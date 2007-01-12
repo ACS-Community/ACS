@@ -1,7 +1,7 @@
 #************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: tat.tcl,v 1.101 2006/09/07 07:52:11 psivera Exp $"
+# "@(#) $Id: tat.tcl,v 1.102 2007/01/12 17:09:22 psivera Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -54,13 +54,16 @@
 # 
 #   DESCRIPTION
 #
-#   Looks on the current directory, normally "test", for a file named 
-#     TestList (the default name)
-#     TestList.lite on a CCSlite installation ($RTAPROOT, $NOCCS not defined)
-#     TestList.NOCCS on a NOCCS installation ($NOCCS defined)
-#     (for ALMA, you can use indifferently TestList or TestList.lite)
-#   The file specifies the QS/RQS/LCU environments to be created and the
-#   tests to be run. 
+#   Looks in the current directory, normally "test", for a file named: 
+#     -TestList (the default name)
+#     -for the VLT project: 
+#       TestList.lite on a CCSlite installation ($RTAPROOT, $NOCCS not defined)
+#       TestList.NOCCS on a NOCCS installation ($NOCCS defined)
+#     -for the ALMA project, you can indifferently use TestList or TestList.lite
+#   The file specifies the scripts to be sourced and/or run to prepare the environment, 
+#   QS/RQS/LCU environments to be created (for the VLT project), 
+#   the tests to be run, 
+#   the scripts to be run to clean-up at the end of the test
 #   tat executes the following steps:
 #
 #   - the environment variable SHLIB_PATH/LD_LIBRARY_PATH is redefined 
@@ -68,10 +71,10 @@
 #   - the environment variable PYTHONPATH (for ALMA) is redefined 
 #     to module lib/python directory first
 #   - the environment variable PATH is redefined to module binaries first
-#   - 'make clean all' is executed in ws and lcu test directories
+#   - 'make clean all' is executed in the (ws and lcu) test directories
 #     to build the test binaries
 #   - test environment is prepared: env variables defined, 
-#     preparation scripts executed
+#     preparation scripts (prologue) executed
 #   - Real time environments (VLT) are allocated and created
 #   - tests scripts are run (a test script may actually be any executable 
 #     file in PATH).
@@ -88,19 +91,22 @@
 #   and then are redirected into ./tatlogs/run<process_id>/<testName>.out
 #   If this file is the  same as ./ref/<testName>.ref, tat prints 
 #   "TEST <testName> PASSED" otherwise tat prints "TEST <testName> FAILED". 
-#   Note that for each allocated environment, tat subsitutes the allocated 
-#   environment name by the corresponding environment variable in the file
+#   For the VLT project: note that for each allocated environment, tat 
+#   subsitutes the allocated environment name by the corresponding environment 
+#   variable in the file
 #   ./tatlogs/run<process_id>/<testName>.out and ./ref/<testName>.ref.
 #   
 #   The output files before the parsing with TestList.grep and TestList.sed 
 #   are saved as well in ./tatlogs/run<process_id>/<testName>.out.orig
 #
-#   Note the matching between the test driver steps and the log files:
+#   Note the matching between the test output name, the reference file name 
+#   and the file where the differences are stored
 #
 #   - output of test script: ./tatlogs/run<process_id>/<testName>.out
 #   - differences between reference file and output file: 
 #   ./tatlogs/run<process_id>/<testName>.diff
-#   In case of failures during RT environments creation, error messages 
+#
+#   VLT: In case of failures during RT environments creation, error messages 
 #   are saved under ./tatlogs/run<process_id>/<env> along whith the whole 
 #   environment for further checking, the RT environment under 
 #   $VLTDATA/ENVIRONMENT is always removed 
@@ -128,7 +134,7 @@
 #     or executable) with optional arguments that has to be run after 
 #     'make all' and before the environments creation.
 #   
-#   - ENVIRONMENT <envName> <type> specifies a environment to be created;
+#   - ENVIRONMENT <envName> <type> specifies a environment to be created (VLT only);
 #
 #   type QS : qsemu local environment (CCS lite only)
 #   type WS : local RTAP environment on the local machine
@@ -141,7 +147,9 @@
 #   Two possible syntax for lines containing the actual test programs 
 #   are allowed:
 #   1. (recommended)
-#   - <testNum> <testName> <proc 1> [<proc 2>..<proc n>]
+#   - <testNum> [SOURCE <tcl_script>] [PROLOGUE <exe_or_script_name> [ <arg1> <arg2> ... ]] 
+#               <testName> <proc 1> [<proc 2>..<proc n>]
+#               [EPILOGUE <exe_or_script_name> [ <arg1> <arg2> ... ]]
 #                 where:
 #                    <testNum>  is the number assigned to the test.
 #                          Usually every record has a different number
@@ -179,7 +187,11 @@
 #                     1  MyTest initDb "@SLEEP 5" "test -a dfs" test_slave
 #                 This means that when initDb is executed, a sleep of 5 second 
 #                 is simultaneously executed.
-# To summarize:
+#       
+#                 Every test case can also be preceded by its own SOURCE script 
+#                 or PROLOGUE or EPILOGUE script.
+#
+# To summarize the usage of the first type of syntax for the test case:
 # - All processes you enter in a TestList record are executed in BACKGORUND, 
 #   but the LAST ONE, which is executed in FOREGROUND
 # - When the last process (the one in foreground) exits, all other processes 
@@ -202,7 +214,7 @@
 #   listed in TestList. Tat filters automatically the name from the
 #   LCU and lines containing "value = " from the VxWorks shell output.
 #
-#   -<envName> is the name of the environment variable defining the envir.
+#   -<envName> is the name of the environment variable defining the envir (VLT).
 #   name: it is NOT the name of the environment. Environments are dynamically
 #   allocated: there is no way to use a given RTAP environment or use a given
 #   LCU environment. During test execution, RTAPENV is assigned to the first
@@ -218,7 +230,7 @@
 #   
 #   Commented line begin with the # character.
 #
-#   ENVIRONMENT CREATION
+#   ENVIRONMENT CREATION (VLT)
 #
 #   Environments are built from scratch. The module test subdirectory shall
 #   contain a ./ENVIRONMENTS/<envName> subdirectory for every environment
@@ -253,7 +265,7 @@
 #   HOSTIPADDR, hostTCPPort, LOCALHOST, LOCALENV, LOCALIPADDR, localTCPPort,
 #   etc., are automatically generated by the lcuboot into bootScript. 
 #
-#   HANDLING OF logLCU.config FILE
+#   HANDLING OF logLCU.config FILE (VLT)
 #   After implementation of SPRs 990447 and 20030339, the user can choose 
 #   whether to write itself the logLCU.config file under the 
 #   test/ENVIRONMENT/ws_env_name directory or let tat prepare the file.
@@ -261,7 +273,7 @@
 #   the TestList* files; if no WS environments have to be created, 
 #   tat will take the default RTAPENV.
 #
-#   SCAN SYSTEM CONFIGURATION
+#   SCAN SYSTEM CONFIGURATION (VLT)
 #
 #   If the file ./ENVIRONMENTS/<envName>/dbl/USER.db.scan contains references 
 #   to the environment variables for the environments (<envName>), these 
@@ -271,7 +283,7 @@
 #   - a reference is just the environment variable name without any prefix 
 #   or suffix (no '$' !).
 #
-#   TEST OF VXWORKS BINARIES
+#   TEST OF VXWORKS BINARIES (VLT)
 #
 #   If not already defined, tat defines MODROOT and it is possible to load
 #   additional vxWorks modules using lcuboot functions by adding them
@@ -324,8 +336,10 @@
 #
 #   -g[enerate]: generates the test reference in ./ref/<test>.ref. 
 #   A former reference file is overwritten. 
-#   The only other valid option with -g are 'all', '-g'
-#   and <testName>. If <testName> is specified, the makeEnv and cleanEnv steps 
+#   The only other valid option with -g are 'all', '-g' and 
+#   <testNum> (if the first type of syntax is used) or
+#   <testName> (if the second type of syntax is used): 
+#   If <testNum> or <testName> is specified, the makeEnv and cleanEnv steps 
 #   are not executed. 
 #   By default, all tests specified in TestFile are executed.
 #
@@ -419,28 +433,47 @@
 #   The words "all", "ALL", "makeEnv" and "cleanEnv" are reserved. 
 #   You should not have tests called with one of those words. 
 #   
+#   ------------------------------------------------------------------------
+#
 #   Each sub directory of ./ENVIRONMENTS should be owner writable.
+#
+#   ------------------------------------------------------------------------
 #
 #   Environments allocated by running 'tat makeEnv' are booked until
 #   the command 'tat cleanEnv' is run. When developing a test, special
 #   care should be taken not to book "forever" environment ressources.
 #
+#   ------------------------------------------------------------------------
+#
 #   Do not mix TestList.grep and TestList.sed syntax: it's the best way
 #   to get a empty reference file.
 #
+#   ------------------------------------------------------------------------
+#
 #   RtapEnvTable is not taken into account: use RtapEnvTable.normal
 #   Do not customize bootScript: use userScript.
+#
+#   ------------------------------------------------------------------------
 #
 #   Never hard code in your test reference file, any host name or address, 
 #   environment name, port number or even user name or file name refering
 #   to your test directory. 
 #
+#   ------------------------------------------------------------------------
+#
 #   It should be mandatory for the user to re-test once its module tests have
 #   been archived, possibly from a different computer using different 
 #   environments.
 #
+#   ------------------------------------------------------------------------
+#
 #   The directives PROLOGUE and EPILOGUE do not support yet the possibility of 
 #   passing a string (between quotes) . To be extended in the future!
+#
+#   At the moment, one can pass to the programs to be run as PROLOGUE or as 
+#   EPILOGUE one and only one argument.
+#
+#   ------------------------------------------------------------------------
 #
 #   When writing the TestList.lite (or TestList), first put the WS envir.
 #   then the LCU environments. Use blanks, not tabs (at list one blank) 
@@ -448,23 +481,69 @@
 #   for instance: 
 #   ENVIRONMENT wsTat  QS
 #
+#   ------------------------------------------------------------------------
+#
 #   When writing the logLCU.config file, use blanks, not tabs (at list one
 #   blank) to separate LCU and WS environment names. 
+#
+#   ------------------------------------------------------------------------
 #
 #   When passing the name of a test (not the number), the name should not 
 #   begin with a number!
 #
+#   ------------------------------------------------------------------------
+#
 #   The order of execution of the different numbered tests or resp. lettered 
 #   is the one written in the TestList[.lite] file
 #  
+#   ------------------------------------------------------------------------
+#
 #   The option -x has not been maintained while performing the merge 
 #   with eccsTestDriver
+#
+#   ------------------------------------------------------------------------
 #
 #   There is not check on the correctness of the env variable REPEAT 
 #   which has to be an integer number. 
 #  
+#   ------------------------------------------------------------------------
+#
 #   Be careful not to have a continuation line character (\) at the end 
 #   of the last test line in the TestList(.lite).
+#
+#   ------------------------------------------------------------------------
+#
+#   When a SOURCE script is used for a specific test case, besides the SOURCE 
+#   script used for all test cases, for example: 
+#    
+#     SOURCE generalTclScript
+#     1 SOURCE myTclScript myTestName procToRun 
+#     2                    mySecondTestName secondProcToRun
+#
+#   and the tests in the TestList are executed all in one go, then the variables 
+#   set in the test case 1 by myTclScript will be valid for the following test cases 
+#   as well. 
+#   In other words, what has been set in 1 is not un-set before running 2.
+#   In the example above, also the test mySecondTestName will benefit of the 
+#   same environment variables set during the execution of myTestName. 
+#   If you do not want those variables set, you should prepare another SOURCE script 
+#   to put in front of mySecondTestName, redefining or unsetting the desired variables.
+#   Note that if you run the test cases one by one, using the command: 
+#      tat 1 
+#      tat 2 
+#   in this case, when running tat 2 the environment variables set in 1 are lost.
+#   Note also that by design (it was requested in an SPR), the SOURCE script 
+#   used at the beginning of the TestList is always re-sourced before any test case, 
+#   so that the environment variables are always valid, whether the tests are run 
+#   all in one go with one command, or one by one. 
+#   So in the example above, the environmnet variables defined in generalTclScript 
+#   will be active for test 1 and test 2, whether these tests are run with one command: 
+#      tat 
+#   or one by one: 
+#      tat 1
+#      tat 2
+#
+#   ------------------------------------------------------------------------
 #
 #   BUGS     
 #
@@ -1330,24 +1409,66 @@ proc runTest { testList generate rep } {
     set iter      0
     set FLAG_TESTDRIVER 1
 
+    set sourceTestId {}
+    set prologueTestId {}
+    set epilogueTestId {}
+    set numEl 0
+
     # Loop over the tests
     # Each line correspond to a test
     while { ![lempty $testList]} {
 
+	# testid will contain the number which identifies the test; in case the old tat syntax is used, the testid will simply be the test itself
 	set testid [lvarpop testList]
-
-        # Prepares the file names for the output
-	set outputFile   ./tatlogs/run$PID/$testid.out
-	set refFile      ./ref/$testid.ref
-	catch {file delete -force -- $outputFile}
-	if { $generate == 1 } {
-	    file delete -force -- $refFile
-	}
 
 	# Parse the test command line
 	if { [llength $testid ] > 1 } {
-	    set FLAG_TESTDRIVER 1
 	    set thisTest [lindex $testid 0]
+	    lvarpop testid
+	    set FLAG_TESTDRIVER 1
+            if { [lsearch -exact $testid SOURCE] != -1 } {
+		if { [lindex $testid 0] != "SOURCE" } {
+		    error "SOURCE directive is not in the right place; it should be immediately after the test id number"
+		}
+		lvarpop testid
+		set sourceTestId [lvarpop testid]
+		tatPuts "Sourcing script $sourceTestId"
+		source $sourceTestId
+	    }
+	    if { [lsearch -exact $testid PROLOGUE] != -1 } {
+		if { [lindex $testid 0] != "PROLOGUE" } {
+		    error "PROLOGUE directive is not in the right place"
+		}
+		lvarpop testid
+		set prologueTestId [lvarpop testid]
+		set prologueProg [lindex $prologueTestId 0]
+		set prologueArgs [lrange $prologueTestId 1 end]
+	        tatPuts "Executing prologue script $prologueTestId"
+	        if {[ catch {exec $prologueProg [join $prologueArgs ] } out ]} {
+	    	    tatPuts "The prologue script $prologueTestId fails: $out"
+	        }
+	        tatPuts "End of prologue script"
+	    }
+	    if { [lsearch -exact $testid EPILOGUE] != -1 } {
+		set numEl [llength $testid]
+		set lastElIndex [expr {$numEl -1}]
+		set epiDirIndex [expr {$lastElIndex -1}]
+		if { [lindex $testid $epiDirIndex] != "EPILOGUE" } {
+		    error "EPILOGUE directive is not in the right place"
+		}
+		set epilogueTestId [lindex $testid $lastElIndex]
+		set epilogueProg [lindex $epilogueTestId 0]
+		set epilogueArgs [lrange $epilogueTestId 1 end]
+		set testid [lreplace $testid $epiDirIndex $lastElIndex] 
+	    }
+	    #set thisTest [lindex $testid 0]
+	    set testName [lindex $testid 0]
+	    set testid [concat $thisTest $testid]
+	    set outputFile   ./tatlogs/run$PID/$testName.out
+	    set refFile      ./ref/$testName.ref
+	    if { $generate == 1 } {
+		file delete -force -- $refFile
+	    }
 #	    The following line is a debug printing, not necessarily needed
 #	    puts "thisTest=$thisTest"
 	    if { $gv(testAll) == 0 && [lsearch $gv(toTest) $thisTest] == -1 } {
@@ -1365,15 +1486,43 @@ proc runTest { testList generate rep } {
             }
 
             printLogVerbose "TEST NAME: $testProc ($nProc processes to run)"
+	    # make test script executable for cmmCopied dir:
+	    # only test scripts should be in the current dir.
+	    # not the binary generated under bin.
+	    if { [file exists $testid] && ![file executable $testid] } {
+	        if { [catch {chmod u+x $testid}] } {
+		    error "cannot chmod u+x $testid"
+	        }
+	    }
 
 	} else {
 	    set FLAG_TESTDRIVER 0
-#	    The following line is a debug printing, not necessarily needed
-#	    puts "testid = $testid"
+	    set outputFile   ./tatlogs/run$PID/$testid.out
+	    set refFile      ./ref/$testid.ref
+	    catch {file delete -force -- $outputFile}
+ 	    if { $generate == 1 } {
+                file delete -force -- $refFile
+ 	    }
+	    # make test script executable for cmmCopied dir:
+	    # only test scripts should be in the current dir.
+	    # not the binary generated under bin.
+	    if { [file exists $testid] && ![file executable $testid] } {
+	        if { [catch {chmod u+x $testid}] } {
+		    error "cannot chmod u+x $testid"
+	        }
+	    }
+	    
 	}
 
         # Prepares the file names for the otput
         # and execute the processes
+        #set outputFile   ./tatlogs/run$PID/$testid.out
+	#set refFile      ./ref/$testid.ref
+ 	#catch {file delete -force -- $outputFile}
+ 	#if { $generate == 1 } {
+        #    file delete -force -- $refFile
+ 	#}
+
         set userId [id user]
         set file /tmp/${userId}_test[pid]
 
@@ -1381,14 +1530,6 @@ proc runTest { testList generate rep } {
 
 	# execute the test
 	
-	# make test script executable for cmmCopied dir:
-	# only test scripts should be in the current dir.
-	# not the binary generated under bin.
-	if { [file exists $testid] && ![file executable $testid] } {
-	    if { [catch {chmod u+x $testid}] } {
-		error "cannot chmod u+x $testid"
-	    }
-	}
 
 	if { $FLAG_TESTDRIVER == 0 } {
 
@@ -1591,6 +1732,14 @@ proc runTest { testList generate rep } {
                 sleep $waitAtEnd
             }
 
+	if { $epilogueTestId != "" } {
+	    tatPuts "Executing epilogue script $epilogueTestId"
+	    if {[ catch {exec $epilogueProg [join $epilogueArgs ] } out ]} {
+	        tatPuts "The epilogue script $epilogueTestId fails: $out"
+	    }
+	    tatPuts "End of epilogue script"
+	    set epilogueTestId {}
+	}
         # Add a time stamp to all the lines of the output files
         # that do not have it.
         # Add also a mark to identify the process (master or slave)
@@ -2204,8 +2353,12 @@ proc doRunTest  {} {
 	# specififed test id. is wrong (SPR 960586).
 	# check that the specified testid are defined in TestList ...
 	if { [llength $gv(userTestList) ] != 0 } {
+	set concList {}
+	foreach item $gv(testList) {
+	    set concList [concat $concList $item]
+	}
 	foreach userTest $gv(userTestList) {
-	    if {[lsearch $gv(testList) $userTest] == -1 } {
+	    if {[lsearch $concList $userTest] == -1 } {
 		    puts "$userTest not found in $gv(testListFileName)."
 	    }
 	}
@@ -2790,7 +2943,7 @@ while {! [lempty $argv]} {
 		"^makeEnv$"  { set gv(makeEnvOn) 1 }
 		"^cleanEnv$" { set gv(cleanEnvOn) 1 }
                 "^[0-9]+"     { set gv(testAll) 0; lappend gv(toTest) $arg }
-		default	   { set gv(userTestList) [concat $gv(userTestList) $arg] ; 
+		default	   { set gv(userTestList)  [concat $gv(userTestList) $arg] ; 
 			     set gv(testAll) 0
 			   }
 	    }
