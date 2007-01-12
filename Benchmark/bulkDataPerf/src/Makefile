@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.2 2006/11/22 15:35:03 bjeram Exp $"
+# "@(#) $Id: Makefile,v 1.3 2007/01/12 09:42:51 rcirami Exp $"
 #
 # Makefile of ........
 #
@@ -66,7 +66,7 @@ sendDistRecvsPerfTest_OBJECTS = sendDistRecvsPerfTest
 sendDistRecvsPerfTest_LIBS =  bulkDataDistributerStubs bulkDataSenderStubs bulkDataReceiverStubs bulkDataStubs bulkDataCallback ACSBulkDataError receiverPTStubs senderPTStubs
 
 senderReceiverPerfTest_OBJECTS = senderReceiverPerfTest
-senderReceiverPerfTest_LIBS =  bulkDataDistributerStubs bulkDataSenderStubs bulkDataReceiverStubs bulkDataStubs bulkDataCallback ACSBulkDataError receiverPTStubs senderPTStubs
+senderReceiverPerfTest_LIBS =  bulkDataSenderStubs bulkDataReceiverStubs bulkDataStubs bulkDataCallback ACSBulkDataError receiverPTStubs senderPTStubs
 
 sendThreadDistRecvsPerfTest_OBJECTS = sendThreadDistRecvsPerfTest
 sendThreadDistRecvsPerfTest_LIBS =  bulkDataDistributerStubs bulkDataSenderStubs bulkDataReceiverStubs bulkDataStubs bulkDataCallback ACSBulkDataError receiverPTStubs senderPTStubs

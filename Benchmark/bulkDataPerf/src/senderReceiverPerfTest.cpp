@@ -6,7 +6,7 @@
 
 #include <bulkDataSenderC.h>
 #include <receiverPTC.h>
-#include <bulkDataDistributerC.h>
+#include <senderPTC.h>
 
 #include "ACSBulkDataError.h"
 
@@ -16,7 +16,7 @@ using namespace ACSBulkDataError;
 
 int main(int argc, char *argv[])
 {
-  bulkdata::BulkDataReceiver_var  receiver;
+  bulkdata::BulkDataReceiver_var receiver;
   bulkdata::BulkDataSender_var sender;
   // Creates and initializes the SimpleClient object
   SimpleClient client;
@@ -39,10 +39,17 @@ int main(int argc, char *argv[])
 	client.login();
 	}
 	
+	TEST_M::ReceiverPT_var rpt;
+	TEST_M::SenderPT_var spt;
+
     try
       {
-	TEST_M::ReceiverPT_var rpt;
-	sender = client.getComponent<bulkdata::BulkDataSender>(argv[1], 0, true);
+	spt = client.getComponent<TEST_M::SenderPT>(argv[1], 0, true);
+	if (CORBA::is_nil(spt.in()))
+	    {
+	    ACS_SHORT_LOG((LM_INFO, "!!!! Error activating sender component !!!"));
+	    throw;
+	    }
 	
 	receiver = client.getComponent<bulkdata::BulkDataReceiver>(argv[2], 0, true);
 	rpt = TEST_M::ReceiverPT::_narrow(receiver.in());
@@ -58,50 +65,58 @@ int main(int argc, char *argv[])
 	return -1;
       }
     
-    ACS_SHORT_LOG((LM_INFO, "All components have been retreiven !"));
+    ACS_SHORT_LOG((LM_INFO, "All components have been retrieven !"));
 		  
     try
       {
 	
 	ACS_SHORT_LOG((LM_INFO, "Connecting receiver to the sender."));
-	sender->connect(receiver.in());
+	spt->connect(rpt.in());
 			      
 	ACS_SHORT_LOG((LM_INFO, "Start sending the data"));		      
 
-	sender->startSend();
-	sender->paceData();
+	//spt->startSendNew(1,100000);
+	spt->paceDataNew(1,1200000);
 		      
 	ACS_SHORT_LOG((LM_INFO, "Stop sending the data"));		      
-	sender->stopSend();
+	spt->stopSendNew(1);
 
 	ACS_SHORT_LOG((LM_INFO, "Disconnect the sender"));		      
-	sender->disconnect();
+	spt->disconnect();
 	
-	receiver->closeReceiver();
+	rpt->closeReceiver();
       }
     catch (AVConnectErrorEx & ex)
       {   
 	ACS_SHORT_LOG((LM_INFO, "AVConnectErrorEx exception catched !"));
 	AVConnectErrorExImpl ex1(ex);
 	ex1.log();
+	spt->disconnect();	
+	rpt->closeReceiver();
 	}
     catch (AVStartSendErrorEx & ex)
 	{   
 	ACS_SHORT_LOG((LM_INFO, "AVStartSendErrorEx exception catched !"));
 	AVStartSendErrorExImpl ex1(ex);
 	ex1.log();
+	spt->disconnect();	
+	rpt->closeReceiver();
 	}
     catch (AVPaceDataErrorEx & ex)
 	{   
 	ACS_SHORT_LOG((LM_INFO, "AVPaceDataErrorEx exception catched !"));
 	AVPaceDataErrorExImpl ex1(ex);
 	ex1.log();
+	spt->disconnect();	
+	rpt->closeReceiver();
 	}
     catch (AVStopSendErrorEx & ex)
 	{   
 	ACS_SHORT_LOG((LM_INFO, "AVStopSendErrorEx exception catched !"));
 	AVStopSendErrorExImpl ex1(ex);
 	ex1.log();
+	spt->disconnect();	
+	rpt->closeReceiver();
 	}
     catch (AVDisconnectErrorEx & ex)
 	{   

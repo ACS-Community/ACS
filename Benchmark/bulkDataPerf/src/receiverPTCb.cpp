@@ -51,6 +51,9 @@ ReceiverPTCb::cbReceive(ACE_Message_Block * frame_p)
     count++;
     double dtime;
 
+    //cout << "AAAAAAAAAAAAA: " << frame_p->length() << endl; 
+    ACE_OS::sleep(6);
+
     if (start)
 	{
 	start_time = ACE_OS::gettimeofday();

@@ -62,35 +62,15 @@ void SenderPTImpl::startSendNew(CORBA::Long flwNmbr, CORBA::Long sz)
 
 	mb1->release();
 	}
-
-    catch (AVInvalidFlowNumberExImpl & ex)
-	{   
-	ACS_SHORT_LOG((LM_INFO,"SenderPTImpl::startSendNew AVInvalidFlowNumberExImpl exception catched !"));
-	AVStartSendErrorExImpl err = AVStartSendErrorExImpl(ex,__FILE__,__LINE__,"SenderPTImpl::startSendNew");
-	throw err.getAVStartSendErrorEx();
-	}
-    catch (AVSendFrameErrorExImpl & ex)
-	{   
-	ACS_SHORT_LOG((LM_INFO,"SenderPTImpl::startSendNew AVSendFrameErrorExImpl exception catched !"));
-	AVStartSendErrorExImpl err = AVStartSendErrorExImpl(ex,__FILE__,__LINE__,"SenderPTImpl::startSendNew");
-	throw err.getAVStartSendErrorEx();
-	}
-    catch (AVFlowEndpointErrorExImpl & ex)
-	{   
-	ACS_SHORT_LOG((LM_INFO,"SenderPTImpl::startSendNew AVFlowEndpointErrorExImplexception catched !"));
-	AVStartSendErrorExImpl err = AVStartSendErrorExImpl(ex,__FILE__,__LINE__,"SenderPTImpl::startSendNew");
-	throw err.getAVStartSendErrorEx();
-	}
-    catch (AVProtocolErrorExImpl & ex)
-	{   
-	ACS_SHORT_LOG((LM_INFO,"SenderPTImpl::startSendNew AVProtocolErrorExImplexception catched !"));
-	AVStartSendErrorExImpl err = AVStartSendErrorExImpl(ex,__FILE__,__LINE__,"SenderPTImpl::startSendNew");
+    catch(ACSErr::ACSbaseExImpl &ex)
+	{
+	AVStartSendErrorExImpl err = AVStartSendErrorExImpl(ex,__FILE__,__LINE__,"senderPTImpl::startSendNew");
 	throw err.getAVStartSendErrorEx();
 	}
     catch (...)
 	{
-	ACS_SHORT_LOG((LM_INFO,"SenderPTImpl::startSendNew UNKNOWN exception"));
-	AVStartSendErrorExImpl err = AVStartSendErrorExImpl(__FILE__,__LINE__,"SenderPTImpl::startSendNew");
+	ACS_SHORT_LOG((LM_ERROR,"senderPTImpl::startSendNew UNKNOWN exception"));
+	AVStartSendErrorExImpl err = AVStartSendErrorExImpl(__FILE__,__LINE__,"senderPTImpl::startSendNew");
 	throw err.getAVStartSendErrorEx();
 	}
 }
@@ -99,7 +79,6 @@ void SenderPTImpl::startSendNew(CORBA::Long flwNmbr, CORBA::Long sz)
 void SenderPTImpl::paceDataNew(CORBA::Long flwNmbr, CORBA::Long sz)
     throw (CORBA::SystemException, AVPaceDataErrorEx)
 {
-
     CORBA::ULong flowNumber = flwNmbr;
     int size = sz;
 
@@ -124,29 +103,15 @@ void SenderPTImpl::paceDataNew(CORBA::Long flwNmbr, CORBA::Long sz)
 
 	mb1->release();
      	}
-
-    catch (AVInvalidFlowNumberExImpl & ex)
-	{   
-	ACS_SHORT_LOG((LM_INFO,"SenderPTImpl::paceDataNew AVInvalidFlowNumberExImpl exception catched !"));
-	AVPaceDataErrorExImpl err = AVPaceDataErrorExImpl(ex,__FILE__,__LINE__,"SenderPTImpl::paceDataNew");
+    catch(ACSErr::ACSbaseExImpl &ex)
+	{
+	AVPaceDataErrorExImpl err = AVPaceDataErrorExImpl(ex,__FILE__,__LINE__,"senderPTImpl::paceDataNew");
 	throw err.getAVPaceDataErrorEx();
 	}
-    catch (AVSendFrameErrorExImpl & ex)
+   catch (...)
 	{
-	ACS_SHORT_LOG((LM_INFO,"SenderPTImpl::paceDataNew AVSendFrameErrorExImpl exception catched !"));
-	AVPaceDataErrorExImpl err = AVPaceDataErrorExImpl(ex,__FILE__,__LINE__,"SenderPTImpl::paceDataNew");
-	throw err.getAVPaceDataErrorEx();
-	}
-    catch (AVCouldNotOpenFileExImpl & ex)
-	{
-	ACS_SHORT_LOG((LM_INFO,"SenderPTImpl::paceDataNew AVCouldNotOpenFileExImpl exception catched !"));
-	AVPaceDataErrorExImpl err = AVPaceDataErrorExImpl(ex,__FILE__,__LINE__,"SenderPTImpl::paceDataNew");
-	throw err.getAVPaceDataErrorEx();
-	}
-    catch (...)
-	{
-	ACS_SHORT_LOG((LM_INFO,"SenderPTImpl::paceDataNew UNKNOWN exception"));
-	AVPaceDataErrorExImpl err = AVPaceDataErrorExImpl(__FILE__,__LINE__,"SenderPTImpl::paceDataNew");
+	ACS_SHORT_LOG((LM_ERROR,"senderPTImpl::paceDataNew UNKNOWN exception"));
+	AVPaceDataErrorExImpl err = AVPaceDataErrorExImpl(__FILE__,__LINE__,"senderPTImpl::paceDataNew");
 	throw err.getAVPaceDataErrorEx();
 	}
 }
@@ -161,17 +126,22 @@ void SenderPTImpl::stopSendNew(CORBA::Long flwNmbr)
 	{
 	getSender()->stopSend(flowNumber);
 	}
-
-    catch (AVInvalidFlowNumberExImpl & ex)
+    catch(ACSErr::ACSbaseExImpl &ex)
+	{
+	ACS_SHORT_LOG((LM_WARNING,"senderPTImpl::stopSendNew base exception catched !"));	
+	AVStopSendErrorExImpl err = AVStopSendErrorExImpl(ex,__FILE__,__LINE__,"senderPTImpl::stopSendNew");
+	throw err.getAVStopSendErrorEx();
+	}
+    /*catch (AVInvalidFlowNumberExImpl & ex)
 	{   
 	ACS_SHORT_LOG((LM_INFO,"SenderPTImpl::stopSendNew AVInvalidFlowNumberExImpl exception catched !"));
 	AVStopSendErrorExImpl err = AVStopSendErrorExImpl(ex,__FILE__,__LINE__,"SenderPTImpl::stopSendNew");
 	throw err.getAVStopSendErrorEx();
-	}
+	}*/
     catch (...)
 	{
-	ACS_SHORT_LOG((LM_INFO,"SenderPTImpl::stopSendNew UNKNOWN exception"));
-	AVStopSendErrorExImpl err = AVStopSendErrorExImpl(__FILE__,__LINE__,"SenderPTImpl::stopSendNew");
+	ACS_SHORT_LOG((LM_ERROR,"senderPTImpl::stopSendNew UNKNOWN exception"));
+	AVStopSendErrorExImpl err = AVStopSendErrorExImpl(__FILE__,__LINE__,"senderPTImpl::stopSendNew");
 	throw err.getAVStopSendErrorEx();
 	}
 }

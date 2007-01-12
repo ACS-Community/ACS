@@ -88,11 +88,10 @@ int main(int argc, char *argv[])
 	return -1;
       }
     
-    ACS_SHORT_LOG((LM_INFO, "All components have been retreiven !"));
+    ACS_SHORT_LOG((LM_INFO, "All components have been retrieven !"));
 		  
     try
-      {
-	
+      {	
 	ACS_SHORT_LOG((LM_INFO, "Connecting to the sender."));
 	spt->connect(distributor.in());
 	
@@ -103,15 +102,21 @@ int main(int argc, char *argv[])
 	  } 
 		      
 	ACS_SHORT_LOG((LM_INFO, "Start sending the data"));		      
-	spt->startSendNew(1,1000);
-	spt->startSendNew(2,2000);
+	//spt->startSendNew(1,100000);
+	//spt->startSendNew(2,200000);
+	//spt->startSendNew(3,300000);
+	//spt->startSendNew(4,400000);
 
-	spt->paceDataNew(1,300000000);
-	spt->paceDataNew(2,300000000);
+	spt->paceDataNew(1,1000000);
+	//spt->paceDataNew(2,2000000);
+	//spt->paceDataNew(3,3000000);
+	//spt->paceDataNew(4,4000000);
 		      
 	ACS_SHORT_LOG((LM_INFO, "Stop sending the data"));		      
 	spt->stopSendNew(1);
-	spt->stopSendNew(2);
+	//spt->stopSendNew(2);
+	//spt->stopSendNew(3);
+	//spt->stopSendNew(4);
 
 	ACS_SHORT_LOG((LM_INFO, "Disconnect the sender"));		      
 	spt->disconnect();
@@ -129,50 +134,75 @@ int main(int argc, char *argv[])
 	  {
 	  distributor->multiDisconnect(rpt[i]);
 	  } 
-	
-	
+		
       }
     catch (AVConnectErrorEx & ex)
       {   
-	ACS_SHORT_LOG((LM_INFO, "AVConnectErrorEx exception catched !"));
+	ACS_SHORT_LOG((LM_ERROR, "AVConnectErrorEx exception catched !"));
 	AVConnectErrorExImpl ex1(ex);
 	ex1.log();
+	distributor->closeReceiver();
+	
+	ACS_SHORT_LOG((LM_INFO, "Disconnect the receivers from the distributer"));	      
+	for (i=0; i<recvsNum; i++)
+	  {
+	  distributor->multiDisconnect(rpt[i]);
+	  } 
 	}
     catch (AVStartSendErrorEx & ex)
 	{   
-	ACS_SHORT_LOG((LM_INFO, "AVStartSendErrorEx exception catched !"));
+	ACS_SHORT_LOG((LM_ERROR, "AVStartSendErrorEx exception catched !"));
 	AVStartSendErrorExImpl ex1(ex);
 	ex1.log();
+	distributor->closeReceiver();
+	
+	ACS_SHORT_LOG((LM_INFO, "Disconnect the receivers from the distributer"));	      
+	for (i=0; i<recvsNum; i++)
+	  {
+	  distributor->multiDisconnect(rpt[i]);
+	  } 
 	}
     catch (AVPaceDataErrorEx & ex)
 	{   
-	ACS_SHORT_LOG((LM_INFO, "AVPaceDataErrorEx exception catched !"));
+	ACS_SHORT_LOG((LM_ERROR, "AVPaceDataErrorEx exception catched !"));
 	AVPaceDataErrorExImpl ex1(ex);
 	ex1.log();
+	distributor->closeReceiver();
+	
+	ACS_SHORT_LOG((LM_INFO, "Disconnect the receivers from the distributer"));	      
+	for (i=0; i<recvsNum; i++)
+	  {
+	  distributor->multiDisconnect(rpt[i]);
+	  } 
 	}
     catch (AVStopSendErrorEx & ex)
 	{   
-	ACS_SHORT_LOG((LM_INFO, "AVStopSendErrorEx exception catched !"));
+	ACS_SHORT_LOG((LM_ERROR, "AVStopSendErrorEx exception catched !"));
 	AVStopSendErrorExImpl ex1(ex);
 	ex1.log();
+	distributor->closeReceiver();
+	
+	ACS_SHORT_LOG((LM_INFO, "Disconnect the receivers from the distributer"));	      
+	for (i=0; i<recvsNum; i++)
+	  {
+	  distributor->multiDisconnect(rpt[i]);
+	  } 
 	}
     catch (AVDisconnectErrorEx & ex)
 	{   
-	ACS_SHORT_LOG((LM_INFO, "AVDisconnectErrorEx exception catched !"));
+	ACS_SHORT_LOG((LM_ERROR, "AVDisconnectErrorEx exception catched !"));
 	AVDisconnectErrorExImpl ex1(ex);
 	ex1.log();
 	}
     catch (AVCloseReceiverErrorEx & ex)
 	{   
-	ACS_SHORT_LOG((LM_INFO, "AVCloseReceiverErrorEx exception catched !"));
+	ACS_SHORT_LOG((LM_ERROR, "AVCloseReceiverErrorEx exception catched !"));
 	AVCloseReceiverErrorExImpl ex1(ex);
 	ex1.log();
 	}
-
-
     catch(...)
 	{
-	ACS_SHORT_LOG((LM_INFO,"UNKNOWN exception catched!"));
+	ACS_SHORT_LOG((LM_ERROR,"UNKNOWN exception catched!"));
 	}
 
     try

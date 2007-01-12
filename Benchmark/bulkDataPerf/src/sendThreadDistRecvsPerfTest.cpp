@@ -16,7 +16,7 @@ using namespace ACSBulkDataError;
 
 
 ACE_Barrier *barrier_p;
-pthread_t tasks[2];
+pthread_t tasks[4];
 
 TEST_M::SenderPT_var spt;
 
@@ -36,7 +36,7 @@ void *senderTask(void *_ptr)
     try
     {
 
-    unsigned long loop = 5;
+    unsigned long loop = 1;
 
     for (unsigned long k=0;k<loop;k++ )
 	{
@@ -45,14 +45,18 @@ void *senderTask(void *_ptr)
 //	barrier_p->wait();
       
 	ACS_SHORT_LOG((LM_INFO, "Start sending the data"));		      
-	spt->startSendNew(id,1000);
+	spt->startSendNew(id,100000);
 	
 //	barrier_p->wait();
 
 	if ( id == 1 )
-	    spt->paceDataNew(id,800000000);
+	    spt->paceDataNew(id,1000000);
 	else if ( id == 2 )
-	    spt->paceDataNew(id,80000000);
+	    spt->paceDataNew(id,2000000);
+	else if ( id == 3 )
+	    spt->paceDataNew(id,3000000);
+	else if ( id == 4 )
+	    spt->paceDataNew(id,4000000);
 	
 //	barrier_p->wait();
 	
@@ -119,13 +123,13 @@ int main(int argc, char *argv[])
       //spt = TEST_M::SenderPT::_narrow(sender.in());
 
       spt = client.getComponent<TEST_M::SenderPT>(argv[1], 0, true);
-      /*
+
       if (CORBA::is_nil(spt.in()))
 	  {
 	  ACS_SHORT_LOG((LM_INFO, "!!!! Error activating sender component !!!"));
 	  return -1;
 	  }
-      */
+	
       distributor = client.getComponent<bulkdata::BulkDataDistributer>(argv[2], 0, true);
 	
       for (;recvsNum < (argc-4); recvsNum++)
@@ -163,19 +167,15 @@ int main(int argc, char *argv[])
     
     ACS_SHORT_LOG((LM_INFO, "All components have been retreiven !"));
     
-    ACE_Barrier barrier(2);
+    ACE_Barrier barrier(4);
     barrier_p = &barrier;
     
     try
 	{
-	  /*	ACS_SHORT_LOG((LM_INFO, "Connecting to the sender."));
-	spt->connect(rpt[0].in());
-	  */
-	 
-	ACS_SHORT_LOG((LM_INFO, "Connecting to the distributor."));
+	
+	ACS_SHORT_LOG((LM_INFO, "Connecting to the sender."));
 	spt->connect(distributor.in());
-
-		
+	
 	ACS_SHORT_LOG((LM_INFO, "Connecting receivers to the distributor"));		      
 	for (i=0; i<recvsNum; i++)
 	  {
@@ -187,7 +187,7 @@ int main(int argc, char *argv[])
 	//
 	// spawn the senders
 	//
-	for ( int ii = 0; ii < 2; ii++ )
+	for ( int ii = 0; ii < 4; ii++ )
             {
 	    int stat;
 	    if ( (stat = pthread_create(&tasks[ii],
@@ -207,7 +207,7 @@ int main(int argc, char *argv[])
 	//
 	// join the senders
 	//
-	for ( int jj = 0; jj < 2; jj++ )
+	for ( int jj = 0; jj < 4; jj++ )
 	    {
 	    ACS_SHORT_LOG((LM_INFO, "joining sender task %d...", jj));
 	    
