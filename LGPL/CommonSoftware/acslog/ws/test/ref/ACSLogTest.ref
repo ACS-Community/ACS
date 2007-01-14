@@ -18,7 +18,7 @@
 3 - Logging error stack using ACS Log Svc ... 
 2 - (logging::LoggingHelper::resolveNameService) CORBA exception caught!
 3 - Logging error stack using ACS Log Svc with different priorities 
-2 - Resolving Notify Channel...
+2 - Resolving Notify Channel... 2 LoggingChannel
 3 - Test #1
 2 - Notify Channel: LoggingChannel
 3 - Test #2
