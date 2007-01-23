@@ -28,7 +28,6 @@ AcsBulkdata::BulkDataSender<TSenderCallback>::~BulkDataSender()
 	deleteStreamCtrl();
 	deleteFepsA();
 	deleteSepA();
-
 	}
 }
 
@@ -190,7 +189,7 @@ void AcsBulkdata::BulkDataSender<TSenderCallback>::getFlowProtocol(ACE_CString &
 
     BulkDataFlowProducer<TSenderCallback> *fep_p = 0;
     fepMap_m.find(flowname, fep_p);
-    
+
     if(fep_p == 0)
 	{
 	ACS_SHORT_LOG((LM_ERROR,"BulkDataSender<>::getFlowProtocol Flow protocol null"));
@@ -718,8 +717,8 @@ void AcsBulkdata::BulkDataSender<TSenderCallback>::initPartA()
 	TAO_AV_CORE::instance()->init(BACI_CORBA::getORB(), BACI_CORBA::getPOARoot());
 	}
 
-    int result = endpointStrategy_m.init(TAO_AV_CORE::instance()->orb (),
-					 TAO_AV_CORE::instance()->poa ());
+    int result = endpointStrategy_m.init(TAO_AV_CORE::instance()->orb(),
+					 TAO_AV_CORE::instance()->poa());
     if (result != 0)
 	{
 	ACS_SHORT_LOG((LM_ERROR,"BulkDataSender<>::initPartA endpoint_strategy init failed"));
@@ -745,13 +744,13 @@ AVStreams::StreamEndPoint_A_ptr AcsBulkdata::BulkDataSender<TSenderCallback>::cr
     sepRefCount_p = localSepA_p;
 
     AVStreams::StreamEndPoint_A_var localSepObj_p = localSepA_p->_this();
-    if (CORBA::is_nil(localSepObj_p.in()))
+    if(CORBA::is_nil(localSepObj_p.in()))
 	{
 	ACS_SHORT_LOG((LM_ERROR,"BulkDataSender<>::createSepA unable to activate Stream Endpoint"));
 	AVStreamEndpointErrorExImpl err = AVStreamEndpointErrorExImpl(__FILE__,__LINE__,"BulkDataSender::createSepA");
 	throw err;
 	}
-
+    
     return localSepObj_p._retn();
 }
 
@@ -858,12 +857,6 @@ const char * AcsBulkdata::BulkDataSender<TSenderCallback>::createFwdFlowSpec(ACE
 				     carrierProtocol.c_str(),
 				     &locAddr);
   
-    //cout << "!!!!!!!!!!!!!!!!!!!!!!!" << flowname.c_str() << endl;
-    //cout << "!!!!!!!!!!!!!!!!!!!!!!!" << direction.c_str() << endl;
-    //cout << "!!!!!!!!!!!!!!!!!!!!!!!" << formatName.c_str() << endl;
-    //cout << "!!!!!!!!!!!!!!!!!!!!!!!" << localAddress.c_str () << endl;
-    //cout << "!!!!!!!!!!!!!!!!!!!!!!!" << remoteAddress.c_str () << endl;
-
     entry.set_peer_addr(&remAddr);
 
     return CORBA::string_dup(entry.entry_to_string());
@@ -1077,12 +1070,6 @@ const char * AcsBulkdata::BulkDataSender<TSenderCallback>::createFlowSpec(ACE_CS
 				     carrierProtocol.c_str(),
 				     &locAddr);
   
-    //cout << "!!!!!!!!!!!!!!!!!!!!!!!" << flowname.c_str() << endl;
-    //cout << "!!!!!!!!!!!!!!!!!!!!!!!" << direction.c_str() << endl;
-    //cout << "!!!!!!!!!!!!!!!!!!!!!!!" << formatName.c_str() << endl;
-    //cout << "!!!!!!!!!!!!!!!!!!!!!!!" << localAddress.c_str () << endl;
-    //cout << "!!!!!!!!!!!!!!!!!!!!!!!" << remoteAddress.c_str () << endl;
-
     entry.set_peer_addr(&remAddr);
 
     return CORBA::string_dup(entry.entry_to_string());
@@ -1128,9 +1115,6 @@ void AcsBulkdata::BulkDataSender<TSenderCallback>::mergeFlowSpecs()
 	    AVStreamBindErrorExImpl err = AVStreamBindErrorExImpl(__FILE__,__LINE__,"BulkDataSender::mergeFlowSpecs");
 	    throw err;	
 	    }
-
-	//cout << "JJJJJJJJJJJJJJJJJJJJJJJ: " << entry.format() << endl;
-	//cout << "JJJJJJJJJJJJJJJJJJJJJJJ: " << entry.flowname() << endl;
 
 	flowname = CORBA::string_dup(senderEntry.flowname());
 	carrierProtocol = CORBA::string_dup(senderEntry.carrier_protocol_str());

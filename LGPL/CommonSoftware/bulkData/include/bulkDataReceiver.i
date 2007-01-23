@@ -516,12 +516,6 @@ const char * AcsBulkdata::BulkDataReceiver<TReceiverCallback>::createFlowSpec(AC
 				     carrierProtocol.c_str(),
 				     &locAddr);
   
-    //cout << "!!!!!!!!!!!!!!!!!!!!!!!" << flowName.c_str() << endl;
-    //cout << "!!!!!!!!!!!!!!!!!!!!!!!" << direction.c_str() << endl;
-    //cout << "!!!!!!!!!!!!!!!!!!!!!!!" << formatName.c_str() << endl;
-    //cout << "!!!!!!!!!!!!!!!!!!!!!!!" << localAddress.c_str () << endl;
-    //cout << "!!!!!!!!!!!!!!!!!!!!!!!" << remoteAddress.c_str () << endl;
-
     entry.set_peer_addr(&remAddr);
 
     return CORBA::string_dup(entry.entry_to_string());
