@@ -88,6 +88,7 @@ void BulkDataSenderImpl<TSenderCallback>::connect(bulkdata::BulkDataReceiver_ptr
     catch(ACSErr::ACSbaseExImpl &ex)
 	{
 	AVConnectErrorExImpl err = AVConnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataSenderImpl::connect");
+	err.log(LM_DEBUG);
 	throw err.getAVConnectErrorEx();
 	}
     /*catch(CORBA::UserException &ex) //is the base of the remote exceptions
@@ -98,21 +99,25 @@ void BulkDataSenderImpl<TSenderCallback>::connect(bulkdata::BulkDataReceiver_ptr
     catch(AVOpenReceiverErrorEx &ex)
 	{
 	AVConnectErrorExImpl err = AVConnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataSenderImpl::connect");
+	err.log(LM_DEBUG);
 	throw err.getAVConnectErrorEx();
 	}
     catch(AVReceiverConfigErrorEx &ex)
 	{
 	AVConnectErrorExImpl err = AVConnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataSenderImpl::connect");
+	err.log(LM_DEBUG);
 	throw err.getAVConnectErrorEx();
 	}
     catch(AVFlowEndpointErrorEx &ex)
 	{
 	AVConnectErrorExImpl err = AVConnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataSenderImpl::connect");
+	err.log(LM_DEBUG);
 	throw err.getAVConnectErrorEx();
 	}
     catch(AVSetReceiverNameErrorEx &ex)
 	{
 	AVConnectErrorExImpl err = AVConnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataSenderImpl::connect");
+	err.log(LM_DEBUG);
 	throw err.getAVConnectErrorEx();
 	}
     catch(...)

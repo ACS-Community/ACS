@@ -4,7 +4,7 @@ BulkDataReceiverImpl<TCallback>::BulkDataReceiverImpl(const ACE_CString& name,Co
 {
     ACS_TRACE("BulkDataReceiverImpl<>::BulkDataReceiverImpl");
 
-    containerServices_p=containerServices;
+    containerServices_p = containerServices;
 }
 
 
@@ -60,6 +60,7 @@ void BulkDataReceiverImpl<TCallback>::openReceiver()
     catch(ACSErr::ACSbaseExImpl &ex)
 	{
 	AVOpenReceiverErrorExImpl err = AVOpenReceiverErrorExImpl(ex,__FILE__,__LINE__,"BulkDataReceiverImpl::openReceiver");
+	err.log(LM_DEBUG);
 	throw err.getAVOpenReceiverErrorEx();
 	}
     catch(...)
