@@ -475,12 +475,18 @@ class ErrorTrace(ACSErr.ErrorTrace, ErrorTraceHelper):
         Parameters:
         - error_type is the error type (a long)
         - error_code is the error code (a long)
-        - exception is a previous exception from the ACS Error System
+        - exception is a previous exception from the ACS Error System, or a Python 
+	native exception, in which case, an ErrorTrace will be constructed. The traceback
+	should be ok in most cases, but if you find that it isn't, a possible workaround is
+	converting the python exception to an ACS exception using pyExceptionToCORBA()
+	before passing it to an ACSError constructor. Remember, that if you don't use 
+	pyExceptionToCORBA(), if 
+	you are dealing with a native exception, you must pass create=1 to the ACSError 
+	constructor.
         - description is a stringified description of the errror
         - nvSeq is a name-value sequence describing the error condition. Each value
         should be of the type ACSErr.NameValue
-        - create with a value of 1 implies error information will be added to the stack
-        - offset from stack()
+        - level is an offset from stack()
         - severity is the severity of the error
         '''
         call_frame = stack()[level]
@@ -519,13 +525,56 @@ class ErrorTrace(ACSErr.ErrorTrace, ErrorTraceHelper):
         if severity == None:
             severity = ACSErr.Error
             
+	
+	#let's get the traceback in case we are dealing
+	#with a Python native exception
+	from traceback import extract_tb,format_exc
+	string_tb=format_exc()
+	from sys import exc_traceback
+	tuple_tb=extract_tb(exc_traceback)
         try:
             #If the previous exception is an ACS Error System Exception
             if isinstance(exception.errorTrace, ACSErr.ErrorTrace):
                 #We can use an error stack...
                 errortrace = [ exception.errorTrace ]
         except Exception, e:
-            errortrace = [] 
+           if exception == None:
+                errortrace = []
+           else:	
+		#In this case we are dealing with a native Python Exception
+		#so we have to "transform" it to an ACS exception
+		#(actually we are only interested in the ErrorTrace)
+                from ACSErrTypePythonNativeImpl import PythonExImpl
+		
+
+                #next get the type of native_ex. this will be used as the short
+                #description
+                descript = exception.__doc__
+
+                #create the new exception
+                new_except = PythonExImpl()
+
+                #redo the error trace so that the level is one lower
+                new_et = ErrorTrace(new_except.getErrorType(),
+                                    new_except.getErrorCode(),
+                                    description = new_except.getDescription(),
+                                    level = 2)
+		#Now modify some fields
+		new_et.file=tuple_tb[0][0]
+		new_et.lineNum=tuple_tb[0][1]
+		new_et.routine=tuple_tb[0][2]
+
+                new_except.setErrorTrace(new_et)
+
+                #time to add the real description
+                new_except.addData("Real Description", descript)
+
+    		#add the real traceback
+    		new_except.addData("Traceback", string_tb)
+
+
+                errortrace= [ new_except.errorTrace ]
+
                 
         #Create error trace
         errortrace = ACSErr.ErrorTrace.__init__(self,

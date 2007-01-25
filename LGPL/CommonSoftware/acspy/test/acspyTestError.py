@@ -21,7 +21,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# @(#) $Id: acspyTestError.py,v 1.19 2006/12/14 11:41:45 bjeram Exp $
+# @(#) $Id: acspyTestError.py,v 1.20 2007/01/25 12:37:39 nbarriga Exp $
 ###############################################################################
 """
 Tests the Python Error system.
@@ -38,7 +38,10 @@ def fakeCORBAMethod():
     '''
     Simulates the testing of a fake CORBA method
     This function:
-    - creates a new local exception and throws it
+    - creates a new native local exception and throws it
+    - catches it as native exception
+    - converts it to an ACS exception using pyExceptionToCORBA() function
+    - throws it again
     - catches it as a CORBA exception
     - converts it back into the helper class WITHOUT adding new error info
     - rethrows the new local exception
@@ -95,6 +98,51 @@ def fakeClientFunction():
     raise helperException
 
 ###############################################################################
+def fakeCORBAMethodNew():
+    '''
+    Simulates the testing of a fake CORBA method
+    This function:
+    - creates a new native local exception and throws it
+    - catches it as native exception
+    - creates a new ACS exception out of it, retaining all its information
+    - throws it again
+    - catches it as a CORBA exception
+    - converts it back into the helper class WITHOUT adding new error info
+    - rethrows the new local exception
+    - catches it as a CORBA exception
+    - converts it back into the helper class AND adds new error info
+    - throws the exception again which should have two error traces
+    '''
+    print "--fakeCORBAMethodNew1-------------------------------------------------"
+    try:
+        try:
+            raise Exception("fake python exception")
+        except Exception, ex:
+            print "Raising the local exception..."
+            raise ACSErrTypePythonNativeImpl.PythonExImpl(exception=ex)
+        
+    #make sure we can catch the real CORBA exception
+    except ACSErrTypePythonNative.PythonEx, e:
+        #convert it back into the helper class w/o adding error information
+        helperException = ACSErrTypePythonNativeImpl.PythonExImpl(exception=e, create=0)
+        #print to stdout...only one error trace should be seen
+        helperException.Print()
+    
+    print "--fakeCORBAMethodNew2-------------------------------------------------"
+    try:
+        #reraise a local ACS exception
+        raise helperException
+    except ACSErrTypePythonNative.PythonEx, e:
+        #make sure we can catch the real CORBA exception
+        helperException = ACSErrTypePythonNativeImpl.PythonExImpl(exception=e)
+        #Printing to stdout AGAIN...should see TWO errorTraces this time around
+        helperException.Print()
+
+    #finally raise the exception out of the pseudo CORBA method
+    raise helperException
+
+
+###############################################################################
 if __name__ == "__main__":
     print "--main1-------------------------------------------------"
     try:
@@ -133,4 +181,15 @@ if __name__ == "__main__":
     helperException.setError(0, 0)
     helperException.setSeverity(ACSErr.Error)
         
+    print "--mainNew1-------------------------------------------------"
+    try:
+        fakeCORBAMethodNew()
+    except ACSErrTypePythonNative.PythonEx, e:
+        print "--mainNew2-------------------------------------------------"
+        helperException = ACSErrTypePythonNativeImpl.PythonExImpl(exception=e)
+        #should be four error traces at this point
+        helperException.Print()
+
+
+
 print "The end __oOo__"

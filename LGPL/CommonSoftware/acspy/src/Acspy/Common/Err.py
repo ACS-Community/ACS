@@ -1,4 +1,4 @@
-# @(#) $Id: Err.py,v 1.18 2006/12/14 11:41:44 bjeram Exp $
+# @(#) $Id: Err.py,v 1.19 2007/01/25 12:37:39 nbarriga Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA,  2001
@@ -27,7 +27,7 @@ TODO:
 - nada
 '''
 
-__revision__ = "$Id: Err.py,v 1.18 2006/12/14 11:41:44 bjeram Exp $"
+__revision__ = "$Id: Err.py,v 1.19 2007/01/25 12:37:39 nbarriga Exp $"
 
 #------------------------------------------------------------------------------
 import ACSErr
@@ -62,7 +62,14 @@ class ACSError(ErrorTraceHelper):
         Parameters:
         - error_type is the error type (a long)
         - error_code is the error code (a long)
-        - exception is a previous exception from the ACS Error System
+        - exception is a previous exception from the ACS Error System, or a Python
+        native exception, in which case, an ErrorTrace will be constructed. The traceback
+        should be ok in most cases, but if you find that it isn't, a possible workaround is
+        converting the python exception to an ACS exception using pyExceptionToCORBA()
+        before passing it to an ACSError constructor. Remember, that if you don't use
+	pyExceptionToCORBA(), if
+        you are dealing with a native exception, you must pass create=1 to the ACSError
+        constructor.
         - description is a stringified description of the errror
         - nvSeq is a name-value sequence describing the error condition. Each value
         should be of the type ACSErr.NameValue
