@@ -57,6 +57,7 @@ import javax.swing.filechooser.FileFilter;
 
 import alma.acs.logging.archive.ArchiveConnectionManager;
 import alma.acs.logging.archive.QueryDlg;
+import alma.acs.logging.dialogs.main.LogMenuBar;
 import alma.acs.logging.preferences.UserPreferences;
 
 import com.cosylab.gui.components.r2.SmartTextArea;
@@ -115,75 +116,17 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener, ACSLo
 	// Create an instance of the preferences with default values
 	private UserPreferences userPreferences = new UserPreferences();
 	
-	// Connect or disconnect text depending on the status of the connection
-	// The text is changed by checking the connection before displaying the menu
-	private JMenuItem connectMenuItem = null; 
-	
-	private JMenuItem loadMenuItem = null; // Load File
-	private JMenuItem loadURLMenuItem = null; // Load from URL
-	private JMenuItem loadDBMenuItem = null; // Load from database
-	private JMenuItem saveFileMenuItem = null; // Save File As
-	private JMenuItem clearLogsMI = null; // Clear All
-	private JMenuItem exitMenuItem = null; // Exit
-	
-	/**
-	 * The menu item to load filters
-	 */
-	private JMenuItem loadFiltersMenuItem = null;
-	
-	/**
-	 * The menu item to save the filters
-	 */
-	private JMenuItem saveFiltersMenuItem = null;
-	
-	/**
-	 * The menu item to show the statistics dialog
-	 */
-	private JMenuItem statisticsMenuItem = null;
-	
-	/**
-     * The menu item to show the error log window
-     */
-    private JMenuItem viewErrorLogMI;
-    
-	/** 
-	 * The filters menu
-	 */
-	private JMenu filtersMenu;
-	
-	/**
-	 * The menu item to save the filters with a new name
-	 */
-	private JMenuItem saveAsFiltersMenuItem = null;
-	
-	/**
-	 * The menu item to edit the filters
-	 */
-	private JMenuItem editFiltersMenuItem = null;
-	
 	/**
 	 * The name of the last save/load filter file
 	 * (to implement the save as option)
 	 */
 	private String filterFileName = null;
-	
-	private JMenuItem fieldsMenuItem = null; // Fields...
-
-	private JMenuItem searchMenuItem; // Search...
-    private JMenuItem searchNextMenuItem; // Search Next
-
-	private JMenu fileMenu; // File
-	private JMenu viewMenu; // View
-    private JMenu searchMenu; // Search
-    private JMenu expertMenu; // Expert
-    
-    private JMenuItem suspendMI;
-    private JMenuItem prefsMI;
 
 	private JLabel ivjFilterStatus = null; // Not filtered
 	private JLabel ivjInfoStatus = null; // Additional info
 
-	private JMenuBar loggingClientJMenuBar = null;
+	// The menu bar
+	private LogMenuBar menuBar = new LogMenuBar();
 
 	private JPanel ivjJPanel1 = null;
 	private JPanel ivjJPanel2 = null;
@@ -210,34 +153,6 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener, ACSLo
      * The toolbar
      */
     private JToolBar toolBar;
-    
-    /**
-     * The menu item to show/hide the toolbar
-     */
-    private JCheckBoxMenuItem viewToolbarMI;
-    
-    /**
-     * The menu item to show/hide the toolbar
-     */
-    private JCheckBoxMenuItem autoReconnectMI;
-    
-    /**
-     * The menu item to show/hide the Detailed log info panel
-     */
-    private JCheckBoxMenuItem viewDetailedInfoMI;
-    
-        /**
-     * The menu item to show/hide the Detailed log info panel
-     */
-    private JCheckBoxMenuItem viewStatusAreaMI;
-    
-    /**
-     * The menu item to select the format of the date column in the table of logs
-     * If it is true, the date appear as hh:mm:ss otherwise it's shown with a complet
-     * longest format
-     * shortDateViewMI defaults to true
-     */
-    private JCheckBoxMenuItem shortDateViewMI;
     
     // The ComboBox in the toolbar and its default value (i.e. the log level
     // at startup
@@ -306,82 +221,82 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener, ACSLo
 	{
 		public void actionPerformed(java.awt.event.ActionEvent e)
 		{
-			if (e.getSource() == LoggingClient.this.getConnectMenuItem()) {
-				connect(connectMenuItem.getText().compareTo("Connect")==0);
-            } else if (e.getSource() == LoggingClient.this.getLoadMenuItem()) {
+			if (e.getSource() == menuBar.getConnectMenuItem()) {
+				connect(menuBar.getConnectMenuItem().getText().compareTo("Connect")==0);
+            } else if (e.getSource() == menuBar.getLoadMenuItem()) {
 				getLCModel1().loadFromFile(null);
-            } else if (e.getSource() == LoggingClient.this.getLoadURLMenuItem()) {
+            } else if (e.getSource() == menuBar.getLoadURLMenuItem()) {
             	getLCModel1().loadFromURL();
-            } else if (e.getSource() == LoggingClient.this.getSaveFileMenuItem()) {
+            } else if (e.getSource() == menuBar.getSaveFileMenuItem()) {
             	getLCModel1().saveFile();
-            } else if (e.getSource() == LoggingClient.this.getLoadDBMenuItem()) {
+            } else if (e.getSource() == menuBar.getLoadDBMenuItem()) {
             	if (archive.getDBStatus()==ArchiveConnectionManager.DATABASE_OK) {
             		QueryDlg dlg = new QueryDlg(archive,LoggingClient.this);
             		dlg.setVisible(true);
             	}
-            } else if (e.getSource() == LoggingClient.this.getClearLogsMI() || e.getSource()==clearLogsBtn) {
+            } else if (e.getSource() == menuBar.getClearLogsMenuItem() || e.getSource()==clearLogsBtn) {
 				getLCModel1().clearAll();
-            } else if (e.getSource() == LoggingClient.this.getExitMenuItem()) {
+            } else if (e.getSource() == menuBar.getExitMenuItem()) {
 				connExit(e);
-            }else if (e.getSource() == LoggingClient.this.getFieldsMenuItem()) {
+            }else if (e.getSource() == menuBar.getFieldsMenuItem()) {
 				connFields(e);
-            } else if (e.getSource() == LoggingClient.this.editFiltersMenuItem) {
+            } else if (e.getSource() == menuBar.getEditFiltersMenuItem()) {
 				editFilters(e);
-            } else if (e.getSource() == LoggingClient.this.loadFiltersMenuItem) {
+            } else if (e.getSource() == menuBar.getLoadFiltersMenuItem()) {
 				loadFilters();
-            } else if (e.getSource() == LoggingClient.this.saveFiltersMenuItem) {
+            } else if (e.getSource() == menuBar.getSaveFiltersMenuItem()) {
 				if (filterFileName!=null)
 					if (filterFileName.length()>0) 
 						saveFilters(filterFileName);
-			} else if (e.getSource() == LoggingClient.this.saveAsFiltersMenuItem) {
+			} else if (e.getSource() == menuBar.getSaveAsFiltersMenuItem()) {
 				saveAsFilters();
 			} else if (e.getSource()==LoggingClient.this.logLevelCB) {
 				getLCModel1().setLogLevel(logLevelCB.getSelectedIndex());
 				getLCModel1().invalidateVisibleLogs();
             } else if (e.getSource()==LoggingClient.this.searchBtn ||
-                    e.getSource()==searchMenuItem) {
+                    e.getSource()==menuBar.getSearchMenuItem()) {
                 if (searchDialog==null) {
                     searchDialog = new SearchDialog(LoggingClient.this);
                 }
                 searchDialog.setVisible(true);
-            } else if (e.getSource()==LoggingClient.this.searchNextMenuItem) {
+            } else if (e.getSource()==menuBar.getSearchNextMenuItem()) {
                 // The searchDialog is always not null otherwise the
                 // menu item is disabled but... repetita juvant ;-)
                 if (searchDialog!=null) {
                     searchDialog.search();
                 } else {
-                    searchNextMenuItem.setEnabled(false);
+                    menuBar.getSearchNextMenuItem().setEnabled(false);
                 }
-            } else if (e.getSource()==LoggingClient.this.viewToolbarMI) {
+            } else if (e.getSource()==menuBar.getViewToolbarMenuItem()) {
                 // Hide/Show the toolbar
-                toolBar.setVisible(viewToolbarMI.getState());
-            } else if (e.getSource()==LoggingClient.this.statisticsMenuItem) {
+                toolBar.setVisible(menuBar.getViewToolbarMenuItem().getState());
+            } else if (e.getSource()==menuBar.getStatisticsMenuItem()) {
             	// Show the statistics dialog
             	StatsDlg statsDlg = new StatsDlg(LoggingClient.this); 
-            } else if (e.getSource()==viewErrorLogMI) {
+            } else if (e.getSource()==menuBar.getViewErrorLogMenuItem()) {
             	if (ErrorLogDialog.getErrorLogDlg(false)!=null) 
             		ErrorLogDialog.getErrorLogDlg(false).setVisible(true);
-            } else if (e.getSource()==LoggingClient.this.viewStatusAreaMI) {
-            	getStatusAreaPanel().setVisible(viewStatusAreaMI.getState());
-            	if (viewStatusAreaMI.getState()) {
+            } else if (e.getSource()==menuBar.getViewStatusAreaMenuItem()) {
+            	getStatusAreaPanel().setVisible(menuBar.getViewStatusAreaMenuItem().getState());
+            	if (menuBar.getViewStatusAreaMenuItem().getState()) {
             		getJSplitPane1().setDividerLocation(getHeight() - 150);
             	} else {
             		getJSplitPane1().setDividerLocation(getHeight());
             	}
-            } else if (e.getSource()==LoggingClient.this.viewDetailedInfoMI) {
-            	getDeatailedInfoPanel().setVisible(viewDetailedInfoMI.getState());
-            	if (viewDetailedInfoMI.getState()) {
+            } else if (e.getSource()==menuBar.getViewDetailedInfoMenuItem()) {
+            	getDeatailedInfoPanel().setVisible(menuBar.getViewDetailedInfoMenuItem().getState());
+            	if (menuBar.getViewDetailedInfoMenuItem().getState()) {
             		int w = getLogTable().getWidth();
             		getJSplitPane2().setDividerLocation(getJSplitPane2().getWidth() - w/3);
             	} else {
             		getJSplitPane2().setDividerLocation(getJSplitPane2().getWidth());
             	}
-            } else if (e.getSource()==LoggingClient.this.autoReconnectMI) {
+            } else if (e.getSource()==menuBar.getAutoReconnectMenuItem()) {
             	if (LoggingClient.this.engine!=null) {
-            		LoggingClient.this.engine.enableAutoReconnection(LoggingClient.this.autoReconnectMI.getState());
+            		LoggingClient.this.engine.enableAutoReconnection(menuBar.getAutoReconnectMenuItem().getState());
             	}
-            } else if (e.getSource()==LoggingClient.this.shortDateViewMI) {
-            	logEntryTable.setShortDateFormat(LoggingClient.this.shortDateViewMI.getState());
+            } else if (e.getSource()==menuBar.getShortDateViewMenuItem()) {
+            	logEntryTable.setShortDateFormat(menuBar.getShortDateViewMenuItem().getState());
             } else if (e.getSource()==LoggingClient.this.pauseB) {
             	pauseBtnPaused=!pauseBtnPaused;
             	tableModel.scrollLock(pauseBtnPaused);
@@ -392,9 +307,9 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener, ACSLo
             		pauseB.setIcon(pauseIcon);
             		pauseB.setText("<HTML><FONT size=-2>Pause");
             	}
-            } else if (e.getSource()==LoggingClient.this.suspendMI) {
-            	getEngine().setSupended(suspendMI.isSelected());
-            } else if (e.getSource()==LoggingClient.this.prefsMI) {
+            } else if (e.getSource()==menuBar.getSuspendMenuItem()) {
+            	getEngine().setSupended(menuBar.getSuspendMenuItem().isSelected());
+            } else if (e.getSource()==menuBar.getPrefsMenuItem()) {
             	ExpertPrefsDlg dlg = new ExpertPrefsDlg(LoggingClient.this,userPreferences.getMaxNumOfLogs(),userPreferences.getMinuteTimeFrame());
             	if (dlg.okPressed()) {
             		userPreferences.setMaxLogs(dlg.getMaxNumOfLogs());
@@ -461,35 +376,35 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener, ACSLo
 		public void menuSelected(MenuEvent menuE) {
 			// Some menus are disabled when loading/saving
 			boolean enableMenu = !getLCModel1().IOInProgress();
-			clearLogsMI.setEnabled(enableMenu);
+			menuBar.getClearLogsMenuItem().setEnabled(enableMenu);
 			if (getEngine().isConnected()) {
-				connectMenuItem.setText("Disconnect");
+				menuBar.getConnectMenuItem().setText("Disconnect");
 			} else {
-				connectMenuItem.setText("Connect");
+				menuBar.getConnectMenuItem().setText("Connect");
 			}
-			connectMenuItem.setEnabled(enableMenu);
-			loadMenuItem.setEnabled(enableMenu);
-			loadURLMenuItem.setEnabled(enableMenu);
-			saveFileMenuItem.setEnabled(enableMenu);
+			menuBar.getConnectMenuItem().setEnabled(enableMenu);
+			menuBar.getLoadMenuItem().setEnabled(enableMenu);
+			menuBar.getLoadURLMenuItem().setEnabled(enableMenu);
+			menuBar.getSaveFileMenuItem().setEnabled(enableMenu);
 			
 			// Check if Save and Save As menu items are selectable
-			saveAsFiltersMenuItem.setEnabled(true);
+			menuBar.getSaveAsFiltersMenuItem().setEnabled(true);
 			if (tableModel.getFilters().size()==0) {
-				saveFiltersMenuItem.setEnabled(false);
-				saveAsFiltersMenuItem.setEnabled(false);
+				menuBar.getSaveFiltersMenuItem().setEnabled(false);
+				menuBar.getSaveAsFiltersMenuItem().setEnabled(false);
 			} else if(filterFileName==null) {
-					saveFiltersMenuItem.setEnabled(false);
+					menuBar.getSaveFiltersMenuItem().setEnabled(false);
 			} else if (filterFileName.length()==0) {
-				saveFiltersMenuItem.setEnabled(false);
+				menuBar.getSaveFiltersMenuItem().setEnabled(false);
 			} else {
-				saveFiltersMenuItem.setEnabled(true);
+				menuBar.getSaveFiltersMenuItem().setEnabled(true);
 			}
 			
 			// Ensure the status of the item shown in the main panel
 			// is consistent with the menu item in View
-			viewStatusAreaMI.setSelected(getStatusAreaPanel().isVisible());
-			viewDetailedInfoMI.setSelected(getDeatailedInfoPanel().isVisible());
-			viewToolbarMI.setSelected(toolBar.isVisible());
+			menuBar.getViewStatusAreaMenuItem().setSelected(getStatusAreaPanel().isVisible());
+			menuBar.getViewDetailedInfoMenuItem().setSelected(getDeatailedInfoPanel().isVisible());
+			menuBar.getViewToolbarMenuItem().setSelected(toolBar.isVisible());
 			
 			// Enable diasble the menu to load from the DB
 			// if the DB is not available
@@ -545,12 +460,12 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener, ACSLo
 	public void connect(boolean connectEngine) {
 		if (connectEngine) {
 			// Check and eventually un-suspend the engine
-			suspendMI.setSelected(false);
-			getEngine().setSupended(suspendMI.isSelected());
+			menuBar.getSuspendMenuItem().setSelected(false);
+			getEngine().setSupended(menuBar.getSuspendMenuItem().isSelected());
 			// Connect the the channel
 			connect();
 		} else {
-			LoggingClient.this.autoReconnectMI.setState(false);
+			menuBar.getAutoReconnectMenuItem().setState(false);
 			LoggingClient.this.engine.enableAutoReconnection(false);
 			disconnect();
 		}
@@ -615,73 +530,6 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener, ACSLo
 	}
 
 	/**
-	 * Returns the ExitMenuItem property value.
-	 * @return javax.swing.JMenuItem
-	 */
-	private JMenuItem getExitMenuItem()
-	{
-		if (exitMenuItem == null)
-		{
-			try
-			{
-				ImageIcon icon =new ImageIcon(LogTypeHelper.class.getResource("/exit.png"));
-				exitMenuItem = new JMenuItem("Exit",icon);
-				exitMenuItem.setName("ExitMenuItem");
-			}
-			catch (java.lang.Throwable ivjExc)
-			{
-				handleException(ivjExc);
-			}
-		}
-		return exitMenuItem;
-	}
-	/**
-	 * Returns the SaveFileMenuItem property value.
-	 * @return javax.swing.JMenuItem
-	 */
-
-	private JMenuItem getSaveFileMenuItem()
-	{
-		if (saveFileMenuItem == null)
-		{
-			try
-			{
-				ImageIcon icon =new ImageIcon(LogTypeHelper.class.getResource("/disk.png"));
-				saveFileMenuItem = new JMenuItem("Save File As",icon);
-				saveFileMenuItem.setName("SaveFileMenuItem");
-			}
-			catch (java.lang.Throwable ivjExc)
-			{
-
-				handleException(ivjExc);
-			}
-		}
-		return saveFileMenuItem;
-	}
-
-    /**
-	 * Returns the ClearAllMenuItem property value.
-	 * @return javax.swing.JMenuItem
-	 */
-	private JMenuItem getClearLogsMI()
-	{
-		if (clearLogsMI == null)
-		{
-			try
-			{
-				ImageIcon icon =new ImageIcon(LogTypeHelper.class.getResource("/delete.png"));
-				clearLogsMI = new JMenuItem("Clear logs",icon);
-				clearLogsMI.setName("ClearAllMenuItem");
-			}
-			catch (java.lang.Throwable ivjExc)
-			{
-				handleException(ivjExc);
-			}
-		}
-		return clearLogsMI;
-	}
-
-	/**
 	 * Returns the JFrameContentPane property value.
 	 * @return javax.swing.JPanel
 	 */
@@ -702,86 +550,6 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener, ACSLo
 			}
 		}
 		return ivjJFrameContentPane;
-	}
-
-	/**
-	 * Returns the FiltersMenuItem property value.
-	 * @return javax.swing.JMenuItem
-	 */
-	private javax.swing.JMenu setFiltersMenuItem()
-	{
-		filtersMenu = new JMenu("Filters");
-		filtersMenu.addMenuListener(eventHandler);
-		loadFiltersMenuItem = new JMenuItem("Load");
-		filtersMenu.add(loadFiltersMenuItem);
-		saveFiltersMenuItem = new JMenuItem("Save");
-		filtersMenu.add(saveFiltersMenuItem);
-		saveAsFiltersMenuItem = new JMenuItem("Save As...");
-		filtersMenu.add(saveAsFiltersMenuItem);
-		editFiltersMenuItem = new JMenuItem("Edit...");
-		filtersMenu.add(editFiltersMenuItem);
-		return filtersMenu; 
-	}
-
-	/**
-	 * Returns the LoadMenuItem property value.
-	 * @return javax.swing.JMenuItem
-	 */
-	private JMenuItem getLoadMenuItem()
-	{
-		if (loadMenuItem == null)
-		{
-			try
-			{
-				ImageIcon icon =new ImageIcon(LogTypeHelper.class.getResource("/load.png"));
-				loadMenuItem = new JMenuItem("Load from File",icon);
-				loadMenuItem.setName("ivjLoadMenuItem");
-			}
-			catch (java.lang.Throwable ivjExc)
-			{
-
-				handleException(ivjExc);
-			}
-		}
-		return loadMenuItem;
-	}
-	
-	private JMenuItem getLoadDBMenuItem()
-	{
-		if (loadDBMenuItem == null)
-		{
-			try
-			{
-				ImageIcon icon =new ImageIcon(LogTypeHelper.class.getResource("/database.png"));
-				loadDBMenuItem = new JMenuItem("Load from database",icon);
-				loadDBMenuItem.setName("ivjLoadDBMenuItem");
-
-			}
-			catch (java.lang.Throwable ivjExc)
-			{
-				handleException(ivjExc);
-			}
-		}
-		return loadDBMenuItem;
-	}
-
-	private JMenuItem getLoadURLMenuItem()
-	{
-		if (loadURLMenuItem == null)
-		{
-			try
-			{
-				ImageIcon icon =new ImageIcon(LogTypeHelper.class.getResource("/loadURL.png"));
-				loadURLMenuItem = new JMenuItem("Load from URL",icon);
-				loadURLMenuItem.setName("ivjLoadURLMenuItem");
-
-			}
-			catch (java.lang.Throwable ivjExc)
-			{
-				handleException(ivjExc);
-			}
-		}
-		return loadURLMenuItem;
 	}
 
 	/**
@@ -858,29 +626,7 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener, ACSLo
 		return scrollLogTable;
 	}
 
-	/**
-	 * Returns the NewMenuItem property value.
-	 * @return javax.swing.JMenuItem
-	 */
-	private JMenuItem getConnectMenuItem()
-	{
-		if (connectMenuItem == null)
-		{
-			try
-			{
-				ImageIcon icon =new ImageIcon(LogTypeHelper.class.getResource("/link.png"));
-				connectMenuItem = new JMenuItem("Connect",icon);
-				connectMenuItem.setName("connectMenuItem");
-				connectMenuItem.setText("Connect");
-			}
-			catch (java.lang.Throwable ivjExc)
-			{
-
-				handleException(ivjExc);
-			}
-		}
-		return connectMenuItem;
-	}
+	
 	
 	/**
 	 * Returns the ScrollPaneTable property value.
@@ -893,7 +639,7 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener, ACSLo
 		{
 			try
 			{
-				logEntryTable = new com.cosylab.logging.LogEntryTable(this,shortDateViewMI.isSelected());
+				logEntryTable = new com.cosylab.logging.LogEntryTable(this,menuBar.getShortDateViewMenuItem().isSelected());
 				logEntryTable.setName("ScrollPaneTable");
 				logEntryTable.setBounds(0, 0, 200, 200);
 			}
@@ -923,114 +669,14 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener, ACSLo
 	 */
 	private void initConnections() throws java.lang.Exception
 	{
-		getConnectMenuItem().addActionListener(eventHandler); // Connect/Disconnect
-		getLoadMenuItem().addActionListener(eventHandler); // Load File
-		getLoadURLMenuItem().addActionListener(eventHandler); // Load URL
-		getLoadDBMenuItem().addActionListener(eventHandler); // Load from database
-		getSaveFileMenuItem().addActionListener(eventHandler); // Save File As
-		getClearLogsMI().addActionListener(eventHandler); // ClearAll
-		getExitMenuItem().addActionListener(eventHandler); // Exit
-
-		getFieldsMenuItem().addActionListener(eventHandler); // Fields
-		editFiltersMenuItem.addActionListener(eventHandler); // Edit Filters
-		loadFiltersMenuItem.addActionListener(eventHandler); // Load Filters
-		saveFiltersMenuItem.addActionListener(eventHandler); // Save Filters
-		saveAsFiltersMenuItem.addActionListener(eventHandler); // Save Filters
+		menuBar.setEventHandler(eventHandler, eventHandler);
 		getLogEntryTable().addPropertyChangeListener(eventHandler); // ScrollPaneTable		
 		this.addWindowListener(eventHandler); // Logging Client
 
 		connLCMod();
 	}
     
-    /**
-     * Builds the menu bar
-     */
-    private void setupMenuBar() {
-        // Build the menu barr
-        loggingClientJMenuBar = new javax.swing.JMenuBar();
-        loggingClientJMenuBar.setName("LoggingClientJMenuBar");
-        
-        // Add the File menu
-        fileMenu = new javax.swing.JMenu();
-        fileMenu.setName("FileMenu");
-        fileMenu.setText("File");
-        fileMenu.addMenuListener(eventHandler);
-        fileMenu.add(getConnectMenuItem());
-        ImageIcon icon =new ImageIcon(LogTypeHelper.class.getResource("/autoreconnect.png"));
-        autoReconnectMI = new JCheckBoxMenuItem("Auto reconnect",icon,false);
-        autoReconnectMI.addActionListener(eventHandler);
-        fileMenu.add(autoReconnectMI);
-        fileMenu.addSeparator();
-        fileMenu.add(getLoadMenuItem());
-        fileMenu.add(getLoadURLMenuItem());
-        fileMenu.add(getLoadDBMenuItem());
-        fileMenu.add(getSaveFileMenuItem());
-        fileMenu.add(getClearLogsMI());
-        fileMenu.addSeparator();
-        fileMenu.add(getExitMenuItem());
-        loggingClientJMenuBar.add(fileMenu);
-        
-        // Add the View Menu
-        viewMenu = new javax.swing.JMenu();
-        viewMenu.setName("ViewMenu");
-        viewMenu.setText("View");
-        viewMenu.addMenuListener(eventHandler);
-        viewToolbarMI = new JCheckBoxMenuItem("Toolbar",true);
-        viewToolbarMI.addActionListener(eventHandler);
-        viewMenu.add(viewToolbarMI);
-        viewDetailedInfoMI = new JCheckBoxMenuItem("Detailed log info",true);
-        viewDetailedInfoMI.addActionListener(eventHandler);
-        viewMenu.add(viewDetailedInfoMI);
-        viewStatusAreaMI = new JCheckBoxMenuItem("Status area",true);
-        viewStatusAreaMI.addActionListener(eventHandler);
-        viewMenu.add(viewStatusAreaMI);
-        viewMenu.addSeparator();
-        viewMenu.add(getFieldsMenuItem());
-        shortDateViewMI = new JCheckBoxMenuItem("Short date format",true);
-        shortDateViewMI.addActionListener(eventHandler);
-        viewMenu.add(shortDateViewMI);
-        viewMenu.addSeparator();
-        viewMenu.add(setFiltersMenuItem());
-        viewMenu.addSeparator();
-        ImageIcon statIcon =new ImageIcon(LogTypeHelper.class.getResource("/statistics.png"));
-        statisticsMenuItem = new JMenuItem("Statistics",statIcon);
-        statisticsMenuItem.addActionListener(eventHandler);
-        viewMenu.add(statisticsMenuItem);
-        viewErrorLogMI = new JMenuItem("Error log");
-        viewErrorLogMI.addActionListener(eventHandler);
-        viewMenu.add(viewErrorLogMI);
-        loggingClientJMenuBar.add(viewMenu);
-        
-        // Add the Search Menu
-        searchMenu = new JMenu();
-        searchMenu.setName("SearchMenu");
-        searchMenu.setText("Search");
-        searchMenu.addMenuListener(eventHandler);
-        ImageIcon searchIcon =new ImageIcon(LogTypeHelper.class.getResource("/search.png"));
-        searchMenuItem = new JMenuItem("Search...",searchIcon);
-        searchMenuItem.addActionListener(eventHandler);
-        searchMenuItem.setAccelerator(KeyStroke.getKeyStroke('S',Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
-        searchMenu.add(searchMenuItem);
-        
-        searchNextMenuItem = new JMenuItem("Search Next");
-        searchNextMenuItem.setAccelerator(KeyStroke.getKeyStroke('N',Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
-        searchNextMenuItem.addActionListener(eventHandler);
-        searchNextMenuItem.setEnabled(false);
-        searchMenu.add(searchNextMenuItem);
-        loggingClientJMenuBar.add(searchMenu);
-        
-        // Add the expert menu
-        expertMenu = new JMenu();
-        expertMenu.setName("ExpertMenu");
-        expertMenu.setText("Expert");
-        suspendMI = new JCheckBoxMenuItem("Suspend",false);
-        suspendMI.addActionListener(eventHandler);
-        expertMenu.add(suspendMI);
-        prefsMI = new JMenuItem("Preferences");
-        prefsMI.addActionListener(eventHandler);
-        expertMenu.add(prefsMI);
-        loggingClientJMenuBar.add(expertMenu);
-    }
+    
     
     /** 
      * Builds the toolbar
@@ -1132,8 +778,7 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener, ACSLo
 			setName("LoggingClient");
 			setTitle("LoggingClient");
 			setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-            setupMenuBar();
-			setJMenuBar(loggingClientJMenuBar);
+			setJMenuBar(menuBar);
             
             setSize(750, 550);
             // Move the window to the center of the screen 
@@ -1502,30 +1147,6 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener, ACSLo
 		}
 		return ivjInfoStatus;
 	}
-	/**
-	 * Returns the JMenuItem6 property value.
-	 * @return javax.swing.JMenuItem
-	 */
-
-	private javax.swing.JMenuItem getFieldsMenuItem()
-	{
-		if (fieldsMenuItem == null)
-		{
-			try
-			{
-				fieldsMenuItem = new javax.swing.JMenuItem();
-				fieldsMenuItem.setName("FieldsMenuItem");
-				fieldsMenuItem.setText("Fields...");
-
-			}
-			catch (java.lang.Throwable ivjExc)
-			{
-
-				handleException(ivjExc);
-			}
-		}
-		return fieldsMenuItem;
-	}
 
 	/**
 	 * Returns the JPanel1 property value.
@@ -1711,6 +1332,8 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener, ACSLo
 		}
 		return statusAreaPanel;
 	}
+	
+	
 	/**
 	 * Returns the JScrollPane2 property value.
 	 * @return javax.swing.JScrollPane
@@ -1992,7 +1615,7 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener, ACSLo
      * @param enable true enable the searchNextMenuItem
      */
     public void enableSearchNext(boolean enable) {
-        this.searchNextMenuItem.setEnabled(enable);
+        menuBar.getSearchNextMenuItem().setEnabled(enable);
     }
     
     /**
@@ -2178,16 +1801,16 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener, ACSLo
 	 */
 	public void setEnabledGUIControls(boolean enabled) {
 		logLevelCB.setEnabled(enabled);
-		filtersMenu.setEnabled(enabled);
-		searchMenu.setEnabled(enabled);
+		menuBar.getFiltersMenu().setEnabled(enabled);
+		menuBar.getSearchMenu().setEnabled(enabled);
 		searchBtn.setEnabled(enabled);
-		fieldsMenuItem.setEnabled(enabled);
-		loadMenuItem.setEnabled(enabled);
-		loadURLMenuItem.setEnabled(enabled);
-		clearLogsMI.setEnabled(enabled);
-		saveFileMenuItem.setEnabled(enabled);
-		connectMenuItem.setEnabled(enabled);
-		autoReconnectMI.setEnabled(enabled);
+		menuBar.getFieldsMenuItem().setEnabled(enabled);
+		menuBar.getLoadMenuItem().setEnabled(enabled);
+		menuBar.getLoadURLMenuItem().setEnabled(enabled);
+		menuBar.getClearLogsMenuItem().setEnabled(enabled);
+		menuBar.getSaveFileMenuItem().setEnabled(enabled);
+		menuBar.getConnectMenuItem().setEnabled(enabled);
+		menuBar.getAutoReconnectMenuItem().setEnabled(enabled);
 	}
 	
 	/**
