@@ -1,6 +1,6 @@
 #ifndef RT_SUPPLIER_I
 #define RT_SUPPLIER_I
-/*    @(#) $Id: acsncRTSupplier.i,v 1.19 2006/09/01 02:20:54 cparedes Exp $
+/*    @(#) $Id: acsncRTSupplier.i,v 1.20 2007/01/25 10:31:34 bjeram Exp $
  *    ALMA - Atacama Large Millimiter Array
  *    (c) Associated Universities Inc., 2002 
  *    (c) European Southern Observatory, 2002
@@ -34,9 +34,15 @@ RTSupplier::publishData(T data)
 {
     try
 	{
+       
 	//acquire the mutex first
-	eventQueueMutex_m.acquire();
-	
+	ACE_Guard<ACE_Thread_Mutex>  guard(eventQueueMutex_m);//.acquire();
+
+/*	if (unpublishedEvents_m.size()>10000)
+	    {
+	    printf ("\n============>  Queue size exceed 10000 (%d) !!! <===========\n\n", unpublishedEvents_m.size());
+	    }
+*/
 	//convert user data to an any
 	any_m <<= data;
 	//"fill out" the entire structured event
@@ -46,7 +52,7 @@ RTSupplier::publishData(T data)
 	unpublishedEvents_m.push(event_m);
 	
 	//done...release it
-	eventQueueMutex_m.release();
+//	eventQueueMutex_m.release();
 	}
     catch(CORBAProblemEx)
 	{

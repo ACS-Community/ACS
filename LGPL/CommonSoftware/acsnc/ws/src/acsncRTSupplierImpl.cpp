@@ -19,7 +19,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsncRTSupplierImpl.cpp,v 1.10 2006/10/18 11:06:40 sharring Exp $"
+* "@(#) $Id: acsncRTSupplierImpl.cpp,v 1.11 2007/01/25 10:31:34 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -120,9 +120,9 @@ RTSupplier::worker(void* param_p)
 		    supplier_p->publishEvent(supplier_p->unpublishedEvents_m.front());
 
 		    //must use a mutex for any STL write operation
-		    supplier_p->eventQueueMutex_m.acquire();
+		    ACE_Guard<ACE_Thread_Mutex> guard(supplier_p->eventQueueMutex_m);//.acquire();
 		    supplier_p->unpublishedEvents_m.pop();
-		    supplier_p->eventQueueMutex_m.release();
+//		    supplier_p->eventQueueMutex_m.release();
 		    }
 		catch(...)
 		    {
