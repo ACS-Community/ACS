@@ -13,6 +13,12 @@ import javax.swing.event.MenuListener;
 
 import com.cosylab.logging.engine.log.LogTypeHelper;
 
+/**
+ * The menu bar of the main GUI
+ * 
+ * @author acaproni
+ *
+ */
 public class LogMenuBar extends JMenuBar {
 	
 	// Connect or disconnect text depending on the status of the connection
