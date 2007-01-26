@@ -58,6 +58,7 @@ import javax.swing.filechooser.FileFilter;
 import alma.acs.logging.archive.ArchiveConnectionManager;
 import alma.acs.logging.archive.QueryDlg;
 import alma.acs.logging.dialogs.main.LogMenuBar;
+import alma.acs.logging.dialogs.main.LogToolBar;
 import alma.acs.logging.preferences.UserPreferences;
 
 import com.cosylab.gui.components.r2.SmartTextArea;
@@ -152,30 +153,7 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener, ACSLo
     /**
      * The toolbar
      */
-    private JToolBar toolBar;
-    
-    // The ComboBox in the toolbar and its default value (i.e. the log level
-    // at startup
-    private JComboBox logLevelCB;
-    private final int DEFAULT_LOGLEVEL = LogTypeHelper.ENTRYTYPE_INFO;
-    
-    // The ComboBox with the discard level in the toolbar
-    // (the logs with a level lower then what is shown in this ComboBox
-    // are discarded when read from the NC)
-    private JComboBox discardLevelCB;
-    private final int DEFAULT_DISCARDLEVEL = LogTypeHelper.ENTRYTYPE_DEBUG;
-    
-    // The button to enable/disable (play/pause) the scroll lock
-    private JButton pauseB;
-    private boolean pauseBtnPaused; // The status of the button
-    private ImageIcon pauseIcon;
-    private ImageIcon playIcon;
-    
-    // The button to delete the logs
-    private JButton clearLogsBtn;
-    
-    // The search button in the toolbar
-    private JButton searchBtn;
+    private LogToolBar toolBar;
     
     // The progress bar for long time operations
     private JProgressBar progressBar = new JProgressBar(JProgressBar.HORIZONTAL);
@@ -234,7 +212,7 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener, ACSLo
             		QueryDlg dlg = new QueryDlg(archive,LoggingClient.this);
             		dlg.setVisible(true);
             	}
-            } else if (e.getSource() == menuBar.getClearLogsMenuItem() || e.getSource()==clearLogsBtn) {
+            } else if (e.getSource() == menuBar.getClearLogsMenuItem() || e.getSource()==toolBar.getClearLogsBtn()) {
 				getLCModel1().clearAll();
             } else if (e.getSource() == menuBar.getExitMenuItem()) {
 				connExit(e);
@@ -250,10 +228,10 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener, ACSLo
 						saveFilters(filterFileName);
 			} else if (e.getSource() == menuBar.getSaveAsFiltersMenuItem()) {
 				saveAsFilters();
-			} else if (e.getSource()==LoggingClient.this.logLevelCB) {
-				getLCModel1().setLogLevel(logLevelCB.getSelectedIndex());
+			} else if (e.getSource()==toolBar.getLogLevelCB()) {
+				getLCModel1().setLogLevel(toolBar.getLogLevelCB().getSelectedIndex());
 				getLCModel1().invalidateVisibleLogs();
-            } else if (e.getSource()==LoggingClient.this.searchBtn ||
+            } else if (e.getSource()==toolBar.getSearchBtn() ||
                     e.getSource()==menuBar.getSearchMenuItem()) {
                 if (searchDialog==null) {
                     searchDialog = new SearchDialog(LoggingClient.this);
@@ -297,16 +275,8 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener, ACSLo
             	}
             } else if (e.getSource()==menuBar.getShortDateViewMenuItem()) {
             	logEntryTable.setShortDateFormat(menuBar.getShortDateViewMenuItem().getState());
-            } else if (e.getSource()==LoggingClient.this.pauseB) {
-            	pauseBtnPaused=!pauseBtnPaused;
-            	tableModel.scrollLock(pauseBtnPaused);
-            	if (pauseBtnPaused) {
-            		pauseB.setIcon(playIcon);
-            		pauseB.setText("<HTML><FONT size=-2>Play");
-            	} else {
-            		pauseB.setIcon(pauseIcon);
-            		pauseB.setText("<HTML><FONT size=-2>Pause");
-            	}
+            } else if (e.getSource()==toolBar.getPauseBtn()) {
+            	tableModel.scrollLock(toolBar.clickPauseBtn());
             } else if (e.getSource()==menuBar.getSuspendMenuItem()) {
             	getEngine().setSupended(menuBar.getSuspendMenuItem().isSelected());
             } else if (e.getSource()==menuBar.getPrefsMenuItem()) {
@@ -670,103 +640,12 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener, ACSLo
 	private void initConnections() throws java.lang.Exception
 	{
 		menuBar.setEventHandler(eventHandler, eventHandler);
+		toolBar.setEventHandler(eventHandler);
 		getLogEntryTable().addPropertyChangeListener(eventHandler); // ScrollPaneTable		
-		this.addWindowListener(eventHandler); // Logging Client
+		addWindowListener(eventHandler); // Logging Client
 
 		connLCMod();
 	}
-    
-    
-    
-    /** 
-     * Builds the toolbar
-     */
-    private void setupToolBar() {
-        toolBar=new JToolBar();
-        toolBar.setFloatable(false);
-        
-        // The panel for the toolbar
-        JPanel toolBarPanel = new JPanel();
-        toolBarPanel.setLayout(new BorderLayout());
-        
-        // userPanel conatins the Panel with buttons, combo boxes and so on
-        JPanel userPanel = new JPanel();
-        FlowLayout tbFlowL = new FlowLayout(FlowLayout.LEFT);
-        tbFlowL.setHgap(10);
-        userPanel.setLayout(tbFlowL);
-        
-        // Add the label for the log level
-        FlowLayout lyLevel = new FlowLayout();
-        lyLevel.setHgap(2);
-        JPanel tbLevelPanel = new JPanel(lyLevel);
-        JLabel logLevelLbl = new JLabel("<HTML><FONT size=-2>Log level: </FONT></HTML>");
-        tbLevelPanel.add(logLevelLbl);
-        
-        // Add the ComboBox for the log level
-        logLevelCB = new JComboBox(LogTypeHelper.getAllTypesDescriptions());
-        
-        // Build the renderer for the combo boxex
-        LogTypeRenderer rendererCB = new LogTypeRenderer();
-        
-        logLevelCB.setSelectedIndex(DEFAULT_LOGLEVEL);
-        getLCModel1().setLogLevel(DEFAULT_LOGLEVEL);
-        logLevelCB.setEditable(false);
-        logLevelCB.setMaximumRowCount(LogTypeHelper.getNumberOfTypes());
-        logLevelCB.setRenderer(rendererCB);
-        logLevelCB.addActionListener(eventHandler);
-        tbLevelPanel.add(logLevelCB);
-        
-        JLabel discardLevelLbl = new JLabel("<HTML><FONT size=-2>Discard level: </FONT></HTML>");
-        tbLevelPanel.add(discardLevelLbl);
-        // Add the ComboBox for the log level
-        LogTypeRenderer discardRendererCB = new LogTypeRenderer();
-        String[] discardLevelStr = new String[LogTypeHelper.getAllTypesDescriptions().length+1];
-        discardLevelStr[0] = "None";
-        for (int t=0; t<LogTypeHelper.getAllTypesDescriptions().length; t++) {
-        	discardLevelStr[t+1]=LogTypeHelper.getAllTypesDescriptions()[t];
-        }
-        discardLevelCB = new JComboBox(discardLevelStr);
-        discardLevelCB.setMaximumRowCount(discardLevelStr.length);
-        discardLevelCB.setSelectedIndex(DEFAULT_DISCARDLEVEL+1);
-        discardLevelCB.setEditable(false);
-        discardLevelCB.setRenderer(discardRendererCB);
-        tbLevelPanel.add(discardLevelCB);
-        
-        // Add the pause button
-        pauseIcon=new ImageIcon(LogTypeHelper.class.getResource("/pause.png"));
-        playIcon=new ImageIcon(LogTypeHelper.class.getResource("/play.png"));
-        pauseB = new JButton("<HTML><FONT size=-2>Pause</FONT>",pauseIcon);
-        pauseBtnPaused=false;
-        pauseB.addActionListener(eventHandler);
-        tbLevelPanel.add(pauseB);
-        
-        //  Add the  search button
-        ImageIcon searchIcon=new ImageIcon(LogTypeHelper.class.getResource("/search.png"));
-        searchBtn = new JButton("<HTML><FONT size=-2>Search...</FONT>",searchIcon);
-        searchBtn.addActionListener(eventHandler);
-        tbLevelPanel.add(searchBtn);
-        
-        // Add the button to delete logs
-        ImageIcon iconClear =new ImageIcon(LogTypeHelper.class.getResource("/delete.png"));
-        clearLogsBtn = new JButton("<HTML><FONT size=-2>Clear logs</FONT>",iconClear);
-        clearLogsBtn.addActionListener(eventHandler);
-        tbLevelPanel.add(clearLogsBtn);
-        
-        userPanel.add(tbLevelPanel);
-        
-        toolBarPanel.add(userPanel,BorderLayout.WEST);
-        
-        // Rationalize the sizes ...
-        Dimension d = discardLevelCB.getPreferredSize();
-        d.height=searchBtn.getPreferredSize().height;
-        discardLevelCB.setPreferredSize(d);
-        d= logLevelCB.getPreferredSize();
-        d.height=searchBtn.getPreferredSize().height;
-        logLevelCB.setPreferredSize(d);
-        
-        // Add the toolbar
-        toolBar.add(toolBarPanel);
-    }
 
 	/**
 	 * Initializes the object.
@@ -798,14 +677,17 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener, ACSLo
             // Set the content pane
 			setContentPane(toolBarPanel);
             
+			//	Add the tool bar
+            toolBar = new LogToolBar();
+            toolBarPanel.add(toolBar,BorderLayout.NORTH);
+            
 			initConnections();
 			validate();
             
-			// Create and setup the toolbar
-            setupToolBar();
-            
+			getLCModel1().setLogLevel(toolBar.DEFAULT_LOGLEVEL);
             // Add the tool bar
-            toolBarPanel.add(toolBar,BorderLayout.NORTH);
+            //toolBar = new LogToolBar();
+            //toolBarPanel.add(toolBar,BorderLayout.NORTH);
 		}
 		catch (java.lang.Throwable ivjExc)
 		{
@@ -1711,7 +1593,7 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener, ACSLo
      * @see LoggingClient.discardLevelCB
      */
     public int getDiscardLevel() {
-    	return discardLevelCB.getSelectedIndex();
+    	return toolBar.getDiscardLevelCB().getSelectedIndex();
     }
     
     /**
@@ -1719,7 +1601,7 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener, ACSLo
      */
     public void logEntryReceived(ILogEntry logEntry) {
     	int logLevel = ((Integer)logEntry.getField(ILogEntry.FIELD_ENTRYTYPE)).intValue();
-    	if (logLevel>=discardLevelCB.getSelectedIndex()) {
+    	if (logLevel>=toolBar.getDiscardLevelCB().getSelectedIndex()) {
 			getLogEntryTable().getLCModel().appendLog(logEntry);
 		} 
     	
@@ -1800,10 +1682,10 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener, ACSLo
 	 * @param enabled If true the controls are enabled
 	 */
 	public void setEnabledGUIControls(boolean enabled) {
-		logLevelCB.setEnabled(enabled);
+		toolBar.getLogLevelCB().setEnabled(enabled);
 		menuBar.getFiltersMenu().setEnabled(enabled);
 		menuBar.getSearchMenu().setEnabled(enabled);
-		searchBtn.setEnabled(enabled);
+		toolBar.getSearchBtn().setEnabled(enabled);
 		menuBar.getFieldsMenuItem().setEnabled(enabled);
 		menuBar.getLoadMenuItem().setEnabled(enabled);
 		menuBar.getLoadURLMenuItem().setEnabled(enabled);
@@ -1830,6 +1712,5 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener, ACSLo
 	public UserPreferences getPrefs() {
 		return userPreferences;
 	}
-	
 }
 
