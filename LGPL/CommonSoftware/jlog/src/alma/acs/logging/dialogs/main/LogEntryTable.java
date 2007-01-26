@@ -19,7 +19,7 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
  *    MA 02111-1307  USA
  */
-package com.cosylab.logging;
+package alma.acs.logging.dialogs.main;
 
 import java.awt.Component;
 import java.awt.event.ActionEvent;
@@ -47,6 +47,9 @@ import javax.swing. DefaultListSelectionModel;
 
 import alma.acs.logging.preferences.UserPreferences;
 
+import com.cosylab.logging.LogTableDataModel;
+import com.cosylab.logging.LoggingClient;
+import com.cosylab.logging.SortableHeaderRenderer;
 import com.cosylab.logging.client.EntryTypeRenderer;
 import com.cosylab.logging.client.ExpandButtonRenderer;
 import com.cosylab.logging.client.InfoRenderer;

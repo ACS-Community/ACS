@@ -13,8 +13,9 @@ import java.util.Vector;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 
+import alma.acs.logging.dialogs.main.LogEntryTable;
+
 import com.cosylab.logging.LogTableDataModel;
-import com.cosylab.logging.LogEntryTable;
 
 import com.cosylab.logging.engine.log.ILogEntry;
 

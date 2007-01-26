@@ -57,6 +57,7 @@ import javax.swing.filechooser.FileFilter;
 
 import alma.acs.logging.archive.ArchiveConnectionManager;
 import alma.acs.logging.archive.QueryDlg;
+import alma.acs.logging.dialogs.main.LogEntryTable;
 import alma.acs.logging.dialogs.main.LogMenuBar;
 import alma.acs.logging.dialogs.main.LogToolBar;
 import alma.acs.logging.preferences.UserPreferences;
@@ -609,7 +610,7 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener, ACSLo
 		{
 			try
 			{
-				logEntryTable = new com.cosylab.logging.LogEntryTable(this,menuBar.getShortDateViewMenuItem().isSelected());
+				logEntryTable = new alma.acs.logging.dialogs.main.LogEntryTable(this,menuBar.getShortDateViewMenuItem().isSelected());
 				logEntryTable.setName("ScrollPaneTable");
 				logEntryTable.setBounds(0, 0, 200, 200);
 			}
