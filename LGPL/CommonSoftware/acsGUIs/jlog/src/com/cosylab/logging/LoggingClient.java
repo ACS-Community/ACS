@@ -153,7 +153,7 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener, ACSLo
     /**
      * The toolbar
      */
-    private LogToolBar toolBar;
+    private LogToolBar toolBar = new LogToolBar();
     
     // The progress bar for long time operations
     private JProgressBar progressBar = new JProgressBar(JProgressBar.HORIZONTAL);
@@ -678,7 +678,6 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener, ACSLo
 			setContentPane(toolBarPanel);
             
 			//	Add the tool bar
-            toolBar = new LogToolBar();
             toolBarPanel.add(toolBar,BorderLayout.NORTH);
             
 			initConnections();
