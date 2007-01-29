@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!-- created by Nicolas Barriga-->
+<xs:schema 
+	xmlns:loggingts="Alma/ACSLogTS" 
+	xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+	targetNamespace="Alma/ACSLogTS" 
+	elementFormDefault="qualified" 
+	attributeFormDefault="unqualified">
+	<xs:element name="LogDefinitionType">
+		<xs:complexType>
+			<xs:choice maxOccurs="unbounded">
+				<xs:element name="LogDefinition" maxOccurs="unbounded">
+					<xs:complexType>
+						<xs:choice minOccurs="0" maxOccurs="unbounded">
+							<xs:element name="Member" type="loggingts:Member_"/>
+						</xs:choice>
+						<xs:attribute name="name" type="loggingts:nameType" use="required"/>
+						<xs:attribute name="shortDescription" type="loggingts:shortDescriptionString" use="required"/>
+						<xs:attribute name="description" type="loggingts:nonEmptyString" use="required"/>
+						<xs:attribute name="URL" type="xs:string" use="optional"/>
+					</xs:complexType>
+				</xs:element>
+			</xs:choice>
+			<xs:attribute name="name" type="loggingts:nameType" use="required"/>
+			<xs:attribute name="type" type="loggingts:logType" use="required"/><!-- Actually needed? -->
+			<xs:attribute name="shortDescription" type="loggingts:shortDescriptionString" use="optional"/>
+			<xs:attribute name="description" type="loggingts:nonEmptyString" use="optional"/>
+			<xs:attribute name="URL" type="xs:string" use="optional"/>
+			<xs:attribute name="_prefix" type="loggingts:prefixType" default="alma"/><!-- Actually needed? -->
+		</xs:complexType>
+	</xs:element>
+	<xs:complexType name="Member_">
+		<xs:attribute name="name" type="loggingts:nameType" use="required"/>
+		<xs:attribute name="type" type="loggingts:MemberTypes" use="required"/>
+		<xs:attribute name="description" type="loggingts:nonEmptyString" use="optional"/>
+	</xs:complexType>
+	<!--  type for names that are mapped into class names -->
+	<xs:simpleType name="nameType">
+		<xs:restriction base="xs:NCName">
+			<xs:minLength value="1"/>
+			<xs:pattern value="[\c-[.,\-]]*"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<!-- types definition                                                                   -->
+	<xs:simpleType name="logType">
+		<xs:restriction base="xs:nonNegativeInteger"/>
+	</xs:simpleType>
+	<!--  type for prefix                                                           -->
+	<xs:simpleType name="prefixType">
+		<xs:restriction base="xs:NCName">
+			<xs:minLength value="1"/>
+			<xs:pattern value="[\c-[\-]]*"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<!--        non empty string                                                        -->
+	<xs:simpleType name="nonEmptyString">
+		<xs:restriction base="xs:string">
+			<xs:minLength value="1"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<!-- short description string. Maximal length is 50. If you change it ,code has to be changed, too !!! -->
+	<xs:simpleType name="shortDescriptionString">
+		<xs:restriction base="loggingts:nonEmptyString">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="50"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<!-- definition fpr Member                                                       -->
+	<xs:simpleType name="MemberTypes">
+		<xs:restriction base="loggingts:nonEmptyString">
+			<xs:enumeration value="double"/>
+			<xs:enumeration value="long"/>
+			<xs:enumeration value="string"/>
+		</xs:restriction>
+	</xs:simpleType>
+</xs:schema>
+
