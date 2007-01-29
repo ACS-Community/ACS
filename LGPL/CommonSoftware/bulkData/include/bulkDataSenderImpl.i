@@ -172,19 +172,25 @@ void BulkDataSenderImpl<TSenderCallback>::disconnect()
 		}
 	    }
 
-	sender.disconnectPeer();
+	getSender()->disconnectPeer();
 	}
-    catch (AVInvalidFlowNumberExImpl & ex)
+    catch(ACSErr::ACSbaseExImpl &ex)
+	{
+	AVDisconnectErrorExImpl err = AVDisconnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataSenderImpl::disconnectPeer");
+	err.log(LM_DEBUG);
+	throw err.getAVDisconnectErrorEx();
+	}
+    catch(AVInvalidFlowNumberEx &ex)
 	{   
-	ACS_SHORT_LOG((LM_INFO,"BulkDataSenderImpl::disconnect AVInvalidFlowNumberExImpl exception catched !"));
+	getSender()->disconnectPeer();
 
-	sender.disconnectPeer();
-
-	AVDisconnectErrorExImpl err = AVDisconnectErrorExImpl(__FILE__,__LINE__,"BulkDataSenderImpl::disconnect");
+	AVDisconnectErrorExImpl err = AVDisconnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataSenderImpl::disconnect");
+	err.log(LM_DEBUG);
 	throw err.getAVDisconnectErrorEx();
 	}
     catch(...)
 	{
+	ACS_SHORT_LOG((LM_ERROR,"BulkDataSenderImpl::disconnect UNKNOWN exception"));
 	AVDisconnectErrorExImpl err = AVDisconnectErrorExImpl(__FILE__,__LINE__,"BulkDataSenderImpl::disconnect");
 	throw err.getAVDisconnectErrorEx();
 	}

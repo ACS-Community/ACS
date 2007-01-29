@@ -129,12 +129,14 @@ ACSErr::Completion *BulkDataReceiverImpl<TCallback>::getCbStatus(CORBA::ULong fl
 	{
 	getReceiver()->getFlowCallback(flowNumber,cb);
 	}
-    catch(AVInvalidFlowNumberExImpl & ex)
+    catch(AVInvalidFlowNumberExImpl &ex)
 	{
+	ex.log(LM_DEBUG);
 	throw ex.getAVInvalidFlowNumberEx();
 	}
     catch(AVFlowEndpointErrorExImpl &ex)
 	{
+	ex.log(LM_DEBUG);
 	throw ex.getAVFlowEndpointErrorEx();
 	}
 
