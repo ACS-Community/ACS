@@ -3,7 +3,11 @@
 1 - Reading 'MACI/Containers/OnDemandContainer/LoggingConfig/minLogLevel'='0'
 1 - Setting 'MACI/Containers/OnDemandContainer/LoggingConfig/minLogLevel'='1'
 1 - 5d4
-1 - 12c11
+1 - 12,13c11,13
 1 - < 	<LoggingConfig centralizedLogger="Log" minLogLevel="1" dispatchPacketSize="10" immediateDispatchLevel="31" />
+1 - < </Container>
+1 - \ No newline at end of file
 1 - ---
 1 - > 	<LoggingConfig centralizedLogger="Log" minLogLevel="0" dispatchPacketSize="10" immediateDispatchLevel="31" />
+1 - > </Container>
+1 - > 

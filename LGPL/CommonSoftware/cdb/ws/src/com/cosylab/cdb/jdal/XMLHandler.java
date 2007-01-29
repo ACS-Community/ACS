@@ -30,6 +30,9 @@ package com.cosylab.cdb.jdal;
  */
 
 import java.util.ArrayList;
+import alma.cdbErrType.wrappers.AcsJCDBRecordDoesNotExistEx;
+//TODO; remover esto
+import java.util.Iterator;
 
 import org.xml.sax.helpers.DefaultHandler;
 import org.xml.sax.*;
@@ -102,24 +105,29 @@ public class XMLHandler extends DefaultHandler {
 				m_rootNode.m_name = raw;
 				m_parent = m_rootNode;
 			}
-			else {
+			else{
 				pNode = new XMLTreeNode(m_parent);
 				if (attrs.getLength() > 0 && (raw.equals("_") || raw.endsWith(":_"))) {
 					// in this case we will replace the element name with Name name, otherwise its first attribute is taken
-					if(raw.indexOf(':') >= 0) m_parent.m_nameSpace = raw.substring(0,raw.indexOf(':'));
-					//System.out.println("CARLI: raw=" + raw );
-					//System.out.println("CARLI: namespace=" + m_parent.m_nameSpace );
+					if(raw.indexOf(':') >= 0) pNode.m_nameSpace = raw.substring(0,raw.indexOf(':'));
 					raw = attrs.getValue("Name");
-					if (raw == null)
+					if (raw == null){
+					    inArray = true; // special case when array is found
 					    raw = attrs.getValue(0);
-						if( markArrays > 0 ) { // ad an array marker
-							if(!m_parent.m_subNodesMap.containsKey(XMLTreeNode.ARRAY_MARKER))
-								m_parent.m_subNodesMap.put(XMLTreeNode.ARRAY_MARKER, new XMLTreeNode(pNode));
-							if(markArrays == 2) { // add node to the array - used by diff check where we must distinguish between original array elements and merged ones 
-								XMLTreeNode arrNode = (XMLTreeNode)m_parent.m_subNodesMap.get(XMLTreeNode.ARRAY_MARKER); 
-								arrNode.m_subNodesMap.put(String.valueOf(arrNode.m_subNodesMap.size()), pNode);
-							}
-						}
+					    if( markArrays > 0 ) { // ad an array marker
+						pNode.setArrayNode();
+					    /*	if(markArrays == 2) { // add node to the array - used by diff check where we must distinguish between original array elements and merged ones 
+							XMLTreeNode arrNode = (XMLTreeNode)m_parent.m_subNodesMap.get(XMLTreeNode.ARRAY_MARKER); 
+							arrNode.m_subNodesMap.put(String.valueOf(arrNode.m_subNodesMap.size()), pNode);
+					    	}
+*/
+					    }
+					}else{
+					    if( markArrays > 0 ){ 
+						if(raw.equals("*")) pNode.setDynamicNode();
+						else pNode.setMapNode();
+					    }
+					}
 				}
 
 				if (m_parent.m_subNodesMap.get(raw) != null) {
@@ -132,12 +140,23 @@ public class XMLHandler extends DefaultHandler {
 				m_parent.m_subNodesMap.put(pNode.m_name, pNode);
 				m_parent = pNode;
 			}
-			if (raw.equalsIgnoreCase("cdb:_"))
-				inArray = true; // special case when array is found
 		}
-		else
-			m_xmlString.append('<').append(raw);
-		
+		else{
+		    if(elementNames == null) elementNames = new ArrayList();
+			m_xmlString.append('<');
+			if (attrs.getLength() > 0 && (raw.equals("_") || raw.endsWith(":_"))) {
+			    // in this case we will replace the element name with Name name
+			    //String mapName = attrs.getValue("Name");
+			    //if(mapName != null && !mapName.equals("*")){
+			//	m_xmlString.append(mapName);
+			//	elementNames.add(mapName); 
+//			    }else{
+m_xmlString.append(raw); elementNames.add(raw);//}
+			}else{
+				m_xmlString.append(raw);
+				elementNames.add(raw);
+			}
+		}
 		// add prefixes if any only if we are wiritng XML otherwise (like in DAO) it is not needed
 		if(prefixes.size() > 0) {
 			for (int i = 0; i < prefixes.size(); i++) {
@@ -160,13 +179,7 @@ public class XMLHandler extends DefaultHandler {
 					m_xmlString.append(' ').append(attrs.getQName(i)).append("=\"").append(attrs.getValue(i)).append("\"");
 				}
 				else {
-					if (inArray) {
-						m_arrayContent.append(attrs.getValue(i)).append(',');
-						m_parent.m_parent.m_isArray = true;
-					}
-					else {
-						m_parent.m_fieldMap.put(attrs.getQName(i), attrs.getValue(i));
-					}
+					m_parent.m_fieldMap.put(attrs.getQName(i), attrs.getValue(i));
 				}
 
 			}
@@ -185,17 +198,18 @@ public class XMLHandler extends DefaultHandler {
 		}
 		
 		if (m_toString) {
-			m_xmlString.append("</").append(raw).append('>');
+			String elem = (String)elementNames.remove(elementNames.size()-1);
+			m_xmlString.append("</").append(elem).append('>');
 		}
 		else {
-			if (m_parent.m_isArray) {
+		/*	if (m_parent.m_isArray) {
 				String nolastDelim = m_arrayContent.substring(0,m_arrayContent.length()-1); // remove last delimiter
 				m_parent.m_parent.m_fieldMap.put(m_parent.m_name, nolastDelim);
 				// since we added array content as field then there is no need any more for array node  itself
 				m_parent.m_parent.m_subNodesMap.remove(m_parent.m_name);
 				m_arrayContent.delete(0, m_arrayContent.length());
 			}
-			m_parent = m_parent.m_parent;
+		*/	m_parent = m_parent.m_parent;
 		}
 	}
 	public void characters(char buf[], int offset, int len) throws SAXException {
@@ -257,5 +271,44 @@ public class XMLHandler extends DefaultHandler {
 	public void setMarkArrays(int mode) {
 		this.markArrays = mode;
 	}
+	
+	public XMLHandler getChild(String curl)
+		throws AcsJCDBRecordDoesNotExistEx{
+	    XMLTreeNode tnFather = m_rootNode;
+	    XMLTreeNode tnChild = null;
+	    String strFirst = "";
+	    String strLast = curl;
+	    String strPast ="";
+	    do{
+    	    	strFirst = strLast.substring(0, strLast.indexOf('/'));
+	    	strLast = strLast.substring(strLast.indexOf('/')+1);
+/*Iterator i = tnFather.getNodesMap().keySet().iterator();
+while(i.hasNext()){
+String s = (String)i.next();
+System.out.println("CARLI: ITERANDO! key ="+s);
+}
+*/
+	 	tnChild = (XMLTreeNode) tnFather.getNodesMap().get(strFirst);
+		strPast+="/"+strFirst;
+		if(tnChild == null){
+		    AcsJCDBRecordDoesNotExistEx recordDoesNotExist = 
+			new AcsJCDBRecordDoesNotExistEx();
+		    recordDoesNotExist.setCurl(strPast);
+		    throw recordDoesNotExist;
+		}
+		tnFather = tnChild;
+	    }while(!strLast.equals(""));
+	    XMLHandler a = new XMLHandler(false);
+	    a.m_rootNode = tnChild;
+	    return a;  
+	}
 
+	public String toString(boolean withMapNames){
+		if(m_toString)
+			return m_xmlString.toString();
+		else{
+			if(m_rootNode == null) return null;
+			else return m_rootNode.toString(withMapNames);
+		}
+	}
 }

@@ -22,6 +22,8 @@
    -   Tue Mar 07 15:06:42 UTC 2006 modified by jDAL
    -   Tue Mar 07 16:50:08 UTC 2006 modified by jDAL
    -   Tue Mar 07 16:54:55 UTC 2006 modified by jDAL
+   -   Mon Jan 29 05:33:05 UTC 2007 modified by jDAL
+   -   Mon Jan 29 05:33:05 UTC 2007 modified by jDAL
 -->
 <Components xmlns="urn:schemas-cosylab-com:Components:1.0" xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0" xmlns:baci="urn:schemas-cosylab-com:BACI:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<_ Name="PBEND_B_01" Code="acsexmplPowerSupplyImpl" Type="IDL:alma/PS/PowerSupply:1.0" Container="bilboContainer" />
@@ -64,4 +66,3 @@
 	<_ Name="XMLCOMP1" Code="alma.demo.XmlComponentImpl.XmlComponentHelper" Type="IDL:alma/demo/XmlComponent:1.0" Container="frodoContainer" Default="true" />
 	<_ Name="PYHELLODEMO1" Code="demoImpl.HelloDemo" Type="IDL:alma/demo/HelloDemo:1.0" Container="aragornContainer" Default="true" />
 </Components>
-

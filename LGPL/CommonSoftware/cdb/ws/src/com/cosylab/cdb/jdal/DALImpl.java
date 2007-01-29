@@ -311,29 +311,66 @@ public class DALImpl extends JDALPOA implements Recoverer {
 		}
 
 		//no Error throwed
-		DALNode curlNode = rootNode.findNode(curl);
-		if(curlNode == null) {
-			m_logger.log(AcsLogLevel.NOTICE,"Record does not exists: " + curl);
-			AcsJCDBRecordDoesNotExistEx recordDoesNotExist = 
-			    new AcsJCDBRecordDoesNotExistEx();
-			recordDoesNotExist.setCurl(curl);
-			throw recordDoesNotExist; 
+		String strFileCurl = curl;
+		String strNodeCurl = "";
+		DALNode curlNode = null;
+		while(strFileCurl != null){
+		    curlNode = rootNode.findNode(strFileCurl);
+		    if(curlNode == null) {
+			if(strFileCurl.lastIndexOf('/') >0){
+			    strNodeCurl = strFileCurl.substring(strFileCurl.lastIndexOf('/')+1) + "/"+ strNodeCurl; 
+		    	    strFileCurl = strFileCurl.substring(0,strFileCurl.lastIndexOf('/'));
+		    	}else strFileCurl = null;
+		    }else break;
 		}
+		
+		m_logger.log(AcsLogLevel.DEBUG, "loadRecords(curl="+curl+"), strFileCurl="+strFileCurl+", strNodeCurl="+ strNodeCurl);
+	    	if(strFileCurl == null) {
+		    m_logger.log(AcsLogLevel.NOTICE,"Record does not exists: " + curl);
+		    AcsJCDBRecordDoesNotExistEx recordDoesNotExist = 
+		        new AcsJCDBRecordDoesNotExistEx();
+		    recordDoesNotExist.setCurl(curl);
+		    throw recordDoesNotExist; 
+	        }
 		//no Error throwed
 		if(curlNode.isSimple()){
-			return loadRecord(curl, toString);
+			m_logger.log(AcsLogLevel.DEBUG, "loadRecords(curl="+curl+"), curlNode is Simple");
+			if(curl.equals(strFileCurl)){
+			     return loadRecord(strFileCurl, toString);
+			}else{
+			    XMLHandler xmlSolver = loadRecord(strFileCurl, false);
+			    try{
+			    return xmlSolver.getChild(strNodeCurl);
+			    }catch(AcsJCDBRecordDoesNotExistEx e){
+			    	e.setCurl(strFileCurl+e.getCurl());
+			    	throw e;
+			    }
+			}
 		}
-		XMLHandler xmlSolver = new XMLHandler(toString);
-		xmlSolver.setAutoCloseStartingElement(false);
+		m_logger.log(AcsLogLevel.DEBUG, "loadRecords(curl="+curl+"), curlNode is Complex");
+		XMLHandler xmlSolver;
 		try {
 			//xmlSolver.startDocument();
 			//xmlSolver.startElement(null,null,"curl",new org.xml.sax.helpers.AttributesImpl);
-			parseNode(curlNode, xmlSolver);
+ 			if(curl.equals(strFileCurl)){
+			    xmlSolver = new XMLHandler(toString);
+			    xmlSolver.setAutoCloseStartingElement(false);
+			    parseNode(curlNode, xmlSolver);
 			//xmlSolver.closeElement();
-			return xmlSolver;
+			     return xmlSolver;
+			}else{
+			    //here we must to return the node inside the xmlSolver with curl= strNodeCurl		
+			    xmlSolver = new XMLHandler(false);
+		 	    xmlSolver.setMarkArrays(1);
+			    xmlSolver.setAutoCloseStartingElement(false);
+			    parseNode(curlNode, xmlSolver);
+			    return xmlSolver.getChild(strNodeCurl);
+			}
 		} catch (AcsJCDBXMLErrorEx e) {
-			//AcsJCDBXMLErrorEx cdbxmlErr = new AcsJCDBXMLErrorEx(e);
-			//e.setCurl(curl);
+			e.setCurl(curl);
+			throw e;
+		} catch (AcsJCDBRecordDoesNotExistEx e){
+			e.setCurl(strFileCurl+e.getCurl());
 			throw e;
 		} catch (Throwable t) {
 			String info = "SAXException " + t;
@@ -363,7 +400,9 @@ public class DALImpl extends JDALPOA implements Recoverer {
 		}
 
 		XMLHandler xmlSolver = new XMLHandler(toString);
+		xmlSolver.setMarkArrays(1);
 		try {
+			m_logger.log(AcsLogLevel.DEBUG, "Parsing xmlFile="+xmlFile);
 			saxParser.parse(xmlFile, xmlSolver);
 			if (xmlSolver.m_errorString != null) {
 				String info = "XML parser error: " + xmlSolver.m_errorString;
@@ -396,11 +435,15 @@ public class DALImpl extends JDALPOA implements Recoverer {
 	 */
 	public synchronized String get_DAO(String curl) throws CDBRecordDoesNotExistEx, CDBXMLErrorEx {
 		try{
-			XMLHandler xmlSolver = loadRecords(curl, true);
+		    if(curl.lastIndexOf('/') == curl.length()-1)
+			curl = curl.substring(0,curl.length()-1);
+		    XMLHandler xmlSolver = loadRecords(curl, true);
 		if (xmlSolver == null)
 			return null;
+		
 		m_logger.log(AcsLogLevel.INFO, "Returning XML record for: " + curl);
-		return xmlSolver.m_xmlString.toString();
+		//System.out.println("CARLI: " + xmlSolver.toString(false));
+		return xmlSolver.toString(false);
 		}catch(AcsJCDBXMLErrorEx e){
 			String smsg = "XML Error \tCURL='" + e.getCurl()+"'\n\t\tFilename='"+e.getFilename()+"'\n\t\tNodename='"+e.getNodename()+"'\n\t\tMSG='"+e.getErrorString()+"'";
 			m_logger.log(AcsLogLevel.NOTICE, smsg, e);	

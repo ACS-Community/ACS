@@ -251,18 +251,21 @@ public class WDAOImpl extends WDAOPOA {
 		}
 		String currentValue = (String) pNode.m_fieldMap.get(fieldName);
 		if (currentValue == null) {
-			m_logger.log(AcsLogLevel.NOTICE, "WDAO:'" + getName() + "' Unable to find field: '" + strFieldName + "'");
+			m_logger.log(AcsLogLevel.NOTICE, "setField():'" + getName() + "' Unable to find field: '" + strFieldName + "'");
 			AcsJCDBFieldDoesNotExistEx e = new AcsJCDBFieldDoesNotExistEx();
 			e.setFieldName(strFieldName);
 			throw e;
 		}
-		m_logger.log(AcsLogLevel.INFO,"WDAO:'" + getName() + "' set '" + strFieldName + "'=" + value);  
+		m_logger.log(AcsLogLevel.INFO,"setField():'" + getName() + "' set '" + strFieldName + "'=" + value);  
 		// set value in memory
+		m_logger.log(AcsLogLevel.DEBUG,"setField(): - Set value in memory");  
 		pNode.m_fieldMap.put(fieldName, value);
 		// and on disk
+		m_logger.log(AcsLogLevel.DEBUG,"setField(): - Set value in disk");  
 		HashMap map = new HashMap();
 		map.put(strFieldName, value);
 		try {
+		        m_logger.log(AcsLogLevel.DEBUG,"setField(): - Saving Changes");  
 			wdal.saveChanges(getName(), map);
 		}
 		catch(AcsJCDBFieldDoesNotExistEx e) {

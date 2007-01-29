@@ -367,25 +367,22 @@ public class WDALImpl extends WDALBaseImpl
 		String currentValue;
 		String value;
 
-		// if this node represents an aray then add its contents into map
+		// if this node represents an array then add its contents into map
 		// this will be the case when we cheking full expanded version of a XML
-		if(node.isArray()) {
-			XMLTreeNode arrNode = (XMLTreeNode)node.m_subNodesMap.get(XMLTreeNode.ARRAY_MARKER);
+		//if(node.isArrayNode()) {
+		//	XMLTreeNode arrNode = (XMLTreeNode)node.m_subNodesMap.get(XMLTreeNode.ARRAY_MARKER);
 
-			for(Iterator iter = arrNode.m_subNodesMap.keySet().iterator();
-			    iter.hasNext();) {
-				String key = (String)iter.next();
-				XMLTreeNode childNode = (XMLTreeNode)arrNode.m_subNodesMap.get(key);
-
-				for(Iterator iterator = childNode.m_fieldMap.keySet().iterator();
-				    iterator.hasNext();) {
-					String childKey = (String)iterator.next();
-					map.put(XMLTreeNode.ARRAY_MARKER + "/" + key + "/"
+		for(Iterator iter = node.m_subNodesMap.keySet().iterator(); iter.hasNext();) {
+			String key = (String)iter.next();
+			XMLTreeNode childNode = (XMLTreeNode)node.m_subNodesMap.get(key);
+			if(childNode.isMapNode()){
+				for(Iterator iterator = childNode.m_fieldMap.keySet().iterator();iterator.hasNext();) {
+				String childKey = (String)iterator.next();
+					map.put(XMLTreeNode.MAP_TYPE + "/" + key + "/"
 					    + childKey, childNode.m_fieldMap.get(childKey));
 				}
+				node.m_subNodesMap.clear();
 			}
-
-			node.m_subNodesMap.clear();
 		}
 
 		// node attributes i.e 'CommandLine' in node 'Manager'
@@ -445,7 +442,7 @@ public class WDALImpl extends WDALBaseImpl
 	public File getNodeFile(String curl)
 	{
 		String xmlPath = dalImpl.getRecordPath(curl);
-
+		m_logger.log(AcsLogLevel.DEBUG,"getNodeFile("+curl+") = "+ xmlPath);
 		return new File(xmlPath);
 	}
 
@@ -480,6 +477,8 @@ public class WDALImpl extends WDALBaseImpl
 			saxParser.setProperty("http://xml.org/sax/properties/lexical-handler",
 			    xmlHandler);
 
+		        m_logger.log(AcsLogLevel.DEBUG,"saveChanges('"+curl+"'): - Parsing");  
+		        //System.out.println("CARLI: "+xmlHandler.toString(false));	
 			saxParser.parse(getNodeFile(curl), xmlHandler);
 		} catch(Exception e) {
 			e.printStackTrace();
@@ -494,7 +493,7 @@ public class WDALImpl extends WDALBaseImpl
 		xmlHandler.writeXML(sw);
 	//	try{	
 			// now check that everything conforms to the schema
-			//System.out.println("CARLI: el xml: " + sw.toString());
+		//System.out.println("CARLI: el xml: " + sw.toString());
 			validateXML(sw.toString());
 			// ok it is safe now to write it to disk
 			writeXmlData(curl, sw.toString());
@@ -591,7 +590,7 @@ public class WDALImpl extends WDALBaseImpl
 					setField(key, null, true);
 				}
 			}
-
+			//System.out.println("CARLI: "+ m_rootNode.toString(false));
 			try {
 				write("<?xml version='1.0' encoding='ISO-8859-1'?>\n");
 				writeComment();
@@ -636,7 +635,7 @@ public class WDALImpl extends WDALBaseImpl
 
 			while(st.hasMoreTokens()) {
 				if(pNode.m_subNodesMap.get(fieldName) == null
-				    && strFieldName.startsWith(XMLTreeNode.ARRAY_MARKER)) {
+				    && strFieldName.startsWith(XMLTreeNode.MAP_TYPE)) {
 					XMLTreeNode newNode = new XMLTreeNode(pNode);
 					newNode.m_name = fieldName;
 					pNode.m_subNodesMap.put(fieldName, newNode);
@@ -658,10 +657,10 @@ public class WDALImpl extends WDALBaseImpl
 					value = (String)pNode.m_fieldMap.get(fieldName);
 				}
 
-				if(pNode.isArray()) { // the hole node is an array so change back its names
+				/*if(pNode.isArray()) { // the hole node is an array so change back its names
 
 					XMLTreeNode arrNode = (XMLTreeNode)pNode.m_subNodesMap.get(XMLTreeNode.ARRAY_MARKER);
-					pNode.m_subNodesMap.remove(XMLTreeNode.ARRAY_MARKER); // remove it in any case to avoid its writing back to the XML
+				//	pNode.m_subNodesMap.remove(XMLTreeNode.ARRAY_MARKER); // remove it in any case to avoid its writing back to the XML
 
 					if(arrNode.m_subNodesMap.size() > 0) {
 						pNode.m_subNodesMap.clear();
@@ -683,7 +682,7 @@ public class WDALImpl extends WDALBaseImpl
 					newNode.m_isArray = true;
 					newNode.m_fieldMap.put(fieldName, value);
 					pNode.m_subNodesMap.put(fieldName, newNode);
-				}
+				}*/
 			} else {
 				pNode.m_fieldMap.put(fieldName, value);
 			}
@@ -699,15 +698,16 @@ public class WDALImpl extends WDALBaseImpl
 		private void writeNode(XMLTreeNode node, int indent)
 			throws IOException
 		{
-			writeIndent(indent);
+			write(node.toString(false));	
+	/*			writeIndent(indent);
 			
 			// is map element?
 			if(node.m_parent != null &&
 			   node.m_parent.m_subNodesMap.containsKey(XMLTreeNode.ARRAY_MARKER))
-				if(node.m_parent.m_nameSpace.equals(""))
+				if(node.m_nameSpace.equals(""))
 					write("<_");
 				else
-					write("<"+node.m_parent.m_nameSpace+":_");
+					write("<"+node.m_nameSpace+":_");
 			else
 				write("<" + node.m_name);
 
@@ -765,6 +765,7 @@ public class WDALImpl extends WDALBaseImpl
 			}
 
 			write("</" + node.m_name + ">\n");
+		*/
 		}
 
 		private void putArrayMap(String key, String value)
@@ -787,9 +788,11 @@ public class WDALImpl extends WDALBaseImpl
 			super.startElement(uri, localName, qName, attributes);
 
 			// if we are in array procesing just rememebr array name and type
-			if(m_parent.m_parent != null && m_parent.m_parent.m_isArray) {
-				putArrayMap(m_parent.m_parent.m_name, attributes.getQName(0));
-			}
+			if(m_parent.isArrayNode())
+			//if(m_parent.m_parent != null && m_parent.m_parent.m_isArray) {
+				putArrayMap(m_parent.m_name, attributes.getQName(0));
+				//putArrayMap(m_parent.m_parent.m_name, attributes.getQName(0));
+			//}
 			
 			/*	
 			// if node names are '_' we change its name to the first attribute so we must keep track of that

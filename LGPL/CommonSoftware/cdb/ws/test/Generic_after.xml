@@ -26,6 +26,6 @@ Correspondence concerning ALMA should be addressed as follows:
 
    - History:
    -   Thu Mar 09 12:54:21 UTC 2006 modified by jDAL
+   -   Mon Jan 29 05:50:55 UTC 2007 modified by jDAL
 -->
 <Component xmlns="urn:schemas-cosylab-com:Component:1.0" Name="CONTROL/CRD/Node0x20/Generic" Code="CRDImpl" Type="IDL:alma/Control/CRD:1.0" Container="CONTROL/Test/cppContainer" Default="true" />
-

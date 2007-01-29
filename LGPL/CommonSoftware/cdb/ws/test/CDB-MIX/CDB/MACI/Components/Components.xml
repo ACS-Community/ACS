@@ -64,4 +64,3 @@
 	<_ Name="XMLCOMP1" Code="alma.demo.XmlComponentImpl.XmlComponentHelper" Type="IDL:alma/demo/XmlComponent:1.0" Container="frodoContainer" Default="true" />
 	<_ Name="PYHELLODEMO1" Code="demoImpl.HelloDemo" Type="IDL:alma/demo/HelloDemo:1.0" Container="aragornContainer" Default="true" />
 </Components>
-
