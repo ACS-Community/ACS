@@ -107,10 +107,17 @@ void BulkDataReceiverImpl<TCallback>::closeReceiver()
 
     try
 	{
-	receiver.closeReceiver();
+	getReceiver()->closeReceiver();
+	}
+    catch(ACSErr::ACSbaseExImpl &ex)
+	{
+	AVCloseReceiverErrorExImpl err = AVCloseReceiverErrorExImpl(ex,__FILE__,__LINE__,"BulkDataReceiverImpl::closeReceiver");
+	err.log(LM_DEBUG);
+	throw err.getAVCloseReceiverErrorEx();
 	}
     catch(...)
 	{
+	ACS_SHORT_LOG((LM_ERROR,"BulkDataReceiverImpl<>::closeReceiver UNKNOWN exception"));
 	AVCloseReceiverErrorExImpl err = AVCloseReceiverErrorExImpl(__FILE__,__LINE__,"BulkDataReceiverImpl::closeReceiver");
 	throw err.getAVCloseReceiverErrorEx();
 	}

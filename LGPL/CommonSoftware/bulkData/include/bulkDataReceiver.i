@@ -253,9 +253,23 @@ void AcsBulkdata::BulkDataReceiver<TReceiverCallback>::closeReceiver()
 {
     ACE_TRACE("BulkDataReceiver<>::closeReceiver");
 
-    deleteAcceptor();
-    deleteFepsB();
-    deleteSepB();
+    try
+	{
+	deleteAcceptor();
+	deleteFepsB();
+	deleteSepB();
+	}
+    catch(ACSErr::ACSbaseExImpl &ex)
+	{
+	AVCloseReceiverErrorExImpl err = AVCloseReceiverErrorExImpl(ex,__FILE__,__LINE__,"BulkDataReceiver::closeReceiver");
+	throw err;
+	}
+    catch(...)
+	{
+	ACS_SHORT_LOG((LM_ERROR,"BulkDataReceiver<>::closeReceiver UNKNOWN exception"));
+	AVCloseReceiverErrorExImpl err = AVCloseReceiverErrorExImpl(__FILE__,__LINE__,"BulkDataReceiver::closeReceiver");
+	throw err;
+	}
 
     closeReceiverFlag = true;
 }
@@ -404,23 +418,28 @@ void AcsBulkdata::BulkDataReceiver<TReceiverCallback>::deleteFepsB()
     for(CORBA::ULong i = 0; i < fepsData.length(); i++)
 	{
 	ACE_CString flowname = TAO_AV_Core::get_flowname(fepsData[i]);
-
+	
 	if (sepRefCount_p != 0)
 	    {
 	    sepRefCount_p->remove_fep(flowname.c_str());
 	    }
-
+	
 	BulkDataFlowConsumer<TReceiverCallback> *fep = 0;
 	fepMap_m.find(flowname, fep);
-	if (fep != 0)
+	if(fep == 0)
 	    {
-
+	    closeReceiverFlag = true; //necessary to avoid container crash
+	    AVFlowEndpointErrorExImpl err = AVFlowEndpointErrorExImpl(__FILE__,__LINE__,"BulkDataReceiver<>::deleteFepsB");
+	    throw err;
+	    }
+	else
+	    {
 	    CORBA::Long dim = fep->_refcount_value /*_ref_count*/();
 	    for(CORBA::Long n = 1; n < dim; n++)
 		{
 		TAO_AV_Core::deactivate_servant(fep);
 		}
-
+	    
 	    if (fep != 0) fep->_remove_ref();
 	    fepMap_m.unbind(flowname, fep);
 	    }
@@ -437,16 +456,14 @@ void AcsBulkdata::BulkDataReceiver<TReceiverCallback>::deleteSepB()
 
     if (sepRefCount_p != 0)
 	{
-
 	CORBA::Long dim = sepRefCount_p->_refcount_value/*_ref_count*/();
 	for(CORBA::Long n = 1; n < dim; n++)
 	    {
 	    TAO_AV_Core::deactivate_servant(sepRefCount_p);
 	    }
-
+	
 	if (sepRefCount_p != 0) sepRefCount_p->_remove_ref();
 	sepRefCount_p=0;
-
 	}
 }
 

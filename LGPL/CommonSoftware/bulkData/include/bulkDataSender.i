@@ -967,7 +967,7 @@ void AcsBulkdata::BulkDataSender<TSenderCallback>::deleteFepsA()
 	fepMap_m.find(flowname, fep);
 	if(fep == 0)
 	    {
-	    disconnectPeerFlag = true; //seems necessary to avoid container crash
+	    disconnectPeerFlag = true; //necessary to avoid container crash
 	    AVFlowEndpointErrorExImpl err = AVFlowEndpointErrorExImpl(__FILE__,__LINE__,"BulkDataSender<>::deleteFepsA");
 	    throw err;
 	    }
