@@ -14,10 +14,11 @@
 						<xs:choice minOccurs="0" maxOccurs="unbounded">
 							<xs:element name="Member" type="loggingts:Member_"/>
 						</xs:choice>
-						<xs:attribute name="name" type="loggingts:nameType" use="required"/>
+						<xs:attribute name="logName" type="loggingts:nameType" use="required"/>
 						<xs:attribute name="shortDescription" type="loggingts:shortDescriptionString" use="required"/>
 						<xs:attribute name="description" type="loggingts:nonEmptyString" use="required"/>
 						<xs:attribute name="URL" type="xs:string" use="optional"/>
+						<xs:attribute name="priority" type="loggingts:priorityType" use="required"/>
 					</xs:complexType>
 				</xs:element>
 			</xs:choice>
@@ -26,7 +27,6 @@
 			<xs:attribute name="shortDescription" type="loggingts:shortDescriptionString" use="optional"/>
 			<xs:attribute name="description" type="loggingts:nonEmptyString" use="optional"/>
 			<xs:attribute name="URL" type="xs:string" use="optional"/>
-			<xs:attribute name="_prefix" type="loggingts:prefixType" default="alma"/><!-- Actually needed? -->
 		</xs:complexType>
 	</xs:element>
 	<xs:complexType name="Member_">
@@ -65,12 +65,26 @@
 			<xs:maxLength value="50"/>
 		</xs:restriction>
 	</xs:simpleType>
-	<!-- definition fpr Member                                                       -->
+	<!-- definition for Member                                                       -->
 	<xs:simpleType name="MemberTypes">
 		<xs:restriction base="loggingts:nonEmptyString">
 			<xs:enumeration value="double"/>
 			<xs:enumeration value="long"/>
 			<xs:enumeration value="string"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<!-- Priority                                                      -->
+	<xs:simpleType name="priorityType">
+		<xs:restriction base="loggingts:nonEmptyString">
+			<xs:enumeration value="TRACE"/>
+			<xs:enumeration value="DEBUG"/>
+			<xs:enumeration value="INFO"/>
+			<xs:enumeration value="NOTICE"/>
+			<xs:enumeration value="WARNING"/>
+			<xs:enumeration value="ERROR"/>
+			<xs:enumeration value="CRITICAL"/>
+			<xs:enumeration value="ALERT"/>
+			<xs:enumeration value="EMERGENCY"/>
 		</xs:restriction>
 	</xs:simpleType>
 </xs:schema>

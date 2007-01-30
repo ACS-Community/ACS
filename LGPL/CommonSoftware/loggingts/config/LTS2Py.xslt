@@ -21,7 +21,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: LTS2Py.xslt,v 1.1 2007/01/29 14:49:53 nbarriga Exp $"
+# "@(#) $Id: LTS2Py.xslt,v 1.2 2007/01/30 13:11:54 nbarriga Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -33,6 +33,7 @@ Some form of custom documentation goes here...
 '''
 ######################################################################
 from loggingts.ACSLogTS import ACSLogTS
+import ACSLog
 ######################################################################
 class </xsl:text><xsl:variable name="typeName"><xsl:value-of select="@name"/></xsl:variable>
 <xsl:value-of select="$typeName"/>
@@ -43,7 +44,7 @@ class </xsl:text><xsl:variable name="typeName"><xsl:value-of select="@name"/></x
 </xsl:text>
         <xsl:for-each select="LogDefinition">
 		<xsl:text>class </xsl:text>
-        	<xsl:variable name="logName"><xsl:value-of select="@name"/></xsl:variable>
+        	<xsl:variable name="logName"><xsl:value-of select="@logName"/></xsl:variable>
 		<xsl:value-of select="$logName"/>
 		<xsl:text>(</xsl:text><xsl:value-of select="$typeName"/><xsl:text>):
 	def __init__(self):
@@ -51,6 +52,7 @@ class </xsl:text><xsl:variable name="typeName"><xsl:value-of select="@name"/></x
 		self.shortDescription="</xsl:text><xsl:value-of select="@shortDescription"/><xsl:text>"
                 self.description="</xsl:text><xsl:value-of select="@description"/><xsl:text>"
                 self.URL="</xsl:text><xsl:value-of select="@URL"/><xsl:text>"
+                self.priority=ACSLog.ACS_LOG_</xsl:text><xsl:value-of select="@priority"/><xsl:text>
                 </xsl:text><xsl:value-of select="$typeName"/><xsl:text>.__init__(self)
 
 </xsl:text>

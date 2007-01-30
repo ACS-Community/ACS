@@ -17,7 +17,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: ACSLogTS.py,v 1.2 2007/01/30 12:06:53 nbarriga Exp $"
+# "@(#) $Id: ACSLogTS.py,v 1.3 2007/01/30 13:11:54 nbarriga Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -59,5 +59,5 @@ class ACSLogTS:
 		srcInfo=ACSLog.SourceInfo(str(cur_stack[0][0]),str(cur_stack[0][2]),long(cur_stack[0][1]))
 
 		timestamp=TimeUtil().py2epoch(time.time()).value
-		self._logger.logTypeSafe(ACSLog.ACS_LOG_INFO, timestamp, msg, rtCont, srcInfo, data)
+		self._logger.logTypeSafe(self.priority, timestamp, msg, rtCont, srcInfo, data)
 
