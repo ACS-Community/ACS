@@ -20,7 +20,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acslogSvcImpl.h,v 1.13 2006/12/13 16:38:11 bjeram Exp $"
+* "@(#) $Id: acslogSvcImpl.h,v 1.14 2007/01/30 12:06:53 nbarriga Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -38,7 +38,7 @@
 
 #include <acsutilPorts.h>
 
-typedef unsigned long PriortyFlag;
+typedef unsigned long PriorityFlag;
 
 class ACSLogImpl : public POA_ACSLog::LogSvc {
 public:
@@ -91,7 +91,16 @@ public:
   void logErrorWithPriority (const ACSErr::ErrorTrace &c,
 			    ACSLog::Priorities p
       ) throw ( CORBA::SystemException, ACSErr::ACSException );
-  
+
+  void ACSLogImpl::logWithPriority (ACSLog::Priorities p,
+       			      acscommon::TimeStamp time,
+                              const char * msg,
+                              const ACSLog::RTContext & rtCont,
+                              const ACSLog::SourceInfo & srcInfo,
+                              const ACSLog::NVPairSeq & data
+
+			      ) throw ( CORBA::SystemException, ACSErr::ACSException );
+ 
   void logCritical (acscommon::TimeStamp time,
 		 const char * msg,
 		 const ACSLog::RTContext & rtCont,
@@ -128,10 +137,10 @@ public:
 private:
   bool checkRTContext (const ACSLog::RTContext & rtCont);
   bool checkSourceInfo (const ACSLog::SourceInfo & srcInfo);
-  PriortyFlag writeRTContext (const ACSLog::RTContext & rtCont);
-  PriortyFlag writeSourceInfo (const ACSLog::SourceInfo & srcInfo);
+  PriorityFlag writeRTContext (const ACSLog::RTContext & rtCont);
+  PriorityFlag writeSourceInfo (const ACSLog::SourceInfo & srcInfo);
   unsigned int writeData (const ACSLog::NVPairSeq & data);
-  PriortyFlag write(const ACSLog::RTContext & rtCont,
+  PriorityFlag write(const ACSLog::RTContext & rtCont,
 		    const ACSLog::SourceInfo & srcInfo,
 		    const ACSLog::NVPairSeq & data);
   LoggingProxy &m_logProxy;

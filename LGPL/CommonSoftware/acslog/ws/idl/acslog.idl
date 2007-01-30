@@ -151,6 +151,13 @@ module ACSLog {
     void logErrorWithPriority(in ACSErr::ErrorTrace c, in Priorities p) raises (ACSErr::ACSException);
 
     /**
+       logs a message with a certain priority.
+       If all rtCont string members are NULL than no run-time context information will be logged.
+       If all srcInfo string members are NULL than no source information will be logged.
+    */
+    void logWithPriority(in Priorities p, in acscommon::TimeStamp time, in string msg, in RTContext rtCont, in SourceInfo srcInfo,  in NVPairSeq data) raises (ACSErr::ACSException);
+    
+    /**
        logs CRITICAL message.
        If all rtCont string members are NULL than no run-time context information will be logged.
        If all srcInfo string members are NULL than no source information will be logged.

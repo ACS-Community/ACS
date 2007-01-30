@@ -18,14 +18,14 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acslogSvcImpl.cpp,v 1.17 2006/12/14 08:35:29 bjeram Exp $"
+* "@(#) $Id: acslogSvcImpl.cpp,v 1.18 2007/01/30 12:06:53 nbarriga Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
 * bjeram  11/09/01  created 
 */
 
-static char *rcsId="@(#) $Id: acslogSvcImpl.cpp,v 1.17 2006/12/14 08:35:29 bjeram Exp $"; 
+static char *rcsId="@(#) $Id: acslogSvcImpl.cpp,v 1.18 2007/01/30 12:06:53 nbarriga Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include "acslogSvcImpl.h"
@@ -39,7 +39,7 @@ void ACSLogImpl::logTrace (acscommon::TimeStamp time,
 			   
 			   ) throw ( CORBA::SystemException, ACSErr::ACSException )
 {  
-  PriortyFlag  flag = write (rtCont, srcInfo, data);
+  PriorityFlag  flag = write (rtCont, srcInfo, data);
   ACS_CHECK_LOGGER;
   LoggingProxy::Flags(flag);
   LOG_RECORD(Logging::BaseLog::LM_TRACE, msg, srcInfo.file.in(), srcInfo.line, srcInfo.routine.in(), time, rtCont.sourceObject.in());
@@ -53,7 +53,7 @@ void ACSLogImpl::logDebug (acscommon::TimeStamp time,
 			   
 			   ) throw ( CORBA::SystemException, ACSErr::ACSException )
 {  
-  PriortyFlag  flag = write (rtCont, srcInfo, data);
+  PriorityFlag  flag = write (rtCont, srcInfo, data);
   ACS_CHECK_LOGGER;
   LoggingProxy::Flags(flag);
   LOG_RECORD(Logging::BaseLog::LM_DEBUG, msg, srcInfo.file.in(), srcInfo.line, srcInfo.routine.in(), time, rtCont.sourceObject.in());
@@ -67,7 +67,7 @@ void ACSLogImpl::logInfo (acscommon::TimeStamp time,
 			   
 			   ) throw ( CORBA::SystemException, ACSErr::ACSException )
 {  
-  PriortyFlag  flag = write (rtCont, srcInfo, data);
+  PriorityFlag  flag = write (rtCont, srcInfo, data);
   ACS_CHECK_LOGGER;
   LoggingProxy::Flags(flag);
   LOG_RECORD(Logging::BaseLog::LM_INFO, msg, srcInfo.file.in(), srcInfo.line, srcInfo.routine.in(), time, rtCont.sourceObject.in());
@@ -81,7 +81,7 @@ void ACSLogImpl::logNotice (acscommon::TimeStamp time,
 			   
 			   ) throw ( CORBA::SystemException, ACSErr::ACSException )
 {  
-  PriortyFlag  flag = write (rtCont, srcInfo, data);
+  PriorityFlag  flag = write (rtCont, srcInfo, data);
   ACS_CHECK_LOGGER;
   LoggingProxy::Flags(flag);
   LOG_RECORD(Logging::BaseLog::LM_NOTICE, msg, srcInfo.file.in(), srcInfo.line, srcInfo.routine.in(), time, rtCont.sourceObject.in());
@@ -95,7 +95,7 @@ void ACSLogImpl::logWarning (acscommon::TimeStamp time,
 			   
 			   ) throw ( CORBA::SystemException, ACSErr::ACSException )
 {  
-  PriortyFlag  flag = write (rtCont, srcInfo, data);
+  PriorityFlag  flag = write (rtCont, srcInfo, data);
   ACS_CHECK_LOGGER;
   LoggingProxy::Flags(flag);
   LOG_RECORD(Logging::BaseLog::LM_WARNING, msg, srcInfo.file.in(), srcInfo.line, srcInfo.routine.in(), time, rtCont.sourceObject.in());
@@ -115,6 +115,20 @@ void ACSLogImpl::logErrorWithPriority(const ACSErr::ErrorTrace &et, ACSLog::Prio
   err.log(ACE_Log_Priority(1 << (p+1)));   // here we assume that enums in IDL starts from 0 
 }//logErrorWithPriorty
 
+void ACSLogImpl::logWithPriority (ACSLog::Priorities p,
+			      acscommon::TimeStamp time,
+			      const char * msg,
+			      const ACSLog::RTContext & rtCont,
+			      const ACSLog::SourceInfo & srcInfo,
+			      const ACSLog::NVPairSeq & data) 
+    throw ( CORBA::SystemException, ACSErr::ACSException )
+{  
+  PriorityFlag  flag = write (rtCont, srcInfo, data);
+  ACS_CHECK_LOGGER;
+  LoggingProxy::Flags(flag);
+  LOG_RECORD(Logging::ace2acsPriority(ACE_Log_Priority(1 << (p+1)))/*awfull!!! need to check how to do it cleanly*/, msg, srcInfo.file.in(), srcInfo.line, srcInfo.routine.in(), time, rtCont.sourceObject.in());
+}
+
 void ACSLogImpl::logCritical (acscommon::TimeStamp time,
 			      const char * msg,
 			      const ACSLog::RTContext & rtCont,
@@ -122,7 +136,7 @@ void ACSLogImpl::logCritical (acscommon::TimeStamp time,
 			      const ACSLog::NVPairSeq & data) 
     throw ( CORBA::SystemException, ACSErr::ACSException )
 {  
-  PriortyFlag  flag = write (rtCont, srcInfo, data);
+  PriorityFlag  flag = write (rtCont, srcInfo, data);
   ACS_CHECK_LOGGER;
   LoggingProxy::Flags(flag);
   LOG_RECORD(Logging::BaseLog::LM_CRITICAL, msg, srcInfo.file.in(), srcInfo.line, srcInfo.routine.in(), time, rtCont.sourceObject.in());
@@ -136,7 +150,7 @@ void ACSLogImpl::logAlert (acscommon::TimeStamp time,
 			   
 			   ) throw ( CORBA::SystemException, ACSErr::ACSException )
 {  
-  PriortyFlag  flag = write (rtCont, srcInfo, data);
+  PriorityFlag  flag = write (rtCont, srcInfo, data);
   ACS_CHECK_LOGGER;
   LoggingProxy::Flags(flag);
   LOG_RECORD(Logging::BaseLog::LM_ALERT, msg, srcInfo.file.in(), srcInfo.line, srcInfo.routine.in(), time, rtCont.sourceObject.in());
@@ -150,7 +164,7 @@ void ACSLogImpl::logEmergency (acscommon::TimeStamp time,
 			   
 			   ) throw ( CORBA::SystemException, ACSErr::ACSException )
 {  
-  PriortyFlag  flag = write (rtCont, srcInfo, data);
+  PriorityFlag  flag = write (rtCont, srcInfo, data);
   ACS_CHECK_LOGGER;
   LoggingProxy::Flags(flag);
   LOG_RECORD(Logging::BaseLog::LM_EMERGENCY, msg, srcInfo.file.in(), srcInfo.line, srcInfo.routine.in(), time, rtCont.sourceObject.in());
@@ -190,7 +204,7 @@ bool ACSLogImpl::checkSourceInfo(const ACSLog::SourceInfo & srcInfo)
           srcInfo.routine.in()[0]!=0);
 }
 
-PriortyFlag ACSLogImpl::writeRTContext(const ACSLog::RTContext & rtCont)
+PriorityFlag ACSLogImpl::writeRTContext(const ACSLog::RTContext & rtCont)
 {
   if (checkRTContext (rtCont)){
     //ACE_OS::printf("context\n");
@@ -204,7 +218,7 @@ PriortyFlag ACSLogImpl::writeRTContext(const ACSLog::RTContext & rtCont)
 }
 
 
-PriortyFlag ACSLogImpl::writeSourceInfo(const ACSLog::SourceInfo & srcInfo)
+PriorityFlag ACSLogImpl::writeSourceInfo(const ACSLog::SourceInfo & srcInfo)
 {
  if (checkSourceInfo(srcInfo)){
     //    ACE_OS::printf("sourceInfo\n");
@@ -223,11 +237,11 @@ unsigned int ACSLogImpl::writeData (const ACSLog::NVPairSeq & data){
   return j-1;
 }
 
-PriortyFlag ACSLogImpl::write(const ACSLog::RTContext & rtCont,
+PriorityFlag ACSLogImpl::write(const ACSLog::RTContext & rtCont,
 		    const ACSLog::SourceInfo & srcInfo,
 		    const ACSLog::NVPairSeq & data)
 {
-  PriortyFlag flag=0;
+  PriorityFlag flag=0;
  
   flag |= writeRTContext (rtCont);
   flag |= writeSourceInfo (srcInfo);
