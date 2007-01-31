@@ -794,6 +794,14 @@ public class TabPanel extends JPanel {
 		int index = containerLines.size()-1;
 		setMnemonicForContainerLine(index);
 
+		// (2007-01-19) set a name for this containerline object
+		containerLine.setName("pnl_ContainerLine#"+index);
+		containerLine.btnStart.setName("btn_Start_Container#"+index);
+		containerLine.btnStop.setName("btn_Stop_Container#"+index);
+		containerLine.btnData.setName("btn_Edit_Container#"+index);
+		containerLine.nameF.setName("txt_ContainerName#"+index);
+		containerLine.typeF.setName("txt_ContainerType#"+index);
+
 		// add model-autowrite
 		containerLine.nameF.addFocusListener(focusListener);
 		containerLine.typeF.addFocusListener(focusListener);
@@ -1100,12 +1108,6 @@ public class TabPanel extends JPanel {
 			this.add(btnData = new Button(master.icons.getConfigIcon(), this));
 			btnData.setToolTipText("Choose where to run this container");
 			
-			
-			btnStart.setName("btn_Start_Container");
-			btnStop.setName("btn_Stop_Container");
-			btnData.setName("btn_Edit_Container");
-			nameF.setName("txt_ContainerName");
-			typeF.setName("txt_ContainerType");
 		}
 
 		public void actionPerformed (ActionEvent e) {
