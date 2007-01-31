@@ -32,6 +32,6 @@ PROLOGUE prologue
 
 commandcenterTest
 # msc 2006-07-17: need to repair this gui test, didn't manage in time yet
-#acscommandcenterGUITest
+acscommandcenterGUITest
 
 EPILOGUE epilogue
