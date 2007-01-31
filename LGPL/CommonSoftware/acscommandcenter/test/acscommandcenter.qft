@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <!DOCTYPE RootStep>
-<RootStep id="_0" name="root" version="1.8.0">
+<RootStep id="_0" name="root" version="2.0.0">
   <include>qfs.qft</include>
   <variable name="Client">acscommandcenterGUITest</variable>
   <Test catch="true" id="_1" name="acscommandcenter ">
@@ -8,7 +8,7 @@
       <comment>Starts the GUI and resizes the output textbox</comment>
       <SUTClientStarter client="$(Client)" directory="$(HOME)/tmp/"
                         executable="acscommandcenter" id="_9S"/>
-      <ClientWaiter client="$(Client)" id="_6"/>
+      <ClientWaiter client="$(Client)" id="_6" timeout="15000"/>
       <ComponentWaiter client="$(Client)"
                        component="frame(project)_-_Acs_Command_Center"
                        id="_v"/>
@@ -54,7 +54,7 @@
       <BasicSequence id="_2e"
                      name="CheckBox &#34;advanced&#34; - Services, Manager">
         <ProcedureCall id="_2i" postdelay="2000"
-                       procedure="/diska/alma_tmp/mzampare/qftest/qftestJUI-1.08.0/include/qfs.qft#qfs.swing.checkbox.set">
+                       procedure="/alma/mzampare/qftest/qftest-2.0.0/include/qfs.qft#qfs.swing.checkbox.set">
           <variable name="id">checkAdvanced</variable>
           <variable name="client">$(Client)</variable>
           <variable name="check">true</variable>
@@ -72,7 +72,7 @@
                           component="buttonTipStop_the_specified_Manager"
                           id="_3S" raise="true"/>
         <ProcedureCall id="_2m" postdelay="2000"
-                       procedure="/diska/alma_tmp/mzampare/qftest/qftestJUI-1.08.0/include/qfs.qft#qfs.swing.checkbox.set">
+                       procedure="/alma/mzampare/qftest/qftest-2.0.0/include/qfs.qft#qfs.swing.checkbox.set">
           <variable name="id">checkAdvanced</variable>
           <variable name="client">$(Client)</variable>
           <variable name="check">false</variable>
@@ -92,7 +92,7 @@
       </BasicSequence>
       <BasicSequence id="_3a" name="RadioLocal - RadioJava - RadioRemote">
         <ProcedureCall id="_3f"
-                       procedure="/diska/alma_tmp/mzampare/qftest/qftestJUI-1.08.0/include/qfs.qft#qfs.swing.checkbox.set">
+                       procedure="/alma/mzampare/qftest/qftest-2.0.0/include/qfs.qft#qfs.swing.checkbox.set">
           <variable name="id">radioLocal</variable>
           <variable name="client">$(Client)</variable>
           <variable name="check">true</variable>
@@ -112,7 +112,7 @@
         <CheckEnabledStep client="$(Client)" component="passwdPassword"
                           enabled="false" id="_3o" raise="true"/>
         <ProcedureCall id="_3g"
-                       procedure="/diska/alma_tmp/mzampare/qftest/qftestJUI-1.08.0/include/qfs.qft#qfs.swing.checkbox.set">
+                       procedure="/alma/mzampare/qftest/qftest-2.0.0/include/qfs.qft#qfs.swing.checkbox.set">
           <variable name="id">radioJava-only_Acs</variable>
           <variable name="client">$(Client)</variable>
           <variable name="check">true</variable>
@@ -132,7 +132,7 @@
         <CheckEnabledStep client="$(Client)" component="passwdPassword"
                           enabled="false" id="_3x" raise="true"/>
         <ProcedureCall id="_3h"
-                       procedure="/diska/alma_tmp/mzampare/qftest/qftestJUI-1.08.0/include/qfs.qft#qfs.swing.checkbox.set">
+                       procedure="/alma/mzampare/qftest/qftest-2.0.0/include/qfs.qft#qfs.swing.checkbox.set">
           <variable name="id">radioRemote</variable>
           <variable name="client">$(Client)</variable>
           <variable name="check">true</variable>
@@ -246,59 +246,47 @@ If not call the cleanup node</comment>
         <MouseEventStep clicks="1" client="$(Client)"
                         component="splitLeft.comLeft.com3" event="MOUSE_MPRC"
                         id="_5u" modifiers="16" x="68" y="260"/>
-        <MouseEventStep clicks="1" client="$(Client)" component="text1"
-                        event="MOUSE_MPRC" id="_5v" modifiers="16" x="18"
-                        y="13"/>
-        <TextInputStep clear="true" client="$(Client)" component="text1"
-                       id="_5w" single="false">
-          <text>fisrtC</text>
-        </TextInputStep>
-        <KeyEventStep client="$(Client)" component="text1"
-                      event="KEY_RELEASED" id="_5x" keychar="65535"
-                      keycode="16" modifiers="1"/>
-        <TextInputStep client="$(Client)" component="text1" id="_5y"
-                       single="false">
-          <text>ontainer</text>
-        </TextInputStep>
         <MouseEventStep clicks="1" client="$(Client)"
-                        component="buttonTipStart_this_Container"
-                        event="MOUSE_MPRC" id="_5z" modifiers="16"
-                        postdelay="15000" x="1" y="1"/>
-        <MouseEventStep clicks="1" client="$(Client)"
-                        component="buttonTipMore_Containers"
-                        event="MOUSE_MPRC" id="_5-" modifiers="16" x="1"
-                        y="1"/>
-        <MouseEventStep clicks="1" client="$(Client)"
-                        component="splitLeft.comLeft.text3" event="MOUSE_MPRC"
-                        id="_60" modifiers="16" x="17" y="12"/>
+                        component="txt_ContainerName_0" event="MOUSE_MPRC"
+                        id="_9v" modifiers="16" x="40" y="12"/>
         <TextInputStep clear="true" client="$(Client)"
-                       component="splitLeft.comLeft.text3" id="_61"
+                       component="txt_ContainerName_0" id="_9w"
                        single="false">
-          <text>secondC</text>
-        </TextInputStep>
-        <KeyEventStep client="$(Client)" component="splitLeft.comLeft.text3"
-                      event="KEY_RELEASED" id="_62" keychar="65535"
-                      keycode="16" modifiers="1"/>
-        <TextInputStep client="$(Client)" component="splitLeft.comLeft.text3"
-                       id="_63" single="false">
-          <text>ontainer</text>
+          <text>firstContainer</text>
         </TextInputStep>
         <MouseEventStep clicks="1" client="$(Client)"
-                        component="splitLeft.comLeft.button"
-                        event="MOUSE_MPRC" id="_64" modifiers="16" x="1"
-                        y="1"/>
+                        component="btn_Start_Container_0" event="MOUSE_MPRC"
+                        id="_9x" modifiers="16" x="1" y="1"/>
+        <ComponentWaiter client="$(Client)"
+                         component="dialogStarting_firstContainer_-_Progress"
+                         id="_AQ"/>
+        <ComponentWaiter absence="true" client="$(Client)"
+                         component="dialogStarting_firstContainer_-_Progress"
+                         id="_AR"/>
         <MouseEventStep clicks="1" client="$(Client)"
-                        component="popupInvokerClass:_JComboBox.list.cpp"
-                        event="MOUSE_MPRC" id="_65" modifiers="16" x="1"
-                        y="1"/>
+                        component="btn_More_Containers" event="MOUSE_MPRC"
+                        id="_9z" modifiers="16" x="1" y="1"/>
         <MouseEventStep clicks="1" client="$(Client)"
-                        component="buttonTipStart_this_Container2"
-                        event="MOUSE_MPRC" id="_66" modifiers="16"
-                        postdelay="15000" x="1" y="1"/>
+                        component="txt_ContainerName_1" event="MOUSE_MPRC"
+                        id="_9+" modifiers="16" x="27" y="12"/>
+        <TextInputStep clear="true" client="$(Client)"
+                       component="txt_ContainerName_1" id="_9-"
+                       single="false">
+          <text>secondContainer</text>
+        </TextInputStep>
+        <MouseEventStep clicks="1" client="$(Client)"
+                        component="btn_Start_Container_1" event="MOUSE_MPRC"
+                        id="_A0" modifiers="16" x="1" y="1"/>
+        <ComponentWaiter client="$(Client)"
+                         component="dialogStarting_secondContainer_-_Progress"
+                         id="_AS"/>
+        <ComponentWaiter absence="true" client="$(Client)"
+                         component="dialogStarting_secondContainer_-_Progress"
+                         id="_AT"/>
         <MouseEventStep clicks="1" client="$(Client)"
                         component="splitLeft.comRight.tree@/Manager on $(IP), port 3000"
-                        event="MOUSE_MPRC" id="_68" modifiers="16"
-                        postdelay="15000" x="-14" y="7"/>
+                        event="MOUSE_MPRC" id="_68" modifiers="16" x="-14"
+                        y="7"/>
         <MouseEventStep clicks="1" client="$(Client)"
                         component="splitLeft.comRight.tree&amp;/0/0"
                         event="MOUSE_MPRC" id="_69" modifiers="16" x="-14"
@@ -311,58 +299,6 @@ If not call the cleanup node</comment>
                         component="splitLeft.comRight.tree&amp;/0/2"
                         event="MOUSE_MPRC" id="_6B" modifiers="16" x="-13"
                         y="9"/>
-        <MouseEventStep clicks="0" client="$(Client)"
-                        component="splitLeft.comRight.scrollbarVertical"
-                        event="MOUSE_MOVED" id="_6C" modifiers="0" x="10"
-                        y="65"/>
-        <MouseEventStep clicks="1" client="$(Client)"
-                        component="splitLeft.comRight.scrollbarVertical"
-                        event="MOUSE_PRESSED" id="_6D" modifiers="16" x="10"
-                        y="65"/>
-        <MouseEventStep clicks="0" client="$(Client)"
-                        component="splitLeft.comRight.scrollbarVertical"
-                        event="MOUSE_DRAGGED" id="_6E" modifiers="16" x="7"
-                        y="29"/>
-        <MouseEventStep clicks="0" client="$(Client)"
-                        component="splitLeft.comRight.scrollbarVertical"
-                        event="MOUSE_RELEASED" id="_6F" modifiers="16" x="7"
-                        y="29"/>
-        <MouseEventStep clicks="1" client="$(Client)"
-                        component="tabSecondContainer.text.Retrieving_CDB_reference_from_Manager_using_bootstrap_ORB"
-                        event="MOUSE_MPRC" id="_6J" modifiers="16" x="100"
-                        y="14"/>
-        <MouseEventStep clicks="0" client="$(Client)"
-                        component="tabSecondContainer.scrollbarVertical"
-                        event="MOUSE_MOVED" id="_6K" modifiers="0" x="9"
-                        y="26"/>
-        <MouseEventStep clicks="1" client="$(Client)"
-                        component="tabSecondContainer.scrollbarVertical"
-                        event="MOUSE_PRESSED" id="_6L" modifiers="16" x="9"
-                        y="26"/>
-        <MouseEventStep clicks="0" client="$(Client)"
-                        component="tabSecondContainer.buttonDown"
-                        event="MOUSE_DRAGGED" id="_6M" modifiers="16" x="1"
-                        y="1"/>
-        <MouseEventStep clicks="0" client="$(Client)"
-                        component="tabSecondContainer.buttonDown"
-                        event="MOUSE_RELEASED" id="_6N" modifiers="16" x="1"
-                        y="1"/>
-        <CheckStringStep client="$(Client)"
-                         component="tabSecondContainer.text" id="_6P"
-                         raise="true" regexp="true">
-          <text>(.|\n)*components activated(.|\n)*</text>
-          <comment>Check if the container is started</comment>
-        </CheckStringStep>
-        <MouseEventStep clicks="1" client="$(Client)"
-                        component="tabbedRight.fisrtContainer"
-                        event="MOUSE_MPRC" id="_6Q" modifiers="16" x="1"
-                        y="1"/>
-        <CheckStringStep client="$(Client)" component="tabFisrtContainer.text"
-                         id="_6S" raise="true" regexp="true">
-          <text>(.|\n)*components activated(.|\n)*
-</text>
-          <comment>Check if the container is started</comment>
-        </CheckStringStep>
         <MouseEventStep clicks="1" client="$(Client)"
                         component="splitLeft.comRight.tree&amp;/0/2"
                         event="MOUSE_MPRC" id="_6V" modifiers="16" x="-12"
@@ -380,34 +316,51 @@ If not call the cleanup node</comment>
                         event="MOUSE_MPRC" id="_6Y" modifiers="16" x="-11"
                         y="8"/>
         <MouseEventStep clicks="1" client="$(Client)"
-                        component="buttonTipStop_this_Container2"
-                        event="MOUSE_MPRC" id="_6Z" modifiers="16"
-                        postdelay="30000" x="1" y="1"/>
-        <CheckStringStep client="$(Client)"
-                         component="tabSecondContainer.text" id="_6c"
-                         raise="true" regexp="true">
-          <text>(.|\n)*Container stopped(.|\n)*
-</text>
-          <comment>Check if the container is stopped</comment>
+                        component="btn_Stop_Container_1" event="MOUSE_MPRC"
+                        id="_AE" modifiers="16" x="1" y="1"/>
+        <ComponentEventStep client="$(Client)"
+                            component="dialogStopping_secondContainer_-_Progress"
+                            disabled="true" event="COMPONENT_RESIZED" id="_AJ"
+                            param1="330" param2="119"/>
+        <ComponentWaiter client="$(Client)"
+                         component="dialogStopping_secondContainer_-_Progress"
+                         id="_AU"/>
+        <ComponentWaiter absence="true" client="$(Client)"
+                         component="dialogStopping_secondContainer_-_Progress"
+                         id="_AV"/>
+        <MouseEventStep clicks="1" client="$(Client)"
+                        component="btn_Stop_Container_0" event="MOUSE_MPRC"
+                        id="_AG" modifiers="16" x="1" y="1"/>
+        <ComponentEventStep client="$(Client)"
+                            component="dialogStopping_firstContainer_-_Progress"
+                            disabled="true" event="COMPONENT_RESIZED" id="_AK"
+                            param1="330" param2="119"/>
+        <ComponentWaiter client="$(Client)"
+                         component="dialogStopping_firstContainer_-_Progress"
+                         id="_AW"/>
+        <ComponentWaiter absence="true" client="$(Client)"
+                         component="dialogStopping_firstContainer_-_Progress"
+                         id="_AX"/>
+        <MouseEventStep clicks="1" client="$(Client)"
+                        component="tabbedRight.secondContainer"
+                        event="MOUSE_MPRC" id="_AI" modifiers="16" x="1"
+                        y="1"/>
+        <CheckStringStep client="$(Client)" component="txt_Output" id="_A2"
+                         regexp="true">
+          <text>(.|\n)*come back soon(.|\n)*</text>
         </CheckStringStep>
         <MouseEventStep clicks="1" client="$(Client)"
-                        component="tabSecondContainer.text.Retrieving_CDB_reference_from_Manager_using_bootstrap_ORB"
-                        event="MOUSE_MPRC" id="_6d" modifiers="16" x="94"
-                        y="10"/>
-        <MouseEventStep clicks="1" client="$(Client)"
-                        component="buttonTipStop_this_Container3"
-                        event="MOUSE_MPRC" id="_6e" modifiers="16"
-                        postdelay="30000" x="1" y="1"/>
-        <CheckStringStep client="$(Client)" component="tabFisrtContainer.text"
-                         id="_6h" raise="true" regexp="true">
-          <text>(.|\n)*come back soon(.|\n)*
-</text>
-          <comment>Check if the container is stopped</comment>
+                        component="tabbedRight.firstContainer"
+                        event="MOUSE_MPRC" id="_A3" modifiers="16"
+                        postdelay="15000" x="1" y="1"/>
+        <CheckStringStep client="$(Client)" component="txt_Output" id="_A4"
+                         regexp="true">
+          <text>(.|\n)*come back soon(.|\n)*</text>
         </CheckStringStep>
         <MouseEventStep clicks="0" client="$(Client)"
                         component="tabFisrtContainer.scrollbarVertical"
-                        event="MOUSE_MOVED" id="_6j" modifiers="0" x="8"
-                        y="23"/>
+                        event="MOUSE_MOVED" id="_6j" modifiers="0"
+                        postdelay="30000" x="8" y="23"/>
         <MouseEventStep clicks="1" client="$(Client)"
                         component="tabFisrtContainer.scrollbarVertical"
                         event="MOUSE_PRESSED" id="_6k" modifiers="16" x="8"
@@ -576,16 +529,6 @@ If not call the cleanup node</comment>
         <MouseEventStep clicks="1" client="$(Client)"
                         component="splitLeft.comRight.tree" event="MOUSE_MPRC"
                         id="_9R" modifiers="4" popup="true" x="93" y="94"/>
-        <MouseEventStep clicks="1" client="$(Client)"
-                        component="menuItemRemove_from_View"
-                        event="MOUSE_MPRC" id="_95" modifiers="16" x="1"
-                        y="1"/>
-        <CheckImageStep client="$(Client)" component="splitLeft.comRight.tree"
-                        id="_7m" raise="true">
-          <ImageWrapper height="219" name="checkimage" width="296">
-            <binary size="212">eJztwQENAAAAwqD+qW9PBxQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA9G1wO+c5=</binary>
-          </ImageWrapper>
-        </CheckImageStep>
       </BasicSequence>
     </Test>
     <CleanupSequence id="_+" name="Cleanup the status of the application">
@@ -597,7 +540,7 @@ If not call the cleanup node</comment>
   <PackageRoot id="_2">
     <Procedure id="_1e" name="Stop the application">
       <ProcedureCall id="_1m"
-                     procedure="/diska/alma_tmp/mzampare/qftest/qftestJUI-1.08.0/include/qfs.qft#qfs.cleanup.implicitExceptionHandler">
+                     procedure="/alma/mzampare/qftest/qftest-2.0.0/include/qfs.qft#qfs.cleanup.implicitExceptionHandler">
         <variable name="client">$(Client)</variable>
       </ProcedureCall>
       <TryStep id="_1f" name="Click on Stop button">
@@ -612,7 +555,176 @@ If not call the cleanup node</comment>
       </TryStep>
     </Procedure>
   </PackageRoot>
-  <ExtraSequence id="_3"/>
+  <ExtraSequence id="_3">
+    <BasicSequence id="_9i" name="Recorded 1/19/07 2:45 PM">
+      <MouseEventStep clicks="1" client="$(Client)"
+                      component="txt_ContainerName_0" event="MOUSE_MPRC"
+                      id="_9j" modifiers="16" x="40" y="12"/>
+      <TextInputStep clear="true" client="$(Client)"
+                     component="txt_ContainerName_0" id="_9k" single="false">
+        <text>firstContainer</text>
+      </TextInputStep>
+      <MouseEventStep clicks="1" client="$(Client)"
+                      component="btn_Start_Container_0" event="MOUSE_MPRC"
+                      id="_9l" modifiers="16" x="1" y="1"/>
+      <ComponentEventStep client="$(Client)"
+                          component="dialogStarting_firstContainer_-_Progress"
+                          event="COMPONENT_RESIZED" id="_9m" param1="330"
+                          param2="119"/>
+      <MouseEventStep clicks="1" client="$(Client)"
+                      component="btn_More_Containers" event="MOUSE_MPRC"
+                      id="_9n" modifiers="16" x="1" y="1"/>
+      <MouseEventStep clicks="1" client="$(Client)"
+                      component="txt_ContainerName_1" event="MOUSE_MPRC"
+                      id="_9o" modifiers="16" x="27" y="12"/>
+      <TextInputStep clear="true" client="$(Client)"
+                     component="txt_ContainerName_1" id="_9p" single="false">
+        <text>secondContainer</text>
+      </TextInputStep>
+      <MouseEventStep clicks="1" client="$(Client)"
+                      component="btn_Start_Container_1" event="MOUSE_MPRC"
+                      id="_9q" modifiers="16" x="1" y="1"/>
+      <ComponentEventStep client="$(Client)"
+                          component="dialogStarting_secondContainer_-_Progress"
+                          event="COMPONENT_RESIZED" id="_9r" param1="330"
+                          param2="119"/>
+      <CheckStringStep client="$(Client)" component="txt_Output" id="_9s">
+        <text>INFO - Running the container with these arguments: 'acsStartJavaContainer secondContainer alma.acs.container.AcsContainerRunner -OAIAddr 134.171.12.93 -OAport 4002 -m corbaloc::134.171.12.93:3000/Manager'
+ --endorsed -D alma.MicroArchive.DbDir=/diska/alma_tmp/acsdata/config/MicroArchive -- alma.acs.container.AcsContainerRunner -OAIAddr 134.171.12.93 -OAport 4002 -m corbaloc::134.171.12.93:3000/Manager -containerName secondContainer
+INFO - Starting Java/abeans application: alma.acs.container.AcsContainerRunner -OAIAddr 134.171.12.93 -OAport 4002 -m corbaloc::134.171.12.93:3000/Manager -containerName secondContainer
+INFO - Using endorsed jar files in: -Djava.endorsed.dirs=/introot/vltuser8/lib/endorsed:/introot/vltuser8/lib/endorsed:
+FINER: Logging configuration has been initialized, but not from CDB settings.
+2007-01-19T13:45:05.462 INFO [AcsContainerRunner] AcsContainerRunner#run 
+[jacorb.poa] INFO : oid: 
+73 65 63 6F 6E 64 43 6F 6E 74 61 69 6E 65 72                secondContainer
+object is activated
+[jacorb.poa] INFO : oid: 
+00 15 00 48 2E 30 20 17 02 0B 48                            ...H.0 ...H
+object is activated
+[jacorb.poa] INFO : Using server ID (2150091978) for transient POA
+2007-01-19T13:45:09.522 INFO [secondContainer] Info message from the manager: Startup statistics: 0 components queued to be activated.
+2007-01-19T13:45:09.559 INFO [secondContainer] Info message from the manager: Startup statistics: 0 of 0 components activated.
+</text>
+      </CheckStringStep>
+      <MouseEventStep clicks="1" client="$(Client)"
+                      component="tabbedRight.firstContainer"
+                      event="MOUSE_MPRC" id="_9t" modifiers="16" x="1" y="1"/>
+      <CheckStringStep client="$(Client)" component="txt_Output" id="_9u">
+        <text>INFO - Running the container with these arguments: 'acsStartJavaContainer firstContainer alma.acs.container.AcsContainerRunner -OAIAddr 134.171.12.93 -OAport 4000 -m corbaloc::134.171.12.93:3000/Manager'
+ --endorsed -D alma.MicroArchive.DbDir=/diska/alma_tmp/acsdata/config/MicroArchive -- alma.acs.container.AcsContainerRunner -OAIAddr 134.171.12.93 -OAport 4000 -m corbaloc::134.171.12.93:3000/Manager -containerName firstContainer
+INFO - Starting Java/abeans application: alma.acs.container.AcsContainerRunner -OAIAddr 134.171.12.93 -OAport 4000 -m corbaloc::134.171.12.93:3000/Manager -containerName firstContainer
+INFO - Using endorsed jar files in: -Djava.endorsed.dirs=/introot/vltuser8/lib/endorsed:/introot/vltuser8/lib/endorsed:
+FINER: Logging configuration has been initialized, but not from CDB settings.
+2007-01-19T13:44:48.683 INFO [AcsContainerRunner] AcsContainerRunner#run 
+[jacorb.poa] INFO : oid: 
+66 69 72 73 74 43 6F 6E 74 61 69 6E 65 72                   firstContainer
+object is activated
+[jacorb.poa] INFO : oid: 
+00 15 00 48 2E 2B 18 06 02 1F 01                            ...H.+.....
+object is activated
+[jacorb.poa] INFO : Using server ID (43421275) for transient POA
+2007-01-19T13:44:52.768 INFO [firstContainer] Info message from the manager: Startup statistics: 0 components queued to be activated.
+2007-01-19T13:44:52.807 INFO [firstContainer] Info message from the manager: Startup statistics: 0 of 0 components activated.
+ping received, container alive. Memory usage 1956 of 3136 kB (= 3.0% of JVM growth limit 65088 kB) 
+</text>
+      </CheckStringStep>
+    </BasicSequence>
+    <BasicSequence id="_A5" name="Recorded 1/19/07 3:27 PM">
+      <MouseEventStep clicks="1" client="$(Client)"
+                      component="btn_Stop_Container_1" event="MOUSE_MPRC"
+                      id="_A6" modifiers="16" x="1" y="1"/>
+      <ComponentEventStep client="$(Client)"
+                          component="dialogStopping_secondContainer_-_Progress"
+                          event="COMPONENT_RESIZED" id="_A7" param1="330"
+                          param2="119"/>
+      <MouseEventStep clicks="1" client="$(Client)"
+                      component="btn_Stop_Container_0" event="MOUSE_MPRC"
+                      id="_A8" modifiers="16" x="1" y="1"/>
+      <ComponentEventStep client="$(Client)"
+                          component="dialogStopping_firstContainer_-_Progress"
+                          event="COMPONENT_RESIZED" id="_A9" param1="330"
+                          param2="119"/>
+      <MouseEventStep clicks="1" client="$(Client)"
+                      component="tabbedRight.secondContainer"
+                      event="MOUSE_MPRC" id="_AA" modifiers="16" x="1" y="1"/>
+      <CheckStringStep client="$(Client)" component="txt_Output" id="_AB">
+        <text>INFO - Running the container with these arguments: 'acsStartJavaContainer secondContainer alma.acs.container.AcsContainerRunner -OAIAddr 134.171.12.93 -OAport 4002 -m corbaloc::134.171.12.93:3000/Manager'
+ --endorsed -D alma.MicroArchive.DbDir=/diska/alma_tmp/acsdata/config/MicroArchive -- alma.acs.container.AcsContainerRunner -OAIAddr 134.171.12.93 -OAport 4002 -m corbaloc::134.171.12.93:3000/Manager -containerName secondContainer
+INFO - Starting Java/abeans application: alma.acs.container.AcsContainerRunner -OAIAddr 134.171.12.93 -OAport 4002 -m corbaloc::134.171.12.93:3000/Manager -containerName secondContainer
+INFO - Using endorsed jar files in: -Djava.endorsed.dirs=/introot/vltuser8/lib/endorsed:/introot/vltuser8/lib/endorsed:
+FINER: Logging configuration has been initialized, but not from CDB settings.
+2007-01-19T14:18:00.505 INFO [AcsContainerRunner] AcsContainerRunner#run 
+[jacorb.poa] INFO : oid: 
+73 65 63 6F 6E 64 43 6F 6E 74 61 69 6E 65 72                secondContainer
+object is activated
+[jacorb.poa] INFO : oid: 
+00 15 00 48 38 0B 2E 18 01 3F 47                            ...H8....?G
+object is activated
+[jacorb.poa] INFO : Using server ID (2027021651) for transient POA
+2007-01-19T14:18:04.877 INFO [secondContainer] Info message from the manager: Startup statistics: 0 components queued to be activated.
+2007-01-19T14:18:04.915 INFO [secondContainer] Info message from the manager: Startup statistics: 0 of 0 components activated.
+ping received, container alive. Memory usage 1946 of 3004 kB (= 2.9% of JVM growth limit 65088 kB) 
+2007-01-19T14:18:37.304 INFO [secondContainer] received call to 'shutdown', action=2 (encryptedAction=512), gracefully=true.
+[jacorb.poa] INFO : POA ComponentPOA destroyed
+[jacorb.poa] INFO : POA ContainerPOA destroyed
+[jacorb.poa] INFO : POA RootPOA destroyed
+2007-01-19T14:18:37.346 INFO [secondContainer] about to exit the JVM...thanks for using our container, come back soon...
+</text>
+      </CheckStringStep>
+      <MouseEventStep clicks="1" client="$(Client)"
+                      component="tabbedRight.firstContainer"
+                      event="MOUSE_MPRC" id="_AC" modifiers="16" x="1" y="1"/>
+      <CheckStringStep client="$(Client)" component="txt_Output" id="_AD">
+        <text>INFO - Running the container with these arguments: 'acsStartJavaContainer firstContainer alma.acs.container.AcsContainerRunner -OAIAddr 134.171.12.93 -OAport 4000 -m corbaloc::134.171.12.93:3000/Manager'
+ --endorsed -D alma.MicroArchive.DbDir=/diska/alma_tmp/acsdata/config/MicroArchive -- alma.acs.container.AcsContainerRunner -OAIAddr 134.171.12.93 -OAport 4000 -m corbaloc::134.171.12.93:3000/Manager -containerName firstContainer
+INFO - Starting Java/abeans application: alma.acs.container.AcsContainerRunner -OAIAddr 134.171.12.93 -OAport 4000 -m corbaloc::134.171.12.93:3000/Manager -containerName firstContainer
+INFO - Using endorsed jar files in: -Djava.endorsed.dirs=/introot/vltuser8/lib/endorsed:/introot/vltuser8/lib/endorsed:
+FINER: Logging configuration has been initialized, but not from CDB settings.
+2007-01-19T14:17:41.811 INFO [AcsContainerRunner] AcsContainerRunner#run 
+[jacorb.poa] INFO : oid: 
+66 69 72 73 74 43 6F 6E 74 61 69 6E 65 72                   firstContainer
+object is activated
+[jacorb.poa] INFO : oid: 
+00 15 00 48 38 05 02 22 01 03 32                            ...H8.."..2
+object is activated
+[jacorb.poa] INFO : Using server ID (2869012891) for transient POA
+2007-01-19T14:17:45.927 INFO [firstContainer] Info message from the manager: Startup statistics: 0 components queued to be activated.
+2007-01-19T14:17:45.963 INFO [firstContainer] Info message from the manager: Startup statistics: 0 of 0 components activated.
+ping received, container alive. Memory usage 1958 of 3136 kB (= 3.0% of JVM growth limit 65088 kB) 
+ping received, container alive. Memory usage 1960 of 3136 kB (= 3.0% of JVM growth limit 65088 kB) 
+ping received, container alive. Memory usage 1962 of 3136 kB (= 3.0% of JVM growth limit 65088 kB) 
+2007-01-19T14:19:32.624 INFO [firstContainer] received call to 'shutdown', action=2 (encryptedAction=512), gracefully=true.
+[jacorb.poa] INFO : POA ComponentPOA destroyed
+[jacorb.poa] INFO : POA ContainerPOA destroyed
+[jacorb.poa] INFO : POA RootPOA destroyed
+2007-01-19T14:19:32.679 INFO [firstContainer] about to exit the JVM...thanks for using our container, come back soon...
+</text>
+      </CheckStringStep>
+    </BasicSequence>
+    <BasicSequence id="_AL" name="Recorded 1/22/07 8:58 AM">
+      <MouseEventStep clicks="1" client="$(Client)"
+                      component="txt_ContainerName" event="MOUSE_MPRC"
+                      id="_AM" modifiers="16" x="53" y="15"/>
+      <TextInputStep clear="true" client="$(Client)"
+                     component="txt_ContainerName" id="_AN" single="false">
+        <text>first</text>
+      </TextInputStep>
+      <MouseEventStep clicks="1" client="$(Client)"
+                      component="btn_Start_Container" event="MOUSE_MPRC"
+                      id="_AO" modifiers="16" x="1" y="1"/>
+      <ComponentEventStep client="$(Client)"
+                          component="dialogStarting_first_-_Progress"
+                          event="COMPONENT_RESIZED" id="_AP" param1="330"
+                          param2="119"/>
+    </BasicSequence>
+    <BasicSequence id="_AY" name="Recorded 1/22/07 9:06 AM">
+      <CheckStringStep client="$(Client)"
+                       component="splitLeft.comRight.tree./Manager_on_134.171.12.93,_port_3000"
+                       id="_AZ">
+        <text>Manager on 134.171.12.93, port 3000</text>
+      </CheckStringStep>
+    </BasicSequence>
+  </ExtraSequence>
   <WindowList id="_4">
     <WindowStep class="javax.swing.JFrame"
                 feature="(project) - Acs Command Center" height="648"
@@ -697,6 +809,62 @@ If not call the cleanup node</comment>
                              feature="ToolTip: Stop this Container"
                              height="24" id="buttonTipStop_this_Container3"
                              width="22" x="283" y="6"/>
+              <ComponentStep class="alma.acs.commandcenter.gui.TabPanel$ContainerLine"
+                             classcount="1" classindex="0" height="24"
+                             id="pnl_ContainerLine_0"
+                             name="pnl_ContainerLine#0" width="322" x="6"
+                             y="6">
+                <ComponentStep class="javax.swing.JTextField" classcount="1"
+                               classindex="0" feature="Label: 1" height="24"
+                               id="txt_ContainerName_0"
+                               name="txt_ContainerName#0" width="116" x="13"
+                               y="0"/>
+                <ComponentStep class="alma.acs.commandcenter.gui.TabPanel$ContainerLine$Button"
+                               classcount="3" classindex="0"
+                               feature="ToolTip: Start this Container"
+                               height="24" id="btn_Start_Container_0"
+                               name="btn_Start_Container#0" width="22" x="256"
+                               y="0"/>
+                <ComponentStep class="alma.acs.commandcenter.gui.TabPanel$ContainerLine$Button"
+                               classcount="3" classindex="1"
+                               feature="ToolTip: Stop this Container"
+                               height="24" id="btn_Stop_Container_0"
+                               name="btn_Stop_Container#0" width="22" x="278"
+                               y="0"/>
+              </ComponentStep>
+              <ComponentStep class="alma.acs.commandcenter.gui.TabPanel$ContainerLine"
+                             classcount="2" classindex="1" height="24"
+                             id="pnl_ContainerLine_1"
+                             name="pnl_ContainerLine#1" width="322" x="6"
+                             y="30">
+                <ComponentStep class="javax.swing.JTextField" classcount="1"
+                               classindex="0" height="24"
+                               id="txt_ContainerName_1"
+                               name="txt_ContainerName#1" width="116" x="13"
+                               y="0"/>
+                <ComponentStep class="alma.acs.commandcenter.gui.TabPanel$ContainerLine$Button"
+                               classcount="3" classindex="0"
+                               feature="ToolTip: Start this Container"
+                               height="24" id="btn_Start_Container_1"
+                               name="btn_Start_Container#1" width="22" x="256"
+                               y="0"/>
+                <ComponentStep class="alma.acs.commandcenter.gui.TabPanel$ContainerLine$Button"
+                               classcount="3" classindex="1"
+                               feature="ToolTip: Stop this Container"
+                               height="24" id="btn_Stop_Container_1"
+                               name="btn_Stop_Container#1" width="22" x="278"
+                               y="0"/>
+              </ComponentStep>
+              <ComponentStep class="javax.swing.JTextField" classcount="1"
+                             classindex="0" feature="Label: 1" height="24"
+                             id="txt_ContainerName" name="txt_ContainerName"
+                             width="116" x="19" y="6"/>
+              <ComponentStep class="alma.acs.commandcenter.gui.TabPanel$ContainerLine$Button"
+                             classcount="3" classindex="0"
+                             feature="ToolTip: Start this Container"
+                             height="24" id="btn_Start_Container"
+                             name="btn_Start_Container" width="22" x="262"
+                             y="6"/>
             </ComponentStep>
             <ComponentStep class="javax.swing.JButton" classcount="18"
                            classindex="1" feature="Stop" height="26"
@@ -915,6 +1083,9 @@ If not call the cleanup node</comment>
                 <SubItemStep id="splitLeft.comRight.tree./Manager_on_134.171.12.236, port 3000/Cliental_Applications2">
                   <primary>/Manager on 134.171.12.236, port 3000/Cliental Applications</primary>
                 </SubItemStep>
+                <SubItemStep id="splitLeft.comRight.tree./Manager_on_134.171.12.93,_port_3000">
+                  <primary>/Manager on 134.171.12.93, port 3000</primary>
+                </SubItemStep>
               </ComponentStep>
               <ComponentStep class="javax.swing.JScrollPane$ScrollBar"
                              classcount="2" classindex="0" feature="Vertical"
@@ -1040,6 +1211,9 @@ If not call the cleanup node</comment>
                              classcount="4" classindex="0" feature="Down"
                              height="15" id="tabSecondContainer.buttonDown"
                              width="15" x="1052" y="95"/>
+              <ComponentStep class="javax.swing.JTextArea" classcount="1"
+                             classindex="0" id="txt_Output"
+                             name="txt_Output"/>
             </ComponentStep>
             <ComponentStep class="javax.swing.JToolBar" classcount="1"
                            classindex="0" height="31"
@@ -1094,6 +1268,9 @@ If not call the cleanup node</comment>
                              id="buttonClear_All3" width="65" x="1002" y="1"/>
             </ComponentStep>
           </ComponentStep>
+          <SubItemStep id="tabbedRight.firstContainer">
+            <primary>firstContainer</primary>
+          </SubItemStep>
         </ComponentStep>
         <ComponentStep class="javax.swing.plaf.basic.BasicSplitPaneDivider"
                        classcount="2" classindex="1" feature="Vertical"
@@ -1194,5 +1371,25 @@ If not call the cleanup node</comment>
                 feature="Starting Acs - Progress" height="146"
                 id="dialogStarting_Acs_-_Progress" width="338" x="373"
                 y="224"/>
+    <WindowStep class="alma.acs.commandcenter.gui.TabPanel$FlowDialog"
+                feature="Starting firstContainer - Progress" height="119"
+                id="dialogStarting_firstContainer_-_Progress" width="330"
+                x="497" y="277"/>
+    <WindowStep class="alma.acs.commandcenter.gui.TabPanel$FlowDialog"
+                feature="Starting secondContainer - Progress" height="119"
+                id="dialogStarting_secondContainer_-_Progress" width="330"
+                x="497" y="277"/>
+    <WindowStep class="alma.acs.commandcenter.gui.TabPanel$FlowDialog"
+                feature="Stopping secondContainer - Progress" height="119"
+                id="dialogStopping_secondContainer_-_Progress" width="330"
+                x="497" y="277"/>
+    <WindowStep class="alma.acs.commandcenter.gui.TabPanel$FlowDialog"
+                feature="Stopping firstContainer - Progress" height="119"
+                id="dialogStopping_firstContainer_-_Progress" width="330"
+                x="497" y="277"/>
+    <WindowStep class="alma.acs.commandcenter.gui.TabPanel$FlowDialog"
+                feature="Starting first - Progress" height="119"
+                id="dialogStarting_first_-_Progress" width="330" x="497"
+                y="277"/>
   </WindowList>
 </RootStep>
