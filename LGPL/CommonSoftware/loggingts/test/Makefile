@@ -1,13 +1,28 @@
 #*******************************************************************************
-# PPPPPPPP
+# ALMA - Atacama Large Millimiter Array
+# (c) Associated Universities Inc., 2007 
+# 
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License as published by the Free Software Foundation; either
+# version 2.1 of the License, or (at your option) any later version.
+# 
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Lesser General Public License for more details.
+# 
+# You should have received a copy of the GNU Lesser General Public
+# License along with this library; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.2 2007/01/31 14:03:39 nbarriga Exp $"
+# "@(#) $Id: Makefile,v 1.1 2007/01/31 14:03:39 nbarriga Exp $"
 #
 # Makefile of ........
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
-# nbarriga  29/01/07  created
+# nbarriga  2007-01-31  created
 #
 
 #*******************************************************************************
@@ -24,7 +39,7 @@
 #
 # additional include and library search paths
 #USER_INC = 
-#USER_LIB = 
+USER_LIB = -lmaciClient -lacslogStubs -lACSLogTypeExample -lmaci -lbaci -lcdb -llogging -lacscomponent -lrecovery -lacserr -lacsutil -lexpat -lACE -lTAO -lTAO_DsLogAdmin -lTAO_CosNaming -lTAO_IORTable -lTAO_PortableServer -lTAO_Svc_Utils -lTAO_CosTrading -lTAO_DynamicAny -lTAO_CosProperty -lTAO_IFR_Client 
 
 #
 # MODULE CODE DESCRIPTION:
@@ -32,24 +47,15 @@
 # As a general rule:  public file are "cleaned" and "installed"  
 #                     local (_L) are not "installed".
 
-# log types defined
-XML_LOG_DEFS = ACSLogTypeExample
-
-LOG_GEN_XML = $(foreach xml, $(XML_LOG_DEFS), ../idl/$(xml).xml)
-LOG_GEN_PY = $(foreach xml, $(XML_LOG_DEFS), ../src/loggingts/$(xml).py)
-LOG_GEN_H = $(foreach xml, $(XML_LOG_DEFS), ../include/$(xml).h)
-LOG_GEN_CPP = $(foreach xml, $(XML_LOG_DEFS), ../src/$(xml).cpp)
-
-
 #
 # C programs (public and local)
 # -----------------------------
-EXECUTABLES     =
+EXECUTABLES     = testLTSClient
 EXECUTABLES_L   = 
 
 #
 # <brief description of xxxxx program>
-xxxxx_OBJECTS   =	
+testLTSClient_OBJECTS   = testLTSClient 
 xxxxx_LDFLAGS   =
 xxxxx_LIBS      =
 
@@ -60,22 +66,22 @@ xxxxx_LIBS      =
 #
 # Includes (.h) files (public only)
 # ---------------------------------
-INCLUDES        = $(LOG_GEN_H)
+INCLUDES        =
 
 #
 # Libraries (public and local)
 # ----------------------------
-LIBRARIES       = $(XML_LOG_DEFS)
+LIBRARIES       =
 LIBRARIES_L     =
 
 #
-# <brief description of ACSLogTypeExample library> THIS NEEDS a way to do it automatically
-ACSLogTypeExample_OBJECTS   = ACSLogTypeExample ACSLogTS
+# <brief description of lllll library>
+lllll_OBJECTS   =
 
 #
 # Scripts (public and local)
 # ----------------------------
-SCRIPTS         = loggingtsGenPython loggingtsGenH loggingtsGenCpp
+SCRIPTS         =
 SCRIPTS_L       =
 
 #
@@ -87,13 +93,13 @@ TCL_SCRIPTS_L   =
 #
 # Python stuff (public and local)
 # ----------------------------
-PY_SCRIPTS         = 
+PY_SCRIPTS         =
 PY_SCRIPTS_L       =
 
 PY_MODULES         =
 PY_MODULES_L       =
 
-PY_PACKAGES        = loggingts
+PY_PACKAGES        =
 PY_PACKAGES_L      =
 pppppp_MODULES	   =
 
@@ -171,7 +177,7 @@ ASCII_TO_MIF =
 #
 # other files to be installed
 #----------------------------
-INSTALL_FILES = ../config/LTS2Py.xslt ../config/LTS2Cpp.xslt ../config/LTS2H.xslt ../idl/ACSLogTS.xsd
+INSTALL_FILES =
 
 #
 # list of all possible C-sources (used to create automatic dependencies)
@@ -183,7 +189,6 @@ CSOURCENAMES = \
 
 #
 #>>>>> END OF standard rules
-
 
 #
 # INCLUDE STANDARDS
@@ -198,10 +203,10 @@ endif
 #
 # TARGETS
 # -------
-all:	do_logts_gen do_all
+all:	do_all
 	@echo " . . . 'all' done" 
 
-clean : clean_all clean_logts_gen
+clean : clean_all 
 	@echo " . . . clean done"
 
 clean_dist : clean_all clean_dist_all 
@@ -213,29 +218,5 @@ man   : do_man
 install : install_all
 	@echo " . . . installation done"
 
-
-
-$(LOG_GEN_PY) : $(LOG_GEN_XML)
-	- $(AT) for member in $(XML_LOG_DEFS); do \
-        echo "== Generating:" $${member}".py out of:" $${member}".xml"; \
-        sh ./loggingtsGenPython ../idl/$${member}.xml ../src/loggingts/$${member}.py ; \
-        done
-
-$(LOG_GEN_H) : $(LOG_GEN_XML)
-	- $(AT) for member in $(XML_LOG_DEFS); do \
-        echo "== Generating:" $${member}".h out of:" $${member}".xml"; \
-        sh ./loggingtsGenH ../idl/$${member}.xml ../include/$${member}.h ; \
-        done
-
-$(LOG_GEN_CPP) : $(LOG_GEN_XML)
-	- $(AT) for member in $(XML_LOG_DEFS); do \
-        echo "== Generating:" $${member}".cpp out of:" $${member}".xml"; \
-        sh ./loggingtsGenCpp ../idl/$${member}.xml ../src/$${member}.cpp ; \
-        done
-
-do_logts_gen: $(LOG_GEN_PY) $(LOG_GEN_CPP) $(LOG_GEN_H)
-	
-clean_logts_gen:
-	$(AT) $(RM) $(LOG_GEN_PY) $(LOG_GEN_CPP) $(LOG_GEN_H)
 
 #___oOo___
