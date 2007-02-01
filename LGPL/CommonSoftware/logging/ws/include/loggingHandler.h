@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingHandler.h,v 1.5 2005/04/13 20:50:54 dfugate Exp $"
+* "@(#) $Id: loggingHandler.h,v 1.6 2007/02/01 17:37:03 sharring Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -56,7 +56,7 @@ namespace Logging
 	//----------------------------------------------------
 	///Handler smart pointer
 	typedef Loki::SmartPtr<Handler, 
-			       RefCounted, 
+			       Loki::RefCountedMTAdj<Loki::ObjectLevelLockable>::RefCountedMT,
 			       Loki::AllowConversion,
 			       Loki::NoCheck,
 			       Loki::DefaultSPStorage> HandlerSmartPtr;

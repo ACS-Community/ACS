@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingBaseLog.h,v 1.8 2006/01/05 18:45:10 dfugate Exp $"
+* "@(#) $Id: loggingBaseLog.h,v 1.9 2007/02/01 17:37:03 sharring Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -175,7 +175,11 @@ namespace Logging
      * class. RefCounted is the implementation of a classic external reference counting implementation
      * of the OwnerShipPolicy used by loki::SmartPtr. It's based on the class of the same name defined
      * in $ACSROOT/include/lokiSmartPtr.h
-     */
+
+    // SLH: commenting this out - hopefully for future deletion - because we are using the new loki library with 
+    // multi-threading support and are using a loki reference counting class for our smart pointers now. If all
+    // goes well with testing, we can then delete this code.
+
     template <class P>
     class RefCounted
     {
@@ -222,6 +226,7 @@ namespace Logging
         // Data
         unsigned int* pCount_;
     };  
+     */
 };
 
 #endif /*!_H*/
