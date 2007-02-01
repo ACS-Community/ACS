@@ -19,7 +19,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: acsexmplClient.cpp,v 1.97 2006/10/16 08:42:39 bjeram Exp $"
+* "@(#) $Id: acsexmplClient.cpp,v 1.98 2007/02/01 05:14:26 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -49,6 +49,16 @@
     <br><hr>
     @endhtmlonly
  */
+
+/** @addtogroup ACSEXMPLTOC
+*/
+/*@{
+*/
+
+/** @addtogroup ACSEXMPLTOCCLIENTS
+*/
+/*@{
+*/
 
 /** @defgroup ACSEXMPLCLIENTDOC Client
  *  @{
@@ -84,16 +94,20 @@ obtained asynchronously and it's value is logged.
  * @}
  */
 
+/* @}*/
+/* @}*/
 
 #include <maciSimpleClient.h>
 #include "acsexmplMountC.h"
 
 #include "acsexmplCallbacks.h"
 
-ACE_RCSID(acsexmpl, acsexmpClient, "$Id: acsexmplClient.cpp,v 1.97 2006/10/16 08:42:39 bjeram Exp $")
+ACE_RCSID(acsexmpl, acsexmpClient, "$Id: acsexmplClient.cpp,v 1.98 2007/02/01 05:14:26 cparedes Exp $")
 using namespace maci;
        
 /*******************************************************************************/
+/** @cond
+*/    
     
 int main(int argc, char *argv[])
 {
@@ -239,6 +253,8 @@ int main(int argc, char *argv[])
     ACE_OS::sleep(3);   
     return 0;
 }
+/** @endcond
+*/    
 
 /*___oOo___*/
 

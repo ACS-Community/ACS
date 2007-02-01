@@ -21,7 +21,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: acsexmplSlowMountImpl.h,v 1.5 2006/11/30 02:55:48 cparedes Exp $"
+* "@(#) $Id: acsexmplSlowMountImpl.h,v 1.6 2007/02/01 05:14:26 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -50,8 +50,14 @@ using namespace baci;
 /** @file acsexmplMountImpl.h
  */
 
-/** @defgroup ACSEXMPLSLOWMOUNTDOC Slow Mount
+/** @addtogroup ACSEXMPLTOC
  *  @{
+ */
+/**   @addtogroup ACSEXMPLTOCCOMPONENTS
+ *   @{
+ */
+/**    @defgroup ACSEXMPLSLOWMOUNTDOC Slow Mount
+ *    @{
  * @htmlonly
 <hr size="2" width="100%">
 <div align="left">
@@ -86,7 +92,8 @@ read-only double properties: actAz, actEl, cmdAz, and cmdEl.
  * @}
  */
 
-/** @class SlowMount
+/**
+ * Similar to Mount, but simulate the movements of the antenna in a 30 secs time interval. 
  * The class Mount is a good example of a component and simulates the behaviour of an antenna interface.
  * It provides two asynchronous methods: objstar and objfix.  The methods only write the data into 
  * virtual properties instead of hardware.
@@ -97,7 +104,7 @@ read-only double properties: actAz, actEl, cmdAz, and cmdEl.
  * The Mount::invokeAction method is called by the asynchronous dispatcher whenever there is an
  * xxx pending action and it calls the xxxAction corresponding method.  Also, invokeAction calls 
  * these methods by simply using a function pointer (ActionFunction) instead of specifying each method.
- * @version "@(#) $Id: acsexmplSlowMountImpl.h,v 1.5 2006/11/30 02:55:48 cparedes Exp $"
+ * @version "@(#) $Id: acsexmplSlowMountImpl.h,v 1.6 2007/02/01 05:14:26 cparedes Exp $"
  */
 class acsexmpl_EXPORT SlowMount: public CharacteristicComponentImpl,     //Standard component superclass
 			     public virtual POA_MOUNT_ACS::Mount,   //CORBA servant stub
@@ -386,6 +393,8 @@ class acsexmpl_EXPORT SlowMount: public CharacteristicComponentImpl,     //Stand
      */
     void operator=(const SlowMount&);
 };
+/*\@}*/
+/*\@}*/ 
 
 #endif /*!acsexmplMountImpl_H*/
 

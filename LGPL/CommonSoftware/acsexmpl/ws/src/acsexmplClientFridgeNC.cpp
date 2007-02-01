@@ -19,7 +19,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: acsexmplClientFridgeNC.cpp,v 1.10 2005/02/08 18:09:33 dfugate Exp $"
+* "@(#) $Id: acsexmplClientFridgeNC.cpp,v 1.11 2007/02/01 05:14:26 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -40,6 +40,16 @@
     <br><hr>
     @endhtmlonly
  */
+
+/** @addtogroup ACSEXMPLTOC
+*/
+/*@{
+*/
+
+/** @addtogroup ACSEXMPLTOCCLIENTS
+*/
+/*@{
+*/
 
 /** @defgroup ACSEXMPLCLIENTFRIDGENCDOC Client Fridge Channel Event Consumer
  *  @{
@@ -71,12 +81,15 @@ from the channel.
    @endhtmlonly
  * @}
  */
+
+/* @}*/
+/* @}*/
 /////////////////////////////////////////////////////////////////////////
 #include <maciSimpleClient.h>
 #include <acsncSimpleConsumer.h>
 #include "acsexmplFridgeC.h"
 /////////////////////////////////////////////////////////////////////////  
-ACE_RCSID(acsexmpl, acsexmplFridgeNCClient, "$Id: acsexmplClientFridgeNC.cpp,v 1.10 2005/02/08 18:09:33 dfugate Exp $")
+ACE_RCSID(acsexmpl, acsexmplFridgeNCClient, "$Id: acsexmplClientFridgeNC.cpp,v 1.11 2007/02/01 05:14:26 cparedes Exp $")
 //-----------------------------------------------------------------------------
 
 /** Function designed to do something useful with temperatureDataBlockEvents
@@ -100,6 +113,8 @@ void myHandlerFunction(FRIDGE::temperatureDataBlockEvent joe, void *handlerParam
     (*eventCount)++;
 }
 /*******************************************************************************/
+/** @cond
+*/    
 int main(int argc, char *argv[])
 {
     ACS_SHORT_LOG((LM_INFO, "Welcome to %s!", argv[0]));
@@ -153,6 +168,8 @@ int main(int argc, char *argv[])
     ACE_OS::sleep(5);
     return 0;
 }
+/** @endcond
+*/    
 
 /*___oOo___*/
 

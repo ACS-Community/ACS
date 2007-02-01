@@ -16,7 +16,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsexmplAsyncCalls.cpp,v 1.5 2006/11/30 02:55:48 cparedes Exp $"
+* "@(#) $Id: acsexmplAsyncCalls.cpp,v 1.6 2007/02/01 05:14:26 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -27,24 +27,40 @@
  * @htmlonly
  * <br><br>
  * @endhtmlonly
- * 
- * @htmlonly
- * <h2>Description</h2>
- * This is is a client that uses asynchronous calls.
- * It access a MOUNT component to move the antenna to a definite position.
- * The movement is asynchronous
- * <br>
- * <br>
- * 
- * <h2>What can I gain from this example?</h2>
- * <ul>
- * 	<li>Simple client usage</li>
- * 	<li>asynchronous calls to read property</li>
- *  <li>asynchronous execution of methods
- *  <li>Usage of baci threads
- * </ul>
- * @endhtmlonly
  */
+
+/** @addtogroup ACSEXMPLTOC
+*/
+/*@{
+*/
+
+/** @addtogroup ACSEXMPLTOCCLIENTS
+*/
+/*@{
+*/
+
+/** @defgroup ACSEXMPLCLIENTASYNCCALLSDOC Async Calls
+ *  @{
+ * @htmlonly
+ <h2>Description</h2>
+ This is is a client that uses asynchronous calls.
+ It access a MOUNT component to move the antenna to a definite position.
+ The movement is asynchronous
+ <br>
+  
+ <h2>What can I gain from this example?</h2>
+ <ul>
+  	<li>Simple client usage</li>
+  	<li>asynchronous calls to read property</li>
+   <li>asynchronous execution of methods </li>
+   <li>Usage of baci threads</li>
+  </ul>
+  @endhtmlonly
+ * @}
+ */
+
+/* @}*/
+/* @}*/
 
 #include <maciSimpleClient.h>
 #include <baciThread.h>
@@ -54,7 +70,7 @@
 #include <iostream>
 #include <string>
 
-static char *rcsId="@(#) $Id: acsexmplAsyncCalls.cpp,v 1.5 2006/11/30 02:55:48 cparedes Exp $"; 
+static char *rcsId="@(#) $Id: acsexmplAsyncCalls.cpp,v 1.6 2007/02/01 05:14:26 cparedes Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 using namespace maci;
@@ -161,6 +177,8 @@ worker(void *threadParam_p) {
     myself_p->setStopped();
 }
 
+/** @cond
+*/    
 int main(int argc, char* argv[]) 
 {
     MOUNT_ACS::Mount_var mount;
@@ -274,3 +292,6 @@ int main(int argc, char* argv[])
 	
 	return 0;
 }
+/** @endcond
+*/   
+ 

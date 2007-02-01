@@ -19,7 +19,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: acsexmplClientListComponents.cpp,v 1.7 2006/10/16 08:42:39 bjeram Exp $"
+* "@(#) $Id: acsexmplClientListComponents.cpp,v 1.8 2007/02/01 05:14:26 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -43,6 +43,16 @@
     <br><hr>
     @endhtmlonly
  */
+
+/** @addtogroup ACSEXMPLTOC
+*/
+/*@{
+*/
+
+/** @addtogroup ACSEXMPLTOCCLIENTS
+*/
+/*@{
+*/
 
 /** @defgroup ACSEXMPLCLIENTLISTCOMPONENTSDOC Client List Components
  *  @{
@@ -76,13 +86,18 @@ This example shows a client that:
  * @}
  */
 
+/* @}*/
+/* @}*/
+
 #include <maciSimpleClient.h>
 
-ACE_RCSID(acsexmpl, acsexmplListCOBS, "$Id: acsexmplClientListComponents.cpp,v 1.7 2006/10/16 08:42:39 bjeram Exp $")
+ACE_RCSID(acsexmpl, acsexmplListCOBS, "$Id: acsexmplClientListComponents.cpp,v 1.8 2007/02/01 05:14:26 cparedes Exp $")
 using namespace maci;
 
 /*---------------------------------------------------------------------------------------*/
 
+/** @cond
+*/    
 int main(int argc, char *argv[]) 
 {
     ACS_SHORT_LOG((LM_INFO, "Welcome to %s!", argv[0]));
@@ -147,5 +162,7 @@ int main(int argc, char *argv[])
     return 0;
 }
 
+/** @endcond
+*/    
 
 

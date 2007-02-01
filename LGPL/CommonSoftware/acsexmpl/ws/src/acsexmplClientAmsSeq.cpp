@@ -19,7 +19,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: acsexmplClientAmsSeq.cpp,v 1.8 2006/10/13 14:04:27 bjeram Exp $"
+* "@(#) $Id: acsexmplClientAmsSeq.cpp,v 1.9 2007/02/01 05:14:26 cparedes Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -48,6 +48,17 @@
     <br><hr>
     @endhtmlonly
  */  
+
+
+/** @addtogroup ACSEXMPLTOC
+*/
+/*@{
+*/
+
+/** @addtogroup ACSEXMPLTOCCLIENTS
+*/
+/*@{
+*/
 
 /** @defgroup ACSEXMPLCLIENTAMSSEQDOC Client AmsSeq
  *  @{
@@ -83,15 +94,21 @@ This example shows a client that:
  * @}
  */
 
+/* @}*/
+/* @}*/
+
 #include <maciSimpleClient.h>
 #include <ACSErrTypeOK.h>
 #include <acsexmplAmsSeqC.h>
 
 
-ACE_RCSID(acsexmpl, acsexmplAmsSeqClient, "$Id: acsexmplClientAmsSeq.cpp,v 1.8 2006/10/13 14:04:27 bjeram Exp $")
+ACE_RCSID(acsexmpl, acsexmplAmsSeqClient, "$Id: acsexmplClientAmsSeq.cpp,v 1.9 2007/02/01 05:14:26 cparedes Exp $")
 using namespace maci;
 
 /*******************************************************************************/
+/** @cond
+*/    
+
 int main(int argc, char *argv[])
 {
     //Checks command-line arguments.
@@ -234,6 +251,8 @@ int main(int argc, char *argv[])
     return 0;
 }
 
+/** @endcond
+*/    
 /*___oOo___*/
 
 

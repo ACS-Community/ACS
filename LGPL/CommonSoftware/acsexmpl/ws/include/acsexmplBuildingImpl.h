@@ -21,7 +21,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: acsexmplBuildingImpl.h,v 1.104 2006/04/20 08:47:59 bjeram Exp $"
+* "@(#) $Id: acsexmplBuildingImpl.h,v 1.105 2007/02/01 05:14:26 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -54,6 +54,16 @@ using namespace baci;
 
 /** @file acsexmplBuildingImpl.h
  */
+
+/** @addtogroup ACSEXMPLTOC
+*/
+/*@{
+*/
+
+/** @addtogroup ACSEXMPLTOCCOMPONENTS
+*/
+/*@{
+*/
 
 /** @defgroup ACSEXMPLBUILDINGDOC Building
  *  @{
@@ -95,7 +105,9 @@ version of the C++ Building implementation currently used.
  * @}
  */
 
-/** This class implements an example device "Building". The purpose
+/** 
+ *  Implements an hierarchical device using @ref ACSEXMPLDOORDOC Door.
+ *  This class implements an example device "Building". The purpose
  *  is to show the implementation of hierarchical devices.  Building 
  *  has two methods: openFrontDoor() and closeFrontDoor().  It also provides
  *  one property, version, which is just the version of Building being 
@@ -104,7 +116,7 @@ version of the C++ Building implementation currently used.
  *  Since this device has only synchronous methods, we do not inherit 
  *  from the ActionImplementator class and we do not implement the 
  *  invokeAction method.
- *  @version "@(#) $Id: acsexmplBuildingImpl.h,v 1.104 2006/04/20 08:47:59 bjeram Exp $"
+ *  @version "@(#) $Id: acsexmplBuildingImpl.h,v 1.105 2007/02/01 05:14:26 cparedes Exp $"
  */
 class Building: public CharacteristicComponentImpl,     //Standard component superclass
 	        public virtual POA_acsexmplBuilding::Building    //CORBA servant stub
@@ -222,8 +234,8 @@ class Building: public CharacteristicComponentImpl,     //Standard component sup
      */
     void operator=(const Building&);
 };
+/*\@}*/
+/*\@}*/
 
 #endif
-
-
 

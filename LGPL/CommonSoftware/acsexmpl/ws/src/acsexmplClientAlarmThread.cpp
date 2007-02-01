@@ -20,7 +20,7 @@
 *
 *
 *
-* "@(#) $Id: acsexmplClientAlarmThread.cpp,v 1.108 2006/10/13 14:04:27 bjeram Exp $"
+* "@(#) $Id: acsexmplClientAlarmThread.cpp,v 1.109 2007/02/01 05:14:26 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -57,6 +57,16 @@
     @endhtmlonly
  */
 
+/** @addtogroup ACSEXMPLTOC
+*/
+/*@{
+*/
+
+/** @addtogroup ACSEXMPLTOCCLIENTS
+*/
+/*@{
+*/
+
 /** @defgroup ACSEXMPLCLIENTALARMTHREADDOC Client Alarm Thread
  *  @{
  * @htmlonly
@@ -87,13 +97,15 @@ necessary for this alarm to "go off" are set using an ACS thread.
  * @}
  */
 
+/* @}*/
+/* @}*/
 #include <maciSimpleClient.h>
 #include <acsThread.h>
 #include "acsexmplCallbacks.h"
 
 #include <acsexmplPowerSupplyC.h>
 
-ACE_RCSID(acsexmpl, acsexmplClientAlarmThread, "$Id: acsexmplClientAlarmThread.cpp,v 1.108 2006/10/13 14:04:27 bjeram Exp $")
+ACE_RCSID(acsexmpl, acsexmplClientAlarmThread, "$Id: acsexmplClientAlarmThread.cpp,v 1.109 2007/02/01 05:14:26 cparedes Exp $")
 
 using namespace ACS;
 using namespace maci;
@@ -175,6 +187,8 @@ class WorkerThread : public ACS::Thread
 
 /*-----------------------------------------------------------------*/
 //Now onto the real example...
+/** @cond
+*/    
 int main(int argc, char *argv[]) 
 {
     //Checks command-line arguments.
@@ -285,3 +299,6 @@ int main(int argc, char *argv[])
     ACE_OS::sleep(3);
     return 0;
 }
+/** @endcond
+*/
+    

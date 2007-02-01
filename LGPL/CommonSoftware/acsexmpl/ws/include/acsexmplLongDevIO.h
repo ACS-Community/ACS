@@ -21,7 +21,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: acsexmplLongDevIO.h,v 1.8 2006/10/19 09:47:40 bjeram Exp $"
+* "@(#) $Id: acsexmplLongDevIO.h,v 1.9 2007/02/01 05:14:26 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -40,6 +40,16 @@ using namespace baci;
 
 /** @file acsexmplLongDevIO.h
  */
+
+/** @addtogroup ACSEXMPLTOC
+*/
+/*@{
+*/
+
+/** @defgroup ACSEXMPLTOMISCELLANEOUS Miscellaneous Examples 
+*/
+/*@{
+*/
 
 /** @defgroup ACSEXMPLLONGDEVIODOC Long DevIO Subclass
  *  @{
@@ -72,13 +82,17 @@ using namespace baci;
  * @}
  */
 
+
+/* @}*/
+/* @}*/
+
 /**
  * This class provides an example of the implementation of a devIO subclass.  Developers 
  * should use devIOs when you have a BACI property where you need to change the underlying value,
  * but do not want the property to be read-write where anyone can change it. Please see the
  * Ramped Power Supply example to see how this class is used in conjunction with BACI long
  * properties.
- * @version "@(#) $Id: acsexmplLongDevIO.h,v 1.8 2006/10/19 09:47:40 bjeram Exp $"
+ * @version "@(#) $Id: acsexmplLongDevIO.h,v 1.9 2007/02/01 05:14:26 cparedes Exp $"
  */
 class acsexmpl_EXPORT LongDevIO : public DevIO<CORBA::Long>
 {

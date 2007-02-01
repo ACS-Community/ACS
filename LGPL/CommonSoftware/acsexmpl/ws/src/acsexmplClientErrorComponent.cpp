@@ -20,7 +20,7 @@
 *
 *
 *
-* "@(#) $Id: acsexmplClientErrorComponent.cpp,v 1.7 2006/11/30 02:55:48 cparedes Exp $"
+* "@(#) $Id: acsexmplClientErrorComponent.cpp,v 1.8 2007/02/01 05:14:26 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -47,6 +47,16 @@
     <br><hr>
     @endhtmlonly
  */
+
+/** @addtogroup ACSEXMPLTOC
+*/
+/*@{
+*/
+
+/** @addtogroup ACSEXMPLTOCCLIENTS
+*/
+/*@{
+*/
 
 /** @defgroup ACSEXMPLCLIENTERROROCOMPDOC Client Error Component
  *  @{
@@ -90,7 +100,7 @@ Each method in the class shows an example.
 #include <acsutilTimeStamp.h>
 #include <string.h>
 
-ACE_RCSID(acsexmpl, acsexmplErrorComponentClient, "$Id: acsexmplClientErrorComponent.cpp,v 1.7 2006/11/30 02:55:48 cparedes Exp $")
+ACE_RCSID(acsexmpl, acsexmplErrorComponentClient, "$Id: acsexmplClientErrorComponent.cpp,v 1.8 2007/02/01 05:14:26 cparedes Exp $")
 using namespace maci;
 
 /*******************************************************************************/
@@ -391,8 +401,12 @@ void ClientErrorComponent::TestReceiveCorbaSystemException()
 
 }
 
+/* @}*/
+/* @}*/
 
 /*******************************************************************************/
+/** @cond
+*/    
 
 int main(int argc, char *argv[])
 {
@@ -464,6 +478,8 @@ int main(int argc, char *argv[])
     ACE_OS::sleep(3);
     return 0;
 }
+/** @endcond
+*/    
 
 /*___oOo___*/
 

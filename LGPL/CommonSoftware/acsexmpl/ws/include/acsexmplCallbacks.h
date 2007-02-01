@@ -18,7 +18,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsexmplCallbacks.h,v 1.6 2004/04/28 18:52:03 dfugate Exp $"
+* "@(#) $Id: acsexmplCallbacks.h,v 1.7 2007/02/01 05:14:26 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -34,6 +34,17 @@
 
 /** @file acsexmplCallbacks.h
  */
+
+
+/** @addtogroup ACSEXMPLTOC
+*/
+/*@{
+*/
+
+/** @addtogroup ACSEXMPLTOMISCELLANEOUS
+*/
+/*@{
+*/
 
 /** @defgroup ACSEXMPLCALLBACKSDOC BACI Callback and Alarm Implementation
  *  @{
@@ -74,6 +85,8 @@
  * @}
  */
 
+/* @}*/
+/* @}*/
 
 /**
  * Used to provide common functionality for the implementations of BACI 
@@ -81,7 +94,7 @@
  * of done invocations as well as the name of the BACI property it's monitoring, receiving
  * an asynchronous value from, etc.
  * 
- * @version "@(#) $Id: acsexmplCallbacks.h,v 1.6 2004/04/28 18:52:03 dfugate Exp $"
+ * @version "@(#) $Id: acsexmplCallbacks.h,v 1.7 2007/02/01 05:14:26 cparedes Exp $"
  */
 class CommonCallback
 {
@@ -118,7 +131,7 @@ class CommonCallback
  * property.  There are only two useful methods: alarm_raised and alarm_cleared.  They
  * do just what their names imply.
  * 
- * @version "@(#) $Id: acsexmplCallbacks.h,v 1.6 2004/04/28 18:52:03 dfugate Exp $"
+ * @version "@(#) $Id: acsexmplCallbacks.h,v 1.7 2007/02/01 05:14:26 cparedes Exp $"
  */
 class MyAlarmdouble : public virtual POA_ACS::Alarmdouble,    //CORBA servant stub
 		      protected CommonCallback

@@ -20,7 +20,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsexmplLampImpl.h,v 1.96 2005/04/29 14:08:41 acaproni Exp $"
+* "@(#) $Id: acsexmplLampImpl.h,v 1.97 2007/02/01 05:14:26 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -51,6 +51,16 @@ using namespace baci;
 
 /** @file acsexmplLampImpl.h
  */
+
+/** @addtogroup ACSEXMPLTOC
+*/
+/*@{
+*/
+
+/** @addtogroup ACSEXMPLTOCCOMPONENTS
+*/
+/*@{
+*/
 
 /** @defgroup ACSEXMPLLAMPDOC Lamp
  *  @{
@@ -83,6 +93,7 @@ has one read-write double property: brightness.
  */
 
 /**
+ * Simple component with asynchronous methods.
  * This class Lamp simulates the behavior of a lamp.
  * It provides two asynchronous methods: on and off.
  * It also provides the property brightness.
@@ -97,7 +108,7 @@ has one read-write double property: brightness.
  * 
  * @author <a href=mailto:matej.sekoranja@ijs.si>Matej Sekoranja</a>,
  * Jozef Stefan Institute, Slovenia<br>
- * @version "@(#) $Id: acsexmplLampImpl.h,v 1.96 2005/04/29 14:08:41 acaproni Exp $"
+ * @version "@(#) $Id: acsexmplLampImpl.h,v 1.97 2007/02/01 05:14:26 cparedes Exp $"
  */
 class Lamp: public CharacteristicComponentImpl,
 	    public virtual POA_acsexmplLamp::Lamp,
@@ -276,6 +287,8 @@ class Lamp: public CharacteristicComponentImpl,
     void operator=(const Lamp&);
     
 };
+/*\@}*/
+/*\@}*/
 
 #endif   /* acsexmplLampImpl_h */
 

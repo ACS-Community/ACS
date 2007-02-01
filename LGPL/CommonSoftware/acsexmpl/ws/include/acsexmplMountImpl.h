@@ -21,7 +21,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: acsexmplMountImpl.h,v 1.97 2005/04/29 14:08:41 acaproni Exp $"
+* "@(#) $Id: acsexmplMountImpl.h,v 1.98 2007/02/01 05:14:26 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -60,6 +60,16 @@ using namespace baci;
 /** @file acsexmplMountImpl.h
  */
 
+/** @addtogroup ACSEXMPLTOC
+*/
+/*@{
+*/
+
+/** @addtogroup ACSEXMPLTOCCOMPONENTS
+*/
+/*@{
+*/
+
 /** @defgroup ACSEXMPLMOUNTDOC Mount
  *  @{
  * @htmlonly
@@ -96,7 +106,8 @@ read-only double properties: actAz, actEl, cmdAz, and cmdEl.
  * @}
  */
 
-/** @class Mount
+/** 
+ * Simulates the behavior of an antenna interface.
  * The class Mount is a good example of a component and simulates the behaviour of an antenna interface.
  * It provides two asynchronous methods: objstar and objfix.  The methods only write the data into 
  * virtual properties instead of hardware.
@@ -107,7 +118,7 @@ read-only double properties: actAz, actEl, cmdAz, and cmdEl.
  * The Mount::invokeAction method is called by the asynchronous dispatcher whenever there is an
  * xxx pending action and it calls the xxxAction corresponding method.  Also, invokeAction calls 
  * these methods by simply using a function pointer (ActionFunction) instead of specifying each method.
- * @version "@(#) $Id: acsexmplMountImpl.h,v 1.97 2005/04/29 14:08:41 acaproni Exp $"
+ * @version "@(#) $Id: acsexmplMountImpl.h,v 1.98 2007/02/01 05:14:26 cparedes Exp $"
  */
 class acsexmpl_EXPORT Mount: public CharacteristicComponentImpl,     //Standard component superclass
 			     public virtual POA_MOUNT_ACS::Mount,   //CORBA servant stub
@@ -397,6 +408,8 @@ class acsexmpl_EXPORT Mount: public CharacteristicComponentImpl,     //Standard 
      */
     void operator=(const Mount&);
 };
+/*\@}*/
+/*\@}*/
 
 #endif /*!acsexmplMountImpl_H*/
 

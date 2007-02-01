@@ -21,7 +21,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: acsexmplDoorImpl.h,v 1.104 2006/05/11 15:03:19 bjeram Exp $"
+* "@(#) $Id: acsexmplDoorImpl.h,v 1.105 2007/02/01 05:14:26 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -93,6 +93,17 @@ class DoorThread : public ACS::Thread
 		Door * door_p;
 };
 
+/** @addtogroup ACSEXMPLTOC
+ * @{
+ * @htmlonly
+  @endhtmlonly
+*/
+
+/** @addtogroup ACSEXMPLTOCCOMPONENTS
+*/
+/*@{
+*/
+
 /** @defgroup ACSEXMPLDOORDOC Door
  *  @{
  * @htmlonly
@@ -131,7 +142,8 @@ respectively. &nbsp;This example has four properties and uses an ACS thread.
  * @}
  */
 
-/** @class Door
+/** 
+ *  Door is a simple component that utilizes just about every ACS API.
  *  This class implements an example device "Door".  It provides both synchronous (move(...))
  *  and asynchronous methods (open() and close()).  A control loop thread
  *  simulates the door's movements. Error and exception handling have been
@@ -142,7 +154,7 @@ respectively. &nbsp;This example has four properties and uses an ACS thread.
  *   - xxxAction() performs (asyncronously) the action and invokes the callback when finished.
  *  The Door::invokeAction method is called by the asynchronous dispatcher whenever there is a
  *  xxx pending action and it calls the corresponding xxxAction method.
- * @version "@(#) $Id: acsexmplDoorImpl.h,v 1.104 2006/05/11 15:03:19 bjeram Exp $"
+ * @version "@(#) $Id: acsexmplDoorImpl.h,v 1.105 2007/02/01 05:14:26 cparedes Exp $"
  */
 class Door: public CharacteristicComponentImpl,     //Standard component superclass
             public virtual POA_acsexmplBuilding::Door,    //CORBA servant stub
@@ -424,6 +436,8 @@ class Door: public CharacteristicComponentImpl,     //Standard component supercl
     void operator=(const Door&);
 }; 
 
+/*\@}*/
+/*\@}*/
 #endif   /* acsexmplDoorImpl_h */
 
 

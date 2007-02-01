@@ -20,7 +20,7 @@
 *
 *
 *
-* "@(#) $Id: acsexmplClientHelloWorld.cpp,v 1.6 2006/10/13 14:04:27 bjeram Exp $"
+* "@(#) $Id: acsexmplClientHelloWorld.cpp,v 1.7 2007/02/01 05:14:26 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -47,6 +47,16 @@
     <br><hr>
     @endhtmlonly
  */
+
+/** @addtogroup ACSEXMPLTOC
+*/
+/*@{
+*/
+
+/** @defgroup ACSEXMPLTOCCLIENTS Client Examples
+*/
+/*@{
+*/
 
 /** @defgroup ACSEXMPLCLIENTHWDOC Client Hello World
  *  @{
@@ -81,17 +91,20 @@ This example shows a client that:
  * @}
  */
 
+/* @}*/
+/* @}*/
 
 #include <maciSimpleClient.h>
 #include <acsexmplHelloWorldC.h>
 #include <ACSErrTypeCommon.h>
 #include <acsutilTimeStamp.h>
 
-ACE_RCSID(acsexmpl, acsexmplHelloWorldClient, "$Id: acsexmplClientHelloWorld.cpp,v 1.6 2006/10/13 14:04:27 bjeram Exp $")
+ACE_RCSID(acsexmpl, acsexmplHelloWorldClient, "$Id: acsexmplClientHelloWorld.cpp,v 1.7 2007/02/01 05:14:26 cparedes Exp $")
 using namespace maci;
 
 /*******************************************************************************/
-    
+/** @cond
+*/    
 int main(int argc, char *argv[])
 {
     SimpleClient client;
@@ -154,7 +167,8 @@ int main(int argc, char *argv[])
     ACE_OS::sleep(3);
     return 0;
 }
-
+/** @endcond
+*/
 /*___oOo___*/
 
 

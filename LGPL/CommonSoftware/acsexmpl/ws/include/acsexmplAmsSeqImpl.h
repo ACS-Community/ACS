@@ -21,7 +21,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: acsexmplAmsSeqImpl.h,v 1.99 2006/04/20 08:47:59 bjeram Exp $"
+* "@(#) $Id: acsexmplAmsSeqImpl.h,v 1.100 2007/02/01 05:14:26 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -51,6 +51,19 @@ using namespace baci;
 
 /** @file acsexmplAmsSeqImpl.h
  */
+
+
+/** @defgroup ACSEXMPLTOC ACS C++ Examples Documentation
+ * @{
+ * @htmlonly
+  @endhtmlonly
+*/
+
+/** @defgroup ACSEXMPLTOCCOMPONENTS ACS Components Examples
+ * @{
+ * @htmlonly
+  @endhtmlonly
+*/
 
 /** @defgroup ACSEXMPLAMSSEQDOC Antenna Mount System Sequence
  *  @{
@@ -94,6 +107,7 @@ using namespace baci;
  */
 
 /**
+ *  Antenna Mount System Pointing Model.
  *  Class AmsTestSeq can be considered to be a "real-world" distributed object for antenna
  *  systems.  This class exists between two sections of the antenna mount system.  The 
  *  high-level section executes at the array central control area in the Array 
@@ -103,7 +117,7 @@ using namespace baci;
  *  pointing model term.  An important thing to note is this example shows usage of property
  *  sequence types (i.e., ROdoubleSeq and RWdoubleSeq).
  *
- *  @version "@(#) $Id: acsexmplAmsSeqImpl.h,v 1.99 2006/04/20 08:47:59 bjeram Exp $"
+ *  @version "@(#) $Id: acsexmplAmsSeqImpl.h,v 1.100 2007/02/01 05:14:26 cparedes Exp $"
  */
 class AmsTestSeq: public CharacteristicComponentImpl,     //Standard component superclass
 		  public virtual POA_AMSSEQ::AmsTestSeq    //CORBA servant stub
@@ -190,8 +204,9 @@ class AmsTestSeq: public CharacteristicComponentImpl,     //Standard component s
      */
     void operator=(const AmsTestSeq&);
 };
+/*\@}*/
+/*\@}*/
 
 #endif   /* acsexmplAmsSeqImpl_h */
-
 
 

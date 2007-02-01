@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsexmplClientWave.cpp,v 1.101 2006/10/13 14:04:27 bjeram Exp $"
+* "@(#) $Id: acsexmplClientWave.cpp,v 1.102 2007/02/01 05:14:26 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -47,6 +47,16 @@
     <br><hr>
     @endhtmlonly
  */
+
+/** @addtogroup ACSEXMPLTOC
+*/
+/*@{
+*/
+
+/** @addtogroup ACSEXMPLTOCCLIENTS
+*/
+/*@{
+*/
 
 /** @defgroup ACSEXMPLCLIENTWAVEDOC Client Wave
  *  @{
@@ -86,13 +96,17 @@ This example shows a client that:
  * @}
  */
 
+
+/* @}*/
+/* @}*/
+
 #include <maciSimpleClient.h>
 #include <acsexmplMountC.h>
 #include "acsexmplCallbacks.h"
 #include <acsThread.h>
 #include <math.h>
 
-ACE_RCSID(acsexmpl, acsexmpClientWave, "$Id: acsexmplClientWave.cpp,v 1.101 2006/10/13 14:04:27 bjeram Exp $")
+ACE_RCSID(acsexmpl, acsexmpClientWave, "$Id: acsexmplClientWave.cpp,v 1.102 2007/02/01 05:14:26 cparedes Exp $")
 using namespace ACS;
 using namespace maci;
 
@@ -188,6 +202,8 @@ class WorkerThread : public ACS::Thread
 
 /*******************************************************************************/
 
+/** @cond
+*/    
 int main(int argc, char *argv[])
 {
     
@@ -297,6 +313,8 @@ int main(int argc, char *argv[])
     ACE_OS::sleep(3);   
     return 0;
 }
+/** @endcond
+*/    
 
 /*___oOo___*/
 

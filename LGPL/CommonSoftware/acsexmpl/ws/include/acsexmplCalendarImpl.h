@@ -22,7 +22,7 @@
 *
 *
 *
-* "@(#) $Id: acsexmplCalendarImpl.h,v 1.95 2005/04/14 09:35:59 acaproni Exp $"
+* "@(#) $Id: acsexmplCalendarImpl.h,v 1.96 2007/02/01 05:14:26 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -53,6 +53,14 @@ using namespace baci;
 /** @file acsexmplCalendarImpl.h
  */
 
+/** @addtogroup ACSEXMPLTOC
+*/
+/*@{
+*/
+/** @addtogroup ACSEXMPLTOCCOMPONENTS
+*/
+/*@{
+*/
 /** @defgroup ACSEXMPLCALENDARDOC Calendar
  *  @{
  * @htmlonly
@@ -85,14 +93,15 @@ specifically for manipulating components).
  * @}
  */
 
-/** @class Calendar
+/** 
+ *  Simulates the behavior of a calendar using enums and pattern properties.
  *  This is an example component which includes enums and pattern types. It represents a 
  *  simple calendar. Calendar provides no methods, but it has four enum/pattern 
  *  properties.
  *
  *  @author <a href=mailto:matej.sekoranja@ijs.si>Matej Sekoranja</a>,
  *  Jozef Stefan Institute, Slovenia<br>
- *  @version "@(#) $Id: acsexmplCalendarImpl.h,v 1.95 2005/04/14 09:35:59 acaproni Exp $"
+ *  @version "@(#) $Id: acsexmplCalendarImpl.h,v 1.96 2007/02/01 05:14:26 cparedes Exp $"
  */
 class Calendar: public CharacteristicComponentImpl,     //Standard component superclass
 		public virtual POA_acsexmplCalendar::Calendar    //CORBA servant stub
@@ -189,8 +198,8 @@ class Calendar: public CharacteristicComponentImpl,     //Standard component sup
      */
     void operator=(const Calendar&);
 };
+/*\@}*/
+/*\@}*/
 
 #endif  
-
-
 

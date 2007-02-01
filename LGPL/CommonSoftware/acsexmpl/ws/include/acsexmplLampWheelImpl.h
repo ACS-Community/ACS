@@ -20,7 +20,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsexmplLampWheelImpl.h,v 1.12 2006/04/20 08:47:59 bjeram Exp $"
+* "@(#) $Id: acsexmplLampWheelImpl.h,v 1.13 2007/02/01 05:14:26 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -59,6 +59,16 @@ typedef struct {
 /** @file acsexmplLampWheelImpl.h
  */
 
+/** @addtogroup ACSEXMPLTOC
+*/
+/*@{
+*/
+
+/** @addtogroup ACSEXMPLTOCCOMPONENTS
+*/
+/*@{
+*/
+
 /** @defgroup ACSEXMPLLAMPWHEELDOC Lamp
  *  @{
  * @htmlonly
@@ -93,7 +103,7 @@ It also has three read-only properties: position, desc, slots.
  */
 
 /**
- * The class LampWheel class simulates the behavior of a very simple lamp wheel.
+ * The class LampWheel class simulates the behavior of a very simple lamp wheel using an asynchronous method to rotate it.
  *
  * The component reads the wheel data from the CDB.
  * The lamp wheel is caracterized by a description, a number of available slots
@@ -108,7 +118,7 @@ It also has three read-only properties: position, desc, slots.
  * A log message inform the user about the selected lamp.
  * 
  * @author <a href=mailto:acaproni@eso.org>Alessandro Caproni</a>,
- * @version "@(#) $Id: acsexmplLampWheelImpl.h,v 1.12 2006/04/20 08:47:59 bjeram Exp $"
+ * @version "@(#) $Id: acsexmplLampWheelImpl.h,v 1.13 2007/02/01 05:14:26 cparedes Exp $"
  */
 class acsexmpl_EXPORT LampWheel: public CharacteristicComponentImpl,//Standard component superclass
 	    public virtual POA_acsexmplLampWheel::LampWheel,//CORBA servant stub
@@ -413,6 +423,8 @@ class acsexmpl_EXPORT LampWheel: public CharacteristicComponentImpl,//Standard c
     static void char_hndl(void *data, const XML_Char *s, int len);
 
 };
+/*\@}*/
+/*\@}*/
 
 #endif   /* acsexmplLampWheelImpl_h */
 

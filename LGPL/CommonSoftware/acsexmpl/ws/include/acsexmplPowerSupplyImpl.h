@@ -21,7 +21,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: acsexmplPowerSupplyImpl.h,v 1.102 2006/04/20 08:47:59 bjeram Exp $"
+* "@(#) $Id: acsexmplPowerSupplyImpl.h,v 1.103 2007/02/01 05:14:26 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -68,6 +68,15 @@ using namespace baci;
 #define ON_ACTION 0
 #define OFF_ACTION 1
 #define RESET_ACTION 2
+/** @addtogroup ACSEXMPLTOC
+*/
+/*@{
+*/
+
+/** @addtogroup ACSEXMPLTOCCOMPONENTS
+*/
+/*@{
+*/
 
 /** @defgroup ACSEXMPLPSDOC Power Supply
  *  @{
@@ -113,6 +122,7 @@ power supply's actual current) at the same time.
  */
 
 /**
+ * Simulates the behavior of a power supply and overwrites an ACS property.
  * The class PowerSupply simulates the behaviour of a power supply.
  * It provides three methods: on, off and reset.
  * It also provides the properties current, readback and status.
@@ -125,7 +135,7 @@ power supply's actual current) at the same time.
  * 
  * @author <a href=mailto:matej.sekoranja@ijs.si>Matej Sekoranja</a>,
  * Jozef Stefan Institute, Slovenia<br>
- * @version "@(#) $Id: acsexmplPowerSupplyImpl.h,v 1.102 2006/04/20 08:47:59 bjeram Exp $"
+ * @version "@(#) $Id: acsexmplPowerSupplyImpl.h,v 1.103 2007/02/01 05:14:26 cparedes Exp $"
  */
 class acsexmpl_EXPORT PowerSupply: public CharacteristicComponentImpl,     //Standard component superclass
 				   public virtual POA_PS::PowerSupply,    //CORBA servant stub
@@ -397,6 +407,8 @@ class acsexmpl_EXPORT PowerSupply: public CharacteristicComponentImpl,     //Sta
      */
     void operator=(const PowerSupply&);
 };
+/*\@}*/
+/*\@}*/
 
 #endif   /* acsexmplPowerSupplyImpl_h */
 

@@ -22,7 +22,7 @@
 *
 *
 *
-* "@(#) $Id: acsexmplFridgeImpl.h,v 1.112 2006/03/24 13:02:19 vwang Exp $"
+* "@(#) $Id: acsexmplFridgeImpl.h,v 1.113 2007/02/01 05:14:26 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------\
@@ -63,6 +63,16 @@ using ACS::ThreadBase;
 
 /** @file acsexmplFridgeImpl.h
  */
+
+
+/** @addtogroup ACSEXMPLTOC
+*/
+/*@{
+*/
+/** @addtogroup ACSEXMPLTOCCOMPONENTS
+*/
+/*@{
+*/
 
 /** @defgroup ACSEXMPLFRIDGEDOC Fridge
  *  @{
@@ -130,6 +140,7 @@ class FridgeThread : public ACS::Thread
 };
 
 /**
+ * FridgeControl shows BACI threads as well as a notification channel supplier.
  * The class FridgeControl simulates the behaviour of a fridge.
  * It provides four synchronous methods: on, off, open, and close.
  * It also provides the properties: refTemperature, powerStatus, doorStatus, and currTemperature.
@@ -137,7 +148,7 @@ class FridgeThread : public ACS::Thread
  * for the "fridge" notification channel.
  * @author <a href=mailto:matej.sekoranja@ijs.si>Matej Sekoranja</a>,
  * Jozef Stefan Institute, Slovenia<br>
- * @version "@(#) $Id: acsexmplFridgeImpl.h,v 1.112 2006/03/24 13:02:19 vwang Exp $"
+ * @version "@(#) $Id: acsexmplFridgeImpl.h,v 1.113 2007/02/01 05:14:26 cparedes Exp $"
  */
 class FridgeControl: public CharacteristicComponentImpl,    //Standard component superclass
 		     public virtual POA_FRIDGE::FridgeControl    //CORBA servant stub
@@ -344,6 +355,8 @@ class FridgeControl: public CharacteristicComponentImpl,    //Standard component
      */
     void operator=(const FridgeControl&);
 };
+/*\@}*/
+/*\@}*/
 
 #endif   /* acsexmplFridgeImpl_h */
 

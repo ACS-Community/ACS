@@ -19,7 +19,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: acsexmplClientDynamicComponent.cpp,v 1.8 2006/10/13 14:04:27 bjeram Exp $"
+* "@(#) $Id: acsexmplClientDynamicComponent.cpp,v 1.9 2007/02/01 05:14:26 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -46,6 +46,16 @@
     <br><hr>
     @endhtmlonly
  */
+
+/** @addtogroup ACSEXMPLTOC
+*/
+/*@{
+*/
+
+/** @addtogroup ACSEXMPLTOCCLIENTS
+*/
+/*@{
+*/
 
 /** @defgroup ACSEXMPLCLIENTDYNAMICCOMPONENTDOC Client Dynamic Component
  *  @{
@@ -75,13 +85,18 @@ it's a <a href="group__ACSEXMPLHWDOC.html">Hello World</a> component.
  * @}
  */
 
+/* @}*/
+/* @}*/
+
 #include <maciSimpleClient.h>
 #include "acsexmplHelloWorldC.h"
 
-ACE_RCSID(acsexmpl, acsexmpClient, "$Id: acsexmplClientDynamicComponent.cpp,v 1.8 2006/10/13 14:04:27 bjeram Exp $")
+ACE_RCSID(acsexmpl, acsexmpClient, "$Id: acsexmplClientDynamicComponent.cpp,v 1.9 2007/02/01 05:14:26 cparedes Exp $")
 using namespace maci;
        
 /*******************************************************************************/
+/** @cond
+*/    
     
 int main(int argc, char *argv[])
 {
@@ -217,6 +232,8 @@ int main(int argc, char *argv[])
     ACE_OS::sleep(3);   
     return 0;
 }
+/** @endcond
+*/    
 
 /*___oOo___*/
 

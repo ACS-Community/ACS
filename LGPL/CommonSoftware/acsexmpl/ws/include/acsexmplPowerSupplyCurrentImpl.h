@@ -21,7 +21,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: acsexmplPowerSupplyCurrentImpl.h,v 1.86 2004/04/28 18:52:03 dfugate Exp $"
+* "@(#) $Id: acsexmplPowerSupplyCurrentImpl.h,v 1.87 2007/02/01 05:14:26 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -44,6 +44,16 @@ using namespace baci;
 
 /** @file acsexmplPowerSupplyCurrentImpl.h
  */
+
+/** @addtogroup ACSEXMPLTOC
+*/
+/*@{
+*/
+
+/** @addtogroup ACSEXMPLTOMISCELLANEOUS
+*/
+/*@{
+*/
 
 /** @defgroup ACSEXMPLPSCURRENTDOC Power Supply Current
  *  @{
@@ -75,6 +85,9 @@ using namespace baci;
  * @}
  */
 
+/* @}*/
+/* @}*/
+
 /**
  * This class provides simulation of PowerSupply current/readback interraction.
  * It extends the basic BACI RWdouble by accepting at construction time the reference 
@@ -84,7 +97,7 @@ using namespace baci;
  *
  * @author <a href=mailto:matej.sekoranja@ijs.si>Matej Sekoranja</a>,
  * Jozef Stefan Institute, Slovenia<br>
- * @version "@(#) $Id: acsexmplPowerSupplyCurrentImpl.h,v 1.86 2004/04/28 18:52:03 dfugate Exp $"
+ * @version "@(#) $Id: acsexmplPowerSupplyCurrentImpl.h,v 1.87 2007/02/01 05:14:26 cparedes Exp $"
  */
 class acsexmpl_EXPORT PowerSupplyCurrent : public RWdouble
 {

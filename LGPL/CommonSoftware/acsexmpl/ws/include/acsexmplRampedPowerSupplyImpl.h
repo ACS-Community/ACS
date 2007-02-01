@@ -21,7 +21,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: acsexmplRampedPowerSupplyImpl.h,v 1.98 2006/11/30 02:55:48 cparedes Exp $"
+* "@(#) $Id: acsexmplRampedPowerSupplyImpl.h,v 1.99 2007/02/01 05:14:26 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -59,6 +59,17 @@ using namespace baci;
 
 /** @file acsexmplRampedPowerSupplyImpl.h
  */
+
+
+/** @addtogroup ACSEXMPLTOC
+*/
+/*@{
+*/
+
+/** @addtogroup ACSEXMPLTOCCOMPONENTS
+*/
+/*@{
+*/
 
 /** @defgroup ACSEXMPLRPSDOC Ramped Power Supply
  *  @{
@@ -98,6 +109,7 @@ defined in two separate IDLs.
  */
 
 /**
+ * Simulates the behavior of a ramped power supply by inheriting from Power Supply's IDL interface and C++ implementation.
  *  The class RampedPowerSupply simulates the behaviour of a ramped power supply and is
  *  derived from the PowerSupply IDL interface. This class shows how to utilize inheritance 
  *  in both the C++ and IDL class/interface.
@@ -114,7 +126,7 @@ defined in two separate IDLs.
  *  
  *  @author <a href=mailto:matej.sekoranja@ijs.si>Matej Sekoranja</a>,
  *  Jozef Stefan Institute, Slovenia<br>
- *  @version "@(#) $Id: acsexmplRampedPowerSupplyImpl.h,v 1.98 2006/11/30 02:55:48 cparedes Exp $"
+ *  @version "@(#) $Id: acsexmplRampedPowerSupplyImpl.h,v 1.99 2007/02/01 05:14:26 cparedes Exp $"
  */
 class acsexmpl_EXPORT RampedPowerSupply: public PowerSupply,     //PowerSupply's superclass is CharacteristicComponent
 					 public virtual POA_RampedPS::RampedPowerSupply    //CORBA servant stub
@@ -315,6 +327,8 @@ class acsexmpl_EXPORT RampedPowerSupply: public PowerSupply,     //PowerSupply's
      */
     void operator=(const RampedPowerSupply&);
 };
+/*\@}*/
+/*\@}*/
 
 #endif   /* acsexmplRampedPowerSupplyImpl_h */
 

@@ -19,7 +19,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: acsexmplClientFridge.cpp,v 1.8 2006/10/13 14:04:27 bjeram Exp $"
+* "@(#) $Id: acsexmplClientFridge.cpp,v 1.9 2007/02/01 05:14:26 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -48,6 +48,16 @@
     <br><hr>
     @endhtmlonly
  */
+
+/** @addtogroup ACSEXMPLTOC
+*/
+/*@{
+*/
+
+/** @addtogroup ACSEXMPLTOCCLIENTS
+*/
+/*@{
+*/
 
 /** @defgroup ACSEXMPLCLIENTFRIDGEDOC Client Fridge
  *  @{
@@ -85,14 +95,21 @@ This example shows a client that:
  * @}
  */
 
+
+/* @}*/
+/* @}*/
+
 #include <maciSimpleClient.h>
 #include <acsexmplFridgeC.h>
 #include "acsexmplCallbacks.h"
 
-ACE_RCSID(acsexmpl, acsexmplFridgeClient, "$Id: acsexmplClientFridge.cpp,v 1.8 2006/10/13 14:04:27 bjeram Exp $")
+ACE_RCSID(acsexmpl, acsexmplFridgeClient, "$Id: acsexmplClientFridge.cpp,v 1.9 2007/02/01 05:14:26 cparedes Exp $")
 using namespace maci;
     
 /*******************************************************************************/
+/** @cond
+*/    
+
 /*
  * Main procedure
  */
@@ -210,6 +227,8 @@ int main(int argc, char *argv[])
     return 0;
 }
 
+/** @endcond
+*/    
 
 /*___oOo___*/
 

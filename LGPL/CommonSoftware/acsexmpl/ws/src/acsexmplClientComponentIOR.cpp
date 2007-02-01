@@ -20,7 +20,7 @@
 *
 *
 *
-* "@(#) $Id: acsexmplClientComponentIOR.cpp,v 1.7 2006/10/13 14:04:27 bjeram Exp $"
+* "@(#) $Id: acsexmplClientComponentIOR.cpp,v 1.8 2007/02/01 05:14:26 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -83,12 +83,16 @@ This example shows a client that:
    @endhtmlonly
  * @}
  */
+/* @}*/
+/* @}*/
 
 #include <maciSimpleClient.h>
 
-ACE_RCSID(acsexmpl, acsexmplMaciIOR, "$Id: acsexmplClientComponentIOR.cpp,v 1.7 2006/10/13 14:04:27 bjeram Exp $")
+ACE_RCSID(acsexmpl, acsexmplMaciIOR, "$Id: acsexmplClientComponentIOR.cpp,v 1.8 2007/02/01 05:14:26 cparedes Exp $")
 using namespace maci;
 
+/** @cond
+*/    
 int main(int argc, char *argv[]) 
 {
     //Checks command-line arguments
@@ -191,4 +195,6 @@ int main(int argc, char *argv[])
 }
 
 
+/** @endcond
+*/    
 
