@@ -226,9 +226,12 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 				return;
 			}
 			String op = request.operation();
+
+			/*
 			notifier.reportDebug(
 				"BACIRemoteAccess$CallbackImpl::invoke",
 				"Received callback invocation '" + op + "'.");
+			*/
 
 			String opKey = createHashKey(callbackID, op);
 
@@ -278,9 +281,13 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 					descriptions.put(opKey, odef);
 				}
 			}
+
+			/*
 			notifier.reportDebug(
 				"BACIRemoteAccess$CallbackImpl::invoke",
 				"Unpacking callback arguments...");
+			*/
+
 			String[] names = null;
 			java.lang.Object[] data = null;
 			boolean errorResponse = false;
@@ -359,9 +366,11 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 						"POA cannot deactivate callback: " + e);
 				}
 			}
+			/*
 			notifier.reportDebug(
 				"BACIRemoteAccess$CallbackImpl::invoke",
 				"Inserted remote response into dispatcher queue.");
+			*/
 			getDispatcher().add(response);
 		}
 	}
