@@ -65,8 +65,10 @@ public class LoadURLDlg extends JDialog implements ActionListener {
 	 * 
 	 * @param initialValue The initial value of the URL
 	 */
-	public LoadURLDlg(JFrame owner,String initialValue) {
-		super(owner,"Load from URL",true);
+	public LoadURLDlg(String initialValue) {
+		super();
+		setTitle("Load from URL");
+		setModal(true);
 		initGUI();
 		urlTF.setText(initialValue);
 		//setBounds(50,50,50,50);

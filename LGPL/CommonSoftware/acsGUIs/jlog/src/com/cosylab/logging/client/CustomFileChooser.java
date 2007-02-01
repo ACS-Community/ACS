@@ -52,7 +52,9 @@ public class CustomFileChooser extends JDialog implements ActionListener {
 	 * @param title The title of the window (it appears also in the button)
 	 */
 	public CustomFileChooser(File currentDir,String title) {
-		super(LoggingClient.getInstance(),title,true);
+		super();
+		setTitle(title);
+		setModal(true);
 		initialize(currentDir);
 		pack();
 		setVisible(true);

@@ -30,8 +30,6 @@ import alma.acs.logging.preferences.UserPreferences;
  */
 public class ExpertPrefsDlg extends JDialog implements ActionListener {
 	
-	
-	
 	// The ok and cancel buttons
 	private JButton okBtn;
 	private JButton cancelBtn;
@@ -53,8 +51,11 @@ public class ExpertPrefsDlg extends JDialog implements ActionListener {
 	 * @param initialNumOfLogs The initial value for the num of logs
 	 * @param initialTimeFrame The initial value for the time frame (minutes)
 	 */
-	public ExpertPrefsDlg(Frame owner, int initialNumOfLogs, int initialTimeFrame) {
-		super(owner, "Preferences", true);
+	public ExpertPrefsDlg(int initialNumOfLogs, int initialTimeFrame) {
+		super();
+		setTitle("Preferences");
+		setName("ExpertPrefsDlg");
+		setModal(true);
 		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		initGUI();
 		initCombos(initialNumOfLogs,initialTimeFrame);
