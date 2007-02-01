@@ -56,4 +56,11 @@ int getSequenceNumber();
  */
 boolean isErrorResponse();
 
+/**
+ * Return timestamp of the response.
+ * Engine should use server timestamp that correspond to the data timestamp. If not available <code>System.currentTimeMillis()</code> should be used.
+ * @return timestamp of the response.
+ */
+long getTimestamp();
+
 }

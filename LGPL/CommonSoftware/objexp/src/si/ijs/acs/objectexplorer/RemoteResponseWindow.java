@@ -1547,7 +1547,7 @@ public static void main(java.lang.String[] args) {
 private void processChartValues(RemoteResponse response) {
 	Object[] data = response.getData();
 	double[] newNumbers=new double[numberIndexes.size()+1];
-	newNumbers[0]=(double)System.currentTimeMillis()/1000.0;
+	newNumbers[0]=(double)response.getTimestamp()/1000.0;
 	maxs[0]=newNumbers[0];
 	for (int i = 0; i < numberIndexes.size(); i++) {
 		int numIndex=((Number)numberIndexes.get(i)).intValue();
@@ -1556,9 +1556,12 @@ private void processChartValues(RemoteResponse response) {
 			val=((Long)data[numIndex]).longValue()/1000;
 		}
 		else val=((Number)data[numIndex]).doubleValue();
-		newNumbers[i+1]= val;
-		if (val<mins[i+1]) mins[i+1]=val;
-		if (val>maxs[i+1]) maxs[i+1]=val;
+		
+		// skip first element (time)
+		final int ix = i+1;
+		newNumbers[ix]= val;
+		if (val<mins[ix]) mins[ix]=val;
+		if (val>maxs[ix]) maxs[ix]=val;
 	}
 	chartData.add(newNumbers);
 	if (chartData.size()>maxLines) chartData.remove(0);

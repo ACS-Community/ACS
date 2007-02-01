@@ -302,7 +302,8 @@ public static String toString(RemoteResponse response, boolean expand) {
 	result.append(response.getSequenceNumber());
 	result.append("] : ");
 	//result.append(System.currentTimeMillis());
-	result.append(df.format(new Date(System.currentTimeMillis())));
+	//result.append(df.format(new Date(System.currentTimeMillis())));
+	result.append(df.format(new Date(response.getTimestamp())));
 	result.append(" |-----------------------------------------------------\n");
 	result.append(" --> Response for: ");
 	result.append(response.getInvocation().getName());
