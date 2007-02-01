@@ -435,7 +435,7 @@ public class LogTableDataModel extends AbstractTableModel implements Runnable
 	}
 
 	public void loadFromURL() {
-		LoadURLDlg urlDlg = new LoadURLDlg(LoggingClient.getInstance(),"http://websqa.hq.eso.org/alma/snapshotRHE/ACS-Reports/TestCoverage-Linux/ACS/LGPL/CommonSoftware/jcont/test/tmp/all_logs.xml");
+		LoadURLDlg urlDlg = new LoadURLDlg("http://websqa.hq.eso.org/alma/snapshotRHE/ACS-Reports/TestCoverage-Linux/ACS/LGPL/CommonSoftware/jcont/test/tmp/all_logs.xml");
 		urlDlg.setVisible(true);
 		URL url = urlDlg.getURL();
 		if (url==null) {
