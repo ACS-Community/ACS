@@ -487,7 +487,7 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 	private HashMap operationsIntrospected = new HashMap();
 	private boolean bufferDescs = true;
 	private Hashtable devices = null;
-	private boolean destroyed = true;
+	private boolean destroyed = false;
 	/**
 	 * ESORemoteAccess constructor comment.
 	 */
