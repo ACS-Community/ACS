@@ -38,6 +38,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -47,6 +48,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
+import javax.swing.JRootPane;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JToolBar;
@@ -59,6 +61,7 @@ import alma.acs.logging.archive.ArchiveConnectionManager;
 import alma.acs.logging.archive.QueryDlg;
 import alma.acs.logging.dialogs.main.LogEntryTable;
 import alma.acs.logging.dialogs.main.LogMenuBar;
+import alma.acs.logging.dialogs.main.LogFrame;
 import alma.acs.logging.dialogs.main.LogToolBar;
 import alma.acs.logging.preferences.UserPreferences;
 
@@ -108,7 +111,7 @@ import com.cosylab.logging.stats.StatsDlg;
  * One solution is replacing the character with the appropriate html substitute &lt;.
  * Another solution is keeping it in a CDATA section: <[!CDATA[the log entry message]]>.
  */
-public class LoggingClient extends JFrame implements ACSRemoteLogListener, ACSLogConnectionListener
+public class LoggingClient extends JRootPane implements ACSRemoteLogListener, ACSLogConnectionListener
 {
 	// The loggingClient is a singleton
 	private static LoggingClient singleton=null;
@@ -126,9 +129,6 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener, ACSLo
 
 	private JLabel ivjFilterStatus = null; // Not filtered
 	private JLabel ivjInfoStatus = null; // Additional info
-
-	// The menu bar
-	private LogMenuBar menuBar = new LogMenuBar();
 
 	private JPanel ivjJPanel1 = null;
 	private JPanel ivjJPanel2 = null;
@@ -151,10 +151,7 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener, ACSLo
 
 	private JPanel ivjJFrameContentPane = null;
     
-    /**
-     * The toolbar
-     */
-    private LogToolBar toolBar = new LogToolBar();
+ 
     
     // The progress bar for long time operations
     private JProgressBar progressBar = new JProgressBar(JProgressBar.HORIZONTAL);
@@ -191,10 +188,20 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener, ACSLo
 	// with the DB is shown
 	private JLabel connectionDBLbl;
 	
+	// The panel with all the GUI controls inside
+	//
+	// It cobtains the menu bar and the tool bar too.
+	private LogFrame panel;
+	
+    // The toolbar
+    private LogToolBar toolBar = new LogToolBar();
+    
+    // The menu bar
+    private LogMenuBar menuBar = new LogMenuBar();
+	
 	class EventHandler
 		implements
 			java.awt.event.ActionListener,
-			java.awt.event.WindowListener,
 			java.beans.PropertyChangeListener,
 			javax.swing.event.MenuListener
 	{
@@ -281,7 +288,7 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener, ACSLo
             } else if (e.getSource()==menuBar.getSuspendMenuItem()) {
             	getEngine().setSupended(menuBar.getSuspendMenuItem().isSelected());
             } else if (e.getSource()==menuBar.getPrefsMenuItem()) {
-            	ExpertPrefsDlg dlg = new ExpertPrefsDlg(LoggingClient.this,userPreferences.getMaxNumOfLogs(),userPreferences.getMinuteTimeFrame());
+            	ExpertPrefsDlg dlg = new ExpertPrefsDlg(userPreferences.getMaxNumOfLogs(),userPreferences.getMinuteTimeFrame());
             	if (dlg.okPressed()) {
             		userPreferences.setMaxLogs(dlg.getMaxNumOfLogs());
             		userPreferences.setTimeFrame(dlg.getTimeFrame());
@@ -307,42 +314,10 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener, ACSLo
 				connLCMod();
 			}
 				
-		};
+		}
 		
-		public void windowActivated(java.awt.event.WindowEvent e)
-		{
-		};
-
-		public void windowClosed(java.awt.event.WindowEvent e)
-		{
-		};
-
-		public void windowClosing(java.awt.event.WindowEvent e)
-		{
-
-			if (e.getSource() == LoggingClient.this)
-				connLCEngDisconnect(e);
-		};
-
-		public void windowDeactivated(java.awt.event.WindowEvent e)
-		{
-		};
-
-		public void windowDeiconified(java.awt.event.WindowEvent e)
-		{
-		};
-
-		public void windowIconified(java.awt.event.WindowEvent e)
-		{
-		};
-
-		public void windowOpened(java.awt.event.WindowEvent e)
-		{
-		};
-		
-		
-		public void menuCanceled(MenuEvent menuE) {
-		};
+		public void menuCanceled(MenuEvent menuE) {}
+		public void menuDeselected(MenuEvent menuE) {}
 		
 		public void menuSelected(MenuEvent menuE) {
 			// Some menus are disabled when loading/saving
@@ -382,9 +357,8 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener, ACSLo
 			//loadDBMenuItem.setEnabled(archive.getDBStatus()==ArchiveConnectionManager.DATABASE_OK);
 		}
 		
-		public void menuDeselected(MenuEvent menuE) {
-		}
-	};
+		
+	}
 	
 	/**
 	 * The filter to load save filters as xml files
@@ -416,7 +390,10 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener, ACSLo
 	private LoggingClient()
 	{
 		super();
+		Dimension d = new Dimension(750, 550);
+		setPreferredSize(d);
 		initialize();
+		
 		getLCModel1().setTimeFrame(userPreferences.getMillisecondsTimeFrame());
 		getLCModel1().setMaxLog(userPreferences.getMaxNumOfLogs());
 		archive = new ArchiveConnectionManager(this);
@@ -446,7 +423,7 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener, ACSLo
 	 * Connects to the remote system
 	 * as soon as the item "New" is clicked.
 	 */
-	private void connect()
+	public void connect()
 	{
 		try
 		{
@@ -643,7 +620,6 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener, ACSLo
 		menuBar.setEventHandler(eventHandler, eventHandler);
 		toolBar.setEventHandler(eventHandler);
 		getLogEntryTable().addPropertyChangeListener(eventHandler); // ScrollPaneTable		
-		addWindowListener(eventHandler); // Logging Client
 
 		connLCMod();
 	}
@@ -655,39 +631,21 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener, ACSLo
 	{
 		try
 		{
-			setName("LoggingClient");
-			setTitle("LoggingClient");
-			setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+			setName("LoggingClientPanel");
+			
+			getContentPane().setLayout(new BorderLayout());
 			setJMenuBar(menuBar);
             
-            setSize(750, 550);
-            // Move the window to the center of the screen 
-            Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-            Dimension windowSize = getSize();
-            setLocation(Math.max(0,(screenSize.width -windowSize.width)/2), 
-            Math.max(0,(screenSize.height-windowSize.height)/2));
+            //  Add the GUI in the center position
+			getContentPane().add(getJFrameContentPane(),BorderLayout.CENTER);
             
-            // Create a panel for the toolbar (NORTH position)
-            // and the other stuffs like the table (CENTER position)
-            JPanel toolBarPanel = new JPanel();
-            toolBarPanel.setLayout(new BorderLayout());
+            // Add the tool bar
+			getContentPane().add(toolBar,BorderLayout.NORTH);
             
-            // Add the GUI in the center position
-            toolBarPanel.add(getJFrameContentPane(),BorderLayout.CENTER);
-            
-            // Set the content pane
-			setContentPane(toolBarPanel);
-            
-			//	Add the tool bar
-            toolBarPanel.add(toolBar,BorderLayout.NORTH);
-            
-			initConnections();
-			validate();
+    		initConnections();
+    		validate();
             
 			getLCModel1().setLogLevel(toolBar.DEFAULT_LOGLEVEL);
-            // Add the tool bar
-            //toolBar = new LogToolBar();
-            //toolBarPanel.add(toolBar,BorderLayout.NORTH);
 		}
 		catch (java.lang.Throwable ivjExc)
 		{
@@ -696,7 +654,7 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener, ACSLo
 
 		// java 1.2.2. bugfix
 		getJSplitPane2().setDividerLocation(getJSplitPane2().getLastDividerLocation());
-		getJSplitPane1().setDividerLocation(getHeight() - 150);
+		getJSplitPane1().setDividerLocation(350); //getHeight() - 150);
 		// user code end
 
 	}
@@ -912,7 +870,7 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener, ACSLo
 	 * @param arg1 java.awt.event.WindowEvent
 	 */
 
-	private void connLCEngDisconnect(java.awt.event.WindowEvent arg1)
+	public void connLCEngDisconnect(java.awt.event.WindowEvent arg1)
 	{
 		try
 		{
@@ -1620,7 +1578,7 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener, ACSLo
     * @see com.cosylab.logging.engine.ACS.ACSRemoteLogListener
 	 */
 	public void acsLogConnEstablished() {
-		setTitle("LoggingClient");
+		//setTitle("LoggingClient");
 		connectionStatusLbl.setIcon(connectionStatusIcons[CONNECTED_ICON]);
 		connectionStatusLbl.setToolTipText("Connected");
 	}
@@ -1630,7 +1588,7 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener, ACSLo
      * @see com.cosylab.logging.engine.ACS.ACSRemoteLogListener
      */
 	public void acsLogConnDisconnected() {
-		setTitle("LoggingClient - Offline");
+		//setTitle("LoggingClient - Offline");
 		connectionStatusLbl.setIcon(connectionStatusIcons[DISCONNECTED_ICON]);
 		connectionStatusLbl.setToolTipText("Disconnected");
 	}
@@ -1650,7 +1608,7 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener, ACSLo
 	 * @see com.cosylab.logging.engine.ACS.ACSRemoteLogListener
 	 */
 	public void acsLogConnConnecting() {
-		setTitle("LoggingClient - Connecting");
+		//setTitle("LoggingClient - Connecting");
 		connectionStatusLbl.setIcon(connectionStatusIcons[CONNECTING_ICON]);
 		connectionStatusLbl.setToolTipText("Connecting");
 	}
@@ -1660,7 +1618,7 @@ public class LoggingClient extends JFrame implements ACSRemoteLogListener, ACSLo
 	 * @see com.cosylab.logging.engine.ACS.ACSRemoteLogListener
 	 */
 	public void acsLogConnSuspended() {
-		setTitle("LoggingClient - Suspended");
+		//setTitle("LoggingClient - Suspended");
 		connectionStatusLbl.setIcon(connectionStatusIcons[SUSPENDED_ICON]);
 		connectionStatusLbl.setToolTipText("Suspended");
 	}
