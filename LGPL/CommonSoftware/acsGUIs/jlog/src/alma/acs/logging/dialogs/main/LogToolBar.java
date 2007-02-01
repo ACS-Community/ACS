@@ -40,8 +40,11 @@ public class LogToolBar extends JToolBar {
     private boolean pauseBtnPaused; // The status of the button
     private ImageIcon pauseIcon;
     private ImageIcon playIcon;
-    private final String pauseStr = "<HTML><FONT size=-2>Pause</FONT>";
-    private final String playStr =  "<HTML><FONT size=-2>Play</FONT>";
+    // GCH: 2007.02.01
+    // I had to make these public to get jlog compiling.
+    // alessandro to check.
+    public final String pauseStr = "<HTML><FONT size=-2>Pause</FONT>";
+    public final String playStr =  "<HTML><FONT size=-2>Play</FONT>";
     
     // The button to delete the logs
     private JButton clearLogsBtn;
