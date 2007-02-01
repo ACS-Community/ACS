@@ -13,10 +13,12 @@
 //     without express or implied warranty.
 ////////////////////////////////////////////////////////////////////////////////
 
-// Last update: November 22, 2001
+// Last update, July 26, 2005
 
-#ifndef TYPEMANIP_INC_
-#define TYPEMANIP_INC_
+// $Header: /diskb/tmp/stefano/project2/CVS/ACS/LGPL/Tools/loki/ws/include/lokiTypeManip.h,v 1.2 2007/02/01 17:29:00 sharring Exp $
+
+#ifndef LOKI_TYPEMANIP_INC_
+#define LOKI_TYPEMANIP_INC_
 
 namespace Loki
 {
@@ -171,8 +173,37 @@ namespace Loki
 template <class T, class U>
 struct SuperSubclass
 {
-  enum { value = (::Loki::Conversion<const volatile U*, const volatile T*>::exists &&
+    enum { value = (::Loki::Conversion<const volatile U*, const volatile T*>::exists &&
                   !::Loki::Conversion<const volatile T*, const volatile void*>::sameType) };
+      
+    // Dummy enum to make sure that both classes are fully defined.
+    enum{ dontUseWithIncompleteTypes = ( sizeof (T) == sizeof (U) ) };
+};
+
+template <>
+struct SuperSubclass<void, void> 
+{
+    enum { value = false };
+};
+
+template <class U>
+struct SuperSubclass<void, U> 
+{
+    enum { value = (::Loki::Conversion<const volatile U*, const volatile void*>::exists &&
+                  !::Loki::Conversion<const volatile void*, const volatile void*>::sameType) };
+      
+    // Dummy enum to make sure that both classes are fully defined.
+    enum{ dontUseWithIncompleteTypes = ( 0 == sizeof (U) ) };
+};
+
+template <class T>
+struct SuperSubclass<T, void> 
+{
+    enum { value = (::Loki::Conversion<const volatile void*, const volatile T*>::exists &&
+                  !::Loki::Conversion<const volatile T*, const volatile void*>::sameType) };
+      
+    // Dummy enum to make sure that both classes are fully defined.
+    enum{ dontUseWithIncompleteTypes = ( sizeof (T) == 0 ) };
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -186,10 +217,42 @@ struct SuperSubclass
 template<class T,class U>
 struct SuperSubclassStrict
 {
-  enum { value = (::Loki::Conversion<const volatile U*, const volatile T*>::exists &&
+    enum { value = (::Loki::Conversion<const volatile U*, const volatile T*>::exists &&
                  !::Loki::Conversion<const volatile T*, const volatile void*>::sameType &&
                  !::Loki::Conversion<const volatile T*, const volatile U*>::sameType) };
+    
+    // Dummy enum to make sure that both classes are fully defined.
+    enum{ dontUseWithIncompleteTypes = ( sizeof (T) == sizeof (U) ) };
 };
+
+template<>
+struct SuperSubclassStrict<void, void> 
+{
+    enum { value = false };
+};
+
+template<class U>
+struct SuperSubclassStrict<void, U> 
+{
+    enum { value = (::Loki::Conversion<const volatile U*, const volatile void*>::exists &&
+                 !::Loki::Conversion<const volatile void*, const volatile void*>::sameType &&
+                 !::Loki::Conversion<const volatile void*, const volatile U*>::sameType) };
+    
+    // Dummy enum to make sure that both classes are fully defined.
+    enum{ dontUseWithIncompleteTypes = ( 0 == sizeof (U) ) };
+};
+
+template<class T>
+struct SuperSubclassStrict<T, void> 
+{
+    enum { value = (::Loki::Conversion<const volatile void*, const volatile T*>::exists &&
+                 !::Loki::Conversion<const volatile T*, const volatile void*>::sameType &&
+                 !::Loki::Conversion<const volatile T*, const volatile void*>::sameType) };
+    
+    // Dummy enum to make sure that both classes are fully defined.
+    enum{ dontUseWithIncompleteTypes = ( sizeof (T) == 0 ) };
+};
+
 
 }   // namespace Loki
 
@@ -203,7 +266,7 @@ struct SuperSubclassStrict
 // Deprecated: Use SuperSubclass class template instead.
 ////////////////////////////////////////////////////////////////////////////////
 
-#define SUPERSUBCLASS(T, U) \
+#define LOKI_SUPERSUBCLASS(T, U) \
     ::Loki::SuperSubclass<T,U>::value
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -215,7 +278,7 @@ struct SuperSubclassStrict
 // Deprecated: Use SuperSubclassStrict class template instead.
 ////////////////////////////////////////////////////////////////////////////////
 
-#define SUPERSUBCLASS_STRICT(T, U) \
+#define LOKI_SUPERSUBCLASS_STRICT(T, U) \
     ::Loki::SuperSubclassStrict<T,U>::value
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -232,6 +295,24 @@ struct SuperSubclassStrict
 //     macros are deprecated.
 //     Added extra parenthesis in sizeof in Conversion, to disambiguate function
 //     call from function declaration. T.S.
+// July 27, 2005 : compiler error on using SuperSubclass/Strict with incomplete types
+//                 (credit due to Mark Stevans) by Peter Kümmel
 ////////////////////////////////////////////////////////////////////////////////
 
 #endif // TYPEMANIP_INC_
+
+// $Log: lokiTypeManip.h,v $
+// Revision 1.2  2007/02/01 17:29:00  sharring
+// updating to newer version of loki library, with support for multi-threading enabled. manually renamed files to avoid name conflicts, by
+// prepending "loki" to the names of header files. also manually edited lokiThreads.h to #define LOKI_OBJECT_LEVEL_THREADING; this could
+// also be done with a compile FLAG, perhaps would be better.
+//
+// Revision 1.1.28.1  2007/02/01 07:36:57  sharring
+//
+// updating loki to newer version for testing in SFI in the hopes of fixing some
+// multi-threading problems seen in acs logging code for which the stack trace
+// indicates that loki smart pointers were involved.
+//
+// Revision 1.8  2006/01/16 19:05:09  rich_sposato
+// Added cvs keywords.
+//

@@ -13,8 +13,10 @@
 //     without express or implied warranty.
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef ASSOCVECTOR_INC_
-#define ASSOCVECTOR_INC_
+#ifndef LOKI_ASSOCVECTOR_INC_
+#define LOKI_ASSOCVECTOR_INC_
+
+// $Header: /diskb/tmp/stefano/project2/CVS/ACS/LGPL/Tools/loki/ws/include/lokiAssocVector.h,v 1.2 2007/02/01 17:29:00 sharring Exp $
 
 #include <algorithm>
 #include <functional>
@@ -175,13 +177,12 @@ namespace Loki
             }
             return std::make_pair(i, !found);
         }
-
+        //Section [23.1.2], Table 69
+        //http://developer.apple.com/documentation/DeveloperTools/gcc-3.3/libstdc++/23_containers/howto.html#4
         iterator insert(iterator pos, const value_type& val)
         {
-            if (pos != end() && this->operator()(*pos, val) &&
-                (pos == end() - 1 ||
-                    !this->operator()(val, pos[1]) &&
-                        this->operator()(pos[1], val)))
+            if( (pos == begin() || this->operator()(*(pos-1),val)) && 
+                (pos == end()    || this->operator()(val, *pos)) )
             {
                 return Base::insert(pos, val);
             }
@@ -208,11 +209,10 @@ namespace Loki
 
         void swap(AssocVector& other)
         {
-            using std::swap;
             Base::swap(other);
             MyCompare& me = *this;
             MyCompare& rhs = other;
-            swap(me, rhs);
+            std::swap(me, rhs);
         }
         
         void clear()
@@ -334,3 +334,19 @@ namespace Loki
 ////////////////////////////////////////////////////////////////////////////////
 
 #endif // ASSOCVECTOR_INC_
+
+// $Log: lokiAssocVector.h,v $
+// Revision 1.2  2007/02/01 17:29:00  sharring
+// updating to newer version of loki library, with support for multi-threading enabled. manually renamed files to avoid name conflicts, by
+// prepending "loki" to the names of header files. also manually edited lokiThreads.h to #define LOKI_OBJECT_LEVEL_THREADING; this could
+// also be done with a compile FLAG, perhaps would be better.
+//
+// Revision 1.1.28.1  2007/02/01 07:36:57  sharring
+//
+// updating loki to newer version for testing in SFI in the hopes of fixing some
+// multi-threading problems seen in acs logging code for which the stack trace
+// indicates that loki smart pointers were involved.
+//
+// Revision 1.5  2006/01/16 19:05:09  rich_sposato
+// Added cvs keywords.
+//

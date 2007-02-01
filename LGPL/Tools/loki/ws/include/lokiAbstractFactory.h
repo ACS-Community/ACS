@@ -15,10 +15,13 @@
 
 // Last update: June 20, 2001
 
-#ifndef ABSTRACTFACTORY_INC_
-#define ABSTRACTFACTORY_INC_
+#ifndef LOKI_ABSTRACTFACTORY_INC_
+#define LOKI_ABSTRACTFACTORY_INC_
+
+// $Header: /diskb/tmp/stefano/project2/CVS/ACS/LGPL/Tools/loki/ws/include/lokiAbstractFactory.h,v 1.2 2007/02/01 17:29:00 sharring Exp $
 
 #include "lokiTypelist.h"
+#include "lokiSequence.h"
 #include "lokiTypeManip.h"
 #include "lokiHierarchyGenerators.h"
 
@@ -117,7 +120,7 @@ namespace Loki
         { me.pPrototype_ = pObj; }
         
         template <class U>
-        void GetPrototype(AbstractProduct*& p)
+        void GetPrototype(U*& p)
         { return DoGetPrototype(*this, p); }
         
         template <class U>
@@ -159,6 +162,28 @@ namespace Loki
 ////////////////////////////////////////////////////////////////////////////////
 // Change log:
 // June 20, 2001: ported by Nick Thurn to gcc 2.95.3. Kudos, Nick!!!
+// September 25, 2004: Fixed bug in PrototypeFactoryUnit::GetPrototype, thanks
+//   to a bug report submitted by funcall.
 ////////////////////////////////////////////////////////////////////////////////
 
 #endif // ABSTRACTFACTORY_INC_
+
+// $Log: lokiAbstractFactory.h,v $
+// Revision 1.2  2007/02/01 17:29:00  sharring
+// updating to newer version of loki library, with support for multi-threading enabled. manually renamed files to avoid name conflicts, by
+// prepending "loki" to the names of header files. also manually edited lokiThreads.h to #define LOKI_OBJECT_LEVEL_THREADING; this could
+// also be done with a compile FLAG, perhaps would be better.
+//
+// Revision 1.1.28.1  2007/02/01 07:36:57  sharring
+//
+// updating loki to newer version for testing in SFI in the hopes of fixing some
+// multi-threading problems seen in acs logging code for which the stack trace
+// indicates that loki smart pointers were involved.
+//
+// Revision 1.4  2006/01/16 19:05:09  rich_sposato
+// Added cvs keywords.
+//
+
+
+
+

@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: Makefile,v 1.4 2005/01/31 21:45:25 dfugate Exp $"
+# "@(#) $Id: Makefile,v 1.5 2007/02/01 17:29:01 sharring Exp $"
 #
 # Makefile of ........
 #
@@ -19,7 +19,7 @@
 
 #
 # user definable C-compilation flags
-#USER_CFLAGS =
+USER_CFLAGS = -DLOKI_OBJECT_LEVEL_THREADING
 
 #
 # additional include and library search paths
@@ -51,27 +51,18 @@ xxxxx_LIBS      =
 #
 # Includes (.h) files (public only)
 # ---------------------------------
-INCLUDES        = lokiAbstractFactory.h \
-		  lokiNullType.h \
-		  lokiTypeManip.h \
-		  lokiAssocVector.h \
-		  lokiSingleton.h \
-		  lokiTypeTraits.h \
-		  lokiEmptyType.h \
-		  lokiSmallObj.h \
-		  lokiTypelist.h \
-		  lokiFactory.h \
-		  lokiSmartPtr.h \
-		  lokiVisitor.h \
-		  lokiFunctor.h \
-		  lokiThreads.h \
-		  lokiStatic_check.h \
-		  lokiHierarchyGenerators.h \
-		  lokiTuple.h \
-		  lokiMultiMethods.h \
-		  lokiTypeInfo.h
- 
 
+INCLUDES        = lokiAbstractFactory.h lokiAssocVector.h lokiConstPolicy.h \
+	lokiDataGenerators.h lokiEmptyType.h lokiFactory.h \
+	lokiFunction.h lokiFunctor.h lokiHierarchyGenerators.h \
+	lokiLockingPtr.h lokiExport.h lokiTypeInfo.h \
+	lokiMultiMethods.h lokiNullType.h lokiOrderedStatic.h \
+	lokiPimpl.h lokiRefToValue.h lokiRegister.h \
+	lokiSafeFormat.h lokiScopeGuard.h lokiSequence.h \
+	lokiSingleton.h lokiSmallObj.h lokiSmartPtr.h \
+	lokiStatic_check.h lokiStrongPtr.h lokiThreads.h \
+	lokiTuple.h lokiTypelist.h lokiTypelistMacros.h \
+	lokiTypeManip.h lokiTypeTraits.h lokiVisitor.h
 
 #
 # Libraries (public and local)
@@ -81,7 +72,8 @@ LIBRARIES_L     =
 
 #
 # <brief description of lllll library>
-loki_OBJECTS   = lokiSingleton lokiSmallObj
+loki_OBJECTS   = lokiOrderedStatic lokiSafeFormat lokiSingleton lokiSmallObj lokiSmartPtr lokiStrongPtr
+
 #
 # Scripts (public and local)
 # ----------------------------
