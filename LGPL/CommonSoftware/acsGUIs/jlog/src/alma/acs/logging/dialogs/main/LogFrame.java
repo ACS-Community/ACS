@@ -77,9 +77,6 @@ public class LogFrame extends JFrame implements WindowListener {
         	throw new NullPointerException("The logging client is null");
         }
         this.setRootPane(aLoggingClient);
-        //JRootPane rootPane = getRootPane();
-        //rootPane.setLayout(new BorderLayout());
-        //rootPane.add(aLoggingClient,BorderLayout.CENTER);
 	}
 	
 	/**
