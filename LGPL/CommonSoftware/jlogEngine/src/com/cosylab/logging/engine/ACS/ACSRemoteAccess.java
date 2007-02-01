@@ -358,6 +358,8 @@ public final class ACSRemoteAccess implements RemoteAccess {
 	 * @param suspended If true suspend the notification of new logs
 	 */
 	public void setSuspended(boolean suspended) {
-		acsSPS.setSupended(suspended);
+		if (acsSPS!=null) {
+			acsSPS.setSupended(suspended);
+		}
 	}
 }
