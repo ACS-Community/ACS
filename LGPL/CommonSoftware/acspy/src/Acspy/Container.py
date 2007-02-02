@@ -1,4 +1,4 @@
-# @(#) $Id: Container.py,v 1.24 2006/07/18 21:52:57 dfugate Exp $
+# @(#) $Id: Container.py,v 1.25 2007/02/02 09:21:49 agrimstrup Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -21,7 +21,7 @@
 # ALMA should be addressed as follows:
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: Container.py,v 1.24 2006/07/18 21:52:57 dfugate Exp $"
+# "@(#) $Id: Container.py,v 1.25 2007/02/02 09:21:49 agrimstrup Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -38,7 +38,7 @@ TODO LIST:
 - a ComponentLifecycleException has been defined in IDL now...
 '''
 
-__revision__ = "$Id: Container.py,v 1.24 2006/07/18 21:52:57 dfugate Exp $"
+__revision__ = "$Id: Container.py,v 1.25 2007/02/02 09:21:49 agrimstrup Exp $"
 
 
 #--REGULAR IMPORTS-------------------------------------------------------------
@@ -54,6 +54,7 @@ from maci  import ComponentInfo
 from ACS   import OffShoot
 import ACS
 from ACSErrTypeCommonImpl              import CORBAProblemExImpl, CouldntCreateObjectExImpl
+from maciErrTypeImpl                   import CannotActivateComponentExImpl
 #--ACS Imports-----------------------------------------------------------------
 from Acspy.Common.Log                       import getLogger
 from Acspy.Common.CDBAccess                 import CDBaccess
@@ -118,6 +119,14 @@ class Container(maci__POA.Container, BaseClient):
         self.corbaRef = None  #reference to this object's CORBA reference
         self.logger = getLogger(name)
 
+        #Configure CORBA
+        self.configCORBA()
+
+        #call superclass constructor
+        BaseClient.__init__(self, self.name)
+        
+        self.logger.logTrace('CORBA configured for Container: ' + self.name)
+
         self.cdbAccess = CDBaccess()
         self.cdbContainerInfo = {}
         self.autoLoadPackages = []
@@ -130,14 +139,6 @@ class Container(maci__POA.Container, BaseClient):
         #get info from the CDB
         self.getCDBInfo()
         
-        #Configure CORBA
-        self.configCORBA()
-
-        #call superclass constructor
-        BaseClient.__init__(self, self.name)
-        
-        self.logger.logTrace('CORBA configured for Container: ' + self.name)
-
         #Run everything
         self.logger.logInfo('Container ' + self.name + ' waiting for requests')
         
@@ -162,6 +163,8 @@ class Container(maci__POA.Container, BaseClient):
         - exe is the name of the Python module that has to be imported for the
         components implementation
         - idl_type is the the IR Location for the component
+
+        Raises: CannotActivateComponentExImpl exception when invalid 
 
         Returns: a ComponentInfo structure for manager to use.
         
@@ -196,7 +199,17 @@ class Container(maci__POA.Container, BaseClient):
             except Exception, e:
                 temp[PYCLASS] = temp[COMPMODULE].__dict__.get(temp[PYCLASS]) #get class
                 temp[PYREF] = instance(temp[PYCLASS]) #create Python object
+
+        except (TypeError, ImportError), e:
+            e2 = CannotActivateComponentExImpl(exception=e)
+            if isinstance(e,TypeError):
+                e2.setDetailedReason("Verify that the name of implementation class matches the module name *%s*" % temp[EXE].split('.').pop())
+            else:
+                e2.setDetailedReason("Verify that CDB Code entry and Python install path match for module *%s*" % temp[EXE])
                 
+            self.failedActivation(temp)
+            e2.log()
+            raise e2
         except Exception, e:
             self.logger.logWarning("Failed to create Python object for: " + name)
             print_exc()
