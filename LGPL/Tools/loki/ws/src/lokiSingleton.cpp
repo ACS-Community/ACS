@@ -13,7 +13,7 @@
 //     without express or implied warranty.
 ////////////////////////////////////////////////////////////////////////////////
 
-// $Header: /diskb/tmp/stefano/project2/CVS/ACS/LGPL/Tools/loki/ws/src/lokiSingleton.cpp,v 1.2 2007/02/01 17:29:01 sharring Exp $
+// $Header: /diskb/tmp/stefano/project2/CVS/ACS/LGPL/Tools/loki/ws/src/lokiSingleton.cpp,v 1.3 2007/02/02 21:28:57 bjeram Exp $
 
 #include <lokiSingleton.h>
 
@@ -43,7 +43,9 @@ void LOKI_C_CALLING_CONVENTION_QUALIFIER Loki::Private::AtExitFn()
     pTrackerArray->pop_back();
     
     // Destroy the element
-    delete pTop;
+    //BJE: commented out because it causes trouble 
+    //  possible cause ACE object manager
+    //   delete pTop;
     
     // Destroy stack when it's empty _after_ deleting pTop
     if(pTrackerArray->empty())
@@ -80,7 +82,11 @@ void LOKI_C_CALLING_CONVENTION_QUALIFIER Loki::Private::AtExitFn()
 ////////////////////////////////////////////////////////////////////////////////
 
 // $Log: lokiSingleton.cpp,v $
+// Revision 1.3  2007/02/02 21:28:57  bjeram
+// fixed (temporary) clash between ACE object manager and singelton longevity
+//
 // Revision 1.2  2007/02/01 17:29:01  sharring
+//
 // updating to newer version of loki library, with support for multi-threading enabled. manually renamed files to avoid name conflicts, by
 // prepending "loki" to the names of header files. also manually edited lokiThreads.h to #define LOKI_OBJECT_LEVEL_THREADING; this could
 // also be done with a compile FLAG, perhaps would be better.
