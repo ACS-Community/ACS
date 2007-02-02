@@ -1,4 +1,4 @@
-# @(#) $Id: ACSCorba.py,v 1.20 2006/10/11 16:02:37 gchiozzi Exp $
+# @(#) $Id: ACSCorba.py,v 1.21 2007/02/02 09:10:01 agrimstrup Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA,  2001
@@ -27,7 +27,7 @@ Takes care of initializing the ORB and setting initial reference to MACI
 manager. Also provides functions to get service and device references
 from the manager.
 '''
-__revision__ = "$Id: ACSCorba.py,v 1.20 2006/10/11 16:02:37 gchiozzi Exp $"
+__revision__ = "$Id: ACSCorba.py,v 1.21 2007/02/02 09:10:01 agrimstrup Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 from sys       import argv
@@ -410,9 +410,7 @@ def notifyEventChannelFactory():
     
     Raises: ???
     '''
-    necf_corbaloc = "corbaloc::" + getManagerHost() + ":" + getNotifyServicePort() + "/NotifyEventChannelFactory"
-    necf = getORB().string_to_object(necf_corbaloc)
-    
+    necf = getClient().getService('NotifyEventChannelFactory')
     return necf._narrow(CosNotifyChannelAdmin.EventChannelFactory)
 #----------------------------------------------------------------------------
 def archivingChannel():
@@ -449,9 +447,7 @@ def interfaceRepository():
     
     Raises: ???
     '''
-    ifr_corbaloc = "corbaloc::" + getManagerHost() + ":" + getIRPort() + "/InterfaceRepository"
-    ifr = getORB().string_to_object(ifr_corbaloc)
-    
+    ifr = getClient().getService('InterfaceRepository')
     return ifr._narrow(CORBA.Repository)
 #----------------------------------------------------------------------------
 def cdb():
@@ -464,9 +460,7 @@ def cdb():
     
     Raises: ???
     '''
-    cdb_corbaloc = "corbaloc::" + getManagerHost() + ":" + getCDBPort() + "/CDB"
-    cdb_obj = getORB().string_to_object(cdb_corbaloc)
-    
+    cdb_obj = getClient().getService('CDB')
     return cdb_obj._narrow(CDB.DAL)
 #----------------------------------------------------------------------------
 def acsLogSvc():
@@ -479,9 +473,7 @@ def acsLogSvc():
     
     Raises: ???
     '''
-    als_corbaloc = "corbaloc::" + getManagerHost() + ":" + getLogPort() + "/ACSLogSvc"
-    als = getORB().string_to_object(als_corbaloc)
-    
+    als = getClient().getService('ACSLogSvc')
     return als._narrow(ACSLog.LogSvc)
 #----------------------------------------------------------------------------
 def nameService():
@@ -494,9 +486,7 @@ def nameService():
     
     Raises: ???
     '''
-    ns_corbaloc = "corbaloc::" + getManagerHost() + ":" + getNamingServicePort() + "/NameService"
-    ns = getORB().string_to_object(ns_corbaloc)
-    
+    ns = getClient().getService('NameService')
     return ns._narrow(CosNaming.NamingContext)
 #----------------------------------------------------------------------------
 
