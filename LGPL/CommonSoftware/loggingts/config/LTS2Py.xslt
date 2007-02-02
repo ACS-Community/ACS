@@ -21,7 +21,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: LTS2Py.xslt,v 1.2 2007/01/30 13:11:54 nbarriga Exp $"
+# "@(#) $Id: LTS2Py.xslt,v 1.3 2007/02/02 10:23:31 nbarriga Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -32,28 +32,36 @@
 Some form of custom documentation goes here...
 '''
 ######################################################################
-from loggingts.ACSLogTS import ACSLogTS
+from Acspy.Common.Log import getLogger
 import ACSLog
+from socket import gethostname
+from Acspy.Common.TimeHelper import TimeUtil
+import time
+from os import getpid
+from traceback import extract_stack
 ######################################################################
-class </xsl:text><xsl:variable name="typeName"><xsl:value-of select="@name"/></xsl:variable>
-<xsl:value-of select="$typeName"/>
-<xsl:text>(ACSLogTS):#just a formality, need to check if this is needed
-	def __init__(self):
-		ACSLogTS.__init__(self)
-
 </xsl:text>
         <xsl:for-each select="LogDefinition">
 		<xsl:text>class </xsl:text>
         	<xsl:variable name="logName"><xsl:value-of select="@logName"/></xsl:variable>
-		<xsl:value-of select="$logName"/>
-		<xsl:text>(</xsl:text><xsl:value-of select="$typeName"/><xsl:text>):
+		<xsl:value-of select="$logName"/><xsl:text>:
 	def __init__(self):
+		self._members={}
+		self._logger=getLogger("loggingts --")
 		self.name="</xsl:text><xsl:value-of select="$logName"/><xsl:text>"
 		self.shortDescription="</xsl:text><xsl:value-of select="@shortDescription"/><xsl:text>"
-                self.description="</xsl:text><xsl:value-of select="@description"/><xsl:text>"
-                self.URL="</xsl:text><xsl:value-of select="@URL"/><xsl:text>"
                 self.priority=ACSLog.ACS_LOG_</xsl:text><xsl:value-of select="@priority"/><xsl:text>
-                </xsl:text><xsl:value-of select="$typeName"/><xsl:text>.__init__(self)
+
+	def log(self):
+		msg=self.shortDescription
+		data=[ACSLog.NVPair("logName",self.name)]
+		for key, value in self._members.items():
+			data.append(ACSLog.NVPair(str(key),str(value)))
+		cur_stack=extract_stack()
+		rtCont=ACSLog.RTContext("",str(getpid()),str(gethostname()).replace("&lt;", "").replace(">", ""),"","")
+		srcInfo=ACSLog.SourceInfo(str(cur_stack[0][0]),str(cur_stack[0][2]),long(cur_stack[0][1]))
+		timestamp=TimeUtil().py2epoch(time.time()).value
+		self._logger.logTypeSafe(self.priority, timestamp, msg, rtCont, srcInfo, data)
 
 </xsl:text>
 		<xsl:for-each select="Member">
