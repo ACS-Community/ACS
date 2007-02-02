@@ -20,7 +20,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: LTS2Cpp.xslt,v 1.1 2007/01/31 14:03:39 nbarriga Exp $"
+* "@(#) $Id: LTS2Cpp.xslt,v 1.2 2007/02/02 08:52:46 nbarriga Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -33,19 +33,43 @@
 <xsl:value-of select="$typeName"/>
 <xsl:text>.h"
 
+#include &lt;acstimeTimeUtil.h>
+
 using namespace </xsl:text><xsl:value-of select="$typeName"/><xsl:text>;
 
 </xsl:text>
         <xsl:for-each select="LogDefinition">
         	<xsl:variable name="logName"><xsl:value-of select="@logName"/></xsl:variable>
-		<xsl:value-of select="$logName"/><xsl:text>::</xsl:text><xsl:value-of select="$logName"/><xsl:text>(string file, unsigned long line, string routine):
-	ACSLogTS(Logging::ace2acsPriority(ACE_Log_Priority(LM_</xsl:text><xsl:value-of select="@priority"/><xsl:text>)),file,line,routine,"</xsl:text>
-		<xsl:value-of select="$logName"/><xsl:text>","</xsl:text><xsl:value-of select="@shortDescription"/><xsl:text>"){
+		<xsl:value-of select="$logName"/><xsl:text>::</xsl:text><xsl:value-of select="$logName"/><xsl:text>(string file, unsigned long line, string routine){
+	this->priority=Logging::ace2acsPriority(ACE_Log_Priority(LM_</xsl:text><xsl:value-of select="@priority"/><xsl:text>));
+	this->file=file;
+	this->line=line;
+	this->routine=routine;
+	this->name="</xsl:text>
+		<xsl:value-of select="$logName"/><xsl:text>";
+	this->shortDescription="</xsl:text><xsl:value-of select="@shortDescription"/><xsl:text>";
 
 }
 
 </xsl:text>
 		<xsl:value-of select="$logName"/><xsl:text>::~</xsl:text><xsl:value-of select="$logName"/><xsl:text>(){
+
+}
+
+void </xsl:text><xsl:value-of select="$logName"/><xsl:text>::log(){
+        Logging::BaseLog::LogRecord lr;
+        lr.priority=this->priority;
+        lr.message=this->shortDescription;
+        lr.file=this->file;
+        lr.line=this->line;
+        lr.method=this->routine;
+        lr.timeStamp=baci::getTimeStamp();
+        LoggingProxy::AddData("logName",this->name.c_str());
+        for(unsigned int i=0;i&lt;members.length();i++){
+                LoggingProxy::AddData(members[i].name.in(),members[i].value.in());
+        }
+        LoggingProxy::Flags(LM_SOURCE_INFO | LM_RUNTIME_CONTEXT);
+        getLogger()->log(lr);
 
 }
 

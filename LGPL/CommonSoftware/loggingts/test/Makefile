@@ -16,7 +16,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.1 2007/01/31 14:03:39 nbarriga Exp $"
+# "@(#) $Id: Makefile,v 1.2 2007/02/02 08:52:46 nbarriga Exp $"
 #
 # Makefile of ........
 #
@@ -133,12 +133,12 @@ USER_IDL =
 #
 # Jarfiles and their directories
 #
-JARFILES= 
-jjj_DIRS=
+JARFILES=testLTSClient 
+testLTSClient_DIRS=alma
 jjj_EXTRAS= 
 #
 # java sources in Jarfile on/off
-DEBUG= 
+DEBUG= on
 #
 # ACS XmlIdl generation on/off
 #

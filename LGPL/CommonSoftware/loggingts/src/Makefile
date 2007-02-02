@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.2 2007/01/31 14:03:39 nbarriga Exp $"
+# "@(#) $Id: Makefile,v 1.3 2007/02/02 08:52:46 nbarriga Exp $"
 #
 # Makefile of ........
 #
@@ -70,7 +70,7 @@ LIBRARIES_L     =
 
 #
 # <brief description of ACSLogTypeExample library> THIS NEEDS a way to do it automatically
-ACSLogTypeExample_OBJECTS   = ACSLogTypeExample ACSLogTS
+ACSLogTypeExample_OBJECTS   = ACSLogTypeExample
 
 #
 # Scripts (public and local)
@@ -127,12 +127,12 @@ USER_IDL =
 #
 # Jarfiles and their directories
 #
-JARFILES= 
-jjj_DIRS=
+JARFILES=simpleLog 
+simpleLog_DIRS=alma
 jjj_EXTRAS= 
 #
 # java sources in Jarfile on/off
-DEBUG= 
+DEBUG= on
 #
 # ACS XmlIdl generation on/off
 #

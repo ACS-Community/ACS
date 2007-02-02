@@ -27,7 +27,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: LTS2H.xslt,v 1.1 2007/01/31 14:03:39 nbarriga Exp $"
+* "@(#) $Id: LTS2H.xslt,v 1.2 2007/02/02 08:52:46 nbarriga Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -43,7 +43,12 @@
 #error This is a C++ include file and cannot be used from plain C
 #endif
 
-#include "ACSLogTS.h"
+#include &lt;string>
+#include &lt;acslogS.h>
+#include &lt;loggingACSLogger.h>
+#include &lt;logging.h>
+
+using namespace std;
 
 namespace </xsl:text><xsl:value-of select="@name"/>
 <xsl:text>{
@@ -52,9 +57,15 @@ namespace </xsl:text><xsl:value-of select="@name"/>
         <xsl:for-each select="LogDefinition">
 		<xsl:text>class </xsl:text>
         	<xsl:variable name="logName"><xsl:value-of select="@logName"/></xsl:variable>
-		<xsl:value-of select="$logName"/><xsl:text>: public ACSLogTS{
+		<xsl:value-of select="$logName"/><xsl:text>{
 	private:
-
+                Logging::BaseLog::Priority priority;
+                string file;
+                unsigned long line;
+                string routine;
+                string name;
+                string shortDescription;
+                ACSLog::NVPairSeq members;
 	protected:
 
 	public:
@@ -62,6 +73,7 @@ namespace </xsl:text><xsl:value-of select="@name"/>
                         unsigned long line,
                         string routine);
                 ~</xsl:text><xsl:value-of select="$logName"/><xsl:text>();
+		void log();
 </xsl:text>
 		<xsl:for-each select="Member">
 		<xsl:text>		void set</xsl:text><xsl:value-of select="@name"/>
@@ -75,7 +87,7 @@ namespace </xsl:text><xsl:value-of select="@name"/>
 <xsl:text>
 };
 
-#endif /*!ACSLogTypeExample_H*/
+#endif /*_ACSLogTypeExample_H*/
 </xsl:text>
 </xsl:template>
 </xsl:stylesheet>
