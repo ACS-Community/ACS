@@ -25,35 +25,23 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
-import java.awt.Toolkit;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.io.File;
 import java.io.IOException;
 
 import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JComboBox;
-import javax.swing.JComponent;
 import javax.swing.JFileChooser;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JRootPane;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
-import javax.swing.JToolBar;
 import javax.swing.JViewport;
-import javax.swing.KeyStroke;
 import javax.swing.event.MenuEvent;
 import javax.swing.filechooser.FileFilter;
 
@@ -61,7 +49,6 @@ import alma.acs.logging.archive.ArchiveConnectionManager;
 import alma.acs.logging.archive.QueryDlg;
 import alma.acs.logging.dialogs.main.LogEntryTable;
 import alma.acs.logging.dialogs.main.LogMenuBar;
-import alma.acs.logging.dialogs.main.LogFrame;
 import alma.acs.logging.dialogs.main.LogToolBar;
 import alma.acs.logging.preferences.UserPreferences;
 
@@ -71,11 +58,9 @@ import com.cosylab.logging.engine.ACS.ACSRemoteLogListener;
 import com.cosylab.logging.engine.ACS.ACSLogConnectionListener;
 import com.cosylab.logging.engine.ACS.LCEngine;
 import com.cosylab.logging.engine.log.ILogEntry;
-import com.cosylab.logging.engine.log.LogTypeHelper;
 import com.cosylab.logging.search.SearchDialog;
 import com.cosylab.logging.settings.ErrorLogDialog;
 import com.cosylab.logging.settings.ExpertPrefsDlg;
-import com.cosylab.logging.settings.LogTypeRenderer;
 import com.cosylab.logging.stats.StatsDlg;
 
 /**
@@ -191,11 +176,6 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 	// The label where the icon representing the status of the connection 
 	// with the DB is shown
 	private JLabel connectionDBLbl;
-	
-	// The panel with all the GUI controls inside
-	//
-	// It cobtains the menu bar and the tool bar too.
-	private LogFrame panel;
 	
     // The toolbar
     private LogToolBar toolBar = new LogToolBar();
@@ -436,7 +416,7 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 	 * @throws Exception
 	 */
 	public void pause() throws Exception {
-		if (toolBar.getPauseBtn().getText().equals(toolBar.playStr)) {
+		if (toolBar.getPauseBtn().getText().equals(LogToolBar.playStr)) {
 			tableModel.scrollLock(toolBar.clickPauseBtn());
 		}
 	}
@@ -449,7 +429,7 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 	 * @throws Exception
 	 */
 	public void resume() throws Exception {
-		if (toolBar.getPauseBtn().getText().equals(toolBar.pauseStr)) {
+		if (toolBar.getPauseBtn().getText().equals(LogToolBar.pauseStr)) {
 			tableModel.scrollLock(toolBar.clickPauseBtn());
 		}
 	}
