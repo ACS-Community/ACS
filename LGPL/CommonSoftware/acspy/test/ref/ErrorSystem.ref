@@ -12,7 +12,7 @@
 1 -             Code=0,
 1 -             ShortDescrip=A Python exception,
 1 -             Severity=Error,
-1 -   File "/home/nbarriga/ACS/LGPL/CommonSoftware/acspy/bin/acspyTestError", line 55, in fakeCORBAMethod
+1 -   File "acspyTestError", line xxx, in fakeCORBAMethod
 1 -     raise Exception("fake python exception")
 1 - Exception: fake python exception
 1 - ; )
@@ -40,7 +40,7 @@
 1 -                 Code=0,
 1 -                 ShortDescrip=A Python exception,
 1 -                 Severity=Error,
-1 -   File "/home/nbarriga/ACS/LGPL/CommonSoftware/acspy/bin/acspyTestError", line 55, in fakeCORBAMethod
+1 -   File "acspyTestError", line xxx, in fakeCORBAMethod
 1 -     raise Exception("fake python exception")
 1 - Exception: fake python exception
 1 - ; )
@@ -80,7 +80,7 @@
 1 -                     Code=0,
 1 -                     ShortDescrip=A Python exception,
 1 -                     Severity=Error,
-1 -   File "/home/nbarriga/ACS/LGPL/CommonSoftware/acspy/bin/acspyTestError", line 55, in fakeCORBAMethod
+1 -   File "acspyTestError", line xxx, in fakeCORBAMethod
 1 -     raise Exception("fake python exception")
 1 - Exception: fake python exception
 1 - ; )
@@ -132,7 +132,7 @@
 1 -                         Code=0,
 1 -                         ShortDescrip=A Python exception,
 1 -                         Severity=Error,
-1 -   File "/home/nbarriga/ACS/LGPL/CommonSoftware/acspy/bin/acspyTestError", line 55, in fakeCORBAMethod
+1 -   File "acspyTestError", line xxx, in fakeCORBAMethod
 1 -     raise Exception("fake python exception")
 1 - Exception: fake python exception
 1 - ; )
@@ -186,7 +186,7 @@
 1 -                         Code=0,
 1 -                         ShortDescrip=A Python exception,
 1 -                         Severity=Error,
-1 -   File "/home/nbarriga/ACS/LGPL/CommonSoftware/acspy/bin/acspyTestError", line 55, in fakeCORBAMethod
+1 -   File "acspyTestError", line xxx, in fakeCORBAMethod
 1 -     raise Exception("fake python exception")
 1 - Exception: fake python exception
 1 - ; )
@@ -237,7 +237,7 @@
 1 -                         Code=0,
 1 -                         ShortDescrip=A Python exception,
 1 -                         Severity=Error,
-1 -   File "/home/nbarriga/ACS/LGPL/CommonSoftware/acspy/bin/acspyTestError", line 55, in fakeCORBAMethod
+1 -   File "acspyTestError", line xxx, in fakeCORBAMethod
 1 -     raise Exception("fake python exception")
 1 - Exception: fake python exception
 1 - ; )
@@ -269,7 +269,7 @@
 1 -                 Code=0,
 1 -                 ShortDescrip=A Python exception,
 1 -                 Severity=Error,
-1 -   File "/home/nbarriga/ACS/LGPL/CommonSoftware/acspy/bin/acspyTestError", line 119, in fakeCORBAMethodNew
+1 -   File "acspyTestError", line xxx, in fakeCORBAMethodNew
 1 -     raise Exception("fake python exception")
 1 - Exception: fake python exception
 1 - ; )
@@ -309,7 +309,7 @@
 1 -                     Code=0,
 1 -                     ShortDescrip=A Python exception,
 1 -                     Severity=Error,
-1 -   File "/home/nbarriga/ACS/LGPL/CommonSoftware/acspy/bin/acspyTestError", line 119, in fakeCORBAMethodNew
+1 -   File "acspyTestError", line xxx, in fakeCORBAMethodNew
 1 -     raise Exception("fake python exception")
 1 - Exception: fake python exception
 1 - ; )
@@ -361,7 +361,7 @@
 1 -                         Code=0,
 1 -                         ShortDescrip=A Python exception,
 1 -                         Severity=Error,
-1 -   File "/home/nbarriga/ACS/LGPL/CommonSoftware/acspy/bin/acspyTestError", line 119, in fakeCORBAMethodNew
+1 -   File "acspyTestError", line xxx, in fakeCORBAMethodNew
 1 -     raise Exception("fake python exception")
 1 - Exception: fake python exception
 1 - ; )

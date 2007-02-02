@@ -17,3 +17,4 @@ s/Process=PID: [0-9]*/Process=PID: xxx/g
 s/RTContext: ([0-9,a-z,A-Z,-,_]*, [0-9,a-z,A-Z,-,_]*, [0-9,a-z,A-Z,-,_]*, [0-9,a-z,A-Z,-,_]*,/RTContext: (xxx, xxx, xxx, xxx/g
 s/Thread=ID: [0-9]*/Thread=ID: xxx/g
 s/Process=[0-9]*/Process=xxx/g
+s/File "\/.*\/\(.*\)", line [0-9]*/File "\1", line xxx/g
