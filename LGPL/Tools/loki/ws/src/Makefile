@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: Makefile,v 1.5 2007/02/01 17:29:01 sharring Exp $"
+# "@(#) $Id: Makefile,v 1.6 2007/02/02 21:27:42 bjeram Exp $"
 #
 # Makefile of ........
 #
@@ -19,7 +19,8 @@
 
 #
 # user definable C-compilation flags
-USER_CFLAGS = -DLOKI_OBJECT_LEVEL_THREADING
+USER_CFLAGS = -DLOKI_OBJECT_LEVEL_THREADING -DLOKI_MAKE_DLL 
+#-DATEXIT_FIXED
 
 #
 # additional include and library search paths
