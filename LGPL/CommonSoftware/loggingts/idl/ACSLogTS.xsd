@@ -1,15 +1,53 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <!-- created by Nicolas Barriga-->
+<!--
+<xs:annotation>
+<xs:documentation>
+</xs:documentation>
+</xs:annotation>
+-->
 <xs:schema 
 	xmlns:loggingts="Alma/ACSLogTS" 
 	xmlns:xs="http://www.w3.org/2001/XMLSchema" 
 	targetNamespace="Alma/ACSLogTS" 
 	elementFormDefault="qualified" 
 	attributeFormDefault="unqualified">
+	<xs:annotation>
+		<xs:documentation>
+This schema describes type safe logs, that are used on top of the normal free format logs, provided by the log system. It is mainly intended for Operational logs of direct interest for the operator of the system, while free format logs are used for post-mortem analysis and debugging.
+		</xs:documentation>
+	</xs:annotation>
 	<xs:element name="LogDefinitionType">
+	        <xs:annotation>
+        	        <xs:documentation>
+This element is used to describe and group together all the log definitions in the same file.
+                	</xs:documentation>
+       	 	</xs:annotation>
+
 		<xs:complexType>
 			<xs:choice maxOccurs="unbounded">
 				<xs:element name="LogDefinition" maxOccurs="unbounded">
+					<xs:annotation>
+						<xs:documentation>
+This element contains all the information for the code generation of the type safe logs, plus information for documentation purposes. Each LogDefinition will become a new class, with a standardized interface in all three languages supported by ACS(C++, Java and Python).
+
+CPP API:
+	SampleLog mylog(__FILE__, __LINE__, "routine")
+	mylog.setSomeMember("value") //sets member SomeMember="value" 
+	mylog.log()
+
+Java API:
+	SampleLog mylog = new SampleLog(mylogger);
+	mylog.setSomeMember("value"); //sets member SomeMember="value" 
+	mylog.log();
+
+Python API:
+	mylog = SampleLog() #filename, line number and function can be extracted at runtime
+	mylog.setSomeMember("value") #sets member SomeMember="value" 
+	mylog.log()
+
+						</xs:documentation>
+					</xs:annotation>
 					<xs:complexType>
 						<xs:choice minOccurs="0" maxOccurs="unbounded">
 							<xs:element name="Member" type="loggingts:Member_"/>
@@ -30,51 +68,81 @@
 		</xs:complexType>
 	</xs:element>
 	<xs:complexType name="Member_">
+		<xs:annotation>
+			<xs:documentation>
+Member elements define name-value pairs with additional information for the log. For example a log informing that someone logged in, could have as additional information: username:"John Doe", indicating who logged in.
+			</xs:documentation>
+		</xs:annotation>
 		<xs:attribute name="name" type="loggingts:nameType" use="required"/>
 		<xs:attribute name="type" type="loggingts:MemberTypes" use="required"/>
 		<xs:attribute name="description" type="loggingts:nonEmptyString" use="optional"/>
 	</xs:complexType>
-	<!--  type for names that are mapped into class names -->
 	<xs:simpleType name="nameType">
+		<xs:annotation>
+			<xs:documentation>
+Type for names that are mapped into class names.
+			</xs:documentation>
+		</xs:annotation>
 		<xs:restriction base="xs:NCName">
 			<xs:minLength value="1"/>
 			<xs:pattern value="[\c-[.,\-]]*"/>
 		</xs:restriction>
 	</xs:simpleType>
-	<!-- types definition                                                                   -->
 	<xs:simpleType name="logType">
+		<xs:annotation>
+			<xs:documentation>
+the 'type' field of the LogDefinition is a non negative integer.
+			</xs:documentation>
+		</xs:annotation>
 		<xs:restriction base="xs:nonNegativeInteger"/>
 	</xs:simpleType>
-	<!--  type for prefix                                                           -->
+<!--  type for prefix                                                           
 	<xs:simpleType name="prefixType">
 		<xs:restriction base="xs:NCName">
 			<xs:minLength value="1"/>
 			<xs:pattern value="[\c-[\-]]*"/>
 		</xs:restriction>
 	</xs:simpleType>
-	<!--        non empty string                                                        -->
+-->
 	<xs:simpleType name="nonEmptyString">
+		<xs:annotation>
+			<xs:documentation>
+Defines a type for a string with minimal length 1.
+			</xs:documentation>
+		</xs:annotation>
 		<xs:restriction base="xs:string">
 			<xs:minLength value="1"/>
 		</xs:restriction>
 	</xs:simpleType>
-	<!-- short description string. Maximal length is 50. If you change it ,code has to be changed, too !!! -->
 	<xs:simpleType name="shortDescriptionString">
+		<xs:annotation>
+			<xs:documentation>
+Log short description string. Arbitrarily the maximal length is set at 50.
+			</xs:documentation>
+		</xs:annotation>
 		<xs:restriction base="loggingts:nonEmptyString">
 			<xs:minLength value="1"/>
 			<xs:maxLength value="50"/>
 		</xs:restriction>
 	</xs:simpleType>
-	<!-- definition for Member                                                       -->
 	<xs:simpleType name="MemberTypes">
+		<xs:annotation>
+			<xs:documentation>
+Type of the member value. Can be double, long or string.
+			</xs:documentation>
+		</xs:annotation>
 		<xs:restriction base="loggingts:nonEmptyString">
 			<xs:enumeration value="double"/>
 			<xs:enumeration value="long"/>
 			<xs:enumeration value="string"/>
 		</xs:restriction>
 	</xs:simpleType>
-	<!-- Priority                                                      -->
 	<xs:simpleType name="priorityType">
+		<xs:annotation>
+			<xs:documentation>
+Type for priority. Just lists all the priorities defined for the ACS logging system.
+			</xs:documentation>
+		</xs:annotation>
 		<xs:restriction base="loggingts:nonEmptyString">
 			<xs:enumeration value="TRACE"/>
 			<xs:enumeration value="DEBUG"/>
