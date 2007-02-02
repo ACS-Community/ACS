@@ -2,6 +2,7 @@ package si.ijs.acs.objectexplorer;
 
 import java.awt.Color;
 import java.awt.event.InputEvent;
+import java.util.List;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
@@ -24,6 +25,7 @@ import si.ijs.acs.objectexplorer.engine.RemoteResponse;
 import com.cosylab.gui.components.r2.DataFormatter;
 import com.cosylab.gui.components.r2.SmartPanel;
 import com.cosylab.gui.components.r2.SmartTextPane;
+import com.cosylab.util.CircularArrayList;
 /**
  * Insert the type's description here.
  * Creation date: (11/2/00 8:17:28 PM)
@@ -146,7 +148,7 @@ public class RemoteResponseWindow extends JFrame implements OperationInvocator, 
 	private int maxLines = 500;
 //CHART
 	private java.util.ArrayList numberIndexes = new java.util.ArrayList();
-	private java.util.ArrayList chartData = new java.util.ArrayList();
+	private List<double[]> chartData = new CircularArrayList<double[]>();
 	private int selectedChartValue = -1;
 	private int selectedChartXValue = -1;
 	private double[] mins=null;
