@@ -15,6 +15,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 
@@ -171,6 +173,8 @@ public class RemoteResponseWindow extends JFrame implements OperationInvocator, 
 	private SmartPanel ivjOperations = null;
 	private SmartPanel ivjTrendPanel = null;
 	private boolean disposeOnDestroy=false;
+	
+	private volatile boolean textOutputTabSelected = false;
 
 	private Style redStyle = null;
 	private Style blackStyle = null;
@@ -1199,6 +1203,18 @@ private javax.swing.JTabbedPane getResultPanel() {
 			ivjResultPanel.insertTab("Text output", null, getTextPanel(), null, 0);
 			ivjResultPanel.insertTab("Trend", null, getTrendPanel(), null, 1);
 			ivjResultPanel.insertTab("Operations", null, getOperations(), null, 2);
+			// set trend as default
+			ivjResultPanel.setSelectedIndex(1);
+			// text output switch
+			ivjResultPanel.addChangeListener(new ChangeListener() {
+		        // This method is called whenever the selected tab changes
+		        public void stateChanged(ChangeEvent evt) {
+		            JTabbedPane pane = (JTabbedPane)evt.getSource();
+		    
+		            // Get current tab
+		            textOutputTabSelected = (pane.getSelectedIndex() == 0);
+		        }
+		    });
 			// user code begin {1}
 			// user code end
 		} catch (java.lang.Throwable ivjExc) {
@@ -1472,7 +1488,7 @@ public void jList2_MouseClicked(java.awt.event.MouseEvent mouseEvent) {
 			}
 		}
 		if (doParams)
-			new CallMethodDialog(op, this, true, notifier, this).show();
+			new CallMethodDialog(op, this, true, notifier, this).setVisible(true);
 		else
 			invokeOperation(op, new Object[op.getParameterTypes().length]);
 	}
@@ -1628,45 +1644,49 @@ public void reportRemoteResponse(RemoteResponse response) {
 		
 	    processChartValues(response);
 		
-		boolean errorResponse = response.isErrorResponse(); 
-
-		String resultString = processResponse(response, errorResponse | isExpand());
-
-		if (reportLength==-1) {
-	        reportLength=DataFormatter.getLineCount(resultString);
-			editing=true;
-			jTextField1_ActionPerformed();
-		}
-
-		if (getState() == java.awt.Frame.ICONIFIED) {
-			minimText.append(resultString);
-			if (minimTextReportCount > maxLines) {
-				minimText.delete(0, resultString.length());
-			}
-			else minimTextReportCount++;
-		}
-		else
-		{
-			SmartTextPane resultArea = getReportArea();
-			try
-			{
-				if (errorResponse)
-				{
-					// needed since carent does not point always to the end
-					resultArea.setCaretPosition(resultArea.getText().length());
-					resultArea.setLogicalStyle(redStyle);
-				}
-				
-				resultArea.append(resultString);
+	    // process text output only if tab is enabled
+	    if (textOutputTabSelected)
+	    {
+			boolean errorResponse = response.isErrorResponse(); 
 	
-				if (errorResponse)
-					resultArea.append("\n");
+			String resultString = processResponse(response, errorResponse | isExpand());
+	
+			if (reportLength==-1) {
+		        reportLength=DataFormatter.getLineCount(resultString);
+				editing=true;
+				jTextField1_ActionPerformed();
 			}
-			finally
+	
+			if (getState() == java.awt.Frame.ICONIFIED) {
+				minimText.append(resultString);
+				if (minimTextReportCount > maxLines) {
+					minimText.delete(0, resultString.length());
+				}
+				else minimTextReportCount++;
+			}
+			else
 			{
-			    resultArea.setLogicalStyle(blackStyle);
+				SmartTextPane resultArea = getReportArea();
+				try
+				{
+					if (errorResponse)
+					{
+						// needed since carent does not point always to the end
+						resultArea.setCaretPosition(resultArea.getText().length());
+						resultArea.setLogicalStyle(redStyle);
+					}
+					
+					resultArea.append(resultString);
+		
+					if (errorResponse)
+						resultArea.append("\n");
+				}
+				finally
+				{
+				    resultArea.setLogicalStyle(blackStyle);
+				}
 			}
-		}
+	    }
 	}
 		
 }
