@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.1 2005/02/17 18:25:15 dfugate Exp $"
+# "@(#) $Id: Makefile,v 1.2 2007/02/05 09:42:57 nbarriga Exp $"
 #
 # Makefile of ........
 #
@@ -107,7 +107,7 @@ tttlll_OBJECTS  =
 #
 # Configuration Database Files
 # ----------------------------
-CDB_SCHEMAS = 
+CDB_SCHEMAS = commontypes
 
 # 
 # IDL Files and flags
@@ -162,7 +162,7 @@ ASCII_TO_MIF =
 #
 # other files to be installed
 #----------------------------
-INSTALL_FILES =
+INSTALL_FILES = 
 
 #
 # list of all possible C-sources (used to create automatic dependencies)
