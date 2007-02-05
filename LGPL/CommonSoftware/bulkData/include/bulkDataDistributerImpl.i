@@ -51,6 +51,7 @@ void BulkDataDistributerImpl<TReceiverCallback, TSenderCallback>::connect(bulkda
     // single connect not allowed
     ACS_SHORT_LOG((LM_ERROR,"BulkDataDistributerImpl::connect AVFlowEndpointErrorExImpl single connection not allowed"));
     AVConnectErrorExImpl err = AVConnectErrorExImpl(__FILE__,__LINE__,"BulkDataDistributerImpl::connect");
+    err.log(LM_DEBUG);
     throw err.getAVConnectErrorEx();
 }
 
@@ -112,21 +113,19 @@ void BulkDataDistributerImpl<TReceiverCallback, TSenderCallback>::multiConnect(b
     catch(ACSErr::ACSbaseExImpl &ex)
 	{
 	AVConnectErrorExImpl err = AVConnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataDistributerImpl::multiConnect");
+	err.log(LM_DEBUG);
 	throw err.getAVConnectErrorEx();
 	}
-    /*catch(CORBA::UserException &ex) //is the base of the remote exceptions
-	{
-	AVConnectErrorExImpl err = AVConnectErrorExImpl(__FILE__,__LINE__,"BulkDataDistributerImpl::multiConnect");
-	throw err.getAVConnectErrorEx();
-	}*/
     catch(AVOpenReceiverErrorEx &ex)
 	{
 	AVConnectErrorExImpl err = AVConnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataDistributerImpl::multiConnect");
+	err.log(LM_DEBUG);
 	throw err.getAVConnectErrorEx();
 	}
     catch(AVReceiverConfigErrorEx &ex)
 	{
 	AVConnectErrorExImpl err = AVConnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataDistributerImpl::multiConnect");
+	err.log(LM_DEBUG);
 	throw err.getAVConnectErrorEx();
 	}
    catch(...)
@@ -180,15 +179,21 @@ template<class TReceiverCallback, class TSenderCallback>
 void BulkDataDistributerImpl<TReceiverCallback, TSenderCallback>::multiDisconnect(bulkdata::BulkDataReceiver_ptr receiverObj_p)
     throw (CORBA::SystemException, AVDisconnectErrorEx)
 {
-    
     ACE_CString recvName = receiverObj_p->name();
 
     try
 	{
 	distributer.multiDisconnect(recvName);
 	}
+    catch(ACSErr::ACSbaseExImpl &ex)
+	{
+	AVDisconnectErrorExImpl err = AVDisconnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataDistributerImpl::multiDisconnect");
+	err.log(LM_DEBUG);
+	throw err.getAVDisconnectErrorEx();
+	}
     catch(...)
 	{
+	ACS_SHORT_LOG((LM_ERROR,"BulkDataDistributerImpl::multiDisconnect UNKNOWN exception"));
 	AVDisconnectErrorExImpl err = AVDisconnectErrorExImpl(__FILE__,__LINE__,"BulkDataDistributerImpl::disconnect");
 	throw err.getAVDisconnectErrorEx();
 	}

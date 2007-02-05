@@ -150,8 +150,7 @@ namespace AcsBulkdata
 	CORBA::ULong numberOfFlows;
 	CORBA::ULong offset;
 
-	ContainerServices * contSvc_p;
-
+	ContainerServices *contSvc_p;
     };
 }
 

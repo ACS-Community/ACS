@@ -66,15 +66,15 @@ void BulkDataSenderImpl<TSenderCallback>::connect(bulkdata::BulkDataReceiver_ptr
 
     try
 	{
-	sender.initialize();
+	getSender()->initialize();
 
-	sender.createMultipleFlows(buf);
+	getSender()->createMultipleFlows(buf);
 
 	receiverObj_p->openReceiver();
 
 	bulkdata::BulkDataReceiverConfig *receiverConfig = receiverObj_p->getReceiverConfig();
 
-	sender.connectToPeer(receiverConfig);
+	getSender()->connectToPeer(receiverConfig);
 
 	receiverObj_p->setRecvName(receiverObj_p->name());
 
@@ -91,11 +91,6 @@ void BulkDataSenderImpl<TSenderCallback>::connect(bulkdata::BulkDataReceiver_ptr
 	err.log(LM_DEBUG);
 	throw err.getAVConnectErrorEx();
 	}
-    /*catch(CORBA::UserException &ex) //is the base of the remote exceptions
-	{
-	AVConnectErrorExImpl err = AVConnectErrorExImpl(__FILE__,__LINE__,"BulkDataSenderImpl::connect");
-	throw err.getAVConnectErrorEx();
-	}*/
     catch(AVOpenReceiverErrorEx &ex)
 	{
 	AVConnectErrorExImpl err = AVConnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataSenderImpl::connect");
@@ -148,6 +143,7 @@ void BulkDataSenderImpl<TSenderCallback>::disconnect()
 		while(loop)
 		    {
 		    CompletionImpl comp = receiverObj_m->getCbStatus(i+1);
+
 /*
   if(comp.getCode() == ACSBulkDataStatus::AVCbReady)
   cout << "ACSBulkDataStatus::AVCbReady" << endl;
@@ -161,7 +157,8 @@ void BulkDataSenderImpl<TSenderCallback>::disconnect()
   cout << "ACSBulkDataStatus::AVCbWorkingTimeout" << endl;
   if(comp.getCode() == ACSBulkDataStatus::AVCbNotAvailable)
   cout << "ACSBulkDataStatus::AVCbNotAvailable" << endl;
-*/		   
+*/
+		   
 		    if ((comp.getCode() == ACSBulkDataStatus::AVCbReady) || 
 			(comp.getCode() == ACSBulkDataStatus::AVCbTimeout))
 			{
@@ -181,6 +178,14 @@ void BulkDataSenderImpl<TSenderCallback>::disconnect()
 	throw err.getAVDisconnectErrorEx();
 	}
     catch(AVInvalidFlowNumberEx &ex)
+	{   
+	getSender()->disconnectPeer();
+
+	AVDisconnectErrorExImpl err = AVDisconnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataSenderImpl::disconnect");
+	err.log(LM_DEBUG);
+	throw err.getAVDisconnectErrorEx();
+	}
+    catch(AVFlowEndpointErrorEx &ex)
 	{   
 	getSender()->disconnectPeer();
 

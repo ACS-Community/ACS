@@ -22,7 +22,7 @@ AcsBulkdata::BulkDataSender<TSenderCallback>::~BulkDataSender()
 // we do not remove the handler; this will
 // cause problems if the user forget to call disconnect,
 // but at least the container will not crash when an exception occurs
-
+	
 	deleteConnector();
 	deleteStreamCtrl();
 	deleteFepsA();
@@ -1051,7 +1051,7 @@ void AcsBulkdata::BulkDataSender<TSenderCallback>::deleteHandler()
 
 	if(fep == 0)
 	    {
-	    AVFlowEndpointErrorExImpl err = AVFlowEndpointErrorExImpl(__FILE__,__LINE__,"BulkDataSender<>::deleteHandler");
+	    AVFlowEndpointErrorExImpl err = AVFlowEndpointErrorExImpl(__FILE__,__LINE__,"BulkDataSender::deleteHandler");
 	    throw err;
 	    }
         else
