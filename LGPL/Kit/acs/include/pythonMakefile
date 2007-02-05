@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ALMA project
 #
-# "@(#) $Id: pythonMakefile,v 1.75 2006/02/02 15:25:17 mzampare Exp $"
+# "@(#) $Id: pythonMakefile,v 1.76 2007/02/05 22:21:35 mzampare Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -164,24 +164,62 @@ ifneq ($(strip $(PY_MODULES)),)
 		done
 endif
 
+# STRUCTURE
+#install_python_packages: install_pp_alpha 
+#
+#install_pp_alpha: $(LIB)/python/site-packages/alpha/alpha1.py $(LIB)/python/site-packages/alpha/alpha1.pyc $(LIB)/python/site-packages/alpha/alpha2.py $(LIB)/python/site-packages/alpha/alpha2.pyc
+#
+#../lib/python/site-packages/alpha/%.pyc: alpha/%.py: 
+#	compile instructions
+#
+#$(LIB)/lib/python/site-packages/alpha/%.py: ../lib/python/site-packages/alpha/%.py
+#	cp 
+#$(LIB)/lib/python/site-packages/alpha/%.pyc: ../lib/python/site-packages/alpha/%.pyc
+#	cp 
+
+
 install_python_packages:
 ifneq ($(strip $(PY_PACKAGES)),)
-	-@$(ECHO) "install_python_packages: python_packages_begin $(foreach member, $(PY_PACKAGES), $(LIB)/python/site-packages/$(member)  )" >>$(FILE)
+	-@$(ECHO) "" >>$(FILE);
+	-@$(ECHO) "install_python_packages: python_packages_begin $(foreach member, $(PY_PACKAGES), install_pp_$(member)  )" >>$(FILE)
 	-@$(ECHO) "python_packages_begin:" >>$(FILE)
+#
+
 	-@$(ECHO) "	-@echo \"\"; $(ECHO) \"......python_packages:\"" >>$(FILE)
-	-$(AT) for member in $(foreach name, $(PY_PACKAGES), $(name) ); \
+	$(AT) for member in $(foreach name, $(PY_PACKAGES), $(name) ); \
 		do \
-		    $(ECHO) "$(LIB)/python/site-packages/$${member}: `find ../lib/python/site-packages/$${member} -type f |tr  '\n' ' '`" >>$(FILE);\
-		    $(ECHO) "	-\$$(AT)echo \"\t$${member}\";\\" >>$(FILE);\
-		    $(ECHO) "	cp -pr ../lib/python/site-packages/$${member} $(LIB)/python/site-packages;\\" >>$(FILE);\
-		    $(ECHO) "	find $(LIB)/python/site-packages/$${member} -type f -exec chmod $(P644) {} \\; ;\\" >>$(FILE);\
-		    $(ECHO) "	find $(LIB)/python/site-packages/$${member} -type d -exec chmod $(P755) {} \\; ;\\" >>$(FILE);\
-		    $(ECHO) "	python $(PYTHON_ROOT)/lib/python$(PYTHON_VERS)/compileall.py ../lib/python/site-packages/$${member} ;\\" >>$(FILE);\
-		    $(ECHO) "	cp ../lib/python/site-packages/$${member}/*.pyc $(LIB)/python/site-packages/$${member};\\" >>$(FILE);\
-		    $(ECHO) "	chmod $(P644) $(LIB)/python/site-packages/$${member}/*.pyc" >>$(FILE);\
-		    $(ECHO) "	touch $(LIB)/python/site-packages/$${member}" >>$(FILE);\
+		     $(ECHO) "$${member}_FILES := \$$(shell find $${member} -type f -name \*.py | sed -n 's/\(.*\).py/\1/p' | tr '\\\\n' ' ' ) " >>$(FILE);\
+		    $(ECHO) "" >>$(FILE);\
+		    $(ECHO) "" >>$(FILE);\
+		    $(ECHO) ".PHONY : install_pp_$${member}" >>$(FILE);\
+		    $(ECHO) "install_pp_$${member}: \$$(addsuffix .py, \$$(addprefix $(LIB)/python/site-packages/,  \$$($${member}_FILES))) \$$(addsuffix .pyc, \$$(addprefix $(LIB)/python/site-packages/,  \$$($${member}_FILES))) " >>$(FILE);\
+                    $(ECHO) "" >>$(FILE);\
+		    for dir in `find $${member} -type d ! -name CVS`; \
+			do \
+                    $(ECHO) "# copy python source from ../lib into INTROOT" >>$(FILE);\
+		    $(ECHO) "$(LIB)/python/site-packages/$${dir}/%.py: ../lib/python/site-packages/$${dir}/%.py " >>$(FILE);\
+		    $(ECHO) "	\$$(AT)mkdir -p $(LIB)/python/site-packages/$${dir}  " >>$(FILE);\
+		    $(ECHO) "	\$$(AT)$(ECHO) \"installing \$$@ \" " >>$(FILE);\
+		    $(ECHO) "	\$$(AT)cp -pr  \$$< $(LIB)/python/site-packages/$${dir}  " >>$(FILE);\
+                    $(ECHO) "	\$$(AT)chmod $(P644) \$$@ " >>$(FILE);\
+                    $(ECHO) "" >>$(FILE);\
+                    $(ECHO) "# copy python binaries from ../lib into INTROOT" >>$(FILE);\
+		    $(ECHO) "$(LIB)/python/site-packages/$${dir}/%.pyc: ../lib/python/site-packages/$${dir}/%.pyc " >>$(FILE);\
+		    $(ECHO) "	\$$(AT)mkdir -p $(LIB)/python/site-packages/$${dir} " >>$(FILE);\
+		    $(ECHO) "	\$$(AT)cp -pr  \$$< $(LIB)/python/site-packages/$${dir}  " >>$(FILE);\
+                    $(ECHO) "	\$$(AT)chmod $(P644) \$$@ "  >>$(FILE);\
+                    $(ECHO) "" >>$(FILE);\
+                    $(ECHO) "# compile python sources into .pyc files, in ../lib" >>$(FILE);\
+		    $(ECHO) "../lib/python/site-packages/$${dir}/%.pyc: $${dir}/%.py" >>$(FILE);\
+		    $(ECHO) "	\$$(AT)echo \"Compiling python $${member}\" " >>$(FILE);\
+		    $(ECHO) "	\$$(AT)python $(PYTHON_ROOT)/lib/python$(PYTHON_VERS)/compileall.py ../lib/python/site-packages/$${member} " >>$(FILE);\
+                    $(ECHO) "" >>$(FILE);\
+		    done; \
 		done
 endif
+
+
+
 
 install_pythondoc:
 	-@$(ECHO) "install_pythondoc: pythondoc_begin" >>$(FILE)
