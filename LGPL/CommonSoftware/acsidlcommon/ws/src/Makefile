@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.2 2007/02/05 09:42:57 nbarriga Exp $"
+# "@(#) $Id: Makefile,v 1.3 2007/02/05 13:00:00 nbarriga Exp $"
 #
 # Makefile of ........
 #
@@ -135,7 +135,7 @@ COMPONENT_HELPERS=
 #
 # Java Entity Classes generation on/off
 #
-XSDBIND=
+XSDBIND = commontypes
 #
 # Schema Config files for the above
 #
