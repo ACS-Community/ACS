@@ -1,7 +1,7 @@
 <!-- created by Nicolas Barriga-->
-<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:loggingts="Alma/ACSLogTS">
         <xsl:output method="text" version="1.0" encoding="ASCII"/>
-        <xsl:template match="/LogDefinitionType">
+        <xsl:template match="/loggingts:LogDefinitionType">
 <xsl:text>#ifndef _</xsl:text>
                 <xsl:value-of select="@name"/>
                 <xsl:text>_H_</xsl:text>
@@ -27,7 +27,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: LTS2H.xslt,v 1.2 2007/02/02 08:52:46 nbarriga Exp $"
+* "@(#) $Id: LTS2H.xslt,v 1.3 2007/02/05 13:01:54 nbarriga Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -54,7 +54,7 @@ namespace </xsl:text><xsl:value-of select="@name"/>
 <xsl:text>{
 
 </xsl:text>
-        <xsl:for-each select="LogDefinition">
+        <xsl:for-each select="loggingts:LogDefinition">
 		<xsl:text>class </xsl:text>
         	<xsl:variable name="logName"><xsl:value-of select="@logName"/></xsl:variable>
 		<xsl:value-of select="$logName"/><xsl:text>{
@@ -75,7 +75,7 @@ namespace </xsl:text><xsl:value-of select="@name"/>
                 ~</xsl:text><xsl:value-of select="$logName"/><xsl:text>();
 		void log();
 </xsl:text>
-		<xsl:for-each select="Member">
+		<xsl:for-each select="loggingts:Member">
 		<xsl:text>		void set</xsl:text><xsl:value-of select="@name"/>
 		<xsl:text>(string value);
 </xsl:text>	</xsl:for-each>

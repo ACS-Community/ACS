@@ -9,9 +9,11 @@
 <xs:schema 
 	xmlns:loggingts="Alma/ACSLogTS" 
 	xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+	xmlns:common="urn:schemas-cosylab-com:COMMONTYPES:1.0"
 	targetNamespace="Alma/ACSLogTS" 
 	elementFormDefault="qualified" 
 	attributeFormDefault="unqualified">
+	<xs:import namespace="urn:schemas-cosylab-com:COMMONTYPES:1.0" schemaLocation="commontypes.xsd"/>
 	<xs:annotation>
 		<xs:documentation>
 This schema describes type safe logs, that are used on top of the normal free format logs, provided by the log system. It is mainly intended for Operational logs of direct interest for the operator of the system, while free format logs are used for post-mortem analysis and debugging.
@@ -50,44 +52,23 @@ Python API:
 					</xs:annotation>
 					<xs:complexType>
 						<xs:choice minOccurs="0" maxOccurs="unbounded">
-							<xs:element name="Member" type="loggingts:Member_"/>
+							<xs:element name="Member" type="common:Member_"/>
 						</xs:choice>
-						<xs:attribute name="logName" type="loggingts:nameType" use="required"/>
-						<xs:attribute name="shortDescription" type="loggingts:shortDescriptionString" use="required"/>
-						<xs:attribute name="description" type="loggingts:nonEmptyString" use="required"/>
+						<xs:attribute name="logName" type="common:nameType" use="required"/>
+						<xs:attribute name="shortDescription" type="common:shortDescriptionString" use="required"/>
+						<xs:attribute name="description" type="common:nonEmptyString" use="required"/>
 						<xs:attribute name="URL" type="xs:string" use="optional"/>
 						<xs:attribute name="priority" type="loggingts:priorityType" use="required"/>
 					</xs:complexType>
 				</xs:element>
 			</xs:choice>
-			<xs:attribute name="name" type="loggingts:nameType" use="required"/>
+			<xs:attribute name="name" type="common:nameType" use="required"/>
 			<xs:attribute name="type" type="loggingts:logType" use="required"/><!-- Actually needed? -->
-			<xs:attribute name="shortDescription" type="loggingts:shortDescriptionString" use="optional"/>
-			<xs:attribute name="description" type="loggingts:nonEmptyString" use="optional"/>
+			<xs:attribute name="shortDescription" type="common:shortDescriptionString" use="optional"/>
+			<xs:attribute name="description" type="common:nonEmptyString" use="optional"/>
 			<xs:attribute name="URL" type="xs:string" use="optional"/>
 		</xs:complexType>
 	</xs:element>
-	<xs:complexType name="Member_">
-		<xs:annotation>
-			<xs:documentation>
-Member elements define name-value pairs with additional information for the log. For example a log informing that someone logged in, could have as additional information: username:"John Doe", indicating who logged in.
-			</xs:documentation>
-		</xs:annotation>
-		<xs:attribute name="name" type="loggingts:nameType" use="required"/>
-		<xs:attribute name="type" type="loggingts:MemberTypes" use="required"/>
-		<xs:attribute name="description" type="loggingts:nonEmptyString" use="optional"/>
-	</xs:complexType>
-	<xs:simpleType name="nameType">
-		<xs:annotation>
-			<xs:documentation>
-Type for names that are mapped into class names.
-			</xs:documentation>
-		</xs:annotation>
-		<xs:restriction base="xs:NCName">
-			<xs:minLength value="1"/>
-			<xs:pattern value="[\c-[.,\-]]*"/>
-		</xs:restriction>
-	</xs:simpleType>
 	<xs:simpleType name="logType">
 		<xs:annotation>
 			<xs:documentation>
@@ -96,54 +77,13 @@ the 'type' field of the LogDefinition is a non negative integer.
 		</xs:annotation>
 		<xs:restriction base="xs:nonNegativeInteger"/>
 	</xs:simpleType>
-<!--  type for prefix                                                           
-	<xs:simpleType name="prefixType">
-		<xs:restriction base="xs:NCName">
-			<xs:minLength value="1"/>
-			<xs:pattern value="[\c-[\-]]*"/>
-		</xs:restriction>
-	</xs:simpleType>
--->
-	<xs:simpleType name="nonEmptyString">
-		<xs:annotation>
-			<xs:documentation>
-Defines a type for a string with minimal length 1.
-			</xs:documentation>
-		</xs:annotation>
-		<xs:restriction base="xs:string">
-			<xs:minLength value="1"/>
-		</xs:restriction>
-	</xs:simpleType>
-	<xs:simpleType name="shortDescriptionString">
-		<xs:annotation>
-			<xs:documentation>
-Log short description string. Arbitrarily the maximal length is set at 50.
-			</xs:documentation>
-		</xs:annotation>
-		<xs:restriction base="loggingts:nonEmptyString">
-			<xs:minLength value="1"/>
-			<xs:maxLength value="50"/>
-		</xs:restriction>
-	</xs:simpleType>
-	<xs:simpleType name="MemberTypes">
-		<xs:annotation>
-			<xs:documentation>
-Type of the member value. Can be double, long or string.
-			</xs:documentation>
-		</xs:annotation>
-		<xs:restriction base="loggingts:nonEmptyString">
-			<xs:enumeration value="double"/>
-			<xs:enumeration value="long"/>
-			<xs:enumeration value="string"/>
-		</xs:restriction>
-	</xs:simpleType>
 	<xs:simpleType name="priorityType">
 		<xs:annotation>
 			<xs:documentation>
 Type for priority. Just lists all the priorities defined for the ACS logging system.
 			</xs:documentation>
 		</xs:annotation>
-		<xs:restriction base="loggingts:nonEmptyString">
+		<xs:restriction base="common:nonEmptyString">
 			<xs:enumeration value="TRACE"/>
 			<xs:enumeration value="DEBUG"/>
 			<xs:enumeration value="INFO"/>
