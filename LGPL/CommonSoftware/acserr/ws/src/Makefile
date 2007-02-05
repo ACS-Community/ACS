@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.78 2005/12/21 16:47:35 bjeram Exp $"
+# "@(#) $Id: Makefile,v 1.79 2007/02/05 13:10:36 nbarriga Exp $"
 #
 # Makefile of ........
 #
@@ -122,8 +122,8 @@ CSOURCENAMES = \
 IDL_FILES =  acserr acserrHandlersErr ErrorSystemErrType
 
 
-
 XSDBIND = ACSError
+XSDBIND_INCLUDE = commontypes
 
 #
 # Jarfiles and their directories
