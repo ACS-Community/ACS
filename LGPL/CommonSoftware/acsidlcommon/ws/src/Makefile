@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.3 2007/02/05 13:00:00 nbarriga Exp $"
+# "@(#) $Id: Makefile,v 1.4 2007/02/06 07:37:07 nbarriga Exp $"
 #
 # Makefile of ........
 #
@@ -107,7 +107,7 @@ tttlll_OBJECTS  =
 #
 # Configuration Database Files
 # ----------------------------
-CDB_SCHEMAS = commontypes
+CDB_SCHEMAS = 
 
 # 
 # IDL Files and flags
