@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.4 2007/02/06 09:55:14 nbarriga Exp $"
+# "@(#) $Id: Makefile,v 1.5 2007/02/06 17:24:11 nbarriga Exp $"
 #
 # Makefile of ........
 #
@@ -32,14 +32,6 @@
 # As a general rule:  public file are "cleaned" and "installed"  
 #                     local (_L) are not "installed".
 
-# log types defined
-XML_LOG_DEFS = ACSLogTypeExample
-
-LOG_GEN_XML = $(foreach xml, $(XML_LOG_DEFS), ../idl/$(xml).xml)
-LOG_GEN_PY = $(foreach xml, $(XML_LOG_DEFS), ../src/loggingts/$(xml).py)
-LOG_GEN_H = $(foreach xml, $(XML_LOG_DEFS), ../include/$(xml).h)
-LOG_GEN_CPP = $(foreach xml, $(XML_LOG_DEFS), ../src/$(xml).cpp)
-
 
 #
 # C programs (public and local)
@@ -60,17 +52,14 @@ xxxxx_LIBS      =
 #
 # Includes (.h) files (public only)
 # ---------------------------------
-INCLUDES        = $(XML_LOG_DEFS).h
+INCLUDES        = 
 
 #
 # Libraries (public and local)
 # ----------------------------
-LIBRARIES       = $(XML_LOG_DEFS)
+LIBRARIES       = 
 LIBRARIES_L     =
 
-#
-# <brief description of ACSLogTypeExample library> THIS NEEDS a way to do it automatically
-ACSLogTypeExample_OBJECTS   = ACSLogTypeExample
 
 #
 # Scripts (public and local)
@@ -93,7 +82,7 @@ PY_SCRIPTS_L       =
 PY_MODULES         =
 PY_MODULES_L       =
 
-PY_PACKAGES        = loggingts
+PY_PACKAGES        = 
 PY_PACKAGES_L      =
 pppppp_MODULES	   =
 
@@ -127,12 +116,12 @@ USER_IDL =
 #
 # Jarfiles and their directories
 #
-JARFILES=simpleLog 
-simpleLog_DIRS=alma
+#JARFILES=simpleLog 
+#simpleLog_DIRS=alma
 jjj_EXTRAS= 
 #
 # java sources in Jarfile on/off
-DEBUG= on
+#DEBUG= on
 #
 # ACS XmlIdl generation on/off
 #
@@ -198,10 +187,10 @@ endif
 #
 # TARGETS
 # -------
-all:	do_logts_gen do_all
+all:	do_all
 	@echo " . . . 'all' done" 
 
-clean : clean_all clean_logts_gen
+clean : clean_all 
 	@echo " . . . clean done"
 
 clean_dist : clean_all clean_dist_all 
@@ -214,28 +203,5 @@ install : install_all
 	@echo " . . . installation done"
 
 
-
-$(LOG_GEN_PY) : $(LOG_GEN_XML)
-	- $(AT) for member in $(XML_LOG_DEFS); do \
-        echo "== Generating:" $${member}".py out of:" $${member}".xml"; \
-        sh ./loggingtsGenPython ../idl/$${member}.xml ../src/loggingts/$${member}.py ; \
-        done
-
-$(LOG_GEN_H) : $(LOG_GEN_XML)
-	- $(AT) for member in $(XML_LOG_DEFS); do \
-        echo "== Generating:" $${member}".h out of:" $${member}".xml"; \
-        sh ./loggingtsGenH ../idl/$${member}.xml ../include/$${member}.h ; \
-        done
-
-$(LOG_GEN_CPP) : $(LOG_GEN_XML)
-	- $(AT) for member in $(XML_LOG_DEFS); do \
-        echo "== Generating:" $${member}".cpp out of:" $${member}".xml"; \
-        sh ./loggingtsGenCpp ../idl/$${member}.xml ../src/$${member}.cpp ; \
-        done
-
-do_logts_gen: $(LOG_GEN_PY) $(LOG_GEN_CPP) $(LOG_GEN_H)
-	
-clean_logts_gen:
-	$(AT) $(RM) $(LOG_GEN_PY) $(LOG_GEN_CPP) $(LOG_GEN_H)
 
 #___oOo___

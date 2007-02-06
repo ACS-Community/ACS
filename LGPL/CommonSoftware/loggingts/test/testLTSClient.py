@@ -23,7 +23,8 @@
 #
 #------------------------------------------------------------------------------
 
-from loggingts.ACSLogTypeExample import simpleLog,complexLog
+#from loggingts.ACSLogTypeExample import simpleLog,complexLog
+from ACSLogTypeExample  import simpleLog,complexLog
 
 # Import the acspy.PySimpleClient class
 from Acspy.Clients.SimpleClient import PySimpleClient
