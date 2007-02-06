@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.3 2007/02/02 08:52:46 nbarriga Exp $"
+# "@(#) $Id: Makefile,v 1.4 2007/02/06 09:55:14 nbarriga Exp $"
 #
 # Makefile of ........
 #
@@ -60,7 +60,7 @@ xxxxx_LIBS      =
 #
 # Includes (.h) files (public only)
 # ---------------------------------
-INCLUDES        = $(LOG_GEN_H)
+INCLUDES        = $(XML_LOG_DEFS).h
 
 #
 # Libraries (public and local)

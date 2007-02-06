@@ -20,7 +20,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: LTS2Cpp.xslt,v 1.3 2007/02/05 13:01:54 nbarriga Exp $"
+* "@(#) $Id: LTS2Cpp.xslt,v 1.4 2007/02/06 09:55:14 nbarriga Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -77,11 +77,11 @@ void </xsl:text><xsl:value-of select="$logName"/><xsl:text>::log(){
 		<xsl:for-each select="loggingts:Member">
 		<xsl:text>void </xsl:text><xsl:value-of select="$logName"/><xsl:text>::set</xsl:text><xsl:variable name="memberName"><xsl:value-of select="@name"/></xsl:variable>
 		<xsl:value-of select="$memberName"/>
-		<xsl:text>(string value){
+		<xsl:text>(</xsl:text><xsl:value-of select="@type"/><xsl:text> value){
 
 	ACSLog::NVPair nv;
 	nv.name=CORBA::string_dup("</xsl:text><xsl:value-of select="$memberName"/><xsl:text>");
-	nv.value=CORBA::string_dup(value.c_str());
+	nv.value=CORBA::string_dup(value.c_str());//check what to do when value is long or double
 	members.length(members.length()+1);
 	members[members.length()-1]=nv;
 
