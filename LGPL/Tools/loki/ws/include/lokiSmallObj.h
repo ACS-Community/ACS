@@ -13,7 +13,7 @@
 //     without express or implied warranty.
 ////////////////////////////////////////////////////////////////////////////////
 
-// $Header: /diskb/tmp/stefano/project2/CVS/ACS/LGPL/Tools/loki/ws/include/lokiSmallObj.h,v 1.2 2007/02/01 17:29:00 sharring Exp $
+// $Header: /diskb/tmp/stefano/project2/CVS/ACS/LGPL/Tools/loki/ws/include/lokiSmallObj.h,v 1.3 2007/02/07 12:25:11 bjeram Exp $
 
 
 #ifndef LOKI_SMALLOBJ_INC_
@@ -24,6 +24,7 @@
 #include "lokiSingleton.h"
 #include <cstddef>
 #include <new> // needed for std::nothrow_t parameter.
+
 
 #ifndef LOKI_DEFAULT_CHUNK_SIZE
 #define LOKI_DEFAULT_CHUNK_SIZE 4096
@@ -51,6 +52,8 @@
 ///
 ///  \defgroup  SmallObjectGroupInternal Internals
 ///  \ingroup   SmallObjectGroup
+
+
 
 namespace Loki
 {
@@ -276,16 +279,18 @@ namespace Loki
         AllocatorSingleton & operator = ( const AllocatorSingleton & );
     };
 
+
+
     template
     <
         template <class, class> class TM,
-        std::size_t CS,
-        std::size_t MSOS,
-        std::size_t OAS,
+	std::size_t chunkSize,
+	std::size_t maxSmallObjectSize,
+	std::size_t objectAlignSize,
         template <class> class LP,
         class MX
     >
-    void AllocatorSingleton< TM, CS, MSOS, OAS, LP, MX >::ClearExtraMemory( void )
+    void AllocatorSingleton< TM, chunkSize, maxSmallObjectSize, objectAlignSize, LP, MX >::ClearExtraMemory( void )
     {
         typename MyThreadingModel::Lock lock;
         (void)lock; // get rid of warning
@@ -295,13 +300,13 @@ namespace Loki
     template
     <
         template <class, class> class TM,
-        std::size_t CS,
-        std::size_t MSOS,
-        std::size_t OAS,
+	std::size_t chunkSize,
+	std::size_t maxSmallObjectSize,
+	std::size_t objectAlignSize,
         template <class> class LP,
         class MX
     >
-    bool AllocatorSingleton< TM, CS, MSOS, OAS, LP, MX >::IsCorrupted( void )
+    bool AllocatorSingleton< TM, chunkSize, maxSmallObjectSize, objectAlignSize, LP, MX >::IsCorrupted( void )
     {
         typename MyThreadingModel::Lock lock;
         (void)lock; // get rid of warning
@@ -323,14 +328,14 @@ namespace Loki
     template
     <
         template <class, class> class TM,
-        std::size_t CS,
-        std::size_t MSOS,
-        std::size_t OAS,
+	std::size_t chunkSize,
+	std::size_t maxSmallObjectSize,
+	std::size_t objectAlignSize,
         template <class> class LP,
         class MX
     >
     inline unsigned int GetLongevity(
-        AllocatorSingleton< TM, CS, MSOS, OAS, LP, MX > * )
+        AllocatorSingleton< TM, chunkSize, maxSmallObjectSize, objectAlignSize, LP, MX > * )
     {
         // Returns highest possible value.
         return 0xFFFFFFFF;
@@ -634,7 +639,11 @@ namespace Loki
 // Nov. 26, 2004: re-implemented by Rich Sposato.
 //
 // $Log: lokiSmallObj.h,v $
+// Revision 1.3  2007/02/07 12:25:11  bjeram
+// reanmed dangurous template prameter list CS ,...  with chunkSize, ... there was problem due to defining CS somwhere in RTAI code
+//
 // Revision 1.2  2007/02/01 17:29:00  sharring
+//
 // updating to newer version of loki library, with support for multi-threading enabled. manually renamed files to avoid name conflicts, by
 // prepending "loki" to the names of header files. also manually edited lokiThreads.h to #define LOKI_OBJECT_LEVEL_THREADING; this could
 // also be done with a compile FLAG, perhaps would be better.
