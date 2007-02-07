@@ -16,7 +16,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.2 2007/02/02 08:52:46 nbarriga Exp $"
+# "@(#) $Id: Makefile,v 1.3 2007/02/07 10:46:00 nbarriga Exp $"
 #
 # Makefile of ........
 #
@@ -133,8 +133,8 @@ USER_IDL =
 #
 # Jarfiles and their directories
 #
-JARFILES=testLTSClient 
-testLTSClient_DIRS=alma
+#JARFILES=testLTSClient 
+#testLTSClient_DIRS=alma
 jjj_EXTRAS= 
 #
 # java sources in Jarfile on/off
