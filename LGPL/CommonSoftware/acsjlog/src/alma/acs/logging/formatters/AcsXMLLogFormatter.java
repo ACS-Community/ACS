@@ -34,6 +34,7 @@ import java.util.logging.LogRecord;
 import alma.acs.logging.ACSCoreLevel;
 import alma.acs.logging.AcsLogLevel;
 import alma.acs.logging.ClientLogManager;
+import alma.acs.logging.LogParameterUtil;
 import alma.acs.util.XmlNormalizer;
 
 /**
@@ -69,9 +70,7 @@ public class AcsXMLLogFormatter extends Formatter implements ACSCoreLevel
 		Date date = new Date(logRecord.getMillis());
 		String TimeStamp = df.format(date);
 		
-		LogParameterExtractor logParamExtractor = new LogParameterExtractor();
-		logParamExtractor.setCurrentLogRecord(logRecord);		
-
+		LogParameterUtil logParamUtil = new LogParameterUtil(logRecord);
 
 		StringBuffer sb = new StringBuffer("");
 
@@ -90,7 +89,7 @@ public class AcsXMLLogFormatter extends Formatter implements ACSCoreLevel
 		else
 			sb.append("File=\"" + file + "\"  ");
 
-		long line = logParamExtractor.extractLongProperty(LogParameterExtractor.PARAM_LINE, -1);
+		long line = logParamUtil.extractLongProperty(LogParameterUtil.PARAM_LINE, -1);
 		if (line < 0)
 		{
 			if (acsCoreLevel == ACS_LEVEL_TRACE || acsCoreLevel == ACS_LEVEL_DEBUG)
@@ -110,7 +109,7 @@ public class AcsXMLLogFormatter extends Formatter implements ACSCoreLevel
 		}
 
         // host name: may be different from local host if ErrorTrace gets logged
-        String hostName = logParamExtractor.extractStringProperty("HostName", null);
+        String hostName = logParamUtil.extractStringProperty(LogParameterUtil.PARAM_HOSTNAME, null);
         if (hostName == null || hostName.length() == 0) {
             hostName = this.getLocalHostName();
         }
@@ -127,14 +126,14 @@ public class AcsXMLLogFormatter extends Formatter implements ACSCoreLevel
 			sb.append("SourceObject=\"" + sourceObject + "\" ");
         }
 		// add thread ID, or name if given		
-		String threadName = logParamExtractor.extractStringProperty(LogParameterExtractor.PARAM_THREAD_NAME, null);
+		String threadName = logParamUtil.extractStringProperty(LogParameterUtil.PARAM_THREAD_NAME, null);
 		if (threadName != null && threadName.length() > 0)
 			sb.append("Thread=\"" + threadName + "\" ");
 		else if (logRecord.getThreadID() >= 0)
 			sb.append("Thread=\"" + logRecord.getThreadID() + "\" ");
 
 		// add context		
-		String context = logParamExtractor.extractStringProperty("Context", null);
+		String context = logParamUtil.extractStringProperty("Context", null);
 		if (context != null)
 			sb.append("Context=\"" + context + "\" ");
 
@@ -142,14 +141,14 @@ public class AcsXMLLogFormatter extends Formatter implements ACSCoreLevel
 		if (acsCoreLevel >= ACS_LEVEL_WARNING)
 		{
 			// add stack id
-			String stackId = logParamExtractor.extractStringProperty("StackId", null);
+			String stackId = logParamUtil.extractStringProperty(LogParameterUtil.PARAM_STACK_ID, null);
 			if (stackId == null)
 				sb.append("StackId=\"unknown\" ");
 			else
 				sb.append("StackId=\"" + stackId + "\" ");
 
 			// add stack idlevel
-			long stackLevel = logParamExtractor.extractLongProperty("StackLevel", -1);
+			long stackLevel = logParamUtil.extractLongProperty(LogParameterUtil.PARAM_STACK_LEVEL, -1);
 			if (stackLevel < 0)
 				sb.append("StackLevel=\"0\" ");
 			else
@@ -162,28 +161,15 @@ public class AcsXMLLogFormatter extends Formatter implements ACSCoreLevel
 			sb.append("LogId=\"" + logId + "\" ");
 
 		// add URI		
-		String uri = logParamExtractor.extractStringProperty("Uri", null);
+		String uri = logParamUtil.extractStringProperty(LogParameterUtil.PARAM_URI, null);
 		if (uri != null)
 			sb.append("Uri=\"" + uri + "\" ");
 
 		// add priority
 		// to be written only different as entry priority		
-		long priority = logParamExtractor.extractLongProperty("Priority", acsCoreLevel);
+		long priority = logParamUtil.extractLongProperty(LogParameterUtil.PARAM_PRIORITY, acsCoreLevel);
 		if (priority != acsCoreLevel)
 			sb.append("Priority=\"" + priority + "\" ");
-
-		// add additional attributes here
-		// e.g. name="value"
-		Map attributes = logParamExtractor.extractMapProperty("Attributes", null);
-		if (attributes != null)
-		{
-			Iterator iter = attributes.keySet().iterator();
-			while (iter.hasNext())
-			{
-				Object key = iter.next();
-				sb.append(key + "=\"" + attributes.get(key) + "\" ");
-			}
-		}
 
 		sb.setCharAt(sb.lastIndexOf("") - 1, '>');
 
@@ -204,20 +190,22 @@ public class AcsXMLLogFormatter extends Formatter implements ACSCoreLevel
 			    loggedThrowable.printStackTrace(new PrintWriter(exWriter));
 			    sb.append("<Data Name=\"LoggedException\">" + maskMessage(exWriter.toString()) + "</Data>");
 			}
-			// error trace free-format properties from AcsJException#log (see module acserr)
-			Map errorTraceProperties = logParamExtractor.extractMapProperty("ErrorTraceProperties", null);
-			if (errorTraceProperties != null) {
-				for (Iterator iter = errorTraceProperties.keySet().iterator(); iter.hasNext();) {
-					String key = (String) iter.next();
-					String value = maskEmptyDataContent((String) errorTraceProperties.get(key));
-				    sb.append("<Data Name=\"" + key + "\">" + maskMessage(value) + "</Data>");
-				}
-			}
-			// other
-			Object[] params = logParamExtractor.getNonPropertiesMapParameters();
+			// log parameters (except for the special properties which were used already to set specific fields)
+			Object[] params = logParamUtil.getNonSpecialPropertiesMapParameters();
 			for (int i = 0; i < params.length; i++) {
-				String value = maskEmptyDataContent(params[i].toString());
-			    sb.append("<Data Name=\"LoggedParameter\">" + maskMessage(value) + "</Data>");
+				if (params[i] instanceof Map) {
+					// any map that is not the special properties map we interpret as name-value pairs.
+					Map propertiesMap = (Map) params[i];
+					for (Object keyName : propertiesMap.keySet()) {
+						String value = maskEmptyDataContent(propertiesMap.get(keyName).toString());
+					    sb.append("<Data Name=\"" + keyName.toString() + "\">" + maskMessage(value) + "</Data>");
+					}					
+				}
+				else {
+					// a single parameter was logged, but we have to fit it into our name-value scheme using a fake name
+					String value = maskEmptyDataContent(params[i].toString());
+					sb.append("<Data Name=\"LoggedParameter\">" + maskMessage(value) + "</Data>");
+				}
 			}
 		}
 		catch (Exception e) {
