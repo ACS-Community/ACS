@@ -422,7 +422,7 @@ void AcsBulkdata::BulkDataSender<TSenderCallback>::sendData(CORBA::ULong flowNum
 	}
     catch(CORBA::BAD_OPERATION & bad)
 	{
-	ACS_SHORT_LOG((LM_ERROR,"BulkDataSender<>::sendData User Exception catched!"));
+	ACS_SHORT_LOG((LM_ERROR,"BulkDataSender<>::sendData User Exception"));
 	AVSendFrameErrorExImpl err = AVSendFrameErrorExImpl(__FILE__,__LINE__,"BulkDataSender::sendData");
 	throw err;
 	}
@@ -434,6 +434,7 @@ void AcsBulkdata::BulkDataSender<TSenderCallback>::sendData(CORBA::ULong flowNum
 	}
     catch(...)
 	{
+	ACS_SHORT_LOG((LM_ERROR,"BulkDataSender<>::sendData UNKNOWN exception"));
 	AVSendFrameErrorExImpl err = AVSendFrameErrorExImpl(__FILE__,__LINE__,"BulkDataSender::sendData");
 	throw err;
 	}
@@ -501,7 +502,7 @@ void AcsBulkdata::BulkDataSender<TSenderCallback>::sendData(CORBA::ULong flowNum
 	}
     catch(CORBA::BAD_OPERATION & bad)
 	{
-	ACS_SHORT_LOG((LM_ERROR,"BulkDataSender<>::sendData User Exception catched!"));
+	ACS_SHORT_LOG((LM_ERROR,"BulkDataSender<>::sendData User Exception"));
 	AVSendFrameErrorExImpl err = AVSendFrameErrorExImpl(__FILE__,__LINE__,"BulkDataSender::sendData");
 	throw err;
 	}
@@ -513,6 +514,7 @@ void AcsBulkdata::BulkDataSender<TSenderCallback>::sendData(CORBA::ULong flowNum
 	}
     catch(...)
 	{
+	ACS_SHORT_LOG((LM_ERROR,"BulkDataSender<>::sendData UNKNOWN exception"));
 	AVSendFrameErrorExImpl err = AVSendFrameErrorExImpl(__FILE__,__LINE__,"BulkDataSender::sendData");
 	throw err;
 	}
