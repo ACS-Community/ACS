@@ -76,8 +76,7 @@ public class AcsJCompletion
 	 */
 	protected AcsJCompletion(int type, int code)
 	{
-		init(type, code);
-		
+		init(type, code);	
 	}
 	
 	/**
@@ -245,19 +244,31 @@ public class AcsJCompletion
 
 	
 	/**
-	 * Allows extra information to be attached to the completion.
+	 * Allows extra information to be attached to the completion, but only if this completion represents an error.
 	 * @return     the previous value of the specified key in this property
 	 *             list, or <code>null</code> if it did not have one.
+	 * @throws IllegalStateException if this completion has no exceptions attached (i.e. it is an "ok-completion"). 
+	 *         TODO: modify ACS error system to allow properties also for ok-completions.
 	 */
 	public Object setProperty(String key, String value) {
-		return m_properties.setProperty(key, value);
+		if (isError()) {
+			return getAcsJException().setProperty(key, value);
+		}
+		else {
+			throw new IllegalStateException("Failed to set property '" + key + "' because properties are not supported for ok-completion classes.");
+		}
 	}
 
 	/**
 	 * @see #setProperty
 	 */
 	public String getProperty(String key) {
-		return m_properties.getProperty(key);
+		if (isError()) {
+			return getAcsJException().getProperty(key);
+		}
+		else {
+			throw new IllegalStateException("Failed to get property '" + key + "' because properties are not supported for ok-completion classes.");
+		}
 	}
 
 }
