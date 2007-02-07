@@ -20,7 +20,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: LTS2Cpp.xslt,v 1.4 2007/02/06 09:55:14 nbarriga Exp $"
+* "@(#) $Id: LTS2Cpp.xslt,v 1.5 2007/02/07 14:07:40 nbarriga Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -34,6 +34,7 @@
 <xsl:text>.h"
 
 #include &lt;acstimeTimeUtil.h>
+#include &lt;sstream>
 
 using namespace </xsl:text><xsl:value-of select="$typeName"/><xsl:text>;
 
@@ -81,7 +82,19 @@ void </xsl:text><xsl:value-of select="$logName"/><xsl:text>::log(){
 
 	ACSLog::NVPair nv;
 	nv.name=CORBA::string_dup("</xsl:text><xsl:value-of select="$memberName"/><xsl:text>");
-	nv.value=CORBA::string_dup(value.c_str());//check what to do when value is long or double
+</xsl:text>
+	<xsl:choose>
+		<xsl:when test='@type="string"'>
+			<xsl:text>	nv.value=CORBA::string_dup(value.c_str());</xsl:text>
+		</xsl:when>
+		<xsl:otherwise>
+			<xsl:text>	stringstream strstr;
+	strstr&lt;&lt;value;
+	string value_str=strstr.str();
+	nv.value=CORBA::string_dup(value_str.c_str());</xsl:text>
+		</xsl:otherwise>
+	</xsl:choose>
+	<xsl:text>
 	members.length(members.length()+1);
 	members[members.length()-1]=nv;
 

@@ -16,7 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: testLTSClient.cpp,v 1.1 2007/01/31 14:03:39 nbarriga Exp $"
+ * "@(#) $Id: testLTSClient.cpp,v 1.2 2007/02/07 14:07:40 nbarriga Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -31,7 +31,7 @@
 #include <stdio.h>
 #include <string.h>
 
-static char *rcsId="@(#) $Id: testLTSClient.cpp,v 1.1 2007/01/31 14:03:39 nbarriga Exp $"; 
+static char *rcsId="@(#) $Id: testLTSClient.cpp,v 1.2 2007/02/07 14:07:40 nbarriga Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <maciSimpleClient.h>
@@ -54,7 +54,7 @@ int main(int argc, char *argv[])
 
 
 	ACSLogTypeExample::complexLog my_complexLog(__FILE__,__LINE__,"main");
-	my_complexLog.setsomeMember("value of some member");
+	my_complexLog.setsomeMember(3.14159);
 	my_complexLog.log();
 
 

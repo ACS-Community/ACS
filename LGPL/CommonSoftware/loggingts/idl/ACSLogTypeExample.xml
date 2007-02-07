@@ -23,7 +23,7 @@
 		URL="http://someurl.org"
 		priority="WARNING">
 		<Member name="someMember"
-			type="string"
+			type="double"
 			description="member description"/>
 	</LogDefinition>
 </LogDefinitionType>
