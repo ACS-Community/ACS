@@ -26,16 +26,27 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 
+import junit.framework.TestCase;
+
 import alma.acs.logging.AcsLogLevel;
+import alma.acs.logging.LogParameterUtil;
+import alma.acs.testsupport.LogRecordCollectingLogger;
 
 /**
  * Note that <code>LogRecord</code>s are usually constructed inside of the log methods of class <code>Logger</code>;
  * if we create them with <code>new</code> in the test routines, the class name and method name can't be figured out
  * by <code>LogRecord#inferCaller</code> -- this failure has nothing to do with the normal limitations of this "best effort" feature.
  */
-public class AcsLogFormatterTest extends junit.framework.TestCase
+public class AcsLogFormatterTest extends TestCase
 {
-	public static AcsXMLLogFormatter acsLogFormatter = new AcsXMLLogFormatter();
+	private AcsXMLLogFormatter acsLogFormatter;
+	private LogRecordCollectingLogger collectingLogger; 
+
+	protected void setUp() throws Exception {
+		acsLogFormatter = new AcsXMLLogFormatter();
+		collectingLogger = LogRecordCollectingLogger.getCollectingLogger("testLogger");
+	}
+
 
 	/**
 	 * Method testFormat.
@@ -83,18 +94,46 @@ public class AcsLogFormatterTest extends junit.framework.TestCase
 		assertEquals(expected, actual);
 	}
 
+	public void testLoggedParameters() {
+		// a stupid empty parameter that should show up as "N/A" to work around a xerces parser bug
+		LogRecord record = new LogRecord(AcsLogLevel.INFO, "INFO message");
+		System.out.println(acsLogFormatter.format(record));
+		record = new LogRecord(AcsLogLevel.DEBUG, "DEBUG message");
+		record.setParameters(new Object[] {""}); 		
+		String logXML = acsLogFormatter.format(record);
+		assertTrue(logXML.endsWith("<![CDATA[DEBUG message]]><Data Name=\"LoggedParameter\"><![CDATA[N/A]]></Data></Debug>"));
+
+		// one string parameter
+		String param = "My string log parameter";
+		collectingLogger.clearLogRecords();
+		collectingLogger.log(Level.INFO, "Log with one string parameter.", param);
+		LogRecord oneStringParamRecord = collectingLogger.getCollectedLogRecords()[0];
+//		System.out.println(acsLogFormatter.format(oneStringParamRecord));
+		logXML = acsLogFormatter.format(oneStringParamRecord);
+		assertTrue(logXML.endsWith("<Data Name=\"LoggedParameter\"><![CDATA[" + param + "]]></Data></Info>"));
+		
+		// todo: multiple parameters as Object[]
+		
+		// properties map parameter
+		Map<String, String> myNamedValues = new HashMap<String, String>();
+		myNamedValues.put("aKey", "aValue");
+		collectingLogger.clearLogRecords();
+		collectingLogger.log(Level.INFO, "Log with name/value pair.", myNamedValues);
+		LogRecord nameValueParamRecord = collectingLogger.getCollectedLogRecords()[0];
+//		System.out.println(acsLogFormatter.format(nameValueParamRecord));
+		logXML = acsLogFormatter.format(nameValueParamRecord);
+		assertTrue(logXML.endsWith("<Data Name=\"aKey\"><![CDATA[aValue]]></Data></Info>"));
+	}
+	
+	
+	
 	public void testFormatter()
 	{
 		LogRecord record = new LogRecord(AcsLogLevel.INFO, "INFO message");
 		System.out.println(acsLogFormatter.format(record));
 
-		record = new LogRecord(AcsLogLevel.DEBUG, "DEBUG message");
-		record.setParameters(new Object[] {""}); // a stupid empty parameter that should show up as "N/A" to work around a xerces parser bug		
-		String logXML = acsLogFormatter.format(record);
-		assertTrue(logXML.endsWith("<![CDATA[DEBUG message]]><Data Name=\"LoggedParameter\"><![CDATA[N/A]]></Data></Debug>"));
-
 		// test additional properties
-		Map<String, Object> map = new HashMap<String, Object>();
+		Map<String, Object> map = LogParameterUtil.createPropertiesMap();
 		map.put("Line", new Long(1208));
 		map.put("StackId", "Stack ID");
 		map.put("StackLevel", new Long(4));
@@ -105,18 +144,11 @@ public class AcsLogFormatterTest extends junit.framework.TestCase
 		Map<String, String> nv = new HashMap<String, String>();
 		nv.put("name1", "value1");
 		nv.put("name2", "value2");
-		map.put("Data", nv);
-
 		
 		// TODO: put asserts on these otherwise useless ancient test pieces below 
 		
-		Map<String, String> nv2 = new HashMap<String, String>();
-		nv2.put("attribute1", "value1");
-		nv2.put("attribute2", "value2");
-		map.put("Attributes", nv2);
-
 		record = new LogRecord(AcsLogLevel.ERROR, "ERROR message");
-		record.setParameters(new Object[] { map });
+		record.setParameters(new Object[] { map, nv });
 		System.out.println(acsLogFormatter.format(record));
 
 		record = new LogRecord(AcsLogLevel.EMERGENCY, "EMERGENCY message");
