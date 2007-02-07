@@ -316,7 +316,7 @@ public class AcsJExceptionTest extends TestCase
             final String stackId = (String) logProperties.get("StackId");
             assertNotNull(stackId);
             assertEquals(2, ((Long)logProperties.get("StackLevel")).intValue());
-            Map userProps2 = (Map) logProperties.get("ErrorTraceProperties");
+            Map userProps2 = (Map) lr2.getParameters()[1];
             assertEquals(0, userProps2.size());
             
             // The causing exception is logged next, with stack level = 1
@@ -332,7 +332,7 @@ public class AcsJExceptionTest extends TestCase
             assertEquals("throwOriginalAcsJACSErrTest0Ex", lr1.getSourceMethodName());
             assertEquals(stackId, logProperties.get("StackId"));
             assertEquals(1, ((Long)logProperties.get("StackLevel")).intValue());
-            Map userProps1 = (Map) logProperties.get("ErrorTraceProperties");
+            Map userProps1 = (Map) lr1.getParameters()[1];
             assertEquals(1, userProps1.size());
             assertEquals("Poverty", userProps1.get("MyStupidProperty"));
 
@@ -347,7 +347,7 @@ public class AcsJExceptionTest extends TestCase
             assertEquals("throwOriginalAcsJACSErrTest0Ex", lr0.getSourceMethodName());
             assertEquals(stackId, logProperties.get("StackId"));
             assertEquals(0, ((Long)logProperties.get("StackLevel")).intValue());
-            Map userProps0 = (Map) logProperties.get("ErrorTraceProperties");
+            Map userProps0 = (Map) lr0.getParameters()[1];
             assertEquals(0, userProps0.size());
             
         }        
