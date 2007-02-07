@@ -413,6 +413,7 @@ public abstract class AcsJException extends Exception
         ErrorTrace et = new ErrorTrace();
         et.host = m_host;
         et.process = m_process;
+//        et.sourceObject =  TODO
         et.lineNum = m_line;
         et.routine = m_method;
         et.file = m_file;
@@ -468,10 +469,12 @@ public abstract class AcsJException extends Exception
         // so we have to use defaults or smart guessing
         et.host = s_thisHost;
         et.process = s_thisProcess;
+//        et.sourceObject = TODO
         et.thread = "NA";
         et.timeStamp = UTCUtility.utcJavaToOmg(defaultTimeMilli);
         et.errorType = 9; // = ACSErrTypeJavaNative.value; this code is hardcoded otherwise we'll have problem with bulding and duplication of code 
         et.errorCode = -1;
+        et.shortDescription = thr.getClass().getName();
         et.severity = Severity.Error;
         et.data = new NameValue[0];
 
@@ -558,22 +561,28 @@ public abstract class AcsJException extends Exception
         logRec.setMillis(UTCUtility.utcOmgToJava(et.timeStamp));
         logRec.setSourceClassName(et.file);
         logRec.setSourceMethodName(et.routine);
-        logRec.setLoggerName(et.process); // the SourceObject will be derived from the logger name in AcsXMLLOgFormatter
+        logRec.setLoggerName(et.sourceObject); // the SourceObject will be derived from the logger name in AcsXMLLOgFormatter
+
         // other fields are encoded in a map and will be extracted by the AcsXMLLOgFormatter before sending the log record over the wire
-        Map<String, Object> logProperties = new HashMap<String, Object>();
-        logRec.setParameters(new Object[] {logProperties} );
-        logProperties.put("Line", new Long(et.lineNum));
-        logProperties.put("ThreadName", et.thread);
-        logProperties.put("HostName", et.host);
+        // Due to build order problems we can't call LogParameterUtil#createPropertiesMap(), but instead have to repeat that code here;
+        // the same is true for the property names which would be available as String constants of LogParameterUtil.
+        Map<String, Object> specialLogProperties = new HashMap<String, Object>();
+        specialLogProperties.put("isAcsPropertiesMap", Boolean.TRUE);
+        specialLogProperties.put("Line", new Long(et.lineNum));
+        specialLogProperties.put("ThreadName", et.thread);
+        specialLogProperties.put("HostName", et.host);
 //        logProperties.put("Context", "???");
-        logProperties.put("StackId", stackID);
-        logProperties.put("StackLevel", new Long(stackLevel));
+        specialLogProperties.put("StackId", stackID);
+        specialLogProperties.put("StackLevel", new Long(stackLevel));
+
         // non-standard properties from ErrorTrace
         Map etProperties = ErrorTraceManipulator.getProperties(et);
         etProperties.remove(CorbaExceptionConverter.PROPERTY_JAVAEXCEPTION_CLASS);
         etProperties.remove(CorbaExceptionConverter.PROPERTY_JAVAEXCEPTION_MESSAGE);
-        logProperties.put("ErrorTraceProperties", etProperties);
-        
+
+        // set both maps as log parameters. By design there can't be any other parameters which would be lost here
+        logRec.setParameters(new Object[] {specialLogProperties, etProperties} );
+
         return logRec;
     }
     
