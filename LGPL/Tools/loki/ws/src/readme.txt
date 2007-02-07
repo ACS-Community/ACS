@@ -1,5 +1,13 @@
 2007-02-02 B. Jeram
 
+I patched lokiSmallObj.h because there was confilcti with RTAI.
+The problem was that CS is used as a template parameter where methods
+of class AllocatorSingleton are defined, but CS is defined somewhere
+in RTAI code and CS is than replaced with that number.
+I renamed CS to chunkSize - the name that it is used in class template parameter.
+
+2007-02-02 B. Jeram
+
 New version of loki 0.1.5 was put in the acs loki module.
 There was problem at application exit. The problem due to clash
 between ACE and loki was solved by patching: lokiSingleton.cpp
