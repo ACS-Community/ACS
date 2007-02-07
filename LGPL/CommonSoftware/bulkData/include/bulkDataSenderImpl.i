@@ -14,8 +14,6 @@ template<class TSenderCallback>
 BulkDataSenderImpl<TSenderCallback>::~BulkDataSenderImpl()
 {
     ACS_TRACE("BulkDataSenderImpl::~BulkDataSenderImpl");
-
-    CORBA::release(receiverObj_m);
 }
 
 
@@ -23,6 +21,8 @@ template<class TSenderCallback>
 void BulkDataSenderImpl<TSenderCallback>::cleanUp()
 {
     ACS_TRACE("BulkDataSenderImpl::cleanUp");
+
+    CORBA::release(receiverObj_m);
 }
 
 
