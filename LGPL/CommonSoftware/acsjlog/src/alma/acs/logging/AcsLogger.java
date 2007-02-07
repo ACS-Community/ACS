@@ -21,7 +21,6 @@
  */
 package alma.acs.logging;
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -33,7 +32,6 @@ import java.util.logging.Logger;
 import alma.acs.logging.adapters.JacORBFilter;
 import alma.acs.logging.config.LogConfig;
 import alma.acs.logging.config.LogConfigSubscriber;
-import alma.acs.logging.formatters.LogParameterExtractor;
 import alma.maci.loggingconfig.NamedLogger;
 import alma.maci.loggingconfig.UnnamedLogger;
 
@@ -118,17 +116,16 @@ public class AcsLogger extends Logger implements LogConfigSubscriber {
     		record.setLoggerName(loggerName);
     	}
     	
-        // check if this record alreay has context data attached
-        LogParameterExtractor paramExtractor = new LogParameterExtractor(record);
-        String threadName = paramExtractor.extractStringProperty(LogParameterExtractor.PARAM_THREAD_NAME, null);
-                
-        if (threadName == null) {
-            // todo: centralize this log parameter coding/decoding in one class similar to LogParameterExtractor
-            Map<String, Object> logProperties = new HashMap<String, Object>();
-            record.setParameters(new Object[] {logProperties} );
+        // check if this record alreay has the context data attached which ACS needs but the JDK logging API does not provide
+        LogParameterUtil paramUtil = new LogParameterUtil(record);
+        Map<String, Object> specialProperties = paramUtil.extractSpecialPropertiesMap();
+        
+        if (specialProperties == null) {
+        	specialProperties = LogParameterUtil.createPropertiesMap();
+            record.setParameters(new Object[] {specialProperties} );
             
-            threadName = Thread.currentThread().getName();
-            logProperties.put(LogParameterExtractor.PARAM_THREAD_NAME, threadName);
+            String threadName = Thread.currentThread().getName();
+            specialProperties.put(LogParameterUtil.PARAM_THREAD_NAME, threadName);
     
             // Get the stack trace
             StackTraceElement stack[] = (new Throwable()).getStackTrace();
@@ -142,7 +139,7 @@ public class AcsLogger extends Logger implements LogConfigSubscriber {
                     record.setSourceClassName(cname);
                     record.setSourceMethodName(frame.getMethodName());
                     int lineNumber = frame.getLineNumber();
-                    logProperties.put(LogParameterExtractor.PARAM_LINE, new Long(lineNumber));
+                    specialProperties.put(LogParameterUtil.PARAM_LINE, new Long(lineNumber));
                     break;
                 }
                 ix++;
