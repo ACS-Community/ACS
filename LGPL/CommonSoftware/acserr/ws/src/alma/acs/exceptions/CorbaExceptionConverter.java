@@ -82,7 +82,7 @@ public class CorbaExceptionConverter
 					// non-ACS Java exceptions we don't reconstruct directly
 					// because we'd loose the additional information
 					// like line number etc. that ErrorTrace has.
-					thr = new DefaultAcsJException(message, 0, 0, classname);
+					thr = new DefaultAcsJException(message, 0, 0, et.shortDescription);
 				}
 			}
 			catch (Exception e)
