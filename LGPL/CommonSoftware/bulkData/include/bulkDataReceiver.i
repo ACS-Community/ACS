@@ -493,15 +493,26 @@ void AcsBulkdata::BulkDataReceiver<TReceiverCallback>::closeSocket()
 	BulkDataFlowConsumer<TReceiverCallback> *fep = 0;
 	
 	fepMap_m.find(flowName, fep);
-	
-	if(fep != 0)
+	if(fep == 0)
+	    {
+	    ACS_SHORT_LOG((LM_ERROR,"BulkDataReceiver::closeSocket Flow End Point null"));
+	    AVFlowEndpointErrorExImpl err = AVFlowEndpointErrorExImpl(__FILE__,__LINE__,"BulkDataReceiver::closeSocket");
+	    throw err;
+	    } 
+	else
 	    {
 	    TReceiverCallback *cb_p = fep->getBulkDataCallback();
-	    
-	    if (cb_p != 0)
+	    if(cb_p == 0)
+		{
+		ACS_SHORT_LOG((LM_ERROR,"BulkDataReceiver::closeSocket callback null"));
+		AVCallbackErrorExImpl err = AVCallbackErrorExImpl(__FILE__,__LINE__,"BulkDataReceiver::closeSocket");
+		throw err;
+		}
+	    else
+		{
 		cb_p->closePeer();
+		}
 	    }
-	
 	}
 }   
 

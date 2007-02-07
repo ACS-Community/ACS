@@ -82,10 +82,11 @@ bulkdata::BulkDataReceiverConfig * BulkDataReceiverImpl<TCallback>::getReceiverC
     bulkdata::BulkDataReceiverConfig *receiverConfig = 0;
     try
 	{
-	receiverConfig = receiver.getReceiverConfig();
+	receiverConfig = getReceiver()->getReceiverConfig();
 	}
-    catch(AVReceiverConfigErrorExImpl & ex)
+    catch(AVReceiverConfigErrorExImpl &ex)
 	{
+	ex.log(LM_DEBUG);
 	throw ex.getAVReceiverConfigErrorEx();
 	}
     catch(...)
@@ -189,16 +190,25 @@ void BulkDataReceiverImpl<TCallback>::setTimeout(CORBA::ULong flowNumber, CORBA:
 	{
 	getReceiver()->getFlowCallback(flowNumber,cb);
 	}
-    catch(AVInvalidFlowNumberExImpl & ex)
+    catch(AVInvalidFlowNumberExImpl &ex)
 	{
+	ex.log(LM_DEBUG);
 	throw ex.getAVInvalidFlowNumberEx();
 	}
     catch(AVFlowEndpointErrorExImpl &ex)
 	{
+	ex.log(LM_DEBUG);
 	throw ex.getAVFlowEndpointErrorEx();
 	}
 
-    cb->setFlowTimeout(timeout);
+    if(cb != 0)
+	{
+	cb->setFlowTimeout(timeout);
+	}
+    else
+	{
+	ACS_SHORT_LOG((LM_WARNING,"BulkDataReceiverImpl<>::setTimeout - callback = 0 - no timeout set"));
+	}
 }
 
 
@@ -213,6 +223,7 @@ void BulkDataReceiverImpl<TCallback>::setRecvName(const char *recvName)
     catch(ACSErr::ACSbaseExImpl &ex)
 	{
 	AVSetReceiverNameErrorExImpl err = AVSetReceiverNameErrorExImpl(ex,__FILE__,__LINE__,"BulkDataSenderImpl::setRecvName");
+	err.log(LM_DEBUG);
 	throw err.getAVSetReceiverNameErrorEx();
 	}
     catch(...)
