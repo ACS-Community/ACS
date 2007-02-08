@@ -23,6 +23,7 @@
 	<ErrorCode name="AVCloseReceiverError" shortDescription="Receiver closeReceiver error" description=""/>
 	<ErrorCode name="AVCbFlowTimeout" shortDescription="Callback Flow timeout" description=""/>
 	<ErrorCode name="AVSetReceiverNameError" shortDescription="Set receiver name error" description=""/>
+	<ErrorCode name="AVSetReceiverError" shortDescription="Set receiver error" description=""/>
 
 </Type>
 

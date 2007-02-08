@@ -200,13 +200,13 @@ class BulkDataDistributerImpl : public CharacteristicComponentImpl,
 	throw (CORBA::SystemException, AVCloseReceiverErrorEx);
 
     virtual void setReceiver(const bulkdata::BulkDataReceiverConfig &receiverConfig) 
-	throw (CORBA::SystemException, AVFlowEndpointErrorEx);
+	throw (CORBA::SystemException, AVSetReceiverErrorEx);
 
     //protected:
 
-    virtual AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback> * getDistributer() 
+    virtual AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback> *getDistributer() 
 	{
-	    return & distributer;
+	    return &distributer;
 	}
 
     virtual ACSErr::Completion *getCbStatus(CORBA::ULong flowNumber) 

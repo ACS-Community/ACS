@@ -127,7 +127,7 @@ module bulkdata
 	 @endhtmlonly
 	*/
 	void setReceiver(in BulkDataReceiverConfig receiverConfig)
-	    raises (ACSBulkDataError::AVFlowEndpointErrorEx);
+	    raises (ACSBulkDataError::AVSetReceiverErrorEx);
 	};
 
 };
