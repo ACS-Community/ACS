@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.2 2007/02/07 10:51:10 nbarriga Exp $"
+# "@(#) $Id: Makefile,v 1.3 2007/02/08 10:47:16 nbarriga Exp $"
 #
 # Makefile of ........
 #
@@ -32,7 +32,7 @@
 # As a general rule:  public file are "cleaned" and "installed"  
 #                     local (_L) are not "installed".
 
-ACSLOGTSDEF = SampleLog
+ACSLOGTSDEF = SampleLog AnotherSampleLog
 
 #
 # C programs (public and local)
