@@ -16,7 +16,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.4 2007/02/08 09:46:15 nbarriga Exp $"
+# "@(#) $Id: Makefile,v 1.5 2007/02/08 16:26:34 nbarriga Exp $"
 #
 # Makefile of ........
 #
@@ -39,7 +39,9 @@
 #
 # additional include and library search paths
 #USER_INC = 
-USER_LIB = -lmaciClient -lacslogStubs -lACSLogTypeExample -lmaci -lbaci -lcdb -llogging -lacscomponent -lrecovery -lacserr -lacsutil -lexpat -lACE -lTAO -lTAO_DsLogAdmin -lTAO_CosNaming -lTAO_IORTable -lTAO_PortableServer -lTAO_Svc_Utils -lTAO_CosTrading -lTAO_DynamicAny -lTAO_CosProperty -lTAO_IFR_Client 
+#USER_LIB = -lmaciClient -lacslogStubs -lACSLogTypeExample -lmaci -lbaci -lcdb -llogging -lacscomponent -lrecovery -lacserr -lacsutil -lexpat -lACE -lTAO -lTAO_DsLogAdmin -lTAO_CosNaming -lTAO_IORTable -lTAO_PortableServer -lTAO_Svc_Utils -lTAO_CosTrading -lTAO_DynamicAny -lTAO_CosProperty -lTAO_IFR_Client 
+ACSLOGTSDEF=ACSLogTypeExample
+
 
 #
 # MODULE CODE DESCRIPTION:
@@ -52,6 +54,8 @@ USER_LIB = -lmaciClient -lacslogStubs -lACSLogTypeExample -lmaci -lbaci -lcdb -l
 # -----------------------------
 EXECUTABLES     = testLTSClient
 EXECUTABLES_L   = 
+testLTSClient_LDFLAGS = -lmaciClient -lacslogStubs -lACSLogTypeExampleLTS -lmaci -lbaci -lcdb -llogging -lacscomponent -lrecovery -lacserr -lacsutil -lexpat -lACE -lTAO -lTAO_DsLogAdmin -lTAO_CosNaming -lTAO_IORTable -lTAO_PortableServer -lTAO_Svc_Utils -lTAO_CosTrading -lTAO_DynamicAny -lTAO_CosProperty -lTAO_IFR_Client
+ACSLOGTSDEF=ACSLogTypeExample
 
 #
 # <brief description of xxxxx program>
