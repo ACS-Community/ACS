@@ -155,7 +155,7 @@ public interface ILogEntry extends Serializable {
 	    
 	public static final String TIME_FORMAT = "yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'SSS";
 	
-	public static final short NUMBER_OF_FIELDS = 16;
+	public static final int NUMBER_OF_FIELDS = fieldClasses.length;
 	
 	/**
 	 * 
@@ -181,6 +181,12 @@ public interface ILogEntry extends Serializable {
 	 * @return Return the object in the field of the passed index
 	 */
 	public Object getField(int fieldIndex);
+	
+	/**
+	 * 
+	 * @return The type of the log
+	 */
+	public Integer getType();
 	
 	/**
 	 *	Add data to this log

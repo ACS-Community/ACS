@@ -425,5 +425,12 @@ public class LogEntry implements ILogEntry {
 	public Vector<AdditionalData> getAdditionalData() {
 		return additionalData;
 	}
+	
+	/**
+	 * @see ILogEntry
+	 */
+	public Integer getType() {
+		return type;
+	}
 
 }

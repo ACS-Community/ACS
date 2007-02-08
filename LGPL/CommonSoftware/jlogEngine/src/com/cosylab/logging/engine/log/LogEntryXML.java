@@ -204,6 +204,13 @@ public final class LogEntryXML implements ILogEntry
 	{
 		return (isValidFieldIndex(fieldIndex) ? fields[fieldIndex] : null);
 	}
+	
+	/**
+	 * @see ILogEntry
+	 */
+	public Integer getType() {
+		return (Integer)getField(ILogEntry.FIELD_ENTRYTYPE);
+	}
     
 	/**
 	 * Return the class of a specific field 
