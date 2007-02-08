@@ -2,7 +2,7 @@
 #*******************************************************************************
 # E.S.O. - ALMA project
 #
-# "@(#) $Id: acsMakeLogTSDependencies,v 1.1 2007/02/08 10:33:08 mzampare Exp $"
+# "@(#) $Id: acsMakeLogTSDependencies,v 1.2 2007/02/08 14:41:33 mzampare Exp $"
 #
 #************************************************************************
 #   NAME
@@ -47,7 +47,7 @@ logtsName=$1
 # I cannot put the following variable under object since 
 # make do_idl cleans up ../object
 # 
-tDir="tmp$$"
+tDir="../object/${logtsName}"
 
 echo "# Dependency file for ACSLOGTSDEF: ${logtsName}"
 echo "# Created automatically by acsMakeLogTSDependencies -  `date '+%d.%m.%y %T'`"
@@ -66,7 +66,7 @@ echo "#"
 
 echo "# preliminary, compute which targets are wanted"
 echo "ifeq (\$(call mustBuild,Java),true)"
-#echo "    ALL_LOGTS += ../lib/${logtsName}LTS.jar "
+echo "    ALL_LOGTS += ../lib/${logtsName}LTS.jar "
 echo "endif"
 echo "ifeq (\$(call mustBuild,C++),true)"
 echo "    ALL_LOGTS += ../lib/lib${logtsName}LTS.a ../lib/lib${logtsName}LTS.so "
@@ -102,21 +102,18 @@ echo ""
 #
 echo "../lib/${logtsName}LTS.jar:  ../idl/${logtsName}.xml"
 echo "ifndef MAKE_VXWORKS"
-# switched off for the moment.
-echo "ifeq (\$(call mustBuild,Java),false)"
+echo "ifeq (\$(call mustBuild,Java),true)"
 echo "	\$(AT)echo \"== LOGTS generating Java from (${logtsName}) XML \" "
-echo "	\$(AT)mkdir -p ${tDir}/src || exit -34"
-echo "	\$(AT)acserrGenJava ../idl/${logtsName}.xml ${tDir}/src || exit -2"
+echo "	\$(AT)loggingtsGenJava ../idl/${logtsName}.xml  || exit -2"
 echo "	-\$(AT)echo \"== LOGTS Compiling generated Java classes into Stub jarfile (${logtsName})\" "
-echo "	\$(AT)(cd ${tDir}; ln -s ../../lib lib; cd src;  export CLASSPATH=\`acsMakeJavaClasspath\`:.; javac -d .. \`find . -name \*.java | tr '\n' ' '\` ) || exit -13 ; \\"
+echo "	\$(AT)(cd ${tDir};  export CLASSPATH=\`acsMakeJavaClasspath\`:.; javac  \`find . -name \*.java | tr '\n' ' '\` ) || exit -13 ; \\"
 echo "	    if [ xx\$(DEBUG) = xxon ]; \\"
 echo "    then \\"
-echo "		(cd ${tDir}; find . \( -name \*.class -o -name \*.java \) -exec jar cf ../../lib/${logtsName}Errors.jar  \{\} \; ) ; \\"
+echo "		(cd ${tDir}; touch../../lib/${logtsName}LTS.jar; find . \( -name \*.class -o -name \*.java \) -exec jar uf ../../lib/${logtsName}LTS.jar  \{\} \; ) ; \\"
 echo "	    else\\"
-echo "		(cd ${tDir}; find . -name \*.class -exec jar uf ../../lib/${logtsName}Errors.jar  \{\} \; ) ;	\\"
+echo "		(cd ${tDir}; touch ../../lib/${logtsName}LTS.jar; find . -name \*.class -exec jar uf ../../lib/${logtsName}LTS.jar  \{\} \; ) ;	\\"
 echo "	    fi;\\"
 echo ""
-echo "	\$(AT)rm -fr ${tDir}"
 echo "endif"
 echo "endif"
 echo ""
@@ -141,7 +138,7 @@ echo "#"
 # NOTE: after the transition to the new system a dependency should be added
 # to clean_lib_${logtsName}
 echo "clean_logts_${logtsName}: "
-echo "	-\$(AT)\$(RM)  ../lib/${logtsName}.jar ../object/${logtsName}.dlts ../object/${logtsName} ../object/${logtsName}.cpp ../object/${logtsName}.o ../object/${logtsName}.h  ../object/${logtsName}LTS.py  ../lib/lib${logtsName}LTS.a ../lib/lib${logtsName}LTS.so  ../lib/python/site-packages/${logtsName}LTS.py  ../object/${logtsName}.d ../object/${logtsName}LTS.da "
+echo "	-\$(AT)\$(RM)  ../lib/${logtsName}LTS.jar ../object/${logtsName}.dlts ../object/${logtsName} ../object/${logtsName}.cpp ../object/${logtsName}.o ../object/${logtsName}.h  ../object/${logtsName}LTS.py  ../lib/lib${logtsName}LTS.a ../lib/lib${logtsName}LTS.so  ../lib/python/site-packages/${logtsName}LTS.py  ../object/${logtsName}.d ../object/${logtsName}LTS.da "
 echo ""
 echo ""
 #
@@ -155,7 +152,7 @@ echo "#"
 # NOTE: after the transition to the new system a dependency should be added
 # to install_lib_${logtsName}
 echo ".PHONY: install_logts_${logtsName}"
-echo "install_logts_${logtsName}: \$(VLTTOP)/include/${logtsName}.h \$(VLTTOP)/lib/lib${logtsName}LTS.a \$(VLTTOP)/lib/lib${logtsName}LTS.so \$(VLTTOP)/idl/${logtsName}.xml \$(VLTTOP)/lib/python/site-packages/${logtsName}LTS.py"
+echo "install_logts_${logtsName}: \$(VLTTOP)/include/${logtsName}.h \$(VLTTOP)/lib/lib${logtsName}LTS.a \$(VLTTOP)/lib/lib${logtsName}LTS.so \$(VLTTOP)/idl/${logtsName}.xml \$(VLTTOP)/lib/python/site-packages/${logtsName}LTS.py \$(VLTTOP)/lib/${logtsName}LTS.jar"
 echo ""
 #
 echo "\$(VLTTOP)/lib/python/site-packages/${logtsName}LTS.py: ../idl/${logtsName}.xml"
@@ -169,6 +166,7 @@ echo ""
 
 # remove me, see note above
 echo "\$(VLTTOP)/lib/lib${logtsName}LTS.a: ../lib/lib${logtsName}LTS.a"
+echo "	-\$(AT)echo \"== installing LOGTS C++ (${logtsName}) \" "
 echo "	\$(AT)cp -f $< \$(VLTTOP)/lib"
 echo ""
 echo "\$(VLTTOP)/lib/lib${logtsName}LTS.so: ../lib/lib${logtsName}LTS.so"
@@ -176,6 +174,17 @@ echo "	\$(AT)cp -f $< \$(VLTTOP)/lib"
 echo ""
 echo "\$(VLTTOP)/include/${logtsName}.h: ../object/${logtsName}.h"
 echo "	\$(AT)cp $< \$(VLTTOP)/include/"
-
+echo ""
+# MEMENTO HOMO!!!
+# the rule below would have seemed necessary, 
+# but it turns out that there are "somewhere" other rules for which the 
+# makefile apparently already knows how to install this stuff to the $VLTTOP.
+# The same probably applies to other rules above.
+#
+# Since we have to restructure everything anyway we leave it as it is.
+#
+#echo "\$(VLTTOP)/lib/${logtsName}LTS.jar: ../lib/${logtsName}LTS.jar"
+#echo "	-\$(AT)echo \"== installing LOGTS Java (${logtsName}) \" "
+#echo "	\$(AT)cp $< \$(VLTTOP)/lib/"
 
 # ___oOo___
