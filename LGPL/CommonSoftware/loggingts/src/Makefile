@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.6 2007/02/07 10:46:00 nbarriga Exp $"
+# "@(#) $Id: Makefile,v 1.7 2007/02/08 09:46:15 nbarriga Exp $"
 #
 # Makefile of ........
 #
@@ -116,8 +116,8 @@ USER_IDL =
 #
 # Jarfiles and their directories
 #
-#JARFILES=simpleLog 
-#simpleLog_DIRS=alma
+JARFILES=simpleLog 
+simpleLog_DIRS=alma
 jjj_EXTRAS= 
 #
 # java sources in Jarfile on/off

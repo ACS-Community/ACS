@@ -19,25 +19,25 @@
 
 /** 
  * @author  nbarriga
- * @version $Id: simpleLog.java,v 1.1 2007/02/02 08:52:46 nbarriga Exp $
+ * @version $Id: simpleLog.java,v 1.2 2007/02/08 09:46:15 nbarriga Exp $
  * @since    
  */
 
 package alma.acs.loggingts;
 
-import java.util.logging.LogRecord;
+//import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 import java.util.logging.Level;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
+//import java.net.InetAddress;
+//import java.net.UnknownHostException;
 import java.util.HashMap;
-import java.util.Iterator;
+//import java.util.Iterator;
 import java.util.Map;
-import java.util.Properties;
-import java.lang.Throwable;
+//import java.util.Properties;
+//import java.lang.Throwable;
 
 import alma.acs.logging.AcsLogLevel;
-import alma.acs.logging.ClientLogManager;
+//import alma.acs.logging.ClientLogManager;
 import alma.acs.logging.AcsLogger;
 
 /**
@@ -52,40 +52,14 @@ public class simpleLog{
 	}
 	public void log(){
 		Level level = AcsLogLevel.WARNING;
-/*		LogRecord lr = new LogRecord(level, "Simple Log");
-		lr.setMillis(System.currentTimeMillis());
-		StackTraceElement[] stTrElems = (new Throwable()).getStackTrace();
-		StackTraceElement stTrEl = stTrElems[1];
-		lr.setSourceClassName(stTrEl.getClassName());
-		lr.setSourceMethodName(stTrEl.getMethodName());
-		lr.setLoggerName("java " + System.getProperty("java.version"));
-		Map<String, Object> logProperties = new HashMap<String, Object>();
-		lr.setParameters(new Object[] {logProperties} );
-		logProperties.put("Line", new Long(stTrEl.getLineNumber()));
-		logProperties.put("ThreadName", Thread.currentThread().getName());
-		try{
-			logProperties.put("HostName", InetAddress.getLocalHost().getHostName());
-		}
-		catch(UnknownHostException e)
-		{
-			logProperties.put("HostName", "Unknown");
-		}
-
-		//logProperties.put("StackId", stackID);
-		//logProperties.put("StackLevel", new Long(stackLevel));
-		logProperties.put("testProperty", "testProperty value");
-
-
-
-		//Logger m_logger = Logger.getLogger("AcsRemoteLogger");
-		//Logger m_logger =ClientLogManager.getAcsLogManager().getLoggerForComponent("dddd");
-		//m_logger.log(lr);
-*/		
 
 		Map<String, Object> nameValue = new HashMap<String, Object>();
 		nameValue.put("logName","simpleLog");
-		Map<String, Object> logProperties = new HashMap<String, Object>();
-		logProperties.put("LogProperties", nameValue);
-		m_logger.log(level,"Simple Log",new Object[] {logProperties});
+		m_logger.log(level,"Simple Log", nameValue);
+		//System.out.println("blabla2");
+
+
+
+		
 	}
 }

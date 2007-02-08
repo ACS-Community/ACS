@@ -37,7 +37,7 @@ simpleClient.getLogger().logInfo("Starting test client.")
 
 simpleLog().log()
 a=complexLog()
-a.setsomeMember("value of some member")
+a.setsomeMember(3.14159)
 a.log()
 
 simpleClient.disconnect()
