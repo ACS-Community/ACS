@@ -2,7 +2,7 @@
 #*******************************************************************************
 # E.S.O. - ALMA project
 #
-# "@(#) $Id: acsMakeLogTSDependencies,v 1.2 2007/02/08 14:41:33 mzampare Exp $"
+# "@(#) $Id: acsMakeLogTSDependencies,v 1.3 2007/02/08 15:06:13 nbarriga Exp $"
 #
 #************************************************************************
 #   NAME
@@ -106,10 +106,10 @@ echo "ifeq (\$(call mustBuild,Java),true)"
 echo "	\$(AT)echo \"== LOGTS generating Java from (${logtsName}) XML \" "
 echo "	\$(AT)loggingtsGenJava ../idl/${logtsName}.xml  || exit -2"
 echo "	-\$(AT)echo \"== LOGTS Compiling generated Java classes into Stub jarfile (${logtsName})\" "
-echo "	\$(AT)(cd ${tDir};  export CLASSPATH=\`acsMakeJavaClasspath\`:.; javac  \`find . -name \*.java | tr '\n' ' '\` ) || exit -13 ; \\"
+echo "	\$(AT)(cd ${tDir};  export CLASSPATH=\`vltMakeJavaClasspath\`:.; javac  \`find . -name \*.java | tr '\n' ' '\` ) || exit -13 ; \\"
 echo "	    if [ xx\$(DEBUG) = xxon ]; \\"
 echo "    then \\"
-echo "		(cd ${tDir}; touch../../lib/${logtsName}LTS.jar; find . \( -name \*.class -o -name \*.java \) -exec jar uf ../../lib/${logtsName}LTS.jar  \{\} \; ) ; \\"
+echo "		(cd ${tDir}; touch ../../lib/${logtsName}LTS.jar; find . \( -name \*.class -o -name \*.java \) -exec jar uf ../../lib/${logtsName}LTS.jar  \{\} \; ) ; \\"
 echo "	    else\\"
 echo "		(cd ${tDir}; touch ../../lib/${logtsName}LTS.jar; find . -name \*.class -exec jar uf ../../lib/${logtsName}LTS.jar  \{\} \; ) ;	\\"
 echo "	    fi;\\"
@@ -175,16 +175,8 @@ echo ""
 echo "\$(VLTTOP)/include/${logtsName}.h: ../object/${logtsName}.h"
 echo "	\$(AT)cp $< \$(VLTTOP)/include/"
 echo ""
-# MEMENTO HOMO!!!
-# the rule below would have seemed necessary, 
-# but it turns out that there are "somewhere" other rules for which the 
-# makefile apparently already knows how to install this stuff to the $VLTTOP.
-# The same probably applies to other rules above.
-#
-# Since we have to restructure everything anyway we leave it as it is.
-#
-#echo "\$(VLTTOP)/lib/${logtsName}LTS.jar: ../lib/${logtsName}LTS.jar"
-#echo "	-\$(AT)echo \"== installing LOGTS Java (${logtsName}) \" "
-#echo "	\$(AT)cp $< \$(VLTTOP)/lib/"
+echo "\$(VLTTOP)/lib/${logtsName}LTS.jar: ../lib/${logtsName}LTS.jar"
+echo "	-\$(AT)echo \"== installing LOGTS Java (${logtsName}) \" "
+echo "	\$(AT)cp $< \$(VLTTOP)/lib/"
 
 # ___oOo___
