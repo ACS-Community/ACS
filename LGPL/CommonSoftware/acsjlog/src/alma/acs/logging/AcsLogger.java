@@ -22,6 +22,7 @@
 package alma.acs.logging;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Filter;
@@ -121,8 +122,11 @@ public class AcsLogger extends Logger implements LogConfigSubscriber {
         Map<String, Object> specialProperties = paramUtil.extractSpecialPropertiesMap();
         
         if (specialProperties == null) {
+        	// we prepend the special properties map to the other parameters
         	specialProperties = LogParameterUtil.createPropertiesMap();
-            record.setParameters(new Object[] {specialProperties} );
+        	List<Object> paramList = paramUtil.getNonSpecialPropertiesMapParameters();
+        	paramList.add(0, specialProperties);
+            record.setParameters(paramList.toArray() );
             
             String threadName = Thread.currentThread().getName();
             specialProperties.put(LogParameterUtil.PARAM_THREAD_NAME, threadName);
