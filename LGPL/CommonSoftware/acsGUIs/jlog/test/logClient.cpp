@@ -20,7 +20,7 @@
 *
 *
 *
-* "@(#) $Id: logClient.cpp,v 1.4 2007/01/09 13:57:49 acaproni Exp $"
+* "@(#) $Id: logClient.cpp,v 1.5 2007/02/08 14:13:51 acaproni Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -33,8 +33,8 @@
  * This process is a SimpleClient that sends logs
  * 
  * Usage:
- *    - logClient 0
- *    - logClient 1 nIter sendDone
+ *    - logClient 1
+ *    - logClient 2 nIter sendDone
  * 
  * If first param is 0 then the process sends 100 logs with a defined 
  * message reporting the number of the log.
