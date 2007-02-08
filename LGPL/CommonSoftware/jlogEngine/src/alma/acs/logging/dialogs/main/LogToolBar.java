@@ -1,3 +1,24 @@
+/*
+ *    ALMA - Atacama Large Millimiter Array
+ *    (c) European Southern Observatory, 2002
+ *    Copyright by ESO (in the framework of the ALMA collaboration)
+ *    and Cosylab 2002, All rights reserved
+ *
+ *    This library is free software; you can redistribute it and/or
+ *    modify it under the terms of the GNU Lesser General Public
+ *    License as published by the Free Software Foundation; either
+ *    version 2.1 of the License, or (at your option) any later version.
+ *
+ *    This library is distributed in the hope that it will be useful,
+ *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *    Lesser General Public License for more details.
+ *
+ *    You should have received a copy of the GNU Lesser General Public
+ *    License along with this library; if not, write to the Free Software
+ *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
+ *    MA 02111-1307  USA
+ */
 package alma.acs.logging.dialogs.main;
 
 import java.awt.BorderLayout;
@@ -218,6 +239,43 @@ public class LogToolBar extends JToolBar {
     		getPauseBtn().setText(pauseStr);
     	}
     	return pauseBtnPaused;
+	}
+	
+	/**
+	 * Set the play/pause button in pause mode
+	 * 
+	 * @return The status of the button previous of the command 
+	 *         (true means pasused)
+	 */
+	public boolean pause() {
+		boolean ret=pauseBtnPaused;
+		pauseBtnPaused=true;
+		getPauseBtn().setIcon(playIcon);
+		getPauseBtn().setText(playStr);
+		return ret;
+	}
+	
+	/**
+	 * Unpause the play/pause button
+	 * 
+	 * @return The status of the button previous of the command 
+	 *         (true means pasused)
+	 */
+	public boolean unpause() {
+		boolean ret=pauseBtnPaused;
+		pauseBtnPaused=true;
+		getPauseBtn().setIcon(pauseIcon);
+		getPauseBtn().setText(pauseStr);
+		return ret;
+	}
+	
+	/**
+	 * Enable/disable the play/pause button
+	 * 
+	 * @param enabled If true enable the play/pause button
+	 */
+	public void setEnablePauseBtn(boolean enabled) {
+		pauseBtn.setEnabled(enabled);
 	}
 	
 }
