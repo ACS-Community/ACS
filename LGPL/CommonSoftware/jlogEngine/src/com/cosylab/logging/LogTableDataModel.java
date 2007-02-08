@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -189,7 +190,7 @@ public class LogTableDataModel extends AbstractTableModel implements Runnable
 	 * The thread to invalidate the list of logs
 	 * i.e. to regenerate the list of visible logs 
 	 */
-	Thread invalidateThread = new Thread(this);
+	private Thread invalidateThread = new Thread(this);
 	
 	/**
 	 * The max number of logs in cache 
@@ -593,6 +594,7 @@ public class LogTableDataModel extends AbstractTableModel implements Runnable
 		visibleLogs.clear();
 		logging.setEnabledGUIControls(false);
 		visibleLogs.setRefreshInterval(2000);
+		
 		for (int i = 0; i < size; i++) {
 			try {
 				// Check here the log level so we can avoid getting a log
@@ -611,6 +613,7 @@ public class LogTableDataModel extends AbstractTableModel implements Runnable
 		logging.freezeProgressBar();
 		visibleLogs.setRefreshInterval(null);
 		logging.setEnabledGUIControls(true);
+		visibleLogs.setRefreshInterval(null);
 	}
 	
 	/**
@@ -625,19 +628,6 @@ public class LogTableDataModel extends AbstractTableModel implements Runnable
 			invalidateThread=new Thread(this);
 			invalidateThread.start();
 		}
-	}
-	
-	/**
-	 * Insert the method's description here.
-	 * <p>
-	 * Creation date: (12/23/2001 13:01:44)
-	 * @param index int
-	 */
-	public void toggleExpand(int index) {
-		/*if (visibleLogs.isExpanded(index)) 
-			visibleLogs.collapse(index);
-		else
-			visibleLogs.expand(index);*/
 	}
 	
 	/**
