@@ -6,7 +6,8 @@
 	type="10"
 	shortDescription="Example LogDefinitionType"
 	description="Longer description of the sample LogDefinitionType"
-	URL="http://someurl.org">
+	URL="http://someurl.org"
+	_prefix="alma">
 	
 	<LogDefinition
 		logName="logWithMembers"
