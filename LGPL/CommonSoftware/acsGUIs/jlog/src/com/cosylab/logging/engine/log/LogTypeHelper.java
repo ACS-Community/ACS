@@ -38,18 +38,18 @@ import com.cosylab.logging.engine.log.LogEntryXML;
  * array of icons in a lot of different places
  */
 public class LogTypeHelper {
-    public static final short ENTRYTYPE_TRACE = 0;
-    public static final short ENTRYTYPE_DEBUG = 1;
-    public static final short ENTRYTYPE_INFO = 2;
-    public static final short ENTRYTYPE_NOTICE = 3;
-    public static final short ENTRYTYPE_WARNING = 4;
-    public static final short ENTRYTYPE_ERROR = 5;
-    public static final short ENTRYTYPE_CRITICAL = 6;
-    public static final short ENTRYTYPE_ALERT = 7;
-    public static final short ENTRYTYPE_EMERGENCY = 8;
+    public static final int ENTRYTYPE_TRACE = 0;
+    public static final int ENTRYTYPE_DEBUG = 1;
+    public static final int ENTRYTYPE_INFO = 2;
+    public static final int ENTRYTYPE_NOTICE = 3;
+    public static final int ENTRYTYPE_WARNING = 4;
+    public static final int ENTRYTYPE_ERROR = 5;
+    public static final int ENTRYTYPE_CRITICAL = 6;
+    public static final int ENTRYTYPE_ALERT = 7;
+    public static final int ENTRYTYPE_EMERGENCY = 8;
     
     // The total amount of different log types
-    private static short NUMBER_OF_ENTRYTYPES = 9;
+    private static int NUMBER_OF_ENTRYTYPES = 9;
     
     /**
      * The description of each log type
