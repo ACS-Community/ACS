@@ -18,7 +18,7 @@
 */
 /** 
  * @author  nbarriga
- * @version $Id: testLTSClient.java,v 1.1 2007/02/02 08:52:46 nbarriga Exp $
+ * @version $Id: testLTSClient.java,v 1.2 2007/02/08 11:42:01 nbarriga Exp $
  * @since    
  */
 
@@ -26,7 +26,7 @@ package alma.acs.loggingtstest;
 
 import java.util.logging.Logger;
 import alma.acs.component.client.ComponentClient;
-import alma.acs.loggingts.simpleLog;
+import alma.acs.ACSLogTypeExample.*;
 
 /**
  * Insert a Class/Interface comment.
@@ -65,8 +65,11 @@ public class testLTSClient  extends ComponentClient
 			e.printStackTrace(System.err);
 			System.exit(-1);
 		}
-		simpleLog log=new simpleLog(client.m_logger);
-		log.log();		
+		simpleLog slog=new simpleLog(client.m_logger);
+		slog.log();		
+		complexLog clog=new complexLog(client.m_logger);
+		clog.setsomeMember(3.14159);
+		clog.log();		
 		try
 		{
 			Thread.sleep(1000);

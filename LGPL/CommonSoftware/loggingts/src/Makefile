@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.7 2007/02/08 09:46:15 nbarriga Exp $"
+# "@(#) $Id: Makefile,v 1.8 2007/02/08 11:42:01 nbarriga Exp $"
 #
 # Makefile of ........
 #
@@ -64,7 +64,7 @@ LIBRARIES_L     =
 #
 # Scripts (public and local)
 # ----------------------------
-SCRIPTS         = loggingtsGenPython loggingtsGenH loggingtsGenCpp
+SCRIPTS         = loggingtsGenPython loggingtsGenH loggingtsGenCpp loggingtsGenJava
 SCRIPTS_L       =
 
 #
@@ -116,8 +116,8 @@ USER_IDL =
 #
 # Jarfiles and their directories
 #
-JARFILES=simpleLog 
-simpleLog_DIRS=alma
+#JARFILES=ACSLogTypeExample 
+#ACSLogTypeExample_DIRS=alma
 jjj_EXTRAS= 
 #
 # java sources in Jarfile on/off
@@ -160,7 +160,7 @@ ASCII_TO_MIF =
 #
 # other files to be installed
 #----------------------------
-INSTALL_FILES = ../config/LTS2Py.xslt ../config/LTS2Cpp.xslt ../config/LTS2H.xslt ../idl/ACSLogTS.xsd
+INSTALL_FILES = ../config/LTS2Py.xslt ../config/LTS2Cpp.xslt ../config/LTS2H.xslt ../config/LTS2Java.xslt ../idl/ACSLogTS.xsd
 
 #
 # list of all possible C-sources (used to create automatic dependencies)
