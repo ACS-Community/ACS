@@ -19,13 +19,13 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: baciCharacteristicComponentImpl.cpp,v 1.43 2006/09/24 18:43:39 bjeram Exp $"
+* "@(#) $Id: baciCharacteristicComponentImpl.cpp,v 1.44 2007/02/08 08:11:53 bjeram Exp $"
 *
 */
 
 #include <vltPort.h>
 
-static char *rcsId="@(#) $Id: baciCharacteristicComponentImpl.cpp,v 1.43 2006/09/24 18:43:39 bjeram Exp $"; 
+static char *rcsId="@(#) $Id: baciCharacteristicComponentImpl.cpp,v 1.44 2007/02/08 08:11:53 bjeram Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <baci.h>
@@ -136,12 +136,28 @@ void CharacteristicComponentImpl::__aboutToAbort()
 void CharacteristicComponentImpl::__cleanUp()
 {
   ACS_TRACE("baci::CharacteristicComponentImpl::__cleanUp");
-    // Stop the threads 
-    if (component_mp)
-    {
-        component_mp->stopAllThreads();
-    }
-    ACSComponentImpl::__cleanUp();
+  try
+      {
+      // we stop the action thread in all cases because we started it
+      if (component_mp!=NULL)
+	  component_mp->stopActionThread();
+
+      //if user started monitoring thread s/he has to stop it as well
+      // if s/he for some reason forget to do this the acs component will try to stop it again at the end of _cleanUp
+      if( monitoringProperties_mp == true )
+	  {
+	  // Stop just threads that are used by properties
+	  stopPropertiesMonitoring();
+	  }
+      }
+  catch(ACSErr::ACSbaseExImpl &ex)
+      {
+//tbd: add CleanUp Error
+      ex.log(LM_WARNING);
+// should we continue or throw an exception
+      }
+  
+  ACSComponentImpl::__cleanUp();
 }//__cleanUp
 
 void  CharacteristicComponentImpl::startPropertiesMonitoring() throw (acsthreadErrType::CanNotStartThreadExImpl,
