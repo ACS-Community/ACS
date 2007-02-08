@@ -23,7 +23,7 @@
 
 if [ -f ../config/LTS2Java.xslt ]
 then
-   Java_XSLT=../config/LTS2Java.xslt
+   Java_XSLT=../../config/LTS2Java.xslt
 else
    # Now I look for in the other dirs
    result=`searchFile /config/LTS2Java.xslt`
@@ -36,5 +36,5 @@ DIRNAME=$(basename $1 | sed s/\.xml//g)
 NEWDIR=../object/$DIRNAME
 mkdir -p $NEWDIR
 cd $NEWDIR
-java -cp $ACSROOT/lib/xalan.jar:$ACSROOT/lib/xalan_serializer.jar org.apache.xalan.xslt.Process -XSL ../$Java_XSLT -IN ../$1 -OUT .dummytmp
+java -cp $ACSROOT/lib/xalan.jar:$ACSROOT/lib/xalan_serializer.jar org.apache.xalan.xslt.Process -XSL $Java_XSLT -IN ../$1 -OUT .dummytmp
 rm -f .dummytmp
