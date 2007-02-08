@@ -38,7 +38,7 @@ public class VisibleLogsVector extends Thread {
 	 * the event to the table
 	 */
 	public class NewLogGUIRefresher extends Thread {
-		private final int REFRESH_INTERVAL=1000;
+		public static final int REFRESH_INTERVAL=1000;
 		/**
 		 * The minimum index of the logs inserted
 		 */
@@ -917,6 +917,12 @@ public class VisibleLogsVector extends Thread {
 		}
 	}
 	
+	/**
+	 * Sort the logs in the table with the given criteria
+	 * 
+	 * @param field
+	 * @param ascending
+	 */
 	private void sort(int field, boolean ascending) {
 		LoggingClient.getInstance().animateProgressBar("Sorting");
 		int prevField = comparator.getSortField();
@@ -1035,8 +1041,10 @@ public class VisibleLogsVector extends Thread {
 	 * LogOperationRequest is created to flush the logs asynchronously
 	 * 
 	 * @param suspend If true the new logs received are not shown in the table
+	 * @return The old status (suspended/unsuspended)
 	 */
-	public void suspendRefresh(boolean pause) {
+	public boolean suspendRefresh(boolean pause) {
+		boolean status=isPaused;
 		isPaused=pause;
 		if (!isPaused) {
 			synchronized (asyncOps) {
@@ -1046,6 +1054,7 @@ public class VisibleLogsVector extends Thread {
 				notifyAll();
 			}
 		}
+		return status;
 	}
 	
 	/**
