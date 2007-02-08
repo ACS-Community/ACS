@@ -34,7 +34,7 @@
 
 /**
  * @author  nbarriga
- * @version $Id: LTS2Java.xslt,v 1.2 2007/02/08 13:10:39 nbarriga Exp $
+ * @version $Id: LTS2Java.xslt,v 1.3 2007/02/08 14:01:10 nbarriga Exp $
  * @since
  */
 
@@ -66,7 +66,19 @@ import alma.acs.logging.AcsLogger;
 </xsl:text>
 		<xsl:for-each select="loggingts:Member">
 		<xsl:text>	public void set</xsl:text><xsl:value-of select="@name"/>
-		<xsl:text>(</xsl:text><xsl:value-of select="@type"/><xsl:text> value){
+		<xsl:text>(</xsl:text>        
+		<xsl:choose>
+                <xsl:when test='@type="string"'>
+                        <xsl:text>String</xsl:text>
+                </xsl:when>
+	        <xsl:when test='@type="double"'>
+        		<xsl:text>Double</xsl:text>
+              	</xsl:when>
+                <xsl:when test='@type="long"'>
+	        	<xsl:text>Long</xsl:text>
+          	</xsl:when>
+        </xsl:choose>
+	<xsl:text> value){
 		nameValue.put("</xsl:text><xsl:value-of select="@name"/><xsl:text>",value);
 	}
 </xsl:text>	
