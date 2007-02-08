@@ -79,7 +79,7 @@ void BulkDataDistributerImpl<TReceiverCallback, TSenderCallback>::multiConnect(b
     CDBpath += name();
 
     CDB::DAO_ptr dao_p = dal_p->get_DAO_Servant(CDBpath.c_str());
-    if (CORBA::is_nil(dao_p))
+    if(CORBA::is_nil(dao_p))
 	{
 	ACS_SHORT_LOG((LM_ERROR,"BulkDataDistributerImpl::multiConnect error getting DAO reference"));
 	AVConnectErrorExImpl err = AVConnectErrorExImpl(__FILE__,__LINE__,"BulkDataDistributerImpl::multiConnect");
@@ -144,24 +144,30 @@ void BulkDataDistributerImpl<TReceiverCallback, TSenderCallback>::connectByName(
     ACS_TRACE("BulkDataDistributerImpl<>::connectByName");
 
     bulkdata::BulkDataReceiver_var receiver = containerServices_p->maci::ContainerServices::getComponent<bulkdata::BulkDataReceiver>(receiverName_p);
-    if(!CORBA::is_nil(receiver.in()))
+    if(CORBA::is_nil(receiver.in()))
+	{
+	ACS_SHORT_LOG((LM_ERROR,"BulkDataDistributerImpl<>::connectByName receiver reference null"));
+	AVConnectErrorExImpl err = AVConnectErrorExImpl(__FILE__,__LINE__,"BulkDataDistributerImpl::connectByName");
+	throw err.getAVConnectErrorEx();
+	}
+    else
 	{
 	try
 	    {
 	    multiConnect(receiver.in());
 	    }
-	catch(AVConnectErrorExImpl &ex)
+	catch(AVConnectErrorEx &ex)
 	    {
-	    ACS_SHORT_LOG((LM_INFO,"BulkDataDistributerImpl::connectByName AVConnectErrorExImpl exception catched !"));
 	    AVConnectErrorExImpl err = AVConnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataDistributerImpl::connectByName");
+	    err.log(LM_DEBUG);
 	    throw err.getAVConnectErrorEx();
 	    }
-	}
-    else
-	{
-	ACS_SHORT_LOG((LM_INFO,"BulkDataDistributerImpl::connectByName AVConnectErrorExImpl exception catched !"));
-	AVConnectErrorExImpl err = AVConnectErrorExImpl(__FILE__,__LINE__,"BulkDataDistributerImpl::connectByName");
-	throw err.getAVConnectErrorEx();
+	catch(...)
+	    {
+	    ACS_SHORT_LOG((LM_ERROR,"BulkDataDistributerImpl<>::connectByName UNKNOWN exception"));
+	    AVConnectErrorExImpl err = AVConnectErrorExImpl(__FILE__,__LINE__,"BulkDataDistributerImpl::connectByName");
+	    throw err.getAVConnectErrorEx();
+	    }
 	}
 }
 
@@ -208,34 +214,38 @@ void BulkDataDistributerImpl<TReceiverCallback, TSenderCallback>::disconnectByNa
 
     if(!distributer.isRecvConnected(receiverName_p))
 	{
-	ACS_SHORT_LOG((LM_INFO,"BulkDataDistributerImpl::disconnectByName AVDisconnectErrorExImpl - receiver %s not connected",receiverName_p));
+	ACS_SHORT_LOG((LM_ERROR,"BulkDataDistributerImpl::disconnectByName AVDisconnectErrorExImpl - receiver %s not connected",receiverName_p));
 	AVDisconnectErrorExImpl err = AVDisconnectErrorExImpl(__FILE__,__LINE__,"BulkDataDistributerImpl::disconnectByName");
 	throw err.getAVDisconnectErrorEx();
 	}
 
     bulkdata::BulkDataReceiver_var receiver = containerServices_p->maci::ContainerServices::getComponent<bulkdata::BulkDataReceiver>(receiverName_p);
-    if(!CORBA::is_nil(receiver.in()))
+    if(CORBA::is_nil(receiver.in()))
+	{
+	ACS_SHORT_LOG((LM_ERROR,"BulkDataDistributerImpl::disconnectByName could not get receiver component reference"));
+	AVDisconnectErrorExImpl err = AVDisconnectErrorExImpl(__FILE__,__LINE__,"BulkDataDistributerImpl::disconnectByName");
+	throw err.getAVDisconnectErrorEx();
+	}
+    else
 	{
 	try
 	    {
 	    multiDisconnect(receiver.in());
 	    containerServices_p->releaseComponent(receiverName_p);	
 	    }
+	catch(AVDisconnectErrorEx &ex)
+	    {
+	    AVDisconnectErrorExImpl err = AVDisconnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataDistributerImpl::disconnectByName");
+	    err.log(LM_DEBUG);
+	    throw err.getAVDisconnectErrorEx();
+	    }
 	catch(...)
 	    {
-	    ACS_SHORT_LOG((LM_INFO,"BulkDataDistributerImpl::disconnectByName AVDisconnectErrorExImpl exception catched !"));
+	    ACS_SHORT_LOG((LM_ERROR,"BulkDataDistributerImpl::disconnectByName UNKNOWN exception"));
 	    AVDisconnectErrorExImpl err = AVDisconnectErrorExImpl(__FILE__,__LINE__,"BulkDataDistributerImpl::disconnectByName");
 	    throw err.getAVDisconnectErrorEx();
 	    }
 	}
-    else
-	{
-	ACS_SHORT_LOG((LM_INFO,"BulkDataDistributerImpl::disconnectByName AVDisconnectErrorExImpl exception catched !"));
-	AVDisconnectErrorExImpl err = AVDisconnectErrorExImpl(__FILE__,__LINE__,"BulkDataDistributerImpl::disconnectByName");
-	throw err.getAVDisconnectErrorEx();
-	}
-
-
 }
 
 

@@ -98,7 +98,6 @@ void AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::multi
     else
 	{
 	bulkdata::BulkDataReceiver_var receiver = contSvc_p->maci::ContainerServices::getComponent<bulkdata::BulkDataReceiver>(receiverName.c_str());
-
 	if(CORBA::is_nil(receiver.in()))
 	    {
 	    ACS_SHORT_LOG((LM_ERROR,"BulkDataDistributer<>::multiDisconnect could not get receiver reference"));	
@@ -143,49 +142,48 @@ void AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::multi
 		    }
 		catch(AVInvalidFlowNumberEx &ex)
 		    {
-		    AVDisconnectErrorExImpl err = AVDisconnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataDistributer<>::multiDisconnect");
+		    AVDisconnectErrorExImpl err = AVDisconnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataDistributer::multiDisconnect");
 		    throw err;
 		    }
 		catch(AVFlowEndpointErrorEx &ex)
 		    {
-		    AVDisconnectErrorExImpl err = AVDisconnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataDistributer<>::multiDisconnect");
+		    AVDisconnectErrorExImpl err = AVDisconnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataDistributer::multiDisconnect");
+		    throw err;
+		    }
+		catch(...)
+		    {
+		    ACS_SHORT_LOG((LM_ERROR,"BulkDataDistributer<>::multiDisconnect UNKNOWN exception"));
+		    AVDisconnectErrorExImpl err = AVDisconnectErrorExImpl(__FILE__,__LINE__,"BulkDataDistributer::multiDisconnect");
 		    throw err;
 		    }
 		}
 	    }
-
-
-
+	
 	try
 	    {
-	    locSender_p->disconnectPeer();    
+	    locSender_p->disconnectPeer();
 	    receiver->closeReceiver();
 	    delete locSender_p;
 	    senderMap_m.unbind(receiverName);
 	    }
 	catch(ACSErr::ACSbaseExImpl &ex)
 	    {
-	    AVDisconnectErrorExImpl err = AVDisconnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataDistributer<>::multiDisconnect");
+	    AVDisconnectErrorExImpl err = AVDisconnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataDistributer::multiDisconnect");
 	    throw err;
 	    }
 	catch(AVCloseReceiverErrorEx &ex)
 	    {
-	    AVDisconnectErrorExImpl err = AVDisconnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataDistributer<>::multiDisconnect");
+	    AVDisconnectErrorExImpl err = AVDisconnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataDistributer::multiDisconnect");
 	    throw err;
 	    }
 	catch(...)
 	    {
 	    ACS_SHORT_LOG((LM_ERROR,"BulkDataDistributer<>::multiDisconnect UNKNOWN exception"));
-	    AVDisconnectErrorExImpl err = AVDisconnectErrorExImpl(__FILE__,__LINE__,"BulkDataDistributer<>::multiDisconnect");
+	    AVDisconnectErrorExImpl err = AVDisconnectErrorExImpl(__FILE__,__LINE__,"BulkDataDistributer::multiDisconnect");
 	    throw err;
 	    }
 
-
-
 	}
-
-
-
 
 }
 
