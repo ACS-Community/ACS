@@ -530,8 +530,8 @@ class ErrorTrace(ACSErr.ErrorTrace, ErrorTraceHelper):
 	#with a Python native exception
 	from traceback import extract_tb,format_exc
 	string_tb=format_exc()
-	from sys import exc_traceback
-	tuple_tb=extract_tb(exc_traceback)
+	from sys import exc_info
+	tuple_tb=extract_tb(exc_info()[2])
         try:
             #If the previous exception is an ACS Error System Exception
             if isinstance(exception.errorTrace, ACSErr.ErrorTrace):
