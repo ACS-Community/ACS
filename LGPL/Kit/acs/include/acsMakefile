@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: acsMakefile,v 1.161 2006/10/18 06:33:03 mzampare Exp $" 
+# "@(#) $Id: acsMakefile,v 1.162 2007/02/08 10:33:08 mzampare Exp $" 
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -1344,6 +1344,7 @@ include $(MAKEDIR)/javaMakefile
 endif
 include $(MAKEDIR)/pythonMakefile
 include $(MAKEDIR)/xmlerrMakefile
+include $(MAKEDIR)/logtsMakefile
 ifndef MAKE_VXWORKS
 include $(MAKEDIR)/xsdMakefile
 endif
@@ -1412,7 +1413,7 @@ do_indexfiles :
 ifdef MAKE_VXWORKS
 do_all : directory_structure do_indexfiles do_links do_xmlerr do_idl
 else
-do_all : directory_structure do_indexfiles do_xmlerr do_xsd do_idl do_abeans 
+do_all : directory_structure do_indexfiles do_logts do_xmlerr do_xsd do_idl do_abeans 
 endif
 	$(AT)$(MAKE) $(AUXILIARY_FLAGS) do_all
 
@@ -1758,7 +1759,7 @@ removeDepFile:
 #
 # In order to avoid that left over files from ctrl-C interrupted
 # execution can cause troubles, remove possible old files
-install_all : removeDepFile $(INSTALL_TARGET) 
+install_all : removeDepFile $(INSTALL_TARGET) install_logts
 	-@$(ECHO) "install_all: begin $(INSTALL_TARGET)" >> $(FILE)
 	-@$(ECHO) "SHELL=/bin/bash" >> $(FILE)
 	-@$(ECHO) "begin:" >>$(FILE)

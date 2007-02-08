@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: acsMakefile.all,v 1.75 2006/01/12 09:00:20 mzampare Exp $" 
+# "@(#) $Id: acsMakefile.all,v 1.76 2007/02/08 10:33:08 mzampare Exp $" 
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -363,6 +363,7 @@ include $(MAKEDIR)/javaMakefile
 include $(MAKEDIR)/pythonMakefile
 include $(MAKEDIR)/idlMakefile
 include $(MAKEDIR)/tclMakefile
+include $(MAKEDIR)/logtsMakefile
 
 # 
 #

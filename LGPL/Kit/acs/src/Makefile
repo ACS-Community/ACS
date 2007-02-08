@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.91 2006/10/13 19:33:10 gchiozzi Exp $" 
+# "@(#) $Id: Makefile,v 1.92 2007/02/08 10:33:08 mzampare Exp $" 
 #
 # Makefile   for vlt customization of make 
 #
@@ -50,6 +50,7 @@ SCRIPTS  = 	acsMakeTclScriptDependencies    \
 		acsMakeCppStubsLibrary     \
 		acsMakeXmlErrLibraries     \
                 acsMakeTclScript		\
+		acsMakeLogTSDependencies   \
 		acsMan				\
 		doxygenize		\
 		acsChangeEnv            \
@@ -104,6 +105,7 @@ ASCII_TO_MIF =
 # ---------------------------
 INSTALL_FILES = ../include/acsMakefile       \
                 ../include/javaMakefile   \
+                ../include/logtsMakefile   \
                 ../include/pythonMakefile   \
                 ../include/rtaiMakefile   \
                 ../include/tclMakefile   \

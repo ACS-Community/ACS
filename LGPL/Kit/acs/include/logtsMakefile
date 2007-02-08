@@ -1,0 +1,34 @@
+#################################
+# experimental part starts here
+#################################
+
+######################################
+# incrementing tasks
+######################################
+ifneq ($(strip $(ACSLOGTSDEF)),)
+    CLEAN_TARGET := $(CLEAN_TARGET) clean_logts
+endif
+
+ifneq ($(strip $(ACSLOGTSDEF)),)
+#    INSTALL_TARGET := $(INSTALL_TARGET) install_logts
+endif
+
+ifneq ($(strip $(ACSLOGTSDEF)),)
+    ALL_TARGET := $(ALL_TARGET) do_logts
+endif
+
+
+do_logts: $(foreach name, $(ACSLOGTSDEF), do_logts_$(name))
+
+install_logts: $(foreach name, $(ACSLOGTSDEF), install_logts_$(name))
+
+clean_logts: $(foreach name, $(ACSLOGTSDEF), clean_logts_$(name))
+
+ifneq "$(strip $(ACSLOGTSDEF))" "" 
+    -include $(addprefix ../object/, $(addsuffix .dlts, $(ACSLOGTSDEF)))
+endif
+
+../object/%.dlts:
+	- @echo "== Dependencies: DLTS $@"
+	$(AT)acsMakeLogTSDependencies $(*F)  >../object/$*.dlts
+
