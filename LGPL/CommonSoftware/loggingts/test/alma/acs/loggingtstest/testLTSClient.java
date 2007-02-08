@@ -18,7 +18,7 @@
 */
 /** 
  * @author  nbarriga
- * @version $Id: testLTSClient.java,v 1.2 2007/02/08 11:42:01 nbarriga Exp $
+ * @version $Id: testLTSClient.java,v 1.3 2007/02/08 13:10:39 nbarriga Exp $
  * @since    
  */
 
@@ -26,7 +26,7 @@ package alma.acs.loggingtstest;
 
 import java.util.logging.Logger;
 import alma.acs.component.client.ComponentClient;
-import alma.acs.ACSLogTypeExample.*;
+import alma.ACSLogTypeExample.*;
 
 /**
  * Insert a Class/Interface comment.

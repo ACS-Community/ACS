@@ -5,9 +5,12 @@
 	<xsl:variable name="logdefname">
 		<xsl:value-of select="@name"/>
 	</xsl:variable>
+	<xsl:variable name="Prefix">
+		<xsl:value-of select="@_prefix"/>
+	</xsl:variable>
         <xsl:for-each select="loggingts:LogDefinition">
 	<xsl:variable name="FileName">
-		<xsl:text>alma/acs/</xsl:text><xsl:value-of select="$logdefname"/><xsl:text>/</xsl:text><xsl:value-of select="@logName"/><xsl:text>.java</xsl:text>
+		<xsl:value-of select="$Prefix"/><xsl:text>/</xsl:text><xsl:value-of select="$logdefname"/><xsl:text>/</xsl:text><xsl:value-of select="@logName"/><xsl:text>.java</xsl:text>
 	</xsl:variable>
 	<redirect:write select="$FileName">
 	<xsl:text>/*
@@ -31,11 +34,11 @@
 
 /**
  * @author  nbarriga
- * @version $Id: LTS2Java.xslt,v 1.1 2007/02/08 11:42:01 nbarriga Exp $
+ * @version $Id: LTS2Java.xslt,v 1.2 2007/02/08 13:10:39 nbarriga Exp $
  * @since
  */
 
-package alma.acs.</xsl:text><xsl:value-of select="$logdefname"/>
+package </xsl:text><xsl:value-of select="$Prefix"/><xsl:text>.</xsl:text><xsl:value-of select="$logdefname"/>
 	<xsl:text>;
 
 import java.util.logging.Logger;

@@ -67,6 +67,7 @@ Python API:
 			<xs:attribute name="shortDescription" type="common:shortDescriptionString" use="optional"/>
 			<xs:attribute name="description" type="common:nonEmptyString" use="optional"/>
 			<xs:attribute name="URL" type="xs:string" use="optional"/>
+			<xs:attribute name="_prefix" type="common:nonEmptyString" use="required"/><!--for java package-->
 		</xs:complexType>
 	</xs:element>
 	<xs:simpleType name="logType">
