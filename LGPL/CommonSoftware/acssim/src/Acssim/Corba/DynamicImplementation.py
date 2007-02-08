@@ -1,4 +1,4 @@
-# @(#) $Id: DynamicImplementation.py,v 1.9 2006/03/22 21:06:17 dfugate Exp $
+# @(#) $Id: DynamicImplementation.py,v 1.10 2007/02/08 15:44:16 agrimstrup Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -21,7 +21,7 @@
 # ALMA should be addressed as follows:
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: DynamicImplementation.py,v 1.9 2006/03/22 21:06:17 dfugate Exp $"
+# "@(#) $Id: DynamicImplementation.py,v 1.10 2007/02/08 15:44:16 agrimstrup Exp $"
 #
 # who       when        what
 # --------  ----------  -------------------------------------------------------
@@ -37,7 +37,7 @@ from Acspy.Util.ACSCorba import interfaceRepository
 import CORBA
 
 #--GLOBALS---------------------------------------------------------------------
-__revision__ = "@(#) $Id: DynamicImplementation.py,v 1.9 2006/03/22 21:06:17 dfugate Exp $"
+__revision__ = "@(#) $Id: DynamicImplementation.py,v 1.10 2007/02/08 15:44:16 agrimstrup Exp $"
 #------------------------------------------------------------------------------
 def _mergeClasses(complete_dict, new_class):
     '''
@@ -137,10 +137,13 @@ class DynamicImplementation:
         self.__real_class = None
         
         #create the POA class first...
-        self.__real_class =  self.__ir_id.split(':')[1].split('/').pop()  #get interface name
+        classname =  self.__ir_id.split(':')[1].split('/').pop()  #get interface name
         self.__real_mod = self.__ir_id.split(':')[1].split('/')[1] + "__POA"  #"IDL:alma/acspytest/PyTest:1.0" becomes "acspytest__POA"
-        self.__real_mod = __import__(self.__real_mod, globals(), locals(), [self.__real_class]) #get module
-        self.__real_class = self.__real_mod.__dict__.get(self.__real_class) #get class
+        self.__real_mod = __import__(self.__real_mod, globals(), locals(), [classname]) #get module
+        self.__real_class = self.__real_mod.__dict__.get(classname) #get class
+        if self.__real_class is None:
+            reload(self.__real_mod)
+            self.__real_class = self.__real_mod.__dict__.get(classname) #get class
 
         #copy it's class locally thereby converting DynamicImplementation
         #into the POA object!
