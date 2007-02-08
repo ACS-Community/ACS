@@ -410,27 +410,29 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 	
 	/**
 	 * Method used by the plugin interface in EXEC.
-	 * Pause the application
+	 * Pause the application (scroll lock enabled)
 	 * @see alma.exec.extension.subsystemplugin.IPauseResume
 	 * 
 	 * @throws Exception
 	 */
 	public void pause() throws Exception {
 		if (toolBar.getPauseBtn().getText().equals(LogToolBar.playStr)) {
-			tableModel.scrollLock(toolBar.clickPauseBtn());
+			tableModel.scrollLock(true);
+			toolBar.pause();
 		}
 	}
 	
 	/**
 	 * Method used by the plugin interface in EXEC.
-	 * Unpause the application
+	 * Unpause the application (scroll lock disabled)
 	 * @see alma.exec.extension.subsystemplugin.IPauseResume
 	 * 
 	 * @throws Exception
 	 */
 	public void resume() throws Exception {
 		if (toolBar.getPauseBtn().getText().equals(LogToolBar.pauseStr)) {
-			tableModel.scrollLock(toolBar.clickPauseBtn());
+			tableModel.scrollLock(false);
+			toolBar.unpause();
 		}
 	}
 	
