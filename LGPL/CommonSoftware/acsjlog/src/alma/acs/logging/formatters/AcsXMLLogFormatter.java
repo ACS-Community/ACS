@@ -191,11 +191,10 @@ public class AcsXMLLogFormatter extends Formatter implements ACSCoreLevel
 			    sb.append("<Data Name=\"LoggedException\">" + maskMessage(exWriter.toString()) + "</Data>");
 			}
 			// log parameters (except for the special properties which were used already to set specific fields)
-			Object[] params = logParamUtil.getNonSpecialPropertiesMapParameters();
-			for (int i = 0; i < params.length; i++) {
-				if (params[i] instanceof Map) {
+			for (Object param : logParamUtil.getNonSpecialPropertiesMapParameters()) {
+				if (param instanceof Map) {
 					// any map that is not the special properties map we interpret as name-value pairs.
-					Map propertiesMap = (Map) params[i];
+					Map propertiesMap = (Map) param;
 					for (Object keyName : propertiesMap.keySet()) {
 						String value = maskEmptyDataContent(propertiesMap.get(keyName).toString());
 					    sb.append("<Data Name=\"" + keyName.toString() + "\">" + maskMessage(value) + "</Data>");
@@ -203,7 +202,7 @@ public class AcsXMLLogFormatter extends Formatter implements ACSCoreLevel
 				}
 				else {
 					// a single parameter was logged, but we have to fit it into our name-value scheme using a fake name
-					String value = maskEmptyDataContent(params[i].toString());
+					String value = maskEmptyDataContent(param.toString());
 					sb.append("<Data Name=\"LoggedParameter\">" + maskMessage(value) + "</Data>");
 				}
 			}
