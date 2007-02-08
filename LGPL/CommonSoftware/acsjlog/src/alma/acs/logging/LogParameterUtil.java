@@ -139,12 +139,14 @@ public class LogParameterUtil {
 
     
     /**
-    * Returns parameters of the current log record which a different from the special Properties <code>Map</code>.
+    * Returns parameters of the current log record which are different from the special Properties <code>Map</code>.
     * These parameters may still be of type Map.
+    * <p>
+    * The returned list is "live", so don't muck with it.
     * @return array of parameters, possibly empty, but never null. 
     */
-    public Object[] getNonSpecialPropertiesMapParameters() {
-        return otherParameters.toArray();
+    public List<Object> getNonSpecialPropertiesMapParameters() {
+        return otherParameters;
     }
     
     
