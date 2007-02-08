@@ -45,6 +45,8 @@ import alma.maciErrType.CannotGetComponentEx;
 import alma.maciErrType.ComponentNotAlreadyActivatedEx;
 import alma.maciErrType.ComponentConfigurationNotFoundEx;
 import alma.maciErrType.NoPermissionEx;
+import alma.acscommon.NAMING_SERVICE_NAME;
+import alma.acscommon.LOGGING_CHANNEL_NAME;
 
 /**
  * This class implements methods for declaring the naming service 
@@ -56,8 +58,8 @@ import alma.maciErrType.NoPermissionEx;
 public final class ACSRemoteAccess implements RemoteAccess {
 	public static final String MANAGER_PROPERTY = System.getProperty("ACS.manager");
 	
-	public static final String NAME_SERVICE = "NameService";
-	public static final String LOGGING_CHANNEL = "LoggingChannel";
+	public static final String NAME_SERVICE = NAMING_SERVICE_NAME.value;
+	public static final String LOGGING_CHANNEL = LOGGING_CHANNEL_NAME.value;
 	
 	
 	
