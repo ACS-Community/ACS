@@ -263,19 +263,31 @@ public class LogToolBar extends JToolBar {
 	 */
 	public boolean unpause() {
 		boolean ret=pauseBtnPaused;
-		pauseBtnPaused=true;
+		pauseBtnPaused=false;
 		getPauseBtn().setIcon(pauseIcon);
 		getPauseBtn().setText(pauseStr);
 		return ret;
 	}
 	
 	/**
-	 * Enable/disable the play/pause button
+	 * Enable/Disbale all the control in tha GUI than can cause
+	 * the invalidation of the logs
 	 * 
-	 * @param enabled If true enable the play/pause button
+	 * @param enabled If true the controls are enabled
 	 */
-	public void setEnablePauseBtn(boolean enabled) {
+	public void setEnabledGUIControls(boolean enabled) {
+		getLogLevelCB().setEnabled(enabled);
+		getSearchBtn().setEnabled(enabled);
 		pauseBtn.setEnabled(enabled);
+		clearLogsBtn.setEnabled(enabled);
+	}
+	
+	/**
+	 * 
+	 * @return true if the play/pause button is pressed
+	 */
+	public boolean isPaused() {
+		return pauseBtnPaused;
 	}
 	
 }
