@@ -23,7 +23,7 @@ PROJECT_NAME           = "ACS C++ API"
 # This could be handy for archiving the generated documentation or 
 # if some version control system is used.
 
-PROJECT_NUMBER         = "@(#) $Id: Doxyfile.cpp,v 1.8 2005/07/19 17:02:12 gchiozzi Exp $"
+PROJECT_NUMBER         = "@(#) $Id: Doxyfile.cpp,v 1.9 2007/02/09 08:58:44 gchiozzi Exp $"
 
 # The OUTPUT_DIRECTORY tag is used to specify the (relative or absolute) 
 # base path where the generated documentation will be put. 
@@ -415,6 +415,7 @@ RECURSIVE              = YES
 EXCLUDE                = acscourse \
                          Tools/doxygen \
                          Tools/cppunit \
+                         Tools/loki \
                          Tools/xerces
 
 # The EXCLUDE_SYMLINKS tag can be used select whether or not files or directories 
