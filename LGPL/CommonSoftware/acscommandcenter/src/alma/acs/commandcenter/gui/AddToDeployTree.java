@@ -12,6 +12,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.JToggleButton;
 import javax.swing.SpringLayout;
 
 import alma.acs.commandcenter.gui.CommandCenterGui.ActionBaseClass;
@@ -35,6 +36,7 @@ class AddToDeployTree extends JPanel {
 		JLabel lbl;
 		JButton btnAdd;
 		JButton btnRefresh;
+		JToggleButton btnFreeze;
 		JPanel temp;
 
 		this.master = gui;
@@ -53,12 +55,18 @@ class AddToDeployTree extends JPanel {
 		temp.add(portF);
 		temp.add(btnAdd = new JButton(new ActionAdd()));
 
-		temp.add(new JPanel(/* empty */));
+		temp.add(btnFreeze = new JToggleButton()); /* action assigned below */
 		temp.add(new JPanel(/* empty */));
 		temp.add(btnRefresh = new JButton(new ActionRefresh()));
 
 		SpringUtilities.makeCompactGrid(temp, 0, 3);
 
+		btnFreeze.setAction(new ActionFreeze(btnFreeze));
+		/* initially sync the button state with the tree.
+		 * note the button will not continuously be synced later 
+		 * on, so if somebody other than the button changes the
+		 * deploytree's freeze flag, we'll be out of sync. */
+		btnFreeze.setSelected(deployTree.isViewFrozen()); 
 
 		lbl.setLabelFor(hostF);
 		lbl.setDisplayedMnemonic(KeyEvent.VK_M);
@@ -66,6 +74,7 @@ class AddToDeployTree extends JPanel {
 		portF.setText("");
 		btnAdd.setToolTipText("Add specified Manager to Deployment Info");
 		btnRefresh.setToolTipText("Refresh all Managers in Deployment Info");
+		btnFreeze.setToolTipText("Halt automatic Refresh of Deployment Info");
 
 		btnAdd.setName("btn_Add_To_DeployTree");
 		btnRefresh.setName("btn_Refresh_DeployTree");
@@ -155,9 +164,44 @@ class AddToDeployTree extends JPanel {
 		}
 
 		protected void myActionPerformed () throws Throwable {
-			deployTree.refreshManagers();
+			/* if view is frozen, no updates will occur on the tree
+			 * including those that the user forces through the
+			 * refresh button. this context info ('automatic refresh'
+			 * or 'user refresh') is not available in the deploytree.
+			 * thus, we temporarily disable the freeze and reenable it
+			 * afterwards. note we could use the public getter and setter
+			 * for the flag, but we're not interested in any of the logic
+			 * inside the setter, so we operate on the flag directly */
+			boolean isViewFrozen = deployTree.isViewFrozen;
+			if (isViewFrozen)
+				deployTree.isViewFrozen = false;
+			
+			try {
+				deployTree.refreshManagers();
+			
+			} finally {
+				if (isViewFrozen)
+					deployTree.isViewFrozen = true;
+			}
 		}
 
 	}
 
+	protected class ActionFreeze extends MyActionBaseClass {
+		
+		protected JToggleButton btn;
+		
+		public ActionFreeze (JToggleButton btn) {
+			super("Freeze View");
+			this.btn = btn;
+		}
+		
+		protected void myActionPerformed () throws Throwable {
+			boolean b = btn.isSelected();
+			deployTree.setViewFrozen(b);
+		}
+	}
+	
+	
 }
+

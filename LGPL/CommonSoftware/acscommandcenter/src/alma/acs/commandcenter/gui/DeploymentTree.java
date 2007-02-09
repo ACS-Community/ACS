@@ -259,7 +259,7 @@ public class DeploymentTree extends JTree {
 		}
 	}
 
-
+	
 
 	/**
 	 * Finds the manager node with the given managerLocation inside
@@ -341,6 +341,34 @@ public class DeploymentTree extends JTree {
 		this.setCursor(Cursor.getPredefinedCursor(cursor));
 	}
 
+
+	// --- "freeze view" logic ---
+
+	protected boolean isViewFrozen;
+
+	/**
+	 * Will make the model converters pause, so the deployment
+	 * trees remain unchanged so the user can navigate the
+	 * trees without disturbance.
+	 */
+	public void setViewFrozen (boolean newValue) {
+		isViewFrozen = newValue;
+
+		/* when "freeze" gets switched off, there may be
+		 * changes pending in some model converters */
+		if (newValue == false) {
+			for (ModelConverter mc : modelConverters)
+				mc.convertCompleteModelIfDirty();
+		}
+	}
+	
+	/**
+	 * This is public so outside code like a toggle
+	 * button could update its state.
+	 */
+	public boolean isViewFrozen() {
+		return isViewFrozen;
+	}
 
 
 	//
@@ -493,6 +521,7 @@ public class DeploymentTree extends JTree {
 
 	}
 
+	
 	protected class ModelConverter implements TreeModelListener {
 
 		protected MaciInfo sourceModel;
@@ -507,6 +536,17 @@ public class DeploymentTree extends JTree {
 			return (DefaultMutableTreeNode) targetModel.getRoot();
 		}
 
+		// --- "freeze view" logic ---
+		
+		protected boolean isDirty;
+
+		protected void convertCompleteModelIfDirty () {
+			if (isDirty) {
+				isDirty = false;
+				convertCompleteModel();
+			}
+		}		
+		
 		// --- conversion logic ---
 
 		public void treeNodesChanged (TreeModelEvent e) {}
@@ -516,9 +556,13 @@ public class DeploymentTree extends JTree {
 		public void treeNodesRemoved (TreeModelEvent e) {}
 
 		public void treeStructureChanged (TreeModelEvent e) {
+			if (isViewFrozen()) {
+				isDirty = true;
+				return;
+			}
 			convertCompleteModel();
 		}
-
+		
 		protected void convertCompleteModel () {
 			/* System.err.println("MC: "+Thread.currentThread().getName()); */
 
@@ -660,6 +704,7 @@ public class DeploymentTree extends JTree {
 
 			this.add(new JPopupMenu.Separator());
 			this.add(new RemoveFromViewAction());
+
 		}
 
 	}
@@ -800,6 +845,7 @@ public class DeploymentTree extends JTree {
 		}
 	}
 
+	
 	protected class ManagerRefreshAction extends DelayedAction {
 
 		protected ManagerRefreshAction() {
