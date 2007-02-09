@@ -58,6 +58,7 @@ public class VisibleLogsVector extends Thread {
 		 *
 		 */
 		public NewLogGUIRefresher() {
+			super("NewLogGUIRefresher");
 			refreshInterv=REFRESH_INTERVAL;
 			clear();
 			start();
@@ -109,7 +110,7 @@ public class VisibleLogsVector extends Thread {
 				try {
 					Thread.sleep(refreshInterv);
 				} catch (InterruptedException ie) {}
-				if (min>=0 && max>=0 && !isPaused) {
+				if (min>=0 && max>=0) {
 					tableModel.fireTableRowsInserted(min,max);
 					min=max=-1;
 				}
@@ -445,20 +446,13 @@ public class VisibleLogsVector extends Thread {
 	private LogTableDataModel tableModel;
 	
 	/**
-	 * Indicate if the GUI has to be refreshed or not (i.e. if it is paused or not)
-	 * 
-	 * @see setSupended()
-	 */
-	private boolean isPaused=false;
-
-	/**
 	 * Build a VisibleLogsVector object 
 	 * 
 	 * @param theCache The cache of all the logs
 	 * @param model The table model that owns this object
 	 */
 	public VisibleLogsVector(LogCache theCache, LogTableDataModel model) {
-		super();
+		super("VisibleLogsVector");
 		this.cache=theCache;
 		this.comparator = new VisibleLogsComparator();
 		this.comparator.setComparingParams(ILogEntry.FIELD_TIMESTAMP,false);
@@ -483,7 +477,7 @@ public class VisibleLogsVector extends Thread {
 	 */
 	public synchronized void add(Integer key, ILogEntry log) {
 		synchronized (asyncOps) {
-			if (asyncOps.size()==0 && !isPaused) {
+			if (asyncOps.size()==0) {
 				addLogToVector(key, log);
 				return;
 			} 
@@ -967,6 +961,7 @@ public class VisibleLogsVector extends Thread {
 	 */
 	public void run() {
 		LogOperationRequest request = null;
+		LoggingClient logClient =LoggingClient.getInstance();
 		AddLogItem item = null;
 		int flushLimit=0;
 		while (true) {
@@ -983,12 +978,18 @@ public class VisibleLogsVector extends Thread {
 				if (request.getType()==LogOperationRequest.TERMINATE) {
 							return;
 				} else if (request.getType()==LogOperationRequest.SETORDER) {
-					LoggingClient.getInstance().getLogEntryTable().getTableHeader().setEnabled(false);
-					LoggingClient.getInstance().setEnabledGUIControls(false);
+					logClient.setEnabledGUIControls(false);
+					logClient.getLogEntryTable().getTableHeader().setEnabled(false);
+					try {
+						LoggingClient.getInstance().pause();
+					} catch (Exception e) {}
 					sort(request.getOrderingField(),request.orderDirection());
-					LoggingClient.getInstance().getLogEntryTable().getTableHeader().setEnabled(true);
-					LoggingClient.getInstance().setEnabledGUIControls(true);
-					LoggingClient.getInstance().getLogEntryTable().getTableHeader().resizeAndRepaint();
+					logClient.getLogEntryTable().getTableHeader().setEnabled(true);
+					try {
+						LoggingClient.getInstance().resume();
+					} catch (Exception e) {}
+					logClient.setEnabledGUIControls(true);
+					logClient.getLogEntryTable().getTableHeader().resizeAndRepaint();
 				}
 			}
 			
@@ -1028,33 +1029,6 @@ public class VisibleLogsVector extends Thread {
 				}
 			}
 		}
-	}
-	
-	/**
-	 * If true the notification of the changes in the table is not
-	 * sent to the table: all the logs that arrive when suspended
-	 * are stored in a vector and not shown in the table until
-	 * the suspenction is deactivated. In that moment, all the new
-	 * logs will be displayed.
-	 * 
-	 * If the interface is un-paused (i.e. pause is true) then a
-	 * LogOperationRequest is created to flush the logs asynchronously
-	 * 
-	 * @param suspend If true the new logs received are not shown in the table
-	 * @return The old status (suspended/unsuspended)
-	 */
-	public boolean suspendRefresh(boolean pause) {
-		boolean status=isPaused;
-		isPaused=pause;
-		if (!isPaused) {
-			synchronized (asyncOps) {
-				asyncOps.add(new LogOperationRequest(LogOperationRequest.FLUSH_QUEUE));
-			}
-			synchronized(this) {
-				notifyAll();
-			}
-		}
-		return status;
 	}
 	
 	/**
