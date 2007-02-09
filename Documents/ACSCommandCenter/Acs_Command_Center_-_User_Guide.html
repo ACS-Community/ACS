@@ -1,336 +1,496 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
+
+  
+
+
+  
   <title>User Guide - Acs Command Center</title>
-
-
   <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
 
-  <link rel="stylesheet" href="style.css" type="text/css">
 
+  
+  <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 
 
 <body style="background-color: rgb(255, 255, 255);" lang="EN-US" link="#0000ff" vlink="#800080">
 
+
 <br>
+
 
 <table class="MsoNormalTable" style="width: 585pt;" border="0" cellpadding="0" cellspacing="0" width="780">
 
+
   <caption><br>
+
 
   </caption><tbody>
 
+
+  
   </tbody> <tbody>
 
+
     <tr style="">
+
 
       <td style="padding: 0.75pt;" valign="top"> <span style="font-size: 10pt;"><span style="text-decoration: none;"><a href="http://www.eso.org/projects/alma/"><img src="images/alma_art_3.jpg" alt="[ ALMA ]" id="_x0000_i1025" border="0" height="117" width="90"> </a></span><o:p></o:p></span>
       </td>
 
+
       <td style="padding: 0.75pt;"> <span style="font-size: 18pt;"><b>ALMA
-Common Software</b></span> <span style="font-size: 18pt;"><b>ACS 5.0
+Common Software</b></span> <span style="font-size: 18pt;"><b>ACS 6.0
 documentation</b></span><span style="font-size: 10pt;"><u1:p></u1:p><u6:p></u6:p><o:p></o:p></span>
       <u1:p></u1:p> </td>
+
 
       <td style="padding: 0.75pt;" valign="top"> <span style="font-size: 10pt;"><span style="text-decoration: none;"><a href="http://www.eso.org/"><img src="images/eso-logo.gif" id="_x0000_i1026" border="0" height="117" width="90"> </a></span><o:p></o:p></span>
       </td>
 
+
     </tr>
 
+
+  
   </tbody>
 </table>
+
 
 <hr align="center" size="1" width="100%">
 <div align="center"><br>
 
+
 <b><br>
+
 
 <h1><a name="User_Guide">User Guide - Acs Command Center</a></h1>
 
-<br>
 
 <br>
+
+
+<br>
+
 
 </b><br>
 
+
 </div>
+
 
 <h2>Content</h2>
 
+
 <ol>
+
 
   <li><a href="#Overview">Overview</a></li>
 
+
+  
   <ol>
+
 
     <li><a href="#Launching_Command_Center">Launching
 Command Center</a></li>
 
+
     <li><a href="#Starting_Acs">Starting Acs</a></li>
+
 
     <li><a href="#Running_Clients">Running Clients</a></li>
 
+
     <li><a href="#Stopping_Acs">Stopping Acs</a></li>
 
+
+  
   </ol>
+
 
   <br>
 
+
   <li><a href="#Running_Acs">Running Acs</a> </li>
 
+
+  
   <ol>
+
 
     <li><a href="#Deployment_Scenario_A">Deployment
 Scenario A</a> </li>
 
+
+    
     <ul>
+
 
       <li><a href="#Local_script_running">Local
 Script Running</a> </li>
 
+
       <li><a href="#Pure_Java_running">Pure Java
 Running</a> </li>
 
+
+    
     </ul>
+
 
     <li><a href="#Deployment_Scenario_B">Deployment
 Scenario B</a></li>
 
+
+    
     <ul>
+
 
       <li><a href="#Remote_script_running">Remote
 Script Running</a><br>
 
+
       </li>
 
+
+    
     </ul>
 
+
+  
   </ol>
 
+
   <br>
+
 
   <li><a href="#Managing_Projects">Managing Projects</a></li>
 
+
   <br>
+
 
   <li><a href="#Extra_Tools">Extra Tools</a></li>
 
+
+  
   <ul>
+
 
     <li><a href="#Tools_Menu">Tools Menu</a></li>
 
+
     <li><a href="#Tool_Definitions">Tool Definitions</a><br>
+
 
     </li>
 
+
+  
   </ul>
+
 
   <br>
 
+
   <li><a href="#Glossary">Glossary</a></li>
 
+
+  
   <ol>
+
 
     <li><a href="#Progress_Panel">Progress Panel</a>
     </li>
 
+
     <li><a href="#Deployment_Info_View">Deployment
 Info View</a></li>
 
+
     <li><a href="#Log_Area">Log Area</a></li>
+
 
     <li><a href="#Acs_Instance">Acs Instance</a></li>
 
+
     <li><a href="#CDB">Cdb, Cdb- Root</a></li>
 
+
+  
   </ol>
+
 
   <br>
 
+
   <li><a href="#Other_Resources">Other resources</a></li>
 
+
+  
   <ol>
+
 
     <li><a href="#Whats_New">What's New?</a><br>
 
+
     </li>
 
+
+  
   </ol>
+
 
 </ol>
 
-<br>
 
 <br>
 
+
 <br>
+
+
+<br>
+
 
 <h2>1. <a name="Overview">Overview</a></h2>
 
+
 <br>
+
 
 This section describes how to launch Acs Command Center and why you
 would want to launch it.<br>
 
+
 <br>
+
 
 <h3><a name="Launching_Command_Center">Launching
 Command Center</a></h3>
 
+
 <br>
+
 
 Acs Command Center is a tool to start up, manage, and shut down Acs
 sessions. It can be launched in two ways:<br>
 
+
 <br>
+
 
 &nbsp; &nbsp;<b>a)</b> via the command "<code>acscommandcenter</code>"
 in your (Linux) shell<br>
 
+
 <br>
+
 
 &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <span style="text-decoration: underline;">Command
 line options</span>:<br>
 
+
 <ul>
+
 
   <li><code>-r | -retrieve | --retrieve&nbsp;
 PROJECTFILE</code> <br>
 
+
 retrieve a project file on startup </li>
 
+
   <br>
+
 
   <li><code>-g | -geometry | --geometry&nbsp;
 WIDTHxHEIGHT+XPOS+YPOS</code> <br>
 
+
 set the size and location of the application main window </li>
 
+
   <br>
+
 
   <li><code>-x | -noexit&nbsp;&nbsp; |
 --noexit&nbsp; </code> <br>
 
+
 do not exit the Java virtual machine on quit </li>
+
 
   <br>
 
+
 </ul>
+
 
 &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
 <span style="text-decoration: underline;">Commandline
 arguments:</span><br>
 
+
 <ul>
+
 
   <li><code>PROJECTFILE</code> <br>
 
+
 retrieve a project file on startup</li>
 
+
   <br>
+
 
   <li><code>corbaloc::HOST:PORT/Manager</code><br>
 
+
 instantly connect to and show details of specified manager</li>
 
+
   <br>
+
 
   <li><code>HOST:INSTANCE</code><br>
 
+
 instantly connect to and show details of specified manager</li>
+
 
   <br>
 
+
 </ul>
 
-<br>
 
 <br>
+
+
+<br>
+
 
 &nbsp; &nbsp;<b>b)</b> via the <a href="http://www.eso.org/projects/alma/AcsWebStart">Acs Java
 Web Start</a>
 page (for this, your browser needs to have a Java Web Start plugin)<br>
 
-<br>
 
 <br>
+
+
+<br>
+
 
 To make clear what Acs Command Center can do for you (and what it can't
 do), we first look at the general work-flow of an Acs
 session. If you have worked with Acs on the command line before,
 you will find these steps familiar.<br>
 
+
 <br>
+
 
 Generally, a session with Acs consists of <b>four</b>
 tasks. We will
 give an overview here, and discuss them in more detail in the following
 sections.<br>
 
+
 <br>
+
 
 <h3><a name="Starting_Acs">Starting Acs</a></h3>
 
+
 <br>
+
 
 <strong>&nbsp; &nbsp; 1)</strong> Start the
 Services and the Manager<br>
+
 
 <strong>&nbsp; &nbsp; 2)</strong> Start one or
 more
 Containers<br>
 
+
 <br>
+
 
 The single workers (<i>worker = Service, Manager, or Container</i>)
 &nbsp;can be run on one single host (see figure A) or on several
 hosts
 (see figure B).<br>
 
+
 <br>
+
 
 <table border="0" cellpadding="2" cellspacing="5" width="70%">
 
+
   <tbody>
 
+
     <tr>
+
 
       <td valign="top"><img src="images/figureA.jpg" alt="Deployment Scenario A" border="1" height="300" width="250"> <br>
 
+
       </td>
+
 
       <td valign="top"><img src="images/figureB.jpg" alt="Deployment Scenario B" border="1" height="300" width="250"> <br>
 
+
       </td>
+
 
     </tr>
 
+
     <tr>
+
 
       <td valign="top">Figure A: Simple Deployment
 Scenario A<br>
 
+
       </td>
+
 
       <td valign="top">Figure B: Complex Deployment
 Scenario B<br>
 
+
       </td>
+
 
     </tr>
 
+
+  
   </tbody>
 </table>
 
-<br>
 
 <br>
+
+
+<br>
+
 
 <h3><a name="Running_Clients">Running
 Clients</a></h3>
 
+
 <br>
+
 
 After Acs has been started, you will want to run clients against it.
 Such a client can either be something provided by you or a preinstalled
@@ -338,38 +498,53 @@ client (Acs comes with various popular and useful clients). These
 preinstalled clients can directly be started from within Acs Command
 Center through the <a href="#Tools_Menu">Tools Menu</a>.<br>
 
+
 <br>
+
 
 &nbsp;&nbsp;&nbsp; <strong>3)</strong> Run one
 or more
 clients<br>
 
-<br>
 
 <br>
+
+
+<br>
+
 
 <h3><a name="Stopping_Acs">Stopping Acs</a></h3>
 
+
 <br>
+
 
 After your work is done, you should shut down all workers in reverse
 order.<br>
 
-<br>
 
 <br>
+
+
+<br>
+
 
 &nbsp;&nbsp;&nbsp; <strong>4)</strong> Stop
 the Container(s), the
 Manager, and the Services<br>
 
-<br>
 
 <br>
 
-<br>
 
 <br>
+
+
+<br>
+
+
+<br>
+
 
 Acs Command Center allows for different deployment scenarios, from
 simple ones like A to complex ones like B.<sup><b>*</b></sup>
@@ -377,11 +552,15 @@ In the
 following section, you will learn how scenarios A and B can be put into
 practice.<br>
 
-<br>
 
 <br>
+
+
+<br>
+
 
 ---<br>
+
 
 *: <i>Acs Command Center's frontend only supports scenarios
 where
@@ -390,111 +569,155 @@ files on the other hand do not have this constraint (as they are used
 for other purposes as well).</i>
 <h2>2. <a name="Running_Acs">Running Acs</a></h2>
 
+
 <br>
+
 
 This section provides step-by-step instructions on how to set up the
 sample scenarios sketched in the previous section.<br>
 
+
 <br>
+
 
 <h3><a name="Deployment_Scenario_A">Deployment
 Scenario A</a></h3>
 
+
 In our first deployment scenario (recall figure A), all
 workers run on localhost.<br>
 
-<br>
 
 <br>
+
+
+<br>
+
 
 <table border="0" cellpadding="2" cellspacing="2" width="100%">
 
+
   <tbody>
+
 
     <tr>
 
+
       <td valign="top"><img src="images/figureC.jpg" alt="Figure C - Main Window"> <br>
+
 
       </td>
 
+
     </tr>
 
+
     <tr align="center">
+
 
       <td valign="top">Figure C - There and back
 again...
 in 7 steps<br>
 
+
       </td>
+
 
     </tr>
 
+
+  
   </tbody>
 </table>
 
+
 <br>
 
+
 <h4><u>Preparation</u></h4>
+
 
 To run Acs locally on your machine, you have <b>two</b>
 alternatives:<br>
 
+
 <br>
+
 
 <div class="indent1"><b><a name="Local_script_running">a) Local script
 running</a></b><br>
+
 
 This requires a full, native Acs installation on your machine: Acs
 Command Center
 will use shell and python scripts to run your Acs installation.<br>
 
+
 <br>
+
 
 Make sure "Local" is selected in the <code>Common Settings</code>
 (<b><font color="#ff0000">1</font></b>).<br>
 
+
 <br>
+
 
 Specify the <code>Acs Instance</code> to use (<b><font color="#ff0000">2</font></b>,
 see <a href="#Acs_Instance">Acs
 Instance</a> in the glossary).<br>
 
-<br>
 
 <br>
+
+
+<br>
+
 
 <b><a name="Pure_Java_running">b) Pure Java running</a></b><br>
 
+
 <br>
+
 
 This is a platform-independent variant that offers not all, yet the
 most frequently used features. Acs Command Center will execute all
 workers within its own Java Virtual Machine.<br>
 
+
 <br>
+
 
 Make sure "Java-only Acs" is selected in the <code>Common
 Settings</code>
 section of the user interface.<br>
 
+
 <br>
+
 
 Specify the <code>Acs Instance</code> to use (<b><font color="#ff0000">2</font></b>,
 see <a href="#Acs_Instance">Acs Instance</a> in the
 glossary).<br>
 
+
 <br>
+
 
 You need to specify a directory where an Acs configuration database is
 located (see also <a href="#CDB">Cdb</a> in the
 glossary). Commonly,
 there are three ways of gaining access to such a directory:<br>
 
+
 <div class="indent2"> <br>
+
 
 <b>a)</b> Download a Cdb and install it in your filesystem<br>
 
+
 <br>
+
 
 Go to the <a href="http://www.eso.org/%7Emschilli/acc/cdb">Command
 Center Cdb Page</a> and get yourself a tarred Cdb. Extract the
@@ -502,7 +725,9 @@ archive
 in your local file system. The path plus the name of the archive will
 be your Cdb root.<br>
 
+
 <br>
+
 
 <b>Example</b>: You downloaded acc-cdb-2.tar, stored it
 in
@@ -511,114 +736,166 @@ local home and extracted it there. This yields a new directory
 <code>&lt;home&gt;/acc-cdb-2</code> which is your
 Cdb root:<br>
 
+
 <br>
+
 
 <table border="0" cellpadding="1" cellspacing="1">
 
+
   <tbody>
+
 
     <tr>
 
+
       <td valign="top">on Windows &nbsp;<br>
 
+
       </td>
+
 
       <td valign="top"><code>c:/docume~1/johnny/acc-cdb-2
 &nbsp;</code><br>
 
+
       </td>
+
 
       <td valign="top">Note: Use 8.3 names, <b>no
 whitespace</b>
 allowed<br>
 
+
       </td>
 
+
     </tr>
+
 
     <tr>
 
+
       <td valign="top">on Linux<br>
 
+
       </td>
+
 
       <td valign="top"><code>/home/johnny/acc-cdb-2</code><br>
 
+
       </td>
+
 
       <td valign="top"><br>
 
+
       </td>
+
 
     </tr>
 
+
+  
   </tbody>
 </table>
 
-<br>
 
 <br>
+
+
+<br>
+
 
 <b>b)</b> Java Web Start<br>
 
+
 <br>
+
 
 If you have started (or plan to start) Acs Command Center via Java Web
 Start, the installation of a Cdb is done for you automatically in your
 local home directory. The correct directory then simply
 is <code>&lt;home&gt;/.acsjava</code>, e.g.:<br>
 
+
 <br>
+
 
 <table border="0" cellpadding="1" cellspacing="1">
 
+
   <tbody>
+
 
     <tr>
 
+
       <td valign="top">on Windows &nbsp;<br>
 
+
       </td>
+
 
       <td valign="top"><code>c:/docume~1/johnny/.acsjava
 &nbsp;</code><br>
 
+
       </td>
+
 
       <td valign="top">Note: Use 8.3 names, <b>no
 whitespace</b>
 allowed<br>
 
+
       </td>
 
+
     </tr>
+
 
     <tr>
 
+
       <td valign="top">on Linux<br>
 
+
       </td>
+
 
       <td valign="top"><code>/home/johnny/.acsjava</code><br>
 
+
       </td>
+
 
       <td valign="top"><br>
 
+
       </td>
+
 
     </tr>
 
+
+  
   </tbody>
 </table>
 
-<br>
 
 <br>
+
+
+<br>
+
 
 <b>c)</b> Native Acs Installation<br>
 
+
 <br>
+
 
 If you have access to a native Acs installation, there are chances you
 can use the Cdb that comes with it. The problem is that such a Cdb does
@@ -629,11 +906,14 @@ Cdb structure. Acs Command Center will attempt to find those schema
 files using the Java system properties <code>ACS.cdbpath</code>
 or <code>ACS.root</code>.<br>
 
+
 As a convenience, it will likewise examine the Java system properties <code>ACS.cdbroot</code>
 or <code>ACS.data</code> to find out the Cdb root
 directory.<br>
 
+
 <br>
+
 
 Note that on Linux these properties are automatically set from your
 environment variables when you run <code>acscommandcenter</code>.
@@ -642,160 +922,236 @@ Windows, you need to set them yourself (e.g.<span style="font-family: monospace;
 ACS.cdbroot=y:/ACS-4.0/ACSSW</code>) if you'd like to use this
 feature.<br>
 
+
 <br>
+
 
 <table style="width: 349px; height: 189px;" border="1" cellpadding="2" cellspacing="2">
 
+
   <tbody>
 
+
     <tr>
+
 
       <td style="vertical-align: middle; text-align: left;">For
 the
 Cdb-Root Directory ...<br>
 
+
       </td>
+
 
       <td style="vertical-align: top;"><br>
 
+
       </td>
+
 
     </tr>
 
+
     <tr>
+
 
       <td style="vertical-align: top;">...set
 environment
 variable <br>
 
+
       </td>
 
+
       <td style="text-align: center; vertical-align: top;">
+      
       <div style="text-align: center;">
+      
       <div style="text-align: center;"><code>$ACS_CDB</code><br>
 
+
       </div>
+
 
       <code></code></div>
 
+
+      
       <div style="text-align: right;"><small><code></code></small>
       </div>
 
+
       </td>
+
 
     </tr>
 
+
     <tr>
+
 
       <td style="vertical-align: top; text-align: right;"><small>(or
 alternatively:</small><br>
 
+
       </td>
+
 
       <td style="vertical-align: top; text-align: center;"><code>$ACSDATA)<br>
 
+
       </code></td>
+
 
     </tr>
 
+
     <tr>
+
 
       <td style="vertical-align: top;">...or set Java
 system property </td>
 
+
       <td style="text-align: center; vertical-align: top;"><code>ACS.cdbroot</code></td>
+
 
     </tr>
 
+
     <tr>
+
 
       <td style="vertical-align: top; text-align: right;"><small>(or
 alternatively:</small><br>
 
+
       </td>
+
 
       <td style="vertical-align: top; text-align: center;"><code>ACS.data)<br>
 
+
       </code></td>
+
 
     </tr>
 
+
+  
   </tbody>
 </table>
 
-<br>
 
 <br>
+
+
+<br>
+
 
 <table style="width: 348px; height: 166px;" border="1" cellpadding="2" cellspacing="2">
 
+
   <tbody>
+
 
     <tr>
 
+
       <td style="vertical-align: middle;">
+      
       <div style="text-align: left;"> </div>
+
 
 For the Additional-Schemas Directory ... </td>
 
+
       <td valign="top"> <br>
+
 
       </td>
 
+
     </tr>
 
+
     <tr>
+
 
       <td valign="top">...set environment variable </td>
 
+
       <td style="text-align: center; vertical-align: top;"><code>$ACSROOT<br>
+
 
       </code></td>
 
+
     </tr>
 
+
     <tr>
+
 
       <td style="vertical-align: top;">...or set Java
 system property </td>
 
+
       <td style="text-align: center; vertical-align: top;"><code>ACS.cdbpath<br>
+
 
       </code></td>
 
+
     </tr>
 
+
     <tr>
+
 
       <td style="vertical-align: top; text-align: right;"><small>(or
 alternatively:</small> </td>
 
+
       <td style="vertical-align: top; text-align: center;"><code>ACS.root)<br>
+
 
       </code></td>
 
+
     </tr>
 
+
+  
   </tbody>
 </table>
 
-<br>
 
 <br>
+
+
+<br>
+
 
 To make a long story short: If you're on Linux, everything might
 instantly work without further interaction required - just try it out.
 If it doesn't work, use one of the afore described solutions.<br>
 
+
 <br>
 
-</div>
 
 </div>
+
+
+</div>
+
 
 <h4><u>Start</u><br>
 
+
 </h4>
+
 
 Press the Acs Suite's play button (<b><font color="#ff0000">3</font></b>),
 which will start the Services and the Manager. A progress panel will
@@ -807,7 +1163,9 @@ is
 up, some controls in the user interface are locked. When all steps have
 been completed successfully, it will close automatically.<br>
 
+
 <br>
+
 
 <p><img src="images/rightarrow.gif"> The output of
 any Acs-related
@@ -824,13 +1182,17 @@ checkbox,&nbsp; press the Services' &nbsp;play button,
 the progress panel to
 close, then press the Manager's play button.</p>
 
+
 <br>
+
 
 The freshly started Manager now appears in the deployment info view (<b><font color="#ff0000">D</font></b>, see <a href="#Deployment_Info_View">Deployment
 Info View</a> in the glossary for
 more information).<br>
 
+
 <br>
+
 
 Ensure you have at least one Container visible on screen (their amount
 can be adjusted using the plus and minus buttons on the bottom, <b><font color="#ff0000">C</font></b>). Specify a name (<b><font color="#ff0000">4</font></b>)
@@ -840,6 +1202,7 @@ Container, e.g., "frodoContainer" of type <code>java</code>,
 then
 press play
 to start the Container (<b><font color="#ff0000">6</font></b>).<br>
+
 
 <p class="caution">Note: The Container name you specify
 here is used by
@@ -851,16 +1214,22 @@ and
 for Python <i>aragornContainer</i>.
 </p>
 
+
 <br>
 
+
 Acs is now up and running, and clients can be run against it.<br>
+
 
 To run one or more of the predefined clients, use the Tools menu. For
 some of the tools, you may be asked to provide additional information.<br>
 
+
 <br>
 
+
 <h4><u>Stop</u></h4>
+
 
 Simply press the Acs Suite's stop button, (<b><font color="#ff0000">7</font></b>).
 This will stop the Container(s), the Manager, and the Services. Once
@@ -868,13 +1237,16 @@ the Acs Suite has been stopped, the Manager will be automatically
 removed from the <a href="#Deployment_Info_View">Deployment
 Info View</a>.<br>
 
+
 <br>
+
 
 <p class="caution">Note: There's an asymmetry in the
 behavior of
 starting the Acs Suite and stopping the Acs Suite: The first starts the
 Services and the Manager, the latter stops the Services, the Manager <b>plus</b>
 any Containers.</p>
+
 
 <img src="images/rightarrow.gif"> Again, all output will
 go to the log
@@ -886,9 +1258,12 @@ through its stop button,&nbsp; then stop the Manager and finally
 stop
 the Services through their stop buttons in the advanced section.<br>
 
+
 <br>
 
+
 <h4><u>Troubleshooting</u></h4>
+
 
 If you encounter problems, e.g., the progress panel presents an error
 message, and find the Acs session in an inoperable state, &nbsp;you
@@ -898,33 +1273,46 @@ Note, however, that this is, as
 the name implies, a brute shutdown that may kill the Acs Command Center
 as well.<br>
 
-<br>
 
 <br>
 
+
 <br>
+
+
+<br>
+
 
 <h3><a name="Deployment_Scenario_B">Deployment
 Scenario B</a></h3>
 
+
 <br>
+
 
 In our second scenario (recall figure B), the workers run distributed
 on several separate hosts. <br>
 
+
 <br>
 
+
 <h4><u>Preparation</u></h4>
+
 
 Acs Command Center provides a way to start workers on remote hosts
 through a startup variant called<br>
 
+
 <br>
+
 
 <b><a name="Remote_script_running"></a>Remote
 script running</b><br>
 
+
 <br>
+
 
 With this variant, Acs Command Center logs in to other hosts
 via&nbsp;SSH
@@ -934,12 +1322,16 @@ the same
 collection of scripts to run Acs on the remote hosts. This implies that
 a full, native Acs installation must be present on these hosts.<br>
 
+
 <br>
+
 
 <div style="margin-left: 80px;">As of version 5.0, Acs
 Command Center supports two variants of SSH operations:<span style="font-style: italic;"></span><br>
 
+
 <span style="font-weight: bold;"><br>
+
 
 a)</span> The <span style="font-style: italic;">platform-independent
 variant</span>&nbsp;is
@@ -951,7 +1343,9 @@ Acs on a remote host, you have to provide a valid accountname and a
 password for the remote host. The platform-independent variant is the
 default.<br>
 
+
 <span style="font-weight: bold;"><br>
+
 
 b)</span> The <span style="font-style: italic;">native
 variant</span>, on the other hand, makes use of an <span style="font-style: italic;">ssh</span> program already
@@ -962,9 +1356,11 @@ if your native <span style="font-style: italic;">ssh</span>
 is configured properly, you wont' be required to provide a password for
 the remote host you want to start/stop Acs on.<br>
 
+
 The <span style="font-style: italic;">ssh</span>
 program is available for virtually all platforms (see <a href="http://openssh.org/" target="_blank">http://openssh.org/</a>),
 and many systems&nbsp;already have it installed.<br>
+
 
 Beware: If you use the native variant but you did not configure <span style="font-style: italic;">ssh</span> for public-key
 authentication, it will&nbsp;prompt for your password - and that
@@ -972,53 +1368,79 @@ prompt will be on the <span style="font-weight: bold;">terminal</span>
 (xterm, dos box) from which you started Acs Command Center. This
 behavior is part of the security concept of <span style="font-style: italic;">ssh</span>.<br>
 
-<br>
 
 <br>
+
+
+<br>
+
 
 Three ways exist to choose which of the two variants you want to use:<br>
 
+
 <span style="font-weight: bold;"></span><span style="font-weight: bold;"></span><br>
+
 
 <span style="font-weight: bold;">a)</span>
 Through&nbsp;Java System Properties<br>
 
+
 <br>
+
 
 <pre>AcsCommandCenter.useNativeSSH </pre>
 
+
 <table style="width: 417px; height: 80px;" border="1" cellpadding="2" cellspacing="2">
+
 
   <tbody>
 
+
     <tr>
 
+
       <td>
+      
       <pre>"true"</pre>
 
+
       </td>
+
 
       <td> use native variant</td>
 
+
     </tr>
+
 
     <tr>
 
+
       <td>
+      
       <pre>"false" or undefined</pre>
+
 
       </td>
 
+
       <td>use platform-independent variant</td>
+
 
     </tr>
 
+
+  
   </tbody>
 </table>
 
-<br>
 
 <br>
+
+
+<br>
+
 
 There are more,&nbsp;rather expert-level, properties that control
 the
@@ -1026,89 +1448,128 @@ behavior of the native mode. Foremost, the following property may be
 useful if you find unwanted SSH processes lingering around
 after&nbsp;quitting the Acs Command Center:<br>
 
+
 <br>
+
 
 <pre>AcsCommandCenter.killNativeSSH </pre>
 
+
 <table style="width: 730px; height: 100px;" border="1" cellpadding="2" cellspacing="2">
+
 
   <tbody>
 
+
     <tr>
 
+
       <td>
+      
       <pre>"true"</pre>
 
+
       </td>
+
 
       <td>forcibly destroy still running SSH processes when
 exiting Acs Command Center</td>
 
+
     </tr>
+
 
     <tr>
 
+
       <td>
+      
       <pre>"false" or undefined</pre>
+
 
       </td>
 
+
       <td> don't automatically destroy running SSH processes,<br>
+
 
 let operating system decide what to do with these processes, instead.</td>
 
+
     </tr>
 
+
+  
   </tbody>
 </table>
 
-<br>
 
 <br>
+
+
+<br>
+
 
 <span style="font-weight: bold;"></span>To define
 a
 Java System Property, issue the following command before running Acs
 Command Center:<code><br>
 
+
 </code>
 <pre><code>export JAVA_OPTIONS="$JAVA_OPTIONS -Dname=value"</code><code></code></pre>
+
 
 with the possible&nbsp;<span style="font-style: italic;">name</span>
 and <span style="font-style: italic;">value</span>
 arguments listed above. Note that there must&nbsp;be <span style="font-weight: bold;">no spaces</span> anywhere
 in "-Dname=value".<br>
 
+
 <br>
 
+
 <span style="font-weight: bold;"><br>
+
 
 b)<span style="font-weight: bold;"> </span></span>By
 specifying command line switches to the <code>acscommandcenter</code>
 command<br>
 
+
 <br>
+
 
 <pre>-useNativeSSH</pre>
 
+
 <pre>-killNativeSSH</pre>
 
+
 <br>
+
 
 Example: <code>acscommandcenter -useNativeSSH -r myProject.xml</code><br>
 
+
 <br>
+
 
 For a more&nbsp;detailed explanation of the meaning of these
 command line switches, please refer to&nbsp;foregoing section a).<br>
 
+
 <br>
+
 
 <span style="font-weight: bold;"><br>
 
+
 c)</span> Through Acs Command Center's&nbsp;<span style="font-style: italic;">Expert</span> menu<br>
 
+
 <br>
+
 
 In the main menu, go to <span style="font-style: italic;">Expert-&gt;SSH
 Mode</span>
@@ -1119,13 +1580,18 @@ Center. That is, you will have to redo your choice on your next run.
 For persistent behavior, you need to use one of the afore mentioned
 possibilities a) or b).<br>
 
-<br>
 
 <br>
 
+
 <br>
+
+
+<br>
+
 
 </div>
+
 
 To continue with remote script running, make sure "Remote" is selected
 in the <code>Common Settings</code> (<b><font color="#ff0000">1</font></b>). As for the local
@@ -1133,9 +1599,12 @@ variant, you should
 specify an Acs Instance (<b><font color="#ff0000">2</font></b>).
 <br>
 
+
 <br>
 
+
 <h4><u>Start</u></h4>
+
 
 Specify a remote host (e.g., "host1") and user credentials for that
 host in the <code>Common Settings</code>. Start the
@@ -1147,24 +1616,32 @@ respective buttons in the
 advanced
 controls section.<br>
 
+
 <br>
+
 
 Use the plus button (<b><font color="#ff0000">C</font></b>)
 to ensure
 you have at least two Containers available on screen.<br>
 
+
 <br>
+
 
 Give the first Container a name, and choose its type (<b><font color="#ff0000">4, 5</font></b>). Then press the
 first Container's
 configure button (the one labeled with three dots) and specify a host
 (e.g., "host2") and appropriate user credentials. <br>
 
+
 <br>
+
 
 Do the same for the second Container.<br>
 
+
 <br>
+
 
 Finally, press
 play (<b><font color="#ff0000">6</font></b>)
@@ -1173,9 +1650,12 @@ the order you entered them into the list. To move a Container up or
 down within the list, select it by clicking into its name field (<b><font color="#ff0000">4</font></b>) and press the
 arrow buttons (<b><font color="#ff0000">C</font></b>).<br>
 
+
 <br>
 
+
 <h4><u>Stop</u></h4>
+
 
 Shut down everything through the Acs Suite stop button (<b><font color="#ff0000">7</font></b>). Alternatively
 shut down all workers in
@@ -1183,9 +1663,12 @@ reverse order through their respective buttons. Please refer to <b>Local
 script running</b> above
 if unsure. <br>
 
+
 <br>
 
+
 <h4><u>Troubleshooting</u></h4>
+
 
 As for the local variants, you can terminate Acs mercilessly through
 the kill button (<b><font color="#ff0000">X</font></b>)
@@ -1193,16 +1676,22 @@ if it appears
 to hang and alike. Again, note that this will also kill the Acs Command
 Center if it is running on the same host.<br>
 
-<br>
 
 <br>
 
+
 <br>
+
+
+<br>
+
 
 <h2>3. <a name="Managing_Projects">Managing
 Projects</a></h2>
 
+
 <br>
+
 
 All settings you entered (in the <code>Common Settings</code>
 section,
@@ -1212,39 +1701,54 @@ Projects are a neat thing that can save you a lot of typing. Their
 usage should be self-explanatory, simply use the <code>Project</code>
 menu to create, store, and load projects.<br>
 
+
 <br>
+
 
 <p class="caution">Note: Any passwords you enter as part
 of user
 credentials will not be saved when you store a project. You will have
 to reenter them the next time you use the project.</p>
 
-<br>
 
 <br>
 
-<br>
 
 <br>
 
-<br>
 
 <br>
+
+
+<br>
+
+
+<br>
+
+
+<br>
+
 
 <h2>4. <a name="Extra_Tools">Extra Tools</a></h2>
 
+
 <br>
+
 
 <h3><a name="Tools_Menu">Tools Menu</a><br>
 
+
 </h3>
+
 
 The Tools menu provides access to several useful tools dealing with Acs
 and Corba. They are invoked as separate local processes, in other
 words, they must exist as executables on your host.
 <br>
 
+
 <br>
+
 
 The necessary configuration required by the tools is
 automatically derived from your <code>Common Settings</code>
@@ -1252,15 +1756,20 @@ without
 further interaction required (still some tools might ask for additional
 configuration when you launch them).<br>
 
+
 If you are not satisfied with the default settings, a custom
 configuration for the tools can be defined in the <span style="font-style: italic;">Configure Tools...</span>
 dialog.<br>
 
+
 <br>
+
 
 <h3><a name="Tool_Definitions">Tool Definitions</a><br>
 
+
 </h3>
+
 
 The tools in the Tools menu are defined in an xml file <code>AcsCommandCenterTools.xml</code>
 that AcsCommandCenter reads in on startup.
@@ -1270,18 +1779,25 @@ which brings up a file-search dialog to point to a new definition file.
 The default definition file contains quite exhaustive documentation in
 case you'd like to copy and accommodate it.<br>
 
-<br>
 
 <br>
+
+
+<br>
+
 
 <h2>5. <a name="Glossary">Glossary</a></h2>
 
+
 <br>
+
 
 <h3><a name="Progress_Panel">Progress
 Panel</a></h3>
 
+
 <br>
+
 
 &nbsp;&nbsp;&nbsp; The Progress Panel &nbsp;shows the
 single steps
@@ -1290,42 +1806,60 @@ Center has succeeded so far in performing your request. When
 an error occurs, it is also shown in the Progress Panel. Thus,
 it will (hopefully) support you in tracking down failures.<br>
 
+
 <br>
+
 
 <table border="0" cellpadding="2" cellspacing="2" width="100%">
 
+
   <tbody>
 
+
     <tr>
+
 
       <td valign="top"><img src="images/figureE.jpg" alt="figure E - Progress Panel"> <br>
 
+
       </td>
+
 
     </tr>
 
+
     <tr>
+
 
       <td valign="top">Figure E - Progress Panel showing
 a
 host lookup
 error<br>
 
+
       </td>
+
 
     </tr>
 
+
+  
   </tbody>
 </table>
 
-<br>
 
 <br>
+
+
+<br>
+
 
 <h3><a name="Deployment_Info_View">Deployment
 Info View</a></h3>
 
+
 <br>
+
 
 &nbsp;&nbsp;&nbsp; The Deployment Info View shows
 information about an
@@ -1338,49 +1872,69 @@ instance (0-9). Simply type in the Manager's host and port into the
 fields above the Deployment Info View and press the "Add to View"
 button.<br>
 
+
 <br>
+
 
 The shown information will be refreshed automatically. Note,
 however, that this automatism cannot detect all changes on the
 server-side. To
 refresh the data manually, press the "Full Refresh" button.<br>
 
+
 <br>
+
 
 In the screen shot below, a component has been selected in the tree:
 all occurences of the component are highlighted in response (the
 selected occurrence in blue, all other occurrences in gray).<br>
 
+
 <br>
+
 
 <table border="0" cellpadding="2" cellspacing="2" width="100%">
 
+
   <tbody>
 
+
     <tr>
+
 
       <td valign="top"><img src="images/figureF.jpg" alt="Figure F - Deployment" style="width: 365px; height: 445px;" title="" hspace="10"> <br>
 
+
       </td>
+
 
     </tr>
 
+
     <tr>
+
 
       <td valign="top">Figure F - Deployment Info View
 with a manually
 added Manager<br>
 
+
       </td>
+
 
     </tr>
 
+
+  
   </tbody>
 </table>
 
-<br>
 
 <br>
+
+
+<br>
+
 
 Most elements of the Deployment Info View offer context menus that
 allow to, e.g., refresh the currently displayed information, activate a
@@ -1388,18 +1942,24 @@ component, or shut down a Manager. The Deployment Info View's
 capabilities are very close to that of the admin client tool
 ("adminc"). Give it a try.<br>
 
-<br>
 
 <br>
+
+
+<br>
+
 
 <h3><a name="Log_Area">Log Area</a></h3>
+
 
 &nbsp;&nbsp;&nbsp; The Log Area shows the logs (i.e. the
 console
 output) of started processes. It allows to view, copy, and save these
 logs.<br>
 
+
 <br>
+
 
 To prevent the Java Virtual Machine from running out of memory,
 the Log Area allows to restrict the buffer size for each log. It is
@@ -1413,38 +1973,55 @@ Lock</span>, resp. disable the buffer size limit, in special
 cases but
 not in the general case.<br>
 
+
 <br>
+
 
 <table border="0" cellpadding="2" cellspacing="2" width="100%">
 
+
   <tbody>
 
+
     <tr>
+
 
       <td valign="top"><img src="images/figureG.jpg" alt="figure G - Progress Panel"> <br>
 
+
       </td>
+
 
     </tr>
 
+
     <tr>
+
 
       <td valign="top">Figure G - Log Area showing the
 console output
 of started processes<br>
 
+
       </td>
+
 
     </tr>
 
+
+  
   </tbody>
 </table>
 
-<br>
 
 <br>
+
+
+<br>
+
 
 <h3><a name="Acs_Instance">Acs Instance</a></h3>
+
 
 &nbsp;&nbsp;&nbsp; As of version 3.0, Acs allows for more
 than one
@@ -1458,11 +2035,15 @@ specify its number explicitly. Otherwise simply try with the default
 number 0 (zero). If the requested slot is already occupied, you will
 receive an according message. You should then try a different number.<br>
 
-<br>
 
 <br>
+
+
+<br>
+
 
 <h3><a name="CDB">Cdb, Cdb-Root</a></h3>
+
 
 &nbsp;&nbsp;&nbsp; The Cdb (<i>Configuration Database</i>)
 contains
@@ -1471,194 +2052,294 @@ is read and published by a server process (Cdb-Dal). In order to be
 readable by the server process, the Cdb needs to reside in a filesystem
 directory. This directory is called Cdb-Root.<br>
 
-<br>
 
 <br>
+
+
+<br>
+
 
 <h2>6. <a name="Other_Resources">Other Resources</a></h2>
 
+
 <br>
+
 
 <h3><a name="Whats_New">What's new?</a><br>
 
+
 </h3>
+
 
 The change log for the different versions is on the <a href="AcsCommandCenter-News.html">What's New?</a> page<br>
 
-<br>
 
 <br>
+
+
+<br>
+
 
 <hr size="2" width="100%"><br>
 
+
 <table border="1" cellpadding="2" cellspacing="0" width="50%">
+
 
   <tbody>
 
+
     <tr>
+
 
       <td align="center" valign="top"><code>Version</code><br>
 
+
       </td>
+
 
       <td align="center" valign="top"><code>Author</code><code>
       </code><br>
 
+
       </td>
+
 
       <td align="center" valign="top"><code>Changes</code><br>
 
+
       </td>
+
 
     </tr>
 
+
     <tr>
+      <td>2007-02-09</td>
+      <td>Marcus Schilling</td>
+      <td>Adjusted to Acs6.0</td>
+    </tr>
+    <tr>
+
 
       <td>2005-10-28</td>
 
+
       <td>Marcus Schilling</td>
+
 
       <td>Adjusted to Acs5.0</td>
 
+
     </tr>
+
 
     <tr>
 
+
       <td style="vertical-align: top;">2005-07-26<br>
 
+
       </td>
+
 
       <td style="vertical-align: top;">Marcus Schilling<br>
 
+
       </td>
+
 
       <td style="vertical-align: top;">Adjusted to
 Acs4.1.2<br>
 
+
       </td>
+
 
     </tr>
 
+
     <tr>
+
 
       <td valign="top">2005-04-27<br>
 
+
       </td>
+
 
       <td valign="top">Marcus Schilling<br>
 
+
       </td>
+
 
       <td valign="top">Adjusted to Acs4.1<br>
 
+
       </td>
+
 
     </tr>
 
+
     <tr>
+
 
       <td valign="top">2004-11-08<br>
 
+
       </td>
+
 
       <td valign="top">Marcus Schilling<br>
 
+
       </td>
+
 
       <td valign="top">Adjusted to Acs4.0<br>
 
+
       </td>
+
 
     </tr>
 
+
     <tr>
+
 
       <td valign="top">2004-05-10<br>
 
+
       </td>
+
 
       <td valign="top">Marcus Schilling<br>
 
+
       </td>
+
 
       <td valign="top">Adjusted to Acs3.1<br>
 
+
       </td>
+
 
     </tr>
 
+
     <tr>
+
 
       <td valign="top">2004-02-04<br>
 
+
       </td>
+
 
       <td valign="top">Marcus Schilling<br>
 
+
       </td>
+
 
       <td valign="top">Adjusted to Acs3.0.1<br>
 
+
       </td>
 
+
     </tr>
+
 
     <tr>
 
+
       <td valign="top">2003-11-17<br>
 
+
       </td>
+
 
       <td valign="top">Marcus Schilling<br>
 
+
       </td>
+
 
       <td valign="top">Created<br>
 
+
       </td>
+
 
     </tr>
 
+
+  
   </tbody>
 </table>
 
-<p>&nbsp;</p>
 
 <p>&nbsp;</p>
+
+
+<p>&nbsp;</p>
+
 
 <p><br>
 
+
 </p>
 
-<p>&nbsp;</p>
 
 <p>&nbsp;</p>
 
+
 <p>&nbsp;</p>
 
-<br>
+
+<p>&nbsp;</p>
+
 
 <br>
 
-<br>
 
 <br>
 
-<br>
 
 <br>
 
-<br>
 
 <br>
 
-<br>
 
 <br>
 
-<br>
 
 <br>
+
+
+<br>
+
+
+<br>
+
+
+<br>
+
+
+<br>
+
+
+<br>
+
+
+<br>
+
 
 </body>
 </html>
