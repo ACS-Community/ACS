@@ -222,7 +222,6 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 				saveAsFilters();
 			} else if (e.getSource()==toolBar.getLogLevelCB()) {
 				getLCModel1().setLogLevel(toolBar.getLogLevelCB().getSelectedIndex());
-				getLCModel1().invalidateVisibleLogs();
             } else if (e.getSource()==toolBar.getSearchBtn() ||
                     e.getSource()==menuBar.getSearchMenuItem()) {
                 if (searchDialog==null) {
