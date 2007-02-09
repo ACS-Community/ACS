@@ -38,7 +38,7 @@ public class VisibleLogsVector extends Thread {
 	 * the event to the table
 	 */
 	public class NewLogGUIRefresher extends Thread {
-		public static final int REFRESH_INTERVAL=1000;
+		public static final int REFRESH_INTERVAL=1500;
 		/**
 		 * The minimum index of the logs inserted
 		 */
@@ -513,8 +513,10 @@ public class VisibleLogsVector extends Thread {
 	}
 	
 	/**
-	 * Delete the rows containg thelg whose keys are
+	 * Delete the rows containg the log whose keys are
 	 * in the collection
+	 * Not all the logs in keys are in the visible logs vector becuase
+	 * they can be filtered out by LogLevel or user defined filters
 	 * 
 	 * @param keys The keys of the logs to delete
 	 */
@@ -526,9 +528,10 @@ public class VisibleLogsVector extends Thread {
 		while (iter.hasNext()) {
 			Integer key = iter.next();
 			synchronized (visibleLogs) {
-				if (!visibleLogs.remove(key)) {
-					System.err.println("Error removing "+key);
-				}
+				// The remove does not always return true (success).
+				// It happens if the log repsented by the key is not visible
+				// due, for example, to some filters or the log level.
+				visibleLogs.remove(key);
 			}
 		}
 	}
@@ -983,13 +986,13 @@ public class VisibleLogsVector extends Thread {
 					logClient.setEnabledGUIControls(false);
 					logClient.getLogEntryTable().getTableHeader().setEnabled(false);
 					try {
-						LoggingClient.getInstance().pause();
+						logClient.pause();
 					} catch (Exception e) {}
 					sort(request.getOrderingField(),request.orderDirection());
 					logClient.getLogEntryTable().getTableHeader().setEnabled(true);
 					if (!logClientWasPaused) {
 						try {
-							LoggingClient.getInstance().resume();
+							logClient.resume();
 						} catch (Exception e) {}
 					}
 					logClient.setEnabledGUIControls(true);
