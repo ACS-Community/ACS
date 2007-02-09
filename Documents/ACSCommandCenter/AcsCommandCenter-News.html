@@ -4,6 +4,12 @@
 
 
 
+
+
+  
+  
+  
+  
   
   
   
@@ -15,6 +21,10 @@
 
 
 
+
+
+  
+  
   
   
   
@@ -26,7 +36,11 @@
 
 
 
+
+
 <br>
+
+
 
 
 
@@ -34,7 +48,11 @@
 
 
 
+
+
   <caption><br>
+
+
 
 
 
@@ -42,6 +60,10 @@
 
 
 
+
+
+  
+  
   
   
   
@@ -49,13 +71,19 @@
 
 
 
+
+
     <tr style="">
+
+
 
 
 
       <td style="padding: 0.75pt;" valign="top"> <span style="font-size: 10pt;"><span style="text-decoration: none;"><a href="http://www.eso.org/projects/alma/"><img src="images/alma_art_3.jpg" alt="[ ALMA 
   ]" id="_x0000_i1025" border="0" height="117" width="90"> </a></span><o:p></o:p></span>
       </td>
+
+
 
 
 
@@ -66,8 +94,12 @@ documentation</b></span><span style="font-size: 10pt;"><u1:p></u1:p><u6:p></u6:p
 
 
 
+
+
       <td style="padding: 0.75pt;" valign="top"> <span style="font-size: 10pt;"><span style="text-decoration: none;"><a href="http://www.eso.org/"><img src="images/eso-logo.gif" id="_x0000_i1026" border="0" height="117" width="90"> </a></span><o:p></o:p></span>
       </td>
+
+
 
 
 
@@ -75,6 +107,10 @@ documentation</b></span><span style="font-size: 10pt;"><u1:p></u1:p><u6:p></u6:p
 
 
 
+
+
+  
+  
   
   
   
@@ -83,8 +119,12 @@ documentation</b></span><span style="font-size: 10pt;"><u1:p></u1:p><u6:p></u6:p
 
 
 
+
+
 <hr align="center" size="1" width="100%">
 <div align="center"><br>
+
+
 
 
 
@@ -92,7 +132,11 @@ documentation</b></span><span style="font-size: 10pt;"><u1:p></u1:p><u6:p></u6:p
 
 
 
+
+
 <h1><a name="Whats_New">What's New? - Acs Command Center</a></h1>
+
+
 
 
 
@@ -100,11 +144,17 @@ documentation</b></span><span style="font-size: 10pt;"><u1:p></u1:p><u6:p></u6:p
 
 
 
+
+
 </b><br>
 
 
 
+
+
 </div>
+
+
 
 
 
@@ -113,11 +163,37 @@ Guide - Acs Command Center </a></div>
 
 
 
+
+
 <br>
 
 
 
+
+
 <br>
+
+<h2>Acs 6.0.2</h2>
+
+
+
+
+
+<h4>Deployment Info<br>
+
+</h4>
+
+<ul>
+
+  <li>Added a toggle button "Freeze View" that suppresses automatic
+refresh, so the tree&nbsp;can be browsed through&nbsp;without
+disturbance</li>
+
+</ul>
+
+<br>
+
+
 
 
 
@@ -125,74 +201,138 @@ Guide - Acs Command Center </a></div>
 
 
 
+
+
 <h4>Starting Acs remotely</h4>
 
 
 
+
+
 <ul>
+
+
 
 
   <li>Now supports&nbsp;native ssh installed on the underlying platform. This allows for using public-key authentication</li>
 
 
+
+
   <li>The native ssh support can be switched on/off using Java system properties, command line switches, or the Gui</li>
+
+
   <li>Remote processes (manager, containers) will no longer leave stray tail processes behind</li>
+
+
   <li>Remote processes&nbsp;can now X-forward to localhost</li>
+
+
   <li>Process logs in ~/.acs/commandcenter/ will now also contain a process's stderr output</li>
+
+
 
 
 </ul>
 
 
+
+
 <br>
+
+
 
 <h4>Variables in Projects</h4>
 
 
 
+
+
 <ul>
 
+
+
   <li>Variables with&nbsp;syntax ${varname}are now allowed in projects</li>
+
+
 
   <li>A variable's value can be&nbsp;set by defining&nbsp;a&nbsp;Java
 system property of the same name, or through&nbsp;the Gui's Variable
 Editor</li>
 
+
+
 </ul>
 
+
+
 <br>
+
+
 
 <h4>Deployment Info</h4>
 
 
 
+
+
 <ul>
+
+
 
   <li>The "Containers", "Client Applications", "Components" nodes in the DeploymentInfoView now display how many children they contain</li>
 
+
+
   <li>Containers and Clients now have a subnode "location" that displays their host and port</li>
+
+
   <li>A manager to connect to can now be specified as command line argument, either as "<span style="font-style: italic;">corbaloc...</span>" or as "<span style="font-style: italic;">host:port</span>"</li>
+
+
 
 </ul>
 
+
+
 <br>
+
+
 
 <h4>Misc</h4>
 
 
 
+
+
 <ul>
 
+
+
   <li>A&nbsp;project to load can now, alternatively to the -retrieve option, be specified as the first command line argument</li>
+
+
   <li>Closing the Progress Panel through the window title's X-button will no longer leave the Gui in an inoperable state</li>
+
+
 
   <li>Logfiles now also get created when starting a remote container that contains&nbsp;slashes in its name<br>
 
+
+
   </li>
 
+
+
   <li>Some explanatory texts in the Gui have hopefully&nbsp;been made clearer, following suggestions by users</li>
+
+
 </ul>
+
+
 <br>
+
+
 
 
 
@@ -200,11 +340,17 @@ Editor</li>
 
 
 
+
+
 <h4>Container Section</h4>
 
 
 
+
+
 <ul>
+
+
 
 
 
@@ -213,7 +359,11 @@ list&nbsp; sequentially in one go</li>
 
 
 
+
+
   <li>New controls to move containers up/down within the container list</li>
+
+
 
 
 
@@ -221,7 +371,11 @@ list&nbsp; sequentially in one go</li>
 
 
 
+
+
 <h4>Log Area</h4>
+
+
 
 
 
@@ -229,7 +383,11 @@ list&nbsp; sequentially in one go</li>
 
 
 
+
+
   <li>Each tool will now have its own log in the Log Area</li>
+
+
 
 
 
@@ -238,7 +396,11 @@ restrict the size of a log</li>
 
 
 
+
+
 </ul>
+
+
 
 
 
@@ -246,7 +408,11 @@ restrict the size of a log</li>
 
 
 
+
+
 <ul>
+
+
 
 
 
@@ -255,8 +421,12 @@ specified through an command line option ("-geometry")</li>
 
 
 
+
+
   <li>The (non-graphical) file logging client can now be stopped
 through an entry in the Tools Menu</li>
+
+
 
 
 
@@ -265,8 +435,12 @@ operation is being performed (i.e. the progress panel is on screen)</li>
 
 
 
+
+
   <li>Noisy error messages on startup are now avoided by adopting a
 jacorb patch coming with this Acs release</li>
+
+
 
 
 
@@ -274,7 +448,11 @@ jacorb patch coming with this Acs release</li>
 
 
 
+
+
   </li>
+
+
 
 
 
@@ -282,11 +460,17 @@ jacorb patch coming with this Acs release</li>
 
 
 
+
+
 <h4> Usage as a library</h4>
 
 
 
+
+
 <ul>
+
+
 
 
 
@@ -295,7 +479,11 @@ script, remote script, local java) of a project<br>
 
 
 
+
+
   </li>
+
+
 
 
 
@@ -306,7 +494,11 @@ implementation of a fully automatic run of a project.<br>
 
 
 
+
+
   </li>
+
+
 
 
 
@@ -314,7 +506,11 @@ implementation of a fully automatic run of a project.<br>
 
 
 
+
+
 <br>
+
+
 
 
 
@@ -322,7 +518,11 @@ implementation of a fully automatic run of a project.<br>
 
 
 
+
+
 <h4>Default Settings for Tools and Containers</h4>
+
+
 
 
 
@@ -332,6 +532,8 @@ Tools" in the Tools menu).
 One set of such settings will be offered as <i>default settings</i> in
 the dialog.
 <br>
+
+
 
 
 
@@ -346,7 +548,11 @@ much more intuitive.</p>
 
 
 
+
+
 <p></p>
+
+
 
 
 
@@ -355,11 +561,17 @@ invoked through the "..." button (beside the "+" and "-" button).</p>
 
 
 
+
+
 <h4>Deployment Info</h4>
 
 
 
+
+
 <ul>
+
+
 
 
 
@@ -370,9 +582,13 @@ nodes will be highlighted <b>gray</b>
 
 
 
+
+
   <li> Improved manual addition of managers. New "<b>Full Refresh</b>"
 button (in addition to "Refresh" in the manager context menu).
   </li>
+
+
 
 
 
@@ -383,9 +599,13 @@ manager context menu.
 
 
 
+
+
   <li> A manager is now automatically removed from the Deployment Info
 after acsStop or acsStopManager
   </li>
+
+
 
 
 
@@ -395,9 +615,13 @@ component is requested by any Acs client.
 
 
 
+
+
   <li> Better dealing with gone-down managers and cut connections: most
 operations are now guarded by small-meshed error handlers
   </li>
+
+
 
 
 
@@ -405,11 +629,17 @@ operations are now guarded by small-meshed error handlers
 
 
 
+
+
 <h4>Misc</h4>
 
 
 
+
+
 <ul>
+
+
 
 
 
@@ -419,9 +649,13 @@ Windows-only
 
 
 
+
+
   <li> Fixed the bug where NullPointerExceptions arose when one tried
 to sort the containers but there were none
   </li>
+
+
 
 
 
@@ -431,9 +665,13 @@ each time a file is shown
 
 
 
+
+
   <li> Progress dialog closing to early when doing acsStop should now
 only appear on rare occasions
   </li>
+
+
 
 
 
@@ -444,6 +682,8 @@ standard behavior)
 
 
 
+
+
   <li> Fixed the problem with foreground scripts like "AcsEventAdmin"
 blocking the command center: changed internal task-execution from
 "foreground" to "background"
@@ -451,7 +691,11 @@ blocking the command center: changed internal task-execution from
 
 
 
+
+
 </ul>
+
+
 
 
 
@@ -459,7 +703,11 @@ blocking the command center: changed internal task-execution from
 
 
 
+
+
 <ul>
+
+
 
 
 
@@ -467,6 +715,8 @@ blocking the command center: changed internal task-execution from
 it available as a RunModel to the Executor engine. This allows an
 external application to start an Acs Suite described by a project file
   </li>
+
+
 
 
 
@@ -478,7 +728,11 @@ the ToolManager (unless they aren't happy with the standard settings)
 
 
 
+
+
 </ul>
+
+
 
 
 
@@ -486,7 +740,11 @@ the ToolManager (unless they aren't happy with the standard settings)
 
 
 
+
+
 <h4>Java-only Acs</h4>
+
+
 
 
 
@@ -496,7 +754,11 @@ the desired instance can not be occupied due to, e.g., port clashes.<br>
 
 
 
+
+
 <h4>Tool Definitions</h4>
+
+
 
 
 
@@ -505,7 +767,11 @@ files:<br>
 
 
 
+
+
 <ul>
+
+
 
 
 
@@ -513,7 +779,11 @@ files:<br>
 
 
 
+
+
   <br>
+
+
 
 
 
@@ -522,11 +792,17 @@ start/stop/kill an instance of Acs locally/remotely, etc.<br>
 
 
 
+
+
 Some or all of the functions can be redefined at runtime.<br>
 
 
 
+
+
   <br>
+
+
 
 
 
@@ -534,11 +810,17 @@ Some or all of the functions can be redefined at runtime.<br>
 
 
 
+
+
   <br>
 
 
 
+
+
 Defines the extra Tools that can be triggered through the "Tools" menu.<br>
+
+
 
 
 
@@ -547,7 +829,11 @@ The complete content of the "Tools" menu can be replaced at runtime.
 
 
 
+
+
 <br>
+
+
 
 
 
@@ -557,7 +843,11 @@ be loaded through the "Expert" menu.<br>
 
 
 
+
+
 <br>
+
+
 
 
 
@@ -565,8 +855,12 @@ be loaded through the "Expert" menu.<br>
 
 
 
+
+
 Much more information on nodes is shown, the visual representation has
 changed.<br>
+
+
 
 
 
@@ -576,13 +870,19 @@ nodes.<br>
 
 
 
+
+
 Will now detect when a Manager instance is down or was replaced by
 another
 Manager instance.<br>
 
 
 
+
+
 <h4>Misc</h4>
+
+
 
 
 
@@ -592,8 +892,12 @@ the mouse (seems to not work on X Windows, however).<br>
 
 
 
+
+
 The Advanced Controls section can now be enabled/disabled through a
 checkbox.<br>
+
+
 
 
 
@@ -601,11 +905,17 @@ Menu "Extra" was renamed to "Experts". Its entries changed.<br>
 
 
 
+
+
 <br>
 
 
 
+
+
 <br>
+
+
 
 
 
@@ -613,11 +923,17 @@ Menu "Extra" was renamed to "Experts". Its entries changed.<br>
 
 
 
+
+
 </h2>
 
 
 
+
+
 <br>
+
+
 
 
 
@@ -625,11 +941,17 @@ First version ...<br>
 
 
 
+
+
 <br>
 
 
 
+
+
 <br>
+
+
 
 
 
@@ -637,7 +959,11 @@ First version ...<br>
 
 
 
+
+
 <table border="1" cellpadding="2" cellspacing="0" width="50%">
+
+
 
 
 
@@ -645,7 +971,11 @@ First version ...<br>
 
 
 
+
+
     <tr>
+
+
 
 
 
@@ -653,7 +983,11 @@ First version ...<br>
 
 
 
+
+
       </td>
+
+
 
 
 
@@ -661,7 +995,11 @@ First version ...<br>
 
 
 
+
+
       </td>
+
+
 
 
 
@@ -669,7 +1007,11 @@ First version ...<br>
 
 
 
+
+
       </td>
+
+
 
 
 
@@ -677,22 +1019,41 @@ First version ...<br>
 
 
 
+
+
     <tr>
+      <td>2007-02-09</td>
+      <td>Marcus Schilling</td>
+      <td>Updated to Acs6.0.2</td>
+    </tr>
+    <tr>
+
+
 
 
       <td>2005-10-28</td>
 
 
+
+
       <td>Marcus Schilling</td>
+
+
 
 
       <td>Updated to Acs5.0</td>
 
 
+
+
     </tr>
 
 
+
+
     <tr>
+
+
 
 
 
@@ -700,7 +1061,11 @@ First version ...<br>
 
 
 
+
+
       </td>
+
+
 
 
 
@@ -708,7 +1073,11 @@ First version ...<br>
 
 
 
+
+
       </td>
+
+
 
 
 
@@ -716,7 +1085,11 @@ First version ...<br>
 
 
 
+
+
       </td>
+
+
 
 
 
@@ -724,7 +1097,11 @@ First version ...<br>
 
 
 
+
+
     <tr>
+
+
 
 
 
@@ -732,7 +1109,11 @@ First version ...<br>
 
 
 
+
+
       </td>
+
+
 
 
 
@@ -740,7 +1121,11 @@ First version ...<br>
 
 
 
+
+
       </td>
+
+
 
 
 
@@ -748,11 +1133,17 @@ First version ...<br>
 
 
 
+
+
       </td>
 
 
 
+
+
     </tr>
+
+
 
 
 
@@ -760,11 +1151,17 @@ First version ...<br>
 
 
 
+
+
       <td valign="top">2004-05-10<br>
 
 
 
+
+
       </td>
+
+
 
 
 
@@ -772,7 +1169,11 @@ First version ...<br>
 
 
 
+
+
       </td>
+
+
 
 
 
@@ -780,7 +1181,11 @@ First version ...<br>
 
 
 
+
+
       </td>
+
+
 
 
 
@@ -788,6 +1193,10 @@ First version ...<br>
 
 
 
+
+
+  
+  
   
   
   
@@ -796,11 +1205,17 @@ First version ...<br>
 
 
 
+
+
 <p>&nbsp;</p>
 
 
 
+
+
 <p>&nbsp;</p>
+
+
 
 
 
@@ -808,39 +1223,29 @@ First version ...<br>
 
 
 
+
+
 </p>
 
 
 
-<p>&nbsp;</p>
-
-
-
-<p>&nbsp;</p>
-
 
 
 <p>&nbsp;</p>
 
 
 
-<br>
+
+
+<p>&nbsp;</p>
 
 
 
-<br>
 
 
-
-<br>
-
+<p>&nbsp;</p>
 
 
-<br>
-
-
-
-<br>
 
 
 
@@ -848,23 +1253,65 @@ First version ...<br>
 
 
 
-<br>
-
-
-
-<br>
-
 
 
 <br>
 
 
 
+
+
 <br>
 
 
 
+
+
 <br>
+
+
+
+
+
+<br>
+
+
+
+
+
+<br>
+
+
+
+
+
+<br>
+
+
+
+
+
+<br>
+
+
+
+
+
+<br>
+
+
+
+
+
+<br>
+
+
+
+
+
+<br>
+
+
 
 
 
