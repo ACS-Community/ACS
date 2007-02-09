@@ -882,9 +882,11 @@ public class IOLogsHelper extends Thread  {
 			System.err.println("Warning exception ignored "+e.getMessage());
 			e.printStackTrace(System.err);
 		}
-		for (int count =0; count<cache.getSize(); count++) {
+		
+		int key=cache.getFirstLog();
+		while (key <= cache.getLastLog()) {
 			try {
-				ILogEntry log = cache.getLog(count);
+				ILogEntry log = cache.getLog(key);
 				outBW.write((log.toXMLString()+"\n").toCharArray());
 			} catch (IOException ioe) {
 				System.err.println("Exception while saving logs: "+ioe.getMessage());
@@ -892,19 +894,23 @@ public class IOLogsHelper extends Thread  {
 				JOptionPane.showMessageDialog(null, "Exception saving "+ioe.getMessage(),"Error saving",JOptionPane.ERROR_MESSAGE);
 				break;
 			} catch (LogCacheException lce) {
-				System.err.println("Exception getting a log from the cache: "+lce.getMessage());
-				lce.printStackTrace(System.err);
-				JOptionPane.showMessageDialog(null, "Exception saving "+lce.getMessage(),"Error saving",JOptionPane.ERROR_MESSAGE);
+				// This can happen if the log has been removed by a separate
+				// thread
+				// It is not an error and the exception can be ignored
 				break;
 			}
+			
+			
+			
 			if (progressDialog!=null) {
-				progressDialog.updateStatus(""+count+" logs saved");
-				progressDialog.updateProgressBar(count);
+				progressDialog.updateStatus(""+key+" logs saved");
+				progressDialog.updateProgressBar(key);
 				// Check if the user pressed the abort button
 				if (progressDialog.wantsToAbort()) {
 					break;
 				}
 			}
+			key++;
 		}
 		try {
 			outBW.write("</Log>");
