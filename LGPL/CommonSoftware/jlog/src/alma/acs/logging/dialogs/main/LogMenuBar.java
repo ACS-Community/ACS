@@ -498,4 +498,22 @@ public class LogMenuBar extends JMenuBar {
 		}
 		return viewErrorLogMI;
 	}
+	
+	/**
+	 * Enable/Disbale all the control in tha GUI than can cause
+	 * the invalidation of the logs
+	 * 
+	 * @param enabled If true the controls are enabled
+	 */
+	public void setEnabledGUIControls(boolean enabled) {
+		getFiltersMenu().setEnabled(enabled);
+		getSearchMenu().setEnabled(enabled);
+		getFieldsMenuItem().setEnabled(enabled);
+		getLoadMenuItem().setEnabled(enabled);
+		getLoadURLMenuItem().setEnabled(enabled);
+		getClearLogsMenuItem().setEnabled(enabled);
+		getSaveFileMenuItem().setEnabled(enabled);
+		getConnectMenuItem().setEnabled(enabled);
+		getAutoReconnectMenuItem().setEnabled(enabled);
+	}
 }
