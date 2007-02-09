@@ -268,7 +268,7 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
             } else if (e.getSource()==menuBar.getShortDateViewMenuItem()) {
             	logEntryTable.setShortDateFormat(menuBar.getShortDateViewMenuItem().getState());
             } else if (e.getSource()==toolBar.getPauseBtn()) {
-            	tableModel.scrollLock(toolBar.clickPauseBtn());
+            	toolBar.clickPauseBtn();
             } else if (e.getSource()==menuBar.getSuspendMenuItem()) {
             	getEngine().setSupended(menuBar.getSuspendMenuItem().isSelected());
             } else if (e.getSource()==menuBar.getPrefsMenuItem()) {
@@ -416,10 +416,7 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 	 * @throws Exception
 	 */
 	public void pause() throws Exception {
-		if (toolBar.getPauseBtn().getText().equals(LogToolBar.playStr)) {
-			tableModel.scrollLock(true);
-			toolBar.pause();
-		}
+		toolBar.pause();
 	}
 	
 	/**
@@ -430,10 +427,7 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 	 * @throws Exception
 	 */
 	public void resume() throws Exception {
-		if (toolBar.getPauseBtn().getText().equals(LogToolBar.pauseStr)) {
-			tableModel.scrollLock(false);
-			toolBar.unpause();
-		}
+		toolBar.unpause();
 	}
 	
 	
@@ -1573,17 +1567,8 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 	 * @param enabled If true the controls are enabled
 	 */
 	public void setEnabledGUIControls(boolean enabled) {
-		toolBar.getLogLevelCB().setEnabled(enabled);
-		menuBar.getFiltersMenu().setEnabled(enabled);
-		menuBar.getSearchMenu().setEnabled(enabled);
-		toolBar.getSearchBtn().setEnabled(enabled);
-		menuBar.getFieldsMenuItem().setEnabled(enabled);
-		menuBar.getLoadMenuItem().setEnabled(enabled);
-		menuBar.getLoadURLMenuItem().setEnabled(enabled);
-		menuBar.getClearLogsMenuItem().setEnabled(enabled);
-		menuBar.getSaveFileMenuItem().setEnabled(enabled);
-		menuBar.getConnectMenuItem().setEnabled(enabled);
-		menuBar.getAutoReconnectMenuItem().setEnabled(enabled);
+		toolBar.setEnabledGUIControls(enabled);
+		menuBar.setEnabledGUIControls(enabled);
 	}
 	
 	/**
@@ -1602,6 +1587,15 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 	 */
 	public UserPreferences getPrefs() {
 		return userPreferences;
+	}
+	
+	/**
+	 * Return true if the application is paused
+	 * 
+	 * @return
+	 */
+	public boolean isPaused() {
+		return toolBar.isPaused();
 	}
 }
 
