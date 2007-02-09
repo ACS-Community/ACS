@@ -230,7 +230,7 @@ void AcsBulkdata::BulkDataSender<TSenderCallback>::startSend(CORBA::ULong flowNu
 	locSpec.length(1);
 	ACE_CString flowname = TAO_AV_Core::get_flowname(flowSpec_m[flowNumber]);
 	locSpec[0] = flowSpec_m[flowNumber];
-	
+		
 	streamctrl_p->start(locSpec);
 	
 	TAO_AV_Protocol_Object *dp_p = 0;
@@ -283,6 +283,14 @@ void AcsBulkdata::BulkDataSender<TSenderCallback>::startSend(CORBA::ULong flowNu
     catch(ACSErr::ACSbaseExImpl &ex)
 	{
 	AVSendFrameErrorExImpl err = AVSendFrameErrorExImpl(ex,__FILE__,__LINE__,"BulkDataSender::startSend");
+	throw err;
+	}
+    catch(CORBA::SystemException &ex)
+	{
+	ACSErrTypeCommon::CORBAProblemExImpl err = ACSErrTypeCommon::CORBAProblemExImpl(__FILE__,__LINE__,"BulkDataSender::startSend");
+	err.setMinor(ex.minor());
+	err.setCompletionStatus(ex.completed());
+	err.setInfo(ex._info().c_str());
 	throw err;
 	}
     catch(...)
@@ -348,6 +356,14 @@ void AcsBulkdata::BulkDataSender<TSenderCallback>::startSend(CORBA::ULong flowNu
     catch(ACSErr::ACSbaseExImpl &ex)
 	{
 	AVSendFrameErrorExImpl err = AVSendFrameErrorExImpl(ex,__FILE__,__LINE__,"BulkDataSender::startSend");
+	throw err;
+	}
+    catch(CORBA::SystemException &ex)
+	{
+	ACSErrTypeCommon::CORBAProblemExImpl err = ACSErrTypeCommon::CORBAProblemExImpl(__FILE__,__LINE__,"BulkDataSender::startSend");
+	err.setMinor(ex.minor());
+	err.setCompletionStatus(ex.completed());
+	err.setInfo(ex._info().c_str());
 	throw err;
 	}
     catch(...)
@@ -432,6 +448,14 @@ void AcsBulkdata::BulkDataSender<TSenderCallback>::sendData(CORBA::ULong flowNum
 	AVSendFrameErrorExImpl err = AVSendFrameErrorExImpl(__FILE__,__LINE__,"BulkDataSender::sendData");
 	throw err;
 	}
+    catch(CORBA::SystemException &ex)
+	{
+	ACSErrTypeCommon::CORBAProblemExImpl err = ACSErrTypeCommon::CORBAProblemExImpl(__FILE__,__LINE__,"BulkDataSender::sendData");
+	err.setMinor(ex.minor());
+	err.setCompletionStatus(ex.completed());
+	err.setInfo(ex._info().c_str());
+	throw err;
+	}
     catch(...)
 	{
 	ACS_SHORT_LOG((LM_ERROR,"BulkDataSender<>::sendData UNKNOWN exception"));
@@ -512,6 +536,14 @@ void AcsBulkdata::BulkDataSender<TSenderCallback>::sendData(CORBA::ULong flowNum
 	AVSendFrameErrorExImpl err = AVSendFrameErrorExImpl(__FILE__,__LINE__,"BulkDataSender::sendData");
 	throw err;
 	}
+    catch(CORBA::SystemException &ex)
+	{
+	ACSErrTypeCommon::CORBAProblemExImpl err = ACSErrTypeCommon::CORBAProblemExImpl(__FILE__,__LINE__,"BulkDataSender::sendData");
+	err.setMinor(ex.minor());
+	err.setCompletionStatus(ex.completed());
+	err.setInfo(ex._info().c_str());
+	throw err;
+	}
     catch(...)
 	{
 	ACS_SHORT_LOG((LM_ERROR,"BulkDataSender<>::sendData UNKNOWN exception"));
@@ -542,6 +574,14 @@ void AcsBulkdata::BulkDataSender<TSenderCallback>::stopSend(CORBA::ULong flowNum
 	locSpec[0] = flowSpec_m[flowNumber];
 	
 	streamctrl_p->stop(locSpec);
+	}
+    catch(CORBA::SystemException &ex)
+	{
+	ACSErrTypeCommon::CORBAProblemExImpl err = ACSErrTypeCommon::CORBAProblemExImpl(__FILE__,__LINE__,"BulkDataSender::stopSend");
+	err.setMinor(ex.minor());
+	err.setCompletionStatus(ex.completed());
+	err.setInfo(ex._info().c_str());
+	throw err;
 	}
     catch(...)
 	{

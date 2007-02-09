@@ -210,10 +210,8 @@ void AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::distS
     Sender_Map_Iterator iterator (senderMap_m);
     Sender_Map_Entry *entry = 0;
 
-
     for (;iterator.next (entry) !=  0;iterator.advance ())
 	{
-
 	AVStreams::flowSpec locSpec(1);
 	locSpec.length(1);
 	locSpec[0] = CORBA::string_dup(entry->int_id_->getFlowSpec(flowName));
@@ -225,7 +223,6 @@ void AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::distS
 
 	if(avail)
 	    entry->int_id_->getStreamCtrl()->start(locSpec);
-
 	}
 }
 
@@ -243,7 +240,6 @@ int AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::distSe
 
     for (;iterator.next (entry) !=  0;iterator.advance ())
 	{
-
 	TAO_AV_Protocol_Object *dp_p = 0;
 	entry->int_id_->getFlowProtocol(flowName, dp_p);
 
@@ -256,8 +252,7 @@ int AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::distSe
 		{
 		ACS_SHORT_LOG((LM_INFO,"BulkDataDistributer<>::distSendDataHsk send frame error"));
 		}
-	    }
-	
+	    }	
 	}
     
     return res;
@@ -277,8 +272,7 @@ int AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::distSe
 
     
     for (;iterator.next (entry) !=  0;iterator.advance ())
-	{
-	
+	{	
 	TAO_AV_Protocol_Object *dp_p = 0;
 	entry->int_id_->getFlowProtocol(flowName, dp_p);
 	
@@ -292,8 +286,7 @@ int AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::distSe
 		ACS_SHORT_LOG((LM_INFO,"BulkDataDistributer<>::distSendData send frame error"));
 		getFlowReceiverStatus(recvName,flowNumber);
 		}
-	    }
-	
+	    }	
 	}
     
     return res;
@@ -313,8 +306,7 @@ CORBA::Boolean AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallba
     Sender_Map_Iterator iterator (senderMap_m);
     Sender_Map_Entry *entry = 0;
     for (;iterator.next (entry) !=  0;iterator.advance ())
-	{
-    
+	{    
 	AVStreams::flowSpec locSpec(1);
 	locSpec.length(1);
 	locSpec[0] = CORBA::string_dup(entry->int_id_->getFlowSpec(flowName));
@@ -333,8 +325,7 @@ CORBA::Boolean AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallba
 		getFlowReceiverStatus(recvName, flowNumber);
 		timeout = false;
 		}
-	    }
-   
+	    }   
 	}
 
     return timeout;
@@ -353,8 +344,6 @@ void AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::distS
 
     for (;iterator.next (entry) !=  0;iterator.advance ())
 	{
-
-
 	ACE_CString recvName = entry->ext_id_;
 	CORBA::Boolean avail = isFlowReceiverAvailable(recvName, flowNumber);
 	if(avail)
@@ -364,9 +353,7 @@ void AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::distS
 	    locSpec[0] = CORBA::string_dup(entry->int_id_->getFlowSpec(flowName));
 	    entry->int_id_->getStreamCtrl()->stop(locSpec);
 	    }
-
 	}
-
 }
 
 

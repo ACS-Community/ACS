@@ -253,7 +253,6 @@ BulkDataDistributerCb::cbHandshake(ACE_Message_Block * info_p)
 
     try
 	{
-
 	distr_m->getDistributer()->distSendStart(flowname_m, flowNumber_m);
 	
 	distr_m->getDistributer()->distSendDataHsk(flowname_m, info_p, flowNumber_m);
@@ -262,7 +261,7 @@ BulkDataDistributerCb::cbHandshake(ACE_Message_Block * info_p)
 	}
     catch(...)
 	{
-	ACS_SHORT_LOG((LM_INFO,"BulkDataDistributerCb::cbHandshake exception catched!"));
+	ACS_SHORT_LOG((LM_ERROR,"BulkDataDistributerCb::cbHandshake exception"));
 	}
 
 
@@ -312,7 +311,7 @@ BulkDataDistributerCb::cbFwdStart(ACE_Message_Block * userParam_p)
 	}
     catch(...)
 	{
-	ACS_SHORT_LOG((LM_INFO,"BulkDataDistributerCb::cbFwdStart exception catched!"));
+	ACS_SHORT_LOG((LM_ERROR,"BulkDataDistributerCb::cbFwdStart exception"));
 	}
     return 0;
 
@@ -338,7 +337,7 @@ BulkDataDistributerCb::cbFwdReceive(ACE_Message_Block * frame_p)
 	}
     catch(...)
 	{
-	ACS_SHORT_LOG((LM_INFO,"BulkDataDistributerCb::cbFwdReceive exception catched!"));
+	ACS_SHORT_LOG((LM_ERROR,"BulkDataDistributerCb::cbFwdReceive exception"));
 	}
 
     return 0;
@@ -367,7 +366,7 @@ BulkDataDistributerCb::cbFwdStop()
 	}
     catch(...)
 	{
-	ACS_SHORT_LOG((LM_INFO,"BulkDataDistributerCb::cbFwdStop exception catched!"));
+	ACS_SHORT_LOG((LM_ERROR,"BulkDataDistributerCb::cbFwdStop exception"));
 	}
 
     return 0;
@@ -386,7 +385,7 @@ BulkDataDistributerCb::cbFwdUserStop()
 	}
     catch(...)
 	{
-	ACS_SHORT_LOG((LM_INFO,"BulkDataDistributerCb::cbFwdStop exception catched!"));
+	ACS_SHORT_LOG((LM_ERROR,"BulkDataDistributerCb::cbFwdStop exception"));
 	}
 
     return 0;
