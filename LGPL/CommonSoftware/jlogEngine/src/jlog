@@ -20,7 +20,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: jlog,v 1.28 2007/02/01 12:04:20 acaproni Exp $"
+# "@(#) $Id: jlog,v 1.29 2007/02/09 14:54:55 acaproni Exp $"
 #
 #acsStartJava com.cosylab.logging.LoggingClient
 
@@ -37,4 +37,4 @@ then
     echo "Adding ORACLE XML parser jar to classpath: $OracleXmlParserPath/$OracleXmlParser"
     CLASSPATH=$CLASSPATH:$OracleXmlParserPath/$OracleXmlParser
 fi
-acsStartJava -v -Xmx256M -v -Xms16M --noDirectory alma.acs.logging.dialogs.main.LogFrame $*
+acsStartJava --noDirectory alma.acs.logging.dialogs.main.LogFrame $*
