@@ -93,6 +93,14 @@ public class LCEngine implements Runnable {
 	 */
 	private class AccessSetter extends Thread {
 		
+		/**
+		 * Constructor
+		 *
+		 */
+		public AccessSetter() {
+			super("AccessSetter");
+		}
+		
 		public void run() {
 			disconnect();
 			publishConnecting();
@@ -166,6 +174,7 @@ public class LCEngine implements Runnable {
 	 */
 	private void initEngine() {
 		Thread thread = new Thread(this);
+		thread.setName("LCEngine");
 		thread.start();
 	}
 	
