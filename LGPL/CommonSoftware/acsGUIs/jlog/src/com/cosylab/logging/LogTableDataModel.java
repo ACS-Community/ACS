@@ -728,6 +728,7 @@ public class LogTableDataModel extends AbstractTableModel implements Runnable
 			throw new IllegalArgumentException(""+newLevel+" is not valid");
 		}
 		logLevel=newLevel;
+		invalidateVisibleLogs();
 	}
 	
 	/**
