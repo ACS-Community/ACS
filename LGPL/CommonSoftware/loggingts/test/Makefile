@@ -16,7 +16,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.5 2007/02/08 16:26:34 nbarriga Exp $"
+# "@(#) $Id: Makefile,v 1.6 2007/02/09 12:21:14 nbarriga Exp $"
 #
 # Makefile of ........
 #
@@ -97,7 +97,7 @@ TCL_SCRIPTS_L   =
 #
 # Python stuff (public and local)
 # ----------------------------
-PY_SCRIPTS         =
+PY_SCRIPTS         = testLTSClientpy
 PY_SCRIPTS_L       =
 
 PY_MODULES         =
@@ -210,6 +210,7 @@ endif
 # TARGETS
 # -------
 all:	do_all
+	@mkdir -p tmp
 	@echo " . . . 'all' done" 
 
 clean : clean_all 

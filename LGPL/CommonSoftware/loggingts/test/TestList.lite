@@ -1,0 +1,10 @@
+SOURCE acslogTATEnv
+PROLOGUE acsutilTATPrologue
+
+1 javaLog "acsutilTATTestRunner acsStartJava --noDirectory alma.acs.logclient.LogListener" "@SLEEP 5" "acsutilTATTestRunner acsStartJava --noDirectory alma.acs.loggingtstest.testLTSClient &> /dev/null" "@SLEEP 15"
+
+2 pythonLog "acsutilTATTestRunner acsStartJava --noDirectory alma.acs.logclient.LogListener" "@SLEEP 5" "acsutilTATTestRunner ../bin/testLTSClientpy &> /dev/null" "@SLEEP 15"
+
+3 cppLog "acsutilTATTestRunner acsStartJava --noDirectory alma.acs.logclient.LogListener" "@SLEEP 5" "acsutilTATTestRunner ../bin/testLTSClient &> /dev/null" "@SLEEP 15"
+
+EPILOGUE acsutilTATEpilogue

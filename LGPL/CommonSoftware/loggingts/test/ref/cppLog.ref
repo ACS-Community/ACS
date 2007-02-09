@@ -1,0 +1,37 @@
+1 -  --noDirectory -- alma.acs.logclient.LogListener
+1 - Connection disconnected
+1 - Connecting
+1 - object is activated
+1 - Connection established
+1 - RAW log: <Info TimeStamp="xxx" File="testLTSClient.cpp" Line="52" Routine="main" Host="xxx" Process="../bin/testLTSClient" Thread="main" Context="" SourceObject="GlobalLogger"><Data Name="logName"><![CDATA[simpleLog]]></Data><![CDATA[Simple Log]]></Info>
+1 - Log received: --- LogEntry ---
+1 - TimeStamp: xxx
+1 - Entry Type: Info
+1 - Source Object: GlobalLogger
+1 - File: testLTSClient.cpp
+1 - Line: 52
+1 - Routine: main
+1 - Host: xxx
+1 - Process: xxx../bin/testLTSClient
+1 - Context: 
+1 - Thread: main
+1 - Log Message: Simple Log
+1 - Datas: 
+1 - 	logName : simpleLog
+1 - RAW log: <Warning TimeStamp="xxx" File="testLTSClient.cpp" Line="56" Routine="main" Host="xxx" Process="../bin/testLTSClient" Thread="main" Context="" SourceObject="GlobalLogger" StackId="" StackLevel="0"><Data Name="someLongMember"><![CDATA[42]]></Data><Data Name="someStringMember"><![CDATA[test string]]></Data><Data Name="logName"><![CDATA[complexLog]]></Data><Data Name="someDoubleMember"><![CDATA[3.14159]]></Data><![CDATA[Complex Log]]></Warning>
+1 - Log received: --- LogEntry ---
+1 - TimeStamp: xxx
+1 - Entry Type: Warning
+1 - Source Object: GlobalLogger
+1 - File: testLTSClient.cpp
+1 - Line: 56
+1 - Routine: main
+1 - Host: xxx
+1 - Process: xxx../bin/testLTSClient
+1 - Context: 
+1 - Thread: main
+1 - Stack ID: 
+1 - Stack Level: 0
+1 - Log Message: Complex Log
+1 - Datas: 
+1 - 	someLongMember : 42	someStringMember : test string	logName : complexLog	someDoubleMember : 3.14159

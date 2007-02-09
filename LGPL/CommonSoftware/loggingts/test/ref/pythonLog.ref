@@ -1,0 +1,37 @@
+1 -  --noDirectory -- alma.acs.logclient.LogListener
+1 - Connection disconnected
+1 - Connecting
+1 - object is activated
+1 - Connection established
+1 - RAW log: <Info TimeStamp="xxx" File="../bin/testLTSClientpy" Line="38" Routine="?" Host="xxx" Process="xxx" Thread="" Context="" SourceObject=""><Data Name="logName"><![CDATA[simpleLog]]></Data><![CDATA[Simple Log]]></Info>
+1 - Log received: --- LogEntry ---
+1 - TimeStamp: xxx
+1 - Entry Type: Info
+1 - Source Object: 
+1 - File: ../bin/testLTSClientpy
+1 - Line: 38
+1 - Routine: ?
+1 - Host: xxx
+1 - Process: xxx
+1 - Context: 
+1 - Thread: 
+1 - Log Message: Simple Log
+1 - Datas: 
+1 - 	logName : simpleLog
+1 - RAW log: <Warning TimeStamp="xxx" File="../bin/testLTSClientpy" Line="43" Routine="?" Host="xxx" Process="xxx" Thread="" Context="" SourceObject="" StackId="" StackLevel="0"><Data Name="someLongMember"><![CDATA[42]]></Data><Data Name="someStringMember"><![CDATA[test string]]></Data><Data Name="logName"><![CDATA[complexLog]]></Data><Data Name="someDoubleMember"><![CDATA[3.14159]]></Data><![CDATA[Complex Log]]></Warning>
+1 - Log received: --- LogEntry ---
+1 - TimeStamp: xxx
+1 - Entry Type: Warning
+1 - Source Object: 
+1 - File: ../bin/testLTSClientpy
+1 - Line: 43
+1 - Routine: ?
+1 - Host: xxx
+1 - Process: xxx
+1 - Context: 
+1 - Thread: 
+1 - Stack ID: 
+1 - Stack Level: 0
+1 - Log Message: Complex Log
+1 - Datas: 
+1 - 	someLongMember : 42	someStringMember : test string	logName : complexLog	someDoubleMember : 3.14159

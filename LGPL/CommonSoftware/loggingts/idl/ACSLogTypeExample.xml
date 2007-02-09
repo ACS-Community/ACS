@@ -23,8 +23,14 @@
 		description="This is a somewhat more complex log using members"
 		URL="http://someurl.org"
 		priority="WARNING">
-		<Member name="someMember"
+		<Member name="someDoubleMember"
 			type="double"
+			description="member description"/>
+		<Member name="someStringMember"
+			type="string"
+			description="member description"/>
+		<Member name="someLongMember"
+			type="long"
 			description="member description"/>
 	</LogDefinition>
 </LogDefinitionType>

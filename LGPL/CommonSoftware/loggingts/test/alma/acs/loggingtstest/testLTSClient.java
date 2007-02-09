@@ -18,7 +18,7 @@
 */
 /** 
  * @author  nbarriga
- * @version $Id: testLTSClient.java,v 1.3 2007/02/08 13:10:39 nbarriga Exp $
+ * @version $Id: testLTSClient.java,v 1.4 2007/02/09 12:21:14 nbarriga Exp $
  * @since    
  */
 
@@ -68,11 +68,13 @@ public class testLTSClient  extends ComponentClient
 		simpleLog slog=new simpleLog(client.m_logger);
 		slog.log();		
 		complexLog clog=new complexLog(client.m_logger);
-		clog.setsomeMember(3.14159);
+		clog.setsomeDoubleMember(3.14159);
+		clog.setsomeStringMember("test string");
+		clog.setsomeLongMember((long)42);
 		clog.log();		
 		try
 		{
-			Thread.sleep(1000);
+			Thread.sleep(2000);
 		}
 		catch (Exception e)
 		{

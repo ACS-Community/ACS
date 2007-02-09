@@ -24,7 +24,7 @@
 #------------------------------------------------------------------------------
 
 #from loggingts.ACSLogTypeExample import simpleLog,complexLog
-from ACSLogTypeExample  import simpleLog,complexLog
+from ACSLogTypeExampleLTS  import simpleLog,complexLog
 
 # Import the acspy.PySimpleClient class
 from Acspy.Clients.SimpleClient import PySimpleClient
@@ -37,7 +37,9 @@ simpleClient.getLogger().logInfo("Starting test client.")
 
 simpleLog().log()
 a=complexLog()
-a.setsomeMember(3.14159)
+a.setsomeDoubleMember(3.14159)
+a.setsomeStringMember("test string")
+a.setsomeLongMember(42)
 a.log()
 
 simpleClient.disconnect()

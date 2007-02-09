@@ -43,7 +43,7 @@ public class LogListener implements
 	public static void main(String[] args) {
 		LogListener ll = new LogListener();
 		try {
-			Thread.sleep(30000);
+			Thread.sleep(20000);
 		} catch (InterruptedException ie) {}
 		ll.disconnet();
 		System.exit(0);
@@ -101,7 +101,8 @@ public class LogListener implements
 	 * @see com.cosylab.logging.engine.ACS.ACSRemoteLogListener
 	 */
 	public void xmlEntryReceived(String str) {
-		if (str.indexOf("testLTSClient.py")>=0||str.indexOf("alma.acs.loggingtstest.testLTSClient")>=0||str.indexOf("testLTSClient.cpp")>=0) {
+		if (str.indexOf("testLTSClientpy")>=0||str.indexOf("alma.acs.loggingtstest.testLTSClient")>=0||str.indexOf("testLTSClient.cpp")>=0) {
+	//	if (str.indexOf("testLTSClient")>=0){
 			System.out.println("RAW log: "+str);
 		}
 	}
@@ -112,7 +113,8 @@ public class LogListener implements
 	 * @see com.cosylab.logging.engine.ACS.ACSRemoteRawLogListener
 	 */
 	public void logEntryReceived(ILogEntry log) {
-		if (log.getField(ILogEntry.FIELD_FILE).toString().compareTo("testLTSClient.py")==0||log.getField(ILogEntry.FIELD_FILE).toString().compareTo("alma.acs.loggingtstest.testLTSClient")==0||log.getField(ILogEntry.FIELD_FILE).toString().compareTo("testLTSClient.cpp")==0) {
+		if (log.getField(ILogEntry.FIELD_FILE).toString().compareTo("../bin/testLTSClientpy")==0||log.getField(ILogEntry.FIELD_FILE).toString().compareTo("alma.acs.loggingtstest.testLTSClient")==0||log.getField(ILogEntry.FIELD_FILE).toString().compareTo("testLTSClient.cpp")==0) {
+		//if(log.getField(ILogEntry.FIELD_FILE).toString().indexOf("testLTSClient")>=0){
 			System.out.println("Log received: "+log.toString());
 		}
 	}
