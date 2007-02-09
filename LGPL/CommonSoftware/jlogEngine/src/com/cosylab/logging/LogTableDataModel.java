@@ -600,13 +600,15 @@ public class LogTableDataModel extends AbstractTableModel implements Runnable
 	 */
 	public void run() {
 		LoggingClient logging=LoggingClient.getInstance();
+		// Store the status of the application (paused/unpaused) before this rebuilding
+		boolean logClientWasPaused=logging.isPaused();
+		logging.setEnabledGUIControls(false);
+		try {
+			logging.pause();
+		} catch (Exception e) {}
 		int key=allLogs.getFirstLog();
 		visibleLogs.clear();
-		logging.setEnabledGUIControls(false);
 		visibleLogs.setRefreshInterval(3000);
-		try {
-			LoggingClient.getInstance().pause();
-		} catch (Exception e) {}
 		
 		try {
 			while (key <= allLogs.getLastLog()) {
@@ -634,9 +636,12 @@ public class LogTableDataModel extends AbstractTableModel implements Runnable
 		visibleLogs.setRefreshInterval(null);
 		logging.setEnabledGUIControls(true);
 		visibleLogs.setRefreshInterval(null);
-		try {
-			LoggingClient.getInstance().resume();
-		} catch (Exception e) {}
+		// Upause the application if it was unpaused before this rebuilding
+		if (!logClientWasPaused) {
+			try {
+				LoggingClient.getInstance().resume();
+			} catch (Exception e) {}
+		}
 	}
 	
 	/**

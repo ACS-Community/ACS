@@ -978,6 +978,8 @@ public class VisibleLogsVector extends Thread {
 				if (request.getType()==LogOperationRequest.TERMINATE) {
 							return;
 				} else if (request.getType()==LogOperationRequest.SETORDER) {
+					// Store the status of the application (paused/unpaused) before this rebuilding
+					boolean logClientWasPaused=logClient.isPaused(); 
 					logClient.setEnabledGUIControls(false);
 					logClient.getLogEntryTable().getTableHeader().setEnabled(false);
 					try {
@@ -985,9 +987,11 @@ public class VisibleLogsVector extends Thread {
 					} catch (Exception e) {}
 					sort(request.getOrderingField(),request.orderDirection());
 					logClient.getLogEntryTable().getTableHeader().setEnabled(true);
-					try {
-						LoggingClient.getInstance().resume();
-					} catch (Exception e) {}
+					if (!logClientWasPaused) {
+						try {
+							LoggingClient.getInstance().resume();
+						} catch (Exception e) {}
+					}
 					logClient.setEnabledGUIControls(true);
 					logClient.getLogEntryTable().getTableHeader().resizeAndRepaint();
 				}
