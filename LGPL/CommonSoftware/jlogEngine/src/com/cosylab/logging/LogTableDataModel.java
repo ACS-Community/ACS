@@ -609,6 +609,7 @@ public class LogTableDataModel extends AbstractTableModel implements Runnable
 		int key=allLogs.getFirstLog();
 		visibleLogs.clear();
 		visibleLogs.setRefreshInterval(3000);
+		logging.animateProgressBar("Regenerating",key,allLogs.getLastLog());
 		
 		try {
 			while (key <= allLogs.getLastLog()) {
