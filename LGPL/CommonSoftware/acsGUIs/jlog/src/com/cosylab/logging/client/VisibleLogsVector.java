@@ -322,6 +322,10 @@ public class VisibleLogsVector extends Thread {
 	/**
 	 * The request for an async operation
 	 * 
+	 * Async operations must be executed with the application paused
+	 * @see VisibleLogsVector.buffer
+	 * @see VisibleLogsVector.asyncOps
+	 * 
 	 * @author acaproni
 	 *
 	 */
@@ -419,14 +423,31 @@ public class VisibleLogsVector extends Thread {
 	/**
 	 * Usually new logs are directly added in the GUI.
 	 * They are cached if a long lasting async operation is in progress.
-	 * The thread will check if there are logs to add when it terminates
-	 * other operations
+	 * 
+	 * The thread checks if there are logs to add when it terminates
+	 * other operations like a sort/reorder.
+	 * 
+	 * This buffer has limited size but it is intended to store logs
+	 * that accidentally are added to the vector while async ops are
+	 * in progress.
+	 * The async ops must me executed with the appication paused so the logs
+	 * are keeped on a file when they are received from the NC.
+	 * Sometimes a few logs are added between the moment the application is
+	 * requested to pause and the moment it is effectively paused 
+	 * i.e. all the threads acknowledge the situation.
+	 * 
+	 * @see VisibleLogsVector.LogOperationRequest
 	 */
 	private Vector<AddLogItem> buffer = new Vector<AddLogItem>(16);
 	
-	// The vector with the request for async operations.
-	// If it is empty then each new log can be immediately added
-	// in the GUI, otherwise it has to be caches in the buffer
+	/** The vector with the request for async operations.
+	 *  If it is empty then each new log can be immediately added
+	 *  in the GUI, otherwise it has to be cached in the buffer
+	 *
+	 *   To avoid out of memories it is better to execute async ops with 
+	 *   the application paused to reduce the number of logs added in the  buffer vector.
+	 *   @see documentation for VisibleLogsVector.buffer for further details
+	 */
 	private Vector<LogOperationRequest> asyncOps = new Vector<LogOperationRequest>();
 	
 	
@@ -478,10 +499,14 @@ public class VisibleLogsVector extends Thread {
 	public synchronized void add(Integer key, ILogEntry log) {
 		synchronized (asyncOps) {
 			if (asyncOps.size()==0) {
+				// Add the log to the array of visible logs 
+				// i.e. it will be shown in the table at the next refresh 
+				// iteration
 				addLogToVector(key, log);
 				return;
 			} 
-		} 
+		}
+		// There are async ops in progress: the log is buffered in the temporary vector 
 		synchronized(buffer) {
 			buffer.add(new AddLogItem(key,log));
 		}
