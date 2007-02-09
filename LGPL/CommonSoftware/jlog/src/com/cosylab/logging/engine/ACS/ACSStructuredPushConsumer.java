@@ -159,8 +159,6 @@ public final class ACSStructuredPushConsumer extends StructuredPushConsumerPOA
 		structuredProxyPushSupplier.disconnect_structured_push_supplier();
 	}
 
-	// disconnect_structured_push_consumer method comment.
-
 	public void disconnect_structured_push_consumer()
 	{
 		//	System.out.println(">>>disconnect_structured_push_consumer called.");
@@ -173,6 +171,7 @@ public final class ACSStructuredPushConsumer extends StructuredPushConsumerPOA
 				System.out.println("Exception in disconnect_structured_push_consumer(): " + e);
 			}*/
 	}
+	
 	/**
 	 * Initializes the parser.
 	 * Creation date: (10/24/2001 12:48:32 PM)
@@ -207,29 +206,11 @@ public final class ACSStructuredPushConsumer extends StructuredPushConsumerPOA
 		structuredProxyPushSupplier = StructuredProxyPushSupplierHelper.narrow(proxySupplier);
 		isInitialized = true;
 	}
+	
 	public boolean isInitialized()
 	{
 		return isInitialized;
 	}
-	/**
-	 * Used for testing purposes only. 
-	 * Creation date: (10/25/2001 12:31:21 PM)
-	 * @param args java.lang.String[]
-	 */
-	public static void main(String[] args)
-	{
-		/*	ACSRemoteAccess sub = null;
-			
-		//	sub = new ACSRemoteAccess();
-		//	sub.resolveNamingService();
-		//	sub.resolveNotifyChannel(Subscribe.LOGGING_CHANNEL);
-		//	sub.createConsumerAdmin();
-		
-			ACSStructuredPushConsumer acsSPS = new ACSStructuredPushConsumer(sub);
-			acsSPS.connect(); 
-			acsSPS.setupEvents(); */
-	}
-	// offer_change method comment.
 
 	public void offer_change(org.omg.CosNotification.EventType[] added, org.omg.CosNotification.EventType[] removed)
 		throws org.omg.CosNotifyComm.InvalidEventType
@@ -242,24 +223,18 @@ public final class ACSStructuredPushConsumer extends StructuredPushConsumerPOA
 	public void push_structured_event(StructuredEvent event) throws org.omg.CosEventComm.Disconnected
 	{
 		if (suspended) {
-			// In suspended mode, the incoming messages ar read from the NC but
-			// nt notified to the listeners
 			return;
 		}
-		//System.out.println("Pushed...: "  + event.remainder_of_body.toString());
-
-		/* extract event data */
-		// For logging, only the following is used
-		// check whether eventName is defined at all.
-		//String domainName = event.header.fixed_header.event_type.domain_name;
-		//String typeName = event.header.fixed_header.event_type.type_name;
-		//String eventName = event.header.fixed_header.event_name;
-		/////////////////////////////////////////////////////////
-		//Property[] variableHeaders = event.header.variable_header;
-		//Property[] filterableFields = event.filterable_data;
-		/////////////////////////////////////////////////////////
 		String xmlLog = event.remainder_of_body.extract_string();
-
+		
+		// If the application is paused then the logs are flushed on disk
+		// The ACSLogRetrieval will flush the logs out of the file
+		// when the application will be unpaused
+		if (LoggingClient.getInstance().isPaused()) {
+			logRetrieval.addLog(xmlLog);
+			return;
+		}
+		
 		if (!xmlLogs.offer(xmlLog)) {
 			if (!discarding) {
 				discarding=true;
@@ -272,28 +247,6 @@ public final class ACSStructuredPushConsumer extends StructuredPushConsumerPOA
 		}
 	}
 
-	/*// This is how it should have been done...
-		// This syntax will be useful for arhiving
-	
-		// Event Header
-		//   Fixed Header
-		String domainName = event.header.fixed_header.event_type.domain_name;
-		String typeName = event.header.fixed_header.event_type.type_name;
-		String eventName = event.header.fixed_header.event_name;
-		//   Variable Header
-		Property[] variableHeaders = event.header.variable_header;
-	
-		// Event Body
-		//   Filterable Fields
-		Property[] filterableFields = event.filterable_data;
-		//   Remaining Body, returned as CORBA Any. Converted to String. Is this OK?
-		String remainingBody = event.remainder_of_body.extract_string();
-	
-		// Property has
-		// String property.name
-		// CORBA::Any property.value
-	
-	*/
 	/**
 	 * Changes subscription on ConsumerAdmin.
 	 */
