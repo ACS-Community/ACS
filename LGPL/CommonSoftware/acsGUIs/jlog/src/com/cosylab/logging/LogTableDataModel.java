@@ -26,7 +26,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -81,6 +80,14 @@ public class LogTableDataModel extends AbstractTableModel implements Runnable
 		private LinkedBlockingQueue<Integer> logsToDelete = new LinkedBlockingQueue<Integer>();
 		
 		/**
+		 * Constructor
+		 *
+		 */
+		public LogDeleter() {
+			super("LogDeleter");
+		}
+		
+		/**
 		 * Add the key of a log to delete
 		 * 
 		 * @param key The key of the log to delete
@@ -106,6 +113,10 @@ public class LogTableDataModel extends AbstractTableModel implements Runnable
 				try {
 					Thread.sleep(TIME_INTERVAL);
 				} catch (InterruptedException e) {
+					continue;
+				}
+				// Do not do anything if the application is paused
+				if (LoggingClient.getInstance().isPaused()) {
 					continue;
 				}
 				sz =allLogs.getSize();
@@ -210,7 +221,7 @@ public class LogTableDataModel extends AbstractTableModel implements Runnable
 	 * The thread to delete the logs asynchronously
 	 */
 	private LogDeleter logDeleter;
-		
+	
 	/**
 	 * Return number of columns in table
 	 */
@@ -589,31 +600,43 @@ public class LogTableDataModel extends AbstractTableModel implements Runnable
 	 */
 	public void run() {
 		LoggingClient logging=LoggingClient.getInstance();
-		int size = allLogs.getSize();
-		logging.animateProgressBar("Regenerating",0,size);
+		int key=allLogs.getFirstLog();
 		visibleLogs.clear();
 		logging.setEnabledGUIControls(false);
-		visibleLogs.setRefreshInterval(2000);
+		visibleLogs.setRefreshInterval(3000);
+		try {
+			LoggingClient.getInstance().pause();
+		} catch (Exception e) {}
 		
-		for (int i = 0; i < size; i++) {
-			try {
-				// Check here the log level so we can avoid getting a log
-				// if it has the wrong log level
-				if (allLogs.getLogType(i)>=logLevel) {
-					visibleLogInsert(allLogs.getLog(i),i);
+		try {
+			while (key <= allLogs.getLastLog()) {
+				try {
+					if (allLogs.getLogType(key) >= logLevel) {
+						visibleLogInsert(allLogs.getLog(key), key);
+					}
+				} catch (LogCacheException e) {
+					// This can happen if the log has been removed by a separate
+					// thread
+					// It is not an error and the exception can be ignored
 				}
-			} catch (Exception e) {
-				System.err.println("Exception "+e.getMessage());
-				e.printStackTrace(System.err);
+				if (key % 50 == 0) {
+					logging.moveProgressBar(key);
+				}
+				key++;
 			}
-			if (i%25==0) {
-				logging.moveProgressBar(i);
-			}
+		} catch (Throwable t) {
+			System.err.println("Got a throwble " + t.getMessage());
+			t.printStackTrace();
+			System.out.println("Exiting");
+			System.exit(-1);			
 		}
 		logging.freezeProgressBar();
 		visibleLogs.setRefreshInterval(null);
 		logging.setEnabledGUIControls(true);
 		visibleLogs.setRefreshInterval(null);
+		try {
+			LoggingClient.getInstance().resume();
+		} catch (Exception e) {}
 	}
 	
 	/**
@@ -626,6 +649,7 @@ public class LogTableDataModel extends AbstractTableModel implements Runnable
 		}
 		if (allLogs.getSize()>1) {
 			invalidateThread=new Thread(this);
+			invalidateThread.setName("LogTableDataModel");
 			invalidateThread.start();
 		}
 	}
@@ -639,13 +663,8 @@ public class LogTableDataModel extends AbstractTableModel implements Runnable
 	 * @param pos The position of this log in the cache
 	 */
 	public void visibleLogInsert(ILogEntry log, int pos) {
-		try {
-			if (allLogs.getLogType(pos)>=logLevel && filters.applyFilters(log)) {
-				visibleLogs.add(pos,log);
-			}
-		} catch (LogCacheException e) {
-			System.err.println("Error getting the log type "+pos);
-			e.printStackTrace();
+		if (log.getType()>=logLevel && filters.applyFilters(log)) {
+			visibleLogs.add(pos,log);
 		}
 	}
 	
@@ -697,17 +716,6 @@ public class LogTableDataModel extends AbstractTableModel implements Runnable
 	 */
 	public long totalLogNumber() {
 		return allLogs.getSize();
-	}
-	
-	/**
-	 * Do not scroll the table when new logs arrive
-	 * (this is done by delaying the insertion of new logs in the table
-	 * until the scroll lock is disabled)
-	 * 
-	 * @param lock If true the table does not scroll 
-	 */
-	public void scrollLock(boolean lock) {
-		visibleLogs.suspendRefresh(lock);
 	}
 	
 	public void setLogLevel(int newLevel) {
