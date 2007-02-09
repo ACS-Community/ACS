@@ -19,7 +19,7 @@
 
 /** 
  * @author  acaproni   
- * @version $Id: ACSLogRetrieval.java,v 1.9 2006/10/19 13:07:45 acaproni Exp $
+ * @version $Id: ACSLogRetrieval.java,v 1.10 2007/02/09 11:08:03 acaproni Exp $
  * @since    
  */
 
@@ -72,6 +72,7 @@ public class ACSLogRetrieval extends Thread {
 	 * @param engine The engine
 	 */
 	public ACSLogRetrieval(LCEngine engine) {
+		super("ACSLogRetrieval");
 		this.engine=engine;
 		initialize();
 	}
@@ -166,6 +167,13 @@ public class ACSLogRetrieval extends Thread {
 	 */
 	public void run() {
 		while (true) {
+			// Do not flush the logs if the application is paused
+			if (LoggingClient.getInstance().isPaused()) {
+				try {
+					Thread.sleep(250);
+				} catch(InterruptedException e) {}
+				continue;
+			}
 			// Get from the queue the final position of the next log to read
 			long endPos;
 			try {
