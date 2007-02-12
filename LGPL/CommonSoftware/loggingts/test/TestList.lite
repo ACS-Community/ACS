@@ -1,5 +1,5 @@
 SOURCE acslogTATEnv
-PROLOGUE acsutilTATPrologue
+PROLOGUE acsutilTATPrologue 
 
 1 javaLog "acsutilTATTestRunner acsStartJava --noDirectory alma.acs.logclient.LogListener" "@SLEEP 5" "acsutilTATTestRunner acsStartJava --noDirectory alma.acs.loggingtstest.testLTSClient &> /dev/null" "@SLEEP 15"
 
