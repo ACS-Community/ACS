@@ -1,7 +1,7 @@
 #%#------------------------------------------------------------------------
 #%# E.S.O. - ACS project
 #%# 
-#%# "@(#) $Id: java-class-interface.template,v 1.1 2004/08/04 13:55:50 mpasquat Exp $"
+#%# "@(#) $Id: java-class-interface.template,v 1.2 2007/02/12 09:12:47 nbarriga Exp $"
 #%# 
 #%# Template for java class interface documentation header include files         
 #%# 
@@ -15,12 +15,12 @@
 #%#>>> INSTRUCTIONS ON HOW TO FILL THIS TEMPLATE ARE GIVEN IN c++class_file(5).
 #%#>>>
 #%#------------------------------------------------------------------------
-
+/*
 PPPPPPPP
-
+*/
 /** 
  * @author  NNNNNNNN
- * @version $Id: java-class-interface.template,v 1.1 2004/08/04 13:55:50 mpasquat Exp $
+ * @version $Id: java-class-interface.template,v 1.2 2007/02/12 09:12:47 nbarriga Exp $
  * @since    
  */
 
