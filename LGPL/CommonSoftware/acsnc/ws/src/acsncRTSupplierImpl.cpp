@@ -19,7 +19,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsncRTSupplierImpl.cpp,v 1.11 2007/01/25 10:31:34 bjeram Exp $"
+* "@(#) $Id: acsncRTSupplierImpl.cpp,v 1.12 2007/02/12 09:39:58 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------

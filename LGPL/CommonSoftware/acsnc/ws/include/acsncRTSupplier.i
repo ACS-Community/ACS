@@ -1,6 +1,6 @@
 #ifndef RT_SUPPLIER_I
 #define RT_SUPPLIER_I
-/*    @(#) $Id: acsncRTSupplier.i,v 1.20 2007/01/25 10:31:34 bjeram Exp $
+/*    @(#) $Id: acsncRTSupplier.i,v 1.21 2007/02/12 09:39:58 bjeram Exp $
  *    ALMA - Atacama Large Millimiter Array
  *    (c) Associated Universities Inc., 2002 
  *    (c) European Southern Observatory, 2002
@@ -34,15 +34,18 @@ RTSupplier::publishData(T data)
 {
     try
 	{
-       
 	//acquire the mutex first
-	ACE_Guard<ACE_Thread_Mutex>  guard(eventQueueMutex_m);//.acquire();
-
-/*	if (unpublishedEvents_m.size()>10000)
+	ACE_Guard<ACE_Thread_Mutex> guard(eventQueueMutex_m);//.acquire();
+	
+	if (unpublishedEvents_m.size()>10000)
 	    {
-	    printf ("\n============>  Queue size exceed 10000 (%d) !!! <===========\n\n", unpublishedEvents_m.size());
+	    // here different exception should be thrown
+	    char buf[100];
+	    CORBAProblemExImpl ex(__FILE__, __LINE__, "RTSupplier<>::publishData");
+            sprintf(buf, "RTSupplier sueue size exceed 10000 (%d)", unpublishedEvents_m.size());
+	    ex.setInfo(buf);
+	    throw ex.getCORBAProblemEx();
 	    }
-*/
 	//convert user data to an any
 	any_m <<= data;
 	//"fill out" the entire structured event
