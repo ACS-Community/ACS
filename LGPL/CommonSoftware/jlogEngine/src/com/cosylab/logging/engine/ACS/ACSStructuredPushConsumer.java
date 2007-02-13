@@ -44,6 +44,18 @@ public final class ACSStructuredPushConsumer extends StructuredPushConsumerPOA
 {
 	private class Dispatcher extends Thread
 	{
+		/**
+		 * Constructor 
+		 *
+		 */
+		public Dispatcher() {
+			super("Dispatcher");
+		}
+		
+		/**
+		 * The thread that takes log from the vector and publish the log to the
+		 * listeners
+		 */
 		public void run()
 		{
 			String log = null;
@@ -227,24 +239,7 @@ public final class ACSStructuredPushConsumer extends StructuredPushConsumerPOA
 		}
 		String xmlLog = event.remainder_of_body.extract_string();
 		
-		// If the application is paused then the logs are flushed on disk
-		// The ACSLogRetrieval will flush the logs out of the file
-		// when the application will be unpaused
-		if (LoggingClient.getInstance().isPaused()) {
-			logRetrieval.addLog(xmlLog);
-			return;
-		}
-		
-		if (!xmlLogs.offer(xmlLog)) {
-			if (!discarding) {
-				discarding=true;
-				engine.publishDiscarding();
-			} 
-			logRetrieval.addLog(xmlLog);
-		} else if (discarding) {
-			discarding=false;
-			engine.publishConnected(true);
-		}
+		logRetrieval.addLog(xmlLog);
 	}
 
 	/**
