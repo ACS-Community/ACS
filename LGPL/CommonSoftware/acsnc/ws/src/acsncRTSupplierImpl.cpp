@@ -19,7 +19,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsncRTSupplierImpl.cpp,v 1.12 2007/02/12 09:39:58 bjeram Exp $"
+* "@(#) $Id: acsncRTSupplierImpl.cpp,v 1.13 2007/02/13 08:56:12 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -123,6 +123,13 @@ RTSupplier::worker(void* param_p)
 		    ACE_Guard<ACE_Thread_Mutex> guard(supplier_p->eventQueueMutex_m);//.acquire();
 		    supplier_p->unpublishedEvents_m.pop();
 //		    supplier_p->eventQueueMutex_m.release();
+		    }
+		catch(CORBAProblemEx &_ex)
+		    {
+		    ACS_SHORT_LOG((LM_ERROR,"RTSupplier::worker() %s channel - problem publishing a saved event!",
+				   supplier_p->channelName_mp));
+		    CORBAProblemExImpl ex(_ex);
+		    ex.log();
 		    }
 		catch(...)
 		    {
