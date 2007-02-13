@@ -187,14 +187,6 @@ public class LogBufferedFileCache extends LogFileCache implements ILogMap {
 		if (buffer.size()!=size) {
 			throw new IllegalStateException("Error: trying to flush but the buffer is not full");
 		}
-		// Builds a TreeMap with all the logs
-		TreeMap<Integer,ILogEntry> logs;
-		synchronized (buffer) {
-			logs = new TreeMap<Integer,ILogEntry>(buffer);
-		}
-		// The TreeMap of valid logs
-		TreeMap<Integer,LogFileCache.LogCacheInfo> validLogsInfo=new TreeMap<Integer,LogFileCache.LogCacheInfo>();
-		
 		// str is the buffer of logs to write on disk at once
 		StringBuilder str = new StringBuilder();
 		
@@ -207,15 +199,15 @@ public class LogBufferedFileCache extends LogFileCache implements ILogMap {
 		}
 		// Prepare the buffer and the index
 		LogFileCache.LogCacheInfo info;
-		for (Integer key: logs.keySet()) {
-			ILogEntry log = logs.get(key);
+		for (Integer key: buffer.keySet()) {
+			ILogEntry log = buffer.get(key);
 			info = new LogFileCache.LogCacheInfo();
 			info.start=startingPos+str.length();
 			String cacheLogStr=toCacheString(log);
 			str.append(cacheLogStr);
 			info.len=cacheLogStr.length();
 			if (buffer.containsKey(key)) {
-				validLogsInfo.put(key,info);
+				index.put(key,info);
 			} 
 		}
 		// Write the buffer on disk
@@ -227,19 +219,10 @@ public class LogBufferedFileCache extends LogFileCache implements ILogMap {
 				throw new LogCacheException("Error writing the buffer on disk",ioe);
 			}
 		}
-		// Add the <Key,LogCaCheInfo> couples to the data structures in
-		// LogFileCache
-		synchronized (index) {
-			index.putAll(validLogsInfo);
-		}
 		// Clear the buffer
 		synchronized (buffer) {
 			buffer.clear();
 		}
-		
-		// Clear temporary data structures
-		validLogsInfo.clear();
-		logs.clear();
 	}
 	
 	/**
