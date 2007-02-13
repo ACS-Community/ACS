@@ -158,7 +158,12 @@ public class LogTableDataModel extends AbstractTableModel implements Runnable
 			}
 			visibleLogs.deleteLogs(keys);
 			fireTableDataChanged();
-			allLogs.deleteLogs(keys);
+			try {
+				allLogs.deleteLogs(keys);
+			} catch (LogCacheException e) {
+				System.out.println("Error deleting a collection of logs from thread: "+e.getMessage());
+				e.printStackTrace();
+			}
 		}
 		
 	}
