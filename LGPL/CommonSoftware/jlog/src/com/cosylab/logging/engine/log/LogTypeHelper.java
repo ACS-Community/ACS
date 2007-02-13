@@ -38,19 +38,54 @@ import com.cosylab.logging.engine.log.LogEntryXML;
  * array of icons in a lot of different places
  */
 public class LogTypeHelper {
-    public static final int ENTRYTYPE_TRACE = 0;
-    public static final int ENTRYTYPE_DEBUG = 1;
-    public static final int ENTRYTYPE_INFO = 2;
-    public static final int ENTRYTYPE_NOTICE = 3;
-    public static final int ENTRYTYPE_WARNING = 4;
-    public static final int ENTRYTYPE_ERROR = 5;
-    public static final int ENTRYTYPE_CRITICAL = 6;
-    public static final int ENTRYTYPE_ALERT = 7;
-    public static final int ENTRYTYPE_EMERGENCY = 8;
+	
+	/**
+	 * The types of the logs.
+	 * 
+	 * We do want to reuse these Integers instead of creating new Integers 
+	 * with the same value
+	 * We need that to reduce the amount of memory used by the software.
+	 * 
+	 */
+    public static final Integer ENTRYTYPE_TRACE = new Integer(0);
+    public static final Integer ENTRYTYPE_DEBUG = new Integer(1);
+    public static final Integer ENTRYTYPE_INFO = new Integer(2);
+    public static final Integer ENTRYTYPE_NOTICE = new Integer(3);
+    public static final Integer ENTRYTYPE_WARNING = new Integer(4);
+    public static final Integer ENTRYTYPE_ERROR = new Integer(5);
+    public static final Integer ENTRYTYPE_CRITICAL = new Integer(6);
+    public static final Integer ENTRYTYPE_ALERT = new Integer(7);
+    public static final Integer ENTRYTYPE_EMERGENCY = new Integer(8);
+    
+    /**
+     * The array with all the log types.
+     * 
+     * When I need to pass from the number representing a log type
+     * to its reference given upon, it is better to have this array
+     * instad of using a switch.
+     * I mean I can reduce something like:
+     * switch(i) {
+     * 	case 0: ENTRYTYPE_TRACE;
+     *  ....
+     * }
+     * to that one
+     *  	i = logTypes[i];
+     */
+    public static final Integer[] logTypes = new Integer[] {
+    	ENTRYTYPE_TRACE,
+    	ENTRYTYPE_DEBUG,
+    	ENTRYTYPE_INFO,
+    	ENTRYTYPE_NOTICE,
+    	ENTRYTYPE_WARNING,
+    	ENTRYTYPE_ERROR,
+    	ENTRYTYPE_CRITICAL,
+    	ENTRYTYPE_ALERT,
+    	ENTRYTYPE_EMERGENCY
+    };
     
     // The total amount of different log types
-    private static int NUMBER_OF_ENTRYTYPES = 9;
-    
+    private static int NUMBER_OF_ENTRYTYPES = logTypes.length;
+ 
     /**
      * The description of each log type
      * 
