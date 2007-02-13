@@ -24,6 +24,7 @@ package com.cosylab.logging.client.cache;
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -77,10 +78,6 @@ public class LogFileCache implements ILogMap {
 		 * Ending position in the file
 		 */ 
 		public long end;
-		/**
-		 * true if the log has been deleted from the cache
-		 */
-		public boolean deleted;
 		
 		/**
 		 * Create LogCacheInfo marked as not deleted
@@ -94,25 +91,8 @@ public class LogFileCache implements ILogMap {
 			}
 			start=startPos;
 			end=endPos;
-			deleted = false;
 		}
 		
-		/**
-		 * Create a LogCacheInfo object 
-		 * 
-		 * @param startPos The starting position in the file on disk
-		 * @param endPos The ending position in the file on disk
-		 * @param markAsDeleted If true the log is marked as deleted
-		 */
-		public  LogCacheInfo(long startPos, long endPos, boolean markAsDeleted) {
-			if (startPos>=endPos || startPos<0 || endPos<0) {
-				throw new IllegalArgumentException("Invalid positions for log ["+startPos+", "+endPos+"]");
-			}
-			start=startPos;
-			end=endPos;
-			deleted = false;
-		}
-
 		/**
 		 * Empty constructor
 		 */ 
@@ -143,10 +123,18 @@ public class LogFileCache implements ILogMap {
 	// of the log in the file
 	protected TreeMap<Integer,LogCacheInfo> index = new TreeMap<Integer,LogCacheInfo>();
 	
-	// The deleted logs
-	// These logs are marked as deleted and will be definitely removed from the file by
-	// the garbage collector
-	protected TreeMap<Integer,LogCacheInfo> deletedLogIndex = new TreeMap<Integer,LogCacheInfo>();
+	/**
+	 * The deleted logs
+	 * These logs are marked as deleted and will be definitely removed from the file by
+	 * a separate thread to avoid having a cache on disk too big.
+	 * This is not implemented yet.
+	 * At this stage deletedLogIndex is used only to remember which logs have been
+	 * deleted and to make consistency checks on the cache.
+	 * It should contain a LogCacheInfo for each log in order to be able to remove the logs
+	 * from the file on disk.
+	 */
+	//protected TreeMap<Integer,Integer> deletedLogIndex = new TreeMap<Integer,Integer>();
+	protected ArrayList<Integer> deletedKeys = new ArrayList<Integer>();
 	
 	private StringBuilder sb=new StringBuilder();
 	private final String SEPARATOR = new String (""+((char)0));
@@ -187,8 +175,8 @@ public class LogFileCache implements ILogMap {
 	 */
 	public int getDeletedSize() {
 		int ret;
-		synchronized (deletedLogIndex) {
-			ret = deletedLogIndex.size();
+		synchronized (deletedKeys) {
+			ret = deletedKeys.size();
 		}
 		return ret;
 	}
@@ -215,8 +203,8 @@ public class LogFileCache implements ILogMap {
 			replacedLogs.clear();
 		}
 		// Clear the deleted logs
-		synchronized (deletedLogIndex) {
-			deletedLogIndex.clear();
+		synchronized (deletedKeys) {
+			deletedKeys.clear();
 		}
 	}
 	
@@ -364,7 +352,7 @@ public class LogFileCache implements ILogMap {
 			throw new LogCacheException("Key "+key+" out of range [0,"+logID+"[");
 		}
 		// Check if the log has been deleted
-		if (deletedLogIndex.containsKey(key)) {
+		if (deletedKeys.contains(key)) {
 			throw new LogCacheException("Trying to access a deleted log "+key);
 		}
 		// Check if the log is in the index
@@ -459,8 +447,8 @@ public class LogFileCache implements ILogMap {
 	
 	private ILogEntry fromCacheString(String str) {
 		String[] strs = str.split(SEPARATOR);
-		Long millis = Long.parseLong(strs[0]);
-		Integer entrytype = Integer.parseInt(strs[1]);
+		Long millis = new Long(strs[0]);
+		Integer entrytype = new Integer(strs[1]);
 		String srcObject = null;
 		if (strs.length>2) {
 			srcObject=strs[2];
@@ -471,7 +459,7 @@ public class LogFileCache implements ILogMap {
 		}
 		Integer line = null;
 		if (strs.length>4 && strs[4].length()!=0) {
-			line = Integer.parseInt(strs[4]);
+			line =new Integer(strs[4]);
 		}
 		String routine = null;
 		if (strs.length>5) {
@@ -499,7 +487,7 @@ public class LogFileCache implements ILogMap {
 		}
 		Integer priority = null;
 		if (strs.length>11 && strs[11].length()>0) {
-			priority=Integer.parseInt(strs[11]);
+			priority=new Integer(strs[11]);
 		}
 		String uri = null;
 		if (strs.length>12) {
@@ -557,17 +545,14 @@ public class LogFileCache implements ILogMap {
 		if (key<0 || key>=logID) {
 			throw new LogCacheException("Key "+key+" out of range [0,"+logID+"]");
 		}
-		if (deletedLogIndex.containsKey(key)) {
+		if (deletedKeys.contains(key)) {
 			throw new LogCacheException("The log "+key+" has already been deleted!");
 		}
 		if (!index.containsKey(key)) {
 			throw new LogCacheException("the log "+key+" is not in cache");
 		}
-		LogCacheInfo info;
 		// Remove the log from the index
 		synchronized (index) {
-			info = index.get(key);
-			info.deleted=true;
 			index.remove(key);
 		}
 		// Remove the log from the replacedLogs
@@ -575,8 +560,8 @@ public class LogFileCache implements ILogMap {
 			replacedLogs.remove(key);
 		}
 		// Add the log to the list of deleted logs
-		synchronized(deletedLogIndex) {
-			deletedLogIndex.put(key,info);
+		synchronized(deletedKeys) {
+			deletedKeys.add(key);
 		}
 	}
 	
@@ -585,28 +570,12 @@ public class LogFileCache implements ILogMap {
 	 * 
 	 * @param keys The keys of logs to delete
 	 */
-	public synchronized void deleteLogs(Collection<Integer> keys) {
+	public synchronized void deleteLogs(Collection<Integer> keys) throws LogCacheException {
 		if (keys==null) {
 			throw new IllegalArgumentException("Invalid null parameter");
 		}
-		Iterator<Integer> iter = keys.iterator();
-		while (iter.hasNext()) {
-			Integer key=iter.next();
-			LogCacheInfo info;
-			// Remove the log from the index
-			synchronized (index) {
-				info = index.get(key);
-				info.deleted=true;
-				index.remove(key);
-			}
-			// Remove the log from the replacedLogs
-			synchronized(replacedLogs) {
-				replacedLogs.remove(key);
-			}
-			// Add the log to the list of deleted logs
-			synchronized(deletedLogIndex) {
-				deletedLogIndex.put(key,info);
-			}
+		for (Integer key: keys) {
+			deleteLog(key);
 		}
 	}
 	
@@ -622,9 +591,8 @@ public class LogFileCache implements ILogMap {
 		synchronized(index) {
 			if (index.size()==0) {
 				return null;
-			} else {
-				return index.firstKey();
-			}
+			} 
+			return index.firstKey();
 		}
 	}
 	
@@ -665,9 +633,8 @@ public class LogFileCache implements ILogMap {
 		synchronized(index) {
 			if (index.size()==0) {
 				return null;
-			} else {
-				return index.lastKey();
 			}
+			return index.lastKey();
 		}
 	}
 	

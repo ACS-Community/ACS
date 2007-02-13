@@ -1,6 +1,7 @@
 package com.cosylab.logging.client.cache;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Set;
@@ -27,9 +28,6 @@ public class LogBufferedFileCache extends LogFileCache implements ILogMap {
 	// The buffer of logs is a TreeMap having has key the identifier
 	// of the log and the log itself as value
 	private TreeMap<Integer,ILogEntry> buffer= new TreeMap<Integer,ILogEntry>();
-	
-	// The deleted logs
-	private TreeMap<Integer,ILogEntry> deletedLogs= new TreeMap<Integer,ILogEntry>(); 
 	
 	// The capacity of the buffer: when the buffer is full it is flushed on disk  
 	private int size;
@@ -73,9 +71,6 @@ public class LogBufferedFileCache extends LogFileCache implements ILogMap {
 		synchronized (buffer){
 			buffer.clear();
 		}
-		synchronized(deletedLogs) {
-			deletedLogs.clear();
-		}
 	}
 	
 	/**
@@ -91,9 +86,6 @@ public class LogBufferedFileCache extends LogFileCache implements ILogMap {
 		synchronized(buffer) {
 			buffer.clear();
 		}
-		synchronized(deletedLogs) {
-			deletedLogs.clear();
-		}
 	}
 
 	/**
@@ -103,15 +95,11 @@ public class LogBufferedFileCache extends LogFileCache implements ILogMap {
 	 * @return The LogEntryXML or null in case of error
 	 */
 	public synchronized ILogEntry getLog(Integer key) throws LogCacheException {
-		if (deletedLogs.containsKey(key)) {
-			throw new LogCacheException("Trying to get a deleted log ("+key+") from the buffer");
-		}
 		ILogEntry log = buffer.get(key);
 		if (log==null) {
 			return super.getLog(key);
-		} else {
-			return log;
 		}
+		return log;
 	}
 	
 	/**
@@ -120,18 +108,12 @@ public class LogBufferedFileCache extends LogFileCache implements ILogMap {
 	 * @param pos The key of the log to delete
 	 */
 	public synchronized void deleteLog(Integer key) throws LogCacheException {
-		if (deletedLogs.containsKey(key)) {
-			throw new LogCacheException("The log "+key+" has already been deleted");
-		}
 		if (!buffer.containsKey(key)) {
 			super.deleteLog(key);
 		}
 		ILogEntry log;
 		synchronized (buffer) {
 			log = buffer.remove(key);
-		}
-		synchronized (deletedLogs) {
-			deletedLogs.put(key,log);
 		}
 	}
 	
@@ -140,7 +122,7 @@ public class LogBufferedFileCache extends LogFileCache implements ILogMap {
 	 * 
 	 * @param keys The keys of the logs to remove from the cache
 	 */
-	public synchronized void deleteLogs(Collection<Integer> keys) {
+	public synchronized void deleteLogs(Collection<Integer> keys) throws LogCacheException {
 		if (keys==null) {
 			throw new IllegalArgumentException("Illegal null collection of logs to delete");
 		}
@@ -150,11 +132,6 @@ public class LogBufferedFileCache extends LogFileCache implements ILogMap {
 			ILogEntry log;
 			synchronized(buffer) {
 				log=buffer.remove(key);
-			}
-			if (log==null) {
-				synchronized (deletedLogs) {
-					log=deletedLogs.remove(key);
-				}
 			}
 			if (log!=null) {
 				iter.remove();
@@ -212,19 +189,13 @@ public class LogBufferedFileCache extends LogFileCache implements ILogMap {
 		if (buffer.size()!=size) {
 			throw new IllegalStateException("Error: trying to flush but the buffer is not full");
 		}
-		// Builds a TreeMap with all the logs (i.e. deleted and valid)
+		// Builds a TreeMap with all the logs
 		TreeMap<Integer,ILogEntry> logs;
 		synchronized (buffer) {
 			logs = new TreeMap<Integer,ILogEntry>(buffer);
 		}
-		synchronized (deletedLogs) {
-			if (deletedLogs.size()>0) {
-				logs.putAll(deletedLogs);
-			}
-		}
-		// The TreeMap of valid and deleted logs
+		// The TreeMap of valid logs
 		TreeMap<Integer,LogFileCache.LogCacheInfo> validLogsInfo=new TreeMap<Integer,LogFileCache.LogCacheInfo>();
-		TreeMap<Integer,LogFileCache.LogCacheInfo> deletedLogsInfo=new TreeMap<Integer,LogFileCache.LogCacheInfo>();
 		
 		// str is the buffer of logs to write on disk at once
 		StringBuilder str = new StringBuilder();
@@ -247,12 +218,8 @@ public class LogBufferedFileCache extends LogFileCache implements ILogMap {
 			str.append(toCacheString(log));
 			info.end=startingPos+str.length();
 			if (buffer.containsKey(key)) {
-				info.deleted=false;
 				validLogsInfo.put(key,info);
-			} else {
-				info.deleted=true;
-				deletedLogsInfo.put(key,info);
-			}
+			} 
 		}
 		// Write the buffer on disk
 		synchronized (file) {
@@ -268,21 +235,12 @@ public class LogBufferedFileCache extends LogFileCache implements ILogMap {
 		synchronized (index) {
 			index.putAll(validLogsInfo);
 		}
-		synchronized(deletedLogIndex) {
-			deletedLogIndex.putAll(deletedLogsInfo);
-		}
 		// Clear the buffer
 		synchronized (buffer) {
 			buffer.clear();
 		}
 		
-		// Clear the deleted logs
-		synchronized(deletedLogs) {
-			deletedLogs.clear();
-		}
-		
 		// Clear temporary data structures
-		deletedLogsInfo.clear();
 		validLogsInfo.clear();
 		logs.clear();
 	}
@@ -298,19 +256,6 @@ public class LogBufferedFileCache extends LogFileCache implements ILogMap {
 			sz=buffer.size();
 		}
 		return super.getSize()+sz;
-	}
-	
-	/**
-	 * Return the number of deleted logs in cache
-	 * 
-	 * @return The number of deleted logs in cache
-	 */
-	public int getDeletedSize() {
-		int sz;
-		synchronized (deletedLogs) {
-			sz=deletedLogs.size();
-		}
-		return super.getDeletedSize()+sz;
 	}
 	
 	/**
