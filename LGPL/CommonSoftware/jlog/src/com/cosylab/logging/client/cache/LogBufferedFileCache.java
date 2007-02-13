@@ -176,9 +176,7 @@ public class LogBufferedFileCache extends LogFileCache implements ILogMap {
 		if (cacheSizeFromProperty != null) {
 			return cacheSizeFromProperty.intValue();
 		}
-		else {
-			return DEFAULT_WRITEBUFFERSIZE;
-		}
+		return DEFAULT_WRITEBUFFERSIZE;
 	}
 	
 	/**
@@ -208,15 +206,14 @@ public class LogBufferedFileCache extends LogFileCache implements ILogMap {
 			throw new LogCacheException("Error getting the length of the file ",ioe);
 		}
 		// Prepare the buffer and the index
-		Set<Integer> keys = logs.keySet();
-		Iterator<Integer> iter =keys.iterator();
-		while (iter.hasNext()) {
-			Integer key = iter.next();
+		LogFileCache.LogCacheInfo info;
+		for (Integer key: logs.keySet()) {
 			ILogEntry log = logs.get(key);
-			LogFileCache.LogCacheInfo info = new LogFileCache.LogCacheInfo();
+			info = new LogFileCache.LogCacheInfo();
 			info.start=startingPos+str.length();
-			str.append(toCacheString(log));
-			info.end=startingPos+str.length();
+			String cacheLogStr=toCacheString(log);
+			str.append(cacheLogStr);
+			info.len=cacheLogStr.length();
 			if (buffer.containsKey(key)) {
 				validLogsInfo.put(key,info);
 			} 
