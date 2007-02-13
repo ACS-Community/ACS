@@ -53,7 +53,7 @@ public interface ILogMap {
 	 * 
 	 * @param keys The keys of logs to delete
 	 */
-	public void deleteLogs(Collection<Integer> keys);
+	public void deleteLogs(Collection<Integer> keys) throws LogCacheException;
 	
 	/**
 	 * 
