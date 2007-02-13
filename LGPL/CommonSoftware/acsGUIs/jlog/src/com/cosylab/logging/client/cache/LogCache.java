@@ -143,7 +143,7 @@ public class LogCache extends LogBufferedFileCache implements ILogMap {
 	public synchronized int add(ILogEntry log) throws LogCacheException {
 		Integer key = super.add(log);
 		synchronized (logTypes) {
-			logTypes.put(key,((Integer)log.getField(ILogEntry.FIELD_ENTRYTYPE)));
+			logTypes.put(key,(log.getType()));
 		}
 		synchronized (logTimes) {
 			logTimes.put(key,new Long(((Date)log.getField(ILogEntry.FIELD_TIMESTAMP)).getTime()));
@@ -340,22 +340,10 @@ public class LogCache extends LogBufferedFileCache implements ILogMap {
 	 * 
 	 * @param keys The keys of the logs to delete
 	 */
-	public synchronized void deleteLogs(Collection<Integer> keys) {
+	public synchronized void deleteLogs(Collection<Integer> keys) throws LogCacheException {
 		for (Integer key: keys) {
-			synchronized(cache) {
-				if (cache.containsKey(key)) {
-					cache.remove(key);
-					manager.remove(key);
-				}
-			}
-			synchronized (logTimes) {
-				logTimes.remove(key);
-			}
-			synchronized (logTypes) {
-				logTypes.remove(key);
-			}
+			deleteLog(key);
 		}
-		super.deleteLogs(keys);
 	}
 	
 	/**
