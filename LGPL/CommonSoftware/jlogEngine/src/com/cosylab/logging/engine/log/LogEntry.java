@@ -109,7 +109,7 @@ public class LogEntry implements ILogEntry {
 		else {
 			this.date = null;
 		}
-		this.type=entrytype;
+		this.type=LogTypeHelper.logTypes[entrytype];
 		this.file=file;
 		this.line=line;
 		this.routine=routine;
@@ -223,9 +223,8 @@ public class LogEntry implements ILogEntry {
 	public boolean hasDatas() {
 		if (additionalData==null) {
 			return false;
-		} else {
-			return additionalData.size()>0;
-		}
+		} 
+		return additionalData.size()>0;
 	}
 
 	/**
@@ -303,7 +302,7 @@ public class LogEntry implements ILogEntry {
 				return;
 			}
 			case FIELD_ENTRYTYPE: {
-				type=(Integer)value;
+				type=LogTypeHelper.logTypes[(Integer)value];
 				return;
 			}
 			case FIELD_SOURCEOBJECT: {
