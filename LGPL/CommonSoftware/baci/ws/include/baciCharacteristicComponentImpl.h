@@ -20,7 +20,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciCharacteristicComponentImpl.h,v 1.34 2006/10/03 22:09:33 gchiozzi Exp $"
+* "@(#) $Id: baciCharacteristicComponentImpl.h,v 1.35 2007/02/13 11:59:29 bjeram Exp $"
 *
 */
 
@@ -103,7 +103,10 @@ class CharacteristicComponentImpl : public acscomponent::ACSComponentImpl,
      * is not initilized (i.e. initilization() would return 1 == incomplete).
      * @param Tha name of the Component
      * @param containerServices  pointer to services provided by the container
-     * @param monitoringProperties flag that indicates if monitoring of properties has to be turned on or not. Default is monitroing turned on. Be aware that turning monitoring off means that monitors created by users, archive monitors and alarm monitors will be turned off!
+     * @param monitoringProperties flag that indicates if monitoring of properties has to be turned on or not.
+       Default is monitroing turned on (true). 
+       Be aware that turning monitoring off means that monitors created by users, archive monitors and alarm monitors will be turned off!
+       If monitoringProperties flag is set to false an user has to take care for turning the monitoring on and also to turn the monitoring off when a component is deleted.
      */
     CharacteristicComponentImpl(
         const ACE_CString& name,
