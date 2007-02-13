@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.10 2005/05/18 14:21:02 msekoran Exp $"
+# "@(#) $Id: Makefile,v 1.11 2007/02/13 16:57:26 hsommer Exp $"
 #
 # Makefile of ........
 #
@@ -137,6 +137,7 @@ USER_IDL =
 #
 # Jarfiles and their directories
 #
+DEBUG=on
 JARFILES = jACSCommon
 jACSCommon_DIRS = abeans com
 USER_JFLAGS=-source 1.4
