@@ -120,13 +120,10 @@ public class LogTableDataModel extends AbstractTableModel implements Runnable
 					continue;
 				}
 				sz =allLogs.getSize();
-				System.out.println("Checking log numbers "+sz+" (limit "+maxLog+")");
 				if (maxLog>0 && sz>maxLog) {
-					System.out.println("LogDeleter.run: "+(sz-maxLog)+" logs to delete");
 					keysToDelete.clear();
 					int nKeys=allLogs.getFirstLogs(sz-maxLog,keysToDelete);
 					deleteLogs(keysToDelete);
-					System.out.println("Logs deleted");
 				}
 			}
 		}
