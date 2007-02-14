@@ -300,6 +300,9 @@ public final class ACSStructuredPushConsumer extends StructuredPushConsumerPOA
 	
 	/**
 	 * Suspend the notification of the incoming logs
+	 * The logs received while suspended discarded
+	 * (i.e. lost forever)
+	 * 
 	 * @see LCEngine
 	 * @param suspend If true suspend the notification of new logs
 	 */
@@ -310,6 +313,17 @@ public final class ACSStructuredPushConsumer extends StructuredPushConsumerPOA
 		} else {
 			engine.publishConnected(true);
 		}
+	}
+	
+	/**
+	 * Pause/unpause the thread that publishes logs
+	 * The logs received in pause mode are cached and will be
+	 * published wneh the application will be unpaused
+	 * 
+	 * @param pause
+	 */
+	public void setPaused(boolean pause) {
+		logRetrieval.pause(pause);
 	}
 }
 

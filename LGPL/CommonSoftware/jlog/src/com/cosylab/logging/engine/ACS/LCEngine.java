@@ -79,7 +79,7 @@ public class LCEngine implements Runnable {
 	 * The listeners of the XML strings representing a log
 	 */
 	private Vector<ACSRemoteRawLogListener> rawLogListeners = new Vector<ACSRemoteRawLogListener>();
-	int rawLogListenersNum=0;
+	private int rawLogListenersNum=0;
 
 	/** 
 	 * A thread used to set and initialize RemoteAccess
@@ -582,5 +582,17 @@ public class LCEngine implements Runnable {
 		return connListenersNum>0;
 	}
 	
+	/**
+	 * Pause/unpause the publishing of logs to the listener
+	 * The difference between pause and suspended is that
+	 * when the engine is suspended all the received logs are
+	 * discarded. When it is paused, the received logs are
+	 * cached and published when the engine will be unpaused.
+	 * 
+	 * @param pause
+	 */
+	public void setPaused(boolean pause) {
+		remoteAccess.pause(pause);
+	}
 	
 }

@@ -364,4 +364,13 @@ public final class ACSRemoteAccess implements RemoteAccess {
 			acsSPS.setSupended(suspended);
 		}
 	}
+	
+	/**
+	 * Pause/unpause the thread that publishes logs
+	 * 
+	 * @param pause
+	 */
+	public void pause(boolean pause) {
+		acsSPS.setPaused(pause);
+	}
 }
