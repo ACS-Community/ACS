@@ -39,6 +39,7 @@ public class simulatorRemoteAccess extends Thread implements com.cosylab.logging
 	private boolean isInitalized = false;
 	private ACSRemoteLogListener logListener;
 	private Random random;
+	private boolean paused=false;
 	
 	/**
 	 * simulatorRemoteAccess constructor comment.
@@ -83,10 +84,21 @@ public class simulatorRemoteAccess extends Thread implements com.cosylab.logging
 	//		sleep(5000);
 			while (isInitalized) {
 	//			System.out.println(">sim< A Random Log is being sent.");
-				this.logListener.logEntryReceived(LogEntryXML.generateRandomLog(random));
+				if (!paused) {
+					this.logListener.logEntryReceived(LogEntryXML.generateRandomLog(random));
+				}
 				sleep(300*(random.nextInt(5)));
 			}
 		} catch (InterruptedException e) {
 		}
+	}
+	
+	/**
+	 * Pause/unpause the thread that publishes logs
+	 * 
+	 * @param pause
+	 */
+	public void pause(boolean pause) {
+		paused=pause;
 	}
 }
