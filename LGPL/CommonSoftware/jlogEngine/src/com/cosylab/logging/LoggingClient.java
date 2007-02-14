@@ -220,6 +220,12 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 						saveFilters(filterFileName);
 			} else if (e.getSource() == menuBar.getSaveAsFiltersMenuItem()) {
 				saveAsFilters();
+			} else if (e.getSource()==toolBar.getPauseBtn()) {
+				System.out.println("Pause button pressed");
+				// Swap set the pause mode in the toolbar
+				toolBar.clickPauseBtn();
+				// Pause/unpause the engine
+				engine.setPaused(toolBar.isPaused());
 			} else if (e.getSource()==toolBar.getLogLevelCB()) {
 				getLCModel1().setLogLevel(toolBar.getLogLevelCB().getSelectedIndex());
             } else if (e.getSource()==toolBar.getSearchBtn() ||
@@ -416,6 +422,7 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 	 */
 	public void pause() throws Exception {
 		toolBar.pause();
+		engine.setPaused(true);
 	}
 	
 	/**
@@ -427,6 +434,7 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 	 */
 	public void resume() throws Exception {
 		toolBar.unpause();
+		engine.setPaused(false);
 	}
 	
 	
