@@ -221,7 +221,6 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 			} else if (e.getSource() == menuBar.getSaveAsFiltersMenuItem()) {
 				saveAsFilters();
 			} else if (e.getSource()==toolBar.getPauseBtn()) {
-				System.out.println("Pause button pressed");
 				// Swap set the pause mode in the toolbar
 				toolBar.clickPauseBtn();
 				// Pause/unpause the engine
