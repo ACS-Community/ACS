@@ -19,7 +19,7 @@
 
 /** 
  * @author  acaproni   
- * @version $Id: ACSLogRetrieval.java,v 1.11 2007/02/13 10:55:45 acaproni Exp $
+ * @version $Id: ACSLogRetrieval.java,v 1.12 2007/02/14 14:47:11 acaproni Exp $
  * @since    
  */
 
@@ -36,7 +36,6 @@ import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.settings.ErrorLogDialog;
 
 import  javax.xml.parsers.ParserConfigurationException;
-import com.cosylab.logging.LoggingClient;
 /**
  * ACSLogRetireval stores the XML string representing logs on a file
  * when the engine is not able to follow the flow of the incoming logs
@@ -63,6 +62,10 @@ public class ACSLogRetrieval extends Thread {
 	
 	// The position where a read starts
 	private long readCursor=0;
+	
+	// If it is true, the thread will not publish logs 
+	// to the listeners
+	private boolean paused=false;
 	
 	/**
 	 * The ending position of each log is stored in this queue
@@ -179,11 +182,21 @@ public class ACSLogRetrieval extends Thread {
 		// delay is used to remember if there is a delay between the logs received
 		// and those shown in the GUI.
 		// We assume that such delay exists if the number of logs in queue is 
-		// bigger then DELAY_NUMEBER
+		// bigger then DELAY_NUMBER
 		boolean delay=false;
 		while (true) {
+			//	Check if a delay has to be notifyed to the listeners
+			if (endingPositions.size()>ACSLogRetrieval.DELAY_NUMBER) {
+				if (!delay) {
+					delay=true;
+					engine.publishDiscarding();
+				}
+			} else if (delay) {
+				delay=false;
+				engine.publishConnected(true);
+			}
 			// Do not flush the logs if the application is paused
-			if (LoggingClient.getInstance().isPaused()) {
+			if (paused) {
 				try {
 					Thread.sleep(250);
 				} catch(InterruptedException e) {}
@@ -196,16 +209,7 @@ public class ACSLogRetrieval extends Thread {
 			} catch (InterruptedException ie) {
 				continue;
 			}
-			//	Check if a delay has to be notifyed to the listeners
-			if (endingPositions.size()>ACSLogRetrieval.DELAY_NUMBER) {
-				if (!delay) {
-					delay=true;
-					engine.publishDiscarding();
-				}
-			} else if (delay) {
-				delay=false;
-				engine.publishConnected(true);
-			}
+			
 			byte buffer[] = new byte[(int)endPos-(int)readCursor];
 			synchronized (rOutF) {
 				try {
@@ -247,6 +251,15 @@ public class ACSLogRetrieval extends Thread {
 				}
 			}
 		}
+	}
+	
+	/**
+	 * Pause/unpause the thread that publishes logs
+	 * 
+	 * @param pause
+	 */
+	public void pause(boolean pause) {
+		paused=pause;
 	}
 	
 }
