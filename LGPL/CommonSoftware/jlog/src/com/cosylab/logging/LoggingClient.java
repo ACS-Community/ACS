@@ -342,7 +342,7 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 			
 			// Enable diasble the menu to load from the DB
 			// if the DB is not available
-			//loadDBMenuItem.setEnabled(archive.getDBStatus()==ArchiveConnectionManager.DATABASE_OK);
+			menuBar.getLoadDBMenuItem().setEnabled(archive.getDBStatus()==ArchiveConnectionManager.DATABASE_OK);
 		}
 		
 		
@@ -388,6 +388,8 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 		initialize();
 		getLCModel1().setTimeFrame(userPreferences.getMillisecondsTimeFrame());
 		getLCModel1().setMaxLog(userPreferences.getMaxNumOfLogs());
+		
+		archive = new ArchiveConnectionManager(this);
 	}
 	
 	/**
