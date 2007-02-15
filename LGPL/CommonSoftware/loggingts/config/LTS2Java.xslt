@@ -34,7 +34,7 @@
 
 /**
  * @author  nbarriga
- * @version $Id: LTS2Java.xslt,v 1.3 2007/02/08 14:01:10 nbarriga Exp $
+ * @version $Id: LTS2Java.xslt,v 1.4 2007/02/15 08:25:15 nbarriga Exp $
  * @since
  */
 
@@ -59,6 +59,7 @@ import alma.acs.logging.AcsLogger;
 		((AcsLogger)m_logger).addLoggerClass(this.getClass());
 		nameValue = new HashMap&lt;String, Object>();
 		nameValue.put("logName","</xsl:text><xsl:value-of select="$logName"/><xsl:text>");
+		nameValue.put("audience","</xsl:text><xsl:value-of select="@audience"/><xsl:text>");
 	}
 	public void log(){
 		m_logger.log(AcsLogLevel.</xsl:text><xsl:value-of select="@priority"/><xsl:text>,"</xsl:text><xsl:value-of select="@shortDescription"/><xsl:text>",nameValue);

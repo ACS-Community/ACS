@@ -20,7 +20,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: LTS2Cpp.xslt,v 1.5 2007/02/07 14:07:40 nbarriga Exp $"
+* "@(#) $Id: LTS2Cpp.xslt,v 1.6 2007/02/15 08:25:15 nbarriga Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -48,6 +48,8 @@ using namespace </xsl:text><xsl:value-of select="$typeName"/><xsl:text>;
 	this->routine=routine;
 	this->name="</xsl:text>
 		<xsl:value-of select="$logName"/><xsl:text>";
+	this->audience="</xsl:text>
+		<xsl:value-of select="@audience"/><xsl:text>";
 	this->shortDescription="</xsl:text><xsl:value-of select="@shortDescription"/><xsl:text>";
 
 }
@@ -66,6 +68,7 @@ void </xsl:text><xsl:value-of select="$logName"/><xsl:text>::log(){
         lr.method=this->routine;
         lr.timeStamp=baci::getTimeStamp();
         LoggingProxy::AddData("logName",this->name.c_str());
+        LoggingProxy::AddData("audience",this->audience.c_str());
         for(unsigned int i=0;i&lt;members.length();i++){
                 LoggingProxy::AddData(members[i].name.in(),members[i].value.in());
         }

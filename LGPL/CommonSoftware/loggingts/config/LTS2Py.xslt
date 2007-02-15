@@ -21,7 +21,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: LTS2Py.xslt,v 1.4 2007/02/05 13:01:54 nbarriga Exp $"
+# "@(#) $Id: LTS2Py.xslt,v 1.5 2007/02/15 08:25:15 nbarriga Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -49,12 +49,14 @@ from traceback import extract_stack
 		self._members={}
 		self._logger=getLogger("loggingts --")
 		self.name="</xsl:text><xsl:value-of select="$logName"/><xsl:text>"
+		self.audience="</xsl:text><xsl:value-of select="@audience"/><xsl:text>"
 		self.shortDescription="</xsl:text><xsl:value-of select="@shortDescription"/><xsl:text>"
                 self.priority=ACSLog.ACS_LOG_</xsl:text><xsl:value-of select="@priority"/><xsl:text>
 
 	def log(self):
 		msg=self.shortDescription
 		data=[ACSLog.NVPair("logName",self.name)]
+		data.append(ACSLog.NVPair("audience",self.audience))
 		for key, value in self._members.items():
 			data.append(ACSLog.NVPair(str(key),str(value)))
 		cur_stack=extract_stack()

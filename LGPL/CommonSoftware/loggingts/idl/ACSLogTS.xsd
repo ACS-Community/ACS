@@ -59,6 +59,7 @@ Python API:
 						<xs:attribute name="description" type="common:nonEmptyString" use="required"/>
 						<xs:attribute name="URL" type="xs:string" use="optional"/>
 						<xs:attribute name="priority" type="loggingts:priorityType" use="required"/>
+						<xs:attribute name="audience" type="common:nonEmptyString" use="required"/>
 					</xs:complexType>
 				</xs:element>
 			</xs:choice>

@@ -3,7 +3,7 @@
 1 - Connecting
 1 - object is activated
 1 - Connection established
-1 - RAW log: <Info TimeStamp="xxx" File="alma.acs.loggingtstest.testLTSClient"  Line="69" Routine="main" Host="xxx" Process="LoggerName: testLTSClient" SourceObject="testLTSClient" Thread="main" LogId="7"><![CDATA[Simple Log]]><Data Name="logName"><![CDATA[simpleLog]]></Data></Info>
+1 - RAW log: <Info TimeStamp="xxx" File="alma.acs.loggingtstest.testLTSClient"  Line="69" Routine="main" Host="xxx" Process="LoggerName: testLTSClient" SourceObject="testLTSClient" Thread="main" LogId="7"><![CDATA[Simple Log]]><Data Name="logName"><![CDATA[simpleLog]]></Data><Data Name="audience"><![CDATA[Curious people]]></Data></Info>
 1 - Log received: --- LogEntry ---
 1 - TimeStamp: xxx
 1 - Entry Type: Info
@@ -17,8 +17,8 @@
 1 - Log ID: 7
 1 - Log Message: Simple Log
 1 - Datas: 
-1 - 	logName : simpleLog
-1 - RAW log: <Warning TimeStamp="xxx" File="alma.acs.loggingtstest.testLTSClient"  Line="74" Routine="main" Host="xxx" Process="LoggerName: testLTSClient" SourceObject="testLTSClient" Thread="main" StackId="unknown" StackLevel="0" LogId="8"><![CDATA[Complex Log]]><Data Name="logName"><![CDATA[complexLog]]></Data><Data Name="someStringMember"><![CDATA[test string]]></Data><Data Name="someLongMember"><![CDATA[42]]></Data><Data Name="someDoubleMember"><![CDATA[3.14159]]></Data></Warning>
+1 - 	logName : simpleLog	audience : Curious people
+1 - RAW log: <Warning TimeStamp="xxx" File="alma.acs.loggingtstest.testLTSClient"  Line="74" Routine="main" Host="xxx" Process="LoggerName: testLTSClient" SourceObject="testLTSClient" Thread="main" StackId="unknown" StackLevel="0" LogId="8"><![CDATA[Complex Log]]><Data Name="logName"><![CDATA[complexLog]]></Data><Data Name="someStringMember"><![CDATA[test string]]></Data><Data Name="audience"><![CDATA[People with too much time on their hands]]></Data><Data Name="someLongMember"><![CDATA[42]]></Data><Data Name="someDoubleMember"><![CDATA[3.14159]]></Data></Warning>
 1 - Log received: --- LogEntry ---
 1 - TimeStamp: xxx
 1 - Entry Type: Warning
@@ -34,4 +34,4 @@
 1 - Stack Level: 0
 1 - Log Message: Complex Log
 1 - Datas: 
-1 - 	logName : complexLog	someStringMember : test string	someLongMember : 42	someDoubleMember : 3.14159
+1 - 	logName : complexLog	someStringMember : test string	audience : People with too much time on their hands	someLongMember : 42	someDoubleMember : 3.14159

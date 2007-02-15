@@ -27,7 +27,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: LTS2H.xslt,v 1.4 2007/02/06 09:55:14 nbarriga Exp $"
+* "@(#) $Id: LTS2H.xslt,v 1.5 2007/02/15 08:25:15 nbarriga Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -64,6 +64,7 @@ namespace </xsl:text><xsl:value-of select="@name"/>
                 unsigned long line;
                 string routine;
                 string name;
+                string audience;
                 string shortDescription;
                 ACSLog::NVPairSeq members;
 	protected:
