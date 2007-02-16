@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.139 2007/02/08 16:22:45 gchiozzi Exp $"
+# "@(#) $Id: Makefile,v 1.140 2007/02/16 11:18:56 gchiozzi Exp $"
 #
 #
 
@@ -40,7 +40,7 @@ MODULE_PREFIX_NO-LGPL = NO-LGPL
 HAS_NO-LGPL = $(shell if [ -d NO-LGPL ]; then echo "TRUE"; else echo "FALSE"; fi)
 
 ifeq ($(HAS_NO-LGPL),TRUE)
-  MODULES_NO-LGPL = sla cfitsio fftw 
+  MODULES_NO-LGPL = sla cfitsio fftw jide
 endif
 
 # RTOS related things are build only if they are part of distribution and RTAI_HOME is defined
