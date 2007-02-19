@@ -129,9 +129,13 @@ public class JacORBFilter implements Filter {
 					message.startsWith("no adapter activator exists for") // client tries to find remote poa locally and then complains if not there... 
 			);
 		}
-		
-		// TODO: filter out error message "no adapter activator exists for ComponentPOA"
-		
+		else if (record.getLevel().intValue() == Level.SEVERE.intValue()) {
+			// HSO 07-02-19: thought this adapter activator crap was logged as warning, but now it showed up in jcont test as ACS-level "Emergency", which is JDK-SEVERE  
+			isLoggable = !(
+					message.startsWith("no adapter activator exists for") // client tries to find remote poa locally and then complains if not there... 
+			);
+		}
+				
 		// filter by possibly modified log level
 		if (isLoggable && record.getLevel().intValue() < this.logLevel) {
 			isLoggable = false;
