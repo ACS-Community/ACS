@@ -103,9 +103,9 @@ basic_tools_RH9 = [('gcc','gcc --version','3.3'),\
               ('snack','echo "puts [package require snack]; exit" | seqWish','2.2')]
 
 
-other_tools = [('ACE','more $ACE_ROOT/VERSION','5.4'),\
-              ('TAO','more $ALMASW_ROOTDIR/$ALMASW_RELEASE/TAO/ACE_wrappers/TAO/VERSION','1.4'),\
-              ('JacORB','more $JACORB_HOME/REL_NOTES','1.4.1'),\
+other_tools = [('ACE','more $ACE_ROOT/VERSION','5.5.2'),\
+              ('TAO','more $ALMASW_ROOTDIR/$ALMASW_RELEASE/TAO/ACE_wrappers/TAO/VERSION','1.5.2'),\
+              ('JacORB','more $JACORB_HOME/doc/REL_NOTES','2.2'),\
               ('Ant','$ANT_HOME/bin/ant -version','1.6.0'),\
               ('doxygen','doxygen --version','1.3.6'),\
               ('python','python -V','2.4'),\
