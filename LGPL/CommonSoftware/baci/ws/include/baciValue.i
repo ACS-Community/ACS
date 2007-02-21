@@ -16,7 +16,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciValue.i,v 1.105 2006/05/29 10:49:51 msekoran Exp $"
+* "@(#) $Id: baciValue.i,v 1.106 2007/02/21 15:51:16 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -405,7 +405,7 @@ inline bool BACIValue::operator<=(const BACIValue &value) const
 	else if (value.ptr_m.pointer==0 || ptr_m.pointer==0)
 	  return false;
 	else
-	  return (ACE_OS::strcmp((const ACE_TCHAR*)ptr_m.pointer, (const ACE_TCHAR*)value.ptr_m.pointer)!=1);
+	  return (ACE_OS::strcmp((const ACE_TCHAR*)ptr_m.pointer, (const ACE_TCHAR*)value.ptr_m.pointer)<=0);
 	break;
 
 COMPARE_LESS_OR_EQUAL_INLINE_TYPE(double, BACIdouble)
@@ -456,7 +456,7 @@ inline bool BACIValue::operator<(const BACIValue &value) const
 	else if (value.ptr_m.pointer==0 || ptr_m.pointer==0)
 	  return false;
 	else
-	  return (ACE_OS::strcmp((const ACE_TCHAR*)ptr_m.pointer, (const ACE_TCHAR*)value.ptr_m.pointer)==-1);
+	  return (ACE_OS::strcmp((const ACE_TCHAR*)ptr_m.pointer, (const ACE_TCHAR*)value.ptr_m.pointer)<0);
 	break;
 
 //COMPARE_LESS_PTR_TYPE(string, BACIstring)
