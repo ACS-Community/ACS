@@ -19,3 +19,12 @@ s/instance at 0x[0-9,a-z,A-Z]*/instance at 0xXXXX/g
 s/Process=[0-9]*/Process=xxx/g
 s/The current time is:  [0-9]*$/The current time is:  xxx/g
 s/Thread=omniORB--\([0-9]\)\+/Thread=omniORB--XXXXXXX/g 
+s/-OAIAddr [0-9]*\.[0-9]*\.[0-9]*\.[0-9]*/-OAIAddr xxx.xxx.xxx.xxx/g
+s/-OAport [0-9]*/-OAport xxx/g
+s/activate_component: handle=[0-9]*/activate_component: handle=xxx/g
+s/alma\.MicroArchive\.DbDir=\/[^ ]*/alma.MicroArchive.DbDir=\/somepath/g
+s/-Djava\.endorsed\.dirs=\/[^ ]*/-Djava.endorsed.dirs=\/somepath/g
+s/1 - Manager hostname obtained via command line: '[0-9]*\.[0-9]*\.[0-9]*\.[0-9]*'/1 - Manager hostname obtained via command line: 'xxx.xxx.xxx.xxx'/g
+s/Full path '\/.*\/\([^\/]*\.so\)'/Full path '\/somepath\/\1'/g
+s/Loaded '\/.*\/\([^\/]*\.so\)'/Loaded '\/somepath\/\1'/g
+s/Unloaded '\/.*\/\([^\/]*\.so\)'/Unloaded '\/somepath\/\1'/g

@@ -1,4 +1,4 @@
-# @(#) $Id: Err.py,v 1.19 2007/01/25 12:37:39 nbarriga Exp $
+# @(#) $Id: Err.py,v 1.20 2007/02/21 09:02:16 nbarriga Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA,  2001
@@ -27,7 +27,7 @@ TODO:
 - nada
 '''
 
-__revision__ = "$Id: Err.py,v 1.19 2007/01/25 12:37:39 nbarriga Exp $"
+__revision__ = "$Id: Err.py,v 1.20 2007/02/21 09:02:16 nbarriga Exp $"
 
 #------------------------------------------------------------------------------
 import ACSErr
@@ -117,7 +117,10 @@ class ACSError(ErrorTraceHelper):
         '''
         Overridden
         '''
-        return self.errorTrace
+	if hasattr(self, "errorTrace"):
+        	return self.errorTrace
+	else:
+		return None
     #--------------------------------------------------------------------------
     def setErrorTrace(self, et_obj):
         '''
@@ -186,10 +189,10 @@ def addComplHelperMethods(compl_obj):
         '''
         Returns true if the completion does not container an error trace
         '''
-        if len(compl_obj.previousError)==0:
-            return 1
+	if len(compl_obj.previousError)==0:	
+		return 1
         else:
-            return 0
+        	return 0
         
     compl_obj.__dict__['isErrorFree'] = _isErrorFree
     #------------------------------------
@@ -197,7 +200,8 @@ def addComplHelperMethods(compl_obj):
         '''
         Logs the Completion.
         '''
-        ErrorTraceHelper(compl_obj.previousError[0]).log()
+	if len(compl_obj.previousError)!=0:
+        	ErrorTraceHelper(compl_obj.previousError[0]).log()
 
     compl_obj.__dict__['log'] = _log
     #------------------------------------

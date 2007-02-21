@@ -1,0 +1,123 @@
+2 - starting acspyexmplClientErrorComponent
+2 - Creating ClientErrorComponent
+2 - Calling TestOk()
+2 - Calling TestReceiveRemoteException()
+1 - ----------T--:--:--.--- pyErrContainer __init__ - Container pyErrContainer waiting for requests
+1 - ----------T--:--:--.--- pyErrContainer message - Info message from the manager: Startup statistics: 0 components queued to be activated.
+1 - ----------T--:--:--.--- pyErrContainer message - Info message from the manager: Startup statistics: 0 of 0 components activated.
+1 - ----------T--:--:--.--- None completionFromException - ErrorComponent::completionFromException
+1 - ----------T--:--:--.--- None completionFromException - ErrorComponent::completionFromException
+1 - ----------T--:--:--.--- pyErrContainer activate_component - Activated component: ERRORCOMP_PY
+1 - ----------T--:--:--.--- pyErrContainer deactivate_components - Deactivating component: ERRORCOMP_PY
+2 - ----------T--:--:--.--- Python Client disconnect - Shutdown called for client
+2 - ----------T--:--:--.--- Python Client TestReceiveRemoteCompletion - Completion Ok, without error trace
+2 - ----------T--:--:--.--- Python Client TestReceiveRemoteCompletion - Completion with error trace
+2 - ----------T--:--:--.--- Python Client TestReceiveRemoteCompletion - Example 2a: Calls a method that returns an OK completion.
+2 - ----------T--:--:--.--- Python Client TestReceiveRemoteCompletion - Example 2b: Calls a method that returns an Error completion.
+2 - ----------T--:--:--.--- Python Client TestReceiveRemoteException - Example 1: Calls a method that throws an exception.
+1 - Goodbye
+1 - Hello World
+2 - ErrorTrace (TimeStamp=xxxx,
+2 - ErrorTrace (TimeStamp=xxxx,
+2 -             File=xxx
+2 -             File=xxx
+2 -             Line=xxx
+2 -             Line=xxx
+2 -             Routine=completionFromException,
+2 -             Routine=TestReceiveRemoteException,
+2 -             Host=xxxx,
+2 -             Host=xxxx,
+2 -             Process=xxx,
+2 -             Process=xxx,
+2 -             Thread=MainThread,
+2 -             Thread=omniORB--XXXXXXX,
+2 -             Type=10,
+2 -             Type=10,
+2 -             Code=16,
+2 -             Code=16,
+2 -             ShortDescrip=An error occurred, see ErrorDesc member,
+2 -             ShortDescrip=An error occurred, see ErrorDesc member,
+2 -             Severity=Error,
+2 -             Severity=Error,
+2 -             Data: Name=ErrorDesc, Value=badMethod has thrown the expected exception; )
+2 -             Data: Name=ErrorDesc, Value=Generated multi level exception; )
+2 - 
+2 - 
+2 -     ErrorTrace (TimeStamp=xxxx,
+2 -     ErrorTrace (TimeStamp=xxxx,
+2 -                 File=xxx
+2 -                 File=xxx
+2 -                 Line=xxx
+2 -                 Line=xxx
+2 -                 Routine=badMethod,
+2 -                 Routine=__errorTrace,
+2 -                 Host=xxxx,
+2 -                 Host=xxxx,
+2 -                 Process=xxx,
+2 -                 Process=xxx,
+2 -                 Thread=omniORB--XXXXXXX,
+2 -                 Thread=omniORB--XXXXXXX,
+2 -                 Type=10,
+2 -                 Type=10,
+2 -                 Code=16,
+2 -                 Code=16,
+2 -                 ShortDescrip=An error occurred, see ErrorDesc member,
+2 -                 ShortDescrip=An error occurred, see ErrorDesc member,
+2 -                 Severity=Error,
+2 -                 Severity=Error,
+2 -                 Data: Name=ErrorDesc, Value=Generated multi level exception; )
+2 -                 Data: Name=ErrorDesc, Value=Generated multi level exception; )
+2 - 
+2 - 
+2 -         ErrorTrace (TimeStamp=xxxx,
+2 -         ErrorTrace (TimeStamp=xxxx,
+2 -                     File=xxx
+2 -                     File=xxx
+2 -                     Line=xxx
+2 -                     Line=xxx
+2 -                     Routine=__errorTrace,
+2 -                     Routine=__errorTrace,
+2 -                     Host=xxxx,
+2 -                     Host=xxxx,
+2 -                     Process=xxx,
+2 -                     Process=xxx,
+2 -                     Thread=omniORB--XXXXXXX,
+2 -                     Thread=omniORB--XXXXXXX,
+2 -                     Type=10,
+2 -                     Type=10,
+2 -                     Code=16,
+2 -                     Code=16,
+2 -                     ShortDescrip=An error occurred, see ErrorDesc member,
+2 -                     ShortDescrip=An error occurred, see ErrorDesc member,
+2 -                     Severity=Error,
+2 -                     Severity=Error,
+2 -                     Data: Name=ErrorDesc, Value=Generated multi level exception; )
+2 -                     Data: Name=ErrorDesc, Value=Generated multi level exception; )
+2 - 
+2 - 
+2 -             ErrorTrace (TimeStamp=xxxx,
+2 -             ErrorTrace (TimeStamp=xxxx,
+2 -                         File=xxx
+2 -                         File=xxx
+2 -                         Line=xxx
+2 -                         Line=xxx
+2 -                         Routine=__errorTrace,
+2 -                         Routine=__errorTrace,
+2 -                         Host=xxxx,
+2 -                         Host=xxxx,
+2 -                         Process=xxx,
+2 -                         Process=xxx,
+2 -                         Thread=omniORB--XXXXXXX,
+2 -                         Thread=omniORB--XXXXXXX,
+2 -                         Type=10,
+2 -                         Type=10,
+2 -                         Code=16,
+2 -                         Code=16,
+2 -                         ShortDescrip=An error occurred, see ErrorDesc member,
+2 -                         ShortDescrip=An error occurred, see ErrorDesc member,
+2 -                         Severity=Error,
+2 -                         Severity=Error,
+2 -                         Data: Name=ErrorDesc, Value=Bottom of error trace; )
+2 -                         Data: Name=ErrorDesc, Value=Bottom of error trace; )
+2 - 
+2 - 

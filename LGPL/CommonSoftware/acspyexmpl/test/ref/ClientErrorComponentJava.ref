@@ -1,0 +1,128 @@
+2 - starting acspyexmplClientErrorComponent
+1 -  --endorsed -D alma.MicroArchive.DbDir=/somepath -- alma.acs.container.AcsContainerRunner -OAIAddr xxx.xxx.xxx.xxx -OAport xxx -m corbaloc::xxxx:xxxx/Manager -containerName javaContainer
+2 - Creating ClientErrorComponent
+1 - INFO - Starting Java/abeans application: alma.acs.container.AcsContainerRunner -OAIAddr xxx.xxx.xxx.xxx -OAport xxx -m corbaloc::xxxx:xxxx/Manager -containerName javaContainer
+2 - Calling TestOk()
+1 - INFO - Using endorsed jar files in: -Djava.endorsed.dirs=/somepath
+2 - Calling TestReceiveRemoteException()
+1 - FINER: Logging configuration has been initialized, but not from CDB settings.
+1 - ----------T--:--:--.--- INFO [AcsContainerRunner] AcsContainerRunner#run 
+1 - [jacorb.poa] INFO : oid: 
+1 - object is activated
+1 - [jacorb.poa] INFO : oid: 
+1 - object is activated
+1 - ----------T--:--:--.--- INFO [javaContainer] Info message from the manager: Startup statistics: 0 components queued to be activated.
+1 - ----------T--:--:--.--- INFO [javaContainer] Info message from the manager: Startup statistics: 0 of 0 components activated.
+2 - ----------T--:--:--.--- Python Client disconnect - Shutdown called for client
+2 - ----------T--:--:--.--- Python Client TestReceiveRemoteCompletion - Completion Ok, without error trace
+2 - ----------T--:--:--.--- Python Client TestReceiveRemoteCompletion - Completion with error trace
+2 - ----------T--:--:--.--- Python Client TestReceiveRemoteCompletion - Example 2a: Calls a method that returns an OK completion.
+2 - ----------T--:--:--.--- Python Client TestReceiveRemoteCompletion - Example 2b: Calls a method that returns an Error completion.
+2 - ----------T--:--:--.--- Python Client TestReceiveRemoteException - Example 1: Calls a method that throws an exception.
+2 - ErrorTrace (TimeStamp=xxxx,
+2 - ErrorTrace (TimeStamp=xxxx,
+2 -             File=xxx
+2 -             File=xxx
+2 -             Line=xxx
+2 -             Line=xxx
+2 -             Routine=<init>,
+2 -             Routine=TestReceiveRemoteException,
+2 -             Host=xxxx,
+2 -             Host=xxxx,
+2 -             Process=xxx,
+2 -             Process=xxxjava 1.5.0_04,
+2 -             Thread=MainThread,
+2 -             Thread=RequestProcessor-10,
+2 -             Type=10,
+2 -             Type=10,
+2 -             Code=16,
+2 -             Code=16,
+2 -             ShortDescrip=An error occurred, see ErrorDesc member,
+2 -             ShortDescrip=An error occurred, see ErrorDesc member,
+2 -             Severity=Error,
+2 -             Severity=Error,
+2 -             Data: Name=ErrorDesc, Value=badMethod has thrown the expected exception; )
+2 -             Data: Name=javaex.class, Value=alma.ACSErrTypeCommon.wrappers.AcsJGenericErrorEx; )
+2 - 
+2 - 
+2 -     ErrorTrace (TimeStamp=xxxx,
+2 -     ErrorTrace (TimeStamp=xxxx,
+2 -                 File=xxx
+2 -                 File=xxx
+2 -                 Line=xxx
+2 -                 Line=xxx
+2 -                 Routine=internalBadMethod,
+2 -                 Routine=internalBadMethod,
+2 -                 Host=xxxx,
+2 -                 Host=xxxx,
+2 -                 Process=xxxjava 1.5.0_04,
+2 -                 Process=xxxjava 1.5.0_04,
+2 -                 Thread=RequestProcessor-10,
+2 -                 Thread=RequestProcessor-10,
+2 -                 Type=10,
+2 -                 Type=10,
+2 -                 Code=16,
+2 -                 Code=16,
+2 -                 ShortDescrip=An error occurred, see ErrorDesc member,
+2 -                 ShortDescrip=An error occurred, see ErrorDesc member,
+2 -                 Severity=Error,
+2 -                 Severity=Error,
+2 -                 Data: Name=javaex.class, Value=alma.ACSErrTypeCommon.wrappers.AcsJGenericErrorEx; Name=javaex.msg, Value=This exception was caused by another exception...; )
+2 -                 Data: Name=javaex.class, Value=alma.ACSErrTypeCommon.wrappers.AcsJGenericErrorEx; Name=javaex.msg, Value=This exception was caused by another exception...; )
+2 - 
+2 - 
+2 -         ErrorTrace (TimeStamp=xxxx,
+2 -         ErrorTrace (TimeStamp=xxxx,
+2 -                     File=xxx
+2 -                     File=xxx
+2 -                     Line=xxx
+2 -                     Line=xxx
+2 -                     Routine=internalBadMethod,
+2 -                     Routine=internalBadMethod,
+2 -                     Host=xxxx,
+2 -                     Host=xxxx,
+2 -                     Process=xxxjava 1.5.0_04,
+2 -                     Process=xxxjava 1.5.0_04,
+2 -                     Thread=RequestProcessor-10,
+2 -                     Thread=RequestProcessor-10,
+2 -                     Type=10,
+2 -                     Type=10,
+2 -                     Code=16,
+2 -                     Code=16,
+2 -                     ShortDescrip=An error occurred, see ErrorDesc member,
+2 -                     ShortDescrip=An error occurred, see ErrorDesc member,
+2 -                     Severity=Error,
+2 -                     Severity=Error,
+2 -                     Data: Name=javaex.class, Value=alma.ACSErrTypeCommon.wrappers.AcsJGenericErrorEx; Name=javaex.msg, Value=This exception is the original cause.; )
+2 -                     Data: Name=javaex.class, Value=alma.ACSErrTypeCommon.wrappers.AcsJGenericErrorEx; Name=javaex.msg, Value=This exception was caused by another exception...; )
+2 - 
+2 - 
+2 -             ErrorTrace (TimeStamp=xxxx,
+2 -                         File=xxx
+2 -                         Line=xxx
+2 -                         Routine=internalBadMethod,
+2 -                         Host=xxxx,
+2 -                         Process=xxxjava 1.5.0_04,
+2 -                         Thread=RequestProcessor-10,
+2 -                         Type=10,
+2 -                         Code=16,
+2 -                         ShortDescrip=An error occurred, see ErrorDesc member,
+2 -                         Severity=Error,
+2 -                         Data: Name=javaex.class, Value=alma.ACSErrTypeCommon.wrappers.AcsJGenericErrorEx; Name=javaex.msg, Value=This exception is the original cause.; )
+2 - 
+1 - ----------T--:--:--.--- INFO [javaContainer] activate_component: handle=xxx name=ERRORCOMP_JAVA helperClass=alma.acsexmplErrorComponent.ErrorComponentImpl.ErrorComponentHelper type=IDL:alma/acsexmplErrorComponent/ErrorComponent:1.0
+1 - [jacorb.poa] INFO : oid: 
+1 - object is activated
+1 - [jacorb.poa] INFO : oid: 
+1 - object is activated
+1 - ----------T--:--:--.--- INFO [ERRORCOMP_JAVA] ErrorComponent
+1 - [jacorb.poa] INFO : oid: 
+1 - object is deactivated
+1 - [jacorb.poa] INFO : oid: 
+1 - servant is etherealized
+1 - [jacorb.poa] INFO : POA ComponentPOA_ERRORCOMP_JAVA destroyed
+1 - ----------T--:--:--.--- INFO [javaContainer] received call to 'shutdown', action=2 (encryptedAction=512), gracefully=true.
+1 - [jacorb.poa] INFO : POA ComponentPOA destroyed
+1 - [jacorb.poa] INFO : POA ContainerPOA destroyed
+1 - [jacorb.poa] INFO : POA RootPOA destroyed
+1 - ----------T--:--:--.--- INFO [javaContainer] about to exit the JVM...thanks for using our container, come back soon...

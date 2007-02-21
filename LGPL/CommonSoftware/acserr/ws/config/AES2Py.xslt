@@ -3,7 +3,7 @@
         <xsl:output method="text" version="1.0" encoding="ASCII"/>
         <xsl:template match="/Type">
 <xsl:text>#!/usr/bin/env python
-# @(#) $Id: AES2Py.xslt,v 1.18 2006/04/28 17:24:45 bjeram Exp $
+# @(#) $Id: AES2Py.xslt,v 1.19 2007/02/21 09:02:16 nbarriga Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA,  2001
@@ -33,6 +33,7 @@ from   Acspy.Common.Err import ACSError
 import ACSErr
 import </xsl:text><xsl:value-of select="@name"/>
 <xsl:text>
+from Acspy.Common.TimeHelper import getTimeStamp
 ######################################################################
 </xsl:text>
 <xsl:if test="count(//ErrorCode[not(@_suppressExceptionGeneration)]) > 0">
@@ -199,8 +200,8 @@ class BaseException:
 </xsl:text>
 </xsl:for-each>
 
-<!--  ******************************************** Completion *********************************** -->
-        <xsl:for-each select="Code | ErrorCode">
+<!--  ******************************************** Completion for ErrorCode *********************************** -->
+        <xsl:for-each select="ErrorCode">
         <xsl:variable name="ClassName"><xsl:value-of select="@name"/><xsl:text>CompletionImpl</xsl:text></xsl:variable>
                                 <xsl:text>class </xsl:text>
                                 <xsl:value-of select="$ClassName"/>
@@ -331,6 +332,119 @@ class BaseException:
 
 </xsl:text>
 </xsl:for-each>
+<xsl:text>
+######################################################################
+</xsl:text>
+</xsl:for-each>
+
+<!--  ******************************************** Completion for Code*********************************** -->
+        <xsl:for-each select="Code">
+        <xsl:variable name="ClassName"><xsl:value-of select="@name"/><xsl:text>CompletionImpl</xsl:text></xsl:variable>
+                                <xsl:text>class </xsl:text>
+                                <xsl:value-of select="$ClassName"/>
+                                <xsl:text>(ACSErr.Completion, ACSError):
+    '''
+    Some form of custom documentation goes here...
+    '''
+    #-----------------------------------------------------------------
+    def __init__(self,
+                 nvSeq = None,
+                 exception = None,
+                 create = 0,
+                 severity = None):
+        '''
+        Constructor
+        
+        An instance of this class is derived from ACSErr.Completion. 
+        It provides many helper methods from Acspy.Common.Err.
+        
+        There are three different combinations of keyword parameter
+        uses that make sense here:
+            
+            __init__()
+              Using the default values creates a new Completion which 
+              does not include any previous error traces
+            
+            __init__(exception=acsException)
+              Specifying a previous ACS Error System exception without
+              changing the value of create creates a new Completion which
+              does in fact include previous error traces from
+              acsException.
+            
+            __init__(exception=acsException, create=0)
+              Used to reconstruct acsException without adding any
+              new error trace information.
+
+            nvSeq default keyword parameter
+              This sequence of name/values is only used when a new 
+              Completion is being created. In simple terms, the only
+              time you can use it is when the create keyword parameter
+              has the value of 1
+
+            severity default keyword parameter
+              This CORBA type corresponds to ACSErr.Severity. The
+              only time you can use it is when the create keyword parameter
+              has the value of 1
+
+        Parameters:
+        - nvSeq is a sequence of ACSErr.NameValue pairs used to add
+        additional information about the Completion. Only used when
+        create has a value of 1
+        - exception is an ACS Error System based CORBA exception. 
+	Provide this to extract previous error trace information and put this into
+        the new object being constructed
+        - create is a boolean value which defines whether or not traceback
+        information should be extracted from the call to create this Completion
+        and added to it's error trace. If you're simply trying to recreate
+        a remote CORBA exception locally and figure out 
+        what went wrong most likely you want create to have a value of 0. 
+        However, if you intend on returning the Completion a value of 1 makes 
+        more sense.
+        - severity is used to set the severity of the completion. Only used when
+        create has a value of 1/True
+        '''
+        if nvSeq == None:
+            nvSeq = []
+        self.shortDescription = "</xsl:text>
+        <xsl:value-of select="@shortDescription"/>
+        <xsl:text>"
+        description = self.shortDescription
+        ACSError.__init__(self,
+                          ACSErr.</xsl:text>
+                          <xsl:value-of select="../@name"/>
+                          <xsl:text>,
+                          </xsl:text>
+                           <xsl:value-of select="../@name"/>
+                           <xsl:text>.</xsl:text>
+                           <xsl:value-of select="@name"/>
+                          <xsl:text>,
+                          exception,
+                          description,
+                          nvSeq,
+                          create,
+                          severity)
+
+        #Create the CORBA object
+        ACSErr.Completion.__init__(self,
+                                   getTimeStamp().value,
+                                   0,
+                                   0,
+                                   [])
+        return
+
+    def isOK(self):
+        return 1
+
+    def getDescription(self):
+        return self.shortDescription
+
+    def getErrorCode(self):
+        return 0
+
+    def getErrorType(self):
+        return 0
+
+</xsl:text>
 <xsl:text>
 ######################################################################
 </xsl:text>

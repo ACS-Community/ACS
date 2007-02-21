@@ -20,7 +20,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: TestList.lite,v 1.10 2006/11/16 15:15:41 gchiozzi Exp $"
+# "@(#) $Id: TestList.lite,v 1.11 2007/02/21 09:02:16 nbarriga Exp $"
 #
 # TestList
 #
@@ -38,7 +38,7 @@ PROLOGUE acspyexmplTATPrologue
 6  HelloWorldDynamic "acsutilTATTestRunner acspyexmplDynamicHelloWorld TestContainer"
 7  FridgeNCClient "acsutilTATTestRunner acspyexmplFridgeNCClient"
 8  TimeoutHandler "acsutilTATTestRunner acspyexmplTimeoutHandler"
-#9  ClientErrorComponent "acsutilTATTestRunner acsStartContainer -py pyErrContainer" "@SLEEP 15" "acsutilTATTestRunner acspyexmplClientErrorComponent ERRORCOMP_PY" "@SLEEP 15" "acsutilTATTestRunner acsStopContainer pyErrContainer"  "@SLEEP 15"
-#10  ClientErrorComponent "acsutilTATTestRunner acsStartContainer -cpp cppContainer" "@SLEEP 15" "acsutilTATTestRunner acspyexmplClientErrorComponent ERRORCOMP_CPP" "@SLEEP 15" "acsutilTATTestRunner acsStopContainer cppContainer"  "@SLEEP 15"
-#11  ClientErrorComponent "acsutilTATTestRunner acsStartContainer -java javaContainer" "@SLEEP 15" "acsutilTATTestRunner acspyexmplClientErrorComponent ERRORCOMP_JAVA" "@SLEEP 15" "acsutilTATTestRunner acsStopContainer javaContainer"  "@SLEEP 15"
+9  ClientErrorComponentPy "acsutilTATTestRunner acsStartContainer -py pyErrContainer" "@SLEEP 15" "acsutilTATTestRunner acspyexmplClientErrorComponent ERRORCOMP_PY" "@SLEEP 15" "acsutilTATTestRunner acsStopContainer pyErrContainer"  "@SLEEP 15"
+10  ClientErrorComponentCpp "acsutilTATTestRunner acsStartContainer -cpp cppContainer" "@SLEEP 15" "acsutilTATTestRunner acspyexmplClientErrorComponent ERRORCOMP_CPP" "@SLEEP 15" "acsutilTATTestRunner acsStopContainer cppContainer"  "@SLEEP 15"
+11  ClientErrorComponentJava "acsutilTATTestRunner acsStartContainer -java javaContainer" "@SLEEP 15" "acsutilTATTestRunner acspyexmplClientErrorComponent ERRORCOMP_JAVA" "@SLEEP 15" "acsutilTATTestRunner acsStopContainer javaContainer"  "@SLEEP 15"
 EPILOGUE acsutilTATEpilogue

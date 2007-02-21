@@ -79,7 +79,7 @@ class ErrorTraceHelper:
 
         Raises: Nothing
         '''
-        if len(self.getErrorTrace().previousError) != 0:
+        if self.getErrorTrace() != None and len(self.getErrorTrace().previousError) != 0:
             return self.getErrorTrace().previousError[0]
         else:
             return None
@@ -104,7 +104,9 @@ class ErrorTraceHelper:
         if stdoutOk(logging.ERROR):
             self.Print()
             
-        getLogger("Acspy.Common.Err.ErrorTraceHelper").logErrorTrace(self.getErrorTrace(), priority)
+	if self.getErrorTrace() != None:
+		getLogger("Acspy.Common.Err.ErrorTraceHelper").logErrorTrace(self.getErrorTrace(), priority)
+
         
     #--------------------------------------------------------------------------
     def errorTraceToString(self, error_trace, ws):
@@ -173,14 +175,13 @@ class ErrorTraceHelper:
         Raises: Nothing
         '''
         joe = self.getErrorTrace()
-        
-        ws = ""
-        
-        while len(joe.previousError) != 0:
-            self.printET(joe, ws)
-            joe = joe.previousError[0]
-            ws = ws + "    "
-        self.printET(joe, ws)
+        if joe != None:
+        	ws = ""
+	        while len(joe.previousError) != 0:
+           		self.printET(joe, ws)
+            		joe = joe.previousError[0]
+            		ws = ws + "    "
+        	self.printET(joe, ws)
         
         return
     #--------------------------------------------------------------------------
