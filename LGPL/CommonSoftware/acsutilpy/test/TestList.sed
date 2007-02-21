@@ -18,3 +18,4 @@ s/RTContext: ([0-9,a-z,A-Z,-,_]*, [0-9,a-z,A-Z,-,_]*, [0-9,a-z,A-Z,-,_]*, [0-9,a
 s/Thread=ID: [0-9]*/Thread=ID: xxx/g
 s/Process=[0-9]*/Process=xxx/g
 s/\/.*\/idl\/acscommon.idl/....\/idl\/acscommon.idl/g
+s/Ran 33 tests in [0-9].[0-9][0-9][0-9]s/Ran 33 tests in x.xxs/g
