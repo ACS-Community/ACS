@@ -16,7 +16,7 @@ import com.cosylab.acs.maci.RemoteException;
 /**
  * @author msekoranja
  *
- * TODO To change the template for this generated type comment go to
+ * @todo To change the template for this generated type comment go to
  * Window - Preferences - Java - Code Style - Code Templates
  */
 public class TestDaemon implements Daemon {
@@ -50,7 +50,7 @@ public class TestDaemon implements Daemon {
 					ClientInfo info = manager.login(tdc);
 					tdc.setHandle(info.getHandle());
 				} catch (AcsJNoPermissionEx e) {
-					// TODO 
+					/// @todo Error handling when catching exceptions 
 					e.printStackTrace();
 				}
 							}
