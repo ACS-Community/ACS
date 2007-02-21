@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <!-- created by Nicolas Barriga-->
 <xs:schema 
-	xmlns="urn:schemas-cosylab-com:COMMONTYPES:1.0"
+	xmlns:common="urn:schemas-cosylab-com:COMMONTYPES:1.0"
 	xmlns:xs="http://www.w3.org/2001/XMLSchema" 
 	targetNamespace="urn:schemas-cosylab-com:COMMONTYPES:1.0" 
 	elementFormDefault="qualified" 
@@ -12,9 +12,9 @@
 Member elements define name-value pairs with additional information for the log. For example a log informing that someone logged in, could have as additional information: username:"John Doe", indicating who logged in.
 			</xs:documentation>
 		</xs:annotation>
-		<xs:attribute name="name" type="nameType" use="required"/>
-		<xs:attribute name="type" type="MemberTypes" use="required"/>
-		<xs:attribute name="description" type="nonEmptyString" use="optional"/>
+		<xs:attribute name="name" type="common:nameType" use="required"/>
+		<xs:attribute name="type" type="common:MemberTypes" use="required"/>
+		<xs:attribute name="description" type="common:nonEmptyString" use="optional"/>
 	</xs:complexType>
 	<xs:simpleType name="nameType">
 		<xs:annotation>
@@ -54,7 +54,7 @@ Defines a type for a string with minimal length 1.
 Short description string. Arbitrarily the maximal length is set at 50.
 			</xs:documentation>
 		</xs:annotation>
-		<xs:restriction base="nonEmptyString">
+		<xs:restriction base="common:nonEmptyString">
 			<xs:minLength value="1"/>
 			<xs:maxLength value="50"/>
 		</xs:restriction>
@@ -65,7 +65,7 @@ Short description string. Arbitrarily the maximal length is set at 50.
 Type of the member value. Can be double, long or string.
 			</xs:documentation>
 		</xs:annotation>
-		<xs:restriction base="nonEmptyString">
+		<xs:restriction base="common:nonEmptyString">
 			<xs:enumeration value="double"/>
 			<xs:enumeration value="long"/>
 			<xs:enumeration value="string"/>
