@@ -18,7 +18,7 @@
 */
 /** 
  * @author  nbarriga
- * @version $Id: testLTSClient.java,v 1.4 2007/02/09 12:21:14 nbarriga Exp $
+ * @version $Id: testLTSClient.java,v 1.1 2007/02/21 09:38:05 nbarriga Exp $
  * @since    
  */
 

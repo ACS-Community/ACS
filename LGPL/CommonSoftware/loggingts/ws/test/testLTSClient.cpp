@@ -16,7 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: testLTSClient.cpp,v 1.3 2007/02/09 12:21:14 nbarriga Exp $"
+ * "@(#) $Id: testLTSClient.cpp,v 1.1 2007/02/21 09:38:05 nbarriga Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -31,7 +31,7 @@
 #include <stdio.h>
 #include <string.h>
 
-static char *rcsId="@(#) $Id: testLTSClient.cpp,v 1.3 2007/02/09 12:21:14 nbarriga Exp $"; 
+static char *rcsId="@(#) $Id: testLTSClient.cpp,v 1.1 2007/02/21 09:38:05 nbarriga Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <maciSimpleClient.h>

@@ -34,7 +34,7 @@
 
 /**
  * @author  nbarriga
- * @version $Id: LTS2Java.xslt,v 1.4 2007/02/15 08:25:15 nbarriga Exp $
+ * @version $Id: LTS2Java.xslt,v 1.1 2007/02/21 09:38:05 nbarriga Exp $
  * @since
  */
 

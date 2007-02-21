@@ -21,7 +21,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: LTS2Py.xslt,v 1.5 2007/02/15 08:25:15 nbarriga Exp $"
+# "@(#) $Id: LTS2Py.xslt,v 1.1 2007/02/21 09:38:05 nbarriga Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
