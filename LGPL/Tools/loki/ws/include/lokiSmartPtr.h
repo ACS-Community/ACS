@@ -16,7 +16,7 @@
 #ifndef LOKI_SMARTPTR_INC_
 #define LOKI_SMARTPTR_INC_
 
-// $Header: /diskb/tmp/stefano/project2/CVS/ACS/LGPL/Tools/loki/ws/include/lokiSmartPtr.h,v 1.2 2007/02/01 17:29:00 sharring Exp $
+// $Header: /diskb/tmp/stefano/project2/CVS/ACS/LGPL/Tools/loki/ws/include/lokiSmartPtr.h,v 1.3 2007/02/22 09:00:32 bjeram Exp $
 
 ///  \defgroup  SmartPointerGroup Smart pointers
 ///  Policy based implementation of a smart pointer
@@ -40,9 +40,28 @@
 #include <stdexcept>
 #include <cassert>
 
-#if !defined(_MSC_VER)
+#if !defined(_MSC_VER) && !defined (MAKE_VXWORKS)
     #include <stdint.h>
 #endif
+
+#ifdef MAKE_VXWORKS
+/* Types for `void *' pointers.  */
+#if __WORDSIZE == 64
+# ifndef __intptr_t_defined
+typedef long int		intptr_t;
+#  define __intptr_t_defined
+# endif
+typedef unsigned long int	uintptr_t;
+#else
+# ifndef __intptr_t_defined
+typedef int			intptr_t;
+#  define __intptr_t_defined
+# endif
+typedef unsigned int		uintptr_t;
+#endif
+#endif
+
+
 
 namespace Loki
 {
@@ -1525,7 +1544,11 @@ namespace std
 
 
 // $Log: lokiSmartPtr.h,v $
+// Revision 1.3  2007/02/22 09:00:32  bjeram
+// ported to VxWorks
+//
 // Revision 1.2  2007/02/01 17:29:00  sharring
+//
 // updating to newer version of loki library, with support for multi-threading enabled. manually renamed files to avoid name conflicts, by
 // prepending "loki" to the names of header files. also manually edited lokiThreads.h to #define LOKI_OBJECT_LEVEL_THREADING; this could
 // also be done with a compile FLAG, perhaps would be better.

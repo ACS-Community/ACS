@@ -20,7 +20,7 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 
-// $Header: /diskb/tmp/stefano/project2/CVS/ACS/LGPL/Tools/loki/ws/include/lokiThreads.h,v 1.2 2007/02/01 17:29:00 sharring Exp $
+// $Header: /diskb/tmp/stefano/project2/CVS/ACS/LGPL/Tools/loki/ws/include/lokiThreads.h,v 1.3 2007/02/22 09:00:32 bjeram Exp $
 
 ///  @defgroup  ThreadingGroup Threading
 ///  Policies to for the threading model:
@@ -50,6 +50,11 @@
 
 
 #include <cassert>
+
+//for some resona VxWorks does not have defined neither _PTHREAD_H nor _POSIX_PTHREAD_H
+#ifdef MAKE_VXWORKS
+#define  _PTHREAD_H 1
+#endif
 
 #define LOKI_OBJECT_LEVEL_THREADING 1
 
@@ -409,7 +414,11 @@ namespace Loki
 #endif
 
 // $Log: lokiThreads.h,v $
+// Revision 1.3  2007/02/22 09:00:32  bjeram
+// ported to VxWorks
+//
 // Revision 1.2  2007/02/01 17:29:00  sharring
+//
 // updating to newer version of loki library, with support for multi-threading enabled. manually renamed files to avoid name conflicts, by
 // prepending "loki" to the names of header files. also manually edited lokiThreads.h to #define LOKI_OBJECT_LEVEL_THREADING; this could
 // also be done with a compile FLAG, perhaps would be better.

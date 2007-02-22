@@ -935,7 +935,11 @@ public:
         }
     }
 
-    friend bool ReleaseAll( StrongPtr & sp,
+// default template parameter list does not work with friend methods under VxWorks
+#ifndef MAKE_VXWORKS
+    friend 
+#endif
+    bool ReleaseAll( StrongPtr & sp,
         typename StrongPtr::StoredType & p )
     {
         if ( !sp.RP::OnReleaseAll( sp.IsStrong() || sp.OP::HasStrongPointer() ) )
@@ -947,7 +951,11 @@ public:
         return true;
     }
 
-    friend bool ResetAll( StrongPtr & sp,
+// default template parameter list does not work with friend methods under VxWorks
+#ifndef MAKE_VXWORKS
+    friend 
+#endif
+    bool ResetAll( StrongPtr & sp,
         typename StrongPtr::StoredType p )
     {
         if ( sp.OP::GetPointer() == p )
@@ -1481,7 +1489,11 @@ namespace std
 #endif // end file guardian
 
 // $Log: lokiStrongPtr.h,v $
+// Revision 1.3  2007/02/22 09:00:32  bjeram
+// ported to VxWorks
+//
 // Revision 1.2  2007/02/01 17:29:00  sharring
+//
 // updating to newer version of loki library, with support for multi-threading enabled. manually renamed files to avoid name conflicts, by
 // prepending "loki" to the names of header files. also manually edited lokiThreads.h to #define LOKI_OBJECT_LEVEL_THREADING; this could
 // also be done with a compile FLAG, perhaps would be better.

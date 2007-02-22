@@ -10,13 +10,15 @@
 //     without express or implied warranty.
 ////////////////////////////////////////////////////////////////////////////////
 
-// $Header: /diskb/tmp/stefano/project2/CVS/ACS/LGPL/Tools/loki/ws/src/lokiStrongPtr.cpp,v 1.2 2007/02/01 17:29:01 sharring Exp $
+// $Header: /diskb/tmp/stefano/project2/CVS/ACS/LGPL/Tools/loki/ws/src/lokiStrongPtr.cpp,v 1.3 2007/02/22 09:00:32 bjeram Exp $
 
 // ----------------------------------------------------------------------------
 
 #include <lokiStrongPtr.h>
 
+#ifndef MAKE_VXWORKS
 #include <memory.h>
+#endif
 #include <cassert>
 
 #include <lokiSmallObj.h>
@@ -615,7 +617,11 @@ bool TwoRefLinks::Merge( TwoRefLinks & rhs )
 // ----------------------------------------------------------------------------
 
 // $Log: lokiStrongPtr.cpp,v $
+// Revision 1.3  2007/02/22 09:00:32  bjeram
+// ported to VxWorks
+//
 // Revision 1.2  2007/02/01 17:29:01  sharring
+//
 // updating to newer version of loki library, with support for multi-threading enabled. manually renamed files to avoid name conflicts, by
 // prepending "loki" to the names of header files. also manually edited lokiThreads.h to #define LOKI_OBJECT_LEVEL_THREADING; this could
 // also be done with a compile FLAG, perhaps would be better.

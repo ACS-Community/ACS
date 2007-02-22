@@ -19,14 +19,18 @@
 #ifndef LOKI_SAFEFORMAT_H_
 #define LOKI_SAFEFORMAT_H_
 
-// $Header: /diskb/tmp/stefano/project2/CVS/ACS/LGPL/Tools/loki/ws/include/lokiSafeFormat.h,v 1.2 2007/02/01 17:29:00 sharring Exp $
+// $Header: /diskb/tmp/stefano/project2/CVS/ACS/LGPL/Tools/loki/ws/include/lokiSafeFormat.h,v 1.3 2007/02/22 09:00:32 bjeram Exp $
 
 #include <cstdio>
 #include <string>
 #include <stdexcept>
 #include <utility>
 #include <cassert>
-#include <locale>
+#ifndef MAKE_VXWORKS
+#include <locale>   // we do not have this header file for VxWorks
+#else
+#include <algorithm>
+#endif
 
 #include <lokiExport.h>
 
@@ -573,7 +577,11 @@ namespace Loki
 #endif //SAFEFORMAT_H_
 
 // $Log: lokiSafeFormat.h,v $
+// Revision 1.3  2007/02/22 09:00:32  bjeram
+// ported to VxWorks
+//
 // Revision 1.2  2007/02/01 17:29:00  sharring
+//
 // updating to newer version of loki library, with support for multi-threading enabled. manually renamed files to avoid name conflicts, by
 // prepending "loki" to the names of header files. also manually edited lokiThreads.h to #define LOKI_OBJECT_LEVEL_THREADING; this could
 // also be done with a compile FLAG, perhaps would be better.

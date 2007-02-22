@@ -10,10 +10,12 @@
 //     without express or implied warranty.
 ////////////////////////////////////////////////////////////////////////////////
 
-// $Header: /diskb/tmp/stefano/project2/CVS/ACS/LGPL/Tools/loki/ws/src/lokiOrderedStatic.cpp,v 1.2 2007/02/01 17:29:01 sharring Exp $
+// $Header: /diskb/tmp/stefano/project2/CVS/ACS/LGPL/Tools/loki/ws/src/lokiOrderedStatic.cpp,v 1.3 2007/02/22 09:00:32 bjeram Exp $
 
 #include <lokiOrderedStatic.h>
+#ifndef MAKE_VXWORKS
 #include <limits>
+#endif
 
 #ifdef min 
 #undef min 
@@ -39,8 +41,14 @@ namespace Loki
 
         OrderedStaticManagerClass::OrderedStaticManagerClass() :
                     staticObjects_(),
+// there is no std::numeric_limits<> or VxWorks
+#ifndef MAKE_VXWORKS
                     max_longevity_(std::numeric_limits<unsigned int>::min()),
                     min_longevity_(std::numeric_limits<unsigned int>::max())
+#else
+	            max_longevity_(0),
+		    min_longevity_(__INT_MAX__* 2U + 1)
+#endif
         {
         }
 
@@ -54,7 +62,12 @@ namespace Loki
             {
                 for(unsigned int i=0; i<staticObjects_.size(); i++)
                 {
+// there is no at method for Vector for VxWorks
+#ifndef MAKE_VXWORKS
                     Data cur = staticObjects_.at(i);
+#else
+		   Data cur = staticObjects_[i];  
+#endif
                     if(cur.longevity==longevity)
                         ( (*cur.object).*cur.creator )();
                 }
@@ -79,7 +92,11 @@ namespace Loki
 }//namespace Loki
 
 // $Log: lokiOrderedStatic.cpp,v $
+// Revision 1.3  2007/02/22 09:00:32  bjeram
+// ported to VxWorks
+//
 // Revision 1.2  2007/02/01 17:29:01  sharring
+//
 // updating to newer version of loki library, with support for multi-threading enabled. manually renamed files to avoid name conflicts, by
 // prepending "loki" to the names of header files. also manually edited lokiThreads.h to #define LOKI_OBJECT_LEVEL_THREADING; this could
 // also be done with a compile FLAG, perhaps would be better.
