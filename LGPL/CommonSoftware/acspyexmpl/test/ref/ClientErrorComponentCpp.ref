@@ -167,6 +167,6 @@
 1 - ----------T--:--:--.--- [cppContainer - ContainerImpl::run] Container stopping...
 1 - ----------T--:--:--.--- [GlobalLogger - ] Stopping container... 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Request to unload 'libbaci.so'.
-1 - /alma/ACS-6.0/ACSSW/lib/libbaci.so
+1 - /somepath/libbaci.so
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Unloaded '/somepath/libbaci.so'.
 1 - ----------T--:--:--.--- [GlobalLogger - ] Container stopped.

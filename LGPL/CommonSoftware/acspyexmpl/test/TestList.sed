@@ -28,3 +28,4 @@ s/1 - Manager hostname obtained via command line: '[0-9]*\.[0-9]*\.[0-9]*\.[0-9]
 s/Full path '\/.*\/\([^\/]*\.so\)'/Full path '\/somepath\/\1'/g
 s/Loaded '\/.*\/\([^\/]*\.so\)'/Loaded '\/somepath\/\1'/g
 s/Unloaded '\/.*\/\([^\/]*\.so\)'/Unloaded '\/somepath\/\1'/g
+s/1 - \/.*\/\([^\/]*\.so\)/1 - \/somepath\/\1/g
