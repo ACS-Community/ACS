@@ -20,7 +20,7 @@
 *
 *
 *
-* "@(#) $Id: acsexmplClientErrorComponent.cpp,v 1.8 2007/02/01 05:14:26 cparedes Exp $"
+* "@(#) $Id: acsexmplClientErrorComponent.cpp,v 1.9 2007/02/26 11:55:58 nbarriga Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -100,7 +100,7 @@ Each method in the class shows an example.
 #include <acsutilTimeStamp.h>
 #include <string.h>
 
-ACE_RCSID(acsexmpl, acsexmplErrorComponentClient, "$Id: acsexmplClientErrorComponent.cpp,v 1.8 2007/02/01 05:14:26 cparedes Exp $")
+ACE_RCSID(acsexmpl, acsexmplErrorComponentClient, "$Id: acsexmplClientErrorComponent.cpp,v 1.9 2007/02/26 11:55:58 nbarriga Exp $")
 using namespace maci;
 
 /*******************************************************************************/
@@ -156,7 +156,28 @@ class ClientErrorComponent
     void TestReceiveRemoteCompletion() throw(ACSErrTypeCommon::CouldntAccessComponentExImpl);
 
     /**
-     * Example 3: Calls a method that throws a CORBA system exception
+     * Example 3: Calls a method that throws an exception
+     *            with an error trace..
+     * <ul>
+     *   <li> Catches the exception, 
+     *   <li> Adds context information
+     *   <li> sends it to the logging system
+     * </ul>
+     */
+    void testExceptionFromCompletion() throw(ACSErrTypeCommon::CouldntAccessComponentExImpl);
+
+    /**
+     * Example 4: Calls a method that throws an exception 
+     *            with an error trace..
+     * <ul>
+     *   <li> Catches the exception, 
+     *   <li> Adds context information
+     *   <li> sends it to the logging system
+     * </ul>
+     */
+    void testTypeException() throw(ACSErrTypeCommon::CouldntAccessComponentExImpl);
+    /**
+     * Example 5: Calls a method that throws a CORBA system exception
      *            It:
      * <ul>
      *   <li> Catches the exception, 
@@ -166,6 +187,27 @@ class ClientErrorComponent
      */
     void TestReceiveCorbaSystemException() throw(ACSErrTypeCommon::CouldntAccessComponentExImpl);
 
+    /**
+     * Example 6: Calls a method that returns a completion
+     *            If the completion contains an error, then
+     * <ul>
+     *   <li> Catches the exception,
+     *   <li> prints it locally
+     *   <li> sends it to the logging system
+     * </ul>
+     */
+    void testCompletionFromCompletion() throw(ACSErrTypeCommon::CouldntAccessComponentExImpl);
+
+    /**
+     * Example 6: Calls a method that returns a completion created on the stack instead of heap
+     *            If the completion contains an error, then
+     * <ul>
+     *   <li> Catches the exception,
+     *   <li> prints it locally
+     *   <li> sends it to the logging system
+     * </ul>
+     */
+    void testCompletionOnStack() throw(ACSErrTypeCommon::CouldntAccessComponentExImpl);
   private:
     SimpleClient &client_m;
     std::string   errorComponent_m;
@@ -236,14 +278,14 @@ void ClientErrorComponent::TestOk()
 	ACSErrTypeCommon::GenericErrorExImpl displayMessageEx(
 				   __FILE__, __LINE__,
 				   "ClientErrorComponent::TestReceiveRemoteException");
-	displayMessageEx.setErrorDesc("badMethod has thrown a CORBA exception");
+	displayMessageEx.setErrorDesc("UNEXPECTED: displayMessage has thrown a CORBA exception");
 	displayMessageEx.log();
 	}
     catch(...)
 	{
 	ACSErrTypeCommon::GenericErrorExImpl displayMessageEx(__FILE__, __LINE__,
 		      				 "ClientErrorComponent::TestReceiveRemoteException");
-	displayMessageEx.setErrorDesc("badMethod has thrown an UNEXPECTED exception");
+	displayMessageEx.setErrorDesc("UNEXPECTED: displayMessage has thrown an UNEXPECTED exception");
 	displayMessageEx.log();
 	}
 }
@@ -263,6 +305,7 @@ void ClientErrorComponent::TestReceiveRemoteException()
     try
 	{
 	foo_m->badMethod(5);
+        ACS_SHORT_LOG((LM_INFO, "UNEXPECTED: should have thrown an exception"));
 	}
     catch(ACSErrTypeCommon::GenericErrorEx &ex)
 	{
@@ -301,6 +344,212 @@ void ClientErrorComponent::TestReceiveRemoteException()
 	ACS::Time timeStamp = badMethodEx.getTimeStamp();
 	ACE_CString tString = getStringifiedUTC(timeStamp);
 	ACS_DEBUG_PARAM("ClientErrorComponent::TestReceiveRemoteException", 
+			"Time of the unexpected exception: %s\n", tString.c_str());
+	}
+
+}
+void ClientErrorComponent::testTypeException() 
+    throw(ACSErrTypeCommon::CouldntAccessComponentExImpl)
+{
+    ACS_TRACE("ClientErrorComponent::testTypeException");
+
+    if (CORBA::is_nil(foo_m.in()) == true)
+	{
+	throw ACSErrTypeCommon::CouldntAccessComponentExImpl(
+				   __FILE__, __LINE__,
+				   "ClientErrorComponent::testTypeException");
+	}
+    ACS_SHORT_LOG((LM_INFO, "Example 4a: typeException with depth 0"));
+    try
+	{
+	foo_m->typeException(0);
+        ACS_SHORT_LOG((LM_INFO, "OK: No exception thrown"));
+	}
+    catch(ACSErrTypeCommon::GenericErrorEx &ex)
+	{
+	ACSErrTypeCommon::GenericErrorExImpl badMethodEx(ex,
+				   __FILE__, __LINE__,
+				   "ClientErrorComponent::testTypeException");
+	badMethodEx.setErrorDesc("UNEXPECTED: shouldn't have thrown an exception");
+	badMethodEx.log();
+
+	ACS::Time timeStamp = badMethodEx.getTimeStamp();
+	ACE_CString tString = getStringifiedUTC(timeStamp);
+	ACS_DEBUG_PARAM("ClientErrorComponent::testTypeException", 
+			"Time of the exception: %s\n", tString.c_str());
+	}
+    catch(CORBA::SystemException &ex)
+	{
+	// Map......
+	ACSErrTypeCommon::GenericErrorExImpl badMethodEx(
+				   __FILE__, __LINE__,
+				   "ClientErrorComponent::testTypeException");
+	badMethodEx.setErrorDesc("UNEXPECTED: typeException has thrown a CORBA exception");
+	badMethodEx.log();
+
+	ACS::Time timeStamp = badMethodEx.getTimeStamp();
+	ACE_CString tString = getStringifiedUTC(timeStamp);
+	ACS_DEBUG_PARAM("ClientErrorComponent::TestReceiveRemoteException", 
+			"Time of the CORBA exception: %s\n", tString.c_str());
+	}
+    catch(...)
+	{
+	ACSErrTypeCommon::GenericErrorExImpl badMethodEx(__FILE__, __LINE__,
+		      				 "ClientErrorComponent::testTypeException");
+	badMethodEx.setErrorDesc("UNEXPECTED: typeException has thrown an UNKNOWN exception");
+	badMethodEx.log();
+
+	ACS::Time timeStamp = badMethodEx.getTimeStamp();
+	ACE_CString tString = getStringifiedUTC(timeStamp);
+	ACS_DEBUG_PARAM("ClientErrorComponent::testTypeException", 
+			"Time of the unexpected exception: %s\n", tString.c_str());
+	}
+    ACS_SHORT_LOG((LM_INFO, "Example 4b: typeException with depth 5"));
+    try
+	{
+	foo_m->typeException(5);
+        ACS_SHORT_LOG((LM_INFO, "UNEXPECTED: should have thrown an exception"));
+	}
+    catch(ACSErrTypeCommon::ACSErrTypeCommonEx &ex)
+	{
+	ACSErrTypeCommon::GenericErrorExImpl badMethodEx(ex,
+				   __FILE__, __LINE__,
+				   "ClientErrorComponent::testTypeException");
+	badMethodEx.setErrorDesc("typeException has thrown the expected exception");
+	badMethodEx.log();
+
+	ACS::Time timeStamp = badMethodEx.getTimeStamp();
+	ACE_CString tString = getStringifiedUTC(timeStamp);
+	ACS_DEBUG_PARAM("ClientErrorComponent::testTypeException", 
+			"Time of the exception: %s\n", tString.c_str());
+	}
+    catch(CORBA::SystemException &ex)
+	{
+	// Map......
+	ACSErrTypeCommon::GenericErrorExImpl badMethodEx(
+				   __FILE__, __LINE__,
+				   "ClientErrorComponent::testTypeException");
+	badMethodEx.setErrorDesc("typeException has thrown a CORBA exception");
+	badMethodEx.log();
+
+	ACS::Time timeStamp = badMethodEx.getTimeStamp();
+	ACE_CString tString = getStringifiedUTC(timeStamp);
+	ACS_DEBUG_PARAM("ClientErrorComponent::testTypeException", 
+			"Time of the CORBA exception: %s\n", tString.c_str());
+	}
+    catch(...)
+	{
+	ACSErrTypeCommon::GenericErrorExImpl badMethodEx(__FILE__, __LINE__,
+		      				 "ClientErrorComponent::testTypeException");
+	badMethodEx.setErrorDesc("typeException has thrown an UNEXPECTED exception");
+	badMethodEx.log();
+
+	ACS::Time timeStamp = badMethodEx.getTimeStamp();
+	ACE_CString tString = getStringifiedUTC(timeStamp);
+	ACS_DEBUG_PARAM("ClientErrorComponent::testTypeException", 
+			"Time of the unexpected exception: %s\n", tString.c_str());
+	}
+
+}
+void ClientErrorComponent::testExceptionFromCompletion() 
+    throw(ACSErrTypeCommon::CouldntAccessComponentExImpl)
+{
+    ACS_TRACE("ClientErrorComponent::testExceptionFromCompletion");
+
+    if (CORBA::is_nil(foo_m.in()) == true)
+	{
+	throw ACSErrTypeCommon::CouldntAccessComponentExImpl(
+				   __FILE__, __LINE__,
+				   "ClientErrorComponent::testExceptionFromCompletion");
+	}
+    ACS_SHORT_LOG((LM_INFO, "Example 3a: ExceptionFromCompletion with depth 0"));
+    try
+	{
+	foo_m->exceptionFromCompletion(0);
+        ACS_SHORT_LOG((LM_INFO, "OK: No exception thrown"));
+	}
+    catch(ACSErrTypeCommon::GenericErrorEx &ex)
+	{
+	ACSErrTypeCommon::GenericErrorExImpl badMethodEx(ex,
+				   __FILE__, __LINE__,
+				   "ClientErrorComponent::testExceptionFromCompletion");
+	badMethodEx.setErrorDesc("UNEXPECTED: shouldn't have thrown an exception");
+	badMethodEx.log();
+
+	ACS::Time timeStamp = badMethodEx.getTimeStamp();
+	ACE_CString tString = getStringifiedUTC(timeStamp);
+	ACS_DEBUG_PARAM("ClientErrorComponent::testExceptionFromCompletion", 
+			"Time of the exception: %s\n", tString.c_str());
+	}
+    catch(CORBA::SystemException &ex)
+	{
+	// Map......
+	ACSErrTypeCommon::GenericErrorExImpl badMethodEx(
+				   __FILE__, __LINE__,
+				   "ClientErrorComponent::testExceptionFromCompletion");
+	badMethodEx.setErrorDesc("UNEXPECTED: exceptionFromCompletion has thrown a CORBA exception");
+	badMethodEx.log();
+
+	ACS::Time timeStamp = badMethodEx.getTimeStamp();
+	ACE_CString tString = getStringifiedUTC(timeStamp);
+	ACS_DEBUG_PARAM("ClientErrorComponent::TestReceiveRemoteException", 
+			"Time of the CORBA exception: %s\n", tString.c_str());
+	}
+    catch(...)
+	{
+	ACSErrTypeCommon::GenericErrorExImpl badMethodEx(__FILE__, __LINE__,
+		      				 "ClientErrorComponent::testExceptionFromCompletion");
+	badMethodEx.setErrorDesc("UNEXPECTED: exceptionFromCompletion has thrown an UNKNOWN exception");
+	badMethodEx.log();
+
+	ACS::Time timeStamp = badMethodEx.getTimeStamp();
+	ACE_CString tString = getStringifiedUTC(timeStamp);
+	ACS_DEBUG_PARAM("ClientErrorComponent::testExceptionFromCompletion", 
+			"Time of the unexpected exception: %s\n", tString.c_str());
+	}
+    ACS_SHORT_LOG((LM_INFO, "Example 3b: ExceptionFromCompletion with depth 5"));
+    try
+	{
+	foo_m->exceptionFromCompletion(5);
+        ACS_SHORT_LOG((LM_INFO, "UNEXPECTED: should have thrown an exception"));
+	}
+    catch(ACSErrTypeCommon::GenericErrorEx &ex)
+	{
+	ACSErrTypeCommon::GenericErrorExImpl badMethodEx(ex,
+				   __FILE__, __LINE__,
+				   "ClientErrorComponent::testExceptionFromCompletion");
+	badMethodEx.setErrorDesc("exceptionFromCompletion has thrown the expected exception");
+	badMethodEx.log();
+
+	ACS::Time timeStamp = badMethodEx.getTimeStamp();
+	ACE_CString tString = getStringifiedUTC(timeStamp);
+	ACS_DEBUG_PARAM("ClientErrorComponent::testExceptionFromCompletion", 
+			"Time of the exception: %s\n", tString.c_str());
+	}
+    catch(CORBA::SystemException &ex)
+	{
+	// Map......
+	ACSErrTypeCommon::GenericErrorExImpl badMethodEx(
+				   __FILE__, __LINE__,
+				   "ClientErrorComponent::testExceptionFromCompletion");
+	badMethodEx.setErrorDesc("exceptionFromCompletion has thrown a CORBA exception");
+	badMethodEx.log();
+
+	ACS::Time timeStamp = badMethodEx.getTimeStamp();
+	ACE_CString tString = getStringifiedUTC(timeStamp);
+	ACS_DEBUG_PARAM("ClientErrorComponent::testExceptionFromCompletion", 
+			"Time of the CORBA exception: %s\n", tString.c_str());
+	}
+    catch(...)
+	{
+	ACSErrTypeCommon::GenericErrorExImpl badMethodEx(__FILE__, __LINE__,
+		      				 "ClientErrorComponent::testExceptionFromCompletion");
+	badMethodEx.setErrorDesc("exceptionFromCompletion has thrown an UNEXPECTED exception");
+	badMethodEx.log();
+
+	ACS::Time timeStamp = badMethodEx.getTimeStamp();
+	ACE_CString tString = getStringifiedUTC(timeStamp);
+	ACS_DEBUG_PARAM("ClientErrorComponent::testExceptionFromCompletion", 
 			"Time of the unexpected exception: %s\n", tString.c_str());
 	}
 
@@ -348,6 +597,91 @@ void ClientErrorComponent::TestReceiveRemoteCompletion()
 	ex.log();
 	}
 }
+void ClientErrorComponent::testCompletionOnStack() 
+    throw(ACSErrTypeCommon::CouldntAccessComponentExImpl)
+{
+    ACS_TRACE("ClientErrorComponent::testCompletionOnStack");
+
+    if (CORBA::is_nil(foo_m.in()) == true)
+	{
+	throw ACSErrTypeCommon::CouldntAccessComponentExImpl(
+				   __FILE__, __LINE__,
+				   "ClientErrorComponent::testCompletionOnStack");
+	}
+    try
+	{
+	CompletionImpl comp;
+
+	// OK Completion
+	ACS_SHORT_LOG((LM_INFO, "Example 7a: completionOnStack with depth 0."));
+	comp = foo_m->completionOnStack(0);
+	comp.log();
+
+	// ERROR completion with an error trace inside.
+	ACS_SHORT_LOG((LM_INFO, "Example 7b: completionOnStack with depth 3."));
+	comp = foo_m->completionOnStack(3);
+	comp.log();
+	}
+    catch(CORBA::SystemException &ex2)
+	{
+	// Map......
+	ACSErrTypeCommon::GenericErrorExImpl ex(
+				   __FILE__, __LINE__,
+				   "ClientErrorComponent::testCompletionOnStack");
+	ex.setErrorDesc("CompletionOnStack has thrown a CORBA exception");
+	ex.log();
+	}
+    catch(...)
+	{
+	ACSErrTypeCommon::GenericErrorExImpl ex(__FILE__, __LINE__,
+							 "ClientErrorComponent::testCompletionOnStack");
+	ex.setErrorDesc("CompletionOnStack has thrown an UNEXPECTED exception");
+	ex.log();
+	}
+}
+
+void ClientErrorComponent::testCompletionFromCompletion() 
+    throw(ACSErrTypeCommon::CouldntAccessComponentExImpl)
+{
+    ACS_TRACE("ClientErrorComponent::testCompletionFromCompletion");
+
+    if (CORBA::is_nil(foo_m.in()) == true)
+	{
+	throw ACSErrTypeCommon::CouldntAccessComponentExImpl(
+				   __FILE__, __LINE__,
+				   "ClientErrorComponent::testCompletionFromCompletion");
+	}
+    try
+	{
+	CompletionImpl comp;
+
+	// OK Completion
+	ACS_SHORT_LOG((LM_INFO, "Example 6a: completionFromCompletion with depth 0."));
+	comp = foo_m->completionFromException(0);
+	comp.log();
+
+	// ERROR completion with an error trace inside.
+	ACS_SHORT_LOG((LM_INFO, "Example 6b: completionFromCompletion with depth 3."));
+	comp = foo_m->completionFromException(3);
+	comp.log();
+	}
+    catch(CORBA::SystemException &ex)
+	{
+	// Map......
+	ACSErrTypeCommon::GenericErrorExImpl ex(
+				   __FILE__, __LINE__,
+				   "ClientErrorComponent::testCompletionFromCompletion");
+	ex.setErrorDesc("completionFromCompletion has thrown a CORBA exception");
+	ex.log();
+	}
+    catch(...)
+	{
+	ACSErrTypeCommon::GenericErrorExImpl ex(__FILE__, __LINE__,
+							 "ClientErrorComponent::testCompletionFromCompletion");
+	ex.setErrorDesc("completionFromCompletion has thrown an UNEXPECTED exception");
+	ex.log();
+	}
+}
 
 void ClientErrorComponent::TestReceiveCorbaSystemException() 
     throw(ACSErrTypeCommon::CouldntAccessComponentExImpl)
@@ -360,7 +694,7 @@ void ClientErrorComponent::TestReceiveCorbaSystemException()
 				   __FILE__, __LINE__,
 				   "ClientErrorComponent::TestReceiveRemoteException");
 	}
-    ACS_SHORT_LOG((LM_INFO, "Example 3: Calls a method that throws a CORBA System Exception."));
+    ACS_SHORT_LOG((LM_INFO, "Example 5: Calls a method that throws a CORBA System Exception."));
     try
 	{
 	foo_m->corbaSystemException();
@@ -443,6 +777,14 @@ int main(int argc, char *argv[])
 	clientErrorComponent.TestReceiveRemoteCompletion();
     	ACS_SHORT_LOG((LM_TRACE, "acsexmplClientErrorComponent::main, calling TestReceiveCorbaSystemException()"));
 	clientErrorComponent.TestReceiveCorbaSystemException();
+    	ACS_SHORT_LOG((LM_TRACE, "acsexmplClientErrorComponent::main, calling testCompletionFromCompletion()"));
+	clientErrorComponent.testCompletionFromCompletion();
+    	ACS_SHORT_LOG((LM_TRACE, "acsexmplClientErrorComponent::main, calling testExceptionFromCompletion()"));
+	clientErrorComponent.testExceptionFromCompletion();
+    	ACS_SHORT_LOG((LM_TRACE, "acsexmplClientErrorComponent::main, calling testTypeException()"));
+	clientErrorComponent.testTypeException();
+    	ACS_SHORT_LOG((LM_TRACE, "acsexmplClientErrorComponent::main, calling testCompletionOnStack()"));
+	clientErrorComponent.testCompletionOnStack();
 	}
     catch(ACSErr::ACSbaseExImpl ex)
 	{

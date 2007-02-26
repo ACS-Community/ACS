@@ -21,7 +21,7 @@
 *
 *
 *
-* "@(#) $Id: acsexmplErrorComponentImpl.cpp,v 1.5 2006/11/01 10:09:50 cparedes Exp $"
+* "@(#) $Id: acsexmplErrorComponentImpl.cpp,v 1.6 2007/02/26 11:55:58 nbarriga Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -34,7 +34,7 @@
 #include <ACSErrTypeOK.h>
 #include <iostream>
 
-ACE_RCSID(acsexmpl, acsexmplErrorComponentImpl, "$Id: acsexmplErrorComponentImpl.cpp,v 1.5 2006/11/01 10:09:50 cparedes Exp $")
+ACE_RCSID(acsexmpl, acsexmplErrorComponentImpl, "$Id: acsexmplErrorComponentImpl.cpp,v 1.6 2007/02/26 11:55:58 nbarriga Exp $")
 
 /* ----------------------------------------------------------------*/
 ErrorComponent::ErrorComponent( 
@@ -65,35 +65,37 @@ void
 ErrorComponent::badMethod(CORBA::Short depth) 
     throw(CORBA::SystemException, ACSErrTypeCommon::GenericErrorEx)
 {
-    ACS_TRACE("::ErrorComponent::badMethod");
-    try
-	{
-	// We decrement the depth, because we are going to add one
-        // error here in any case.
-	buildErrorTrace(depth-1);
-	}
-    catch(ACSErrTypeCommon::GenericErrorExImpl &ex)
-	{
-	ACSErrTypeCommon::GenericErrorExImpl ex2(ex, 
-						 __FILE__, __LINE__, 
-						 "ErrorComponent::badMethod");
-	ex2.setErrorDesc("Generated multi level exception");
-	throw ex2.getGenericErrorEx();
-	}
-    catch(...)
-	{
-	ACSErrTypeCommon::UnexpectedExceptionExImpl ex2(__FILE__, __LINE__, 
-						 "ErrorComponent::badMethod");
-	throw ex2.getUnexpectedExceptionEx();
-	}
-    
-    /*
-     * We should get here only if a depth<=1 was requested.
-     */
-    ACSErrTypeCommon::GenericErrorExImpl ex(__FILE__, __LINE__, 
-					    "ErrorComponent::badMethod");
-    ex.setErrorDesc("An error trace with depth lower or equal to 1 was requested.");
-    throw ex.getGenericErrorEx();
+        ACS_TRACE("::ErrorComponent::badMethod");
+        if(depth>=1){
+            try
+                {
+                        // We decrement the depth, because we are going to add one
+                        // error here in any case.
+                        buildErrorTrace(depth-1);
+                }
+                catch(ACSErrTypeCommon::GenericErrorExImpl &ex)
+                {
+                        ACSErrTypeCommon::GenericErrorExImpl ex2(ex, 
+                                        __FILE__, __LINE__, 
+                                        "ErrorComponent::badMethod");
+                        ex2.setErrorDesc("Generated multi level exception");
+                        throw ex2.getGenericErrorEx();
+                }
+                catch(...)
+                {
+                        ACSErrTypeCommon::UnexpectedExceptionExImpl ex2(__FILE__, __LINE__, 
+                                        "ErrorComponent::badMethod");
+                        throw ex2.getUnexpectedExceptionEx();
+                }
+
+                /*
+                 * We should get here only if a depth<=1 was requested.
+                 */
+                ACSErrTypeCommon::GenericErrorExImpl ex(__FILE__, __LINE__, 
+                                "ErrorComponent::badMethod");
+                ex.setErrorDesc("An error trace with depth lower or equal to 1 was requested.");
+                throw ex.getGenericErrorEx();
+        }
 }
 
 
@@ -103,34 +105,36 @@ void ErrorComponent::typeException(CORBA::Short depth)
 	   ACSErrTypeCommon::ACSErrTypeCommonEx)
 {
     ACS_TRACE("::ErrorComponent::typeException");
-    try
-	{
-	// We decrement the depth, because we are going to add one
-        // error here in any case.
-	buildErrorTrace(depth-1);
-	}
-    catch(ACSErrTypeCommon::GenericErrorExImpl &ex)
-	{
-	ACSErrTypeCommon::GenericErrorExImpl ex2(ex, 
-						 __FILE__, __LINE__, 
-						 "ErrorComponent::badMethod");
-	ex2.setErrorDesc("Generated multi level exception");
-	throw ex2.getACSErrTypeCommonEx();
-	}
-    catch(...)
-	{
-	ACSErrTypeCommon::UnexpectedExceptionExImpl ex2(__FILE__, __LINE__, 
-						 "ErrorComponent::badMethod");
-	throw ex2.getUnexpectedExceptionEx();
-	}
-    
-    /*
-     * We should get here only if a depth<=1 was requested.
-     */
-    ACSErrTypeCommon::GenericErrorExImpl ex(__FILE__, __LINE__, 
-					    "ErrorComponent::badMethod");
-    ex.setErrorDesc("An error trace with depth lower or equal to 1 was requested.");
-    throw ex.getACSErrTypeCommonEx();
+    if(depth>=1){
+            try
+            {
+                    // We decrement the depth, because we are going to add one
+                    // error here in any case.
+                    buildErrorTrace(depth-1);
+            }
+            catch(ACSErrTypeCommon::GenericErrorExImpl &ex)
+            {
+                    ACSErrTypeCommon::GenericErrorExImpl ex2(ex, 
+                                    __FILE__, __LINE__, 
+                                    "ErrorComponent::badMethod");
+                    ex2.setErrorDesc("Generated multi level exception");
+                    throw ex2.getACSErrTypeCommonEx();
+            }
+            catch(...)
+            {
+                    ACSErrTypeCommon::UnexpectedExceptionExImpl ex2(__FILE__, __LINE__, 
+                                    "ErrorComponent::badMethod");
+                    throw ex2.getUnexpectedExceptionEx();
+            }
+
+            /*
+             * We should get here only if a depth<=1 was requested.
+             */
+            ACSErrTypeCommon::GenericErrorExImpl ex(__FILE__, __LINE__, 
+                            "ErrorComponent::badMethod");
+            ex.setErrorDesc("An error trace with depth lower or equal to 1 was requested.");
+            throw ex.getACSErrTypeCommonEx();
+    }
 }//typeException
 
 
