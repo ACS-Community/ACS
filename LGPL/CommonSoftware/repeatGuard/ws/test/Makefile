@@ -16,7 +16,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.1 2007/02/26 13:19:41 nbarriga Exp $"
+# "@(#) $Id: Makefile,v 1.2 2007/02/26 16:28:11 nbarriga Exp $"
 #
 # Makefile of ........
 #
@@ -50,13 +50,15 @@ USER_CFLAGS = -Wall
 #
 # C programs (public and local)
 # -----------------------------
-EXECUTABLES     = testRepeatGuard
+EXECUTABLES     = testRepeatGuard testRepeatGuardLogger
 EXECUTABLES_L   = 
 
 #
 # <brief description of xxxxx program>
 testRepeatGuard_OBJECTS   =	testRepeatGuard
-testRepeatGuard_LDFLAGS   = -lRepeatGuard -lacsutil -lTAO -lTAO_PortableServer
+testRepeatGuard_LDFLAGS   = -lRepeatGuard -lacsutil -lTAO -lTAO_PortableServer -llogging
+testRepeatGuardLogger_OBJECTS   =	testRepeatGuardLogger
+testRepeatGuardLogger_LDFLAGS   = -lRepeatGuardLogger -lRepeatGuard -lacsutil -lTAO -lTAO_PortableServer -llogging
 xxxxx_LIBS      =
 
 #

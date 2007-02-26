@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.1 2007/02/26 13:19:41 nbarriga Exp $"
+# "@(#) $Id: Makefile,v 1.2 2007/02/26 16:28:10 nbarriga Exp $"
 #
 # Makefile of ........
 #
@@ -51,17 +51,18 @@ xxxxx_LIBS      =
 #
 # Includes (.h) files (public only)
 # ---------------------------------
-INCLUDES        = RepeatGuard.h
+INCLUDES        = RepeatGuard.h RepeatGuardLogger.h
 
 #
 # Libraries (public and local)
 # ----------------------------
-LIBRARIES       = RepeatGuard
+LIBRARIES       = RepeatGuard RepeatGuardLogger
 LIBRARIES_L     =
 
 #
 # <brief description of lllll library>
 RepeatGuard_OBJECTS   = RepeatGuard
+RepeatGuardLogger_OBJECTS   = RepeatGuardLogger
 
 #
 # Scripts (public and local)
