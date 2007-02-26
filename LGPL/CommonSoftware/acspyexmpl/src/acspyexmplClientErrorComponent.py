@@ -48,6 +48,7 @@ from Acspy.Common.Err           import pyExceptionToCORBA
 from Acspy.Common.Err           import addComplHelperMethods
 from Acspy.Common.Log           import acsPrintExcDebug
 
+
 import acsexmplErrorComponent
 import ACSErrTypeCommonImpl
 import ACSErrTypeCommon
@@ -110,7 +111,7 @@ class ClientErrorComponent:
         
         Raises: ACSErrTypeCommonImpl.CouldntAccessComponentExImpl
         '''
-        self.logger.logTrace("ClientErrorComponent")
+        self.logger.logTrace("ClientErrorComponent.TestOk")
         
         if self.foo == None:
             raise ACSErrTypeCommonImpl.CouldntAccessComponentExImpl()
@@ -145,7 +146,7 @@ class ClientErrorComponent:
         
         Raises: ACSErrTypeCommonImpl.CouldntAccessComponentExImpl
         '''
-        self.logger.logTrace("ClientErrorComponent")
+        self.logger.logTrace("ClientErrorComponent.TestReceiveRemoteException")
 
         if self.foo == None:
             raise ACSErrTypeCommonImpl.CouldntAccessComponentExImpl()
@@ -200,7 +201,7 @@ class ClientErrorComponent:
                  
         Raises: ACSErrTypeCommonImpl.CouldntAccessComponentExImpl
         '''
-        self.logger.logTrace("ClientErrorComponent")
+        self.logger.logTrace("ClientErrorComponent.TestReceiveRemoteCompletion")
         
         if self.foo == None:
             raise ACSErrTypeCommonImpl.CouldntAccessComponentExImpl()
@@ -219,7 +220,7 @@ class ClientErrorComponent:
 		 comp.log()
 
 	    # ERROR completion with an error trace inside.
-            self.logger.logInfo("Example 2b: Calls a method that returns an Error completion.")
+            self.logger.logInfo("Example 2b: Calls a method that returns an Error completion, of depth 3.")
             
 	    comp2 = self.foo.completionFromException(3)
             addComplHelperMethods(comp2)
@@ -242,6 +243,143 @@ class ClientErrorComponent:
             badMethodEx.setErrorDesc("completionFromException has thrown an UNEXPECTED exception")
             badMethodEx.log()
 
+    def testExceptionFromCompletion(self):
+        '''
+        Calls exceptionFromCompletion, with differents depths, 
+        catches the exceptions(if any, there shouldn't be if depth<=0)
+        '''
+        self.logger.logTrace("ClientErrorComponent.testExceptionFromCompletion")
+        
+        self.logger.logInfo("Example 3a: ExceptionFromCompletion with depth 0")
+        try:
+            self.foo.exceptionFromCompletion(0)
+            self.logger.logInfo("OK: No exception thrown")
+        except ACSErrTypeCommon.GenericErrorEx, ex:
+            ex2=ACSErrTypeCommonImpl.UnexpectedExceptionExImpl(exception=ex)
+            ex2.addData("ErrorDesc","UNEXPECTED: shouldn't have thrown an exception")
+            ex2.log()
+        except Exception, ex:
+            ex2=ACSErrTypeCommonImpl.UnexpectedExceptionExImpl(exception=ex)
+            ex2.addData("ErrorDesc","UNEXPECTED: exceptionFromCompletion has thrown an UNKNOWN exception")
+            ex2.log()
+
+        self.logger.logInfo("Example 3b: ExceptionFromCompletion with depth 3")
+        try:
+            self.foo.exceptionFromCompletion(3)
+            self.logger.logInfo("UNEXPECTED: should have thrown an exception")
+        except ACSErrTypeCommon.GenericErrorEx, ex:
+            ex2=ACSErrTypeCommonImpl.GenericErrorExImpl(exception=ex,create=0)
+            self.logger.logInfo("OK: ACSErrTypeCommon.GenericErrorEx exception thrown")
+            ex2.log()
+        except Exception, ex:
+            ex2=ACSErrTypeCommonImpl.UnexpectedExceptionExImpl(exception=ex)
+            ex2.addData("ErrorDesc","UNEXPECTED: exceptionFromCompletion has thrown an UNKNOWN exception")
+            ex2.log()
+        
+
+    def testTypeException(self):
+        '''
+        Calls typeException, with differents depths,
+        catches the exceptions(if any, there shouldn't be if depth<=0)
+        '''
+        self.logger.logTrace("ClientErrorComponent.testTypeException")
+
+        self.logger.logInfo("Example 4a: TypeException with depth 0")
+        try:
+            self.foo.typeException(0)
+            self.logger.logInfo("OK: No exception thrown")
+        except ACSErrTypeCommon.GenericErrorEx, ex:
+            ex2=ACSErrTypeCommonImpl.UnexpectedExceptionExImpl(exception=ex)
+            ex2.addData("ErrorDesc","UNEXPECTED: shouldn't have thrown an exception")
+            ex2.log()
+        except Exception, ex:
+            ex2=ACSErrTypeCommonImpl.UnexpectedExceptionExImpl(exception=ex)
+            ex2.addData("ErrorDesc","UNEXPECTED: typeException has thrown an UNKNOWN exception")
+            ex2.log()
+
+        self.logger.logInfo("Example 4b: TypeException with depth 3")
+        try:
+            self.foo.typeException(3)
+            self.logger.logInfo("UNEXPECTED: should have thrown an exception")
+        except ACSErrTypeCommon.ACSErrTypeCommonEx, ex:
+            ex2=ACSErrTypeCommonImpl.GenericErrorExImpl(exception=ex,create=0)
+            self.logger.logInfo("OK: ACSErrTypeCommonEx exception thrown")
+            ex2.log()
+        except Exception, ex:
+            ex2=ACSErrTypeCommonImpl.UnexpectedExceptionExImpl(exception=ex)
+            ex2.addData("ErrorDesc","UNEXPECTED: typeException has thrown an UNKNOWN exception")
+            ex2.log()
+
+
+    def testCORBASystemException(self):
+        '''
+        Calls CORBASystemException, with differents depths,
+        catches the exceptions(if any, there shouldn't be if depth<=0)
+        '''
+        self.logger.logTrace("ClientErrorComponent.testTypeException")
+
+        self.logger.logInfo("Example 5: CORBA exception")
+
+        try:
+            self.foo.corbaSystemException()
+            self.logger.logInfo("UNEXPECTED: should have received an exception")
+        except CORBA.SystemException, ex:
+            ex2 = ACSErrTypeCommonImpl.GenericErrorExImpl(exception=ex)
+            self.logger.logInfo("OK: CORBA.SystemException exception received")
+            ex2.log()
+        except Exception, ex:
+            ex2=ACSErrTypeCommonImpl.UnexpectedExceptionExImpl(exception=ex)
+            ex2.addData("ErrorDesc","UNEXPECTED: corbaSystemException has thrown an UNKNOWN exception")
+            ex2.log()
+
+
+    def testCompletionFromCompletion(self):
+        '''
+        Calls completionFromCompletion, with differents depths,
+        catches the exceptions(if any, there shouldn't be if depth<=0)
+        '''
+        self.logger.logTrace("ClientErrorComponent.testCompletionFromCompletion")
+
+        self.logger.logInfo("Example 6a: completionFromCompletion with depth 0")
+
+        try:
+            comp = self.foo.completionFromCompletion(0)
+        except Exception, ex:
+            ex2 = ACSErrTypeCommonImpl.UnknownExImpl(exception=ex)
+            ex2.addData("ErrorDesc","completionFromCompletion has thrown an UNEXPECTED exception")
+            ex2.log()
+        
+        addComplHelperMethods(comp)
+
+        if comp.isErrorFree() == 1:
+            self.logger.logInfo("Completion Ok, without error trace")
+        else:
+            self.logger.logInfo("Completion with error trace (UNEXPECTED)")
+            comp.log()
+
+        self.logger.logInfo("Example 6b: completionFromCompletion with depth 3")
+        try:
+            comp = self.foo.completionFromCompletion(3)
+        except Exception, ex:
+            ex2 = ACSErrTypeCommonImpl.UnknownExImpl(exception=ex)
+            ex2.addData("ErrorDesc","completionFromCompletion has thrown an UNEXPECTED exception")
+            ex2.log()
+        
+        addComplHelperMethods(comp)
+
+        if comp.isErrorFree() == 1:
+            self.logger.logInfo("UNEXPECTED: Completion without error trace")
+        else:
+            self.logger.logInfo("OK: Completion with error trace")
+            comp.log()
+
+        
+
+    #no point doing this in python
+    def testCompletionOnStack(self):
+        pass
+
+
 #-----------------------------------------------------------------------------  
 if __name__=="__main__":
     
@@ -256,12 +394,13 @@ if __name__=="__main__":
         clientErrorComponent = ClientErrorComponent(client, argv[1])
         
         #Call the displayMessage() method existing in the interface for ErrorComponent
-        print("Calling TestOk()");
 	clientErrorComponent.TestOk()
-	print("Calling TestReceiveRemoteException()");
         clientErrorComponent.TestReceiveRemoteException()
         clientErrorComponent.TestReceiveRemoteCompletion()
-    
+        clientErrorComponent.testExceptionFromCompletion() 
+        clientErrorComponent.testTypeException()
+        clientErrorComponent.testCORBASystemException()
+        clientErrorComponent.testCompletionFromCompletion() 
     except ACSError, ex:
         # We should never get here, because the methods in the example
         # should be all self contained and none of them should throw
