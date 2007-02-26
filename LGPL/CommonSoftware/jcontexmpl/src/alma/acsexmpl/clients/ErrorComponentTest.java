@@ -3,13 +3,16 @@ package alma.acsexmpl.clients;
 import org.omg.CORBA.SystemException;
 
 import alma.acs.exceptions.AcsJException;
+import alma.acs.exceptions.AcsJCompletion;
 
 import alma.ACSErrTypeCommon.GenericErrorEx;
 import alma.ACSErrTypeCommon.ACSErrTypeCommonEx;
+import alma.ACSErrTypeCommon.UnknownEx;
 
 import alma.ACSErrTypeCommon.wrappers.AcsJACSErrTypeCommonEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJGenericErrorEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJCORBAProblemEx;
+import alma.ACSErrTypeCommon.wrappers.AcsJUnknownEx;
 
 import alma.acs.component.client.ComponentClientTestCase;
 import alma.acsexmplErrorComponent.ErrorComponent;
@@ -144,11 +147,64 @@ public class ErrorComponentTest extends ComponentClientTestCase {
         }
 
 	public void testCompletionFromException() {
-		//fail("Not yet implemented");
+		// depth == 0
+                AcsJCompletion comp=null;
+		try {
+			// call the component method
+			comp = AcsJCompletion.fromCorbaCompletion(errorComp.completionFromException((short)0));
+		} catch (Throwable th) {
+                        m_logger.info("Caught an unexpected Exception");
+                        AcsJUnknownEx ex = new AcsJUnknownEx(th);
+                        ex.log(m_logger);
+			fail("No exception should be thrown");
+		}			
+                verifyErrorTrace(1, new AcsJGenericErrorEx(comp.getAcsJException()));
+
+		// depth > 0
+		short[] depths = new short[] {1, 2, 3, 5, 13};
+		for (int i = 0; i < depths.length; i++) {
+			try {
+				// call the component method
+				comp = AcsJCompletion.fromCorbaCompletion(errorComp.completionFromException((depths[i])));
+			} catch (Throwable th) {
+				m_logger.info("Caught an unexpected Exception at depth "+depths[i]);
+                                AcsJUnknownEx ex = new AcsJUnknownEx(th);
+                                ex.log(m_logger);
+                                fail("No exception should be thrown");
+			}
+                        verifyErrorTrace(depths[i]+1, new AcsJGenericErrorEx(comp.getAcsJException()));
+		}
+
 	}
 
 	public void testCompletionFromCompletion() {
-		//fail("Not yet implemented");
+		// depth == 0
+                AcsJCompletion comp=null;
+		try {
+			// call the component method
+			comp = AcsJCompletion.fromCorbaCompletion(errorComp.completionFromCompletion((short)0));
+		} catch (Throwable th) {
+                        m_logger.info("Caught an unexpected Exception");
+                        AcsJUnknownEx ex = new AcsJUnknownEx(th);
+                        ex.log(m_logger);
+			fail("No exception should be thrown");
+		}			
+                verifyErrorTrace(1, new AcsJGenericErrorEx(comp.getAcsJException()));
+ 
+		// depth > 0
+		short[] depths = new short[] {1, 2, 3, 5, 13};
+		for (int i = 0; i < depths.length; i++) {
+			try {
+				// call the component method
+				comp = AcsJCompletion.fromCorbaCompletion(errorComp.completionFromCompletion((depths[i])));
+			} catch (Throwable th) {
+				m_logger.info("Caught an unexpected Exception at depth "+depths[i]);
+                                AcsJUnknownEx ex = new AcsJUnknownEx(th);
+                                ex.log(m_logger);
+                                fail("No exception should be thrown");
+			}
+                        verifyErrorTrace(depths[i]+1, new AcsJGenericErrorEx(comp.getAcsJException()));
+		}
 	}
 
 	public void testCompletionOnStack() {

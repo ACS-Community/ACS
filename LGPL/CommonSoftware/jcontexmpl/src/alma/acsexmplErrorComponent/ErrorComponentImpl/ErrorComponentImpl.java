@@ -154,18 +154,18 @@ public class ErrorComponentImpl extends ComponentImplBase implements ErrorCompon
 	 * 
 	 * @see alma.acsexmplErrorComponent.ErrorComponentOperations#completionFromCompletion(short)
 	 */
-	public Completion completionFromCompletion(short depth) {
-		AcsJCompletion completion = internalCompletionMethod(depth);
-		if (completion.isError()) {
-			// here we show how to wrap the error from a given completion with a new completion
-			AcsJCompletion newCompletion = new GenericErrorAcsJCompletion(completion);
-			return newCompletion.toCorbaCompletion();
-		}
-		else {
-			// if there is no error, we just return the completion directly
-			return completion.toCorbaCompletion();
-		}
-	}
+        public Completion completionFromCompletion(short depth) {
+                AcsJCompletion completion=null;                
+                if(depth<=1){
+                        completion = internalCompletionMethod(depth);
+                        return completion.toCorbaCompletion();
+                }else{
+                        completion = internalCompletionMethod(depth-1);
+                        // here we show how to wrap the error from a given completion with a new completion
+                        AcsJCompletion newCompletion = new GenericErrorAcsJCompletion(completion);
+                        return newCompletion.toCorbaCompletion();
+                }
+        }
 	
 	
 	/**
