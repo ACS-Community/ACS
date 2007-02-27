@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: testRepeatGuardLogger.cpp,v 1.1 2007/02/26 16:28:11 nbarriga Exp $"
+* "@(#) $Id: testRepeatGuardLogger.cpp,v 1.2 2007/02/27 09:14:35 nbarriga Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -31,7 +31,7 @@
 #include <stdio.h>
 #include <string.h>
 
-static char *rcsId="@(#) $Id: testRepeatGuardLogger.cpp,v 1.1 2007/02/26 16:28:11 nbarriga Exp $"; 
+static char *rcsId="@(#) $Id: testRepeatGuardLogger.cpp,v 1.2 2007/02/27 09:14:35 nbarriga Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <unistd.h>
@@ -41,9 +41,13 @@ int main(int argc, char *argv[])
 {
 	Logging::RepeatGuardLogger rg("mylogger",1,10);
 
-	for(int i=0;i<50;i++)
-			rg.log("este es un %s y un numero:%d", "log",3);
-
+	for(int i=0;i<50;i++){
+	    rg.logAndIncrement("This is a %s", "log");
+        }
+	for(int i=0;i<50;i++){
+            usleep(200000);
+	    rg.logAndIncrement("This is a slower %s", "log");
+        }
 	return 0;
 
 }

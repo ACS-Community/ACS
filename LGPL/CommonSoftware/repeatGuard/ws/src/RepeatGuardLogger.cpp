@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: RepeatGuardLogger.cpp,v 1.1 2007/02/26 16:28:11 nbarriga Exp $"
+* "@(#) $Id: RepeatGuardLogger.cpp,v 1.2 2007/02/27 09:14:35 nbarriga Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -25,9 +25,10 @@
 
 #include "vltPort.h"
 
-static char *rcsId="@(#) $Id: RepeatGuardLogger.cpp,v 1.1 2007/02/26 16:28:11 nbarriga Exp $"; 
+static char *rcsId="@(#) $Id: RepeatGuardLogger.cpp,v 1.2 2007/02/27 09:14:35 nbarriga Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
+#include <sstream>
 
 #include "RepeatGuardLogger.h"
 
@@ -42,17 +43,27 @@ namespace Logging{
                 delete mGuard;
         }
 
-        void RepeatGuardLogger::log(const char *format, ...){
+        //void RepeatGuardLogger::log(const char *format, ...){}
+
+        void RepeatGuardLogger::logAndIncrement(const char *format, ...){
 #define MAX_MSG_SIZE 512
-                char msg[MAX_MSG_SIZE];
-                va_list arglist;
-                va_start (arglist, format);
-                vsnprintf(msg,MAX_MSG_SIZE,format,arglist);
-                Logger::log(LM_INFO,msg);
+                if(mGuard->checkAndIncrement()){
+                        char buffer[MAX_MSG_SIZE];
+                        va_list arglist;
+                        va_start (arglist, format);
+                        vsnprintf(buffer,MAX_MSG_SIZE,format,arglist);
+                        std::string msg(buffer);
+                        appendCount(msg);
+                        Logger::log(LM_INFO,msg);
+                }
         }
 
-        void RepeatGuardLogger::logAndIncrement(){
-
+        void RepeatGuardLogger::appendCount(std::string &msg){
+                msg+="; message repeated ";
+                std::stringstream strstr;
+                strstr<<mGuard->count();
+                msg+=strstr.str();
+                msg+=" times.";
         }
 
 }
