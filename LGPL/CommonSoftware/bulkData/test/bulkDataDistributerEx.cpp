@@ -20,7 +20,7 @@
  *
  *
  *
- * "@(#) $Id: bulkDataDistributerEx.cpp,v 1.6 2006/07/13 13:25:07 rcirami Exp $"
+ * "@(#) $Id: bulkDataDistributerEx.cpp,v 1.7 2007/02/28 08:47:50 rcirami Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -53,6 +53,9 @@ int main(int argc, char *argv[])
 {
     // Creates and initializes the SimpleClient object
     SimpleClient client;
+    //ACE_Time_Value start_time; // for performances test
+    //ACE_Time_Value elapsed_time;
+    //double dtime;
 
     if (client.init(argc,argv) == 0)
 	{
@@ -103,11 +106,15 @@ int main(int argc, char *argv[])
 	distributer->multiConnect(receiver2.in());
 	//distributer->connectByName("BulkDataReceiverDistr2");
 
+	//start_time = ACE_OS::gettimeofday(); // for performances test
 	sender->startSend();
 	
 	sender->paceData();
 
 	sender->stopSend();
+	//elapsed_time = ACE_OS::gettimeofday() - start_time; // for performances test
+	//dtime = elapsed_time.sec() + ( elapsed_time.usec() / 1000000. );
+	//cout << "dtime: " << dtime << endl;
 
 	sender->disconnect();
 
