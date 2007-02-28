@@ -95,7 +95,7 @@ public class Profiler extends alma.acs.util.StopWatch
 	    String out = "";
 	    
 	    out = out + "#ACS PROFILER# msg=" + msg;
-	    out = out + ", avg=" + m_totalTime /  m_totalNumStarts; 
+	    out = out + ", avg=" + (double)((double)m_totalTime /  (double)m_totalNumStarts); 
 	    out = out + ", runs=" + m_totalNumStarts; 
 	    out = out + ", mindur=" + m_minDuration;
 	    out = out + ", maxdur=" + m_maxDuration;
