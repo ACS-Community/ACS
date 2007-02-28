@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingBaseLog.h,v 1.10 2007/02/01 20:52:16 sharring Exp $"
+* "@(#) $Id: loggingBaseLog.h,v 1.11 2007/02/28 16:14:00 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -223,6 +223,66 @@ namespace Logging
         // Data
         unsigned int* pCount_;
     };  
+
+#ifdef MAKE_VXWORKS
+// we have to define (copy from loki) our own RefCountedMT for VxWorks since the one for loki is too compley for VxWorks compiler
+	template <class P>
+        class RefCountedMT : public Loki::ObjectLevelLockable<RefCountedMT<P>, LOKI_DEFAULT_MUTEX >
+        {
+            typedef Loki::ObjectLevelLockable<RefCountedMT<P>, LOKI_DEFAULT_MUTEX > base_type;
+            typedef typename base_type::IntType       CountType;
+            typedef volatile CountType               *CountPtrType;
+
+        public:
+            RefCountedMT()
+            {
+                pCount_ = reinterpret_cast<CountPtrType>(
+                    Loki::SmallObject<LOKI_DEFAULT_THREADING_NO_OBJ_LEVEL>::operator new(
+                        sizeof(*pCount_)));
+                assert(pCount_);
+                // *pCount_ = 1;
+                Loki::ObjectLevelLockable<RefCountedMT, LOKI_DEFAULT_MUTEX>::AtomicAssign(*pCount_, 1);
+            }
+
+            RefCountedMT(const RefCountedMT& rhs) : 
+		Loki::ObjectLevelLockable<RefCountedMT<P>, LOKI_DEFAULT_MUTEX>( rhs ),
+		pCount_(rhs.pCount_)
+            {}
+
+            //MWCW lacks template friends, hence the following kludge
+            template <typename P1>
+            RefCountedMT(const RefCountedMT<P1>& rhs) 
+            : pCount_(reinterpret_cast<const RefCountedMT<P>&>(rhs).pCount_)
+            {}
+
+            P Clone(const P& val)
+            {
+		Loki::ObjectLevelLockable<RefCountedMT, LOKI_DEFAULT_MUTEX>::AtomicIncrement(*pCount_);
+                return val;
+            }
+
+            bool Release(const P&)
+            {
+                if (! Loki::ObjectLevelLockable<RefCountedMT, LOKI_DEFAULT_MUTEX>::AtomicDecrement(*pCount_))
+                {
+                    Loki::SmallObject<LOKI_DEFAULT_THREADING_NO_OBJ_LEVEL>::operator delete(
+                        const_cast<CountType *>(pCount_), 
+                        sizeof(*pCount_));
+                    return true;
+                }
+                return false;
+            }
+
+            void Swap(RefCountedMT& rhs)
+            { std::swap(pCount_, rhs.pCount_); }
+
+            enum { destructiveCopy = false };
+
+        private:
+            // Data
+            CountPtrType pCount_;
+        };
+#endif //MAKE_VXWORKS
 };
 
 #endif /*!_H*/

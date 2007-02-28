@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingLogger.h,v 1.14 2007/02/01 17:37:03 sharring Exp $"
+* "@(#) $Id: loggingLogger.h,v 1.15 2007/02/28 16:14:00 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -54,11 +54,20 @@ namespace Logging
       public:
 	//----------------------------------------------------
 	///Logger smart pointer
+#ifndef MAKE_VXWORKS
 	typedef Loki::SmartPtr<Logger, 
 			       Loki::RefCountedMTAdj<Loki::ObjectLevelLockable>::RefCountedMT,
 			       Loki::AllowConversion,
 			       Loki::NoCheck,
 			       Loki::DefaultSPStorage> LoggerSmartPtr;
+#else
+	typedef Loki::SmartPtr<Logger, 
+			       RefCountedMT,
+			       Loki::AllowConversion,
+			       Loki::NoCheck,
+			       Loki::DefaultSPStorage> LoggerSmartPtr;
+#endif
+
 	
 	/**
 	 * Create a logger for a named subsystem. This method is pure abstract
