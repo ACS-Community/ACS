@@ -2,11 +2,12 @@
 #*******************************************************************************
 # E.S.O. - ALMA project
 #
-# "@(#) $Id: acsMakeCppStubsLibrary,v 1.6 2006/05/05 12:19:13 mzampare Exp $" 
+# "@(#) $Id: acsMakeCppStubsLibrary,v 1.7 2007/02/28 07:13:01 mzampare Exp $" 
 #
 idlName=$1
-makeDir=$2
-vxWorks=$3
+idlNameLIBS=$2
+makeDir=$3
+vxWorks=$4
 
 FILE=/tmp/IdlCppStubsGeneration$$_$USER
 FILE2=/tmp/IdlCppStubsSubMake$$
@@ -26,7 +27,8 @@ then
 	    echo "include ../object/${libName}.dx" >> $FILE
 	else   
 	    echo "../object/${libName}.da:" >> $FILE
-	    echo "	-vltMakeLibraryDependencies $libName \"${idlName}S ${idlName}C\" \"\" \"\" \"\" > ../object/${libName}.da" >> $FILE
+	    echo "	-vltMakeLibraryDependencies $libName \"${idlName}S ${idlName}C\" \"\" \"\" \"${idlNameLIBS}\" > ../object/${libName}.da" >> $FILE
+	    echo "vpath %.so \$(subst -L,:,\$(L_PATH)) " >> $FILE
 	    echo "include ../object/${libName}.da" >> $FILE
 	fi
 	echo "" >> $FILE

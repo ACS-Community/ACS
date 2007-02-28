@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ALMA  project
 #
-# "@(#) $Id: idlMakefile,v 1.108 2006/02/14 10:12:52 mzampare Exp $"
+# "@(#) $Id: idlMakefile,v 1.109 2007/02/28 07:13:01 mzampare Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -43,6 +43,10 @@
 #   The stubs and skeletons for C++ are stored in the object directory.
 #   The C++ Stubs will be compiled and put in a library called 
 #   ../lib/lib<idl>Stubs.a
+#   
+#   Additional libraries for the C++ stubs can be provided by specifying
+#   the tag  <idl>Stubs_LIBS = <lll>
+#
 #   The Java files are directly compiled and jarred in a jarfile
 #   with the same name under lib, the source and class files deleted.
 #
@@ -390,7 +394,7 @@ endif # MAKE_VXWORKS
 # $(<F) 
 ifeq ($(call mustBuild,C++),true)
 	- @echo "== IDL Compiling Stubs into libraries/executable (C++): $(<F)"
-	$(AT) acsMakeCppStubsLibrary $(*F) $(MAKEDIR) $(MAKE_VXWORKS)
+	$(AT) acsMakeCppStubsLibrary $(*F) "$($(*F)Stubs_LIBS)" $(MAKEDIR) $(MAKE_VXWORKS)
 	$(AT) touch ../object/.$(*F).fake
 	$(AT) touch .idl-compilation-end
 endif
