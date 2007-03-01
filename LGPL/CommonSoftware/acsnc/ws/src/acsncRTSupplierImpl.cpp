@@ -19,7 +19,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsncRTSupplierImpl.cpp,v 1.13 2007/02/13 08:56:12 bjeram Exp $"
+* "@(#) $Id: acsncRTSupplierImpl.cpp,v 1.14 2007/03/01 14:01:14 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -130,6 +130,18 @@ RTSupplier::worker(void* param_p)
 				   supplier_p->channelName_mp));
 		    CORBAProblemExImpl ex(_ex);
 		    ex.log();
+		    }
+		catch(CORBA::SystemException &ex)
+		    {
+//tbd: we have to improve here the erro handling. Now we print out more that is necessary
+		    ACS_SHORT_LOG((LM_ERROR,"RTSupplier::worker() %s channel - problem publishing a saved event!",
+				   supplier_p->channelName_mp));
+		    ACSErrTypeCommon::CORBAProblemExImpl corbaProblemEx(__FILE__, __LINE__,
+							    "MACIContainerServices::getCORBAComponentNonSticky");
+		    corbaProblemEx.setMinor(ex.minor());
+		    corbaProblemEx.setCompletionStatus(ex.completed());
+		    corbaProblemEx.setInfo(ex._info().c_str());
+		    corbaProblemEx.log();
 		    }
 		catch(...)
 		    {
