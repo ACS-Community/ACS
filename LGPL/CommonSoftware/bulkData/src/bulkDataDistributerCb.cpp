@@ -10,8 +10,10 @@ BulkDataDistributerCb::BulkDataDistributerCb()
     dim_m = 0;
     count_m = 0;
 
-    loop_m = 5;
-    waitPeriod_m.set(0L, 400000L);
+    //loop_m = 5;
+    loop_m = 1000;
+    //waitPeriod_m.set(0L, 400000L);
+    waitPeriod_m.set(0L, 100L); // set to 0.1 ms to improve Distributor performance
 
     frameCount_m = 0;
 
@@ -59,9 +61,13 @@ int BulkDataDistributerCb::handle_stop (void)
     locLoop = loop_m;
     while ( (frameCount_m != 0) && locLoop > 0)  
 	{
-	  ACE_OS::sleep(waitPeriod_m);
-	  locLoop--; 
+	ACE_OS::sleep(waitPeriod_m);
+	locLoop--; 
 	} // we didn't receive the first frame yet
+    if ( locLoop == 0 ) // TBD error handling has to be done
+	{
+	ACS_SHORT_LOG((LM_WARNING,"BulkDataDistributerCb::handle_stop timeout expired"));
+	}
 
     //cout << "CCCCCCCCCCCCCCCCC enter stop state " << state_m << " " << substate_m << endl;
 
