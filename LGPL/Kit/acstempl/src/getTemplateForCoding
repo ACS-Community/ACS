@@ -2,7 +2,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: getTemplateForCoding,v 1.28 2005/08/03 09:17:42 mpasquat Exp $" 
+# "@(#) $Id: getTemplateForCoding,v 1.29 2007/03/01 15:54:35 agrimstrup Exp $" 
 # who       when      what
 # --------- --------  ----------------------------------------------
 # gchiozzi  27/06/95  Added c++ and various templates
@@ -29,13 +29,25 @@
 #   See getTemplate
 #------------------------------------------------------------------------
 
+
+if [ "$INTROOT" != "" ] && [ -d "$INTROOT/templates/forCoding" ]
+    #
+    # This case will only occur AFTER a "make all install" in this dir.
+    then
+    ACSTEMPLATES=$INTROOT/templates 
+elif [ "$VLTROOT" != "" ] && [ -d "$VLTROOT/templates/forCoding" ]
+    then
+    ACSTEMPLATES=$VLTROOT/templates      
+elif [ -d "$ACSROOT/templates/forCoding" ]
+    then 
+    ACSTEMPLATES=$ACSROOT/templates
+else
+    echo "\$ACSTEMPLATES not defined, no purpose in going further"
+    exit -1 
+fi
+
 T_DIR=$ACSTEMPLATES/forCoding
 
-if [[ "$ACSTEMPLATES" -eq "" ]];
-    then
-    echo "\$ACSTEMPLATES not defined, no purpose in going further"
-    exit
-fi
 
 while clear
 do
@@ -97,7 +109,7 @@ xyz
             c++-small-main|c++-file|c++-class-file)
                 TEMPLATE=$T_DIR/$OPTION.template
                 FILE_NAME=""
-                FILE_SUFFIX=".C"
+                FILE_SUFFIX=".cpp"
                 COMMENT="* "
                 MODE=644
                 ;;
