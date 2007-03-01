@@ -351,8 +351,25 @@ public class LogConfig {
     		System.out.println(level.toString() + ": " + msg + (thr != null ? thr.toString() : ""));
     	}
     }
-    
-    
+   
+    public void setMinLogLevelLocal(int level){
+        loggingConfig.setMinLogLevelLocal(level);
+        notifySubscribers();
+    }
+
+    public void setMinLogLevel(int level){
+        loggingConfig.setMinLogLevel(level);
+        notifySubscribers();
+    }
+ 
+
+    public int getMinLogLevelLocal(){
+        return loggingConfig.getMinLogLevelLocal();
+    }
+
+    public int getMinLogLevel(){
+        return loggingConfig.getMinLogLevel();
+    }
     
     /////////////////////////////////////////////////////////////////////
     // Propagation of configuration updates to various logging classes
