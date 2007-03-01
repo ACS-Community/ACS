@@ -467,6 +467,10 @@ public class LogFileCache implements ILogMap {
 		if (strs.length>15) {
 			logmessage=strs[15];
 		}
+		String audience = null;
+		if (strs.length>16) {
+			audience=strs[16];
+		}
         
         Vector<ILogEntry.AdditionalData> addDatas = null;
         if (strs.length>ILogEntry.NUMBER_OF_FIELDS) {
@@ -492,6 +496,7 @@ public class LogFileCache implements ILogMap {
         		stacklevel,
         		logmessage,
         		srcObject,
+                        audience,
         		addDatas);
 	}
 	

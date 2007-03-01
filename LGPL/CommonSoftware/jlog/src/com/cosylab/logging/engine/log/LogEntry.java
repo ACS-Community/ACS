@@ -53,6 +53,7 @@ public class LogEntry implements ILogEntry {
 	private Integer stackLevel;
 	private String logMessage;
 	private String sourceObject;
+	private String audience;
 	
 	// The additional data
 	private  Vector<LogEntry.AdditionalData> additionalData = null;
@@ -78,6 +79,7 @@ public class LogEntry implements ILogEntry {
 	 * @param stacklevel ...
 	 * @param logmessage ...
 	 * @param srcObject ...
+	 * @param audience ...
 	 * @param addDatas The additional data as a Vector<String>
 	 *                 The Vector contains in the even position the name 
 	 *                 and in the odd the value. It can be null.
@@ -102,6 +104,7 @@ public class LogEntry implements ILogEntry {
 			Integer stacklevel,
 			String logmessage,
 	        String srcObject,
+	        String audience,
 	        Vector<AdditionalData> addDatas) {
 		if(null != milliseconds) {
 			this.date=new Date(milliseconds);
@@ -124,6 +127,7 @@ public class LogEntry implements ILogEntry {
 		this.stackLevel=stacklevel;
 		this.logMessage=logmessage;
 		this.sourceObject=srcObject;
+		this.audience=audience;
 		// Add the additional datas, if any
 		if (addDatas!=null) {
 			additionalData = new Vector<LogEntry.AdditionalData>();
@@ -242,6 +246,9 @@ public class LogEntry implements ILogEntry {
 			case FIELD_SOURCEOBJECT: {
 				return sourceObject;
 			}
+			case FIELD_AUDIENCE: {
+				return audience;
+			}
 			case FIELD_FILE: {
 				return file;
 			}
@@ -307,6 +314,10 @@ public class LogEntry implements ILogEntry {
 			}
 			case FIELD_SOURCEOBJECT: {
 				sourceObject=(String)value;
+				return;
+			}
+			case FIELD_AUDIENCE: {
+				audience=(String)value;
 				return;
 			}
 			case FIELD_FILE: {

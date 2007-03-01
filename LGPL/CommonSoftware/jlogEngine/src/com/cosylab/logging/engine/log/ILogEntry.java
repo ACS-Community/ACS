@@ -90,6 +90,7 @@ public interface ILogEntry extends Serializable {
 	public static final short FIELD_STACKID = 13;
 	public static final short FIELD_STACKLEVEL = 14;
 	public static final short FIELD_LOGMESSAGE = 15;
+        public static final short FIELD_AUDIENCE=16;
 	
 	public static final String DATA_ELEMENT_TAG_NAME = "Data";
 	public static final String HEADER_ELEMENT_TAG_NAME = "Header";
@@ -113,7 +114,8 @@ public interface ILogEntry extends Serializable {
 		"URI",
 		"Stack ID",
 		"Stack Level",
-		"Log Message"} ;
+		"Log Message",
+                "Audience"} ;
 
 	public static final Class[] fieldClasses = { 
 	    Date.class, // Time Stamp
@@ -131,7 +133,8 @@ public interface ILogEntry extends Serializable {
 		String.class, //URI
 		String.class, //Stack ID
 		Integer.class, //Stack Level
-		String.class}; // Log Message
+		String.class, // Log Message
+                String.class};//Audience
 	
 	// The name of the attributes in XML files
 	public static final String[] tagAttributes =
@@ -151,7 +154,8 @@ public interface ILogEntry extends Serializable {
 		"URI",
 		"StackId",
 		"StackLevel",
-		""} ; // Place holeder: not an attribute in the XML
+		"", // Place holeder: not an attribute in the XML
+                "Audience"};
 	    
 	public static final String TIME_FORMAT = "yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'SSS";
 	
