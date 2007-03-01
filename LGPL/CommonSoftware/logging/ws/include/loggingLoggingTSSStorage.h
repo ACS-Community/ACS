@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingLoggingTSSStorage.h,v 1.3 2006/01/06 20:04:07 dfugate Exp $"
+* "@(#) $Id: loggingLoggingTSSStorage.h,v 1.4 2007/03/01 13:41:47 nbarriga Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -63,6 +63,7 @@ class LoggingTSSStorage
 	    m_file = 0;
 	    m_line = 0UL;
 	    sourceObject_m = 0;
+	    audience_m = 0;
 	    m_lflags = 0;
 	    m_stackId = 0;
 	    m_stackLevel = 0;
@@ -89,6 +90,12 @@ class LoggingTSSStorage
     
     void 
     sourceObject(const ACE_TCHAR * soName) { sourceObject_m = soName; };
+
+    const ACE_TCHAR * 
+    audience() { return audience_m; };
+    
+    void 
+    audience(const ACE_TCHAR * soName) { audience_m = soName; };
     
     unsigned int flags() { return m_lflags; };
     void flags(unsigned int flags) { m_lflags=flags; };
@@ -158,6 +165,7 @@ class LoggingTSSStorage
     const ACE_TCHAR * m_file;
     unsigned long m_line;
     const ACE_TCHAR * sourceObject_m;
+    const ACE_TCHAR * audience_m;
     unsigned int m_lflags;
     const ACE_TCHAR * m_stackId;
     int m_stackLevel;

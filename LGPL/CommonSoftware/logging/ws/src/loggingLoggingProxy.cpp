@@ -19,7 +19,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: loggingLoggingProxy.cpp,v 1.26 2007/01/05 10:19:08 bjeram Exp $"
+* "@(#) $Id: loggingLoggingProxy.cpp,v 1.27 2007/03/01 13:41:47 nbarriga Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -56,7 +56,7 @@
 #define LOG_NAME "Log"
 #define DEFAULT_LOG_FILE_NAME "acs_local_log"
 
-ACE_RCSID(logging, logging, "$Id: loggingLoggingProxy.cpp,v 1.26 2007/01/05 10:19:08 bjeram Exp $");
+ACE_RCSID(logging, logging, "$Id: loggingLoggingProxy.cpp,v 1.27 2007/03/01 13:41:47 nbarriga Exp $");
 
 ACE_TCHAR* LoggingProxy::m_LogEntryTypeName[] =
 {
@@ -292,6 +292,12 @@ LoggingProxy::log(ACE_Log_Record &log_record)
 	xml += " SourceObject=\"" + ACE_CString((*tss)->sourceObject()) + "\"";
 	}
     
+    //audience
+    if ((*tss)->audience()!=0)
+	{
+	xml += " Audience=\"" + ACE_CString((*tss)->audience()) + "\"";
+	}
+
     if (log_record.priority()>=ACE::log2(LM_WARNING))		// LM_WARNING+
 	{
 	// stackId
@@ -503,6 +509,21 @@ const ACE_TCHAR * LoggingProxy::SourceObject()
     else
 	return 0;
 }//SourceObject
+
+void
+LoggingProxy::audience(const ACE_TCHAR *aud)
+{
+  if (tss)
+    (*tss)->audience(aud);
+}
+
+const ACE_TCHAR * LoggingProxy::audience()
+{
+    if (tss)
+	return (*tss)->audience();
+    else
+	return 0;
+}//audience
 
 const ACE_TCHAR *
 LoggingProxy::ThreadName()

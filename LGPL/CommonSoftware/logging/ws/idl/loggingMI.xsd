@@ -69,6 +69,7 @@
 		<xs:attribute name="LogId" type="xs:string"/>
 		<xs:attribute name="Priority" type="xs:string"/>
 		<xs:attribute name="Uri" type="xs:string"/>
+		<xs:attribute name="Audience" type="xs:string"/>
 	</xs:complexType>
 	<xs:complexType name="LogEntryWithStack" mixed="true">
 		<xs:complexContent mixed="true">

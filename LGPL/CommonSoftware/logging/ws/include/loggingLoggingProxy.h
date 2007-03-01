@@ -21,7 +21,7 @@
  *    License along with this library; if not, write to the Free Software
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: loggingLoggingProxy.h,v 1.17 2007/01/05 10:19:12 bjeram Exp $"
+ * "@(#) $Id: loggingLoggingProxy.h,v 1.18 2007/03/01 13:41:47 nbarriga Exp $"
  *
  * who       when        what
  * --------  ----------  ----------------------------------------------
@@ -104,7 +104,7 @@
  * </OL> 
  * @author <a href=mailto:matej.sekoranja@ijs.si>Matej Sekoranja</a>,
  * Jozef Stefan Institute, Slovenia<br>
- * @version "@(#) $Id: loggingLoggingProxy.h,v 1.17 2007/01/05 10:19:12 bjeram Exp $"
+ * @version "@(#) $Id: loggingLoggingProxy.h,v 1.18 2007/03/01 13:41:47 nbarriga Exp $"
  */
 class logging_EXPORT LoggingProxy : public ACE_Log_Msg_Callback
 {
@@ -201,6 +201,13 @@ class logging_EXPORT LoggingProxy : public ACE_Log_Msg_Callback
     /// Return the name of the source object set by SourceObject
     /// The name is global per thread (stored in thread-specific storage TSS)
     static const ACE_TCHAR * SourceObject();
+    
+    /// Set the audience intended for the log message.
+    static void audience(const ACE_TCHAR *aud);
+
+    /// Return the audience.
+    /// The name is global per thread (stored in thread-specific storage TSS)
+    static const ACE_TCHAR * audience();
     
     /// Supply data with the log entry that follows.
     /// The maximum lenghth for AddData value is ADD_DATA_VALUE_MAX (255+\0). If it is too long it will be truncated.
