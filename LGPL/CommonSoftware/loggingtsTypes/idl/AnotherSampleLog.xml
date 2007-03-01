@@ -7,7 +7,8 @@
 	shortDescription="Example LogDefinitionType"
 	description="Longer description of the sample LogDefinitionType"
 	URL="http://someurl.org"
-	_prefix="alma">
+	_prefix="alma"
+        xsi:schemaLocation="Alma/ACSLogTS ACSLogTS.xsd">
 	
 	<LogDefinition
 		logName="logWithMembers"
