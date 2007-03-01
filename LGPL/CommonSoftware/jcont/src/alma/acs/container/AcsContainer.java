@@ -97,6 +97,7 @@ public class AcsContainer extends ContainerPOA
 
     private final ComponentMap m_activeComponentMap;
 
+    private LogConfig logConfig;
     /**
      * Cache for method {@link #getCDB()}. Don't use this field directly.
      */
@@ -166,7 +167,7 @@ public class AcsContainer extends ContainerPOA
 		
 		// init logging parameters
 		
-		LogConfig logConfig = ClientLogManager.getAcsLogManager().getLogConfig(); // todo: turn into member field when we get new logging config notification method in the container interface
+		logConfig = ClientLogManager.getAcsLogManager().getLogConfig();
 		// logConfig.setInternalLogger(m_logger);
 		logConfig.setCDBContainerPath("MACI/Containers/" + m_containerName);
 		logConfig.setCDB(getCDB());
@@ -1264,7 +1265,12 @@ public class AcsContainer extends ContainerPOA
 	 * are used by all loggers that have not been configured individually.
 	 */
 	public LogLevels get_default_logLevels() {
-		throw new org.omg.CORBA.NO_IMPLEMENT("Method not implemented yet");
+		//throw new org.omg.CORBA.NO_IMPLEMENT("Method not implemented yet");
+                LogLevels logLevels=new LogLevels();
+                logLevels.useDefault=false;
+                logLevels.minLogLevel=(short)logConfig.getMinLogLevel();
+                logLevels.minLogLevelLocal=(short)logConfig.getMinLogLevelLocal();
+                return  logLevels;
 	}
 
 	/**
@@ -1272,7 +1278,9 @@ public class AcsContainer extends ContainerPOA
 	 * are used by all loggers that have not been configured individually.
 	 */
 	public void set_default_logLevels(LogLevels levels) {
-		throw new org.omg.CORBA.NO_IMPLEMENT("Method not implemented yet");
+		//throw new org.omg.CORBA.NO_IMPLEMENT("Method not implemented yet");
+            logConfig.setMinLogLevel(levels.minLogLevel);
+            logConfig.setMinLogLevelLocal(levels.minLogLevelLocal);
 	}
 
 	/**
@@ -1310,8 +1318,16 @@ public class AcsContainer extends ContainerPOA
 	 * This allows for persistent changes in the logging configuration to become
 	 * effective, and also for changes of more advanced parameters.
 	 */
-	public void refresh_logging_config() {
-		throw new org.omg.CORBA.NO_IMPLEMENT("Method not implemented yet");
+        public void refresh_logging_config() {
+                //throw new org.omg.CORBA.NO_IMPLEMENT("Method not implemented yet");
+                try {
+                        logConfig.initialize();
+                } catch (LogConfigException ex) {
+                        // if the CDB can't be read, we still want to run the container, so
+                        // we only log the problems
+                        m_logger.log(Level.FINE, "Failed to configure logging (default values will be used). Reason: "
+                                        + ex.getMessage());
+                }
 	}
 		
 	/** ************************ END LoggingConfigurable ************************ */
