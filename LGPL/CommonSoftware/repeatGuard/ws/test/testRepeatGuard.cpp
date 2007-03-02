@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: testRepeatGuard.cpp,v 1.1 2007/02/26 13:19:41 nbarriga Exp $"
+* "@(#) $Id: testRepeatGuard.cpp,v 1.2 2007/03/02 13:45:29 nbarriga Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -31,7 +31,7 @@
 #include <stdio.h>
 #include <string.h>
 
-static char *rcsId="@(#) $Id: testRepeatGuard.cpp,v 1.1 2007/02/26 13:19:41 nbarriga Exp $"; 
+static char *rcsId="@(#) $Id: testRepeatGuard.cpp,v 1.2 2007/03/02 13:45:29 nbarriga Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <unistd.h>
@@ -46,10 +46,32 @@ int main(int argc, char *argv[])
 		if(rg.check())
 			printf("Log attempt #%d\n",rg.count());
 	}
-	printf("\n\n------------------------------------------\n\n");
+	printf("\n\nUsing 1,10,true ------------------------------------------\n\n");
 	rg.reset();
         for(int i=0;i<25;i++){
 		usleep(200000);
+                if(rg.checkAndIncrement())
+                        printf("Log attempt #%d\n",rg.count());
+        }
+        
+        printf("\n\nUsing 1,10,false -----------------------------------------\n\n");
+        rg.reset(1,10,false);
+        for(int i=0;i<25;i++){
+                usleep(200000);
+                if(rg.checkAndIncrement())
+                        printf("Log attempt #%d\n",rg.count());
+        }
+        printf("\n\nUsing 1,0 -----------------------------------------\n\n");
+        rg.reset(1,0,false);
+        for(int i=0;i<25;i++){
+                usleep(200000);
+                if(rg.checkAndIncrement())
+                        printf("Log attempt #%d\n",rg.count());
+        }
+        printf("\n\nUsing 0,10 -----------------------------------------\n\n");
+        rg.reset(0,10);
+        for(int i=0;i<25;i++){
+                usleep(200000);
                 if(rg.checkAndIncrement())
                         printf("Log attempt #%d\n",rg.count());
         }

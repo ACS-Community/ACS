@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: RepeatGuard.cpp,v 1.1 2007/02/26 13:19:41 nbarriga Exp $"
+* "@(#) $Id: RepeatGuard.cpp,v 1.2 2007/03/02 13:45:29 nbarriga Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -25,13 +25,16 @@
 
 #include "vltPort.h"
 
-static char *rcsId="@(#) $Id: RepeatGuard.cpp,v 1.1 2007/02/26 13:19:41 nbarriga Exp $"; 
+static char *rcsId="@(#) $Id: RepeatGuard.cpp,v 1.2 2007/03/02 13:45:29 nbarriga Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 
 #include "RepeatGuard.h"
 
-RepeatGuard::RepeatGuard(unsigned int interval, unsigned int maxRepetitions){
+RepeatGuard::RepeatGuard(unsigned int interval, unsigned int maxRepetitions, bool or_or_and){
+        method=or_or_and;
+        if(interval==0)method=COUNTER;
+        if(maxRepetitions==0)method=TIMER;
 
 	this->maxRepetitions=maxRepetitions;
 	this->interval=interval*10000000;
@@ -45,26 +48,50 @@ RepeatGuard::~RepeatGuard(){
 }
 
 bool RepeatGuard::check(){
-
-	if(lastTime+interval<=getTimeStamp()||counter>=maxRepetitions){
-		counterAtLastCheck=counter;
-		counter=0;
-		lastTime=getTimeStamp();
-		return true;
-	}
-	return false;
+        switch(method){
+                case AND:
+                        if(lastTime+interval<=getTimeStamp()&&counter>=maxRepetitions){
+                                counterAtLastCheck=counter;
+                                counter=0;
+                                lastTime=getTimeStamp();
+                                return true;
+                        }
+                        return false;
+                        break;
+                case OR:
+                        if(lastTime+interval<=getTimeStamp()||counter>=maxRepetitions){
+                                counterAtLastCheck=counter;
+                                counter=0;
+                                lastTime=getTimeStamp();
+                                return true;
+                        }
+                        return false;
+                        break;
+                case TIMER:
+                        if(lastTime+interval<=getTimeStamp()){
+                                counterAtLastCheck=counter;
+                                counter=0;
+                                lastTime=getTimeStamp();
+                                return true;
+                        }
+                        return false;
+                        break;
+                case COUNTER:
+                        if(counter>=maxRepetitions){
+                                counterAtLastCheck=counter;
+                                counter=0;
+                                lastTime=getTimeStamp();
+                                return true;
+                        }
+                        return false;
+                        break;
+        }
 }
 
 bool RepeatGuard::checkAndIncrement(){
 
-	if(lastTime+interval<=getTimeStamp()||counter>=maxRepetitions){
-		counterAtLastCheck=counter+1;
-		counter=0;
-		lastTime=getTimeStamp();
-		return true;
-	}
         counter++;
-	return false;
+        return check();
 }
 
 void RepeatGuard::increment(){
@@ -81,10 +108,13 @@ void RepeatGuard::reset(){
 	lastTime=0;
 }
 
-void RepeatGuard::reset(unsigned int interval, unsigned int maxRepetitions){
+void RepeatGuard::reset(unsigned int interval, unsigned int maxRepetitions, bool or_or_and){
+        method=OR;
+        if(interval==0)method=COUNTER;
+        if(maxRepetitions==0)method=TIMER;
 
-        this->maxRepetitions=maxRepetitions;
-        this->interval=interval*10000000;
+	this->maxRepetitions=maxRepetitions;
+	this->interval=interval*10000000;
 	counter=0;
 	counterAtLastCheck=0;
 	lastTime=0;

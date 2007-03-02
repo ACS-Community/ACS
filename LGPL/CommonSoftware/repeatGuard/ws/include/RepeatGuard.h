@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: RepeatGuard.h,v 1.1 2007/02/26 13:19:41 nbarriga Exp $"
+* "@(#) $Id: RepeatGuard.h,v 1.2 2007/03/02 13:45:29 nbarriga Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -36,6 +36,11 @@
 
 #include <acsutilTimeStamp.h>
 
+#define AND 0
+#define OR 1
+#define TIMER 2
+#define COUNTER 3
+
 /** @class RepeatGuard 
 *   @brief Guard class against code repetitions.
 *
@@ -51,29 +56,30 @@ class RepeatGuard{
 		unsigned int counter;
 		unsigned int counterAtLastCheck;
 		unsigned int maxRepetitions;
+                unsigned int method;
 		ACS::Time interval;
 		ACS::Time lastTime;
 	public:
                 /** Constructor
-                * @param interval minimum interval between allowing an action(i.e. check returns true)
-                * @param maxRepetitions override minimum interval if maxRepetitions is reached.(0 disables this feature)
+                * @param interval minimum interval between allowing an action(i.e. check returns true)(condition 1)
+                * @param maxRepetitions maxRepetitions between logs.(condition 2)
+                * @param OR true: conditions 1 or 2 must be met, false: conditions 1 and 2 must be met. Ignored if interval
+                *       or maxRepetitions is zero.
                 */
-		RepeatGuard(unsigned int interval, unsigned int maxRepetitions=0);
+		RepeatGuard(unsigned int interval, unsigned int maxRepetitions, bool or_or_and=true);
 
 		~RepeatGuard();
 
                 /** This method returns true or false if the next block of code is allowed to be executed or not.
                 *
-                * @return true if an amount of time longer than "interval" has elapsed or
-                *           maxRepetitions has been reached. Returns false in other case.
+                * @return true if the conditions to allow an action have been met(conditions depend on the constructor used)
                 */
 		bool check();
 
                 /** This method returns true or false if the next block of code is allowed to be executed or not.
                 *   Also it increments the counter.
                 *
-                * @return true if an amount of time longer than "interval" has elapsed or
-                *           maxRepetitions has been reached. Returns false in other case.
+                * @return true if the conditions to allow an action have been met(conditions depend on the constructor used)
                 */
 		bool checkAndIncrement();
 
@@ -92,9 +98,13 @@ class RepeatGuard{
 		void reset();
 
                 /** Resets counter and time of the last time check() returned true.
-                *   @param interval minimum interval between allowing an action(i.e. check returns true)
-                *   @param maxRepetitions override minimum interval if maxRepetitions is reached.(0 disables this feature)
+                * @param interval minimum interval between allowing an action(i.e. check returns true)(condition 1)
+                * @param maxRepetitions maxRepetitions between logs.(condition 2)
+                * @param OR true: conditions 1 or 2 must be met, false: conditions 1 and 2 must be met. Ignored if interval
+                *       or maxRepetitions is zero.
                 */
-		void reset(unsigned int interval, unsigned int maxRepetitions=0);
+		void reset(unsigned int interval, unsigned int maxRepetitions, bool or_or_and=true);
+
+
 };
 #endif /*!REPEATGUARD_H*/
