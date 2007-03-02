@@ -19,7 +19,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: acsexmplFridgeImpl.cpp,v 1.131 2006/06/22 16:25:51 gchiozzi Exp $"
+* "@(#) $Id: acsexmplFridgeImpl.cpp,v 1.132 2007/03/02 14:56:55 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -40,7 +40,7 @@
 #include <acsexmplFridgeImpl.h>
 #include <math.h>
 
-ACE_RCSID(acsexmpl, acsexmplFridgeImpl, "$Id: acsexmplFridgeImpl.cpp,v 1.131 2006/06/22 16:25:51 gchiozzi Exp $")
+ACE_RCSID(acsexmpl, acsexmplFridgeImpl, "$Id: acsexmplFridgeImpl.cpp,v 1.132 2007/03/02 14:56:55 bjeram Exp $")
 using namespace baci;
 
 /**
@@ -144,6 +144,11 @@ void FridgeControl::cleanUp()
 	off();
 	}
     
+    // Here we have to stop all threads
+    getContainerServices()->getThreadManager()->stopAll(); 
+
+
+    // In the past this was done in the CharacteristicComponentImpl::cleanUp();    
     // As required by the CharacteristicComponentImpl class,
     // I call explicitly the cleanUp() of the parent class.
     // This makes sure that all threads are stopped and the 
@@ -164,7 +169,6 @@ void FridgeControl::cleanUp()
     // and consider what resources are allocated by this class
     // to extablish the requirements for the execution of lifecycle
     // chained methods.
-    CharacteristicComponentImpl::cleanUp();
 
     // clean-up associated with NC
     if (m_FridgeSupplier_p != 0)
