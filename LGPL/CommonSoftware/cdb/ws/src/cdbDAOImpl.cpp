@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: cdbDAOImpl.cpp,v 1.37 2006/10/24 09:44:48 cparedes Exp $"
+* "@(#) $Id: cdbDAOImpl.cpp,v 1.38 2007/03/04 15:53:56 msekoran Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -104,8 +104,9 @@ void DAOImpl::Start(const char *el, const char **attr)
 	}
 	else { // we have to add this node
                 elementName = el;
+		int nameLen = ACE_OS::strlen(el);
                 CXMLTreeNode* pNode = new CXMLTreeNode( m_currNode );
-                if( ACE_OS::strcasecmp(el, "_") == 0 && attr[0] != NULL ) 
+                if( (ACE_OS::strcasecmp(el, "_") == 0 || (nameLen > 2 && el[nameLen-2]==':' && el[nameLen-1]=='_')) && attr[0] != NULL ) 
                 {
                         elementName = attr[1];
                 }
