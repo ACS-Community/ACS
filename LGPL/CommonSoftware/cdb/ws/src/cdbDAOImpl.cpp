@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: cdbDAOImpl.cpp,v 1.38 2007/03/04 15:53:56 msekoran Exp $"
+* "@(#) $Id: cdbDAOImpl.cpp,v 1.39 2007/03/04 16:27:51 msekoran Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -255,8 +255,8 @@ Boolean DAOImpl::get_field( const String &strFieldName, Field &fld )
 	pos1 = fieldName.find("/");
 	while( pos1 != String::npos ) {
 		restOfName = fieldName.substr(pos1+1); 
-		fieldName = fieldName.substr(0, pos1);
-		subIter = pNode->m_subNodesMap.find( fieldName );
+		String subName = fieldName.substr(0, pos1);
+		subIter = pNode->m_subNodesMap.find( subName );
 		if( subIter == pNode->m_subNodesMap.end() )
 			break; // we do not find it but fall down to check in plain entries
 		pNode = subIter->second;
@@ -273,7 +273,7 @@ Boolean DAOImpl::get_field( const String &strFieldName, Field &fld )
 		fld.SetString( all_names.c_str() );
 		return TRUE;
 	}
-
+	
 	MapStringToField::iterator iter = pNode->m_fieldMap.find(fieldName);
 	if(iter == pNode->m_fieldMap.end()) {
                 subIter = pNode->m_subNodesMap.find( fieldName );
@@ -287,7 +287,7 @@ Boolean DAOImpl::get_field( const String &strFieldName, Field &fld )
 		return FALSE;
 	}
 	fld = iter->second;
-	/*
+	/*	
 	// DEBUG
 	String fieldData;
 	fld.ToString(fieldData);
