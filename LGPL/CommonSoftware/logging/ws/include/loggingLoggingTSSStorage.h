@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingLoggingTSSStorage.h,v 1.4 2007/03/01 13:41:47 nbarriga Exp $"
+* "@(#) $Id: loggingLoggingTSSStorage.h,v 1.5 2007/03/04 17:40:31 msekoran Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -70,6 +70,7 @@ class LoggingTSSStorage
 	    m_context = 0;		
 	    m_uri = 0;
 	    m_logId = 0;
+	    m_privateFlags = 0;
 	    m_ldata.unbind_all();
 	    m_attributes.unbind_all();
 	}
@@ -134,6 +135,9 @@ class LoggingTSSStorage
     const ACE_TCHAR * uri() { return m_uri; };
     void uri(const ACE_TCHAR * uri) { m_uri=uri; };
     
+    int privateFlags() { return m_privateFlags; };
+    void privateFlags(int privateFlags) { m_privateFlags=privateFlags; };
+
     typedef ACE_Hash_Map_Manager <ACE_CString, ACE_CString, ACE_Thread_Mutex> HASH_MAP;
     typedef ACE_Hash_Map_Iterator <ACE_CString, ACE_CString, ACE_Thread_Mutex> HASH_MAP_ITER;
     typedef ACE_Hash_Map_Entry <ACE_CString, ACE_CString> HASH_MAP_ENTRY;
@@ -172,6 +176,11 @@ class LoggingTSSStorage
     const ACE_TCHAR * m_context;
     const ACE_TCHAR * m_logId;
     const ACE_TCHAR * m_uri;
+    
+    // used internally by logger
+    // bit 0 (LSB) = prohibit stdout
+    // bit 1       = prohibit remote 
+    int m_privateFlags;
     
     LoggingTSSStorage::HASH_MAP m_ldata;
     LoggingTSSStorage::HASH_MAP m_attributes;

@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingLogger.cpp,v 1.10 2006/01/05 18:45:10 dfugate Exp $"
+* "@(#) $Id: loggingLogger.cpp,v 1.11 2007/03/04 17:40:31 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -27,7 +27,7 @@
 #include <functional>
 #include <iostream>
 
-static char *rcsId="@(#) $Id: loggingLogger.cpp,v 1.10 2006/01/05 18:45:10 dfugate Exp $"; 
+static char *rcsId="@(#) $Id: loggingLogger.cpp,v 1.11 2007/03/04 17:40:31 msekoran Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 // -------------------------------------------------------
 //helper function
@@ -49,6 +49,9 @@ checkHandlerEquality(Logging::Handler::HandlerSmartPtr handler,
 namespace Logging {
     Logger::LoggerSmartPtr Logger::globalLogger_m = (Logger *)0;
     Logger::LoggerSmartPtr Logger::anonymousLogger_m = (Logger *)0;
+    Logger::LoggerList Logger::loggers_m;
+    ACE_Thread_Mutex Logger::loggersMutex_m;
+    Logger::ConfigureLoggerFunction Logger::configureLoggerFunction_m = (ConfigureLoggerFunction)0;
     // -------------------------------------------------------
     Logger::LoggerSmartPtr
     Logger::getAnonymousLogger()
@@ -102,6 +105,15 @@ namespace Logging {
     // -------------------------------------------------------
     Logger::~Logger()
     {
+    // remove from loggers list
+    if (loggerName_m != BaseLog::GLOBAL_LOGGER_NAME &&
+    	this != globalLogger_m && this != anonymousLogger_m)
+	{
+    	loggersMutex_m.acquire();
+    	loggers_m.remove(this);
+   		loggersMutex_m.release();
+	}
+	
 	//to be thread safe
 	acquireHandlerMutex();
 	//simply clear the list of handlers
@@ -119,6 +131,8 @@ namespace Logging {
 	handlers_m.push_back(newHandler_p);
 	//make sure it's released
 	releaseHandlerMutex();
+	// configure logger (this will also configure handler)
+	configureLogger(loggerName_m);
     }
     // -------------------------------------------------------
     bool
@@ -153,6 +167,62 @@ namespace Logging {
 	releaseHandlerMutex();
 	
 	return retVal;
+    }
+    // -------------------------------------------------------
+    void
+	Logger::setLevels(Priority localPriority, Priority remotePriority)
+    {
+	//to be thread safe
+	acquireHandlerMutex();
+     
+	std::list<Handler::HandlerSmartPtr>::iterator pos;
+	
+	for (pos = handlers_m.begin();
+	     pos != handlers_m.end();
+	     pos++)
+		(*pos)->setLevels(localPriority, remotePriority);
+
+	//make sure it's released
+	releaseHandlerMutex();
+    }
+    // -------------------------------------------------------
+    void
+	Logger::setLevels(const std::string &loggerName, Priority localPriority, Priority remotePriority)
+    {
+	//to be thread safe
+	loggersMutex_m.acquire();
+     
+	LoggerList::iterator pos;
+	
+	for (pos = loggers_m.begin();
+	     pos != loggers_m.end();
+	     pos++)
+		if ((*pos)->getName() == loggerName)
+			(*pos)->setLevels(localPriority, remotePriority);
+
+	//make sure it's released
+	loggersMutex_m.release();
+    }
+    // -------------------------------------------------------
+    std::list<std::string>
+	Logger::getLoggerNames()
+    {
+	std::list<std::string> names;
+	//to be thread safe
+	loggersMutex_m.acquire();
+     
+	LoggerList::iterator pos;
+	
+	for (pos = loggers_m.begin();
+	     pos != loggers_m.end();
+	     pos++)
+	    if (find(names.begin(), names.end(), (*pos)->getName()) == names.end())
+	    	names.push_back((*pos)->getName());
+
+	//make sure it's released
+	loggersMutex_m.release();
+
+	return names;
     }
     // -------------------------------------------------------
     void
@@ -213,7 +283,13 @@ namespace Logging {
     Logger::Logger(const std::string &loggerName) :
 	loggerName_m(loggerName)
     {
-	
+    	// add to logger list
+    	if (loggerName_m != BaseLog::GLOBAL_LOGGER_NAME)
+    	{
+		    loggersMutex_m.acquire();
+    		loggers_m.push_back(this);
+    		loggersMutex_m.release();
+    	}
     }
     // -------------------------------------------------------
 };

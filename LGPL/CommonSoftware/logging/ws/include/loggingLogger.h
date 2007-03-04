@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingLogger.h,v 1.15 2007/02/28 16:14:00 bjeram Exp $"
+* "@(#) $Id: loggingLogger.h,v 1.16 2007/03/04 17:40:31 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -38,6 +38,7 @@
 #include <list>
 #include "loggingBaseLog.h"
 #include "loggingHandler.h"
+#include <ace/Thread_Mutex.h>
 
 
 namespace Logging 
@@ -68,6 +69,11 @@ namespace Logging
 			       Loki::DefaultSPStorage> LoggerSmartPtr;
 #endif
 
+	// Loggers list
+	typedef std::list<Logger*> LoggerList;
+	
+	// Implementation of external function that configures logger 
+	typedef void (*ConfigureLoggerFunction)(const std::string& loggerName);
 	
 	/**
 	 * Create a logger for a named subsystem. This method is pure abstract
@@ -186,6 +192,45 @@ namespace Logging
 	virtual void 
 	setName(const std::string &newName);
 
+	/**
+	 * Set levels for local and remote logging. 
+	 * There levels are passed to the handlers.
+	 * @return void
+	 */
+	virtual void
+	setLevels(Priority localPriority, Priority remotePriority);
+	
+	/**
+	 * Set levels for local and remote logging of a child logger with given name. 
+	 * There levels are passed to the handlers.
+	 * @return void
+	 */
+	virtual void
+	setLevels(const std::string &loggerName, Priority localPriority, Priority remotePriority);
+
+	/**
+	 * Get all logger names. 
+	 * @return logger names.
+	 */
+	virtual std::list<std::string>
+	getLoggerNames();
+
+	/**
+	 * Set logger configuration function.
+	 */
+	static void
+	setConfigureLoggerFunction(ConfigureLoggerFunction configureLoggerFunction) {configureLoggerFunction_m=configureLoggerFunction;}
+	
+	/**
+	 * Configure logger.
+	 */
+	static void
+	configureLogger(const std::string& loggerName)
+	{
+		if (configureLoggerFunction_m)
+			(*configureLoggerFunction_m)(loggerName);
+	}
+	
       protected:
 	//----------------------------------------------------
 	/**
@@ -238,6 +283,23 @@ namespace Logging
 	 * irrelevant.
 	 */
 	static LoggerSmartPtr anonymousLogger_m;
+
+	/**
+	 * List of all child loggers.
+	 */
+	static LoggerList loggers_m;
+
+	/**
+	 * mutex which guards the loggers lost making this class completely
+	 * thread-safe
+	 */
+	static ACE_Thread_Mutex loggersMutex_m;
+
+	/**
+	 * External function that configures logger.
+	 */
+	static ConfigureLoggerFunction configureLoggerFunction_m;
+
     };
     //------------------------------------------------------------------------------
 };

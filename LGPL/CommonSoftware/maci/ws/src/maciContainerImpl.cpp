@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciContainerImpl.cpp,v 1.80 2006/10/24 16:37:17 sharring Exp $"
+* "@(#) $Id: maciContainerImpl.cpp,v 1.81 2007/03/04 17:42:47 msekoran Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -76,7 +76,7 @@
 #include <ACSAlarmSystemInterfaceFactory.h>
 #endif
 
-ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.80 2006/10/24 16:37:17 sharring Exp $")
+ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.81 2007/03/04 17:42:47 msekoran Exp $")
 
  using namespace maci;
  using namespace cdb;
@@ -510,6 +510,7 @@ ContainerImpl::init(int argc, char *argv[])
 
   //ACS_TRACE("maci::ContainerImpl::init");
   
+  Logger::setConfigureLoggerFunction(ContainerImpl::configureLogger);
   
   try 
     {
@@ -644,7 +645,12 @@ ContainerImpl::init(int argc, char *argv[])
 	{
 	  ACS_LOG(LM_RUNTIME_CONTEXT, "maci::Container::init", (LM_INFO, "Starting as dynamic container."));
 	}
-
+	else
+	{
+		// setup loggers
+		refresh_logging_config();
+	}
+	
       //
       // setup DLL manager
       //
@@ -2507,47 +2513,193 @@ ContainerImpl::instantiateContainerServices(
 maci::LoggingConfigurable::LogLevels ContainerImpl::get_default_logLevels()
 	throw (CORBA::SystemException)
 {
-    // @todo: implementation missing
-    throw CORBA::NO_IMPLEMENT ( /* CORBA::OMGVMCID | */ 2, CORBA::COMPLETED_NO);;
+	ACS_TRACE("maci::ContainerImpl::get_default_logLevels");
+
+	return m_defaultLogLevels;
 }
 
-void ContainerImpl::set_default_logLevels(const maci::LoggingConfigurable::LogLevels&)
+void ContainerImpl::set_default_logLevels(const maci::LoggingConfigurable::LogLevels& logLevels)
 	throw (CORBA::SystemException)
 {
-    // @todo: implementation missing
-    throw CORBA::NO_IMPLEMENT ( /* CORBA::OMGVMCID | */ 2, CORBA::COMPLETED_NO);;
+	ACS_TRACE("maci::ContainerImpl::set_default_logLevels");
+
+	if (!logLevels.useDefault)
+	{
+		Logger::getGlobalLogger()->setLevels(
+			static_cast<Logging::BaseLog::Priority>(logLevels.minLogLevelLocal), 
+			static_cast<Logging::BaseLog::Priority>(logLevels.minLogLevel));
+		m_defaultLogLevels = logLevels;
+	}
 }
 
 
 maci::stringSeq* ContainerImpl::get_logger_names()
 	throw (CORBA::SystemException)
 {
-    // @todo: implementation missing
-    throw CORBA::NO_IMPLEMENT ( /* CORBA::OMGVMCID | */ 2, CORBA::COMPLETED_NO);;
+	ACS_TRACE("maci::ContainerImpl::get_logger_names");
+
+	std::list<std::string> names = Logger::getGlobalLogger()->getLoggerNames();
+	
+	maci::stringSeq_var namesSeq = new maci::stringSeq();
+	namesSeq->length(names.size() + m_logLevels.size());
+	
+	CORBA::ULong i = 0;
+
+	// add live logs
+	std::list<std::string>::iterator pos;
+	for (pos = names.begin(); pos != names.end(); pos++)
+		namesSeq[i++] = CORBA::string_dup(pos->c_str());
+	
+	// add logs from configuration
+	std::map<std::string, maci::LoggingConfigurable::LogLevels>::iterator iter;
+	for (iter = m_logLevels.begin(); iter != m_logLevels.end(); iter++)
+		if (find(names.begin(), names.end(), iter->first) == names.end())
+			namesSeq[i++] = CORBA::string_dup(iter->first.c_str());
+	
+	namesSeq->length(i);
+	return namesSeq._retn();
 }
 
 
-maci::LoggingConfigurable::LogLevels ContainerImpl::get_logLevels(const char*)
+maci::LoggingConfigurable::LogLevels ContainerImpl::get_logLevels(const char* loggerName)
       throw (CORBA::SystemException)
 {
-    // @todo: implementation missing
-    throw CORBA::NO_IMPLEMENT ( /* CORBA::OMGVMCID | */ 2, CORBA::COMPLETED_NO);;
+	ACS_TRACE("maci::ContainerImpl::get_logLevels");
+
+	if (m_logLevels.find(loggerName) != m_logLevels.end())
+		return m_logLevels[loggerName];
+	else
+		return m_defaultLogLevels;
 }
 
 
-void ContainerImpl::set_logLevels(const char*, const maci::LoggingConfigurable::LogLevels&)
+void ContainerImpl::set_logLevels(const char* loggerName, const maci::LoggingConfigurable::LogLevels& logLevels)
 	throw (CORBA::SystemException)
 {
-    // @todo: implementation missing
-    throw CORBA::NO_IMPLEMENT ( /* CORBA::OMGVMCID | */ 2, CORBA::COMPLETED_NO);;
+	ACS_TRACE("maci::ContainerImpl::set_logLevels");
+
+	m_logLevels[loggerName] = logLevels;
+	if (logLevels.useDefault)
+		Logger::getGlobalLogger()->setLevels(loggerName, 
+			static_cast<Logging::BaseLog::Priority>(m_defaultLogLevels.minLogLevelLocal),
+			static_cast<Logging::BaseLog::Priority>(m_defaultLogLevels.minLogLevel));
+	else
+		Logger::getGlobalLogger()->setLevels(loggerName, 
+			static_cast<Logging::BaseLog::Priority>(logLevels.minLogLevelLocal),
+			static_cast<Logging::BaseLog::Priority>(logLevels.minLogLevel));
 }
 
 
 void ContainerImpl::refresh_logging_config()
 	throw (CORBA::SystemException)
 {
-    // @todo: implementation missing
-    throw CORBA::NO_IMPLEMENT ( /* CORBA::OMGVMCID | */ 2, CORBA::COMPLETED_NO);;
+	ACS_TRACE("maci::ContainerImpl::refresh_logging_config");
+	
+	if (m_dynamicContainer)
+		return;
+
+	Field fld;
+
+	// m_defaultLogLevels.minLogLevel
+	cdb::ULong ul;
+	if (m_database->GetField(m_dbPrefix, "LoggingConfig/minLogLevel", fld))
+	{
+		if (fld.GetULong(ul))
+			m_defaultLogLevels.minLogLevel = ul;
+	}
+	
+	// m_defaultLogLevels.minLogLevelLocal
+	if (m_database->GetField(m_dbPrefix, "LoggingConfig/minLogLevelLocal", fld))
+	{
+		if (fld.GetULong(ul))
+			m_defaultLogLevels.minLogLevelLocal = ul;
+	}
+
+	// other loggers config
+	if (m_database->GetField(m_dbPrefix.c_str(), "LoggingConfig", fld))
+	{
+		cdb::StringArray loggers;
+		if (fld.GetStringArray(loggers))
+		{
+			cdb::StringArray::iterator iter;
+			for (iter = loggers.begin(); iter != loggers.end(); iter++)
+			{
+				// C++ CDB impl reutrns also attriburtes, we do not want
+				if (*iter == "centralizedLogger" ||
+					*iter == "dispatchPacketSize" ||
+					*iter == "flushPeriodSeconds" ||
+					*iter == "immediateDispatchLevel" ||
+					*iter == "maxLogQueueSize" ||
+					*iter == "minLogLevel" ||
+					*iter == "minLogLevelLocal")
+					continue; 
+				
+				// load
+				loadLoggerConfiguration(iter->c_str());
+				// ... and configure
+				configureLogger(iter->c_str());				
+			}
+		}
+	}
+}
+
+void ContainerImpl::configureLogger(const std::string& loggerName)
+{
+	// this methods stores configuration and we do not want this...
+	//getContainer()->set_logLevels(loggerName.c_str(), getContainer()->get_logLevels(loggerName.c_str()));
+	
+	maci::LoggingConfigurable::LogLevels logLevels;
+	if (getContainer()->m_logLevels.find(loggerName) != getContainer()->m_logLevels.end())
+		logLevels = getContainer()->m_logLevels[loggerName];
+	else
+		logLevels = getContainer()->m_defaultLogLevels;
+	
+	if (logLevels.useDefault)
+		Logger::getGlobalLogger()->setLevels(loggerName, 
+			static_cast<Logging::BaseLog::Priority>(getContainer()->m_defaultLogLevels.minLogLevelLocal),
+			static_cast<Logging::BaseLog::Priority>(getContainer()->m_defaultLogLevels.minLogLevel));
+	else
+		Logger::getGlobalLogger()->setLevels(loggerName, 
+			static_cast<Logging::BaseLog::Priority>(logLevels.minLogLevelLocal),
+			static_cast<Logging::BaseLog::Priority>(logLevels.minLogLevel));
 }
 
 
+void ContainerImpl::loadLoggerConfiguration(const std::string& loggerName)
+{
+	bool failed = false;
+		
+	maci::LoggingConfigurable::LogLevels logLevels;
+	logLevels.useDefault = false;
+	
+	Field fld;
+
+	// minLogLevel
+	cdb::ULong ul;
+	if (m_database->GetField(m_dbPrefix, ACE_CString("LoggingConfig/") + loggerName.c_str() + "/minLogLevel", fld))
+	{
+		if (fld.GetULong(ul))
+			logLevels.minLogLevel = ul;
+		else
+			failed = true;
+	}
+	else
+		failed = true;
+	
+	// minLogLevelLocal
+	if (!failed && m_database->GetField(m_dbPrefix, ACE_CString("LoggingConfig/") + loggerName.c_str() + "/minLogLevelLocal", fld))
+	{
+		if (fld.GetULong(ul))
+			logLevels.minLogLevelLocal = ul;
+		else
+			failed = true;
+	}
+	else
+		failed = true;
+
+	// store or remove old
+	if (failed)
+		m_logLevels.erase(loggerName);
+	else
+		m_logLevels[loggerName] = logLevels;
+}

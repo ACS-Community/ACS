@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingHandler.h,v 1.7 2007/02/28 16:14:00 bjeram Exp $"
+* "@(#) $Id: loggingHandler.h,v 1.8 2007/03/04 17:40:31 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -93,7 +93,17 @@ namespace Logging
 	 */
 	void
 	setLevel(Priority priority) {priority_m = priority;}
-	
+
+	/**
+	 * Set levels for local and remote logging. It depends on the
+	 * handler implementation (does it support only loca/remote or both)
+	 * to handle the level. Default implementation sets localPriority. 
+	 * @see setLevel()
+	 * @return void
+	 */
+	virtual void
+	setLevels(Priority localPriority, Priority) {setLevel(localPriority);}
+
       protected:
 	//----------------------------------------------------
 	

@@ -19,7 +19,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: loggingLoggingProxy.cpp,v 1.27 2007/03/01 13:41:47 nbarriga Exp $"
+* "@(#) $Id: loggingLoggingProxy.cpp,v 1.28 2007/03/04 17:40:31 msekoran Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -56,7 +56,7 @@
 #define LOG_NAME "Log"
 #define DEFAULT_LOG_FILE_NAME "acs_local_log"
 
-ACE_RCSID(logging, logging, "$Id: loggingLoggingProxy.cpp,v 1.27 2007/03/01 13:41:47 nbarriga Exp $");
+ACE_RCSID(logging, logging, "$Id: loggingLoggingProxy.cpp,v 1.28 2007/03/04 17:40:31 msekoran Exp $");
 
 ACE_TCHAR* LoggingProxy::m_LogEntryTypeName[] =
 {
@@ -91,6 +91,9 @@ LoggingProxy::log(ACE_Log_Record &log_record)
     unsigned int flags = (*tss)->flags();
     unsigned long priority = getPriority(log_record);
     
+    int privateFlags = (*tss)->privateFlags();
+    bool prohibitLocal  = privateFlags & 1; 
+    bool prohibitRemote = privateFlags & 2;
    
     ACE_TCHAR timestamp[24];
     formatISO8601inUTC(log_record.time_stamp(), timestamp);
@@ -111,7 +114,7 @@ LoggingProxy::log(ACE_Log_Record &log_record)
     LoggingTSSStorage::HASH_MAP_ENTRY *entry;
     LoggingTSSStorage::HASH_MAP_ITER hash_iter = (*tss)->getData();
 
-    if (ACE_OS::strcmp(entryType, "Archive")!=0)      // do not print archive logs
+    if (!prohibitLocal && ACE_OS::strcmp(entryType, "Archive")!=0)      // do not print archive logs
 	{
 	// to make print outs nice
 	ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_printMutex);
@@ -190,7 +193,7 @@ LoggingProxy::log(ACE_Log_Record &log_record)
 	}//if
 
     // if priority less tha minCachePriority do not cache or log
-    if (priority < m_minCachePriority) 
+    if (prohibitRemote || priority < m_minCachePriority) 
 	{
 	return;
 	}
@@ -595,6 +598,21 @@ LoggingProxy::StackId()
     return 0;
 }
 
+void
+LoggingProxy::PrivateFlags(int privateFlags)
+{
+  if (tss)
+    (*tss)->privateFlags(privateFlags);
+}
+
+const int
+LoggingProxy::PrivateFlags()
+{
+  if (tss)
+    return (*tss)->privateFlags();
+  else
+    return 0;
+}
 
 void
 LoggingProxy::StackLevel(int nLevel)

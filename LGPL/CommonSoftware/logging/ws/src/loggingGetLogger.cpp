@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingGetLogger.cpp,v 1.2 2005/08/08 22:52:06 dfugate Exp $"
+* "@(#) $Id: loggingGetLogger.cpp,v 1.3 2007/03/04 17:40:31 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -53,7 +53,7 @@
 
 #include "loggingGetLogger.h"
 
-static char *rcsId="@(#) $Id: loggingGetLogger.cpp,v 1.2 2005/08/08 22:52:06 dfugate Exp $"; 
+static char *rcsId="@(#) $Id: loggingGetLogger.cpp,v 1.3 2007/03/04 17:40:31 msekoran Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 //---------------------------------------------------------------------------------------
@@ -65,8 +65,8 @@ getLogger()
 //---------------------------------------------------------------------------------------
 Logging::Logger::LoggerSmartPtr
 getNamedLogger(const std::string& loggerName)
-{   
-    //just delegate to getLogger function (really the global logger)
+{
+    // just delegate to getLogger function (really the global logger)
     return getLogger()->getLogger(loggerName);
 }
 //---------------------------------------------------------------------------------------

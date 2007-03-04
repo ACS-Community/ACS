@@ -21,7 +21,7 @@
  *    License along with this library; if not, write to the Free Software
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: loggingLoggingProxy.h,v 1.18 2007/03/01 13:41:47 nbarriga Exp $"
+ * "@(#) $Id: loggingLoggingProxy.h,v 1.19 2007/03/04 17:40:31 msekoran Exp $"
  *
  * who       when        what
  * --------  ----------  ----------------------------------------------
@@ -104,7 +104,7 @@
  * </OL> 
  * @author <a href=mailto:matej.sekoranja@ijs.si>Matej Sekoranja</a>,
  * Jozef Stefan Institute, Slovenia<br>
- * @version "@(#) $Id: loggingLoggingProxy.h,v 1.18 2007/03/01 13:41:47 nbarriga Exp $"
+ * @version "@(#) $Id: loggingLoggingProxy.h,v 1.19 2007/03/04 17:40:31 msekoran Exp $"
  */
 class logging_EXPORT LoggingProxy : public ACE_Log_Msg_Callback
 {
@@ -179,6 +179,12 @@ class logging_EXPORT LoggingProxy : public ACE_Log_Msg_Callback
     /// StackId.
     static const ACE_TCHAR *StackId();
     
+    /// Private flags (to be used only internally).
+    static void PrivateFlags(int privateFlags);
+
+    /// Private flags (to be used only internally).
+    static const int PrivateFlags();
+
     /// Set the stack level in the current logical thread. The value must be stored
     /// in the thread-specific storage!
     static void StackLevel(int nLevel);

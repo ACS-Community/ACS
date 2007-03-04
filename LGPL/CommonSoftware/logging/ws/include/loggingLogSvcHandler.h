@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingLogSvcHandler.h,v 1.5 2006/01/05 18:45:10 dfugate Exp $"
+* "@(#) $Id: loggingLogSvcHandler.h,v 1.6 2007/03/04 17:40:31 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -82,6 +82,12 @@ namespace Logging {
 	virtual std::string
 	getName() const;
 
+	/**
+	 * Overridden from baseclass.
+	 */
+	virtual void
+	setLevels(Priority localPriority, Priority remotePriority);
+
 	//---------------------------------------------
 	//--The following section exists solely to remain
 	//--backwards compatible with the ACS 4.0 and earlier
@@ -129,6 +135,16 @@ namespace Logging {
 	 * Name of the source object.
 	 */
 	std::string sourceObjectName_m;
+	
+	/**
+	 * Local (stdout) priority.
+	 */
+
+	Priority localPriority_m;
+	/**
+	 * Remove priority.
+	 */
+	Priority remotePriority_m;
     };
 
 };

@@ -4,7 +4,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciContainerImpl.h,v 1.43 2006/10/19 15:14:03 bjeram Exp $"
+* "@(#) $Id: maciContainerImpl.h,v 1.44 2007/03/04 17:42:47 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -34,6 +34,8 @@
 
 #include <acsContainerServices.h>
 #include "maciContainerThreadHook.h"
+
+#include <map>
 
 // #include <maciContainerServices.h> commented out: forward decl
 
@@ -96,7 +98,7 @@ class LibraryManager;
  *
  * @author <a href=mailto:matej.sekoranja@ijs.si>Matej Sekoranja</a>,
  * Jozef Stefan Institute, Slovenia<br>
- * @version "@(#) $Id: maciContainerImpl.h,v 1.43 2006/10/19 15:14:03 bjeram Exp $"
+ * @version "@(#) $Id: maciContainerImpl.h,v 1.44 2007/03/04 17:42:47 msekoran Exp $"
  */
 
 class maci_EXPORT ContainerImpl :
@@ -442,6 +444,10 @@ public:
     virtual void refresh_logging_config()
 	throw (CORBA::SystemException);
 
+    static void configureLogger(const std::string& loggerName);
+
+    void loadLoggerConfiguration(const std::string& loggerName);
+
   protected:
     /**
      * Returns an ACS Logger created for this container.
@@ -632,6 +638,11 @@ public:
     /// Logger for this container;
     Logging::Logger::LoggerSmartPtr m_logger;
 
+  // default logging levels
+  maci::LoggingConfigurable::LogLevels m_defaultLogLevels;
+  
+  // loggers configuration 
+  std::map<std::string, maci::LoggingConfigurable::LogLevels> m_logLevels;  
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////

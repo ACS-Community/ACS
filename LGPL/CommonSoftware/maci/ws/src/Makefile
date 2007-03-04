@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: Makefile,v 1.122 2006/10/18 12:55:53 sharring Exp $" 
+# "@(#) $Id: Makefile,v 1.123 2007/03/04 17:42:47 msekoran Exp $" 
 #
 # Makefile of ........
 #
@@ -43,7 +43,7 @@ PROG =
 #
 # C programs (public and local)
 # -----------------------------
-EXECUTABLES     = $(PROG) maciContainer maciManagerShutdown maciContainerShutdown maciReleaseComponent
+EXECUTABLES     = $(PROG) maciContainer maciManagerShutdown maciContainerShutdown maciReleaseComponent maciContainerLogLevel
 EXECUTABLES_L   = 
 
 maciContainer_OBJECTS   = maciContainer
@@ -57,6 +57,9 @@ maciContainerShutdown_LIBS = maci
 
 maciReleaseComponent_OBJECTS = maciReleaseComponent
 maciReleaseComponent_LIBS = maci
+
+maciContainerLogLevel_OBJECTS = maciContainerLogLevel
+maciContainerLogLevel_LIBS = maci
 
 # <brief description of xxxxx program>
 

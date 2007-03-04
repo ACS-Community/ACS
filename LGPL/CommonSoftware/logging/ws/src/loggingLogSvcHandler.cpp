@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingLogSvcHandler.cpp,v 1.20 2006/10/03 21:44:13 gchiozzi Exp $"
+* "@(#) $Id: loggingLogSvcHandler.cpp,v 1.21 2007/03/04 17:40:31 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -31,7 +31,7 @@
 
 #include <ace/Log_Record.h>
 
-static char *rcsId="@(#) $Id: loggingLogSvcHandler.cpp,v 1.20 2006/10/03 21:44:13 gchiozzi Exp $"; 
+static char *rcsId="@(#) $Id: loggingLogSvcHandler.cpp,v 1.21 2007/03/04 17:40:31 msekoran Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 
@@ -153,7 +153,7 @@ namespace Logging {
     }
     // ----------------------------------------------------------
     LogSvcHandler::LogSvcHandler(const std::string& soName) :
-	sourceObjectName_m(soName)
+	sourceObjectName_m(soName), localPriority_m(LM_TRACE), remotePriority_m(LM_TRACE)
     {
 	//if we ever do away with the LoggingProxy class, a more
 	//intelligent mechanism needs to be used here (i.e., read
@@ -224,7 +224,12 @@ namespace Logging {
 	//create the ACE log record using the message
 	ACE_Log_Record log_record_(acs2acePriority(lr.priority), time, 0);
 	log_record_.msg_data(message.c_str());
-	    
+	
+	// set private flags
+	const int prohibitLocal  = lr.priority <  localPriority_m ? 1 : 0;
+	const int prohibitRemote = lr.priority < remotePriority_m ? 2 : 0;
+	LoggingProxy::PrivateFlags(prohibitLocal || prohibitRemote);
+	
 	ace___->log(log_record_, 0);
     }
     // ----------------------------------------------------------
@@ -233,6 +238,15 @@ namespace Logging {
     {
 	return std::string("acsLogSvc");
     }
+    // ----------------------------------------------------------
+    void
+	LogSvcHandler::setLevels(Priority localPriority, Priority remotePriority)
+	{
+		localPriority_m = localPriority;
+		remotePriority_m = remotePriority;
+		// set global level (min of both)
+		setLevel(localPriority_m < remotePriority_m ? localPriority_m : remotePriority_m);  
+	}
     // ----------------------------------------------------------
     //--The following section exists solely to remain
     //--backwards compatible with the ACS 4.0 and earlier
