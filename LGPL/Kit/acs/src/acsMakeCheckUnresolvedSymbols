@@ -1,5 +1,5 @@
 #!/usr/bin/perl
-# @(#) $Id: acsMakeCheckUnresolvedSymbols,v 1.1 2007/01/30 16:01:15 pmurphy Exp $
+# @(#) $Id: acsMakeCheckUnresolvedSymbols,v 1.2 2007/03/05 14:42:45 pmurphy Exp $
 #-----------------------------------------------------------------------
 # Copyright (C) 2007 Patrick P. Murphy
 #
@@ -34,6 +34,10 @@
 #    unresolved symbols.  If there are any found, it exits with an error
 #    status and an appropriate error message.
 #
+#    An alternative usage is obtained via the -l flag; this invokes ldd
+#    against the relevant library to highlight any shared libraries that
+#    cannot be found.
+#
 #   USAGE
 #    See the "$usage = ..." section below.
 #
@@ -52,7 +56,7 @@
 #    To be inserted.
 #
 #   SEE ALSO
-#    Manual pages for "ld" and "readelf"
+#    Manual pages for "ld" and "readelf" and "ldd"
 #
 #   BUGS
 #    Probably present.  Squish them as you find them.
@@ -72,6 +76,7 @@ $myname = basename($0, ".pl");  # Who am I?
 $usage = "Usage: $myname library.so [opts]\n\n" .
     "Options:\n\n" .
     " -h          show this message\n" .
+    " -l          Use 'ldd' to only show 'not found' libraries\n" .
     " -o {file}   Output to {file} instead of a.out\n" .
     " -n          Do not print headers or summary in output\n" .
     " -q          Ultra Quiet mode, only use status return\n" .
@@ -81,7 +86,7 @@ $usage = "Usage: $myname library.so [opts]\n\n" .
 
 # Options! Options!  Must have options!
 
-getopts('hno:qvw') || die($usage);
+getopts('hlno:qvw') || die($usage);
 if ($opt_h) {
     printf $usage;
     exit;
@@ -113,12 +118,18 @@ printf "$myname debug: output is $opt_o\n" if ($opt_v);
 
 $ush = $ENV{"SHELL"};
 $cmd = "ld $mylib -o $opt_o 2>&1";
+if ($opt_l) {
+    $cmd = "ldd $mylib 2>&1";
+}
 if ($ush =~ /csh/) {            # Ick ick!  Note that a google search for
                                 # 'tcsh version of "2>&1"' finds the FAQ
                                 # "csh programming considered harmful".
                                 # This circumvention may not work.  If
                                 # not, then put in an error here instead.
     $cmd = "bash -c 'ld $mylib $opt_o 2>&1' ";
+    if ($opt_l) {
+        $cmd = "bash -c 'ldd $mylib 2>&1' ";
+    }
     # printf STDERR "$myname: your shell is csh or tcsh; This script cannot\n";
     # printf STDERR "$myname: run under c-style shells.  Please read or \n";
     # printf STDERR "$myname: google the unix-faq/shell/csh-whynot FAQ to\n";
@@ -131,38 +142,47 @@ $first = 1;
 $nundef = 0;
 $mystat = 0;
 
-# Note: any redirection in the command here would make assumptions about
-# the type of shell.  Bourne (bash, zsh, sh) syntax is 2>&1 to put
-# stderr and stdout together, but I don't know what tcsh syntax is.
-# People shouldn't use tcsh!  :-) 
 if (!open(ROLF, "$cmd |")) {    # Open a pipe to the command
     printf STDERR "$myname: cannot run $cmd on $mylib: $!\n";
     exit(5);                
 } elsif ($opt_v) {
     printf "$myname debug: checking $mylib\n";
 }
-while (<ROLF>) {                # HIGHLY dependent on readelf output!
+while (<ROLF>) {
     chomp;                      # trim any newline
-    next if /entry symbol _start/; # Always ignore this
-    next unless /undefined reference to \`([^\']*)\'/;
-    $und = $1;
-    printf "$myname debug:  Found $und:\n" if ($opt_v);
-    if ($first) {
-        if (!($opt_n || $opt_q)) {
-            printf STDERR "$myname: Undefined symbol(s) found!  ";
-            printf STDERR "List follows\n";
+    if ($opt_l) {
+        next unless /(lib.*) =\> not found$/;
+        $und = $1;
+        printf "$myname debug:  ldd found $und\n" if ($opt_v);
+        if ($first) {
+            if (!($opt_n || $opt_q)) {
+                printf STDERR "$myname: 'not found' library/ies detected in $mylib\n";
+                printf STDERR "$myname:  - List follows:\n";
+            }
+            $first--;
         }
-        $first--;
+    } else {
+        next if /entry symbol _start/; # Always ignore this
+        next unless /undefined reference to \`([^\']*)\'/;
+        $und = $1;
+        printf "$myname debug:  found $und:\n" if ($opt_v);
+        if ($first) {
+            if (!($opt_n || $opt_q)) {
+                printf STDERR "$myname: Undefined symbol(s) detected in $mylib\n";
+                printf STDERR "$myname:  - List follows:\n";
+            }
+            $first--;
+        }
     }
                                 # see if we have it already; unlikely
     if ($undefs{$und}) {
         printf "$myname debug:   Skipping $und, already found\n" 
             if ($opt_v);
     } else {
-        printf STDERR "$myname: $_\n" unless ($opt_q);
+        printf STDERR "$myname: $und\n" unless ($opt_q);
         $mystat = 3;
         $nundef++;
-        $undefs{$_} = $lib;     # Show which one it's from
+        $undefs{$und} = $mylib;
     }
 }
 $stat = 0;
@@ -172,26 +192,41 @@ close(ROLF);                   # Clean up.
                                 # Report on findings.
 if ($nundef > 0) {
     if (!($opt_n || $opt_q)) {
-        if ($nundef == 1) {
-            printf STDERR "$myname: Total of one undefined symbol.\n";
+        if ($opt_l) {
+            if ($nundef == 1) {
+                printf STDERR "$myname: Total of one 'not found'in $mylib\n";
+            } else {
+                printf STDERR "$myname: Total of $nundef 'not found' in $mylib\n";
+            }
         } else {
-            printf STDERR "$myname: Total of $nundef undefined symbols.\n";
+            if ($nundef == 1) {
+                printf STDERR "$myname: Total of one undefined symbol in $mylib\n";
+            } else {
+                printf STDERR "$myname: Total of $nundef undefined symbols in $mylib\n";
+            }
         }
     }
-    if (!$opt_s) {
+    if (!$opt_s && !$opt_l) {
         if (( -f $opt_o) && (! $opt_q) ) {
+                                # See below; this should not happen.
             printf STDERR "$myname: found $opt_o, deleting it...\n";
             unlink($opt_o);
         }
     }
 } else {
-    printf "$myname debug: You lucky dog, no undefined symbols in $mylib!\n" 
-        if ($opt_v);
-    if (!$opt_s) {              # See if we have to clean up.
+    if ($opt_l) {
+        printf "$myname debug: no 'not found' libraries referenced in $mylib.\n" 
+            if ($opt_v);
+    } else {
+        printf "$myname debug: no undefined symbols detected in $mylib.\n" 
+            if ($opt_v);
+    }
+    if (!$opt_s && !$opt_l) {   # See if we have to clean up.
                                 # NOTE: no undefined symbols usually means the
                                 # a.out or $opt_o file got created.  It seems
                                 # not to be created otherwise.
         if ( -f $opt_o) {
+            printf STDERR "$myname: found $opt_o, deleting it...\n";
             unlink($opt_o);
         } else {
             printf STDERR "$myname: no $opt_o to delete?  Weird!\n";
