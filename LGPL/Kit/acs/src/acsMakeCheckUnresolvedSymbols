@@ -1,5 +1,5 @@
 #!/usr/bin/perl
-# @(#) $Id: acsMakeCheckUnresolvedSymbols,v 1.3 2007/03/05 14:49:03 pmurphy Exp $
+# @(#) $Id: acsMakeCheckUnresolvedSymbols,v 1.4 2007/03/05 14:51:29 pmurphy Exp $
 #-----------------------------------------------------------------------
 # Copyright (C) 2007 Patrick P. Murphy
 #
@@ -209,7 +209,7 @@ if ($nundef > 0) {
     if (!$opt_s && !$opt_l) {
         if (( -f $opt_o) && (! $opt_q) ) {
                                 # See below; this should not happen.
-            printf STDERR "$myname: found $opt_o, deleting it...\n";
+            printf STDERR "$myname: found unexpected $opt_o, deleting it...\n";
             unlink($opt_o);
         }
     }
@@ -233,7 +233,7 @@ if ($nundef > 0) {
                                 # a.out or $opt_o file got created.  It seems
                                 # not to be created otherwise.
         if ( -f $opt_o) {
-            printf STDERR "$myname: found $opt_o, deleting it...\n";
+            printf STDERR "$myname: found $opt_o, deleting it...\n"; if ($opt_v);
             unlink($opt_o);
         } else {
             printf STDERR "$myname: no $opt_o to delete?  Weird!\n";
