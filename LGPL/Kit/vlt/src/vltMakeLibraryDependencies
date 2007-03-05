@@ -2,7 +2,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: vltMakeLibraryDependencies,v 1.3 2005/04/06 09:45:17 mzampare Exp $" 
+# "@(#) $Id: vltMakeLibraryDependencies,v 1.4 2007/03/05 16:08:52 pmurphy Exp $" 
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -20,6 +20,7 @@
 # psivera   07/06/02  removed iberty from libList
 # psivera   31/07/02  introduced GEN_LIBLIST variable: list of lib that have always
 #                     to be linked
+# pmurphy   2007-03-05 Added check for unresolved symbols in shared libraries
 
 #************************************************************************
 #   NAME
@@ -316,6 +317,10 @@ then
         echo "	@echo \"== Making library: ${sharedLib}\" "
         echo "	-\$(AT)\$(RM) ${sharedLib} "
         echo "	\$(AT)\$(CC) -shared -fPIC ${sharedLibName} \$(L_PATH) $gccDir ${libraryList} ${ldFlags} -o ${sharedLib} \$(xyz_${libName}_OBJ)"
+        # PPM 2007.01.30 - check for unresolved symbols.  
+        # The -w flag means just complain, don't cause an error
+        # Without -w, it should cause a fatal error
+        echo "  \$(AT) acsMakeCheckUnresolvedSymbols -w ${sharedLib}"
         echo "	\$(AT) chmod a-w ${sharedLib} "
     fi
     echo "	@echo "
