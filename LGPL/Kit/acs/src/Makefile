@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.92 2007/02/08 10:33:08 mzampare Exp $" 
+# "@(#) $Id: Makefile,v 1.93 2007/03/05 16:02:31 pmurphy Exp $" 
 #
 # Makefile   for vlt customization of make 
 #
@@ -60,7 +60,9 @@ SCRIPTS  = 	acsMakeTclScriptDependencies    \
 		acsMakeRTAIDependencies \
 		acsCheckGroupPermissions\
                 cvs2cl \
-                acsUserConfig
+                acsUserConfig \
+		acsMakeCheckUnresolvedSymbols
+
 
 #
 # TCL scripts (public and local)
