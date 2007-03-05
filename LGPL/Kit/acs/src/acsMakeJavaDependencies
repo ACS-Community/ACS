@@ -2,7 +2,7 @@
 #*******************************************************************************
 # E.S.O. - ALMA project
 #
-# "@(#) $Id: acsMakeJavaDependencies,v 1.80 2007/03/02 15:08:19 mzampare Exp $"
+# "@(#) $Id: acsMakeJavaDependencies,v 1.81 2007/03/05 11:46:21 mzampare Exp $"
 #
 # who       when       what
 # --------  --------   ----------------------------------------------
@@ -95,7 +95,10 @@ fi
 
     if [ "${debug}" != "" ]
 	then
-	CompilerFlags=`echo $CompilerFlags | sed -e 's/-g //;s/-g[:a-z]*//'`
+	# all possible debugging flags are deleted to
+	# be later replaced with a global one
+	#
+	CompilerFlags=`echo $CompilerFlags | sed -e 's/-g //;s/-g[:a-z,]*//'`
 	CompilerFlags="$CompilerFlags -g"
     fi
 
