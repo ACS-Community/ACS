@@ -1,5 +1,5 @@
 #!/usr/bin/perl
-# @(#) $Id: acsMakeCheckUnresolvedSymbols,v 1.4 2007/03/05 14:51:29 pmurphy Exp $
+# @(#) $Id: acsMakeCheckUnresolvedSymbols,v 1.5 2007/03/05 14:54:31 pmurphy Exp $
 #-----------------------------------------------------------------------
 # Copyright (C) 2007 Patrick P. Murphy
 #
@@ -215,9 +215,9 @@ if ($nundef > 0) {
     }
     if (!$opt_w) {
         if ($opt_l) {
-            printf STDERR "$myname: ###### FAIL for ldd on $mylib";
+            printf STDERR "$myname: ###### FAIL for ldd on $mylib\n";
         } else {
-            printf STDERR "$myname: ###### FAIL for ld on $mylib";
+            printf STDERR "$myname: ###### FAIL for ld on $mylib\n";
         }
     }
 } else {
@@ -233,7 +233,7 @@ if ($nundef > 0) {
                                 # a.out or $opt_o file got created.  It seems
                                 # not to be created otherwise.
         if ( -f $opt_o) {
-            printf STDERR "$myname: found $opt_o, deleting it...\n"; if ($opt_v);
+            printf STDERR "$myname: found $opt_o, deleting it...\n" if ($opt_v);
             unlink($opt_o);
         } else {
             printf STDERR "$myname: no $opt_o to delete?  Weird!\n";
