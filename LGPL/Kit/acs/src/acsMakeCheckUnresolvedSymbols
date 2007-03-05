@@ -1,5 +1,5 @@
 #!/usr/bin/perl
-# @(#) $Id: acsMakeCheckUnresolvedSymbols,v 1.2 2007/03/05 14:42:45 pmurphy Exp $
+# @(#) $Id: acsMakeCheckUnresolvedSymbols,v 1.3 2007/03/05 14:49:03 pmurphy Exp $
 #-----------------------------------------------------------------------
 # Copyright (C) 2007 Patrick P. Murphy
 #
@@ -211,6 +211,13 @@ if ($nundef > 0) {
                                 # See below; this should not happen.
             printf STDERR "$myname: found $opt_o, deleting it...\n";
             unlink($opt_o);
+        }
+    }
+    if (!$opt_w) {
+        if ($opt_l) {
+            printf STDERR "$myname: ###### FAIL for ldd on $mylib";
+        } else {
+            printf STDERR "$myname: ###### FAIL for ld on $mylib";
         }
     }
 } else {
