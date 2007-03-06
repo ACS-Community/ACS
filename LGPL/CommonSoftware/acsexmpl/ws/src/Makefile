@@ -1,7 +1,7 @@
 #*******************************************************************************
 # ALMA - Atacama Large Millimiter Array
 #
-# "@(#) $Id: Makefile,v 1.136 2006/08/14 16:41:33 hsommer Exp $" 
+# "@(#) $Id: Makefile,v 1.137 2007/03/06 08:47:50 agrimstrup Exp $" 
 #
 # Makefile of ........
 #
@@ -96,6 +96,7 @@ EXECUTABLES     = $(PROG) \
                   acsexmplClientFridgeCmd acsexmplClientFridge \
 		  acsexmplClientAmsSeq \
 		  acsexmplClientHelloWorld \
+		  acsexmplClientHelloWorldSP \
 		  acsexmplClientFridgeNC \
                   acsexmplClientErrorComponent
 
@@ -134,6 +135,9 @@ acsexmplClientAmsSeq_LIBS	   = acsexmplAmsSeqStubs
 
 acsexmplClientHelloWorld_OBJECTS   = acsexmplClientHelloWorld
 acsexmplClientHelloWorld_LIBS      = acsexmplHelloWorldStubs ACSErrTypeCommon
+
+acsexmplClientHelloWorldSP_OBJECTS   = acsexmplClientHelloWorldSP
+acsexmplClientHelloWorldSP_LIBS      = acsexmplHelloWorldStubs ACSErrTypeCommon
 
 acsexmplClientFridgeNC_OBJECTS     = acsexmplClientFridgeNC
 acsexmplClientFridgeNC_LIBS        = acsnc acsexmplFridgeStubs ACSErrTypeCommon
