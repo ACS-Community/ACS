@@ -2,7 +2,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: vltMakeLibraryDependencies,v 1.4 2007/03/05 16:08:52 pmurphy Exp $" 
+# "@(#) $Id: vltMakeLibraryDependencies,v 1.5 2007/03/06 10:20:33 mzampare Exp $" 
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -320,7 +320,7 @@ then
         # PPM 2007.01.30 - check for unresolved symbols.  
         # The -w flag means just complain, don't cause an error
         # Without -w, it should cause a fatal error
-        echo "  \$(AT) acsMakeCheckUnresolvedSymbols -w ${sharedLib}"
+        echo "	\$(AT) acsMakeCheckUnresolvedSymbols -w ${sharedLib}"
         echo "	\$(AT) chmod a-w ${sharedLib} "
     fi
     echo "	@echo "
