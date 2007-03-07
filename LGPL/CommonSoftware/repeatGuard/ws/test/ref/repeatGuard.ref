@@ -5,10 +5,34 @@
 1 - Log attempt #10
 1 - 
 1 - 
-1 - ------------------------------------------
+1 - Using 1,10,true ------------------------------------------
 1 - 
 1 - Log attempt #1
 1 - Log attempt #5
 1 - Log attempt #5
 1 - Log attempt #5
 1 - Log attempt #5
+1 - 
+1 - 
+1 - Using 1,10,false -----------------------------------------
+1 - 
+1 - Log attempt #1
+1 - Log attempt #5
+1 - Log attempt #5
+1 - Log attempt #5
+1 - Log attempt #5
+1 - 
+1 - 
+1 - Using 1,0 -----------------------------------------
+1 - 
+1 - Log attempt #1
+1 - Log attempt #5
+1 - Log attempt #5
+1 - Log attempt #5
+1 - Log attempt #5
+1 - 
+1 - 
+1 - Using 0,10 -----------------------------------------
+1 - 
+1 - Log attempt #10
+1 - Log attempt #10
