@@ -34,7 +34,7 @@
 
 /**
  * @author  nbarriga
- * @version $Id: LTS2Java.xslt,v 1.1 2007/02/21 09:38:05 nbarriga Exp $
+ * @version $Id: LTS2Java.xslt,v 1.2 2007/03/07 13:44:22 nbarriga Exp $
  * @since
  */
 
@@ -48,21 +48,27 @@ import java.util.Map;
 
 import alma.acs.logging.AcsLogLevel;
 import alma.acs.logging.AcsLogger;
+import alma.acs.logging.AcsLogRecord;
+
 </xsl:text>
 		<xsl:text>public class </xsl:text>
         	<xsl:variable name="logName"><xsl:value-of select="@logName"/></xsl:variable>
 		<xsl:value-of select="$logName"/><xsl:text>{
 	private Logger m_logger;
 	private Map&lt;String, Object> nameValue;
+        private AcsLogRecord lr;
 	public </xsl:text><xsl:value-of select="$logName"/><xsl:text>(Logger logger){
 		this.m_logger=logger;
 		((AcsLogger)m_logger).addLoggerClass(this.getClass());
 		nameValue = new HashMap&lt;String, Object>();
 		nameValue.put("logName","</xsl:text><xsl:value-of select="$logName"/><xsl:text>");
-		nameValue.put("audience","</xsl:text><xsl:value-of select="@audience"/><xsl:text>");
+		//nameValue.put("audience","</xsl:text><xsl:value-of select="@audience"/><xsl:text>");
+                lr=new AcsLogRecord(AcsLogLevel.</xsl:text><xsl:value-of select="@priority"/><xsl:text>,"</xsl:text><xsl:value-of select="@shortDescription"/><xsl:text>",nameValue,logger.getName());
+                lr.setAudience("</xsl:text><xsl:value-of select="@audience"/><xsl:text>");
 	}
 	public void log(){
-		m_logger.log(AcsLogLevel.</xsl:text><xsl:value-of select="@priority"/><xsl:text>,"</xsl:text><xsl:value-of select="@shortDescription"/><xsl:text>",nameValue);
+		//m_logger.log(AcsLogLevel.</xsl:text><xsl:value-of select="@priority"/><xsl:text>,"</xsl:text><xsl:value-of select="@shortDescription"/><xsl:text>",nameValue);
+                m_logger.log(lr);
 	}
 </xsl:text>
 		<xsl:for-each select="loggingts:Member">
