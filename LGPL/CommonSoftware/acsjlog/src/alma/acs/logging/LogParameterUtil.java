@@ -58,7 +58,6 @@ public class LogParameterUtil {
     public static final String PARAM_STACK_LEVEL = "StackLevel"; 	
     public static final String PARAM_PRIORITY = "Priority"; 	
     public static final String PARAM_URI = "Uri"; 	
-    
     private LogRecord currentLogRecord;
     
     /** 

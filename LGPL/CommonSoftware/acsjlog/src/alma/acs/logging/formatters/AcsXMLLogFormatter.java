@@ -36,6 +36,7 @@ import alma.acs.logging.AcsLogLevel;
 import alma.acs.logging.ClientLogManager;
 import alma.acs.logging.LogParameterUtil;
 import alma.acs.util.XmlNormalizer;
+import alma.acs.logging.AcsLogRecord;
 
 /**
  * @author rgeorgie
@@ -171,6 +172,11 @@ public class AcsXMLLogFormatter extends Formatter implements ACSCoreLevel
 		if (priority != acsCoreLevel)
 			sb.append("Priority=\"" + priority + "\" ");
 
+                //add Audience, if applicable(for typeSafeLogs/Operator logs)
+                if(logRecord instanceof AcsLogRecord){
+                    String audience = ((AcsLogRecord)logRecord).getAudience();
+                    sb.append("Audience=\"" + audience + "\" ");
+                }
 		sb.setCharAt(sb.lastIndexOf("") - 1, '>');
 
 		// the log message becomes the text in our XML record
