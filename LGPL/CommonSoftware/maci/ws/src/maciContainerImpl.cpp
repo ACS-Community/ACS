@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciContainerImpl.cpp,v 1.81 2007/03/04 17:42:47 msekoran Exp $"
+* "@(#) $Id: maciContainerImpl.cpp,v 1.82 2007/03/07 14:17:42 msekoran Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -76,7 +76,7 @@
 #include <ACSAlarmSystemInterfaceFactory.h>
 #endif
 
-ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.81 2007/03/04 17:42:47 msekoran Exp $")
+ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.82 2007/03/07 14:17:42 msekoran Exp $")
 
  using namespace maci;
  using namespace cdb;
@@ -124,6 +124,10 @@ ContainerImpl::ContainerImpl() :
   ACE_OS::hostname (hostname, sizeof(hostname));
   ACE_Log_Msg::instance()->local_host(hostname);
 
+  // initialize default log levels
+  m_defaultLogLevels.minLogLevel = 0;
+  m_defaultLogLevels.minLogLevelLocal = 0;
+ 
   // singleton check
   
     if (m_container)
