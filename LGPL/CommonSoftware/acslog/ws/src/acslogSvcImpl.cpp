@@ -18,14 +18,14 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acslogSvcImpl.cpp,v 1.18 2007/01/30 12:06:53 nbarriga Exp $"
+* "@(#) $Id: acslogSvcImpl.cpp,v 1.19 2007/03/07 10:52:49 nbarriga Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
 * bjeram  11/09/01  created 
 */
 
-static char *rcsId="@(#) $Id: acslogSvcImpl.cpp,v 1.18 2007/01/30 12:06:53 nbarriga Exp $"; 
+static char *rcsId="@(#) $Id: acslogSvcImpl.cpp,v 1.19 2007/03/07 10:52:49 nbarriga Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include "acslogSvcImpl.h"
@@ -120,12 +120,14 @@ void ACSLogImpl::logWithPriority (ACSLog::Priorities p,
 			      const char * msg,
 			      const ACSLog::RTContext & rtCont,
 			      const ACSLog::SourceInfo & srcInfo,
-			      const ACSLog::NVPairSeq & data) 
+			      const ACSLog::NVPairSeq & data,
+			      const char * audience) 
     throw ( CORBA::SystemException, ACSErr::ACSException )
 {  
   PriorityFlag  flag = write (rtCont, srcInfo, data);
   ACS_CHECK_LOGGER;
   LoggingProxy::Flags(flag);
+  if(audience!=NULL)LoggingProxy::audience(audience);
   LOG_RECORD(Logging::ace2acsPriority(ACE_Log_Priority(1 << (p+1)))/*awfull!!! need to check how to do it cleanly*/, msg, srcInfo.file.in(), srcInfo.line, srcInfo.routine.in(), time, rtCont.sourceObject.in());
 }
 

@@ -20,7 +20,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acslogSvcImpl.h,v 1.14 2007/01/30 12:06:53 nbarriga Exp $"
+* "@(#) $Id: acslogSvcImpl.h,v 1.15 2007/03/07 10:52:49 nbarriga Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -97,8 +97,8 @@ public:
                               const char * msg,
                               const ACSLog::RTContext & rtCont,
                               const ACSLog::SourceInfo & srcInfo,
-                              const ACSLog::NVPairSeq & data
-
+                              const ACSLog::NVPairSeq & data,
+                              const char * audience=NULL
 			      ) throw ( CORBA::SystemException, ACSErr::ACSException );
  
   void logCritical (acscommon::TimeStamp time,
