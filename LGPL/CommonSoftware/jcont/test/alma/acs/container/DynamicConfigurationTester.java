@@ -50,7 +50,7 @@ import alma.acs.component.client.ComponentClientTestCase;
 
 /**
  * Tests for {@link alma.acs.container.AcsContainer
- * 
+ * INFO: This test is not used, it is only written as a guideline, instead we are using maciContainerLogLevels tool 
  * @author nbarriga
  * created 28.02.2007
  */
