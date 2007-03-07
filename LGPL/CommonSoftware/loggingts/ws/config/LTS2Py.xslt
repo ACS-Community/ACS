@@ -21,7 +21,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: LTS2Py.xslt,v 1.1 2007/02/21 09:38:05 nbarriga Exp $"
+# "@(#) $Id: LTS2Py.xslt,v 1.2 2007/03/07 10:51:21 nbarriga Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -56,14 +56,14 @@ from traceback import extract_stack
 	def log(self):
 		msg=self.shortDescription
 		data=[ACSLog.NVPair("logName",self.name)]
-		data.append(ACSLog.NVPair("audience",self.audience))
+		#data.append(ACSLog.NVPair("audience",self.audience))
 		for key, value in self._members.items():
 			data.append(ACSLog.NVPair(str(key),str(value)))
 		cur_stack=extract_stack()
 		rtCont=ACSLog.RTContext("",str(getpid()),str(gethostname()).replace("&lt;", "").replace(">", ""),"","")
 		srcInfo=ACSLog.SourceInfo(str(cur_stack[0][0]),str(cur_stack[0][2]),long(cur_stack[0][1]))
 		timestamp=TimeUtil().py2epoch(time.time()).value
-		self._logger.logTypeSafe(self.priority, timestamp, msg, rtCont, srcInfo, data)
+		self._logger.logTypeSafe(self.priority, timestamp, msg, rtCont, srcInfo, data, self.audience)
 
 </xsl:text>
 		<xsl:for-each select="loggingts:Member">

@@ -20,7 +20,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: LTS2Cpp.xslt,v 1.1 2007/02/21 09:38:05 nbarriga Exp $"
+* "@(#) $Id: LTS2Cpp.xslt,v 1.2 2007/03/07 10:51:21 nbarriga Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -68,7 +68,8 @@ void </xsl:text><xsl:value-of select="$logName"/><xsl:text>::log(){
         lr.method=this->routine;
         lr.timeStamp=baci::getTimeStamp();
         LoggingProxy::AddData("logName",this->name.c_str());
-        LoggingProxy::AddData("audience",this->audience.c_str());
+        //LoggingProxy::AddData("audience",this->audience.c_str());
+        LoggingProxy::audience(this->audience.c_str());
         for(unsigned int i=0;i&lt;members.length();i++){
                 LoggingProxy::AddData(members[i].name.in(),members[i].value.in());
         }
