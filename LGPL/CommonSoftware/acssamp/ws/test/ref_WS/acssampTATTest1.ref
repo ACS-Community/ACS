@@ -8,6 +8,7 @@
 1 - 
 1 - 
 1 - 
+1 - 
 1 - ----------T--:--:--.--- [main - maci::ContainerImpl::initThread] Thread name: 'main'
 1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::getManager] Resolving manager...
 1 - ----------T--:--:--.--- [Container - maci::Container::init] Recovery enabled.
@@ -41,9 +42,9 @@
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Full path '/----/libacsexmplLampImpl.so'
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'acsexmplLampImpl'.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loaded '/----/libacsexmplLampImpl.so'.
+1 - ----------T--:--:--.--- [GlobalLogger - ] Switched state of component LAMP1: INITIALIZED -> OPERATIONAL
 1 - ----------T--:--:--.--- [GlobalLogger - ] Switched state of component LAMP1: INITIALIZING -> INITIALIZED
 1 - ----------T--:--:--.--- [GlobalLogger - ] Switched state of component LAMP1: NEW -> INITIALIZING
-1 - ----------T--:--:--.--- [GlobalLogger - ] Switched state of component LAMP1: INITIALIZED -> OPERATIONAL
 1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::activate_component] Component 'LAMP1' activated.
 1 - ----------T--:--:--.--- [LAMP1::actionThread - maci::ContainerImpl::initThread] Thread name: 'LAMP1::actionThread'
 1 - ----------T--:--:--.--- [LAMP1::monitorThread - maci::ContainerImpl::initThread] Thread name: 'LAMP1::monitorThread'
@@ -56,8 +57,6 @@
 2 - ----------T--:--:--.--- [StaticMethodLogger - ] CDBProperties::getCDB
 2 - ----------T--:--:--.--- [GlobalLogger - ] ::SamplerConsumer::SamplerConsumer(names, orb)
 2 - ----------T--:--:--.--- [StaticMethodLogger - ] CDBProperties::getCDB
-1 - ----------T--:--:--.--- [LAMP1_brightness_1000000_10000000_thread - maci::ContainerImpl::initThread] Thread name: 'LAMP1_brightness_1000000_10000000_thread'
-1 - ----------T--:--:--.--- [LAMP1_brightness_1000000_10000000_f_thread - maci::ContainerImpl::initThread] Thread name: 'LAMP1_brightness_1000000_10000000_f_thread'
 2 - ----------T--:--:--.--- multicast_query: unable to accept: Connection timed out
 2 - 
 2 - ----------T--:--:--.--- 
@@ -70,12 +69,14 @@
 2 - 
 2 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveNameService] NameService reference generated using localhost address: 'corbaloc::---:----/NameService'
 2 - ----------T--:--:--.--- [GlobalLogger - ] Consumer::addSubscription subscribing to '_SequenceOf_SampDataBlock' events for the 'NC_LAMP1_brightness_1000000_10000000' channel!
+1 - ----------T--:--:--.--- [LAMP1_brightness_1000000_10000000_thread - maci::ContainerImpl::initThread] Thread name: 'LAMP1_brightness_1000000_10000000_thread'
+1 - ----------T--:--:--.--- [LAMP1_brightness_1000000_10000000_f_thread - maci::ContainerImpl::initThread] Thread name: 'LAMP1_brightness_1000000_10000000_f_thread'
 1 - ----------T--:--:--.--- [GlobalLogger - ] ACSSamp deleting object LAMP1_brightness_1000000_10000000
 1 - ----------T--:--:--.--- [GlobalLogger - ] Switched state of component SAMP1: OPERATIONAL -> DESTROYING
 1 - ----------T--:--:--.--- [GlobalLogger - ] Switched state of component SAMP1: DESTROYING -> DEFUNCT
 1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::etherealizeComponent] Component 'SAMP1' etherealized.
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Unloaded '/----/libacssamp.so'.
 1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::deactivate_component] Component 'SAMP1' deactivated.
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Unloaded '/----/libacssamp.so'.
 2 - ----------T--:--:--.--- [GlobalLogger - ] SAMP1 released
 2 - Shutting down Container
 2 - All done!
