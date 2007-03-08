@@ -1,4 +1,4 @@
-# @(#) $Id: Log.py,v 1.23 2007/01/30 12:06:53 nbarriga Exp $
+# @(#) $Id: Log.py,v 1.24 2007/03/08 09:21:43 nbarriga Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA,  2001
@@ -42,7 +42,7 @@ TODO:
 XML-related methods are untested at this point.
 '''
 
-__revision__ = "$Id: Log.py,v 1.23 2007/01/30 12:06:53 nbarriga Exp $"
+__revision__ = "$Id: Log.py,v 1.24 2007/03/08 09:21:43 nbarriga Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 from os        import environ
@@ -373,7 +373,7 @@ class Logger(logging.Logger):
             #save it to be processes later
             self.error_trace_list.append(errortrace)
     #------------------------------------------------------------------------
-    def logTypeSafe(self, priority, timestamp, msg, rtCont, srcInfo, data):
+    def logTypeSafe(self, priority, timestamp, msg, rtCont, srcInfo, data, audience=None):
         '''
         Log a type safe log.
 
@@ -389,7 +389,7 @@ class Logger(logging.Logger):
 
         Raises: Nothing
         '''
-        ACSHANDLER.logSvc.logWithPriority(priority, timestamp, msg, rtCont, srcInfo, data)
+        ACSHANDLER.logSvc.logWithPriority(priority, timestamp, msg, rtCont, srcInfo, data, audience)
 
 #----------------------------------------------------------------------------
 logging.setLoggerClass(Logger)
