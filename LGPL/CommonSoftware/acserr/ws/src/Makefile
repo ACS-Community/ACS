@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.79 2007/02/05 13:10:36 nbarriga Exp $"
+# "@(#) $Id: Makefile,v 1.80 2007/03/08 10:30:46 nbarriga Exp $"
 #
 # Makefile of ........
 #
@@ -48,7 +48,7 @@ DEBUG=on
 
 #
 # additional include and library search paths
-USER_LIB = 
+USER_LIB = -lTAO -lACE 
 
 #
 # MODULE CODE DESCRIPTION:
@@ -90,7 +90,7 @@ LIBRARIES_L     =
 acserr_OBJECTS = acserr acserrC acserrS acserrExceptionManager \
 		 acserrLegacy acserrACSbaseExImpl \
 		 acserrHandlersErrC acserrHandlersErrS  acserrHandlersErr acserrHandlers ErrorSystemErrType
-
+acserr_LDFLAGS = -llogging -lloki -lacstime -lmaci
 
 #
 # Scripts (public and local)
