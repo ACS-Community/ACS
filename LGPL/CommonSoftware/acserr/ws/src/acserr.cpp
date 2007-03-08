@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acserr.cpp,v 1.84 2006/11/29 16:17:43 bjeram Exp $"
+* "@(#) $Id: acserr.cpp,v 1.85 2007/03/08 07:45:04 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -34,7 +34,7 @@
 #include <iomanip>
 #include "ace/UUID.h"
 
-static char *rcsId="@(#) $Id: acserr.cpp,v 1.84 2006/11/29 16:17:43 bjeram Exp $"; 
+static char *rcsId="@(#) $Id: acserr.cpp,v 1.85 2007/03/08 07:45:04 bjeram Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 
@@ -548,7 +548,7 @@ CompletionImpl::operator=(CompletionImpl& c)
 }
 
 CompletionImpl::CompletionImpl (const CompletionImpl &c)
-    : CompletionInit(c), m_errorTraceHelper(previousError[0])
+    : CompletionInit(c), m_errorTraceHelper(previousError[0], previousError.length())
 {
 }
 
