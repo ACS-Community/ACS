@@ -26,6 +26,7 @@
 # hsommer 2004-09-17 copied from jcontexmpl
 
 export ACS_CDB=$PWD
+echo $ACS_CDB
 acsutilTATPrologue -l
 
 echo " Starting Test Java Container"
