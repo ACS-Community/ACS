@@ -20,7 +20,7 @@
 # MA 02111-1307  USA
 #
 #
-# "@(#) $Id: Makefile,v 1.57 2006/10/03 21:44:38 gchiozzi Exp $" 
+# "@(#) $Id: Makefile,v 1.58 2007/03/08 13:23:44 nbarriga Exp $" 
 #
 # Makefile of ........
 #
@@ -39,7 +39,7 @@
 #------------------------------------------------------------------------
 
 USER_CFLAGS = 
-USER_LIB = 	
+USER_LIB = -lACE	
 
 #USER_INC =
 
@@ -104,7 +104,7 @@ LIBRARIES_L     =
 baselogging_OBJECTS =	loggingBaseLog loggingHandler loggingLogger \
                         loggingLogTrace loggingGetLogger loggingGenericLogger \
                         loggingStdoutHandler
-baselogging_LDFLAGS = 	-lloki
+baselogging_LDFLAGS = 	-lloki -lacstime 
 
 logging_OBJECTS = 	logging loggingLoggable loggingXMLElement loggingXMLParser \
                         loggingLocalSyslog loggingRemoteSyslog loggingLocalFile \
