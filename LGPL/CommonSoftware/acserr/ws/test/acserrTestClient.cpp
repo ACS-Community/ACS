@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acserrTestClient.cpp,v 1.49 2005/09/28 11:09:49 vwang Exp $"
+* "@(#) $Id: acserrTestClient.cpp,v 1.50 2007/03/08 07:45:35 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -28,7 +28,7 @@
 * rlemke   30/08/01  integrated into tat 
 */
 
-static char *rcsId="@(#) $Id: acserrTestClient.cpp,v 1.49 2005/09/28 11:09:49 vwang Exp $"; 
+static char *rcsId="@(#) $Id: acserrTestClient.cpp,v 1.50 2007/03/08 07:45:35 bjeram Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include "acserrTestC.h"
@@ -39,6 +39,8 @@ static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 #include "ACSErrTypeTest.h"
 
 using namespace ACSErrTypeTest;
+
+
 
 int main(int argc, char *argv[])
 {
@@ -199,6 +201,10 @@ int main(int argc, char *argv[])
                      "Performing test3 (no error) ... (%d/%d)", i, iteration));
       CompletionImpl comp = test->testNoError ();
       comp.log();
+      // test CompletionImpl copy constructor where there is no error
+      CompletionImpl c1(comp);
+      c1.log();
+      
     }
     catch( CORBA::Exception &ex )
     {    
@@ -230,6 +236,37 @@ int main(int argc, char *argv[])
   }
     
   ACS_SHORT_LOG((LM_INFO, "Test4 performed."));
+
+// test5 ( error completion, assignment and copy constructor)
+  try
+  {
+    ACS_SHORT_LOG((LM_INFO, 
+          "Performing test5" ));
+    CompletionImpl comp = test->test(depth, isErr);
+    comp.log();
+
+    ACS_SHORT_LOG((LM_INFO, "Performing test5  - copy constructor" ));
+ // test CompletionImpl copy constructor where there is no error
+    CompletionImpl c1(comp);
+    c1.log();
+
+    ACS_SHORT_LOG((LM_INFO, "Performing test5  - assignment constructor" ));
+    CompletionImpl OKComp = test->testNoError ();
+
+    comp = OKComp;
+    comp.log();
+    
+    comp = c1;
+    comp.log();
+  }
+  catch( CORBA::Exception &ex )
+  {    
+    ACE_PRINT_EXCEPTION (ex, "EXCEPTION CAUGHT");
+      return -1;
+  }
+    
+  ACS_SHORT_LOG((LM_INFO, "Test5 performed."));
+
 
   test->shutdown();
   ACE_OS::sleep(5);
