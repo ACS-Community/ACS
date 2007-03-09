@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.80 2007/03/08 10:30:46 nbarriga Exp $"
+# "@(#) $Id: Makefile,v 1.81 2007/03/09 07:17:33 gchiozzi Exp $"
 #
 # Makefile of ........
 #
@@ -90,7 +90,7 @@ LIBRARIES_L     =
 acserr_OBJECTS = acserr acserrC acserrS acserrExceptionManager \
 		 acserrLegacy acserrACSbaseExImpl \
 		 acserrHandlersErrC acserrHandlersErrS  acserrHandlersErr acserrHandlers ErrorSystemErrType
-acserr_LDFLAGS = -llogging -lloki -lacstime -lmaci
+acserr_LIBS = logging loki acsutil
 
 #
 # Scripts (public and local)
