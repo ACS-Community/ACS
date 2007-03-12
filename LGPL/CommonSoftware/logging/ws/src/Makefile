@@ -20,7 +20,7 @@
 # MA 02111-1307  USA
 #
 #
-# "@(#) $Id: Makefile,v 1.59 2007/03/09 07:08:31 gchiozzi Exp $" 
+# "@(#) $Id: Makefile,v 1.60 2007/03/12 10:59:03 gchiozzi Exp $" 
 #
 # Makefile of ........
 #
@@ -39,7 +39,12 @@
 #------------------------------------------------------------------------
 
 USER_CFLAGS = 
-USER_LIB = -lACE	
+##
+## @todo
+## -lACE commented out because it makes the container crash on exit
+## Seems a problem with singletons, being investigated.
+##
+##USER_LIB = -lACE
 
 #USER_INC =
 
@@ -104,20 +109,25 @@ LIBRARIES_L     =
 baselogging_OBJECTS =	loggingBaseLog loggingHandler loggingLogger \
                         loggingLogTrace loggingGetLogger loggingGenericLogger \
                         loggingStdoutHandler
-baselogging_LDFLAGS =   -lTAO_PortableServer
-baselogging_LIBS = 	loki acsutil
+##
+## @todo
+## -lTAO_PortableServer and acsutil commented out because it makes the container crash on exit
+## Seems a problem with singletons, being investigated.
+##
+##baselogging_LDFLAGS =   -lTAO_PortableServer
+##baselogging_LIBS =    loki acsutil
+baselogging_LIBS =    loki
 
 logging_OBJECTS = 	logging loggingLoggable loggingXMLElement loggingXMLParser \
                         loggingLocalSyslog loggingRemoteSyslog loggingLocalFile \
 			loggingLoggingTSSStorage loggingLoggingProxy \
 			loggingACSLogger loggingLogSvcHandler
-logging_LIBS    =	baselogging acsutil acscommonStubs
+logging_LIBS    =     baselogging # acsutil acscommonStubs
 logging_LDFLAGS =	-lACE -lTAO -lTAO_DsLogAdmin -lTAO_DsLogAdmin_Serv \
                         -lTAO_CosNaming -lTAO_IORTable -lTAO_PortableServer -lTAO_Svc_Utils \
 			-lTAO_CosTrading -lTAO_DynamicAny \
-                        -lTAO_CosNotification -lTAO_CosNotification_Serv
-
-
+                        -lTAO_CosNotification -lTAO_CosNotification_Serv \
+                        -lacsutil -lacscommonStubs
 #
 # other files to be installed
 #----------------------------
