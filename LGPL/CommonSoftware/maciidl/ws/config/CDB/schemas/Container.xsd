@@ -21,36 +21,38 @@ of Container for a list of supported and un-supported
 configuration parameters.</xs:documentation>
     </xs:annotation>
     <xs:complexType name="DeployInfo">
-        <xs:attribute name="Type" type="xs:string" use="required"/>
+        <xs:attribute name="Type" use="required">
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="java"/>
+                    <xs:enumeration value="cpp"/>
+                    <xs:enumeration value="py"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
         <xs:attribute name="Host" type="xs:string" use="required"/>
         <xs:attribute name="Instance" type="xs:int" use="optional" default="0"/>
         <xs:attribute name="Flags" type="xs:string" use="optional" default=""/>
         <xs:attribute name="KeepAliveTime" type="xs:int" use="optional" default="-1"/>
     </xs:complexType>
-    
     <xs:element name="Container" type="Container"/>
     <xs:complexType name="Container">
         <xs:sequence>
-        
             <xs:element name="Autoload" type="cdb:Array">
                 <xs:annotation>
                     <xs:documentation>Set of libraries that will be automatically loaded at Container startup time. Used by the CPP Containers to automatically load shared libraries that will be used by many Components. It also allow to resolve dynamically linking problems. The arguments are names of shared libraries.</xs:documentation>
                 </xs:annotation>
             </xs:element>
-            
             <xs:element name="DeployInfo" type="DeployInfo" minOccurs="0">
                 <xs:annotation>
-					<xs:documentation>Optional deployment information. Used by Manager to automatically startup/shutdown containers.</xs:documentation>
-				</xs:annotation>
+                    <xs:documentation>Optional deployment information. Used by Manager to automatically startup/shutdown containers.</xs:documentation>
+                </xs:annotation>
             </xs:element>
-            
             <xs:element name="LoggingConfig" type="log:LoggingConfig"/>
-            
         </xs:sequence>
-        
         <xs:attribute name="CommandLine" type="xs:string" use="optional" default="">
             <xs:annotation>
-                <xs:documentation>String passed to the container at startup as command line arguments.</xs:documentation>
+                <xs:documentation>String passed to the container at startup as command line arguments. @Deprecated as of ACS 6.0.3 (was never used, and got superseded by DeployInfo.Flags</xs:documentation>
             </xs:annotation>
         </xs:attribute>
         <xs:attribute name="Timeout" type="xs:double" use="optional" default="2">
@@ -70,7 +72,8 @@ configuration parameters.</xs:documentation>
         </xs:attribute>
         <xs:attribute name="ManagerReference" type="xs:string" use="optional" default="">
             <xs:annotation>
-                <xs:documentation>Reference to contact the Manager in the form: corbaloc::ip:port/Manager, for example: corbaloc::127.0.0.1:3100/Manager. Containers can get this reference as a default, from the command line, from the environment or from the CDB. This last option is very convenient in the final deployment.</xs:documentation>
+                <xs:documentation>Reference to contact the Manager in the form: corbaloc::ip:port/Manager, for example: corbaloc::127.0.0.1:3100/Manager. Containers can get this reference as a default, from the command line, from the environment or from the CDB. This last option is very convenient in the final deployment. 
+                @Deprecated as of ACS 6.0.3 because since a long time the container first sees the manager, and then the CDB.</xs:documentation>
             </xs:annotation>
         </xs:attribute>
         <xs:attribute name="DALtype" type="xs:string" use="optional" default="DAL">
@@ -90,4 +93,3 @@ configuration parameters.</xs:documentation>
         </xs:attribute>
     </xs:complexType>
 </xs:schema>
-
