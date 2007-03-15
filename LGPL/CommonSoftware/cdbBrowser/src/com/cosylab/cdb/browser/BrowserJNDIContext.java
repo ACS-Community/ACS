@@ -21,14 +21,18 @@
 */
 package com.cosylab.cdb.browser;
 
+import java.util.regex.PatternSyntaxException;
+
 import javax.naming.Name;
 import javax.naming.NamingException;
+
 import org.omg.CORBA.ORB;
-// The package containing the CORBA stubs.
-import com.cosylab.CDB.*;
+
+import com.cosylab.CDB.DAL;
+
 import alma.cdbErrType.CDBRecordDoesNotExistEx;
 import alma.cdbErrType.CDBXMLErrorEx;
-import java.util.regex.PatternSyntaxException;
+import alma.cdbErrType.wrappers.AcsJCDBXMLErrorEx;
 
 
 public class BrowserJNDIContext extends com.cosylab.cdb.jdal.JNDIContext {
@@ -70,74 +74,79 @@ public class BrowserJNDIContext extends com.cosylab.cdb.jdal.JNDIContext {
     /**
      * This methos returns either a new JNDI_Context or a new JNDI_XMLContxt obj.
      */
-    public Object lookup(Name name) throws NamingException {	
+    public Object lookup(Name name) throws NamingException {
 
-	//full path of the last Node selected           (/alma/LAMP1)
-	String nameToLookup = this.name + "/" + name;
-	//name of the last Node selected.. without path (LAMP1)
-	String recordName = nameToLookup.substring(nameToLookup.lastIndexOf('/')+1);
+		// full path of the last Node selected (/alma/LAMP1)
+		String nameToLookup = this.name + "/" + name;
+		// name of the last Node selected.. without path (LAMP1)
+		String recordName = nameToLookup.substring(nameToLookup.lastIndexOf('/') + 1);
 
-	CDBLogic.setKey(nameToLookup);
-	
-	//get elements (SUBNODES) of the selected node
-	String elements = dal.list_nodes(nameToLookup);
-	//Remove CVS from list f elements
-	try{
-	    elements = elements.replaceAll("CVS","");
-	}catch(PatternSyntaxException e){}
-	catch(NullPointerException e){}
-	// put elements in alphabetical order
-	//elements = CDBLogic.abcOrder(elements);*********************************
+		CDBLogic.setKey(nameToLookup);
 
-	//System.out.println(elements);
-
-	//PASS THE ELEMENTS OF THE NEXT LEVEL AS A PARAMETER TO THE  APPROPRIATE CONSTRUCTOR
-	try {
-	    //CASE 1 *********************************************************
-	    //check if elements contains an xml file: if yes -> return JNDI_XMLContext(nameToLookup, elements, xml);
-	    if (elements.indexOf(recordName + ".xml") != -1) {
-		String xml = dal.get_DAO(nameToLookup);
-		Browser.getInstance().display("==> Returning XML record for: " + nameToLookup, true);
-		return new BrowserJNDIXMLContext(nameToLookup, elements, xml);
-	    } else {
-
-
-		//CASE 2 *********************************************************
-		//if current 'Node' contains no elements -> check the parent 'node'
-		if (elements.length() == 0 ) { // inside a XML?
-
-		    int slashIndex = nameToLookup.lastIndexOf('/');
-		    String newName;
-		    while( slashIndex != -1 ) {
-			newName = nameToLookup.substring(0,slashIndex);             //full path of the parent 'node'
-			recordName = newName.substring(newName.lastIndexOf('/')+1); //name of the parent
-			elements = dal.list_nodes(newName);                         //get elements of the parent
-			if (elements.indexOf(recordName + ".xml") != -1) {          //element is xml file??
-			    String xml = dal.get_DAO(newName);
-			    Browser.getInstance().display("==> Returning XML record for: " + newName, true); 
-			    recordName = nameToLookup.substring(slashIndex+1);      //get the selected node
-			    //System.out.println("2) return a BrowserJNDIXMLContext instance");
-			    return new BrowserJNDIXMLContext(newName, elements, xml).lookup(recordName);
-			}
-			slashIndex = newName.lastIndexOf('/');
-		    }
-		    throw new NamingException("No name " + nameToLookup );
+		// get elements (SUBNODES) of the selected node
+		String elements = dal.list_nodes(nameToLookup);
+		// Remove CVS from list f elements
+		try {
+			elements = elements.replaceAll("CVS", "");
 		}
+		catch (PatternSyntaxException e) {
+		}
+		catch (NullPointerException e) {
+		}
+		// put elements in alphabetical order
+		// elements = CDBLogic.abcOrder(elements);*********************************
+
+		// System.out.println(elements);
+
+		// PASS THE ELEMENTS OF THE NEXT LEVEL AS A PARAMETER TO THE APPROPRIATE CONSTRUCTOR
+		try {
+			// CASE 1 *********************************************************
+	    	//check if elements contains an xml file: if yes -> return JNDI_XMLContext(nameToLookup, elements, xml);
+			if (elements.indexOf(recordName + ".xml") != -1) {
+				String xml = dal.get_DAO(nameToLookup);
+				Browser.getInstance().display("==> Returning XML record for: " + nameToLookup, true);
+				return new BrowserJNDIXMLContext(nameToLookup, elements, xml);
+			}
+			else {
+
+				// CASE 2 *********************************************************
+				// if current 'Node' contains no elements -> check the parent 'node'
+				if (elements.length() == 0) { // inside a XML?
+
+					int slashIndex = nameToLookup.lastIndexOf('/');
+					String newName;
+					while (slashIndex != -1) {
+						newName = nameToLookup.substring(0, slashIndex); // full path of the parent 'node'
+						recordName = newName.substring(newName.lastIndexOf('/')+1); //name of the parent
+						elements = dal.list_nodes(newName);                         //get elements of the parent
+						if (elements.indexOf(recordName + ".xml") != -1) {          //element is xml file??
+							String xml = dal.get_DAO(newName);
+							Browser.getInstance().display("==> Returning XML record for: " + newName, true);
+			    			recordName = nameToLookup.substring(slashIndex+1);      //get the selected node
+			    			//System.out.println("2) return a BrowserJNDIXMLContext instance");
+							return new BrowserJNDIXMLContext(newName, elements, xml).lookup(recordName);
+						}
+						slashIndex = newName.lastIndexOf('/');
+					}
+					throw new NamingException("No name " + nameToLookup);
+				}
 
 
-		//CASE 3 *********************************************************
-		//Elements of current node do not contain xml file  -> return JNDI_Context(nameToLookup, elements)
-		return new BrowserJNDIContext(nameToLookup, elements);
-	    }
-	} catch (CDBRecordDoesNotExistEx e) {
-
-
-	    //CASE 4 *********************************************************
-	    //repeat case 3 (statement never reached???)
-	    return new BrowserJNDIContext(nameToLookup, elements);
-	} catch (CDBXMLErrorEx e) {
-		throw new NamingException();
-		//  throw new NamingException(e);
+				//CASE 3 *********************************************************
+				//Elements of current node do not contain xml file  -> return JNDI_Context(nameToLookup, elements)
+				return new BrowserJNDIContext(nameToLookup, elements);
+			}
+		}
+		catch (CDBRecordDoesNotExistEx e) {
+			// CASE 4 *********************************************************
+			// repeat case 3 (statement never reached???)
+			return new BrowserJNDIContext(nameToLookup, elements);
+		}
+		catch (CDBXMLErrorEx ex) {
+			AcsJCDBXMLErrorEx jex = AcsJCDBXMLErrorEx.fromCDBXMLErrorEx(ex);
+			NamingException ex2 = new NamingException(jex.getFilename() + ": " + jex.getErrorString());
+			ex2.setRootCause(jex);
+			throw ex2;
+		}
 	}
-    }
 }
