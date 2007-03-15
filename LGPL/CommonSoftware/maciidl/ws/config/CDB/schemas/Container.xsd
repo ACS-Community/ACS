@@ -21,19 +21,37 @@ of Container for a list of supported and un-supported
 configuration parameters.</xs:documentation>
     </xs:annotation>
     <xs:complexType name="DeployInfo">
-        <xs:attribute name="Type" use="required">
-            <xs:simpleType>
-                <xs:restriction base="xs:string">
-                    <xs:enumeration value="java"/>
-                    <xs:enumeration value="cpp"/>
-                    <xs:enumeration value="py"/>
-                </xs:restriction>
-            </xs:simpleType>
+        <xs:attribute name="Type" type="xs:string" use="optional">
+            <xs:annotation>
+                <xs:documentation>@deprecated since ACS 6.0.3, because the type is now split into Container.ImplLang and DeployInfo.TypeModifiers</xs:documentation>
+            </xs:annotation>
         </xs:attribute>
-        <xs:attribute name="Host" type="xs:string" use="required"/>
-        <xs:attribute name="Instance" type="xs:int" use="optional" default="0"/>
-        <xs:attribute name="Flags" type="xs:string" use="optional" default=""/>
-        <xs:attribute name="KeepAliveTime" type="xs:int" use="optional" default="-1"/>
+        <xs:attribute name="TypeModifiers" type="xs:string" use="optional">
+            <xs:annotation>
+                <xs:documentation>Space-separated list of modifies for the container type. While Container.ImplLang specifies the programming language type of the container (e.g. "java"), the modifiers may select a special mode (such as "debug", "single_threaded") or whatever else. 
+The ACS daemon that starts the container must understand the modifiers in order for them to become effective.</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="Host" type="xs:string" use="required">
+            <xs:annotation>
+                <xs:documentation>The computer on which the container will be started.</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="Instance" type="xs:int" use="optional" default="0">
+            <xs:annotation>
+                <xs:documentation>The ACS instance. Note that the instance should only be used when sharing developer machines, but not for the integrated system.</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="Flags" type="xs:string" use="optional" default="">
+            <xs:annotation>
+                <xs:documentation>Optional command line flags for starting the container. For example, an alternative container implementation can be used with --executable=myContainerImpl</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="KeepAliveTime" type="xs:int" use="optional" default="-1">
+            <xs:annotation>
+                <xs:documentation>Time in seconds for which the manager will not shut down an idle container, i.e. one that no longer runs components. Negative values mean indefinite.</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
     </xs:complexType>
     <xs:element name="Container" type="Container"/>
     <xs:complexType name="Container">
@@ -50,6 +68,19 @@ configuration parameters.</xs:documentation>
             </xs:element>
             <xs:element name="LoggingConfig" type="log:LoggingConfig"/>
         </xs:sequence>
+        <xs:attribute name="ImplLang" use="optional">
+            <xs:annotation>
+                <xs:documentation>The programming language the container is implemented in. Introduced with ACS 6.0.3 and declared optional only in order to be backward compatible. @Todo: make required with ACS 7.0. 
+Note that for importing data from the ACS CDB to the TMCDB, this field is already required now.</xs:documentation>
+            </xs:annotation>
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="java"/>
+                    <xs:enumeration value="cpp"/>
+                    <xs:enumeration value="py"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
         <xs:attribute name="CommandLine" type="xs:string" use="optional" default="">
             <xs:annotation>
                 <xs:documentation>String passed to the container at startup as command line arguments. @Deprecated as of ACS 6.0.3 (was never used, and got superseded by DeployInfo.Flags</xs:documentation>
@@ -62,7 +93,7 @@ configuration parameters.</xs:documentation>
         </xs:attribute>
         <xs:attribute name="UseIFR" type="xs:boolean" use="optional" default="1">
             <xs:annotation>
-                <xs:documentation>Normally Containers access the Interface Repository to retrieve information about the interfaces implemented by Components. In some very special situations, for example during debugging, it might be useful to disable the usage of the Interface Repository.</xs:documentation>
+                <xs:documentation>At least the C++ container accesses the Interface Repository to retrieve information about the interfaces implemented by Components. In some very special situations, for example during debugging, it might be useful to disable the usage of the Interface Repository.</xs:documentation>
             </xs:annotation>
         </xs:attribute>
         <xs:attribute name="ManagerRetry" type="xs:int" use="optional" default="10">
@@ -73,7 +104,7 @@ configuration parameters.</xs:documentation>
         <xs:attribute name="ManagerReference" type="xs:string" use="optional" default="">
             <xs:annotation>
                 <xs:documentation>Reference to contact the Manager in the form: corbaloc::ip:port/Manager, for example: corbaloc::127.0.0.1:3100/Manager. Containers can get this reference as a default, from the command line, from the environment or from the CDB. This last option is very convenient in the final deployment. 
-                @Deprecated as of ACS 6.0.3 because since a long time the container first sees the manager, and then the CDB.</xs:documentation>
+@Deprecated as of ACS 6.0.3 because since a long time the container first sees the manager, and then the CDB.</xs:documentation>
             </xs:annotation>
         </xs:attribute>
         <xs:attribute name="DALtype" type="xs:string" use="optional" default="DAL">
