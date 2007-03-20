@@ -1,6 +1,6 @@
 #include <MethodTestComponentImpl.h>
 
-ACE_RCSID(acstests, MethodTestComponentImpl, "$Id: MethodTestComponentImpl.cpp,v 1.4 2005/04/29 21:45:13 dfugate Exp $")
+ACE_RCSID(acstests, MethodTestComponentImpl, "$Id: MethodTestComponentImpl.cpp,v 1.5 2007/03/20 17:55:42 sharring Exp $")
 
 /////////////////////////////////////////////////
 // MethodTestComponent
@@ -21,6 +21,7 @@ MethodTestComponent::testReturnSize()
     throw (CORBA::SystemException)
 {
     perftest::charSeq_var tCharSeq = m_charSeq;
+
     //Not the best way in the world to return this but it should work.
     return tCharSeq._retn();
 }
@@ -30,6 +31,7 @@ MethodTestComponent::setup(CORBA::ULong count, CORBA::ULong size, ACS::TimeInter
 {
     BasePerfCompImpl::setup(count, size, waitTime);
     
+    m_charSeq = new perftest::charSeq(m_size);
     m_charSeq->length(m_size);
     
     for (CORBA::ULong i=0; i<m_charSeq->length(); i++)

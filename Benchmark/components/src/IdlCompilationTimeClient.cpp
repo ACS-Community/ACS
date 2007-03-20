@@ -20,7 +20,7 @@
 *
 *
 *
-* "@(#) $Id: IdlCompilationTimeClient.cpp,v 1.1 2004/09/20 15:38:02 dfugate Exp $"
+* "@(#) $Id: IdlCompilationTimeClient.cpp,v 1.2 2007/03/20 17:55:42 sharring Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -31,7 +31,7 @@
 #include <maciSimpleClient.h>
 #include <IdlCompilationTimeC.h>
 
-ACE_RCSID(acsexmpl, acsexmplHelloWorldClient, "$Id: IdlCompilationTimeClient.cpp,v 1.1 2004/09/20 15:38:02 dfugate Exp $")
+ACE_RCSID(acsexmpl, acsexmplHelloWorldClient, "$Id: IdlCompilationTimeClient.cpp,v 1.2 2007/03/20 17:55:42 sharring Exp $")
 using namespace maci;
     
 int main(int argc, char *argv[])
@@ -48,7 +48,7 @@ int main(int argc, char *argv[])
 	client.login();
 	}
    
-    IdlCompilationTime::SimpleBACIComponent_var foo = client.get_object<IdlCompilationTime::SimpleBACIComponent>(argv[1], 0, true);
+    IdlCompilationTime::IdlCompilationTimeComponent_var foo = client.get_object<IdlCompilationTime::IdlCompilationTimeComponent>(argv[1], 0, true);
     
     foo->method();
     

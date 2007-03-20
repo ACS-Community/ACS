@@ -18,7 +18,7 @@
 
 /** 
  * @author  dfugate
- * @version $Id: ErrTestComponentImpl.java,v 1.1 2004/09/28 22:04:03 dfugate Exp $
+ * @version $Id: ErrTestComponentImpl.java,v 1.2 2007/03/20 17:55:42 sharring Exp $
  * @since    
  */
 
@@ -59,13 +59,13 @@ public class ErrTestComponentImpl extends BasePerfCompImpl implements ErrTestCom
 		}
 	}
     
-    public void testExceptions(int depth, boolean err)
-	throws alma.ACSErr.ACSException, BenchmarkErr0Ex
+    public void testExceptions(int depth, boolean err) throws BenchmarkErr0Ex
 	{
 	    //sanity check
 	    if (depth < 0)
 		{
-		throw new alma.ACSErr.ACSException();
+			AcsJBenchmarkErr0Ex myExcept = new AcsJBenchmarkErr0Ex();
+			throw myExcept.toBenchmarkErr0Ex();
 		}
 
 	    BenchmarkErr0Ex except = getException(depth, new AcsJBenchmarkErr0Ex()).toBenchmarkErr0Ex();

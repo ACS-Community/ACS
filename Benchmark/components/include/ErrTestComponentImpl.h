@@ -16,13 +16,14 @@ class ErrTestComponentImpl: public virtual BasePerfCompImpl,
 			    public POA_perftest::ErrTestComponent
 {
   private:
-    BenchmarkErrType::BenchmarkErr0ExImpl getException(int depth, BenchmarkErrType::BenchmarkErr0ExImpl err);
+
+  void genException(int depth, BenchmarkErrType::BenchmarkErr0ExImpl excep, CORBA::Boolean err) throw (BenchmarkErrType::BenchmarkErr0Ex);
   public:
     ErrTestComponentImpl(const ACE_CString& name,
 			 maci::ContainerServices *containerServices);
     virtual ~ErrTestComponentImpl(){};
     
-    virtual void testExceptions(CORBA::Long depth, CORBA::Boolean err) throw (CORBA::SystemException, ACSErr::ACSException, BenchmarkErrType::BenchmarkErr0Ex);
+    virtual void testExceptions(CORBA::Long depth, CORBA::Boolean err) throw (CORBA::SystemException, BenchmarkErrType::BenchmarkErr0Ex);
 };
 
 #endif

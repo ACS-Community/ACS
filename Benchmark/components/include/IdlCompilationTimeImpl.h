@@ -1,5 +1,5 @@
-#ifndef IDL_COMPILATION_TIME_IMPL_H
-#define IDL_COMPILATION_TIME_IMPL_H
+#ifndef IDL_COMPILATION_TIME_COMPONENT_IMPL_H
+#define IDL_COMPILATION_TIME_COMPONENT_IMPL_H
 
 //Simple IDL file used to test IDL compilation time.
 //Do not add or remove anything from this file!
@@ -17,14 +17,14 @@
  */
 #define ACTION 0
 
-class SimpleBACIComponent: public CharacteristicComponentImpl,     //Standard component superclass
-			   public virtual POA_IdlCompilationTime::SimpleBACIComponent,    //CORBA servant stub
+class IdlCompilationTimeComponentImpl: public CharacteristicComponentImpl,     //Standard component superclass
+			   public virtual POA_IdlCompilationTime::IdlCompilationTimeComponent,    //CORBA servant stub
 			   public ActionImplementator    //Asynchronous method helper class
 {
   public:
-    SimpleBACIComponent(const ACE_CString& name,
+    IdlCompilationTimeComponentImpl(const ACE_CString& name,
 			maci::ContainerServices *containerServices);
-    virtual ~SimpleBACIComponent();  
+    virtual ~IdlCompilationComponentTimeImpl();  
     
     virtual ActionRequest invokeAction(int function,
 				       BACIComponent *component_p, 
@@ -40,7 +40,7 @@ class SimpleBACIComponent: public CharacteristicComponentImpl,     //Standard co
 
   private:
     RWlong	*m_property;
-    void operator=(const SimpleBACIComponent&);
+    void operator=(const IdlCompilationTimeComponentImpl&);
 };
 
 #endif
