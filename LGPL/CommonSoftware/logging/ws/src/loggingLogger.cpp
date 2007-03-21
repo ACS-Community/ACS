@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingLogger.cpp,v 1.11 2007/03/04 17:40:31 msekoran Exp $"
+* "@(#) $Id: loggingLogger.cpp,v 1.12 2007/03/21 10:04:48 nbarriga Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -26,8 +26,9 @@
 #include "loggingLogger.h"
 #include <functional>
 #include <iostream>
+#include <Recursive_Thread_Mutex.h>
 
-static char *rcsId="@(#) $Id: loggingLogger.cpp,v 1.11 2007/03/04 17:40:31 msekoran Exp $"; 
+static char *rcsId="@(#) $Id: loggingLogger.cpp,v 1.12 2007/03/21 10:04:48 nbarriga Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 // -------------------------------------------------------
 //helper function
@@ -47,48 +48,44 @@ checkHandlerEquality(Logging::Handler::HandlerSmartPtr handler,
 }
 // -------------------------------------------------------
 namespace Logging {
-    Logger::LoggerSmartPtr Logger::globalLogger_m = (Logger *)0;
-    Logger::LoggerSmartPtr Logger::anonymousLogger_m = (Logger *)0;
-    Logger::LoggerList Logger::loggers_m;
     ACE_Thread_Mutex Logger::loggersMutex_m;
     Logger::ConfigureLoggerFunction Logger::configureLoggerFunction_m = (ConfigureLoggerFunction)0;
     // -------------------------------------------------------
     Logger::LoggerSmartPtr
     Logger::getAnonymousLogger()
     {
-	//first check to see if the static member has been
-	//set yet...
-	if (anonymousLogger_m == 0)
+	if (ACE_Singleton<Logger_ptr, ACE_Recursive_Thread_Mutex>::instance()->anonymousLogger_m == 0)
 	    {
 	    //ok, now check is getGlobalLogger returns something
 	    //other than null...
 	    if (getGlobalLogger()!=0)
 		{
 		//delegate to the global logger
-		anonymousLogger_m = getGlobalLogger()->getLogger(BaseLog::ANONYMOUS_LOGGER_NAME);
+		ACE_Singleton<Logger_ptr, ACE_Recursive_Thread_Mutex>::instance()->anonymousLogger_m = getGlobalLogger()->getLogger(BaseLog::ANONYMOUS_LOGGER_NAME);
 		}
 	    }
 
 	//just delegate to abstract method implementation
-	return anonymousLogger_m;
+	return ACE_Singleton<Logger_ptr, ACE_Recursive_Thread_Mutex>::instance()->anonymousLogger_m;
+
     }
     // -------------------------------------------------------
     Logger::LoggerSmartPtr
     Logger::getGlobalLogger()
     {
-	return globalLogger_m;
+	return ACE_Singleton<Logger_ptr, ACE_Recursive_Thread_Mutex>::instance()->globalLogger_m;
     }
     // -------------------------------------------------------
     void
     Logger::setGlobalLogger(Logger::LoggerSmartPtr globalLogger)
     {
-	globalLogger_m = globalLogger;
+	ACE_Singleton<Logger_ptr, ACE_Recursive_Thread_Mutex>::instance()->globalLogger_m = globalLogger;
     }
     // -------------------------------------------------------
     void
     Logger::setAnonymousLogger(Logger::LoggerSmartPtr anonyLogger)
     {
-	anonymousLogger_m = anonyLogger;
+	ACE_Singleton<Logger_ptr, ACE_Recursive_Thread_Mutex>::instance()->anonymousLogger_m = anonyLogger;
     }
     // -------------------------------------------------------
     std::string
@@ -107,10 +104,11 @@ namespace Logging {
     {
     // remove from loggers list
     if (loggerName_m != BaseLog::GLOBAL_LOGGER_NAME &&
-    	this != globalLogger_m && this != anonymousLogger_m)
+    	this != ACE_Singleton<Logger_ptr, ACE_Recursive_Thread_Mutex>::instance()->globalLogger_m && this != ACE_Singleton<Logger_ptr, ACE_Recursive_Thread_Mutex>::instance()->anonymousLogger_m)
 	{
-    	loggersMutex_m.acquire();
-    	loggers_m.remove(this);
+                //printf("Deleting Logger: \"%s\"\n",loggerName_m.c_str());
+                loggersMutex_m.acquire();
+                ACE_Singleton<Logger_ptr, ACE_Recursive_Thread_Mutex>::instance()->loggers_m.remove(this);
    		loggersMutex_m.release();
 	}
 	
@@ -194,8 +192,8 @@ namespace Logging {
      
 	LoggerList::iterator pos;
 	
-	for (pos = loggers_m.begin();
-	     pos != loggers_m.end();
+	for (pos = ACE_Singleton<Logger_ptr, ACE_Recursive_Thread_Mutex>::instance()->loggers_m.begin();
+	     pos != ACE_Singleton<Logger_ptr, ACE_Recursive_Thread_Mutex>::instance()->loggers_m.end();
 	     pos++)
 		if ((*pos)->getName() == loggerName)
 			(*pos)->setLevels(localPriority, remotePriority);
@@ -213,8 +211,8 @@ namespace Logging {
      
 	LoggerList::iterator pos;
 	
-	for (pos = loggers_m.begin();
-	     pos != loggers_m.end();
+	for (pos = ACE_Singleton<Logger_ptr, ACE_Recursive_Thread_Mutex>::instance()->loggers_m.begin();
+	     pos != ACE_Singleton<Logger_ptr, ACE_Recursive_Thread_Mutex>::instance()->loggers_m.end();
 	     pos++)
 	    if (find(names.begin(), names.end(), (*pos)->getName()) == names.end())
 	    	names.push_back((*pos)->getName());
@@ -286,8 +284,9 @@ namespace Logging {
     	// add to logger list
     	if (loggerName_m != BaseLog::GLOBAL_LOGGER_NAME)
     	{
-		    loggersMutex_m.acquire();
-    		loggers_m.push_back(this);
+                //printf("Adding Logger: \"%s\"\n",loggerName_m.c_str());
+		loggersMutex_m.acquire();
+    		ACE_Singleton<Logger_ptr, ACE_Recursive_Thread_Mutex>::instance()->loggers_m.push_back(this);
     		loggersMutex_m.release();
     	}
     }

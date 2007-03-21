@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingLogger.h,v 1.16 2007/03/04 17:40:31 msekoran Exp $"
+* "@(#) $Id: loggingLogger.h,v 1.17 2007/03/21 10:04:48 nbarriga Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -39,10 +39,11 @@
 #include "loggingBaseLog.h"
 #include "loggingHandler.h"
 #include <ace/Thread_Mutex.h>
-
+#include <Singleton.h>
 
 namespace Logging 
 {
+
     //------------------------------------------------------------------------------
     /**
      * Logger is an abstract class which provides the interface used to log
@@ -272,22 +273,25 @@ namespace Logging
 	 */
 	std::list<Handler::HandlerSmartPtr> handlers_m;
 
-	/**
-	 * Static global logger. By changing this (via the the setGlobalLogger),
-	 * one can completely alter the way logs are handled throughout the system.
-	 */
-	static LoggerSmartPtr globalLogger_m;
-
-	/**
-	 * Anonymous logger. To be used in situations where the logger's name is
-	 * irrelevant.
-	 */
-	static LoggerSmartPtr anonymousLogger_m;
-
-	/**
-	 * List of all child loggers.
-	 */
-	static LoggerList loggers_m;
+        class Logger_ptr{
+                public:
+                        Logger_ptr(){globalLogger_m=(Logger *)0;anonymousLogger_m=(Logger *)0;}
+                        ~Logger_ptr(){globalLogger_m=(Logger *)0;anonymousLogger_m=(Logger *)0;}
+                        /**
+                         * Global logger. By changing this (via the the setGlobalLogger),
+                         * one can completely alter the way logs are handled throughout the system.
+                         */
+                        LoggerSmartPtr globalLogger_m;
+                        /**
+                         * Anonymous logger. To be used in situations where the logger's name is
+                         * irrelevant.
+                         */
+                        LoggerSmartPtr anonymousLogger_m;
+                        /**
+                         * List of all child loggers.
+                         */
+                        LoggerList loggers_m;
+        };
 
 	/**
 	 * mutex which guards the loggers lost making this class completely
