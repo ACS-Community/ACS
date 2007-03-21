@@ -75,14 +75,6 @@ namespace acsalarm
 
 			/** 
 			 * Fault family accessor method.
-			 * @param faultFamily the fault family.
-			 */
-			void setFamily(const string & faultFamily) {
-				family=faultFamily;
-			}
-
-			/** 
-			 * Fault family accessor method.
 			 * @return the fault family.
 			 */
 			string getFamily() const {
@@ -91,19 +83,25 @@ namespace acsalarm
 	 
 			/** 
 			 * Fault member accessor method.
-			 * @param member the fault member.
-			 */
-			void setMember(const string & newFaultMember) {
-				member=newFaultMember;
-			}
-
-			/** 
-			 * Fault member accessor method.
 			 * @return the fault member.
 			 */
 			string getMember() const {
 				return member;
 			}
+
+
+			/** 
+			  * Fault family accessor method.
+			  * @param faultFamily the fault family.
+			  */
+			void  FaultState::setFamily(const string & faultFamily);
+
+			/** 
+			  * Fault member accessor method.
+			  * @param member the fault member.
+			*/
+			void  FaultState::setMember(const string & newFaultMember);
+
 			/**
  			 * Returns an XML representation of the fault state. NOTE: this 
  			 * will not be a complete XML document, but just a fragment.

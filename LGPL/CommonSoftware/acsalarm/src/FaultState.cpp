@@ -189,3 +189,40 @@ string FaultState::toXML(int amountToIndent)
 
 	return retVal;
 }
+
+/** 
+  * Fault family accessor method.
+  * @param faultFamily the fault family.
+  */
+void  FaultState::setFamily(const string & faultFamily) {
+	unsigned int pos;
+	do
+        {
+                pos=faultFamily.find(":");
+                if (pos!=string::npos)
+                {
+                        faultFamily.replace(pos,1,"#");
+                }
+        }
+	while(pos!=string::npos);
+	family=faultFamily;
+}
+
+/** 
+  * Fault member accessor method.
+  * @param member the fault member.
+*/
+void  FaultState::setMember(const string & newFaultMember) {
+	unsigned int pos;
+	do 
+	{
+		pos=newFaultMember.find(":");
+		if (pos!=string::npos) 
+		{
+			newFaultMember.replace(pos,1,"#");
+		}
+	} 
+	while(pos!=string::npos);
+	member=newFaultMember;
+}
+
