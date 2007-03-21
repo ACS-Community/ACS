@@ -40,7 +40,7 @@ void AlarmSystemMonitorEnumProp<T, TPROP>::check(BACIValue &val,
       ostr << value << std::ends;
       ts =  ostr.str(); // we have to make a temporary string otherwise there is problem with memory:  s = ostr.str().c_str(); does not work
       ACS_SHORT_LOG((LM_ALERT, "Alarm for property: %s cleared. Value change to: %s", this->property_mp->name(), ts.c_str()));
-      this->sendAlarm("enumprop",this->property_mp->name(),1,true);
+      this->sendAlarm("enumprop",this->property_mp->name(),1,false);
       this->alarmRaised_m = false;
       }
 }//check
