@@ -32,14 +32,14 @@ CERNAlarmSystemInterfaceProxy::CERNAlarmSystemInterfaceProxy(string theSourceNam
 {
 	Logging::Logger::LoggerSmartPtr myLoggerSmartPtr = getLogger();
 	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "CERNAlarmSystemInterfaceProxy::CERNAlarmSystemInterfaceProxy(string): entering.");
-	setSourceName(theSourceName);
 	string expectedSrcName(ALARM_SOURCE_NAME);
 	if(theSourceName != expectedSrcName)
 	{
-		string logString =  "CERNAlarmSystemInterfaceProxy::CERNAlarmSystemInterfaceProxy(string): source name: " 
-			+ theSourceName + " will not work; all alarms should use: " + ALARM_SOURCE_NAME;
+		string logString =  "CERNAlarmSystemInterfaceProxy::CERNAlarmSystemInterfaceProxy(string) all should use " + expectedSrcName+" as source (source "+theSourceName+" forced to "+ALARM_SOURCE_NAME+")";
 		myLoggerSmartPtr->log(Logging::Logger::LM_WARNING, logString);
+		theSourceName=expectedSrcName;
 	}
+	setSourceName(theSourceName);
 	init();
 	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "CERNAlarmSystemInterfaceProxy::CERNAlarmSystemInterfaceProxy(string): exiting.");
 }
