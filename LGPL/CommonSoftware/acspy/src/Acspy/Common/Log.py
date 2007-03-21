@@ -1,4 +1,4 @@
-# @(#) $Id: Log.py,v 1.24 2007/03/08 09:21:43 nbarriga Exp $
+# @(#) $Id: Log.py,v 1.25 2007/03/21 19:06:46 agrimstrup Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA,  2001
@@ -42,7 +42,7 @@ TODO:
 XML-related methods are untested at this point.
 '''
 
-__revision__ = "$Id: Log.py,v 1.24 2007/03/08 09:21:43 nbarriga Exp $"
+__revision__ = "$Id: Log.py,v 1.25 2007/03/21 19:06:46 agrimstrup Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 from os        import environ
@@ -113,26 +113,11 @@ def getSeverity(severity_number):
         if severity_number <= num:
             return num
 #------------------------------------------------------------------------------           
-#create a stdout handler
-STDOUTHANDLER = logging.StreamHandler(sys.stdout)
-
-#create our own formatter
-ACSFORMATTER = ACSFormatter()
-
-#register the formatter with stdouthandler
-STDOUTHANDLER.setFormatter(ACSFORMATTER)
-    
 #determine ACS_LOG_STDOUT
 if environ.has_key('ACS_LOG_STDOUT'):
     ACS_LOG_STDOUT = pow(2, max(0, int(environ['ACS_LOG_STDOUT'])-1))
 else:
     ACS_LOG_STDOUT = 010
-
-#set the filtering level for the stdout handler
-STDOUTHANDLER.setLevel(LEVELS[SEVERITIES[getSeverity(ACS_LOG_STDOUT)]])
-
-#create an ACS log svc handler
-ACSHANDLER = ACSHandler()
 
 
 def stdoutOk(log_priority):
@@ -179,9 +164,24 @@ class Logger(logging.Logger):
         #pass it on to baseclass. by default all logs are sent to the handlers
         logging.Logger.__init__(self, name, logging.NOTSET)
 
+        #create a stdout handler
+        self.stdouthandler = logging.StreamHandler(sys.stdout)
+        
+        #create our own formatter
+        self.acsformatter = ACSFormatter()
+
+        #register the formatter with stdouthandler
+        self.stdouthandler.setFormatter(self.acsformatter)
+    
+        #set the filtering level for the stdout handler
+        self.stdouthandler.setLevel(LEVELS[SEVERITIES[getSeverity(ACS_LOG_STDOUT)]])
+
+        #create an ACS log svc handler
+        self.acshandler = ACSHandler()
+        
         #add handlers
-        self.addHandler(STDOUTHANDLER)
-        self.addHandler(ACSHANDLER)
+        self.addHandler(self.stdouthandler)
+        self.addHandler(self.acshandler)
     #------------------------------------------------------------------------    
     def __getCallerName(self):
         '''
@@ -359,12 +359,12 @@ class Logger(logging.Logger):
         Raises: Nothing
         '''
         #ok to send it directly
-        if ACSHANDLER.logSvc!=None:
-            ACSHANDLER.logSvc.logErrorWithPriority(errortrace, priority)
+        if self.acshandler.logSvc!=None:
+            self.acshandler.logSvc.logErrorWithPriority(errortrace, priority)
 
             #could have old errors cached up
             for et in self.error_trace_list:
-                ACSHANDLER.logSvc.logErrorWithPriority(et, priority)
+                self.acshandler.logSvc.logErrorWithPriority(et, priority)
 
             #zero the list
             self.error_trace_list = []
@@ -389,7 +389,7 @@ class Logger(logging.Logger):
 
         Raises: Nothing
         '''
-        ACSHANDLER.logSvc.logWithPriority(priority, timestamp, msg, rtCont, srcInfo, data, audience)
+        self.acshandler.logSvc.logWithPriority(priority, timestamp, msg, rtCont, srcInfo, data, audience)
 
 #----------------------------------------------------------------------------
 logging.setLoggerClass(Logger)
