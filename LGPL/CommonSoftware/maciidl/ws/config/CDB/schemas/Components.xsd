@@ -21,7 +21,7 @@ the various option to describe Components configuration,
 see the ACS CDB documentation and the FAQ 
 FAQHierarchicalComponentsAndCDBStructure in the ACS Wiki.</xs:documentation>
     </xs:annotation>
-	<xs:import namespace="http://www.w3.org/XML/1998/namespace" schemaLocation="xml.xsd"/>
+    <xs:import namespace="http://www.w3.org/XML/1998/namespace" schemaLocation="xml.xsd"/>
     <xs:complexType name="ComponentInfo">
         <xs:annotation>
             <xs:documentation>Specification for a Component to be instantiated in the system. This definitionis identical to the one in Component.xsd. Look for the documentation there. TODO Probably we should look for a way to factorize the two definitions in a single place</xs:documentation>
@@ -43,11 +43,23 @@ Comparison of logging configuration for the container and for components:
                 </xs:annotation>
             </xs:element>
         </xs:sequence>
-		<xs:attributeGroup ref="xml:specialAttrs"/>
+        <xs:attributeGroup ref="xml:specialAttrs"/>
         <xs:attribute name="Name" type="xs:string" use="required"/>
         <xs:attribute name="Code" type="xs:string" use="required"/>
         <xs:attribute name="Type" type="xs:string" use="required"/>
         <xs:attribute name="Container" type="xs:string" use="required"/>
+        <xs:attribute name="ImplLang" use="optional">
+            <xs:annotation>
+                <xs:documentation>The programming language the component is implemented in. Introduced with ACS 6.0.3 and declared optional only in order to be backward compatible. @Todo: make required with ACS 7.0. </xs:documentation>
+            </xs:annotation>
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="java"/>
+                    <xs:enumeration value="cpp"/>
+                    <xs:enumeration value="py"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
         <xs:attribute name="Default" type="xs:boolean" use="optional" default="false"/>
         <xs:attribute name="Autostart" type="xs:boolean" use="optional" default="false"/>
         <xs:attribute name="KeepAliveTime" type="xs:int" use="optional" default="0"/>
@@ -60,8 +72,7 @@ Comparison of logging configuration for the container and for components:
             <xs:sequence>
                 <xs:element name="_" type="ComponentInfo" maxOccurs="unbounded"/>
             </xs:sequence>
-			<xs:attributeGroup ref="xml:specialAttrs"/>
+            <xs:attributeGroup ref="xml:specialAttrs"/>
         </xs:complexType>
     </xs:element>
 </xs:schema>
-
