@@ -102,8 +102,10 @@ bool CERNAlarmSystemInterfaceProxy::publishMessage(ASIMessage msg)
 	topicName.append(".");
 	topicName.append(msg.getSourceName());
 
-	// TODO - can we avoid new'ing this each time?
-	laserPublisher = new AcsAlarmPublisher(topicName);
+	if(laserPublisher == NULL)
+	{
+		laserPublisher = new AcsAlarmPublisher(topicName);
+	}
 
 	// publish the alarm 
 	laserPublisher->publishAlarm(msg);
