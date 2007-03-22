@@ -16,7 +16,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.2 2007/02/26 16:28:11 nbarriga Exp $"
+# "@(#) $Id: Makefile,v 1.3 2007/03/22 10:57:56 gchiozzi Exp $"
 #
 # Makefile of ........
 #
@@ -37,15 +37,9 @@
 USER_CFLAGS = -Wall
 
 #
-# additional include and library search paths
-#USER_INC = 
-#USER_LIB = 
-
-#
-# MODULE CODE DESCRIPTION:
-# ------------------------
-# As a general rule:  public file are "cleaned" and "installed"  
-#                     local (_L) are not "installed".
+# Type safe log definitions
+# --------------------------
+ACSLOGTSDEF=repeatGuardLogTypeExample
 
 #
 # C programs (public and local)
@@ -57,129 +51,15 @@ EXECUTABLES_L   =
 # <brief description of xxxxx program>
 testRepeatGuard_OBJECTS   =	testRepeatGuard
 testRepeatGuard_LDFLAGS   = -lRepeatGuard -lacsutil -lTAO -lTAO_PortableServer -llogging
-testRepeatGuardLogger_OBJECTS   =	testRepeatGuardLogger
-testRepeatGuardLogger_LDFLAGS   = -lRepeatGuardLogger -lRepeatGuard -lacsutil -lTAO -lTAO_PortableServer -llogging
-xxxxx_LIBS      =
 
-#
-# special compilation flags for single c sources
-#yyyyy_CFLAGS   = 
-
-#
-# Includes (.h) files (public only)
-# ---------------------------------
-INCLUDES        = 
-
-#
-# Libraries (public and local)
-# ----------------------------
-LIBRARIES       =
-LIBRARIES_L     =
-
-#
-# <brief description of lllll library>
-lllll_OBJECTS   =
-
-#
-# Scripts (public and local)
-# ----------------------------
-SCRIPTS         =
-SCRIPTS_L       =
-
-#
-# TCL scripts (public and local)
-# ------------------------------
-TCL_SCRIPTS     =
-TCL_SCRIPTS_L   =
-
-#
-# Python stuff (public and local)
-# ----------------------------
-PY_SCRIPTS         =
-PY_SCRIPTS_L       =
-
-PY_MODULES         =
-PY_MODULES_L       =
-
-PY_PACKAGES        =
-PY_PACKAGES_L      =
-pppppp_MODULES	   =
-
-#
-# <brief description of tttttt tcl-script>
-tttttt_OBJECTS  =
-tttttt_TCLSH    = 
-tttttt_LIBS     = 
-
-#
-# TCL libraries (public and local)
-# ------------------------------
-TCL_LIBRARIES   =
-TCL_LIBRARIES_L =
-
-#
-# <brief description of tttlll library>
-tttlll_OBJECTS  = 
-
-#
-# Configuration Database Files
-# ----------------------------
-CDB_SCHEMAS = 
-
-# 
-# IDL Files and flags
-# 
-IDL_FILES =
-IDL_TAO_FLAGS =
-USER_IDL =
-#
-# Jarfiles and their directories
-#
-JARFILES= 
-jjj_DIRS=
-jjj_EXTRAS= 
-#
-# java sources in Jarfile on/off
-DEBUG= 
-#
-# ACS XmlIdl generation on/off
-#
-XML_IDL= 
-#
-# Java Component Helper Classes generation on/off
-#
-COMPONENT_HELPERS=
-#
-# Java Entity Classes generation on/off
-#
-XSDBIND=
-#
-# Schema Config files for the above
-#
-XSDBIND_INCLUDE=
-# man pages to be done
-# --------------------
-MANSECTIONS =
-MAN1 =
-MAN3 =
-MAN5 =
-MAN7 =
-MAN8 =
-
-#
-# local man pages
-# ---------------
-MANl =
-
-#
-# ASCII file to be converted into Framemaker-MIF
-# --------------------
-ASCII_TO_MIF = 
-
-#
-# other files to be installed
-#----------------------------
-INSTALL_FILES =
+testRepeatGuardLogger_OBJECTS   = testRepeatGuardLogger
+testRepeatGuardLogger_LDFLAGS   = -lRepeatGuardLogger -lRepeatGuard -lrepeatGuardLogTypeExampleLTS \
+                                  -lmaciClient -lacslogStubs \
+                                  -lmaci -lbaci -lcdb -llogging -lacscomponent -lrecovery \
+                                  -lacserr -lacsutil -lexpat -lACE -lTAO -lTAO_DsLogAdmin \
+                                  -lTAO_CosNaming -lTAO_IORTable -lTAO_PortableServer \
+                                  -lTAO_Svc_Utils -lTAO_CosTrading -lTAO_DynamicAny \
+                                  -lTAO_CosProperty -lTAO_IFR_Client
 
 #
 # list of all possible C-sources (used to create automatic dependencies)
