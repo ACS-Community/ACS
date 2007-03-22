@@ -52,8 +52,8 @@ public class LogMenuBar extends JMenuBar {
 	private JMenuItem loadDBMenuItem = null; // Load from database
 	private JMenuItem saveFileMenuItem = null; // Save File As
 	private JMenuItem clearLogsMI = null; // Clear All
-	private JMenuItem exitMenuItem = null; // Exit
-	private JSeparator exitSeparator = new JSeparator();
+	private JMenuItem exitMenuItem = null; // Exit Not visible per default
+	private JSeparator exitSeparator = new JSeparator(); //Not visible per default
 	
 	/**
 	 * The menu item to load filters
@@ -138,6 +138,7 @@ public class LogMenuBar extends JMenuBar {
 		super();
 		setName("LoggingClientMenuBar");
 		setupMenuBar();
+		hideExitMenu(true); // Hide the exit menu
 	}
 	
 	/**
