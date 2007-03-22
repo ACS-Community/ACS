@@ -712,6 +712,17 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 		}
 		return singleton;
 	}
+	
+	/**
+	 * Release the LoggingClient setting the singleton to null
+	 *
+	 */
+	public static void destroyInstance() {
+		if (singleton!=null) {
+			singleton.disconnect();
+			singleton = null;
+		}
+	}
 
 	/**
 	 * Exits by calling the LCEngine.
