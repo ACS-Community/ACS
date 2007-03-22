@@ -444,29 +444,7 @@ private void initialize() {
 public boolean isTrimChecked() {
 	return getJCheckBox1().isSelected();
 }
-/**
- * main entrypoint - starts the part when it is run as an application
- * @param args java.lang.String[]
- */
-public static void main(java.lang.String[] args) {
-	try {
-		ConfirmImportDialog aConfirmImportDialog;
-		aConfirmImportDialog = new ConfirmImportDialog();
-		aConfirmImportDialog.setModal(true);
-		aConfirmImportDialog.addWindowListener(new java.awt.event.WindowAdapter() {
-			public void windowClosing(java.awt.event.WindowEvent e) {
-				System.exit(0);
-			};
-		});
-//		aConfirmImportDialog.show();
-		java.awt.Insets insets = aConfirmImportDialog.getInsets();
-		aConfirmImportDialog.setSize(aConfirmImportDialog.getWidth() + insets.left + insets.right, aConfirmImportDialog.getHeight() + insets.top + insets.bottom);
-		aConfirmImportDialog.setVisible(true);
-	} catch (Throwable exception) {
-		System.err.println("Exception occurred in main() of com.cosylab.logging.settings.JModalDialog");
-		exception.printStackTrace(System.out);
-	}
-}
+
 /**
  * Insert the method's description here.
  * Creation date: (4/14/2002 17:39:30)

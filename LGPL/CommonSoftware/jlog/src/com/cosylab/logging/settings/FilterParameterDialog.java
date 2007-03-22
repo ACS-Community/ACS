@@ -520,29 +520,7 @@ private void initialize() {
 	// user code begin {2}
 	// user code end
 }
-/**
- * main entrypoint - starts the part when it is run as an application
- * @param args java.lang.String[]
- */
-public static void main(java.lang.String[] args) {
-	try {
-		FilterParameterDialog aFilterParameterDialog;
-		aFilterParameterDialog = new FilterParameterDialog();
-		aFilterParameterDialog.setModal(true);
-		aFilterParameterDialog.addWindowListener(new java.awt.event.WindowAdapter() {
-			public void windowClosing(java.awt.event.WindowEvent e) {
-				System.exit(0);
-			};
-		});
-		aFilterParameterDialog.show();
-		java.awt.Insets insets = aFilterParameterDialog.getInsets();
-		aFilterParameterDialog.setSize(aFilterParameterDialog.getWidth() + insets.left + insets.right, aFilterParameterDialog.getHeight() + insets.top + insets.bottom);
-		aFilterParameterDialog.setVisible(true);
-	} catch (Throwable exception) {
-		System.err.println("Exception occurred in main() of com.cosylab.logging.settings.JModalDialog");
-		exception.printStackTrace(System.out);
-	}
-}
+ 
 /**
  * Check if the filter is valid then exit
  */
