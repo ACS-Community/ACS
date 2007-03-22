@@ -118,8 +118,8 @@ public class UserPreferences {
 	 */
 	public final static NumberOption[] maxLogNumOptions = new NumberOption[] {
 		new NumberOption("Unlimited",0),
-		new NumberOption("100K",100000),
-		new NumberOption("200K",200000), // Default
+		new NumberOption("100K",100000), // Default
+		new NumberOption("200K",200000), 
 		new NumberOption("300K",300000),
 		new NumberOption("400K",400000)
 	};
@@ -138,7 +138,7 @@ public class UserPreferences {
 	 */
 	public UserPreferences() {
 		timeFrame = timeOptions[0].getTimeFrame();
-		maxNumOfLogs = maxLogNumOptions[0].getNumOfLogs();
+		maxNumOfLogs = maxLogNumOptions[1].getNumOfLogs();
 	}
 	
 	/**
