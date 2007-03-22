@@ -4,7 +4,7 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry sourcepath="/ACSROOT/lib/endorsed/xercesImpl.jar" kind="var" path="ACSROOT/lib/endorsed/xercesImpl.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/castor.jar"/>
-	<classpathentry kind="var" path="INTROOT/lib/cdbSchemaBindings.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/cdbSchemaBindings.jar"/>
 	<classpathentry kind="lib" path="ws/lib/maciSchemaBindings.jar"/>
 	<classpathentry kind="output" path="object/eclipseOut"/>
 </classpath>
