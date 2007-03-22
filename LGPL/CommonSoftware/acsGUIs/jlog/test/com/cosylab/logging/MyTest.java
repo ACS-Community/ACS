@@ -49,9 +49,13 @@ public class MyTest extends junit.framework.TestCase
 		super(name);
 	}
 
-	protected void setUp()
+	protected void setUp() throws Exception
 	{
-		ltdm = new LogTableDataModel();
+		try {
+			ltdm = new LogTableDataModel();
+		} catch (Exception e) {
+			throw new Exception("Error creating the model",e);
+		}
 		curDir = System.getProperty("user.dir");
 		save();
 	}
