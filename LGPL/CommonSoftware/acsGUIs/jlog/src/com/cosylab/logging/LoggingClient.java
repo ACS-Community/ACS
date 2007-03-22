@@ -1614,5 +1614,14 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 	public boolean isPaused() {
 		return toolBar.isPaused();
 	}
+	
+	/**
+	 * Hide the Exit menu item
+	 * 
+	 * @param hide If true the menu is set to invisible
+	 */
+	public void hideExitMenu(boolean hide) {
+		menuBar.hideExitMenu(hide);
+	}
 }
 
