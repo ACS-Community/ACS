@@ -525,7 +525,7 @@ public class LogMenuBar extends JMenuBar {
 	 * 
 	 * @param hide If true the menu is set to invisible
 	 */
-	public void hiedExitMenu(boolean hide) {
+	public void hideExitMenu(boolean hide) {
 		exitMenuItem.setVisible(hide);
 		exitSeparator.setVisible(hide);
 	}
