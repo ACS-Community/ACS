@@ -54,6 +54,7 @@ public class LogMenuBar extends JMenuBar {
 	private JMenuItem clearLogsMI = null; // Clear All
 	private JMenuItem exitMenuItem = null; // Exit Not visible per default
 	private JSeparator exitSeparator = new JSeparator(); //Not visible per default
+	private boolean exitHided; // true if the exit menu is not visible
 	
 	/**
 	 * The menu item to load filters
@@ -527,7 +528,14 @@ public class LogMenuBar extends JMenuBar {
 	 * @param hide If true the menu is set to invisible
 	 */
 	public void hideExitMenu(boolean hide) {
-		exitMenuItem.setVisible(hide);
-		exitSeparator.setVisible(hide);
+		if (hide && !exitHided) {
+			exitHided=true;
+			fileMenu.remove(exitMenuItem);
+			fileMenu.remove(exitSeparator);
+		} else if (!hide && exitHided){
+			exitHided=false;
+			fileMenu.add(exitSeparator);
+			fileMenu.add(exitMenuItem);
+		}
 	}
 }
