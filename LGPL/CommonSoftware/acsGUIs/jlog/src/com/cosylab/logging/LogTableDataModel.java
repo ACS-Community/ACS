@@ -629,9 +629,9 @@ public class LogTableDataModel extends AbstractTableModel implements Runnable
 			}
 		} catch (Throwable t) {
 			System.err.println("Got a throwble " + t.getMessage());
-			t.printStackTrace();
+			t.printStackTrace(System.err);
 			System.out.println("Exiting");
-			System.exit(-1);			
+			JOptionPane.showMessageDialog(null,t.getMessage(),"Error rebuilding logs",JOptionPane.ERROR_MESSAGE);
 		}
 		logging.freezeProgressBar();
 		visibleLogs.setRefreshInterval(null);
@@ -759,7 +759,7 @@ public class LogTableDataModel extends AbstractTableModel implements Runnable
 	}
 	
 	/**
-	 * check if each logs in the table has the same date of the related log in the cache
+	 * Check if each logs in the table has the same date of the related log in the cache
 	 *
 	 */
 	private void checkConsistency() {
@@ -813,16 +813,12 @@ public class LogTableDataModel extends AbstractTableModel implements Runnable
 			long date1 = ((java.util.Date)log1.getField(ILogEntry.FIELD_TIMESTAMP)).getTime();
 			long date2 = ((java.util.Date)log2.getField(ILogEntry.FIELD_TIMESTAMP)).getTime();
 			if (date1<date2) {
-				System.out.println(" Misaligned at "+t+" date@pos0="+date1+" date@pos1="+date2);
 				int start = (t-5<0)?0:t-5;
 				int end=(t+5<visibleLogs.size())?t+5:visibleLogs.size();
-				System.out.println("visibleLogs dump:");
 				for (int j=start; j<end; j++) {
 					ILogEntry l =visibleLogs.get(j);
 					long d =((java.util.Date)l.getField(ILogEntry.FIELD_TIMESTAMP)).getTime();
-					System.out.println("\t"+j+": "+d);
 				}
-				System.exit(-1);
 			}
 		}
 	}
