@@ -16,7 +16,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.6 2006/12/18 12:43:11 hsommer Exp $"
+# "@(#) $Id: Makefile,v 1.7 2007/03/22 15:56:51 hsommer Exp $"
 #
 # Makefile of ........
 #
@@ -137,22 +137,13 @@ USER_IDL =
 ACSERRDEF = maciErrType
 
 #
-# Jarfiles and their directories
-#
-JARFILES= 
-jjj_DIRS=
-jjj_EXTRAS= 
-#
 # java sources in Jarfile on/off
 DEBUG=on 
+
 #
 # ACS XmlIdl generation on/off
 #
 XML_IDL= 
-#
-# Java Component Helper Classes generation on/off
-#
-COMPONENT_HELPERS=
 
 #
 # Java Entity Classes generation on/off
@@ -212,15 +203,13 @@ endif
 #
 # TARGETS
 # -------
-#all:	prepare_xsdbind do_all clean_xsdbind
-all:	do_all
+all:	prepare_xsdbind do_all clean_xsdbind
+#all:	do_all
 	@echo " . . . 'all' done" 
 
 prepare_xsdbind:
-	@echo " copying schema files from ../config/CDB/schemas to ../idl as an XSDBIND workaround . . ."
-	@cp -a ../config/CDB/schemas/LoggingConfig.xsd ../config/CDB/schemas/Container.xsd ../idl
-# this is a particular hack. The binding classes for CDB.xsd should be generated separately in module cdbidl 
-	@cp -a $(ACSROOT)/config/CDB/schemas/CDB.xsd ../idl	
+	@echo " copying xml.xsd from ACSROOT, because we can't create binding classes up in ACS/LGPL/Tools/xercesj where this file comes from"
+	@cp -a $(ACSROOT)/config/CDB/schemas/xml.xsd ../config/CDB/schemas/
 
 #clean : clean_xsdbind clean_all
 clean : clean_all
@@ -228,7 +217,7 @@ clean : clean_all
 
 clean_xsdbind:
 	@echo " will remove schema files copied for XSDBIND workaround . . ."
-	@rm -f ../idl/CDB.xsd ../idl/Container.xsd ../idl/LoggingConfig.xsd
+	@rm -f ../config/CDB/schemas/xml.xsd
 
 clean_dist : clean_all clean_dist_all 
 	@echo " . . . clean_dist done"
