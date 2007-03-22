@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.1 2007/02/21 09:38:05 nbarriga Exp $"
+# "@(#) $Id: Makefile,v 1.2 2007/03/22 08:50:53 nbarriga Exp $"
 #
 # Makefile of ........
 #
@@ -52,7 +52,7 @@ xxxxx_LIBS      =
 #
 # Includes (.h) files (public only)
 # ---------------------------------
-INCLUDES        = 
+INCLUDES        = TypeSafeLog.h
 
 #
 # Libraries (public and local)
