@@ -29,6 +29,7 @@ import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JSeparator;
 import javax.swing.KeyStroke;
 import javax.swing.event.MenuListener;
 
@@ -52,6 +53,7 @@ public class LogMenuBar extends JMenuBar {
 	private JMenuItem saveFileMenuItem = null; // Save File As
 	private JMenuItem clearLogsMI = null; // Clear All
 	private JMenuItem exitMenuItem = null; // Exit
+	private JSeparator exitSeparator = new JSeparator();
 	
 	/**
 	 * The menu item to load filters
@@ -154,7 +156,8 @@ public class LogMenuBar extends JMenuBar {
         fileMenu.add(getLoadDBMenuItem());
         fileMenu.add(getSaveFileMenuItem());
         fileMenu.add(getClearLogsMenuItem());
-        fileMenu.addSeparator();
+        //fileMenu.addSeparator();
+        fileMenu.add(exitSeparator);
         fileMenu.add(getExitMenuItem());
         add(fileMenu);
         
@@ -500,7 +503,7 @@ public class LogMenuBar extends JMenuBar {
 	}
 	
 	/**
-	 * Enable/Disbale all the control in tha GUI than can cause
+	 * Enable/Disbale all the controls in the GUI that could trigger
 	 * the invalidation of the logs
 	 * 
 	 * @param enabled If true the controls are enabled
@@ -515,5 +518,15 @@ public class LogMenuBar extends JMenuBar {
 		getSaveFileMenuItem().setEnabled(enabled);
 		getConnectMenuItem().setEnabled(enabled);
 		getAutoReconnectMenuItem().setEnabled(enabled);
+	}
+	
+	/**
+	 * Hide the Exit menu item
+	 * 
+	 * @param hide If true the menu is set to invisible
+	 */
+	public void hiedExitMenu(boolean hide) {
+		exitMenuItem.setVisible(hide);
+		exitSeparator.setVisible(hide);
 	}
 }
