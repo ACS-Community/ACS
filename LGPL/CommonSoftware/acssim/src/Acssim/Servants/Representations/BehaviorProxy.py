@@ -40,6 +40,7 @@ from Acssim.Servants.Representations.CDB import CDB
 from Acssim.Servants.Representations.GUI import GUI
 from Acssim.Servants.Representations.Dynamic      import Dynamic
 from Acssim.Servants.Representations.API          import API
+from Acssim.Servants.Representations.Server       import Server
 from Acssim.Corba.Utilities            import getCompIfrID
 from Acssim.Corba.Utilities            import getSuperIDs
 #--GLOBALS---------------------------------------------------------------------
@@ -73,6 +74,7 @@ class BehaviorProxy:
         self.cdb_handler = None
         self.api_handler = None
         self.gui_handler = None
+        self.server_handler = None
         self.handlers = []
         
         self.__setupCases()
@@ -96,6 +98,10 @@ class BehaviorProxy:
         self.cdb_handler = CDB(self.compname, if_list)
         self.attachNewHandler(self.cdb_handler)
         
+        #create a Server handler object
+        self.server_handler = Server(self.compname)
+        self.attachNewHandler(self.server_handler)
+
         #create a GUI handler object
         self.gui_handler = GUI(self.compname)
         self.attachNewHandler(self.gui_handler)

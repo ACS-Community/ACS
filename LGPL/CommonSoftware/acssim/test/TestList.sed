@@ -20,4 +20,5 @@ s/Process=[0-9]*/Process=xxx/g
 s/The evaluated return value is: .*$/The evaluated return value is: some value that was filtered out by TestList.sed/g
 s/0x[0-9,a-z,A-Z]*>/0xXXXX>/g
 s/from '[^']*'>/from 'xxx'>/g
+s/Ran . test. in .*/Ran x tests in xxx/
 

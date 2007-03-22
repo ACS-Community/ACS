@@ -50,5 +50,14 @@ Container="pyContainer"/>
       Code="Acssim.Servants.Simulator"
       Type="IDL:alma/RampedPS/RampedPowerSupply:1.0"
       Container="pyContainer"/>
+  <_ Name="SIMULATION_SERVER"
+     Code="Acssim.SimServerImpl.SimServer"
+     Type="IDL:alma/ACSSim/Simulator:1.0"
+     Container="pyContainer"
+     Default="true"/> 
+  <_ Name="LAMP_ACCESS"
+     Code="Acssim.Servants.Simulator"
+     Type="IDL:alma/demo/LampAccess:1.0"
+     Container="pyContainer"/>
 </Components>
 

@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.17 2006/04/07 22:45:35 dfugate Exp $"
+# "@(#) $Id: Makefile,v 1.18 2007/03/22 22:37:40 agrimstrup Exp $"
 #
 # Makefile of ........
 #
@@ -84,7 +84,7 @@ PY_SCRIPTS_L       = acssimGenericTest acssimCallbackTest acssimInParamsTest acs
 			acssimDynamicImplementation acssimUtilities \
 			acssimGoodies \
 			acssimBaseRepresentation acssimAPI acssimGUI acssimBehaviorProxy acssimCDB acssimDynamic \
-			acssimEventDispatcher acssimGenerator
+			acssimEventDispatcher acssimGenerator acssimServerRepresentation
 PY_MODULES         = mastercompsim interfaceInheritance
 PY_MODULES_L       = 
 
