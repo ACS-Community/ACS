@@ -627,13 +627,12 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 		{
 			try
 			{
-				logEntryTable = new alma.acs.logging.dialogs.main.LogEntryTable(this,menuBar.getShortDateViewMenuItem().isSelected());
+				logEntryTable = new LogEntryTable(this,menuBar.getShortDateViewMenuItem().isSelected());
 				logEntryTable.setName("ScrollPaneTable");
 				logEntryTable.setBounds(0, 0, 200, 200);
 			}
 			catch (java.lang.Throwable ivjExc)
 			{
-
 				handleException(ivjExc);
 			}
 		}
@@ -649,7 +648,8 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 
 		/* Uncomment the following lines to print uncaught exceptions to stdout */
 		System.out.println("--------- UNCAUGHT EXCEPTION ---------");
-		exception.printStackTrace(System.out);
+		exception.printStackTrace(System.err);
+		JOptionPane.showMessageDialog(null,exception.getMessage(),"Uncaught exception",JOptionPane.ERROR_MESSAGE);
 	}
 	/**
 	 * Initializes connections and adds listeners to all the menus and menu items.

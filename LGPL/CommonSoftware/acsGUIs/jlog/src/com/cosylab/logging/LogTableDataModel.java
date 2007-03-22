@@ -310,7 +310,7 @@ public class LogTableDataModel extends AbstractTableModel implements Runnable
 	/**
 	 * LCLogTableDataModel constructor comment. Gets updated logs.
 	 */
-	public LogTableDataModel() {
+	public LogTableDataModel() throws Exception {
 		super();
 		try {
 			allLogs = new LogCache();
@@ -318,9 +318,7 @@ public class LogTableDataModel extends AbstractTableModel implements Runnable
 			System.err.println("Exception instantiating the cache: "+lce.getMessage());
 			lce.printStackTrace(System.err);
 			String msg="Unrecoverable error instantiating the cache:\n<I>"+lce.getMessage()+"</I>";
-			JOptionPane.showMessageDialog(null,msg,"I/O error",JOptionPane.ERROR_MESSAGE);
-			// The program exit because it can't store the logs!
-			System.exit(-1);
+			throw new Exception("Exception instantiating the cache: ",lce);
 		} 
 		visibleLogs = new VisibleLogsVector(allLogs,this);
 		logDeleter=new LogDeleter();
@@ -692,9 +690,8 @@ public class LogTableDataModel extends AbstractTableModel implements Runnable
 	public boolean IOInProgress() {
 		if (ioHelper==null) {
 			return false;
-		} else {
-			return ioHelper.isPerformingIO();
 		}
+		return ioHelper.isPerformingIO();
 	}
 	
 	/**
@@ -754,15 +751,11 @@ public class LogTableDataModel extends AbstractTableModel implements Runnable
 		Collections.sort((List<Integer>)logsToDelete);
 		Collections.reverse((List<Integer>)logsToDelete);
 		
-		System.out.println("*** Checking time frame ****");
-		System.out.println("===> "+logsToDelete.size()+" logs to delete, cache size="+allLogs.getSize());
-		System.out.println("===> "+timeFrame+" timeframe");
 		if (logsToDelete!=null && logsToDelete.size()>0) {
 			for (Integer logNumber: logsToDelete) {
 				//deleteLog(logNumber);
 			}
 		}
-		System.out.println("cahche size after deletion "+allLogs.getSize());
 	}
 	
 	/**
@@ -770,7 +763,6 @@ public class LogTableDataModel extends AbstractTableModel implements Runnable
 	 *
 	 */
 	private void checkConsistency() {
-		System.out.print("Checking consistency... ");
 		for (int t=0; t<allLogs.getSize(); t++) {
 			int posInTable =visibleLogs.getRowOfEntry(t);
 			if (posInTable==-1) { 
@@ -810,16 +802,11 @@ public class LogTableDataModel extends AbstractTableModel implements Runnable
 				System.err.println("Error getting tyhe time stamp of "+t);
 				e.printStackTrace();
 			}
-			if (t%10000==0) {
-				System.out.print('.');
-			}
 		}
-		System.out.println("Ok and checking order!" );
 		checkOrder();
 	}
 	
 	private void checkOrder() {
-		System.out.print("Checking order (visibleLogs size "+visibleLogs.size()+")... ");
 		for (int t=0; t<visibleLogs.size()-1; t++) {
 			ILogEntry log1=visibleLogs.get(t);
 			ILogEntry log2=visibleLogs.get(t+1);
@@ -837,11 +824,7 @@ public class LogTableDataModel extends AbstractTableModel implements Runnable
 				}
 				System.exit(-1);
 			}
-			if (t%10000==0) {
-				System.out.print('*');
-			}
 		}
-		System.out.println("Ok");
 	}
 
 }

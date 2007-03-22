@@ -81,7 +81,7 @@ import com.cosylab.logging.client.DateRenderer;
  * @author: 
  */
 
-public class LogEntryTable extends javax.swing.JTable
+public class LogEntryTable extends javax.swing.JTable 
 {
 	private TableColumn[] columnsList;
 	private boolean[] visibleColumns;
@@ -601,9 +601,13 @@ public class LogEntryTable extends javax.swing.JTable
 	 * @param logClient The LoggingClient that owns this table
 	 * @param initialDateFormat The format to show the date (true means short)
 	 */
-	public LogEntryTable(LoggingClient logClient,boolean initialDateFormat)
+	public LogEntryTable(LoggingClient logClient,boolean initialDateFormat) throws Exception
 	{
 		super();
+		// Set the table model
+		LogTableDataModel model= new LogTableDataModel();
+		setModel(model);
+		
 		initialize(initialDateFormat);
 		// Create the object for the clipboard
 		textTransfer = new TextTransfer();
@@ -619,10 +623,7 @@ public class LogEntryTable extends javax.swing.JTable
 	{
 		return convertColumnIndexToModel(index) - 1;
 	}
-	protected TableModel createDefaultDataModel()
-	{
-		return new LogTableDataModel();
-	}
+	
 	/**
 	 * Insert the method's description here.
 	 * Creation date: (2/7/02 3:52:36 PM)
