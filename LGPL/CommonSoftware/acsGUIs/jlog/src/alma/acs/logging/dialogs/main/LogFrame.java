@@ -21,16 +21,12 @@
  */
 package alma.acs.logging.dialogs.main;
 
-import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Toolkit;
 import java.awt.event.WindowListener;
 import java.io.File;
 
 import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JRootPane;
 
 import com.cosylab.logging.LoggingClient;
 
@@ -40,7 +36,7 @@ import com.cosylab.logging.LoggingClient;
  * @author acaproni
  *
  */
-public class LogFrame extends JFrame implements WindowListener {
+public class LogFrame extends JFrame implements WindowListener { 
 	
 	private LoggingClient aLoggingClient;
 	
@@ -98,6 +94,8 @@ public class LogFrame extends JFrame implements WindowListener {
         	throw new NullPointerException("The logging client is null");
         }
         this.setRootPane(aLoggingClient);
+        // Enable the exit menu
+        aLoggingClient.hideExitMenu(false);
 	}
 	
 	/**
