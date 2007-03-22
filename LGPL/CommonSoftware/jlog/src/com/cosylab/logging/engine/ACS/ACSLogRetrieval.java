@@ -19,7 +19,7 @@
 
 /** 
  * @author  acaproni   
- * @version $Id: ACSLogRetrieval.java,v 1.12 2007/02/14 14:47:11 acaproni Exp $
+ * @version $Id: ACSLogRetrieval.java,v 1.13 2007/03/22 10:33:42 acaproni Exp $
  * @since    
  */
 
@@ -176,7 +176,7 @@ public class ACSLogRetrieval extends Thread {
 	}
 	
 	/**
-	 * The thread to read and notify the logs from the file to the listeners
+	 * The thread to read and notify the logs read from the file to the listeners
 	 */
 	public void run() {
 		// delay is used to remember if there is a delay between the logs received
@@ -231,22 +231,23 @@ public class ACSLogRetrieval extends Thread {
 					ILogEntry log;
 					try {
 						log = parser.parse(tempStr);
-					} catch (Exception e) {
+					} catch (Throwable e) {
 						StringBuilder strB = new StringBuilder("\nException occurred while dispatching the XML log.\n");
 						strB.append("This log has been lost: "+tempStr);
 						ErrorLogDialog.getErrorLogDlg(true).appendText(strB.toString());
 						engine.publishReport(strB.toString());
-						System.err.println("error parsing a log "+e.getMessage());
+						System.err.println("Error parsing a log "+e.getMessage());
 						e.printStackTrace();
 						continue;
 					}
 					try {
 						engine.publishLog(log);
 					} catch (Throwable t) {
-						System.err.println("Exception while publishing a log: "+t.getMessage());
+						String msg = "Exception while publishing a log: "+t.getMessage();
+						System.err.println(msg);
 						t.printStackTrace(System.err);
-						System.out.println("Exiting");
-						System.exit(-1);
+						ErrorLogDialog.getErrorLogDlg(true).appendText(msg);
+						continue;
 					}
 				}
 			}
