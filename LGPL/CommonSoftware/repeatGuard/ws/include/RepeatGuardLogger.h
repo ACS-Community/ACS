@@ -18,7 +18,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: RepeatGuardLogger.h,v 1.4 2007/03/22 12:45:58 gchiozzi Exp $"
+ * "@(#) $Id: RepeatGuardLogger.h,v 1.5 2007/03/23 09:50:06 nbarriga Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -110,7 +110,7 @@ namespace Logging
 	 *  @param maxRepetitions override minimum interval if 
 	 *         maxRepetitions is reached.(0 disables this feature)
 	 */
-	RepeatGuardLogger(unsigned int interval, 
+	RepeatGuardLogger(ACS::TimeInterval interval, 
 			  unsigned int maxRepetitions=0); 
 	virtual ~RepeatGuardLogger();
 
@@ -121,6 +121,15 @@ namespace Logging
 		 unsigned long line,
 		 const std::string &method);
 	void log(Logging::Logger::LoggerSmartPtr &logger, 
+		 const Logging::BaseLog::LogRecord &lr);
+
+	void logAndIncrement(ALogger &logger );
+	void logAndIncrement(Logging::Logger::LoggerSmartPtr &logger, Logging::BaseLog::Priority priority,
+		 const std::string &message,
+		 const std::string &file,
+		 unsigned long line,
+		 const std::string &method);
+	void logAndIncrement(Logging::Logger::LoggerSmartPtr &logger, 
 		 const Logging::BaseLog::LogRecord &lr);
 
     }; /* end RepeatGuardLogger */
@@ -135,7 +144,7 @@ namespace Logging
  */
 
 template <class ALogger> 
-Logging::RepeatGuardLogger<ALogger>::RepeatGuardLogger(unsigned int interval, 
+Logging::RepeatGuardLogger<ALogger>::RepeatGuardLogger(ACS::TimeInterval interval, 
 						       unsigned int maxRepetitions) :  
     RepeatGuard(interval,maxRepetitions)
 {
@@ -149,7 +158,6 @@ Logging::RepeatGuardLogger<ALogger>::~RepeatGuardLogger()
 template <class ALogger>     
 void Logging::RepeatGuardLogger<ALogger>::log(ALogger &logger ) 
 {
-    increment();
     if(check())
 	{
 	std::stringstream strstr;
@@ -169,7 +177,6 @@ void Logging::RepeatGuardLogger<ALogger>::log(Logging::Logger::LoggerSmartPtr &l
 				    unsigned long line,
 				    const std::string &method)
 {
-    increment();
     if(check())
 	{
 	std::stringstream strstr;
@@ -187,8 +194,56 @@ template <class ALogger>
 void Logging::RepeatGuardLogger<ALogger>::log(Logging::Logger::LoggerSmartPtr &logger, 
 				    const Logging::BaseLog::LogRecord &lr)
 {
-    increment();
     if(check())
+	{
+	std::stringstream strstr;
+	strstr << count();
+
+	LoggingProxy::AddData("repeatCount", strstr.str().c_str() );
+
+	logger->log(lr);
+	}
+}
+template <class ALogger>     
+void Logging::RepeatGuardLogger<ALogger>::logAndIncrement(ALogger &logger ) 
+{
+    if(checkAndIncrement())
+	{
+	std::stringstream strstr;
+	strstr << count();
+
+	LoggingProxy::AddData("repeatCount", strstr.str().c_str() );
+
+	logger.log();
+	}
+};
+
+template <class ALogger>     
+void Logging::RepeatGuardLogger<ALogger>::logAndIncrement(Logging::Logger::LoggerSmartPtr &logger, 
+				    Logging::BaseLog::Priority priority,
+				    const std::string &message,
+				    const std::string &file,
+				    unsigned long line,
+				    const std::string &method)
+{
+    if(checkAndIncrement())
+	{
+	std::stringstream strstr;
+	strstr << count();
+
+	LoggingProxy::AddData("repeatCount", strstr.str().c_str() );
+
+	logger->log(priority, message,
+		    file, line, method);
+	}
+}
+
+    
+template <class ALogger>     
+void Logging::RepeatGuardLogger<ALogger>::logAndIncrement(Logging::Logger::LoggerSmartPtr &logger, 
+				    const Logging::BaseLog::LogRecord &lr)
+{
+    if(checkAndIncrement())
 	{
 	std::stringstream strstr;
 	strstr << count();

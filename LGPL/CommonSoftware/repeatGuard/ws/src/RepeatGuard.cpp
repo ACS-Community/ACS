@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: RepeatGuard.cpp,v 1.3 2007/03/22 10:55:29 gchiozzi Exp $"
+* "@(#) $Id: RepeatGuard.cpp,v 1.4 2007/03/23 09:50:06 nbarriga Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -25,19 +25,19 @@
 
 #include "vltPort.h"
 
-static char *rcsId="@(#) $Id: RepeatGuard.cpp,v 1.3 2007/03/22 10:55:29 gchiozzi Exp $"; 
+static char *rcsId="@(#) $Id: RepeatGuard.cpp,v 1.4 2007/03/23 09:50:06 nbarriga Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 
 #include "RepeatGuard.h"
 
-RepeatGuard::RepeatGuard(unsigned int interval, unsigned int maxRepetitions, bool or_or_and){
+RepeatGuard::RepeatGuard(ACS::TimeInterval interval, unsigned int maxRepetitions, bool or_or_and){
         method=or_or_and;
         if(interval==0)method=COUNTER;
         if(maxRepetitions==0)method=TIMER;
 
 	this->maxRepetitions=maxRepetitions;
-	this->interval=interval*10000000;
+	this->interval=interval;
 	counter=0;
 	counterAtLastCheck=0;
 	lastTime=0;
@@ -109,13 +109,13 @@ void RepeatGuard::reset(){
 	lastTime=0;
 }
 
-void RepeatGuard::reset(unsigned int interval, unsigned int maxRepetitions, bool or_or_and){
+void RepeatGuard::reset(ACS::TimeInterval interval, unsigned int maxRepetitions, bool or_or_and){
         method=OR;
         if(interval==0)method=COUNTER;
         if(maxRepetitions==0)method=TIMER;
 
 	this->maxRepetitions=maxRepetitions;
-	this->interval=interval*10000000;
+	this->interval=interval;
 	counter=0;
 	counterAtLastCheck=0;
 	lastTime=0;

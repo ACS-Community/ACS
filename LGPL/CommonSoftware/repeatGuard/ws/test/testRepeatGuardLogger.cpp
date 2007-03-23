@@ -16,7 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: testRepeatGuardLogger.cpp,v 1.3 2007/03/22 10:56:55 gchiozzi Exp $"
+ * "@(#) $Id: testRepeatGuardLogger.cpp,v 1.4 2007/03/23 09:50:06 nbarriga Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -31,7 +31,7 @@
 #include <stdio.h>
 #include <string.h>
 
-static char *rcsId="@(#) $Id: testRepeatGuardLogger.cpp,v 1.3 2007/03/22 10:56:55 gchiozzi Exp $"; 
+static char *rcsId="@(#) $Id: testRepeatGuardLogger.cpp,v 1.4 2007/03/23 09:50:06 nbarriga Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <maciSimpleClient.h>
@@ -80,7 +80,7 @@ int main(int argc, char *argv[])
      * This approach also allows to use the same guard for multiple logs
      * (as long as they are of the same logger type)
      */
-    Logging::RepeatGuardLogger<Logging::BaseLog> guardbl(1,10);
+    Logging::RepeatGuardLogger<Logging::BaseLog> guardbl(10000000,10);
 
     /*
      * 2. We get the standard logger for this "object"
@@ -97,7 +97,15 @@ int main(int argc, char *argv[])
     for(int i=0;i<50;i++)
 	{
 	guardbl.log(logger, Logging::Logger::LM_INFO, 
-		    "Simple test.",
+		    "Log A without incrementing",
+		    __FILE__,__LINE__,
+		    "main");
+	guardbl.log(logger, Logging::Logger::LM_INFO, 
+		    "Log B without incrementing",
+		    __FILE__,__LINE__,
+		    "main");
+	guardbl.logAndIncrement(logger, Logging::Logger::LM_INFO, 
+		    "LogAndIncrement",
 		    __FILE__,__LINE__,
 		    "main");
 	}
@@ -108,16 +116,17 @@ int main(int argc, char *argv[])
      * produced using any subclass of Logging::TypeSafeLog
      */
 
-    Logging::RepeatGuardLogger<Logging::TypeSafeLog> guard(1,10);
+    Logging::RepeatGuardLogger<Logging::TypeSafeLog> guard(10000000,10);
 
     repeatGuardLogTypeExample::simpleLog my_simpleLog(__FILE__,__LINE__,"main");
     my_simpleLog.log();
 
 
+    guard.log(my_simpleLog);
 
     for(int i=0;i<50;i++)
 	{
-	guard.log(my_simpleLog);
+	guard.logAndIncrement(my_simpleLog);
 	}
 
     /*****************************************************************/
@@ -127,17 +136,18 @@ int main(int argc, char *argv[])
      */
 
 
-    Logging::RepeatGuardLogger<ACSErr::ACSbaseExImpl> guardex(1,10);
+    Logging::RepeatGuardLogger<ACSErr::ACSbaseExImpl> guardex(10000000,10);
 
     ACSErrTypeCommon::GenericErrorExImpl displayMessageEx(
 	__FILE__, __LINE__, "main");
     displayMessageEx.log();
 
 
+    guardex.log(displayMessageEx);
 
     for(int i=0;i<50;i++)
 	{
-	guardex.log(displayMessageEx);
+	guardex.logAndIncrement(displayMessageEx);
 	}
 
     /*****************************************************************/

@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: RepeatGuard.h,v 1.2 2007/03/02 13:45:29 nbarriga Exp $"
+* "@(#) $Id: RepeatGuard.h,v 1.3 2007/03/23 09:50:06 nbarriga Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -57,16 +57,16 @@ class RepeatGuard{
 		unsigned int counterAtLastCheck;
 		unsigned int maxRepetitions;
                 unsigned int method;
-		ACS::Time interval;
+		ACS::TimeInterval interval;
 		ACS::Time lastTime;
 	public:
                 /** Constructor
-                * @param interval minimum interval between allowing an action(i.e. check returns true)(condition 1)
+                * @param interval minimum interval between allowing an action(i.e. check returns true)(in 100ns)(condition 1)
                 * @param maxRepetitions maxRepetitions between logs.(condition 2)
                 * @param OR true: conditions 1 or 2 must be met, false: conditions 1 and 2 must be met. Ignored if interval
                 *       or maxRepetitions is zero.
                 */
-		RepeatGuard(unsigned int interval, unsigned int maxRepetitions, bool or_or_and=true);
+		RepeatGuard(ACS::TimeInterval interval, unsigned int maxRepetitions, bool or_or_and=true);
 
 		~RepeatGuard();
 
@@ -98,12 +98,12 @@ class RepeatGuard{
 		void reset();
 
                 /** Resets counter and time of the last time check() returned true.
-                * @param interval minimum interval between allowing an action(i.e. check returns true)(condition 1)
+                * @param interval minimum interval between allowing an action(i.e. check returns true)(in 100ns)(condition 1)
                 * @param maxRepetitions maxRepetitions between logs.(condition 2)
                 * @param OR true: conditions 1 or 2 must be met, false: conditions 1 and 2 must be met. Ignored if interval
                 *       or maxRepetitions is zero.
                 */
-		void reset(unsigned int interval, unsigned int maxRepetitions, bool or_or_and=true);
+		void reset(ACS::TimeInterval interval, unsigned int maxRepetitions, bool or_or_and=true);
 
 
 };
