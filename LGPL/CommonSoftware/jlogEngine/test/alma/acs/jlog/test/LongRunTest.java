@@ -47,18 +47,22 @@ public class LongRunTest extends Thread {
 	// The time interval in msec between the sending of two blocks of logs
 	private int msec;
 	
+	// The time interval (msec) between the sending of 2 logs in a block
+	// Default is LongRunTest.LOGS_INTERVAL
+	private int blockInterval=LongRunTest.LOGS_INTERVAL;
+	
 	// The ACS component client
 	private AdvancedComponentClient client=null;
 	
 	// The logger
 	private Logger logger=null;
 	
-	public LongRunTest(String endTime, String msec) throws IllegalArgumentException {
+	public LongRunTest(String endTime, String msec, String logInt) throws IllegalArgumentException {
 		if (endTime==null || msec==null) {
 			throw new IllegalArgumentException("Invalid null date/interval");
 		}
 		setEndTime(endTime);
-		setInterval(msec);
+		setInterval(msec,logInt);
 		try {
 			connectACSComponentClient();
 		} catch (Throwable t) {
@@ -71,9 +75,15 @@ public class LongRunTest extends Thread {
 	
 	/**
 	 * Decode the millisec
-	 * @param millisec
+	 * 
+	 * @param millisec The interval in msec between the sending of two blocks of logs
+	 * @param logInt The interval in msec between the sending of two logs in a block
+	 *               (it can be null, in that case the default is used)
 	 */
-	private void setInterval(String millisec) throws IllegalArgumentException {
+	private void setInterval(String millisec, String blockInt) throws IllegalArgumentException {
+		if (millisec==null) {
+			throw new IllegalArgumentException("Invalid null interval");
+		}
 		try {
 			msec= Integer.parseInt(millisec);
 		} catch (Exception e) {
@@ -81,6 +91,16 @@ public class LongRunTest extends Thread {
 		}
 		if (msec<0) {
 			throw new IllegalArgumentException("Invalid interval "+millisec);
+		}
+		if (blockInt!=null) {
+			try {
+				blockInterval= Integer.parseInt(blockInt);
+			} catch (Exception e) {
+				throw new IllegalArgumentException("Error decoding the interval in a block "+blockInt,e);
+			}
+			if (msec<0) {
+				throw new IllegalArgumentException("Invalid interval in a block "+blockInt);
+			}
 		}
 	}
 	
@@ -91,7 +111,7 @@ public class LongRunTest extends Thread {
 	 */
 	private void setEndTime(String time) throws IllegalArgumentException {
 		String[] times = time.split(":");
-		if (times.length!=2) {
+		if (times.length!=2 && times.length!=3) {
 			throw new IllegalArgumentException("Malformed end time "+time);
 		}
 		try {
@@ -110,10 +130,12 @@ public class LongRunTest extends Thread {
 	 *
 	 */
 	public static void usage() {
-		System.out.println("LongRunTest <end_time> <interval>");
+		System.out.println("LongRunTest <end_time> <interval> [logLevelInterval]");
 		System.out.println("end_time: the time (hh:mm) to terminate sending logs");
-		System.out.println("interval: the interval (msec between the sending of a block of logs");
-		System.out.println("Every interval msec, send publish one log of each log type.");
+		System.out.println("interval: the interval (msec) between the sending of a block of logs");
+		System.out.println("logLevelInterval: the interval (msec) between the sending of two logs in a block");
+		System.out.println("Every interval msec, send publish one log of each log type (i.e. a block of logs).");
+		System.out.println("The logs in a block are published with a delay of logLevelInterval msec (default is 100 msec).");
 	}
 	
 	/**
@@ -121,12 +143,16 @@ public class LongRunTest extends Thread {
 	 *
 	 */
 	public static void main(String[] args) {
-		if (args.length!=2) {
+		if (args.length!=2 && args.length!=3) {
 			LongRunTest.usage();
 		} else {
 			LongRunTest test;
 			try {
-				test = new LongRunTest(args[0],args[1]);
+				if (args.length==2) {
+					test = new LongRunTest(args[0],args[1],null);
+				} else {
+					test = new LongRunTest(args[0],args[1],args[2]);
+				}
 			} catch (Exception e) {
 				System.err.println("Exception: "+e.getMessage());
 				e.printStackTrace(System.err);
@@ -227,7 +253,7 @@ public class LongRunTest extends Thread {
 				logger.log(level,LongRunTest.logMsg+System.currentTimeMillis());
 			}
 			try {
-				Thread.sleep(LongRunTest.LOGS_INTERVAL);
+				Thread.sleep(blockInterval);
 			} catch (InterruptedException ie) {}
 		}
 	}
