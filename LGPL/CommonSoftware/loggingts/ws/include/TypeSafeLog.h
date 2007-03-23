@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: TypeSafeLog.h,v 1.1 2007/03/22 08:50:53 nbarriga Exp $"
+* "@(#) $Id: TypeSafeLog.h,v 1.2 2007/03/23 07:53:06 nbarriga Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -33,10 +33,10 @@
 #ifndef __cplusplus
 #error This is a C++ include file and cannot be used from plain C
 #endif
-
-class TypeSafeLog{
-    public:
-        virtual void log()=0;
+namespace Logging{
+        class TypeSafeLog{
+                public:
+                        virtual void log()=0;
+        };
 };
-
 #endif /*!TYPESAFELOG_H*/
