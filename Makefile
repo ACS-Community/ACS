@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.140 2007/02/16 11:18:56 gchiozzi Exp $"
+# "@(#) $Id: Makefile,v 1.141 2007/03/23 10:10:06 nbarriga Exp $"
 #
 #
 
@@ -19,7 +19,7 @@ MODULES_KIT = vlt doc acs acstempl
 # because it is already built in the prepare phase.
 #
 MODULES_TOOLS = cmm emacs compat tat expat loki extjars antlr freetype extpy cppunit getopt FITS astyle swig xercesc xercesj castor mimetic gmp jfree xsddoc
-MODULES_ACS = abeansgen jacsutil xmljbind acsidlcommon acsutil acsutilpy acsstartup logging acserr acserrTypes acsQoS acsthread acscomponentidl cdbidl maciidl acsjlog cdb cdbChecker acsContainerServices acscomponent cdbBrowser recovery baciidl acsncidl basenc archiveevents parameter acsalarmidl acsalarm baci enumprop acsdaemon jacscommon jmanager maci task abeans acstime acsnc acslog acstestcompcpp acsexmpl acsabeans jlog acspy loggingts loggingtsTypes comphelpgen XmlIdl define acstestentities objexp jacsalarm jcont jcontnc jcontexmpl jbaci acssamp acscallbacks codegen mastercomp acspyexmpl nctest acscommandcenter acssampGUI acssim bulkData  mountguiexample acscourse ACSLaser
+MODULES_ACS = abeansgen jacsutil xmljbind acsidlcommon acsutil acsutilpy acsstartup logging acserr acserrTypes repeatGuard acsQoS acsthread acscomponentidl cdbidl maciidl acsjlog cdb cdbChecker acsContainerServices acscomponent cdbBrowser recovery baciidl acsncidl basenc archiveevents parameter acsalarmidl acsalarm baci enumprop acsdaemon jacscommon jmanager maci task abeans acstime acsnc acslog acstestcompcpp acsexmpl acsabeans jlog acspy loggingts loggingtsTypes comphelpgen XmlIdl define acstestentities objexp jacsalarm jcont jcontnc jcontexmpl jbaci acssamp acscallbacks codegen mastercomp acspyexmpl nctest acscommandcenter acssampGUI acssim bulkData  mountguiexample acscourse ACSLaser
 ######## end Modules ###########################
 
 #
