@@ -121,6 +121,7 @@ public class LogManagerGui extends JPanel {
 	LoggerEditor editor;
 	QuickLoggerEditor quickEditor;
 	JSplitPane splitpane;
+	Controls controls;
 	
 	/**
 	 *  
@@ -138,7 +139,7 @@ public class LogManagerGui extends JPanel {
 		editor = new LoggerEditor();
 		tree.setBackground(Color.white);
 
-		Controls controls = new Controls();
+		controls = new Controls();
 		
 		JPanel left = new JPanel(new BorderLayout());
 		left.add(new JScrollPane(tree), BorderLayout.CENTER);
@@ -152,7 +153,8 @@ public class LogManagerGui extends JPanel {
 
 	protected void message(String msg) {
 		String me = LogManagerGui.class.getName();
-	   System.out.println("me: "+msg);
+		me = me.substring(me.lastIndexOf('.')+1);
+	   System.out.println(me+": "+msg);
 	}
 
 	
@@ -161,6 +163,9 @@ public class LogManagerGui extends JPanel {
 	////////////////////////////////////////////////////////
 
 
+	public void setFilter (String string) {
+		controls.txtNameFilter.setText(string);
+	}
 
 	@Override
 	public void setVisible (boolean b) {
@@ -420,7 +425,7 @@ public class LogManagerGui extends JPanel {
 			});
 			this.add(r, BorderLayout.EAST);
 			
-			txtNameFilter.setText("sun, java.awt, javax.swing");
+			txtNameFilter.setText("sun., java., javax.");
 		}
 	}
 	
