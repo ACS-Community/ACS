@@ -2,7 +2,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: buildJacORB,v 1.15 2006/08/10 08:08:07 bjeram Exp $"
+# "@(#) $Id: buildJacORB,v 1.16 2007/03/25 14:08:12 msekoran Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -154,6 +154,30 @@ then
 else
     rm $JACORB_SOURCES/JacORB-ACS-2006-07-31.patch
 fi
+
+#
+# JacORB interoperability IR patch
+#
+
+echo ==== IR Patch
+if [ -f $JACORB_SOURCES/JacORB-ACS-IR-2007-02-12.patch.gz ]
+then
+    gunzip -c $JACORB_SOURCES/JacORB-ACS-IR-2007-02-12.patch.gz >$JACORB_SOURCES/JacORB-ACS-IR-2007-02-12.patch
+else
+    echo "file $JACORB_SOURCES/JacORB-ACS-IR-2007-02-12.patch.gz not found"
+    echo "Installation aborted"
+    exit 3
+fi
+patch -p1 < $JACORB_SOURCES/JacORB-ACS-IR-2007-02-12.patch
+if [ $? -ne 0 ]
+then
+    rm $JACORB_SOURCES/JacORB-ACS-IR-2007-02-12.patch
+    echo "========= FAILED =========="
+        exit 1
+else
+    rm $JACORB_SOURCES/JacORB-ACS-IR-2007-02-12.patch
+fi
+
 
 echo ==== Building jaco
 ant jaco
