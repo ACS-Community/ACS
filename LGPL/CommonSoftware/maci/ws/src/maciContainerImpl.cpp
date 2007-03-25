@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciContainerImpl.cpp,v 1.82 2007/03/07 14:17:42 msekoran Exp $"
+* "@(#) $Id: maciContainerImpl.cpp,v 1.83 2007/03/25 13:33:02 msekoran Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -76,7 +76,7 @@
 #include <ACSAlarmSystemInterfaceFactory.h>
 #endif
 
-ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.82 2007/03/07 14:17:42 msekoran Exp $")
+ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.83 2007/03/25 13:33:02 msekoran Exp $")
 
  using namespace maci;
  using namespace cdb;
@@ -2554,11 +2554,12 @@ maci::stringSeq* ContainerImpl::get_logger_names()
 	for (pos = names.begin(); pos != names.end(); pos++)
 		namesSeq[i++] = CORBA::string_dup(pos->c_str());
 	
-	// add logs from configuration
+	// add logs from configuration, but hide non-existant
 	std::map<std::string, maci::LoggingConfigurable::LogLevels>::iterator iter;
 	for (iter = m_logLevels.begin(); iter != m_logLevels.end(); iter++)
 		if (find(names.begin(), names.end(), iter->first) == names.end())
-			namesSeq[i++] = CORBA::string_dup(iter->first.c_str());
+			if (Logger::getGlobalLogger()->exists(iter->first))
+				namesSeq[i++] = CORBA::string_dup(iter->first.c_str());
 	
 	namesSeq->length(i);
 	return namesSeq._retn();
@@ -2572,8 +2573,11 @@ maci::LoggingConfigurable::LogLevels ContainerImpl::get_logLevels(const char* lo
 
 	if (m_logLevels.find(loggerName) != m_logLevels.end())
 		return m_logLevels[loggerName];
+	else if (Logger::getGlobalLogger()->exists(loggerName))
+		return m_defaultLogLevels;
 	else
 		return m_defaultLogLevels;
+		//throw new CORBA::BAD_PARAM();
 }
 
 
@@ -2581,6 +2585,10 @@ void ContainerImpl::set_logLevels(const char* loggerName, const maci::LoggingCon
 	throw (CORBA::SystemException)
 {
 	ACS_TRACE("maci::ContainerImpl::set_logLevels");
+
+	if (!Logger::getGlobalLogger()->exists(loggerName))
+		return;
+		//throw new CORBA::BAD_PARAM();
 
 	m_logLevels[loggerName] = logLevels;
 	if (logLevels.useDefault)
@@ -2618,6 +2626,11 @@ void ContainerImpl::refresh_logging_config()
 		if (fld.GetULong(ul))
 			m_defaultLogLevels.minLogLevelLocal = ul;
 	}
+	
+	// set default logger levels 
+	Logger::getGlobalLogger()->setLevels(
+		static_cast<Logging::BaseLog::Priority>(m_defaultLogLevels.minLogLevelLocal),
+		static_cast<Logging::BaseLog::Priority>(m_defaultLogLevels.minLogLevel));
 
 	// other loggers config
 	if (m_database->GetField(m_dbPrefix.c_str(), "LoggingConfig", fld))
@@ -2649,9 +2662,6 @@ void ContainerImpl::refresh_logging_config()
 
 void ContainerImpl::configureLogger(const std::string& loggerName)
 {
-	// this methods stores configuration and we do not want this...
-	//getContainer()->set_logLevels(loggerName.c_str(), getContainer()->get_logLevels(loggerName.c_str()));
-	
 	maci::LoggingConfigurable::LogLevels logLevels;
 	if (getContainer()->m_logLevels.find(loggerName) != getContainer()->m_logLevels.end())
 		logLevels = getContainer()->m_logLevels[loggerName];

@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingLogger.cpp,v 1.12 2007/03/21 10:04:48 nbarriga Exp $"
+* "@(#) $Id: loggingLogger.cpp,v 1.13 2007/03/25 13:31:05 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -28,7 +28,7 @@
 #include <iostream>
 #include <Recursive_Thread_Mutex.h>
 
-static char *rcsId="@(#) $Id: loggingLogger.cpp,v 1.12 2007/03/21 10:04:48 nbarriga Exp $"; 
+static char *rcsId="@(#) $Id: loggingLogger.cpp,v 1.13 2007/03/25 13:31:05 msekoran Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 // -------------------------------------------------------
 //helper function
@@ -200,6 +200,26 @@ namespace Logging {
 
 	//make sure it's released
 	loggersMutex_m.release();
+    }
+    // -------------------------------------------------------
+    bool
+	Logger::exists(const std::string &loggerName)
+    {
+	//to be thread safe
+	loggersMutex_m.acquire();
+
+	bool found = false;
+	LoggerList::iterator pos;
+	for (pos = ACE_Singleton<Logger_ptr, ACE_Recursive_Thread_Mutex>::instance()->loggers_m.begin();
+	     !found && pos != ACE_Singleton<Logger_ptr, ACE_Recursive_Thread_Mutex>::instance()->loggers_m.end();
+	     pos++)
+		if ((*pos)->getName() == loggerName)
+			found = true;
+
+	//make sure it's released
+	loggersMutex_m.release();
+	
+	return found;
     }
     // -------------------------------------------------------
     std::list<std::string>
