@@ -52,6 +52,8 @@
 using namespace baci;
 using namespace maci;
 using namespace ACSBulkDataStatus;
+using namespace ACSBulkDataStatus;
+using namespace ACSErrTypeCommon;
 
 /** @file bulkDataDistributerImpl.h  
  */
@@ -139,7 +141,7 @@ class BulkDataDistributerImpl : public CharacteristicComponentImpl,
 	throw (CORBA::SystemException, AVDisconnectErrorEx);
 
     virtual void multiDisconnect(bulkdata::BulkDataReceiver_ptr receiverObj_p)
-	throw (CORBA::SystemException, AVDisconnectErrorEx);
+	throw (CORBA::SystemException, AVDisconnectErrorEx, CORBAProblemEx);
 
     virtual void disconnectByName(const char *receiverName_p)
 	throw (CORBA::SystemException, AVDisconnectErrorEx);

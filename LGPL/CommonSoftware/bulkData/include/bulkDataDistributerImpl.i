@@ -183,12 +183,13 @@ void BulkDataDistributerImpl<TReceiverCallback, TSenderCallback>::disconnect()
 
 template<class TReceiverCallback, class TSenderCallback>
 void BulkDataDistributerImpl<TReceiverCallback, TSenderCallback>::multiDisconnect(bulkdata::BulkDataReceiver_ptr receiverObj_p)
-    throw (CORBA::SystemException, AVDisconnectErrorEx)
+    throw (CORBA::SystemException, AVDisconnectErrorEx, CORBAProblemEx)
 {
-    ACE_CString recvName = receiverObj_p->name();
+    ACE_CString recvName = "";
 
     try
 	{
+	recvName = receiverObj_p->name();
 	distributer.multiDisconnect(recvName);
 	}
     catch(ACSErr::ACSbaseExImpl &ex)
@@ -196,6 +197,15 @@ void BulkDataDistributerImpl<TReceiverCallback, TSenderCallback>::multiDisconnec
 	AVDisconnectErrorExImpl err = AVDisconnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataDistributerImpl::multiDisconnect");
 	err.log(LM_DEBUG);
 	throw err.getAVDisconnectErrorEx();
+	}
+    catch(CORBA::SystemException &ex)
+	{
+	CORBAProblemExImpl err = CORBAProblemExImpl(__FILE__,__LINE__,"BulkDataDistributerImpl::multiDisconnect");
+	err.setMinor(ex.minor());
+	err.setCompletionStatus(ex.completed());
+	err.setInfo(ex._info().c_str());
+	err.log(LM_DEBUG);
+	throw err.getCORBAProblemEx();
 	}
     catch(...)
 	{

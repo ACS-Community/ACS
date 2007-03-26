@@ -31,6 +31,7 @@
 */
 
 #include <baci.idl>
+#include <ACSErrTypeCommon.idl>
 #include <ACSBulkDataError.idl>
 #include <AVStreams.idl>
 #include <bulkData.idl>
@@ -59,7 +60,7 @@ module bulkdata
 	    raises (ACSBulkDataError::AVConnectErrorEx);
 	
        	void multiDisconnect(in BulkDataReceiver receiver)
-	    raises (ACSBulkDataError::AVDisconnectErrorEx);
+	    raises (ACSBulkDataError::AVDisconnectErrorEx, ACSErrTypeCommon::CORBAProblemEx);
 
 	void disconnectByName(in string receiverName)
 	    raises (ACSBulkDataError::AVDisconnectErrorEx);

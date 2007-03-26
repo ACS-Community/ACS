@@ -321,9 +321,22 @@ CORBA::Boolean AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallba
 		}
 	    catch(CORBA::TIMEOUT & ex)
 		{
-		ACS_SHORT_LOG((LM_INFO,"BulkDataDistributer::distSendStopTimeout CORBA::TIMEOUT exception catched!"));
+		ACS_SHORT_LOG((LM_ERROR,"BulkDataDistributer::distSendStopTimeout CORBA::TIMEOUT exception"));
 		getFlowReceiverStatus(recvName, flowNumber);
 		timeout = false;
+		}
+	    catch(CORBA::SystemException &ex)
+		{
+		senderMap_m.unbind(recvName);		
+		ACSErrTypeCommon::CORBAProblemExImpl err = ACSErrTypeCommon::CORBAProblemExImpl(__FILE__,__LINE__,"BulkDataDistributer::distSendStopTimeout");
+		err.setMinor(ex.minor());
+		err.setCompletionStatus(ex.completed());
+		err.setInfo(ex._info().c_str());
+		throw err;
+		}
+	    catch(...)
+		{
+		ACS_SHORT_LOG((LM_ERROR,"BulkDataDistributer::distSendStopTimeout UNKNOWN exception"));
 		}
 	    }   
 	}

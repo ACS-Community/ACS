@@ -104,6 +104,11 @@ int BulkDataDistributerCb::handle_stop (void)
 	    }
 
 	int res = cbFwdStop();
+	if(res == -1) // TBD
+	    {
+	    ACS_SHORT_LOG((LM_ERROR,"BulkDataDistributerCb::handle_stop error in cbFwdStop"));
+	    res = 0;
+	    }
 
 	state_m = CB_UNS;
 	substate_m = CB_SUB_UNS;
@@ -370,9 +375,16 @@ BulkDataDistributerCb::cbFwdStop()
 	{
 	timeout_m = distr_m->getDistributer()->distSendStopTimeout(flowname_m, flowNumber_m);
 	}
+    catch(ACSErr::ACSbaseExImpl &ex)
+	{
+	ACS_SHORT_LOG((LM_ERROR,"BulkDataDistributerCb::cbFwdStop ACSErr::ACSbaseExImpl exception"));
+	ex.log();
+	return -1;
+	}
     catch(...)
 	{
-	ACS_SHORT_LOG((LM_ERROR,"BulkDataDistributerCb::cbFwdStop exception"));
+	ACS_SHORT_LOG((LM_ERROR,"BulkDataDistributerCb::cbFwdStop UNKNOWN exception"));
+	return -1;
 	}
 
     return 0;
