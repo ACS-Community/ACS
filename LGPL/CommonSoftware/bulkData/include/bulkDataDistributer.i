@@ -327,12 +327,14 @@ CORBA::Boolean AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallba
 		}
 	    catch(CORBA::SystemException &ex)
 		{
-		senderMap_m.unbind(recvName);		
+		senderMap_m.unbind(recvName);
+		iterator--;
+		recvStatusMap_m.unbind(recvName);
 		ACSErrTypeCommon::CORBAProblemExImpl err = ACSErrTypeCommon::CORBAProblemExImpl(__FILE__,__LINE__,"BulkDataDistributer::distSendStopTimeout");
 		err.setMinor(ex.minor());
 		err.setCompletionStatus(ex.completed());
 		err.setInfo(ex._info().c_str());
-		throw err;
+		err.log();
 		}
 	    catch(...)
 		{
