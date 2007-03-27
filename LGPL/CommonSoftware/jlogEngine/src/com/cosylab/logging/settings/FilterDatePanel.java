@@ -54,7 +54,8 @@ public FilterDatePanel() {
  */
 protected void createComponents() {
 	
-	notCheck = new JCheckBox("Apply as NOT");
+	notCheck = new JCheckBox("Discard entries matching this filter");
+	notCheck.setToolTipText("Keep/discard entries matching this filter");
 	add(notCheck,newConstraints(0,4,4,4,4));
 	
 	minimumCheck = new JCheckBox("From");

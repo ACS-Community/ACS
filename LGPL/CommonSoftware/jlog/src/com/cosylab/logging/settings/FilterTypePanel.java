@@ -67,7 +67,8 @@ public class FilterTypePanel extends FilterParameterPanel implements ItemListene
 		JPanel panelTop = new JPanel(new GridBagLayout());
 		add(panelTop, newConstraints(0, 4, 4, 4, 4));
 		
-		notCheck = new JCheckBox("Apply as NOT");
+		notCheck = new JCheckBox("Discard entries matching this filter");
+		notCheck.setToolTipText("Keep/discard entries matching this filter");
 		panelTop.add(notCheck,newConstraints(0,4,4,4,4));
 
 		minimumCheck = new JCheckBox("Minimum value");
