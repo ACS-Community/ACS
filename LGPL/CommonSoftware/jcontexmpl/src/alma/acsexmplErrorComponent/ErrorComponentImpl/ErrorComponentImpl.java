@@ -176,7 +176,15 @@ public class ErrorComponentImpl extends ComponentImplBase implements ErrorCompon
 	public Completion completionOnStack(short depth) {
 		return completionFromException(depth);
 	}
-	
+        
+       /** this method returns a Completion as an out parameter.
+         *
+         * @see alma.acsexmplErrorComponent.ErrorComponentOperations#outCompletion(alma.ACSErr.CompletionHolder)
+         */
+        public void outCompletion(alma.ACSErr.CompletionHolder comp){
+
+            comp.value=(new GenericErrorAcsJCompletion()).toCorbaCompletion();
+        }	
 	///////////////////////////////////////////////////////////////////////
 	
 	/**

@@ -16,7 +16,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: ErrorComponent.py,v 1.5 2007/02/26 12:17:27 nbarriga Exp $"
+# "@(#) $Id: ErrorComponent.py,v 1.6 2007/03/27 07:08:28 nbarriga Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -235,6 +235,16 @@ class ErrorComponent(acsexmplErrorComponent__POA.ErrorComponent,
         '''
         #This is just a Stub. No need for it in python
         return self.completionFromException(depth);
+    #------------------------------------------------------------------------------
+    def outCompletion(self):
+        '''
+        Implementation of IDL method:
+            void outCompletion(out ACSErr::Completion comp);
+
+        For details on what this method does, please see the IDL Doxygen
+        documentation.
+        '''
+        return ACSErrTypeOKImpl.ACSErrOKCompletionImpl() 
     #------------------------------------------------------------------------------
     def __errorTrace(self, depth):
         '''
