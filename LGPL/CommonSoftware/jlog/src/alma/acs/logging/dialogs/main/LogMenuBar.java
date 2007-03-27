@@ -119,7 +119,7 @@ public class LogMenuBar extends JMenuBar {
      */
     private JCheckBoxMenuItem viewDetailedInfoMI;
     
-        /**
+    /**
      * The menu item to show/hide the Detailed log info panel
      */
     private JCheckBoxMenuItem viewStatusAreaMI;
@@ -269,8 +269,9 @@ public class LogMenuBar extends JMenuBar {
 	 * Returns the FiltersMenuItem property value.
 	 * @return javax.swing.JMenuItem
 	 */
-	public JMenu getFiltersMenu() {
+	private JMenu getFiltersMenu() {
 		filtersMenu = new JMenu("Filters");
+		filtersMenu.setName("Filters");
 	
 		filtersMenu.add( getLoadFiltersMenuItem());
 		filtersMenu.add(getSaveFiltersMenuItem());
@@ -511,7 +512,6 @@ public class LogMenuBar extends JMenuBar {
 	 * @param enabled If true the controls are enabled
 	 */
 	public void setEnabledGUIControls(boolean enabled) {
-		getFiltersMenu().setEnabled(enabled);
 		getSearchMenu().setEnabled(enabled);
 		getFieldsMenuItem().setEnabled(enabled);
 		getLoadMenuItem().setEnabled(enabled);
@@ -538,4 +538,5 @@ public class LogMenuBar extends JMenuBar {
 			fileMenu.add(exitMenuItem);
 		}
 	}
+	
 }
