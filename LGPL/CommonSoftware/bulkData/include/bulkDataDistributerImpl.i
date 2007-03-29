@@ -204,8 +204,8 @@ void BulkDataDistributerImpl<TReceiverCallback, TSenderCallback>::multiDisconnec
 	err.setMinor(ex.minor());
 	err.setCompletionStatus(ex.completed());
 	err.setInfo(ex._info().c_str());
-	err.log(LM_DEBUG);
-	throw err.getCORBAProblemEx();
+	err.log(LM_ERROR);
+	//throw err.getCORBAProblemEx();
 	}
     catch(...)
 	{

@@ -250,7 +250,7 @@ int AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::distSe
 	    res = dp_p->send_frame(frame_p);
 	    if(res < 0)
 		{
-		ACS_SHORT_LOG((LM_INFO,"BulkDataDistributer<>::distSendDataHsk send frame error"));
+		ACS_SHORT_LOG((LM_ERROR,"BulkDataDistributer<>::distSendDataHsk send frame error"));
 		}
 	    }	
 	}
@@ -283,7 +283,10 @@ int AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::distSe
 	    res = dp_p->send_frame(frame_p);
 	    if(res < 0)
 		{
-		ACS_SHORT_LOG((LM_INFO,"BulkDataDistributer<>::distSendData send frame error"));
+		ACS_SHORT_LOG((LM_ERROR,"BulkDataDistributer<>::distSendData send frame error"));
+		senderMap_m.unbind(recvName);
+		iterator--;
+		recvStatusMap_m.unbind(recvName);
 		getFlowReceiverStatus(recvName,flowNumber);
 		}
 	    }	
