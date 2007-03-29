@@ -6,11 +6,13 @@ import alma.acs.exceptions.AcsJException;
 import alma.acs.exceptions.AcsJCompletion;
 
 import alma.ACSErrTypeCommon.GenericErrorEx;
+import alma.ACSErrTypeCommon.UnexpectedExceptionEx;
 import alma.ACSErrTypeCommon.ACSErrTypeCommonEx;
 import alma.ACSErrTypeCommon.UnknownEx;
 
 import alma.ACSErrTypeCommon.wrappers.AcsJACSErrTypeCommonEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJGenericErrorEx;
+import alma.ACSErrTypeCommon.wrappers.AcsJUnexpectedExceptionEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJCORBAProblemEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJUnknownEx;
 
@@ -51,7 +53,11 @@ public class ErrorComponentTest extends ComponentClientTestCase {
 			errorComp.badMethod((short)0);
 		} catch (GenericErrorEx e) {
 			fail("No exception should be thrown for depth=0");
-		}			
+		} catch (UnexpectedExceptionEx e){
+                    AcsJUnexpectedExceptionEx jEx = AcsJUnexpectedExceptionEx.fromUnexpectedExceptionEx(e);
+                    jEx.log(m_logger);
+                    fail("No exception should be thrown for depth=0");
+                }
 
 		short[] depths = new short[] {1, 2, 5};
 		for (int i = 0; i < depths.length; i++) {
@@ -62,9 +68,13 @@ public class ErrorComponentTest extends ComponentClientTestCase {
 			} catch (GenericErrorEx e) {
 				m_logger.info("Caught GenericErrorEx as expected. Depth=" + depths[i]);
 				AcsJGenericErrorEx jEx = AcsJGenericErrorEx.fromGenericErrorEx(e);
-				verifyErrorTrace(depths[i], jEx);
-			}
-		}
+                                verifyErrorTrace(depths[i], jEx);
+                        } catch (UnexpectedExceptionEx e){
+                                AcsJUnexpectedExceptionEx jEx = AcsJUnexpectedExceptionEx.fromUnexpectedExceptionEx(e);
+                                jEx.log(m_logger);
+                                fail("Expected a GenericErrorEx in ErrorComponent#badMethod for depth=" + depths[i]);
+                        }
+                }
 	}
 
 	
