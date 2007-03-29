@@ -11,11 +11,6 @@
 1 - object is activated
 1 - ----------T--:--:--.--- INFO [javaContainer] Info message from the manager: Startup statistics: 0 components queued to be activated.
 1 - ----------T--:--:--.--- INFO [javaContainer] Info message from the manager: Startup statistics: 0 of 0 components activated.
-1 - ----------T--:--:--.--- INFO [javaContainer] activate_component: handle=xxx name=ERRORCOMP_JAVA helperClass=alma.acsexmplErrorComponent.ErrorComponentImpl.ErrorComponentHelper type=IDL:alma/acsexmplErrorComponent/ErrorComponent:1.0
-1 - [jacorb.poa] INFO : oid: 
-1 - object is activated
-1 - [jacorb.poa] INFO : oid: 
-1 - object is activated
 2 - ----------T--:--:--.--- Python Client disconnect - Shutdown called for client
 2 - ----------T--:--:--.--- Python Client testCompletionFromCompletion - Completion Ok, without error trace
 2 - ----------T--:--:--.--- Python Client testCompletionFromCompletion - Example 6a: completionFromCompletion with depth 0
@@ -197,12 +192,12 @@
 2 -         ErrorTrace (TimeStamp=xxxx,
 2 -         ErrorTrace (TimeStamp=xxxx,
 2 -     self.foo.corbaSystemException()
+2 -   File "/somepath/acsexmplErrorComponent_idl.py, line 80, in corbaSystemException
 2 -                     File=xxx
 2 -                     File=xxx
 2 -                     File=xxx
 2 -                     File=xxx
 2 -                     File=xxx
-2 -   File "/somepath/acsexmplErrorComponent_idl.py, line 79, in corbaSystemException
 2 -                     Line=xxx
 2 -                     Line=xxx
 2 -                     Line=xxx
@@ -275,6 +270,11 @@
 2 -                         Severity=Error,
 2 -                         Data: Name=javaex.class, Value=alma.ACSErrTypeCommon.wrappers.AcsJGenericErrorEx; Name=javaex.msg, Value=This exception is the original cause.; )
 2 - 
+1 - ----------T--:--:--.--- INFO [javaContainer] activate_component: handle=xxx name=ERRORCOMP_JAVA helperClass=alma.acsexmplErrorComponent.ErrorComponentImpl.ErrorComponentHelper type=IDL:alma/acsexmplErrorComponent/ErrorComponent:1.0
+1 - [jacorb.poa] INFO : oid: 
+1 - object is activated
+1 - [jacorb.poa] INFO : oid: 
+1 - object is activated
 1 - ----------T--:--:--.--- INFO [ERRORCOMP_JAVA] ErrorComponent
 1 - ----------T--:--:--.--- WARNING [javaContainer] unexpected exception was thrown in functional method 'ERRORCOMP_JAVA#corbaSystemException': 
 1 - org.omg.CORBA.BAD_PARAM: Test throwing a CORBA Exception  vmcid: 0x0  minor code: 0  completed: No
@@ -285,8 +285,8 @@
 1 - 	at java.lang.reflect.Method.invoke(Method.java:585)
 1 - 	at alma.acs.container.ContainerSealant.invoke(ContainerSealant.java:156)
 1 - 	at $Proxy0.corbaSystemException(Unknown Source)
-1 - 	at alma.acsexmplErrorComponent.ErrorComponentPOATie.corbaSystemException(ErrorComponentPOATie.java:94)
-1 - 	at alma.acsexmplErrorComponent.ErrorComponentPOA._invoke(ErrorComponentPOA.java:124)
+1 - 	at alma.acsexmplErrorComponent.ErrorComponentPOATie.corbaSystemException(ErrorComponentPOATie.java:99)
+1 - 	at alma.acsexmplErrorComponent.ErrorComponentPOA._invoke(ErrorComponentPOA.java:133)
 1 - 	at org.jacorb.poa.RequestProcessor.invokeOperation(RequestProcessor.java:297)
 1 - 	at org.jacorb.poa.RequestProcessor.process(RequestProcessor.java:591)
 1 - 	at org.jacorb.poa.RequestProcessor.run(RequestProcessor.java:734)
