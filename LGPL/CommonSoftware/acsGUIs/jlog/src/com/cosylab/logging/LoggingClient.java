@@ -1108,7 +1108,7 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 				statusAreaPanel.setPreferredSize(new java.awt.Dimension(50, 50));
 				statusAreaPanel.setMinimumSize(new java.awt.Dimension(50, 50));
 				statusAreaPanel.setViewportView(getStatusArea());
-
+				statusAreaPanel.setVisible(false);
 			}
 			catch (java.lang.Throwable ivjExc)
 			{
