@@ -713,7 +713,11 @@ public class Consumer extends OSPushConsumerPOA {
 	 * be received.
 	 */
 	public void disconnect() {
-
+		// do better than NPE if someone actually calls this twice
+		if (m_proxySupplier == null) {
+			throw new IllegalStateException("Consumer already disconnected");
+		}
+		
 		try {
 			// stop receiving events
 			suspend();
@@ -741,6 +745,12 @@ public class Consumer extends OSPushConsumerPOA {
 
 	/** Used to temporarily halt receiving events of all types */
 	public void suspend() {
+		
+		// do better than NPE if someone actually calls this twice
+		if (m_proxySupplier == null) {
+			throw new IllegalStateException("Consumer already disconnected");
+		}
+		
 		try {
 			m_proxySupplier.suspend_connection();
 		} catch (org.omg.CosNotifyChannelAdmin.ConnectionAlreadyInactive e) {
