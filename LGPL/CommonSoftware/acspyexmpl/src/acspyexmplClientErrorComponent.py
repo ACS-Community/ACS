@@ -379,6 +379,28 @@ class ClientErrorComponent:
     def testCompletionOnStack(self):
         pass
 
+    def testOutCompletion(self):
+        '''
+        Calls outCompletion
+        '''
+        self.logger.logTrace("ClientErrorComponent.testOutCompletion")
+
+        self.logger.logInfo("Example 8: outCompletion")
+
+        try:
+            comp = self.foo.outCompletion()
+        except Exception, ex:
+            ex2 = ACSErrTypeCommonImpl.UnknownExImpl(exception=ex)
+            ex2.addData("ErrorDesc","completionFromCompletion has thrown an UNEXPECTED exception")
+            ex2.log()
+        
+        addComplHelperMethods(comp)
+
+        if comp.isErrorFree() == 1:
+            self.logger.logInfo("Completion Ok, without error trace")
+        else:
+            self.logger.logInfo("Completion with error trace (UNEXPECTED)")
+            comp.log()
 
 #-----------------------------------------------------------------------------  
 if __name__=="__main__":
@@ -401,6 +423,8 @@ if __name__=="__main__":
         clientErrorComponent.testTypeException()
         clientErrorComponent.testCORBASystemException()
         clientErrorComponent.testCompletionFromCompletion() 
+        if clientErrorComponent.error_comp != "ERRORCOMP_CPP":
+            clientErrorComponent.testOutCompletion()
     except ACSError, ex:
         # We should never get here, because the methods in the example
         # should be all self contained and none of them should throw
