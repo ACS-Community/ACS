@@ -21,7 +21,7 @@
 *
 *
 *
-* "@(#) $Id: acsexmplErrorComponentImpl.cpp,v 1.7 2007/02/27 14:09:01 nbarriga Exp $"
+* "@(#) $Id: acsexmplErrorComponentImpl.cpp,v 1.8 2007/03/29 06:53:54 nbarriga Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -34,7 +34,7 @@
 #include <ACSErrTypeOK.h>
 #include <iostream>
 
-ACE_RCSID(acsexmpl, acsexmplErrorComponentImpl, "$Id: acsexmplErrorComponentImpl.cpp,v 1.7 2007/02/27 14:09:01 nbarriga Exp $")
+ACE_RCSID(acsexmpl, acsexmplErrorComponentImpl, "$Id: acsexmplErrorComponentImpl.cpp,v 1.8 2007/03/29 06:53:54 nbarriga Exp $")
 
 /* ----------------------------------------------------------------*/
 ErrorComponent::ErrorComponent( 
@@ -273,6 +273,15 @@ ACSErr::Completion *ErrorComponent::completionFromCompletion(CORBA::Short depth)
         return comp->returnCompletion();
 }//completionFromCompletion
 
+void 
+ErrorComponent::outCompletion(ACSErr::Completion_out comp)
+    throw(CORBA::SystemException)
+{
+        ACS_TRACE("ErrorComponent::outCompletion");
+        comp=new ACSErrTypeOK::ACSErrOKCompletion; 
+        //comp=new ACSErrTypeCommon::GenericErrorCompletion(__FILE__, __LINE__,"ErrorComponent::outCompletion");
+
+}
 CompletionImpl *ErrorComponent::returnCompletion(unsigned short depth)
 {
    ACS_TRACE("::ErrorComponent::returnCompletion");
@@ -319,6 +328,7 @@ CompletionImpl *ErrorComponent::returnCompletion(unsigned short depth)
     // i.e. release the memory of CompletionImpl !
     return er;
 }//returnCompletion
+
 
 /************
  * Utility method to build a deep ErrorTrace
