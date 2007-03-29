@@ -9,12 +9,14 @@ import alma.ACSErrTypeCommon.GenericErrorEx;
 import alma.ACSErrTypeCommon.UnexpectedExceptionEx;
 import alma.ACSErrTypeCommon.ACSErrTypeCommonEx;
 import alma.ACSErrTypeCommon.UnknownEx;
+import alma.ACSErr.ACSErrTypeOK;
 
 import alma.ACSErrTypeCommon.wrappers.AcsJACSErrTypeCommonEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJGenericErrorEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJUnexpectedExceptionEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJCORBAProblemEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJUnknownEx;
+import alma.ACSErrTypeOK.wrappers.ACSErrOKAcsJCompletion;
 
 import alma.acs.component.client.ComponentClientTestCase;
 import alma.acsexmplErrorComponent.ErrorComponent;
@@ -220,7 +222,20 @@ public class ErrorComponentTest extends ComponentClientTestCase {
 	public void testCompletionOnStack() {
 		//fail("Not yet implemented");
 	}
-
+        
+        public void testOutCompletion() {
+            alma.ACSErr.CompletionHolder comp= new alma.ACSErr.CompletionHolder();
+            try{
+                    errorComp.outCompletion(comp);
+            } catch(Throwable th) {
+                    m_logger.info("Caught an unexpected Exception");
+                    AcsJUnknownEx ex = new AcsJUnknownEx(th);
+                    ex.log(m_logger);
+                    fail("No exception should be thrown");
+            }
+            assertEquals(0 , comp.value.type );
+            assertEquals(0 , comp.value.code );
+        }
 	
 	///////////////////////////////////////////////////////////////
 	

@@ -183,7 +183,7 @@ public class ErrorComponentImpl extends ComponentImplBase implements ErrorCompon
          */
         public void outCompletion(alma.ACSErr.CompletionHolder comp){
 
-            comp.value=(new GenericErrorAcsJCompletion()).toCorbaCompletion();
+            comp.value=(new ACSErrOKAcsJCompletion()).toCorbaCompletion();
         }	
 	///////////////////////////////////////////////////////////////////////
 	
