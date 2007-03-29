@@ -21,7 +21,7 @@
 *
 *
 *
-* "@(#) $Id: acsexmplErrorComponentImpl.cpp,v 1.8 2007/03/29 06:53:54 nbarriga Exp $"
+* "@(#) $Id: acsexmplErrorComponentImpl.cpp,v 1.9 2007/03/29 12:35:38 nbarriga Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -34,7 +34,7 @@
 #include <ACSErrTypeOK.h>
 #include <iostream>
 
-ACE_RCSID(acsexmpl, acsexmplErrorComponentImpl, "$Id: acsexmplErrorComponentImpl.cpp,v 1.8 2007/03/29 06:53:54 nbarriga Exp $")
+ACE_RCSID(acsexmpl, acsexmplErrorComponentImpl, "$Id: acsexmplErrorComponentImpl.cpp,v 1.9 2007/03/29 12:35:38 nbarriga Exp $")
 
 /* ----------------------------------------------------------------*/
 ErrorComponent::ErrorComponent( 
@@ -63,7 +63,7 @@ ErrorComponent::displayMessage ()
 /* ----------------------------------------------------------------*/
 void 
 ErrorComponent::badMethod(CORBA::Short depth) 
-    throw(CORBA::SystemException, ACSErrTypeCommon::GenericErrorEx)
+    throw(CORBA::SystemException, ACSErrTypeCommon::GenericErrorEx, ACSErrTypeCommon::UnexpectedExceptionEx)
 {
         ACS_TRACE("::ErrorComponent::badMethod");
         if(depth>=1){
@@ -149,7 +149,7 @@ ACSErr::Completion *ErrorComponent::completionFromException(CORBA::Short depth)
 {
     ACS_TRACE("::ErrorComponent::completionFromException");
     // here we get LOCAL (C++) completion 
-    CompletionImpl *er = returnCompletion(depth);
+    CompletionImpl *er = createCompletion(depth);
 
     // returnCompletion() automatically deletes er
     //   NOTE: you can use returnCompletion() 
@@ -165,7 +165,7 @@ throw (CORBA::SystemException)
     ACS_TRACE("::ErrorComponent::completionOnStack");
 
     // here we get LOCAL (C++) completion 
-    CompletionImpl *comp = returnCompletion(depth);
+    CompletionImpl *comp = createCompletion(depth);
     
 
     // if comp does not contain error (=is error free) we return it 
@@ -212,7 +212,7 @@ void  ErrorComponent::exceptionFromCompletion(CORBA::Short depth)
         }    
 
 
-        CompletionImpl *comp = returnCompletion(depth>0?depth-1:0);
+        CompletionImpl *comp = createCompletion(depth>0?depth-1:0);
         ACS_DEBUG("ErrorComponent::exceptionFromCompletion","first step");
         // if comp does not conatin error (=is error free) we just return 
         // otherwise we create a new exception which takes the error trace from a completion comp.     
@@ -255,7 +255,7 @@ ACSErr::Completion *ErrorComponent::completionFromCompletion(CORBA::Short depth)
 
         }
         else{
-                comp = returnCompletion(depth>0?depth-1:0);
+                comp = createCompletion(depth>0?depth-1:0);
 
                 // if comp does not conatin error (=is error free) we return it 
                 // otherwise we create a new completion which takes the error trace from a completion comp.
@@ -282,9 +282,9 @@ ErrorComponent::outCompletion(ACSErr::Completion_out comp)
         //comp=new ACSErrTypeCommon::GenericErrorCompletion(__FILE__, __LINE__,"ErrorComponent::outCompletion");
 
 }
-CompletionImpl *ErrorComponent::returnCompletion(unsigned short depth)
+CompletionImpl *ErrorComponent::createCompletion(unsigned short depth)
 {
-   ACS_TRACE("::ErrorComponent::returnCompletion");
+   ACS_TRACE("::ErrorComponent::createCompletion");
    CompletionImpl *er;
 
     if( depth <= 0 )
@@ -299,7 +299,7 @@ CompletionImpl *ErrorComponent::returnCompletion(unsigned short depth)
             ACSErrTypeCommon::GenericErrorCompletion *erg =
                 new ACSErrTypeCommon::GenericErrorCompletion(
                                                      __FILE__, __LINE__,
-                                                     "ErrorComponent::returnCompletion");
+                                                     "ErrorComponent::createCompletion");
             erg->setErrorDesc("Building a Completion with an errorTrace");
             er = erg;
 	    }
@@ -310,7 +310,7 @@ CompletionImpl *ErrorComponent::returnCompletion(unsigned short depth)
 	    ACSErrTypeCommon::GenericErrorCompletion *erg = 
 		new ACSErrTypeCommon::GenericErrorCompletion(ex, 
 						     __FILE__, __LINE__, 
-						     "ErrorComponent::returnCompletion");
+						     "ErrorComponent::createCompletion");
 	    erg->setErrorDesc("Building a Completion with a previous errorTrace");
 	    er = erg;
 	    }
@@ -327,7 +327,7 @@ CompletionImpl *ErrorComponent::returnCompletion(unsigned short depth)
     // we are in local case so caller has to do the memory managment 
     // i.e. release the memory of CompletionImpl !
     return er;
-}//returnCompletion
+}//createCompletion
 
 
 /************

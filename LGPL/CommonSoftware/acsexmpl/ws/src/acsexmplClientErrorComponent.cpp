@@ -20,7 +20,7 @@
 *
 *
 *
-* "@(#) $Id: acsexmplClientErrorComponent.cpp,v 1.9 2007/02/26 11:55:58 nbarriga Exp $"
+* "@(#) $Id: acsexmplClientErrorComponent.cpp,v 1.10 2007/03/29 12:35:38 nbarriga Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -100,7 +100,7 @@ Each method in the class shows an example.
 #include <acsutilTimeStamp.h>
 #include <string.h>
 
-ACE_RCSID(acsexmpl, acsexmplErrorComponentClient, "$Id: acsexmplClientErrorComponent.cpp,v 1.9 2007/02/26 11:55:58 nbarriga Exp $")
+ACE_RCSID(acsexmpl, acsexmplErrorComponentClient, "$Id: acsexmplClientErrorComponent.cpp,v 1.10 2007/03/29 12:35:38 nbarriga Exp $")
 using namespace maci;
 
 /*******************************************************************************/
@@ -208,6 +208,13 @@ class ClientErrorComponent
      * </ul>
      */
     void testCompletionOnStack() throw(ACSErrTypeCommon::CouldntAccessComponentExImpl);
+
+
+   /**
+     * Example 7: Calls a method that returns a completion as an "out" parameter.
+     */
+    void testOutCompletion() throw(ACSErrTypeCommon::CouldntAccessComponentExImpl);
+
   private:
     SimpleClient &client_m;
     std::string   errorComponent_m;
@@ -734,7 +741,47 @@ void ClientErrorComponent::TestReceiveCorbaSystemException()
 	}
 
 }
+void 
+ClientErrorComponent::testOutCompletion() 
+    throw(ACSErrTypeCommon::CouldntAccessComponentExImpl)
+{
+    ACS_TRACE("ClientErrorComponent::testOutCompletion");
 
+    if (CORBA::is_nil(foo_m.in()) == true)
+        {
+        throw ACSErrTypeCommon::CouldntAccessComponentExImpl(
+                                   __FILE__, __LINE__,
+                                   "ClientErrorComponent::testCompletionFromCompletion");
+        }
+    try
+        {
+        ACSErr::Completion_var comp_var=0;
+
+        // OK Completion
+        ACS_SHORT_LOG((LM_INFO, "Example 8: outCompletion"));
+        foo_m->outCompletion(comp_var);
+        CompletionImpl compImpl(comp_var.in());
+        compImpl.log();
+
+        }
+    catch(CORBA::SystemException &ex)
+        {
+        // Map......
+        ACSErrTypeCommon::GenericErrorExImpl ex(
+                                   __FILE__, __LINE__,
+                                   "ClientErrorComponent::outCompletion");
+        ex.setErrorDesc("outCompletion has thrown a CORBA exception");
+        ex.log();
+        }
+    catch(...)
+        {
+        ACSErrTypeCommon::GenericErrorExImpl ex(__FILE__, __LINE__,
+                                                         "ClientErrorComponent::outCompletion");
+        ex.setErrorDesc("outCompletion has thrown an UNEXPECTED exception");
+        ex.log();
+        }
+    
+}
 /* @}*/
 /* @}*/
 
@@ -785,6 +832,8 @@ int main(int argc, char *argv[])
 	clientErrorComponent.testTypeException();
     	ACS_SHORT_LOG((LM_TRACE, "acsexmplClientErrorComponent::main, calling testCompletionOnStack()"));
 	clientErrorComponent.testCompletionOnStack();
+    	//ACS_SHORT_LOG((LM_TRACE, "acsexmplClientErrorComponent::main, calling testOutCompletion()"));
+	//clientErrorComponent.testOutCompletion();
 	}
     catch(ACSErr::ACSbaseExImpl ex)
 	{
