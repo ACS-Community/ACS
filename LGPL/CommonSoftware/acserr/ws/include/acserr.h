@@ -20,7 +20,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acserr.h,v 1.76 2006/11/29 16:17:47 bjeram Exp $"
+* "@(#) $Id: acserr.h,v 1.77 2007/03/30 09:18:00 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -532,6 +532,13 @@ class CompletionImpl : public CompletionInit
      */
     CompletionImpl(ACSErr::Completion* c, bool del=true);
 
+   /**
+     * Wrapper constructor for remote (CORBA) completions (#ACSErr::Completion) that is contained in a #Completion_var.
+     * @param c reference to #Completion_var
+     * #Completion from #Completion_var is copied, so after that the #Completion_var still contains the completion.
+     */
+    CompletionImpl(ACSErr::Completion_var& c);
+
     CompletionImpl (const ACSErr::Completion &c);
 
     /**
@@ -588,10 +595,18 @@ class CompletionImpl : public CompletionInit
     CompletionImpl& operator=(CompletionImpl&);
 
     /**
-     * assigment for remote (CORBA) completions.
+     * assignment for remote (CORBA) completions.
      * @param c pointer to the remote (CORBA) completion
+     * It takes over the memory managment of #Completion, so the Completion is deleted.
      */
     CompletionImpl& operator=(Completion* c);
+
+     /**
+     * assignment for remote (CORBA) completion that is contained in a #Completion_var.
+     * @param c pointer to the  #Completion_var.
+     * This assigment makes a copy of #Completion that is contained inside the #Completion_var, so after the #Completion_var still conatins #Completion.
+     */
+    CompletionImpl& operator=(Completion_var& c);
 
   protected:
     ErrorTraceHelper m_errorTraceHelper;

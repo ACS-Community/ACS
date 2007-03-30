@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acserr.cpp,v 1.85 2007/03/08 07:45:04 bjeram Exp $"
+* "@(#) $Id: acserr.cpp,v 1.86 2007/03/30 09:18:00 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -34,7 +34,7 @@
 #include <iomanip>
 #include "ace/UUID.h"
 
-static char *rcsId="@(#) $Id: acserr.cpp,v 1.85 2007/03/08 07:45:04 bjeram Exp $"; 
+static char *rcsId="@(#) $Id: acserr.cpp,v 1.86 2007/03/30 09:18:00 bjeram Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 
@@ -510,10 +510,20 @@ CompletionImpl::CompletionImpl (const ACSErr::Completion &c) :
 {}
 
 CompletionImpl::CompletionImpl(ACSErr::Completion* c, bool del) :
-	CompletionInit(*c), m_errorTraceHelper(previousError[0], previousError.length())
-	{ 
-	    if (del) delete c; 
+    CompletionInit(*c), m_errorTraceHelper(previousError[0], previousError.length())
+{ 
+    if (del) 
+	{
+	delete c;
+	c = 0;
 	}
+}
+
+CompletionImpl::CompletionImpl(ACSErr::Completion_var& c) :
+    CompletionInit(*c.ptr()), 
+    m_errorTraceHelper(previousError[0], previousError.length())
+{ 
+}
 
 void CompletionImpl::log(ACE_Log_Priority priorty)
 {
@@ -572,9 +582,31 @@ CompletionImpl::operator=(Completion* c)
 	printf("WARNING a NULL ACSErr completion can not be assigned to CompletionImpl: CompletionImpl::operator=(Completion* c)!!\n");
 	}
     delete c;
-  return *this;
-}
+    c = 0;
+    return *this;
+}//operator=(Completion* c)
 
+CompletionImpl&
+CompletionImpl::operator=(Completion_var& c) 
+{ 
+    if (c.ptr() != NULL )
+	{
+	type = c->type;;
+	code = c->code;
+	timeStamp = c->timeStamp;
+	previousError = c->previousError;
+	if (previousError.length()>0)
+	    {
+	    m_errorTraceHelper = previousError[0];
+	    }//if
+	}
+    else
+	{
+	// TBD: improved
+	printf("WARNING a Completion_var that contains NULL ACSErr completion can not be assigned to CompletionImpl: CompletionImpl::operator=(Completion_var &c)!!\n");
+	}
+    return *this;
+}//operator=(Completion_var& c)
 
 /*
  * Exception Manager
