@@ -37,15 +37,17 @@
 1 - ----------T--:--:--.--- [GlobalLogger - ] Example 4b: typeException with depth 5
 1 - ----------T--:--:--.--- [GlobalLogger - ErrorComponent::buildErrorTrace] An error occurred, see ErrorDesc member (type=10, code=16),ErrorDesc=Bottom of error trace
 1 - ----------T--:--:--.--- [GlobalLogger - ErrorComponent::errorTrace] An error occurred, see ErrorDesc member (type=10, code=16),ErrorDesc=Generated multi level exception level
-1 - ----------T--:--:--.--- [GlobalLogger - ErrorComponent::badMethod] An error occurred, see ErrorDesc member (type=10, code=16),ErrorDesc=Generated multi level exception
 1 - ----------T--:--:--.--- [GlobalLogger - ErrorComponent::errorTrace] An error occurred, see ErrorDesc member (type=10, code=16),ErrorDesc=Generated multi level exception level
+1 - ----------T--:--:--.--- [GlobalLogger - ErrorComponent::badMethod] An error occurred, see ErrorDesc member (type=10, code=16),ErrorDesc=Generated multi level exception
 1 - ----------T--:--:--.--- [GlobalLogger - ErrorComponent::errorTrace] An error occurred, see ErrorDesc member (type=10, code=16),ErrorDesc=Generated multi level exception level
 1 - ----------T--:--:--.--- [GlobalLogger - ClientErrorComponent::testTypeException] An error occurred, see ErrorDesc member (type=10, code=16),ErrorDesc=typeException has thrown the expected exception
 1 - ----------T--:--:--.--- [GlobalLogger - ] Example 7a: completionOnStack with depth 0.
 1 - ----------T--:--:--.--- [GlobalLogger - ] Completion (type=0, code=0) does not contain any error
 1 - ----------T--:--:--.--- [GlobalLogger - ] Example 7b: completionOnStack with depth 3.
 1 - ----------T--:--:--.--- [GlobalLogger - ErrorComponent::buildErrorTrace] An error occurred, see ErrorDesc member (type=10, code=16),ErrorDesc=Bottom of error trace
-1 - ----------T--:--:--.--- [GlobalLogger - ErrorComponent::errorTrace] An error occurred, see ErrorDesc member (type=10, code=16),ErrorDesc=Generated multi level exception level
 1 - ----------T--:--:--.--- [GlobalLogger - ErrorComponent::completionOnStack] An error occurred, see ErrorDesc member (type=10, code=16),ErrorDesc=Put an error trace in completionOnStack
 1 - ----------T--:--:--.--- [GlobalLogger - ErrorComponent::createCompletion] An error occurred, see ErrorDesc member (type=10, code=16),ErrorDesc=Building a Completion with a previous errorTrace
+1 - ----------T--:--:--.--- [GlobalLogger - ErrorComponent::errorTrace] An error occurred, see ErrorDesc member (type=10, code=16),ErrorDesc=Generated multi level exception level
+1 - ----------T--:--:--.--- [GlobalLogger - ] Example 8: outCompletion
+1 - ----------T--:--:--.--- [GlobalLogger - ] Completion (type=0, code=0) does not contain any error
 1 - All done!

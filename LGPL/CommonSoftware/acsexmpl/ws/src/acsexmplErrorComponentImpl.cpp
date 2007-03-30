@@ -21,7 +21,7 @@
 *
 *
 *
-* "@(#) $Id: acsexmplErrorComponentImpl.cpp,v 1.9 2007/03/29 12:35:38 nbarriga Exp $"
+* "@(#) $Id: acsexmplErrorComponentImpl.cpp,v 1.10 2007/03/30 13:43:48 nbarriga Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -34,7 +34,7 @@
 #include <ACSErrTypeOK.h>
 #include <iostream>
 
-ACE_RCSID(acsexmpl, acsexmplErrorComponentImpl, "$Id: acsexmplErrorComponentImpl.cpp,v 1.9 2007/03/29 12:35:38 nbarriga Exp $")
+ACE_RCSID(acsexmpl, acsexmplErrorComponentImpl, "$Id: acsexmplErrorComponentImpl.cpp,v 1.10 2007/03/30 13:43:48 nbarriga Exp $")
 
 /* ----------------------------------------------------------------*/
 ErrorComponent::ErrorComponent( 
@@ -278,7 +278,10 @@ ErrorComponent::outCompletion(ACSErr::Completion_out comp)
     throw(CORBA::SystemException)
 {
         ACS_TRACE("ErrorComponent::outCompletion");
-        comp=new ACSErrTypeOK::ACSErrOKCompletion; 
+        ACSErrTypeOK::ACSErrOKCompletion c;
+        comp = c.returnCompletion(false);
+    
+            //comp=new ACSErr::Completion();
         //comp=new ACSErrTypeCommon::GenericErrorCompletion(__FILE__, __LINE__,"ErrorComponent::outCompletion");
 
 }

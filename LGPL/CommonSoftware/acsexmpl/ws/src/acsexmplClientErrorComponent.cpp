@@ -20,7 +20,7 @@
 *
 *
 *
-* "@(#) $Id: acsexmplClientErrorComponent.cpp,v 1.10 2007/03/29 12:35:38 nbarriga Exp $"
+* "@(#) $Id: acsexmplClientErrorComponent.cpp,v 1.11 2007/03/30 13:43:48 nbarriga Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -100,7 +100,7 @@ Each method in the class shows an example.
 #include <acsutilTimeStamp.h>
 #include <string.h>
 
-ACE_RCSID(acsexmpl, acsexmplErrorComponentClient, "$Id: acsexmplClientErrorComponent.cpp,v 1.10 2007/03/29 12:35:38 nbarriga Exp $")
+ACE_RCSID(acsexmpl, acsexmplErrorComponentClient, "$Id: acsexmplClientErrorComponent.cpp,v 1.11 2007/03/30 13:43:48 nbarriga Exp $")
 using namespace maci;
 
 /*******************************************************************************/
@@ -755,23 +755,25 @@ ClientErrorComponent::testOutCompletion()
         }
     try
         {
-        ACSErr::Completion_var comp_var=0;
+        ACSErr::Completion_var comp_var;
 
         // OK Completion
         ACS_SHORT_LOG((LM_INFO, "Example 8: outCompletion"));
-        foo_m->outCompletion(comp_var);
+        foo_m->outCompletion(comp_var.out());
         CompletionImpl compImpl(comp_var.in());
         compImpl.log();
 
         }
     catch(CORBA::SystemException &ex)
         {
-        // Map......
-        ACSErrTypeCommon::GenericErrorExImpl ex(
+       ACSErrTypeCommon::CORBAProblemExImpl corbaProblemEx(
                                    __FILE__, __LINE__,
-                                   "ClientErrorComponent::outCompletion");
-        ex.setErrorDesc("outCompletion has thrown a CORBA exception");
-        ex.log();
+                                   "ClientErrorComponent::TestReceiveRemoteException");
+        corbaProblemEx.setMinor(ex.minor());
+        corbaProblemEx.setCompletionStatus(ex.completed());
+        corbaProblemEx.setInfo(ex._info().c_str());
+        corbaProblemEx.log();
+
         }
     catch(...)
         {
@@ -832,8 +834,8 @@ int main(int argc, char *argv[])
 	clientErrorComponent.testTypeException();
     	ACS_SHORT_LOG((LM_TRACE, "acsexmplClientErrorComponent::main, calling testCompletionOnStack()"));
 	clientErrorComponent.testCompletionOnStack();
-    	//ACS_SHORT_LOG((LM_TRACE, "acsexmplClientErrorComponent::main, calling testOutCompletion()"));
-	//clientErrorComponent.testOutCompletion();
+    	ACS_SHORT_LOG((LM_TRACE, "acsexmplClientErrorComponent::main, calling testOutCompletion()"));
+	clientErrorComponent.testOutCompletion();
 	}
     catch(ACSErr::ACSbaseExImpl ex)
 	{
