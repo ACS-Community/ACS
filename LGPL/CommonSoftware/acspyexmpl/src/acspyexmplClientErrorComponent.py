@@ -423,8 +423,7 @@ if __name__=="__main__":
         clientErrorComponent.testTypeException()
         clientErrorComponent.testCORBASystemException()
         clientErrorComponent.testCompletionFromCompletion() 
-        if clientErrorComponent.error_comp != "ERRORCOMP_CPP":
-            clientErrorComponent.testOutCompletion()
+        clientErrorComponent.testOutCompletion()
     except ACSError, ex:
         # We should never get here, because the methods in the example
         # should be all self contained and none of them should throw

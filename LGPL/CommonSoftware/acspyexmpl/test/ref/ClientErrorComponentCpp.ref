@@ -31,10 +31,10 @@
 1 - ----------T--:--:--.--- [cppContainer - maci::ContainerImpl::init] Connecting to the Archiving Channel.
 1 - ----------T--:--:--.--- [cppContainer - maci::ContainerImpl::init] Connecting to the Centralized Logger...
 1 - ----------T--:--:--.--- [cppContainer - maci::ContainerImpl::init] Connected to the Centralized Logger.
-1 - ----------T--:--:--.--- [cppContainer - maci::ContainerImpl::init] Set Naming Context to Logger.
 1 - ----------T--:--:--.--- [cppContainer - maci::ContainerImpl::init] Logging into the Manager...
-1 - ----------T--:--:--.--- [cppContainer - ContainerImpl::run] Container running...
+1 - ----------T--:--:--.--- [cppContainer - maci::ContainerImpl::init] Set Naming Context to Logger.
 1 - ----------T--:--:--.--- [cppContainer - maci::ContainerImpl::init] Logged into the Manager.
+1 - ----------T--:--:--.--- [cppContainer - ContainerImpl::run] Container running...
 1 - ----------T--:--:--.--- [cppContainer - maci::ContainerImpl::message] Message from manager received. Type: 20. Message: Startup statistics: 0 components queued to be activated.
 1 - ----------T--:--:--.--- [cppContainer - maci::ContainerImpl::message] Message from manager received. Type: 20. Message: Startup statistics: 0 of 0 components activated.
 2 - ----------T--:--:--.--- Python Client testCompletionFromCompletion - Completion Ok, without error trace
@@ -47,6 +47,8 @@
 2 - ----------T--:--:--.--- Python Client testExceptionFromCompletion - Example 3b: ExceptionFromCompletion with depth 3
 2 - ----------T--:--:--.--- Python Client testExceptionFromCompletion - OK: ACSErrTypeCommon.GenericErrorEx exception thrown
 2 - ----------T--:--:--.--- Python Client testExceptionFromCompletion - OK: No exception thrown
+2 - ----------T--:--:--.--- Python Client testOutCompletion - Completion Ok, without error trace
+2 - ----------T--:--:--.--- Python Client testOutCompletion - Example 8: outCompletion
 2 - ----------T--:--:--.--- Python Client TestReceiveRemoteCompletion - Completion Ok, without error trace
 2 - ----------T--:--:--.--- Python Client TestReceiveRemoteCompletion - Completion with error trace
 2 - ----------T--:--:--.--- Python Client TestReceiveRemoteCompletion - Example 2a: Calls a method that returns an OK completion.
@@ -134,14 +136,12 @@
 2 - 
 2 - 
 2 - 
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'acsexmplErrorComponentImpl'.
 2 -     ErrorTrace (TimeStamp=xxxx,
 2 -     ErrorTrace (TimeStamp=xxxx,
 2 -     ErrorTrace (TimeStamp=xxxx,
 2 -     ErrorTrace (TimeStamp=xxxx,
 2 -     ErrorTrace (TimeStamp=xxxx,
 2 -     ErrorTrace (TimeStamp=xxxx,
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Full path '/somepath/libacsexmplErrorComponentImpl.so'
 2 -                 File=xxx
 2 -                 File=xxx
 2 -                 File=xxx
@@ -297,6 +297,8 @@
 2 -                         Severity=Error,
 2 -                         Data: Name=ErrorDesc, Value=Bottom of error trace; )
 2 - 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'acsexmplErrorComponentImpl'.
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Full path '/somepath/libacsexmplErrorComponentImpl.so'
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loaded '/somepath/libacsexmplErrorComponentImpl.so'.
 1 - ----------T--:--:--.--- [GlobalLogger - ] Switched state of component ERRORCOMP_CPP: INITIALIZED -> OPERATIONAL
 1 - ----------T--:--:--.--- [GlobalLogger - ] Switched state of component ERRORCOMP_CPP: INITIALIZING -> INITIALIZED
