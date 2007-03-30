@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acserrTestClient.cpp,v 1.50 2007/03/08 07:45:35 bjeram Exp $"
+* "@(#) $Id: acserrTestClient.cpp,v 1.51 2007/03/30 09:18:28 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -28,7 +28,7 @@
 * rlemke   30/08/01  integrated into tat 
 */
 
-static char *rcsId="@(#) $Id: acserrTestClient.cpp,v 1.50 2007/03/08 07:45:35 bjeram Exp $"; 
+static char *rcsId="@(#) $Id: acserrTestClient.cpp,v 1.51 2007/03/30 09:18:28 bjeram Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include "acserrTestC.h"
@@ -93,7 +93,12 @@ int main(int argc, char *argv[])
       ACS_SHORT_LOG((LM_INFO, "Performing test1 (remote call)... (%d/%d)", i, iteration));
       ACSErr::ErrorTrace *corbaErrorTrace=0;
       ErrorTraceHelper *errorTrace=0;
-      CompletionImpl comp = test->test (depth, isErr);
+      // here is also test for converting Completion_var to CompletionImpl
+      CompletionImpl comp;
+      ACSErr::Completion_var tc = test->test (depth, isErr);
+
+      comp = tc;
+
 
       if (comp.isErrorFree())
       {
