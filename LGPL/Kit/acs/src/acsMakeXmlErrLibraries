@@ -3,7 +3,7 @@ if [ "`uname`" = "Linux" ]; then enable -n echo; fi
 #*******************************************************************************
 # E.S.O. - ALMA project
 #
-# "@(#) $Id: acsMakeXmlErrLibraries,v 1.23 2006/08/08 11:05:28 bjeram Exp $"
+# "@(#) $Id: acsMakeXmlErrLibraries,v 1.24 2007/04/02 09:16:53 nbarriga Exp $"
 #
 
 # the ugly solution taken here is really ugly: it requires one to maintain the list
@@ -20,7 +20,7 @@ MAKE_VXWORKS=$5
 DEBUG=$6
 
 IDL_D="../idl"
-FILE=/tmp/XmlErrGeneration_$USER_$$
+FILE=/tmp/XmlErrGeneration_$USER\_$$
 #
 # I cannot put the following variable under object since 
 # make do_idl cleans up ../object
