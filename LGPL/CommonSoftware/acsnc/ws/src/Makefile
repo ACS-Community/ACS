@@ -21,7 +21,7 @@
 # MA 02111-1307  USA
 #
 #*******************************************************************************
-# "@(#) $Id: Makefile,v 1.56 2006/07/19 16:57:28 dfugate Exp $"
+# "@(#) $Id: Makefile,v 1.57 2007/04/03 14:23:58 hsommer Exp $"
 #------------------------------------------------------------------------
 #
 # Makefile for acsnc/ws/src
@@ -78,6 +78,12 @@ USER_IDL  =
 # On-Line Database Files
 # ----------------------
 CDB_SCHEMAS = EventChannel
+
+#
+# Java Entity Classes generation on/off
+#
+XSDBIND = acsncSchemaBindings
+
 
 #>>>>> END OF standard rules
 
