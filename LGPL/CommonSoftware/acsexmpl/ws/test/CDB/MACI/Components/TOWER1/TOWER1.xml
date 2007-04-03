@@ -4,7 +4,7 @@
        xmlns:baci="urn:schemas-cosylab-com:BACI:1.0"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 
-       Name="TOWER_1"
+       Name="TOWER1"
        Code="acsexmplBuildingImpl"
        Type="IDL:alma/acsexmplBuilding/Building:1.0"
        Container="Container"
