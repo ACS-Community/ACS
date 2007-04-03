@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciContainerImpl.cpp,v 1.83 2007/03/25 13:33:02 msekoran Exp $"
+* "@(#) $Id: maciContainerImpl.cpp,v 1.84 2007/04/03 09:25:51 nbarriga Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -76,7 +76,7 @@
 #include <ACSAlarmSystemInterfaceFactory.h>
 #endif
 
-ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.83 2007/03/25 13:33:02 msekoran Exp $")
+ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.84 2007/04/03 09:25:51 nbarriga Exp $")
 
  using namespace maci;
  using namespace cdb;
@@ -1477,7 +1477,7 @@ ContainerImpl::initThread(const char * threadName)
     
     if (m_loggerProxy)
 	LoggingProxy::init(m_loggerProxy);
-    LoggingProxy::ProcessName(getContainer()->m_argv[0]);
+    LoggingProxy::ProcessName(getContainer()->name());
     LoggingProxy::ThreadName(threadName);
     
     if (threadName && ACE_OS::strlen(threadName))
