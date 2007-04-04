@@ -19,3 +19,4 @@ terminate called after throwing an instance of 'omni_thread_fatal'
 ^1 - [0-9A-Fa-f][0-9A-Fa-f] [0-9A-Fa-f][0-9A-Fa-f]
 ^1 - \[jacorb.poa\] INFO : Using server ID
 component ERRORCOMP_JAVA activated and initialized in
+^1 - ping received, container alive. Memory usage

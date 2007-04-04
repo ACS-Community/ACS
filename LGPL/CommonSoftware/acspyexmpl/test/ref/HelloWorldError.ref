@@ -18,7 +18,7 @@
 1 -                 Line=xxx
 1 -                 Routine=HelloWorld::badMethod,
 1 -                 Host=xxxx,
-1 -                 Process=xxxmaciContainer,
+1 -                 Process=xxxTestContainer,
 1 -                 Thread=ORBTask,
 1 -                 Type=10,
 1 -                 Code=3,
@@ -44,7 +44,7 @@
 1 -                 Line=xxx
 1 -                 Routine=HelloWorld::badMethod,
 1 -                 Host=xxxx,
-1 -                 Process=xxxmaciContainer,
+1 -                 Process=xxxTestContainer,
 1 -                 Thread=ORBTask,
 1 -                 Type=10,
 1 -                 Code=3,
