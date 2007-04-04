@@ -1,4 +1,4 @@
-# @(#) $Id: Container.py,v 1.25 2007/02/02 09:21:49 agrimstrup Exp $
+# @(#) $Id: Container.py,v 1.26 2007/04/04 20:22:02 agrimstrup Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -21,7 +21,7 @@
 # ALMA should be addressed as follows:
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: Container.py,v 1.25 2007/02/02 09:21:49 agrimstrup Exp $"
+# "@(#) $Id: Container.py,v 1.26 2007/04/04 20:22:02 agrimstrup Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -38,9 +38,10 @@ TODO LIST:
 - a ComponentLifecycleException has been defined in IDL now...
 '''
 
-__revision__ = "$Id: Container.py,v 1.25 2007/02/02 09:21:49 agrimstrup Exp $"
+__revision__ = "$Id: Container.py,v 1.26 2007/04/04 20:22:02 agrimstrup Exp $"
 
-
+#--Enable Searching Import-----------------------------------------------------
+import AcsutilPy.ACSImport
 #--REGULAR IMPORTS-------------------------------------------------------------
 from time      import sleep
 from signal    import signal, SIGINT
