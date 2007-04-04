@@ -25,7 +25,7 @@
 # No changes were made to Python during the preparation of this
 # module nor are any required to use it.
 #
-# "@(#) $Id: ACSImport.py,v 1.1 2007/02/21 10:59:42 agrimstrup Exp $"
+# "@(#) $Id: ACSImport.py,v 1.2 2007/04/04 19:44:31 agrimstrup Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -48,7 +48,7 @@ tree.
 
 """
 #------------------------------------------------------------------------------
-__revision__ = "$Id: ACSImport.py,v 1.1 2007/02/21 10:59:42 agrimstrup Exp $"
+__revision__ = "$Id: ACSImport.py,v 1.2 2007/04/04 19:44:31 agrimstrup Exp $"
 #--REGULAR IMPORTS-------------------------------------------------------------
 import sys
 import os
@@ -76,13 +76,16 @@ def searchingImport(name, globals=None, locals=None, fromlist=None):
     ImportError is thrown if the module is not found.
 
     """
-    parent = _determineParent(globals)
-    q, tail = _findHeadPackage(parent, name)
-    m = _loadTail(q, tail)
-    if not fromlist:
-        return q
-    if hasattr(m, "__path__"):
-        _ensureFromList(m, fromlist)
+    try:
+        m = _original_import(name, globals, locals, fromlist)
+    except ImportError:
+        parent = _determineParent(globals)
+        q, tail = _findHeadPackage(parent, name)
+        m = _loadTail(q, tail)
+        if not fromlist:
+            return q
+        if hasattr(m, "__path__"):
+            _ensureFromList(m, fromlist)
     return m
 
 def _determineParent(globals):
