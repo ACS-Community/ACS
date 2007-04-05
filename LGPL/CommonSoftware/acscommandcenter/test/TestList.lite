@@ -31,7 +31,9 @@
 PROLOGUE prologue
 
 commandcenterTest
-# msc 2006-07-17: need to repair this gui test, didn't manage in time yet
-acscommandcenterGUITest
+# msc 2007-04-05: was about to repair the qf-test, but the actual problem seems qf-test
+# isn't producing any output at all, like it's failing to run. as long as SE doesn't
+# fix this, i'll again disable this test - sorry.
+# acscommandcenterGUITest
 
 EPILOGUE epilogue
