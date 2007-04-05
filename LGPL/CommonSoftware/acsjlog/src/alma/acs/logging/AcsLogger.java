@@ -55,7 +55,9 @@ public class AcsLogger extends Logger implements LogConfigSubscriber {
 	/** the logger class, which must be known to unwind the stack trace. Will be this class unless we use delegation. */
     private Set<String> loggerClassNames = new HashSet<String>();
         
-	private String loggerName;
+    private String loggerName;
+    private String processName;
+    private String sourceObject;
 
     public AcsLogger(String name, String resourceBundleName, LogConfig logConfig) {
         super(name, resourceBundleName);
@@ -72,8 +74,21 @@ public class AcsLogger extends Logger implements LogConfigSubscriber {
      * @param loggerName
      */
     void setLoggerName(String loggerName) {
-    	this.loggerName = loggerName;
+            this.loggerName = loggerName;
     }
+    void setProcessName(String processName) {
+            this.processName = processName;
+    }
+    public String getProcessName(){
+            return this.processName;
+    }
+    void setSourceObject(String sourceObject) {
+            this.sourceObject = sourceObject;
+    }
+    public String getSourceObject(){
+            return this.sourceObject;
+    }
+
     
     /**
      * Logs the given <code>LogRecord</code>. 
@@ -130,6 +145,11 @@ public class AcsLogger extends Logger implements LogConfigSubscriber {
             
             String threadName = Thread.currentThread().getName();
             specialProperties.put(LogParameterUtil.PARAM_THREAD_NAME, threadName);
+
+            specialProperties.put(LogParameterUtil.PARAM_PROCESSNAME, this.processName);
+            specialProperties.put(LogParameterUtil.PARAM_SOURCEOBJECT, this.sourceObject);
+
+            
     
             // Get the stack trace
             StackTraceElement stack[] = (new Throwable()).getStackTrace();

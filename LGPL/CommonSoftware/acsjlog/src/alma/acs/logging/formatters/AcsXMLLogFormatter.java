@@ -30,6 +30,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.logging.Formatter;
 import java.util.logging.LogRecord;
+import java.util.logging.LogManager;
+
 
 import alma.acs.logging.ACSCoreLevel;
 import alma.acs.logging.AcsLogLevel;
@@ -37,6 +39,7 @@ import alma.acs.logging.ClientLogManager;
 import alma.acs.logging.LogParameterUtil;
 import alma.acs.util.XmlNormalizer;
 import alma.acs.logging.AcsLogRecord;
+import alma.acs.logging.AcsLogger;
 
 /**
  * @author rgeorgie
@@ -47,231 +50,240 @@ import alma.acs.logging.AcsLogRecord;
 public class AcsXMLLogFormatter extends Formatter implements ACSCoreLevel
 {
 
-	private static final SimpleDateFormat df = new SimpleDateFormat("yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'SSS");
+        private static final SimpleDateFormat df = new SimpleDateFormat("yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'SSS");
 
-	private static String localHostName;
-    
-    
-	/**
-	 * Constructs the XML log message that can be sent to the ACS logging service.
-	 * @see java.util.logging.Formatter#format(java.util.logging.LogRecord)
-	 */
-	public String format(LogRecord logRecord)
-	{
-		// log level 
-		AcsLogLevel acsLevel = AcsLogLevel.getNativeLevel(logRecord.getLevel());
-		if (acsLevel == null) {
-			return "";
-		}		
-		final int acsCoreLevel = acsLevel.getAcsLevel();
-		final String levelName = acsLevel.getEntryName();
+        private static String localHostName;
 
 
-		// get date
-		Date date = new Date(logRecord.getMillis());
-		String TimeStamp = df.format(date);
-		
-		LogParameterUtil logParamUtil = new LogParameterUtil(logRecord);
-
-		StringBuffer sb = new StringBuffer("");
-
-		sb.append("<");
-		sb.append(levelName);
-		sb.append(" ");
-
-		sb.append("TimeStamp=\"" + TimeStamp + "\" ");
-
-		String file = logRecord.getSourceClassName();
-		if (file == null)
-		{
-			if (acsCoreLevel == ACS_LEVEL_DEBUG)
-				sb.append("File=\"unknown\" ");
-		}
-		else
-			sb.append("File=\"" + file + "\"  ");
-
-		long line = logParamUtil.extractLongProperty(LogParameterUtil.PARAM_LINE, -1);
-		if (line < 0)
-		{
-			if (acsCoreLevel == ACS_LEVEL_TRACE || acsCoreLevel == ACS_LEVEL_DEBUG)
-				sb.append("Line=\"0\" ");
-		}
-		else
-			sb.append("Line=\"" + line + "\" ");
-
-		String Routine = logRecord.getSourceMethodName();
-		if (Routine == null)
-		{
-			if (acsCoreLevel == ACS_LEVEL_TRACE)
-				sb.append("Routine=\"unknown\" ");
-		}
-		else {
-			sb.append("Routine=\"" + maskAttribute(Routine) + "\" ");
-		}
-
-        // host name: may be different from local host if ErrorTrace gets logged
-        String hostName = logParamUtil.extractStringProperty(LogParameterUtil.PARAM_HOSTNAME, null);
-        if (hostName == null || hostName.length() == 0) {
-            hostName = this.getLocalHostName();
-        }
-		sb.append("Host=\"" + hostName + "\" ");
-
-		String process = logRecord.getLoggerName();
-		if (process != null)
-			sb.append("Process=\"LoggerName: " + process + "\" ");
+        /**
+         * Constructs the XML log message that can be sent to the ACS logging service.
+         * @see java.util.logging.Formatter#format(java.util.logging.LogRecord)
+         */
+        public String format(LogRecord logRecord)
+        {
+                // log level 
+                AcsLogLevel acsLevel = AcsLogLevel.getNativeLevel(logRecord.getLevel());
+                if (acsLevel == null) {
+                        return "";
+                }		
+                final int acsCoreLevel = acsLevel.getAcsLevel();
+                final String levelName = acsLevel.getEntryName();
 
 
-		// source object: the container name or component name
-		String sourceObject = ClientLogManager.stripKnownLoggerNamespacePrefix(logRecord.getLoggerName());
-		if (sourceObject != null) {
-			sb.append("SourceObject=\"" + sourceObject + "\" ");
-        }
-		// add thread ID, or name if given		
-		String threadName = logParamUtil.extractStringProperty(LogParameterUtil.PARAM_THREAD_NAME, null);
-		if (threadName != null && threadName.length() > 0)
-			sb.append("Thread=\"" + threadName + "\" ");
-		else if (logRecord.getThreadID() >= 0)
-			sb.append("Thread=\"" + logRecord.getThreadID() + "\" ");
+                // get date
+                Date date = new Date(logRecord.getMillis());
+                String TimeStamp = df.format(date);
 
-		// add context		
-		String context = logParamUtil.extractStringProperty("Context", null);
-		if (context != null)
-			sb.append("Context=\"" + context + "\" ");
+                LogParameterUtil logParamUtil = new LogParameterUtil(logRecord);
 
-		// add stack info
-		if (acsCoreLevel >= ACS_LEVEL_WARNING)
-		{
-			// add stack id
-			String stackId = logParamUtil.extractStringProperty(LogParameterUtil.PARAM_STACK_ID, null);
-			if (stackId == null)
-				sb.append("StackId=\"unknown\" ");
-			else
-				sb.append("StackId=\"" + stackId + "\" ");
+                StringBuffer sb = new StringBuffer("");
 
-			// add stack idlevel
-			long stackLevel = logParamUtil.extractLongProperty(LogParameterUtil.PARAM_STACK_LEVEL, -1);
-			if (stackLevel < 0)
-				sb.append("StackLevel=\"0\" ");
-			else
-				sb.append("StackLevel=\"" + stackLevel + "\" ");
-		}
+                sb.append("<");
+                sb.append(levelName);
+                sb.append(" ");
 
-		// add log id		
-		long logId = logRecord.getSequenceNumber();
-		if (logId >= 0)
-			sb.append("LogId=\"" + logId + "\" ");
+                sb.append("TimeStamp=\"" + TimeStamp + "\" ");
 
-		// add URI		
-		String uri = logParamUtil.extractStringProperty(LogParameterUtil.PARAM_URI, null);
-		if (uri != null)
-			sb.append("Uri=\"" + uri + "\" ");
+                String file = logRecord.getSourceClassName();
+                if (file == null)
+                {
+                        if (acsCoreLevel == ACS_LEVEL_DEBUG)
+                                sb.append("File=\"unknown\" ");
+                }
+                else
+                        sb.append("File=\"" + file + "\"  ");
 
-		// add priority
-		// to be written only different as entry priority		
-		long priority = logParamUtil.extractLongProperty(LogParameterUtil.PARAM_PRIORITY, acsCoreLevel);
-		if (priority != acsCoreLevel)
-			sb.append("Priority=\"" + priority + "\" ");
+                long line = logParamUtil.extractLongProperty(LogParameterUtil.PARAM_LINE, -1);
+                if (line < 0)
+                {
+                        if (acsCoreLevel == ACS_LEVEL_TRACE || acsCoreLevel == ACS_LEVEL_DEBUG)
+                                sb.append("Line=\"0\" ");
+                }
+                else
+                        sb.append("Line=\"" + line + "\" ");
+
+                String Routine = logRecord.getSourceMethodName();
+                if (Routine == null)
+                {
+                        if (acsCoreLevel == ACS_LEVEL_TRACE)
+                                sb.append("Routine=\"unknown\" ");
+                }
+                else {
+                        sb.append("Routine=\"" + maskAttribute(Routine) + "\" ");
+                }
+
+                // host name: may be different from local host if ErrorTrace gets logged
+                String hostName = logParamUtil.extractStringProperty(LogParameterUtil.PARAM_HOSTNAME, null);
+                if (hostName == null || hostName.length() == 0) {
+                        hostName = this.getLocalHostName();
+                }
+                sb.append("Host=\"" + hostName + "\" ");
+
+                String process = logParamUtil.extractStringProperty(LogParameterUtil.PARAM_PROCESSNAME, null);
+                if (process != null){
+                        sb.append("Process=\"" + process + "\" ");
+                }else{
+                        process = logRecord.getLoggerName();
+                        if (process != null){
+                                sb.append("Process=\"" + process + "\" ");
+                        }
+                }
+              String sourceObject = logParamUtil.extractStringProperty(LogParameterUtil.PARAM_SOURCEOBJECT, null);
+                if (sourceObject != null){
+                        sb.append("SourceObject=\"" + sourceObject + "\" ");
+                }else{
+                        sourceObject = ClientLogManager.stripKnownLoggerNamespacePrefix(logRecord.getLoggerName());
+                        if (sourceObject != null){
+                                sb.append("SourceObject=\"" + sourceObject + "\" ");
+                        }
+                }
+
+                // add thread ID, or name if given		
+                String threadName = logParamUtil.extractStringProperty(LogParameterUtil.PARAM_THREAD_NAME, null);
+                if (threadName != null && threadName.length() > 0)
+                        sb.append("Thread=\"" + threadName + "\" ");
+                else if (logRecord.getThreadID() >= 0)
+                        sb.append("Thread=\"" + logRecord.getThreadID() + "\" ");
+
+                // add context		
+                String context = logParamUtil.extractStringProperty("Context", null);
+                if (context != null)
+                        sb.append("Context=\"" + context + "\" ");
+
+                // add stack info
+                if (acsCoreLevel >= ACS_LEVEL_WARNING)
+                {
+                        // add stack id
+                        String stackId = logParamUtil.extractStringProperty(LogParameterUtil.PARAM_STACK_ID, null);
+                        if (stackId == null)
+                                sb.append("StackId=\"unknown\" ");
+                        else
+                                sb.append("StackId=\"" + stackId + "\" ");
+
+                        // add stack idlevel
+                        long stackLevel = logParamUtil.extractLongProperty(LogParameterUtil.PARAM_STACK_LEVEL, -1);
+                        if (stackLevel < 0)
+                                sb.append("StackLevel=\"0\" ");
+                        else
+                                sb.append("StackLevel=\"" + stackLevel + "\" ");
+                }
+
+                // add log id		
+                long logId = logRecord.getSequenceNumber();
+                if (logId >= 0)
+                        sb.append("LogId=\"" + logId + "\" ");
+
+                // add URI		
+                String uri = logParamUtil.extractStringProperty(LogParameterUtil.PARAM_URI, null);
+                if (uri != null)
+                        sb.append("Uri=\"" + uri + "\" ");
+
+                // add priority
+                // to be written only different as entry priority		
+                long priority = logParamUtil.extractLongProperty(LogParameterUtil.PARAM_PRIORITY, acsCoreLevel);
+                if (priority != acsCoreLevel)
+                        sb.append("Priority=\"" + priority + "\" ");
 
                 //add Audience, if applicable(for typeSafeLogs/Operator logs)
                 if(logRecord instanceof AcsLogRecord){
-                    String audience = ((AcsLogRecord)logRecord).getAudience();
-                    sb.append("Audience=\"" + audience + "\" ");
+                        String audience = ((AcsLogRecord)logRecord).getAudience();
+                        sb.append("Audience=\"" + audience + "\" ");
                 }
-		sb.setCharAt(sb.lastIndexOf("") - 1, '>');
+                sb.setCharAt(sb.lastIndexOf("") - 1, '>');
 
-		// the log message becomes the text in our XML record
-		if (logRecord.getMessage() != null)
-		{
-			sb.append(maskMessage(logRecord.getMessage()));
-		}
+                // the log message becomes the text in our XML record
+                if (logRecord.getMessage() != null)
+                {
+                        sb.append(maskMessage(logRecord.getMessage()));
+                }
 
 
-		// <Data> elements: logged exception or error trace, and log parameters
-		
-		try {
-			// logged exception
-			Throwable loggedThrowable = logRecord.getThrown();
-			if (loggedThrowable != null) {
-			    StringWriter exWriter = new StringWriter();
-			    loggedThrowable.printStackTrace(new PrintWriter(exWriter));
-			    sb.append("<Data Name=\"LoggedException\">" + maskMessage(exWriter.toString()) + "</Data>");
-			}
-			// log parameters (except for the special properties which were used already to set specific fields)
-			for (Object param : logParamUtil.getNonSpecialPropertiesMapParameters()) {
-				if (param instanceof Map) {
-					// any map that is not the special properties map we interpret as name-value pairs.
-					Map propertiesMap = (Map) param;
-					for (Object keyName : propertiesMap.keySet()) {
-						String value = maskEmptyDataContent(propertiesMap.get(keyName).toString());
-					    sb.append("<Data Name=\"" + keyName.toString() + "\">" + maskMessage(value) + "</Data>");
-					}					
-				}
-				else {
-					// a single parameter was logged, but we have to fit it into our name-value scheme using a fake name
-					String value = maskEmptyDataContent(param.toString());
-					sb.append("<Data Name=\"LoggedParameter\">" + maskMessage(value) + "</Data>");
-				}
-			}
-		}
-		catch (Exception e) {
-			// expected not to happen often at all, thus no try blocks inside every loop, so we may lose some <Data>
-			sb.append("<Data Name=\"DataConstructionError\">" + maskMessage(e.toString()) + "</Data>");
-		}		
-		
-		// end tag of XML record
-		sb.append("</" + levelName + ">");
+                // <Data> elements: logged exception or error trace, and log parameters
 
-		String Log = sb.toString();		
-//		System.err.println("Logging XML log entry " + Log);
-		return Log;
-	}
-	
-	
-	/**
-	 * Escapes characters in the log message which would make the surrounding XML invalid.
-	 * Embeds the message text in a <code>&lt;![CDATA[..]]&gt;</code> block.
-	 * @return the masked message
-	 */
-	private String maskMessage(String message) {
-	    String maskedMessage = "<![CDATA[" + message + "]]>";
-	    return maskedMessage;
-	}
+                try {
+                        // logged exception
+                        Throwable loggedThrowable = logRecord.getThrown();
+                        if (loggedThrowable != null) {
+                                StringWriter exWriter = new StringWriter();
+                                loggedThrowable.printStackTrace(new PrintWriter(exWriter));
+                                sb.append("<Data Name=\"LoggedException\">" + maskMessage(exWriter.toString()) + "</Data>");
+                        }
+                        // log parameters (except for the special properties which were used already to set specific fields)
+                        for (Object param : logParamUtil.getNonSpecialPropertiesMapParameters()) {
+                                if (param instanceof Map) {
+                                        // any map that is not the special properties map we interpret as name-value pairs.
+                                        Map propertiesMap = (Map) param;
+                                        for (Object keyName : propertiesMap.keySet()) {
+                                                String value = maskEmptyDataContent(propertiesMap.get(keyName).toString());
+                                                sb.append("<Data Name=\"" + keyName.toString() + "\">" + maskMessage(value) + "</Data>");
+                                        }					
+                                }
+                                else {
+                                        // a single parameter was logged, but we have to fit it into our name-value scheme using a fake name
+                                        String value = maskEmptyDataContent(param.toString());
+                                        sb.append("<Data Name=\"LoggedParameter\">" + maskMessage(value) + "</Data>");
+                                }
+                        }
+                }
+                catch (Exception e) {
+                        // expected not to happen often at all, thus no try blocks inside every loop, so we may lose some <Data>
+                        sb.append("<Data Name=\"DataConstructionError\">" + maskMessage(e.toString()) + "</Data>");
+                }		
 
-	/**
-	 * Escapes characters in a log record attribute which would make the surrounding XML invalid.
-	 * Since XML attributes can't use <code>&lt;![CDATA[..]]&gt;</code>, illegal characters in <code>attributeValue</code>
-	 * are replaced with the corresponding masked XML notation.
-	 * @return the masked atttribute value 
-	 * @see XmlNormalizer#normalize(java.lang.String)  
-	 */
-	private String maskAttribute(String attributeValue) {		 
-	    return XmlNormalizer.normalize(attributeValue);
-	}
+                // end tag of XML record
+                sb.append("</" + levelName + ">");
 
-	/**
-	 * If a Data element has empty content (resulting in <Data></Data>), 
-	 * then the xerces parser would throw an exception. 
-	 * As a workaround, we replace the empty string with "N/A". 
-	 */
-	private String maskEmptyDataContent(String content) {
-		if (content == null || content.length() == 0) {
-			return "N/A";
-		}
-		return content;
-	}
-    
-	/**
-	 * Method getHost. Returns the host on which the system is run.
-	 * @return String
-	 */
-	private String getLocalHostName() {
-        if (localHostName == null) {
-            try {
-                localHostName = InetAddress.getLocalHost().getHostName();
-            } catch (Exception e) {
-                localHostName = "localHost(unknown)";
-            }
+                String Log = sb.toString();		
+                //		System.err.println("Logging XML log entry " + Log);
+                return Log;
         }
-        return localHostName;
-    }
+
+
+        /**
+         * Escapes characters in the log message which would make the surrounding XML invalid.
+         * Embeds the message text in a <code>&lt;![CDATA[..]]&gt;</code> block.
+         * @return the masked message
+         */
+        private String maskMessage(String message) {
+                String maskedMessage = "<![CDATA[" + message + "]]>";
+                return maskedMessage;
+        }
+
+        /**
+         * Escapes characters in a log record attribute which would make the surrounding XML invalid.
+         * Since XML attributes can't use <code>&lt;![CDATA[..]]&gt;</code>, illegal characters in <code>attributeValue</code>
+         * are replaced with the corresponding masked XML notation.
+         * @return the masked atttribute value 
+         * @see XmlNormalizer#normalize(java.lang.String)  
+         */
+        private String maskAttribute(String attributeValue) {		 
+                return XmlNormalizer.normalize(attributeValue);
+        }
+
+        /**
+         * If a Data element has empty content (resulting in <Data></Data>), 
+         * then the xerces parser would throw an exception. 
+         * As a workaround, we replace the empty string with "N/A". 
+         */
+        private String maskEmptyDataContent(String content) {
+                if (content == null || content.length() == 0) {
+                        return "N/A";
+                }
+                return content;
+        }
+
+        /**
+         * Method getHost. Returns the host on which the system is run.
+         * @return String
+         */
+        private String getLocalHostName() {
+                if (localHostName == null) {
+                        try {
+                                localHostName = InetAddress.getLocalHost().getHostName();
+                        } catch (Exception e) {
+                                localHostName = "localHost(unknown)";
+                        }
+                }
+                return localHostName;
+        }
 }

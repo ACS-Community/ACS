@@ -265,7 +265,17 @@ public class ClientLogManager implements LogConfigSubscriber
             
                 logger.setParent(parentRemoteLogger);
                 logger.setUseParentHandlers(true);
-        
+                
+                logger.setProcessName(this.processName);
+                if (loggerNamespace.startsWith(NS_COMPONENT)) {
+                        logger.setSourceObject(loggerNamespace.substring(NS_COMPONENT.length()+1));
+                }
+                else if (loggerNamespace.startsWith(NS_CORBA)){
+                        logger.setSourceObject(loggerNamespace.substring(NS_CORBA.length()+1));
+                }
+                else {
+                        logger.setSourceObject(this.processName);
+                }
                 // currently all remote loggers should also log locally
                 addLocalHandler(logger);
                 
