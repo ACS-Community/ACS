@@ -30,6 +30,7 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.naming.*;
 import alma.acs.util.ACSPorts;
+import alma.cdbErrType.CDBRecordIsReadOnlyEx;
 
 class CDBLogic implements  TreeSelectionListener, TreeExpansionListener, KeyListener
 {
@@ -346,7 +347,11 @@ class CDBLogic implements  TreeSelectionListener, TreeExpansionListener, KeyList
 					Browser.getInstance().display("Invoking set_DAO for " + curl, true);
 					 wdal.set_DAO(curl, newXMLString);
 					ok = true;
-				 } catch (Exception e) {
+				 }catch (CDBRecordIsReadOnlyEx e){ 
+                    e.printStackTrace();
+                    Browser.getInstance().display("==> ERROR MESSAGE: The file or record is read only: " + e, true);
+
+                 }catch (Exception e) {
 					 e.printStackTrace();
 					 Browser.getInstance().display("==> ERROR MESSAGE: Exception while saving changes " + e, true);				
 				 } 
@@ -469,7 +474,11 @@ class CDBLogic implements  TreeSelectionListener, TreeExpansionListener, KeyList
 				Browser.getInstance().display("Invoking set_DAO for " + curl, true);
 				wdal.set_DAO(curl, sw.toString());
 			}
-		} catch (Exception e) {
+		}catch (CDBRecordIsReadOnlyEx e){
+            e.printStackTrace();
+            Browser.getInstance().display("==> ERROR MESSAGE: The file or record is read only: " + e, true);
+
+        } catch (Exception e) {
 			e.printStackTrace();
 			Browser.getInstance().display("==> ERROR MESSAGE: Exception while saving changes " + e, true);				
 		}
