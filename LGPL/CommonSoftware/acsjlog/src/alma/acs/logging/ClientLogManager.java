@@ -265,7 +265,7 @@ public class ClientLogManager implements LogConfigSubscriber
             
                 logger.setParent(parentRemoteLogger);
                 logger.setUseParentHandlers(true);
-                
+        
                 logger.setProcessName(this.processName);
                 if (loggerNamespace.startsWith(NS_COMPONENT)) {
                         logger.setSourceObject(loggerNamespace.substring(NS_COMPONENT.length()+1));
@@ -520,6 +520,11 @@ public class ClientLogManager implements LogConfigSubscriber
      * Takes the process name and overwrites previous names,
      * and updates all Loggers which are waiting to get their overly simple name enriched.
      * The new name will be the old name + @ + processName.
+     * <p>
+     * The update mechanism ensures that the process name will eventually be set also on loggers
+     * which were created before the process name was known, e.g. component logger created before container logger.
+     * @TODO check if we still need the process name appended to the logger name, now that we have a separate field for it in AcsLogger.
+     * 
      * @param name
      */
     private void setProcessName(String processName) {
@@ -528,6 +533,7 @@ public class ClientLogManager implements LogConfigSubscriber
 			for (Iterator<AcsLogger> iter = loggersNeedingProcessNameUpdate.iterator(); iter.hasNext();) {
 				AcsLogger logger = iter.next();
 				logger.setLoggerName(logger.getName() + "@" + processName);
+				logger.setProcessName(processName);
 			}
 		}
 	}
