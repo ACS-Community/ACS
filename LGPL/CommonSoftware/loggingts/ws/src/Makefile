@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.2 2007/03/22 08:50:53 nbarriga Exp $"
+# "@(#) $Id: Makefile,v 1.3 2007/04/10 12:23:58 hsommer Exp $"
 #
 # Makefile of ........
 #
@@ -121,7 +121,7 @@ USER_IDL =
 jjj_EXTRAS= 
 #
 # java sources in Jarfile on/off
-#DEBUG= on
+DEBUG=on
 #
 # ACS XmlIdl generation on/off
 #
