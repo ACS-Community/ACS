@@ -774,7 +774,6 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 	{
 		try {
 			LogEntryTable jt = getLogEntryTable();
-			//getDomTree().setRootNode(jt.getExtraInfo());
 			int selectedRow = jt.getSelectedRow();
 			// Check whether a row has been selected
 			// no row selected

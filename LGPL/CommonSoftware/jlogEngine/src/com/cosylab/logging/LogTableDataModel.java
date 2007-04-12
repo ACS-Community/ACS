@@ -276,15 +276,14 @@ public class LogTableDataModel extends AbstractTableModel implements Runnable
 		ILogEntry log = getVisibleLogEntry(row);
 		if (log==null) {
 			return null;
+		} 
+		if (column == 0) {
+			return new Integer(0);
+		} else if (column == 1) {
+			return new Boolean(log.hasDatas());
 		} else {
-			if (column == 0) {
-				return new Integer(0);
-			} else if (column==1) {
-					return new Boolean(log.hasDatas());
-			} else {
-				column=column-2;
-				return log.getField(column);
-			}
+			column = column - 2;
+			return log.getField(column);
 		}
 	}
 	
