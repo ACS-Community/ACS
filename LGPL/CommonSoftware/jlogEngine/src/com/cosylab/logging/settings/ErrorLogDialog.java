@@ -28,13 +28,13 @@ import javax.swing.text.PlainDocument;
 
 /**
  * The dialog to show the errors.
- * The dialog store till maxLength chars. If the log exceeds that number,
- * it is automatically flushed in ACS_TMP.
+ * The dialog stores errors till maxLength chars is reached. If the log exceeds that number,
+ * they are automatically flushed in ACS_TMP.
  * 
  * The dimension defaults to ERROR_LOG_DEFAULT_SIZE and can be changed seeting
  * the ERRORLOG_SIZE_PROP_NAME property.
  * 
- * The dialog is instantiated only one. Its content can be saved and cleared.
+ * The dialog is instantiated only once. Its content can be saved and cleared.
  * 
  * The dimension of the file on disk can grows too much.
  * 
@@ -48,7 +48,7 @@ public class ErrorLogDialog extends JDialog implements ActionListener {
 	private JTextArea logTA;
 	
 	// The document of the TextArea
-	PlainDocument document = new PlainDocument();
+	private PlainDocument document = new PlainDocument();
 	
 	// The button to close (hide) the dialog
 	private JButton closeBtn;
@@ -100,6 +100,7 @@ public class ErrorLogDialog extends JDialog implements ActionListener {
 		maxLength = Long.getLong(ERRORLOG_SIZE_PROP_NAME, ERROR_LOG_DEFAULT_SIZE);
 		System.out.println("Max length of in-memory error log "+maxLength);
 		setVisible(true);
+		toFront();
 	}
 	
 	/**
@@ -144,18 +145,9 @@ public class ErrorLogDialog extends JDialog implements ActionListener {
 		rationalizeButtons();
 	}
 	
-	/** 
-	 * Add a String to the error log and ensure the dialog is
-	 * visible
-	 * 
-	 * @param str The string to append in the TextArea
-	 */
-	public synchronized void appendText(String str) {
-		appendText(str,true);
-	}
-	
 	/**
 	 * Add a String to the error log and show/hide the dialog
+	 * if it is the first time an error is added
 	 * 
 	 * It calls SwingUtilities.invokeLater to avoid deadlocks
 	 * @see javax.swing.SwingUtilities
@@ -163,14 +155,12 @@ public class ErrorLogDialog extends JDialog implements ActionListener {
 	 * @param str The string to append in the TextArea
 	 * @param show Show/hide the dialog
 	 */
-	public synchronized void appendText(String str, boolean show) {
+	public synchronized void appendText(String str) {
 		class RunAsyncAppend implements Runnable {
 			private String theString;
-			private boolean visible;
 			
-			public RunAsyncAppend(String str, boolean vis) {
+			public RunAsyncAppend(String str) {
 				theString=str;
-				visible=vis;
 			}
 			
 			public void run() {
@@ -192,12 +182,11 @@ public class ErrorLogDialog extends JDialog implements ActionListener {
 					}
 					logTA.append(theString);
 				}
-				setVisible(visible);
 				rationalizeButtons();
 			}
 		};
 		
-		RunAsyncAppend runAppend = new RunAsyncAppend(str,show);
+		RunAsyncAppend runAppend = new RunAsyncAppend(str);
 		SwingUtilities.invokeLater(runAppend);
 	}
 	
