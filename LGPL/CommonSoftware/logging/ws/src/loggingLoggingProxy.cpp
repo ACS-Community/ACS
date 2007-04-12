@@ -19,7 +19,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: loggingLoggingProxy.cpp,v 1.28 2007/03/04 17:40:31 msekoran Exp $"
+* "@(#) $Id: loggingLoggingProxy.cpp,v 1.29 2007/04/12 12:18:36 msekoran Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -56,7 +56,7 @@
 #define LOG_NAME "Log"
 #define DEFAULT_LOG_FILE_NAME "acs_local_log"
 
-ACE_RCSID(logging, logging, "$Id: loggingLoggingProxy.cpp,v 1.28 2007/03/04 17:40:31 msekoran Exp $");
+ACE_RCSID(logging, logging, "$Id: loggingLoggingProxy.cpp,v 1.29 2007/04/12 12:18:36 msekoran Exp $");
 
 ACE_TCHAR* LoggingProxy::m_LogEntryTypeName[] =
 {
@@ -426,7 +426,9 @@ LoggingProxy::log(ACE_Log_Record &log_record)
     // transfer cache to centralized logger if necessary
     if (m_cache.size() >= m_cacheSize)
 	{
-	sendCache();
+		// avoid excessive signaling
+		if (m_cache.size() > 0)
+			sendCache();
 	}
     
     // clear TSS data
@@ -672,10 +674,12 @@ LoggingProxy::LoggingProxy(const unsigned long cacheSize,
 			   const unsigned long minCachePriority,
 			   const unsigned long maxCachePriority,
 			   DsLogAdmin::Log_ptr centralizedLogger,
-			   CosNaming::NamingContext_ptr namingContext) :
+			   CosNaming::NamingContext_ptr namingContext,
+			   const unsigned int autoFlushTimeoutSec) :
   m_cacheSize(cacheSize),
   m_minCachePriority(minCachePriority), 
   m_maxCachePriority(maxCachePriority),
+  m_autoFlushTimeoutSec(autoFlushTimeoutSec),
   m_logger(DsLogAdmin::Log::_duplicate(centralizedLogger)),
   m_noLogger(false),
   m_namingContext(CosNaming::NamingContext::_duplicate(namingContext)),
@@ -683,7 +687,11 @@ LoggingProxy::LoggingProxy(const unsigned long cacheSize,
   m_disconnectionTime(0),
   m_cacheDisabled(!cacheSize || maxCachePriority<minCachePriority),
   m_alreadyInformed(false),
-  m_stdio(-1)
+  m_stdio(-1),
+  m_doWorkCond(m_doWorkMutex),
+  m_sendingPending(false),
+  m_threadStart(2),
+  m_threadShutdown(2)
 {
   if (m_logger.ptr() == DsLogAdmin::Log::_nil())
     m_noLogger = true;
@@ -706,11 +714,14 @@ LoggingProxy::LoggingProxy(const unsigned long cacheSize,
   if (acsSyslog && *acsSyslog)
       m_syslog = acsSyslog;
 
+  // start one worker thread
+  ACE_Thread::spawn(static_cast<ACE_THR_FUNC>(LoggingProxy::worker), this);
+  m_threadStart.wait();
 }
 
 LoggingProxy::~LoggingProxy()
 {
-  flush();  //sendCache();
+  flush();  //sendCacheInternal();
 
   // unregister ACE callback
   done();
@@ -721,11 +732,15 @@ LoggingProxy::~LoggingProxy()
       delete tss;
       tss = 0;
       }
+  
+  // signal work thread to exit
+  m_doWorkCond.signal();
+  m_threadShutdown.wait();
 }
 
 void LoggingProxy::flush()
 {
-  sendCache();
+  sendCacheInternal();
   ACE_OS::fflush (stdout);
 }
 
@@ -844,13 +859,54 @@ LoggingProxy::reconnectToLogger()
     return false;
 }
 
+void*
+LoggingProxy::worker(void* arg)
+{
+	static_cast<LoggingProxy*>(arg)->svc();
+	return 0;
+}
 
-/// NO LOGGING IN THIS METHOD !!!
+int
+LoggingProxy::svc()
+{
+	// start barrier
+	m_threadStart.wait();
+
+	while (instances)
+	{
+		ACE_Time_Value timeout = ACE_OS::gettimeofday() + ACE_Time_Value(m_autoFlushTimeoutSec, 0);
+		m_doWorkCond.wait(&timeout);
+
+		if (instances)
+			sendCacheInternal();
+	}
+
+	// shutdown barrier
+	m_threadShutdown.wait();
+
+	return 0;
+}
+
 void
 LoggingProxy::sendCache()
 {
+	// signal work thread to get working...
+	m_doWorkCond.signal();
+}
+
+/// NO LOGGING IN THIS METHOD !!!
+void
+LoggingProxy::sendCacheInternal()
+{
+	if (m_sendingPending)
+		return;
+		
     ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex);
-    
+
+ 	// nothing to send check
+	if (instances == 0 || m_cache.size() == 0)
+		return;
+         
     // no centralized logger => output to other logging end-point
     if (m_noLogger && (reconnectToLogger()==false))
 	{
@@ -1023,7 +1079,11 @@ LoggingProxy::sendCache()
     // centralized logger is present, log cache to CL
     //
     
-    
+	// TAO uses leader/follower concurrency pattern that might cause
+	// that this thread will do other things and this can case deadlock
+	// this is avoided by using this flag
+	m_sendingPending = true;
+
     try
 	{
 	
@@ -1052,6 +1112,7 @@ LoggingProxy::sendCache()
 	//ACE_PRINT_EXCEPTION(ACE_ANY_EXCEPTION, "(LoggingProxy::sendCache) Unexpected exception occured while sending to the Centralized Logger");
 	}
     
+	 m_sendingPending = false;
 }
 
 /// NO LOGGING IN THIS METHOD !!!

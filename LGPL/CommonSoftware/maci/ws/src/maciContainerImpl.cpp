@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciContainerImpl.cpp,v 1.85 2007/04/03 15:32:11 nbarriga Exp $"
+* "@(#) $Id: maciContainerImpl.cpp,v 1.86 2007/04/12 12:19:38 msekoran Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -76,7 +76,7 @@
 #include <ACSAlarmSystemInterfaceFactory.h>
 #endif
 
-ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.85 2007/04/03 15:32:11 nbarriga Exp $")
+ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.86 2007/04/12 12:19:38 msekoran Exp $")
 
  using namespace maci;
  using namespace cdb;
@@ -641,7 +641,14 @@ ContainerImpl::init(int argc, char *argv[])
 	      maxCachePriority = ul;
 	}
     
-      m_loggerProxy = new LoggingProxy(cacheSize, minCachePriority, maxCachePriority, 0);
+      unsigned int flushPeriodSeconds = 10;
+      if (!m_dynamicContainer && m_database->GetField(m_dbPrefix, "LoggingConfig/flushPeriodSeconds", fld))
+	{
+	  if (fld.GetULong(ul))
+	      flushPeriodSeconds = static_cast<unsigned int>(ul);
+	}
+
+      m_loggerProxy = new LoggingProxy(cacheSize, minCachePriority, maxCachePriority, 0, 0, flushPeriodSeconds);
       if (!m_loggerProxy)
 	ACS_SHORT_LOG((LM_WARNING, "Unable to create logging system. Using 'stdout'..."));
 

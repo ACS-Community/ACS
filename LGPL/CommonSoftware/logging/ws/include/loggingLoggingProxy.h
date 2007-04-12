@@ -21,7 +21,7 @@
  *    License along with this library; if not, write to the Free Software
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: loggingLoggingProxy.h,v 1.19 2007/03/04 17:40:31 msekoran Exp $"
+ * "@(#) $Id: loggingLoggingProxy.h,v 1.20 2007/04/12 12:18:36 msekoran Exp $"
  *
  * who       when        what
  * --------  ----------  ----------------------------------------------
@@ -46,6 +46,8 @@
 
 #include <orbsvcs/orbsvcs/DsLogAdminC.h>
 #include <orbsvcs/CosNamingC.h>
+
+#include <ace/Synch.h>
 
 #include "loggingExport.h"
 #include "loggingLoggingTSSStorage.h"
@@ -104,7 +106,7 @@
  * </OL> 
  * @author <a href=mailto:matej.sekoranja@ijs.si>Matej Sekoranja</a>,
  * Jozef Stefan Institute, Slovenia<br>
- * @version "@(#) $Id: loggingLoggingProxy.h,v 1.19 2007/03/04 17:40:31 msekoran Exp $"
+ * @version "@(#) $Id: loggingLoggingProxy.h,v 1.20 2007/04/12 12:18:36 msekoran Exp $"
  */
 class logging_EXPORT LoggingProxy : public ACE_Log_Msg_Callback
 {
@@ -227,7 +229,8 @@ class logging_EXPORT LoggingProxy : public ACE_Log_Msg_Callback
 		 const unsigned long minCachePriority,
 		 const unsigned long maxCachePriority,
 		 DsLogAdmin::Log_ptr centralizedLogger = DsLogAdmin::Log::_nil(),
-		 CosNaming::NamingContext_ptr namingContext = CosNaming::NamingContext::_nil());
+		 CosNaming::NamingContext_ptr namingContext = CosNaming::NamingContext::_nil(),
+		 const unsigned int autoFlushTimeoutSec = 5);
     
     /// Destructor
     ~LoggingProxy();
@@ -296,6 +299,9 @@ class logging_EXPORT LoggingProxy : public ACE_Log_Msg_Callback
     
     /// Send local cache file to the centralized logger (Telecom log service)
     void sendCache();
+
+    /// Send local cache file to the centralized logger (Telecom log service)
+    void sendCacheInternal();
     
     /// Send given record to the centralized logger (Telecom log service)
     /// Return: true if successful, false on failure
@@ -323,6 +329,11 @@ class logging_EXPORT LoggingProxy : public ACE_Log_Msg_Callback
     /// If this is set to MinCachePriority 1, the local cache feature is disabled.
     ///
     unsigned long m_maxCachePriority;
+    
+    ///
+    /// Timeout in seconds to auto-flush (send cache).
+    ///
+    unsigned int m_autoFlushTimeoutSec;
     
     ///
     /// Reference to the persistent object which implements the Telecom Log
@@ -402,7 +413,26 @@ class logging_EXPORT LoggingProxy : public ACE_Log_Msg_Callback
     /// Set /clear flag counter - number of timest that
     /// global flags were set cleared
     static unsigned int setClrCount_m;
+    
+  /// The mutual exclusion mechanism which is required to use the <m_workWorkCond>.
+  ACE_SYNCH_MUTEX m_doWorkMutex;
 
+  /// Work condition
+  ACE_SYNCH_CONDITION m_doWorkCond;
+
+  /// Sending pending...
+  volatile bool m_sendingPending;
+  
+  /// Thread entry point (thread worker)
+  virtual int svc();
+  
+  /// Static thread worker (calls svc)
+  static void* worker(void*);
+  
+  /// Thread start barrier
+  ACE_Barrier m_threadStart;
+  /// Thread shutdown barrier
+  ACE_Barrier m_threadShutdown;
 };
 
 #endif /*!logging_logging_proxy_H*/
