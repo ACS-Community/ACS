@@ -6,3 +6,4 @@ SOURCE loggingTATEnvironment
 5 testGenericLogger     "testGenericLogger"
 6 testLoggable          "testLoggable"
 7 testACS_LOG_STDOUT    "testACS_LOG_STDOUT"
+8 testLoggingProxy      "testLoggingProxy"

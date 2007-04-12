@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.48 2007/01/02 16:12:07 bjeram Exp $"
+# "@(#) $Id: Makefile,v 1.49 2007/04/12 15:55:28 msekoran Exp $"
 #
 # Makefile of ........
 #
@@ -57,7 +57,7 @@ USER_LIB = -lACE -lTAO -lTAO_DsLogAdmin -lTAO_CosNaming -lTAO_IORTable -lTAO_Por
 # -----------------------------
 EXECUTABLES     = 	
 EXECUTABLES_L   = 	testLogger testNoLogging testMacros \
-			loggingXMLParserTest testGenericLogger testLoggable
+			loggingXMLParserTest testGenericLogger testLoggable testLoggingProxy
 
 loggingXMLParserTest_OBJECTS = loggingXMLParserTest
 loggingXMLParserTest_LIBS = logging
@@ -76,6 +76,9 @@ testNoLogging_LIBS    = logging
 
 testMacros_OBJECTS	= testMacros
 testMacros_LIBS		= logging
+
+testLoggingProxy_OBJECTS= testLoggingProxy
+testLoggingProxy_LIBS	= logging
 
 #
 # <brief description of xxxxx program>
