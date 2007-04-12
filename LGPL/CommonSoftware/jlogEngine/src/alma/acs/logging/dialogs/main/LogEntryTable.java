@@ -532,17 +532,18 @@ public class LogEntryTable extends javax.swing.JTable
 			int col = getColumnModel().getColumnIndexAtX(e.getX());
 
 			col = owner.convertColumnIndexToModel(col) - 2;
-			if (col == 0)
-			{
-				e.consume();
-			}
+			if (col<0) {
+				return;
+			} 
+			e.consume();
+			
 			getTableHeader().setEnabled(false);
+			System.out.println("\n\nCOL="+col);
 			if (col == owner.getSortIndex()) {
 				setSortOrder(!isSortAscending());
 			} else {
 				setSortIndex(col);
 			}
-			//super.mouseClicked(e);
 		}
 
 		public void mouseReleased(MouseEvent e)
@@ -1038,46 +1039,6 @@ public class LogEntryTable extends javax.swing.JTable
 			updateFilteredString();
 			ltdm.invalidateVisibleLogs();
 		}
-	}
-	
-	/**
-	 * Scroll the table in such a way the given row is visible
-	 * 
-	 * @param row The row to make visible
-	 */
-	public synchronized void showRow (int row) {
-		JScrollPane scrollPane = loggingClient.getLogTable();
-		//loggingClient.getScrollPaneTable().changeSelection(row,1,false,false);
-		//scrollRectToVisible(getCellRect(row,0,true));
-		/*JViewport vPort = scrollPane.getViewport();
-		
-		Rectangle visible = getVisibleRect();
-	    
-		Rectangle cellRect = getCellRect(row,0,true);
-		if (visible.contains(cellRect)) {
-			return;
-		}
-		
-		Rectangle dest = new Rectangle(visible);
-		
-		if (cellRect.y>visible.y+visible.height) {
-			dest.y = cellRect.y-visible.height-cellRect.height;
-			if (dest.y<0) {
-				dest.y=0;
-			}
-		}
-		
-		System.out.println("visible="+visible.toString()+
-				",  cell="+cellRect.toString());
-		System.out.println("row = "+row+", rowCount = "+getRowCount());
-		System.out.println("VP Viewport = "+vPort.getViewRect().toString());
-		System.out.println("VP ViewSize = "+vPort.getViewSize().toString()+", size="+vPort.getExtentSize().toString());
-		System.out.println("VP VisibleRect = "+vPort.getVisibleRect().toString());
-	    
-		if (!visible.contains(dest)) {
-			System.out.println("Scrolling from "+visible.toString()+" to "+dest.toString());
-			scrollPane.scrollRectToVisible(dest);
-		}*/
 	}
 	
 	/**
