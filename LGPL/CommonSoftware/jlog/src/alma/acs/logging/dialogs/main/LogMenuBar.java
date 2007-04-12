@@ -456,7 +456,7 @@ public class LogMenuBar extends JMenuBar {
 	
 	public JCheckBoxMenuItem getViewStatusAreaMenuItem() {
 		if (viewStatusAreaMI==null) {
-			viewStatusAreaMI = new JCheckBoxMenuItem("Status area",true);
+			viewStatusAreaMI = new JCheckBoxMenuItem("Status area",false);
 		}
 		return viewStatusAreaMI;
 	}
