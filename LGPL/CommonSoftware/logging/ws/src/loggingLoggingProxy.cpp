@@ -19,7 +19,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: loggingLoggingProxy.cpp,v 1.29 2007/04/12 12:18:36 msekoran Exp $"
+* "@(#) $Id: loggingLoggingProxy.cpp,v 1.30 2007/04/13 14:30:11 msekoran Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -56,7 +56,7 @@
 #define LOG_NAME "Log"
 #define DEFAULT_LOG_FILE_NAME "acs_local_log"
 
-ACE_RCSID(logging, logging, "$Id: loggingLoggingProxy.cpp,v 1.29 2007/04/12 12:18:36 msekoran Exp $");
+ACE_RCSID(logging, logging, "$Id: loggingLoggingProxy.cpp,v 1.30 2007/04/13 14:30:11 msekoran Exp $");
 
 ACE_TCHAR* LoggingProxy::m_LogEntryTypeName[] =
 {
@@ -690,7 +690,8 @@ LoggingProxy::LoggingProxy(const unsigned long cacheSize,
   m_stdio(-1),
   m_doWorkCond(m_doWorkMutex),
   m_sendingPending(false),
-  m_threadStart(2),
+  m_threadCreated(false),
+  //m_threadStart(2),
   m_threadShutdown(2)
 {
   if (m_logger.ptr() == DsLogAdmin::Log::_nil())
@@ -713,10 +714,6 @@ LoggingProxy::LoggingProxy(const unsigned long cacheSize,
   char *acsSyslog = getenv("ACS_LOG_SYSLOG");
   if (acsSyslog && *acsSyslog)
       m_syslog = acsSyslog;
-
-  // start one worker thread
-  ACE_Thread::spawn(static_cast<ACE_THR_FUNC>(LoggingProxy::worker), this);
-  m_threadStart.wait();
 }
 
 LoggingProxy::~LoggingProxy()
@@ -870,8 +867,11 @@ int
 LoggingProxy::svc()
 {
 	// start barrier
-	m_threadStart.wait();
+	//m_threadStart.wait();
 
+	// started on demand, so flush immediately
+	sendCacheInternal();
+	
 	while (instances)
 	{
 		ACE_Time_Value timeout = ACE_OS::gettimeofday() + ACE_Time_Value(m_autoFlushTimeoutSec, 0);
@@ -890,6 +890,23 @@ LoggingProxy::svc()
 void
 LoggingProxy::sendCache()
 {
+	if (!m_threadCreated)
+	{
+	  // start one worker thread
+	  // note this method is called when under m_mutex lock, so this is safe
+	  if (ACE_Thread::spawn(static_cast<ACE_THR_FUNC>(LoggingProxy::worker), this) != -1)
+	  {
+	  	m_threadCreated = true;
+  	    //m_threadStart.wait();
+	  }
+	  else
+	  {
+	  	// not thread available, do it in current thread
+	  	sendCacheInternal();
+	    return;
+	  }
+	}
+	
 	// signal work thread to get working...
 	m_doWorkCond.signal();
 }

@@ -21,7 +21,7 @@
  *    License along with this library; if not, write to the Free Software
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: loggingLoggingProxy.h,v 1.21 2007/04/13 11:27:10 msekoran Exp $"
+ * "@(#) $Id: loggingLoggingProxy.h,v 1.22 2007/04/13 14:30:11 msekoran Exp $"
  *
  * who       when        what
  * --------  ----------  ----------------------------------------------
@@ -106,7 +106,7 @@
  * </OL> 
  * @author <a href=mailto:matej.sekoranja@ijs.si>Matej Sekoranja</a>,
  * Jozef Stefan Institute, Slovenia<br>
- * @version "@(#) $Id: loggingLoggingProxy.h,v 1.21 2007/04/13 11:27:10 msekoran Exp $"
+ * @version "@(#) $Id: loggingLoggingProxy.h,v 1.22 2007/04/13 14:30:11 msekoran Exp $"
  */
 class logging_EXPORT LoggingProxy : public ACE_Log_Msg_Callback
 {
@@ -432,8 +432,10 @@ class logging_EXPORT LoggingProxy : public ACE_Log_Msg_Callback
   /// Static thread worker (calls svc)
   static void* worker(void*);
   
+  /// Thread creation flag.
+  volatile bool m_threadCreated;
   /// Thread start barrier
-  ACE_Barrier m_threadStart;
+  //ACE_Barrier m_threadStart;
   /// Thread shutdown barrier
   ACE_Barrier m_threadShutdown;
 };
