@@ -18,7 +18,7 @@
 
 /** 
  * @author  dfugate
- * @version $Id: ComplexBACIComponentImpl.java,v 1.1 2004/09/28 22:04:03 dfugate Exp $
+ * @version $Id: ComplexBACIComponentImpl.java,v 1.2 2007/04/13 02:51:27 sharring Exp $
  * @since    
  */
 
@@ -29,12 +29,7 @@
 
 package alma.perftest.ComplexBACIComponentImpl;
 
-import java.util.logging.Logger;
-
 import alma.perftest.BasePerfCompImpl.BasePerfCompImpl;
-import alma.acs.component.ComponentLifecycleException;
-import alma.acs.container.ContainerServices;
-
 import alma.perftest.ComplexBACIComponentOperations;
 
 

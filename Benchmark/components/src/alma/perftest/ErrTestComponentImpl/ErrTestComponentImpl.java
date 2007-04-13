@@ -18,7 +18,7 @@
 
 /** 
  * @author  dfugate
- * @version $Id: ErrTestComponentImpl.java,v 1.2 2007/03/20 17:55:42 sharring Exp $
+ * @version $Id: ErrTestComponentImpl.java,v 1.3 2007/04/13 02:51:27 sharring Exp $
  * @since    
  */
 
@@ -29,14 +29,8 @@
 
 package alma.perftest.ErrTestComponentImpl;
 
-import java.util.logging.Logger;
-
 import alma.perftest.BasePerfCompImpl.BasePerfCompImpl;
-import alma.acs.component.ComponentLifecycleException;
-import alma.acs.container.ContainerServices;
-
 import alma.perftest.ErrTestComponentOperations;
-
 import alma.BenchmarkErrType.BenchmarkErr0Ex;
 import alma.BenchmarkErrType.wrappers.AcsJBenchmarkErr0Ex;
 

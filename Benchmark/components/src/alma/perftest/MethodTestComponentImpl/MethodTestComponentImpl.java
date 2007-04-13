@@ -18,7 +18,7 @@
 
 /** 
  * @author  dfugate
- * @version $Id: MethodTestComponentImpl.java,v 1.4 2006/05/12 20:39:56 dfugate Exp $
+ * @version $Id: MethodTestComponentImpl.java,v 1.5 2007/04/13 02:51:27 sharring Exp $
  * @since    
  */
 
@@ -29,14 +29,8 @@
 
 package alma.perftest.MethodTestComponentImpl;
 
-import java.util.logging.Logger;
-
 import alma.perftest.BasePerfCompImpl.BasePerfCompImpl;
-import alma.acs.component.ComponentLifecycleException;
-import alma.acs.container.ContainerServices;
-
 import alma.perftest.MethodTestComponentOperations;
-
 
 /**
  * 

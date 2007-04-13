@@ -2,6 +2,9 @@ package alma.perftest.ComplexBACIComponentImpl;
 
 import java.util.logging.Logger;
 
+import org.omg.PortableServer.Servant;
+
+import alma.ACS.ACSComponentOperations;
 import alma.acs.component.ComponentLifecycle;
 import alma.acs.container.ComponentHelper;
 
@@ -34,7 +37,7 @@ public class ComplexBACIComponentImplHelper extends ComponentHelper
 	 * @return Class
 	 * @see alma.acs.container.ComponentHelper#_getPOATieClass()
 	 */
-	protected Class _getPOATieClass()
+	protected Class<? extends Servant> _getPOATieClass()
 	{
 		return alma.perftest.ComplexBACIComponentPOATie.class;
 	}
@@ -44,7 +47,7 @@ public class ComplexBACIComponentImplHelper extends ComponentHelper
 	 * @return Class
 	 * @see alma.acs.container.ComponentHelper#getOperationsInterface()
 	 */
-	protected Class _getOperationsInterface()
+	protected Class<? extends ACSComponentOperations> _getOperationsInterface()
 	{
 		return alma.perftest.ComplexBACIComponentOperations.class;
 	}

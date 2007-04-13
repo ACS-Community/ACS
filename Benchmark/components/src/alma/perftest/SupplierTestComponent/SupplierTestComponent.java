@@ -18,7 +18,7 @@
 
 /** 
  * @author  dfugate
- * @version $Id: SupplierTestComponent.java,v 1.4 2004/10/21 18:40:38 dfugate Exp $
+ * @version $Id: SupplierTestComponent.java,v 1.5 2007/04/13 02:51:27 sharring Exp $
  * @since    
  */
 
@@ -29,15 +29,10 @@
 
 package alma.perftest.SupplierTestComponent;
 
-import java.util.logging.Logger;
-
 import alma.perftest.BasePerfCompImpl.BasePerfCompImpl;
 import alma.acs.component.ComponentLifecycleException;
 import alma.acs.container.ContainerServices;
 import alma.acs.nc.SimpleSupplier;
-
-import alma.perftest.SimpleBACIComponentOperations;
-
 
 /**
  * 

@@ -18,7 +18,7 @@
 
 /** 
  * @author  dfugate
- * @version $Id: BasePerfCompImpl.java,v 1.6 2005/05/20 21:40:35 dfugate Exp $
+ * @version $Id: BasePerfCompImpl.java,v 1.7 2007/04/13 02:51:27 sharring Exp $
  * @since    
  */
 
@@ -29,15 +29,11 @@
 
 package alma.perftest.BasePerfCompImpl;
 
-import java.util.logging.Logger;
-
 import alma.ACS.impl.CharacteristicComponentImpl;
 import alma.acs.component.ComponentLifecycleException;
 import alma.acs.container.ContainerServices;
 import alma.acs.time.Profiler;
-
 import alma.perftest.BasePerfCompOperations;
-
 
 /**
  * 
