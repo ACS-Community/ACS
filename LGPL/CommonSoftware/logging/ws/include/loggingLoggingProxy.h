@@ -21,7 +21,7 @@
  *    License along with this library; if not, write to the Free Software
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: loggingLoggingProxy.h,v 1.20 2007/04/12 12:18:36 msekoran Exp $"
+ * "@(#) $Id: loggingLoggingProxy.h,v 1.21 2007/04/13 11:27:10 msekoran Exp $"
  *
  * who       when        what
  * --------  ----------  ----------------------------------------------
@@ -106,7 +106,7 @@
  * </OL> 
  * @author <a href=mailto:matej.sekoranja@ijs.si>Matej Sekoranja</a>,
  * Jozef Stefan Institute, Slovenia<br>
- * @version "@(#) $Id: loggingLoggingProxy.h,v 1.20 2007/04/12 12:18:36 msekoran Exp $"
+ * @version "@(#) $Id: loggingLoggingProxy.h,v 1.21 2007/04/13 11:27:10 msekoran Exp $"
  */
 class logging_EXPORT LoggingProxy : public ACE_Log_Msg_Callback
 {
@@ -282,7 +282,10 @@ class logging_EXPORT LoggingProxy : public ACE_Log_Msg_Callback
  
    /// Returns true if logging is initialized in this thread
     static bool isInitThread();
-    
+   
+    /// For testing only (not tread-safe)
+    int getCacheLogCount() const { return m_cache.size(); }
+ 
   private:
     
     /// Get time in ISO8601 format in UTC (eg. 2000-12-31T08:12:21.322) - 24 chars (incl. \0)
