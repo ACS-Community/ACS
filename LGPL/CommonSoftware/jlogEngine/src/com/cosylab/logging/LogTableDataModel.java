@@ -116,7 +116,7 @@ public class LogTableDataModel extends AbstractTableModel implements Runnable
 					continue;
 				}
 				// Do not do anything if the application is paused
-				if (LoggingClient.getInstance().isPaused()) {
+				if (loggingClient.isPaused()) {
 					continue;
 				}
 				sz =allLogs.getSize();
@@ -184,6 +184,9 @@ public class LogTableDataModel extends AbstractTableModel implements Runnable
 	 * The level of the log to show in the table
 	 */
     private int logLevel;
+    
+    // The LoggingClient that owns this table model
+    private LoggingClient loggingClient=null;
     
 	// Contains references to the filters that are currently applied to logs.
 	// Actual filters are stored in filters.
@@ -309,8 +312,12 @@ public class LogTableDataModel extends AbstractTableModel implements Runnable
 	/**
 	 * LCLogTableDataModel constructor comment. Gets updated logs.
 	 */
-	public LogTableDataModel() throws Exception {
+	public LogTableDataModel(LoggingClient client) throws Exception {
 		super();
+		if (client==null) {
+			throw new IllegalArgumentException("Invalid null LoggingClient");
+		}
+		this.loggingClient=client;
 		try {
 			allLogs = new LogCache();
 		} catch (LogCacheException lce) {
@@ -319,7 +326,7 @@ public class LogTableDataModel extends AbstractTableModel implements Runnable
 			String msg="Unrecoverable error instantiating the cache:\n<I>"+lce.getMessage()+"</I>";
 			throw new Exception("Exception instantiating the cache: ",lce);
 		} 
-		visibleLogs = new VisibleLogsVector(allLogs,this);
+		visibleLogs = new VisibleLogsVector(allLogs,this,loggingClient);
 		logDeleter=new LogDeleter();
 		logDeleter.setPriority(Thread.MIN_PRIORITY);
 		logDeleter.start();
@@ -446,7 +453,7 @@ public class LogTableDataModel extends AbstractTableModel implements Runnable
 	}
 
 	public void loadFromURL() {
-		LoadURLDlg urlDlg = new LoadURLDlg("http://websqa.hq.eso.org/alma/snapshotRHE/ACS-Reports/TestCoverage-Linux/ACS/LGPL/CommonSoftware/jcont/test/tmp/all_logs.xml");
+		LoadURLDlg urlDlg = new LoadURLDlg("http://websqa.hq.eso.org/alma/snapshotRHE/ACS-Reports/TestCoverage-Linux/ACS/LGPL/CommonSoftware/jcont/test/tmp/all_logs.xml",loggingClient);
 		urlDlg.setVisible(true);
 		URL url = urlDlg.getURL();
 		if (url==null) {
@@ -462,8 +469,7 @@ public class LogTableDataModel extends AbstractTableModel implements Runnable
 			isSuspended = true;
 			clearAll();
 
-			getIOHelper().loadLogs(in, LoggingClient.getInstance(),
-				allLogs, true, 0);
+			getIOHelper().loadLogs(in, loggingClient, allLogs, true, 0);
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			JOptionPane.showInternalMessageDialog(null, "Exception reading "
@@ -483,7 +489,7 @@ public class LogTableDataModel extends AbstractTableModel implements Runnable
 	 */
 	public void loadFromFile(String fileName) {
 		if (fileName==null) {
-			CustomFileChooser fc = new CustomFileChooser(currentDir,"Load");
+			CustomFileChooser fc = new CustomFileChooser(currentDir,"Load",loggingClient);
 			File f = fc.getSelectedFile();
 			if (f!=null) {
 				try {
@@ -514,12 +520,7 @@ public class LogTableDataModel extends AbstractTableModel implements Runnable
 			System.err.println("File not found: "+fileName);
 			return;
 		}
-		getIOHelper().loadLogs(
-				br,
-				LoggingClient.getInstance(),
-				allLogs,
-				true,
-				len);
+		getIOHelper().loadLogs(br,loggingClient,allLogs,true,len);
 		
 	}
 
@@ -598,17 +599,16 @@ public class LogTableDataModel extends AbstractTableModel implements Runnable
 	 * Erases and rebuilds visible logs considering filters.
 	 */
 	public void run() {
-		LoggingClient logging=LoggingClient.getInstance();
 		// Store the status of the application (paused/unpaused) before this rebuilding
-		boolean logClientWasPaused=logging.isPaused();
-		logging.setEnabledGUIControls(false);
+		boolean logClientWasPaused=loggingClient.isPaused();
+		loggingClient.setEnabledGUIControls(false);
 		try {
-			logging.pause();
+			loggingClient.pause();
 		} catch (Exception e) {}
 		int key=allLogs.getFirstLog();
 		visibleLogs.clear();
 		visibleLogs.setRefreshInterval(3000);
-		logging.animateProgressBar("Regenerating",key,allLogs.getLastLog());
+		loggingClient.animateProgressBar("Regenerating",key,allLogs.getLastLog());
 		
 		try {
 			while (key <= allLogs.getLastLog()) {
@@ -622,7 +622,7 @@ public class LogTableDataModel extends AbstractTableModel implements Runnable
 					// It is not an error and the exception can be ignored
 				}
 				if (key % 50 == 0) {
-					logging.moveProgressBar(key);
+					loggingClient.moveProgressBar(key);
 				}
 				key++;
 			}
@@ -632,14 +632,14 @@ public class LogTableDataModel extends AbstractTableModel implements Runnable
 			System.out.println("Exiting");
 			JOptionPane.showMessageDialog(null,t.getMessage(),"Error rebuilding logs",JOptionPane.ERROR_MESSAGE);
 		}
-		logging.freezeProgressBar();
+		loggingClient.freezeProgressBar();
 		visibleLogs.setRefreshInterval(null);
-		logging.setEnabledGUIControls(true);
+		loggingClient.setEnabledGUIControls(true);
 		visibleLogs.setRefreshInterval(null);
 		// Upause the application if it was unpaused before this rebuilding
 		if (!logClientWasPaused) {
 			try {
-				LoggingClient.getInstance().resume();
+				loggingClient.resume();
 			} catch (Exception e) {}
 		}
 	}
@@ -709,7 +709,7 @@ public class LogTableDataModel extends AbstractTableModel implements Runnable
 	 */
 	private IOLogsHelper getIOHelper() {
 		if (ioHelper==null) {
-			ioHelper = new IOLogsHelper();
+			ioHelper = new IOLogsHelper(loggingClient);
 		}
 		return ioHelper;
 	}

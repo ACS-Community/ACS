@@ -53,11 +53,18 @@ public class LoadSwitchesPanel extends JPanel {
 	 */
 	private JCheckBox disconnectCB = null;
 	
+	// The logging client
+	private LoggingClient loggingClient=null;
+	
 	/**
 	 * Constructor
 	 *
 	 */
-	public LoadSwitchesPanel() {
+	public LoadSwitchesPanel(LoggingClient client) {
+		if (client==null) {
+			throw new IllegalArgumentException("Invalid null LoggingClient!");
+		}
+		loggingClient=client;
 		initGUI();
 	}
 	
@@ -85,13 +92,13 @@ public class LoadSwitchesPanel extends JPanel {
 	public void checkControlsState() {
 		// Clear and disable the disconnectCB if the engine is already
 		// disconnected
-		if (!LoggingClient.getInstance().isConnected()) {
+		if (!loggingClient.isConnected()) {
 			disconnectCB.setSelected(false);
 			disconnectCB.setEnabled(false);
 		}
 		
 		// Clear and disable the clearLogsCB if there are no logs in the table
-		if (LoggingClient.getInstance().getLCModel1().totalLogNumber()==0) {
+		if (loggingClient.getLCModel1().totalLogNumber()==0) {
 			clearLogsCB.setEnabled(false);
 			clearLogsCB.setSelected(false);
 		}
@@ -119,12 +126,11 @@ public class LoadSwitchesPanel extends JPanel {
 	 *
 	 */
 	public void execute() {
-		LoggingClient client = LoggingClient.getInstance();
 		if (disconnectCB.isSelected()) {
-			client.connect(false);
+			loggingClient.connect(false);
 		}
 		if (clearLogsCB.isSelected()) {
-			client.getLCModel1().clearAll();
+			loggingClient.getLCModel1().clearAll();
 		}
 	}
 }

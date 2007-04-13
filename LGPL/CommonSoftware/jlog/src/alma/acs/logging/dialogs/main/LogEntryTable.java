@@ -601,18 +601,22 @@ public class LogEntryTable extends javax.swing.JTable
 	 * @param logClient The LoggingClient that owns this table
 	 * @param initialDateFormat The format to show the date (true means short)
 	 */
-	public LogEntryTable(LoggingClient logClient,boolean initialDateFormat) throws Exception
+	public LogEntryTable(LoggingClient client,boolean initialDateFormat) throws Exception
 	{
 		super();
+		if (client==null) {
+			throw new IllegalArgumentException("Invalid null LoggingClient!");
+		}
+		loggingClient=client;
 		// Set the table model
-		LogTableDataModel model= new LogTableDataModel();
+		LogTableDataModel model= new LogTableDataModel(client);
 		setModel(model);
 		
 		initialize(initialDateFormat);
 		// Create the object for the clipboard
 		textTransfer = new TextTransfer();
-		loggingClient=logClient;
 	}
+	
 	/**
 	 * Utility method to provide mapping of column index to data fields.
 	 * Creation date: (1/25/02 11:11:43 AM)

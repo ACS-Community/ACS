@@ -38,7 +38,7 @@ import com.cosylab.logging.LoggingClient;
  */
 public class LogFrame extends JFrame implements WindowListener { 
 	
-	private LoggingClient aLoggingClient;
+	private LoggingClient loggingClient;
 	
 	/**
 	 * Constructor
@@ -65,14 +65,14 @@ public class LogFrame extends JFrame implements WindowListener {
 		
 		//	Load the filters (if any)
 		if (filterFile!=null) {
-			aLoggingClient.getLCModel1().getFilters().loadFilters(filterFile,true,null);
+			loggingClient.getLCModel1().getFilters().loadFilters(filterFile,true,null);
 		}
 		// If there is no file name in the command line then connect
 		// the client to the CORBA notification channel
 		if (logFileName==null) {
-			aLoggingClient.connect();
+			loggingClient.connect();
 		} else {
-			aLoggingClient.getLCModel1().loadFromFile(logFileName);
+			loggingClient.getLCModel1().loadFromFile(logFileName);
 		}
 		
 		// Get events from the main window
@@ -89,13 +89,13 @@ public class LogFrame extends JFrame implements WindowListener {
 		setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         
         
-        aLoggingClient = LoggingClient.getInstance(); // build the singleton
-        if (aLoggingClient==null) {
+        loggingClient = new LoggingClient(); // build the singleton
+        if (loggingClient==null) {
         	throw new NullPointerException("The logging client is null");
         }
-        this.setRootPane(aLoggingClient);
+        this.setRootPane(loggingClient);
         // Enable the exit menu
-        aLoggingClient.hideExitMenu(false);
+        loggingClient.hideExitMenu(false);
 	}
 	
 	/**
@@ -227,7 +227,7 @@ public class LogFrame extends JFrame implements WindowListener {
 	 */
 	public void windowClosing(java.awt.event.WindowEvent e)	{
 		if (e.getSource() == this)
-			aLoggingClient.getEngine().disconnect();
+			loggingClient.getEngine().disconnect();
 	}
 
 	

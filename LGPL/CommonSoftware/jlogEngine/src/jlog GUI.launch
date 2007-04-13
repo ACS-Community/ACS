@@ -1,13 +1,13 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <launchConfiguration type="org.eclipse.jdt.launching.localJavaApplication">
-<booleanAttribute key="org.eclipse.debug.core.appendEnvironmentVariables" value="true"/>
-<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
-<listEntry value="/jlog"/>
-</listAttribute>
+<stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="alma.acs.logging.dialogs.main.LogFrame"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="jlog"/>
-<booleanAttribute key="org.eclipse.jdt.launching.STOP_IN_MAIN" value="true"/>
 <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
 <listEntry value="4"/>
 </listAttribute>
-<stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="com.cosylab.logging.LoggingClient"/>
+<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
+<listEntry value="/jlog"/>
+</listAttribute>
+<booleanAttribute key="org.eclipse.debug.core.appendEnvironmentVariables" value="true"/>
+<booleanAttribute key="org.eclipse.jdt.launching.STOP_IN_MAIN" value="true"/>
 </launchConfiguration>

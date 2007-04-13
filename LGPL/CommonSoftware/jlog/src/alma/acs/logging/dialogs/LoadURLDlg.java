@@ -38,6 +38,8 @@ import javax.swing.JPanel;
 import javax.swing.JRootPane;
 import javax.swing.JTextField;
 
+import com.cosylab.logging.LoggingClient;
+
 /**
  * The dialog to get the URL to load
  * 
@@ -60,13 +62,20 @@ public class LoadURLDlg extends JDialog implements ActionListener {
 	// until the user presses Load)
 	private URL url=null;
 	
+	// The logging client
+	private LoggingClient loggingClient=null;
+	
 	/** 
 	 * Constructor
 	 * 
 	 * @param initialValue The initial value of the URL
 	 */
-	public LoadURLDlg(String initialValue) {
+	public LoadURLDlg(String initialValue, LoggingClient client) {
 		super();
+		if (client==null) {
+			throw new IllegalArgumentException("Invalid null LoggingClient!");
+		}
+		loggingClient=client;
 		setTitle("Load from URL");
 		setModal(true);
 		initGUI();
@@ -82,7 +91,7 @@ public class LoadURLDlg extends JDialog implements ActionListener {
 		JRootPane mainPnl = this.getRootPane();
 		mainPnl.setLayout(new BorderLayout());
 		
-		guiSwitches = new LoadSwitchesPanel();
+		guiSwitches = new LoadSwitchesPanel(loggingClient);
 		mainPnl.add(guiSwitches,BorderLayout.NORTH);
 		
 		JPanel urlPnl = new JPanel(new FlowLayout());

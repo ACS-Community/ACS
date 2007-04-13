@@ -45,14 +45,21 @@ public class CustomFileChooser extends JDialog implements ActionListener {
 	// The switches to clear the logs and disconnect the engine from the NC
 	private LoadSwitchesPanel guiSwitches;
 	
+	// The logging client
+	private LoggingClient loggingClient=null;
+	
 	/**
 	 * Constructor: build and show the modal dialog
 	 *  
 	 * @param currentDir The dir whose content is shown at startup
 	 * @param title The title of the window (it appears also in the button)
 	 */
-	public CustomFileChooser(File currentDir,String title) {
+	public CustomFileChooser(File currentDir,String title, LoggingClient client) {
 		super();
+		if (client==null) {
+			throw new IllegalArgumentException("Invalid null LoggingClient!");
+		}
+		loggingClient=client;
 		setTitle(title);
 		setModal(true);
 		initialize(currentDir);
@@ -66,7 +73,7 @@ public class CustomFileChooser extends JDialog implements ActionListener {
 	private void initialize(File curDir) {
 		rootPane.setLayout(new BorderLayout());
 		
-		guiSwitches = new LoadSwitchesPanel();
+		guiSwitches = new LoadSwitchesPanel(loggingClient);
 		JPanel pnl = new JPanel(new BorderLayout());
 		viewHiddenFiles.addActionListener(this);
 		pnl.add(guiSwitches,BorderLayout.NORTH);

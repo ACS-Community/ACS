@@ -97,6 +97,9 @@ public class QueryDlg extends JDialog implements ActionListener {
 	// The parser
 	private ACSLogParser parser = null;
 	
+	// The logging client
+	private LoggingClient loggingClient=null;
+	
 	// The switches to clear the table and disconnect from the NC 
 	// before submitting a query
 	private LoadSwitchesPanel guiSwitches;
@@ -187,11 +190,15 @@ public class QueryDlg extends JDialog implements ActionListener {
 	/**
 	 * Empty constructor
 	 */
-	public QueryDlg(ArchiveConnectionManager archiveConn, ACSRemoteLogListener listener) {
+	public QueryDlg(ArchiveConnectionManager archiveConn, ACSRemoteLogListener listener, LoggingClient client) {
 		super();
 		if (listener==null) {
 			throw new IllegalArgumentException("Invalid null listener!");
 		}
+		if (client==null) {
+			throw new IllegalArgumentException("Invalid null LoggingClient!");
+		}
+		loggingClient=client;
 		try
 		{
 			parser = new ACSLogParserDOM();
@@ -236,7 +243,7 @@ public class QueryDlg extends JDialog implements ActionListener {
 		// The actual time/date used to fill the time fields 
 		Calendar calendar = Calendar.getInstance();
 		
-		guiSwitches = new LoadSwitchesPanel();
+		guiSwitches = new LoadSwitchesPanel(loggingClient);
 		
 		JRootPane mainPnl = this.getRootPane();
 		mainPnl.setLayout(new BorderLayout());
@@ -405,7 +412,7 @@ public class QueryDlg extends JDialog implements ActionListener {
 			submitBtn.setEnabled(true);
 			return;
 		}
-		LoggingClient.getInstance().reportStatus("Submitting a query");
+		loggingClient.reportStatus("Submitting a query");
 		guiSwitches.execute(); // Clear the logs and disconnect from the NC
 		StringBuilder from=new StringBuilder(fromYY.getText());
 		from.append('-');
@@ -487,10 +494,10 @@ public class QueryDlg extends JDialog implements ActionListener {
 			t.printStackTrace(System.err);
 			JOptionPane.showMessageDialog(this,"Error executing the query:\n"+t.getMessage(),"Database error!",JOptionPane.ERROR_MESSAGE);
 			submitBtn.setEnabled(true);
-			LoggingClient.getInstance().reportStatus("Query terminated with error");
+			loggingClient.reportStatus("Query terminated with error");
 		}
 		if (logs!=null) {
-			LoggingClient.getInstance().reportStatus("Num. of logs read from DB: "+logs.size());
+			loggingClient.reportStatus("Num. of logs read from DB: "+logs.size());
 			LogsPublisher flusher = new LogsPublisher(logs,parser,submitBtn);
 			flusher.start();
 			logs=null;

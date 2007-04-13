@@ -158,7 +158,7 @@ public class IOLogsHelper extends Thread  {
 			// Bottom panel contains the checkbox to hide/show the logs
 			// and the abort button
 			JPanel bottomPanel = new JPanel(new BorderLayout());
-			boolean checked=!LoggingClient.getInstance().getLogEntryTable().isVisible();
+			boolean checked=!loggingClient.getLogEntryTable().isVisible();
 			fastCB = new JCheckBox("Fast IO (hide logs)",checked);
 			fastCB.addActionListener(this);
 			bottomPanel.add(fastCB,BorderLayout.NORTH);
@@ -226,7 +226,7 @@ public class IOLogsHelper extends Thread  {
 		 */
 		public void actionPerformed(ActionEvent evt) {
 			if (evt.getSource()==fastCB) {
-				LoggingClient.getInstance().getLogEntryTable().setVisible(
+				loggingClient.getLogEntryTable().setVisible(
 						!fastCB.isSelected());
 			} else if (evt.getSource()==abortBtn) {
 				abortRequested=true;
@@ -533,8 +533,12 @@ public class IOLogsHelper extends Thread  {
 	 * Build an IOCacheHelper object
 	 *
 	 */
-	public IOLogsHelper() {
+	public IOLogsHelper(LoggingClient client) {
 		super();
+		if (client==null) {
+			throw new IllegalArgumentException("Invalid null LoggingClient!");
+		}
+		loggingClient=client;
 		// Try to speed up (less responsive but seems good enough)
 		this.setPriority(Thread.MAX_PRIORITY);
 		start();
@@ -544,6 +548,9 @@ public class IOLogsHelper extends Thread  {
 	private LinkedList<IOAction> actions = new LinkedList<IOAction>();
 	
 	private ProgressDialog progressDialog;
+	
+	// The logging client
+	private LoggingClient loggingClient=null;
 	
 	/**
 	 * Load the logs from the given file in the Cache appending their
@@ -690,7 +697,7 @@ public class IOLogsHelper extends Thread  {
 		// Hide the table with the logs
 		// It reduces the access to the cache to redraw the logs 
 		// speeding up the loading
-		LoggingClient.getInstance().getLogEntryTable().setVisible(false);
+		loggingClient.getLogEntryTable().setVisible(false);
 		
 		// No progress bar because we don't know the length of this kind of file
 		if (showProgress) {
@@ -943,7 +950,7 @@ public class IOLogsHelper extends Thread  {
 	 *
 	 */
 	public void IOOperationTerminated() {
-		LoggingClient.getInstance().getLogEntryTable().setVisible(true);
+		loggingClient.getLogEntryTable().setVisible(true);
 		IOOperationInProgress=false;
 	}
 	

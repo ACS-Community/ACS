@@ -466,14 +466,21 @@ public class VisibleLogsVector extends Thread {
 	 */
 	private LogTableDataModel tableModel;
 	
+	// The logging client
+	private LoggingClient loggingClient=null;
+	
 	/**
 	 * Build a VisibleLogsVector object 
 	 * 
 	 * @param theCache The cache of all the logs
 	 * @param model The table model that owns this object
 	 */
-	public VisibleLogsVector(LogCache theCache, LogTableDataModel model) {
+	public VisibleLogsVector(LogCache theCache, LogTableDataModel model, LoggingClient client) {
 		super("VisibleLogsVector");
+		if (client==null) {
+			throw new IllegalArgumentException("Invalid null LoggingClient!");
+		}
+		loggingClient=client;
 		this.cache=theCache;
 		this.comparator = new VisibleLogsComparator();
 		this.comparator.setComparingParams(ILogEntry.FIELD_TIMESTAMP,false);
@@ -946,7 +953,7 @@ public class VisibleLogsVector extends Thread {
 	 * @param ascending
 	 */
 	private void sort(int field, boolean ascending) {
-		LoggingClient.getInstance().animateProgressBar("Sorting");
+		loggingClient.animateProgressBar("Sorting");
 		int prevField = comparator.getSortField();
 		comparator.setComparingParams(field,ascending);
 		// Do we have to update the vector?
@@ -960,7 +967,7 @@ public class VisibleLogsVector extends Thread {
 			}
 			tableModel.fireTableDataChanged();
 		}
-		LoggingClient.getInstance().freezeProgressBar();
+		loggingClient.freezeProgressBar();
 	}
 	
 	/**
@@ -989,7 +996,6 @@ public class VisibleLogsVector extends Thread {
 	 */
 	public void run() {
 		LogOperationRequest request = null;
-		LoggingClient logClient =LoggingClient.getInstance();
 		AddLogItem item = null;
 		int flushLimit=0;
 		while (true) {
@@ -1007,21 +1013,21 @@ public class VisibleLogsVector extends Thread {
 							return;
 				} else if (request.getType()==LogOperationRequest.SETORDER) {
 					// Store the status of the application (paused/unpaused) before this rebuilding
-					boolean logClientWasPaused=logClient.isPaused(); 
-					logClient.setEnabledGUIControls(false);
-					logClient.getLogEntryTable().getTableHeader().setEnabled(false);
+					boolean logClientWasPaused=loggingClient.isPaused(); 
+					loggingClient.setEnabledGUIControls(false);
+					loggingClient.getLogEntryTable().getTableHeader().setEnabled(false);
 					try {
-						logClient.pause();
+						loggingClient.pause();
 					} catch (Exception e) {}
 					sort(request.getOrderingField(),request.orderDirection());
-					logClient.getLogEntryTable().getTableHeader().setEnabled(true);
+					loggingClient.getLogEntryTable().getTableHeader().setEnabled(true);
 					if (!logClientWasPaused) {
 						try {
-							logClient.resume();
+							loggingClient.resume();
 						} catch (Exception e) {}
 					}
-					logClient.setEnabledGUIControls(true);
-					logClient.getLogEntryTable().getTableHeader().resizeAndRepaint();
+					loggingClient.setEnabledGUIControls(true);
+					loggingClient.getLogEntryTable().getTableHeader().resizeAndRepaint();
 				}
 			}
 			
