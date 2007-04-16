@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.27 2006/12/28 09:44:36 acaproni Exp $" 
+# "@(#) $Id: Makefile,v 1.28 2007/04/16 08:39:33 acaproni Exp $" 
 #
 # Makefile of lcTest for jlog.
 #
@@ -80,8 +80,7 @@ logClient_LIBS =
 # Scripts (public and local)
 # ----------------------------
 SCRIPTS         = 
-SCRIPTS_L       = 	jlogTest1 \
-					jlogLogEntryTest \
+SCRIPTS_L       =			jlogLogEntryTest \
 					jlogTestCache \
 					jlogTestDelete \
 					jlogTestIterator \
