@@ -147,7 +147,8 @@ module maci {
              * logger uses the default levels, see get_default_logLevels();       
              * otherwise the returned local and remote levels apply.
              */
-            LogLevels get_logLevels(in string logger_name);
+            LogLevels get_logLevels(in string logger_name)
+		raises (maciErrType::LoggerDoesNotExistEx);
        
             /**
              * Sets log levels for a particular named logger.
@@ -156,7 +157,8 @@ module maci {
              * otherwise it will use the supplied
              * local and remote levels. 
              */
-            void set_logLevels(in string logger_name, in LogLevels levels);
+            void set_logLevels(in string logger_name, in LogLevels levels)
+		raises (maciErrType::LoggerDoesNotExistEx);
        
             /**
              * Commands the container or manager to read in again the logging

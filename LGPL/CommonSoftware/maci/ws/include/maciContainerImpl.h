@@ -4,7 +4,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciContainerImpl.h,v 1.44 2007/03/04 17:42:47 msekoran Exp $"
+* "@(#) $Id: maciContainerImpl.h,v 1.45 2007/04/16 15:03:38 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -98,7 +98,7 @@ class LibraryManager;
  *
  * @author <a href=mailto:matej.sekoranja@ijs.si>Matej Sekoranja</a>,
  * Jozef Stefan Institute, Slovenia<br>
- * @version "@(#) $Id: maciContainerImpl.h,v 1.44 2007/03/04 17:42:47 msekoran Exp $"
+ * @version "@(#) $Id: maciContainerImpl.h,v 1.45 2007/04/16 15:03:38 msekoran Exp $"
  */
 
 class maci_EXPORT ContainerImpl :
@@ -436,10 +436,10 @@ public:
 	throw (CORBA::SystemException);
 
     virtual maci::LoggingConfigurable::LogLevels get_logLevels(const char*)
-      throw (CORBA::SystemException);
+      throw (CORBA::SystemException, maciErrType::LoggerDoesNotExistEx);
 
     virtual void set_logLevels(const char*, const maci::LoggingConfigurable::LogLevels&)
-	throw (CORBA::SystemException);
+	throw (CORBA::SystemException, maciErrType::LoggerDoesNotExistEx);
 
     virtual void refresh_logging_config()
 	throw (CORBA::SystemException);

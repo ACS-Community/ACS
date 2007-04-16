@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciContainerImpl.cpp,v 1.86 2007/04/12 12:19:38 msekoran Exp $"
+* "@(#) $Id: maciContainerImpl.cpp,v 1.87 2007/04/16 15:03:38 msekoran Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -76,7 +76,7 @@
 #include <ACSAlarmSystemInterfaceFactory.h>
 #endif
 
-ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.86 2007/04/12 12:19:38 msekoran Exp $")
+ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.87 2007/04/16 15:03:38 msekoran Exp $")
 
  using namespace maci;
  using namespace cdb;
@@ -2575,7 +2575,7 @@ maci::stringSeq* ContainerImpl::get_logger_names()
 
 
 maci::LoggingConfigurable::LogLevels ContainerImpl::get_logLevels(const char* loggerName)
-      throw (CORBA::SystemException)
+      throw (CORBA::SystemException, maciErrType::LoggerDoesNotExistEx)
 {
 	ACS_TRACE("maci::ContainerImpl::get_logLevels");
 
@@ -2584,19 +2584,31 @@ maci::LoggingConfigurable::LogLevels ContainerImpl::get_logLevels(const char* lo
 	else if (Logger::getGlobalLogger()->exists(loggerName))
 		return m_defaultLogLevels;
 	else
-		return m_defaultLogLevels;
-		//throw new CORBA::BAD_PARAM();
+	{
+		maciErrType::LoggerDoesNotExistExImpl ex(__FILE__, __LINE__,
+					"maci::ContainerImpl::get_logLevels");
+		ex.setLoggerName(loggerName);
+		ex.log(LM_DEBUG);
+		throw ex.getLoggerDoesNotExistEx();
+		//return m_defaultLogLevels;
+	}
 }
 
 
 void ContainerImpl::set_logLevels(const char* loggerName, const maci::LoggingConfigurable::LogLevels& logLevels)
-	throw (CORBA::SystemException)
+	throw (CORBA::SystemException, maciErrType::LoggerDoesNotExistEx)
 {
 	ACS_TRACE("maci::ContainerImpl::set_logLevels");
 
 	if (!Logger::getGlobalLogger()->exists(loggerName))
-		return;
-		//throw new CORBA::BAD_PARAM();
+	{
+		maciErrType::LoggerDoesNotExistExImpl ex(__FILE__, __LINE__,
+					"maci::ContainerImpl::set_logLevels");
+		ex.setLoggerName(loggerName);
+		ex.log(LM_DEBUG);
+		throw ex.getLoggerDoesNotExistEx();
+		//return;
+ 	}
 
 	m_logLevels[loggerName] = logLevels;
 	if (logLevels.useDefault)
