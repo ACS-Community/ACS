@@ -10,8 +10,11 @@ BulkDataCallback::BulkDataCallback()
     dim_m = 0;
     count_m = 0;
 
-    loop_m = 5;
-    waitPeriod_m.set(0L, 400000L);
+    //loop_m = 5;
+    loop_m = 1000;
+    //waitPeriod_m.set(0L, 400000L);
+    waitPeriod_m.set(0L, 100L); // set to 0.1 ms to improve Receiver performance
+                                // (similar to Distributor callback)
 
     frameCount_m = 0;
 
