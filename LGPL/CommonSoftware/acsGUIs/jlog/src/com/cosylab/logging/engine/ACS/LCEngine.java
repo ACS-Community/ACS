@@ -48,7 +48,7 @@ import com.cosylab.logging.engine.log.ILogEntry;
  * @see ACSLogConnectionListener
  *  
  */
-public class LCEngine implements Runnable {
+public class LCEngine {
 	/**
 	 * The connection is checked every CHECK_INTERVAL seconds
 	 */
@@ -58,6 +58,10 @@ public class LCEngine implements Runnable {
 	// checking for the connection (needed to understand if the
 	// connection has been lost or never happened)
 	private boolean wasConnected=false;
+	
+	// Signal the thread to terminate
+	private AccessChecker connCheckerThread=null;
+	private boolean terminateThread=false;
 	
 	private RemoteAccess remoteAccess = null;
 	
@@ -99,10 +103,16 @@ public class LCEngine implements Runnable {
 		 */
 		public AccessSetter() {
 			super("AccessSetter");
+			setDaemon(true);
 		}
 		
+		/**
+		 * Connect to the NC.
+		 * It starts the thread to check the status of the connection (LCEngine.run) 
+		 * if it is not already alive (this last case can happen if the connection has been lost)
+		 */
 		public void run() {
-			disconnect();
+			disconnectRA();
 			publishConnecting();
 			publishReport("Connecting to " + accessType + " remote access...");
 			try {
@@ -136,6 +146,68 @@ public class LCEngine implements Runnable {
 		}
 	}
 
+	/**
+	 * The thread to check the status of the connection
+	 * 
+	 * @author acaproni
+	 *
+	 */
+	private class AccessChecker extends Thread {
+		
+		/**
+		 * Constructor
+		 *
+		 */
+		public AccessChecker() {
+			super("AccessChecker");
+		}
+		
+		/**
+		 * The thread that 
+		 * 1- monitors the status of the connection
+		 * 2- reconnect if the autoReconnect option is activated
+		 * 
+		 * The thread is started when the connection is activated and terminated
+		 * when disconnects from the NC.
+		 * 
+		 */
+		public void run() {
+			int currentSec=0;
+			while (!terminateThread) {
+				// wait for CHECK_INTERVAL secs..
+				while (currentSec<CHECK_INTERVAL) {
+					try {
+						Thread.sleep(1000);
+						currentSec++;
+						if (terminateThread) {
+							return;
+						}
+					} catch (InterruptedException ie) {
+						continue;
+					}
+				}
+				
+				currentSec=0;
+				// Check the connection!
+				boolean connected = isConnected();
+				//publishConnected(connected);
+				if (wasConnected && !connected) {
+					publishReport("Connection lost");
+					wasConnected=false;
+					disconnectRA();
+					publishConnectionLost();
+					// Better otherwise it tries to reconnect every time
+					if (!autoReconnect) {
+						return; // Terminate the thread
+					}
+					
+				}
+				if (autoReconnect && !connected) {
+					connect();
+				}
+			}
+		}
+	}
 	/** accessType, orb and manager are used to connect to
 	 * the logging channel
 	 * 
@@ -155,7 +227,6 @@ public class LCEngine implements Runnable {
 	 *
 	 */
 	public LCEngine() {
-		initEngine();
 	}
 	
 	/**
@@ -165,17 +236,6 @@ public class LCEngine implements Runnable {
 	 */
 	public LCEngine(boolean autoReconn) {
 		autoReconnect=autoReconn;
-		initEngine();
-	}
-	
-	/**
-	 * Perfoem initial operation to init the Engine
-	 *
-	 */
-	private void initEngine() {
-		Thread thread = new Thread(this);
-		thread.setName("LCEngine");
-		thread.start();
 	}
 	
 	/**
@@ -185,6 +245,12 @@ public class LCEngine implements Runnable {
 	 */
 	public void connect() {
 		new AccessSetter().start();
+		if (connCheckerThread==null || !connCheckerThread.isAlive()) {
+			terminateThread=false;
+			connCheckerThread = new AccessChecker();
+			connCheckerThread.setName("LCEngine");
+			connCheckerThread.start();
+		} 
 	}
 	
 	/**
@@ -217,9 +283,30 @@ public class LCEngine implements Runnable {
 	/**
 	 * LCEngine starts an attempt to connect to the remote system.
 	 * Connection is handled in a separate Thread
+	 * 
 	 * @see LCEngine$AccessSetter
 	 */
 	public void disconnect() {
+		disconnectRA();
+		// Stop the thread to check the status of the connection
+		if (connCheckerThread!=null) {
+			terminateThread=true;
+			while (connCheckerThread!=null && connCheckerThread.isAlive()) {
+				try {
+					Thread.sleep(250);
+				} catch (InterruptedException ie) {
+					continue;
+				}
+			}
+			connCheckerThread=null;
+		}
+	}
+	
+	/**
+	 * Disconnect the remote access
+	 *
+	 */
+	private void disconnectRA() {
 		if (remoteAccess != null && remoteAccess.isInitialized()) {
 			try {
 				publishReport("Disconnecting from " + accessType + " remote access...");
@@ -228,21 +315,11 @@ public class LCEngine implements Runnable {
 				publishReport("Exception occurred when destroying " + accessType + " remote access.");
 				System.out.println("Exception in LCEngine$AccessDestroyer::run(): " + e);
 			}
-			publishReport("Disonnected from " + accessType + " remote access.");
-	//		System.out.println("Disonnected from " + accessType + " remote access.");
+			publishReport("Disconnected from " + accessType + " remote access.");
 		}
 		remoteAccess = null;
 		publishConnected(false);
 		LCEngine.this.wasConnected=false;
-	}
-	
-	/**
-	 * Insert the method's description here.
-	 * Creation date: (2/9/2002 1:29:32 PM)
-	 */
-	public void exit() {
-		disconnect();
-		System.exit(0);	
 	}
 	
 	/**
@@ -282,45 +359,8 @@ public class LCEngine implements Runnable {
 	public boolean isConnected() {
 		if (remoteAccess==null) {
 			return false;
-		} else {
-			return remoteAccess.isConnected();
-		}
-	}
-	
-	
-	/**
-	 * The thread that monitors the status of the connection
-	 */
-	public void run() {
-		int attempts = 0;
-		while (true) {
-			// wait for CHECK_INTERVAL secs..
-			try {
-				Thread.sleep(CHECK_INTERVAL*1000);
-				attempts=0;
-			} catch (InterruptedException ie) {
-				// If it not possible to sleep than it is better to stop 
-				// the thread after 5 attempts
-				System.err.println("Error in sleep: "+ie.getMessage());
-				ie.printStackTrace(System.err);
-				if (++attempts>5) {
-					break;
-				}
-			}
-			// Check the connection!
-			boolean connected = isConnected();
-			//publishConnected(connected);
-			if (wasConnected && !connected) {
-				publishReport("Connection lost");
-				wasConnected=false;
-				// Better otherwise it tries to reconnect every time
-				disconnect();
-				publishConnectionLost();
-			}
-			if (autoReconnect) {
-				connect();
-			}
-		}
+		} 
+		return remoteAccess.isConnected();
 	}
 	
 	/**
