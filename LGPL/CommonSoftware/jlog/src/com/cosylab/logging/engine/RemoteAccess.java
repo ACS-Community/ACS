@@ -38,4 +38,10 @@ public interface RemoteAccess {
 	public boolean isInitialized();
 	public boolean isConnected();
 	public void pause(boolean pause);
+	
+	/**
+	 * Close the threads and free all the resources
+	 * @param sync If it is true wait the termination of the threads before returning
+	 */
+	public void close(boolean sync);
 }
