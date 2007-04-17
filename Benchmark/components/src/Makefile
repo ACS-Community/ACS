@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.17 2005/05/20 21:41:03 dfugate Exp $"
+# "@(#) $Id: Makefile,v 1.18 2007/04/17 05:00:03 sharring Exp $"
 #
 # Makefile of ........
 #
@@ -85,15 +85,18 @@ INCLUDES        =  	IdlCompilationTimeImpl.h BasePerfCompImpl.h \
 			LogTestComponentImpl.h \
 			ErrTestComponentImpl.h \
 			SupplierTestComponentImpl.h \
-			componentsBulkReceiver.h componentsBulkSender.h 
+			componentsBulkReceiver.h componentsBulkSender.h LogStressImpl.h
 
 #
 # Libraries (public and local)
 # ----------------------------
 LIBRARIES       = 	componentsBulkReceiver componentsBulkSender \
 			MethodTestComponentImpl SimpleBACIComponentImpl ComplexBACIComponentImpl \
-			LogTestComponentImpl ErrTestComponentImpl SupplierTestComponentImpl 
+			LogTestComponentImpl ErrTestComponentImpl SupplierTestComponentImpl LogStressImpl
 LIBRARIES_L     =
+
+LogStressImpl_OBJECTS = LogStressImpl
+LogStressImpl_LIBS	= LogStressStubs
 
 componentsBulkReceiver_OBJECTS   = componentsBulkReceiver 
 componentsBulkReceiver_LIBS      =  bulkDataReceiverStubs bulkDataStubs bulkDataCallback ACSBulkDataError 
@@ -173,7 +176,7 @@ CDB_SCHEMAS =
 # 
 # IDL Files and flags
 # 
-IDL_FILES = perftest IdlCompilationTime perftestBD
+IDL_FILES = perftest IdlCompilationTime perftestBD LogStress
 IDL_TAO_FLAGS =
 USER_IDL = -I$(ACE_ROOT)/TAO/orbsvcs/orbsvcs/
 
