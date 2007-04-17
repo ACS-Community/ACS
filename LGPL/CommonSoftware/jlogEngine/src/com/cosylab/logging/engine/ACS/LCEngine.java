@@ -316,6 +316,9 @@ public class LCEngine {
 				System.out.println("Exception in LCEngine$AccessDestroyer::run(): " + e);
 			}
 			publishReport("Disconnected from " + accessType + " remote access.");
+			if (remoteAccess!=null) {
+				remoteAccess.close(false);
+			}
 		}
 		remoteAccess = null;
 		publishConnected(false);
