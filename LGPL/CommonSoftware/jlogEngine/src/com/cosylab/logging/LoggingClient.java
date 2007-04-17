@@ -700,7 +700,7 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 		try
 		{
 
-			getEngine().exit();
+			getEngine().disconnect();
 
 		}
 		catch (java.lang.Throwable ivjExc)
