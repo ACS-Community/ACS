@@ -86,10 +86,10 @@ public class LogFrame extends JFrame implements WindowListener {
 	 */
 	private void initialize() {
 		setTitle("LoggingClient");
-		setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+		
+		addWindowListener(this);
         
-        
-        loggingClient = new LoggingClient(); // build the singleton
+        loggingClient = new LoggingClient(this); // build the LoggingClient
         if (loggingClient==null) {
         	throw new NullPointerException("The logging client is null");
         }
@@ -226,8 +226,8 @@ public class LogFrame extends JFrame implements WindowListener {
 	 * @see WindowListener
 	 */
 	public void windowClosing(java.awt.event.WindowEvent e)	{
-		if (e.getSource() == this)
-			loggingClient.getEngine().disconnect();
+		loggingClient.close(false);
+		dispose();
 	}
 
 	
