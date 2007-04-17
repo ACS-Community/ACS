@@ -13,7 +13,7 @@ BulkDataDistributerCb::BulkDataDistributerCb()
     //loop_m = 5;
     loop_m = 1000;
     //waitPeriod_m.set(0L, 400000L);
-    waitPeriod_m.set(0L, 100L); // set to 0.1 ms to improve Distributor performance
+    waitPeriod_m.set(0L, 10L); // set to 0.01 ms to improve Distributor performance
 
     frameCount_m = 0;
 
