@@ -101,4 +101,6 @@ public class simulatorRemoteAccess extends Thread implements com.cosylab.logging
 	public void pause(boolean pause) {
 		paused=pause;
 	}
+	
+	public void close(boolean sync) {}
 }
