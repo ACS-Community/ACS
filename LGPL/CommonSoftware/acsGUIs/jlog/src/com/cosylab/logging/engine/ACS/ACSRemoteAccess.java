@@ -373,4 +373,12 @@ public final class ACSRemoteAccess implements RemoteAccess {
 	public void pause(boolean pause) {
 		acsSPS.setPaused(pause);
 	}
+	
+	/**
+	 * Close the threads and free all the resources
+	 * @param sync If it is true wait the termination of the threads before returning
+	 */
+	public void close(boolean sync) {
+		acsSPS.close(sync);
+	}
 }

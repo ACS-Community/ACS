@@ -79,6 +79,9 @@ public class LogTableDataModel extends AbstractTableModel implements Runnable
 		// The queue with the keys of the logs to delete
 		private LinkedBlockingQueue<Integer> logsToDelete = new LinkedBlockingQueue<Integer>();
 		
+		// Signal the thread to terminate
+		private volatile boolean terminateThread=false;
+		
 		/**
 		 * Constructor
 		 *
@@ -103,17 +106,40 @@ public class LogTableDataModel extends AbstractTableModel implements Runnable
 			System.out.println("Added "+key);
 		}
 		
+		/**
+		 * Terminate the thread
+		 * 
+		 * @param sync If it is true wait the termination of the thread before returning
+		 */
+		public void close(boolean sync) {
+			terminateThread=true;
+			if (sync) {
+				while (this.isAlive()) {
+					try {
+						Thread.sleep(250);
+					} catch (InterruptedException ie) {
+						continue;
+					}
+				}
+			}
+		}
+		
 		/** 
 		 * The thread to delete logs
 		 */
 		public void run() {
 			ArrayList<Integer> keysToDelete = new ArrayList<Integer>();
 			int sz;
-			while (true) {
-				try {
-					Thread.sleep(TIME_INTERVAL);
-				} catch (InterruptedException e) {
-					continue;
+			while (!terminateThread) {
+				for (int t=0; t<TIME_INTERVAL && !terminateThread;t ++) {
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e) {
+						continue;
+					}
+				}
+				if (terminateThread) {
+					return;
 				}
 				// Do not do anything if the application is paused
 				if (loggingClient.isPaused()) {
@@ -819,6 +845,20 @@ public class LogTableDataModel extends AbstractTableModel implements Runnable
 					long d =((java.util.Date)l.getField(ILogEntry.FIELD_TIMESTAMP)).getTime();
 				}
 			}
+		}
+	}
+	
+	/**
+	 * Closes all the threads and frees the resources
+	 * This is the last method to call before closing the application
+	 * @param sync If it is true wait the termination of the threads before returning
+	 */
+	public void close(boolean sync) {
+		if (logDeleter!=null) {
+			logDeleter.close(sync);
+		}
+		if (visibleLogs!=null) {
+			visibleLogs.close(sync);
 		}
 	}
 

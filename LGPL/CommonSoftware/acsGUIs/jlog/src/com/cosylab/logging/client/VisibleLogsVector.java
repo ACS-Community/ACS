@@ -9,6 +9,7 @@ import java.util.Date;
 
 import com.cosylab.logging.LogTableDataModel;
 
+import com.cosylab.logging.LogTableDataModel.LogDeleter;
 import com.cosylab.logging.client.cache.LogCache;
 import com.cosylab.logging.client.cache.LogCacheException;
 
@@ -53,6 +54,8 @@ public class VisibleLogsVector extends Thread {
 		 */
 		private int refreshInterv;
 		
+		private volatile boolean terminateRefresherThread=false;
+		
 		/**
 		 * Constructor
 		 *
@@ -62,6 +65,24 @@ public class VisibleLogsVector extends Thread {
 			refreshInterv=REFRESH_INTERVAL;
 			clear();
 			start();
+		}
+		
+		/**
+		 * Close the threads and free all the resources
+		 * @param sync If it is true wait the termination of the threads before returning
+		 */
+		public void close(boolean sync) {
+			// Terminate the VisibleLogsVector thread
+			terminateRefresherThread=true;
+			if (sync) {
+				while (isAlive()) {
+					try {
+						Thread.sleep(250);
+					} catch (InterruptedException ie) {
+						continue;
+					}
+				}
+			}
 		}
 		
 		/**
@@ -106,10 +127,13 @@ public class VisibleLogsVector extends Thread {
 		 * happened in the REFRESH_INTERVAL time.
 		 */
 		public void run() {
-			while (true) {
+			while (!terminateRefresherThread) {
 				try {
 					Thread.sleep(refreshInterv);
 				} catch (InterruptedException ie) {}
+				if (terminateRefresherThread) {
+					return;
+				}
 				if (min>=0 && max>=0) {
 					tableModel.fireTableRowsInserted(min,max);
 					min=max=-1;
@@ -420,6 +444,9 @@ public class VisibleLogsVector extends Thread {
 	
 	private NewLogGUIRefresher guiRefresher;
 	
+	// Signal the thread to terminate
+	private volatile boolean terminateThread=false;;
+	
 	/**
 	 * Usually new logs are directly added in the GUI.
 	 * They are cached if a long lasting async operation is in progress.
@@ -487,6 +514,7 @@ public class VisibleLogsVector extends Thread {
 		this.tableModel=model;
 		visibleLogs = new Vector<Integer>(256,32);
 		// Start the thread for async operations
+		terminateThread=false;
 		start();
 		// Instantiate and start the refresher
 		guiRefresher=new NewLogGUIRefresher();
@@ -998,7 +1026,7 @@ public class VisibleLogsVector extends Thread {
 		LogOperationRequest request = null;
 		AddLogItem item = null;
 		int flushLimit=0;
-		while (true) {
+		while (!terminateThread) {
 			synchronized (asyncOps) {
 				if (asyncOps.size()>0) {
 					// The request will be removed later to avoid a critical
@@ -1007,6 +1035,9 @@ public class VisibleLogsVector extends Thread {
 				} else {
 					request = null;
 				}
+			}
+			if (terminateThread) {
+				return;
 			}
 			if (request!=null) {
 				if (request.getType()==LogOperationRequest.TERMINATE) {
@@ -1092,5 +1123,31 @@ public class VisibleLogsVector extends Thread {
 		return visibleLogs.indexOf(entry);
 	}
 	
-	
+	/**
+	 * Close the threads and free all the resources
+	 * @param sync If it is true wait the termination of the threads before returning
+	 */
+	public void close(boolean sync) {
+		// Terminate the VisibleLogsVector thread
+		terminateThread=true;
+		synchronized (asyncOps) {
+			asyncOps.add(new LogOperationRequest(LogOperationRequest.TERMINATE));
+		}
+		synchronized(this) {
+			notifyAll();
+		}
+		if (sync) {
+			while (isAlive()) {
+				try {
+					Thread.sleep(250);
+				} catch (InterruptedException ie) {
+					continue;
+				}
+			}
+		}
+		// Terminate the refresher thread
+		if (guiRefresher!=null) {
+			guiRefresher.close(sync);
+		}
+	}
 }

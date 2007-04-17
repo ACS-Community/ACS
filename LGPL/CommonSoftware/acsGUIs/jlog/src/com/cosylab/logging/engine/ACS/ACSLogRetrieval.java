@@ -19,7 +19,7 @@
 
 /** 
  * @author  acaproni   
- * @version $Id: ACSLogRetrieval.java,v 1.13 2007/03/22 10:33:42 acaproni Exp $
+ * @version $Id: ACSLogRetrieval.java,v 1.14 2007/04/17 11:01:59 acaproni Exp $
  * @since    
  */
 
@@ -31,6 +31,7 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.Random;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.settings.ErrorLogDialog;
@@ -66,6 +67,12 @@ public class ACSLogRetrieval extends Thread {
 	// If it is true, the thread will not publish logs 
 	// to the listeners
 	private boolean paused=false;
+	
+	// Signal the thread to terminate
+	private volatile boolean terminateThread=false;
+	
+	// Remeber if the object is closed to avoid adding new logs
+	private volatile boolean closed=false;
 	
 	/**
 	 * The ending position of each log is stored in this queue
@@ -115,7 +122,7 @@ public class ACSLogRetrieval extends Thread {
 	 * @param XMLLogStr The XML string of the new log to add
 	 */
 	public void addLog(String XMLLogStr) {
-		if (rOutF==null) {
+		if (rOutF==null || closed) {
 			return;
 		}
 		long pos;
@@ -184,7 +191,7 @@ public class ACSLogRetrieval extends Thread {
 		// We assume that such delay exists if the number of logs in queue is 
 		// bigger then DELAY_NUMBER
 		boolean delay=false;
-		while (true) {
+		while (!terminateThread) {
 			//	Check if a delay has to be notifyed to the listeners
 			if (endingPositions.size()>ACSLogRetrieval.DELAY_NUMBER) {
 				if (!delay) {
@@ -203,14 +210,17 @@ public class ACSLogRetrieval extends Thread {
 				continue;
 			}
 			// Get from the queue the final position of the next log to read
-			long endPos;
+			Long endPos;
 			try {
-				endPos = endingPositions.take();
+				endPos = endingPositions.poll(250,TimeUnit.MILLISECONDS);
 			} catch (InterruptedException ie) {
 				continue;
 			}
-			
-			byte buffer[] = new byte[(int)endPos-(int)readCursor];
+			if (endPos==null) {
+				// Timeout i.e. no logs received
+				continue;
+			} 
+			byte buffer[] = new byte[endPos.intValue()-(int)readCursor];
 			synchronized (rOutF) {
 				try {
 					rOutF.seek(readCursor);
@@ -261,6 +271,24 @@ public class ACSLogRetrieval extends Thread {
 	 */
 	public void pause(boolean pause) {
 		paused=pause;
+	}
+	
+	/**
+	 * Close the threads and free all the resources
+	 * @param sync If it is true wait the termination of the threads before returning
+	 */
+	public void close(boolean sync) {
+		closed=true;
+		terminateThread=true;
+		if (sync) {
+			while (isAlive()) {
+				try {
+					Thread.sleep(250);
+				} catch (InterruptedException ie) {
+					continue;
+				}
+			}
+		}
 	}
 	
 }

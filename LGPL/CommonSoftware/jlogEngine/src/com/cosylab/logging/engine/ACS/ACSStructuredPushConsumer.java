@@ -22,6 +22,7 @@
 package com.cosylab.logging.engine.ACS;
 
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 import org.omg.CosNotification.StructuredEvent;
 import org.omg.CosNotifyChannelAdmin.ClientType;
@@ -44,12 +45,31 @@ public final class ACSStructuredPushConsumer extends StructuredPushConsumerPOA
 {
 	private class Dispatcher extends Thread
 	{
+		// Signal the thread to terminate
+		private volatile boolean terminateThread=false;
 		/**
 		 * Constructor 
 		 *
 		 */
 		public Dispatcher() {
 			super("Dispatcher");
+		}
+		
+		/**
+		 * Close the threads and free all the resources
+		 * @param sync If it is true wait the termination of the threads before returning
+		 */
+		public void close(boolean sync) {
+			terminateThread=true;
+			if (sync) {
+				while (isAlive()) {
+					try {
+						Thread.sleep(250);
+					} catch (InterruptedException ie) {
+						continue;
+					}
+				}
+			}
 		}
 		
 		/**
@@ -60,12 +80,16 @@ public final class ACSStructuredPushConsumer extends StructuredPushConsumerPOA
 		{
 			String log = null;
 			ILogEntry logEntry = null;
-			while (true) {
+			while (!terminateThread) {
 				try {
-					log = xmlLogs.take();
+					log = xmlLogs.poll(250,TimeUnit.MILLISECONDS);
 				} catch (InterruptedException ie) {
 					System.out.println("Exception while taking a log out of the queue: "+ie.getMessage());
 					ie.printStackTrace();
+					continue;
+				}
+				if (log==null) {
+					// No logs received before the timeout elapsed
 					continue;
 				}
 				if (engine.hasRawLogListeners()) {
@@ -117,7 +141,12 @@ public final class ACSStructuredPushConsumer extends StructuredPushConsumerPOA
 	private Dispatcher dispatcher = new Dispatcher();
 	private LCEngine engine;
 	
+	// The log retrieval object
 	private ACSLogRetrieval logRetrieval;
+	
+	// This boolean signal that the object has been closed:
+	// all the logs received while closed will be discarded
+	private volatile boolean closed=false;
 	
 	/**
 	 * StructuredPushConsumer constructor comment.
@@ -169,19 +198,12 @@ public final class ACSStructuredPushConsumer extends StructuredPushConsumerPOA
 	public void destroy()
 	{
 		structuredProxyPushSupplier.disconnect_structured_push_supplier();
+		close(false);
 	}
 
 	public void disconnect_structured_push_consumer()
 	{
-		//	System.out.println(">>>disconnect_structured_push_consumer called.");
-		/*	try {
-				byte[] oid = acsra.getPOA().servant_to_id(this);
-				acsra.getPOA().deactivate_object(oid);
-				//acsra.getORB().shutdown(false);
-			} catch (Exception e) {
-				acsra.getEngine().reportStatus("Exception occurred when disconnecting from structured push consumer.");
-				System.out.println("Exception in disconnect_structured_push_consumer(): " + e);
-			}*/
+		System.out.println(">>>disconnect_structured_push_consumer called.");
 	}
 	
 	/**
@@ -234,7 +256,7 @@ public final class ACSStructuredPushConsumer extends StructuredPushConsumerPOA
 	 */
 	public void push_structured_event(StructuredEvent event) throws org.omg.CosEventComm.Disconnected
 	{
-		if (suspended) {
+		if (suspended || closed) {
 			return;
 		}
 		String xmlLog = event.remainder_of_body.extract_string();
@@ -324,6 +346,20 @@ public final class ACSStructuredPushConsumer extends StructuredPushConsumerPOA
 	 */
 	public void setPaused(boolean pause) {
 		logRetrieval.pause(pause);
+	}
+	
+	/**
+	 * Close the threads and free all the resources
+	 * @param sync If it is true wait the termination of the threads before returning
+	 */
+	public void close(boolean sync) {
+		closed=true;
+		if (dispatcher!=null) {
+			dispatcher.close(sync);
+		}
+		if (logRetrieval!=null) {
+			logRetrieval.close(sync);
+		}
 	}
 }
 
