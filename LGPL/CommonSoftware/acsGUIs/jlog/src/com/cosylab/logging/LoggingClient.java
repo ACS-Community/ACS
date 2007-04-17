@@ -29,6 +29,7 @@ import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
+import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
 
@@ -48,6 +49,7 @@ import javax.swing.filechooser.FileFilter;
 import alma.acs.logging.archive.ArchiveConnectionManager;
 import alma.acs.logging.archive.QueryDlg;
 import alma.acs.logging.dialogs.main.LogEntryTable;
+import alma.acs.logging.dialogs.main.LogFrame;
 import alma.acs.logging.dialogs.main.LogMenuBar;
 import alma.acs.logging.dialogs.main.LogToolBar;
 import alma.acs.logging.preferences.UserPreferences;
@@ -178,6 +180,10 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
     
     // The menu bar
     private LogMenuBar menuBar = new LogMenuBar();
+    
+    // The frame containing this logging client
+    // It is not null only if the application is executed in stand alone mode
+    private LogFrame logFrame=null;
 	
 	class EventHandler
 		implements
@@ -203,7 +209,14 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
             } else if (e.getSource() == menuBar.getClearLogsMenuItem() || e.getSource()==toolBar.getClearLogsBtn()) {
 				getLCModel1().clearAll();
             } else if (e.getSource() == menuBar.getExitMenuItem()) {
-				connExit(e);
+            	if (logFrame!=null) {
+        			// The application is executed in stand-alone mode
+        			// Signal the main window to close
+        			WindowEvent wEvt = new WindowEvent(logFrame,WindowEvent.WINDOW_CLOSING);
+        			logFrame.dispatchEvent(wEvt);
+        		} else {
+        			close(false);
+        		}
             }else if (e.getSource() == menuBar.getFieldsMenuItem()) {
 				connFields(e);
             } else if (e.getSource() == menuBar.getEditFiltersMenuItem()) {
@@ -374,14 +387,17 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 	public LoggingClient()
 	{
 		super();
-		Dimension d = new Dimension(750, 550);
-		setPreferredSize(d);
 		initialize();
-		getLCModel1().setTimeFrame(userPreferences.getMillisecondsTimeFrame());
-		getLCModel1().setMaxLog(userPreferences.getMaxNumOfLogs());
-		
-		archive = new ArchiveConnectionManager(this);
 	}
+	
+	public LoggingClient(LogFrame frame)
+	{
+		super();
+		logFrame=frame;
+		initialize();
+	}
+	
+	
 	
 	/**
 	 * Method used by the plugin interface in EXEC:
@@ -402,7 +418,7 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 	 * @throws Exception
 	 */
 	public void stop() throws Exception {
-		disconnect();
+		close(false);
 	}
 	
 	/**
@@ -664,6 +680,9 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 		{
 			setName("LoggingClientPanel");
 			
+			Dimension d = new Dimension(750, 550);
+			setPreferredSize(d);
+			
 			getContentPane().setLayout(new BorderLayout());
 			setJMenuBar(menuBar);
             
@@ -677,6 +696,11 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
     		validate();
             
 			getLCModel1().setLogLevel(toolBar.DEFAULT_LOGLEVEL);
+			
+			getLCModel1().setTimeFrame(userPreferences.getMillisecondsTimeFrame());
+			getLCModel1().setMaxLog(userPreferences.getMaxNumOfLogs());
+			
+			archive = new ArchiveConnectionManager(this);
 		}
 		catch (java.lang.Throwable ivjExc)
 		{
@@ -690,26 +714,6 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 
 	}
 
-	/**
-	 * Exits by calling the LCEngine.
-	 * @param arg1 java.awt.event.ActionEvent
-	 */
-
-	private void connExit(java.awt.event.ActionEvent arg1)
-	{
-		try
-		{
-
-			getEngine().disconnect();
-
-		}
-		catch (java.lang.Throwable ivjExc)
-		{
-
-			handleException(ivjExc);
-		}
-	}
-	
 	/**
 	 * The method is executed when the filter property ("filterString") changes.
 	 * 
@@ -1587,6 +1591,17 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 	 */
 	public void hideExitMenu(boolean hide) {
 		menuBar.hideExitMenu(hide);
+	}
+	
+	/**
+	 * Close all the threads and release all the resources
+	 * @param sync If it is true wait the termination of the threads before returning
+	 */
+	public void close(boolean sync) {
+		disconnect();
+		if (tableModel!=null) {
+			tableModel.close(sync);
+		}
 	}
 }
 
