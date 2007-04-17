@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.18 2006/02/03 23:58:36 dfugate Exp $"
+# "@(#) $Id: Makefile,v 1.19 2007/04/17 04:55:42 sharring Exp $"
 #
 # Makefile of ........
 #
@@ -168,10 +168,7 @@ USER_IDL =
 #
 # Jarfiles and their directories
 #
-JARFILES= perftestClient
-jjj_DIRS=
-jjj_EXTRAS= 
-
+JARFILES= perftestClient 
 perftestClient_DIRS = alma
 
 #
