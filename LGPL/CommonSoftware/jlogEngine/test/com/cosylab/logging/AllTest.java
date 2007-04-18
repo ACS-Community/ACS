@@ -64,7 +64,6 @@ public static void main(String args[]) {
 public static TestSuite suite() {
 	TestSuite suite = new TestSuite();
 	suite.addTest(new TestSuite(LogEntryTest.class));
-	suite.addTest(new TestSuite(MyTest.class));
 	suite.addTest(new TestSuite(CacheTest.class));
 	return suite;
 }
