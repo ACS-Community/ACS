@@ -19,7 +19,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: loggingLoggingProxy.cpp,v 1.30 2007/04/13 14:30:11 msekoran Exp $"
+* "@(#) $Id: loggingLoggingProxy.cpp,v 1.31 2007/04/18 13:29:31 msekoran Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -56,7 +56,7 @@
 #define LOG_NAME "Log"
 #define DEFAULT_LOG_FILE_NAME "acs_local_log"
 
-ACE_RCSID(logging, logging, "$Id: loggingLoggingProxy.cpp,v 1.30 2007/04/13 14:30:11 msekoran Exp $");
+ACE_RCSID(logging, logging, "$Id: loggingLoggingProxy.cpp,v 1.31 2007/04/18 13:29:31 msekoran Exp $");
 
 ACE_TCHAR* LoggingProxy::m_LogEntryTypeName[] =
 {
@@ -692,7 +692,8 @@ LoggingProxy::LoggingProxy(const unsigned long cacheSize,
   m_sendingPending(false),
   m_threadCreated(false),
   //m_threadStart(2),
-  m_threadShutdown(2)
+  m_threadShutdown(2),
+  m_shutdown(false)
 {
   if (m_logger.ptr() == DsLogAdmin::Log::_nil())
     m_noLogger = true;
@@ -731,6 +732,7 @@ LoggingProxy::~LoggingProxy()
       }
   
   // signal work thread to exit
+  m_shutdown = true;
   m_doWorkCond.signal();
   m_threadShutdown.wait();
 }
@@ -872,12 +874,11 @@ LoggingProxy::svc()
 	// started on demand, so flush immediately
 	sendCacheInternal();
 	
-	while (instances)
+	while (!m_shutdown)
 	{
 		ACE_Time_Value timeout = ACE_OS::gettimeofday() + ACE_Time_Value(m_autoFlushTimeoutSec, 0);
 		m_doWorkCond.wait(&timeout);
-
-		if (instances)
+		if (!m_shutdown)
 			sendCacheInternal();
 	}
 
