@@ -54,6 +54,50 @@ genplot ()
 	gnuplot $ACS_TEMP/gplot.tmp;
 }
 
+# definition of a function to plot (using gnuplot) the data produced by the unix 'sar' command for one or more containers
+gencontainerplot () 
+{
+	LOG_FILE_NAME=$1
+	X_AXIS_POSITION=$2	
+	Y_AXIS_POSITION=$3	
+   ACS_TEMP=$4
+
+	# remove the first plot commands in the template
+	cat ./gnuplot.template > $ACS_TEMP/gnuplot.tmp
+	cat $ACS_TEMP/gnuplot.tmp | sed -e /using/d > $ACS_TEMP/gnuplot.tmp
+
+	# insert plot commands in the template, for each component
+	i=1
+	if [ $NUM_COMPONENTS -ge 2 ]
+	then
+		echo -e "plot \"CHANGE_LOGFILE$i.log\" using CHANGE_X_LOCATION:CHANGE_Y_LOCATION title \"%user cpu: container$i\" with lines, "\\c \
+			 >> $ACS_TEMP/gnuplot.tmp
+	else
+		echo "plot \"CHANGE_LOGFILE$i.log\" using CHANGE_X_LOCATION:CHANGE_Y_LOCATION title \"%user cpu: container$i\" with lines" >> $ACS_TEMP/gnuplot.tmp
+	fi
+	i=2
+	while [ "$i" -le $NUM_COMPONENTS ]
+	do
+		if [ "$i" -lt $NUM_COMPONENTS ]
+		then
+			echo -e "\"CHANGE_LOGFILE$i.log\" using CHANGE_X_LOCATION:CHANGE_Y_LOCATION title \"%user cpu: container$i\" with lines, "\\c \
+				 >> $ACS_TEMP/gnuplot.tmp
+		else
+			echo " \"CHANGE_LOGFILE$i.log\" using CHANGE_X_LOCATION:CHANGE_Y_LOCATION title \"%user cpu: container$i\" with lines" \
+				 >> $ACS_TEMP/gnuplot.tmp
+		fi
+		i=`expr $i + 1`
+	done
+
+	# replace substitution keywords
+	cat $ACS_TEMP/gnuplot.tmp | sed -e s@CHANGE_PNG@../doc/$LOG_FILE_NAME@g | sed -e s@CHANGE_LOGFILE@$ACS_TEMP/$LOG_FILE_NAME@g \
+		| sed -e s@CHANGE_X_LOCATION@$X_AXIS_POSITION@g | sed -e s@CHANGE_Y_LOCATION@$Y_AXIS_POSITION@g \
+		| sed -e s@CHANGE_GRAPH_TITLE@$LOG_FILE_NAME@g > $ACS_TEMP/gplotFinal.tmp;
+
+	# plot the results
+	gnuplot $ACS_TEMP/gplotFinal.tmp;
+}
+
 # definition of a function to generate an html file summarizing the test results
 genhtml () 
 {
@@ -164,7 +208,16 @@ debugPrint "made new ACS_TMP: $ACS_TMP"
 export ACS_CDB=`pwd`
 debugPrint "exported ACS_CDB: $ACS_CDB"
 
+# start ACS
 acsutilTATPrologue -l
+
+# define some string constants which will be used in several places
+ACS_LOG_SVC_LOG_FILE=acsLogSvc
+LOGGING_SERVICE_LOG_FILE=loggingService
+LOGGING_CLIENT_LOG_FILE=loggingClient
+LOGGING_NOTIFY_SERVICE_LOG_FILE=loggingNotifyService
+JLOG_LOG_FILE=jlog
+PUBLISHER_LOG_FILE=publisher
 
 # start the container(s)
 i=1
@@ -172,16 +225,13 @@ while [ "$i" -le $NUM_COMPONENTS ]
 do
 	echo " Starting Container $i"
 	acsutilAwaitContainerStart -cpp cppContainer$i >& $ACS_TMP/cppContainer$i.log
+	publisherPid[$i]=`ps -ef | grep "maciContainer cppContainer$i"  | grep -v grep | gawk '{ print $2 }'`
+	debugPrint "publisherPid$i is: ${publisherPid[${i}]}"
+	`sar -x ${publisherPid[${i}]} 1 $SAR_RUN_TIME >& $ACS_TMP/$PUBLISHER_LOG_FILE$i.orig.log` &
 	i=`expr $i + 1`
+	#echo "hit a key to continue..."
+	#read okToContinue
 done
-
-# define some string constants which will be used in several places
-ACS_LOG_SVC_LOG_FILE=acsLogSvc
-LOGGING_SERVICE_LOG_FILE=loggingService
-LOGGING_CLIENT_LOG_FILE=loggingClient
-LOGGING_NOTIFY_SERVICE_LOG_FILE=loggingNotifyService
-PUBLISHER_LOG_FILE=publisher
-JLOG_LOG_FILE=jlog
 
 # find the pids for all the processes that we're interested in monitoring
 while [ -z "$logSvcPid" ]
@@ -232,16 +282,6 @@ echo " Sending logs"
 acsStartJava -D NumLogs=$NUM_LOGS -D NumComponents=$NUM_COMPONENTS -D Delay=$DELAY \
 	alma.perftest.client.$ClientJavaClass >& $ACS_TMP/clientOutput.log &
 
-while [ -z "$publisherPid" ]
-do
-	publisherPid=`ps -ef | grep $ClientJavaClass  | grep -v grep | grep -v acsStartJava | gawk '{ print $2 }'`
-done
-
-debugPrint "publisherPid is: $publisherPid"
-#read okToContinue
-
-`sar -x $publisherPid 1 $SAR_RUN_TIME >& $ACS_TMP/$PUBLISHER_LOG_FILE.orig.log` &
-
 # wait until all the background processes are complete; 
 echo " Waiting for all logs to be sent..."
 wait
@@ -251,6 +291,7 @@ echo " Sleeping a bit to allow logs to be processed..."
 sleep 10
 
 # prep the log files
+echo " Preparing the sar log files"
 cat $ACS_TMP/$ACS_LOG_SVC_LOG_FILE.orig.log | grep -v -i average | grep -v -i linux \
 	| grep -v -i pid > $ACS_TMP/$ACS_LOG_SVC_LOG_FILE.log 
 cat $ACS_TMP/$LOGGING_SERVICE_LOG_FILE.orig.log | grep -v -i average | grep -v -i linux \
@@ -259,8 +300,15 @@ cat $ACS_TMP/$LOGGING_NOTIFY_SERVICE_LOG_FILE.orig.log | grep -v -i average | gr
 	| grep -v -i pid > $ACS_TMP/$LOGGING_NOTIFY_SERVICE_LOG_FILE.log
 cat $ACS_TMP/$LOGGING_CLIENT_LOG_FILE.orig.log | grep -v -i average | grep -v -i linux \
 	| grep -v -i pid > $ACS_TMP/$LOGGING_CLIENT_LOG_FILE.log
-cat $ACS_TMP/$PUBLISHER_LOG_FILE.orig.log | grep -v -i average | grep -v -i linux \
-	| grep -v -i pid > $ACS_TMP/$PUBLISHER_LOG_FILE.log
+
+i=1
+while [ "$i" -le $NUM_COMPONENTS ]
+do
+	cat $ACS_TMP/$PUBLISHER_LOG_FILE$i.orig.log | grep -v -i average | grep -v -i linux \
+		| grep -v -i pid > $ACS_TMP/$PUBLISHER_LOG_FILE$i.log
+	i=`expr $i + 1`
+done
+
 if [ "$PROFILE_JLOG" ] ;
 then
 	cat $ACS_TMP/$JLOG_LOG_FILE.orig.log | grep -v -i average | grep -v -i linux \
@@ -273,7 +321,8 @@ genplot $ACS_LOG_SVC_LOG_FILE 1 6 $ACS_TMP
 genplot $LOGGING_SERVICE_LOG_FILE 1 6 $ACS_TMP
 genplot $LOGGING_NOTIFY_SERVICE_LOG_FILE 1 6 $ACS_TMP
 genplot $LOGGING_CLIENT_LOG_FILE 1 6 $ACS_TMP
-genplot $PUBLISHER_LOG_FILE 1 6 $ACS_TMP
+gencontainerplot $PUBLISHER_LOG_FILE 1 6 $ACS_TMP
+
 if [ "$PROFILE_JLOG" ] ;
 then
 	genplot $JLOG_LOG_FILE 1 6 $ACS_TMP
@@ -300,7 +349,8 @@ acsStop >& $ACS_TMP/acsStop.log
 
 # verify the proper number of logs were received
 totalLogsReceivedByLoggingClient=`grep "msg:" $ACS_TMP/all_logs.xml | wc -l`
-if [ $totalLogsReceivedByLoggingClient -ne $NUM_LOGS ]
+totalLogsExpected=`expr $NUM_LOGS \* $NUM_COMPONENTS`
+if [ $totalLogsReceivedByLoggingClient -ne $totalLogsExpected ]
 then
 	echo " FAILURE: didn't receive the proper number of logs."
 else
