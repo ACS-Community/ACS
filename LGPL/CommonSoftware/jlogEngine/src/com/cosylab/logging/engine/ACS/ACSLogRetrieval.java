@@ -19,7 +19,7 @@
 
 /** 
  * @author  acaproni   
- * @version $Id: ACSLogRetrieval.java,v 1.14 2007/04/17 11:01:59 acaproni Exp $
+ * @version $Id: ACSLogRetrieval.java,v 1.15 2007/04/19 16:09:04 acaproni Exp $
  * @since    
  */
 
@@ -131,6 +131,7 @@ public class ACSLogRetrieval extends Thread {
 				pos = rOutF.length();
 				rOutF.seek(pos);
 				rOutF.writeBytes(XMLLogStr);
+				pos = rOutF.length();
 			} catch (IOException ioe) {
 				System.err.println("Log Discarded: "+XMLLogStr);
 				System.err.println("Reason: "+ioe.getMessage());
@@ -241,6 +242,9 @@ public class ACSLogRetrieval extends Thread {
 					ILogEntry log;
 					try {
 						log = parser.parse(tempStr);
+						if (log==null) {
+							throw new NullPointerException("Fail to parse "+tempStr);
+						}
 					} catch (Throwable e) {
 						StringBuilder strB = new StringBuilder("\nException occurred while dispatching the XML log.\n");
 						strB.append("This log has been lost: "+tempStr);
