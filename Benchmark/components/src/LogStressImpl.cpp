@@ -44,6 +44,7 @@ int SendingThread::svc()
 	
 	string componentName(logStress2_p->name());
 	std::ostringstream stressMessage;
+	int sleepAmount = logStress2_p->getDelay();
 	for(int i = 0; i < logStress2_p->getNumTimesToLog(); i++)
 	{
 		stressMessage.str("");
@@ -57,7 +58,10 @@ int SendingThread::svc()
 		else {
 			ACS_SHORT_LOG((LM_ERROR,"Stress test - problem generating message text!"));
 		}
-		usleep(logStress2_p->getDelay());
+		if(sleepAmount > 0)
+		{
+			usleep(sleepAmount);
+		}
 	}
 	logStress2_p->setThreadDone(true);	
 	return retVal;
