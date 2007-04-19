@@ -1,4 +1,5 @@
 #!/bin/bash
+. acsstartupAcsPorts
 
 #################################################################################
 #
@@ -26,6 +27,7 @@ printUsageAndExit ()
 	echo "   -j | --jlog: indicates whether to profile the jlog GUI (default if not specified is true)";
 	echo "   -h | --help: print this usage message and exit."
 	echo "   -d | --debug: print additional debugging info about this script to stdout."
+	echo "   -r | --remoteHost <hostname>: remote host name on which to run the container(s)."
 	echo ""
 	exit -1;
 }
@@ -123,17 +125,18 @@ genhtml ()
 ORIGINAL_CMD_LINE=$@
 
 #
-# These will contain the parsing results (CL_XXX, CL = command line)
+# These will contain the command line arguments and/or options
 #
 HELP=
 DEBUG_MODE=
 PROFILE_JLOG=
+REMOTE_HOST=
 
 #
 # These options can be recognized (longopts comma-separated. colon means argument is required)
 #
-LONGOPTS=help,jlog,debug
-SHORTOPTS=h,j,d
+LONGOPTS=help,jlog,debug,remoteHost:
+SHORTOPTS=h,j,d,r:
 
 #
 # Run getopt (posixly_correct needed). We run twice:
@@ -151,13 +154,15 @@ set -- `getopt -u -a -l $LONGOPTS $SHORTOPTS "$@"` >& /dev/null ;
 while : 
 do
 	case "$1" in
-	--help)  HELP=true ;;
-	-h)      HELP=true ;;
-	--jlog)  PROFILE_JLOG=true ;;
-	-j)      PROFILE_JLOG=true ;;
-	--debug) DEBUG_MODE=true ;;
-	-d)      DEBUG_MODE=true ;;
-	--) break ;;
+		--help)       HELP=true ;;
+		-h)           HELP=true ;;
+		--jlog)       PROFILE_JLOG=true ;;
+		-j)           PROFILE_JLOG=true ;;
+		--debug)      DEBUG_MODE=true ;;
+		-d)           DEBUG_MODE=true ;;
+		-r)           REMOTE_HOST=$2 ; shift ;;
+		--remoteHost) REMOTE_HOST=$2 ; shift ;;
+		--) break ;;
 	esac
 	shift
 done
@@ -186,8 +191,10 @@ DELAY=$3
 
 # 'guesstimate' the amount of time we need to monitor the processes using the unix
 # sar command by a rough rule of thumb that 100,000 logs requires ~ 4 minutes (240 secs)
+debugPrint "NUM_LOGS was: $NUM_LOGS"
 SAR_RUN_TIME=`expr \( $NUM_LOGS / 100000 \) \* 240`
-if [ 0 -eq $SAR_RUN_TIME ] ;
+debugPrint "SAR_RUN_TIME was calculated as: $SAR_RUN_TIME"
+if [ "$SAR_RUN_TIME" -eq "0" ] ;
 then
 	SAR_RUN_TIME=240
 fi
@@ -223,14 +230,24 @@ PUBLISHER_LOG_FILE=publisher
 i=1
 while [ "$i" -le $NUM_COMPONENTS ]
 do
-	echo " Starting Container $i"
-	acsutilAwaitContainerStart -cpp cppContainer$i >& $ACS_TMP/cppContainer$i.log
-	publisherPid[$i]=`ps -ef | grep "maciContainer cppContainer$i"  | grep -v grep | gawk '{ print $2 }'`
-	debugPrint "publisherPid$i is: ${publisherPid[${i}]}"
-	`sar -x ${publisherPid[${i}]} 1 $SAR_RUN_TIME >& $ACS_TMP/$PUBLISHER_LOG_FILE$i.orig.log` &
+	if [ -z $REMOTE_HOST ]
+	then
+		echo " Starting Container $i"
+		acsutilAwaitContainerStart -cpp cppContainer$i >& $ACS_TMP/cppContainer$i.log
+		publisherPid[$i]=`ps -ef | grep "maciContainer cppContainer$i"  | grep -v grep | gawk '{ print $2 }'`
+		debugPrint "publisherPid$i is: ${publisherPid[${i}]}"
+		`sar -x ${publisherPid[${i}]} 1 $SAR_RUN_TIME >& $ACS_TMP/$PUBLISHER_LOG_FILE$i.orig.log` &
+	else
+		echo " Starting Remote Container $i"
+    	export MANAGER_REFERENCE=corbaloc::`getIP`:`getManagerPort`/Manager
+		ssh -f $USER@$REMOTE_HOST -f acsStartContainer -m $MANAGER_REFERENCE -cpp cppContainer$i >& $ACS_TMP/cppContainer$i.log
+		debugPrint "waiting for remote container $i to start..."
+		sleep 15
+		publisherPid[$i]=`ssh -f $USER@$REMOTE_HOST ps -ef | grep "maciContainer cppContainer$i"  | grep -v grep | gawk '{ print $2 }'`
+		debugPrint "publisherPid$i is: ${publisherPid[${i}]}"
+		ssh -f $USER@$REMOTE_HOST sar -x ${publisherPid[${i}]} 1 $SAR_RUN_TIME >& $ACS_TMP/$PUBLISHER_LOG_FILE$i.orig.log &
+	fi
 	i=`expr $i + 1`
-	#echo "hit a key to continue..."
-	#read okToContinue
 done
 
 # find the pids for all the processes that we're interested in monitoring
