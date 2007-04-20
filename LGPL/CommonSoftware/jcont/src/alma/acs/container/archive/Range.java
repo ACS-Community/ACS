@@ -27,7 +27,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.concurrent.atomic.AtomicLong;
 
-import alma.ArchiveIdentifierError.RangeUnlockedEx;
 import alma.ArchiveIdentifierError.wrappers.AcsJIdentifierUnexpectedEx;
 import alma.ArchiveIdentifierError.wrappers.AcsJRangeExhaustedEx;
 import alma.ArchiveIdentifierError.wrappers.AcsJRangeLockedEx;
@@ -48,6 +47,12 @@ import alma.entities.commonentity.EntityT;
  * which itself gets generated from the schema "IdentifierRange.xsd".
  * <p>
  * For a better description, see the <a href="http://almasw.hq.eso.org/almasw/bin/view/Archive/UidLibrary">Archive/UidLibrary wiki page</a>.
+ * <p>
+ * General remark on the length of UIDs: there is no limit on the length of the three "/x012af" parts of a UID,
+ * as was confirmed by awicenec to hsommer on 2007-04-20. It is therefore the Archive's responsibility to
+ * ensure that all code dealing with UIDs (which should all be under archive responsibility anyway) 
+ * be updated accordingly whenever the actually generated UIDs exceed the "Long" limit.
+ *    
  * @author simon, hsommer
  */
 public class Range
@@ -115,7 +120,7 @@ public class Range
 	/**
 	 * Assigns a UID to the <code>EntityT</code> castor object that should be a direct child of an Alma XML entity.
 	 * Unlike {@link #assignUniqueEntityID}, this method will silently replace any existing UID,
-	 * which is possibly dangerous. Therefore it should only be used in rare cases where replacing an exisint ID is 
+	 * which is possibly dangerous. Therefore it should only be used in rare cases where replacing an existing ID is 
 	 * needed, for example when the ObsPrep tool might translate locally created documents into an archivable format. 
 	 */
 	public void replaceUniqueEntityId(EntityT entity) throws AcsJUidAlreadyExistsEx, AcsJRangeLockedEx, AcsJRangeExhaustedEx {
