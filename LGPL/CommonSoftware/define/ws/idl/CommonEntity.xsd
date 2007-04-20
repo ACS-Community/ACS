@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <xsd:schema xmlns:ent="Alma/CommonEntity" xmlns:xsd="http://www.w3.org/2001/XMLSchema" attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="Alma/CommonEntity" version="1">
 	
-	<!-- globally unique id for entity objects (formatted hex string "uid://X0000000000000000/X00000000") -->
+	<!-- globally unique id for entity objects (formatted hex string such as "uid://X1/Xa023/X1111111111111111111111") 
+	     Note that by the spec any of the three parts of the UID can be larger than a 64 bit variable if turned into numerical presentation,
+	     even though at the moment (2007-04) the archive does not generate such UIDs -->
 	<xsd:simpleType name="EntityIdT">
 		<xsd:restriction base="xsd:string">
 			<xsd:pattern value="[uU][iI][dD]:/(/[xX][0-9a-fA-F]+){3}(#[a-zA-Z0-9_]+)*"/>
