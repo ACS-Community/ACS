@@ -10,15 +10,27 @@
 		The test components (log suppliers) were run on CHANGE_NUMBER_OF_SUPPLIERS separate machines.
 		<H2>Performance of log publisher process: </H2>
 		<img src="publisher.png"/>
+		<H2>Memory usage of log publisher process: </H2>
+		<img src="publisher-memory.png"/>
 		<H2>Performance of CORBA telecom logging service (loggingService) process: </H2>
 		<img src="loggingService.png"/>
+		<H2>Memory usage of CORBA telecom logging service (loggingService) process: </H2>
+		<img src="loggingService-memory.png"/>
 		<H2>Performance of logging notification service (appropriate instance of Notify_Service) process: </H2>
 		<img src="loggingNotifyService.png"/>
+		<H2>Memory usage of logging notification service (appropriate instance of Notify_Service) process: </H2>
+		<img src="loggingNotifyService-memory.png"/>
 		<H2>Performance of command-line logging client (loggingClient) process: </H2>
 		<img src="loggingClient.png"/>
+		<H2>Memory usage of command-line logging client (loggingClient) process: </H2>
+		<img src="loggingClient-memory.png"/>
 		<H2>Performance of jlog GUI (jlog) process: </H2>
 		<img src="jlog.png"/>
+		<H2>Memory usage of jlog GUI (jlog) process: </H2>
+		<img src="jlog-memory.png"/>
 		<H2>Performance of ACS log service (acsLogService) process: </H2>
 		<img src="acsLogSvc.png"/>
+		<H2>Memory usage of ACS log service (acsLogService) process: </H2>
+		<img src="acsLogSvc-memory.png"/>
 	</body>
 </html>

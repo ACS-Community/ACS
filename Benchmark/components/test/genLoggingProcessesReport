@@ -42,7 +42,7 @@ debugPrint ()
 	fi;
 }
 
-# definition of a function to plot (using gnuplot) the data produced by the unix 'sar' command
+# definition of a function to plot (using gnuplot) the data produced by the unix 'sar' and 'top' commands
 genplot () 
 {
 	LOG_FILE_NAME=$1
@@ -98,6 +98,73 @@ gencontainerplot ()
 
 	# plot the results
 	gnuplot $ACS_TEMP/gplotFinal.tmp;
+}
+
+genmemoryplot ()
+{
+	LOG_FILE_NAME=$1
+   ACS_TEMP=$2
+	PROCESS_NAME=$3
+
+# Dump gnuplot script
+cat <<HERE > $ACS_TEMP/gnuplot.tmp
+	set terminal png
+	set out "../doc/$LOG_FILE_NAME.png"
+	set title "Memory usage for process: $PROCESS_NAME"
+	set xlabel "Time"
+	set ylabel "Memory Allocated (kB)"
+	set xdata time
+	set timefmt "%s"
+	plot "$ACS_TEMP/$LOG_FILE_NAME" using 1:2 title "Total Memory Requirement" with lines, "$ACS_TEMP/$LOG_FILE_NAME" using 1:3 title "Resident Memory Size" with lines
+HERE
+
+	# plot the results
+	gnuplot $ACS_TEMP/gnuplot.tmp;
+}
+
+# definition of a function to plot (using gnuplot) the memory information for 1-n containers
+gencontainermemoryplot () 
+{
+	LOG_FILE_NAME=$1
+   ACS_TEMP=$2
+	NUM_COMPONENTS=$3
+
+# Dump gnuplot script
+cat <<HERE > $ACS_TEMP/gnuplot.tmp
+	set terminal png
+	set out "../doc/$LOG_FILE_NAME.png"
+	set title "Container memory usage"
+	set xlabel "Time"
+	set ylabel "Memory Allocated (kB)"
+	set xdata time
+	set timefmt "%s"
+HERE
+
+	i=1
+	if [ $NUM_COMPONENTS -ge 2 ]
+	then
+		echo -e "plot \"$ACS_TEMP/$LOG_FILE_NAME$i\" using 1:2 title \"Total Memory Requirement container: $i\" with lines, \"$ACS_TEMP/$LOG_FILE_NAME$i\" \
+			 using 1:3 title \"Resident Memory Size container: $i\" with lines, "\\c >> $ACS_TEMP/gnuplot.tmp
+	else
+		echo -e "plot \"$ACS_TEMP/$LOG_FILE_NAME$i\" using 1:2 title \"Total Memory Requirement container: $i\" with lines, \"$ACS_TEMP/$LOG_FILE_NAME$i\" \
+			 using 1:3 title \"Resident Memory Size container: $i\" with lines "\\c >> $ACS_TEMP/gnuplot.tmp
+	fi
+	i=2
+	while [ "$i" -le $NUM_COMPONENTS ]
+	do
+		if [ "$i" -lt $NUM_COMPONENTS ]
+		then
+			echo -e "\"$ACS_TEMP/$LOG_FILE_NAME$i\" using 1:2 title \"Total Memory Requirement container: $i\" with lines, \
+				\"$ACS_TEMP/$LOG_FILE_NAME$i\" using 1:3 title \"Resident Memory Size\" with lines, "\\c >> $ACS_TEMP/gnuplot.tmp
+		else
+			echo -e "\"$ACS_TEMP/$LOG_FILE_NAME$i\" using 1:2 title \"Total Memory Requirement container: $i\" with lines, \
+				\"$ACS_TEMP/$LOG_FILE_NAME$i\" using 1:3 title \"Resident Memory Size container: $i\" with lines " >> $ACS_TEMP/gnuplot.tmp
+		fi
+		i=`expr $i + 1`
+	done
+
+	# plot the results
+	gnuplot $ACS_TEMP/gnuplot.tmp;
 }
 
 # definition of a function to generate an html file summarizing the test results
@@ -237,6 +304,7 @@ do
 		publisherPid[$i]=`ps -ef | grep "maciContainer cppContainer$i"  | grep -v grep | gawk '{ print $2 }'`
 		debugPrint "publisherPid$i is: ${publisherPid[${i}]}"
 		`sar -x ${publisherPid[${i}]} 1 $SAR_RUN_TIME >& $ACS_TMP/$PUBLISHER_LOG_FILE$i.orig.log` &
+		./monitorPid.sh ${publisherPid[${i}]} 1 $ACS_TMP/$PUBLISHER_LOG_FILE-memory$i
 	else
 		echo " Starting Remote Container $i"
     	export MANAGER_REFERENCE=corbaloc::`getIP`:`getManagerPort`/Manager
@@ -246,6 +314,7 @@ do
 		publisherPid[$i]=`ssh -f $USER@$REMOTE_HOST ps -ef | grep "maciContainer cppContainer$i"  | grep -v grep | gawk '{ print $2 }'`
 		debugPrint "publisherPid$i is: ${publisherPid[${i}]}"
 		ssh -f $USER@$REMOTE_HOST sar -x ${publisherPid[${i}]} 1 $SAR_RUN_TIME >& $ACS_TMP/$PUBLISHER_LOG_FILE$i.orig.log &
+		ssh -f $USER@$REMOTE_HOST remoteMonitorProcess ${publisherPid[${i}]} 1 >& $ACS_TMP/$PUBLISHER_LOG_FILE-memory$i &
 	fi
 	i=`expr $i + 1`
 done
@@ -274,9 +343,13 @@ debugPrint "loggingClientPid is: $loggingClientPid"
 
 # monitor the relevant processes using the unix 'sar' command
 sar -x $logSvcPid 1 $SAR_RUN_TIME >& $ACS_TMP/$ACS_LOG_SVC_LOG_FILE.orig.log &
+./monitorPid.sh $logSvcPid 1 $ACS_TMP/$ACS_LOG_SVC_LOG_FILE-memory
 sar -x $loggingServicePid 1 $SAR_RUN_TIME >& $ACS_TMP/$LOGGING_SERVICE_LOG_FILE.orig.log &
+./monitorPid.sh $loggingServicePid 1 $ACS_TMP/$LOGGING_SERVICE_LOG_FILE-memory 
 sar -x $loggingNotifyServicePid 1 $SAR_RUN_TIME >& $ACS_TMP/$LOGGING_NOTIFY_SERVICE_LOG_FILE.orig.log &
+./monitorPid.sh $loggingNotifyServicePid 1 $ACS_TMP/$LOGGING_NOTIFY_SERVICE_LOG_FILE-memory 
 sar -x $loggingClientPid 1 $SAR_RUN_TIME >& $ACS_TMP/$LOGGING_CLIENT_LOG_FILE.orig.log &
+./monitorPid.sh $loggingClientPid 1 $ACS_TMP/$LOGGING_CLIENT_LOG_FILE-memory 
 if [ "$PROFILE_JLOG" ] ;
 then
 	# start jlog - using a separate script so that 'wait' will work later in this script (and not 
@@ -290,6 +363,7 @@ then
 	#read okToContinue
 	# start monitoring jlog process with 'sar' command
 	sar -x $jlogPid 1 $SAR_RUN_TIME >& $ACS_TMP/$JLOG_LOG_FILE.orig.log &
+	./monitorPid.sh $jlogPid 1 $ACS_TMP/$JLOG_LOG_FILE-memory 
 fi
 
 
@@ -306,6 +380,14 @@ wait
 # sleep a bit longer to allow things to 'settle'
 echo " Sleeping a bit to allow logs to be processed..."
 sleep 10
+
+# stop the monitoring
+echo " Stopping the monitoring"
+killall monitorProcess
+if [ ! -z $REMOTE_HOST ] 
+then
+	ssh -f $USER@$REMOTE_HOST killall monitorProcess
+fi
 
 # prep the log files
 echo " Preparing the sar log files"
@@ -335,14 +417,20 @@ fi
 # plot the data from the prepped log files
 echo " Generating the plots"
 genplot $ACS_LOG_SVC_LOG_FILE 1 6 $ACS_TMP
-genplot $LOGGING_SERVICE_LOG_FILE 1 6 $ACS_TMP
+genmemoryplot $ACS_LOG_SVC_LOG_FILE-memory $ACS_TMP acsLogSvc
+genplot $LOGGING_SERVICE_LOG_FILE 1 6 $ACS_TMP 
+genmemoryplot $LOGGING_SERVICE_LOG_FILE-memory $ACS_TMP loggingService
 genplot $LOGGING_NOTIFY_SERVICE_LOG_FILE 1 6 $ACS_TMP
+genmemoryplot $LOGGING_NOTIFY_SERVICE_LOG_FILE-memory $ACS_TMP
 genplot $LOGGING_CLIENT_LOG_FILE 1 6 $ACS_TMP
+genmemoryplot $LOGGING_CLIENT_LOG_FILE-memory $ACS_TMP loggingClient
 gencontainerplot $PUBLISHER_LOG_FILE 1 6 $ACS_TMP
+gencontainermemoryplot $PUBLISHER_LOG_FILE-memory $ACS_TMP $NUM_COMPONENTS 
 
 if [ "$PROFILE_JLOG" ] ;
 then
 	genplot $JLOG_LOG_FILE 1 6 $ACS_TMP
+	genmemoryplot $JLOG_LOG_FILE-memory $ACS_TMP jlog
 fi
 
 # generate the html page summarizing the test results
