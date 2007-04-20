@@ -4,10 +4,9 @@
 	<!-- globally unique id for entity objects (formatted hex string "uid://X0000000000000000/X00000000") -->
 	<xsd:simpleType name="EntityIdT">
 		<xsd:restriction base="xsd:string">
-		<!-- todo: use regular expression -->
+			<xsd:pattern value="[uU][iI][dD]:/(/[xX][0-9a-fA-F]+){3}(#[a-zA-Z0-9_]+)*"/>
 		</xsd:restriction>
 	</xsd:simpleType>
-	
 	<!-- locally unique id for subnodes of entity objects (integer numbers);
 	     application schemas of entities in which parts (=subnodes) should be addressable by ID
 	     must define an attribute of type "EntityPartIdT" for the respective node, 
@@ -22,7 +21,6 @@
 			<xsd:whiteSpace value="collapse"/>
 		</xsd:restriction>
 	</xsd:simpleType>
-	
 	<!-- reference to an element with an attribute of type "EntityPartIdT".
 	     Can't be of type ID because we may want to reference the same node more than once per document,
 	     and also can't be of type IDREF because the referenced node is usually in a different document -->
@@ -30,8 +28,6 @@
 		<xsd:restriction base="xsd:NCName">
 		</xsd:restriction>
 	</xsd:simpleType>
-
-	
 	<!-- unique name for entity objects, like "SchedBlock" -->
 	<xsd:simpleType name="EntityTypeNameT">
 		<xsd:restriction base="xsd:string">
@@ -40,8 +36,6 @@
 			<xsd:whiteSpace value="collapse"/>
 		</xsd:restriction>
 	</xsd:simpleType>
-	
-	
 	<!-- EntityRefT describes a reference to
 	     (1) another entity (only entityId required), or 
 	     (2) a subnode of another entity (both entityId and partId required) -->
@@ -53,8 +47,6 @@
 		<!-- version -->
 		<xsd:attribute name="documentVersion" type="xsd:string" use="required"/>
 	</xsd:complexType>
-	
-	
 	<!-- common to all entities -->
 	<xsd:complexType name="EntityT">
 		<xsd:attribute name="entityId" type="ent:EntityIdT" use="required"/>
@@ -77,6 +69,4 @@
 		     TODO: make it "required" with ACS 6.0. -->
 		<xsd:attribute name="datamodelVersion" type="xsd:string" use="optional"/>		
 	</xsd:complexType>
-	
 </xsd:schema>
-
