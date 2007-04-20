@@ -386,7 +386,7 @@ echo " Stopping the monitoring"
 killall monitorProcess
 if [ ! -z $REMOTE_HOST ] 
 then
-	ssh -f $USER@$REMOTE_HOST killall monitorProcess
+	ssh -f $USER@$REMOTE_HOST killall remoteMonitorProcess
 fi
 
 # prep the log files
