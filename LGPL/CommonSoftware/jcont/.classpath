@@ -10,17 +10,17 @@
 	<classpathentry kind="var" path="ACSROOT/lib/xmljbind.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acsjlog.jar"/>
 	<classpathentry sourcepath="ACSROOT/lib/xmlentity.jar" kind="var" path="ACSROOT/lib/xmlentity.jar"/>
-	<classpathentry kind="var" path="ACSROOT/lib/baci.jar"/>
+	<classpathentry sourcepath="/ACSROOT/lib/baci.jar" kind="var" path="ACSROOT/lib/baci.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acsTestEntities.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/cdbDAL.jar"/>
 	<classpathentry sourcepath="/ACSROOT/lib/acscomponent.jar" kind="var" path="ACSROOT/lib/acscomponent.jar"/>
-	<classpathentry kind="var" path="ACSROOT/lib/maci.jar"/>
+	<classpathentry sourcepath="/ACSROOT/lib/maci.jar" kind="var" path="ACSROOT/lib/maci.jar"/>
 	<classpathentry sourcepath="/ACSROOT/lib/archive_xmlstore_if.jar" kind="var" path="ACSROOT/lib/archive_xmlstore_if.jar"/>
 	<classpathentry sourcepath="lib/jconttest_if.jar" kind="lib" path="lib/jconttest_if.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/jACSUtil.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/systementities.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/CDB.jar"/>
-	<classpathentry kind="var" path="ACSROOT/lib/lc.jar"/>
+	<classpathentry sourcepath="/ACSROOT/lib/lc.jar" kind="var" path="ACSROOT/lib/lc.jar"/>
 	<classpathentry sourcepath="/ACSROOT/lib/ACSErrTypeCommon.jar" kind="var" path="ACSROOT/lib/ACSErrTypeCommon.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acserr.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acserrj.jar"/>
