@@ -136,7 +136,7 @@ public class LCEngine {
 				System.out.println("Exception in LCEngine$AccessSetter::run(): " + e);
 				return;
 			}
-			if (remoteAccess.isInitialized()) {
+			if (remoteAccess!=null && remoteAccess.isInitialized()) {
 				publishReport("Connected to " + accessType + " remote access.");
 				publishConnected(true);
 				LCEngine.this.wasConnected=true;
