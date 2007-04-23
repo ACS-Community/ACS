@@ -112,7 +112,23 @@ public class LogListener implements
 	 * @see com.cosylab.logging.engine.ACS.ACSRemoteRawLogListener
 	 */
 	public void logEntryReceived(ILogEntry log) {
-		if (log.getField(ILogEntry.FIELD_FILE).toString().compareTo("logClient.cpp")==0) {
+		if (log==null) {
+			throw new IllegalArgumentException("Invalid null log");
+		}
+		Object fileObj = log.getField(ILogEntry.FIELD_FILE);
+		if (fileObj==null) {
+			System.out.println("The log has no field FIELD_FILE defined");
+			System.out.println("XML = ["+log.toXMLString()+"]");
+			return;
+		}
+		String fileField=fileObj.toString();
+		if (fileField==null) {
+			System.out.println("Invalid conversion of field to String");
+			System.out.println("Class of the object: "+fileObj.getClass().getName());
+			System.out.println("XML = ["+log.toXMLString()+"]");
+			return;
+		}
+		if (fileField.compareTo("logClient.cpp")==0) {
 			System.out.println("Log received: "+log.toString());
 		}
 	}
