@@ -42,13 +42,13 @@ import alma.perftest.LogStressWithDelay;
  * 1) You must have entries in the CDB for each instance of the component
  * that you wish to use, for example:
  *
-		<_ Name="LOGSTRESS1" 	    
-         Code="LogStressImpl" 
+		<_ Name="REPLACE_WITH_COMPONENT_NAME" 	    
+         Code="REPLACE_WITH_COMPONENT_CODE" 
          Type="IDL:alma/perftest/LogStressWithDelay:1.0" 	
          Container="cppContainer1"/>
 
  * Note: this client currently requires that the numbering starts with '1' - so if you have N 
- * component instances they must be named LOGSTRESS1, LOGSTRESS2, LOGSTRESS3, ... LOGSTRESSN.
+ * component instances they must be named COMPONENT_NAME1, COMPONENT_NAME2, COMPONENT_NAME3, ... COMPONENT_NAMEN.
  *
  * 2) You should invoke the client passing a couple of properties to the java runtime.
  *    These two properties are: a) NumLogs -> an integer indicating how many logs to send 
@@ -71,6 +71,9 @@ public class LogPerformanceTestClient extends ComponentClient
 	private static final String NUM_COMPONENTS = "NumComponents";
 	private static final String NUM_LOGS = "NumLogs";
 	private static final String ACS_MANAGER = "ACS.manager";
+	private static final String COMPONENT_NAME = "ComponentName";
+	private static final String DEFAULT_COMPONENT_NAME = "LOGSTRESSCPP";
+
 	private LogStressWithDelay[] m_logStressComp;
 
 	/**
@@ -88,7 +91,7 @@ public class LogPerformanceTestClient extends ComponentClient
 	/**
 	 * Calls logNumTimes() on the logStress component.
 	 */
-	public void doSomeStuff() throws AcsJContainerServicesEx  
+	public void activateComponentsAndSendLogs() throws AcsJContainerServicesEx  
 	{
 		int numToLog = 25;
 		int numComponents = 1;
@@ -96,6 +99,8 @@ public class LogPerformanceTestClient extends ComponentClient
 		String numToLogString = System.getProperty(NUM_LOGS);
 		String numComponentsString = System.getProperty(NUM_COMPONENTS);
 		String delayBetweenLogsString = System.getProperty(DELAY);
+		String componentName = System.getProperty(COMPONENT_NAME);
+
 		try {
 			if(null != numToLogString) {
 				numToLog = Integer.parseInt(numToLogString);
@@ -105,6 +110,9 @@ public class LogPerformanceTestClient extends ComponentClient
 			}
 			if(null != delayBetweenLogsString) {
 				delay = Integer.parseInt(delayBetweenLogsString);
+			}
+			if(null == componentName) {
+				componentName = DEFAULT_COMPONENT_NAME;
 			}
 		}
 		catch (NumberFormatException ex) {
@@ -119,9 +127,9 @@ public class LogPerformanceTestClient extends ComponentClient
 		{
 			//try 
 			{
-				org.omg.CORBA.Object obj = getContainerServices().getComponent("LOGSTRESS" + i);
+				org.omg.CORBA.Object obj = getContainerServices().getComponent(componentName + i);
 				System.out.println("obj is: " + obj);
-				logger.log(Level.INFO, "acquired generic corba object for LOGSTRESS" + i);
+				logger.log(Level.INFO, "acquired generic corba object for " + componentName + " " + i);
 				m_logStressComp[i-1] = alma.perftest.LogStressWithDelayHelper.narrow(obj);
 			}
 		}
@@ -142,7 +150,7 @@ public class LogPerformanceTestClient extends ComponentClient
 			{
 				if(!doneArray[i] && m_logStressComp[i].getThreadDone()) 
 				{
-					getContainerServices().releaseComponent("LOGSTRESS" + (i+1));
+					getContainerServices().releaseComponent(componentName + (i+1));
 					doneArray[i] = true;
 					doneCount++;
 					logger.log(Level.SEVERE, "releasing component: " + i);
@@ -175,28 +183,27 @@ public class LogPerformanceTestClient extends ComponentClient
 		
 		String managerLoc = System.getProperty(ACS_MANAGER);
 		if (managerLoc == null) {
-			System.out
-					.println("Java property 'ACS.manager' must be set to the corbaloc of the ACS manager!");
+			System.out.println("Java property 'ACS.manager' must be set to the corbaloc of the ACS manager!");
 			System.exit(-1);
 		}
 		String clientName = "LogPerformanceTestClient";
-		LogPerformanceTestClient hlc = null;
+		LogPerformanceTestClient performanceTestClient = null;
 		try {
-			hlc = new LogPerformanceTestClient(null, managerLoc, clientName);
-			hlc.doSomeStuff();
+			performanceTestClient = new LogPerformanceTestClient(null, managerLoc, clientName);
+			performanceTestClient.activateComponentsAndSendLogs();
 		}
 		catch (Exception e) {
             try {
-                Logger logger = hlc.getContainerServices().getLogger();
+                Logger logger = performanceTestClient.getContainerServices().getLogger();
                 logger.log(Level.SEVERE, "Client application failure", e);
             } catch (Exception e2) {
                 e2.printStackTrace(System.err);
             }
 		}
 		finally {
-			if (hlc != null) {
+			if (performanceTestClient != null) {
 				try {
-					hlc.tearDown();
+					performanceTestClient.tearDown();
 				}
 				catch (Exception e3) {
 					// bad luck

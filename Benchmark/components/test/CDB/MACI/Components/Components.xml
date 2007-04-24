@@ -155,20 +155,28 @@
       <_ Name="BDCPP01"      Code="componentsBulkReceiver"	
                              Type="IDL:alma/bulkdata/BulkDataReceiver:1.0"
                              Container="bilboContainer"/>
-      <_ Name="LOGSTRESS1" 	    
+      <_ Name="LOGSTRESSCPP1" 	    
          Code="LogStressImpl" 
          Type="IDL:alma/perftest/LogStressWithDelay:1.0" 	
          Container="cppContainer1"/>
-      <_ Name="LOGSTRESS2" 	    
+      <_ Name="LOGSTRESSCPP2" 	    
          Code="LogStressImpl" 
          Type="IDL:alma/perftest/LogStressWithDelay:1.0" 	
          Container="cppContainer2"/>
-      <_ Name="LOGSTRESS3" 	    
+      <_ Name="LOGSTRESSCPP3" 	    
          Code="LogStressImpl" 
          Type="IDL:alma/perftest/LogStressWithDelay:1.0" 	
          Container="cppContainer3"/>
-      <_ Name="JAVALOGSTRESS"   
+      <_ Name="LOGSTRESSJAVA1"   
          Code="alma.perftest.LogStressImpl.LogStressHelper" 
          Type="IDL:alma/perftest/LogStress:1.0" 
-         Container="frodoContainer"/>
+         Container="javaContainer1"/>
+      <_ Name="LOGSTRESSJAVA2"   
+         Code="alma.perftest.LogStressImpl.LogStressHelper" 
+         Type="IDL:alma/perftest/LogStress:1.0" 
+         Container="javaContainer2"/>
+      <_ Name="LOGSTRESSJAVA3"   
+         Code="alma.perftest.LogStressImpl.LogStressHelper" 
+         Type="IDL:alma/perftest/LogStress:1.0" 
+         Container="javaContainer3"/>
 </Components>

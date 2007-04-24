@@ -28,6 +28,7 @@ printUsageAndExit ()
 	echo "   -h | --help: print this usage message and exit."
 	echo "   -d | --debug: print additional debugging info about this script to stdout."
 	echo "   -r | --remoteHost <hostname>: remote host name on which to run the container(s)."
+	echo "   -l | --language <python | cpp | java>: the implementation language of the publishing component (cpp, java, python)."
 	echo ""
 	exit -1;
 }
@@ -198,12 +199,13 @@ HELP=
 DEBUG_MODE=
 PROFILE_JLOG=
 REMOTE_HOST=
+COMPONENT_LANGUAGE=
 
 #
 # These options can be recognized (longopts comma-separated. colon means argument is required)
 #
-LONGOPTS=help,jlog,debug,remoteHost:
-SHORTOPTS=h,j,d,r:
+LONGOPTS=help,jlog,debug,remoteHost:,language:
+SHORTOPTS=h,j,d,r:,l:
 
 #
 # Run getopt (posixly_correct needed). We run twice:
@@ -229,6 +231,8 @@ do
 		-d)           DEBUG_MODE=true ;;
 		-r)           REMOTE_HOST=$2 ; shift ;;
 		--remoteHost) REMOTE_HOST=$2 ; shift ;;
+		-l)           COMPONENT_LANGUAGE=$2 ; shift ;;
+		--language)   COMPONENT_LANGUAGE=$2 ; shift ;;
 		--) break ;;
 	esac
 	shift
@@ -252,6 +256,23 @@ then
 	printUsageAndExit
 fi
 
+#if [ ! $COMPONENT_LANGUAGE -eq "cpp" -a ! $COMPONENT_LANGUAGE -eq "java" -a ! $COMPONENT_LANGUAGE -eq "cpp" ]
+#then
+#	printUsageAndExit	
+#fi
+
+case "$COMPONENT_LANGUAGE" in
+	"cpp")	CONTAINER_GREP_STRING="maciContainer cppContainer"
+				COMPONENT_NAME=LOGSTRESSCPP;;
+	"java")  CONTAINER_GREP_STRING="containerName javaContainer"
+				COMPONENT_NAME=LOGSTRESSJAVA;;
+	"python") CONTAINER_GREP_STRING="pyContainer"
+				COMPONENT_NAME=LOGSTRESSPYTHON;;
+	*) printUsageAndExit;;
+esac
+
+debugPrint "Component type will be: $COMPONENT_LANGUAGE and name will be: $COMPONENT_NAME"
+
 NUM_LOGS=$1
 NUM_COMPONENTS=$2
 DELAY=$3
@@ -259,15 +280,14 @@ DELAY=$3
 # 'guesstimate' the amount of time we need to monitor the processes using the unix
 # sar command by a rough rule of thumb that 100,000 logs requires ~ 4 minutes (240 secs)
 debugPrint "NUM_LOGS was: $NUM_LOGS"
-SAR_RUN_TIME=`expr \( $NUM_LOGS / 100000 \) \* 240`
+SAR_RUN_TIME=`expr \( $NUM_LOGS / 100000 \) \* 240 + 100 \* $DELAY`
 debugPrint "SAR_RUN_TIME was calculated as: $SAR_RUN_TIME"
-if [ "$SAR_RUN_TIME" -eq "0" ] ;
+if [ "$SAR_RUN_TIME" -le "240" ] ;
 then
 	SAR_RUN_TIME=240
 fi
 
 debugPrint "SAR Run Time will be: $SAR_RUN_TIME"
-#read okToContinue
 
 # start acs
 export ACS_TMP=`pwd`/tmp
@@ -300,18 +320,19 @@ do
 	if [ -z $REMOTE_HOST ]
 	then
 		echo " Starting Container $i"
-		acsutilAwaitContainerStart -cpp cppContainer$i >& $ACS_TMP/cppContainer$i.log
-		publisherPid[$i]=`ps -ef | grep "maciContainer cppContainer$i"  | grep -v grep | gawk '{ print $2 }'`
+		acsutilAwaitContainerStart -${COMPONENT_LANGUAGE} ${COMPONENT_LANGUAGE}Container$i >& $ACS_TMP/${COMPONENT_LANGUAGE}Container$i.log
+		publisherPid[$i]=`ps -ef | grep "${CONTAINER_GREP_STRING}$i"  | grep -v acsStartJava | grep -v grep | gawk '{ print $2 }'`
 		debugPrint "publisherPid$i is: ${publisherPid[${i}]}"
 		`sar -x ${publisherPid[${i}]} 1 $SAR_RUN_TIME >& $ACS_TMP/$PUBLISHER_LOG_FILE$i.orig.log` &
 		./monitorPid.sh ${publisherPid[${i}]} 1 $ACS_TMP/$PUBLISHER_LOG_FILE-memory$i
 	else
 		echo " Starting Remote Container $i"
     	export MANAGER_REFERENCE=corbaloc::`getIP`:`getManagerPort`/Manager
-		ssh -f $USER@$REMOTE_HOST -f acsStartContainer -m $MANAGER_REFERENCE -cpp cppContainer$i >& $ACS_TMP/cppContainer$i.log
+		ssh -f $USER@$REMOTE_HOST -f acsStartContainer -m $MANAGER_REFERENCE -$COMPONENT_LANGUAGE ${COMPONENT_LANGUAGE}Container$i \
+			>& $ACS_TMP/${COMPONENT_LANGUAGE}Container$i.log
 		debugPrint "waiting for remote container $i to start..."
 		sleep 15
-		publisherPid[$i]=`ssh -f $USER@$REMOTE_HOST ps -ef | grep "maciContainer cppContainer$i"  | grep -v grep | gawk '{ print $2 }'`
+		publisherPid[$i]=`ssh -f $USER@$REMOTE_HOST ps -ef | grep "${CONTAINER_GREP_STRING}$i"  | grep -v acsStartJava | grep -v grep | gawk '{ print $2 }'`
 		debugPrint "publisherPid$i is: ${publisherPid[${i}]}"
 		ssh -f $USER@$REMOTE_HOST sar -x ${publisherPid[${i}]} 1 $SAR_RUN_TIME >& $ACS_TMP/$PUBLISHER_LOG_FILE$i.orig.log &
 		ssh -f $USER@$REMOTE_HOST remoteMonitorProcess ${publisherPid[${i}]} 1 >& $ACS_TMP/$PUBLISHER_LOG_FILE-memory$i &
@@ -360,7 +381,6 @@ then
 		jlogPid=`ps -ef | grep LogFrame  | grep -v grep | grep -v acsStartJava | gawk '{ print $2 }'`
 	done
 	debugPrint "jlogPid is: $jlogPid"
-	#read okToContinue
 	# start monitoring jlog process with 'sar' command
 	sar -x $jlogPid 1 $SAR_RUN_TIME >& $ACS_TMP/$JLOG_LOG_FILE.orig.log &
 	./monitorPid.sh $jlogPid 1 $ACS_TMP/$JLOG_LOG_FILE-memory 
@@ -370,7 +390,7 @@ fi
 # start up the client which will send the appropriate number of logs
 ClientJavaClass=LogPerformanceTestClient
 echo " Sending logs"
-acsStartJava -D NumLogs=$NUM_LOGS -D NumComponents=$NUM_COMPONENTS -D Delay=$DELAY \
+acsStartJava -D NumLogs=$NUM_LOGS -D NumComponents=$NUM_COMPONENTS -D Delay=$DELAY -D ComponentName=$COMPONENT_NAME \
 	alma.perftest.client.$ClientJavaClass >& $ACS_TMP/clientOutput.log &
 
 # wait until all the background processes are complete; 
@@ -448,7 +468,25 @@ then
 	kill -9 $jlogPid
 fi
 
-# stop acs, containers, etc.
+# stop the container(s)
+i=1
+while [ "$i" -le $NUM_COMPONENTS ]
+do
+	if [ -z $REMOTE_HOST ]
+	then
+		echo " Stopping Container $i"
+		acsStopContainer ${COMPONENT_LANGUAGE}Container$i >& $ACS_TMP/Stop${COMPONENT_LANGUAGE}Container$i.log
+	else
+		echo " Stopping Remote Container $i"
+		ssh -f $USER@$REMOTE_HOST -f acsStopContainer ${COMPONENT_LANGUAGE}Container$i \
+			>& $ACS_TMP/Stop${COMPONENT_LANGUAGE}Container$i.log
+		debugPrint "waiting for remote container $i to start..."
+		sleep 15
+	fi
+	i=`expr $i + 1`
+done
+
+# stop acs
 echo " Stopping ACS"
 acsStop >& $ACS_TMP/acsStop.log
 
