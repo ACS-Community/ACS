@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.18 2007/04/17 05:00:03 sharring Exp $"
+# "@(#) $Id: Makefile,v 1.19 2007/04/24 21:15:07 sharring Exp $"
 #
 # Makefile of ........
 #
@@ -186,12 +186,11 @@ ACSERRDEF = BenchmarkErrType
 # Jarfiles and their directories
 #
 
-JARFILES=components
+COMPONENTS_JARFILES=benchmarkComponents
 jjj_DIRS=
 jjj_EXTRAS= 
 
-components_DIRS=alma
-
+benchmarkComponents_DIRS=alma
 
 #
 # java sources in Jarfile on/off
