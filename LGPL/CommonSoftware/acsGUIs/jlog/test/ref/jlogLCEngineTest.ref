@@ -1416,7 +1416,6 @@
 1 - Log Message: Test message 99
 1 - 
 2 - ----------T--:--:--.--- [GlobalLogger] Logging proxy successfully created.
-2 - ----------T--:--:--.--- Local file logger: Cache saved to XXXXXX
 2 - ----------T--:--:--.--- [GlobalLogger] ManagerReference generated using localhost address: 'corbaloc::xxxxxxx:yyyy/Manager'
 2 - ----------T--:--:--.--- [GlobalLogger] Test message 0
 2 - ----------T--:--:--.--- [GlobalLogger] Test message 1
