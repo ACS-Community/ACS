@@ -279,7 +279,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 					internalRequestComponent(h, curls[i], status);
 
 					if (status.getStatus() != ComponentStatus.COMPONENT_ACTIVATED)
-						logger.fine("Failed to activate requested component '"+curls[i]+"', reason: '"+status.getStatus()+"'.");
+					    logger.log(Level.FINE,"Failed to activate requested component '"+curls[i]+"', reason: '"+status.getStatus()+"'.");
 				}
 				catch (Throwable ex)
 				{
@@ -808,7 +808,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			if (componentSpec != null)
 			{
 				cdbActivation = new ComponentSpec(componentSpec);
-				logger.info("Using CDB component specification: '" + cdbActivation + "'.");
+				logger.log(Level.INFO,"Using CDB component specification: '" + cdbActivation + "'.");
 			}
 		}
 		catch (Throwable t)
@@ -920,7 +920,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 					throw new IllegalArgumentException("Class '" + strategyClass.getName() + "' does not implement '" + LoadBalancingStrategy.class.getName() + "' interface.");
 				loadBalancingStrategy = (LoadBalancingStrategy)strategyObject;
 
-				logger.info("Using load balancing strategy: '" + strategyClass.getName() + "'.");
+				logger.log(Level.INFO,"Using load balancing strategy: '" + strategyClass.getName() + "'.");
 			}
 		}
 		catch (Throwable t)
@@ -1337,7 +1337,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 							String name = ids[i]; //readStringCharacteristics(componentsDAO, ids[i]+"/Name");
 							if (name == null)
 							{
-								logger.warning("Misconfigured CDB, there is no name of component '"+ids[i]+"' defined.");
+								logger.log(Level.WARNING,"Misconfigured CDB, there is no name of component '"+ids[i]+"' defined.");
 								continue;
 							}
 
@@ -1352,7 +1352,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 								String type = readStringCharacteristics(componentsDAO, ids[i]+"/Type");
 								if (type == null)
 								{
-									logger.warning("Misconfigured CDB, there is no type of component '"+name+"' defined.");
+									logger.log(Level.WARNING,"Misconfigured CDB, there is no type of component '"+name+"' defined.");
 									continue;
 								}
 
@@ -1364,7 +1364,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 									String code = readStringCharacteristics(componentsDAO, ids[i]+"/Code");
 									if (code == null)
 									{
-										logger.warning("Misconfigured CDB, there is no code of component '"+name+"' defined.");
+										logger.log(Level.WARNING,"Misconfigured CDB, there is no code of component '"+name+"' defined.");
 										continue;
 									}
 
@@ -1377,7 +1377,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 									String container = readStringCharacteristics(componentsDAO, ids[i]+"/Container");
 									if (container == null)
 									{
-										logger.warning("Misconfigured CDB, there is no container name of component '"+name+"' defined.");
+										logger.log(Level.WARNING,"Misconfigured CDB, there is no container name of component '"+name+"' defined.");
 										continue;
 									}
 
@@ -1495,10 +1495,10 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		if (id != 0)
 		{
 			requestorName = getRequestorName(id);
-			logger.info("'" + requestorName + "' requested component '" + curl + "'.");
+			logger.log(Level.INFO,"'" + requestorName + "' requested component '" + curl + "'.");
 		}
 		else
-			logger.info("Request for component '" + curl + "' issued.");
+			logger.log(Level.INFO,"Request for component '" + curl + "' issued.");
 	
 	
 		// no login required for predefined objects (services)
@@ -1556,16 +1556,16 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		if (component != null && component.getObject() != null)
 		{
 			if (requestorName != null)
-				logger.info("Component '" + curl + "' provided to '" + requestorName + "'.");
+				logger.log(Level.INFO, "Component '" + curl + "' provided to '" + requestorName + "'.");
 			else
-				logger.info("Component '" + curl + "' provided.");
+				logger.log(Level.INFO,"Component '" + curl + "' provided.");
 		}
 		else if (status.getStatus() != ComponentStatus.COMPONENT_NOT_ACTIVATED)
 		{
 			if (requestorName != null)
-				logger.info("Request from '" + requestorName + "' for component '" + curl + "' completed sucessfully, but component not activated.");
+				logger.log(Level.INFO,"Request from '" + requestorName + "' for component '" + curl + "' completed sucessfully, but component not activated.");
 			else
-				logger.info("Request for component '" + curl + "' completed sucessfully, but component not activated.");
+				logger.log(Level.INFO,"Request for component '" + curl + "' completed sucessfully, but component not activated.");
 		}
 		/**
 		 * @todo GCH 2006.09.25
@@ -1575,11 +1575,13 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		else
 		{
 			if (requestorName != null)
-				logger.info("Failed to provide component '" + curl + "' to '" + requestorName + "'.");
+				logger.log(Level.INFO,"Failed to provide component '" + curl + "' to '" + requestorName + "'.");
 			else
-				logger.info("Failed to provide component '" + curl + "'.");
-			if (status.getStatus() == ComponentStatus.COMPONENT_NOT_ACTIVATED)
-			    ex2 = new AcsJCannotGetComponentEx("Component " + curl + " not activated.");
+				logger.log(Level.INFO,"Failed to provide component '" + curl + "'.");
+			if (status.getStatus() == ComponentStatus.COMPONENT_NOT_ACTIVATED) {
+				ex2 = new AcsJCannotGetComponentEx();
+				logger.log(Level.WARNING, "Component " + curl + " not activated.", ex2);
+			}
 		}
 	
 		/****************************************************************/
@@ -1648,7 +1650,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			}
 		}
 	
-		logger.info(obtained + " of " + curls.length +" components obtained.");
+		logger.log(Level.INFO,obtained + " of " + curls.length +" components obtained.");
 	
 		/****************************************************************/
 	
@@ -1682,7 +1684,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 		// log info
 		String requestorName = getRequestorName(id);
-		logger.info("'" + requestorName + "' requested non-sticky component '" + curl + "'.");
+		logger.log(Level.INFO,"'" + requestorName + "' requested non-sticky component '" + curl + "'.");
 	
 		Component component = null;
 		synchronized (components)
@@ -1702,9 +1704,9 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	
 		// log info
 		if (component != null && component.getObject() != null)
-			logger.info("Non-sticky component '" + curl + "' provided to '" + requestorName + "'.");
+			logger.log(Level.INFO,"Non-sticky component '" + curl + "' provided to '" + requestorName + "'.");
 		else
-			logger.info("Failed to provide non-sticky component '" + curl + "' to '" + requestorName + "'.");
+			logger.log(Level.INFO,"Failed to provide non-sticky component '" + curl + "' to '" + requestorName + "'.");
 	
 		/****************************************************************/
 	
@@ -1775,14 +1777,14 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 					executeCommand(new ComponentCommandClientAdd(componentInfo.getHandle() & HANDLE_MASK, this.getHandle()));
 					//componentInfo.getClients().add(this.getHandle());
 				}
-				logger.info("Component " + name + " was made immortal.");
+				logger.log(Level.INFO,"Component " + name + " was made immortal.");
 			}
 		}
 
 		// this must be done outside component sync. block
 		if (!immortalState)
 		{
-			logger.info("Component " + name + " was made mortal.");
+			logger.log(Level.INFO,"Component " + name + " was made mortal.");
 
 			// finally, can happen that the manager is the only owner
 			// so release could be necessary
@@ -1851,7 +1853,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 				throw af;
 			}
 
-			logger.fine("'"+name+"' is logging in.");
+			logger.log(Level.FINE,"'"+name+"' is logging in.");
 
 			// delegate
 			switch (reply.charAt(0))
@@ -1932,7 +1934,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	public void logout(int id) throws AcsJNoPermissionEx
 	{
 
-		logger.fine("Client with handle '" + HandleHelper.toString(id) + "' is logging out.");
+	    logger.log(Level.FINE,"Client with handle '" + HandleHelper.toString(id) + "' is logging out.");
 
 		// check handle, no special rights needed for logout
                 // AcsJNoPermissionEx flies directly up from securityCheck()
@@ -2084,7 +2086,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		// NOTE: this could block since it is a remote call
 		bind(convertToHiearachical(name), "O", component);
 
-		logger.info("Component '"+name+"' registered.");
+		logger.log(Level.INFO,"Component '"+name+"' registered.");
 
 		/****************************************************************/
 
@@ -2104,7 +2106,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 		internalReleaseComponent(this.getHandle(), h, false);
 
-		logger.info("Component with handle '"+HandleHelper.toString(h)+"' unregistered.");
+		logger.log(Level.INFO,"Component with handle '"+HandleHelper.toString(h)+"' unregistered.");
 
 		/****************************************************************/
 
@@ -2133,9 +2135,9 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		Component component = internalRestartComponent(id, curl);
 
 		if (component != null)
-			logger.info("Component '"+curl+"' restarted.");
+			logger.log(Level.INFO,"Component '"+curl+"' restarted.");
 		else
-			logger.info("Failed to restart component '"+curl+"'.");
+			logger.log(Level.INFO,"Failed to restart component '"+curl+"'.");
 
 		/****************************************************************/
 
@@ -2164,11 +2166,11 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 		// log info
 		String requestorName = getRequestorName(id);
-		logger.info("'" + requestorName + "' requested release of component '" + curl + "'.");
+		logger.log(Level.INFO,"'" + requestorName + "' requested release of component '" + curl + "'.");
 
 		int owners = internalReleaseComponent(id, curl, id == this.getHandle());
 
-		logger.info("Component '" + curl + "' released by '" + requestorName + "'.");
+		logger.log(Level.INFO,"Component '" + curl + "' released by '" + requestorName + "'.");
 
 		/****************************************************************/
 
@@ -2205,11 +2207,11 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 		// log info
 		String requestorName = getRequestorName(id);
-		logger.info("'" + requestorName + "' requested forceful release of component '" + curl + "'.");
+		logger.log(Level.INFO,"'" + requestorName + "' requested forceful release of component '" + curl + "'.");
 
 		int owners = internalReleaseComponent(id, curl, true);
 
-		logger.info("Component '" + curl + "' forcefully released by '" + requestorName + "'.");
+		logger.log(Level.INFO,"Component '" + curl + "' forcefully released by '" + requestorName + "'.");
 
 		/****************************************************************/
 
@@ -2252,7 +2254,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			}
 		}
 
-		logger.info(released + " of " + curls.length +" components released.");
+		logger.log(Level.INFO,released + " of " + curls.length +" components released.");
 
 		/****************************************************************/
 
@@ -2429,10 +2431,10 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 		/****************************************************************/
 
-		logger.info("Manager is shutting down.");
+		logger.log(Level.INFO,"Manager is shutting down.");
 
 
-		logger.finer("Canceling heartbeat task.");
+		logger.log(Level.FINER,"Canceling heartbeat task.");
 		// cancel hertbeat task
 		heartbeatTask.cancel();
 		topologySortManager.destroy();
@@ -2454,7 +2456,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		// if not "silent" shutdown
 		if (containers != 0)
 		{
-			logger.finer("Releasing all components in the system.");
+			logger.log(Level.FINER,"Releasing all components in the system.");
 			try
 			{
 				topologySortManager.requestTopologicalSort();
@@ -2467,7 +2469,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			}
 		}
 
-		logger.finer("Notifying containers to disconnect or shutdown.");
+		logger.log(Level.FINER,"Notifying containers to disconnect or shutdown.");
 		notifyContainerDisconnectShutdown(containers);
 
 		// finalizeFearation
@@ -2475,7 +2477,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 		// process tasks in thread poll
 		// !!! NOTE: this could block (for a long time)
-		logger.finer("Waiting tasks in thread poll to complete...");
+		logger.log(Level.FINER,"Waiting tasks in thread poll to complete...");
 		threadPool.shutdown();
         try {
             if (!threadPool.awaitTermination(3, TimeUnit.SECONDS))
@@ -2493,7 +2495,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		destroyContainersDAOProxy();
 		destroyManagerDAOProxy();
 
-		logger.info("Manager shutdown completed.");
+		logger.log(Level.INFO,"Manager shutdown completed.");
 
 		/****************************************************************/
 
@@ -2617,7 +2619,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 					}
 				});
 
-		logger.info("Container '" + name + "' logged in.");
+		logger.log(Level.INFO,"Container '" + name + "' logged in.");
 
 		return clientInfo;
 	}
@@ -2658,12 +2660,12 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 										 cdbActivation.getCode(), cdbActivation.getContainer(), RELEASE_IMMEDIATELY, status, true);
 
 				if (status.getStatus() != ComponentStatus.COMPONENT_ACTIVATED)
-					logger.severe("Failed to activate CDB, reason: '"+status.getStatus()+"'.");
+					logger.log(Level.SEVERE,"Failed to activate CDB, reason: '"+status.getStatus()+"'.");
 				else if (cdbInfo == null || cdbInfo.getHandle() == 0 || cdbInfo.getComponent() == null)
-					logger.severe("Failed to activate CDB, invalid ComponentInfo returned: '"+cdbInfo+"'.");
+					logger.log(Level.SEVERE,"Failed to activate CDB, invalid ComponentInfo returned: '"+cdbInfo+"'.");
 				else
 				{
-					logger.info("CDB activated on container '" + containerInfo.getName() + "'.");
+				logger.log(Level.INFO,"CDB activated on container '" + containerInfo.getName() + "'.");
 				}
 			}
 			catch (Throwable ex)
@@ -2705,7 +2707,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 					String containerName = readStringCharacteristics(componentsDAO, startup[i]+"/Container");
 					if (containerName == null)
 					{
-						logger.warning("Misconfigured CDB, there is no container of component '"+startup[i]+"' defined.");
+						logger.log(Level.WARNING,"Misconfigured CDB, there is no container of component '"+startup[i]+"' defined.");
 						continue;
 					}
 
@@ -2763,7 +2765,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 					String name = ids[i]; //readStringCharacteristics(componentsDAO, ids[i]+"/Name");
 					if (name == null)
 					{
-						logger.warning("Misconfigured CDB, there is no name of component '"+ids[i]+"' defined.");
+						logger.log(Level.WARNING,"Misconfigured CDB, there is no name of component '"+ids[i]+"' defined.");
 						continue;
 					}
 
@@ -2771,7 +2773,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 					String autostart = readStringCharacteristics(componentsDAO, ids[i]+"/Autostart", true);
 					if (autostart == null)
 					{
-						logger.warning("Misconfigured CDB, there is no autostart attribute of component '"+ids[i]+"' defined.");
+						logger.log(Level.WARNING,"Misconfigured CDB, there is no autostart attribute of component '"+ids[i]+"' defined.");
 						continue;
 					}
 					else if (autostart.equalsIgnoreCase(TRUE_STRING) && !activationRequests.containsKey(name) /* TODO to be removed */ )
@@ -2780,7 +2782,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 						String componentContainer = readStringCharacteristics(componentsDAO, ids[i]+"/Container", true);
 						if (componentContainer == null)
 						{
-							logger.warning("Misconfigured CDB, there is no container attribute of component '"+ids[i]+"' defined.");
+							logger.log(Level.WARNING,"Misconfigured CDB, there is no container attribute of component '"+ids[i]+"' defined.");
 							continue;
 						}
 						else if (!containerInfo.getName().equals(componentContainer))
@@ -2853,7 +2855,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 								String containerName = readStringCharacteristics(componentsDAO, name+"/Container");
 								if (containerName == null)
 								{
-									logger.warning("Misconfigured CDB, there is no container of component '"+name+"' defined.");
+									logger.log(Level.WARNING,"Misconfigured CDB, there is no container of component '"+name+"' defined.");
 									//continue;
 								}
 								// if container name matches, add (override) activation request
@@ -2943,7 +2945,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 		}
 
-		logger.info("Container '"+containerInfo.getName()+"' startup statistics: " +
+		logger.log(Level.INFO,"Container '"+containerInfo.getName()+"' startup statistics: " +
 							activationRequestsList.size() + " components queued to be activated.");
 
 		// send message to the container
@@ -2966,7 +2968,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 				internalRequestComponent(requestor, uri, status);
 
 				if (status.getStatus() != ComponentStatus.COMPONENT_ACTIVATED)
-					logger.fine("Failed to reactivate requested component '"+uri+"', reason: '"+status.getStatus()+"'.");
+					logger.log(Level.FINE,"Failed to reactivate requested component '"+uri+"', reason: '"+status.getStatus()+"'.");
 				else
 					activated++;
 			}
@@ -2977,7 +2979,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			}
 		}
 
-		logger.info("Container '"+containerInfo.getName()+"' startup statistics: " +
+		logger.log(Level.INFO,"Container '"+containerInfo.getName()+"' startup statistics: " +
 							activated + " of " + activationRequestsList.size() + " components activated.");
 
 		// send message to the container
@@ -3232,7 +3234,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 					if (componentInfo == null)
 					{
 						// internal error, this should not happen
-						logger.severe("Internal state is not consistent (no ComponentInfo).");
+						logger.log(Level.SEVERE,"Internal state is not consistent (no ComponentInfo).");
 						continue;
 					}
 
@@ -3262,7 +3264,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 				else
 				{
 					// internal error, this should not happen
-					logger.severe("Internal state is not consistent.");
+					logger.log(Level.SEVERE,"Internal state is not consistent.");
 				}
 
 			}
@@ -3401,7 +3403,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		// notify administrators about the login
 		notifyClientLogin(clientInfo);
 
-		logger.info("Administrator '" + name + "' logged in.");
+		logger.log(Level.INFO,"Administrator '" + name + "' logged in.");
 
 		return clientInfo;
 	}
@@ -3470,7 +3472,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		// notify administrators about the login
 		notifyClientLogin(clientInfo);
 
-		logger.info("Client '" + name + "' logged in.");
+		logger.log(Level.INFO,"Client '" + name + "' logged in.");
 
 		return clientInfo;
 	}
@@ -3536,7 +3538,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		// notify administrators about the logout
 		notifyContainerLogout(containerInfo);
 
-		logger.info("Container '" + containerInfo.getName() + "' logged out.");
+		logger.log(Level.INFO,"Container '" + containerInfo.getName() + "' logged out.");
 
 	}
 
@@ -3609,7 +3611,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		// notify administrators about the logout
 		notifyClientLogout(clientInfo);
 
-		logger.info("Client '" + clientInfo.getName() + "' logged out.");
+		logger.log(Level.INFO,"Client '" + clientInfo.getName() + "' logged out.");
 
 	}
 
@@ -3650,7 +3652,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		// notify administrators about the logout
 		notifyClientLogout(clientInfo);
 
-		logger.info("Administrator '" + clientInfo.getName() + "' logged out.");
+		logger.log(Level.INFO,"Administrator '" + clientInfo.getName() + "' logged out.");
 
 	}
 
@@ -5267,7 +5269,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			{
 				// failed
 				bcex = new AcsJCannotGetComponentEx("Failed to reactivate dynamic component '"+componentInfo+"'.");
-				logger.severe(bcex.getMessage());
+				logger.log(Level.SEVERE,bcex.getMessage());
 				status.setStatus(ComponentStatus.COMPONENT_DOES_NO_EXIST);
 				throw bcex;
 			}
@@ -5315,7 +5317,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 				if (code == null)
 				{
 					bcex = new AcsJCannotGetComponentEx("Misconfigured CDB, there is no code of component '"+name+"' defined.");
-					logger.warning(bcex.getMessage());
+					logger.log(Level.WARNING,bcex.getMessage());
 					status.setStatus(ComponentStatus.COMPONENT_DOES_NO_EXIST);
 					throw bcex;
 				}
@@ -5327,7 +5329,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 				if (type == null)
 				{
 					bcex = new AcsJCannotGetComponentEx("Misconfigured CDB, there is no type of component '"+name+"' defined.");
-					logger.warning(bcex.getMessage());
+					logger.log(Level.WARNING,bcex.getMessage());
 					status.setStatus(ComponentStatus.COMPONENT_DOES_NO_EXIST);
 					throw bcex;
 				}
@@ -5339,7 +5341,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 				if (containerName == null)
 				{
 					bcex = new AcsJCannotGetComponentEx("Misconfigured CDB, there is no container of component '"+name+"' defined.");
-					logger.warning(bcex.getMessage());
+					logger.log(Level.WARNING,bcex.getMessage());
 					status.setStatus(ComponentStatus.COMPONENT_DOES_NO_EXIST);
 					throw bcex;
 				}
@@ -5505,7 +5507,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			//
 
 			// log info
-			logger.info("Activating component '"+name+"' on container '" + containerInfo.getName() + "'.");
+			logger.log(Level.INFO,"Activating component '"+name+"' on container '" + containerInfo.getName() + "'.");
 
 			try
 			{
@@ -5531,7 +5533,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		// failed to activate
 		if (componentInfo == null || componentInfo.getHandle() == 0 || componentInfo.getComponent() == null)
 		{
-			logger.severe("Failed to activate component '"+name+"'.");
+			logger.log(Level.SEVERE,"Failed to activate component '"+name+"'.");
 
 			synchronized (components)
 			{
@@ -5549,7 +5551,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		}
 
 		// log info
-		logger.info("Component '"+name+"' activated successfully.");
+		logger.log(Level.INFO,"Component '"+name+"' activated successfully.");
 
 		//
 		// check type consistency
@@ -5557,7 +5559,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		if (!isOtherDomainComponent && !componentInfo.getComponent().doesImplement(type))
 		{
 			// just output SEVERE message
-			logger.severe("Activated component '" + name + "' does not implement specified type '" + type + "'.");
+			logger.log(Level.SEVERE,"Activated component '" + name + "' does not implement specified type '" + type + "'.");
 		}
 
 		// @todo MF do the component handle mapping here (remember map and fix componentInfo),
@@ -5600,7 +5602,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 						//components.deallocate(h, true);
 
 					bcex = new AcsJCannotGetComponentEx("Container returned another handle than given, failed to fix handle since returned handle is already allocated.");
-					logger.severe(bcex.getMessage());
+					logger.log(Level.SEVERE,bcex.getMessage());
 
 					status.setStatus(ComponentStatus.COMPONENT_ACTIVATED);		// component is activated, but cannot be managed by the Manager
 					throw bcex;
@@ -5632,7 +5634,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 					{
 						// failed to allocate new
 						bcex = new AcsJCannotGetComponentEx("Container returned another handle than given, failed to fix handle due to handle relocation failure.");
-						logger.severe(bcex.getMessage());
+						logger.log(Level.SEVERE,bcex.getMessage());
 						status.setStatus(ComponentStatus.COMPONENT_ACTIVATED);		// Component is activated, but cannot be managed by the Manager
 						throw bcex;
 					}
@@ -5641,7 +5643,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 						executeCommand(new ComponentCommandSet(h, existingData));
 						//components.set(h, existingData);
 
-					logger.severe("Container returned another handle than given, handle fixed.");
+					logger.log(Level.SEVERE,"Container returned another handle than given, handle fixed.");
 				}
 
 			}
@@ -5818,9 +5820,9 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		notifyComponentRequested(new int[] { requestor }, new int[] { componentInfo.getHandle() });
 
 		if (reactivate)
-			logger.fine("Component '"+name+"' reactivated.");
+			logger.log(Level.FINE,"Component '"+name+"' reactivated.");
 		else
-			logger.fine("Component '"+name+"' activated.");
+			logger.log(Level.FINE,"Component '"+name+"' activated.");
 
 		// notify about the change (only this-domain container which activated the component)...
 		if (containerInfo != null)
@@ -6112,7 +6114,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		// notify administrators about the release request
 		notifyComponentReleased(new int[] { owner }, new int[] { h });
 
-		logger.fine("Component '"+componentInfo.getName()+"' released.");
+		logger.log(Level.FINE,"Component '"+componentInfo.getName()+"' released.");
 
 		// component deactivated
 		if (owners == 0 || force)
@@ -6224,7 +6226,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 							containerName = containerInfo.getName();
 						else
 							containerName = HandleHelper.toString(componentInfo.getContainer());
-						logger.warning("Container '"+containerName+"' required by component '"+componentInfo.getName()+"' is not logged in.");
+						logger.log(Level.WARNING,"Container '"+containerName+"' required by component '"+componentInfo.getName()+"' is not logged in.");
 					}
 
 				}
@@ -6233,7 +6235,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 				{
 
 					// log info
-					logger.info("Deactivating component '"+componentInfo.getName()+"' on container '" + containerInfo.getName() + "'.");
+					logger.log(Level.INFO,"Deactivating component '"+componentInfo.getName()+"' on container '" + containerInfo.getName() + "'.");
 
 					// destruct
 					try
@@ -6277,7 +6279,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		}
 
 		// log info
-		logger.info("Component '"+componentInfo.getName()+"' deactivated.");
+		logger.log(Level.INFO,"Component '"+componentInfo.getName()+"' deactivated.");
 
 		// release all subcomponents (just like client logoff)
 		// component should have already done this by itself, but take care of clean cleanup
@@ -6589,7 +6591,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 					containerName = containerInfo.getName();
 				else
 					containerName = HandleHelper.toString(componentInfo.getContainer());
-				logger.warning("Container '"+containerName+"' required by component '"+componentInfo.getName()+"' is not logged in.");
+				logger.log(Level.WARNING,"Container '"+containerName+"' required by component '"+componentInfo.getName()+"' is not logged in.");
 			}
 
 		}
@@ -6621,7 +6623,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			}
 		}
 
-		logger.fine("Component '"+componentInfo.getName()+"' restarted.");
+		logger.log(Level.FINE,"Component '"+componentInfo.getName()+"' restarted.");
 
 		return component;
 	}
@@ -6650,7 +6652,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		// check handle and NONE permissions
 		securityCheck(id, AccessRights.NONE);
 
-		logger.info("Getting default component for type '" + type + "'.");
+		logger.log(Level.INFO,"Getting default component for type '" + type + "'.");
 
 		ComponentInfo componentInfo = internalRequestDefaultComponent(id, type);
 
@@ -6700,7 +6702,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 						String name = ids[i]; //readStringCharacteristics(componentsDAO, ids[i]+"/Name");
 						if (name == null)
 						{
-							logger.warning("Misconfigured CDB, there is no type of component '"+ids[i]+"' defined.");
+							logger.log(Level.WARNING,"Misconfigured CDB, there is no type of component '"+ids[i]+"' defined.");
 							continue;
 						}
 
@@ -6712,7 +6714,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 							String componentType = readStringCharacteristics(componentsDAO, ids[i]+"/Type");
 							if (type == null)
 							{
-								logger.warning("Misconfigured CDB, there is no type of component '"+name+"' defined.");
+								logger.log(Level.WARNING,"Misconfigured CDB, there is no type of component '"+name+"' defined.");
 								continue;
 							}
 
@@ -6923,7 +6925,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 				//defaultComponents.put(componentInfo.getType(), componentInfo.getName());
 			}
 
-			logger.info("'" + componentInfo.getName() +"' has been marked as a default component of type '" + componentInfo.getType() +"'.");
+			logger.log(Level.INFO,"'" + componentInfo.getName() +"' has been marked as a default component of type '" + componentInfo.getType() +"'.");
 		}
 
 		/****************************************************************/
@@ -6984,7 +6986,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			}
 		}
 
-		logger.info(obtained + " of " + components.length +" dynamic components obtained.");
+		logger.log(Level.INFO,obtained + " of " + components.length +" dynamic components obtained.");
 
 		/****************************************************************/
 
@@ -7142,7 +7144,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 				//defaultComponents.put(componentInfo.getType(), componentInfo.getName());
 			}
 			
-			logger.info("'" + componentInfo.getName() +"' has been marked as a default component of type '" + componentInfo.getType() +"'.");
+			logger.log(Level.INFO,"'" + componentInfo.getName() +"' has been marked as a default component of type '" + componentInfo.getType() +"'.");
 		}
 		
 		if(componentInfo == null)
@@ -8291,7 +8293,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
         String[] retVal = new String[componentList.size()];
         componentList.toArray(retVal);
 
-		logger.info("Found " + retVal.length + " component entries in the configuration database.");
+	logger.log(Level.INFO,"Found " + retVal.length + " component entries in the configuration database.");
 
         return retVal;
     }
@@ -8360,7 +8362,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			}
 			catch (Throwable th)
 			{
-				logger.fine("Failed to create DAO for '"+entity+"'.");
+				logger.log(Level.FINE,"Failed to create DAO for '"+entity+"'.");
 				// TODO @todo logging?!
 				//CoreException ce = new CoreException("Failed to create DAO for '"+entity+"'.", th);
 				//logger.log(Level.FINE, ce.getMessage(), ce);
@@ -8527,7 +8529,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			}
 
 			if (givenDomainList.size() > 0)
-			    logger.info("Using domain list: " + givenDomainList + ".");
+				logger.log(Level.INFO,"Using domain list: " + givenDomainList + ".");
 
 		}
 		catch (Throwable t)
@@ -8548,7 +8550,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		// no domain to control, no federation
 		if (domains.size() == 0)
 		{
-			logger.config("No domain list given, manager federation disabled.");
+			logger.log(Level.CONFIG,"No domain list given, manager federation disabled.");
 			return;
 		}
 
@@ -8558,7 +8560,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 		if (remoteDirectoryComponentReference == null)
 		{
-			logger.warning("No valid local domain naming service reference found, manager federation disabled.");
+			logger.log(Level.WARNING,"No valid local domain naming service reference found, manager federation disabled.");
 			return;
 		}
 
@@ -8569,13 +8571,13 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		String domainNS = System.getProperty(NAME_DOMAIN_DIRECTORY);
 		if (domainNS == null)
 		{
-			logger.warning("No federation directory reference given, manager federation disabled.");
+			logger.log(Level.WARNING,"No federation directory reference given, manager federation disabled.");
 			return;
 		}
 		// set NS address
 		federationDirectoryProperties.put(Context.PROVIDER_URL, domainNS);
 
-		logger.info("Connecting to the federation directory with reference '"+domainNS+"'...");
+		logger.log(Level.INFO,"Connecting to the federation directory with reference '"+domainNS+"'...");
 
 		try
 		{
@@ -8587,7 +8589,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			return;
 		}
 
-		logger.info("Connected to the federation directory with reference '"+domainNS+"'.");
+		logger.log(Level.INFO,"Connected to the federation directory with reference '"+domainNS+"'.");
 
 		// register domains
 		Iterator iter = domains.iterator();
@@ -8598,7 +8600,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 		federationEnabled = true;
 
-		logger.info("Manager federation enabled.");
+		logger.log(Level.INFO,"Manager federation enabled.");
 
 		// set domain name string (one name or set of names)
 		if (domains.size() == 1)
