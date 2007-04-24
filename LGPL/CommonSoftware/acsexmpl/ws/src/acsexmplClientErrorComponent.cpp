@@ -20,7 +20,7 @@
 *
 *
 *
-* "@(#) $Id: acsexmplClientErrorComponent.cpp,v 1.11 2007/03/30 13:43:48 nbarriga Exp $"
+* "@(#) $Id: acsexmplClientErrorComponent.cpp,v 1.12 2007/04/24 16:22:22 nbarriga Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -100,7 +100,7 @@ Each method in the class shows an example.
 #include <acsutilTimeStamp.h>
 #include <string.h>
 
-ACE_RCSID(acsexmpl, acsexmplErrorComponentClient, "$Id: acsexmplClientErrorComponent.cpp,v 1.11 2007/03/30 13:43:48 nbarriga Exp $")
+ACE_RCSID(acsexmpl, acsexmplErrorComponentClient, "$Id: acsexmplClientErrorComponent.cpp,v 1.12 2007/04/24 16:22:22 nbarriga Exp $")
 using namespace maci;
 
 /*******************************************************************************/
@@ -281,12 +281,13 @@ void ClientErrorComponent::TestOk()
 	}
     catch(CORBA::SystemException &ex)
 	{
-	// Map......
-	ACSErrTypeCommon::GenericErrorExImpl displayMessageEx(
+	ACSErrTypeCommon::CORBAProblemExImpl corbaProblemEx(
 				   __FILE__, __LINE__,
-				   "ClientErrorComponent::TestReceiveRemoteException");
-	displayMessageEx.setErrorDesc("UNEXPECTED: displayMessage has thrown a CORBA exception");
-	displayMessageEx.log();
+				   "ClientErrorComponent::TestOk");
+	corbaProblemEx.setMinor(ex.minor());
+	corbaProblemEx.setCompletionStatus(ex.completed());
+	corbaProblemEx.setInfo(ex._info().c_str());
+	corbaProblemEx.log();
 	}
     catch(...)
 	{
@@ -329,14 +330,16 @@ void ClientErrorComponent::TestReceiveRemoteException()
 	}
     catch(CORBA::SystemException &ex)
 	{
-	// Map......
-	ACSErrTypeCommon::GenericErrorExImpl badMethodEx(
+	ACSErrTypeCommon::CORBAProblemExImpl corbaProblemEx(
 				   __FILE__, __LINE__,
 				   "ClientErrorComponent::TestReceiveRemoteException");
-	badMethodEx.setErrorDesc("badMethod has thrown a CORBA exception");
-	badMethodEx.log();
+	corbaProblemEx.setMinor(ex.minor());
+	corbaProblemEx.setCompletionStatus(ex.completed());
+	corbaProblemEx.setInfo(ex._info().c_str());
+	corbaProblemEx.log();
 
-	ACS::Time timeStamp = badMethodEx.getTimeStamp();
+	//Is this really necessary? The exceptions already have a timeStamp
+	ACS::Time timeStamp = corbaProblemEx.getTimeStamp();
 	ACE_CString tString = getStringifiedUTC(timeStamp);
 	ACS_DEBUG_PARAM("ClientErrorComponent::TestReceiveRemoteException", 
 			"Time of the CORBA exception: %s\n", tString.c_str());
@@ -387,14 +390,16 @@ void ClientErrorComponent::testTypeException()
 	}
     catch(CORBA::SystemException &ex)
 	{
-	// Map......
-	ACSErrTypeCommon::GenericErrorExImpl badMethodEx(
+	ACSErrTypeCommon::CORBAProblemExImpl corbaProblemEx(
 				   __FILE__, __LINE__,
-				   "ClientErrorComponent::testTypeException");
-	badMethodEx.setErrorDesc("UNEXPECTED: typeException has thrown a CORBA exception");
-	badMethodEx.log();
+				   "ClientErrorComponent::TestTypeException");
+	corbaProblemEx.setMinor(ex.minor());
+	corbaProblemEx.setCompletionStatus(ex.completed());
+	corbaProblemEx.setInfo(ex._info().c_str());
+	corbaProblemEx.log();
 
-	ACS::Time timeStamp = badMethodEx.getTimeStamp();
+	//Is this really necessary? The exceptions already have a timeStamp
+	ACS::Time timeStamp = corbaProblemEx.getTimeStamp();
 	ACE_CString tString = getStringifiedUTC(timeStamp);
 	ACS_DEBUG_PARAM("ClientErrorComponent::TestReceiveRemoteException", 
 			"Time of the CORBA exception: %s\n", tString.c_str());
@@ -432,14 +437,16 @@ void ClientErrorComponent::testTypeException()
 	}
     catch(CORBA::SystemException &ex)
 	{
-	// Map......
-	ACSErrTypeCommon::GenericErrorExImpl badMethodEx(
+	ACSErrTypeCommon::CORBAProblemExImpl corbaProblemEx(
 				   __FILE__, __LINE__,
-				   "ClientErrorComponent::testTypeException");
-	badMethodEx.setErrorDesc("typeException has thrown a CORBA exception");
-	badMethodEx.log();
+				   "ClientErrorComponent::TestReceiveRemoteException");
+	corbaProblemEx.setMinor(ex.minor());
+	corbaProblemEx.setCompletionStatus(ex.completed());
+	corbaProblemEx.setInfo(ex._info().c_str());
+	corbaProblemEx.log();
 
-	ACS::Time timeStamp = badMethodEx.getTimeStamp();
+	//Is this really necessary? The exceptions already have a timeStamp
+	ACS::Time timeStamp = corbaProblemEx.getTimeStamp();
 	ACE_CString tString = getStringifiedUTC(timeStamp);
 	ACS_DEBUG_PARAM("ClientErrorComponent::testTypeException", 
 			"Time of the CORBA exception: %s\n", tString.c_str());
@@ -490,14 +497,16 @@ void ClientErrorComponent::testExceptionFromCompletion()
 	}
     catch(CORBA::SystemException &ex)
 	{
-	// Map......
-	ACSErrTypeCommon::GenericErrorExImpl badMethodEx(
+	ACSErrTypeCommon::CORBAProblemExImpl corbaProblemEx(
 				   __FILE__, __LINE__,
-				   "ClientErrorComponent::testExceptionFromCompletion");
-	badMethodEx.setErrorDesc("UNEXPECTED: exceptionFromCompletion has thrown a CORBA exception");
-	badMethodEx.log();
+				   "ClientErrorComponent::TestExceptionFromCompletion");
+	corbaProblemEx.setMinor(ex.minor());
+	corbaProblemEx.setCompletionStatus(ex.completed());
+	corbaProblemEx.setInfo(ex._info().c_str());
+	corbaProblemEx.log();
 
-	ACS::Time timeStamp = badMethodEx.getTimeStamp();
+	//Is this really necessary? The exceptions already have a timeStamp
+	ACS::Time timeStamp = corbaProblemEx.getTimeStamp();
 	ACE_CString tString = getStringifiedUTC(timeStamp);
 	ACS_DEBUG_PARAM("ClientErrorComponent::TestReceiveRemoteException", 
 			"Time of the CORBA exception: %s\n", tString.c_str());
@@ -535,14 +544,16 @@ void ClientErrorComponent::testExceptionFromCompletion()
 	}
     catch(CORBA::SystemException &ex)
 	{
-	// Map......
-	ACSErrTypeCommon::GenericErrorExImpl badMethodEx(
+	ACSErrTypeCommon::CORBAProblemExImpl corbaProblemEx(
 				   __FILE__, __LINE__,
-				   "ClientErrorComponent::testExceptionFromCompletion");
-	badMethodEx.setErrorDesc("exceptionFromCompletion has thrown a CORBA exception");
-	badMethodEx.log();
+				   "ClientErrorComponent::TestExceptionFromCompletion");
+	corbaProblemEx.setMinor(ex.minor());
+	corbaProblemEx.setCompletionStatus(ex.completed());
+	corbaProblemEx.setInfo(ex._info().c_str());
+	corbaProblemEx.log();
 
-	ACS::Time timeStamp = badMethodEx.getTimeStamp();
+	//Is this really necessary? The exceptions already have a timeStamp
+	ACS::Time timeStamp = corbaProblemEx.getTimeStamp();
 	ACE_CString tString = getStringifiedUTC(timeStamp);
 	ACS_DEBUG_PARAM("ClientErrorComponent::testExceptionFromCompletion", 
 			"Time of the CORBA exception: %s\n", tString.c_str());
@@ -589,12 +600,14 @@ void ClientErrorComponent::TestReceiveRemoteCompletion()
 	}
     catch(CORBA::SystemException &ex)
 	{
-	// Map......
-	ACSErrTypeCommon::GenericErrorExImpl ex(
+	ACSErrTypeCommon::CORBAProblemExImpl corbaProblemEx(
 				   __FILE__, __LINE__,
 				   "ClientErrorComponent::TestReceiveRemoteCompletion");
-	ex.setErrorDesc("completionFromException has thrown a CORBA exception");
-	ex.log();
+	corbaProblemEx.setMinor(ex.minor());
+	corbaProblemEx.setCompletionStatus(ex.completed());
+	corbaProblemEx.setInfo(ex._info().c_str());
+	corbaProblemEx.log();
+
 	}
     catch(...)
 	{
@@ -629,14 +642,15 @@ void ClientErrorComponent::testCompletionOnStack()
 	comp = foo_m->completionOnStack(3);
 	comp.log();
 	}
-    catch(CORBA::SystemException &ex2)
+    catch(CORBA::SystemException &ex)
 	{
-	// Map......
-	ACSErrTypeCommon::GenericErrorExImpl ex(
+	ACSErrTypeCommon::CORBAProblemExImpl corbaProblemEx(
 				   __FILE__, __LINE__,
-				   "ClientErrorComponent::testCompletionOnStack");
-	ex.setErrorDesc("CompletionOnStack has thrown a CORBA exception");
-	ex.log();
+				   "ClientErrorComponent::TestCompletionOnStack");
+	corbaProblemEx.setMinor(ex.minor());
+	corbaProblemEx.setCompletionStatus(ex.completed());
+	corbaProblemEx.setInfo(ex._info().c_str());
+	corbaProblemEx.log();
 	}
     catch(...)
 	{
@@ -674,12 +688,13 @@ void ClientErrorComponent::testCompletionFromCompletion()
 	}
     catch(CORBA::SystemException &ex)
 	{
-	// Map......
-	ACSErrTypeCommon::GenericErrorExImpl ex(
+	ACSErrTypeCommon::CORBAProblemExImpl corbaProblemEx(
 				   __FILE__, __LINE__,
-				   "ClientErrorComponent::testCompletionFromCompletion");
-	ex.setErrorDesc("completionFromCompletion has thrown a CORBA exception");
-	ex.log();
+				   "ClientErrorComponent::TestCompletionFromCompletion");
+	corbaProblemEx.setMinor(ex.minor());
+	corbaProblemEx.setCompletionStatus(ex.completed());
+	corbaProblemEx.setInfo(ex._info().c_str());
+	corbaProblemEx.log();
 	}
     catch(...)
 	{
