@@ -21,7 +21,7 @@
 *
 * who       when        what
 * --------  --------    ----------------------------------------------
-* sharring  2006/06/20  created 
+* sharring  2007/04/13  created 
 */
  
 #include <LogStressImpl.h>
@@ -30,7 +30,7 @@
 #include <unistd.h>
 
 /**
- * The required thread service method (for ACE thread); sends messages to the logging channel as fast as it can.
+ * The required thread service method (for ACE thread); sends messages to the logging channel.
  */
 int SendingThread::svc()
 {
@@ -104,6 +104,7 @@ LogStress::~LogStress()
  * Starts a thread and returns control to the caller. The thread will log messages 
  * to the logging channel with the designated delay between msgs until the appropriate 
  * number of msgs have been sent.  
+ *
  * @param numberOfTimes: the number of logs to be sent to the logging channel.
  * @param delayBetweenLogs: the time to pause between logs, in milliseconds.
  */

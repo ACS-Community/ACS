@@ -35,9 +35,9 @@ public class LogStressImpl implements ComponentLifecycle, LogStressWithDelayOper
 {
 	private ContainerServices m_containerServices;
 	private Logger m_logger;
-	private boolean threadDone;
 	private int numTimesToLog;
 	private int delay;
+	private boolean threadDone;
 	
 	private class SendingThread extends Thread
 	{
@@ -65,7 +65,6 @@ public class LogStressImpl implements ComponentLifecycle, LogStressWithDelayOper
 			}
 			setThreadDone(true);
 		}
-
 	}
 
 	/////////////////////////////////////////////////////////////
@@ -106,21 +105,15 @@ public class LogStressImpl implements ComponentLifecycle, LogStressWithDelayOper
 		return m_containerServices.getName();
 	}
 	
-	/////////////////////////////////////////////////////////////
-	// Implementation of LogStressOperations
-	/////////////////////////////////////////////////////////////
-	
 	public void setThreadDone(boolean threadDone) 
 	{
 		this.threadDone = threadDone;
 	}
 
-	public boolean getThreadDone() 
-	{
-		// TODO Auto-generated method stub
-		return threadDone;
-	}
-
+	/////////////////////////////////////////////////////////////
+	// Implementation of LogStressOperations
+	/////////////////////////////////////////////////////////////
+	
 	public void logNumTimes(int numTimes, int delayBetweenLogs) 
 	{
 		// TODO Auto-generated method stub
@@ -131,5 +124,10 @@ public class LogStressImpl implements ComponentLifecycle, LogStressWithDelayOper
 		SendingThread sendingThread = new SendingThread();
 		sendingThread.start();
 	}
-}
 
+	public boolean getThreadDone() 
+	{
+		// TODO Auto-generated method stub
+		return threadDone;
+	}
+}

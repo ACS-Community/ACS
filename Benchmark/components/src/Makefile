@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.19 2007/04/24 21:15:07 sharring Exp $"
+# "@(#) $Id: Makefile,v 1.20 2007/04/25 00:38:14 sharring Exp $"
 #
 # Makefile of ........
 #
@@ -176,7 +176,7 @@ CDB_SCHEMAS =
 # 
 # IDL Files and flags
 # 
-IDL_FILES = perftest IdlCompilationTime perftestBD LogStress
+IDL_FILES = perftest IdlCompilationTime perftestBD 
 IDL_TAO_FLAGS =
 USER_IDL = -I$(ACE_ROOT)/TAO/orbsvcs/orbsvcs/
 
