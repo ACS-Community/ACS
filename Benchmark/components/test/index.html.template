@@ -4,10 +4,12 @@
 	</head>
 	<body>
 		<H1>Test summary: </H1>
-		For this test, we sent CHANGE_NUMBER_OF_LOGS logs.<br> 
+		For this test, we sent CHANGE_NUMBER_OF_LOGS logs per component.<br> 
 		The acs services (loggingService, acsLogSvc, and Notify_Service processes included)
-		were run on the the host: CHANGE_HOST_NAME. <br>
-		The test components (log suppliers) were run on CHANGE_NUMBER_OF_SUPPLIERS separate machines.
+		were run on the the host: CHANGE_ACSHOST_NAME. <br>
+		We used CHANGE_NUMBER_OF_SUPPLIERS component(s) each running in a separate container on host: CHANGE_PUBLISHER_HOST_NAME.<br>
+		The components were implemented in: CHANGE_PUBLISHER_LANGUAGE.	<br>
+		We were expected to receive a total of: CHANGE_TOTAL_EXPECTED messages, and we received: CHANGE_TOTAL_RECEIVED.
 		<H2>Performance of log publisher process: </H2>
 		<img src="publisher.png"/>
 		<H2>Memory usage of log publisher process: </H2>

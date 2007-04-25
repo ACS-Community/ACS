@@ -171,18 +171,19 @@ HERE
 # definition of a function to generate an html file summarizing the test results
 genhtml () 
 {
-	if [ $PROFILE_JLOG ]
+	cat ./index.html.template \
+		| sed -e s/CHANGE_NUMBER_OF_LOGS/$1/g \
+		| sed -e s/CHANGE_ACSHOST_NAME/$2/g \
+		| sed -e s/CHANGE_NUMBER_OF_SUPPLIERS/$3/g \
+		| sed -e s/CHANGE_PUBLISHER_HOST_NAME/$4/g \
+		| sed -e s/CHANGE_PUBLISHER_LANGUAGE/$5/g \
+		| sed -e s/CHANGE_TOTAL_EXPECTED/$6/g \
+		| sed -e s/CHANGE_TOTAL_RECEIVED/$7/g \
+			> ../doc/loggingPerformance.html;
+
+	if [ ! $PROFILE_JLOG ]
 	then
-		cat ./index.html.template | sed -e s/CHANGE_NUMBER_OF_LOGS/$1/g \
-		 | sed -e s/CHANGE_HOST_NAME/$2/g \
-		 | sed -e s/CHANGE_NUMBER_OF_SUPPLIERS/$3/g \
-		 > ../doc/loggingPerformance.html;
-	else
-		cat ./index.html.template | sed -e s/CHANGE_NUMBER_OF_LOGS/$1/g \
-		 | sed -e s/CHANGE_HOST_NAME/$2/g \
-		 | sed -e s/CHANGE_NUMBER_OF_SUPPLIERS/$3/g \
-		 | sed -e /jlog/d \
-		 > ../doc/loggingPerformance.html;
+		 cat ../doc/loggingPerformance.html | sed -e /jlog/d > ../doc/loggingPerformance.html;
 	fi
 }
 
@@ -275,14 +276,14 @@ DELAY=$3
 # 'guesstimate' the amount of time we need to monitor the processes using the unix
 # sar command by a rough rule of thumb that 100,000 logs requires ~ 4 minutes (240 secs)
 debugPrint "NUM_LOGS was: $NUM_LOGS"
-SAR_RUN_TIME=`expr \( $NUM_LOGS / 100000 \) \* 240 + 100 \* $DELAY`
-debugPrint "SAR_RUN_TIME was calculated as: $SAR_RUN_TIME"
-if [ "$SAR_RUN_TIME" -le "240" ] ;
+EXTRA_WAIT_TIME=`expr \( $NUM_LOGS / 100000 \) \* 60`
+debugPrint "EXTRA_WAIT_TIME was calculated as: $EXTRA_WAIT_TIME"
+if [ "$EXTRA_WAIT_TIME" -le "60" ] ;
 then
-	SAR_RUN_TIME=240
+	EXTRA_WAIT_TIME=60
 fi
 
-debugPrint "SAR Run Time will be: $SAR_RUN_TIME"
+debugPrint "Extra wait time will be: $EXTRA_WAIT_TIME"
 
 # start acs
 export ACS_TMP=`pwd`/tmp
@@ -318,20 +319,20 @@ do
 		acsutilAwaitContainerStart -${COMPONENT_LANGUAGE} ${COMPONENT_LANGUAGE}Container$i >& $ACS_TMP/${COMPONENT_LANGUAGE}Container$i.log
 		publisherPid[$i]=`ps -ef | grep "${CONTAINER_GREP_STRING}$i"  | grep -v acsStartJava | grep -v bash | grep -v grep | gawk '{ print $2 }'`
 		debugPrint "publisherPid$i is: ${publisherPid[${i}]}"
-		`sar -x ${publisherPid[${i}]} 1 $SAR_RUN_TIME >& $ACS_TMP/$PUBLISHER_LOG_FILE$i.orig.log` &
-		./monitorPid.sh ${publisherPid[${i}]} 1 $ACS_TMP/$PUBLISHER_LOG_FILE-memory$i
+		`sar -x ${publisherPid[${i}]} 1 9999 >& $ACS_TMP/$PUBLISHER_LOG_FILE$i.orig.log` &
+		./monitorProcess ${publisherPid[${i}]} 1 $ACS_TMP/$PUBLISHER_LOG_FILE-memory$i &
 	else
 		echo " Starting Remote Container $i"
     	export MANAGER_REFERENCE=corbaloc::`getIP`:`getManagerPort`/Manager
-		ssh -f $USER@$REMOTE_HOST -f acsStartContainer -m $MANAGER_REFERENCE -$COMPONENT_LANGUAGE ${COMPONENT_LANGUAGE}Container$i \
+		ssh -f $USER@$REMOTE_HOST -f "acsStartContainer -m $MANAGER_REFERENCE -$COMPONENT_LANGUAGE ${COMPONENT_LANGUAGE}Container$i" \
 			>& $ACS_TMP/${COMPONENT_LANGUAGE}Container$i.log
 		debugPrint "waiting for remote container $i to start..."
 		sleep 15
 		publisherPid[$i]=`ssh -f $USER@$REMOTE_HOST ps -ef | grep "${CONTAINER_GREP_STRING}$i"  | grep -v acsStartJava | grep -v bash \
 			 | grep -v grep | gawk '{ print $2 }'`
 		debugPrint "publisherPid$i is: ${publisherPid[${i}]}"
-		ssh -f $USER@$REMOTE_HOST sar -x ${publisherPid[${i}]} 1 $SAR_RUN_TIME >& $ACS_TMP/$PUBLISHER_LOG_FILE$i.orig.log &
-		ssh -f $USER@$REMOTE_HOST remoteMonitorProcess ${publisherPid[${i}]} 1 >& $ACS_TMP/$PUBLISHER_LOG_FILE-memory$i &
+		ssh -f $USER@$REMOTE_HOST "sar -x ${publisherPid[${i}]} 1 9999" >& $ACS_TMP/$PUBLISHER_LOG_FILE$i.orig.log &
+		ssh -f $USER@$REMOTE_HOST "remoteMonitorProcess ${publisherPid[${i}]} 1" >& $ACS_TMP/$PUBLISHER_LOG_FILE-memory$i &
 	fi
 	i=`expr $i + 1`
 done
@@ -359,29 +360,27 @@ done
 debugPrint "loggingClientPid is: $loggingClientPid"
 
 # monitor the relevant processes using the unix 'sar' command
-sar -x $logSvcPid 1 $SAR_RUN_TIME >& $ACS_TMP/$ACS_LOG_SVC_LOG_FILE.orig.log &
-./monitorPid.sh $logSvcPid 1 $ACS_TMP/$ACS_LOG_SVC_LOG_FILE-memory
-sar -x $loggingServicePid 1 $SAR_RUN_TIME >& $ACS_TMP/$LOGGING_SERVICE_LOG_FILE.orig.log &
-./monitorPid.sh $loggingServicePid 1 $ACS_TMP/$LOGGING_SERVICE_LOG_FILE-memory 
-sar -x $loggingNotifyServicePid 1 $SAR_RUN_TIME >& $ACS_TMP/$LOGGING_NOTIFY_SERVICE_LOG_FILE.orig.log &
-./monitorPid.sh $loggingNotifyServicePid 1 $ACS_TMP/$LOGGING_NOTIFY_SERVICE_LOG_FILE-memory 
-sar -x $loggingClientPid 1 $SAR_RUN_TIME >& $ACS_TMP/$LOGGING_CLIENT_LOG_FILE.orig.log &
-./monitorPid.sh $loggingClientPid 1 $ACS_TMP/$LOGGING_CLIENT_LOG_FILE-memory 
+sar -x $logSvcPid 1 9999 >& $ACS_TMP/$ACS_LOG_SVC_LOG_FILE.orig.log &
+./monitorProcess $logSvcPid 1 $ACS_TMP/$ACS_LOG_SVC_LOG_FILE-memory &
+sar -x $loggingServicePid 1 9999 >& $ACS_TMP/$LOGGING_SERVICE_LOG_FILE.orig.log &
+./monitorProcess $loggingServicePid 1 $ACS_TMP/$LOGGING_SERVICE_LOG_FILE-memory  &
+sar -x $loggingNotifyServicePid 1 9999 >& $ACS_TMP/$LOGGING_NOTIFY_SERVICE_LOG_FILE.orig.log &
+./monitorProcess $loggingNotifyServicePid 1 $ACS_TMP/$LOGGING_NOTIFY_SERVICE_LOG_FILE-memory  &
+sar -x $loggingClientPid 1 9999 >& $ACS_TMP/$LOGGING_CLIENT_LOG_FILE.orig.log &
+./monitorProcess $loggingClientPid 1 $ACS_TMP/$LOGGING_CLIENT_LOG_FILE-memory  &
 if [ "$PROFILE_JLOG" ] ;
 then
-	# start jlog - using a separate script so that 'wait' will work later in this script (and not 
-	# stall waiting on jlog to finish running) 
-	./startJlog.sh $ACS_TMP
+	echo " Starting jlog..."
+	jlog >& $ACS_TMP/jlogOutput.log &
 	while [ -z "$jlogPid" ]
 	do
 		jlogPid=`ps -ef | grep LogFrame  | grep -v grep | grep -v acsStartJava | gawk '{ print $2 }'`
 	done
 	debugPrint "jlogPid is: $jlogPid"
 	# start monitoring jlog process with 'sar' command
-	sar -x $jlogPid 1 $SAR_RUN_TIME >& $ACS_TMP/$JLOG_LOG_FILE.orig.log &
-	./monitorPid.sh $jlogPid 1 $ACS_TMP/$JLOG_LOG_FILE-memory 
+	sar -x $jlogPid 1 9999 >& $ACS_TMP/$JLOG_LOG_FILE.orig.log &
+	./monitorProcess $jlogPid 1 $ACS_TMP/$JLOG_LOG_FILE-memory  &
 fi
-
 
 # start up the client which will send the appropriate number of logs
 ClientJavaClass=LogPerformanceTestClient
@@ -391,18 +390,67 @@ acsStartJava -D NumLogs=$NUM_LOGS -D NumComponents=$NUM_COMPONENTS -D Delay=$DEL
 
 # wait until all the background processes are complete; 
 echo " Waiting for all logs to be sent..."
-wait
+wait $!
 
 # sleep a bit longer to allow things to 'settle'
-echo " Sleeping a bit to allow logs to be processed..."
-sleep 10
+echo " Sleeping $EXTRA_WAIT_TIME seconds to allow logs to be processed..."
+sleep $EXTRA_WAIT_TIME
 
 # stop the monitoring
 echo " Stopping the monitoring"
-killall monitorProcess
+echo ""
+echo " NOTE: some 'process terminated' messages are normal here..."
+echo ""
+killall -q monitorProcess >& $ACS_TMP/killallLocalMonitorProcess.out
+killall -q sar >& $ACS_TMP/killallLocalSar.out
 if [ ! -z $REMOTE_HOST ] 
 then
-	ssh -f $USER@$REMOTE_HOST killall remoteMonitorProcess
+	ssh -f $USER@$REMOTE_HOST "killall -q remoteMonitorProcess" >& $ACS_TMP/killallMonitorProcess.out
+	ssh -f $USER@$REMOTE_HOST "killall -q sar >& /dev/null" >& $ACS_TMP/killallSar.out
+fi
+echo ""
+
+# stop the loggingClient
+echo " Stopping the loggingClient"
+kill -9 $loggingClientPid
+
+# stop jlog
+if [ "$PROFILE_JLOG" ] ;
+then
+	echo " Stopping jlog"
+	kill -9 $jlogPid
+fi
+
+# stop the container(s)
+i=1
+while [ "$i" -le $NUM_COMPONENTS ]
+do
+	if [ -z $REMOTE_HOST ]
+	then
+		echo " Stopping Container $i"
+		acsStopContainer ${COMPONENT_LANGUAGE}Container$i >& $ACS_TMP/Stop${COMPONENT_LANGUAGE}Container$i.log
+	else
+		echo " Stopping Remote Container $i"
+		ssh -f $USER@$REMOTE_HOST -f "acsStopContainer ${COMPONENT_LANGUAGE}Container$i" \
+			>& $ACS_TMP/Stop${COMPONENT_LANGUAGE}Container$i.log
+		debugPrint "waiting for remote container $i to stop..."
+		sleep 15
+	fi
+	i=`expr $i + 1`
+done
+
+# stop acs
+echo " Stopping ACS"
+acsStop >& $ACS_TMP/acsStop.log
+
+# verify the proper number of logs were received
+totalLogsReceivedByLoggingClient=`grep "msg:" $ACS_TMP/all_logs.xml | wc -l`
+totalLogsExpected=`expr $NUM_LOGS \* $NUM_COMPONENTS`
+if [ $totalLogsReceivedByLoggingClient -ne $totalLogsExpected ]
+then
+	echo " FAILURE: didn't receive the proper number of logs."
+else
+	echo " SUCCESS - all logs accounted for."
 fi
 
 # prep the log files
@@ -451,47 +499,9 @@ fi
 
 # generate the html page summarizing the test results
 echo " Generating the html file"
-genhtml $NUM_LOGS `hostname -f` $NUM_COMPONENTS
-
-# stop the loggingClient
-echo " Stopping the loggingClient"
-kill -9 $loggingClientPid
-
-# stop jlog
-if [ "$PROFILE_JLOG" ] ;
+LOCALHOSTNAME=`hostname -f` 
+if [ -z $REMOTE_HOST ]
 then
-	echo " Stopping jlog"
-	kill -9 $jlogPid
+	REMOTE_HOST=$LOCALHOSTNAME
 fi
-
-# stop the container(s)
-i=1
-while [ "$i" -le $NUM_COMPONENTS ]
-do
-	if [ -z $REMOTE_HOST ]
-	then
-		echo " Stopping Container $i"
-		acsStopContainer ${COMPONENT_LANGUAGE}Container$i >& $ACS_TMP/Stop${COMPONENT_LANGUAGE}Container$i.log
-	else
-		echo " Stopping Remote Container $i"
-		ssh -f $USER@$REMOTE_HOST -f acsStopContainer ${COMPONENT_LANGUAGE}Container$i \
-			>& $ACS_TMP/Stop${COMPONENT_LANGUAGE}Container$i.log
-		debugPrint "waiting for remote container $i to stop..."
-		sleep 15
-	fi
-	i=`expr $i + 1`
-done
-
-# stop acs
-echo " Stopping ACS"
-acsStop >& $ACS_TMP/acsStop.log
-
-# verify the proper number of logs were received
-totalLogsReceivedByLoggingClient=`grep "msg:" $ACS_TMP/all_logs.xml | wc -l`
-totalLogsExpected=`expr $NUM_LOGS \* $NUM_COMPONENTS`
-if [ $totalLogsReceivedByLoggingClient -ne $totalLogsExpected ]
-then
-	echo " FAILURE: didn't receive the proper number of logs."
-else
-	echo " SUCCESS - all logs accounted for."
-fi
+genhtml $NUM_LOGS $LOCALHOSTNAME $NUM_COMPONENTS $REMOTE_HOST $COMPONENT_LANGUAGE $totalLogsExpected $totalLogsReceivedByLoggingClient 
