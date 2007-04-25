@@ -90,7 +90,7 @@ public class LogStressImpl implements ComponentLifecycle, LogStressWithDelayOper
 	public void aboutToAbort() {
 		cleanUp();
 		m_logger.info("managed to abort...");
-        System.out.println("LogStress component managed to abort... you should know this even if the logger did not flush correctly!");
+		System.out.println("LogStress component managed to abort... you should know this even if the logger did not flush correctly!");
 	}
 	
 	/////////////////////////////////////////////////////////////
@@ -116,7 +116,6 @@ public class LogStressImpl implements ComponentLifecycle, LogStressWithDelayOper
 	
 	public void logNumTimes(int numTimes, int delayBetweenLogs) 
 	{
-		// TODO Auto-generated method stub
 		m_logger.info("logNumTimes called...");
 		this.threadDone = false;
 		this.numTimesToLog = numTimes;
@@ -127,7 +126,6 @@ public class LogStressImpl implements ComponentLifecycle, LogStressWithDelayOper
 
 	public boolean getThreadDone() 
 	{
-		// TODO Auto-generated method stub
 		return threadDone;
 	}
 }
