@@ -67,6 +67,36 @@ public class LogStressImpl implements ComponentLifecycle, LogStressWithDelayOper
 		}
 	}
 
+   // Constructor
+   public LogStressImpl()
+	{
+		setThreadDone(false);
+	}
+
+	public void setThreadDone(boolean threadDone) 
+	{
+		this.threadDone = threadDone;
+	}
+
+	/////////////////////////////////////////////////////////////
+	// Implementation of LogStressOperations
+	/////////////////////////////////////////////////////////////
+	
+	public void logNumTimes(int numTimes, int delayBetweenLogs) 
+	{
+		m_logger.info("logNumTimes called...");
+		this.threadDone = false;
+		this.numTimesToLog = numTimes;
+		this.delay = delayBetweenLogs;
+		SendingThread sendingThread = new SendingThread();
+		sendingThread.start();
+	}
+
+	public boolean getThreadDone() 
+	{
+		return threadDone;
+	}
+
 	/////////////////////////////////////////////////////////////
 	// Implementation of ComponentLifecycle
 	/////////////////////////////////////////////////////////////
@@ -90,42 +120,18 @@ public class LogStressImpl implements ComponentLifecycle, LogStressWithDelayOper
 	public void aboutToAbort() {
 		cleanUp();
 		m_logger.info("managed to abort...");
-		System.out.println("LogStress component managed to abort... you should know this even if the logger did not flush correctly!");
 	}
-	
+
 	/////////////////////////////////////////////////////////////
 	// Implementation of ACSComponent
 	/////////////////////////////////////////////////////////////
 	
-	public ComponentStates componentState() {
+	public ComponentStates componentState() 
+	{
 		return m_containerServices.getComponentStateManager().getCurrentState();
 	}
 	
 	public String name() {
 		return m_containerServices.getName();
-	}
-	
-	public void setThreadDone(boolean threadDone) 
-	{
-		this.threadDone = threadDone;
-	}
-
-	/////////////////////////////////////////////////////////////
-	// Implementation of LogStressOperations
-	/////////////////////////////////////////////////////////////
-	
-	public void logNumTimes(int numTimes, int delayBetweenLogs) 
-	{
-		m_logger.info("logNumTimes called...");
-		this.threadDone = false;
-		this.numTimesToLog = numTimes;
-		this.delay = delayBetweenLogs;
-		SendingThread sendingThread = new SendingThread();
-		sendingThread.start();
-	}
-
-	public boolean getThreadDone() 
-	{
-		return threadDone;
 	}
 }
