@@ -101,6 +101,20 @@ module perftest
 	readonly attribute ACS::RWlong property15;
 	readonly attribute ACS::RWlong property16;
     };
+
+ 	// a very simple component used to stress test the logging channel
+	interface LogStress : ACS::ACSComponent
+	{
+		string sendLogs();
+	};
+
+   /** @interface Interface LogStressPerformanceTest used to stress test the logging channel
+    */
+   interface LogStressWithDelay : ACS::ACSComponent
+	{
+		void logNumTimes(in long numTimes, in long delayBetweenLogs);
+		boolean getThreadDone();
+	};
 };
 
 #endif
