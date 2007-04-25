@@ -476,7 +476,7 @@ do
 		echo " Stopping Remote Container $i"
 		ssh -f $USER@$REMOTE_HOST -f acsStopContainer ${COMPONENT_LANGUAGE}Container$i \
 			>& $ACS_TMP/Stop${COMPONENT_LANGUAGE}Container$i.log
-		debugPrint "waiting for remote container $i to start..."
+		debugPrint "waiting for remote container $i to stop..."
 		sleep 15
 	fi
 	i=`expr $i + 1`
