@@ -236,11 +236,11 @@ public abstract class MasterComponentImplBase extends CharacteristicComponentImp
 	
 	/*********************** [ miscellaneous ] ***********************/
 	
-	protected class DefaultResourceErrorHandler<T> implements SubsysResourceMonitor.RecoverableResourceErrorHandler<T>
+	public class DefaultResourceErrorHandler<T> implements SubsysResourceMonitor.RecoverableResourceErrorHandler<T>
 	{
-		private final String resourceName;
-		private final boolean isComponent;
-		DefaultResourceErrorHandler(String resourceName, boolean isComponent) {
+		protected final String resourceName;
+		protected final boolean isComponent;
+		protected DefaultResourceErrorHandler(String resourceName, boolean isComponent) {
 			this.resourceName = resourceName;
 			this.isComponent = isComponent;
 		}
