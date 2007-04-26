@@ -277,6 +277,7 @@ public class SubsysResourceMonitor {
     	private final ExecutorService threadPool;
         private Future scheduleFuture;
         private volatile boolean isSuspended;
+        private volatile boolean lastCheckSucceeded;
 		
 		ResourceCheckRunner(ResourceChecker<T> resourceChecker, ResourceErrorHandler<T> err, Logger logger, ExecutorService threadPool) {
 			this.resourceChecker = resourceChecker;
@@ -284,6 +285,7 @@ public class SubsysResourceMonitor {
             this.logger = logger;
     		this.threadPool = threadPool;
     		isSuspended = false;
+    		lastCheckSucceeded = true;
 		}
         
         /**
@@ -299,6 +301,17 @@ public class SubsysResourceMonitor {
         Future getScheduleFuture() {
             return scheduleFuture;
         }
+        
+        /**
+         * To be called from run()
+         */
+        private void notifyRecovery() {
+			// @TODO remove this check with ACS 7.0 when the interface have been merged
+			if (err instanceof RecoverableResourceErrorHandler) {
+				RecoverableResourceErrorHandler<T> recoverableErr = (RecoverableResourceErrorHandler<T>) err;
+				recoverableErr.resourceRecovered(resourceChecker.getResource());
+			}        	
+        }
 		
 		public void run() {
 			
@@ -312,11 +325,17 @@ public class SubsysResourceMonitor {
 				public void run() {
 					String badState = resourceChecker.checkState();
 					if (badState != null && !timeout) { // we don't want to report a bad state after a timeout, since the timeout has already been reported
+						lastCheckSucceeded = false;
 						try {
 							err.badState(resourceChecker.getResource(), badState);                            
 						} catch (Exception e) {
 							logger.log(Level.WARNING, "Failed to propagate offending state of resource '" + resourceChecker.getResourceName() + "' to the error handler!", e);
 						}
+					}
+					else if (!lastCheckSucceeded) {
+						// all is well, but previous check failed
+						notifyRecovery();
+						lastCheckSucceeded = true;
 					}
 				}
 				void cancel() {
@@ -365,16 +384,18 @@ public class SubsysResourceMonitor {
 			
 			boolean beyondRepair = false;
 			if (wasTimedOut) {
+				lastCheckSucceeded = false;
 				try {
 					// notify the error handler
 					// TODO: call in separate thread with timeout. Decide about value of "beyondRepair" if method 'resourceUnreachable' times out
 					beyondRepair = err.resourceUnreachable(resourceChecker.getResource()); 
 				} catch (Throwable thr) {
                     logger.log(Level.WARNING, "Failed to propagate unavailability of resource '" + resourceChecker.getResourceName() + "' to the error handler!", thr);
-				} 				
+				}
 			}			
 			else if (callError != null) {
                 // the asynchronous call "resourceChecker.checkState()" failed, but not because of a timeout.
+				lastCheckSucceeded = false;
                 logger.log(Level.WARNING, "Failed to check the status of resource '" + resourceChecker.getResourceName() + "'.", callError);				
 			}
 			if (beyondRepair) {
@@ -508,10 +529,26 @@ public class SubsysResourceMonitor {
         abstract boolean resourceUnreachable(T resource);
         
         /**
-         * Called when {@link SubsysResourceMonitor}
+         * Called when {@link SubsysResourceMonitor} was found in a bad state, but still replied in time. 
          * @param resource
          */
         abstract void badState(T resource, String stateName);
+        
+    }
+    
+    /**
+     * @TODO: with next major ACS release (7.0) this interface must be merged back to ResourceErrorHandler.
+     * We only use a separate interface to be able to add the method resourceRecovered in ACS 6.0.3 in a backward compatible way.
+     */
+    public interface RecoverableResourceErrorHandler<T> extends ResourceErrorHandler<T> {
+        /**
+         * Notification that the monitored resource has recovered after a previous failure or timeout.
+         * This notification can only work if monitoring has continued after the problem was detected, 
+         * which is always the case for =badState= problems, but depends on the return value of <code>resourceUnreachable</code>.
+         * in case of timeout problems.
+         * @since ACS 6.0.3
+         */
+        abstract void resourceRecovered(T resource);        	    	
     }
 
 }
