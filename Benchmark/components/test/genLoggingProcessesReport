@@ -28,7 +28,7 @@ printUsageAndExit ()
 	echo "   -h | --help: print this usage message and exit."
 	echo "   -d | --debug: print additional debugging info about this script to stdout."
 	echo "   -r | --remoteHost <hostname>: remote host name on which to run the container(s)."
-	echo "   -l | --language <py | cpp | java>: the implementation language of the publishing component (cpp, java, python)."
+	echo "   -l | --language <py | cpp | java>: the implementation language of the publishing component (cpp, java, python) - NOTE: default is cpp."
 	echo ""
 	exit -1;
 }
@@ -200,7 +200,7 @@ HELP=
 DEBUG_MODE=
 PROFILE_JLOG=
 REMOTE_HOST=
-COMPONENT_LANGUAGE=
+COMPONENT_LANGUAGE=cpp
 
 #
 # These options can be recognized (longopts comma-separated. colon means argument is required)
@@ -401,12 +401,12 @@ echo " Stopping the monitoring"
 echo ""
 echo " NOTE: some 'process terminated' messages are normal here..."
 echo ""
-killall -q monitorProcess >& $ACS_TMP/killallLocalMonitorProcess.out
-killall -q sar >& $ACS_TMP/killallLocalSar.out
+killall -q monitorProcess >& $ACS_TMP/killallLocalMonitorProcess.log
+killall -q sar >& $ACS_TMP/killallLocalSar.log
 if [ ! -z $REMOTE_HOST ] 
 then
-	ssh -f $USER@$REMOTE_HOST "killall -q remoteMonitorProcess" >& $ACS_TMP/killallMonitorProcess.out
-	ssh -f $USER@$REMOTE_HOST "killall -q sar >& /dev/null" >& $ACS_TMP/killallSar.out
+	ssh -f $USER@$REMOTE_HOST "killall -q remoteMonitorProcess" >& $ACS_TMP/killallMonitorProcess.log
+	ssh -f $USER@$REMOTE_HOST "killall -q sar >& /dev/null" >& $ACS_TMP/killallSar.log
 fi
 echo ""
 

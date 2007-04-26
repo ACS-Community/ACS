@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.19 2007/04/17 04:55:42 sharring Exp $"
+# "@(#) $Id: Makefile,v 1.20 2007/04/26 02:15:25 sharring Exp $"
 #
 # Makefile of ........
 #
@@ -108,7 +108,7 @@ lllll_OBJECTS   =
 #
 # Scripts (public and local)
 # ----------------------------
-SCRIPTS         =
+SCRIPTS         = monitorProcess monitorPid.sh remoteMonitorProcess
 SCRIPTS_L       = 	genMakeReport genCompReport \
 			genCompLoggingReport \
 			genCompEventReport \
