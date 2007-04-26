@@ -236,7 +236,7 @@ public abstract class MasterComponentImplBase extends CharacteristicComponentImp
 	
 	/*********************** [ miscellaneous ] ***********************/
 	
-	protected class DefaultResourceErrorHandler<T> implements SubsysResourceMonitor.ResourceErrorHandler<T>
+	protected class DefaultResourceErrorHandler<T> implements SubsysResourceMonitor.RecoverableResourceErrorHandler<T>
 	{
 		private final String resourceName;
 		private final boolean isComponent;
@@ -268,6 +268,12 @@ public abstract class MasterComponentImplBase extends CharacteristicComponentImp
         		}
         	}
         }
+		/**
+		 * Subclasses might want to send a <code>reinit</code> event to the state machine.
+		 */
+		public void resourceRecovered(T resource) {
+			// nada
+		}
     }
 
 	/**
@@ -357,7 +363,7 @@ public abstract class MasterComponentImplBase extends CharacteristicComponentImp
         	boolean isComponent = ( checker.getResource() instanceof ACSComponent );
 			err = new DefaultResourceErrorHandler<T>(checker.getResourceName(), isComponent);
         }
-		subsysComponentMonitor.monitorResource(checker, err);
+		subsysComponentMonitor.monitorResource(checker, err, monitorDelaySeconds);
 	}
 	
 	/**
