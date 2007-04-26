@@ -5078,12 +5078,18 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	    throws  AcsJCannotGetComponentEx, AcsJSyncLockFailedEx,
 	            AcsJComponentSpecIncompatibleWithActiveComponentEx
 	{
-
-		if (name == null)
-		    throw new AcsJCannotGetComponentEx("Cannot activate component with NULL name.");
-		if (status == null)
-		    throw new AcsJCannotGetComponentEx("Component " + name + " has NULL status.");
-
+		AcsJCannotGetComponentEx bcex = null;
+		
+		if (name == null) {
+			bcex = new AcsJCannotGetComponentEx();
+			logger.log(Level.SEVERE, "Cannot activate component with NULL name.", bcex);
+		    throw bcex;
+		}
+		if (status == null) {
+			bcex = new AcsJCannotGetComponentEx();
+			logger.log(Level.SEVERE, "Component " + name + " has NULL status.", bcex);
+			throw bcex;
+		}    
 
 		try {
 			checkCyclicDependency(requestor, name);
@@ -5144,12 +5150,18 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
                 AcsJComponentSpecIncompatibleWithActiveComponentEx
 	{
 
-		if (name == null)
-		    throw new AcsJCannotGetComponentEx("Cannot activate component with NULL name.");
-		if (status == null)
-		    throw new AcsJCannotGetComponentEx("Component " + name + " has NULL status.");
-
 		AcsJCannotGetComponentEx bcex = null;
+		
+		if (name == null) {
+		    bcex = new AcsJCannotGetComponentEx();
+		    logger.log(Level.SEVERE,"Cannot activate component with NULL name.",bcex);
+		    throw bcex;
+		}
+		if (status == null) {
+		    bcex = new AcsJCannotGetComponentEx();
+		    logger.log(Level.SEVERE,"Component " + name + " has NULL status.",bcex);
+	    	throw bcex;
+		}
 
 		boolean isOtherDomainComponent = name.startsWith(CURL_URI_SCHEMA);
 		boolean isDynamicComponent = isOtherDomainComponent ?
@@ -5268,8 +5280,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 				componentInfo.getDynamicContainerName() == null)
 			{
 				// failed
-				bcex = new AcsJCannotGetComponentEx("Failed to reactivate dynamic component '"+componentInfo+"'.");
-				logger.log(Level.SEVERE,bcex.getMessage());
+				bcex = new AcsJCannotGetComponentEx();
+				logger.log(Level.SEVERE,"Failed to reactivate dynamic component '"+componentInfo+"'.",bcex);
 				status.setStatus(ComponentStatus.COMPONENT_DOES_NO_EXIST);
 				throw bcex;
 			}
@@ -5305,8 +5317,10 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 				else
 				{
 					// not found
+					bcex = new AcsJCannotGetComponentEx();
 					status.setStatus(ComponentStatus.COMPONENT_DOES_NO_EXIST);
-					throw new AcsJCannotGetComponentEx("Component "+ name +" not found in CDB");
+					logger.log(Level.SEVERE,"Component "+ name +" not found in CDB",bcex);
+					throw bcex;
 				}
 
 			}
@@ -5316,8 +5330,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 				code = readStringCharacteristics(dao, name+"/Code");
 				if (code == null)
 				{
-					bcex = new AcsJCannotGetComponentEx("Misconfigured CDB, there is no code of component '"+name+"' defined.");
-					logger.log(Level.WARNING,bcex.getMessage());
+					bcex = new AcsJCannotGetComponentEx();
+					logger.log(Level.SEVERE,"Misconfigured CDB, there is no code of component '"+name+"' defined.",bcex);
 					status.setStatus(ComponentStatus.COMPONENT_DOES_NO_EXIST);
 					throw bcex;
 				}
@@ -5328,8 +5342,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 				type = readStringCharacteristics(dao, name+"/Type");
 				if (type == null)
 				{
-					bcex = new AcsJCannotGetComponentEx("Misconfigured CDB, there is no type of component '"+name+"' defined.");
-					logger.log(Level.WARNING,bcex.getMessage());
+					bcex = new AcsJCannotGetComponentEx();
+					logger.log(Level.SEVERE,"Misconfigured CDB, there is no type of component '"+name+"' defined.",bcex);
 					status.setStatus(ComponentStatus.COMPONENT_DOES_NO_EXIST);
 					throw bcex;
 				}
@@ -5340,8 +5354,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 				containerName = readStringCharacteristics(dao, name+"/Container");
 				if (containerName == null)
 				{
-					bcex = new AcsJCannotGetComponentEx("Misconfigured CDB, there is no container of component '"+name+"' defined.");
-					logger.log(Level.WARNING,bcex.getMessage());
+					bcex = new AcsJCannotGetComponentEx();
+					logger.log(Level.SEVERE,"Misconfigured CDB, there is no container of component '"+name+"' defined.",bcex);
 					status.setStatus(ComponentStatus.COMPONENT_DOES_NO_EXIST);
 					throw bcex;
 				}
@@ -5380,11 +5394,14 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		    {
 			    String domainName = CURLHelper.createURI(name).getAuthority();
 			    remoteManager = getManagerForDomain(domainName);
-			    if (remoteManager == null)
-			        throw new AcsJCannotGetComponentEx("Failed to obtain manager for domain '" + domainName + "'.");
+			    if (remoteManager == null) {
+			    	bcex = new AcsJCannotGetComponentEx();
+			    	logger.log(Level.WARNING, "Failed to obtain manager for domain '" + domainName + "'.", bcex);
+			        throw bcex;
+			    }
 		    } catch (Throwable th) {
-				bcex = new AcsJCannotGetComponentEx("Failed to obtain non-local manager required by component '"+name+"'.", th);
-				logger.log(Level.WARNING, bcex.getMessage());
+				bcex = new AcsJCannotGetComponentEx(th);
+				logger.log(Level.WARNING, "Failed to obtain non-local manager required by component '"+name+"'.", bcex);
 				status.setStatus(ComponentStatus.COMPONENT_NOT_ACTIVATED);
 				throw bcex;
 		    }
@@ -5408,8 +5425,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			// required container is not logged in
 			if (container == null)
 			{
-				bcex = new AcsJCannotGetComponentEx("Container '"+containerName+"' required by component '"+name+"' is not logged in.");
-				logger.log(Level.WARNING, bcex.getMessage());
+				bcex = new AcsJCannotGetComponentEx();
+				logger.log(Level.SEVERE, "Container '"+containerName+"' required by component '"+name+"' is not logged in.",bcex);
 				status.setStatus(ComponentStatus.COMPONENT_NOT_ACTIVATED);
 				throw bcex;
 			}
@@ -5431,7 +5448,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			// failed to obtain handle
 			if (h == 0)
 			{
-				AcsJCannotGetComponentEx af = new AcsJCannotGetComponentEx("Preallocation of new handle failed, too many registered components.");
+				AcsJCannotGetComponentEx af = new AcsJCannotGetComponentEx();
+				logger.log(Level.WARNING, "Preallocation of new handle failed, too many registered components.", af);
 				throw af;
 			}
 
@@ -5496,8 +5514,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			}
 			catch (Throwable ex)
 			{
-				bcex = new AcsJCannotGetComponentEx("Failed to obtain component '"+name+"' from remote manager.", ex);
-				logger.log(Level.WARNING, bcex.getMessage());
+				bcex = new AcsJCannotGetComponentEx(ex);
+				logger.log(Level.SEVERE, "Failed to obtain component '"+name+"' from remote manager.", bcex);
 			}
 		}
 		else
@@ -5515,8 +5533,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			}
 			catch (Throwable ex)
 			{
-				bcex = new AcsJCannotGetComponentEx("Failed to activate component '"+name+"' on container '"+containerName+"'.", ex);
-				logger.log(Level.SEVERE, bcex.getMessage());
+				bcex = new AcsJCannotGetComponentEx(ex);
+				logger.log(Level.SEVERE, "Failed to activate component '"+name+"' on container '"+containerName+"'.", bcex);
 			}
 		}
 
@@ -5601,8 +5619,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 						executeCommand(new ComponentCommandDeallocate(h, true));
 						//components.deallocate(h, true);
 
-					bcex = new AcsJCannotGetComponentEx("Container returned another handle than given, failed to fix handle since returned handle is already allocated.");
-					logger.log(Level.SEVERE,bcex.getMessage());
+					bcex = new AcsJCannotGetComponentEx();
+					logger.log(Level.SEVERE, "Container returned another handle than given, failed to fix handle since returned handle is already allocated.", bcex);
 
 					status.setStatus(ComponentStatus.COMPONENT_ACTIVATED);		// component is activated, but cannot be managed by the Manager
 					throw bcex;
@@ -5633,8 +5651,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 					if (h == 0)
 					{
 						// failed to allocate new
-						bcex = new AcsJCannotGetComponentEx("Container returned another handle than given, failed to fix handle due to handle relocation failure.");
-						logger.log(Level.SEVERE,bcex.getMessage());
+						bcex = new AcsJCannotGetComponentEx();
+						logger.log(Level.SEVERE,"Container returned another handle than given, failed to fix handle due to handle relocation failure.", bcex);
 						status.setStatus(ComponentStatus.COMPONENT_ACTIVATED);		// Component is activated, but cannot be managed by the Manager
 						throw bcex;
 					}
@@ -5725,8 +5743,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			}
 			catch (Throwable ex)
 			{
-				bcex = new AcsJCannotGetComponentEx("Failed to construct component '"+name+"', exception caught when invoking 'construct()' method.", ex);
-				logger.log(Level.SEVERE, bcex.getMessage(), bcex);
+				bcex = new AcsJCannotGetComponentEx(ex);
+				logger.log(Level.SEVERE, "Failed to construct component '"+name+"', exception caught when invoking 'construct()' method.", bcex);
 
 			}
 
@@ -5751,8 +5769,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 					}
 					catch (Exception ex)
 					{
-						bcex = new AcsJCannotGetComponentEx("Failed to deactivate component '"+name+"' on container '"+containerName+"'.", ex);
-						logger.log(Level.SEVERE, bcex.getMessage(), bcex);
+						bcex = new AcsJCannotGetComponentEx(ex);
+						logger.log(Level.SEVERE, "Failed to deactivate component '"+name+"' on container '"+containerName+"'.", bcex);
 					}
 
 					status.setStatus(ComponentStatus.COMPONENT_NOT_ACTIVATED);
