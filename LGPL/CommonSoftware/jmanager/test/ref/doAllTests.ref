@@ -52,17 +52,17 @@
 1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx
 1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx
 1 - This is OK: duplicate unregistration alma.ACSErrTypeCommon.wrappers.AcsJBadParameterEx
-1 - This is OK: cyclic dependency alma.maciErrType.wrappers.AcsJCannotGetComponentEx: Component MOUNT2 not activated.
-1 - This is OK: cyclic dependency alma.maciErrType.wrappers.AcsJCannotGetComponentEx: Component MOUNT3 not activated.
+1 - This is OK: cyclic dependency alma.maciErrType.wrappers.AcsJCannotGetComponentEx
+1 - This is OK: cyclic dependency alma.maciErrType.wrappers.AcsJCannotGetComponentEx
 1 - This is OK: alma.maciErrType.wrappers.AcsJCannotGetComponentEx
 1 - This is OK: alma.maciErrType.wrappers.AcsJCannotGetComponentEx
 1 - This is OK: alma.maciErrType.wrappers.AcsJCannotGetComponentEx
 1 - This is OK: alma.maciErrType.wrappers.AcsJCannotGetComponentEx
 1 - This is OK: component does not exist alma.maciErrType.wrappers.AcsJCannotGetComponentEx
-1 - This is OK: component not activated alma.maciErrType.wrappers.AcsJCannotGetComponentEx: Component MOUNT1 not activated.
-1 - This is OK: component not activated alma.maciErrType.wrappers.AcsJCannotGetComponentEx: Component MOUNT1 not activated.
-1 - This is OK: alma.maciErrType.wrappers.AcsJCannotGetComponentEx: Component MOUNT2 not activated.
-1 - This is OK: component not activated alma.maciErrType.wrappers.AcsJCannotGetComponentEx: Component MOUNT3 not activated.
+1 - This is OK: component not activated alma.maciErrType.wrappers.AcsJCannotGetComponentEx
+1 - This is OK: component not activated alma.maciErrType.wrappers.AcsJCannotGetComponentEx
+1 - This is OK: alma.maciErrType.wrappers.AcsJCannotGetComponentEx
+1 - This is OK: component not activated alma.maciErrType.wrappers.AcsJCannotGetComponentEx
 1 - This is OK: Non-null CURLs expected.
 1 - This is OK: Non-null CURLs expected.
 1 - This is OK: Non-null 'statuses' expected.
@@ -84,7 +84,7 @@
 1 - This is OK: alma.maciErrType.wrappers.AcsJInvalidComponentSpecEx
 1 - This is OK: alma.maciErrType.wrappers.AcsJInvalidComponentSpecEx
 1 - This is OK: alma.maciErrType.wrappers.AcsJInvalidComponentSpecEx
-1 - This is OK: alma.maciErrType.wrappers.AcsJCannotGetComponentEx: Container 'invalidContainer' required by component 'dynComponent' is not logged in.
+1 - This is OK: alma.maciErrType.wrappers.AcsJCannotGetComponentEx
 1 - This is OK: alma.maciErrType.wrappers.AcsJComponentSpecIncompatibleWithActiveComponentEx
 1 - This is OK: alma.maciErrType.wrappers.AcsJComponentSpecIncompatibleWithActiveComponentEx
 1 - This is OK: alma.maciErrType.wrappers.AcsJInvalidComponentSpecEx
@@ -114,8 +114,8 @@
 1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx
 1 - This is OK: null parameter
 1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx
-1 - This is OK: alma.maciErrType.wrappers.AcsJCannotGetComponentEx: Component DEMANDER not activated.
-1 - This is OK: alma.maciErrType.wrappers.AcsJCannotGetComponentEx: Component DEMANDER not activated.
+1 - This is OK: alma.maciErrType.wrappers.AcsJCannotGetComponentEx
+1 - This is OK: alma.maciErrType.wrappers.AcsJCannotGetComponentEx
 1 - 
 1 - 
 1 - OK (39 tests)
