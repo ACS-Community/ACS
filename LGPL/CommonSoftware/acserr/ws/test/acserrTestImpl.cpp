@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acserrTestImpl.cpp,v 1.53 2006/04/13 18:13:44 bjeram Exp $"
+* "@(#) $Id: acserrTestImpl.cpp,v 1.54 2007/04/27 14:38:40 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -27,7 +27,7 @@
 * rlemke   30/08/01  integrated into tat
 */
 
-static char *rcsId="@(#) $Id: acserrTestImpl.cpp,v 1.53 2006/04/13 18:13:44 bjeram Exp $"; 
+static char *rcsId="@(#) $Id: acserrTestImpl.cpp,v 1.54 2007/04/27 14:38:40 bjeram Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include "acserrTestImpl.h"
@@ -46,29 +46,87 @@ acserrTestImpl::acserrTestImpl(acserrTest* dest, const char* sn){
 ACSErr::Completion * acserrTestImpl::testNoError (  )
     throw ( CORBA::SystemException)
 {
+    AUTO_TRACE("acserrTestImpl::testNoError");
+
     ACSErrTestOKCompletion *er = new ACSErrTestOKCompletion();
     return er->returnCompletion();
-}  
+}//acserrTestImpl::testNoError 
 
-ACSErr::Completion * acserrTestImpl::testDefaultError (  )
+ACSErr::Completion* acserrTestImpl::testDefaultError (  )
     throw ( CORBA::SystemException)
 {
-    CompletionImpl *er = new CompletionImpl();
-    return er->returnCompletion();
-}  
+    AUTO_TRACE("acserrTestImpl::testDefaultError");
+
+// here we create complation on stack but could be created on heap as well (see other examples)
+    CompletionImpl er; //  CompletionImpl *er = new CompletionImpl();
+
+// because er is allocated on stack and will be automatically deleted, returnCompletion should not delete it !!!
+    return er.returnCompletion(false);  
+}//acserrTestImpl::testDefaultError 
 
 ACSErr::Completion * acserrTestImpl::test ( CORBA::Long depth, CORBA::Boolean err )
     throw ( CORBA::SystemException)
 {
+    AUTO_TRACE("acserrTestImpl::test");
   this->depth = depth;
   
   CompletionImpl *e = f1 (depth-1, err);
 
+  // we could create comp on the stach as well
   ACSErrTest0Completion *comp= new ACSErrTest0Completion(e, __FILE__, __LINE__, "acserrTestImpl::test", ACSErr::Alert);
-  comp->log();
+  comp->log(); // noramlly we do not log here (just for test purpose)
   
   return comp->returnCompletion();
 }  
+
+// Here we return CORBA completion as output parameter
+void acserrTestImpl::testCompletionOut ( CORBA::Long depth, CORBA::Boolean err, ACSErr::Completion_out c ) 
+     throw( CORBA::SystemException )
+{
+    AUTO_TRACE("acserrTestImpl::testCompletionOut");
+    CompletionImpl *e = f1 (depth-1, err);
+
+    ACSErrTest0Completion comp(e, __FILE__, __LINE__, "acserrTestImpl::testCompletionOut");
+    comp.log(); // noramlly we do not log here (just for test purpose)
+    
+    c = comp.outCompletion();
+}//testCompletionOut
+
+
+// error is reported as CORBA exception
+void acserrTestImpl::testExceptions ( CORBA::Long depth, CORBA::Boolean err)
+    throw ( CORBA::SystemException, ACSErrTypeTest::ACSErrTest0Ex, ACSErr::ACSException)
+{
+  this->depth = depth;
+  try
+    {
+      f2 (depth-1, err);
+      
+    }
+  catch (ACSErr::ACSException &ex)
+    {
+
+       throw ACS_EXCEPTION(ex, ACSErr::ACSErrTypeTest, ACSErrTypeTest::ACSErrTest2, "acserrTestImpl::testException");
+    }
+  catch (ACSErrTest1ExImpl &_ex)
+      {
+      _ex.log();
+      ACSErrTest0ExImpl ex(_ex, __FILE__,  __LINE__, "acserrTestImpl::testExceptions");
+      ex.setMember1(3);
+      ex.setMember2(3.33);
+      ex.setMember3("stringMember");
+//      char *strB = ex.getMember3();
+
+      ACS_SHORT_LOG((LM_INFO, "Exception members are: %d | %d, %f, %s", 
+		     ex.getMember1(),
+		     ex.getMemberValue<int>("Member1"),
+		     ex.getMember2(),
+		     ex.getMember3().c_str()/*strB*/));
+//      delete[] strB;
+      throw ex.getACSErrTest0Ex();
+      }// tr-catch
+}//acserrTestImpl::testExceptions
+
 
 CompletionImpl*  acserrTestImpl::f1 (int depth, bool iserr){
   char errString[64];
@@ -102,42 +160,8 @@ CompletionImpl*  acserrTestImpl::f1 (int depth, bool iserr){
 	  return res;
 	  }
       }
-}
+}//f1
     
-void acserrTestImpl::testExceptions ( CORBA::Long depth, CORBA::Boolean err)
-    throw ( CORBA::SystemException, ACSErrTypeTest::ACSErrTest0Ex, ACSErr::ACSException)
-{
-  this->depth = depth;
-  try
-    {
-      f2 (depth-1, err);
-      
-    }
-  catch (ACSErr::ACSException &ex)
-    {
-
-       throw ACS_EXCEPTION(ex, ACSErr::ACSErrTypeTest, ACSErrTypeTest::ACSErrTest2, "acserrTestImpl::testException");
-    }
-  catch (ACSErrTest1ExImpl &_ex)
-      {
-      _ex.log();
-      ACSErrTest0ExImpl ex(_ex, __FILE__,  __LINE__, "acserrTestImpl::testExceptions");
-      ex.setMember1(3);
-      ex.setMember2(3.33);
-      ex.setMember3("stringMember");
-//      char *strB = ex.getMember3();
-
-      ACS_SHORT_LOG((LM_INFO, "Exception members are: %d | %d, %f, %s", 
-		     ex.getMember1(),
-		     ex.getMemberValue<int>("Member1"),
-		     ex.getMember2(),
-		     ex.getMember3().c_str()/*strB*/));
-//      delete[] strB;
-      throw ex.getACSErrTest0Ex();
-      }
-
-}
-
 void acserrTestImpl::f2(int depth, bool isErr){
   char errString[64];
 
@@ -208,15 +232,16 @@ void acserrTestImpl::f2(int depth, bool isErr){
       }//if isErr
     } // else if dest.in()
   } //else if  depth
-}
+}//f2
+
 
 void acserrTestImpl::shutdown ()
     throw (CORBA::SystemException )
 {
-    ACS_SHORT_LOG((LM_INFO, "acserr TestImpl Shutdown")); 
+    ACS_TRACE("acserr TestImpl Shutdown"); 
     ACSError::done();
     orb->shutdown (false);
-}
+}//shutdown
 
 /*___oOo___*/
 

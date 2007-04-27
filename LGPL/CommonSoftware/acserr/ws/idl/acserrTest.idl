@@ -29,11 +29,17 @@
 
 #pragma prefix "alma"
 
-interface acserrTest {
+interface acserrTest 
+{
     ACSErr::Completion testNoError ();
+
     ACSErr::Completion testDefaultError ();
+
     ACSErr::Completion test (in long depth, in boolean err);
+
     void testExceptions (in long depth, in boolean er) raises (ACSErr::ACSException, ACSErrTypeTest::ACSErrTest0Ex);
+
+    void testCompletionOut(in long depth, in boolean err, out ACSErr::Completion c );
 
     oneway void shutdown();
 };

@@ -20,7 +20,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acserrTestImpl.h,v 1.40 2005/09/16 13:54:23 vwang Exp $"
+* "@(#) $Id: acserrTestImpl.h,v 1.41 2007/04/27 14:38:40 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -37,26 +37,22 @@
 
 class acserrTestImpl : public POA_acserrTest {
 public:
-  acserrTestImpl(acserrTest* dest, const char *sn);
+    acserrTestImpl(acserrTest* dest, const char *sn);
 
-  ACSErr::Completion * testNoError ( 
-				   ) throw ( CORBA::SystemException); 
+    ACSErr::Completion * testNoError () throw ( CORBA::SystemException); 
   
-  ACSErr::Completion * testDefaultError ( 
-				   ) throw ( CORBA::SystemException); 
+    ACSErr::Completion * testDefaultError () throw (CORBA::SystemException); 
   
-  ACSErr::Completion * test (  CORBA::Long depth,
-				    CORBA::Boolean err
-				    
-				   ) throw ( CORBA::SystemException);
-  
+    ACSErr::Completion * test (CORBA::Long depth, CORBA::Boolean err ) 
+	throw ( CORBA::SystemException);
     
-  void testExceptions ( CORBA::Long depth,
-			CORBA::Boolean err
-			
-			) throw ( CORBA::SystemException
-					   , ACSErrTypeTest::ACSErrTest0Ex
-					   , ACSErr::ACSException  );
+    void testExceptions (CORBA::Long depth, CORBA::Boolean err) 
+	throw (CORBA::SystemException
+	       ,ACSErrTypeTest::ACSErrTest0Ex
+	       ,ACSErr::ACSException);
+
+    void testCompletionOut ( CORBA::Long depth, CORBA::Boolean err, ACSErr::Completion_out c ) 
+	throw( CORBA::SystemException );
 
     // ACSError
   CompletionImpl* f1 (int depth, bool iserr);
