@@ -28,7 +28,7 @@
 
 #include "ace/Task.h"
 #include <acscomponentImpl.h>
-#include <LogStressS.h>
+#include <perftestS.h>
  
 using namespace acscomponent;
 using std::string;
