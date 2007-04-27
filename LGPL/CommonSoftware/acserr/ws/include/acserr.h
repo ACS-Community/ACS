@@ -20,7 +20,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acserr.h,v 1.77 2007/03/30 09:18:00 bjeram Exp $"
+* "@(#) $Id: acserr.h,v 1.78 2007/04/27 14:38:09 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -552,16 +552,32 @@ class CompletionImpl : public CompletionInit
     virtual ~CompletionImpl(){}
     
   /**
-   * Returns copy of completion structure (and delete CompletionImpl object)
-   * @param deletion flag indicates if ACSError has to be deleted. Default value is true what means that ACSError object will be deleted.
-   * @return pointer to the CORBA completion structure.
+   * Returns copy of completion structure (and delete #CompletionImpl object).
+   * This method should be used in a method when we retrun #ACSErr::Completion 
+   * (when we go from local (C++) to remote (CORBA)
+   * @param deletion flag indicates if #CompletionImpl has to be deleted. 
+   * Default value is true what means that #CompletionImpl object will be deleted.
+   * DO NOT use true (default) value when #CompletionImpl is allocated on the stack !!!
+   * @return pointer to the CORBA #ACSErr::Completion structure.
    */
-  ACSErr::Completion* returnCompletion (bool deletion=true)
+    ACSErr::Completion* returnCompletion (bool deletion=true)
 	{
 	    ACSErr::Completion *tmp = new ACSErr::Completion(*this);
 	    if (deletion) delete this;
 	    return tmp;
-	}
+	}//returnCompletion
+
+    /**
+     * Returns copy of completion structure (#ACSErr::Completion) which can be assign to #ACSErr::Completion_out.
+     * This method should be used when #ACSErrCompletion is used as out(put) parameter of a method (#ACSErr::Completion_out).
+     * DO NOT use this method on client side !!
+     * @param deletion flag indicates if #CompletionImpl has to be deleted. 
+     * Default value is false what means that #CompletionImpl object will not be deleted 
+     * (oposit than in #returnCompeltion()).
+     * DO NOT use true value when #CompletionImpl is allocated on the stack !!!
+     * @return pointer to the CORBA #ACSErr::Completion structure.
+     */
+    ACSErr::Completion* outCompletion(bool del=false) { return this->returnCompletion(del); }
 
     /**
      * Tells if CompletionImpl is error-free or not (i.e. if is it contain error trace or not)
@@ -607,6 +623,8 @@ class CompletionImpl : public CompletionInit
      * This assigment makes a copy of #Completion that is contained inside the #Completion_var, so after the #Completion_var still conatins #Completion.
      */
     CompletionImpl& operator=(Completion_var& c);
+
+
 
   protected:
     ErrorTraceHelper m_errorTraceHelper;
