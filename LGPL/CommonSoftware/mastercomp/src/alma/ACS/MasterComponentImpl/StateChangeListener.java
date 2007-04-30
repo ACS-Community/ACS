@@ -68,8 +68,10 @@ public class StateChangeListener extends CBstringSeqPOA
 	
     private class MyStateChangeSemaphore extends StateChangeSemaphore  
 	{
-		synchronized void externalStateChangedNotify() 
-		{
+    	public MyStateChangeSemaphore() {
+    		super(logger);
+		}
+		synchronized void externalStateChangedNotify()  {
 			stateChangedNotify();
 		}
 	}
