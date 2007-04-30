@@ -87,7 +87,7 @@ public class MasterComponentTest extends ComponentClientTestCase
 		// send event
 		m_masterComp.doTransition(SubsystemStateEvent.SUBSYSEVENT_INITPASS1);
 		
-		// verify transient state (available for 2 seconds thanks to a sleepy test component action)
+		// verify transient state (available for 1 second thanks to a sleepy test component action)
 		expectedHierarchy[2] = SUBSYSSTATE_INITIALIZING_PASS1.value;
 		verifyCurrentState(statesProperty, expectedHierarchy);
 		
@@ -121,12 +121,14 @@ public class MasterComponentTest extends ComponentClientTestCase
 				SUBSYSSTATE_AVAILABLE.value, SUBSYSSTATE_OFFLINE.value, SUBSYSSTATE_SHUTDOWN.value };
 		verifyCurrentState(statesProperty, expectedHierarchy);
 		
-		m_masterComp.doTransition(SubsystemStateEvent.SUBSYSEVENT_INITPASS1);		
-		Thread.sleep(2500);
-//		expectedHierarchy[2] = SUBSYSSTATE_PREINITIALIZED.value;
-//		verifyCurrentState(statesProperty, expectedHierarchy);
+		m_masterComp.doTransition(SubsystemStateEvent.SUBSYSEVENT_INITPASS1);
+		// component-side action method initSubsysPass1 will sleep 1000 ms, during which component is in state SUBSYSSTATE_INITIALIZING_PASS1
+		// thus after 1500 ms we should have reached SUBSYSSTATE_PREINITIALIZED and can send the next event
+		Thread.sleep(1500);
 		
 		m_masterComp.doTransition(SubsystemStateEvent.SUBSYSEVENT_INITPASS2);
+		// the action method initSubsysPass2 does not do anything, so we should rather quickly go via SUBSYSSTATE_INITIALIZING_PASS2 to SUBSYSSTATE_ONLINE
+		Thread.sleep(500);
 		expectedHierarchy = new String[] {
 				SUBSYSSTATE_AVAILABLE.value, SUBSYSSTATE_ONLINE.value };
 		verifyCurrentState(statesProperty, expectedHierarchy);
