@@ -21,6 +21,10 @@
  */
 package alma.ACS.MasterComponentImpl;
 
+import java.util.logging.Logger;
+
+import alma.acs.logging.ClientLogManager;
+
 /**
  * Helper class that allows to synchronize the sending of events with the 
  * state changes due to previous events. 
@@ -35,11 +39,26 @@ package alma.ACS.MasterComponentImpl;
  */
 public class StateChangeSemaphore
 {
-    private boolean DEBUG = false;
-    
 	private volatile int notifCount = 0;
 	private volatile int minCount;
+	
+	private Logger logger;
     
+	
+	public StateChangeSemaphore(Logger logger) {
+		if (logger == null) {
+			// @TODO throw ex in ACS 7.0 which we can't do now in 6.0.3. Then remove all the checks for logger != null
+		}
+		this.logger = logger;
+	}
+
+	/**
+	 * @deprecated as of ACS 6.0.3. Use {@link #StateChangeSemaphore(Logger)} instead.
+	 */
+	public StateChangeSemaphore() {
+		this(null);
+	}
+
 	/**
 	 * To be called from state change listener method of subclass.
 	 * <p>
@@ -49,8 +68,8 @@ public class StateChangeSemaphore
 	 */
 	protected synchronized void stateChangedNotify() {
 	    
-	    if (DEBUG) {
-	        System.out.println("stateChangedNotify: called in thread '" + Thread.currentThread().getName() + "'.");
+	    if (logger != null) {
+	        logger.finest("stateChangedNotify: called in thread '" + Thread.currentThread().getName() + "'.");
 	    }
 	    
 		notifCount++;
@@ -82,23 +101,23 @@ public class StateChangeSemaphore
 	 * @throws InterruptedException
 	 */
 	public synchronized void waitForStateChanges(int count) throws InterruptedException {
-	    if (DEBUG) {
-	        System.out.println("waitForStateChanges: called in thread '" + Thread.currentThread().getName() + "'.");
+	    if (logger != null) {
+	    	logger.finest("waitForStateChanges: called in thread '" + Thread.currentThread().getName() + "'.");
 	    }
 	    
 		minCount = count;
 		// was stateChangedNotify called sufficiently often already? 
 		while (notifCount < count) {
-		    if (DEBUG) {
-		        System.out.println("waitForStateChanges: waiting for " + (count - notifCount) + " state change notification(s)");
+		    if (logger != null) {
+		    	logger.finest("waitForStateChanges: waiting for " + (count - notifCount) + " state change notification(s)");
 		    }
 		    // releases current thread's ownership of this StateChangeSemaphore's monitor, and blocks until other thread calls notify
 			wait(); 
 			// now our thread has re-obtained ownership of this StateChangeSemaphore's monitor, so the field notifCount is again ours. 
 		}
 		notifCount = notifCount - count;
-	    if (DEBUG) {
-	        System.out.println("waitForStateChanges: state change notification counter down at " + notifCount);
+	    if (logger != null) {
+	    	logger.finest("waitForStateChanges: state change notification counter down at " + notifCount);
 	    }
 	}
 
