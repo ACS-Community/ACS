@@ -283,15 +283,15 @@ href="ReferenceDocuments.html#RD05">[RD05]</a>: </h3>
     is a property type with a single set of characteristics that apply to an array 
     of integers. It is a single property and its value is an array of values. 
     With respect to <i>sequence&lt;scalar property&gt;</i>, <i>scalarTypeSeq</i> 
-    is much more efficient for transporting big tables of data. <b><i>(Not all 
-    types implemented for ALMA)</i></b></li>
-  <li style='     '><font face="Arial, Helvetica, sans-serif" size="-1">complex 
+    is much more efficient for transporting big tables of data. <b><i><font color="#0000FF">(Not 
+    all types implemented for ALMA)</font></i></b></li>
+  <li style='     '><font face="Arial, Helvetica, sans-serif" size="-1" color="#0000FF">complex 
     for handling complex numbers <b><i>(Implementation not foreseen for ALMA)</i></b></font></li>
-  <li><font face="Arial, Helvetica, sans-serif" size="-1">structures built with 
-    properties of the other basic types. Since structures introduce a significant 
-    increase of complexity in the handling libraries, they will be implemented 
-    last and only if a clear need arises.<b><i>(Implementation not foreseen for 
-    ALMA)</i></b></font></li>
+  <li><font face="Arial, Helvetica, sans-serif" size="-1" color="#0000FF">structures 
+    built with properties of the other basic types. Since structures introduce 
+    a significant increase of complexity in the handling libraries, they will 
+    be implemented last and only if a clear need arises.<b><i>(Implementation 
+    not foreseen for ALMA)</i></b></font></li>
 </ul>
 <h5>The selection of a limited set of type is motivated by the need of avoiding 
   implementing the same code for many different types and conversion problems 
@@ -526,7 +526,8 @@ href="ReferenceDocuments.html#RD01">[RD01 - 4.2.1. Configuration Database]</a>.
   can have additional sub-states. <a href="ReferenceDocuments.html#RD01">[RD01 
   - 13.1.2 Standard Methods]</a> <a href="ReferenceDocuments.html#RD01">[RD01 
   - 14.1.13 States]</a>. </h3>
-<h3><b><font face="Arial, Helvetica, sans-serif" size="-1">Note: </font></b><font face="Arial, Helvetica, sans-serif" size="-1">A 
+<h3><b><font face="Arial, Helvetica, sans-serif" size="-1" color="#0000FF">Note: 
+  </font></b><font face="Arial, Helvetica, sans-serif" size="-1" color="#0000FF">A 
   standard state machine and standard state transition commands could be defined. 
   <i><b>(Implementation not foreseen for ALMA).</b></i></font></h3>
 <h3>JavaBeans wrap CORBA objects on the client side. Standard Rapid Application 
@@ -552,13 +553,13 @@ href="ReferenceDocuments.html#RD01">[RD01 - 4.2.1. Configuration Database]</a>.
   Switching from the real to the simulated device is handled in the configuration 
   of the Manager (see Management and Access Control section), telling it to start 
   a different implementation of the same device's CORBA interface.</h3>
-<h3><font face="Arial, Helvetica, sans-serif" size="-1"><b>Note: </b>As an extension, 
-  ACS could provide support for simulation<a href="ReferenceDocuments.html#RD01">[RD01 
-  - 3.3.4. Simulation]</a> at Property level. All properties that access hardware 
-  can be switched in simulation by setting TRUE a simulation characteristic in 
-  the configuration database. After this, they behave like &quot;logical properties&quot;. 
-  This provides basic simulation capabilities. <i>(Implementation not foreseen 
-  for ALMA).</i></font></h3>
+<h3><font face="Arial, Helvetica, sans-serif" size="-1"><b><font color="#0000FF">Note: 
+  </font></b><font color="#0000FF">As an extension, ACS could provide support 
+  for simulation<a href="ReferenceDocuments.html#RD01">[RD01 - 3.3.4. Simulation]</a> 
+  at Property level. All properties that access hardware can be switched in simulation 
+  by setting TRUE a simulation characteristic in the configuration database. After 
+  this, they behave like &quot;logical properties&quot;. This provides basic simulation 
+  capabilities. <i>(Implementation not foreseen for ALMA).</i></font></font></h3>
 
 <h3><a name=CommandHandling>Direct Value Retrieval</a></h3>
 
@@ -613,10 +614,11 @@ href="ReferenceDocuments.html#RD01">[RD01 - 13.1.4. Events]</a>. Triggered event
 
 
 href="ReferenceDocuments.html#RD01">[RD01 - 4.1.3 Rate]</a>. </h4>
-<h4><b><font face="Arial, Helvetica, sans-serif" size="-1">Note:</font></b> <font face="Arial, Helvetica, sans-serif" size="-1">Other 
-  conditions, for example any write, value increase/decrease, value less or greater 
-  than set-point could also be included at a later stage. <i>(Implementation not 
-  foreseen for ALMA)</i></font></h4>
+<h4><b><font face="Arial, Helvetica, sans-serif" size="-1" color="#0000FF">Note:</font></b> 
+  <font face="Arial, Helvetica, sans-serif" size="-1" color="#0000FF">Other conditions, 
+  for example any write, value increase/decrease, value less or greater than set-point 
+  could also be included at a later stage. <i>(Implementation not foreseen for 
+  ALMA)</i></font></h4>
 
 <h4>Timed or periodic events can be generated as follows:</h4>
 
@@ -662,7 +664,8 @@ width=636 height=614 id="_x0000_i1027" src="Images/Class_Diagram-Event_System-Ev
 
   itself. </h4>
 
-<h4><b><font face="Arial, Helvetica, sans-serif" size="-1">Note: </font></b><font face="Arial, Helvetica, sans-serif" size="-1">CAN-Properties 
+<h4><b><font face="Arial, Helvetica, sans-serif" size="-1" color="#0000FF">Note: 
+  </font></b><font face="Arial, Helvetica, sans-serif" size="-1" color="#0000FF">CAN-Properties 
   will have to implement notification on change also for CAN monitor points although 
   CAN monitor points do not provide a specific support via HW or in the drivers. 
   This can/should be done via polling. If there are clients registered on events 
@@ -670,24 +673,26 @@ width=636 height=614 id="_x0000_i1027" src="Images/Class_Diagram-Event_System-Ev
   change of the value of the monitor point. The poll rate is defined by the characteristic 
   change frequency. The polling frequency determines the time resolution of the 
   event-on-change.<i> (implementation not foreseen for ALMA)</i></font></h4>
-<h4><font face="Arial, Helvetica, sans-serif" size="-1"><b>Note: </b>For performance 
-  optimization, the final implementation will not leave to the single Characteristic 
-  Component Properties the responsibility of managing timers, but a local centralized 
-  manager will take care of that, transparently to client applications. More details 
-  will be given in the ACS design. <i>(implementation not foreseen for ALMA)</i></font></h4>
-<h4><font face="Arial, Helvetica, sans-serif" size="-1"><b>Note: </b>A particular 
-  case is a Characteristic Component State Machine. A State Machine class is a 
-  Characteristic Component and the current state is represented by a State Property. 
-  This State Property can fire events whenever the state changes to allow external 
-  objects to monitor it. <i>(implementation not foreseen for ALMA)</i></font></h4>
+<h4><font face="Arial, Helvetica, sans-serif" size="-1" color="#0000FF"><b>Note: 
+  </b>For performance optimization, the final implementation will not leave to 
+  the single Characteristic Component Properties the responsibility of managing 
+  timers, but a local centralized manager will take care of that, transparently 
+  to client applications. More details will be given in the ACS design. <i>(implementation 
+  not foreseen for ALMA)</i></font></h4>
+<h4><font face="Arial, Helvetica, sans-serif" size="-1" color="#0000FF"><b>Note: 
+  </b>A particular case is a Characteristic Component State Machine. A State Machine 
+  class is a Characteristic Component and the current state is represented by 
+  a State Property. This State Property can fire events whenever the state changes 
+  to allow external objects to monitor it. <i>(implementation not foreseen for 
+  ALMA)</i></font></h4>
 
 <h3>Supported implementation languages</h3>
 
 <p>&nbsp;The Characteristic Component / Property /characteristic pattern is implemented 
   in C++ and in Java and Python</p>
-<p><i><b><font face="Arial, Helvetica, sans-serif" size="-1">Note: Java and Python 
-  implementations are not complete and contain now all and only the features used 
-  in ALMA.</font></b></i></p>
+<p><i><b><font face="Arial, Helvetica, sans-serif" size="-1" color="#0000FF">Note: 
+  Java and Python implementations are not complete and contain now all and only 
+  the features used in ALMA.</font></b></i></p>
 
 <p>--------------------------------------------------</p>
 

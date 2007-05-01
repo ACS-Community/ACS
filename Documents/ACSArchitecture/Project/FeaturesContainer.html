@@ -1,61 +1,89 @@
 <!doctype html public "-//w3c//dtd html 4.0 transitional//en">
 
+
+
 <html>
+
+
 
 <head>
 
+
+
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+
+
 
 <meta name="Template" content="C:\Program Files\MSOffice\Office\html.dot">
 
+
+
 <meta name="GENERATOR" content="Mozilla/4.79 [en] (Windows NT 5.0; U) [Netscape]">
+
+
 
 <title>FeaturesContainer</title>
 
+
+
 <link rel=Edit-Time-Data href="FeaturesContainer_files/editdata.mso">
+
+
 
 <o:SmartTagType namespaceuri="urn:schemas-microsoft-com:office:smarttags"
 
+
+
  name="PlaceName"/> <o:SmartTagType namespaceuri="urn:schemas-microsoft-com:office:smarttags"
+
+
 
  name="PlaceType"/> <o:SmartTagType namespaceuri="urn:schemas-microsoft-com:office:smarttags"
 
+
+
  name="place"/> 
+
+
 
 <style><!--
 
+
+
 .Normal
+
+
 
 	{font-size:12.0pt;
 
+
+
 	font-family:"Times New Roman";}
+
+
 
 -->
 
+
+
 </style>
+
+
 
 </head>
 
+
+
 <body link="#0000FF" vlink="#800080" lang="EN-US" class="Normal" bgcolor="#FFFFFF">
-
 <h2> ACS Container</h2>
-
 <h3> The ACS Container package is responsible for the implementation of the Container 
-
   part of the Container-Component model of ACS. This includes design patterns 
-
   and high level services to manage the life cycle of Components and Containers 
-
   themselves <a href="ReferenceDocuments.html#RD01">[RD01 - 5.1.2. Procedures]</a>. 
-
   This high level management part is implemented in a specific sub-package called 
-
   the Management and Access Control package.</h3>
-
 <h3> Containers are supervised and managed by an ACS Manager. Manager and Containers 
-
   cooperate to provide the following functionality:</h3>
-
 <ul type=disc>
   <li class="MsoNormal" style="     "> <b>Instantiation and de-instantiation of 
     Components.</b> <br>
@@ -78,725 +106,499 @@
   <li class="MsoNormal" style="     "> <b>Administration control.</b> <br>
     Administrative users must have an overview and control over the current state 
     of the system, including existing services and clients, and must have the 
-    possibility to manually manage services. Administration functionalities include 
+    possibility to manually manage services. Administration functionality includes 
     startup and shutdown of the whole ACS, Manager, Services and Containers.</li>
 </ul>
-
 <h3> Components will be registered in the CORBA Naming Service. Properties of 
-
   Characteristic Components are not registered in the naming service, but are 
-
   accessed by retrieving their CORBA references from the Characteristic Component 
-
   that contains them.</h3>
-
 <h3> Access to the CORBA Naming Service and Component's life cycle is handled 
-
   by a Management and Access Control Interface. A Manager is the communication 
-
   entry point for clients: it provides access to the CORBA Naming Service (with 
-
   added security) and delegates to Containers the task to manage the life cycle 
-
   (code loading, creation and destruction) of Components, based on the request 
-
   of services from the clients.</h3>
-
 <img SRC="Images/Class_Diagram-Management_and_Access_Control-Name_Resolution.png" BORDER=0 id="_x0000_i1025" width=640> 
-
 <br>
-
 <i>Figure 3.12: Management and Access Control architecture</i> 
-
 <h3> The basic entities managed by the Management and Access Control interface 
-
   (MACI) are&nbsp;<span style='font-family:"Courier New"'>Components.</span></h3>
-
 <h4> To the management system, the Component is an entity with a lifecycle that 
-
-  has to be managed. Components can be instantiated in three different ways:</h4>
-
+  has to be managed. Components can be instantiated in two different ways:</h4>
 <ul type=disc>
   <li class="MsoNormal" style="     "> <b>regular Components</b> are instantiated 
-    on demand when they are first requested, and released when they are no longer 
-    needed, i.e. when there are no more clients referencing them.</li>
+    on demand when they are first requested.</li>
   <li class="MsoNormal" style="     "> <b>startup Components</b> are instantiated 
-    when the system is brought online. They cannot be shut down, unless the entire 
-    system is shut down.</li>
-  <li class="MsoNormal" style="     "> <b>immortal Components</b> are instantiated 
-    when they are needed for the first time, but cannot be shut down afterwards. 
-    They are similar to startup Components, but being activated only when needed 
-    they allow shortening the time required to startup the system.<b> (<i>Partially 
-    implemented</i>)</b> </li>
+    when the system is brought online, i.e. when the Container where they are 
+    supposed to live in is started.</li>
 </ul>
-
 <h4>A Component implements the functionality that allows the interaction between 
   the MACI infrastructure and an underlying object. The underlying object can 
   be a Java Component, a C++ Component or other type of objects, for example CORBA 
   services, which have to be managed by MACI.</h4>
-
 <h4> Every Component has a unique designation. Well-formed Component designations 
-
   are Component URLs or&nbsp;<span style='font-family:Courier-BoldOblique'><i>CUR</i></span><i><span 
+
+
 
 style='font-family:Courier'></span></i><span 
 
+
+
 style='font-family:Courier'>L</span>s. A&nbsp;<span style='font-family:Courier'>CURL 
-
   </span>is a hierarchical name implemented as a string of arbitrary length that 
-
   consists of the static prefix&nbsp;<span style='font-family:Courier'>curl</span>:, 
-
   domain identifier and Component name. An example of a&nbsp;<span style='font-family:
 
+
+
 Courier'>CURL&nbsp;</span>might be&nbsp;<span style='font-family:Courier'>curl://alma/antenna1/moun</span>t, 
-
   representing the&nbsp;<st1:place><st1:PlaceType>mount</st1:PlaceType>&nbsp;<st1:PlaceName>Component</st1:PlaceName></st1:place> 
-
   for ALMA antenna number 1. MACI provides name resolution that from a well-formed 
-
   Component designation generates the Component reference that can be returned 
-
   to the client</h4>
-
 <h4>Regular components are kept active if and only if there are clients referencing 
   them. The Manager keeps track of all references and periodically verifies that 
   the clients are still alive and deactivates unreferenced components.</h4>
 <h4>The Manager provides an API to forcefully deactivate Components even if they 
   are still referenced. This is used when shutting down parts of the system or 
   when replacing at run time the implementation of a Component with anew one.</h4>
-<h4>It is possible to have &quot;weak clients&quot;, whose reference to used components 
-  is not accounted by the Manager when deciding if a Component needs to be activated/deactivated. 
-  This is used, for example, for passive GUIs that monitor Components or interact 
-  with them only if the are already active for other reasons. Such &quot;weak 
-  clients&quot; do not force the activation of a component if it is not already 
-  active when they request the reference from the Manager. In this way starting/stopping 
-  a GUI is unrelated with the status of Components and subsystems can be started 
-  up and shutdown independently from the GUIs (not implemented yet).</h4>
+<h4>It is possible to have &quot;non-sticky clients&quot;, whose reference to used 
+  components is not accounted by the Manager when deciding if a Component needs 
+  to be activated/deactivated. This is used, for example, for passive GUIs that 
+  monitor Components or interact with them only if the are already active for 
+  other reasons. Such &quot;non-sticky clients&quot; do not force the activation 
+  of a component if it is not already active when they request the reference from 
+  the Manager. In this way starting/stopping a GUI is unrelated with the status 
+  of Components and subsystems can be started up and shutdown independently from 
+  the GUIs.</h4>
 <h4>It is possible to define a timeout before a regular Component not referenced 
   any more is deactivated. This is useful when there are multiple clients intermittently 
   accessing a component for a long period of time and we do not want the server 
-  component to be all the time activated and deactivated. Notice that an immortal 
-  Component is essentially a component with infinite timeout for deactivation 
-  (not implemented yet)</h4>
+  component to be all the time activated and deactivated. Notice that an &quot;immortal 
+  Component&quot;, i.e. a component that is never deactivated after a first activation 
+  even is all clients release it, is essentially a component with infinite timeout 
+  for deactivation.</h4>
 <h3><span style='font-family:Courier'>Manager&nbsp;</span>is the central point 
   of interaction between the Components and the clients requesting&nbsp;<span style='font-family:
 
+
+
 TimesNewRomanPSMT'>their services.&nbsp;</span></h3>
-
 <h4> <span style='font-family:TimesNewRomanPSMT'>Manager has&nbsp;</span>the following 
-
   basic functionality:</h4>
-
 <ul type=disc>
-
   <li class="MsoNormal" style="     "> <span style='font-family:
+
+
 
      TimesNewRomanPSMT'>It is the communication entry point. A client requesting 
-
     a Component service can do so by querying the Manager. Security is tied to 
-
     this functionality by requiring every client to pass the authorization protocol 
-
     and subsequently tag every request to the manager with a security token generated 
-
     by the manager upon successful authentication. Manager serves also as a broker 
-
     for objects that were activated outside of MACI (non-Components). It provides 
-
-    a mechanism for binding and resolving references to such objects.&nbsp;</span></li>
-
+    a mechanism for binding and resolving references to such objects, relying 
+    on the CORBA naming service.&nbsp;</span></li>
   <li class="MsoNormal" style="     "> <span style='font-family:
+
+
 
      TimesNewRomanPSMT'>It performs as a name service, resolving CURLs into object 
-
     references. If a CURL is passed that is outside the current Manager’s domain, 
-
     the Manager forwards the request to the Manager closest to the destination 
-
     domain to resolve.&nbsp;</span></li>
-
   <li class="MsoNormal" style="     "> <span style='font-family:
 
+
+
      TimesNewRomanPSMT'>It delegates the Component life cycle management to the 
-
     Container objects and therefore creates no Components directly. However, it 
-
     does maintain a list of all available Containers.&nbsp;</span></li>
-
   <li class="MsoNormal" style="     "> The Manager uses the configuration database 
-
     to retrieve relevant configuration for individual Components in the domain, 
-
     as well as locations of&nbsp;<span style='font-family:TimesNewRomanPSMT'>other 
-
     Managers.</span></li>
-
 </ul>
-
 <h4> Manager is the only interaction that clients have with MACI. Thus, neither 
-
   Component implementers nor GUI client developers need concern themselves with 
-
   aspects of MACI other than the Manager.</h4>
-
 <h4> Manager implementation is based on CORBA Naming Service and all references 
-
   to Components are available to clients not aware of MACI functionality through 
-
   the CORBA Naming Service. A CURL-to-Naming Context mapping allows a one to one 
-
   correspondence between Components retrieved using MACI services or from the 
-
   Naming Service.</h4>
-
-<h4> Manager will provide also process control of Containers and CORBA services, 
-  i.e. it will be able to start/stop containers and CORBA services upon request. 
-</h4>
+<h4> Manager provides also process control of Containers and CORBA services, i.e. 
+  it will be able to start/stop containers and CORBA services upon request. </h4>
 <h4>A demon process runs on every host where Containers or services can be started. 
   The Manager interacts with this demon to instruct it to start Containers. The 
   demon provides also other services (in part still TBD) like collection of statistical 
-  data such as CPU , memory and disk <b>load or availability (Partially implemented).</b></h4>
-
-The Pipeline/Offline teams define the requirements for process management by the 
-Manager and described above, like redistribution of processes/containers for load 
-balancing, dynamic allocation of components to container or redundancy and replication 
-of components. 
+  data such as CPU , memory and disk <b>load or availability<font color="#0000FF"> 
+  <i>(Partially implemented</i>)</font>.</b></h4>
+<h4><b>Manager can also deploy &quot;collocated&quot; Components, i.e. it can 
+  be requested to &quot;deploy a Component in the same Container of another, given, 
+  Component&quot;</b></h4>
+<ul>
+  <li> This allows applications to implement deployment recipes, for example for 
+    load balancing or for selecting the deployment configuration that satisfies 
+    specific application needs, without having to know explicitly the deployment 
+    of Containers or, more in general, the topology of the system.</li>
+  <li>For example
+    <ul>
+      <li> a pipeline application might deploy load balancing Components on all 
+        pipeline nodes at system configuration/</li>
+      <li> a load balancing master Component can request information from load 
+        balancing Components (disk space, memory, load, performance characteristics....) 
+      </li>
+      <li> based on this information can determine the best node where to run 
+        a specific pipeline stage Component</li>
+      <li>it can then deploy the pipeline stage &quot;collocated&quot; with the 
+        selected load balancing Component</li>
+      <li>this does not require to the application any explicit knowledge of the 
+        host and Container where the pipeline stage needs to be deployed.</li>
+      <li>the load balancing Component need to be deployed at configuration time 
+        or using administration tools written for that specific purpose, but transparently 
+        to applications.</li>
+    </ul>
+  </li>
+</ul>
+<p><i>The Pipeline/Offline teams define the requirements for process management 
+  by the Manager and described above, like redistribution of processes/containers 
+  for load balancing, dynamic allocation of components to container or redundancy 
+  and replication of components. </i> </p>
 <h3> A Container serves as an agent of MACI that is installed on every computer 
-
   in the control system.</h3>
-
 <img SRC="Images/-ACS_Component-Container_model-Component_Activation.png" BORDER=0 id="_x0000_i1026" width=649> 
-
 <br>
-
 <i>Figure 3.13: Component activation sequence</i> 
-
 <ul type=disc>
-
   <li class="MsoNormal" style="     "> <span style='font-family:
+
+
 
      TimesNewRomanPSMT'>Every Container runs in its own process.&nbsp;</span></li>
-
   <li class="MsoNormal" style="     "> <span style='font-family:
+
+
 
      Courier'>Manager&nbsp;</span><span style='font-family:TimesNewRomanPSMT'>sends 
-
     the&nbsp;</span><span style='font-family:"Courier New"'>Container</span><span 
 
+
+
      style='font-family:Courier'>&nbsp;</span><span style='font-family:TimesNewRomanPSMT'>the 
-
-    request to construct a specific Component by passing it the name, type and 
-
-    the path of executable code (depending on the implementation language) of 
-
-    the Component.&nbsp;</span></li>
-
+    request to construct/activate a specific Component by passing it the name, 
+    type and the path of executable code (depending on the implementation language) 
+    of the Component.&nbsp;</span></li>
   <li class="MsoNormal" style="     "> <span style='font-family:
 
+
+
      TimesNewRomanPSMT'>The&nbsp;</span><span style='font-family:Courier'>Container&nbsp;</span><span 
+
+
 
      style='font-family:TimesNewRomanPSMT'>loads the executable code and begins 
-
     executing it. Depending on the implementation language, if the dependant executables 
-
     are not loaded automatically by the operating system (as is the case on the 
-
     VxWorks platform), Container loads them prior to executing any code.&nbsp;</span></li>
-
   <li class="MsoNormal" style="     "> <span style='font-family:
+
+
 
      TimesNewRomanPSMT'>The&nbsp;</span><span style='font-family:Courier'>Container&nbsp;</span><span 
 
-     style='font-family:TimesNewRomanPSMT'>also deactivates Components, when so 
 
+
+     style='font-family:TimesNewRomanPSMT'>also deactivates Components, when so 
     instructed by the&nbsp;</span><span style='font-family:Courier'>Manager&nbsp;</span><span 
 
+
+
      style='font-family:TimesNewRomanPSMT'>and is able to shutdown by disabling 
-
     all Components.&nbsp;</span></li>
-
   <li class="MsoNormal" style="     "> <span style='font-family:
+
+
 
      Courier'>Container&nbsp;</span><span style='font-family:TimesNewRomanPSMT'>maintains 
-
     a list of all Components it has activated and is able to return information 
-
-    about an individual Component’s implementation (such file path of the loaded 
-
+    about an individual Component's implementation (such file path of the loaded 
     code, version and build date).&nbsp;</span></li>
-
   <li class="MsoNormal" style="     "> <span style='font-family:
+
+
 
      &quot;Courier New&quot;'>Container</span> implements the&nbsp;<span style='font-family:
 
-     &quot;Courier New&quot;'>ContainerServices</span> to allow the Components 
 
-    it hosts to perform their MACI-related tasks, such as issuing requests to 
 
-    the Manager and activating other CORBA objects and to get hold of all the 
-
+     &quot;Courier New&quot;'>ContainerServices</span> interface to allow the 
+    Components it hosts to perform their MACI-related tasks, such as issuing requests 
+    to the Manager and activating other CORBA objects and to get hold of all the 
     general services they may need.</li>
-
   <br>
-
   Java, C++ and Python Containers will provide slightly different services, since 
-
   the three languages are supposed to be used in different application domains. 
-
   <br>
-
   It is expected that new services will be added to one or the other Container 
-
-  based on the application requestes. 
-
+  based on the application requests. 
   <li class="MsoNormal" style="     "> The Java ContainerServices interface defines 
-
     a number of services. Look at the documentation for more details. The most 
-
     important are:</li>
-
   <ul type=disc>
-
     <li class="MsoNormal" style="     "> Logger&nbsp; getLogger () <br>
-
       Retrieves the logging system service object </li>
-
     <li class="MsoNormal" style="     "> void assignUniqueEntityId (EntityT entity) 
-
       throws ContainerException <br>
-
       Get a Unique Entity Id assigned by the archive to entity data </li>
-
     <li class="MsoNormal" style="     "> org.omg.CORBA.Object getComponent (String 
-
       componentUrl) throws ContainerException <br>
-
       Retrieves e reference to another Component. This exists in a number of variants.</li>
-
     <li class="MsoNormal" style="     "> void releaseComponent (String componentUrl) 
-
       <br>
-
       Releases another component </li>
-
     <li>DAL getCDB()<br>
-
       to access the Configuration Database.</li>
-
     <li class="MsoNormal" style="     "> Object getTransparentXmlComponent (Class 
-
       transparentXMLInterface, org.omg.CORBA.Object <br>
-
       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-
       componentReference, Class flatXmlInterface) throws ContainerException <br>
-
       Converts a &quot;flat-XML&quot; component interface to a &quot;transparent-XML&quot; 
-
       component interface.</li>
-
   </ul>
-
   <li class="MsoNormal" style="     "> The C++ ContainerServices is functionally 
-
     equivalent to the Java one, but does not provide services equivalent to assignUniqueEntityId() 
-
     and createXmlBindingWrapper(). The getLogger() method is provided directly 
-
-    by the COmponent base implementation classes and not through the ContainerServices.</li>
-
+    by the Component base implementation classes and not through the ContainerServices.</li>
   <li>The Python ContainerServices is functionally equivalent to the Java one, 
-
     but does not provide services equivalent to assignUniqueEntityId() and createXmlBindingWrapper().</li>
-
 </ul>
-
 <h3> There can be two types of Containers:</h3>
-
 <ul type=disc>
-
   <li class="MsoNormal"> Porous Container <br>
-
     A Porous Container returns to clients directly the CORBA reference to the 
-
     managed Components. Once they have received the reference, clients will communicate 
-
     directly with the Component itself and the Container will only be responsible 
-
     for the lifecycle management and the general services the Container provides 
-
     to Components, like Logging. </li>
-
   <li class="MsoNormal"> Tight Container <br>
-
     A tight Container returns to clients a reference to an internally handled 
-
     proxy to the managed Components. In this way the communication between client 
-
     and Component is decoupled allowing us to implement transparently in the proxy 
-
     layer extra security and optimization functionality, at the expense of an 
-
     additional layer of indirection, with some<br>
-
     performance implication.</li>
-
 </ul>
-
 <img SRC="Images/-ACS_Component-Container_model-Porous-Tight_Container.png" BORDER=0 id="_x0000_i1027" width=640> 
-
 <br>
-
 <i>Figure 3.14: Porous vs. Tight Container access sequence</i> 
-
 <h3> ACS provides just one implementation for the Manager interface (in Java) 
-
   and three implementations for the Container:</h3>
-
 <ul type=disc>
-
   <li class="MsoNormal">C++ Container<br>
-
     A C++ Container is a “porous” Container to allow better performance avoiding 
-
-    the extra level of indirection introduced by the tight COntainer wrapper. 
-
+    the extra level of indirection introduced by the tight Container wrapper. 
     A C++ Component is assumed to be part of a Dynamically Loaded Library (DLL). 
-
     Whenever the Manager requests a Component from a C++ Container, it passes 
-
     the reference to the DLL to be loaded. The DLL is loaded dynamically and the 
-
     Component instantiated and activated. When the Component is released, the 
-
     DLL is unloaded. </li>
-
   <li class="MsoNormal"> Java Container<br>
     A Java Container is a &quot;tight&quot; Container. The Java Class for a Component 
     is dynamically loaded on request by the Container and unloaded when not needed 
-    any more. The &quot;tight&quot;implementation allows the transparent implementation 
+    any more. The &quot;tight&quot; implementation allows the transparent implementation 
     of the (de)-serialization of entity (data) objects that appear in the parameter 
     lists of operations. This functionality is very important for high-level Java 
-    applications. This means that a Java “binding class” which is a typesafe representation 
-    of XML data is transported across processes in the form of an XML string, 
-    even though the client and server component only see the real Java classes. 
-    This is also true for sequences of entity objects, or structures that contain 
-    entity objects. <br>
-
+    applications. This means that a Java &quot;binding class&quot; which is a 
+    type-safe representation of XML data is transported across processes in the 
+    form of an XML string, even though the client and server component only see 
+    the real Java classes. This is also true for sequences of entity objects, 
+    or structures that contain entity objects. <br>
     There will be one JVM for each Java Container. In each Container we will have 
-
     many Components, all running in the same JVM. This protects in a better way 
-
     one Container from another and resource balancing is done re-deploying Components 
-
     from one Container to another in the same or in another host. <br>
-
     On the other hand, starting up and keeping alive JVMs is quite expensive. 
-
     This is particularly important for user interfaces: a user can start at wish 
-
     many GUIs on the same console, easily overloading the host. Therefore GUIs 
-
     will have the capability of running inside the same JVM (when a new application/GUI 
-
     is started, it looks for an existing JVM able to host it. This mechanism is 
-
-    already implemented in ABeans 3. GUIs can be just clients for Components or 
-
-    they can be Components themself.</li>
-
+    implemented in ABeans 3. GUIs can be just clients for Components or they can 
+    be Components themselves.</li>
   <li>Python Container<br>
-
     A Python Container is a &quot;porous&quot; Container. A Python package for 
-
     a Component is dynamically loaded on request by the Container and unloaded 
-
     when not needed any more. Python is used to implement Component that have 
-
-    a strong requirement for flexible and easily editable procedures. A typical 
-
-    example are pipeline and data reduction recipes. Such recipes are often edited 
-
+    a strong requirement for flexible and easily editable procedures. Typical 
+    examples are pipeline and data reduction recipes. Such recipes are often edited 
     by astronomers or by operators also during operation and are therefore better 
-
-    implmented using a scripting language; the Python components typically use 
-
+    implemented using a scripting language; the Python components typically use 
     and interact with C++ and or Java Components that implement CPU intensive 
-
     algorithms, for example interfacing with Fortran legacy procedures.. </li>
-
 </ul>
-
 <h3>Specialized Containers</h3>
-
 <ul type=disc>
-
   <li>It is possible to create new Container implementations for specific application 
-
     purposes. </li>
-
   <li>ACS Containers are implemented as classes that can be inherited from and 
-
     extended. For example, specific initialization of legacy systems or data reduction 
-
-    packages to be used together with ACS components can be delegated to specialised 
-
+    packages to be used together with ACS components can be delegated to specialized 
     containers</li>
-
-  <li>Specialised Containers can also be used to implement statically linked ACS 
-
-    excutables. The Container will look from the Client and Manager point of view 
-
-    as a standard Container, but the libraries implementing Components are statically 
-
-    linked and instances of Components can be predefined in the linked executable. 
-
-    This is being discussed for the implementation of the Offline Data Reduction 
-
-    Framework and ACS will most probably provide a standardized implementation 
-
-    for a few specialized ocntainers.</li>
-
-  <li>The Task (see Task section) is a specialised Container that can be run as 
-
+  <li>specialized Containers can also be used to implement statically linked ACS 
+    executables. The Container will look from the Client and Manager point of 
+    view as a standard Container, but the libraries implementing Components are 
+    statically linked and instances of Components can be predefined in the linked 
+    executable. This was discussed for the implementation of the Offline Data 
+    Reduction Framework and ACS can, upon request, provide a standardized implementation 
+    for a few specialized containers.</li>
+  <li>The Task (see Task section) is a specialized Container that can be run as 
     an executable and does not require Manager or ACS services.</li>
-
 </ul>
-
 <h3>Every client of a Component service that is not itself a Component shall implement 
-
   an interface called&nbsp;<span style='font-family:Courier'>maci::Clien</span>t.</h3>
-
 <ul type=disc>
   <li class="MsoNormal" style="     "> <span style='font-family:
+
+
 
      TimesNewRomanPSMT'>The Client interface allows the client to act as a secure 
     party in the communication with the Components, to receive general-purpose 
     string messages from the MACI components and to be notified when any change 
     happens to the Components that the client utilizes.&nbsp;</span></li>
-  <li class="MsoNormal" style="     "> Each Client logs in to the MACI system 
-    before any other requests are made, and in turn it obtains a security token, 
-    which it must use in every subsequent request to the MACI <b>(<i>Partially 
-    implemented</i>)</b>. The authentication will be implemented using a plugin 
-    design. If the Archive User Repository is available and if desired, the corresponding 
-    plugin will allow to authenticate clients based on the User Repository <b>(<i>Not 
-    implemented yet</i>)</b>.</li>
   <li class="MsoNormal" style="     "> The log in and other requests are issued 
-    to the Manager, which serves as a portal to other services.</li>
-</ul>
-
-<h3> <span style='font-family:Courier'>maci::Administrator&nbsp;</span>is a special-purpose 
-
-  client that can monitor the functioning of the domain that it administers. Monitoring 
-
-  includes obtaining the status of the Components as well as notification about 
-
-  the availability of Components.</h3>
-
-<h3> MACI allows organizing Components hierarchically and handling startup and 
-
-  shutdown dependencies between objects.</h3>
-
-<ul type=disc>
-
-  <li class="MsoNormal" style="     "> Whenever a client needs a CORBA reference 
-
-    for a Component, a request to Manager is done for the corresponding Component.</li>
-
-  <li class="MsoNormal" style="     "> If the object is not already instantiated, 
-
-    the Manager asks the Container to create it.</li>
-
-  <li class="MsoNormal" style="     "> When an object contains hierarchical references 
-
-    to contained objects, the dependency is expressed via Component URLs and resolved 
-
-    through requests to the Manager. In this way, the Manager can automatically 
-
-    achieve instantiation of not already active nested objects. This guaranties 
-
-    that all objects are automatically created in the right order and when needed.</li>
-
-  <li class="MsoNormal" style="     "> Some objects are needed immediately at 
-
-    bootstrap. They are directly specified in a Manager table and the Manager 
-
-    instantiates them as soon as the Container responsible for their deployment 
-
-    is bootstrapped.</li>
-
-  <li class="MsoNormal" style="     "> If there is a root top-level object, just 
-
-    putting this object in the Manager table will trigger a cascade instantiation 
-
-    of all dependent objects.</li>
-
-</ul>
-
-<h3> The Manager is the only responsible for providing references to Components.</h3>
-
-<ul>
-
-  <li> <i><b>It is not allowed to directly pass a CORBA reference to a Component 
-
-    from one Component (or more in general, client) to another.</b></i></li>
-
-  <li> Whenever a Client needs to access a Component, it shall request the reference 
-
-    by name from the Manager, by using the service calls provided by the ContainerServices, 
-
-    or by using directly the Manager's IDL interfaces</li>
-
-  <li> If a Client needs to pass to another client information about a Component 
-
-    to be accessed, this shall be done by passing the Component's name. The Client 
-
-    will then have to get the component reference from the Manager using this 
-
-    name.</li>
-
-  <li>In exceptional situations, Components need to instantiate objects that are 
-
-    accessible remotely, and need to pass them around to other Clients. The <font face="Arial, Helvetica, sans-serif">ACS::OffShoot</font> 
-
-    interface is a base interface defined for this purpose. <font face="Arial, Helvetica, sans-serif">ACS::OffShoot</font> 
-
-    objects are instantiated by a Component, who is responsible for their whole 
-
-    lifecycle. Their lifetime is limited to the lifetime of the Component who 
-
-    created and handed them over to clients. Mostly <font face="Arial, Helvetica, sans-serif">ACS:OffShoots</font> 
-
-    are used internally by ACS, for examples <font face="Arial, Helvetica, sans-serif">ACS:Callback 
-
-    </font>and <font face="Arial, Helvetica, sans-serif">ACS:Monitor </font>objects.</li>
-
-</ul>
-
-This is because the Manager needs to keep directly track of all the Client-Component 
-
-associations to be able to handle failures and restarts of Components and to allow 
-
-administrator Clients to get a realistic picture of the status of the system. 
-
-<br>
-
-&nbsp; 
-
-<h3> An Object Explorer User Interface tool is provided to navigate the hierarchy 
-
-  of Components on the naming hierarchy.<a href="ReferenceDocuments.html#RD01">[RD01 
-
-  - 5.1.3 Browser]</a> </h3>
-
-<ul>
-
-  <li>The Object Explorer is equivalent and covers the requirements of the Device 
-
-    Browser Tool described in the <a href="ReferenceDocuments.html#RD45">[RD45 
-
-    - EVLA Engineering Software Requirements, 1.1 Accessing a Single Device]</a>. 
-
-    In order to cover all detailed requirements expressed in <a href="ReferenceDocuments.html#RD45">[RD45]</a>, 
-
-    extensions to the Object Explored will need to be implemented.</li>
-
-  <li>All objects in the system can be reached by navigating the hierarchy and 
-
-    all object information can be retrieved and edited, including accessibility 
-
-    for a given user . For example, it will be possible to graphically browse 
-
-    the hierarchy of Components in the system, based on the naming hierarchy, 
-
-    reach every single Component and view/edit all values of Properties and Characteristics.</li>
-
-  <li>The Object Explorer allowa to browse the interface <a href="ReferenceDocuments.html#RD45">[RD45 
-
-    - 1.1-R4]</a> and send any command supported by a Component <a href="ReferenceDocuments.html#RD45">[RD45 
-
-    - 1.1-R5]</a></li>
-
-  <li>It is possible to monitor and draw trend-plots for each property <a href="ReferenceDocuments.html#RD45">[RD45 
-
-    - 1.1-R3]</a></li>
-
-  <li>The Object Explorer uses the CORBA Interface Repository to retrieve information 
-
-    on the interfaces provided by the Components in the system. </li>
-
-  <li>Requirements in <a href="ReferenceDocuments.html#RD45">[RD45 - 1.1]</a> 
-
-    not covered by the current Object Explorer implementation are: 
-
-    <ul>
-
-      <li>1.1-R2 - Tabular representation of multiple monitor points</li>
-
-      <li>1.1-R3 - Plot multiple monitor points on the same plot (this is possible 
-
-        with the ACS Sampling System)</li>
-
-      <li>1.1-R5.4 - Send a command repetitively</li>
-
-      <li>1.1-R5.5, 5.7- Save, read and execute sets of commands from file</li>
-
-      <li>1.1-R8 - Save tabular data with monitor values (this is possible with 
-
-        the ACS Sampling System)</li>
-
-      <li>1.3 Accessing Multiple Devices<br>
-
-        ABeans can be used to implement easily engineering panels as described 
-
-        in this section.<br>
-
-        Cosylab has also implemented a prototype for new Object Explorer that 
-
-        allows to configure the display of properties by placing ABeans widgets 
-
-        and tables of values on the display area and save/reload configurations. 
-
-        This would have to be further investigated.</li>
-
-    </ul>
-
+    to the Manager, which serves as a portal to other services. </li>
+  <li>Each Client logs in to the MACI system before any other requests are made, 
+    and in turn it obtains a security token, which it must use in every subsequent 
+    request to the MACI <b><font color="#0000FF">(<i>Partially implemented</i>)</font></b>. 
   </li>
-
+  <li><font face="Arial, Helvetica, sans-serif" size="-1" color="#0000FF">The 
+    authentication can be implemented using a plugin design. If the Archive User 
+    Repository is available and if desired, the corresponding plugin will allow 
+    to authenticate clients based on the User Repository<i> <b>(Implementation 
+    not foreseen for ALMA)</b>.</i></font></li>
 </ul>
-
-<h3> An Administrator User Interface (ACS Command Center) tool is provided. The 
-
-  Command Center:</h3>
-
+<h3> <span style='font-family:Courier'>maci::Administrator&nbsp;</span>is a special-purpose 
+  client that can monitor the functioning of the domain that it administers. Monitoring 
+  includes obtaining the status of the Components as well as notification about 
+  the availability of Components.</h3>
+<h3> MACI allows organizing Components hierarchically and handling startup and 
+  shutdown dependencies between objects.</h3>
 <ul type=disc>
-
-  <li class="MsoNormal" style="     ">allows to start/stop ACS Services, Manager 
-
-    and Containers on the local system or remotely</li>
-
+  <li class="MsoNormal" style="     "> Whenever a client needs a CORBA reference 
+    for a Component, a request to Manager is done for the corresponding Component.</li>
+  <li class="MsoNormal" style="     "> If the object is not already instantiated, 
+    the Manager asks the Container to create it.</li>
+  <li class="MsoNormal" style="     "> When an object contains hierarchical references 
+    to contained objects, the dependency is expressed via Component URLs and resolved 
+    through requests to the Manager. In this way, the Manager can automatically 
+    achieve instantiation of not already active nested objects. This guaranties 
+    that all objects are automatically created in the right order and when needed.</li>
+  <li class="MsoNormal" style="     "> Some objects are needed immediately at 
+    bootstrap. They are directly specified in a Manager configuration table (stored 
+    in the Configuration Database) and the Manager instantiates them as soon as 
+    the Container responsible for their deployment is bootstrapped.</li>
+  <li class="MsoNormal" style="     "> If there is a root top-level object, just 
+    putting this object in the Manager table will trigger a cascade instantiation 
+    of all dependent objects.</li>
+</ul>
+<h3> The Manager is the only responsible for providing references to Components.</h3>
+<ul>
+  <li> <i><b>It is not allowed to directly pass a CORBA reference to a Component 
+    from one Component (or more in general, client) to another.</b></i></li>
+  <li> Whenever a Client needs to access a Component, it shall request the reference 
+    by name from the Manager, by using the service calls provided by the ContainerServices, 
+    or by using directly the Manager's IDL interfaces</li>
+  <li> If a Client needs to pass to another client information about a Component 
+    to be accessed, this shall be done by passing the Component's name. The Client 
+    will then have to get the component reference from the Manager using this 
+    name.</li>
+  <li>In exceptional situations, Components need to instantiate objects that are 
+    accessible remotely, and need to pass them around to other Clients. The <font face="Arial, Helvetica, sans-serif">ACS::OffShoot</font> 
+    interface is a base interface defined for this purpose. <font face="Arial, Helvetica, sans-serif">ACS::OffShoot</font> 
+    objects are instantiated by a Component, who is responsible for their whole 
+    lifecycle. Their lifetime is limited to the lifetime of the Component who 
+    created and handed them over to clients. Mostly <font face="Arial, Helvetica, sans-serif">ACS:OffShoots</font> 
+    are used internally by ACS, for examples <font face="Arial, Helvetica, sans-serif">ACS:Callback 
+    </font>and <font face="Arial, Helvetica, sans-serif">ACS:Monitor </font>objects.</li>
+  <li>This is because the Manager needs to keep directly track of all the Client-Component 
+    associations to be able to handle failures and restarts of Components and 
+    to allow administrator Clients to get a realistic picture of the status of 
+    the system. <br>
+    &nbsp; </li>
+</ul>
+<h3> An Object Explorer User Interface tool is provided to navigate the hierarchy 
+  of Components on the naming hierarchy.<a href="ReferenceDocuments.html#RD01">[RD01 
+  - 5.1.3 Browser]</a> </h3>
+<ul>
+  <li>The Object Explorer is equivalent and covers the requirements of the Device 
+    Browser Tool described in the <a href="ReferenceDocuments.html#RD45">[RD45 
+    - EVLA Engineering Software Requirements, 1.1 Accessing a Single Device]</a>.<b><i> 
+    <font color="#0000FF">In order to cover all detailed requirements expressed 
+    in <a href="ReferenceDocuments.html#RD45">[RD45]</a>, extensions to the Object 
+    Explored will need to be implemented.</font></i></b></li>
+  <li>All objects in the system can be reached by navigating the hierarchy and 
+    all object information can be retrieved and edited, including accessibility 
+    for a given user . For example, it is possible to graphically browse the hierarchy 
+    of Components in the system, based on the naming hierarchy, reach every single 
+    Component and view/edit all values of Properties and Characteristics.</li>
+  <li>The Object Explorer allows to browse the interface <a href="ReferenceDocuments.html#RD45">[RD45 
+    - 1.1-R4]</a> and send any command supported by a Component <a href="ReferenceDocuments.html#RD45">[RD45 
+    - 1.1-R5]</a></li>
+  <li>It is possible to monitor and draw trend-plots for each property <a href="ReferenceDocuments.html#RD45">[RD45 
+    - 1.1-R3]</a></li>
+  <li>The Object Explorer uses the CORBA Interface Repository to retrieve information 
+    on the interfaces provided by the Components in the system. </li>
+  <li>Requirements in <a href="ReferenceDocuments.html#RD45">[RD45 - 1.1]</a> 
+    not covered by the current Object Explorer implementation are: 
+    <ul>
+      <li>1.1-R2 - Tabular representation of multiple monitor points</li>
+      <li>1.1-R3 - Plot multiple monitor points on the same plot (this is possible 
+        with the ACS Sampling System)</li>
+      <li>1.1-R5.4 - Send a command repetitively</li>
+      <li>1.1-R5.5, 5.7- Save, read and execute sets of commands from file</li>
+      <li>1.1-R8 - Save tabular data with monitor values (this is possible with 
+        the ACS Sampling System)</li>
+      <li>1.3 Accessing Multiple Devices</li>
+    </ul>
+  </li>
+</ul>
+<h3> An Administrator User Interface (ACS Command Center) tool is provided. The 
+  Command Center:</h3>
+<ul type=disc>
+  <li class="MsoNormal" style="     ">allows to start/stop ACS Services, Manager, 
+    Containers and Components on the local system or remotely</li>
   <li><span style='font-family:
 
-     TimesNewRoman'>displays the information about CORBA objects in the system. 
 
-    This includes Components, Managers and Containers. Both currently active Components 
 
+     TimesNewRoman'>displays the information about objects in the system. This 
+    includes Components, Managers and Containers. Both currently active Components 
     and potentially active Components (i.e. Components that the Manager is able 
-
     to bring online on request) are displayed.&nbsp;</span></li>
-
   <li class="MsoNormal" style="     "> <span style='font-family:
 
+
+
      TimesNewRoman'>interacts with the Manager through IDL maci::Administrator 
-
     interface, by receiving notifications about other clients and activators in 
-
     the system from the Manager.</span></li>
-
+  <li>acts as a central user interface for starting up administration utilities 
+    (logging client, object explorer, event monitor and others), providing a configurable 
+    menu structure.</li>
+  <li>makes available to developers an API and GUI elements to implement administration 
+    applications and GUI.<br>
+    The ALMA Executive is an application based on this API and GUI building blocks.</li>
 </ul>
+
+
 
 </body>
 
+
+
 </html>
+
+
 

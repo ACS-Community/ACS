@@ -260,50 +260,51 @@ class=GramE>Characteristic Components</span><a href="ReferenceDocuments.html#RD0
   &quot;Static&quot; calibration values, for example measured by <span class=GramE>an 
   engineer and</span> not supposed to change for months can be Characteristics. 
   Characteristics can change with time or can change with the context. </h4>
-<h4><font face="Arial, Helvetica, sans-serif" size="-1">Note: It is possible to 
-  implement also a more dynamic mechanism, but we have not identified a requirement 
-  for ALMA. This can be done transparently at a later time extending the Property 
-  class with methods to change the value of characteristics but this has not been 
-  considered in the first design to avoid increasing the complexity of the system.<b> 
-  (Implementation not foreseen for ALMA)</b></font></h4>
-
-<h3><font face="Arial, Helvetica, sans-serif" size="-1">Note: A Visual Configuration 
-  Tool (CT) can be implemented on top of the Database Loader. This can be completely 
-  independent of all other aspects of CDB and therefore can be implemented at 
-  a later stage. ALMA configuration data is edited using the TMCDB tools and therefore 
-  no requirement for such Visual Configuration Tool has been recognized. The basic 
-  features are described hereafter for a possible future implementation <i>(Implementation 
-  not foreseen for ALMA)</i></font></h3>
+<h4><font face="Arial, Helvetica, sans-serif" size="-1" color="#0000FF">Note: 
+  It is possible to implement also a more dynamic mechanism, but we have not identified 
+  a requirement for ALMA. This can be done transparently at a later time extending 
+  the Property class with methods to change the value of characteristics but this 
+  has not been considered in the first design to avoid increasing the complexity 
+  of the system.<b> (Implementation not foreseen for ALMA)</b></font></h4>
+<h3><font face="Arial, Helvetica, sans-serif" size="-1" color="#0000FF">Note: 
+  A Visual Configuration Tool (CT) can be implemented on top of the Database Loader. 
+  This can be completely independent of all other aspects of CDB and therefore 
+  can be implemented at a later stage. ALMA configuration data is edited using 
+  the TMCDB tools and therefore no requirement for such Visual Configuration Tool 
+  has been recognized. The basic features are described hereafter for a possible 
+  future implementation <i>(Implementation not foreseen for ALMA)</i></font></h3>
 <ul>
-  <li><font face="Arial, Helvetica, sans-serif" size="-1"> The CT allows to visually 
-    edit the structure/schema of the configuration database and to fill in the 
-    values inside the instantiated database.</font></li>
-  <li><font face="Arial, Helvetica, sans-serif" size="-1"> The CT supports expressions 
-    and variables.  </font></li>
-  <li><font face="Arial, Helvetica, sans-serif" size="-1"> Allows switching between 
-    different views (think of Eclipse): source, members, hierarchy, editions, 
-    and visual composition. Like in Eclipse, there should be wizards that help 
-    create new structures, but the structures can be created also manually. Structures 
-    can be changed using connections and <span class=SpellE>drag&amp;drop</span>. 
+  <li><font face="Arial, Helvetica, sans-serif" size="-1" color="#0000FF"> The 
+    CT allows to visually edit the structure/schema of the configuration database 
+    and to fill in the values inside the instantiated database.</font></li>
+  <li><font face="Arial, Helvetica, sans-serif" size="-1" color="#0000FF"> The 
+    CT supports expressions and variables.  </font></li>
+  <li><font face="Arial, Helvetica, sans-serif" size="-1" color="#0000FF"> Allows 
+    switching between different views (think of Eclipse): source, members, hierarchy, 
+    editions, and visual composition. Like in Eclipse, there should be wizards 
+    that help create new structures, but the structures can be created also manually. 
+    Structures can be changed using connections and <span class=SpellE>drag&amp;drop</span>. 
     </font></li>
-  <li><font face="Arial, Helvetica, sans-serif" size="-1"> An existing CDB can 
-    be parsed and displayed visually, for easier re-engineering. </font></li>
-  <li><font face="Arial, Helvetica, sans-serif" size="-1"> There is a tree view 
-    in CT that uses <span
+  <li><font face="Arial, Helvetica, sans-serif" size="-1" color="#0000FF"> An 
+    existing CDB can be parsed and displayed visually, for easier re-engineering. 
+    </font></li>
+  <li><font face="Arial, Helvetica, sans-serif" size="-1" color="#0000FF"> There 
+    is a tree view in CT that uses <span
 
 
 
 class=SpellE>colour</span> codes and icons to define classes or properties that 
     are abstract, inherited, calculated (from expressions) and imported from templates.</font></li>
-  <li><font face="Arial, Helvetica, sans-serif" size="-1"> A “spreadsheet view” 
-    is used for mass population of configuration data. The normal approach is 
-    to define the structure with the tools just described, and then to write a 
-    substitution file, which contains data in compact form in a table that is 
+  <li><font face="Arial, Helvetica, sans-serif" size="-1" color="#0000FF"> A “spreadsheet 
+    view” is used for mass population of configuration data. The normal approach 
+    is to define the structure with the tools just described, and then to write 
+    a substitution file, which contains data in compact form in a table that is 
     similar to a spreadsheet. Ideally, it should be straightforward to create 
     such a substitution file in a spreadsheet program and use it from there directly. 
     </font></li>
-  <li><font face="Arial, Helvetica, sans-serif" size="-1"> The development of 
-    CT will be based on existing tools. For example it could be an Eclipse <span class=SpellE>plugin</span>.</font></li>
+  <li><font face="Arial, Helvetica, sans-serif" size="-1" color="#0000FF"> The 
+    development of CT will be based on existing tools. For example it could be 
+    an Eclipse <span class=SpellE>plugin</span>.</font></li>
 </ul>
 
 </body>

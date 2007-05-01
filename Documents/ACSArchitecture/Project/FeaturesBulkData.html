@@ -1,128 +1,239 @@
 <html>
+
 <head>
+
 <meta http-equiv=Content-Type content="text/html; charset=windows-1252">
+
 <title>FeaturesBulkData</title>
+
 <style><!--
+
 .Normal
+
 	{font-size:12.0pt;
+
 	font-family:"Times New Roman";}
+
 -->
+
 </style>
+
 <meta name=Template content="C:\Program Files\MSOffice\Office\html.dot">
+
 </head>
+
 <body lang=EN-US link=blue vlink=purple class="Normal" bgcolor="#FFFFFF">
+
 <h2>Bulk Data</h2>
+
 <p>ACS provides support for the transport of bulk data <a
+
 href="ReferenceDocuments.html#RD01">[RD01 - 7.1. Bulk data transfer]</a>, to be 
+
   used for science data. </p>
+
 <h3>The following use cases are supported:</h3>
+
 <h4>Push streaming. Connection initiated by the supplier.</h4>
+
 <p>A data supplier produces a continuous stream of data for a specific bulk data 
+
   consumerComponent. Typical example is the Correlator sending continuous streams 
+
   of data to the Archive. </p>
+
 <p>The basic operations are as follows:</p>
+
 <ul>
-  <li>The supplier connects to the received Component</li>
+
+  <li>The supplier gets access to the consumer Component</li>
+
   <li>Opens a connection.</li>
+
   <li>Data is sent by the supplier to the consumer until</li>
+
   <li>The supplier closes the connection</li>
+
 </ul>
+
 <h4>Push discrete bulk data. Connection initiated by the supplier</h4>
+
 <p>A data supplier produces bulks of data as separate, non continuous streaming, 
+
   entities. Typical example is a data processing Component sending images to another 
+
   Component for further processing. Everything works like in the previous case, 
+
   but for the fact that the communication protocol must be able to identify separate 
+
   bulks of data, like a single image.</p>
+
 <h4>Pull data from stream. Connection initiated by consumer.</h4>
+
 <p>An application needs streaming data published by a Stream Provider Component. 
+
   There can be multiple clients. Typical example is a GUI connecting to a CCD 
+
   camera. Multiple GUIs can display the image from the same Camera.</p>
+
 <p>The basic operations are a follows:</p>
+
 <ul>
+
   <li>The supplier Component is available for publishing data</li>
+
   <li>The client opens a connection with the supplier</li>
+
   <li>The supplier sends data to the client(s) until</li>
+
   <li>The client closes the connection</li>
+
 </ul>
+
 <h4>Pull discrete bulk data. Connection initiated by the consumer.</h4>
+
 <p>An application needs to retrieve discrete bulks of data as separate, non continuous 
+
   streaming, entities. Typical example is retrieval of images from the archive. 
+
   Everything works like in the previous case, but for the fact that the communication 
+
   protocol must be able to identify separate bulks of data, like a single image. 
+
 </p>
+
 <h3>Performance considerations</h3>
+
 <p>It shall be possible to handle the actual transfer of data with communication 
+
   protocols more efficient than CORBA IIOP, in particular for high volume streams.</p>
+
 <p>When there are multiple clients for the data published we should implement 
+
   a service architecture where the data supplier sends the data to just one Distributor 
+
   which, in turn, sends them to a number of connecting clients. This decouples 
+
   the load due to the increasing number of clients from the supplier.</p>
-<p>Precise performance requirements are being collected and performance of a prototype 
-  implmentation based on the CORBA Audio Video streaming service isbeing measured.</p>
+
+<p>Precise performance requirements have been collected and verified with the 
+  ACS Bulk Data system implementation based on the CORBA Audio Video streaming 
+  service.</p>
+
 <h3>Architecture and design</h3>
+
 <h4>Bulk data transfer can be implemented in CORBA using three techniques:</h4>
+
 <ol>
+
   <li>Iterators on normal IDL methods</li>
+
   <li>Notification Channel</li>
+
   <li>Audio Video Streaming Service</li>
+
 </ol>
+
 <p>The first two options are based on the IIOP transport protocol and therefore 
+
   suffer from performance limitations, although tests available in the literature 
+
   show that properly designed buffering limits these problems. Option 1 is better 
+
   suited for discrete bulk data while option 2 is better suited for streaming.</p>
+
 <p>Option 3 is based on the Audio Video Streaming Service <a href="ReferenceDocuments.html#RD42">[RD42]</a> 
   defined by CORBA. This specification aims at the streaming and transfer of large 
-  amounts of data and should satisfy the requirements expressed in <a href="ReferenceDocuments.html#RD01">[RD01 
+  amounts of data and satisfies the requirements expressed in <a href="ReferenceDocuments.html#RD01">[RD01 
   - 7.1.1 Image pipeline]</a>. The handshaking protocol is defined using CORBA 
   IDL Media Control interfaces, but the actual data transfer goes out of band 
   and does not use (but could use) CORBA to transport data. TAO provides an implementation 
   and provides transport over TCP and UDP with excellent performance<a href="ReferenceDocuments.html#RD43">[RD43]</a>.</p>
+
 <h4>The CORBA Audio Video Streaming Service supports all the use cases described 
+
   above.</h4>
+
 <h5>There are the following basic concepts:</h5>
+
 <ul>
+
   <li>Stream<br>
+
     A stream represents continuous media transfer between two or more entities.</li>
+
   <li>Flow<br>
+
     A stream can be composed of many flows.<br>
+
     For example a video camera stream has a video and an audio flow.<br>
+
     As an example strictly related to ALMA, the Correlator will have one stream 
+
     to send bulk data to the Archive, but this would be split in up to 8 flows 
+
     with at least 2 always present: 1 per subarray, 1 for spectral data and 1 
+
     for channel average.<br>
+
     Each flow can have independent quality of service parameters and each flow 
+
     can have an independent direction (upload or download).</li>
+
   <li>Frames<br>
+
     A frame is a unit of data sent over a flow. <br>
+
     A frame of a video is a typical example.<br>
-    A set of data published by the Correlator can be mapped toa frame as well.<br>
+    A set of data published by the Correlator can be mapped to a frame as well.<br>
+
     The basic A/V service does not have the concept of frame. The SFP (Simple 
+
     Flow Protocol), on top of the physical transport protocol, introduces the 
+
     concept of frame in the A/V service and protocol messages to identify and 
+
     number the frames are added to the actual data.</li>
+
 </ul>
+
 <h5>Data published on a Flow is received via a callback implemented by the receiving 
+
   Component. </h5>
+
 <h5>The push use cases are implemented using an upload flow. The pull use cases 
+
   are implemented using a download flow.</h5>
+
 <h5>The Bulk Data Components implement the Media Control interfaces (and extend 
+
   them as needed). </h5>
+
 <h5>Streaming use cases are implemented using the start control commands on the 
   Component to notify that the stream has started and not sending the stop command 
   until the stream needs to be closed. Structuring of the data sent in the stream 
-  or the SFP protocol are used for synchronisation and framing of the message.</h5>
+  or the SFP protocol are used for synchronization and framing of the message.</h5>
+
 <h5>Discrete use cases are implemented using the start and stop stream commands 
+
   to identify each discrete piece of bulk data. These will be wrapped in convenience 
+
   interfaces. In this way it is not necessary to inspect the incoming data to 
+
   identify the frame boundary and the end of data.</h5>
+
 <h4>Limitations of the CORBA Audio Video Streaming Service</h4>
-At present time there is no implementation of CORBA A/V service for Java or Python. 
-The TAO implementation is only about 3000 lines of C++ code but it uses ACE libraries 
-extensively and therefore porting to Java and Python should be evaluated immediately 
-after performance has been assessed. It will have also to be assessed in what 
-cases Bulk Data transfer will have to take place involving Java and Python Components 
-and not just C++ Components. For example, image data processing will typically 
-take place between C++ Components without requiring high performance image transfer 
-to Java or Python Components. 
+
+<p>At present time there is no implementation of CORBA A/V service for Java or 
+  Python. The TAO implementation is only about 3000 lines of C++ code but it uses 
+  ACE libraries extensively and therefore porting to Java and Python should be 
+  evaluated immediately after performance has been assessed. It will have also 
+  to be assessed in what cases Bulk Data transfer will have to take place involving 
+  Java and Python Components and not just C++ Components. For example, image data 
+  processing will typically take place between C++ Components without requiring 
+  high performance image transfer to Java or Python Components. </p>
+<p>&nbsp; </p>
 </body>
+
 </html>
+

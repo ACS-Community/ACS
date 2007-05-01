@@ -155,36 +155,25 @@ href="ReferenceDocuments.html#RD01">[RD01 - 9.2.2. Software limits]</a>. Applica
 
 
 <p>Basic performance requirements have been verified with ACS 0.0 on the Kitt 
-
   Peak 12m antenna, with the TICS <a href="ReferenceDocuments.html#RD26">[RD26]</a> 
-
-  and the Protype Pipeline.</p>
+  and the Protype Pipeline, at the ATF and in the laboratories.</p>
 
 
 
 <p>All performance requirements stated in <a href="ReferenceDocuments.html#RD01">[RD01 
-
   - 9.4. Performance]</a> are being verified. A set of performance measuring suites 
-
   aimed at implementing a realistic system in term of number and size of objects 
-
   <a
 
 
 
 href="ReferenceDocuments.html#RD01">[RD01 - 3.3.1 Size]</a> and of number of interactions 
-
   has been implemented. Discussions and results of ACS performance measures are 
-
   available in the ACS Wiki page <a href="http://almasw.hq.eso.org/almasw/bin/view/ACS/AcsPerformances">http://almasw.hq.eso.org/almasw/bin/view/ACS/AcsPerformances</a>. 
-
   This includes a specific feasibility check of CORBA Audio Video Streaming service 
-
   in relation to astronomical data transfer<a href="ReferenceDocuments.html#RD01"> 
-
   [RD01 - 10.5.9 Data transfer]</a> and tests of the event and notification system 
-
-  performance.</p>
+  and logging system performance.</p>
 
 
 
@@ -197,11 +186,11 @@ href="ReferenceDocuments.html#RD01">[RD01 - 3.3.1 Size]</a> and of number of int
 
 <p>In the current implementation (ACS 6.0) XML is extensively used for the Configuration 
   Database, for logging and archiving. The performances apper to be an issue for 
-  the logging system and we have now implemented a new version of the logging 
-  system that does not use XML as transport protocol. We are evaluating the improvement 
-  in perfromanc. Performance of XML do not appear to be an issue in the other 
-  cases, but will have to be verified on a lager scale for scalability. Also the 
-  use of XML for sampling needs to be verified.</p>
+  the logging system when low logging levels (trace and debug) are used. Therefore 
+  we have now implemented a new version of the logging system that does not use 
+  XML as transport protocol. We are evaluating the improvement in perfromance. 
+  Performance of XML does not appear to be an issue in the other cases, but this 
+  will have to be verified on a lager scale for scalability.</p>
 
 
 
@@ -262,45 +251,15 @@ href="ReferenceDocuments.html#RD32">[RD32]</a>. This document describes also the
 
 
 <p>Code does not always need to be recompiled if new IDL interfaces are made available 
-
-
-
   or if an IDL interface is changed, for example adding new methods<a href="ReferenceDocuments.html#RD01">[RD01 
-
-
-
   - 13.1.6. Modularity]</a>. With TAO and JacORB even if one changes interfaces, 
-
-
-
   both client and server still work if they do not use the new features. It is 
-
-
-
   possible to have the server exporting one version of the interface and the client 
-
-
-
   use another version. If an interface changes, then re-compilation is necessary 
-
-
-
-  (as expected) only for those programs that use the new feature of the methods 
-
-
-
+  (as expected) only for those programs that use the new feature or the methods 
   that eventually changed signature. This should work also with other ORBs, since 
-
-
-
   it is due to the existing CORBA IIOP protocol. On the other hand, this behavior 
-
-
-
   is not explicitly supported and, should the IIOP protocol ever change, different 
-
-
-
   interfaces might lead to run-time errors.<b>&nbsp;</b></p>
 
 
