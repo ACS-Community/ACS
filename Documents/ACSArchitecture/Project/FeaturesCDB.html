@@ -190,29 +190,14 @@ class=GramE>implementations</span><a href="ReferenceDocuments.html#RD01">[RD01
 
   loading them in a &quot;live&quot; database.</h3>
 
-<h3>The ALMA Archive will implement the Configuration Database Access API. ACS 
-
-  will develop, in collaboration with the ALMA Archive subsystem, tools to convert 
-
-  CDB instances between the XML reference implementation and the ALMA Archive. 
-
-  In this way it will be possible to develop locally with the XML implementation 
-
-  and transparently migrate to the final system based on the ALMA Archive. <i>(Not 
-
-  implemented yet)</i></h3>
-
-<h3>ACS will not provide any specific implementation based on IBM <span class=GramE>DB2</span><a href="ReferenceDocuments.html#RD20">[RD20]</a> 
-
-  or <span
-
-
-
-class=SpellE>mySQL</span><a href="ReferenceDocuments.html#RD01">[RD01 - 10.5.5 
-
-  Configuration DB]</a>, since it will directly support the ALMA Archive interfaces, 
-
-  but there are no technical problems in doing that. </h3>
+<h3>In ALMA, configuration information is stored in the Telescope and Monitoring 
+  Configuration Data Base (TMCDB). This is based on the Oracle RDBMS. Archive, 
+  Control and ACS subsystems are responsible for the implementation of the Configuration 
+  Database Access API on top of the TMCDB, throught the implementation of a specific 
+  Component. This implementation includes round-trip tools to convert CDB instances 
+  between the XML reference implementation and the TMCDB. In this way it is possible 
+  to develop locally with the XML implementation and transparently migrate to 
+  the final system based on the ALMA Archive and TMCBD. <i>(Being implemented).</i></h3>
 
 <h3>All Components have access to the Configuration Database during construction/initialization 
 
@@ -273,65 +258,52 @@ class=GramE>Characteristic Components</span><a href="ReferenceDocuments.html#RD0
   e.g., calibrations that change at run time. With this definition, calibration 
   values that change at run time should be implemented as Properties, not as Characteristics. 
   &quot;Static&quot; calibration values, for example measured by <span class=GramE>an 
-  engineer that are</span> not supposed to change for months can be Characteristics. 
-  Characteristics can change with time or can change with the context. We will 
-  have to verify if some more dynamic mechanism is necessary. This can be done 
-  transparently at a later time extending the Property class with methods to change 
-  the value of characteristics but will not be considered in the first design 
-  to avoid increasing the complexity of the system. This point will be reviewed 
-  after the TICS development.<b> (Not implemented yet)</b></h4>
+  engineer and</span> not supposed to change for months can be Characteristics. 
+  Characteristics can change with time or can change with the context. </h4>
+<h4><font face="Arial, Helvetica, sans-serif" size="-1">Note: It is possible to 
+  implement also a more dynamic mechanism, but we have not identified a requirement 
+  for ALMA. This can be done transparently at a later time extending the Property 
+  class with methods to change the value of characteristics but this has not been 
+  considered in the first design to avoid increasing the complexity of the system.<b> 
+  (Implementation not foreseen for ALMA)</b></font></h4>
 
-<h3>A Visual Configuration Tool (CT) comes on top of the Database Loader. This 
-  can be completely independent of all other aspects of CDB and therefore can 
-  be implemented at a later stage. <i>(Not implemented yet, to be rediscussed 
-  after R3)</i></h3>
-
+<h3><font face="Arial, Helvetica, sans-serif" size="-1">Note: A Visual Configuration 
+  Tool (CT) can be implemented on top of the Database Loader. This can be completely 
+  independent of all other aspects of CDB and therefore can be implemented at 
+  a later stage. ALMA configuration data is edited using the TMCDB tools and therefore 
+  no requirement for such Visual Configuration Tool has been recognized. The basic 
+  features are described hereafter for a possible future implementation <i>(Implementation 
+  not foreseen for ALMA)</i></font></h3>
 <ul>
-
-  <li> The CT allows to visually edit the structure/schema of the configuration 
-
-    database and to fill in the values inside the instantiated database.</li>
-
-  <li> The CT supports expressions and variables.  </li>
-
-  <li> Allows switching between different views (think of Eclipse): source, members, 
-
-    hierarchy, editions, and visual composition. Like in Eclipse, there should 
-
-    be wizards that help create new structures, but the structures can be created 
-
-    also manually. Structures can be changed using connections and <span class=SpellE>drag&amp;drop</span>. 
-
-  </li>
-
-  <li> An existing CDB can be parsed and displayed visually, for easier re-engineering. 
-
-  </li>
-
-  <li> There is a tree view in CT that uses <span
+  <li><font face="Arial, Helvetica, sans-serif" size="-1"> The CT allows to visually 
+    edit the structure/schema of the configuration database and to fill in the 
+    values inside the instantiated database.</font></li>
+  <li><font face="Arial, Helvetica, sans-serif" size="-1"> The CT supports expressions 
+    and variables.  </font></li>
+  <li><font face="Arial, Helvetica, sans-serif" size="-1"> Allows switching between 
+    different views (think of Eclipse): source, members, hierarchy, editions, 
+    and visual composition. Like in Eclipse, there should be wizards that help 
+    create new structures, but the structures can be created also manually. Structures 
+    can be changed using connections and <span class=SpellE>drag&amp;drop</span>. 
+    </font></li>
+  <li><font face="Arial, Helvetica, sans-serif" size="-1"> An existing CDB can 
+    be parsed and displayed visually, for easier re-engineering. </font></li>
+  <li><font face="Arial, Helvetica, sans-serif" size="-1"> There is a tree view 
+    in CT that uses <span
 
 
 
 class=SpellE>colour</span> codes and icons to define classes or properties that 
-
-    are abstract, inherited, calculated (from expressions) and imported from templates.</li>
-
-  <li> A “spreadsheet view” is used for mass population of configuration data. 
-
-    The normal approach is to define the structure with the tools just described, 
-
-    and then to write a substitution file, which contains data in compact form 
-
-    in a table that is similar to a spreadsheet. Ideally, it should be straightforward 
-
-    to create such a substitution file in a spreadsheet program and use it from 
-
-    there directly. </li>
-
-  <li> The development of CT will be based on existing tools. For example it could 
-
-    be an Eclipse <span class=SpellE>plugin</span>.</li>
-
+    are abstract, inherited, calculated (from expressions) and imported from templates.</font></li>
+  <li><font face="Arial, Helvetica, sans-serif" size="-1"> A “spreadsheet view” 
+    is used for mass population of configuration data. The normal approach is 
+    to define the structure with the tools just described, and then to write a 
+    substitution file, which contains data in compact form in a table that is 
+    similar to a spreadsheet. Ideally, it should be straightforward to create 
+    such a substitution file in a spreadsheet program and use it from there directly. 
+    </font></li>
+  <li><font face="Arial, Helvetica, sans-serif" size="-1"> The development of 
+    CT will be based on existing tools. For example it could be an Eclipse <span class=SpellE>plugin</span>.</font></li>
 </ul>
 
 </body>

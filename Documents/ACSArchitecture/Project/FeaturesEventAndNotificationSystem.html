@@ -73,10 +73,10 @@ to the Notification Service and to create/connect/disconnect channels
 in the Event and Notification System. This does not hinder direct
 access to the CORBA Notification Service to access features not
 implemented by the API.</h4>
-<h4>The structured-push-supplier / structured-push-consumer model of
-the CORBA Notification Service has been implemented first. Other
-Notification Service models will be implemented later on based on
-specific application needs. </h4>
+<h4><font face="Arial, Helvetica, sans-serif" size="-1">Note: The structured-push-supplier 
+  / structured-push-consumer model of the CORBA Notification Service has been 
+  implemented first. Other Notification Service models can be implemented later 
+  on based on specific application needs (Implementation not foreseen for ALMA)</font>.</h4>
 <h4>CORBA TCL (Trader Constraint Language) query language is used to
 allow filtering of messages from clients. Filtering is currently only
 allowed on simple CORBA types like Floats, Longs, etc.<br>
@@ -97,21 +97,25 @@ without exposing to the Internet confidential data.</li>
 <h3>The Notification Service is a process separated both from publisher
 and subscriber. It also optimizes data transfer by implementing caching
 to reduce network traffic.</h3>
-<h3>The ACS API provides a class for supplying events. An application
-instantiates a Supplier or Supplier-derived object and invokes the
-publishEvent() method that fills a CosNotification::StructuredEvent,
-which is the structure that defines the data sent on the Notification
-Channel. The Supplier class takes care of the whole administration of
-the Notification Channel including its creation. </h3>
-<h3>The ACS API provides a base class for Consumer. An application
-implements a subclass of this for each Consumer and provides an
-implementation for the push_structured_event() method that has the
-purpose of pushing the data in the received
-CosNotification::StructuredEvent into appropriate member variables. The
-base class takes care of the whole administration of the connection to
-the Notification Channel. An application may also utilize the
-SimpleConsumer subclass which is able to handle events in a generic
-manner and does not need to be subclassed.<br>
+<h3>The ACS API provides a class for supplying events. An application instantiates 
+  a Supplier or Supplier-derived object and invokes the publishEvent() method 
+  that fills a CosNotification::StructuredEvent, which is the structure that defines 
+  the data sent on the Notification Channel. The Supplier class takes care of 
+  the whole administration of the Notification Channel including its creation.</h3>
+<h3>SimpleSupplier is a subclass of Supplier designed specifically for publishing 
+  events defined as IDL structures, the normal and most common situation. It provides 
+  the interface used to push IDL structs onto the notification channel, creates 
+  the channel (if it doesn’t exist), and hides all CORBA from the developer.</h3>
+<h3>The ACS API provides a base class for Consumer. An application implements 
+  a subclass of this for each Consumer and provides an implementation for the 
+  push_structured_event() method that has the purpose of pushing the data in the 
+  received CosNotification::StructuredEvent into appropriate member variables. 
+  The base class takes care of the whole administration of the connection to the 
+  Notification Channel. An application may also utilize the SimpleConsumer subclass 
+  which is able to handle events in a generic manner and does not need to be subclassed.</h3>
+<h3>SimpleConsumer is a concrete, templated implementation of Consumer which uses 
+  a single handler function to process a single type of event defined as an IDL 
+  structure and is therefore simmetric to SimpleSupplier.<br>
 </h3>
 <h3>The Supplier and Consumer classes have a common engine that has
 been factorized in the Helper common base class. In particular the
@@ -121,8 +125,8 @@ Notification Channel as registered with the CORBA Naming Service.</h3>
 services like logging and archiving.</h3>
 <h3>Comparison between Event and Notification System, Direct Value
 Retrieval and Data Retrieval by Event:</h3>
-<h4>The 3 data access mechanism provided by ACS have different
-characteristics and are meant to be used in different situation. </h4>
+<h4>The 3 data access mechanisms provided by ACS have different characteristics 
+  and are meant to be used in different situations. </h4>
 <ul type="disc">
   <li style="">With the Event and Notification System, data subscriber
 and data publisher are completely de-coupled. </li>
