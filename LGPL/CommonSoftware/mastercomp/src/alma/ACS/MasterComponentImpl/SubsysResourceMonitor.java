@@ -143,7 +143,7 @@ public class SubsysResourceMonitor {
                     logger.info(msg);
                     Future future = otherRunner.getScheduleFuture();
                     future.cancel(true);
-                    resourceRunners.remove(otherChecker);
+                    resourceRunners.remove(otherRunner);
                     break;
                 }
             }
@@ -161,6 +161,7 @@ public class SubsysResourceMonitor {
      * Returns the number of actively running threads, plus the number of tasks in the queue that is used for scheduling the monitoring calls.
 	 */
 	public int getNumberOfMonitorTasks() {
+//logger.info("*** scheduler active count =" + scheduler.getActiveCount() + "; scheduler queue size = " + scheduler.getQueue().size());		
 		return ( scheduler.getActiveCount() + scheduler.getQueue().size() );
 	}
 	
