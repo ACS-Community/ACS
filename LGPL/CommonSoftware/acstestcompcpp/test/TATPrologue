@@ -21,14 +21,14 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: TATPrologue,v 1.1 2006/09/14 14:54:34 gchiozzi Exp $"
+# "@(#) $Id: TATPrologue,v 1.2 2007/05/02 20:37:16 agrimstrup Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
 # almamgr 2000-09-13 created
 echo " ****************** TATPrologue ************* "
 if [ -d CDB ]; then export ACS_CDB=$PWD; fi;
-acsutilTATPrologue
+acsutilTATPrologue -l
 
 
 echo " Starting acstestcomp Container"
