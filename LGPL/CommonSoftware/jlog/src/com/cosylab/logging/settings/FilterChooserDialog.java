@@ -555,6 +555,11 @@ public class FilterChooserDialog extends JDialog {
 		if (!fileName.toUpperCase().endsWith(".XML")) {
 			fileName = fileName + ".xml";
 		}
+		CheckListModel clm = (CheckListModel) filterList.getModel();
+		for (int t=0; t<clm.getSize(); t++) {
+			Filter f = (Filter)clm.get(t);
+			filters.activateFilter(f,clm.isChecked(t));
+		}
 		File f = new File(fileName);
 		try {
 			filters.saveFilters(f);
