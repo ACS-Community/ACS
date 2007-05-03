@@ -853,7 +853,6 @@ public class IOLogsHelper extends Thread  {
 					}
 					case IOAction.TERMINATE_THREAD_ACTION: {
 						// Terminate the thread
-						System.out.println("IOLogHelperThread teminate");
 						return;
 					}
 					case IOAction.SAVE_ACTION: {
