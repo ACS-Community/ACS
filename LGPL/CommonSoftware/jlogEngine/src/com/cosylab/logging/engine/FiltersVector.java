@@ -80,6 +80,9 @@ public class FiltersVector extends Vector<Filter> {
 	 * @param active true if the filter is active
 	 */
 	public void addFilter(Filter f, boolean active) {
+		if (f==null) {
+			throw new IllegalArgumentException("Invalid null filter");
+		}
 		add(f);
 		if (active) activeFilters.add(new Integer(size()-1));
 	}
@@ -166,16 +169,7 @@ public class FiltersVector extends Vector<Filter> {
 	 * @return true if the filter is active
 	 */
 	public boolean isActive(int n) {
-		if (activeFilters.isEmpty()) {
-			return false;
-		} else {
-			for (int t=0; t<activeFilters.size(); t++) {
-				if (activeFilters.get(t).intValue()==n) {
-					return true;
-				}
-			}
-		}
-		return false;
+		return activeFilters.contains(new Integer(n));
 	}
 	
 	/**
@@ -308,6 +302,7 @@ public class FiltersVector extends Vector<Filter> {
         	String exactStr = null;
         	String wcharStr = null;
         	String fieldStr=null;
+        	Boolean enabled=null;
         	Element element = (Element) it.next();
         	String type = element.getAttributeValue("type");
         	Element lethalElement = element.getChild("LETHAL");
@@ -344,6 +339,13 @@ public class FiltersVector extends Vector<Filter> {
         	if (fieldElement!=null) {
         		fieldStr=fieldElement.getText();
         	}
+        	Element enabledElement = element.getChild("ENABLED");
+        	if (enabledElement!=null) {
+       			enabled= new Boolean(enabledElement.getText());
+        	} else {
+        		// Tag not found: enable the filter per default
+        		enabled=Boolean.TRUE;
+        	}
         	
         	// Build the filter
         	Filter filter = Filter.buildFilter(
@@ -359,7 +361,7 @@ public class FiltersVector extends Vector<Filter> {
 					wcharStr);
         	
         	if (filter!=null) {
-        		addFilter(filter,true);
+        		addFilter(filter,enabled);
         	} else {
             	// Error: prints a message and abort without saving the filters
             	JOptionPane.showMessageDialog(null,"Error building a filter","Error",JOptionPane.ERROR_MESSAGE);
@@ -455,8 +457,15 @@ public class FiltersVector extends Vector<Filter> {
 		dataOutStream.writeBytes("<FILTERS>\n");
 		dataOutStream.writeBytes("<FILTER_LIST>\n");
 		for (int t=0; t<size(); t++) {
-			String xmlString=((Filter)get(t)).toXMLString();
-			dataOutStream.writeBytes(xmlString);
+			StringBuilder xmlString=new StringBuilder(get(t).toXMLString());
+			int pos=xmlString.indexOf("</FILTER>");
+			if (pos>=0) {
+				StringBuilder enabledStr = new StringBuilder("\t<ENABLED>");
+				enabledStr.append(isActive(t));
+				enabledStr.append("</ENABLED>\n\t");
+				xmlString.insert(pos, enabledStr);
+			}
+			dataOutStream.writeBytes(xmlString.toString());
 		}
 		dataOutStream.writeBytes("</FILTER_LIST>\n");
 		dataOutStream.writeBytes("</FILTERS>\n");
@@ -492,6 +501,29 @@ public class FiltersVector extends Vector<Filter> {
 			activeFilters.remove(pos);
 		}
 		return f;
+	}
+	
+	/**
+	 * Activate/deactivate a filter
+	 * 
+	 * @param f The filter to activate/deactivate
+	 * @param active If true, activate the filter
+	 */
+	public void activateFilter(Filter f, boolean active) {
+		if (f==null) {
+			throw new IllegalArgumentException("Invalid null filter");
+		}
+		Integer pos = indexOf(f);
+		if (pos==-1) {
+			throw new IllegalArgumentException("The filter is not in the vector");
+		}
+		if (active) {
+			if (!activeFilters.contains(pos)) {
+				activeFilters.add(pos);
+			}
+		} else {
+			activeFilters.remove(pos);
+		}
 	}
 
 }
