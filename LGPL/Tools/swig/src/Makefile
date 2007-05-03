@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.4 2004/12/16 15:33:10 bjeram Exp $"
+# "@(#) $Id: Makefile,v 1.5 2007/05/03 16:29:15 agrimstrup Exp $"
 #
 # Makefile of ........
 #
@@ -187,10 +187,10 @@ endif
 
 LIBS = -lstdc++
 
-SWIG: swig-1.3.23.tar.gz
+SWIG: swig-1.3.31.tar.gz
 	@echo "== Building swig"
-	@gtar -zxvf swig-1.3.23.tar.gz
-	@cd SWIG-1.3.23; ./configure --prefix=$(INSTALL_ROOT); make; make install
+	@gtar -zxvf swig-1.3.31.tar.gz
+	@cd swig-1.3.31; ./configure --prefix=$(INSTALL_ROOT); make; make install
 
 #
 # TARGETS
@@ -199,7 +199,7 @@ all:	do_all SWIG
 	@echo " . . . 'all' done" 
 
 clean : clean_all 
-	$(RM) SWIG-1.3.23
+	$(RM) swig-1.3.31
 	@echo " . . . clean done"
 
 clean_dist : clean_all clean_dist_all 
