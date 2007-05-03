@@ -27,6 +27,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.WindowEvent;
 import java.util.Date;
 import java.text.SimpleDateFormat;
 
@@ -36,16 +37,12 @@ import javax.swing.JFileChooser;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JRadioButtonMenuItem;
-import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
-import javax.swing.table.TableModel;
 import javax.swing.ListSelectionModel;
 import javax.swing. DefaultListSelectionModel;
-
-import alma.acs.logging.preferences.UserPreferences;
 
 import com.cosylab.logging.LogTableDataModel;
 import com.cosylab.logging.LoggingClient;
@@ -87,6 +84,14 @@ public class LogEntryTable extends javax.swing.JTable
 	private boolean[] visibleColumns;
 	private FieldChooserDialog fieldChooser = new FieldChooserDialog();
 	private ColumnMenu popupMenu = new ColumnMenu();
+	
+	/**
+	 *  The dialog to manage filters
+	 *  There is only one instance of this dialog that can be visible or invisible.
+	 *  It is disposed by calling the close() (usually done by
+	 *  the LoggingClient before exiting.
+	 */
+	private FilterChooserDialog filterChooserDialog = null;
 
 	private LoggingClient loggingClient;
 	
@@ -502,7 +507,7 @@ public class LogEntryTable extends javax.swing.JTable
 
 	}
 
-	private class headerMouseAdapter extends MouseAdapter
+	private class HeaderMouseAdapter extends MouseAdapter
 	{
 		private boolean performPopup(MouseEvent e)
 		{
@@ -866,7 +871,7 @@ public class LogEntryTable extends javax.swing.JTable
 		columnsList[0].setResizable(false);
 		columnsList[1].setResizable(false);
 		addMouseListener(new ColumnMouseAdapter());
-		getTableHeader().addMouseListener(new headerMouseAdapter());
+		getTableHeader().addMouseListener(new HeaderMouseAdapter());
 
 		setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		sizeColumnsToFit(JTable.AUTO_RESIZE_OFF);
@@ -1023,24 +1028,38 @@ public class LogEntryTable extends javax.swing.JTable
         return visibleCols;
     }
     
+    /**
+     * Close the filterChooser dialog releasing all the resources.
+     * This is intended to be the last operatione when the application 
+     * is closing
+     *
+     */
+    public void close() {
+    	showFilterChooser(false);
+    	if (filterChooserDialog!=null) {
+    		filterChooserDialog.dispose();
+    		filterChooserDialog=null;
+    	}
+    	
+    }
+    
 	/**
-	 * Displays the filter and history configuration dialog.
-	 * Creation date: (2/4/02 3:57:44 PM)
+	 * Display/hide the filter configuration dialog.
+	 * @param show If true the dialog is shown, otherwise it is closed
+	 * 
 	 */
-	public void showFilterChooser()
+	public void showFilterChooser(boolean show)
 	{
-		FilterChooserDialog fcd = new FilterChooserDialog();
-		LogTableDataModel ltdm = getLCModel();
-
-		fcd.setModal(true);
-
-		fcd.setupFields(ltdm.getFilters());
-
-		if (fcd.showModal() == FilterChooserDialog.MODAL_OK)
-		{
-			ltdm.getFilters().setFilters(fcd.getFilters(), fcd.getChecked());
-			updateFilteredString();
-			ltdm.invalidateVisibleLogs();
+		if (show) {
+			if (filterChooserDialog==null) {
+				filterChooserDialog=new FilterChooserDialog(loggingClient,getLCModel());
+			}
+			filterChooserDialog.setFilters(getLCModel().getFilters());
+			filterChooserDialog.setVisible(true);
+		} else {
+			if (filterChooserDialog!=null) {
+				filterChooserDialog.setVisible(false);
+			}
 		}
 	}
 	
