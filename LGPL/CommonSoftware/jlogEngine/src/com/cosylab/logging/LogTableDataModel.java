@@ -42,6 +42,7 @@ import alma.acs.logging.dialogs.LoadURLDlg;
 
 import com.cosylab.logging.client.VisibleLogsVector;
 import com.cosylab.logging.engine.log.ILogEntry;
+import com.cosylab.logging.engine.Filter;
 import com.cosylab.logging.engine.FiltersVector;
 import com.cosylab.logging.LoggingClient;
 import com.cosylab.logging.IOLogsHelper;
@@ -203,7 +204,7 @@ public class LogTableDataModel extends AbstractTableModel implements Runnable
 	// allLogs provides the items and filteredLogs is not valid.
 	private final VisibleLogsVector visibleLogs;
 	
-	// Data model maintains the list of all the available filters
+	// The list of all the available filters
 	private final FiltersVector filters = new FiltersVector();
     
 	/**
@@ -860,6 +861,22 @@ public class LogTableDataModel extends AbstractTableModel implements Runnable
 		if (visibleLogs!=null) {
 			visibleLogs.close(sync);
 		}
+	}
+	
+	/**
+	 * Set the specified filters in the vector
+	 * 
+	 * @param newFilters The array of the new filters
+	 * @param actives The array of booleans saying if a filter is active/inactive
+	 */
+	public void setFilters(Filter[] newFilters, boolean[] actives) {
+		if (newFilters==null || actives==null) {
+			throw new IllegalArgumentException("Invalid null parameter");
+		}
+		if (newFilters.length!=actives.length) {
+			throw new IllegalArgumentException("The size of the filters and the active booleans differ");
+		}
+		filters.setFilters(newFilters, actives);
 	}
 
 }
