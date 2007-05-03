@@ -57,16 +57,6 @@ public class LogMenuBar extends JMenuBar {
 	private boolean exitHided; // true if the exit menu is not visible
 	
 	/**
-	 * The menu item to load filters
-	 */
-	private JMenuItem loadFiltersMenuItem = null;
-	
-	/**
-	 * The menu item to save the filters
-	 */
-	private JMenuItem saveFiltersMenuItem = null;
-	
-	/**
 	 * The menu item to show the statistics dialog
 	 */
 	private JMenuItem statisticsMenuItem = null;
@@ -76,20 +66,10 @@ public class LogMenuBar extends JMenuBar {
      */
     private JMenuItem viewErrorLogMI;
     
-	/** 
-	 * The filters menu
-	 */
-	private JMenu filtersMenu;
-	
 	/**
-	 * The menu item to save the filters with a new name
+	 * The menu item to show the filters control panel
 	 */
-	private JMenuItem saveAsFiltersMenuItem = null;
-	
-	/**
-	 * The menu item to edit the filters
-	 */
-	private JMenuItem editFiltersMenuItem;
+	private JMenuItem filtersMenuItem;
 	
 	private JMenuItem fieldsMenuItem = null; // Fields...
 
@@ -176,7 +156,7 @@ public class LogMenuBar extends JMenuBar {
         viewMenu.add(getFieldsMenuItem());
         viewMenu.add(getShortDateViewMenuItem());
         viewMenu.addSeparator();
-        viewMenu.add(getFiltersMenu());
+        viewMenu.add(getFiltersMenuItem());
         viewMenu.addSeparator();
         viewMenu.add(getStatisticsMenuItem());
         viewMenu.add(getViewErrorLogMenuItem());
@@ -266,68 +246,15 @@ public class LogMenuBar extends JMenuBar {
 	}
 	
 	/**
-	 * Returns the FiltersMenuItem property value.
-	 * @return javax.swing.JMenuItem
-	 */
-	private JMenu getFiltersMenu() {
-		filtersMenu = new JMenu("Filters");
-		filtersMenu.setName("Filters");
-	
-		filtersMenu.add( getLoadFiltersMenuItem());
-		filtersMenu.add(getSaveFiltersMenuItem());
-		filtersMenu.add(getSaveAsFiltersMenuItem());
-		filtersMenu.add(getEditFiltersMenuItem());
-		
-		return filtersMenu; 
-	}
-	
-	/**
-	 * Return the loadFiltersMenuItem
-	 * @return
-	 */
-	public JMenuItem getSaveAsFiltersMenuItem() {
-		if (saveAsFiltersMenuItem==null) {
-			saveAsFiltersMenuItem=new JMenuItem("Save As,,,");
-			saveAsFiltersMenuItem.setName("LoadFiltersMenuItem");
-		}
-		return saveAsFiltersMenuItem;
-	}
-	
-	
-	/**
-	 * Return the loadFiltersMenuItem
-	 * @return
-	 */
-	public JMenuItem getSaveFiltersMenuItem() {
-		if (saveFiltersMenuItem==null) {
-			saveFiltersMenuItem=new JMenuItem("Save");
-			saveFiltersMenuItem.setName("LoadFiltersMenuItem");
-		}
-		return saveFiltersMenuItem;
-	}
-	
-	/**
-	 * Return the loadFiltersMenuItem
-	 * @return
-	 */
-	public JMenuItem getLoadFiltersMenuItem() {
-		if (loadFiltersMenuItem==null) {
-			loadFiltersMenuItem=new JMenuItem("Load");
-			loadFiltersMenuItem.setName("LoadFiltersMenuItem");
-		}
-		return loadFiltersMenuItem;
-	}
-	
-	/**
 	 * Return the editFiltersMenuItem
 	 * @return
 	 */
-	public JMenuItem getEditFiltersMenuItem() {
-		if (editFiltersMenuItem==null) {
-			editFiltersMenuItem=new JMenuItem("Edit...");
-			editFiltersMenuItem.setName("EditFiltersMenuItem");
+	public JMenuItem getFiltersMenuItem() {
+		if (filtersMenuItem==null) {
+			filtersMenuItem=new JMenuItem("Filters...");
+			filtersMenuItem.setName("EditFiltersMenuItem");
 		}
-		return editFiltersMenuItem;
+		return filtersMenuItem;
 	}
 	
 	/**
@@ -413,7 +340,6 @@ public class LogMenuBar extends JMenuBar {
 		fileMenu.addMenuListener(menuListener);
 		viewMenu.addMenuListener(menuListener);
 		searchMenu.addMenuListener(menuListener);
-		filtersMenu.addMenuListener(menuListener);
 		
 		connectMenuItem.addActionListener(actionListener); // Connect/Disconnect
 		autoReconnectMI.addActionListener(actionListener);
@@ -434,10 +360,7 @@ public class LogMenuBar extends JMenuBar {
 		clearLogsMI.addActionListener(actionListener); // ClearAll
 		exitMenuItem.addActionListener(actionListener); // Exit
 		fieldsMenuItem.addActionListener(actionListener); // Fields
-		editFiltersMenuItem.addActionListener(actionListener); // Edit Filters
-		loadFiltersMenuItem.addActionListener(actionListener); // Load Filters
-		saveFiltersMenuItem.addActionListener(actionListener); // Save Filters
-		saveAsFiltersMenuItem.addActionListener(actionListener); // Save Filters
+		filtersMenuItem.addActionListener(actionListener); // Filters
 	}
 	
 	public JCheckBoxMenuItem getViewToolbarMenuItem() {
