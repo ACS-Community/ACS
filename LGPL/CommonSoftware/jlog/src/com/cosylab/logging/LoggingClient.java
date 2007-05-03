@@ -107,12 +107,6 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 	
 	// Create an instance of the preferences with default values
 	private UserPreferences userPreferences = new UserPreferences();
-	
-	/**
-	 * The name of the last save/load filter file
-	 * (to implement the save as option)
-	 */
-	private String filterFileName = null;
 
 	private JLabel ivjFilterStatus = null; // Not filtered
 	private JLabel ivjInfoStatus = null; // Additional info
@@ -219,17 +213,9 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
         		}
             }else if (e.getSource() == menuBar.getFieldsMenuItem()) {
 				connFields(e);
-            } else if (e.getSource() == menuBar.getEditFiltersMenuItem()) {
-				editFilters(e);
-            } else if (e.getSource() == menuBar.getLoadFiltersMenuItem()) {
-				loadFilters();
-            } else if (e.getSource() == menuBar.getSaveFiltersMenuItem()) {
-				if (filterFileName!=null)
-					if (filterFileName.length()>0) 
-						saveFilters(filterFileName);
-			} else if (e.getSource() == menuBar.getSaveAsFiltersMenuItem()) {
-				saveAsFilters();
-			} else if (e.getSource()==toolBar.getPauseBtn()) {
+            } else if (e.getSource() == menuBar.getFiltersMenuItem() || e.getSource()==toolBar.getFiltersBtn()) {
+				showFiltersPanel(e);
+            } else if (e.getSource()==toolBar.getPauseBtn()) {
 				// Swap set the pause mode in the toolbar
 				toolBar.clickPauseBtn();
 				// Pause/unpause the engine
@@ -330,19 +316,6 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 			menuBar.getLoadURLMenuItem().setEnabled(enableMenu);
 			menuBar.getSaveFileMenuItem().setEnabled(enableMenu);
 			
-			// Check if Save and Save As menu items are selectable
-			menuBar.getSaveAsFiltersMenuItem().setEnabled(true);
-			if (tableModel.getFilters().size()==0) {
-				menuBar.getSaveFiltersMenuItem().setEnabled(false);
-				menuBar.getSaveAsFiltersMenuItem().setEnabled(false);
-			} else if(filterFileName==null) {
-					menuBar.getSaveFiltersMenuItem().setEnabled(false);
-			} else if (filterFileName.length()==0) {
-				menuBar.getSaveFiltersMenuItem().setEnabled(false);
-			} else {
-				menuBar.getSaveFiltersMenuItem().setEnabled(true);
-			}
-			
 			// Ensure the status of the item shown in the main panel
 			// is consistent with the menu item in View
 			menuBar.getViewStatusAreaMenuItem().setSelected(getStatusAreaPanel().isVisible());
@@ -357,27 +330,7 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 		
 	}
 	
-	/**
-	 * The filter to load save filters as xml files
-	 * The filter checks for the extension .xml in the name
-	 * 
-	 * @author acaproni
-	 */
-	private class xmlFileFilter extends FileFilter {
-		public boolean accept(File f) {
-			// Check if the name has the extension .xml at the end and is readable
-			boolean pass = f.isFile() && f.getName().toUpperCase().endsWith(".XML") && f.canRead();
-			// Check if the file is a directory
-			pass = pass || f.isDirectory();
-			// Check if f is a hidden file
-			pass = pass && !f.isHidden();
-			return pass; 
-		}
-		
-		public String getDescription() {
-			return "xml file";
-		}
-	}
+	
 	
 	/**
 	 * Build the object in online/offline mode 
@@ -512,15 +465,17 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 	 * as soon as the item "Filters" is clicked.
 	 * @param arg1 java.awt.event.ActionEvent
 	 */
-	private void editFilters(java.awt.event.ActionEvent arg1)
+	private void showFiltersPanel(java.awt.event.ActionEvent arg1)
 	{
 		try
 		{
-			getLogEntryTable().showFilterChooser();
+			enableFiltersWidgets(false);
+			getLogEntryTable().showFilterChooser(true);
 		}
 		catch (java.lang.Throwable ivjExc)
 		{
 			handleException(ivjExc);
+			enableFiltersWidgets(true);
 		}
 	}
 
@@ -1265,102 +1220,8 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 
 	}
 	
-	/**
-	 * Save the filters in a new XML file
-	 *
-	 */
-	private void saveAsFilters() {
-		// Check if there are filters in use
-		if (tableModel.getFilters().size()==0) {
-			JOptionPane.showMessageDialog(this,"No filters to save","Warning",JOptionPane.INFORMATION_MESSAGE);
-			return;
-		}
-		// Show the dialog to choose the file to save
-		JFileChooser fileChooserDlg = new JFileChooser();
-		fileChooserDlg.setMultiSelectionEnabled(false);
-		fileChooserDlg.setDialogTitle("Save filters");
-		xmlFileFilter fileFilter= new xmlFileFilter();
-		fileChooserDlg.setFileFilter(fileFilter);
-		if (fileChooserDlg.showSaveDialog(this)==JFileChooser.APPROVE_OPTION) {
-			// Get the selected file
-			File fileToSave = fileChooserDlg.getSelectedFile();
-			if (!fileToSave.getAbsolutePath().toUpperCase().endsWith(".XML")) {
-				fileToSave = new File(fileToSave.getAbsolutePath()+".xml");
-			}
-			if (fileToSave!=null) {
-				try {
-					tableModel.getFilters().saveFilters(fileToSave);
-					filterFileName=fileToSave.getAbsolutePath();
-					System.out.println("Saved "+filterFileName);
-				} catch (IOException e) {
-					System.err.println("Exception: "+e.toString());
-				}
-			}
-		}
-	}
-
-	/**
-	 * Save the filters to a XML files with a given name
-	 * It create the File object then call overloaded method
-	 * 
-	 *@param fileName The name of the xml file
-	 */
-	private void saveFilters(String fileName) {
-		// Check if the name terminate with xml
-		if (!fileName.toUpperCase().endsWith(".XML")) {
-			fileName=fileName+".xml";
-		}
-		File f = new File(fileName);
-		try {
-			tableModel.getFilters().saveFilters(f);
-			filterFileName=f.getAbsolutePath();
-			System.out.println("Saved "+filterFileName);
-		} catch (IOException e) {
-			System.err.println("Error opening "+fileName);
-		}
-	}
 	
-	/**
-	 * Load filters from a XML file
-	 * The user choose if the loaded filters substitutes the existing ones
-	 * or merges with them
-	 */
-	private void loadFilters() {
-		boolean eraseOldFilters;
-		// Check if already exists filters
-		if (tableModel.getFilters().size()>0) {
-			int ret=JOptionPane.showConfirmDialog(
-					(Component)this,
-					"Do you want do discard existing filters?",
-					"Merge filters?",
-					JOptionPane.YES_NO_CANCEL_OPTION);
-			if (ret==JOptionPane.CANCEL_OPTION) {
-				return;
-			} else {
-				eraseOldFilters=(ret==JOptionPane.YES_OPTION);
-			}
-		} else {
-			eraseOldFilters = false; // We have no filters so.. nothing to delete ;-) 
-		}
-		
-		// Show the dialog to choose the file to load
-		JFileChooser fileChooserDlg = new JFileChooser();
-		fileChooserDlg.setMultiSelectionEnabled(false);
-		fileChooserDlg.setDialogTitle("Load filters");
-		xmlFileFilter fileFilter= new xmlFileFilter();
-		fileChooserDlg.setFileFilter(fileFilter);
-		if (fileChooserDlg.showOpenDialog(this)==JFileChooser.APPROVE_OPTION) {
-			// Load filters from file
-			File fileToLoad=fileChooserDlg.getSelectedFile();
-			if (fileToLoad!=null) {
-				tableModel.getFilters().loadFilters(fileToLoad,eraseOldFilters,null);
-				logEntryTable.updateFilteredString();
-				//tableModel.setMaxHistory(history);
-				tableModel.invalidateVisibleLogs();
-				filterFileName=fileToLoad.getAbsolutePath();
-			}
-		}
-	}
+	
 	
     /**
      * Enable or disable the Search next menu item
@@ -1602,6 +1463,20 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 		if (tableModel!=null) {
 			tableModel.close(sync);
 		}
+		if (logEntryTable!=null) {
+			logEntryTable.close();
+		}
+	}
+	
+	/**
+	 * Enable/disable the filter menu item and the filter button
+	 * in the tool bar
+	 * 
+	 * @param enable true enables the widgets
+	 */
+	public void enableFiltersWidgets(boolean enable) {
+		toolBar.getFiltersBtn().setEnabled(enable);
+		menuBar.getFiltersMenuItem().setEnabled(enable);
 	}
 }
 
