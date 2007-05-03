@@ -70,6 +70,9 @@ public class LogToolBar extends JToolBar {
     // The search button in the toolbar
     private JButton searchBtn;
     
+    // The button to manage filters
+    private JButton filtersBtn;
+    
 	/**
 	 * Empty constructor
 	 *
@@ -112,6 +115,7 @@ public class LogToolBar extends JToolBar {
         tbLevelPanel.add(getPauseBtn());
         tbLevelPanel.add(getSearchBtn());
         tbLevelPanel.add(getClearLogsBtn());
+        tbLevelPanel.add(getFiltersBtn());
         userPanel.add(tbLevelPanel);
         
         toolBarPanel.add(userPanel,BorderLayout.WEST);
@@ -138,6 +142,7 @@ public class LogToolBar extends JToolBar {
     	searchBtn.addActionListener(listener);
     	logLevelCB.addActionListener(listener);
     	pauseBtn.addActionListener(listener);
+    	filtersBtn.addActionListener(listener);
     }
     
     /**
@@ -224,6 +229,17 @@ public class LogToolBar extends JToolBar {
     }
     
     /**
+     * 
+     * @return The filter button
+     */
+    public JButton getFiltersBtn() {
+    	if (filtersBtn==null) {
+    		filtersBtn=new JButton("Filters");
+    	}
+    	return filtersBtn;
+    }
+    
+    /**
 	 * The pause has been pressed
 	 * Change the test and icon in the button.
 	 * 
@@ -280,6 +296,7 @@ public class LogToolBar extends JToolBar {
 		getSearchBtn().setEnabled(enabled);
 		pauseBtn.setEnabled(enabled);
 		clearLogsBtn.setEnabled(enabled);
+		filtersBtn.setEnabled(enabled);
 	}
 	
 	/**
