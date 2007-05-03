@@ -92,17 +92,44 @@ public class FiltersVector extends Vector<Filter> {
 	 * @param active The array of active filters
 	 */
 	public void setFilters(Filter[] f, boolean[] active) {
-		if (f.length ==  active.length) {
-			clear();
-			activeFilters.clear();
-			for (int i = 0; i < f.length; i++) {
-				add(f[i]);
-				if (active[i]) {
-					activeFilters.add(new Integer(i));
-				} 
+		if (f.length !=  active.length) {
+			throw new IllegalArgumentException("The size of filters and active differ");
+		}
+		clear();
+		activeFilters.clear();
+		for (int i = 0; i < f.length; i++) {
+			add(f[i]);
+			if (active[i]) {
+				activeFilters.add(new Integer(i));
+			} 
+		}
+	}
+	
+	/**
+	 * Set the filters in this vector to be the same of the 
+	 * passed vector
+	 * 
+	 * @param flts The vector of filters
+	 */
+	public void setFilters(FiltersVector flts) {
+		if (flts==null) {
+			throw new IllegalArgumentException("Invalid null filters vector");
+		}
+		clear();
+		activeFilters.clear();
+		// Get the indexes of the active filters
+		for (Filter f: flts) {
+			if (f==null) {
+				throw new IllegalStateException("A filter in the vector is null");
 			}
-		} else {
-			System.err.println("Error occured setting filter parameters");
+			add(f);
+		}
+		int[] activesIdx=flts.getAppliedFiltersIndexes();
+		if (activesIdx==null) {
+			return;
+		}
+		for (int t=0; t<activesIdx.length; t++) {
+			activeFilters.add(activesIdx[t]);
 		}
 	}
 
