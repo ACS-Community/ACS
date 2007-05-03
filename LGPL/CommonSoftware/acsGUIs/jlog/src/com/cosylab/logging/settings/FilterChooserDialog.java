@@ -21,7 +21,7 @@
  */
 package com.cosylab.logging.settings;
 
-import java.awt.Component;
+import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -30,13 +30,19 @@ import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
+import javax.swing.JToolBar;
 import javax.swing.ListSelectionModel;
 import javax.swing.WindowConstants;
 import javax.swing.filechooser.FileFilter;
@@ -65,28 +71,29 @@ public class FilterChooserDialog extends JDialog {
 
 	private JButton buttonClose = null;
 
-	private JButton buttonModify = null;
-
-	private JButton buttonAdd = null;
-
-	private JButton buttonRemove = null;
-
-	private JButton buttonActivateAll = null;
-
-	private JButton buttonDeactivateAll = null;
-
-	private JButton buttonDeleteAll = null;
-
-	private JButton buttonSave = null;
-
-	private JButton buttonSaveAs = null;
-
-	private JButton buttonLoad = null;
-
 	private JButton buttonApply = null;
 	
 	private JButton buttonRestore = null;
-
+	
+	// The toolbar with its buttons
+	private JToolBar toolBar = new JToolBar();
+	private JButton buttonAdd = null;
+	private JButton buttonRemove = null;
+	private JButton buttonModify = null;
+	
+	// The menu bar with its items
+	private JMenuBar menuBar = new JMenuBar();
+	private JMenuItem loadMI=new JMenuItem("Load");
+	private JMenuItem saveMI=new JMenuItem("Save");
+	private JMenuItem saveAsMI=new JMenuItem("Save as");
+	private JMenuItem closeMI=new JMenuItem("Close");
+	private JMenuItem activateAllMI=new JMenuItem("Activate all");
+	private JMenuItem deactivateAllMI=new JMenuItem("Deactivate all");
+	private JMenuItem clearAllMI=new JMenuItem("Clear all");
+	
+	// The listener
+	ButtonListener bl = new ButtonListener();
+	
 	// The logging client
 	private LoggingClient loggingClient;
 	
@@ -132,7 +139,7 @@ public class FilterChooserDialog extends JDialog {
 		}
 
 		public void actionPerformed(java.awt.event.ActionEvent e) {
-			if (e.getSource() == buttonClose) { // Close
+			if (e.getSource() == buttonClose || e.getSource() == closeMI) { // Close
 				setVisible(false);
 				loggingClient.enableFiltersWidgets(true);
 				return;
@@ -172,19 +179,19 @@ public class FilterChooserDialog extends JDialog {
 					((CheckListModel) (fcd.filterList.getModel())).remove(i);
 					filters.remove(i);
 					modified=true;
-			} else if (e.getSource() == buttonActivateAll) {
+			} else if (e.getSource() == activateAllMI) {
 				CheckListModel clm = (CheckListModel) filterList.getModel();
 				for (int i = 0; i < clm.getSize(); i++) {
 					clm.setChecked(i, true); // Deactivate all the filters
 					modified=true;
 				}
-			} else if (e.getSource() == buttonDeactivateAll) { // Deactivate All
+			} else if (e.getSource() == deactivateAllMI) { // Deactivate All
 				CheckListModel clm = (CheckListModel) filterList.getModel();
 				for (int i = 0; i < clm.getSize(); i++) {
 					clm.setChecked(i, false); // Deactivate all the filters
 					modified=true;
 				}
-			} else if (e.getSource() == buttonDeleteAll) { // Delete all
+			} else if (e.getSource() == clearAllMI) { // Delete all
 				CheckListModel clm = (CheckListModel) filterList.getModel();
 				if (clm.getSize() > 0) {
 					// Ask the user for a confirmation
@@ -200,11 +207,11 @@ public class FilterChooserDialog extends JDialog {
 			}  else if (e.getSource() == buttonApply) { // Apply
 				applyFilters();
 				modified=false;
-			} else if (e.getSource() == buttonLoad) { // Load
+			} else if (e.getSource() == loadMI) { // Load
 				loadFilters();
-			} else if (e.getSource() == buttonSave) { // Save
+			} else if (e.getSource() == saveMI) { // Save
 				saveFilters(filterFileName);
-			} else if (e.getSource() == buttonSaveAs) { // Save as
+			} else if (e.getSource() == saveAsMI) { // Save as
 				saveAsFilters();
 			} else if (e.getSource() == buttonRestore) { // Restore
 				restoreFilters();
@@ -215,14 +222,6 @@ public class FilterChooserDialog extends JDialog {
 		}
 	}
 	
-	/**
-	 * Edit a filter
-	 *
-	 */
-	private void editFilter() {
-		
-	}
-
 	/**
 	 * The filter to load save filters as xml files
 	 * The filter checks for the extension .xml in the name
@@ -292,78 +291,46 @@ public class FilterChooserDialog extends JDialog {
 	 */
 	private void initialize() {
 		setLocation(50, 50);
-		getContentPane().setLayout(new GridBagLayout());
-
-		ButtonListener bl = new ButtonListener();
+		
+		// Add the toolbars
+		initMenubar();
+		initToolbar();
+		
+		JPanel panel = new JPanel(new GridBagLayout());
 
 		GridBagConstraints c = new GridBagConstraints();
 
 		description = new JLabel("Select filter to apply");
 		c = newConstraints(0, 0, 0, 4);
 		c.gridwidth = 3;
-		getContentPane().add(description, c);
+		panel.add(description, c);
 
 		c = newConstraints(0, 1, 0, 4);
 		c.gridwidth = 3;
 		c.weighty = 1.0;
 		c.fill = GridBagConstraints.BOTH;
 		filterList = new JCheckList();
-		getContentPane().add(new JScrollPane(filterList), c);
+		panel.add(new JScrollPane(filterList), c);
 		filterList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
-		buttonAdd = new JButton("Add");
-		buttonAdd.addActionListener(bl);
-		getContentPane().add(buttonAdd, newConstraints(0, 2, 4, 4));
-
-		buttonRemove = new JButton("Remove");
-		buttonRemove.addActionListener(bl);
-		getContentPane().add(buttonRemove, newConstraints(1, 2, 4, 4));
-
-		buttonModify = new JButton("Modify");
-		buttonModify.addActionListener(bl);
-		getContentPane().add(buttonModify, newConstraints(2, 2, 4, 4));
-
-		buttonActivateAll = new JButton("Activate all");
-		buttonActivateAll.addActionListener(bl);
-		getContentPane().add(buttonActivateAll, newConstraints(0, 3, 4, 4));
-
-		buttonDeactivateAll = new JButton("Deactivate all");
-		buttonDeactivateAll.addActionListener(bl);
-		getContentPane().add(buttonDeactivateAll, newConstraints(1, 3, 4, 4));
-
-		buttonDeleteAll = new JButton("Delete all");
-		buttonDeleteAll.addActionListener(bl);
-		getContentPane().add(buttonDeleteAll, newConstraints(2, 3, 4, 4));
-
-		buttonSave = new JButton("Save");
-		buttonSave.addActionListener(bl);
-		getContentPane().add(buttonSave, newConstraints(0, 4, 4, 4));
-
-		buttonSaveAs = new JButton("Save as");
-		buttonSaveAs.addActionListener(bl);
-		getContentPane().add(buttonSaveAs, newConstraints(1, 4, 4, 4));
-
-		buttonLoad = new JButton("Load");
-		buttonLoad.addActionListener(bl);
-		getContentPane().add(buttonLoad, newConstraints(2, 4, 4, 4));
-
 		JSeparator sep = new JSeparator();
-		GridBagConstraints constr = newConstraints(0, 5, 4, 4);
+		GridBagConstraints constr = newConstraints(0, 2, 4, 4);
 		constr.gridwidth = 3;
-		getContentPane().add(sep, constr);
+		panel.add(sep, constr);
 
 		buttonApply = new JButton("Apply");
 		buttonApply.addActionListener(bl);
-		getContentPane().add(buttonApply, newConstraints(0, 6, 4, 4));
+		panel.add(buttonApply, newConstraints(0, 3, 4, 4));
 		
 		buttonRestore= new JButton("Restore");
 		buttonRestore.addActionListener(bl);
-		getContentPane().add(buttonRestore, newConstraints(1, 6, 4, 4));
+		panel.add(buttonRestore, newConstraints(1, 3, 4, 4));
 
 		buttonClose = new JButton("Close");
 		buttonClose.addActionListener(bl);
-		getContentPane().add(buttonClose, newConstraints(2, 6, 4, 4));
-
+		panel.add(buttonClose, newConstraints(2, 3, 4, 4));
+		
+		getContentPane().add(panel,BorderLayout.CENTER);
 		pack();
 	}
 
@@ -461,11 +428,11 @@ public class FilterChooserDialog extends JDialog {
 		boolean hasEntries = (filterList.getModel().getSize() > 0);
 		buttonRemove.setEnabled(hasEntries);
 		buttonModify.setEnabled(hasEntries);
-		buttonActivateAll.setEnabled(hasEntries);
-		buttonDeactivateAll.setEnabled(hasEntries);
-		buttonDeleteAll.setEnabled(hasEntries);
-		buttonSave.setEnabled(filterFileName!=null && hasEntries);
-		buttonSaveAs.setEnabled(hasEntries);
+		activateAllMI.setEnabled(hasEntries);
+		deactivateAllMI.setEnabled(hasEntries);
+		clearAllMI.setEnabled(hasEntries);
+		saveMI.setEnabled(filterFileName!=null && hasEntries);
+		saveAsMI.setEnabled(hasEntries);
 	}
 
 	/**
@@ -606,6 +573,62 @@ public class FilterChooserDialog extends JDialog {
 		}
 		filters.setFilters(initialFilters);
 		setupFields(filters);
+	}
+	
+	/**
+	 * Initialize the toolbar
+	 *
+	 */
+	private void initToolbar() {
+		ImageIcon addIcon=new ImageIcon(FilterChooserDialog.class.getResource("/page_add.png"));
+		buttonAdd = new JButton("Add",addIcon);
+		buttonAdd.addActionListener(bl);
+		toolBar.add(buttonAdd);
+
+		ImageIcon removeIcon=new ImageIcon(FilterChooserDialog.class.getResource("/page_delete.png"));
+		buttonRemove = new JButton("Remove",removeIcon);
+		buttonRemove.addActionListener(bl);
+		toolBar.add(buttonRemove);
+
+		ImageIcon editIcon=new ImageIcon(FilterChooserDialog.class.getResource("/page_edit.png"));
+		buttonModify = new JButton("Modify",editIcon);
+		buttonModify.addActionListener(bl);
+		toolBar.add(buttonModify);
+		
+		getContentPane().add(toolBar,BorderLayout.NORTH);
+	}
+	
+	/**
+	 * Initialize the menubar
+	 *
+	 */
+	private void initMenubar() {
+		JMenu fileMenu = new JMenu("File");
+		fileMenu.add(loadMI);
+		fileMenu.add(saveMI);
+		fileMenu.add(saveAsMI);
+		fileMenu.add(new JSeparator());
+		fileMenu.add(closeMI);
+		
+		JMenu editMenu = new JMenu("Edit");
+		editMenu.add(activateAllMI);
+		editMenu.add(deactivateAllMI);
+		editMenu.add(new JSeparator());
+		editMenu.add(clearAllMI);
+		
+		menuBar.add(fileMenu);
+		menuBar.add(editMenu);
+		
+		setJMenuBar(menuBar);
+		
+		// Add the event listeners
+		loadMI.addActionListener(bl);
+		saveMI.addActionListener(bl);
+		saveAsMI.addActionListener(bl);
+		closeMI.addActionListener(bl);
+		activateAllMI.addActionListener(bl);
+		deactivateAllMI.addActionListener(bl);
+		clearAllMI.addActionListener(bl);
 	}
 
 }
