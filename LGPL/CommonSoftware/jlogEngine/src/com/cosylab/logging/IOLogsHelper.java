@@ -824,15 +824,13 @@ public class IOLogsHelper extends Thread  {
 	 */
 	public void done() {
 		// Check if the thread is alive
-		if (!this.isAlive()) {
-			IOAction terminateAction = new IOAction();
-			synchronized(actions) {
-				actions.add(terminateAction);
-			}
-			synchronized(this) {
-				// Wake up the thread
-					notifyAll();
-			}
+		IOAction terminateAction = new IOAction();
+		synchronized(actions) {
+			actions.add(terminateAction);
+		}
+		synchronized(this) {
+			// Wake up the thread
+			notifyAll();
 		}
 	}
 	
@@ -854,7 +852,8 @@ public class IOLogsHelper extends Thread  {
 						break;
 					}
 					case IOAction.TERMINATE_THREAD_ACTION: {
-						// Terminate the thrread
+						// Terminate the thread
+						System.out.println("IOLogHelperThread teminate");
 						return;
 					}
 					case IOAction.SAVE_ACTION: {
