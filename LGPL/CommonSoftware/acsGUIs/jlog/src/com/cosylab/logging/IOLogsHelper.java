@@ -540,7 +540,9 @@ public class IOLogsHelper extends Thread  {
 		}
 		loggingClient=client;
 		// Try to speed up (less responsive but seems good enough)
-		this.setPriority(Thread.MAX_PRIORITY);
+		setPriority(Thread.MAX_PRIORITY);
+		setName("IOLogsHelper");
+		setDaemon(true);
 		start();
 	}
 	
