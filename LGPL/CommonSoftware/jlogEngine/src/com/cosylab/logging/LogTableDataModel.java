@@ -861,6 +861,9 @@ public class LogTableDataModel extends AbstractTableModel implements Runnable
 		if (visibleLogs!=null) {
 			visibleLogs.close(sync);
 		}
+		if (ioHelper!=null) {
+			ioHelper.done();
+		}
 	}
 	
 	/**
