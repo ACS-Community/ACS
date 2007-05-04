@@ -381,13 +381,17 @@ def getRandomTuple(typeCode, compRef, valType):
     if realValType == CORBA.tk_sequence:
         LOGGER.logTrace("Dealing with a sequence.")
         retVal = []
-        for i in range(0,randrange(0, getMaxSeqSize())):
+        for i in range(0,1+randrange(0, getMaxSeqSize()-1)):
             retVal.append(getRandomValue(realTypeCode, compRef))
         #Sequences of octects and characters must be handled specially in 
         #Python
         if realTypeCode.kind()==CORBA.tk_octet or realTypeCode.kind()==CORBA.tk_char:
             LOGGER.logTrace("Dealing with a sequence of characters/octets.")
-            return reduce((lambda x, y : str(x) + str(y)), retVal)
+            try:
+                return reduce((lambda x, y : str(x) + str(y)), retVal)
+            except Exception, e:
+                LOGGER.logCritical("Exception: " + str(e))
+                raise e
         else:
             return tuple(retVal)
 
