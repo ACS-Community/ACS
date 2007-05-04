@@ -22,6 +22,7 @@
 package com.cosylab.logging.settings;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -92,7 +93,7 @@ public class FilterChooserDialog extends JDialog {
 	private JMenuItem clearAllMI=new JMenuItem("Clear all");
 	
 	// The listener
-	ButtonListener bl = new ButtonListener();
+	private ButtonListener bl = new ButtonListener();
 	
 	// The logging client
 	private LoggingClient loggingClient;
@@ -140,6 +141,14 @@ public class FilterChooserDialog extends JDialog {
 
 		public void actionPerformed(java.awt.event.ActionEvent e) {
 			if (e.getSource() == buttonClose || e.getSource() == closeMI) { // Close
+				if (modified) {
+					int ret = JOptionPane.showConfirmDialog(null,
+							"<HTML>You have modified the filters withouth saving/applying.<BR>Do you really want to close?</HTML>",
+							"Close confimation", JOptionPane.YES_NO_OPTION);
+					if (ret != JOptionPane.YES_OPTION) {
+						return;
+					}
+				}
 				setVisible(false);
 				loggingClient.enableFiltersWidgets(true);
 				return;
@@ -259,7 +268,6 @@ public class FilterChooserDialog extends JDialog {
 		}
 		loggingClient = logCli;
 		tableModel=model;
-		System.out.println("FilterChooserDialog::FilterChooserDialog(...)");
 		setTitle("Filter chooser");
 		setModal(false);
 
