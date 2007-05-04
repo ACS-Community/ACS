@@ -138,7 +138,7 @@ def getComponent(comp_name):
     
     return _COMP_REFS[comp_name]
 #---------------------------------------------------------------------
-def getSimProxy(comp_name):
+def getSimProxy(comp_name, comp_type=None):
     '''
     Returns a proxy object for this particular component. The proxy object
     is what actually determines how a simulated component behaves. That is,
@@ -163,7 +163,7 @@ def getSimProxy(comp_name):
     #sanity check
     if not _COMP_PROXIES.has_key(comp_name):
         from Acssim.Servants.Representations.BehaviorProxy import BehaviorProxy
-        _COMP_PROXIES[comp_name] = BehaviorProxy(comp_name)
+        _COMP_PROXIES[comp_name] = BehaviorProxy(comp_name, comp_type)
     
     return _COMP_PROXIES[comp_name]
 #---------------------------------------------------------------------

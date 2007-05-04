@@ -51,7 +51,7 @@ class BehaviorProxy:
     Class BehaviorProxy is a baseclass which describes simulated components.
     '''
     #--------------------------------------------------------------------------
-    def __init__(self, compname):
+    def __init__(self, compname, comptype=None):
         '''
         Constructor.
         
@@ -65,6 +65,9 @@ class BehaviorProxy:
         #save the name of the component we're looking for
         self.compname = str(compname)
 
+        #save the component type
+        self.comptype = comptype
+        
         #our logger
         self.logger = getLogger(compname)
         
@@ -84,7 +87,10 @@ class BehaviorProxy:
         Helper method which creates entries objects
         '''
         #get the IFR ID of the component
-        comp_type = getCompIfrID(self.compname)
+        if self.comptype is None:
+            comp_type = getCompIfrID(self.compname)
+        else:
+            comp_type = self.comptype
 
         #get all superclasses of the IDL interfaces
         if_list = getSuperIDs(comp_type)
@@ -135,3 +141,4 @@ class BehaviorProxy:
         entirely.
         '''
         self.handlers.insert(0, handler_obj)
+        

@@ -1,4 +1,4 @@
-# @(#) $Id: Simulator.py,v 1.34 2006/05/02 22:55:44 dfugate Exp $
+1# @(#) $Id: Simulator.py,v 1.35 2007/05/04 19:43:26 agrimstrup Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -21,7 +21,7 @@
 # ALMA should be addressed as follows:
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: Simulator.py,v 1.34 2006/05/02 22:55:44 dfugate Exp $"
+# "@(#) $Id: Simulator.py,v 1.35 2007/05/04 19:43:26 agrimstrup Exp $"
 #
 # who       when        what
 # --------  ----------  -------------------------------------------------------
@@ -185,7 +185,7 @@ class Simulator(CharacteristicComponent,  #Base IDL interface
         #be used with a BACI property.
         if_list = getSuperIDs(self.ir)
         if_list.append(self.ir)
-        simCDB = getSimProxy(self._get_name()).cdb_handler
+        simCDB = getSimProxy(self._get_name(), self.ir).cdb_handler
 
         #IFR
         ir = interfaceRepository()
