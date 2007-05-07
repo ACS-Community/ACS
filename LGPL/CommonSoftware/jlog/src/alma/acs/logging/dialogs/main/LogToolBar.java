@@ -234,7 +234,8 @@ public class LogToolBar extends JToolBar {
      */
     public JButton getFiltersBtn() {
     	if (filtersBtn==null) {
-    		filtersBtn=new JButton("<HTML><FONT size=-2>Filters</HTML>");
+    		ImageIcon filterIcon = new ImageIcon(LogTypeHelper.class.getResource("/filters.png"));
+    		filtersBtn=new JButton("<HTML><FONT size=-2>Filters</HTML>",filterIcon);
     	}
     	return filtersBtn;
     }

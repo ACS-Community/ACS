@@ -251,7 +251,8 @@ public class LogMenuBar extends JMenuBar {
 	 */
 	public JMenuItem getFiltersMenuItem() {
 		if (filtersMenuItem==null) {
-			filtersMenuItem=new JMenuItem("Filters...");
+			ImageIcon filterIcon = new ImageIcon(LogTypeHelper.class.getResource("/filters.png"));
+			filtersMenuItem=new JMenuItem("Filters...",filterIcon);
 			filtersMenuItem.setName("EditFiltersMenuItem");
 		}
 		return filtersMenuItem;
