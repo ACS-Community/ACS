@@ -54,6 +54,7 @@ import com.cosylab.logging.LogTableDataModel;
 import com.cosylab.logging.LoggingClient;
 import com.cosylab.logging.engine.Filter;
 import com.cosylab.logging.engine.FiltersVector;
+import com.cosylab.logging.engine.log.LogTypeHelper;
 
 /**
  * Serves the purpose of selecting the right filters (Timestamp, Entry Type,
@@ -270,7 +271,8 @@ public class FilterChooserDialog extends JDialog {
 		tableModel=model;
 		setTitle("Filter chooser");
 		setModal(false);
-
+		ImageIcon filterIcon = new ImageIcon(LogTypeHelper.class.getResource("/filters.png"));
+		setIconImage(filterIcon.getImage());
 		initialize();
 		setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
 		addWindowListener(new WindowAdapter() {
