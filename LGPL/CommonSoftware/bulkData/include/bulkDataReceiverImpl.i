@@ -65,8 +65,8 @@ void BulkDataReceiverImpl<TCallback>::openReceiver()
 	}
     catch(...)
 	{
-	ACS_SHORT_LOG((LM_ERROR,"BulkDataReceiverImpl::openReceiver UNKNOWN exception"));
-	AVOpenReceiverErrorExImpl err = AVOpenReceiverErrorExImpl(__FILE__,__LINE__,"BulkDataReceiverImpl::openReceiver");
+	ACSErrTypeCommon::UnknownExImpl ex = ACSErrTypeCommon::UnknownExImpl(__FILE__,__LINE__,"BulkDataReceiverImpl::openReceiver");
+	AVOpenReceiverErrorExImpl err = AVOpenReceiverErrorExImpl(ex,__FILE__,__LINE__,"BulkDataReceiverImpl::openReceiver");
 	throw err.getAVOpenReceiverErrorEx();
 	}
 }
@@ -86,13 +86,14 @@ bulkdata::BulkDataReceiverConfig * BulkDataReceiverImpl<TCallback>::getReceiverC
 	}
     catch(AVReceiverConfigErrorExImpl &ex)
 	{
-	ex.log(LM_DEBUG);
-	throw ex.getAVReceiverConfigErrorEx();
+	AVReceiverConfigErrorExImpl err = AVReceiverConfigErrorExImpl(ex,__FILE__,__LINE__,"BulkDataReceiverImpl::getReceiverConfig");
+	err.log(LM_DEBUG);
+	throw err.getAVReceiverConfigErrorEx();
 	}
     catch(...)
 	{
-	ACS_SHORT_LOG((LM_ERROR,"BulkDataReceiverImpl<>::getReceiverConfig UNKNOWN exception"));
-	AVReceiverConfigErrorExImpl err = AVReceiverConfigErrorExImpl(__FILE__,__LINE__,"BulkDataReceiverImpl::getReceiverConfig");
+	ACSErrTypeCommon::UnknownExImpl ex = ACSErrTypeCommon::UnknownExImpl(__FILE__,__LINE__,"BulkDataReceiverImpl::getReceiverConfig");
+	AVReceiverConfigErrorExImpl err = AVReceiverConfigErrorExImpl(ex,__FILE__,__LINE__,"BulkDataReceiverImpl::getReceiverConfig");
 	throw err.getAVReceiverConfigErrorEx();
 	}
 
@@ -118,8 +119,8 @@ void BulkDataReceiverImpl<TCallback>::closeReceiver()
 	}
     catch(...)
 	{
-	ACS_SHORT_LOG((LM_ERROR,"BulkDataReceiverImpl<>::closeReceiver UNKNOWN exception"));
-	AVCloseReceiverErrorExImpl err = AVCloseReceiverErrorExImpl(__FILE__,__LINE__,"BulkDataReceiverImpl::closeReceiver");
+	ACSErrTypeCommon::UnknownExImpl ex = ACSErrTypeCommon::UnknownExImpl(__FILE__,__LINE__,"BulkDataReceiverImpl::closeReceiver");
+	AVCloseReceiverErrorExImpl err = AVCloseReceiverErrorExImpl(ex,__FILE__,__LINE__,"BulkDataReceiverImpl::closeReceiver");
 	throw err.getAVCloseReceiverErrorEx();
 	}
 }
@@ -139,13 +140,15 @@ ACSErr::Completion *BulkDataReceiverImpl<TCallback>::getCbStatus(CORBA::ULong fl
 	}
     catch(AVInvalidFlowNumberExImpl &ex)
 	{
-	ex.log(LM_DEBUG);
-	throw ex.getAVInvalidFlowNumberEx();
+	AVInvalidFlowNumberExImpl err = AVInvalidFlowNumberExImpl(ex,__FILE__,__LINE__,"BulkDataReceiverImpl::getCbStatus");
+	err.log(LM_DEBUG);
+	throw err.getAVInvalidFlowNumberEx();
 	}
     catch(AVFlowEndpointErrorExImpl &ex)
 	{
-	ex.log(LM_DEBUG);
-	throw ex.getAVFlowEndpointErrorEx();
+	AVFlowEndpointErrorExImpl err = AVFlowEndpointErrorExImpl(ex,__FILE__,__LINE__,"BulkDataReceiverImpl::getCbStatus");
+	err.log(LM_DEBUG);
+	throw err.getAVFlowEndpointErrorEx();
 	}
 
     if(cb->isError())
@@ -192,13 +195,15 @@ void BulkDataReceiverImpl<TCallback>::setTimeout(CORBA::ULong flowNumber, CORBA:
 	}
     catch(AVInvalidFlowNumberExImpl &ex)
 	{
-	ex.log(LM_DEBUG);
-	throw ex.getAVInvalidFlowNumberEx();
+	AVInvalidFlowNumberExImpl err = AVInvalidFlowNumberExImpl(ex,__FILE__,__LINE__,"BulkDataReceiverImpl::setTimeout");
+	err.log(LM_DEBUG);
+	throw err.getAVInvalidFlowNumberEx();
 	}
     catch(AVFlowEndpointErrorExImpl &ex)
 	{
-	ex.log(LM_DEBUG);
-	throw ex.getAVFlowEndpointErrorEx();
+	AVFlowEndpointErrorExImpl err = AVFlowEndpointErrorExImpl(ex,__FILE__,__LINE__,"BulkDataReceiverImpl::setTimeout");
+	err.log(LM_DEBUG);
+	throw err.getAVFlowEndpointErrorEx();
 	}
 
     if(cb != 0)
@@ -228,8 +233,8 @@ void BulkDataReceiverImpl<TCallback>::setRecvName(const char *recvName)
 	}
     catch(...)
 	{
-	ACS_SHORT_LOG((LM_ERROR,"BulkDataReceiverImpl<>::setRecvName UNKNOWN exception"));
-	AVSetReceiverNameErrorExImpl err = AVSetReceiverNameErrorExImpl(__FILE__,__LINE__,"BulkDataSenderImpl::setRecvName");
+	ACSErrTypeCommon::UnknownExImpl ex = ACSErrTypeCommon::UnknownExImpl(__FILE__,__LINE__,"BulkDataReceiverImpl::setRecvName");
+	AVSetReceiverNameErrorExImpl err = AVSetReceiverNameErrorExImpl(ex,__FILE__,__LINE__,"BulkDataSenderImpl::setRecvName");
 	throw err.getAVSetReceiverNameErrorEx();
 	}    
 }

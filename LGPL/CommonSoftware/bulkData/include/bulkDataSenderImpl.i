@@ -123,8 +123,8 @@ void BulkDataSenderImpl<TSenderCallback>::connect(bulkdata::BulkDataReceiver_ptr
 	}
     catch(...)
 	{
-	ACS_SHORT_LOG((LM_ERROR,"BulkDataSenderImpl::connect UNKNOWN exception"));
-	AVConnectErrorExImpl err = AVConnectErrorExImpl(__FILE__,__LINE__,"BulkDataSenderImpl::connect");
+	ACSErrTypeCommon::UnknownExImpl ex = ACSErrTypeCommon::UnknownExImpl(__FILE__,__LINE__,"BulkDataSenderImpl::connect");
+	AVConnectErrorExImpl err = AVConnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataSenderImpl::connect");
 	throw err.getAVConnectErrorEx();
 	}
 }
@@ -201,8 +201,8 @@ void BulkDataSenderImpl<TSenderCallback>::disconnect()
 	}
     catch(...)
 	{
-	ACS_SHORT_LOG((LM_ERROR,"BulkDataSenderImpl::disconnect UNKNOWN exception"));
-	AVDisconnectErrorExImpl err = AVDisconnectErrorExImpl(__FILE__,__LINE__,"BulkDataSenderImpl::disconnect");
+	ACSErrTypeCommon::UnknownExImpl ex = ACSErrTypeCommon::UnknownExImpl(__FILE__,__LINE__,"BulkDataSenderImpl::disconnect");
+	AVDisconnectErrorExImpl err = AVDisconnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataSenderImpl::disconnect");
 	throw err.getAVDisconnectErrorEx();
 	}
 }

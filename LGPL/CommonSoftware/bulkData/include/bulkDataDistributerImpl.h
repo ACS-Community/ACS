@@ -141,7 +141,7 @@ class BulkDataDistributerImpl : public CharacteristicComponentImpl,
 	throw (CORBA::SystemException, AVDisconnectErrorEx);
 
     virtual void multiDisconnect(bulkdata::BulkDataReceiver_ptr receiverObj_p)
-	throw (CORBA::SystemException, AVDisconnectErrorEx, CORBAProblemEx);
+	throw (CORBA::SystemException, AVDisconnectErrorEx);
 
     virtual void disconnectByName(const char *receiverName_p)
 	throw (CORBA::SystemException, AVDisconnectErrorEx);

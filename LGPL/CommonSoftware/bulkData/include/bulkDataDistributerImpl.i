@@ -130,8 +130,8 @@ void BulkDataDistributerImpl<TReceiverCallback, TSenderCallback>::multiConnect(b
 	}
    catch(...)
 	{
-	ACS_SHORT_LOG((LM_ERROR,"BulkDataDistributerImpl::multiConnect UNKNOWN exception"));
-	AVConnectErrorExImpl err = AVConnectErrorExImpl(__FILE__,__LINE__,"BulkDataDistributerImpl::multiConnect");
+	ACSErrTypeCommon::UnknownExImpl ex = ACSErrTypeCommon::UnknownExImpl(__FILE__,__LINE__,"BulkDataDistributerImpl::multiConnect");
+	AVConnectErrorExImpl err = AVConnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataDistributerImpl::multiConnect");
 	throw err.getAVConnectErrorEx();
 	}
 }
@@ -164,8 +164,8 @@ void BulkDataDistributerImpl<TReceiverCallback, TSenderCallback>::connectByName(
 	    }
 	catch(...)
 	    {
-	    ACS_SHORT_LOG((LM_ERROR,"BulkDataDistributerImpl<>::connectByName UNKNOWN exception"));
-	    AVConnectErrorExImpl err = AVConnectErrorExImpl(__FILE__,__LINE__,"BulkDataDistributerImpl::connectByName");
+	    ACSErrTypeCommon::UnknownExImpl ex = ACSErrTypeCommon::UnknownExImpl(__FILE__,__LINE__,"BulkDataDistributerImpl::connectByName");
+	    AVConnectErrorExImpl err = AVConnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataDistributerImpl::connectByName");
 	    throw err.getAVConnectErrorEx();
 	    }
 	}
@@ -183,7 +183,7 @@ void BulkDataDistributerImpl<TReceiverCallback, TSenderCallback>::disconnect()
 
 template<class TReceiverCallback, class TSenderCallback>
 void BulkDataDistributerImpl<TReceiverCallback, TSenderCallback>::multiDisconnect(bulkdata::BulkDataReceiver_ptr receiverObj_p)
-    throw (CORBA::SystemException, AVDisconnectErrorEx, CORBAProblemEx)
+    throw (CORBA::SystemException, AVDisconnectErrorEx)
 {
     ACE_CString recvName = "";
 
@@ -205,12 +205,14 @@ void BulkDataDistributerImpl<TReceiverCallback, TSenderCallback>::multiDisconnec
 	err.setCompletionStatus(ex.completed());
 	err.setInfo(ex._info().c_str());
 	err.log(LM_ERROR);
+	AVDisconnectErrorExImpl err1 = AVDisconnectErrorExImpl(err,__FILE__,__LINE__,"BulkDataDistributerImpl::multiDisconnect");
+	throw err1.getAVDisconnectErrorEx();
 	//throw err.getCORBAProblemEx();
 	}
     catch(...)
 	{
-	ACS_SHORT_LOG((LM_ERROR,"BulkDataDistributerImpl::multiDisconnect UNKNOWN exception"));
-	AVDisconnectErrorExImpl err = AVDisconnectErrorExImpl(__FILE__,__LINE__,"BulkDataDistributerImpl::disconnect");
+	ACSErrTypeCommon::UnknownExImpl ex = ACSErrTypeCommon::UnknownExImpl(__FILE__,__LINE__,"BulkDataDistributerImpl::multiDisconnect");
+	AVDisconnectErrorExImpl err = AVDisconnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataDistributerImpl::multiDisconnect");
 	throw err.getAVDisconnectErrorEx();
 	}
 }
@@ -251,8 +253,8 @@ void BulkDataDistributerImpl<TReceiverCallback, TSenderCallback>::disconnectByNa
 	    }
 	catch(...)
 	    {
-	    ACS_SHORT_LOG((LM_ERROR,"BulkDataDistributerImpl::disconnectByName UNKNOWN exception"));
-	    AVDisconnectErrorExImpl err = AVDisconnectErrorExImpl(__FILE__,__LINE__,"BulkDataDistributerImpl::disconnectByName");
+	    ACSErrTypeCommon::UnknownExImpl ex = ACSErrTypeCommon::UnknownExImpl(__FILE__,__LINE__,"BulkDataDistributerImpl::disconnectByName");
+	    AVDisconnectErrorExImpl err = AVDisconnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataDistributerImpl::disconnectByName");
 	    throw err.getAVDisconnectErrorEx();
 	    }
 	}
@@ -326,8 +328,8 @@ void BulkDataDistributerImpl<TReceiverCallback, TSenderCallback>::openReceiver()
 	}
     catch(...)
 	{
-	ACS_SHORT_LOG((LM_ERROR,"BulkDataDistributerImpl<>::openReceiver UNKNOWN exception"));
-	AVOpenReceiverErrorExImpl err = AVOpenReceiverErrorExImpl(__FILE__,__LINE__,"BulkDataDistributerImpl::openReceiver");
+	ACSErrTypeCommon::UnknownExImpl ex = ACSErrTypeCommon::UnknownExImpl(__FILE__,__LINE__,"BulkDataDistributerImpl::openReceiver");
+	AVOpenReceiverErrorExImpl err = AVOpenReceiverErrorExImpl(ex,__FILE__,__LINE__,"BulkDataDistributerImpl::openReceiver");
 	throw err.getAVOpenReceiverErrorEx();
 	}
 }
@@ -346,13 +348,14 @@ bulkdata::BulkDataReceiverConfig * BulkDataDistributerImpl<TReceiverCallback, TS
 	}
     catch(AVReceiverConfigErrorExImpl &ex)
 	{
-	ex.log(LM_DEBUG);
-	throw ex.getAVReceiverConfigErrorEx();
+	AVReceiverConfigErrorExImpl err = AVReceiverConfigErrorExImpl(ex,__FILE__,__LINE__,"BulkDataDistributerImpl::getReceiverConfig");
+	err.log(LM_DEBUG);
+	throw err.getAVReceiverConfigErrorEx();
 	}
     catch(...)
 	{
-	ACS_SHORT_LOG((LM_ERROR,"BulkDataDistributerImpl<>::getReceiverConfig UNKNOWN exception"));
-	AVReceiverConfigErrorExImpl err = AVReceiverConfigErrorExImpl(__FILE__,__LINE__,"BulkDataDistributerImpl::getReceiverConfig");
+	ACSErrTypeCommon::UnknownExImpl ex = ACSErrTypeCommon::UnknownExImpl(__FILE__,__LINE__,"BulkDataDistributerImpl::getReceiverConfig");
+	AVReceiverConfigErrorExImpl err = AVReceiverConfigErrorExImpl(ex,__FILE__,__LINE__,"BulkDataDistributerImpl::getReceiverConfig");
 	throw err.getAVReceiverConfigErrorEx();
 	}
 
@@ -378,8 +381,8 @@ void BulkDataDistributerImpl<TReceiverCallback, TSenderCallback>::closeReceiver(
 	}
     catch(...)
 	{
-	ACS_SHORT_LOG((LM_ERROR,"BulkDataDistributerImpl::closeReceiver UNKNOWN exception"));
-	AVCloseReceiverErrorExImpl err = AVCloseReceiverErrorExImpl(__FILE__,__LINE__,"BulkDataDistributerImpl::closeReceiver");
+	ACSErrTypeCommon::UnknownExImpl ex = ACSErrTypeCommon::UnknownExImpl(__FILE__,__LINE__,"BulkDataDistributerImpl::closeReceiver");
+	AVCloseReceiverErrorExImpl err = AVCloseReceiverErrorExImpl(ex,__FILE__,__LINE__,"BulkDataDistributerImpl::closeReceiver");
 	throw err.getAVCloseReceiverErrorEx();
 	}
 }
@@ -419,8 +422,8 @@ void BulkDataDistributerImpl<TReceiverCallback, TSenderCallback>::setReceiver(co
 	    }
 	catch(...)
 	    {
-	    ACS_SHORT_LOG((LM_ERROR,"BulkDataDistributerImpl::setReceiver UNKNOWN exception"));
-	    AVSetReceiverErrorExImpl err = AVSetReceiverErrorExImpl(__FILE__,__LINE__,"BulkDataBulkDataDistributerImpl::setReceiver");
+	    ACSErrTypeCommon::UnknownExImpl ex = ACSErrTypeCommon::UnknownExImpl(__FILE__,__LINE__,"BulkDataDistributerImpl::setReceiver");
+	    AVSetReceiverErrorExImpl err = AVSetReceiverErrorExImpl(ex,__FILE__,__LINE__,"BulkDataBulkDataDistributerImpl::setReceiver");
 	    throw err.getAVSetReceiverErrorEx();
 	    }
 
@@ -452,13 +455,15 @@ ACSErr::Completion * BulkDataDistributerImpl<TReceiverCallback, TSenderCallback>
 	}
     catch(AVInvalidFlowNumberExImpl &ex)
 	{
-	ex.log(LM_DEBUG);
-	throw ex.getAVInvalidFlowNumberEx();
+	AVInvalidFlowNumberExImpl err = AVInvalidFlowNumberExImpl(ex,__FILE__,__LINE__,"BulkDataDistributerImpl::getCbStatus");
+	err.log(LM_DEBUG);
+	throw err.getAVInvalidFlowNumberEx();
 	}
     catch(AVFlowEndpointErrorExImpl &ex)
 	{
-	ex.log(LM_DEBUG);
-	throw ex.getAVFlowEndpointErrorEx();
+	AVFlowEndpointErrorExImpl err = AVFlowEndpointErrorExImpl(ex,__FILE__,__LINE__,"BulkDataDistributerImpl::getCbStatus");
+	err.log(LM_DEBUG);
+	throw err.getAVFlowEndpointErrorEx();
 	}
 
     if(cb->isTimeout() && cb->isWorking())

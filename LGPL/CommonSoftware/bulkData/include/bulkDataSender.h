@@ -96,9 +96,8 @@ namespace AcsBulkdata
 	 <br><hr>
 	 @endhtmlonly
 	*/
-	void initialize(); 
-
-
+	void initialize()
+	    throw (AVInitErrorExImpl); 
 
 	/** Create single flow (TCP, A/V default port)
 	 *  @return void
@@ -106,7 +105,8 @@ namespace AcsBulkdata
 	 <br><hr>
 	 @endhtmlonly
 	*/
-	void createSingleFlow();
+	void createSingleFlow()
+	    throw (AVStreamEndpointErrorExImpl, AVFlowEndpointErrorExImpl);
 
 	/** Create multiple flows (user defined)
 	 * @param fepsConfig
@@ -115,8 +115,8 @@ namespace AcsBulkdata
 	 <br><hr>
 	 @endhtmlonly
 	*/
-	void createMultipleFlows(const char *fepsConfig);
-
+	void createMultipleFlows(const char *fepsConfig)
+	    throw (AVStreamEndpointErrorExImpl, AVInvalidFlowNumberExImpl, AVFlowEndpointErrorExImpl);
 
 	/** Bind the Stram End Points
 	 * @param recv_config
@@ -125,7 +125,8 @@ namespace AcsBulkdata
 	 <br><hr>
 	 @endhtmlonly
 	*/
-	void connectToPeer(bulkdata::BulkDataReceiverConfig *recvConfig_p); 
+	void connectToPeer(bulkdata::BulkDataReceiverConfig *recvConfig_p)
+	    throw (AVConnectErrorExImpl);
 
 	/** Get the Flow Protocol according to flowname
 	 * @param flowname
@@ -135,7 +136,8 @@ namespace AcsBulkdata
 	 <br><hr>
 	 @endhtmlonly
 	*/
-	void getFlowProtocol(ACE_CString &flowname, TAO_AV_Protocol_Object *&currentProtocol_p);
+	void getFlowProtocol(ACE_CString &flowname, TAO_AV_Protocol_Object *&currentProtocol_p)
+	    throw (AVFlowEndpointErrorExImpl, AVProtocolErrorExImpl);
 
 	/** 
 	 *  Calls the Receiver cbstart() method once the connection is established.
@@ -146,7 +148,8 @@ namespace AcsBulkdata
 	 <br><hr>
 	 @endhtmlonly
 	*/
-	void startSend(CORBA::ULong flownumber, ACE_Message_Block *param = 0);
+	void startSend(CORBA::ULong flownumber, ACE_Message_Block *param = 0)
+	    throw (AVSendFrameErrorExImpl);
 
 	/** 
 	 *  Calls the Receiver cbstart() method once the connection is established.
@@ -157,7 +160,8 @@ namespace AcsBulkdata
 	 <br><hr>
 	 @endhtmlonly
 	*/
-	void startSend(CORBA::ULong flownumber, const char *param, size_t len);
+	void startSend(CORBA::ULong flownumber, const char *param, size_t len)
+	    throw (AVSendFrameErrorExImpl);
 
 	/** 
 	 * Calls the Receiver receive_frame() method.
@@ -168,7 +172,8 @@ namespace AcsBulkdata
 	 <br><hr>
 	 @endhtmlonly
 	*/
-	void sendData(CORBA::ULong flownumber, ACE_Message_Block *buffer);
+	void sendData(CORBA::ULong flownumber, ACE_Message_Block *buffer)
+	    throw (AVSendFrameErrorExImpl);
            
 	/** 
 	 * Calls the Receiver receive_frame() method.
@@ -181,7 +186,8 @@ namespace AcsBulkdata
 	 <br><hr>
 	 @endhtmlonly
 	*/
-	void sendData(CORBA::ULong flownumber, const char *buffer, size_t len);
+	void sendData(CORBA::ULong flownumber, const char *buffer, size_t len)
+	    throw (AVSendFrameErrorExImpl);
 
 	/** 
 	 *  Calls the Receiver handle_stop() method.
@@ -192,7 +198,8 @@ namespace AcsBulkdata
 	 <br><hr>
 	 @endhtmlonly
 	*/
-	void stopSend(CORBA::ULong flownumber);
+	void stopSend(CORBA::ULong flownumber)
+	    throw (AVStopSendErrorExImpl); 
 
 	/** Disconnect peer
 	 *  @return void
@@ -200,9 +207,9 @@ namespace AcsBulkdata
 	 <br><hr>
 	 @endhtmlonly
 	*/
-	void disconnectPeer(); 
+	void disconnectPeer()
+	    throw (AVDisconnectErrorExImpl);
  
-
 	TAO_StreamCtrl * getStreamCtrl() 
 	    {
 		return streamctrl_p;

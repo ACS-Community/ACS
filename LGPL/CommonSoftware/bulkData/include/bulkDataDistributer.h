@@ -97,10 +97,11 @@ namespace AcsBulkdata
 	 */
 	virtual ~BulkDataDistributer();
 
-
-	virtual void multiConnect(bulkdata::BulkDataReceiverConfig *recvConfig_p, const char *fepsConfig, const ACE_CString& receiverName);
-
-	virtual void multiDisconnect(const ACE_CString& receiverName);
+	virtual void multiConnect(bulkdata::BulkDataReceiverConfig *recvConfig_p, const char *fepsConfig, const ACE_CString& receiverName)
+	    throw (AVConnectErrorExImpl);
+	
+	virtual void multiDisconnect(const ACE_CString& receiverName)
+	    throw (AVDisconnectErrorExImpl);
 
 	virtual BulkDataReceiver<TReceiverCallback> *getReceiver() 
 	    {
@@ -113,7 +114,6 @@ namespace AcsBulkdata
 	    }
 
 	virtual bool isRecvConnected (const ACE_CString& receiverName);
-
 
 	virtual void distSendStart (ACE_CString& flowName, CORBA::ULong flowNumber);
 

@@ -2,7 +2,6 @@ template<class TReceiverCallback, class TSenderCallback>
 AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::BulkDataDistributer() : sender_p(0),timeout_m(0),numberOfFlows(0),offset(100),contSvc_p(0)
 {
     ACE_TRACE("BulkDataDistributer<>::BulkDataDistributer");
-
 }
 
 
@@ -25,26 +24,27 @@ AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::~BulkDataD
 
 template<class TReceiverCallback, class TSenderCallback>
 void AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::multiConnect(bulkdata::BulkDataReceiverConfig *recvConfig_p, const char *fepsConfig, const ACE_CString& receiverName)
+    throw (AVConnectErrorExImpl)
 {
     ACS_TRACE("BulkDataDistributer<>::multiConnect");
 
-    if(isRecvConnected(receiverName))
-	{
-	ACS_SHORT_LOG((LM_WARNING,"BulkDataDistributer<>::multiConnect receiver %s already connected",receiverName.c_str()));
-	AVConnectErrorExImpl err = AVConnectErrorExImpl(__FILE__,__LINE__,"BulkDataDistributer<>::multiConnect");
-	throw err;
-	}
-
-    sender_p = new BulkDataSender<TSenderCallback>;
-    if(sender_p == 0)
-	{
-	ACS_SHORT_LOG((LM_ERROR, "BulkDataDistributer<>::multiConnect error creating sender"));
-	AVConnectErrorExImpl err = AVConnectErrorExImpl(__FILE__,__LINE__,"BulkDataDistributer<>::multiConnect");
-	throw err;
-	}
-
     try
 	{
+	if(isRecvConnected(receiverName))
+	    {
+	    ACS_SHORT_LOG((LM_WARNING,"BulkDataDistributer<>::multiConnect receiver %s already connected",receiverName.c_str()));
+	    AVConnectErrorExImpl err = AVConnectErrorExImpl(__FILE__,__LINE__,"BulkDataDistributer<>::multiConnect");
+	    throw err;
+	    }
+
+	sender_p = new BulkDataSender<TSenderCallback>;
+	if(sender_p == 0)
+	    {
+	    ACS_SHORT_LOG((LM_ERROR, "BulkDataDistributer<>::multiConnect error creating sender"));
+	    AVConnectErrorExImpl err = AVConnectErrorExImpl(__FILE__,__LINE__,"BulkDataDistributer<>::multiConnect");
+	    throw err;
+	    }
+
 	sender_p->initialize();
 
 	sender_p->createMultipleFlows(fepsConfig);
@@ -73,8 +73,8 @@ void AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::multi
 	}
     catch(...)
 	{
-	ACS_SHORT_LOG((LM_ERROR,"BulkDataDistributer<>::multiConnect UNKNOWN exception"));
-	AVConnectErrorExImpl err = AVConnectErrorExImpl(__FILE__,__LINE__,"BulkDataDistributer<>::multiConnect");
+	ACSErrTypeCommon::UnknownExImpl ex = ACSErrTypeCommon::UnknownExImpl(__FILE__,__LINE__,"BulkDataDistributer::multiConnect");
+	AVConnectErrorExImpl err = AVConnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataDistributer<>::multiConnect");
 	throw err;
 	}
 
@@ -84,105 +84,120 @@ void AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::multi
 
 template<class TReceiverCallback, class TSenderCallback>
 void AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::multiDisconnect(const ACE_CString& receiverName)
+    throw (AVDisconnectErrorExImpl)
 {
     ACS_TRACE("BulkDataDistributer<>::multiDisconnect");
 
-    BulkDataSender<TSenderCallback> *locSender_p;
+    try
+	{
+	BulkDataSender<TSenderCallback> *locSender_p;
 
-    if (senderMap_m.find(receiverName,locSender_p) != 0)
-	{
-	ACS_SHORT_LOG((LM_ERROR,"BulkDataDistributer<>::multiDisconnect connected sender not found"));	
-	AVDisconnectErrorExImpl err = AVDisconnectErrorExImpl(__FILE__,__LINE__,"BulkDataDistributer<>::multiDisconnect");
-	throw err;
-	}
-    else
-	{
-	bulkdata::BulkDataReceiver_var receiver = contSvc_p->maci::ContainerServices::getComponent<bulkdata::BulkDataReceiver>(receiverName.c_str());
-	if(CORBA::is_nil(receiver.in()))
+	if (senderMap_m.find(receiverName,locSender_p) != 0)
 	    {
-	    ACS_SHORT_LOG((LM_ERROR,"BulkDataDistributer<>::multiDisconnect could not get receiver reference"));	
+	    ACS_SHORT_LOG((LM_ERROR,"BulkDataDistributer<>::multiDisconnect connected sender not found"));	
 	    AVDisconnectErrorExImpl err = AVDisconnectErrorExImpl(__FILE__,__LINE__,"BulkDataDistributer<>::multiDisconnect");
 	    throw err;
 	    }
 	else
 	    {
-	    vector<string> vec = locSender_p->getFlowNames();
-	    for(CORBA::ULong i = 0; i < vec.size(); i++)
+	    bulkdata::BulkDataReceiver_var receiver = contSvc_p->maci::ContainerServices::getComponent<bulkdata::BulkDataReceiver>(receiverName.c_str());
+	    if(CORBA::is_nil(receiver.in()))
 		{
-		CORBA::Boolean loop = true;
-
-		try
+		ACS_SHORT_LOG((LM_ERROR,"BulkDataDistributer<>::multiDisconnect could not get receiver reference"));	
+		AVDisconnectErrorExImpl err = AVDisconnectErrorExImpl(__FILE__,__LINE__,"BulkDataDistributer<>::multiDisconnect");
+		throw err;
+		}
+	    else
+		{
+		vector<string> vec = locSender_p->getFlowNames();
+		for(CORBA::ULong i = 0; i < vec.size(); i++)
 		    {
-		    while(loop)
-			{
-			CompletionImpl comp = receiver->getCbStatus(i+1);
-			
-			/*
-			  if(comp.getCode() == ACSBulkDataStatus::AVCbReady)
-			  cout << "ACSBulkDataStatus::AVCbReady" << endl;
-			  if(comp.getCode() == ACSBulkDataStatus::AVCbTimeout)
-			  cout << "ACSBulkDataStatus::AVCbTimeout" << endl;
-			  if(comp.getCode() == ACSBulkDataStatus::AVCbWorking)
-			  cout << "ACSBulkDataStatus::AVCbWorking" << endl;
-			  if(comp.getCode() == ACSBulkDataStatus::AVCbError)
-			  cout << "ACSBulkDataStatus::AVCbError" << endl;
-			  if(comp.getCode() == ACSBulkDataStatus::AVCbWorkingTimeout)
-			  cout << "ACSBulkDataStatus::AVCbWorkingTimeout" << endl;
-			  if(comp.getCode() == ACSBulkDataStatus::AVCbNotAvailable)
-			  cout << "ACSBulkDataStatus::AVCbNotAvailable" << endl;
-			*/		   
+		    CORBA::Boolean loop = true;
 
-			if ((comp.getCode() == ACSBulkDataStatus::AVCbReady) || 
-			    (comp.getCode() == ACSBulkDataStatus::AVCbTimeout))
+		    try
+			{
+			while(loop)
 			    {
-			    loop = false;
+			    CompletionImpl comp = receiver->getCbStatus(i+1);
+			
+			    /*
+			      if(comp.getCode() == ACSBulkDataStatus::AVCbReady)
+			      cout << "ACSBulkDataStatus::AVCbReady" << endl;
+			      if(comp.getCode() == ACSBulkDataStatus::AVCbTimeout)
+			      cout << "ACSBulkDataStatus::AVCbTimeout" << endl;
+			      if(comp.getCode() == ACSBulkDataStatus::AVCbWorking)
+			      cout << "ACSBulkDataStatus::AVCbWorking" << endl;
+			      if(comp.getCode() == ACSBulkDataStatus::AVCbError)
+			      cout << "ACSBulkDataStatus::AVCbError" << endl;
+			      if(comp.getCode() == ACSBulkDataStatus::AVCbWorkingTimeout)
+			      cout << "ACSBulkDataStatus::AVCbWorkingTimeout" << endl;
+			      if(comp.getCode() == ACSBulkDataStatus::AVCbNotAvailable)
+			      cout << "ACSBulkDataStatus::AVCbNotAvailable" << endl;
+			    */		   
+
+			    if ((comp.getCode() == ACSBulkDataStatus::AVCbReady) || 
+				(comp.getCode() == ACSBulkDataStatus::AVCbTimeout))
+				{
+				loop = false;
+				}
+			    ACE_OS::sleep(1);
 			    }
-			ACE_OS::sleep(1);
+			}
+		    catch(AVInvalidFlowNumberEx &ex)
+			{
+			AVDisconnectErrorExImpl err = AVDisconnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataDistributer::multiDisconnect");
+			throw err;
+			}
+		    catch(AVFlowEndpointErrorEx &ex)
+			{
+			AVDisconnectErrorExImpl err = AVDisconnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataDistributer::multiDisconnect");
+			throw err;
+			}
+		    catch(...)
+			{
+			ACSErrTypeCommon::UnknownExImpl ex = ACSErrTypeCommon::UnknownExImpl(__FILE__,__LINE__,"BulkDataDistributer::multiDisconnect");
+			AVDisconnectErrorExImpl err = AVDisconnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataDistributer::multiDisconnect");
+			throw err;
 			}
 		    }
-		catch(AVInvalidFlowNumberEx &ex)
-		    {
-		    AVDisconnectErrorExImpl err = AVDisconnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataDistributer::multiDisconnect");
-		    throw err;
-		    }
-		catch(AVFlowEndpointErrorEx &ex)
-		    {
-		    AVDisconnectErrorExImpl err = AVDisconnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataDistributer::multiDisconnect");
-		    throw err;
-		    }
-		catch(...)
-		    {
-		    ACS_SHORT_LOG((LM_ERROR,"BulkDataDistributer<>::multiDisconnect UNKNOWN exception"));
-		    AVDisconnectErrorExImpl err = AVDisconnectErrorExImpl(__FILE__,__LINE__,"BulkDataDistributer::multiDisconnect");
-		    throw err;
-		    }
 		}
-	    }
 	
-	try
-	    {
-	    locSender_p->disconnectPeer();
-	    receiver->closeReceiver();
-	    delete locSender_p;
-	    senderMap_m.unbind(receiverName);
-	    }
-	catch(ACSErr::ACSbaseExImpl &ex)
-	    {
-	    AVDisconnectErrorExImpl err = AVDisconnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataDistributer::multiDisconnect");
-	    throw err;
-	    }
-	catch(AVCloseReceiverErrorEx &ex)
-	    {
-	    AVDisconnectErrorExImpl err = AVDisconnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataDistributer::multiDisconnect");
-	    throw err;
-	    }
-	catch(...)
-	    {
-	    ACS_SHORT_LOG((LM_ERROR,"BulkDataDistributer<>::multiDisconnect UNKNOWN exception"));
-	    AVDisconnectErrorExImpl err = AVDisconnectErrorExImpl(__FILE__,__LINE__,"BulkDataDistributer::multiDisconnect");
-	    throw err;
-	    }
+	    try
+		{
+		locSender_p->disconnectPeer();
+		receiver->closeReceiver();
+		delete locSender_p;
+		senderMap_m.unbind(receiverName);
+		}
+	    catch(ACSErr::ACSbaseExImpl &ex)
+		{
+		AVDisconnectErrorExImpl err = AVDisconnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataDistributer::multiDisconnect");
+		throw err;
+		}
+	    catch(AVCloseReceiverErrorEx &ex)
+		{
+		AVDisconnectErrorExImpl err = AVDisconnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataDistributer::multiDisconnect");
+		throw err;
+		}
+	    catch(...)
+		{
+		ACSErrTypeCommon::UnknownExImpl ex = ACSErrTypeCommon::UnknownExImpl(__FILE__,__LINE__,"BulkDataDistributer::multiDisconnect");
+		AVDisconnectErrorExImpl err = AVDisconnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataDistributer::multiDisconnect");
+		throw err;
+		}
 
+	    }
+	}
+    catch(AVDisconnectErrorExImpl &ex)
+	{
+	AVDisconnectErrorExImpl err = AVDisconnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataDistributer::multiDisconnect");
+	throw err;
+	}
+    catch(...)
+	{
+	ACSErrTypeCommon::UnknownExImpl ex = ACSErrTypeCommon::UnknownExImpl(__FILE__,__LINE__,"BulkDataDistributer::multiDisconnect");
+	AVDisconnectErrorExImpl err = AVDisconnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataDistributer::multiDisconnect");
+	throw err;
 	}
 
 }

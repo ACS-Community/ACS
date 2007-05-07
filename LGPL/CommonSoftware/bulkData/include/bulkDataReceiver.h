@@ -89,8 +89,8 @@ namespace AcsBulkdata
 	 <br><hr>
 	 @endhtmlonly
 	*/
-	void initialize();
-
+	void initialize()
+	    throw (AVInitErrorExImpl);
 
 	/** Create single flow (TCP, A/V default port)
 	 *  @return void
@@ -98,8 +98,8 @@ namespace AcsBulkdata
 	 <br><hr>
 	 @endhtmlonly
 	*/
-	void createSingleFlow();
-
+	void createSingleFlow()
+	    throw (AVStreamEndpointErrorExImpl, AVFlowEndpointErrorExImpl);
 
 	/** Create multiple flows (user defined)
 	 * @param fepsConfig
@@ -108,8 +108,8 @@ namespace AcsBulkdata
 	 <br><hr>
 	 @endhtmlonly
 	*/
-	void createMultipleFlows(const char *fepsConfig);
-
+	void createMultipleFlows(const char *fepsConfig)
+	    throw (AVStreamEndpointErrorExImpl, AVInvalidFlowNumberExImpl, AVFlowEndpointErrorExImpl);
 
 	/** Get the receiver flow and sep configuration
 	 *  @return bulkdata::BulkDataReceiverConfig * 
@@ -117,8 +117,8 @@ namespace AcsBulkdata
 	 <br><hr>
 	 @endhtmlonly
 	*/
-	bulkdata::BulkDataReceiverConfig * getReceiverConfig();
-
+	bulkdata::BulkDataReceiverConfig * getReceiverConfig()
+	    throw (AVReceiverConfigErrorExImpl);
 
 	/** Accessor to allocated receiver callback
 	 * @param ACE_CString 
@@ -128,8 +128,8 @@ namespace AcsBulkdata
 	 <br><hr>
 	 @endhtmlonly
 	*/
-	void getFlowCallback(ACE_CString &flowName, TReceiverCallback *&cb_p);
-
+	void getFlowCallback(ACE_CString &flowName, TReceiverCallback *&cb_p)
+	    throw (AVFlowEndpointErrorExImpl);
 
 	/** Accessor to allocated receiver callback
 	 * @param CORBA::ULong
@@ -139,8 +139,8 @@ namespace AcsBulkdata
 	 <br><hr>
 	 @endhtmlonly
 	*/
-	void getFlowCallback(CORBA::ULong flowNumber, TReceiverCallback *&cb_p);
-
+	void getFlowCallback(CORBA::ULong flowNumber, TReceiverCallback *&cb_p)
+	    throw (AVInvalidFlowNumberExImpl, AVFlowEndpointErrorExImpl);
 
 	/** Close the Receiver
 	 *  @return void
@@ -148,7 +148,8 @@ namespace AcsBulkdata
 	 <br><hr>
 	 @endhtmlonly
 	*/
-	void closeReceiver(); 
+	void closeReceiver()
+	    throw (AVCloseReceiverErrorExImpl);
 
 	/** Get the names of the connected flows
 	 *  @return vector<string>
