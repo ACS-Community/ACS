@@ -76,7 +76,7 @@ if __name__=="__main__":
     ec_cons.disconnect()
     erc_cons.disconnect()
     ed.destroy()
-    
+
     if EVENT_COUNTER["IDL:alma/FRIDGE/temperatureDataBlockEvent:1.0"] > 10:
         print "Good...enough temperatureDataBlockEvent's"
     else:
@@ -87,7 +87,7 @@ if __name__=="__main__":
     else:
         print "Bad...not enough XmlEntityStruct's"
         
-    if EVENT_COUNTER["IDL:alma/acstime/Duration:1.0"] > 5 and EVENT_COUNTER["IDL:alma/acstime/Duration:1.0"] < EVENT_COUNTER["IDL:alma/FRIDGE/temperatureDataBlockEvent:1.0"]:
+    if EVENT_COUNTER["IDL:alma/acstime/Duration:1.0"] > 1 and EVENT_COUNTER["IDL:alma/acstime/Duration:1.0"] < EVENT_COUNTER["IDL:alma/FRIDGE/temperatureDataBlockEvent:1.0"]:
         print "Good...enough Durations have been received"
     else:
         print "Bad...the wrong number of Durations were received"
