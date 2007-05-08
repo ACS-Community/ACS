@@ -271,8 +271,9 @@ public class FilterChooserDialog extends JDialog {
 		tableModel=model;
 		setTitle("Filter chooser");
 		setModal(false);
-		ImageIcon filterIcon = new ImageIcon(LogTypeHelper.class.getResource("/filters.png"));
-		setIconImage(filterIcon.getImage());
+		// Enable when ACS will use jdk 1.6
+		//ImageIcon filterIcon = new ImageIcon(LogTypeHelper.class.getResource("/filters.png"));
+		//setIconImage(filterIcon.getImage());
 		initialize();
 		setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
 		addWindowListener(new WindowAdapter() {
