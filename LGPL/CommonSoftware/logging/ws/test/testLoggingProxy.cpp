@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: testLoggingProxy.cpp,v 1.1 2007/04/12 15:55:28 msekoran Exp $"
+* "@(#) $Id: testLoggingProxy.cpp,v 1.2 2007/05/10 08:06:17 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -26,7 +26,7 @@
 #include "loggingLoggingProxy.h"
 #include "logging.h"
 
-static char *rcsId="@(#) $Id: testLoggingProxy.cpp,v 1.1 2007/04/12 15:55:28 msekoran Exp $"; 
+static char *rcsId="@(#) $Id: testLoggingProxy.cpp,v 1.2 2007/05/10 08:06:17 bjeram Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 
@@ -81,7 +81,13 @@ int main(int argc, char *argv[])
   // so it will be 1
   ACS_SHORT_LOG((LM_EMERGENCY, "emerency log - should bypass cache"));
   CHECK_LOG_COUNT; 
-  
+
+  // test that clean is called even if the log is not sent 
+  // TRACE level is too high to be sent so it is ignored ...
+  // but in the past the fileds like line, file etc. were not cleared ...
+  // ... so logs from ACE+TAO which do not set those fields were corupted
+  ACS_LOG(LM_FULL_INFO, "main", (LM_DEBUG, "a log that it is not sent to the CL"));
+  ACE_DEBUG((LM_DEBUG, "problematic log that shall not contain non empty file, line etc. fields")); // yes should be ACE and not ACS !!!
   // ------------------------------------------------------
 
   LoggingProxy::done();
