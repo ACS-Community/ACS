@@ -19,7 +19,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: loggingLoggingProxy.cpp,v 1.32 2007/04/20 16:47:11 msekoran Exp $"
+* "@(#) $Id: loggingLoggingProxy.cpp,v 1.33 2007/05/10 08:05:46 bjeram Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -56,7 +56,7 @@
 #define LOG_NAME "Log"
 #define DEFAULT_LOG_FILE_NAME "acs_local_log"
 
-ACE_RCSID(logging, logging, "$Id: loggingLoggingProxy.cpp,v 1.32 2007/04/20 16:47:11 msekoran Exp $");
+ACE_RCSID(logging, logging, "$Id: loggingLoggingProxy.cpp,v 1.33 2007/05/10 08:05:46 bjeram Exp $");
 
 ACE_TCHAR* LoggingProxy::m_LogEntryTypeName[] =
 {
@@ -195,6 +195,8 @@ LoggingProxy::log(ACE_Log_Record &log_record)
     // if priority less tha minCachePriority do not cache or log
     if (prohibitRemote || priority < m_minCachePriority) 
 	{
+	// anyway we have to clear TSS data 
+	(*tss)->clear(); 
 	return;
 	}
     
@@ -397,8 +399,10 @@ LoggingProxy::log(ACE_Log_Record &log_record)
       else
       ACE_OS::printf ("Locking <unnamed>\n");
     */    
-    
-    ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex);
+        
+    // we can clear TSS data here, because we do not need them anymore
+    (*tss)->clear();    
+    ACE_GUARD_REACTION (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, printf("problem acquring mutex in loggingProxy::log () errno: %d\n", errno);return);
     
     /*
       if (threadName)
@@ -430,9 +434,7 @@ LoggingProxy::log(ACE_Log_Record &log_record)
 		if (m_cache.size() > 0)
 			sendCache();
 	}
-    
-    // clear TSS data
-    (*tss)->clear();    
+
 }
 
 void LoggingProxy::logXML(const ACE_TCHAR *xml, bool cache)
