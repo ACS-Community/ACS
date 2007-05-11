@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.21 2007/04/30 05:09:34 sharring Exp $"
+# "@(#) $Id: Makefile,v 1.22 2007/05/11 20:43:10 sharring Exp $"
 #
 # Makefile of ........
 #
@@ -96,7 +96,7 @@ LIBRARIES       = 	componentsBulkReceiver componentsBulkSender \
 LIBRARIES_L     =
 
 LogStressImpl_OBJECTS = LogStressImpl
-LogStressImpl_LIBS	= perftestStubs
+LogStressImpl_LIBS	= perftestStubs BenchmarkErrType
 
 componentsBulkReceiver_OBJECTS   = componentsBulkReceiver 
 componentsBulkReceiver_LIBS      =  bulkDataReceiverStubs bulkDataStubs bulkDataCallback ACSBulkDataError 
