@@ -49,7 +49,7 @@ genplot ()
 	LOG_FILE_NAME=$1
 	X_AXIS_POSITION=$2	
 	Y_AXIS_POSITION=$3	
-   ACS_TEMP=$4
+	ACS_TEMP=$4
 	
 	cat ./gnuplot.template | sed -e s@CHANGE_PNG@../doc/$LOG_FILE_NAME@g | sed -e s@CHANGE_LOGFILE@$ACS_TEMP/$LOG_FILE_NAME@g \
 		| sed -e s@CHANGE_X_LOCATION@$X_AXIS_POSITION@g | sed -e s@CHANGE_Y_LOCATION@$Y_AXIS_POSITION@g \
@@ -63,7 +63,7 @@ gencontainerplot ()
 	LOG_FILE_NAME=$1
 	X_AXIS_POSITION=$2	
 	Y_AXIS_POSITION=$3	
-   ACS_TEMP=$4
+	ACS_TEMP=$4
 
 	# remove the first plot commands in the template
 	cat ./gnuplot.template > $ACS_TEMP/gnuplot.tmp
@@ -276,7 +276,7 @@ DELAY=$3
 # 'guesstimate' the amount of time we need to monitor the processes using the unix
 # sar command by a rough rule of thumb that 100,000 logs requires ~ 4 minutes (240 secs)
 debugPrint "NUM_LOGS was: $NUM_LOGS"
-EXTRA_WAIT_TIME=`expr \( $NUM_LOGS / 100000 \) \* 30`
+EXTRA_WAIT_TIME=`expr \( $NUM_LOGS / 100000 \) \* 80`
 debugPrint "EXTRA_WAIT_TIME was calculated as: $EXTRA_WAIT_TIME"
 if [ "$EXTRA_WAIT_TIME" -le "60" ] ;
 then
@@ -398,14 +398,16 @@ totalLogsExpected=`expr $NUM_LOGS \* $NUM_COMPONENTS`
 totalLogsReceivedByLoggingClient=`grep "msg:" $ACS_TMP/all_logs.xml | wc -l`
 sleepCount=0
 gotAllLogs=
-while [ -z gotAllLogs -a "$sleepCount" -le "$EXTRA_WAIT_TIME" ]
+while [ -z "$gotAllLogs" -a "$sleepCount" -le "$EXTRA_WAIT_TIME" ]
 do
 	sleep 1
-   sleepCount=`expr $sleepCount + 1`
-	if [ "$totalLogsReceivedByLoggingClient" -e "$totalLogsExpected" ]
+	sleepCount=`expr $sleepCount + 1`
+	if [ "$totalLogsReceivedByLoggingClient" -eq "$totalLogsExpected" ]
 	then
 		gotAllLogs=true   
+		debugPrint "received all logs, no need to wait any longer"
 	fi
+	debugPrint "waiting."
 done
 
 # stop the monitoring
