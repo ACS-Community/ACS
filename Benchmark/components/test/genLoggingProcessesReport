@@ -43,14 +43,38 @@ debugPrint ()
 	fi;
 }
 
+# definition of a function to find the number (counting from 1) of the column which contains the %user cpu information 
+# in the output from the sar command. It seems this can vary from machine to machine, so we cannot hard-code a column number.
+findCpuColumnInSarOutput () 
+{
+	LOG_FILE=$1
+	retval=
+	count=1
+	for i in `grep PID $LOG_FILE | grep "[0-9]"`
+	do
+		if [ "$i" = "%user" ]
+		then 
+			retval=$count
+			break
+		fi
+		count=`expr $count + 1`
+	done
+	echo $retval
+}
+
 # definition of a function to plot (using gnuplot) the data produced by the unix 'sar' and 'top' commands
 genplot () 
 {
 	LOG_FILE_NAME=$1
-	X_AXIS_POSITION=$2	
-	Y_AXIS_POSITION=$3	
-	ACS_TEMP=$4
-	
+	ACS_TEMP=$2
+	X_AXIS_POSITION=1	
+        Y_AXIS_POSITION=`findCpuColumnInSarOutput $ACS_TEMP/$LOG_FILE_NAME.orig.log`
+	debugPrint "cpu column for $LOG_FILE_NAME was determined to be: $Y_AXIS_POSITION"
+	if [ -z "$Y_AXIS_POSITION" ]
+	then
+		echo "FATAL ERROR: could not find cpu column in sar output!"
+		exit -1;
+	fi
 	cat ./gnuplot.template | sed -e s@CHANGE_PNG@../doc/$LOG_FILE_NAME@g | sed -e s@CHANGE_LOGFILE@$ACS_TEMP/$LOG_FILE_NAME@g \
 		| sed -e s@CHANGE_X_LOCATION@$X_AXIS_POSITION@g | sed -e s@CHANGE_Y_LOCATION@$Y_AXIS_POSITION@g \
 		| sed -e s@CHANGE_GRAPH_TITLE@$LOG_FILE_NAME@g > $ACS_TEMP/gplot.tmp;
@@ -61,9 +85,9 @@ genplot ()
 gencontainerplot () 
 {
 	LOG_FILE_NAME=$1
-	X_AXIS_POSITION=$2	
-	Y_AXIS_POSITION=$3	
-	ACS_TEMP=$4
+	ACS_TEMP=$2
+
+	X_AXIS_POSITION=1
 
 	# remove the first plot commands in the template
 	cat ./gnuplot.template > $ACS_TEMP/gnuplot.tmp
@@ -71,6 +95,14 @@ gencontainerplot ()
 
 	# insert plot commands in the template, for each component
 	i=1
+	Y_AXIS_POSITION=`findCpuColumnInSarOutput $ACS_TEMP/$LOG_FILE_NAME$i.orig.log`
+	debugPrint "cpu column for $LOG_FILE_NAME$i was determined to be: $Y_AXIS_POSITION"
+	if [ -z "$Y_AXIS_POSITION" ]
+	then
+		echo "FATAL ERROR: could not find cpu column in sar output!"
+		exit -1;
+	fi
+
 	if [ $NUM_COMPONENTS -ge 2 ]
 	then
 		echo -e "plot \"CHANGE_LOGFILE$i.log\" using CHANGE_X_LOCATION:CHANGE_Y_LOCATION title \"%user cpu: container$i\" with lines, "\\c \
@@ -78,9 +110,17 @@ gencontainerplot ()
 	else
 		echo "plot \"CHANGE_LOGFILE$i.log\" using CHANGE_X_LOCATION:CHANGE_Y_LOCATION title \"%user cpu: container$i\" with lines" >> $ACS_TEMP/gnuplot.tmp
 	fi
+
 	i=2
 	while [ "$i" -le $NUM_COMPONENTS ]
 	do
+		Y_AXIS_POSITION=`findCpuColumnInSarOutput $ACS_TEMP/$LOG_FILE_NAME$i.orig.log`
+		debugPrint "cpu column for $LOG_FILE_NAME$i was determined to be: $Y_AXIS_POSITION"
+		if [ -z "$Y_AXIS_POSITION" ]
+		then
+			echo "FATAL ERROR: could not find cpu column in sar output!"
+			exit -1;
+		fi
 		if [ "$i" -lt $NUM_COMPONENTS ]
 		then
 			echo -e "\"CHANGE_LOGFILE$i.log\" using CHANGE_X_LOCATION:CHANGE_Y_LOCATION title \"%user cpu: container$i\" with lines, "\\c \
@@ -171,7 +211,16 @@ HERE
 # definition of a function to generate an html file summarizing the test results
 genhtml () 
 {
+	result=SUCCESS
+	resultFontColor=GREEN
+   if [ "$6" -ne "$7" ]
+	then
+		result=FAILURE
+		resultFontColor=RED
+	fi
 	cat ./index.html.template \
+		| sed -e s/CHANGE_RESULT_FONT_COLOR/$resultFontColor/g \
+		| sed -e s/CHANGE_RESULT/$result/g \
 		| sed -e s/CHANGE_NUMBER_OF_LOGS/$1/g \
 		| sed -e s/CHANGE_ACSHOST_NAME/$2/g \
 		| sed -e s/CHANGE_NUMBER_OF_SUPPLIERS/$3/g \
@@ -179,6 +228,7 @@ genhtml ()
 		| sed -e s/CHANGE_PUBLISHER_LANGUAGE/$5/g \
 		| sed -e s/CHANGE_TOTAL_EXPECTED/$6/g \
 		| sed -e s/CHANGE_TOTAL_RECEIVED/$7/g \
+		| sed -e s/CHANGE_DELAY/$8/g \
 			> ../doc/loggingPerformance.html;
 
 	if [ ! $PROFILE_JLOG ]
@@ -313,7 +363,7 @@ PUBLISHER_LOG_FILE=publisher
 i=1
 while [ "$i" -le $NUM_COMPONENTS ]
 do
-	if [ -z $REMOTE_HOST ]
+	if [ -z "$REMOTE_HOST" ]
 	then
 		echo " Starting Container $i"
 		acsutilAwaitContainerStart -${COMPONENT_LANGUAGE} ${COMPONENT_LANGUAGE}Container$i >& $ACS_TMP/${COMPONENT_LANGUAGE}Container$i.log
@@ -394,18 +444,19 @@ wait $!
 
 # sleep a bit longer to allow things to 'settle'
 echo " Sleeping (at most) $EXTRA_WAIT_TIME seconds to allow logs to be processed..."
-totalLogsExpected=`expr $NUM_LOGS \* $NUM_COMPONENTS`
-totalLogsReceivedByLoggingClient=`grep "msg:" $ACS_TMP/all_logs.xml | wc -l`
 sleepCount=0
 gotAllLogs=
 while [ -z "$gotAllLogs" -a "$sleepCount" -le "$EXTRA_WAIT_TIME" ]
 do
 	sleep 1
 	sleepCount=`expr $sleepCount + 1`
+	totalLogsExpected=`expr $NUM_LOGS \* $NUM_COMPONENTS`
+	totalLogsReceivedByLoggingClient=`grep "msg:" $ACS_TMP/all_logs.xml | wc -l`
 	if [ "$totalLogsReceivedByLoggingClient" -eq "$totalLogsExpected" ]
 	then
 		gotAllLogs=true   
 		debugPrint "received all logs, no need to wait any longer"
+		continue
 	fi
 	debugPrint "waiting."
 done
@@ -417,7 +468,7 @@ echo " NOTE: some 'process terminated' messages are normal here..."
 echo ""
 killall -q monitorProcess >& $ACS_TMP/killallLocalMonitorProcess.log
 killall -q sar >& $ACS_TMP/killallLocalSar.log
-if [ ! -z $REMOTE_HOST ] 
+if [ ! -z "$REMOTE_HOST" ] 
 then
 	ssh -f $USER@$REMOTE_HOST "killall -q remoteMonitorProcess" >& $ACS_TMP/killallMonitorProcess.log
 	ssh -f $USER@$REMOTE_HOST "killall -q sar >& /dev/null" >& $ACS_TMP/killallSar.log
@@ -439,7 +490,7 @@ fi
 i=1
 while [ "$i" -le $NUM_COMPONENTS ]
 do
-	if [ -z $REMOTE_HOST ]
+	if [ -z "$REMOTE_HOST" ]
 	then
 		echo " Stopping Container $i"
 		acsStopContainer ${COMPONENT_LANGUAGE}Container$i >& $ACS_TMP/Stop${COMPONENT_LANGUAGE}Container$i.log
@@ -468,19 +519,20 @@ fi
 # prep the log files
 echo " Preparing the sar log files"
 cat $ACS_TMP/$ACS_LOG_SVC_LOG_FILE.orig.log | grep -v -i average | grep -v -i linux \
-	| grep -v -i pid > $ACS_TMP/$ACS_LOG_SVC_LOG_FILE.log 
+	| grep -v -i pid | sed -e /^[^0-9]/d > $ACS_TMP/$ACS_LOG_SVC_LOG_FILE.log 
 cat $ACS_TMP/$LOGGING_SERVICE_LOG_FILE.orig.log | grep -v -i average | grep -v -i linux \
-	| grep -v -i pid > $ACS_TMP/$LOGGING_SERVICE_LOG_FILE.log
+	| grep -v -i pid | sed -e /^[^0-9]/d > $ACS_TMP/$LOGGING_SERVICE_LOG_FILE.log
 cat $ACS_TMP/$LOGGING_NOTIFY_SERVICE_LOG_FILE.orig.log | grep -v -i average | grep -v -i linux \
-	| grep -v -i pid > $ACS_TMP/$LOGGING_NOTIFY_SERVICE_LOG_FILE.log
+	| grep -v -i pid | sed -e /^[^0-9]/d > $ACS_TMP/$LOGGING_NOTIFY_SERVICE_LOG_FILE.log
 cat $ACS_TMP/$LOGGING_CLIENT_LOG_FILE.orig.log | grep -v -i average | grep -v -i linux \
-	| grep -v -i pid > $ACS_TMP/$LOGGING_CLIENT_LOG_FILE.log
+	| grep -v -i pid | sed -e /^[^0-9]/d > $ACS_TMP/$LOGGING_CLIENT_LOG_FILE.log
 
 i=1
 while [ "$i" -le $NUM_COMPONENTS ]
 do
 	cat $ACS_TMP/$PUBLISHER_LOG_FILE$i.orig.log | grep -v -i average | grep -v -i linux \
-		| grep -v -i pid > $ACS_TMP/$PUBLISHER_LOG_FILE$i.log
+		| grep -v -i pid | sed -e /^[^0-9]/d > $ACS_TMP/$PUBLISHER_LOG_FILE$i.log
+    
 	i=`expr $i + 1`
 done
 
@@ -492,28 +544,28 @@ fi
 
 # plot the data from the prepped log files
 echo " Generating the plots"
-genplot $ACS_LOG_SVC_LOG_FILE 1 6 $ACS_TMP
+genplot $ACS_LOG_SVC_LOG_FILE $ACS_TMP
 genmemoryplot $ACS_LOG_SVC_LOG_FILE-memory $ACS_TMP acsLogSvc
-genplot $LOGGING_SERVICE_LOG_FILE 1 6 $ACS_TMP 
+genplot $LOGGING_SERVICE_LOG_FILE $ACS_TMP 
 genmemoryplot $LOGGING_SERVICE_LOG_FILE-memory $ACS_TMP loggingService
-genplot $LOGGING_NOTIFY_SERVICE_LOG_FILE 1 6 $ACS_TMP
+genplot $LOGGING_NOTIFY_SERVICE_LOG_FILE $ACS_TMP
 genmemoryplot $LOGGING_NOTIFY_SERVICE_LOG_FILE-memory $ACS_TMP
-genplot $LOGGING_CLIENT_LOG_FILE 1 6 $ACS_TMP
+genplot $LOGGING_CLIENT_LOG_FILE $ACS_TMP
 genmemoryplot $LOGGING_CLIENT_LOG_FILE-memory $ACS_TMP loggingClient
-gencontainerplot $PUBLISHER_LOG_FILE 1 6 $ACS_TMP
+gencontainerplot $PUBLISHER_LOG_FILE $ACS_TMP
 gencontainermemoryplot $PUBLISHER_LOG_FILE-memory $ACS_TMP $NUM_COMPONENTS 
 
 if [ "$PROFILE_JLOG" ] ;
 then
-	genplot $JLOG_LOG_FILE 1 6 $ACS_TMP
+	genplot $JLOG_LOG_FILE $ACS_TMP
 	genmemoryplot $JLOG_LOG_FILE-memory $ACS_TMP jlog
 fi
 
 # generate the html page summarizing the test results
 echo " Generating the html file"
 LOCALHOSTNAME=`hostname -f` 
-if [ -z $REMOTE_HOST ]
+if [ -z "$REMOTE_HOST" ]
 then
 	REMOTE_HOST=$LOCALHOSTNAME
 fi
-genhtml $NUM_LOGS $LOCALHOSTNAME $NUM_COMPONENTS $REMOTE_HOST $COMPONENT_LANGUAGE $totalLogsExpected $totalLogsReceivedByLoggingClient 
+genhtml $NUM_LOGS $LOCALHOSTNAME $NUM_COMPONENTS $REMOTE_HOST $COMPONENT_LANGUAGE $totalLogsExpected $totalLogsReceivedByLoggingClient $DELAY
