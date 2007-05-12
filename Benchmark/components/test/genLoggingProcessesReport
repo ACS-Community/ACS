@@ -427,6 +427,7 @@ then
 		jlogPid=`ps -ef | grep LogFrame  | grep -v grep | grep -v acsStartJava | gawk '{ print $2 }'`
 	done
 	debugPrint "jlogPid is: $jlogPid"
+	sleep 5
 	# start monitoring jlog process with 'sar' command
 	sar -x $jlogPid 1 9999 >& $ACS_TMP/$JLOG_LOG_FILE.orig.log &
 	./monitorProcess $jlogPid 1 $ACS_TMP/$JLOG_LOG_FILE-memory  &
