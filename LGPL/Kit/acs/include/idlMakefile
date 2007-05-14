@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ALMA  project
 #
-# "@(#) $Id: idlMakefile,v 1.110 2007/03/15 06:26:17 mzampare Exp $"
+# "@(#) $Id: idlMakefile,v 1.111 2007/05/14 09:49:56 mzampare Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -233,7 +233,7 @@ ifneq ($(strip $(IDL_FILES)),)
 ifndef MAKE_VXWORKS
 ifeq ($(call mustBuild,Python),true)
 	-$(AT) for member in  $(foreach name, $(IDL_FILES), $(name) ) ; do \
-		    tFile=`(cd ../idl; find . -name $${member}.idl | tail -1 )` ; \
+		    tFile=`(cd ../idl; find . ! -path '*/CVS/*' -name $${member}.idl | tail -1 )` ; \
                     $(ECHO)  "	\$$(AT)$(OMNI_IDL)  -I$(OMNI_ROOT)/idl/ $(MK_IDL_PATH) $(TAO_MK_IDL_PATH) -bacs_python -C$(VLTTOP)/lib/python/site-packages ../idl/$${tFile} > /dev/null 2>&1" >>$(FILE);\
 	done
 endif # must build Python
@@ -264,7 +264,7 @@ endif # MAKE_VXWORKS
 
 ifeq ($(call mustBuild,C++),true)
 	-$(AT) for member in  $(foreach name, $(IDL_FILES), $(name) ) ; do \
-		    tFile=`(cd ../idl; find . -name $${member}.idl | tail -1 )` ; \
+		    tFile=`(cd ../idl; find . ! -path '*/CVS/*' -name $${member}.idl | tail -1 )` ; \
 		    tDir=`dirname $${tFile}` ;\
 		    $(ECHO) "$(VLTTOP)/idl/$${tFile} $(VLTTOP)/include/$${member}C.h $(VLTTOP)/include/$${member}C.inl $(VLTTOP)/include/$${member}S.h $(VLTTOP)/include/$${member}S.inl $(VLTTOP)/include/$${member}S_T.h $(VLTTOP)/include/$${member}S_T.inl $(VLTTOP)/include/$${member}S_T.cpp: ../idl/$${tFile}" >>$(FILE);\
 		    $(ECHO) "	-$(AT)echo \"\t$${member}\";" >>$(FILE);\
@@ -280,7 +280,7 @@ ifeq ($(call mustBuild,C++),true)
 	done
 ifndef MAKE_VXWORKS
 	-$(AT) for member in  $(foreach name, $(IDL_FILES), $(name) ) ; do \
-		    tFile=`(cd ../idl; find . -name $${member}.idl | tail -1 )` ; \
+		    tFile=`(cd ../idl; find . ! -path '*/CVS/*' -name $${member}.idl | tail -1 )` ; \
 		    $(ECHO) "$(VLTTOP)/lib/lib$${member}Stubs.a :  ../lib/lib$${member}Stubs.a" >>$(FILE);\
 		    $(ECHO) "	-$(AT)if [[ -f ../lib/lib$${member}Stubs.a ]]; then \\" >>$(FILE);\
 		    $(ECHO) "	cp -v ../lib/lib$${member}Stubs.a $(VLTTOP)/lib/lib$${member}Stubs.a;\\" >>$(FILE);\
@@ -294,7 +294,7 @@ ifndef MAKE_VXWORKS
 	done
 else
 	-$(AT) for member in  $(foreach name, $(IDL_FILES), $(name) ) ; do \
-		    tFile=`(cd ../idl; find . -name $${member}.idl | tail -1 )` ; \
+		    tFile=`(cd ../idl; find . ! -path '*/CVS/*' -name $${member}.idl | tail -1 )` ; \
 		    $(ECHO) "$(BIN)/$${member}Stubs: ../idl/$${tFile}" >>$(FILE);\
 		    $(ECHO) "	-$(AT)if [[ -f ../bin/$${member}Stubs ]]; then \\" >>$(FILE);\
 		    $(ECHO) "	cp ../bin/$${member}Stubs $(BIN)/$${member}Stubs;\\" >>$(FILE);\
@@ -364,7 +364,7 @@ endif #end $(strip $(XML_IDL))
 # the assumption made here is that there are no other java files under
 # ../object besides those which result from processing IDL files
 # 
-	$(AT) CLASSPATH=`vltMakeJavaClasspath`; export CLASSPATH; FILES=`find ../object/src -name \*.java`; export FILES;  if [ "$$FILES" != "" ] ; then javac $(javaCompilerOptions) -d ../object/src $$FILES; fi;
+	$(AT) CLASSPATH=`vltMakeJavaClasspath`; export CLASSPATH; FILES=`find ../object/src ! -path '*/CVS/*' -name \*.java`; export FILES;  if [ "$$FILES" != "" ] ; then javac $(javaCompilerOptions) -d ../object/src $$FILES; fi;
 #
 #
 # putting it into the jarfile
@@ -373,7 +373,7 @@ ifeq ($(strip $(DEBUG)),on)
 # first put the class files
 	$(AT) cd ../object/src; FILES=`find . -name \*.class `; export FILES;  if [ "$$FILES" != "" ] ; then jar cf ../../lib/$(basename $(<F)).jar $$FILES ; fi
 # then, carefully, the java files prefixed with 'src'.
-	$(AT) cd ../object;  FILES=`find src -name \*.java`; export FILES;  if [ "$$FILES" != "" ] ; then jar uf ../lib/$(basename $(<F)).jar $$FILES ; fi; 
+	$(AT) cd ../object;  FILES=`find src ! -path '*/CVS/*' -name \*.java`; export FILES;  if [ "$$FILES" != "" ] ; then jar uf ../lib/$(basename $(<F)).jar $$FILES ; fi; 
 	$(AT) echo "ACS-Generated-FromFile: $(<F)" >  ../object/$(basename $(<F)).manifest; \
 	      jar ufm ../lib/$(basename $(<F)).jar ../object/$(basename $(<F)).manifest; \
               rm ../object/$(basename $(<F)).manifest
