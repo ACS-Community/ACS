@@ -18,7 +18,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acserrLegacy.h,v 1.10 2006/10/05 06:44:20 bjeram Exp $"
+* "@(#) $Id: acserrLegacy.h,v 1.11 2007/05/14 14:12:32 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -409,7 +409,8 @@ public:
       const char *s;
       std::ostringstream ostr;
       ostr << value << std::ends;
-      s =  ostr.str().c_str();
+      std::string ts=ostr.str(); // we have to make a temporary string otherwise there is problem with memory:  s = ostr.str().c_str(); does not work
+      s = ts.c_str();
       addData (name, s);
   }
 
