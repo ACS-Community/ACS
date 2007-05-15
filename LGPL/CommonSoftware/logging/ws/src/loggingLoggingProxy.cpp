@@ -19,7 +19,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: loggingLoggingProxy.cpp,v 1.33 2007/05/10 08:05:46 bjeram Exp $"
+* "@(#) $Id: loggingLoggingProxy.cpp,v 1.34 2007/05/15 09:15:04 bjeram Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -56,7 +56,7 @@
 #define LOG_NAME "Log"
 #define DEFAULT_LOG_FILE_NAME "acs_local_log"
 
-ACE_RCSID(logging, logging, "$Id: loggingLoggingProxy.cpp,v 1.33 2007/05/10 08:05:46 bjeram Exp $");
+ACE_RCSID(logging, logging, "$Id: loggingLoggingProxy.cpp,v 1.34 2007/05/15 09:15:04 bjeram Exp $");
 
 ACE_TCHAR* LoggingProxy::m_LogEntryTypeName[] =
 {
@@ -898,7 +898,11 @@ LoggingProxy::sendCache()
 	{
 	  // start one worker thread
 	  // note this method is called when under m_mutex lock, so this is safe
+#ifndef MAKE_VXWORKS
 	  if (ACE_Thread::spawn(static_cast<ACE_THR_FUNC>(LoggingProxy::worker), this) != -1)
+#else
+	  if (ACE_Thread::spawn((ACE_THR_FUNC)(LoggingProxy::worker), this) != -1)
+#endif
 	  {
 	  	m_threadCreated = true;
   	    //m_threadStart.wait();
