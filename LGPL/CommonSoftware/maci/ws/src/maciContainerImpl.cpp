@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciContainerImpl.cpp,v 1.87 2007/04/16 15:03:38 msekoran Exp $"
+* "@(#) $Id: maciContainerImpl.cpp,v 1.88 2007/05/16 14:49:45 bjeram Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -76,7 +76,7 @@
 #include <ACSAlarmSystemInterfaceFactory.h>
 #endif
 
-ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.87 2007/04/16 15:03:38 msekoran Exp $")
+ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.88 2007/05/16 14:49:45 bjeram Exp $")
 
  using namespace maci;
  using namespace cdb;
@@ -513,8 +513,7 @@ ContainerImpl::init(int argc, char *argv[])
 {
 
   //ACS_TRACE("maci::ContainerImpl::init");
-  
-  Logger::setConfigureLoggerFunction(ContainerImpl::configureLogger);
+  Logging::Logger::setConfigureLoggerFunction(ContainerImpl::configureLogger);
   
   try 
     {
@@ -2537,7 +2536,7 @@ void ContainerImpl::set_default_logLevels(const maci::LoggingConfigurable::LogLe
 
 	if (!logLevels.useDefault)
 	{
-		Logger::getGlobalLogger()->setLevels(
+		Logging::Logger::getGlobalLogger()->setLevels(
 			static_cast<Logging::BaseLog::Priority>(logLevels.minLogLevelLocal), 
 			static_cast<Logging::BaseLog::Priority>(logLevels.minLogLevel));
 		m_defaultLogLevels = logLevels;
@@ -2550,7 +2549,7 @@ maci::stringSeq* ContainerImpl::get_logger_names()
 {
 	ACS_TRACE("maci::ContainerImpl::get_logger_names");
 
-	std::list<std::string> names = Logger::getGlobalLogger()->getLoggerNames();
+	std::list<std::string> names = Logging::Logger::getGlobalLogger()->getLoggerNames();
 	
 	maci::stringSeq_var namesSeq = new maci::stringSeq();
 	namesSeq->length(names.size() + m_logLevels.size());
@@ -2566,7 +2565,7 @@ maci::stringSeq* ContainerImpl::get_logger_names()
 	std::map<std::string, maci::LoggingConfigurable::LogLevels>::iterator iter;
 	for (iter = m_logLevels.begin(); iter != m_logLevels.end(); iter++)
 		if (find(names.begin(), names.end(), iter->first) == names.end())
-			if (Logger::getGlobalLogger()->exists(iter->first))
+			if (Logging::Logger::getGlobalLogger()->exists(iter->first))
 				namesSeq[i++] = CORBA::string_dup(iter->first.c_str());
 	
 	namesSeq->length(i);
@@ -2581,7 +2580,7 @@ maci::LoggingConfigurable::LogLevels ContainerImpl::get_logLevels(const char* lo
 
 	if (m_logLevels.find(loggerName) != m_logLevels.end())
 		return m_logLevels[loggerName];
-	else if (Logger::getGlobalLogger()->exists(loggerName))
+	else if (Logging::Logger::getGlobalLogger()->exists(loggerName))
 		return m_defaultLogLevels;
 	else
 	{
@@ -2600,7 +2599,7 @@ void ContainerImpl::set_logLevels(const char* loggerName, const maci::LoggingCon
 {
 	ACS_TRACE("maci::ContainerImpl::set_logLevels");
 
-	if (!Logger::getGlobalLogger()->exists(loggerName))
+	if (!Logging::Logger::getGlobalLogger()->exists(loggerName))
 	{
 		maciErrType::LoggerDoesNotExistExImpl ex(__FILE__, __LINE__,
 					"maci::ContainerImpl::set_logLevels");
@@ -2612,11 +2611,11 @@ void ContainerImpl::set_logLevels(const char* loggerName, const maci::LoggingCon
 
 	m_logLevels[loggerName] = logLevels;
 	if (logLevels.useDefault)
-		Logger::getGlobalLogger()->setLevels(loggerName, 
+		Logging::Logger::getGlobalLogger()->setLevels(loggerName, 
 			static_cast<Logging::BaseLog::Priority>(m_defaultLogLevels.minLogLevelLocal),
 			static_cast<Logging::BaseLog::Priority>(m_defaultLogLevels.minLogLevel));
 	else
-		Logger::getGlobalLogger()->setLevels(loggerName, 
+		Logging::Logger::getGlobalLogger()->setLevels(loggerName, 
 			static_cast<Logging::BaseLog::Priority>(logLevels.minLogLevelLocal),
 			static_cast<Logging::BaseLog::Priority>(logLevels.minLogLevel));
 }
@@ -2648,7 +2647,7 @@ void ContainerImpl::refresh_logging_config()
 	}
 	
 	// set default logger levels 
-	Logger::getGlobalLogger()->setLevels(
+	Logging::Logger::getGlobalLogger()->setLevels(
 		static_cast<Logging::BaseLog::Priority>(m_defaultLogLevels.minLogLevelLocal),
 		static_cast<Logging::BaseLog::Priority>(m_defaultLogLevels.minLogLevel));
 
@@ -2689,11 +2688,11 @@ void ContainerImpl::configureLogger(const std::string& loggerName)
 		logLevels = getContainer()->m_defaultLogLevels;
 	
 	if (logLevels.useDefault)
-		Logger::getGlobalLogger()->setLevels(loggerName, 
+		Logging::Logger::getGlobalLogger()->setLevels(loggerName, 
 			static_cast<Logging::BaseLog::Priority>(getContainer()->m_defaultLogLevels.minLogLevelLocal),
 			static_cast<Logging::BaseLog::Priority>(getContainer()->m_defaultLogLevels.minLogLevel));
 	else
-		Logger::getGlobalLogger()->setLevels(loggerName, 
+		Logging::Logger::getGlobalLogger()->setLevels(loggerName, 
 			static_cast<Logging::BaseLog::Priority>(logLevels.minLogLevelLocal),
 			static_cast<Logging::BaseLog::Priority>(logLevels.minLogLevel));
 }
