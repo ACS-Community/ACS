@@ -19,7 +19,7 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
  *    MA 02111-1307  USA
  */
-package alma.acs.container.classloader;
+package alma.acs.classloading;
 
 import java.io.File;
 import java.net.URL;
@@ -68,7 +68,8 @@ public class AcsComponentClassLoader extends URLClassLoader
 
     /**
      * @param parent  parent class loader (currently the container class loader)
-     * @param logger  the container logger, for debug output (see <code>PROPERTY_CLASSLOADERVERBOSE</code>).
+     * @param logger  the container logger, for debug output (see <code>PROPERTY_CLASSLOADERVERBOSE</code>). 
+     *                  This is also used to derive the processName when logging exceptions.
      * @param componentName  used for log messages in verbose mode 
      */
     public AcsComponentClassLoader(ClassLoader parent, Logger logger, String componentName)
@@ -204,4 +205,43 @@ public class AcsComponentClassLoader extends URLClassLoader
         }
         super.finalize();
     }
+    public String getSourceObject(){
+        return componentName;
+    }
+    /**
+     * Taken from ClientLogManager.stripKnownLoggerNamespacePrefix(). Maybe it should be nice to generalize it and put it somewhere else. 
+     * Strips the prepended constants {@link #NS_CORBA}, {@link #NS_CONTAINER}, {@link #NS_COMPONENT} etc from the logger namespace.
+     * This allows for a short, but possibly not unique display of the logger name.
+     */
+    public String getProcessName(){
+            /** logger namespace for CORBA classes (ORB, POAs, etc) */
+            String NS_CORBA = "alma.acs.corba";
+
+            /** logger namespace for container classes during operation */
+            String NS_CONTAINER = "alma.acs.container";
+
+            /** parent of logger namespaces for application components */
+            String NS_COMPONENT = "alma.component";
+            
+            String loggerName=logger.getName();
+            if (loggerName != null) {
+                    // try to strip off fixed prefix from logger namespace
+                    try {
+                            if (loggerName.startsWith(NS_COMPONENT)) {
+                                    loggerName = loggerName.substring(NS_COMPONENT.length()+1);
+                            }
+                            else if (loggerName.startsWith(NS_CONTAINER)) {
+                                    loggerName = loggerName.substring(NS_CONTAINER.length()+1);
+                            }
+                            else if (loggerName.startsWith(NS_CORBA)) {
+                                    loggerName = loggerName.substring(NS_CORBA.length()+1);
+                            }
+                    } catch (Exception e) {
+                            // fallback: use logger namespace
+                    }
+            }
+            return loggerName;
+    }
+
 }
+

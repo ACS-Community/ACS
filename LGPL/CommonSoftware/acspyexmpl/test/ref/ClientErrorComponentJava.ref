@@ -11,6 +11,65 @@
 1 - object is activated
 1 - ----------T--:--:--.--- INFO [javaContainer] Info message from the manager: Startup statistics: 0 components queued to be activated.
 1 - ----------T--:--:--.--- INFO [javaContainer] Info message from the manager: Startup statistics: 0 of 0 components activated.
+2 - ----------T--:--:--.--- Python Client TestReceiveRemoteException - Example 1: Calls a method that throws an exception.
+2 - ErrorTrace (TimeStamp=xxxx,
+2 -             File=xxx
+2 -             Line=xxx
+2 -             Routine=TestReceiveRemoteException,
+2 -             Host=xxxx,
+2 -             Process=xxx,
+2 -             Thread=MainThread,
+2 -             Type=10,
+2 -             Code=16,
+2 -             ShortDescrip=An error occurred, see ErrorDesc member,
+2 -             Severity=Error,
+2 -             Data: Name=ErrorDesc, Value=badMethod has thrown the expected exception; )
+2 - 
+2 -     ErrorTrace (TimeStamp=xxxx,
+2 -                 File=xxx
+2 -                 Line=xxx
+2 -                 Routine=internalBadMethod,
+2 -                 Host=xxxx,
+2 -                 Process=xxxjavaContainer,
+2 -                 Thread=RequestProcessor-xxx,
+2 -                 Type=10,
+2 -                 Code=16,
+2 -                 ShortDescrip=An error occurred, see ErrorDesc member,
+2 -                 Severity=Error,
+2 -                 Data: Name=javaex.class, Value=alma.ACSErrTypeCommon.wrappers.AcsJGenericErrorEx; Name=javaex.msg, Value=This exception was caused by another exception...; )
+2 - 
+2 -         ErrorTrace (TimeStamp=xxxx,
+2 -                     File=xxx
+2 -                     Line=xxx
+2 -                     Routine=internalBadMethod,
+2 -                     Host=xxxx,
+2 -                     Process=xxxjavaContainer,
+2 -                     Thread=RequestProcessor-xxx,
+2 -                     Type=10,
+2 -                     Code=16,
+2 -                     ShortDescrip=An error occurred, see ErrorDesc member,
+2 -                     Severity=Error,
+2 -                     Data: Name=javaex.class, Value=alma.ACSErrTypeCommon.wrappers.AcsJGenericErrorEx; Name=javaex.msg, Value=This exception was caused by another exception...; )
+2 - 
+2 -             ErrorTrace (TimeStamp=xxxx,
+2 -                         File=xxx
+2 -                         Line=xxx
+2 -                         Routine=internalBadMethod,
+2 -                         Host=xxxx,
+2 -                         Process=xxxjavaContainer,
+2 -                         Thread=RequestProcessor-xxx,
+2 -                         Type=10,
+2 -                         Code=16,
+2 -                         ShortDescrip=An error occurred, see ErrorDesc member,
+2 -                         Severity=Error,
+2 -                         Data: Name=javaex.class, Value=alma.ACSErrTypeCommon.wrappers.AcsJGenericErrorEx; Name=javaex.msg, Value=This exception is the original cause.; )
+2 - 
+1 - ----------T--:--:--.--- INFO [javaContainer] activate_component: handle=xxx name=ERRORCOMP_JAVA helperClass=alma.acsexmplErrorComponent.ErrorComponentImpl.ErrorComponentHelper type=IDL:alma/acsexmplErrorComponent/ErrorComponent:1.0
+1 - [jacorb.poa] INFO : oid: 
+1 - object is activated
+1 - [jacorb.poa] INFO : oid: 
+1 - object is activated
+1 - ----------T--:--:--.--- INFO [ERRORCOMP_JAVA] ErrorComponent
 2 - ----------T--:--:--.--- Python Client disconnect - Shutdown called for client
 2 - ----------T--:--:--.--- Python Client testCompletionFromCompletion - Completion Ok, without error trace
 2 - ----------T--:--:--.--- Python Client testCompletionFromCompletion - Example 6a: completionFromCompletion with depth 0
@@ -28,7 +87,6 @@
 2 - ----------T--:--:--.--- Python Client TestReceiveRemoteCompletion - Completion with error trace
 2 - ----------T--:--:--.--- Python Client TestReceiveRemoteCompletion - Example 2a: Calls a method that returns an OK completion.
 2 - ----------T--:--:--.--- Python Client TestReceiveRemoteCompletion - Example 2b: Calls a method that returns an Error completion, of depth 3.
-2 - ----------T--:--:--.--- Python Client TestReceiveRemoteException - Example 1: Calls a method that throws an exception.
 2 - ----------T--:--:--.--- Python Client testTypeException - Example 4a: TypeException with depth 0
 2 - ----------T--:--:--.--- Python Client testTypeException - Example 4b: TypeException with depth 3
 2 - ----------T--:--:--.--- Python Client testTypeException - OK: ACSErrTypeCommonEx exception thrown
@@ -38,14 +96,11 @@
 2 - ErrorTrace (TimeStamp=xxxx,
 2 - ErrorTrace (TimeStamp=xxxx,
 2 - ErrorTrace (TimeStamp=xxxx,
-2 - ErrorTrace (TimeStamp=xxxx,
 2 -             File=xxx
 2 -             File=xxx
 2 -             File=xxx
 2 -             File=xxx
 2 -             File=xxx
-2 -             File=xxx
-2 -             Line=xxx
 2 -             Line=xxx
 2 -             Line=xxx
 2 -             Line=xxx
@@ -56,20 +111,16 @@
 2 -             Routine=<init>,
 2 -             Routine=internalBadMethod,
 2 -             Routine=testCORBASystemException,
-2 -             Routine=TestReceiveRemoteException,
-2 -             Host=xxxx,
 2 -             Host=xxxx,
 2 -             Host=xxxx,
 2 -             Host=xxxx,
 2 -             Host=xxxx,
 2 -             Host=xxxx,
 2 -             Process=xxx,
-2 -             Process=xxx,
-2 -             Process=xxxjava 1.5.0_04,
-2 -             Process=xxxjava 1.5.0_04,
-2 -             Process=xxxjava 1.5.0_04,
-2 -             Process=xxxjava 1.5.0_04,
-2 -             Thread=MainThread,
+2 -             Process=xxxjavaContainer,
+2 -             Process=xxxjavaContainer,
+2 -             Process=xxxjavaContainer,
+2 -             Process=xxxjavaContainer,
 2 -             Thread=MainThread,
 2 -             Thread=RequestProcessor-xxx,
 2 -             Thread=RequestProcessor-xxx,
@@ -80,8 +131,6 @@
 2 -             Type=10,
 2 -             Type=10,
 2 -             Type=10,
-2 -             Type=10,
-2 -             Code=16,
 2 -             Code=16,
 2 -             Code=16,
 2 -             Code=16,
@@ -92,15 +141,12 @@
 2 -             ShortDescrip=An error occurred, see ErrorDesc member,
 2 -             ShortDescrip=An error occurred, see ErrorDesc member,
 2 -             ShortDescrip=An error occurred, see ErrorDesc member,
-2 -             ShortDescrip=An error occurred, see ErrorDesc member,
-2 -             Severity=Error,
 2 -             Severity=Error,
 2 -             Severity=Error,
 2 -             Severity=Error,
 2 -             Severity=Error,
 2 -             Severity=Error,
 2 -             Data: )
-2 -             Data: Name=ErrorDesc, Value=badMethod has thrown the expected exception; )
 2 -             Data: Name=javaex.class, Value=alma.ACSErrTypeCommon.wrappers.AcsJGenericErrorEx; )
 2 -             Data: Name=javaex.class, Value=alma.ACSErrTypeCommon.wrappers.AcsJGenericErrorEx; )
 2 -             Data: Name=javaex.class, Value=alma.ACSErrTypeCommon.wrappers.AcsJGenericErrorEx; )
@@ -110,8 +156,6 @@
 2 - 
 2 - 
 2 - 
-2 - 
-2 -     ErrorTrace (TimeStamp=xxxx,
 2 -     ErrorTrace (TimeStamp=xxxx,
 2 -     ErrorTrace (TimeStamp=xxxx,
 2 -     ErrorTrace (TimeStamp=xxxx,
@@ -122,8 +166,6 @@
 2 -                 File=xxx
 2 -                 File=xxx
 2 -                 File=xxx
-2 -                 File=xxx
-2 -                 Line=xxx
 2 -                 Line=xxx
 2 -                 Line=xxx
 2 -                 Line=xxx
@@ -131,7 +173,6 @@
 2 -                 Line=xxx
 2 -                 Routine=<init>,
 2 -                 Routine=<init>,
-2 -                 Routine=internalBadMethod,
 2 -                 Routine=internalBadMethod,
 2 -                 Routine=internalBadMethod,
 2 -                 Routine=testCORBASystemException,
@@ -140,20 +181,16 @@
 2 -                 Host=xxxx,
 2 -                 Host=xxxx,
 2 -                 Host=xxxx,
-2 -                 Host=xxxx,
 2 -                 Process=xxx,
-2 -                 Process=xxxjava 1.5.0_04,
-2 -                 Process=xxxjava 1.5.0_04,
-2 -                 Process=xxxjava 1.5.0_04,
-2 -                 Process=xxxjava 1.5.0_04,
-2 -                 Process=xxxjava 1.5.0_04,
+2 -                 Process=xxxjavaContainer,
+2 -                 Process=xxxjavaContainer,
+2 -                 Process=xxxjavaContainer,
+2 -                 Process=xxxjavaContainer,
 2 -                 Thread=MainThread,
 2 -                 Thread=RequestProcessor-xxx,
 2 -                 Thread=RequestProcessor-xxx,
 2 -                 Thread=RequestProcessor-xxx,
 2 -                 Thread=RequestProcessor-xxx,
-2 -                 Thread=RequestProcessor-xxx,
-2 -                 Type=10,
 2 -                 Type=10,
 2 -                 Type=10,
 2 -                 Type=10,
@@ -164,8 +201,6 @@
 2 -                 Code=16,
 2 -                 Code=16,
 2 -                 Code=16,
-2 -                 Code=16,
-2 -                 ShortDescrip=An error occurred, see ErrorDesc member,
 2 -                 ShortDescrip=An error occurred, see ErrorDesc member,
 2 -                 ShortDescrip=An error occurred, see ErrorDesc member,
 2 -                 ShortDescrip=An error occurred, see ErrorDesc member,
@@ -176,13 +211,10 @@
 2 -                 Severity=Error,
 2 -                 Severity=Error,
 2 -                 Severity=Error,
-2 -                 Severity=Error,
 2 -                 Data: Name=javaex.class, Value=alma.ACSErrTypeCommon.wrappers.AcsJGenericErrorEx; )
 2 -                 Data: Name=javaex.class, Value=alma.ACSErrTypeCommon.wrappers.AcsJGenericErrorEx; )
 2 -                 Data: Name=javaex.class, Value=alma.ACSErrTypeCommon.wrappers.AcsJGenericErrorEx; Name=javaex.msg, Value=This exception was caused by another exception...; )
 2 -                 Data: Name=javaex.class, Value=alma.ACSErrTypeCommon.wrappers.AcsJGenericErrorEx; Name=javaex.msg, Value=This exception was caused by another exception...; )
-2 -                 Data: Name=javaex.class, Value=alma.ACSErrTypeCommon.wrappers.AcsJGenericErrorEx; Name=javaex.msg, Value=This exception was caused by another exception...; )
-2 - 
 2 - 
 2 - 
 2 - 
@@ -192,15 +224,12 @@
 2 -         ErrorTrace (TimeStamp=xxxx,
 2 -         ErrorTrace (TimeStamp=xxxx,
 2 -         ErrorTrace (TimeStamp=xxxx,
-2 -         ErrorTrace (TimeStamp=xxxx,
 2 -     self.foo.corbaSystemException()
-2 -                     File=xxx
-2 -                     File=xxx
-2 -                     File=xxx
-2 -                     File=xxx
-2 -                     File=xxx
 2 -   File "/somepath/acsexmplErrorComponent_idl.py, line 80, in corbaSystemException
-2 -                     Line=xxx
+2 -                     File=xxx
+2 -                     File=xxx
+2 -                     File=xxx
+2 -                     File=xxx
 2 -                     Line=xxx
 2 -                     Line=xxx
 2 -                     Line=xxx
@@ -211,20 +240,16 @@
 2 -                     Routine=internalBadMethod,
 2 -                     Routine=internalBadMethod,
 2 -                     Routine=internalBadMethod,
-2 -                     Routine=internalBadMethod,
 2 - ; )
 2 -                     Host=xxxx,
 2 -                     Host=xxxx,
 2 -                     Host=xxxx,
 2 -                     Host=xxxx,
-2 -                     Host=xxxx,
 2 - 
-2 -                     Process=xxxjava 1.5.0_04,
-2 -                     Process=xxxjava 1.5.0_04,
-2 -                     Process=xxxjava 1.5.0_04,
-2 -                     Process=xxxjava 1.5.0_04,
-2 -                     Process=xxxjava 1.5.0_04,
-2 -                     Thread=RequestProcessor-xxx,
+2 -                     Process=xxxjavaContainer,
+2 -                     Process=xxxjavaContainer,
+2 -                     Process=xxxjavaContainer,
+2 -                     Process=xxxjavaContainer,
 2 -                     Thread=RequestProcessor-xxx,
 2 -                     Thread=RequestProcessor-xxx,
 2 -                     Thread=RequestProcessor-xxx,
@@ -233,8 +258,6 @@
 2 -                     Type=10,
 2 -                     Type=10,
 2 -                     Type=10,
-2 -                     Type=10,
-2 -                     Code=16,
 2 -                     Code=16,
 2 -                     Code=16,
 2 -                     Code=16,
@@ -243,8 +266,6 @@
 2 -                     ShortDescrip=An error occurred, see ErrorDesc member,
 2 -                     ShortDescrip=An error occurred, see ErrorDesc member,
 2 -                     ShortDescrip=An error occurred, see ErrorDesc member,
-2 -                     ShortDescrip=An error occurred, see ErrorDesc member,
-2 -                     Severity=Error,
 2 -                     Severity=Error,
 2 -                     Severity=Error,
 2 -                     Severity=Error,
@@ -253,31 +274,10 @@
 2 -                     Data: Name=javaex.class, Value=alma.ACSErrTypeCommon.wrappers.AcsJGenericErrorEx; Name=javaex.msg, Value=This exception is the original cause.; )
 2 -                     Data: Name=javaex.class, Value=alma.ACSErrTypeCommon.wrappers.AcsJGenericErrorEx; Name=javaex.msg, Value=This exception is the original cause.; )
 2 -                     Data: Name=javaex.class, Value=alma.ACSErrTypeCommon.wrappers.AcsJGenericErrorEx; Name=javaex.msg, Value=This exception is the original cause.; )
-2 -                     Data: Name=javaex.class, Value=alma.ACSErrTypeCommon.wrappers.AcsJGenericErrorEx; Name=javaex.msg, Value=This exception was caused by another exception...; )
 2 - 
 2 - 
 2 - 
 2 - 
-2 - 
-2 -             ErrorTrace (TimeStamp=xxxx,
-2 -                         File=xxx
-2 -                         Line=xxx
-2 -                         Routine=internalBadMethod,
-2 -                         Host=xxxx,
-2 -                         Process=xxxjava 1.5.0_04,
-2 -                         Thread=RequestProcessor-xxx,
-2 -                         Type=10,
-2 -                         Code=16,
-2 -                         ShortDescrip=An error occurred, see ErrorDesc member,
-2 -                         Severity=Error,
-2 -                         Data: Name=javaex.class, Value=alma.ACSErrTypeCommon.wrappers.AcsJGenericErrorEx; Name=javaex.msg, Value=This exception is the original cause.; )
-2 - 
-1 - ----------T--:--:--.--- INFO [javaContainer] activate_component: handle=xxx name=ERRORCOMP_JAVA helperClass=alma.acsexmplErrorComponent.ErrorComponentImpl.ErrorComponentHelper type=IDL:alma/acsexmplErrorComponent/ErrorComponent:1.0
-1 - [jacorb.poa] INFO : oid: 
-1 - object is activated
-1 - [jacorb.poa] INFO : oid: 
-1 - object is activated
-1 - ----------T--:--:--.--- INFO [ERRORCOMP_JAVA] ErrorComponent
 1 - ----------T--:--:--.--- WARNING [javaContainer] unexpected exception was thrown in functional method 'ERRORCOMP_JAVA#corbaSystemException': 
 1 - org.omg.CORBA.BAD_PARAM: Test throwing a CORBA Exception  vmcid: 0x0  minor code: 0  completed: No
 1 - 	at alma.acsexmplErrorComponent.ErrorComponentImpl.ErrorComponentImpl.corbaSystemException(ErrorComponentImpl.java:83)

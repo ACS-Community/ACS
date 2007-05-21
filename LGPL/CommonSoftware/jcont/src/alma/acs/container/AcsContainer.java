@@ -53,7 +53,7 @@ import alma.acs.component.ComponentDescriptor;
 import alma.acs.component.ComponentLifecycle;
 import alma.acs.concurrent.DaemonThreadFactory;
 import alma.acs.container.ContainerServices.ComponentListener;
-import alma.acs.container.classloader.AcsComponentClassLoader;
+import alma.acs.classloading.AcsComponentClassLoader;
 import alma.acs.container.corba.AcsCorba;
 import alma.acs.logging.ClientLogManager;
 import alma.acs.logging.config.LogConfig;

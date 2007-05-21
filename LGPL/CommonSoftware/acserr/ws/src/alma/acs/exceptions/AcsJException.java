@@ -38,6 +38,7 @@ import alma.ACSErr.ErrorTrace;
 import alma.ACSErr.NameValue;
 import alma.ACSErr.Severity;
 import alma.acs.util.UTCUtility;
+import alma.acs.classloading.ContextFinder;
 
 /**
  * Base class for any checked exceptions defined in ALMA Java code.
@@ -82,6 +83,8 @@ public abstract class AcsJException extends Exception
 	protected int m_line;
 	protected String m_method;
 	protected String m_file;
+
+        protected String m_sourceObject;
 		
 	// thread name or its ID
 	protected String m_threadName;
@@ -203,11 +206,13 @@ public abstract class AcsJException extends Exception
 		
 		if (s_thisProcess == null)
 		{
-			s_thisProcess = "java " + System.getProperty("java.version");
+		    	//s_thisProcess = "java " + System.getProperty("java.version");
+                        s_thisProcess = ContextFinder.getProcessName();
 		}
 		
 		m_host = s_thisHost;
 		m_process = s_thisProcess;
+                m_sourceObject = ContextFinder.getSourceObject();
 		m_timeMilli = System.currentTimeMillis();
 		m_threadName = Thread.currentThread().getName();
 		setSeverity();
@@ -413,7 +418,7 @@ public abstract class AcsJException extends Exception
         ErrorTrace et = new ErrorTrace();
         et.host = m_host;
         et.process = m_process;
-//        et.sourceObject =  TODO
+        et.sourceObject =  m_sourceObject;
         et.lineNum = m_line;
         et.routine = m_method;
         et.file = m_file;
@@ -469,7 +474,7 @@ public abstract class AcsJException extends Exception
         // so we have to use defaults or smart guessing
         et.host = s_thisHost;
         et.process = s_thisProcess;
-//        et.sourceObject = TODO
+        et.sourceObject = ContextFinder.getSourceObject();
         et.thread = "NA";
         et.timeStamp = UTCUtility.utcJavaToOmg(defaultTimeMilli);
         et.errorType = 9; // = ACSErrTypeJavaNative.value; this code is hardcoded otherwise we'll have problem with bulding and duplication of code 
@@ -644,5 +649,13 @@ public abstract class AcsJException extends Exception
 	{
 		return m_threadName;
 	}
-	
+	/**
+	 * @return Returns the m_sourceObject.
+	 */
+	public String getSourceObject()
+	{
+		return m_sourceObject;
+	}
+
+
 }
