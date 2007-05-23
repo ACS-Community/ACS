@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.20 2007/04/26 02:15:25 sharring Exp $"
+# "@(#) $Id: Makefile,v 1.21 2007/05/23 22:24:00 sharring Exp $"
 #
 # Makefile of ........
 #
@@ -127,7 +127,7 @@ TCL_SCRIPTS_L   =
 #
 # Python stuff (public and local)
 # ----------------------------
-PY_SCRIPTS         = 
+PY_SCRIPTS         = NotificationServiceTest
 PY_SCRIPTS_L       = componentsGenericTestPy componentsClientTestPy componentsMethodTestPy \
 			componentsClientEventConsumer
 

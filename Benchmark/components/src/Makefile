@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.22 2007/05/11 20:43:10 sharring Exp $"
+# "@(#) $Id: Makefile,v 1.23 2007/05/23 22:24:00 sharring Exp $"
 #
 # Makefile of ........
 #
@@ -142,7 +142,7 @@ TCL_SCRIPTS_L   =
 #
 # Python stuff (public and local)
 # ----------------------------
-PY_SCRIPTS         =
+PY_SCRIPTS         = NCStressConsumer NCStressSupplier
 PY_SCRIPTS_L       =
 
 PY_MODULES         =
