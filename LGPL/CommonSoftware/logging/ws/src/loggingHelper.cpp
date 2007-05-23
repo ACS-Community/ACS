@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingHelper.cpp,v 1.43 2005/08/29 08:42:57 vwang Exp $"
+* "@(#) $Id: loggingHelper.cpp,v 1.44 2007/05/23 08:59:11 bjeram Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -59,24 +59,43 @@ LoggingHelper::resolveNameService(CORBA::ORB_ptr orb,
   
   try
     {
-      CORBA::Object_var naming_obj =
-        orb->resolve_initial_references ("NameService");
+    // first we check if we have if we have initalize reference for NameService
+    CORBA::ORB::ObjectIdList_ptr svcsList = 
+	orb->list_initial_services();
+    // ... we can start with 12th if exsist, because from 0 to 11 are "hardcoded" SVCS 
+    for(unsigned int i=12; i<svcsList->length(); i++)
+	{
+	ACE_CString o ((*svcsList)[i]);
+	if (o.find("NameService")!=ACE_CString::npos)
+	    {
+	    // printf("Svc %d = %s\n", i, o.c_str());
+	    // we find NameService so we can use resolve_initial_references w/o using multicast for discovering NameService
+	    CORBA::Object_var naming_obj =
+		orb->resolve_initial_references ("NameService");
       
 
-      if (!CORBA::is_nil (naming_obj.in ()))
-	{
-	  CosNaming::NamingContext_var naming_context =
-	    CosNaming::NamingContext::_narrow (naming_obj.in ()
-					       );
+	    if (!CORBA::is_nil (naming_obj.in ()))
+		{
+		CosNaming::NamingContext_var naming_context =
+		    CosNaming::NamingContext::_narrow (naming_obj.in ()
+			);
 	  
 
-	  if (naming_context.ptr() != CosNaming::NamingContext::_nil())
-	    return naming_context._retn();
-	}
+		if (naming_context.ptr() != CosNaming::NamingContext::_nil())
+		    return naming_context._retn();
+		}
+	    }//if
+	}//for
+    
     }
+  catch(CORBA::SystemException &ex)
+      {
+      ACE_PRINT_EXCEPTION(ex, "logging::LoggingHelper::resolveNameService");
+      ACS_SHORT_LOG((LM_WARNING, "(logging::LoggingHelper::resolveNameService) CORBA exception caught! - will try to use other possiblities"));
+      }
   catch(...)
     {
-       ACS_SHORT_LOG((LM_ERROR, "(logging::LoggingHelper::resolveNameService) CORBA exception caught!"));
+       ACS_SHORT_LOG((LM_WARNING, "(logging::LoggingHelper::resolveNameService) unknown exception caught! - will try to use other possiblities"));
     }
 
   //ACS_LOG(LM_RUNTIME_CONTEXT, "logging::LoggingHelper::resolveNameService",
@@ -177,6 +196,9 @@ LoggingHelper::resolveNameService(CORBA::ORB_ptr orb,
 // REVISION HISTORY:
 //
 // $Log: loggingHelper.cpp,v $
+// Revision 1.44  2007/05/23 08:59:11  bjeram
+// solved resolveNameService that it does not use multicast for finding NameService + improved error hansling a bit
+//
 // Revision 1.43  2005/08/29 08:42:57  vwang
 // fix problem about return str().c_str()
 //
