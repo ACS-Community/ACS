@@ -3,7 +3,7 @@
 This has to be just temporary solution. 
 This file has to be moved into the TICS subsystem
 -->
-<Type xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="ACSError.xsd" name="jmanagerErrType" type="26" _prefix="alma">
+<Type xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="Alma/ACSError" xsi:schemaLocation="Alma/ACSError ACSError.xsd" name="jmanagerErrType" type="26" _prefix="alma">
 
 			NoResourcesException nre = new NoResourcesException(this, "Cyclic dependency detected: ["+pathBuffer.toString()+"].");
 			nre.caughtIn(this, "checkCyclicDependency");

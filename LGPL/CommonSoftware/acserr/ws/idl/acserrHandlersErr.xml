@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <Type xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-     xsi:noNamespaceSchemaLocation="ACSError.xsd"     
+     xmlns="Alma/ACSError" xsi:schemaLocation="Alma/ACSError ACSError.xsd"     
      name="acserrHandlersErr"
      type="6"
      description="Errors used by Unspecified and Uncaught handlers"

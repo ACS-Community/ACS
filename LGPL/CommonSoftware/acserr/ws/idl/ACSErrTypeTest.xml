@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <!-- edited with XMLSPY v5 rel. 2 U (http://www.xmlspy.com) by Bogdan Jeram (E.S.O.) -->
-<Type xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="ACSError.xsd" name="ACSErrTypeTest" type="900901" _prefix="alma">
+<Type xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="Alma/ACSError" xsi:schemaLocation="Alma/ACSError ACSError.xsd" name="ACSErrTypeTest" type="900901" _prefix="alma">
 	<Code name="ACSErrTestOK" shortDescription="Test OK" description="Test OK"/>
  	<ErrorCode name="ACSErrTest0" shortDescription="Test error 0" description="Test error 0">
 		<Member name="Member1" type="long" description="exmple of long member"/>

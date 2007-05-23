@@ -1,9 +1,9 @@
 <!-- edited with XMLSPY v5 rel. 2 U (http://www.xmlspy.com) by Bogdan Jeram (E.S.O.) -->
-<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:acserr="Alma/ACSError">
         <xsl:output method="text" version="1.0" encoding="ASCII"/>
-        <xsl:template match="/Type">
+        <xsl:template match="/acserr:Type">
 <xsl:text>#!/usr/bin/env python
-# @(#) $Id: AES2Py.xslt,v 1.19 2007/02/21 09:02:16 nbarriga Exp $
+# @(#) $Id: AES2Py.xslt,v 1.20 2007/05/23 08:55:56 nbarriga Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA,  2001
@@ -36,7 +36,7 @@ import </xsl:text><xsl:value-of select="@name"/>
 from Acspy.Common.TimeHelper import getTimeStamp
 ######################################################################
 </xsl:text>
-<xsl:if test="count(//ErrorCode[not(@_suppressExceptionGeneration)]) > 0">
+<xsl:if test="count(//acserr:ErrorCode[not(@_suppressExceptionGeneration)]) > 0">
 <xsl:text>
 class BaseException:
     '''
@@ -51,7 +51,7 @@ class BaseException:
 </xsl:text>
 </xsl:if>
 <!--  *** ErrorCode ********************************************** -->
-        <xsl:for-each select="ErrorCode[not(@_suppressExceptionGeneration)]">
+        <xsl:for-each select="acserr:ErrorCode[not(@_suppressExceptionGeneration)]">
         <xsl:variable name="ClassName">
                                         <xsl:value-of select="@name"/><xsl:text>ExImpl</xsl:text>
                                 </xsl:variable>
@@ -159,7 +159,7 @@ class BaseException:
 
 </xsl:text>
 
-<xsl:for-each select="Member">
+<xsl:for-each select="acserr:Member">
 <xsl:variable name="MemberType">
     <xsl:choose>
 	<xsl:when test='@type="string"'>
@@ -201,7 +201,7 @@ class BaseException:
 </xsl:for-each>
 
 <!--  ******************************************** Completion for ErrorCode *********************************** -->
-        <xsl:for-each select="ErrorCode">
+        <xsl:for-each select="acserr:ErrorCode">
         <xsl:variable name="ClassName"><xsl:value-of select="@name"/><xsl:text>CompletionImpl</xsl:text></xsl:variable>
                                 <xsl:text>class </xsl:text>
                                 <xsl:value-of select="$ClassName"/>
@@ -296,7 +296,7 @@ class BaseException:
         return
 
 </xsl:text>
-<xsl:for-each select="Member">
+<xsl:for-each select="acserr:Member">
 <xsl:variable name="MemberType">
     <xsl:choose>
 	<xsl:when test='@type="string"'>
@@ -338,7 +338,7 @@ class BaseException:
 </xsl:for-each>
 
 <!--  ******************************************** Completion for Code*********************************** -->
-        <xsl:for-each select="Code">
+        <xsl:for-each select="acserr:Code">
         <xsl:variable name="ClassName"><xsl:value-of select="@name"/><xsl:text>CompletionImpl</xsl:text></xsl:variable>
                                 <xsl:text>class </xsl:text>
                                 <xsl:value-of select="$ClassName"/>
@@ -456,7 +456,7 @@ class BaseException:
 </xsl:text>
 
 
-<xsl:for-each select="ErrorCode[not(@_suppressExceptionGeneration)]">
+<xsl:for-each select="acserr:ErrorCode[not(@_suppressExceptionGeneration)]">
         <xsl:variable name="ClassName">
                                         <xsl:value-of select="@name"/><xsl:text>ExImpl</xsl:text>
                                 </xsl:variable>
@@ -475,7 +475,7 @@ class BaseException:
 
 </xsl:for-each>
 
-<xsl:for-each select="ErrorCode | Code">
+<xsl:for-each select="acserr:ErrorCode | acserr:Code">
         <xsl:variable name="ClassName"><xsl:value-of select="@name"/><xsl:text>CompletionImpl</xsl:text></xsl:variable>
 
 <xsl:text>

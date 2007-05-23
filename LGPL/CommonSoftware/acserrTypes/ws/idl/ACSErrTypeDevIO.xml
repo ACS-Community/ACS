@@ -2,7 +2,7 @@
 <!-- edited with XMLSPY v5 rel. 2 U (http://www.xmlspy.com) by Bogdan -->
 <!-- Jeram (E.S.O.) -->
 <!-- this is duplicated in baciidl and can be removed -->
-<Type xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="ACSError.xsd" name="ACSErrTypeDevIO" type="17" _prefix="alma">
+<Type xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="Alma/ACSError" xsi:schemaLocation="Alma/ACSError ACSError.xsd" name="ACSErrTypeDevIO" type="17" _prefix="alma">
 <ErrorCode name="ReadError" shortDescription="Read Error" description="DevIO read error"/>
 <ErrorCode name="WriteError" shortDescription="Write error" description="DevIO write error"/>
 <ErrorCode name="UnimplementedRead" shortDescription="Read Method is not implemented" description="Read Method of DevIO is not implemented"/>

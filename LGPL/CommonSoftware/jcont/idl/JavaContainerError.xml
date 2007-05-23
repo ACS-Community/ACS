@@ -13,7 +13,7 @@
 -->
 
 <Type xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	  xsi:noNamespaceSchemaLocation="ACSError.xsd" 
+	  xmlns="Alma/ACSError" xsi:schemaLocation="Alma/ACSError ACSError.xsd" 
 	  name="JavaContainerError"
 	  type="6666"
 	  _prefix="alma">

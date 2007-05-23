@@ -1,9 +1,9 @@
 <!-- edited with XMLSPY v5 rel. 2 U (http://www.xmlspy.com) by Bogdan Jeram (E.S.O.) -->
-<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:redirect="http://xml.apache.org/xalan/redirect" extension-element-prefixes="redirect">
+<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:acserr="Alma/ACSError" xmlns:redirect="http://xml.apache.org/xalan/redirect" extension-element-prefixes="redirect">
 	<xsl:output method="text" version="1.0" encoding="ASCII"/>
 	
 <!--                                                                BEGIN: template for members          -->
-<xsl:template match="Member">
+<xsl:template match="acserr:Member">
 		 <xsl:variable name="MemberType">
 		 <xsl:choose>
 					<xsl:when test='@type="string"'>
@@ -62,12 +62,12 @@
 </xsl:template>
 <!--                                                                END: template for members          -->	
 	
-<xsl:template match="/Type">
+<xsl:template match="/acserr:Type">
 <xsl:variable name="NumCodes">
-			<xsl:number value="count(//Code)"/>
+			<xsl:number value="count(//acserr:Code)"/>
 </xsl:variable>
 <!-- we generate type exception just in case if ther is some error code -->
-<xsl:if test="count(//ErrorCode[not(@_suppressExceptionGeneration)]) > 0">
+<xsl:if test="count(//acserr:ErrorCode[not(@_suppressExceptionGeneration)]) > 0">
 <xsl:variable name="ClassName">
 		<xsl:text>AcsJ</xsl:text><xsl:value-of select="@name"/><xsl:text>Ex</xsl:text>
 	</xsl:variable>
@@ -102,20 +102,20 @@
  * ======================================================================== 
  */
 package </xsl:text>
- <xsl:value-of select="/Type/@_prefix"/>
+ <xsl:value-of select="/acserr:Type/@_prefix"/>
 <xsl:text>.</xsl:text>
-<xsl:value-of select="/Type/@name"/>
+<xsl:value-of select="/acserr:Type/@name"/>
 <xsl:text>.wrappers;
 
 import alma.acs.exceptions.*;
 //import alma.ACSErr.ACSErrType;
 import alma.ACSErr.ErrorTrace;
 import </xsl:text>
-<xsl:value-of select="/Type/@_prefix"/>
+<xsl:value-of select="/acserr:Type/@_prefix"/>
 <xsl:text>.</xsl:text>
-<xsl:value-of select="/Type/@name"/>
+<xsl:value-of select="/acserr:Type/@name"/>
 <xsl:text>.</xsl:text>
-<xsl:value-of select="/Type/@name"/>
+<xsl:value-of select="/acserr:Type/@name"/>
 <xsl:text>Ex;
 
 
@@ -207,9 +207,9 @@ public abstract class </xsl:text>
 	protected final int getErrorType()
 	{
 		return </xsl:text>
-		<xsl:value-of select="/Type/@_prefix"/>
+		<xsl:value-of select="/acserr:Type/@_prefix"/>
 		<xsl:text>.ACSErr.</xsl:text>
-		<xsl:value-of select="/Type/@name"/>
+		<xsl:value-of select="/acserr:Type/@name"/>
 		<xsl:text>.value;
 	}
 
@@ -248,14 +248,14 @@ public abstract class </xsl:text>
 
 <!-- *********************************************************Generated code for Codes has to be addded  -->
 
-<xsl:for-each select="ErrorCode[not(@_suppressExceptionGeneration)]">
+<xsl:for-each select="acserr:ErrorCode[not(@_suppressExceptionGeneration)]">
 
 <xsl:variable name="ClassName">
 	<xsl:text>AcsJ</xsl:text><xsl:value-of select="@name"/><xsl:text>Ex</xsl:text>
 </xsl:variable>
 
 <xsl:variable name="FileName">
-	<xsl:value-of select="/Type/@_prefix"/><xsl:text>/</xsl:text><xsl:value-of select="/Type/@name"/><xsl:text>/wrappers/</xsl:text><xsl:value-of select="$ClassName"/><xsl:text>.java</xsl:text>
+	<xsl:value-of select="/acserr:Type/@_prefix"/><xsl:text>/</xsl:text><xsl:value-of select="/acserr:Type/@name"/><xsl:text>/wrappers/</xsl:text><xsl:value-of select="$ClassName"/><xsl:text>.java</xsl:text>
 </xsl:variable>
 <redirect:write select="$FileName">
 
@@ -286,9 +286,9 @@ public abstract class </xsl:text>
  */
  
 package </xsl:text>
- <xsl:value-of select="/Type/@_prefix"/>
+ <xsl:value-of select="/acserr:Type/@_prefix"/>
 <xsl:text>.</xsl:text>
-<xsl:value-of select="/Type/@name"/>
+<xsl:value-of select="/acserr:Type/@name"/>
 <xsl:text>.wrappers;
 
 import org.omg.CORBA.UserException; 
@@ -296,16 +296,16 @@ import alma.acs.exceptions.*;
 
 import alma.ACSErr.ErrorTrace;
 import </xsl:text>
-<xsl:value-of select="/Type/@_prefix"/>
+<xsl:value-of select="/acserr:Type/@_prefix"/>
 <xsl:text>.</xsl:text>
-<xsl:value-of select="/Type/@name"/>
+<xsl:value-of select="/acserr:Type/@name"/>
 <xsl:text>.</xsl:text><xsl:value-of select="@name"/>
 
 <xsl:text>;
 import </xsl:text>
-<xsl:value-of select="/Type/@_prefix"/>
+<xsl:value-of select="/acserr:Type/@_prefix"/>
 <xsl:text>.</xsl:text>
-<xsl:value-of select="/Type/@name"/>
+<xsl:value-of select="/acserr:Type/@name"/>
 <xsl:text>.</xsl:text>
 <xsl:value-of select="@name"/>
 <xsl:text>Ex;
@@ -313,14 +313,14 @@ import </xsl:text>
 /**
  * Java native style exception class representing the error type 
  * &lt;code&gt;alma.ACSErr.ACSErrType.</xsl:text>
- <xsl:value-of select="/Type/@name"/>
+ <xsl:value-of select="/acserr:Type/@name"/>
  <xsl:text>&lt;/code&gt;,
  * error code &lt;code&gt;</xsl:text>
  <xsl:value-of select="@name"/>
   <xsl:text>.value&lt;/code&gt;.     
  * 
  * @see AcsJ</xsl:text>
- <xsl:value-of select="/Type/@name"/>
+ <xsl:value-of select="/acserr:Type/@name"/>
  <xsl:text>Ex
  * 
  * @author ACS Error System Code Generator
@@ -329,7 +329,7 @@ import </xsl:text>
 public class </xsl:text>
 <xsl:value-of select="$ClassName"/>
 <xsl:text> extends AcsJ</xsl:text>
-<xsl:value-of select="/Type/@name"/>
+<xsl:value-of select="/acserr:Type/@name"/>
 <xsl:text>Ex
 {
 
@@ -552,7 +552,7 @@ public class </xsl:text>
 </xsl:variable>
 
 <xsl:variable name="FileName">
-	<xsl:value-of select="/Type/@_prefix"/><xsl:text>/</xsl:text><xsl:value-of select="/Type/@name"/><xsl:text>/wrappers/</xsl:text><xsl:value-of select="$ClassName"/><xsl:text>.java</xsl:text>
+	<xsl:value-of select="/acserr:Type/@_prefix"/><xsl:text>/</xsl:text><xsl:value-of select="/acserr:Type/@name"/><xsl:text>/wrappers/</xsl:text><xsl:value-of select="$ClassName"/><xsl:text>.java</xsl:text>
 </xsl:variable>
 <redirect:write select="$FileName">
 
@@ -584,17 +584,17 @@ public class </xsl:text>
  */
  
 package </xsl:text>
- <xsl:value-of select="/Type/@_prefix"/>
+ <xsl:value-of select="/acserr:Type/@_prefix"/>
 <xsl:text>.</xsl:text>
-<xsl:value-of select="/Type/@name"/>
+<xsl:value-of select="/acserr:Type/@name"/>
 <xsl:text>.wrappers;
 
 import alma.ACSErr.Completion;
 import alma.acs.exceptions.*;
 import </xsl:text>
-<xsl:value-of select="/Type/@_prefix"/>
+<xsl:value-of select="/acserr:Type/@_prefix"/>
 <xsl:text>.</xsl:text>
-<xsl:value-of select="/Type/@name"/>
+<xsl:value-of select="/acserr:Type/@name"/>
 <xsl:text>.wrappers.AcsJ</xsl:text>
 <xsl:value-of select="@name"/>
 <xsl:text>Ex;
@@ -702,14 +702,14 @@ public class </xsl:text>
 
 <!-- *********************************************************Generated code for Error-Free Codes  -->
 
-<xsl:for-each select="Code">
+<xsl:for-each select="acserr:Code">
 
 <xsl:variable name="ClassName">
 	<xsl:value-of select="@name"/><xsl:text>AcsJCompletion</xsl:text>
 </xsl:variable>
 
 <xsl:variable name="FileName">
-	<xsl:value-of select="/Type/@_prefix"/><xsl:text>/</xsl:text><xsl:value-of select="/Type/@name"/><xsl:text>/wrappers/</xsl:text><xsl:value-of select="$ClassName"/><xsl:text>.java</xsl:text>
+	<xsl:value-of select="/acserr:Type/@_prefix"/><xsl:text>/</xsl:text><xsl:value-of select="/acserr:Type/@name"/><xsl:text>/wrappers/</xsl:text><xsl:value-of select="$ClassName"/><xsl:text>.java</xsl:text>
 </xsl:variable>
 <redirect:write select="$FileName">
 
@@ -741,16 +741,16 @@ public class </xsl:text>
  */
  
 package </xsl:text>
- <xsl:value-of select="/Type/@_prefix"/>
+ <xsl:value-of select="/acserr:Type/@_prefix"/>
 <xsl:text>.</xsl:text>
-<xsl:value-of select="/Type/@name"/>
+<xsl:value-of select="/acserr:Type/@name"/>
 <xsl:text>.wrappers;
 
 import alma.acs.exceptions.*;
 import </xsl:text>
-<xsl:value-of select="/Type/@_prefix"/>
+<xsl:value-of select="/acserr:Type/@_prefix"/>
 <xsl:text>.</xsl:text>
-<xsl:value-of select="/Type/@name"/>
+<xsl:value-of select="/acserr:Type/@name"/>
 <xsl:text>.</xsl:text><xsl:value-of select="@name"/>
 
 <xsl:text>;
@@ -772,9 +772,9 @@ public class </xsl:text>
 <xsl:text>()
 	{
 		super(</xsl:text>
-		<xsl:value-of select="/Type/@_prefix"/>
+		<xsl:value-of select="/acserr:Type/@_prefix"/>
 		<xsl:text>.ACSErr.</xsl:text>
-		<xsl:value-of select="/Type/@name"/>
+		<xsl:value-of select="/acserr:Type/@name"/>
 		<xsl:text>.value, </xsl:text>
  		 <xsl:value-of select="@name"/> 
 		<xsl:text>.value);

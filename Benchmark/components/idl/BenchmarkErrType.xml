@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Type xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-      xsi:noNamespaceSchemaLocation="ACSError.xsd" 
+      xmlns="Alma/ACSError" xsi:schemaLocation="Alma/ACSError ACSError.xsd" 
       name="BenchmarkErrType" 
       type="12" 
       _prefix="alma">

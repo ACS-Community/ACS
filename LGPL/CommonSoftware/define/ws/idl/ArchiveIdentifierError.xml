@@ -8,7 +8,7 @@
 -->
 
 <Type xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	  xsi:noNamespaceSchemaLocation="ACSError.xsd" 
+	  xmlns="Alma/ACSError" xsi:schemaLocation="Alma/ACSError ACSError.xsd" 
 	  name="ArchiveIdentifierError"
 	  type="8000"
 	  _prefix="alma">

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
 <Type xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-xsi:noNamespaceSchemaLocation="ACSError.xsd" name="acsdaemonErrType"
+xmlns="Alma/ACSError" xsi:schemaLocation="Alma/ACSError ACSError.xsd" name="acsdaemonErrType"
 type="55" _prefix="alma">
 <ErrorCode name="FailedToStartContainer"
            shortDescription="Failed to start container"

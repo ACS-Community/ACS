@@ -3,7 +3,7 @@
 <!-- type must be 0 otherwise we'll have problem with error libraries ((j)acserr)-->
 <Type 
  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
- xsi:noNamespaceSchemaLocation="ACSError.xsd"
+ xmlns="Alma/ACSError" xsi:schemaLocation="Alma/ACSError ACSError.xsd"
  name="ACSErrTypeOK"
  type="0"
  _prefix="alma">

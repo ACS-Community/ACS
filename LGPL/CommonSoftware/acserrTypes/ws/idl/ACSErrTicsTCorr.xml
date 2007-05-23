@@ -3,7 +3,7 @@
 This file has to be moved into the TICS subsystem !
 -->
 <Type xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-xsi:noNamespaceSchemaLocation="ACSError.xsd" name="ACSErrTicsTCorr"
+xmlns="Alma/ACSError" xsi:schemaLocation="Alma/ACSError ACSError.xsd" name="ACSErrTicsTCorr"
 type="14" _prefix="alma">
      <ErrorCode name="AnyTICSTCorrError" shortDescription="Any TICS
      TCorr error" description="TICS TCorr error"/>

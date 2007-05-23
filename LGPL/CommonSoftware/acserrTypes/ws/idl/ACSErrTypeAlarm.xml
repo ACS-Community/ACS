@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<Type xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="ACSError.xsd" name="ACSErrTypeAlarm" type="2" _prefix="alma">
+<Type xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="Alma/ACSError" xsi:schemaLocation="Alma/ACSError ACSError.xsd" name="ACSErrTypeAlarm" type="2" _prefix="alma">
 	<Code name="ACSErrAlarmCleared" shortDescription="All alarm conditions have disappeared." description="All alarm conditions have disappeared."/>
 	<Code name="ACSErrAlarmChanged" shortDescription=" At least one alarm condition remains." description=" At least one alarm condition remains."/>
 	<Code name="ACSErrAlarmLow" shortDescription="Value below alarm LoLo (includes hysteresis)." description="Value below alarm LoLo (includes hysteresis)."/>

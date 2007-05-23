@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <!-- type must be 9 otherwise we'll have problem with error libraries ((j)acserr)-->
 <Type xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-      xsi:noNamespaceSchemaLocation="ACSError.xsd"
+      xmlns="Alma/ACSError" xsi:schemaLocation="Alma/ACSError ACSError.xsd"
       name="ACSErrTypeJavaNative"
       type="9"
       _prefix="alma">

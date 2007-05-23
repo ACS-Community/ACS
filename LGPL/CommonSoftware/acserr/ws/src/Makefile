@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.81 2007/03/09 07:17:33 gchiozzi Exp $"
+# "@(#) $Id: Makefile,v 1.82 2007/05/23 08:55:56 nbarriga Exp $"
 #
 # Makefile of ........
 #
@@ -95,7 +95,7 @@ acserr_LIBS = logging loki acsutil
 #
 # Scripts (public and local)
 # ----------------------------
-SCRIPTS         = acserrGenCpp acserrGenJava acserrGenIDL acserrGenPython
+SCRIPTS         = acserrGenCpp acserrGenJava acserrGenIDL acserrGenPython updateErrDefs.sh
 SCRIPTS_L       =
 
 #

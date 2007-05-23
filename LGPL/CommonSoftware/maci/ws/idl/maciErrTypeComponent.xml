@@ -3,7 +3,7 @@
 This has to be just temporary solution. 
 This file has to be moved into the TICS subsystem
 -->
-<Type xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="ACSError.xsd" name="maciErrTypeComponent" type="25" _prefix="alma">
+<Type xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="Alma/ACSError" xsi:schemaLocation="Alma/ACSError ACSError.xsd" name="maciErrTypeComponent" type="25" _prefix="alma">
 	<ErrorCode name="ComponentCreation" shortDescription="Error creating
 	component" description="Error creating the component"/>
 </Type>

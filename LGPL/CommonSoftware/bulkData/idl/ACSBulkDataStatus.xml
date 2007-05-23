@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <!-- edited with XMLSPY v5 rel. 2 U (http://www.xmlspy.com) by Bogdan Jeram (E.S.O.) -->
-<Type xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="ACSError.xsd" name="ACSBulkDataStatus" type="54" _prefix="alma">
+<Type xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="Alma/ACSError" xsi:schemaLocation="Alma/ACSError ACSError.xsd" name="ACSBulkDataStatus" type="54" _prefix="alma">
 	<Code name="AVCbReady" shortDescription="Receiver callback ok status" description=""/>
 	<Code name="AVCbWorking" shortDescription="Receiver callback working status" description=""/>
 	<Code name="AVCbTimeout" shortDescription="Receiver callback timeout status" description=""/>
