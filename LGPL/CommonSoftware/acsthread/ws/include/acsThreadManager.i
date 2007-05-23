@@ -1,8 +1,11 @@
 #ifndef _ACS_THREAD_MANAGER_I
 #define _ACS_THREAD_MANAGER_I
 
+
 template<class T>
-T* ThreadManager::create(const ACE_CString name)
+T* ThreadManager::create(const ACE_CString name) throw (acsthreadErrType::ThreadAlreadyExistExImpl,
+						 acsthreadErrType::CanNotCreateThreadExImpl
+						 )
 {
 //ACE_Guard<ACE_Recursive_Thread_Mutex> guard(m_addRemoveMutex);	
     if (getThreadByName(name)!=NULL) 
@@ -32,43 +35,23 @@ T* ThreadManager::create(const ACE_CString name)
 	threadManagerTSS->resetThreadManager();
 	throw acsthreadErrType::CanNotCreateThreadExImpl(ex, __FILE__, __LINE__, "ACS::ThreadManager<>::create");
 	}
-}//create
-
-/* to remove suspended parameter, same as "create(name)"
-template<class T>
-T* ThreadManager::create(const ACE_CString name,
-			 const bool suspended)
-{
-//ACE_Guard<ACE_Recursive_Thread_Mutex> guard(m_addRemoveMutex);	
-    if (getThreadByName(name)!=NULL) 
-	{
-	acsthreadErrType::ThreadAlreadyExistExImpl ex(__FILE__, __LINE__, 
-						      "ACS::ThreadManager<>::create");
-	ex.setThreadName(name);
-	throw ex;
-	}
-    try
-	{
-	threadManagerTSS->setThreadManager(this);
-	T* thread_p = new T(name);
-	if(!suspended) thread_p->ACS::Thread::resume(); // the thread can be started !!
-
-	return thread_p;
-	} 
-    catch(ACSErr::ACSbaseExImpl& ex)
+    catch (...) 
 	{
 	threadManagerTSS->resetThreadManager();
-	throw acsthreadErrType::CanNotCreateThreadExImpl(ex, __FILE__, __LINE__, 
+	ACSErrTypeCommon::UnexpectedExceptionExImpl uex(__FILE__, __LINE__,
+							"ACS::ThreadManager<>::create");
+	throw acsthreadErrType::CanNotCreateThreadExImpl(uex, __FILE__, __LINE__, 
 							 "ACS::ThreadManager<>::create");
-	}
+	}//try-catch
 }//create
-*/
+
 
 template<class T>
 T* ThreadManager::create(const ACE_CString name,
-//			 const bool suspended,
 			 const TimeInterval responseTime,
-			 const TimeInterval sleepTime)
+			 const TimeInterval sleepTime) throw (acsthreadErrType::ThreadAlreadyExistExImpl,
+							      acsthreadErrType::CanNotCreateThreadExImpl
+			     )
 {
 //ACE_Guard<ACE_Recursive_Thread_Mutex> guard(m_addRemoveMutex);	
     if (getThreadByName(name)!=NULL) 
@@ -92,15 +75,24 @@ T* ThreadManager::create(const ACE_CString name,
 	throw acsthreadErrType::CanNotCreateThreadExImpl(ex, __FILE__, __LINE__, 
 							 "ACS::ThreadManager<>::create");
 	}
+    catch (...) 
+	{
+	threadManagerTSS->resetThreadManager();
+	ACSErrTypeCommon::UnexpectedExceptionExImpl uex(__FILE__, __LINE__,
+							"ACS::ThreadManager<>::create");
+	throw acsthreadErrType::CanNotCreateThreadExImpl(uex, __FILE__, __LINE__, 
+							 "ACS::ThreadManager<>::create");
+	}//try-catch
 }//create
 
 
 template<class T>
 T* ThreadManager::create(const ACE_CString name,
-//			 const bool suspended,
 			 const TimeInterval responseTime,
 			 const TimeInterval sleepTime,
-			 bool del)
+			 bool del)  throw (acsthreadErrType::ThreadAlreadyExistExImpl,
+					   acsthreadErrType::CanNotCreateThreadExImpl
+			     )
 {
 //ACE_Guard<ACE_Recursive_Thread_Mutex> guard(m_addRemoveMutex);	
     if (getThreadByName(name)!=NULL) 
@@ -124,15 +116,24 @@ T* ThreadManager::create(const ACE_CString name,
 	throw acsthreadErrType::CanNotCreateThreadExImpl(ex, __FILE__, __LINE__, 
 							 "ACS::ThreadManager<>::create");
 	}
+    catch (...) 
+	{
+	threadManagerTSS->resetThreadManager();
+	ACSErrTypeCommon::UnexpectedExceptionExImpl uex(__FILE__, __LINE__,
+							"ACS::ThreadManager<>::create");
+	throw acsthreadErrType::CanNotCreateThreadExImpl(uex, __FILE__, __LINE__, 
+							 "ACS::ThreadManager<>::create");
+	}//try-catch
 }//create
 
 template<class T>
 T* ThreadManager::create(const ACE_CString name,
-//			 const bool suspended,
 			 const TimeInterval responseTime,
 			 const TimeInterval sleepTime,
 			 bool del,
-                         const long thrFlags)
+                         const long thrFlags)  throw (acsthreadErrType::ThreadAlreadyExistExImpl,
+						      acsthreadErrType::CanNotCreateThreadExImpl
+			     )
 {
 //ACE_Guard<ACE_Recursive_Thread_Mutex> guard(m_addRemoveMutex);	
     if (getThreadByName(name)!=NULL) 
@@ -156,6 +157,14 @@ T* ThreadManager::create(const ACE_CString name,
 	throw acsthreadErrType::CanNotCreateThreadExImpl(ex, __FILE__, __LINE__, 
 							 "ACS::ThreadManager<>::create");
 	}
+    catch (...) 
+	{
+	threadManagerTSS->resetThreadManager();
+	ACSErrTypeCommon::UnexpectedExceptionExImpl uex(__FILE__, __LINE__,
+							"ACS::ThreadManager<>::create");
+	throw acsthreadErrType::CanNotCreateThreadExImpl(uex, __FILE__, __LINE__, 
+							 "ACS::ThreadManager<>::create");
+	}//try-catch
 }//create
 
 /***************************************
@@ -163,7 +172,8 @@ T* ThreadManager::create(const ACE_CString name,
  ***************************************/
 
 template<class T, class P>
-T* ThreadManager::create(const ACE_CString name, P& param)
+T* ThreadManager::create(const ACE_CString name, P& param)  throw (acsthreadErrType::ThreadAlreadyExistExImpl,
+								   acsthreadErrType::CanNotCreateThreadExImpl )
 {
 //ACE_Guard<ACE_Recursive_Thread_Mutex> guard(m_addRemoveMutex);	
     if (getThreadByName(name)!=NULL) 
@@ -188,42 +198,21 @@ T* ThreadManager::create(const ACE_CString name, P& param)
 	throw acsthreadErrType::CanNotCreateThreadExImpl(ex, __FILE__, __LINE__, 
 							 "ACS::ThreadManager<>::create");
 	}
-}//create
-
-/* to remove suspended parameter, same as "create(name,param)"
-template<class T, class P>
-T* ThreadManager::create(const ACE_CString name, P& param,
-			 const bool suspended)
-{
-//    ACE_Guard<ACE_Recursive_Thread_Mutex> guard(m_addRemoveMutex);	
-    if (getThreadByName(name)!=NULL) 
-	{
-	acsthreadErrType::ThreadAlreadyExistExImpl ex(__FILE__, __LINE__, 
-						      "ACS::ThreadManager<>::create");
-	}
-
-    try
-	{
-	threadManagerTSS->setThreadManager(this);
-	T* thread_p = new T(name, param);
-	if(!suspended) thread_p->ACS::Thread::resume(); // the thread can be started !!
-
-	return thread_p;
-	} 
-    catch(ACSErr::ACSbaseExImpl& ex)
+    catch (...) 
 	{
 	threadManagerTSS->resetThreadManager();
-	throw acsthreadErrType::CanNotCreateThreadExImpl(ex, __FILE__, __LINE__, 
+	ACSErrTypeCommon::UnexpectedExceptionExImpl uex(__FILE__, __LINE__,
+							"ACS::ThreadManager<>::create");
+	throw acsthreadErrType::CanNotCreateThreadExImpl(uex, __FILE__, __LINE__, 
 							 "ACS::ThreadManager<>::create");
-	}
+	}//try-catch
 }//create
-*/
 
 template<class T, class P>
 T* ThreadManager::create(const ACE_CString name, P& param,
-//			 const bool suspended,
 			 const TimeInterval responseTime,
-			 const TimeInterval sleepTime)
+			 const TimeInterval sleepTime)  throw (acsthreadErrType::ThreadAlreadyExistExImpl,
+							      acsthreadErrType::CanNotCreateThreadExImpl )
 {
 //ACE_Guard<ACE_Recursive_Thread_Mutex> guard(m_addRemoveMutex);	
     if (getThreadByName(name)!=NULL) 
@@ -248,14 +237,22 @@ T* ThreadManager::create(const ACE_CString name, P& param,
 	throw acsthreadErrType::CanNotCreateThreadExImpl(ex, __FILE__, __LINE__, 
 							 "ACS::ThreadManager<>::create");
 	}
+    catch (...) 
+	{
+	threadManagerTSS->resetThreadManager();
+	ACSErrTypeCommon::UnexpectedExceptionExImpl uex(__FILE__, __LINE__,
+							"ACS::ThreadManager<>::create");
+	throw acsthreadErrType::CanNotCreateThreadExImpl(uex, __FILE__, __LINE__, 
+							 "ACS::ThreadManager<>::create");
+	}//try-catch
 }//create
 
 template<class T, class P>
 T* ThreadManager::create(const ACE_CString name, P& param,
-//			 const bool suspended,
 			 const TimeInterval responseTime,
 			 const TimeInterval sleepTime,
-			 bool del)
+			 bool del)  throw (acsthreadErrType::ThreadAlreadyExistExImpl,
+					   acsthreadErrType::CanNotCreateThreadExImpl )
 {
 //ACE_Guard<ACE_Recursive_Thread_Mutex> guard(m_addRemoveMutex);	
     if (getThreadByName(name)!=NULL) 
@@ -280,15 +277,23 @@ T* ThreadManager::create(const ACE_CString name, P& param,
 	throw acsthreadErrType::CanNotCreateThreadExImpl(ex, __FILE__, __LINE__, 
 							 "ACS::ThreadManager<>::create");
 	}
+    catch (...) 
+	{
+	threadManagerTSS->resetThreadManager();
+	ACSErrTypeCommon::UnexpectedExceptionExImpl uex(__FILE__, __LINE__,
+							"ACS::ThreadManager<>::create");
+	throw acsthreadErrType::CanNotCreateThreadExImpl(uex, __FILE__, __LINE__, 
+							 "ACS::ThreadManager<>::create");
+	}//try-catch
 }//create
 
 template<class T, class P>
 T* ThreadManager::create(const ACE_CString name, P& param,
-//			 const bool suspended,
 			 const TimeInterval responseTime,
 			 const TimeInterval sleepTime,
 			 bool del,
-			 const long thrFlags)
+			 const long thrFlags)  throw (acsthreadErrType::ThreadAlreadyExistExImpl,
+						      acsthreadErrType::CanNotCreateThreadExImpl )
 {
 //ACE_Guard<ACE_Recursive_Thread_Mutex> guard(m_addRemoveMutex);	
     if (getThreadByName(name)!=NULL) 
@@ -313,6 +318,14 @@ T* ThreadManager::create(const ACE_CString name, P& param,
 	throw acsthreadErrType::CanNotCreateThreadExImpl(ex, __FILE__, __LINE__, 
 							 "ACS::ThreadManager<>::create");
 	}
+       catch (...) 
+	{
+	threadManagerTSS->resetThreadManager();
+	ACSErrTypeCommon::UnexpectedExceptionExImpl uex(__FILE__, __LINE__,
+							"ACS::ThreadManager<>::create");
+	throw acsthreadErrType::CanNotCreateThreadExImpl(uex, __FILE__, __LINE__, 
+							 "ACS::ThreadManager<>::create");
+	}//try-catch
 }//create
 
 #endif 

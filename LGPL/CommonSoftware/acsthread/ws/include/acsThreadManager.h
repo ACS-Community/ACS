@@ -3,7 +3,7 @@
 /*******************************************************************************
 * E.S.O. - VLT project
 *
-* "@(#) $Id: acsThreadManager.h,v 1.16 2006/10/03 22:17:28 gchiozzi Exp $"
+* "@(#) $Id: acsThreadManager.h,v 1.17 2007/05/23 14:51:23 bjeram Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -21,6 +21,7 @@
 
 #include "acsThread.h"
 #include "loggingLoggable.h"
+#include <ACSErrTypeCommon.h>
 
 namespace ACS
 {
@@ -59,35 +60,28 @@ namespace ACS
 	 * and adds it to the list of Threads.
 	 */
 	template <class T>
-	T* create(const ACE_CString name);
-
-       /* remove suspended parameter, same as create(name)
-	template <class T>
-	T* create(const ACE_CString name,
-		  const bool suspended);
-        */
+	T* create(const ACE_CString name) throw (acsthreadErrType::ThreadAlreadyExistExImpl,
+						 acsthreadErrType::CanNotCreateThreadExImpl );
 
 	template <class T>
 	T* create(const ACE_CString name,
-//		  const bool suspended,
 		  const TimeInterval responseTime,
-		  const TimeInterval sleepTime);
-
+		  const TimeInterval sleepTime) throw (acsthreadErrType::ThreadAlreadyExistExImpl,
+						       acsthreadErrType::CanNotCreateThreadExImpl );
 	template <class T>
 	T* create(const ACE_CString name,
-//		  const bool suspended,
 		  const TimeInterval responseTime,
 		  const TimeInterval sleepTime,
-		  bool del);
+		  bool del) throw (acsthreadErrType::ThreadAlreadyExistExImpl,
+				   acsthreadErrType::CanNotCreateThreadExImpl );
 
 	template <class T>
 	T* create(const ACE_CString name,
-//		  const bool suspended,
 		  const TimeInterval responseTime,
 		  const TimeInterval sleepTime,
 		  bool del,
-		  const long thrFlags);
-
+		  const long thrFlags) throw (acsthreadErrType::ThreadAlreadyExistExImpl,
+					      acsthreadErrType::CanNotCreateThreadExImpl );
 
 	/**
 	 * create methods which create a user defined 
@@ -96,34 +90,28 @@ namespace ACS
 	 * and add it to the list of Threads.
 	 */
 	template <class T, class P>
-	T* create(const ACE_CString name, P&);
-
-       /* to remove parameter suspended, same as create( name, P& )
-	template <class T, class P>
-	T* create(const ACE_CString name, P&,
-		  const bool suspended);
-        */
+	T* create(const ACE_CString name, P&) throw (acsthreadErrType::ThreadAlreadyExistExImpl,
+						     acsthreadErrType::CanNotCreateThreadExImpl );
 
 	template <class T, class P>
 	T* create(const ACE_CString name, P&,
-//		  const bool suspended,
 		  const TimeInterval responseTime,
-		  const TimeInterval sleepTime);
-	
+		  const TimeInterval sleepTime) throw (acsthreadErrType::ThreadAlreadyExistExImpl,
+						       acsthreadErrType::CanNotCreateThreadExImpl );
 	template <class T, class P>
 	T* create(const ACE_CString name, P&,
-//		  const bool suspended,
 		  const TimeInterval responseTime,
 		  const TimeInterval sleepTime,
-		  bool del);
+		  bool del) throw (acsthreadErrType::ThreadAlreadyExistExImpl,
+				   acsthreadErrType::CanNotCreateThreadExImpl );
 
 	template <class T, class P>
 	T* create(const ACE_CString name, P&,
-//		  const bool suspended,
 		  const TimeInterval responseTime,
 		  const TimeInterval sleepTime,
 		  bool del,
-		  const long thrFlags);
+		  const long thrFlags) throw (acsthreadErrType::ThreadAlreadyExistExImpl,
+					      acsthreadErrType::CanNotCreateThreadExImpl );
 
 	/**
 	 * destoy method destroys a thread object
