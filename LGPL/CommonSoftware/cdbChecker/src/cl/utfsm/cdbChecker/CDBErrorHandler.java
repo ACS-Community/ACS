@@ -41,7 +41,7 @@ class CDBErrorHandler extends DefaultHandler implements ErrorHandler {
 	public void fatalError(SAXParseException e)
 	throws SAXException{
 		String filename=e.getSystemId();
-		if(filename.startsWith("file://"))
+		if(filename != null && filename.startsWith("file://"))
 			filename=filename.substring(7);
 		if(CDBChecker.verbose)
 			System.out.print(":"+e.getLineNumber()+":"+e.getColumnNumber()+" [Fatal Error]\n\t "+e.getMessage()+"\n");
