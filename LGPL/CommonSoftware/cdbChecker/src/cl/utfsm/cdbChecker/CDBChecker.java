@@ -127,25 +127,30 @@ public class CDBChecker {
 	protected void XSDValidate(Vector filename){
 		System.out.println("*** Will verify XSD files in directory: " + this.XSDPath);
 		for(int i=0;i<filename.size();i++){
-			if(verbose){
-				System.out.print("    "+(String)filename.get(i));
-				/*for(int j=0;j<(91-(int)((String)filename.get(i)).length())/8;j++)
-					System.out.print("\t");
-				*/}
-			try{
-				SP.reset();
-				SP.setEntityResolver(new CDBSchemasResolver(schemaFolder+":"+XSDPath));
-				SP.setFeature("http://xml.org/sax/features/validation",true);
-				SP.setFeature("http://apache.org/xml/features/validation/schema",true);
-				SP.setFeature("http://xml.org/sax/features/namespace-prefixes",false);
-				SP.setFeature("http://xml.org/sax/features/namespaces",true);
-				SP.setErrorHandler(new CDBErrorHandler());	
-				SP.setProperty("http://apache.org/xml/properties/schema/external-schemaLocation","http://www.w3.org/2001/XMLSchema http://www.w3.org/2001/XMLSchema.xsd");
-				SP.parse((String)filename.get(i));
-				if(verbose && !errorFlag)
-					System.out.println("[OK]");
-			}catch (SAXException e){e.printStackTrace();}
-			catch (IOException e){System.out.println("[IOException] Probably "+(String)filename.get(i)+" doesn't exists.");}
+                        File file = new File((String)filename.get(i));
+                        if(file.length()!=0){
+                                if(verbose){
+                                        System.out.print("    "+(String)filename.get(i));
+                                        /*for(int j=0;j<(91-(int)((String)filename.get(i)).length())/8;j++)
+                                          System.out.print("\t");
+                                         */}
+                                try{
+                                        SP.reset();
+                                        SP.setEntityResolver(new CDBSchemasResolver(schemaFolder+":"+XSDPath));
+                                        SP.setFeature("http://xml.org/sax/features/validation",true);
+                                        SP.setFeature("http://apache.org/xml/features/validation/schema",true);
+                                        SP.setFeature("http://xml.org/sax/features/namespace-prefixes",false);
+                                        SP.setFeature("http://xml.org/sax/features/namespaces",true);
+                                        SP.setErrorHandler(new CDBErrorHandler());	
+                                        SP.setProperty("http://apache.org/xml/properties/schema/external-schemaLocation","http://www.w3.org/2001/XMLSchema http://www.w3.org/2001/XMLSchema.xsd");
+                                        SP.parse((String)filename.get(i));
+                                        if(verbose && !errorFlag)
+                                                System.out.println("[OK]");
+                                }catch (SAXException e){e.printStackTrace();}
+                                catch (IOException e){System.out.println("[IOException] Probably "+(String)filename.get(i)+" doesn't exists.");}
+                        }else{
+                                System.out.print((String)filename.get(i)+": [Warning] file is empty.\n");
+                        }
 		}	
 	}
 	
@@ -157,27 +162,33 @@ public class CDBChecker {
 	protected void XMLValidate(Vector filename){
 		System.out.println("*** Will verify XML files in directory: " + this.XMLPath);
 		for(int i=0;i<filename.size();i++){
-			if(verbose){
-				System.out.print("    "+(String)filename.get(i));
-				/*for(int j=0;j<(90-(int)((String)filename.get(i)).length())/8;j++)
-					System.out.print("\t");
-				*/}
-			String targetNamespace;
-			targetNamespace = ((xsd_targetns.toString()).replace(',',' ')).replace('=',' ').replace('{',' ').replace('}',' ');
-			CDBChecker.errorFlag=false;
-			try{
-				SP.reset();
-				SP.setFeature("http://xml.org/sax/features/validation",true);
-				SP.setFeature("http://apache.org/xml/features/validation/schema", true);
-				SP.setFeature("http://xml.org/sax/features/namespace-prefixes",false);
-				SP.setFeature("http://xml.org/sax/features/namespaces",true);
-				SP.setErrorHandler(new CDBErrorHandler());
-				SP.setProperty("http://apache.org/xml/properties/schema/external-schemaLocation",targetNamespace);
-				SP.parse((String)filename.get(i));
-				if(verbose && !errorFlag)
-					System.out.println("[OK]");
-			}catch(SAXException e){e.getMessage();}
-			catch(IOException e){System.out.println("[IOException] Probably "+(String)filename.get(i)+" doesn't exists.");}
+                        File file = new File((String)filename.get(i));
+                        if(file.length()!=0){
+                                if(verbose){
+                                        System.out.print("    "+(String)filename.get(i));
+                                        /*for(int j=0;j<(90-(int)((String)filename.get(i)).length())/8;j++)
+                                          System.out.print("\t");
+                                         */}
+                                String targetNamespace;
+                                targetNamespace = ((xsd_targetns.toString()).replace(',',' ')).replace('=',' ').replace('{',' ').replace('}',' ');
+                                CDBChecker.errorFlag=false;
+                                try{
+                                        SP.reset();
+                                        SP.setFeature("http://xml.org/sax/features/validation",true);
+                                        SP.setFeature("http://apache.org/xml/features/validation/schema", true);
+                                        SP.setFeature("http://xml.org/sax/features/namespace-prefixes",false);
+                                        SP.setFeature("http://xml.org/sax/features/namespaces",true);
+                                        SP.setErrorHandler(new CDBErrorHandler());
+                                        SP.setProperty("http://apache.org/xml/properties/schema/external-schemaLocation",targetNamespace);
+                                        SP.parse((String)filename.get(i));
+                                        if(verbose && !errorFlag)
+                                                System.out.println("[OK]");
+                                }catch(SAXException e){e.getMessage();}
+                                catch(IOException e){System.out.println("[IOException] Probably "+(String)filename.get(i)+" doesn't exists.");}
+                        }else{
+                                System.out.print((String)filename.get(i)+": [Warning] file is empty.\n");
+                        }
+
 		}
 	}
 	
@@ -191,50 +202,56 @@ public class CDBChecker {
 		String filename;
 		
 		for(int i=0;i<XSDFilenames.size();i++){
-			filename=(String)XSDFilenames.get(i);
-			SP.setContentHandler(new CDBContentHandler());
-			SP.reset();
-			try{
-				SP.setFeature("http://xml.org/sax/features/validation",false);
-				SP.setFeature("http://apache.org/xml/features/validation/schema",false);
-				SP.setFeature("http://xml.org/sax/features/namespace-prefixes",false);
-				SP.setFeature("http://xml.org/sax/features/namespaces",true);
-			
-				SP.parse(filename);
-			}catch(SAXException e){e.getMessage();}
-			catch (IOException e){System.out.println("[IOException] Probably "+filename+" doesn't exists.");}
-		
-			if(targetNamespace!=null)
-			    {
-			    /* GCH
-			     * If the targetNamespace has been already registered,
-			     * I skip registering it again.
-			     * In this way I give priority to definitions that come first.
-			     * Since the search order depents on the order int the ACS.cdbPath
-			     * property, standard definitions can be overwritten byte newer ones in
-                             * the standard search path algorithm.
-			     */
-			    if(xsd_targetns.containsKey(targetNamespace))
-				{
-				/*
-				 * If the same targetNamespace appears int files with
-				 * the same name, then we are simply overriding the
-				 * default version with a new one and we need to warning.
-				 * Otherwise, a warning can be useful to discover
-				 * inconsistencies.
-				 */
-				String[] newArr = filename.split("/");
-				String[] oldArr = ((String)xsd_targetns.get(targetNamespace)).split("/");
-				if(newArr[newArr.length-1].compareTo(oldArr[oldArr.length-1])!=0)
-				    {
-					System.out.println("[Warning] The XSD files \""+(String)XSDFilenames.get(i)+"\" and \""+xsd_targetns.get(targetNamespace)+"\" have same targetNamespace: \""+targetNamespace+"\". Skipping this one.");
-				    }
-				}
-			    else
-				{
-				xsd_targetns.put(targetNamespace,XSDFilenames.get(i));
-				}
-			}
+                        filename=(String)XSDFilenames.get(i);
+                        File file = new File((String)XSDFilenames.get(i));
+                        if(file.length()!=0){
+                                SP.setContentHandler(new CDBContentHandler());
+                                SP.reset();
+                                try{
+                                        SP.setFeature("http://xml.org/sax/features/validation",false);
+                                        SP.setFeature("http://apache.org/xml/features/validation/schema",false);
+                                        SP.setFeature("http://xml.org/sax/features/namespace-prefixes",false);
+                                        SP.setFeature("http://xml.org/sax/features/namespaces",true);
+                                        SP.setErrorHandler(new CDBErrorHandler());	
+
+                                        SP.parse(filename);
+                                }catch(SAXException e){e.getMessage();}
+                                catch (IOException e){System.out.println("[IOException] Probably "+filename+" doesn't exists.");}
+
+                                if(targetNamespace!=null)
+                                {
+                                        /* GCH
+                                         * If the targetNamespace has been already registered,
+                                         * I skip registering it again.
+                                         * In this way I give priority to definitions that come first.
+                                         * Since the search order depents on the order int the ACS.cdbPath
+                                         * property, standard definitions can be overwritten byte newer ones in
+                                         * the standard search path algorithm.
+                                         */
+                                        if(xsd_targetns.containsKey(targetNamespace))
+                                        {
+                                                /*
+                                                 * If the same targetNamespace appears int files with
+                                                 * the same name, then we are simply overriding the
+                                                 * default version with a new one and we need to warning.
+                                                 * Otherwise, a warning can be useful to discover
+                                                 * inconsistencies.
+                                                 */
+                                                String[] newArr = filename.split("/");
+                                                String[] oldArr = ((String)xsd_targetns.get(targetNamespace)).split("/");
+                                                if(newArr[newArr.length-1].compareTo(oldArr[oldArr.length-1])!=0)
+                                                {
+                                                        System.out.println("[Warning] The XSD files \""+(String)XSDFilenames.get(i)+"\" and \""+xsd_targetns.get(targetNamespace)+"\" have same targetNamespace: \""+targetNamespace+"\". Skipping this one.");
+                                                }
+                                        }
+                                        else
+                                        {
+                                                xsd_targetns.put(targetNamespace,XSDFilenames.get(i));
+                                        }
+                                }
+                        }else{
+                                System.out.print((String)XSDFilenames.get(i)+": [Warning] file is empty.\n");
+                        }
 		}
 	}
 	
