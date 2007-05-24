@@ -416,8 +416,8 @@ def main():
     else:
         largeMsgFactor = 0
     debugprint("Calculating the time to wait for messages...", debug)
-    timeToWait = 100 + numMsgs * (delayBetweenMsgs + largeMsgFactor)
-    debugprint("Total 'wait' time for receiving all msgs will be: " + str(timeToWait) + " seconds", debug)
+    timeToWait = 120 + numMsgs * (delayBetweenMsgs + largeMsgFactor)
+    debugprint("Max 'wait' time for receiving all msgs will be: " + str(timeToWait) + " seconds", debug)
 
     managerCorbaLoc = getManagerCorbaloc()
     userName = os.environ["USER"]
@@ -435,13 +435,18 @@ def main():
 
     # start the local consumers
     localProcesses = []
+    ncChannelCreated = False
     for i in range(0, numLocalConsumers):
        debugprint("starting local consumer " + str(i), debug)
        cmdString = "NCStressConsumer -d " + str(timeToWait) + " >& ./tmp/consumer" + str(i) + "-local.out"
-       #outFileName = "./tmp/consumer" + str(i) + "-local.out"
-       #cmdString = "NCStressConsumer -d -n " + str(numMsgs) + " -o " + outFileName + " " + str(timeToWait) 
        debugprint("using local command " + cmdString, debug)
        localProcesses.append(popen2.Popen4(cmdString))
+       # special case to stop race condition during initial creation of NC channel - it seems the first consumer creates 
+       # the channel and if the others start too fast, they get 'stuck'; must wait for the channel to be created before 
+       # starting subsequent consumers. This race condition only occurs if ACS has just been started; subsequent runs are ok.
+       if(i == 0):
+           sleep(5)
+           ncChannelCreated = True
 
     # start the remote consumers
     remoteProcesses = []
@@ -451,6 +456,11 @@ def main():
            + str(timeToWait) + '"' + ' >& ./tmp/consumer' + str(i) + '-remote.out'
        debugprint("using command: " + sshCmdString, debug)
        remoteProcesses.append(popen2.Popen3(sshCmdString))
+       # special case to stop race condition during initial creation of NC channel - it seems the first consumer creates 
+       # the channel and if the others start too fast, they get 'stuck'; must wait for the channel to be created before 
+       # starting subsequent consumers. This race condition only occurs if ACS has just been started; subsequent runs are ok.
+       if(i == 0 and ncChannelCreated == False):
+           sleep(5)
 
     # pause to allow all consumers to get fully up and running 
     debugprint("sleeping a bit to let all consumers start...", debug)
@@ -463,7 +473,6 @@ def main():
     localConsumerMemoryMonitors = []
     if(numLocalConsumers != None):
         grepCmd = "ps -ef | grep NCStressConsumer | grep -v ssh | grep -v .out | grep -v grep | awk '{ print $2 }'"
-        #grepCmd = "ps -ef | grep NCStressConsumer | grep -v ssh | grep -v grep | awk '{ print $2 }'"
         debugprint("grepping for local consumer pid with command:  " + grepCmd, debug)
         localGrepProcess = popen2.Popen3(grepCmd)
         pids = localGrepProcess.fromchild.readlines()
@@ -518,8 +527,6 @@ def main():
     for i in range(0, numLocalConsumers):
         debugprint("waiting for local consumer" + str(i) + " to complete", debug)
         fileStrings.append("./tmp/consumer" + str(i) + "-local.out")
-        #localProcesses[i].wait()
-        #debugprint("finished waiting for local consumer " + str(i) + " to complete", debug)
 
     count = 0
     allReceived = False
@@ -544,8 +551,6 @@ def main():
     for i in range(0, numRemoteConsumers):
         debugprint("waiting for remote consumer " + str(i) + " to complete", debug)
         fileStrings.append("./tmp/consumer" + str(i) + "-remote.out")
-        #remoteProcesses[i].wait()
-        #debugprint("finished waiting for remote consumer " + str(i) + " to complete", debug)
  
     count = 0
     allReceived = False
@@ -566,7 +571,6 @@ def main():
     popen2.Popen4(killCmd)
     killCmd = "kill -9 " + str(notifyMonitorProcess.pid)
     popen2.Popen4(killCmd)
-    #popen2.Popen4('killall sar >& /dev/null; killall monitorProcess >& /dev/null')
      
     # prep output files
     prepOutputFiles(numLocalConsumers, "local", debug)
