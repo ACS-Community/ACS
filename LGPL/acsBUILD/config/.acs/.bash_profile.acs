@@ -20,7 +20,7 @@
 # MA 02111-1307  USA
 #
 #
-# "@(#) $Id: .bash_profile.acs,v 1.65 2006/11/24 10:16:06 bjeram Exp $"
+# "@(#) $Id: .bash_profile.acs,v 1.66 2007/05/24 20:09:45 agrimstrup Exp $"
 #
 #
 #
@@ -736,7 +736,7 @@ fi
 if [ "$OSYSTEM" = "SunOS" ]
 then
 
-    LD_LIBRARY_PATH=$ACE_ROOT/lib:$OMNI_ROOT/lib:$TCLTK_ROOT/lib:$GNU_ROOT/lib:/usr/dt/lib:$ORIG_LD_LIBRARY_PATH
+    LD_LIBRARY_PATH=$ACE_ROOT/lib:$PYTHON_ROOT/lib:$OMNI_ROOT/lib:$TCLTK_ROOT/lib:$GNU_ROOT/lib:/usr/dt/lib:$ORIG_LD_LIBRARY_PATH
 
    if [ X"$VLTROOT" != X ] && [ X"$VLTROOT" != X"$intlist_first_dir" ]
    then
@@ -751,7 +751,7 @@ then
 elif [ "$OSYSTEM" = "Linux" ]
 then
 
-   LD_LIBRARY_PATH=$ACE_ROOT/lib:$OMNI_ROOT/lib:$TCLTK_ROOT/lib:$GNU_ROOT/lib:$ORIG_LD_LIBRARY_PATH
+   LD_LIBRARY_PATH=$ACE_ROOT/lib:$PYTHON_ROOT/lib:$OMNI_ROOT/lib:$TCLTK_ROOT/lib:$GNU_ROOT/lib:$ORIG_LD_LIBRARY_PATH
 
    if [ X"$VLTROOT" != X ] && [ X"$VLTROOT" != X"$intlist_first_dir" ]
    then

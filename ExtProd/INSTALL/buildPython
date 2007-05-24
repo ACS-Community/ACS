@@ -2,7 +2,7 @@
 #*******************************************************************************
 # E.S.O. - ALMA project
 #
-# "@(#) $Id: buildPython,v 1.13 2005/12/30 11:54:07 gchiozzi Exp $"
+# "@(#) $Id: buildPython,v 1.14 2007/05/24 20:09:45 agrimstrup Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -165,7 +165,7 @@ then
    mv Modules/Setup.dist.tmp  Modules/Setup.dist
 fi
 
-./configure --prefix $PYTHON_ROOT
+./configure --prefix $PYTHON_ROOT --enable-shared
 make install
 
 # to be discussed!
