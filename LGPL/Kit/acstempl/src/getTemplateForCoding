@@ -2,7 +2,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: getTemplateForCoding,v 1.29 2007/03/01 15:54:35 agrimstrup Exp $" 
+# "@(#) $Id: getTemplateForCoding,v 1.30 2007/05/25 09:02:27 mpasquat Exp $" 
 # who       when      what
 # --------- --------  ----------------------------------------------
 # gchiozzi  27/06/95  Added c++ and various templates
@@ -157,7 +157,7 @@ xyz
             script)
                 TEMPLATE=$T_DIR/$OPTION.template
                 FILE_NAME=""
-                FILE_SUFFIX=""
+                FILE_SUFFIX=".sh"
                 COMMENT="# "
                 MODE=755
                 ;;
