@@ -28,10 +28,13 @@ package alma.acs.time;
  */
 public class Profiler extends alma.acs.util.StopWatch
 {
+    //private double m_totalTime;
+    //private double m_minDuration;
+    //private double m_maxDuration;
     private long m_totalTime;
-    private long m_totalNumStarts;
     private long m_minDuration;
     private long m_maxDuration;
+    private long m_totalNumStarts;
     private String m_extraDescrip;
     
     /**
@@ -68,7 +71,7 @@ public class Profiler extends alma.acs.util.StopWatch
      */
     public void stop()
 	{
-	    long tTime = super.getLapTimeMillis();
+	    long tTime = super.getLapTimeNanos();
 	    
 	    m_totalNumStarts++;
 
@@ -95,10 +98,11 @@ public class Profiler extends alma.acs.util.StopWatch
 	    String out = "";
 	    
 	    out = out + "#ACS PROFILER# msg=" + msg;
-	    out = out + ", avg=" + (double)((double)m_totalTime /  (double)m_totalNumStarts); 
+            // multiply by 1E-6 to convert nanoseconds to milliseconds
+	    out = out + ", avg=" + (double)(((double)m_totalTime /  (double)m_totalNumStarts) * 1E-6); 
 	    out = out + ", runs=" + m_totalNumStarts; 
-	    out = out + ", mindur=" + m_minDuration;
-	    out = out + ", maxdur=" + m_maxDuration;
+	    out = out + ", mindur=" + m_minDuration * 1E-6;
+	    out = out + ", maxdur=" + m_maxDuration * 1E-6;
 	    out = out + ", cpu=Unknown";
 	    out = out + ", mem=Unknown"; 
 	    out = out + ", date=" + TimeHelper.getUTCDate();

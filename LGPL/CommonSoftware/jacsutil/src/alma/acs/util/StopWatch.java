@@ -37,6 +37,7 @@ public class StopWatch
 	private Logger m_logger;
 	
 	private long m_startTime;
+	private long m_startTimeNanos;
 	
 	
 	/**
@@ -68,6 +69,7 @@ public class StopWatch
 	public void reset()
 	{
 		m_startTime = System.currentTimeMillis();
+		m_startTimeNanos = System.nanoTime();
 	}
 
 
@@ -88,6 +90,23 @@ public class StopWatch
 		return (now - m_startTime);
 	}
 
+	/**
+	 * Gets the time in nanoseconds that has elapsed since this object was created
+	 * or <code>reset()</code> was called. 
+	 * <p>
+	 * The implementation simply relies on <code>System.nanoTime()</code>,
+	 * so that the granularity of measurements is OS dependent.
+	 * Also, note that the time spent on all threads together is returned, which might
+	 * be a poor measure for runtime profiling a particular method.   
+	 * <p>
+	 * @return  elapsed time in nanoseconds
+	 */
+	public long getLapTimeNanos()
+	{
+                long now = System.nanoTime();
+                System.out.println("now is: " + now);
+		return (now - m_startTimeNanos);
+	}
 	
 	/**
 	 * Logs a message about the elapsed time for a certain task.
@@ -113,7 +132,7 @@ public class StopWatch
 					m_logger = Logger.getLogger("StopWatchLogger");
 				}
 						
-				long elapsed = getLapTimeMillis();
+				double elapsed = getLapTimeNanos() * 1E-6;
 				m_logger.log(Level.FINE, "elapsed time in ms to " + taskDesc + ": " + elapsed);
 			}
 			catch (Throwable thr)
