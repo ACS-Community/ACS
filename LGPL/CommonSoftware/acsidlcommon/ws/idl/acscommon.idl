@@ -188,10 +188,14 @@ module acscommon
 
     /**
      * Name of the notification channel (as registered with the Naming Service) 
-     * that contains logs.
+     * that contains logs in "binary" idl way.
      */
-    const string LOGGING_CHANNEL_NAME = "LoggingChannel";
+    const string LOGGING_CHANNEL_NAME = "LoggingChannelBin";
 
+    /**
+     * Name of the notification channer that contains the logs in xml
+     */
+    const string LOGGING_CHANNEL_XML_NAME = "LoggingChannel";	
     /**
      * Kind of the notification channel (as registered with the Naming Service) 
      * that contains events from BACI properties to be stored in the ALMA Archive.
