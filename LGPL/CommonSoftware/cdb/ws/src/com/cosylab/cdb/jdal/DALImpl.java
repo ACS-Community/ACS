@@ -442,7 +442,6 @@ public class DALImpl extends JDALPOA implements Recoverer {
 			return null;
 		
 		m_logger.log(AcsLogLevel.INFO, "Returning XML record for: " + curl);
-		//System.out.println("CARLI: " + xmlSolver.toString(false));
 		return xmlSolver.toString(false);
 		}catch(AcsJCDBXMLErrorEx e){
 			String smsg = "XML Error \tCURL='" + e.getCurl()+"'\n\t\tFilename='"+e.getFilename()+"'\n\t\tNodename='"+e.getNodename()+"'\n\t\tMSG='"+e.getErrorString()+"'";

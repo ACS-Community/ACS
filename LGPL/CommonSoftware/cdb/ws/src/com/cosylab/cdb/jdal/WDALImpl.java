@@ -478,7 +478,6 @@ public class WDALImpl extends WDALBaseImpl
 			    xmlHandler);
 
 		        m_logger.log(AcsLogLevel.DEBUG,"saveChanges('"+curl+"'): - Parsing");  
-		        //System.out.println("CARLI: "+xmlHandler.toString(false));	
 			saxParser.parse(getNodeFile(curl), xmlHandler);
 		} catch(Exception e) {
 			e.printStackTrace();
@@ -493,7 +492,6 @@ public class WDALImpl extends WDALBaseImpl
 		xmlHandler.writeXML(sw);
 	//	try{	
 			// now check that everything conforms to the schema
-		//System.out.println("CARLI: el xml: " + sw.toString());
 			validateXML(sw.toString());
 			// ok it is safe now to write it to disk
 			writeXmlData(curl, sw.toString());
@@ -590,7 +588,6 @@ public class WDALImpl extends WDALBaseImpl
 					setField(key, null, true);
 				}
 			}
-			//System.out.println("CARLI: "+ m_rootNode.toString(false));
 			try {
 				write("<?xml version='1.0' encoding='ISO-8859-1'?>\n");
 				writeComment();

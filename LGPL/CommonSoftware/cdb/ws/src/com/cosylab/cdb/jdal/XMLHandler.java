@@ -285,7 +285,6 @@ m_xmlString.append(raw); elementNames.add(raw);//}
 /*Iterator i = tnFather.getNodesMap().keySet().iterator();
 while(i.hasNext()){
 String s = (String)i.next();
-System.out.println("CARLI: ITERANDO! key ="+s);
 }
 */
 	 	tnChild = (XMLTreeNode) tnFather.getNodesMap().get(strFirst);
