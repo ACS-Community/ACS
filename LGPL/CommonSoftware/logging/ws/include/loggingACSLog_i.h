@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingACSLog_i.h,v 1.3 2006/08/08 11:14:04 bjeram Exp $"
+* "@(#) $Id: loggingACSLog_i.h,v 1.4 2007/05/28 06:23:39 cparedes Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -37,7 +37,8 @@
 
 #include "loggingACSStructuredPushSupplier.h"
 
-
+#define LOG_BIN_TYPE 0
+#define LOG_XML_TYPE 1
 /**
  * Implementation of the ACSLog interface (extending BasicLog interface).
  */
@@ -81,7 +82,8 @@ class ACSLog_i : public TAO_BasicLog_i
 	       DsLogAdmin::LogLocked); 
     
   protected:
-    
+   
+    bool m_logBin; 
     /** The logging supplier */
     ACSStructuredPushSupplier* m_logging_supplier;
 };

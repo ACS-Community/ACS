@@ -20,7 +20,7 @@
 # MA 02111-1307  USA
 #
 #
-# "@(#) $Id: Makefile,v 1.60 2007/03/12 10:59:03 gchiozzi Exp $" 
+# "@(#) $Id: Makefile,v 1.61 2007/05/28 06:23:39 cparedes Exp $" 
 #
 # Makefile of ........
 #
@@ -65,12 +65,14 @@ PROG =
 EXECUTABLES     = $(PROG) loggingService loggingClient
 EXECUTABLES_L   = 
 
-loggingService_OBJECTS = loggingService loggingACSLogFactory_i loggingACSStructuredPushSupplier loggingACSLog_i \
+loggingService_OBJECTS = loggingService loggingACSLogFactory_i loggingACSStructuredPushSupplier loggingACSStructuredPushSupplierBin loggingACSStructuredPushSupplierXml loggingACSLog_i \
 			loggingHelper 
 loggingService_LIBS = logging
+loggingService_LDFLAGS= -ggdb
 
 loggingClient_OBJECTS = loggingClient loggingHelper 
 loggingClient_LIBS = logging
+loggingClient_LDFLAGS= -ggdb
 
 # <brief description of xxxxx program>
 
@@ -97,7 +99,9 @@ INCLUDES        = 	logging.h loggingExport.h loggingXMLElement.h loggingXMLParse
 			loggingACEMACROS.h loggingGetLogger.h loggingGenericLogger.h loggingStdoutHandler.h 
 INCLUDES_L      = loggingService.h \
 		  loggingACSStructuredPushSupplier.h \
-		  loggingACSLogFactory_i.h loggingACSLog_i.h \
+		  loggingACSStructuredPushSupplierXml.h \
+          loggingACSStructuredPushSupplierBin.h \
+          loggingACSLogFactory_i.h loggingACSLog_i.h \
 		  loggingHelper.h
 
 #
@@ -117,17 +121,17 @@ baselogging_OBJECTS =	loggingBaseLog loggingHandler loggingLogger \
 ##baselogging_LDFLAGS =   -lTAO_PortableServer
 ##baselogging_LIBS =    loki acsutil
 baselogging_LIBS =    loki
-
+baselogging_LDFLAGS = 	-lloki -ggdb
 logging_OBJECTS = 	logging loggingLoggable loggingXMLElement loggingXMLParser \
                         loggingLocalSyslog loggingRemoteSyslog loggingLocalFile \
 			loggingLoggingTSSStorage loggingLoggingProxy \
 			loggingACSLogger loggingLogSvcHandler
-logging_LIBS    =     baselogging # acsutil acscommonStubs
+logging_LIBS    =	baselogging 
 logging_LDFLAGS =	-lACE -lTAO -lTAO_DsLogAdmin -lTAO_DsLogAdmin_Serv \
                         -lTAO_CosNaming -lTAO_IORTable -lTAO_PortableServer -lTAO_Svc_Utils \
-			-lTAO_CosTrading -lTAO_DynamicAny \
+			            -lTAO_CosTrading -lTAO_DynamicAny \
                         -lTAO_CosNotification -lTAO_CosNotification_Serv \
-                        -lacsutil -lacscommonStubs
+                        -lacsutil -lacscommonStubs -llogging_idlStubs -ggdb
 #
 # other files to be installed
 #----------------------------

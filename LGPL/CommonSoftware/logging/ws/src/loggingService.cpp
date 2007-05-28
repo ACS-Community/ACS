@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingService.cpp,v 1.54 2006/08/08 11:14:04 bjeram Exp $"
+* "@(#) $Id: loggingService.cpp,v 1.55 2007/05/28 06:23:39 cparedes Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -35,6 +35,9 @@
 #include "loggingHelper.h"
 #include "logging.h"
 
+#include "loggingACSStructuredPushSupplierBin.h"
+#include "loggingACSStructuredPushSupplierXml.h"
+
 #include <acscommonC.h>
 
 #define LOG_NAME "Log"
@@ -48,6 +51,12 @@ LoggingService::LoggingService (void)
   m_ifgop = CosNotifyChannelAdmin::OR_OP;
 
   m_isInitialized = true;
+  m_logBin = false;
+  char *acsLogType = getenv("ACS_LOG_BIN");
+  if (acsLogType && *acsLogType){
+    if(strcmp("true", acsLogType) == 0)
+        m_logBin = true; 
+  } 
 }
 
 LoggingService::~LoggingService (void)
@@ -359,8 +368,13 @@ LoggingService::shutdown ()
       
       try
 	{
-	  name[0].id = CORBA::string_dup (acscommon::LOGGING_CHANNEL_NAME);
-	  name[0].kind = CORBA::string_dup (acscommon::LOGGING_CHANNEL_KIND);
+        if(!m_logBin)
+	        name[0].id = CORBA::string_dup (acscommon::LOGGING_CHANNEL_XML_NAME);
+	    else
+	        name[0].id = CORBA::string_dup (acscommon::LOGGING_CHANNEL_NAME);
+            
+
+      name[0].kind = CORBA::string_dup (acscommon::LOGGING_CHANNEL_KIND);
 	  this->m_naming_context->unbind (name);
 	}
       catch(...)
@@ -450,7 +464,11 @@ LoggingService::create_EC ()
 {
     CosNaming::Name name (1);
     name.length (1);
-    name[0].id = CORBA::string_dup (acscommon::LOGGING_CHANNEL_NAME);
+    if(!m_logBin)
+        name[0].id = CORBA::string_dup (acscommon::LOGGING_CHANNEL_XML_NAME);
+    else
+        name[0].id = CORBA::string_dup (acscommon::LOGGING_CHANNEL_NAME);
+    
     name[0].kind = CORBA::string_dup (acscommon::LOGGING_CHANNEL_KIND);
     
     try 
@@ -481,10 +499,16 @@ LoggingService::create_EC ()
 					m_logging_ec.in());
   
   
-	ACS_SHORT_LOG ((LM_DEBUG,
+    if(m_logBin){
+	    
+        ACS_SHORT_LOG ((LM_DEBUG,
+			"Logging EC registered with the naming service as: %s",
+			acscommon::LOGGING_CHANNEL_XML_NAME));
+    }else{
+	    ACS_SHORT_LOG ((LM_DEBUG,
 			"Logging EC registered with the naming service as: %s",
 			acscommon::LOGGING_CHANNEL_NAME));
-	
+	}
 	//ACE_ASSERT(!CORBA::is_nil (this->m_naming_context.in ()));
 	
 	//CosNaming::Name name (1);
@@ -506,8 +530,12 @@ LoggingService::create_supplieradmin ()
 void
 LoggingService::create_suppliers ()
 {
-  m_logging_supplier = new ACSStructuredPushSupplier ();
-  ACE_ASSERT (m_logging_supplier);
+    if(!m_logBin)
+        m_logging_supplier = new ACSStructuredPushSupplierXml ();
+    else
+        m_logging_supplier = new ACSStructuredPushSupplierBin ();
+
+    ACE_ASSERT (m_logging_supplier);
 
   m_logging_supplier->connect (this->m_logging_supplier_admin.in ()
 			       );
@@ -548,6 +576,7 @@ main (int argc, char *argv[])
 
   ACE_OS::signal(SIGINT, TerminationSignalHandler);  // Ctrl+C
   ACE_OS::signal(SIGTERM, TerminationSignalHandler); // termination request
+  ACS_SHORT_LOG ((LM_INFO, "ACS Centralized Logger starting."));
   
   try
       {
@@ -584,6 +613,19 @@ main (int argc, char *argv[])
 // REVISION HISTORY:
 //
 // $Log: loggingService.cpp,v $
+// Revision 1.55  2007/05/28 06:23:39  cparedes
+// Adding the new alternate method to log binaries
+//
+// Revision 1.54.6.3  2007/04/03 07:46:03  cparedes
+// Changing from ACS_LOG_TYPE to ACS_LOG_BIN
+//
+// Revision 1.54.6.2  2007/03/12 10:14:40  cparedes
+// Fully functional cpp implementation of structured logs (not yet well tested, but it
+// passed the normal workflow)
+//
+// Revision 1.54.6.1  2007/03/05 06:16:24  cparedes
+// First attempt, work well with old things, but seg fault with the new things. To debug
+//
 // Revision 1.54  2006/08/08 11:14:04  bjeram
 // ported to ACE+TAO x.5.2:
 //   * change dur to cahnge in TAO_BasicLogFactory_i and TAO_BasicLog_i

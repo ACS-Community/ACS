@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingService.h,v 1.42 2006/01/28 00:03:51 dfugate Exp $"
+* "@(#) $Id: loggingService.h,v 1.43 2007/05/28 06:23:39 cparedes Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -41,6 +41,8 @@
 
 #include "loggingACSStructuredPushSupplier.h"
 #include "loggingACSLogFactory_i.h"
+#define LOG_BIN_TYPE 0
+#define LOG_XML_TYPE 1
 
 /**
  * Implementation of the Telecom Log Service
@@ -182,6 +184,8 @@ class LoggingService
 
     //--Common data members-------------------------------------
 
+    bool m_logBin;
+
     /** Initialization status */
     bool m_isInitialized;
 
@@ -203,6 +207,15 @@ class LoggingService
 // REVISION HISTORY:
 //
 // $Log: loggingService.h,v $
+// Revision 1.43  2007/05/28 06:23:39  cparedes
+// Adding the new alternate method to log binaries
+//
+// Revision 1.42.14.2  2007/04/03 07:46:03  cparedes
+// Changing from ACS_LOG_TYPE to ACS_LOG_BIN
+//
+// Revision 1.42.14.1  2007/03/05 06:16:24  cparedes
+// First attempt, work well with old things, but seg fault with the new things. To debug
+//
 // Revision 1.42  2006/01/28 00:03:51  dfugate
 // The LoggingChannel is now created using the LoggingNotifyEventChannelFactory instead of NotifyEventChannelFactory.
 //

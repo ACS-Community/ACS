@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingClient.h,v 1.39 2007/01/11 11:24:10 acaproni Exp $"
+* "@(#) $Id: loggingClient.h,v 1.40 2007/05/28 06:23:39 cparedes Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -41,6 +41,10 @@
 #include <orbsvcs/CosNotifyChannelAdminS.h>
 #include <orbsvcs/CosNotifyCommC.h>
 
+#include "logging_idlC.h"
+
+#define LOG_BIN_TYPE 0
+#define LOG_XML_TYPE 1
 // The syslog facility to use while logging messages throwgh the
 // kernel logger
 // Its value depends on the running ACS_INSTANCE
@@ -177,6 +181,8 @@ class ACSStructuredPushConsumer : public POA_CosNotifyComm::StructuredPushConsum
     Subscribe* subscribe_;
     // callback <done>
     
+    std::string ACSStructuredPushConsumer::BinToXml(ACSLoggingLog::LogBinaryRecord* record);
+    
     // = Methods
     virtual ~ACSStructuredPushConsumer (void);
     // Destructor
@@ -194,7 +200,9 @@ class ACSStructuredPushConsumer : public POA_CosNotifyComm::StructuredPushConsum
     
     virtual void disconnect_structured_push_consumer ()
 	throw (CORBA::SystemException);
-		
+
+    bool m_logBin;
+	static ACE_TCHAR* m_LogEntryTypeName[];	
 };
 
 #endif /* loggingClient_H */

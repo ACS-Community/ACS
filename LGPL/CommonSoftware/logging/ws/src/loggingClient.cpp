@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingClient.cpp,v 1.45 2007/01/11 11:24:10 acaproni Exp $"
+* "@(#) $Id: loggingClient.cpp,v 1.46 2007/05/28 06:23:39 cparedes Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -71,7 +71,7 @@ Subscribe::init (int argc, char *argv [], std::string channel)
   resolve_naming_service ();
   
 
-  ACE_DEBUG((LM_DEBUG, "Resolving Notify Channel... %d %s\n",argc,argv[argc-1]));
+  ACE_DEBUG((LM_DEBUG, "Resolving Notify Channel... %d %s\n",argc, channel.c_str()));
   
   	resolve_notify_channel (channel.c_str());
   
@@ -174,7 +174,8 @@ Subscribe::resolve_notify_channel (const char * channel_name)
   name.length (1);
   name[0].id = CORBA::string_dup (channel_name);
   
-  if(ACE_OS::strcmp(channel_name, acscommon::LOGGING_CHANNEL_NAME)==0)
+  if(ACE_OS::strcmp(channel_name, acscommon::LOGGING_CHANNEL_NAME)==0 ||
+        ACE_OS::strcmp(channel_name, acscommon::LOGGING_CHANNEL_XML_NAME)==0 )
       {
       name[0].kind = acscommon::LOGGING_CHANNEL_KIND;
       }
@@ -277,7 +278,13 @@ ACSStructuredPushConsumer::connect (CosNotifyChannelAdmin::ConsumerAdmin_ptr con
   ACE_ASSERT (!CORBA::is_nil (proxy_supplier_.in ()));
 
   proxy_supplier_->connect_structured_push_consumer (objref.in ()
-                                                     );
+                                                   );
+  m_logBin = false;
+  char *acsLogType = getenv("ACS_LOG_BIN");
+  if (acsLogType && *acsLogType){
+    if(strcmp("true", acsLogType) == 0)
+        m_logBin = true; 
+  }
   
 }
 
@@ -302,6 +309,118 @@ ACSStructuredPushConsumer::offer_change (const CosNotification::EventTypeSeq & /
   // No-Op.
 }
 
+ACE_TCHAR* ACSStructuredPushConsumer::m_LogEntryTypeName[] =
+{
+    ACE_TEXT ("Unknown"),		// not in specs
+    ACE_TEXT ("Shutdown"), 	// not in specs
+    ACE_TEXT ("Trace"),
+    ACE_TEXT ("Debug"),
+    ACE_TEXT ("Info"),
+    ACE_TEXT ("Notice"),
+    ACE_TEXT ("Warning"),
+    ACE_TEXT ("Startup"),		// not in specs
+    ACE_TEXT ("Error"),
+    ACE_TEXT ("Critical"),
+    ACE_TEXT ("Alert"),
+    ACE_TEXT ("Emergency")
+};
+
+std::string ACSStructuredPushConsumer::BinToXml(ACSLoggingLog::LogBinaryRecord* record){
+    ACE_TCHAR line[64];
+    ACE_CString xml((size_t)512);    // create buffer of 512 chars to improove performace (avoid reallocating)
+
+    ACE_OS::sprintf(line, "<%s TimeStamp=\"%s\"", 
+            m_LogEntryTypeName[record->type], 
+            record->TimeStamp.in()); 
+
+    xml = line;
+
+    // source info
+    xml += " File=\"";
+    xml += record->File;
+    ACE_OS::sprintf(line, "\" Line=\"%d\"", record->Line);
+    xml += line;
+
+    xml += " Routine=\"";
+    xml+= record->Routine.in();
+    xml +=  "\"";
+
+    xml += " Host=\"";
+    xml += record->Host.in();
+    xml += "\" Process=\"";
+    xml += record->Process.in();
+    xml += "\" Thread=\"";
+    xml+= record->Thread.in();
+    xml += "\"";
+
+    xml += " Context=\"";
+    xml += record->LogContext.in();
+    xml += "\"";
+
+    xml += " SourceObject=\"";
+    xml += record->SourceObject.in();
+    xml += "\"";
+    if(strlen(record->StackId) > 0){
+        xml += " StackId=\"";
+        xml += record->StackId.in();
+        xml += "\"";
+    }
+    if(record->StackLevel != -1){
+        ACE_OS::sprintf(line, " StackLevel=\"%d\"", record->StackLevel);
+        xml += line;
+    }
+    if(strcmp("", record->LogId.in())!= 0){
+        xml += " LogId=\"";
+        xml += record->LogId.in();
+        xml += "\"";
+    }
+    if(strcmp("", record->Uri.in())!= 0){
+        xml += " Uri=\"";
+        xml += record->Uri.in();
+        xml += "\"";
+    }
+    if(record->Priority != record->type){
+        ACE_OS::sprintf(line, " Priority=\"%lu\"", record->Priority); //align to ACS priorty
+        xml += line;
+    }
+    /*xml += " Audience=\"";
+    xml += record->Audience.in();
+    xml += "\""; 
+*/
+    for (unsigned int i = 0; i< record->attributes.length() ; i++) 
+    {
+        xml += " ";
+        xml += record->attributes[i].name.in();
+        xml += "=\""; 
+        xml += record->attributes[i].value.in();
+        xml += "\"";
+    }
+    
+    xml += ">";
+    
+    for (unsigned int i = 0; i< record->log_data.length() ; i++) 
+	{
+        xml += "<Data Name=\"";
+        xml += record->log_data[i].name.in();
+        xml += "\">";
+        if(strlen(record->log_data[i].value.in()) > 0){
+            xml += "<![CDATA[";
+            xml += record->log_data[i].value.in();
+            xml += "]]>";
+        }else   xml += "N/A";
+        xml += "</Data>";
+	}
+   
+	xml += "<![CDATA[";
+	xml+=record->MsgData.in();
+	xml+="]]>";
+    
+    // end tag
+    ACE_OS::sprintf(line, "</%s>", m_LogEntryTypeName[record->type]); 
+    xml += line;
+    return xml.c_str();
+}
+
 void
 ACSStructuredPushConsumer::push_structured_event (const CosNotification::StructuredEvent & notification
 						  )
@@ -324,21 +443,40 @@ ACSStructuredPushConsumer::push_structured_event (const CosNotification::Structu
 
   if (ACE_OS::strcmp(domain_name, "Logging")==0)
   {
-    // for logging
-    const char * xmlLog;
-    notification.remainder_of_body >>= xmlLog;
-    if (xmlLog)
-	{
-		if (toSyslog) 
-		{
-			writeSyslogMsg(xmlLog);
-		} 
-		else 
-		{
-			ACE_OS::printf("%s\n", xmlLog);
-			ACE_OS::fflush (stdout);
-		}
-	}
+    if(!m_logBin){
+        // for logging
+        const char * xmlLog;
+        notification.remainder_of_body >>= xmlLog;
+        if (xmlLog)
+        {
+            if (toSyslog) 
+            {
+                writeSyslogMsg(xmlLog);
+            } 
+            else 
+            {
+                ACE_OS::printf("%s\n", xmlLog);
+                ACE_OS::fflush (stdout);
+            }
+        }
+    }else{
+        // for logging
+        ACSLoggingLog::LogBinaryRecord *log;
+        notification.remainder_of_body >>= log;
+        if (log)
+        {
+            if (toSyslog)
+            {
+                writeSyslogMsg(BinToXml(log).c_str());
+            }
+            else
+            {
+                ACE_OS::printf("%s\n",BinToXml(log).c_str());
+                ACE_OS::fflush (stdout);
+            }
+        }
+
+    }
   }
   else if (ACE_OS::strcmp(domain_name, "Archiving")==0)
       {
@@ -445,8 +583,8 @@ main (int argc, char *argv [])
   getParams(argc,argv);
   
   if (argc < 2 ||
-      (ACE_OS::strcmp(argv[argc-1], acscommon::LOGGING_CHANNEL_NAME)!=0 &&
-      ACE_OS::strcmp(argv[argc-1], acscommon::ARCHIVING_CHANNEL_NAME)!=0))
+      (ACE_OS::strcmp(argv[argc-1], "Logging")!=0 &&
+       ACE_OS::strcmp(argv[argc-1], "Archiving")!=0))
     {
       printUsage(argv[0]);
       return 1;
@@ -530,7 +668,7 @@ void getParams(int argc, char *argv []) {
                {"ORBInitRef", required_argument, &orb_flag, 1}
              };
     int option_index=0;
-	while ((c = getopt_long_only (argc, argv, "sh",long_options,&option_index)) != -1) {
+	while ((c = getopt_long_only (argc, argv, "sht:c:",long_options,&option_index)) != -1) {
 		switch(c) {
 			case 's': toSyslog=true; break;
 			case 'h': printUsage(argv[0]); exit(0);
@@ -545,8 +683,20 @@ void getParams(int argc, char *argv []) {
 		exit(-1);
 	} 
 	else 
-	{
-		channelName=argv[argc-1];
+	{   
+        if(strcmp("Archiving",argv[argc-1]) == 0)
+            channelName = acscommon::ARCHIVING_CHANNEL_NAME;
+        else if(strcmp("Logging",argv[argc-1]) == 0){
+            channelName = acscommon::LOGGING_CHANNEL_XML_NAME;
+            char *acsLogType = getenv("ACS_LOG_BIN");
+            if (acsLogType && *acsLogType){
+              if(strcmp("true", acsLogType) == 0)
+                channelName = acscommon::LOGGING_CHANNEL_NAME;
+             } 
+        }else{
+            printUsage(argv[0]);
+            exit(-1);
+        }
 	}
 }
 
@@ -554,10 +704,8 @@ void getParams(int argc, char *argv []) {
  * Prints the usage message on the stdout
  */
 void printUsage(const char* prgName) {
-	ACE_OS::printf("\n\tusage: %s [-s] <%s | %s> <ORB options>\n", 
-	     prgName, 
-	     acscommon::LOGGING_CHANNEL_NAME, 
-	     acscommon::ARCHIVING_CHANNEL_NAME);
+    ACE_OS::printf("\n\tusage: %s [-s] <Logging| Archiving> <ORB options>\n",
+	     prgName);
 	  ACE_OS::printf("-s: write the logs into the syslog\n");
 	  ACE_OS::printf("-h: print this help\n\n");
 }

@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingACSLog_i.cpp,v 1.3 2006/08/08 11:14:04 bjeram Exp $"
+* "@(#) $Id: loggingACSLog_i.cpp,v 1.4 2007/05/28 06:23:39 cparedes Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -26,11 +26,11 @@
 
 #include "loggingACSLog_i.h"
 #include "loggingXMLParser.h"
-
+#include <acsutilAnyAide.h>
 #include <sstream>
 
 #include <acscommonC.h>
-
+#include "logging_idlC.h"
 
 using namespace loggingXMLParser;
 
@@ -43,6 +43,15 @@ using namespace loggingXMLParser;
      TAO_BasicLog_i(orb, poa, logmgr_i, factory, id),
      m_logging_supplier(0)
 {
+
+
+  m_logBin =false; 
+  char *acsLogType = getenv("ACS_LOG_BIN");
+  if (acsLogType && *acsLogType){
+    if(strcmp("true", acsLogType) == 0)
+        m_logBin = true; 
+  } 
+
 }
 
 
@@ -98,32 +107,60 @@ ACSLog_i::write_recordlist (const DsLogAdmin::RecordList &reclist)
     logging_event.header.fixed_header.event_name = CORBA::string_dup("");
     logging_event.header.variable_header.length (0); // put nothing here
     logging_event.filterable_data.length (0);
-    
-    int result;
-    ACE_CString XMLtype(size_t(32));
-    ACE_CString value;
-    ACE_CString type;
-    const ACE_TCHAR * xml;
-    
-    for (CORBA::ULong i = 0; i < reclist.length (); i++)
-	{
-	/*    // Check if the log is full.
-	      if (avail_status_.log_full == 1)
-	      {
-	      ACE_THROW (DsLogAdmin::LogFull (num_written));
-	      }
-	      else*/
-	
-	reclist[i].info >>= xml; 
-	result = XMLParser::parseElementType(xml, XMLtype);
-	
-	logging_event.remainder_of_body <<= xml;
-	m_logging_supplier->send_event (logging_event);
-	 
-	/*
-	  this->check_threshold_list ();
-	*/
-	
-	} // for   
+   
+
+    if(!m_logBin){
+ 
+        int result;
+        ACE_CString XMLtype(size_t(32));
+        const ACE_TCHAR * xml;
+        
+        for (CORBA::ULong i = 0; i < reclist.length (); i++)
+        {
+        /*    // Check if the log is full.
+              if (avail_status_.log_full == 1)
+              {
+              ACE_THROW (DsLogAdmin::LogFull (num_written));
+              }
+              else*/
+            
+         //   CORBA::TCKind kin = AnyAide::getRealType(reclist[i].info); 
+           
+        
+        reclist[i].info >>= xml; 
+        result = XMLParser::parseElementType(xml, XMLtype);
+        
+        logging_event.remainder_of_body <<= xml;
+        m_logging_supplier->send_event (logging_event);
+         
+        /*
+          this->check_threshold_list ();
+        */
+        
+        } // for   
+    }else{
+
+        ACSLoggingLog::LogBinaryRecord *record;
+ 
+        for (CORBA::ULong i = 0; i < reclist.length (); i++)
+        {
+
+            CORBA::TCKind kin = AnyAide::getRealType(reclist[i].info);
+           
+
+            if(kin == CORBA::tk_struct){
+            
+                reclist[i].info >>= record; 
+
+                logging_event.remainder_of_body <<= *record;
+                m_logging_supplier->send_event (logging_event);
+            }else if(kin == CORBA::tk_any){
+            }else{
+               // ACE_OS::printf("Error??");
+            }
+            
+        } // for   
+
+    }
 }
 

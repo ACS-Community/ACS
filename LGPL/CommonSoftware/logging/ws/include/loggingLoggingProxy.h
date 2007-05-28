@@ -21,7 +21,7 @@
  *    License along with this library; if not, write to the Free Software
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: loggingLoggingProxy.h,v 1.23 2007/04/18 13:29:31 msekoran Exp $"
+ * "@(#) $Id: loggingLoggingProxy.h,v 1.24 2007/05/28 06:23:39 cparedes Exp $"
  *
  * who       when        what
  * --------  ----------  ----------------------------------------------
@@ -48,6 +48,7 @@
 #include <orbsvcs/CosNamingC.h>
 
 #include <ace/Synch.h>
+#include "logging_idlC.h"
 
 #include "loggingExport.h"
 #include "loggingLoggingTSSStorage.h"
@@ -106,7 +107,7 @@
  * </OL> 
  * @author <a href=mailto:matej.sekoranja@ijs.si>Matej Sekoranja</a>,
  * Jozef Stefan Institute, Slovenia<br>
- * @version "@(#) $Id: loggingLoggingProxy.h,v 1.23 2007/04/18 13:29:31 msekoran Exp $"
+ * @version "@(#) $Id: loggingLoggingProxy.h,v 1.24 2007/05/28 06:23:39 cparedes Exp $"
  */
 class logging_EXPORT LoggingProxy : public ACE_Log_Msg_Callback
 {
@@ -259,7 +260,8 @@ class logging_EXPORT LoggingProxy : public ACE_Log_Msg_Callback
     
     /// ACE log type int-to-string mapping
     static ACE_TCHAR* m_LogEntryTypeName[];
-    
+    static ACSLoggingLog::LogType m_LogBinEntryTypeName[];    
+
     /// initializes ACE_LOG_MSG (must be done per each thread)
     static void init(LoggingProxy *loggingProxy);
     
@@ -284,7 +286,7 @@ class logging_EXPORT LoggingProxy : public ACE_Log_Msg_Callback
     static bool isInitThread();
    
     /// For testing only (not tread-safe)
-    int getCacheLogCount() const { return m_cache.size(); }
+    int getCacheLogCount() const { if(!m_logBin) return m_cache.size(); else return m_bin_cache.size();}
  
   private:
     
@@ -309,7 +311,10 @@ class logging_EXPORT LoggingProxy : public ACE_Log_Msg_Callback
     /// Send given record to the centralized logger (Telecom log service)
     /// Return: true if successful, false on failure
     bool sendRecord(CORBA::Any &record);
-    
+
+    void sendXmlLogs(ACE_Log_Record &log_record,  const ACE_TCHAR * timestamp, const ACE_TCHAR * entryType);
+    void sendBinLogs(ACE_Log_Record &log_record,  const ACE_TCHAR * timestamp, const ACE_TCHAR * entryType);  
+ 
     ///
     /// The number of log entries that can be kept in the local cache.
     /// When this number is reached, all log entries are transferred to the centralized
@@ -370,7 +375,14 @@ class logging_EXPORT LoggingProxy : public ACE_Log_Msg_Callback
     ///
     typedef std::deque<ACE_CString> LogDeque;
     LogDeque m_cache;
-    
+   
+
+    typedef std::deque<ACSLoggingLog::LogBinaryRecord *> LogBinDeque;
+    //typedef std::deque<ACSLoggingLog::LogBinaryRecord > LogBinDeque;
+    LogBinDeque m_bin_cache;
+
+   // ACSLoggingLog::LogBinaryRecord * m_binaryRecord;
+
     /// Cache state
     bool m_cacheDisabled;
     
@@ -384,7 +396,9 @@ class logging_EXPORT LoggingProxy : public ACE_Log_Msg_Callback
     ///
     ACE_Recursive_Thread_Mutex m_mutex;
     ACE_Recursive_Thread_Mutex m_printMutex;
-    
+
+    bool m_logBin;   
+ 
     ///
     /// Thread specific storage
     ///
