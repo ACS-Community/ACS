@@ -1,4 +1,4 @@
-# @(#) $Id: ACSCorba.py,v 1.21 2007/02/02 09:10:01 agrimstrup Exp $
+# @(#) $Id: ACSCorba.py,v 1.22 2007/05/28 06:42:34 cparedes Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA,  2001
@@ -27,7 +27,7 @@ Takes care of initializing the ORB and setting initial reference to MACI
 manager. Also provides functions to get service and device references
 from the manager.
 '''
-__revision__ = "$Id: ACSCorba.py,v 1.21 2007/02/02 09:10:01 agrimstrup Exp $"
+__revision__ = "$Id: ACSCorba.py,v 1.22 2007/05/28 06:42:34 cparedes Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 from sys       import argv
@@ -35,6 +35,7 @@ from os        import environ
 from traceback import print_exc
 from atexit    import register
 from time      import sleep
+import os
 #--CORBA STUBS-----------------------------------------------------------------
 from omniORB import CORBA
 from omniORB import importIRStubs
@@ -435,7 +436,13 @@ def loggingChannel():
     
     Raises: ???
     '''
-    return getClient().getService('LoggingChannel')
+
+    if os.environ.has_key('ACS_LOG_BIN') and os.environ['ACS_LOG_BIN'] == "true":
+        loggingChannelName = "LoggingChannelBin"
+    else:
+        loggingChannelName = "LoggingChannel"
+
+    return getClient().getService(loggingChannelName)
 #----------------------------------------------------------------------------
 def interfaceRepository():
     '''

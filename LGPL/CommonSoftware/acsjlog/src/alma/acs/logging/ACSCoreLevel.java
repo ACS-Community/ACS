@@ -22,6 +22,8 @@
  
 package alma.acs.logging;
 
+import alma.ACSLoggingLog.LogType;
+
 /**
  * Contains constants for ACS Core Levels,
  * as defined by the ACS logging system.
@@ -82,4 +84,19 @@ public interface ACSCoreLevel
 	 * A panic condition. This is normally broadcast to all users (ACS level).
 	 */
 	public final int ACS_LEVEL_EMERGENCY = 11;
+
+    public final LogType[] LogBinEntryTypeName={
+        LogType.Unknown,		// not in specs
+        LogType.Shutdown, 	// not in specs
+        LogType.Trace,
+        LogType.Debug,
+        LogType.Info,
+        LogType.Notice,
+        LogType.Warning,
+        LogType.Startup,		// not in specs
+        LogType.Error,
+        LogType.Critical,
+        LogType.Alert,
+        LogType.Emergency
+    };
 }

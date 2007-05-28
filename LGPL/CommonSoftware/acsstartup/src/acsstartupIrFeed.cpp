@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsstartupIrFeed.cpp,v 1.2 2006/05/05 21:04:50 dfugate Exp $"
+* "@(#) $Id: acsstartupIrFeed.cpp,v 1.3 2007/05/28 06:41:27 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -59,7 +59,7 @@
 #include <stdio.h>
 #include <string.h>
 
-static char *rcsId="@(#) $Id: acsstartupIrFeed.cpp,v 1.2 2006/05/05 21:04:50 dfugate Exp $"; 
+static char *rcsId="@(#) $Id: acsstartupIrFeed.cpp,v 1.3 2007/05/28 06:41:27 cparedes Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <iostream>
@@ -141,28 +141,31 @@ int main(int argc, char *argv[])
 	}
 
     //cycle through each area of IDL path
-    while(idlPath.length()!=0)
-	{
-	//find the next whitespace to...
-	std::string::size_type wsIndex = idlPath.find(" ");
-	//sanity check
-	if (wsIndex == string::npos)
-	    {
-	    break;
-	    }
+    if (argc == 2){
+        while(idlPath.length()!=0)
+        {
+        //find the next whitespace to...
+        std::string::size_type wsIndex = idlPath.find(" ");
+        //sanity check
+        if (wsIndex == string::npos)
+            {
+            break;
+            }
 
-	//...get the next IDL directory
-	string idlDir = idlPath.substr(0, wsIndex);
-	
-	//examine the IDL directory adding all IDLs found
-	addIdlFiles(idlDir, idlFiles);
+        //...get the next IDL directory
+        string idlDir = idlPath.substr(0, wsIndex);
+        
+        //examine the IDL directory adding all IDLs found
+        addIdlFiles(idlDir, idlFiles);
 
-	
-	//shrink the idlPath
-	idlPath.erase(0, wsIndex + 1);
-	}
-    
+        
+        //shrink the idlPath
+        idlPath.erase(0, wsIndex + 1);
+        }
+    }
+ 
     //remove duplicates
+ //   idlFiles.sort();
     idlFiles.unique();
 
     file << "#ifndef acsIrfeedDyn_" << processId <<"_idl" << std::endl;
@@ -188,6 +191,9 @@ int main(int argc, char *argv[])
 	file << "#include <" << idlFiles.front() << ">" << std::endl;
 	idlFiles.pop_front();
 	}
+
+    for(int i=3 ; i < argc ;  i++)
+        file << "#include <" << argv[i] << ">" << std::endl;  
 
     file << "#endif" << std::endl;
     

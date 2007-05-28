@@ -18,7 +18,7 @@
  */
 /** 
  * @author  nbarriga
- * @version $Id: AcsLogRecord.java,v 1.2 2007/04/10 14:40:37 hsommer Exp $
+ * @version $Id: AcsLogRecord.java,v 1.3 2007/05/28 06:40:44 cparedes Exp $
  * @since    
  */
 

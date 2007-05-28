@@ -24,13 +24,13 @@ package alma.acs.logging;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.logging.Formatter;
 import java.util.logging.LogRecord;
 
 import org.omg.CORBA.Any;
 import org.omg.CORBA.ORB;
 import org.omg.CORBA.UserException;
 import org.omg.DsLogAdmin.Log;
+import alma.acs.logging.formatters.AcsLogFormatter;
 
 /**
  * Sends log records to the remote CORBA log service.
@@ -51,10 +51,10 @@ class RemoteLogDispatcher {
     private ORB orb;
     private Log logService;
     
-    private Formatter xmlFormatter;
+    private AcsLogFormatter logFormatter;  
+
     private LogRecordComparator timestampLogRecordComparator;
     protected boolean DEBUG = false;
-    
     
     /**
      * 
@@ -64,14 +64,14 @@ class RemoteLogDispatcher {
      *                    we can keep working with this object the whole time.
      *                    May be <code>null</code> for unit tests, in which case {@link #sendLogRecords(LogRecord[])} 
      *                    will fail and return the all log records inside the <code>FailedLogRecords</code> structure.
-     * @param xmlLogFormatter  used to format LogRecords to XML representation. 
-     *                    No direct assumption on XML is made, so technically any valid String returned by the formatter will do 
+     * @param logFormatter  used to format LogRecords to Any representation. 
+     *                    No direct assumption on XML is made, so technically any valid Any returned by the formatter will do 
      *                    (as far as this class is concerned).  
      */
-    RemoteLogDispatcher(ORB orb, Log logService, Formatter xmlLogFormatter) {
+    RemoteLogDispatcher(ORB orb, Log logService, AcsLogFormatter logFormatter) {
         this.orb = orb;
         this.logService = logService;
-        this.xmlFormatter = xmlLogFormatter;
+        this.logFormatter = logFormatter;
         timestampLogRecordComparator = new LogRecordComparator(true);
     }
  
@@ -96,8 +96,6 @@ class RemoteLogDispatcher {
         }
     }
 
-
-    
     /**
      * Attempts to send <code>logRecords</code> over to the remote logging service.
      * To not lose any log records in case of failure, they can be obtained from the returned 
@@ -109,7 +107,7 @@ class RemoteLogDispatcher {
      * Sorts all log records by timestamp before converting them for remote transmission.
      * 
      * @param logRecords
-     * @return those LogRecords that failed to be sent, either because they could not be converted to XML, 
+     * @return those LogRecords that failed to be sent, either because they could not be converted to Any, 
      * or because the remote logger failed.
      */
     FailedLogRecords sendLogRecords(LogRecord[] logRecords) {
@@ -121,15 +119,13 @@ class RemoteLogDispatcher {
         // used for feeding back these LogRecords if the sending fails
         List<LogRecord> candidateLogRecords = new ArrayList<LogRecord>(); 
         
-        // create CORBA Anys containing XML String representations of log records
+        // create CORBA Anys containing Any representations of log records
         List<Any> anyLogRecords = new ArrayList<Any>();
         for (int i = 0; i < logRecords.length; i++) {
             if (i < getBufferSize()) {
                 try {
-                    String xmlLogRecord = xmlFormatter.format(logRecords[i]);
-                    // TODO: check if these anys can and should be cached for performance reasons
                     Any anyLogRecord = orb.create_any();
-                    anyLogRecord.insert_string(xmlLogRecord);
+                    anyLogRecord = logFormatter.formatAny(anyLogRecord, logRecords[i]);
                     anyLogRecords.add(anyLogRecord);
                     candidateLogRecords.add(logRecords[i]);
                 } catch (RuntimeException e) {
@@ -166,8 +162,9 @@ class RemoteLogDispatcher {
     protected void writeRecords(Any[] anyLogRecordsArray) throws UserException {
         logService.write_records(anyLogRecordsArray);
         if (DEBUG) {
-            System.out.println("sent the following XML log records to the log service:");
+            System.out.println("sent the following Any log records to the log service:");
             for (int i = 0; i < anyLogRecordsArray.length; i++) {
+                //TODO: CARLI, change that here assumes that is string, it can be a binary log!!!
                 System.out.println("" + i + ") " + anyLogRecordsArray[i].extract_string());
             }
         }

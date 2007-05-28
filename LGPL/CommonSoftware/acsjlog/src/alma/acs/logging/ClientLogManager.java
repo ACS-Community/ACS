@@ -40,7 +40,10 @@ import alma.acs.logging.config.LogConfig;
 import alma.acs.logging.config.LogConfigException;
 import alma.acs.logging.config.LogConfigSubscriber;
 import alma.acs.logging.formatters.AcsXMLLogFormatter;
+import alma.acs.logging.formatters.AcsBinLogFormatter;
+//TODO: CARLI fix this to match the other formatters
 import alma.acs.logging.formatters.ConsoleLogFormatter;
+
 import alma.maci.loggingconfig.LoggingConfig;
 
 
@@ -72,7 +75,7 @@ public class ClientLogManager implements LogConfigSubscriber
     /** logger namespace for logger classes from this module */
     private static final String NS_LOGGER = "alma.acs.logger";
 
-	/** instance of a singleton */
+    /** instance of a singleton */
 	private volatile static ClientLogManager s_instance;
 
 	
@@ -103,6 +106,7 @@ public class ClientLogManager implements LogConfigSubscriber
 
 	/** for testing */
 	private boolean DEBUG = Boolean.getBoolean("alma.acs.logging.verbose");
+    private boolean LOG_BIN_TYPE = Boolean.getBoolean("ACS.loggingBin");
 
 	/** the process name to be prepended to the name for the Corba logger, so that different ORB instances in the system can be distinguished */ 
     private String processName;
@@ -347,7 +351,11 @@ public class ClientLogManager implements LogConfigSubscriber
                         m_internalLogger.info("Connected to central log service after initial failure. ");
                     }
                     // make log service available to our dispatcher, and flush the records collected so far
-                    logDispatcher = new RemoteLogDispatcher(orb, logService, new AcsXMLLogFormatter());
+                    if(LOG_BIN_TYPE){
+                        logDispatcher = new RemoteLogDispatcher(orb, logService, new AcsBinLogFormatter());
+                    }else{
+                        logDispatcher = new RemoteLogDispatcher(orb, logService, new AcsXMLLogFormatter());
+                    }
                     logQueue.setRemoteLogDispatcher(logDispatcher);
                     logQueue.flushAllAndWait();
                     logQueue.setPeriodicFlushing(flushPeriodSeconds * 1000);

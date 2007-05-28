@@ -19,7 +19,7 @@
 
 /** 
  * @author  acaproni   
- * @version $Id: ACSLogRetrieval.java,v 1.15 2007/04/19 16:09:04 acaproni Exp $
+ * @version $Id: ACSLogRetrieval.java,v 1.16 2007/05/28 06:41:06 cparedes Exp $
  * @since    
  */
 
@@ -29,11 +29,16 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Random;
+import java.util.Vector;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
 import com.cosylab.logging.engine.log.ILogEntry;
+import com.cosylab.logging.engine.log.LogEntry;
+import com.cosylab.logging.engine.log.ILogEntry.AdditionalData;
 import com.cosylab.logging.settings.ErrorLogDialog;
 
 import  javax.xml.parsers.ParserConfigurationException;
@@ -51,6 +56,9 @@ public class ACSLogRetrieval extends Thread {
 	// received and those shown in the GUI
 	// The thread will publish this situation to the listeners
 	private static final int DELAY_NUMBER=1000;
+	
+	// The separator for the field of the logs in the file
+	private final String SEPARATOR = ""+((char)0);
 	
 	// The engine
 	private LCEngine engine;
@@ -82,13 +90,20 @@ public class ACSLogRetrieval extends Thread {
 	// The parser
 	private ACSLogParser parser=null;
 	
+	// true if the binary format is in use, falso otherwise
+	private boolean binaryFormat;
+	
+	// The simple date format used to write and read dates from a string
+	private SimpleDateFormat dateFormat = new SimpleDateFormat(ILogEntry.TIME_FORMAT);
+	
 	/**
 	 * Constructor
 	 * 
 	 * @param engine The engine
 	 */
-	public ACSLogRetrieval(LCEngine engine) {
+	public ACSLogRetrieval(LCEngine engine, boolean binFormat) {
 		super("ACSLogRetrieval");
+		this.binaryFormat=binFormat;
 		this.engine=engine;
 		initialize();
 	}
@@ -103,12 +118,14 @@ public class ACSLogRetrieval extends Thread {
 		} catch (FileNotFoundException fne) {
 			rOutF=null;
 		}
-		try {
-			parser = new ACSLogParserDOM();
-		} catch (ParserConfigurationException pce) {
-			parser=null;
+		if (!binaryFormat) {
+			try {
+				parser = new ACSLogParserDOM();
+			} catch (ParserConfigurationException pce) {
+				parser=null;
+			}
 		}
-		if (rOutF!=null && parser!=null) {
+		if (rOutF!=null) {
 			this.setPriority(Thread.MIN_PRIORITY);
 			this.start();
 		} else {
@@ -240,19 +257,20 @@ public class ACSLogRetrieval extends Thread {
 				}
 				if (engine.hasLogListeners()) {
 					ILogEntry log;
-					try {
-						log = parser.parse(tempStr);
-						if (log==null) {
-							throw new NullPointerException("Fail to parse "+tempStr);
+					if (!binaryFormat) {
+						try {
+							log = parser.parse(tempStr);
+						} catch (Exception e) {
+							StringBuilder strB = new StringBuilder("\nException occurred while dispatching the XML log.\n");
+							strB.append("This log has been lost: "+tempStr);
+							ErrorLogDialog.getErrorLogDlg(true).appendText(strB.toString());
+							engine.publishReport(strB.toString());
+							System.err.println("error parsing a log "+e.getMessage());
+							e.printStackTrace();
+							continue;
 						}
-					} catch (Throwable e) {
-						StringBuilder strB = new StringBuilder("\nException occurred while dispatching the XML log.\n");
-						strB.append("This log has been lost: "+tempStr);
-						ErrorLogDialog.getErrorLogDlg(true).appendText(strB.toString());
-						engine.publishReport(strB.toString());
-						System.err.println("Error parsing a log "+e.getMessage());
-						e.printStackTrace();
-						continue;
+					} else {
+						log=fromCacheString(tempStr);
 					}
 					try {
 						engine.publishLog(log);
@@ -293,6 +311,110 @@ public class ACSLogRetrieval extends Thread {
 				}
 			}
 		}
+	}
+	
+	/**
+	 * Build a log out of its string representation
+	 * 
+	 * @param str The string representing a log
+	 * @return The log
+	 */
+	private ILogEntry fromCacheString(String str) {
+		String[] strs = str.split(SEPARATOR);
+		long millis = 0;
+		try { 
+			millis=dateFormat.parse(strs[0]).getTime();
+		} catch (ParseException e) {
+			System.err.println("Error parsing the date: "+strs[0]);
+		}
+		Integer entrytype = new Integer(strs[1]);
+		String srcObject = null;
+		if (strs.length>2) {
+			srcObject=strs[2];
+		}
+		String fileNM = null;
+		if (strs.length>3) {
+			fileNM=strs[3];
+		}
+		Integer line = null;
+		if (strs.length>4 && strs[4].length()!=0) {
+			line =new Integer(strs[4]);
+		}
+		String routine = null;
+		if (strs.length>5) {
+			routine=strs[5];
+		}
+		String host = null;
+		if (strs.length>6) {
+			host=strs[6];
+		}
+		String process = null;
+		if (strs.length>7) {
+			process=strs[7];
+		}
+		String context = null;
+		if (strs.length>8) {
+			context=strs[8];
+		}
+		String thread = null;
+		if (strs.length>9) {
+			thread=strs[9];
+		}
+		String logid = null;
+		if (strs.length>10) {
+			logid=strs[10];
+		}
+		Integer priority = null;
+		if (strs.length>11 && strs[11].length()>0) {
+			priority=new Integer(strs[11]);
+		}
+		String uri = null;
+		if (strs.length>12) {
+			uri=strs[12];
+		}
+		String stackid = null;
+		if (strs.length>13) {
+			stackid=strs[13]; 
+		}
+		Integer stacklevel = null;
+		if (strs.length>14 && strs[14].length()>0) {
+			Integer.parseInt(strs[14]);
+		}
+		String logmessage = null;
+		if (strs.length>15) {
+			logmessage=strs[15];
+		}
+		String audience = null;
+		if (strs.length>16) {
+			audience=strs[16];
+		}
+        
+        Vector<ILogEntry.AdditionalData> addDatas = null;
+        if (strs.length>ILogEntry.NUMBER_OF_FIELDS) {
+        	addDatas = new Vector<ILogEntry.AdditionalData>();
+        	for (int t=ILogEntry.NUMBER_OF_FIELDS; t<strs.length; t+=2) {
+        		addDatas.add(new AdditionalData(strs[t],strs[t+1]));
+        	}
+        }
+        return new LogEntry(
+        		millis,
+        		entrytype,
+        		fileNM,
+        		line,
+        		routine,
+        		host,
+        		process,
+        		context,
+        		thread,
+        		logid,
+        		priority,
+        		uri,
+        		stackid,
+        		stacklevel,
+        		logmessage,
+        		srcObject,
+                        audience,
+        		addDatas);
 	}
 	
 }

@@ -6,7 +6,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: acsStartORBSRVC,v 1.64 2006/10/17 09:20:10 cparedes Exp $"
+# "@(#) $Id: acsStartORBSRVC,v 1.65 2007/05/28 06:41:27 cparedes Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -449,8 +449,13 @@ then
     timeoutExit
 fi
 
+export LOGGING_CHANNEL=LoggingChannel
+if [ "$ACS_LOG_BIN" = "true" ]
+then 
+    export LOGGING_CHANNEL=LoggingChannelBin
+fi
 # Create the logging channel now.
-acsstartupCreateChannel --name_service corbaloc::$HOST:$NAMING_SERVICE_PORT/NameService --notify_service_id LoggingNotifyEventChannelFactory --channel_id LoggingChannel #--max_queue_length 10 --reject_new_events true #--discard_policy FifoOrder #
+acsstartupCreateChannel --name_service corbaloc::$HOST:$NAMING_SERVICE_PORT/NameService --notify_service_id LoggingNotifyEventChannelFactory --channel_id $LOGGING_CHANNEL #--max_queue_length 10 --reject_new_events true #--discard_policy FifoOrder #
 
 #------------------------------------------------------------------------------------------
 ################################

@@ -16,7 +16,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: acslogTATEnv,v 1.1 2006/12/14 08:35:29 bjeram Exp $"
+# "@(#) $Id: acslogTATEnv,v 1.2 2007/05/28 06:39:36 cparedes Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -26,6 +26,7 @@
 set ACS_TMP $env(PWD)/tmp
 set env(ACS_TMP) $ACS_TMP
 set env(ACS_LOG_STDOUT) 0
+#set env(ACS_LOG_BIN) true
 set env(MACI_RECOVERY_FILE_NAME) $ACS_TMP/maciRecovery
 set env(ACS_BACI_RECOVERY_FILE) $ACS_TMP/baciRecovery
 set env(ACS_LOG_FILE) $ACS_TMP/log_cache.dat 

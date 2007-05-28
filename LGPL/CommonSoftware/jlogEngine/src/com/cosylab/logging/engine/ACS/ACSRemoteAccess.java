@@ -45,6 +45,7 @@ import alma.maciErrType.CannotGetComponentEx;
 import alma.maciErrType.ComponentNotAlreadyActivatedEx;
 import alma.maciErrType.ComponentConfigurationNotFoundEx;
 import alma.maciErrType.NoPermissionEx;
+import alma.acscommon.LOGGING_CHANNEL_XML_NAME;
 import alma.acscommon.NAMING_SERVICE_NAME;
 import alma.acscommon.LOGGING_CHANNEL_NAME;
 
@@ -57,11 +58,11 @@ import alma.acscommon.LOGGING_CHANNEL_NAME;
  */
 public final class ACSRemoteAccess implements RemoteAccess {
 	public static final String MANAGER_PROPERTY = System.getProperty("ACS.manager");
+	public static final String LOGGING_BINARY_FORMAT =System.getProperty("ACS.loggingBin");
 	
 	public static final String NAME_SERVICE = NAMING_SERVICE_NAME.value;
-	public static final String LOGGING_CHANNEL = LOGGING_CHANNEL_NAME.value;
-	
-	
+	public static final String LOGGING_XML_CHANNEL = LOGGING_CHANNEL_XML_NAME.value;
+	public static final String LOGGING_BIN_CHANNEL = LOGGING_CHANNEL_NAME.value;
 	
 	private boolean isInitialized = false;
 	private ORB orb;
@@ -149,7 +150,10 @@ public final class ACSRemoteAccess implements RemoteAccess {
 	
 	private boolean createStructuredPushConsumer() {
 		engine.publishReport("Initializing Structured Push Consumer...");
-		acsSPS = new ACSStructuredPushConsumer(this,engine);
+		acsSPS = new ACSStructuredPushConsumer(
+				this,
+				engine,
+				Boolean.parseBoolean(ACSRemoteAccess.LOGGING_BINARY_FORMAT));
 		if (!acsSPS.isInitialized) return false;
 	
 		acsSPS.connect();
@@ -243,7 +247,12 @@ public final class ACSRemoteAccess implements RemoteAccess {
 			return;
 		}
 		
-		boolean isNotifyResolved = resolveNotifyChannel(LOGGING_CHANNEL, namingContext);
+		boolean isNotifyResolved;
+		if (Boolean.parseBoolean(ACSRemoteAccess.LOGGING_BINARY_FORMAT)) {
+			isNotifyResolved= resolveNotifyChannel(LOGGING_BIN_CHANNEL, namingContext);
+		} else {
+			isNotifyResolved= resolveNotifyChannel(LOGGING_XML_CHANNEL, namingContext);
+		}
 		if (!isNotifyResolved) {
 			return;
 		}

@@ -21,9 +21,11 @@
  */
 package com.cosylab.logging.engine.ACS;
 
+import java.util.Date;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
+import org.omg.CORBA.Any;
 import org.omg.CosNotification.StructuredEvent;
 import org.omg.CosNotifyChannelAdmin.ClientType;
 import org.omg.CosNotifyChannelAdmin.ProxySupplier;
@@ -31,15 +33,22 @@ import org.omg.CosNotifyChannelAdmin.StructuredProxyPushSupplier;
 import org.omg.CosNotifyChannelAdmin.StructuredProxyPushSupplierHelper;
 import org.omg.CosNotifyComm.StructuredPushConsumerPOA;
 
-import com.cosylab.logging.LoggingClient;
+import alma.ACSLoggingLog.LogBinaryRecord;
+import alma.ACSLoggingLog.LogBinaryRecordHelper;
+import alma.ACSLoggingLog.NameValue;
+
+import com.cosylab.logging.engine.log.LogTypeHelper;
+
+import com.cosylab.logging.client.cache.LogBufferedFileCache;
 import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.settings.ErrorLogDialog;
+import com.cosylab.logging.settings.LogTypeRenderer;
 
 /**
- * ACSStructuredPushConsumer gets an XML log from the Engine 
- * and stores it in a list called XmlLogs.
- * Creation date: (10/24/2001 12:27:34 PM)
- * @author: 
+ * ACSStructuredPushConsumer gets logs from the NC 
+ * and stores them in a list called receivedLogs.
+ * 
+ * It supports binary and XML formats.
  */
 public final class ACSStructuredPushConsumer extends StructuredPushConsumerPOA
 {
@@ -81,17 +90,28 @@ public final class ACSStructuredPushConsumer extends StructuredPushConsumerPOA
 			String log = null;
 			ILogEntry logEntry = null;
 			while (!terminateThread) {
+//			while (true) {
+				Object obj;
 				try {
-					log = xmlLogs.poll(250,TimeUnit.MILLISECONDS);
+					//log = xmlLogs.poll(250,TimeUnit.MILLISECONDS);
+					obj = receivedLogs.take();
 				} catch (InterruptedException ie) {
 					System.out.println("Exception while taking a log out of the queue: "+ie.getMessage());
 					ie.printStackTrace();
 					continue;
 				}
-				if (log==null) {
-					// No logs received before the timeout elapsed
+				if (binaryFormat) {
+					System.out.println("Dispatcher.run(): Binary log received");
 					continue;
+				} else {
+                    //if (log==null) {
+                        // No logs received before the timeout elapsed
+                      //  continue;
+                    //}
+					//XML
+					log = (String)obj;
 				}
+				
 				if (engine.hasRawLogListeners()) {
 					engine.publishRawLog(log);
 				}
@@ -122,6 +142,9 @@ public final class ACSStructuredPushConsumer extends StructuredPushConsumerPOA
 	private ACSLogParser parser = null;
 	private ACSRemoteAccess acsra = null;
 	
+	// true if the binary format is in use, falso otherwise
+	private boolean binaryFormat;
+	
 	/**
 	 * true if the consumer is discarding logs because is not able
 	 * to follow the flow of the incoming messages
@@ -136,7 +159,9 @@ public final class ACSStructuredPushConsumer extends StructuredPushConsumerPOA
 	
 	// The queue where the logs read from the NC are pushed
 	// The dispatcher pos up and injects the logs in the GUI
-	private LinkedBlockingQueue<String> xmlLogs = new LinkedBlockingQueue<String>(2048);
+	//
+	// Contains String if XML logs are in use, otherwise binary logs
+	private LinkedBlockingQueue receivedLogs = new LinkedBlockingQueue(2048);
 	
 	private Dispatcher dispatcher = new Dispatcher();
 	private LCEngine engine;
@@ -148,27 +173,31 @@ public final class ACSStructuredPushConsumer extends StructuredPushConsumerPOA
 	// all the logs received while closed will be discarded
 	private volatile boolean closed=false;
 	
+	private StringBuilder sb=new StringBuilder();
+	private final char SEPARATOR = (char)0;
+	
 	/**
 	 * StructuredPushConsumer constructor comment.
 	 * 
 	 * @param acsra The remote access obj to ACS NC
 	 * @param theEngine The LCEngine
 	 */
-	public ACSStructuredPushConsumer(ACSRemoteAccess acsra,LCEngine theEngine)
+	public ACSStructuredPushConsumer(ACSRemoteAccess acsra,LCEngine theEngine, boolean binaryFormat)
 	{
 		if (acsra==null || theEngine==null) {
 			throw new IllegalArgumentException("Illegal null argument");
 		}
+		this.binaryFormat=binaryFormat;
 		this.acsra = acsra;
 		this.engine=theEngine;
 		dispatcher.setPriority(Thread.MAX_PRIORITY);
-		logRetrieval = new ACSLogRetrieval(engine);
+		logRetrieval = new ACSLogRetrieval(engine,this.binaryFormat);
 		initialize();
 	}
 
 	public LinkedBlockingQueue<String> getXmlLogs()
 	{
-		LinkedBlockingQueue<String> XmlLogs = xmlLogs;
+		LinkedBlockingQueue<String> XmlLogs = receivedLogs;
 		XmlLogs.add(
 			"<Info TimeStamp=\"2001-11-07T09:24:11.096\" Routine=\"msaci::ContainerImpl::init\" Host=\"disna\" Process=\"maciManager\" Thread=\"main\" Context=\"\"><Data Name=\"StupidData\">All your base are belong to us.</Data>Connected to the Centralized Logger.</Info>");
 		XmlLogs.add(
@@ -212,15 +241,17 @@ public final class ACSStructuredPushConsumer extends StructuredPushConsumerPOA
 	 */
 	private void initialize()
 	{
-		try
-		{
-			parser = new ACSLogParserDOM();
-		}
-		catch (javax.xml.parsers.ParserConfigurationException pce)
-		{
-			engine.publishReport("Exception occurred when initializing the XML parser.");
-			System.out.println("Exception in ACSStructuredPushConsumer::initialize(): " + pce);
-			return;
+		if (!binaryFormat) {
+			try
+			{
+				parser = new ACSLogParserDOM();
+			}
+			catch (javax.xml.parsers.ParserConfigurationException pce)
+			{
+				engine.publishReport("Exception occurred when initializing the XML parser.");
+				System.out.println("Exception in ACSStructuredPushConsumer::initialize(): " + pce);
+				return;
+			}
 		}
 		org.omg.CORBA.IntHolder proxyId = new org.omg.CORBA.IntHolder();
 
@@ -259,9 +290,15 @@ public final class ACSStructuredPushConsumer extends StructuredPushConsumerPOA
 		if (suspended || closed) {
 			return;
 		}
-		String xmlLog = event.remainder_of_body.extract_string();
-		
-		logRetrieval.addLog(xmlLog);
+		if (binaryFormat) {
+			Any any = event.remainder_of_body;
+			LogBinaryRecord logRecord = LogBinaryRecordHelper.extract(any);
+			String binStr = toCacheString(logRecord);
+			logRetrieval.addLog(binStr);
+		} else {
+			String xmlLog = event.remainder_of_body.extract_string();
+			logRetrieval.addLog(xmlLog);
+		}
 	}
 
 	/**
@@ -360,6 +397,91 @@ public final class ACSStructuredPushConsumer extends StructuredPushConsumerPOA
 		if (logRetrieval!=null) {
 			logRetrieval.close(sync);
 		}
+	}
+	
+	/**
+	 * Transform the log in a string of zero separated values
+	 * It is very similato what is used in the FileCache
+	 * 
+	 * @param log The log to get the string representation
+	 * @return A string representation of the log
+	 */
+	private String toCacheString(LogBinaryRecord log) {
+		sb.delete(0,sb.length());
+		sb.append(log.TimeStamp);
+		sb.append(SEPARATOR);
+		sb.append(LogTypeHelper.parseLogTypeDescription(log.type.toString()));
+		sb.append(SEPARATOR);
+		sb.append(log.SourceObject);
+		sb.append(SEPARATOR);
+		sb.append(log.File);
+		sb.append(SEPARATOR);
+		sb.append(log.Line);
+		sb.append(SEPARATOR);
+		sb.append(log.Routine);
+		sb.append(SEPARATOR);
+		sb.append(log.Host);
+		sb.append(SEPARATOR);
+		sb.append(log.Process);
+		sb.append(SEPARATOR);
+		sb.append(log.LogContext);
+		sb.append(SEPARATOR);
+		sb.append(log.Thread);
+		sb.append(SEPARATOR);
+		sb.append(log.LogId);
+		sb.append(SEPARATOR);
+		sb.append(log.Priority);
+		sb.append(SEPARATOR);
+		sb.append(log.Uri);
+		sb.append(SEPARATOR);
+		sb.append(log.StackId);
+		sb.append(SEPARATOR);
+		sb.append(log.StackLevel);
+		sb.append(SEPARATOR);
+		sb.append(log.MsgData);
+		sb.append(SEPARATOR);
+		sb.append(log.Audience);
+		sb.append(SEPARATOR);
+		
+		NameValue[] attrs=log.attributes;
+		NameValue[] vals=log.log_data;
+		
+		//int max=Math.max(attrs.length, vals.length);
+		int min=Math.min(attrs.length, vals.length);
+		for (int t=0; t<min; t++) {
+			if (attrs[t]!=null) {
+				sb.append(attrs[t].name);
+			    sb.append(SEPARATOR);
+				sb.append(attrs[t].value);
+			    sb.append(SEPARATOR);
+			}
+			if (vals[t]!=null) {
+				sb.append(vals[t].name);
+			    sb.append(SEPARATOR);
+				sb.append(vals[t].value);
+			    sb.append(SEPARATOR);
+			}
+		}
+        if(attrs.length > vals.length){
+            for (int t=min; t<attrs.length; t++) {
+			    if (attrs[t]!=null) {
+                    sb.append(attrs[t].name);
+                    sb.append(SEPARATOR);
+                    sb.append(attrs[t].value);
+                    sb.append(SEPARATOR);
+			    }
+            }
+        }else if (attrs.length < vals.length){
+            for (int t=min; t<vals.length; t++) {
+                if (vals[t]!=null) {
+                    sb.append(vals[t].name);
+                    sb.append(SEPARATOR);
+                    sb.append(vals[t].value);
+                    sb.append(SEPARATOR);
+                }
+            }
+        }
+		return sb.toString();
 	}
 }
 

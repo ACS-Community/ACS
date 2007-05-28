@@ -22,7 +22,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: acsstartupLoadIFR,v 1.3 2006/06/07 16:51:49 dfugate Exp $"
+# "@(#) $Id: acsstartupLoadIFR,v 1.4 2007/05/28 06:41:27 cparedes Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -86,9 +86,33 @@ export HOST=`getIP`
 #Find the port number of the IR
 ACS_IR_PORT=`getIRPort`
 IRcorbaloc="corbaloc::$HOST:$ACS_IR_PORT/DefaultRepository"
+
+while [ $# -gt 0 ]
+do
+   case "$1" in
+    -c*) CHECK=on
+    ;;
+    -IRcorbaloc) IRcorbaloc=$2
+    shift
+    ;;
+    *) files="$files $1";;
+   esac
+   shift
+
+done
 ORBInitRef="InterfaceRepository=$IRcorbaloc"
 
+if [ "$CHECK" = "on" ]
+then
+    FUNCTION_STRING="Checking"
+else
+    FUNCTION_STRING="Loading"
+fi
 
+if [ "X" != "X$files" ]
+    then
+    ACS_LOG_INFO "Loading files passed on the command line: $files"
+fi
 #***************************************************************
 # Creates dynamically the IDL file to include everything
 #***************************************************************
@@ -97,7 +121,7 @@ ORBInitRef="InterfaceRepository=$IRcorbaloc"
 ACS_IDL_IRFEED_FILE=/tmp/acsIrfeedDyn.$$.idl
 
 # Build the file
-acsstartupIrFeed $ACS_IDL_IRFEED_FILE $$
+acsstartupIrFeed $ACS_IDL_IRFEED_FILE $$ $files
 
 
 ACS_LOG_DEBUG "            loading: $ACS_IDL_IRFEED_FILE"
@@ -105,7 +129,15 @@ ACS_LOG_DEBUG "            loading: $ACS_IDL_IRFEED_FILE"
 LD_LIBRARY_PATH=$MICO_HOME/lib:$LD_LIBRARY_PATH
 PATH=$MICO_HOME/bin:$PATH
 
-$MICO_HOME/bin/idl -I../idl $IDL_PATH --no-codegen-c++ --feed-ir -ORBIfaceRepoAddr inet:$HOST:$ACS_IR_PORT $ACS_IDL_IRFEED_FILE
+if [ "$CHECK" = "on" ]
+then
+#    rm -f result.idl
+    IRFEED_CMD="$MICO_HOME/bin/idl -I../idl $IDL_PATH --no-codegen-c++ --codegen-idl --name=result.idl $ACS_IDL_IRFEED_FILE"
+else
+    IRFEED_CMD="$MICO_HOME/bin/idl -I../idl $IDL_PATH --no-codegen-c++ --feed-ir -ORBIfaceRepoAddr inet:$HOST:$ACS_IR_PORT $ACS_IDL_IRFEED_FILE"
+fi
+
+$IRFEED_CMD
 RET_CODE=$?
 
 # Now deletes the file
@@ -114,9 +146,9 @@ rm $ACS_IDL_IRFEED_FILE
 # One final check
 if [ "$RET_CODE" = "0" ]
 then
-    ACS_LOG_INFO "Loading of IDL interfaces in Interface Repository completed OK"
+    ACS_LOG_INFO "$FUNCTION_STRING of IDL interfaces in Interface Repository completed OK"
 else
-    ACS_LOG_ERROR "Loading of IDL interfaces in Interface Repository FAILED"
+    ACS_LOG_ERROR "$FUNCTION_STRING of IDL interfaces in Interface Repository FAILED"
 fi
 
 exit $RET_CODE

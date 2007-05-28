@@ -21,16 +21,15 @@
  */
 package alma.acs.logging.formatters;
 
+import org.omg.CORBA.Any;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.net.InetAddress;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
-import java.util.logging.Formatter;
+//import java.util.logging.Formatter;
 import java.util.logging.LogRecord;
 
-import alma.acs.logging.ACSCoreLevel;
+//import alma.acs.logging.ACSCoreLevel;
 import alma.acs.logging.AcsLogLevel;
 import alma.acs.logging.AcsLogRecord;
 import alma.acs.logging.ClientLogManager;
@@ -43,12 +42,21 @@ import alma.acs.util.XmlNormalizer;
  * Class that is responsible for formatting the log records/elements of different levels 
  * as well as assigning the right values to their attributes. 
  */
-public class AcsXMLLogFormatter extends Formatter implements ACSCoreLevel
+public class AcsXMLLogFormatter extends AcsLogFormatter 
 {
+/*<<<<<<< AcsXMLLogFormatter.java
 	private static final SimpleDateFormat df = new SimpleDateFormat("yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'SSS");
 
 	private static String localHostName;
 
+=======
+*/
+    public Any formatAny( Any anyLogRecord, LogRecord logRecord){
+        String xmlLogRecord = format(logRecord);
+        anyLogRecord.insert_string(xmlLogRecord);
+        return anyLogRecord;
+    }   
+ 
 	/**
 	 * Constructs the XML log message that can be sent to the ACS logging service.
 	 * @see java.util.logging.Formatter#format(java.util.logging.LogRecord)
@@ -108,6 +116,7 @@ public class AcsXMLLogFormatter extends Formatter implements ACSCoreLevel
 		if (hostName == null || hostName.length() == 0) {
 			hostName = this.getLocalHostName();
 		}
+            //hostName = getLocalHostName();
 		sb.append("Host=\"" + hostName + "\" ");
 
 		String process = logParamUtil.extractStringProperty(LogParameterUtil.PARAM_PROCESSNAME, null);
@@ -267,19 +276,4 @@ public class AcsXMLLogFormatter extends Formatter implements ACSCoreLevel
 		return content;
 	}
 
-	/**
-	 * Method getHost. Returns the host on which the system is run.
-	 * @return String
-	 */
-	private String getLocalHostName() {
-		if (localHostName == null) {
-			try {
-				localHostName = InetAddress.getLocalHost().getHostName();
-			}
-			catch (Exception e) {
-				localHostName = "localHost(unknown)";
-			}
-		}
-		return localHostName;
-	}
 }

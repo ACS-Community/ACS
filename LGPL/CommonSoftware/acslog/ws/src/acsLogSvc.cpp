@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsLogSvc.cpp,v 1.19 2005/09/21 14:17:17 vwang Exp $"
+* "@(#) $Id: acsLogSvc.cpp,v 1.20 2007/05/28 06:39:36 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -31,7 +31,7 @@
 * bjeram 2001-09-11 created
 */
 
-static char *rcsId="@(#) $Id: acsLogSvc.cpp,v 1.19 2005/09/21 14:17:17 vwang Exp $"; 
+static char *rcsId="@(#) $Id: acsLogSvc.cpp,v 1.20 2007/05/28 06:39:36 cparedes Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <acslogSvcImpl.h>
@@ -55,17 +55,13 @@ void TerminationSignalHandler(int)
 
 int main(int argc, char *argv[])
 {
-
-  
-
   CosNaming::NamingContext_var naming_context; 
   int  nargc=0;
   char **nargv=0;
   const char *hn=ACSPorts::getIP();
   ACE_CString iorFile;
 
- if (argc>=2 && !ACE_OS_String::strcmp(argv[1], "-?"))
-     {
+ if (argc>=2 && !ACE_OS_String::strcmp(argv[1], "-?")){
      ACE_OS::printf ("USAGE: acsLogSvc  [-ORBInitRef NameService=iiop://yyy:xxxx/NameService] [-ORBEndpoint iiop://ip:port] [-o iorfile] [-silent]\n");
      return -1;
   }
@@ -73,8 +69,7 @@ int main(int argc, char *argv[])
 
 // create logging proxy
   LoggingProxy::ProcessName(argv[0]);
-  ACE_Log_Msg::instance()->local_host(hn
-);
+  ACE_Log_Msg::instance()->local_host(hn);
   LoggingProxy m_logger (0, 0, 31, 0);
   LoggingProxy::init (&m_logger);  
   ACS_SHORT_LOG((LM_INFO, "Logging proxy successfully created !"));
@@ -292,14 +287,12 @@ int main(int argc, char *argv[])
 	  name.length (1);
 	  name[0].id = CORBA::string_dup ("ACSLogSvc");
 	  naming_context->rebind (name, obj.in ());
-	  
 	  ACS_SHORT_LOG((LM_INFO, "ACSLogSvc service registered with Naming Services")); 
 	  }//if
 
       CORBA::Object_var table_object =
         orb->resolve_initial_references ("IORTable");
       
-
       IORTable::Table_var adapter =
         IORTable::Table::_narrow (table_object.in ());
       
@@ -310,7 +303,6 @@ int main(int argc, char *argv[])
       else
         {
           adapter->bind ("ACSLogSvc", ior.in ());
-          
         }
 
       poa_manager->activate ();
@@ -320,7 +312,6 @@ int main(int argc, char *argv[])
       if (argStr.find ("-ORBEndpoint")!=ACE_CString::npos)
 	  m_logger.setStdio(31);
       orb->run ();
-      
       
       ACSError::done();
       LoggingProxy::done();

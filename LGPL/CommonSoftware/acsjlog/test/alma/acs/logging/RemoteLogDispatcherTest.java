@@ -24,7 +24,6 @@ package alma.acs.logging;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.logging.Formatter;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 
@@ -35,6 +34,7 @@ import org.omg.CORBA.UserException;
 import junit.framework.TestCase;
 
 import alma.acs.logging.formatters.AcsXMLLogFormatter;
+import alma.acs.logging.formatters.AcsLogFormatter;
 import alma.acs.testsupport.LogRecordCollectingLogger;
 
 
@@ -279,7 +279,7 @@ class TestLogDispatcher extends RemoteLogDispatcher {
     private double writeFailureChance = 0.0;
     private final Random random = new Random(System.currentTimeMillis());
     
-    TestLogDispatcher(ORB orb, Formatter xmlLogFormatter) {
+    TestLogDispatcher(ORB orb, AcsLogFormatter xmlLogFormatter) {
         super(orb, null, xmlLogFormatter);
     }
 
