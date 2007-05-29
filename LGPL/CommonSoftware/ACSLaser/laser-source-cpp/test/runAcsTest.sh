@@ -9,7 +9,7 @@ cp $ACS_CDB/CDB/Alarms/AlarmSystemConfiguration/AlarmSystemConfiguration.xml .
 patch $ACS_CDB/CDB/Alarms/AlarmSystemConfiguration/AlarmSystemConfiguration.xml AlarmSystemConfiguration.xml.patch
 cdbjDALClearCache
 acsutilAwaitContainerStart -cpp bilboContainer
-loggingClient LoggingChannel >& logs.xml &
+loggingClient Logging >& logs.xml &
 sleep 10
 testDriverAcs $NUM_TO_SEND
 sleep 10
