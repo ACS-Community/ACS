@@ -1,4 +1,4 @@
-# @(#) $Id: BaseClient.py,v 1.7 2005/06/17 22:36:08 dfugate Exp $
+# @(#) $Id: BaseClient.py,v 1.8 2007/05/29 20:37:40 agrimstrup Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA,  2001
@@ -21,7 +21,7 @@
 #    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: BaseClient.py,v 1.7 2005/06/17 22:36:08 dfugate Exp $"
+# "@(#) $Id: BaseClient.py,v 1.8 2007/05/29 20:37:40 agrimstrup Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -36,7 +36,7 @@ designed to be used in all Python servant implementations derived from Client.
 BaseClient is more of a helper class than anything else.
 '''
 
-__revision__ = "$Id: BaseClient.py,v 1.7 2005/06/17 22:36:08 dfugate Exp $"
+__revision__ = "$Id: BaseClient.py,v 1.8 2007/05/29 20:37:40 agrimstrup Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 from traceback import print_exc
@@ -74,7 +74,7 @@ class BaseClient(Client):
         #name we will call ourself when contacting the manager
         self.name = str(name)
         #Logger used by container/components
-        self.logger = getLogger(name)
+        self.logger = getLogger(name,name)
         #List of components manager says are active
         self.managerComponents = []
         #CORBA reference to ourself

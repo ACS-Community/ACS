@@ -1,4 +1,4 @@
-# @(#) $Id: Container.py,v 1.26 2007/04/04 20:22:02 agrimstrup Exp $
+# @(#) $Id: Container.py,v 1.27 2007/05/29 20:37:40 agrimstrup Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -21,7 +21,7 @@
 # ALMA should be addressed as follows:
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: Container.py,v 1.26 2007/04/04 20:22:02 agrimstrup Exp $"
+# "@(#) $Id: Container.py,v 1.27 2007/05/29 20:37:40 agrimstrup Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -38,7 +38,7 @@ TODO LIST:
 - a ComponentLifecycleException has been defined in IDL now...
 '''
 
-__revision__ = "$Id: Container.py,v 1.26 2007/04/04 20:22:02 agrimstrup Exp $"
+__revision__ = "$Id: Container.py,v 1.27 2007/05/29 20:37:40 agrimstrup Exp $"
 
 #--Enable Searching Import-----------------------------------------------------
 import AcsutilPy.ACSImport
@@ -118,7 +118,7 @@ class Container(maci__POA.Container, BaseClient):
         self.compPolicies = []  #Policy[] for components
         self.offShootPolicies = []  #Policy[] for offshoots
         self.corbaRef = None  #reference to this object's CORBA reference
-        self.logger = getLogger(name)
+        self.logger = getLogger(name,name)
 
         #Configure CORBA
         self.configCORBA()
@@ -233,7 +233,8 @@ class Container(maci__POA.Container, BaseClient):
             temp[PYREF].setAll(temp[NAME],  #string-name of component
                                self.token,   #Security handle from manager
                                temp[HANDLE],  #Security handle from manager
-                               self.activateOffShoot  #Container's method
+                               self.activateOffShoot,  #Container's method
+                               self.name # Container's Name
                                )
 
         #Check to see if it's an ACSComponent next

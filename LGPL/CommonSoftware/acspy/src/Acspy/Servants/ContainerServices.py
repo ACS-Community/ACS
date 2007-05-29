@@ -1,4 +1,4 @@
-# @(#) $Id: ContainerServices.py,v 1.21 2006/10/25 14:09:49 bjeram Exp $
+# @(#) $Id: ContainerServices.py,v 1.22 2007/05/29 20:37:40 agrimstrup Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -21,7 +21,7 @@
 # ALMA should be addressed as follows:
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: ContainerServices.py,v 1.21 2006/10/25 14:09:49 bjeram Exp $"
+# "@(#) $Id: ContainerServices.py,v 1.22 2007/05/29 20:37:40 agrimstrup Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -41,7 +41,7 @@ developer. For now, we can depend on Manager to keep track of whats going on
 but this solution is less than ideal.
 '''
 
-__revision__ = "$Id: ContainerServices.py,v 1.21 2006/10/25 14:09:49 bjeram Exp $"
+__revision__ = "$Id: ContainerServices.py,v 1.22 2007/05/29 20:37:40 agrimstrup Exp $"
 
 #--GLOBALS---------------------------------------------------------------------
 
@@ -75,6 +75,8 @@ class ContainerServices:
         '''
         #Name of this component if applicable
         self.__name = None
+        #Name of this component container if applicable
+        self.__contname = None
         #Token given to us by manager
         self.__token = None
         #Handle give to us by manager
@@ -100,6 +102,18 @@ class ContainerServices:
         Raises: Nothing
         '''
         return self.__name
+    #--------------------------------------------------------------------------
+    def getContName(self):
+        '''
+        Returns our container name.
+
+        Parameters: None
+
+        Return: name of the container the component was started by.
+
+        Raises: Nothing
+        '''
+        return self.__contname
     #--------------------------------------------------------------------------
     def getCDBRecord(self, record_name):
         '''
@@ -147,7 +161,7 @@ class ContainerServices:
         Raises: Nothing
         '''
         if self.__logger == None:
-            self.__logger = getLogger(self.getName())
+            self.__logger = getLogger(self.getName(), self.getContName())
         
         return self.__logger
     #--------------------------------------------------------------------------
@@ -668,7 +682,8 @@ class ContainerServices:
                name,  #string-name of component
                token,  #Security token from manager
                handle, #Security handle from manager
-               activate_offshoot_method  #Container's method
+               activate_offshoot_method,  #Container's method
+               contname=None # Container's name
                ):
         '''
         This method should only be invoked by the container and provides the
@@ -678,6 +693,7 @@ class ContainerServices:
         self.__name = name
         self.__token = token
         self.__handle = handle
+        self.__contname = contname
         
         #Set method variables next
         self.activateOffShootMethod = activate_offshoot_method

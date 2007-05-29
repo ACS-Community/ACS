@@ -1,4 +1,4 @@
-# @(#) $Id: Log.py,v 1.25 2007/03/21 19:06:46 agrimstrup Exp $
+# @(#) $Id: Log.py,v 1.26 2007/05/29 20:37:40 agrimstrup Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA,  2001
@@ -42,7 +42,7 @@ TODO:
 XML-related methods are untested at this point.
 '''
 
-__revision__ = "$Id: Log.py,v 1.25 2007/03/21 19:06:46 agrimstrup Exp $"
+__revision__ = "$Id: Log.py,v 1.26 2007/05/29 20:37:40 agrimstrup Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 from os        import environ
@@ -149,7 +149,7 @@ class Logger(logging.Logger):
     of this class though as the getLogger() function returns a singled logger.
     '''
     #------------------------------------------------------------------------
-    def __init__(self, name):
+    def __init__(self, name, contname=None):
         '''
         Create a Logger instance.
 
@@ -177,7 +177,7 @@ class Logger(logging.Logger):
         self.stdouthandler.setLevel(LEVELS[SEVERITIES[getSeverity(ACS_LOG_STDOUT)]])
 
         #create an ACS log svc handler
-        self.acshandler = ACSHandler()
+        self.acshandler = ACSHandler(contname)
         
         #add handlers
         self.addHandler(self.stdouthandler)
@@ -395,7 +395,7 @@ class Logger(logging.Logger):
 logging.setLoggerClass(Logger)
 
 #----------------------------------------------------------------------------
-def getLogger(name=None):
+def getLogger(name=None, contname=None):
     '''
     This returns the singleton instance of logger.
 
@@ -408,5 +408,5 @@ def getLogger(name=None):
 
     Raises: ???
     '''
-    return Logger(str(name))
+    return Logger(str(name), contname)
 #----------------------------------------------------------------------------
