@@ -104,7 +104,6 @@ public class StopWatch
 	public long getLapTimeNanos()
 	{
                 long now = System.nanoTime();
-                System.out.println("now is: " + now);
 		return (now - m_startTimeNanos);
 	}
 	
