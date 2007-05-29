@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: acsMakefile.all,v 1.76 2007/02/08 10:33:08 mzampare Exp $" 
+# "@(#) $Id: acsMakefile.all,v 1.77 2007/05/29 12:15:09 mzampare Exp $" 
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -148,6 +148,7 @@ LIB_PATH_LIST := $(subst $(space):,:,$(LIB_PATH_LIST))
 
 
 vpath  %.a  $(LIB_PATH_LIST)
+vpath  %.so  $(LIB_PATH_LIST)
 
 #
 # set search path for shared libraries (they have different extentions on HP and SUN)
