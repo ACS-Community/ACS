@@ -2,7 +2,7 @@
 #*******************************************************************************
 # E.S.O. - ALMA project
 #
-# "@(#) $Id: acsMakeRTAIDependencies,v 1.25 2006/07/14 08:21:04 bjeram Exp $"
+# "@(#) $Id: acsMakeRTAIDependencies,v 1.26 2007/05/30 12:15:25 mzampare Exp $"
 #
 #************************************************************************
 #   NAME
@@ -50,6 +50,7 @@ VLTTOP=$4
 
 destDir=../object/${modName}/
 OWNER=root
+GROUP=root
 
 VER=`uname -r`
 INSTLKM=../bin/installLKM-${modName}
@@ -145,6 +146,7 @@ then
     if [ -d ${VLTTOP}/rtai ]
 	then
 	OWNER=${USER}
+	GROUP=`groups | awk '{print $1}'`
 	DEST=${VLTTOP}/rtai
     else
 	echo "	@echo \"echo 'WARNING: missing ACSROOT/INTROOT installation dir'\" > ${INSTLKM}"
@@ -162,7 +164,7 @@ then
     echo "	@echo \"install -c `pwd`/../rtai/${modName}.ko ${DEST}\" >> ${INSTLKM}"
     echo "	@echo \"echo 'running depmod..'\" >> ${INSTLKM}"
     echo "	@echo \"/sbin/depmod\" >> ${INSTLKM}"
-    echo "	@echo \"chown $OWNER ${DEST}/${modName}.ko \" >> ${INSTLKM}"
+    echo "	@echo \"chown $OWNER:$GROUP ${DEST}/${modName}.ko \" >> ${INSTLKM}"
     if [ $AUXPROG = "1" ] 
 	then
 	echo "	@echo \"echo 'setting uid permissions and ownership..'\" >> ${INSTLKM}"
