@@ -19,7 +19,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: loggingLoggingProxy.cpp,v 1.35 2007/05/28 06:23:39 cparedes Exp $"
+* "@(#) $Id: loggingLoggingProxy.cpp,v 1.36 2007/05/30 08:46:06 cparedes Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -57,7 +57,7 @@
 #define LOG_NAME "Log"
 #define DEFAULT_LOG_FILE_NAME "acs_local_log"
 
-ACE_RCSID(logging, logging, "$Id: loggingLoggingProxy.cpp,v 1.35 2007/05/28 06:23:39 cparedes Exp $");
+ACE_RCSID(logging, logging, "$Id: loggingLoggingProxy.cpp,v 1.36 2007/05/30 08:46:06 cparedes Exp $");
 
 ACSLoggingLog::LogType LoggingProxy::m_LogBinEntryTypeName[] =
 {
@@ -1284,7 +1284,7 @@ LoggingProxy::sendCacheInternal()
                             }
                             //TODO: CARLI: write and use a parser
                             logger->log(prio,"<INFO>TODO: Parser the bin log</INFO>");   
-                            //delete *iter; 
+                            delete *iter; 
                         }
                      }
                 } 
@@ -1340,7 +1340,7 @@ LoggingProxy::sendCacheInternal()
              iter != m_cache.end(); 
              iter++)
             anys[i++] <<= iter->c_str();
-        
+
         m_logger->write_records(anys);
         
         
@@ -1360,7 +1360,7 @@ LoggingProxy::sendCacheInternal()
             CORBA::Any record;
             record <<= *(*iter);
             anys[i++] = record;
-            //delete *iter;
+            delete *iter;
         }
         
         m_logger->write_records(anys);
