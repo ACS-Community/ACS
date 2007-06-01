@@ -90,28 +90,17 @@ public final class ACSStructuredPushConsumer extends StructuredPushConsumerPOA
 			String log = null;
 			ILogEntry logEntry = null;
 			while (!terminateThread) {
-//			while (true) {
-				Object obj;
 				try {
-					//log = xmlLogs.poll(250,TimeUnit.MILLISECONDS);
-					obj = receivedLogs.take();
+					log = xmlLogs.poll(250,TimeUnit.MILLISECONDS);
 				} catch (InterruptedException ie) {
 					System.out.println("Exception while taking a log out of the queue: "+ie.getMessage());
 					ie.printStackTrace();
 					continue;
 				}
-				if (binaryFormat) {
-					System.out.println("Dispatcher.run(): Binary log received");
-					continue;
-				} else {
-                    //if (log==null) {
-                        // No logs received before the timeout elapsed
-                      //  continue;
-                    //}
-					//XML
-					log = (String)obj;
-				}
-				
+                if (log==null) {
+                    // No logs received before the timeout elapsed
+                	continue;
+                }
 				if (engine.hasRawLogListeners()) {
 					engine.publishRawLog(log);
 				}
@@ -157,11 +146,9 @@ public final class ACSStructuredPushConsumer extends StructuredPushConsumerPOA
 	 */
 	private boolean suspended=false;
 	
-	// The queue where the logs read from the NC are pushed
+	/// The queue where the logs read from the NC are pushed
 	// The dispatcher pos up and injects the logs in the GUI
-	//
-	// Contains String if XML logs are in use, otherwise binary logs
-	private LinkedBlockingQueue receivedLogs = new LinkedBlockingQueue(2048);
+	private LinkedBlockingQueue<String> xmlLogs = new LinkedBlockingQueue<String>(2048);
 	
 	private Dispatcher dispatcher = new Dispatcher();
 	private LCEngine engine;
@@ -197,7 +184,7 @@ public final class ACSStructuredPushConsumer extends StructuredPushConsumerPOA
 
 	public LinkedBlockingQueue<String> getXmlLogs()
 	{
-		LinkedBlockingQueue<String> XmlLogs = receivedLogs;
+		LinkedBlockingQueue<String> XmlLogs = xmlLogs;
 		XmlLogs.add(
 			"<Info TimeStamp=\"2001-11-07T09:24:11.096\" Routine=\"msaci::ContainerImpl::init\" Host=\"disna\" Process=\"maciManager\" Thread=\"main\" Context=\"\"><Data Name=\"StupidData\">All your base are belong to us.</Data>Connected to the Centralized Logger.</Info>");
 		XmlLogs.add(
