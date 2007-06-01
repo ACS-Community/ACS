@@ -7,7 +7,7 @@
 package alma.acs.testsupport.tat;
 
 import junit.framework.TestCase;
-
+import java.io.FileNotFoundException;
 /**
  * @author hsommer
  *
@@ -49,7 +49,12 @@ public class TATJUnitRunnerTest extends TestCase
 	
 	public static void main(String[] args)
 	{
-		TATJUnitRunner.run(TATJUnitRunnerTest.class);
+                try{
+        		TATJUnitRunner.run(TATJUnitRunnerTest.class);
+                }catch(FileNotFoundException ex){
+                        System.err.print("Error opening file:"+ex.getMessage());
+                }
+
 	}
 
 }

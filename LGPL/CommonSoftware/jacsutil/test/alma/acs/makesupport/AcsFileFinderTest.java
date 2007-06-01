@@ -23,6 +23,7 @@ package alma.acs.makesupport;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileNotFoundException;
 import java.util.jar.JarFile;
 import java.util.jar.JarOutputStream;
 import java.util.logging.Logger;
@@ -127,7 +128,11 @@ public class AcsFileFinderTest extends TestCase
 
 	public static void main(String[] args)
 	{
-		TATJUnitRunner.run(AcsFileFinderTest.class);
+                try{
+		        TATJUnitRunner.run(AcsFileFinderTest.class);
+                }catch(FileNotFoundException ex){
+                        System.err.print("Error opening file:"+ex.getMessage());
+                }
 	}
 
 }
