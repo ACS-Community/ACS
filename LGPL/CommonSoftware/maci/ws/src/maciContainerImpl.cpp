@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciContainerImpl.cpp,v 1.88 2007/05/16 14:49:45 bjeram Exp $"
+* "@(#) $Id: maciContainerImpl.cpp,v 1.89 2007/06/04 13:16:23 msekoran Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -76,7 +76,7 @@
 #include <ACSAlarmSystemInterfaceFactory.h>
 #endif
 
-ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.88 2007/05/16 14:49:45 bjeram Exp $")
+ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.89 2007/06/04 13:16:23 msekoran Exp $")
 
  using namespace maci;
  using namespace cdb;
@@ -998,8 +998,12 @@ ContainerImpl::connect()
       CORBA::ULong ul;
       if (!m_dynamicContainer && m_database->GetField(m_dbPrefix, "UseIFR", fld))
 	{
-	  fld.GetULong(ul);
-	  useIFR = ul;
+          ACE_CString bVal("");
+          if (fld.GetString(bVal))
+          {
+            useIFR = ((ACE_OS::strcmp(bVal.c_str(), "true") == 0) ||
+                      (ACE_OS::strcmp(bVal.c_str(), "1") == 0) ? 1 : 0);
+          }
 	}
       
 
