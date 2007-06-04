@@ -91,7 +91,7 @@ Note that for importing data from the ACS CDB to the TMCDB, this field is alread
                 <xs:documentation>Standard timeout in seconds for remote (CORBA) calls. Every call will timeout after this period of time, ensuring protection from deadlock. Notice that ACS QoS features can be used to trim specific calls.</xs:documentation>
             </xs:annotation>
         </xs:attribute>
-        <xs:attribute name="UseIFR" type="xs:boolean" use="optional" default="1">
+        <xs:attribute name="UseIFR" type="xs:boolean" use="optional" default="true">
             <xs:annotation>
                 <xs:documentation>At least the C++ container accesses the Interface Repository to retrieve information about the interfaces implemented by Components. In some very special situations, for example during debugging, it might be useful to disable the usage of the Interface Repository.</xs:documentation>
             </xs:annotation>
@@ -117,7 +117,7 @@ Note that for importing data from the ACS CDB to the TMCDB, this field is alread
                 <xs:documentation>This is the number of threads allocate to the CORBA infrastructure for the handling of concurrent invocations. This value is normally sufficient, but it myght necessary to increase it for Containers with very many Components or when methods of Components take long time and build up complex chains of invocations. A typical manifestation of an insufficient number of threads is the deadlock followed by timeouts of actions in the Container.</xs:documentation>
             </xs:annotation>
         </xs:attribute>
-        <xs:attribute name="Recovery" type="xs:boolean" use="optional" default="1">
+        <xs:attribute name="Recovery" type="xs:boolean" use="optional" default="true">
             <xs:annotation>
                 <xs:documentation>By default when a Container that crashes is restarted the system tries to reload all the same Components that where active at the time of the crash. This can lead to problems, for example, trying to debug a compont that causes the crash of the container just at activation time. Therefore it is possible to set this options to prevent reloading the components and getting into a deadlock situation.</xs:documentation>
             </xs:annotation>
