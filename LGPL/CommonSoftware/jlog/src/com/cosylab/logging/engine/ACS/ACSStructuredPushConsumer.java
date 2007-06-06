@@ -101,24 +101,20 @@ public final class ACSStructuredPushConsumer extends StructuredPushConsumerPOA
                     // No logs received before the timeout elapsed
                 	continue;
                 }
-				if (engine.hasRawLogListeners()) {
-					engine.publishRawLog(log);
+				engine.publishRawLog(log);
+				try {
+					logEntry = parser.parse(log);
+				} catch (Exception e) {
+					StringBuilder strB = new StringBuilder("\nException occurred while dispatching the XML log.\n");
+					strB.append("This log has been lost: "+log);
+					ErrorLogDialog.getErrorLogDlg(true).appendText(strB.toString());
+					engine.publishReport(strB.toString());
+					System.err.println("Exception in ACSStructuredPushConsumer$Dispatcher::run(): " + e.getMessage());
+					System.err.println("An XML string that could not be parsed: " + log);
+					e.printStackTrace(System.err);
+					continue;
 				}
-				if (engine.hasLogListeners()) {
-					try {
-						logEntry = parser.parse(log);
-					} catch (Exception e) {
-						StringBuilder strB = new StringBuilder("\nException occurred while dispatching the XML log.\n");
-						strB.append("This log has been lost: "+log);
-						ErrorLogDialog.getErrorLogDlg(true).appendText(strB.toString());
-						engine.publishReport(strB.toString());
-						System.err.println("Exception in ACSStructuredPushConsumer$Dispatcher::run(): " + e.getMessage());
-						System.err.println("An XML string that could not be parsed: " + log);
-						e.printStackTrace(System.err);
-						continue;
-					}
-					engine.publishLog(logEntry);
-				}
+				engine.publishLog(logEntry);
 			}
 		}
 	}
@@ -161,7 +157,6 @@ public final class ACSStructuredPushConsumer extends StructuredPushConsumerPOA
 	private volatile boolean closed=false;
 	
 	private StringBuilder sb=new StringBuilder();
-	private final char SEPARATOR = (char)0;
 	
 	/**
 	 * StructuredPushConsumer constructor comment.
@@ -394,81 +389,84 @@ public final class ACSStructuredPushConsumer extends StructuredPushConsumerPOA
 	 * @return A string representation of the log
 	 */
 	private String toCacheString(LogBinaryRecord log) {
-		sb.delete(0,sb.length());
-		sb.append(log.TimeStamp);
-		sb.append(SEPARATOR);
-		sb.append(LogTypeHelper.parseLogTypeDescription(log.type.toString()));
-		sb.append(SEPARATOR);
-		sb.append(log.SourceObject);
-		sb.append(SEPARATOR);
-		sb.append(log.File);
-		sb.append(SEPARATOR);
-		sb.append(log.Line);
-		sb.append(SEPARATOR);
-		sb.append(log.Routine);
-		sb.append(SEPARATOR);
-		sb.append(log.Host);
-		sb.append(SEPARATOR);
-		sb.append(log.Process);
-		sb.append(SEPARATOR);
-		sb.append(log.LogContext);
-		sb.append(SEPARATOR);
-		sb.append(log.Thread);
-		sb.append(SEPARATOR);
-		sb.append(log.LogId);
-		sb.append(SEPARATOR);
-		sb.append(log.Priority);
-		sb.append(SEPARATOR);
-		sb.append(log.Uri);
-		sb.append(SEPARATOR);
-		sb.append(log.StackId);
-		sb.append(SEPARATOR);
-		sb.append(log.StackLevel);
-		sb.append(SEPARATOR);
-		sb.append(log.MsgData);
-		sb.append(SEPARATOR);
-		sb.append(log.Audience);
-		sb.append(SEPARATOR);
-		
-		NameValue[] attrs=log.attributes;
-		NameValue[] vals=log.log_data;
-		
-		//int max=Math.max(attrs.length, vals.length);
-		int min=Math.min(attrs.length, vals.length);
-		for (int t=0; t<min; t++) {
-			if (attrs[t]!=null) {
-				sb.append(attrs[t].name);
-			    sb.append(SEPARATOR);
-				sb.append(attrs[t].value);
-			    sb.append(SEPARATOR);
+		synchronized (sb) {
+			sb.delete(0, sb.length());
+			sb.append(log.TimeStamp);
+			sb.append(ACSLogRetrieval.SEPARATOR_CHAR);
+			sb.append(LogTypeHelper
+					.parseLogTypeDescription(log.type.toString()));
+			sb.append(ACSLogRetrieval.SEPARATOR_CHAR);
+			sb.append(log.SourceObject);
+			sb.append(ACSLogRetrieval.SEPARATOR_CHAR);
+			sb.append(log.File);
+			sb.append(ACSLogRetrieval.SEPARATOR_CHAR);
+			sb.append(log.Line);
+			sb.append(ACSLogRetrieval.SEPARATOR_CHAR);
+			sb.append(log.Routine);
+			sb.append(ACSLogRetrieval.SEPARATOR_CHAR);
+			sb.append(log.Host);
+			sb.append(ACSLogRetrieval.SEPARATOR_CHAR);
+			sb.append(log.Process);
+			sb.append(ACSLogRetrieval.SEPARATOR_CHAR);
+			sb.append(log.LogContext);
+			sb.append(ACSLogRetrieval.SEPARATOR_CHAR);
+			sb.append(log.Thread);
+			sb.append(ACSLogRetrieval.SEPARATOR_CHAR);
+			sb.append(log.LogId);
+			sb.append(ACSLogRetrieval.SEPARATOR_CHAR);
+			sb.append(log.Priority);
+			sb.append(ACSLogRetrieval.SEPARATOR_CHAR);
+			sb.append(log.Uri);
+			sb.append(ACSLogRetrieval.SEPARATOR_CHAR);
+			sb.append(log.StackId);
+			sb.append(ACSLogRetrieval.SEPARATOR_CHAR);
+			sb.append(log.StackLevel);
+			sb.append(ACSLogRetrieval.SEPARATOR_CHAR);
+			sb.append(log.MsgData);
+			sb.append(ACSLogRetrieval.SEPARATOR_CHAR);
+			sb.append(log.Audience);
+			sb.append(ACSLogRetrieval.SEPARATOR_CHAR);
+
+			NameValue[] attrs = log.attributes;
+			NameValue[] vals = log.log_data;
+
+			//int max=Math.max(attrs.length, vals.length);
+			int min = Math.min(attrs.length, vals.length);
+			for (int t = 0; t < min; t++) {
+				if (attrs[t] != null) {
+					sb.append(attrs[t].name);
+					sb.append(ACSLogRetrieval.SEPARATOR_CHAR);
+					sb.append(attrs[t].value);
+					sb.append(ACSLogRetrieval.SEPARATOR_CHAR);
+				}
+				if (vals[t] != null) {
+					sb.append(vals[t].name);
+					sb.append(ACSLogRetrieval.SEPARATOR_CHAR);
+					sb.append(vals[t].value);
+					sb.append(ACSLogRetrieval.SEPARATOR_CHAR);
+				}
 			}
-			if (vals[t]!=null) {
-				sb.append(vals[t].name);
-			    sb.append(SEPARATOR);
-				sb.append(vals[t].value);
-			    sb.append(SEPARATOR);
+			if (attrs.length > vals.length) {
+				for (int t = min; t < attrs.length; t++) {
+					if (attrs[t] != null) {
+						sb.append(attrs[t].name);
+						sb.append(ACSLogRetrieval.SEPARATOR_CHAR);
+						sb.append(attrs[t].value);
+						sb.append(ACSLogRetrieval.SEPARATOR_CHAR);
+					}
+				}
+			} else if (attrs.length < vals.length) {
+				for (int t = min; t < vals.length; t++) {
+					if (vals[t] != null) {
+						sb.append(vals[t].name);
+						sb.append(ACSLogRetrieval.SEPARATOR_CHAR);
+						sb.append(vals[t].value);
+						sb.append(ACSLogRetrieval.SEPARATOR_CHAR);
+					}
+				}
 			}
+			return sb.toString();
 		}
-        if(attrs.length > vals.length){
-            for (int t=min; t<attrs.length; t++) {
-			    if (attrs[t]!=null) {
-                    sb.append(attrs[t].name);
-                    sb.append(SEPARATOR);
-                    sb.append(attrs[t].value);
-                    sb.append(SEPARATOR);
-			    }
-            }
-        }else if (attrs.length < vals.length){
-            for (int t=min; t<vals.length; t++) {
-                if (vals[t]!=null) {
-                    sb.append(vals[t].name);
-                    sb.append(SEPARATOR);
-                    sb.append(vals[t].value);
-                    sb.append(SEPARATOR);
-                }
-            }
-        }
-		return sb.toString();
 	}
 }
 
