@@ -64,26 +64,6 @@ public class LCEngine {
 	private boolean terminateThread=false;
 	
 	private RemoteAccess remoteAccess = null;
-	
-	/**
-	 * The log listeners for this connection
-	 */
-	private Vector<ACSRemoteLogListener> logListeners = new Vector<ACSRemoteLogListener>();
-	// The number of listeners (it is the same of listeners.size() but It avoids
-	// executing a method)
-	private int logListenersNum=0;
-	
-	/**
-	 * The listeners of the status of the connection and report messages
-	 */
-	private Vector<ACSLogConnectionListener> connectionListeners = new Vector<ACSLogConnectionListener>();
-	private int connListenersNum=0;
-	
-	/**
-	 * The listeners of the XML strings representing a log
-	 */
-	private Vector<ACSRemoteRawLogListener> rawLogListeners = new Vector<ACSRemoteRawLogListener>();
-	private int rawLogListenersNum=0;
 
 	/** 
 	 * A thread used to set and initialize RemoteAccess
@@ -113,11 +93,11 @@ public class LCEngine {
 		 */
 		public void run() {
 			disconnectRA();
-			publishConnecting();
-			publishReport("Connecting to " + accessType + " remote access...");
+			listenersDispatcher.publishConnecting();
+			listenersDispatcher.publishReport("Connecting to " + accessType + " remote access...");
 			try {
 				
-				Class[] parameters = {LCEngine.this.getClass()};
+				Class[] parameters = {listenersDispatcher.getClass()};
 				String raName = accessType;
 				if (accessType.indexOf(".") == -1)
 					raName = "com.cosylab.logging.engine."
@@ -126,22 +106,22 @@ public class LCEngine {
 							+ accessType
 							+ "RemoteAccess"; // com.cosylab.logging.engine.ACS.ACSRemoteAccess
 				//remoteAccess = (RemoteAccess) Class.forName(raName).getConstructors()[0].newInstance(parameters);
-				remoteAccess = (RemoteAccess) Class.forName(raName).getConstructor(parameters).newInstance(LCEngine.this);
+				remoteAccess = (RemoteAccess) Class.forName(raName).getConstructor(parameters).newInstance(listenersDispatcher);
 				//if (remoteAccess == null)
 				//	System.out.println("RemoteAccess == null");
 				remoteAccess.initialize(orb,manager);
 			} catch (Throwable e) {
-				publishReport("Exception occurred when initializing " + accessType + " remote access.");
-				publishConnected(false);
+				listenersDispatcher.publishReport("Exception occurred when initializing " + accessType + " remote access.");
+				listenersDispatcher.publishConnected(false);
 				System.out.println("Exception in LCEngine$AccessSetter::run(): " + e);
 				return;
 			}
 			if (remoteAccess!=null && remoteAccess.isInitialized()) {
-				publishReport("Connected to " + accessType + " remote access.");
-				publishConnected(true);
+				listenersDispatcher.publishReport("Connected to " + accessType + " remote access.");
+				listenersDispatcher.publishConnected(true);
 				LCEngine.this.wasConnected=true;
 			} else {
-				publishConnected(false);
+				listenersDispatcher.publishConnected(false);
 			}
 		}
 	}
@@ -192,10 +172,10 @@ public class LCEngine {
 				boolean connected = isConnected();
 				//publishConnected(connected);
 				if (wasConnected && !connected) {
-					publishReport("Connection lost");
+					listenersDispatcher.publishReport("Connection lost");
 					wasConnected=false;
 					disconnectRA();
-					publishConnectionLost();
+					listenersDispatcher.publishConnectionLost();
 					// Better otherwise it tries to reconnect every time
 					if (!autoReconnect) {
 						return; // Terminate the thread
@@ -221,6 +201,9 @@ public class LCEngine {
 	 * If true the engine tries to reconnect automatically
 	 */
 	private boolean autoReconnect = false;
+	
+	// Dispatches messages to the listeners
+	private ACSListenersDispatcher listenersDispatcher = new ACSListenersDispatcher();
 	
 	/**
 	 * LCEngine constructor.
@@ -309,19 +292,19 @@ public class LCEngine {
 	private void disconnectRA() {
 		if (remoteAccess != null && remoteAccess.isInitialized()) {
 			try {
-				publishReport("Disconnecting from " + accessType + " remote access...");
+				listenersDispatcher.publishReport("Disconnecting from " + accessType + " remote access...");
 				remoteAccess.destroy();
 			} catch (Exception e) {
-				publishReport("Exception occurred when destroying " + accessType + " remote access.");
+				listenersDispatcher.publishReport("Exception occurred when destroying " + accessType + " remote access.");
 				System.out.println("Exception in LCEngine$AccessDestroyer::run(): " + e);
 			}
-			publishReport("Disconnected from " + accessType + " remote access.");
+			listenersDispatcher.publishReport("Disconnected from " + accessType + " remote access.");
 			if (remoteAccess!=null) {
 				remoteAccess.close(false);
 			}
 		}
 		remoteAccess = null;
-		publishConnected(false);
+		listenersDispatcher.publishConnected(false);
 		LCEngine.this.wasConnected=false;
 	}
 	
@@ -379,250 +362,12 @@ public class LCEngine {
 	}
 	
 	/**
-	 * Add a log listener
-	 * 
-	 * @param listener The listener to add
-	 */
-	public void addLogListener(ACSRemoteLogListener listener) {
-		if (listener==null) {
-			throw new IllegalArgumentException("Invalid null listener");
-		}
-		synchronized(logListeners) {
-			logListeners.add(listener);
-			logListenersNum=logListeners.size();
-		}
-	}
-	
-	/**
-	 * Add a RAW log listener
-	 * 
-	 * @param listener The listener to add
-	 */
-	public void addRawLogListener(ACSRemoteRawLogListener listener) {
-		if (listener==null) {
-			throw new IllegalArgumentException("Invalid null listener");
-		}
-		synchronized(rawLogListeners) {
-			rawLogListeners.add(listener);
-			rawLogListenersNum=rawLogListeners.size();
-		}
-	}
-	
-	/**
-	 * Add a RAW log listener
-	 * 
-	 * @param listener The listener to add
-	 */
-	public void addLogConnectionListener(ACSLogConnectionListener listener) {
-		if (listener==null) {
-			throw new IllegalArgumentException("Invalid null listener");
-		}
-		synchronized(connectionListeners) {
-			connectionListeners.add(listener);
-			connListenersNum=connectionListeners.size();
-		}
-	}
-	
-	/**
-	 * Publish a report string to the listeners (if any)
-	 * 
-	 * @param message The message to publish
-	 */
-	public synchronized void publishReport(String message){
-		if (connListenersNum>0) {
-			synchronized(connectionListeners) {
-				for (int t=0; t<connListenersNum; t++) {
-					ACSLogConnectionListener listener = connectionListeners.get(t);
-					if (listener!=null) {
-						listener.reportStatus(message);
-					}
-				}
-			}
-		}
-	}
-	
-	/**
-	 * Publish the connection status to the listeners
-	 * The connection status means connected/disconnected
-	 * 
-	 * @param connected
-	 */
-	public synchronized void publishConnected(boolean connected) {
-		for (int t=0; t<connListenersNum; t++) {
-			ACSLogConnectionListener listener = connectionListeners.get(t);
-			if (listener!=null) {
-					if (connected) {
-						listener.acsLogConnEstablished();
-					} else {
-						listener.acsLogConnDisconnected();
-					}
-			}
-		}
-	}
-	
-	/**
-	 * Notify the listeners that the connection has been lost
-	 *
-	 */
-	public synchronized void publishConnectionLost() {
-		for (int t=0; t<connListenersNum; t++) {
-			ACSLogConnectionListener listener = connectionListeners.get(t);
-			if (listener!=null) {
-					listener.acsLogConnLost();
-			}
-		}
-	}
-	
-	/**
-	 * Notify the listeners that an attempt to connect is in progress
-	 */
-	public synchronized void publishConnecting() {
-		for (int t=0; t<connListenersNum; t++) {
-			ACSLogConnectionListener listener = connectionListeners.get(t);
-			if (listener!=null) {
-				listener.acsLogConnConnecting();
-			}
-		}
-	}
-	
-	/**
-	 * Publish a log to the listeners (if any)
-	 * 
-	 * @param newLog The log to send to the listeners
-	 */
-	public synchronized void publishLog(ILogEntry newLog) {
-		if (logListenersNum>0) {
-			synchronized(logListeners) {
-				for (int t=0; t<logListenersNum; t++) {
-					ACSRemoteLogListener listener = logListeners.get(t);
-					listener.logEntryReceived(newLog);
-				}
-			}
-		}
-	}
-	
-	/**
-	 * Publish a RAW log to the listeners (if any)
-	 * 
-	 * @param newLog The XML string to send to the listeners
-	 */
-	public synchronized void publishRawLog(String xmlStr) {
-		if (rawLogListenersNum>0) {
-			synchronized(rawLogListeners) {
-				for (int t=0; t<rawLogListenersNum; t++) {
-					ACSRemoteRawLogListener listener = rawLogListeners.get(t);
-					listener.xmlEntryReceived(xmlStr);
-				}
-			}
-		}
-	}
-	
-	public synchronized void publishSuspended() {
-		for (int t=0; t<connListenersNum; t++) {
-			ACSLogConnectionListener listener = connectionListeners.get(t);
-			if (listener!=null) {
-				listener.acsLogConnSuspended();
-			}
-		}
-	}
-	
-	public synchronized void publishDiscarding() {
-		for (int t=0; t<connListenersNum; t++) {
-			ACSLogConnectionListener listener = connectionListeners.get(t);
-			if (listener!=null) {
-				listener.acsLogsDelay();
-			}
-		}
-	}
-	
-	/**
-	 * Remove a connection status listener
-	 * 
-	 * @param listener The listener to remove
-	 * @return true if the listener has been effectively removed
-	 * 
-	 */
-	public boolean removeLogListener(ACSRemoteLogListener listener) {
-		if (listener==null) {
-			throw new IllegalArgumentException("Invalid null listener");
-		}
-		boolean ret;
-		synchronized(logListeners) {
-			ret=logListeners.remove(listener);
-			logListenersNum=logListeners.size();
-		}
-		return ret;
-	}
-	
-	/**
-	 * Remove a connection status listener
-	 * 
-	 * @param listener The listener to remove
-	 * @return true if the listener has been effectively removed
-	 * 
-	 */
-	public boolean removeRawLogListener(ACSRemoteRawLogListener listener) {
-		if (listener==null) {
-			throw new IllegalArgumentException("Invalid null listener");
-		}
-		boolean ret;
-		synchronized(rawLogListeners) {
-			ret=rawLogListeners.remove(listener);
-			rawLogListenersNum=rawLogListeners.size();
-		}
-		return ret;
-	}
-	
-	/**
-	 * Remove a connection status listener
-	 * 
-	 * @param listener The listener to remove
-	 * @return true if the listener has been effectively removed
-	 * 
-	 */
-	public boolean removeConnectionListener(ACSRemoteLogListener listener) {
-		if (listener==null) {
-			throw new IllegalArgumentException("Invalid null listener");
-		}
-		boolean ret;
-		synchronized(connectionListeners) {
-			ret=connectionListeners.remove(listener);
-			connListenersNum=connectionListeners.size();
-		}
-		return ret;
-	}
-	
-	/**
 	 * Enable/disable the auto reconnection
 	 * 
 	 * @param autoRec If true the engine tries to reconnect automatically
 	 */
 	public void enableAutoReconnection(boolean autoRec) {
 		autoReconnect=autoRec;
-	}
-	
-	/**
-	 * 
-	 * @return true is there are registerd log listeners
-	 */
-	public boolean hasLogListeners() {
-		return logListenersNum>0;
-	}
-	
-	/**
-	 * 
-	 * @return true is there are registerd raw log listeners
-	 */
-	public boolean hasRawLogListeners() {
-		return rawLogListenersNum>0;
-	}
-	
-	/**
-	 * 
-	 * @return true is there are registerd connection listeners
-	 */
-	public boolean hasConnectionListeners() {
-		return connListenersNum>0;
 	}
 	
 	/**
@@ -638,4 +383,30 @@ public class LCEngine {
 		remoteAccess.pause(pause);
 	}
 	
+	/**
+	 * Add a log listener
+	 * 
+	 * @param listener The listener to add
+	 */
+	public void addLogListener(ACSRemoteLogListener listener) {
+		listenersDispatcher.addLogListener(listener);
+	}
+	
+	/**
+	 * Add a RAW log listener
+	 * 
+	 * @param listener The listener to add
+	 */
+	public void addRawLogListener(ACSRemoteRawLogListener listener) {
+		listenersDispatcher.addRawLogListener(listener);
+	}
+	
+	/**
+	 * Add a RAW log listener
+	 * 
+	 * @param listener The listener to add
+	 */
+	public void addLogConnectionListener(ACSLogConnectionListener listener) {
+		listenersDispatcher.addLogConnectionListener(listener);
+	}
 }
