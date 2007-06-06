@@ -19,7 +19,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: loggingLoggingProxy.cpp,v 1.36 2007/05/30 08:46:06 cparedes Exp $"
+* "@(#) $Id: loggingLoggingProxy.cpp,v 1.37 2007/06/06 05:46:34 cparedes Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -57,7 +57,7 @@
 #define LOG_NAME "Log"
 #define DEFAULT_LOG_FILE_NAME "acs_local_log"
 
-ACE_RCSID(logging, logging, "$Id: loggingLoggingProxy.cpp,v 1.36 2007/05/30 08:46:06 cparedes Exp $");
+ACE_RCSID(logging, logging, "$Id: loggingLoggingProxy.cpp,v 1.37 2007/06/06 05:46:34 cparedes Exp $");
 
 ACSLoggingLog::LogType LoggingProxy::m_LogBinEntryTypeName[] =
 {
@@ -335,42 +335,43 @@ LoggingProxy::log(ACE_Log_Record &log_record)
     LoggingTSSStorage::HASH_MAP_ITER hash_iter = (*tss)->getAttributes();
     LoggingTSSStorage::HASH_MAP_ENTRY *entry;
     // add attributes
-    //hash_iter = (*tss)->getAttributes();
-    //TODO: seek another way to know the max number of max values of attributes
-    s_log->attributes = ACSLoggingLog::NameValueSeq(128); 
-    int i,length;
-    ACSLoggingLog::NameValue a;
-    for (i=0; (hash_iter.next (entry) != 0) && i<128; hash_iter.advance ()){
-        if(i>=128) break;
-        length = s_log->log_data.length();
-        a.name = entry->ext_id_.c_str();
-        a.value = entry->int_id_.c_str();
-        s_log->attributes.length(length+1);
-        s_log->attributes[length] = a;
+    int max = 128;
+    ACSLoggingLog::NameValue aux [max];
+    int i,j,length;
+    for (i=0; (hash_iter.next (entry) != 0) && i<max; hash_iter.advance ()){
+        aux[i].name = entry->ext_id_.c_str();
+        aux[i].value = entry->int_id_.c_str();
         i++;
     }
-    int max = 128;
-    s_log->log_data = ACSLoggingLog::NameValueSeq(max);
-    i=1;
-    for (hash_iter = (*tss)->getData(); (hash_iter.next (entry) != 0) ; hash_iter.advance ()){
-        if(i>=128) break;
-        length = s_log->log_data.length();
-        a.name = entry->ext_id_.c_str();
+    s_log->attributes = ACSLoggingLog::NameValueSeq(i);
+    for (j=0;j<i;j++){
+        length = s_log->attributes.length(); 
+        s_log->attributes.length(length+1);
+        s_log->attributes[length] = aux[j];
+    }
+
+     ACSLoggingLog::NameValue aux2[max];
+    i=0;
+    for (hash_iter = (*tss)->getData(); (hash_iter.next (entry) != 0) && i<max; hash_iter.advance ()){
+        aux2[i].name = entry->ext_id_.c_str();
         if(entry->int_id_.length() == 0){
-            a.value = "";
+            aux2[i].value = "";
         }else{
-            a.value = entry->int_id_.c_str();
+            aux2[i].value = entry->int_id_.c_str();
 	    }
-        s_log->log_data.length(length+1);
-        s_log->log_data[length] = a;
         i++;
 	}
+    s_log->log_data = ACSLoggingLog::NameValueSeq(i);
+    for (j=0;j<i;j++){
+        length = s_log->log_data.length(); 
+        s_log->log_data.length(length+1);
+        s_log->log_data[length] = aux[j];
+    }
 
     if (ACE_OS::strlen(log_record.msg_data())){
 	    s_log->MsgData = log_record.msg_data();
 	}
   
-    //ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex);
     (*tss)->clear();    
     ACE_GUARD_REACTION (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, printf("problem acquring mutex in loggingProxy::log () errno: %d\n", errno);return);
     if (!m_noLogger && (m_cacheDisabled || (priority > m_maxCachePriority))){
