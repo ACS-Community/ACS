@@ -19,7 +19,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: loggingLoggingProxy.cpp,v 1.37 2007/06/06 05:46:34 cparedes Exp $"
+* "@(#) $Id: loggingLoggingProxy.cpp,v 1.38 2007/06/06 08:42:02 cparedes Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -57,7 +57,7 @@
 #define LOG_NAME "Log"
 #define DEFAULT_LOG_FILE_NAME "acs_local_log"
 
-ACE_RCSID(logging, logging, "$Id: loggingLoggingProxy.cpp,v 1.37 2007/06/06 05:46:34 cparedes Exp $");
+ACE_RCSID(logging, logging, "$Id: loggingLoggingProxy.cpp,v 1.38 2007/06/06 08:42:02 cparedes Exp $");
 
 ACSLoggingLog::LogType LoggingProxy::m_LogBinEntryTypeName[] =
 {
@@ -324,11 +324,7 @@ LoggingProxy::log(ACE_Log_Record &log_record)
 	    s_log->Uri = (*tss)->uri();
 	}
     
-    // priority
-//    if (priority != log_record.priority()+1)
-//	{
-	    s_log->Priority = priority;
-//	}else s_log->Priority = priority;
+	s_log->Priority = priority;
     if((*tss)->audience()!=0)
         s_log->Audience = (*tss)->audience();
 
@@ -365,7 +361,7 @@ LoggingProxy::log(ACE_Log_Record &log_record)
     for (j=0;j<i;j++){
         length = s_log->log_data.length(); 
         s_log->log_data.length(length+1);
-        s_log->log_data[length] = aux[j];
+        s_log->log_data[length] = aux2[j];
     }
 
     if (ACE_OS::strlen(log_record.msg_data())){
