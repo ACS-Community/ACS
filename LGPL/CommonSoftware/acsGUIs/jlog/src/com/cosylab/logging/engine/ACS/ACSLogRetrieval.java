@@ -19,7 +19,7 @@
 
 /** 
  * @author  acaproni   
- * @version $Id: ACSLogRetrieval.java,v 1.17 2007/06/06 14:24:48 acaproni Exp $
+ * @version $Id: ACSLogRetrieval.java,v 1.18 2007/06/06 15:47:09 acaproni Exp $
  * @since    
  */
 
@@ -65,8 +65,8 @@ public class ACSLogRetrieval extends Thread {
 	public static final char SEPARATOR_CHAR = (char)0;
 	public static final String SEPARATOR = ""+ACSLogRetrieval.SEPARATOR_CHAR;
 	
-	// The Engine
-	LCEngine engine=null;
+	// The object to dispatch messages to the listeners
+	private ACSListenersDispatcher listenersDispatcher = null;
 	
 	// The name of the temp file
 	private String fileName;
@@ -104,14 +104,15 @@ public class ACSLogRetrieval extends Thread {
 	/**
 	 * Constructor
 	 * 
+	 * @param listenersDispatcher The object to send messages to the listeners
 	 * @param binFormat true if the lags are binary, 
 	 *                  false if XML format is used 
 	 */
 	public ACSLogRetrieval(
-			LCEngine engine,
+			ACSListenersDispatcher listenersDispatcher,
 			boolean binFormat) {
 		super("ACSLogRetrieval");
-		this.engine=engine;
+		this.listenersDispatcher=listenersDispatcher;
 		this.binaryFormat=binFormat;
 		initialize();
 	}
@@ -222,11 +223,11 @@ public class ACSLogRetrieval extends Thread {
 			if (endingPositions.size()>ACSLogRetrieval.DELAY_NUMBER) {
 				if (!delay) {
 					delay=true;
-					engine.publishDiscarding();
+					listenersDispatcher.publishDiscarding();
 				}
 			} else if (delay) {
 				delay=false;
-				engine.publishConnected(true);
+				listenersDispatcher.publishConnected(true);
 			}
 			// Do not flush the logs if the application is paused
 			if (paused) {
@@ -262,15 +263,15 @@ public class ACSLogRetrieval extends Thread {
 			if (tempStr.length()>0) {
 				ILogEntry log;
 				if (!binaryFormat) {
-					engine.publishRawLog(tempStr);
+					listenersDispatcher.publishRawLog(tempStr);
 					try {
 						log = parser.parse(tempStr);
-						engine.publishLog(log);
+						listenersDispatcher.publishLog(log);
 					} catch (Exception e) {
 						StringBuilder strB = new StringBuilder("\nException occurred while dispatching the XML log.\n");
 						strB.append("This log has been lost: "+tempStr);
 						ErrorLogDialog.getErrorLogDlg(true).appendText(strB.toString());
-						engine.publishReport(strB.toString());
+						listenersDispatcher.publishReport(strB.toString());
 						System.err.println("error parsing a log "+e.getMessage());
 						e.printStackTrace();
 						continue;
@@ -278,8 +279,8 @@ public class ACSLogRetrieval extends Thread {
 				} else {
 					log=fromCacheString(tempStr);
 					String xmlStr=log.toXMLString();
-					engine.publishRawLog(xmlStr);
-					engine.publishLog(log);
+					listenersDispatcher.publishRawLog(xmlStr);
+					listenersDispatcher.publishLog(log);
 				}
 			}
 		}

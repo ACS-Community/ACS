@@ -101,20 +101,20 @@ public final class ACSStructuredPushConsumer extends StructuredPushConsumerPOA
                     // No logs received before the timeout elapsed
                 	continue;
                 }
-				engine.publishRawLog(log);
+                listenersDispatcher.publishRawLog(log);
 				try {
 					logEntry = parser.parse(log);
 				} catch (Exception e) {
 					StringBuilder strB = new StringBuilder("\nException occurred while dispatching the XML log.\n");
 					strB.append("This log has been lost: "+log);
 					ErrorLogDialog.getErrorLogDlg(true).appendText(strB.toString());
-					engine.publishReport(strB.toString());
+					listenersDispatcher.publishReport(strB.toString());
 					System.err.println("Exception in ACSStructuredPushConsumer$Dispatcher::run(): " + e.getMessage());
 					System.err.println("An XML string that could not be parsed: " + log);
 					e.printStackTrace(System.err);
 					continue;
 				}
-				engine.publishLog(logEntry);
+				listenersDispatcher.publishLog(logEntry);
 			}
 		}
 	}
@@ -147,7 +147,9 @@ public final class ACSStructuredPushConsumer extends StructuredPushConsumerPOA
 	private LinkedBlockingQueue<String> xmlLogs = new LinkedBlockingQueue<String>(2048);
 	
 	private Dispatcher dispatcher = new Dispatcher();
-	private LCEngine engine;
+	
+	// The object to dispatch messages to the listeners
+	private ACSListenersDispatcher listenersDispatcher = null;
 	
 	// The log retrieval object
 	private ACSLogRetrieval logRetrieval;
@@ -164,16 +166,16 @@ public final class ACSStructuredPushConsumer extends StructuredPushConsumerPOA
 	 * @param acsra The remote access obj to ACS NC
 	 * @param theEngine The LCEngine
 	 */
-	public ACSStructuredPushConsumer(ACSRemoteAccess acsra,LCEngine theEngine, boolean binaryFormat)
+	public ACSStructuredPushConsumer(ACSRemoteAccess acsra, ACSListenersDispatcher listenersDispatcher, boolean binaryFormat)
 	{
-		if (acsra==null || theEngine==null) {
+		if (acsra==null || listenersDispatcher==null) {
 			throw new IllegalArgumentException("Illegal null argument");
 		}
 		this.binaryFormat=binaryFormat;
 		this.acsra = acsra;
-		this.engine=theEngine;
+		this.listenersDispatcher=listenersDispatcher;
 		dispatcher.setPriority(Thread.MAX_PRIORITY);
-		logRetrieval = new ACSLogRetrieval(engine,this.binaryFormat);
+		logRetrieval = new ACSLogRetrieval(listenersDispatcher,this.binaryFormat);
 		initialize();
 	}
 
@@ -199,7 +201,7 @@ public final class ACSStructuredPushConsumer extends StructuredPushConsumerPOA
 		}
 		catch (Exception e)
 		{
-			engine.publishReport("Exception occurred when connecting to structured push consumer.");
+			listenersDispatcher.publishReport("Exception occurred when connecting to structured push consumer.");
 			System.out.println("Exception in ACSStructuredPushConsumer::connect(): " + e);
 			return;
 		}
@@ -230,7 +232,7 @@ public final class ACSStructuredPushConsumer extends StructuredPushConsumerPOA
 			}
 			catch (javax.xml.parsers.ParserConfigurationException pce)
 			{
-				engine.publishReport("Exception occurred when initializing the XML parser.");
+				listenersDispatcher.publishReport("Exception occurred when initializing the XML parser.");
 				System.out.println("Exception in ACSStructuredPushConsumer::initialize(): " + pce);
 				return;
 			}
@@ -245,7 +247,7 @@ public final class ACSStructuredPushConsumer extends StructuredPushConsumerPOA
 		}
 		catch (Exception e)
 		{
-			engine.publishReport("Exception occurred when obtaining notification push supplier.");
+			listenersDispatcher.publishReport("Exception occurred when obtaining notification push supplier.");
 			System.out.println("Exception in ACSStructuredPushConsumer::initialize(): " + e);
 			return;
 		}
@@ -300,7 +302,7 @@ public final class ACSStructuredPushConsumer extends StructuredPushConsumerPOA
 		}
 		catch (Exception e)
 		{
-			engine.publishReport("Exception occurred when changing subscription on Consumer Admin.");
+			listenersDispatcher.publishReport("Exception occurred when changing subscription on Consumer Admin.");
 			System.out.println("Exception in ACSStructuredPushConsumer::setupEvents(): " + e);
 			return;
 		}
@@ -350,9 +352,9 @@ public final class ACSStructuredPushConsumer extends StructuredPushConsumerPOA
 	public void setSupended(boolean suspended) {
 		this.suspended=suspended;
 		if (suspended) {
-			engine.publishSuspended();
+			listenersDispatcher.publishSuspended();
 		} else {
-			engine.publishConnected(true);
+			listenersDispatcher.publishConnected(true);
 		}
 	}
 	

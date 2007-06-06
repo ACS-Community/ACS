@@ -71,20 +71,21 @@ public final class ACSRemoteAccess implements RemoteAccess {
 	private ConsumerAdmin consumerAdmin = null;
 	private ACSStructuredPushConsumer acsSPS = null;
 	
-	private LCEngine engine = null;
+	// The object to dispatch messages to the listeners
+	private ACSListenersDispatcher listenersDispatcher = null;
 	
 	private Thread orbThread = null;
 	
 	/**
 	 * ACSRemoteAccss constructor comment.
 	 * 
-	 * @param theEngine
+	 * @param listeners The object to send messages to the listeners
 	 */
-	public ACSRemoteAccess(LCEngine theEngine) {
-		if (theEngine==null) {
-			throw new IllegalArgumentException("The LCEngine can't be null");
+	public ACSRemoteAccess(ACSListenersDispatcher listeners) {
+		if (listeners==null) {
+			throw new IllegalArgumentException("The object to dispatch messages to listeners can't be null");
 		}
-		this.engine=theEngine;
+		listenersDispatcher=listeners;
 	}
 	
 	/**
@@ -103,7 +104,7 @@ public final class ACSRemoteAccess implements RemoteAccess {
 	}
 	
 	private boolean createConsumerAdmin() {
-		engine.publishReport("Creating Consumer Admin...");
+		listenersDispatcher.publishReport("Creating Consumer Admin...");
 		try {
 			//consumerAdmin = eventChannel.default_consumer_admin();
 	
@@ -113,11 +114,11 @@ public final class ACSRemoteAccess implements RemoteAccess {
 			
 			consumerAdmin = eventChannel.new_for_consumers(ifgo, adminID);
 		} catch (Exception e) {
-			engine.publishReport("Exception occurred when creating Consumer Admin.");
+			listenersDispatcher.publishReport("Exception occurred when creating Consumer Admin.");
 			System.out.println("Exception in ACSRemoteAccess::createConsumerAdmin(): " + e);
 			return false;
 		}
-		engine.publishReport("Consumer Admin created.");
+		listenersDispatcher.publishReport("Consumer Admin created.");
 		return true;
 	}
 	
@@ -149,10 +150,10 @@ public final class ACSRemoteAccess implements RemoteAccess {
 	}
 	
 	private boolean createStructuredPushConsumer() {
-		engine.publishReport("Initializing Structured Push Consumer...");
+		listenersDispatcher.publishReport("Initializing Structured Push Consumer...");
 		acsSPS = new ACSStructuredPushConsumer(
 				this,
-				engine,
+				listenersDispatcher,
 				Boolean.parseBoolean(ACSRemoteAccess.LOGGING_BINARY_FORMAT));
 		if (!acsSPS.isInitialized) return false;
 	
@@ -162,7 +163,7 @@ public final class ACSRemoteAccess implements RemoteAccess {
 		acsSPS.setupEvents();
 		if (!acsSPS.isEventSetup) return false;
 		
-		engine.publishReport("Structured Push Consumer initialized.");
+		listenersDispatcher.publishReport("Structured Push Consumer initialized.");
 		return true;
 	}
 	
@@ -200,7 +201,7 @@ public final class ACSRemoteAccess implements RemoteAccess {
 		this.orb=theORB;
 
 		if (orb==null) { 
-			engine.publishReport("Initializing CORBA...");
+			listenersDispatcher.publishReport("Initializing CORBA...");
 		
 			// ORB stanza
 			java.util.Properties orbprops = java.lang.System.getProperties();
@@ -230,7 +231,7 @@ public final class ACSRemoteAccess implements RemoteAccess {
 			}
 		
 			// end of CORBA stanza
-			engine.publishReport("CORBA initialized.");
+			listenersDispatcher.publishReport("CORBA initialized.");
 		}
 		
 		Manager maciManager=manager;
@@ -281,7 +282,7 @@ public final class ACSRemoteAccess implements RemoteAccess {
 	}
 	
 	private si.ijs.maci.Manager resolveManagerReference() {
-		engine.publishReport("Resolving " + MANAGER_PROPERTY + " manager reference...");
+		listenersDispatcher.publishReport("Resolving " + MANAGER_PROPERTY + " manager reference...");
 		org.omg.CORBA.Object obj = null;
 		si.ijs.maci.Manager manager;
 		try {
@@ -290,18 +291,18 @@ public final class ACSRemoteAccess implements RemoteAccess {
 			//if (obj == null) throw new IllegalStateException("Could not resolve Manager reference from the ACS.manager system property (" + MANAGER_PROPERTY + ").");
 			manager = si.ijs.maci.ManagerHelper.narrow(obj);
 		} catch (Exception e) {
-			engine.publishReport("Exception occurred when resolving manager reference.");
+			listenersDispatcher.publishReport("Exception occurred when resolving manager reference.");
 			System.out.println("Exception in ACSRemoteAccess::resolveManagerReference(): " + e);
 			return null;
 		}
 		
-		engine.publishReport("Manager reference resolved.");
+		listenersDispatcher.publishReport("Manager reference resolved.");
 		
 		return manager;
 	}
 	
 	private NamingContext resolveNamingServiceContext(si.ijs.maci.Manager manager) {
-		engine.publishReport("Resolving Naming Service...");
+		listenersDispatcher.publishReport("Resolving Naming Service...");
 		org.omg.CORBA.Object nameService = null;
 		try
 		    {
@@ -328,17 +329,17 @@ public final class ACSRemoteAccess implements RemoteAccess {
 		try {
 			namingContext = org.omg.CosNaming.NamingContextHelper.narrow(nameService);
 		} catch (Exception e) {
-			engine.publishReport("Exception occurred when narrowing Naming Service Context from the Naming Service.");
+			listenersDispatcher.publishReport("Exception occurred when narrowing Naming Service Context from the Naming Service.");
 			System.out.println("Exception in resloveNamingServiceContext(): " + e);
 			return null;
 		}
 		
-		engine.publishReport("Naming Service resolved.");
+		listenersDispatcher.publishReport("Naming Service resolved.");
 		return namingContext;
 	}
 	
 	private boolean resolveNotifyChannel(String channelName, NamingContext namingContext) {
-		engine.publishReport("Resolving channel \"" + channelName + "\" from Notify Service...");
+		listenersDispatcher.publishReport("Resolving channel \"" + channelName + "\" from Notify Service...");
 		try {
 			NameComponent[] nc = new NameComponent[1];
 			nc[0] = new NameComponent(channelName, "");
@@ -348,11 +349,11 @@ public final class ACSRemoteAccess implements RemoteAccess {
 			eventChannel = org.omg.CosNotifyChannelAdmin.EventChannelHelper.narrow(obj);
 			
 		} catch (Exception e) {
-			engine.publishReport("Exception occurred when obtaining channel \"" + channelName + "\" from the Notify Service.");
+			listenersDispatcher.publishReport("Exception occurred when obtaining channel \"" + channelName + "\" from the Notify Service.");
 			System.out.println("ACSRemoteAccess::Exception in resolveNotifyChannel(): " + e);
 			return false;
 		}
-		engine.publishReport("Channel \"" + channelName + "\" resolved.");
+		listenersDispatcher.publishReport("Channel \"" + channelName + "\" resolved.");
 		return true;
 	}
 
