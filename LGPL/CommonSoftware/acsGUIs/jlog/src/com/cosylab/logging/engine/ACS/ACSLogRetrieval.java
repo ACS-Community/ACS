@@ -19,7 +19,7 @@
 
 /** 
  * @author  acaproni   
- * @version $Id: ACSLogRetrieval.java,v 1.16 2007/05/28 06:41:06 cparedes Exp $
+ * @version $Id: ACSLogRetrieval.java,v 1.17 2007/06/06 14:24:48 acaproni Exp $
  * @since    
  */
 
@@ -43,11 +43,15 @@ import com.cosylab.logging.settings.ErrorLogDialog;
 
 import  javax.xml.parsers.ParserConfigurationException;
 /**
- * ACSLogRetireval stores the XML string representing logs on a file
- * when the engine is not able to follow the flow of the incoming logs
+ * ACSLogRetireval stores the XML string (or a String in case of binary logs) 
+ * representing logs on a file when the engine is not able to follow the flow 
+ * of the incoming logs 
  * The strings are stored on disk and the logs published to
- * the listeners when there is enough CPU to do that.
- * For this reason, the thread in this method runs with a low priority.  
+ * the listeners when there is enough CPU available.
+ * 
+ * @see ACSRemoteLogListener
+ * @see ACSRemoteRawLogListener
+ * @see ACSLogConnectionListener
  */
 public class ACSLogRetrieval extends Thread {
 	
@@ -58,10 +62,11 @@ public class ACSLogRetrieval extends Thread {
 	private static final int DELAY_NUMBER=1000;
 	
 	// The separator for the field of the logs in the file
-	private final String SEPARATOR = ""+((char)0);
+	public static final char SEPARATOR_CHAR = (char)0;
+	public static final String SEPARATOR = ""+ACSLogRetrieval.SEPARATOR_CHAR;
 	
-	// The engine
-	private LCEngine engine;
+	// The Engine
+	LCEngine engine=null;
 	
 	// The name of the temp file
 	private String fileName;
@@ -99,12 +104,15 @@ public class ACSLogRetrieval extends Thread {
 	/**
 	 * Constructor
 	 * 
-	 * @param engine The engine
+	 * @param binFormat true if the lags are binary, 
+	 *                  false if XML format is used 
 	 */
-	public ACSLogRetrieval(LCEngine engine, boolean binFormat) {
+	public ACSLogRetrieval(
+			LCEngine engine,
+			boolean binFormat) {
 		super("ACSLogRetrieval");
-		this.binaryFormat=binFormat;
 		this.engine=engine;
+		this.binaryFormat=binFormat;
 		initialize();
 	}
 	
@@ -252,35 +260,26 @@ public class ACSLogRetrieval extends Thread {
 			}
 			String tempStr = new String(buffer).trim();
 			if (tempStr.length()>0) {
-				if (engine.hasRawLogListeners()) {
+				ILogEntry log;
+				if (!binaryFormat) {
 					engine.publishRawLog(tempStr);
-				}
-				if (engine.hasLogListeners()) {
-					ILogEntry log;
-					if (!binaryFormat) {
-						try {
-							log = parser.parse(tempStr);
-						} catch (Exception e) {
-							StringBuilder strB = new StringBuilder("\nException occurred while dispatching the XML log.\n");
-							strB.append("This log has been lost: "+tempStr);
-							ErrorLogDialog.getErrorLogDlg(true).appendText(strB.toString());
-							engine.publishReport(strB.toString());
-							System.err.println("error parsing a log "+e.getMessage());
-							e.printStackTrace();
-							continue;
-						}
-					} else {
-						log=fromCacheString(tempStr);
-					}
 					try {
+						log = parser.parse(tempStr);
 						engine.publishLog(log);
-					} catch (Throwable t) {
-						String msg = "Exception while publishing a log: "+t.getMessage();
-						System.err.println(msg);
-						t.printStackTrace(System.err);
-						ErrorLogDialog.getErrorLogDlg(true).appendText(msg);
+					} catch (Exception e) {
+						StringBuilder strB = new StringBuilder("\nException occurred while dispatching the XML log.\n");
+						strB.append("This log has been lost: "+tempStr);
+						ErrorLogDialog.getErrorLogDlg(true).appendText(strB.toString());
+						engine.publishReport(strB.toString());
+						System.err.println("error parsing a log "+e.getMessage());
+						e.printStackTrace();
 						continue;
 					}
+				} else {
+					log=fromCacheString(tempStr);
+					String xmlStr=log.toXMLString();
+					engine.publishRawLog(xmlStr);
+					engine.publishLog(log);
 				}
 			}
 		}
