@@ -39,6 +39,7 @@ import alma.ACSLoggingLog.NameValue;
 
 import com.cosylab.logging.engine.log.LogTypeHelper;
 
+import com.cosylab.logging.client.cache.CacheUtils;
 import com.cosylab.logging.client.cache.LogBufferedFileCache;
 import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.settings.ErrorLogDialog;
@@ -158,8 +159,6 @@ public final class ACSStructuredPushConsumer extends StructuredPushConsumerPOA
 	// all the logs received while closed will be discarded
 	private volatile boolean closed=false;
 	
-	private StringBuilder sb=new StringBuilder();
-	
 	/**
 	 * StructuredPushConsumer constructor comment.
 	 * 
@@ -277,7 +276,7 @@ public final class ACSStructuredPushConsumer extends StructuredPushConsumerPOA
 		if (binaryFormat) {
 			Any any = event.remainder_of_body;
 			LogBinaryRecord logRecord = LogBinaryRecordHelper.extract(any);
-			String binStr = toCacheString(logRecord);
+			String binStr = CacheUtils.toCacheString(logRecord);
 			logRetrieval.addLog(binStr);
 		} else {
 			String xmlLog = event.remainder_of_body.extract_string();
@@ -383,92 +382,6 @@ public final class ACSStructuredPushConsumer extends StructuredPushConsumerPOA
 		}
 	}
 	
-	/**
-	 * Transform the log in a string of zero separated values
-	 * It is very similato what is used in the FileCache
-	 * 
-	 * @param log The log to get the string representation
-	 * @return A string representation of the log
-	 */
-	private String toCacheString(LogBinaryRecord log) {
-		synchronized (sb) {
-			sb.delete(0, sb.length());
-			sb.append(log.TimeStamp);
-			sb.append(ACSLogRetrieval.SEPARATOR_CHAR);
-			sb.append(LogTypeHelper
-					.parseLogTypeDescription(log.type.toString()));
-			sb.append(ACSLogRetrieval.SEPARATOR_CHAR);
-			sb.append(log.SourceObject);
-			sb.append(ACSLogRetrieval.SEPARATOR_CHAR);
-			sb.append(log.File);
-			sb.append(ACSLogRetrieval.SEPARATOR_CHAR);
-			sb.append(log.Line);
-			sb.append(ACSLogRetrieval.SEPARATOR_CHAR);
-			sb.append(log.Routine);
-			sb.append(ACSLogRetrieval.SEPARATOR_CHAR);
-			sb.append(log.Host);
-			sb.append(ACSLogRetrieval.SEPARATOR_CHAR);
-			sb.append(log.Process);
-			sb.append(ACSLogRetrieval.SEPARATOR_CHAR);
-			sb.append(log.LogContext);
-			sb.append(ACSLogRetrieval.SEPARATOR_CHAR);
-			sb.append(log.Thread);
-			sb.append(ACSLogRetrieval.SEPARATOR_CHAR);
-			sb.append(log.LogId);
-			sb.append(ACSLogRetrieval.SEPARATOR_CHAR);
-			sb.append(log.Priority);
-			sb.append(ACSLogRetrieval.SEPARATOR_CHAR);
-			sb.append(log.Uri);
-			sb.append(ACSLogRetrieval.SEPARATOR_CHAR);
-			sb.append(log.StackId);
-			sb.append(ACSLogRetrieval.SEPARATOR_CHAR);
-			sb.append(log.StackLevel);
-			sb.append(ACSLogRetrieval.SEPARATOR_CHAR);
-			sb.append(log.MsgData);
-			sb.append(ACSLogRetrieval.SEPARATOR_CHAR);
-			sb.append(log.Audience);
-			sb.append(ACSLogRetrieval.SEPARATOR_CHAR);
-
-			NameValue[] attrs = log.attributes;
-			NameValue[] vals = log.log_data;
-
-			//int max=Math.max(attrs.length, vals.length);
-			int min = Math.min(attrs.length, vals.length);
-			for (int t = 0; t < min; t++) {
-				if (attrs[t] != null) {
-					sb.append(attrs[t].name);
-					sb.append(ACSLogRetrieval.SEPARATOR_CHAR);
-					sb.append(attrs[t].value);
-					sb.append(ACSLogRetrieval.SEPARATOR_CHAR);
-				}
-				if (vals[t] != null) {
-					sb.append(vals[t].name);
-					sb.append(ACSLogRetrieval.SEPARATOR_CHAR);
-					sb.append(vals[t].value);
-					sb.append(ACSLogRetrieval.SEPARATOR_CHAR);
-				}
-			}
-			if (attrs.length > vals.length) {
-				for (int t = min; t < attrs.length; t++) {
-					if (attrs[t] != null) {
-						sb.append(attrs[t].name);
-						sb.append(ACSLogRetrieval.SEPARATOR_CHAR);
-						sb.append(attrs[t].value);
-						sb.append(ACSLogRetrieval.SEPARATOR_CHAR);
-					}
-				}
-			} else if (attrs.length < vals.length) {
-				for (int t = min; t < vals.length; t++) {
-					if (vals[t] != null) {
-						sb.append(vals[t].name);
-						sb.append(ACSLogRetrieval.SEPARATOR_CHAR);
-						sb.append(vals[t].value);
-						sb.append(ACSLogRetrieval.SEPARATOR_CHAR);
-					}
-				}
-			}
-			return sb.toString();
-		}
-	}
+	
 }
 

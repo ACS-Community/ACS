@@ -19,7 +19,7 @@
 
 /** 
  * @author  acaproni   
- * @version $Id: ACSLogRetrieval.java,v 1.18 2007/06/06 15:47:09 acaproni Exp $
+ * @version $Id: ACSLogRetrieval.java,v 1.19 2007/06/08 09:50:22 acaproni Exp $
  * @since    
  */
 
@@ -36,6 +36,7 @@ import java.util.Vector;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
+import com.cosylab.logging.client.cache.CacheUtils;
 import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.engine.log.LogEntry;
 import com.cosylab.logging.engine.log.ILogEntry.AdditionalData;
@@ -61,9 +62,7 @@ public class ACSLogRetrieval extends Thread {
 	// The thread will publish this situation to the listeners
 	private static final int DELAY_NUMBER=1000;
 	
-	// The separator for the field of the logs in the file
-	public static final char SEPARATOR_CHAR = (char)0;
-	public static final String SEPARATOR = ""+ACSLogRetrieval.SEPARATOR_CHAR;
+	
 	
 	// The object to dispatch messages to the listeners
 	private ACSListenersDispatcher listenersDispatcher = null;
@@ -277,10 +276,20 @@ public class ACSLogRetrieval extends Thread {
 						continue;
 					}
 				} else {
-					log=fromCacheString(tempStr);
-					String xmlStr=log.toXMLString();
-					listenersDispatcher.publishRawLog(xmlStr);
-					listenersDispatcher.publishLog(log);
+					try {
+						log=CacheUtils.fromCacheString(tempStr);
+						String xmlStr=log.toXMLString();
+						listenersDispatcher.publishRawLog(xmlStr);
+						listenersDispatcher.publishLog(log);
+					} catch (Exception e) {
+						StringBuilder strB = new StringBuilder("\nException occurred while dispatching the XML log.\n");
+						strB.append("This log has been lost: "+tempStr);
+						ErrorLogDialog.getErrorLogDlg(true).appendText(strB.toString());
+						listenersDispatcher.publishReport(strB.toString());
+						System.err.println("error parsing a log "+e.getMessage());
+						e.printStackTrace();
+						continue;
+					}
 				}
 			}
 		}
@@ -313,108 +322,6 @@ public class ACSLogRetrieval extends Thread {
 		}
 	}
 	
-	/**
-	 * Build a log out of its string representation
-	 * 
-	 * @param str The string representing a log
-	 * @return The log
-	 */
-	private ILogEntry fromCacheString(String str) {
-		String[] strs = str.split(SEPARATOR);
-		long millis = 0;
-		try { 
-			millis=dateFormat.parse(strs[0]).getTime();
-		} catch (ParseException e) {
-			System.err.println("Error parsing the date: "+strs[0]);
-		}
-		Integer entrytype = new Integer(strs[1]);
-		String srcObject = null;
-		if (strs.length>2) {
-			srcObject=strs[2];
-		}
-		String fileNM = null;
-		if (strs.length>3) {
-			fileNM=strs[3];
-		}
-		Integer line = null;
-		if (strs.length>4 && strs[4].length()!=0) {
-			line =new Integer(strs[4]);
-		}
-		String routine = null;
-		if (strs.length>5) {
-			routine=strs[5];
-		}
-		String host = null;
-		if (strs.length>6) {
-			host=strs[6];
-		}
-		String process = null;
-		if (strs.length>7) {
-			process=strs[7];
-		}
-		String context = null;
-		if (strs.length>8) {
-			context=strs[8];
-		}
-		String thread = null;
-		if (strs.length>9) {
-			thread=strs[9];
-		}
-		String logid = null;
-		if (strs.length>10) {
-			logid=strs[10];
-		}
-		Integer priority = null;
-		if (strs.length>11 && strs[11].length()>0) {
-			priority=new Integer(strs[11]);
-		}
-		String uri = null;
-		if (strs.length>12) {
-			uri=strs[12];
-		}
-		String stackid = null;
-		if (strs.length>13) {
-			stackid=strs[13]; 
-		}
-		Integer stacklevel = null;
-		if (strs.length>14 && strs[14].length()>0) {
-			Integer.parseInt(strs[14]);
-		}
-		String logmessage = null;
-		if (strs.length>15) {
-			logmessage=strs[15];
-		}
-		String audience = null;
-		if (strs.length>16) {
-			audience=strs[16];
-		}
-        
-        Vector<ILogEntry.AdditionalData> addDatas = null;
-        if (strs.length>ILogEntry.NUMBER_OF_FIELDS) {
-        	addDatas = new Vector<ILogEntry.AdditionalData>();
-        	for (int t=ILogEntry.NUMBER_OF_FIELDS; t<strs.length; t+=2) {
-        		addDatas.add(new AdditionalData(strs[t],strs[t+1]));
-        	}
-        }
-        return new LogEntry(
-        		millis,
-        		entrytype,
-        		fileNM,
-        		line,
-        		routine,
-        		host,
-        		process,
-        		context,
-        		thread,
-        		logid,
-        		priority,
-        		uri,
-        		stackid,
-        		stacklevel,
-        		logmessage,
-        		srcObject,
-                        audience,
-        		addDatas);
-	}
+	
 	
 }
