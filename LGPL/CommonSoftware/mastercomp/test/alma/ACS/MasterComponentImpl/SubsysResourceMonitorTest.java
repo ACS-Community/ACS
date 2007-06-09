@@ -112,7 +112,42 @@ public class SubsysResourceMonitorTest extends TestCase {
         assertEquals("The monitoring should have created 2 threads", 2, threadsCreated.size());
     }
 
-    
+    /**
+     * Tests if resource unreachability is propagated to the client when it is not detected by a timeout 
+     * in the monitoring framework, but by getting a RuntimeException such as TRANSIENT for a Corba resource.
+     * 
+     */
+    public void testResourceCheckException() throws Exception {
+		TestResource resource = new TestResource(logger);		
+		TestResourceChecker checker = new TestResourceChecker(resource, logger);        
+		TestErrorHandler handler = new TestErrorHandler(logger);
+
+		int delaySeconds = 2;
+		
+		// (1) NPE, as if the check had failed for a stupid error.
+		//     The NPE is not expected, so an additional warning gets logged.
+		//     The unreachable handler must be called (it will decide to continue monitoring).
+		int numMonitorCalls = 2;
+		resource.setCheckStateRuntimeEx(NullPointerException.class);
+		CountDownLatch timeoutSync = new CountDownLatch(numMonitorCalls);
+        handler.setUnreachabilitySync(timeoutSync);
+		handler.setIsPermanentlyUnreachable(false);
+		subsysResourceMonitor.monitorResource(checker, handler, delaySeconds);
+		assertTrue("timeout occured while waiting for unreachability notification", timeoutSync.await(delaySeconds * numMonitorCalls, TimeUnit.SECONDS));
+		logger.info("Survived the " + numMonitorCalls + " NPEs");
+
+		// (2) org.omg.CORBA.TRANSIENT, as if a remote container had disappeared.
+		//     The TRANSIENT exception is treated the same way as a timeout.
+		//     The unreachable handler must be called (it will decide to stop monitoring).
+		Thread.sleep(100); // because above some stuff happens after timeoutSync was called
+		numMonitorCalls = 1;
+		resource.setCheckStateRuntimeEx(org.omg.CORBA.TRANSIENT.class);
+		timeoutSync = new CountDownLatch(numMonitorCalls);
+        handler.setUnreachabilitySync(timeoutSync);
+		handler.setIsPermanentlyUnreachable(true);
+		assertTrue("timeout occured while waiting for unreachability notification", timeoutSync.await(delaySeconds * numMonitorCalls, TimeUnit.SECONDS));
+		Thread.sleep(100); // because above some stuff happens after timeoutSync was called
+    }
     
     /**
      * Simulates hanging monitor calls, and tests the notification of the error handler,
@@ -165,6 +200,10 @@ public class SubsysResourceMonitorTest extends TestCase {
     }
     
     
+    /**
+     * Tests whether bad user-supplied parameters are handled gracefully.
+     * @throws Exception
+     */
     public void testUsageErrorResponse() throws Exception {
         TestResource resourceOk = new TestResource(logger);
                     
@@ -228,12 +267,16 @@ public class SubsysResourceMonitorTest extends TestCase {
         private final Logger logger;
 		private volatile CountDownLatch counter;
         private String name;
+        private Class<? extends RuntimeException> checkStateRuntimeExClass; // != null to simulate a problem
+//        private Error checkStateError; // != null to simulate a problem
 
         public TestResource(Logger logger) {
             this.logger = logger;
             setTestDelaySeconds(1);
             setState(STATE_OK);
             setName("Your faithful test resource");
+            this.checkStateRuntimeExClass = null;
+//            this.checkStateError = null;
         }
         String getName() {
             return name;
@@ -246,6 +289,17 @@ public class SubsysResourceMonitorTest extends TestCase {
          * Otherwise the timeouts in the tests get confused.
          */
         String getState() {
+        	if (checkStateRuntimeExClass != null) {
+                logger.info("TestResource#getState called in thread '" + Thread.currentThread().getName() + "'. Will throw an exception of type " + checkStateRuntimeExClass.getName());
+        		RuntimeException ex = null;
+        		try {
+					ex = checkStateRuntimeExClass.newInstance();
+				} catch (Throwable thr) {
+					logger.log(Level.WARNING, "unexpected exception while instantiating test exception", thr);
+				}
+				throw ex;
+        	}
+        	
             logger.info("TestResource#getState called in thread '" + Thread.currentThread().getName() + "'. Will wait " + testDelaySeconds + " seconds unless interrupted.");
             try {
                 Thread.sleep(testDelaySeconds * 1000);
@@ -272,7 +326,13 @@ public class SubsysResourceMonitorTest extends TestCase {
         }
         void setTestDelaySeconds(int testDelaySeconds) {
             this.testDelaySeconds = testDelaySeconds;
-        }        
+        }
+        Class<? extends RuntimeException> getCheckStateRuntimeEx() {
+        	return this.checkStateRuntimeExClass;
+        }
+        void setCheckStateRuntimeEx(Class<? extends RuntimeException> exClass) {
+        	this.checkStateRuntimeExClass = exClass;
+        }
     }
     
     
