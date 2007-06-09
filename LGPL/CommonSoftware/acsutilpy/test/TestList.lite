@@ -20,7 +20,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: TestList.lite,v 1.5 2007/02/21 10:59:42 agrimstrup Exp $"
+# "@(#) $Id: TestList.lite,v 1.6 2007/06/09 04:46:44 agrimstrup Exp $"
 #
 # TestList
 #
@@ -34,5 +34,8 @@ SOURCE acsutilpyTATEnvironment
 2   FindFileBad    "acsutilpyTestFindFile does/Not/exist.bkjare"
 3   ACSPorts       "acsutilpyTestPorts"
 4   CmdLinePorts  "acsutilpyTestCmdLinePorts -b 8"
-5   Import  "acsutilpyTestImport -v"
+5   Import  "acsutilpyTestImport -v AImportSyntaxCheck BSingleImportCheck CDoubleImportCheck DImportSearchCheck"
+6   IDLMImport  "acsutilpyTestImport -v EIDLImportCheck.testAModuleImport"
+7   IDLPImport  "acsutilpyTestImport -v EIDLImportCheck.testBPackageImport"
+8   IDLReload  "acsutilpyTestImport -v EIDLImportCheck.testCPackageReload"
 #EPILOGUE acsutilpyTATEpilogue

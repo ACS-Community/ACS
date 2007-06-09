@@ -19,3 +19,4 @@ s/Thread=ID: [0-9]*/Thread=ID: xxx/g
 s/Process=[0-9]*/Process=xxx/g
 s/\/.*\/idl\/acscommon.idl/....\/idl\/acscommon.idl/g
 s/Ran 33 tests in [0-9].[0-9][0-9][0-9]s/Ran 33 tests in x.xxs/g
+s/Ran 1 test in [0-9].[0-9][0-9][0-9]s/Ran 1 test in x.xxxs/g

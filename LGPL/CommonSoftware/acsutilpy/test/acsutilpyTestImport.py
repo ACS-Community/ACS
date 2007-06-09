@@ -17,7 +17,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: acsutilpyTestImport.py,v 1.1 2007/02/21 10:59:42 agrimstrup Exp $"
+# "@(#) $Id: acsutilpyTestImport.py,v 1.2 2007/06/09 04:46:44 agrimstrup Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -25,7 +25,7 @@
 #
 
 #------------------------------------------------------------------------------
-__revision__ = "$Id: acsutilpyTestImport.py,v 1.1 2007/02/21 10:59:42 agrimstrup Exp $"
+__revision__ = "$Id: acsutilpyTestImport.py,v 1.2 2007/06/09 04:46:44 agrimstrup Exp $"
 #--REGULAR IMPORTS-------------------------------------------------------------
 import sys
 import os
@@ -302,6 +302,30 @@ class DImportSearchCheck(unittest.TestCase):
         self.assertEqual(self.__pathlist[1], os.path.dirname(mod2.__file__))
         self.assertEqual(m, mod2)
     
+
+class EIDLImportCheck(unittest.TestCase):
+    ACSPackageDoc = 'omniORB IDL module ACS\n\nGenerated from:\n\n  ../idl/./acscommon.idl\n  ../idl/./acscomponent.idl\n  ../idl/./baci.idl\n  ../idl/./enumpropStd.idl\n  ../idl/./taskComponent.idl\n  ../idl/./characteristicTask.idl\n  ../idl/./mastercomp_if.idl\n'
+    ACSPackageDoc2 = 'omniORB IDL module ACS\n\nGenerated from:\n\n  ../idl/./acscomponent.idl\n  ../idl/./acscommon.idl\n  ../idl/./baci.idl\n  ../idl/./enumpropStd.idl\n  ../idl/./taskComponent.idl\n  ../idl/./characteristicTask.idl\n  ../idl/./mastercomp_if.idl\n'
+    ACSModuleDoc = 'omniORB IDL module ACS\n\nGenerated from:\n\n  ../idl/./acscomponent.idl\n  ../idl/./acscommon.idl\n  ../idl/./baci.idl\n'
+
+    def testAModuleImport(self):
+        """Import a single IDL interface module of a package"""
+        import baci_idl
+        self.assertEqual(sys.modules['ACS'].__doc__, self.ACSModuleDoc)
+        self.assertEqual(hasattr(sys.modules['ACS'],'__file__'), False)
+
+    def testBPackageImport(self):
+        """Import an IDL generated package"""
+        import ACS
+        self.assertEqual(ACS.__doc__, self.ACSPackageDoc)
+        self.assertEqual(hasattr(sys.modules['ACS'],'__file__'), True)
+
+    def testCPackageReload(self):
+        """Reload an IDL package on second import"""
+        self.testAModuleImport()
+        import ACS
+        self.assertEqual(ACS.__doc__, self.ACSPackageDoc2)
+        self.assertEqual(hasattr(sys.modules['ACS'],'__file__'), True)
 
 if __name__ == "__main__":
     unittest.main()
