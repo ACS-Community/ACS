@@ -23,8 +23,6 @@ package alma.ACS.MasterComponentImpl;
 
 import java.util.logging.Logger;
 
-import alma.acs.logging.ClientLogManager;
-
 /**
  * Helper class that allows to synchronize the sending of events with the 
  * state changes due to previous events. 
