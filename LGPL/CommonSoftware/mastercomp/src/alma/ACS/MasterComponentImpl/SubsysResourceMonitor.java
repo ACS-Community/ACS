@@ -25,6 +25,7 @@ package alma.ACS.MasterComponentImpl;
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -328,7 +329,7 @@ public class SubsysResourceMonitor {
 					if (badState != null && !timeout) { // we don't want to report a bad state after a timeout, since the timeout has already been reported
 						lastCheckSucceeded = false;
 						try {
-							err.badState(resourceChecker.getResource(), badState);                            
+							err.badState(resourceChecker.getResource(), badState);
 						} catch (Exception e) {
 							logger.log(Level.WARNING, "Failed to propagate offending state of resource '" + resourceChecker.getResourceName() + "' to the error handler!", e);
 						}
@@ -360,19 +361,25 @@ public class SubsysResourceMonitor {
 					wasTimedOut = true;
 				}
 				else {
-					// some other strange InterruptedException
+					// some other strange InterruptedException. 
 					callError = e;
 				}
 // TODO: check how CORBA timeout behaves, and whether a corba exception would be wrapped as an ExecutionException
 //			} catch (???CORBATimeoutEx??? e) {
 //				wasTimedOut = true;
 //			}
-			} catch (Throwable thr) { // ExecutionException or unexpected
+			} catch (ExecutionException ex) {
+				callError = ex.getCause();
+				if (callError instanceof org.omg.CORBA.TRANSIENT) {
+					// Corba failed to connect to the server, for example because a container process has disappeared
+					wasTimedOut = true;
+				}
+			} catch (Throwable thr) { // unexpected
 				callError = thr;
 			}
 			finally {
 				if (wasTimedOut) {
-					checkStateCallerWithTimeout.cancel();
+					checkStateCallerWithTimeout.cancel();  // to suppress a possible later bad-state message 
 				}
 			}
 			
@@ -396,9 +403,18 @@ public class SubsysResourceMonitor {
 			}			
 			else if (callError != null) {
                 // the asynchronous call "resourceChecker.checkState()" failed, but not because of a timeout.
+				// This is not expected, and we must log the exception.
 				lastCheckSucceeded = false;
-                logger.log(Level.WARNING, "Failed to check the status of resource '" + resourceChecker.getResourceName() + "'.", callError);				
+                logger.log(Level.WARNING, "Failed to check the status of resource '" + resourceChecker.getResourceName() + "' because of an exception.", callError);
+				try {
+					// notify the error handler
+					// @TODO: call in separate thread with timeout. Decide about value of "beyondRepair" if method 'resourceUnreachable' times out
+					beyondRepair = err.resourceUnreachable(resourceChecker.getResource()); 
+				} catch (Throwable thr) {
+                    logger.log(Level.WARNING, "Failed to propagate unavailability of resource '" + resourceChecker.getResourceName() + "' to the error handler!", thr);
+				}
 			}
+
 			if (beyondRepair) {
 				String msg = "Resource '" + resourceChecker.getResourceName() + "' appears permanently unreachable and will no longer be monitored.";			
 				logger.info(msg);
