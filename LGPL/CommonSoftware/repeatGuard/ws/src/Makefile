@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.3 2007/03/22 10:57:22 gchiozzi Exp $"
+# "@(#) $Id: Makefile,v 1.4 2007/06/11 09:28:51 nbarriga Exp $"
 #
 # Makefile of ........
 #
@@ -63,7 +63,7 @@ LIBRARIES_L     =
 #
 # <brief description of lllll library>
 RepeatGuard_OBJECTS   = RepeatGuard
-RepeatGuard_LIBS      = acsutil
+RepeatGuard_LIBS      = acsutil acsThread
 
 RepeatGuardLogger_OBJECTS   = RepeatGuardLogger
 

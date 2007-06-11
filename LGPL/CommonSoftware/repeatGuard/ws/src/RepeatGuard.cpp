@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: RepeatGuard.cpp,v 1.4 2007/03/23 09:50:06 nbarriga Exp $"
+* "@(#) $Id: RepeatGuard.cpp,v 1.5 2007/06/11 09:28:51 nbarriga Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -25,22 +25,26 @@
 
 #include "vltPort.h"
 
-static char *rcsId="@(#) $Id: RepeatGuard.cpp,v 1.4 2007/03/23 09:50:06 nbarriga Exp $"; 
+static char *rcsId="@(#) $Id: RepeatGuard.cpp,v 1.5 2007/06/11 09:28:51 nbarriga Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 
 #include "RepeatGuard.h"
 
-RepeatGuard::RepeatGuard(ACS::TimeInterval interval, unsigned int maxRepetitions, bool or_or_and){
-        method=or_or_and;
-        if(interval==0)method=COUNTER;
-        if(maxRepetitions==0)method=TIMER;
-
-	this->maxRepetitions=maxRepetitions;
-	this->interval=interval;
-	counter=0;
-	counterAtLastCheck=0;
-	lastTime=0;
+RepeatGuard::RepeatGuard(ACS::TimeInterval _interval, unsigned int _maxRepetitions, bool or_or_and):
+        counter(0),
+        counterAtLastCheck(0),
+        maxRepetitions(_maxRepetitions),
+        method(or_or_and),
+        interval(_interval),
+        lastTime(0)
+{
+        if(_interval==0){
+            method=COUNTER;
+        }
+        if(_maxRepetitions==0){
+            method=TIMER;
+        }
 }
 
 RepeatGuard::~RepeatGuard(){
@@ -48,30 +52,32 @@ RepeatGuard::~RepeatGuard(){
 }
 
 bool RepeatGuard::check(){
+        ACS::ThreadSyncGuard guard(&mutex);
+        ACS::Time currentTime=getTimeStamp();
         switch(method){
                 case AND:
-                        if(lastTime+interval<=getTimeStamp()&&counter>=maxRepetitions){
+                        if(lastTime+interval<=currentTime&&counter>=maxRepetitions){
                                 counterAtLastCheck=counter;
                                 counter=0;
-                                lastTime=getTimeStamp();
+                                lastTime=currentTime;
                                 return true;
                         }
                         return false;
                         break;
                 case OR:
-                        if(lastTime+interval<=getTimeStamp()||counter>=maxRepetitions){
+                        if(lastTime+interval<=currentTime||counter>=maxRepetitions){
                                 counterAtLastCheck=counter;
                                 counter=0;
-                                lastTime=getTimeStamp();
+                                lastTime=currentTime;
                                 return true;
                         }
                         return false;
                         break;
                 case TIMER:
-                        if(lastTime+interval<=getTimeStamp()){
+                        if(lastTime+interval<=currentTime){
                                 counterAtLastCheck=counter;
                                 counter=0;
-                                lastTime=getTimeStamp();
+                                lastTime=currentTime;
                                 return true;
                         }
                         return false;
@@ -80,7 +86,7 @@ bool RepeatGuard::check(){
                         if(counter>=maxRepetitions){
                                 counterAtLastCheck=counter;
                                 counter=0;
-                                lastTime=getTimeStamp();
+                                lastTime=currentTime;
                                 return true;
                         }
                         return false;
@@ -90,12 +96,53 @@ bool RepeatGuard::check(){
 }
 
 bool RepeatGuard::checkAndIncrement(){
-
+        ACS::ThreadSyncGuard guard(&mutex);
         counter++;
-        return check();
+        ACS::Time currentTime=getTimeStamp();
+        switch(method){
+                case AND:
+                        if(lastTime+interval<=currentTime&&counter>=maxRepetitions){
+                                counterAtLastCheck=counter;
+                                counter=0;
+                                lastTime=currentTime;
+                                return true;
+                        }
+                        return false;
+                        break;
+                case OR:
+                        if(lastTime+interval<=currentTime||counter>=maxRepetitions){
+                                counterAtLastCheck=counter;
+                                counter=0;
+                                lastTime=currentTime;
+                                return true;
+                        }
+                        return false;
+                        break;
+                case TIMER:
+                        if(lastTime+interval<=currentTime){
+                                counterAtLastCheck=counter;
+                                counter=0;
+                                lastTime=currentTime;
+                                return true;
+                        }
+                        return false;
+                        break;
+                case COUNTER:
+                        if(counter>=maxRepetitions){
+                                counterAtLastCheck=counter;
+                                counter=0;
+                                lastTime=currentTime;
+                                return true;
+                        }
+                        return false;
+                        break;
+        }
+        return false;
+
 }
 
 void RepeatGuard::increment(){
+        ACS::ThreadSyncGuard guard(&mutex);
 	counter++;
 }
 
@@ -104,12 +151,14 @@ unsigned int RepeatGuard::count(){
 }
 
 void RepeatGuard::reset(){
+        ACS::ThreadSyncGuard guard(&mutex);
 	counter=0;
 	counterAtLastCheck=0;
 	lastTime=0;
 }
 
 void RepeatGuard::reset(ACS::TimeInterval interval, unsigned int maxRepetitions, bool or_or_and){
+        ACS::ThreadSyncGuard guard(&mutex);
         method=OR;
         if(interval==0)method=COUNTER;
         if(maxRepetitions==0)method=TIMER;

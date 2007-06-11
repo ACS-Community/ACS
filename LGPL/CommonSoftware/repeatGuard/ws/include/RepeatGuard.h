@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: RepeatGuard.h,v 1.3 2007/03/23 09:50:06 nbarriga Exp $"
+* "@(#) $Id: RepeatGuard.h,v 1.4 2007/06/11 09:28:51 nbarriga Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -35,6 +35,7 @@
 #endif
 
 #include <acsutilTimeStamp.h>
+#include "acsThread.h"
 
 #define AND 0
 #define OR 1
@@ -59,6 +60,7 @@ class RepeatGuard{
                 unsigned int method;
 		ACS::TimeInterval interval;
 		ACS::Time lastTime;
+                ACE_Recursive_Thread_Mutex mutex;
 	public:
                 /** Constructor
                 * @param interval minimum interval between allowing an action(i.e. check returns true)(in 100ns)(condition 1)
