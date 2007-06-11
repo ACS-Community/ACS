@@ -28,10 +28,8 @@ import java.util.Vector;
 import alma.ACSLoggingLog.LogBinaryRecord;
 import alma.ACSLoggingLog.NameValue;
 
-import com.cosylab.logging.engine.ACS.ACSLogRetrieval;
 import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.engine.log.LogEntry;
-import com.cosylab.logging.engine.log.LogTypeHelper;
 import com.cosylab.logging.engine.log.ILogEntry.AdditionalData;
 
 /**
@@ -67,6 +65,7 @@ public class CacheUtils {
 			throw new LogCacheException(e);
 		}
 		Integer entrytype = new Integer(strs[1]);
+		
 		String srcObject = null;
 		if (strs.length>2) {
 			srcObject=strs[2];
@@ -168,8 +167,7 @@ public class CacheUtils {
 			sb.delete(0, sb.length());
 			sb.append(log.TimeStamp);
 			sb.append(CacheUtils.SEPARATOR_CHAR);
-			sb.append(LogTypeHelper
-					.parseLogTypeDescription(log.type.toString()));
+			sb.append(log.type.value());
 			sb.append(CacheUtils.SEPARATOR_CHAR);
 			sb.append(log.SourceObject);
 			sb.append(CacheUtils.SEPARATOR_CHAR);
@@ -204,6 +202,10 @@ public class CacheUtils {
 
 			NameValue[] attrs = log.attributes;
 			NameValue[] vals = log.log_data;
+			
+			if (vals==null||attrs==null) {
+				return sb.toString();
+			}
 
 			//int max=Math.max(attrs.length, vals.length);
 			int min = Math.min(attrs.length, vals.length);
