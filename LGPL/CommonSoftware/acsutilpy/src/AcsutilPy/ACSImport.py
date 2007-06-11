@@ -25,7 +25,7 @@
 # No changes were made to Python during the preparation of this
 # module nor are any required to use it.
 #
-# "@(#) $Id: ACSImport.py,v 1.3 2007/06/09 04:46:44 agrimstrup Exp $"
+# "@(#) $Id: ACSImport.py,v 1.4 2007/06/11 21:49:42 agrimstrup Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -48,11 +48,12 @@ tree.
 
 """
 #------------------------------------------------------------------------------
-__revision__ = "$Id: ACSImport.py,v 1.3 2007/06/09 04:46:44 agrimstrup Exp $"
+__revision__ = "$Id: ACSImport.py,v 1.4 2007/06/11 21:49:42 agrimstrup Exp $"
 #--REGULAR IMPORTS-------------------------------------------------------------
 import sys
 import os
 import imp
+import inspect
 import __builtin__
 #------------------------------------------------------------------------------
 
@@ -78,7 +79,7 @@ def searchingImport(name, globals=None, locals=None, fromlist=None):
     """
     try:
         m = _original_import(name, globals, locals, fromlist)
-        if not imp.is_builtin(m.__name__) and not hasattr(m,'__file__'):
+        if inspect.ismodule(m) and not imp.is_builtin(m.__name__) and not hasattr(m,'__file__'):
             reload(m)
     except ImportError:
         parent = _determineParent(globals)

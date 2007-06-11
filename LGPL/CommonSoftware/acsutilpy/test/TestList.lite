@@ -20,7 +20,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: TestList.lite,v 1.6 2007/06/09 04:46:44 agrimstrup Exp $"
+# "@(#) $Id: TestList.lite,v 1.7 2007/06/11 21:49:42 agrimstrup Exp $"
 #
 # TestList
 #
@@ -38,4 +38,5 @@ SOURCE acsutilpyTATEnvironment
 6   IDLMImport  "acsutilpyTestImport -v EIDLImportCheck.testAModuleImport"
 7   IDLPImport  "acsutilpyTestImport -v EIDLImportCheck.testBPackageImport"
 8   IDLReload  "acsutilpyTestImport -v EIDLImportCheck.testCPackageReload"
+9   LoaderImport  "acsutilpyTestImport -v EIDLImportCheck.testDLoaderImport"
 #EPILOGUE acsutilpyTATEpilogue
