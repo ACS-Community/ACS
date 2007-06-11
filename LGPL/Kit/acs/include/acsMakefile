@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: acsMakefile,v 1.162 2007/02/08 10:33:08 mzampare Exp $" 
+# "@(#) $Id: acsMakefile,v 1.163 2007/06/11 11:27:07 mzampare Exp $" 
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -381,13 +381,13 @@ endif
 ifndef platform
     #
     # force a syntax error, so that vltMake stops on a
-    UNSUPPORTED platform
+$(error  UNSUPPORTED platform)
 endif
 
 ifndef GNU_ROOT
     #
     # force a syntax error, so that vltMake stops 
-    GNU_ROOT must be defined
+$(error GNU_ROOT must be defined)
 endif
 
 ifndef TCLTK_ROOT
@@ -630,7 +630,7 @@ endif
     ifndef VX_CPU_FAMILY
         #
         # force a syntax error, so that vltMake stops on a
-        UNSUPPORTED CPU type
+$(error "UNSUPPORTED CPU type")
     endif
 
     #
@@ -1119,8 +1119,6 @@ MODIDL = -I../idl
 PATH := ../bin:$(PATH)
 LD_LIBRARY_PATH := ../lib:$(LD_LIBRARY_PATH)
 PYTHONPATH := ../lib/python/site-packages:$(PYTHONPATH)
-
-
 
 #
 # REMARK: for VW module there is the possibility that a mod/ws-lcu structure
