@@ -19,7 +19,7 @@
 
 /** 
  * @author  acaproni   
- * @version $Id: ACSLogRetrieval.java,v 1.19 2007/06/08 09:50:22 acaproni Exp $
+ * @version $Id: ACSLogRetrieval.java,v 1.20 2007/06/11 12:25:50 acaproni Exp $
  * @since    
  */
 
@@ -322,6 +322,13 @@ public class ACSLogRetrieval extends Thread {
 		}
 	}
 	
-	
+	/**
+	 * Check if there are logs to be published in the cache. 
+	 * 
+	 * @return true if there are logs to be processed in the file
+	 */
+	public boolean hasPendingEntries() {
+		return !endingPositions.isEmpty();
+	}
 	
 }
