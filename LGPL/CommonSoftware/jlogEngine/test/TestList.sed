@@ -25,3 +25,5 @@ s/LogId="[0-9]*"/ LogId="NNN"/g
 s/Log ID: [0-9]*/Log ID: NNN/g
 s/Host: .*/Host: hostname/g
 s/Host=".*"/Host="hostname"/g
+s/LoggingChannelBin/LogChannel_Name/g
+s/LoggingChannel/LogChannel_Name/g
