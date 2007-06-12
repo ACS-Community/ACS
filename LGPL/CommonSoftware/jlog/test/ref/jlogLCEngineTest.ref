@@ -7,8 +7,8 @@
 1 - Status msg received: Manager reference resolved.
 1 - Status msg received: Resolving Naming Service...
 1 - Status msg received: Naming Service resolved.
-1 - Status msg received: Resolving channel "LoggingChannel" from Notify Service...
-1 - Status msg received: Channel "LoggingChannel" resolved.
+1 - Status msg received: Resolving channel "LogChannel_Name" from Notify Service...
+1 - Status msg received: Channel "LogChannel_Name" resolved.
 1 - Status msg received: Creating Consumer Admin...
 1 - Status msg received: Consumer Admin created.
 1 - Status msg received: Initializing Structured Push Consumer...
@@ -24,7 +24,7 @@
 1 - Line: NNN
 1 - Routine: 
 1 - Host: hostname
-1 - Process: logClient
+1 - Process: ../bin/logClient
 1 - Context: 
 1 - Thread: NNNmain
 1 - Log Message: Test message 0
@@ -38,7 +38,7 @@
 1 - Line: NNN
 1 - Routine: 
 1 - Host: hostname
-1 - Process: logClient
+1 - Process: ../bin/logClient
 1 - Context: 
 1 - Thread: NNNmain
 1 - Log Message: Test message 1
@@ -52,7 +52,7 @@
 1 - Line: NNN
 1 - Routine: 
 1 - Host: hostname
-1 - Process: logClient
+1 - Process: ../bin/logClient
 1 - Context: 
 1 - Thread: NNNmain
 1 - Log Message: Test message 2
@@ -66,7 +66,7 @@
 1 - Line: NNN
 1 - Routine: 
 1 - Host: hostname
-1 - Process: logClient
+1 - Process: ../bin/logClient
 1 - Context: 
 1 - Thread: NNNmain
 1 - Log Message: Test message 3
@@ -80,7 +80,7 @@
 1 - Line: NNN
 1 - Routine: 
 1 - Host: hostname
-1 - Process: logClient
+1 - Process: ../bin/logClient
 1 - Context: 
 1 - Thread: NNNmain
 1 - Log Message: Test message 4
@@ -94,7 +94,7 @@
 1 - Line: NNN
 1 - Routine: 
 1 - Host: hostname
-1 - Process: logClient
+1 - Process: ../bin/logClient
 1 - Context: 
 1 - Thread: NNNmain
 1 - Log Message: Test message 5
@@ -108,7 +108,7 @@
 1 - Line: NNN
 1 - Routine: 
 1 - Host: hostname
-1 - Process: logClient
+1 - Process: ../bin/logClient
 1 - Context: 
 1 - Thread: NNNmain
 1 - Log Message: Test message 6
@@ -122,7 +122,7 @@
 1 - Line: NNN
 1 - Routine: 
 1 - Host: hostname
-1 - Process: logClient
+1 - Process: ../bin/logClient
 1 - Context: 
 1 - Thread: NNNmain
 1 - Log Message: Test message 7
@@ -136,7 +136,7 @@
 1 - Line: NNN
 1 - Routine: 
 1 - Host: hostname
-1 - Process: logClient
+1 - Process: ../bin/logClient
 1 - Context: 
 1 - Thread: NNNmain
 1 - Log Message: Test message 8
@@ -150,7 +150,7 @@
 1 - Line: NNN
 1 - Routine: 
 1 - Host: hostname
-1 - Process: logClient
+1 - Process: ../bin/logClient
 1 - Context: 
 1 - Thread: NNNmain
 1 - Log Message: Test message 9
@@ -164,7 +164,7 @@
 1 - Line: NNN
 1 - Routine: 
 1 - Host: hostname
-1 - Process: logClient
+1 - Process: ../bin/logClient
 1 - Context: 
 1 - Thread: NNNmain
 1 - Log Message: Test message 10
@@ -178,7 +178,7 @@
 1 - Line: NNN
 1 - Routine: 
 1 - Host: hostname
-1 - Process: logClient
+1 - Process: ../bin/logClient
 1 - Context: 
 1 - Thread: NNNmain
 1 - Log Message: Test message 11
@@ -192,7 +192,7 @@
 1 - Line: NNN
 1 - Routine: 
 1 - Host: hostname
-1 - Process: logClient
+1 - Process: ../bin/logClient
 1 - Context: 
 1 - Thread: NNNmain
 1 - Log Message: Test message 12
@@ -206,7 +206,7 @@
 1 - Line: NNN
 1 - Routine: 
 1 - Host: hostname
-1 - Process: logClient
+1 - Process: ../bin/logClient
 1 - Context: 
 1 - Thread: NNNmain
 1 - Log Message: Test message 13
@@ -220,7 +220,7 @@
 1 - Line: NNN
 1 - Routine: 
 1 - Host: hostname
-1 - Process: logClient
+1 - Process: ../bin/logClient
 1 - Context: 
 1 - Thread: NNNmain
 1 - Log Message: Test message 14
@@ -234,7 +234,7 @@
 1 - Line: NNN
 1 - Routine: 
 1 - Host: hostname
-1 - Process: logClient
+1 - Process: ../bin/logClient
 1 - Context: 
 1 - Thread: NNNmain
 1 - Log Message: Test message 15
@@ -248,7 +248,7 @@
 1 - Line: NNN
 1 - Routine: 
 1 - Host: hostname
-1 - Process: logClient
+1 - Process: ../bin/logClient
 1 - Context: 
 1 - Thread: NNNmain
 1 - Log Message: Test message 16
@@ -262,7 +262,7 @@
 1 - Line: NNN
 1 - Routine: 
 1 - Host: hostname
-1 - Process: logClient
+1 - Process: ../bin/logClient
 1 - Context: 
 1 - Thread: NNNmain
 1 - Log Message: Test message 17
@@ -276,7 +276,7 @@
 1 - Line: NNN
 1 - Routine: 
 1 - Host: hostname
-1 - Process: logClient
+1 - Process: ../bin/logClient
 1 - Context: 
 1 - Thread: NNNmain
 1 - Log Message: Test message 18
@@ -290,7 +290,7 @@
 1 - Line: NNN
 1 - Routine: 
 1 - Host: hostname
-1 - Process: logClient
+1 - Process: ../bin/logClient
 1 - Context: 
 1 - Thread: NNNmain
 1 - Log Message: Test message 19
@@ -304,7 +304,7 @@
 1 - Line: NNN
 1 - Routine: 
 1 - Host: hostname
-1 - Process: logClient
+1 - Process: ../bin/logClient
 1 - Context: 
 1 - Thread: NNNmain
 1 - Log Message: Test message 20
@@ -318,7 +318,7 @@
 1 - Line: NNN
 1 - Routine: 
 1 - Host: hostname
-1 - Process: logClient
+1 - Process: ../bin/logClient
 1 - Context: 
 1 - Thread: NNNmain
 1 - Log Message: Test message 21
@@ -332,7 +332,7 @@
 1 - Line: NNN
 1 - Routine: 
 1 - Host: hostname
-1 - Process: logClient
+1 - Process: ../bin/logClient
 1 - Context: 
 1 - Thread: NNNmain
 1 - Log Message: Test message 22
@@ -346,7 +346,7 @@
 1 - Line: NNN
 1 - Routine: 
 1 - Host: hostname
-1 - Process: logClient
+1 - Process: ../bin/logClient
 1 - Context: 
 1 - Thread: NNNmain
 1 - Log Message: Test message 23
@@ -360,7 +360,7 @@
 1 - Line: NNN
 1 - Routine: 
 1 - Host: hostname
-1 - Process: logClient
+1 - Process: ../bin/logClient
 1 - Context: 
 1 - Thread: NNNmain
 1 - Log Message: Test message 24
@@ -374,7 +374,7 @@
 1 - Line: NNN
 1 - Routine: 
 1 - Host: hostname
-1 - Process: logClient
+1 - Process: ../bin/logClient
 1 - Context: 
 1 - Thread: NNNmain
 1 - Log Message: Test message 25
@@ -388,7 +388,7 @@
 1 - Line: NNN
 1 - Routine: 
 1 - Host: hostname
-1 - Process: logClient
+1 - Process: ../bin/logClient
 1 - Context: 
 1 - Thread: NNNmain
 1 - Log Message: Test message 26
@@ -402,7 +402,7 @@
 1 - Line: NNN
 1 - Routine: 
 1 - Host: hostname
-1 - Process: logClient
+1 - Process: ../bin/logClient
 1 - Context: 
 1 - Thread: NNNmain
 1 - Log Message: Test message 27
@@ -416,7 +416,7 @@
 1 - Line: NNN
 1 - Routine: 
 1 - Host: hostname
-1 - Process: logClient
+1 - Process: ../bin/logClient
 1 - Context: 
 1 - Thread: NNNmain
 1 - Log Message: Test message 28
@@ -430,7 +430,7 @@
 1 - Line: NNN
 1 - Routine: 
 1 - Host: hostname
-1 - Process: logClient
+1 - Process: ../bin/logClient
 1 - Context: 
 1 - Thread: NNNmain
 1 - Log Message: Test message 29
@@ -444,7 +444,7 @@
 1 - Line: NNN
 1 - Routine: 
 1 - Host: hostname
-1 - Process: logClient
+1 - Process: ../bin/logClient
 1 - Context: 
 1 - Thread: NNNmain
 1 - Log Message: Test message 30
@@ -458,7 +458,7 @@
 1 - Line: NNN
 1 - Routine: 
 1 - Host: hostname
-1 - Process: logClient
+1 - Process: ../bin/logClient
 1 - Context: 
 1 - Thread: NNNmain
 1 - Log Message: Test message 31
@@ -472,7 +472,7 @@
 1 - Line: NNN
 1 - Routine: 
 1 - Host: hostname
-1 - Process: logClient
+1 - Process: ../bin/logClient
 1 - Context: 
 1 - Thread: NNNmain
 1 - Log Message: Test message 32
@@ -486,7 +486,7 @@
 1 - Line: NNN
 1 - Routine: 
 1 - Host: hostname
-1 - Process: logClient
+1 - Process: ../bin/logClient
 1 - Context: 
 1 - Thread: NNNmain
 1 - Log Message: Test message 33
@@ -500,7 +500,7 @@
 1 - Line: NNN
 1 - Routine: 
 1 - Host: hostname
-1 - Process: logClient
+1 - Process: ../bin/logClient
 1 - Context: 
 1 - Thread: NNNmain
 1 - Log Message: Test message 34
@@ -514,7 +514,7 @@
 1 - Line: NNN
 1 - Routine: 
 1 - Host: hostname
-1 - Process: logClient
+1 - Process: ../bin/logClient
 1 - Context: 
 1 - Thread: NNNmain
 1 - Log Message: Test message 35
@@ -528,7 +528,7 @@
 1 - Line: NNN
 1 - Routine: 
 1 - Host: hostname
-1 - Process: logClient
+1 - Process: ../bin/logClient
 1 - Context: 
 1 - Thread: NNNmain
 1 - Log Message: Test message 36
@@ -542,7 +542,7 @@
 1 - Line: NNN
 1 - Routine: 
 1 - Host: hostname
-1 - Process: logClient
+1 - Process: ../bin/logClient
 1 - Context: 
 1 - Thread: NNNmain
 1 - Log Message: Test message 37
@@ -556,7 +556,7 @@
 1 - Line: NNN
 1 - Routine: 
 1 - Host: hostname
-1 - Process: logClient
+1 - Process: ../bin/logClient
 1 - Context: 
 1 - Thread: NNNmain
 1 - Log Message: Test message 38
@@ -570,7 +570,7 @@
 1 - Line: NNN
 1 - Routine: 
 1 - Host: hostname
-1 - Process: logClient
+1 - Process: ../bin/logClient
 1 - Context: 
 1 - Thread: NNNmain
 1 - Log Message: Test message 39
@@ -584,7 +584,7 @@
 1 - Line: NNN
 1 - Routine: 
 1 - Host: hostname
-1 - Process: logClient
+1 - Process: ../bin/logClient
 1 - Context: 
 1 - Thread: NNNmain
 1 - Log Message: Test message 40
@@ -598,7 +598,7 @@
 1 - Line: NNN
 1 - Routine: 
 1 - Host: hostname
-1 - Process: logClient
+1 - Process: ../bin/logClient
 1 - Context: 
 1 - Thread: NNNmain
 1 - Log Message: Test message 41
@@ -612,7 +612,7 @@
 1 - Line: NNN
 1 - Routine: 
 1 - Host: hostname
-1 - Process: logClient
+1 - Process: ../bin/logClient
 1 - Context: 
 1 - Thread: NNNmain
 1 - Log Message: Test message 42
@@ -626,7 +626,7 @@
 1 - Line: NNN
 1 - Routine: 
 1 - Host: hostname
-1 - Process: logClient
+1 - Process: ../bin/logClient
 1 - Context: 
 1 - Thread: NNNmain
 1 - Log Message: Test message 43
@@ -640,7 +640,7 @@
 1 - Line: NNN
 1 - Routine: 
 1 - Host: hostname
-1 - Process: logClient
+1 - Process: ../bin/logClient
 1 - Context: 
 1 - Thread: NNNmain
 1 - Log Message: Test message 44
@@ -654,7 +654,7 @@
 1 - Line: NNN
 1 - Routine: 
 1 - Host: hostname
-1 - Process: logClient
+1 - Process: ../bin/logClient
 1 - Context: 
 1 - Thread: NNNmain
 1 - Log Message: Test message 45
@@ -668,7 +668,7 @@
 1 - Line: NNN
 1 - Routine: 
 1 - Host: hostname
-1 - Process: logClient
+1 - Process: ../bin/logClient
 1 - Context: 
 1 - Thread: NNNmain
 1 - Log Message: Test message 46
@@ -682,7 +682,7 @@
 1 - Line: NNN
 1 - Routine: 
 1 - Host: hostname
-1 - Process: logClient
+1 - Process: ../bin/logClient
 1 - Context: 
 1 - Thread: NNNmain
 1 - Log Message: Test message 47
@@ -696,7 +696,7 @@
 1 - Line: NNN
 1 - Routine: 
 1 - Host: hostname
-1 - Process: logClient
+1 - Process: ../bin/logClient
 1 - Context: 
 1 - Thread: NNNmain
 1 - Log Message: Test message 48
@@ -710,7 +710,7 @@
 1 - Line: NNN
 1 - Routine: 
 1 - Host: hostname
-1 - Process: logClient
+1 - Process: ../bin/logClient
 1 - Context: 
 1 - Thread: NNNmain
 1 - Log Message: Test message 49
@@ -724,7 +724,7 @@
 1 - Line: NNN
 1 - Routine: 
 1 - Host: hostname
-1 - Process: logClient
+1 - Process: ../bin/logClient
 1 - Context: 
 1 - Thread: NNNmain
 1 - Log Message: Test message 50
@@ -738,7 +738,7 @@
 1 - Line: NNN
 1 - Routine: 
 1 - Host: hostname
-1 - Process: logClient
+1 - Process: ../bin/logClient
 1 - Context: 
 1 - Thread: NNNmain
 1 - Log Message: Test message 51
@@ -752,7 +752,7 @@
 1 - Line: NNN
 1 - Routine: 
 1 - Host: hostname
-1 - Process: logClient
+1 - Process: ../bin/logClient
 1 - Context: 
 1 - Thread: NNNmain
 1 - Log Message: Test message 52
@@ -766,7 +766,7 @@
 1 - Line: NNN
 1 - Routine: 
 1 - Host: hostname
-1 - Process: logClient
+1 - Process: ../bin/logClient
 1 - Context: 
 1 - Thread: NNNmain
 1 - Log Message: Test message 53
@@ -780,7 +780,7 @@
 1 - Line: NNN
 1 - Routine: 
 1 - Host: hostname
-1 - Process: logClient
+1 - Process: ../bin/logClient
 1 - Context: 
 1 - Thread: NNNmain
 1 - Log Message: Test message 54
@@ -794,7 +794,7 @@
 1 - Line: NNN
 1 - Routine: 
 1 - Host: hostname
-1 - Process: logClient
+1 - Process: ../bin/logClient
 1 - Context: 
 1 - Thread: NNNmain
 1 - Log Message: Test message 55
@@ -808,7 +808,7 @@
 1 - Line: NNN
 1 - Routine: 
 1 - Host: hostname
-1 - Process: logClient
+1 - Process: ../bin/logClient
 1 - Context: 
 1 - Thread: NNNmain
 1 - Log Message: Test message 56
@@ -822,7 +822,7 @@
 1 - Line: NNN
 1 - Routine: 
 1 - Host: hostname
-1 - Process: logClient
+1 - Process: ../bin/logClient
 1 - Context: 
 1 - Thread: NNNmain
 1 - Log Message: Test message 57
@@ -836,7 +836,7 @@
 1 - Line: NNN
 1 - Routine: 
 1 - Host: hostname
-1 - Process: logClient
+1 - Process: ../bin/logClient
 1 - Context: 
 1 - Thread: NNNmain
 1 - Log Message: Test message 58
@@ -850,7 +850,7 @@
 1 - Line: NNN
 1 - Routine: 
 1 - Host: hostname
-1 - Process: logClient
+1 - Process: ../bin/logClient
 1 - Context: 
 1 - Thread: NNNmain
 1 - Log Message: Test message 59
@@ -864,7 +864,7 @@
 1 - Line: NNN
 1 - Routine: 
 1 - Host: hostname
-1 - Process: logClient
+1 - Process: ../bin/logClient
 1 - Context: 
 1 - Thread: NNNmain
 1 - Log Message: Test message 60
@@ -878,7 +878,7 @@
 1 - Line: NNN
 1 - Routine: 
 1 - Host: hostname
-1 - Process: logClient
+1 - Process: ../bin/logClient
 1 - Context: 
 1 - Thread: NNNmain
 1 - Log Message: Test message 61
@@ -892,7 +892,7 @@
 1 - Line: NNN
 1 - Routine: 
 1 - Host: hostname
-1 - Process: logClient
+1 - Process: ../bin/logClient
 1 - Context: 
 1 - Thread: NNNmain
 1 - Log Message: Test message 62
@@ -906,7 +906,7 @@
 1 - Line: NNN
 1 - Routine: 
 1 - Host: hostname
-1 - Process: logClient
+1 - Process: ../bin/logClient
 1 - Context: 
 1 - Thread: NNNmain
 1 - Log Message: Test message 63
@@ -920,7 +920,7 @@
 1 - Line: NNN
 1 - Routine: 
 1 - Host: hostname
-1 - Process: logClient
+1 - Process: ../bin/logClient
 1 - Context: 
 1 - Thread: NNNmain
 1 - Log Message: Test message 64
@@ -934,7 +934,7 @@
 1 - Line: NNN
 1 - Routine: 
 1 - Host: hostname
-1 - Process: logClient
+1 - Process: ../bin/logClient
 1 - Context: 
 1 - Thread: NNNmain
 1 - Log Message: Test message 65
@@ -948,7 +948,7 @@
 1 - Line: NNN
 1 - Routine: 
 1 - Host: hostname
-1 - Process: logClient
+1 - Process: ../bin/logClient
 1 - Context: 
 1 - Thread: NNNmain
 1 - Log Message: Test message 66
@@ -962,7 +962,7 @@
 1 - Line: NNN
 1 - Routine: 
 1 - Host: hostname
-1 - Process: logClient
+1 - Process: ../bin/logClient
 1 - Context: 
 1 - Thread: NNNmain
 1 - Log Message: Test message 67
@@ -976,7 +976,7 @@
 1 - Line: NNN
 1 - Routine: 
 1 - Host: hostname
-1 - Process: logClient
+1 - Process: ../bin/logClient
 1 - Context: 
 1 - Thread: NNNmain
 1 - Log Message: Test message 68
@@ -990,7 +990,7 @@
 1 - Line: NNN
 1 - Routine: 
 1 - Host: hostname
-1 - Process: logClient
+1 - Process: ../bin/logClient
 1 - Context: 
 1 - Thread: NNNmain
 1 - Log Message: Test message 69
@@ -1004,7 +1004,7 @@
 1 - Line: NNN
 1 - Routine: 
 1 - Host: hostname
-1 - Process: logClient
+1 - Process: ../bin/logClient
 1 - Context: 
 1 - Thread: NNNmain
 1 - Log Message: Test message 70
@@ -1018,7 +1018,7 @@
 1 - Line: NNN
 1 - Routine: 
 1 - Host: hostname
-1 - Process: logClient
+1 - Process: ../bin/logClient
 1 - Context: 
 1 - Thread: NNNmain
 1 - Log Message: Test message 71
@@ -1032,7 +1032,7 @@
 1 - Line: NNN
 1 - Routine: 
 1 - Host: hostname
-1 - Process: logClient
+1 - Process: ../bin/logClient
 1 - Context: 
 1 - Thread: NNNmain
 1 - Log Message: Test message 72
@@ -1046,7 +1046,7 @@
 1 - Line: NNN
 1 - Routine: 
 1 - Host: hostname
-1 - Process: logClient
+1 - Process: ../bin/logClient
 1 - Context: 
 1 - Thread: NNNmain
 1 - Log Message: Test message 73
@@ -1060,7 +1060,7 @@
 1 - Line: NNN
 1 - Routine: 
 1 - Host: hostname
-1 - Process: logClient
+1 - Process: ../bin/logClient
 1 - Context: 
 1 - Thread: NNNmain
 1 - Log Message: Test message 74
@@ -1074,7 +1074,7 @@
 1 - Line: NNN
 1 - Routine: 
 1 - Host: hostname
-1 - Process: logClient
+1 - Process: ../bin/logClient
 1 - Context: 
 1 - Thread: NNNmain
 1 - Log Message: Test message 75
@@ -1088,7 +1088,7 @@
 1 - Line: NNN
 1 - Routine: 
 1 - Host: hostname
-1 - Process: logClient
+1 - Process: ../bin/logClient
 1 - Context: 
 1 - Thread: NNNmain
 1 - Log Message: Test message 76
@@ -1102,7 +1102,7 @@
 1 - Line: NNN
 1 - Routine: 
 1 - Host: hostname
-1 - Process: logClient
+1 - Process: ../bin/logClient
 1 - Context: 
 1 - Thread: NNNmain
 1 - Log Message: Test message 77
@@ -1116,7 +1116,7 @@
 1 - Line: NNN
 1 - Routine: 
 1 - Host: hostname
-1 - Process: logClient
+1 - Process: ../bin/logClient
 1 - Context: 
 1 - Thread: NNNmain
 1 - Log Message: Test message 78
@@ -1130,7 +1130,7 @@
 1 - Line: NNN
 1 - Routine: 
 1 - Host: hostname
-1 - Process: logClient
+1 - Process: ../bin/logClient
 1 - Context: 
 1 - Thread: NNNmain
 1 - Log Message: Test message 79
@@ -1144,7 +1144,7 @@
 1 - Line: NNN
 1 - Routine: 
 1 - Host: hostname
-1 - Process: logClient
+1 - Process: ../bin/logClient
 1 - Context: 
 1 - Thread: NNNmain
 1 - Log Message: Test message 80
@@ -1158,7 +1158,7 @@
 1 - Line: NNN
 1 - Routine: 
 1 - Host: hostname
-1 - Process: logClient
+1 - Process: ../bin/logClient
 1 - Context: 
 1 - Thread: NNNmain
 1 - Log Message: Test message 81
@@ -1172,7 +1172,7 @@
 1 - Line: NNN
 1 - Routine: 
 1 - Host: hostname
-1 - Process: logClient
+1 - Process: ../bin/logClient
 1 - Context: 
 1 - Thread: NNNmain
 1 - Log Message: Test message 82
@@ -1186,7 +1186,7 @@
 1 - Line: NNN
 1 - Routine: 
 1 - Host: hostname
-1 - Process: logClient
+1 - Process: ../bin/logClient
 1 - Context: 
 1 - Thread: NNNmain
 1 - Log Message: Test message 83
@@ -1200,7 +1200,7 @@
 1 - Line: NNN
 1 - Routine: 
 1 - Host: hostname
-1 - Process: logClient
+1 - Process: ../bin/logClient
 1 - Context: 
 1 - Thread: NNNmain
 1 - Log Message: Test message 84
@@ -1214,7 +1214,7 @@
 1 - Line: NNN
 1 - Routine: 
 1 - Host: hostname
-1 - Process: logClient
+1 - Process: ../bin/logClient
 1 - Context: 
 1 - Thread: NNNmain
 1 - Log Message: Test message 85
@@ -1228,7 +1228,7 @@
 1 - Line: NNN
 1 - Routine: 
 1 - Host: hostname
-1 - Process: logClient
+1 - Process: ../bin/logClient
 1 - Context: 
 1 - Thread: NNNmain
 1 - Log Message: Test message 86
@@ -1242,7 +1242,7 @@
 1 - Line: NNN
 1 - Routine: 
 1 - Host: hostname
-1 - Process: logClient
+1 - Process: ../bin/logClient
 1 - Context: 
 1 - Thread: NNNmain
 1 - Log Message: Test message 87
@@ -1256,7 +1256,7 @@
 1 - Line: NNN
 1 - Routine: 
 1 - Host: hostname
-1 - Process: logClient
+1 - Process: ../bin/logClient
 1 - Context: 
 1 - Thread: NNNmain
 1 - Log Message: Test message 88
@@ -1270,7 +1270,7 @@
 1 - Line: NNN
 1 - Routine: 
 1 - Host: hostname
-1 - Process: logClient
+1 - Process: ../bin/logClient
 1 - Context: 
 1 - Thread: NNNmain
 1 - Log Message: Test message 89
@@ -1284,7 +1284,7 @@
 1 - Line: NNN
 1 - Routine: 
 1 - Host: hostname
-1 - Process: logClient
+1 - Process: ../bin/logClient
 1 - Context: 
 1 - Thread: NNNmain
 1 - Log Message: Test message 90
@@ -1298,7 +1298,7 @@
 1 - Line: NNN
 1 - Routine: 
 1 - Host: hostname
-1 - Process: logClient
+1 - Process: ../bin/logClient
 1 - Context: 
 1 - Thread: NNNmain
 1 - Log Message: Test message 91
@@ -1312,7 +1312,7 @@
 1 - Line: NNN
 1 - Routine: 
 1 - Host: hostname
-1 - Process: logClient
+1 - Process: ../bin/logClient
 1 - Context: 
 1 - Thread: NNNmain
 1 - Log Message: Test message 92
@@ -1326,7 +1326,7 @@
 1 - Line: NNN
 1 - Routine: 
 1 - Host: hostname
-1 - Process: logClient
+1 - Process: ../bin/logClient
 1 - Context: 
 1 - Thread: NNNmain
 1 - Log Message: Test message 93
@@ -1340,7 +1340,7 @@
 1 - Line: NNN
 1 - Routine: 
 1 - Host: hostname
-1 - Process: logClient
+1 - Process: ../bin/logClient
 1 - Context: 
 1 - Thread: NNNmain
 1 - Log Message: Test message 94
@@ -1354,7 +1354,7 @@
 1 - Line: NNN
 1 - Routine: 
 1 - Host: hostname
-1 - Process: logClient
+1 - Process: ../bin/logClient
 1 - Context: 
 1 - Thread: NNNmain
 1 - Log Message: Test message 95
@@ -1368,7 +1368,7 @@
 1 - Line: NNN
 1 - Routine: 
 1 - Host: hostname
-1 - Process: logClient
+1 - Process: ../bin/logClient
 1 - Context: 
 1 - Thread: NNNmain
 1 - Log Message: Test message 96
@@ -1382,7 +1382,7 @@
 1 - Line: NNN
 1 - Routine: 
 1 - Host: hostname
-1 - Process: logClient
+1 - Process: ../bin/logClient
 1 - Context: 
 1 - Thread: NNNmain
 1 - Log Message: Test message 97
@@ -1396,7 +1396,7 @@
 1 - Line: NNN
 1 - Routine: 
 1 - Host: hostname
-1 - Process: logClient
+1 - Process: ../bin/logClient
 1 - Context: 
 1 - Thread: NNNmain
 1 - Log Message: Test message 98
@@ -1410,7 +1410,7 @@
 1 - Line: NNN
 1 - Routine: 
 1 - Host: hostname
-1 - Process: logClient
+1 - Process: ../bin/logClient
 1 - Context: 
 1 - Thread: NNNmain
 1 - Log Message: Test message 99
