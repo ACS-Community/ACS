@@ -19,7 +19,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciBACIComponent.h,v 1.12 2006/09/24 18:43:33 bjeram Exp $"
+* "@(#) $Id: baciBACIComponent.h,v 1.13 2007/06/12 08:02:23 nbarriga Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -84,10 +84,10 @@ public:
     BACIComponent( ACS::ThreadManager *thrMgr,
 		   const ACE_CString& name,
 		   CharacteristicModelImpl *characteristicModel,
-		   const TimeInterval& actionThreadResponseTime=defaultRTResponseTime_m, 
-		   const TimeInterval& actionThreadSleepTime=minRTSleepTime_m,
-		   const TimeInterval& monitorThreadResponseTime=defaultMTResponseTime_m,
-		   const TimeInterval& monitorThreadSleepTime=minMTSleepTime_m);
+		   const ACS::TimeInterval& actionThreadResponseTime=defaultRTResponseTime_m, 
+		   const ACS::TimeInterval& actionThreadSleepTime=minRTSleepTime_m,
+		   const ACS::TimeInterval& monitorThreadResponseTime=defaultMTResponseTime_m,
+		   const ACS::TimeInterval& monitorThreadSleepTime=minMTSleepTime_m);
 
   ~BACIComponent();
 
@@ -139,17 +139,17 @@ public:
 
   BACIThreadManager* getThreadManager() const { return threadManager_mp; }
 
-  TimeInterval getMTResponseTime() const { return monitorThreadResponseTime_m; }
-  void setMTResponseTime(const TimeInterval& _monitorThreadResponseTime);
+  ACS::TimeInterval getMTResponseTime() const { return monitorThreadResponseTime_m; }
+  void setMTResponseTime(const ACS::TimeInterval& _monitorThreadResponseTime);
 
-  TimeInterval getMTSleepTime() const { return monitorThreadSleepTime_m; }
-  void setMTSleepTime(const TimeInterval& _monitorThreadSleepTime);
+  ACS::TimeInterval getMTSleepTime() const { return monitorThreadSleepTime_m; }
+  void setMTSleepTime(const ACS::TimeInterval& _monitorThreadSleepTime);
   
-  TimeInterval getRTResponseTime() const { return actionThreadResponseTime_m; }
-  void setRTResponseTime(const TimeInterval& _actionThreadResponseTime);
+  ACS::TimeInterval getRTResponseTime() const { return actionThreadResponseTime_m; }
+  void setRTResponseTime(const ACS::TimeInterval& _actionThreadResponseTime);
 
-  TimeInterval getRTSleepTime() const { return actionThreadSleepTime_m; }
-  void setRTSleepTime(const TimeInterval& _actionThreadSleepTime);
+  ACS::TimeInterval getRTSleepTime() const { return actionThreadSleepTime_m; }
+  void setRTSleepTime(const ACS::TimeInterval& _actionThreadSleepTime);
 
     bool dispatchCallback(int callbackID, 
 			  const BACIValue& value, 
@@ -225,11 +225,11 @@ public:
 
 protected:
 
-  static const TimeInterval defaultRTResponseTime_m;			// RT = Action Thread
-  static const TimeInterval minRTSleepTime_m;
+  static const ACS::TimeInterval defaultRTResponseTime_m;			// RT = Action Thread
+  static const ACS::TimeInterval minRTSleepTime_m;
   
-  static const TimeInterval defaultMTResponseTime_m;			// MT = Monitor Thread
-  static const TimeInterval minMTSleepTime_m;
+  static const ACS::TimeInterval defaultMTResponseTime_m;			// MT = Monitor Thread
+  static const ACS::TimeInterval minMTSleepTime_m;
 
 
   BACIThread* getActionThread() const { return actionThread_mp; }
@@ -251,10 +251,10 @@ private:
   BACIActionQueue actionQueue_m;
   BACIPropertyVector propertyVector_m;
 
-    TimeInterval actionThreadResponseTime_m;
-    TimeInterval actionThreadSleepTime_m;
-    TimeInterval monitorThreadResponseTime_m;
-    TimeInterval monitorThreadSleepTime_m;
+    ACS::TimeInterval actionThreadResponseTime_m;
+    ACS::TimeInterval actionThreadSleepTime_m;
+    ACS::TimeInterval monitorThreadResponseTime_m;
+    ACS::TimeInterval monitorThreadSleepTime_m;
 
   BACIThread* actionThread_mp;
   BACIThread* monitorThread_mp;

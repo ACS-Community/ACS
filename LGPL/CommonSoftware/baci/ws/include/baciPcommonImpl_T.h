@@ -360,8 +360,8 @@ public:
 
   // P	
   TSM	defaultValue_m; 			
-  TimeInterval  defaultTimerTrig_m; 		
-  TimeInterval  minTimerTrig_m;
+  ACS::TimeInterval  defaultTimerTrig_m; 		
+  ACS::TimeInterval  minTimerTrig_m;
 
   private:
     /**

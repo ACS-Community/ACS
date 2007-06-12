@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciUtil.cpp,v 1.3 2006/09/01 02:20:54 cparedes Exp $"
+* "@(#) $Id: baciUtil.cpp,v 1.4 2007/06/12 08:02:23 nbarriga Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -27,7 +27,7 @@
 
 #include "baciUtil.h"
 
-ACE_RCSID(baci, baci, "$Id: baciUtil.cpp,v 1.3 2006/09/01 02:20:54 cparedes Exp $");
+ACE_RCSID(baci, baci, "$Id: baciUtil.cpp,v 1.4 2007/06/12 08:02:23 nbarriga Exp $");
 
 namespace baci {
 
@@ -133,16 +133,16 @@ char *printLLUasString(unsigned long long numToPrint)
 
 #ifdef MAKE_VXWORKS
 
-TimeInterval ModulusAlgorithm(TimeInterval a,
-			      TimeInterval b)
+ACS::TimeInterval ModulusAlgorithm(ACS::TimeInterval a,
+			      ACS::TimeInterval b)
 {
   if (b==0) 
       {
       return 0;
       }
 
-  TimeInterval bit = 1;
-  TimeInterval a_half(a);
+  ACS::TimeInterval bit = 1;
+  ACS::TimeInterval a_half(a);
   a_half >>= 1;
   while(a_half >= b)
     {
@@ -165,7 +165,7 @@ TimeInterval ModulusAlgorithm(TimeInterval a,
 #endif
 
 
-TimeInterval calculateModulus(TimeInterval t1, TimeInterval t2) {
+ACS::TimeInterval calculateModulus(ACS::TimeInterval t1, ACS::TimeInterval t2) {
 
 #ifndef MAKE_VXWORKS
   return t1 % t2;

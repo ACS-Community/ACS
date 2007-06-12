@@ -19,7 +19,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciMonitor_T.h,v 1.101 2006/09/01 02:20:54 cparedes Exp $"
+* "@(#) $Id: baciMonitor_T.h,v 1.102 2007/06/12 08:02:23 nbarriga Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -178,18 +178,18 @@ class baci_EXPORT Monitor: public virtual PortableServer::RefCountServantBase,
 public:
 
   Monitor(ACE_CString name,
-	  const TimeInterval& minTriggerTime,
+	  const ACS::TimeInterval& minTriggerTime,
 	  const BACIValue& minTriggerValue,
 	  BACIProperty* property);
 
   Monitor(ACE_CString name,
 	  Callback_ptr callback_p, const CBDescIn& inDesc,
-	  const TimeInterval& triggerTime,
+	  const ACS::TimeInterval& triggerTime,
 	  const BACIValue& triggerValue,
-	  const TimeInterval& minTriggerTime,
+	  const ACS::TimeInterval& minTriggerTime,
 	  const BACIValue& minTriggerValue,
 	  BACIProperty* property,
-	  const TimeInterval& transmitTime = 0,
+	  const ACS::TimeInterval& transmitTime = 0,
 	  const BACIMonitor::UpdateMode& updateMode=BACIMonitor::mumLast);
 
   virtual ~Monitor();
@@ -215,7 +215,7 @@ public:
   virtual void setObjectState(const char * state);
 
   virtual void setObjectState(const char * state,
-		      const TimeInterval& minTriggerTime,
+		      const ACS::TimeInterval& minTriggerTime,
 		      const BACIValue& minTriggerValue,
 		      BACIProperty * property);
 
@@ -288,18 +288,18 @@ class baci_EXPORT MonitorBasic: public virtual PortableServer::RefCountServantBa
 public:
 
   MonitorBasic(ACE_CString name,
-	  const TimeInterval& minTriggerTime,
+	  const ACS::TimeInterval& minTriggerTime,
 	  const BACIValue& minTriggerValue,
 	  BACIProperty* property);
 
   MonitorBasic(ACE_CString name,
 	  Callback_ptr callback_p, const CBDescIn& inDesc,
-	  const TimeInterval& triggerTime,
+	  const ACS::TimeInterval& triggerTime,
 	  const BACIValue& triggerValue,
-	  const TimeInterval& minTriggerTime,
+	  const ACS::TimeInterval& minTriggerTime,
 	  const BACIValue& minTriggerValue,
 	  BACIProperty* property,
-	  const TimeInterval& transmitTime = 0,
+	  const ACS::TimeInterval& transmitTime = 0,
 	  const BACIMonitor::UpdateMode& updateMode=BACIMonitor::mumLast);
 
   virtual ~MonitorBasic();
@@ -326,7 +326,7 @@ public:
   virtual void setObjectState(const char * state);
 
   virtual void setObjectState(const char * state,
-		      const TimeInterval& minTriggerTime,
+		      const ACS::TimeInterval& minTriggerTime,
 		      BACIProperty * property);
 
 

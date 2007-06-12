@@ -19,7 +19,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciROcommonImpl_T.h,v 1.25 2006/09/26 10:23:42 bjeram Exp $"
+* "@(#) $Id: baciROcommonImpl_T.h,v 1.26 2007/06/12 08:02:23 nbarriga Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -113,7 +113,7 @@ protected:
   EventDispatcher * monitorEventDispatcher_mp;
 
   // RO
-  TimeInterval	alarmTimerTrig_m;
+  ACS::TimeInterval	alarmTimerTrig_m;
   
   private:
     /**

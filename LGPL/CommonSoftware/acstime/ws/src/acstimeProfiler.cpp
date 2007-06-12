@@ -1,4 +1,4 @@
-/* @(#) $Id: acstimeProfiler.cpp,v 1.11 2005/08/29 08:36:36 vwang Exp $
+/* @(#) $Id: acstimeProfiler.cpp,v 1.12 2007/06/12 08:02:23 nbarriga Exp $
  *
  * Copyright (C) 2001
  * Associated Universities, Inc. Washington DC, USA.
@@ -25,7 +25,7 @@
 //------------------------------------------------------------------------------
 #include "acstimeProfiler.h"
 #include <acsutilPorts.h>
-#include "baciTime.h"
+#include "acsutilTimeStamp.h"
 //------------------------------------------------------------------------------
 Profiler::Profiler() :
     epochHelper_mp(0)
@@ -63,7 +63,7 @@ Profiler::start()
 	std::cerr << "Looks like Profiler::start was called twice in a row without invoking Profiler::stop" << std::endl;
 	}
     //get the current time.
-    lastStart_m=baci::getTimeStamp();
+    lastStart_m=getTimeStamp();
 }
 //------------------------------------------------------------------------------
 ACS::Time
@@ -75,7 +75,7 @@ Profiler::stop()
 	std::cerr << "Looks like Profiler::stop was called twice in a row without invoking Profiler::start" << std::endl;
 	return 0ULL;
 	}
-    ACS::Time timeDiff = baci::getTimeStamp() - lastStart_m;
+    ACS::Time timeDiff = getTimeStamp() - lastStart_m;
 
     if (timeDiff>maxDuration)
 	{
@@ -124,7 +124,7 @@ Profiler::fullDescription(const char* msg)
     std::cout << ", mem=Unknown";
 
     acstime::Epoch currEpoch;
-    currEpoch.value = baci::getTimeStamp();
+    currEpoch.value = getTimeStamp();
     epochHelper_mp->value(currEpoch);
 
     std::cout << ", date=" << (epochHelper_mp->toString(acstime::TSArray, "", 0, 0)).c_str();

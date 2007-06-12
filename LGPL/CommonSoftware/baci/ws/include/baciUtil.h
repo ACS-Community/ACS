@@ -19,7 +19,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciUtil.h,v 1.2 2006/09/01 02:20:54 cparedes Exp $"
+* "@(#) $Id: baciUtil.h,v 1.3 2007/06/12 08:02:23 nbarriga Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -37,7 +37,7 @@
 #endif
 
 #include "baciExport.h"
-#include "baciTime.h"
+#include "acsutilTimeStamp.h"
 
 namespace baci {
 
@@ -47,11 +47,11 @@ unsigned long long lpow10(int value);
 unsigned long long convString2LLU(char *str2Convert);
 char *printLLUasString(unsigned long long numToPrint);
 
-TimeInterval ModulusAlgorithm(TimeInterval a,
-			      TimeInterval b);
+ACS::TimeInterval ModulusAlgorithm(ACS::TimeInterval a,
+			      ACS::TimeInterval b);
 #endif
 
-TimeInterval calculateModulus(TimeInterval t1, TimeInterval t2);
+ACS::TimeInterval calculateModulus(ACS::TimeInterval t1, ACS::TimeInterval t2);
 
  }; 
 

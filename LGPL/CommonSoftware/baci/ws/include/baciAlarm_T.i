@@ -24,7 +24,7 @@
 
 template<class T, class TCB, class POA_CB>
 MonitorEventDispatcher<T, TCB, POA_CB>::MonitorEventDispatcher(const CBDescIn& descIn,
-							       const TimeInterval& interval,
+							       const ACS::TimeInterval& interval,
 							       BACIProperty * property) : 
     EventDispatcher(), monitorCallback_mp(0), callbackServant_mp(0)
 {
@@ -225,7 +225,7 @@ AlarmEventStrategy<T, TPROP, TALARM>::AlarmEventStrategy(TPROP * property,
 template<class T, class TPROP, class TALARM>
 AlarmEventStrategy<T, TPROP, TALARM>::AlarmEventStrategy(Callback_ptr callback_p,
 						     const CBDescIn& descIn,
-						     const TimeInterval& interval,
+						     const ACS::TimeInterval& interval,
 						     TPROP * property,
 						     EventDispatcher * eventDispatcher) :
     suspended_m(false), failureCount_m(0), desc_mIn(descIn), interval_m(interval),

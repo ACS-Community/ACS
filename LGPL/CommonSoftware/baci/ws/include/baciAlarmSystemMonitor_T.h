@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciAlarmSystemMonitor_T.h,v 1.6 2006/10/20 07:45:05 gchiozzi Exp $"
+* "@(#) $Id: baciAlarmSystemMonitor_T.h,v 1.7 2007/06/12 08:02:23 nbarriga Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -92,7 +92,7 @@ class baci_EXPORT AlarmSystemMonitor : public EventStrategy
     
     CBDescIn desc_mIn;
     
-    TimeInterval interval_m;
+    ACS::TimeInterval interval_m;
     
     EventDispatcher * eventDispatcher_mp;
     

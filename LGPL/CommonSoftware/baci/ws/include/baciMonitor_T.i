@@ -19,7 +19,7 @@
 
 template<ACS_MONITOR_C>
 Monitor<ACS_MONITOR_T>::Monitor(ACE_CString name,
-					    const TimeInterval& minTriggerTime,
+					    const ACS::TimeInterval& minTriggerTime,
 					    const BACIValue& minTriggerValue,
 					    BACIProperty* property) :
   initialization_m(1), monitor_mp(0), reference_mp(CORBA::Object::_nil())
@@ -35,12 +35,12 @@ template<ACS_MONITOR_C>
 Monitor<ACS_MONITOR_T>::Monitor(ACE_CString name_,
 					    Callback_ptr callback_p,
 					    const CBDescIn& inDesc,
-					    const TimeInterval& triggerTime,
+					    const ACS::TimeInterval& triggerTime,
 					    const BACIValue& triggerValue,
-					    const TimeInterval& minTriggerTime,
+					    const ACS::TimeInterval& minTriggerTime,
 					    const BACIValue& minTriggerValue,
 					    BACIProperty* property,
-					    const TimeInterval& transmitTime,
+					    const ACS::TimeInterval& transmitTime,
 					    const BACIMonitor::UpdateMode& updateMode) :
   initialization_m(1), monitor_mp(0), reference_mp(CORBA::Object::_nil())
 {
@@ -149,7 +149,7 @@ void Monitor<ACS_MONITOR_T>::setObjectState(const char* state)
 
 template<ACS_MONITOR_C>
 void Monitor<ACS_MONITOR_T>::setObjectState(const char* state,
-							const TimeInterval& minTriggerTime,
+							const ACS::TimeInterval& minTriggerTime,
 							const BACIValue& minTriggerValue,
 							BACIProperty *property)
 {
@@ -159,8 +159,8 @@ void Monitor<ACS_MONITOR_T>::setObjectState(const char* state,
 
   CBDescIn descIn;
   unsigned long tag;
-  TimeInterval timeTrigger;
-  TimeInterval transmitTime;
+  ACS::TimeInterval timeTrigger;
+  ACS::TimeInterval transmitTime;
   ACE_TCHAR valueTrigger[MAX_VALUE_LENGTH];
   int mode;
   unsigned int triggerOnValue, isSuspended;
@@ -339,7 +339,7 @@ ACS_TRACE("baci::Monitor&lt;&gt;::start_time");
 
 template<ACS_MONITOR_BASIC_C> 
 MonitorBasic<ACS_MONITOR_BASIC_T>::MonitorBasic(ACE_CString name,
-						     const TimeInterval& minTriggerTime,
+						     const ACS::TimeInterval& minTriggerTime,
 						     const BACIValue& minTriggerValue,
 						     BACIProperty* property) :
   initialization_m(1), monitor_mp(0), reference_mp(CORBA::Object::_nil())
@@ -356,12 +356,12 @@ template<ACS_MONITOR_BASIC_C>
 MonitorBasic<ACS_MONITOR_BASIC_T>::MonitorBasic(ACE_CString name_,
 						Callback_ptr callback_p,
 						const CBDescIn& inDesc,
-						const TimeInterval& triggerTime,
+						const ACS::TimeInterval& triggerTime,
 						const BACIValue& triggerValue,
-						const TimeInterval& minTriggerTime,
+						const ACS::TimeInterval& minTriggerTime,
 						const BACIValue& minTriggerValue,
 						BACIProperty* property,
-						const TimeInterval& transmitTime,
+						const ACS::TimeInterval& transmitTime,
 						const BACIMonitor::UpdateMode& updateMode) :
     initialization_m(1), monitor_mp(0), reference_mp(CORBA::Object::_nil())
 {
@@ -472,7 +472,7 @@ ACS_TRACE("baci::MonitorBasic&lt;&gt;::setObjectState");
 
 template<ACS_MONITOR_BASIC_C>
 void MonitorBasic<ACS_MONITOR_BASIC_T>::setObjectState(const char* state,
-			      const TimeInterval& minTriggerTime,
+			      const ACS::TimeInterval& minTriggerTime,
 			      BACIProperty *property)
 {
 ACS_TRACE("baci::MonitorBasic&lt;&gt;::setObjectState");
@@ -481,8 +481,8 @@ ACS_TRACE("baci::MonitorBasic&lt;&gt;::setObjectState");
 
   CBDescIn descIn;
   unsigned long tag;
-  TimeInterval timeTrigger;
-  TimeInterval transmitTime;
+  ACS::TimeInterval timeTrigger;
+  ACS::TimeInterval transmitTime;
   int mode;
   unsigned int isSuspended;
 

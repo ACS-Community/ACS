@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciBACIProperty.cpp,v 1.8 2006/12/12 16:33:15 bjeram Exp $"
+* "@(#) $Id: baciBACIProperty.cpp,v 1.9 2007/06/12 08:02:23 nbarriga Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -33,7 +33,7 @@
 #include "baciDB.h"
 
 
-ACE_RCSID(baci, baci, "$Id: baciBACIProperty.cpp,v 1.8 2006/12/12 16:33:15 bjeram Exp $");
+ACE_RCSID(baci, baci, "$Id: baciBACIProperty.cpp,v 1.9 2007/06/12 08:02:23 nbarriga Exp $");
 
 namespace baci {
 
@@ -235,12 +235,12 @@ void BACIProperty::dispatchMonitors(Completion& completion, CBDescOut& descOut)
       }
   
   BACIValue lastValue = getLastValue();
-  TimeInterval lastPollTime = getLastPollTime();
+  ACS::TimeInterval lastPollTime = getLastPollTime();
   //Completion lastCompletion = getLastCompletion();
   
   bool ok;
 
-  TimeInterval monitorTriggerTime, monitorLastTime;
+  ACS::TimeInterval monitorTriggerTime, monitorLastTime;
   BACIValue monitorTriggerValue;
   
   BACIMonitor* mon_p=0;
@@ -286,7 +286,7 @@ void BACIProperty::dispatchMonitors(Completion& completion, CBDescOut& descOut)
 		  {
 		  case BACIMonitor::mumLast: 
 		  {
-		  TimeInterval delay=calculateModulus(lastPollTime-monitorLastTime, monitorTriggerTime);
+		  ACS::TimeInterval delay=calculateModulus(lastPollTime-monitorLastTime, monitorTriggerTime);
 		  mon_p->setLastTime(lastPollTime-delay); 
 		  break; 
 		  }
@@ -377,7 +377,7 @@ void BACIProperty::dispatchMonitors(Completion& completion, CBDescOut& descOut)
     }
 }
 
-TimeInterval BACIProperty::GCD(TimeInterval t1, TimeInterval t2) 
+ACS::TimeInterval BACIProperty::GCD(ACS::TimeInterval t1, ACS::TimeInterval t2) 
 {
   ACS_TRACE("baci::BACIProperty::GCD");
   if (t1==0) 
@@ -390,14 +390,14 @@ TimeInterval BACIProperty::GCD(TimeInterval t1, TimeInterval t2)
       }
   else if (t2>t1)
     {
-      TimeInterval t = t2;
+      ACS::TimeInterval t = t2;
       t2=t1; 
       t1=t;
     }
   
   while ((t2!=0) && (t1>component_mp->getMTSleepTime())) 
     {
-    TimeInterval t=calculateModulus(t1,t2); 
+    ACS::TimeInterval t=calculateModulus(t1,t2); 
     t1=t2; 
     t2=t;
     }
@@ -418,8 +418,8 @@ void BACIProperty::updateMonitorStates()
   // update pollInterval
   triggerOnValueMonitor_m=false;
   setMonMinTriggerTime(0LL);
-  TimeInterval pi=0;
-  TimeInterval minTriggerTime = 0LL;
+  ACS::TimeInterval pi=0;
+  ACS::TimeInterval minTriggerTime = 0LL;
  
   for (int n=0; n<getMonitorCount(); n++) 
     {

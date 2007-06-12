@@ -19,7 +19,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciThread.h,v 1.101 2005/02/24 13:21:55 bjeram Exp $"
+* "@(#) $Id: baciThread.h,v 1.102 2007/06/12 08:02:23 nbarriga Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -33,7 +33,7 @@
 
 #include <baciExport.h>
 #include <acsThreadBase.h>
-#include <baciTime.h>
+#include <acsutilTimeStamp.h>
 
 namespace baci {
 

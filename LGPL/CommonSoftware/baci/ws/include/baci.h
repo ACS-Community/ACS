@@ -19,7 +19,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baci.h,v 1.107 2006/09/01 02:20:54 cparedes Exp $"
+* "@(#) $Id: baci.h,v 1.108 2007/06/12 08:02:23 nbarriga Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -40,7 +40,7 @@
 #include "acsutil.h"
 #include "baciExport.h"
 
-#include "baciTime.h"
+#include "acsutilTimeStamp.h"
 #include "baciThread.h"
 #include "baciTypes.h"
 #include "baciValue.h"

@@ -19,7 +19,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciBACIMonitor.h,v 1.4 2006/09/01 02:20:54 cparedes Exp $"
+* "@(#) $Id: baciBACIMonitor.h,v 1.5 2007/06/12 08:02:23 nbarriga Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -36,7 +36,8 @@
 #endif
 
 #include "baciExport.h"
-#include "baciTime.h"
+#include "acsutilTimeStamp.h"
+#include <acscommonC.h>
 #include "baciValue.h"
 #include "logging.h"
 #include <vector>
@@ -132,10 +133,10 @@ public:
    */
   BACIMonitor(const ACE_CString& _name, int _callbackID,
 	      MonitorImplementator* monitorImplementator_p,
-	      const TimeInterval& _triggerTime, const BACIValue& _triggerValue, 
-	      const TimeInterval& _minTriggerTime, const BACIValue& _minTriggerValue, 
+	      const ACS::TimeInterval& _triggerTime, const BACIValue& _triggerValue, 
+	      const ACS::TimeInterval& _minTriggerTime, const BACIValue& _minTriggerValue, 
 	      BACIProperty* _property, 
-	      const TimeInterval& _transmitTime=0,
+	      const ACS::TimeInterval& _transmitTime=0,
 	      const UpdateMode& _updateMode=mumLast,
 	      const bool _achivingMonitor=false,
 	      const bool _suspended=false,
@@ -147,7 +148,7 @@ public:
   
   void suspend();
   void resume();
-  void setLastTime(const TimeInterval& _lastTime);
+  void setLastTime(const ACS::TimeInterval& _lastTime);
   void setTriggerValue(const BACIValue& _triggerValue);
   void setMinTriggerValue(const BACIValue& _minTriggerValue);
   void setLastValue(const BACIValue& _lastValue);
@@ -191,20 +192,20 @@ public:
 
   UpdateMode getUpdateMode() const { return updateMode_m; }
   int getCallbackID() const { return callbackID_m; }
-  TimeInterval getTriggerTime() const { return triggerTime_m; }
-  TimeInterval getMinTriggerTime() const { return minTriggerTime_m; }
-  TimeInterval getLastTime() const { return lastTime_m; }
-  TimeInterval getTransmitTime() const { return transmitTime_m; }
+  ACS::TimeInterval getTriggerTime() const { return triggerTime_m; }
+  ACS::TimeInterval getMinTriggerTime() const { return minTriggerTime_m; }
+  ACS::TimeInterval getLastTime() const { return lastTime_m; }
+  ACS::TimeInterval getTransmitTime() const { return transmitTime_m; }
   BACIValue getTriggerValue() const { return triggerValue_m; }
   BACIValue getMinTriggerValue() const { return minTriggerValue_m; }
   BACIValue getLastValue() const { return lastValue_m; }
   bool getTriggerOnValue() const { return triggerOnValue_m; }
 
   void setUpdateMode(const UpdateMode& _updateMode);
-  void setTriggerTime(const TimeInterval& _triggerTime);
-  void setMinTriggerTime(const TimeInterval& _minTriggerTime);
+  void setTriggerTime(const ACS::TimeInterval& _triggerTime);
+  void setMinTriggerTime(const ACS::TimeInterval& _minTriggerTime);
 
-  void setTransmitTime(const TimeInterval& _transmitTime)
+  void setTransmitTime(const ACS::TimeInterval& _transmitTime)
   {
     transmitTime_m = _transmitTime;
   }
@@ -251,11 +252,11 @@ private:
 
   UpdateMode updateMode_m;
   
-    TimeInterval triggerTime_m;
-    TimeInterval minTriggerTime_m;
-  TimeInterval transmitTime_m;
+    ACS::TimeInterval triggerTime_m;
+    ACS::TimeInterval minTriggerTime_m;
+  ACS::TimeInterval transmitTime_m;
   bool userControlledTransmitTime_m;
-  TimeInterval lastTime_m;
+  ACS::TimeInterval lastTime_m;
     
     BACIValue triggerValue_m;
     BACIValue minTriggerValue_m; 

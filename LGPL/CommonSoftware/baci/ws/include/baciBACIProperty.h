@@ -19,7 +19,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciBACIProperty.h,v 1.6 2006/09/01 02:20:54 cparedes Exp $"
+* "@(#) $Id: baciBACIProperty.h,v 1.7 2007/06/12 08:02:23 nbarriga Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -158,15 +158,15 @@ public:
   
   bool hasTriggerOnValueMonitor() const { return triggerOnValueMonitor_m; }
 
-  TimeInterval getPollInterval() const { return pollInterval_m; }
-  TimeInterval getLastPollTime() const { return lastPollTime_m; }
-  TimeInterval getMonMinTriggerTime() const { return monMinTriggerTime_m; }
+  ACS::TimeInterval getPollInterval() const { return pollInterval_m; }
+  ACS::TimeInterval getLastPollTime() const { return lastPollTime_m; }
+  ACS::TimeInterval getMonMinTriggerTime() const { return monMinTriggerTime_m; }
   BACIValue getLastValue() const { return lastValue_m; }
   //Completion getLastCompletion() const { return lastCompletion; }
 
-  void setPollInterval(const TimeInterval& _pollInterval) { pollInterval_m=_pollInterval; }
-  void setLastPollTime(const TimeInterval& _lastPollTime) { lastPollTime_m=_lastPollTime; }
-  void setMonMinTriggerTime(const TimeInterval& _interval) { monMinTriggerTime_m=_interval; }
+  void setPollInterval(const ACS::TimeInterval& _pollInterval) { pollInterval_m=_pollInterval; }
+  void setLastPollTime(const ACS::TimeInterval& _lastPollTime) { lastPollTime_m=_lastPollTime; }
+  void setMonMinTriggerTime(const ACS::TimeInterval& _interval) { monMinTriggerTime_m=_interval; }
   void setLastValue(const BACIValue& _lastValue) {lastValue_m=_lastValue;}
   //void setLastCompletion(const Completion& _lastCompletion) { lastCompletion=_lastCompletion;}
 
@@ -180,7 +180,7 @@ protected:
   void addMonitor(BACIMonitor* monitor);
   void removeMonitor(BACIMonitor* monitor);
 
-  TimeInterval GCD(TimeInterval t1, TimeInterval t2);
+  ACS::TimeInterval GCD(ACS::TimeInterval t1, ACS::TimeInterval t2);
 
 
 private:
@@ -196,9 +196,9 @@ private:
   BACIMonitorVector monitorVector_m;
 
   bool triggerOnValueMonitor_m;
-    TimeInterval pollInterval_m;
-    TimeInterval lastPollTime_m;
-    TimeInterval monMinTriggerTime_m;
+    ACS::TimeInterval pollInterval_m;
+    ACS::TimeInterval lastPollTime_m;
+    ACS::TimeInterval monMinTriggerTime_m;
   // Completion lastCompletion;
 
   BACIMonitor* archiver_mp;

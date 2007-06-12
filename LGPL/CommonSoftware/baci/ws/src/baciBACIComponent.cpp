@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciBACIComponent.cpp,v 1.17 2006/09/08 14:19:27 bjeram Exp $"
+* "@(#) $Id: baciBACIComponent.cpp,v 1.18 2007/06/12 08:02:23 nbarriga Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -30,7 +30,7 @@
 #include "baciError.h"
 #include "logging.h"
 
-ACE_RCSID(baci, baci, "$Id: baciBACIComponent.cpp,v 1.17 2006/09/08 14:19:27 bjeram Exp $");
+ACE_RCSID(baci, baci, "$Id: baciBACIComponent.cpp,v 1.18 2007/06/12 08:02:23 nbarriga Exp $");
 
 using namespace baciErrTypeProperty;
 using namespace ACSErrTypeCommon;
@@ -198,7 +198,7 @@ void monitorThreadWorker(void* param) {
 
   ACS_TRACE("baci::monitorThreadWorker");
 
-  TimeInterval pollInterval, time, lastPollTime;
+  ACS::TimeInterval pollInterval, time, lastPollTime;
   BACIValue value;
   bool timeTriggered;
   BACIProperty* property_p=0;
@@ -247,7 +247,7 @@ void monitorThreadWorker(void* param) {
 		  //time = getTimeStamp();
 
 		  // time fix
-		  TimeInterval etime = time;
+		  ACS::TimeInterval etime = time;
 		  if (pollInterval!=0)
 		    {
 		      etime -= calculateModulus(time-lastPollTime, pollInterval);
@@ -312,19 +312,19 @@ void monitorThreadWorker(void* param) {
 // BACIComponent
 /////////////////////////////////////////////////
 
-const TimeInterval BACIComponent::defaultRTResponseTime_m=5*1000*1000*10;         // 5s.
-const TimeInterval BACIComponent::minRTSleepTime_m=50*1000*10;		          // 50ms
+const ACS::TimeInterval BACIComponent::defaultRTResponseTime_m=5*1000*1000*10;         // 5s.
+const ACS::TimeInterval BACIComponent::minRTSleepTime_m=50*1000*10;		          // 50ms
 
-const TimeInterval BACIComponent::defaultMTResponseTime_m=5*1000*1000*10;    // 5s
-const TimeInterval BACIComponent::minMTSleepTime_m=25*1000*10;	          // 25ms
+const ACS::TimeInterval BACIComponent::defaultMTResponseTime_m=5*1000*1000*10;    // 5s
+const ACS::TimeInterval BACIComponent::minMTSleepTime_m=25*1000*10;	          // 25ms
 
 BACIComponent::BACIComponent( ACS::ThreadManager *thrMgr,
 			      const ACE_CString& _name,
 			      CharacteristicModelImpl *characteristicModel,
-			      const TimeInterval& _actionThreadResponseTime,
-			      const TimeInterval& _actionThreadSleepTime,
-			      const TimeInterval& _monitorThreadResponseTime,
-			      const TimeInterval& _monitorThreadSleepTime) :
+			      const ACS::TimeInterval& _actionThreadResponseTime,
+			      const ACS::TimeInterval& _actionThreadSleepTime,
+			      const ACS::TimeInterval& _monitorThreadResponseTime,
+			      const ACS::TimeInterval& _monitorThreadSleepTime) :
     name_m(_name),
     characteristicModel_mp(characteristicModel),
     actionThread_mp(BACIThread::NullBACIThread),
@@ -540,7 +540,7 @@ bool BACIComponent::isActionThreadActive()
 	}
 }//isActionThreadActive
 
-void BACIComponent::setRTResponseTime(const TimeInterval& _actionThreadResponseTime)
+void BACIComponent::setRTResponseTime(const ACS::TimeInterval& _actionThreadResponseTime)
 {
   ACS_TRACE("baci::BACIComponent::setRTResponseTime");
   actionThreadResponseTime_m=_actionThreadResponseTime;
@@ -550,7 +550,7 @@ void BACIComponent::setRTResponseTime(const TimeInterval& _actionThreadResponseT
       }
 }
 
-void BACIComponent::setRTSleepTime(const TimeInterval& _actionThreadSleepTime)
+void BACIComponent::setRTSleepTime(const ACS::TimeInterval& _actionThreadSleepTime)
 {
   ACS_TRACE("baci::BACIComponent::setRTSleepTime");
   actionThreadSleepTime_m=(_actionThreadSleepTime<minRTSleepTime_m) ? (minRTSleepTime_m):(_actionThreadSleepTime);
@@ -560,7 +560,7 @@ void BACIComponent::setRTSleepTime(const TimeInterval& _actionThreadSleepTime)
       }
 }
 
-void BACIComponent::setMTResponseTime(const TimeInterval& _monitorThreadResponseTime)
+void BACIComponent::setMTResponseTime(const ACS::TimeInterval& _monitorThreadResponseTime)
 {
   ACS_TRACE("baci::BACIComponent::setMTResponseTime");
   monitorThreadResponseTime_m=_monitorThreadResponseTime;
@@ -570,7 +570,7 @@ void BACIComponent::setMTResponseTime(const TimeInterval& _monitorThreadResponse
       }
 }
 
-void BACIComponent::setMTSleepTime(const TimeInterval& _monitorThreadSleepTime)
+void BACIComponent::setMTSleepTime(const ACS::TimeInterval& _monitorThreadSleepTime)
 {
   ACS_TRACE("baci::BACIComponent::setMTSleepTime");
   monitorThreadSleepTime_m=(_monitorThreadSleepTime<minMTSleepTime_m) ? (minMTSleepTime_m):(_monitorThreadSleepTime);

@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciBACIMonitor.cpp,v 1.6 2007/01/09 14:54:07 bjeram Exp $"
+* "@(#) $Id: baciBACIMonitor.cpp,v 1.7 2007/06/12 08:02:23 nbarriga Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -30,7 +30,7 @@
 #include "baci.h"
 #include "baciUtil.h"
 
-ACE_RCSID(baci, baci, "$Id: baciBACIMonitor.cpp,v 1.6 2007/01/09 14:54:07 bjeram Exp $");
+ACE_RCSID(baci, baci, "$Id: baciBACIMonitor.cpp,v 1.7 2007/06/12 08:02:23 nbarriga Exp $");
 
 
 namespace baci {
@@ -40,9 +40,9 @@ namespace baci {
 
 BACIMonitor::BACIMonitor(const ACE_CString& _name, int _callbackID, 
 			 MonitorImplementator* _monitorImplementator_p,
-			 const TimeInterval& _triggerTime, const BACIValue& _triggerValue, 
-			 const TimeInterval& _minTriggerTime, const BACIValue& _minTriggerValue, 
-			 BACIProperty* _property, const TimeInterval& _transmitTime,
+			 const ACS::TimeInterval& _triggerTime, const BACIValue& _triggerValue, 
+			 const ACS::TimeInterval& _minTriggerTime, const BACIValue& _minTriggerValue, 
+			 BACIProperty* _property, const ACS::TimeInterval& _transmitTime,
 			 const UpdateMode& _updateMode, 
 			 const bool _archivingMonitor,
 			 const bool _suspended,
@@ -225,7 +225,7 @@ void BACIMonitor::setUpdateMode(const UpdateMode& _updateMode)
   }
 }
 
-void BACIMonitor::setTriggerTime(const TimeInterval& _triggerTime)
+void BACIMonitor::setTriggerTime(const ACS::TimeInterval& _triggerTime)
 {
   ACS_TRACE("baci::BACIMonitor::setTriggerTime");
   if (_triggerTime != triggerTime_m)
@@ -250,7 +250,7 @@ void BACIMonitor::setTriggerTime(const TimeInterval& _triggerTime)
     }
 }
 
-void BACIMonitor::setMinTriggerTime(const TimeInterval& _minTriggerTime) 
+void BACIMonitor::setMinTriggerTime(const ACS::TimeInterval& _minTriggerTime) 
 {
   ACS_TRACE("baci::BACIMonitor::setMinTriggerTime");
   minTriggerTime_m=_minTriggerTime; 
@@ -260,7 +260,7 @@ void BACIMonitor::setMinTriggerTime(const TimeInterval& _minTriggerTime)
       }
 }
 
-void BACIMonitor::setLastTime(const TimeInterval& _lastTime) 
+void BACIMonitor::setLastTime(const ACS::TimeInterval& _lastTime) 
 { 
   ACS_TRACE("baci::BACIMonitor::setLastTime");
   lastTime_m=_lastTime; 

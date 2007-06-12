@@ -18,7 +18,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acstimeProfiler.h,v 1.5 2005/02/09 21:39:49 dfugate Exp $"
+* "@(#) $Id: acstimeProfiler.h,v 1.6 2007/06/12 08:02:23 nbarriga Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -29,7 +29,7 @@
 #error This is a C++ include file and cannot be used from plain C
 #endif
 ////////////////////////////////////////////////////////////////////////
-#include <baciTime.h>
+#include <acsutilTimeStamp.h>
 #include <iostream>
 #include <string>
 #include "acstimeC.h"

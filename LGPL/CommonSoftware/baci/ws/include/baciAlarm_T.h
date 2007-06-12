@@ -18,7 +18,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciAlarm_T.h,v 1.15 2006/09/26 10:24:00 bjeram Exp $"
+* "@(#) $Id: baciAlarm_T.h,v 1.16 2007/06/12 08:02:23 nbarriga Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -51,7 +51,7 @@ class  baci_EXPORT MonitorEventDispatcher :
 {
   public:
     MonitorEventDispatcher(const CBDescIn& descIn,
-			   const TimeInterval& interval,
+			   const ACS::TimeInterval& interval,
 			   BACIProperty * property);
     
     virtual ~MonitorEventDispatcher();
@@ -149,7 +149,7 @@ class baci_EXPORT AlarmEventStrategy : public EventStrategy
     
     AlarmEventStrategy(Callback_ptr callback_p,
 		       const CBDescIn& descIn,
-		       const TimeInterval& interval,
+		       const ACS::TimeInterval& interval,
 		       TPROP * property,
 		       EventDispatcher * eventDispatcher);
     
@@ -195,7 +195,7 @@ class baci_EXPORT AlarmEventStrategy : public EventStrategy
     
     CBDescIn desc_mIn;
     
-    TimeInterval interval_m;
+    ACS::TimeInterval interval_m;
     
     EventDispatcher * eventDispatcher_mp;
     
@@ -235,7 +235,7 @@ class baci_EXPORT AlarmEventStrategyDisc : public AlarmEventStrategy<T, TPROP, T
     
     AlarmEventStrategyDisc(Callback_ptr callback_p,
 			   const CBDescIn& descIn,
-			   const TimeInterval& interval,
+			   const ACS::TimeInterval& interval,
 			   TPROP * property,
 			   EventDispatcher * eventDispatcher) :
 	AlarmEventStrategy<T, TPROP, TALARM>(callback_p, descIn, interval, property, eventDispatcher)
@@ -270,7 +270,7 @@ class baci_EXPORT AlarmEventStrategyCont : public AlarmEventStrategy<T, TPROP, T
     
     AlarmEventStrategyCont(Callback_ptr callback_p,
 			   const CBDescIn& descIn,
-			   const TimeInterval& interval,
+			   const ACS::TimeInterval& interval,
 			   TPROP * property,
 			   EventDispatcher * eventDispatcher) :
 	AlarmEventStrategy<T, TPROP, TALARM>(callback_p, descIn, interval, property, eventDispatcher)
@@ -306,7 +306,7 @@ class baci_EXPORT AlarmEventStrategyContSeq : public AlarmEventStrategy<T, TPROP
     
     AlarmEventStrategyContSeq(Callback_ptr callback_p,
 			      const CBDescIn& descIn,
-			      const TimeInterval& interval,
+			      const ACS::TimeInterval& interval,
 			      TPROP * property,
 			      EventDispatcher * eventDispatcher) :
 	AlarmEventStrategy<T, TPROP, TALARM>(callback_p, descIn, interval, property, eventDispatcher)
@@ -345,7 +345,7 @@ class baci_EXPORT AlarmEventStrategyDiscSeq : public AlarmEventStrategy<T, TPROP
     
     AlarmEventStrategyDiscSeq(Callback_ptr callback_p,
 			      const CBDescIn& descIn,
-			      const TimeInterval& interval,
+			      const ACS::TimeInterval& interval,
 			      TPROP * property,
 			      EventDispatcher * eventDispatcher) :
 	AlarmEventStrategy<T, TPROP, TALARM>(callback_p, descIn, interval, property, eventDispatcher)
