@@ -51,7 +51,7 @@ acsjlogTest_DIRS =  alma
 # Scripts (public and local)
 # ----------------------------
 SCRIPTS         = 
-SCRIPTS_L       = junitNoACS
+SCRIPTS_L       = junitNoACS testAnyLog
 
 #>>>>> END OF standard rules
 

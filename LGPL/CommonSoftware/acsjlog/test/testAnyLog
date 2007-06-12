@@ -1,0 +1,3 @@
+#! /bin/bash
+acsStartJava -endorsed alma.acs.logging.AnyLogTest $*
+#com.cosylab.cdb.DALRead $CL_CURL -d $CL_DAL_REFERENCE $CL_RAW $*
