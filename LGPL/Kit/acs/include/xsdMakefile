@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ALMA  project
 #
-# "@(#) $Id: xsdMakefile,v 1.70 2005/03/16 12:15:10 mzampare Exp $"
+# "@(#) $Id: xsdMakefile,v 1.71 2007/06/12 12:35:53 mzampare Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -91,6 +91,9 @@ endif
 
 ifneq ($(strip $(XSDBIND)),)
 #    ALL_TARGET := do_xsd $(ALL_TARGET) 
+XSDDEPLIST = java -cp $(ACSROOT)/lib/xalan.jar:$(ACSROOT)/lib/xalan_serializer.jar org.apache.xalan.xslt.Process -XSL $(MAKEDIR)/../config/XSDIncludeDependencies.xml  -IN ../idl/$(XSDBIND).xml  |  egrep -v '^\ *\$$' | tr '\n' ' '
+XSDBIND_FILES = $(shell $(XSDDEPLIST))
+
 endif
 endif
 
@@ -123,8 +126,8 @@ install_xsd:
 #########################################
 ## ALL
 ##
-
-../lib/$(XSDBIND).jar: ../idl/$(XSDBIND).xml ../idl/*.xsd
+#########################################
+../lib/$(XSDBIND).jar: ../idl/$(XSDBIND).xml $(XSDBIND_FILES)
 	- @echo "== XSD Compiling with Castor (Java): $(<F)"
 # calling castor
 # what if the file is not there?, we should check that.

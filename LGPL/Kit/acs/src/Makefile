@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.93 2007/03/05 16:02:31 pmurphy Exp $" 
+# "@(#) $Id: Makefile,v 1.94 2007/06/12 12:35:53 mzampare Exp $" 
 #
 # Makefile   for vlt customization of make 
 #
@@ -118,7 +118,8 @@ INSTALL_FILES = ../include/acsMakefile       \
                 ../include/Makefile_LCU.template \
                 ../include/Makefile_WS.template \
                 ../include/Makefile_PACKAGE.template \
-                $(wildcard ../config/acsPackageInfo*.rpmref)
+                $(wildcard ../config/acsPackageInfo*.rpmref) \
+		../config/XSDIncludeDependencies.xml
 
 #
 # list of all possible C-sources (used to create automatic dependencies)
