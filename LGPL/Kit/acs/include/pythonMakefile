@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ALMA project
 #
-# "@(#) $Id: pythonMakefile,v 1.78 2007/02/07 15:10:24 mzampare Exp $"
+# "@(#) $Id: pythonMakefile,v 1.79 2007/06/12 08:34:00 mzampare Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -188,7 +188,7 @@ ifneq ($(strip $(PY_PACKAGES)),)
 	-@$(ECHO) "	-@echo \"\"; $(ECHO) \"......python_packages:\"" >>$(FILE)
 	$(AT) for member in $(foreach name, $(PY_PACKAGES), $(name) ); \
 		do \
-		     $(ECHO) "$${member}_FILES := \$$(shell find  $${member} ! -path '*/CVS/*' -type f  | sed -n 's/\(.*\).py\$$\$$/\1.py \1.pyc/p; /\.py\$$\$$/!p' |tr '\\\\n' ' ' ) " >>$(FILE);\
+		     $(ECHO) "$${member}_FILES := \$$(shell find  $${member} ! -path '*/CVS/*' -type f  | sed -n 's/\(.*\).py\$$\$$/\1.py\\\n\1.pyc/p; /\.py\$$\$$/!p' |sort -t\. -k 2 |tr '\\\\n' ' ' ) " >>$(FILE);\
 		    $(ECHO) "" >>$(FILE);\
 		    $(ECHO) "" >>$(FILE);\
 		    $(ECHO) ".PHONY : install_pp_$${member}" >>$(FILE);\
@@ -196,17 +196,18 @@ ifneq ($(strip $(PY_PACKAGES)),)
                     $(ECHO) "" >>$(FILE);\
 		    for dir in `find $${member} -type d -depth ! -name CVS`; \
 			do \
-                    $(ECHO) "# copy python source from ../lib into INTROOT" >>$(FILE);\
-		    $(ECHO) "$(LIB)/python/site-packages/$${dir}/%: ../lib/python/site-packages/$${dir}/% " >>$(FILE);\
+                    $(ECHO) "# copy python source from ../lib into INTROOT $${dir}" >>$(FILE);\
+		    $(ECHO) "$(LIB)/python/site-packages/$${dir}/%.py: ../lib/python/site-packages/$${dir}/%.py " >>$(FILE);\
 		    $(ECHO) "	\$$(AT)mkdir -p $(LIB)/python/site-packages/$${dir}  " >>$(FILE);\
 		    $(ECHO) "	\$$(AT)$(ECHO) \"installing [$${dir}] \$$@ \" " >>$(FILE);\
 		    $(ECHO) "	\$$(AT)cp -pr  \$$< $(LIB)/python/site-packages/$${dir}  " >>$(FILE);\
                     $(ECHO) "	\$$(AT)chmod $(P644) \$$@ " >>$(FILE);\
                     $(ECHO) "" >>$(FILE);\
                     $(ECHO) "# compile python sources into .pyc files, in ../lib" >>$(FILE);\
-		    $(ECHO) "../lib/python/site-packages/$${dir}/%.pyc: $${dir}/%.py" >>$(FILE);\
+		    $(ECHO) "$(LIB)/python/site-packages/$${dir}/%.pyc: ../lib/python/site-packages/$${dir}/%.py" >>$(FILE);\
+		    $(ECHO) "	\$$(AT)mkdir -p $(LIB)/python/site-packages/$${dir}  " >>$(FILE);\
 		    $(ECHO) "	\$$(AT)echo \"Compiling python $${member}\" " >>$(FILE);\
-		    $(ECHO) "	\$$(AT)python $(PYTHON_ROOT)/lib/python$(PYTHON_VERS)/compileall.py ../lib/python/site-packages/$${member} " >>$(FILE);\
+		    $(ECHO) "	\$$(AT)(cd $(LIB)/python/site-packages && python $(PYTHON_ROOT)/lib/python$(PYTHON_VERS)/compileall.py $(LIB)/python/site-packages/$${member} )" >>$(FILE);\
                     $(ECHO) "" >>$(FILE);\
 		    done; \
 		done
