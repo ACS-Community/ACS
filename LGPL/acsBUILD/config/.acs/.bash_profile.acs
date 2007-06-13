@@ -20,7 +20,7 @@
 # MA 02111-1307  USA
 #
 #
-# "@(#) $Id: .bash_profile.acs,v 1.66 2007/05/24 20:09:45 agrimstrup Exp $"
+# "@(#) $Id: .bash_profile.acs,v 1.67 2007/06/13 22:04:00 agrimstrup Exp $"
 #
 #
 #
@@ -579,6 +579,15 @@ else
    fi
 fi
 
+# CASA stuff
+if [ X"$CASA_ROOT" = X ] || [ X"$ACS_RETAIN" = X ]
+then
+   if [ -e $ALMASW_INSTDIR/casa ]
+   then
+      CASA_ROOT=$ALMASW_INSTDIR/casa
+   fi
+fi
+
 # MICO stuff
 if [ X"$MICO_HOME" = X ] || [ X"$ACS_RETAIN" = X ]
 then
@@ -679,6 +688,11 @@ then
       PATH=$ACSROOT/bin:$PATH
    fi
 
+   if [ X"$CASA_ROOT" != X ] && [ X"$CASA_ROOT" != X"$ACSROOT" ]
+   then
+      PATH=$CASA_ROOT/bin:$PATH
+   fi
+
 elif [ "$OSYSTEM" = "Linux" ]
 then
    # So it is linux
@@ -692,6 +706,11 @@ then
    if [ X"$ACSROOT" != X ] && [ X"$VLTROOT" != X"$ACSROOT" ]
    then
       PATH=$ACSROOT/bin:$PATH
+   fi
+
+   if [ X"$CASA_ROOT" != X ] && [ X"$CASA_ROOT" != X"$ACSROOT" ]
+   then
+      PATH=$CASA_ROOT/bin:$PATH
    fi
 else
     PATH=IMPOSSIBLE_TO_DETERMINE_THE_SYSTEM_NAME_OR_OS_NOT_SUPPORTED
@@ -748,6 +767,11 @@ then
        LD_LIBRARY_PATH=$ACSROOT/lib:$LD_LIBRARY_PATH 
    fi
 
+   if  [ X"$CASA_ROOT" != X ] && [ X"$CASA_ROOT" != X"$ACSROOT" ]
+   then
+       LD_LIBRARY_PATH=$CASA_ROOT/lib:$LD_LIBRARY_PATH 
+   fi
+
 elif [ "$OSYSTEM" = "Linux" ]
 then
 
@@ -761,6 +785,11 @@ then
    if  [ X"$ACSROOT" != X ] && [ X"$VLTROOT" != X"$ACSROOT" ]
    then
        LD_LIBRARY_PATH=$ACSROOT/lib:$LD_LIBRARY_PATH 
+   fi
+
+   if  [ X"$CASA_ROOT" != X ] && [ X"$CASA_ROOT" != X"$ACSROOT" ]
+   then
+       LD_LIBRARY_PATH=$CASA_ROOT/lib:$LD_LIBRARY_PATH 
    fi
 
 else
@@ -895,6 +924,19 @@ CLASSPATH=$JACORB_HOME/lib/avalon-framework-4.1.5.jar:$JACORB_HOME/lib/logkit-1.
 export PATH LD_LIBRARY_PATH
 PYTHONVER=`$PYTHON_ROOT/bin/python -V 2>&1 | awk '{print $2}' | awk -F. '{print $1 "." $2}'`
 
+PYTHONPATH=$OMNI_ROOT/lib/python:$OMNI_ROOT/lib:$PYTHON_ROOT/lib/python$PYTHONVER/site-packages:$OMNI_ROOT/lib/python/site-packages
+
+if [ X"$ACSROOT" != X ] || [ X"$INTLIST" = X ]
+then
+   PYTHONPATH=$ACSROOT/lib/python/site-packages:$PYTHONPATH
+fi
+
+if [ X"$CASA_ROOT" != X ]
+then
+   PYTHONPATH=$CASA_ROOT/lib/python/site-packages:$PYTHONPATH
+fi
+   
+
 if [ X"$INTLIST" != X ]
 then
    tmp_list=""
@@ -903,30 +945,12 @@ then
       tmp_list=$tmp_list$item_list/lib/python/site-packages:
    done
 
-   if [ X"$INTROOT" != X ]
-   then
-      if [ X"$ACSROOT" = X ]
-      then
-         PYTHONPATH=$INTROOT/lib/python/site-packages:$tmp_list$OMNI_ROOT/lib/python:$OMNI_ROOT/lib:$PYTHON_ROOT/lib/python$PYTHONVER/site-packages:$OMNI_ROOT/lib/python/site-packages
-      else
-         PYTHONPATH=$INTROOT/lib/python/site-packages:$tmp_list$ACSROOT/lib/python/site-packages:$OMNI_ROOT/lib/python:$OMNI_ROOT/lib:$PYTHON_ROOT/lib/python$PYTHONVER/site-packages:$OMNI_ROOT/lib/python/site-packages
-      fi
-   else
-      if [ X"$ACSROOT" = X ]
-      then
-         PYTHONPATH=$tmp_list$OMNI_ROOT/lib/python:$OMNI_ROOT/lib:$PYTHON_ROOT/lib/python$PYTHONVER/site-packages:$OMNI_ROOT/lib/python/site-packages  
-      else
-         PYTHONPATH=$tmp_list$ACSROOT/lib/python/site-packages:$OMNI_ROOT/lib/python:$OMNI_ROOT/lib:$PYTHON_ROOT/lib/python$PYTHONVER/site-packages:$OMNI_ROOT/lib/python/site-packages    
-      fi
-   fi
-else
-   if [ X"$INTROOT" != X ]
-   then
-      # ACSROOT must exist here since INTLIST is nott defined
-      PYTHONPATH=$INTROOT/lib/python/site-packages:$ACSROOT/lib/python/site-packages:$OMNI_ROOT/lib/python:$OMNI_ROOT/lib:$PYTHON_ROOT/lib/python$PYTHONVER/site-packages:$OMNI_ROOT/lib/python/site-packages
-   else
-      PYTHONPATH=$ACSROOT/lib/python/site-packages:$OMNI_ROOT/lib/python:$OMNI_ROOT/lib:$PYTHON_ROOT/lib/python$PYTHONVER/site-packages:$OMNI_ROOT/lib/python/site-packages
-   fi
+   PYTHONPATH=$tmp_list$PYTHONPATH
+fi
+
+if [ X"$INTROOT" != X ]
+then
+   PYTHONPATH=$INTROOT/lib/python/site-packages:$PYTHONPATH
 fi
 
 ########################################
