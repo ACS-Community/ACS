@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ALMA  project
 #
-# "@(#) $Id: xsdMakefile,v 1.71 2007/06/12 12:35:53 mzampare Exp $"
+# "@(#) $Id: xsdMakefile,v 1.72 2007/06/13 09:46:42 mzampare Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -74,7 +74,8 @@ CASTOR = alma.tools.entitybuilder.CastorBuilder
 
 # set search path for idl files
 
-vpath %.xsdl $(MK_IDL_PATH_LIST)
+#vpath %.xsdl $(MK_IDL_PATH_LIST)
+vpath %.xsd ../idl
 
 ######################################
 # incrementing tasks
