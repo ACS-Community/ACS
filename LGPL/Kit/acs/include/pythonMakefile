@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ALMA project
 #
-# "@(#) $Id: pythonMakefile,v 1.79 2007/06/12 08:34:00 mzampare Exp $"
+# "@(#) $Id: pythonMakefile,v 1.80 2007/06/13 06:06:18 mzampare Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -188,7 +188,7 @@ ifneq ($(strip $(PY_PACKAGES)),)
 	-@$(ECHO) "	-@echo \"\"; $(ECHO) \"......python_packages:\"" >>$(FILE)
 	$(AT) for member in $(foreach name, $(PY_PACKAGES), $(name) ); \
 		do \
-		     $(ECHO) "$${member}_FILES := \$$(shell find  $${member} ! -path '*/CVS/*' -type f  | sed -n 's/\(.*\).py\$$\$$/\1.py\\\n\1.pyc/p; /\.py\$$\$$/!p' |sort -t\. -k 2 |tr '\\\\n' ' ' ) " >>$(FILE);\
+		     $(ECHO) "$${member}_FILES := \$$(shell find  $${member} ! -path '*/CVS/*' -type f  -name \*.py | sed -n 's/\(.*\).py\$$\$$/\1.py\\\n\1.pyc/p; /\.py\$$\$$/!p' |sort -t\. -k 2 |tr '\\\\n' ' ' ) " >>$(FILE);\
 		    $(ECHO) "" >>$(FILE);\
 		    $(ECHO) "" >>$(FILE);\
 		    $(ECHO) ".PHONY : install_pp_$${member}" >>$(FILE);\
