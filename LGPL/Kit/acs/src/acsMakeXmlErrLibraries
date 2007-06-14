@@ -3,7 +3,7 @@ if [ "`uname`" = "Linux" ]; then enable -n echo; fi
 #*******************************************************************************
 # E.S.O. - ALMA project
 #
-# "@(#) $Id: acsMakeXmlErrLibraries,v 1.24 2007/04/02 09:16:53 nbarriga Exp $"
+# "@(#) $Id: acsMakeXmlErrLibraries,v 1.25 2007/06/14 06:56:38 mzampare Exp $"
 #
 
 # the ugly solution taken here is really ugly: it requires one to maintain the list
@@ -175,8 +175,12 @@ then
 	cp ../object/${xmlName}.h ${VLTTOP}/include
 	cp ../object/${xmlName}{C,S}.{h,inl} ${VLTTOP}/include
 #	cp ../object/${xmlName}S_T.{h,cpp,inl} ${VLTTOP}/include
+
+
 	cp ../idl/${xmlName}.idl ${VLTTOP}/idl
 	cp ../idl/${xmlName}.xml ${VLTTOP}/idl
+	# forcing user's write permissions
+	chmod u+w ${VLTTOP}/idl/${xmlName}.xml
     else
 	cp ../bin/${xmlName} ${BIN}/${xmlName}
 	chmod 664 ${BIN}/${xmlName}
