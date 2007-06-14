@@ -20,7 +20,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: LTS2Cpp.xslt,v 1.2 2007/03/07 10:51:21 nbarriga Exp $"
+* "@(#) $Id: LTS2Cpp.xslt,v 1.3 2007/06/14 08:54:06 nbarriga Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -33,7 +33,7 @@
 <xsl:value-of select="$typeName"/>
 <xsl:text>.h"
 
-#include &lt;acstimeTimeUtil.h>
+#include &lt;acsutilTimeStamp.h>
 #include &lt;sstream>
 
 using namespace </xsl:text><xsl:value-of select="$typeName"/><xsl:text>;
@@ -66,7 +66,7 @@ void </xsl:text><xsl:value-of select="$logName"/><xsl:text>::log(){
         lr.file=this->file;
         lr.line=this->line;
         lr.method=this->routine;
-        lr.timeStamp=baci::getTimeStamp();
+        lr.timeStamp=getTimeStamp();
         LoggingProxy::AddData("logName",this->name.c_str());
         //LoggingProxy::AddData("audience",this->audience.c_str());
         LoggingProxy::audience(this->audience.c_str());

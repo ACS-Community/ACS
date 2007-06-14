@@ -4,7 +4,7 @@
 /*******************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: enumpropAlarm.h,v 1.35 2006/09/26 12:10:49 bjeram Exp $"
+* "@(#) $Id: enumpropAlarm.h,v 1.36 2007/06/14 08:54:06 nbarriga Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -18,6 +18,7 @@
 #include <baciEvent.h>
 #include <baciRecoverableObject.h>
 #include <ACSErrTypeAlarmC.h>
+#include <acscommonC.h>
 
 NAMESPACE_BEGIN(baci);
 
@@ -26,7 +27,7 @@ class MonitorenumpropEventDispatcher :
 {
 public:
     MonitorenumpropEventDispatcher(const CBDescIn& descIn,
-			   const TimeInterval& interval,
+			   const ACS::TimeInterval& interval,
 				   BACIProperty * property) :
 	MonitorEventDispatcher<ACS::pattern, ACS::CBpattern, POA_ACS::CBpattern>(descIn, interval, property)
 	{
@@ -46,7 +47,7 @@ public:
   
   AlarmenumpropEventStrategy(Callback_ptr callback,
 			     const CBDescIn& descIn,
-			     const TimeInterval& interval,
+			     const ACS::TimeInterval& interval,
 			     ROT * property,
 			     EventDispatcher * eventDispatcher);
   
@@ -107,7 +108,7 @@ private:
   CBDescIn m_descIn;
 
   /// Cheking interval
-  TimeInterval interval_m;
+  ACS::TimeInterval interval_m;
 
   /// Property to be checked for events
   ROT * property_mp;

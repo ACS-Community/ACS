@@ -21,7 +21,7 @@ AlarmenumpropEventStrategy<T, ROT, AlarmT>::AlarmenumpropEventStrategy(ROT * pro
 template <class T, class ROT, class AlarmT> 
 AlarmenumpropEventStrategy<T, ROT, AlarmT>::AlarmenumpropEventStrategy(Callback_ptr callback,
 				       const CBDescIn& descIn,
-				       const TimeInterval& interval,
+				       const ACS::TimeInterval& interval,
 				       ROT * property,
 				       EventDispatcher * eventDispatcher) :
   suspended_m(false), failureCount_m(0), m_descIn(descIn), interval_m(interval),

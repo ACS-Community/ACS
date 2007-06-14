@@ -3,7 +3,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: enumpropRWImpl.h,v 1.43 2006/10/16 07:55:16 cparedes Exp $"
+* "@(#) $Id: enumpropRWImpl.h,v 1.44 2007/06/14 08:54:06 nbarriga Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -414,8 +414,8 @@ private:
 
   // P
   T	defaultValue_m; 			
-  TimeInterval  defaultTimerTrig_m; 		
-  TimeInterval  minTimerTrig_m; 			
+  ACS::TimeInterval  defaultTimerTrig_m; 		
+  ACS::TimeInterval  minTimerTrig_m; 			
 
   ACS::stringSeq    m_statesDescription;
   ACS::ConditionSeq m_condition;
