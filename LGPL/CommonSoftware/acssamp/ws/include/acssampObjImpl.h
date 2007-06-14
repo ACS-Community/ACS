@@ -21,7 +21,7 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
  *
- * "@(#) $Id: acssampObjImpl.h,v 1.26 2006/10/24 10:54:43 rcirami Exp $"
+ * "@(#) $Id: acssampObjImpl.h,v 1.27 2007/06/14 09:14:54 nbarriga Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -226,7 +226,7 @@ class ACSSampObjImpl: public virtual POA_acssamp::SampObj,
 
 
     ACSSampObjImpl(const ACE_CString& _cobName, const ACE_CString& _propertyName, 
-		   TimeInterval _sampFrequency, TimeInterval _sampReportRate, BACIComponent *_m_cob, ACS::Property_var _genProperty, ACSSampImpl * _sampPtr);
+		   ACS::TimeInterval _sampFrequency, ACS::TimeInterval _sampReportRate, BACIComponent *_m_cob, ACS::Property_var _genProperty, ACSSampImpl * _sampPtr);
 
     /**
      * Destructor
@@ -411,7 +411,7 @@ class ACSSampObjImpl: public virtual POA_acssamp::SampObj,
      * <br><hr>
      * @endhtmlonly
      */
-    TimeInterval getSampFrequency() const { return sampFrequency; }
+    ACS::TimeInterval getSampFrequency() const { return sampFrequency; }
 
     /**
      * Internal method to set the sampling frequency.
@@ -422,7 +422,7 @@ class ACSSampObjImpl: public virtual POA_acssamp::SampObj,
      * <br><hr>
      * @endhtmlonly
      */
-    void setSampFrequency(const TimeInterval& _sampFrequency);
+    void setSampFrequency(const ACS::TimeInterval& _sampFrequency);
 
     /**
      * Internal method to retrieve the report rate.
@@ -432,7 +432,7 @@ class ACSSampObjImpl: public virtual POA_acssamp::SampObj,
      * <br><hr>
      * @endhtmlonly
      */
-    TimeInterval getReportRate() const { return sampReportRate; }
+    ACS::TimeInterval getReportRate() const { return sampReportRate; }
 
     /**
      * Internal method to set the report rate.
@@ -443,7 +443,7 @@ class ACSSampObjImpl: public virtual POA_acssamp::SampObj,
      * <br><hr>
      * @endhtmlonly
      */
-    void setReportRate(const TimeInterval& _sampReportRate);
+    void setReportRate(const ACS::TimeInterval& _sampReportRate);
 
     /**
      * Internal method to get the CORBA reference to the newly activated
@@ -506,8 +506,8 @@ class ACSSampObjImpl: public virtual POA_acssamp::SampObj,
     ACE_CString sampObjName;
     ACE_CString sampChannelName;
 
-    TimeInterval sampFrequency;
-    TimeInterval sampReportRate;
+    ACS::TimeInterval sampFrequency;
+    ACS::TimeInterval sampReportRate;
 
     bool inDestructState;
 

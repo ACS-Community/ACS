@@ -16,7 +16,7 @@
  *License along with this library; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: acssampObjImpl.i,v 1.5 2006/11/10 13:13:18 rcirami Exp $"
+ * "@(#) $Id: acssampObjImpl.i,v 1.6 2007/06/14 09:14:54 nbarriga Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -44,7 +44,7 @@ using namespace ACSErrTypeCommon;
 template <ACS_SAMP_C>
 ACSSampObjImpl<ACS_SAMP_TL>::ACSSampObjImpl(const ACE_CString& _cobName,
 					    const ACE_CString& _propertyName, 
-					    TimeInterval _sampFrequency, TimeInterval _sampReportRate,
+					    ACS::TimeInterval _sampFrequency, ACS::TimeInterval _sampReportRate,
 					    BACIComponent *_m_cob, ACS::Property_var _genProperty, 
 					    ACSSampImpl * _sampPtr) :
     cobName(_cobName),propertyName(_propertyName),sampFrequency(_sampFrequency),
@@ -234,7 +234,7 @@ void ACSSampObjImpl<ACS_SAMP_TL>::start ()
     
     DBConnector::writeCommand(cob_p->getName(), "start", getStringifiedTimeStamp());
     
-    const TimeInterval responseTime=1*1000*1000*10;    // 1s
+    const ACS::TimeInterval responseTime=1*1000*1000*10;    // 1s
 
     ACE_CString sampThreadName = sampObjName + "_thread";
 
@@ -401,7 +401,7 @@ void ACSSampObjImpl<ACS_SAMP_TL>::destroy()
 
 // implementation of  internal setSampFrequency() method
 template <ACS_SAMP_C>
-void ACSSampObjImpl<ACS_SAMP_TL>::setSampFrequency(const TimeInterval& _sampFrequency)
+void ACSSampObjImpl<ACS_SAMP_TL>::setSampFrequency(const ACS::TimeInterval& _sampFrequency)
 {
     sampFrequency=_sampFrequency;
 }
@@ -409,7 +409,7 @@ void ACSSampObjImpl<ACS_SAMP_TL>::setSampFrequency(const TimeInterval& _sampFreq
 
 // implementation of  internal setReportRate() method
 template <ACS_SAMP_C>
-void ACSSampObjImpl<ACS_SAMP_TL>::setReportRate(const TimeInterval& _sampReportRate)
+void ACSSampObjImpl<ACS_SAMP_TL>::setReportRate(const ACS::TimeInterval& _sampReportRate)
 {
     sampReportRate = _sampReportRate;
 }
