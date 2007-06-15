@@ -16,7 +16,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsexmplAsyncCalls.cpp,v 1.6 2007/02/01 05:14:26 cparedes Exp $"
+* "@(#) $Id: acsexmplAsyncCalls.cpp,v 1.7 2007/06/15 07:47:22 nbarriga Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -70,7 +70,7 @@
 #include <iostream>
 #include <string>
 
-static char *rcsId="@(#) $Id: acsexmplAsyncCalls.cpp,v 1.6 2007/02/01 05:14:26 cparedes Exp $"; 
+static char *rcsId="@(#) $Id: acsexmplAsyncCalls.cpp,v 1.7 2007/06/15 07:47:22 nbarriga Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 using namespace maci;
@@ -131,16 +131,16 @@ worker(void *threadParam_p) {
 	// Create the structs for the async calls to read the values of az
 	AsyncCBdouble azCallback("actAz",&az);
 	ACS::CBdouble_var actAz_CB = azCallback._this();
-	CBDescIn actAzDescIn;
+	ACS::CBDescIn actAzDescIn;
 	// Create the structs for the async calls to read the values of az
 	AsyncCBdouble elCallback("actEl",&el);
 	ACS::CBdouble_var actEl_CB = elCallback._this();
-	CBDescIn actElDescIn;
+	ACS::CBDescIn actElDescIn;
 	
 	// Create the callback for the objfix method
 	AsyncMethodCBvoid objfixCB("objfix");
 	ACS::CBvoid_var objfix_CB = objfixCB._this();
-	CBDescIn objfixDescIn;
+	ACS::CBDescIn objfixDescIn;
 	
 	// Times handshaking is not yet implemented so
 	// we do not really need to fill these fields
