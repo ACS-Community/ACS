@@ -61,7 +61,6 @@ public class ComponentTestclient extends ComponentClientTestCase
 		m_contSrvTesterComp = ContainerServicesTesterHelper.narrow(compObj);
 	}
 	
-	
     public void testComponentName() {
 		StringHolder nameHolder = new StringHolder();
 		boolean ret = m_contSrvTesterComp.testComponentName(nameHolder);
@@ -76,6 +75,18 @@ public class ComponentTestclient extends ComponentClientTestCase
 		assertEquals("OPERATIONAL", stateNameHolder.value);
 	}
 	
+    public void NotWorkingtestTimeout() throws Exception {
+		DummyComponent dummyComponent = DummyComponentHelper.narrow(getContainerServices().getComponent(DEFAULT_DUMMYCOMP_INSTANCE));
+  
+	    System.out.println("About to call the callThatTakesSomeTime with 30 sec[2].");
+		try{
+        dummyComponent.callThatTakesSomeTime(30000);
+		fail("Timeout exception didn't thrown");
+        }catch(org.omg.CORBA.TIMEOUT t){
+           System.out.println("org.omg.CORBA.TIMEOUT catched!");
+            // m_logger.log(Level.INFO, "org.omg.CORBA.TIMEOUT catched!",t);
+        }
+    }
 	public void testGetDynamicDummyComponent() {
 		StringHolder compNameHolder = new StringHolder();
 		boolean ret = m_contSrvTesterComp.testGetDynamicDummyComponent(compNameHolder);
@@ -206,7 +217,6 @@ public class ComponentTestclient extends ComponentClientTestCase
 			throw AcsJCouldntPerformActionEx.fromCouldntPerformActionEx(ex);
 		}
 	}
-    
 }
 
 

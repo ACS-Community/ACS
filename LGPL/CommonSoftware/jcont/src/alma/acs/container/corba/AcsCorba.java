@@ -32,6 +32,8 @@ import java.util.logging.Logger;
 import org.omg.CORBA.ORB;
 import org.omg.CORBA.Object;
 import org.omg.CORBA.Policy;
+import org.omg.CORBA.Any;
+import org.omg.CORBA.SetOverrideType;
 import org.omg.PortableServer.IdAssignmentPolicyValue;
 import org.omg.PortableServer.LifespanPolicyValue;
 import org.omg.PortableServer.POA;
@@ -222,8 +224,7 @@ public class AcsCorba
 			initPOAForContainer();			
 			initPOAForComponents();
 			
-			// TODO: uncomment when fixed
-//			setTimeout(15000); // TODO: make timeout configurable
+		//	setTimeout(1500); // TODO: make timeout configurable
 
 			setInitialized(true);
 		} catch (Throwable thr) {
@@ -382,6 +383,8 @@ public class AcsCorba
 			contPolicies[3] =
 				m_rootPOA.create_servant_retention_policy(ServantRetentionPolicyValue.RETAIN);
 			
+           // contPolicies[4] = 
+           //      new org.jacorb.orb.policies.RelativeRoundtripTimeoutPolicy(1000 * 1000);
 			// Container POA (corresponds to "poaContainer" in C++)
 			
 			m_containerPOA = m_rootPOA.create_POA("ContainerPOA", sharedPoaManager, contPolicies);
@@ -435,6 +438,8 @@ public class AcsCorba
 			
 			m_compPolicies[3] =
 				m_rootPOA.create_request_processing_policy(RequestProcessingPolicyValue.USE_SERVANT_MANAGER); 
+        //    m_compPolicies[4] = 
+        //         new org.jacorb.orb.policies.RelativeRoundtripTimeoutPolicy(1000 * 1000);
 
 			m_componentPOA = m_rootPOA.create_POA("ComponentPOA", sharedPoaManager, m_compPolicies);
 
@@ -458,9 +463,8 @@ public class AcsCorba
 	 * @param timeoutMillisec 
 	 */
 	private void setTimeout(int timeoutMillisec)
-//		throws AcsJContainerEx
+		throws AcsJContainerEx
 	{
-	    /*
 		if (timeoutMillisec <= 0)
 		{
 			return;
@@ -468,26 +472,19 @@ public class AcsCorba
 		
 		try
 		{
-			int timeout100Nanosec = 10000 * timeoutMillisec;
-			Any timeoutAny = m_orb.create_any();
-//			TimeTHelper.insert(timeoutAny, timeout100Nanosec);
-			timeoutAny.insert_long(timeout100Nanosec);
-	
 			org.omg.CORBA.PolicyManager pm =
 				org.omg.CORBA.PolicyManagerHelper.narrow(
 					m_orb.resolve_initial_references("ORBPolicyManager"));
 	
 			Policy[] policies = new Policy[1];
-			policies[0] =
-				m_orb.create_policy(RELATIVE_RT_TIMEOUT_POLICY_TYPE.value, timeoutAny);
-			pm.add_policy_overrides(policies);
+			policies[0] = new org.jacorb.orb.policies.RelativeRoundtripTimeoutPolicy(10000 * timeoutMillisec);
+			pm.set_policy_overrides(policies, SetOverrideType.ADD_OVERRIDE);
 			policies[0].destroy();
 		}
 		catch (Exception ex)
 		{
-			throw new AcsJContainerServicesEx("failed to set RelativeRoundtripTimeoutPolicy: ", ex);
-		}
-	    */
+			throw new AcsJContainerEx("failed to set RelativeRoundtripTimeoutPolicy: ", ex);
+        }
 	}
 	
 
