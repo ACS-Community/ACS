@@ -572,35 +572,38 @@ public class DALImpl extends JDALPOA implements Recoverer {
 			InputStream in = new FileInputStream(storageFile);
 			BufferedReader reader = new BufferedReader(new InputStreamReader(in));
 
-			// load listeners
-			String line;
-			while (true) {
-				line = reader.readLine();
-				if (line == null || line.length() == 0)
-					break;
-				Integer id = new Integer(line);
-				line = reader.readLine();
-				if (line == null || line.length() == 0)
-					break;
-				// try to narrow it 
-				DALChangeListener listener = DALChangeListenerHelper.narrow(orb.string_to_object(line));
-				regListeners.put(id, listener);
-			}
-
-			// then listened curls
-			String curl;
-			while (true) {
-				curl = reader.readLine();
-				if (curl == null)
-					break;
-				ArrayList arr = new ArrayList();
+			synchronized (listenedCurls)
+			{
+				// load listeners
+				String line;
 				while (true) {
 					line = reader.readLine();
 					if (line == null || line.length() == 0)
 						break;
-					arr.add(new Integer(line));
+					Integer id = new Integer(line);
+					line = reader.readLine();
+					if (line == null || line.length() == 0)
+						break;
+					// try to narrow it 
+					DALChangeListener listener = DALChangeListenerHelper.narrow(orb.string_to_object(line));
+					regListeners.put(id, listener);
 				}
-				listenedCurls.put(curl, arr);
+	
+				// then listened curls
+				String curl;
+				while (true) {
+					curl = reader.readLine();
+					if (curl == null)
+						break;
+					ArrayList arr = new ArrayList();
+					while (true) {
+						line = reader.readLine();
+						if (line == null || line.length() == 0)
+							break;
+						arr.add(new Integer(line));
+					}
+					listenedCurls.put(curl, arr);
+				}
 			}
 
 		} catch (Exception e) {
@@ -655,16 +658,18 @@ public class DALImpl extends JDALPOA implements Recoverer {
 	}
 
 	public int add_change_listener(DALChangeListener listener) {
-		int id;
-		while (true) {
-			id = idPool.nextInt(Integer.MAX_VALUE);
-			Integer key = new Integer(id);
-			if (!regListeners.containsKey(key)) {
-				regListeners.put(key, listener);
-				break;
+		synchronized (listenedCurls) {
+			int id;
+			while (true) {
+				id = idPool.nextInt(Integer.MAX_VALUE);
+				Integer key = new Integer(id);
+				if (!regListeners.containsKey(key)) {
+					regListeners.put(key, listener);
+					break;
+				}
 			}
+			return id;
 		}
-		return id;
 	}
 
 	public void listen_for_changes(String curl, int listenerID) {
@@ -727,23 +732,31 @@ public class DALImpl extends JDALPOA implements Recoverer {
 		object_changed(curl);
 
 		// then all registered listeners
+		ArrayList listeners;
+		boolean needToSave = false;
 		synchronized (listenedCurls) {
-			boolean needToSave = false;
-			ArrayList listeners = (ArrayList) listenedCurls.get(curl);
-			if (listeners == null)
-				return;
-			ArrayList invalidListeners = new ArrayList();
-			for (int i = 0; i < listeners.size(); i++) {
-				DALChangeListener listener = (DALChangeListener) regListeners.get(listeners.get(i));
-				try {
-					//System.out.println("Calling " + listener + " ...");
-					listener.object_changed(curl);
-					//System.out.println("Done " + listener);
-				} catch (RuntimeException e) {
-					// silent here because who knows what happend with clients
-					invalidListeners.add(listeners.get(i));
-				}
+			listeners = (ArrayList) listenedCurls.get(curl);
+		}
+		if (listeners == null)
+			return;
+
+		ArrayList invalidListeners = new ArrayList();
+		for (int i = 0; i < listeners.size(); i++) {
+			DALChangeListener listener;
+			synchronized (listenedCurls) {
+				listener = (DALChangeListener) regListeners.get(listeners.get(i));
 			}
+			try {
+				//System.out.println("Calling " + listener + " ...");
+				listener.object_changed(curl);
+				//System.out.println("Done " + listener);
+			} catch (RuntimeException e) {
+				// silent here because who knows what happend with clients
+				invalidListeners.add(listeners.get(i));
+			}
+		}
+			
+		synchronized (listenedCurls) {
 			// now remove invalid listeners if any
 			for (int i = 0; i < invalidListeners.size(); i++) {
 				listeners.remove(invalidListeners.get(i));
@@ -760,14 +773,16 @@ public class DALImpl extends JDALPOA implements Recoverer {
         public void clear_cache_all() {
 		loadFactory();
 		rootNode = DALNode.getRoot(m_root);
+
+		Object[] curls;
 		synchronized (listenedCurls) {
-			Iterator iter = listenedCurls.keySet().iterator();
-			while (iter.hasNext()) {
-				String curl = (String) iter.next();
-				clear_cache(curl);
-			}
+			curls = listenedCurls.keySet().toArray();
 		}
+		
+		for (int i = 0; i < curls.length; i++)
+			clear_cache((String)curls[i]);
 	}
+
 	// listing
 	public String list_nodes(String name) {
 		// if we didn't create a root node yet or we are listing
