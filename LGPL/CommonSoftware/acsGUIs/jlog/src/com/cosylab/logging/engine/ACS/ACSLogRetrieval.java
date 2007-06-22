@@ -19,7 +19,7 @@
 
 /** 
  * @author  acaproni   
- * @version $Id: ACSLogRetrieval.java,v 1.20 2007/06/11 12:25:50 acaproni Exp $
+ * @version $Id: ACSLogRetrieval.java,v 1.21 2007/06/22 12:31:24 acaproni Exp $
  * @since    
  */
 
@@ -78,7 +78,7 @@ public class ACSLogRetrieval extends Thread {
 	
 	// If it is true, the thread will not publish logs 
 	// to the listeners
-	private boolean paused=false;
+	private volatile boolean paused=false;
 	
 	// Signal the thread to terminate
 	private volatile boolean terminateThread=false;
