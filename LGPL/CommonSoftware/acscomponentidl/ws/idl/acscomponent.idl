@@ -23,7 +23,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: acscomponent.idl,v 1.3 2005/04/20 14:38:59 acaproni Exp $"
+* "@(#) $Id: acscomponent.idl,v 1.4 2007/06/22 12:46:52 nbarriga Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -103,6 +103,30 @@ module ACS {
     readonly attribute ComponentStates componentState;
 
   };
+
+  /**
+   * This interface may be implemented by any remote object (component, offshoot, other resources...)
+   * that you want to monitor in the master component.
+   * Note that resource monitoring framework in module 'mastercomp' supports monitoring of ACSComponents
+   * for which it checks the 'componentState' attribute.
+   * However, this componentState only tells us something about the Alma component itself, but not about
+   * any resources it controls or uses.
+   * While resource monitoring via 'componentState' does not require specific changes in the component,
+   * the check call cannot be intercepted by the component, which means that the value of the returned
+   * information is limited.
+   * On the other hand, this 'PingableResource' interface shows up in the component definition,
+   * but allows for "deeper" outreach of the status check.
+   * Of course your components and resources can use any other method to get their status checked
+   * by your master component, but in that case you must implement a custom "ResourceChecker" class;
+   * with "PingableResource" you can use the convenience methods provided by ACS.
+   *
+   * @return true means the resource is OK
+   */
+  interface PingableResource
+  {
+          boolean ping();
+  };
+
   
 };
 
