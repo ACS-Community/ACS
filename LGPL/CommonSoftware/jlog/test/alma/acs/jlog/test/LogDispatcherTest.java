@@ -61,15 +61,6 @@ public class LogDispatcherTest extends TestCase {
 		 * @see com.cosylab.logging.engine.ACS.ACSListenersDispatcher
 		 */
 		public void logEntryReceived(ILogEntry logEntry) {
-			/*System.out.print("Log message: "+logEntry.getField(ILogEntry.FIELD_LOGMESSAGE)+", ");
-			if (logEntry.hasDatas()) {
-				Vector<AdditionalData>  data = logEntry.getAdditionalData();
-				for (AdditionalData d: data) {
-					System.out.println("[Name="+d.getName()+", Value="+d.getValue()+"]");
-				}
-			} else {
-				System.out.println("No additional data");
-			}*/
 			logsReceived++;
 		}
 		
@@ -80,7 +71,6 @@ public class LogDispatcherTest extends TestCase {
 		 * @see com.cosylab.logging.engine.ACS.ACSListenersDispatcher
 		 */
 		public void xmlEntryReceived(String xmlLogString) {
-			//System.out.println("RAW: "+xmlLogString);
 			rawLogsReceived++;
 		}
 	}
