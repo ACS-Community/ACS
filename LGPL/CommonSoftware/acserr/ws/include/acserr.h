@@ -20,7 +20,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acserr.h,v 1.78 2007/04/27 14:38:09 bjeram Exp $"
+* "@(#) $Id: acserr.h,v 1.79 2007/06/25 15:36:49 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -117,7 +117,7 @@ class ErrorTraceHelper
     std::string toString();
 
     /**
-     * Adds data to the current error.
+     * Adds data to the current error trace.
      * If the name apperas more than one time it adds it more times.
      * @param name data name, which should be shorter than 255 characters otherwise is truncated. If name is NULL the method return w/o setting anything.
      * @param value string data value , which should be shorter than 255 characters, otherwise is truncated. If value is NULL the method return w/o setting anything.
@@ -134,7 +134,8 @@ class ErrorTraceHelper
         }//addData
 
     /**
-     * Adds data (pair of name-value)
+     * Templated version of #addData adds data (pair of name-value)
+     * It works for all types that can be put to std::ostringstream.
      * @param name data name, which should be shorter than 255 characters otherwise is truncated. If name is NULL the method return w/o setting anything.
      * @param value data value. The stringified length of value should not exceed 255 characters, otherwise it is truncated. If value is NULL the method return w/o setting anything.
      *
@@ -150,31 +151,27 @@ class ErrorTraceHelper
 	    addData (name, s);
 	}//addData
 
-
     /**
-     * Sets member value of current error.
-     * If this function is used the fist time it adds new name-value pair
-     * If name or value are NULL it returns w/o setting anything.
-     * @param name data name
+     * Sets member value of current error. This method is mainly used by generated code.
+     * If this function is used the fist time it adds new name-value pair. 
+     * @param name data name. If name or value are NULL it returns w/o setting anything.
      * @param value string data value 
      */
     void setMemberValue (const char* name, const char* value);
 
     /**
-     * 
-     * Version of SetMember that takes value as ACE_CString.
-     * If this function is used the fist time it adds new name-value pair.
-     * If name is NULL it returns w/o setting anything.
-     * @param name data name
+     * Version of setMember that takes value as ACE_CString. This method is mainly used by generated code.
+     * If this function is used the fist time it adds new name-value pair. 
+     * @param name data name. If name is NULL it returns w/o setting anything.
      * @param value string data value 
      */
     void setMemberValue (const char* name, ACE_CString &value);
 
     /**
-     * Sets member value.
-     * If name is NULL it returns w/o setting anything.
-     @param name member name
-     *param value member value  
+     * Sets member value. Template version of #setMemberValue. This method is mainly used by generated code.
+     * It works for all types that can be put to std::ostringstream like: int, string and double.
+     * @param name member name. If name is NULL it returns w/o setting anything.
+     * @param value member value  
      */
     template<typename T>
     void setMemberValue (const char* name, T value)
@@ -197,9 +194,8 @@ class ErrorTraceHelper
     ACE_CString getData (const char* name);
 
     /**
-     * Gets data value for data name (first occurrence).
+     * Gets data value for data name (first occurrence). This method is mainly used by generated code.
      * If data for name is not found it returns an empty string.
-     * This function is used by generated code
      * @param name data name
      * @param value string data value 
      */
@@ -209,8 +205,8 @@ class ErrorTraceHelper
 	}
     
     /**
-     * Template version of #getMemberValue
-     * Gets data value for data name (first occurrence).
+     * Template version of #getMemberValue. Gets data value for data name (first occurrence).
+     * It works for all types that can be retreived from  std::istringstream like: int, string and double.
      * If data name is not found it returns empty string.
      * @param name data name
      * @param value data value 
@@ -223,9 +219,8 @@ class ErrorTraceHelper
 	}//getMemberValue
 
     /**
-     * Another version of getMemberValue 
-     * which is more elegant since it returns value.
-     * This function is used by generated code
+     * Another version of getMemberValue, which is more elegant since it returns value. This function is mainly used by generated code.
+     * It works for all types that can be retreived from  std::istringstream like: int, string and double.
      * @param name data name
      * @return data vlaue of right type
      */
@@ -607,6 +602,7 @@ class CompletionImpl : public CompletionInit
 		m_errorTraceHelper.addData(name, value);
 		}
 	}
+
 
     CompletionImpl& operator=(CompletionImpl&);
 
