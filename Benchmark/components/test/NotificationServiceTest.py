@@ -310,7 +310,7 @@ def generateHTML(numLocalConsumers, numRemoteConsumers, numMsgs, sizeOfMsg, dela
     print >> htmlFile, '<H2>Reception times: </H2>'
     if(localSummaryData != None):
         for avg, max, min, consumerNumber, totalReceived  in localSummaryData:
-            print >> htmlFile, 'Local consumer ' + str(consumerNumber) + ': avg: ' + str(avg) + ' max: ' + str(max) + ' min: ' \
+            print >> htmlFile, 'Local consumer ' + str(consumerNumber) + ': avg: ' + str(avg) + '; maximum: ' + str(max) + '; minimum: ' \
             + str(min) + ' (seconds) <br>'
             if(totalReceived != numMsgs):
                 print >> htmlFile, '<font color=RED>ERROR</font> local consumer ' + str(consumerNumber) + ' expected: ' + str(numMsgs) \
@@ -321,7 +321,7 @@ def generateHTML(numLocalConsumers, numRemoteConsumers, numMsgs, sizeOfMsg, dela
 
     if(remoteSummaryData != None):
         for avg, max, min, consumerNumber, totalReceived in remoteSummaryData:
-            print >> htmlFile, 'Remote consumer ' + str(consumerNumber) + ': avg: ' + str(avg) + ' max: ' + str(max) + ' min: '\
+            print >> htmlFile, 'Remote consumer ' + str(consumerNumber) + ': avg: ' + str(avg) + '; maximum: ' + str(max) + '; minimum: '\
             + str(min) + ' (seconds) <br>'
             if(totalReceived != numMsgs):
                 print >> htmlFile, '<font color=RED>ERROR</font> remote consumer ' + str(consumerNumber) + ' expected: ' + str(numMsgs) \
@@ -591,14 +591,14 @@ def main():
 
     if(localSummaryData != None):
         for avg, max, min, consumerNumber, totalMsgsReceived  in localSummaryData:
-            debugprint("Local consumer " + str(consumerNumber) + " avg: " + str(avg) + " max: " + str(max) + " min: " + str(min), debug)
+            debugprint("Local consumer " + str(consumerNumber) + " avg: " + str(avg) + "; maximum: " + str(max) + "; minimum: " + str(min), debug)
             if(totalMsgsReceived != numMsgs):
                 print "ERROR: local consumer " + str(consumerNumber) + " expected: " + str(numMsgs) + " but only received: " \
                 + str(totalMsgsReceived)
 
     if(remoteSummaryData != None):
         for avg, max, min, consumerNumber, totalMsgsReceived in remoteSummaryData:
-            debugprint("Remote consumer " + str(consumerNumber) + " avg: " + str(avg) + " max: " + str(max) + " min: " + str(min), debug)
+            debugprint("Remote consumer " + str(consumerNumber) + " avg: " + str(avg) + "; maximum: " + str(max) + "; minimum: " + str(min), debug)
             if(totalMsgsReceived != numMsgs):
                 print "ERROR: remote consumer " + str(consumerNumber) + " expected: " + str(numMsgs) + " but only received: " \
                 + str(totalMsgsReceived)
