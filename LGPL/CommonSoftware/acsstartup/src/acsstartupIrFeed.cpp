@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsstartupIrFeed.cpp,v 1.3 2007/05/28 06:41:27 cparedes Exp $"
+* "@(#) $Id: acsstartupIrFeed.cpp,v 1.4 2007/06/26 08:56:41 nbarriga Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -59,7 +59,7 @@
 #include <stdio.h>
 #include <string.h>
 
-static char *rcsId="@(#) $Id: acsstartupIrFeed.cpp,v 1.3 2007/05/28 06:41:27 cparedes Exp $"; 
+static char *rcsId="@(#) $Id: acsstartupIrFeed.cpp,v 1.4 2007/06/26 08:56:41 nbarriga Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <iostream>
@@ -141,7 +141,7 @@ int main(int argc, char *argv[])
 	}
 
     //cycle through each area of IDL path
-    if (argc == 2){
+    if (argc == 3){
         while(idlPath.length()!=0)
         {
         //find the next whitespace to...
