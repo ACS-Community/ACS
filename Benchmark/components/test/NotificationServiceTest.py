@@ -8,8 +8,29 @@ import sys
 import os
 import popen2
 import traceback
+import acstime
 from Acspy.Util.ACSCorba import getManagerCorbaloc
 
+# this is a modified version of that found in acs time utilities; the one there
+# has a bug... remove this when / if we fix the bug. The bug is that it gives
+# precision of whole numbers due to not converting to float.
+def duration2py(duration):
+        '''
+        Convert an ACS duration to a Python duration.
+
+        Parameters: duration is in units of 100 nanoseconds
+
+        Return: duration converted to seconds
+
+        Raises: Nothing
+        '''
+        if isinstance(duration, long):
+            duration = acstime.Duration(duration)
+
+        sec = float(duration.value) / float(10000000L)
+        return sec
+
+# function to determine whether all of the messages we are expecting have been received
 def verifyMessagesReceived(fileNames, numToExpect, debug):
     allReceived = []
     for i in range(0, len(fileNames)):
@@ -81,7 +102,7 @@ def prepSarOutputFiles(numLocalConsumers, numRemoteConsumers, debug):
     count = 0
     for i in range(0, numLocalConsumers):
         os.system("cat ./tmp/consumerCpu" + str(i) + "-local.orig.log | sed -e /Linux/d | sed -e /PID/d  \
-            | sed -e /^[^0-9]/d | sed -e /^$/d  > ./tmp/consumerCpu" + str(i) + "-local.log")
+            | sed -e /^[^0-9]/d | sed -e /^$/d > ./tmp/consumerCpu" + str(i) + "-local.log")
         count += 1
 
     count = 0
@@ -111,11 +132,46 @@ def prepOutputFiles(numConsumers, label, debug):
     for i in range(0, numConsumers):
         filename = './tmp/consumer' + str(i) + '-' + label + '.out'
         debugprint("prepping output file: " + filename, debug)
-        sedCmd = 'cat ' + filename + ' | sed -e /addSubscription/d | sed -e /initCORBA/d | sed -e /^[^0-9]/d | sed -e /^$/d' + ' > ' + filename + '.tmp'
+        sedCmd = 'cat ' + filename + ' | sed -e /addSubscription/d | sed -e /initCORBA/d | sed -e /^[^0-9\-]/d | sed -e /^$/d' + ' > ' + filename + '.tmp'
         debugprint("with sed command: " + sedCmd, debug)
         os.system("cp " + filename + " " + filename + ".orig")
         os.system(sedCmd)
         os.system('mv ' + filename + '.tmp ' + filename)
+
+# function to calculate the total time (in seconds) of receiving all events
+def calculateTotalTimes(numConsumers, label, debug):
+    totalTimes = []
+    if(numConsumers <= 0):
+        return None
+
+    for i in range(0, numConsumers):
+        # read in the data from the file, as a list of strings
+        fileName = './tmp/consumer' + str(i) + '-' + label + '.out'
+        inputFile = open(fileName, "r")
+        strdata = inputFile.readlines()
+
+        firstReceptionTime = 0L
+        lastReceptionTime = 0L
+
+        # find the first occurence of "reception time:" in the list - this is the last one received
+        for line in strdata:
+            if line.startswith("reception time:"):
+               lastReceptionTime = long(line.split(":")[1])
+
+        # find the last occurence of "reception time:" in the list - this is the first one received
+        strdata.reverse()
+        for line in strdata:
+            if line.startswith("reception time:"):
+               firstReceptionTime = long(line.split(":")[1])
+
+        debugprint("first reception time for consumer " + label + str(i) + " is:  " + str(firstReceptionTime) + \
+                   " and last reception: " + str(lastReceptionTime), debug)
+
+        # calculate the difference in the times in seconds
+        totalTimes.append(float(duration2py(long(lastReceptionTime - firstReceptionTime))))
+    
+    return totalTimes
+
 
 # function to calculate the reception time summary information (e.g. averages, max, min, etc.)
 def calculateReceptionTimeSummary(numConsumers, label, debug):
@@ -132,7 +188,7 @@ def calculateReceptionTimeSummary(numConsumers, label, debug):
         # convert string data to float
         floatdata = []
         for j in range(0, len(strdata)):
-            floatdata.append(float(strdata[j]))
+               floatdata.append(float(strdata[j]))
 
         # calculate the sum of all the data points
         sum = 0.0
@@ -270,7 +326,7 @@ def plotConsumerReceptionResults(numConsumers, label, numMsgs, outputDir):
     print >> gnuplotCommandFile, 'set title "Arrival time for events on ACS notification channel"'
     print >> gnuplotCommandFile, 'set xlabel "Event No."'
     print >> gnuplotCommandFile, 'set xrange [0:' + str(numMsgs) + ']'
-    print >> gnuplotCommandFile, 'set ylabel "Time until reception (sampled every 1 second)"'
+    print >> gnuplotCommandFile, 'set ylabel "Time elapsed between send and reception (seconds)"'
     if(numConsumers == 1):
         plotString = 'plot ' + '"./tmp/consumer0-' + label + '.out" title "Consumer ' + label + '"'
         print >> gnuplotCommandFile, plotString
@@ -290,7 +346,8 @@ def plotConsumerReceptionResults(numConsumers, label, numMsgs, outputDir):
     os.system("gnuplot ./tmp/gnuplot-" + label + ".txt")
 
 # function to generate the final report as HTML
-def generateHTML(numLocalConsumers, numRemoteConsumers, numMsgs, sizeOfMsg, delayBetweenMsgs, localSummaryData, remoteSummaryData, outputDir):
+def generateHTML(numLocalConsumers, numRemoteConsumers, numMsgs, sizeOfMsg, delayBetweenMsgs, localSummaryData, \
+                 remoteSummaryData, totalTimesLocal, totalTimesRemote, outputDir):
     if(numLocalConsumers <= 0 and numRemoteConsumers <=0):
         return
 
@@ -308,10 +365,17 @@ def generateHTML(numLocalConsumers, numRemoteConsumers, numMsgs, sizeOfMsg, dela
     print >> htmlFile, 'There were: ' + str(numLocalConsumers) + ' local consumers and: ' + str(numRemoteConsumers) + ' remote consumers.'
 
     print >> htmlFile, '<H2>Reception times: </H2>'
+    count = 0
     if(localSummaryData != None):
         for avg, max, min, consumerNumber, totalReceived  in localSummaryData:
             print >> htmlFile, 'Local consumer ' + str(consumerNumber) + ': avg: ' + str(avg) + '; maximum: ' + str(max) + '; minimum: ' \
             + str(min) + ' (seconds) <br>'
+            if(totalTimesLocal[count] != 0 and totalTimesRemote[count] != None):
+                print >> htmlFile, 'Received: ' + str(totalReceived) + ' events in: ' + str(totalTimesLocal[count]) + \
+                         ' seconds for a rate of: ' + str(float(totalReceived/totalTimesLocal[count])) + ' events/second<br>'
+            else:
+                print >> htmlFile, 'Unable to calculate events/second (rate) because of test failure.<br>'
+            count = count + 1
             if(totalReceived != numMsgs):
                 print >> htmlFile, '<font color=RED>ERROR</font> local consumer ' + str(consumerNumber) + ' expected: ' + str(numMsgs) \
                     + ' events, but only received: ' + str(totalReceived) + ' events<br><br>'
@@ -319,10 +383,17 @@ def generateHTML(numLocalConsumers, numRemoteConsumers, numMsgs, sizeOfMsg, dela
                 print >> htmlFile, '<font color=GREEN>SUCCESS</font> local consumer ' + str(consumerNumber) + ' expected: ' \
                     + str(numMsgs) + ' events, and received: ' + str(totalReceived) + ' events<br><br>'
 
+    count = 0
     if(remoteSummaryData != None):
         for avg, max, min, consumerNumber, totalReceived in remoteSummaryData:
             print >> htmlFile, 'Remote consumer ' + str(consumerNumber) + ': avg: ' + str(avg) + '; maximum: ' + str(max) + '; minimum: '\
             + str(min) + ' (seconds) <br>'
+            if(totalTimesRemote[count] != 0 and totalTimesRemote[count] != None ):
+                print >> htmlFile, 'Received: ' + str(totalReceived) + ' events in: ' + str(totalTimesRemote[count]) + \
+                         ' seconds for a rate of: ' + str(float(totalReceived/totalTimesRemote[count])) + ' events/second<br>'
+            else:
+                print >> htmlFile, 'Unable to calculate events/second (rate) because of test failure.<br>'
+            count = count + 1
             if(totalReceived != numMsgs):
                 print >> htmlFile, '<font color=RED>ERROR</font> remote consumer ' + str(consumerNumber) + ' expected: ' + str(numMsgs) \
                     + ' events, but only received: ' + str(totalReceived) + ' events <br><br>'
@@ -410,7 +481,8 @@ def main():
     from perftestImpl.NotificationServiceStressSupplier import NCStressSupplier
 
     # calculate time to wait based on a heuristic: 100 seconds plus the number of messages 
-    # times (the quantity of) the delay plus 5 ms
+    # times (the quantity of) the delay plus 5 ms - this formula is fairly arbitrary but seems to be
+    # (more than) enough.
     if(sizeOfMsg > 100000):
         largeMsgFactor = sizeOfMsg / 100000
     else:
@@ -438,7 +510,7 @@ def main():
     ncChannelCreated = False
     for i in range(0, numLocalConsumers):
        debugprint("starting local consumer " + str(i), debug)
-       cmdString = "NCStressConsumer -d " + str(timeToWait) + " >& ./tmp/consumer" + str(i) + "-local.out"
+       cmdString = "NCStressConsumer -d " + str(timeToWait) + " " + str(numMsgs) + " >& ./tmp/consumer" + str(i) + "-local.out"
        debugprint("using local command " + cmdString, debug)
        localProcesses.append(popen2.Popen4(cmdString))
        # special case to stop race condition during initial creation of NC channel - it seems the first consumer creates 
@@ -453,7 +525,7 @@ def main():
     for i in range(0, numRemoteConsumers):
        debugprint("starting remote consumer " + str(i), debug)
        sshCmdString = 'ssh ' + userName + '@' + remoteHost + ' "NCStressConsumer -d -m ' + managerCorbaLoc + ' ' \
-           + str(timeToWait) + '"' + ' >& ./tmp/consumer' + str(i) + '-remote.out'
+           + str(timeToWait) + " " + str(numMsgs) + '"' + ' >& ./tmp/consumer' + str(i) + '-remote.out'
        debugprint("using command: " + sshCmdString, debug)
        remoteProcesses.append(popen2.Popen3(sshCmdString))
        # special case to stop race condition during initial creation of NC channel - it seems the first consumer creates 
@@ -466,7 +538,7 @@ def main():
     debugprint("sleeping a bit to let all consumers start...", debug)
     for i in range (1, (numLocalConsumers + numRemoteConsumers)):
         debugprint(".", debug)
-        sleep(1)
+        sleep(3)
 
     # monitor the local consumers
     localConsumerMonitors = []
@@ -572,6 +644,10 @@ def main():
     killCmd = "kill -9 " + str(notifyMonitorProcess.pid)
     popen2.Popen4(killCmd)
      
+    # calculate total time to receive all msgs
+    totalTimesLocal = calculateTotalTimes(numLocalConsumers, "local", debug)
+    totalTimesRemote = calculateTotalTimes(numRemoteConsumers, "remote", debug)
+
     # prep output files
     prepOutputFiles(numLocalConsumers, "local", debug)
     prepOutputFiles(numRemoteConsumers, "remote", debug)
@@ -604,7 +680,9 @@ def main():
                 + str(totalMsgsReceived)
 
     # generate the final report as HTML 
-    generateHTML(numLocalConsumers, numRemoteConsumers, numMsgs, sizeOfMsg, delayBetweenMsgs, localSummaryData, remoteSummaryData, "../doc")
+    generateHTML(numLocalConsumers, numRemoteConsumers, numMsgs, sizeOfMsg, \
+                 delayBetweenMsgs, localSummaryData, remoteSummaryData, totalTimesLocal, \
+                 totalTimesRemote, "../doc")
 
 if __name__ == "__main__":
     main()
