@@ -10,7 +10,7 @@ from perftestImpl.NotificationServiceStressConsumer import debugprint
 
 def printUsageAndExit():
     print ""
-    print "Usage: " + sys.argv[0] + " [OPTIONS] timeToWaitForMessages"
+    print "Usage: " + sys.argv[0] + " [OPTIONS] timeToWaitForMessages numToExpect"
     print ""
     print "   OPTIONS:"
     print ""
@@ -21,6 +21,7 @@ def printUsageAndExit():
     print "   and:"
     print ""
     print "   timeToWaitForMessages is the amount of time (in seconds) to wait for all the messages to arrive"
+    print "   numToExpect is the number of messages we expect (or hope) will arrive"
     print ""
     sys.exit(2)
 
@@ -48,7 +49,7 @@ def main():
         if o in ("-h", "--help"):
             printUsageAndExit()
 
-    if(len(args) < 1):
+    if(len(args) < 2):
         printUsageAndExit()
 
     if(managerRef != None):
@@ -57,8 +58,10 @@ def main():
 
     timeToWait = int(args[0])
     debugprint("time to wait for messages: " + str(timeToWait), debug)
+    numToExpect = int(args[1])
+    debugprint("expected number of messages: " + str(numToExpect), debug)
 
-    consumer = NCStressConsumer(outputFileName)
+    consumer = NCStressConsumer(numToExpect, outputFileName)
     sleep(timeToWait)
 
     consumer.disconnect()
