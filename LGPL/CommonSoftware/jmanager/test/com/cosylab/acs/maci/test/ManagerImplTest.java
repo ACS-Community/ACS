@@ -2250,7 +2250,7 @@ public class ManagerImplTest extends TestCase
 
 			assertEquals(2, infos.length);
 
-			assertTrue(mount.toString().equals(infos[0].getName()));
+			assertEquals(mount.toString(), infos[0].getName());
 			// manager and client
 			assertEquals(2, infos[0].getClients().size());
 			assertTrue(infos[0].getClients().contains(info.getHandle()));
@@ -4203,8 +4203,8 @@ public class ManagerImplTest extends TestCase
 			ComponentInfo[] infos = manager.getComponentInfo(info.getHandle(), new int[0], "*", "*", true);
 			assertEquals(2, infos.length);
 
-			assertTrue("MOUNT1".equals(infos[0].getName()));
-			assertTrue("MOUNT2".equals(infos[1].getName()));
+			assertEquals("MOUNT1", infos[0].getName());
+			assertEquals("MOUNT2", infos[1].getName());
 			
 			// container2 took over
 			assertEquals(containerInfo2.getHandle(), infos[0].getContainer());
@@ -4289,8 +4289,8 @@ public class ManagerImplTest extends TestCase
 			ComponentInfo[] infos = manager.getComponentInfo(info.getHandle(), new int[0], "*", "*", true);
 			assertEquals(2, infos.length);
 
-			assertTrue("MOUNT1".equals(infos[0].getName()));
-			assertTrue("MOUNT2".equals(infos[1].getName()));
+			assertEquals("MOUNT1", infos[0].getName());
+			assertEquals("MOUNT2", infos[1].getName());
 			
 			// container2 took over
 			assertEquals(containerInfo.getHandle(), infos[0].getContainer());
