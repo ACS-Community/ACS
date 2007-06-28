@@ -56,6 +56,7 @@ public class JacORBFilter implements Filter {
 				message.startsWith("prepare ORB for shutdown") ||
 				message.startsWith("Client-side TCP transport to") ||
 				message.startsWith("ORB going down...") ||
+				message.startsWith("reply to") ||
 				message.startsWith("POA ") && (
 						message.endsWith("shutdown is in progress") ||
 						message.endsWith("destruction is apparent") ||
@@ -65,7 +66,7 @@ public class JacORBFilter implements Filter {
 						message.endsWith("etherialize all servants ...")
 				) ||
 				message.startsWith("Opened new server-side TCP/IP" )) {
-				record.setLevel(Level.FINE);
+				record.setLevel(Level.FINER);
 			}
 			// from FINE to discard
 			else isLoggable = !(
@@ -77,6 +78,7 @@ public class JacORBFilter implements Filter {
 					message.endsWith("invokeOperation on servant (stream based)") ||
 					message.endsWith("reset a previous completion call") ||
 					message.startsWith("Delegate.getReference") || 
+					message.startsWith("Received CodeSetContext. Using") || 
 					message.startsWith("ClientConnectionManager: releasing ClientGIOPConnection") ||
 					message.startsWith("Delegate released!") ||
 					message.endsWith(": streamClosed()")		// findPOA: impl_name mismatch						
@@ -101,6 +103,7 @@ public class JacORBFilter implements Filter {
 			// from INFO to FINER
 			else if (message.startsWith("Connected to ") ||
 					message.startsWith("Closed server-side transport to") ||
+					message.startsWith("Retrying to connect to") ||
 					message.startsWith("ClientConnectionManager: created new ClientGIOPConnection") ||
 					message.startsWith("ClientConnectionManager: found ClientGIOPConnection") ||
 					message.equals("Listener exited") ) {
