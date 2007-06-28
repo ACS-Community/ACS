@@ -24,9 +24,7 @@ package alma.acs.gui.loglevel;
 import javax.swing.JScrollPane;
 
 import alma.acs.container.ContainerServices;
-import alma.acs.container.ContainerServicesImpl;
 import alma.acs.gui.loglevel.tree.LogLvlTree;
-import alma.exec.extension.subsystemplugin.PluginContainerServices;
 
 /**
  * The panel of the application containing the tree with 
@@ -38,7 +36,7 @@ import alma.exec.extension.subsystemplugin.PluginContainerServices;
 public class LogLevelPanel extends JScrollPane {
 	
 	// The container services
-    private ContainerServicesImpl contSvc=null;
+    private ContainerServices contSvc=null;
     
 	/**
 	 * Constructor
@@ -116,7 +114,7 @@ public class LogLevelPanel extends JScrollPane {
 	 * 
 	 * @see alma.exec.extension.subsystemplugin.SubsystemPlugin
 	 */
-	public void setServices (PluginContainerServices ctrl) {
+	public void setServices (ContainerServices ctrl) {
 		setACSContainerServices(ctrl);
 	}
 	
@@ -138,11 +136,7 @@ public class LogLevelPanel extends JScrollPane {
 		if (cs==null) {
 			throw new IllegalArgumentException("Invalid null ContainerServices");
 		}
-		if (!(cs instanceof ContainerServicesImpl)) {
-			throw new IllegalStateException("ContainerServices is not an instance of ContainerServicesImpl");
-			
-		} 
-		contSvc=(ContainerServicesImpl)cs;
+		contSvc=cs;
 	}
 
 }
