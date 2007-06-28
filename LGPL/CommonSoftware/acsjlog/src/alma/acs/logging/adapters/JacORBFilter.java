@@ -48,15 +48,14 @@ public class JacORBFilter implements Filter {
 	public boolean isLoggable(LogRecord record) {
 		String message = record.getMessage();
 		boolean isLoggable = true;
-		if (record.getLevel().intValue() == Level.FINE.intValue()) {
-			// map from FINE to FINER
+		if (record.getLevel().intValue() == Level.CONFIG.intValue()) {
+			// map from CONFIG to FINEST
 			if (message.indexOf("(C) The JacORB project") > 0 || 
 				message.equals("ORB run") ||
 				message.startsWith("Received CloseConnection on ClientGIOPConnection") ||
 				message.startsWith("prepare ORB for shutdown") ||
 				message.startsWith("Client-side TCP transport to") ||
 				message.startsWith("ORB going down...") ||
-				message.startsWith("reply to") ||
 				message.startsWith("POA ") && (
 						message.endsWith("shutdown is in progress") ||
 						message.endsWith("destruction is apparent") ||
@@ -66,9 +65,9 @@ public class JacORBFilter implements Filter {
 						message.endsWith("etherialize all servants ...")
 				) ||
 				message.startsWith("Opened new server-side TCP/IP" )) {
-				record.setLevel(Level.FINER);
+				record.setLevel(Level.FINEST);
 			}
-			// from FINE to discard
+			// from CONFIG to discard
 			else isLoggable = !(
 					message.endsWith("_invoke: queuing request") ||
 					message.indexOf("is queued (queue size:") > 0 ||
@@ -86,7 +85,7 @@ public class JacORBFilter implements Filter {
 		}
 		
 		else if (record.getLevel().intValue() == Level.INFO.intValue()) {
-			// from INFO to FINE
+			// from INFO to CONFIG
 			if (message.indexOf("(C) The JacORB project") > 0 || 
 				message.startsWith("ORB run") || // also "ORB run, exit"
 				message.startsWith("Received CloseConnection on ClientGIOPConnection") ||
@@ -98,16 +97,16 @@ public class JacORBFilter implements Filter {
 						message.endsWith("destroyed") 
 				)) ||
 				message.startsWith("Opened new server-side TCP/IP" )) {
-				record.setLevel(Level.FINE);
+				record.setLevel(Level.CONFIG);
 			}
-			// from INFO to FINER
+			// from INFO to FINEST
 			else if (message.startsWith("Connected to ") ||
 					message.startsWith("Closed server-side transport to") ||
 					message.startsWith("Retrying to connect to") ||
 					message.startsWith("ClientConnectionManager: created new ClientGIOPConnection") ||
 					message.startsWith("ClientConnectionManager: found ClientGIOPConnection") ||
 					message.equals("Listener exited") ) {
-				record.setLevel(Level.FINER);
+				record.setLevel(Level.FINEST);
 			}
 			// from INFO to discard
 			else isLoggable = !(
@@ -118,13 +117,13 @@ public class JacORBFilter implements Filter {
 		}
 		
 		else if (record.getLevel().intValue() == Level.WARNING.intValue()) {
-			// from WARNING to FINE
+			// from WARNING to CONFIG
 //			if (message.indexOf("") > 0) { 
-//				record.setLevel(Level.FINE);
+//				record.setLevel(Level.CONFIG);
 //			}
-//			// from WARNING to FINER
+//			// from WARNING to FINEST
 //			else if (message.startsWith("")) {
-//				record.setLevel(Level.FINER);
+//				record.setLevel(Level.FINEST);
 //			}
 			// from WARNING to discard
 //			else 
