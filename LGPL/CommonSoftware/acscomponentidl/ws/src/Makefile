@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.1.1.1 2005/04/11 17:53:38 acaproni Exp $"
+# "@(#) $Id: Makefile,v 1.2 2007/06/28 09:09:28 nbarriga Exp $"
 #
 # Makefile of ........
 #
@@ -114,6 +114,7 @@ PANELS_L =
 # 
 # IDL Files and flags
 # 
+ABEANS = acscomponent
 IDL_FILES = acscomponent
 IDL_TAO_FLAGS =
 USER_IDL =

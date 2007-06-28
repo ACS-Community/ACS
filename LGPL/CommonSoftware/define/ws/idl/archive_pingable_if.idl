@@ -32,6 +32,7 @@ module archive
 	/**
 	 * All archive components and offshoots that implement a ping method should implement this interface
 	 * to allow easier monitoring by the master component.
+         * @deprecated Use ACS.PingableResource instead(acscomponent.idl)
 	 */
 	interface ArchivePingableResource
 	{

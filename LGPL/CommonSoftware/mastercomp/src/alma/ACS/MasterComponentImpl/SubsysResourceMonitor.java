@@ -37,7 +37,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import alma.ACS.ACSComponent;
+import alma.ACS.ACSComponentOperations;
 import alma.ACS.ComponentStates;
+import alma.ACS.PingableResourceOperations;
 
 /**
  * Monitor for any kind of resource whose state a subsystem master component 
@@ -520,7 +522,38 @@ public class SubsysResourceMonitor {
             return compName;
         }
 	}
-    
+	/**
+	 * A custom <code>ResourceChecker</code> for objects implementing
+	 * PingableResource interface.
+	 */
+	public static class PingableResourceChecker<T extends PingableResourceOperations> implements
+			SubsysResourceMonitor.ResourceChecker<T> {
+
+		private T resource;
+
+		private String resourceName;
+
+		public PingableResourceChecker(T resource, String resourceName) {
+			this.resource = resource;
+			this.resourceName = resourceName;
+		}
+
+		public String checkState() {
+			String errMsg = null;
+			if (!resource.ping()) {
+				errMsg = "ping() failed.";
+			}
+			return errMsg;
+		}
+
+		public T getResource() {
+			return resource;
+		}
+
+		public String getResourceName() {
+			return resourceName;
+		}
+	}
     /**
      * Error handler that gets notified when a monitored resource
      * becomes unavailable or degraded.

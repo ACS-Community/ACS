@@ -27,7 +27,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import alma.ACS.ACSComponent;
+import alma.ACS.ComponentStates;
 import alma.ACS.MasterComponentOperations;
+import alma.ACS.PingableResourceOperations;
 import alma.ACS.ROstringSeq;
 import alma.ACS.ROstringSeqHelper;
 import alma.ACS.ROstringSeqPOATie;
@@ -326,6 +328,30 @@ public abstract class MasterComponentImplBase extends CharacteristicComponentImp
 		SubsysResourceMonitor.ResourceChecker<T> checker = new SubsysResourceMonitor.ComponentChecker<T>(component);
 		monitorResource(checker, err, -1);
 	}
+	/**
+	 * Like {@link #monitorComponent(ACSComponent)} but for objects implementing the PingableResource interface.
+	 * @param resource  the resource that should be monitored
+	 * @since ACS 7.0
+	 */
+	protected final void monitorPingableResource(PingableResourceOperations resource, String name) {
+		monitorPingableResource(resource, name, null);
+	}
+	
+	/**
+	 * Like {@link #monitorComponent()} but for objects implementing the PingableResource interface.
+	 * @param resource  the resource that should be monitored
+	 * @param err  a custom error handler. If <code>null</code>, then a default error handler will be used,
+     *             and the master component will go to error state automatically (same as using {@link #monitorPingableResource(PingableResourceOperations)}).
+	 * @since ACS 7.0
+	 */
+	protected final <T extends PingableResourceOperations>void monitorPingableResource(T resource, String name, SubsysResourceMonitor.ResourceErrorHandler<T> err) {
+		if (resource == null) {
+			throw new NullPointerException("resource must not be null");
+		}
+		
+		SubsysResourceMonitor.ResourceChecker<T> checker = new SubsysResourceMonitor.PingableResourceChecker<T>(resource, name);
+		monitorResource(checker, err, -1);
+	}	
 	
 	
 	/**

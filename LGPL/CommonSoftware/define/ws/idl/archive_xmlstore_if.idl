@@ -25,7 +25,6 @@
 
 #include <xmlentity.idl> 
 #include <acscomponent.idl>
-#include <archive_pingable_if.idl>
 
 // HSO 2006-09-15: it seems that after a year of freedom from this bug, 
 // we must again put the pragma after the includes. Otherwise a unit test in ARCHIVE/Archive failed,
@@ -352,7 +351,7 @@ module xmlstore
 	 * This interface contains advanced methods not to be used in normal 
 	 * circumstances.
 	 */
-	interface Administrative : ACS::OffShoot, archive::ArchivePingableResource
+	interface Administrative : ACS::OffShoot, ACS::PingableResource
 	{
 		/** If an entity does not exist in the Archive. */
 		exception NotFound{};
