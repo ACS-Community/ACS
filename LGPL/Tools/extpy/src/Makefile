@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.22 2006/01/06 18:16:14 dfugate Exp $"
+# "@(#) $Id: Makefile,v 1.23 2007/06/29 20:53:50 agrimstrup Exp $"
 #
 # Makefile of ........
 #
@@ -28,7 +28,7 @@ PY_PACKAGES_L      =
 pppppp_MODULES	   =
 
 PY_EXT_DOC_L	   = pexpect-doc
-PY_DISUTIL	   = pexpect-0.999 PyXML-0.8.4 pychecker-0.8.14 Pmw numarray-1.3.3 matplotlib-0.73.1
+PY_DISUTIL	   = pexpect-0.999 PyXML-0.8.4 pychecker-0.8.14 Pmw Numeric-23.1 numarray-1.3.3 numpy-1.0.1 matplotlib-0.73.1 python-ldap-2.0.1 gnuplot-py-1.7 pysnmp-2.0.9
 
 
 PEXPECT: pexpect-0.999.tgz
@@ -59,16 +59,16 @@ MATPLOTLIB: matplotlib-0.73.1.tar.gz
 	@cd matplotlib-0.73.1; \
 	export BUILD_AGG=1; \
 	python setup.py build; \
-	python setup.py install --home=$(INSTALL_ROOT) --install-purelib=$(INSTALL_ROOT)/lib/python/site-packages --install-platlib=$(INSTALL_ROOT)/lib/python/site-packages;
+	python setup.py install; 
 
 
 MATPLOTLIB_CONFIG: 
-	@cd $(INSTALL_ROOT)/share/matplotlib/; cat .matplotlibrc | sed s/numerix\ \ \ \ \ \ :\ Numeric/numerix\ \ \ \ \ \ :\ numarray/g >> .matplotlibrc.tmp
-	@cd $(INSTALL_ROOT)/share/matplotlib/; mv .matplotlibrc.tmp .matplotlibrc
-	@cd $(INSTALL_ROOT)/share/matplotlib/; cat .matplotlibrc | sed s/backend\ \ \ \ \ \ :\ GTKAgg/backend\ \ \ \ \ \ :\ TkAgg/g >> .matplotlibrc.tmp
-	@cd $(INSTALL_ROOT)/share/matplotlib/; mv .matplotlibrc.tmp .matplotlibrc
-	@cd $(INSTALL_ROOT)/share/matplotlib/; cat .matplotlibrc | sed s/interactive\ \ :\ False/interactive\ \ :\ True/g >> .matplotlibrc.tmp
-	@cd $(INSTALL_ROOT)/share/matplotlib/; mv .matplotlibrc.tmp .matplotlibrc
+	@cd $(PYTHON_ROOT)/share/matplotlib/; cat .matplotlibrc | sed s/numerix\ \ \ \ \ \ :\ Numeric/numerix\ \ \ \ \ \ :\ numarray/g >> .matplotlibrc.tmp
+	@cd $(PYTHON_ROOT)/share/matplotlib/; mv .matplotlibrc.tmp .matplotlibrc
+	@cd $(PYTHON_ROOT)/share/matplotlib/; cat .matplotlibrc | sed s/backend\ \ \ \ \ \ :\ GTKAgg/backend\ \ \ \ \ \ :\ TkAgg/g >> .matplotlibrc.tmp
+	@cd $(PYTHON_ROOT)/share/matplotlib/; mv .matplotlibrc.tmp .matplotlibrc
+	@cd $(PYTHON_ROOT)/share/matplotlib/; cat .matplotlibrc | sed s/interactive\ \ :\ False/interactive\ \ :\ True/g >> .matplotlibrc.tmp
+	@cd $(PYTHON_ROOT)/share/matplotlib/; mv .matplotlibrc.tmp .matplotlibrc
 
 
 #
@@ -82,10 +82,37 @@ PYCHECKER: pychecker-0.8.14.tar.gz
 	@patch pychecker-0.8.14/setup.py pychecker-0.8.14.setup.py.patch
 	@cd pychecker-0.8.14; python setup.py install --home=$(INSTALL_ROOT) --install-purelib=$(INSTALL_ROOT)/lib/python/site-packages --install-platlib=$(INSTALL_ROOT)/lib/python/site-packages;
 
+NUMERIC: Numeric-23.1.tar.gz
+	@echo "== Building Numeric"
+	@gtar -zxvf Numeric-23.1.tar.gz;
+	@cd Numeric-23.1; python setup.py install; 
+
 NUMARRAY: numarray-1.3.3.tar.gz
 	@echo "== Building numarray"
 	@gtar -zxvf numarray-1.3.3.tar.gz;
-	@cd numarray-1.3.3; python setup.py install --home=$(INSTALL_ROOT) --gencode --install-lib=$(INSTALL_ROOT)/lib/python/site-packages --install-purelib=$(INSTALL_ROOT)/lib/python/site-packages --install-platlib=$(INSTALL_ROOT)/lib/python/site-packages --install-headers=$(INSTALL_ROOT)/include/numarray
+	@cd numarray-1.3.3; python setup.py install --gencode; 
+
+NUMPY: numpy-1.0.1.tar.gz
+	@echo "== Building numpy"
+	@gtar -zxvf numpy-1.0.1.tar.gz;
+	@cd numpy-1.0.1; python setup.py install; 
+
+LDAP: python-ldap-2.0.1.tar.gz
+	@echo "== Building Python LDAP"
+	@gtar -zxvf python-ldap-2.0.1.tar.gz;
+	@cd python-ldap-2.0.1; cat setup.cfg | sed 's/local\/openldap-REL_ENG_2_1\///' >> setup.cfg.tmp
+	@mv python-ldap-2.0.1/setup.cfg.tmp python-ldap-2.0.1/setup.cfg 
+	@cd python-ldap-2.0.1; python setup.py install;
+
+GNUPLOT: gnuplot-py-1.7.tar.gz
+	@echo "== Building GnuPlot Py"
+	@gtar -zxvf gnuplot-py-1.7.tar.gz;
+	@cd gnuplot-py-1.7; python setup.py install;
+
+SNMP: pysnmp-2.0.9.tar.gz
+	@echo "== Building PySNMP"
+	@gtar -zxvf pysnmp-2.0.9.tar.gz;
+	@cd pysnmp-2.0.9; python setup.py install;
 
 #
 # list all python tarballs
@@ -94,7 +121,7 @@ PY_DOC :
 	$(foreach file, $(PY_EXT_DOC_L), - $(AT) cd ../doc; if [ -e $(file).tgz ]; then echo "== Extracting external documentation: $(file).tgz"; gtar -zxvf $(file).tgz; fi )
 
 
-PY_DISUTIL_BUILD : PEXPECT PYXML PYCHECKER NUMARRAY MATPLOTLIB
+PY_DISUTIL_BUILD : PEXPECT PYXML PYCHECKER NUMERIC NUMARRAY NUMPY MATPLOTLIB LDAP GNUPLOT SNMP
 	echo "== Building/Installing external Python modules now..."
 
 #
