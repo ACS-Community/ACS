@@ -19,7 +19,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: loggingLoggingProxy.cpp,v 1.38 2007/06/06 08:42:02 cparedes Exp $"
+* "@(#) $Id: loggingLoggingProxy.cpp,v 1.39 2007/06/29 10:04:23 msekoran Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -57,7 +57,7 @@
 #define LOG_NAME "Log"
 #define DEFAULT_LOG_FILE_NAME "acs_local_log"
 
-ACE_RCSID(logging, logging, "$Id: loggingLoggingProxy.cpp,v 1.38 2007/06/06 08:42:02 cparedes Exp $");
+ACE_RCSID(logging, logging, "$Id: loggingLoggingProxy.cpp,v 1.39 2007/06/29 10:04:23 msekoran Exp $");
 
 ACSLoggingLog::LogType LoggingProxy::m_LogBinEntryTypeName[] =
 {
@@ -1311,7 +1311,7 @@ LoggingProxy::sendCacheInternal()
         }
     }
     // should I retain cache or not?!!!
-    ACE_OS::printf ("%s Failed to create cache logginger. Logging cache is lost!\n", timestamp);
+    ACE_OS::printf ("%s Failed to create cache logger. Logging cache is lost!\n", timestamp);
     if (!m_logBin) m_cache.clear();
     else m_bin_cache.clear();
     return;
