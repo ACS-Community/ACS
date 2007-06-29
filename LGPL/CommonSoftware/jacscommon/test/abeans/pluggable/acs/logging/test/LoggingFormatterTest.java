@@ -4,7 +4,7 @@
  
 package abeans.pluggable.acs.logging.test;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import junit.framework.TestCase;
@@ -112,7 +112,7 @@ public class LoggingFormatterTest extends TestCase implements Identifiable
 		System.out.println(formatter.format(record));
 
 		// test additional properties
-		Map map = new HashMap();
+		Map map = new LinkedHashMap();
 		map.put("Line", new Long(1208));
 		map.put("StackId", "Stack ID");
 		map.put("StackLevel", new Long(4));
@@ -120,12 +120,12 @@ public class LoggingFormatterTest extends TestCase implements Identifiable
 		map.put("Context", "Testing...");
 		map.put("ThreadName", "MyThread");
 		map.put("Uri", "abeans-CDBDAL://csl01:5001/alma/gizmo/current/units?get");
-		Map nv = new HashMap();
+		Map nv = new LinkedHashMap();
 		nv.put("name1", "value1");
 		nv.put("name2", "value2");
 		map.put("Data", nv);
 
-		Map nv2 = new HashMap();
+		Map nv2 = new LinkedHashMap();
 		nv2.put("attribute1", "value1");
 		nv2.put("attribute2", "value2");
 		map.put("Attributes", nv2);
