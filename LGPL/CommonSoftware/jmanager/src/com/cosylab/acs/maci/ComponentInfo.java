@@ -12,7 +12,7 @@ import java.io.Serializable;
  * @author		Matej Sekoranja (matej.sekoranja@cosylab.com)
  * @version	@@VERSION@@
  */
-public class ComponentInfo implements Serializable
+public class ComponentInfo implements Serializable, Comparable<ComponentInfo>
 {
 
 	/**
@@ -382,6 +382,13 @@ public class ComponentInfo implements Serializable
 	 */
 	public void setDynamicContainerName(String string) {
 		dynamicContainerName = string;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Comparable#compareTo(java.lang.Object)
+	 */
+	public int compareTo(ComponentInfo o) {
+		return name.compareTo(o.name);
 	}
 
 }

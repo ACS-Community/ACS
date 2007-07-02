@@ -6,6 +6,7 @@ package com.cosylab.acs.maci.test;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,6 +16,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
 import alma.ACSErrTypeCommon.wrappers.AcsJBadParameterEx;
 import alma.maciErrType.wrappers.AcsJCannotGetComponentEx;
 import alma.maciErrType.wrappers.AcsJComponentSpecIncompatibleWithActiveComponentEx;
@@ -23,16 +26,16 @@ import alma.maciErrType.wrappers.AcsJInvalidComponentSpecEx;
 import alma.maciErrType.wrappers.AcsJNoPermissionEx;
 
 import com.cosylab.acs.cdb.CDBAccess;
-import com.cosylab.acs.maci.ComponentSpec;
-import com.cosylab.acs.maci.Container;
-import com.cosylab.acs.maci.ContainerInfo;
 import com.cosylab.acs.maci.Administrator;
 import com.cosylab.acs.maci.BadParametersException;
-import com.cosylab.acs.maci.Component;
-import com.cosylab.acs.maci.ComponentInfo;
-import com.cosylab.acs.maci.ComponentStatus;
 import com.cosylab.acs.maci.Client;
 import com.cosylab.acs.maci.ClientInfo;
+import com.cosylab.acs.maci.Component;
+import com.cosylab.acs.maci.ComponentInfo;
+import com.cosylab.acs.maci.ComponentSpec;
+import com.cosylab.acs.maci.ComponentStatus;
+import com.cosylab.acs.maci.Container;
+import com.cosylab.acs.maci.ContainerInfo;
 import com.cosylab.acs.maci.HandleConstants;
 import com.cosylab.acs.maci.IntArray;
 import com.cosylab.acs.maci.NoDefaultComponentException;
@@ -43,9 +46,6 @@ import com.cosylab.acs.maci.manager.CURLHelper;
 import com.cosylab.acs.maci.manager.ComponentInfoTopologicalSort;
 import com.cosylab.acs.maci.manager.ManagerImpl;
 import com.cosylab.acs.maci.plug.DefaultCORBAService;
-
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
 
 /**
  * ManagerImpl tests.
@@ -2247,7 +2247,8 @@ public class ManagerImplTest extends TestCase
 			// test activated Components
 			// there should be only two Components activated (MOUNT1 and MOUNT4)
 			infos = manager.getComponentInfo(info.getHandle(), new int[0], "*", "*", true);
-
+			Arrays.sort(infos);
+			
 			assertEquals(2, infos.length);
 
 			assertEquals(mount.toString(), infos[0].getName());
@@ -2270,10 +2271,11 @@ public class ManagerImplTest extends TestCase
 			// test activated Components after activation
 			// there should be only two Components activated (MOUNT1 and MOUNT4)
 			infos = manager.getComponentInfo(info.getHandle(), new int[0], "*", "*", true);
+			Arrays.sort(infos);
 
 			assertEquals(2, infos.length);
 
-			assertTrue(mount.toString().equals(infos[0].getName()));
+			assertEquals(mount.toString(), infos[0].getName());
 			// manager and client
 			assertEquals(2, infos[0].getClients().size());
 			assertTrue(infos[0].getClients().contains(info.getHandle()));
@@ -4201,6 +4203,8 @@ public class ManagerImplTest extends TestCase
 
 			// there should be 2 Components activated
 			ComponentInfo[] infos = manager.getComponentInfo(info.getHandle(), new int[0], "*", "*", true);
+			Arrays.sort(infos);
+			
 			assertEquals(2, infos.length);
 
 			assertEquals("MOUNT1", infos[0].getName());
@@ -4287,6 +4291,8 @@ public class ManagerImplTest extends TestCase
 
 			// there should be 2 Components activated
 			ComponentInfo[] infos = manager.getComponentInfo(info.getHandle(), new int[0], "*", "*", true);
+			Arrays.sort(infos);
+
 			assertEquals(2, infos.length);
 
 			assertEquals("MOUNT1", infos[0].getName());
