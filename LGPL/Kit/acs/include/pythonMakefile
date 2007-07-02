@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ALMA project
 #
-# "@(#) $Id: pythonMakefile,v 1.80 2007/06/13 06:06:18 mzampare Exp $"
+# "@(#) $Id: pythonMakefile,v 1.81 2007/07/02 14:37:13 mzampare Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -188,7 +188,7 @@ ifneq ($(strip $(PY_PACKAGES)),)
 	-@$(ECHO) "	-@echo \"\"; $(ECHO) \"......python_packages:\"" >>$(FILE)
 	$(AT) for member in $(foreach name, $(PY_PACKAGES), $(name) ); \
 		do \
-		     $(ECHO) "$${member}_FILES := \$$(shell find  $${member} ! -path '*/CVS/*' -type f  -name \*.py | sed -n 's/\(.*\).py\$$\$$/\1.py\\\n\1.pyc/p; /\.py\$$\$$/!p' |sort -t\. -k 2 |tr '\\\\n' ' ' ) " >>$(FILE);\
+		     $(ECHO) "$${member}_FILES := \$$(shell find  $${member} ! -path '*/CVS/*' -type f  -name \*.py -o -name \*.def | sed -n 's/\(.*\).py\$$\$$/\1.py\\\n\1.pyc/p; /\.py\$$\$$/!p' |sort -t\. -k 2 |tr '\\\\n' ' ' ) " >>$(FILE);\
 		    $(ECHO) "" >>$(FILE);\
 		    $(ECHO) "" >>$(FILE);\
 		    $(ECHO) ".PHONY : install_pp_$${member}" >>$(FILE);\
@@ -208,6 +208,12 @@ ifneq ($(strip $(PY_PACKAGES)),)
 		    $(ECHO) "	\$$(AT)mkdir -p $(LIB)/python/site-packages/$${dir}  " >>$(FILE);\
 		    $(ECHO) "	\$$(AT)echo \"Compiling python $${member}\" " >>$(FILE);\
 		    $(ECHO) "	\$$(AT)(cd $(LIB)/python/site-packages && python $(PYTHON_ROOT)/lib/python$(PYTHON_VERS)/compileall.py $(LIB)/python/site-packages/$${member} )" >>$(FILE);\
+                    $(ECHO) "" >>$(FILE);\
+		    $(ECHO) "$(LIB)/python/site-packages/$${dir}/%.def: ../lib/python/site-packages/$${dir}/%.def " >>$(FILE);\
+		    $(ECHO) "	\$$(AT)mkdir -p $(LIB)/python/site-packages/$${dir}  " >>$(FILE);\
+		    $(ECHO) "	\$$(AT)$(ECHO) \"installing [$${dir}] \$$@ \" " >>$(FILE);\
+		    $(ECHO) "	\$$(AT)cp -pr  \$$< $(LIB)/python/site-packages/$${dir}  " >>$(FILE);\
+                    $(ECHO) "	\$$(AT)chmod $(P644) \$$@ " >>$(FILE);\
                     $(ECHO) "" >>$(FILE);\
 		    done; \
 		done
