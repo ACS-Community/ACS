@@ -49,9 +49,8 @@ public class JacORBFilter implements Filter {
 		String message = record.getMessage();
 		boolean isLoggable = true;
 		if (record.getLevel().intValue() == Level.CONFIG.intValue()) {
-			// map from CONFIG to FINEST
+			// map from FINE to FINEST
 			if (message.indexOf("(C) The JacORB project") > 0 || 
-				message.startsWith("ORB run") || // also "ORB run, exit"
 				message.startsWith("Received CloseConnection on ClientGIOPConnection") ||
 				message.startsWith("prepare ORB for shutdown") ||
 				message.startsWith("Client-side TCP transport to") ||
@@ -67,7 +66,7 @@ public class JacORBFilter implements Filter {
 				message.startsWith("Opened new server-side TCP/IP" )) {
 				record.setLevel(Level.FINEST);
 			}
-			// from CONFIG to discard
+			// from FINE to discard
 			else isLoggable = !(
 					message.endsWith("_invoke: queuing request") ||
 					message.indexOf("is queued (queue size:") > 0 ||
@@ -91,6 +90,7 @@ public class JacORBFilter implements Filter {
 				message.startsWith("prepare ORB for shutdown") ||
 				message.startsWith("Client-side TCP transport to") ||
 				message.startsWith("ORB going down...") ||
+				message.startsWith("ORB run") || // also "ORB run, exit"
 				message.equals("ORB shutdown complete") || 
 				( message.startsWith("POA ") && (
 						message.endsWith("destroyed") 

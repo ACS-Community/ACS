@@ -84,7 +84,7 @@ public class JacORBLoggerFactory implements LoggerFactory {
 			// 2 = important messages (WARN)
 			// 3 = informational messages and exceptions (INFO)
 			// 4 = debug-level output (DEBUG) (may confuse the unaware user :-)
-			Level[] levelMap = new Level[] {Level.SEVERE, Level.WARNING, Level.INFO, Level.CONFIG, Level.ALL};
+			Level[] levelMap = new Level[] {Level.SEVERE, Level.WARNING, Level.INFO, Level.FINE, Level.ALL};
 			
 			if (jacOrbVerbosity >= 0 && jacOrbVerbosity <=4) {
 				Level level = levelMap[jacOrbVerbosity];
