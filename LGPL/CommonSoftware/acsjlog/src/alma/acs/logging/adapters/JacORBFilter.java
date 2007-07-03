@@ -51,7 +51,7 @@ public class JacORBFilter implements Filter {
 		if (record.getLevel().intValue() == Level.CONFIG.intValue()) {
 			// map from CONFIG to FINEST
 			if (message.indexOf("(C) The JacORB project") > 0 || 
-				message.equals("ORB run") ||
+				message.startsWith("ORB run") || // also "ORB run, exit"
 				message.startsWith("Received CloseConnection on ClientGIOPConnection") ||
 				message.startsWith("prepare ORB for shutdown") ||
 				message.startsWith("Client-side TCP transport to") ||
@@ -87,7 +87,6 @@ public class JacORBFilter implements Filter {
 		else if (record.getLevel().intValue() == Level.INFO.intValue()) {
 			// from INFO to CONFIG
 			if (message.indexOf("(C) The JacORB project") > 0 || 
-				message.startsWith("ORB run") || // also "ORB run, exit"
 				message.startsWith("Received CloseConnection on ClientGIOPConnection") ||
 				message.startsWith("prepare ORB for shutdown") ||
 				message.startsWith("Client-side TCP transport to") ||
