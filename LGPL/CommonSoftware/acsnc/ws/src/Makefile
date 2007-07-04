@@ -21,7 +21,7 @@
 # MA 02111-1307  USA
 #
 #*******************************************************************************
-# "@(#) $Id: Makefile,v 1.57 2007/04/03 14:23:58 hsommer Exp $"
+# "@(#) $Id: Makefile,v 1.58 2007/07/04 13:08:23 nbarriga Exp $"
 #------------------------------------------------------------------------
 #
 # Makefile for acsnc/ws/src
@@ -37,7 +37,7 @@ DEBUG=on
 
 # C programs (public and local)
 # -----------------------------
-EXECUTABLES     =
+EXECUTABLES     = acsncServiceChecker
 EXECUTABLES_L   = 
 
 # Includes (.h) files (public only)
@@ -62,6 +62,10 @@ acsnc_OBJECTS  = acsncCDBProperties \
 		 acsncConsumerImpl acsncSimpleConsumerImpl \
                  acsncSupplierImpl acsncSimpleSupplierImpl acsncRTSupplierImpl
 acsnc_LIBS     = ACSErrTypeCommon acsncStubs
+
+acsncServiceChecker_OBJECTS = acsncServiceChecker
+acsncServiceChecker_LIBS = acsnc
+acsncServiceChecker_LDFLAGS = -lmaciClient
 
 
 # list of all possible C-sources (used to create automatic dependencies)
