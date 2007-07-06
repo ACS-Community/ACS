@@ -3,13 +3,13 @@
 1 - Connecting
 1 - object is activated
 1 - Connection established
-1 - RAW log: <Info TimeStamp="xxx" File="alma.acs.loggingtstest.testLTSClient"  Line="69" Routine="main" Host="xxx" Process="testLTSClient" SourceObject="testLTSClient" Thread="main" LogId="7" Audience="Curious people"><![CDATA[Simple Log]]><Data Name="logName"><![CDATA[simpleLog]]></Data></Info>
+1 - RAW log: <Info TimeStamp="xxx" File="alma.acs.loggingtstest.testLTSClient"  Line="58" Routine="main" Host="xxx" Process="testLTSClient" SourceObject="testLTSClient" Thread="main" LogId="7" Audience="Curious people"><![CDATA[Simple Log]]><Data Name="logName"><![CDATA[simpleLog]]></Data></Info>
 1 - Log received: --- LogEntry ---
 1 - TimeStamp: xxx
 1 - Entry Type: Info
 1 - Source Object: testLTSClient
 1 - File: alma.acs.loggingtstest.testLTSClient
-1 - Line: 69
+1 - Line: 58
 1 - Routine: main
 1 - Host: xxx
 1 - Process: xxxtestLTSClient
@@ -19,13 +19,13 @@
 1 - Audience: Curious people
 1 - Datas: 
 1 - 	logName : simpleLog
-1 - RAW log: <Warning TimeStamp="xxx" File="alma.acs.loggingtstest.testLTSClient"  Line="74" Routine="main" Host="xxx" Process="testLTSClient" SourceObject="testLTSClient" Thread="main" StackId="unknown" StackLevel="0" LogId="8" Audience="People with too much time on their hands"><![CDATA[Complex Log]]><Data Name="logName"><![CDATA[complexLog]]></Data><Data Name="someStringMember"><![CDATA[test string]]></Data><Data Name="someLongMember"><![CDATA[42]]></Data><Data Name="someDoubleMember"><![CDATA[3.14159]]></Data></Warning>
+1 - RAW log: <Warning TimeStamp="xxx" File="alma.acs.loggingtstest.testLTSClient"  Line="64" Routine="main" Host="xxx" Process="testLTSClient" SourceObject="testLTSClient" Thread="main" StackId="unknown" StackLevel="0" LogId="8" Audience="People with too much time on their hands"><![CDATA[Complex Log]]><Data Name="logName"><![CDATA[complexLog]]></Data><Data Name="someStringMember"><![CDATA[test string]]></Data><Data Name="someLongMember"><![CDATA[42]]></Data><Data Name="someDoubleMember"><![CDATA[3.14159]]></Data></Warning>
 1 - Log received: --- LogEntry ---
 1 - TimeStamp: xxx
 1 - Entry Type: Warning
 1 - Source Object: testLTSClient
 1 - File: alma.acs.loggingtstest.testLTSClient
-1 - Line: 74
+1 - Line: 64
 1 - Routine: main
 1 - Host: xxx
 1 - Process: xxxtestLTSClient
