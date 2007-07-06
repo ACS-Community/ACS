@@ -18,74 +18,58 @@
 */
 /** 
  * @author  nbarriga
- * @version $Id: testLTSClient.java,v 1.1 2007/02/21 09:38:05 nbarriga Exp $
+ * @version $Id: testLTSClient.java,v 1.2 2007/07/06 08:57:51 hsommer Exp $
  * @since    
  */
 
 package alma.acs.loggingtstest;
 
 import java.util.logging.Logger;
+
+import alma.ACSLogTypeExample.complexLog;
+import alma.ACSLogTypeExample.simpleLog;
 import alma.acs.component.client.ComponentClient;
-import alma.ACSLogTypeExample.*;
 
 /**
- * Insert a Class/Interface comment.
- * 
+ * The test is based on TAT comparing with the reference output the log records sent by this class
+ * and then received and printed by {@link alma.acs.logclient.LogListener}.
+ * This is why we need to have the ACS manager available, to give access to the Log service. 
  */
-
-public class testLTSClient  extends ComponentClient
+public class testLTSClient extends ComponentClient
 { 
-	/**
-	 * @param logger
-	 * @param managerLoc
-	 * @param clientName
-	 * @throws Exception
-	 */
 	public testLTSClient(Logger logger, String managerLoc, String clientName) throws Exception
 	{
 		super(logger, managerLoc, clientName);
 	}
 
+	
 	public static void main(String[] args) {
-		String managerLoc = System.getProperty("ACS.manager");
-		if (managerLoc == null)
-		{
-			System.out.println("Java property 'ACS.manager' must be set to the corbaloc of the ACS manager!");
-			System.exit(-1);
-		}
-		String clientName = "testLTSClient";
-		testLTSClient client = null;
+		try {
+			String managerLoc = System.getProperty("ACS.manager");
+			if (managerLoc == null) {
+				System.out.println("Java property 'ACS.manager' must be set to the corbaloc of the ACS manager!");
+				System.exit(-1);
+			}
 
-		try
-		{
-			client = new testLTSClient(null, managerLoc, clientName);
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace(System.err);
-			System.exit(-1);
-		}
-		simpleLog slog=new simpleLog(client.m_logger);
-		slog.log();		
-		complexLog clog=new complexLog(client.m_logger);
-		clog.setsomeDoubleMember(3.14159);
-		clog.setsomeStringMember("test string");
-		clog.setsomeLongMember((long)42);
-		clog.log();		
-		try
-		{
+			testLTSClient client = new testLTSClient(null, managerLoc, "testLTSClient");			
+			Logger logger = client.m_logger;
+			
+			simpleLog slog=new simpleLog(logger);
+			slog.log();		
+			
+			complexLog clog=new complexLog(logger);
+			clog.setsomeDoubleMember(3.14159);
+			clog.setsomeStringMember("test string");
+			clog.setsomeLongMember((long)42);
+			clog.log();
+			
 			Thread.sleep(2000);
 		}
-		catch (Exception e)
-		{
+		catch (Throwable thr) {
 			// bad luck
-			e.printStackTrace(System.err);
-                        System.exit(-1);
+			thr.printStackTrace();
+			System.exit(-1);
 		}
-
 	}
-
-
-
 
 }
