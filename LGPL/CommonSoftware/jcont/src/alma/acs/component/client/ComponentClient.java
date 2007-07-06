@@ -21,7 +21,6 @@
  */
 package alma.acs.component.client;
 
-import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.logging.Level;
@@ -31,16 +30,13 @@ import org.omg.PortableServer.POA;
 
 import si.ijs.maci.Client;
 
-import alma.acs.component.ComponentDescriptor;
 import alma.acs.concurrent.DaemonThreadFactory;
 import alma.acs.container.AcsManagerProxy;
 import alma.acs.container.CleaningDaemonThreadFactory;
-import alma.acs.container.ComponentAdapter;
 import alma.acs.container.ContainerServices;
 import alma.acs.container.ContainerServicesImpl;
 import alma.acs.container.corba.AcsCorba;
 import alma.acs.logging.ClientLogManager;
-
 import alma.alarmsystem.source.ACSAlarmSystemInterfaceFactory;
 
 /**
