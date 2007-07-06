@@ -34,7 +34,7 @@
 
 /**
  * @author  nbarriga
- * @version $Id: LTS2Java.xslt,v 1.3 2007/07/06 08:56:52 hsommer Exp $
+ * @version $Id: LTS2Java.xslt,v 1.4 2007/07/06 12:31:03 hsommer Exp $
  * @since
  */
 
@@ -43,7 +43,7 @@ package </xsl:text><xsl:value-of select="$Prefix"/><xsl:text>.</xsl:text><xsl:va
 
 import java.util.logging.Logger;
 import java.util.logging.Level;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import alma.acs.logging.AcsLogLevel;
@@ -51,7 +51,11 @@ import alma.acs.logging.AcsLogger;
 import alma.acs.logging.AcsLogRecord;
 
 </xsl:text>
-		<xsl:text>public class </xsl:text>
+<xsl:text>
+/**
+ * Generated class that produces a type-safe log message, as configured in </xsl:text><xsl:value-of select="$logdefname"/><xsl:text>.xml.
+ */
+public class </xsl:text>
         	<xsl:variable name="logName"><xsl:value-of select="@logName"/></xsl:variable>
 		<xsl:value-of select="$logName"/><xsl:text>{
 	private Logger m_logger;
@@ -63,11 +67,15 @@ import alma.acs.logging.AcsLogRecord;
 		if (m_logger instanceof AcsLogger) {
 			((AcsLogger)m_logger).addLoggerClass(this.getClass());
 		}
-		nameValue = new HashMap&lt;String, Object>();
+		nameValue = new LinkedHashMap&lt;String, Object>();
 		nameValue.put("logName","</xsl:text><xsl:value-of select="$logName"/><xsl:text>");
 		lr = new AcsLogRecord(AcsLogLevel.</xsl:text><xsl:value-of select="@priority"/><xsl:text>, "</xsl:text><xsl:value-of select="@shortDescription"/><xsl:text>", nameValue, logger.getName());
 		lr.setAudience("</xsl:text><xsl:value-of select="@audience"/><xsl:text>");
 	}
+	
+	/**
+	 * Logs the message through the Logger supplied in the constructor, with the configured log level.
+	 */	
 	public void log() {
 		m_logger.log(lr);
 	}
