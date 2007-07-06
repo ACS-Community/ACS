@@ -102,5 +102,12 @@
 			type="string"
 			description="Name of the object that could not be loaded"/>
 	</ErrorCode>	
+	<ErrorCode name="ParsingXMLProblem"
+		shortDescription="Problem with parsin XML"
+		description="A XML string/file can not be parsed">
+		<Member name="XML" 
+			type="string"
+			description="XML that case the problem"/>
+	</ErrorCode>
 </Type>
 
