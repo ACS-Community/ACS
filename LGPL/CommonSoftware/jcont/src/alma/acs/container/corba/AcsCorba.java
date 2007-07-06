@@ -21,6 +21,7 @@
  */
 package alma.acs.container.corba;
 
+import java.util.ConcurrentModificationException;
 import java.util.Properties;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
@@ -527,7 +528,12 @@ public class AcsCorba
      * in which case the ORB shutdown will happen in a separate thread and this method will return immediately;
      * since the client does not block on the ORB, the risk is that the JVM terminates before the ORB has released system resources.
      * 
-     * todo: investigate better discrimination of ORB threads, or perhaps add a parameter to explicitly determine the threading behavior. 
+     * @Todo: investigate better discrimination of ORB threads, or perhaps add a parameter to explicitly determine the threading behavior.
+     * <p>
+     * @Todo: As a workaround for a JacORB bug (http://www.jacorb.org/cgi-bin/bugzilla/show_bug.cgi?id=537), 
+     *        we currently skim off the <code>ConcurrentModificationException</code> that the unsynchronized
+     *        HashMap of <code>ClientConnectionManager.shutdown</code> may throw. 
+     *        This should be removed when we upgrade JacORB.
 	 */
 	public void shutdownORB(final boolean wait_for_completion)
 	{
@@ -536,14 +542,22 @@ public class AcsCorba
             if (wait_for_completion && isORBThread) {
                 Runnable cmd = new Runnable() {
                     public void run() {
-                        m_orb.shutdown(true);
+                    	try {
+                    		m_orb.shutdown(true);
+                    	} catch (ConcurrentModificationException ex) {
+                    		// ignore, see javadoc
+                    	}
                     }            
                 };
                 ExecutorService executor = Executors.newSingleThreadExecutor(new DaemonThreadFactory("ShutdownORB"));
                 executor.execute(cmd);
             }
             else {
-                m_orb.shutdown(wait_for_completion);
+            	try {
+            		m_orb.shutdown(wait_for_completion);
+            	} catch (ConcurrentModificationException ex) {
+            		// ignore, see javadoc
+            	}
             }
 		}		
 	}
