@@ -1,0 +1,1 @@
+acsStartJava -D acs.system.classloader.verbose=true -noDirectory -endorsed junit.textui.TestRunner alma.acs.logging.repeatGuardTest

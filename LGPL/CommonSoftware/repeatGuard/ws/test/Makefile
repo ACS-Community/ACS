@@ -16,7 +16,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.4 2007/03/24 09:26:51 gchiozzi Exp $"
+# "@(#) $Id: Makefile,v 1.5 2007/07/10 14:59:18 hmeuss Exp $"
 #
 # Makefile of ........
 #
@@ -42,11 +42,23 @@ USER_CFLAGS = -Wall
 ACSLOGTSDEF=repeatGuardLogTypeExample
 
 #
+# Jarfiles and their directories
+#
+JARFILES=repeatGuardJavaTest
+repeatGuardJavaTest_DIRS=alma
+jjj_EXTRAS= 
+
+#
 # C programs (public and local)
 # -----------------------------
 EXECUTABLES     = testRepeatGuard testRepeatGuardLogger
 EXECUTABLES_L   = 
 
+#
+# Scripts (public and local)
+# ----------------------------
+SCRIPTS         =
+SCRIPTS_L    	= repeatGuardJavaTest #repeatGuardJavaLoggerTest
 #
 # <brief description of xxxxx program>
 testRepeatGuard_OBJECTS   =	testRepeatGuard

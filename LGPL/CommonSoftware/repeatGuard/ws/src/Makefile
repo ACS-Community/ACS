@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.4 2007/06/11 09:28:51 nbarriga Exp $"
+# "@(#) $Id: Makefile,v 1.5 2007/07/10 14:59:18 hmeuss Exp $"
 #
 # Makefile of ........
 #
@@ -122,8 +122,8 @@ USER_IDL =
 #
 # Jarfiles and their directories
 #
-JARFILES= 
-jjj_DIRS=
+JARFILES= repeatGuard
+repeatGuard_DIRS=alma
 jjj_EXTRAS= 
 #
 # java sources in Jarfile on/off

@@ -16,7 +16,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: TestList.lite,v 1.2 2007/03/23 09:50:06 nbarriga Exp $"
+# "@(#) $Id: TestList.lite,v 1.3 2007/07/10 14:59:18 hmeuss Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -26,6 +26,7 @@ SOURCE repeatGuardTATEnvironment
 PROLOGUE acsutilTATPrologue
 1 repeatGuard ../bin/testRepeatGuard
 2 repeatGuardLogger "acsutilTATTestRunner ../bin/testRepeatGuardLogger"
+3 repeatGuardJavaTest "acsutilTATTestRunner repeatGuardJavaTest"
 EPILOGUE acsutilTATEpilogue
 #
 # ___oOo___
