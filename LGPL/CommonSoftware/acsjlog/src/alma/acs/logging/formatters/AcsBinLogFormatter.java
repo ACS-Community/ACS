@@ -173,9 +173,11 @@ public class AcsBinLogFormatter extends AcsLogFormatter
             rLog.MsgData = logRecord.getMessage();
 		}else rLog.MsgData = "";
 
-        //add Audience, if applicable(for typeSafeLogs/Operator logs)
+        //add Audience, Array and Antenna, if applicable
         if (logRecord instanceof AcsLogRecord) {
             rLog.Audience = ((AcsLogRecord) logRecord).getAudience();
+            rLog.Array = ((AcsLogRecord) logRecord).getArray();
+            rLog.Antenna = ((AcsLogRecord) logRecord).getAntenna();
         }
 		// <Data> elements: logged exception or error trace, and log parameters
 		

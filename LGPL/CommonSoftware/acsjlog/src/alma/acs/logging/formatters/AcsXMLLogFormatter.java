@@ -191,11 +191,20 @@ public class AcsXMLLogFormatter extends AcsLogFormatter
 			sb.append("Priority=\"" + priority + "\" ");
 		}
 
-		//add Audience, if applicable(for typeSafeLogs/Operator logs)
-		if (logRecord instanceof AcsLogRecord) {
-			String audience = ((AcsLogRecord) logRecord).getAudience();
-			sb.append("Audience=\"" + audience + "\" ");
-		}
+                //add Audience, if applicable(for typeSafeLogs/Operator logs)
+                if (logRecord instanceof AcsLogRecord) {
+                        String audience = ((AcsLogRecord) logRecord).getAudience();
+                        if(!audience.equals(""))
+                                sb.append("Audience=\"" + audience + "\" ");
+                        //add Array
+                        String array = ((AcsLogRecord) logRecord).getArray();
+                        if(!array.equals(""))
+                                sb.append("Array=\"" + array + "\" ");
+                        //add Antenna
+                        String antenna = ((AcsLogRecord) logRecord).getAntenna();
+                        if(!antenna.equals(""))
+                                sb.append("Antenna=\"" + antenna + "\" ");
+                }
 		sb.setCharAt(sb.lastIndexOf("") - 1, '>');
 
 		// the log message becomes the text in our XML record

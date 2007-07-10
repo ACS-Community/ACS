@@ -18,7 +18,7 @@
  */
 /** 
  * @author  nbarriga
- * @version $Id: AcsLogRecord.java,v 1.3 2007/05/28 06:40:44 cparedes Exp $
+ * @version $Id: AcsLogRecord.java,v 1.4 2007/07/10 12:51:21 nbarriga Exp $
  * @since    
  */
 
@@ -40,6 +40,8 @@ import java.util.logging.LogRecord;
 public class AcsLogRecord extends LogRecord
 {
 	private String audience;
+	private String array;
+	private String antenna;
 
 	private Object params[];
 
@@ -56,6 +58,32 @@ public class AcsLogRecord extends LogRecord
 	}
 
 	public String getAudience() {
-		return this.audience;
+                if(this.audience!=null)
+    		    return this.audience;
+                else
+                    return "";
 	}
+        
+	public void setArray(String array) {
+		this.array = array;
+	}
+
+	public String getArray() {
+                if(this.array!=null)
+		    return this.array;
+                else
+                    return "";            
+	}
+        
+	public void setAntenna(String antenna) {
+		this.antenna = antenna;
+	}
+
+	public String getAntenna() {
+                if(this.antenna!=null)
+		    return this.antenna;
+                else
+                    return "";
+	}
+        
 }
