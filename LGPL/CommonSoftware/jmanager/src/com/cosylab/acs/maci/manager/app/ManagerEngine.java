@@ -17,12 +17,14 @@ import org.omg.PortableServer.IdAssignmentPolicyValue;
 import org.omg.PortableServer.LifespanPolicyValue;
 import org.omg.PortableServer.POA;
 import org.prevayler.implementation.SnapshotPrevayler;
+
 import si.ijs.maci.ManagerHelper;
-
-
 import alma.acs.logging.ClientLogManager;
+import alma.acs.logging.config.LogConfig;
+import alma.acs.logging.config.LogConfigException;
 
-import com.cosylab.acs.cdb.CDBAccess;
+import com.cosylab.cdb.client.CDBAccess;
+
 import com.cosylab.acs.maci.CoreException;
 import com.cosylab.acs.maci.HandleConstants;
 import com.cosylab.acs.maci.manager.ManagerImpl;
@@ -256,7 +258,20 @@ public class ManagerEngine
 
 	    	manager = (ManagerImpl)prevayler.system();
 
-		manager.initialize(prevayler, new CDBAccess(orb, logger), context, logger);
+	    CDBAccess cdbAccess = new CDBAccess(orb, logger);
+		/*
+	    LogConfig logConfig = ClientLogManager.getAcsLogManager().getLogConfig();
+		logConfig.setCDBContainerPath("MACI/Managers/Manager");
+		logConfig.setCDB(cdbAccess.connectAndGetDAL());
+		try {
+			logConfig.initialize();
+		} catch (LogConfigException ex) {
+			// if the CDB can't be read, we still want to run the container, so
+			// we only log the problems
+			logger.log(Level.FINE, "Failed to configure logging (default values will be used). Reason: " + ex.getMessage());
+		}
+	    */
+		manager.initialize(prevayler, cdbAccess, context, logger);
 		manager.setShutdownImplementation(shutdownImplementation);
 		
 		FileHelper.setFileAttributes( "g+w", recoveryLocation );

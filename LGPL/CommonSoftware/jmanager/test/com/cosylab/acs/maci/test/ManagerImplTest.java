@@ -25,7 +25,8 @@ import alma.maciErrType.wrappers.AcsJIncompleteComponentSpecEx;
 import alma.maciErrType.wrappers.AcsJInvalidComponentSpecEx;
 import alma.maciErrType.wrappers.AcsJNoPermissionEx;
 
-import com.cosylab.acs.cdb.CDBAccess;
+import com.cosylab.cdb.client.CDBAccess;
+
 import com.cosylab.acs.maci.Administrator;
 import com.cosylab.acs.maci.BadParametersException;
 import com.cosylab.acs.maci.Client;

@@ -10,23 +10,49 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import si.ijs.maci.Container;
-import si.ijs.maci.ContainerInfo;
-import si.ijs.maci.ContainerHelper;
+import org.omg.CORBA.BAD_PARAM;
+import org.omg.CORBA.NO_PERMISSION;
+import org.omg.CORBA.NO_RESOURCES;
+import org.omg.CORBA.Object;
+import org.omg.CORBA.UNKNOWN;
+
 import si.ijs.maci.AdministratorHelper;
-import si.ijs.maci.ComponentInfo;
 import si.ijs.maci.Client;
 import si.ijs.maci.ClientHelper;
 import si.ijs.maci.ClientInfo;
+import si.ijs.maci.ComponentInfo;
+import si.ijs.maci.Container;
+import si.ijs.maci.ContainerHelper;
+import si.ijs.maci.ContainerInfo;
 import si.ijs.maci.ManagerPOA;
 import si.ijs.maci.ulongSeqHolder;
 import si.ijs.maci.LoggingConfigurablePackage.LogLevels;
+import alma.ACSErrTypeCommon.wrappers.AcsJBadParameterEx;
+import alma.maciErrType.CannotGetComponentEx;
+import alma.maciErrType.CannotRegisterComponentEx;
+import alma.maciErrType.CannotUnregisterComponentEx;
+import alma.maciErrType.ComponentConfigurationNotFoundEx;
+import alma.maciErrType.ComponentNotAlreadyActivatedEx;
+import alma.maciErrType.ComponentSpecIncompatibleWithActiveComponentEx;
+import alma.maciErrType.IncompleteComponentSpecEx;
+import alma.maciErrType.InvalidComponentSpecEx;
+import alma.maciErrType.NoDefaultComponentEx;
+import alma.maciErrType.NoPermissionEx;
+import alma.maciErrType.wrappers.AcsJCannotGetComponentEx;
+import alma.maciErrType.wrappers.AcsJCannotRegisterComponentEx;
+import alma.maciErrType.wrappers.AcsJComponentConfigurationNotFoundEx;
+import alma.maciErrType.wrappers.AcsJComponentNotAlreadyActivatedEx;
+import alma.maciErrType.wrappers.AcsJComponentSpecIncompatibleWithActiveComponentEx;
+import alma.maciErrType.wrappers.AcsJIncompleteComponentSpecEx;
+import alma.maciErrType.wrappers.AcsJInvalidComponentSpecEx;
+import alma.maciErrType.wrappers.AcsJNoDefaultComponentEx;
+import alma.maciErrType.wrappers.AcsJNoPermissionEx;
 
 import com.cosylab.acs.maci.AccessRights;
 import com.cosylab.acs.maci.BadParametersException;
 import com.cosylab.acs.maci.Component;
-import com.cosylab.acs.maci.ComponentStatus;
 import com.cosylab.acs.maci.ComponentSpec;
+import com.cosylab.acs.maci.ComponentStatus;
 import com.cosylab.acs.maci.CoreException;
 import com.cosylab.acs.maci.Manager;
 import com.cosylab.acs.maci.NoDefaultComponentException;
@@ -34,34 +60,6 @@ import com.cosylab.acs.maci.NoResourcesException;
 import com.cosylab.acs.maci.StatusHolder;
 import com.cosylab.acs.maci.StatusSeqHolder;
 import com.cosylab.acs.maci.manager.CURLHelper;
-
-import org.omg.CORBA.BAD_PARAM;
-import org.omg.CORBA.NO_PERMISSION;
-import org.omg.CORBA.NO_RESOURCES;
-import org.omg.CORBA.Object;
-import org.omg.CORBA.UNKNOWN;
-
-import alma.ACSErrTypeCommon.wrappers.AcsJBadParameterEx;
-import alma.maciErrType.wrappers.AcsJCannotGetComponentEx;
-import alma.maciErrType.wrappers.AcsJCannotRegisterComponentEx;
-import alma.maciErrType.wrappers.AcsJComponentNotAlreadyActivatedEx;
-import alma.maciErrType.wrappers.AcsJComponentConfigurationNotFoundEx;
-import alma.maciErrType.wrappers.AcsJIncompleteComponentSpecEx;
-import alma.maciErrType.wrappers.AcsJComponentSpecIncompatibleWithActiveComponentEx;
-import alma.maciErrType.wrappers.AcsJInvalidComponentSpecEx;
-import alma.maciErrType.wrappers.AcsJNoDefaultComponentEx;
-import alma.maciErrType.wrappers.AcsJNoPermissionEx;
-
-import alma.maciErrType.CannotGetComponentEx;
-import alma.maciErrType.ComponentNotAlreadyActivatedEx;
-import alma.maciErrType.ComponentConfigurationNotFoundEx;
-import alma.maciErrType.IncompleteComponentSpecEx;
-import alma.maciErrType.ComponentSpecIncompatibleWithActiveComponentEx;
-import alma.maciErrType.InvalidComponentSpecEx;
-import alma.maciErrType.NoDefaultComponentEx;
-import alma.maciErrType.CannotRegisterComponentEx;
-import alma.maciErrType.CannotUnregisterComponentEx;
-import alma.maciErrType.NoPermissionEx;
 
 /**
  * Manager is the central point of interaction between the components
@@ -2201,6 +2199,14 @@ public class ManagerProxyImpl extends ManagerPOA
 	 * are used by all loggers that have not been configured individually.
 	 */
 	public LogLevels get_default_logLevels() {
+		/*
+		LogConfig logConfig = ClientLogManager.getAcsLogManager().getLogConfig();
+		LoggingConfig loggingConfig = logConfig.getLoggingConfig();
+		LogLevels levels = new LogLevels(false,
+								(short)loggingConfig.getMinLogLevel(),
+								(short)loggingConfig.getMinLogLevelLocal());
+		return levels;
+		*/
 		throw new org.omg.CORBA.NO_IMPLEMENT("Method not implemented yet");
 	}
 

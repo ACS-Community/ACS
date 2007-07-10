@@ -58,9 +58,10 @@ import alma.maciErrType.wrappers.AcsJIncompleteComponentSpecEx;
 import alma.maciErrType.wrappers.AcsJInvalidComponentSpecEx;
 import alma.maciErrType.wrappers.AcsJNoPermissionEx;
 
-import com.cosylab.acs.cdb.CDBAccess;
-import com.cosylab.acs.cdb.DAOProxy;
-import com.cosylab.acs.cdb.DAOProxyConnectionListener;
+import com.cosylab.cdb.client.CDBAccess;
+import com.cosylab.cdb.client.DAOProxy;
+import com.cosylab.cdb.client.DAOProxyConnectionListener;
+
 import com.cosylab.acs.maci.AccessRights;
 import com.cosylab.acs.maci.Administrator;
 import com.cosylab.acs.maci.BadParametersException;
