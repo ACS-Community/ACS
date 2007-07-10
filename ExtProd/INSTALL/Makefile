@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ALMA project
 #
-# "@(#) $Id: Makefile,v 1.10 2005/10/18 12:05:22 gchiozzi Exp $"
+# "@(#) $Id: Makefile,v 1.11 2007/07/10 22:22:26 agrimstrup Exp $"
 #
 # Makefile of ........
 #
@@ -25,6 +25,13 @@ all:
 
 clean : 
 	rm -rf ../PRODUCTS/Python-2.4.1
+	rm -rf ../PRODUCTS/pysnmp-2.0.9
+	rm -rf ../PRODUCTS/python-ldap-2.0.1
+	rm -rf ../PRODUCTS/Numeric-23.1
+	rm -rf ../PRODUCTS/numarray-1.3.3
+	rm -rf ../PRODUCTS/numpy-1.0.1
+	rm -rf ../PRODUCTS/gnuplot-py-1.7
+	rm -rf ../PRODUCTS/matplotlib-0.73.1
 	rm -rf ../PRODUCTS/gcc-SUN
 	rm -rf ../PRODUCTS/gnu
 	rm -rf ../PRODUCTS/java

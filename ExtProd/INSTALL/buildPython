@@ -2,7 +2,7 @@
 #*******************************************************************************
 # E.S.O. - ALMA project
 #
-# "@(#) $Id: buildPython,v 1.14 2007/05/24 20:09:45 agrimstrup Exp $"
+# "@(#) $Id: buildPython,v 1.15 2007/07/10 22:22:26 agrimstrup Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -114,6 +114,9 @@ if [ "$OS" = "SOLARIS" ]
 # SunOS: here inserted modifications in the  Modules/Setup.dist script.
 then
    cp Modules/Setup.dist Modules/Setup.dist_backup
+   cat Modules/Setup.dist | sed "s/\#\*shared\*/\*shared\*/" >> Modules/Setup.dist.tmp
+   mv Modules/Setup.dist.tmp  Modules/Setup.dist
+
    cat Modules/Setup.dist | sed s/\#\ _tkinter\ _tkinter\.c\ tkappinit\.c\ \-DWITH_APPINIT/\ _tkinter\ _tkinter\.c\ tkappinit\.c\ \-DWITH_APPINIT/g >> Modules/Setup.dist.tmp
    mv Modules/Setup.dist.tmp  Modules/Setup.dist
  
@@ -138,6 +141,9 @@ then
 elif [ "$OS" = "LINUX" ]
 then
    cp Modules/Setup.dist Modules/Setup.dist_backup
+   cat Modules/Setup.dist | sed "s/\#\*shared\*/\*shared\*/" >> Modules/Setup.dist.tmp
+   mv Modules/Setup.dist.tmp  Modules/Setup.dist
+
    cat Modules/Setup.dist | sed s/\#\ _tkinter\ _tkinter\.c\ tkappinit\.c\ \-DWITH_APPINIT/\ _tkinter\ _tkinter\.c\ tkappinit\.c\ \-DWITH_APPINIT/g >> Modules/Setup.dist.tmp
    mv Modules/Setup.dist.tmp  Modules/Setup.dist
  
