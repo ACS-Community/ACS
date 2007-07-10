@@ -476,4 +476,19 @@ public class CDBAccess
 		return dalReference;
 	}
 	
+	/**
+	 * Active (connects if necessary) DAL accessor.
+	 * @return DAL reference, <code>null</code> if failed to connect.
+	 */
+	public DAL connectAndGetDAL() 
+	{
+		try 
+		{
+			checkDALConnection();
+			return dalReference;
+		}
+		catch (Throwable th) {
+			return null;
+		}
+	}
 }
