@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.23 2007/06/29 20:53:50 agrimstrup Exp $"
+# "@(#) $Id: Makefile,v 1.24 2007/07/10 22:28:23 agrimstrup Exp $"
 #
 # Makefile of ........
 #
@@ -121,7 +121,8 @@ PY_DOC :
 	$(foreach file, $(PY_EXT_DOC_L), - $(AT) cd ../doc; if [ -e $(file).tgz ]; then echo "== Extracting external documentation: $(file).tgz"; gtar -zxvf $(file).tgz; fi )
 
 
-PY_DISUTIL_BUILD : PEXPECT PYXML PYCHECKER NUMERIC NUMARRAY NUMPY MATPLOTLIB LDAP GNUPLOT SNMP
+#PY_DISUTIL_BUILD : PEXPECT PYXML PYCHECKER NUMERIC NUMARRAY NUMPY MATPLOTLIB LDAP GNUPLOT SNMP
+PY_DISUTIL_BUILD : PEXPECT PYXML PYCHECKER 
 	echo "== Building/Installing external Python modules now..."
 
 #
@@ -163,7 +164,8 @@ clean_dist : clean clean_dist_all
 man   : do_man PY_DOC
 	@echo " . . . man page(s) done"
 
-install : install_all MATPLOTLIB_CONFIG
+#install : install_all MATPLOTLIB_CONFIG
+install : install_all 
 	@echo " . . . installation done"
 
 #___oOo___
