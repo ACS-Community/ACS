@@ -19,7 +19,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: loggingLoggingProxy.cpp,v 1.39 2007/06/29 10:04:23 msekoran Exp $"
+* "@(#) $Id: loggingLoggingProxy.cpp,v 1.40 2007/07/10 07:18:55 nbarriga Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -57,7 +57,7 @@
 #define LOG_NAME "Log"
 #define DEFAULT_LOG_FILE_NAME "acs_local_log"
 
-ACE_RCSID(logging, logging, "$Id: loggingLoggingProxy.cpp,v 1.39 2007/06/29 10:04:23 msekoran Exp $");
+ACE_RCSID(logging, logging, "$Id: loggingLoggingProxy.cpp,v 1.40 2007/07/10 07:18:55 nbarriga Exp $");
 
 ACSLoggingLog::LogType LoggingProxy::m_LogBinEntryTypeName[] =
 {
@@ -328,6 +328,12 @@ LoggingProxy::log(ACE_Log_Record &log_record)
     if((*tss)->audience()!=0)
         s_log->Audience = (*tss)->audience();
 
+    if((*tss)->array()!=0)
+        s_log->Array = (*tss)->array();
+
+    if((*tss)->antenna()!=0)
+        s_log->Antenna = (*tss)->antenna();
+
     LoggingTSSStorage::HASH_MAP_ITER hash_iter = (*tss)->getAttributes();
     LoggingTSSStorage::HASH_MAP_ENTRY *entry;
     // add attributes
@@ -496,6 +502,16 @@ LoggingProxy::log(ACE_Log_Record &log_record)
     {
     xml += " Audience=\"" + ACE_CString((*tss)->audience()) + "\""; 
     }   
+    //array 
+    if ((*tss)->array()!=0)
+    {
+    xml += " Array=\"" + ACE_CString((*tss)->array()) + "\""; 
+    }   
+    //antenna 
+    if ((*tss)->antenna()!=0)
+    {
+    xml += " Antenna=\"" + ACE_CString((*tss)->antenna()) + "\""; 
+    }   
     
     if (log_record.priority()>=ACE::log2(LM_WARNING))		// LM_WARNING+
 	{
@@ -642,6 +658,38 @@ const ACE_TCHAR * LoggingProxy::audience()
     else
 	return 0;
 }//audience
+
+void
+LoggingProxy::array(const ACE_TCHAR *aud)
+{
+    if (tss)
+        (*tss)->array(aud);
+}
+
+
+const ACE_TCHAR * LoggingProxy::array()
+{
+    if (tss)
+	return (*tss)->array();
+    else
+	return 0;
+}//array
+
+void
+LoggingProxy::antenna(const ACE_TCHAR *aud)
+{
+    if (tss)
+        (*tss)->antenna(aud);
+}
+
+
+const ACE_TCHAR * LoggingProxy::antenna()
+{
+    if (tss)
+	return (*tss)->antenna();
+    else
+	return 0;
+}//antenna
 
 void
 LoggingProxy::PrivateFlags(int privateFlags)

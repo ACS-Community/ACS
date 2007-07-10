@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingMACROS.h,v 1.14 2006/04/04 19:01:07 dfugate Exp $"
+* "@(#) $Id: loggingMACROS.h,v 1.15 2007/07/10 07:18:55 nbarriga Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -32,6 +32,7 @@
 #include "loggingLogger.h"
 #include "loggingLogTrace.h"
 #include <iostream>
+#include <acsutilTimeStamp.h> 
 
 /**
  * Used to send logs. This macro is primarily useful because it automatically
@@ -46,6 +47,103 @@
 if (getLogger()!=0) \
 { \
   getLogger()->log(priority, text, __FILE__, __LINE__, routine); \
+} \
+else \
+{ \
+  std::cerr << "SEVERE LOGGING ERROR - getLogger() returned NULL: file="; \
+  std::cerr << __FILE__ << ", line=" << __LINE__ << std::endl; \
+}
+
+
+/**
+ * Used to send logs. This macro is primarily useful because it automatically
+ * determines the file name and line number for the developer. It is important
+ * to note that getLogger() is defined in a header file other than what's included
+ * above.
+ * @param logPriority Logging::BaseLog::Priority of the log message
+ * @param logRoutine Name of the routine in which this macro is being used from (std::string)
+ * @param logMessage Log message (std::string)
+ * @param logAudience intended receiver of this log message
+ * @param logArray array where the log was generated
+ * @param logAntenna antenna where the log was generated
+ */
+#define LOG_FULL(logPriority, logRoutine, logMessage, logAudience, logArray, logAntenna) \
+if (getLogger()!=0) \
+{ \
+    Logging::BaseLog::LogRecord lr; \
+    lr.priority  = Logging::ace2acsPriority(logPriority); \
+    lr.message   = logMessage; \
+    lr.file      = __FILE__; \
+    lr.line      = __LINE__; \
+    lr.method    = logRoutine; \
+    lr.timeStamp = getTimeStamp(); \
+    LoggingProxy::audience(logAudience); \
+    LoggingProxy::array(logArray); \
+    LoggingProxy::antenna(logAntenna); \
+    LoggingProxy::Flags(LM_SOURCE_INFO | LM_RUNTIME_CONTEXT); \
+    getLogger()->log(lr); \
+} \
+else \
+{ \
+  std::cerr << "SEVERE LOGGING ERROR - getLogger() returned NULL: file="; \
+  std::cerr << __FILE__ << ", line=" << __LINE__ << std::endl; \
+}
+
+/**
+ * Used to send logs. This macro is primarily useful because it automatically
+ * determines the file name and line number for the developer. It is important
+ * to note that getLogger() is defined in a header file other than what's included
+ * above.
+ * @param logPriority Logging::BaseLog::Priority of the log message
+ * @param logRoutine Name of the routine in which this macro is being used from (std::string)
+ * @param logMessage Log message (std::string)
+ * @param logArray array where the log was generated
+ * @param logAntenna antenna where the log was generated
+ */
+#define LOG_LOCATION(logPriority, logRoutine, logMessage, logArray, logAntenna) \
+if (getLogger()!=0) \
+{ \
+    Logging::BaseLog::LogRecord lr; \
+    lr.priority  = Logging::ace2acsPriority(logPriority); \
+    lr.message   = logMessage; \
+    lr.file      = __FILE__; \
+    lr.line      = __LINE__; \
+    lr.method    = logRoutine; \
+    lr.timeStamp = getTimeStamp(); \
+    LoggingProxy::array(logArray); \
+    LoggingProxy::antenna(logAntenna); \
+    LoggingProxy::Flags(LM_SOURCE_INFO | LM_RUNTIME_CONTEXT); \
+    getLogger()->log(lr); \
+} \
+else \
+{ \
+  std::cerr << "SEVERE LOGGING ERROR - getLogger() returned NULL: file="; \
+  std::cerr << __FILE__ << ", line=" << __LINE__ << std::endl; \
+}
+
+/**
+ * Used to send logs. This macro is primarily useful because it automatically
+ * determines the file name and line number for the developer. It is important
+ * to note that getLogger() is defined in a header file other than what's included
+ * above.
+ * @param logPriority Logging::BaseLog::Priority of the log message
+ * @param logRoutine Name of the routine in which this macro is being used from (std::string)
+ * @param logMessage Log message (std::string)
+ * @param logAudience intended receiver of this log message
+ */
+#define LOG_AUD(logPriority, logRoutine, logMessage, logAudience) \
+if (getLogger()!=0) \
+{ \
+    Logging::BaseLog::LogRecord lr; \
+    lr.priority  = Logging::ace2acsPriority(logPriority); \
+    lr.message   = logMessage; \
+    lr.file      = __FILE__; \
+    lr.line      = __LINE__; \
+    lr.method    = logRoutine; \
+    lr.timeStamp = getTimeStamp(); \
+    LoggingProxy::audience(logAudience); \
+    LoggingProxy::Flags(LM_SOURCE_INFO | LM_RUNTIME_CONTEXT); \
+    getLogger()->log(lr); \
 } \
 else \
 { \

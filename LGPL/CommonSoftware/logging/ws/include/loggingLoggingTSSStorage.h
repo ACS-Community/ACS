@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingLoggingTSSStorage.h,v 1.5 2007/03/04 17:40:31 msekoran Exp $"
+* "@(#) $Id: loggingLoggingTSSStorage.h,v 1.6 2007/07/10 07:18:55 nbarriga Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -64,6 +64,8 @@ class LoggingTSSStorage
 	    m_line = 0UL;
 	    sourceObject_m = 0;
 	    audience_m = 0;
+            array_m = 0;
+            antenna_m = 0;
 	    m_lflags = 0;
 	    m_stackId = 0;
 	    m_stackLevel = 0;
@@ -97,6 +99,18 @@ class LoggingTSSStorage
     
     void 
     audience(const ACE_TCHAR * soName) { audience_m = soName; };
+    
+    const ACE_TCHAR * 
+    array() { return array_m; };
+    
+    void 
+    array(const ACE_TCHAR * soName) { array_m = soName; };
+    
+    const ACE_TCHAR * 
+    antenna() { return antenna_m; };
+    
+    void 
+    antenna(const ACE_TCHAR * soName) { antenna_m = soName; };
     
     unsigned int flags() { return m_lflags; };
     void flags(unsigned int flags) { m_lflags=flags; };
@@ -170,6 +184,8 @@ class LoggingTSSStorage
     unsigned long m_line;
     const ACE_TCHAR * sourceObject_m;
     const ACE_TCHAR * audience_m;
+    const ACE_TCHAR * array_m;
+    const ACE_TCHAR * antenna_m;
     unsigned int m_lflags;
     const ACE_TCHAR * m_stackId;
     int m_stackLevel;

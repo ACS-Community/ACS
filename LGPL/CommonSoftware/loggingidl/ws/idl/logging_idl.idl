@@ -78,7 +78,8 @@ Header,
 	long Priority;
 	string Uri;
     string Audience;
-
+    string Array;
+    string Antenna;
 	string MsgData;
 	
 	/**

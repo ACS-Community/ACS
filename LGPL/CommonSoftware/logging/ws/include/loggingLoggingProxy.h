@@ -21,7 +21,7 @@
  *    License along with this library; if not, write to the Free Software
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: loggingLoggingProxy.h,v 1.24 2007/05/28 06:23:39 cparedes Exp $"
+ * "@(#) $Id: loggingLoggingProxy.h,v 1.25 2007/07/10 07:18:55 nbarriga Exp $"
  *
  * who       when        what
  * --------  ----------  ----------------------------------------------
@@ -107,7 +107,7 @@
  * </OL> 
  * @author <a href=mailto:matej.sekoranja@ijs.si>Matej Sekoranja</a>,
  * Jozef Stefan Institute, Slovenia<br>
- * @version "@(#) $Id: loggingLoggingProxy.h,v 1.24 2007/05/28 06:23:39 cparedes Exp $"
+ * @version "@(#) $Id: loggingLoggingProxy.h,v 1.25 2007/07/10 07:18:55 nbarriga Exp $"
  */
 class logging_EXPORT LoggingProxy : public ACE_Log_Msg_Callback
 {
@@ -217,6 +217,20 @@ class logging_EXPORT LoggingProxy : public ACE_Log_Msg_Callback
     /// Return the audience.
     /// The name is global per thread (stored in thread-specific storage TSS)
     static const ACE_TCHAR * audience();
+    
+    /// Set the array where the log message was generated.
+    static void array(const ACE_TCHAR *aud);
+
+    /// Return the array.
+    /// The name is global per thread (stored in thread-specific storage TSS)
+    static const ACE_TCHAR * array();
+    
+    /// Set the antenna where the log message was generated.
+    static void antenna(const ACE_TCHAR *aud);
+
+    /// Return the antenna.
+    /// The name is global per thread (stored in thread-specific storage TSS)
+    static const ACE_TCHAR * antenna();
     
     /// Supply data with the log entry that follows.
     /// The maximum lenghth for AddData value is ADD_DATA_VALUE_MAX (255+\0). If it is too long it will be truncated.
