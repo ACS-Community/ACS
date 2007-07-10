@@ -494,9 +494,13 @@ public class ClientLogManager implements LogConfigSubscriber
 
     /**
      * Gets a logger for an application (which is not an ACS component itself), e.g. a GUI application using the ACS ComponentClient. 
-     * @param namespace  the logger namespace, should identify the application.
-     * @param enableRemoteLogging  if true (generally recommended), log messages will be sent to the remote log service,
+     * @param namespace  the logger namespace, should identify the application or the particular logger that gets requested.
+     * @param enableRemoteLogging  if true (generally recommended), the returned logger is set up to send the logs to the remote log service,
      *                             as it always happens for container and component loggers. 
+     *                             <emph>This will only work if {@link #initRemoteLogging(ORB, Manager, int, boolean)} is also called,
+     *                             which happens automatically in <code>ComponentClient</code>. 
+     *                             For a standalone application that is not ACS-aware (no manager known etc), remote logging is not available 
+     *                             even with enableRemoteLogging == true.</emph> 
      * @return a configured Logger  
      */
     public Logger getLoggerForApplication(String namespace, boolean enableRemoteLogging)
