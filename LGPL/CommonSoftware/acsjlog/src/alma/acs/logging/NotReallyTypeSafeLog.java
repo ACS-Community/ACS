@@ -18,13 +18,15 @@ ALMA - Atacama Large Millimiter Array
 */
 /** 
  * @author  nbarriga
- * @version $Id: NotReallyTypeSafeLog.java,v 1.1 2007/07/10 12:51:21 nbarriga Exp $
+ * @version $Id: NotReallyTypeSafeLog.java,v 1.2 2007/07/10 13:34:18 nbarriga Exp $
  * @since    
  */
 package alma.acs.logging;
 
 import java.util.logging.Logger;
 import java.util.logging.Level;
+import java.util.HashMap;
+import java.util.Map;
 
 import alma.acs.logging.AcsLogLevel;
 import alma.acs.logging.AcsLogger;
@@ -32,13 +34,13 @@ import alma.acs.logging.AcsLogRecord;
 
 class NotReallyTypeSafeLog{
         private Logger m_logger;
-//        private Map<String, Object> nameValue;
+        private Map<String, Object> nameValue;
         private AcsLogRecord lr;
         public NotReallyTypeSafeLog(Logger logger, Level priority, String message, String Audience, String Array, String Antenna){
                 this.m_logger=logger;
                 ((AcsLogger)m_logger).addLoggerClass(this.getClass());
-                //nameValue = new HashMap<String, Object>();
-                lr=new AcsLogRecord(priority, message, /*nameValue*/null, logger.getName());
+                nameValue = new HashMap<String, Object>();
+                lr=new AcsLogRecord(priority, message, nameValue, logger.getName());
                 lr.setAudience(Audience);
                 lr.setArray(Array);
                 lr.setAntenna(Antenna);
@@ -47,9 +49,10 @@ class NotReallyTypeSafeLog{
         public NotReallyTypeSafeLog(Logger logger, Level priority, String message, String Audience){
                 this.m_logger=logger;
                 ((AcsLogger)m_logger).addLoggerClass(this.getClass());
-                //nameValue = new HashMap<String, Object>();
-                lr=new AcsLogRecord(priority, message, /*nameValue*/null, logger.getName());
+                nameValue = new HashMap<String, Object>();
+                lr=new AcsLogRecord(priority, message, nameValue, logger.getName());
                 lr.setAudience(Audience);
                 m_logger.log(lr);
         }
+
 }
