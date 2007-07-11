@@ -4,7 +4,7 @@
 #
 # build
 #
-# "@(#) $Id: buildTools,v 1.25 2005/11/14 15:18:36 gchiozzi Exp $"
+# "@(#) $Id: buildTools,v 1.26 2007/07/11 15:12:17 agrimstrup Exp $"
 
 #************************************************************************
 #   NAME
@@ -165,6 +165,8 @@ echo "buildJacORB"
 ./buildJacORB
 echo "buildPython"
 ./buildPython
+echo "buildPyModules"
+./buildPyModules
 echo "buildOmniORB"
 ./buildOmniORB
 echo "buildMico"
