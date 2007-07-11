@@ -2,7 +2,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: buildJacORB,v 1.16 2007/03/25 14:08:12 msekoran Exp $"
+# "@(#) $Id: buildJacORB,v 1.17 2007/07/11 13:36:49 hsommer Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -30,8 +30,7 @@
 #   Any previous installation of JarORB will be erased.
 #
 #   To download JacORB:
-#    
-#       wget http://www.jacorb.org/releases/1.4.1/JacORB_1_4_1-full.tar.gz
+#       wget http://www.jacorb.org/releases/2.2.4/JacORB-2.2.4-source.zip
 #
 #   FILES
 #
@@ -67,19 +66,25 @@ ALMASW_INSTDIR=$ALMASW_ROOTDIR/$ALMASW_RELEASE
 JACORB_SOURCES=`pwd`/../PRODUCTS
 CUR_DIR=`pwd`
 
-if [ "X$JACORB_HOME" = X ]
-then
-   JACORB_HOME=$ALMASW_ROOTDIR/$ALMASW_RELEASE/JacORB
-   echo "==== Setting JACORB_HOME to $JACORB_HOME"
-   unset CLASSPATH
-fi
-
-if [ `echo $CLASSPATH | grep -c $JACORB_HOME` -ne 0 ]
-then
-   echo "==== CLASSPATH contains $JACORB_HOME. Unsetting it for this script"
-   echo "     But make sure we use the right version of ANT "
-   CLASSPATH=$ANT_HOME/lib/ant.jar
-fi
+# HSO (2007-07-11): With JDK versions > 1.5_04 some subtle change of handling the classpath
+#                   (perhaps in jar manifest files) brought in the unpacked JacORB/lib/jacorb.jar
+#                   even if JACORB_HOME was not on the CLASSPATH. Therefore we can probably remove
+#                   the following classpath handling lines, 
+#                   and just rely on the ant target "realclean" to get rid of these jars.
+# 
+#if [ "X$JACORB_HOME" = X ]
+#then
+#   JACORB_HOME=$ALMASW_ROOTDIR/$ALMASW_RELEASE/JacORB
+#   echo "==== Setting JACORB_HOME to $JACORB_HOME"
+#   unset CLASSPATH
+#fi
+#
+#if [ `echo $CLASSPATH | grep -c $JACORB_HOME` -ne 0 ]
+#then
+#   echo "==== CLASSPATH contains $JACORB_HOME. Unsetting it for this script"
+#   echo "     But make sure we use the right version of ANT "
+#   CLASSPATH=$ANT_HOME/lib/ant.jar
+#fi
 
 echo ==== Building JacORB from: $JACORB_SOURCES    into:   $ALMASW_INSTDIR
 
@@ -96,9 +101,6 @@ fi
 
 echo ==== Extracting package
 cd $ALMASW_INSTDIR
-
-#tar xfzp $JACORB_SOURCES/JacORB_1_4_1-full.tar.gz
-#mv JacORB_1_4_1 $JACORB_HOME
 
 unzip $JACORB_SOURCES/JacORB_2_2_4-full.zip
 mv JacORB-2.2.4 $JACORB_HOME
@@ -179,6 +181,9 @@ else
 fi
 
 
+echo "========= Done with unpacking and patching, can compile now... =========="
+
+
 echo ==== Building jaco
 ant jaco
 if [ $? -ne 0 ]
@@ -189,7 +194,17 @@ fi
 
 echo ==== Building jars
 cd $JACORB_HOME/
-ant
+
+# get rid of precompiled jacorb jars which sometimes mess with the classpath
+# to the effect that incompatible versions of some org.omg interface come in from the JDK libs
+ant realclean
+
+# our JacORB should not use backport-util-concurrent.jar
+rm $JACORB_HOME/lib/backport-util-concurrent.jar
+ant convert.jdk5 
+
+# the main jacorb compilation
+ant all
 if [ $? -ne 0 ]
 then
      echo "========= FAILED =========="
