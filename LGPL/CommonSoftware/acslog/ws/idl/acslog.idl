@@ -155,7 +155,14 @@ module ACSLog {
        If all rtCont string members are NULL than no run-time context information will be logged.
        If all srcInfo string members are NULL than no source information will be logged.
     */
-    void logWithPriority(in Priorities p, in acscommon::TimeStamp time, in string msg, in RTContext rtCont, in SourceInfo srcInfo,  in NVPairSeq data, in string audience) raises (ACSErr::ACSException);
+    void logWithPriority(in Priorities p, in acscommon::TimeStamp time, in string msg, in RTContext rtCont, in SourceInfo srcInfo,  in NVPairSeq data, in string audience, in string array, in string antenna) raises (ACSErr::ACSException);
+    
+    /**
+       logs a message with a certain priority, an audience, an array and an antenna.
+       If all rtCont string members are NULL than no run-time context information will be logged.
+       If all srcInfo string members are NULL than no source information will be logged.
+    */
+    void logWithAudience(in Priorities p, in acscommon::TimeStamp time, in string msg, in RTContext rtCont, in SourceInfo srcInfo, in string audience, in string array, in string antenna) raises (ACSErr::ACSException);
     
     /**
        logs CRITICAL message.

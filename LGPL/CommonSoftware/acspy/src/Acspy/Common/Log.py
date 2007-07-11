@@ -1,4 +1,4 @@
-# @(#) $Id: Log.py,v 1.26 2007/05/29 20:37:40 agrimstrup Exp $
+# @(#) $Id: Log.py,v 1.27 2007/07/11 12:14:45 nbarriga Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA,  2001
@@ -42,7 +42,7 @@ TODO:
 XML-related methods are untested at this point.
 '''
 
-__revision__ = "$Id: Log.py,v 1.26 2007/05/29 20:37:40 agrimstrup Exp $"
+__revision__ = "$Id: Log.py,v 1.27 2007/07/11 12:14:45 nbarriga Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 from os        import environ
@@ -51,9 +51,14 @@ import sys
 import math
 import logging
 from traceback import print_exc
+from socket import gethostname
+import time
+from os import getpid
+from traceback import extract_stack
 #--ACS Imports-----------------------------------------------------------------
 from Acspy.Common.ACSHandler import ACSHandler
 from Acspy.Common.ACSHandler import ACSFormatter
+from Acspy.Common.TimeHelper import TimeUtil
 #--CORBA STUBS-----------------------------------------------------------------
 import ACSLog
 #--GLOBALS---------------------------------------------------------------------
@@ -389,7 +394,36 @@ class Logger(logging.Logger):
 
         Raises: Nothing
         '''
-        self.acshandler.logSvc.logWithPriority(priority, timestamp, msg, rtCont, srcInfo, data, audience)
+        if audience == None:
+                audience = ""
+        self.acshandler.logSvc.logWithPriority(priority, timestamp, msg, rtCont, srcInfo, data, audience, "", "")
+    #------------------------------------------------------------------------
+    def logNotSoTypeSafe(self, priority, msg, audience=None, array=None, antenna=None):
+        '''
+        Log a message indicating audience, array and/or antenna.
+
+        Parameter:
+        - priority value of logging priority
+        - msg log definition shortDescription
+        - audience
+        - array
+        - antenna
+        
+        Returns: Nothing
+
+        Raises: Nothing
+        '''
+        cur_stack=extract_stack()
+        rtCont=ACSLog.RTContext("",str(getpid()),str(gethostname()).replace("<", "").replace(">", ""),"","")
+        srcInfo=ACSLog.SourceInfo(str(cur_stack[0][0]),str(cur_stack[0][2]),long(cur_stack[0][1]))
+        timestamp=TimeUtil().py2epoch(time.time()).value
+        if audience == None:
+                audience = ""
+        if array == None:
+                array = ""
+        if antenna == None:
+                antenna = ""
+        self.acshandler.logSvc.logWithAudience(priority, timestamp, msg, rtCont, srcInfo, audience, array, antenna)
 
 #----------------------------------------------------------------------------
 logging.setLoggerClass(Logger)
