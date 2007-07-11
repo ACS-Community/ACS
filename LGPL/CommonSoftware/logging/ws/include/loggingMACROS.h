@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingMACROS.h,v 1.15 2007/07/10 07:18:55 nbarriga Exp $"
+* "@(#) $Id: loggingMACROS.h,v 1.16 2007/07/11 12:49:10 nbarriga Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -31,6 +31,7 @@
 
 #include "loggingLogger.h"
 #include "loggingLogTrace.h"
+#include "loggingGetLogger.h"
 #include <iostream>
 #include <acsutilTimeStamp.h> 
 
@@ -38,7 +39,7 @@
  * Used to send logs. This macro is primarily useful because it automatically
  * determines the file name and line number for the developer. It is important
  * to note that getLogger() is defined in a header file other than what's included
- * above.
+ * above. UPDATE: I just included the file, don't know why it wasn't included before.
  * @param priority Logging::BaseLog::Priority of the log message
  * @param routine Name of the routine in which this macro is being used from (std::string)
  * @param text Log message (std::string)
@@ -57,9 +58,7 @@ else \
 
 /**
  * Used to send logs. This macro is primarily useful because it automatically
- * determines the file name and line number for the developer. It is important
- * to note that getLogger() is defined in a header file other than what's included
- * above.
+ * determines the file name and line number for the developer. 
  * @param logPriority Logging::BaseLog::Priority of the log message
  * @param logRoutine Name of the routine in which this macro is being used from (std::string)
  * @param logMessage Log message (std::string)
@@ -91,9 +90,7 @@ else \
 
 /**
  * Used to send logs. This macro is primarily useful because it automatically
- * determines the file name and line number for the developer. It is important
- * to note that getLogger() is defined in a header file other than what's included
- * above.
+ * determines the file name and line number for the developer. 
  * @param logPriority Logging::BaseLog::Priority of the log message
  * @param logRoutine Name of the routine in which this macro is being used from (std::string)
  * @param logMessage Log message (std::string)
@@ -123,9 +120,7 @@ else \
 
 /**
  * Used to send logs. This macro is primarily useful because it automatically
- * determines the file name and line number for the developer. It is important
- * to note that getLogger() is defined in a header file other than what's included
- * above.
+ * determines the file name and line number for the developer. 
  * @param logPriority Logging::BaseLog::Priority of the log message
  * @param logRoutine Name of the routine in which this macro is being used from (std::string)
  * @param logMessage Log message (std::string)
