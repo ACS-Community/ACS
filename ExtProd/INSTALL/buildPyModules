@@ -184,7 +184,7 @@ python setup.py install
 
 
 echo "== Configuring matplotlib"
-pushd $(PYTHON_ROOT)/share/matplotlib/ 
+pushd ${PYTHON_ROOT}/share/matplotlib/ 
 cat .matplotlibrc | sed s/numerix\ \ \ \ \ \ :\ Numeric/numerix\ \ \ \ \ \ :\ numarray/g >> .matplotlibrc.tmp
 mv .matplotlibrc.tmp .matplotlibrc
 cat .matplotlibrc | sed s/backend\ \ \ \ \ \ :\ GTKAgg/backend\ \ \ \ \ \ :\ TkAgg/g >> .matplotlibrc.tmp
