@@ -141,6 +141,8 @@ then
   echo Error: numpy sources are missing
 else
   echo "== Building numpy"
+  export BLAS=/usr/lib/libblas.so
+  export LAPACK=/usr/lib/liblapack.so
   tar -zxvf numpy-1.0.1.tar.gz
   pushd numpy-1.0.1
   python setup.py install 
