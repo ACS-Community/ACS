@@ -96,7 +96,9 @@ public final class LogEntryXML implements ILogEntry
 		int stacklevel,
 		String logmessage,
         String srcObject,
-        String audience)
+        String audience,
+        String array,
+        String antenna)
 	{
 		// set whatever you want here (depending of the test you are performing);
 
@@ -117,6 +119,8 @@ public final class LogEntryXML implements ILogEntry
 		setField(FIELD_LOGMESSAGE, logmessage);
         setField(FIELD_SOURCEOBJECT,srcObject);
         setField(FIELD_AUDIENCE,audience);
+        setField(FIELD_ARRAY,array);
+        setField(FIELD_ANTENNA,antenna);
 	}
 
 	public LogEntryXML(String stackId, int stackLevel) throws DOMException
@@ -314,6 +318,14 @@ public final class LogEntryXML implements ILogEntry
                 attr = nnm.getNamedItem(tagAttributes[FIELD_AUDIENCE]);
                 if (attr != null) {
                         setField(FIELD_AUDIENCE, attr.getNodeValue());
+                }
+                attr = nnm.getNamedItem(tagAttributes[FIELD_ARRAY]);
+                if (attr != null) {
+                        setField(FIELD_ARRAY, attr.getNodeValue());
+                }
+                attr = nnm.getNamedItem(tagAttributes[FIELD_ANTENNA]);
+                if (attr != null) {
+                        setField(FIELD_ANTENNA, attr.getNodeValue());
                 }
         }
     

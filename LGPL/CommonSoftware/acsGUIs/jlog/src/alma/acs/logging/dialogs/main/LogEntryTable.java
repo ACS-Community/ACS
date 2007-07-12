@@ -890,6 +890,8 @@ public class LogEntryTable extends javax.swing.JTable
         hideColumn(ILogEntry.FIELD_FILE+2);
         hideColumn(ILogEntry.FIELD_STACKLEVEL+2);
         hideColumn(ILogEntry.FIELD_AUDIENCE+2);
+        hideColumn(ILogEntry.FIELD_ARRAY+2);
+        hideColumn(ILogEntry.FIELD_ANTENNA+2);
 
 		// Build and set the slection model
 		selectionModel = new DefaultListSelectionModel();

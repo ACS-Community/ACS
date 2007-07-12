@@ -126,6 +126,14 @@ public class CacheUtils {
 		if (strs.length>16) {
 			audience=strs[16];
 		}
+		String array = null;
+		if (strs.length>17) {
+			array=strs[17];
+		}
+		String antenna = null;
+		if (strs.length>18) {
+			antenna=strs[18];
+		}
         
         Vector<ILogEntry.AdditionalData> addDatas = null;
         if (strs.length>ILogEntry.NUMBER_OF_FIELDS) {
@@ -152,6 +160,8 @@ public class CacheUtils {
         		logmessage,
         		srcObject,
                         audience,
+                        array,
+                        antenna,
         		addDatas);
 	}
 	
@@ -198,6 +208,10 @@ public class CacheUtils {
 			sb.append(log.MsgData);
 			sb.append(CacheUtils.SEPARATOR_CHAR);
 			sb.append(log.Audience);
+			sb.append(CacheUtils.SEPARATOR_CHAR);
+			sb.append(log.Array);
+			sb.append(CacheUtils.SEPARATOR_CHAR);
+			sb.append(log.Antenna);
 			sb.append(CacheUtils.SEPARATOR_CHAR);
 
 			NameValue[] attrs = log.attributes;

@@ -54,6 +54,8 @@ public class LogEntry implements ILogEntry {
 	private String logMessage;
 	private String sourceObject;
 	private String audience;
+	private String array;
+	private String antenna;
 	
 	// The additional data
 	private  Vector<LogEntry.AdditionalData> additionalData = null;
@@ -80,6 +82,8 @@ public class LogEntry implements ILogEntry {
 	 * @param logmessage ...
 	 * @param srcObject ...
 	 * @param audience ...
+	 * @param array ...
+	 * @param antenna ...
 	 * @param addDatas The additional data as a Vector<String>
 	 *                 The Vector contains in the even position the name 
 	 *                 and in the odd the value. It can be null.
@@ -105,6 +109,8 @@ public class LogEntry implements ILogEntry {
 			String logmessage,
 	        String srcObject,
 	        String audience,
+	        String array,
+	        String antenna,
 	        Vector<AdditionalData> addDatas) {
 		if(null != milliseconds) {
 			this.date=new Date(milliseconds);
@@ -128,6 +134,8 @@ public class LogEntry implements ILogEntry {
 		this.logMessage=logmessage;
 		this.sourceObject=srcObject;
 		this.audience=audience;
+		this.array=array;
+		this.antenna=antenna;
 		// Add the additional datas, if any
 		if (addDatas!=null) {
 			additionalData = new Vector<LogEntry.AdditionalData>();
@@ -249,6 +257,12 @@ public class LogEntry implements ILogEntry {
 			case FIELD_AUDIENCE: {
 				return audience;
 			}
+			case FIELD_ARRAY: {
+				return array;
+			}
+			case FIELD_ANTENNA: {
+				return antenna;
+			}
 			case FIELD_FILE: {
 				return file;
 			}
@@ -318,6 +332,14 @@ public class LogEntry implements ILogEntry {
 			}
 			case FIELD_AUDIENCE: {
 				audience=(String)value;
+				return;
+			}
+			case FIELD_ARRAY: {
+				array=(String)value;
+				return;
+			}
+			case FIELD_ANTENNA: {
+				antenna=(String)value;
 				return;
 			}
 			case FIELD_FILE: {
