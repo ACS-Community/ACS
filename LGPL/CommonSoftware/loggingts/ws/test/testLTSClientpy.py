@@ -36,11 +36,22 @@ simpleClient = PySimpleClient()
 simpleClient.getLogger().logInfo("Starting test client.")
 
 simpleLog().log()
+
+simpleLog("Array01","Antenna01").log()
+
 a=complexLog()
 a.setsomeDoubleMember(3.14159)
 a.setsomeStringMember("test string")
 a.setsomeLongMember(42)
 a.log()
+
+b=complexLog()
+b.setArray("Array01")
+b.setAntenna("Antenna01")
+b.setsomeDoubleMember(3.14159)
+b.setsomeStringMember("test string")
+b.setsomeLongMember(42)
+b.log()
 
 simpleClient.disconnect()
 simpleClient.getLogger().logInfo("Exiting test client.")

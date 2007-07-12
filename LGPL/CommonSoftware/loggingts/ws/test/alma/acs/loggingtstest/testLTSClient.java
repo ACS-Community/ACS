@@ -18,7 +18,7 @@
 */
 /** 
  * @author  nbarriga
- * @version $Id: testLTSClient.java,v 1.2 2007/07/06 08:57:51 hsommer Exp $
+ * @version $Id: testLTSClient.java,v 1.3 2007/07/12 11:29:53 nbarriga Exp $
  * @since    
  */
 
@@ -57,11 +57,22 @@ public class testLTSClient extends ComponentClient
 			simpleLog slog=new simpleLog(logger);
 			slog.log();		
 			
+			simpleLog slogAA=new simpleLog(logger, "Array01", "Antenna01");
+			slogAA.log();		
+			
 			complexLog clog=new complexLog(logger);
 			clog.setsomeDoubleMember(3.14159);
 			clog.setsomeStringMember("test string");
 			clog.setsomeLongMember((long)42);
 			clog.log();
+			
+			complexLog clogAA=new complexLog(logger);
+                        clogAA.setArray("Array01");
+                        clogAA.setAntenna("Antenna01");
+			clogAA.setsomeDoubleMember(3.14159);
+			clogAA.setsomeStringMember("test string");
+			clogAA.setsomeLongMember((long)42);
+			clogAA.log();
 			
 			Thread.sleep(2000);
 		}

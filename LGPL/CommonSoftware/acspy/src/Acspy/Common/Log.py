@@ -1,4 +1,4 @@
-# @(#) $Id: Log.py,v 1.27 2007/07/11 12:14:45 nbarriga Exp $
+# @(#) $Id: Log.py,v 1.28 2007/07/12 11:29:53 nbarriga Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA,  2001
@@ -42,7 +42,7 @@ TODO:
 XML-related methods are untested at this point.
 '''
 
-__revision__ = "$Id: Log.py,v 1.27 2007/07/11 12:14:45 nbarriga Exp $"
+__revision__ = "$Id: Log.py,v 1.28 2007/07/12 11:29:53 nbarriga Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 from os        import environ
@@ -378,7 +378,7 @@ class Logger(logging.Logger):
             #save it to be processes later
             self.error_trace_list.append(errortrace)
     #------------------------------------------------------------------------
-    def logTypeSafe(self, priority, timestamp, msg, rtCont, srcInfo, data, audience=None):
+    def logTypeSafe(self, priority, timestamp, msg, rtCont, srcInfo, data, audience=None, array=None, antenna=None):
         '''
         Log a type safe log.
 
@@ -396,7 +396,11 @@ class Logger(logging.Logger):
         '''
         if audience == None:
                 audience = ""
-        self.acshandler.logSvc.logWithPriority(priority, timestamp, msg, rtCont, srcInfo, data, audience, "", "")
+        if array == None:
+                array = ""
+        if antenna == None:
+                antenna = ""
+        self.acshandler.logSvc.logWithPriority(priority, timestamp, msg, rtCont, srcInfo, data, audience, array, antenna)
     #------------------------------------------------------------------------
     def logNotSoTypeSafe(self, priority, msg, audience=None, array=None, antenna=None):
         '''

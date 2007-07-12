@@ -34,7 +34,7 @@
 
 /**
  * @author  nbarriga
- * @version $Id: LTS2Java.xslt,v 1.4 2007/07/06 12:31:03 hsommer Exp $
+ * @version $Id: LTS2Java.xslt,v 1.5 2007/07/12 11:29:53 nbarriga Exp $
  * @since
  */
 
@@ -61,8 +61,16 @@ public class </xsl:text>
 	private Logger m_logger;
 	private Map&lt;String, Object> nameValue;
 	private AcsLogRecord lr;
-	
+        public </xsl:text><xsl:value-of select="$logName"/><xsl:text>(Logger logger, String array, String antenna)
+            {
+                init(logger)    ;
+                lr.setArray(array);
+                lr.setAntenna(antenna);
+        }	
 	public </xsl:text><xsl:value-of select="$logName"/><xsl:text>(Logger logger) {
+                init(logger);
+	}
+        public void init(Logger logger){
 		this.m_logger=logger;
 		if (m_logger instanceof AcsLogger) {
 			((AcsLogger)m_logger).addLoggerClass(this.getClass());
@@ -71,8 +79,19 @@ public class </xsl:text>
 		nameValue.put("logName","</xsl:text><xsl:value-of select="$logName"/><xsl:text>");
 		lr = new AcsLogRecord(AcsLogLevel.</xsl:text><xsl:value-of select="@priority"/><xsl:text>, "</xsl:text><xsl:value-of select="@shortDescription"/><xsl:text>", nameValue, logger.getName());
 		lr.setAudience("</xsl:text><xsl:value-of select="@audience"/><xsl:text>");
-	}
-	
+        }
+	public void setArray(String array){
+                lr.setArray(array);
+        }
+	public void setAntenna(String antenna){
+                lr.setAntenna(antenna);
+        }
+	public String getArray(){
+                return lr.getArray();
+        }
+	public String getAntenna(){
+                return lr.getAntenna();
+        }
 	/**
 	 * Logs the message through the Logger supplied in the constructor, with the configured log level.
 	 */	

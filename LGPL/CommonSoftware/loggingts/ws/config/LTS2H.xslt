@@ -27,7 +27,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: LTS2H.xslt,v 1.3 2007/03/22 10:08:19 gchiozzi Exp $"
+* "@(#) $Id: LTS2H.xslt,v 1.4 2007/07/12 11:29:53 nbarriga Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -66,6 +66,8 @@ namespace </xsl:text><xsl:value-of select="@name"/>
                 string routine;
                 string name;
                 string audience;
+                string array;
+                string antenna;
                 string shortDescription;
                 ACSLog::NVPairSeq members;
 	protected:
@@ -74,8 +76,18 @@ namespace </xsl:text><xsl:value-of select="@name"/>
 		</xsl:text><xsl:value-of select="$logName"/><xsl:text>(string file,
                         unsigned long line,
                         string routine);
+		</xsl:text><xsl:value-of select="$logName"/><xsl:text>(string file,
+                        unsigned long line,
+                        string routine,
+                        string array,
+                        string antenna);
+                void init(string file, unsigned long line, string routine);
                 virtual ~</xsl:text><xsl:value-of select="$logName"/><xsl:text>();
 		void log();
+                void setArray(string array);
+                void setAntenna(string antenna);
+                string getArray();
+                string getAntenna();
 </xsl:text>
 		<xsl:for-each select="loggingts:Member">
 		<xsl:text>		void set</xsl:text><xsl:value-of select="@name"/>

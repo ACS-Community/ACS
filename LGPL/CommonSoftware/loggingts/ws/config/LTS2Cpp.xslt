@@ -20,7 +20,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: LTS2Cpp.xslt,v 1.3 2007/06/14 08:54:06 nbarriga Exp $"
+* "@(#) $Id: LTS2Cpp.xslt,v 1.4 2007/07/12 11:29:53 nbarriga Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -42,6 +42,9 @@ using namespace </xsl:text><xsl:value-of select="$typeName"/><xsl:text>;
         <xsl:for-each select="loggingts:LogDefinition">
         	<xsl:variable name="logName"><xsl:value-of select="@logName"/></xsl:variable>
 		<xsl:value-of select="$logName"/><xsl:text>::</xsl:text><xsl:value-of select="$logName"/><xsl:text>(string file, unsigned long line, string routine){
+                        init(file, line, routine);
+                }
+    void </xsl:text><xsl:value-of select="$logName"/><xsl:text>::init(string file, unsigned long line, string routine){
 	this->priority=Logging::ace2acsPriority(ACE_Log_Priority(LM_</xsl:text><xsl:value-of select="@priority"/><xsl:text>));
 	this->file=file;
 	this->line=line;
@@ -55,10 +58,29 @@ using namespace </xsl:text><xsl:value-of select="$typeName"/><xsl:text>;
 }
 
 </xsl:text>
+        	<xsl:variable name="logName"><xsl:value-of select="@logName"/></xsl:variable>
+		<xsl:value-of select="$logName"/><xsl:text>::</xsl:text><xsl:value-of select="$logName"/><xsl:text>(string file, unsigned long line, string routine, string array, string antenna){
+        init(file, line, routine);
+        this->array=array;
+        this->antenna=antenna;
+}        
+</xsl:text>
 		<xsl:value-of select="$logName"/><xsl:text>::~</xsl:text><xsl:value-of select="$logName"/><xsl:text>(){
 
 }
+void </xsl:text><xsl:value-of select="$logName"/><xsl:text>::setArray(string array){
+        this->array=array;
+}
+void </xsl:text><xsl:value-of select="$logName"/><xsl:text>::setAntenna(string antenna){
+        this->antenna=antenna;
+}
 
+string </xsl:text><xsl:value-of select="$logName"/><xsl:text>::getArray(){
+        return array;
+}
+string </xsl:text><xsl:value-of select="$logName"/><xsl:text>::getAntenna(){
+        return antenna;
+}
 void </xsl:text><xsl:value-of select="$logName"/><xsl:text>::log(){
         Logging::BaseLog::LogRecord lr;
         lr.priority=this->priority;
@@ -70,6 +92,8 @@ void </xsl:text><xsl:value-of select="$logName"/><xsl:text>::log(){
         LoggingProxy::AddData("logName",this->name.c_str());
         //LoggingProxy::AddData("audience",this->audience.c_str());
         LoggingProxy::audience(this->audience.c_str());
+        if(this->array.length()!=0)LoggingProxy::array(this->array.c_str());
+        if(this->antenna.length()!=0)LoggingProxy::antenna(this->antenna.c_str());
         for(unsigned int i=0;i&lt;members.length();i++){
                 LoggingProxy::AddData(members[i].name.in(),members[i].value.in());
         }

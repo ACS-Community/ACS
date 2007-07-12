@@ -3,7 +3,7 @@
 1 - Connecting
 1 - object is activated
 1 - Connection established
-1 - RAW log: <Info TimeStamp="xxx" File="../bin/testLTSClientpy" Line="38" Routine="?" Host="xxx" Process="xxx" Thread="" Context="" SourceObject="" Audience="Curious people"><Data Name="logName"><![CDATA[simpleLog]]></Data><![CDATA[Simple Log]]></Info>
+1 - RAW log: <Info TimeStamp="xxx" File="../bin/testLTSClientpy" Line="38" Routine="?" Host="xxx" Process="xxx" Thread="" Context="" SourceObject="" Audience="Curious people" Array="" Antenna=""><Data Name="logName"><![CDATA[simpleLog]]></Data><![CDATA[Simple Log]]></Info>
 1 - Log received: --- LogEntry ---
 1 - TimeStamp: xxx
 1 - Entry Type: Info
@@ -17,15 +17,35 @@
 1 - Thread: 
 1 - Log Message: Simple Log
 1 - Audience: Curious people
+1 - Array: 
+1 - Antenna: 
 1 - Datas: 
 1 - 	logName : simpleLog
-1 - RAW log: <Warning TimeStamp="xxx" File="../bin/testLTSClientpy" Line="43" Routine="?" Host="xxx" Process="xxx" Thread="" Context="" SourceObject="" Audience="People with too much time on their hands" StackId="" StackLevel="0"><Data Name="someLongMember"><![CDATA[42]]></Data><Data Name="someStringMember"><![CDATA[test string]]></Data><Data Name="logName"><![CDATA[complexLog]]></Data><Data Name="someDoubleMember"><![CDATA[3.14159]]></Data><![CDATA[Complex Log]]></Warning>
+1 - RAW log: <Info TimeStamp="xxx" File="../bin/testLTSClientpy" Line="40" Routine="?" Host="xxx" Process="xxx" Thread="" Context="" SourceObject="" Audience="Curious people" Array="Array01" Antenna="Antenna01"><Data Name="logName"><![CDATA[simpleLog]]></Data><![CDATA[Simple Log]]></Info>
+1 - Log received: --- LogEntry ---
+1 - TimeStamp: xxx
+1 - Entry Type: Info
+1 - Source Object: 
+1 - File: ../bin/testLTSClientpy
+1 - Line: 40
+1 - Routine: ?
+1 - Host: xxx
+1 - Process: xxx
+1 - Context: 
+1 - Thread: 
+1 - Log Message: Simple Log
+1 - Audience: Curious people
+1 - Array: Array01
+1 - Antenna: Antenna01
+1 - Datas: 
+1 - 	logName : simpleLog
+1 - RAW log: <Warning TimeStamp="xxx" File="../bin/testLTSClientpy" Line="46" Routine="?" Host="xxx" Process="xxx" Thread="" Context="" SourceObject="" Audience="People with too much time on their hands" Array="" Antenna="" StackId="" StackLevel="0"><Data Name="someLongMember"><![CDATA[42]]></Data><Data Name="someStringMember"><![CDATA[test string]]></Data><Data Name="logName"><![CDATA[complexLog]]></Data><Data Name="someDoubleMember"><![CDATA[3.14159]]></Data><![CDATA[Complex Log]]></Warning>
 1 - Log received: --- LogEntry ---
 1 - TimeStamp: xxx
 1 - Entry Type: Warning
 1 - Source Object: 
 1 - File: ../bin/testLTSClientpy
-1 - Line: 43
+1 - Line: 46
 1 - Routine: ?
 1 - Host: xxx
 1 - Process: xxx
@@ -35,5 +55,27 @@
 1 - Stack Level: 0
 1 - Log Message: Complex Log
 1 - Audience: People with too much time on their hands
+1 - Array: 
+1 - Antenna: 
+1 - Datas: 
+1 - 	someLongMember : 42	someStringMember : test string	logName : complexLog	someDoubleMember : 3.14159
+1 - RAW log: <Warning TimeStamp="xxx" File="../bin/testLTSClientpy" Line="54" Routine="?" Host="xxx" Process="xxx" Thread="" Context="" SourceObject="" Audience="People with too much time on their hands" Array="Array01" Antenna="Antenna01" StackId="" StackLevel="0"><Data Name="someLongMember"><![CDATA[42]]></Data><Data Name="someStringMember"><![CDATA[test string]]></Data><Data Name="logName"><![CDATA[complexLog]]></Data><Data Name="someDoubleMember"><![CDATA[3.14159]]></Data><![CDATA[Complex Log]]></Warning>
+1 - Log received: --- LogEntry ---
+1 - TimeStamp: xxx
+1 - Entry Type: Warning
+1 - Source Object: 
+1 - File: ../bin/testLTSClientpy
+1 - Line: 54
+1 - Routine: ?
+1 - Host: xxx
+1 - Process: xxx
+1 - Context: 
+1 - Thread: 
+1 - Stack ID: 
+1 - Stack Level: 0
+1 - Log Message: Complex Log
+1 - Audience: People with too much time on their hands
+1 - Array: Array01
+1 - Antenna: Antenna01
 1 - Datas: 
 1 - 	someLongMember : 42	someStringMember : test string	logName : complexLog	someDoubleMember : 3.14159

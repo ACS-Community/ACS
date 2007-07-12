@@ -16,7 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: testLTSClient.cpp,v 1.1 2007/02/21 09:38:05 nbarriga Exp $"
+ * "@(#) $Id: testLTSClient.cpp,v 1.2 2007/07/12 11:29:53 nbarriga Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -31,7 +31,7 @@
 #include <stdio.h>
 #include <string.h>
 
-static char *rcsId="@(#) $Id: testLTSClient.cpp,v 1.1 2007/02/21 09:38:05 nbarriga Exp $"; 
+static char *rcsId="@(#) $Id: testLTSClient.cpp,v 1.2 2007/07/12 11:29:53 nbarriga Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <maciSimpleClient.h>
@@ -52,12 +52,23 @@ int main(int argc, char *argv[])
 	ACSLogTypeExample::simpleLog my_simpleLog(__FILE__,__LINE__,"main");
 	my_simpleLog.log();
 
+	ACSLogTypeExample::simpleLog my_simpleLogAA(__FILE__,__LINE__,"main","Array01","Antenna01");
+	my_simpleLogAA.log();
+
 
 	ACSLogTypeExample::complexLog my_complexLog(__FILE__,__LINE__,"main");
 	my_complexLog.setsomeDoubleMember(3.14159);
 	my_complexLog.setsomeStringMember("test string");
 	my_complexLog.setsomeLongMember(42);
 	my_complexLog.log();
+
+	ACSLogTypeExample::complexLog my_complexLogAA(__FILE__,__LINE__,"main");
+        my_complexLogAA.setArray("Array01");
+        my_complexLogAA.setAntenna("Antenna01");
+	my_complexLogAA.setsomeDoubleMember(3.14159);
+	my_complexLogAA.setsomeStringMember("test string");
+	my_complexLogAA.setsomeLongMember(42);
+	my_complexLogAA.log();
 
 
 	client.logout();
