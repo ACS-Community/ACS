@@ -14,10 +14,12 @@ AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::~BulkDataD
     Sender_Map_Entry *entry = 0;
     for (;iterator.next (entry) !=  0;iterator.advance ())
 	{	
-	entry->int_id_->disconnectPeer();
-	BulkDataSender<TSenderCallback> *locSender_p = entry->int_id_;
+	(entry->int_id_).second()->disconnectPeer();
+	BulkDataSender<TSenderCallback> *locSender_p = (entry->int_id_).second();
 	if (locSender_p != 0)
 	    delete locSender_p;
+
+	CORBA::release((entry->int_id_).first()); 
 	}
 }
 
@@ -51,7 +53,21 @@ void AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::multi
   
 	sender_p->connectToPeer(recvConfig_p);
 
-	senderMap_m.bind(receiverName,sender_p);
+	bulkdata::BulkDataReceiver_var receiver_p = contSvc_p->maci::ContainerServices::getComponentNonSticky<bulkdata::BulkDataReceiver>(receiverName.c_str());
+	if(CORBA::is_nil(receiver_p.in()))
+	    {
+	    ACS_SHORT_LOG((LM_ERROR,"BulkDataDistributer<>::multiConnect could not get receiver reference"));	
+	    AVConnectErrorExImpl err = AVConnectErrorExImpl(__FILE__,__LINE__,"BulkDataDistributer<>::multiConnect");
+	    throw err;
+	    }
+
+	Sender_Map_Pair pair;
+	//pair.first(receiver_p.in());
+	pair.first(bulkdata::BulkDataReceiver::_duplicate(receiver_p));
+	pair.second(sender_p);
+
+	//senderMap_m.bind(receiverName,sender_p);
+	senderMap_m.bind(receiverName,pair);	
 
 	recvStatusMap_m.bind(receiverName,offset);
 
@@ -78,7 +94,7 @@ void AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::multi
 	throw err;
 	}
 
-    offset += 100;
+   offset += 100;
 }
 
 
@@ -92,7 +108,10 @@ void AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::multi
 	{
 	BulkDataSender<TSenderCallback> *locSender_p;
 
-	if (senderMap_m.find(receiverName,locSender_p) != 0)
+	Sender_Map_Pair pair;
+
+	//if (senderMap_m.find(receiverName,locSender_p) != 0)
+	if (senderMap_m.find(receiverName,pair) != 0)
 	    {
 	    ACS_SHORT_LOG((LM_ERROR,"BulkDataDistributer<>::multiDisconnect connected sender not found"));	
 	    AVDisconnectErrorExImpl err = AVDisconnectErrorExImpl(__FILE__,__LINE__,"BulkDataDistributer<>::multiDisconnect");
@@ -100,6 +119,7 @@ void AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::multi
 	    }
 	else
 	    {
+	    locSender_p = pair.second();
 	    bulkdata::BulkDataReceiver_var receiver = contSvc_p->maci::ContainerServices::getComponent<bulkdata::BulkDataReceiver>(receiverName.c_str());
 	    if(CORBA::is_nil(receiver.in()))
 		{
@@ -167,6 +187,11 @@ void AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::multi
 		locSender_p->disconnectPeer();
 		receiver->closeReceiver();
 		delete locSender_p;
+
+		Sender_Map_Pair pair;
+		senderMap_m.find(receiverName,pair);
+		CORBA::release(pair.first());
+
 		senderMap_m.unbind(receiverName);
 		}
 	    catch(ACSErr::ACSbaseExImpl &ex)
@@ -229,7 +254,7 @@ void AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::distS
 	{
 	AVStreams::flowSpec locSpec(1);
 	locSpec.length(1);
-	locSpec[0] = CORBA::string_dup(entry->int_id_->getFlowSpec(flowName));
+	locSpec[0] = CORBA::string_dup( (entry->int_id_).second()->getFlowSpec(flowName));
 	
 	ACE_CString recvName = entry->ext_id_;
 	CORBA::Boolean avail = isFlowReceiverAvailable(recvName, flowNumber);
@@ -237,7 +262,7 @@ void AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::distS
 	    avail = getFlowReceiverStatus(recvName, flowNumber);
 
 	if(avail)
-	    entry->int_id_->getStreamCtrl()->start(locSpec);
+	    (entry->int_id_).second()->getStreamCtrl()->start(locSpec);
 	}
 }
 
@@ -256,7 +281,7 @@ int AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::distSe
     for (;iterator.next (entry) !=  0;iterator.advance ())
 	{
 	TAO_AV_Protocol_Object *dp_p = 0;
-	entry->int_id_->getFlowProtocol(flowName, dp_p);
+	(entry->int_id_).second()->getFlowProtocol(flowName, dp_p);
 
 	ACE_CString recvName = entry->ext_id_;
 	CORBA::Boolean avail = isFlowReceiverAvailable(recvName, flowNumber);
@@ -289,7 +314,7 @@ int AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::distSe
     for (;iterator.next (entry) !=  0;iterator.advance ())
 	{	
 	TAO_AV_Protocol_Object *dp_p = 0;
-	entry->int_id_->getFlowProtocol(flowName, dp_p);
+	(entry->int_id_).second()->getFlowProtocol(flowName, dp_p);
 	
 	ACE_CString recvName = entry->ext_id_;
 	CORBA::Boolean avail = isFlowReceiverAvailable(recvName, flowNumber);
@@ -299,6 +324,7 @@ int AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::distSe
 	    if(res < 0)
 		{
 		ACS_SHORT_LOG((LM_ERROR,"BulkDataDistributer<>::distSendData send frame error"));
+		CORBA::release((entry->int_id_).first()); 
 		senderMap_m.unbind(recvName);
 		iterator--;
 		recvStatusMap_m.unbind(recvName);
@@ -327,7 +353,7 @@ CORBA::Boolean AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallba
 	{    
 	AVStreams::flowSpec locSpec(1);
 	locSpec.length(1);
-	locSpec[0] = CORBA::string_dup(entry->int_id_->getFlowSpec(flowName));
+	locSpec[0] = CORBA::string_dup( (entry->int_id_).second()->getFlowSpec(flowName));
     
 	ACE_CString recvName = entry->ext_id_;
 	CORBA::Boolean avail = isFlowReceiverAvailable(recvName, flowNumber);
@@ -335,7 +361,7 @@ CORBA::Boolean AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallba
 	    {	
 	    try 
 		{
-		entry->int_id_->getStreamCtrl()->stop(locSpec);
+		(entry->int_id_).second()->getStreamCtrl()->stop(locSpec);
 		}
 	    catch(CORBA::TIMEOUT & ex)
 		{
@@ -345,6 +371,7 @@ CORBA::Boolean AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallba
 		}
 	    catch(CORBA::SystemException &ex)
 		{
+		CORBA::release((entry->int_id_).first()); 
 		senderMap_m.unbind(recvName);
 		iterator--;
 		recvStatusMap_m.unbind(recvName);
@@ -383,8 +410,8 @@ void AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::distS
 	    {
 	    AVStreams::flowSpec locSpec(1);
 	    locSpec.length(1);
-	    locSpec[0] = CORBA::string_dup(entry->int_id_->getFlowSpec(flowName));
-	    entry->int_id_->getStreamCtrl()->stop(locSpec);
+	    locSpec[0] = CORBA::string_dup( (entry->int_id_).second()->getFlowSpec(flowName));
+	    (entry->int_id_).second()->getStreamCtrl()->stop(locSpec);
 	    }
 	}
 }

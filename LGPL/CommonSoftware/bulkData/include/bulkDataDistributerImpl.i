@@ -200,6 +200,19 @@ void BulkDataDistributerImpl<TReceiverCallback, TSenderCallback>::multiDisconnec
 	}
     catch(CORBA::SystemException &ex)
 	{
+	Sender_Map *map = getDistributer()->getSenderMap();
+
+	Sender_Map_Iterator iterator(*map);
+	Sender_Map_Entry *entry = 0;
+	for (;iterator.next (entry) !=  0;iterator.advance ())
+	    {
+	    if( ((entry->int_id_).first())->_is_equivalent(receiverObj_p) )
+		{
+		CORBA::release((entry->int_id_).first()); 
+		map->unbind(entry);
+		}
+	    }
+
 	CORBAProblemExImpl err = CORBAProblemExImpl(__FILE__,__LINE__,"BulkDataDistributerImpl::multiDisconnect");
 	err.setMinor(ex.minor());
 	err.setCompletionStatus(ex.completed());
