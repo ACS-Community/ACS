@@ -16,7 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: testAUD_ARR.cpp,v 1.1 2007/07/10 07:18:55 nbarriga Exp $"
+ * "@(#) $Id: testAUD_ARR.cpp,v 1.2 2007/07/13 08:24:33 nbarriga Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -47,9 +47,9 @@ int main(int argc, char *argv[])
 	}
 
         ACS_SHORT_LOG((LM_WARNING,"ACS_SHORT_LOG"));
-        LOG_FULL(LM_WARNING,"main","LOG_FULL","operator","array01","Antenna01");
-        LOG_LOCATION(LM_WARNING,"main","LOG_LOCATION","array01","Antenna01");
-        LOG_AUD(LM_WARNING,"main","LOG_AUD","operator");
+        LOG_FULL(LM_WARNING,"main","LOG_FULL",acscommon::OPERATOR,"array01","Antenna01");
+        LOG_WITH_ANTENNA_CONTEXT(LM_WARNING,"main","LOG_WITH_ANTENNA_CONTEXT","array01","Antenna01");
+        LOG_TO_AUDIENCE(LM_WARNING,"main","LOG_TO_AUDIENCE",acscommon::OPERATOR);
 	client.logout();
 
 	return 0;

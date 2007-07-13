@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingMACROS.h,v 1.16 2007/07/11 12:49:10 nbarriga Exp $"
+* "@(#) $Id: loggingMACROS.h,v 1.17 2007/07/13 08:24:33 nbarriga Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -97,7 +97,7 @@ else \
  * @param logArray array where the log was generated
  * @param logAntenna antenna where the log was generated
  */
-#define LOG_LOCATION(logPriority, logRoutine, logMessage, logArray, logAntenna) \
+#define LOG_WITH_ANTENNA_CONTEXT(logPriority, logRoutine, logMessage, logArray, logAntenna) \
 if (getLogger()!=0) \
 { \
     Logging::BaseLog::LogRecord lr; \
@@ -126,7 +126,7 @@ else \
  * @param logMessage Log message (std::string)
  * @param logAudience intended receiver of this log message
  */
-#define LOG_AUD(logPriority, logRoutine, logMessage, logAudience) \
+#define LOG_TO_AUDIENCE(logPriority, logRoutine, logMessage, logAudience) \
 if (getLogger()!=0) \
 { \
     Logging::BaseLog::LogRecord lr; \

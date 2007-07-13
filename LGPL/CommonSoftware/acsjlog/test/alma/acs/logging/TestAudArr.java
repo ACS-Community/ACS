@@ -25,7 +25,7 @@ import java.util.logging.Logger;
 import java.lang.Thread;
 
 import alma.acs.component.client.ComponentClient;
-
+import alma.acscommon.OPERATOR;
 
 class TestAudArr extends ComponentClient{
         public TestAudArr(String managerLoc, String clientName) throws Exception {
@@ -44,8 +44,8 @@ class TestAudArr extends ComponentClient{
                         client = new TestAudArr(managerLoc, clientName);
                         Logger logger = client.getContainerServices().getLogger();
                         logger.log(Level.WARNING, "Normal Log");
-                        new NotReallyTypeSafeLog(logger, Level.WARNING, "Log with audience, array and antenna", "operator", "Array01", "Antenna01");
-                        new NotReallyTypeSafeLog(logger, Level.WARNING, "Log with audience", "operator");
+                        new NotReallyTypeSafeLog(logger, Level.WARNING, "Log with audience, array and antenna", OPERATOR.value, "Array01", "Antenna01");
+                        new NotReallyTypeSafeLog(logger, Level.WARNING, "Log with audience", OPERATOR.value);
 
                         Thread.sleep(1000);
                 }catch(Exception e){

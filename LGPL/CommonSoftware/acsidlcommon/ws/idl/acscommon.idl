@@ -122,6 +122,12 @@ module acscommon
     typedef unsigned long long TimeStamp; 
 
 
+    const string OPERATOR = "Operator";
+    const string DEVELOPER = "Developer";
+    const string SYSADMIN = "Sysadmin";
+    const string DBA = "DBA";
+    const string NONE = "";
+
 
 
     //Names of CORBA/ACS services////////////////////////////////////////////////////
