@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: RepeatGuard.cpp,v 1.5 2007/06/11 09:28:51 nbarriga Exp $"
+* "@(#) $Id: RepeatGuard.cpp,v 1.6 2007/07/13 07:21:45 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -25,7 +25,7 @@
 
 #include "vltPort.h"
 
-static char *rcsId="@(#) $Id: RepeatGuard.cpp,v 1.5 2007/06/11 09:28:51 nbarriga Exp $"; 
+static char *rcsId="@(#) $Id: RepeatGuard.cpp,v 1.6 2007/07/13 07:21:45 cparedes Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 
@@ -159,7 +159,8 @@ void RepeatGuard::reset(){
 
 void RepeatGuard::reset(ACS::TimeInterval interval, unsigned int maxRepetitions, bool or_or_and){
         ACS::ThreadSyncGuard guard(&mutex);
-        method=OR;
+        //method=OR;
+        method = or_or_and;
         if(interval==0)method=COUNTER;
         if(maxRepetitions==0)method=TIMER;
 

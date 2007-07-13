@@ -23,9 +23,12 @@
  *
  */
 
-// $Author: hmeuss $
-// $Date: 2007/07/10 14:59:18 $
+// $Author: cparedes $
+// $Date: 2007/07/13 07:21:45 $
 // $Log: RepeatGuard.java,v $
+// Revision 1.2  2007/07/13 07:21:45  cparedes
+// Changing the 2nd ctor, to work fine
+//
 // Revision 1.1  2007/07/10 14:59:18  hmeuss
 // Added Java implementation, but for some reason TAT does not work for the test here. Needs repair!
 // 
@@ -88,7 +91,7 @@ public class RepeatGuard {
 		// in 100 nanosconds as
 		// base unit
 		endTime = System.nanoTime() + interval;
-	}
+    }
 
 	/**
 	 * ctor, convenience fo rthe above, using AND evaluationMethod
@@ -98,26 +101,27 @@ public class RepeatGuard {
 	 * @param maxRepetitions
 	 */
 	RepeatGuard(long interv, int maxRep) {
-		new RepeatGuard(interv, maxRep, 0);
+		this(interv, maxRep, 0);
 	}
 
 	// check returns true, iff the last call for check was longer ago than
 	// interval, and (or) increment has been called more than maxRepetitions
-	boolean check() {
-		switch (evaluationMethod) {
+	synchronized boolean check() {
+		long now = System.nanoTime();
+        switch (evaluationMethod) {
 		case AND:
-			if ((System.nanoTime() >= endTime) && (counter >= maxRepetitions)) {
-				counterAtLastCheck = counter;
+			if ((now >= endTime) && (counter >= maxRepetitions)) {
+                counterAtLastCheck = counter;
 				counter = 0;
-				endTime = System.nanoTime() + interval;
+				endTime = now + interval;
 				return true;
 			}
 			return false;
 		case OR:
-			if ((System.nanoTime() >= endTime) || (counter >= maxRepetitions)) {
+			if ((now >= endTime) || (counter >= maxRepetitions)) {
 				counterAtLastCheck = counter;
 				counter = 0;
-				endTime = System.nanoTime() + interval;
+				endTime = now + interval;
 				return true;
 			}
 			return false;
@@ -125,7 +129,7 @@ public class RepeatGuard {
 			if (System.nanoTime() >= endTime) {
 				counterAtLastCheck = counter;
 				counter = 0;
-				endTime = System.nanoTime() + interval;
+				endTime = now + interval;
 				return true;
 			}
 			return false;
@@ -133,7 +137,7 @@ public class RepeatGuard {
 			if (counter >= maxRepetitions) {
 				counterAtLastCheck = counter;
 				counter = 0;
-				endTime = System.nanoTime() + interval;
+				endTime = now + interval;
 				return true;
 			}
 			return false;
@@ -141,13 +145,12 @@ public class RepeatGuard {
 		return false;
 	}
 
-	boolean checkAndIncrement() {
-
+	synchronized boolean checkAndIncrement() {
 		counter++;
 		return check();
 	}
 
-	void increment() {
+	synchronized void increment() {
 		counter++;
 	}
 
@@ -155,16 +158,17 @@ public class RepeatGuard {
 		return counterAtLastCheck;
 	}
 
-	void reset() {
+	synchronized void reset() {
 		counter = 0;
 		counterAtLastCheck = 0;
 		endTime = System.nanoTime() + interval;
 	}
 
-	void reset(long interv, int maxRep) {
+	synchronized void reset(long interv, int maxRep) {
 		reset(interv, maxRep, 0);
 	}
-		void reset(long interv, int maxRep, int or_or_and) {
+
+	synchronized void reset(long interv, int maxRep, int or_or_and) {
 		evaluationMethod = or_or_and;
 		if (interv == 0) {
 			evaluationMethod = COUNTER;
@@ -180,5 +184,4 @@ public class RepeatGuard {
 		// base unit
 		endTime = System.nanoTime() + interval;
 	}
-
 }
