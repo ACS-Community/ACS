@@ -1,0 +1,7 @@
+1 - === Running all JUnit tests of module repeatGuard 
+1 -  --endorsed -- alma.acs.testsupport.tat.TATJUnitRunner alma.acs.logging.RepeatGuardTest
+1 - INFO - Starting Java/abeans application: alma.acs.testsupport.tat.TATJUnitRunner alma.acs.logging.RepeatGuardTest
+1 - INFO - Using endorsed jar files in: -Djava.endorsed.dirs=/home/almadev/introot/lib/endorsed:/alma/ACS-6.0/ACSSW/lib/endorsed:
+1 - TEST_RUNNER_REPORT success/total: 1/1
+1 - JUnit test run succeeded
+1 - === Done running jcont JUnit tests 
