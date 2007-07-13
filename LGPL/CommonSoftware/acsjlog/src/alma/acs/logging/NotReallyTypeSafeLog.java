@@ -18,7 +18,7 @@ ALMA - Atacama Large Millimiter Array
 */
 /** 
  * @author  nbarriga
- * @version $Id: NotReallyTypeSafeLog.java,v 1.2 2007/07/10 13:34:18 nbarriga Exp $
+ * @version $Id: NotReallyTypeSafeLog.java,v 1.3 2007/07/13 14:50:45 nbarriga Exp $
  * @since    
  */
 package alma.acs.logging;
@@ -32,7 +32,7 @@ import alma.acs.logging.AcsLogLevel;
 import alma.acs.logging.AcsLogger;
 import alma.acs.logging.AcsLogRecord;
 
-class NotReallyTypeSafeLog{
+public class NotReallyTypeSafeLog{
         private Logger m_logger;
         private Map<String, Object> nameValue;
         private AcsLogRecord lr;
