@@ -1,7 +1,7 @@
 #*******************************************************************************
 # NRAO - ACS project
 #
-# "@(#) $Id: Makefile,v 1.22 2006/10/13 06:35:08 gchiozzi Exp $"
+# "@(#) $Id: Makefile,v 1.23 2007/07/13 09:55:59 bjeram Exp $"
 #
 # Makefile of ........
 #
@@ -82,8 +82,7 @@ acstime_OBJECTS   =	acstimeTimeUtil \
 			acstimeDurationHelper acstimeEpochHelper \
 			acstimeProfiler \
 			acstimeC acstimeS
-acstime_LIBS      =     baci ACSTimeError
-
+acstime_LIBS      =     baci ACSTimeError maciErrType
 
 acsclock_OBJECTS   =	acstimeClockImpl
 acsclock_LIBS      =    baci ACSTimeError acstime
