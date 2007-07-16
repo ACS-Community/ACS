@@ -222,7 +222,10 @@ module xmlstore
 			/** The document is invisible, similar to deleted. */
 			boolean hidden;
 		};
-		
+		/**
+                * @TODO: need to change this exceptions to ACS exceptions urgently!!!
+                */
+                
 		/** An entity does already exist (eg when trying to store an entity). 
 		 * Not used in the moment...
 		 */
