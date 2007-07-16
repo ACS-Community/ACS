@@ -15,20 +15,20 @@ import java.util.logging.Logger;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
-import com.cosylab.CDB.DAL;
-import com.cosylab.CDB.DALChangeListener;
-import com.cosylab.CDB.DALChangeListenerPOA;
-import com.cosylab.CDB.DALHelper;
-import com.cosylab.CDB.DAOOperations;
-
-import alma.cdbErrType.wrappers.AcsJCDBXMLErrorEx;
-import com.cosylab.cdb.jdal.DAOImpl;
-import com.cosylab.cdb.jdal.XMLHandler;
-
 import org.omg.CORBA.ORB;
 import org.xml.sax.InputSource;
 
 import alma.acs.util.ACSPorts;
+import alma.cdbErrType.wrappers.AcsJCDBXMLErrorEx;
+
+import com.cosylab.CDB.DAL;
+import com.cosylab.CDB.DALChangeListener;
+import com.cosylab.CDB.DALChangeListenerOperations;
+import com.cosylab.CDB.DALChangeListenerPOA;
+import com.cosylab.CDB.DALHelper;
+import com.cosylab.CDB.DAOOperations;
+import com.cosylab.cdb.jdal.DAOImpl;
+import com.cosylab.cdb.jdal.XMLHandler;
 
 /**
  * Class managing CDB access (establishing connection to the CDB,
@@ -246,13 +246,21 @@ public class CDBAccess
 	};
 
 	/**
+	 * Constructor used only when {@link #setDAL(DAL)} is called afterwards.
+	 * @param logger logger.
+	 */
+	public CDBAccess(Logger logger)
+	{
+		this(null, logger);
+	}
+
+	/**
 	 * Constructor.
 	 * @param orb 	CORBA ORB.
 	 * @param logger logger.
 	 */
 	public CDBAccess(ORB orb, Logger logger)
 	{
-		assert (orb != null);
 		assert (logger != null);
 		this.orb = orb;
 		this.logger = logger;
@@ -279,7 +287,6 @@ public class CDBAccess
 	 * Performs the connect of the specified DAO.
 	 * 
 	 * @param	proxy	the proxy to connect, non-<code>null</code>
-	 * @throws	RemoteException	if the connection fails
 	 */
 	private void internalConnect(DAOProxy proxy) 
 	{
