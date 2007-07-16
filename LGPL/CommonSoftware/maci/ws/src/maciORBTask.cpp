@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciORBTask.cpp,v 1.4 2006/09/01 02:20:54 cparedes Exp $"
+* "@(#) $Id: maciORBTask.cpp,v 1.5 2007/07/16 09:33:14 bjeram Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -11,6 +11,7 @@
 #include <vltPort.h>
 
 #include <maciORBTask.h>
+#include <ACSErrTypeCommon.h>
 
  using namespace maci;
 
@@ -48,11 +49,40 @@ ORBTask::svc (void)
 
 
       }
+    catch( CORBA::SystemException &ex ) 
+	{
+	ACSErrTypeCommon::CORBAProblemExImpl corbaProblemEx(__FILE__, __LINE__,
+							    "maci::ORBTask::svc");
+	corbaProblemEx.setMinor(ex.minor());
+	corbaProblemEx.setCompletionStatus(ex.completed());
+	corbaProblemEx.setInfo(ex._info().c_str());
+	
+	corbaProblemEx.log();
+	return 1;
+	}
     catch( CORBA::Exception &ex )
       {
-	ACE_PRINT_EXCEPTION(ex, "maci::ORBTask::svc");
-	return 1;
+      ACSErrTypeCommon::CORBAProblemExImpl corbaProblemEx(__FILE__, __LINE__,
+							    "maci::ORBTask::svc");
+      corbaProblemEx.setInfo(ex._info().c_str());
+      corbaProblemEx.log();
+      return 1;
       }
+    catch(ACSErr::ACSbaseExImpl &_ex)
+	{
+	
+	ACSErrTypeCommon::UnexpectedExceptionExImpl ex(_ex, __FILE__, __LINE__,
+						       "maci::ORBTask::svc");
+	ex.log();
+	return 1;
+	}
+    catch(...)
+	{
+	ACSErrTypeCommon::UnexpectedExceptionExImpl ex(__FILE__, __LINE__,
+						       "maci::ORBTask::svc");
+	ex.log();
+	return 1;
+	}//try-catch
 
   // return error free code
   return 0;
@@ -65,6 +95,9 @@ ORBTask::svc (void)
 // REVISION HISTORY:
 //
 // $Log: maciORBTask.cpp,v $
+// Revision 1.5  2007/07/16 09:33:14  bjeram
+// improved error handling
+//
 // Revision 1.4  2006/09/01 02:20:54  cparedes
 // small change, NAMESPACE_BEGIN / NAMESPACE_END / NAMESPACE_USE macross to clean up a little the cpp code
 //
