@@ -1,9 +1,12 @@
 #*******************************************************************************
 # ACS project Makefile
 #
-# "@(#) $Id: Makefile,v 1.4 2006/10/18 15:52:30 gchiozzi Exp $"
+# "@(#) $Id: Makefile,v 1.5 2007/07/16 15:51:25 hsommer Exp $"
 #
 # $Log: Makefile,v $
+# Revision 1.5  2007/07/16 15:51:25  hsommer
+# DEBUG=on to include .java in IDL-generated jar
+#
 # Revision 1.4  2006/10/18 15:52:30  gchiozzi
 # Added schema file for ErrorExplorer.
 #
@@ -171,7 +174,7 @@ jjj_DIRS=
 jjj_EXTRAS= 
 #
 # java sources in Jarfile on/off
-DEBUG= 
+DEBUG=on
 #
 # ACS XmlIdl generation on/off
 #
