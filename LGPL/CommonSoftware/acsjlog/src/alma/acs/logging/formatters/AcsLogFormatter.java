@@ -24,6 +24,7 @@ package alma.acs.logging.formatters;
 import java.net.InetAddress;
 
 import java.text.SimpleDateFormat;
+import java.util.logging.Formatter;
 import java.util.logging.LogRecord;
 
 import org.omg.CORBA.Any;
@@ -35,7 +36,7 @@ import alma.acs.logging.ACSCoreLevel;
  * Class that is responsible for formatting the log records/elements of different levels 
  * as well as assigning the right values to their attributes. 
  */
-public abstract class AcsLogFormatter implements ACSCoreLevel
+public abstract class AcsLogFormatter extends Formatter implements ACSCoreLevel
 {
 
 	protected static final SimpleDateFormat df = new SimpleDateFormat("yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'SSS");
