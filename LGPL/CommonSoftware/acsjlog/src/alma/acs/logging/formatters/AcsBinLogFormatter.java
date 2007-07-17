@@ -24,6 +24,7 @@ import org.omg.CORBA.Any;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.logging.Formatter;
 import java.util.logging.LogRecord;
 import java.util.Map;
 import java.util.Date;
@@ -45,13 +46,16 @@ import alma.ACSLoggingLog.NameValue;
 public class AcsBinLogFormatter extends AcsLogFormatter 
 {
 
+    /**
+     * This is the method used by ACS, for all AcsLogFormatters.
+     */
     public Any formatAny( Any anyLogRecord, LogRecord logRecord){
-        LogBinaryRecord binLogRecord = format(logRecord);
+        LogBinaryRecord binLogRecord = formatBinary(logRecord);
         LogBinaryRecordHelper.insert(anyLogRecord,binLogRecord);
         return anyLogRecord;
     }   
     
-    LogBinaryRecord format(LogRecord logRecord){
+    LogBinaryRecord formatBinary(LogRecord logRecord){
         LogBinaryRecord rLog = new LogBinaryRecord();
         
 		// log level 
@@ -228,4 +232,12 @@ public class AcsBinLogFormatter extends AcsLogFormatter
 		return rLog;
 
     }
+
+	/**
+	 * This method should never be called. We only add it to support the inheritance of
+	 * {@link AcsLogFormatter} from {@link Formatter} which is useful for text-based subclasses.
+	 */
+	public String format(LogRecord record) {		
+		return "Error: only binary format available!";
+	}
 }
