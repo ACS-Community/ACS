@@ -25,8 +25,11 @@
  
   
 // $Author: cparedes $
-// $Date: 2007/07/13 07:19:38 $
+// $Date: 2007/07/17 09:34:18 $
 // $Log: RepeatGuardTest.java,v $
+// Revision 1.3  2007/07/17 09:34:18  cparedes
+// Added a little cleaning and always true for the first check
+//
 // Revision 1.2  2007/07/13 07:19:38  cparedes
 // Adding the right reference file
 //
@@ -51,58 +54,64 @@ public class RepeatGuardTest extends TestCase {
 	public void testRepeatGuard() throws InterruptedException {
 		RepeatGuard rg = new RepeatGuard(10000000,10);  // interval is 1 sec
 
+        System.out.println("******************RepeatGuard(10000000,10)***************");
 		int countSucceeded=0;
+        int total = 0;
 		for(int i=0;i<50;i++){
 			rg.increment();
 			if(rg.check()) {
+                total+=rg.count();
 				countSucceeded++;
 			}
 		}
-		assertEquals(5, countSucceeded);
-	/*	
-		rg.reset();
+        
+        total+=rg.counter();
+		assertEquals(50, total);
+		assertEquals(6, countSucceeded);
+
+        System.out.println("******************RepeatGuard(0,10)***************");
+        rg.reset(0,10);
+        countSucceeded=0;
+        for (int i=0;i<25;i++) {
+            Thread.sleep(200);  // 200 millisecs;
+            if(rg.checkAndIncrement()) {
+                countSucceeded++;
+            }
+        }
+        assertEquals(2, countSucceeded);
+		
+        System.out.println("******************RepeatGuard.reset()***************");
+        rg.reset();
 		countSucceeded=0;
-	        for(int i=0;i<25;i++){
-			Thread.sleep(200);  // 200 millisecs;
-	                if(rg.checkAndIncrement()) {
-	                	countSucceeded++;
-	                }
-	        }
-	        assertEquals(5, countSucceeded);
-	        
-	        rg.reset(10000000, 10, RepeatGuard.OR);
-			countSucceeded=0;
-	        for(int i=0;i<25;i++) {
-				Thread.sleep(200);  // 200 millisecs;
-		                if(rg.checkAndIncrement()) {
-		                	countSucceeded++;
-		                }
-		        }
-		        assertEquals(5, countSucceeded);
-		        
-		        
-	        rg.reset(10000000,0);
-			countSucceeded=0;
-	        for (int i=0;i<25;i++) {
-				Thread.sleep(200);  // 200 millisecs;
-                if(rg.checkAndIncrement()) {
-                	countSucceeded++;
-                }
+        for(int i=0;i<25;i++){
+            Thread.sleep(200);  // 200 millisecs;
+            if(rg.checkAndIncrement()) {
+                countSucceeded++;
+            }
+        }
+        assertEquals(2, countSucceeded);
+        
+        System.out.println("******************RepeatGuard.reset(10000000,10,RepeatGuard.OR)***************");
+        rg.reset(10000000, 10, RepeatGuard.OR);
+        countSucceeded=0;
+        for(int i=0;i<25;i++) {
+            if(rg.checkAndIncrement()) {
+                countSucceeded++;
+            }
+        }
+        assertEquals(2, countSucceeded);
+            
+        System.out.println("******************RepeatGuard(10000000,10)***************");
+        rg.reset(10000000,0);
+        countSucceeded=0;
+        for (int i=0;i<25;i++) {
+            Thread.sleep(200);  // 200 millisecs;
+            if(rg.checkAndIncrement()) {
+                countSucceeded++;
+            }
         }
         assertEquals(5, countSucceeded);
         
-	        	
-	        
-	        rg.reset(0,10);
-			countSucceeded=0;
-	        for (int i=0;i<25;i++) {
-				Thread.sleep(200);  // 200 millisecs;
-                if(rg.checkAndIncrement()) {
-                	countSucceeded++;
-                }
-        }
-        assertEquals(2, countSucceeded);
-        */
 	}
 
 	/**
