@@ -111,6 +111,21 @@ module ACS {
 
 
 /**
+ * The optional audience field in the log record should be filled using the constant strings 
+ * defined in this module. 
+ * Note that we don't use enums to allow a more flexible extension by temporarily using free strings.  
+ */
+module log_audience
+{
+    const string OPERATOR = "Operator";
+    const string DEVELOPER = "Developer";
+    const string SYSADMIN = "Sysadmin";
+    const string DBA = "DBA";
+    const string NONE = "";
+};
+
+
+/**
  * This module is intended to be a common place to group ALMA/ACS data type 
  * definitions and constant strings that are shared among different CVS modules.
  * In short, it is in place to eliminate dependency problems.
@@ -120,15 +135,6 @@ module acscommon
 
     //Time-related definitions///////////////////////////////////////////////////////
     typedef unsigned long long TimeStamp; 
-
-
-    const string OPERATOR = "Operator";
-    const string DEVELOPER = "Developer";
-    const string SYSADMIN = "Sysadmin";
-    const string DBA = "DBA";
-    const string NONE = "";
-
-
 
     //Names of CORBA/ACS services////////////////////////////////////////////////////
     /**
