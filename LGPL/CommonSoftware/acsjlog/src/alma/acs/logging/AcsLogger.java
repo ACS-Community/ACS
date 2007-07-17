@@ -89,6 +89,23 @@ public class AcsLogger extends Logger implements LogConfigSubscriber {
             return this.sourceObject;
     }
 
+    public void logToAudience(Level level, String msg, String audience) {
+    	AcsLogRecord lr = createAcsLogRecord(level, msg);
+    	lr.setAudience(audience);
+    	log(lr);
+    }
+    
+    public void logToAudience(Level level, String msg, Throwable thr, String audience) {
+    	AcsLogRecord lr = createAcsLogRecord(level, msg);
+    	lr.setAudience(audience);
+    	lr.setThrown(thr);
+    	log(lr);    	
+    }
+    
+    public AcsLogRecord createAcsLogRecord(Level level, String msg) {
+    	AcsLogRecord lr = new AcsLogRecord(level, msg, getName());
+    	return lr;
+    }
     
     /**
      * Logs the given <code>LogRecord</code>. 
