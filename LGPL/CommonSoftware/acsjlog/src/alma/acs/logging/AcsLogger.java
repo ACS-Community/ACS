@@ -61,7 +61,7 @@ public class AcsLogger extends Logger implements LogConfigSubscriber {
 
     public AcsLogger(String name, String resourceBundleName, LogConfig logConfig) {
         super(name, resourceBundleName);
-        addLoggerClass(getClass());
+        addLoggerClass(AcsLogger.class); 
         addLoggerClass(Logger.class);
         logConfig.addSubscriber(this);
         configureLogging(logConfig);
