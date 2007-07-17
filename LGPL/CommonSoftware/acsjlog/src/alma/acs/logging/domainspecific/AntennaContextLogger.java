@@ -55,5 +55,48 @@ public class AntennaContextLogger {
         lr.setAntenna(antenna);
         delegateLogger.log(lr);
 	}
-	
+	/**
+	 * @param level
+	 * @param msg
+	 * @param thr
+	 * @param audience  Should be one of the IDL-defined string constants from package <code>alma.log_audience</code>,
+	 *                  or any string in case a required audience type has not yet been defined in IDL.
+	 *                  May also be <code>null</code>, but {@link alma.log_audience.NONE.value} is preferred.  
+	 * @param array
+	 * @param antenna
+	 */
+	public void log(Level level, String msg, Throwable thr, String audience, String array, String antenna) { 
+		AcsLogRecord lr = delegateLogger.createAcsLogRecord(level, msg);
+		lr.setThrown(thr);
+        lr.setAudience(audience);
+        lr.setArray(array);
+        lr.setAntenna(antenna);
+        delegateLogger.log(lr);
+	}
+	/**
+	 * @param level
+	 * @param msg
+	 * @param array
+	 * @param antenna
+	 */
+	public void log(Level level, String msg, String array, String antenna) { 
+		AcsLogRecord lr = delegateLogger.createAcsLogRecord(level, msg);
+        lr.setArray(array);
+        lr.setAntenna(antenna);
+        delegateLogger.log(lr);
+	}
+	/**
+	 * @param level
+	 * @param msg
+	 * @param thr
+	 * @param array
+	 * @param antenna
+	 */
+	public void log(Level level, String msg, Throwable thr, String array, String antenna) { 
+		AcsLogRecord lr = delegateLogger.createAcsLogRecord(level, msg);
+		lr.setThrown(thr);
+        lr.setArray(array);
+        lr.setAntenna(antenna);
+        delegateLogger.log(lr);
+	}
 }

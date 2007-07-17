@@ -21,11 +21,10 @@
  */
 package alma.acs.logging;
 import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.lang.Thread;
 
 import alma.acs.component.client.ComponentClient;
-import alma.acscommon.OPERATOR;
+import alma.acs.logging.domainspecific.AntennaContextLogger;
+import alma.log_audience.OPERATOR;
 
 class TestAudArr extends ComponentClient{
         public TestAudArr(String managerLoc, String clientName) throws Exception {
@@ -42,11 +41,18 @@ class TestAudArr extends ComponentClient{
                 TestAudArr client = null;
                 try{
                         client = new TestAudArr(managerLoc, clientName);
-                        Logger logger = client.getContainerServices().getLogger();
-                        logger.log(Level.WARNING, "Normal Log");
-                        new NotReallyTypeSafeLog(logger, Level.WARNING, "Log with audience, array and antenna", OPERATOR.value, "Array01", "Antenna01");
-                        new NotReallyTypeSafeLog(logger, Level.WARNING, "Log with audience", OPERATOR.value);
-
+                        AcsLogger m_logger = (AcsLogger)client.getContainerServices().getLogger();
+                        AntennaContextLogger logger = new AntennaContextLogger(m_logger);
+                        m_logger.log(Level.WARNING, "Normal Log");
+                        m_logger.logToAudience(Level.WARNING, "Log with audience", OPERATOR.value);
+                        m_logger.logToAudience(Level.WARNING, "Log exception with audience", new Exception("My dummy exception"), OPERATOR.value);
+                        
+                        
+                        logger.log(Level.WARNING, "Log with audience, array and antenna", OPERATOR.value, "Array01", "Antenna01");
+                        logger.log(Level.WARNING, "Log with array and antenna", "Array01", "Antenna01");
+                        logger.log(Level.WARNING, "Log exception with audience, array and antenna", new Exception("My dummy exception"), OPERATOR.value, "Array01", "Antenna01");
+                        logger.log(Level.WARNING, "Log exception with array and antenna", new Exception("My dummy exception"), "Array01", "Antenna01");
+                        
                         Thread.sleep(1000);
                 }catch(Exception e){
                         System.out.println("Error creating test client");
