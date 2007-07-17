@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 ################################################################################################
-# @(#) $Id: acsstartupContainerPort.py,v 1.34 2006/11/10 10:50:28 sturolla Exp $
+# @(#) $Id: acsstartupContainerPort.py,v 1.35 2007/07/17 20:46:09 agrimstrup Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA, 2001
@@ -196,6 +196,14 @@ parser.add_option("-b", "--baseport",
                   help=baseport_help_msg,
                   default=None)
 
+#Container flags
+flags_help_msg='''Sets flags that are to be passed to the actual container
+start executables.'''
+parser.add_option("-p", "--passthrough",
+                  dest="container_flags",
+                  default=None,
+                  help=flags_help_msg)
+
 #--------------------------------------------------------------------------
 #--Make commands backwards compatible with pre ACS 6.0 usage.
 #--Basically this means that commands of the form -xy... should still 
@@ -223,6 +231,7 @@ cl_remote_host       = options.remote_host
 cl_remote_debuggable = options.remote_debuggable
 cl_cdb_ref           = options.cdb_ref
 cl_baseport          = options.baseport
+cl_flags             = options.container_flags
 __DEBUG__            = options.debug
 
 #-----------------------------------------------------------------------------
@@ -673,7 +682,7 @@ if cl_java:
     
     parsed_argv.insert(i, str(newPort))
     i = i + 1
-        
+
 elif cl_cpp:
     parsed_argv.insert(i, "-ORBEndpoint")
     i = i + 1
@@ -703,7 +712,12 @@ else:
 #add the manager reference
 parsed_argv.insert(i, "-m " + str(cl_manager))
 i = i + 1
-    
+
+#add any container flags passed
+if cl_flags:
+    parsed_argv.insert(i, cl_flags)
+    i = i + 1
+        
 ################################################################    
 #Finally print out the command.
 for arg in parsed_argv:
