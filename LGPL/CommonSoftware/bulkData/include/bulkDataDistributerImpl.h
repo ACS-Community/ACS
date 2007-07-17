@@ -243,6 +243,9 @@ class BulkDataDistributerImpl : public CharacteristicComponentImpl,
     CDB::DAL_ptr dal_p;
 
     AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback> distributer;
+
+    void rmEntryFromSenderMap(bulkdata::BulkDataReceiver_ptr receiverObj_p);
+    void rmEntryFromSenderMap(const char *receiverName_p);
 };
 
 

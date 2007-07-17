@@ -143,32 +143,39 @@ void BulkDataDistributerImpl<TReceiverCallback, TSenderCallback>::connectByName(
 {
     ACS_TRACE("BulkDataDistributerImpl<>::connectByName");
 
-    bulkdata::BulkDataReceiver_var receiver = containerServices_p->maci::ContainerServices::getComponent<bulkdata::BulkDataReceiver>(receiverName_p);
-    if(CORBA::is_nil(receiver.in()))
+    try
 	{
-	ACS_SHORT_LOG((LM_ERROR,"BulkDataDistributerImpl<>::connectByName receiver reference null"));
-	AVConnectErrorExImpl err = AVConnectErrorExImpl(__FILE__,__LINE__,"BulkDataDistributerImpl::connectByName");
-	throw err.getAVConnectErrorEx();
-	}
-    else
-	{
-	try
+	bulkdata::BulkDataReceiver_var receiver = containerServices_p->maci::ContainerServices::getComponentNonSticky<bulkdata::BulkDataReceiver>(receiverName_p);
+	if(CORBA::is_nil(receiver.in()))
+	    {
+	    ACS_SHORT_LOG((LM_ERROR,"BulkDataDistributerImpl<>::connectByName receiver reference null"));
+	    AVConnectErrorExImpl err = AVConnectErrorExImpl(__FILE__,__LINE__,"BulkDataDistributerImpl::connectByName");
+	    throw err.getAVConnectErrorEx();
+	    }
+	else
 	    {
 	    multiConnect(receiver.in());
 	    }
-	catch(AVConnectErrorEx &ex)
-	    {
-	    AVConnectErrorExImpl err = AVConnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataDistributerImpl::connectByName");
-	    err.log(LM_DEBUG);
-	    throw err.getAVConnectErrorEx();
-	    }
-	catch(...)
-	    {
-	    ACSErrTypeCommon::UnknownExImpl ex = ACSErrTypeCommon::UnknownExImpl(__FILE__,__LINE__,"BulkDataDistributerImpl::connectByName");
-	    AVConnectErrorExImpl err = AVConnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataDistributerImpl::connectByName");
-	    throw err.getAVConnectErrorEx();
-	    }
 	}
+    catch(AVConnectErrorEx &ex)
+	{
+	AVConnectErrorExImpl err = AVConnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataDistributerImpl::connectByName");
+	err.log(LM_DEBUG);
+	throw err.getAVConnectErrorEx();
+	}
+    catch(ACSErr::ACSbaseExImpl &ex)
+	{
+	AVConnectErrorExImpl err = AVConnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataDistributerImpl::connectByName");
+	err.log(LM_DEBUG);
+	throw err.getAVConnectErrorEx();
+	}
+    catch(...)
+	{
+	ACSErrTypeCommon::UnknownExImpl ex = ACSErrTypeCommon::UnknownExImpl(__FILE__,__LINE__,"BulkDataDistributerImpl::connectByName");
+	AVConnectErrorExImpl err = AVConnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataDistributerImpl::connectByName");
+	throw err.getAVConnectErrorEx();
+	}
+
 }
 
 
@@ -194,38 +201,31 @@ void BulkDataDistributerImpl<TReceiverCallback, TSenderCallback>::multiDisconnec
 	}
     catch(ACSErr::ACSbaseExImpl &ex)
 	{
+	rmEntryFromSenderMap(receiverObj_p);
+
 	AVDisconnectErrorExImpl err = AVDisconnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataDistributerImpl::multiDisconnect");
 	err.log(LM_DEBUG);
 	throw err.getAVDisconnectErrorEx();
 	}
     catch(CORBA::SystemException &ex)
 	{
-	Sender_Map *map = getDistributer()->getSenderMap();
-
-	Sender_Map_Iterator iterator(*map);
-	Sender_Map_Entry *entry = 0;
-	for (;iterator.next (entry) !=  0;iterator.advance ())
-	    {
-	    if( ((entry->int_id_).first())->_is_equivalent(receiverObj_p) )
-		{
-		CORBA::release((entry->int_id_).first()); 
-		map->unbind(entry);
-		}
-	    }
+	rmEntryFromSenderMap(receiverObj_p);
 
 	CORBAProblemExImpl err = CORBAProblemExImpl(__FILE__,__LINE__,"BulkDataDistributerImpl::multiDisconnect");
 	err.setMinor(ex.minor());
 	err.setCompletionStatus(ex.completed());
 	err.setInfo(ex._info().c_str());
-	err.log(LM_ERROR);
 	AVDisconnectErrorExImpl err1 = AVDisconnectErrorExImpl(err,__FILE__,__LINE__,"BulkDataDistributerImpl::multiDisconnect");
+	err1.log(LM_DEBUG);
 	throw err1.getAVDisconnectErrorEx();
-	//throw err.getCORBAProblemEx();
 	}
     catch(...)
 	{
+	rmEntryFromSenderMap(receiverObj_p);
+
 	ACSErrTypeCommon::UnknownExImpl ex = ACSErrTypeCommon::UnknownExImpl(__FILE__,__LINE__,"BulkDataDistributerImpl::multiDisconnect");
 	AVDisconnectErrorExImpl err = AVDisconnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataDistributerImpl::multiDisconnect");
+	err.log(LM_DEBUG);
 	throw err.getAVDisconnectErrorEx();
 	}
 }
@@ -237,40 +237,52 @@ void BulkDataDistributerImpl<TReceiverCallback, TSenderCallback>::disconnectByNa
 {
     ACS_TRACE("BulkDataDistributerImpl<>::disconnectByName");
 
-    if(!distributer.isRecvConnected(receiverName_p))
+    try
 	{
-	ACS_SHORT_LOG((LM_ERROR,"BulkDataDistributerImpl::disconnectByName AVDisconnectErrorExImpl - receiver %s not connected",receiverName_p));
-	AVDisconnectErrorExImpl err = AVDisconnectErrorExImpl(__FILE__,__LINE__,"BulkDataDistributerImpl::disconnectByName");
-	throw err.getAVDisconnectErrorEx();
-	}
+	if(!distributer.isRecvConnected(receiverName_p))
+	    {
+	    ACS_SHORT_LOG((LM_ERROR,"BulkDataDistributerImpl::disconnectByName AVDisconnectErrorExImpl - receiver %s not connected",receiverName_p));
+	    AVDisconnectErrorExImpl err = AVDisconnectErrorExImpl(__FILE__,__LINE__,"BulkDataDistributerImpl::disconnectByName");
+	    throw err.getAVDisconnectErrorEx();
+	    }
 
-    bulkdata::BulkDataReceiver_var receiver = containerServices_p->maci::ContainerServices::getComponent<bulkdata::BulkDataReceiver>(receiverName_p);
-    if(CORBA::is_nil(receiver.in()))
-	{
-	ACS_SHORT_LOG((LM_ERROR,"BulkDataDistributerImpl::disconnectByName could not get receiver component reference"));
-	AVDisconnectErrorExImpl err = AVDisconnectErrorExImpl(__FILE__,__LINE__,"BulkDataDistributerImpl::disconnectByName");
-	throw err.getAVDisconnectErrorEx();
-	}
-    else
-	{
-	try
+	bulkdata::BulkDataReceiver_var receiver = containerServices_p->maci::ContainerServices::getComponentNonSticky<bulkdata::BulkDataReceiver>(receiverName_p);
+	if(CORBA::is_nil(receiver.in()))
+	    {
+	    ACS_SHORT_LOG((LM_ERROR,"BulkDataDistributerImpl::disconnectByName could not get receiver component reference"));
+	    AVDisconnectErrorExImpl err = AVDisconnectErrorExImpl(__FILE__,__LINE__,"BulkDataDistributerImpl::disconnectByName");
+	    throw err.getAVDisconnectErrorEx();
+	    }
+	else
 	    {
 	    multiDisconnect(receiver.in());
-	    containerServices_p->releaseComponent(receiverName_p);	
-	    }
-	catch(AVDisconnectErrorEx &ex)
-	    {
-	    AVDisconnectErrorExImpl err = AVDisconnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataDistributerImpl::disconnectByName");
-	    err.log(LM_DEBUG);
-	    throw err.getAVDisconnectErrorEx();
-	    }
-	catch(...)
-	    {
-	    ACSErrTypeCommon::UnknownExImpl ex = ACSErrTypeCommon::UnknownExImpl(__FILE__,__LINE__,"BulkDataDistributerImpl::disconnectByName");
-	    AVDisconnectErrorExImpl err = AVDisconnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataDistributerImpl::disconnectByName");
-	    throw err.getAVDisconnectErrorEx();
+	    //containerServices_p->releaseComponent(receiverName_p);
 	    }
 	}
+    catch(AVDisconnectErrorEx &ex)
+	{
+	rmEntryFromSenderMap(receiverName_p);
+
+	AVDisconnectErrorExImpl err = AVDisconnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataDistributerImpl::disconnectByName");
+	err.log(LM_DEBUG);
+	throw err.getAVDisconnectErrorEx();
+	}
+    catch(ACSErr::ACSbaseExImpl &ex)
+	{
+	rmEntryFromSenderMap(receiverName_p);
+
+	AVDisconnectErrorExImpl err = AVDisconnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataDistributerImpl::disconnectByName");
+	err.log(LM_DEBUG);
+	throw err.getAVDisconnectErrorEx();
+	}
+    catch(...)
+	{
+	rmEntryFromSenderMap(receiverName_p);
+
+	ACSErrTypeCommon::UnknownExImpl ex = ACSErrTypeCommon::UnknownExImpl(__FILE__,__LINE__,"BulkDataDistributerImpl::disconnectByName");
+	AVDisconnectErrorExImpl err = AVDisconnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataDistributerImpl::disconnectByName");
+	throw err.getAVDisconnectErrorEx();
+	}		
 }
 
 
@@ -519,4 +531,44 @@ ACSErr::Completion * BulkDataDistributerImpl<TReceiverCallback, TSenderCallback>
     
     AVCbNotAvailableCompletion *comp = new AVCbNotAvailableCompletion();
     return comp->returnCompletion();
+}
+
+
+template<class TReceiverCallback, class TSenderCallback>
+void BulkDataDistributerImpl<TReceiverCallback, TSenderCallback>::rmEntryFromSenderMap(bulkdata::BulkDataReceiver_ptr receiverObj_p)
+{
+    ACS_TRACE("BulkDataDistributerImpl<>::removeEntryFromMap");
+
+    Sender_Map *map = getDistributer()->getSenderMap();
+
+    Sender_Map_Iterator iterator(*map);
+    Sender_Map_Entry *entry = 0;
+    for (;iterator.next (entry) !=  0;iterator.advance ())
+	{
+	if( ((entry->int_id_).first())->_is_equivalent(receiverObj_p) )
+	    {
+	    CORBA::release((entry->int_id_).first()); 
+	    map->unbind(entry);
+	    }
+	}
+}
+
+
+template<class TReceiverCallback, class TSenderCallback>
+void BulkDataDistributerImpl<TReceiverCallback, TSenderCallback>::rmEntryFromSenderMap(const char *receiverName_p)
+{
+    ACS_TRACE("BulkDataDistributerImpl<>::removeEntryFromMap");
+
+    Sender_Map *map = getDistributer()->getSenderMap();
+
+    Sender_Map_Iterator iterator(*map);
+    Sender_Map_Entry *entry = 0;
+    for (;iterator.next (entry) !=  0;iterator.advance ())
+	{
+	if(strcmp((entry->ext_id_).c_str(),receiverName_p) == 0)
+	    {
+	    CORBA::release((entry->int_id_).first()); 
+	    map->unbind(entry);
+	    }
+	}
 }
