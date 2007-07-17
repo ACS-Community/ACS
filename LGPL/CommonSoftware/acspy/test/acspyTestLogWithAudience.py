@@ -17,7 +17,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: acspyTestLogWithAudience.py,v 1.2 2007/07/13 08:24:33 nbarriga Exp $"
+# "@(#) $Id: acspyTestLogWithAudience.py,v 1.3 2007/07/17 13:39:45 nbarriga Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -29,8 +29,8 @@ from Acspy.Common.Log import getLogger
 import ACSLog
 from Acspy.Clients.SimpleClient import PySimpleClient
 import logging 
-from acscommon import OPERATOR
-from acscommon import NONE
+from log_audience import OPERATOR
+from log_audience import NONE
 
 simpleClient = PySimpleClient()
 
