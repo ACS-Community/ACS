@@ -18,7 +18,7 @@
  */
 /** 
  * @author  nbarriga
- * @version $Id: AcsLogRecord.java,v 1.4 2007/07/10 12:51:21 nbarriga Exp $
+ * @version $Id: AcsLogRecord.java,v 1.5 2007/07/17 13:03:56 hsommer Exp $
  * @since    
  */
 
@@ -45,9 +45,13 @@ public class AcsLogRecord extends LogRecord
 
 	private Object params[];
 
-	public AcsLogRecord(Level level, String msg, Object parameters, String loggerName) {
+	public AcsLogRecord(Level level, String msg, String loggerName) {
 		super(level, msg);
 		this.setLoggerName(loggerName);
+	}
+
+	public AcsLogRecord(Level level, String msg, Object parameters, String loggerName) {
+		this(level, msg, loggerName);
 		params = new Object[1];
 		params[0] = parameters;
 		this.setParameters(params);
