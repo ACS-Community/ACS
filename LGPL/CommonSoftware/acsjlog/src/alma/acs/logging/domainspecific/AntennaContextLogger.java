@@ -22,10 +22,7 @@
 
 package alma.acs.logging.domainspecific;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import alma.acs.logging.AcsLogRecord;
 import alma.acs.logging.AcsLogger;
@@ -33,12 +30,12 @@ import alma.acs.logging.AcsLogger;
 public class AntennaContextLogger {
 
 	private final AcsLogger delegateLogger;
-    
+
 	public AntennaContextLogger(AcsLogger logger) {
 		delegateLogger = logger;
 		delegateLogger.addLoggerClass(getClass());
 	}
-	
+
 	/**
 	 * @param level
 	 * @param msg
@@ -48,13 +45,14 @@ public class AntennaContextLogger {
 	 * @param array
 	 * @param antenna
 	 */
-	public void log(Level level, String msg, String audience, String array, String antenna) { 
+	public void log(Level level, String msg, String audience, String array, String antenna) {
 		AcsLogRecord lr = delegateLogger.createAcsLogRecord(level, msg);
-        lr.setAudience(audience);
-        lr.setArray(array);
-        lr.setAntenna(antenna);
-        delegateLogger.log(lr);
+		lr.setAudience(audience);
+		lr.setArray(array);
+		lr.setAntenna(antenna);
+		delegateLogger.log(lr);
 	}
+
 	/**
 	 * @param level
 	 * @param msg
@@ -65,26 +63,28 @@ public class AntennaContextLogger {
 	 * @param array
 	 * @param antenna
 	 */
-	public void log(Level level, String msg, Throwable thr, String audience, String array, String antenna) { 
+	public void log(Level level, String msg, Throwable thr, String audience, String array, String antenna) {
 		AcsLogRecord lr = delegateLogger.createAcsLogRecord(level, msg);
 		lr.setThrown(thr);
-        lr.setAudience(audience);
-        lr.setArray(array);
-        lr.setAntenna(antenna);
-        delegateLogger.log(lr);
+		lr.setAudience(audience);
+		lr.setArray(array);
+		lr.setAntenna(antenna);
+		delegateLogger.log(lr);
 	}
+
 	/**
 	 * @param level
 	 * @param msg
 	 * @param array
 	 * @param antenna
 	 */
-	public void log(Level level, String msg, String array, String antenna) { 
+	public void log(Level level, String msg, String array, String antenna) {
 		AcsLogRecord lr = delegateLogger.createAcsLogRecord(level, msg);
-        lr.setArray(array);
-        lr.setAntenna(antenna);
-        delegateLogger.log(lr);
+		lr.setArray(array);
+		lr.setAntenna(antenna);
+		delegateLogger.log(lr);
 	}
+
 	/**
 	 * @param level
 	 * @param msg
@@ -92,11 +92,11 @@ public class AntennaContextLogger {
 	 * @param array
 	 * @param antenna
 	 */
-	public void log(Level level, String msg, Throwable thr, String array, String antenna) { 
+	public void log(Level level, String msg, Throwable thr, String array, String antenna) {
 		AcsLogRecord lr = delegateLogger.createAcsLogRecord(level, msg);
 		lr.setThrown(thr);
-        lr.setArray(array);
-        lr.setAntenna(antenna);
-        delegateLogger.log(lr);
+		lr.setArray(array);
+		lr.setAntenna(antenna);
+		delegateLogger.log(lr);
 	}
 }
