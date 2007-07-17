@@ -39,12 +39,6 @@ import alma.acs.logging.config.LogConfigSubscriber;
  */
 public class StdOutConsoleHandler extends StreamHandler implements LogConfigSubscriber {
 	
-    /**
-     * Create a <tt>ConsoleHandler</tt> for <tt>System.err</tt>.
-     * <p>
-     * The <tt>ConsoleHandler</tt> is configured based on <tt>LogManager</tt>
-     * properties (or their default values).
-     */
     public StdOutConsoleHandler(LogConfig logConfig) {
         setOutputStream(System.out);
         logConfig.addSubscriber(this);
