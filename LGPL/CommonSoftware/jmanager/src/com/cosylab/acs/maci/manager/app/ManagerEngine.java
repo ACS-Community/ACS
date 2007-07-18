@@ -261,7 +261,7 @@ public class ManagerEngine
 	    CDBAccess cdbAccess = new CDBAccess(orb, logger);
 		/*
 	    LogConfig logConfig = ClientLogManager.getAcsLogManager().getLogConfig();
-		logConfig.setCDBContainerPath("MACI/Managers/Manager");
+		logConfig.setCDBLoggingConfigPath("MACI/Managers/Manager");
 		logConfig.setCDB(cdbAccess.connectAndGetDAL());
 		try {
 			logConfig.initialize();
