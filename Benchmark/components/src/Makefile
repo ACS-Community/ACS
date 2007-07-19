@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.23 2007/05/23 22:24:00 sharring Exp $"
+# "@(#) $Id: Makefile,v 1.24 2007/07/19 15:37:49 hsommer Exp $"
 #
 # Makefile of ........
 #
@@ -187,9 +187,7 @@ ACSERRDEF = BenchmarkErrType
 #
 
 COMPONENTS_JARFILES=benchmarkComponents
-jjj_DIRS=
-jjj_EXTRAS= 
-
+# currently the com.cosylab stuff does not compile, so we exclude it.
 benchmarkComponents_DIRS=alma
 
 #
