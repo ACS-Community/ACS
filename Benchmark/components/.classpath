@@ -1,8 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="src" path="test"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry excluding="tmp*/src/alma/BenchmarkErrType/wrappers/|com/cosylab/acs/perftest/client/LECTClient.java|com/cosylab/acs/perftest/sampler/T24Sampler.java" kind="src" path="src"/>
+	<classpathentry kind="src" path="test"/>
 	<classpathentry kind="var" path="ACSROOT/lib/jcont.jar"/>
+	<classpathentry kind="lib" path="lib/BenchmarkErrType.jar"/>
+	<classpathentry kind="lib" path="lib/IdlCompilationTime.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/JavaContainerError.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acserr.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acserrj.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/baci.jar"/>
+	<classpathentry kind="lib" path="lib/perftest.jar"/>
+	<classpathentry kind="lib" path="lib/perftestBD.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acscomponent.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/maciErrType.jar"/>
+	<classpathentry kind="var" path="INTROOT/lib/acsjlog.jar"/>
+	<classpathentry kind="lib" path="lib/jakarta-jmeter-2.3RC3/lib/ext/ApacheJMeter_java.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/logkit.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/jbaci.jar"/>
+	<classpathentry kind="var" path="JACORB_HOME/lib/jacorb.jar" sourcepath="/JACORB_HOME/src"/>
+	<classpathentry kind="var" path="ACSROOT/lib/jacstime.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/jcontnc.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acsnc.jar"/>
+	<classpathentry kind="lib" path="lib/jakarta-jmeter-2.3RC3/lib/ext/ApacheJMeter_core.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
