@@ -449,7 +449,7 @@ public class ClientLogManager implements LogConfigSubscriber
 	 * Gets a logger to be used by the Java container classes.
 	 * The logger is connected to the central ACS logger.
 	 */
-	public Logger getLoggerForContainer(String containerName) {
+	public AcsLogger getLoggerForContainer(String containerName) {
         String ns = NS_CONTAINER;
         if (containerName != null) {
             setProcessName(containerName);
@@ -473,7 +473,7 @@ public class ClientLogManager implements LogConfigSubscriber
 	 * @return Logger
 	 *
 	 */
-	public Logger getLoggerForComponent(String subNamespace)
+	public AcsLogger getLoggerForComponent(String subNamespace)
 	{
 		String ns = NS_COMPONENT;
 		if (subNamespace != null)
