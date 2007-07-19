@@ -21,11 +21,10 @@
  */
 package alma.acs.component;
 
-import java.util.logging.Logger;
-
 import alma.ACS.ACSComponentOperations;
 import alma.ACS.ComponentStates;
 import alma.acs.container.ContainerServices;
+import alma.acs.logging.AcsLogger;
 
 /**
  * Convenience base class for components. 
@@ -50,7 +49,7 @@ public class ComponentImplBase implements ComponentLifecycle, ACSComponentOperat
     /** 
      * Logger to be used by subclass for all application code logging.
      */
-	protected Logger m_logger;
+	protected AcsLogger m_logger;
 
 
 	/////////////////////////////////////////////////////////////
