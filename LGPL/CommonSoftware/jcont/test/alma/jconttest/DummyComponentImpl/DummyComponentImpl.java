@@ -33,6 +33,9 @@ import alma.jconttest.DummyComponentOperations;
  */
 public class DummyComponentImpl extends ComponentImplBase implements DummyComponentOperations
 {
+	// super.m_logger is not reliable because no container services may be set during some special test execution.
+	// Only access this field through methods getLogger().
+	private Logger myLogger;
 	
 	/** 
 	 * Logs a message, which should facilitate debugging the logs when the synchronization of deactivation with long-running methods is being tested.
@@ -72,9 +75,9 @@ public class DummyComponentImpl extends ComponentImplBase implements DummyCompon
 	 */
 	private Logger getLogger() {
 		
-		if (m_logger == null) {
-			m_logger = ClientLogManager.getAcsLogManager().getLoggerForApplication("DummyComponentImpl running outside of container", false);
+		if (myLogger == null) {
+			myLogger = ClientLogManager.getAcsLogManager().getLoggerForApplication("DummyComponentImpl running outside of container", false);
 		}
-		return m_logger;
+		return myLogger;
 	}
 }
