@@ -14,7 +14,7 @@
 
 package com.cosylab.distsync;
 
-import EDU.oswego.cs.dl.util.concurrent.CyclicBarrier;
+import java.util.concurrent.CyclicBarrier;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
@@ -23,8 +23,8 @@ import java.rmi.server.UnicastRemoteObject;
 /**
  * DOCUMENT ME!
  *
- * @author $Author: dfugate $
- * @version $Revision: 1.1 $
+ * @author $Author: hsommer $
+ * @version $Revision: 1.2 $
  */
 public class RemoteCyclicBarrierImpl extends UnicastRemoteObject
 	implements RemoteCyclicBarrier
@@ -50,7 +50,7 @@ public class RemoteCyclicBarrierImpl extends UnicastRemoteObject
 	public int barrier() throws RemoteException
 	{
 		try {
-			return this.cyclicBarrier.barrier();
+			return this.cyclicBarrier.await();
 		} catch (Exception e) {
 			throw new RemoteException("Exception in RemoteCyclicBarrier.barrier()",
 			    e);
@@ -62,7 +62,7 @@ public class RemoteCyclicBarrierImpl extends UnicastRemoteObject
 	 */
 	public int parties() throws RemoteException
 	{
-		return this.cyclicBarrier.parties();
+		return this.cyclicBarrier.getParties();
 	}
 }
 
