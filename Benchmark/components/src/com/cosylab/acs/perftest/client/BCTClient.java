@@ -6,8 +6,8 @@ import org.omg.CORBA.ORB;
 
 import alma.acs.component.client.ComponentClient;
 import com.cosylab.acs.perftest.client.ComponentClientSingleton;
-import com.cosylab.acs.perftest.SimpleBACIComponent;
-import com.cosylab.acs.perftest.ComplexBACIComponent;
+import alma.perftest.SimpleBACIComponent;
+import alma.perftest.ComplexBACIComponent;
 
 import alma.ACS.RWlong;
 import alma.ACS.CBlongPOA;
@@ -124,7 +124,7 @@ public class BCTClient
 	private Monitorlong m_monitor = null;
 	
 	public BCTClient() throws Exception {
-		m_SBC = com.cosylab.acs.perftest.SimpleBACIComponentHelper.narrow(ComponentClientSingleton.getInstance().getContainerServices().getComponent(m_deviceName));
+		m_SBC = alma.perftest.SimpleBACIComponentHelper.narrow(ComponentClientSingleton.getInstance().getContainerServices().getComponent(m_deviceName));
 		m_property = m_SBC.property();
 	}
 	
@@ -151,7 +151,7 @@ public class BCTClient
 		m_startTime = System.currentTimeMillis();
 		try {
 			for (int i = 0; i < count; i++)
-				SBC[i] = com.cosylab.acs.perftest.SimpleBACIComponentHelper.narrow(cc.getContainerServices().getComponent(SBCs[i]));
+				SBC[i] = alma.perftest.SimpleBACIComponentHelper.narrow(cc.getContainerServices().getComponent(SBCs[i]));
 		} catch (Exception e) { return false; }
 		m_midTime = System.currentTimeMillis();
 		for (int i = 0; i < count; i++) {
@@ -173,7 +173,7 @@ public class BCTClient
 		m_startTime = System.currentTimeMillis();
 		try {
 			for (int i = 0; i < count; i++)
-				CBC[i] = com.cosylab.acs.perftest.ComplexBACIComponentHelper.narrow(cc.getContainerServices().getComponent(CBCs[i]));
+				CBC[i] = alma.perftest.ComplexBACIComponentHelper.narrow(cc.getContainerServices().getComponent(CBCs[i]));
 		} catch (Exception e) { return false; }
 		m_midTime = System.currentTimeMillis();
 		for (int i = 0; i < count; i++) {
@@ -405,7 +405,7 @@ public class BCTClient
 		m_startTime = System.currentTimeMillis();
 		try {
 			for (int i = 0; i < loop; i++)
-				SBC[i] = com.cosylab.acs.perftest.SimpleBACIComponentHelper.narrow(cc.getContainerServices().getComponent(m_deviceName));
+				SBC[i] = alma.perftest.SimpleBACIComponentHelper.narrow(cc.getContainerServices().getComponent(m_deviceName));
 		} catch (Exception e) {}
 		m_endTime = System.currentTimeMillis();
 	}
