@@ -23,7 +23,6 @@ package alma.acs.container;
 
 import java.util.List;
 import java.util.concurrent.ThreadFactory;
-import java.util.logging.Logger;
 
 import org.omg.PortableServer.Servant;
 
@@ -36,6 +35,7 @@ import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
 import alma.acs.component.ComponentDescriptor;
 import alma.acs.component.ComponentQueryDescriptor;
 import alma.acs.component.ComponentStateManager;
+import alma.acs.logging.AcsLogger;
 import alma.entities.commonentity.EntityT;
 
 /**
@@ -92,10 +92,13 @@ public interface ContainerServices
 	 * <p>
 	 * The <code>Logger</code> will be set up with a namespace specific to the component
 	 * that uses this <code>ContainerServices</code> instance.  
-	 *   
+	 * <p>
+	 * Specific logger extensions that only apply to certain subsystems can be used
+	 * by wrapping this logger with a class such as {@link alma.acs.logging.domainspecific.AntennaContextLogger}. 
+	 * 
 	 * @return Logger
 	 */
-	public Logger getLogger();
+	public AcsLogger getLogger();
 	
 	
 	/////////////////////////////////////////////////////////////

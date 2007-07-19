@@ -55,6 +55,7 @@ import alma.acs.component.dynwrapper.DynamicProxyFactory;
 import alma.acs.container.archive.Range;
 import alma.acs.container.archive.UIDLibrary;
 import alma.acs.container.corba.AcsCorba;
+import alma.acs.logging.AcsLogger;
 import alma.acs.logging.ClientLogManager;
 import alma.entities.commonentity.EntityT;
 import alma.maciErrType.wrappers.AcsJNoPermissionEx;
@@ -96,7 +97,7 @@ public class ContainerServicesImpl implements ContainerServices
 	protected final Logger m_logger;
     
     // logger given to component
-    private volatile Logger componentLogger;
+    private volatile AcsLogger componentLogger;
 
 	// sync'd map, key=curl, value=corbaStub
 	private final Map<String, org.omg.CORBA.Object> m_usedComponentsMap;
@@ -216,7 +217,7 @@ public class ContainerServicesImpl implements ContainerServices
 	 * 
 	 * @see alma.acs.container.ContainerServices#getLogger()
 	 */
-	public Logger getLogger()
+	public AcsLogger getLogger()
 	{
         if (componentLogger == null) {
     		componentLogger = ClientLogManager.getAcsLogManager().getLoggerForComponent(m_clientName);
