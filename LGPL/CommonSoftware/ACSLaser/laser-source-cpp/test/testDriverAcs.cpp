@@ -20,7 +20,7 @@
 *
 *
 *
-* "@(#) $Id: testDriverAcs.cpp,v 1.8 2006/10/16 12:14:46 sharring Exp $"
+* "@(#) $Id: testDriverAcs.cpp,v 1.9 2007/07/19 07:09:12 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -42,7 +42,7 @@ class LoggingConsumer : public nc::Consumer
   public:
 	
     LoggingConsumer():
-	nc::Consumer(acscommon::LOGGING_CHANNEL_NAME)
+	nc::Consumer(acscommon::LOGGING_CHANNEL_XML_NAME)
 	{
 		 mutex_m = new ACE_Mutex;
        evtsReceived = 0;
