@@ -19,7 +19,7 @@
 #  Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 #  MA 02111-1307  USA
 #
-# "@(#) $Id: TestList.lite,v 1.5 2005/02/22 12:01:03 rcirami Exp $"
+# "@(#) $Id: TestList.lite,v 1.6 2007/07/20 12:30:36 rcirami Exp $"
 #
 # TestList
 #
@@ -31,5 +31,6 @@ SOURCE bulkDataTATEnvironment
 PROLOGUE bulkDataTATPrologue
 
 1 bulkDataEx1 "startBulkDataTest.sh" "@SLEEP 25" "bulkDataTestRun.sh bulkDataEx1"
+2 bulkDataDistributerEx "startBulkDataDistrTest.sh" "@SLEEP 25" "bulkDataDistrTestRun.sh bulkDataDistributerEx"
 
 EPILOGUE bulkDataTATEpilogue

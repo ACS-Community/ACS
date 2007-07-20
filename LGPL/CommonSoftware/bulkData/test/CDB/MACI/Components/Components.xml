@@ -13,23 +13,18 @@
                                      Type="IDL:alma/bulkdata/BulkDataSenderEx1:1.0"
                                      Container="ContainerEx1"/>
 
-<!--
-
-
      <_ Name="BulkDataDistributer"     Code="bulkDataDistributerLib"	
                                        Type="IDL:alma/bulkdata/BulkDataDistributer:1.0"
-                                       Container="Container3"/>
+                                       Container="Container1"/>
      <_ Name="BulkDataSenderDistr"     Code="bulkDataSenderDistrLib"	
                                        Type="IDL:alma/bulkdatadistr/BulkDataSenderDistr:1.0"
                                        Container="Container1"/>
      <_ Name="BulkDataReceiverDistr1"  Code="bulkDataReceiverDistr1Lib"	
                                        Type="IDL:alma/bulkdatadistr/BulkDataReceiverDistr1:1.0"
-                                       Container="Container2"/>
+                                       Container="Container1"/>
      <_ Name="BulkDataReceiverDistr2"  Code="bulkDataReceiverDistr2Lib"	
                                        Type="IDL:alma/bulkdatadistr/BulkDataReceiverDistr2:1.0"
-                                       Container="Container2"/>
--->
-
+                                       Container="Container1"/>
 
 </Components>		     
 

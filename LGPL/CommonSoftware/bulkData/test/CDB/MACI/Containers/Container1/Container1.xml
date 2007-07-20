@@ -12,6 +12,9 @@
   <Autoload>
     <cdb:_ string="baci" />
     <cdb:_ string="bulkDataSenderDistrLib"/>
+    <cdb:_ string="bulkDataDistributerLib"/>
+    <cdb:_ string="bulkDataReceiverDistr1Lib"/>
+    <cdb:_ string="bulkDataReceiverDistr2Lib"/>
   </Autoload>
   <LoggingConfig 
              centralizedLogger="Log" 

@@ -20,7 +20,7 @@
  *
  *
  *
- * "@(#) $Id: bulkDataDistributerEx.cpp,v 1.7 2007/02/28 08:47:50 rcirami Exp $"
+ * "@(#) $Id: bulkDataDistributerEx.cpp,v 1.8 2007/07/20 12:30:36 rcirami Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -103,8 +103,8 @@ int main(int argc, char *argv[])
 	distributer->multiConnect(receiver1.in());
 	//distributer->connectByName("BulkDataReceiverDistr1");
 
-	distributer->multiConnect(receiver2.in());
-	//distributer->connectByName("BulkDataReceiverDistr2");
+	//distributer->multiConnect(receiver2.in());
+	distributer->connectByName("BulkDataReceiverDistr2");
 
 	//start_time = ACE_OS::gettimeofday(); // for performances test
 	sender->startSend();
@@ -123,10 +123,9 @@ int main(int argc, char *argv[])
 	distributer->multiDisconnect(receiver1.in());
 	//distributer->disconnectByName("BulkDataReceiverDistr1");
 
-	distributer->multiDisconnect(receiver2.in());
-	//distributer->disconnectByName("BulkDataReceiverDistr2");
+	//distributer->multiDisconnect(receiver2.in());
+	distributer->disconnectByName("BulkDataReceiverDistr2");
 	}
-
     catch (AVConnectErrorEx & ex)
 	{   
 	ACS_SHORT_LOG((LM_INFO, "AVConnectErrorEx exception catched !"));
@@ -163,8 +162,6 @@ int main(int argc, char *argv[])
 	AVCloseReceiverErrorExImpl ex1(ex);
 	ex1.log();
 	}
-
-
     catch(...)
 	{
 	ACS_SHORT_LOG((LM_INFO,"UNKNOWN exception catched!"));
