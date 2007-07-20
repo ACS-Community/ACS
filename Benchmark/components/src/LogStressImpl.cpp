@@ -59,9 +59,9 @@ int SendingThread::svc()
 			ACS_SHORT_LOG((LM_ERROR,"Stress test - problem generating message text!"));
 		}
 		if(sleepAmount > 0)
-		{
-			usleep(sleepAmount);
-		}
+		    {
+		    usleep(sleepAmount*1000);    /* usleep is in microseconds */
+		    }
 	}
 	logStress2_p->setThreadDone(true);	
 	return retVal;
