@@ -18,7 +18,7 @@ class NCStressSupplier:
       for i in range(0, self.numMessages):
          supplier.publishEvent(self.event)
          if(self.delayBetweenMessages > 0):
-            sleep(self.delayBetweenMessages / 1000)
+            sleep(self.delayBetweenMessages / 1000.)
       supplier.disconnect()
       return
 
