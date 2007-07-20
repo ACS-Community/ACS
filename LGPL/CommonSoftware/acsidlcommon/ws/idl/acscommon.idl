@@ -121,7 +121,7 @@ module log_audience
     const string DEVELOPER = "Developer";
     const string SYSADMIN = "Sysadmin";
     const string DBA = "DBA";
-    const string NONE = "";
+    const string NO_AUDIENCE = "";
 };
 
 

@@ -17,7 +17,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: acspyTestLogWithAudience.py,v 1.3 2007/07/17 13:39:45 nbarriga Exp $"
+# "@(#) $Id: acspyTestLogWithAudience.py,v 1.4 2007/07/20 09:07:52 nbarriga Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -30,7 +30,7 @@ import ACSLog
 from Acspy.Clients.SimpleClient import PySimpleClient
 import logging 
 from log_audience import OPERATOR
-from log_audience import NONE
+from log_audience import NO_AUDIENCE
 
 simpleClient = PySimpleClient()
 
@@ -38,7 +38,7 @@ logger = getLogger("TestAudience")
 logger.log(logging.WARNING, "Normal log")
 logger.logNotSoTypeSafe(ACSLog.ACS_LOG_WARNING, "Log with audience, array and antenna", OPERATOR, "Array01", "Antenna01")
 logger.logNotSoTypeSafe(ACSLog.ACS_LOG_WARNING, "Log with audience", OPERATOR)
-logger.logNotSoTypeSafe(ACSLog.ACS_LOG_WARNING, "Log with array and antenna", NONE, "Array01", "Antenna01")
+logger.logNotSoTypeSafe(ACSLog.ACS_LOG_WARNING, "Log with array and antenna", NO_AUDIENCE, "Array01", "Antenna01")
 
 simpleClient.disconnect()
 #
