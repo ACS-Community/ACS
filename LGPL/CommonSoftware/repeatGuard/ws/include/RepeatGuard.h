@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: RepeatGuard.h,v 1.4 2007/06/11 09:28:51 nbarriga Exp $"
+* "@(#) $Id: RepeatGuard.h,v 1.5 2007/07/23 10:26:49 nbarriga Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -58,6 +58,7 @@ class RepeatGuard{
 		unsigned int counterAtLastCheck;
 		unsigned int maxRepetitions;
                 unsigned int method;
+                bool firstTime;
 		ACS::TimeInterval interval;
 		ACS::Time lastTime;
                 ACE_Recursive_Thread_Mutex mutex;
