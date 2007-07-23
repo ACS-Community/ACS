@@ -37,9 +37,9 @@ public class LogStressImpl implements ComponentLifecycle, LogStressWithDelayOper
 	private Logger m_logger;
 	private int numTimesToLog;
 	private int delay;
-	private boolean threadDone;
+	private volatile boolean threadDone;
 	
-	private class SendingThread extends Thread
+	private class LogSender implements Runnable
 	{
 		/**
 		 * Required method of Thread base class; does the actual work of the thread
@@ -52,6 +52,7 @@ public class LogStressImpl implements ComponentLifecycle, LogStressWithDelayOper
 			while(i < numTimesToLog)
 			{
 				m_logger.info("Java stress test msg: " + i++);
+				
 				if(delay != 0) 
 				{
 					try {
@@ -63,20 +64,10 @@ public class LogStressImpl implements ComponentLifecycle, LogStressWithDelayOper
 					}
 				}
 			}
-			setThreadDone(true);
+			threadDone = true;
 		}
 	}
 
-   // Constructor
-   public LogStressImpl()
-	{
-		setThreadDone(false);
-	}
-
-	public void setThreadDone(boolean threadDone) 
-	{
-		this.threadDone = threadDone;
-	}
 
 	/////////////////////////////////////////////////////////////
 	// Implementation of LogStressOperations
@@ -88,7 +79,8 @@ public class LogStressImpl implements ComponentLifecycle, LogStressWithDelayOper
 		this.threadDone = false;
 		this.numTimesToLog = numTimes;
 		this.delay = delayBetweenLogs;
-		SendingThread sendingThread = new SendingThread();
+		
+		Thread sendingThread = m_containerServices.getThreadFactory().newThread(new LogSender());
 		sendingThread.start();
 	}
 
@@ -106,7 +98,7 @@ public class LogStressImpl implements ComponentLifecycle, LogStressWithDelayOper
 		m_containerServices = containerServices;
 		m_logger = m_containerServices.getLogger();
 		m_logger.info("initialize() called...");
-		setThreadDone(false);
+		threadDone = false;
 	}
     
 	public void execute() {
