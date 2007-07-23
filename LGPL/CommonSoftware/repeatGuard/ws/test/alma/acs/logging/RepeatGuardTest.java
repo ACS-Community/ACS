@@ -24,9 +24,15 @@
  */
  
   
-// $Author: cparedes $
-// $Date: 2007/07/17 09:34:18 $
+// $Author: nbarriga $
+// $Date: 2007/07/23 10:03:47 $
 // $Log: RepeatGuardTest.java,v $
+// Revision 1.4  2007/07/23 10:03:47  nbarriga
+// Default evaluation method is now OR, to be consistent with cpp implementation.
+// Some minor bugs fixed(not reseting counters the first time, time drift).
+// References in asserts fixed.
+// Added filter to TesList.grep.
+//
 // Revision 1.3  2007/07/17 09:34:18  cparedes
 // Added a little cleaning and always true for the first check
 //
@@ -67,7 +73,7 @@ public class RepeatGuardTest extends TestCase {
         
         total+=rg.counter();
 		assertEquals(50, total);
-		assertEquals(6, countSucceeded);
+		assertEquals(5, countSucceeded);
 
         System.out.println("******************RepeatGuard(0,10)***************");
         rg.reset(0,10);
@@ -78,7 +84,7 @@ public class RepeatGuardTest extends TestCase {
                 countSucceeded++;
             }
         }
-        assertEquals(2, countSucceeded);
+        assertEquals(3, countSucceeded);
 		
         System.out.println("******************RepeatGuard.reset()***************");
         rg.reset();
@@ -89,7 +95,7 @@ public class RepeatGuardTest extends TestCase {
                 countSucceeded++;
             }
         }
-        assertEquals(2, countSucceeded);
+        assertEquals(3, countSucceeded);
         
         System.out.println("******************RepeatGuard.reset(10000000,10,RepeatGuard.OR)***************");
         rg.reset(10000000, 10, RepeatGuard.OR);
@@ -99,7 +105,7 @@ public class RepeatGuardTest extends TestCase {
                 countSucceeded++;
             }
         }
-        assertEquals(2, countSucceeded);
+        assertEquals(3, countSucceeded);
             
         System.out.println("******************RepeatGuard(10000000,10)***************");
         rg.reset(10000000,0);
@@ -112,6 +118,27 @@ public class RepeatGuardTest extends TestCase {
         }
         assertEquals(5, countSucceeded);
         
+        System.out.println("******************RepeatGuard(10000000,10,RepeatGuard.AND)***************");
+        rg.reset(10000000,10,RepeatGuard.AND);
+        countSucceeded=0;
+        for (int i=0;i<25;i++) {
+            Thread.sleep(200);  // 200 millisecs;
+            if(rg.checkAndIncrement()) {
+                countSucceeded++;
+            }
+        }
+        assertEquals(3, countSucceeded);
+        
+        System.out.println("******************RepeatGuard(10000000,4,RepeatGuard.AND)***************");
+        rg.reset(10000000,4,RepeatGuard.AND);
+        countSucceeded=0;
+        for (int i=0;i<25;i++) {
+            Thread.sleep(200);  // 200 millisecs;
+            if(rg.checkAndIncrement()) {
+                countSucceeded++;
+            }
+        }
+        assertEquals(5, countSucceeded);
 	}
 
 	/**

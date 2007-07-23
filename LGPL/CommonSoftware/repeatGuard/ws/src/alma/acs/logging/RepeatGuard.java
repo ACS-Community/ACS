@@ -23,9 +23,15 @@
  *
  */
 
-// $Author: cparedes $
-// $Date: 2007/07/17 09:34:17 $
+// $Author: nbarriga $
+// $Date: 2007/07/23 10:03:46 $
 // $Log: RepeatGuard.java,v $
+// Revision 1.4  2007/07/23 10:03:46  nbarriga
+// Default evaluation method is now OR, to be consistent with cpp implementation.
+// Some minor bugs fixed(not reseting counters the first time, time drift).
+// References in asserts fixed.
+// Added filter to TesList.grep.
+//
 // Revision 1.3  2007/07/17 09:34:17  cparedes
 // Added a little cleaning and always true for the first check
 //
@@ -100,27 +106,34 @@ public class RepeatGuard {
     }
 
 	/**
-	 * ctor, convenience fo rthe above, using AND evaluationMethod
+	 * ctor, convenience fo rthe above, using OR evaluationMethod
 	 * 
 	 * @param interval
 	 *            Time interval in 100 nanosecond units!
 	 * @param maxRepetitions
 	 */
 	RepeatGuard(long interv, int maxRep) {
-		this(interv, maxRep, 0);
+		this(interv, maxRep, 1);
 	}
 
 	// check returns true, iff the last call for check was longer ago than
 	// interval, and (or) increment has been called more than maxRepetitions
-	 boolean check() {
-		long now = System.nanoTime();
-        if(firstTime){firstTime=false; return true;}
+        boolean check() {
+                long now = System.nanoTime();
+                if(firstTime){
+                        firstTime=false; 
+                        counterAtLastCheck = counter;
+                        counter = 0;
+                        endTime = now + interval;
+
+                        return true;
+                }
         switch (evaluationMethod) {
 		case AND:
 			if ((now >= endTime) && (counter >= maxRepetitions)) {
                 counterAtLastCheck = counter;
 				counter = 0;
-				endTime = System.nanoTime() + interval;
+				endTime = now + interval;
 				return true;
 			}
 			return false;
@@ -128,7 +141,7 @@ public class RepeatGuard {
 			if ((now >= endTime) || (counter >= maxRepetitions)) {
 				counterAtLastCheck = counter;
 				counter = 0;
-				endTime = System.nanoTime() + interval;
+				endTime = now + interval;
 				return true;
 			}
 			return false;
@@ -136,7 +149,7 @@ public class RepeatGuard {
 			if (now >= endTime) {
 				counterAtLastCheck = counter;
 				counter = 0;
-				endTime = System.nanoTime() + interval;
+				endTime = endTime + interval; //endTime +interval instead of now + interval to prevent drift
 				return true;
 			}
 			return false;
@@ -144,7 +157,7 @@ public class RepeatGuard {
 			if (counter >= maxRepetitions) {
 				counterAtLastCheck = counter;
 				counter = 0;
-				endTime = System.nanoTime() + interval;
+				endTime = now + interval;
 				return true;
 			}
 			return false;
@@ -177,7 +190,7 @@ public class RepeatGuard {
 	}
 
 	 void reset(long interv, int maxRep) {
-		reset(interv, maxRep, 0);
+		reset(interv, maxRep, 1);
 	}
 
 	 void reset(long interv, int maxRep, int or_or_and) {
@@ -192,7 +205,7 @@ public class RepeatGuard {
 		maxRepetitions = maxRep;
 		counter = 0;
 		counterAtLastCheck = 0;
-		interval = interv / 100;// interval is measured
+		interval = interv * 100;// interval is measured
 		// in 100 nanosconds as
 		// base unit
 		endTime = System.nanoTime() + interval;
