@@ -248,11 +248,11 @@ setLogLevelLocal ()
     if [ -n "$STDOUT_LEVEL" ] ; then
 	##echo maciContainerLogLevel: `maciContainerLogLevel $1 get default`
 	set -- `maciContainerLogLevel $1 get default | grep "minLogLevel "`
-	if [ -z $5 ] ; then
+	if [ -z $7 ] ; then
 	    # Python doesn't know "get default"
 	    echo " Warning: setting minLogLevel to 2"
-        elif [ $5 -ne 2 ] ; then
-	    echo " Warning: changing minLogLevel from $5 to 2"
+        elif [ $7 -ne 2 ] ; then
+	    echo " Warning: changing minLogLevel from $7 to 2"
 	fi
 	maciContainerLogLevel $CONTAINER set default 2 $STDOUT_LEVEL
     fi
@@ -420,7 +420,7 @@ do
       publisherPid[$i]=`ps -ef | grep "${CONTAINER_GREP_STRING}$i"  | grep -v acsStartJava | grep -v bash | grep -v grep | gawk '{ print $2 }'`
       debugPrint "publisherPid$i is: ${publisherPid[${i}]}"
       sleep 5
-      ##setLogLevelLocal ${COMPONENT_LANGUAGE}Container$i $ACS_LOG_STDOUT
+      setLogLevelLocal ${COMPONENT_LANGUAGE}Container$i $ACS_LOG_STDOUT
       `sar -x ${publisherPid[${i}]} 1 9999 >& $ACS_TMP/$PUBLISHER_LOG_FILE$i.orig.log` &
       ./monitorProcess ${publisherPid[${i}]} 1 $ACS_TMP/$PUBLISHER_LOG_FILE-memory$i &
   else
@@ -515,27 +515,42 @@ echo " Needed `getChrono 1`s to send all logs"
 echo " Sleeping (at most) $EXTRA_WAIT_TIME seconds to allow logs to be processed..."
 sleepCount=0
 totalLogsExpected=`expr $NUM_LOGS \* $NUM_COMPONENTS`
+lastMsgId=`expr $NUM_LOGS - 1`
 sleepCount=0
+# First look for the last log(s), then check later if no logs are lost
 while [ $sleepCount -le $EXTRA_WAIT_TIME ]
 do
-  # Note that a grep|wc on all_logs.xml can take a few seconds if lots of logs are sent.
+  chrono2=`getChrono 2`
+  startChrono 3
+  nrLastLogs=`grep "msg: $lastMsgId]" $ACS_TMP/all_logs.xml | wc -l`
+  debugPrint "overhead of grep|wc is `getChrono 3` s"
+  # Note that a grep|wc on all_logs.xml can take a few seconds if lots of logs are sent,
+  # and that duration is anyway proportional to the size of all_logs.xml.
   # So don't assume that loop duration is determined by the "sleep 1" further on.
-  totalLogsReceivedByLoggingClient=`grep "msg:" $ACS_TMP/all_logs.xml | wc -l`
-  if [ "$totalLogsReceivedByLoggingClient" -eq "$totalLogsExpected" ] ; then
-      debugPrint "received all logs, no need to wait any longer"
+  if [ "$nrLastLogs" -eq " $NUM_COMPONENTS" ] ; then
+      debugPrint "received last log of all components, no need to wait any longer"
       break
   fi
   sleepCount=`getChrono 2`
   debugPrint "waiting since $sleepCount s"
   # convert to integer (needed for expression in "while" control statement above)
   sleepCount=`printf %.0f $sleepCount`
-  sleep 1
+  ##sleep 1
 done
 
 if [ $sleepCount -le $EXTRA_WAIT_TIME ] ; then
-  echo " All logs digested within `getChrono 2`s"
+  echo " Last log digested within $chrono2 s"
 else
-  echo " Log digestion timed out after `getChrono 2`s"
+  echo " Log digestion timed out after $chrono2 s"
+fi
+
+# verify the proper number of logs were received
+totalLogsReceivedByLoggingClient=`grep "msg:" $ACS_TMP/all_logs.xml | wc -l`
+if [ $totalLogsReceivedByLoggingClient -ne $totalLogsExpected ]
+then
+    echo " FAILURE: received $totalLogsReceivedByLoggingClient logs instead of expected $totalLogsExpected."
+else
+    echo " SUCCESS - all logs accounted for."
 fi
 
 # stop the monitoring
@@ -586,14 +601,6 @@ done
 echo " Stopping ACS"
 #!#acsStop >& $ACS_TMP/acsStop.log
 acsutilTATEpilogue
-
-# verify the proper number of logs were received
-if [ $totalLogsReceivedByLoggingClient -ne $totalLogsExpected ]
-then
-    echo " FAILURE: received $totalLogsReceivedByLoggingClient logs instead of expected $totalLogsExpected."
-else
-    echo " SUCCESS - all logs accounted for."
-fi
 
 # prep the log files
 echo " Preparing the sar log files"
