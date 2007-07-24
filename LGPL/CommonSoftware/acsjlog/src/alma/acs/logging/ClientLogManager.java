@@ -170,12 +170,18 @@ public class ClientLogManager implements LogConfigSubscriber
         	}
         }
         
+        // Only (re-)set the flushing if the value has changed, because the operation is expensive (stop/start)
         if (loggingConfig.getFlushPeriodSeconds() != flushPeriodSeconds) {
         	flushPeriodSeconds = loggingConfig.getFlushPeriodSeconds();
         	if (logQueue != null) {
         		logQueue.setPeriodicFlushing(loggingConfig.getFlushPeriodSeconds());
         	}
         }
+     
+        // Set the log queue size.   
+    	if (logQueue != null) {
+    		logQueue.setMaxQueueSize(loggingConfig.getMaxLogQueueSize());
+    	}
     }
 
     public LogConfig getLogConfig() {
