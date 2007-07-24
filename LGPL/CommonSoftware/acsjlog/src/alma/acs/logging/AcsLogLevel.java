@@ -39,7 +39,7 @@ import java.util.logging.Level;
  * @author		Matej Sekoranja (matej.sekoranja@cosylab.com)
  * @version	@@VERSION@@
  */
-public class AcsLogLevel extends Level implements ACSCoreLevel, Comparable
+public class AcsLogLevel extends Level implements ACSCoreLevel, Comparable<AcsLogLevel>
 {
 	/**
 	 * The resource bundle name to be used in localizing ACS level name.
@@ -206,7 +206,7 @@ public class AcsLogLevel extends Level implements ACSCoreLevel, Comparable
 	 * 
 	 * @see java.lang.Comparable#compareTo(Object)
 	 */
-	public int compareTo(Object obj)
+	public int compareTo(AcsLogLevel obj)
 	{
 		Level l = (Level) obj;
 		if (intValue() < l.intValue())
