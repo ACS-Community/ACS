@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 ################################################################################################
-# @(#) $Id: acsstartupContainerPort.py,v 1.35 2007/07/17 20:46:09 agrimstrup Exp $
+# @(#) $Id: acsstartupContainerPort.py,v 1.36 2007/07/24 12:06:46 gchiozzi Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA, 2001
@@ -143,7 +143,7 @@ cdb_help_msg='''
 Sets a reference to the configuration database.
 Tells the container where to find its own configuration data.
 This is currently only applicable to C++ containers.
-E.g., corbaloc::127.0.0.1:3012/DAL
+E.g., corbaloc::127.0.0.1:3012/CDB
 '''
 parser.add_option("-d", "--DALReference",
                   dest="cdb_ref",
