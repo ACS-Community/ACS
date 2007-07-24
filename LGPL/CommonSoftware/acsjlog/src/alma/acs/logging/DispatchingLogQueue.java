@@ -42,7 +42,7 @@ import alma.acs.concurrent.DaemonThreadFactory;
  * using the one provided in {@link #setRemoteLogDispatcher(RemoteLogDispatcher)}. 
  * <p>
  * Technically this class is not a singleton, but it is foreseen to be used as a single instance.
- * It is thread-safe, so mulitple log handlers can submit records.
+ * It is thread-safe, so multiple log handlers can submit records.
  * <p>
  * All log records to be sent remotely to the central log service must be submitted
  * to the {@link #log(LogRecord)} method.
@@ -66,7 +66,7 @@ public class DispatchingLogQueue {
     private final ReentrantLock flushLock;
     
     private ScheduledThreadPoolExecutor executor;
-    private ScheduledFuture flushScheduleFuture;
+    private ScheduledFuture<?> flushScheduleFuture;
     
     // system time in millisec when last flush finished (either scheduled or explicit flush)
     private long lastFlushFinished;
@@ -83,7 +83,7 @@ public class DispatchingLogQueue {
     /** Underlying PriorityBlockingQueue is unbounded, but we don't want logging to cause memory problems
      * while the remote logger is unavailable and all logs must be cached. Thus a maximum queue size. 
      * The chosen value must be larger than {@link RemoteLogDispatcher#getBufferSize()} */
-    static final int MAX_QUEUE_SIZE = 1000;
+    private int maxQueueSize;
 
     private final boolean DEBUG = Boolean.getBoolean("alma.acs.logging.verbose");
     
@@ -92,12 +92,24 @@ public class DispatchingLogQueue {
         outOfCapacity = false;
         preOverflowFlushPeriod = 0;
         currentFlushPeriod = 0;
+        setMaxQueueSize(1000);
         flushLock = new ReentrantLock();
         queue = new PriorityBlockingQueue<LogRecord>(100, new LogRecordComparator());        
         executor = new ScheduledThreadPoolExecutor(1, new DaemonThreadFactory("LogDispatcher"));
         executor.setContinueExistingPeriodicTasksAfterShutdownPolicy(false);
     }
     
+    int getMaxQueueSize() {
+    	return maxQueueSize;
+    }
+    
+    /**
+     * Sets the maximum size of the log queue. Logs will be dropped when the queue is full.
+     * The default is 1000, but gets overwritten by the value of <code>&lt;LoggingConfig MaxLogQueueSize/&gt;</code> in the CDB.
+     */
+    synchronized void setMaxQueueSize(int maxQueueSize) {
+    	this.maxQueueSize = maxQueueSize;
+    }
 
     /**
      * Adds a <code>LogRecord</code> to the internal queue, so that it gets scheduled for logging.
@@ -122,14 +134,14 @@ public class DispatchingLogQueue {
     synchronized boolean log(LogRecord logRecord) {
         int oldSize = queue.size();
         // if queue is full, then drop the record
-        if (oldSize >= MAX_QUEUE_SIZE) {
+        if (oldSize >= maxQueueSize) {
             // first time overflow? Then start periodic flushing attempts drain the queue once the central logger comes up again
             if (!outOfCapacity) {
                 preOverflowFlushPeriod = currentFlushPeriod;
                 setPeriodicFlushing(10000);
             }
             outOfCapacity = true;
-            if (DEBUG || oldSize == MAX_QUEUE_SIZE) {
+            if (DEBUG || oldSize == maxQueueSize) {
                 System.err.println("log queue overflow: log record with message '" + logRecord.getMessage() + 
                 "' and possibly future log records will not be sent to the remote logging service.");
             }
@@ -144,11 +156,11 @@ public class DispatchingLogQueue {
         }
         
         // drop less important messages if queue space gets scarce
-        final int filterThreshold = MAX_QUEUE_SIZE * 7 / 10;
+        final int filterThreshold = maxQueueSize * 7 / 10;
 
         if (oldSize >= filterThreshold && logRecord.getLevel().intValue() < Level.INFO.intValue()) {
             if (DEBUG) {
-                System.err.println("looming log queue overflow (" + (oldSize+1) + "/" + MAX_QUEUE_SIZE + 
+                System.err.println("looming log queue overflow (" + (oldSize+1) + "/" + maxQueueSize + 
                                     "): low-level log record with message '" + logRecord.getMessage() +
                                     "' will not be sent to the remote logging service.");
             }
@@ -382,7 +394,7 @@ public class DispatchingLogQueue {
      * because some of them may find an empty log record queue when they get executed, and thus end w/o effect.   
      */
     int pendingFlushes() {
-        BlockingQueue flushQueue = executor.getQueue();        
+        BlockingQueue<Runnable> flushQueue = executor.getQueue();
         int size = flushQueue.size();
         // periodic flushing shows up as one entry in the executor queue 
         if (flushesPeriodically()) {
