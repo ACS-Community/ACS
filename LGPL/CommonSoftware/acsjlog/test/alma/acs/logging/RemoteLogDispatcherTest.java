@@ -222,7 +222,7 @@ public class RemoteLogDispatcherTest extends TestCase {
         dispatcher.setWriteFailureChance(1.0);
         queue.setRemoteLogDispatcher(dispatcher);
         
-        int numRecords = DispatchingLogQueue.MAX_QUEUE_SIZE;
+        int numRecords = queue.getMaxQueueSize();
         collectingLogger.produceLogs1(numRecords);
         LogRecord[] fakeLogRecords = collectingLogger.getCollectedLogRecords();
         dispatcher.setVerbose(false);
