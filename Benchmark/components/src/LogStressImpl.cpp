@@ -48,7 +48,7 @@ int SendingThread::svc()
 	for(int i = 0; i < logStress2_p->getNumTimesToLog(); i++)
 	{
 		stressMessage.str("");
-		stressMessage << "Stress test - host: " << hostName << " component: " << componentName << " msg:" << i;
+		stressMessage << "Stress test - host: " << hostName << " component: " << componentName << " msg: " << i;
 		if(NULL != stressMessage.str().c_str()) 
 		{
 			string message(stressMessage.str());
