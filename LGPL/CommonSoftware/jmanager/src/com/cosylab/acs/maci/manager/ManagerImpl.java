@@ -57,6 +57,12 @@ import alma.maciErrType.wrappers.AcsJComponentSpecIncompatibleWithActiveComponen
 import alma.maciErrType.wrappers.AcsJIncompleteComponentSpecEx;
 import alma.maciErrType.wrappers.AcsJInvalidComponentSpecEx;
 import alma.maciErrType.wrappers.AcsJNoPermissionEx;
+import alma.acsErrTypeAlarmSourceFactory.ACSASFactoryNotInitedEx;
+import alma.acsErrTypeAlarmSourceFactory.FaultStateCreationErrorEx;
+import alma.acsErrTypeAlarmSourceFactory.SourceCreationErrorEx;
+import alma.alarmsystem.source.ACSAlarmSystemInterface;
+import alma.alarmsystem.source.ACSAlarmSystemInterfaceFactory;
+import alma.alarmsystem.source.ACSFaultState;
 
 import com.cosylab.cdb.client.CDBAccess;
 import com.cosylab.cdb.client.DAOProxy;
@@ -762,6 +768,12 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	private transient Logger logger;
 
 	/**
+	 * Alarm System Interface.
+	 */
+        private transient ACSAlarmSystemInterface alarmSource;
+
+
+	/**
 	 * Initializes Manager.
 	 * @param	prevayler			implementation of prevayler system
 	 * @param	context				remote directory implementation
@@ -820,6 +832,17 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		// check load balancing strategy
 		checkLoadBalancingStrategy();
 
+		// establish connect to the alarm system
+		try
+		{
+		        alarmSource = ACSAlarmSystemInterfaceFactory.createSource("Manager");
+		}
+		catch (Throwable ex)
+		{
+		        logger.log(Level.SEVERE, "Failed to initialize Alarm System Interface " + ex.getMessage(), ex);
+		        alarmSource = null;
+	        }
+
 		// register ping tasks
 		initializePingTasks();
 
@@ -863,7 +886,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			ClientInfo clientInfo = containerInfo.createClientInfo();
 
 			// register container to the heartbeat manager
-			PingTimerTask task = new PingTimerTask(this, logger, clientInfo);
+			PingTimerTask task = new PingTimerTask(this, logger, clientInfo, alarmSource);
 			containerInfo.setTask(task);
 			heartbeatTask.schedule(task, 0, containerPingInterval);
 	    }
@@ -877,7 +900,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			h = administrators.next(h);
 
 			// register administrator to the heartbeat manager
-			PingTimerTask task = new PingTimerTask(this, logger, adminInfo);
+			PingTimerTask task = new PingTimerTask(this, logger, adminInfo, null);
 			adminInfo.setTask(task);
 			heartbeatTask.schedule(task, 0, administratorPingInterval);
 	    }
@@ -891,7 +914,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			h = clients.next(h);
 
 			// register client to the heartbeat manager
-			PingTimerTask task = new PingTimerTask(this, logger, clientInfo);
+			PingTimerTask task = new PingTimerTask(this, logger, clientInfo, null);
 			clientInfo.setTask(task);
 			heartbeatTask.schedule(task, 0, clientPingInterval);
 	    }
@@ -2588,7 +2611,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 				clientInfo = containerInfo.createClientInfo();
 
 				// register container to the heartbeat manager
-				PingTimerTask task = new PingTimerTask(this, logger, clientInfo);
+				PingTimerTask task = new PingTimerTask(this, logger, clientInfo, alarmSource);
 				containerInfo.setTask(task);
 				heartbeatTask.schedule(task, containerPingInterval, containerPingInterval);
 
@@ -3391,7 +3414,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 
 			// register administrator to the heartbeat manager
-			PingTimerTask task = new PingTimerTask(this, logger, clientInfo);
+			PingTimerTask task = new PingTimerTask(this, logger, clientInfo, null);
 			clientInfo.setTask(task);
 			heartbeatTask.schedule(task, administratorPingInterval, administratorPingInterval);
 
@@ -3460,7 +3483,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 
 			// register client to the heartbeat manager
-			PingTimerTask task = new PingTimerTask(this, logger, clientInfo);
+			PingTimerTask task = new PingTimerTask(this, logger, clientInfo, null);
 			clientInfo.setTask(task);
 			heartbeatTask.schedule(task, clientPingInterval, clientPingInterval);
 

@@ -6,6 +6,14 @@ package com.cosylab.acs.maci.manager;
 
 import java.util.TimerTask;
 import java.util.logging.Logger;
+import java.sql.Timestamp;
+
+import alma.acsErrTypeAlarmSourceFactory.ACSASFactoryNotInitedEx;
+import alma.acsErrTypeAlarmSourceFactory.FaultStateCreationErrorEx;
+import alma.acsErrTypeAlarmSourceFactory.SourceCreationErrorEx;
+import alma.alarmsystem.source.ACSAlarmSystemInterface;
+import alma.alarmsystem.source.ACSAlarmSystemInterfaceFactory;
+import alma.alarmsystem.source.ACSFaultState;
 
 import com.cosylab.acs.maci.ClientInfo;
 import com.cosylab.acs.maci.HandleHelper;
@@ -59,12 +67,18 @@ public class PingTimerTask extends TimerTask
 	private Logger logger;
 	
 	/**
+	 * Alarm System Interface.
+	 */
+        private ACSAlarmSystemInterface alarmSource;
+
+	/**
 	 * Constructs a ping task which monitors client's state.
 	 * @param	manager	manager to which the client is logged in
 	 * @param 	logger logger.
 	 * @param	clientInfo	info of the client to be monitored
+	 * @param	alarmSource	interface to send alarms
 	 */
-	public PingTimerTask(Manager manager, Logger logger, ClientInfo clientInfo)
+	public PingTimerTask(Manager manager, Logger logger, ClientInfo clientInfo, ACSAlarmSystemInterface alarmSource)
 	{
 		super();
 		
@@ -75,6 +89,7 @@ public class PingTimerTask extends TimerTask
 		this.manager = manager;
 		this.logger = logger;
 		this.clientInfo = clientInfo;
+		this.alarmSource = alarmSource;
 
 		this.transientCount = 0;
 	}
@@ -114,7 +129,11 @@ public class PingTimerTask extends TimerTask
 			if (clientInfo.getClient().ping() == false)
 			{
 				logger.info("Client '"+clientInfo.getName()+"' ["+HandleHelper.toString(clientInfo.getHandle())+"] announced itself as malfunctioning.");
-					
+
+  			        //An alarm is raised for those clients that define an alarm interface
+			        if (alarmSource != null)
+				    send_alarm(clientInfo.getName());
+
 				logout();
 			}
 			
@@ -130,6 +149,11 @@ public class PingTimerTask extends TimerTask
 			if (transientCount >= MAX_TRANSIENT_COUNT)
 			{
 				logger.info("Client '"+clientInfo.getName()+"' ["+HandleHelper.toString(clientInfo.getHandle())+"] is unreachable, logging it out.");
+
+  			        //An alarm is raised for those clients that define an alarm interface
+			        if (alarmSource != null)
+				    send_alarm(clientInfo.getName());
+
 				logout();
 			}
 		
@@ -143,6 +167,11 @@ public class PingTimerTask extends TimerTask
 			if (transientCount >= MAX_TRANSIENT_COUNT)
 			{
 				logger.info("Client '"+clientInfo.getName()+"' ["+HandleHelper.toString(clientInfo.getHandle())+"] ping method timed-out several times, logging it out.");
+
+  			        //An alarm is raised for those clients that define an alarm interface
+			        if (alarmSource != null)
+				    send_alarm(clientInfo.getName());
+
 				logout();
 			}
 		
@@ -150,7 +179,11 @@ public class PingTimerTask extends TimerTask
 		catch (Throwable ex)
 		{
 			//logger.log(Level.INFO, "Invoking client '"+clientInfo.getName()+"' ping method thrown an exception, logging it out.", ex);
-			logger.info("Invoking client '"+clientInfo.getName()+"' ping method thrown an unknown exception, logging it out.");
+			logger.info("Invoking client '"+clientInfo.getName()+"' ping method threw an unknown exception, logging it out.");
+
+			//An alarm is raised for those clients that define an alarm interface
+			if (alarmSource != null)
+			    send_alarm(clientInfo.getName());
 
 			// malfunctioning client
 			logout();
@@ -177,4 +210,31 @@ public class PingTimerTask extends TimerTask
 		return new String(sbuff);
 	}
 
+
+	/**
+	 * convenience method for send_alarm. Has to improved in order to
+	 * deactivate alarms etc.
+	 *
+	 * @param faultMember
+	 * @throws ACSASFactoryNotInitedEx
+	 * @throws SourceCreationErrorEx
+	 * @throws FaultStateCreationErrorEx
+	 * 
+	 */
+        public void send_alarm(String faultMember) {
+	    String faultFamily = "Manager";
+	    int faultCode = 1;
+	    String faultState;
+	    faultState = ACSFaultState.ACTIVE;
+
+	    try {
+  	        ACSFaultState fs = ACSAlarmSystemInterfaceFactory.createFaultState(faultFamily, faultMember, faultCode);
+	        fs.setDescriptor(faultState);
+	        fs.setUserTimestamp(new Timestamp(System.currentTimeMillis()));
+   	        alarmSource.push(fs);
+
+	    } catch(Exception e) {
+	    // do nothing, alarm did not work
+	    }
+        }
 }
