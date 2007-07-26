@@ -17,7 +17,8 @@
 printUsageAndExit ()
 {
     echo ""
-    echo "Usage: $0 [OPTIONS] <numLogsToSend> <numComponents> <delayBetweenLogs>";    echo "  where: "
+    echo "Usage: $0 [OPTIONS] <numLogsToSend> <numComponents> <delayBetweenLogs>";
+    echo "  where: "
     echo "";
     echo "   <numLogsToSend> is the number of logs to publish per component.";
     echo "   <numComponents> is the number of publishing components to use.";
@@ -30,6 +31,7 @@ printUsageAndExit ()
     echo "   -l | --language <py | cpp | java>: the implementation language of the publishing component (cpp, java, python) - NOTE: default is cpp."
     echo "   -m | --minLogLevelLocal <level>: the local log level to set for all containers - NOTE: default is no change."
     echo "   -s | --stdout: leave output of Containers to stdout instead of redirecting to a temp file."
+    echo "   -c | --csv <fileName>: append timing info in CSV format to <fileName>."
     echo ""
     exit -1;
 }
@@ -245,7 +247,8 @@ setLogLevelLocal ()
 {
     CONTAINER=$1
     STDOUT_LEVEL=$2
-    if [ -n "$STDOUT_LEVEL" ] ; then
+    # Note that maciContainerLogLevel does not work with python containers
+    if [ -n "$STDOUT_LEVEL" ] && [ X"$COMPONENT_LANGUAGE" == X"py" ] ; then
 	##echo maciContainerLogLevel: `maciContainerLogLevel $1 get default`
 	set -- `maciContainerLogLevel $1 get default | grep "minLogLevel "`
 	if [ -z $7 ] ; then
@@ -271,7 +274,7 @@ startChrono ()
 getChrono () 
 {
     eval CHRONO=\$START_CHRONO$1
-    echo "puts [expr {([clock clicks -milliseconds] - $CHRONO) /1000.}]" | tclsh
+    echo "puts [format %.3f [expr {([clock clicks -milliseconds] - $CHRONO) /1000.}]]" | tclsh
 }
 
 ##########################################################################################
@@ -289,12 +292,13 @@ PROFILE_JLOG=
 REMOTE_HOST=
 COMPONENT_LANGUAGE=cpp
 NO_REDIRECTION=
+CSVFILE=/dev/null
 
 #
 # These options can be recognized (longopts comma-separated. Colon means 1 argument is required)
 #
-LONGOPTS=help,jlog,debug,stdout,remoteHost:,language:,minLogLevelLocal:
-SHORTOPTS=h,j,d,s,r:,l:,m:
+LONGOPTS=help,jlog,debug,stdout,remoteHost:,language:,minLogLevelLocal:,csv:
+SHORTOPTS=h,j,d,s,r:,l:,m:,c:
 
 #
 # Run getopt (posixly_correct needed). We run twice:
@@ -326,6 +330,8 @@ while :
       --minLogLevelLocal)  export ACS_LOG_STDOUT=$2 ; shift ;;
       -s)           NO_REDIRECTION=true ;;
       --stdout)     NO_REDIRECTION=true ;;
+      -c)           CSVFILE=$2 ; shift ;;
+      --csv)        CSVFILE=$2 ; shift ;;
       --) break ;;
   esac
   shift
@@ -445,36 +451,42 @@ do
 done
 
 # find the pids for all the processes that we're interested in monitoring
+# don't use the "-e" option in the call to ps, as we're only interested in
+# the processes started by *this* user.
 while [ -z "$logSvcPid" ]
 do
-  logSvcPid=`ps -ef | grep acsLogSvc | grep -v grep | gawk '{ print $2 }'`
+  logSvcPid=`ps -f | grep acsLogSvc | grep -v grep | gawk '{ print $2 }'`
 done
 debugPrint "logSvcPid is: $logSvcPid"
 while [ -z "$loggingServicePid" ]
   do
-  loggingServicePid=`ps -ef | grep loggingService  | grep -v grep | gawk '{ print $2 }'`
+  loggingServicePid=`ps -f | grep loggingService | grep -v grep | gawk '{ print $2 }'`
 done
 debugPrint "loggingServicePid is: $loggingServicePid"
 while [ -z "$loggingNotifyServicePid" ]
 do
-  loggingNotifyServicePid=`ps -ef | grep Notify_Service  | grep -v grep | grep LoggingNotify | gawk '{ print $2 }'`
+  loggingNotifyServicePid=`ps -f | grep Notify_Service | grep -v grep | grep LoggingNotify | gawk '{ print $2 }'`
 done
 debugPrint "loggingNotifyServicePid is: $loggingNotifyServicePid"
 while [ -z "$loggingClientPid" ]
   do
-  loggingClientPid=`ps -ef | grep loggingClient  | grep -v grep | gawk '{ print $2 }'`
+  loggingClientPid=`ps -f | grep loggingClient  | grep -v grep | gawk '{ print $2 }'`
 done
 # Should actually check here is loggingClientPid is a single number,
 # as there could be several (not terminated) loggingClients running
 debugPrint "loggingClientPid is: $loggingClientPid"
 
 # monitor the relevant processes using the unix 'sar' command
+debugPrint "sar -x $logSvcPid 1 9999 >& $ACS_TMP/$ACS_LOG_SVC_LOG_FILE.orig.log"
 sar -x $logSvcPid 1 9999 >& $ACS_TMP/$ACS_LOG_SVC_LOG_FILE.orig.log &
 ./monitorProcess $logSvcPid 1 $ACS_TMP/$ACS_LOG_SVC_LOG_FILE-memory &
+debugPrint "sar -x $loggingServicePid 1 9999 >& $ACS_TMP/$LOGGING_SERVICE_LOG_FILE.orig.log"
 sar -x $loggingServicePid 1 9999 >& $ACS_TMP/$LOGGING_SERVICE_LOG_FILE.orig.log &
 ./monitorProcess $loggingServicePid 1 $ACS_TMP/$LOGGING_SERVICE_LOG_FILE-memory  &
+debugPrint "sar -x $loggingNotifyServicePid 1 9999 >& $ACS_TMP/$LOGGING_NOTIFY_SERVICE_LOG_FILE.orig.log"
 sar -x $loggingNotifyServicePid 1 9999 >& $ACS_TMP/$LOGGING_NOTIFY_SERVICE_LOG_FILE.orig.log &
 ./monitorProcess $loggingNotifyServicePid 1 $ACS_TMP/$LOGGING_NOTIFY_SERVICE_LOG_FILE-memory  &
+debugPrint "sar -x $loggingClientPid 1 9999 >& $ACS_TMP/$LOGGING_CLIENT_LOG_FILE.orig.log"
 sar -x $loggingClientPid 1 9999 >& $ACS_TMP/$LOGGING_CLIENT_LOG_FILE.orig.log &
 ./monitorProcess $loggingClientPid 1 $ACS_TMP/$LOGGING_CLIENT_LOG_FILE-memory  &
 if [ "$PROFILE_JLOG" ] ;
@@ -509,7 +521,8 @@ wait $!
 startChrono 2
 
 # Tell how long it took to send all these logs
-echo " Needed `getChrono 1`s to send all logs"
+chrono1=`getChrono 1`
+echo " Needed ${chrono1}s to send all logs"
 
 # sleep a bit longer to allow things to 'settle'
 echo " Sleeping (at most) $EXTRA_WAIT_TIME seconds to allow logs to be processed..."
@@ -539,9 +552,9 @@ do
 done
 
 if [ $sleepCount -le $EXTRA_WAIT_TIME ] ; then
-  echo " Last log digested within $chrono2 s"
+  echo " Last log digested within ${chrono2}s"
 else
-  echo " Log digestion timed out after $chrono2 s"
+  echo " Log digestion timed out after ${chrono2}s"
 fi
 
 # verify the proper number of logs were received
@@ -578,6 +591,9 @@ then
     echo " Stopping jlog"
     kill -9 $jlogPid
 fi
+
+# append timing data to a CSV file, for import into Excel
+echo "$COMPONENT_LANGUAGE,$NUM_LOGS,$totalLogsReceivedByLoggingClient,$ACS_LOG_STDOUT,$DELAY,$chrono1,$chrono2" >> $CSVFILE
 
 # stop the container(s)
 i=1
@@ -622,8 +638,7 @@ do
   i=`expr $i + 1`
 done
 
-if [ "$PROFILE_JLOG" ] ;
-    then
+if [ "$PROFILE_JLOG" ] ; then
     cat $ACS_TMP/$JLOG_LOG_FILE.orig.log | grep -v -i average | grep -v -i linux \
 	| grep -v -i pid > $ACS_TMP/$JLOG_LOG_FILE.log
 fi
