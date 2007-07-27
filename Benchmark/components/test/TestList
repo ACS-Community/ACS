@@ -20,7 +20,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: TestList,v 1.1 2007/07/20 07:06:16 eallaert Exp $"
+# "@(#) $Id: TestList,v 1.2 2007/07/27 12:16:15 eallaert Exp $"
 #
 # TestList
 #
@@ -46,8 +46,14 @@ SOURCE setupTatEnvironment.tcl
 #         in the foreground. To pass parameters to a program
 #         it is enough to write the complete command line for
 #         the program in quotes.
-1 loggingBenchmark "genLoggingProcessesReport 10000 2 0"
+1 loggingBenchmarkCpp    "genLoggingProcessesReport -m 1 -l cpp  --csv tmp/cppReport.csv  40000 1 0"
+2 cppPerformanceCheck    "calculatePerformance tmp/cppReport.csv  ref/cppPerformance.ref"
 
+3 loggingBenchmarkJava   "genLoggingProcessesReport -m 1 -l java --csv tmp/javaReport.csv 40000 1 0"
+4 javaPerformanceCheck   "calculatePerformance tmp/javaReport.csv ref/javaPerformance.ref"
+
+5 loggingBenchmarkPython "genLoggingProcessesReport -m 1 -l py   --csv pyReport.csv   20000 1 0"
+6 pythonPerformanceCheck "calculatePerformance tmp/pyReport.csv   ref/pythonPerformance.ref"
 
 #1   dbm01         "ACSPerfAnalyzer ../doc/testDBM fakeOutput00"
 #2   reportGen01   "ACSPerfReportGen ../doc/testDBM"
