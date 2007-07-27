@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.22 2007/07/20 07:06:15 eallaert Exp $"
+# "@(#) $Id: Makefile,v 1.23 2007/07/27 12:00:28 eallaert Exp $"
 #
 # Makefile of ........
 #
@@ -117,6 +117,8 @@ SCRIPTS_L       = 	genMakeReport genCompReport \
 			genCompBulkDataReport \
 			genLoggingProcessesReport \
 			genStartupTest \
+			calculatePerformance \
+			loggingPerformance \
 			sleepRunner
 
 #
