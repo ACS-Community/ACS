@@ -248,7 +248,7 @@ setLogLevelLocal ()
     CONTAINER=$1
     STDOUT_LEVEL=$2
     # Note that maciContainerLogLevel does not work with python containers
-    if [ -n "$STDOUT_LEVEL" ] && [ X"$COMPONENT_LANGUAGE" == X"py" ] ; then
+    if [ -n "$STDOUT_LEVEL" ] && [ X"$COMPONENT_LANGUAGE" != X"py" ] ; then
 	##echo maciContainerLogLevel: `maciContainerLogLevel $1 get default`
 	set -- `maciContainerLogLevel $1 get default | grep "minLogLevel "`
 	if [ -z $7 ] ; then
@@ -275,6 +275,12 @@ getChrono ()
 {
     eval CHRONO=\$START_CHRONO$1
     echo "puts [format %.3f [expr {([clock clicks -milliseconds] - $CHRONO) /1000.}]]" | tclsh
+}
+
+# Definition of a function to sleep a number of ms
+milliSleep () 
+{
+    echo "after $1" | tclsh
 }
 
 ##########################################################################################
@@ -514,15 +520,30 @@ echo " Sending logs"
 acsStartJava -D NumLogs=$NUM_LOGS -D NumComponents=$NUM_COMPONENTS -D Delay=$DELAY -D ComponentName=$COMPONENT_NAME \
     alma.perftest.client.$ClientJavaClass >& $ACS_TMP/clientOutput.log &
 
+# Start another timer as soon as the logs effectively start arriving, 
+# as there is some delay (25s) coded into ClientJavaClass
+sleep 25
+count=0
+while [ `grep "msg: " $ACS_TMP/all_logs.xml | wc -l` -eq 0 ]; do
+    milliSleep 75
+    # timeout-counter to avoid that we sleep forever
+    count=`expr count + 1`
+    if [ $count -gt 100 ] ; then
+        break
+    fi
+done
+startChrono 2
+
 # wait until all the background processes are complete; 
 echo " Waiting for all logs to be sent..."
 wait $!
-##echo " Resetting/starting chronometer 2"
-startChrono 2
+##echo " Resetting/starting chronometer 3"
+startChrono 3
 
 # Tell how long it took to send all these logs
 chrono1=`getChrono 1`
-echo " Needed ${chrono1}s to send all logs"
+chrono2=`getChrono 2`
+echo " Needed ${chrono1}s / ${chrono2}s  to send all logs"
 
 # sleep a bit longer to allow things to 'settle'
 echo " Sleeping (at most) $EXTRA_WAIT_TIME seconds to allow logs to be processed..."
@@ -533,10 +554,11 @@ sleepCount=0
 # First look for the last log(s), then check later if no logs are lost
 while [ $sleepCount -le $EXTRA_WAIT_TIME ]
 do
-  chrono2=`getChrono 2`
-  startChrono 3
+  chrono3=`getChrono 3`
+  startChrono 4
   nrLastLogs=`grep "msg: $lastMsgId]" $ACS_TMP/all_logs.xml | wc -l`
-  debugPrint "overhead of grep|wc is `getChrono 3` s"
+  chrono4=`getChrono 4`
+  debugPrint "overhead of grep|wc is ${chrono4}s"
   # Note that a grep|wc on all_logs.xml can take a few seconds if lots of logs are sent,
   # and that duration is anyway proportional to the size of all_logs.xml.
   # So don't assume that loop duration is determined by the "sleep 1" further on.
@@ -544,7 +566,7 @@ do
       debugPrint "received last log of all components, no need to wait any longer"
       break
   fi
-  sleepCount=`getChrono 2`
+  sleepCount=`getChrono 3`
   debugPrint "waiting since $sleepCount s"
   # convert to integer (needed for expression in "while" control statement above)
   sleepCount=`printf %.0f $sleepCount`
@@ -552,13 +574,18 @@ do
 done
 
 if [ $sleepCount -le $EXTRA_WAIT_TIME ] ; then
-  echo " Last log digested within ${chrono2}s"
+  echo " Last log digested within ${chrono3}s"
 else
-  echo " Log digestion timed out after ${chrono2}s"
+  echo " Log digestion timed out after ${chrono3}s"
 fi
 
 # verify the proper number of logs were received
-totalLogsReceivedByLoggingClient=`grep "msg:" $ACS_TMP/all_logs.xml | wc -l`
+startChrono 4
+totalLogsReceivedByLoggingClient=`grep "msg: " $ACS_TMP/all_logs.xml | wc -l`
+chrono4=`getChrono 4`
+# Calculate the system performance as the number of logs/s processed by the
+# above grep|wc
+sysPerformance=$(printf %0.f `echo "$totalLogsExpected / $chrono4" | bc -l`)
 if [ $totalLogsReceivedByLoggingClient -ne $totalLogsExpected ]
 then
     echo " FAILURE: received $totalLogsReceivedByLoggingClient logs instead of expected $totalLogsExpected."
@@ -593,7 +620,7 @@ then
 fi
 
 # append timing data to a CSV file, for import into Excel
-echo "$COMPONENT_LANGUAGE,$NUM_LOGS,$totalLogsReceivedByLoggingClient,$ACS_LOG_STDOUT,$DELAY,$chrono1,$chrono2" >> $CSVFILE
+echo "$COMPONENT_LANGUAGE,$NUM_LOGS,$totalLogsReceivedByLoggingClient,$ACS_LOG_STDOUT,$DELAY,$sysPerformance,$chrono1,$chrono2,$chrono3" >> $CSVFILE
 
 # stop the container(s)
 i=1
