@@ -29,7 +29,7 @@ printUsageAndExit ()
     echo "";
     echo "   <startNumLogsToSend> is the initial number of logs to publish per component.";
     echo "   <numLogsIncrement> is the increment for <startNumLogsToSend> for the next loop.";
-    echo "   <nrSteps> is the number of loops.";
+    echo "   <nrLoops> is the number of loops.";
     echo "   <csvFile> is the pathname of the CSV-file to create."
     echo "             Note: genLoggingProcessReport removes the tmp subdir at each iteration!"
     echo "Options: "
@@ -126,7 +126,7 @@ NUM_LOOPS=$3
 CSV_FILE=$4
 
 # Initialize CSV-file with column headers
-echo "Language,#Logs sent,#Logs received,minLogLevelLocal,Delay,Time to send,Time to receive" > $CSV_FILE 
+echo "Language,#Logs sent,#Logs received,minLogLevelLocal,Delay,System performance,Time from start,Time to send,Time to receive" > $CSV_FILE 
 
 # collect data
 for language in $LANGUAGES
