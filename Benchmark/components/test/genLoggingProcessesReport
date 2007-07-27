@@ -527,7 +527,7 @@ count=0
 while [ `grep "msg: " $ACS_TMP/all_logs.xml | wc -l` -eq 0 ]; do
     milliSleep 75
     # timeout-counter to avoid that we sleep forever
-    count=`expr count + 1`
+    count=`expr $count + 1`
     if [ $count -gt 100 ] ; then
         break
     fi
