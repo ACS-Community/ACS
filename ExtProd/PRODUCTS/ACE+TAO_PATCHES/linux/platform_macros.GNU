@@ -7,9 +7,11 @@
 # We always include config-linux.h on Linux platforms.
 ACE_PLATFORM_CONFIG ?= config-linux.h
 
+NUM_CPU=$(shell grep -c processor  /proc/cpuinfo)
+
 exceptions ?= 1
 debug ?= 1
-optimize ?= 1
+optimize = 1
 threads ?= 1
 
 PLATFORM_XT_CPPFLAGS=
@@ -101,14 +103,22 @@ endif
 LIBS += $(shell test "`ls -L /usr/lib/librt.so* /lib/librt.so*`" && echo -lrt)
 
 ifeq ($(optimize),1)
-  SOFLAGS += -Wl,-O3
+  ifeq ($(NUM_CPU),1)	
+    SOFLAGS += -Wl,-O3
+  else
+    SOFLAGS += -Wl,-O1	#with gcc 3.4.3 -O2 blocks build
+  endif #NUM_CPU
 endif
 
 PLATFORM_QT_CPPFLAGS ?= -I$(QTDIR)/include
 PLATFORM_QT_LIBS ?= -lqt-mt
 PLATFORM_QT_LDFLAGS ?= -L$(QTDIR)/lib
 
-OCFLAGS ?= -O3
+ifeq ($(NUM_CPU),1)
+  OCFLAGS ?= -O3	
+else
+  OCFLAGS ?= -O1 #with gcc 3.4.3 -O2 blocks build
+endif #NUM_CPU
 PIC     = -fPIC
 AR      = ar
 ARFLAGS = rsuv
