@@ -2,7 +2,7 @@
 #*******************************************************************************
 # E.S.O. - ALMA project
 #
-# "@(#) $Id: buildTAO,v 1.22 2006/12/11 19:37:16 bjeram Exp $"
+# "@(#) $Id: buildTAO,v 1.23 2007/07/30 10:51:57 bjeram Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -46,7 +46,10 @@ exec > $LOG 2>&1
 
 date
 
+NUM_CPU=`grep -c processor  /proc/cpuinfo`
+
 CURR_DIR=`pwd`
+
 if [ "$OS" = "LINUX" ]
 then 
   OSTAG=linux
@@ -58,7 +61,7 @@ else
   exit -1
 fi
 
-echo "Installing ACE/TAO for $OSTAG"
+echo "Installing ACE/TAO for $OSTAG using $NUM_CPU CPU(s)"
 echo 
 
 if [ -d $ALMASW_ROOTDIR/$ALMASW_RELEASE/TAO ]
@@ -117,19 +120,19 @@ echo "done"
 echo ""
 
 echo "building ace"
-cd $ACE_ROOT/ace ; make
+cd $ACE_ROOT/ace ; make -j $NUM_CPU
 echo "done"
 echo ""
 echo "building gperf"
-cd $ACE_ROOT/apps/gperf ; make
+cd $ACE_ROOT/apps/gperf ; make -j $NUM_CPU
 echo "done"
 echo ""
 echo "building ACEXML"
-cd $ACE_ROOT/ACEXML ; make
+cd $ACE_ROOT/ACEXML ; make -j $NUM_CPU
 echo "done"
 echo ""
 echo "building Kokyu"
-cd $ACE_ROOT/Kokyu ; make
+cd $ACE_ROOT/Kokyu ; make -j $NUM_CPU
 echo "done"
 echo ""
 
@@ -142,21 +145,21 @@ echo ""
 # ... or not
 echo "building tao"
 echo "building TAO_IDL"
-cd $ACE_ROOT/TAO/TAO_IDL ; make 
+cd $ACE_ROOT/TAO/TAO_IDL ; make -j $NUM_CPU
 echo "done"
 echo ""
 
-cd $ACE_ROOT/TAO/tao ; make 
+cd $ACE_ROOT/TAO/tao ; make -j $NUM_CPU
 echo "done"
 echo ""
 
 echo "building orbsvcs"
-cd $ACE_ROOT/TAO/orbsvcs; make 
+cd $ACE_ROOT/TAO/orbsvcs; make -j $NUM_CPU
 echo "done"
 echo ""
 
 echo "building utilities"
-cd $ACE_ROOT/TAO/utils; make 
+cd $ACE_ROOT/TAO/utils; make -j $NUM_CPU
 echo "done"
 echo ""
 
