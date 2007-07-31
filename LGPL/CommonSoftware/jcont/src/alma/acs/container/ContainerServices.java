@@ -142,7 +142,8 @@ public interface ContainerServices
 	 * without interfering with its functioning.
 	 * <p>
 	 * A non-sticky reference does not bind the Manager to keep alive the Component, and the Client requesting a non-sticky reference 
-	 * is not considered when checking for reference counts. 
+	 * is not considered when checking for reference counts.
+	 * The non-sticky reference should not be released, as that call will fail.
 	 * The Manager can deactivate Components independently of any non-sticky reference.
 	 * Since a non-sticky reference is not considered in reference counting, it will also not activate the component if it is 
 	 * not already active. As a consequence, asking for a non-sticky reference to a not-active Component throws an exception. 
