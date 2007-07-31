@@ -263,6 +263,8 @@ public class ClientLogManager implements LogConfigSubscriber
         
         // just to make sure we never throw an exception
         try {
+        	// @TODO: the LogManager-cache-check should better be moved to a static getter method of AcsLogger,
+        	//        instead of doing it externally here. Comes from the fact that in the past there was no subclass AcsLogger.
             LogManager manager = LogManager.getLogManager();
             logger = (AcsLogger) manager.getLogger(loggerNamespace);
             if (logger == null) {
@@ -278,13 +280,13 @@ public class ClientLogManager implements LogConfigSubscriber
         
                 logger.setProcessName(this.processName);
                 if (loggerNamespace.startsWith(NS_COMPONENT)) {
-                        logger.setSourceObject(loggerNamespace.substring(NS_COMPONENT.length()+1));
+                	logger.setSourceObject(loggerNamespace.substring(NS_COMPONENT.length()+1));
                 }
                 else if (loggerNamespace.startsWith(NS_CORBA)){
-                        logger.setSourceObject(loggerNamespace.substring(NS_CORBA.length()+1));
+                	logger.setSourceObject(loggerNamespace.substring(NS_CORBA.length()+1));
                 }
                 else {
-                        logger.setSourceObject(this.processName);
+                	logger.setSourceObject(this.processName);
                 }
                 // currently all remote loggers should also log locally
                 addLocalHandler(logger);
