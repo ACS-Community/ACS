@@ -963,7 +963,7 @@ module maci {
 
 
 		/** 
-		    Get a non-sticky reference to a component.
+		    Gets a non-sticky reference to a component.
 
 		    A non-sticky reference does not bind the
 		    Manager to keep alive the Component, and 
@@ -971,17 +971,20 @@ module maci {
 		    is not considered when checking for reference
 		    counts. 
 		    The Manager can deactivate Components
-		    independently from any non-sticky reference.
+		    independently of any non-sticky reference.
 
 		    This is typically used by "weak clients" like
 		    graphical user interfaces.
 
-                    Since a non-sticky reference is not considered in
-                    reference counting, it will also not activate
+		    Since a non-sticky reference is not considered in
+		    reference counting, it will also not activate
 		    the component if it is not already active.
 
 		    As a consequence, asking for a non-sticky reference
-                    to a not-active Component throws an exception.
+		    to a not-active Component throws an exception.
+		    
+		    The client should not attempt to release 
+		    the non-sticky reference, which would yield an exception.
   
 		    The client represented by id (the handle) must 
 		    have adequate access rights to access the component.
