@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Filter;
 import java.util.logging.Level;
+import java.util.logging.LogManager;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
@@ -38,6 +39,9 @@ import alma.maci.loggingconfig.UnnamedLogger;
 
 /**
  * A <code>Logger</code> that attaches additional information to the produced <code>LogRecord</code>s.
+ * <p>
+ * This class should be used only by ACS or by similar framework layers in the Operator GUI etc.
+ * Normal application code should get the Logger object from the <code>ContainerServices</code>. 
  * <p>
  * Design note: the additional data (thread name, line of code) are really most interesting for the remotely sent log messages.
  * Thus an alternative implementation could put the code from {@link #log(LogRecord)} into class {@link alma.acs.logging.AcsLoggingHandler},
@@ -59,14 +63,71 @@ public class AcsLogger extends Logger implements LogConfigSubscriber {
     private String processName;
     private String sourceObject;
 
+    /**
+     * Standard constructor that configures this logger from <code>logConfig</code>
+     * and also registers for log config changes.
+     *  
+     * @param name  the logger's name
+     * @param resourceBundleName may be <code>null</code>
+     * @param logConfig  the ACS logging configuration object, which gives optional access to the CDB. 
+     */
     public AcsLogger(String name, String resourceBundleName, LogConfig logConfig) {
+    	this(name, resourceBundleName, logConfig, false);
+    }
+    
+    /**
+     * Auxiliary ctor. Don't use it directly from outside of this class.
+     */
+    protected AcsLogger(String name, String resourceBundleName, LogConfig logConfig, boolean allowNullLogConfig) {
         super(name, resourceBundleName);
-        addLoggerClass(AcsLogger.class); 
+        addLoggerClass(AcsLogger.class);
         addLoggerClass(Logger.class);
-        logConfig.addSubscriber(this);
-        configureLogging(logConfig);
+        if (logConfig != null) {
+        	logConfig.addSubscriber(this);
+        	configureLogging(logConfig);
+        }
+        else if (!allowNullLogConfig) {
+        	throw new NullPointerException("LogConfig must not be null");
+        }
     }
 
+    /**
+     * Non-standard factory method to be used only for special offline or testing purposes
+     * where typically an AcsLogger must be provided by an alternative implementation of ContainerServices.
+     * The returned AcsLogger is just like a JDK Logger obtained from {@link Logger#getLogger(String, String)}.
+     * 
+     * @param name  the logger's name
+     * @param resourceBundleName
+     * @return <code>AcsLogger</code> that is as close to a normal JDK Logger as possible.
+     */
+    public static AcsLogger createUnconfiguredLogger(String name, String resourceBundleName) {
+    	
+    	// the following code is copied and modified from Logger.getLogger 
+    	
+    	LogManager manager = LogManager.getLogManager();
+    	Logger jdkLogger = manager.getLogger(name);    	
+    	if (jdkLogger != null && !(jdkLogger instanceof AcsLogger)) {
+    		throw new IllegalArgumentException("Logger " + name + " already exists but is not of subtype AcsLogger.");
+    	}    	
+    	AcsLogger result = (AcsLogger) jdkLogger;
+    	
+    	if (result == null) {
+    	    // Create a new logger.
+    	    // Note: we may get a MissingResourceException here.
+    	    result = new AcsLogger(name, resourceBundleName, null, true);
+    	    manager.addLogger(result);
+    	    result = (AcsLogger) manager.getLogger(name);
+    	}
+    	
+    	// unlike in the JDK logger, we can't fix the resource bundle name if the logger from cache had null and now one is given.
+    	// however we check that the old and new bundle are consistent.
+    	if (result.getResourceBundleName() != null && !result.getResourceBundleName().equals(resourceBundleName)) {
+    	    throw new IllegalArgumentException(result.getResourceBundleName() +
+    				" != " + resourceBundleName);
+    	}
+    	return result;
+    }
+    
     /**
      * Optionally sets a logger name that can be different from the {@link Logger#name} passed in the constructor.
      * The new name will be used for the <code>LogRecord</code>s produced by this class.
