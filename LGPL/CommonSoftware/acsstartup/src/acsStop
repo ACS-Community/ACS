@@ -6,7 +6,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: acsStop,v 1.18 2006/06/07 16:51:49 dfugate Exp $"
+# "@(#) $Id: acsStop,v 1.19 2007/07/31 01:13:09 cparedes Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -176,7 +176,7 @@ if [ -e $LC_PIDFILE ]
 then
     export LC_PID=`cat $LC_PIDFILE`
     ACS_LOG_INFO  "Stopping file-based logging client."
-    acsKillProc $LC_PID &> /dev/null
+    kill -15 $LC_PID &> /dev/null
 fi
 
 ########################################################################
