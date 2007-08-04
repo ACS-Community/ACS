@@ -553,6 +553,54 @@ public class ContainerServicesImpl implements ContainerServices
 
 		return cInfo.reference;
 	}
+	
+	public org.omg.CORBA.Object getCollocatedComponent(ComponentSpec spec, boolean markAsDefaul, String targetCompUrl) throws AcsJContainerServicesEx {
+		if (spec == null) {
+			AcsJBadParameterEx cause = new AcsJBadParameterEx();
+			cause.setParameter("ComponentSpec");
+			cause.setParameterValue("null");
+			throw new AcsJContainerServicesEx(cause);
+		}
+		if (targetCompUrl == null) {
+			AcsJBadParameterEx cause = new AcsJBadParameterEx();
+			cause.setParameter("targetCompUrl");
+			cause.setParameterValue("null");
+			throw new AcsJContainerServicesEx(cause);
+		}
+		ComponentInfo cInfo = null;
+		
+		try {
+			// the call
+			cInfo = m_acsManagerProxy.get_collocated_component(m_clientHandle, spec, false, targetCompUrl);
+			
+		} catch (AcsJmaciErrTypeEx ex) {				
+			String msg = "Failed to retrieve component '" + spec.component_name + "' created such that it runs collocated with '"+ targetCompUrl + "'.";
+			m_logger.log(Level.FINE, msg, ex); // it's serious, but the caller is supposed to log this. Container only logs just in case.
+		    throw new AcsJContainerServicesEx(ex);
+		}
+		catch (Throwable thr) {
+			String msg = "Unexpectedly failed to retrieve component '" + spec.component_name + "' created such that it runs collocated with '"+ targetCompUrl + "'.";
+			m_logger.log(Level.FINE, msg, thr); 
+			AcsJContainerServicesEx ex = new AcsJContainerServicesEx(thr);
+			ex.setContextInfo(msg);
+			throw ex;
+		}
+
+		// cInfo.reference == null should no longer happen since the maci exception changes for ACS 6.0
+		// @todo check and remove this
+		if (cInfo.reference == null) {
+			String msg = "Failed to retrieve component '" + spec.component_name + "' created such that it runs collocated with '"+ targetCompUrl + "'.";
+			m_logger.info(msg);
+			AcsJContainerServicesEx ex = new AcsJContainerServicesEx();
+			ex.setContextInfo(msg);
+			throw ex;
+		}
+		
+		m_usedComponentsMap.put(cInfo.name, cInfo.reference);
+		m_componentDescriptorMap.put(cInfo.name, new ComponentDescriptor(cInfo));
+
+		return cInfo.reference;
+	}
 
 
 	public org.omg.CORBA.Object getCollocatedComponent(String compUrl, String targetCompUrl) throws AcsJContainerServicesEx {
@@ -572,39 +620,7 @@ public class ContainerServicesImpl implements ContainerServices
 
 		ComponentQueryDescriptor cqd = new ComponentQueryDescriptor(compUrl, null);
 		ComponentSpec cspec = cqd.toComponentSpec();
-		ComponentInfo cInfo = null;
-		
-		try {
-			// the call
-			cInfo = m_acsManagerProxy.get_collocated_component(m_clientHandle, cspec, false, targetCompUrl);
-			
-		} catch (AcsJmaciErrTypeEx ex) {				
-			String msg = "Failed to retrieve component '" + compUrl + "' created such that it runs collocated with '"+ targetCompUrl + "'.";
-			m_logger.log(Level.FINE, msg, ex); // it's serious, but the caller is supposed to log this. Container only logs just in case.
-		    throw new AcsJContainerServicesEx(ex);
-		}
-		catch (Throwable thr) {
-			String msg = "Unexpectedly failed to retrieve component '" + compUrl + "' created such that it runs collocated with '"+ targetCompUrl + "'.";
-			m_logger.log(Level.FINE, msg, thr); 
-			AcsJContainerServicesEx ex = new AcsJContainerServicesEx(thr);
-			ex.setContextInfo(msg);
-			throw ex;
-		}
-
-		// cInfo.reference == null should no longer happen since the maci exception changes for ACS 6.0
-		// @todo check and remove this
-		if (cInfo.reference == null) {
-			String msg = "Failed to retrieve component '" + compUrl + "' created such that it runs collocated with '"+ targetCompUrl + "'.";
-			m_logger.info(msg);
-			AcsJContainerServicesEx ex = new AcsJContainerServicesEx();
-			ex.setContextInfo(msg);
-			throw ex;
-		}
-		
-		m_usedComponentsMap.put(cInfo.name, cInfo.reference);
-		m_componentDescriptorMap.put(cInfo.name, new ComponentDescriptor(cInfo));
-
-		return cInfo.reference;
+		return getCollocatedComponent(cspec, false, targetCompUrl);
 	}
 	
 	

@@ -187,6 +187,16 @@ public interface ContainerServices
 	 */
 	public org.omg.CORBA.Object getCollocatedComponent(String compUrl, String targetCompUrl) throws AcsJContainerServicesEx;
 	
+	/**
+	 * 
+	 * @param spec the description of the component to be created
+	 * @param markAsDefaul  if true, the new component will become the default component for its IDL type.
+	 * @param targetCompUrl targetCompUrl  the name (URL) of the target component, in whose container we also want <code>compUrl</code> to run.
+	 * @return 
+	 * @throws AcsJContainerServicesEx If the call failed and no component reference could be obtained.
+	 */
+	public org.omg.CORBA.Object getCollocatedComponent(ComponentSpec spec, boolean markAsDefaul, String targetCompUrl) throws AcsJContainerServicesEx;
+	
 	
 	/**
 	 * Gets a component whose instance is not registered in the CDB 
