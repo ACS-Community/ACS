@@ -45,6 +45,7 @@ public class LogLevelWinAdapter extends WindowAdapter {
 	}
 	
 	public void windowClosing(WindowEvent e) {
+		frame.stopPanel();
 		frame.disconnectACSComponentClient();
 		frame.dispose();
 	}

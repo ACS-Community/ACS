@@ -26,4 +26,6 @@ protected void drawDart(Graphics g) {
 		g.fillOval(-15, -15, 30, 30);
 	}
 }
+
+public void setError(boolean err) {}
 }

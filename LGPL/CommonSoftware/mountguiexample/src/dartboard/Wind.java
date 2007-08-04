@@ -78,4 +78,6 @@ public void setVelocity(double direction, double speed) {
 	setSpeed(speed);
 	setDirection(direction);
 }
+
+public void setError(boolean err) {}
 }

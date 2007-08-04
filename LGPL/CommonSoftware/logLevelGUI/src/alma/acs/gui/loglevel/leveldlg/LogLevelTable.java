@@ -21,7 +21,14 @@
  */
 package alma.acs.gui.loglevel.leveldlg;
 
+import javax.swing.DefaultCellEditor;
+import javax.swing.JComboBox;
 import javax.swing.JTable;
+import javax.swing.table.TableCellEditor;
+import javax.swing.table.TableCellRenderer;
+
+import com.cosylab.logging.engine.log.LogTypeHelper;
+import com.cosylab.logging.settings.LogTypeRenderer;
 
 /**
  * The table showing the log levels
@@ -30,7 +37,14 @@ import javax.swing.JTable;
  *
  */
 public class LogLevelTable extends JTable {
-
+	
+	// The renderer for the global and local log types
+	private LogTypeCellRenderer renderer = new LogTypeCellRenderer();
+	
+	// The editor for log levels
+	private JComboBox editor=new JComboBox(LogTypeHelper.getAllTypesDescriptions());;
+	public LogTypeRenderer editorRenderer= new LogTypeRenderer();
+	
 	/**
 	 * Constructor
 	 * 
@@ -41,7 +55,46 @@ public class LogLevelTable extends JTable {
 		if (model==null) {
 			throw new IllegalArgumentException("Invalid null table model in constructor");
 		}
+		
+		editor.setSelectedIndex(0);
+		editor.setEditable(false);
+		editor.setMaximumRowCount(LogTypeHelper.getNumberOfTypes());
+		editor.setRenderer(editorRenderer);
+		
+		columnModel.getColumn(2).setCellEditor(new DefaultCellEditor(editor));
+		columnModel.getColumn(3).setCellEditor(new DefaultCellEditor(editor));
+		for (int t=0; t<4; t++) {
+			columnModel.getColumn(t).setMinWidth(30);
+		}
+		
+		setRowHeight(LogTypeHelper.getIconsVSize()+5);
+		setRowMargin(2);
+		setRowSelectionAllowed(false);
 	}
 	
+	/**
+	 * Return the renderer for a given cell
+	 */
+	public TableCellRenderer getCellRenderer(int row, int column) {
+		if (column==2 || column==3) {
+			return renderer;
+		}
+		return super.getCellRenderer(row, column);
+	}
+	
+	/**
+	 * Return the editor for a given cell
+	 */
+	public TableCellEditor getCellEditor(int row, int column) {
+		if (column==2 || column==3) {
+			Object val=getModel().getValueAt(row, column);
+			System.out.println("Value="+val.toString());
+			DefaultCellEditor edt = (DefaultCellEditor)super.getCellEditor(row, column);
+			JComboBox edtCB = (JComboBox)edt.getComponent();
+			edtCB.setSelectedIndex(Integer.parseInt(val.toString()));
+			return edt;
+		}
+		return super.getCellEditor(row, column);
+	}
 	
 }

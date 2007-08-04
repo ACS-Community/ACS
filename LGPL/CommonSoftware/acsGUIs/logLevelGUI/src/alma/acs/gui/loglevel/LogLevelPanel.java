@@ -21,10 +21,14 @@
  */
 package alma.acs.gui.loglevel;
 
+import java.awt.Dimension;
+
+import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 
 import alma.acs.container.ContainerServices;
 import alma.acs.gui.loglevel.tree.LogLvlTree;
+import alma.acs.gui.util.panel.IPanel;
 
 /**
  * The panel of the application containing the tree with 
@@ -33,17 +37,33 @@ import alma.acs.gui.loglevel.tree.LogLvlTree;
  * @author acaproni
  *
  */
-public class LogLevelPanel extends JScrollPane {
+public class LogLevelPanel extends JScrollPane implements IPanel {
 	
 	// The container services
     private ContainerServices contSvc=null;
     
+    // The tree
+    private LogLvlTree tree=null;
+    
+    // The window that shows this panel
+    private JFrame frame=null;
+    
 	/**
-	 * Constructor
+	 * Constructor 
 	 *
 	 */
 	public LogLevelPanel() {
-		super(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+		super(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		initialize();
+	}
+	
+	/**
+	 * Constructor 
+	 * 
+	 * @param frame The window that owns this panel
+	 */
+	public LogLevelPanel(JFrame frame) {
+		super(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		initialize();
 	}
 	
@@ -52,6 +72,7 @@ public class LogLevelPanel extends JScrollPane {
 	 *
 	 */
 	private void initialize() {
+		setPreferredSize(new Dimension(150,100));
 	}
 	
 	/**
@@ -73,7 +94,7 @@ public class LogLevelPanel extends JScrollPane {
 	    	throw new IllegalStateException("ACS.magager property not set!");
 	    }
 	    
-	    LogLvlTree tree = new LogLvlTree(contSvc.getAdvancedContainerServices().getORB(),contSvc.getLogger());
+	    tree = new LogLvlTree(contSvc.getAdvancedContainerServices().getORB(),contSvc.getLogger());
 		setViewportView(tree);
 		tree.start();
 	}
@@ -86,6 +107,8 @@ public class LogLevelPanel extends JScrollPane {
 	 * @throws Exception
 	 */
 	public void stop() throws Exception {
+		tree.stop();
+		tree=null;
 		contSvc=null;
 	}
 	
@@ -109,17 +132,7 @@ public class LogLevelPanel extends JScrollPane {
 	public void resume() throws Exception {
 	}
 	
-	/**
-	 * Set the plugin container services
-	 * 
-	 * @see alma.exec.extension.subsystemplugin.SubsystemPlugin
-	 */
-	public void setServices (ContainerServices ctrl) {
-		setACSContainerServices(ctrl);
-	}
-	
-	/**
-	 * Run in restricted mode
+	 /* Run in restricted mode
 	 * 
 	 * @see alma.exec.extension.subsystemplugin.SubsystemPlugin
 	 */
@@ -137,6 +150,10 @@ public class LogLevelPanel extends JScrollPane {
 			throw new IllegalArgumentException("Invalid null ContainerServices");
 		}
 		contSvc=cs;
+	}
+	
+	public boolean isOMCPlugin() {
+		return frame==null;
 	}
 
 }

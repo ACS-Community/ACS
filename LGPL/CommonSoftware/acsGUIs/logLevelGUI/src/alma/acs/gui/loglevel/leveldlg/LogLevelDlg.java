@@ -26,6 +26,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -104,25 +105,21 @@ public class LogLevelDlg extends JDialog implements ActionListener {
 	 * 
 	 * @return The panel with the table of log levels
 	 */
-	private JPanel initLogLevelsPanel() {
-		JPanel loggersPnl = new JPanel();
+	private JComponent initLogLevelsPanel() {
 		LogLevelHelper[] levels=null;
 		try {
 			levels = loggersLbl();
 		} catch (Exception e) {
 			JLabel lbl = new JLabel("No log levels available");
 			lbl.setToolTipText("Function not implemented");
-			loggersPnl.add(lbl);
-			return loggersPnl;
+			return lbl;
 		}
 		
-		loggersPnl.setBorder(new TitledBorder("Log levels"));
 		model = new LogLevelModel(levels);
 		table = new LogLevelTable(model);
-		JScrollPane scrollPane = new JScrollPane(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+		JScrollPane scrollPane = new JScrollPane(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		scrollPane.setViewportView(table);
-		loggersPnl.add(scrollPane);
-		return loggersPnl;
+		return scrollPane;
 	}
 	
 	/**
@@ -195,6 +192,12 @@ public class LogLevelDlg extends JDialog implements ActionListener {
 	 * @return true if the user changed at least one level
 	 */
 	public boolean userChangedLogLevels() {
+		if (model==null) {
+			// The model is null if the table is not shown
+			// because the client does not support 
+			// logLevels operations
+			return false;
+		}
 		LogLevelHelper[] newLevels = model.getLevels();
 		for (LogLevelHelper logLvl: newLevels) {
 			if (logLvl.modified()) {

@@ -17,14 +17,14 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: logLevelPanel,v 1.1.1.1 2007/06/22 12:29:47 acaproni Exp $"
+# "@(#) $Id: logLevelPanel,v 1.2 2007/08/04 10:22:40 acaproni Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
 # acaproni  2007-06-12  created
 #
 
-acsStartJava alma.acs.gui.loglevel.LogLevelFrame
+acsStartJava alma.acs.gui.util.panel.Frame alma.acs.gui.loglevel.LogLevelPanel
 
 
 #

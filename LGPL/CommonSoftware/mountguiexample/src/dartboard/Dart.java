@@ -76,4 +76,12 @@ public void setPosition(double elevation, double azimuth) {
 	if (!isDisplayed) isDisplayed = true;
 	recalculateCartesian(elevation, azimuth);
 }
+
+/**
+ * Called in case of error.
+ * 
+ * Each derived class will take the opportune action
+ * @param error
+ */
+public abstract void setError(boolean error);
 }

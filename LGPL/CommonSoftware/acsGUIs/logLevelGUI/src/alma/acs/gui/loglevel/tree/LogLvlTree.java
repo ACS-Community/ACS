@@ -21,6 +21,7 @@
  */
 package alma.acs.gui.loglevel.tree;
 
+import java.awt.Dimension;
 import java.util.logging.Logger;
 
 import javax.swing.JTree;
@@ -49,7 +50,7 @@ public class LogLvlTree extends JTree {
 		super();
 		model = new LogLvlTreeModel(theOrb,theLogger);
 		setModel(model);
-		
+		setPreferredSize(new Dimension(150,250));
 	}
 	
 	/**

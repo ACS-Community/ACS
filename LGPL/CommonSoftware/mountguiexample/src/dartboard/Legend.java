@@ -41,4 +41,6 @@ protected void drawDart(Graphics g) {
 	
 	g.setFont(f);
 }
+
+public void setError(boolean err) {}
 }

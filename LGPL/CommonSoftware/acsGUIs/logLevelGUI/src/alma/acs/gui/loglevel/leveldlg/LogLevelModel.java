@@ -24,6 +24,8 @@ package alma.acs.gui.loglevel.leveldlg;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
+import com.cosylab.logging.engine.log.LogTypeHelper;
+
 import si.ijs.maci.LoggingConfigurablePackage.LogLevels;
 
 /**
@@ -101,9 +103,6 @@ public class LogLevelModel extends DefaultTableModel {
 	}
 	
 	public void setValueAt(Object aValue, int row, int column) {
-		if (aValue!=null) {
-			System.out.println("Setting class "+aValue.getClass().getName());
-		}
 		if (row>levels.length) {
 			throw new IllegalStateException("Trying to set value for ["+row+", "+column+"] but the table has "+levels.length+" rows");
 		}
@@ -128,7 +127,7 @@ public class LogLevelModel extends DefaultTableModel {
 		}
 		case 2: {
 			try {
-				levels[row].setLocalLevel((Integer)aValue);
+				levels[row].setLocalLevel(getLevelFromObject(aValue));
 			} catch (Throwable t) {
 				System.err.println("Error setting a value:" +t.getMessage());
 				t.printStackTrace(System.err);
@@ -142,7 +141,7 @@ public class LogLevelModel extends DefaultTableModel {
 		}
 		case 3: {
 			try {
-				levels[row].setGlobalLevel((Integer)aValue);
+				levels[row].setGlobalLevel(getLevelFromObject(aValue));
 			} catch (Throwable t) {
 				System.err.println("Error setting a value:" +t.getMessage());
 				t.printStackTrace(System.err);
@@ -159,6 +158,28 @@ public class LogLevelModel extends DefaultTableModel {
 		}
 		}
 		fireTableRowsUpdated(row, row);
+	}
+	
+	/**
+	 * Get the level represented by the object.
+	 * There are two cases:
+	 *  - obj is an integer representing the log level (for example 3)
+	 *  - obj is a string describing the log (LogTypeHelper.logEntryTypes for example Info)
+	 *  The reason we have two cases is that the value can be set from the LogLevelHelper
+	 *  of from the Combobox of the editor. The former is reprsented by an int and the
+	 *  latter by a String
+	 *  
+	 * @param obj The object representing the log type
+	 * @return The log type
+	 */
+	private int getLevelFromObject(Object obj) {
+		if (obj==null) {
+			throw new IllegalArgumentException("Invalid null object");
+		}
+		if (obj instanceof Integer) {
+			return (Integer)obj;
+		}
+		return LogTypeHelper.parseLogTypeDescription(obj.toString());
 	}
 	
 	/**

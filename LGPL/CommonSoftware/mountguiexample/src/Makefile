@@ -20,7 +20,7 @@
 # MA 02111-1307  USA
 #
 #
-# "@(#) $Id: Makefile,v 1.4 2004/09/16 09:48:40 mpasquat Exp $"
+# "@(#) $Id: Makefile,v 1.5 2007/08/04 10:23:28 acaproni Exp $"
 #
 # Makefile of Abeans
 #
@@ -55,7 +55,7 @@ JARFILES = dartboard antMountGUI
 antMountGUI_DIRS = antMountGUI 
 
 dartboard_DIRS = dartboard
-dartboard_EXTRAS = dartboard/*.gif
+dartboard_EXTRAS = dartboard/*.png
 
 
 #

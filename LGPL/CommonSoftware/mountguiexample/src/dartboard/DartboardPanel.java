@@ -19,7 +19,7 @@ public class DartboardPanel extends JPanel {
 	
 	private Dartboard dartboard;
 	private Dart[] darts;
-	private PlanetPanel planetPanel;
+//	private PlanetPanel planetPanel;
 	
 	public void setSettable(boolean settable) {
 	}
@@ -35,9 +35,9 @@ public DartboardPanel() {
 private void initialize() {
 	setLayout(new BorderLayout());
 	dartboard = new Dartboard();
-	planetPanel = new PlanetPanel();
+//	planetPanel = new PlanetPanel();
 	add(dartboard, "Center");
-	add(planetPanel, "South");
+//	add(planetPanel, "South");
 
 	darts = new Dart[7];
 	darts[GRID] = new Grid();
@@ -60,13 +60,13 @@ public void setMoonAzimuth(double azimuth) {
 // This method should be protected. But how to call it from 
 // an inner class then?
 public void setMoonDeclination(double declination) {
-	planetPanel.getMoonDeclinationLabel().setText(Double.toString(declination));
+//	planetPanel.getMoonDeclinationLabel().setText(Double.toString(declination));
 }
 
 // This method should be protected. But how to call it from 
 // an inner class then?
 public void setMoonDeclination(String declination) {
-	planetPanel.getMoonDeclinationLabel().setText(declination);
+//	planetPanel.getMoonDeclinationLabel().setText(declination);
 }
 
 // This method should be protected. But how to call it from 
@@ -84,13 +84,13 @@ public void setMoonPhase(int phase) {
 // This method should be protected. But how to call it from 
 // an inner class then?
 public void setMoonRightAscension(double rightAscension) {
-	planetPanel.getMoonRightAscensionLabel().setText(Double.toString(rightAscension));
+//	planetPanel.getMoonRightAscensionLabel().setText(Double.toString(rightAscension));
 }
 
 // This method should be protected. But how to call it from 
 // an inner class then?
 public void setMoonRightAscension(String rightAscension) {
-	planetPanel.getMoonRightAscensionLabel().setText(rightAscension);
+//	planetPanel.getMoonRightAscensionLabel().setText(rightAscension);
 }
 
 // This method should be protected. But how to call it from 
@@ -102,13 +102,13 @@ public void setSunAzimuth(double azimuth) {
 // This method should be protected. But how to call it from 
 // an inner class then?
 public void setSunDeclination(double declination) {
-	planetPanel.getSunDeclinationLabel().setText(Double.toString(declination));
+//	planetPanel.getSunDeclinationLabel().setText(Double.toString(declination));
 }
 
 // This method should be protected. But how to call it from 
 // an inner class then?
 public void setSunDeclination(String declination) {
-	planetPanel.getSunDeclinationLabel().setText(declination);
+//	planetPanel.getSunDeclinationLabel().setText(declination);
 }
 
 // This method should be protected. But how to call it from 
@@ -120,13 +120,13 @@ public void setSunElevation(double elevation) {
 // This method should be protected. But how to call it from 
 // an inner class then?
 public void setSunRightAscension(double rightAscension) {
-	planetPanel.getSunRightAscensionLabel().setText(Double.toString(rightAscension));
+//	planetPanel.getSunRightAscensionLabel().setText(Double.toString(rightAscension));
 }
 
 // This method should be protected. But how to call it from 
 // an inner class then?
 public void setSunRightAscension(String rightAscension) {
-	planetPanel.getSunRightAscensionLabel().setText(rightAscension);
+//	planetPanel.getSunRightAscensionLabel().setText(rightAscension);
 }
 
 // This method should be protected. But how to call it from 
@@ -164,5 +164,26 @@ public void setWindDirection(double direction) {
 public void setWindSpeed(double speed) {
 	((Wind)darts[WIND]).setSpeed(speed);
 }
+
+	/**
+	 * Set the dartboard in error state.
+	 * Normally the dartboard is not in error state.
+	 * If it enters the error state, it delegates each widget to show
+	 * him self accordingly (for example the grid is show in red)
+	 *  
+	 * @param error if true the dartboard enter the error state
+	 *              otherwise it resumes its standard functionality
+	 */
+	public void setError(boolean error) {
+		darts[GRID].setError(error);
+		darts[LEGEND].setError(error);
+		darts[MOON].setError(error);
+		darts[SUN].setError(error);
+		darts[TELESCOPE].setError(error);
+		darts[TELESCOPE_DESTINATION].setError(error);
+		// Force a refresh 
+		this.repaint();
+	}
+
 
 }

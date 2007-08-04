@@ -69,4 +69,6 @@ public short getPhase(short phase) {
 public void setPhase(short phase) {
 	this.phase = phase;
 }
+
+public void setError(boolean err) {}
 }

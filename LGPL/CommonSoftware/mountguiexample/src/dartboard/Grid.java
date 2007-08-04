@@ -7,6 +7,9 @@ import java.awt.*;
  * @author: 
  */
 public class Grid extends Dart {
+	
+	// Set to true in case of error
+	boolean error=false;
 /**
  * Grid constructor comment.
  * @param x int
@@ -18,7 +21,11 @@ public Grid() {
 	setPosition(90, 0);
 }
 protected void drawDart(Graphics g) {
-	g.setColor(Color.blue);
+	if (error) {
+		g.setColor(Color.red);
+	} else {
+		g.setColor(Color.blue);
+	}
 
 	// needed only for this Dart, the Grid.
 	Font f = g.getFont();
@@ -50,8 +57,16 @@ protected void drawDart(Graphics g) {
 		y1 = calculateY(i,90);
 		g.setColor(Color.black);
 		g.drawString(Integer.toString(i), x1 + 3, y1 - 2);
-		g.setColor(Color.blue);
+		if (error) {
+			g.setColor(Color.red);
+		} else {
+			g.setColor(Color.blue);
+		}
 	}
 	g.setFont(f);
+}
+
+public void setError(boolean err) {
+	error=err;
 }
 }

@@ -21,15 +21,21 @@
  */
 package alma.acs.gui.loglevel.tree;
 
+import java.awt.MouseInfo;
+import java.awt.Point;
+import java.awt.PointerInfo;
+import java.awt.Toolkit;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 
 import alma.acs.gui.loglevel.leveldlg.LogLevelDlg;
 import alma.acs.gui.loglevel.tree.node.TreeContainerInfo;
+
 
 import si.ijs.maci.Container;
 import si.ijs.maci.ContainerInfo;
@@ -54,6 +60,9 @@ public class TreeMouseListener extends MouseAdapter {
 	// The model of the tree
 	private LogLvlTreeModel model;
 	
+	// The popup menu
+	private TreePopupMenu popupMenu;
+	
 	/**
 	 * Constructor 
 	 * 
@@ -65,6 +74,7 @@ public class TreeMouseListener extends MouseAdapter {
 		}
 		tree=logLevelTree;
 		model = (LogLvlTreeModel)tree.getModel();
+		popupMenu= new TreePopupMenu(model);
 		containersNode = model.findNode(null, "Containers", 0);
 		if (containersNode==null) {
 			throw new IllegalStateException("Containers node not found in the tree");
@@ -76,16 +86,24 @@ public class TreeMouseListener extends MouseAdapter {
 	 */
 	public void mousePressed(MouseEvent e) {
 		TreePath selPath = tree.getPathForLocation(e.getX(), e.getY());
-		System.out.println("TreePath: [" + selPath + "]");
 		if (selPath == null) {
 			// No object selected but the user expand/compress a node
 			return;
 		}
 		
-		if (e.isPopupTrigger()) {
+		if (e.getClickCount()==2) {
 			tree.setSelectionPath(selPath);
 			showLoggingConfigDlg(selPath);
+			return;
 		}
+		if (e.isPopupTrigger()) {
+			Toolkit tk = Toolkit.getDefaultToolkit();
+			PointerInfo pi = MouseInfo.getPointerInfo();
+			Point mouseLocation = pi.getLocation();
+			SwingUtilities.convertPointFromScreen(mouseLocation, tree);
+			popupMenu.show(tree,mouseLocation.x,mouseLocation.y);
+		}
+		
 	}
 	
 	/**

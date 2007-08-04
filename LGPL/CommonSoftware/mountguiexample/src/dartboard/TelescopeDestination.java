@@ -1,27 +1,42 @@
 package dartboard;
 
 import java.awt.*;
+
+import javax.swing.ImageIcon;
+
 /**
- * Insert the type's description here.
- * Creation date: (11/27/00 9:09:15 PM)
+ * Insert the type's description here. Creation date: (11/27/00 9:09:15 PM)
+ * 
  * @author: Administrator
  */
 public class TelescopeDestination extends Dart {
-	private static int a = 2;
-	private static int[] xs = {0*a, 2*a, 3*a, 3*a, 1*a, 3*a, 3*a, 2*a, 0*a, -2*a, -3*a, -3*a, -1*a, -3*a, -3*a, -2*a};
-	private static int[] ys = {1*a, 3*a, 3*a, 2*a, 0*a, -2*a, -3*a, -3*a, -1*a, -3*a, -3*a, -2*a, 0*a, 2*a, 3*a, 3*a};
 
-	private static Polygon cross;
-/**
- * TelescopeDestination constructor comment.
- */
-public TelescopeDestination() {
-	super();
-	cross = new Polygon(xs, ys, xs.length);
-}
-protected void drawDart(Graphics g) {
-	g.setColor(Color.black);
-	g.fillPolygon(cross);
-	g.drawPolygon(cross);
-}
+	// The cross icon
+	private ImageIcon icon = null;
+
+	/**
+	 * TelescopeDestination constructor comment.
+	 */
+	public TelescopeDestination() {
+		super();
+		java.net.URL url = this.getClass().getClassLoader().getSystemResource("dartboard/dest.png");
+		if (url != null) {
+			icon = new ImageIcon(url);
+		} else {
+			System.err.println("Destination icon is null");
+		}
+	}
+
+	protected void drawDart(Graphics g) {
+		if (icon != null) {
+			icon.paintIcon(dartboard, g, -icon.getIconWidth() / 2, -icon.getIconHeight() / 2);
+		}
+		else {
+			g.setColor(Color.yellow);
+			g.fillRect(-10, -10, 20, 20);
+		}
+	}
+
+	public void setError(boolean err) {
+	}
 }

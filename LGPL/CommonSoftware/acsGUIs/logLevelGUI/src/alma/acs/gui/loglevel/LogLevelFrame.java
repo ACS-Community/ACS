@@ -92,10 +92,10 @@ public class LogLevelFrame extends JFrame {
 	private void initialize() {
 		LogLevelWinAdapter winAdapter = new LogLevelWinAdapter(this);
 		addWindowListener(winAdapter);
-		setBounds(20, 20, 120, 200);
+		
 		panel = new LogLevelPanel();
 		add(panel,BorderLayout.CENTER);
-		pack();
+		setBounds(50,50,225,150);
 		setVisible(true);
 	}
 
@@ -142,6 +142,19 @@ public class LogLevelFrame extends JFrame {
 	    }
 	    
 	    
+    }
+    
+    /**
+     * Stop the panel (same operation
+     * done by the OMC when closing the plugin)
+     *
+     */
+    public void stopPanel() {
+    	if (panel!=null) {
+    		try {
+    			panel.stop();
+    		} catch (Throwable t) {} // Ignored.. we are closing!
+    	}
     }
 
     /**
