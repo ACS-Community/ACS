@@ -15,7 +15,7 @@ if [ -r $pidfile ] ; then
 			echo "  $USER doesn't run logging client with ID $pid"
 		else     
 			echo "  bringing down logging client with ID $pid..."
-			acsKillProc $pid
+			kill $pid
 		fi        
 		if [ ! $? == 0 ] ; then
 			failed="$failed $pid"

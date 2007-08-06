@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingClient.cpp,v 1.46 2007/05/28 06:23:39 cparedes Exp $"
+* "@(#) $Id: loggingClient.cpp,v 1.47 2007/08/06 08:50:51 cparedes Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -455,8 +455,13 @@ ACSStructuredPushConsumer::push_structured_event (const CosNotification::Structu
             } 
             else 
             {
-                ACE_OS::printf("%s\n", xmlLog);
-                ACE_OS::fflush (stdout);
+                if(toFile){
+                    ACE_OS::fprintf(outputFile,"%s\n", xmlLog);
+                    ACE_OS::fflush (stdout);
+                }else{
+                    ACE_OS::printf("%s\n", xmlLog);
+                    ACE_OS::fflush (stdout);
+                }
             }
         }
     }else{
@@ -471,8 +476,13 @@ ACSStructuredPushConsumer::push_structured_event (const CosNotification::Structu
             }
             else
             {
-                ACE_OS::printf("%s\n",BinToXml(log).c_str());
-                ACE_OS::fflush (stdout);
+                if(toFile){
+                    ACE_OS::fprintf(outputFile,"%s\n",BinToXml(log).c_str());
+                    ACE_OS::fflush (stdout);
+                }else{
+                    ACE_OS::printf("%s\n",BinToXml(log).c_str());
+                    ACE_OS::fflush (stdout);
+                }
             }
         }
 
@@ -569,6 +579,10 @@ void TerminationSignalHandler(int)
 
   LoggingHelper::terminateResolving();
 
+    if(toFile){
+        ACE_OS::fprintf(outputFile,"</Log>\n");
+        ACE_OS::fclose (outputFile);
+    }
   ACE_ERROR ((LM_INFO, "Stopping the Logging Client...\n"));
 
   if (g_client)
@@ -577,13 +591,13 @@ void TerminationSignalHandler(int)
     }
 }
 
+
 int
 main (int argc, char *argv [])
 {
   getParams(argc,argv);
   
-  if (argc < 2 ||
-      (ACE_OS::strcmp(argv[argc-1], "Logging")!=0 &&
+  if ( (ACE_OS::strcmp(argv[argc-1], "Logging")!=0 &&
        ACE_OS::strcmp(argv[argc-1], "Archiving")!=0))
     {
       printUsage(argv[0]);
@@ -599,15 +613,20 @@ main (int argc, char *argv [])
   try
     {
       client.init (argc, argv,channelName); // Init the Client
-      
 
       g_client = &client;
       
       ACE_OS::signal(SIGINT, TerminationSignalHandler);  // Ctrl+C
       ACE_OS::signal(SIGTERM, TerminationSignalHandler); // termination request
+      if(toFile){
+        outputFile = ACE_OS::fopen (fileName.c_str(),"w");
+        
+        if(outputFile == NULL) toFile=false; 
+        else
+            ACE_OS::fprintf(outputFile, "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?> \n<Log> \n<Header Name=\"NameForXmlDocument\" Type=\"LOGFILE\" />\n");
+      }
 
-      client.run ();
-      
+     client.run ();
 
       if (!g_blockTermination)
 	{
@@ -633,6 +652,7 @@ main (int argc, char *argv [])
 
   return 0;
 }
+
 
 int getSyslogFacility() {
 	int instance = (int)ACSPorts::getBasePort();
@@ -665,13 +685,15 @@ void getParams(int argc, char *argv []) {
 	struct option long_options[] =
              {
                /* These options set a flag. */
-               {"ORBInitRef", required_argument, &orb_flag, 1}
+               {"ORBInitRef", required_argument, &orb_flag, 1},
+               {"file", 1, 0, 0}
              };
     int option_index=0;
-	while ((c = getopt_long_only (argc, argv, "sht:c:",long_options,&option_index)) != -1) {
+	while ((c = getopt_long(argc, argv, "shf:t:c:",long_options,&option_index)) != -1) {
 		switch(c) {
 			case 's': toSyslog=true; break;
 			case 'h': printUsage(argv[0]); exit(0);
+            case 'f': toFile=true; fileName = optarg;
 			default: break;
 		}
 	}

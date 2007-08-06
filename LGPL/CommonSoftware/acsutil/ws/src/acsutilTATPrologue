@@ -63,7 +63,7 @@ then
     outfile=$ACS_TMP/all_logs.xml
 	
 	# logging client writes to stderr which would confuse TAT
-	loggingClient Logging > $outfile 2>$ACS_TMP/logerrfile.out &
+	loggingClient -f $outfile Logging > $ACS_TMP/logerrfile.out 2>1 &
 	pid=$!
 
 	## store pid in file, so that acsutilTATEpilogue can kill the logging client process (there's no other way to end it)

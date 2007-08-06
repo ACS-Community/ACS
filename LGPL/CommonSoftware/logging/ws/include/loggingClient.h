@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingClient.h,v 1.40 2007/05/28 06:23:39 cparedes Exp $"
+* "@(#) $Id: loggingClient.h,v 1.41 2007/08/06 08:50:51 cparedes Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -62,6 +62,10 @@ bool toSyslog;
 
 // The name of the channel to connect to
 std::string channelName;
+
+FILE * outputFile;
+std::string fileName;
+bool toFile=false;
 
 // Read the command line params into local variables
 void getParams(int argc, char *argv []);
