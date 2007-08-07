@@ -6,7 +6,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: acsStartJava,v 1.40 2007/07/31 01:18:57 cparedes Exp $"
+# "@(#) $Id: acsStartJava,v 1.41 2007/08/07 17:28:13 sharring Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -392,6 +392,10 @@ fi
 #
 JAVA_OPTIONS=$JAVA_OPTIONS\ -Djava.util.logging.manager=alma.acs.logging.AcsLogManager
 
+#
+# Not interested in verbose and non-informative jacorb messages
+#
+JAVA_OPTIONS=$JAVA_OPTIONS\ -Djacorb.log.loggerFactory=alma.acs.logging.adapters.JacORBLoggerFactory
 
 #
 # Creates default values for configuration files directory
