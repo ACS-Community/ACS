@@ -179,6 +179,7 @@ public interface ContainerServices
 	
 
 	/**
+	 * Gets a component that will run collocated with a given component.
 	 * @param compUrl  the component's name (URL)
 	 * @param targetCompUrl  the name (URL) of the target component, in whose container we also want <code>compUrl</code> to run.
 	 * @return  the component reference, which should be cast using the appropriate CORBA narrow operation. Never null.
@@ -188,14 +189,15 @@ public interface ContainerServices
 	public org.omg.CORBA.Object getCollocatedComponent(String compUrl, String targetCompUrl) throws AcsJContainerServicesEx;
 	
 	/**
-	 * 
-	 * @param spec the description of the component to be created
+	 * Dynamic version of {@link #getCollocatedComponent(String, String)}.
+	 * @param compSpec  the description of the component to be created
 	 * @param markAsDefaul  if true, the new component will become the default component for its IDL type.
 	 * @param targetCompUrl targetCompUrl  the name (URL) of the target component, in whose container we also want <code>compUrl</code> to run.
 	 * @return 
 	 * @throws AcsJContainerServicesEx If the call failed and no component reference could be obtained.
+	 * @since ACS 6.0.4
 	 */
-	public org.omg.CORBA.Object getCollocatedComponent(ComponentSpec spec, boolean markAsDefaul, String targetCompUrl) throws AcsJContainerServicesEx;
+	public org.omg.CORBA.Object getCollocatedComponent(ComponentQueryDescriptor compSpec, boolean markAsDefaul, String targetCompUrl) throws AcsJContainerServicesEx;
 	
 	
 	/**
