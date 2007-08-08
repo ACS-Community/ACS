@@ -770,7 +770,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	/**
 	 * Alarm System Interface.
 	 */
-        private transient ACSAlarmSystemInterface alarmSource;
+    private transient ACSAlarmSystemInterface alarmSource;
 
 
 	/**
@@ -835,6 +835,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		// establish connect to the alarm system
 		try
 		{
+		        ACSAlarmSystemInterfaceFactory.init(logger, cdbAccess.getDAL());
 		        alarmSource = ACSAlarmSystemInterfaceFactory.createSource("Manager");
 		}
 		catch (Throwable ex)

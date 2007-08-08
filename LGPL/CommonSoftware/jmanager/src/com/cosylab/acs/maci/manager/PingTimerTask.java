@@ -132,7 +132,7 @@ public class PingTimerTask extends TimerTask
 
   			        //An alarm is raised for those clients that define an alarm interface
 			        if (alarmSource != null)
-				    send_alarm(clientInfo.getName());
+			        	send_alarm(clientInfo.getName());
 
 				logout();
 			}
@@ -152,7 +152,7 @@ public class PingTimerTask extends TimerTask
 
   			        //An alarm is raised for those clients that define an alarm interface
 			        if (alarmSource != null)
-				    send_alarm(clientInfo.getName());
+			        	send_alarm(clientInfo.getName());
 
 				logout();
 			}
@@ -170,7 +170,7 @@ public class PingTimerTask extends TimerTask
 
   			        //An alarm is raised for those clients that define an alarm interface
 			        if (alarmSource != null)
-				    send_alarm(clientInfo.getName());
+			        	send_alarm(clientInfo.getName());
 
 				logout();
 			}

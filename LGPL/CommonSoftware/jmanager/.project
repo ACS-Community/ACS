@@ -3,6 +3,7 @@
 	<name>ACS_jmanager</name>
 	<comment></comment>
 	<projects>
+		<project>jacsalarm</project>
 		<project>jacscommon</project>
 		<project>jacsutil</project>
 	</projects>
