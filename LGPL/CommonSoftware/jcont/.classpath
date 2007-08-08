@@ -1,27 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="src" path="test"/>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry sourcepath="/JACORB_HOME/src" kind="var" path="JACORB_HOME/lib/jacorb.jar"/>
-	<classpathentry sourcepath="JRE_SRC" kind="var" path="JRE_LIB"/>
+	<classpathentry kind="var" path="JACORB_HOME/lib/jacorb.jar" sourcepath="/JACORB_HOME/src"/>
 	<classpathentry kind="var" path="ACSROOT/lib/castor.jar"/>
-	<classpathentry sourcepath="/ACSROOT/lib/endorsed/xercesImpl.jar" kind="var" path="ACSROOT/lib/endorsed/xercesImpl.jar"/>
-	<classpathentry sourcepath="ACSROOT/lib/junit.jar" kind="var" path="ACSROOT/lib/junit.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/endorsed/xercesImpl.jar" sourcepath="/ACSROOT/lib/endorsed/xercesImpl.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/junit.jar" sourcepath="ACSROOT/lib/junit.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/xmljbind.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acsjlog.jar"/>
-	<classpathentry sourcepath="ACSROOT/lib/xmlentity.jar" kind="var" path="ACSROOT/lib/xmlentity.jar"/>
-	<classpathentry sourcepath="/ACSROOT/lib/baci.jar" kind="var" path="ACSROOT/lib/baci.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/xmlentity.jar" sourcepath="ACSROOT/lib/xmlentity.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/baci.jar" sourcepath="/ACSROOT/lib/baci.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acsTestEntities.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/cdbDAL.jar"/>
-	<classpathentry sourcepath="/ACSROOT/lib/acscomponent.jar" kind="var" path="ACSROOT/lib/acscomponent.jar"/>
-	<classpathentry sourcepath="/ACSROOT/lib/maci.jar" kind="var" path="ACSROOT/lib/maci.jar"/>
-	<classpathentry sourcepath="/ACSROOT/lib/archive_xmlstore_if.jar" kind="var" path="ACSROOT/lib/archive_xmlstore_if.jar"/>
-	<classpathentry sourcepath="lib/jconttest_if.jar" kind="lib" path="lib/jconttest_if.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acscomponent.jar" sourcepath="/ACSROOT/lib/acscomponent.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/maci.jar" sourcepath="/ACSROOT/lib/maci.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/archive_xmlstore_if.jar" sourcepath="/ACSROOT/lib/archive_xmlstore_if.jar"/>
+	<classpathentry kind="lib" path="lib/jconttest_if.jar" sourcepath="lib/jconttest_if.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/jACSUtil.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/systementities.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/CDB.jar"/>
-	<classpathentry sourcepath="/ACSROOT/lib/lc.jar" kind="var" path="ACSROOT/lib/lc.jar"/>
-	<classpathentry sourcepath="/ACSROOT/lib/ACSErrTypeCommon.jar" kind="var" path="ACSROOT/lib/ACSErrTypeCommon.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/lc.jar" sourcepath="/ACSROOT/lib/lc.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/ACSErrTypeCommon.jar" sourcepath="/ACSROOT/lib/ACSErrTypeCommon.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acserr.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acserrj.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/avalon-framework.jar"/>
@@ -34,5 +34,7 @@
 	<classpathentry kind="lib" path="lib/JavaContainerError.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/maciSchemaBindings.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/cdbErrType.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/logkit.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/jacstime.jar"/>
 	<classpathentry kind="output" path="object/eclipseOut"/>
 </classpath>
