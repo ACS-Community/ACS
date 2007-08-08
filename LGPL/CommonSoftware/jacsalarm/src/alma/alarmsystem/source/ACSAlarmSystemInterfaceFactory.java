@@ -1,17 +1,6 @@
 package alma.alarmsystem.source;
 
-import alma.acs.util.ACSPorts;
-
-import si.ijs.maci.Manager;
-import si.ijs.maci.ManagerHelper;
 import com.cosylab.CDB.DAL;
-import com.cosylab.CDB.DALHelper;
-
-import org.omg.CORBA.ORB;
-import org.omg.CORBA.Object;
-import org.omg.CORBA.IntHolder;
-import org.omg.PortableServer.POA;
-import org.omg.PortableServer.POAHelper;
 
 import java.lang.reflect.Constructor;
 
@@ -28,7 +17,6 @@ import org.xml.sax.SAXException;
 
 import alma.acsErrTypeAlarmSourceFactory.acsErrTypeAlarmSourceFactoryEx;
 import alma.acsErrTypeAlarmSourceFactory.ACSASFactoryNotInitedEx;
-import alma.acsErrTypeAlarmSourceFactory.InavalidManagerEx;
 import alma.acsErrTypeAlarmSourceFactory.ErrorGettingDALEx;
 import alma.acsErrTypeAlarmSourceFactory.SourceCreationErrorEx;
 import alma.acsErrTypeAlarmSourceFactory.FaultStateCreationErrorEx;
@@ -41,10 +29,6 @@ import alma.acsErrTypeAlarmSourceFactory.wrappers.AcsJFaultStateCreationErrorEx;
 import java.util.logging.Logger;
 
 import java.io.StringReader;
-
-import alma.maciErrType.CannotGetComponentEx;
-import alma.maciErrType.ComponentConfigurationNotFoundEx;
-import alma.maciErrType.ComponentNotAlreadyActivatedEx;
 
 /**
  * ACSAlarmSystemInterfaceFactory extends the CERN AlarmSystemInterfaceFactory
@@ -66,14 +50,8 @@ public class ACSAlarmSystemInterfaceFactory {
 	// false means CERN implementation
 	private static Boolean useACSAlarmSystem = null;
 	
-	// The ORB
-	private static ORB orb=null;
-	
-	// The Manager
-	private static Manager manager=null;
-	
-	// The manager handle
-	private static int managerHandle=0;
+	// The CDB
+//	private static DAL dal=null;
 	
 	// The logger
 	private static Logger logger=null;
@@ -83,28 +61,14 @@ public class ACSAlarmSystemInterfaceFactory {
 	 * This method has to be called outside of the class before executing any other
 	 * methods. In this implementation it is called the first time a static method is
 	 * executed (in this case infact useACSAlarmSystem is null)
-	 * 
-	 * @param theORB The ORB 
-	 * @param manager A reference to the manager 
 	 * @param logger The logger
-	 * @param mgrHandle The manager handle
+	 * @param dal TODO
 	 */
-	public static void init(ORB theORB, Manager manager, int mgrHandle, Logger logger) throws InavalidManagerEx, ErrorGettingDALEx {
-		ACSAlarmSystemInterfaceFactory.orb=theORB;
-		ACSAlarmSystemInterfaceFactory.manager=manager;
-		ACSAlarmSystemInterfaceFactory.managerHandle=mgrHandle;
+	public static void init(Logger logger, DAL dal) throws ErrorGettingDALEx {
+//		ACSAlarmSystemInterfaceFactory.dal=dal;
 		ACSAlarmSystemInterfaceFactory.logger = logger;
-		if (manager==null) {
-			manager = getManager();
-		}
-		if (manager==null) {
-			NullPointerException e = new NullPointerException("Error getting the manager!");
-			AcsJInavalidManagerEx acsE = new AcsJInavalidManagerEx(e);
-			throw acsE.toInavalidManagerEx();
-		}
 		
-		DAL dal=getDAL(manager,managerHandle);
-        useACSAlarmSystem = retrieveImplementationType(dal);
+		useACSAlarmSystem = retrieveImplementationType(dal);
 	}
 	
 	/**
@@ -115,76 +79,8 @@ public class ACSAlarmSystemInterfaceFactory {
 	 */
 	public static void done() {
 		useACSAlarmSystem=null;
-		manager=null;
-		orb=null;
+//		dal=null;
 	}
-	
-	/**
-	 * Get a reference to the DAL
-	 * 
-	 * @param manager A reference to the Manager
-	 * @param handle The manager handle
-	 */
-	private static DAL getDAL(Manager manager, int handle) throws ErrorGettingDALEx {
-		DAL dal;
-		try {
-	        org.omg.CORBA.Object cdbObj = manager.get_service(handle, "CDB", true);
-	        dal = DALHelper.narrow(cdbObj);
-	        if (dal==null) {
-	        	throw new NullPointerException("Error narrowing the DAL");
-	        }
-                } catch(CannotGetComponentEx e) {		    
-			AcsJErrorGettingDALEx dalEx = new AcsJErrorGettingDALEx(e);
-			throw dalEx.toErrorGettingDALEx();
-    	        } catch(ComponentNotAlreadyActivatedEx e) {
-			AcsJErrorGettingDALEx dalEx = new AcsJErrorGettingDALEx(e);
-			throw dalEx.toErrorGettingDALEx();
-	        } catch(ComponentConfigurationNotFoundEx e) {
-			AcsJErrorGettingDALEx dalEx = new AcsJErrorGettingDALEx(e);
-			throw dalEx.toErrorGettingDALEx();
-		} catch (Exception e) {
-			AcsJErrorGettingDALEx dalEx = new AcsJErrorGettingDALEx(e);
-			throw dalEx.toErrorGettingDALEx();
-		}
-		return dal;
-	}
-	
-	/**
-	 * Return the orb
-	 * If it is null, a new ORB is created and inited
-	 * 
-	 * @return The ORB
-	 */
-	private static ORB getORB() {
-		if (orb!=null) {
-			return orb;
-		}
-		String args[] = {};
-		orb = ORB.init(args, null);
-		return orb;
-	}
-	
-	/**
-	 * Get a reference to the Manager
-	 */
-	private static Manager getManager() {
-		if (manager!=null) {
-			return manager;
-		}
-		String managerLoc = System.getProperty("ACS.manager");
-        if (managerLoc == null) {
-                System.out.println("Java property 'ACS.manager' must be set to the corbaloc of the ACS manager!");
-                System.exit(-1);
-        }
-        
-		org.omg.CORBA.Object managerObj = getORB().string_to_object(managerLoc);
-		if (managerObj==null) {
-			return null;
-		} 
-		manager = ManagerHelper.narrow(managerObj);
-        return manager;
-	}
-	
 	
 	/**
 	 * Read the Implementation property from the Alarm System Configuration

@@ -8,5 +8,15 @@
 	<classpathentry kind="var" path="ACSROOT/lib/acsASsources.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acsjlog.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/maci.jar"/>
+	<classpathentry kind="lib" path="/alma/ACS-6.0/ACSSW/lib/cdbDAL.jar"/>
+	<classpathentry kind="lib" path="/alma/ACS-6.0/ACSSW/lib/cdbErrType.jar"/>
+	<classpathentry kind="lib" path="/alma/ACS-6.0/ACSSW/lib/CDB.jar"/>
+	<classpathentry kind="lib" path="/alma/ACS-6.0/ACSSW/lib/cdbjDAL.jar"/>
+	<classpathentry kind="lib" path="/alma/ACS-6.0/ACSSW/lib/acserr.jar"/>
+	<classpathentry kind="lib" path="/alma/ACS-6.0/ACSSW/lib/acserrj.jar"/>
+	<classpathentry kind="lib" path="/alma/ACS-6.0/ACSSW/lib/ACSError.jar"/>
+	<classpathentry kind="lib" path="/alma/ACS-6.0/ACSSW/lib/acsErrTypeAlarmSourceFactory.jar"/>
+	<classpathentry kind="lib" path="/alma/ACS-6.0/ACSSW/lib/maciErrType.jar"/>
+	<classpathentry kind="lib" path="/alma/ACS-6.0/ACSSW/lib/jACSUtil.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
