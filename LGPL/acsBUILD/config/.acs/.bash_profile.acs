@@ -20,7 +20,7 @@
 # MA 02111-1307  USA
 #
 #
-# "@(#) $Id: .bash_profile.acs,v 1.68 2007/07/23 16:14:21 hsommer Exp $"
+# "@(#) $Id: .bash_profile.acs,v 1.69 2007/08/08 17:04:36 hsommer Exp $"
 #
 #
 #
@@ -466,9 +466,9 @@ if [ X"$JAVA_HOME" = X ] || [ X"$ACS_RETAIN" = X ]
 then
 	if [ "${DISTRO}-${REL}" = "RHLX-9" -o "${DISTRO}-${REL}" = "RHLX-7.3" -o  "${DISTRO}-${REL}" = "RHLX-7.3" ] 
 	then 
-   		JAVA_HOME=$ALMASW_INSTDIR/java/jdk1.5.0_04
+   		JAVA_HOME=$ALMASW_INSTDIR/java/jdk1.6.0_02
 	else
-   		JAVA_HOME=/usr/java/jdk1.5.0_04
+   		JAVA_HOME=/usr/java/jdk1.6.0_02
 	fi	
 fi
 
