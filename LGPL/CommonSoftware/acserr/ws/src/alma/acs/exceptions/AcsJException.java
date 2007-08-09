@@ -240,6 +240,19 @@ public abstract class AcsJException extends Exception
 		m_initialized = true;
 	}
 	
+
+    public String toString(){
+        String strProperties = ""; 
+		int count = 0;
+		for (Iterator iter = m_properties.keySet().iterator(); iter.hasNext();)
+		{
+			String key = (String) iter.next();
+			String value = m_properties.getProperty(key);
+		    strProperties+=key+"='"+value+"' ";
+            count++;
+        }
+		return super.toString() + ((count>0)?( " " + strProperties):"");
+    }
 	
 	/**
 	 * If we have some better name than "java", for example the unique name of 
