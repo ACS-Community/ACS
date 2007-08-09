@@ -56,7 +56,7 @@ import alma.xmljbind.test.schedblock.SchedBlockEntityT;
  */
 public class XmlComponentImpl extends ComponentImplBase implements XmlComponentJ
 {
-	private ArrayList m_schedBlockList;
+	private ArrayList<SchedBlock> m_schedBlockList;
 //	private float m_radius; 
 	
 
@@ -72,7 +72,7 @@ public class XmlComponentImpl extends ComponentImplBase implements XmlComponentJ
 	{
 		super.initialize(contServices);
 		
-		m_schedBlockList = new ArrayList();
+		m_schedBlockList = new ArrayList<SchedBlock>();
 		
 		try
 		{
@@ -97,6 +97,7 @@ public class XmlComponentImpl extends ComponentImplBase implements XmlComponentJ
 		{
 			m_logger.log(Level.WARNING, "failed to initialize list of SchedBlocks. ", e);
 			m_schedBlockList.clear();
+//			throw new ComponentLifecycleException(e); // not required
 		}
 	}
 
@@ -145,10 +146,13 @@ public class XmlComponentImpl extends ComponentImplBase implements XmlComponentJ
 	 */
 	public SchedBlock getBestSchedBlock()
 	{
-		Random random = new Random(System.currentTimeMillis());
-		int sbIndex = random.nextInt(m_schedBlockList.size());
-		
-		SchedBlock sb = (SchedBlock) m_schedBlockList.get(sbIndex);
+		SchedBlock sb = null;
+		if (m_schedBlockList.size() > 0) {
+			Random random = new Random(System.currentTimeMillis());
+			int sbIndex = random.nextInt(m_schedBlockList.size());
+			
+			sb = m_schedBlockList.get(sbIndex);
+		}
 		return sb;
 	}
 
@@ -159,7 +163,7 @@ public class XmlComponentImpl extends ComponentImplBase implements XmlComponentJ
 	 */
 	public SchedBlock[] getAllSchedBlocks()
 	{
-		return (SchedBlock[]) m_schedBlockList.toArray(new SchedBlock[0]);
+		return m_schedBlockList.toArray(new SchedBlock[0]);
 	}
 
 
