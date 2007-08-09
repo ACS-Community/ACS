@@ -2,18 +2,17 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="test"/>
-	<classpathentry sourcepath="JRE_SRC" kind="var" path="JRE_LIB"/>
-	<classpathentry sourcepath="lib/XmlComponent.jar" kind="lib" path="lib/XmlComponent.jar"/>
+	<classpathentry kind="lib" path="lib/XmlComponent.jar" sourcepath="lib/XmlComponent.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/endorsed/xercesImpl.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/endorsed/xmlParserAPIs.jar"/>
-	<classpathentry sourcepath="JACORB_HOME/src" kind="var" path="JACORB_HOME/lib/jacorb.jar"/>
+	<classpathentry kind="var" path="JACORB_HOME/lib/jacorb.jar" sourcepath="JACORB_HOME/src"/>
 	<classpathentry kind="var" path="ACSROOT/lib/xmljbind.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acsjlog.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acsTestEntities.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/systementities.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/xmlentity.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acscomponent.jar"/>
-	<classpathentry sourcepath="ACSROOT/lib/baci.jar" kind="var" path="ACSROOT/lib/baci.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/baci.jar" sourcepath="ACSROOT/lib/baci.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acserr.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acserrj.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/maci.jar"/>
@@ -26,7 +25,7 @@
 	<classpathentry kind="var" path="ACSROOT/lib/acsnc.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acsexmplFridge.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/jcontnc.jar"/>
-	<classpathentry sourcepath="ACSROOT/lib/acstime.jar" kind="var" path="ACSROOT/lib/acstime.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acstime.jar" sourcepath="ACSROOT/lib/acstime.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/ACSTimeError.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/EventComponent.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/ACSErrTypeCommon.jar"/>
@@ -40,5 +39,9 @@
 	<classpathentry kind="var" path="ACSROOT/lib/acsexmplErrorComponent.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/ACSErrTypeOK.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/ACSErrTypeJavaNative.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="var" path="ACSROOT/lib/JavaContainerError.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/maciErrType.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/cdbErrType.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
