@@ -1,4 +1,4 @@
-# @(#) $Id: ContainerServices.py,v 1.22 2007/05/29 20:37:40 agrimstrup Exp $
+# @(#) $Id: ContainerServices.py,v 1.23 2007/08/10 20:45:27 agrimstrup Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -21,7 +21,7 @@
 # ALMA should be addressed as follows:
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: ContainerServices.py,v 1.22 2007/05/29 20:37:40 agrimstrup Exp $"
+# "@(#) $Id: ContainerServices.py,v 1.23 2007/08/10 20:45:27 agrimstrup Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -41,7 +41,7 @@ developer. For now, we can depend on Manager to keep track of whats going on
 but this solution is less than ideal.
 '''
 
-__revision__ = "$Id: ContainerServices.py,v 1.22 2007/05/29 20:37:40 agrimstrup Exp $"
+__revision__ = "$Id: ContainerServices.py,v 1.23 2007/08/10 20:45:27 agrimstrup Exp $"
 
 #--GLOBALS---------------------------------------------------------------------
 
@@ -588,18 +588,27 @@ class ContainerServices:
         - mark_as_default (bool) Mark component as default component of its type
         - target_comp Name of the target component (where to activate component)
         
-        Returns: maci.ComponentInfo object
+        Returns: a narrowed reference to the component or None if
+        that reference cannot be obtained.
         
         Raises:
         - IncompleteComponentSpec
         - InvalidComponentSpec
         - ComponentSpecIncompatibleWithActiveComponent
         '''
-        #just delegate call directly to manager
-        return getManager().get_collocated_component(self.__handle,
+
+        comp_info = getManager().get_collocated_component(self.__handle,
                                                      comp_spec,
                                                      mark_as_default,
                                                      target_comp)
+
+        if comp_info is not None:
+            corba_obj = comp_info.reference
+            comp_class = comp_info.type
+            return self.__narrowComponentReference(corba_obj, comp_class)
+
+        else:
+            return None
     
     #--------------------------------------------------------------------------
     def activateOffShoot(self, py_obj):
