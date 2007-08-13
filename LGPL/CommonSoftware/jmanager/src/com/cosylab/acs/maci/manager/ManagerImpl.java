@@ -79,6 +79,7 @@ import com.cosylab.acs.maci.ComponentSpec;
 import com.cosylab.acs.maci.ComponentStatus;
 import com.cosylab.acs.maci.Container;
 import com.cosylab.acs.maci.ContainerInfo;
+import com.cosylab.acs.maci.ContainerInfo.ImplementationLanguage;
 import com.cosylab.acs.maci.CoreException;
 import com.cosylab.acs.maci.Daemon;
 import com.cosylab.acs.maci.HandleConstants;
@@ -2608,6 +2609,11 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 				// create new container info
 				containerInfo = new TimerTaskContainerInfo(h, name, container);
+                DAOProxy dao = getContainersDAOProxy();
+                if (dao == null)
+                    return null;
+                String impLang = readStringCharacteristics(dao, name + "/ImplLang", true);
+                containerInfo.setImplLang(impLang);                
 
 				clientInfo = containerInfo.createClientInfo();
 
@@ -2659,14 +2665,15 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	private void containerPostLoginActivation(final ContainerInfo containerInfo, boolean recoverContainer)
 	{
 		// give containers some time to fully initialize
-		try
-		{
-			Thread.sleep(3000);
-		}
-		catch (InterruptedException ie)
-		{
-		}
-
+        if(containerInfo.getImplLang() == ImplementationLanguage.cpp || containerInfo.getImplLang() == ImplementationLanguage.not_specified){
+            try
+            {
+                Thread.sleep(3000);
+            }
+            catch (InterruptedException ie)
+            {
+            }
+        }
 		// shutdown check
 		if (isShuttingDown())
 			return;
@@ -6385,6 +6392,11 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		if (flags == null)
 			flags = "";
 
+        String impLang = readStringCharacteristics(dao, containerName + "/ImplLang", true);
+		if (impLang == null)
+			impLang = "";
+
+
 		// add itself as manager reference
 		flags += " -m " + transport.getManagerReference();
 
@@ -6428,7 +6440,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 				// check if container has logged in
 				ContainerInfo info = getContainerInfo(containerName);
-				if (info != null)
+				info.setImplLang(impLang);
+                if (info != null)
 					return info;
 
 				waitTime = waitTime - (int)(System.currentTimeMillis() - start);
