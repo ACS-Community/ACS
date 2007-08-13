@@ -169,7 +169,7 @@ public class AcsContainer extends ContainerPOA
 		
 		logConfig = ClientLogManager.getAcsLogManager().getLogConfig();
 		// logConfig.setInternalLogger(m_logger);
-		logConfig.setCDBContainerPath("MACI/Containers/" + m_containerName);
+		logConfig.setCDBLoggingConfigPath("MACI/Containers/" + m_containerName);
 		logConfig.setCDB(getCDB());
 		try {
 			logConfig.initialize();
