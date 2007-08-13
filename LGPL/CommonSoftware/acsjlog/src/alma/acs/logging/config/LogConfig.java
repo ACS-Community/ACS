@@ -31,19 +31,29 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+
 import org.exolab.castor.core.exceptions.CastorException;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
 
-
-import com.cosylab.CDB.DALOperations;
-
-import alma.acs.logging.ACSCoreLevel;
 import alma.cdbErrType.CDBRecordDoesNotExistEx;
 import alma.cdbErrType.CDBXMLErrorEx;
 import alma.cdbErrType.wrappers.AcsJCDBRecordDoesNotExistEx;
 import alma.cdbErrType.wrappers.AcsJCDBXMLErrorEx;
-import alma.maci.containerconfig.Container;
 import alma.maci.loggingconfig.LoggingConfig;
 import alma.maci.loggingconfig.NamedLogger;
+
+import com.cosylab.CDB.DAL;
+import com.cosylab.CDB.DALOperations;
 
 /**
  * Class that encapsulates all configuration sources (defaults, properties, CDB) for Java logging,
@@ -71,17 +81,9 @@ public class LogConfig {
     private DALOperations cdb;
     
     /** 
-     * Path in the CDB to the container configuration, 
-     * whose log levels are also used for component loggers as a default.
+     * Path in the CDB to the logging configuration.
      */
-    private String cdbContainerPath;
-
-    /**
-     * Path in the CDB to the container configuration, 
-     * whose log levels are also used for component loggers as a default.
-     * Not yet supported in ACS 6.0
-     */
-    private String cdbManagerPath;
+    private String cdbLoggingConfigPath;
 
     /** 
      * key = component logger name, value = path in the CDB to the Component configuration 
@@ -139,19 +141,10 @@ public class LogConfig {
     
     /**
      * Sets the path to the CDB's node that is parent of the &lt;LoggingConfig&gt; node.
-     * In Java there is currently no support for calls to the CDB at levels below an XML document,
-     * thus we have to deal with &lt;Container/&gt; and &lt;Manager/&gt; nodes instead of
-     * directly getting at the contained &lt;LoggingConfig/&gt;.
-     * <p>
-     * As of ACS 6.0, only &lt;Container/&gt; can have a &lt;LoggingConfig/&gt;.
-     * @TODO: support also Manager and something new for client applications (which currently cannot configure their log settings!) 
      * @param path
      */
-    public void setCDBContainerPath(String path) {
-    	if (path != null) {
-            cdbContainerPath = path;
-            // Todo cdbManagerPath = null; // mutually exclusive
-    	}
+    public void setCDBLoggingConfigPath(String path) {
+    	cdbLoggingConfigPath = path;
     }
     
     public void setCDBComponentPath(String compLoggerName, String path) {
@@ -178,27 +171,33 @@ public class LogConfig {
         
        	LoggingConfig newLoggingConfig = null;
         if (cdb != null) {
-        	String cdbPath = null;
         	try {
-               	// in the absence of a common interface for Container, Manager, and other config types that may contain a <LoggingConfig>,
-               	// we hardcode the access to all of them. Once we can access sub-XMLfile CDB snippets, the paths should point to 
-               	// the LoggingConfig directly, and the if-else can be removed.
-               	if (cdbContainerPath != null) {
-               		cdbPath = cdbContainerPath;
-                   	String containerConfigXML = cdb.get_DAO(cdbContainerPath);
-                   	Container containerConfig = Container.unmarshalContainer(new StringReader(containerConfigXML));
-                   	newLoggingConfig = containerConfig.getLoggingConfig();
-               	}
-               	else if (cdbManagerPath != null) {
-               		cdbPath = cdbManagerPath;
-               		String managerConfigXML = cdb.get_DAO(cdbManagerPath);
-// @todo implement manager log config support later               		
-//                	Manager managerConfig = Manager.unmarshalManager(new StringReader(managerConfigXML));
-//                	newLoggingConfig = managerConfig.getLoggingConfig();
-               	}
-//               	else if (...) {
-// @todo implement client application support later               		
-//                }
+				if (cdbLoggingConfigPath != null) {
+					String containerConfigXML = cdb.get_DAO(cdbLoggingConfigPath);
+
+					DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+					DocumentBuilder builder = factory.newDocumentBuilder();
+					Document doc = builder.parse(new InputSource(new StringReader(containerConfigXML)));
+
+					Element documentElement = doc.getDocumentElement();
+					NodeList loggingConfigElements = documentElement.getElementsByTagName("LoggingConfig");
+					if (loggingConfigElements.getLength() != 1)
+						throw new LogConfigException("Parent node does not contain one LoggingConfig element.");
+
+					Node loggingConfigElement = loggingConfigElements.item(0);
+
+					Document newDoc = builder.newDocument();
+					loggingConfigElement = newDoc.importNode(loggingConfigElement, true);
+					newDoc.appendChild(loggingConfigElement);
+
+					TransformerFactory transformerFactory = TransformerFactory.newInstance();
+					Transformer transformer = transformerFactory.newTransformer();
+					StringWriter sw = new StringWriter();
+					StreamResult result = new StreamResult(sw);
+					transformer.transform(new DOMSource(newDoc), result);
+
+					newLoggingConfig = LoggingConfig.unmarshalLoggingConfig(new StringReader(sw.toString()));
+				}
                 else {
                 	errMsg.append("CDB reference was set, but not the path to the logging configuration. ");
                 }
@@ -206,16 +205,16 @@ public class LogConfig {
                		loggingConfig = newLoggingConfig;
                	}
                	else {
-               		throw new LogConfigException("LoggingConfig binding class obtained from CDB node '" + cdbPath + "' was null.");
+               		throw new LogConfigException("LoggingConfig binding class obtained from CDB node '" + cdbLoggingConfigPath + "' was null.");
                	}
         	} catch (CDBXMLErrorEx ex) { 
-        		errMsg.append("Failed to read node " + cdbPath + " from the CDB (msg='" + ex.errorTrace.shortDescription + "'). ");
+        		errMsg.append("Failed to read node " + cdbLoggingConfigPath + " from the CDB (msg='" + ex.errorTrace.shortDescription + "'). ");
         	} catch (CDBRecordDoesNotExistEx ex) { 
-        		errMsg.append("Node " + cdbPath + " does not exist in the CDB (msg='" + ex.errorTrace.shortDescription + "'). ");
+        		errMsg.append("Node " + cdbLoggingConfigPath + " does not exist in the CDB (msg='" + ex.errorTrace.shortDescription + "'). ");
         	} catch (CastorException ex) {
-        		errMsg.append("Failed to parse XML for CDB node " + cdbPath + " into binding classes (ex=" + ex.getClass().getName() + ", msg='" + ex.getMessage() + "'). ");
+        		errMsg.append("Failed to parse XML for CDB node " + cdbLoggingConfigPath + " into binding classes (ex=" + ex.getClass().getName() + ", msg='" + ex.getMessage() + "'). ");
         	} catch (Throwable thr) { 
-        		errMsg.append("Failed to read node " + cdbPath + " from the CDB (ex=" + thr.getClass().getName() + ", msg='" + thr.getMessage() + "'). ");
+        		errMsg.append("Failed to read node " + cdbLoggingConfigPath + " from the CDB (ex=" + thr.getClass().getName() + ", msg='" + thr.getMessage() + "'). ");
         	}
         }
             
@@ -256,9 +255,7 @@ public class LogConfig {
             throw new LogConfigException("Log config initialization at least partially failed. " + errMsg.toString());
         }        
 	}
-	
-	
-	
+
     /**
      * Gets the logging configuration data that contains all configuration values that apply to the entire process,
      * ass well as the default log levels.
