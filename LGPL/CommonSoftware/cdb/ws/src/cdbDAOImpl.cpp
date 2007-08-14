@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: cdbDAOImpl.cpp,v 1.39 2007/03/04 16:27:51 msekoran Exp $"
+* "@(#) $Id: cdbDAOImpl.cpp,v 1.40 2007/08/14 08:47:43 bjeram Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -488,8 +488,14 @@ CDB::stringSeq* DAOImpl::get_string_seq (
    }
  // create return value
  CDB::longSeq_var retSeq;
- ACE_NEW_THROW_EX (retSeq, CDB::longSeq, CORBA::NO_MEMORY ());
-    ACE_CHECK_RETURN (0);
+ try
+     {
+     retSeq = new CDB::longSeq();
+     }
+ catch(...)
+     {
+     throw CORBA::NO_MEMORY ();
+     }//try-catch
 
  StringArray * ary = fld.GetStringArray();
   retSeq->length( ary->size() );
@@ -539,8 +545,14 @@ CDB::stringSeq* DAOImpl::get_string_seq (
    }
  // create return value
  CDB::doubleSeq_var retSeq;
- ACE_NEW_THROW_EX (retSeq, CDB::doubleSeq, CORBA::NO_MEMORY ());
-    ACE_CHECK_RETURN (0);
+ try
+     {
+     retSeq = new CDB::doubleSeq();
+     }
+ catch(...)
+     {
+     throw CORBA::NO_MEMORY ();
+     }//try-catch
 
  StringArray * ary = fld.GetStringArray();
   retSeq->length( ary->size() );
