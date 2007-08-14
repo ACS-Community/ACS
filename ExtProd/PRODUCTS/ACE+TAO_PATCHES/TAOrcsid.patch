@@ -1,6 +1,5 @@
-diff -Naur TAO.org/ACE_wrappers/TAO/tao/Transport_Selection_Guard.cpp TAO/ACE_wrappers/TAO/tao/Transport_Selection_Guard.cpp
 --- TAO.org/ACE_wrappers/TAO/tao/Transport_Selection_Guard.cpp	2007-03-01 15:01:51.000000000 +0100
-+++ TAO/ACE_wrappers/TAO/tao/Transport_Selection_Guard.cpp	2007-08-14 11:55:17.000000000 +0200
++++ TAO/ACE_wrappers/TAO/tao/Transport_Selection_Guard.cpp	2007-08-14 18:21:02.000000000 +0200
 @@ -4,7 +4,7 @@
  #include "tao/TSS_Resources.h"
  
