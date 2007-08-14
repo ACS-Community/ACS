@@ -1,6 +1,6 @@
 // -*- C++ -*-
 //
-// config-linux.h,v 4.41 2004/04/22 20:54:00 shuston Exp
+// $Id: config.h,v 1.4 2007/08/14 15:31:48 bjeram Exp $
 
 // The following configuration file is designed to work for Linux
 // platforms using GNU C++.
@@ -30,6 +30,16 @@
 // ... and the final standard even!
 #define ACE_HAS_PTHREADS_STD
 
+// On linux this is part of pthreads
+#  if (defined _POSIX_C_SOURCE && (_POSIX_C_SOURCE - 0) >= 199309L)
+#    if !defined (ACE_HAS_CLOCK_GETTIME)
+#      if !defined(__PGI)
+#        define ACE_HAS_CLOCK_GETTIME
+#      endif /* __PGI */
+#      define ACE_HAS_CLOCK_SETTIME
+#    endif  /* !ACE_HAS_CLOCK_GETTIME */
+#  endif  /* _POSIX_C_SOURCE >= 199309L */
+
 #if !defined (ACE_HAS_PTHREADS_UNIX98_EXT)
 #  define ACE_LACKS_RWLOCK_T
 #else
@@ -57,8 +67,11 @@
 #define ACE_HAS_2_PARAM_ASCTIME_R_AND_CTIME_R
 #endif
 
+#else
+// AIO support pulls in the rt library, which pulls in the pthread
+// library.  Disable AIO in single-threaded builds.
+# undef ACE_HAS_AIO_CALLS
 #endif  /* ACE_MT_SAFE */
-
 
 #include /**/ "ace/post.h"
 

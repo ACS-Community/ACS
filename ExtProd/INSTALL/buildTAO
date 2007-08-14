@@ -2,7 +2,7 @@
 #*******************************************************************************
 # E.S.O. - ALMA project
 #
-# "@(#) $Id: buildTAO,v 1.23 2007/07/30 10:51:57 bjeram Exp $"
+# "@(#) $Id: buildTAO,v 1.24 2007/08/14 15:31:44 bjeram Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -76,7 +76,7 @@ mkdir $ALMASW_ROOTDIR/$ALMASW_RELEASE/TAO
 # Unpack the tar file
 # put the sources under $ALMASW_ROOTDIR/$ALMASW_RELEASE/TAO
 #
-FILE=ACE-5.5.2+TAO-1.5.2
+FILE=ACE-5.5.10+TAO-1.5.10
 ARCHIVE=`pwd`/../PRODUCTS/$FILE.tar.gz
 cd $ALMASW_ROOTDIR/$ALMASW_RELEASE/TAO
 echo "unpacking the archive"
@@ -90,6 +90,7 @@ echo ""
 echo "patching the code"
 echo "- ACErelpath.patch"
 patch -p1 < $CURR_DIR/../PRODUCTS/ACE+TAO_PATCHES/ACErelpath.patch
+patch -p1 < $CURR_DIR/../PRODUCTS/ACE+TAO_PATCHES/TAOrcsid.patch
 #echo "- ACETAOVxWorks.patch"
 #patch -p1 < $CURR_DIR/../PRODUCTS/ACE+TAO_PATCHES/ACETAOVxWorks.patch
 echo "- TAOAV.patch"

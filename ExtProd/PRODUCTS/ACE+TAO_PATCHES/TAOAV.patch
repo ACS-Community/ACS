@@ -1,94 +1,135 @@
---- TAO.org/ACE_wrappers/TAO/orbsvcs/orbsvcs/AV/AVStreams_i.cpp	2006-04-24 15:53:27.000000000 +0200
-+++ TAO/ACE_wrappers/TAO/orbsvcs/orbsvcs/AV/AVStreams_i.cpp	2007-02-15 10:16:17.000000000 +0100
-@@ -117,6 +117,14 @@
+diff -Naur TAO.org/ACE_wrappers/TAO/orbsvcs/orbsvcs/AV/AVStreams_i.cpp TAO/ACE_wrappers/TAO/orbsvcs/orbsvcs/AV/AVStreams_i.cpp
+--- TAO.org/ACE_wrappers/TAO/orbsvcs/orbsvcs/AV/AVStreams_i.cpp	2007-07-07 22:06:46.000000000 +0200
++++ TAO/ACE_wrappers/TAO/orbsvcs/orbsvcs/AV/AVStreams_i.cpp	2007-08-14 17:03:09.000000000 +0200
+@@ -108,10 +108,18 @@
              }
          }
      }
-+  ACE_CATCH(AVStreams::noSuchFlow, ex)
++  catch(AVStreams::noSuchFlow& ex)
 +      {
-+      ACE_RE_THROW; //ACS mod 2006-02
++      throw; //ACS mod 2007-08
 +      }
-+  ACE_CATCH(CORBA::SystemException, ex)
-+      {
-+      ACE_RE_THROW; //ACS mod 2006-03
-+      }
-   ACE_CATCHANY
+   catch (const CORBA::Exception& ex)
      {
-       ACE_PRINT_EXCEPTION (ACE_ANY_EXCEPTION, "TAO_Basic_StreamCtrl::stop");
-@@ -167,6 +175,16 @@
+-      ex._tao_print_exception ("TAO_Basic_StreamCtrl::stop");
+-      return;
++    ex._tao_print_exception ("TAO_Basic_StreamCtrl::stop");
++    throw;  //ACS mod 2007-08
++    }
++  catch(...)
++    {
++      printf ("TAO_Basic_StreamCtrl::stop - unknown exception\n");
+     }
+ }
+ 
+@@ -151,10 +159,18 @@
              }
          }
      }
-+  ACE_CATCH(AVStreams::noSuchFlow,ex)
++ catch(AVStreams::noSuchFlow& ex)
 +      {
-+      ACE_PRINT_EXCEPTION(ex, "TAO_Basic_StreamCtrl::start");
-+      ACE_RE_THROW;    //ACS mod 2007-02
++      throw; //ACS mod 2007-08
 +      }
-+  ACE_CATCH(CORBA::SystemException,ex)
-+      {
-+      ACE_PRINT_EXCEPTION(ex, "TAO_Basic_StreamCtrl::start");
-+      ACE_RE_THROW;    //ACS mod 2007-02
-+      }
-   ACE_CATCHANY
+   catch (const CORBA::Exception& ex)
      {
-       ACE_PRINT_EXCEPTION (ACE_ANY_EXCEPTION, "TAO_Basic_StreamCtrl::start");
-@@ -510,6 +528,14 @@
-           ACE_TRY_CHECK;
+-      ex._tao_print_exception ("TAO_Basic_StreamCtrl::start");
+-      return;
++    ex._tao_print_exception ("TAO_Basic_StreamCtrl::start");
++    throw;  //ACS mod 2007-08
++    }
++  catch(...)
++    {
++      printf ("TAO_Basic_StreamCtrl::start - unknown exception\n");
+     }
+ }
+ 
+@@ -435,10 +451,18 @@
+           entry->int_id_.sep_->stop (flow_spec);
          }
      }
-+ ACE_CATCH(AVStreams::noSuchFlow, ex)
-+      {
-+      ACE_RE_THROW; //ACS mod 2007-02
-+      }
-+  ACE_CATCH(CORBA::SystemException, ex)
-+      {
-+      ACE_RE_THROW; //ACS mod 2006-03
-+      }
-   ACE_CATCHANY
++  catch(AVStreams::noSuchFlow& ex)
++    {
++    throw; //ACS mod 2007-08
++    }
+   catch (const CORBA::Exception& ex)
      {
-       ACE_PRINT_EXCEPTION (ACE_ANY_EXCEPTION, "TAO_Basic_StreamCtrl::stop");
-@@ -548,6 +574,16 @@
-           ACE_TRY_CHECK;
+-      ex._tao_print_exception ("TAO_Basic_StreamCtrl::stop");
+-      return;
++    ex._tao_print_exception ("TAO_StreamCtrl::stop");
++    throw;  //ACS mod 2007-08
++    }
++  catch(...)
++    {
++      printf ("TAO_StreamCtrl::stop - unknow exception\n");
+     }
+ }
+ 
+@@ -465,10 +489,18 @@
+           entry->int_id_.sep_->start (flow_spec);
          }
      }
-+  ACE_CATCH(AVStreams::noSuchFlow,ex)
-+      {
-+      ACE_PRINT_EXCEPTION(ex, "TAO_StreamCtrl::start");
-+      ACE_RE_THROW;  //ACS mod 2007-02
-+      }
-+  ACE_CATCH(CORBA::SystemException,ex)
-+      {
-+      ACE_PRINT_EXCEPTION(ex, "TAO_StreamCtrl::start");
-+      ACE_RE_THROW;    //ACS mod 2007-02
-+      }
-   ACE_CATCHANY
++ catch(AVStreams::noSuchFlow& ex)
++    {
++    throw; //ACS mod 2007-08
++    }
+   catch (const CORBA::Exception& ex)
      {
-       ACE_PRINT_EXCEPTION (ACE_ANY_EXCEPTION, "TAO_StreamCtrl::start");
-@@ -3932,6 +3968,10 @@
-           ACE_TRY_CHECK;
+-      ex._tao_print_exception ("TAO_StreamCtrl::start");
+-      return;
++    ex._tao_print_exception ("TAO_StreamCtrl::start");
++    throw;  //ACS mod 2007-08
++    }
++  catch(...)
++    {
++      printf ("TAO_StreamCtrl::start - unknow exception\n");
+     }
+ }
+ 
+@@ -3367,10 +3399,18 @@
+           (*consumer_begin)->stop ();
          }
      }
-+  ACE_CATCH(CORBA::SystemException, ex)
-+      {
-+      ACE_RE_THROW; //ACS mod 2006-03
-+      }
-   ACE_CATCHANY
++ catch(AVStreams::noSuchFlow& ex)
++    {
++    throw; //ACS mod 2007-08
++    }
+   catch (const CORBA::Exception& ex)
      {
-       ACE_PRINT_EXCEPTION (ACE_ANY_EXCEPTION, "TAO_FlowConnection::stop");
-@@ -3967,6 +4007,11 @@
-           ACE_TRY_CHECK;
+-      ex._tao_print_exception ("TAO_FlowConnection::stop");
+-      return;
++    ex._tao_print_exception ("TAO_FlowConnection::stop");
++    throw;  //ACS mod 2007-08
++    }
++  catch(...)
++    {
++      printf ("TAO_FlowConnection::stop - unknown exception\n");
+     }
+ }
+ 
+@@ -3397,10 +3437,18 @@
+           (*producer_begin)->start ();
          }
      }
-+  ACE_CATCH(CORBA::SystemException,ex)
-+      {
-+      ACE_PRINT_EXCEPTION(ex, "TAO_FlowConnection::start");   
-+      ACE_RE_THROW;    //ACS mod 2007-02
-+      }
-   ACE_CATCHANY
++ catch(AVStreams::noSuchFlow& ex)
++    {
++    throw; //ACS mod 2007-08
++    }
+   catch (const CORBA::Exception& ex)
      {
-       ACE_PRINT_EXCEPTION (ACE_ANY_EXCEPTION, "TAO_FlowConnection::start");
---- TAO.org/ACE_wrappers/TAO/orbsvcs/orbsvcs/AV/TCP.cpp	2006-05-16 16:06:38.000000000 +0200
-+++ TAO/ACE_wrappers/TAO/orbsvcs/orbsvcs/AV/TCP.cpp	2006-12-14 17:01:31.000000000 +0100
+-      ex._tao_print_exception ("TAO_FlowConnection::start");
+-      return;
++    ex._tao_print_exception ("TAO_FlowConnection::start");
++    throw;  //ACS mod 2007-08
++    }
++  catch(...)
++    {
++      printf ("TAO_FlowConnection::start - unknown exception\n");
+     }
+ }
+ 
+diff -Naur TAO.org/ACE_wrappers/TAO/orbsvcs/orbsvcs/AV/TCP.cpp TAO/ACE_wrappers/TAO/orbsvcs/orbsvcs/AV/TCP.cpp
+--- TAO.org/ACE_wrappers/TAO/orbsvcs/orbsvcs/AV/TCP.cpp	2006-05-16 16:09:14.000000000 +0200
++++ TAO/ACE_wrappers/TAO/orbsvcs/orbsvcs/AV/TCP.cpp	2007-08-14 13:37:21.000000000 +0200
 @@ -656,6 +656,19 @@
                        -1);
  #endif /* TCP_NODELAY */
@@ -109,8 +150,9 @@
    // Called by the <Strategy_Acceptor> when the handler is completely
    // connected.
    ACE_INET_Addr addr;
---- TAO.org/ACE_wrappers/TAO/orbsvcs/orbsvcs/AV/TCP.h	2006-03-14 07:14:24.000000000 +0100
-+++ TAO/ACE_wrappers/TAO/orbsvcs/orbsvcs/AV/TCP.h	2006-12-14 17:01:31.000000000 +0100
+diff -Naur TAO.org/ACE_wrappers/TAO/orbsvcs/orbsvcs/AV/TCP.h TAO/ACE_wrappers/TAO/orbsvcs/orbsvcs/AV/TCP.h
+--- TAO.org/ACE_wrappers/TAO/orbsvcs/orbsvcs/AV/TCP.h	2006-03-14 07:14:35.000000000 +0100
++++ TAO/ACE_wrappers/TAO/orbsvcs/orbsvcs/AV/TCP.h	2007-08-14 13:37:21.000000000 +0200
 @@ -248,7 +248,7 @@
    /// end the stream.
    virtual int destroy (void);
