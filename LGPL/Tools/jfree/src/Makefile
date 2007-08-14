@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.6 2005/09/20 20:41:19 sharring Exp $"
+# "@(#) $Id: Makefile,v 1.7 2007/08/14 16:51:35 hsommer Exp $"
 #
 # Makefile of ........
 #
@@ -16,8 +16,8 @@
 # REMARKS
 #    None
 #------------------------------------------------------------------------
-JCOMMON_VER = 1.0.0-rc1
-JFREECHART_VER = 1.0.0-rc1
+JCOMMON_VER = 1.0.10
+JFREECHART_VER = 1.0.6
 
 #
 # other files to be installed
