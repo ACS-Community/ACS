@@ -45,15 +45,15 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
+import com.cosylab.CDB.DAL;
+import com.cosylab.CDB.DALOperations;
+
 import alma.cdbErrType.CDBRecordDoesNotExistEx;
 import alma.cdbErrType.CDBXMLErrorEx;
 import alma.cdbErrType.wrappers.AcsJCDBRecordDoesNotExistEx;
 import alma.cdbErrType.wrappers.AcsJCDBXMLErrorEx;
 import alma.maci.loggingconfig.LoggingConfig;
 import alma.maci.loggingconfig.NamedLogger;
-
-import com.cosylab.CDB.DAL;
-import com.cosylab.CDB.DALOperations;
 
 /**
  * Class that encapsulates all configuration sources (defaults, properties, CDB) for Java logging,
@@ -140,7 +140,7 @@ public class LogConfig {
     }
     
     /**
-     * Sets the path to the CDB's node that is parent of the &lt;LoggingConfig&gt; node.
+     * Sets the path to the CDB's node that is <em>parent of</em> the &lt;LoggingConfig&gt; node, such as a container or the manager.
      * @param path
      */
     public void setCDBLoggingConfigPath(String path) {
