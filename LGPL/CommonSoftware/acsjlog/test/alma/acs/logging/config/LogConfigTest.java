@@ -136,7 +136,7 @@ public class LogConfigTest extends TestCase {
 		TestCDB testCDB = new TestCDB();
 		testCDB.addCurlToXmlMapping(cdbContainerPath, frodoContainerXml);
 		
-		logConfig.setCDBContainerPath(cdbContainerPath);
+		logConfig.setCDBLoggingConfigPath(cdbContainerPath);
 		logConfig.setCDB(testCDB);
 		
 		logConfig.initialize();
@@ -173,7 +173,7 @@ public class LogConfigTest extends TestCase {
 		TestCDB testCDB = new TestCDB();
 		testCDB.addCurlToXmlMapping(cdbContainerPath, frodoContainerXml);
 		
-		logConfig.setCDBContainerPath(cdbContainerPath);
+		logConfig.setCDBLoggingConfigPath(cdbContainerPath);
 		logConfig.setCDB(testCDB);
 		
 		try {
