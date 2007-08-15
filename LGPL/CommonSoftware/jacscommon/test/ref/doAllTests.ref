@@ -1,5 +1,6 @@
+.FINER: Logging configuration has been initialized, but not from CDB settings.
 .This is OK: Failed to do constructor connect.
-
+.
 
 OK (3 tests)
 
