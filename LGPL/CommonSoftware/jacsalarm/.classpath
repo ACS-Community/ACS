@@ -5,18 +5,17 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="var" path="ACSROOT/lib/jcont.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/junit.jar"/>
-	<classpathentry kind="var" path="ACSROOT/lib/acsASsources.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acsjlog.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/maci.jar"/>
-	<classpathentry kind="lib" path="/alma/ACS-6.0/ACSSW/lib/cdbDAL.jar"/>
-	<classpathentry kind="lib" path="/alma/ACS-6.0/ACSSW/lib/cdbErrType.jar"/>
-	<classpathentry kind="lib" path="/alma/ACS-6.0/ACSSW/lib/CDB.jar"/>
-	<classpathentry kind="lib" path="/alma/ACS-6.0/ACSSW/lib/cdbjDAL.jar"/>
-	<classpathentry kind="lib" path="/alma/ACS-6.0/ACSSW/lib/acserr.jar"/>
-	<classpathentry kind="lib" path="/alma/ACS-6.0/ACSSW/lib/acserrj.jar"/>
-	<classpathentry kind="lib" path="/alma/ACS-6.0/ACSSW/lib/ACSError.jar"/>
-	<classpathentry kind="lib" path="/alma/ACS-6.0/ACSSW/lib/acsErrTypeAlarmSourceFactory.jar"/>
-	<classpathentry kind="lib" path="/alma/ACS-6.0/ACSSW/lib/maciErrType.jar"/>
-	<classpathentry kind="lib" path="/alma/ACS-6.0/ACSSW/lib/jACSUtil.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/cdbDAL.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/cdbErrType.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/CDB.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/cdbjDAL.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acserr.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acserrj.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/ACSError.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acsErrTypeAlarmSourceFactory.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/maciErrType.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/jACSUtil.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
