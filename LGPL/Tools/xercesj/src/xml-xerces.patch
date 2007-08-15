@@ -1,184 +1,29 @@
-diff -Naur tmp_unpack/xml-xerces.orig/java/src/org/apache/xerces/xinclude/XIncludeHandler.java xml-xerces/java/src/org/apache/xerces/xinclude/XIncludeHandler.java
---- tmp_unpack/xml-xerces.orig/java/src/org/apache/xerces/xinclude/XIncludeHandler.java	2005-02-18 21:30:23.000000000 +0000
-+++ xml-xerces/java/src/org/apache/xerces/xinclude/XIncludeHandler.java	2005-03-09 19:37:10.000000000 +0000
-@@ -307,6 +307,10 @@
-     // and it is only reset to false when the end tag of the parent is encountered.
-     private boolean[] fSawFallback = new boolean[INITIAL_SIZE];
+--- tmp/xml-xerces/java/src/org/apache/xerces/xpointer/XPointerHandler.java	2006-11-23 00:36:57.000000000 +0100
++++ xml-xerces/java/src/org/apache/xerces/xpointer/XPointerHandler.java	2007-08-14 15:07:22.000000000 +0200
+@@ -1055,7 +1055,8 @@
  
-+    // Array indicating wheather we have a XPointer (skip root element) on current depth
-+    private boolean[] fGotXPointer = new boolean[INITIAL_SIZE];
-+    private XIncludeHandler newXMLHandler = null;
-+
-     // The state of the processor at each given depth.
-     private int[] fState = new int[INITIAL_SIZE];
- 
-@@ -341,6 +345,10 @@
- 
-         fSawFallback[fDepth] = false;
-         fSawInclude[fDepth] = false;
-+        fGotXPointer[fDepth] = false;
-+        for (int i = 0; i < fGotXPointer.length; ++i) {
-+            fGotXPointer[i] = false;
-+        }
-         fState[fDepth] = STATE_NORMAL_PROCESSING;
-         fNotations = new ArrayList();
-         fUnparsedEntities = new ArrayList();
-@@ -392,7 +400,7 @@
-         for (int i = 0; i < fSawInclude.length; ++i) {
-             fSawInclude[i] = false;
+             return;
          }
--        
+-        super.startElement(element, attributes, augs);
 +
-         try {
-             if (!componentManager.getFeature(PARSER_SETTINGS)) {
-                 // if parser settings have not changed return.
-@@ -878,9 +886,11 @@
-                 checkMultipleRootElements();
-             }
-             if (fDocumentHandler != null) {
--                augs = modifyAugmentations(augs);
--                attributes = processAttributes(attributes);
--                fDocumentHandler.startElement(element, attributes, augs);
-+                if (!getGotXPointer(fDepth)) {
-+                    augs = modifyAugmentations(augs);
-+                    attributes = processAttributes(attributes);
-+                    fDocumentHandler.startElement(element, attributes, augs);
-+                }
-             }            
-         }
-     }
-@@ -939,15 +949,19 @@
-                 checkMultipleRootElements();
-             }
-             if (fDocumentHandler != null) {
--                augs = modifyAugmentations(augs);
--                attributes = processAttributes(attributes);
--                fDocumentHandler.emptyElement(element, attributes, augs);
-+                if (!getGotXPointer(fDepth)) {
-+                    augs = modifyAugmentations(augs);
-+                    attributes = processAttributes(attributes);
-+                    fDocumentHandler.emptyElement(element, attributes, augs);
-+                }
-             }
-         }
-         // reset the out of scope stack elements
-         setSawFallback(fDepth + 1, false);
-         setSawInclude(fDepth + 1, false);
- 
-+        setGotXPointer(fDepth, false);
-+
-         // check if an xml:base has gone out of scope
-         if (fBaseURIScope.size() > 0 && fDepth == fBaseURIScope.peek()) {
-             // pop the values from the stack
-@@ -978,13 +992,17 @@
-             fDocumentHandler != null
-                 && getState() == STATE_NORMAL_PROCESSING) {
-             --fResultDepth;
--            fDocumentHandler.endElement(element, augs);
-+            if (!getGotXPointer(fDepth)) {
-+                fDocumentHandler.endElement(element, augs);
-+            }
-         }
- 
-         // reset the out of scope stack elements
-         setSawFallback(fDepth + 1, false);
-         setSawInclude(fDepth + 1, false);
- 
-+        setGotXPointer(fDepth, false);
-+
-         // check if an xml:base has gone out of scope
-         if (fBaseURIScope.size() > 0 && fDepth == fBaseURIScope.peek()) {
-             // pop the values from the stack
-@@ -1416,6 +1434,11 @@
-             parse = XINCLUDE_PARSE_XML;
-         }
-         
-+        // only root node XPointer is supported
-+        if (xpointer != null && !xpointer.equalsIgnoreCase("element(/1)")) {
-+            throw new RuntimeException("Unsupported XPointer syntax, only \"element(/1)\" is supported.");
-+        }            
-+        
-         URI hrefURI = null;
-         
-         // Check whether href is correct and perform escaping as per section 4.1.1 of the XInclude spec.
-@@ -1502,7 +1525,9 @@
-                 includedSource = new XMLInputSource(null, href, fCurrentBaseURI.getExpandedSystemId());
-             }
-         }
--        
-+
-+        XIncludeHandler newHandler = null;
-+
-         if (parse.equals(XINCLUDE_PARSE_XML)) {
-             // Instead of always creating a new configuration, the first one can be reused
-             if (fChildConfig == null) {
-@@ -1530,12 +1555,14 @@
-                         + Constants.NAMESPACE_CONTEXT_PROPERTY,
-                     fNamespaceContext);
- 
--                XIncludeHandler newHandler =
-+                newHandler =
-                     (XIncludeHandler)fChildConfig.getProperty(
-                         Constants.XERCES_PROPERTY_PREFIX
-                             + Constants.XINCLUDE_HANDLER_PROPERTY);
-                 newHandler.setParent(this);
-                 newHandler.setDocumentHandler(this.getDocumentHandler());
-+
-+                newXMLHandler = newHandler;
-             }
- 
-             // set all features on parserConfig to match this parser configuration
-@@ -1546,6 +1573,11 @@
- 
-             try {
-                 fNamespaceContext.pushScope();
-+                //setGotDepth(fDepth + 1, true);
-+                // new handler is created, set XPointer to 1st level
-+                if (xpointer != null)
-+                    newXMLHandler.setGotXPointer(1, true);
-+                
-                 fChildConfig.parse(includedSource);
-                 // necessary to make sure proper location is reported in errors
-                 if (fErrorReporter != null) {
-@@ -2125,6 +2157,34 @@
-         return fSawInclude[depth];
++     //   super.startElement(element, attributes, augs);
      }
  
-+    /**
-+     * Records that an &lt;xpointer&gt; was encountered at the specified depth.
-+     *
-+     * @param depth
-+     * @param val
-+     */
-+    /*protected*/ void setGotXPointer(int depth, boolean val) {
-+        if (depth >= fGotXPointer.length) {
-+            boolean[] newarray = new boolean[depth * 2];
-+            System.arraycopy(fGotXPointer, 0, newarray, 0, fGotXPointer.length);
-+            fGotXPointer = newarray;
-+        }
-+        fGotXPointer[depth] = val;
-+    }
-+
-+    /**
-+     * Return whether an &lt;xpointer&gt; was encountered at the specified depth.
-+     *
-+     * @param depth
-+     * @return
-+     */
-+    protected boolean getGotXPointer(int depth) {
-+        if (depth >= fGotXPointer.length) {
-+            return false;
-+        }
-+        return fGotXPointer[depth];
-+    }
-+
-     protected void reportResourceError(String key) {
-         this.reportFatalError(key, null);
-     }
-@@ -2809,4 +2869,4 @@
-             return href;
+     /**
+@@ -1144,7 +1145,8 @@
+             // no need to restore restoreBaseURI() for xml:base and xml:lang processing
+             return;
          }
+-        super.endElement(element, augs);
++       
++       // super.endElement(element, augs);
      }
+ 
+     /**
+@@ -1249,4 +1251,4 @@
+         super.setProperty(propertyId, value);
+     }
+ 
 -}
-+}
 \ No newline at end of file
++}
