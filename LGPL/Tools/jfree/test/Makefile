@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.5 2006/04/20 09:02:07 gchiozzi Exp $"
+# "@(#) $Id: Makefile,v 1.6 2007/08/19 08:41:55 hsommer Exp $"
 #
 # Makefile of ........
 #
@@ -20,8 +20,8 @@
 #
 # Version of tools.
 #
-JCOMMON_VER = 1.0.0-rc1
-JFREECHART_VER = 1.0.0-rc1
+JCOMMON_VER = 1.0.10
+JFREECHART_VER = 1.0.6
 
 JUNIT_JAR = ../lib/junit.jar
 SERVLET_JAR = ../lib/servlet.jar
