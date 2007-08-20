@@ -43,61 +43,43 @@
 	</target>
 
 
-<!-- 	<uptodate property="src.original.uptodate" targetfile="${build.genmetajar}" >
-		<srcfiles dir= "${mod.src}" />
-	</uptodate>
--->
-
-	<target name="files2Unix" >
-		<!-- ANT's <fixcrlf> task does not have something like a 'keepdate' option like dos2unix, so we use native dos2unix 
-				TODO: watch ANT enhancement requests 
-					#25770 (optional 'preserveLastModified' attribute for <fixCRLF) (announced for ANT 1.6.3) and 
-					#33155 (provide FixCRLF functionality as a FilterReader for the <copy> task)
-					
-					fixcrlf
-					srcdir="${build.src.patched}"
-					eol="unix" eof="remove"
-					includes="**/*.java,**/*.properties"
-					/
-	--> 
-		<exec dir="${files2Unix.dir}" os="Linux" executable="find" >
- 			<arg line=". -type f -exec dos2unix -k {} ;"/>
-  		</exec>
-		<exec dir="${files2Unix.dir}" os="SunOS" executable="find" >
-			<arg line=". -type f -exec dos2unix {} {} ';'"/>
-		</exec>	
-	
-	</target>
-
-	
-	
 	<target name="extractOriginalCastorXmlSources" 
 			description="Extracts all castor source files used for the 'xml-only' castor jar; fixes CRLF w/o changing access date."
 		>
+
 		<unzip src="${mod.lib}/${castor.zipname}" dest="${build.tmp}" />
+
 		<copy todir="${build.src.original}" includeEmptyDirs="false" preservelastmodified="true">
 			<fileset dir="${build.tmp}/${castor.zipsrc}" 
-					includes="
-              org/exolab/castor/*,
-              org/exolab/castor/builder/**,
-              org/exolab/castor/core/**,
-              org/exolab/castor/mapping/**,
-              org/exolab/castor/net/**,
-              org/exolab/castor/tools/**,
-              org/exolab/castor/types/**,
-              org/exolab/castor/util/**,
-              org/exolab/castor/xml/**,
-              org/exolab/javasource/**"
-					excludes="
-							org/exolab/castor/util/SqlBindParser.java
-							org/exolab/castor/util/JdoConfFactory.java"
-				/>
+				includes="
+				org/exolab/castor/*,
+				org/exolab/castor/builder/**,
+				org/exolab/castor/core/**,
+				org/exolab/castor/mapping/**,
+				org/exolab/castor/net/**,
+				org/exolab/castor/tools/**,
+				org/exolab/castor/types/**,
+				org/exolab/castor/util/**,
+				org/exolab/castor/xml/**,
+				org/exolab/javasource/**"
+				excludes="
+				org/exolab/castor/util/SqlBindParser.java
+				org/exolab/castor/util/JdoConfFactory.java"
+			/>
+			<!-- Unfortunatley, FixCrLfFilter does currently (Ant 1.7) not support the preservelastmodified
+				attribute of the stand-alone fixcrlf task, which would allow the elegant
+				integration via a filterchain child task.  -->
 		</copy>
-		<antcall target="files2Unix">
-			<param name="files2Unix.dir" value="${build.src.original}"/>
-		</antcall>		
+
+		<fixcrlf 
+		    srcdir="${build.src.original}"
+		    eol="unix" eof="remove" fixlast="false"
+		    preservelastmodified="true">
+		</fixcrlf>
+
 		<delete dir="${build.tmp}" />
-		</target>
+
+	</target>
 
 
 	<target name="createPatchfile" depends="extractOriginalCastorXmlSources"> <!-- depends="extractOriginalCastorXmlSources" -->
