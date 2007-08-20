@@ -194,8 +194,16 @@ mv .matplotlibrc.tmp .matplotlibrc
 cat .matplotlibrc | sed s/interactive\ \ :\ False/interactive\ \ :\ True/g >> .matplotlibrc.tmp
 mv .matplotlibrc.tmp .matplotlibrc
 popd
+popd
 fi
 
+if [ ! -e ../PRODUCTS/pythonmock-0.1.0.zip ]
+then
+  echo Error: Python Mock sources are missing
+else
+echo "== Installing Python Mock Objects"
+unzip pythonmock-0.1.0.zip *.py -d $PYTHON_ROOT/lib/python2.4/site-packages/
+fi
 
 cd $CWD
 echo Python Module installation done!
