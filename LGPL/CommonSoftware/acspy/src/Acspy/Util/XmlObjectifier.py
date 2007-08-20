@@ -1,4 +1,4 @@
-# Copyright (C) 2004-2005
+# Copyright (C) 2004-2007
 # Max-Planck-Institut fuer Radioastronomie Bonn
 #
 # Produced for the ALMA and APEX projects
@@ -28,6 +28,9 @@
 #
 # Who		   When	       What
 #
+# D.Muders, MPIfR  2007-08-20  Renamed internal element name to _0elementName to
+#                              allow for the string "name" to be an XML element
+#                              name.
 # D.Muders, MPIfR  2005-08-16  Added "setValue" method to "XmlElement" class.
 # D.Muders, MPIfR  2004-12-14  - Improved name space mapping.
 #			       - Added switches to skip arbitrary leading
@@ -156,7 +159,7 @@ class _XmlObject:
             if len(self.elementsList) > 1:
                 if number == None:
                     msg = 'More than one XmlElement of type ' + \
-                        str(self.elementsList[0].name)+'. '
+                        str(self.elementsList[0]._0elementName)+'. '
                     msg = msg + 'Select one py passing a number (0 - ' + \
                         str(len(self.elementsList)-1) + ')'
                     raise XmlObjectifierError(msg)
@@ -322,7 +325,7 @@ class XmlElement(minidom.Element):
             if attr != '__init__' and attr != 'getAttribute':
                 setattr(self,attr,getattr(element,attr))
         _createLists(self, mapNameSpaces, nameSpaceMapping, skipChars)
-        self.name = str(self.nodeName)
+        self._0elementName = str(self.nodeName)
 
 
     def getAttribute(self,name):
