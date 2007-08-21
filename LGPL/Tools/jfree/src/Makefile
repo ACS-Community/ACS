@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.7 2007/08/14 16:51:35 hsommer Exp $"
+# "@(#) $Id: Makefile,v 1.8 2007/08/21 11:56:38 hsommer Exp $"
 #
 # Makefile of ........
 #
@@ -40,24 +40,16 @@ endif
 #
 # TARGETS
 # -------
-### GCH 2005-04-28
-### I commented out removing uneeded jars
-### Because of the way the classpath is built in the ant build.xml
-### file, we have to use these jars and we cannot simply remove them.
-### Some work would be needed to fix this problem
-### This is bad because we do not build with the actual jars that will be
-### used in the ACSROOT.
-### all:	do_all remove_unneeded_jars jcommon_jar jfreechart_jar
 all:	do_all jcommon_jar jfreechart_jar
 	@echo " . . . 'all' done" 
 
 clean : clean_all
-	@rm -rf unpacked patched
+	@rm -rf unpacked
 	@rm -rf jcommon-$(JCOMMON_VER)
 	@rm -rf jfreechart-$(JFREECHART_VER)
 	@rm -rf .purify
-	@rm -rf ../lib/jcommon-$(JCOMMON_VER).jar
-	@rm -rf ../lib/jfreechart-$(JFREECHART_VER).jar
+	@rm -f ../lib/jfree-jcommon-$(JCOMMON_VER).jar
+	@rm -f ../lib/jfreechart-$(JFREECHART_VER).jar
 	@echo " . . . clean done"
 
 clean_dist : clean clean_dist_all 
@@ -67,7 +59,7 @@ man   : do_man
 	@echo " . . . man page(s) done"
 
 install :
-	@cp ../lib/jcommon-$(JCOMMON_VER).jar $(INSTALL_ROOT)/lib
+	@cp ../lib/jfree-jcommon-$(JCOMMON_VER).jar $(INSTALL_ROOT)/lib
 	@cp ../lib/jfreechart-$(JFREECHART_VER).jar $(INSTALL_ROOT)/lib
 	@echo " . . . installation done"
 
@@ -81,38 +73,30 @@ unpacked:
 	@gtar -xzf jfreechart-$(JFREECHART_VER).tar.gz
 	@touch unpacked
 
-patch_jfree : patched
-patched:
-	@patch jfreechart-$(JFREECHART_VER)/ant/build.xml jfreechart-build.xml.patch
-	@touch patched
-
-# remove unneeded jar files to avoid any possible confusion during build/installation.
-remove_unneeded_jars :
-	@rm -rf jcommon-$(JCOMMON_VER)/lib/junit.jar
-	@rm -rf jfreechart-$(JFREECHART_VER)/jfreechart-$(JFREECHART_VER)-demo.jar
-	@rm -rf jfreechart-$(JFREECHART_VER)/lib/gnujaxp.jar
-	@rm -rf jfreechart-$(JFREECHART_VER)/lib/jcommon-0.9.6.jar
-	@rm -rf jfreechart-$(JFREECHART_VER)/lib/junit.jar
-	@rm -rf jfreechart-$(JFREECHART_VER)/lib/servlet.jar
-
 # build the jfreechart jar file
-# HSO 2005-09-20: commented out the patching because the ant target 'compile-junit-tests' seems never used anywhere.
-# waiting for reply from SHA on its usage. If it's required, the patch file must be re-created, otherwise deleted.
-#jfreechart_jar : unpack patch_jfree
-jfreechart_jar : unpack 
+jfreechart_jar : jcommon_jar
 	@echo ". . . building jfreechart . . . "
-	@cd jfreechart-$(JFREECHART_VER)/ant; ant compile
+# Don't use any of the jar files from inside the downloaded tar.gz packages, but instead use the jars
+# that come with ACS, or that we have built already here in this module (jfree-jcommon-$(JCOMMON_VER).jar).
+# To make up for it, when calling ant below, we provide that jar by overriding the ant property "jcommon.jar"
+	@rm -rf jfreechart-$(JFREECHART_VER)/lib
+# The servlet.jar file comes with jfreechart (and just got deleted in the lib dir). 
+# Since it is not part of ACS, we better not even compile the jfree classes that need the javax.servlet. packages.
+	@rm -rf jfreechart-$(JFREECHART_VER)/source/org/jfree/chart/servlet
+
+	@cd jfreechart-$(JFREECHART_VER)/ant; ant -Djcommon.jar=../../lib/jfree-jcommon-$(JCOMMON_VER).jar compile
 	@cp jfreechart-$(JFREECHART_VER)/jfreechart-$(JFREECHART_VER).jar ../lib
 
-# build the jcommon jar and the jcommon junit tests jar file
-#  Must explicitly override the ANT property "build.target" which otherwise gets set to "1.2" 
-#  in jcommon-1.0.0-rc1/ant/build.properties. It is used for the javac task in the build.xml file
-#  and would result in a compile error under JDK 1.5. 
+# build the jcommon jar jar file.
+#  Must explicitly override the ANT property "build.target" which otherwise gets set to "1.2"
+#  in jcommon-1.0.10/ant/build.properties. It is used for the javac task in the build.xml file
+#  and would result in a compile error under JDK 1.6.
 #  An alternative would be to remove the "build.target" property by patching the ANT files, or to declare the source as 1.2.
 JDK_VERSION=$(shell java -version 2>&1 | grep 'java version' | cut -d\" -f2 | cut -d. -f1,2)
 jcommon_jar : unpack 
 	@echo ". . . building jcommon . . . "
+	@rm -rf jcommon-$(JCOMMON_VER)/lib
 	cd jcommon-$(JCOMMON_VER)/ant; ant -Dbuild.target=$(JDK_VERSION) compile
-	@cp jcommon-$(JCOMMON_VER)/jcommon-$(JCOMMON_VER).jar ../lib
+	@cp jcommon-$(JCOMMON_VER)/jcommon-$(JCOMMON_VER).jar ../lib/jfree-jcommon-$(JCOMMON_VER).jar
 
 #___oOo___
