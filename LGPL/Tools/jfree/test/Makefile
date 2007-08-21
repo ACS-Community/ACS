@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.7 2007/08/21 12:03:29 hsommer Exp $"
+# "@(#) $Id: Makefile,v 1.8 2007/08/21 21:32:24 hsommer Exp $"
 #
 # Makefile of ........
 #
@@ -23,9 +23,6 @@
 JCOMMON_VER = 1.0.10
 JFREECHART_VER = 1.0.6
 
-JUNIT_JAR = ../lib/junit.jar
-SERVLET_JAR = ../lib/servlet.jar
-GNU_JAXP_JAR = ../lib/gnujaxp.jar
 JCOMMON_JAR = ../lib/jcommon-$(JCOMMON_VER).jar
 
 #
@@ -65,9 +62,6 @@ clean : clean_all
 	@rm -rf unpacked
 	@rm -rf org
 	@rm -rf .purify
-	@rm -rf $(JUNIT_JAR)
-	@rm -rf $(SERVLET_JAR)
-	@rm -rf $(GNU_JAXP_JAR)
 	@rm -rf $(JCOMMON_JAR)
 	@echo " . . . clean done"
 
@@ -90,9 +84,7 @@ unpacked:
 	@rm -rf jcommon-$(JCOMMON_VER)
 	@echo ". . . unpacking jfreechart junit sources . . . "
 	@gtar -xvzf ../src/jfreechart-$(JFREECHART_VER).tar.gz `gtar -tzf../src/jfreechart-$(JFREECHART_VER).tar.gz | grep "tests/.*/junit/..*"`
-#	@gtar -xvzf ../src/jfreechart-$(JFREECHART_VER).tar.gz `gtar -tzf../src/jfreechart-$(JFREECHART_VER).tar.gz | grep "lib/*.jar"`
 	@cp -r jfreechart-$(JFREECHART_VER)/tests/org .
-#	@cp -r jfreechart-$(JFREECHART_VER)/lib/* ../lib
 	@rm -rf jfreechart-$(JFREECHART_VER)
 	@touch unpacked
 
