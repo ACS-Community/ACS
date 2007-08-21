@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.6 2007/08/19 08:41:55 hsommer Exp $"
+# "@(#) $Id: Makefile,v 1.7 2007/08/21 12:03:29 hsommer Exp $"
 #
 # Makefile of ........
 #
@@ -41,7 +41,7 @@ jfreejunit_DIRS=org
 
 #
 # java sources in Jarfile on/off
-DEBUG=
+DEBUG=on
 
 #>>>>> END OF standard rules
 
@@ -85,15 +85,16 @@ install : install_all
 unpack : unpacked
 unpacked:
 	@echo ". . . unpacking jcommon junit sources . . . "
-	@gtar -xvzf ../src/jcommon-$(JCOMMON_VER).tar.gz `gtar -tzf../src/jcommon-$(JCOMMON_VER).tar.gz | grep "source/..*/junit/..*"`
+	@gtar -xvzf ../src/jcommon-$(JCOMMON_VER).tar.gz `gtar -tzf../src/jcommon-$(JCOMMON_VER).tar.gz | grep "source/.*/junit/..*"`
 	@cp -r jcommon-$(JCOMMON_VER)/source/org .
 	@rm -rf jcommon-$(JCOMMON_VER)
 	@echo ". . . unpacking jfreechart junit sources . . . "
-	@gtar -xvzf ../src/jfreechart-$(JFREECHART_VER).tar.gz `gtar -tzf../src/jfreechart-$(JFREECHART_VER).tar.gz | grep "source/..*/junit/..*"`
-	@gtar -xvzf ../src/jfreechart-$(JFREECHART_VER).tar.gz `gtar -tzf../src/jfreechart-$(JFREECHART_VER).tar.gz | grep "lib/*.jar"`
-	@cp -r jfreechart-$(JFREECHART_VER)/source/org .
-	@cp -r jfreechart-$(JFREECHART_VER)/lib/* ../lib
+	@gtar -xvzf ../src/jfreechart-$(JFREECHART_VER).tar.gz `gtar -tzf../src/jfreechart-$(JFREECHART_VER).tar.gz | grep "tests/.*/junit/..*"`
+#	@gtar -xvzf ../src/jfreechart-$(JFREECHART_VER).tar.gz `gtar -tzf../src/jfreechart-$(JFREECHART_VER).tar.gz | grep "lib/*.jar"`
+	@cp -r jfreechart-$(JFREECHART_VER)/tests/org .
+#	@cp -r jfreechart-$(JFREECHART_VER)/lib/* ../lib
 	@rm -rf jfreechart-$(JFREECHART_VER)
 	@touch unpacked
 
 #___oOo___
+
