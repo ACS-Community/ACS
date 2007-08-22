@@ -1,121 +1,121 @@
 1 -  Starting ORB Services
-1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx Reason='Invalid handle.' 
-1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx Reason='Insufficient rights.' 
-1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx Reason='Manager in shutdown state.' 
-1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx Reason='Manager in shutdown state.' 
-1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx Reason='Manager in shutdown state.' 
+1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ Reason='Invalid handle.' ]
+1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ Reason='Insufficient rights.' ]
+1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ Reason='Manager in shutdown state.' ]
+1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ Reason='Manager in shutdown state.' ]
+1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ Reason='Manager in shutdown state.' ]
 1 - This is OK: Non-null 'containerName' expected.
-1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx Reason='Invalid handle.' 
-1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx Reason='Insufficient rights.' 
+1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ Reason='Invalid handle.' ]
+1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ Reason='Insufficient rights.' ]
 1 - This is OK: Non-null 'containerName' expected.
 1 - This is OK: Container 'invalid' not logged in.
-1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx Reason='Insufficient rights.' 
+1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ Reason='Insufficient rights.' ]
 1 - This is OK: Non-null 'reference' expected.
 1 - This is OK: Invalid response to 'Client::name()' method - non-null string expected.
 1 - This is OK: Invalid response to 'Client::authenticate()' method - non-null string expected.
-1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx Reason='Invalid response to 'Client::authenticate()' method. [A,C,S] are expected as first characters.' 
-1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx Reason='Given reply to 'Client::authenticate()' method indicated container login, but given reference does not implement 'maci::Container' interface.' 
-1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx Reason='Invalid handle.' 
-1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx Reason='Invalid handle.' 
-1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx Reason='Invalid handle.' 
+1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ Reason='Invalid response to 'Client::authenticate()' method. [A,C,S] are expected as first characters.' ]
+1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ Reason='Given reply to 'Client::authenticate()' method indicated container login, but given reference does not implement 'maci::Container' interface.' ]
+1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ Reason='Invalid handle.' ]
+1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ Reason='Invalid handle.' ]
+1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ Reason='Invalid handle.' ]
 1 - This is OK: Non-null 'handles' sequence expected.
 1 - This is OK: Non-null 'handles' sequence expected.
 1 - This is OK: Non-null 'handles' sequence expected.
 1 - This is OK: Non-null 'names_wc' sequence expected.
-1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx Reason='Invalid handle.' 
-1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx Reason='Insufficient rights.' 
-1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx Reason='Insufficient rights.' 
-1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx Reason='Insufficient rights.' 
-1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx Reason='Insufficient rights.' 
-1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx Reason='Insufficient rights.' 
-1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx Reason='Insufficient rights.' 
-1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx Reason='Insufficient rights.' 
+1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ Reason='Invalid handle.' ]
+1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ Reason='Insufficient rights.' ]
+1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ Reason='Insufficient rights.' ]
+1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ Reason='Insufficient rights.' ]
+1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ Reason='Insufficient rights.' ]
+1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ Reason='Insufficient rights.' ]
+1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ Reason='Insufficient rights.' ]
+1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ Reason='Insufficient rights.' ]
 1 - This is OK: Non-null 'handles' sequence expected.
 1 - This is OK: Non-null 'handles' sequence expected.
 1 - This is OK: Non-null 'handles' sequence expected.
 1 - This is OK: Non-null 'names_wc' sequence expected.
-1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx Reason='Invalid handle.' 
-1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx Reason='Insufficient rights.' 
-1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx Reason='Insufficient rights.' 
-1 - This is OK alma.ACSErrTypeCommon.wrappers.AcsJBadParameterEx ParameterValue='null' Parameter='curl' 
-1 - This is OK alma.ACSErrTypeCommon.wrappers.AcsJBadParameterEx ParameterValue='null' Parameter='curl' 
-1 - This is OK alma.ACSErrTypeCommon.wrappers.AcsJBadParameterEx ParameterValue='null' Parameter='component' 
-1 - This is OK alma.ACSErrTypeCommon.wrappers.AcsJBadParameterEx ParameterValue='null' Parameter='curl' 
-1 - This is OK: empty URI alma.ACSErrTypeCommon.wrappers.AcsJBadParameterEx ParameterValue='' Parameter='curl' 
-1 - This is OK: URI does not exist alma.ACSErrTypeCommon.wrappers.AcsJBadParameterEx ParameterValue='CURL does not belong to this domain ('other' not one of '[]').' Parameter='curl' 
-1 - This is OK: invalid URI alma.ACSErrTypeCommon.wrappers.AcsJBadParameterEx ParameterValue='CURL does not belong to this domain ('other' not one of '[]').' Parameter='curl' 
-1 - This is OK: invalid URI alma.ACSErrTypeCommon.wrappers.AcsJBadParameterEx ParameterValue='CURL does not belong to this domain ('other' not one of '[]').' Parameter='curl' 
-1 - This is OK: invalid URI alma.ACSErrTypeCommon.wrappers.AcsJBadParameterEx ParameterValue='CURL does not belong to this domain ('other' not one of '[]').' Parameter='curl' 
-1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx Reason='Component with name 'GIZMO4' but different type already registered.' 
-1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx Reason='Invalid handle.' 
-1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx Reason='Invalid handle.' 
-1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx Reason='Invalid handle.' 
-1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx Reason='Invalid handle.' 
-1 - This is OK: duplicate unregistration alma.ACSErrTypeCommon.wrappers.AcsJBadParameterEx ParameterValue='null' Parameter='componentInfo' 
-1 - This is OK: cyclic dependency alma.maciErrType.wrappers.AcsJCannotGetComponentEx CURL='MOUNT2' 
-1 - This is OK: cyclic dependency alma.maciErrType.wrappers.AcsJCannotGetComponentEx CURL='MOUNT3' 
-1 - This is OK: alma.maciErrType.wrappers.AcsJCannotGetComponentEx CURL='' 
-1 - This is OK: alma.maciErrType.wrappers.AcsJCannotGetComponentEx CURL='' 
-1 - This is OK: alma.maciErrType.wrappers.AcsJCannotGetComponentEx CURL='invalid' 
-1 - This is OK: alma.maciErrType.wrappers.AcsJCannotGetComponentEx CURL='' 
-1 - This is OK: component does not exist alma.maciErrType.wrappers.AcsJCannotGetComponentEx CURL='invalid' 
-1 - This is OK: component not activated alma.maciErrType.wrappers.AcsJCannotGetComponentEx CURL='MOUNT1' 
-1 - This is OK: component not activated alma.maciErrType.wrappers.AcsJCannotGetComponentEx CURL='MOUNT1' 
-1 - This is OK: alma.maciErrType.wrappers.AcsJCannotGetComponentEx CURL='MOUNT2' 
-1 - This is OK: component not activated alma.maciErrType.wrappers.AcsJCannotGetComponentEx CURL='MOUNT3' 
+1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ Reason='Invalid handle.' ]
+1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ Reason='Insufficient rights.' ]
+1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ Reason='Insufficient rights.' ]
+1 - This is OK alma.ACSErrTypeCommon.wrappers.AcsJBadParameterEx [ ParameterValue='null' Parameter='curl' ]
+1 - This is OK alma.ACSErrTypeCommon.wrappers.AcsJBadParameterEx [ ParameterValue='null' Parameter='curl' ]
+1 - This is OK alma.ACSErrTypeCommon.wrappers.AcsJBadParameterEx [ ParameterValue='null' Parameter='component' ]
+1 - This is OK alma.ACSErrTypeCommon.wrappers.AcsJBadParameterEx [ ParameterValue='null' Parameter='curl' ]
+1 - This is OK: empty URI alma.ACSErrTypeCommon.wrappers.AcsJBadParameterEx [ ParameterValue='' Parameter='curl' ]
+1 - This is OK: URI does not exist alma.ACSErrTypeCommon.wrappers.AcsJBadParameterEx [ ParameterValue='CURL does not belong to this domain ('other' not one of '[]').' Parameter='curl' ]
+1 - This is OK: invalid URI alma.ACSErrTypeCommon.wrappers.AcsJBadParameterEx [ ParameterValue='CURL does not belong to this domain ('other' not one of '[]').' Parameter='curl' ]
+1 - This is OK: invalid URI alma.ACSErrTypeCommon.wrappers.AcsJBadParameterEx [ ParameterValue='CURL does not belong to this domain ('other' not one of '[]').' Parameter='curl' ]
+1 - This is OK: invalid URI alma.ACSErrTypeCommon.wrappers.AcsJBadParameterEx [ ParameterValue='CURL does not belong to this domain ('other' not one of '[]').' Parameter='curl' ]
+1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ Reason='Component with name 'GIZMO4' but different type already registered.' ]
+1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ Reason='Invalid handle.' ]
+1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ Reason='Invalid handle.' ]
+1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ Reason='Invalid handle.' ]
+1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ Reason='Invalid handle.' ]
+1 - This is OK: duplicate unregistration alma.ACSErrTypeCommon.wrappers.AcsJBadParameterEx [ ParameterValue='null' Parameter='componentInfo' ]
+1 - This is OK: cyclic dependency alma.maciErrType.wrappers.AcsJCannotGetComponentEx [ CURL='MOUNT2' ]
+1 - This is OK: cyclic dependency alma.maciErrType.wrappers.AcsJCannotGetComponentEx [ CURL='MOUNT3' ]
+1 - This is OK: alma.maciErrType.wrappers.AcsJCannotGetComponentEx [ CURL='' ]
+1 - This is OK: alma.maciErrType.wrappers.AcsJCannotGetComponentEx [ CURL='' ]
+1 - This is OK: alma.maciErrType.wrappers.AcsJCannotGetComponentEx [ CURL='invalid' ]
+1 - This is OK: alma.maciErrType.wrappers.AcsJCannotGetComponentEx [ CURL='' ]
+1 - This is OK: component does not exist alma.maciErrType.wrappers.AcsJCannotGetComponentEx [ CURL='invalid' ]
+1 - This is OK: component not activated alma.maciErrType.wrappers.AcsJCannotGetComponentEx [ CURL='MOUNT1' ]
+1 - This is OK: component not activated alma.maciErrType.wrappers.AcsJCannotGetComponentEx [ CURL='MOUNT1' ]
+1 - This is OK: alma.maciErrType.wrappers.AcsJCannotGetComponentEx [ CURL='MOUNT2' ]
+1 - This is OK: component not activated alma.maciErrType.wrappers.AcsJCannotGetComponentEx [ CURL='MOUNT3' ]
 1 - This is OK: Non-null CURLs expected.
 1 - This is OK: Non-null CURLs expected.
 1 - This is OK: Non-null 'statuses' expected.
-1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx Reason='Invalid handle.' 
-1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx Reason='Invalid handle.' 
-1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx Reason='Invalid handle.' 
+1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ Reason='Invalid handle.' ]
+1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ Reason='Invalid handle.' ]
+1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ Reason='Invalid handle.' ]
 1 - This is OK: Non-null 'statuses' expected.
-1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx Reason='Invalid handle.' 
+1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ Reason='Invalid handle.' ]
 1 - This is OK: Non-null CURLs expected.
 1 - This is OK: Non-null 'type' expected.
 1 - This is OK: Non-null 'type' expected.
-1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx Reason='Invalid handle.' 
+1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ Reason='Invalid handle.' ]
 1 - This is OK: Non-null 'type' expected.
 1 - This is OK: No default component for type 'invalid' found.
 1 - This is OK: alma.maciErrType.wrappers.AcsJInvalidComponentSpecEx
-1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx Reason='Invalid handle.' 
-1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx Reason='Invalid handle.' 
+1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ Reason='Invalid handle.' ]
+1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ Reason='Invalid handle.' ]
 1 - This is OK: alma.maciErrType.wrappers.AcsJInvalidComponentSpecEx
 1 - This is OK: alma.maciErrType.wrappers.AcsJInvalidComponentSpecEx
-1 - This is OK: alma.maciErrType.wrappers.AcsJInvalidComponentSpecEx Reason=''name' and 'type' cannot be both '*'.' 
-1 - This is OK: alma.maciErrType.wrappers.AcsJInvalidComponentSpecEx Reason=''name' and 'type' cannot be both '*'.' 
+1 - This is OK: alma.maciErrType.wrappers.AcsJInvalidComponentSpecEx [ Reason=''name' and 'type' cannot be both '*'.' ]
+1 - This is OK: alma.maciErrType.wrappers.AcsJInvalidComponentSpecEx [ Reason=''name' and 'type' cannot be both '*'.' ]
 1 - This is OK: alma.maciErrType.wrappers.AcsJCannotGetComponentEx
-1 - This is OK: alma.maciErrType.wrappers.AcsJComponentSpecIncompatibleWithActiveComponentEx ContainerName='DynContainer' CURL='MOUNT2' ComponentType='IDL:alma/MOUNT_ACS/Mount:1.0' ComponentCode='acsexmplMount' 
-1 - This is OK: alma.maciErrType.wrappers.AcsJComponentSpecIncompatibleWithActiveComponentEx ContainerName='Container' CURL='MOUNT1' ComponentType='IDL:alma/MOUNT_ACS/Mount:1.0' ComponentCode='acsexmplMount' 
-1 - This is OK: alma.maciErrType.wrappers.AcsJInvalidComponentSpecEx Reason='Requested ComponentSpec does not match any entry in the CDB.' 
-1 - This is OK: alma.maciErrType.wrappers.AcsJInvalidComponentSpecEx Reason='Requested ComponentSpec does not match any entry in the CDB.' 
-1 - This is OK: alma.maciErrType.wrappers.AcsJInvalidComponentSpecEx Reason='Requested ComponentSpec does not match any entry in the CDB.' 
+1 - This is OK: alma.maciErrType.wrappers.AcsJComponentSpecIncompatibleWithActiveComponentEx [ ContainerName='DynContainer' CURL='MOUNT2' ComponentType='IDL:alma/MOUNT_ACS/Mount:1.0' ComponentCode='acsexmplMount' ]
+1 - This is OK: alma.maciErrType.wrappers.AcsJComponentSpecIncompatibleWithActiveComponentEx [ ContainerName='Container' CURL='MOUNT1' ComponentType='IDL:alma/MOUNT_ACS/Mount:1.0' ComponentCode='acsexmplMount' ]
+1 - This is OK: alma.maciErrType.wrappers.AcsJInvalidComponentSpecEx [ Reason='Requested ComponentSpec does not match any entry in the CDB.' ]
+1 - This is OK: alma.maciErrType.wrappers.AcsJInvalidComponentSpecEx [ Reason='Requested ComponentSpec does not match any entry in the CDB.' ]
+1 - This is OK: alma.maciErrType.wrappers.AcsJInvalidComponentSpecEx [ Reason='Requested ComponentSpec does not match any entry in the CDB.' ]
 1 - This is OK: alma.maciErrType.wrappers.AcsJInvalidComponentSpecEx
-1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx Reason='Invalid handle.' 
-1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx Reason='Invalid handle.' 
-1 - This is OK: alma.maciErrType.wrappers.AcsJInvalidComponentSpecEx
-1 - This is OK: alma.maciErrType.wrappers.AcsJInvalidComponentSpecEx
+1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ Reason='Invalid handle.' ]
+1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ Reason='Invalid handle.' ]
 1 - This is OK: alma.maciErrType.wrappers.AcsJInvalidComponentSpecEx
 1 - This is OK: alma.maciErrType.wrappers.AcsJInvalidComponentSpecEx
-1 - This is OK: alma.maciErrType.wrappers.AcsJIncompleteComponentSpecEx ContainerName='*' CURL='noEntry' 
+1 - This is OK: alma.maciErrType.wrappers.AcsJInvalidComponentSpecEx
+1 - This is OK: alma.maciErrType.wrappers.AcsJInvalidComponentSpecEx
+1 - This is OK: alma.maciErrType.wrappers.AcsJIncompleteComponentSpecEx [ ContainerName='*' CURL='noEntry' ]
 1 - This is OK: null parameter
 1 - This is OK: null parameter
-1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx Reason='Invalid handle.' 
+1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ Reason='Invalid handle.' ]
 1 - This is OK
 1 - This is OK
 1 - This is OK
-1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx Reason='Insufficient rights.' 
+1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ Reason='Insufficient rights.' ]
 1 - This is OK: null parameter
 1 - This is OK: null parameter
-1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx Reason='Invalid handle.' 
+1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ Reason='Invalid handle.' ]
 1 - This is OK: Insufficient rights.
 1 - This is OK: null parameter
 1 - This is OK: null parameter
-1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx Reason='Invalid handle.' 
+1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ Reason='Invalid handle.' ]
 1 - This is OK: null parameter
-1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx Reason='Restarting component that client does not own.' 
-1 - This is OK: alma.maciErrType.wrappers.AcsJCannotGetComponentEx CURL='DEMANDER' 
-1 - This is OK: alma.maciErrType.wrappers.AcsJCannotGetComponentEx CURL='DEMANDER' 
+1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ Reason='Restarting component that client does not own.' ]
+1 - This is OK: alma.maciErrType.wrappers.AcsJCannotGetComponentEx [ CURL='DEMANDER' ]
+1 - This is OK: alma.maciErrType.wrappers.AcsJCannotGetComponentEx [ CURL='DEMANDER' ]
 1 - 
 1 - 
 1 - OK (39 tests)
