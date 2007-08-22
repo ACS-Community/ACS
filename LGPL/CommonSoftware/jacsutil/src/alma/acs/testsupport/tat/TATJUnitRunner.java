@@ -21,13 +21,12 @@
  */
 package alma.acs.testsupport.tat;
 
-import java.io.PrintStream;
-import java.io.FileOutputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.FileInputStream;
 import java.io.File;
-
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.PrintStream;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
@@ -37,12 +36,15 @@ import junit.framework.TestSuite;
 import junit.textui.ResultPrinter;
 import junit.textui.TestRunner;
 
-import alma.acs.util.StringOutputStream;
-
 /**
  * Replacement for <code>junit.textui.TestRunner</code> 
  * that helps avoid some issues with using JUnit 
  * embedded in ALMA TAT scripts.
+ * <p>
+ * Note that the intent is not to get rid of the output-based testing that TAT offers,
+ * but to complement it with result-based testing as JUnit proposes it, 
+ * and to make the latter easier in a TAT environment.
+ * Both approaches have their merit, so chose one depending on what you want to test.
  * <p>
  * Internally calls {@link TestRunner#doRun(Test)}, controlling the 
  * {@link ResultPrinter} output as well as <code>System.out</code> 
@@ -91,32 +93,22 @@ public class TATJUnitRunner
 	private static PrintStream s_oldSysOut = System.out;
 	private static PrintStream s_oldSysErr = System.err;
 
-	//private static StringOutputStream s_outstream;
-	//private static StringOutputStream s_errstream;
-	
-	//private static StringOutputStream s_resultstream;
-	
-        private static FileOutputStream s_fileoutstream;
-        private static FileOutputStream s_fileerrstream;
+	private static FileOutputStream s_fileoutstream;
+	private static FileOutputStream s_fileerrstream;
 
-        private static FileOutputStream s_fileresultstream;
-                
-        private static String outFilename;
-        private static String errFilename;
-        private static String resFilename;       
+	private static FileOutputStream s_fileresultstream;
 
-	private static void redirectSysOutputStreams()
-            throws FileNotFoundException
+	private static String outFilename;
+	private static String errFilename;
+	private static String resFilename;
+
+	private static void redirectSysOutputStreams() throws FileNotFoundException
 	{
 		s_oldSysOut = System.out;		
-		//s_outstream = new StringOutputStream();
-		//System.setOut(new PrintStream(s_outstream));
 		s_fileoutstream = new FileOutputStream(outFilename);
 		System.setOut(new PrintStream(s_fileoutstream,true));
 
 		s_oldSysErr = System.err;
-		//s_errstream = new StringOutputStream();
-		//System.setErr(new PrintStream(s_errstream));
 		s_fileerrstream = new FileOutputStream(errFilename);
 		System.setErr(new PrintStream(s_fileerrstream,true));
 	}
@@ -127,31 +119,30 @@ public class TATJUnitRunner
 		System.setErr(s_oldSysErr);
 	}
 
-        private static void closeFiles()
-        {
-                try{
-                    s_fileoutstream.close();
-                }catch(IOException ex){
-                        System.err.print("Couldn't close file:"+ex.getMessage());
-                }
-                try{
-                    s_fileerrstream.close();
-                }catch(IOException ex){
-                        System.err.print("Couldn't close file:"+ex.getMessage());
-                }
-                try{
-                    s_fileresultstream.close();
-                }catch(IOException ex){
-                        System.err.print("Couldn't close file:"+ex.getMessage());
-                }
-        }
+	private static void closeFiles() {
+		try {
+			s_fileoutstream.close();
+		} catch (IOException ex) {
+			System.err.print("Couldn't close file:" + ex.getMessage());
+		}
+		try {
+			s_fileerrstream.close();
+		} catch (IOException ex) {
+			System.err.print("Couldn't close file:" + ex.getMessage());
+		}
+		try {
+			s_fileresultstream.close();
+		} catch (IOException ex) {
+			System.err.print("Couldn't close file:" + ex.getMessage());
+		}
+	}
 	
 	/**
 	 * Runs a suite extracted from a TestCase subclass.
 	 * 
-	 * Redirects System.out and System.err 
-	 * so that successful test runs will not produce any output,
-	 * while in case of failure/error they get dumped to System.err. 
+	 * Redirects System.out and System.err so that successful test runs will not
+	 * produce any output, while in case of failure/error they get dumped to
+	 * System.err.
 	 */
 	public static void run(Class testClass) 
             throws FileNotFoundException
@@ -193,8 +184,11 @@ public class TATJUnitRunner
 	 */
 	private static void run(Test suite)
 	{
-		ResultPrinter resultPrinter = new ResultPrinter(
-			new PrintStream(s_fileresultstream,true));
+		ResultPrinter resultPrinter = new ResultPrinter(new PrintStream(s_fileresultstream,true)) {
+			public void startTest(Test test) {
+				// do not print the damn "." !
+			}
+		};
 		TestRunner testRunner = new TestRunner(resultPrinter);
 
 		TestResult r = null;
@@ -211,7 +205,7 @@ public class TATJUnitRunner
 			System.err.println("Exception was thrown during test execution: ");
 			ex.printStackTrace();
 
-                        closeFiles();
+			closeFiles();
 			traceOutput(false);
 
 			System.exit(TestRunner.EXCEPTION_EXIT);
@@ -227,128 +221,127 @@ public class TATJUnitRunner
 
 		if (r.wasSuccessful()) {
 			System.out.println("JUnit test run succeeded");
-                        closeFiles();
-                        File file=new File(outFilename);
-                        file.delete();
-                        file=new File(errFilename);
-                        file.delete();
-                        file=new File(resFilename);
-                        file.delete();
-		}
+			closeFiles();
+			File file = new File(outFilename);
+			file.delete();
+			file = new File(errFilename);
+			file.delete();
+			file = new File(resFilename);
+			file.delete();
+		} 
 		else {
-			System.err.println("JUnitRunner: Errors and/or failures during test execution!\n");
-                        closeFiles();
+			System.err
+					.println("JUnitRunner: Errors and/or failures during test execution!\n");
+			closeFiles();
 			traceOutput(true);
 
-			System.exit(TestRunner.FAILURE_EXIT); 
+			System.exit(TestRunner.FAILURE_EXIT);
 		}
 		
 	}
 
 
-	private static void traceOutput(boolean isFailure)
-	{
-                byte buffer[]=new byte[1024];
-                int status=-1;
-                boolean error=false;
-                try{
-                        FileInputStream resultFile=new FileInputStream(resFilename);
-                        System.err.println("Test execution trace: ");
-                        System.err.println("<<<<<<<<<<<<<<<<<<<");
-                        //System.err.println(s_resultstream.toString());
-                        do{
-                                try{
-                                        status=resultFile.read(buffer);
-                                }catch(IOException ex){
-                                        error=true;
-                                        System.err.print("Error reading file:"+ex.getMessage());
-                                }
-                                if(status>0)
-                                        System.err.write(buffer,0,status);
-                        }while(status>0);
-                        System.err.println(">>>>>>>>>>>>>>>>>>>");
-                        System.err.println();
-                        try{
-                                resultFile.close();
-                        }catch(IOException ex){
-                                error=true;
-                                System.err.print("Couldn't close file:"+ex.getMessage());
-                        }
+	private static void traceOutput(boolean isFailure) {
+		byte buffer[] = new byte[1024];
+		int status = -1;
+		boolean error = false;
+		try {
+			FileInputStream resultFile = new FileInputStream(resFilename);
+			System.err.println("Test execution trace: ");
+			System.err.println("<<<<<<<<<<<<<<<<<<<");
+			//System.err.println(s_resultstream.toString());
+			do {
+				try {
+					status = resultFile.read(buffer);
+				} catch (IOException ex) {
+					error = true;
+					System.err.print("Error reading file:" + ex.getMessage());
+				}
+				if (status > 0)
+					System.err.write(buffer, 0, status);
+			} while (status > 0);
+			System.err.println(">>>>>>>>>>>>>>>>>>>");
+			System.err.println();
+			try {
+				resultFile.close();
+			} catch (IOException ex) {
+				error = true;
+				System.err.print("Couldn't close file:" + ex.getMessage());
+			}
+		} catch (FileNotFoundException ex) {
+			error = true;
+			System.err.print("Error opening file:" + ex.getMessage());
+		}
+		if (!error) {
+			File file = new File(resFilename);
+			file.delete();
+		}
+		error = false;
 
-                }catch(FileNotFoundException ex){
-                        error=true;
-                        System.err.print("Error opening file:"+ex.getMessage());
-                }
-                if(!error){
-                        File file=new File(resFilename);
-                        file.delete();
-                }
-                error=false;
-                
-                try{
-                        FileInputStream stdoutFile=new FileInputStream(outFilename);
-                        System.err.println("System.out during test execution: ");
-                        System.err.println("<<<<<<<<<<<<<<<<<<<");
-                        //System.err.println(s_outstream.toString());
-                        do{
-                                try{
-                                        status=stdoutFile.read(buffer);
-                                }catch(IOException ex){
-                                        error=true;
-                                        System.err.print("Error reading file:"+ex.getMessage());
-                                }
-                                if(status>0)
-                                        System.err.write(buffer,0,status);
-                        }while(status>0);
-                        System.err.println(">>>>>>>>>>>>>>>>>>>");
-                        System.err.println();
-                        try{
-                                stdoutFile.close();
-                        }catch(IOException ex){
-                                error=true;
-                                System.err.print("Couldn't close file:"+ex.getMessage());
-                        }
+		try {
+			FileInputStream stdoutFile = new FileInputStream(outFilename);
+			System.err.println("System.out during test execution: ");
+			System.err.println("<<<<<<<<<<<<<<<<<<<");
+			//System.err.println(s_outstream.toString());
+			do {
+				try {
+					status = stdoutFile.read(buffer);
+				} catch (IOException ex) {
+					error = true;
+					System.err.print("Error reading file:" + ex.getMessage());
+				}
+				if (status > 0)
+					System.err.write(buffer, 0, status);
+			} while (status > 0);
+			System.err.println(">>>>>>>>>>>>>>>>>>>");
+			System.err.println();
+			try {
+				stdoutFile.close();
+			} catch (IOException ex) {
+				error = true;
+				System.err.print("Couldn't close file:" + ex.getMessage());
+			}
 
-                }catch(FileNotFoundException ex){
-                        error=true;
-                        System.err.print("Error opening file:"+ex.getMessage());
-                }
-                if(!error){
-                        File file=new File(outFilename);
-                        file.delete();
-                }
-                error=false;
-                                            
-                try{
-                        FileInputStream stderrFile=new FileInputStream(errFilename);
-                        System.err.println("System.err during test execution: ");
-                        System.err.println("<<<<<<<<<<<<<<<<<<<");
-                        //System.err.println(s_errstream.toString());
-                        do{
-                                try{
-                                        status=stderrFile.read(buffer);
-                                }catch(IOException ex){
-                                        error=true;
-                                        System.err.print("Error reading file:"+ex.getMessage());
-                                }
-                                if(status>0)
-                                        System.err.write(buffer,0,status);
-                        }while(status>0);
-                        System.err.println(">>>>>>>>>>>>>>>>>>>");
-                        try{
-                                stderrFile.close();
-                        }catch(IOException ex){
-                                error=true;
-                                System.err.print("Couldn't close file:"+ex.getMessage());
-                        }
-                }catch(FileNotFoundException ex){
-                        error=true;
-                        System.err.print("Error opening file:"+ex.getMessage());
-                }
-                if(!error){
-                        File file=new File(errFilename);
-                        file.delete();
-                }
+		} catch (FileNotFoundException ex) {
+			error = true;
+			System.err.print("Error opening file:" + ex.getMessage());
+		}
+		if (!error) {
+			File file = new File(outFilename);
+			file.delete();
+		}
+		error = false;
+
+		try {
+			FileInputStream stderrFile = new FileInputStream(errFilename);
+			System.err.println("System.err during test execution: ");
+			System.err.println("<<<<<<<<<<<<<<<<<<<");
+			//System.err.println(s_errstream.toString());
+			do {
+				try {
+					status = stderrFile.read(buffer);
+				} catch (IOException ex) {
+					error = true;
+					System.err.print("Error reading file:" + ex.getMessage());
+				}
+				if (status > 0)
+					System.err.write(buffer, 0, status);
+			} while (status > 0);
+			System.err.println(">>>>>>>>>>>>>>>>>>>");
+			try {
+				stderrFile.close();
+			} catch (IOException ex) {
+				error = true;
+				System.err.print("Couldn't close file:" + ex.getMessage());
+			}
+		} catch (FileNotFoundException ex) {
+			error = true;
+			System.err.print("Error opening file:" + ex.getMessage());
+		}
+		if (!error) {
+			File file = new File(errFilename);
+			file.delete();
+		}
 
 	}
 
@@ -367,19 +360,17 @@ public class TATJUnitRunner
 			else
 			{
 				String testClassName = args[0];
-                                outFilename="stdout-"+testClassName+".log";
-                                errFilename="stderr-"+testClassName+".log";
-                                resFilename="result-"+testClassName+".log";
+				outFilename = "stdout-" + testClassName + ".log";
+				errFilename = "stderr-" + testClassName + ".log";
+				resFilename = "result-" + testClassName + ".log";
 				testClass = Class.forName(testClassName);
 			}
 			
 			run(testClass);
-		}catch(FileNotFoundException ex){
-                        System.err.print("Error opening file:"+ex.getMessage());
-                        System.exit(TestRunner.EXCEPTION_EXIT);
-                }
-		catch (Throwable thr)
-		{
+		} catch (FileNotFoundException ex) {
+			System.err.print("Error opening file:" + ex.getMessage());
+			System.exit(TestRunner.EXCEPTION_EXIT);
+		} catch (Throwable thr) {
 			thr.printStackTrace();
 			System.exit(TestRunner.EXCEPTION_EXIT);
 		}
