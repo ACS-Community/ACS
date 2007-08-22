@@ -2,7 +2,6 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="test"/>
-	<classpathentry kind="var" path="JRE_LIB" sourcepath="JRE_SRC"/>
 	<classpathentry kind="var" path="ACSROOT/lib/maci.jar" sourcepath="INTROOT/lib/maci.jar"/>
 	<classpathentry kind="var" path="JACORB_HOME/lib/jacorb.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/junit.jar"/>
@@ -28,4 +27,5 @@
 	<classpathentry kind="var" path="ACSROOT/lib/avalon-framework.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/logkit.jar"/>
 	<classpathentry kind="output" path="object/eclipseOut"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 </classpath>
