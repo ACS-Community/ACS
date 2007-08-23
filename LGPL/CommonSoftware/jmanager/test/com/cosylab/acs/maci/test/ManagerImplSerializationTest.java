@@ -62,7 +62,6 @@ public class ManagerImplSerializationTest extends TestCase {
 	protected void setUp() throws Exception {
 		super.setUp();
 		
-		// turn off flod of Abeans messages
 		Properties systemProps = System.getProperties(); 
 		
 		//systemProps.setProperty("ACS.tmp", ".");

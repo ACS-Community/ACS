@@ -55,39 +55,20 @@ public class DefaultCORBAService implements Runnable
 		Properties orbprops = System.getProperties();
 		
 		Properties serviceConfig = new Properties();
-/*
-		try
-		{
-			// TODO!!!
-			final String path = orbprops.getProperty("abeans.home") + "/DefaultCORBAService.txt";  
 
-			logger.config("Loading DefaultCORBAService configuration using path '" + path + "'...");
+		serviceConfig.put("org.omg.CORBA.ORBClass", "org.jacorb.orb.ORB");
+		serviceConfig.put("org.omg.CORBA.ORBSingletonClass", "org.jacorb.orb.ORBSingleton");
 
-			InputStream input = this.getClass().getClassLoader().getResourceAsStream(path);
-			serviceConfig.load(input);
+		serviceConfig.put("jacorb.implname", "ORB");
 
-			logger.config("DefaultCORBAService configuration loaded.");
+		serviceConfig.put("jacorb.orb.objectKeyMap.Manager", "ORB/ManagerPOA/Manager");
 
-		} catch (Throwable th) {
-			logger.log(Level.WARNING, "Failed to load DefaultCORBAService configuration.", th);
-		}
-*/
-		
-serviceConfig.put("org.omg.CORBA.ORBClass", "org.jacorb.orb.ORB");
-serviceConfig.put("org.omg.CORBA.ORBSingletonClass", "org.jacorb.orb.ORBSingleton");
+		serviceConfig.put("jacorb.verbosity", "1");
 
-serviceConfig.put("jacorb.implname", "ORB");
+		serviceConfig.put("org.omg.PortableInterceptor.ORBInitializerClass.bidir_init",
+				"org.jacorb.orb.connection.BiDirConnectionInitializer");
 
-					
-serviceConfig.put("jacorb.orb.objectKeyMap.Manager", "ORB/ManagerPOA/Manager");
-
-serviceConfig.put("jacorb.verbosity", "1");
-
-
-serviceConfig.put("org.omg.PortableInterceptor.ORBInitializerClass.bidir_init", "org.jacorb.orb.connection.BiDirConnectionInitializer");
-		
-		
-		// add additional properties		
+		// add additional properties
 		if (serviceConfig != null)
 			orbprops.putAll(serviceConfig);
 		
@@ -138,7 +119,6 @@ serviceConfig.put("org.omg.PortableInterceptor.ORBInitializerClass.bidir_init", 
 	 * Returns Object Request Broker (ORB) object.
 	 * 
 	 * @return		Object Request Broker (ORB) object
-	 * @see 		abeans.pluggable.acs.CORBAService#getORB()
 	 */
 	public ORB getORB()
 	{
@@ -149,7 +129,6 @@ serviceConfig.put("org.omg.PortableInterceptor.ORBInitializerClass.bidir_init", 
 	 * Returns root Portable Object Adapter (POA) object.
 	 * 
 	 * @return		root Portable Object Adapter (POA) object
-	 * @see 		abeans.pluggable.acs.CORBAService#getRootPOA()
 	 */
 	public POA getRootPOA()
 	{

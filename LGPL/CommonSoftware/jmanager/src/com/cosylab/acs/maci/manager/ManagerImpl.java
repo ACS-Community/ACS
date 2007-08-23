@@ -2513,7 +2513,6 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		// unbind Manager
 		unbind("Manager", null);
 
-		// remove Abeans DB connection
 		setCDBAccess(null);
 
 		// release CDB DAO daos

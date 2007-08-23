@@ -166,7 +166,7 @@ public class ManagerImplTest extends TestCase
 		}
 	}
 	
-	public void testAbeansFrameworkStartupShutdown() throws Exception
+	public void testStartupShutdown() throws Exception
 	{
 		for (int i = 0; i < 4; i++)
 		{

@@ -126,14 +126,6 @@ public class ClientImpl implements Client
 	}
 
 	/**
-	 * @see abeans.core.Identifiable#isDebug()
-	 */
-	public boolean isDebug()
-	{
-		return false;
-	}
-
-	/**
 	 * Returns a single-line rendition of this instance into text.
 	 * 
 	 * @return internal state of this instance
