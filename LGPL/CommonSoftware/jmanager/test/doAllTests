@@ -29,16 +29,16 @@ export ACS_TMP=../test/tmp
 #determine the ACS instance
 export ACS_INSTANCE=`cat $ACS_TMP/acs_instance`
 
-acsStartJava junit.textui.TestRunner com.cosylab.acs.maci.test.ManagerImplTest
+acsStartJava alma.acs.testsupport.tat.NoDotJUnitRunner com.cosylab.acs.maci.test.ManagerImplTest
 
 # does not exit!!! 
-#acsStartJava junit.textui.TestRunner com.cosylab.acs.maci.test.ManagerImplSerializationTest
+#acsStartJava alma.acs.testsupport.tat.NoDotJUnitRunner com.cosylab.acs.maci.test.ManagerImplSerializationTest
 
 ./jmanagerTATEpilogue
 
 # non-CORBA service tests
-acsStartJava junit.textui.TestRunner com.cosylab.acs.maci.test.HandleDataStoreTest
-acsStartJava junit.textui.TestRunner com.cosylab.acs.maci.test.IntArrayTest
-acsStartJava junit.textui.TestRunner com.cosylab.acs.maci.test.MACIModelTest
-acsStartJava junit.textui.TestRunner com.cosylab.acs.maci.test.WildcharMatcherTest
-acsStartJava junit.textui.TestRunner com.cosylab.acs.maci.test.CURLHelperTest
+acsStartJava alma.acs.testsupport.tat.NoDotJUnitRunner com.cosylab.acs.maci.test.HandleDataStoreTest
+acsStartJava alma.acs.testsupport.tat.NoDotJUnitRunner com.cosylab.acs.maci.test.IntArrayTest
+acsStartJava alma.acs.testsupport.tat.NoDotJUnitRunner com.cosylab.acs.maci.test.MACIModelTest
+acsStartJava alma.acs.testsupport.tat.NoDotJUnitRunner com.cosylab.acs.maci.test.WildcharMatcherTest
+acsStartJava alma.acs.testsupport.tat.NoDotJUnitRunner com.cosylab.acs.maci.test.CURLHelperTest
