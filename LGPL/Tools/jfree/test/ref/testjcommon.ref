@@ -13,9 +13,9 @@
 1 - 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
 1 - 	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
 1 - 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
-1 - 	at alma.acs.testsupport.tat.TATJUnitRunner.run(TATJUnitRunner.java:203)
-1 - 	at alma.acs.testsupport.tat.TATJUnitRunner.run(TATJUnitRunner.java:184)
-1 - 	at alma.acs.testsupport.tat.TATJUnitRunner.main(TATJUnitRunner.java:376)
+1 - 	at alma.acs.testsupport.tat.TATJUnitRunner.run(TATJUnitRunner.java:193)
+1 - 	at alma.acs.testsupport.tat.TATJUnitRunner.run(TATJUnitRunner.java:175)
+1 - 	at alma.acs.testsupport.tat.TATJUnitRunner.main(TATJUnitRunner.java:365)
 1 - 
 1 - FAILURES!!!
 1 - Tests run: 129,  Failures: 1,  Errors: 0
