@@ -1,24 +1,13 @@
-SUP.
-Log outputed to the local file
-lcuboot: open
 DAL root is
 java -classpath
 Time:
-XTRADYNE Technologies
-www.jacorb.org
 Connected to
-ACS abeans configuration directory:
 Using naming reference
 Retrying to connect to
-Abnormal connection termination
-POA RootPOA
-POA ManagerPOA
 export
 -D abeans.home=
 Starting Java/abeans application:
-\[jacorb\.poa\] INFO : Using server ID 
 [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F]
-\[jacorb\.poa\] INFO : oid:
 object is activated
 Logging configuration has been initialized, but not from CDB settings.
 Bound ID: InterfaceRepository
