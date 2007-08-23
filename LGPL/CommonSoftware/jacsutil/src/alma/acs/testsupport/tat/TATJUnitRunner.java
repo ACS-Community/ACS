@@ -184,11 +184,7 @@ public class TATJUnitRunner
 	 */
 	private static void run(Test suite)
 	{
-		ResultPrinter resultPrinter = new ResultPrinter(new PrintStream(s_fileresultstream,true)) {
-			public void startTest(Test test) {
-				// do not print the damn "." !
-			}
-		};
+		ResultPrinter resultPrinter = new ResultPrinter(new PrintStream(s_fileresultstream,true));
 		TestRunner testRunner = new TestRunner(resultPrinter);
 
 		TestResult r = null;
