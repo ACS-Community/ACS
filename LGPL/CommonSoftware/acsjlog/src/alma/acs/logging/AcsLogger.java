@@ -254,12 +254,13 @@ public class AcsLogger extends Logger implements LogConfigSubscriber {
     }
 
     /**
+     * Callback method, configures this logger from the data in logConfig.
      * @see alma.acs.logging.config.LogConfigSubscriber#configureLogging(alma.acs.logging.config.LogConfig)
      */
     public void configureLogging(LogConfig logConfig) {
 		try {
-			NamedLogger config = logConfig.getSpecialLoggerConfig(getName());
-	    	configureJDKLogger(this, config);	    	
+			UnnamedLogger config = logConfig.getNamedLoggerConfig(getName());
+	    	configureJDKLogger(this, config);
 		} catch (Exception e) {
 			info("Failed to configure logger.");
 		}

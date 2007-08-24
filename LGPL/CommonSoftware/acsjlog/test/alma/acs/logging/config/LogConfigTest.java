@@ -6,6 +6,7 @@ import alma.acs.logging.ACSCoreLevel;
 import alma.acs.testsupport.TestLogger;
 import alma.maci.loggingconfig.LoggingConfig;
 import alma.maci.loggingconfig.NamedLogger;
+import alma.maci.loggingconfig.UnnamedLogger;
 
 public class LogConfigTest extends TestCase {
 
@@ -53,7 +54,7 @@ public class LogConfigTest extends TestCase {
 				logConfig.addSubscriber(configSubscribers[i]);
 			}
 		}
-		logConfig.initialize(); // should call "configureLogging" on all subscribers
+		logConfig.initialize(false); // should call "configureLogging" on all subscribers
 		for (int i = 0; i < numSubscribers; i++) {
 			assertEquals(1, configSubscribers[i].count);
 		}
@@ -64,7 +65,7 @@ public class LogConfigTest extends TestCase {
 		for (int i = 0; i < numSubscribers - numRemainingSubscribers; i++) {
 			logConfig.removeSubscriber(configSubscribers[i]);
 		}
-		logConfig.initialize(); 
+		logConfig.initialize(false); 
 		for (int i = 0; i < numSubscribers - numRemainingSubscribers; i++) {
 			assertEquals(1, configSubscribers[i].count);
 		}
@@ -76,7 +77,7 @@ public class LogConfigTest extends TestCase {
 	
 	/**
 	 * Tests the config values returned from {@link LogConfig#getLoggingConfig()}
-	 * and {@link LogConfig#getSpecialLoggerConfig(String)} in the pristine state of our LogConfig object,
+	 * and {@link LogConfig#getNamedLoggerConfig(String)} in the pristine state of our LogConfig object,
 	 * that is, without CDB or other property information being considered.
 	 * <p>
 	 * Also asserts that none of these calls return the original object, 
@@ -102,11 +103,11 @@ public class LogConfigTest extends TestCase {
 //		assertNotSame(defaultLogConfig, defaultLogConfig2); // commented out because currently we don't copy/hide the instance
 		assertEquals(defaultLogConfig, defaultLogConfig2);
 
-		NamedLogger namedLogConfig1 = logConfig.getSpecialLoggerConfig(null);
+		UnnamedLogger namedLogConfig1 = logConfig.getNamedLoggerConfig(null);
 		assertEquals(defaultLogConfig.getMinLogLevel(), namedLogConfig1.getMinLogLevel());
 		assertEquals(defaultLogConfig.getMinLogLevelLocal(), namedLogConfig1.getMinLogLevelLocal());
 		
-		NamedLogger namedLogConfig2 = logConfig.getSpecialLoggerConfig("nonExistingLogger");
+		UnnamedLogger namedLogConfig2 = logConfig.getNamedLoggerConfig("nonExistingLogger");
 		assertNotSame(namedLogConfig1, namedLogConfig2); 
 		assertEquals(namedLogConfig1.getMinLogLevel(), namedLogConfig2.getMinLogLevel());
 		assertEquals(namedLogConfig1.getMinLogLevelLocal(), namedLogConfig2.getMinLogLevelLocal());
@@ -129,7 +130,7 @@ public class LogConfigTest extends TestCase {
                           " immediateDispatchLevel=\"7\" " +
                           " dispatchPacketSize=\"33\" " +
                           " >" +
-                               //<log:_ Name="MyMuteComponent" minLogLevel="5" minLogLevelLocal="5" />
+                               "<log:_ Name=\"MyMuteComponent\" minLogLevel=\"5\" minLogLevelLocal=\"6\" />" +
                           "</LoggingConfig>" +
                     "</Container>";
         		
@@ -139,7 +140,7 @@ public class LogConfigTest extends TestCase {
 		logConfig.setCDBLoggingConfigPath(cdbContainerPath);
 		logConfig.setCDB(testCDB);
 		
-		logConfig.initialize();
+		logConfig.initialize(true);
 
 		LoggingConfig updatedConfig = logConfig.getLoggingConfig();
 		assertEquals("LogForFrodo", updatedConfig.getCentralizedLogger());
@@ -177,7 +178,7 @@ public class LogConfigTest extends TestCase {
 		logConfig.setCDB(testCDB);
 		
 		try {
-			logConfig.initialize();
+			logConfig.initialize(true);
 			fail("LogConfigException was expected.");
 		}
 		catch (LogConfigException ex) {
@@ -188,7 +189,7 @@ public class LogConfigTest extends TestCase {
 		
 		testCDB.setThrowException(true);
 		try {
-			logConfig.initialize();
+			logConfig.initialize(true);
 			fail("LogConfigException was expected.");
 		}
 		catch (LogConfigException ex) {

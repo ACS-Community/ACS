@@ -24,7 +24,6 @@ package alma.acs.container;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
@@ -49,11 +48,11 @@ import si.ijs.maci.LoggingConfigurablePackage.LogLevels;
 
 import alma.ACS.ComponentStates;
 import alma.JavaContainerError.wrappers.AcsJContainerEx;
+import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
+import alma.acs.classloading.AcsComponentClassLoader;
 import alma.acs.component.ComponentDescriptor;
 import alma.acs.component.ComponentLifecycle;
 import alma.acs.concurrent.DaemonThreadFactory;
-import alma.acs.container.ContainerServices.ComponentListener;
-import alma.acs.classloading.AcsComponentClassLoader;
 import alma.acs.container.corba.AcsCorba;
 import alma.acs.logging.ClientLogManager;
 import alma.acs.logging.config.LogConfig;
@@ -172,7 +171,7 @@ public class AcsContainer extends ContainerPOA
 		logConfig.setCDBLoggingConfigPath("MACI/Containers/" + m_containerName);
 		logConfig.setCDB(getCDB());
 		try {
-			logConfig.initialize();
+			logConfig.initialize(false);
 		} catch (LogConfigException ex) {
 			// if the CDB can't be read, we still want to run the container, so
 			// we only log the problems
@@ -1256,21 +1255,20 @@ public class AcsContainer extends ContainerPOA
     }
 
 
-    /////////////////////////////////////////////////////////////
-    // LoggingConfigurable interface
-    /////////////////////////////////////////////////////////////
+    // ///////////////////////////////////////////////////////////
+	// LoggingConfigurable interface
+	// ///////////////////////////////////////////////////////////
 
-    /**
+	/**
 	 * Gets the log levels of the default logging configuration. These levels
 	 * are used by all loggers that have not been configured individually.
 	 */
 	public LogLevels get_default_logLevels() {
-		//throw new org.omg.CORBA.NO_IMPLEMENT("Method not implemented yet");
-                LogLevels logLevels=new LogLevels();
-                logLevels.useDefault=false;
-                logLevels.minLogLevel=(short)logConfig.getMinLogLevel();
-                logLevels.minLogLevelLocal=(short)logConfig.getMinLogLevelLocal();
-                return  logLevels;
+		LogLevels logLevels = new LogLevels();
+		logLevels.useDefault = false;
+		logLevels.minLogLevel = (short) logConfig.getDefaultMinLogLevel();
+		logLevels.minLogLevelLocal = (short) logConfig.getDefaultMinLogLevelLocal();
+		return logLevels;
 	}
 
 	/**
@@ -1278,9 +1276,8 @@ public class AcsContainer extends ContainerPOA
 	 * are used by all loggers that have not been configured individually.
 	 */
 	public void set_default_logLevels(LogLevels levels) {
-		//throw new org.omg.CORBA.NO_IMPLEMENT("Method not implemented yet");
-            logConfig.setMinLogLevel(levels.minLogLevel);
-            logConfig.setMinLogLevelLocal(levels.minLogLevelLocal);
+		logConfig.setDefaultMinLogLevel(levels.minLogLevel);
+		logConfig.setDefaultMinLogLevelLocal(levels.minLogLevelLocal);
 	}
 
 	/**
@@ -1319,15 +1316,15 @@ public class AcsContainer extends ContainerPOA
 	 * effective, and also for changes of more advanced parameters.
 	 */
         public void refresh_logging_config() {
-                //throw new org.omg.CORBA.NO_IMPLEMENT("Method not implemented yet");
-                try {
-                        logConfig.initialize();
-                } catch (LogConfigException ex) {
-                        // if the CDB can't be read, we still want to run the container, so
-                        // we only log the problems
-                        m_logger.log(Level.FINE, "Failed to configure logging (default values will be used). Reason: "
-                                        + ex.getMessage());
-                }
+		try {
+			logConfig.initialize(true);
+		} catch (LogConfigException ex) {
+			// if the CDB can't be read, we still want to run the container, so
+			// we only log the problems
+			m_logger.log(Level.FINE,
+					"Failed to configure logging (default values will be used). Reason: "
+							+ ex.getMessage());
+		}
 	}
 		
 	/** ************************ END LoggingConfigurable ************************ */

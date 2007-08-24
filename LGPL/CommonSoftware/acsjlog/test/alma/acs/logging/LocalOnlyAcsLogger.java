@@ -29,7 +29,7 @@ public class LocalOnlyAcsLogger extends AcsLogger {
 	public static LocalOnlyAcsLogger getInstance(String namespace, Level level) {
 		if (instance == null) {
 			LogConfig testLogConfig = new LogConfig();
-			testLogConfig.setMinLogLevelLocal(AcsLogLevel.getNativeLevel(level).getAcsLevel());
+			testLogConfig.setDefaultMinLogLevelLocal(AcsLogLevel.getNativeLevel(level).getAcsLevel());
 			instance = new LocalOnlyAcsLogger(namespace, testLogConfig);
 			instance.setUseParentHandlers(false);
 			Handler logHandler = new StdOutConsoleHandler(testLogConfig);
