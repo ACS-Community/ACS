@@ -87,6 +87,14 @@ public class DispatchingLogQueue {
 
     private final boolean DEBUG = Boolean.getBoolean("alma.acs.logging.verbose");
     
+    /**
+     * If true, them the queue does not drop any log records, but rather blocks loggers in {@link #log(LogRecord)} 
+     * until their request can be processed.
+     * Default is <code>false</code>, because application performance is more important than logging.
+     * For performance testing etc, setting this property may be useful though.
+     */
+    private static boolean LOSSLESS = Boolean.getBoolean("alma.acs.logging.lossless");
+    
     
     DispatchingLogQueue() {
         outOfCapacity = false;
@@ -94,7 +102,7 @@ public class DispatchingLogQueue {
         currentFlushPeriod = 0;
         setMaxQueueSize(1000);
         flushLock = new ReentrantLock();
-        queue = new PriorityBlockingQueue<LogRecord>(100, new LogRecordComparator());        
+        queue = new PriorityBlockingQueue<LogRecord>(100, new LogRecordComparator());
         executor = new ScheduledThreadPoolExecutor(1, new DaemonThreadFactory("LogDispatcher"));
         executor.setContinueExistingPeriodicTasksAfterShutdownPolicy(false);
     }
@@ -135,17 +143,31 @@ public class DispatchingLogQueue {
         int oldSize = queue.size();
         // if queue is full, then drop the record
         if (oldSize >= maxQueueSize) {
-            // first time overflow? Then start periodic flushing attempts drain the queue once the central logger comes up again
+        	
+        	
+            // first time overflow? Then start periodic flushing attempts to drain the queue once the central logger comes up again
             if (!outOfCapacity) {
                 preOverflowFlushPeriod = currentFlushPeriod;
                 setPeriodicFlushing(10000);
             }
             outOfCapacity = true;
-            if (DEBUG || oldSize == maxQueueSize) {
-                System.err.println("log queue overflow: log record with message '" + logRecord.getMessage() + 
-                "' and possibly future log records will not be sent to the remote logging service.");
-            }
-            return false;
+            
+        	if (LOSSLESS) {
+        		do {
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException ex) {
+						// nada
+					}
+				} while (queue.size() >= maxQueueSize);
+        	}
+        	else {
+        		if (DEBUG || oldSize == maxQueueSize) {
+                    System.err.println("log queue overflow: log record with message '" + logRecord.getMessage() + 
+                    "' and possibly future log records will not be sent to the remote logging service.");
+        		}
+                return false;
+        	}
         }
 
         // queue was full before, but now is better again
@@ -156,15 +178,17 @@ public class DispatchingLogQueue {
         }
         
         // drop less important messages if queue space gets scarce
-        final int filterThreshold = maxQueueSize * 7 / 10;
-
-        if (oldSize >= filterThreshold && logRecord.getLevel().intValue() < Level.INFO.intValue()) {
-            if (DEBUG) {
-                System.err.println("looming log queue overflow (" + (oldSize+1) + "/" + maxQueueSize + 
-                                    "): low-level log record with message '" + logRecord.getMessage() +
-                                    "' will not be sent to the remote logging service.");
-            }
-            return false;
+        if (!LOSSLESS) {
+	        final int filterThreshold = maxQueueSize * 7 / 10;
+	
+	        if (oldSize >= filterThreshold && logRecord.getLevel().intValue() < Level.INFO.intValue()) {
+	            if (DEBUG) {
+	                System.err.println("looming log queue overflow (" + (oldSize+1) + "/" + maxQueueSize + 
+	                                    "): low-level log record with message '" + logRecord.getMessage() +
+	                                    "' will not be sent to the remote logging service.");
+	            }
+	            return false;
+	        }
         }
         
         queue.put(logRecord);
