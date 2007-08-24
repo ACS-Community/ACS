@@ -47,8 +47,10 @@ import org.xml.sax.InputSource;
  * Converts an old CDB Container config XML file to the new logging config format introduced with ACS 6.
  * <p>
  * TODO-: validate output against Container.xsd
- *  
+ *
  * @author hsommer
+ * @deprecated  with ACS 7.0 because conversion of CDB config files for ACS 5 or lower should be over soon.
+ *              To be removed with ACS 8.0
  */
 public class ACS6ContainerLoggingConfigConverter {
 
