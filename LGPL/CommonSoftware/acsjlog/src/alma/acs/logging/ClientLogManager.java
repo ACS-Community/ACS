@@ -133,7 +133,7 @@ public class ClientLogManager implements LogConfigSubscriber
         logConfig = new LogConfig();
         logConfig.addSubscriber(this);
         try {
-            logConfig.initialize(); // will call configureLogging, using default values
+            logConfig.initialize(false); // will call configureLogging, using default values
         } catch (LogConfigException ex) {
             System.err.println("Failed to configure logging: " + ex.toString());
         }
@@ -399,7 +399,7 @@ public class ClientLogManager implements LogConfigSubscriber
         }
         return false;
 	}
-
+	
     
     /**
      * Suppresses remote logging.
