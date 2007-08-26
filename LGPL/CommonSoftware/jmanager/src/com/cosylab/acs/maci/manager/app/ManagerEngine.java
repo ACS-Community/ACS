@@ -264,7 +264,7 @@ public class ManagerEngine
 		logConfig.setCDBLoggingConfigPath("MACI/Managers/Manager");
 		logConfig.setCDB(cdbAccess.connectAndGetDAL());
 		try {
-			logConfig.initialize();
+			logConfig.initialize(false);
 		} catch (LogConfigException ex) {
 			// if the CDB can't be read, we still want to run the manager, so
 			// we only log the problems
