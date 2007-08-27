@@ -226,6 +226,9 @@ public class HandleDataStore implements Serializable
      */
     public void set(int handle, Object data)
     {
+    	if (data == null)
+    		throw new IllegalArgumentException("data == null");
+    	
     	/*
         if (handle < 0 || handle >= capacity) 
             throw new IndexOutOfBoundsException(String.valueOf(handle) + " < " + offset + " or " +
