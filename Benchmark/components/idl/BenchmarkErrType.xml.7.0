@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Type xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns="Alma/ACSError" xsi:schemaLocation="Alma/ACSError ACSError.xsd" 
+      name="BenchmarkErrType" 
+      type="12" 
+      _prefix="alma">
+	<Code name="BenchmarkErrTestOK" shortDescription="Test OK" description="Test OK"/>
+	<ErrorCode name="BenchmarkErr0" shortDescription="benchmark error 0" description="benchmark error 0"/>
+	<ErrorCode name="BenchmarkErr1" shortDescription="benchmark error 1" description="benchmark error 1"/>
+	<ErrorCode name="BenchmarkErr2" shortDescription="benchmark error 2" description="benchmark error 2"/>
+	<ErrorCode name="BenchmarkErr3" shortDescription="benchmark error 3" description="benchmark error 3"/>
+	<ErrorCode name="BenchmarkErr4" shortDescription="benchmark error 4" description="benchmark error 4" _suppressExceptionGeneration="true"/>
+	<ErrorCode name="BenchmarkErr5" shortDescription="benchmark error 5" description="benchmark error 5" _suppressExceptionGeneration="true"/>
+</Type>
