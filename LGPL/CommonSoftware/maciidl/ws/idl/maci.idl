@@ -113,14 +113,24 @@ module maci {
 	   size, dispatch packet size and so forth are not supported
 	   in this interface; they must be done in the CDB instead. 
 	 */
-         interface LoggingConfigurable {
-       
-            struct LogLevels {
-               boolean useDefault;        // if true, then the values of minLogLevel, minLogLevelLocal are undefined
-               short minLogLevel;
-               short minLogLevelLocal;
-            };
-       
+	interface LoggingConfigurable {
+
+		/*
+		 * Struct that represents log level thresholds used for filtering log records.
+		 */
+		struct LogLevels {
+			/** 
+			 * This flag is only relevant in the context of a named logger configuration. 
+			 * If true, then the fields minLogLevel and minLogLevelLocal are undefined, 
+			 * and default values apply. 
+			 */
+			boolean useDefault;
+			/** min log level for logging to the central log service */
+			short minLogLevel;
+			/** min log level for printing logs to stdout */
+			short minLogLevelLocal;
+		};
+
             /**
              * Gets the log levels of the default logging configuration.
              * These levels are used by all loggers that have not been configured individually.
@@ -136,8 +146,8 @@ module maci {
             /** 
              * Gets the names of all loggers, to allow configuring their levels individually.
              * The names are those that appear in the log records in the field "SourceObject".
-             * This includes the container logger, ORB logger, component
-             * loggers, and (only C++) GlobalLogger. 
+             * This includes the container logger, ORB logger, component loggers, 
+             * and (only C++) "GlobalLogger"s which get treated as one named logger. 
              */
             stringSeq get_logger_names();
        
@@ -159,22 +169,21 @@ module maci {
              */
             void set_logLevels(in string logger_name, in LogLevels levels)
 		raises (maciErrType::LoggerDoesNotExistEx);
-       
-            /**
-             * Commands the container or manager to read in again the logging
-             * configuration from the CDB and to reconfigure the loggers
-             * accordingly. 
-             * This allows for persistent changes in the logging
-             * configuration to become effective, and also for changes of more
-             * advanced parameters. 
-	     *
-	     * Notice that this is a oneway method and therefore 
-	     * there cannot be return values or user exceptions.
-	     * Only CORBA runtime exceptions due to communication
-	     * issues can be thrown
-             */
-            oneway void refresh_logging_config();
-         };
+
+		/**
+		 * Commands the container or manager to read in again the logging
+		 * configuration from the CDB and to reconfigure the loggers
+		 * accordingly. 
+		 * This allows for persistent changes in the logging
+		 * configuration to become effective, and also for changes of more
+		 * advanced parameters. 
+		 *
+		 * Notice that this is a oneway method and therefore there cannot be return values or user exceptions.
+		 * Only CORBA runtime exceptions due to communication issues can be thrown.
+		 */
+		oneway void refresh_logging_config();
+	};
+
 
        	/** 
        	    Structure in which the Manager stores information about a component. 
@@ -791,30 +800,7 @@ module maci {
 	    </UL> 
 	*/
 	interface Manager : LoggingConfigurable {
-	        /** 
-		    The component has been successfully activated. 
-		    @deprecated This define is deprecated and will be
-	                        removed with get_services() and get_components()
-		*/
-	        const unsigned long COMPONENT_ACTIVATED = 0;
-
-		/** 
-		    Manager has no information about the component: it is neither
-		    activated, nor does Manager know how to activate it. 
-		    @deprecated This define is deprecated and will be
-	                        removed with get_services() and get_components()
-		*/
-		const unsigned long COMPONENT_NONEXISTENT = 2;
-
-		/** 
-		    The component has not been activated. This error code is returned by
-		    get_component when a component is requested that is not yet activated,
-		    and get_component was not given permission to activate it. 
-		    @deprecated This define is deprecated and will be
-	                        removed with get_services() and get_components()
-		*/
-		const unsigned long COMPONENT_NOT_ACTIVATED = 1;
-
+	
 		/** The fully qualified name of the domain, e.g., "antenna1.alma.nrao". */
 		readonly attribute string domain_name;
 
@@ -1007,44 +993,6 @@ module maci {
 			    maciErrType::CannotGetComponentEx,
 			    maciErrType::ComponentNotAlreadyActivatedEx);
 
-		/** 
-		    Used for retrieving several services with one call. 
-		    See get_service.
-
-		    @deprecated This method is deprecated and will be
-		    removed.
-
-		    @return A sequence of requested services.
-		 */
-		ObjectSeq get_services (
-			in Handle id,	///< Identification of the caller. If this is an invalid handle, or if the caller does not have enough access rights, a maciErrType::NoPermissionEx exception is raised.
-			in CURLSeq service_urls,	///< A sequence of CURLs of the services whose references are to be retrieved.
-			in boolean activate,	///< True if the services are to be activated in case they do not exist. If set to False, and the i-th service does not exist, the i-th element of the status is set to COMPONENT_NOT_ACTIVATED and the i-th reference in the result is set to nil.
-			out ulongSeq status	///< Statuses of individual requests -- one element per request. Can be one of COMPONENT_ACTIVATED, COMPONENT_NONEXISTENT and COMPONENT_NOT_ACTIVATED.
-			)
-		    raises (maciErrType::NoPermissionEx,
-			    maciErrType::CannotGetServiceEx);
-
-
-		/** 
-		    Used for retrieving several components with one call. 
-		    See get_component.
-		    
-		    @deprecated This method is deprecated and will be
-		    removed.
-
-		    @return A sequence of requested components.
-		 */
-		ObjectSeq get_components (
-			in Handle id,	///< Identification of the caller. If this is an invalid handle, or if the caller does not have enough access rights, a maciErrType::NoPermissionEx exception is raised.
-			in CURLSeq component_urls,	///< A sequence of CURLs of the components whose references are to be retrieved.
-			in boolean activate,	///< True if the components are to be activated in case they do not exist. If set to False, and the i-th service does not exist, the i-th element of the status is set to COMPONENT_NOT_ACTIVATED and the i-th reference in the result is set to nil.
-			out ulongSeq status	///< Statuses of individual requests -- one element per request. Can be one of COMPONENT_ACTIVATED, COMPONENT_NONEXISTENT and COMPONENT_NOT_ACTIVATED.
-			)
-		    raises (maciErrType::NoPermissionEx,
-			    maciErrType::CannotGetComponentEx);
-
-
 		/** Change mortality state of an component. 
 		    Component must be already active, otherwise 
 		    maciErrType::ComponentNotAlreadyActivatedEx exception will be thrown. 
@@ -1090,15 +1038,6 @@ module maci {
 		long force_release_component (
 			in Handle id,	///< Identification of the caller.  
 			in CURL component_url	///< The CURL of the component to be (forcefully) released.
-			)
-                    raises (maciErrType::NoPermissionEx);
-
-		/** Release components.
-		 * @deprecated
-		 */
-		void release_components (
-			in Handle id,	///< Identification of the caller.
-			in CURLSeq component_urls	///< CURLs of the components to be released.
 			)
                     raises (maciErrType::NoPermissionEx);
 
@@ -1214,22 +1153,6 @@ module maci {
 				maciErrType::ComponentSpecIncompatibleWithActiveComponentEx, 
 				maciErrType::CannotGetComponentEx);
 
-		/** 
-		    Group request of dynamic components. 
-
-		    @deprecated This method is deprecated and will be
-		    removed.
-		*/
-		ComponentInfoSeq get_dynamic_components(
-			in Handle client,	///< Identification of the caller.
-			in ComponentSpecSeq components	///< Components to be obtained.
-			)
-			raises (maciErrType::NoPermissionEx, 
-				maciErrType::IncompleteComponentSpecEx, 
-				maciErrType::InvalidComponentSpecEx, 
-				maciErrType::ComponentSpecIncompatibleWithActiveComponentEx, 
-				maciErrType::CannotGetComponentEx);
-		
 		/** 
 		    Activation of a component so that it runs in the same process as
 		    another given component. 
