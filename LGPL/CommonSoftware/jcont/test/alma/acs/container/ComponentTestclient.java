@@ -152,70 +152,45 @@ public class ComponentTestclient extends ComponentClientTestCase
     	}
     }
 
-    public void testForceReleaseComponent() throws Exception {
-    	try {
-    		// first something very easy: "forcefully" unloading a component to which no other client has a reference
-    		m_contSrvTesterComp.testForceReleaseComponent(DEFAULT_DUMMYCOMP_INSTANCE, true);
-    		Thread.sleep(2000);
-    		
-    		// the normal case: 2 references and a forceful unload
-    		DummyComponent defaultDummy = DummyComponentHelper.narrow(getContainerServices().getComponent(DEFAULT_DUMMYCOMP_INSTANCE));
-    		assertEquals(DEFAULT_DUMMYCOMP_INSTANCE, defaultDummy.name());    		
-			m_contSrvTesterComp.testForceReleaseComponent(DEFAULT_DUMMYCOMP_INSTANCE, true);
-			// our reference should no longer work
-			try {
-				String name = defaultDummy.name();
-				fail("Did not expect to get the proper component name '" + name + "' after forceful unloading!");
-			} catch (OBJECT_NOT_EXIST ex) {
-				; // that's good
-			}
-			
-			// component trying to forcefully unload another comp to which it never got a reference.
-			// The container services should prevent this, thus we can't test whether manager would check it as well.
-			String onlyMyDummyName = "onlyMyDummy";
-			DummyComponent onlyMyDummy = DummyComponentHelper.narrow(getContainerServices().getDynamicComponent(new ComponentQueryDescriptor(onlyMyDummyName, "IDL:alma/jconttest/DummyComponent:1.0"), false));
-			m_contSrvTesterComp.testForceReleaseComponent(onlyMyDummyName, false);
-			
-    	} catch (CouldntPerformActionEx ex) {
-    		throw AcsJCouldntPerformActionEx.fromCouldntPerformActionEx(ex);
-    	}
-    }
-
     
-    public void testComponentListening () throws Exception {
-		try {
-			BlockingComponentListener blockLizzy = new BlockingComponentListener(m_logger);
-    		getContainerServices().registerComponentListener(blockLizzy);
-    		
-    		// we shouldn't get notified as we're not a client of the component yet
-			m_contSrvTesterComp.testForceReleaseComponent(DEFAULT_DUMMYCOMP_INSTANCE, true);
-			Thread.sleep(2000); // to make sure we would have gotten the notification if there were any
-			assertEquals(0, blockLizzy.getAllCompsAvailable().size());
-			assertEquals(0, blockLizzy.getAllCompNamesUnavailable().size());
+    public void testComponentListening() throws Exception {
+		BlockingComponentListener blockLizzy = new BlockingComponentListener(m_logger);
+		getContainerServices().registerComponentListener(blockLizzy);
 
-			
-			DummyComponent defaultDummy = DummyComponentHelper.narrow(getContainerServices().getComponent(DEFAULT_DUMMYCOMP_INSTANCE));
-    		// from now on we should be notified
-			
-			// component already active, this call will kill it . Should yield one notification
-    		blockLizzy.clearAndExpect(1);
-    		m_contSrvTesterComp.testForceReleaseComponent(DEFAULT_DUMMYCOMP_INSTANCE, true);
-            assertTrue("Failed to get expected notification from manager within 10 seconds", 
-                    blockLizzy.awaitNotifications(10, TimeUnit.SECONDS));
-			assertEquals(0, blockLizzy.getAllCompsAvailable().size());
-			assertEquals(1, blockLizzy.getAllCompNamesUnavailable().size());
-			
-			// this call will both activate and kill the component . Should yield two notifications in total
-    		blockLizzy.clearAndExpect(2);
-			m_contSrvTesterComp.testForceReleaseComponent(DEFAULT_DUMMYCOMP_INSTANCE, true);
-            assertTrue("Failed to get expected notification from manager within 10 seconds",
-                    blockLizzy.awaitNotifications(10, TimeUnit.SECONDS));
-			assertEquals(1, blockLizzy.getAllCompsAvailable().size());
-			assertEquals(1, blockLizzy.getAllCompNamesUnavailable().size());
-			
-		} catch (CouldntPerformActionEx ex) {
-			throw AcsJCouldntPerformActionEx.fromCouldntPerformActionEx(ex);
-		}
+		// we shouldn't get notified as we're not a client of the component yet
+		forceReleaseComponent(DEFAULT_DUMMYCOMP_INSTANCE);
+		Thread.sleep(2000); // to make sure we would have gotten the notification if there were any
+		assertEquals(0, blockLizzy.getAllCompsAvailable().size());
+		assertEquals(0, blockLizzy.getAllCompNamesUnavailable().size());
+
+		DummyComponent defaultDummy = DummyComponentHelper.narrow(getContainerServices().getComponent(DEFAULT_DUMMYCOMP_INSTANCE));
+		// from now on we should be notified
+
+		// component already active, this call will kill it . Should yield one notification
+		blockLizzy.clearAndExpect(1);
+		forceReleaseComponent(DEFAULT_DUMMYCOMP_INSTANCE);
+		assertTrue("Failed to get expected notification from manager within 10 seconds", blockLizzy.awaitNotifications(
+				10, TimeUnit.SECONDS));
+		assertEquals(0, blockLizzy.getAllCompsAvailable().size());
+		assertEquals(1, blockLizzy.getAllCompNamesUnavailable().size());
+
+		// this call will both activate and kill the component . Should yield two notifications in total
+		blockLizzy.clearAndExpect(2);
+		forceReleaseComponent(DEFAULT_DUMMYCOMP_INSTANCE);
+		assertTrue("Failed to get expected notification from manager within 10 seconds", blockLizzy.awaitNotifications(
+				10, TimeUnit.SECONDS));
+		assertEquals(1, blockLizzy.getAllCompsAvailable().size());
+		assertEquals(1, blockLizzy.getAllCompNamesUnavailable().size());
+
+	}
+
+	/**
+	 * @TODO: implement directly against the manager, now that AdvancedContainerServices and therefor our test component no longer provide this.
+	 * In the meantime, the tests will fail unfortunately.
+	 * @param name
+	 */
+	private void forceReleaseComponent(String name) {
+//@TODO
 	}
 }
 
