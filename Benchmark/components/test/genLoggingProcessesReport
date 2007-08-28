@@ -523,18 +523,36 @@ acsStartJava -D NumLogs=$NUM_LOGS -D NumComponents=$NUM_COMPONENTS -D Delay=$DEL
 # Start another timer as soon as the logs effectively start arriving, 
 # as there is some delay (25s) coded into ClientJavaClass
 sleep 25
-count=0
+startChrono 2
+sleepUnit=75
+timeout=5000
+# Note that on a fully loaded system, "milliSleep" may take a lot more
+# than 75 ms wall-clock time to execute. So we'll have to take
+# measures for that - see below this "while" loop.
+# Waiting till all_logs.xml gets filled seems not to be the proper way to
+# measure when the logs start to arrive, as this may take a while for
+# fully loaded CPU on a system with Real-Time extensions an not a lot
+# of RAM (=> swapping)...
 while [ `grep "msg: " $ACS_TMP/all_logs.xml | wc -l` -eq 0 ]; do
-    milliSleep 75
-    # timeout-counter to avoid that we sleep forever
-    count=`expr $count + 1`
-    if [ $count -gt 100 ] ; then
+    milliSleep $sleepUnit
+    offset2=`getChrono 2`
+    debugPrint "waiting for all_logs.xml since ${offset2}s"
+    delay=$(printf %.0f `echo "$offset2 * 1000." | bc -l`)
+    if [ $delay -gt $timeout ] ; then
         break
     fi
 done
-startChrono 2
+# We can use offset2 as the value to subtract from chrono2 to
+# to measure the time from the reception of the 1st log.
+# However, if we timed-out waiting on all_logs.xml being filled,
+# it is likely due to an overloaded system. In this case, we don't
+# have a clear trigger for our time-measurement. So we'll have to
+# assume a default offset in this case.
+if [ $delay -gt $timeout ] ; then
+    offset2=2.5
+fi
 
-# wait until all the background processes are complete; 
+# wait until the most recently started background processes (acsStartJava) has completed.
 echo " Waiting for all logs to be sent..."
 wait $!
 ##echo " Resetting/starting chronometer 3"
@@ -543,22 +561,23 @@ startChrono 3
 # Tell how long it took to send all these logs
 chrono1=`getChrono 1`
 chrono2=`getChrono 2`
-echo " Needed ${chrono1}s / ${chrono2}s  to send all logs"
+# chrono2 was started "too early" (see above)
+chrono2=$(printf %.3f `echo "$chrono2 - $offset2" | bc -l`)
+echo " Needed ${chrono1}s / ${chrono2}s to send all logs"
 
 # sleep a bit longer to allow things to 'settle'
 echo " Sleeping (at most) $EXTRA_WAIT_TIME seconds to allow logs to be processed..."
-sleepCount=0
 totalLogsExpected=`expr $NUM_LOGS \* $NUM_COMPONENTS`
 lastMsgId=`expr $NUM_LOGS - 1`
-sleepCount=0
+delay=0
 # First look for the last log(s), then check later if no logs are lost
-while [ $sleepCount -le $EXTRA_WAIT_TIME ]
+while [ $delay -le $EXTRA_WAIT_TIME ]
 do
   chrono3=`getChrono 3`
   startChrono 4
   nrLastLogs=`grep "msg: $lastMsgId]" $ACS_TMP/all_logs.xml | wc -l`
   chrono4=`getChrono 4`
-  debugPrint "overhead of grep|wc is ${chrono4}s"
+  #!#debugPrint "overhead of grep|wc is ${chrono4}s"
   # Note that a grep|wc on all_logs.xml can take a few seconds if lots of logs are sent,
   # and that duration is anyway proportional to the size of all_logs.xml.
   # So don't assume that loop duration is determined by the "sleep 1" further on.
@@ -566,17 +585,17 @@ do
       debugPrint "received last log of all components, no need to wait any longer"
       break
   fi
-  sleepCount=`getChrono 3`
-  debugPrint "waiting since $sleepCount s"
+  delay=`getChrono 3`
+  #!#debugPrint "waiting since $delay s"
   # convert to integer (needed for expression in "while" control statement above)
-  sleepCount=`printf %.0f $sleepCount`
+  delay=`printf %.0f $delay`
   ##sleep 1
 done
 
-if [ $sleepCount -le $EXTRA_WAIT_TIME ] ; then
-  echo " Last log digested within ${chrono3}s"
+if [ $delay -le $EXTRA_WAIT_TIME ] ; then
+  echo " Last log digested within ${chrono3}s after generating process stopped."
 else
-  echo " Log digestion timed out after ${chrono3}s"
+  echo " Log digestion timed out after ${chrono3}s after last log was sent."
 fi
 
 # verify the proper number of logs were received
