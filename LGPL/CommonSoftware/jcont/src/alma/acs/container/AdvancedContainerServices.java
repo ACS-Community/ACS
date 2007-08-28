@@ -74,13 +74,4 @@ public interface AdvancedContainerServices {
      */
     public org.omg.CORBA.Any getAny();
 
-    /**
-     * Forcefully unloads a component, even if there are still clients using it.
-     * Caution: using this method can damage system integrity! 
-     * 
-     * @param curl  name (url) of the component that should be released.
-     * @throws ContainerException if the forceful release failed, for example because the calling client (component) did not acquire a reference to the target component.
-     * @deprecated  Use {@link ContainerServices#getComponentNonSticky(String)} instead, which replaces this workaround since ACS 6.0. 
-     */
-    public void forceReleaseComponent(String curl) throws AcsJContainerServicesEx;
 }

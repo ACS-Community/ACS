@@ -92,15 +92,6 @@ public class AdvancedContainerServicesImpl implements AdvancedContainerServices
 		}
 		return orb.create_any();
 	}
-    
-
-    /* TODO: remove this method once weak component references are implemented.
-     * @see alma.acs.container.AdvancedContainerServices#forceReleaseComponent(java.lang.String)
-     */
-    public void forceReleaseComponent(String curl) throws AcsJContainerServicesEx {
-    	containerServicesImpl.releaseComponent(curl, true);
-    }
-
 
 }
 
