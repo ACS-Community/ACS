@@ -2609,11 +2609,11 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 				// create new container info
 				containerInfo = new TimerTaskContainerInfo(h, name, container);
                 DAOProxy dao = getContainersDAOProxy();
-                if (dao == null)
-                    return null;
-                String impLang = readStringCharacteristics(dao, name + "/ImplLang", true);
-                containerInfo.setImplLang(impLang);                
-
+                if (dao != null)
+                {
+                	String impLang = readStringCharacteristics(dao, name + "/ImplLang", true);
+                	containerInfo.setImplLang(impLang);                
+                }
 				clientInfo = containerInfo.createClientInfo();
 
 				// register container to the heartbeat manager
