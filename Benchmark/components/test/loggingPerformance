@@ -37,9 +37,9 @@ printUsageAndExit ()
     echo "   -d | --debug: print additional debugging info about this script to stdout."
     echo "          This flag will also be passed to genLoggingProcessReport"
     echo "   -l | --language(s) <cpp | java | py>: list of the implementation languages"
-    echo "          of the publishing component (cpp, java, python)."
-    echo "   -m | --minLogLevelLocal <level>: list of the local log levels to set."
-    echo "   -w | --wait: list of delays between sending logs."
+    echo "          of the publishing component (cpp, java, python). Default: coo"
+    echo "   -m | --minLogLevelLocal <level>: list of the local log levels to set. Default: 1"
+    echo "   -w | --wait: list of delays between sending logs. Default: 0"
     echo ""
     exit -1;
 }
@@ -64,7 +64,7 @@ MY_NAME=`basename $0`
 #
 HELP=
 DEBUG_MODE=
-DEBUG_FLAG=-d
+DEBUG_FLAG=
 LANGUAGES=cpp
 LEVELS=1
 DELAYS=0
