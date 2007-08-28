@@ -1,13 +1,14 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.24 2007/07/19 15:37:49 hsommer Exp $"
+# "@(#) $Id: Makefile,v 1.25 2007/08/28 15:20:07 eallaert Exp $"
 #
 # Makefile of ........
 #
-# who       when      what
-# --------  --------  ----------------------------------------------
-# dfugate  2004-09-16  created
+# who       when        what
+# --------  ----------  ----------------------------------------------
+# dfugate   2004-09-16  created
+# eallaert  2007-08-27  added fix_idl target
 #
 
 #*******************************************************************************
@@ -53,7 +54,7 @@ USER_LIB = 	-lACE \
 		-lACSBulkDataError \
 		-lbulkDataReceiverStubs
 
-
+ACS_VERSION = $(shell cat $(ACSROOT)/ACS_VERSION)
 #
 # MODULE CODE DESCRIPTION:
 # ------------------------
@@ -256,12 +257,14 @@ endif
 #
 # TARGETS
 # -------
-all:	do_all
+all:	fix_idl do_all
 	@echo " . . . 'all' done" 
 
 clean : clean_all
 	$(RM) perftestImpl/*~  perftestImpl/*.pyc
 	$(RM) *~ ../idl/*~ ../doc/*~
+	@# Do next only as long as the "fix_idl" target exists!!
+	$(RM) ../idl/BenchmarkErrType.xml
 	@echo " . . . clean done"
 
 clean_dist : clean_all clean_dist_all 
@@ -273,5 +276,9 @@ man   : do_man
 install : install_all
 	@echo " . . . installation done"
 
+
+# Temporary target, to deal with changes for IDL introduced with ACS 7.0
+fix_idl :
+	$(AT)cp -f ../idl/BenchmarkErrType.xml.$(ACS_VERSION) ../idl/BenchmarkErrType.xml
 
 #___oOo___
