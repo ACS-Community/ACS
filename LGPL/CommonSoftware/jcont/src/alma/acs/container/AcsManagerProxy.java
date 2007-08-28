@@ -24,6 +24,7 @@ package alma.acs.container;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.omg.CORBA.IntHolder;
 import org.omg.CORBA.ORB;
 import org.omg.CORBA.Object;
 
@@ -33,22 +34,24 @@ import si.ijs.maci.ComponentInfo;
 import si.ijs.maci.ComponentSpec;
 import si.ijs.maci.Manager;
 import si.ijs.maci.ManagerHelper;
-import si.ijs.maci.ulongSeqHolder;
 
+import alma.ACSErrTypeCommon.wrappers.AcsJUnexpectedExceptionEx;
 import alma.JavaContainerError.wrappers.AcsJContainerEx;
+import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
 import alma.acs.util.ACSPorts;
 import alma.maciErrType.CannotGetComponentEx;
-import alma.maciErrType.CannotGetServiceEx;
 import alma.maciErrType.CannotRegisterComponentEx;
 import alma.maciErrType.ComponentConfigurationNotFoundEx;
 import alma.maciErrType.ComponentNotAlreadyActivatedEx;
+import alma.maciErrType.ComponentSpecIncompatibleWithActiveComponent;
 import alma.maciErrType.ComponentSpecIncompatibleWithActiveComponentEx;
+import alma.maciErrType.IncompleteComponentSpec;
 import alma.maciErrType.IncompleteComponentSpecEx;
+import alma.maciErrType.InvalidComponentSpec;
 import alma.maciErrType.InvalidComponentSpecEx;
 import alma.maciErrType.NoDefaultComponentEx;
 import alma.maciErrType.NoPermissionEx;
 import alma.maciErrType.wrappers.AcsJCannotGetComponentEx;
-import alma.maciErrType.wrappers.AcsJCannotGetServiceEx;
 import alma.maciErrType.wrappers.AcsJCannotRegisterComponentEx;
 import alma.maciErrType.wrappers.AcsJComponentConfigurationNotFoundEx;
 import alma.maciErrType.wrappers.AcsJComponentNotAlreadyActivatedEx;
@@ -555,33 +558,6 @@ public class AcsManagerProxy
 	}
 
 	/**
-	 * From maci IDL comments:
-	 * <i>
-	 * "Used for retrieving several components with one call. See get_service."
-	 * </i>
-	 * 
-	 * @param service_urls
-	 * @param activate
-	 * @param status
-	 * @return org.omg.CORBA.Object[]  A sequence of requested services.
-	 */
-	public Object[] get_services(String[] service_urls, boolean activate, ulongSeqHolder status)
-	    throws AcsJCannotGetServiceEx, AcsJNoPermissionEx
-	{
-		try {
-			return m_manager.get_services(m_mgrHandle, service_urls, activate, status);
-		} catch (RuntimeException exc) {
-			handleRuntimeException(exc);
-			throw exc;
-		} catch (NoPermissionEx ex) {
-			throw AcsJNoPermissionEx.fromNoPermissionEx(ex);
-		} catch (CannotGetServiceEx ex) {
-			throw AcsJCannotGetServiceEx.fromCannotGetServiceEx(ex);
-		}			
-	}
-
-
-	/**
 	 * The more restricted version of {@link #get_service(String, boolean, IntHolder) get_service}, 
 	 * only good for getting components.
 	 * 
@@ -810,27 +786,6 @@ public class AcsManagerProxy
 		}
 	}
 
-
-	/**
-	 * Releases several components at a time.
-	 * @param clientHandle  handle of requesting component or other kind of client
-	 * @param component_urls
-	 * @see si.ijs.maci.ManagerOperations#release_components(int, java.lang.String[])
-	 * @see #release_component(int, String)
-	 */
-	public void release_components(int clientHandle, String[] component_urls)
-	    throws AcsJNoPermissionEx
-	{
-		try {
-			m_manager.release_components(clientHandle, component_urls);
-
-		} catch (RuntimeException exc) {
-			handleRuntimeException(exc);
-			throw exc;
-		} catch (NoPermissionEx ex) {
-			throw AcsJNoPermissionEx.fromNoPermissionEx(ex);
-		}
-	}
 
 	/**
 	 * @deprecated  remove this method once weak component references are implemented.
