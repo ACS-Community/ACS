@@ -2319,123 +2319,6 @@ public class ManagerImplTest extends TestCase
 		
 	}
 
-	public void testGetComponents()
-	{	
-
-		try {
-			try
-			{
-				manager.getComponents(0, null, false, null);
-				fail();
-			}
-			catch (BadParametersException bpe)
-			{
-	
-				System.out.println("This is OK: "+bpe.getMessage());
-			}
-
-			try
-			{
-				manager.getComponents(Integer.MAX_VALUE, null, false, null);
-				fail();
-			}
-			catch (BadParametersException bpe)
-			{
-	
-				System.out.println("This is OK: "+bpe.getMessage());
-			}
-
-			try
-			{
-				StatusSeqHolder statusSeq = null;
-				manager.getComponents(dummyHandle, new URI[0], false, statusSeq);
-				fail();
-			}
-			catch (BadParametersException bpe)
-			{
-	
-				System.out.println("This is OK: "+bpe.getMessage());
-			}
-				
-			try
-			{
-				StatusSeqHolder statusSeq = new StatusSeqHolder();
-				manager.getComponents(dummyHandle, new URI[] { null }, false, statusSeq);
-				fail();
-			}
-			catch (AcsJNoPermissionEx npe)
-			{
-	
-				System.out.println("This is OK: "+npe.toString());
-			}
-
-			try
-			{
-				StatusSeqHolder statusSeq = new StatusSeqHolder();
-				manager.getComponents(dummyHandle, new URI[] { dummyURI, null }, false, statusSeq);
-				fail();
-			}
-			catch (AcsJNoPermissionEx npe)
-			{
-	
-				System.out.println("This is OK: "+npe.toString());
-			}
-
-			try
-			{
-				StatusSeqHolder statusSeq = new StatusSeqHolder();
-				manager.getComponents(dummyHandle, new URI[] { dummyURI, null, dummyURI }, false, statusSeq);
-				fail();
-			}
-			catch (AcsJNoPermissionEx npe)
-			{
-	
-				System.out.println("This is OK: "+npe.toString());
-			}
-
-			try
-			{
-				StatusSeqHolder statusSeq = null;
-				URI[] seqURIs = new URI[] { dummyURI, dummyURI};
-				manager.getComponents(dummyHandle, seqURIs, false, statusSeq);
-				fail();
-			}
-			catch (BadParametersException bpe)
-			{
-	
-				System.out.println("This is OK: "+bpe.getMessage());
-			}
-
-			try
-			{
-				StatusSeqHolder statusSeq = new StatusSeqHolder();
-				URI[] seqURIs = new URI[] { dummyURI, dummyURI };
-				manager.getComponents(dummyHandle, seqURIs, false, statusSeq);
-				fail();
-			}
-			catch (AcsJNoPermissionEx npe)
-			{
-	
-				System.out.println("This is OK: "+npe.toString());
-			}
-			
-			try
-			{
-				StatusSeqHolder statusSeq = new StatusSeqHolder();
-				manager.getComponents(dummyHandle, null, false, statusSeq);
-				fail();
-			}
-			catch (BadParametersException bpe)
-			{
-	
-				System.out.println("This is OK: "+bpe.getMessage());
-			}
-		} catch (AcsJNoPermissionEx e) {
-			fail("No permission");
-		}
-	
-	}
-	
 	/**
 	 * Test getDefaultComponent.
 	 */
@@ -4147,7 +4030,6 @@ public class ManagerImplTest extends TestCase
 	
 	public void testManagerToContainerStateTransferComponents()
 	{
-
 		TestComponent mount1COB = new TestComponent("MOUNT1");
 		TestComponent mount2COB = new TestComponent("MOUNT2");
 		
@@ -4178,16 +4060,15 @@ public class ManagerImplTest extends TestCase
 			{
 				mount1URI = new URI("MOUNT1");	
 				mount2URI = new URI("MOUNT2");	
-				StatusSeqHolder status = new StatusSeqHolder();
-				Component[] ref = manager.getComponents(info.getHandle(), new URI[] { mount1URI, mount2URI }, true, status);
+				StatusHolder status = new StatusHolder();
+				Component ref = manager.getComponent(info.getHandle(), mount1URI, true, status);
 				
-				assertEquals(2, ref.length);
-				
-				assertEquals(mount1COB, ref[0]);
-				assertEquals(ComponentStatus.COMPONENT_ACTIVATED, status.getStatus()[0]);
+				assertEquals(mount1COB, ref);
+				assertEquals(ComponentStatus.COMPONENT_ACTIVATED, status.getStatus());
 
-				assertEquals(mount2COB, ref[1]);
-				assertEquals(ComponentStatus.COMPONENT_ACTIVATED, status.getStatus()[1]);
+				ref = manager.getComponent(info.getHandle(), mount2URI, true, status);
+				assertEquals(mount2COB, ref);
+				assertEquals(ComponentStatus.COMPONENT_ACTIVATED, status.getStatus());
 			}
 			catch (Exception ex)
 			{

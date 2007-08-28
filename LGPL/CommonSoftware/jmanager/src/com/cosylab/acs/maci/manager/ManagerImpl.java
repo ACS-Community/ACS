@@ -1456,32 +1456,12 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	}
 
 	/**
-	 * @see com.cosylab.acs.maci.Manager#getServices(int, java.net.URI[], boolean, StatusSeqHolder)
-	 * @deprecated
-	 */
-	public Component[] getServices(int id, URI[] curls,	boolean activate, StatusSeqHolder statuses)
-		throws AcsJNoPermissionEx
-	{
-		return getComponents(id, curls, activate, statuses, true);
-	}
-
-	/**
 	 * @see com.cosylab.acs.maci.Manager#getComponent(int, URI, boolean, StatusHolder)
 	 */
 	public Component getComponent(int id, URI curl, boolean activate, StatusHolder status)
 		throws AcsJCannotGetComponentEx, AcsJNoPermissionEx
 	{
 		return getComponent(id, curl, activate, status, false);
-	}
-
-	/**
-	 * @see com.cosylab.acs.maci.Manager#getComponents(int, URI[], boolean, StatusSeqHolder)
-	 * @deprecated
-	 */
-	public Component[] getComponents(int id, URI[] curls, boolean activate, StatusSeqHolder statuses)
-		throws AcsJNoPermissionEx
-	{
-		return getComponents(id, curls, activate, statuses, false);
 	}
 
 	/**
@@ -1620,67 +1600,6 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		}
 
 		return component;
-	
-	}
-
-	/**
-	 * @see #getComponents
-	 * @deprecated
-	 */
-	private Component[] getComponents(int id, URI[] curls, boolean activate, StatusSeqHolder statuses, boolean allowServices)
-		throws AcsJNoPermissionEx
-	{
-	
-		// check if null
-		if (curls == null)
-		{
-			// BAD_PARAM
-			BadParametersException af = new BadParametersException("Non-null CURLs expected.");
-			throw af;
-		}
-	
-		if (statuses == null)
-		{
-			// BAD_PARAM
-			BadParametersException af = new BadParametersException("Non-null 'statuses' expected.");
-			throw af;
-		}
-	
-		// check handle and NONE permissions
-		securityCheck(id, AccessRights.NONE);
-	
-		/****************************************************************/
-	
-		int obtained = 0;
-	
-		Component[] components = new Component[curls.length];
-		ComponentStatus[] componentStatuses = new ComponentStatus[curls.length];
-		statuses.setStatus(componentStatuses);
-	
-		for (int i = 0; i < curls.length; i++)
-		{
-			StatusHolder status = new StatusHolder();
-			try
-			{
-				components[i] = getComponent(id, curls[i], activate, status, allowServices);
-				componentStatuses[i] = status.getStatus();
-				obtained++;
-			}
-			catch (Exception ex)
-			{
-				components[i] = null;
-				componentStatuses[i] = ComponentStatus.COMPONENT_NOT_ACTIVATED;
-	
-				CoreException ce = new CoreException("Failed to get component '"+curls[i]+"'.", ex);
-				reportException(ce);
-			}
-		}
-	
-		logger.log(Level.INFO,obtained + " of " + curls.length +" components obtained.");
-	
-		/****************************************************************/
-	
-		return components;
 	
 	}
 

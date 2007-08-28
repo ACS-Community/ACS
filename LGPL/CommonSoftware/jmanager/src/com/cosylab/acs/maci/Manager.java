@@ -135,36 +135,11 @@ public interface Manager
 	    throws AcsJCannotGetComponentEx, AcsJNoPermissionEx, AcsJBadParameterEx;
 
 	/** 
-	 * Used for retrieving several components with one call. 
-	 * 
-	 * @param	id		Identification of the caller.
-	 * 					If this is an invalid handle, or if the caller does not have enough access rights,
-	 * 					a <code>AcsJNoPermissionEx</code> exception is raised.
-	 * @param	curls	CURL of the components whose reference is to be retrieved.
-	 * @param	activate	<code>true</code> if the Component is to be activated in case it does not exist.
-	 * 						If set to <code>false</code>, and the Component exist,
-	 * 						a <code>null</code> reference is returned and status is set to COMPONENT_NOT_ACTIVATED.
-	 * @param	status	Status of the request. One of COMPONENT_ACTIVATED, COMPONENT_DOES_NO_EXIST and COMPONENT_NOT_ACTIVATED.
-	 * @return			A sequence of requested components.
-	 * @see getcomponent
-	 * @deprecated
-	 */
-	public Component[] getComponents(int id, URI[] curls, boolean activate, StatusSeqHolder statuses) throws AcsJNoPermissionEx;
-
-	/** 
 	 * Get a service.
 	 * NOTE: a component is also a service, i.e. a service activated by a container.
 	 * @see #get_component
 	 */
 	public Component getService(int id, URI curl, boolean activate, StatusHolder status) throws AcsJCannotGetComponentEx, AcsJNoPermissionEx;
-
-	/** 
-	 * Get services.
-	 * @deprecated
-	 * @see #get_service
-	 * @see #get_components
-	 */
-	public Component[] getServices(int id, URI[] curls, boolean activate, StatusSeqHolder statuses) throws AcsJNoPermissionEx;
 
 	/**
 	 * Login to MACI. 
@@ -227,17 +202,6 @@ public interface Manager
 	public int forceReleaseComponent(int id, URI curl) throws AcsJNoPermissionEx, AcsJBadParameterEx;
 
 	/**
-	 * Release components.
-	 * 
-	 * @param	id		Identification of the caller. The caller must have previously got the Component through get_component.
-	 * @param	curls	The CURL of the component to be released.
-	 * 
-	 * @deprecated
-	 * @see releasecomponent
-	 */
-	public void releaseComponents(int id, URI[] curls) throws AcsJNoPermissionEx;
-
-	/**
 	 * Shutdown the Manager.
 	 * <B>Warning:</B> This call will also deactivate all components active in the system, including startup and immortal components.
 	 * 
@@ -295,16 +259,6 @@ public interface Manager
 	public ComponentInfo getDynamicComponent(int id, ComponentSpec componentSpec, boolean markAsDefault)
 	throws AcsJCannotGetComponentEx, AcsJNoPermissionEx, AcsJIncompleteComponentSpecEx,
 	   AcsJInvalidComponentSpecEx, AcsJComponentSpecIncompatibleWithActiveComponentEx;
-
-	/**
-	 * Group request of dynamic components.
-	 * @param	id 			Identification of the caller.
-	 * @param	components	Components to be obtained.
-	 * @return	<code>ComponentInfo[]</code> of requested components.
-	 * @deprecated
-	 * @see #getDynamicComponent
-	 */
-	public ComponentInfo[] getDynamicComponents(int id, ComponentSpec[] components) throws AcsJNoPermissionEx;
 
 	/**
 	 * Activation of an co-deployed component.

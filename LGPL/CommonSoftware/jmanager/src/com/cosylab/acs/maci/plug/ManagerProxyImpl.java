@@ -16,6 +16,18 @@ import org.omg.CORBA.NO_RESOURCES;
 import org.omg.CORBA.Object;
 import org.omg.CORBA.UNKNOWN;
 
+import com.cosylab.acs.maci.AccessRights;
+import com.cosylab.acs.maci.BadParametersException;
+import com.cosylab.acs.maci.Component;
+import com.cosylab.acs.maci.ComponentSpec;
+import com.cosylab.acs.maci.ComponentStatus;
+import com.cosylab.acs.maci.CoreException;
+import com.cosylab.acs.maci.Manager;
+import com.cosylab.acs.maci.NoDefaultComponentException;
+import com.cosylab.acs.maci.NoResourcesException;
+import com.cosylab.acs.maci.StatusHolder;
+import com.cosylab.acs.maci.manager.CURLHelper;
+
 import si.ijs.maci.AdministratorHelper;
 import si.ijs.maci.Client;
 import si.ijs.maci.ClientHelper;
@@ -25,12 +37,11 @@ import si.ijs.maci.Container;
 import si.ijs.maci.ContainerHelper;
 import si.ijs.maci.ContainerInfo;
 import si.ijs.maci.ManagerPOA;
-import si.ijs.maci.ulongSeqHolder;
 import si.ijs.maci.LoggingConfigurablePackage.LogLevels;
+
 import alma.ACSErrTypeCommon.wrappers.AcsJBadParameterEx;
 import alma.maciErrType.CannotGetComponentEx;
 import alma.maciErrType.CannotRegisterComponentEx;
-import alma.maciErrType.CannotUnregisterComponentEx;
 import alma.maciErrType.ComponentConfigurationNotFoundEx;
 import alma.maciErrType.ComponentNotAlreadyActivatedEx;
 import alma.maciErrType.ComponentSpecIncompatibleWithActiveComponentEx;
@@ -48,19 +59,6 @@ import alma.maciErrType.wrappers.AcsJInvalidComponentSpecEx;
 import alma.maciErrType.wrappers.AcsJNoDefaultComponentEx;
 import alma.maciErrType.wrappers.AcsJNoPermissionEx;
 
-import com.cosylab.acs.maci.AccessRights;
-import com.cosylab.acs.maci.BadParametersException;
-import com.cosylab.acs.maci.Component;
-import com.cosylab.acs.maci.ComponentSpec;
-import com.cosylab.acs.maci.ComponentStatus;
-import com.cosylab.acs.maci.CoreException;
-import com.cosylab.acs.maci.Manager;
-import com.cosylab.acs.maci.NoDefaultComponentException;
-import com.cosylab.acs.maci.NoResourcesException;
-import com.cosylab.acs.maci.StatusHolder;
-import com.cosylab.acs.maci.StatusSeqHolder;
-import com.cosylab.acs.maci.manager.CURLHelper;
-
 /**
  * Manager is the central point of interaction between the components
  * and the clients that request MACI services. A Manager is
@@ -73,9 +71,9 @@ import com.cosylab.acs.maci.manager.CURLHelper;
  *	<LI>It provides information about the whole domain.</LI>
  *	</UL>
  *
- * This class implementes the IDL interface of Manager and
+ * This class implements the IDL interface of Manager and
  * acts like a proxy, by delegating all requests 
- * to an implementation of the com.cosulab.acs.maci.Manager interface.
+ * to an implementation of the com.cosylab.acs.maci.Manager interface.
  *
  * @todo   Now the Manager interface does not use exceptions in many
  *         methods when there is a failure, but it returns a nil object.
@@ -649,107 +647,6 @@ public class ManagerProxyImpl extends ManagerPOA
 	}
 
 
-	/**
-	 * Used for retrieving several components with one call.
-	 *
-	 * @param id Identification of the caller. If this is an invalid handle, or if the caller does not have enough access rights, a maciErrType::NoPermissionEx exception is raised.
-	 * @param component_urls CURL of the components whose reference is to be retrieved.
-	 * @param activate True if the Component is to be activated in case it does not exist. If set to False, and the Component does not exist, a nil reference is returned and status is set to COMPONENT_NOT_ACTIVATED.
-	 * @param status Status of the request. One of COMPONENT_ACTIVATED, COMPONENT_DOES_NO_EXIST and COMPONENT_NOT_ACTIVATED.
-	 * @see get_component
-	 * @deprecated
-	 * @return A sequence of requested components.
-	 */
-	public Object[] get_components(int id, String[] component_urls, boolean activate,	ulongSeqHolder status)
-		throws NoPermissionEx
-	{
-		pendingRequests.incrementAndGet();
-		try
-		{
-			// returned value
-			Object[] retVal = null;
-
-			// returned status
-			StatusSeqHolder statusHolder = new StatusSeqHolder();
-
-			// map strings to CURLs
-			URI[] uris = null;
-			if (component_urls != null)
-			{
-				uris = new URI[component_urls.length];
-				for (int i = 0; i < component_urls.length; i++)
-				{
-					try
-					{
-						if (component_urls[i] != null)
-							uris[i] = CURLHelper.createURI(component_urls[i]);
-					}
-					catch (URISyntaxException usi)
-					{
-						BadParametersException hbpe = new BadParametersException(usi.getMessage(), usi);
-						reportException(hbpe);
-					}
-				}
-			}
-
-			// transform to CORBA specific
-			Component[] components = manager.getComponents(id, uris, activate, statusHolder);
-
-			// map statuses
-			status.value = new int[statusHolder.getStatus().length];
-			for (int i = 0; i < statusHolder.getStatus().length; i++)
-				status.value[i] = mapStatus(statusHolder.getStatus()[i]);
-
-			// extract Component CORBA references
-			if (components != null)
-			{
-				retVal = new Object[components.length];
-
-				for (int i = 0; i < components.length; i++)
-					if (components[i] != null)
-						retVal[i] = (Object)(components[i].getObject());
-			}
-			else
-				retVal = new Object[0];
-
-			return retVal;
-		}
-		catch (BadParametersException bpe)
-		{
-			BadParametersException hbpe = new BadParametersException(bpe.getMessage(), bpe);
-			reportException(hbpe);
-
-			// rethrow CORBA specific
-			throw new BAD_PARAM(bpe.getMessage());
-		}
-		catch (NoResourcesException nre)
-		{
-			NoResourcesException hnre = new NoResourcesException(nre.getMessage(), nre);
-			reportException(hnre);
-
-			// rethrow CORBA specific
-			throw new NO_RESOURCES(nre.getMessage());
-		}
-		catch (AcsJNoPermissionEx npe)
-		{
-			//reportException(npe);
-			
-			// rethrow CORBA specific
-			throw npe.toNoPermissionEx();
-		}
-		catch (Throwable ex)
-		{
-			CoreException hce = new CoreException(ex.getMessage(), ex);
-			reportException(hce);
-
-			// rethrow CORBA specific
-			throw new UNKNOWN(ex.getMessage());
-		}
-		finally
-		{
-			pendingRequests.decrementAndGet();
-		}
-	}
 
 	/**
 	 * Login to MACI.
@@ -1058,7 +955,6 @@ public class ManagerProxyImpl extends ManagerPOA
 	 *		  This is a useful debugging tool.
 	 */
 	public int release_component(int id, String component_url)
-		throws NoPermissionEx
 	{
 		pendingRequests.incrementAndGet();
 		try
@@ -1107,79 +1003,6 @@ public class ManagerProxyImpl extends ManagerPOA
 		}
 	}
 
-	/**
-	 * Release components.
-	 *
-	 * @param id Identification of the caller. The caller must have previously gotten the Component through get_component.
-	 * @param component_url The CURL of the Component to be released.
-	 * @deprecated
-	 * @see release_component
-	 */
-	public void release_components(int id, String[] component_urls)
-		throws NoPermissionEx
-	{
-		pendingRequests.incrementAndGet();
-		try
-		{
-			// map strings to CURLs
-			URI[] uris = null;
-			if (component_urls != null)
-			{
-				uris = new URI[component_urls.length];
-				for (int i = 0; i < component_urls.length; i++)
-				{
-					try
-					{
-						if (component_urls[i] != null)
-							uris[i] = CURLHelper.createURI(component_urls[i]);
-					}
-					catch (URISyntaxException usi)
-					{
-						BadParametersException hbpe = new BadParametersException(usi.getMessage(), usi);
-						reportException(hbpe);
-					}
-				}
-			}
-
-			// simply release components
-			manager.releaseComponents(id, uris);
-		}
-		catch (BadParametersException bpe)
-		{
-			BadParametersException hbpe = new BadParametersException(bpe.getMessage(), bpe);
-			reportException(hbpe);
-
-			// rethrow CORBA specific
-			throw new BAD_PARAM(bpe.getMessage());
-		}
-		catch (NoResourcesException nre)
-		{
-			NoResourcesException hnre = new NoResourcesException(nre.getMessage(), nre);
-			reportException(hnre);
-
-			// rethrow CORBA specific
-			throw new NO_RESOURCES(nre.getMessage());
-		}
-		catch (AcsJNoPermissionEx npe)
-		{
-			//reportException(npe);
-			
-			// rethrow CORBA specific
-			throw npe.toNoPermissionEx();
-		}
-		catch (Throwable ex)
-		{
-			CoreException hce = new CoreException(ex.getMessage(), ex);
-			reportException(hce);
-
-			// rethrow CORBA specific
-			throw new UNKNOWN(ex.getMessage());
-		}
-		finally
-		{
-			pendingRequests.decrementAndGet();
-		}
-	}
 
 	/**
 	 * Forcefully release a Component.
@@ -1316,7 +1139,7 @@ public class ManagerProxyImpl extends ManagerPOA
 	 * a components_unavailable notification is issued to all of them, and the Component is unregistered.
 	 */
 	public void unregister_component(int id, int h)
-		throws NoPermissionEx, CannotUnregisterComponentEx
+		throws NoPermissionEx
 	{
 		pendingRequests.incrementAndGet();
 		try
@@ -1611,124 +1434,6 @@ public class ManagerProxyImpl extends ManagerPOA
 		}
 	}
 
-	/**
-	 * Group request of dynamic components.
-	 * @param	id 	identification of the caller.
-	 * @param	c	components to be obtained.
-	 * @return	<code>ComponentInfo[]</code> of requested components.
-	 * @see #get_dynamic_component
-	 */
-	public ComponentInfo[] get_dynamic_components(int id, si.ijs.maci.ComponentSpec[] components)
-		throws NoPermissionEx
-	{
-		pendingRequests.incrementAndGet();
-		try
-		{
-			// invalid info (replacement for null)
-			final ComponentInfo invalidInfo = new ComponentInfo("<invalid>", "<invalid>", null, "<invalid>", new int[0], 0, "<invalid>", 0, 0, new String[0]);
-
-			// returned value
-			ComponentInfo[] retVal = null;
-			
-			// map strings to CURLs
-			ComponentSpec[] componentSpecs = null;
-			if (components != null)
-			{
-				componentSpecs = new ComponentSpec[components.length];
-				for (int i = 0; i < components.length; i++)
-				{
-					//try
-					//{
-						if (components[i] != null)
-							/// @TODO si.ijs.maci.COMPONENT_SPEC_ANY -> ComponentSpec.COMPSPEC_ANY
-							componentSpecs[i] = new ComponentSpec(
-											//CURLHelper.createURI(components[i].component_name),
-											components[i].component_name,
-											components[i].component_type,
-											components[i].component_code,
-											components[i].container_name);
-					/*}
-					catch (URISyntaxException usi)
-					{
-						BadParametersException hbpe = new BadParametersException(usi.getMessage(), usi);
-						hbpe.caughtIn(this, "get_dynamic_components");
-						hbpe.putValue("components[i].component_name", components[i].component_name);
-						// exception service will handle this
-					}*/
-				}
-			}
-			com.cosylab.acs.maci.ComponentInfo[] infos = manager.getDynamicComponents(id, componentSpecs);
-
-			// transform to CORBA specific
-			if (infos != null)
-			{
-				retVal = new ComponentInfo[infos.length];
-				for (int i = 0; i < infos.length; i++)
-					if (infos[i] == null)
-						retVal[i] = invalidInfo;
-					else
-					{
-						Object obj = null;
-						if (infos[i].getComponent() != null)
-							obj = (Object)infos[i].getComponent().getObject();
-						String[] interfaces;
-						if (infos[i].getInterfaces() != null)
-							interfaces = infos[i].getInterfaces();
-						else
-							interfaces = new String[0];
-						retVal[i] = new ComponentInfo(infos[i].getType(),
-												 infos[i].getCode(),
-												 obj,
-												 infos[i].getName(),
-												 infos[i].getClients().toArray(),
-												 infos[i].getContainer(),
-												 infos[i].getContainerName(),
-												 infos[i].getHandle(),
-												 mapAccessRights(infos[i].getAccessRights()),
-												 interfaces);
-					}
-			}
-			else
-				retVal = new ComponentInfo[0];
-
-			return retVal;
-		}
-		catch (BadParametersException bpe)
-		{
-			BadParametersException hbpe = new BadParametersException(bpe.getMessage(), bpe);
-			reportException(hbpe);
-
-			// rethrow CORBA specific
-			throw new BAD_PARAM(bpe.getMessage());
-		}
-		catch (NoResourcesException nre)
-		{
-			NoResourcesException hnre = new NoResourcesException(nre.getMessage(), nre);
-			reportException(hnre);
-
-			// rethrow CORBA specific
-			throw new NO_RESOURCES(nre.getMessage());
-		}
-		catch (AcsJNoPermissionEx npe)
-		{
-			//reportException(npe);
-			
-			// rethrow CORBA specific
-			throw npe.toNoPermissionEx();
-		}
-		catch (Throwable ex)
-		{
-			CoreException hce = new CoreException(ex.getMessage(), ex);
-			reportException(hce);
-
-			// rethrow CORBA specific
-			throw new UNKNOWN(ex.getMessage());
-		}
-		finally
-		{
-			pendingRequests.decrementAndGet();
-		}
-	}
 
 	
 	/**
@@ -1880,7 +1585,7 @@ public class ManagerProxyImpl extends ManagerPOA
 	 * @see #get_component
 	 */
 	public Object get_service(int id, String service_url, boolean activate)
-		throws NoPermissionEx, CannotGetComponentEx, ComponentNotAlreadyActivatedEx, ComponentConfigurationNotFoundEx
+		throws NoPermissionEx, CannotGetComponentEx
 	{
 		pendingRequests.incrementAndGet();
 		try
@@ -1956,106 +1661,6 @@ public class ManagerProxyImpl extends ManagerPOA
 		}
 	}
 
-	/**
-	 * Used for retrieving several services with one call.
-	 *
-	 * @param id Identification of the caller. If this is an invalid handle, or if the caller does not have enough access rights, a maciErrType::NoPermissionEx exception is raised.
-	 * @param service_urls CURL of the services whose reference is to be retrieved.
-	 * @param activate True if the Component is to be activated in case it does not exist. If set to False, and the Component does not exist, a nil reference is returned and status is set to COMPONENT_NOT_ACTIVATED.
-	 * @param status Status of the request. One of COMPONENT_ACTIVATED, COMPONENT_DOES_NO_EXIST and COMPONENT_NOT_ACTIVATED.
-	 * @see #get_service
-	 * @return A sequence of requested services.
-	 */
-	public Object[] get_services(int id, String[] service_urls, boolean activate, ulongSeqHolder status)
-		throws NoPermissionEx
-	{
-		pendingRequests.incrementAndGet();
-		try
-		{
-			// returned value
-			Object[] retVal = null;
-
-			// returned status
-			StatusSeqHolder statusHolder = new StatusSeqHolder();
-
-			// map strings to CURLs
-			URI[] uris = null;
-			if (service_urls != null)
-			{
-				uris = new URI[service_urls.length];
-				for (int i = 0; i < service_urls.length; i++)
-				{
-					try
-					{
-						if (service_urls[i] != null)
-							uris[i] = CURLHelper.createURI(service_urls[i]);
-					}
-					catch (URISyntaxException usi)
-					{
-						BadParametersException hbpe = new BadParametersException(usi.getMessage(), usi);
-						reportException(hbpe);
-					}
-				}
-			}
-
-			// transform to CORBA specific
-			Component[] services = manager.getServices(id, uris, activate, statusHolder);
-
-			// map statuses
-			status.value = new int[statusHolder.getStatus().length];
-			for (int i = 0; i < statusHolder.getStatus().length; i++)
-				status.value[i] = mapStatus(statusHolder.getStatus()[i]);
-
-			// extract services CORBA references
-			if (services != null)
-			{
-				retVal = new Object[services.length];
-
-				for (int i = 0; i < services.length; i++)
-					if (services[i] != null)
-						retVal[i] = (Object)(services[i].getObject());
-			}
-			else
-				retVal = new Object[0];
-
-			return retVal;
-		}
-		catch (BadParametersException bpe)
-		{
-			BadParametersException hbpe = new BadParametersException(bpe.getMessage(), bpe);
-			reportException(hbpe);
-
-			// rethrow CORBA specific
-			throw new BAD_PARAM(bpe.getMessage());
-		}
-		catch (NoResourcesException nre)
-		{
-			NoResourcesException hnre = new NoResourcesException(nre.getMessage(), nre);
-			reportException(hnre);
-
-			// rethrow CORBA specific
-			throw new NO_RESOURCES(nre.getMessage());
-		}
-		catch (AcsJNoPermissionEx npe)
-		{
-			//reportException(npe);
-			
-			// rethrow CORBA specific
-			throw npe.toNoPermissionEx();
-		}
-		catch (Throwable ex)
-		{
-			CoreException hce = new CoreException(ex.getMessage(), ex);
-			reportException(hce);
-
-			// rethrow CORBA specific
-			throw new UNKNOWN(ex.getMessage());
-		}
-		finally
-		{
-			pendingRequests.decrementAndGet();
-		}
-	}
 
 	/**
 	 * Restarts an component.
@@ -2262,26 +1867,6 @@ public class ManagerProxyImpl extends ManagerPOA
  	/* *************************************************************************** */
 	/* ************************ [ Mapping methods ] ****************************** */
 	/* *************************************************************************** */
-
-	/**
-	 * Map <code>componentStatus</code> status codes to CORBA specific.
-	 * 
-	 * @param status
-	 *            status of type <code>componentStatus</code>
-	 * @return CORBA specific Component status, <code>-1</code> if status is
-	 *         invalid.
-	 */
-	public static int mapStatus(ComponentStatus status)
-	{
-		if (status == ComponentStatus.COMPONENT_DOES_NO_EXIST)
-			return si.ijs.maci.Manager.COMPONENT_NONEXISTENT;
-		else if (status == ComponentStatus.COMPONENT_NOT_ACTIVATED)
-			return si.ijs.maci.Manager.COMPONENT_NOT_ACTIVATED;
-		else if (status == ComponentStatus.COMPONENT_ACTIVATED)
-			return si.ijs.maci.Manager.COMPONENT_ACTIVATED;
-		else
-			return -1;
-	}
 
 	/**
 	 * Map <code>AccessRights</code> status codes to CORBA specific.
