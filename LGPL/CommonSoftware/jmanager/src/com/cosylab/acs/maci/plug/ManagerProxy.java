@@ -95,25 +95,6 @@ public class ManagerProxy extends CORBAReferenceSerializator implements Manager,
     }
     
 	/**
-	 * Map <code>componentStatus</code> status codes from CORBA specific.
-	 *
-	 * @param	status	CORBA specific int value (status).
-	 * @return	status of type <code>componentStatus</code>, <code>null</code> if code is unknown.
-	 * @deprecated Will be removed together with getServices and getComponents
-	 */
-	public static ComponentStatus mapStatusInverse(int status)
-	{
-		if (status == si.ijs.maci.Manager.COMPONENT_NONEXISTENT)
-			return ComponentStatus.COMPONENT_DOES_NO_EXIST;
-		else if (status == si.ijs.maci.Manager.COMPONENT_NOT_ACTIVATED)
-			return ComponentStatus.COMPONENT_NOT_ACTIVATED;
-		else if (status == si.ijs.maci.Manager.COMPONENT_ACTIVATED)
-			return ComponentStatus.COMPONENT_ACTIVATED;
-		else
-			return null;
-	}
-
-	/**
      * @see com.cosylab.acs.maci.Manager#getComponent(int, java.net.URI, boolean, com.cosylab.acs.maci.StatusHolder)
      */
     public Component getComponent(int id, URI curl, boolean activate,
