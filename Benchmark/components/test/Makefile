@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.23 2007/07/27 12:00:28 eallaert Exp $"
+# "@(#) $Id: Makefile,v 1.24 2007/08/28 16:00:16 eallaert Exp $"
 #
 # Makefile of ........
 #
@@ -246,6 +246,9 @@ all:	do_all
 clean : clean_all 
 	$(RM) *~ *.pyc
 	$(RM) tmp
+	$(RM) .idl-compilation-*
+	@# clean-up the copied reference files
+	$(RM) ref/cppPerformance.ref ref/javaPerformance.ref ref/pythonPerformance.ref
 	@echo " . . . clean done"
 
 clean_dist : clean_all clean_dist_all 
