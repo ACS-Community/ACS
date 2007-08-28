@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<Container 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns="urn:schemas-cosylab-com:Container:1.0" 
+	xmlns:log="urn:schemas-cosylab-com:LoggingConfig:1.0" 
+	>
+    
+    <Autoload>
+    </Autoload>
+    
+    <LoggingConfig
+    	minLogLevel="0"
+    	minLogLevelLocal="2"
+    	centralizedLogger="Log"
+    	maxLogQueueSize="100000"
+    	immediateDispatchLevel="15"
+    	dispatchPacketSize="20"
+    	flushPeriodSeconds="10"
+    	>
+     </LoggingConfig>
+    
+</Container>
+
