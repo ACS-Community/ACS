@@ -351,7 +351,7 @@ public class BuildingTest implements Runnable
 				
 				// release now
 				try {
-				   manager.release_components(clientInfo.h, new String[] { COMPONENT_NAME });
+				   manager.release_component(clientInfo.h, COMPONENT_NAME);
 				}  catch (Exception ex) {
 				   ex.printStackTrace();
 				   System.out.println("Failed to release component.");
