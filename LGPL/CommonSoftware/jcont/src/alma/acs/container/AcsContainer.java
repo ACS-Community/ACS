@@ -25,6 +25,7 @@ import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
@@ -59,6 +60,7 @@ import alma.acs.logging.config.LogConfig;
 import alma.acs.logging.config.LogConfigException;
 import alma.acs.util.StopWatch;
 import alma.alarmsystem.source.ACSAlarmSystemInterfaceFactory;
+import alma.maci.loggingconfig.UnnamedLogger;
 import alma.maciErrType.CannotActivateComponentEx;
 import alma.maciErrType.CannotDeactivateComponentEx;
 import alma.maciErrType.CannotRestartComponentEx;
@@ -96,7 +98,11 @@ public class AcsContainer extends ContainerPOA
 
     private final ComponentMap m_activeComponentMap;
 
+    /**
+     * Singleton logging config object shared with ClientLogManager.
+     */
     private LogConfig logConfig;
+    
     /**
      * Cache for method {@link #getCDB()}. Don't use this field directly.
      */
@@ -155,17 +161,16 @@ public class AcsContainer extends ContainerPOA
     }
 
     /**
-     * Container initialization such as logging in to the manager, configuring logging, initializing the alarm system.
-     * This is taken out of the ctor just to keep is lean and be able to instantiate a minimum container for testing.
-     * 
-     * @throws AcsJContainerServicesEx
-     */
-    void initialize() throws AcsJContainerEx {
+	 * Container initialization such as logging in to the manager, configuring logging, initializing the alarm system.
+	 * This is taken out of the ctor just to keep is lean and be able to instantiate a minimum container for testing.
+	 * 
+	 * @throws AcsJContainerServicesEx
+	 */
+	void initialize() throws AcsJContainerEx {
+
+		loginToManager();
 		
-    	loginToManager();
-		
-		// init logging parameters
-		
+		// init logging 
 		logConfig = ClientLogManager.getAcsLogManager().getLogConfig();
 		// logConfig.setInternalLogger(m_logger);
 		logConfig.setCDBLoggingConfigPath("MACI/Containers/" + m_containerName);
@@ -173,10 +178,8 @@ public class AcsContainer extends ContainerPOA
 		try {
 			logConfig.initialize(false);
 		} catch (LogConfigException ex) {
-			// if the CDB can't be read, we still want to run the container, so
-			// we only log the problems
-			m_logger.log(Level.FINE, "Failed to configure logging (default values will be used). Reason: "
-					+ ex.getMessage());
+			// if the CDB can't be read, we still want to run the container, thus we only log the problem here
+			m_logger.log(Level.FINE, "Failed to configure logging (default values will be used).", ex);
 		}
 
 		// init the alarm system
@@ -1285,9 +1288,12 @@ public class AcsContainer extends ContainerPOA
 	 * individually. The names are those that appear in the log records in the
 	 * field "SourceObject". This includes the container logger, ORB logger,
 	 * component loggers, and (only C++) GlobalLogger.
+	 * <p>
+	 * The returned logger names are randomly ordered.
 	 */
 	public String[] get_logger_names() {
-		throw new org.omg.CORBA.NO_IMPLEMENT("Method not implemented yet");
+		Set<String> loggerNames = logConfig.getLoggerNames();
+		return loggerNames.toArray(new String[loggerNames.size()]);
 	}
 
 	/**
@@ -1295,9 +1301,15 @@ public class AcsContainer extends ContainerPOA
 	 * LogLevels.useDefault is true, then the logger uses the default levels,
 	 * see get_default_logLevels(); otherwise the returned local and remote
 	 * levels apply.
+	 * <p>
+	 * For possible convenience, the default levels are returned in addition to 
+	 * setting {@link LogLevels#useDefault} to <code>true</code>.
 	 */
 	public LogLevels get_logLevels(String logger_name) {
-		throw new org.omg.CORBA.NO_IMPLEMENT("Method not implemented yet");
+		UnnamedLogger levels = logConfig.getNamedLoggerConfig(logger_name);
+		boolean useDefault = !logConfig.hasCustomConfig(logger_name); 
+		LogLevels ret = new LogLevels(useDefault, (short) levels.getMinLogLevel(), (short) levels.getMinLogLevelLocal());
+		return ret;
 	}
 
 	/**
@@ -1306,7 +1318,15 @@ public class AcsContainer extends ContainerPOA
 	 * will use the supplied local and remote levels.
 	 */
 	public void set_logLevels(String logger_name, LogLevels levels) {
-		throw new org.omg.CORBA.NO_IMPLEMENT("Method not implemented yet");
+		if (levels.useDefault) {
+			logConfig.clearNamedLoggerConfig(logger_name);
+		}
+		else {
+			UnnamedLogger config = new UnnamedLogger();
+			config.setMinLogLevel(levels.minLogLevel);
+			config.setMinLogLevelLocal(levels.minLogLevelLocal);
+			logConfig.setNamedLoggerConfig(logger_name, config);
+		}
 	}
 
 	/**
@@ -1314,16 +1334,16 @@ public class AcsContainer extends ContainerPOA
 	 * configuration from the CDB and to reconfigure the loggers accordingly.
 	 * This allows for persistent changes in the logging configuration to become
 	 * effective, and also for changes of more advanced parameters.
+	 * <p>
+	 * Note that unlike for the logging initialization in {@link #initialize()},
+	 * now we give precedence to the CDB values over any previous settings.
 	 */
-        public void refresh_logging_config() {
+	public void refresh_logging_config() {
 		try {
 			logConfig.initialize(true);
 		} catch (LogConfigException ex) {
-			// if the CDB can't be read, we still want to run the container, so
-			// we only log the problems
-			m_logger.log(Level.FINE,
-					"Failed to configure logging (default values will be used). Reason: "
-							+ ex.getMessage());
+			// if the CDB can't be read, we still want to run the container, thus we only log the problem here
+			m_logger.log(Level.FINE, "Failed to configure logging (default values will be used).", ex);
 		}
 	}
 		
@@ -1331,7 +1351,3 @@ public class AcsContainer extends ContainerPOA
 
 
 }
-
-
-
-
