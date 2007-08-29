@@ -241,11 +241,11 @@ public class GuiMaciSupervisor extends MaciSupervisor {
 	 */
 	public void managerReleaseComponents (String[] curls) throws UnknownErrorException, NotConnectedToManagerException, NoPermissionEx, CorbaTransientException, CorbaNotExistException {
 		try {
-			log.fine("sending release_components request to manager");
+			log.fine("sending release_component requests to manager");
 			int hhhhh = myMaciHandle();
-			myManagerReference().release_components(hhhhh, curls);
-
-			
+			for (int i = 0; i < curls.length; i++) {
+				myManagerReference().release_component(hhhhh, curls[i]);
+			}
 		} catch (NotConnectedToManagerException exc) {
 			mcehandler.handleExceptionTalkingToManager(exc);
 			throw exc;
