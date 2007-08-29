@@ -26,9 +26,11 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -110,15 +112,19 @@ public class LogConfig {
     private LoggingConfig loggingConfig;
 
 	/**
-	 * Named logger configurations, coming from either
+	 * Logger names and optionally associated log levels.
+	 * Loggers that use default levels are stored with their name (map key), 
+	 * but a null value for the configuration is associated with them. 
+	 * <p>
+	 * Actual named logger configurations are stored as the map values, and can come from 
 	 * <ul>
 	 * <li>optional named logger children in the process configuration ({@link #loggingConfig}),
 	 *     which are of subclass {@link NamedLogger}, or
 	 * <li>optional log config children of CDB component configuration, or
-	 * <li>dynamically set values that can create or override the above.
+	 * <li>dynamically set values that can create or override the above, see {@link #setNamedLoggerConfig(String, UnnamedLogger)}.
 	 * </ul>
 	 * 
-	 * key = [String] logger name, value = [UnnamedLogger or subclass NamedLogger] level config
+	 * key = [String] logger name, value = [UnnamedLogger or subclass NamedLogger or null] level config
 	 */
 	private Map<String, UnnamedLogger> namedLoggerConfigs;
 
@@ -130,22 +136,19 @@ public class LogConfig {
 
 	
 	public LogConfig() {
-        cdbComponentPaths = new HashMap<String, String>();
-        namedLoggerConfigs = new HashMap<String, UnnamedLogger>();
+		cdbComponentPaths = new HashMap<String, String>();
+		namedLoggerConfigs = new HashMap<String, UnnamedLogger>();
 		subscriberList = new ArrayList<LogConfigSubscriber>();
 		loggingConfig = new LoggingConfig(); // comes with schema default values
-		
+
 		configureDefaultLevelsFromProperties();
 	}
 
 
 	/**
-	 * Reads the properties <code>ACS.logstdout</code> (name defined as
-	 * {@link #PROPERTYNAME_MIN_LOG_LEVEL}) and
-	 * <code>ACS.log.minlevel.remote</code> (name defined as
-	 * {@link #PROPERTYNAME_MIN_LOG_LEVEL_LOCAL}) and, if the property is
-	 * defined, sets the respective default level. 
-	 * Prior values are lost.
+	 * Reads the properties <code>ACS.logstdout</code> (name defined as {@link #PROPERTYNAME_MIN_LOG_LEVEL}) and
+	 * <code>ACS.log.minlevel.remote</code> (name defined as {@link #PROPERTYNAME_MIN_LOG_LEVEL_LOCAL}) and, if the
+	 * property is defined, sets the respective default level. Prior values are lost.
 	 */
 	private void configureDefaultLevelsFromProperties() {
 		// env vars / properties can override the schema defaults
@@ -244,7 +247,12 @@ public class LogConfig {
 					
 					// @TODO: check if we really want to lose named logger settings that had been added dynamically before this refresh from CDB.
 					// If not, then we must dinstinguish between dynamic API and from-CDB config, and leave those objects that have no CDB-equivalent.
-					namedLoggerConfigs.clear();
+
+					// We don't call namedLoggerConfigs.clear() because we don't want to lose logger names but only their configurations.
+					for (Iterator<String> iter = namedLoggerConfigs.keySet().iterator(); iter.hasNext();) {
+						String loggerName = iter.next();
+						namedLoggerConfigs.put(loggerName, null);
+					}
 					
 					// named logger levels from the LoggingConfig XML
 					NamedLogger[] namedLoggers = loggingConfig.get();
@@ -375,49 +383,117 @@ public class LogConfig {
 	// Getter and setter methods for default logger and named logger levels, local and remote logging.
 	///////////////////////////////////////////////////////////////////////////////////////////////////
 
+	/**
+	 * Gets the log level for stdout printing for default loggers 
+	 * (those that don't have custom levels set).
+	 */
 	public int getDefaultMinLogLevelLocal() {
 		return loggingConfig.getMinLogLevelLocal();
 	}
 
+	/**
+	 * Sets the given log level for stdout printing of log records
+	 * for all loggers that don't have a custom configuration. 
+	 * All log config listeners.get notified of this change.
+	 * The call is ignored for negative values of <code>newLevel</code>.
+	 * @param newLevel
+	 */
 	public void setDefaultMinLogLevelLocal(int newLevel) {
-		loggingConfig.setMinLogLevelLocal(newLevel);
-		notifySubscribers();
+		if (newLevel >= 0) {
+			loggingConfig.setMinLogLevelLocal(newLevel);
+			notifySubscribers();
+		}
 	}
 
+	/**
+	 * Gets the log level for centralized logging for default loggers 
+	 * (those that don't have custom levels set).
+	 */
 	public int getDefaultMinLogLevel() {
 		return loggingConfig.getMinLogLevel();
 	}
 
-	public void setDefaultMinLogLevel(int level) {
-		loggingConfig.setMinLogLevel(level);
-		notifySubscribers();
+	/**
+	 * Sets the given log level for centralized logging of log records
+	 * for all loggers that don't have a custom configuration. 
+	 * All log config listeners.get notified of this change.
+	 * The call is ignored for negative values of <code>newLevel</code>.
+	 * @param newLevel
+	 */
+	public void setDefaultMinLogLevel(int newLevel) {
+		if (newLevel >= 0) {
+			loggingConfig.setMinLogLevel(newLevel);
+			notifySubscribers();
+		}
 	}
 
 	/**
-	 * Gets the (log level) configuration data for a named logger. 
+	 * Gets the names of all known loggers, no matter if they use default or custom levels.
+	 * <p>
+	 * The loggers are registered automatically by calls to 
+	 * {@link #getNamedLoggerConfig(String)} and {@link #setNamedLoggerConfig(String, UnnamedLogger)}.
+	 */
+	public Set<String> getLoggerNames() {
+		return new HashSet<String>(namedLoggerConfigs.keySet());
+	}
+
+	public boolean hasCustomConfig(String loggerName) {
+		return (namedLoggerConfigs.get(loggerName) != null);
+	}
+
+	/**
+	 * Gets the (log level) configuration data for a named logger.
 	 * Resorts to the default configuration if a specialized configuration is not available. 
 	 * <p>
 	 * Note that a copy of the config data is returned, so changes to it will
 	 * not affect any other object's configuration.
+	 * <p>
+	 * A previously unknown logger gets registered by its name.
 	 */
 	public UnnamedLogger getNamedLoggerConfig(String loggerName) {
 		UnnamedLogger ret = new UnnamedLogger();
 		
-		if (loggerName == null || loggerName.toLowerCase().equals("default") || !namedLoggerConfigs.containsKey(loggerName)) {
+		if (loggerName == null || loggerName.toLowerCase().equals("default") || namedLoggerConfigs.get(loggerName)==null) {
 			ret.setMinLogLevel(loggingConfig.getMinLogLevel());
 			ret.setMinLogLevelLocal(loggingConfig.getMinLogLevelLocal());
+			if (loggerName != null && !loggerName.toLowerCase().equals("default")) {
+				namedLoggerConfigs.put(loggerName, null); // registered for default levels
+			}
 		}
 		else {
 			UnnamedLogger config = namedLoggerConfigs.get(loggerName);
 			ret.setMinLogLevel(config.getMinLogLevel());
 			ret.setMinLogLevelLocal(config.getMinLogLevelLocal());
 		}
+		// @TODO: resolve the int / short mismatch between xsd and idl definitions
+//		ret.setMinLogLevel(Math.min(ret.getMinLogLevel(), Short.MAX_VALUE));
+//		ret.setMinLogLevelLocal(Math.min(ret.getMinLogLevelLocal(), Short.MAX_VALUE));
 		return ret;
 	}
 	
+	/**
+	 * Sets the given log levels for the named logger and notifies all listeners. 
+	 * Ignores this call if any of the parameters are <code>null</code>.
+	 */
 	public void setNamedLoggerConfig(String loggerName, UnnamedLogger config) {
-		if (config != null) {			
-			namedLoggerConfigs.put(loggerName, config);
+		if (loggerName != null && config != null) {
+			UnnamedLogger config2 = new UnnamedLogger();
+			config2.setMinLogLevel(config.getMinLogLevel());
+			config2.setMinLogLevelLocal(config.getMinLogLevelLocal());
+			namedLoggerConfigs.put(loggerName, config2);
+			notifySubscribers();
+		}
+	}
+	
+	/**
+	 * Clears log level settings for the given named logger,
+	 * so that it uses default log levels. 
+	 * Notifies all listeners.
+	 * Ignores this call if <code>loggerName</code> is <code>null</code>.
+	 */
+	public void clearNamedLoggerConfig(String loggerName) {
+		if (loggerName != null) {
+			namedLoggerConfigs.put(loggerName, null);
 			notifySubscribers();
 		}
 	}
