@@ -6,7 +6,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: acsStartJava,v 1.42 2007/08/07 18:02:50 sharring Exp $"
+# "@(#) $Id: acsStartJava,v 1.43 2007/08/29 12:41:18 hsommer Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -192,12 +192,6 @@ export HOST=`getIP`
 # set ACS_INSTANCE if it was specified on the command line
 if [ "$CL_BASEPORT" ] ; then
 	export ACS_INSTANCE=$CL_BASEPORT
-fi
-
-# set ACS_LOG_STDOUT if not defined
-if [ "X$ACS_LOG_STDOUT" == "X" ]
-then 
-    export ACS_LOG_STDOUT="8"
 fi
 
 # set ACS_LOG_BIN if not defined
