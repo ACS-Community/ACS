@@ -7,10 +7,10 @@
 	<classpathentry kind="lib" path="lib/jnlp.jar"/>
 	<classpathentry kind="lib" path="lib/jfcunit.jar"/>
 	<classpathentry kind="lib" path="lib/AcsCommandCenterHelp.jar"/>
-	<classpathentry kind="var" path="INTROOT/lib/AcsCommandCenterEntities.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/AcsCommandCenterEntities.jar"/>
 	<classpathentry kind="var" path="INTROOT/lib/maciErrType.jar" sourcepath="/INTROOT/lib/maciErrType.jar"/>
-	<classpathentry kind="var" path="INTROOT/lib/acserr.jar" sourcepath="INTROOT/lib/acserr.jar"/>
-	<classpathentry kind="var" path="INTROOT/lib/acserrj.jar" sourcepath="/INTROOT/lib/acserrj.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acserr.jar" sourcepath="INTROOT/lib/acserr.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acserrj.jar" sourcepath="/INTROOT/lib/acserrj.jar"/>
 	<classpathentry kind="var" path="INTROOT/lib/JavaContainerError.jar" sourcepath="/INTROOT/lib/JavaContainerError.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/CDB.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/jManager.jar"/>
