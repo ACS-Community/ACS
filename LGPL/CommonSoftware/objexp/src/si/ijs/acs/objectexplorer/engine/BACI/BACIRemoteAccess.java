@@ -463,7 +463,7 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 	private NotificationBean notifier = null;
 	private ArrayList invocations = new ArrayList();
 	private Dispatcher dispatcher = null;
-	private ArrayList connected = new ArrayList();
+	private ArrayList<String> connected = new ArrayList<String>();
 	private BACIIntrospector baciIntrospector = new BACIIntrospector(this);
 	private boolean ORBdebug = false;
 	private String managerLoc = null;
@@ -539,7 +539,7 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 				internalManagerConnect(baciNode);
 				synchronized (connected) {
 					if (baciNode.getUserObject() instanceof String)
-						connected.add(baciNode.getUserObject());
+						connected.add((String)baciNode.getUserObject());
 				}
 			} else {
 				internalParentConnect(baciNode);
@@ -590,19 +590,16 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 		notifier.reportMessage("Logging out from the Manager.");
 
 		synchronized (connected) {
-			String[] array = new String[connected.size()];
-			connected.toArray(array);
 			notifier.reportDebug(
 				"BACIRemoteAccess::destroy",
-				"Releasing Components on Manager, " + array.length + " Components total.");
-			try {
+				"Releasing Components on Manager, " + connected.size() + " Components total.");
+			for (Iterator<String> iter = connected.iterator(); iter.hasNext();) {
+				String compName = iter.next();
 				try {
-					manager.release_components(handle, array);
-				} catch (Exception e) {
-					// try others
+					manager.release_component(handle, compName);
+				} catch (Exception ex) {
+					notifier.reportError("Cannot release component " + compName, ex);
 				}
-			} catch (Exception e) {
-				notifier.reportError("Cannot release components.", e);
 			}
 			connected.clear();
 		}
