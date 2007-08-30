@@ -2,18 +2,22 @@
 <classpath>
 	<classpathentry excluding="lc.jar.extras/" kind="src" path="src"/>
 	<classpathentry kind="src" path="test"/>
-	<classpathentry sourcepath="JRE_SRC" kind="var" path="JRE_LIB"/>
+	<classpathentry kind="var" path="JRE_LIB" sourcepath="JRE_SRC"/>
 	<classpathentry kind="var" path="JACORB_HOME/lib/jacorb.jar"/>
-	<classpathentry sourcepath="/ACSROOT/lib/jACSUtil.jar" kind="var" path="INTROOT/lib/jACSUtil.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/abeansR2Components.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/junit.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/jACSCommon.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/jACSUtil.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/jdom.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/jManager.jar"/>
-	<classpathentry sourcepath="/ACSROOT/lib/maci.jar" kind="var" path="ACSROOT/lib/maci.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/maci.jar" sourcepath="/ACSROOT/lib/maci.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/icons.jar"/>
 	<classpathentry kind="lib" path="src/lc.jar.extras"/>
 	<classpathentry kind="var" path="ACSROOT/lib/cosyframework-gui.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/maciErrType.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acsjlog.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/jcont.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/logging_idl.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acscommon.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
