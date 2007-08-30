@@ -64,15 +64,6 @@
 1 - This is OK: component not activated alma.maciErrType.wrappers.AcsJCannotGetComponentEx [ CURL='MOUNT1' ]
 1 - This is OK: alma.maciErrType.wrappers.AcsJCannotGetComponentEx [ CURL='MOUNT2' ]
 1 - This is OK: component not activated alma.maciErrType.wrappers.AcsJCannotGetComponentEx [ CURL='MOUNT3' ]
-1 - This is OK: Non-null CURLs expected.
-1 - This is OK: Non-null CURLs expected.
-1 - This is OK: Non-null 'statuses' expected.
-1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ Reason='Invalid handle.' ]
-1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ Reason='Invalid handle.' ]
-1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ Reason='Invalid handle.' ]
-1 - This is OK: Non-null 'statuses' expected.
-1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ Reason='Invalid handle.' ]
-1 - This is OK: Non-null CURLs expected.
 1 - This is OK: Non-null 'type' expected.
 1 - This is OK: Non-null 'type' expected.
 1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ Reason='Invalid handle.' ]
