@@ -27,6 +27,7 @@ import java.awt.event.WindowListener;
 import java.io.File;
 
 import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
 
 import com.cosylab.logging.LoggingClient;
 
@@ -167,9 +168,19 @@ public class LogFrame extends JFrame implements WindowListener {
 		
 		try
 		{
-			/* Create the frame */
-			LogFrame logFrame = new LogFrame(filterFile,initLogFileName);
-			
+			// Create the frame
+			class FrameLauncher extends Thread {
+				File f;
+				String name;
+				public FrameLauncher(File fltFile, String initFileName) {
+					f=fltFile;
+					name=initFileName;
+				}
+				public void run() {
+					new LogFrame(f,name);
+				}
+			}
+			SwingUtilities.invokeLater(new FrameLauncher(filterFile,initLogFileName));
 		}
 		catch (Throwable exception)
 		{
