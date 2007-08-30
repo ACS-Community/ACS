@@ -4209,20 +4209,13 @@ public class ManagerImplTest extends TestCase
 
 		URI curl = null;
 		// test on-demand activation
-		try
-		{
-			curl = new URI("DEMANDER");
+		curl = new URI("DEMANDER");
 
-			StatusHolder status = new StatusHolder();
-			Component ref = manager.getComponent(info.getHandle(), curl, true, status);
-			
-			assertNotNull(ref);
-			assertEquals(ComponentStatus.COMPONENT_ACTIVATED, status.getStatus());
-		}
-		catch (Exception ex)
-		{
-			fail();
-		}
+		StatusHolder status = new StatusHolder();
+		Component ref = manager.getComponent(info.getHandle(), curl, true, status);
+		
+		assertNotNull(ref);
+		assertEquals(ComponentStatus.COMPONENT_ACTIVATED, status.getStatus());
 		
 		// check if container is logged in
 		ContainerInfo[] infos = manager.getContainerInfo(info.getHandle(), new int[0], "OnDemandContainer");
@@ -4245,8 +4238,8 @@ public class ManagerImplTest extends TestCase
 		transport.registerDeamon("test", daemon);
 
 		try {
-			StatusHolder status = new StatusHolder();
-			Component ref = manager.getComponent(info.getHandle(), curl, true, status);			
+			status = new StatusHolder();
+			ref = manager.getComponent(info.getHandle(), curl, true, status);			
 			fail();
 		} catch (AcsJCannotGetComponentEx e) {
 
@@ -4257,12 +4250,10 @@ public class ManagerImplTest extends TestCase
 		transport.registerDeamon("test", null);
 
 		try {
-			StatusHolder status = new StatusHolder();
-			Component ref = manager.getComponent(info.getHandle(), curl, true, status);
-			
-			fail();
+			status = new StatusHolder();
+			ref = manager.getComponent(info.getHandle(), curl, true, status);			
+			fail("Expected AcsJCannotGetComponentEx");
 		} catch (AcsJCannotGetComponentEx e) {
-
 			System.out.println("This is OK: "+e.toString());
 		} catch (AcsJNoPermissionEx e) {
 			fail();
