@@ -4,6 +4,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
 	xmlns="urn:schemas-cosylab-com:Container:1.0" 
 	xmlns:log="urn:schemas-cosylab-com:LoggingConfig:1.0" 
+	ImplLang="java"
 	>
     
     <Autoload>
