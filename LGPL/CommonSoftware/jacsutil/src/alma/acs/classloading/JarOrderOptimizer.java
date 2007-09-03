@@ -85,7 +85,10 @@ public class JarOrderOptimizer implements Comparator<File>
 		"lc.jar", // cosylab logging client
 		"jdom.jar",
 		"acsASsources.jar",
-		"acsErrTypeAlarmSourceFactory.jar" 
+		"acsErrTypeAlarmSourceFactory.jar",
+		"xalan.jar",
+		"xalan_serializer.jar",
+		"commons-logging.jar"
 	};
 	
 	/**
