@@ -34,7 +34,6 @@ import java.util.logging.Logger;
 import alma.acs.logging.adapters.JacORBFilter;
 import alma.acs.logging.config.LogConfig;
 import alma.acs.logging.config.LogConfigSubscriber;
-import alma.maci.loggingconfig.NamedLogger;
 import alma.maci.loggingconfig.UnnamedLogger;
 
 /**
@@ -63,6 +62,8 @@ public class AcsLogger extends Logger implements LogConfigSubscriber {
     private String processName;
     private String sourceObject;
 
+    private boolean DEBUG = Boolean.getBoolean("alma.acs.logging.verbose");
+    
     /**
      * Standard constructor that configures this logger from <code>logConfig</code>
      * and also registers for log config changes.
@@ -80,6 +81,11 @@ public class AcsLogger extends Logger implements LogConfigSubscriber {
      */
     protected AcsLogger(String name, String resourceBundleName, LogConfig logConfig, boolean allowNullLogConfig) {
         super(name, resourceBundleName);
+        
+        if (DEBUG) {
+        	System.out.println("*** AcsLogger running in DEBUG mode!");
+        }
+        
         addLoggerClass(AcsLogger.class);
         addLoggerClass(Logger.class);
         if (logConfig != null) {
@@ -137,6 +143,10 @@ public class AcsLogger extends Logger implements LogConfigSubscriber {
     void setLoggerName(String loggerName) {
             this.loggerName = loggerName;
     }
+    String getLoggerName() {
+    	return ( loggerName != null ? loggerName : getName() );
+    }
+    
     void setProcessName(String processName) {
             this.processName = processName;
     }
@@ -210,7 +220,7 @@ public class AcsLogger extends Logger implements LogConfigSubscriber {
     		record.setLoggerName(loggerName);
     	}
     	
-        // check if this record alreay has the context data attached which ACS needs but the JDK logging API does not provide
+        // check if this record already has the context data attached which ACS needs but the JDK logging API does not provide
         LogParameterUtil paramUtil = new LogParameterUtil(record);
         Map<String, Object> specialProperties = paramUtil.extractSpecialPropertiesMap();
         
@@ -257,12 +267,17 @@ public class AcsLogger extends Logger implements LogConfigSubscriber {
      * Callback method, configures this logger from the data in logConfig.
      * @see alma.acs.logging.config.LogConfigSubscriber#configureLogging(alma.acs.logging.config.LogConfig)
      */
-    public void configureLogging(LogConfig logConfig) {
+    public void configureLogging(LogConfig logConfig) {    	
 		try {
-			UnnamedLogger config = logConfig.getNamedLoggerConfig(getName());
+			String shortName = ClientLogManager.stripKnownLoggerNamespacePrefix(getLoggerName());
+			UnnamedLogger config = logConfig.getNamedLoggerConfig(shortName);
+			if (DEBUG) {
+				System.out.println("*** AcsLogger#configureLogging: name=" + shortName + 
+						" minLevel=" + config.getMinLogLevel() + " minLevelLocal=" + config.getMinLogLevelLocal());
+			}
 	    	configureJDKLogger(this, config);
 		} catch (Exception e) {
-			info("Failed to configure logger.");
+			log(Level.INFO, "Failed to configure logger.", e);
 		}
 		
 		// forward log level to optional JacORB filter
@@ -288,7 +303,7 @@ public class AcsLogger extends Logger implements LogConfigSubscriber {
             AcsLogLevel minLogLevelJDK = AcsLogLevel.fromAcsCoreLevel(minLogLevelACS); // JDK Level style 
             jdkLogger.setLevel(minLogLevelJDK);
         } catch (Exception ex) {
-        	jdkLogger.info("Failed to configure logger.");
+        	jdkLogger.log(Level.INFO, "Failed to configure logger.", ex);
         }
     	
     }
