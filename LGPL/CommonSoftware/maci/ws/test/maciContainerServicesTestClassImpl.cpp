@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - VLT project
 *
-* "@(#) $Id: maciContainerServicesTestClassImpl.cpp,v 1.14 2007/09/03 06:07:12 cparedes Exp $"
+* "@(#) $Id: maciContainerServicesTestClassImpl.cpp,v 1.15 2007/09/03 06:49:02 cparedes Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -61,7 +61,7 @@
 #define _POSIX_SOURCE 1
 #include "vltPort.h"
 
-static char *rcsId="@(#) $Id: maciContainerServicesTestClassImpl.cpp,v 1.14 2007/09/03 06:07:12 cparedes Exp $"; 
+static char *rcsId="@(#) $Id: maciContainerServicesTestClassImpl.cpp,v 1.15 2007/09/03 06:49:02 cparedes Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include "maciContainerServicesTestClassImpl.h"
@@ -293,6 +293,8 @@ void MaciContainerServicesTestClassImpl::componentListenerTest()
         assertEquals(1, blockLizzy.getAllCompsAvailable().size());
         assertEquals(1, blockLizzy.getAllCompNamesUnavailable().size());
 */
+	    getContainerServices()->releaseComponent(comp1->name());
+        getContainerServices()->releaseComponent("MACI_SUB");
     } catch (...) {
         ACS_SHORT_LOG((LM_ERROR,"componentListenerTest Exception"));
     }

@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: TestList_WS.lite,v 1.88 2007/09/03 06:07:12 cparedes Exp $"
+# "@(#) $Id: TestList_WS.lite,v 1.89 2007/09/03 06:49:02 cparedes Exp $"
 #
 # TestList
 #
@@ -12,11 +12,11 @@
 # bjeram 2001-08-22 created
 SOURCE maciTATEnvironment
 PROLOGUE acsutilTATPrologue
-#1 maciTestClient "startContainerWS.sh Container01 3060" "@SLEEP 20" "startMaciTest.sh Container02 3061" "@SLEEP 50" "startContainerWS.sh Container03 3062" "@SLEEP 20" "startMaciTestClient.sh @maciTest.mts"
-#2 maciTestRegistrar maciTestRegistrar
+1 maciTestClient "startContainerWS.sh Container01 3060" "@SLEEP 20" "startMaciTest.sh Container02 3061" "@SLEEP 50" "startContainerWS.sh Container03 3062" "@SLEEP 20" "startMaciTestClient.sh @maciTest.mts"
+2 maciTestRegistrar maciTestRegistrar
 3 maciContainerServicesClient "startContainerWS.sh Container01 3060" "@SLEEP 20" "acsutilTATTestRunner maciContainerServicesClient MACI_CS_TEST"
-#4 maciLifeCycleClient "startContainerWS.sh Container01 3061" "@SLEEP 20" "acsutilTATTestRunner maciLifeCycleClient"
-#5 maciTestCheckException "maciStartWrongCDB.sh" "@SLEEP 50" "maciStopWrongCDB.sh"
+4 maciLifeCycleClient "startContainerWS.sh Container01 3061" "@SLEEP 20" "acsutilTATTestRunner maciLifeCycleClient"
+5 maciTestCheckException "maciStartWrongCDB.sh" "@SLEEP 50" "maciStopWrongCDB.sh"
 EPILOGUE acsutilTATEpilogue
-#6 maciTestSimpleClient "startContainerWS.sh Container01 3061" "@SLEEP 20" "acsutilTATTestRunner maciTestSimpleClient"
-#7 maciTestComponentSmartPtr "startContainerWS.sh Container01 3062" "@SLEEP 20" "acsutilTATTestRunner maciTestComponentSmartPtr"
+6 maciTestSimpleClient "startContainerWS.sh Container01 3061" "@SLEEP 20" "acsutilTATTestRunner maciTestSimpleClient"
+7 maciTestComponentSmartPtr "startContainerWS.sh Container01 3062" "@SLEEP 20" "acsutilTATTestRunner maciTestComponentSmartPtr"

@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: Makefile,v 1.96 2007/09/03 06:07:12 cparedes Exp $" 
+# "@(#) $Id: Makefile,v 1.97 2007/09/03 06:49:02 cparedes Exp $" 
 #
 # Makefile of ........
 #
@@ -51,7 +51,6 @@ maciTestClient_LIBS             = maciClient maciTestUtils
 maciContainerServicesClient_OBJECTS = maciContainerServicesClient \
 									  maciTestC
 maciContainerServicesClient_LIBS = maciClient
-maciContainerServicesClient_LDFLAGS = -ggdb
 
 maciLifeCycleClient_OBJECTS = maciLifeCycleClient maciTestC
 maciLifeCycleClient_LIBS = maciClient
