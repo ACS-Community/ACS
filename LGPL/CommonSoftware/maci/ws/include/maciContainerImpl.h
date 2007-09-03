@@ -4,7 +4,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciContainerImpl.h,v 1.45 2007/04/16 15:03:38 msekoran Exp $"
+* "@(#) $Id: maciContainerImpl.h,v 1.46 2007/09/03 06:07:12 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -98,7 +98,7 @@ class LibraryManager;
  *
  * @author <a href=mailto:matej.sekoranja@ijs.si>Matej Sekoranja</a>,
  * Jozef Stefan Institute, Slovenia<br>
- * @version "@(#) $Id: maciContainerImpl.h,v 1.45 2007/04/16 15:03:38 msekoran Exp $"
+ * @version "@(#) $Id: maciContainerImpl.h,v 1.46 2007/09/03 06:07:12 cparedes Exp $"
  */
 
 class maci_EXPORT ContainerImpl :
@@ -844,13 +844,4 @@ T* ContainerImpl::getService(const char *name, const char *domain, bool activate
 }; 
 
 #endif // maciContainerImpl_h
-
-
-
-
-
-
-
-
-
 

@@ -4,7 +4,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciContainerServicesTestClassImpl.h,v 1.12 2006/10/23 15:39:00 bjeram Exp $"
+* "@(#) $Id: maciContainerServicesTestClassImpl.h,v 1.13 2007/09/03 06:07:12 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -94,6 +94,9 @@ public:
 
   // Test the relase of all components
   virtual void releaseResourcesTest() throw (CORBA::SystemException);
+
+  // Test the component listener
+  virtual void componentListenerTest() throw (CORBA::SystemException);
 
 };
 

@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: Makefile,v 1.124 2007/03/12 11:02:43 gchiozzi Exp $" 
+# "@(#) $Id: Makefile,v 1.125 2007/09/03 06:07:12 cparedes Exp $" 
 #
 # Makefile of ........
 #
@@ -47,7 +47,7 @@ EXECUTABLES     = $(PROG) maciContainer maciManagerShutdown maciContainerShutdow
 EXECUTABLES_L   = 
 
 maciContainer_OBJECTS   = maciContainer
-maciContainer_LIBS = maci acsContainerServices
+maciContainer_LIBS = maci acsContainerServices acsComponentListener
 
 maciManagerShutdown_OBJECTS = maciManagerShutdown
 maciManagerShutdown_LIBS = maci
@@ -95,6 +95,7 @@ maci_OBJECTS   = maciLibraryManager maciORBTask  maciContainerThreadHook \
 		 maciServantManager maciContainerServices maciContainerImpl \
 		 maciHelper maciComponentStateManager 
 maci_LIBS = acsContainerServices maciErrType acsErrTypeContainerServices maciStubs acsAlSysSource acsErrTypeAlarmSourceFactory 
+maci_LDFLAGS = -ggdb
 
 maciClient_OBJECTS =  maciSimpleClient maciSimpleClientThreadHook
 maciClient_LIBS    =  baci maci maciErrType

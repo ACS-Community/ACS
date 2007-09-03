@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: Makefile,v 1.95 2007/03/06 08:17:24 agrimstrup Exp $" 
+# "@(#) $Id: Makefile,v 1.96 2007/09/03 06:07:12 cparedes Exp $" 
 #
 # Makefile of ........
 #
@@ -19,7 +19,7 @@
 #------------------------------------------------------------------------
 
 USER_CFLAGS =
-USER_LIB = -lmaci -lcdb -llogging -lacscomponent -lrecovery -lacserr -lacsutil -lexpat -lACE -lTAO -lTAO_DsLogAdmin -lTAO_CosNaming -lTAO_IORTable -lTAO_PortableServer -lTAO_Svc_Utils -lTAO_CosTrading -lTAO_DynamicAny -lTAO_CosProperty -lTAO_IFR_Client -lbaselogging
+USER_LIB = -lmaci -lcdb -llogging -lacscomponent -lrecovery -lacserr -lacsutil -lexpat -lACE -lTAO -lTAO_DsLogAdmin -lTAO_CosNaming -lTAO_IORTable -lTAO_PortableServer -lTAO_Svc_Utils -lTAO_CosTrading -lTAO_DynamicAny -lTAO_CosProperty -lTAO_IFR_Client -lbaselogging 
 
 # Program to build
 # Can be overwritten in the call
@@ -51,6 +51,7 @@ maciTestClient_LIBS             = maciClient maciTestUtils
 maciContainerServicesClient_OBJECTS = maciContainerServicesClient \
 									  maciTestC
 maciContainerServicesClient_LIBS = maciClient
+maciContainerServicesClient_LDFLAGS = -ggdb
 
 maciLifeCycleClient_OBJECTS = maciLifeCycleClient maciTestC
 maciLifeCycleClient_LIBS = maciClient
@@ -67,19 +68,21 @@ maciTestRegistrar_OBJECTS 	= maciTestRegistrar
 # Includes (.h) files (public and local)
 # ---------------------------------
 INCLUDES        = 
-INCLUDES_L      = maciTestClassImpl.h maciHeartbeatController.h maciContainerServicesTestClassImpl.h
+INCLUDES_L      = maciTestClassImpl.h maciHeartbeatController.h maciBlockingComponentListener.h maciContainerServicesTestClassImpl.h 
 
 #
 # Libraries (public and local)
 # ----------------------------
-LIBRARIES       = maciTestClass maciTestUtils maciContainerServicesTestClass \
+LIBRARIES       = maciTestClass maciBlockingComponentListener maciTestUtils maciContainerServicesTestClass \
 				  maciDynComp 
 LIBRARIES_L     = 
 
+maciBlockingComponentListener_OBJECTS = maciBlockingComponentListener
+maciBlockingComponentListener_LIBS = acsComponentListener
 maciTestClass_OBJECTS	= maciTestClassImpl maciTestC maciTestS
 maciTestUtils_OBJECTS	= maciTestUtils
-maciContainerServicesTestClass_OBJECTS = maciContainerServicesTestClassImpl maciTestS maciTestC
-maciContainerServicesTestClass_LIBS = maci acsContainerServices
+maciContainerServicesTestClass_OBJECTS = maciContainerServicesTestClassImpl maciTestS maciTestC 
+maciContainerServicesTestClass_LIBS = maci acsContainerServices maciBlockingComponentListener 
 maciDynComp_OBJECTS = maciDynCompImpl maciTestS maciTestC
 
 #

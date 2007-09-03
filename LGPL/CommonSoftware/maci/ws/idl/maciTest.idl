@@ -20,6 +20,14 @@ interface MaciTestClass : ACS::ACSComponent {
   
   // Release a component
   long release_component(in maci::CURL component_url);
+  
+  // Release a component
+  void release_internal_component();
+  
+   // Release a component
+  void activate_internal_component();
+  
+
 };
 
 // The component to test the container services methods
@@ -44,6 +52,9 @@ interface ContainerServicesTestClass : ACS::ACSComponent {
 
   // Test the relase of all components
   void releaseResourcesTest();
+  
+  // Test the component listener
+  void componentListenerTest();
 };
 
 // The Dynamic components activated by the container services test

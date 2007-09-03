@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - VLT project
 *
-* "@(#) $Id: maciContainerServicesClient.cpp,v 1.8 2006/10/23 15:39:24 bjeram Exp $"
+* "@(#) $Id: maciContainerServicesClient.cpp,v 1.9 2007/09/03 06:07:12 cparedes Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -39,7 +39,7 @@
 #define _POSIX_SOURCE 1
 #include "vltPort.h"
 
-static char *rcsId="@(#) $Id: maciContainerServicesClient.cpp,v 1.8 2006/10/23 15:39:24 bjeram Exp $"; 
+static char *rcsId="@(#) $Id: maciContainerServicesClient.cpp,v 1.9 2007/09/03 06:07:12 cparedes Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <maciTestC.h>
@@ -94,7 +94,8 @@ int main (int argc, char **argv)
 		    // Teriminate
 		    return -1;
 	    }
-	 
+	
+/* 
 	// Ask the remote component to get a component (it will execute
 	// the getComponent and the releaseComponent of the ContainerServices)   
 	ACS_SHORT_LOG((LM_INFO,"Testing getComponent..."));
@@ -135,6 +136,11 @@ int main (int argc, char **argv)
 	// getComponentDescriptor method
 	ACS_SHORT_LOG((LM_INFO,"Testing getComponentDescriptor..."));
 	comp->componentDescriptorTest();
+*/	
+    //The remote component uses the ContainerServices to register
+    //a listener and then be notified for availability and unavailability
+    ACS_SHORT_LOG((LM_INFO,"Testing componentListenerTest..."));
+	comp->componentListenerTest();
     
 	ACS_SHORT_LOG((LM_INFO,"All tests done."));
 	

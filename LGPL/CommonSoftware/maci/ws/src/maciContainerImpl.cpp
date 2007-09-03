@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciContainerImpl.cpp,v 1.89 2007/06/04 13:16:23 msekoran Exp $"
+* "@(#) $Id: maciContainerImpl.cpp,v 1.90 2007/09/03 06:07:12 cparedes Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -76,7 +76,7 @@
 #include <ACSAlarmSystemInterfaceFactory.h>
 #endif
 
-ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.89 2007/06/04 13:16:23 msekoran Exp $")
+ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.90 2007/09/03 06:07:12 cparedes Exp $")
 
  using namespace maci;
  using namespace cdb;
@@ -995,7 +995,7 @@ ContainerImpl::connect()
       unsigned long useIFR = 0;
 
       Field fld;
-      CORBA::ULong ul;
+      //CORBA::ULong ul;
       if (!m_dynamicContainer && m_database->GetField(m_dbPrefix, "UseIFR", fld))
 	{
           ACE_CString bVal("");
@@ -1947,6 +1947,10 @@ ContainerImpl::deactivate_components (
 
   // deactivation has to be allowed during shutdown...
 
+   //maci::stringSeq compNames;
+   //compNames.length(h.length());
+   // int idxCompNames = 0;
+
   ContainerComponentInfo info;
   for (CORBA::ULong i = 0; i<h.length(); i++)
     if (m_activeComponents.find(h[i], info)!=-1 &&
@@ -2026,9 +2030,11 @@ ContainerImpl::deactivate_components (
 
 	ACS_LOG(LM_RUNTIME_CONTEXT, "maci::ContainerImpl::deactivate_component",
 		(LM_INFO, "Component '%s' deactivated.", info.info.name.in()));                 
-
+     
+     //compNames[idxCompNames++] = info.info.name;
       }
-	      
+     //compNames.length(idxCompNames);
+	//components_unavailable(compNames);  
 }
 
 // ************************************************************************
@@ -2374,9 +2380,24 @@ ContainerImpl::components_available (
 			       )
   throw (CORBA::SystemException)
 {
-  // nothing to do
-  ACE_UNUSED_ARG(cobs);
-  
+      ACS_SHORT_LOG((LM_DEBUG, "Informing Components Available"));
+
+        ACE_CString_Vector compNames;
+        for(CORBA::ULong i = 0; i<cobs.length(); i++){
+            compNames.push_back((ACE_CString)cobs[i].name);
+        }
+        ContainerComponentInfo info;
+        for (COMPONENT_LIST::CONST_ITERATOR iter(m_activeComponentList); !iter.done(); iter.advance()){
+            if (m_activeComponents.find(*iter, info)!=-1 && !CORBA::is_nil(info.info.reference.in())){
+                
+                CORBA::Object_ptr ref = CORBA::Object::_duplicate(info.info.reference.in());
+                PortableServer::Servant servant = poaContainer->reference_to_servant(ref);
+                if (acscomponent::ACSComponentImpl *tempComp = 
+                    dynamic_cast<acscomponent::ACSComponentImpl*>(servant)){ 
+                    tempComp->getContainerServices()->fireComponentsAvailable(compNames);
+                }
+            }
+        }
 }
 
 // ************************************************************************
@@ -2408,9 +2429,23 @@ ContainerImpl::components_unavailable (
 				 )
   throw (CORBA::SystemException) 
 {
-  // nothing to do
-  ACE_UNUSED_ARG(cob_names);
-  
+    ACS_SHORT_LOG((LM_DEBUG, "Informing Components Unavailable"));
+    ACE_CString_Vector compNames;
+    for(CORBA::ULong i = 0; i<cob_names.length(); i++){
+        compNames.push_back((ACE_CString)cob_names[i]);
+    }
+    ContainerComponentInfo info;
+    for (COMPONENT_LIST::CONST_ITERATOR iter(m_activeComponentList); !iter.done(); iter.advance()){
+        if (m_activeComponents.find(*iter, info)!=-1 && !CORBA::is_nil(info.info.reference.in())){
+	        
+            CORBA::Object_ptr ref = CORBA::Object::_duplicate(info.info.reference.in());
+	        PortableServer::Servant servant = poaContainer->reference_to_servant(ref);
+	        if (acscomponent::ACSComponentImpl *tempComp = 
+	            dynamic_cast<acscomponent::ACSComponentImpl*>(servant)){ 
+                tempComp->getContainerServices()->fireComponentsUnavailable(compNames);
+            }
+        }
+    }
 }
 
 // ************************************************************************

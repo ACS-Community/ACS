@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciTestClassImpl.cpp,v 1.96 2006/10/20 09:12:13 bjeram Exp $"
+* "@(#) $Id: maciTestClassImpl.cpp,v 1.97 2007/09/03 06:07:12 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -16,7 +16,7 @@
 
 #include <vltPort.h>
 
-static char *rcsId="@(#) $Id: maciTestClassImpl.cpp,v 1.96 2006/10/20 09:12:13 bjeram Exp $";
+static char *rcsId="@(#) $Id: maciTestClassImpl.cpp,v 1.97 2007/09/03 06:07:12 cparedes Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <logging.h>
@@ -81,7 +81,6 @@ MaciTestClass::get_component (
                  m_name.c_str(), cob_url));
   return CORBA::Object::_nil();
 }
-
 CORBA::Long
 MaciTestClass::release_component(
     const char *cob_url
@@ -91,6 +90,18 @@ MaciTestClass::release_component(
   ACS_SHORT_LOG((LM_INFO, "MaciTestClass::release_component(%s, %s)",
                  m_name.c_str(), cob_url));
   return -1;
+}
+
+void MaciTestClass::activate_internal_component ()
+  throw (CORBA::SystemException)
+{
+  testInternalComp = getContainerServices()->getComponent<MACI_TEST::MaciTestClass>("MACI_SUB");
+}
+
+void MaciTestClass::release_internal_component()
+  throw (CORBA::SystemException)
+{
+   getContainerServices()->forceReleaseComponent("MACI_SUB");
 }
 
 /////////////////////////////////////////////////

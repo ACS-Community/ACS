@@ -4,7 +4,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciTestClassImpl.h,v 1.88 2006/10/09 06:13:39 gchiozzi Exp $"
+* "@(#) $Id: maciTestClassImpl.h,v 1.89 2007/09/03 06:07:12 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -33,7 +33,7 @@
  *
  * @author <a href=mailto:klemen.zagar@ijs.si>Klemen Zagar</a>,
  * Jozef Stefan Institute, Slovenia<br>
- * @version "@(#) $Id: maciTestClassImpl.h,v 1.88 2006/10/09 06:13:39 gchiozzi Exp $"
+ * @version "@(#) $Id: maciTestClassImpl.h,v 1.89 2007/09/03 06:07:12 cparedes Exp $"
  */
 
 class MaciTestClass: public virtual acscomponent::ACSComponentImpl,
@@ -71,10 +71,18 @@ public:
     virtual CORBA::Long release_component (const char *cob_url)                                    
 	throw (CORBA::SystemException);
 
+    virtual void MaciTestClass::activate_internal_component ()
+    throw (CORBA::SystemException);
+
+    virtual void MaciTestClass::release_internal_component ()
+    throw (CORBA::SystemException);
+
 protected:
 
     /// Initialization status
     int m_initialization;
+
+    CORBA::Object_var testInternalComp;
 
     /// The name of the component
     ACE_CString m_name;

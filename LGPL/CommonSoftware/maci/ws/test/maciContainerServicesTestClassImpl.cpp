@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - VLT project
 *
-* "@(#) $Id: maciContainerServicesTestClassImpl.cpp,v 1.13 2006/10/24 10:09:57 bjeram Exp $"
+* "@(#) $Id: maciContainerServicesTestClassImpl.cpp,v 1.14 2007/09/03 06:07:12 cparedes Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -61,12 +61,13 @@
 #define _POSIX_SOURCE 1
 #include "vltPort.h"
 
-static char *rcsId="@(#) $Id: maciContainerServicesTestClassImpl.cpp,v 1.13 2006/10/24 10:09:57 bjeram Exp $"; 
+static char *rcsId="@(#) $Id: maciContainerServicesTestClassImpl.cpp,v 1.14 2007/09/03 06:07:12 cparedes Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include "maciContainerServicesTestClassImpl.h"
 #include <acsContainerServices.h>
 #include <maciContainerServices.h>
+#include "maciBlockingComponentListener.h"
 
 using namespace maci;
 
@@ -252,6 +253,51 @@ void MaciContainerServicesTestClassImpl::getComponentNonStickyTest()
 	ACS_SHORT_LOG((LM_ERROR, "getComponentNonStickyTest (%s): Got an exception (right behaviour)", COMPNAME));
 	_ex.log();
 	}//try-catch
+}
+
+void MaciContainerServicesTestClassImpl::componentListenerTest()
+    throw (CORBA::SystemException)
+{
+    try {
+        BlockingComponentListener* blockLizzy = new BlockingComponentListener();
+        getContainerServices()->registerComponentListener(blockLizzy);
+        MACI_TEST::MaciTestClass* comp1 = getContainerServices()->getComponent<MACI_TEST::MaciTestClass>("MACI01");
+        //comp1->activate_internal_component();
+        // m_contSrvTesterComp.testForceReleaseComponent(DEFAULT_DUMMYCOMP_INSTANCE, true);
+	    comp1->release_internal_component();
+        sleep (2);
+        // we shouldn't get notified as we're not a client of the component yet
+        if(blockLizzy->getAllCompsAvailable().size() != 0) ACS_SHORT_LOG((LM_ERROR, "componentListenerTest getAllCompsAvailable != 0"));
+        if(blockLizzy->getAllCompsUnavailable().size() != 0) ACS_SHORT_LOG((LM_ERROR, "componentListenerTest getAllCompsUnavailable != 0"));
+
+        MACI_TEST::MaciTestClass_var obj =
+	        getContainerServices()->getComponent<MACI_TEST::MaciTestClass>("MACI_SUB");
+       
+        // from now on we should be notified
+
+        // component already active, this call will kill it . Should yield one notification
+        blockLizzy->clearAndExpect(1);
+	    comp1->release_internal_component();
+        sleep (2);
+        if(!blockLizzy->awaitNotifications(10))
+            ACS_SHORT_LOG((LM_ERROR, "Failed to get expected notification from manager within 10 seconds"));
+        if(blockLizzy->getAllCompsAvailable().size() != 0) ACS_SHORT_LOG((LM_ERROR, "componentListenerTest getAllCompsAvailable != 0"));
+        if(blockLizzy->getAllCompsUnavailable().size() != 1) ACS_SHORT_LOG((LM_ERROR, "componentListenerTest getAllCompsUnavailable != 1"));
+        
+        // this call will both activate and kill the component . Should yield two notifications in total
+
+        /* blockLizzy.clearAndExpect(2);
+        m_contSrvTesterComp.testForceReleaseComponent(DEFAULT_DUMMYCOMP_INSTANCE, true);
+        assertTrue("Failed to get expected notification from manager within 10 seconds",
+                blockLizzy.awaitNotifications(10, TimeUnit.SECONDS));
+        assertEquals(1, blockLizzy.getAllCompsAvailable().size());
+        assertEquals(1, blockLizzy.getAllCompNamesUnavailable().size());
+*/
+    } catch (...) {
+        ACS_SHORT_LOG((LM_ERROR,"componentListenerTest Exception"));
+    }
+
+
 }
 
 //--------------------------------------------------------------
