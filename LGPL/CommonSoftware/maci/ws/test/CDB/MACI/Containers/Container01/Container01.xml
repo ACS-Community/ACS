@@ -4,10 +4,9 @@
            xmlns:log="urn:schemas-cosylab-com:LoggingConfig:1.0"
            xmlns:baci="urn:schemas-cosylab-com:BACI:1.0" 
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-           CommandLine="" 
            Timeout="20.0" 
            UseIFR="1" 
-           ManagerRetry="10" >
+           ImplLang="cpp">
   <Autoload>
   </Autoload>
   <LoggingConfig 
