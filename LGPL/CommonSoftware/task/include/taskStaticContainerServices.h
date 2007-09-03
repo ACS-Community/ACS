@@ -3,7 +3,7 @@
 /*******************************************************************************
 * E.S.O. - VLT project
 *
-* "@(#) $Id: taskStaticContainerServices.h,v 1.7 2006/10/24 15:26:57 bjeram Exp $"
+* "@(#) $Id: taskStaticContainerServices.h,v 1.8 2007/09/03 06:01:50 cparedes Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -123,6 +123,8 @@ class StaticContainerServices: public maci::ContainerServices
    * @return void
    */
     void releaseAllComponents(){}
+
+    void forceReleaseComponent(const char *name){}
 
   /**
    * Get a reference to the DAL object
