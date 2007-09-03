@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.5 2005/04/21 15:42:10 bjeram Exp $"
+# "@(#) $Id: Makefile,v 1.6 2007/09/03 05:59:27 cparedes Exp $"
 #
 # Makefile of ........
 #
@@ -51,13 +51,13 @@ xxxxx_LIBS      =
 #
 # Includes (.h) files (public only)
 # ---------------------------------
-INCLUDES        = acsContainerServices.h acsContainerServices.i \
+INCLUDES        = acsComponentListener.h acsContainerServices.h acsContainerServices.i \
 				  acsComponentStateManager.h 
 
 #
 # Libraries (public and local)
 # ----------------------------
-LIBRARIES       = acsContainerServices
+LIBRARIES       = acsComponentListener acsContainerServices 
 LIBRARIES_L     = 
 
 ACSERRDEF = acsErrTypeContainerServices acsErrTypeLifeCycle
@@ -65,8 +65,10 @@ ACSERRDEF = acsErrTypeContainerServices acsErrTypeLifeCycle
 #
 # <brief description of lllll library>
 acsContainerServices_OBJECTS   = acsContainerServices 
-acsContainerServices_LIBS = acsErrTypeContainerServices acsErrTypeLifeCycle acsThread
-
+acsContainerServices_LIBS = acsErrTypeContainerServices acsErrTypeLifeCycle acsThread acsComponentListener
+ 
+acsComponentListener_OBJECTS = acsComponentListener
+acsComponentListener_LIBS = logging
 #
 # Scripts (public and local)
 # ----------------------------
