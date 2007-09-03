@@ -21,7 +21,7 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
  *
- * "@(#) $Id: acsContainerServices.h,v 1.17 2006/10/24 15:21:32 bjeram Exp $"
+ * "@(#) $Id: acsContainerServices.h,v 1.18 2007/09/03 06:00:16 cparedes Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -42,6 +42,7 @@
 #include <logging.h>
 #include <loggingLoggable.h>
 #include <maciErrType.h>
+#include <acsComponentListener.h>
 
 namespace maci {
    
@@ -166,7 +167,12 @@ namespace maci {
         PortableServer::POA_var getPOA() { 
             return m_poa; 
         }
-        
+
+                
+        void registerComponentListener(ComponentListener* listener);
+        void fireComponentsUnavailable(ACE_CString_Vector& compNames);
+        void fireComponentsAvailable(ACE_CString_Vector& compNames);
+ 
         /**
          * Gets the specified component
          * This method uses templates, so no cast to the request object is required
@@ -277,6 +283,8 @@ namespace maci {
 	    throw (maciErrType::CannotReleaseComponentExImpl)  
 	    =0;
       
+        virtual void forceReleaseComponent(const char *name)=0;
+
         /**
          * Release all the components
          * 
@@ -354,6 +362,8 @@ namespace maci {
    private:
         ACE_CString m_componentName;
         
+        ComponentListener* compListener; 
+        bool withCompListener; 
         /** POA reference
          *  This is a reference to the POA activating the component
          *  that owns this container services
