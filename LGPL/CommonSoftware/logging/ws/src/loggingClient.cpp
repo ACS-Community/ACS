@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingClient.cpp,v 1.48 2007/09/04 00:47:58 cparedes Exp $"
+* "@(#) $Id: loggingClient.cpp,v 1.49 2007/09/04 00:48:44 cparedes Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -729,6 +729,6 @@ void printUsage(const char* prgName) {
     ACE_OS::printf("\n\tusage: %s [-f <filename>] [-s] <Logging| Archiving> <ORB options>\n",
 	     prgName);
 	  ACE_OS::printf("-s: write the logs into the syslog\n");
-	  ACE_OS::printf("-f: print the resulting xml to filename\n\n");
+	  ACE_OS::printf("-f: print the resulting xml to filename\n");
 	  ACE_OS::printf("-h: print this help\n\n");
 }
