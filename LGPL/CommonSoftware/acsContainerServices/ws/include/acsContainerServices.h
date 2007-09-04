@@ -21,7 +21,7 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
  *
- * "@(#) $Id: acsContainerServices.h,v 1.18 2007/09/03 06:00:16 cparedes Exp $"
+ * "@(#) $Id: acsContainerServices.h,v 1.19 2007/09/04 04:07:52 cparedes Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -283,8 +283,6 @@ namespace maci {
 	    throw (maciErrType::CannotReleaseComponentExImpl)  
 	    =0;
       
-        virtual void forceReleaseComponent(const char *name)=0;
-
         /**
          * Release all the components
          * 
