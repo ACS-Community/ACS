@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - VLT project
 *
-* "@(#) $Id: maciContainerServicesTestClassImpl.cpp,v 1.15 2007/09/03 06:49:02 cparedes Exp $"
+* "@(#) $Id: maciContainerServicesTestClassImpl.cpp,v 1.16 2007/09/04 04:10:13 cparedes Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -61,7 +61,7 @@
 #define _POSIX_SOURCE 1
 #include "vltPort.h"
 
-static char *rcsId="@(#) $Id: maciContainerServicesTestClassImpl.cpp,v 1.15 2007/09/03 06:49:02 cparedes Exp $"; 
+static char *rcsId="@(#) $Id: maciContainerServicesTestClassImpl.cpp,v 1.16 2007/09/04 04:10:13 cparedes Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include "maciContainerServicesTestClassImpl.h"
@@ -277,7 +277,9 @@ void MaciContainerServicesTestClassImpl::componentListenerTest()
 
         // component already active, this call will kill it . Should yield one notification
         blockLizzy->clearAndExpect(1);
-	    comp1->release_internal_component();
+	    
+        system("maciReleaseComponent MACI_SUB");  
+    //comp1->release_internal_component();
         sleep (2);
         if(!blockLizzy->awaitNotifications(10))
             ACS_SHORT_LOG((LM_ERROR, "Failed to get expected notification from manager within 10 seconds"));

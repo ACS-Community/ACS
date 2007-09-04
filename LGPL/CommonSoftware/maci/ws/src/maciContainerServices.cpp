@@ -19,7 +19,7 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
  *
- * "@(#) $Id: maciContainerServices.cpp,v 1.27 2007/09/03 06:07:12 cparedes Exp $"
+ * "@(#) $Id: maciContainerServices.cpp,v 1.28 2007/09/04 04:10:13 cparedes Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -539,11 +539,7 @@ throw (acsErrTypeContainerServices::GettingCompInfoExImpl)
 	}
 }
 
-void 
-MACIContainerServices::forceReleaseComponent(const char *name)
-{
-	m_manager->force_release_component(m_componentHandle, name);
-}
+	//m_manager->force_release_component(m_componentHandle, name);
 
 void 
 MACIContainerServices::releaseComponent(const char *name)
