@@ -1,4 +1,4 @@
-# @(#) $Id: BaciHelper.py,v 1.8 2006/04/05 16:55:08 dfugate Exp $
+# @(#) $Id: BaciHelper.py,v 1.9 2007/09/04 22:21:23 agrimstrup Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -21,7 +21,7 @@
 # ALMA should be addressed as follows:
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: BaciHelper.py,v 1.8 2006/04/05 16:55:08 dfugate Exp $"
+# "@(#) $Id: BaciHelper.py,v 1.9 2007/09/04 22:21:23 agrimstrup Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -37,13 +37,14 @@ TODO:
 to be changed.
 '''
 
-__revision__ = "$Id: BaciHelper.py,v 1.8 2006/04/05 16:55:08 dfugate Exp $"
+__revision__ = "$Id: BaciHelper.py,v 1.9 2007/09/04 22:21:23 agrimstrup Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 from new import instancemethod
 #--CORBA STUBS-----------------------------------------------------------------
 import CORBA
 #--ACS Imports-----------------------------------------------------------------
+from maciErrTypeImpl      import CannotGetComponentExImpl
 from Acspy.Util.ACSCorba  import interfaceRepository
 
 from ACSImpl.Double       import ROdouble, RWdouble
@@ -116,7 +117,8 @@ def addProperty(comp_ref,
     
     Returns: Nothing
     
-    Raises: ???
+    Raises: CannotGetComponentExImpl if real type of BACI property cannot be
+            determined.
     '''
     #string of the form 'IDL:alma/someModule/someInterface:1.0'
     comp_type = comp_ref._NP_RepositoryId
@@ -133,6 +135,10 @@ def addProperty(comp_ref,
     #look up the component's description in the IFR
     if INTERFACE_DICT.has_key(comp_type) == False:
         interf = IFR.lookup_id(comp_type)
+        if interf is None:
+            ex = CannotGetComponentExImpl()
+            ex.setReason("Interface for %s not found or Interface Repository not responding" % comp_type)
+            raise ex
         interf = interf._narrow(CORBA.InterfaceDef)
         interf = interf.describe_interface()
         INTERFACE_DICT[comp_type] = interf
