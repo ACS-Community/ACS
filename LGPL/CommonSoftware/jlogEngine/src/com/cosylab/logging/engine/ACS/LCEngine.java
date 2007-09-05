@@ -298,10 +298,10 @@ public class LCEngine {
 				listenersDispatcher.publishReport("Exception occurred when destroying " + accessType + " remote access.");
 				System.out.println("Exception in LCEngine$AccessDestroyer::run(): " + e);
 			}
-			listenersDispatcher.publishReport("Disconnected from " + accessType + " remote access.");
-			if (remoteAccess!=null) {
-				remoteAccess.close(false);
-			}
+			listenersDispatcher.publishReport("Disconnected from " + accessType + " remote access.");	
+		}
+		if (remoteAccess!=null) {
+			remoteAccess.close(false);
 		}
 		remoteAccess = null;
 		listenersDispatcher.publishConnected(false);
