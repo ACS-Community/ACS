@@ -27,8 +27,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.WindowEvent;
 import java.util.Date;
+import java.security.acl.Owner;
 import java.text.SimpleDateFormat;
 
 import javax.swing.ImageIcon;
@@ -63,6 +63,7 @@ import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.Toolkit;
 import java.awt.Font;
 import java.awt.FontMetrics;
+import java.awt.Window;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -78,11 +79,11 @@ import com.cosylab.logging.client.DateRenderer;
  * @author: 
  */
 
-public class LogEntryTable extends javax.swing.JTable 
+public class LogEntryTable extends JTable 
 {
 	private TableColumn[] columnsList;
 	private boolean[] visibleColumns;
-	private FieldChooserDialog fieldChooser = new FieldChooserDialog();
+	private FieldChooserDialog fieldChooser = null;
 	private ColumnMenu popupMenu = new ColumnMenu();
 	
 	/**
@@ -986,7 +987,20 @@ public class LogEntryTable extends javax.swing.JTable
 	{
 		String[] fieldNames = ILogEntry.fieldNames;
 		boolean[] fieldVisible = getVisibleColumns(true);
-
+		
+		Window owner;
+		if (fieldChooser==null) {
+			Object temp=loggingClient;
+			while (temp!=null && !(temp instanceof Window)) {
+				if (temp instanceof Component) {
+					temp=((Component)temp).getParent();
+				} else {
+					temp=null;
+				}
+			}
+			owner=(Window)temp;
+			fieldChooser = new FieldChooserDialog(owner);
+		}
 		fieldChooser.setupFields(fieldNames, fieldVisible);
 
 		fieldChooser.setVisible(true);

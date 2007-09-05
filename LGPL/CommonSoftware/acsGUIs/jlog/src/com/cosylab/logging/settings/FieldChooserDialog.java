@@ -24,8 +24,11 @@ package com.cosylab.logging.settings;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.Point;
+import java.awt.Window;
 
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -40,7 +43,7 @@ import com.cosylab.gui.components.r2.JCheckList;
  * Creation date: (1/2/2002 22:53:33)
  * @author: Ales Pucelj (ales.pucelj@kgb.ijs.si)
  */
-public class FieldChooserDialog extends javax.swing.JDialog {
+public class FieldChooserDialog extends JDialog {
 	private JCheckList fieldList = null;
 	private JLabel description = null;
 	private JButton buttonOK = null;
@@ -60,23 +63,21 @@ public class FieldChooserDialog extends javax.swing.JDialog {
 			} else {
 				modalResult = 0;
 			}
-			FieldChooserDialog.this.hide();
+			FieldChooserDialog.this.setVisible(false);
 			return;
 		}
 	}
 /**
  * FieldChooserDialog constructor comment.
  */
-public FieldChooserDialog() {
-	super();
+public FieldChooserDialog(Window owner) {
+	super(owner);
 
 	setTitle("Field chooser");
 	setModal(true);
 	
 	GridBagLayout gb = new GridBagLayout();
 	contentPane = new JPanel();
-
-	setBounds(30, 30, 200, 250);
 
 	this.setContentPane(contentPane);
 	contentPane.setLayout(gb);
@@ -124,7 +125,7 @@ public FieldChooserDialog() {
 	buttonCancel.setHorizontalAlignment(SwingConstants.HORIZONTAL);
 	buttonCancel.addActionListener(buttonListener);
 	contentPane.add(buttonCancel, constraints);
-		
+	
 }
 /**
  * Insert the method's description here.
@@ -168,17 +169,7 @@ public JCheckList getFieldList() {
 public int getModalResult() {
 	return modalResult;
 }
-/**
- * Insert the method's description here.
- * <p>
- * Creation date: (1/2/2002 22:59:20)
- * @param args java.lang.String[]
- */
-public static void main(String[] args) {
-	FieldChooserDialog fcd = new FieldChooserDialog();
-	
-	fcd.show();	
-}
+
 /**
  * Insert the method's description here.
  * <p>
@@ -197,5 +188,13 @@ public void setupFields(String[] fieldNames, boolean[] checked) {
 		clm.setChecked(i, checked[i]);
 	}
 
+}
+
+
+public void setVisible(boolean visible) {
+	setLocationRelativeTo(getOwner());
+	pack();
+	super.setVisible(visible);
+	toFront();
 }
 }
