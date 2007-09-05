@@ -39,6 +39,8 @@ import com.cosylab.logging.LoggingClient;
  */
 public class LogFrame extends JFrame implements WindowListener { 
 	
+	private volatile boolean closing =false;
+	
 	private LoggingClient loggingClient;
 	
 	/**
@@ -87,7 +89,6 @@ public class LogFrame extends JFrame implements WindowListener {
 	 */
 	private void initialize() {
 		setTitle("LoggingClient");
-		
 		addWindowListener(this);
         
         loggingClient = new LoggingClient(this); // build the LoggingClient
@@ -177,7 +178,7 @@ public class LogFrame extends JFrame implements WindowListener {
 					name=initFileName;
 				}
 				public void run() {
-					new LogFrame(f,name);
+					LogFrame l = new LogFrame(f,name);
 				}
 			}
 			SwingUtilities.invokeLater(new FrameLauncher(filterFile,initLogFileName));
@@ -216,7 +217,15 @@ public class LogFrame extends JFrame implements WindowListener {
 	/**
 	 * @see WindowListener
 	 */
-	public void windowClosed(java.awt.event.WindowEvent e) {}
+	public void windowClosed(java.awt.event.WindowEvent e) {
+		final Runnable doDispose = new Runnable() {
+		     public void run() {
+		    	 loggingClient=null;
+		    	 System.exit(0);
+		     }
+		};
+		SwingUtilities.invokeLater(doDispose);
+	}
 	
 	/**
 	 * @see WindowListener
@@ -237,10 +246,17 @@ public class LogFrame extends JFrame implements WindowListener {
 	 * @see WindowListener
 	 */
 	public void windowClosing(java.awt.event.WindowEvent e)	{
-		loggingClient.close(false);
-		dispose();
+		if (closing) {
+			return;
+		}
+		closing=true;
+		final Runnable doClose = new Runnable() {
+			public void run() {
+				loggingClient.close(true);
+				setVisible(false);
+				dispose();
+			}
+		};
+		SwingUtilities.invokeLater(doClose);
 	}
-
-	
-
 }
