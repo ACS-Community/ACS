@@ -308,7 +308,7 @@ public class LogEntryTable extends JTable
 				
 				getLCModel().replaceLog(row,logEntry);
 				
-				loggingClient.getJScrollPane2().setViewportView(loggingClient.getDataTable(logEntry));
+				loggingClient.setLogDetailContent(logEntry);
 			} else if (e.getSource()==addUserInfo) {
 				// Show the dialog
 				UserInfoDlg dlg = new UserInfoDlg();
@@ -338,7 +338,7 @@ public class LogEntryTable extends JTable
 					
 					getLCModel().replaceLog(row,logEntry);
 					
-					loggingClient.getJScrollPane2().setViewportView(loggingClient.getDataTable(logEntry));
+					loggingClient.setLogDetailContent(logEntry);
 				}
 			} else if (e.getSource()==saveSelected) {
 				saveSelectedLogs();
