@@ -63,6 +63,7 @@ public final class ACSStructuredPushConsumer extends StructuredPushConsumerPOA
 		 */
 		public Dispatcher() {
 			super("Dispatcher");
+			setDaemon(true);
 		}
 		
 		/**
@@ -209,8 +210,10 @@ public final class ACSStructuredPushConsumer extends StructuredPushConsumerPOA
 	
 	public void destroy()
 	{
-		structuredProxyPushSupplier.disconnect_structured_push_supplier();
-		close(false);
+		try {
+			structuredProxyPushSupplier.disconnect_structured_push_supplier();
+		} catch (Throwable t) {}
+		//close(false);
 	}
 
 	public void disconnect_structured_push_consumer()
@@ -374,7 +377,8 @@ public final class ACSStructuredPushConsumer extends StructuredPushConsumerPOA
 	 */
 	public void close(boolean sync) {
 		closed=true;
-		if (dispatcher!=null) {
+		
+		if (dispatcher!=null) {			
 			dispatcher.close(sync);
 		}
 		if (logRetrieval!=null) {
