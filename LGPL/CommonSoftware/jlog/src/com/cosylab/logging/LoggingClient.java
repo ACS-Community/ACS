@@ -30,11 +30,8 @@ import java.awt.Insets;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.WindowEvent;
-import java.io.File;
-import java.io.IOException;
 
 import javax.swing.ImageIcon;
-import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -44,7 +41,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JViewport;
 import javax.swing.event.MenuEvent;
-import javax.swing.filechooser.FileFilter;
 
 import alma.acs.logging.archive.ArchiveConnectionManager;
 import alma.acs.logging.archive.QueryDlg;
@@ -109,18 +105,21 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 	private UserPreferences userPreferences = new UserPreferences();
 
 	private JLabel ivjFilterStatus = null; // Not filtered
-	private JLabel ivjInfoStatus = null; // Additional info
 
 	private JPanel ivjJPanel1 = null;
 	private JPanel ivjJPanel2 = null;
 	private JPanel detailedInfoPanel = null;
+	
+	// The table showing the whole content of a log (in the detailed
+	// panel at the right side of the main window)
+	private DetailedLogTable detailedLogTable = new DetailedLogTable();
 	
 	// The panel with the suspend btn, the filter string...
 	// It is immediately under the table of logs
 	private JPanel filterStatusPnl = null;
 
 	private JScrollPane statusAreaPanel = null; // The bottom scrolling panel with the status messages
-	private JScrollPane ivjJScrollPane2 = null;
+	private JScrollPane detailedInfoScrollPane = null;
 
 	private JSplitPane ivjJSplitPane1 = null;
 	private JSplitPane ivjJSplitPane2 = null;
@@ -146,8 +145,6 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 	private EventHandler eventHandler = new EventHandler();
 
 	private boolean ivjConnPtoLCMod = false;
-
-	private com.cosylab.logging.client.DomTree ivjDomTree = null;
 
 	private LCEngine engine = null;
 	private LogTableDataModel tableModel = null;
@@ -703,11 +700,11 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 			// Check whether a row has been selected
 			// no row selected
 			if (selectedRow == -1) {
-				getJScrollPane2().setViewportView(getDomTree());
+				detailedLogTable.setupContent(null);
 			} else {
 				// a row is selected
 				ILogEntry log = jt.getLCModel().getVisibleLogEntry(selectedRow);
-				getJScrollPane2().setViewportView(getDataTable(log));
+				detailedLogTable.setupContent(log);
 			}
 		} catch (java.lang.Throwable ivjExc) {
 			handleException(ivjExc);
@@ -715,23 +712,16 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 	}
 	
 	/**
-	 * Returns a table that displays all the data elements for a selected table row.
-	 * @param log The log entry which datas are to be shown
+	 * Set the content of the detailed info table from the given log
+	 * 
+	 * @param log The log entry which fields have to be shown in the table
+	 *            It can be null
 	 * @return The component that displays the datas
 	 */
-	public Component getDataTable(ILogEntry log)
+	public void setLogDetailContent(ILogEntry log)
 	{
-		DetailedLogTable table = null;
 		// Try to build a DetailedLogTable
-		try {
-			table = new DetailedLogTable(log);
-		} catch (Exception e) {
-			e.printStackTrace();
-			// DetailedLogTable returns an error if there are no datas in the log entry
-			// In this case we return a DomTree
-			return getDomTree();
-		}
-		return (Component)table;
+		detailedLogTable.setupContent(log);
 	}
 
 	/**
@@ -739,7 +729,7 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 	 * @param arg1 java.awt.event.WindowEvent
 	 */
 
-	public void connLCEngDisconnect(java.awt.event.WindowEvent arg1)
+	public void connLCEngDisconnect(WindowEvent arg1)
 	{
 		try
 		{
@@ -781,30 +771,6 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 	}
 	
 	/**
-	 * Returns the DomTree property value.
-	 * @return com.cosylab.logging.client.DomTree
-	 */
-
-	public com.cosylab.logging.client.DomTree getDomTree()
-	{
-		if (ivjDomTree == null)
-		{
-			try
-			{
-				ivjDomTree = new com.cosylab.logging.client.DomTree();
-				ivjDomTree.setName("DomTree");
-				ivjDomTree.setBounds(0, 0, 107, 310);
-
-			}
-			catch (java.lang.Throwable ivjExc)
-			{
-
-				handleException(ivjExc);
-			}
-		}
-		return ivjDomTree;
-	}
-	/**
 	 * Returns the FilterStatus property value.
 	 * @return javax.swing.JLabel
 	 */
@@ -832,31 +798,6 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 	 * Returns the groupMenu1 property value.
 	 * @return javax.swing.JMenu
 	 */
-
-	/**
-	 * Returns the JLabel1 property value.
-	 * @return javax.swing.JLabel
-	 */
-
-	private javax.swing.JLabel getInfoStatus()
-	{
-		if (ivjInfoStatus == null)
-		{
-			try
-			{
-				ivjInfoStatus = new javax.swing.JLabel();
-				ivjInfoStatus.setName("InfoStatus");
-				ivjInfoStatus.setText("Detailed info");
-
-			}
-			catch (java.lang.Throwable ivjExc)
-			{
-
-				handleException(ivjExc);
-			}
-		}
-		return ivjInfoStatus;
-	}
 
 	/**
 	 * Returns the JPanel1 property value.
@@ -919,30 +860,19 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 	 * Returns the JPanel3 property value.
 	 * @return javax.swing.JPanel
 	 */
-	private javax.swing.JPanel getDeatailedInfoPanel()
+	private JPanel getDeatailedInfoPanel()
 	{
 		if (detailedInfoPanel == null)
 		{
 			try
 			{
-				detailedInfoPanel = new javax.swing.JPanel();
-				detailedInfoPanel.setName("JPanel3");
-				detailedInfoPanel.setLayout(new java.awt.GridBagLayout());
-
-				java.awt.GridBagConstraints constraintsJLabel1 = new java.awt.GridBagConstraints();
-				constraintsJLabel1.gridx = 0;
-				constraintsJLabel1.gridy = 0;
-				constraintsJLabel1.anchor = java.awt.GridBagConstraints.WEST;
-				constraintsJLabel1.insets = new java.awt.Insets(4, 4, 4, 4);
-				detailedInfoPanel.add(getInfoStatus(), constraintsJLabel1);
-
-				java.awt.GridBagConstraints constraintsJScrollPane2 = new java.awt.GridBagConstraints();
-				constraintsJScrollPane2.gridx = 0;
-				constraintsJScrollPane2.gridy = 1;
-				constraintsJScrollPane2.fill = java.awt.GridBagConstraints.BOTH;
-				constraintsJScrollPane2.weightx = 1.0;
-				constraintsJScrollPane2.weighty = 1.0;
-				detailedInfoPanel.add(getJScrollPane2(), constraintsJScrollPane2);
+				BorderLayout layout = new BorderLayout();
+				layout.setVgap(10);
+				detailedInfoPanel = new JPanel(layout);
+				detailedInfoPanel.setName("detailedInfoPanel");
+				JLabel lbl =new JLabel("Detailed info");
+				detailedInfoPanel.add(lbl,BorderLayout.NORTH);
+				detailedInfoPanel.add(getLogDetailScrollPane(), BorderLayout.CENTER);
 
 			}
 			catch (java.lang.Throwable ivjExc)
@@ -1045,27 +975,25 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 	
 	
 	/**
-	 * Returns the JScrollPane2 property value.
-	 * @return javax.swing.JScrollPane
+	 * Returns the scroll pane with the details of the logs
+	 * 
+	 * @return JScrollPane
 	 */
-	public javax.swing.JScrollPane getJScrollPane2()
+	public JScrollPane getLogDetailScrollPane()
 	{
-		if (ivjJScrollPane2 == null)
+		if (detailedInfoScrollPane == null)
 		{
 			try
 			{
-				ivjJScrollPane2 = new javax.swing.JScrollPane();
-				ivjJScrollPane2.setName("JScrollPane2");
-				ivjJScrollPane2.setViewportView(getDomTree());
-
+				detailedInfoScrollPane = new JScrollPane(detailedLogTable);
+				detailedInfoScrollPane.setName("detailedInfoScrollPane");
 			}
 			catch (java.lang.Throwable ivjExc)
 			{
-
 				handleException(ivjExc);
 			}
 		}
-		return ivjJScrollPane2;
+		return detailedInfoScrollPane;
 	}
 	/**
 	 * Returns the JSplitPane1 property value.
