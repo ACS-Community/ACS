@@ -75,7 +75,7 @@ public class LogTableDataModel extends AbstractTableModel implements Runnable
 	 */
 	public class LogDeleter extends Thread {
 		// The time interval between two iteration of the thread
-		private final int TIME_INTERVAL=15*1000;
+		private final int TIME_INTERVAL=20;
 		
 		// The queue with the keys of the logs to delete
 		private LinkedBlockingQueue<Integer> logsToDelete = new LinkedBlockingQueue<Integer>();
@@ -132,7 +132,7 @@ public class LogTableDataModel extends AbstractTableModel implements Runnable
 			ArrayList<Integer> keysToDelete = new ArrayList<Integer>();
 			int sz;
 			while (!terminateThread) {
-				for (int t=0; t<TIME_INTERVAL && !terminateThread;t ++) {
+				for (int t=0; t<TIME_INTERVAL && !terminateThread; t ++) {
 					try {
 						Thread.sleep(1000);
 					} catch (InterruptedException e) {
@@ -857,12 +857,14 @@ public class LogTableDataModel extends AbstractTableModel implements Runnable
 	public void close(boolean sync) {
 		if (logDeleter!=null) {
 			logDeleter.close(sync);
+			logDeleter=null;
 		}
 		if (visibleLogs!=null) {
 			visibleLogs.close(sync);
 		}
 		if (ioHelper!=null) {
 			ioHelper.done();
+			ioHelper=null;
 		}
 	}
 	
