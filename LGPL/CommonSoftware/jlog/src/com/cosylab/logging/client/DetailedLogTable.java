@@ -31,6 +31,7 @@ public class DetailedLogTable extends JTable
 {
 	int rowsNum; // The rows in the table
 	String[][] nameValue; // The pairs <name,value>
+	private String NOT_AVAILABLE="N/A";
 	
 	private TableModel dataModel = new AbstractTableModel() { 
 		
@@ -53,10 +54,49 @@ public class DetailedLogTable extends JTable
 	 * 
 	 * @param log The logEntry with the datas to display 
 	 */
-	public DetailedLogTable(ILogEntry log) {
+	public DetailedLogTable() {
 		super();
-
-		//	The number of rows in the table is given by the number of fields
+		setModel(dataModel);
+		setRowSelectionAllowed(false);
+        setColumnSelectionAllowed(false);
+        setCellSelectionEnabled(false);
+        setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+        
+		getColumnModel().getColumn(0).setHeaderValue("Field");
+		getColumnModel().getColumn(1).setHeaderValue("Value");
+		
+		getColumnModel().getColumn(0).setMinWidth(110);
+		getColumnModel().getColumn(1).setMinWidth(10000);
+		setEmptyContent();
+	}
+	
+	/**
+	 * Fill the table with an empty content (no log selected)
+	 *
+	 */
+	private void setEmptyContent() {
+		rowsNum = ILogEntry.NUMBER_OF_FIELDS;
+		nameValue = new String[rowsNum][2];
+		for (int i=0; i<ILogEntry.NUMBER_OF_FIELDS; i++) {
+			nameValue[i][0]= "<HTML><B>"+ILogEntry.fieldNames[i]+"</B>";
+			nameValue[i][1]=NOT_AVAILABLE;
+		}
+		
+		getTableHeader().resizeAndRepaint();
+		resizeAndRepaint();
+	}
+	
+	/**
+	 * Fill the table with the fields of the given log
+	 *  
+	 * @param log The log whose content is shown in the table
+	 */
+	public void setupContent(ILogEntry log) {
+		if (log==null) {
+			setEmptyContent();
+		}
+		
+		// The number of rows in the table is given by the number of fields
 		// of each LogEntry plus the number of the "data" elements for the selected log
 		Vector<ILogEntry.AdditionalData> additionalData = log.getAdditionalData();
 		rowsNum = ILogEntry.NUMBER_OF_FIELDS;
@@ -90,14 +130,14 @@ public class DetailedLogTable extends JTable
 				nameValue[i][1] = additionalData.get(i-ILogEntry.NUMBER_OF_FIELDS).getValue();
 			}
 
-			setModel(dataModel);
-
 			// Change the name of the columns
 			getColumnModel().getColumn(0).setHeaderValue("Field");
 			getColumnModel().getColumn(1).setHeaderValue("Value");
 
 			// Force the header to resize and repaint itself
+			
 			getTableHeader().resizeAndRepaint();
+			resizeAndRepaint();
 		}
 	}
 	
@@ -133,14 +173,16 @@ public class DetailedLogTable extends JTable
 	 * @return
 	 */
 	private void setToolTip(JComponent  c, String text, int colWidth) {
-		if (text==null)	((JComponent) c).setToolTipText(null);
-		else if (text.length() <colWidth) ((JComponent) c).setToolTipText(null);
-		else {
+		if (text==null)	{
+			c.setToolTipText(null);
+		} else if (text.length() <colWidth) {
+			c.setToolTipText(null);
+		} else {
 			// I am going to print the string in HTML format: new lines become <BR>
 			text=text.replaceAll("<","&lt;");
 			text=text.replaceAll(">","&gt;");
 			// Eventually, set the tooltip
-			((JComponent) c).setToolTipText("<HTML><PRE>"+text+"</PRE></HTML>");
+			c.setToolTipText("<HTML><PRE>"+text+"</PRE></HTML>");
 		}
 	}
 
