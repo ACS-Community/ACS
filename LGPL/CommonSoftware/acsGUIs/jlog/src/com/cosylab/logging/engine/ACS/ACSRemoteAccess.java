@@ -74,8 +74,6 @@ public final class ACSRemoteAccess implements RemoteAccess {
 	// The object to dispatch messages to the listeners
 	private ACSListenersDispatcher listenersDispatcher = null;
 	
-	private Thread orbThread = null;
-	
 	/**
 	 * ACSRemoteAccss constructor comment.
 	 * 
@@ -171,13 +169,15 @@ public final class ACSRemoteAccess implements RemoteAccess {
 	 * destroy method comment. Not implemented yet.
 	 */
 	public void destroy() {
-	//	System.out.println(">>> Before destroy.");
-		acsSPS.destroy();
+		if (acsSPS!=null) {
+			acsSPS.destroy();
+		}
 	//	consumerAdmin.destroy();
-        if (!isExternalORB) {
-            getORB().shutdown(false);
+        if (!isExternalORB && orb!=null) {
+            orb.shutdown(true);
+            orb.destroy();
+            orb=null;
         }
-	//	System.out.println(">>> After destroy.");
 	}
 	
 	public ConsumerAdmin getConsumerAdmin() {
@@ -222,9 +222,6 @@ public final class ACSRemoteAccess implements RemoteAccess {
 			try
 			{
 				poaManager.activate();
-				orbThread = new Thread();
-				orbThread.setDaemon(true);
-				orbThread.start();
 			} catch (Exception e)
 			{
 				throw new IllegalStateException("POAManager activation failed." + e);
@@ -389,6 +386,9 @@ public final class ACSRemoteAccess implements RemoteAccess {
 	 * @param sync If it is true wait the termination of the threads before returning
 	 */
 	public void close(boolean sync) {
-		acsSPS.close(sync);
+		if (acsSPS!=null) {
+			acsSPS.close(sync);
+		}
+		destroy();
 	}
 }
