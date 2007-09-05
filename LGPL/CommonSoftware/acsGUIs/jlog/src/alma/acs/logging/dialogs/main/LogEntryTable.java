@@ -988,18 +988,8 @@ public class LogEntryTable extends JTable
 		String[] fieldNames = ILogEntry.fieldNames;
 		boolean[] fieldVisible = getVisibleColumns(true);
 		
-		Window owner;
 		if (fieldChooser==null) {
-			Object temp=loggingClient;
-			while (temp!=null && !(temp instanceof Window)) {
-				if (temp instanceof Component) {
-					temp=((Component)temp).getParent();
-				} else {
-					temp=null;
-				}
-			}
-			owner=(Window)temp;
-			fieldChooser = new FieldChooserDialog(owner);
+			fieldChooser = new FieldChooserDialog(loggingClient);
 		}
 		fieldChooser.setupFields(fieldNames, fieldVisible);
 

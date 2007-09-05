@@ -21,6 +21,7 @@
  */
 package com.cosylab.logging.settings;
 
+import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -54,7 +55,9 @@ public class FieldChooserDialog extends JDialog {
 	private Insets defaultInsets = new Insets(4, 4, 4, 4);
 	private int modalResult = 0;
 
-	private JScrollPane scrollPane = null;
+	// The dialog is positioned over this component when it is made visible
+	// (or at the center of the screen if it is null)
+	private Component displayHelperComponent=null;
 
 	private class ButtonListener implements java.awt.event.ActionListener {
 		public void actionPerformed(java.awt.event.ActionEvent e) {
@@ -69,10 +72,14 @@ public class FieldChooserDialog extends JDialog {
 	}
 /**
  * FieldChooserDialog constructor comment.
+ * @param displayOverComponent The component over which this dialog will be shown
  */
-public FieldChooserDialog(Window owner) {
-	super(owner);
+public FieldChooserDialog(Component displayOverComponent) {
+	if (displayOverComponent==null) {
+		throw new IllegalArgumentException("Invalid null Component in constructor");
+	}
 
+	displayHelperComponent=displayOverComponent;
 	setTitle("Field chooser");
 	setModal(true);
 	
@@ -192,7 +199,7 @@ public void setupFields(String[] fieldNames, boolean[] checked) {
 
 
 public void setVisible(boolean visible) {
-	setLocationRelativeTo(getOwner());
+	setLocationRelativeTo(displayHelperComponent);
 	pack();
 	super.setVisible(visible);
 	toFront();
