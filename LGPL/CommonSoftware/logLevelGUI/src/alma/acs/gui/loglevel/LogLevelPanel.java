@@ -53,7 +53,7 @@ public class LogLevelPanel extends JScrollPane implements IPanel {
 	 *
 	 */
 	public LogLevelPanel() {
-		super(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		super();
 		initialize();
 	}
 	
