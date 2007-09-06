@@ -33,6 +33,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
+import alma.acs.gui.loglevel.LogLvlSelNotSupportedException;
+
 import si.ijs.maci.LoggingConfigurable;
 
 /**
@@ -60,8 +62,9 @@ public class LogLevelSelectorPanel extends JPanel implements ActionListener {
 	 * @param configurable The LoggingConfigurable whose log level
 	 *                     the user wants to read or set
 	 * @param title The name of the configurable to add to the tile
+	 * @throws LogLvlSelNotSupportedException If the configurable does not support selection
 	 */
-	public LogLevelSelectorPanel(LoggingConfigurable configurable, String name) {
+	public LogLevelSelectorPanel(LoggingConfigurable configurable, String name) throws LogLvlSelNotSupportedException {
 		if (configurable==null) {
 			throw new IllegalArgumentException("Invalid null LoggingConfigurable in constructor");
 		}
@@ -72,8 +75,10 @@ public class LogLevelSelectorPanel extends JPanel implements ActionListener {
 	
 	/**
 	 * Init the GUI
+	 * 
+	 * @throws LogLvlSelNotSupportedException If the configurable does not support selection
 	 */
-	private void initialize(String name) {
+	private void initialize(String name) throws LogLvlSelNotSupportedException {
 		BoxLayout layout = new BoxLayout(this,BoxLayout.Y_AXIS);
 		setLayout(layout);
 		
@@ -95,15 +100,15 @@ public class LogLevelSelectorPanel extends JPanel implements ActionListener {
 	 * Initialize the log level panel (i.e. the table)
 	 * 
 	 * @return The panel with the table of log levels
+	 * 
+	 * @throws LogLvlSelNotSupportedException If the configurable does not support selection
 	 */
-	private JComponent initLogLevelsPanel() {
+	private JComponent initLogLevelsPanel() throws LogLvlSelNotSupportedException {
 		LogLevelHelper[] levels=null;
 		try {
 			levels = loggersLbl();
 		} catch (Exception e) {
-			JLabel lbl = new JLabel("No log levels available");
-			lbl.setToolTipText("Function not yet implemented");
-			return lbl;
+			throw new LogLvlSelNotSupportedException("Function not yet implemented by "+getName(),e);
 		}
 		
 		model = new LogLevelModel(levels);
