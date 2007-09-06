@@ -553,8 +553,11 @@ public class LogConfig {
 	protected void log(Level level, String msg, Throwable thr) {
 		if (logger != null) {
 			logger.log(level, msg, thr);
-		} else {
-			System.out.println(level.toString() + ": " + msg + (thr != null ? thr.toString() : ""));
+		} 
+		else {
+			if (level.intValue() >= getDefaultMinLogLevelLocal()) {
+				System.out.println(level.toString() + ": " + msg + (thr != null ? thr.toString() : ""));
+			}
 		}
 	}
 
