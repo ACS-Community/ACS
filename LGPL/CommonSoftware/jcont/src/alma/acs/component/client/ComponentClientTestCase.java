@@ -51,12 +51,17 @@ import alma.acs.util.ACSPorts;
  */
 public class ComponentClientTestCase extends TestCase
 {
-	private AcsCorba acsCorba;
+	protected AcsCorba acsCorba;
 	
 	private ContainerServicesImpl m_containerServices;
     private CleaningDaemonThreadFactory m_threadFactory;
 	
-	private AcsManagerProxy m_acsManagerProxy;
+	/**
+	 * Special tests that need to call directly the manager API could use this proxy object.
+	 * To be used sparingly, as we need to exercise (and extend if necessary) the regular 
+	 * classes such as ContainerServices.  
+	 */
+	protected AcsManagerProxy m_acsManagerProxy;
 	
 	protected Logger m_logger;
 	private LogReceiver logReceiver;
