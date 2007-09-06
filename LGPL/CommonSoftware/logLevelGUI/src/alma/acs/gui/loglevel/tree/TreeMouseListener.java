@@ -118,8 +118,6 @@ public class TreeMouseListener extends MouseAdapter {
 		}
 		DefaultMutableTreeNode selNode = (DefaultMutableTreeNode)path.getLastPathComponent();
 		boolean implementsLogging=implementsLoggingConfigurable(selNode);
-		System.out.println("Object selected: "+ selNode.toString());
-		System.out.println("Implements interface "+implementsLogging);
 		if (!implementsLogging) {
 			return;
 		}
