@@ -152,7 +152,7 @@ public class TreeMouseListener extends MouseAdapter {
 			JOptionPane.showInternalMessageDialog(tree, "LoggingConfigurable is null", "Error", JOptionPane.ERROR_MESSAGE);
 			return;
 		}
-		LogLevelDlg dlg = new LogLevelDlg(logConf,selNode.getUserObject().toString());
+		LogLevelDlg dlg = new LogLevelDlg(tree,logConf,selNode.getUserObject().toString());
 		dlg.setVisible(true);
 	}
 	

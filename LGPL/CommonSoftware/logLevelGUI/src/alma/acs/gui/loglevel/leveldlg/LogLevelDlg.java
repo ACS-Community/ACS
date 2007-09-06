@@ -22,6 +22,7 @@
 package alma.acs.gui.loglevel.leveldlg;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -32,7 +33,6 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.border.TitledBorder;
 
 import si.ijs.maci.LoggingConfigurable;
 
@@ -60,18 +60,19 @@ public class LogLevelDlg extends JDialog implements ActionListener {
 	/**
 	 * Constructor 
 	 * 
+	 * @param owner The windo that owns this dialog (it can be null)
 	 * @param configurable The LoggingConfigurable whose log level
 	 *                     the user wants to read or set
 	 * @param title The name of the configurable to add to the tile
 	 */
-	public LogLevelDlg(LoggingConfigurable configurable, String name) {
-		super();
+	public LogLevelDlg(Component owner, LoggingConfigurable configurable, String name) {
 		if (configurable==null) {
 			throw new IllegalArgumentException("Invalid null LoggingConfigurable in constructor");
 		}
 		logConf=configurable;
 		setTitle("Log level configurator: "+name);
 		initialize(name);
+		setLocationRelativeTo(owner);
 	}
 	
 	/**
@@ -79,7 +80,6 @@ public class LogLevelDlg extends JDialog implements ActionListener {
 	 */
 	private void initialize(String name) {
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-		setLocation(50, 50);
 		setTitle("Log level: "+name);
 		
 		// Set tooltip to buttons
@@ -111,14 +111,13 @@ public class LogLevelDlg extends JDialog implements ActionListener {
 			levels = loggersLbl();
 		} catch (Exception e) {
 			JLabel lbl = new JLabel("No log levels available");
-			lbl.setToolTipText("Function not implemented");
+			lbl.setToolTipText("Function not yet implemented");
 			return lbl;
 		}
 		
 		model = new LogLevelModel(levels);
 		table = new LogLevelTable(model);
-		JScrollPane scrollPane = new JScrollPane(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		scrollPane.setViewportView(table);
+		JScrollPane scrollPane = new JScrollPane(table);
 		return scrollPane;
 	}
 	
