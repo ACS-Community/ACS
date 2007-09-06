@@ -1,30 +1,19 @@
-TEST_RUNNER_REPORT
-FINER
-FINEST
-GlobalLogger - maci::MACIHelper::resolveManager
+maci::MACIHelper::resolveManager
 endorsed -- alma.acs.testsupport.tat.TATJUnitRunner alma.jconttest.ComponentTestclient
 --endorsed
 Starting Java/abeans application
 Using endorsed jar files in
 DEBUG - ACS 
-DEBUG - exported 
+DEBUG - exported
+ORB options -OAIAddr 
 Running the following command
 Running the container with these arguments
-java  -classpath 
-POA RootPOA
-POA ContainerPOA
-POA ComponentPOA
-www.jacorb.org
-Gerald Brose
+java  -classpath
 Connected to
 elapsed time in ms to start the container
+manager corbaloc
 Manager login done
 logged out from manager
-Done!
 about to exit the JVM...
 Local file logger: Cache saved to
 Waiting for the container to really shutdown
-\[jacorb\.poa\] INFO : Using server ID
-[0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F]
-\[jacorb\.poa\] INFO : oid:
-object is activated
