@@ -22,18 +22,21 @@
 package alma.acs.container;
 
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Logger;
 
-import org.omg.CORBA.OBJECT_NOT_EXIST;
 import org.omg.CORBA.StringHolder;
 
 import alma.ACSErrTypeCommon.CouldntPerformActionEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJCouldntPerformActionEx;
-import alma.acs.component.ComponentQueryDescriptor;
+import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
+import alma.acs.component.client.AdvancedComponentClient;
 import alma.acs.component.client.ComponentClientTestCase;
+import alma.acs.container.corba.AcsCorba;
 import alma.jconttest.ContainerServicesTester;
 import alma.jconttest.ContainerServicesTesterHelper;
 import alma.jconttest.DummyComponent;
 import alma.jconttest.DummyComponentHelper;
+import alma.maciErrType.wrappers.AcsJNoPermissionEx;
 
 
 /**
@@ -154,44 +157,74 @@ public class ComponentTestclient extends ComponentClientTestCase
 
     
     public void testComponentListening() throws Exception {
+    	
+    	// a second client to the manager. Shares Corba stuff, but has its own connection to the manager.
+    	OtherComponentClient secondClient = new OtherComponentClient(null, m_managerLoc, "ComponentTestclient-secondClient", acsCorba);
+    	
 		BlockingComponentListener blockLizzy = new BlockingComponentListener(m_logger);
 		getContainerServices().registerComponentListener(blockLizzy);
 
-		// we shouldn't get notified as we're not a client of the component yet
-		forceReleaseComponent(DEFAULT_DUMMYCOMP_INSTANCE);
+		m_logger.info("Second client will activate and kill '" + DEFAULT_DUMMYCOMP_INSTANCE + 
+				"'. This test is not a client and should not be notified.");
+    	secondClient.getComponent(DEFAULT_DUMMYCOMP_INSTANCE);
+    	secondClient.forceReleaseComponent(DEFAULT_DUMMYCOMP_INSTANCE);
 		Thread.sleep(2000); // to make sure we would have gotten the notification if there were any
 		assertEquals(0, blockLizzy.getAllCompsAvailable().size());
 		assertEquals(0, blockLizzy.getAllCompNamesUnavailable().size());
 
-		DummyComponent defaultDummy = DummyComponentHelper.narrow(getContainerServices().getComponent(DEFAULT_DUMMYCOMP_INSTANCE));
-		// from now on we should be notified
+		getContainerServices().getComponent(DEFAULT_DUMMYCOMP_INSTANCE);
 
-		// component already active, this call will kill it . Should yield one notification
+		m_logger.info("A second client will request again and kill '" + DEFAULT_DUMMYCOMP_INSTANCE +
+				"'. This test has already activated the component, thus only the component unloading should yield 1 notification.");
 		blockLizzy.clearAndExpect(1);
-		forceReleaseComponent(DEFAULT_DUMMYCOMP_INSTANCE);
-		assertTrue("Failed to get expected notification from manager within 10 seconds", blockLizzy.awaitNotifications(
-				10, TimeUnit.SECONDS));
+    	secondClient.getComponent(DEFAULT_DUMMYCOMP_INSTANCE);  
+    	secondClient.forceReleaseComponent(DEFAULT_DUMMYCOMP_INSTANCE);
+		assertTrue("Failed to get expected notification from manager within 10 seconds", 
+					blockLizzy.awaitNotifications(10, TimeUnit.SECONDS));
 		assertEquals(0, blockLizzy.getAllCompsAvailable().size());
 		assertEquals(1, blockLizzy.getAllCompNamesUnavailable().size());
 
-		// this call will both activate and kill the component . Should yield two notifications in total
+		m_logger.info("A third client will request and kill '" + DEFAULT_DUMMYCOMP_INSTANCE +
+		"'. This test is still registered as a client, thus 2 notifications for component loading and unloading are expected.");
 		blockLizzy.clearAndExpect(2);
-		forceReleaseComponent(DEFAULT_DUMMYCOMP_INSTANCE);
-		assertTrue("Failed to get expected notification from manager within 10 seconds", blockLizzy.awaitNotifications(
-				10, TimeUnit.SECONDS));
+		secondClient.getComponent(DEFAULT_DUMMYCOMP_INSTANCE);
+		secondClient.forceReleaseComponent(DEFAULT_DUMMYCOMP_INSTANCE);
+		assertTrue("Failed to get expected notification from manager within 10 seconds", 
+					blockLizzy.awaitNotifications(10, TimeUnit.SECONDS));
 		assertEquals(1, blockLizzy.getAllCompsAvailable().size());
 		assertEquals(1, blockLizzy.getAllCompNamesUnavailable().size());
-
-	}
-
-	/**
-	 * @TODO: implement directly against the manager, now that AdvancedContainerServices and therefor our test component no longer provide this.
-	 * In the meantime, the tests will fail unfortunately.
-	 * @param name
-	 */
-	private void forceReleaseComponent(String name) {
-//@TODO
 	}
 }
 
 
+/**
+ * Helper client that allows activating and destroying a component independently of our test,
+ * in the sense that the manager thinks it's a different application. 
+ */
+class OtherComponentClient extends AdvancedComponentClient {
+
+	public OtherComponentClient(Logger logger, String managerLoc, String clientName, AcsCorba externalAcsCorba) throws Exception {
+		super(logger, managerLoc, clientName, externalAcsCorba);
+	}
+	
+	org.omg.CORBA.Object getComponent(String name) throws AcsJContainerServicesEx {
+		return getContainerServices().getComponent(name);
+	}
+	
+	/**
+	 * Commands the manager directly to forcefully release the given component.
+	 * Note that such a call is only OK for a unit test, but not for normal operational code.
+	 * @param name  name of the component to be forcefully released
+	 * @throws AcsJNoPermissionEx 
+	 */
+	void forceReleaseComponent(String name) throws AcsJNoPermissionEx {
+		// first a regular release so that this client's container services count down the reference
+		getContainerServices().releaseComponent(name);
+		
+		// and now the forceful release that will unload the component regardless of other clients' references to it
+		int numClients = getAcsManagerProxy().force_release_component(getAcsManagerProxy().getManagerHandle(), name);
+		
+		m_logger.info("Forcefully released component " + name + " which had " + numClients + " other clients.");
+	}
+	
+}
