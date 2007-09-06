@@ -187,11 +187,27 @@ public class Frame extends JFrame {
 	 *             to load.
 	 */
 	public static void main(String[] args) {
-		try {
-			if (args.length==0) {
-				throw new Exception("Panel class name missing in args");
+		if (args.length==0) {
+			throw new IllegalArgumentException("Panel class name missing in args");
+		}
+		class LaunchThread extends Thread {
+			private String[] commandLineArgs;
+			public LaunchThread(String[] arguments) {
+				commandLineArgs=arguments;
 			}
-			new Frame(args);
+			public void run() {
+				try {
+					new Frame(commandLineArgs);
+				} catch (Throwable t) {
+					System.err.println(t.getMessage());
+					t.printStackTrace(System.err);
+					printUsage("PanelFrame");
+					System.exit(-1);
+				}
+			}
+		};
+		try {
+			SwingUtilities.invokeAndWait(new LaunchThread(args));
 		} catch (Throwable t) {
 			System.err.println(t.getMessage());
 			t.printStackTrace(System.err);
