@@ -788,13 +788,13 @@ public class AcsManagerProxy
 
 
 	/**
-	 * @deprecated  remove this method once weak component references are implemented.
+	 * Calls {@link ManagerOperations#force_release_component(int, String)}. This call must not be used by regular
+	 * component code. It is only provided for setting up tests, writing specialized operator tools, and similar purposes.
+	 * @return  number of clients of the force-released components.
 	 * @since ACS 5.0.4
 	 */
-	public int force_release_component(int clientHandle, String curl) 
-	    throws AcsJNoPermissionEx
-        {
-
+	public int force_release_component(int clientHandle, String curl) throws AcsJNoPermissionEx
+	{
 		try {
 			int clientNumber = m_manager.force_release_component(clientHandle, curl);
 			return clientNumber;
