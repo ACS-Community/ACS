@@ -27,8 +27,6 @@ import java.util.Map;
 import java.util.concurrent.ThreadFactory;
 import java.util.logging.Logger;
 
-import org.omg.CORBA.ORB;
-
 import si.ijs.maci.Client;
 
 import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
@@ -40,6 +38,11 @@ import alma.acs.container.corba.AcsCorba;
 
 /**
  * Special version of <code>ComponentClient</code>, which gives more power to specialized applications such as the OMC Gui ("Exec").
+ * Using some of these methods can be dangerous to the stability of the entire system.
+ * <p>
+ * If you find that your application needs to use <code>AdvancedComponentClient</code> instead of <code>ComponentClient</code>,
+ * better check with the ACS team if there really is no other way.
+ * 
  * @author hsommer
  */
 public class AdvancedComponentClient extends ComponentClient {
@@ -118,22 +121,21 @@ public class AdvancedComponentClient extends ComponentClient {
     		throw ex;
 		}
     }
-    
-    
+        
 	/**
-	 * Use only when direct access to the ORB is absolutely necessary. 
-	 * We try to not expose the ORB to applications. 
-	 *  
-	 * @return ORB
-	 * @deprecated with ACS 6.0, because of new method {@link alma.acs.container.AdvancedContainerServices#getORB()}
-	 *             which should be used instead.
+	 * Gives direct access to the CORBA ORB, POAs etc, encapsulated by the AcsCorba object.
+	 * Caution: interfering with the ComponentClient's usage of CORBA can have nasty side effects! 
 	 */
-	public ORB getORB() {
-		return acsCorba.getORB();
-	}
-	
 	public AcsCorba getAcsCorba() {
 		return acsCorba;
+	}
+
+	/**
+	 * Gives direct access to the ACS manager, encapsulated by the AcsManagerProxy object.
+	 * Caution: interfering with ACS's usage of the manager can have nasty side effects in the entire system! 
+	 */
+	public AcsManagerProxy getAcsManagerProxy() {
+		return m_acsManagerProxy;
 	}
 
 }
