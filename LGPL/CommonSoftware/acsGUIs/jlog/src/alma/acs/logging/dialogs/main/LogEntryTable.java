@@ -38,6 +38,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JTable;
+import javax.swing.event.ListSelectionEvent;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
@@ -1088,6 +1089,25 @@ public class LogEntryTable extends JTable
 	 */
 	public void updateFilteredString() {
 		firePropertyChange("filterString", "", getFilterString());
+	}
+	
+	/**
+	 * The log selected has changed: update the detailed log
+	 * 
+	 * @see javax.swing.JTable
+	 * @see javax.swing.event.ListSelectionListener
+	 */
+	public void valueChanged(ListSelectionEvent e) {
+		super.valueChanged(e);
+		int selected=getSelectedRow();
+		if (selected==-1) {
+			loggingClient.setLogDetailContent(null);
+			return;
+		}
+		LogTableDataModel model =(LogTableDataModel)getModel();
+		ILogEntry log = model.getVisibleLogEntry(selected);
+		loggingClient.setLogDetailContent(log);
+		
 	}
 	
 }
