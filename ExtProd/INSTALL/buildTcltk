@@ -2,7 +2,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: buildTcltk,v 1.11 2007/09/06 08:01:50 eallaert Exp $"
+# "@(#) $Id: buildTcltk,v 1.12 2007/09/06 14:14:52 eallaert Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -515,12 +515,6 @@ cd $SRC/Tktable2.9
 make
 make -k install
 
-cd $SRC/../tkcon-2.4
-cp tkcon.tcl $PREFIX/bin/tkcon
-chmod 755 $PREFIX/bin/tkcon
-cp -R docs $PREFIX/doc/
-mv $PREFIX/doc/docs $PREFIX/doc/tkcon
-
 cd $SRC/snack2.2.10/unix
 # include --libdir, as configure does not do a proper job, it seems.
 ./configure --prefix=$PREFIX --enable-shared --with-tcl=$SRC/tcl8.4.15/unix --with-tk=$SRC/tk8.4.15/unix --disable-stubs --libdir=$PREFIX/lib
@@ -579,20 +573,37 @@ rm -rf Makefile
 cat Makefile.orig | sed s'/install -s/cp/' > Makefile
 make install BIN=$PREFIX/bin
 
-###############################################################
-# 4. Fix to the msql.conf file to put the real path to the TCLTK_ROOT 
-# and the ACSDATA directories (the msql deamon itself does not 
-# understand environment variables)
-cd $TCLTK_ROOT
-sed -e 's,Inst_Dir = [^\n]*,'"Inst_Dir = $TCLTK_ROOT,g" \
-    -e 's,DB_Dir = [^\n]*,'"DB_Dir = $ACSDATA/msql/msqldb,g" \
-    -e 's,mSQL_User = [^\n]*,'"mSQL_User = almamgr,g" \
-    -e 's,Admin_User = [^\n]*,'"Admin_User = almamgr,g" \
-    msql.conf > msql.conf.acs
-mv msql.conf.acs msql.conf
+###########################################
+# 4. tkcon
+# 
+#
+echo $SEPARATOR
+echo "tkcon: untarring . . . "
+cd $SRC
+gunzip -c $TCLTK/tkcon-2.4.tar.gz | tar xf -
+cd tkcon-2.4
+cp tkcon.tcl $PREFIX/bin/tkcon
+chmod 755 $PREFIX/bin/tkcon
+cp -R docs $PREFIX/doc/
+mv $PREFIX/doc/docs $PREFIX/doc/tkcon
 
 ###############################################################
-# 5. Tat uses (for the time being) seqSh, which is a symlink to /usr/bin/tcl, i.e.
+# 5. Fix to the msql.conf file to put the real path to the TCLTK_ROOT 
+# and the ACSDATA directories (the msql deamon itself does not 
+# understand environment variables)
+if [ "$MSQL" ]
+then
+    cd $TCLTK_ROOT
+    sed -e 's,Inst_Dir = [^\n]*,'"Inst_Dir = $TCLTK_ROOT,g" \
+	-e 's,DB_Dir = [^\n]*,'"DB_Dir = $ACSDATA/msql/msqldb,g" \
+	-e 's,mSQL_User = [^\n]*,'"mSQL_User = almamgr,g" \
+	-e 's,Admin_User = [^\n]*,'"Admin_User = almamgr,g" \
+	msql.conf > msql.conf.acs
+    mv msql.conf.acs msql.conf
+fi
+
+###############################################################
+# 6. Tat uses (for the time being) seqSh, which is a symlink to /usr/bin/tcl, i.e.
 # the "old" version of Tcl/Tk. That has been linked with tclx8.3 - while
 # we have just built the newer tclx8.4. So we'll make symlinks to deal with that.
 cd $PREFIX/lib 
@@ -603,10 +614,15 @@ ln -s libtclx8.4.a  libtclx8.3.a
 ln -s libtclx8.4.so libtclx8.3.so
 
 ###############################################################
-# 6. VERIFICATION
+# 7. VERIFICATION
 #
 echo $SEPARATOR
 echo "\n                          VERIFICATION\n"
 
 cd ${INSTALL_ROOT}/INSTALL
-./checkTcltk
+if [ "$MSQL" ]
+then
+    ./checkTcltk WITH_MSQL
+else 
+    ./checkTcltk NO_MSQL
+fi
