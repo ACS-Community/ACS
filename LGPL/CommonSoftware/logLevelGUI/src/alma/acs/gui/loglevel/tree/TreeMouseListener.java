@@ -33,7 +33,10 @@ import javax.swing.SwingUtilities;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 
+import alma.acs.gui.loglevel.LogPaneAlreadyExistException;
+import alma.acs.gui.loglevel.LogPaneNotFoundException;
 import alma.acs.gui.loglevel.leveldlg.LogLevelDlg;
+import alma.acs.gui.loglevel.leveldlg.LogLevelSelectorPanel;
 import alma.acs.gui.loglevel.tree.node.TreeContainerInfo;
 
 
@@ -150,8 +153,22 @@ public class TreeMouseListener extends MouseAdapter {
 			JOptionPane.showInternalMessageDialog(tree, "LoggingConfigurable is null", "Error", JOptionPane.ERROR_MESSAGE);
 			return;
 		}
-		LogLevelDlg dlg = new LogLevelDlg(tree,logConf,selNode.getUserObject().toString());
-		dlg.setVisible(true);
+		
+		try {
+			tree.getTabPanel().showTab(selNode.getUserObject().toString());
+		} catch (LogPaneNotFoundException e) {
+			// The tab with this name does not exist: create and add a new one
+			LogLevelSelectorPanel pnl = new LogLevelSelectorPanel(logConf,selNode.getUserObject().toString());
+			try {
+				tree.getTabPanel().addLogSelectorTab(pnl);
+			} catch (Throwable t) {
+				JOptionPane.showInternalMessageDialog(
+						tree,
+						"<HTML>Error creating the panel for "+selNode.getUserObject().toString()+"<BR>"+t.getMessage(),
+						"Error", 
+						JOptionPane.ERROR_MESSAGE);
+			}
+		}
 	}
 	
 	/**
