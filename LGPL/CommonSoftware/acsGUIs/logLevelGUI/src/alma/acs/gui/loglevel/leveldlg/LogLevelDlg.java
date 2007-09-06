@@ -23,9 +23,12 @@ package alma.acs.gui.loglevel.leveldlg;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Container;
+import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
@@ -80,23 +83,25 @@ public class LogLevelDlg extends JDialog implements ActionListener {
 	 */
 	private void initialize(String name) {
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-		setTitle("Log level: "+name);
+		Container mainPnl = getRootPane().getContentPane();
+		BoxLayout layout = new BoxLayout(mainPnl,BoxLayout.Y_AXIS);
+		mainPnl.setLayout(layout);
+		
+		// Add the widgets with the log levels at the center
+		mainPnl.add(initLogLevelsPanel());
 		
 		// Set tooltip to buttons
 		doneBtn.setToolTipText("Close the dialog");
 		applyBtn.setToolTipText("Apply the changes");
 		
 		// Add the botton at the bottom
-		JPanel btnPnl = new JPanel();
-		btnPnl.add(doneBtn,BorderLayout.EAST);
-		btnPnl.add(applyBtn,BorderLayout.WEST);
+		JPanel btnPnl = new JPanel(new FlowLayout(FlowLayout.CENTER));
+		btnPnl.add(doneBtn);
+		btnPnl.add(applyBtn);
 		doneBtn.addActionListener(this);
 		applyBtn.addActionListener(this);
 		
-		add(btnPnl,BorderLayout.SOUTH);
-		
-		// Add the widgets with the log levels at the center
-		add(initLogLevelsPanel(),BorderLayout.CENTER);
+		mainPnl.add(btnPnl);
 		pack();
 	}
 	
@@ -117,6 +122,7 @@ public class LogLevelDlg extends JDialog implements ActionListener {
 		
 		model = new LogLevelModel(levels);
 		table = new LogLevelTable(model);
+		
 		JScrollPane scrollPane = new JScrollPane(table);
 		return scrollPane;
 	}
