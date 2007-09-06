@@ -24,8 +24,6 @@ package alma.acs.gui.loglevel;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
-import sun.java2d.Disposer;
-
 /**
  * A class to receive window events
  * 
