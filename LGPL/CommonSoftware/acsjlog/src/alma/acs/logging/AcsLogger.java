@@ -61,6 +61,7 @@ public class AcsLogger extends Logger implements LogConfigSubscriber {
     private String loggerName;
     private String processName;
     private String sourceObject;
+    private boolean noLevelWarningPrinted = false;
 
     private boolean DEBUG = Boolean.getBoolean("alma.acs.logging.verbose");
     
@@ -204,13 +205,30 @@ public class AcsLogger extends Logger implements LogConfigSubscriber {
         // Level could be null and must be inherited from the ancestor loggers, 
     	// e.g. during JDK shutdown when the log level is nulled by the JDK LogManager 
     	Logger loggerWithLevel = this;
-    	while (loggerWithLevel.getLevel() == null) {
+    	while (loggerWithLevel != null && loggerWithLevel.getLevel() == null) {
     		loggerWithLevel = loggerWithLevel.getParent();
+    	}
+    	int levelValue = -1;
+    	if (loggerWithLevel.getLevel() == null) {
+    		// HSO 2007-09-05: With ACS 6.0.4 the OMC uses this class (previously plain JDK logger) and has reported 
+    		// that no level was found, which yielded a NPE. To be investigated further. 
+    		// Just to be safe I add the necessary checks and warning message that improve over a NPE.
+    		if (!noLevelWarningPrinted) {
+	    		System.err.println("Logger configuration error: no log level found for logger " + getLoggerName() + 
+	    				" or its ancestors. Will use Level.ALL instead.");
+	    		noLevelWarningPrinted = true;
+    		}
+    		// @TODO: decide if resorting to ALL is desirable, or to use schema defaults, INFO, etc
+    		levelValue = Level.ALL.intValue();
+    	}
+    	else {
+    		// level is fine, reset the flag to print the error message again when log level is missing.
+    		noLevelWarningPrinted = false;
+        	levelValue = loggerWithLevel.getLevel().intValue();
     	}
     	
     	// filter by log level to avoid unnecessary retrieval of context data.
     	// The same check will be repeated by the base class implementation of this method that gets called afterwards.
-    	int levelValue = loggerWithLevel.getLevel().intValue();
     	if (record.getLevel().intValue() < levelValue || levelValue == offValue) {
     	    return;
     	}
