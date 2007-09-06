@@ -21,29 +21,33 @@
  */
 package alma.acs.gui.loglevel;
 
+import java.awt.Component;
 import java.awt.Dimension;
 
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
 
 import alma.acs.container.ContainerServices;
 import alma.acs.gui.loglevel.tree.LogLvlTree;
 import alma.acs.gui.util.panel.IPanel;
 
 /**
- * The panel of the application containing the tree with 
- * containers and components
+ * The panel of the application containing the tabs:
+ * - one tab with the ACS tree showing cleints, containers and components
+ * - one tab per each container whose logs levels the user wants to change
  * 
  * @author acaproni
  *
  */
-public class LogLevelPanel extends JScrollPane implements IPanel {
+public class LogLevelPanel extends JTabbedPane implements IPanel {
 	
 	// The container services
     private ContainerServices contSvc=null;
     
     // The tree
     private LogLvlTree tree=null;
+    private JScrollPane treeSP;
     
     // The window that shows this panel
     private JFrame frame=null;
@@ -63,7 +67,6 @@ public class LogLevelPanel extends JScrollPane implements IPanel {
 	 * @param frame The window that owns this panel
 	 */
 	public LogLevelPanel(JFrame frame) {
-		super(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		initialize();
 	}
 	
@@ -93,10 +96,12 @@ public class LogLevelPanel extends JScrollPane implements IPanel {
 	    } else {
 	    	throw new IllegalStateException("ACS.magager property not set!");
 	    }
-	    
-	    tree = new LogLvlTree(contSvc.getAdvancedContainerServices().getORB(),contSvc.getLogger());
-		setViewportView(tree);
+	   
+		tree = new LogLvlTree(this,contSvc.getAdvancedContainerServices().getORB(),contSvc.getLogger());
+		treeSP= new JScrollPane(tree);
+		treeSP.setName("ACS tree");
 		tree.start();
+		add(treeSP);
 	}
 	
 	/**
@@ -108,6 +113,7 @@ public class LogLevelPanel extends JScrollPane implements IPanel {
 	 */
 	public void stop() throws Exception {
 		tree.stop();
+		tree.setVisible(false);
 		tree=null;
 		contSvc=null;
 	}
@@ -154,6 +160,74 @@ public class LogLevelPanel extends JScrollPane implements IPanel {
 	
 	public boolean isOMCPlugin() {
 		return frame==null;
+	}
+	
+	/**
+	 * Add a new selector tab.
+	 * The name of the new tab is set to be the name of the tab
+	 * 
+	 *@param tab The panel to show in the new tab
+	 *@throws InvalidLogPaneException If the name of the panel is empty or null
+	 *@throws LogPaneAlreadyExistException If a tab with the given name already exist
+	 */
+	public void addLogSelectorTab(Component tab) throws  InvalidLogPaneException, LogPaneAlreadyExistException {
+		if (tab==null) {
+			throw new IllegalArgumentException("Invalid null component");
+		}
+		if (tab.getName()==null || tab.getName().isEmpty()) {
+			throw new InvalidLogPaneException("Trying to add a panel with no name");
+		}
+		// Check if a tab with this name already exist
+		String name=tab.getName();
+		for (int t=0; t<getTabCount(); t++) {
+			if (getComponentAt(t).getName().equals(name)) {
+				throw new LogPaneAlreadyExistException("A log with the name "+name+" is already present");
+			}
+		}
+		// Add the tab
+		add(tab);
+	}
+	
+	/**
+	 * Remove the tab with the given name
+	 * 
+	 * @param name The name of the panel to remove
+	 * @throw LogPaneNotFoundException If the pane with the given name does not exist
+	 */
+	public void removeLogSelectorTab(String name) throws LogPaneNotFoundException {
+		if (name==null || name.isEmpty()) {
+			throw new IllegalArgumentException("Invalid name of the tab to remove "+name);
+		}
+		// Look for the tab with the given name
+		for (int t=0; t<getTabCount(); t++) {
+			if (getComponentAt(t).getName().equals(name)) {
+				remove(t);
+				return;
+			}
+		}
+		// No tab with the given name has been found
+		throw new LogPaneNotFoundException("The tab with name "+name+" does not exist");
+	}
+	
+	/**
+	 * Select the tab with the given name 
+	 * 
+	 * @param name The name of the tab to select
+	 * @thorws LogPaneNotFoundException If the tab with the given name does not exist
+	 */
+	public void showTab(String name) throws LogPaneNotFoundException{
+		if (name==null || name.isEmpty()) {
+			throw new IllegalArgumentException("Invalid name of the tab to remove "+name);
+		}
+		// Look for the tab with the given name
+		for (int t=0; t<getTabCount(); t++) {
+			if (getComponentAt(t).getName().equals(name)) {
+				setSelectedIndex(t);
+				return;
+			}
+		}
+		// No tab with the given name has been found
+		throw new LogPaneNotFoundException("The tab with name "+name+" does not exist");
 	}
 
 }
