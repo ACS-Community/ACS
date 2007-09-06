@@ -37,4 +37,13 @@ public class LogLvlSelNotSupportedException extends Exception {
 	public LogLvlSelNotSupportedException(String msg) {
 		super(msg);
 	}
+	
+	/**
+	 * Constructor
+	 * 
+	 * @param msg The message of the exception
+	 */
+	public LogLvlSelNotSupportedException(String msg, Throwable t) {
+		super(msg,t);
+	}
 }
