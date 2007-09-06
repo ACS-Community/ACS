@@ -28,6 +28,8 @@ import javax.swing.JTree;
 
 import org.omg.CORBA.ORB;
 
+import alma.acs.gui.loglevel.LogLevelPanel;
+
 /**
  * The tree to display manager, components and container
  * whose log level the user may want to change
@@ -48,12 +50,23 @@ public class LogLvlTree extends JTree {
 	// The listener for mouse events
 	private TreeMouseListener mouseListener;
 	
+	// The panel showing the tabs
+	private LogLevelPanel tabPanel;
+	
 	/**
 	 * Constructor
+	 * 
+	 * @param panel The panel that shows the tabs
+	 * @param theOrn The CORBA ORB
+	 * @param theLogger The logger
 	 *
 	 */
-	public LogLvlTree(ORB theOrb, Logger theLogger) {
+	public LogLvlTree(LogLevelPanel panel, ORB theOrb, Logger theLogger) {
 		super();
+		if (panel==null) {
+			throw new IllegalArgumentException("Invalid null panel of tabs");
+		}
+		tabPanel=panel;
 		model = new LogLvlTreeModel(theOrb,theLogger);
 		setModel(model);
 	}
@@ -90,10 +103,19 @@ public class LogLvlTree extends JTree {
 	 * @see javax.swing.jtree
 	 */
 	public Dimension getPreferredSize() {
-		  Dimension size = super.getPreferredSize();
-		  size.width = Math.max(MIN_WIDTH, size.width);
-		  size.height = Math.max(MIN_HEIGHT, size.height);
-		  return size;
-		}
+	  Dimension size = super.getPreferredSize();
+	  size.width = Math.max(MIN_WIDTH, size.width);
+	  size.height = Math.max(MIN_HEIGHT, size.height);
+	  return size;
+	}
+
+	/**
+	 * Getter 
+	 * 
+	 * @return The panel showing the tabs
+	 */
+	public LogLevelPanel getTabPanel() {
+		return tabPanel;
+	}
 
 }
