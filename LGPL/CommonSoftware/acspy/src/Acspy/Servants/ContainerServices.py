@@ -1,4 +1,4 @@
-# @(#) $Id: ContainerServices.py,v 1.23 2007/08/10 20:45:27 agrimstrup Exp $
+# @(#) $Id: ContainerServices.py,v 1.24 2007/09/06 21:54:32 agrimstrup Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -21,7 +21,7 @@
 # ALMA should be addressed as follows:
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: ContainerServices.py,v 1.23 2007/08/10 20:45:27 agrimstrup Exp $"
+# "@(#) $Id: ContainerServices.py,v 1.24 2007/09/06 21:54:32 agrimstrup Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -41,7 +41,7 @@ developer. For now, we can depend on Manager to keep track of whats going on
 but this solution is less than ideal.
 '''
 
-__revision__ = "$Id: ContainerServices.py,v 1.23 2007/08/10 20:45:27 agrimstrup Exp $"
+__revision__ = "$Id: ContainerServices.py,v 1.24 2007/09/06 21:54:32 agrimstrup Exp $"
 
 #--GLOBALS---------------------------------------------------------------------
 
@@ -50,6 +50,7 @@ import threading
 #--CORBA STUBS-----------------------------------------------------------------
 import CORBA
 import maci
+from maciErrTypeImpl          import CannotGetComponentExImpl
 #--ACS Imports-----------------------------------------------------------------
 from Acspy.Util.ACSCorba      import getORB, getManager
 from Acspy.Common.Log         import getLogger
@@ -160,7 +161,7 @@ class ContainerServices:
 
         Raises: Nothing
         '''
-        if self.__logger == None:
+        if self.__logger is None:
             self.__logger = getLogger(self.getName(), self.getContName())
         
         return self.__logger
@@ -215,10 +216,11 @@ class ContainerServices:
         Returns: a narrowed reference to the component or None if
         that reference cannot be obtained.
 
-        Raises: ??? if the dynamic component parameters are messed-up
+        Raises: CannotGetComponentExImpl if the component stubs cannot be loaded
+                or found
         '''
         #if the user is trying to get a "normal" static component
-        if (comp_name != None)and(comp_idl_type == None)and(comp_code == None)and(container_name == None)and(is_dynamic == 0):
+        if (comp_name is not None)and(comp_idl_type is None)and(comp_code is None)and(container_name is None)and(is_dynamic == 0):
             
             #Import the correct Python CORBA stub for the developer.
             comp_class = self.__importComponentStubs(comp_name, comp_idl_type)
@@ -232,7 +234,7 @@ class ContainerServices:
             return self.__narrowComponentReference(corba_obj, comp_class)
             
         #if the user is trying to get a static default component
-        elif (comp_idl_type != None)and(comp_name == None)and(comp_code == None)and(container_name == None)and(is_dynamic == 0):
+        elif (comp_idl_type is not None)and(comp_name is None)and(comp_code is None)and(container_name is None)and(is_dynamic == 0):
             return self.getDefaultComponent(str(comp_idl_type))
             
         #user must be trying to get a dynamic component
@@ -258,29 +260,33 @@ class ContainerServices:
         
         Returns: the component class CORBA stub
         
-        Raises: Nothing
+        Raises: CannotGetComponentExImpl if type is unknown or import fails
         '''
+        t_idl_type = comp_type
+
+        if (comp_name is not None) and (comp_type is None):
+            #Get a list of all components
+            components = self.availableComponents()
+
+            #search each Component
+            for component in components:
+                #for the one that has the given name
+                if component.name == comp_name:
+                    #get that component's IR location
+                    #e.g., "IDL:alma/PS/PowerSupply:1.0"
+                    t_idl_type = component.type  
+                    break
+
+        if t_idl_type is None:
+            #getting this far means the component was not
+            #found
+            ex = CannotGetComponentExImpl()
+            ex.setReason("Component type unavailable!")
+            self.__logger.logWarning("Unable to import '" + str(comp_name) +
+                                   "' component's module: " + ex.getReason())
+            raise ex
+
         try:
-            t_idl_type = comp_type
-            
-            if (comp_name != None) and (comp_type == None):
-                #Get a list of all components
-                components = self.availableComponents()
-                
-                #search each Component
-                for component in components:
-                    #for the one that has the given name
-                    if component.name == comp_name:
-                        #get that component's IR location
-                        #e.g., "IDL:alma/PS/PowerSupply:1.0"
-                        t_idl_type = component.type  
-                        break
-                
-            if t_idl_type==None:
-                #getting this far means the component was not
-                #found
-                raise Exception("Component type unavailable!")
-            
             #extract the proper Python module from the type string.
             #("alma", "PS", "PowerSupply")
             temp = t_idl_type.split(':')[1].split('/')  
@@ -303,7 +309,7 @@ class ContainerServices:
             self.__logger.logWarning("Unable to import '" + str(comp_name) +
                                    "' component's module: " + str(e))
             acsPrintExcDebug()
-            comp_class = None
+            raise CannotGetComponentExImpl(e)
             
         return comp_class
     #--------------------------------------------------------------------------
@@ -317,7 +323,7 @@ class ContainerServices:
             comp_class - CORBA stub class for the component
             
         Returns: 
-            the narrowed component reference
+            the narrowed component reference or None
             
         Raises: Nothing
         '''
@@ -329,7 +335,7 @@ class ContainerServices:
         
         except Exception, e:
             
-            if corba_obj==None:
+            if corba_obj is None:
                 self.__logger.logCritical("Unable to obtain reference to component: " + str(e))
             else:
                 self.__logger.logWarning("Unable to narrow component: " + str(e))
@@ -349,7 +355,8 @@ class ContainerServices:
         Returns: a narrowed reference to the component or None if
         that reference cannot be obtained.
 
-        Raises: ??? 
+        Raises: CannotGetComponentExImpl if the component stubs cannot be loaded
+                or found
         '''
         #Import the correct Python CORBA stub for the developer.
         comp_class = self.__importComponentStubs(None, comp_type)
@@ -371,7 +378,8 @@ class ContainerServices:
         Returns: a narrowed reference to the component or None if
         that reference cannot be obtained.
 
-        Raises: ??? 
+        Raises: CannotGetComponentExImpl if the component stubs cannot be loaded
+                or found
         '''
         #Import the correct Python CORBA stub for the developer.
         comp_class = self.__importComponentStubs(comp_name)
@@ -400,22 +408,23 @@ class ContainerServices:
         Returns: a narrowed reference to the component or None if
         that reference cannot be obtained.
         
-        Raises: ??? 
+        Raises: CannotGetComponentExImpl if the component stubs cannot be loaded
+                or found
         '''
         #Import the correct Python CORBA stub for the developer.
         comp_class = self.__importComponentStubs(None, comp_type)
         
         #convert the default values into something manager can handle
-        if name == None:
+        if name is None:
             name = maci.COMPONENT_SPEC_ANY
                 
-        if comp_type == None:
+        if comp_type is None:
             comp_type=maci.COMPONENT_SPEC_ANY
                 
-        if code == None:
+        if code is None:
             code = maci.COMPONENT_SPEC_ANY
                 
-        if container == None:
+        if container is None:
             container = maci.COMPONENT_SPEC_ANY
             
         comp_spec = maci.ComponentSpec(str(name),
@@ -479,12 +488,12 @@ class ContainerServices:
         Raises: ???
         '''
         #Set them to everything if undefined
-        if curl_wildcard == None:
+        if curl_wildcard is None:
             curl_wildcard = "*"
         else:
             curl_wildcard = str(curl_wildcard)
         
-        if type_wildcard == None:
+        if type_wildcard is None:
             type_wildcard = "*"
         else:
             type_wildcard = str(type_wildcard)
@@ -672,9 +681,9 @@ class ContainerServices:
         Raises: ???
         '''
         #setup keyword parameters to their correct mutable types
-        if args == None:
+        if args is None:
             args = ()
-        if kwargs == None:
+        if kwargs is None:
             kwargs = {}
         
         #create the thread
