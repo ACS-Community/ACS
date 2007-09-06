@@ -37,6 +37,12 @@ import org.omg.CORBA.ORB;
  */
 public class LogLvlTree extends JTree {
 	
+	// The min width and heigh of the tree
+	// See the overridden getPreferredSize
+	private static final int MIN_WIDTH=150;
+	private static final int MIN_HEIGHT=150;
+	
+	// The model of this tree
 	protected LogLvlTreeModel model;
 	
 	// The listener for mouse events
@@ -50,7 +56,6 @@ public class LogLvlTree extends JTree {
 		super();
 		model = new LogLvlTreeModel(theOrb,theLogger);
 		setModel(model);
-		setPreferredSize(new Dimension(150,250));
 	}
 	
 	/**
@@ -72,5 +77,23 @@ public class LogLvlTree extends JTree {
 		mouseListener=null;
 		model.stop();
 	}
+	
+	/**
+	 * Return the preferred size of the JTree
+	 * This is needed to see the scrollbars:
+	 * "JScrollPane basis the desicision to show scroll bars off the views preferred size. 
+	 * When you explicitly set the preferred size, and using a JScrollPane, you are effectively 
+	 * forcing the size of the JTree to be the preferred size.
+	 * If you want to limit the size of the JTree to at least a certain size, 
+	 * override getPrefferredSize to return at least a particular value"
+	 * 
+	 * @see javax.swing.jtree
+	 */
+	public Dimension getPreferredSize() {
+		  Dimension size = super.getPreferredSize();
+		  size.width = Math.max(MIN_WIDTH, size.width);
+		  size.height = Math.max(MIN_HEIGHT, size.height);
+		  return size;
+		}
 
 }
