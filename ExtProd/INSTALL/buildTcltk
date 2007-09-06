@@ -2,7 +2,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: buildTcltk,v 1.12 2007/09/06 14:14:52 eallaert Exp $"
+# "@(#) $Id: buildTcltk,v 1.13 2007/09/06 15:20:09 eallaert Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -181,9 +181,6 @@ BUILD_NAME="Tcl/Tk"
 . ./standardPrologue
 # The standardPrologue re-defines the echo function, whereby it disables
 # the use of escape-sequences under Linux - I wonder why.
-INSTALL_ROOT=/home/eallaert/tcltk/ALMA
-
-TCLTK=${INSTALL_ROOT}/PRODUCTS/tcltk
 
 TCLTK=${INSTALL_ROOT}/PRODUCTS/tcltk
 cd ${INSTALL_ROOT}/PRODUCTS/
