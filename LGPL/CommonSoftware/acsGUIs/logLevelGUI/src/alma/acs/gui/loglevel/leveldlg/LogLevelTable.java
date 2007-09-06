@@ -45,6 +45,18 @@ public class LogLevelTable extends JTable {
 	private JComboBox editor=new JComboBox(LogTypeHelper.getAllTypesDescriptions());;
 	public LogTypeRenderer editorRenderer= new LogTypeRenderer();
 	
+	// The identifiers of the cols
+	private static final Integer NAMEDLOGGER_ID=new Integer(0);
+	private static final Integer DEFAULT_ID=new Integer(1);
+	private static final Integer LOCAL_ID=new Integer(2);
+	private static final Integer GLOBAL_ID=new Integer(3);
+	private static final Object[] COL_IDS = {
+		NAMEDLOGGER_ID,
+		DEFAULT_ID,
+		LOCAL_ID,
+		GLOBAL_ID
+	};
+	
 	/**
 	 * Constructor
 	 * 
@@ -64,11 +76,14 @@ public class LogLevelTable extends JTable {
 		columnModel.getColumn(2).setCellEditor(new DefaultCellEditor(editor));
 		columnModel.getColumn(3).setCellEditor(new DefaultCellEditor(editor));
 		for (int t=0; t<4; t++) {
-			columnModel.getColumn(t).setMinWidth(30);
+			columnModel.getColumn(t).setMinWidth(50);
+			columnModel.getColumn(t).setIdentifier(LogLevelTable.COL_IDS[t]);
 		}
 		
-		setRowHeight(LogTypeHelper.getIconsVSize()+5);
 		setRowMargin(2);
+		setRowHeight(LogTypeHelper.getIconsVSize()+5+getRowMargin());
+		getColumn(LogLevelTable.DEFAULT_ID).sizeWidthToFit();
+		
 		setRowSelectionAllowed(false);
 	}
 	
