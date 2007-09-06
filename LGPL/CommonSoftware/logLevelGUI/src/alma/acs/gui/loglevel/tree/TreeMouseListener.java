@@ -97,7 +97,18 @@ public class TreeMouseListener extends MouseAdapter {
 		
 		if (e.getClickCount()==2) {
 			tree.setSelectionPath(selPath);
-			showLoggingConfigDlg(selPath);
+			class TabShower implements Runnable {
+				TreePath selectedPath;
+				public TabShower(TreePath path) {
+					selectedPath=path;
+				}
+				public void run() {
+					showLoggingConfigTab(selectedPath);
+				}
+			};
+			TabShower shower = new TabShower(selPath);
+			Thread t = new Thread(shower);
+			t.run();
 			return;
 		}
 		if (e.isPopupTrigger()) {
@@ -116,7 +127,7 @@ public class TreeMouseListener extends MouseAdapter {
 	 * @param path The path of the selected node
 	 *
 	 */
-	private void showLoggingConfigDlg(TreePath path) {
+	private void showLoggingConfigTab(TreePath path) {
 		if (path==null) {
 			throw new IllegalArgumentException("Invalid null path");
 		}
