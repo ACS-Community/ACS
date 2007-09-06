@@ -2,7 +2,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: checkTcltk,v 1.4 2007/09/06 08:09:03 eallaert Exp $"
+# "@(#) $Id: checkTcltk,v 1.5 2007/09/06 14:16:13 eallaert Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -97,18 +97,17 @@ fi
 
 PREFIX=$TCLTK_ROOT
 export PREFIX
-echo "Install directory. . .\c"
-echo "defined as: $PREFIX . . .\c"
+echo "Install directory defined as: $PREFIX . . . \c"
 
 if [ ! -d $PREFIX ]
 then
-    echo "but is not a directory, cannot continue."
+    echo "but this is not a directory, cannot continue."
     exit 1
 fi
 
 if [ ! -w $PREFIX ]
 then
-    echo "but is not a writable directory, cannot continue."
+    echo "but this is not a writable directory, cannot continue."
     exit 1
 fi
 echo " . . . ok"
@@ -118,7 +117,10 @@ echo " . . . ok"
 # check that all expected files have been created 
 #
 SRC="$TCLTK/$build_OS-$build_OSV"
-reference=$TCLTK/TCLTK.$build_OS-$build_OSV
+# Whether of not msql is included is indicated by the first argument 
+# passed to this script.
+MSQL=$1
+reference=${TCLTK}/TCLTK.${build_OS}-${build_OSV}_$MSQL
 
 cd $PREFIX
 echo ""
