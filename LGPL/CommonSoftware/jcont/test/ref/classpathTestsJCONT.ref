@@ -2,16 +2,24 @@
 1 - Container will accept remote debuggers on port ----
 1 - AcsSystemClassLoader running in test mode: will only use jar files from priority list.
 1 - Listening for transport dt_socket at address: ----
+1 - FINER: Logging configuration has been initialized, but not from CDB settings.
 1 - ----------T--:--:--.--- INFO [AcsContainerRunner] AcsContainerRunner#run 
+1 - ----------T--:--:--.--- FINER [testContainer] ORB initialized.
 1 - ----------T--:--:--.--- FINE [testContainer] calling orb.resolve_initial_references
 1 - ----------T--:--:--.--- FINE [testContainer] POA activated
+1 - ----------T--:--:--.--- FINEST [testContainer] ContainerPOA created.
+1 - ----------T--:--:--.--- FINEST [testContainer] ComponentPOA created.
 1 - ----------T--:--:--.--- FINE [testContainer] Manager reference not available. Trying to resolve...
+1 - ----------T--:--:--.--- FINEST [testContainer] manager narrow successful.
 1 - ----------T--:--:--.--- FINE [testContainer] creating the AcsContainer testContainer
+1 - ----------T--:--:--.--- FINER [testContainer] entering activateContainer name=testContainer
+1 - ----------T--:--:--.--- FINER [testContainer] AcsContainer successfully registered with the ORB as a Container
 1 - ----------T--:--:--.--- FINE [testContainer] AcsContainer 'testContainer' created.
 1 - ----------T--:--:--.--- FINE [testContainer] call to authenticate() answered with 'AR testContainer'.
 1 - ----------T--:--:--.--- FINE [testContainer] call to name() answered with 'testContainer'.
 1 - ----------T--:--:--.--- INFO [testContainer] Info message from the manager: Startup statistics: 0 components queued to be activated.
 1 - ----------T--:--:--.--- INFO [testContainer] Info message from the manager: Startup statistics: 0 of 0 components activated.
+1 - ----------T--:--:--.--- FINER [alma.acs.logger] Updated default logging configuration based on CDB entry <?xml version="1.0" encoding="UTF-8"?>
 1 - <LoggingConfig xmlns="urn:schemas-cosylab-com:LoggingConfig:1.0"
 1 -     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 1 -     minLogLevel="2" minLogLevelLocal="2" centralizedLogger="Log"
@@ -21,8 +29,11 @@
 1 - </LoggingConfig>
 1 - 
 1 - ----------T--:--:--.--- FINE [testContainer] entering orb loop
-1 - ----------T--:--:--.--- INFO [testContainer] received call to 'shutdown', action=2 (encryptedAction=512), gracefully=true.
+1 - ----------T--:--:--.--- FINER [testContainer] asynchronously calling ClientLogManager#initRemoteLogging()...
+1 - ----------T--:--:--.--- FINER [testContainer] done ClientLogManager#initRemoteLogging
 1 - ----------T--:--:--.--- FINE [testContainer] received call to deactivate_components
+1 - ----------T--:--:--.--- INFO [testContainer] received call to 'shutdown', action=2 (encryptedAction=512), gracefully=true.
 1 - ----------T--:--:--.--- FINE [testContainer] about to log out from manager...
+1 - ----------T--:--:--.--- FINER [testContainer] RETURN
 1 - ----------T--:--:--.--- FINE [testContainer] orb loop over.
 1 - === Done running a Java container with prioritized jar files only
