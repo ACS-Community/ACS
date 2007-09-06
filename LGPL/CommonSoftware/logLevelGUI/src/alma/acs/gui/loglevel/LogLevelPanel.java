@@ -27,6 +27,7 @@ import java.awt.Dimension;
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
+import javax.swing.SwingUtilities;
 
 import alma.acs.container.ContainerServices;
 import alma.acs.gui.loglevel.tree.LogLvlTree;
@@ -185,7 +186,16 @@ public class LogLevelPanel extends JTabbedPane implements IPanel {
 			}
 		}
 		// Add the tab
-		add(tab);
+		class TabInserter extends Thread {
+			Component tabContent;
+			public TabInserter(Component t) {
+				tabContent=t;
+			}
+			public void run() {
+				add(tabContent);
+			}
+		};
+		SwingUtilities.invokeLater(new TabInserter(tab));
 	}
 	
 	/**
@@ -201,7 +211,16 @@ public class LogLevelPanel extends JTabbedPane implements IPanel {
 		// Look for the tab with the given name
 		for (int t=0; t<getTabCount(); t++) {
 			if (getComponentAt(t).getName().equals(name)) {
-				remove(t);
+				class TabRemover extends Thread {
+					int index;
+					public TabRemover(int tabIndex) {
+						index=tabIndex;
+					}
+					public void run() {
+						remove(index);
+					}
+				};
+				SwingUtilities.invokeLater(new TabRemover(t));
 				return;
 			}
 		}
