@@ -30,6 +30,5 @@ echo $ACS_CDB
 acsutilTATPrologue -l
 
 echo " Starting Test Java Container"
-export JAVA_OPTIONS="-Djacorb.log.loggerFactory=alma.acs.logging.adapters.JacORBLoggerFactory"
 acsutilAwaitContainerStart -java frodoContainer
 acsutilAwaitContainerStart -java dynamicTestContainer

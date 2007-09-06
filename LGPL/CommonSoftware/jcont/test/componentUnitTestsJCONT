@@ -22,6 +22,6 @@
 #
 echo "=== Running all JUnit tests of module jcont which require a container infrastructure"
     acsStartJava -endorsed alma.acs.testsupport.tat.TATJUnitRunner  alma.acs.container.ComponentTestclient
-    acsStartJava -endorsed -Djacorb.log.loggerFactory=alma.acs.logging.adapters.JacORBLoggerFactory alma.acs.testsupport.tat.TATJUnitRunner  alma.acs.container.corba.AcsCorbaTestWithContainer
+    acsStartJava -endorsed alma.acs.testsupport.tat.TATJUnitRunner  alma.acs.container.corba.AcsCorbaTestWithContainer
     acsStartJava -endorsed alma.acs.testsupport.tat.TATJUnitRunner  alma.acs.component.client.ClientWithLogReceiverTest
 echo "=== Done running jcont JUnit tests which require a container infrastructure"
