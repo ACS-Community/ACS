@@ -4,7 +4,7 @@
 #
 # build
 #
-# "@(#) $Id: buildTools,v 1.27 2007/09/06 08:06:46 eallaert Exp $"
+# "@(#) $Id: buildTools,v 1.28 2007/09/06 09:45:49 eallaert Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -123,7 +123,7 @@ fi
 #       bug given the limited resources for VxWorks support we do not do it now.
 echo "buildTcltk"
 export TCLTK_ROOT=$ALMASW_INSTDIR/tcltk
-if [ "$BUILD_VX_WORKS" = "1"]
+if [ "$BUILD_VX_WORKS" = "1" ]
 then
     # for VxWorks (better: vcc/CCSLite) we still need to install msqltcl
     ./buildTcltk -m
