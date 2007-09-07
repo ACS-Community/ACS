@@ -2,7 +2,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: checkTcltk,v 1.5 2007/09/06 14:16:13 eallaert Exp $"
+# "@(#) $Id: checkTcltk,v 1.6 2007/09/07 14:47:47 eallaert Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -134,6 +134,10 @@ echo ""
 # set of commands. This cannot be done with tkman and tkinspect
 # because they are are interactive programs.
 #
+# Make sure the newly built Tcl/Tk binaries and shared libs are found first.
+PATH=${TCLTK_ROOT}/bin:$PATH
+LD_LIBRARY_PATH=${TCLTK_ROOT}/lib:$LD_LIBRARY_PATH
+
 echo $SEPARATOR
 echo "verify:"
 rm -f test.tcl
