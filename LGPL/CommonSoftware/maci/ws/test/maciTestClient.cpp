@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciTestClient.cpp,v 1.93 2006/10/13 15:15:03 gchiozzi Exp $"
+* "@(#) $Id: maciTestClient.cpp,v 1.94 2007/09/07 13:42:29 hsommer Exp $"
 *
 * who       when       what
 * --------  --------   ----------------------------------------------
@@ -11,7 +11,7 @@
 * gchiozzi  2001-11-15 created
 */
 
-static char *rcsId="@(#) $Id: maciTestClient.cpp,v 1.93 2006/10/13 15:15:03 gchiozzi Exp $";
+static char *rcsId="@(#) $Id: maciTestClient.cpp,v 1.94 2007/09/07 13:42:29 hsommer Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 
@@ -38,7 +38,7 @@ static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
  using namespace maci;
  using namespace MACI_TEST;
 
-ACE_RCSID(maciTestClient, maciTestClient, "$Id: maciTestClient.cpp,v 1.93 2006/10/13 15:15:03 gchiozzi Exp $")
+ACE_RCSID(maciTestClient, maciTestClient, "$Id: maciTestClient.cpp,v 1.94 2007/09/07 13:42:29 hsommer Exp $")
 
 typedef
   ACE_Hash_Map_Manager <ACE_CString, MaciTestClass_ptr, ACE_Null_Mutex>
@@ -670,131 +670,46 @@ int ProcessReleaseComponent(int argc, const ACE_TCHAR *argv[]
   return SUCCESS;
 }
 
-int ProcessGetComponents(int argc, const ACE_TCHAR *argv[]
-                   )
-{
-  ACE_CString requestor = argv[1];
-  CORBA::Boolean activate = (argv[2][0] == '1') ? 1 : 0;
 
-  ACS_SHORT_LOG((LM_INFO,
-                 "Getting components for '%s'",
-                 requestor.c_str ()));
-
-  Handle h = 0;
-  if (requestor == "SimpleClient")
-    h = g_Client->handle ();
-  else
-    {
-      ClientInfo ci;
-      if (g_Clients.find (requestor, ci) == 0)
-        h = ci.h;
-    }
-
-  CURLSeq_var curls = new CURLSeq(argc-3);
-  curls->length (argc-3);
-
-  for (int i = 0; i < argc-3; ++i)
-    curls[(unsigned int)i] = CORBA::string_dup (GetCURL(argv[i+3]).c_str());
-
-  ulongSeq_var ulsStatus;
-  ObjectSeq_var osComponents;
-  try
-      {
-  osComponents = g_Client->manager ()->get_components (h, curls.in (), activate, ulsStatus.out());
-      }
-  catch(maciErrType::CannotGetComponentEx &_ex)
-      {
-      maciErrType::CannotGetComponentExImpl ex(_ex);
-       ex.log();
-       return ERROR;
-      }
-  if (int(ulsStatus->length()) != argc-3)
-    {
-      ACS_SHORT_LOG((LM_ERROR, "Component status sequence length was %d, but %d was expected!",
-        ulsStatus->length(), argc-3));
-    }
-
-  if (int(osComponents->length()) != argc-3)
-    {
-      ACS_SHORT_LOG((LM_ERROR, "Component object sequence length was %d, but %d was expected!",
-        osComponents->length(), argc-3));
-    }
-
-  for (int i = 0; i < argc-3; ++i)
-    {
-      ACE_CString strStatus;
-
-      if(i < int(ulsStatus->length()))
-        {
-          if (ulsStatus[i] == Manager::COMPONENT_ACTIVATED)
-            strStatus = "COMPONENT_ACTIVATED";
-          if (ulsStatus[i] == Manager::COMPONENT_NONEXISTENT)
-            strStatus = "COMPONENT_NONEXISTENT";
-          if (ulsStatus[i] == Manager::COMPONENT_NOT_ACTIVATED)
-            strStatus = "COMPONENT_NOT_ACTIVATED";
-        }
-
-      if(i < int(osComponents->length()))
-        {
-          ACS_SHORT_LOG ((LM_INFO,
-                          "Activating component '%s': %s.",
-                          argv[i+3], strStatus.c_str()));
-
-          MaciTestClass_ptr componentMTC = MaciTestClass::_narrow (osComponents[(unsigned int)i]
-              );
-          ACE_CHECK_RETURN (ERROR);
-
-          if ((componentMTC != NULL) && (g_TestClasses.bind (argv[i+3], componentMTC) != 0))
-            {
-	      ACS_SHORT_LOG ((LM_DEBUG,                               // LM_ERROR
-                              "Unable to save component info for '%s'",
-                              argv[i+3]));
-            }
-        }
-    }
-
-  return SUCCESS;
-}
-
-int ProcessReleaseComponents(int argc, const ACE_TCHAR *argv[]
-                       )
-{
-  ACE_CString requestor (argv[1]);
-
-  ACS_SHORT_LOG((LM_INFO,
-                 "Releasing components in the name of '%s'",
-                 requestor.c_str ()));
-
-  Handle h = 0;
-  if (requestor == "SimpleClient")
-    h = g_Client->handle ();
-  else
-    {
-      ClientInfo ci;
-      if (g_Clients.find (requestor, ci) == 0)
-        h = ci.h;
-    }
-
-  CURLSeq_var curls = new CURLSeq(argc-2);;
-  //curls->length (argc-2);
-
-  for (int i = 0; i < argc-2; ++i)
-    curls[(unsigned int)i] = CORBA::string_dup (GetCURL(argv[i+2]).c_str());
- 
-
-  g_Client->manager ()->release_components (h, curls.in ());
-  ACE_CHECK_RETURN (ERROR);
-
-  for (int i = 0; i < argc-2; ++i)
-    {
-      MaciTestClass_ptr mtp;
-      g_TestClasses.unbind (argv[i+2], mtp);
-      //@@: What to do?
-      //CORBA::release (mtp);
-    }
-
-  return SUCCESS;
-}
+//int ProcessReleaseComponents(int argc, const ACE_TCHAR *argv[]
+//                       )
+//{
+//  ACE_CString requestor (argv[1]);
+//
+//  ACS_SHORT_LOG((LM_INFO,
+//                 "Releasing components in the name of '%s'",
+//                 requestor.c_str ()));
+//
+//  Handle h = 0;
+//  if (requestor == "SimpleClient")
+//    h = g_Client->handle ();
+//  else
+//    {
+//      ClientInfo ci;
+//      if (g_Clients.find (requestor, ci) == 0)
+//        h = ci.h;
+//    }
+//
+//  CURLSeq_var curls = new CURLSeq(argc-2);;
+//  //curls->length (argc-2);
+//
+//  for (int i = 0; i < argc-2; ++i)
+//    curls[(unsigned int)i] = CORBA::string_dup (GetCURL(argv[i+2]).c_str());
+// 
+//
+//  g_Client->manager ()->release_components (h, curls.in ());
+//  ACE_CHECK_RETURN (ERROR);
+//
+//  for (int i = 0; i < argc-2; ++i)
+//    {
+//      MaciTestClass_ptr mtp;
+//      g_TestClasses.unbind (argv[i+2], mtp);
+//      //@@: What to do?
+//      //CORBA::release (mtp);
+//    }
+//
+//  return SUCCESS;
+//}
 
 int ProcessInit(int argc, const ACE_TCHAR *argv[]
                 )
@@ -918,19 +833,19 @@ int ProcessTestClient(int argc, const ACE_TCHAR *argv[]
     const char* hostname = ACSPorts::getIP();
 
     ACE_TCHAR *args1[] = { "executable", "someparam", "-m" };
-    ASSERT_EQUALS_STR (MACIHelper::getManagerHostname(3, args1, 0, "").c_str(),
+    ASSERT_EQUALS_STR (MACIHelper::getManagerHostname(3, args1).c_str(),
                        hostname);
 
     ACE_TCHAR *args2[] = { "executable", "someparam", "-m", "corbaloc::the.host.com:3000/ManagerReference" };
-    ASSERT_EQUALS_STR (MACIHelper::getManagerHostname(4, args2, 0, "").c_str(),
+    ASSERT_EQUALS_STR (MACIHelper::getManagerHostname(4, args2).c_str(),
                        "the.host.com");
 
     ACE_TCHAR *args3[] = { "executable", "someparam", "-managerReference", "corbaloc::the.host.com:3000/ManagerReference" };
-    ASSERT_EQUALS_STR (MACIHelper::getManagerHostname(4, args3, 0, "").c_str(),
+    ASSERT_EQUALS_STR (MACIHelper::getManagerHostname(4, args3).c_str(),
                        "the.host.com");
 
     ACE_OS::putenv ("MANAGER_REFERENCE=corbaloc::the.host.com:3000/ManagerReference");
-    ASSERT_EQUALS_STR (MACIHelper::getManagerHostname(0, 0, 0, "").c_str(),
+    ASSERT_EQUALS_STR (MACIHelper::getManagerHostname(0, 0).c_str(),
                        "the.host.com");
 
 //    unsetenv ("MANAGER_REFERENCE");
@@ -938,7 +853,7 @@ int ProcessTestClient(int argc, const ACE_TCHAR *argv[]
 
   /* Tests for MACIHelper::resolveManager... not tested with CDB */
   {
-    Manager_var mgr1 = MACIHelper::resolveManager(g_Client->getORB(), 0, 0, 0, 0, 2, 1);
+    Manager_var mgr1 = MACIHelper::resolveManager(g_Client->getORB(), 0, 0, 2, 1);
     if (CORBA::is_nil (mgr1.ptr())) {
       ACS_SHORT_LOG ((LM_INFO, "MACIHelper::resolveManager returned nil"));
     } else {
@@ -1161,19 +1076,13 @@ CommandDef g_Commands[] =
       "Release a component.",
       ProcessReleaseComponent
     },
-    {
-      "getComponents",
-      "<requestor>:<activate>:<name1>:<name2>:...",
-      "Get several components in one call to the manager.",
-      ProcessGetComponents
-    },
-    {
+/*    {
       "releaseComponents",
       "<requestor>:<name1>:<name2>:...",
       "Release several components in one call to the manager.",
       ProcessReleaseComponents
     },
-    {
+*/    {
       "getComponentInfo",
       "<requestor>:<Component name wilcard>:<Component type wildcard>:<active only>",
       "Returns components' info from the manager.",
