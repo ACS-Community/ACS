@@ -25,6 +25,7 @@ import java.awt.Component;
 import java.awt.Dimension;
 
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
@@ -188,14 +189,17 @@ public class LogLevelPanel extends JTabbedPane implements IPanel {
 		// Add the tab
 		class TabInserter extends Thread {
 			Component tabContent;
-			public TabInserter(Component t) {
+			LogLevelPanel thePane;
+			public TabInserter(Component t, LogLevelPanel pane) {
 				tabContent=t;
+				thePane=pane;
 			}
 			public void run() {
-				add(tabContent);
+				add(tabContent, new JLabel(tabContent.getName()));
+				setTabComponentAt(indexOfComponent(tabContent), new ButtonTabComponent(thePane,tabContent.getName()));
 			}
 		};
-		SwingUtilities.invokeLater(new TabInserter(tab));
+		SwingUtilities.invokeLater(new TabInserter(tab,this));
 	}
 	
 	/**
