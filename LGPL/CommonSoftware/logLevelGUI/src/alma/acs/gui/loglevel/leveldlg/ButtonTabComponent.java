@@ -38,6 +38,7 @@ import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import javax.swing.plaf.basic.BasicButtonUI;
@@ -112,7 +113,21 @@ public class ButtonTabComponent extends JPanel {
             addActionListener(this);
         }
 
+        /**
+         * NOTE: there is only one source that can generate events: the button
+         * 
+         * @see java.awt.event.ActionListener
+         */
         public void actionPerformed(ActionEvent e) {
+        	if (selectorPane.userChangedLogLevels()) {
+				if (JOptionPane.showConfirmDialog(
+						null, 
+						"Do you really want to discard changes?", 
+						"Confirm", 
+						JOptionPane.YES_NO_OPTION)==JOptionPane.NO_OPTION) {
+					return;
+				}
+			}
         	try {
         		pane.removeLogSelectorTab(selectorPane.getName());
         	} catch (LogPaneNotFoundException ex) {
