@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - VLT project
 *
-* "@(#) $Id: maciHelper.cpp,v 1.92 2006/10/03 03:31:04 sharring Exp $"
+* "@(#) $Id: maciHelper.cpp,v 1.93 2007/09/07 13:38:13 hsommer Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -68,8 +68,7 @@ MACIHelper::extractHostnameFromCorbaloc(const ACE_TCHAR *corbaloc)
 }
 
 ACE_CString
-MACIHelper::getManagerHostname(int argc, ACE_TCHAR **argv,
-			       Table * cdbTable, const ACE_TCHAR * cdbPrefix)
+MACIHelper::getManagerHostname(int argc, ACE_TCHAR **argv)
 {
   ACS_TRACE("maci::MACIHelper::getManagerHostname");
 
@@ -90,34 +89,6 @@ MACIHelper::getManagerHostname(int argc, ACE_TCHAR **argv,
 	  }
 
       }
-
-  // ManagerReference value in configuration database
-  if (cdbTable)
-    {
-	  ACE_CString reference;
-	  
-	  Field fld;
-	  if (cdbTable->GetField(cdbPrefix, "ManagerReference", fld))
-	    fld.GetString(reference);
-
-	  if (reference.length()==0)
-	    {
-	      ACS_DEBUG_PARAM("maci::MACIHelper::resolveManager", "Field '%s.ManagerReference' empty or not set.", cdbPrefix);
-	    }
-	  else
-	    {
-
-	      ACE_CString result = extractHostnameFromCorbaloc(reference.c_str());
-	      if (result.length()>0)
-		{
-		  ACS_LOG(0, "maci::MACIHelper::getManagerHostname",
-			  (LM_INFO, "Manager hostname obtained via CDB: '%s'", result.c_str()));
-		  return result;
-		}
-
-	    }
-	  
-    }
 
   // Environment variable MANAGER_REFERENCE
   ACE_TCHAR * envRef = ACE_OS::getenv (MANAGER_REFERENCE);
@@ -154,7 +125,6 @@ MACIHelper::getManagerHostname(int argc, ACE_TCHAR **argv,
 maci::Manager_ptr
 MACIHelper::resolveManager(CORBA::ORB_ptr orb,
 			   int argc, ACE_TCHAR **argv,
-			   Table * cdbTable, const ACE_TCHAR * cdbPrefix, 
 			   int retries, unsigned int secTimeout)
 {
   ACS_TRACE("maci::MACIHelper::resolveManager");
@@ -176,30 +146,6 @@ MACIHelper::resolveManager(CORBA::ORB_ptr orb,
 	// return reference
 	return resolveManager(orb, argv[pos], retries, secTimeout);
       }
-
-  // ManagerReference value in configuration database
-  if (cdbTable)
-    {
-	  ACE_CString reference;
-	  
-	  Field fld;
-	  if (cdbTable->GetField(cdbPrefix, "ManagerReference", fld))
-	    fld.GetString(reference);
-
-	  if (reference.length()==0)
-	    {
-	      ACS_DEBUG_PARAM("maci::MACIHelper::resolveManager", "Field '%s.ManagerReference' empty or not set.", cdbPrefix);
-	    }
-	  else
-	    {
-	      ACS_LOG(0, "maci::MACIHelper::resolveManager",
-		      (LM_INFO, "ManagerReference obtained via CDB: '%s'", reference.c_str()));
-	  
-	      // return reference
-	      return resolveManager(orb, reference.c_str(), retries, secTimeout);
-	    }
-	  
-    }
 
   // Environment variable MANAGER_REFERENCE
   ACE_TCHAR * envRef = ACE_OS::getenv (MANAGER_REFERENCE);
@@ -434,7 +380,6 @@ MACIHelper::resolveNameService(CORBA::ORB_ptr orb,
 CORBA::Repository_ptr
 MACIHelper::resolveInterfaceRepository(CORBA::ORB_ptr orb, maci::Manager_ptr manager,
 				       int argc, ACE_TCHAR **argv,
-				       Table * cdbTable, const ACE_TCHAR * cdbPrefix,
 				       int retries, unsigned int secTimeout)
 {
   ACS_TRACE("maci::MACIHelper::resolveInterfaceRepository");
@@ -496,8 +441,7 @@ MACIHelper::resolveInterfaceRepository(CORBA::ORB_ptr orb, maci::Manager_ptr man
 	  (LM_DEBUG,"Unable to resolve InterfaceRepository reference using maci::Manager::get_service(\"InterfaceRepository\") method."));
 
 
-  ACE_CString managerHostname = MACIHelper::getManagerHostname(argc, argv, 
-							       cdbTable, cdbPrefix);
+  ACE_CString managerHostname = MACIHelper::getManagerHostname(argc, argv);
   if (managerHostname.length()>0)
   {
       ACE_TCHAR corbalocRef[240];
