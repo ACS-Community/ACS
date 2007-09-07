@@ -22,16 +22,23 @@
 package alma.acs.gui.loglevel.leveldlg;
 
 import java.awt.FlowLayout;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.border.TitledBorder;
+
+import com.cosylab.logging.engine.log.LogTypeHelper;
+import com.cosylab.logging.settings.LogTypeRenderer;
 
 import alma.acs.gui.loglevel.LogLvlSelNotSupportedException;
 
@@ -54,6 +61,14 @@ public class LogLevelSelectorPanel extends JPanel implements ActionListener {
 	// The table of log levels
 	private LogLevelTable table;
 	private LogLevelModel model;
+	
+	// The editor for local and global log levels
+	private JComboBox allLocalCB=new JComboBox(LogTypeHelper.getAllTypesDescriptions());;
+	private JComboBox allGlobalCB=new JComboBox(LogTypeHelper.getAllTypesDescriptions());;
+	public LogTypeRenderer editorLocal= new LogTypeRenderer();
+	public LogTypeRenderer editorGlobal= new LogTypeRenderer();
+	
+	private JCheckBox defaultCB = new JCheckBox("",false);
 	
 	/**
 	 * Constructor 
@@ -84,6 +99,9 @@ public class LogLevelSelectorPanel extends JPanel implements ActionListener {
 		
 		// Add the widgets with the log levels at the center
 		add(initLogLevelsPanel());
+		
+		// Add the panel to set all the levels
+		add(initAllLoggersPanel());
 		
 		// Set tooltip to buttons
 		applyBtn.setToolTipText("Apply the changes");
@@ -163,6 +181,26 @@ public class LogLevelSelectorPanel extends JPanel implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource()==applyBtn) { 
 			applyChanges();
+		} else if (e.getSource()==defaultCB) {
+			LogLevelHelper[] levels = ((LogLevelModel)table.getModel()).getLevels();
+			for (LogLevelHelper lvl: levels) {
+				lvl.setUseDefault(defaultCB.isSelected());
+			}
+			((LogLevelModel)table.getModel()).fireTableDataChanged();
+		} else if (e.getSource()==allLocalCB) {
+			int newLvl = allLocalCB.getSelectedIndex();
+			LogLevelHelper[] levels = ((LogLevelModel)table.getModel()).getLevels();
+			for (LogLevelHelper lvl: levels) {
+				lvl.setLocalLevel(newLvl);
+			}
+			((LogLevelModel)table.getModel()).fireTableDataChanged();
+		} else if (e.getSource()==allGlobalCB) {
+			int newLvl = allGlobalCB.getSelectedIndex();
+			LogLevelHelper[] levels = ((LogLevelModel)table.getModel()).getLevels();
+			for (LogLevelHelper lvl: levels) {
+				lvl.setGlobalLevel(newLvl);
+			}
+			((LogLevelModel)table.getModel()).fireTableDataChanged();
 		} else {
 			throw new IllegalStateException("Unknown source of events: "+e.getSource());
 		}
@@ -187,5 +225,50 @@ public class LogLevelSelectorPanel extends JPanel implements ActionListener {
 			}
 		}
 		return false;
+	}
+	
+	/**
+	 * Setup the panel with the option for all the named loggers
+	 * 
+	 * @return
+	 */
+	private JPanel initAllLoggersPanel() {
+		TitledBorder border = BorderFactory.createTitledBorder("All named loggers actions");
+		GridLayout layout = new GridLayout(3,2);
+		layout.setVgap(5);
+		
+		JPanel mainPnl = new JPanel(new FlowLayout(FlowLayout.CENTER));
+		JPanel panel = new JPanel(layout);
+		panel.setBorder(border);
+		
+		// Default
+		JLabel defaultLbl=new JLabel("Set/unset all the use default");
+		panel.add(defaultLbl);
+		panel.add(defaultCB);
+		
+		// local
+		JPanel localPnl = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		JLabel localLbl=new JLabel("Set all local levels");
+		panel.add(localLbl);
+		allLocalCB.setRenderer(editorLocal);
+		localPnl.add (allLocalCB);
+		panel.add(localPnl);
+		
+		// Global
+		JPanel globalPnl = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		JLabel globalLbl = new JLabel("Set all global levels");
+		panel.add(globalLbl);
+		allGlobalCB.setRenderer(editorGlobal);
+		globalPnl.add(allGlobalCB);
+		panel.add(globalPnl);
+		
+		mainPnl.add(panel);
+		
+		// Set the listeners
+		defaultCB.addActionListener(this);
+		allLocalCB.addActionListener(this);
+		allGlobalCB.addActionListener(this);
+		
+		return mainPnl;
 	}
 }
