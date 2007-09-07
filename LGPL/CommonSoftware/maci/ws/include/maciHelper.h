@@ -4,7 +4,7 @@
 /*******************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciHelper.h,v 1.87 2006/10/03 03:31:04 sharring Exp $"
+* "@(#) $Id: maciHelper.h,v 1.88 2007/09/07 13:34:49 hsommer Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -36,7 +36,7 @@ namespace maci {
  * MACIHelper class is a class helping to handle commonly used operations.
  * @author <a href=mailto:matej.sekoranja@ijs.si>Matej Sekoranja</a>,
  * Jozef Stefan Institute, Slovenia<br>
- * @version "@(#) $Id: maciHelper.h,v 1.87 2006/10/03 03:31:04 sharring Exp $"
+ * @version "@(#) $Id: maciHelper.h,v 1.88 2007/09/07 13:34:49 hsommer Exp $"
  */
 
 class maci_EXPORT MACIHelper
@@ -61,12 +61,9 @@ public:
    * 
    * @param argv command line parameter count
    * @param argc command line array of strings
-   * @param cdb pointer to the configuration database, if 0 no CDB lookup will be done
-   * @param cdbPrefix prefix to be added to the 'ManagerReference' field (e.g. ':Appl_data:MACI:Containers:Container')
    * @return Manager's hostname
    */
-  static ACE_CString getManagerHostname(int argc, ACE_TCHAR **argv,
-					Table * cdbTable, const ACE_TCHAR * cdbPrefix);
+  static ACE_CString getManagerHostname(int argc, ACE_TCHAR **argv);
 
   /**
    * <i>resolveManager</i> method is a method helping to resolve Manager's reference.
@@ -79,15 +76,12 @@ public:
    * @param orb CORBA ORB
    * @param argv command line parameter count
    * @param argc command line array of strings
-   * @param cdb pointer to the configuration database, if 0 no CDB lookup will be done
-   * @param cdbPrefix prefix to be added to the 'ManagerReference' field (e.g. ':Appl_data:MACI:Containers:Container')
    * @param retries number of retries resolving Manager's reference, <= 0 means infinite
    * @param secTimeout timeout expressed in seconds, == 0 means inifinite (dt between retries is 3 secs)
    * @return CORBA reference to the Manager or maci::Manager::_nil() if unable to resolve Manager's reference
    */
   static maci::Manager_ptr resolveManager(CORBA::ORB_ptr orb,
 					  int argc, ACE_TCHAR **argv,
-					  Table * cdbTable, const ACE_TCHAR * cdbPrefix, 
 					  int retries = 3, unsigned int secTimeout = 0);
 
   /**
@@ -143,15 +137,12 @@ public:
    * @param manager Manager's reference.
    * @param argv command line parameter count
    * @param argc command line array of strings
-   * @param cdb pointer to the configuration database, if 0 no CDB lookup will be done
-   * @param cdbPrefix prefix to be added to the 'ManagerReference' field (e.g. ':Appl_data:MACI:Containers:Container')
    * @param retries number of retries resolving NameService reference, <= 0 means infinite
    * @param secTimeout timeout expressed in seconds, == 0 means inifinite (dt between retries is 3secs).   
    * @return CORBA reference to the InterfaceRepository or CORBA::Object::_nil()
    */
   static CORBA::Repository_ptr resolveInterfaceRepository(CORBA::ORB_ptr orb, maci::Manager_ptr manager,
 							 int argc, ACE_TCHAR **argv,
-							 Table * cdbTable, const ACE_TCHAR * cdbPrefix,
 							 int retries = 3, unsigned int secTimeout = 0);
 
   /**
