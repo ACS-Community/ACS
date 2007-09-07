@@ -525,18 +525,12 @@ public class LogLvlTreeModel extends DefaultTreeModel implements LogLevelListene
 				DefaultMutableTreeNode child = (DefaultMutableTreeNode)componentsNode.getChildAt(t);
 				String childName = ((TreeComponentInfo)child.getUserObject()).getName();
 				if (childName.compareTo(compInfo.name)>0) {
-					pos=t-1;
-					if (pos<0) {
-						pos=0;
-					}
+					pos=t;
 					found=true;
 					break;
 				}
 			}
-		} else {
-			pos=0;
-			found=true;
-		}
+		} 
 		// Add the node in the right position
 		if (found) {
 			componentsNode.insert(newChild, pos);
