@@ -167,4 +167,25 @@ public class LogLevelSelectorPanel extends JPanel implements ActionListener {
 			throw new IllegalStateException("Unknown source of events: "+e.getSource());
 		}
 	}
+	
+	/**
+	 * Check if the user changed one of the logger level
+	 * 
+	 * @return true if the user changed at least one level
+	 */
+	public boolean userChangedLogLevels() {
+		if (model==null) {
+			// The model is null if the table is not shown
+			// because the client does not support 
+			// logLevels operations
+			return false;
+		}
+		LogLevelHelper[] newLevels = model.getLevels();
+		for (LogLevelHelper logLvl: newLevels) {
+			if (logLvl.modified()) {
+				return true;
+			}
+		}
+		return false;
+	}
 }
