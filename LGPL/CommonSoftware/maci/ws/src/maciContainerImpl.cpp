@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciContainerImpl.cpp,v 1.90 2007/09/03 06:07:12 cparedes Exp $"
+* "@(#) $Id: maciContainerImpl.cpp,v 1.91 2007/09/07 13:37:17 hsommer Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -76,7 +76,7 @@
 #include <ACSAlarmSystemInterfaceFactory.h>
 #endif
 
-ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.90 2007/09/03 06:07:12 cparedes Exp $")
+ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.91 2007/09/07 13:37:17 hsommer Exp $")
 
  using namespace maci;
  using namespace cdb;
@@ -568,7 +568,7 @@ ContainerImpl::init(int argc, char *argv[])
 	    int cdb_argc = cdbBootstrapArgv.argc();
 	    cdbORB = CORBA::ORB_init (cdb_argc, cdbBootstrapArgv.argv());
                                                                                                                          
-	    manager = MACIHelper::resolveManager(cdbORB.in(), cdbBootstrapArgv.argc(), cdbBootstrapArgv.argv(), 0, 0, -1 ,0/*2, 5*/);
+	    manager = MACIHelper::resolveManager(cdbORB.in(), cdbBootstrapArgv.argc(), cdbBootstrapArgv.argv(), -1 ,0/*2, 5*/);
 	      if (!CORBA::is_nil(manager.in()))
 		{
 		  CORBA::Object_var cdb = manager->get_service(0, "CDB", true); 
@@ -673,11 +673,12 @@ ContainerImpl::init(int argc, char *argv[])
       //
 
       // get command line options from the local database.
-      ACE_CString strCmdLnDB("");
-      if (!m_dynamicContainer && m_database->GetField(m_dbPrefix, "CommandLine", fld))
-	fld.GetString(strCmdLnDB);
-
-      strCmdLn += strCmdLnDB;
+      // @TODO Now that Container.CommandLine is gone, we need to read this data from Container.DeployInfo.Flags !
+//      ACE_CString strCmdLnDB("");
+//      if (!m_dynamicContainer && m_database->GetField(m_dbPrefix, "CommandLine", fld))
+//	fld.GetString(strCmdLnDB);
+//
+//      strCmdLn += strCmdLnDB;
 
       //get the default C++ Container port
       std::ostringstream containerOutput;
@@ -702,8 +703,7 @@ ContainerImpl::init(int argc, char *argv[])
       // add local IFR address if no other specified
       if (strCmdLn.find("-ORBInitRef InterfaceRepository")==ACE_CString::npos)
 	{
-	  ACE_CString managerHostname = MACIHelper::getManagerHostname(argc, argv, 
-								       m_database, m_dbPrefix.c_str());
+	  ACE_CString managerHostname = MACIHelper::getManagerHostname(argc, argv);
 	  if (managerHostname.length()>0)
 	    {
 	      strCmdLn += " -ORBInitRef InterfaceRepository=corbaloc::";
@@ -1290,7 +1290,6 @@ ContainerImpl::resolveManager(int nSecTimeout)
 
   return MACIHelper::resolveManager(orb.in(),
 				    m_argc, m_argv,
-				    m_dynamicContainer ? 0 : m_database, m_dbPrefix.c_str(),
 				    retries, nSecTimeout);
 }
 
