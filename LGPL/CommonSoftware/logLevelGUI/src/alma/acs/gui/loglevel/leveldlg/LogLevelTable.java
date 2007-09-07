@@ -21,11 +21,17 @@
  */
 package alma.acs.gui.loglevel.leveldlg;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.swing.DefaultCellEditor;
 import javax.swing.JComboBox;
 import javax.swing.JTable;
+import javax.swing.RowSorter;
+import javax.swing.SortOrder;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableModel;
 
 import com.cosylab.logging.engine.log.LogTypeHelper;
 import com.cosylab.logging.settings.LogTypeRenderer;
@@ -63,10 +69,18 @@ public class LogLevelTable extends JTable {
 	 * @param model The model of this table
 	 */
 	public LogLevelTable(LogLevelModel model) {
-		super(model);
+		super();
 		if (model==null) {
 			throw new IllegalArgumentException("Invalid null table model in constructor");
 		}
+		
+		setModel(model);
+		
+		// Set the row sorter
+		setAutoCreateRowSorter(true);
+		List<RowSorter.SortKey> sortKeys = new ArrayList<RowSorter.SortKey>();
+		sortKeys.add(new RowSorter.SortKey(0,SortOrder.ASCENDING));
+		getRowSorter().setSortKeys(sortKeys);
 		
 		editor.setSelectedIndex(0);
 		editor.setEditable(false);
@@ -85,6 +99,7 @@ public class LogLevelTable extends JTable {
 		getColumn(LogLevelTable.DEFAULT_ID).sizeWidthToFit();
 		
 		setRowSelectionAllowed(false);
+		
 	}
 	
 	/**
