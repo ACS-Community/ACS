@@ -31,6 +31,8 @@ import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
 
 import alma.acs.container.ContainerServices;
+import alma.acs.gui.loglevel.leveldlg.ButtonTabComponent;
+import alma.acs.gui.loglevel.leveldlg.LogLevelSelectorPanel;
 import alma.acs.gui.loglevel.tree.LogLvlTree;
 import alma.acs.gui.util.panel.IPanel;
 
@@ -172,15 +174,15 @@ public class LogLevelPanel extends JTabbedPane implements IPanel {
 	 *@throws InvalidLogPaneException If the name of the panel is empty or null
 	 *@throws LogPaneAlreadyExistException If a tab with the given name already exist
 	 */
-	public void addLogSelectorTab(Component tab) throws  InvalidLogPaneException, LogPaneAlreadyExistException {
-		if (tab==null) {
+	public void addLogSelectorTab(LogLevelSelectorPanel logTab) throws  InvalidLogPaneException, LogPaneAlreadyExistException {
+		if (logTab==null) {
 			throw new IllegalArgumentException("Invalid null component");
 		}
-		if (tab.getName()==null || tab.getName().isEmpty()) {
+		if (logTab.getName()==null || logTab.getName().isEmpty()) {
 			throw new InvalidLogPaneException("Trying to add a panel with no name");
 		}
 		// Check if a tab with this name already exist
-		String name=tab.getName();
+		String name=logTab.getName();
 		for (int t=0; t<getTabCount(); t++) {
 			if (getComponentAt(t).getName().equals(name)) {
 				throw new LogPaneAlreadyExistException("A log with the name "+name+" is already present");
@@ -188,18 +190,18 @@ public class LogLevelPanel extends JTabbedPane implements IPanel {
 		}
 		// Add the tab
 		class TabInserter extends Thread {
-			Component tabContent;
+			LogLevelSelectorPanel tabContent;
 			LogLevelPanel thePane;
-			public TabInserter(Component t, LogLevelPanel pane) {
+			public TabInserter(LogLevelSelectorPanel t, LogLevelPanel pane) {
 				tabContent=t;
 				thePane=pane;
 			}
 			public void run() {
 				add(tabContent, new JLabel(tabContent.getName()));
-				setTabComponentAt(indexOfComponent(tabContent), new ButtonTabComponent(thePane,tabContent.getName()));
+				setTabComponentAt(indexOfComponent(tabContent), new ButtonTabComponent(thePane,tabContent));
 			}
 		};
-		SwingUtilities.invokeLater(new TabInserter(tab,this));
+		SwingUtilities.invokeLater(new TabInserter(logTab,this));
 	}
 	
 	/**
