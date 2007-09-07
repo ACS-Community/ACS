@@ -21,6 +21,8 @@
  */
 package alma.acs.gui.loglevel.leveldlg;
 
+import java.awt.Point;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -125,6 +127,23 @@ public class LogLevelTable extends JTable {
 			return edt;
 		}
 		return super.getCellEditor(row, column);
+	}
+	
+	/**
+	 * Set the tootip for the name of the logger
+	 */
+	public String getToolTipText(MouseEvent e) {
+		String tip=null;
+		Point p = e.getPoint();
+        int rowIndex = rowAtPoint(p);
+        int colIndex = columnAtPoint(p);
+        int realColumnIndex = convertColumnIndexToModel(colIndex);
+        int realRowIndex=convertRowIndexToModel(rowIndex);
+        if (realColumnIndex==0) {
+        	tip=getModel().getValueAt(realRowIndex, 0).toString();
+        }
+		
+		return tip;
 	}
 	
 }
