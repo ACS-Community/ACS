@@ -2,7 +2,7 @@
 #
 #  MACI TEST SCRIPT
 #
-#  "@(#) $Id: maciTest.mts,v 1.82 2006/10/12 15:33:11 bjeram Exp $"
+#  "@(#) $Id: maciTest.mts,v 1.83 2007/09/07 13:47:18 hsommer Exp $"
 #
 #  Following is a sequence of commands that the maciTestClient is
 #  to execute. These commands test the Manager and Containers by
@@ -63,26 +63,33 @@ getComponent:SimpleClient:1:MACI_HIER
 
 #releaseComponent:SimpleClient:MACI07
 
-releaseComponents:SimpleClient:MACI01:MACI04
+releaseComponent:SimpleClient:MACI01
+releaseComponent:SimpleClient:MACI04
 
-getComponents:SimpleClient:1:MACI01:MACI04:MACI01
+getComponent:SimpleClient:1:MACI01
+getComponent:SimpleClient:1:MACI04
+getComponent:SimpleClient:1:MACI01
 
 releaseComponent:SimpleClient:MACI01
 
-getComponents:SimpleClient:1:MACI01:MACI04
+getComponent:SimpleClient:1:MACI01
+getComponent:SimpleClient:1:MACI04
 
-releaseComponents:SimpleClient:MACI01:MACI04
+releaseComponent:SimpleClient:MACI01
+releaseComponent:SimpleClient:MACI04
 
 
 
 getComponent:SimpleClient:1:MACI02
 releaseComponent:SimpleClient:MACI02
-getComponents:SimpleClient:1:MACI02:MACI05
+getComponent:SimpleClient:1:MACI02
+getComponent:SimpleClient:1:MACI05
 releaseComponent:SimpleClient:MACI02
 releaseComponent:SimpleClient:MACI05
 getComponent:SimpleClient:1:MACI02
 getComponent:SimpleClient:1:MACI05
-releaseComponents:SimpleClient:1:MACI02:MACI05
+releaseComponent:SimpleClient:1:MACI02
+releaseComponent:SimpleClient:1:MACI05
 getComponents:SimpleClient:1:MACI02
 releaseComponents:SimpleClient:1:MACI02
 
