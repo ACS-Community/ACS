@@ -19,7 +19,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsncORBHelperImpl.cpp,v 1.57 2006/09/01 02:20:54 cparedes Exp $"
+* "@(#) $Id: acsncORBHelperImpl.cpp,v 1.58 2007/09/09 08:01:42 hsommer Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -91,7 +91,7 @@ ORBHelper::init_ORB()
     //get NameService Reference
     nameService += acscommon::NAMING_SERVICE_NAME;
     nameService +="=corbaloc::";
-    nameService += MACIHelper::getManagerHostname(1, NULL, NULL, NULL);
+    nameService += MACIHelper::getManagerHostname(1, NULL);
     nameService += ":"; 
     nameService += ACSPorts::getNamingServicePort().c_str();
     nameService += "/"; 
