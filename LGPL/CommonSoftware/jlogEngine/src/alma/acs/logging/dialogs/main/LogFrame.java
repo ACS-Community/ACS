@@ -218,13 +218,7 @@ public class LogFrame extends JFrame implements WindowListener {
 	 * @see WindowListener
 	 */
 	public void windowClosed(java.awt.event.WindowEvent e) {
-		final Runnable doDispose = new Runnable() {
-		     public void run() {
-		    	 loggingClient=null;
-		    	 System.exit(0);
-		     }
-		};
-		SwingUtilities.invokeLater(doDispose);
+	    	 loggingClient=null;
 	}
 	
 	/**
@@ -250,13 +244,8 @@ public class LogFrame extends JFrame implements WindowListener {
 			return;
 		}
 		closing=true;
-		final Runnable doClose = new Runnable() {
-			public void run() {
-				loggingClient.close(true);
-				setVisible(false);
-				dispose();
-			}
-		};
-		SwingUtilities.invokeLater(doClose);
+		loggingClient.close(true);
+		setVisible(false);
+		dispose();
 	}
 }
