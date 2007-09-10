@@ -373,11 +373,7 @@ public class LogLvlTreeModel extends DefaultTreeModel implements LogLevelListene
 		if (clientInfo==null) {
 			throw new IllegalArgumentException("Invalid null ClientInfo");
 		}
-		DefaultMutableTreeNode clientNode = new DefaultMutableTreeNode(new TreeClientInfo(clientInfo));
-		clientsNode.add(clientNode);
-		Object[] children = new Object[] { clientNode };
-		int[] indexes = new int[] { clientsNode.getIndex(clientNode)};
-		fireTreeNodesInserted(clientsNode, clientsNode.getPath(),indexes,children);
+		addNode(new TreeClientInfo(clientInfo), clientsNode);
 	}
 
 	/**
@@ -399,7 +395,8 @@ public class LogLvlTreeModel extends DefaultTreeModel implements LogLevelListene
 	 */
 	public void componentLoggedIn(ComponentInfo compInfo) {
 		updateComponent(compInfo);
-		addToComponentSubtree(compInfo);
+		TreeComponentInfo info = new TreeComponentInfo(compInfo);
+		addNode(info,componentsNode);
 	}
 	
 	/**
@@ -426,11 +423,7 @@ public class LogLvlTreeModel extends DefaultTreeModel implements LogLevelListene
 			System.out.println(contInfo.name+" already in the tree");
 		} else {
 			// Add the new container
-			DefaultMutableTreeNode newChild = new DefaultMutableTreeNode(new TreeContainerInfo(contInfo));
-			containersNode.add(newChild);
-			Object[] childs = new Object[] { newChild };
-			int[] indexes = new int[] { containersNode.getIndex(newChild) };
-			fireTreeNodesInserted(containersNode, containersNode.getPath(), indexes, childs);
+			addNode(new TreeContainerInfo(contInfo), containersNode);
 		}
 	}
 
@@ -470,12 +463,7 @@ public class LogLvlTreeModel extends DefaultTreeModel implements LogLevelListene
 		if (contNode==null) {
 			throw new IllegalStateException("Trying to add a component but the container does not exist!");
 		}
-		DefaultMutableTreeNode compNode= new DefaultMutableTreeNode(new TreeComponentInfo(info));
-		contNode.add(compNode);
-		int idx = contNode.getIndex(compNode);
-		Object[] children = new Object[] { compNode };
-		int[] indexes = new int[] { idx };
-		fireTreeNodesInserted(contNode, contNode.getPath(), indexes, children);
+		addNode(new TreeComponentInfo(info),contNode);
 	}
 	
 	/**
@@ -498,56 +486,6 @@ public class LogLvlTreeModel extends DefaultTreeModel implements LogLevelListene
 		Object[] children = new Object[] { compNode };
 		int[] indexes = new int[] { idx };
 		fireTreeNodesRemoved(parent,parent.getPath(), indexes, children);
-	}
-	
-	/**
-	 * Add a component to the components subtree if it is not 
-	 * already present.
-	 * The components subtree can be hidden by the user.
-	 * The components are shown in a lessicographical order
-	 * 
-	 * @param compInfo The component to add to the tree
-	 */
-	private void addToComponentSubtree(ComponentInfo compInfo) {
-		if (compInfo==null) {
-			throw new IllegalArgumentException("Invalid null ComponentInfo");
-		}
-		if (findNode(componentsNode, compInfo.name, compInfo.h)!=null) {
-			// The node is already in the tree
-			return;
-		}
-		DefaultMutableTreeNode newChild = new DefaultMutableTreeNode(new TreeComponentInfo(compInfo));
-		// Find the position to insert the new node
-		int pos=0;
-		boolean found=false;
-		if (componentsNode.getChildCount()!=0) {
-			for (int t=0; t<componentsNode.getChildCount(); t++) {
-				DefaultMutableTreeNode child = (DefaultMutableTreeNode)componentsNode.getChildAt(t);
-				String childName = ((TreeComponentInfo)child.getUserObject()).getName();
-				if (childName.compareTo(compInfo.name)>0) {
-					pos=t;
-					found=true;
-					break;
-				}
-			}
-		} 
-		// Add the node in the right position
-		if (found) {
-			componentsNode.insert(newChild, pos);
-		} else {
-			// The node must be appended at the end of the list
-			componentsNode.add(newChild);
-		}
-		// Trigger a refresh of the tree
-		int[] indexes = new int[componentsNode.getChildCount()];
-		for (int t=0; t<indexes.length; t++) {
-			indexes[t]=t;
-		}
-		Object[] children = new Object[indexes.length];
-		for (int t=0; t<indexes.length; t++) {
-			children[t]=componentsNode.getChildAt(t);
-		}
-		fireTreeStructureChanged(componentsNode, componentsNode.getPath(), indexes, children);
 	}
 	
 	/**
@@ -628,6 +566,55 @@ public class LogLvlTreeModel extends DefaultTreeModel implements LogLevelListene
 			Object[] children = new Object[] { clientsNode };
 			fireTreeNodesRemoved(managerNode, managerNode.getPath(), indexes, children);
 		}
+	}
+	
+	/**
+	 * Add an entry to a node.
+	 * The new node is inserted ordered by its name.
+	 * 
+	 * @param newItem The new entry to add
+	 * @param node The node where the entry has to be addded
+	 * 
+	 */
+	private void addNode(TreeContentInfo newItem, DefaultMutableTreeNode node) {
+		if (newItem==null) {
+			throw new IllegalArgumentException("Invalid null item to add");
+		}
+		if (node==null) {
+			throw new IllegalArgumentException("Invalid null node to add the item to");
+		}
+		DefaultMutableTreeNode newChild = new DefaultMutableTreeNode(newItem);
+		// Find the position to insert the new node
+		int pos=0;
+		boolean found=false;
+		if (node.getChildCount()!=0) {
+			for (int t=0; t<node.getChildCount(); t++) {
+				DefaultMutableTreeNode child = (DefaultMutableTreeNode)node.getChildAt(t);
+				String childName = ((TreeContentInfo)child.getUserObject()).getName();
+				if (childName.compareTo(newItem.getName())>0) {
+					pos=t;
+					found=true;
+					break;
+				}
+			}
+		} 
+		// Add the node in the right position
+		if (found) {
+			node.insert(newChild, pos);
+		} else {
+			// The node must be appended at the end of the list
+			node.add(newChild);
+		}
+		// Trigger a refresh of the tree
+		int[] indexes = new int[node.getChildCount()];
+		for (int t=0; t<indexes.length; t++) {
+			indexes[t]=t;
+		}
+		Object[] children = new Object[indexes.length];
+		for (int t=0; t<indexes.length; t++) {
+			children[t]=node.getChildAt(t);
+		}
+		fireTreeStructureChanged(node, node.getPath(), indexes, children);
 	}
 	
 	/**
