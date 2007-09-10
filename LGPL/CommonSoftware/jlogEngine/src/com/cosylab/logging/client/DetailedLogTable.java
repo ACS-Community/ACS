@@ -94,6 +94,7 @@ public class DetailedLogTable extends JTable
 	public void setupContent(ILogEntry log) {
 		if (log==null) {
 			setEmptyContent();
+			return;
 		}
 		
 		// The number of rows in the table is given by the number of fields
