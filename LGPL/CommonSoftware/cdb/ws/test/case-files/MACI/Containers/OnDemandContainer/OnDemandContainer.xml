@@ -7,7 +7,7 @@
 	<Autoload>
 		<cdb:_ string="baci" />
 	</Autoload>
-	<DeployInfo Type="cpp" Host="test" Instance="0" Flags="" KeepAliveTime="0" />
+	<DeployInfo TypeModifiers="total_immersion" Host="test" Instance="0" Flags="" KeepAliveTime="0" />
 	<LoggingConfig centralizedLogger="Log" minLogLevel="0" dispatchPacketSize="10" immediateDispatchLevel="31" />
 </Container>
 
