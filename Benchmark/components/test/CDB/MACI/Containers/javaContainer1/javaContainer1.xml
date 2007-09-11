@@ -13,7 +13,7 @@
     	minLogLevel="0"
     	minLogLevelLocal="2"
     	centralizedLogger="Log"
-    	maxLogQueueSize="100000"
+    	maxLogQueueSize="50000"
     	immediateDispatchLevel="15"
     	dispatchPacketSize="20"
     	flushPeriodSeconds="10"
