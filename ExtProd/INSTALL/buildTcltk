@@ -2,7 +2,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: buildTcltk,v 1.13 2007/09/06 15:20:09 eallaert Exp $"
+# "@(#) $Id: buildTcltk,v 1.14 2007/09/11 05:56:10 eallaert Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -207,14 +207,24 @@ build_OSV=`uname -r`
 
 if [ ${build_OS} = "Linux" ]
 then
-     build_OSV=`cat /etc/redhat-release | awk '{ print $7 }'`
+     distro=`cat /etc/redhat-release | awk '{ print $1 $2 }'`
+     if [ "X${distro} = "XRedHat" ]
+     then 
+          build_OSV=${distro}`cat /etc/redhat-release | awk '{ print $3 $7 }'`
+     fi   
+     if [ "X${distro} = "XFedoraCore" ]
+     then 
+          build_OSV=${distro}`cat /etc/redhat-release | awk '{ print $4 }'`
+     fi   
 fi
 
 echo $SEPARATOR
 echo " Installing on $build_OS version $build_OSV"
 
-if [     ${build_OS}-${build_OSV} != "SunOS-5.8"     \
-     -a  ${build_OS}-${build_OSV} != "Linux-4" ]
+if [     ${build_OS}-${build_OSV} != "SunOS-5.8"                  \
+     -a  ${build_OS}-${build_OSV} != "Linux-RedHatEnterprise4"    \
+     -a  ${build_OS}-${build_OSV} != "Linux-FedoraCore6"          \
+   ]
 then
     echo ""
     echo "        WARNING: this procedure has not been tested on this system!"

@@ -2,7 +2,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: checkTcltk,v 1.6 2007/09/07 14:47:47 eallaert Exp $"
+# "@(#) $Id: checkTcltk,v 1.7 2007/09/11 05:55:56 eallaert Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -47,18 +47,29 @@ build_OSV=`uname -r`
 
 if [ ${build_OS} = "Linux" ]
 then
-     build_OSV=`cat /etc/redhat-release | awk '{ print $7 }'`
+     distro=`cat /etc/redhat-release | awk '{ print $1 $2 }'`
+     if [ "X${distro}" = "XRedHat" ]
+     then 
+          build_OSV=${distro}`cat /etc/redhat-release | awk '{ print $3 $7 }'`
+     fi   
+     if [ "X${distro}" = "XFedoraCore" ]
+     then 
+          build_OSV=${distro}`cat /etc/redhat-release | awk '{ print $4 }'`
+     fi   
 fi
 
 echo $SEPARATOR
 echo "Checking on $build_OS version $build_OSV:"
 echo ""
 
-if [     ${build_OS}-${build_OSV} != "SunOS-5.8"     \
-     -a  ${build_OS}-${build_OSV} != "Linux-4"       \
+if [     ${build_OS}-${build_OSV} != "SunOS-5.8"                  \
+     -a  ${build_OS}-${build_OSV} != "Linux-RedHatEnterprise4"    \
+     -a  ${build_OS}-${build_OSV} != "Linux-FedoraCore6"          \
    ]
 then
-    echo "\n\tWARNING: this procedure has not been tested on this system\n"
+    echo ""
+    echo "WARNING: this procedure has not been tested on this system"
+    echo ""
 fi
 
 
@@ -68,7 +79,7 @@ fi
 echo "ACSDATA . . .\c"
 if [ "$ACSDATA" = "" ]
 then	
-    echo "$ACSDATA not defined, cannot continue."
+    echo "ACSDATA not defined, cannot continue."
     exit 1
 fi
 
