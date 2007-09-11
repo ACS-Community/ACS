@@ -2,7 +2,6 @@
 1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAOImpl] DAO:'MACI' Unable to return field: 'Containers/Container-XXXX/LoggingConfig/dispatchPacketSize'
 1 - ----------T--:--:--.--- [Container-XXXX - ] Configuration information for container 'Container-XXXX' not available.
 1 - ----------T--:--:--.--- [Container-XXXX - maci::Container::init] Starting as dynamic container.
-1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAOImpl] DAO:'MACI' Unable to return field: 'Containers/Container-XXXX/ManagerReference'
 1 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::getManagerHostname] Manager hostname generated using localhost address: '---'
 1 - ----------T--:--:--.--- [main - maci::ContainerImpl::initThread] Thread name: 'main'
 1 - ----------T--:--:--.--- [Container-XXXX - maci::ContainerImpl::getManager] Resolving manager...
