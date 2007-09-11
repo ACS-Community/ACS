@@ -1,7 +1,7 @@
 1 -  --noDirectory -- alma.acs.logclient.LogListener
 1 - Connection disconnected
 1 - Connecting
-1 - object is activated
+1 - FINER: Logging configuration has been initialized, but not from CDB settings.
 1 - Connection established
 1 - RAW log: <Info TimeStamp="xxx" File="testLTSClient.cpp" Line="52" Routine="main" Host="xxx" Process="../bin/testLTSClient" Thread="main" Context="" SourceObject="GlobalLogger" Audience="Curious people"><Data Name="logName"><![CDATA[simpleLog]]></Data><![CDATA[Simple Log]]></Info>
 1 - Log received: --- LogEntry ---
