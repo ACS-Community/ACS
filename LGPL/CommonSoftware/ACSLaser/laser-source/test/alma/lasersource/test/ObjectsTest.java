@@ -19,7 +19,7 @@
 
 /** 
  * @author  almadev   
- * @version $Id: ObjectsTest.java,v 1.3 2006/10/11 10:17:50 acaproni Exp $
+ * @version $Id: ObjectsTest.java,v 1.4 2007/09/11 13:20:15 acaproni Exp $
  * @since    
  */
 
@@ -64,7 +64,7 @@ public class ObjectsTest extends TestCase {
 		assertNotNull("Error getting the manager",manager);
 		Logger logger = TestUtil.getLogger(getClass().getName());
 		assertNotNull("Error getting the logger",logger);
-		ACSAlarmSystemInterfaceFactory.init(orb,manager,0,logger);
+		ACSAlarmSystemInterfaceFactory.init(logger,TestUtil.getDAL(manager));
 		assertFalse("Using ACS implementation instead of CERN",ACSAlarmSystemInterfaceFactory.usingACSAlarmSystem());
 	}
 	
