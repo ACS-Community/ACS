@@ -2,7 +2,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: buildTcltk,v 1.15 2007/09/11 07:16:33 eallaert Exp $"
+# "@(#) $Id: buildTcltk,v 1.16 2007/09/11 08:34:54 eallaert Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -123,7 +123,7 @@ SHORTOPTS=h,d,m
 # Second run is does the real work and sets execution flags for this script, as appropriate
 export POSIXLY_CORRECT=1
 
-getopt -n $MY_NAME -a -l $LONGOPTS $SHORTOPTS "$@" >\& /dev/null
+getopt -n $MY_NAME -a -l $LONGOPTS $SHORTOPTS "$@" > /dev/null
 if [ $? -ne 0 ] 
     then 
     printUsageAndExit 1;
