@@ -416,6 +416,11 @@ LOGGING_NOTIFY_SERVICE_LOG_FILE=loggingNotifyService
 JLOG_LOG_FILE=jlog
 PUBLISHER_LOG_FILE=publisher
 
+# Set the property to not drop logs
+if [ "${COMPONENT_LANGUAGE}" = "java" ] ; then
+    JAVA_OPTIONS="$JAVA_OPTIONS -Dalma.acs.logging.lossless=true"
+    export JAVA_OPTIONS
+fi
 # start the container(s)
 i=1
 while [ "$i" -le $NUM_COMPONENTS ]
@@ -543,7 +548,7 @@ while [ `grep "msg: " $ACS_TMP/all_logs.xml | wc -l` -eq 0 ]; do
     fi
 done
 # We can use offset2 as the value to subtract from chrono2 to
-# to measure the time from the reception of the 1st log.
+# measure the time from the reception of the 1st log.
 # However, if we timed-out waiting on all_logs.xml being filled,
 # it is likely due to an overloaded system. In this case, we don't
 # have a clear trigger for our time-measurement. So we'll have to
