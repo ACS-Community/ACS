@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: cdbTATEpilogue,v 1.5 2006/10/17 09:21:23 cparedes Exp $"
+# "@(#) $Id: cdbTATEpilogue,v 1.6 2007/09/12 04:40:18 cparedes Exp $"
 #
 #
 # who       when      what
@@ -50,6 +50,7 @@ rm -f $ACS_TMP/CDB_Recovery.txt
 rm -f $ACS_TMP/acs_instance
 rm -rf $ACSDATA/tmp/ACS_INSTANCE.$ACS_INSTANCE &> /dev/null || (echo "==> Error - cannot remove $ACSDATA/tmp/ACS_INSTANCE.$ACS_INSTANCE") 1>&2
 
+sleep 5
 exit 0
 
 #
