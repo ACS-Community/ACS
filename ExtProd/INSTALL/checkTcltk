@@ -2,7 +2,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: checkTcltk,v 1.7 2007/09/11 05:55:56 eallaert Exp $"
+# "@(#) $Id: checkTcltk,v 1.8 2007/09/13 14:47:08 eallaert Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -76,27 +76,30 @@ fi
 #-------------------
 # check that ACSDATA is defined as directory (needed by msql)
 #
-echo "ACSDATA . . .\c"
-if [ "$ACSDATA" = "" ]
-then	
-    echo "ACSDATA not defined, cannot continue."
-    exit 1
-fi
+MSQL=$1
+if [ "X$MSQL" = "XWITH_MSQL" ]
+then 
+    echo "ACSDATA . . .\c"
+    if [ "$ACSDATA" = "" ]
+    then	
+        echo "ACSDATA not defined, cannot continue."
+        exit 1
+    fi
 
-echo "defined as: $ACSDATA . . .\c"
-if [ ! -d $ACSDATA ]
-then
-    echo "but is not a directory, cannot continue."
-    exit 1
-fi
+    echo "defined as: $ACSDATA . . .\c"
+    if [ ! -d $ACSDATA ]
+    then
+        echo "but is not a directory, cannot continue."
+        exit 1
+    fi
 
-if [ ! -w $ACSDATA ]
-then
-    echo "but is not a writable directory, cannot continue."
-    exit 1
+    if [ ! -w $ACSDATA ]
+    then
+        echo "but is not a writable directory, cannot continue."
+        exit 1
+    fi
+    echo " . . . ok"
 fi
-echo " . . . ok"
-
 
 #
 # setup and check target directory
@@ -130,7 +133,6 @@ echo " . . . ok"
 SRC="$TCLTK/$build_OS-$build_OSV"
 # Whether of not msql is included is indicated by the first argument 
 # passed to this script.
-MSQL=$1
 reference=${TCLTK}/TCLTK.${build_OS}-${build_OSV}_$MSQL
 
 cd $PREFIX
