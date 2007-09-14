@@ -1,5 +1,5 @@
 # -*- Makefile -*-
-# $Id: platform_macros.GNU,v 1.5 2007/08/14 15:31:48 bjeram Exp $
+# $Id: platform_macros.GNU,v 1.6 2007/09/14 13:34:18 bjeram Exp $
 
 # According to Bryon G. Rigg <bgrigg@opus.bcbnet.com>, this file
 # should allow ACE to be built on Linux.
@@ -142,6 +142,12 @@ include $(ACE_ROOT)/include/makeinclude/platform_g++_common.GNU
 
 # TAO with GCC 4.0.2 and -O3 seems to result in runtime issues, for example
 # the ForwardRequest PI test will fail. For GCC 4.0.2 we default to -O2
+
+# there is alkso problem with gcc 3.4.6!
+ifeq ($(CXX_VERSION),3.4.6)
+  OCFLAGS ?= -O1
+endif
+
 ifeq ($(CXX_VERSION),4.0.2)
   OCFLAGS ?= -O2
 else
