@@ -6298,10 +6298,6 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		// read DeployInfo and initiate start-up
 		//
 
-		String type = readStringCharacteristics(dao, containerName + "/DeployInfo/Type", true);
-		if (type == null)
-			return null;
-
 		String host = readStringCharacteristics(dao, containerName + "/DeployInfo/Host", true);
 		if (host == null)
 			return null;
@@ -6324,7 +6320,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		{
 			Daemon daemon = transport.getDaemon(host);
 			if (daemon != null)
-				daemon.startContainer(type, containerName, (short)instance, flags);
+				daemon.startContainer(impLang, containerName, (short)instance, flags);
 			else
 				throw new RuntimeException("Failed to get daemon.");
 
