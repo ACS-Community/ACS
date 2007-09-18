@@ -1,7 +1,7 @@
 #ifndef CONSUMER_H
 #define CONSUMER_H
 
-/* @(#) $Id: acsncConsumer.h,v 1.66 2007/01/05 17:03:39 hsommer Exp $
+/* @(#) $Id: acsncConsumer.h,v 1.67 2007/09/18 08:05:06 bjeram Exp $
 *
 *    Consumer Abstract base class for notification channel push structured event
 *    consumers.
@@ -175,7 +175,7 @@ class Consumer :
 
     /** 
      *  A suspended (see suspend()) connection can be resumed.
-     *
+     *  All events queued during suspend will be forward to the Consumer! 
      *  @return void
      *  @htmlonly
         <br><hr>
@@ -187,7 +187,8 @@ class Consumer :
     
     /** 
      *  After this method is invoked, the connection is suspended. All events
-     *  published on this channel will not be processed by this Consumer instance.
+     *  published on this channel will not be processed by this Consumer instance, but they will be queued by the Supplier.
+     *  After resuming the connection all queued events will be forwarded to the Consumer! 
      *
      *  @return void
      *  @htmlonly
