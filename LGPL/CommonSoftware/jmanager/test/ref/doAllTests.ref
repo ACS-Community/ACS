@@ -110,7 +110,7 @@
 1 - This is OK: alma.maciErrType.wrappers.AcsJCannotGetComponentEx [ CURL='DEMANDER' ]
 1 - 
 1 - 
-1 - OK (39 tests)
+1 - OK (38 tests)
 1 - 
 1 -  Stopping the services
 1 -  -- alma.acs.testsupport.tat.NoDotJUnitRunner com.cosylab.acs.maci.test.HandleDataStoreTest
