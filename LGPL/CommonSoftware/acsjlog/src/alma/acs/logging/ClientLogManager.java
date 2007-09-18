@@ -184,6 +184,10 @@ public class ClientLogManager implements LogConfigSubscriber
     	}
     }
 
+    /**
+     * Gets the <code>LogConfig</code> object that is shared between the ClientLogManager singleton
+     * and any other objects in the process (e.g. Java container or manager classes).
+     */
     public LogConfig getLogConfig() {
         return logConfig;
     }
@@ -196,6 +200,7 @@ public class ClientLogManager implements LogConfigSubscriber
         if (logQueue == null) {
             logQueue = new DispatchingLogQueue();
         }
+        
         if (sharedRemoteHandler == null) {
             sharedRemoteHandler = new AcsLoggingHandler(logQueue, logConfig);
         }
@@ -204,7 +209,7 @@ public class ClientLogManager implements LogConfigSubscriber
             for (int i = 0; i < handlers.length; i++) {
                 if (sharedRemoteHandler == handlers[i]) {
                     if (DEBUG) {
-                        System.err.println("attempt to add remote handler twice to logger " + parentRemoteLogger.getName());
+                        System.err.println("Ignoring attempt to add remote handler twice to logger " + parentRemoteLogger.getName());
                     }
                     return;
                 }
@@ -315,8 +320,8 @@ public class ClientLogManager implements LogConfigSubscriber
      * Use a daemon thread to avoid shutdown problems if this method still hangs in the login loop.
      * <p>
      * When the log service is obtained, the log queue used for remote logging will be flushed periodically 
-     * to the log service every 10 seconds unless an otherwise triggered flush has done this already. <br>
-     * TODO: check if this fixed automatic flush period should be overridden by a value in the CDB (attribute TBD). 
+     * to the log service unless an otherwise triggered flush has done this already. 
+     * The default period is 10 seconds, but can be overridden in the CDB. <br>
      * 
 	 * @param orb  the ORB used in this JVM
 	 * @param manager  the ACS manager
@@ -349,6 +354,10 @@ public class ClientLogManager implements LogConfigSubscriber
             errMsg = null;
             count++;
             try {
+                // normally there will be a remote handler and log queue already, which has captured all log records produced so far.
+                // However, if suppressRemoteLogging was called, we need to set up remote logging from scratch. 
+                prepareRemoteLogging();
+
                 logService = LogHelper.narrow(manager.get_service(managerHandle, logServiceName, true));
                 if (logService == null) {
                     errMsg = "Failed to obtain central log service '" + logServiceName + "': reference is 'null'. ";
@@ -391,13 +400,7 @@ public class ClientLogManager implements LogConfigSubscriber
             }
         } while (retry && (errMsg != null));
         
-        if (errMsg == null) {
-            // normally there will be a remote handler already, which has captured all log records produced so far.
-            // However, if suppressRemoteLogging was called, we need to set up remote logging from scratch. 
-            prepareRemoteLogging();
-            return true;
-        }
-        return false;
+        return (errMsg == null);
 	}
 	
     
@@ -476,10 +479,10 @@ public class ClientLogManager implements LogConfigSubscriber
 	 * This method is not supposed to be accessed directly in the component implementation.
 	 * Instead, the implementation of <code>alma.acs.container.ContainerServices</code>
 	 * should call this method.
-	 *
+	 * 
 	 * @param subNamespace	 optional logger namespace postfix; same kind as used by the JDK (<code>java.util.logging</code>).
 	 * @return Logger
-	 *
+	 * 
 	 */
 	public AcsLogger getLoggerForComponent(String subNamespace)
 	{
@@ -509,8 +512,8 @@ public class ClientLogManager implements LogConfigSubscriber
      *                             which happens automatically in <code>ComponentClient</code>. 
      *                             For a standalone application that is not ACS-aware (no manager known etc), remote logging is not available 
      *                             even with enableRemoteLogging == true.</emph> 
-     * @return a configured Logger  
-     */
+	 * @return a configured Logger
+	 */
     public Logger getLoggerForApplication(String namespace, boolean enableRemoteLogging)
     {
         if (namespace == null || namespace.trim().length() == 0) {
