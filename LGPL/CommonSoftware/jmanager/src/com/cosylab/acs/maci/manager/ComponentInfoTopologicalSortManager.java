@@ -43,8 +43,9 @@ public class ComponentInfoTopologicalSortManager implements Runnable {
 	/**
 	 * Lock.
 	 */
-	private ReadWriteLock activationPendingRWLock;
-
+	private ReaderPreferenceReadWriteLock activationPendingRWLock;
+	//private ReadWriteLock activationPendingRWLock;
+	
 	/**
 	 * Dirty map.
 	 */
@@ -81,7 +82,7 @@ public class ComponentInfoTopologicalSortManager implements Runnable {
 	 */
 	public ComponentInfoTopologicalSortManager(HandleDataStore components,
 											   HandleDataStore containers,
-											   ReadWriteLock activationPendingRWLock,
+											   /* ReadWriteLock */ ReaderPreferenceReadWriteLock activationPendingRWLock,
 											   Set pendingContainerShutdown,
 											   ThreadPoolExecutor threadPool,
 											   Logger logger) {

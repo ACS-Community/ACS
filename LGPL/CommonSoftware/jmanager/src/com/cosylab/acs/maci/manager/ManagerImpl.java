@@ -595,8 +595,9 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	 * processes which require not to be run until
 	 * activation/deactivation is in progress.
 	 */
-	private transient ReadWriteLock activationPendingRWLock;
-
+	private transient ReaderPreferenceReadWriteLock activationPendingRWLock;
+//	private transient ReadWriteLock activationPendingRWLock;
+	
 	/**
 	 * Shutdown status.
 	 */
@@ -800,7 +801,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		containerLoggedInMonitor = new Object();
 
 		activationSynchronization = new HashMap();
-		activationPendingRWLock = new ReentrantReadWriteLock(); // @todo ReaderPreferenceReadWriteLock();
+		activationPendingRWLock = new ReaderPreferenceReadWriteLock();
 		shutdown = new AtomicBoolean(false);
 		
 		threadPool = new ThreadPoolExecutor(poolThreads, poolThreads,
