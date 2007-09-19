@@ -2,7 +2,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: checkTcltk,v 1.8 2007/09/13 14:47:08 eallaert Exp $"
+# "@(#) $Id: checkTcltk,v 1.9 2007/09/19 13:26:29 eallaert Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -29,6 +29,87 @@
 #
 #------------------------------------------------------------------------
 #
+
+##########################################################################################
+# Function definitions used later in this script.
+##########################################################################################
+# definition of a function to print the usage statement for this script
+printUsageAndExit ()
+{
+    echo ""
+    echo "Usage: $0 [-h] [-m]";
+    echo "Options: "
+    echo "   -h | --help: print this usage message and exit."
+    echo "   -m | --msql: check for the msql stuff as well"
+    echo ""
+    exit $1;
+}
+
+##########################################################################################
+# Script logic starts here...                                                            #
+##########################################################################################
+MY_NAME=`basename $0`
+
+#
+# These will contain the command line arguments and/or options
+#
+HELP=
+MSQL=
+MSQL_NAME=NO_MSQL
+
+#
+# These options can be recognized (longopts comma-separated. Colon means 1 argument is required)
+#
+LONGOPTS=help,msql
+SHORTOPTS=h,m
+#
+# Run getopt (posixly_correct needed). We run twice:
+# First run is simply to check the commandline for correctness.
+# Second run is does the real work and sets execution flags for this script,
+# as appropriate.
+export POSIXLY_CORRECT=1
+
+getopt -n $MY_NAME -a -l $LONGOPTS $SHORTOPTS "$@" > /dev/null
+if [ $? -ne 0 ] 
+    then 
+    printUsageAndExit 1;
+fi
+
+set -- `getopt -u -a -l $LONGOPTS $SHORTOPTS "$@"`
+
+# Some programs behave differently if POSIXLY_CORRECT is set. In particular
+# the configure/build of TclX and Itcl may fail ...
+unset POSIXLY_CORRECT
+
+#
+# Iterate over getopt's output and set variables accordingly
+#
+while :
+  do
+  case "$1" in
+      -h|--help)       HELP=true ;;
+      -m|--msql)       MSQL=true; MSQL_NAME=WITH_MSQL ;;
+      --) break ;;
+  esac
+  shift
+done
+shift
+
+if [ "$HELP" ] ; 
+then
+    printUsageAndExit 0
+fi
+
+# first, verify that the script was invoked without any command-line arguments 
+if [ $# -ne 0 ] ;
+then 
+    printUsageAndExit 1
+fi
+
+if [ "$DEBUG" ]
+then
+    set -x
+fi
 
 #
 # print header
@@ -76,8 +157,7 @@ fi
 #-------------------
 # check that ACSDATA is defined as directory (needed by msql)
 #
-MSQL=$1
-if [ "X$MSQL" = "XWITH_MSQL" ]
+if [ "$MSQL" ]
 then 
     echo "ACSDATA . . .\c"
     if [ "$ACSDATA" = "" ]
@@ -133,7 +213,7 @@ echo " . . . ok"
 SRC="$TCLTK/$build_OS-$build_OSV"
 # Whether of not msql is included is indicated by the first argument 
 # passed to this script.
-reference=${TCLTK}/TCLTK.${build_OS}-${build_OSV}_$MSQL
+reference=${TCLTK}/TCLTK.${build_OS}-${build_OSV}_$MSQL_NAME
 
 cd $PREFIX
 echo ""
