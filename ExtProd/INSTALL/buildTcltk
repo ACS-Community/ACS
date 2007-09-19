@@ -2,7 +2,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: buildTcltk,v 1.16 2007/09/11 08:34:54 eallaert Exp $"
+# "@(#) $Id: buildTcltk,v 1.17 2007/09/19 13:25:15 eallaert Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -29,7 +29,7 @@
 #    - snack      2.2.10           
 #    - tkman      2.2
 #    - rman       3.1
-#    - tcllib     1.9
+#    - tcllib     1.10
 #    - tklib      0.4.1 2007-05-23
 #    - expect     5.43 2006-03-01  
 #    - tclCheck 1.1.10
@@ -119,8 +119,9 @@ LONGOPTS=help,debug,msql
 SHORTOPTS=h,d,m
 #
 # Run getopt (posixly_correct needed). We run twice:
-# First run is simply to check the commandline for correctness
-# Second run is does the real work and sets execution flags for this script, as appropriate
+# First run is simply to check the commandline for correctness.
+# Second run is does the real work and sets execution flags for this script,
+# as appropriate.
 export POSIXLY_CORRECT=1
 
 getopt -n $MY_NAME -a -l $LONGOPTS $SHORTOPTS "$@" > /dev/null
@@ -426,12 +427,12 @@ fi
 #*********************************************
 #
 #  2.
-#      product    previous version    current version (if changed)
-#      ======     ================    ============================
-#    - tcl/tk     8.4.13           -> 8.4.15
-#    - [incr Tcl] 3.3 2006-06-07   -> 3.4 2007-08-07
-#    - iwidgets   4.0.2 2006-06-07 -> 4.0.2 2007-06-10
-#    - tclX       8.4 2006-01-26   -> 8.4 2007-02-27
+#      product    current version
+#      ======     ===============
+#    - tcl/tk     8.4.15
+#    - [incr Tcl] 3.4 2007-08-07
+#    - iwidgets   4.0.2 2007-06-10
+#    - tclX       8.4 2007-02-27
 #    - BLT        2.4z
 #    - msqltcl    1.99
 #    - tkimg      1.3
@@ -439,8 +440,8 @@ fi
 #    - snack      2.2.10           
 #    - tkman      2.2
 #    - rman       3.1
-#    - tcllib     1.8              -> 1.9
-#    - tklib      0.4.1 2006-02-22 -> 0.4.1 2007-05-23
+#    - tcllib     1.10
+#    - tklib      0.4.1 2007-05-23
 #    - expect     5.43 2006-03-01  
 #
 
@@ -536,7 +537,7 @@ cd $SRC/tkman-2.2
 make 
 make -k install
 
-cd $SRC/tcllib-1.9
+cd $SRC/tcllib-1.10
 ./configure --prefix=$PREFIX
 make -k install
 
@@ -629,7 +630,7 @@ echo "\n                          VERIFICATION\n"
 cd ${INSTALL_ROOT}/INSTALL
 if [ "$MSQL" ]
 then
-    ./checkTcltk WITH_MSQL
+    ./checkTcltk --msql
 else 
-    ./checkTcltk NO_MSQL
+    ./checkTcltk
 fi
