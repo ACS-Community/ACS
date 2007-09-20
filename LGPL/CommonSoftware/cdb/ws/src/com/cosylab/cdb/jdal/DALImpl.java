@@ -67,11 +67,11 @@ import alma.acs.logging.AcsLogLevel;
 
 public class DALImpl extends JDALPOA implements Recoverer {
 	/** Schema validation feature id (http://apache.org/xml/features/validation/schema). */
-	protected static final String SCHEMA_VALIDATION_FEATURE_ID =
+	public static final String SCHEMA_VALIDATION_FEATURE_ID =
 		"http://apache.org/xml/features/validation/schema";
 
 	/** Property for setting the mapping of URIs to XML schemas. */
-	protected static final String EXTERNAL_SCHEMA_LOCATION_PROPERTY_ID =
+	public static final String EXTERNAL_SCHEMA_LOCATION_PROPERTY_ID =
 		"http://apache.org/xml/properties/schema/external-schemaLocation";
 
 	private ORB orb;
@@ -166,11 +166,15 @@ public class DALImpl extends JDALPOA implements Recoverer {
 		}
 	 }
 
+	private String getSchemas() {
+		return getSchemas(m_root, m_logger);
+	}
+
 	/**
 	 * returns string of URIs separated by ' ' for all schema files in root/schemas and
 	 * directories list given by ACS.cdbpath environment variable
 	 */
-	private String getSchemas() {
+	public static String getSchemas(String m_root, Logger m_logger) {
 		String fileName, filePath;
 
 		// we will use only first fileName we found in search path
@@ -220,7 +224,7 @@ public class DALImpl extends JDALPOA implements Recoverer {
 	 * Adds all *.xsd files from filePath directory 
 	 * if file already exists in map it is skipped
 	 */
-	private void getFiles(String filePath, LinkedHashMap map) {
+	public static void getFiles(String filePath, LinkedHashMap map) {
 		String fileName;
 		File base = new File(filePath);
 		File[] basefiles = base.listFiles(new Filter());
@@ -237,7 +241,7 @@ public class DALImpl extends JDALPOA implements Recoverer {
 	/**
 	 * Filter which selects all xsd files in the root/schemas directory.
 	 */
-	private class Filter implements FilenameFilter {
+	public static class Filter implements FilenameFilter {
 		public Filter() {
 		}
 		public boolean accept(File arg0, String arg1) {
@@ -792,19 +796,12 @@ public class DALImpl extends JDALPOA implements Recoverer {
 		}
 		//System.out.println( "Listing " + name );
 		String list = rootNode.list(name);
-		
+
 		return list;
-		
-		/*
-		TODO !!! down code removes .xml entry and adds XML nested hier. nodes
-		
-		
-		
-		// TODO caching impl. would be possible
-		// e.g. check if DAO is available and take rootNode from it...
-		
-	    // remove .xml file
-	    final String XML_ENDING = ".xml ";
+/*		
+	    // remove .xml file (always first) and replace it with subnodes
+		// TODO @todo cachnig impl. possible (loadRecord actually loads the record)
+		final String XML_ENDING = ".xml ";
 	    int pos = list.indexOf(XML_ENDING);
 	    if (pos > 0)
 	    {
@@ -838,8 +835,7 @@ public class DALImpl extends JDALPOA implements Recoverer {
 	    }
 
 		return list;
-		 */
-
+*/
 	}
 	
 	/**
