@@ -104,7 +104,9 @@ class PyTest(acspytest__POA.PyTest,
 
         self.releaseComponent("TESTCOMPONENT2")
 
-        print self.findComponents("TEST*", None)
+        comps = self.findComponents("TEST*", None)
+        comps.sort()
+        print comps
 
         #DWF-test OffShoot and corbaOjbect to/from methods
         return TRUE

@@ -21,7 +21,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# @(#) $Id: acspyTestClientMinimum.py,v 1.15 2005/03/08 23:41:30 dfugate Exp $
+# @(#) $Id: acspyTestClientMinimum.py,v 1.16 2007/09/21 20:00:37 agrimstrup Exp $
 
 """
 Demonstration of how to use the acspyPySimpleClient class
@@ -40,7 +40,9 @@ mount = simpleClient.getComponent("MOUNT1")
 print "MOUNT1 actual azimuth: ", mount._get_actAz().get_sync()[0]
 
 # See what's available
-print "Available components: ", simpleClient.availableComponents()
+components = [ c.name for c in simpleClient.availableComponents() ]
+components.sort()
+print "Available components: ", components
 
 from ACS__POA import OffShoot
 

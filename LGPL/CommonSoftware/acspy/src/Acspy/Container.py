@@ -1,4 +1,4 @@
-# @(#) $Id: Container.py,v 1.27 2007/05/29 20:37:40 agrimstrup Exp $
+# @(#) $Id: Container.py,v 1.28 2007/09/21 20:00:37 agrimstrup Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -21,7 +21,7 @@
 # ALMA should be addressed as follows:
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: Container.py,v 1.27 2007/05/29 20:37:40 agrimstrup Exp $"
+# "@(#) $Id: Container.py,v 1.28 2007/09/21 20:00:37 agrimstrup Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -38,7 +38,7 @@ TODO LIST:
 - a ComponentLifecycleException has been defined in IDL now...
 '''
 
-__revision__ = "$Id: Container.py,v 1.27 2007/05/29 20:37:40 agrimstrup Exp $"
+__revision__ = "$Id: Container.py,v 1.28 2007/09/21 20:00:37 agrimstrup Exp $"
 
 #--Enable Searching Import-----------------------------------------------------
 import AcsutilPy.ACSImport
@@ -47,6 +47,7 @@ from time      import sleep
 from signal    import signal, SIGINT
 from new       import instance
 from traceback import print_exc
+import sys
 #--CORBA STUBS-----------------------------------------------------------------
 import PortableServer
 import maci__POA
@@ -659,6 +660,7 @@ class Container(maci__POA.Container, BaseClient):
             sleep(1)
         self.destroyCORBA()
         print "Goodbye"
+        sys.stdout.flush()
     #--------------------------------------------------------------------------
     def handler(self, signum, frame):
         '''
