@@ -2,12 +2,14 @@
 #*******************************************************************************
 # E.S.O. - ALMA project
 #
-# "@(#) $Id: buildPython,v 1.15 2007/07/10 22:22:26 agrimstrup Exp $"
+# "@(#) $Id: buildPython,v 1.16 2007/09/21 19:19:54 agrimstrup Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
 # psivera   2002-08-21  created
 # sturolla  2005-10-09  ported to bourne shell + add external subroutin for OS checking
+# agrimstrup 2007-07-10 modified build to create shared library for Python interpreter
+# agrimstrup 2007-08-22 updated Python to version 2.5.1 
 #
 
 #************************************************************************
@@ -72,22 +74,22 @@ fi
 
 echo installing the Python distribution
 
-if [ ! -e ../PRODUCTS/Python-2.4.1.tgz ]
+if [ ! -e ../PRODUCTS/Python-2.5.1.tgz ]
 then
   echo Error: Python sources are missing
   exit 2
 fi
 
 #
-# Python - Python-2.4.1
+# Python - Python-2.5.1
 #
 # Notes: See README for help
 #
 cd ../PRODUCTS
-rm -rf Python-2.4.1
-tar zxf Python-2.4.1.tgz
+rm -rf Python-2.5.1
+tar zxf Python-2.5.1.tgz
 
-cd Python-2.4.1
+cd Python-2.5.1
 
 
 echo $SEPARATOR
@@ -171,7 +173,8 @@ then
    mv Modules/Setup.dist.tmp  Modules/Setup.dist
 fi
 
-./configure --prefix $PYTHON_ROOT --enable-shared
+./configure --prefix $PYTHON_ROOT --exec-prefix $PYTHON_ROOT --enable-shared
+make
 make install
 
 # to be discussed!

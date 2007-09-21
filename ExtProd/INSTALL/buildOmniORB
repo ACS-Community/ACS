@@ -2,7 +2,7 @@
 #*******************************************************************************
 # E.S.O. - ALMA project
 #
-# "@(#) $Id: buildOmniORB,v 1.12 2006/03/09 23:41:12 dfugate Exp $"
+# "@(#) $Id: buildOmniORB,v 1.13 2007/09/21 19:19:54 agrimstrup Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -64,7 +64,7 @@ date
 echo installing the omniORB distribution
 
 #
-# omniORB ORB - omniORB-4.0.7.tar.gz
+# omniORB ORB - omniORB-4.1.0.tar.gz
 # 
 # Notes: omni/README.FIRST, omni/README.unix
 #
@@ -75,17 +75,17 @@ echo installing the omniORB distribution
 #   PYTHON = /home/alma/packages/bin/python
 #
 
-if [ ! -e ../PRODUCTS/omniORB-4.0.7.tar.gz ]
+if [ ! -e ../PRODUCTS/omniORB-4.1.0.tar.gz ]
 then
-  echo Error: omniORB-4.0.7 sources are missing
+  echo Error: omniORB-4.1.0 sources are missing
   exit 2
 fi
 
 rm -rf $OMNI_ROOT
 CWD=`pwd`
 cd ../PRODUCTS
-tar -zxf omniORB-4.0.7.tar.gz
-mv  omniORB-4.0.7 $OMNI_ROOT
+tar -zxf omniORB-4.1.0.tar.gz
+mv  omniORB-4.1.0 $OMNI_ROOT
 
 cd $OMNI_ROOT
 
@@ -107,20 +107,20 @@ fi
 cd $CWD
 
 #
-# omniORB Python - omniORBpy-2.7.tar.gz
+# omniORB Python - omniORBpy-3.0.tar.gz
 #
 # Notes: See omniORBpy/ReleaseNote for help
 #
-if [ ! -e ../PRODUCTS/omniORBpy-2.7.tar.gz ]
+if [ ! -e ../PRODUCTS/omniORBpy-3.0.tar.gz ]
 then
-  echo Error: omniORBpy-2.7 sources are missing
+  echo Error: omniORBpy-3.0 sources are missing
   exit 2
 fi
 
 cd ../PRODUCTS
-tar -zxf omniORBpy-2.7.tar.gz -C $OMNI_ROOT/src/lib
+tar -zxf omniORBpy-3.0.tar.gz -C $OMNI_ROOT/src/lib
 mkdir -p $OMNI_ROOT/src/lib/
-mv $OMNI_ROOT/src/lib/omniORBpy-2.7 $OMNI_ROOT/src/lib/omniORBpy
+mv $OMNI_ROOT/src/lib/omniORBpy-3.0 $OMNI_ROOT/src/lib/omniORBpy
 cd $OMNI_ROOT/src/lib/omniORBpy
 mkdir -p build
 cd build
