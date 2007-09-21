@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <Components xmlns="urn:schemas-cosylab-com:Components:1.0" xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0" xmlns:baci="urn:schemas-cosylab-com:BACI:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-	<_ Name="TEST_PS_1" Code="acsexmplPowerSupplyImpl" Type="IDL:alma/PS/PowerSupply:1.0" Container="Container"/>
+<!--	<_ Name="TEST_PS_1" Code="acsexmplPowerSupplyImpl" Type="IDL:alma/PS/PowerSupply:1.0" Container="Container"/>-->
 	<_ Name="MOUNT1" Code="acsexmplMountImpl" Type="IDL:alma/MOUNT_ACS/Mount:1.0" Container="Container"/>
 	<_ Name="LAMP1" Code="acsexmplLampImpl" Type="IDL:alma/acsexmplLamp/Lamp:1.0" Container="Container"/>
 	<_ Name="HELLODEMO1" Code="alma.demo.HelloDemoImpl.HelloDemoHelper" Type="IDL:alma/demo/HelloDemo:1.0" Container="frodoContainer"/>
@@ -16,6 +16,14 @@
        Code="alma.acsexmplErrorComponent.ErrorComponentImpl.ErrorComponentHelper" 
        Type="IDL:alma/acsexmplErrorComponent/ErrorComponent:1.0" 
        Container="frodoContainer" />
+    <_ Name="CLOCK1"	    Code="acsclock"
+                            Type="IDL:alma/acstime/Clock:1.0" 
+                            Container="Container"
+                            Default="true"/>
+    <_ Name="TIMER1"	    Code="acstimer" 
+                            Type="IDL:alma/acstime/Timer:1.0" 
+                            Container="Container"
+                            Default="true"/>
                             
 </Components>
 
