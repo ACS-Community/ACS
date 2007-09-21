@@ -21,4 +21,5 @@ s/The evaluated return value is: .*$/The evaluated return value is: some value t
 s/0x[0-9,a-z,A-Z]*>/0xXXXX>/g
 s/from '[^']*'>/from 'xxx'>/g
 s/Ran . test. in .*/Ran x tests in xxx/
-
+s/=[0-9]*L/=xxxxL/g
+s/UnknownEx(.*)/UnknownEx(xxxx)/g

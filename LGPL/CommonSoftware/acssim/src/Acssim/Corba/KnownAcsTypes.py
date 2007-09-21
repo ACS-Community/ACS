@@ -37,6 +37,7 @@ Generally these are defined in baci.idl.
 import CORBA
 import ACSErr
 import ACS
+from ACSErrTypeCommonImpl import TypeNotSupportedExImpl
 #--ACS Imports-----------------------------------------------------------------
 from Acspy.Common.Log       import getLogger
 from Acspy.Common.TimeHelper import getTimeStamp
@@ -61,7 +62,7 @@ def getKnownBaciType(ifr_id):
                                  0L,  #ACSErr::CompletionCode code;
                                  ())
     else:
-        raise "dummie exception"
+        raise TypeNotSupportedExImpl()
 
 #------------------------------------------------------------------------------
 def tryCallbackParams(params, compRef):
