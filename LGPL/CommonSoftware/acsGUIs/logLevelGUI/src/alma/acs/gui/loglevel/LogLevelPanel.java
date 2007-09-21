@@ -71,6 +71,10 @@ public class LogLevelPanel extends JTabbedPane implements IPanel {
 	 * @param frame The window that owns this panel
 	 */
 	public LogLevelPanel(JFrame frame) {
+		if (frame==null) {
+			throw new IllegalArgumentException("Invalid null frame in constructor");
+		}
+		this.frame=frame;
 		initialize();
 	}
 	
