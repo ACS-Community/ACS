@@ -1,14 +1,6 @@
-1 - Import a class loader ... ERROR
-1 - 
-1 - ======================================================================
-1 - ERROR: Import a class loader
-1 - ----------------------------------------------------------------------
-1 - Traceback (most recent call last):
-1 -   File "../bin/acsutilpyTestImport", line 334, in testDLoaderImport
-1 -     self.assertEqual(Pmw.__module__, PmwModuleString)
-1 - NameError: global name 'PmwModuleString' is not defined
+1 - Import a class loader ... ok
 1 - 
 1 - ----------------------------------------------------------------------
 1 - Ran 1 test in x.xxxs
 1 - 
-1 - FAILED (errors=1)
+1 - OK
