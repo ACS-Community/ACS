@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.13 2006/09/25 08:52:35 acaproni Exp $"
+# "@(#) $Id: Makefile,v 1.14 2007/09/21 09:26:17 acaproni Exp $"
 #
 #
 
@@ -25,6 +25,7 @@ MODULES = laser-extlib \
           laser-console \
           laser-guiplatform \
           NetbeansACS \
+	  alarmPanel \
           demo 
 
 ifeq ($(os) $(VXWORKS_RTOS),Linux NO)
