@@ -4,7 +4,6 @@
 	<classpathentry kind="src" path="test"/>
 	<classpathentry kind="lib" path="lib/XmlComponent.jar" sourcepath="lib/XmlComponent.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/endorsed/xercesImpl.jar"/>
-	<classpathentry kind="var" path="ACSROOT/lib/endorsed/xmlParserAPIs.jar"/>
 	<classpathentry kind="var" path="JACORB_HOME/lib/jacorb.jar" sourcepath="JACORB_HOME/src"/>
 	<classpathentry kind="var" path="ACSROOT/lib/xmljbind.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acsjlog.jar"/>
@@ -17,7 +16,6 @@
 	<classpathentry kind="var" path="ACSROOT/lib/acserrj.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/maci.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acsexmplLamp.jar"/>
-	<classpathentry kind="var" path="ACSROOT/lib/cdbDAL.jar"/>
 	<classpathentry kind="lib" path="lib/HelloDemo.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/jACSUtil.jar"/>
 	<classpathentry kind="lib" path="lib/LampAccess.jar"/>
@@ -43,5 +41,13 @@
 	<classpathentry kind="var" path="ACSROOT/lib/JavaContainerError.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/maciErrType.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/cdbErrType.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/lc.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/maciSchemaBindings.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/avalon-framework.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/logkit.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acsASsources.jar"/>
+	<classpathentry kind="var" path="INTROOT/lib/CDB.jar"/>
+	<classpathentry kind="var" path="ACSROOT6/lib/cdbDAL.jar"/>
+	<classpathentry kind="var" path="ACSERRTYPEALARMSOURCEFACTORY_JAR"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
