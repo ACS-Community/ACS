@@ -14,18 +14,18 @@
 
 	<alarm-definition fault-family="AlarmSource" fault-member="ALARM_SOURCE_ANTENNA" fault-code="1">
 		<visual-fields>
-			<system-name></system-name>
-			<identifier></identifier>
-			<problem-description></problem-description>
+			<system-name>Antenna sys name</system-name>
+			<identifier>Antenna identifier</identifier>
+			<problem-description>Antenna prob description</problem-description>
 		</visual-fields>
 		<instant>false</instant>
-		<!--cause></cause-->
-		<!--action></action-->
-		<!--consequence></consequence-->
+		<cause>The cause of Antenna alarm</cause>
+		<action>The action to take</action>
+		<consequence>Ops this alarm has a consequnce</consequence>
 		<priority>3</priority>
 		<responsible-id>123</responsible-id>
-		<!--piquetGSM>12345</piquetGSM-->
-		<!--help-url></help-url-->
+		<piquetGSM>12345</piquetGSM>
+		<help-url></help-url>
 		<source-name>ALARM_SYSTEM_SOURCES</source-name>
 		<!--location>
 			<building></building>
