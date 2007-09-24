@@ -20,7 +20,7 @@
 # MA 02111-1307  USA
 #
 #
-# "@(#) $Id: .bash_profile.acs,v 1.70 2007/08/12 09:06:50 hsommer Exp $"
+# "@(#) $Id: .bash_profile.acs,v 1.71 2007/09/24 16:51:09 agrimstrup Exp $"
 #
 #
 #
@@ -924,7 +924,7 @@ CLASSPATH=$JACORB_HOME/lib/avalon-framework-4.1.5.jar:$JACORB_HOME/lib/logkit-1.
 #
 export PATH LD_LIBRARY_PATH
 PYTHONVER=`$PYTHON_ROOT/bin/python -V 2>&1 | awk '{print $2}' | awk -F. '{print $1 "." $2}'`
-
+PYTHONINC=`python -c "from distutils.sysconfig import get_python_inc ; print get_python_inc()"`
 PYTHONPATH=$OMNI_ROOT/lib/python:$OMNI_ROOT/lib:$PYTHON_ROOT/lib/python$PYTHONVER/site-packages:$OMNI_ROOT/lib/python/site-packages
 
 if [ X"$ACSROOT" != X ] || [ X"$INTLIST" = X ]
@@ -977,7 +977,7 @@ export ORIG_PATH PATH LD_LIBRARY_PATH INTLIST
 export ORIG_MANPATH MANPATH IDL_PATH CLASSPATH HOST ALMASW_RELEASE ALMASW_ROOTDIR ORIG_LD_LIBRARY_PATH
 export ALMASW_INSTDIR ACSROOT ACE_ROOT_DIR ACE_ROOT_VW ACE_ROOT INTROOT USER
 export GNU_ROOT TCLTK_ROOT JAVA_HOME VLTROOT ACSDATA VLTDATA ACS_CDB RTAPENV CMM_PORT CMM_HOST
-export ANT_HOME JACORB_HOME PYTHON_ROOT OMNI_ROOT OMNIORB_CONFIG PYTHONPATH MICO_HOME
+export ANT_HOME JACORB_HOME PYTHON_ROOT OMNI_ROOT OMNIORB_CONFIG PYTHONPATH MICO_HOME PYTHONINC
 export ACS_STARTUP_TIMEOUT_MULTIPLIER
 export ACS_INSTANCE
 
