@@ -64,8 +64,6 @@ public class XMLHandler extends DefaultHandler {
 	// public fields for content and eventually error
 	public String m_errorString = null;
 	public StringBuffer m_xmlString = new StringBuffer(256);
-
-	private String thisElementName = null;
 	
 	// ctor
 	public XMLHandler(boolean toString) {
@@ -84,8 +82,6 @@ public class XMLHandler extends DefaultHandler {
 		throws SAXException {
 		boolean inArray = false;
 	
-		thisElementName = local;
-		
 		if(!autoCloseStartingElement && firstElement) {
 			if(startElements == null) {
 				startElements = new ArrayList();
@@ -313,13 +309,6 @@ String s = (String)i.next();
 			if(m_rootNode == null) return null;
 			else return m_rootNode.toString(withMapNames);
 		}
-	}
-
-	/**
-	 * @return the firstElementName
-	 */
-	public String getFirstElementName() {
-		return thisElementName;
 	}
 
 }
