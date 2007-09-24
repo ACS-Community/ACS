@@ -65,6 +65,8 @@ public class XMLHandler extends DefaultHandler {
 	public String m_errorString = null;
 	public StringBuffer m_xmlString = new StringBuffer(256);
 
+	private String thisElementName = null;
+	
 	// ctor
 	public XMLHandler(boolean toString) {
 		m_toString = toString;
@@ -81,6 +83,8 @@ public class XMLHandler extends DefaultHandler {
 	public void startElement(String uri, String local, String raw, Attributes attrs)
 		throws SAXException {
 		boolean inArray = false;
+	
+		thisElementName = local;
 		
 		if(!autoCloseStartingElement && firstElement) {
 			if(startElements == null) {
@@ -315,7 +319,7 @@ String s = (String)i.next();
 	 * @return the firstElementName
 	 */
 	public String getFirstElementName() {
-		return firstElementName;
+		return thisElementName;
 	}
 
 }
