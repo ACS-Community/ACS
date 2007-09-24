@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: Makefile,v 1.6 2007/02/02 21:27:42 bjeram Exp $"
+# "@(#) $Id: Makefile,v 1.7 2007/09/24 07:42:46 bjeram Exp $"
 #
 # Makefile of ........
 #
@@ -20,6 +20,7 @@
 #
 # user definable C-compilation flags
 USER_CFLAGS = -DLOKI_OBJECT_LEVEL_THREADING -DLOKI_MAKE_DLL 
+
 #-DATEXIT_FIXED
 
 #
@@ -74,6 +75,7 @@ LIBRARIES_L     =
 #
 # <brief description of lllll library>
 loki_OBJECTS   = lokiOrderedStatic lokiSafeFormat lokiSingleton lokiSmallObj lokiSmartPtr lokiStrongPtr
+loki_LDFLAGS = -lstdc++
 
 #
 # Scripts (public and local)
