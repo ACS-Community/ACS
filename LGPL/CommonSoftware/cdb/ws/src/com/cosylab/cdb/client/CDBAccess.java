@@ -333,7 +333,7 @@ public class CDBAccess
 				}
 				// create non-CORBA related, silent DAO
 				dao = new DAOImpl(curl, xmlSolver.m_rootNode, null, true);
-				proxy.setElementName(xmlSolver.getFirstElementName());
+				proxy.setElementName(xmlSolver.m_rootNode.getName());
 			}
 			
 			// register listener, if not already registered
