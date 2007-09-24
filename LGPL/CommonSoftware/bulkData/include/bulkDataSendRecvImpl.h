@@ -185,6 +185,12 @@ class BulkDataSendRecvImpl : public virtual CharacteristicComponentImpl,
 	{
 	}
 
+    virtual void subscribeNotification(ACS::CBvoid_ptr notifCb)
+	throw (CORBA::SystemException, AVNotificationMechanismErrorEx)
+	{
+	}
+
+
   private:
 
     AcsBulkdata::BulkDataSender<TSenderCallback> sender;
