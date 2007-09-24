@@ -128,6 +128,9 @@ class BulkDataReceiverImpl : public CharacteristicComponentImpl,
     virtual void setRecvName(const char *recvName) 
 	throw (CORBA::SystemException, AVSetReceiverNameErrorEx);
 
+    virtual void subscribeNotification(ACS::CBvoid_ptr notifCb)
+	throw (CORBA::SystemException, AVNotificationMechanismErrorEx);
+
   protected: 
 
     
@@ -136,7 +139,6 @@ class BulkDataReceiverImpl : public CharacteristicComponentImpl,
     AcsBulkdata::BulkDataReceiver<TCallback> receiver;
 
     ContainerServices *containerServices_p;
-
 };
 
 #include "bulkDataReceiverImpl.i"

@@ -12,6 +12,7 @@ template<class TCallback>
 BulkDataReceiverImpl<TCallback>::~BulkDataReceiverImpl()
 {
     ACS_TRACE("BulkDataReceiverImpl<>::~BulkDataReceiverImpl");
+
 }
 
 
@@ -237,4 +238,28 @@ void BulkDataReceiverImpl<TCallback>::setRecvName(const char *recvName)
 	AVSetReceiverNameErrorExImpl err = AVSetReceiverNameErrorExImpl(ex,__FILE__,__LINE__,"BulkDataSenderImpl::setRecvName");
 	throw err.getAVSetReceiverNameErrorEx();
 	}    
+}
+
+
+template<class TCallback>
+void BulkDataReceiverImpl<TCallback>::subscribeNotification(ACS::CBvoid_ptr notifCb)
+    throw (CORBA::SystemException, AVNotificationMechanismErrorEx)
+{
+    try
+	{
+	getReceiver()->subscribeNotification(notifCb);
+	}
+    catch(ACSErr::ACSbaseExImpl &ex)
+	{
+	AVNotificationMechanismErrorExImpl err = AVNotificationMechanismErrorExImpl(ex,__FILE__,__LINE__,"BulkDataReceiverImpl::subscribeNotification");
+	err.log(LM_DEBUG);
+	throw err.getAVNotificationMechanismErrorEx();
+	}
+   catch(...)
+	{
+	ACSErrTypeCommon::UnknownExImpl ex = ACSErrTypeCommon::UnknownExImpl(__FILE__,__LINE__,"BulkDataReceiverImpl::subscribeNotification");
+	AVNotificationMechanismErrorExImpl err = AVNotificationMechanismErrorExImpl(ex,__FILE__,__LINE__,"BulkDataReceiverImpl::subscribeNotification");
+	err.log(LM_DEBUG);
+	throw err.getAVNotificationMechanismErrorEx();
+	}
 }

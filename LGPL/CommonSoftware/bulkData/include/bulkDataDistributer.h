@@ -42,6 +42,7 @@
 using namespace std;
 using namespace ACSBulkDataError;
 
+
 namespace AcsBulkdata
 {  
     /** @defgroup BULKDATADISTRIBUTERDOC Bulk Data Distributer
@@ -62,7 +63,10 @@ namespace AcsBulkdata
      * @}
      */
 
-
+    //forward declaration
+    template<class TReceiverCallback, class TSenderCallback>
+    class BulkDataDistributerNotifCb;
+    
     template<class TReceiverCallback, class TSenderCallback>
     class BulkDataDistributer
     { 
@@ -76,8 +80,8 @@ namespace AcsBulkdata
 	typedef ACE_Pair< bulkdata::BulkDataReceiver_ptr, BulkDataSender<TSenderCallback> *> Sender_Map_Pair;
 
 	/*typedef ACE_Hash_Map_Manager <ACE_CString, BulkDataSender<TSenderCallback> *,ACE_Null_Mutex>  Sender_Map;
-	typedef ACE_Hash_Map_Entry <ACE_CString, BulkDataSender<TSenderCallback> * > Sender_Map_Entry;
-	typedef ACE_Hash_Map_Iterator <ACE_CString, BulkDataSender<TSenderCallback> * ,ACE_Null_Mutex>  Sender_Map_Iterator;*/
+	  typedef ACE_Hash_Map_Entry <ACE_CString, BulkDataSender<TSenderCallback> * > Sender_Map_Entry;
+	  typedef ACE_Hash_Map_Iterator <ACE_CString, BulkDataSender<TSenderCallback> * ,ACE_Null_Mutex>  Sender_Map_Iterator;*/
 
 	typedef ACE_Hash_Map_Manager <ACE_CString, Sender_Map_Pair, ACE_Null_Mutex>  Sender_Map;
 	typedef ACE_Hash_Map_Entry <ACE_CString, Sender_Map_Pair > Sender_Map_Entry;
@@ -139,6 +143,13 @@ namespace AcsBulkdata
 	void setContSvc (ContainerServices * services_p)
 	    {  contSvc_p = services_p; }  
 
+	void subscribeNotification(ACS::CBvoid_ptr notifCb)
+	    throw (AVNotificationMechanismErrorExImpl);
+
+	void notifySender(const ACSErr::Completion& comp)
+	    throw (AVNotificationMechanismErrorExImpl);
+
+
       private:
 
 	CORBA::Boolean getFlowReceiverStatus(const ACE_CString& receiverName, CORBA::ULong flowNumber);
@@ -159,8 +170,66 @@ namespace AcsBulkdata
 	CORBA::ULong offset;
 
 	ContainerServices *contSvc_p;
+
+	BulkDataDistributerNotifCb<TReceiverCallback, TSenderCallback> *distributerNotifCb_p;
+
+	ACS::CBvoid_ptr locNotifCb_p;
     };
+
+
+
+    template<class TReceiverCallback, class TSenderCallback = BulkDataSenderDefaultCallback>
+    class BulkDataDistributerNotifCb: public virtual POA_ACS::CBvoid
+    {
+
+      public:
+
+	BulkDataDistributerNotifCb(BulkDataDistributer<TReceiverCallback, TSenderCallback> *distr)
+	    {
+		distr_p = distr;
+	    }
+
+	~BulkDataDistributerNotifCb()
+	    {
+	    }
+
+	void working(const Completion &comp, const ACS::CBDescOut &desc) 
+	    throw (CORBA::SystemException)
+	    {
+	    }
+	
+	void done(const Completion &comp, const ACS::CBDescOut &desc) 
+	    throw (CORBA::SystemException)
+	    {
+		try
+		    {
+		    distr_p->notifySender(comp);
+		    }
+		catch(ACSErr::ACSbaseExImpl &ex)
+		    {
+		    ACS_SHORT_LOG((LM_ERROR,"BulkDataDistributerNotifCb::done error"));
+		    ex.log();
+		    }
+		catch(...)
+		    {
+		    ACS_SHORT_LOG((LM_ERROR,"BulkDataDistributerNotifCb::done unknown error"));	    
+		    }
+	    }
+
+	CORBA::Boolean negotiate (ACS::TimeInterval timeToTransmit, const ACS::CBDescOut &desc) 
+	    throw (CORBA::SystemException)
+	    {
+		return true;
+	    }
+
+      private:
+
+	BulkDataDistributer<TReceiverCallback, TSenderCallback> *distr_p;
+    };   
+
+
 }
+
 
 #include "bulkDataDistributer.i"
 

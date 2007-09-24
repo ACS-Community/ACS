@@ -7,6 +7,7 @@ AcsBulkdata::BulkDataReceiver<TReceiverCallback>::BulkDataReceiver() : closeRece
 
     sepRefCount_p = 0;
 
+    locNotifCb_p = 0;
 //    recvConfig_p->streamendpoint_B = 0;
 //    recvConfig_p->fepsInfo = 0;
 }
@@ -23,6 +24,8 @@ AcsBulkdata::BulkDataReceiver<TReceiverCallback>::~BulkDataReceiver()
 	    {
 	    closeReceiver();
 	    }
+
+	CORBA::release(locNotifCb_p);
 	}
     catch(AVCloseReceiverErrorExImpl &ex)
 	{
@@ -701,5 +704,71 @@ void AcsBulkdata::BulkDataReceiver<TReceiverCallback>::setReceiverName(ACE_CStri
 	    else
 		cb_p->setReceiverName(recvName);
 	    }	
+	}
+}
+
+
+template<class TReceiverCallback>
+void AcsBulkdata::BulkDataReceiver<TReceiverCallback>::subscribeNotification(ACS::CBvoid_ptr notifCb)
+    throw (AVNotificationMechanismErrorExImpl)
+{
+    try
+	{
+	locNotifCb_p = ACS::CBvoid::_duplicate(notifCb);
+	
+	TReceiverCallback *cb = 0;
+	
+	ACE_CString flowName = "";
+	
+	vector<string> vecNames = getFlowNames();
+	for(CORBA::ULong i = 0; i < vecNames.size(); i++)
+	    {
+	    flowName = vecNames[i].c_str();
+	    
+	    getFlowCallback(flowName, cb);
+	    if(cb == 0)
+		{
+		ACS_SHORT_LOG((LM_ERROR,"BulkDataReceiver<>::subscribeNotification callback null"));
+		AVCallbackErrorExImpl err = AVCallbackErrorExImpl(__FILE__,__LINE__,"BulkDataReceiver::subscribeNotification");
+		throw err;
+		} 
+	    else
+		{
+		cb->setReceiverImpl(this);
+		}
+	    }
+	}
+    catch(ACSErr::ACSbaseExImpl &ex)
+	{
+	AVNotificationMechanismErrorExImpl err = AVNotificationMechanismErrorExImpl(ex,__FILE__,__LINE__,"BulkDataReceiver::subscribeNotification");
+	throw err;	
+	}
+    catch(...)
+	{
+	ACSErrTypeCommon::UnknownExImpl ex = ACSErrTypeCommon::UnknownExImpl(__FILE__,__LINE__,"BulkDataReceiver::subscribeNotification");
+	AVNotificationMechanismErrorExImpl err = AVNotificationMechanismErrorExImpl(ex,__FILE__,__LINE__,"BulkDataReceiver::subscribeNotification");
+	throw err;	
+	}
+}
+
+
+template<class TReceiverCallback>
+void AcsBulkdata::BulkDataReceiver<TReceiverCallback>::notifySender(const ACSErr::Completion& comp)
+    throw (AVNotificationMechanismErrorExImpl)
+{
+    CompletionImpl complImp = comp;
+    complImp.log(LM_DEBUG);
+
+    ACS::CBDescOut desc;
+    if(locNotifCb_p)
+	{
+	locNotifCb_p->done(comp,desc);
+	}
+    else
+	{
+	ACS_SHORT_LOG((LM_ERROR,"BulkDataReceiver<>::notifySender callback reference null"));
+	AVCallbackErrorExImpl ex = AVCallbackErrorExImpl(__FILE__,__LINE__,"BulkDataReceiver::notifySender");
+	AVNotificationMechanismErrorExImpl err = AVNotificationMechanismErrorExImpl(ex,__FILE__,__LINE__,"BulkDataReceiver::notifySender");
+	throw err;
 	}
 }

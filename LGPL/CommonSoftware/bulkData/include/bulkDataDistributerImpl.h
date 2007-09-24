@@ -57,6 +57,10 @@ using namespace ACSBulkDataStatus;
 using namespace ACSBulkDataStatus;
 using namespace ACSErrTypeCommon;
 
+//forward declaration
+template<class TReceiverCallback, class TSenderCallback>
+class BulkDataDistributerNotifCb;
+
 /** @file bulkDataDistributerImpl.h  
  */
 
@@ -187,7 +191,6 @@ class BulkDataDistributerImpl : public CharacteristicComponentImpl,
     virtual void stopSend()
 	throw (CORBA::SystemException, AVStopSendErrorEx);
 
-
 /************************ Receiver part ********************/
 
     /**
@@ -237,6 +240,10 @@ class BulkDataDistributerImpl : public CharacteristicComponentImpl,
 	    //empty
 	}
 
+    virtual void subscribeNotification(ACS::CBvoid_ptr notifCb)
+	throw (CORBA::SystemException, AVNotificationMechanismErrorEx);
+
+
   private:
 
     ContainerServices *containerServices_p;
@@ -247,6 +254,7 @@ class BulkDataDistributerImpl : public CharacteristicComponentImpl,
     void rmEntryFromSenderMap(bulkdata::BulkDataReceiver_ptr receiverObj_p);
     void rmEntryFromSenderMap(const char *receiverName_p);
 };
+
 
 
 #include "bulkDataDistributerImpl.i"

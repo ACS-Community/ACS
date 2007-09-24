@@ -572,3 +572,27 @@ void BulkDataDistributerImpl<TReceiverCallback, TSenderCallback>::rmEntryFromSen
 	    }
 	}
 }
+
+
+template<class TReceiverCallback, class TSenderCallback>
+void BulkDataDistributerImpl<TReceiverCallback, TSenderCallback>::subscribeNotification(ACS::CBvoid_ptr notifCb)
+    throw (CORBA::SystemException, AVNotificationMechanismErrorEx)
+{
+    try
+	{
+	getDistributer()->subscribeNotification(notifCb);
+	}
+    catch(ACSErr::ACSbaseExImpl &ex)
+	{
+	AVNotificationMechanismErrorExImpl err = AVNotificationMechanismErrorExImpl(ex,__FILE__,__LINE__,"BulkDataDistributerImpl::subscribeNotification");
+	err.log(LM_DEBUG);
+	throw err.getAVNotificationMechanismErrorEx();
+	}
+   catch(...)
+	{
+	ACSErrTypeCommon::UnknownExImpl ex = ACSErrTypeCommon::UnknownExImpl(__FILE__,__LINE__,"BulkDataDistributerImpl::subscribeNotification");
+	AVNotificationMechanismErrorExImpl err = AVNotificationMechanismErrorExImpl(ex,__FILE__,__LINE__,"BulkDataDistributerImpl::subscribeNotification");
+	err.log(LM_DEBUG);
+	throw err.getAVNotificationMechanismErrorEx();
+	}
+}

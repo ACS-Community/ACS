@@ -2,6 +2,10 @@ template<class TReceiverCallback, class TSenderCallback>
 AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::BulkDataDistributer() : sender_p(0),timeout_m(0),numberOfFlows(0),offset(100),contSvc_p(0)
 {
     ACE_TRACE("BulkDataDistributer<>::BulkDataDistributer");
+
+    distributerNotifCb_p = 0;
+
+    locNotifCb_p = 0;
 }
 
 
@@ -21,6 +25,11 @@ AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::~BulkDataD
 
 	CORBA::release((entry->int_id_).first()); 
 	}
+
+    if(distributerNotifCb_p)
+	distributerNotifCb_p->_remove_ref();
+
+    CORBA::release(locNotifCb_p);
 }
 
 
@@ -500,3 +509,72 @@ CORBA::Boolean AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallba
 	return false;
 	}
 }
+
+
+template<class TReceiverCallback, class TSenderCallback>
+void AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::subscribeNotification(ACS::CBvoid_ptr notifCb)
+    throw (AVNotificationMechanismErrorExImpl)
+{
+    distributerNotifCb_p = new BulkDataDistributerNotifCb<TReceiverCallback, TSenderCallback>(this);
+    if(distributerNotifCb_p == 0)
+	{
+	ACSErrTypeCommon::CouldntCreateObjectExImpl ex = ACSErrTypeCommon::CouldntCreateObjectExImpl(__FILE__,__LINE__,"BulkDataDistributer::multiConnect");
+	AVNotificationMechanismErrorExImpl err = AVNotificationMechanismErrorExImpl(ex,__FILE__,__LINE__,"BulkDataDistributer<>::subscribeNotification");
+	throw err;
+	}
+
+    try
+	{
+	locNotifCb_p = ACS::CBvoid::_duplicate(notifCb);
+	
+	ACS::CBvoid_var cb = distributerNotifCb_p->_this();
+
+	Sender_Map *map = getSenderMap();
+
+	Sender_Map_Iterator iterator(*map);
+	Sender_Map_Entry *entry = 0;
+	for (;iterator.next (entry) !=  0;iterator.advance ())
+	    {
+	    ((entry->int_id_).first())->subscribeNotification(cb.in());
+	    }
+	}
+    catch(ACSErr::ACSbaseExImpl &ex)
+	{
+	AVNotificationMechanismErrorExImpl err = AVNotificationMechanismErrorExImpl(ex,__FILE__,__LINE__,"BulkDataDistributer<>::subscribeNotification");
+	throw err;
+	}
+    catch(AVNotificationMechanismErrorEx &ex)
+	{
+	AVNotificationMechanismErrorExImpl err = AVNotificationMechanismErrorExImpl(ex,__FILE__,__LINE__,"BulkDataDistributer<>::subscribeNotification");
+	throw err;
+	}
+    catch(...)
+	{
+	ACSErrTypeCommon::UnknownExImpl ex = ACSErrTypeCommon::UnknownExImpl(__FILE__,__LINE__,"BulkDataDistributer::subscribeNotification");
+	AVNotificationMechanismErrorExImpl err = AVNotificationMechanismErrorExImpl(ex,__FILE__,__LINE__,"BulkDataDistributer::subscribeNotification");
+	throw err;	
+	}
+}
+
+
+template<class TReceiverCallback, class TSenderCallback>
+void AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::notifySender(const ACSErr::Completion& comp)
+    throw (AVNotificationMechanismErrorExImpl)
+{
+    CompletionImpl complImp = comp;
+    complImp.log(LM_DEBUG);
+
+    ACS::CBDescOut desc;
+    if(locNotifCb_p)
+	{
+	locNotifCb_p->done(comp,desc);
+	}
+    else
+	{
+	ACS_SHORT_LOG((LM_ERROR,"BulkDataDistributer<>::notifySender callback reference null"));
+	AVCallbackErrorExImpl ex = AVCallbackErrorExImpl(__FILE__,__LINE__,"BulkDataDistributer::notifySender");
+	AVNotificationMechanismErrorExImpl err = AVNotificationMechanismErrorExImpl(ex,__FILE__,__LINE__,"BulkDataDistributer::notifySender");
+	throw err;
+	}
+}
+

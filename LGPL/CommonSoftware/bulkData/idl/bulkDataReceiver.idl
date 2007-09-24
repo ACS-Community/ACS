@@ -109,6 +109,17 @@ module bulkdata
 	*/
 	void setRecvName(in string recvName)
 	    raises (ACSBulkDataError::AVSetReceiverNameErrorEx);
+
+	/**
+	 *  Subscribe to the Notification Mechanism
+	 *  @param notifCb receiver name.
+	 *  @return void
+	 *  @htmlonly
+	 <br><hr>
+	 @endhtmlonly
+	*/
+	void subscribeNotification(in ACS::CBvoid notifCb)
+	    raises (ACSBulkDataError::AVNotificationMechanismErrorEx);
 	};
 
     /** @interface BulkDataReceiverDistr

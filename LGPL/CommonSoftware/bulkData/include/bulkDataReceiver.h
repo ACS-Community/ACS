@@ -168,6 +168,19 @@ namespace AcsBulkdata
 	*/
 	void setReceiverName(ACE_CString recvName);
 
+	/** Subscribe to the Notification Mechanism
+	 *  @param ACS::CBvoid_ptr
+	 *  @return void
+	 *  @htmlonly
+	 <br><hr>
+	 @endhtmlonly
+	*/
+	void subscribeNotification(ACS::CBvoid_ptr notifCb)
+	    throw (AVNotificationMechanismErrorExImpl);
+
+	void notifySender(const ACSErr::Completion& comp)
+	    throw (AVNotificationMechanismErrorExImpl);
+
       private:
 
 	typedef ACE_Hash_Map_Manager<ACE_CString, BulkDataFlowConsumer<TReceiverCallback> *, ACE_Null_Mutex> FepObjects;
@@ -283,6 +296,8 @@ namespace AcsBulkdata
 	TAO_StreamEndPoint_B *sepRefCount_p;
 
 	CORBA::Boolean closeReceiverFlag;
+
+	ACS::CBvoid_ptr locNotifCb_p;
 
 	/**
 	 * ALMA C++ coding standards state copy operators should be disabled.
