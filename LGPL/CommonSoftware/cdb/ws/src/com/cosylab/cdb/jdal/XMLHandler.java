@@ -310,4 +310,12 @@ String s = (String)i.next();
 			else return m_rootNode.toString(withMapNames);
 		}
 	}
+
+	/**
+	 * @return the firstElementName
+	 */
+	public String getFirstElementName() {
+		return firstElementName;
+	}
+
 }

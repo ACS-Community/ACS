@@ -227,4 +227,22 @@ public class DAOProxy implements DAOOperations
 	public String toString() {
 		return "Proxy of " + curl;
 	}
+
+	// this is not supported by pure DAO (via remote DAO)
+	private String elementName = null;
+
+	/**
+	 * @return the elementName
+	 */
+	public String getElementName() {
+		return elementName;
+	}
+
+	/**
+	 * @param elementName the elementName to set
+	 */
+	public void setElementName(String elementName) {
+		this.elementName = elementName;
+	}
+	
 }

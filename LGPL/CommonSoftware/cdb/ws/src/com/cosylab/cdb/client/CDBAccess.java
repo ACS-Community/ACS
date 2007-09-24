@@ -290,7 +290,6 @@ public class CDBAccess
 	 */
 	private void internalConnect(DAOProxy proxy) 
 	{
-
 		String curl = null;			
 
 		try
@@ -334,6 +333,7 @@ public class CDBAccess
 				}
 				// create non-CORBA related, silent DAO
 				dao = new DAOImpl(curl, xmlSolver.m_rootNode, null, true);
+				proxy.setElementName(xmlSolver.getFirstElementName());
 			}
 			
 			// register listener, if not already registered
@@ -417,6 +417,18 @@ public class CDBAccess
 	 */
 	public String[] getSubNodes(DAOProxy proxy) throws Throwable
 	{
+		return getSubNodes(proxy, null);
+	}
+	
+	/**
+	 * Helper method to get all subnodes of the current proxy, removes ".xml" element from the list.
+	 * @param proxy		proxy whose subnodes to return.
+	 * @param subnode	proxy subnode to be queried	
+	 * @return	array of subnodes.
+	 * @throws	Throwable	exception on failure (e.g. connection failure, etc.)
+	 */
+	public String[] getSubNodes(DAOProxy proxy, String subnode) throws Throwable
+	{
 		assert (proxy != null);
 
 		checkDALConnection();
@@ -424,7 +436,11 @@ public class CDBAccess
 		ArrayList subnodes = new ArrayList();
 	    
 	    LinkedList stack = new LinkedList();
-		stack.addLast(proxy.getCURL());
+	    if (subnode == null)
+	    	stack.addLast(proxy.getCURL());
+	    else
+	    	stack.addLast(proxy.getCURL() + "/" + subnode);
+	    	
 		while (!stack.isEmpty())
 		{
 		    String parentNode = stack.removeLast().toString();
