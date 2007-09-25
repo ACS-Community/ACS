@@ -186,11 +186,14 @@ namespace AcsBulkdata
 
 	BulkDataDistributerNotifCb(BulkDataDistributer<TReceiverCallback, TSenderCallback> *distr)
 	    {
+		ACS_TRACE("BulkDataDistributerNotifCb<>::BulkDataDistributerNotifCb");
+
 		distr_p = distr;
 	    }
 
 	~BulkDataDistributerNotifCb()
 	    {
+		ACS_TRACE("BulkDataDistributerNotifCb<>::~BulkDataDistributerNotifCb");
 	    }
 
 	void working(const Completion &comp, const ACS::CBDescOut &desc) 

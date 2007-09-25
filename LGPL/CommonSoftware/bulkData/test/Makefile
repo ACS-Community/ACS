@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.27 2007/07/20 12:30:36 rcirami Exp $"
+# "@(#) $Id: Makefile,v 1.28 2007/09/25 13:24:49 rcirami Exp $"
 #
 # Makefile of ........
 #
@@ -63,7 +63,9 @@ EXECUTABLES     = bulkDataEx1 \
 		  bulkDataSendRecvEx \
 		  bulkDataDistributerEx \
 		  bulkDataPerf \
-		  bulkDataDistrPerf
+		  bulkDataDistrPerf \
+		  bulkDataNotificationTest
+
 EXECUTABLES_L   = 
 
 #
@@ -132,6 +134,15 @@ bulkDataDistrPerf_LIBS      = bulkDataReceiverStubs \
 			      bulkDataCallback \
 			      ACSBulkDataError
 
+bulkDataNotificationTest_OBJECTS   = bulkDataNotificationTest	
+bulkDataNotificationTest_LIBS      = bulkDataReceiverStubs \
+			      	     bulkDataSenderStubs \
+			             bulkDataDistributerStubs \
+			             bulkDataStubs \
+			             bulkDataCallback \
+			             ACSBulkDataError
+
+
 #
 # special compilation flags for single c sources
 #yyyyy_CFLAGS   = 
@@ -147,10 +158,12 @@ INCLUDES        =
 LIBRARIES       = bulkDataReceiverLibEx1 \
 		  bulkDataReceiverLibEx2 \
 		  bulkDataReceiverLibEx3 \
+		  bulkDataReceiverLibNotif \
 		  bulkDataSenderLibEx1 \
 		  bulkDataSenderLibEx2 \
 	 	  bulkDataSenderLibEx3 \
 		  bulkDataSenderLibPerf \
+	          bulkDataSenderLibNotif \
 		  bulkDataReceiver1LibPerf \
 		  bulkDataSendRecvLib \
 		  bulkDataSenderDistrLib \
@@ -172,6 +185,10 @@ bulkDataReceiverLibEx3_OBJECTS   = bulkDataReceiverCbEx3
 bulkDataReceiverLibEx3_LIBS      = bulkDataReceiverStubs bulkDataReceiverEx3Stubs bulkDataStubs \
 				   bulkDataCallback ACSBulkDataError ACSBulkDataStatus
 
+bulkDataReceiverLibNotif_OBJECTS   = bulkDataReceiverCbNotif
+bulkDataReceiverLibNotif_LIBS      = bulkDataReceiverStubs bulkDataStubs \
+				     bulkDataCallback ACSBulkDataError ACSBulkDataStatus
+
 bulkDataSenderLibEx1_OBJECTS   = bulkDataSenderEx1Impl
 bulkDataSenderLibEx1_LIBS      = bulkDataReceiverStubs bulkDataSenderStubs bulkDataStubs ACSBulkDataError bulkDataSenderEx1Stubs
 
@@ -183,6 +200,9 @@ bulkDataSenderLibEx3_LIBS      = bulkDataReceiverStubs bulkDataSenderStubs bulkD
 
 bulkDataSenderLibPerf_OBJECTS   = bulkDataSenderPerfImpl
 bulkDataSenderLibPerf_LIBS      = bulkDataReceiverStubs bulkDataSenderPerfStubs bulkDataSenderStubs bulkDataStubs ACSBulkDataError
+
+bulkDataSenderLibNotif_OBJECTS   = bulkDataSenderNotifImpl
+bulkDataSenderLibNotif_LIBS      = bulkDataReceiverStubs bulkDataSenderStubs bulkDataStubs ACSBulkDataError
 
 bulkDataReceiver1LibPerf_OBJECTS   = bulkDataReceiver1PerfCb
 bulkDataReceiver1LibPerf_LIBS      = bulkDataReceiverStubs bulkDataReceiver1PerfStubs bulkDataStubs \

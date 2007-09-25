@@ -26,5 +26,15 @@
                                        Type="IDL:alma/bulkdatadistr/BulkDataReceiverDistr2:1.0"
                                        Container="Container1"/>
 
+     <_ Name="BulkDataNotifDistributer"  Code="bulkDataDistributerLib"	
+                                         Type="IDL:alma/bulkdata/BulkDataDistributer:1.0"
+                                         Container="ContainerNotifTest"/>
+     <_ Name="BulkDataNotifReceiver"     Code="bulkDataReceiverLibNotif"	
+                                         Type="IDL:alma/bulkdata/BulkDataReceiver:1.0"
+                                         Container="ContainerNotifTest"/>
+     <_ Name="BulkDataNotifSender"       Code="bulkDataSenderLibNotif"	
+                                         Type="IDL:alma/bulkdata/BulkDataSender:1.0"
+                                         Container="ContainerNotifTest"/>
+
 </Components>		     
 
