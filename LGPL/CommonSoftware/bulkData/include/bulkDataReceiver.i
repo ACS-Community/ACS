@@ -734,7 +734,7 @@ void AcsBulkdata::BulkDataReceiver<TReceiverCallback>::subscribeNotification(ACS
 		} 
 	    else
 		{
-		//cb->setReceiverImpl(this); // !!! TBD
+		cb->setReceiver(this);
 		}
 	    }
 	}

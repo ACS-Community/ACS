@@ -17,6 +17,8 @@
 #include "ACSBulkDataError.h"
 #include "ACSBulkDataStatus.h"
 
+#include "bulkDataReceiver.h"
+
 #include <iostream>
 
 using namespace std;
@@ -71,6 +73,12 @@ class BulkDataCallback : public TAO_AV_Callback
     virtual void setFlowTimeout(CORBA::ULong timeout);
 
     virtual void closePeer();
+
+    template<class TCallback>
+    void setReceiver(AcsBulkdata::BulkDataReceiver<TCallback> *recv)
+	{
+	    //to be defined by the user
+	}
 
     /********************* methods to be implemented by the user *****************/
 
