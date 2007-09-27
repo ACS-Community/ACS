@@ -105,8 +105,10 @@ public class DAOImpl extends DAOPOA {
 		}
 		String value;
 		// backward compatibility
-		if (fieldName.equals("_characteristics")) {
+		if (fieldName.equals("_characteristics") || fieldName.equals("_attributes")) {
 			value = pNode.getAttributeNames();
+		} else if (fieldName.equals("_elements")) {
+			value = pNode.getElementNames();
 		} else {
 			value = (String) pNode.m_fieldMap.get(fieldName);
 		}

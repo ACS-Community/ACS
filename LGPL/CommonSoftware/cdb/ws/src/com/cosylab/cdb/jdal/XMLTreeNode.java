@@ -114,26 +114,33 @@ public class XMLTreeNode {
 			if(key.startsWith(" xmlns") || key.startsWith("xmlns") || key.equals("space"))
 				continue; // dont put unused info in this listing
 			retVal.append(key);
-			if( i.hasNext() )
+			if (i.hasNext())
 				retVal.append(',');
 		}
 		
-		// TODO !!! remove this cause this adds XML nested nodes, which are not attributes)
-		
-		if (retVal.length()>0 && m_subNodesMap.keySet().size()>0)
-			retVal.append(',');
-
 		// and elements names too
-		i = m_subNodesMap.keySet().iterator();
-		while (i.hasNext()) {
-			key = (String) i.next();
-				retVal.append(key);
-				if( i.hasNext() )
-					retVal.append(",");
-		}
-        
+		final String elementNames = getElementNames(); 
+		if (retVal.length()>0 && elementNames.length()>0)
+			retVal.append(',');
+		retVal.append(elementNames);
+		
 		return retVal.toString();
 	}
+
+	public String getElementNames() {
+		String key;
+		StringBuffer retVal = new StringBuffer(128);
+		Iterator i = m_subNodesMap.keySet().iterator();
+		while (i.hasNext()) {
+			key = (String) i.next();
+			retVal.append(key);
+			if (i.hasNext())
+				retVal.append(",");
+		}
+		
+		return retVal.toString();
+	}
+	
 	/**
 	 * @return LinkedHashMap
 	 */
