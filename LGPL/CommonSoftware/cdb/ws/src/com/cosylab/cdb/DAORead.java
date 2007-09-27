@@ -37,22 +37,23 @@ import java.util.logging.Logger;
 import alma.acs.logging.ClientLogManager;
 import alma.acs.logging.AcsLogLevel;
 
-public class DALList {
+public class DAORead {
 	static	int indent = 0;
 
 	public static void main(String args[]) {
-		Logger m_logger = ClientLogManager.getAcsLogManager().getLoggerForApplication("DALList", true);
+		Logger m_logger = ClientLogManager.getAcsLogManager().getLoggerForApplication("DAORead", true);
 		try {
 			String strIOR = null;
 
-			if (args.length < 1) {
-				System.out.println("Usage: cmd curl [-d ior]");
+			if (args.length < 2) {
+				System.out.println("Usage: cmd curl field [-d ior]");
 				return;
 			}
 			String curl = args[0];
-
+			String field = args[1];
+			
 			// test for IOR in cmd line
-			for (int i = 1; i < args.length; i++) {
+			for (int i = 2; i < args.length; i++) {
 				if (args[i].equals("-d")) {
 					if (i < args.length - 1) {
 						strIOR = args[++i];
@@ -73,7 +74,9 @@ public class DALList {
 
 			DAL dal = DALHelper.narrow(orb.string_to_object(strIOR));
 			
-			m_logger.log(AcsLogLevel.INFO, "Listing " + curl + ": " + dal.list_nodes(curl));
+			DAO dao = dal.get_DAO_Servant(curl);
+			
+			m_logger.log(AcsLogLevel.INFO, curl + "/" + field + " = " + dao.get_field_data(field));
 
 		}
 		/*catch (XMLerror e) {
