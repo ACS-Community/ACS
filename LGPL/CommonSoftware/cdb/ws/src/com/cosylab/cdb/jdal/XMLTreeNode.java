@@ -117,13 +117,7 @@ public class XMLTreeNode {
 			if (i.hasNext())
 				retVal.append(',');
 		}
-		
-		// and elements names too
-		final String elementNames = getElementNames(); 
-		if (retVal.length()>0 && elementNames.length()>0)
-			retVal.append(',');
-		retVal.append(elementNames);
-		
+
 		return retVal.toString();
 	}
 
@@ -141,6 +135,17 @@ public class XMLTreeNode {
 		return retVal.toString();
 	}
 	
+	public String getAttributeAndElementNames() {
+		final String retVal = getAttributeNames();
+		final String elementNames = getElementNames(); 
+		if (elementNames.length()==0)
+			return retVal;
+		else if (retVal.length()>0)
+			return retVal + "," + elementNames;
+		else
+			return elementNames;
+	}
+
 	/**
 	 * @return LinkedHashMap
 	 */

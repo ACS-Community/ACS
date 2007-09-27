@@ -81,7 +81,7 @@ public class DAOImpl extends DAOPOA {
 		XMLTreeNode pNode = m_rootNode;
 		if (strFieldName.length() == 0
 			|| strFieldName.equals(m_rootNode.m_name)) {
-			return pNode.getAttributeNames();
+			return pNode.getAttributeAndElementNames();
 		}
 		StringTokenizer st = new StringTokenizer(strFieldName, "/");
 		String fieldName = st.nextToken();
@@ -105,7 +105,9 @@ public class DAOImpl extends DAOPOA {
 		}
 		String value;
 		// backward compatibility
-		if (fieldName.equals("_characteristics") || fieldName.equals("_attributes")) {
+		if (fieldName.equals("_characteristics")) {
+			value = pNode.getAttributeAndElementNames();
+		} else if (fieldName.equals("_attributes")) {
 			value = pNode.getAttributeNames();
 		} else if (fieldName.equals("_elements")) {
 			value = pNode.getElementNames();
@@ -123,7 +125,7 @@ public class DAOImpl extends DAOPOA {
 				e2.setFieldName(strFieldName);
 				throw e2;
 			}
-			value = node.getAttributeNames();
+			value = node.getAttributeAndElementNames();
 		}
 		if (!m_silent)
 			m_logger.log(AcsLogLevel.NOTICE,"DAO:'" + m_name + "' returned '" + strFieldName + "'=" + value);  
