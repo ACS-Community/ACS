@@ -31,6 +31,9 @@ public class ACSAlarmSystemInterfaceProxy implements ACSAlarmSystemInterface {
 	 * @param logger The logger to log alarms in
 	 */
 	public ACSAlarmSystemInterfaceProxy(String name, Logger logger) {
+		if (logger==null) {
+			throw new IllegalArgumentException("Invalid null logger in constructor");
+		}
 		this.name=name;
 		m_logger = logger;
 		m_logger.fine("Alarm source of "+name+" connected to the logging");
