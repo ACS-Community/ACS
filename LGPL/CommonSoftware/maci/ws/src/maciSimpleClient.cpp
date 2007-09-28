@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciSimpleClient.cpp,v 1.100 2006/10/24 11:47:35 bjeram Exp $"
+* "@(#) $Id: maciSimpleClient.cpp,v 1.101 2007/09/28 13:20:14 bjeram Exp $"
 *
 * who       when        what
 * --------  --------    ----------------------------------------------
@@ -637,12 +637,11 @@ SimpleClient::components_unavailable (const maci::stringSeq & cob_names
 				)
   throw (CORBA::SystemException)
 {
-
   // this is the default implementation
   CORBA::ULong len = cob_names.length (); 
-  
+
   for (unsigned int i=0; i < len; i++) {
-  ACS_SHORT_LOG((LM_DEBUG, "Unavailable component: '%s'.", cob_names[i]));
+  ACS_SHORT_LOG((LM_DEBUG, "Unavailable component: '%s'.", cob_names[i].in()));
   }
 }
 
