@@ -21,11 +21,11 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: acspyexmplTATPrologue,v 1.4 2006/01/16 20:46:29 dfugate Exp $"
+# "@(#) $Id: acspyexmplTATPrologue,v 1.5 2007/09/28 17:56:24 hsommer Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
 # almamgr 2000-09-13 created
-acsutilTATPrologue
+acsutilTATPrologue -l
 acsutilAwaitContainerStart -cpp  TestContainer
 acsutilAwaitContainerStart -java hugoContainer
