@@ -91,6 +91,13 @@ public class XMLTreeNode {
 	void setNormalNode(){
 		m_type = NORMAL_TYPE;
 	}
+	
+	public void markNodesAsElements()
+	{
+		// ignore remarkings, they are wrong
+		if (m_elementsMap == null)
+			m_elementsMap = new LinkedHashMap(m_subNodesMap);
+	}
 
 	public String getAttributeNames() {
 		String key;
@@ -99,7 +106,7 @@ public class XMLTreeNode {
 		while (i.hasNext()) {
 			key = (String) i.next();
 			// remove xml specific attributes
-			if(key.startsWith(" xmlns") || key.startsWith("xmlns") || key.equals("space"))
+			if(key.startsWith(" xmlns") || key.startsWith("xmlns") || key.startsWith("xsi:") || key.equals("space"))
 				continue; // dont put unused info in this listing
 			retVal.append(key);
 			if (i.hasNext())

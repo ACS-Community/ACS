@@ -291,7 +291,7 @@ public class DALImpl extends JDALPOA implements Recoverer {
 		}
 		
 		// make m_elementsMap containing only elements from the XML
-		xmlSolver.m_rootNode.m_elementsMap = new LinkedHashMap(xmlSolver.m_rootNode.m_subNodesMap);
+		xmlSolver.m_rootNode.markNodesAsElements();
 		
 		// and childs if exist
 		for (int i = 0; i < childs.length; i++) {
