@@ -4,6 +4,10 @@ s/IOR:[a-z,0-9,.,]*/IOR:xxxxxxxxxxxxxx/g
 s/iioploc:\/\/[a-z,0-9,.,_,-]*:[0-9]*/iioploc:\/\/xxxxx\.xxxxx:xxxx/g
 s/Handle: [a-z,0-9]*/Handle: xxxxxxxxx/g
 s/ProcessID=\"[0-9]*\"/ProcessID=xxxxxxxxx/g
+s/Line=\"[0-9]*\"/Line="xxxxxxxxx"/g
+s/Host=\"[a-z,A-Z,0-9,.,_,-]*\"/Host="xxxxxxxxx"/g
+s/LogId=\"[0-9]*\"/logId="xxxxxxxxx"/g
+s/Thread=\"[a-z,A-Z,0-9,.,_,-]*\"/Thread="xxxxxxxxx"/g
 s/ThreadID=\"[0-9]*\"/ThreadID=xxxxxxxxx/g
 s/v[0-9]*\.[0-9]*\.[0-9]*.* built at [0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9] [0-9][0-9]:[0-9][0-9]:[0-9][0-9]/v-.-.- built at ---------- --:--:--/g
 s/Interrupted system call/Interrupted system call or resource temporarily anavailable/g

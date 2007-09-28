@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: Makefile,v 1.97 2007/09/03 06:49:02 cparedes Exp $" 
+# "@(#) $Id: Makefile,v 1.98 2007/09/28 08:37:16 cparedes Exp $" 
 #
 # Makefile of ........
 #
@@ -35,7 +35,7 @@ PROG =
 #
 # C programs (public and local)
 # -----------------------------
-EXECUTABLES_L     = $(PROG) maciTestClient maciTestRegistrar \
+EXECUTABLES_L     = $(PROG) maciTestClient maciTestLogConfigClient maciTestRegistrar \
 			maciContainerServicesClient maciLifeCycleClient \
 			maciTestSimpleClient maciTestComponentSmartPtr
 
@@ -47,6 +47,9 @@ maciTestClient_OBJECTS          = maciTestClient \
                                   maciTestC \
                                   maciTestClientImpl
 maciTestClient_LIBS             = maciClient maciTestUtils
+
+maciTestLogConfigClient_OBJECTS = maciTestLogConfigClient maciTestC
+maciTestLogConfigClient_LIBS    = maciClient maciTestUtils
 
 maciContainerServicesClient_OBJECTS = maciContainerServicesClient \
 									  maciTestC
@@ -67,12 +70,12 @@ maciTestRegistrar_OBJECTS 	= maciTestRegistrar
 # Includes (.h) files (public and local)
 # ---------------------------------
 INCLUDES        = 
-INCLUDES_L      = maciTestClassImpl.h maciHeartbeatController.h maciBlockingComponentListener.h maciContainerServicesTestClassImpl.h 
+INCLUDES_L      = maciTestClassImpl.h maciTestLogConfigImpl.h maciHeartbeatController.h maciBlockingComponentListener.h maciContainerServicesTestClassImpl.h 
 
 #
 # Libraries (public and local)
 # ----------------------------
-LIBRARIES       = maciTestClass maciBlockingComponentListener maciTestUtils maciContainerServicesTestClass \
+LIBRARIES       = maciTestClass maciTestLogConfig maciBlockingComponentListener maciTestUtils maciContainerServicesTestClass \
 				  maciDynComp 
 LIBRARIES_L     = 
 
@@ -80,6 +83,8 @@ maciBlockingComponentListener_OBJECTS = maciBlockingComponentListener
 maciBlockingComponentListener_LIBS = acsComponentListener
 maciTestClass_OBJECTS	= maciTestClassImpl maciTestC maciTestS
 maciTestUtils_OBJECTS	= maciTestUtils
+maciTestLogConfig_OBJECTS = maciTestLogConfigImpl maciTestC maciTestS
+maciTestLogConfig_LDFLAGS= -ggdb
 maciContainerServicesTestClass_OBJECTS = maciContainerServicesTestClassImpl maciTestS maciTestC 
 maciContainerServicesTestClass_LIBS = maci acsContainerServices maciBlockingComponentListener 
 maciDynComp_OBJECTS = maciDynCompImpl maciTestS maciTestC
@@ -87,7 +92,7 @@ maciDynComp_OBJECTS = maciDynCompImpl maciTestS maciTestC
 #
 # Scripts (public and local)
 # ----------------------------
-SCRIPTS_L         = startMaciTest.sh startMaciTestClient.sh startContainerWS.sh maciStopWrongCDB.sh maciStartWrongCDB.sh
+SCRIPTS_L         = startMaciTest.sh startMaciTestClient.sh startContainerWS.sh maciStopWrongCDB.sh maciStartWrongCDB.sh maciTestLogConfig.sh
 
 #
 # TCL scripts (public and local)

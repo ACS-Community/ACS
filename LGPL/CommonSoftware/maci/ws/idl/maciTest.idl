@@ -63,6 +63,9 @@ interface DynamicTestClass : ACS::ACSComponent {
 	void whoami();
 };
 
+interface LogConfigTestClass : ACS::ACSComponent {
+	void log_all();
+};
 
 };
 
