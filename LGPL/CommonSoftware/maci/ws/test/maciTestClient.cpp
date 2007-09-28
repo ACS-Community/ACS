@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciTestClient.cpp,v 1.94 2007/09/07 13:42:29 hsommer Exp $"
+* "@(#) $Id: maciTestClient.cpp,v 1.95 2007/09/28 13:21:20 bjeram Exp $"
 *
 * who       when       what
 * --------  --------   ----------------------------------------------
@@ -11,7 +11,7 @@
 * gchiozzi  2001-11-15 created
 */
 
-static char *rcsId="@(#) $Id: maciTestClient.cpp,v 1.94 2007/09/07 13:42:29 hsommer Exp $";
+static char *rcsId="@(#) $Id: maciTestClient.cpp,v 1.95 2007/09/28 13:21:20 bjeram Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 
@@ -38,7 +38,7 @@ static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
  using namespace maci;
  using namespace MACI_TEST;
 
-ACE_RCSID(maciTestClient, maciTestClient, "$Id: maciTestClient.cpp,v 1.94 2007/09/07 13:42:29 hsommer Exp $")
+ACE_RCSID(maciTestClient, maciTestClient, "$Id: maciTestClient.cpp,v 1.95 2007/09/28 13:21:20 bjeram Exp $")
 
 typedef
   ACE_Hash_Map_Manager <ACE_CString, MaciTestClass_ptr, ACE_Null_Mutex>
@@ -836,17 +836,17 @@ int ProcessTestClient(int argc, const ACE_TCHAR *argv[]
     ASSERT_EQUALS_STR (MACIHelper::getManagerHostname(3, args1).c_str(),
                        hostname);
 
-    ACE_TCHAR *args2[] = { "executable", "someparam", "-m", "corbaloc::the.host.com:3000/ManagerReference" };
+    ACE_TCHAR *args2[] = { "executable", "someparam", "-m", "corbaloc::the.host.rom:3000/ManagerReference" };
     ASSERT_EQUALS_STR (MACIHelper::getManagerHostname(4, args2).c_str(),
-                       "the.host.com");
+                       "the.host.rom");
 
-    ACE_TCHAR *args3[] = { "executable", "someparam", "-managerReference", "corbaloc::the.host.com:3000/ManagerReference" };
+    ACE_TCHAR *args3[] = { "executable", "someparam", "-managerReference", "corbaloc::the.host.rom:3000/ManagerReference" };
     ASSERT_EQUALS_STR (MACIHelper::getManagerHostname(4, args3).c_str(),
-                       "the.host.com");
+                       "the.host.rom");
 
-    ACE_OS::putenv ("MANAGER_REFERENCE=corbaloc::the.host.com:3000/ManagerReference");
+    ACE_OS::putenv ("MANAGER_REFERENCE=corbaloc::the.host.rom:3000/ManagerReference");
     ASSERT_EQUALS_STR (MACIHelper::getManagerHostname(0, 0).c_str(),
-                       "the.host.com");
+                       "the.host.rom");
 
 //    unsetenv ("MANAGER_REFERENCE");
   }
