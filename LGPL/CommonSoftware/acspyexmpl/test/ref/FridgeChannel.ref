@@ -1,10 +1,9 @@
 1 - ----------T--:--:--.--- fridge-Consumer addSubscription - temperatureDataBlockEvent
-1 - ----------T--:--:--.--- fridge-Consumer initCORBA - Created new channel.
 1 - ----------T--:--:--.--- FridgeNCConsumer Main - Creating FridgeConsumer
 1 - ----------T--:--:--.--- FridgeNCConsumer Main - Waiting for events . . .
-1 - ----------T--:--:--.--- FridgeNCConsumer fridgeDataHandler - The temperature difference is x.x
 2 - ----------T--:--:--.--- FridgeNCSupplier Main - Creating an instance of Supplier
 2 - ----------T--:--:--.--- FridgeNCSupplier Main - Ready to send NC events...
+1 - ----------T--:--:--.--- FridgeNCConsumer fridgeDataHandler - The temperature difference is x.x
 1 - ----------T--:--:--.--- FridgeNCConsumer fridgeDataHandler - The temperature difference is x.x
 1 - ----------T--:--:--.--- FridgeNCConsumer fridgeDataHandler - The temperature difference is x.x
 1 - ----------T--:--:--.--- FridgeNCConsumer fridgeDataHandler - The temperature difference is x.x
