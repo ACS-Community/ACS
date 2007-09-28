@@ -20,7 +20,7 @@
 # MA 02111-1307  USA
 #
 #
-# "@(#) $Id: Makefile,v 1.61 2007/05/28 06:23:39 cparedes Exp $" 
+# "@(#) $Id: Makefile,v 1.62 2007/09/28 08:29:53 cparedes Exp $" 
 #
 # Makefile of ........
 #
@@ -68,11 +68,11 @@ EXECUTABLES_L   =
 loggingService_OBJECTS = loggingService loggingACSLogFactory_i loggingACSStructuredPushSupplier loggingACSStructuredPushSupplierBin loggingACSStructuredPushSupplierXml loggingACSLog_i \
 			loggingHelper 
 loggingService_LIBS = logging
-loggingService_LDFLAGS= -ggdb
+#loggingService_LDFLAGS= -ggdb
 
 loggingClient_OBJECTS = loggingClient loggingHelper 
 loggingClient_LIBS = logging
-loggingClient_LDFLAGS= -ggdb
+#loggingClient_LDFLAGS= -ggdb
 
 # <brief description of xxxxx program>
 

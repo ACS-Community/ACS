@@ -19,7 +19,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: loggingLoggingProxy.cpp,v 1.40 2007/07/10 07:18:55 nbarriga Exp $"
+* "@(#) $Id: loggingLoggingProxy.cpp,v 1.41 2007/09/28 08:29:53 cparedes Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -57,7 +57,12 @@
 #define LOG_NAME "Log"
 #define DEFAULT_LOG_FILE_NAME "acs_local_log"
 
-ACE_RCSID(logging, logging, "$Id: loggingLoggingProxy.cpp,v 1.40 2007/07/10 07:18:55 nbarriga Exp $");
+#define DYNAMIC_LOG_LEVEL 1 
+#define ENV_LOG_LEVEL 2 
+#define CDB_LOG_LEVEL 3
+#define DEFAULT_LOG_LEVEL 4 
+
+ACE_RCSID(logging, logging, "$Id: loggingLoggingProxy.cpp,v 1.41 2007/09/28 08:29:53 cparedes Exp $");
 
 ACSLoggingLog::LogType LoggingProxy::m_LogBinEntryTypeName[] =
 {
@@ -107,6 +112,12 @@ LoggingProxy::log(ACE_Log_Record &log_record)
     unsigned long priority = getPriority(log_record);
     
     int privateFlags = (*tss)->privateFlags();
+    // 1 - default/priority local prohibit
+    // 2 - default/dynamic priority Remote prohibit
+    // 4 - default cdb log levels, false means that were dyn changed
+    // 8 - Default values, not even taken from CDB
+    bool cdbDefaultLevel = privateFlags & 4 ;
+    bool cdbLevelDefined = privateFlags & 8 ;
     bool prohibitLocal  = privateFlags & 1;
     bool prohibitRemote = privateFlags & 2;
    
@@ -114,6 +125,7 @@ LoggingProxy::log(ACE_Log_Record &log_record)
     formatISO8601inUTC(log_record.time_stamp(), timestamp);
     
     const ACE_TCHAR * entryType = (*tss)->logEntryType();
+    //const int nEntryType;
     if (!entryType)
 	{
 	if (log_record.priority() <= ACE::log2(LM_MAX))
@@ -124,17 +136,46 @@ LoggingProxy::log(ACE_Log_Record &log_record)
 	    {
 	    entryType = m_LogEntryTypeName[0];      // invalid priority ("programmer exception")
 	    }
-	}
+	}else{
+
+    }
+    //Log Level Precedence for standar output log:
+    // 1. Dynamic log level changes
+    // 2. ACS_LOG_STDOUT
+    // 3. CDB log level configuration
+    //TODO: fix this
+    // ???4. Default values of CDB, minLogLevelLocal
+    bool passed = true; 
+    int logLevelPrecedence = -1; 
+    if(cdbDefaultLevel){
+        if(m_envStdioPriority < 0){
+            if(!cdbLevelDefined){
+                logLevelPrecedence = DEFAULT_LOG_LEVEL;
+                //a local value for minCachePriority
+                if(priority < m_minCachePriority) passed = false;
+            }else{ 
+                logLevelPrecedence = CDB_LOG_LEVEL;
+                if(prohibitLocal) passed = false;
+            }
+        }else{
+             logLevelPrecedence = ENV_LOG_LEVEL;
+             if(priority<(unsigned int)m_envStdioPriority) passed = false;
+        }
+    }else{
+        logLevelPrecedence = DYNAMIC_LOG_LEVEL;
+        if(prohibitLocal) passed = false;
+    }
 
     LoggingTSSStorage::HASH_MAP_ENTRY *entry;
     LoggingTSSStorage::HASH_MAP_ITER hash_iter = (*tss)->getData();
 
-    if (!prohibitLocal && ACE_OS::strcmp(entryType, "Archive")!=0)      // do not print archive logs
+    if (passed && ACE_OS::strcmp(entryType, "Archive")!=0)      // do not print archive logs
 	{
 	// to make print outs nice
 	ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_printMutex);
 	
-	if (m_stdio<0)
+	 if (logLevelPrecedence == DEFAULT_LOG_LEVEL)
+	 //if (m_envStdioPriority < 0)
 	    {
 	    // log only LM_INFO and higher
 	    if (log_record.priority()>=ACE::log2(LM_INFO)) 
@@ -151,7 +192,7 @@ LoggingProxy::log(ACE_Log_Record &log_record)
 		    ACE_OS::printf ("%s [%s] %s", timestamp, (*tss)->sourceObject(), log_record.msg_data());
 		    }
 
-                if (log_record.priority()>=ACE::log2(LM_WARNING))   // LM_WARNING+
+                if (priority>=ACE::log2(LM_WARNING))   // LM_WARNING+
                     {
                     for (; hash_iter.next(entry) != 0; hash_iter.advance() )
 	               {
@@ -161,11 +202,11 @@ LoggingProxy::log(ACE_Log_Record &log_record)
                 ACE_OS::printf ("\n");
 		ACE_OS::fflush (stdout); //(2004-01-05)msc: added
 		}
+		//else{
+	//	}
 	    }
-	else if (log_record.priority()+1>=(unsigned int)m_stdio)
-	    {
-            // GCH: if (log_record.priority()>=6)   // LM_WARNING+
-            // GCH:    ACE_OS::printf( "ERROR!! " );
+      //else if (priority>=(unsigned int)m_envStdioPriority){
+      else{
 
 	    ACE_OS::printf ("%s ", timestamp);
 	    
@@ -195,7 +236,7 @@ LoggingProxy::log(ACE_Log_Record &log_record)
 		}
 	    
 	    ACE_OS::printf ("%s", log_record.msg_data());
-            if (log_record.priority()>=ACE::log2(LM_WARNING))   // LM_WARNING+
+            if (priority>=ACE::log2(LM_WARNING))   // LM_WARNING+
                 {
                 for (; hash_iter.next(entry) != 0; hash_iter.advance() )
 	           {
@@ -204,11 +245,40 @@ LoggingProxy::log(ACE_Log_Record &log_record)
                 }
             ACE_OS::printf ("\n");
 	    ACE_OS::fflush (stdout); //(2004-01-05)msc: added
-	    }//if-else
-	}//if
-
-    // if priority less tha minCachePriority do not cache or log
-    if (prohibitRemote || priority < m_minCachePriority)
+	}
+/*else{
+	}*/
+	}//else//if
+    
+    //Log Level Precedence for remote log:
+    // 1. Dynamic log level changes
+    // 2. ACS_LOG_CENTRALIZE_LOGGER
+    // 3. CDB log level configuration
+    // 4. Default values of CDB, minLogLevel
+    passed = true;
+    logLevelPrecedence = -1; 
+    if(cdbDefaultLevel){
+        if(m_envCentralizePriority == -1){
+            if(!cdbLevelDefined){
+                logLevelPrecedence = 4;
+                if(priority < m_minCachePriority) passed = false;
+            }else{ 
+                logLevelPrecedence = 3;
+                if(prohibitRemote) passed = false;
+            }
+        }else{
+             logLevelPrecedence = 2;
+             if(priority<(unsigned int)m_envCentralizePriority) passed = false;
+                //if((long)priority < m_envCentralizePriority)
+        }
+    }else{
+        logLevelPrecedence = 1;
+         if(prohibitRemote) passed = false;
+    }
+    
+    // if priority not match the bigger precedence log level 
+    //if (prohibitRemote || priority < m_minCachePriority)
+    if (!passed)
 	{
 	// anyway we have to clear TSS data 
 	(*tss)->clear(); 
@@ -225,6 +295,15 @@ LoggingProxy::log(ACE_Log_Record &log_record)
    // (*tss)->clear();    
   }
 
+/*  int LoggingProxy::typeStringToInt(ACE_TCHAR* str){
+        
+    for(int i=0;i<12;i++){
+        if(strcmp(str, m_LogEntryTypeName[i])) return i;
+    }
+    else return -1;
+
+  }
+*/
   void LoggingProxy::sendBinLogs(ACE_Log_Record &log_record, const ACE_TCHAR * timestamp, const ACE_TCHAR * entryType){
 	ACSLoggingLog::LogBinaryRecord *s_log = new ACSLoggingLog::LogBinaryRecord();
     unsigned int flags = (*tss)->flags();
@@ -406,7 +485,8 @@ LoggingProxy::log(ACE_Log_Record &log_record)
     unsigned long priority = getPriority(log_record);
     ACE_TCHAR line[64];
     ACE_OS::sprintf(line, "<%s TimeStamp=\"%s\"", 
-		    entryType, 
+    //ACE_OS::sprintf(line, "<LogEntry Type=\"%d\" TimeStamp=\"%s\"", 
+		    entryType,
 		    timestamp); 
     
     ACE_CString xml((size_t)512);    // create buffer of 512 chars to improove performace (avoid reallocating)
@@ -933,7 +1013,8 @@ LoggingProxy::LoggingProxy(const unsigned long cacheSize,
   m_disconnectionTime(0),
   m_cacheDisabled(!cacheSize || maxCachePriority<minCachePriority),
   m_alreadyInformed(false),
-  m_stdio(-1),
+  m_envStdioPriority(-1),
+  m_envCentralizePriority(-1),
   m_doWorkCond(m_doWorkMutex),
   m_sendingPending(false),
   m_threadCreated(false),
@@ -955,7 +1036,7 @@ LoggingProxy::LoggingProxy(const unsigned long cacheSize,
   char *acsSTDIO = getenv("ACS_LOG_STDOUT");
   if (acsSTDIO && *acsSTDIO)
     {
-      m_stdio = atoi(acsSTDIO);
+      m_envStdioPriority = atoi(acsSTDIO);
     }
 
   char *acsSyslog = getenv("ACS_LOG_SYSLOG");
@@ -968,6 +1049,11 @@ LoggingProxy::LoggingProxy(const unsigned long cacheSize,
     if(strcmp("true", acsLogType) == 0)
         m_logBin = true; 
   } 
+  char *acsCentralizeLogger = getenv("ACS_LOG_CENTRALIZE_LOGGER");
+  if (acsCentralizeLogger && *acsCentralizeLogger)
+    {
+      m_envCentralizePriority = atoi(acsCentralizeLogger);
+    }
 }
 
 LoggingProxy::~LoggingProxy()

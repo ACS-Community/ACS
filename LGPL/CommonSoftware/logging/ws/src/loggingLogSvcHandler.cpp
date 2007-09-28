@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingLogSvcHandler.cpp,v 1.21 2007/03/04 17:40:31 msekoran Exp $"
+* "@(#) $Id: loggingLogSvcHandler.cpp,v 1.22 2007/09/28 08:29:53 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -31,7 +31,7 @@
 
 #include <ace/Log_Record.h>
 
-static char *rcsId="@(#) $Id: loggingLogSvcHandler.cpp,v 1.21 2007/03/04 17:40:31 msekoran Exp $"; 
+static char *rcsId="@(#) $Id: loggingLogSvcHandler.cpp,v 1.22 2007/09/28 08:29:53 cparedes Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 
@@ -158,7 +158,8 @@ namespace Logging {
 	//if we ever do away with the LoggingProxy class, a more
 	//intelligent mechanism needs to be used here (i.e., read
 	//$ACS_LOG_STDOUT).
-	setLevel(LM_TRACE);
+	setLevelsDefined(false);
+	setLevelsDefault(true);
     }
     // ----------------------------------------------------------
     void
@@ -228,7 +229,9 @@ namespace Logging {
 	// set private flags
 	const int prohibitLocal  = lr.priority <  localPriority_m ? 1 : 0;
 	const int prohibitRemote = lr.priority < remotePriority_m ? 2 : 0;
-	LoggingProxy::PrivateFlags(prohibitLocal || prohibitRemote);
+    	const int isDefault = areLevelsDefault()? 4 : 0;
+    	const int isDefined = areLevelsDefined()? 8 : 0;
+ 	LoggingProxy::PrivateFlags(prohibitLocal | prohibitRemote | isDefault | isDefined);
 	
 	ace___->log(log_record_, 0);
     }
@@ -242,10 +245,12 @@ namespace Logging {
     void
 	LogSvcHandler::setLevels(Priority localPriority, Priority remotePriority)
 	{
-		localPriority_m = localPriority;
-		remotePriority_m = remotePriority;
-		// set global level (min of both)
-		setLevel(localPriority_m < remotePriority_m ? localPriority_m : remotePriority_m);  
+	    if(areLevelsDefined() && areLevelsDefault()) setLevelsDefault(false);
+       	    localPriority_m = localPriority;
+  	    remotePriority_m = remotePriority;
+	    // set global level (min of both)
+	    setLevel(localPriority_m < remotePriority_m ? localPriority_m : remotePriority_m);  
+		
 	}
     // ----------------------------------------------------------
     //--The following section exists solely to remain

@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingLogger.cpp,v 1.13 2007/03/25 13:31:05 msekoran Exp $"
+* "@(#) $Id: loggingLogger.cpp,v 1.14 2007/09/28 08:29:53 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -28,7 +28,7 @@
 #include <iostream>
 #include <Recursive_Thread_Mutex.h>
 
-static char *rcsId="@(#) $Id: loggingLogger.cpp,v 1.13 2007/03/25 13:31:05 msekoran Exp $"; 
+static char *rcsId="@(#) $Id: loggingLogger.cpp,v 1.14 2007/09/28 08:29:53 cparedes Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 // -------------------------------------------------------
 //helper function
@@ -166,7 +166,6 @@ namespace Logging {
 	
 	return retVal;
     }
-    // -------------------------------------------------------
     void
 	Logger::setLevels(Priority localPriority, Priority remotePriority)
     {
@@ -212,10 +211,10 @@ namespace Logging {
 	LoggerList::iterator pos;
 	for (pos = ACE_Singleton<Logger_ptr, ACE_Recursive_Thread_Mutex>::instance()->loggers_m.begin();
 	     !found && pos != ACE_Singleton<Logger_ptr, ACE_Recursive_Thread_Mutex>::instance()->loggers_m.end();
-	     pos++)
+	     pos++){
 		if ((*pos)->getName() == loggerName)
 			found = true;
-
+	}
 	//make sure it's released
 	loggersMutex_m.release();
 	
@@ -272,9 +271,10 @@ namespace Logging {
 	    {
 	    //if the priority of this log is greater than or equal
 	    //to the minimum logging level the handler is interested
-	    //in...
-	    if(lr.priority >= (*pos)->getLevel())
-		{
+	    //in...(we cannot suppose this, because of the env variables
+	    if((*pos)->areLevelsDefined() && lr.priority < (*pos)->getLevel()) continue;
+	    else 
+	   	{
 		//...go ahead and pass the log message to the handler
 		try
 		    {

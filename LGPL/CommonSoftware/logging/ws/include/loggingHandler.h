@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingHandler.h,v 1.8 2007/03/04 17:40:31 msekoran Exp $"
+* "@(#) $Id: loggingHandler.h,v 1.9 2007/09/28 08:29:53 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -92,7 +92,9 @@ namespace Logging
 	 * @return void
 	 */
 	void
-	setLevel(Priority priority) {priority_m = priority;}
+	setLevel(Priority priority) {
+		
+	priority_m = priority; m_areLevelsDefined=true;}
 
 	/**
 	 * Set levels for local and remote logging. It depends on the
@@ -103,6 +105,10 @@ namespace Logging
 	 */
 	virtual void
 	setLevels(Priority localPriority, Priority) {setLevel(localPriority);}
+    	bool areLevelsDefault(){return m_areLevelsDefault;}
+    	bool areLevelsDefined(){return m_areLevelsDefined;}
+	void setLevelsDefined(bool def){ m_areLevelsDefined=def;}
+	void setLevelsDefault(bool def){ m_areLevelsDefault=def;}
 
       protected:
 	//----------------------------------------------------
@@ -115,6 +121,8 @@ namespace Logging
 	 * sent to the publish method.
 	 */
 	Priority priority_m;
+    	bool m_areLevelsDefault;
+    	bool m_areLevelsDefined;
     };
     //------------------------------------------------------------------------------
 };

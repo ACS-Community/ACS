@@ -21,7 +21,7 @@
  *    License along with this library; if not, write to the Free Software
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: loggingLoggingProxy.h,v 1.25 2007/07/10 07:18:55 nbarriga Exp $"
+ * "@(#) $Id: loggingLoggingProxy.h,v 1.26 2007/09/28 08:29:53 cparedes Exp $"
  *
  * who       when        what
  * --------  ----------  ----------------------------------------------
@@ -107,7 +107,7 @@
  * </OL> 
  * @author <a href=mailto:matej.sekoranja@ijs.si>Matej Sekoranja</a>,
  * Jozef Stefan Institute, Slovenia<br>
- * @version "@(#) $Id: loggingLoggingProxy.h,v 1.25 2007/07/10 07:18:55 nbarriga Exp $"
+ * @version "@(#) $Id: loggingLoggingProxy.h,v 1.26 2007/09/28 08:29:53 cparedes Exp $"
  */
 class logging_EXPORT LoggingProxy : public ACE_Log_Msg_Callback
 {
@@ -270,7 +270,7 @@ class logging_EXPORT LoggingProxy : public ACE_Log_Msg_Callback
     void flush();
     
     /// Sets ACS_LOG_STDOUT runtime
-    void setStdio(int stdio){ m_stdio = stdio; }
+    void setStdio(int stdio){ m_envStdioPriority = stdio; }
     
     /// ACE log type int-to-string mapping
     static ACE_TCHAR* m_LogEntryTypeName[];
@@ -428,7 +428,8 @@ class logging_EXPORT LoggingProxy : public ACE_Log_Msg_Callback
     /// Priority of logs to be sent to STDIO (set by ACE_LOG_STDIO env. var.):
     /// # < 0 - log only LM_INFO (4) and higher - default
     /// # otherwise all >= log all 
-    int m_stdio;
+    int m_envStdioPriority;
+    int m_envCentralizePriority;
     
     /// Syslog setting (set by ACE_LOG_SYSLOG env. var.):
     /// not defined - local file cache is used
