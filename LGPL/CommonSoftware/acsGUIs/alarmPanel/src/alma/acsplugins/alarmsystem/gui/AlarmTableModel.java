@@ -19,7 +19,7 @@
 
 /** 
  * @author  caproni   
- * @version $Id: AlarmTableModel.java,v 1.2 2007/09/28 10:41:42 acaproni Exp $
+ * @version $Id: AlarmTableModel.java,v 1.3 2007/09/28 10:56:51 acaproni Exp $
  * @since    
  */
 
@@ -37,106 +37,9 @@ import java.util.Vector;
  *
  */
 public class AlarmTableModel extends AbstractTableModel {
-	/**
-	 * 
-	 * The view of an alarm for the table model containing
-	 * only the fields that will be dispalayed in the table
-	 *
-	 */
-	public class AlarmView {
-		public String alarmID=null; // Triplet
-		public Integer priority = null; // Priority
-		public Date sourceTimestamp=null; // Source timestamp
-		public String description=null; // Problem description
-		public String cause=null; // The cause
-		public Boolean active=null; // Active
+	
 		
-		/**
-		 * Constructor
-		 * 
-		 * @param id The ID (triplet)
-		 * @param pri Priority
-		 * @param timestamp Timestamp
-		 * @param desc Problem description
-		 * @param act Active
-		 */
-		public AlarmView(String id, String pri, String timestamp, String desc, String cause,String act) {
-			if (id==null || id.length()==0) {
-				throw new IllegalArgumentException("Invalid triplet in constructor");
-			}
-			alarmID=id;
-			description=desc;
-			this.cause=cause;
-			// Get the date
-			try {
-				long nsec=Long.parseLong(timestamp);
-				 sourceTimestamp=new Date(nsec);
-			} catch (Exception e) {
-				// Invalid timestamp
-				sourceTimestamp=null;
-				System.err.println("Invalid timestamp for "+alarmID+": "+timestamp);
-			}
-			// Get the status
-			try {
-				active=Boolean.parseBoolean(act);
-			} catch (Exception e) {
-				System.err.println("Invalid priority for "+alarmID+": "+pri);
-				active=true;
-			}
-			// Get the priority
-			try {
-				priority=new Integer(pri);
-			} catch (Exception e) {
-				System.err.println("Invalid priority for "+alarmID+": "+pri);
-				priority=0;
-			}
-		}
 		
-		/**
-		 * Override the Object.equals because we know
-		 * that 2 alarms are equals if they have the same ID
-		 *
-		 * This method is used to check if a given alarm is already
-		 * in the vector of the alarms in the table.
-		 * The same alarm is shown only once but its color must change
-		 * depending of its stata (active/inactive)
-		 * 
-		 * @param obj The objct to comapre
-		 * @return true if the 2 objects are equal
-		 */
-		@Override
-		public boolean equals(Object obj) {
-			if (obj==null || !(obj instanceof AlarmView)) {
-				return false;
-			} else {
-				AlarmView alarm = (AlarmView)obj;
-				return alarmID.equals(alarm.alarmID);
-			}
-		}
-		
-		/**
-		 * Dump the alarm
-		 * @see Object.toString()
-		 */
-		@Override
-		public String toString() {
-			StringBuilder ret = new StringBuilder("Triplet: ");
-			ret.append(alarmID);
-			ret.append(", Time: ");
-			if (sourceTimestamp!=null) {
-				ret.append(dateFormat.format(sourceTimestamp));
-			} else {
-				ret.append("undefined");
-			}
-			ret.append(", Priority: ");
-			ret.append(priority);
-			ret.append(", Status: ");
-			ret.append(active);
-			ret.append(", Description: ");
-			ret.append(description);
-			return ret.toString();
-		}
-	}
 	
 	/**
 	 * The max number of alarms in the table
@@ -157,9 +60,7 @@ public class AlarmTableModel extends AbstractTableModel {
 	};
 	private final String endStr="</FONT>";
 	
-	// The format for the timestamp
-	private final String TIME_FORMAT = "yyyy'-'MM'-'dd'T'HH':'mm':'ss";
-	private final SimpleDateFormat dateFormat = new SimpleDateFormat(TIME_FORMAT);
+	
 	
 	 // The names of the cols of the table
 	private String headerNames[] = new String[] {
@@ -171,7 +72,7 @@ public class AlarmTableModel extends AbstractTableModel {
 	};
 	
 	// The alarms in the table
-	private Vector<AlarmView> items = new Vector<AlarmView>(); 
+	private Vector<AlarmTableView> items = new Vector<AlarmTableView>(); 
 
 	public int getRowCount() {
 		return items.size();
@@ -182,15 +83,13 @@ public class AlarmTableModel extends AbstractTableModel {
 	}
 
 	public Object getValueAt(int rowIndex, int columnIndex) {
-		AlarmView alarm = items.get(rowIndex);
+		AlarmTableView alarm = items.get(rowIndex);
 		String ret="";
 		switch (columnIndex) {
 		case 0: {
 			// Timestamp
-			if (alarm.sourceTimestamp!=null) {
-				ret=dateFormat.format(alarm.sourceTimestamp);
-				break;
-			}
+			ret=alarm.getTimestamp();
+			break;
 		}
 		case 1: {
 			// Triplet
@@ -229,9 +128,9 @@ public class AlarmTableModel extends AbstractTableModel {
 	 * @param alarm The alarm to show in the table.
 	 */
 	public synchronized void addAlarm(String id, String pri, String timestamp, String desc, String cause, String act) {
-		AlarmView alarm=null;
+		AlarmTableView alarm=null;
 		try {
-			alarm = new AlarmView(id,pri,timestamp,desc,cause,act);
+			alarm = new AlarmTableView(id,pri,timestamp,desc,cause,act);
 		} catch (Exception e) {
 			System.err.println("Invalid alarm definition: "+id+", "+pri+", "+timestamp+", "+desc+", "+act);
 			System.err.println("Alarm discarded");
