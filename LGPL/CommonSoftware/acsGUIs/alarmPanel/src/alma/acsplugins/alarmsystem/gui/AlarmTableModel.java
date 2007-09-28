@@ -19,7 +19,7 @@
 
 /** 
  * @author  caproni   
- * @version $Id: AlarmTableModel.java,v 1.1.1.1 2007/09/21 09:10:11 acaproni Exp $
+ * @version $Id: AlarmTableModel.java,v 1.2 2007/09/28 10:41:42 acaproni Exp $
  * @since    
  */
 
@@ -149,10 +149,10 @@ public class AlarmTableModel extends AbstractTableModel {
 	 * The colors used to show alarms in the table
 	 */
 	private final String[] colors = {
-			"<HTML><FONT Color=\"#FF0000\">", // Priority 0
+			"<HTML><FONT Color=\"#0000FF\">", // Priority 0
 			"<HTML><FONT Color=\"#FF8050\">", // Priority 1
-			"<HTML><FONT Color=\"#FFFF00\">", // Priority 2
-			"<HTML><FONT Color=\"#0000FF\">", // Priority 3
+			"<HTML><FONT Color=\"#FF00FF\">", // Priority 2
+			"<HTML><FONT Color=\"#FF0000\">", // Priority 3
 			"<HTML><FONT Color=\"#00FF00\">" // Inactive
 	};
 	private final String endStr="</FONT>";
