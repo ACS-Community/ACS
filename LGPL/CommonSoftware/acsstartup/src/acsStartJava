@@ -6,7 +6,8 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: acsStartJava,v 1.43 2007/08/29 12:41:18 hsommer Exp $"
+# "@(#) $Id: acsStartJava,v 1.44 2007/09/28 22:32:29 ntroncos Exp $"
+# "@(#) $Id: acsStartJava,v 1.44 2007/09/28 22:32:29 ntroncos Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -194,10 +195,10 @@ if [ "$CL_BASEPORT" ] ; then
 	export ACS_INSTANCE=$CL_BASEPORT
 fi
 
-# set ACS_LOG_BIN if not defined
-if [ "X$ACS_LOG_BIN" == "X" ]
+# set ACS_LOG_STDOUT, if not defined, to a level that won't be too verbose and annoy the user
+if [ "X$ACS_LOG_STDOUT" == "X" ]
 then 
-    export ACS_LOG_BIN="false"
+    export ACS_LOG_STDOUT="8"
 fi
 
 # append java system properties to JAVA_OPTIONS if such were specified on the command line
