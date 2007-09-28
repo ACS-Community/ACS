@@ -9,7 +9,6 @@ Cache saved to
 Waiting for the container to really shutdown
 Done!
 shutdown_container
-Segmentation fault
 File "./__init__.py", line 805, in __init__
 omniORB: Exception trying to create worker thread.
 Traceback \(most recent call last\)
@@ -17,6 +16,5 @@ TypeError: 'NoneType' object is not callable
 Aborted
 terminate called after throwing an instance of 'omni_thread_fatal'
 ^1 - [0-9A-Fa-f][0-9A-Fa-f] [0-9A-Fa-f][0-9A-Fa-f]
-^1 - \[jacorb.poa\] INFO : Using server ID
 component ERRORCOMP_JAVA activated and initialized in
 ^1 - ping received, container alive. Memory usage
