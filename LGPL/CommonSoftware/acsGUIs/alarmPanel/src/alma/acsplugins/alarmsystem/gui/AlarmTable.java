@@ -19,14 +19,18 @@
 
 /** 
  * @author  aaproni
- * @version $Id: AlarmTable.java,v 1.1.1.1 2007/09/21 09:10:11 acaproni Exp $
+ * @version $Id: AlarmTable.java,v 1.2 2007/09/28 12:56:04 acaproni Exp $
  * @since    
  */
 
 package alma.acsplugins.alarmsystem.gui;
 
+import java.awt.Component;
+
 import javax.swing.JTable;
+import javax.swing.JComponent;
 import javax.swing.table.TableModel;
+import javax.swing.table.TableCellRenderer;
 
 /**
  * 
@@ -39,7 +43,7 @@ public class AlarmTable extends JTable {
 	
 	/**
 	 * Constructor 
-	 * @param model Tha model for this table
+	 * @param model The model for this table
 	 */
 	public AlarmTable(TableModel model) {
 		super(model);
@@ -48,6 +52,16 @@ public class AlarmTable extends JTable {
 		}
 		this.model=model;
 		this.setCellSelectionEnabled(false);
+	}
+	
+	public Component prepareRenderer(TableCellRenderer renderer, int rowIndex,
+			int vColIndex) {
+		Component c = super.prepareRenderer(renderer, rowIndex, vColIndex);
+		if (c instanceof JComponent) {
+			JComponent jc = (JComponent) c;
+			jc.setToolTipText("<HTML>"+((AlarmTableModel)model).getCellContent(rowIndex, vColIndex));
+		}
+		return c;
 	}
 
 }
