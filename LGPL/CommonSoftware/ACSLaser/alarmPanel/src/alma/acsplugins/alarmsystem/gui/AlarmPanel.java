@@ -19,7 +19,7 @@
 
 /** 
  * @author  acaproni   
- * @version $Id: AlarmPanel.java,v 1.1.1.1 2007/09/21 09:10:11 acaproni Exp $
+ * @version $Id: AlarmPanel.java,v 1.2 2007/09/28 12:56:46 acaproni Exp $
  * @since    
  */
 
@@ -82,7 +82,7 @@ public class AlarmPanel extends JScrollPane implements IPanel {
 	 *
 	 */
 	public AlarmPanel() {
-		super();
+		super(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		initialize();
 	}
 	
@@ -92,6 +92,7 @@ public class AlarmPanel extends JScrollPane implements IPanel {
 	 * @param frame The window that owns this panel
 	 */
 	public AlarmPanel(JFrame frame) {
+		super(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		if (frame==null) {
 			throw new IllegalArgumentException("Invalid null frame in constructor");
 		}
