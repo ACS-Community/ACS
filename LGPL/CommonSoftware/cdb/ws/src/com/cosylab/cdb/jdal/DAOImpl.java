@@ -2,18 +2,18 @@ package com.cosylab.cdb.jdal;
 
 import java.util.ArrayList;
 import java.util.StringTokenizer;
+import java.util.logging.Logger;
 
 import org.omg.PortableServer.POA;
 
-import com.cosylab.CDB.*;
-import alma.cdbErrType.WrongCDBDataTypeEx;
+import alma.acs.logging.AcsLogLevel;
+import alma.acs.logging.ClientLogManager;
 import alma.cdbErrType.CDBFieldDoesNotExistEx;
+import alma.cdbErrType.WrongCDBDataTypeEx;
 import alma.cdbErrType.wrappers.AcsJCDBFieldDoesNotExistEx;
 import alma.cdbErrType.wrappers.AcsJWrongCDBDataTypeEx;
 
-import java.util.logging.Logger;
-import alma.acs.logging.ClientLogManager;
-import alma.acs.logging.AcsLogLevel;
+import com.cosylab.CDB.DAOPOA;
 
 /*******************************************************************************
  *    ALMA - Atacama Large Millimiter Array
@@ -81,7 +81,7 @@ public class DAOImpl extends DAOPOA {
 		XMLTreeNode pNode = m_rootNode;
 		if (strFieldName.length() == 0
 			|| strFieldName.equals(m_rootNode.m_name)) {
-			return pNode.getAttributeAndElementNames();
+			return pNode.getAttributeAndNodeNames();
 		}
 		StringTokenizer st = new StringTokenizer(strFieldName, "/");
 		String fieldName = st.nextToken();
@@ -106,11 +106,13 @@ public class DAOImpl extends DAOPOA {
 		String value;
 		// backward compatibility
 		if (fieldName.equals("_characteristics")) {
-			value = pNode.getAttributeAndElementNames();
+			value = pNode.getAttributeAndNodeNames();
 		} else if (fieldName.equals("_attributes")) {
 			value = pNode.getAttributeNames();
 		} else if (fieldName.equals("_elements")) {
 			value = pNode.getElementNames();
+		} else if (fieldName.equals("_subnodes")) {
+			value = pNode.getSubNodeNames();
 		} else {
 			value = (String) pNode.m_fieldMap.get(fieldName);
 		}
@@ -125,7 +127,7 @@ public class DAOImpl extends DAOPOA {
 				e2.setFieldName(strFieldName);
 				throw e2;
 			}
-			value = node.getAttributeAndElementNames();
+			value = node.getAttributeAndNodeNames();
 		}
 		if (!m_silent)
 			m_logger.log(AcsLogLevel.NOTICE,"DAO:'" + m_name + "' returned '" + strFieldName + "'=" + value);  

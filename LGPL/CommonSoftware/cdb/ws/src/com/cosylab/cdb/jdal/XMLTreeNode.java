@@ -28,8 +28,8 @@
 package com.cosylab.cdb.jdal;
 
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 
 public class XMLTreeNode {
 	public static final String ARRAY_TYPE = "_ArrayNode_";
@@ -38,7 +38,8 @@ public class XMLTreeNode {
 	public static final String NORMAL_TYPE = "_NormalNode_";
 	
 	XMLTreeNode m_parent; // parent in access tree
-	LinkedHashMap m_subNodesMap;
+	LinkedHashMap m_subNodesMap;	// elements incl. hierarchy elements
+	LinkedHashMap m_elementsMap;	// XML elements only 
 	LinkedHashMap m_fieldMap;
 	String m_name;
 	String m_nameSpace;
@@ -91,19 +92,6 @@ public class XMLTreeNode {
 		m_type = NORMAL_TYPE;
 	}
 
-	public String getAttributeValues() {
-		StringBuffer retVal = new StringBuffer(128);
-		Iterator i = m_fieldMap.keySet().iterator();
-		while (i.hasNext()) {
-			String key = (String) i.next();
-			String value = (String) m_fieldMap.get(key);
-			retVal.append(value);
-			if( i.hasNext() )
-				retVal.append(',');
-		}
-		return retVal.toString();
-	}
-
 	public String getAttributeNames() {
 		String key;
 		StringBuffer retVal = new StringBuffer(128);
@@ -122,6 +110,47 @@ public class XMLTreeNode {
 	}
 
 	public String getElementNames() {
+		// not defined, all the subNodes are actually XML elements
+		if (m_elementsMap == null)
+			return getNodeNames();
+		
+		String key;
+		StringBuffer retVal = new StringBuffer(128);
+		Iterator i = m_elementsMap.keySet().iterator();
+		while (i.hasNext()) {
+			key = (String) i.next();
+			retVal.append(key);
+			if (i.hasNext())
+				retVal.append(",");
+		}
+		
+		return retVal.toString();
+	}
+	
+	public String getSubNodeNames() {
+		// not defined, all the subNodes are actually XML elements
+		if (m_elementsMap == null || m_subNodesMap.size() == 0 || m_elementsMap.size() == m_subNodesMap.size())
+			return "";
+			
+		// list of subnodes
+		LinkedHashMap diff = new LinkedHashMap(m_subNodesMap);
+		diff.remove(m_elementsMap);
+		
+		String key;
+		StringBuffer retVal = new StringBuffer(128);
+		Iterator i = diff.keySet().iterator();
+		while (i.hasNext()) {
+			key = (String) i.next();
+			retVal.append(key);
+			if (i.hasNext())
+				retVal.append(",");
+		}
+		
+		return retVal.toString();
+	}
+
+	// return (elements + subnodes)
+	public String getNodeNames() {
 		String key;
 		StringBuffer retVal = new StringBuffer(128);
 		Iterator i = m_subNodesMap.keySet().iterator();
@@ -134,10 +163,11 @@ public class XMLTreeNode {
 		
 		return retVal.toString();
 	}
-	
-	public String getAttributeAndElementNames() {
+
+	// return attributes + (elements + subnodes)
+	public String getAttributeAndNodeNames() {
 		final String retVal = getAttributeNames();
-		final String elementNames = getElementNames(); 
+		final String elementNames = getNodeNames(); 
 		if (elementNames.length()==0)
 			return retVal;
 		else if (retVal.length()>0)
