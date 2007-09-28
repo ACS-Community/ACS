@@ -19,7 +19,7 @@
 
 /** 
  * @author  caproni   
- * @version $Id: AlarmTableModel.java,v 1.3 2007/09/28 10:56:51 acaproni Exp $
+ * @version $Id: AlarmTableModel.java,v 1.4 2007/09/28 12:58:42 acaproni Exp $
  * @since    
  */
 
@@ -81,8 +81,17 @@ public class AlarmTableModel extends AbstractTableModel {
 	public int getColumnCount() {
 		return headerNames.length;
 	}
-
-	public Object getValueAt(int rowIndex, int columnIndex) {
+	
+	/**
+	 * Return the text to display in a cell as it is read by the alarm
+	 * without any formatting (the table add some formatting for
+	 * example the color)
+	 * 
+	 * @param rowIndex The row of the cell
+	 * @param columnIndex The col of the cell
+	 * @return The string to display in the cell
+	 */
+	public String getCellContent(int rowIndex, int columnIndex) {
 		AlarmTableView alarm = items.get(rowIndex);
 		String ret="";
 		switch (columnIndex) {
@@ -114,6 +123,15 @@ public class AlarmTableModel extends AbstractTableModel {
 				return "";
 			}
 		}
+		return ret;
+	}
+
+	/**
+	 * @see javax.swing.table.AbstractTableModel
+	 */
+	public Object getValueAt(int rowIndex, int columnIndex) {
+		String ret=getCellContent(rowIndex, columnIndex);
+		AlarmTableView alarm = items.get(rowIndex);
 		if (!alarm.active || alarm.priority==null || alarm.priority<0 || alarm.priority>3) {
 			return colors[4]+ret+endStr;
 		} else {
