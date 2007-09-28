@@ -21,7 +21,7 @@
  *    License along with this library; if not, write to the Free Software
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: loggingLoggingProxy.h,v 1.26 2007/09/28 08:29:53 cparedes Exp $"
+ * "@(#) $Id: loggingLoggingProxy.h,v 1.27 2007/09/28 09:22:14 cparedes Exp $"
  *
  * who       when        what
  * --------  ----------  ----------------------------------------------
@@ -107,7 +107,7 @@
  * </OL> 
  * @author <a href=mailto:matej.sekoranja@ijs.si>Matej Sekoranja</a>,
  * Jozef Stefan Institute, Slovenia<br>
- * @version "@(#) $Id: loggingLoggingProxy.h,v 1.26 2007/09/28 08:29:53 cparedes Exp $"
+ * @version "@(#) $Id: loggingLoggingProxy.h,v 1.27 2007/09/28 09:22:14 cparedes Exp $"
  */
 class logging_EXPORT LoggingProxy : public ACE_Log_Msg_Callback
 {
@@ -281,6 +281,7 @@ class logging_EXPORT LoggingProxy : public ACE_Log_Msg_Callback
     
     /// returns ACE_LOG_MSG to default state
     static void done();
+    static std::string BinToXml(ACSLoggingLog::LogBinaryRecord* record); 
     
     /// Returns priority of the record (default or overriden). 
     /// It returns ACS priority which is ACE priority increased by 1. 

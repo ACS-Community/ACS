@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingXMLParser.cpp,v 1.38 2006/09/01 02:20:55 cparedes Exp $"
+* "@(#) $Id: loggingXMLParser.cpp,v 1.39 2007/09/28 09:22:14 cparedes Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -365,11 +365,16 @@ XMLParser::parseElementType(const ACE_TCHAR * xml, ACE_CString &elementType)
 }
 
 
+
 // ************************************************************************
 //
 // REVISION HISTORY:
 //
 // $Log: loggingXMLParser.cpp,v $
+// Revision 1.39  2007/09/28 09:22:14  cparedes
+// Moving the BinToXml from loggingClient to loggingLoggingProxy because of
+// the use in loggingLoggingProxy too.
+//
 // Revision 1.38  2006/09/01 02:20:55  cparedes
 // small change, NAMESPACE_BEGIN / NAMESPACE_END / NAMESPACE_USE macross to clean up a little the cpp code
 //

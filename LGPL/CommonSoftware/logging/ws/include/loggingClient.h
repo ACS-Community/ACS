@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingClient.h,v 1.41 2007/08/06 08:50:51 cparedes Exp $"
+* "@(#) $Id: loggingClient.h,v 1.42 2007/09/28 09:22:14 cparedes Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -185,7 +185,6 @@ class ACSStructuredPushConsumer : public POA_CosNotifyComm::StructuredPushConsum
     Subscribe* subscribe_;
     // callback <done>
     
-    std::string ACSStructuredPushConsumer::BinToXml(ACSLoggingLog::LogBinaryRecord* record);
     
     // = Methods
     virtual ~ACSStructuredPushConsumer (void);

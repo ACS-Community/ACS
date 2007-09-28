@@ -19,7 +19,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: loggingLoggingProxy.cpp,v 1.41 2007/09/28 08:29:53 cparedes Exp $"
+* "@(#) $Id: loggingLoggingProxy.cpp,v 1.42 2007/09/28 09:22:14 cparedes Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -62,7 +62,7 @@
 #define CDB_LOG_LEVEL 3
 #define DEFAULT_LOG_LEVEL 4 
 
-ACE_RCSID(logging, logging, "$Id: loggingLoggingProxy.cpp,v 1.41 2007/09/28 08:29:53 cparedes Exp $");
+ACE_RCSID(logging, logging, "$Id: loggingLoggingProxy.cpp,v 1.42 2007/09/28 09:22:14 cparedes Exp $");
 
 ACSLoggingLog::LogType LoggingProxy::m_LogBinEntryTypeName[] =
 {
@@ -1291,7 +1291,7 @@ LoggingProxy::sendCacheInternal()
 	    
 	    int pos = m_syslog.find("@");
 	    // no facility specified, take default
-	    if (pos==ACE_CString::npos)
+	    if (pos==(int)ACE_CString::npos)
 		host = m_syslog;
 	    else
 		{
@@ -1413,8 +1413,7 @@ LoggingProxy::sendCacheInternal()
                                     { prio = i; break; } 
                                     
                             }
-                            //TODO: CARLI: write and use a parser
-                            logger->log(prio,"<INFO>TODO: Parser the bin log</INFO>");   
+                            logger->log(prio,BinToXml(*iter).c_str());   
                             delete *iter; 
                         }
                      }
@@ -1593,3 +1592,98 @@ LoggingProxy::getPriority(ACE_Log_Record &log_record)
     return priority;
 }
 
+std::string LoggingProxy::BinToXml(ACSLoggingLog::LogBinaryRecord* record){
+    ACE_TCHAR line[64];
+    ACE_CString xml((size_t)512);    // create buffer of 512 chars to improove performace (avoid reallocating)
+
+    ACE_OS::sprintf(line, "<%s TimeStamp=\"%s\"", 
+            m_LogEntryTypeName[record->type], 
+            record->TimeStamp.in()); 
+
+    xml = line;
+
+    // source info
+    xml += " File=\"";
+    xml += record->File;
+    ACE_OS::sprintf(line, "\" Line=\"%d\"", record->Line);
+    xml += line;
+
+    xml += " Routine=\"";
+    xml+= record->Routine.in();
+    xml +=  "\"";
+
+    xml += " Host=\"";
+    xml += record->Host.in();
+    xml += "\" Process=\"";
+    xml += record->Process.in();
+    xml += "\" Thread=\"";
+    xml+= record->Thread.in();
+    xml += "\"";
+
+    xml += " Context=\"";
+    xml += record->LogContext.in();
+    xml += "\"";
+
+    xml += " SourceObject=\"";
+    xml += record->SourceObject.in();
+    xml += "\"";
+    if(strlen(record->StackId) > 0){
+        xml += " StackId=\"";
+        xml += record->StackId.in();
+        xml += "\"";
+    }
+    if(record->StackLevel != -1){
+        ACE_OS::sprintf(line, " StackLevel=\"%d\"", record->StackLevel);
+        xml += line;
+    }
+    if(strcmp("", record->LogId.in())!= 0){
+        xml += " LogId=\"";
+        xml += record->LogId.in();
+        xml += "\"";
+    }
+    if(strcmp("", record->Uri.in())!= 0){
+        xml += " Uri=\"";
+        xml += record->Uri.in();
+        xml += "\"";
+    }
+    if(record->Priority != record->type){
+        ACE_OS::sprintf(line, " Priority=\"%lu\"", record->Priority); //align to ACS priorty
+        xml += line;
+    }
+    /*xml += " Audience=\"";
+    xml += record->Audience.in();
+    xml += "\""; 
+*/
+    for (unsigned int i = 0; i< record->attributes.length() ; i++) 
+    {
+        xml += " ";
+        xml += record->attributes[i].name.in();
+        xml += "=\""; 
+        xml += record->attributes[i].value.in();
+        xml += "\"";
+    }
+    
+    xml += ">";
+    
+    for (unsigned int i = 0; i< record->log_data.length() ; i++) 
+	{
+        xml += "<Data Name=\"";
+        xml += record->log_data[i].name.in();
+        xml += "\">";
+        if(strlen(record->log_data[i].value.in()) > 0){
+            xml += "<![CDATA[";
+            xml += record->log_data[i].value.in();
+            xml += "]]>";
+        }else   xml += "N/A";
+        xml += "</Data>";
+	}
+   
+	xml += "<![CDATA[";
+	xml+=record->MsgData.in();
+	xml+="]]>";
+    
+    // end tag
+    ACE_OS::sprintf(line, "</%s>", m_LogEntryTypeName[record->type]); 
+    xml += line;
+    return xml.c_str();
+}
