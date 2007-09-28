@@ -5,10 +5,6 @@
 1 - INFO - Using endorsed jar files in: -Djava.endorsed.dirs=/somepath
 1 - FINER: Logging configuration has been initialized, but not from CDB settings.
 1 - ----------T--:--:--.--- INFO [AcsContainerRunner] AcsContainerRunner#run 
-1 - [jacorb.poa] INFO : oid: 
-1 - object is activated
-1 - [jacorb.poa] INFO : oid: 
-1 - object is activated
 1 - ----------T--:--:--.--- INFO [javaContainer] Info message from the manager: Startup statistics: 0 components queued to be activated.
 1 - ----------T--:--:--.--- INFO [javaContainer] Info message from the manager: Startup statistics: 0 of 0 components activated.
 2 - ----------T--:--:--.--- Python Client TestReceiveRemoteException - Example 1: Calls a method that throws an exception.
@@ -65,10 +61,6 @@
 2 -                         Data: Name=javaex.class, Value=alma.ACSErrTypeCommon.wrappers.AcsJGenericErrorEx; Name=javaex.msg, Value=This exception is the original cause.; )
 2 - 
 1 - ----------T--:--:--.--- INFO [javaContainer] activate_component: handle=xxx name=ERRORCOMP_JAVA helperClass=alma.acsexmplErrorComponent.ErrorComponentImpl.ErrorComponentHelper type=IDL:alma/acsexmplErrorComponent/ErrorComponent:1.0
-1 - [jacorb.poa] INFO : oid: 
-1 - object is activated
-1 - [jacorb.poa] INFO : oid: 
-1 - object is activated
 1 - ----------T--:--:--.--- INFO [ERRORCOMP_JAVA] ErrorComponent
 2 - ----------T--:--:--.--- Python Client disconnect - Shutdown called for client
 2 - ----------T--:--:--.--- Python Client testCompletionFromCompletion - Completion Ok, without error trace
@@ -279,12 +271,13 @@
 2 - 
 2 - 
 1 - ----------T--:--:--.--- WARNING [javaContainer] unexpected exception was thrown in functional method 'ERRORCOMP_JAVA#corbaSystemException': 
+1 - ----------T--:--:--.--- INFO [jacorb@javaContainer] rid: 20 opname: corbaSystemException invocation: system exception was thrown (org.omg.CORBA.BAD_PARAM: Test throwing a CORBA Exception  vmcid: 0x0  minor code: 0  completed: No)
 1 - org.omg.CORBA.BAD_PARAM: Test throwing a CORBA Exception  vmcid: 0x0  minor code: 0  completed: No
 1 - 	at alma.acsexmplErrorComponent.ErrorComponentImpl.ErrorComponentImpl.corbaSystemException(ErrorComponentImpl.java:83)
 1 - 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
 1 - 	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
 1 - 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
-1 - 	at java.lang.reflect.Method.invoke(Method.java:585)
+1 - 	at java.lang.reflect.Method.invoke(Method.java:597)
 1 - 	at alma.acs.container.ContainerSealant.invoke(ContainerSealant.java:156)
 1 - 	at $Proxy0.corbaSystemException(Unknown Source)
 1 - 	at alma.acsexmplErrorComponent.ErrorComponentPOATie.corbaSystemException(ErrorComponentPOATie.java:99)
@@ -292,14 +285,5 @@
 1 - 	at org.jacorb.poa.RequestProcessor.invokeOperation(RequestProcessor.java:297)
 1 - 	at org.jacorb.poa.RequestProcessor.process(RequestProcessor.java:591)
 1 - 	at org.jacorb.poa.RequestProcessor.run(RequestProcessor.java:734)
-1 - [jacorb.poa.controlle] INFO : rid: 20 opname: corbaSystemException invocation: system exception was thrown (org.omg.CORBA.BAD_PARAM: Test throwing a CORBA Exception  vmcid: 0x0  minor code: 0  completed: No)
-1 - [jacorb.poa] INFO : oid: 
-1 - object is deactivated
-1 - [jacorb.poa] INFO : oid: 
-1 - servant is etherealized
-1 - [jacorb.poa] INFO : POA ComponentPOA_ERRORCOMP_JAVA destroyed
 1 - ----------T--:--:--.--- INFO [javaContainer] received call to 'shutdown', action=2 (encryptedAction=512), gracefully=true.
-1 - [jacorb.poa] INFO : POA ComponentPOA destroyed
-1 - [jacorb.poa] INFO : POA ContainerPOA destroyed
-1 - [jacorb.poa] INFO : POA RootPOA destroyed
 1 - ----------T--:--:--.--- INFO [javaContainer] about to exit the JVM...thanks for using our container, come back soon...
