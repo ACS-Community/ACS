@@ -19,7 +19,7 @@
 
 /** 
  * @author  acaproni   
- * @version $Id: CategorySubscriber.java,v 1.1.1.1 2007/09/21 09:10:11 acaproni Exp $
+ * @version $Id: CategorySubscriber.java,v 1.2 2007/09/28 10:41:26 acaproni Exp $
  * @since    
  */
 
@@ -160,6 +160,9 @@ public class CategorySubscriber   implements MessageListener {
 		String description=""; // Problem description
 		String cause=""; // The cause of the alarm
 		String active=""; // Active
+		
+		System.out.println("Alarm received: "+xmlString);
+		
 		Document document = null;
 		try {
 			document = builder.parse(new InputSource(new StringReader(xmlString)));
@@ -210,7 +213,11 @@ public class CategorySubscriber   implements MessageListener {
 					Node descNode=visualFieldsNodeList.item(m);
 					if (descNode.getNodeName().equals("problemDescription")) {
 						Node dateNode=descNode.getLastChild();
-						description=dateNode.getNodeValue();
+						if (dateNode!=null) {
+							description=dateNode.getNodeValue();
+						} else {
+							description="N/A";
+						}
 					}
 				}
 			}
