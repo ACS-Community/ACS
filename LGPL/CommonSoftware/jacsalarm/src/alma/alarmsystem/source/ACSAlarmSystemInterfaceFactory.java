@@ -50,22 +50,21 @@ public class ACSAlarmSystemInterfaceFactory {
 	// false means CERN implementation
 	private static Boolean useACSAlarmSystem = null;
 	
-	// The CDB
-//	private static DAL dal=null;
-	
 	// The logger
 	private static Logger logger=null;
 	
 	/**
 	 * Init the static variables of the class
-	 * This method has to be called outside of the class before executing any other
-	 * methods. In this implementation it is called the first time a static method is
-	 * executed (in this case infact useACSAlarmSystem is null)
+	 * This method has to be called before executing any other
+	 * method. 
+	 * 
 	 * @param logger The logger
-	 * @param dal TODO
+	 * @param dal The DAL to inti the AS with CERN or ACS implementation
 	 */
 	public static void init(Logger logger, DAL dal) throws ErrorGettingDALEx {
-//		ACSAlarmSystemInterfaceFactory.dal=dal;
+		if (logger==null) {
+			throw new IllegalArgumentException("Invalid null logger");
+		}
 		ACSAlarmSystemInterfaceFactory.logger = logger;
 		
 		useACSAlarmSystem = retrieveImplementationType(dal);
@@ -79,7 +78,6 @@ public class ACSAlarmSystemInterfaceFactory {
 	 */
 	public static void done() {
 		useACSAlarmSystem=null;
-//		dal=null;
 	}
 	
 	/**
@@ -183,9 +181,9 @@ public class ACSAlarmSystemInterfaceFactory {
 				  Thread t = Thread.currentThread();
 				  ClassLoader loader = t.getContextClassLoader();
 				  Class cl =loader.loadClass("alma.acs.alarmsystem.binding.ACSLaserSource");
-				  Class[] classes = {Class.forName("java.lang.String")};
+				  Class[] classes = {String.class , Logger.class };
 				  Constructor constructor = cl.getConstructor(classes);
-				  return (ACSAlarmSystemInterface)constructor.newInstance(sourceName);
+				  return (ACSAlarmSystemInterface)constructor.newInstance(sourceName,logger);
 			  } catch (Exception e) {
 				  System.out.println("ERROR: "+e.getMessage());
 				  e.printStackTrace();
