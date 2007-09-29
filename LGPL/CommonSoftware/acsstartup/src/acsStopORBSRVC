@@ -7,7 +7,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: acsStopORBSRVC,v 1.36 2007/09/28 22:32:29 ntroncos Exp $"
+# "@(#) $Id: acsStopORBSRVC,v 1.37 2007/09/29 13:44:27 ntroncos Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -162,15 +162,6 @@ fi
 #SHUTDOWN ORB SERVICES--------------------------------------------------
 
 #kill the processes one at a time
-
-#############
-#############
-####  ATF HACK
-
-ACS_LOG_INFO "HACK - Stopping all loggingClients"
-killall loggingClient
-
-
 
 ACS_LOG_INFO "Stopping the CORBA Naming Service"
 if PID=`getNamingServicePid`

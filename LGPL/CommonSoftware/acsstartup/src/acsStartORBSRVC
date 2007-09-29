@@ -6,7 +6,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: acsStartORBSRVC,v 1.66 2007/09/28 22:32:29 ntroncos Exp $"
+# "@(#) $Id: acsStartORBSRVC,v 1.67 2007/09/29 13:44:27 ntroncos Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -537,18 +537,6 @@ fi
 
 ACS_LOG_FORCED "INFO - For this ACS session, please do an 'export ACS_INSTANCE=$ACS_INSTANCE' on all terminals running ACS clients."
 ACS_LOG_FORCED "INFO - The acsStartORBSRVC script has now completed!"
-
-
-##########
-##########
-## ATF HACK
-
-ACS_LOG_FORCED "HACK - Starting the loggingClient to capture system logs."
-mkdir -p ~/.acs/
-LOGGINGDATE="`date +%F_%H.%M.%S`"
-loggingClient LoggingChannel &> ~/.acs/loggingClient-$LOGGINGDATE.xml &
-sleep 3
-ACS_LOG_FORCED "HACK - loggingClient started: output dumped to ~/.acs/loggingClient-$LOGGINGDATE.xml"
 
 #
 # ___oOo___
