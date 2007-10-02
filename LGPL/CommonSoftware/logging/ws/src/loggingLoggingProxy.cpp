@@ -19,7 +19,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: loggingLoggingProxy.cpp,v 1.42 2007/09/28 09:22:14 cparedes Exp $"
+* "@(#) $Id: loggingLoggingProxy.cpp,v 1.43 2007/10/02 14:30:32 bjeram Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -62,7 +62,7 @@
 #define CDB_LOG_LEVEL 3
 #define DEFAULT_LOG_LEVEL 4 
 
-ACE_RCSID(logging, logging, "$Id: loggingLoggingProxy.cpp,v 1.42 2007/09/28 09:22:14 cparedes Exp $");
+ACE_RCSID(logging, logging, "$Id: loggingLoggingProxy.cpp,v 1.43 2007/10/02 14:30:32 bjeram Exp $");
 
 ACSLoggingLog::LogType LoggingProxy::m_LogBinEntryTypeName[] =
 {
@@ -145,9 +145,11 @@ LoggingProxy::log(ACE_Log_Record &log_record)
     // 3. CDB log level configuration
     //TODO: fix this
     // ???4. Default values of CDB, minLogLevelLocal
+    // BJE: commented out  if(cdbDefaultLevel){ .. else } what does not work 
+    // if there is no CDB for the container TO BE Fixed !!!.
     bool passed = true; 
     int logLevelPrecedence = -1; 
-    if(cdbDefaultLevel){
+//    if(cdbDefaultLevel){
         if(m_envStdioPriority < 0){
             if(!cdbLevelDefined){
                 logLevelPrecedence = DEFAULT_LOG_LEVEL;
@@ -161,11 +163,11 @@ LoggingProxy::log(ACE_Log_Record &log_record)
              logLevelPrecedence = ENV_LOG_LEVEL;
              if(priority<(unsigned int)m_envStdioPriority) passed = false;
         }
-    }else{
+	/*  }else{
         logLevelPrecedence = DYNAMIC_LOG_LEVEL;
         if(prohibitLocal) passed = false;
     }
-
+	*/
     LoggingTSSStorage::HASH_MAP_ENTRY *entry;
     LoggingTSSStorage::HASH_MAP_ITER hash_iter = (*tss)->getData();
 
@@ -255,9 +257,14 @@ LoggingProxy::log(ACE_Log_Record &log_record)
     // 2. ACS_LOG_CENTRALIZE_LOGGER
     // 3. CDB log level configuration
     // 4. Default values of CDB, minLogLevel
+
+    // ???4. Default values of CDB, minLogLevelLocal
+    // BJE: commented out  if(cdbDefaultLevel){ .. else } what does not work 
+    // if there is no CDB for the container TO BE Fixed !!!.
+
     passed = true;
     logLevelPrecedence = -1; 
-    if(cdbDefaultLevel){
+//    if(cdbDefaultLevel){
         if(m_envCentralizePriority == -1){
             if(!cdbLevelDefined){
                 logLevelPrecedence = 4;
@@ -271,11 +278,11 @@ LoggingProxy::log(ACE_Log_Record &log_record)
              if(priority<(unsigned int)m_envCentralizePriority) passed = false;
                 //if((long)priority < m_envCentralizePriority)
         }
-    }else{
+	/*   }else{
         logLevelPrecedence = 1;
          if(prohibitRemote) passed = false;
     }
-    
+	*/
     // if priority not match the bigger precedence log level 
     //if (prohibitRemote || priority < m_minCachePriority)
     if (!passed)
