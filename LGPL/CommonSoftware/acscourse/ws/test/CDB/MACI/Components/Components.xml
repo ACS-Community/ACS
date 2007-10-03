@@ -56,7 +56,7 @@
       <_ Name="MOUNT6_01"
          Code="alma.ACSCOURSE_MOUNT.Mount6Impl.Mount6Helper"
          Type="IDL:alma/ACSCOURSE_MOUNT/Mount6:1.0"
-         Container="mountContainer" />
+         Container="mountJava" />
 
       <_ Name="PBUMP_B_01"
          Code="acsexmplPowerSupplyImpl"
