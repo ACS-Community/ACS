@@ -5,7 +5,7 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
   <_ Name="PBEND_B_01"	Code="alma.PS.PowerSupplyImplHelper"	Type="IDL:alma/PS/PowerSupply:1.0"	Container="frodoContainer"/>
-  <_ Name="BUILDING1"	Code="alma.acsexmplBuilding.BuildingImplHelper"	Type="IDL:IDL:alma/acsexmplBuilding/Building:1.0"	Container="frodoContainer"/>
+  <_ Name="BUILDING1"	Code="alma.acsexmplBuilding.BuildingImplHelper"	Type="IDL:alma/acsexmplBuilding/Building:1.0"	Container="frodoContainer"/>
 
 </Components>
 
