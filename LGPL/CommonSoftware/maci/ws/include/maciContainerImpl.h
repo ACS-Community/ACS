@@ -4,7 +4,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciContainerImpl.h,v 1.46 2007/09/03 06:07:12 cparedes Exp $"
+* "@(#) $Id: maciContainerImpl.h,v 1.47 2007/10/03 20:03:35 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -98,7 +98,7 @@ class LibraryManager;
  *
  * @author <a href=mailto:matej.sekoranja@ijs.si>Matej Sekoranja</a>,
  * Jozef Stefan Institute, Slovenia<br>
- * @version "@(#) $Id: maciContainerImpl.h,v 1.46 2007/09/03 06:07:12 cparedes Exp $"
+ * @version "@(#) $Id: maciContainerImpl.h,v 1.47 2007/10/03 20:03:35 cparedes Exp $"
  */
 
 class maci_EXPORT ContainerImpl :
@@ -431,6 +431,8 @@ public:
 
     virtual void set_default_logLevels(const maci::LoggingConfigurable::LogLevels&)
 	throw (CORBA::SystemException);
+    virtual void set_dynamic_default_logLevels(const maci::LoggingConfigurable::LogLevels&)
+	throw (CORBA::SystemException);
 
     virtual maci::stringSeq* get_logger_names()
 	throw (CORBA::SystemException);
@@ -439,6 +441,8 @@ public:
       throw (CORBA::SystemException, maciErrType::LoggerDoesNotExistEx);
 
     virtual void set_logLevels(const char*, const maci::LoggingConfigurable::LogLevels&)
+	throw (CORBA::SystemException, maciErrType::LoggerDoesNotExistEx);
+    virtual void set_dynamic_logLevels(const char*, const maci::LoggingConfigurable::LogLevels&)
 	throw (CORBA::SystemException, maciErrType::LoggerDoesNotExistEx);
 
     virtual void refresh_logging_config()

@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciContainerLogLevel.cpp,v 1.1 2007/03/04 17:42:47 msekoran Exp $"
+* "@(#) $Id: maciContainerLogLevel.cpp,v 1.2 2007/10/03 20:03:35 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -184,9 +184,9 @@ main (int argc, char *argv[])
 			    }
 			    
 			    if (ACE_OS::strcmp(loggerName, "default") == 0)
-	    			containers[i].reference->set_default_logLevels(logLevels);
+	    			containers[i].reference->set_dynamic_default_logLevels(logLevels);
 				else
-	    			containers[i].reference->set_logLevels(loggerName, logLevels);
+	    			containers[i].reference->set_dynamic_logLevels(loggerName, logLevels);
 	    	}
 	    	
 			ACS_SHORT_LOG((LM_INFO, "\t... done."));
