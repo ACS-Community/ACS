@@ -1,4 +1,4 @@
-# @(#) $Id: Executor.py,v 1.16 2006/07/26 21:28:00 dfugate Exp $
+# @(#) $Id: Executor.py,v 1.17 2007/10/03 20:44:03 agrimstrup Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -21,7 +21,7 @@
 # ALMA should be addressed as follows:
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: Executor.py,v 1.16 2006/07/26 21:28:00 dfugate Exp $"
+# "@(#) $Id: Executor.py,v 1.17 2007/10/03 20:44:03 agrimstrup Exp $"
 #
 # who       when        what
 # --------  ----------  -------------------------------------------------------
@@ -35,8 +35,8 @@ from time    import sleep
 from inspect import isfunction
 from copy    import copy
 from sys     import stdout
-import types
-from traceback import print_exc
+import types, code
+from traceback import print_exc, print_tb
 #--CORBA STUBS-----------------------------------------------------------------
 
 #--ACS Imports-----------------------------------------------------------------
@@ -47,7 +47,7 @@ from Acssim.Corba.Generator            import *
 
 #--GLOBALS---------------------------------------------------------------------
 LOGGER = getLogger("Acssim.Servants.Executor")
-__revision__ = "@(#) $Id: Executor.py,v 1.16 2006/07/26 21:28:00 dfugate Exp $"
+__revision__ = "@(#) $Id: Executor.py,v 1.17 2007/10/03 20:44:03 agrimstrup Exp $"
 #------------------------------------------------------------------------------
 def _execute(comp_name, meth_name, args, local_ns):
     '''
@@ -149,13 +149,23 @@ def _executeList(code_list, args, local_ns):
     
     #pop off the final return value
     final_val = code.pop()
-    
-    #execute each line still left in the list
-    for line in code:
-        try:
-            exec line in globals(), _locals
-        except:
-            LOGGER.logWarning("Failed to execute the '" + line + "' statement!")
+    # execute all lines left in the list
+    code_str = ""
+    for line in code: code_str += line + '\n'
+    try:
+        exec code_str in globals(), _locals
+    except:
+        LOGGER.logWarning("Failed to execute the simulation code!:")
+        print_exc()
+
+#    (RH) I don't know why code was executed line by line here. This prevent to
+#    execute multiline statements.
+#    #execute each line still left in the list
+#     for line in code:
+#         try:
+#             exec line in globals(), _locals
+#         except:
+#             LOGGER.logWarning("Failed to execute the '" + line + "' statement!")
 
     #if there's a raise in the last line, obviously the developer is trying
     #to simulate an exception. in this case the line should be exec'ed instead

@@ -64,14 +64,14 @@ class Dynamic(BaseRepresentation):
         self.__logger = getLogger(str(Dynamic) + "(" + compname + ")")
 
         #---------------------------------------------------------------------
-        def __initialize():
+        def __initialize(args):
             '''
             Fake lifecycle method.
             '''
             self.__logger.logDebug("Simulated lifecyle method")
             return
     
-        def __cleanUp():
+        def __cleanUp(args):
             '''
             Fake lifecycle method.
             '''

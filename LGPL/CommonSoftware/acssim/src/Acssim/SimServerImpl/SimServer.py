@@ -17,7 +17,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: SimServer.py,v 1.1 2007/04/04 20:24:34 agrimstrup Exp $"
+# "@(#) $Id: SimServer.py,v 1.2 2007/10/03 20:44:03 agrimstrup Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -58,6 +58,8 @@ class SimServer(ACSSim__POA.Simulator,
 
         self.methods = {}
 
+        self.if_methods = {}
+
     #------------------------------------------------------------------------------
     #--Override ComponentLifecycle methods-----------------------------------------
     #------------------------------------------------------------------------------
@@ -90,9 +92,23 @@ class SimServer(ACSSim__POA.Simulator,
                                                           timeout)
 
     #------------------------------------------------------------------------------
+    def setMethodIF(self, if_name, method_name, method_code, timeout):
+        if not if_name in self.if_methods.keys():
+            self.if_methods[if_name] = {}
+        self.if_methods[if_name][method_name] = MethodInfo(method_code.split('\n'),
+                                                           timeout)
+
+    #------------------------------------------------------------------------------
     def getMethod(self, comp_name, method_name):
         try:
             return self.methods[comp_name][method_name]
+        except KeyError:
+            raise NoSuchMethodEx()
+
+    #------------------------------------------------------------------------------
+    def getMethodIF(self, if_name, method_name):
+        try:
+            return self.if_methods[if_name][method_name]
         except KeyError:
             raise NoSuchMethodEx()
 

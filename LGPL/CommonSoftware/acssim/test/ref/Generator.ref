@@ -19,7 +19,7 @@
 1 - --Testing simple sequence types--
 1 - Created an instance of ' IDL:omg.org/CORBA/BooleanSeq:1.0 ': <type 'tuple'>
 1 - Created an instance of ' IDL:omg.org/CORBA/CharSeq:1.0 ': <type 'str'>
-1 - Created an instance of ' IDL:omg.org/CORBA/OctetSeq:1.0 ': <type 'str'>
+1 - Created an instance of ' IDL:omg.org/CORBA/OctetSeq:1.0 ': <type 'xxx'>
 1 - Created an instance of ' IDL:omg.org/CORBA/ShortSeq:1.0 ': <type 'tuple'>
 1 - Created an instance of ' IDL:omg.org/CORBA/UShortSeq:1.0 ': <type 'tuple'>
 1 - Created an instance of ' IDL:omg.org/CORBA/LongSeq:1.0 ': <type 'tuple'>

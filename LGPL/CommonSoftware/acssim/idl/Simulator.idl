@@ -19,7 +19,7 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
  *    MA 02111-1307  USA
  *
- *    "@(#) $Id: Simulator.idl,v 1.1 2007/03/25 18:48:52 agrimstrup Exp $"
+ *    "@(#) $Id: Simulator.idl,v 1.2 2007/10/03 20:44:03 agrimstrup Exp $"
  */
  
 #ifndef _SIMULATOR_IDL_
@@ -52,7 +52,11 @@ module ACSSim
 
     void setMethod(in string compName, in string methodName, in string code, in double timeout);
 
+    void setMethodIF(in string ifName, in string methodName, in string code, in double timeout);
+
     MethodInfo getMethod(in string compName, in string methodName) raises (NoSuchMethodEx);
+
+    MethodInfo getMethodIF(in string ifName, in string methodName) raises (NoSuchMethodEx);
 
     void setGlobalData(in string name, in string value) raises (DataErrorEx);
 

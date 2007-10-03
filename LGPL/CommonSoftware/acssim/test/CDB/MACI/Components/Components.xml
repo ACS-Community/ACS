@@ -59,5 +59,9 @@ Container="pyContainer"/>
      Code="Acssim.Servants.Simulator"
      Type="IDL:alma/demo/LampAccess:1.0"
      Container="pyContainer"/>
+  <_ Name="*"
+     Code="Acssim.Servants.Simulator"
+     Type="IDL:alma/Control/TotalPower:1.0"
+     Container="pyContainer"/>
 </Components>
 

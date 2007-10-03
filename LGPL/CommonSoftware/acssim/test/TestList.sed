@@ -23,3 +23,5 @@ s/from '[^']*'>/from 'xxx'>/g
 s/Ran . test. in .*/Ran x tests in xxx/
 s/=[0-9]*L/=xxxxL/g
 s/UnknownEx(.*)/UnknownEx(xxxx)/g
+s/OctetSeq:1.0 ': <type 'int'>/OctetSeq:1.0 ': <type 'xxx'>/
+s/OctetSeq:1.0 ': <type 'str'>/OctetSeq:1.0 ': <type 'xxx'>/

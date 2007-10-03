@@ -1,4 +1,4 @@
-1# @(#) $Id: Simulator.py,v 1.35 2007/05/04 19:43:26 agrimstrup Exp $
+1# @(#) $Id: Simulator.py,v 1.36 2007/10/03 20:44:03 agrimstrup Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -21,7 +21,7 @@
 # ALMA should be addressed as follows:
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: Simulator.py,v 1.35 2007/05/04 19:43:26 agrimstrup Exp $"
+# "@(#) $Id: Simulator.py,v 1.36 2007/10/03 20:44:03 agrimstrup Exp $"
 #
 # who       when        what
 # --------  ----------  -------------------------------------------------------
@@ -44,7 +44,8 @@ from Acspy.Servants.ContainerServices        import ContainerServices
 from Acspy.Servants.ComponentLifecycle       import ComponentLifecycle
 from Acspy.Servants.CharacteristicComponent  import CharacteristicComponent
 
-from Acspy.Util.BaciHelper   import addProperty
+# from Acspy.Util.BaciHelper   import addProperty
+from Acssim.BaciHelper import addProperty
 from ACSImpl.DevIO           import DevIO
 from Acspy.Util.ACSCorba     import interfaceRepository
 
@@ -60,6 +61,7 @@ from Acssim.Goodies               import getCompLocalNS
 from Acssim.Corba.Utilities                import getSuperIDs
 from Acssim.Servants.Representations.BehaviorProxy import BehaviorProxy
 from Acssim.Corba.EventDispatcher import EventDispatcher
+from Acssim.Recorder import Recorder
 #--GLOBALS---------------------------------------------------------------------
 _DEBUG = 0
 #------------------------------------------------------------------------------
@@ -78,6 +80,13 @@ class BaseSimulator(DynamicImplementation):
 
         else:
             self.__name = ir
+        self.recorder = Recorder(self.__name)
+        self.recorder.begin()
+
+    #------------------------------------------------------------------------------
+    def cleanUp(self):
+        self.recorder.end()
+        
     #------------------------------------------------------------------------------
     def invoke(self, args, moreargs):
         '''
@@ -110,11 +119,14 @@ class BaseSimulator(DynamicImplementation):
             
         else:
             new_args = [self]
-            
+        self.recorder.record(meth_name, new_args[:-1])
+        
+        local_namespace = getCompLocalNS(self.__name)
+        local_namespace['SELF'] = self    
         return _execute(self.__name,
                         meth_name,
                         new_args,
-                        getCompLocalNS(self.__name))
+                        local_namespace)
 
 #------------------------------------------------------------------------------
 class Simulator(CharacteristicComponent,  #Base IDL interface
@@ -142,27 +154,40 @@ class Simulator(CharacteristicComponent,  #Base IDL interface
         #constructor...dynamically changing this object's inheritance
         BaseSimulator.__init__(self, self.ir, self._get_name())
 
-        #handle attributes that should NOT be generically simulated
-        self.__setupSpecialCases()
+#         # hook to call the initialize method from the Simulation Server
+#         simServer = getSimProxy(self._get_name(), self.ir).server_handler
+#         print 'Getting initialize method from server'
+#         initMethodDict = simServer.getMethod('initialize2')
+#         if initMethodDict != None:
+#              print 'executing initialize method: ' + str(initMethodDict['Value'])
+#              _executeDict(initMethodDict, [self], getCompLocalNS(self._get_name()))
 
         #add myself to the global lis
         addComponent(self._get_name(), self)
 
+        # Create a BehaviorProxy, passing the interface repository id to the
+        # constructor.
+        proxy = getSimProxy(self._get_name(), self.ir)
+                
         #possible for developers to configure an initialize method
         #for the simulated component.
         _execute(self._get_name(),
                  "initialize",
                  [self],
                  getCompLocalNS(self._get_name()))
-        
+                
         #create the object used to dispatch events automatically         
         self.event_dispatcher = EventDispatcher(self)
+        #handle attributes that should NOT be generically simulated
+        self.__setupSpecialCases()
+
         
     #------------------------------------------------------------------------------
     def cleanUp(self):
         '''
         Overriden from baseclass.
         '''
+        BaseSimulator.cleanUp(self)
         self.event_dispatcher.destroy()
         
         #possible for developers to configure cleanUp method
@@ -186,6 +211,7 @@ class Simulator(CharacteristicComponent,  #Base IDL interface
         if_list = getSuperIDs(self.ir)
         if_list.append(self.ir)
         simCDB = getSimProxy(self._get_name(), self.ir).cdb_handler
+        simServer = getSimProxy(self._get_name(), self.ir).server_handler
 
         #IFR
         ir = interfaceRepository()
@@ -210,10 +236,11 @@ class Simulator(CharacteristicComponent,  #Base IDL interface
             tempType = attribute.type.id().split(":")[1].split("/").pop()
 
             #sequence BACI property
-            if (tempType=="ROstringSeq")or(tempType=="ROdoubleSeq")or(tempType=="RWdoubleSeq")or(tempType=="ROlongSeq")or(tempType=="RWlongSeq"):
-                cdbAttrDict = simCDB.getMethod(attribute.name)
-                if  cdbAttrDict!= None:
-                    devio = _executeDict(cdbAttrDict, args, getCompLocalNS(self._get_name()))
+            if (tempType=="ROstringSeq")or(tempType=="ROdoubleSeq")or(tempType=="RWdoubleSeq")or(tempType=="ROlongSeq")or(tempType=="RWlongSeq")or(tempType=="ROfloatSeq")or(tempType=="RWfloatSeq"):
+                attrDict = simServer.getMethod(attribute.name)
+                if attrDict == None: attrDict = simCDB.getMethod(attribute.name)
+                if  attrDict!= None:
+                    devio = _executeDict(attrDict, args, getCompLocalNS(self._get_name()))
                 else:
                     devio = DevIO([])                    
                     
@@ -222,20 +249,36 @@ class Simulator(CharacteristicComponent,  #Base IDL interface
 
             #double BACI property
             elif (tempType=="ROdouble")or(tempType=="RWdouble"):
-                cdbAttrDict = simCDB.getMethod(attribute.name)
-                if  cdbAttrDict!= None:
-                    devio = _executeDict(cdbAttrDict, args, getCompLocalNS(self._get_name()))
+                attrDict = simServer.getMethod(attribute.name)
+                if attrDict == None: attrDict = simCDB.getMethod(attribute.name)
+
+                if  attrDict!= None:
+                    devio = _executeDict(attrDict, args, getCompLocalNS(self._get_name()))
+                else:
+                    devio = DevIO(float(0))                    
+                    
+                addProperty(self, attribute.name, devio_ref=devio)
+                continue
+            #float BACI property
+            elif (tempType=="ROfloat")or(tempType=="RWfloat"):
+                attrDict = simServer.getMethod(attribute.name)
+                if attrDict == None: attrDict = simCDB.getMethod(attribute.name)
+
+                if  attrDict!= None:
+                    devio = _executeDict(attrDict, args, getCompLocalNS(self._get_name()))
                 else:
                     devio = DevIO(float(0))                    
                     
                 addProperty(self, attribute.name, devio_ref=devio)
                 continue
 
+
             #long BACI property
             elif (tempType=="ROlong")or(tempType=="RWlong"):
-                cdbAttrDict = simCDB.getMethod(attribute.name)
-                if  cdbAttrDict!= None:
-                    devio = _executeDict(cdbAttrDict, args, getCompLocalNS(self._get_name()))
+                attrDict = simServer.getMethod(attribute.name)
+                if attrDict == None: attrDict = simCDB.getMethod(attribute.name)
+                if  attrDict!= None:
+                    devio = _executeDict(attrDict, args, getCompLocalNS(self._get_name()))
                 else:
                     devio = DevIO(0)                    
                     
@@ -244,9 +287,10 @@ class Simulator(CharacteristicComponent,  #Base IDL interface
 
             #long (Python long also) BACI property
             elif (tempType=="ROpattern")or(tempType=="RWpattern")or(tempType=="ROlongLong")or(tempType=="RWlongLong")or(tempType=="ROuLongLong")or(tempType=="ROuLongLong"):
-                cdbAttrDict = simCDB.getMethod(attribute.name)
-                if  cdbAttrDict!= None:
-                    devio = _executeDict(cdbAttrDict, args, getCompLocalNS(self._get_name()))
+                attrDict = simServer.getMethod(attribute.name)
+                if attrDict == None: attrDict = simCDB.getMethod(attribute.name)
+                if  attrDict!= None:
+                    devio = _executeDict(attrDict, args, getCompLocalNS(self._get_name()))
                 else:
                     devio = DevIO(0L)                    
                     
@@ -255,9 +299,10 @@ class Simulator(CharacteristicComponent,  #Base IDL interface
 
             #string BACI property
             elif (tempType=="ROstring")or(tempType=="RWstring"):
-                cdbAttrDict = simCDB.getMethod(attribute.name)
-                if  cdbAttrDict!= None:
-                    devio = _executeDict(cdbAttrDict, args, getCompLocalNS(self._get_name()))
+                attrDict = simServer.getMethod(attribute.name)
+                if attrDict == None: attrDict = simCDB.getMethod(attribute.name)
+                if  attrDict!= None:
+                    devio = _executeDict(attrDict, args, getCompLocalNS(self._get_name()))
                 else:
                     devio = DevIO("")                    
                     
@@ -278,9 +323,10 @@ class Simulator(CharacteristicComponent,  #Base IDL interface
                         #check if it's a default_value AND an enum!
                         if (tAttr.name=="default_value") and (tAttr.type.kind()==CORBA.tk_enum):
                             #GREAT! It's completely safe to add!
-                            cdbAttrDict = simCDB.getMethod(attribute.name)
-                            if  cdbAttrDict!= None:
-                                devio = _executeDict(cdbAttrDict, args, getCompLocalNS(self._get_name()))
+                            attrDict = simServer.getMethod(attribute.name)
+                            if attrDict == None: attrDict = simCDB.getMethod(attribute.name)
+                            if  attrDict!= None:
+                                devio = _executeDict(attrDict, args, getCompLocalNS(self._get_name()))
                             else:
                                 devio = DevIO(getRandomEnum(tAttr.type))
                             addProperty(self, attribute.name, devio_ref=devio)

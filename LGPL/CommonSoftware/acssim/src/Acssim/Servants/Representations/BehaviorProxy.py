@@ -105,7 +105,7 @@ class BehaviorProxy:
         self.attachNewHandler(self.cdb_handler)
         
         #create a Server handler object
-        self.server_handler = Server(self.compname)
+        self.server_handler = Server(self.compname, comp_type)
         self.attachNewHandler(self.server_handler)
 
         #create a GUI handler object
