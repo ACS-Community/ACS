@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingLogSvcHandler.h,v 1.6 2007/03/04 17:40:31 msekoran Exp $"
+* "@(#) $Id: loggingLogSvcHandler.h,v 1.7 2007/10/03 19:57:23 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -88,6 +88,8 @@ namespace Logging {
 	virtual void
 	setLevels(Priority localPriority, Priority remotePriority);
 
+	virtual void
+	dynamicSetLevels(Priority localPriority, Priority remotePriority);
 	//---------------------------------------------
 	//--The following section exists solely to remain
 	//--backwards compatible with the ACS 4.0 and earlier

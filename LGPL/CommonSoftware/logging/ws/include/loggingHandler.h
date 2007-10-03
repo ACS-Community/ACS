@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingHandler.h,v 1.9 2007/09/28 08:29:53 cparedes Exp $"
+* "@(#) $Id: loggingHandler.h,v 1.10 2007/10/03 19:57:23 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -105,6 +105,8 @@ namespace Logging
 	 */
 	virtual void
 	setLevels(Priority localPriority, Priority) {setLevel(localPriority);}
+	virtual void
+	dynamicSetLevels(Priority localPriority, Priority) {setLevel(localPriority); setLevelsDefault(false);}
     	bool areLevelsDefault(){return m_areLevelsDefault;}
     	bool areLevelsDefined(){return m_areLevelsDefined;}
 	void setLevelsDefined(bool def){ m_areLevelsDefined=def;}
