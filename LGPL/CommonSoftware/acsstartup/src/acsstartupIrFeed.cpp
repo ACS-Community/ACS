@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsstartupIrFeed.cpp,v 1.4 2007/06/26 08:56:41 nbarriga Exp $"
+* "@(#) $Id: acsstartupIrFeed.cpp,v 1.5 2007/10/04 11:24:03 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -59,7 +59,7 @@
 #include <stdio.h>
 #include <string.h>
 
-static char *rcsId="@(#) $Id: acsstartupIrFeed.cpp,v 1.4 2007/06/26 08:56:41 nbarriga Exp $"; 
+static char *rcsId="@(#) $Id: acsstartupIrFeed.cpp,v 1.5 2007/10/04 11:24:03 bjeram Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <iostream>
@@ -180,7 +180,7 @@ int main(int argc, char *argv[])
     file << "*/" << std::endl;
     file << "" << std::endl;
     file << "#define local" << std::endl;
-    file << "#include <CosPropertyService.idl>" << std::endl;
+    file << "#include <CosProperty.idl>" << std::endl;
     file << "#undef local" << std::endl;
     file << "" << std::endl;
     file << "#include <acserr.idl>" << std::endl;

@@ -19,7 +19,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciCDBPropertySet.h,v 1.97 2006/09/01 02:20:54 cparedes Exp $"
+* "@(#) $Id: baciCDBPropertySet.h,v 1.98 2007/10/04 11:23:50 bjeram Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -37,7 +37,7 @@
 
 #include <acsutil.h>
 #include <baciExport.h>
-#include <orbsvcs/CosPropertyServiceS.h>
+#include <orbsvcs/CosPropertyS.h>
 
 #include <map>
 #include "baciCharacteristicModelImpl.h"

@@ -22,7 +22,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: acsIrfeed,v 1.13 2006/06/07 16:51:49 dfugate Exp $"
+# "@(#) $Id: acsIrfeed,v 1.14 2007/10/04 11:24:03 bjeram Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -211,7 +211,7 @@ echo "*/" >> $ACS_IDL_IRFEED_FILE
 echo "" >> $ACS_IDL_IRFEED_FILE
 
 echo "#define local" >> $ACS_IDL_IRFEED_FILE
-echo "#include <CosPropertyService.idl>" >> $ACS_IDL_IRFEED_FILE
+echo "#include <CosProperty.idl>" >> $ACS_IDL_IRFEED_FILE
 echo "#undef local" >> $ACS_IDL_IRFEED_FILE
 echo "" >> $ACS_IDL_IRFEED_FILE
 
