@@ -1,4 +1,4 @@
-# @(#) $Id: Log.py,v 1.29 2007/09/21 20:00:37 agrimstrup Exp $
+# @(#) $Id: Log.py,v 1.30 2007/10/04 21:56:15 agrimstrup Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA,  2001
@@ -42,7 +42,7 @@ TODO:
 XML-related methods are untested at this point.
 '''
 
-__revision__ = "$Id: Log.py,v 1.29 2007/09/21 20:00:37 agrimstrup Exp $"
+__revision__ = "$Id: Log.py,v 1.30 2007/10/04 21:56:15 agrimstrup Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 from os        import environ
@@ -197,9 +197,9 @@ class Logger(logging.Logger):
         except IndexError, ex:
             func_name = "Indeterminable Name"
 
-        func_name = func_name.replace('<module>', 'Main')
+        ffunc_name = func_name.replace('<module>', 'Main')
         
-        return func_name
+        return ffunc_name
     #------------------------------------------------------------------------
     def __formatMessage(self, msg):
         '''

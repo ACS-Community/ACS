@@ -91,6 +91,8 @@ module acspytest
 
 	readonly attribute ROblar blarROProp;
 	readonly attribute RWblar blarRWProp;
+
+	readonly attribute ACS::ROlongSeq timestampROProp;
 	};
 };
 

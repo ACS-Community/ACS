@@ -1,4 +1,4 @@
-# @(#) $Id: GenericProperty.py,v 1.9 2006/01/12 16:15:49 dfugate Exp $
+# @(#) $Id: GenericProperty.py,v 1.10 2007/10/04 21:56:15 agrimstrup Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -21,7 +21,7 @@
 # ALMA should be addressed as follows:
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: GenericProperty.py,v 1.9 2006/01/12 16:15:49 dfugate Exp $"
+# "@(#) $Id: GenericProperty.py,v 1.10 2007/10/04 21:56:15 agrimstrup Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -36,7 +36,7 @@ TODO:
 - asynchronous methods are not really asynchronous
 '''
 
-__version__ = "$Id: GenericProperty.py,v 1.9 2006/01/12 16:15:49 dfugate Exp $"
+__version__ = "$Id: GenericProperty.py,v 1.10 2007/10/04 21:56:15 agrimstrup Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 from traceback import print_exc
@@ -424,8 +424,19 @@ class GenericProperty(TypelessProperty):
             #first just try to get the value from the DevIO...
             retVal = self.value.read()
 
+            #in order to provide the same interface as the C++ DevIOs,
+            #a Python DevIO is expected to pass back a list of value
+            #and timestamp.  To preserve backward compatablity, if the
+            #DevIO does not return a tuple, a timestamp will be generated
+            #as before.
+            if isinstance(retVal,tuple):
+                ts = retVal[-1]
+                retVal = retVal[0]
+            else:
+                ts = long(getTimeStamp().value)
+
             #succeeded! now just create a "no-error" completion
-            compl = Completion(long(getTimeStamp().value),  #unsigned long long timeStamp;
+            compl = Completion(ts,  #unsigned long long timeStamp;
                                0L,  #ACSErr::CompletionType type;
                                0L,  #ACSErr::CompletionCode code;
                                ())  #ErrorLinkedList  previousError;

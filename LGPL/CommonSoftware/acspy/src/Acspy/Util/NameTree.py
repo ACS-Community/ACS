@@ -1,6 +1,6 @@
-# @(#) $Id: NameTree.py,v 1.6 2007/09/21 20:00:37 agrimstrup Exp $
+# @(#) $Id: NameTree.py,v 1.7 2007/10/04 21:56:15 agrimstrup Exp $
 
-__revision__ = "$Id: NameTree.py,v 1.6 2007/09/21 20:00:37 agrimstrup Exp $"
+__revision__ = "$Id: NameTree.py,v 1.7 2007/10/04 21:56:15 agrimstrup Exp $"
 
 '''
 TODO:
@@ -154,7 +154,7 @@ class nameTree:
     try: return cwd.resolve (leaf)
     except CosNaming.NamingContext.NotFound:
       raise
-    except Exception, e:
+    else:
       print 'name service error resolving ', self.path, name, type
       print sys.exc_info()
 

@@ -21,7 +21,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# @(#) $Id: acspyTestBaci.py,v 1.2 2004/08/27 20:52:50 dfugate Exp $
+# @(#) $Id: acspyTestBaci.py,v 1.3 2007/10/04 21:56:15 agrimstrup Exp $
 
 #------------------------------------------------------------------------------
 '''
@@ -229,6 +229,9 @@ print "----------------------------------------------------------------"
 testComplexRWProperty(pybaci._get_doubleSeqRWProp(), CBdoubleSeq()._this(), [1.0, 2.0, 3.0])
 print "----------------------------------------------------------------"
 testComplexRWProperty(pybaci._get_longSeqRWProp(), CBlongSeq()._this(), [10, 20, 30])
+print "----------------------------------------------------------------"
+print "----------------------------------------------------------------"
+testComplexROProperty(pybaci._get_timestampROProp(), CBlongSeq()._this())
 print "----------------------------------------------------------------"
 
 #property = pybaci._get_strSeqProp()

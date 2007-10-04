@@ -25,7 +25,7 @@
 TODO:
 - All!!!
 '''
-__version__ = "$Id: PyBaciTest.py,v 1.4 2004/10/29 21:56:25 dfugate Exp $"
+__version__ = "$Id: PyBaciTest.py,v 1.5 2007/10/04 21:56:15 agrimstrup Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 #--CORBA STUBS-----------------------------------------------------------------
@@ -35,8 +35,20 @@ from Acspy.Servants.CharacteristicComponent import CharacteristicComponent
 from Acspy.Servants.ContainerServices  import ContainerServices
 from Acspy.Servants.ComponentLifecycle import ComponentLifecycle
 from Acspy.Util.BaciHelper             import addProperty
+from ACSImpl.DevIO                     import DevIO
 #--GLOBALS---------------------------------------------------------------------
 #------------------------------------------------------------------------------
+
+class timestampDevIO(DevIO):
+    '''
+    DevIO that returns a timestamp with its data.
+    '''
+    def __init__(self):
+        DevIO.__init__(self, 0)
+        return
+    def read(self):
+        return tuple((0,1191516502))
+
 class PyBaciTest(CharacteristicComponent,
                  acspytest__POA.PyBaciTest,
                  ContainerServices,
@@ -51,6 +63,7 @@ class PyBaciTest(CharacteristicComponent,
         '''
         CharacteristicComponent.__init__(self)
         ContainerServices.__init__(self)
+        self.timestampIO = timestampDevIO()
         return
     #------------------------------------------------------------------------------  
     def initialize(self):
@@ -84,6 +97,8 @@ class PyBaciTest(CharacteristicComponent,
 
         addProperty(self, "blarROProp")
         addProperty(self, "blarRWProp")
+
+        addProperty(self, "timestampROProp", self.timestampIO)
         
         return
     #------------------------------------------------------------------------------

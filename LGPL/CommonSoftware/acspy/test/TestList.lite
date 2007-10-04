@@ -20,7 +20,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: TestList.lite,v 1.23 2006/11/24 07:55:57 cparedes Exp $"
+# "@(#) $Id: TestList.lite,v 1.24 2007/10/04 21:56:15 agrimstrup Exp $"
 #
 # TestList
 #
@@ -56,6 +56,10 @@ PROLOGUE acspyTATPrologue
 10  ComponentLifeCycle  "acsutilTATTestRunner acspyTestComponentLifecycle"
 
 11  CS                  "acsutilTATTestRunner acspyTestContainerServices"
+
+12  Baci                "acsutilAwaitContainerStart -py pyContainer" "@SLEEP 15" \
+			"acsutilTATTestRunner acspyTestBaci" "@SLEEP 25" \
+			"acsutilTATTestRunner acsStopContainer pyContainer"
 
 13  NameTree            "acsutilTATTestRunner acspyTestNameTree"
 
