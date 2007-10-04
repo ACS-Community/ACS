@@ -7146,8 +7146,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		assert(fieldNames != null);
 		assert(equalityRequired != null);
 		assert(equalityPoints != null);
-		assert(fieldNames.length != equalityRequired.length);
-		assert(equalityRequired.length != equalityPoints.length);
+		assert(fieldNames.length == equalityRequired.length);
+		assert(equalityRequired.length == equalityPoints.length);
 
 		DAOProxy componentsDAO = getComponentsDAOProxy();
 		if (componentsDAO == null)
