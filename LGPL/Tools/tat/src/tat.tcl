@@ -1,7 +1,7 @@
 #************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: tat.tcl,v 1.102 2007/01/12 17:09:22 psivera Exp $"
+# "@(#) $Id: tat.tcl,v 1.103 2007/10/04 14:43:06 psivera Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -984,7 +984,9 @@ proc replaceScanEnv {} {
 	    set inputFile ./ENVIRONMENTS/$envName/dbl/USER.db.scan
             set realFile ./ENVIRONMENTS/$envName/dbl/USER.db
 	    if { [file exists $inputFile] } {
-		catch {exec sed -f $sedFile $inputFile > $realFile.tmp} 
+		if { [catch {exec sed -f $sedFile $inputFile > $realFile.tmp}] } {
+		    error "sed processing of the $inputFile file failed. Check syntax in the $sedFile file" 
+		}
 		mvFiles $realFile.tmp $realFile  
 		}
 		set isEnvName 0
@@ -1885,7 +1887,9 @@ proc egrepFilter {fileName testName} {
     # process tat .TestList.grep (for VxWorks tests only)
 
     if {[file exists $gv(grepFileBis)] && [file size $gv(grepFileBis)] != 0} {
-	catch {exec egrep -v -f $gv(grepFileBis) $fileName > $fileName.tmp}
+	if { [catch {exec egrep -v -f $gv(grepFileBis) $fileName > $fileName.tmp}] } {
+	    error "grep processing of $fileName failed. Check the  $gv(grepFileBis) file, please"
+	}
 	mvFiles $fileName.tmp $fileName
     } 
 
@@ -1907,7 +1911,9 @@ proc egrepFilter {fileName testName} {
 
 
     if {[file exists $tmpGrep$gv(grepFile).tmp]} {
-	catch {exec egrep -v -f  $tmpGrep$gv(grepFile).tmp $fileName > $fileName.tmp}
+	if { [catch {exec egrep -v -f  $tmpGrep$gv(grepFile).tmp $fileName > $fileName.tmp}] } {
+	    error "grep processing of $fileName failed. Check the  $tmpGrep$gv(grepFile).tmp file, please"
+	}
 	mvFiles $fileName.tmp $fileName
         catch {file delete -force -- $tmpGrep$gv(grepFile).tmp}
     } else {
@@ -1946,7 +1952,9 @@ proc egrepFilterx {fileName testName} {
 
     # Clean the output file.
     if {[file exists $tmpGrep$gv(grepFile).tmp]} {
-        catch {exec egrep -v -f $tmpGrep$gv(grepFile).tmp $fileName > $fileName.tmp}
+        if { [catch {exec egrep -v -f $tmpGrep$gv(grepFile).tmp $fileName > $fileName.tmp}] } {
+	     error "grep processing of $fileName failed. Check the file  $tmpGrep$gv(grepFile).tmp, please"
+	}
         catch {file rename -force -- $fileName.tmp $fileName}
         catch {file delete -force -- $tmpGrep$gv(grepFile).tmp}
     } else {
@@ -1974,7 +1982,9 @@ proc sedFilter {fileName testName} {
 #   process tat allocated environment names
 
     if {[file exists $gv(sedFileBis)] && [file size $gv(sedFileBis) ] != 0} {
-	catch {exec sed -f $gv(sedFileBis) $fileName > $fileName.tmp}
+	if { [catch {exec sed -f $gv(sedFileBis) $fileName > $fileName.tmp}] } {
+	     error "sed processing of the $fileName file failed. Check syntax in the $gv(sedFileBis) file "
+	}
 	mvFiles $fileName.tmp $fileName
     }
 
@@ -1996,7 +2006,9 @@ proc sedFilter {fileName testName} {
 
 
     if {[file exists $tmpSed$gv(sedFile).tmp]} {
-	catch {exec sed -f  $tmpSed$gv(sedFile).tmp $fileName > $fileName.tmp}
+	if { [catch {exec sed -f  $tmpSed$gv(sedFile).tmp $fileName > $fileName.tmp}] } {
+	    error "sed processing of the $fileName file failed. Check syntax in the TestList.sed or <testName>.sed file"
+	}
 	mvFiles $fileName.tmp $fileName
         catch {file delete -force -- $tmpSed$gv(sedFile).tmp}
     } else {
@@ -2060,7 +2072,9 @@ proc sedFilterx {fileName testName} {
         printLogVerbose "Cleaning with [string range $msg 0 end-3]: $fileName"
         write_file $tmpSed$gv(sedFile).tmp $sedScript
         # Clean the output file.
-        catch {exec sed -f $tmpSed$gv(sedFile).tmp $fileName > $fileName.tmp}
+        if { [catch {exec sed -f $tmpSed$gv(sedFile).tmp $fileName > $fileName.tmp} ] } {
+	    error "sed processing of the $fileName file failed. Check syntax in the $tmpSed$gv(sedFile).tmp file"
+	}
         catch {file rename -force -- $fileName.tmp $fileName}
         catch {file delete -force -- $tmpSed$gv(sedFile).tmp}
     } else {
@@ -3084,13 +3098,4 @@ if { [catch { tatBody } result] } {
 
 #
 # ___oOo___
-
-
-
-
-
-
-
-
-
 
