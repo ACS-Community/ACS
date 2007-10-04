@@ -68,7 +68,7 @@
 2 - 
 2 - 
 2 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveNameService] NameService reference generated using localhost address: 'corbaloc::---:----/NameService'
-2 - ----------T--:--:--.--- [GlobalLogger - ] Consumer::addSubscription subscribing to '_SequenceOf_SampDataBlock' events for the 'NC_LAMP1_brightness_1000000_10000000' channel!
+2 - ----------T--:--:--.--- [GlobalLogger - ] Consumer::addSubscription subscribing to 'SampDataBlockSeq' events for the 'NC_LAMP1_brightness_1000000_10000000' channel!
 1 - ----------T--:--:--.--- [LAMP1_brightness_1000000_10000000_thread - maci::ContainerImpl::initThread] Thread name: 'LAMP1_brightness_1000000_10000000_thread'
 1 - ----------T--:--:--.--- [LAMP1_brightness_1000000_10000000_f_thread - maci::ContainerImpl::initThread] Thread name: 'LAMP1_brightness_1000000_10000000_f_thread'
 1 - ----------T--:--:--.--- [GlobalLogger - ] ACSSamp deleting object LAMP1_brightness_1000000_10000000
