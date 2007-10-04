@@ -1823,6 +1823,15 @@ public class ManagerProxyImpl extends ManagerPOA
 		throw new org.omg.CORBA.NO_IMPLEMENT("Method not implemented yet");
 	}
 
+	public void set_dynamic_logLevels(String logger_name, LogLevels levels) {
+		throw new org.omg.CORBA.NO_IMPLEMENT("set_dynamic_logLevels method not implemented yet");
+	}
+
+
+	public void set_dynamic_default_logLevels(LogLevels levels) {
+		throw new org.omg.CORBA.NO_IMPLEMENT("set_dynamic_default_logLevels method not implemented yet");
+	}
+
 	/**
 	 * Gets the names of all loggers, to allow configuring their levels
 	 * individually. The names are those that appear in the log records in the
