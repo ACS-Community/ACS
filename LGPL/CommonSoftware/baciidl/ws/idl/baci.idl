@@ -22,14 +22,14 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: baci.idl,v 1.6 2006/11/17 13:37:13 hsommer Exp $"
+* "@(#) $Id: baci.idl,v 1.7 2007/10/04 11:23:09 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
 * gchiozzi 2003-09-10 created
 */
 
-#include <CosPropertyService.idl>
+#include <CosProperty.idl>
 #include <acscomponent.idl>
 #include <acscommon.idl>
 #include <acserr.idl>

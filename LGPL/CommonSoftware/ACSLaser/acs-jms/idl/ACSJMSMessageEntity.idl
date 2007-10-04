@@ -25,7 +25,7 @@
  * kzagar    2004-06-26  created
  */
 
-#include <CosPropertyService.idl>
+#include <CosProperty.idl>
 
 module com {
 	module cosylab {

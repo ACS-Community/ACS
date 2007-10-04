@@ -24,7 +24,7 @@
 #define _ALARMSERVICE_IDL_
 
 #include <acscomponent.idl>
-#include <CosPropertyService.idl>
+#include <CosProperty.idl>
 
 #pragma prefix "alma"
 
