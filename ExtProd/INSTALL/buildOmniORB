@@ -2,7 +2,7 @@
 #*******************************************************************************
 # E.S.O. - ALMA project
 #
-# "@(#) $Id: buildOmniORB,v 1.13 2007/09/21 19:19:54 agrimstrup Exp $"
+# "@(#) $Id: buildOmniORB,v 1.14 2007/10/04 09:22:43 bjeram Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -119,6 +119,9 @@ fi
 
 cd ../PRODUCTS
 tar -zxf omniORBpy-3.0.tar.gz -C $OMNI_ROOT/src/lib
+
+cp omniORB-patches/CosProperty.idl $OMNI_ROOT/idl/COS
+
 mkdir -p $OMNI_ROOT/src/lib/
 mv $OMNI_ROOT/src/lib/omniORBpy-3.0 $OMNI_ROOT/src/lib/omniORBpy
 cd $OMNI_ROOT/src/lib/omniORBpy
@@ -149,6 +152,11 @@ omniidl -I. -I$OMNI_ROOT/idl -I$OMNI_ROOT/idl/COS -bpython $OMNI_ROOT/idl/COS/Co
 # omniORB does not come with TAO's AVStreams library so we must 
 # compile the stubs ourselves.
 omniidl -I. -I$OMNI_ROOT/idl -I$OMNI_ROOT/idl/COS -bpython $ACE_ROOT/TAO/orbsvcs/orbsvcs/AVStreams.idl
+
+# there is problem with omniORB which assumes that the idl module name corespond to the name of the file
+# This is not true for CosPropertyService which is in CosProperty.idl file, but module name is CosPropertyService
+#
+omniidl -I. -I$OMNI_ROOT/idl -I$OMNI_ROOT/idl/COS -bpython $OMNI_ROOT/idl/COS/CosProperty.idl
 
 cd $CWD
 echo omniORB installation done!
