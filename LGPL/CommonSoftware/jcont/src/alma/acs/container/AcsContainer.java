@@ -1286,7 +1286,6 @@ public class AcsContainer extends ContainerPOA
 	/**
 	 * Gets the names of all loggers, to allow configuring their levels
 	 * individually. The names are those that appear in the log records in the
-
 	 * field "SourceObject". This includes the container logger, ORB logger,
 	 * component loggers, and (only C++) GlobalLogger.
 	 * <p>
@@ -1311,15 +1310,6 @@ public class AcsContainer extends ContainerPOA
 		boolean useDefault = !logConfig.hasCustomConfig(logger_name); 
 		LogLevels ret = new LogLevels(useDefault, (short) levels.getMinLogLevel(), (short) levels.getMinLogLevelLocal());
 		return ret;
-	}
-
-	public void set_dynamic_logLevels(String logger_name, LogLevels levels) {
-		throw new org.omg.CORBA.NO_IMPLEMENT("set_dynamic_logLevels method not implemented yet");
-	}
-
-
-	public void set_dynamic_default_logLevels(LogLevels levels) {
-		throw new org.omg.CORBA.NO_IMPLEMENT("set_dynamic_default_logLevels method not implemented yet");
 	}
 
 	/**
