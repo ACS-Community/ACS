@@ -22,6 +22,7 @@ def checkDestination(destName,remove):
            for the installation
            False means that the process must abort the installation
     '''
+    
     # Check if destdir already exists
     if not os.access(destName,os.F_OK):
         return True
@@ -94,8 +95,7 @@ for tarinfo in tarFile:
         break
 destDir = installationDir+mainDir
 if destDir[len(destDir)-1]=='/':
-    destDir=destDir[0:len(destDir)-1]
-
+    destDir = destDir[0:-2]
 if not checkDestination(destDir,False):
     sys.exit(-1)
     
