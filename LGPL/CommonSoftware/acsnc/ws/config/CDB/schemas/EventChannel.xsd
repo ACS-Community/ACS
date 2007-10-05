@@ -54,13 +54,10 @@
 		<xs:attribute name="IntegrationLogs" type="xs:boolean" use="optional" default="false">
 			<xs:annotation>
 				<xs:documentation>
-			Giving this attribute a true value indicates that a level of 
-			logging requested by HLA is needed. Essentially each time
-			a supplier sends an event or a consumer receives an event, there
-			is a log of info priority stating the time, component name, etc.
-			As you can probably imagine, this seriously degrades the performance
-			of the NC API: each time an NC event is sent at least one logging
-			event is sent as well. Caution is advised.
+			Giving this attribute a true value results in INFO logs for every sending and receiving of an event.
+			This produces a huge number of log messages, and is only useful for debugging, but never in operations.
+			@TODO: rename to something like "IsTraceEventsEnabled" because the historic 
+			coupling of tracing events with software integrations can be misleading.
 			</xs:documentation>
 			</xs:annotation>
 		</xs:attribute>
@@ -305,4 +302,3 @@
 	</xs:complexType>
 	<xs:element name="EventChannel" type="EventChannel"/>
 </xs:schema>
-
