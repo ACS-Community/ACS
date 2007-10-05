@@ -138,8 +138,6 @@ public class ErrorBrowserEditor extends JFrame {
 
 	/**
 	 * This method initializes this class
-	 * 
-	 * @return void
 	 */
 	private void initialize() {
 		this.setSize(800, 600);
