@@ -49,7 +49,7 @@ public class XmlSeeker implements FilenameFilter {
          * Get an Arraylist with the XMLs on the added dirs that conforms with the xsd filename.
          * @param xsd the filename of the xsd to seek inside the XML files
          * @return the XMLs list */
-        public ArrayList getXmls(String xsd) {
+        public ArrayList<File> getXmls(String xsd) {
                 File fileArr[];
                 ArrayList<File> files=new ArrayList<File>();
                 File dirArr[]=new File[dirs.size()];
