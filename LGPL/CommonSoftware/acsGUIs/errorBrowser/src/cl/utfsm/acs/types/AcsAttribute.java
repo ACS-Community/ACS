@@ -27,7 +27,7 @@ public class AcsAttribute{
          * @param use The usage information
          */
         public AcsAttribute(String name,AcsSimpleType type,String use){
-                this.name=name;;
+                this.name=name;
                 this.type=type;
                 this.use=use;
         }
