@@ -335,7 +335,7 @@ public class ErrorBrowserEditor extends JFrame {
 		if (docTable == null) {
 			docTable = new JTable();
 			docTable.setModel(new EbeTableModel());
-			docTable.setEnabled(false);
+			docTable.setEnabled(true);
 		}
 		return docTable;
 	}
@@ -1327,6 +1327,10 @@ public class ErrorBrowserEditor extends JFrame {
 	public static void log(String text){
 		getTextMessagePane().setText(getTextMessagePane().getText() +"\n"+text );
 		System.out.println(text);
+	}
+	
+	public EbeDocumentManager getManager(){
+		return manager;
 	}
 }
 
