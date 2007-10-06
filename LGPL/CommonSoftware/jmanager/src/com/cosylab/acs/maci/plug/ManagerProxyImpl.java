@@ -6,6 +6,7 @@ package com.cosylab.acs.maci.plug;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -40,6 +41,11 @@ import si.ijs.maci.ManagerPOA;
 import si.ijs.maci.LoggingConfigurablePackage.LogLevels;
 
 import alma.ACSErrTypeCommon.wrappers.AcsJBadParameterEx;
+import alma.acs.logging.ClientLogManager;
+import alma.acs.logging.config.LogConfig;
+import alma.acs.logging.config.LogConfigException;
+import alma.maci.loggingconfig.LoggingConfig;
+import alma.maci.loggingconfig.UnnamedLogger;
 import alma.maciErrType.CannotGetComponentEx;
 import alma.maciErrType.CannotRegisterComponentEx;
 import alma.maciErrType.ComponentConfigurationNotFoundEx;
@@ -1803,16 +1809,14 @@ public class ManagerProxyImpl extends ManagerPOA
 	 * Gets the log levels of the default logging configuration. These levels
 	 * are used by all loggers that have not been configured individually.
 	 */
-	public LogLevels get_default_logLevels() {
-		/*
+	public LogLevels get_default_logLevels() {		
 		LogConfig logConfig = ClientLogManager.getAcsLogManager().getLogConfig();
-		LoggingConfig loggingConfig = logConfig.getLoggingConfig();
-		LogLevels levels = new LogLevels(false,
-								(short)loggingConfig.getMinLogLevel(),
-								(short)loggingConfig.getMinLogLevelLocal());
-		return levels;
-		*/
-		throw new org.omg.CORBA.NO_IMPLEMENT("Method not implemented yet");
+		
+		LogLevels logLevels = new LogLevels();
+		logLevels.useDefault = false;
+		logLevels.minLogLevel = (short) logConfig.getDefaultMinLogLevel();
+		logLevels.minLogLevelLocal = (short) logConfig.getDefaultMinLogLevelLocal();
+		return logLevels;
 	}
 
 	/**
@@ -1820,7 +1824,10 @@ public class ManagerProxyImpl extends ManagerPOA
 	 * are used by all loggers that have not been configured individually.
 	 */
 	public void set_default_logLevels(LogLevels levels) {
-		throw new org.omg.CORBA.NO_IMPLEMENT("Method not implemented yet");
+		LogConfig logConfig = ClientLogManager.getAcsLogManager().getLogConfig();
+		
+		logConfig.setDefaultMinLogLevel(levels.minLogLevel);
+		logConfig.setDefaultMinLogLevelLocal(levels.minLogLevelLocal);
 	}
 
 	/**
@@ -1830,7 +1837,10 @@ public class ManagerProxyImpl extends ManagerPOA
 	 * component loggers, and (only C++) GlobalLogger.
 	 */
 	public String[] get_logger_names() {
-		throw new org.omg.CORBA.NO_IMPLEMENT("Method not implemented yet");
+		LogConfig logConfig = ClientLogManager.getAcsLogManager().getLogConfig();
+		
+		Set<String> loggerNames = logConfig.getLoggerNames();
+		return loggerNames.toArray(new String[loggerNames.size()]);		
 	}
 
 	/**
@@ -1840,7 +1850,12 @@ public class ManagerProxyImpl extends ManagerPOA
 	 * levels apply.
 	 */
 	public LogLevels get_logLevels(String logger_name) {
-		throw new org.omg.CORBA.NO_IMPLEMENT("Method not implemented yet");
+		LogConfig logConfig = ClientLogManager.getAcsLogManager().getLogConfig();
+		
+		UnnamedLogger levels = logConfig.getNamedLoggerConfig(logger_name);
+		boolean useDefault = !logConfig.hasCustomConfig(logger_name); 
+		LogLevels ret = new LogLevels(useDefault, (short) levels.getMinLogLevel(), (short) levels.getMinLogLevelLocal());
+		return ret;		
 	}
 
 	/**
@@ -1849,7 +1864,17 @@ public class ManagerProxyImpl extends ManagerPOA
 	 * will use the supplied local and remote levels.
 	 */
 	public void set_logLevels(String logger_name, LogLevels levels) {
-		throw new org.omg.CORBA.NO_IMPLEMENT("Method not implemented yet");
+		LogConfig logConfig = ClientLogManager.getAcsLogManager().getLogConfig();
+
+		if (levels.useDefault) {
+			logConfig.clearNamedLoggerConfig(logger_name);
+		}
+		else {
+			UnnamedLogger config = new UnnamedLogger();
+			config.setMinLogLevel(levels.minLogLevel);
+			config.setMinLogLevelLocal(levels.minLogLevelLocal);
+			logConfig.setNamedLoggerConfig(logger_name, config);
+		}		
 	}
 
 	/**
@@ -1859,7 +1884,14 @@ public class ManagerProxyImpl extends ManagerPOA
 	 * effective, and also for changes of more advanced parameters.
 	 */
 	public void refresh_logging_config() {
-		throw new org.omg.CORBA.NO_IMPLEMENT("Method not implemented yet");
+		LogConfig logConfig = ClientLogManager.getAcsLogManager().getLogConfig();
+		
+		try {
+			logConfig.initialize(true);
+		} catch (LogConfigException ex) {
+			// if the CDB can't be read, we still want to run the container, thus we only log the problem here
+			logger.log(Level.FINE, "Failed to configure logging (default values will be used).", ex);
+		}		
 	}
 
 	/* ************************ END LoggingConfigurable ************************ */
