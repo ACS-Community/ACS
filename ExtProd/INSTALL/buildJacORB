@@ -2,7 +2,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: buildJacORB,v 1.17 2007/07/11 13:36:49 hsommer Exp $"
+# "@(#) $Id: buildJacORB,v 1.18 2007/10/09 06:36:47 bjeram Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -192,7 +192,7 @@ then
 	exit 1
 fi
 
-echo ==== Building jars
+echo "==== Building jars"
 cd $JACORB_HOME/
 
 # get rid of precompiled jacorb jars which sometimes mess with the classpath
@@ -213,7 +213,7 @@ fi
 
 cd $JACORB_SOURCES
 
-echo ==== Build Notification service IDL
+echo "==== Build Notification service IDL"
 
 cd $JACORB_HOME/idl
 ant notification
@@ -223,10 +223,10 @@ then
 	exit 1
 fi
 
-echo ==== Build extra IDLs CosPropertyService, DsLogAdmin and AVStreams
+echo "==== Build extra IDLs CosProperty(Service), DsLogAdmin and AVStreams"
 
 cd $JACORB_HOME/idl/omg
-cp $ACE_ROOT/TAO/orbsvcs/orbsvcs/CosPropertyService.idl .
+cp $ACE_ROOT/TAO/orbsvcs/orbsvcs/CosProperty.idl .
 if [ $? -ne 0 ]
 then
      echo "========= FAILED =========="
@@ -251,7 +251,7 @@ then
      echo "========= FAILED =========="
 	exit 1
 fi
-ln -s CosPropertyService.idl CosProperty.idl
+
 cd $JACORB_HOME/idl
 
 ant property
