@@ -7,5 +7,9 @@ type="55" _prefix="alma">
            shortDescription="Failed to start container"
 	   description="Failed to start container"
 />
+<ErrorCode name="FailedToStopContainer"
+           shortDescription="Failed to stop container"
+	   description="Failed to stop container"
+/>
 </Type>
 

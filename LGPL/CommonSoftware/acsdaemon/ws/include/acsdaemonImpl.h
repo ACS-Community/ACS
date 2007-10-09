@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsdaemonImpl.h,v 1.2 2006/06/23 12:23:05 msekoran Exp $"
+* "@(#) $Id: acsdaemonImpl.h,v 1.3 2007/10/09 22:43:29 nbarriga Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -89,6 +89,16 @@ class ACSDaemonImpl : public POA_acsdaemon::Daemon {
       ACE_THROW_SPEC ((
         CORBA::SystemException,
         ::acsdaemonErrType::FailedToStartContainerEx,
+	::ACSErrTypeCommon::BadParameterEx
+      ));
+    virtual void stop_container (
+        const char * container_name,
+        ::CORBA::Short instance_number,
+        const char * additional_command_line
+      )
+      ACE_THROW_SPEC ((
+        CORBA::SystemException,
+        ::acsdaemonErrType::FailedToStopContainerEx,
 	::ACSErrTypeCommon::BadParameterEx
       ));
 
