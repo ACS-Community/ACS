@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsdaemonImpl.cpp,v 1.4 2007/10/09 22:43:29 nbarriga Exp $"
+* "@(#) $Id: acsdaemonImpl.cpp,v 1.5 2007/10/09 23:39:10 nbarriga Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -238,15 +238,6 @@ ACSDaemonImpl::stop_container (
 			::ACSErrTypeCommon::BadParameterEx
 			))
 {
-    if (container_type == 0 ||
-	*container_type == 0)
-	{
-	::ACSErrTypeCommon::BadParameterExImpl ex(__FILE__, __LINE__, 
-						  "::ACSDaemonImpl::stop_container");
-	ex.setParameter("container_type");
-	throw ex.getBadParameterEx();
-	}
-
     if (container_name == 0 ||
 	*container_name == 0)
 	{
@@ -261,7 +252,7 @@ ACSDaemonImpl::stop_container (
     // execute: "acsStopContainer -b <instance> <name> <args>"
     // TODO checks for ';', '&', '|' chars, they can run any other command!
     char command[1000];
-    snprintf(command, 1000, "acsStartContainer -b %d %s %s &", instance_number, container_name, cmdln);
+    snprintf(command, 1000, "acsStopContainer -b %d %s %s &", instance_number, container_name, cmdln);
 
     ACS_SHORT_LOG ((LM_INFO, "Executing: '%s'.", command));
 

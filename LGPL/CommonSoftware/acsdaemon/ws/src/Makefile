@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.3 2007/07/11 14:54:12 hsommer Exp $"
+# "@(#) $Id: Makefile,v 1.4 2007/10/09 23:39:10 nbarriga Exp $"
 #
 # Makefile of ........
 #
@@ -36,7 +36,7 @@ USER_LIB = -lTAO -lACE -lTAO_PortableServer -lacserr -lTAO_DsLogAdmin -lTAO_CosN
 #
 # C programs (public and local)
 # -----------------------------
-EXECUTABLES     = acsdaemon acsdaemonStartContainer
+EXECUTABLES     = acsdaemon acsdaemonStartContainer acsdaemonStopContainer
 EXECUTABLES_L   = 
 
 #
@@ -47,6 +47,9 @@ acsdaemon_LIBS      =	acsdaemonErrType acsdaemonStubs
 acsdaemonStartContainer_OBJECTS   =	acsdaemonStartContainer
 acsdaemonStartContainer_LIBS      =	acsdaemonErrType acsdaemonStubs
 
+
+acsdaemonStopContainer_OBJECTS   =	acsdaemonStopContainer
+acsdaemonStopContainer_LIBS      =	acsdaemonErrType acsdaemonStubs
 
 
 #
