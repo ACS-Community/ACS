@@ -1,4 +1,4 @@
-/* @(#) $Id: acsncSupplierImpl.cpp,v 1.73 2007/01/05 17:02:37 hsommer Exp $
+/* @(#) $Id: acsncSupplierImpl.cpp,v 1.74 2007/10/09 15:18:04 bjeram Exp $
  *
  *    Structured event push supplier implementation.
  *    ALMA - Atacama Large Millimiter Array
@@ -242,7 +242,9 @@ Supplier::populateHeader(CosNotification::StructuredEvent &event)
 	}
     else
 	{
-	descrip.name = CORBA::string_dup(component_mp->name());
+        // here we do not have to do CORBA::string_dup, ....
+	// because it is done already in ACSComponentImpl::name()
+	descrip.name = component_mp->name(); 
 	}
 
     integrationLog(std::string("Channel:") + channelName_mp +
