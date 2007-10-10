@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciContainerImpl.cpp,v 1.93 2007/10/05 14:16:03 hsommer Exp $"
+* "@(#) $Id: maciContainerImpl.cpp,v 1.94 2007/10/10 08:22:31 bjeram Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -76,7 +76,7 @@
 #include <ACSAlarmSystemInterfaceFactory.h>
 #endif
 
-ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.93 2007/10/05 14:16:03 hsommer Exp $")
+ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.94 2007/10/10 08:22:31 bjeram Exp $")
 
  using namespace maci;
  using namespace cdb;
@@ -1477,6 +1477,7 @@ ContainerImpl::deactivateCORBAObject(PortableServer::Servant srvnt)
 void
 ContainerImpl::initThread(const char * threadName)
 {
+    char *contName = getContainer()->name();
     ACS_CHECK_LOGGER;
     getNamedLogger(threadName)->log(Logging::BaseLog::LM_TRACE,
 				    Logging::BaseLog::FIELD_UNAVAILABLE,
@@ -1486,7 +1487,7 @@ ContainerImpl::initThread(const char * threadName)
     
     if (m_loggerProxy)
 	LoggingProxy::init(m_loggerProxy);
-    LoggingProxy::ProcessName(getContainer()->name());
+    LoggingProxy::ProcessName(contName);
     LoggingProxy::ThreadName(threadName);
     LoggingProxy::Flags(LM_SOURCE_INFO | LM_RUNTIME_CONTEXT);
     
@@ -1498,7 +1499,8 @@ ContainerImpl::initThread(const char * threadName)
 					__LINE__,
 					"maci::ContainerImpl::initThread");
 	}
-}
+    CORBA::string_free(contName);
+}//ContainerImpl::initThread
 
 // ************************************************************************
 

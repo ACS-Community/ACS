@@ -16,7 +16,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: maciContainerThreadHook.cpp,v 1.5 2007/04/03 09:25:51 nbarriga Exp $"
+* "@(#) $Id: maciContainerThreadHook.cpp,v 1.6 2007/10/10 08:22:31 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -27,7 +27,7 @@
 #include "maciContainerImpl.h"
 #include "maciContainerThreadHook.h"
 
-static char *rcsId="@(#) $Id: maciContainerThreadHook.cpp,v 1.5 2007/04/03 09:25:51 nbarriga Exp $"; 
+static char *rcsId="@(#) $Id: maciContainerThreadHook.cpp,v 1.6 2007/10/10 08:22:31 bjeram Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 using namespace maci;
@@ -46,9 +46,11 @@ void ContainerThreadHook::initThread(void* arg)
     LoggingProxy *logger = maci::ContainerImpl::getLoggerProxy();
     if (logger!=0)
 	{
+	char *contName = ContainerImpl::getContainer()->name();
 	// in some threads the logging will be initialized two times what is not harmful
 	LoggingProxy::init(logger);
-	LoggingProxy::ProcessName(ContainerImpl::getContainer()->name());
+	LoggingProxy::ProcessName(contName);
+	CORBA::string_free(contName);
 	/*TBD: so far we can not check if we are dealing with baci thread
 	// check if it is baci thread
 	baci::BACIThreadParameter *baciThreadParam = dynamic_cast<baci::BACIThreadParameter*>(arg);
