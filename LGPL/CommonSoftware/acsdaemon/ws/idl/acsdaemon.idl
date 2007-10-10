@@ -22,7 +22,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsdaemon.idl,v 1.4 2007/10/09 22:43:29 nbarriga Exp $"
+* "@(#) $Id: acsdaemon.idl,v 1.5 2007/10/10 16:21:35 ntroncos Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -43,7 +43,7 @@ module acsdaemon
     /** @interface ACSDaemon
      *  Interface ACSDaemon is used to ...
      */
-    interface Daemon
+    interface ContainerDaemon
 	{
 	/** 
 	 *  Start a container.
@@ -61,6 +61,26 @@ module acsdaemon
 	 *  @endhtmlonly
 	 */
 	void stop_container(in string container_name, in short instance_number, in string flags) raises (acsdaemonErrType::FailedToStopContainerEx, ACSErrTypeCommon::BadParameterEx);
+	};
+
+    interface ServicesDaemon
+	{
+	/** 
+	 *  Start ACS services.
+	 *  @return void
+	 *  @htmlonly
+	 *  <br><hr>
+	 *  @endhtmlonly
+	 */
+	void start_acs(in short instance_number, in string flags) raises (acsdaemonErrType::FailedToStartAcsEx, ACSErrTypeCommon::BadParameterEx);
+	/** 
+	 *  Stop ACS services.
+	 *  @return void
+	 *  @htmlonly
+	 *  <br><hr>
+	 *  @endhtmlonly
+	 */
+	void stop_acs(in short instance_number, in string flags) raises (acsdaemonErrType::FailedToStopAcsEx, ACSErrTypeCommon::BadParameterEx);
 	};
 };
 

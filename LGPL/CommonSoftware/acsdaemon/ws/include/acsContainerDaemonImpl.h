@@ -1,5 +1,5 @@
-#ifndef _ACS_DAEMON_IMPL_H_
-#define _ACS_DAEMON_IMPL_H_
+#ifndef _ACS_CONTAINER_DAEMON_IMPL_H_
+#define _ACS_CONTAINER_DAEMON_IMPL_H_
 
 /*******************************************************************************
 *    ALMA - Atacama Large Millimiter Array
@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsdaemonImpl.h,v 1.3 2007/10/09 22:43:29 nbarriga Exp $"
+* "@(#) $Id: acsContainerDaemonImpl.h,v 1.1 2007/10/10 16:21:35 ntroncos Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -35,19 +35,19 @@
 #include "acsdaemonS.h"
 #include "logging.h"
 
-class ACSDaemonImpl : public POA_acsdaemon::Daemon {
+class ACSContainerDaemonImpl : public POA_acsdaemon::ContainerDaemon {
 
   public:
     
    /**
     * Constructor
     */
-    ACSDaemonImpl(LoggingProxy &logProxy);
+    ACSContainerDaemonImpl(LoggingProxy &logProxy);
   
     /**
      * Destructor
      */
-    virtual ~ACSDaemonImpl();
+    virtual ~ACSContainerDaemonImpl();
     
     /**
      * Initalization status

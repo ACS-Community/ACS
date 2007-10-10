@@ -11,5 +11,13 @@ type="55" _prefix="alma">
            shortDescription="Failed to start container"
 	   description="Failed to start container"
 />
+<ErrorCode name="FailedToStopAcs"
+           shortDescription="Failed to stop ACS services"
+	   description="Failed to stop ACS services"
+/>
+<ErrorCode name="FailedToStartAcs"
+           shortDescription="Failed to start ACS services"
+	   description="Failed to start ACS services"
+/>
 </Type>
 

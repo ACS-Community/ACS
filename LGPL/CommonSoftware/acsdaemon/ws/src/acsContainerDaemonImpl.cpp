@@ -18,14 +18,14 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsdaemonImpl.cpp,v 1.5 2007/10/09 23:39:10 nbarriga Exp $"
+* "@(#) $Id: acsContainerDaemonImpl.cpp,v 1.1 2007/10/10 16:21:35 ntroncos Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
 * msekoran  2006-06-21  created
 */
 
-#include "acsdaemonImpl.h"
+#include "acsContainerDaemonImpl.h"
 #include <tao/IORTable/IORTable.h>
 #include <acserr.h>
 #include <acsdaemonErrType.h>
@@ -33,7 +33,7 @@
 
 /*****************************************************************/
 
-ACSDaemonImpl::ACSDaemonImpl (LoggingProxy &logProxy) :
+ACSContainerDaemonImpl::ACSContainerDaemonImpl (LoggingProxy &logProxy) :
     m_isInitialized(false),
     m_logProxy(logProxy)
 {
@@ -42,12 +42,12 @@ ACSDaemonImpl::ACSDaemonImpl (LoggingProxy &logProxy) :
     m_isInitialized = true;
 }
 
-ACSDaemonImpl::~ACSDaemonImpl (void)
+ACSContainerDaemonImpl::~ACSContainerDaemonImpl (void)
 {
 }
 
 int
-ACSDaemonImpl::init_ORB  (int& argc, char *argv [])
+ACSContainerDaemonImpl::init_ORB  (int& argc, char *argv [])
 {
     m_orb = CORBA::ORB_init(argc, argv, "TAO");
 
@@ -68,7 +68,7 @@ ACSDaemonImpl::init_ORB  (int& argc, char *argv [])
 	policy_list[4] =  root_poa->create_lifespan_policy(PortableServer::PERSISTENT);
       
 	// create a ACSDaemon POA with policies 
-	PortableServer::POA_var poa = root_poa->create_POA("ACSDaemon", poa_manager.in(), policy_list);
+	PortableServer::POA_var poa = root_poa->create_POA("ACSContainerDaemon", poa_manager.in(), policy_list);
 
 	// destroy policies
 	for (CORBA::ULong i = 0; i < policy_list.length(); ++i)
@@ -81,7 +81,7 @@ ACSDaemonImpl::init_ORB  (int& argc, char *argv [])
 	poa->set_servant(this);
 
 	// create reference
-	PortableServer::ObjectId_var oid = PortableServer::string_to_ObjectId("ACSDeamon");
+	PortableServer::ObjectId_var oid = PortableServer::string_to_ObjectId("ACSContainerDaemon");
 	obj = poa->create_reference_with_id (oid.in(), _interface_repository_id());
 	m_ior = m_orb->object_to_string(obj.in());
 
@@ -96,13 +96,13 @@ ACSDaemonImpl::init_ORB  (int& argc, char *argv [])
 	    }
 	else
 	    {
-	    adapter->bind("ACSDaemon", m_ior.in());
+	    adapter->bind("ACSContainerDaemon", m_ior.in());
 	    }
 
 	// activate POA
 	poa_manager->activate();
 
-	ACS_SHORT_LOG((LM_INFO, "ACS Daemon is waiting for incoming requests."));
+	ACS_SHORT_LOG((LM_INFO, "ACS Container Daemon is waiting for incoming requests."));
       
 	}
     catch( CORBA::Exception &ex )
@@ -116,9 +116,9 @@ ACSDaemonImpl::init_ORB  (int& argc, char *argv [])
 
 
 int
-ACSDaemonImpl::startup (int argc, char *argv[])
+ACSContainerDaemonImpl::startup (int argc, char *argv[])
 {
-    ACS_SHORT_LOG ((LM_INFO, "Starting up the ACS Daemon..."));
+    ACS_SHORT_LOG ((LM_INFO, "Starting up the ACS Container Daemon..."));
 
     // Initalize the ORB.
     if (init_ORB (argc, argv) != 0)
@@ -133,15 +133,15 @@ ACSDaemonImpl::startup (int argc, char *argv[])
 	return -1;
 	}
 
-    ACS_SHORT_LOG ((LM_INFO, "ACS Daemon is initialized."));
+    ACS_SHORT_LOG ((LM_INFO, "ACS Container Daemon is initialized."));
 
     return 0;
 }
 
 int
-ACSDaemonImpl::run (void)
+ACSContainerDaemonImpl::run (void)
 {
-    ACS_SHORT_LOG ((LM_INFO, "ACS Daemon is up and running..."));
+    ACS_SHORT_LOG ((LM_INFO, "ACS Container Daemon is up and running..."));
 
   
     try
@@ -157,7 +157,7 @@ ACSDaemonImpl::run (void)
 }
 
 void
-ACSDaemonImpl::shutdown ()
+ACSContainerDaemonImpl::shutdown ()
 {
 
     // shutdown the ORB.
@@ -174,7 +174,7 @@ ACSDaemonImpl::shutdown ()
 /************************** CORBA interface ****************************/
 
 void
-ACSDaemonImpl::start_container (
+ACSContainerDaemonImpl::start_container (
     const char * container_type,
     const char * container_name,
     ::CORBA::Short instance_number,
@@ -190,7 +190,7 @@ ACSDaemonImpl::start_container (
 	*container_type == 0)
 	{
 	::ACSErrTypeCommon::BadParameterExImpl ex(__FILE__, __LINE__, 
-						  "::ACSDaemonImpl::start_container");
+						  "::ACSContainerDaemonImpl::start_container");
 	ex.setParameter("container_type");
 	throw ex.getBadParameterEx();
 	}
@@ -199,7 +199,7 @@ ACSDaemonImpl::start_container (
 	*container_name == 0)
 	{
 	::ACSErrTypeCommon::BadParameterExImpl ex(__FILE__, __LINE__, 
-						  "::ACSDaemonImpl::start_container");
+						  "::ACSContainerDaemonImpl::start_container");
 	ex.setParameter("container_name");
 	throw ex.getBadParameterEx();
 	}
@@ -219,7 +219,7 @@ ACSDaemonImpl::start_container (
 	{
 	throw ::acsdaemonErrType::FailedToStartContainerExImpl(
 	    __FILE__, __LINE__, 
-	    "::ACSDaemonImpl::start_container").getFailedToStartContainerEx();
+	    "::ACSContainerDaemonImpl::start_container").getFailedToStartContainerEx();
 	}
    
 }
@@ -227,7 +227,7 @@ ACSDaemonImpl::start_container (
 
 
 void
-ACSDaemonImpl::stop_container (
+ACSContainerDaemonImpl::stop_container (
     const char * container_name,
     ::CORBA::Short instance_number,
     const char * additional_command_line
@@ -242,7 +242,7 @@ ACSDaemonImpl::stop_container (
 	*container_name == 0)
 	{
 	::ACSErrTypeCommon::BadParameterExImpl ex(__FILE__, __LINE__, 
-						  "::ACSDaemonImpl::stop_container");
+						  "::ACSContainerDaemonImpl::stop_container");
 	ex.setParameter("container_name");
 	throw ex.getBadParameterEx();
 	}
@@ -262,7 +262,7 @@ ACSDaemonImpl::stop_container (
 	{
 	throw ::acsdaemonErrType::FailedToStopContainerExImpl(
 	    __FILE__, __LINE__, 
-	    "::ACSDaemonImpl::stop_container").getFailedToStopContainerEx();
+	    "::ACSContainerDaemonImpl::stop_container").getFailedToStopContainerEx();
 	}
    
 }

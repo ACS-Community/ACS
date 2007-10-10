@@ -18,29 +18,29 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsdaemon.cpp,v 1.1.1.1 2006/06/21 18:47:46 msekoran Exp $"
+* "@$Id: acscontainerdaemon.cpp,v 1.1 2007/10/10 16:21:35 ntroncos Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
 * msekoran 2006-06-21 created
 */
 
-static char *rcsId="@(#) $Id: acsdaemon.cpp,v 1.1.1.1 2006/06/21 18:47:46 msekoran Exp $"; 
+static char *rcsId="@ $Id: acscontainerdaemon.cpp,v 1.1 2007/10/10 16:21:35 ntroncos Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
-#include <acsdaemonImpl.h>
+#include <acsContainerDaemonImpl.h>
 #include <acsutilPorts.h>
 
 // globals
 volatile bool g_blockTermination = false;
-ACSDaemonImpl * g_service = 0;
+ACSContainerDaemonImpl * g_service = 0;
 
 void TerminationSignalHandler(int)
 {
     if (g_blockTermination) return;
     g_blockTermination = true;
 
-    ACS_SHORT_LOG ((LM_INFO, "Stopping the ACS Daemon..."));
+    ACS_SHORT_LOG ((LM_INFO, "Stopping the ACS Container Daemon..."));
 
     if (g_service)
 	{
@@ -98,7 +98,7 @@ main (int argc, char *argv[])
     ACE_OS::string_to_argv ((ACE_TCHAR*)argStr.c_str(), nargc, nargv);
 
 
-    ACSDaemonImpl service(m_logger);
+    ACSContainerDaemonImpl service(m_logger);
     if (!service.isInitialized())
 	{
 	return -1;
@@ -133,20 +133,20 @@ main (int argc, char *argv[])
 		}
 
 	    ACE_OS::fclose (output_file);
-	    ACS_SHORT_LOG((LM_INFO, "ACS Daemon IOR has been written into file '%s'.", iorFile.c_str()));
+	    ACS_SHORT_LOG((LM_INFO, "ACS Container Daemon IOR has been written into file '%s'.", iorFile.c_str()));
 	    }
 
 	// run, run, run...
 	if (service.run () == -1)
 	    {
 	    service.shutdown ();
-	    ACS_SHORT_LOG ((LM_ERROR, "Failed to run the ACS Daemon."));
+	    ACS_SHORT_LOG ((LM_ERROR, "Failed to run the ACS Container Daemon."));
 	    return  1;
 	    }
 	}
     catch(...)
 	{
-	ACS_SHORT_LOG((LM_ERROR, "Failed to start the ACS Daemon."));
+	ACS_SHORT_LOG((LM_ERROR, "Failed to start the ACS Container Daemon."));
 	return 1;
 	}
   
@@ -158,7 +158,7 @@ main (int argc, char *argv[])
 	}
   
   
-    ACS_SHORT_LOG ((LM_INFO, "ACS Daemon stopped."));
+    ACS_SHORT_LOG ((LM_INFO, "ACS Container Daemon stopped."));
 
     LoggingProxy::done();
   

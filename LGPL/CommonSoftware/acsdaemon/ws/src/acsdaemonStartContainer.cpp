@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: acsdaemonStartContainer.cpp,v 1.2 2006/06/23 12:23:05 msekoran Exp $"
+* "@(#) $Id: acsdaemonStartContainer.cpp,v 1.3 2007/10/10 16:21:35 ntroncos Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -61,7 +61,7 @@ main (int argc, char *argv[])
 	      pos++;
 
 	      ref = argv[pos];
-	      ACS_SHORT_LOG((LM_INFO, "ACS Daemon reference obtained via command line: '%s'", ref.c_str()));
+	      ACS_SHORT_LOG((LM_INFO, "ACS Container Daemon reference obtained via command line: '%s'", ref.c_str()));
 	      break;
 	      }
 
@@ -70,8 +70,8 @@ main (int argc, char *argv[])
 	  {
 	  const char * hostName = ACSPorts::getIP(); 
 	  ref = "corbaloc::";
-	  ref = ref + hostName + ":" + ACSPorts::getDaemonPort().c_str() + "/ACSDaemon";	
-	  ACS_SHORT_LOG((LM_INFO, "Using local ACS Daemon reference: '%s'", ref.c_str()));
+	  ref = ref + hostName + ":" + ACSPorts::getDaemonPort().c_str() + "/ACSContainerDaemon";	
+	  ACS_SHORT_LOG((LM_INFO, "Using local ACS Container Daemon reference: '%s'", ref.c_str()));
 	  
 	  }
 
@@ -82,7 +82,7 @@ main (int argc, char *argv[])
 	  return -1;
 	  }
 
-      acsdaemon::Daemon_var daemon = acsdaemon::Daemon::_narrow(obj.in());
+      acsdaemon::ContainerDaemon_var daemon = acsdaemon::ContainerDaemon::_narrow(obj.in());
       if (CORBA::is_nil(daemon.in()))
 	  {
 	  ACS_SHORT_LOG((LM_INFO, "Failed to narrow reference '%s'.", ref.c_str()));
