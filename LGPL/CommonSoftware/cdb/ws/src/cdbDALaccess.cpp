@@ -19,7 +19,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: cdbDALaccess.cpp,v 1.43 2006/09/26 06:26:32 cparedes Exp $"
+* "@(#) $Id: cdbDALaccess.cpp,v 1.44 2007/10/10 14:41:07 bjeram Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -119,10 +119,11 @@ DALaccess:: DALaccess( int argc, char *argv[], CORBA::ORB_ptr orb ) : m_orb(CORB
 	// check if we succeed
 	if( !CORBA::is_nil(m_dal.in()) ) {
 		m_initialized = TRUE;
-
+ 
 		if( m_useCacheListener ) {
 			DALChangeListenerImpl* changeListener = new DALChangeListenerImpl;
 			changeListenerObj = changeListener->_this();
+			changeListener->_remove_ref(); // decrement ref for one (to 1) that changeListener is deleted 
 			changeListenerID = m_dal->add_change_listener( changeListenerObj.ptr() );
 			changeListener->pMap = &m_mpRecords;
 		}
@@ -133,6 +134,7 @@ DALaccess:: DALaccess( int argc, char *argv[], CORBA::ORB_ptr orb ) : m_orb(CORB
 
 DALaccess::~DALaccess()
 {
+   
 	if( m_useCacheListener && !exitStarts ) {
 		
 		try{
