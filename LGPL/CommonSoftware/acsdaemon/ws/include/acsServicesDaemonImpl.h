@@ -1,5 +1,5 @@
-#ifndef _ACS_DAEMON_IMPL_H_
-#define _ACS_DAEMON_IMPL_H_
+#ifndef _ACS_SERVICES_DAEMON_IMPL_H_
+#define _ACS_SERVICES_DAEMON_IMPL_H_
 
 /*******************************************************************************
 *    ALMA - Atacama Large Millimiter Array
@@ -21,11 +21,9 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsServicesDaemonImpl.h,v 1.1 2007/10/10 16:21:35 ntroncos Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
-* msekoran 2006-06-21 created 
 */
 
 #ifndef __cplusplus
@@ -35,19 +33,19 @@
 #include "acsdaemonS.h"
 #include "logging.h"
 
-class ACSContainerDaemonImpl : public POA_acsdaemon::ContainerDaemon {
+class ACSServicesDaemonImpl : public POA_acsdaemon::ServicesDaemon {
 
   public:
     
    /**
     * Constructor
     */
-    ACSContainerDaemonImpl(LoggingProxy &logProxy);
+    ACSServicesDaemonImpl(LoggingProxy &logProxy);
   
     /**
      * Destructor
      */
-    virtual ~ACSContainerDaemonImpl();
+    virtual ~ACSServicesDaemonImpl();
     
     /**
      * Initalization status
@@ -80,25 +78,22 @@ class ACSContainerDaemonImpl : public POA_acsdaemon::ContainerDaemon {
     
     /*************************** CORBA interface *****************************/
 
-    virtual void start_container (
-        const char * container_type,
-        const char * container_name,
+    virtual void start_acs (
         ::CORBA::Short instance_number,
         const char * additional_command_line
       )
       ACE_THROW_SPEC ((
         CORBA::SystemException,
-        ::acsdaemonErrType::FailedToStartContainerEx,
+        ::acsdaemonErrType::FailedToStartAcsEx,
 	::ACSErrTypeCommon::BadParameterEx
       ));
-    virtual void stop_container (
-        const char * container_name,
+    virtual void stop_acs (
         ::CORBA::Short instance_number,
         const char * additional_command_line
       )
       ACE_THROW_SPEC ((
         CORBA::SystemException,
-        ::acsdaemonErrType::FailedToStopContainerEx,
+        ::acsdaemonErrType::FailedToStopAcsEx,
 	::ACSErrTypeCommon::BadParameterEx
       ));
 
