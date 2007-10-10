@@ -119,7 +119,7 @@ USER_IDL =
 # Jarfiles and their directories
 #
 JARFILES= acsGUIutil
-acsGUIutil_DIRS= alma
+acsGUIutil_DIRS= alma dartboard
 jjj_EXTRAS= 
 #
 # java sources in Jarfile on/off
