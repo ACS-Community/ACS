@@ -4,7 +4,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciContainerImpl.h,v 1.48 2007/10/05 14:17:44 hsommer Exp $"
+* "@(#) $Id: maciContainerImpl.h,v 1.49 2007/10/10 08:23:05 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -98,7 +98,7 @@ class LibraryManager;
  *
  * @author <a href=mailto:matej.sekoranja@ijs.si>Matej Sekoranja</a>,
  * Jozef Stefan Institute, Slovenia<br>
- * @version "@(#) $Id: maciContainerImpl.h,v 1.48 2007/10/05 14:17:44 hsommer Exp $"
+ * @version "@(#) $Id: maciContainerImpl.h,v 1.49 2007/10/10 08:23:05 bjeram Exp $"
  */
 
 class maci_EXPORT ContainerImpl :
@@ -290,7 +290,9 @@ public:
     throw (CORBA::SystemException);
 
   /**
-   * Client name
+   * Container name
+   * @return name of the container. The caller has to take care for the releaseing of the memory!
+   * The memory is allocated with CORBA::string_dup.
    */
   virtual char * name ()
     throw (CORBA::SystemException);
