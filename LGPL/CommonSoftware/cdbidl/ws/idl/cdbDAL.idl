@@ -22,7 +22,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: cdbDAL.idl,v 1.4 2006/09/25 08:38:55 cparedes Exp $"
+* "@(#) $Id: cdbDAL.idl,v 1.5 2007/10/11 11:15:14 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -93,6 +93,11 @@ module CDB {
 	 */
 	interface DAL {
 		/**
+		 * Name of used configuration.
+		 */
+		readonly attribute string configuration_name;
+
+		/**
 		 * Gives an xml string of a given curl  
 		 */
 		string	get_DAO( in string curl ) raises (cdbErrType::CDBRecordDoesNotExistEx,cdbErrType::CDBXMLErrorEx);
@@ -123,11 +128,18 @@ module CDB {
 
 		// listing
 		/**
-		 * Give a list of the nodes' names
+		 * Give a list of the nodes' (non-DAOs) names
 		 * \param curl to list
 		 * \return string list of the nodes' names
 		 */
 		string	list_nodes( in string name );
+
+		/**
+		 * Give a list of nodes' (DAOs) names
+		 * \param curl to list
+		 * \param string list of nodes' names
+		 */
+		string  list_daos( in string name );
 	};
 
 	/**
