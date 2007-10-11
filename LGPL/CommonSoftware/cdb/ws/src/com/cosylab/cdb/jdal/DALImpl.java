@@ -22,20 +22,24 @@ import java.util.logging.Logger;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
+import org.omg.CORBA.NO_IMPLEMENT;
 import org.omg.CORBA.ORB;
 import org.omg.PortableServer.POA;
 import org.xml.sax.SAXException;
 
-import com.cosylab.CDB.*;
-import com.cosylab.util.FileHelper;
-
-import alma.cdbErrType.CDBXMLErrorEx;
-import alma.cdbErrType.CDBRecordDoesNotExistEx;
-import alma.cdbErrType.wrappers.AcsJCDBXMLErrorEx;
-import alma.cdbErrType.wrappers.AcsJCDBRecordDoesNotExistEx;
-
-import alma.acs.logging.ClientLogManager;
 import alma.acs.logging.AcsLogLevel;
+import alma.acs.logging.ClientLogManager;
+import alma.cdbErrType.CDBRecordDoesNotExistEx;
+import alma.cdbErrType.CDBXMLErrorEx;
+import alma.cdbErrType.wrappers.AcsJCDBRecordDoesNotExistEx;
+import alma.cdbErrType.wrappers.AcsJCDBXMLErrorEx;
+
+import com.cosylab.CDB.DALChangeListener;
+import com.cosylab.CDB.DALChangeListenerHelper;
+import com.cosylab.CDB.DAO;
+import com.cosylab.CDB.DAOHelper;
+import com.cosylab.CDB.JDALPOA;
+import com.cosylab.util.FileHelper;
 
 /*******************************************************************************
  *    ALMA - Atacama Large Millimiter Array
@@ -843,6 +847,20 @@ public class DALImpl extends JDALPOA implements Recoverer {
 */
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.cosylab.CDB.DALOperations#configuration_name()
+	 */
+	public String configuration_name() {
+		return "XML";
+	}
+
+	/* (non-Javadoc)
+	 * @see com.cosylab.CDB.DALOperations#list_daos(java.lang.String)
+	 */
+	public String list_daos(String name) {
+		throw new NO_IMPLEMENT();
+	}
+
 	/**
 	 * @return
 	 */

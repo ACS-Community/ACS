@@ -30,11 +30,12 @@ package com.cosylab.cdb.jdal;
 import org.omg.CORBA.ORB;
 import org.omg.PortableServer.POA;
 
+import alma.cdbErrType.CDBRecordDoesNotExistEx;
+import alma.cdbErrType.CDBXMLErrorEx;
+
 import com.cosylab.CDB.DALChangeListener;
 import com.cosylab.CDB.DAO;
-import alma.cdbErrType.CDBRecordDoesNotExistEx;
 import com.cosylab.CDB.WJDALPOA;
-import alma.cdbErrType.CDBXMLErrorEx;
 
 /**
  * @author dragan
@@ -123,4 +124,19 @@ abstract public class WDALBaseImpl extends WJDALPOA implements Recoverer {
 	public void recoverClients() {
 		dalImpl.recoverClients();
 	}
+
+	/* (non-Javadoc)
+	 * @see com.cosylab.CDB.DALOperations#configuration_name()
+	 */
+	public String configuration_name() {
+		return dalImpl.configuration_name();
+	}
+
+	/* (non-Javadoc)
+	 * @see com.cosylab.CDB.DALOperations#list_daos(java.lang.String)
+	 */
+	public String list_daos(String name) {
+		return dalImpl.list_daos(name);
+	}
+	
 }
