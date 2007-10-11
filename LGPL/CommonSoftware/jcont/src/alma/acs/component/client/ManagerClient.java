@@ -25,11 +25,15 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
 
+import si.ijs.maci.AuthenticationData;
 import si.ijs.maci.ClientPOA;
+import si.ijs.maci.ClientType;
 import si.ijs.maci.ComponentInfo;
+import si.ijs.maci.ImplLangType;
 
 import alma.acs.component.ComponentDescriptor;
 import alma.acs.container.ContainerServicesImpl;
+import alma.acs.util.UTCUtility;
 
 /**
  * Class to be used when logging in to the ACS Manager.
@@ -42,6 +46,10 @@ class ManagerClient extends ClientPOA
 
 	private final Logger m_logger;
 
+    private final long startTimeUTClong;
+
+    private long executionId; 
+	
 	/**
 	 * Optional container services, used for notification for components_available etc.
 	 * To be set by the client application, and later used by the methods which the manager calls 
@@ -51,6 +59,7 @@ class ManagerClient extends ClientPOA
 
 	
 	ManagerClient(String clientName, Logger logger) {
+    	startTimeUTClong = UTCUtility.utcJavaToOmg(System.currentTimeMillis());		
 		m_clientName = clientName;
 		m_logger = logger;
 	}
@@ -62,9 +71,21 @@ class ManagerClient extends ClientPOA
 	/**
 	 * @see si.ijs.maci.ClientOperations#authenticate(java.lang.String)
 	 */
-	public String authenticate(String question)
+	public AuthenticationData authenticate(long execution_id, String question)
 	{
-		return "C";
+        // keep old executionId if it exists
+        if (executionId < 0) {
+        	executionId = execution_id;
+        }
+        		
+		AuthenticationData ret = new AuthenticationData(
+				 "C", 
+				 ClientType.CLIENT_TYPE,
+				 ImplLangType.JAVA,
+				 false, 
+				 startTimeUTClong,
+				 executionId);
+		return ret;
 	}
 	
 	/**

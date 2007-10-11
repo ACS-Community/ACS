@@ -40,11 +40,14 @@ import org.omg.PortableServer.Servant;
 import com.cosylab.CDB.DAL;
 import com.cosylab.CDB.DALHelper;
 
+import si.ijs.maci.AuthenticationData;
 import si.ijs.maci.ClientOperations;
+import si.ijs.maci.ClientType;
 import si.ijs.maci.ComponentInfo;
 import si.ijs.maci.Container;
 import si.ijs.maci.ContainerHelper;
 import si.ijs.maci.ContainerPOA;
+import si.ijs.maci.ImplLangType;
 import si.ijs.maci.LoggingConfigurablePackage.LogLevels;
 
 import alma.ACS.ComponentStates;
@@ -59,6 +62,7 @@ import alma.acs.logging.ClientLogManager;
 import alma.acs.logging.config.LogConfig;
 import alma.acs.logging.config.LogConfigException;
 import alma.acs.util.StopWatch;
+import alma.acs.util.UTCUtility;
 import alma.alarmsystem.source.ACSAlarmSystemInterfaceFactory;
 import alma.maci.loggingconfig.UnnamedLogger;
 import alma.maciErrType.CannotActivateComponentEx;
@@ -86,8 +90,17 @@ public class AcsContainer extends ContainerPOA
      */
     private static AcsContainer s_instance;
 
+    private final long startTimeUTClong;
+    
     private final String m_containerName;
 
+    /** 
+     * An ID assigned by the manager at first login. 
+     * This ID survives logout/login to the manager.
+     * For container shutdown/crashes, a new ID is assigned the following login. 
+     */
+    private long executionId; 
+    
     private final AcsManagerProxy m_managerProxy;
 
     private final AcsCorba m_acsCorba;
@@ -142,6 +155,7 @@ public class AcsContainer extends ContainerPOA
         throws AcsJContainerEx
     {
         if (s_instance == null) {
+        	startTimeUTClong = UTCUtility.utcJavaToOmg(System.currentTimeMillis());
             m_containerName = containerName;
             m_managerProxy = managerProxy;
             this.isEmbedded = isEmbedded;
@@ -299,6 +313,7 @@ public class AcsContainer extends ContainerPOA
      * @param componentHandle  handle of the component that is being activated. This handle is used
      *              by the component when it will present itself to the Manager.
      *              The component is expected to remember this handle for its entire life-time.
+     * @param execution_id              
      * @param compName  name of the component to instantiate (instance name, comes from CDB)
      * @param exe   component helper implementation class; must be a subclass of
      *               {@link alma.acs.container.ComponentHelper}.
@@ -308,7 +323,7 @@ public class AcsContainer extends ContainerPOA
      *
      * @see si.ijs.maci.ContainerOperations#activate_component(int, String, String, String)
      */
-    public ComponentInfo activate_component(int componentHandle, String compName, String exe, String type)
+    public ComponentInfo activate_component(int componentHandle, long execution_id, String compName, String exe, String type)
     	throws CannotActivateComponentEx
     {
         ComponentInfo componentInfo = null;
@@ -1096,12 +1111,24 @@ public class AcsContainer extends ContainerPOA
      * @return Answer to the question.
      * @see si.ijs.maci.ClientOperations#authenticate(String)
      */
-    public String authenticate(String question)
-    {
+	public AuthenticationData authenticate(long execution_id, String question) {
+		// the old string-based answer is kept around for the time being
         String code = ( useRecoveryMode ? "AR" : "A" );
         String answer = code + ' ' + m_containerName;
-        m_logger.fine("call to authenticate() answered with '" + answer + "'.");
-        return answer;
+        
+        // keep old executionId if it exists
+        if (executionId < 0) {
+        	executionId = execution_id;
+        }
+        
+        AuthenticationData ret = new AuthenticationData(
+        		answer, 
+        		ClientType.CONTAINER_TYPE, 
+        		ImplLangType.JAVA, 
+        		useRecoveryMode, 
+        		startTimeUTClong, 
+        		executionId);
+        return ret;
     }
 
 
@@ -1346,6 +1373,8 @@ public class AcsContainer extends ContainerPOA
 			m_logger.log(Level.FINE, "Failed to configure logging (default values will be used).", ex);
 		}
 	}
+
+
 		
 	/** ************************ END LoggingConfigurable ************************ */
 
