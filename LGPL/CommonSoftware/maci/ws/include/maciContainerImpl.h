@@ -4,7 +4,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciContainerImpl.h,v 1.49 2007/10/10 08:23:05 bjeram Exp $"
+* "@(#) $Id: maciContainerImpl.h,v 1.50 2007/10/11 15:07:50 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -98,7 +98,7 @@ class LibraryManager;
  *
  * @author <a href=mailto:matej.sekoranja@ijs.si>Matej Sekoranja</a>,
  * Jozef Stefan Institute, Slovenia<br>
- * @version "@(#) $Id: maciContainerImpl.h,v 1.49 2007/10/10 08:23:05 bjeram Exp $"
+ * @version "@(#) $Id: maciContainerImpl.h,v 1.50 2007/10/11 15:07:50 msekoran Exp $"
  */
 
 class maci_EXPORT ContainerImpl :
@@ -241,6 +241,7 @@ public:
    *		  If the component could not the activated, a nil reference is returned. 
    */
   virtual maci::ComponentInfo * activate_component (maci::Handle h,
+					maci::ExecutionId execution_id,
 					const char * name,
 					const char * exe,
 					const char * type
@@ -311,7 +312,7 @@ public:
    * @return Answer to the question. The first character of the answer identifies the type of the client: 
    * <TT>A</TT> An container (implements the Container interface)
    */
-  virtual char * authenticate (const char * question
+  virtual maci::AuthenticationData * authenticate (maci::ExecutionId execution_id, const char * question
 			       )
     throw (CORBA::SystemException);
 	
@@ -644,7 +645,13 @@ public:
   maci::LoggingConfigurable::LogLevels m_defaultLogLevels;
   
   // loggers configuration 
-  std::map<std::string, maci::LoggingConfigurable::LogLevels> m_logLevels;  
+  std::map<std::string, maci::LoggingConfigurable::LogLevels> m_logLevels; 
+
+  // executionId
+  maci::ExecutionId m_executionId;
+
+  // startup timestamp
+  ACS::Time m_startTime;
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////

@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciSimpleClient.cpp,v 1.101 2007/09/28 13:20:14 bjeram Exp $"
+* "@(#) $Id: maciSimpleClient.cpp,v 1.102 2007/10/11 15:07:50 msekoran Exp $"
 *
 * who       when        what
 * --------  --------    ----------------------------------------------
@@ -60,6 +60,7 @@
 #include <baciThread.h>
 #include "maciContainerImpl.h"
 
+#include <acsutilTimeStamp.h>
 
 namespace maci {
 using namespace baci;
@@ -70,7 +71,9 @@ ACE_CString SimpleClient::m_processName("");
 
 SimpleClient::SimpleClient (): 
     m_handle(0),
-    m_initialized(false)
+    m_initialized(false),
+    m_executionId(0),
+    m_startTime(::getTimeStamp())
 {
   if (m_logger==0) {
 	m_logger = new LoggingProxy(0,0,31);
@@ -600,13 +603,27 @@ SimpleClient::disconnect ()
   ACS_SHORT_LOG((LM_DEBUG, "Manager requested that I should log off or I will be disconneced from the Manager."));
 }
 
-char * 
-SimpleClient::authenticate (const char * question
-			    )
-  throw (CORBA::SystemException)
-{ 
-  // first character indicated "C" => Client
-  return CORBA::string_dup("CSimple MACI Client"); 
+::maci::AuthenticationData *
+SimpleClient::authenticate (
+        maci::ExecutionId execution_id,
+        const char * question
+        )
+ throw (CORBA::SystemException)
+{
+  ACE_UNUSED_ARG(question);
+
+  maci::AuthenticationData_var data = new AuthenticationData();
+  data->answer = CORBA::string_dup("");
+  data->client_type = maci::CONTAINER_TYPE;
+  data->impl_lang = maci::CPP;
+  data->recover = true;
+  data->timestamp = m_startTime;
+
+  if (m_executionId == 0)
+    m_executionId = execution_id;
+  data->execution_id = m_executionId;
+
+  return data._retn();
 }
 
 void

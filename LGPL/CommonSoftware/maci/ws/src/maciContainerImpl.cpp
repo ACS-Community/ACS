@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciContainerImpl.cpp,v 1.95 2007/10/10 08:42:26 bjeram Exp $"
+* "@(#) $Id: maciContainerImpl.cpp,v 1.96 2007/10/11 15:07:50 msekoran Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -71,12 +71,14 @@
 
 #include <archiveeventsArchiveSupplier.h>
 
+#include <acsutilTimeStamp.h>
+
 /// @todo Alarm System is not yet supported for VxWorks
 #ifndef MAKE_VXWORKS
 #include <ACSAlarmSystemInterfaceFactory.h>
 #endif
 
-ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.95 2007/10/10 08:42:26 bjeram Exp $")
+ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.96 2007/10/11 15:07:50 msekoran Exp $")
 
  using namespace maci;
  using namespace cdb;
@@ -104,7 +106,9 @@ ContainerImpl::ContainerImpl() :
   m_serverThreads(5),
   m_dynamicContainer(false),
   m_containerServices(0),
-  m_logger(0)
+  m_logger(0),
+  m_executionId(0),
+  m_startTime(::getTimeStamp())
 {
 
   orb = CORBA::ORB::_nil();
@@ -1525,6 +1529,7 @@ ContainerImpl::doneThread()
 maci::ComponentInfo *
 ContainerImpl::activate_component (
 			     maci::Handle h,
+			     maci::ExecutionId execution_id,
 			     const char * name,
 			     const char * exe,
 			     const char * type
@@ -1533,6 +1538,8 @@ ContainerImpl::activate_component (
   throw (CORBA::SystemException,
 	 maciErrType::CannotActivateComponentEx)
 {
+  ACE_UNUSED_ARG(execution_id);
+
   ACS_TRACE("maci::ContainerImpl::activate_component");
   ContainerComponentInfo info;
 
@@ -2326,8 +2333,10 @@ ContainerImpl::disconnect ()
 
 // ************************************************************************
 
-char *
-ContainerImpl::authenticate (const char * question
+maci::AuthenticationData*
+ContainerImpl::authenticate (
+	maci::ExecutionId execution_id,
+	const char * question
 			     )
   throw (CORBA::SystemException)
 {
@@ -2335,17 +2344,19 @@ ContainerImpl::authenticate (const char * question
   
 
   ACS_TRACE("maci::ContainerImpl:::authenticate");
- 
-  // 'A ' means container
-  // 'AR' means container recovery
-  // use space, to avoid problems with containers' names starting with 'R'
-  ACE_CString ans = ACE_CString("A");
-  if (m_recovery) 
-      ans += "R";
-  else if (m_container_name[0]=='R')
-      ans += " ";
-  ans += m_container_name;
-  return CORBA::string_dup(ans.c_str()); 
+
+  maci::AuthenticationData_var data = new AuthenticationData();
+  data->answer = CORBA::string_dup("");
+  data->client_type = maci::CONTAINER_TYPE;
+  data->impl_lang = maci::CPP;
+  data->recover = m_recovery;
+  data->timestamp = m_startTime;
+
+  if (m_executionId == 0)
+    m_executionId = execution_id;
+  data->execution_id = m_executionId;
+  
+  return data._retn(); 
 }
 
 // ************************************************************************

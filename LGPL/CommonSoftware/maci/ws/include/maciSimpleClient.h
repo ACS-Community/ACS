@@ -4,7 +4,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciSimpleClient.h,v 1.98 2007/03/06 08:17:24 agrimstrup Exp $"
+* "@(#) $Id: maciSimpleClient.h,v 1.99 2007/10/11 15:07:50 msekoran Exp $"
 *
 * who       when        what
 * --------  --------    ----------------------------------------------
@@ -283,7 +283,8 @@ public:
    * <TT>C</TT> A client (implements the Client interface)
    * <TT>S</TT> A supervisor (implements the Administrator interface)
    */
-   virtual char * authenticate (const char * question)
+   virtual ::maci::AuthenticationData * authenticate (
+	::maci::ExecutionId execution_id, const char * question)
        throw (CORBA::SystemException);
 	
   /**
@@ -369,6 +370,12 @@ private:
 
   /// threads' standard start-up hook 
   maci::SimpleClientThreadHook m_simpleClientThreadHook;
+
+  /// execution id
+  maci::ExecutionId m_executionId;
+
+  /// client start time
+  ACS::Time m_startTime;
 }; /* end class SimpleClient */
 
 /*

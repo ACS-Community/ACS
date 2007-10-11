@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciReleaseComponent.cpp,v 1.2 2006/09/01 02:20:54 cparedes Exp $"
+* "@(#) $Id: maciReleaseComponent.cpp,v 1.3 2007/10/11 15:07:50 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -33,6 +33,7 @@
 #include <logging.h>
 #include <maciHelper.h>
 #include <maciContainerImpl.h>
+#include <acsutilTimeStamp.h>
 
  using namespace maci;
 
@@ -63,12 +64,23 @@ class  AdministratorImpl :
 	// noop
     }
 
-    virtual char * authenticate (
+    virtual maci::AuthenticationData * authenticate (
+	maci::ExecutionId execution_id,
 	const char * question
 	)
 	throw (CORBA::SystemException)
     {
-	return CORBA::string_dup("S");
+	ACE_UNUSED_ARG(question);
+
+	maci::AuthenticationData_var data = new AuthenticationData();
+	data->answer = CORBA::string_dup("");
+	data->client_type = maci::CONTAINER_TYPE;
+	data->impl_lang = maci::CPP;
+	data->recover = false;
+ 	data->timestamp = ::getTimeStamp();
+ 	data->execution_id = execution_id;
+
+ 	return data._retn();
     }
 
     virtual void message (
@@ -104,57 +116,44 @@ class  AdministratorImpl :
 	    ) {}
 
     virtual void client_logged_in (
-	const maci::ClientInfo & info
-    
-	)
-	throw (
-	    CORBA::SystemException
-	    ) {}
+        const ::maci::ClientInfo & info,
+        ::ACS::Time timestamp,
+        ::maci::ExecutionId execution_id) {}
 
     virtual void client_logged_out (
-	maci::Handle h
-    
-	)
-	throw (
-	    CORBA::SystemException
-	    ) {}
+        ::maci::Handle h,
+        ::ACS::Time timestamp) {}
 
     virtual void container_logged_in (
-	const maci::ContainerInfo & info
-    
-	)
-	throw (
-	    CORBA::SystemException
-	    ) {}
+        const ::maci::ContainerInfo & info,
+        ::ACS::Time timestamp,
+        ::maci::ExecutionId execution_id) {}
 
     virtual void container_logged_out (
-	maci::Handle h
-    
-	)
-	throw (
-	    CORBA::SystemException
-	    ) {}
+        ::maci::Handle h,
+        ::ACS::Time timestamp) {}
 
     virtual void components_requested (
-	const maci::HandleSeq & clients,
-	const maci::HandleSeq & COBs
-    
-	)
-	throw (
-	    CORBA::SystemException
-	    ) {}
+        const ::maci::HandleSeq & clients,
+        const ::maci::HandleSeq & components,
+        ::ACS::Time timestamp) {}
 
     virtual void components_released (
-	const maci::HandleSeq & clients,
-	const maci::HandleSeq & COBs
-    
-	)
-	throw (
-	    CORBA::SystemException
-	    ) {}
+        const ::maci::HandleSeq & clients,
+        const ::maci::HandleSeq & components,
+        ::ACS::Time timestamp) {}
+
+    virtual void component_activated (
+        const ::maci::ComponentInfo & info,
+        ::ACS::Time timestamp,
+        ::maci::ExecutionId execution_id) {}
+
+    virtual void component_deactivated (
+        ::maci::Handle h,
+        ::ACS::Time timestamp) {}
+
 
 };
-
 
 int
 main (int argc, char *argv[])
