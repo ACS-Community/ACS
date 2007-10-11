@@ -1,4 +1,4 @@
-# @(#) $Id: ACSPorts.py,v 1.6 2007/01/03 12:20:32 msekoran Exp $
+# @(#) $Id: ACSPorts.py,v 1.7 2007/10/11 17:27:06 nbarriga Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -21,7 +21,7 @@
 # ALMA should be addressed as follows:
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: ACSPorts.py,v 1.6 2007/01/03 12:20:32 msekoran Exp $"
+# "@(#) $Id: ACSPorts.py,v 1.7 2007/10/11 17:27:06 nbarriga Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -34,7 +34,7 @@ TODO:
 - nada
 '''
 #------------------------------------------------------------------------------
-__revision__ = "$Id: ACSPorts.py,v 1.6 2007/01/03 12:20:32 msekoran Exp $"
+__revision__ = "$Id: ACSPorts.py,v 1.7 2007/10/11 17:27:06 nbarriga Exp $"
 #--REGULAR IMPORTS-------------------------------------------------------------
 from os      import environ
 from socket  import getfqdn, gethostbyname
@@ -163,17 +163,29 @@ def getCDBPort():
     '''  
     return str(getBasePort()*100 + 3000 + 12)
 #----------------------------------------------------------------------------
-def getDaemonPort():
+def getContainerDaemonPort():
     '''
-    Returns the port the ACS Daemon is running on.
+    Returns the port the ACS Container Daemon is running on.
     
     Parameters: None
     
-    Return: port the ACS Daemon is running on
+    Return: port the ACS Container Daemon is running on
     
     Raises: Nothing
     '''  
     return str(3000 + 13)
+#----------------------------------------------------------------------------
+def getServicesDaemonPort():
+    '''
+    Returns the port the ACS Services Daemon is running on.
+    
+    Parameters: None
+    
+    Return: port the ACS Services Daemon is running on
+    
+    Raises: Nothing
+    '''  
+    return str(3000 + 14)
 #----------------------------------------------------------------------------
 def getIP():
     '''

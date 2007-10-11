@@ -85,7 +85,7 @@ main (int argc, char *argv[])
     // add endpoint if not already specified
     if (argStr.find ("-ORBEndpoint")==ACE_CString::npos)
       {
-      argStr = argStr + "-ORBEndpoint iiop://" + hostName + ":" + ACSPorts::getDaemonPort().c_str();
+      argStr = argStr + "-ORBEndpoint iiop://" + hostName + ":" + ACSPorts::getServicesDaemonPort().c_str();
       }
 
     // create new argv

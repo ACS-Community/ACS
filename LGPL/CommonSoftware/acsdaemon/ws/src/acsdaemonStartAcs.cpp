@@ -62,7 +62,7 @@ main (int argc, char *argv[])
 	  {
 	  const char * hostName = ACSPorts::getIP(); 
 	  ref = "corbaloc::";
-	  ref = ref + hostName + ":" + ACSPorts::getDaemonPort().c_str() + "/ACSServicesDaemon";	
+	  ref = ref + hostName + ":" + ACSPorts::getServicesDaemonPort().c_str() + "/ACSServicesDaemon";	
 	  ACS_SHORT_LOG((LM_INFO, "Using local ACS Services Daemon reference: '%s'", ref.c_str()));
 	  
 	  }

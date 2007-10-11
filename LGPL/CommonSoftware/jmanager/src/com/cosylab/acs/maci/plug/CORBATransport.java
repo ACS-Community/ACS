@@ -37,7 +37,7 @@ public class CORBATransport implements Transport {
 	 */
 	public Daemon getDaemon(String host) {
 		
-		String daemonCORBALOC = "corbaloc::" + host + ":" + ACSPorts.getDaemonPort() + "/ACSDaemon";
+		String daemonCORBALOC = "corbaloc::" + host + ":" + ACSPorts.getContainerDaemonPort() + "/ACSDaemon";
 
 		org.omg.CORBA.Object obj = orb.string_to_object(daemonCORBALOC);
 		alma.acsdaemon.ContainerDaemon daemon = ContainerDaemonHelper.narrow(obj);

@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: acsdaemonStartContainer.cpp,v 1.3 2007/10/10 16:21:35 ntroncos Exp $"
+* "@(#) $Id: acsdaemonStartContainer.cpp,v 1.4 2007/10/11 17:27:06 nbarriga Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -70,7 +70,7 @@ main (int argc, char *argv[])
 	  {
 	  const char * hostName = ACSPorts::getIP(); 
 	  ref = "corbaloc::";
-	  ref = ref + hostName + ":" + ACSPorts::getDaemonPort().c_str() + "/ACSContainerDaemon";	
+	  ref = ref + hostName + ":" + ACSPorts::getContainerDaemonPort().c_str() + "/ACSContainerDaemon";	
 	  ACS_SHORT_LOG((LM_INFO, "Using local ACS Container Daemon reference: '%s'", ref.c_str()));
 	  
 	  }

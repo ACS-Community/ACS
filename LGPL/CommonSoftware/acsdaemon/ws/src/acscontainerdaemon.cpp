@@ -18,14 +18,14 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@$Id: acscontainerdaemon.cpp,v 1.1 2007/10/10 16:21:35 ntroncos Exp $"
+* "@$Id: acscontainerdaemon.cpp,v 1.2 2007/10/11 17:27:06 nbarriga Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
 * msekoran 2006-06-21 created
 */
 
-static char *rcsId="@ $Id: acscontainerdaemon.cpp,v 1.1 2007/10/10 16:21:35 ntroncos Exp $";
+static char *rcsId="@ $Id: acscontainerdaemon.cpp,v 1.2 2007/10/11 17:27:06 nbarriga Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <acsContainerDaemonImpl.h>
@@ -90,7 +90,7 @@ main (int argc, char *argv[])
     // add endpoint if not already specified
     if (argStr.find ("-ORBEndpoint")==ACE_CString::npos)
       {
-      argStr = argStr + "-ORBEndpoint iiop://" + hostName + ":" + ACSPorts::getDaemonPort().c_str();
+      argStr = argStr + "-ORBEndpoint iiop://" + hostName + ":" + ACSPorts::getContainerDaemonPort().c_str();
       }
 
     // create new argv

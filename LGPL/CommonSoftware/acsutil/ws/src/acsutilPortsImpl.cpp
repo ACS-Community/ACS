@@ -127,16 +127,30 @@ ACSPorts::getCDBPort()
 }
 
 /**
- * @return the port the ACS Daemon is running on.
+ * @return the port the ACS Container Daemon is running on.
  * @htmlonly
  * <br><hr>
  * @endhtmlonly
  */
 std::string
-ACSPorts::getDaemonPort()
+ACSPorts::getContainerDaemonPort()
 {
     std::ostringstream realOutput;
     realOutput << setw(4) << setfill('0') << (3000 + 13) << ends;
+    return realOutput.str();
+}
+
+/**
+ * @return the port the ACS Services Daemon is running on.
+ * @htmlonly
+ * <br><hr>
+ * @endhtmlonly
+ */
+std::string
+ACSPorts::getServicesDaemonPort()
+{
+    std::ostringstream realOutput;
+    realOutput << setw(4) << setfill('0') << (3000 + 14) << ends;
     return realOutput.str();
 }
 
