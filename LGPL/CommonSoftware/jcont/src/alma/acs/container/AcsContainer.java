@@ -99,7 +99,7 @@ public class AcsContainer extends ContainerPOA
      * This ID survives logout/login to the manager.
      * For container shutdown/crashes, a new ID is assigned the following login. 
      */
-    private long executionId; 
+    private long executionId = -1; 
     
     private final AcsManagerProxy m_managerProxy;
 

@@ -48,7 +48,7 @@ class ManagerClient extends ClientPOA
 
     private final long startTimeUTClong;
 
-    private long executionId; 
+    private long executionId = -1; 
 	
 	/**
 	 * Optional container services, used for notification for components_available etc.
@@ -77,7 +77,7 @@ class ManagerClient extends ClientPOA
         if (executionId < 0) {
         	executionId = execution_id;
         }
-        		
+        
 		AuthenticationData ret = new AuthenticationData(
 				 "C", 
 				 ClientType.CLIENT_TYPE,
