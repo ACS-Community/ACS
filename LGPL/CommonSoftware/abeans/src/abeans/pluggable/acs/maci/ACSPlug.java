@@ -20,9 +20,12 @@ import org.omg.CORBA.IntHolder;
 import org.omg.CORBA.ORB;
 import org.omg.CosNaming.NamingContextHelper;
 
+import si.ijs.maci.AuthenticationData;
+import si.ijs.maci.ClientType;
 import si.ijs.maci.ComponentInfo;
 import si.ijs.maci.ClientInfo;
 import si.ijs.maci.ClientPOA;
+import si.ijs.maci.ImplLangType;
 import si.ijs.maci.Manager;
 import si.ijs.maci.ManagerHelper;
 
@@ -90,6 +93,16 @@ public class ACSPlug extends Plug implements Configurable
 		private String managerReference = null;
 		
 		/**
+		 * Start timestamp.
+		 */
+		private final long timeStamp = System.currentTimeMillis();
+		
+		/**
+		 * Execution id.
+		 */
+		
+		private long executionId = 0;
+		/**
 		 * Default constructor.
 		 */
 		public Client(String managerReference)
@@ -98,10 +111,12 @@ public class ACSPlug extends Plug implements Configurable
 		}
 		
 		/**
-		 * @see si.ijs.maci.ClientOperations#authenticate(java.lang.String)
+		 * @see si.ijs.maci.ClientOperations#authenticate(long, java.lang.String)
 		 */
-		public String authenticate(String question) {
-			return "C";
+		public AuthenticationData authenticate(long executionId, String question) {
+			if (this.executionId == 0)
+				this.executionId = executionId;
+			return new AuthenticationData("", ClientType.CLIENT_TYPE, ImplLangType.JAVA, true, timeStamp, this.executionId);
 		}
 
 		/**
