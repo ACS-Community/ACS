@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: acsdaemonStartContainer.cpp,v 1.5 2007/10/11 20:03:24 ntroncos Exp $"
+* "@(#) $Id: acsdaemonStartContainer.cpp,v 1.6 2007/10/11 21:00:37 nbarriga Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -77,7 +77,7 @@ main (int argc, char *argv[])
                     break;
                 case 't':
                     //create passthough option
-                    containerType = containerType + "-" + optarg;
+                    containerType = optarg;
                     break;
                 case 'c':
                     containerName = optarg;

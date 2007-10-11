@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsContainerDaemonImpl.cpp,v 1.1 2007/10/10 16:21:35 ntroncos Exp $"
+* "@(#) $Id: acsContainerDaemonImpl.cpp,v 1.2 2007/10/11 21:00:37 nbarriga Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -208,9 +208,25 @@ ACSContainerDaemonImpl::start_container (
 
     // execute: "acsStartContainer -<type> -b <instance> <name> <args>"
     // TODO checks for ';', '&', '|' chars, they can run any other command!
-    char command[1000];
-    snprintf(command, 1000, "acsStartContainer -%s -b %d %s %s &", container_type, instance_number, container_name, cmdln);
+    
+    //get the directory name to store the container stdout
+    std::string logDirectory="~/.acs/commandcenter/";
+    std::string containerName(container_name);
+    std::string::size_type pos=containerName.rfind("/"); 
+    if(pos != std::string::npos){
+    	logDirectory.append(containerName,0,pos);
+    	containerName.erase(0,pos);
+    }
+    //create the directory
+    std::string mkdir("mkdir -p ");
+    mkdir.append(logDirectory);
+    ACE_OS::system(mkdir.c_str());
 
+    std::string timeStamp("0000-00-00T00:00:00.000");
+
+    char command[1000];
+    snprintf(command, 1000, "acsStartContainer -%s -b %d %s %s &> %sacsStartContainer_%s_%s&", container_type, instance_number, container_name, cmdln, logDirectory.c_str(), containerName.c_str(), timeStamp.c_str());
+    
     ACS_SHORT_LOG ((LM_INFO, "Executing: '%s'.", command));
 
     int result = ACE_OS::system(command);
