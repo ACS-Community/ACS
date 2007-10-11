@@ -13,6 +13,7 @@
 */
 
 #include <maciErrType.idl>
+#include <acscommon.idl>
 
 #pragma prefix "ijs.si"
 module maci {
@@ -93,6 +94,11 @@ module maci {
 	    Convenience typedef for sequences of Handle 
 	*/
 	typedef ulongSeq HandleSeq;
+
+	/** 
+	    Convenience typedef for sequences of ExecutionId 
+	*/
+	typedef long long ExecutionId;
 
 	/**
 	   Interface through which the logging settings of a container
@@ -272,6 +278,20 @@ module maci {
 	*/
 	typedef sequence<ComponentInfo> ComponentInfoSeq;
 
+	enum ImplLangType { JAVA, CPP, PYTHON };
+	enum ClientType { CLIENT_TYPE, ADMINISTRATOR_TYPE, CONTAINER_TYPE };
+	struct AuthenticationData {
+		string answer;				///< Answer to authenticate question.
+		ClientType client_type;		///< Client type.
+		ImplLangType impl_lang;		///< Client implementation type.
+		boolean recover;			///< Flag indicating whether manager should try to recover client.
+		ACS::Time timestamp;		///< Timestamp of client start-up; there might be a significant time difference
+			///between login time and client start-up time.
+		ExecutionId execution_id;	///< Client should return execution ID passed via authenticate method,
+			///but if it already has been given an ID before (e.g. container relogin) returned ID will be used
+			///by the manager to notify administrators. If 0, this value will be ignored.
+	};
+	
 	/** 
 	    Every client of a component service that is not itself a component
 	    must implement an interface called Client. The interface allows the
@@ -329,7 +349,8 @@ module maci {
 	       <LI><TT>S</TT> Supervisor (implements the Administrator interface).</LI>
 	       </UL>
 	   */
-	   string authenticate (
+	   AuthenticationData authenticate (
+	       in ExecutionId execution_id, ///< Execution ID of the container logging in.
 	       in string question	///< The question posed by the Manager.
 	       );
 
@@ -534,6 +555,9 @@ module maci {
 				///component is expected to remember
 				///this handle for its entire
 				///life-time.
+				
+		in ExecutionId execution_id, ///< Execution ID of the component
+				///that is being activated.
 
 		in string name,	///< Name of the component to
 				///instantiate.
@@ -687,7 +711,9 @@ module maci {
 		    issues can be thrown
 		 */
 		oneway void client_logged_in (
-			in ClientInfo info	///< Information about the client that has just logged in. If the handle of the client (<TT>info.h</TT>) is 0, the Client failed to authenticate.
+			in ClientInfo info,			///< Information about the client that has just logged in. If the handle of the client (<TT>info.h</TT>) is 0, the Client failed to authenticate.
+			in ACS::Time timestamp,  	///< Time of this event.
+			in ExecutionId execution_id	///< Execution ID.
 			);
 
 		/** 
@@ -699,7 +725,8 @@ module maci {
 		    issues can be thrown
 		 */
 		oneway void client_logged_out (
-			in Handle h	///< Handle of the client that has logged out.
+			in Handle h,			///< Handle of the client that has logged out.
+			in ACS::Time timestamp  ///< Time of this event.
 			);
 
 		/** 
@@ -711,7 +738,9 @@ module maci {
 		    issues can be thrown
 		 */
 		oneway void container_logged_in (
-			in ContainerInfo info	///< Information about the container that has just logged in. If the handle of the container (<TT>info.h</TT>) is 0, the container failed to authenticate.
+			in ContainerInfo info,		///< Information about the container that has just logged in. If the handle of the container (<TT>info.h</TT>) is 0, the container failed to authenticate.
+			in ACS::Time timestamp,  	///< Time of this event.
+			in ExecutionId execution_id	///< Execution ID.
 			);
 
 		/** 
@@ -723,7 +752,8 @@ module maci {
 		    issues can be thrown
 		 */
 		oneway void container_logged_out (
-			in Handle h	///< Handle of the container that has logged out.
+			in Handle h,			///< Handle of the container that has logged out.
+			in ACS::Time timestamp  ///< Time of this event.
 			);
 
 		/** 
@@ -736,8 +766,9 @@ module maci {
 		    issues can be thrown
 		 */
 		oneway void components_requested (
-			in HandleSeq clients,	///< Handles of clients requesting components.
-			in HandleSeq components	///< Handles of requested components. component at the i-th place in the sequence was requested by the i-th client of sequence clients.
+			in HandleSeq clients,		///< Handles of clients requesting components.
+			in HandleSeq components,	///< Handles of requested components. component at the i-th place in the sequence was requested by the i-th client of sequence clients.
+			in ACS::Time timestamp  	///< Time of this event.
 			);
 
 		/** 
@@ -750,10 +781,45 @@ module maci {
 		    issues can be thrown
 		 */
 		oneway void components_released (
-			in HandleSeq clients,	///< Handles of clients requesting components.
-			in HandleSeq components	///< Handles of requested components. component at the i-th place in the sequence was requested by the i-th client of sequence clients.
+			in HandleSeq clients,		///< Handles of clients requesting components.
+			in HandleSeq components,	///< Handles of requested components. component at the i-th place in the sequence was requested by the i-th client of sequence clients.
+			in ACS::Time timestamp  	///< Time of this event.
 			);
 
+		/** 
+		    Notification that some component has just been 
+		    activated (through Container::activate_component).
+	     
+		    Notice that this is a oneway method and therefore 
+		    there cannot be return values or user exceptions.
+		    Only CORBA runtime exceptions due to communication
+		    issues can be thrown
+		 */
+		oneway void component_activated (
+			in ComponentInfo info,		///< Component info of activated component.
+			in ACS::Time timestamp,		///< Time of this event.
+			in ExecutionId execution_id	///< Execution ID.
+		);
+		
+		/** 
+		    Notification that some component has just been 
+		    deactivated (through Container::activate_decomponent).
+	     
+		    Notice that this is a oneway method and therefore 
+		    there cannot be return values or user exceptions.
+		    Only CORBA runtime exceptions due to communication
+		    issues can be thrown
+		 */
+		oneway void component_deactivated (
+			in Handle h,	 		///< Handle of deactivated component.
+			in ACS::Time timestamp  ///< Time of this event.
+		);
+	};
+
+	/** 
+	    Administrator to be notified in synchronous way. See Administrator.
+	*/
+	interface SynchronousAdministrator : Administrator {
 	};
 
 	/** 
