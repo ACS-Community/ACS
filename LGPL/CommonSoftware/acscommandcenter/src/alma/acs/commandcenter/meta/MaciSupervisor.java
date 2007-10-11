@@ -19,9 +19,12 @@ import org.omg.CORBA.TRANSIENT;
 
 import si.ijs.maci.Administrator;
 import si.ijs.maci.AdministratorPOA;
+import si.ijs.maci.AuthenticationData;
 import si.ijs.maci.ClientInfo;
+import si.ijs.maci.ClientType;
 import si.ijs.maci.ComponentInfo;
 import si.ijs.maci.ContainerInfo;
+import si.ijs.maci.ImplLangType;
 import si.ijs.maci.Manager;
 import si.ijs.maci.ManagerHelper;
 import alma.acs.commandcenter.meta.IMaciSupervisor.CannotRetrieveManagerException;
@@ -33,6 +36,7 @@ import alma.acs.commandcenter.meta.MaciInfo.FolderInfo;
 import alma.acs.commandcenter.meta.MaciInfo.InfoDetail;
 import alma.acs.commandcenter.meta.MaciInfo.SortingTreeNode;
 import alma.acs.util.AcsLocations;
+import alma.acs.util.UTCUtility;
 import alma.maciErrType.CannotGetComponentEx;
 import alma.maciErrType.ComponentConfigurationNotFoundEx;
 import alma.maciErrType.ComponentNotAlreadyActivatedEx;
@@ -737,21 +741,23 @@ public class MaciSupervisor implements IMaciSupervisor {
 	 */
 	protected class AdministratorImplementation extends AdministratorPOA {
 
+    	private final long startTimeUTClong = UTCUtility.utcJavaToOmg(System.currentTimeMillis());		
+        private long executionId = -1; 
 
 		// ===== Incoming Notifications =====
 
 
-		public void client_logged_in (ClientInfo arg0) {
+		public void client_logged_in (ClientInfo info, long timestamp, long execution_id) {
 			log.finer("client_logged_in() received");
 			infoShouldBeRefreshed = true;
 		}
 
-		public void client_logged_out (int arg0) {
+		public void client_logged_out (int h, long timestamp) {
 			log.finer("client_logged_out() received");
 			infoShouldBeRefreshed = true;
 		}
 
-		public void container_logged_in (ContainerInfo arg0) {
+		public void container_logged_in (ContainerInfo info, long timestamp, long execution_id) {
 			log.finer("container_logged_in() received");
 			infoShouldBeRefreshed = true;
 		}
@@ -761,7 +767,7 @@ public class MaciSupervisor implements IMaciSupervisor {
 		 * components_released() method will be called
 		 * shortly after this, but not for all. 
 		 */
-		public void container_logged_out (int arg0) {
+		public void container_logged_out (int h, long timestamp) {
 			log.finer("container_logged_out() received");
 			infoShouldBeRefreshed = true;
 		}
@@ -769,7 +775,7 @@ public class MaciSupervisor implements IMaciSupervisor {
 		/** 
 		 * Will be called for autostart-components, too.
 		 */
-		public void components_requested (int[] arg0, int[] arg1) {
+		public void components_requested (int[] clients, int[] components, long timestamp) {
 			log.finer("components_requested() received");
 			infoShouldBeRefreshed = true;
 		}
@@ -778,7 +784,7 @@ public class MaciSupervisor implements IMaciSupervisor {
 		 * Will always be called when a client (that was holding
 		 * components) has terminated in any way.
 		 */
-		public void components_released (int[] arg0, int[] arg1) {
+		public void components_released (int[] clients, int[] components, long timestamp) {
 			log.finer("components_released() received");
 			infoShouldBeRefreshed = true;
 		}
@@ -799,6 +805,14 @@ public class MaciSupervisor implements IMaciSupervisor {
 			log.finer("components_unavailable() received");
 		}
 
+		public void component_activated(ComponentInfo info, long timestamp, long execution_id) {
+//			log.finer("component_activated() received");
+		}
+
+		public void component_deactivated(int h, long timestamp) {
+//			log.finer("component_deactivated() received");
+		}
+		
 
 		// ===== Requests from the Manager =====
 
@@ -808,9 +822,22 @@ public class MaciSupervisor implements IMaciSupervisor {
 			return name;
 		}
 
-		public String authenticate (String arg0) {
+		public AuthenticationData authenticate (long execution_id, String question) {
 			log.finer("authenticate() received");
-			return "S";
+			
+	        // keep old executionId if it exists
+	        if (executionId < 0) {
+	        	executionId = execution_id;
+	        }
+	        
+			AuthenticationData ret = new AuthenticationData(
+					 "S", 
+					 ClientType.ADMINISTRATOR_TYPE,
+					 ImplLangType.JAVA,
+					 false, 
+					 startTimeUTClong,
+					 executionId);
+			return ret;
 		}
 
 		public void message (short arg0, String arg1) {
@@ -827,7 +854,6 @@ public class MaciSupervisor implements IMaciSupervisor {
 			log.finer("disconnect() received");
 			disconnectFromManager();
 		}
-
 	}
 
 
