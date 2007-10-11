@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: acsdaemonStartContainer.cpp,v 1.4 2007/10/11 17:27:06 nbarriga Exp $"
+* "@(#) $Id: acsdaemonStartContainer.cpp,v 1.5 2007/10/11 20:03:24 ntroncos Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -21,15 +21,89 @@
 #include <acsdaemonC.h>
 #include <ACSErrTypeCommon.h>
 #include <acsdaemonErrType.h>
+#include <getopt.h>
+
+static struct option long_options[] = {
+        {"help",        no_argument,       0, 'h'},
+        {"type",        required_argument, 0, 't'},
+        {"container",   required_argument, 0, 'c'},
+        {"instance",    required_argument, 0, 'i'},
+        {"host",        required_argument, 0, 'H'},
+        {"deamon",      required_argument, 0, 'd'},
+        {"aditional",   required_argument, 0, 'a'},
+        {0, 0, 0, '\0'}};
+
+void 
+usage(const char *argv)
+{
+    ACE_OS::printf ("\n\tusage: %s {-h} -i INSTANCE -t TYPE -c CONATIANER [-d DAEMONREF] [-H HOST] [-a more options]", argv);
+    ACE_OS::printf ("\t   -h, --help         show this help message\n");
+    ACE_OS::printf ("\t   -t, --type         container type: cpp, java, py\n");
+    ACE_OS::printf ("\t   -c, --container     container name\n");
+    ACE_OS::printf ("\t   -i, --instance     ACS instance to use\n");
+    ACE_OS::printf ("\t   -H, --host         Host where to start the container\n");
+    ACE_OS::printf ("\t   -d, --daemon       Daemon reference\n");
+    ACE_OS::printf ("\t   -a, --aditional    passthrough options for startContaner\n");
+}
 
 int
 main (int argc, char *argv[])
 {
-    if (argc < 4 || argc > 5)
-	{
-	ACE_OS::printf("\n\tusage: %s container_type container_name instance_number [additional_command_line]\n\n", argv[0]);
-	return -1;
-	}
+    int c, instance = -1;
+    ACE_CString daemonRef;
+    ACE_CString hostName;
+    ACE_CString containerType;
+    ACE_CString containerName;
+    char *aditional=NULL;
+    for(;;)
+        {
+        int option_index = 0;
+        c = getopt_long (argc, argv, "ht:c:i:d:H:a",
+                         long_options, &option_index); 
+        if (c==-1) break;
+        switch(c)
+            {
+                case 'h':
+                    usage(argv[0]);
+                    return 0;
+                case 'i':
+                    instance = ACE_OS::atoi(optarg);
+                    break;
+                case 'd':
+                    daemonRef = optarg;
+                    break;
+                case 'H':
+                    hostName = optarg;
+                    break;
+                case 't':
+                    //create passthough option
+                    containerType = containerType + "-" + optarg;
+                    break;
+                case 'c':
+                    containerName = optarg;
+                    break;
+                case 'a':
+                    aditional = argv[option_index];
+                    break;
+            }
+        }
+    if (instance == -1)
+        {
+        ACE_OS::printf("Error: instance is a mandatory option try %s -h\n", argv[0]);
+        return -1;
+        } 
+
+    if (containerType.length() == 0)
+        {
+        ACE_OS::printf("Error: container type is a mandatory option try %s -h\n", argv[0]);
+        return -1;
+        } 
+
+    if (containerName.length() == 0)
+        {
+        ACE_OS::printf("Error: container name is a mandatory option try %s -h\n", argv[0]);
+        return -1;
+        } 
 
     LoggingProxy * logger = new LoggingProxy(0, 0, 31);
     if (logger)
@@ -50,50 +124,43 @@ main (int argc, char *argv[])
                                             "TAO"
                                             );
 
-      ACE_CString ref;
-      
-      // Command line option -d or -daemonReference
-      for (int pos = 1; pos < argc-1; pos++)
-	  if (ACE_OS::strcmp(argv[pos], "-d")==0 ||
-	      ACE_OS::strcmp(argv[pos], "-daemonReference")==0)
-	      {
-	      // increase pos to point to the reference
-	      pos++;
-
-	      ref = argv[pos];
-	      ACS_SHORT_LOG((LM_INFO, "ACS Container Daemon reference obtained via command line: '%s'", ref.c_str()));
-	      break;
-	      }
 
       // construct default one
-      if (ref.length() == 0)
+      if (daemonRef.length() == 0)
 	  {
-	  const char * hostName = ACSPorts::getIP(); 
-	  ref = "corbaloc::";
-	  ref = ref + hostName + ":" + ACSPorts::getContainerDaemonPort().c_str() + "/ACSContainerDaemon";	
-	  ACS_SHORT_LOG((LM_INFO, "Using local ACS Container Daemon reference: '%s'", ref.c_str()));
+          if(hostName.length() == 0)
+          {
+	      hostName = ACSPorts::getIP();
+          } 
+	  daemonRef = "corbaloc::";
+	  daemonRef = daemonRef + hostName + ":" + ACSPorts::getContainerDaemonPort().c_str() + "/ACSContainerDaemon";	
+	  ACS_SHORT_LOG((LM_INFO, "Using local Container Daemon reference: '%s'", daemonRef.c_str()));
 	  
 	  }
+      else
+          {
+          ACS_SHORT_LOG((LM_INFO, "Container Daemon reference obtained via command line: '%s'", daemonRef.c_str()));
+          }
 
-      CORBA::Object_var obj = orb->string_to_object(ref.c_str());
+
+      CORBA::Object_var obj = orb->string_to_object(daemonRef.c_str());
       if (CORBA::is_nil(obj.in()))
-	  {
-	  ACS_SHORT_LOG((LM_INFO, "Failed to resolve reference '%s'.", ref.c_str()));
+          {
+	  ACS_SHORT_LOG((LM_INFO, "Failed to resolve reference '%s'.", daemonRef.c_str()));
 	  return -1;
 	  }
 
       acsdaemon::ContainerDaemon_var daemon = acsdaemon::ContainerDaemon::_narrow(obj.in());
       if (CORBA::is_nil(daemon.in()))
 	  {
-	  ACS_SHORT_LOG((LM_INFO, "Failed to narrow reference '%s'.", ref.c_str()));
+	  ACS_SHORT_LOG((LM_INFO, "Failed to narrow reference '%s'.", daemonRef.c_str()));
 	  return -1;
 	  }
 
 
-      int instance = atoi(argv[3]);
-      ACS_SHORT_LOG((LM_INFO, "Calling start_container(%s, %s, %d, %s).", argv[1], argv[2], instance, argv[4]));
+      ACS_SHORT_LOG((LM_INFO, "Calling start_container(%s, %s, %d, %s).", containerType.c_str(), containerName.c_str(), instance, aditional));
 
-      daemon->start_container(argv[1], argv[2], instance, argv[4]);
+      daemon->start_container(containerType.c_str(), containerName.c_str(), instance, aditional);
       
       ACS_SHORT_LOG((LM_INFO, "Done."));
       
