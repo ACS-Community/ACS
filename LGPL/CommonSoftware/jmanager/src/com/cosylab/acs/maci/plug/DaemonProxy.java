@@ -12,7 +12,8 @@ import java.io.Serializable;
 import com.cosylab.acs.maci.Daemon;
 import com.cosylab.acs.maci.RemoteException;
 
-import alma.acsdaemon.DaemonHelper;
+import alma.acsdaemon.ContainerDaemonHelper;
+
 
 /**
  * CORBA Deamon Proxy.
@@ -31,13 +32,13 @@ public class DaemonProxy extends CORBAReferenceSerializator implements Daemon, S
 	/**
 	 * CORBA reference.
 	 */
-	protected alma.acsdaemon.Daemon daemon;
+	protected alma.acsdaemon.ContainerDaemon daemon;
 
 	/**
 	 * Constructor for DaemonProxy.
 	 * @param	daemon	CORBA reference, non-<code>null</code>.
 	 */
-	public DaemonProxy(alma.acsdaemon.Daemon daemon)
+	public DaemonProxy(alma.acsdaemon.ContainerDaemon daemon)
 	{
 		this.daemon = daemon;
 	}
@@ -62,7 +63,7 @@ public class DaemonProxy extends CORBAReferenceSerializator implements Daemon, S
 	 * Returns the daemon.
 	 * @return alma.acsdaemon.Daemon
 	 */
-	public alma.acsdaemon.Daemon getDaemon()
+	public alma.acsdaemon.ContainerDaemon getDaemon()
 	{
 		return daemon;
 	}
@@ -85,7 +86,7 @@ public class DaemonProxy extends CORBAReferenceSerializator implements Daemon, S
         throws IOException, ClassNotFoundException
     {
 		try {
-			daemon = DaemonHelper.narrow(deserialize((String)stream.readObject()));
+			daemon = ContainerDaemonHelper.narrow(deserialize((String)stream.readObject()));
 		}
 		catch (Exception e) {
 			// silent here and set reference to null.
@@ -116,7 +117,7 @@ public class DaemonProxy extends CORBAReferenceSerializator implements Daemon, S
 	{
 		if (daemon == null)
 			return (obj == null);
-		else if (obj instanceof alma.acsdaemon.Daemon)
+		else if (obj instanceof alma.acsdaemon.ContainerDaemon)
 		{
 			try
 			{

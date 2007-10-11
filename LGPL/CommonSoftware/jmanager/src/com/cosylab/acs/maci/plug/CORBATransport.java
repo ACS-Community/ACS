@@ -6,11 +6,11 @@ package com.cosylab.acs.maci.plug;
 
 import org.omg.CORBA.ORB;
 
-import alma.acs.util.ACSPorts;
-import alma.acsdaemon.DaemonHelper;
-
 import com.cosylab.acs.maci.Daemon;
 import com.cosylab.acs.maci.Transport;
+
+import alma.acs.util.ACSPorts;
+import alma.acsdaemon.ContainerDaemonHelper;
 
 /**
  * CORBA implementation of transport.
@@ -40,7 +40,7 @@ public class CORBATransport implements Transport {
 		String daemonCORBALOC = "corbaloc::" + host + ":" + ACSPorts.getDaemonPort() + "/ACSDaemon";
 
 		org.omg.CORBA.Object obj = orb.string_to_object(daemonCORBALOC);
-		alma.acsdaemon.Daemon daemon = DaemonHelper.narrow(obj);
+		alma.acsdaemon.ContainerDaemon daemon = ContainerDaemonHelper.narrow(obj);
 		if (daemon == null)
 		{
 			throw new RuntimeException("Failed to resolve daemon reference.");
