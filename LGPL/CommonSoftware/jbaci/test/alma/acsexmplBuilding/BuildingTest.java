@@ -20,10 +20,13 @@ import alma.ACS.ROstring;
 import alma.ACSErr.Completion;
 import alma.ACSErr.CompletionHolder;
 
+import si.ijs.maci.AuthenticationData;
 import si.ijs.maci.Client;
 import si.ijs.maci.ClientInfo;
 import si.ijs.maci.ClientPOA;
+import si.ijs.maci.ClientType;
 import si.ijs.maci.ComponentInfo;
+import si.ijs.maci.ImplLangType;
 import si.ijs.maci.Manager;
 import si.ijs.maci.ManagerHelper;
 
@@ -47,13 +50,18 @@ public class BuildingTest implements Runnable
 	private class ClientImpl extends ClientPOA
 	{
 
-		/**
-		 * @see si.ijs.maci.ClientOperations#authenticate(java.lang.String)
-		 */
-		public String authenticate(String arg0) {
-			return "C";
+		public AuthenticationData authenticate(long execution_id, String question)
+		{
+			AuthenticationData ret = new AuthenticationData(
+					 "C", 
+					 ClientType.CLIENT_TYPE,
+					 ImplLangType.JAVA,
+					 false, 
+					 UTCUtility.utcJavaToOmg(System.currentTimeMillis()),
+					 execution_id);
+			return ret;
 		}
-
+		
 		/**
 		 * @see si.ijs.maci.ClientOperations#components_available(si.ijs.maci.ComponentInfo[])
 		 */
