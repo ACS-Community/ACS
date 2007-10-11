@@ -1773,7 +1773,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 		try
 		{
-			AuthenticationData reply = reference.authenticate(generateExecutionId(), "Identify yourself");
+			long executionId = generateExecutionId();
+			AuthenticationData reply = reference.authenticate(executionId, "Identify yourself");
 
 			if (reply == null)
 			{
@@ -1807,6 +1808,10 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 			logger.log(Level.FINE,"'"+name+"' is logging in.");
 
+			final long timeStamp = reply.getTimeStamp() > 0 ? reply.getTimeStamp() : System.currentTimeMillis();
+			if (reply.getExecutionId() != 0)
+				executionId = generateExecutionId();
+
 			// delegate
 			switch (reply.getClientType())
 			{
@@ -1814,7 +1819,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 				case CONTAINER:
 					if (reference instanceof Container)
 					{
-						info = containerLogin(name, reply, (Container)reference);
+						info = containerLogin(name, reply, (Container)reference, timeStamp, executionId);
 					}
 					else
 					{
@@ -1827,14 +1832,14 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 				// client
 				case CLIENT:
-					info = clientLogin(name, reply, reference);
+					info = clientLogin(name, reply, reference, timeStamp, executionId);
 					break;
 
 				// supervisor (administrator)
 				case ADMINISTRATOR:
 					if (reference instanceof Administrator)
 					{
-						info = administratorLogin(name, reply, (Administrator)reference);
+						info = administratorLogin(name, reply, (Administrator)reference, timeStamp, executionId);
 					}
 					else
 					{
@@ -2463,7 +2468,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	 * @param	container	container that is logging in, non-<code>null</code>.
 	 * @return	ClientInfo	client info. of newly logged container
 	 */
-	private ClientInfo containerLogin(String name, AuthenticationData reply, Container container) throws AcsJNoPermissionEx
+	private ClientInfo containerLogin(String name, AuthenticationData reply, Container container, long timeStamp, long executionId) throws AcsJNoPermissionEx
 	{
 		assert (name != null);
 		assert (reply != null);
@@ -2563,8 +2568,6 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		}
 
 		// notify administrators about the login
-		final long timeStamp = reply.getTimeStamp() > 0 ? reply.getTimeStamp() : System.currentTimeMillis();
-		final long executionId = reply.getExecutionId() != 0 ? reply.getExecutionId() : generateExecutionId();
 		notifyContainerLogin(containerInfo, timeStamp, executionId);
 
 		// do container post login activation in separate thread
@@ -3303,7 +3306,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	 * @param	administrator	administrator that is logging in
 	 * @return	ClientInfo	client info. of newly logged administrator
 	 */
-	private ClientInfo administratorLogin(String name, AuthenticationData reply, Administrator administrator) throws AcsJNoPermissionEx
+	private ClientInfo administratorLogin(String name, AuthenticationData reply, Administrator administrator, long timeStamp, long executionId) throws AcsJNoPermissionEx
 	{
 		assert (name != null);
 		assert (administrator != null);
@@ -3360,8 +3363,6 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		}
 
 		// notify administrators about the login
-		final long timeStamp = reply.getTimeStamp() > 0 ? reply.getTimeStamp() : System.currentTimeMillis();
-		final long executionId = reply.getExecutionId() != 0 ? reply.getExecutionId() : generateExecutionId();
 		notifyClientLogin(clientInfo, timeStamp, executionId);
 
 		logger.log(Level.INFO,"Administrator '" + name + "' logged in.");
@@ -3376,7 +3377,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	 * @param	client	client that is logging in
 	 * @return	ClientInfo	client info. of newly logged client
 	 */
-	private ClientInfo clientLogin(String name, AuthenticationData reply, Client client) throws AcsJNoPermissionEx
+	private ClientInfo clientLogin(String name, AuthenticationData reply, Client client, long timeStamp, long executionId) throws AcsJNoPermissionEx
 	{
 		assert (name != null);
 		assert (client != null);
@@ -3431,8 +3432,6 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		}
 
 		// notify administrators about the login
-		final long timeStamp = reply.getTimeStamp() > 0 ? reply.getTimeStamp() : System.currentTimeMillis();
-		final long executionId = reply.getExecutionId() != 0 ? reply.getExecutionId() : generateExecutionId();
 		notifyClientLogin(clientInfo, timeStamp, executionId);
 
 		logger.log(Level.INFO,"Client '" + name + "' logged in.");
