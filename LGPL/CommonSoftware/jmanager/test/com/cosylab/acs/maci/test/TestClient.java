@@ -6,8 +6,11 @@ package com.cosylab.acs.maci.test;
 
 import java.util.HashMap;
 
+import com.cosylab.acs.maci.AuthenticationData;
+import com.cosylab.acs.maci.ClientType;
 import com.cosylab.acs.maci.ComponentInfo;
 import com.cosylab.acs.maci.Client;
+import com.cosylab.acs.maci.ImplLang;
 import com.cosylab.acs.maci.MessageType;
 import com.cosylab.acs.maci.RemoteException;
 
@@ -25,9 +28,14 @@ public class TestClient implements Client
 	String name;
 
 	/**
-	 * Client reply.
+	 * Client type.
 	 */
-	String reply;
+	ClientType type;
+
+	/**
+	 * Recover flag.
+	 */
+	boolean recover;
 
 	/**
 	 * Client operation status.
@@ -51,29 +59,40 @@ public class TestClient implements Client
 	 */
 	public TestClient(String name)
 	{
-		this (name, "C");
+		this (name, ClientType.CLIENT, false);
 	}
 
 	/**
 	 * Constructor for TestClient.
-	 * @param	reply	reply to autheticate, non-<code>null</code>.
+	 * @param	type	reply to autheticate, non-<code>null</code>.
 	 * @param	name	name of the client, non-<code>null</code>.
 	 */
-	public TestClient(String name, String reply)
+	public TestClient(String name, ClientType type)
 	{
-		assert (name != null);
-		assert (reply != null);
-		
-		this.name = name;
-		this.reply = reply;
+		this (name, ClientType.CLIENT, false);
 	}
 
 	/**
-	 * @see com.cosylab.acs.maci.Client#authenticate(String)
+	 * Constructor for TestClient.
+	 * @param	type	reply to autheticate, non-<code>null</code>.
+	 * @param	name	name of the client, non-<code>null</code>.
 	 */
-	public String authenticate(String question) throws RemoteException
+	public TestClient(String name, ClientType type, boolean recover)
 	{
-		return reply;
+		assert (name != null);
+		assert (type != null);
+		
+		this.name = name;
+		this.type = type;
+		this.recover = recover;
+	}
+
+	/**
+	 * @see com.cosylab.acs.maci.Client#authenticate(long, String)
+	 */
+	public AuthenticationData authenticate(long executionId, String question) throws RemoteException
+	{
+		return new AuthenticationData("", type, ImplLang.JAVA, recover, System.currentTimeMillis(), executionId);
 	}
 
 	/**

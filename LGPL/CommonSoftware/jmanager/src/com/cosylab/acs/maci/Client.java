@@ -26,16 +26,9 @@ public interface Client
 	 * which the client will later use as the id parameter with all calls to the Manager.
 	 * 
 	 * @param	question	The question posed by the Manager.
-	 * @return Answer to the question. The first character of the answer identifies the type of the client,
-	 * 			and can be one of:
-	 * 			<UL>
-	 * 				<LI><TT>C</TT> A regular client (implements just the Client interface).</LI>
-	 * 				<LI><TT>A</TT> An container (implements the Container interface).</LI>
-	 * 				<LI><TT>AR</TT> An container with recovery capability (implements the Container interface). </LI>
-	 * 				<LI><TT>S</TT> Supervisor (implements the Administrator interface).</LI>
-	 *			</UL>
-	 */
-	public String authenticate(String question) throws RemoteException;
+	 * @return authentication structure (including answer to the question).
+	 **/
+	public AuthenticationData authenticate(long executionId, String question) throws RemoteException;
 
 	/**
 	 * Notify client about the change (availability) of the components currently in use by this client.

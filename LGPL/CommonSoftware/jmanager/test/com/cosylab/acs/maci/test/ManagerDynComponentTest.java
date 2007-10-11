@@ -11,11 +11,14 @@ import org.omg.PortableServer.POAManager;
 
 import alma.acs.util.ACSPorts;
 
+import si.ijs.maci.AuthenticationData;
 import si.ijs.maci.Client;
 import si.ijs.maci.ClientInfo;
 import si.ijs.maci.ClientPOA;
+import si.ijs.maci.ClientType;
 import si.ijs.maci.ComponentInfo;
 import si.ijs.maci.ComponentSpec;
+import si.ijs.maci.ImplLangType;
 import si.ijs.maci.Manager;
 import si.ijs.maci.ManagerHelper;
 
@@ -36,10 +39,11 @@ public class ManagerDynComponentTest implements Runnable
 	{
 
 		/**
-		 * @see si.ijs.maci.ClientOperations#authenticate(java.lang.String)
+		 * @see com.cosylab.acs.maci.Client#authenticate(long, String)
 		 */
-		public String authenticate(String arg0) {
-			return "C";
+		public AuthenticationData authenticate(long executionId, String question)
+		{
+			return new AuthenticationData("", ClientType.CLIENT_TYPE, ImplLangType.JAVA, false, System.currentTimeMillis(), executionId);
 		}
 
 		/**

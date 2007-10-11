@@ -4,7 +4,6 @@
 
 package com.cosylab.acs.maci.plug;
 
-import java.io.InputStream;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;

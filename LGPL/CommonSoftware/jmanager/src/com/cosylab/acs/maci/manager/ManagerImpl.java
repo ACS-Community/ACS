@@ -29,9 +29,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -50,6 +48,8 @@ import org.prevayler.implementation.SnapshotPrevayler;
 
 import alma.ACSErrTypeCommon.wrappers.AcsJBadParameterEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJNullPointerEx;
+import alma.alarmsystem.source.ACSAlarmSystemInterface;
+import alma.alarmsystem.source.ACSAlarmSystemInterfaceFactory;
 import alma.jmanagerErrType.wrappers.AcsJCyclicDependencyDetectedEx;
 import alma.jmanagerErrType.wrappers.AcsJSyncLockFailedEx;
 import alma.maciErrType.wrappers.AcsJCannotGetComponentEx;
@@ -57,19 +57,10 @@ import alma.maciErrType.wrappers.AcsJComponentSpecIncompatibleWithActiveComponen
 import alma.maciErrType.wrappers.AcsJIncompleteComponentSpecEx;
 import alma.maciErrType.wrappers.AcsJInvalidComponentSpecEx;
 import alma.maciErrType.wrappers.AcsJNoPermissionEx;
-import alma.acsErrTypeAlarmSourceFactory.ACSASFactoryNotInitedEx;
-import alma.acsErrTypeAlarmSourceFactory.FaultStateCreationErrorEx;
-import alma.acsErrTypeAlarmSourceFactory.SourceCreationErrorEx;
-import alma.alarmsystem.source.ACSAlarmSystemInterface;
-import alma.alarmsystem.source.ACSAlarmSystemInterfaceFactory;
-import alma.alarmsystem.source.ACSFaultState;
-
-import com.cosylab.cdb.client.CDBAccess;
-import com.cosylab.cdb.client.DAOProxy;
-import com.cosylab.cdb.client.DAOProxyConnectionListener;
 
 import com.cosylab.acs.maci.AccessRights;
 import com.cosylab.acs.maci.Administrator;
+import com.cosylab.acs.maci.AuthenticationData;
 import com.cosylab.acs.maci.BadParametersException;
 import com.cosylab.acs.maci.Client;
 import com.cosylab.acs.maci.ClientInfo;
@@ -79,7 +70,6 @@ import com.cosylab.acs.maci.ComponentSpec;
 import com.cosylab.acs.maci.ComponentStatus;
 import com.cosylab.acs.maci.Container;
 import com.cosylab.acs.maci.ContainerInfo;
-import com.cosylab.acs.maci.ContainerInfo.ImplementationLanguage;
 import com.cosylab.acs.maci.CoreException;
 import com.cosylab.acs.maci.Daemon;
 import com.cosylab.acs.maci.HandleConstants;
@@ -91,8 +81,8 @@ import com.cosylab.acs.maci.NoDefaultComponentException;
 import com.cosylab.acs.maci.NoResourcesException;
 import com.cosylab.acs.maci.RemoteException;
 import com.cosylab.acs.maci.StatusHolder;
-import com.cosylab.acs.maci.StatusSeqHolder;
 import com.cosylab.acs.maci.Transport;
+import com.cosylab.acs.maci.ContainerInfo.ImplementationLanguage;
 import com.cosylab.acs.maci.loadbalancing.LoadBalancingStrategy;
 import com.cosylab.acs.maci.manager.recovery.AdministratorCommandAllocate;
 import com.cosylab.acs.maci.manager.recovery.AdministratorCommandDeallocate;
@@ -122,6 +112,9 @@ import com.cosylab.acs.maci.manager.recovery.DefaultComponentCommandPut;
 import com.cosylab.acs.maci.manager.recovery.UnavailableComponentCommandPut;
 import com.cosylab.acs.maci.manager.recovery.UnavailableComponentCommandRemove;
 import com.cosylab.acs.maci.plug.ManagerProxy;
+import com.cosylab.cdb.client.CDBAccess;
+import com.cosylab.cdb.client.DAOProxy;
+import com.cosylab.cdb.client.DAOProxyConnectionListener;
 import com.cosylab.util.WildcharMatcher;
 
 /**
@@ -774,7 +767,11 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	 */
     private transient ACSAlarmSystemInterface alarmSource;
 
-
+    /**
+     * Last execution id;
+     */
+    private transient long lastExecutionId = 0;
+    
 	/**
 	 * Initializes Manager.
 	 * @param	prevayler			implementation of prevayler system
@@ -986,6 +983,13 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		return domain;
 	}
 
+	protected synchronized long generateExecutionId()
+	{
+		final long id = Math.max(System.currentTimeMillis(), lastExecutionId + 1);
+		lastExecutionId = id;
+		return id;
+	}
+	
 	/**
 	 * @see com.cosylab.acs.maci.Manager#getContainerInfo(int, int[], String)
 	 */
@@ -1769,25 +1773,28 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 		try
 		{
-			String reply = reference.authenticate("Identify yourself");
+			AuthenticationData reply = reference.authenticate(generateExecutionId(), "Identify yourself");
 
 			if (reply == null)
 			{
 				// BAD_PARAM
-				BadParametersException af = new BadParametersException("Invalid response to 'Client::authenticate()' method - non-null string expected.");
+				BadParametersException af = new BadParametersException("Invalid response to 'Client::authenticate()' method - non-null structure expected.");
 				throw af;
 			}
-
-			if (reply.length() > 0 &&
-				(reply.charAt(0) != 'A' &&
-				 reply.charAt(0) != 'C' &&
-				 reply.charAt(0) != 'S'))
-				{
-					// NO_PERMISSION
-					AcsJNoPermissionEx npe = new AcsJNoPermissionEx();
-					npe.setReason("Invalid response to 'Client::authenticate()' method. [A,C,S] are expected as first characters.");
-					throw npe;
-				}
+			else if (reply.getClientType() == null)
+			{
+				// NO_PERMISSION
+				AcsJNoPermissionEx npe = new AcsJNoPermissionEx();
+				npe.setReason("Invalid response to 'Client::authenticate()' method - no-null client type expected.");
+				throw npe;
+			}
+			else if (reply.getImplLang() == null)
+			{
+				// NO_PERMISSION
+				AcsJNoPermissionEx npe = new AcsJNoPermissionEx();
+				npe.setReason("Invalid response to 'Client::authenticate()' method - no-null implementation language expected.");
+				throw npe;
+			}
 
 			// get client's name
 			String name = reference.name();
@@ -1802,10 +1809,10 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			logger.log(Level.FINE,"'"+name+"' is logging in.");
 
 			// delegate
-			switch (reply.charAt(0))
+			switch (reply.getClientType())
 			{
 				// container
-				case 'A':
+				case CONTAINER:
 					if (reference instanceof Container)
 					{
 						info = containerLogin(name, reply, (Container)reference);
@@ -1820,12 +1827,12 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 					break;
 
 				// client
-				case 'C':
+				case CLIENT:
 					info = clientLogin(name, reply, reference);
 					break;
 
 				// supervisor (administrator)
-				case 'S':
+				case ADMINISTRATOR:
 					if (reference instanceof Administrator)
 					{
 						info = administratorLogin(name, reply, (Administrator)reference);
@@ -2457,7 +2464,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	 * @param	container	container that is logging in, non-<code>null</code>.
 	 * @return	ClientInfo	client info. of newly logged container
 	 */
-	private ClientInfo containerLogin(String name, String reply, Container container) throws AcsJNoPermissionEx
+	private ClientInfo containerLogin(String name, AuthenticationData reply, Container container) throws AcsJNoPermissionEx
 	{
 		assert (name != null);
 		assert (reply != null);
@@ -2548,7 +2555,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			}
 		}
 
-		final boolean recoverContainer = (reply.length() >= 2 && reply.charAt(1) == 'R');
+		final boolean recoverContainer = reply.isRecover();
 
 		if (existingLogin)
 		{
@@ -2557,7 +2564,9 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		}
 
 		// notify administrators about the login
-		notifyContainerLogin(containerInfo);
+		final long timeStamp = reply.getTimeStamp() > 0 ? reply.getTimeStamp() : System.currentTimeMillis();
+		final long executionId = reply.getExecutionId() != 0 ? reply.getExecutionId() : generateExecutionId();
+		notifyContainerLogin(containerInfo, timeStamp, executionId);
 
 		// do container post login activation in separate thread
 		final ContainerInfo finalInfo = containerInfo;
@@ -3295,7 +3304,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	 * @param	administrator	administrator that is logging in
 	 * @return	ClientInfo	client info. of newly logged administrator
 	 */
-	private ClientInfo administratorLogin(String name, String reply, Administrator administrator) throws AcsJNoPermissionEx
+	private ClientInfo administratorLogin(String name, AuthenticationData reply, Administrator administrator) throws AcsJNoPermissionEx
 	{
 		assert (name != null);
 		assert (administrator != null);
@@ -3352,7 +3361,9 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		}
 
 		// notify administrators about the login
-		notifyClientLogin(clientInfo);
+		final long timeStamp = reply.getTimeStamp() > 0 ? reply.getTimeStamp() : System.currentTimeMillis();
+		final long executionId = reply.getExecutionId() != 0 ? reply.getExecutionId() : generateExecutionId();
+		notifyClientLogin(clientInfo, timeStamp, executionId);
 
 		logger.log(Level.INFO,"Administrator '" + name + "' logged in.");
 
@@ -3366,7 +3377,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	 * @param	client	client that is logging in
 	 * @return	ClientInfo	client info. of newly logged client
 	 */
-	private ClientInfo clientLogin(String name, String reply, Client client) throws AcsJNoPermissionEx
+	private ClientInfo clientLogin(String name, AuthenticationData reply, Client client) throws AcsJNoPermissionEx
 	{
 		assert (name != null);
 		assert (client != null);
@@ -3421,7 +3432,9 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		}
 
 		// notify administrators about the login
-		notifyClientLogin(clientInfo);
+		final long timeStamp = reply.getTimeStamp() > 0 ? reply.getTimeStamp() : System.currentTimeMillis();
+		final long executionId = reply.getExecutionId() != 0 ? reply.getExecutionId() : generateExecutionId();
+		notifyClientLogin(clientInfo, timeStamp, executionId);
 
 		logger.log(Level.INFO,"Client '" + name + "' logged in.");
 
@@ -3486,8 +3499,9 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 		}
 
+/// TODO !!!!!!!!!!!!!! no more handle -> componentInfo data
 		// notify administrators about the logout
-		notifyContainerLogout(containerInfo);
+		notifyContainerLogout(containerInfo, System.currentTimeMillis());
 
 		logger.log(Level.INFO,"Container '" + containerInfo.getName() + "' logged out.");
 
@@ -3559,8 +3573,9 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		//internalReleaseComponents(components to be released, owners IntArray)
 		//internalReleaseComponents(clientInfo.getComponents(), clientInfo.getComponents())
 
+/// TODO !!!!!!!!!!!!!! no more handle -> componentInfo data
 		// notify administrators about the logout
-		notifyClientLogout(clientInfo);
+		notifyClientLogout(clientInfo, System.currentTimeMillis());
 
 		logger.log(Level.INFO,"Client '" + clientInfo.getName() + "' logged out.");
 
@@ -3600,8 +3615,9 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		// spawn another task which will release all clientInfo.getComponents()
 		threadPool.execute(new ReleaseComponentTask(clientInfo.getHandle(), componentsArray));
 
+/// TODO !!!!!!!!!!!!!! no more handle -> componentInfo data
 		// notify administrators about the logout
-		notifyClientLogout(clientInfo);
+		notifyClientLogout(clientInfo, System.currentTimeMillis());
 
 		logger.log(Level.INFO,"Administrator '" + clientInfo.getName() + "' logged out.");
 
@@ -3885,7 +3901,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	 * Notifies administrators about newly logged client.
 	 * @param	clientInfo	newly logged client, non-<code>null</code>
 	 */
-	private void notifyClientLogin(final ClientInfo clientInfo)
+	private void notifyClientLogin(final ClientInfo clientInfo, final long timeStamp, final long executionId)
 	{
 		assert (clientInfo != null);
 
@@ -3894,7 +3910,6 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 		if (admins != null)
 		{
-
 			/**
 			 * Task thats invokes <code>Administrator#clientLoggedIn</code> method.
 			 */
@@ -3917,7 +3932,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 					{
 						try
 						{
-							((Administrator)administratorInfo.getClient()).clientLoggedIn(clientInfo);
+							((Administrator)administratorInfo.getClient()).clientLoggedIn(clientInfo, timeStamp, executionId);
 							break;
 						}
 						catch (RemoteException re)
@@ -3941,7 +3956,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	 * Notifies administrators about newly logged container.
 	 * @param	containerInfo	newly logged container, non-<code>null</code>
 	 */
-	private void notifyContainerLogin(final ContainerInfo containerInfo)
+	private void notifyContainerLogin(final ContainerInfo containerInfo, final long timeStamp, final long executionId)
 	{
 		assert (containerInfo != null);
 
@@ -3950,7 +3965,6 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 		if (admins != null)
 		{
-
 			/**
 			 * Task thats invokes <code>Administrator#containerLoggedIn</code> method.
 			 */
@@ -3973,7 +3987,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 					{
 						try
 						{
-							((Administrator)administratorInfo.getClient()).containerLoggedIn(containerInfo);
+							((Administrator)administratorInfo.getClient()).containerLoggedIn(containerInfo, timeStamp, executionId);
 							break;
 						}
 						catch (RemoteException re)
@@ -3999,7 +4013,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	 * Notifies administrators about client logging out.
 	 * @param	client	client logging out, non-<code>null</code>
 	 */
-	private void notifyClientLogout(final ClientInfo clientInfo)
+	private void notifyClientLogout(final ClientInfo clientInfo, final long timeStamp)
 	{
 		assert (clientInfo != null);
 
@@ -4031,7 +4045,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 					{
 						try
 						{
-							((Administrator)administratorInfo.getClient()).clientLoggedOut(clientInfo.getHandle());
+							((Administrator)administratorInfo.getClient()).clientLoggedOut(clientInfo.getHandle(), timeStamp);
 							break;
 						}
 						catch (RemoteException re)
@@ -4056,7 +4070,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	 * Notifies administrators about container logging out.
 	 * @param	containerInfo	container logging out, non-<code>null</code>
 	 */
-	private void notifyContainerLogout(final ContainerInfo containerInfo)
+	private void notifyContainerLogout(final ContainerInfo containerInfo, final long timeStamp)
 	{
 		assert (containerInfo != null);
 
@@ -4088,7 +4102,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 					{
 						try
 						{
-							((Administrator)administratorInfo.getClient()).containerLoggedOut(containerInfo.getHandle());
+							((Administrator)administratorInfo.getClient()).containerLoggedOut(containerInfo.getHandle(), timeStamp);
 							break;
 						}
 						catch (RemoteException re)
@@ -4306,7 +4320,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	 * @param	requestors	array of clients requesting the Component, non-<code>null</code>
 	 * @param	components		array of requested the components, non-<code>null</code>
 	 */
-	private void notifyComponentRequested(int[] requestors, int[] components)
+	private void notifyComponentRequested(int[] requestors, int[] components, final long timeStamp)
 	{
 		assert (requestors != null);
 		assert (components != null);
@@ -4341,7 +4355,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 					{
 						try
 						{
-							((Administrator)administratorInfo.getClient()).components_requested(requestors, components);
+							((Administrator)administratorInfo.getClient()).components_requested(requestors, components, timeStamp);
 							break;
 						}
 						catch (RemoteException re)
@@ -4366,7 +4380,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	 * @param	requestors	array of clients requesting the Component, non-<code>null</code>
 	 * @param	components		array of requested the components, non-<code>null</code>
 	 */
-	private void notifyComponentReleased(int[] requestors, int[] components)
+	private void notifyComponentReleased(int[] requestors, int[] components, final long timeStamp)
 	{
 		assert (requestors != null);
 		assert (components != null);
@@ -4401,7 +4415,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 					{
 						try
 						{
-							((Administrator)administratorInfo.getClient()).components_released(requestors, components);
+							((Administrator)administratorInfo.getClient()).components_released(requestors, components, timeStamp);
 							break;
 						}
 						catch (RemoteException re)
@@ -5189,7 +5203,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 							addComponentOwner(componentInfo.getHandle(), requestor);
 
 						// inform administrators about component request
-						notifyComponentRequested(new int[] { requestor }, new int[] { componentInfo.getHandle() });
+						notifyComponentRequested(new int[] { requestor }, new int[] { componentInfo.getHandle() }, System.currentTimeMillis());
 
 						// notify about the change (only if on the same container)
 						// on complete system shutdown sort will be done anyway
@@ -5480,7 +5494,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 			try
 			{
-				componentInfo = container.activate_component(h | COMPONENT_MASK, name, code, type);
+				componentInfo = container.activate_component(h | COMPONENT_MASK, generateExecutionId(), name, code, type);
 			}
 			catch (Throwable ex)
 			{
@@ -5786,7 +5800,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		//
 		// notify administrators about the activation
 		//
-		notifyComponentRequested(new int[] { requestor }, new int[] { componentInfo.getHandle() });
+		notifyComponentRequested(new int[] { requestor }, new int[] { componentInfo.getHandle() }, System.currentTimeMillis());
 
 		if (reactivate)
 			logger.log(Level.FINE,"Component '"+name+"' reactivated.");
@@ -6079,9 +6093,9 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			// negative means immortal, however this could not happen since immortal
 			// components have manager as an owner
 		}
-
+/// TODO !!!!!!!!!!!!!! no more handle -> componentInfo data
 		// notify administrators about the release request
-		notifyComponentReleased(new int[] { owner }, new int[] { h });
+		notifyComponentReleased(new int[] { owner }, new int[] { h }, System.currentTimeMillis());
 
 		logger.log(Level.FINE,"Component '"+componentInfo.getName()+"' released.");
 

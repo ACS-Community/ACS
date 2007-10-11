@@ -8,15 +8,21 @@ import java.net.URI;
 import java.util.logging.Logger;
 
 import si.ijs.maci.ComponentInfo;
+import alma.acs.util.UTCUtility;
+
 import com.cosylab.acs.maci.IntArray;
 import com.cosylab.acs.maci.MessageType;
 import com.cosylab.acs.maci.RemoteException;
 
 import org.omg.CORBA.ORB;
 import org.omg.CORBA.Object;
+
+import si.ijs.maci.AuthenticationData;
 import si.ijs.maci.Client;
 import si.ijs.maci.ClientInfo;
 import si.ijs.maci.ClientPOA;
+import si.ijs.maci.ClientType;
+import si.ijs.maci.ImplLangType;
 import si.ijs.maci.Manager;
 
 /**
@@ -78,13 +84,60 @@ public class ClientProxyImpl extends ClientPOA
 	}
 
 	/**
-	 * @see si.ijs.maci.ClientOperations#authenticate(String)
+	 * Convert manager ClientType to CORBA type.
+	 * @param type
+	 * @return
 	 */
-	public String authenticate(String question)
+	public static ClientType toClientType(com.cosylab.acs.maci.ClientType type)
+	{
+		switch (type)
+		{
+			case CLIENT:
+				return ClientType.CLIENT_TYPE;
+			case ADMINISTRATOR:
+				return ClientType.ADMINISTRATOR_TYPE;
+			case CONTAINER:
+				return ClientType.CONTAINER_TYPE;
+			default:
+				throw new IllegalArgumentException("unsupported client type");
+		}
+	}
+	
+	/**
+	 * Convert manager ImplLang to CORBA type.
+	 * @param type
+	 * @return
+	 */
+	public static ImplLangType toImplLangType(com.cosylab.acs.maci.ImplLang type)
+	{
+		switch (type)
+		{
+			case JAVA:
+				return ImplLangType.JAVA;
+			case CPP:
+				return ImplLangType.CPP;
+			case PYTHON:
+				return ImplLangType.PYTHON;
+			default:
+				throw new IllegalArgumentException("unsupported implementation language type");
+		}
+	}
+
+	/**
+	 * @see si.ijs.maci.ClientOperations#authenticate(long, String)
+	 */
+	public AuthenticationData authenticate(long executionId, String question)
 	{
 		try
 		{
-			return client.authenticate(question);
+			com.cosylab.acs.maci.AuthenticationData retVal = client.authenticate(executionId, question);
+			return new AuthenticationData(
+					retVal.getAnswer(),
+					toClientType(retVal.getClientType()),
+					toImplLangType(retVal.getImplLang()),
+					retVal.isRecover(),
+					UTCUtility.utcJavaToOmg(retVal.getTimeStamp()),
+					retVal.getExecutionId());
 		}
 		catch (RemoteException re)
 		{

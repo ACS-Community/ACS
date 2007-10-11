@@ -8,11 +8,15 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-import si.ijs.maci.Container;
+import org.omg.CORBA.Object;
 
-import com.cosylab.acs.maci.ContainerInfo;
+import si.ijs.maci.Container;
+import alma.acs.util.UTCUtility;
+
 import com.cosylab.acs.maci.Administrator;
 import com.cosylab.acs.maci.ClientInfo;
+import com.cosylab.acs.maci.ComponentInfo;
+import com.cosylab.acs.maci.ContainerInfo;
 import com.cosylab.acs.maci.RemoteException;
 
 /**
@@ -46,9 +50,9 @@ public class AdministratorProxy extends ClientProxy implements Administrator
 	}
 
 	/**
-	 * @see com.cosylab.acs.maci.Administrator#containerLoggedIn(ContainerInfo)
+	 * @see com.cosylab.acs.maci.Administrator#containerLoggedIn(ContainerInfo, long, long)
 	 */
-	public void containerLoggedIn(ContainerInfo info) throws RemoteException
+	public void containerLoggedIn(ContainerInfo info, long timeStamp, long executionId) throws RemoteException
 	{
 		try
 		{
@@ -60,7 +64,7 @@ public class AdministratorProxy extends ClientProxy implements Administrator
 															  (Container)((ClientProxy)info.getContainer()).getClient(),
 															  info.getComponents().toArray());
 			
-			administrator.container_logged_in(containerInfo);
+			administrator.container_logged_in(containerInfo, UTCUtility.utcJavaToOmg(timeStamp), executionId);
 		}
 		catch (Exception ex)
 		{
@@ -70,13 +74,13 @@ public class AdministratorProxy extends ClientProxy implements Administrator
 	}
 
 	/**
-	 * @see com.cosylab.acs.maci.Administrator#containerLoggedOut(int)
+	 * @see com.cosylab.acs.maci.Administrator#containerLoggedOut(int, long)
 	 */
-	public void containerLoggedOut(int handle) throws RemoteException
+	public void containerLoggedOut(int handle, long timeStamp) throws RemoteException
 	{
 		try
 		{
-			administrator.container_logged_out(handle);
+			administrator.container_logged_out(handle, UTCUtility.utcJavaToOmg(timeStamp));
 		}
 		catch (Exception ex)
 		{
@@ -86,9 +90,9 @@ public class AdministratorProxy extends ClientProxy implements Administrator
 	}
 
 	/**
-	 * @see com.cosylab.acs.maci.Administrator#clientLoggedIn(ClientInfo)
+	 * @see com.cosylab.acs.maci.Administrator#clientLoggedIn(ClientInfo, long, long)
 	 */
-	public void clientLoggedIn(ClientInfo info) throws RemoteException
+	public void clientLoggedIn(ClientInfo info, long timeStamp, long executionId) throws RemoteException
 	{
 		try
 		{
@@ -100,7 +104,7 @@ public class AdministratorProxy extends ClientProxy implements Administrator
 														info.getName(),
 														ManagerProxyImpl.mapAccessRights(info.getAccessRights()));
 			
-			administrator.client_logged_in(clientInfo);
+			administrator.client_logged_in(clientInfo, UTCUtility.utcJavaToOmg(timeStamp), executionId);
 		}
 		catch (Exception ex)
 		{
@@ -110,13 +114,13 @@ public class AdministratorProxy extends ClientProxy implements Administrator
 	}
 
 	/**
-	 * @see com.cosylab.acs.maci.Administrator#clientLoggedOut(int)
+	 * @see com.cosylab.acs.maci.Administrator#clientLoggedOut(int, long)
 	 */
-	public void clientLoggedOut(int handle) throws RemoteException
+	public void clientLoggedOut(int handle, long timeStamp) throws RemoteException
 	{
 		try
 		{
-			administrator.client_logged_out(handle);
+			administrator.client_logged_out(handle, UTCUtility.utcJavaToOmg(timeStamp));
 		}
 		catch (Exception ex)
 		{
@@ -126,13 +130,13 @@ public class AdministratorProxy extends ClientProxy implements Administrator
 	}
 
 	/**
-	 * @see com.cosylab.acs.maci.Administrator#components_released(int[], int[])
+	 * @see com.cosylab.acs.maci.Administrator#components_released(int[], int[], long)
 	 */
-	public void components_released(int[] clients, int[] components) throws RemoteException
+	public void components_released(int[] clients, int[] components, long timeStamp) throws RemoteException
 	{
 		try
 		{
-			administrator.components_released(clients, components);
+			administrator.components_released(clients, components, UTCUtility.utcJavaToOmg(timeStamp));
 		}
 		catch (Exception ex)
 		{
@@ -142,14 +146,14 @@ public class AdministratorProxy extends ClientProxy implements Administrator
 	}
 
 	/**
-	 * @see com.cosylab.acs.maci.Administrator#components_requested(int[], int[])
+	 * @see com.cosylab.acs.maci.Administrator#components_requested(int[], int[], long)
 	 */
-	public void components_requested(int[] clients, int[] components)
+	public void components_requested(int[] clients, int[] components, long timeStamp)
 		throws RemoteException
 	{
 		try
 		{
-			administrator.components_requested(clients, components);
+			administrator.components_requested(clients, components, UTCUtility.utcJavaToOmg(timeStamp));
 		}
 		catch (Exception ex)
 		{
@@ -158,6 +162,62 @@ public class AdministratorProxy extends ClientProxy implements Administrator
 		}
 	}
 
+	/**
+	 * @see com.cosylab.acs.maci.Administrator#component_activated(com.cosylab.acs.maci.ComponentInfo, long, long)
+	 */
+	public void component_activated(ComponentInfo info, long timeStamp, long executionId) throws RemoteException {
+		try
+		{
+			// invalid info (replacement for null)
+			final si.ijs.maci.ComponentInfo invalidInfo = new si.ijs.maci.ComponentInfo("<invalid>", "<invalid>", null, "<invalid>", new int[0], 0, "<invalid>", 0, 0, new String[0]);
+
+			si.ijs.maci.ComponentInfo componentInfo = invalidInfo;
+			if (info != null)
+			{
+				Object obj = null;
+				if (info.getComponent() != null)
+					obj = (Object)info.getComponent().getObject();
+				String[] interfaces;
+				if (info.getInterfaces() != null)
+					interfaces = info.getInterfaces();
+				else
+					interfaces = new String[0];
+
+				componentInfo = new si.ijs.maci.ComponentInfo(info.getType(),
+										 info.getCode(),
+									     obj,
+										 info.getName(),
+										 info.getClients().toArray(),
+										 info.getContainer(),
+										 info.getContainerName(),
+										 info.getHandle(),
+										 ManagerProxyImpl.mapAccessRights(info.getAccessRights()),
+										 interfaces);
+			}
+			
+			administrator.component_activated(componentInfo, UTCUtility.utcJavaToOmg(timeStamp), executionId);
+		}
+		catch (Exception ex)
+		{
+			RemoteException re = new RemoteException("Failed to invoke 'component_activated()' method.", ex);
+			throw re;
+		}
+	}
+
+	/**
+	 * @see com.cosylab.acs.maci.Administrator#component_deactivated(int, long)
+	 */
+	public void component_deactivated(int handle, long timeStamp) throws RemoteException {
+		try
+		{
+			administrator.component_deactivated(handle, UTCUtility.utcJavaToOmg(timeStamp));
+		}
+		catch (Exception ex)
+		{
+			RemoteException re = new RemoteException("Failed to invoke 'component_deactivated()' method.", ex);
+			throw re;
+		}
+	}
 
 	/**
 	 * Returns the client.

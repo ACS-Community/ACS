@@ -5,6 +5,7 @@ package com.cosylab.acs.maci.test;
 
 import alma.maciErrType.wrappers.AcsJNoPermissionEx;
 
+import com.cosylab.acs.maci.ClientType;
 import com.cosylab.acs.maci.ComponentInfo;
 import com.cosylab.acs.maci.Manager;
 import com.cosylab.acs.maci.RemoteException;
@@ -19,18 +20,11 @@ public class TestDynamicContainer extends TestContainer {
 
 	private Manager manager = null;
 	
-	/**
-	 * Constructor for TestContainer.
-	 * @param name
-	 * @param reply
-	 */
-	public TestDynamicContainer(String name, String reply) {
-		super(name, reply);
+
+	public TestDynamicContainer(String name, ClientType type, boolean recover) {
+		super(name, type, recover);
 	}
 
-	/**
-	 * @param name
-	 */
 	public TestDynamicContainer(String name) {
 		super(name);
 	}
@@ -44,10 +38,11 @@ public class TestDynamicContainer extends TestContainer {
 	}
 
 	/**
-	 * @see com.cosylab.acs.maci.Container#activate_COB(int, java.lang.String, java.lang.String, java.lang.String)
+	 * @see com.cosylab.acs.maci.Container#activate_COB(int, long, java.lang.String, java.lang.String, java.lang.String)
 	 */
 	public ComponentInfo activate_component(
 		int handle,
+		long executionId,
 		String name,
 		String exe,
 		String type)
@@ -55,7 +50,7 @@ public class TestDynamicContainer extends TestContainer {
 
 		supportedComponents.put(name, new TestComponent(name));
 		
-		return super.activate_component(handle, name, exe, type);
+		return super.activate_component(handle, executionId, name, exe, type);
 	}
 
 	/**

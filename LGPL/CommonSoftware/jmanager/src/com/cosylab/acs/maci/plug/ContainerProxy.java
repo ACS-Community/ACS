@@ -48,15 +48,15 @@ public class ContainerProxy extends ClientProxy implements Container
 
 
 	/**
-	 * @see com.cosylab.acs.maci.Container#activate_component(int, String, String, String)
+	 * @see com.cosylab.acs.maci.Container#activate_component(int, long, String, String, String)
 	 */
-	public ComponentInfo activate_component(int handle, String name, String exe, String type)
+	public ComponentInfo activate_component(int handle, long executionId, String name, String exe, String type)
 		throws RemoteException
 	{
 		try
 		{
 			ComponentInfo retVal = null;
-			si.ijs.maci.ComponentInfo info = container.activate_component(handle, name, exe, type);
+			si.ijs.maci.ComponentInfo info = container.activate_component(handle, executionId, name, exe, type);
 			if (info != null)
 			{
 				retVal = new ComponentInfo(info.h, info.name, info.type, info.code,

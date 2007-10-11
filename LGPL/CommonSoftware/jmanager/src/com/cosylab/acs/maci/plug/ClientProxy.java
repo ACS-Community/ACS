@@ -11,8 +11,13 @@ import java.io.Serializable;
 
 import org.omg.CORBA.Object;
 
+import alma.acs.util.UTCUtility;
+
+import com.cosylab.acs.maci.AuthenticationData;
+import com.cosylab.acs.maci.ClientType;
 import com.cosylab.acs.maci.ComponentInfo;
 import com.cosylab.acs.maci.Client;
+import com.cosylab.acs.maci.ImplLang;
 import com.cosylab.acs.maci.MessageType;
 import com.cosylab.acs.maci.RemoteException;
 
@@ -47,13 +52,54 @@ public class ClientProxy extends CORBAReferenceSerializator implements Client, S
 	}
 
 	/**
-	 * @see com.cosylab.acs.maci.Client#authenticate(String)
+	 * Convert CORBA ClienType to manager type.
+	 * @param type
+	 * @return
 	 */
-	public String authenticate(String question) throws RemoteException
+	public static ClientType toClientType(si.ijs.maci.ClientType type)
+	{
+		if (type == si.ijs.maci.ClientType.CLIENT_TYPE)
+			return ClientType.CLIENT;
+		else if (type == si.ijs.maci.ClientType.ADMINISTRATOR_TYPE)
+			return ClientType.ADMINISTRATOR;
+		else if (type == si.ijs.maci.ClientType.CONTAINER_TYPE)
+			return ClientType.CONTAINER;
+		else
+			throw new IllegalArgumentException("unsupported client type");
+	}
+	
+	/**
+	 * Convert CORBA ImplLang to manager type.
+	 * @param type
+	 * @return
+	 */
+	public static ImplLang toImplLang(si.ijs.maci.ImplLangType type)
+	{
+		if (type == si.ijs.maci.ImplLangType.JAVA)
+			return ImplLang.JAVA;
+		else if (type == si.ijs.maci.ImplLangType.CPP)
+			return ImplLang.CPP;
+		else if (type == si.ijs.maci.ImplLangType.PYTHON)
+			return ImplLang.PYTHON;
+		else
+			throw new IllegalArgumentException("unsupported implementation language type");
+	}
+
+	/**
+	 * @see com.cosylab.acs.maci.Client#authenticate(long, String)
+	 */
+	public AuthenticationData authenticate(long executionId, String question) throws RemoteException
 	{
 		try
 		{
-			return client.authenticate(question);
+			si.ijs.maci.AuthenticationData retVal = client.authenticate(executionId, question);
+			return new AuthenticationData(
+					retVal.answer,
+					toClientType(retVal.client_type),
+					toImplLang(retVal.impl_lang),
+					retVal.recover,
+					UTCUtility.utcOmgToJava(retVal.timestamp),
+					retVal.execution_id);
 		}
 		catch (Exception ex)
 		{

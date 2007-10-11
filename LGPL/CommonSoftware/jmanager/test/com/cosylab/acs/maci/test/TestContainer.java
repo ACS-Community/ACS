@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.cosylab.acs.maci.ClientType;
 import com.cosylab.acs.maci.Container;
 import com.cosylab.acs.maci.Component;
 import com.cosylab.acs.maci.ComponentInfo;
@@ -29,25 +30,26 @@ public class TestContainer extends TestClient implements Container {
 	/**
 	 * Constructor for TestContainer.
 	 * @param name
-	 * @param reply
+	 * @param type
 	 */
-	public TestContainer(String name, String reply) {
-		super(name, reply);
+	public TestContainer(String name, ClientType type, boolean recover) {
+		super(name, type, recover);
 	}
 
 	/**
 	 * @param name
 	 */
 	public TestContainer(String name) {
-		this(name, "AR");
+		this(name, ClientType.CONTAINER, true);
 	}
 
 
 	/**
-	 * @see com.cosylab.acs.maci.Container#activate_COB(int, java.lang.String, java.lang.String, java.lang.String)
+	 * @see com.cosylab.acs.maci.Container#activate_COB(int, long executionId, java.lang.String, java.lang.String, java.lang.String)
 	 */
 	public ComponentInfo activate_component(
 		int handle,
+		long executionId, 
 		String name,
 		String exe,
 		String type)

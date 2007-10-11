@@ -8,8 +8,11 @@ package com.cosylab.acs.maci.test;
 
 import org.omg.CORBA.Object;
 
+import si.ijs.maci.AuthenticationData;
+import si.ijs.maci.ClientType;
 import si.ijs.maci.ContainerPOA;
 import si.ijs.maci.ComponentInfo;
+import si.ijs.maci.ImplLangType;
 
 import si.ijs.maci.LoggingConfigurablePackage.LogLevels;
 
@@ -29,9 +32,9 @@ public class ContainerProxyImpl extends ContainerPOA {
 	}
 
 	/* (non-Javadoc)
-	 * @see si.ijs.maci.ContainerOperations#activate_COB(int, java.lang.String, java.lang.String, java.lang.String)
+	 * @see si.ijs.maci.ContainerOperations#activate_COB(int, long, java.lang.String, java.lang.String, java.lang.String)
 	 */
-	public ComponentInfo activate_component(int arg0, String arg1, String arg2, String arg3) {
+	public ComponentInfo activate_component(int arg0, long executionId, String arg1, String arg2, String arg3) {
 		return null;
 	}
 
@@ -69,11 +72,10 @@ public class ContainerProxyImpl extends ContainerPOA {
 	}
 
 	/* (non-Javadoc)
-	 * @see si.ijs.maci.ClientOperations#authenticate(java.lang.String)
+	 * @see si.ijs.maci.ClientOperations#authenticate(long, java.lang.String)
 	 */
-	public String authenticate(String arg0) {
-		return "A";
-
+	public AuthenticationData authenticate(long executionId, String arg0) {
+		return new AuthenticationData("", ClientType.CONTAINER_TYPE, ImplLangType.JAVA, false, System.currentTimeMillis(), executionId);
 	}
 
 	/* (non-Javadoc)

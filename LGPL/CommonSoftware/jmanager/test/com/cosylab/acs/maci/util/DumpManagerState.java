@@ -8,10 +8,13 @@ import org.omg.PortableServer.POAManager;
 import com.cosylab.acs.maci.HandleHelper;
 
 import si.ijs.maci.AdministratorPOA;
+import si.ijs.maci.AuthenticationData;
 import si.ijs.maci.Client;
 import si.ijs.maci.ClientInfo;
+import si.ijs.maci.ClientType;
 import si.ijs.maci.ComponentInfo;
 import si.ijs.maci.ContainerInfo;
+import si.ijs.maci.ImplLangType;
 import si.ijs.maci.Manager;
 import si.ijs.maci.ManagerHelper;
 
@@ -29,10 +32,10 @@ public class DumpManagerState implements Runnable
 	{
 
 		/**
-		 * @see si.ijs.maci.ClientOperations#authenticate(java.lang.String)
+		 * @see si.ijs.maci.ClientOperations#authenticate(long, java.lang.String)
 		 */
-		public String authenticate(String arg0) {
-			return "S";
+		public AuthenticationData authenticate(long executionId, String question) {
+			return new AuthenticationData("S", ClientType.ADMINISTRATOR_TYPE, ImplLangType.JAVA, false, System.currentTimeMillis(), executionId);
 		}
 
 		/**
@@ -75,52 +78,68 @@ public class DumpManagerState implements Runnable
 			return true;
 		}
 
-		/**
-		 * @see si.ijs.maci.AdministratorOperations#client_logged_in(si.ijs.maci.ClientInfo)
+		/* (non-Javadoc)
+		 * @see si.ijs.maci.AdministratorOperations#client_logged_in(si.ijs.maci.ClientInfo, long, long)
 		 */
-		public void client_logged_in(ClientInfo arg0) {
+		public void client_logged_in(ClientInfo info, long timestamp, long execution_id) {
 			// TODO Auto-generated method stub
-
+			
 		}
 
-		/**
-		 * @see si.ijs.maci.AdministratorOperations#client_logged_out(int)
+		/* (non-Javadoc)
+		 * @see si.ijs.maci.AdministratorOperations#client_logged_out(int, long)
 		 */
-		public void client_logged_out(int arg0) {
+		public void client_logged_out(int h, long timestamp) {
 			// TODO Auto-generated method stub
-
+			
 		}
 
-		/**
-		 * @see si.ijs.maci.AdministratorOperations#components_released(int[], int[])
+		/* (non-Javadoc)
+		 * @see si.ijs.maci.AdministratorOperations#component_activated(si.ijs.maci.ComponentInfo, long, long)
 		 */
-		public void components_released(int[] arg0, int[] arg1) {
+		public void component_activated(ComponentInfo info, long timestamp, long execution_id) {
 			// TODO Auto-generated method stub
-
+			
 		}
 
-		/**
-		 * @see si.ijs.maci.AdministratorOperations#components_requested(int[], int[])
+		/* (non-Javadoc)
+		 * @see si.ijs.maci.AdministratorOperations#component_deactivated(int, long)
 		 */
-		public void components_requested(int[] arg0, int[] arg1) {
+		public void component_deactivated(int h, long timestamp) {
 			// TODO Auto-generated method stub
-
+			
 		}
 
-		/**
-		 * @see si.ijs.maci.AdministratorOperations#container_logged_in(si.ijs.maci.ContainerInfo)
+		/* (non-Javadoc)
+		 * @see si.ijs.maci.AdministratorOperations#components_released(int[], int[], long)
 		 */
-		public void container_logged_in(ContainerInfo arg0) {
+		public void components_released(int[] clients, int[] components, long timestamp) {
 			// TODO Auto-generated method stub
-
+			
 		}
 
-		/**
-		 * @see si.ijs.maci.AdministratorOperations#container_logged_out(int)
+		/* (non-Javadoc)
+		 * @see si.ijs.maci.AdministratorOperations#components_requested(int[], int[], long)
 		 */
-		public void container_logged_out(int arg0) {
+		public void components_requested(int[] clients, int[] components, long timestamp) {
 			// TODO Auto-generated method stub
+			
+		}
 
+		/* (non-Javadoc)
+		 * @see si.ijs.maci.AdministratorOperations#container_logged_in(si.ijs.maci.ContainerInfo, long, long)
+		 */
+		public void container_logged_in(ContainerInfo info, long timestamp, long execution_id) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see si.ijs.maci.AdministratorOperations#container_logged_out(int, long)
+		 */
+		public void container_logged_out(int h, long timestamp) {
+			// TODO Auto-generated method stub
+			
 		}
 
 	}

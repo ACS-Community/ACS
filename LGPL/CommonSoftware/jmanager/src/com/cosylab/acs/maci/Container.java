@@ -45,6 +45,7 @@ public interface Container extends Client
 	 * @param	handle	Handle of the Component that is being activated.
 	 * 					This handle is used by the Component when it will present itself to the Manager.
 	 * 					The Component is expected to remember this handle for its entire life-time.
+	 * @param	executionId Execution ID.
 	 * @param	name	Name of the Component to instantiate.
 	 * @param	exe		Path to the executable file (a DLL or a shared library) in which the Component's code resides.
 	 * 					The path is relative to the root directory in which all executable code is stored.
@@ -56,7 +57,7 @@ public interface Container extends Client
 	 * @return			Returns the reference to the object that has just been activated.
 	 *					If the Component could not the activated, a nil reference is returned. 
 	 */
-	public ComponentInfo activate_component(int handle, String name, String exe, String type) throws RemoteException;
+	public ComponentInfo activate_component(int handle, long executionId, String name, String exe, String type) throws RemoteException;
 	
 	/**
 	 * Deactivate all components whose handles are given.

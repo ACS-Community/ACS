@@ -13,25 +13,23 @@ import java.net.URI;
 import org.omg.CORBA.Object;
 
 import alma.maciErrType.NoPermissionEx;
+import alma.maciErrType.wrappers.AcsJCannotGetComponentEx;
+import alma.maciErrType.wrappers.AcsJComponentSpecIncompatibleWithActiveComponentEx;
+import alma.maciErrType.wrappers.AcsJIncompleteComponentSpecEx;
+import alma.maciErrType.wrappers.AcsJInvalidComponentSpecEx;
+import alma.maciErrType.wrappers.AcsJNoPermissionEx;
 
 import com.cosylab.acs.maci.Client;
 import com.cosylab.acs.maci.ClientInfo;
 import com.cosylab.acs.maci.Component;
 import com.cosylab.acs.maci.ComponentInfo;
 import com.cosylab.acs.maci.ComponentSpec;
-import com.cosylab.acs.maci.ComponentStatus;
 import com.cosylab.acs.maci.ContainerInfo;
 import com.cosylab.acs.maci.IntArray;
 import com.cosylab.acs.maci.Manager;
 import com.cosylab.acs.maci.NoDefaultComponentException;
 import com.cosylab.acs.maci.StatusHolder;
 import com.cosylab.acs.maci.StatusSeqHolder;
-
-import alma.maciErrType.wrappers.AcsJCannotGetComponentEx;
-import alma.maciErrType.wrappers.AcsJComponentSpecIncompatibleWithActiveComponentEx;
-import alma.maciErrType.wrappers.AcsJIncompleteComponentSpecEx;
-import alma.maciErrType.wrappers.AcsJInvalidComponentSpecEx;
-import alma.maciErrType.wrappers.AcsJNoPermissionEx;
 
 /**
  * CORBA Manager Proxy.

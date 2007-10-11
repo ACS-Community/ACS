@@ -5,6 +5,8 @@ package com.cosylab.acs.maci.test;
 
 import java.util.ArrayList;
 
+import com.cosylab.acs.maci.ClientType;
+import com.cosylab.acs.maci.ComponentInfo;
 import com.cosylab.acs.maci.ContainerInfo;
 import com.cosylab.acs.maci.Administrator;
 import com.cosylab.acs.maci.ClientInfo;
@@ -29,9 +31,9 @@ public class TestAdministrator extends TestClient implements Administrator
 	 * @param name
 	 * @param reply
 	 */
-	public TestAdministrator(String name, String reply, boolean monitorNotifications)
+	public TestAdministrator(String name, ClientType type, boolean monitorNotifications)
 	{
-		super(name, reply);
+		super(name, type);
 		if (monitorNotifications) {
 			clientLoggedInNotifications = new ArrayList();
 			clientLoggedOutNotifications = new ArrayList();
@@ -46,7 +48,7 @@ public class TestAdministrator extends TestClient implements Administrator
 	 */
 	public TestAdministrator(String name)
 	{
-		this(name, "S", false);
+		this(name, ClientType.ADMINISTRATOR, false);
 	}
 
 	/**
@@ -55,13 +57,13 @@ public class TestAdministrator extends TestClient implements Administrator
 	 */
 	public TestAdministrator(String name, boolean monitorNotifications)
 	{
-		this(name, "S", monitorNotifications);
+		this(name, ClientType.ADMINISTRATOR, monitorNotifications);
 	}
 
 	/**
-	 * @see com.cosylab.acs.maci.Administrator#containerLoggedIn(com.cosylab.acs.maci.ContainerInfo)
+	 * @see com.cosylab.acs.maci.Administrator#containerLoggedIn(com.cosylab.acs.maci.ContainerInfo, long, long)
 	 */
-	public void containerLoggedIn(ContainerInfo info) throws RemoteException
+	public void containerLoggedIn(ContainerInfo info, long timeStamp, long executionId) throws RemoteException
 	{
 		if (containerLoggedInNotifications != null)
 		{
@@ -75,9 +77,9 @@ public class TestAdministrator extends TestClient implements Administrator
 	}
 
 	/**
-	 * @see com.cosylab.acs.maci.Administrator#containerLoggedOut(int)
+	 * @see com.cosylab.acs.maci.Administrator#containerLoggedOut(int, long)
 	 */
-	public void containerLoggedOut(int handle) throws RemoteException
+	public void containerLoggedOut(int handle, long timeStamp) throws RemoteException
 	{
 		if (containerLoggedOutNotifications != null)
 		{
@@ -90,9 +92,9 @@ public class TestAdministrator extends TestClient implements Administrator
 	}
 
 	/**
-	 * @see com.cosylab.acs.maci.Administrator#clientLoggedIn(com.cosylab.acs.maci.ClientInfo)
+	 * @see com.cosylab.acs.maci.Administrator#clientLoggedIn(com.cosylab.acs.maci.ClientInfo, long, long)
 	 */
-	public void clientLoggedIn(ClientInfo info) throws RemoteException
+	public void clientLoggedIn(ClientInfo info, long timeStamp, long executionId) throws RemoteException
 	{
 		if (clientLoggedInNotifications != null)
 		{
@@ -105,9 +107,9 @@ public class TestAdministrator extends TestClient implements Administrator
 	}
 
 	/**
-	 * @see com.cosylab.acs.maci.Administrator#clientLoggedOut(int)
+	 * @see com.cosylab.acs.maci.Administrator#clientLoggedOut(int, long)
 	 */
-	public void clientLoggedOut(int handle) throws RemoteException
+	public void clientLoggedOut(int handle , long timeStamp) throws RemoteException
 	{
 		if (clientLoggedOutNotifications != null)
 		{
@@ -120,20 +122,34 @@ public class TestAdministrator extends TestClient implements Administrator
 	}
 
 	/**
-	 * @see com.cosylab.acs.maci.Administrator#components_released(int, int)
+	 * @see com.cosylab.acs.maci.Administrator#components_released(int, int, long)
 	 */
-	public void components_released(int[] clients, int[] components) throws RemoteException
+	public void components_released(int[] clients, int[] components, long timeStamp) throws RemoteException
 	{
 		// noop
 	}
 
 	/**
-	 * @see com.cosylab.acs.maci.Administrator#components_requested(int, int)
+	 * @see com.cosylab.acs.maci.Administrator#components_requested(int, int, long)
 	 */
-	public void components_requested(int[] clients, int[] components)
+	public void components_requested(int[] clients, int[] components, long timeStamp)
 		throws RemoteException
 	{
 			// noop
+	}
+
+	/**
+	 * @see com.cosylab.acs.maci.Administrator#component_activated(com.cosylab.acs.maci.ComponentInfo, long, long)
+	 */
+	public void component_activated(ComponentInfo info, long timeStamp, long executionId) throws RemoteException {
+		// TODO Auto-generated method stub
+	}
+
+	/**
+	 * @see com.cosylab.acs.maci.Administrator#component_deactivated(int, long)
+	 */
+	public void component_deactivated(int handle, long timeStamp) throws RemoteException {
+		// TODO Auto-generated method stub
 	}
 
 	/**

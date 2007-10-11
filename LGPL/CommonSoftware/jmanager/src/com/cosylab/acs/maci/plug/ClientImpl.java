@@ -4,8 +4,11 @@
  
 package com.cosylab.acs.maci.plug;
 
+import com.cosylab.acs.maci.AuthenticationData;
 import com.cosylab.acs.maci.Client;
+import com.cosylab.acs.maci.ClientType;
 import com.cosylab.acs.maci.ComponentInfo;
+import com.cosylab.acs.maci.ImplLang;
 import com.cosylab.acs.maci.MessageType;
 import com.cosylab.acs.maci.RemoteException;
 
@@ -37,11 +40,11 @@ public class ClientImpl implements Client
 	}
 
 	/**
-	 * @see com.cosylab.acs.maci.Client#authenticate(String)
+	 * @see com.cosylab.acs.maci.Client#authenticate(long, String)
 	 */
-	public String authenticate(String question) throws RemoteException
+	public AuthenticationData authenticate(long executionId, String question) throws RemoteException
 	{
-		return "C";
+		return new AuthenticationData("", ClientType.CLIENT, ImplLang.JAVA, true, System.currentTimeMillis(), executionId);
 	}
 
 	/**

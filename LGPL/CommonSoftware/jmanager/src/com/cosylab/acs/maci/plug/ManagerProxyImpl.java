@@ -17,18 +17,6 @@ import org.omg.CORBA.NO_RESOURCES;
 import org.omg.CORBA.Object;
 import org.omg.CORBA.UNKNOWN;
 
-import com.cosylab.acs.maci.AccessRights;
-import com.cosylab.acs.maci.BadParametersException;
-import com.cosylab.acs.maci.Component;
-import com.cosylab.acs.maci.ComponentSpec;
-import com.cosylab.acs.maci.ComponentStatus;
-import com.cosylab.acs.maci.CoreException;
-import com.cosylab.acs.maci.Manager;
-import com.cosylab.acs.maci.NoDefaultComponentException;
-import com.cosylab.acs.maci.NoResourcesException;
-import com.cosylab.acs.maci.StatusHolder;
-import com.cosylab.acs.maci.manager.CURLHelper;
-
 import si.ijs.maci.AdministratorHelper;
 import si.ijs.maci.Client;
 import si.ijs.maci.ClientHelper;
@@ -39,12 +27,10 @@ import si.ijs.maci.ContainerHelper;
 import si.ijs.maci.ContainerInfo;
 import si.ijs.maci.ManagerPOA;
 import si.ijs.maci.LoggingConfigurablePackage.LogLevels;
-
 import alma.ACSErrTypeCommon.wrappers.AcsJBadParameterEx;
 import alma.acs.logging.ClientLogManager;
 import alma.acs.logging.config.LogConfig;
 import alma.acs.logging.config.LogConfigException;
-import alma.maci.loggingconfig.LoggingConfig;
 import alma.maci.loggingconfig.UnnamedLogger;
 import alma.maciErrType.CannotGetComponentEx;
 import alma.maciErrType.CannotRegisterComponentEx;
@@ -64,6 +50,18 @@ import alma.maciErrType.wrappers.AcsJIncompleteComponentSpecEx;
 import alma.maciErrType.wrappers.AcsJInvalidComponentSpecEx;
 import alma.maciErrType.wrappers.AcsJNoDefaultComponentEx;
 import alma.maciErrType.wrappers.AcsJNoPermissionEx;
+
+import com.cosylab.acs.maci.AccessRights;
+import com.cosylab.acs.maci.BadParametersException;
+import com.cosylab.acs.maci.Component;
+import com.cosylab.acs.maci.ComponentSpec;
+import com.cosylab.acs.maci.ComponentStatus;
+import com.cosylab.acs.maci.CoreException;
+import com.cosylab.acs.maci.Manager;
+import com.cosylab.acs.maci.NoDefaultComponentException;
+import com.cosylab.acs.maci.NoResourcesException;
+import com.cosylab.acs.maci.StatusHolder;
+import com.cosylab.acs.maci.manager.CURLHelper;
 
 /**
  * Manager is the central point of interaction between the components

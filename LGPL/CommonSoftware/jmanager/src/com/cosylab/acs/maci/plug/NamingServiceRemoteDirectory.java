@@ -70,7 +70,7 @@ public class NamingServiceRemoteDirectory
 	{
 		logger.info("Connecting to CORBA Naming Service with reference '"+reference+"'...");
 		
-		Hashtable env = new Hashtable();
+		Hashtable<Object, Object> env = new Hashtable<Object, Object>();
 		// set CosNamingFactory 
 		env.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.cosnaming.CNCtxFactory");
 		// set NS address

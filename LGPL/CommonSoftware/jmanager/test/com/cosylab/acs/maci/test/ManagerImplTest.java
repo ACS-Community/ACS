@@ -25,12 +25,11 @@ import alma.maciErrType.wrappers.AcsJIncompleteComponentSpecEx;
 import alma.maciErrType.wrappers.AcsJInvalidComponentSpecEx;
 import alma.maciErrType.wrappers.AcsJNoPermissionEx;
 
-import com.cosylab.cdb.client.CDBAccess;
-
 import com.cosylab.acs.maci.Administrator;
 import com.cosylab.acs.maci.BadParametersException;
 import com.cosylab.acs.maci.Client;
 import com.cosylab.acs.maci.ClientInfo;
+import com.cosylab.acs.maci.ClientType;
 import com.cosylab.acs.maci.Component;
 import com.cosylab.acs.maci.ComponentInfo;
 import com.cosylab.acs.maci.ComponentSpec;
@@ -42,11 +41,11 @@ import com.cosylab.acs.maci.IntArray;
 import com.cosylab.acs.maci.NoDefaultComponentException;
 import com.cosylab.acs.maci.NoResourcesException;
 import com.cosylab.acs.maci.StatusHolder;
-import com.cosylab.acs.maci.StatusSeqHolder;
 import com.cosylab.acs.maci.manager.CURLHelper;
 import com.cosylab.acs.maci.manager.ComponentInfoTopologicalSort;
 import com.cosylab.acs.maci.manager.ManagerImpl;
 import com.cosylab.acs.maci.plug.DefaultCORBAService;
+import com.cosylab.cdb.client.CDBAccess;
 
 /**
  * ManagerImpl tests.
@@ -447,7 +446,7 @@ public class ManagerImplTest extends TestCase
 		// test invalid autheticate
 		try
 		{
-			manager.login(new TestClient("invalid-auth", "invalid"));
+			manager.login(new TestClient("invalid-auth", null));
 			fail();
 		}
 		catch (AcsJNoPermissionEx npe)
@@ -459,7 +458,7 @@ public class ManagerImplTest extends TestCase
 		// test invalid autheticate
 		try
 		{
-			manager.login(new TestClient("container-invalid-auth", "A"));
+			manager.login(new TestClient("container-invalid-auth", ClientType.ADMINISTRATOR));
 			fail();
 		}
 		catch (AcsJNoPermissionEx npe)
@@ -4042,7 +4041,7 @@ public class ManagerImplTest extends TestCase
 		container.setSupportedComponents(supportedComponents);
 		
 		// recovery mode
-		TestContainer container2 = new TestContainer("Container", "AR");
+		TestContainer container2 = new TestContainer("Container", ClientType.CONTAINER, true);
 		container2.setSupportedComponents(supportedComponents);
 
 		try {
@@ -4122,7 +4121,7 @@ public class ManagerImplTest extends TestCase
 
 		try {
 			// dummy container
-			TestContainer dummyContainer  = new TestContainer("Container", "AR");
+			TestContainer dummyContainer  = new TestContainer("Container", ClientType.CONTAINER, true);
 			ClientInfo dummyContainerInfo = manager.login(dummyContainer);
 			dummyContainer.setSupportedComponents(supportedComponents);
 
@@ -4150,7 +4149,7 @@ public class ManagerImplTest extends TestCase
 
 
 			// try to confuse with recovery mode
-			TestContainer container  = new TestContainer("Container", "AR");
+			TestContainer container  = new TestContainer("Container", ClientType.CONTAINER, true);
 			container.setSupportedComponents(supportedComponents);
 
 			// add Components to container

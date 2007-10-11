@@ -1,5 +1,7 @@
 package com.cosylab.acs.maci.test;
 
+import com.cosylab.acs.maci.ClientType;
+
 /**
  * Client to be used for DoS attack.
  * Creating a huge number of clients will took to much time for test.
@@ -24,9 +26,9 @@ public class TestAlwaysNotEqualClient extends TestClient
 	 * @param name
 	 * @param reply
 	 */
-	public TestAlwaysNotEqualClient(String name, String reply)
+	public TestAlwaysNotEqualClient(String name, ClientType type)
 	{
-		super(name, reply);
+		super(name, type);
 	}
 
 	/**
