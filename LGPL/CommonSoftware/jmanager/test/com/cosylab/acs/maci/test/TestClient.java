@@ -69,7 +69,7 @@ public class TestClient implements Client
 	 */
 	public TestClient(String name, ClientType type)
 	{
-		this (name, ClientType.CLIENT, false);
+		this (name, type, false);
 	}
 
 	/**

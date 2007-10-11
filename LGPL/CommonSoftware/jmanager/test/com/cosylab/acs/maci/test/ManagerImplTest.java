@@ -446,18 +446,6 @@ public class ManagerImplTest extends TestCase
 		// test invalid autheticate
 		try
 		{
-			manager.login(new TestClient("invalid-auth", null));
-			fail();
-		}
-		catch (AcsJNoPermissionEx npe)
-		{
-
-			System.out.println("This is OK: "+npe.toString());
-		}
-
-		// test invalid autheticate
-		try
-		{
 			manager.login(new TestClient("container-invalid-auth", ClientType.ADMINISTRATOR));
 			fail();
 		}

@@ -1783,10 +1783,9 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			}
 			else if (reply.getClientType() == null)
 			{
-				// NO_PERMISSION
-				AcsJNoPermissionEx npe = new AcsJNoPermissionEx();
-				npe.setReason("Invalid response to 'Client::authenticate()' method - no-null client type expected.");
-				throw npe;
+				// BAD_PARAM
+				BadParametersException af = new BadParametersException("Invalid response to 'Client::authenticate()' method - non-null client type expected.");
+				throw af;
 			}
 			else if (reply.getImplLang() == null)
 			{
