@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciReleaseComponent.cpp,v 1.3 2007/10/11 15:07:50 msekoran Exp $"
+* "@(#) $Id: maciReleaseComponent.cpp,v 1.4 2007/10/11 15:43:39 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -74,7 +74,7 @@ class  AdministratorImpl :
 
 	maci::AuthenticationData_var data = new AuthenticationData();
 	data->answer = CORBA::string_dup("");
-	data->client_type = maci::CONTAINER_TYPE;
+	data->client_type = maci::CLIENT_TYPE;
 	data->impl_lang = maci::CPP;
 	data->recover = false;
  	data->timestamp = ::getTimeStamp();

@@ -4,11 +4,11 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciTestClientImpl.h,v 1.83 2005/04/13 13:00:14 acaproni Exp $"
+* "@(#) $Id: maciTestClientImpl.h,v 1.84 2007/10/11 15:43:39 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
-* kzager   2002-02-15 Created
+* kzagar   2002-02-15 Created
 */
 
 /************************************************************************
@@ -51,7 +51,8 @@ virtual void disconnect (
     CORBA::SystemException
   );
 
-virtual char * authenticate (
+virtual maci::AuthenticationData * authenticate (
+    maci::ExecutionId execution_id,
     const char * question
     
   )
@@ -113,6 +114,7 @@ public:
 
 virtual maci::ComponentInfo * activate_component (
     maci::Handle h,
+    maci::ExecutionId execution_id,
     const char * name,
     const char * exe,
     const char * type
@@ -160,7 +162,8 @@ virtual void disconnect (
     CORBA::SystemException
   );
 
-virtual char * authenticate (
+virtual maci::AuthenticationData * authenticate (
+    maci::ExecutionId execution_id,
     const char * question
     
   )
@@ -219,32 +222,34 @@ public:
   virtual ~MaciTestAdministratorImpl (void);
 
 virtual void client_logged_in (
-    const maci::ClientInfo & info
-    
+    const maci::ClientInfo & info,
+    ACS::Time timestamp,
+    maci::ExecutionId execution_id
   )
   throw (
     CORBA::SystemException
   );
 
 virtual void client_logged_out (
-    maci::Handle h
-    
+    maci::Handle h,
+    ACS::Time timestamp
   )
   throw (
     CORBA::SystemException
   );
 
 virtual void container_logged_in (
-    const maci::ContainerInfo & info
-    
+    const maci::ContainerInfo & info,
+    ACS::Time timestamp,
+    maci::ExecutionId execution_id
   )
   throw (
     CORBA::SystemException
   );
 
 virtual void container_logged_out (
-    maci::Handle h
-    
+    maci::Handle h,
+    ACS::Time timestamp
   )
   throw (
     CORBA::SystemException
@@ -252,8 +257,8 @@ virtual void container_logged_out (
 
 virtual void components_requested (
     const maci::HandleSeq & clients,
-    const maci::HandleSeq & COBs
-    
+    const maci::HandleSeq & COBs,
+    ACS::Time timestamp
   )
   throw (
     CORBA::SystemException
@@ -261,8 +266,25 @@ virtual void components_requested (
 
 virtual void components_released (
     const maci::HandleSeq & clients,
-    const maci::HandleSeq & COBs
-    
+    const maci::HandleSeq & COBs,
+    ACS::Time timestamp
+  )
+  throw (
+    CORBA::SystemException
+  );
+
+virtual void component_activated (
+    const maci::ComponentInfo & info,
+    ACS::Time timestamp,
+    maci::ExecutionId execution_id
+  )
+  throw (
+    CORBA::SystemException
+  );
+
+virtual void component_deactivated (
+    maci::Handle h,
+    ACS::Time timestamp
   )
   throw (
     CORBA::SystemException
@@ -282,7 +304,8 @@ virtual void disconnect (
     CORBA::SystemException
   );
 
-virtual char * authenticate (
+virtual maci::AuthenticationData * authenticate (
+    maci::ExecutionId execution_id,
     const char * question
     
   )

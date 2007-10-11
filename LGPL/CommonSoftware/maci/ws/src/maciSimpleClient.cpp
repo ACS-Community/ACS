@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciSimpleClient.cpp,v 1.102 2007/10/11 15:07:50 msekoran Exp $"
+* "@(#) $Id: maciSimpleClient.cpp,v 1.103 2007/10/11 15:43:39 msekoran Exp $"
 *
 * who       when        what
 * --------  --------    ----------------------------------------------
@@ -614,7 +614,7 @@ SimpleClient::authenticate (
 
   maci::AuthenticationData_var data = new AuthenticationData();
   data->answer = CORBA::string_dup("");
-  data->client_type = maci::CONTAINER_TYPE;
+  data->client_type = maci::CLIENT_TYPE;
   data->impl_lang = maci::CPP;
   data->recover = true;
   data->timestamp = m_startTime;
