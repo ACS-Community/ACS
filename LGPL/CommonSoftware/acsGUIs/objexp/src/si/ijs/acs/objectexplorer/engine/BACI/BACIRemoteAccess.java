@@ -49,14 +49,18 @@ import si.ijs.acs.objectexplorer.engine.Operation;
 import si.ijs.acs.objectexplorer.engine.RemoteAccess;
 import si.ijs.acs.objectexplorer.engine.RemoteException;
 import si.ijs.acs.objectexplorer.engine.RemoteResponseCallback;
+import si.ijs.maci.AuthenticationData;
 import si.ijs.maci.Client;
 import si.ijs.maci.ClientInfo;
 import si.ijs.maci.ClientPOA;
+import si.ijs.maci.ClientType;
 import si.ijs.maci.ComponentInfo;
+import si.ijs.maci.ImplLangType;
 import si.ijs.maci.Manager;
 import si.ijs.maci.ManagerHelper;
 import alma.acs.exceptions.AcsJCompletion;
 import alma.acs.logging.ClientLogManager;
+import alma.acs.util.UTCUtility;
 
 import alma.ACSErrTypeCommon.wrappers.AcsJUnexpectedExceptionEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJCORBAProblemEx;
@@ -127,6 +131,8 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 	}
 
 	private class ClientImpl extends ClientPOA {
+	    private final long startTimeUTClong = UTCUtility.utcJavaToOmg(System.currentTimeMillis());
+	    private long executionId = -1; 
 
 		public void disconnect() {
 			//		new DebugEntry(ESOprototypeConnectorInitializer.this, "Disconnected by the manager.").dispatchError();
@@ -141,9 +147,21 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 		public String name() {
 			return "ObjectExplorer";
 		}
-		public String authenticate(String challenge) {
-			return "C";
-		}
+		public AuthenticationData authenticate(long execution_id, String question) {
+	        // keep old executionId if it exists
+	        if (executionId < 0) {
+	        	executionId = execution_id;
+	        }
+	        
+	        AuthenticationData ret = new AuthenticationData(
+	        		"C", 
+	        		ClientType.CONTAINER_TYPE, 
+	        		ImplLangType.JAVA, 
+	        		false, 
+	        		startTimeUTClong, 
+	        		executionId);
+	        return ret;
+	    }
 		public void message(short code, String text) {
 			//	new DebugEntry(ESOprototypeConnectorInitializer.this, "Message from the manager: " + text).dispatch();
 			new ServerMessage(
