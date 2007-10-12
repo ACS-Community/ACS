@@ -13,9 +13,8 @@
 1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ Reason='Insufficient rights.' ]
 1 - This is OK: Non-null 'reference' expected.
 1 - This is OK: Invalid response to 'Client::name()' method - non-null string expected.
-1 - This is OK: Invalid response to 'Client::authenticate()' method - non-null string expected.
-1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ Reason='Invalid response to 'Client::authenticate()' method. [A,C,S] are expected as first characters.' ]
-1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ Reason='Given reply to 'Client::authenticate()' method indicated container login, but given reference does not implement 'maci::Container' interface.' ]
+1 - This is OK: Invalid response to 'Client::authenticate()' method - non-null client type expected.
+1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ Reason='Given reply to 'Client::authenticate()' method indicated administrator login, but given reference does not implement 'maci::Administrator' interface.' ]
 1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ Reason='Invalid handle.' ]
 1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ Reason='Invalid handle.' ]
 1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ Reason='Invalid handle.' ]
