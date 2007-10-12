@@ -34,6 +34,7 @@ import si.ijs.maci.ComponentInfo;
 import si.ijs.maci.ComponentSpec;
 import si.ijs.maci.Manager;
 import si.ijs.maci.ManagerHelper;
+import si.ijs.maci.ManagerOperations;
 
 import alma.ACSErrTypeCommon.wrappers.AcsJUnexpectedExceptionEx;
 import alma.JavaContainerError.wrappers.AcsJContainerEx;
@@ -63,8 +64,12 @@ import alma.maciErrType.wrappers.AcsJNoPermissionEx;
 
 /**
  * Proxy class that encapsulates access to the ACS Manager.
+ * See maci.idl for the various types of client, which include container and admin client.
  * <p>
- * Not supposed to be instantiated by components and other non-framework classes. 
+ * This class is stateful, so there must be one <code>AcsManagerProxy</code> used per client 
+ * if a process has more than one client to the manager. 
+ * <p>
+ * Warning: This class is not supposed to be instantiated by components and other non-framework classes. 
  * Components should only access this class through <code>ContainerServices</code>.
  * 
  * @author hsommer Feb 18, 2003 9:20:14 AM
