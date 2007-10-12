@@ -33,7 +33,6 @@ import java.util.logging.Logger;
 import org.omg.CORBA.ORB;
 import org.omg.CORBA.Object;
 import org.omg.CORBA.Policy;
-import org.omg.CORBA.Any;
 import org.omg.CORBA.SetOverrideType;
 import org.omg.PortableServer.IdAssignmentPolicyValue;
 import org.omg.PortableServer.LifespanPolicyValue;
@@ -51,6 +50,7 @@ import org.omg.PortableServer.POAPackage.InvalidPolicy;
 
 import alma.ACSErrTypeCommon.wrappers.AcsJUnexpectedExceptionEx;
 import alma.JavaContainerError.wrappers.AcsJContainerEx;
+import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
 import alma.acs.concurrent.DaemonThreadFactory;
 import alma.acs.container.AcsContainer;
 import alma.acs.container.ComponentServantManager;
@@ -270,7 +270,7 @@ public class AcsCorba
 		try {
 			// todo: integrate better with #prepareORB
 			OrbConfigurator orbConf = OrbConfigurator.getOrbConfigurator();
-			m_orb = ORB.init(orbConf.getOptions(), orbConf.getProperties());
+			setORB(ORB.init(orbConf.getOptions(), orbConf.getProperties()));
 			initRootPoa(m_orb);
 			sharedPoaManager.activate();
 		} catch (Exception ex) {
@@ -620,16 +620,25 @@ public class AcsCorba
 		}
 	}
 
+	private void setORB(ORB orb) throws IllegalArgumentException {
+		if (orb == null) {
+			throw new IllegalStateException("ORB reference does not exist.");
+		}
+		this.m_orb = orb;
+	}
+	
 	/**
 	 * Returns the ORB instance.
 	 * @return ORB
-	 * @throws IllegalStateException if the ORB has not been initialized before. 
+	 * @throws IllegalStateException if the ORB reference is missing or has not been initialized before. 
 	 */
 	public ORB getORB()
 	{
-		// probably checking either isInitialized() or m_orb==null would be sufficient... 
-		if (!isInitialized() || m_orb == null) {
-			throw new IllegalStateException("Illegal call to getORB before it has been initialized.");
+		if (m_orb == null) {
+			throw new IllegalStateException("ORB reference does not exist.");
+		}
+		if (!isInitialized()) {
+			throw new IllegalStateException("ORB has not been initialized.");
 		}
 		return m_orb;
 	}
@@ -1064,7 +1073,7 @@ public class AcsCorba
 
 				ORB orb = createOrb(args, null);
 				initRootPoa(orb);
-				m_orb = orb;
+				setORB(orb);
 				return;
 			}
 
@@ -1072,12 +1081,12 @@ public class AcsCorba
 
 				ORB orb = createOrb(args, this.orbPort);
 				initRootPoa(orb);
-				m_orb = orb;
+				setORB(orb);
 
 			} else {
 
 				RVtrialAndError re = trialAndError(args, orbPort.intValue(), orbPortSearchRetry.intValue());
-				m_orb = re.orb;
+				setORB(re.orb);
 
 			}
 		}		
@@ -1124,6 +1133,11 @@ public class AcsCorba
         m_logger.finer(logBuf.toString());
         
         orb = org.omg.CORBA.ORB.init(orbOpts, orbProps);
+        if (orb == null) {
+        	// seems like this should never happen, but got strange reports about NPE when archive MC creates Corba Any for alarms,
+        	// so better check here and fail fast.
+        	throw new NullPointerException("org.omg.CORBA.ORB.init returned null.");
+        }
         m_logger.finer("ORB initialized.");
         return orb;
 	}
