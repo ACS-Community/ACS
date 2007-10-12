@@ -25,7 +25,11 @@ import java.util.logging.Logger;
 
 import org.omg.CORBA.ORB;
 
-import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
+import si.ijs.maci.Administrator;
+import si.ijs.maci.AdministratorOperations;
+import si.ijs.maci.AdministratorPOATie;
+
+import alma.JavaContainerError.wrappers.AcsJContainerEx;
 
 
 /**
@@ -43,15 +47,13 @@ public class AdvancedContainerServicesImpl implements AdvancedContainerServices
     // logger used by this class
 	protected Logger logger;
     
+	protected AdministratorOperations adminClient;
+	
 	AdvancedContainerServicesImpl(ContainerServicesImpl containerServicesImpl, Logger logger) {
         this.containerServicesImpl = containerServicesImpl;
         this.logger = logger;
     }
 
-    
-	public ORB getORB() {
-		return containerServicesImpl.getAcsCorba().getORB();
-	}
     
 	/* (non-Javadoc)
 	 * @see alma.acs.container.ContainerServices#corbaObjectToString(org.omg.CORBA.Object)
@@ -77,21 +79,53 @@ public class AdvancedContainerServicesImpl implements AdvancedContainerServices
 		return objRef;
 	}
 
+
+	/**
+	 * @throws IllegalStateException if the ORB reference is null or has not been initialized before.
+	 */
+	public ORB getORB() {
+		return containerServicesImpl.getAcsCorba().getORB();
+	}
+    
 	
     /**
      * Returns a reference to a new CORBA Any. In Java the only way to do 
      * this is through the ORB itself (i.e., the create_any method).
-     * @return org.omg.CORBA.Any or null in case of error
+     * @return org.omg.CORBA.Any 
+     * @throws NullPointerException if the Any object could not be created.
      */
     public org.omg.CORBA.Any getAny() {
     	ORB orb = getORB();
-		//sanity check to ensure the container/client has setup an ORB properly
-		if (orb == null) {
-			logger.warning("Failed to get a non-null ORB");
-			return null;
-		}
-		return orb.create_any();
+    	org.omg.CORBA.Any any = orb.create_any();
+    	if (any == null) {
+    		// should never happen, but we check just in case, 
+    		// since there is a difficult to verify NPE when Any is created by MC for sending alarms.
+    		String msg = "Failed to create org.omg.CORBA.Any";
+    		logger.warning(msg);
+    		throw new NullPointerException(msg);
+    	}
+    	return any;
 	}
 
+    /**
+     * Allows to connect a manager admin object to the manager, to receive notifications etc. 
+     * <p>
+     * TODO: (1) container could implement a single proxy/interceptor admin client so that we only have at most one such login 
+     *       on the manager, even if many components register their admin clients.
+     *       (2) Discuss if the <code>retryConnectOnFailure</code> flag makes sense,
+     *       or if such a specialized component that uses this method should implement its own retry strategy
+     *       and should rather be notified quickly if there are problems.
+     * @param adminOp
+     * @param retryConnectOnFailure  retry if the manager is not available or the connection failed.
+     * @throws AcsJContainerEx 
+     */
+    public void connectManagerAdmin(AdministratorOperations adminOp, boolean retryConnectOnFailure) throws AcsJContainerEx {
+    	// need to create our own manager proxy
+    	AcsManagerProxy acsManagerProxy = this.containerServicesImpl.m_acsManagerProxy.createInstance();
+    	AdministratorPOATie adminpoa = new AdministratorPOATie(adminOp);
+		Administrator admin = adminpoa._this(getORB());
+        acsManagerProxy.loginToManager(admin, retryConnectOnFailure);
+    }
+    
 }
 
