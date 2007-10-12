@@ -1,13 +1,13 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.8 2007/10/12 17:09:16 nbarriga Exp $"
+# "@(#) $Id: Makefile,v 1.1 2007/10/12 17:09:16 nbarriga Exp $"
 #
 # Makefile of ........
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
-# almadev  21/06/06  created
+# nbarriga  12/10/07  created
 #
 
 #*******************************************************************************
@@ -25,7 +25,6 @@
 # additional include and library search paths
 #USER_INC = 
 #USER_LIB = 
-USER_LIB = -lTAO -lACE -lTAO_PortableServer -lacserr -lTAO_DsLogAdmin -lTAO_CosNaming -lTAO_IORTable -llogging -lTAO_DynamicAny -lacsutil -lACSErrTypeCommon
 
 #
 # MODULE CODE DESCRIPTION:
@@ -36,33 +35,14 @@ USER_LIB = -lTAO -lACE -lTAO_PortableServer -lacserr -lTAO_DsLogAdmin -lTAO_CosN
 #
 # C programs (public and local)
 # -----------------------------
-EXECUTABLES     = acscontainerdaemon acsdaemonStartContainer \
-                  acsdaemonStopContainer acsservicesdaemon acsdaemonStartAcs \
-                  acsdaemonStopAcs
+EXECUTABLES     =
 EXECUTABLES_L   = 
 
 #
 # <brief description of xxxxx program>
-acscontainerdaemon_OBJECTS   =	acscontainerdaemon acsContainerDaemonImpl
-acscontainerdaemon_LIBS      =	acsdaemonErrType acsdaemonStubs
-
-acsdaemonStartContainer_OBJECTS   =	acsdaemonStartContainer
-acsdaemonStartContainer_LIBS      =	acsdaemonErrType acsdaemonStubs
-
-
-acsdaemonStopContainer_OBJECTS   =	acsdaemonStopContainer
-acsdaemonStopContainer_LIBS      =	acsdaemonErrType acsdaemonStubs
-
-acsservicesdaemon_OBJECTS   =	acsservicesdaemon acsServicesDaemonImpl
-acsservicesdaemon_LIBS      =	acsdaemonErrType acsdaemonStubs
-
-acsdaemonStartAcs_OBJECTS   =	acsdaemonStartAcs
-acsdaemonStartAcs_LIBS      =	acsdaemonErrType acsdaemonStubs
-
-
-acsdaemonStopAcs_OBJECTS   =	acsdaemonStopAcs
-acsdaemonStopAcs_LIBS      =	acsdaemonErrType acsdaemonStubs
-
+xxxxx_OBJECTS   =	
+xxxxx_LDFLAGS   =
+xxxxx_LIBS      =
 
 #
 # special compilation flags for single c sources
@@ -129,17 +109,14 @@ tttlll_OBJECTS  =
 # ----------------------------
 CDB_SCHEMAS = 
 
+ACSERRDEF = acsdaemonErrType
+
 # 
 # IDL Files and flags
 # 
-
-#IDL_FILES = acsdaemon
+IDL_FILES = acsdaemon
 IDL_TAO_FLAGS =
 USER_IDL =
-
-
-#ACSERRDEF = acsdaemonErrType
-
 #
 # Jarfiles and their directories
 #
@@ -148,7 +125,7 @@ jjj_DIRS=
 jjj_EXTRAS= 
 #
 # java sources in Jarfile on/off
-DEBUG=on
+DEBUG= 
 #
 # ACS XmlIdl generation on/off
 #
