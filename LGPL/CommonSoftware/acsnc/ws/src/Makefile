@@ -21,7 +21,7 @@
 # MA 02111-1307  USA
 #
 #*******************************************************************************
-# "@(#) $Id: Makefile,v 1.58 2007/07/04 13:08:23 nbarriga Exp $"
+# "@(#) $Id: Makefile,v 1.59 2007/10/12 20:10:45 nbarriga Exp $"
 #------------------------------------------------------------------------
 #
 # Makefile for acsnc/ws/src
@@ -48,7 +48,7 @@ INCLUDES = 	acsncHelper.h acsncSupplier.h acsncConsumer.h \
 		acsncSimpleConsumer.i acsncSimpleConsumer.h \
 		acsncRTSupplier.i acsncRTSupplier.h \
 		acsncArchiveConsumer.h \
-		acsncCDBProperties.h
+		acsncCDBProperties.h acsncServiceChecker.h
 INCLUDES_L	= 
 
 # Libraries (public and local)
@@ -60,10 +60,11 @@ acsnc_OBJECTS  = acsncCDBProperties \
 		 acsncArchiveConsumer \
 		 acsncORBHelperImpl acsncHelperImpl \
 		 acsncConsumerImpl acsncSimpleConsumerImpl \
-                 acsncSupplierImpl acsncSimpleSupplierImpl acsncRTSupplierImpl
+                 acsncSupplierImpl acsncSimpleSupplierImpl acsncRTSupplierImpl \
+                 acsncServiceChecker
 acsnc_LIBS     = ACSErrTypeCommon acsncStubs
 
-acsncServiceChecker_OBJECTS = acsncServiceChecker
+acsncServiceChecker_OBJECTS = acsncServiceCheckerExec
 acsncServiceChecker_LIBS = acsnc
 acsncServiceChecker_LDFLAGS = -lmaciClient
 
