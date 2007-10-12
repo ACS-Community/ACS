@@ -1,4 +1,4 @@
-# @(#) $Id: ACSCorba.py,v 1.22 2007/05/28 06:42:34 cparedes Exp $
+# @(#) $Id: ACSCorba.py,v 1.23 2007/10/12 14:54:59 agrimstrup Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA,  2001
@@ -27,7 +27,7 @@ Takes care of initializing the ORB and setting initial reference to MACI
 manager. Also provides functions to get service and device references
 from the manager.
 '''
-__revision__ = "$Id: ACSCorba.py,v 1.22 2007/05/28 06:42:34 cparedes Exp $"
+__revision__ = "$Id: ACSCorba.py,v 1.23 2007/10/12 14:54:59 agrimstrup Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 from sys       import argv
@@ -40,7 +40,9 @@ import os
 from omniORB import CORBA
 from omniORB import importIRStubs
 import maci__POA
+import maci
 from maci import Manager
+from maci import AuthenticationData
 import CosNotifyChannelAdmin
 import CDB
 import ACSLog
@@ -56,6 +58,7 @@ from AcsutilPy.ACSPorts          import getNamingServicePort
 from AcsutilPy.ACSPorts          import getCDBPort
 from AcsutilPy.ACSPorts          import getIRPort
 from AcsutilPy.ACSPorts          import getNotifyServicePort
+from Acspy.Common.TimeHelper     import getTimeStamp
 #--GLOBALS---------------------------------------------------------------------
 ORB = None
 POA_ROOT = None 
@@ -303,11 +306,13 @@ class _Client (maci__POA.Client):
 
         return
     #--CLIENT IDL--------------------------------------------------------------
-    def authenticate(self, question):
+    def authenticate(self, execution_id, question):
         '''
         Implementation of IDL method.
         '''
-        return "CacsCORBA Client"
+#        return "CacsCORBA Client"
+        return AuthenticationData("CacsCORBA Client", maci.CLIENT_TYPE,
+                                  maci.PYTHON, False, getTimeStamp(), execution_id)
     #--CLIENT IDL--------------------------------------------------------------
     def message(self, message_type, message):
         '''
