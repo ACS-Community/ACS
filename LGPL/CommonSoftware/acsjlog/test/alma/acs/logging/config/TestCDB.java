@@ -6,9 +6,9 @@ import java.util.Map;
 import com.cosylab.CDB.DALChangeListener;
 import com.cosylab.CDB.DALOperations;
 import com.cosylab.CDB.DAO;
-import alma.cdbErrType.wrappers.AcsJCDBRecordDoesNotExistEx;
+
 import alma.cdbErrType.CDBRecordDoesNotExistEx;
-import alma.cdbErrType.CDBXMLErrorEx;
+import alma.cdbErrType.wrappers.AcsJCDBRecordDoesNotExistEx;
 
 /**
  * 
@@ -42,7 +42,7 @@ public class TestCDB implements DALOperations {
 	/** 
 	 * Test impl of the only CDB method which actually gets used by the logging config classes.
 	 */
-	public String get_DAO(String curl) throws CDBXMLErrorEx, CDBRecordDoesNotExistEx {
+	public String get_DAO(String curl) throws CDBRecordDoesNotExistEx {
 		if (throwEx) {
 			AcsJCDBRecordDoesNotExistEx ex = new AcsJCDBRecordDoesNotExistEx();
 		//	ex.setStringMessage("This is a test exception.");
@@ -55,7 +55,7 @@ public class TestCDB implements DALOperations {
     // Dummy impl of unused methods from the interface
     ////////////////////////////////////////////////////
 
-	public DAO get_DAO_Servant(String curl) throws CDBXMLErrorEx, CDBRecordDoesNotExistEx {
+	public DAO get_DAO_Servant(String curl) {
 		throw new IllegalStateException("Operation not implemented!");
 	}
 
@@ -76,6 +76,14 @@ public class TestCDB implements DALOperations {
 	}
 
 	public String list_nodes(String name) {
+		throw new IllegalStateException("Operation not implemented!");
+	}
+
+	public String configuration_name() {
+		throw new IllegalStateException("Operation not implemented!");
+	}
+
+	public String list_daos(String name) {
 		throw new IllegalStateException("Operation not implemented!");
 	}
 }
