@@ -125,7 +125,7 @@ main (int argc, char *argv[])
 
       ACS_SHORT_LOG((LM_INFO, "Calling start_acs(%d, %s).", instance, aditional));
       daemon->start_acs(instance, aditional);
-      ACS_SHORT_LOG((LM_INFO, "Done."));
+      ACS_SHORT_LOG((LM_INFO, "ACS start message issued."));
       
     }
     catch (ACSErrTypeCommon::BadParameterEx &ex)

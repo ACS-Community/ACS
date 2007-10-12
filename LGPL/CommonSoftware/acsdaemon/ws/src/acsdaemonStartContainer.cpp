@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: acsdaemonStartContainer.cpp,v 1.6 2007/10/11 21:00:37 nbarriga Exp $"
+* "@(#) $Id: acsdaemonStartContainer.cpp,v 1.7 2007/10/12 15:05:17 nbarriga Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -162,7 +162,7 @@ main (int argc, char *argv[])
 
       daemon->start_container(containerType.c_str(), containerName.c_str(), instance, aditional);
       
-      ACS_SHORT_LOG((LM_INFO, "Done."));
+      ACS_SHORT_LOG((LM_INFO, "Container start message issued."));
       
     }
     catch (ACSErrTypeCommon::BadParameterEx &ex)

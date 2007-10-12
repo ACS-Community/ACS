@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsContainerDaemonImpl.cpp,v 1.2 2007/10/11 21:00:37 nbarriga Exp $"
+* "@(#) $Id: acsContainerDaemonImpl.cpp,v 1.3 2007/10/12 15:05:17 nbarriga Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -222,7 +222,7 @@ ACSContainerDaemonImpl::start_container (
     mkdir.append(logDirectory);
     ACE_OS::system(mkdir.c_str());
 
-    std::string timeStamp("0000-00-00T00:00:00.000");
+    std::string timeStamp(getStringifiedTimeStamp().c_str());
 
     char command[1000];
     snprintf(command, 1000, "acsStartContainer -%s -b %d %s %s &> %sacsStartContainer_%s_%s&", container_type, instance_number, container_name, cmdln, logDirectory.c_str(), containerName.c_str(), timeStamp.c_str());

@@ -1,7 +1,7 @@
 /*******************************************************************************
  * E.S.O. - ACS project
  *
- * "@(#) $Id: acsdaemonStopContainer.cpp,v 1.4 2007/10/11 20:03:24 ntroncos Exp $"
+ * "@(#) $Id: acsdaemonStopContainer.cpp,v 1.5 2007/10/12 15:05:17 nbarriga Exp $"
  *
  * who       when        what
  * --------  ----------  ----------------------------------------------
@@ -144,7 +144,7 @@ main (int argc, char *argv[])
 
                 daemon->stop_container(containerName.c_str(), instance, aditional);
 
-                ACS_SHORT_LOG((LM_INFO, "Container stopped."));
+                ACS_SHORT_LOG((LM_INFO, "Container stop message issued."));
 
 
 	}

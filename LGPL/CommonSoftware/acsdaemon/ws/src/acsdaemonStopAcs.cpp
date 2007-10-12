@@ -124,7 +124,7 @@ main (int argc, char *argv[])
 
                 daemon->stop_acs(instance, aditional);
 
-                ACS_SHORT_LOG((LM_INFO, "ACS stopped."));
+                ACS_SHORT_LOG((LM_INFO, "ACS stop message issued."));
 
 
     }
