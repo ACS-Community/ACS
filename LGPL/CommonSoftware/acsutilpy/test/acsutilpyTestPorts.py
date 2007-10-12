@@ -21,7 +21,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# @(#) $Id: acsutilpyTestPorts.py,v 1.2 2007/01/03 12:20:32 msekoran Exp $
+# @(#) $Id: acsutilpyTestPorts.py,v 1.3 2007/10/12 16:04:22 hsommer Exp $
 ###############################################################################
 '''
 Tests ACS Ports.
@@ -34,7 +34,8 @@ from AcsutilPy.ACSPorts import getLoggingServicePort
 from AcsutilPy.ACSPorts import getIRPort
 from AcsutilPy.ACSPorts import getLogPort
 from AcsutilPy.ACSPorts import getCDBPort
-from AcsutilPy.ACSPorts import getDaemonPort
+from AcsutilPy.ACSPorts import getContainerDaemonPort
+from AcsutilPy.ACSPorts import getServicesDaemonPort
 from AcsutilPy.ACSPorts import getIP
 ###############################################################################
 # Test code
@@ -50,7 +51,8 @@ if __name__ == "__main__":
     print type(getIRPort())
     print type(getLogPort())
     print type(getCDBPort())
-    print type(getDaemonPort())
+    print type(getContainerDaemonPort())
+    print type(getServicesDaemonPort())
     print type(getIP())
     
     
