@@ -21,25 +21,25 @@
  */
 package alma.acs.gui.loglevel.tree;
 
-import java.awt.BorderLayout;
 import java.util.HashSet;
 import java.util.logging.Logger;
-
-import javax.swing.JDialog;
-import javax.swing.JLabel;
 
 import org.omg.CORBA.ORB;
 import org.omg.CORBA.SystemException;
 
-import alma.acs.logging.AcsLogLevel;
-import alma.maciErrType.NoPermissionEx;
 import si.ijs.maci.Administrator;
 import si.ijs.maci.AdministratorPOA;
+import si.ijs.maci.AuthenticationData;
 import si.ijs.maci.ClientInfo;
+import si.ijs.maci.ClientType;
 import si.ijs.maci.ComponentInfo;
 import si.ijs.maci.ContainerInfo;
+import si.ijs.maci.ImplLangType;
 import si.ijs.maci.Manager;
 import si.ijs.maci.ManagerHelper;
+import alma.acs.commandcenter.meta.IMaciSupervisor.NotConnectedToManagerException;
+import alma.acs.logging.AcsLogLevel;
+import alma.maciErrType.NoPermissionEx;
 
 public class AdministratorClient extends AdministratorPOA {
 	
@@ -67,6 +67,12 @@ public class AdministratorClient extends AdministratorPOA {
 	// The dialog shown if the manager is busy
 	private ManagerBusyDlg busyDlg=null;
 	
+	// Start time
+	private long startTime = System.currentTimeMillis();
+	
+	// Execution Id.
+	private long executionId = 0;
+	
 	/**
 	 * Constructor 
 	 * 
@@ -84,19 +90,27 @@ public class AdministratorClient extends AdministratorPOA {
 		logger=theLogger;
 	}
 
-	public void client_logged_in(ClientInfo info) {
+	public void client_logged_in(ClientInfo info, long timeStamp, long executionId) {
 		if (listener!=null) {
 			listener.clientLoggedIn(info);
 		}
 	}
 
-	public void client_logged_out(int h) {
+	public void client_logged_out(int h, long timeStamp) {
 		if (listener!=null) {
 			listener.clientLoggedOut(h);
 		}
 	}
 
-	public void components_released(int[] clients, int[] components) {
+	public void component_activated(ComponentInfo info, long timeStamp, long executionId) {
+		// TODO @todo this method can be used to get activation event, but now this is done via components_requested
+	}
+
+	public void component_deactivated(int h, long timeStamp) {
+		// TODO @todo this method can be used to get deactivation event, but now this is done via components_released
+	}
+
+	public void components_released(int[] clients, int[] components, long timeStamp) {
 		// This method notifies the listener only if the component has been 
 		// unloaded.
 		// If it is the case, then the component is not found in the list
@@ -123,7 +137,7 @@ public class AdministratorClient extends AdministratorPOA {
 		}
 	}
 
-	public void components_requested(int[] clients, int[] components) {
+	public void components_requested(int[] clients, int[] components, long timeStamp) {
 		if (listener==null) {
 			return;
 		}
@@ -142,23 +156,25 @@ public class AdministratorClient extends AdministratorPOA {
 		}
 	}
 
-	public void container_logged_in(ContainerInfo info) {
+	public void container_logged_in(ContainerInfo info, long timeStamp, long executionId) {
 		System.out.println("Container logged in name="+info.name+", H="+info.h);
 		if (listener!=null) {
 			listener.containerLoggedIn(info);
 		}
 	}
 
-	public void container_logged_out(int h) {
+	public void container_logged_out(int h, long timeStamp) {
 		System.out.println("Container logged out H="+h);
 		if (listener!=null) {
 			listener.containerLoggedOut(h);
 		}
 	}
 
-	public String authenticate(String question) {
+	public AuthenticationData authenticate(long executionId, String question) {
 		System.out.println("Authenticating");
-		return "S";
+		if (this.executionId == 0)
+			this.executionId = executionId;
+		return new AuthenticationData("", ClientType.ADMINISTRATOR_TYPE, ImplLangType.JAVA, true, startTime, this.executionId);
 	}
 
 	public void components_available(ComponentInfo[] components) {
