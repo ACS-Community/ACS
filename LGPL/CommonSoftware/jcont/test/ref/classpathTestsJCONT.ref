@@ -15,7 +15,6 @@
 1 - ----------T--:--:--.--- FINER [testContainer] entering activateContainer name=testContainer
 1 - ----------T--:--:--.--- FINER [testContainer] AcsContainer successfully registered with the ORB as a Container
 1 - ----------T--:--:--.--- FINE [testContainer] AcsContainer 'testContainer' created.
-1 - ----------T--:--:--.--- FINE [testContainer] call to authenticate() answered with 'AR testContainer'.
 1 - ----------T--:--:--.--- FINE [testContainer] call to name() answered with 'testContainer'.
 1 - ----------T--:--:--.--- INFO [testContainer] Info message from the manager: Startup statistics: 0 components queued to be activated.
 1 - ----------T--:--:--.--- INFO [testContainer] Info message from the manager: Startup statistics: 0 of 0 components activated.
