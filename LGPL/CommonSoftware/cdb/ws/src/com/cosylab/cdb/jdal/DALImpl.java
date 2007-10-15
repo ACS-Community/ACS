@@ -862,7 +862,8 @@ public class DALImpl extends JDALPOA implements Recoverer {
 	        	return "";
 
 	    }
-			return "";
+	    else
+			return null;	// this is not a DAO, indicate with null
 	}
 
 	/* (non-Javadoc)
