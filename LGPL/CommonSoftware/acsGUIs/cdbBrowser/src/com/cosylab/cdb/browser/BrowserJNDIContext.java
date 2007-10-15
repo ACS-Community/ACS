@@ -77,7 +77,9 @@ public class BrowserJNDIContext extends com.cosylab.cdb.jdal.JNDIContext {
 		final String lookupName = name.toString();
     	final String fullLookupName = this.name + "/" + lookupName;
 
-    	final String daoElements = dal.list_daos(fullLookupName);
+    	String daoElements = dal.list_daos(fullLookupName);
+    	if (daoElements.length() == 0)
+    		daoElements = null;
     	
 		CDBLogic.setKey(fullLookupName);
 
