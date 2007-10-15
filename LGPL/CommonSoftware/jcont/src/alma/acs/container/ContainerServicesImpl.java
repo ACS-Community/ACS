@@ -210,7 +210,7 @@ public class ContainerServicesImpl implements ContainerServices
 	 * The component must retrieve its logger object from this interface
 	 * (as opposed to using the <code>ClientLogManager</code> singleton) 
 	 * so that the container is free
-	 * to give away loggers that are somehow taylored to the particular component.
+	 * to give away loggers that are somehow tailored to the particular component.
 	 * <p>
 	 * The goal is to have "componentName" and other fields in all ALMA log entries,
 	 * and have tool support for filtering logs by component, subsystem, user, ...
@@ -716,15 +716,9 @@ public class ContainerServicesImpl implements ContainerServices
 	 * @see alma.acs.container.ContainerServices#releaseComponent(java.lang.String)
 	 */
 	public void releaseComponent(String curl) {
-		releaseComponent(curl, false);
-	}
-
-	
-	/**
-	 * This method was introduced to unify the implementation of #releaseComponent and AdvancedContainerServices#forceReleaseComponent.
-	 * TODO: check if this should be taken back with ACS 6.0.
-	 */
-	void releaseComponent(String curl, boolean forcefully) {
+		// we keep the "forceful" release option as a switch in the code. 
+		// It was taken out for ACS 7.0, but may come back in the future. 
+		final boolean forcefully = false;
 		
 		if (curl == null) {
 			m_logger.info("Invalid curl 'null', nothing to release.");
