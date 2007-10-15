@@ -18,14 +18,14 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@$Id: acscontainerdaemon.cpp,v 1.3 2007/10/11 19:34:55 ntroncos Exp $"
+* "@$Id: acscontainerdaemon.cpp,v 1.4 2007/10/15 21:35:52 ntroncos Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
 * msekoran 2006-06-21 created
 */
 
-static char *rcsId="@ $Id: acscontainerdaemon.cpp,v 1.3 2007/10/11 19:34:55 ntroncos Exp $";
+static char *rcsId="@ $Id: acscontainerdaemon.cpp,v 1.4 2007/10/15 21:35:52 ntroncos Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <acsContainerDaemonImpl.h>
@@ -92,13 +92,6 @@ main (int argc, char *argv[])
                                     argv[option_index]);
             }
         }
-//    if (argc >= 2 &&
-//	(ACE_OS_String::strcmp(argv[1], "-?") == 0 ||
-//	ACE_OS_String::strcmp(argv[1], "-h") == 0))
-//	{
-//	ACE_OS::printf ("\n\tusage: %s [-ORBEndpoint iiop://ip:port] [-o iorfile]\n\n", argv[0]);
-//	return -1;
-//	}
 
     const char* hostName = ACSPorts::getIP();
 
@@ -115,32 +108,16 @@ main (int argc, char *argv[])
     char** nargv = 0;
 
     ACE_CString argStr;
-//    for(int i=1; i<argc; i++)
-//	{
-//	argStr += argv[i];
-//	argStr += " ";
-//	
-//	if (!ACE_OS_String::strcmp(argv[i], "-o") && (i+1)<argc)
-//	    {
-//	    iorFile = argv[i+1];
-//	    i++; // skip filename
-//	    }
-//	}
-    
-    // add endpoint if not already specified
-//    if (argStr.find ("-ORBEndpoint")==ACE_CString::npos)
-//      {
-//      argStr = argStr + "-ORBEndpoint iiop://" + hostName + ":" + ACSPorts::getDaemonPort().c_str();
-//      }
     
     if(ORBEndpoint.length()<=0)
         {
-        argStr = argStr + "-ORBEndpoint iiop://" + hostName + ":" + ACSPorts::getContainerDaemonPort().c_str();
+        argStr = ACE_CString("-ORBEndpoint iiop://") + hostName + ":" + ACSPorts::getContainerDaemonPort().c_str();
         }
     else
         {
-        argStr = "-ORBEndpoint " + ORBEndpoint;
+        argStr = ACE_CString("-ORBEndpoint ") + ORBEndpoint;
         }
+
     // create new argv
     ACS_SHORT_LOG((LM_INFO, "Command line is: %s", argStr.c_str()));
     ACE_OS::string_to_argv ((ACE_TCHAR*)argStr.c_str(), nargc, nargv);

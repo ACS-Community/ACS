@@ -230,10 +230,21 @@ ACSServicesDaemonImpl::stop_acs (
 {
     const char * cmdln = (additional_command_line ? additional_command_line : "");
 
+    //get the directory name to store the container stdout
+    std::string logDirectory="~/.acs/commandcenter/";
+    
+    //create the directory
+    std::string mkdir("mkdir -p ");
+    mkdir.append(logDirectory);
+    ACE_OS::system(mkdir.c_str());
+
+    std::string timeStamp(getStringifiedTimeStamp().c_str());
+
+
+    char command[1000];
     // execute: "acsStop -b <instance> <args>"
     // TODO checks for ';', '&', '|' chars, they can run any other command!
-    char command[1000];
-    snprintf(command, 1000, "acsStop -b %d %s &", instance_number, cmdln);
+    snprintf(command, 1000, "acsStop -b %d %s &> %sacsStop_%s&", instance_number, cmdln, logDirectory.c_str(), timeStamp.c_str());
 
     ACS_SHORT_LOG ((LM_INFO, "Executing: '%s'.", command));
 

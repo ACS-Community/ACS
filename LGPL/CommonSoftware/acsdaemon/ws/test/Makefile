@@ -16,7 +16,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.1 2007/10/09 22:43:29 nbarriga Exp $"
+# "@(#) $Id: Makefile,v 1.2 2007/10/15 21:35:52 ntroncos Exp $"
 #
 # Makefile of ........
 #
@@ -40,7 +40,7 @@
 # additional include and library search paths
 #USER_INC = 
 #USER_LIB = 
-USER_LIB = -lTAO -lACE -lTAO_PortableServer -lacserr -lTAO_DsLogAdmin -lTAO_CosNaming -lTAO_IORTable -llogging -lTAO_DynamicAny -lacsutil -lACSErrTypeCommon
+#USER_LIB = -lTAO -lACE -lTAO_PortableServer -lacserr -lTAO_DsLogAdmin -lTAO_CosNaming -lTAO_IORTable -llogging -lTAO_DynamicAny -lacsutil -lACSErrTypeCommon
 
 
 #
@@ -53,13 +53,13 @@ USER_LIB = -lTAO -lACE -lTAO_PortableServer -lacserr -lTAO_DsLogAdmin -lTAO_CosN
 # C programs (public and local)
 # -----------------------------
 EXECUTABLES     = 
-EXECUTABLES_L   = testAcsDaemon
+EXECUTABLES_L   = 
 
 #
 # <brief description of xxxxx program>
-testAcsDaemon_OBJECTS   =	testAcsDaemon
+xxxxxxxxxxxxx_OBJECTS   =
 xxxxx_LDFLAGS   =
-testAcsDaemon_LIBS      =acsdaemonErrType acsdaemonStubs
+xxxxxxxxxxxxx_LIBS      =
 
 #
 # special compilation flags for single c sources
@@ -84,7 +84,7 @@ lllll_OBJECTS   =
 # Scripts (public and local)
 # ----------------------------
 SCRIPTS         =
-SCRIPTS_L       =
+SCRIPTS_L       = test.sh
 
 #
 # TCL scripts (public and local)
