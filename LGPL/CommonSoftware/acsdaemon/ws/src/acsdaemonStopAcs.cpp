@@ -18,7 +18,7 @@ static struct option long_options[] = {
         {"help",        no_argument,       0, 'h'},
         {"instance",    required_argument, 0, 'i'},
         {"host",        required_argument, 0, 'H'},
-        {"deamon",      required_argument, 0, 'd'},
+        {"daemon",      required_argument, 0, 'd'},
         {"aditional",   required_argument, 0, 'a'},
         {0, 0, 0, '\0'}};
 
@@ -132,11 +132,13 @@ main (int argc, char *argv[])
     {
         ACSErrTypeCommon::BadParameterExImpl exImpl(ex);
         exImpl.log();
+        return -1;
     }
     catch (acsdaemonErrType::FailedToStopAcsEx &ex)
     {
         acsdaemonErrType::FailedToStopAcsExImpl exImpl(ex);
         exImpl.log();
+        return -1;
     }
     catch( CORBA::Exception &ex )
     {

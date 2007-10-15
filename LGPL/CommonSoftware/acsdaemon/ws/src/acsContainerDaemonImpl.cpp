@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsContainerDaemonImpl.cpp,v 1.3 2007/10/12 15:05:17 nbarriga Exp $"
+* "@(#) $Id: acsContainerDaemonImpl.cpp,v 1.4 2007/10/15 22:13:46 nbarriga Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -265,10 +265,25 @@ ACSContainerDaemonImpl::stop_container (
 
     const char * cmdln = (additional_command_line ? additional_command_line : "");
 
+    //get the directory name to store the container stdout
+    std::string logDirectory="~/.acs/commandcenter/";
+    std::string containerName(container_name);
+    std::string::size_type pos=containerName.rfind("/"); 
+    if(pos != std::string::npos){
+    	logDirectory.append(containerName,0,pos);
+    	containerName.erase(0,pos);
+    }
+    //create the directory
+    std::string mkdir("mkdir -p ");
+    mkdir.append(logDirectory);
+    ACE_OS::system(mkdir.c_str());
+
+    std::string timeStamp(getStringifiedTimeStamp().c_str());
+
     // execute: "acsStopContainer -b <instance> <name> <args>"
     // TODO checks for ';', '&', '|' chars, they can run any other command!
     char command[1000];
-    snprintf(command, 1000, "acsStopContainer -b %d %s %s &", instance_number, container_name, cmdln);
+    snprintf(command, 1000, "acsStopContainer -b %d %s %s &> %sacsStopContainer_%s_%s&", instance_number, container_name, cmdln, logDirectory.c_str(), containerName.c_str(), timeStamp.c_str());
 
     ACS_SHORT_LOG ((LM_INFO, "Executing: '%s'.", command));
 

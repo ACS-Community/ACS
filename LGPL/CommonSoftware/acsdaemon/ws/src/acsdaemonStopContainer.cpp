@@ -1,7 +1,7 @@
 /*******************************************************************************
  * E.S.O. - ACS project
  *
- * "@(#) $Id: acsdaemonStopContainer.cpp,v 1.5 2007/10/12 15:05:17 nbarriga Exp $"
+ * "@(#) $Id: acsdaemonStopContainer.cpp,v 1.6 2007/10/15 22:13:46 nbarriga Exp $"
  *
  * who       when        what
  * --------  ----------  ----------------------------------------------
@@ -27,7 +27,7 @@ static struct option long_options[] = {
         {"container",   required_argument, 0, 'c'},
         {"instance",    required_argument, 0, 'i'},
         {"host",        required_argument, 0, 'H'},
-        {"deamon",      required_argument, 0, 'd'},
+        {"daemon",      required_argument, 0, 'd'},
         {"aditional",   required_argument, 0, 'a'},
         {0, 0, 0, '\0'}};
 
@@ -152,11 +152,13 @@ main (int argc, char *argv[])
 	{
 		ACSErrTypeCommon::BadParameterExImpl exImpl(ex);
 		exImpl.log();
+		return -1;
 	}
 	catch (acsdaemonErrType::FailedToStopContainerEx &ex)
 	{
 		acsdaemonErrType::FailedToStopContainerExImpl exImpl(ex);
 		exImpl.log();
+		return -1;
 	}
 	catch( CORBA::Exception &ex )
 	{

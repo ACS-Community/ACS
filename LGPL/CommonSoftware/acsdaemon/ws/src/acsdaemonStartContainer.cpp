@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: acsdaemonStartContainer.cpp,v 1.7 2007/10/12 15:05:17 nbarriga Exp $"
+* "@(#) $Id: acsdaemonStartContainer.cpp,v 1.8 2007/10/15 22:13:46 nbarriga Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -29,7 +29,7 @@ static struct option long_options[] = {
         {"container",   required_argument, 0, 'c'},
         {"instance",    required_argument, 0, 'i'},
         {"host",        required_argument, 0, 'H'},
-        {"deamon",      required_argument, 0, 'd'},
+        {"daemon",      required_argument, 0, 'd'},
         {"aditional",   required_argument, 0, 'a'},
         {0, 0, 0, '\0'}};
 
@@ -169,11 +169,13 @@ main (int argc, char *argv[])
     {
 	ACSErrTypeCommon::BadParameterExImpl exImpl(ex);
 	exImpl.log();
+	return -1;
     }
     catch (acsdaemonErrType::FailedToStartContainerEx &ex)
     {
 	acsdaemonErrType::FailedToStartContainerExImpl exImpl(ex);
 	exImpl.log();
+	return -1;
     }
     catch( CORBA::Exception &ex )
     {

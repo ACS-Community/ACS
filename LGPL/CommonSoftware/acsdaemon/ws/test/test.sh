@@ -1,6 +1,7 @@
 #!/bin/bash
 FLAG=0
 acsservicesdaemon &> services.log &
+sleep 1
 if [ $? -ne 0 ]; then
     echo "FAILED - starting services daemon"
     FLAG=1
@@ -9,6 +10,7 @@ else
     sleep 5
 fi
 acscontainerdaemon &> containers.log &
+sleep 1
 if [ $? -ne 0 ]; then
     echo "FAILED - starting container daemon"
     FLAG=1
@@ -42,15 +44,17 @@ if [ $? -ne 0 ]; then
 fi
 sleep 10 
 kill $CPID 
+sleep  5 
 ps -p $CPID &>/dev/null
 if [ $? -ne 1 ]; then
-    echo "FAILED - shuting down acsContainerDaemon"
+    echo "FAILED - shutting down acsContainerDaemon"
     FLAG=1
 fi
 kill $SPID
+sleep  5 
 ps -p $SPID &>/dev/null 
 if [ $? -ne 1 ]; then
-    echo "FAILED - shuting down acsServicesDaemon"
+    echo "FAILED - shutting down acsServicesDaemon"
     FLAG=1
 fi
 
