@@ -22,7 +22,6 @@ import java.util.logging.Logger;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
-import org.omg.CORBA.NO_IMPLEMENT;
 import org.omg.CORBA.ORB;
 import org.omg.PortableServer.POA;
 import org.xml.sax.SAXException;
@@ -806,8 +805,27 @@ public class DALImpl extends JDALPOA implements Recoverer {
 		//System.out.println( "Listing " + name );
 		String list = rootNode.list(name);
 
-		return list;
-/*		
+	    // remove .xml file (always first)
+		final String XML_ENDING = ".xml ";
+	    int pos = list.indexOf(XML_ENDING);
+	    if (pos > 0)
+	    	list = list.substring(pos+XML_ENDING.length()).trim();
+
+	    return list;
+	}
+	
+	/* (non-Javadoc)
+	 * @see com.cosylab.CDB.DALOperations#list_daos(java.lang.String)
+	 */
+	public String list_daos(String name) {
+		// if we didn't create a root node yet or we are listing
+		// the root content then recreate the tree data
+		if( rootNode == null || name.length() == 0 ) {
+			rootNode = DALNode.getRoot(m_root);
+		}
+		//System.out.println( "Listing " + name );
+		String list = rootNode.list(name);
+
 	    // remove .xml file (always first) and replace it with subnodes
 		// TODO @todo cachnig impl. possible (loadRecord actually loads the record)
 		final String XML_ENDING = ".xml ";
@@ -839,26 +857,19 @@ public class DALImpl extends JDALPOA implements Recoverer {
 	        }
 
 	        if (internalNodes != null && internalNodes.length() > 0)
-			    list += internalNodes.toString();
+			    return internalNodes.toString();
+	        else
+	        	return "";
 
 	    }
-
-		return list;
-*/
+			return "";
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see com.cosylab.CDB.DALOperations#configuration_name()
 	 */
 	public String configuration_name() {
 		return "XML";
-	}
-
-	/* (non-Javadoc)
-	 * @see com.cosylab.CDB.DALOperations#list_daos(java.lang.String)
-	 */
-	public String list_daos(String name) {
-		throw new NO_IMPLEMENT();
 	}
 
 	/**
