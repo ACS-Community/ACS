@@ -28,6 +28,8 @@ import org.omg.CORBA.ORB;
 import si.ijs.maci.Administrator;
 import si.ijs.maci.AdministratorOperations;
 import si.ijs.maci.AdministratorPOATie;
+import si.ijs.maci.SynchronousAdministratorOperations;
+import si.ijs.maci.SynchronousAdministratorPOATie;
 
 import alma.JavaContainerError.wrappers.AcsJContainerEx;
 
@@ -108,7 +110,10 @@ public class AdvancedContainerServicesImpl implements AdvancedContainerServices
 	}
 
     /**
-     * Allows to connect a manager admin object to the manager, to receive notifications etc. 
+     * Allows to connect a manager admin object to the manager, to receive notifications etc.
+     * <p>
+     * This method accepts and distinguishes <code>AdministratorOperations</code> objects
+     * and the subtyped {@link SynchronousAdministratorOperations} objects.
      * <p>
      * TODO: (1) container could implement a single proxy/interceptor admin client so that we only have at most one such login 
      *       on the manager, even if many components register their admin clients.
@@ -122,8 +127,19 @@ public class AdvancedContainerServicesImpl implements AdvancedContainerServices
     public void connectManagerAdmin(AdministratorOperations adminOp, boolean retryConnectOnFailure) throws AcsJContainerEx {
     	// need to create our own manager proxy
     	AcsManagerProxy acsManagerProxy = this.containerServicesImpl.m_acsManagerProxy.createInstance();
-    	AdministratorPOATie adminpoa = new AdministratorPOATie(adminOp);
-		Administrator admin = adminpoa._this(getORB());
+
+    	// for CORBA activation we cannot use polymorphism, but have to choose the correct poa skeleton class.
+    	// The use of "instanceof" is certainly unsatisfying, but saves us from exposing a specialized second method in the 
+    	// AdvancedContainerServices interface.
+    	Administrator admin = null;
+    	if (adminOp instanceof SynchronousAdministratorOperations) {
+        	SynchronousAdministratorPOATie adminpoa = new SynchronousAdministratorPOATie((SynchronousAdministratorOperations)adminOp); 
+    		admin = adminpoa._this(getORB());
+    	}
+    	else {
+        	AdministratorPOATie adminpoa = new AdministratorPOATie(adminOp); 
+    		admin = adminpoa._this(getORB());    		
+    	}
         acsManagerProxy.loginToManager(admin, retryConnectOnFailure);
     }
     
