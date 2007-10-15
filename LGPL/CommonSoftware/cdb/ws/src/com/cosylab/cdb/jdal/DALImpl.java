@@ -859,11 +859,11 @@ public class DALImpl extends JDALPOA implements Recoverer {
 	        if (internalNodes != null && internalNodes.length() > 0)
 			    return internalNodes.toString();
 	        else
-	        	return "";
+	        	return " ";		// not nice (still every list is ended with space)
 
 	    }
 	    else
-			return null;	// this is not a DAO, indicate with null
+			return "";	// cannot return null
 	}
 
 	/* (non-Javadoc)
