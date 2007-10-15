@@ -155,7 +155,7 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 	        
 	        AuthenticationData ret = new AuthenticationData(
 	        		"C", 
-	        		ClientType.CONTAINER_TYPE, 
+	        		ClientType.CLIENT_TYPE, 
 	        		ImplLangType.JAVA, 
 	        		false, 
 	        		startTimeUTClong, 
