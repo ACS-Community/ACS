@@ -4,7 +4,7 @@
 #
 # build
 #
-# "@(#) $Id: buildTools,v 1.28 2007/09/06 09:45:49 eallaert Exp $"
+# "@(#) $Id: buildTools,v 1.29 2007/10/15 16:06:04 hsommer Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -188,8 +188,10 @@ echo "buildMico"
 if [ ${OS} = "LINUX" ]
 then
     # for Linux  only: install Tomcat
-    echo "buildTomcat"
-    ./buildTomcat
+# As of ACS 7.0, the old Tomcat installation here in ExtProd is dropped,
+# since the archive installs its more recent tomcat version.
+#    echo "buildTomcat"
+#    ./buildTomcat
 
     if [ "$DISTRO" != "RHLX" -o "$REL" != "9" ]
     then
