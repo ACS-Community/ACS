@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 ################################################################################################
-# @(#) $Id: killACS.py,v 1.19 2007/08/15 06:10:20 cparedes Exp $
+# @(#) $Id: killACS.py,v 1.20 2007/10/15 23:13:00 nbarriga Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA, 2001
@@ -127,7 +127,7 @@ print "Forcibly killing all known ALMA software executables..."
 #We assume whats above must have failed.
 #No reason to show the user any of this output...
 
-IGNORE_PROCS = ["killACS", "acsKillProc", "acsdaemon", "acsdaemonStartContainer" ]
+IGNORE_PROCS = ["killACS", "acsKillProc", "acsservicesdaemon", "acscontainerdaemon" ]
 
 for process in PROCS:
 
