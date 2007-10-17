@@ -81,6 +81,7 @@ import com.cosylab.acs.maci.NoDefaultComponentException;
 import com.cosylab.acs.maci.NoResourcesException;
 import com.cosylab.acs.maci.RemoteException;
 import com.cosylab.acs.maci.StatusHolder;
+import com.cosylab.acs.maci.SynchronousAdministrator;
 import com.cosylab.acs.maci.Transport;
 import com.cosylab.acs.maci.ContainerInfo.ImplementationLanguage;
 import com.cosylab.acs.maci.loadbalancing.LoadBalancingStrategy;
@@ -3944,7 +3945,13 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 			// spawn new task which surely does not block
 			for (int i = 0; i < admins.length; i++)
-				threadPool.execute(new ClientLoggedInTask(admins[i], clientInfo));
+			{
+				Runnable task = new ClientLoggedInTask(admins[i], clientInfo);
+				if (admins[i] instanceof SynchronousAdministrator)
+					task.run();
+				else
+					threadPool.execute(task);
+			}
 
 		}
 
@@ -3999,7 +4006,13 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 			// spawn new task which surely does not block
 			for (int i = 0; i < admins.length; i++)
-				threadPool.execute(new ContainerLoggedInTask(admins[i], containerInfo));
+			{
+				Runnable task = new ContainerLoggedInTask(admins[i], containerInfo);
+				if (admins[i] instanceof SynchronousAdministrator)
+					task.run();
+				else
+					threadPool.execute(task);
+			}
 
 		}
 
@@ -4057,7 +4070,13 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 			// spawn new task which surely does not block
 			for (int i = 0; i < admins.length; i++)
-				threadPool.execute(new ClientLoggedOutTask(admins[i], clientInfo));
+			{
+				Runnable task = new ClientLoggedOutTask(admins[i], clientInfo);
+				if (admins[i] instanceof SynchronousAdministrator)
+					task.run();
+				else
+					threadPool.execute(task);
+			}
 
 		}
 
@@ -4113,7 +4132,13 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 			// spawn new task which surely does not block
 			for (int i = 0; i < admins.length; i++)
-				threadPool.execute(new ContainerLoggedOutTask(admins[i], containerInfo));
+			{
+				Runnable task = new ContainerLoggedOutTask(admins[i], containerInfo);
+				if (admins[i] instanceof SynchronousAdministrator)
+					task.run();
+				else
+					threadPool.execute(task);
+			}
 
 		}
 
@@ -4367,7 +4392,13 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 			// spawn new task which surely does not block
 			for (int i = 0; i < admins.length; i++)
-				threadPool.execute(new ComponentRequestedTask(admins[i], requestors, components));
+			{
+				Runnable task = new ComponentRequestedTask(admins[i], requestors, components);
+				if (admins[i] instanceof SynchronousAdministrator)
+					task.run();
+				else
+					threadPool.execute(task);
+			}
 
 		}
 
@@ -4421,8 +4452,13 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 			// spawn new task which surely does not block
 			for (int i = 0; i < admins.length; i++)
-				threadPool.execute(new ComponentActivatedTask(admins[i]));
-
+			{
+				Runnable task = new ComponentActivatedTask(admins[i]);
+				if (admins[i] instanceof SynchronousAdministrator)
+					task.run();
+				else
+					threadPool.execute(task);
+			}
 		}
 
 	}
@@ -4475,7 +4511,13 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 			// spawn new task which surely does not block
 			for (int i = 0; i < admins.length; i++)
-				threadPool.execute(new ComponentDeactivatedTask(admins[i]));
+			{
+				Runnable task = new ComponentDeactivatedTask(admins[i]);
+				if (admins[i] instanceof SynchronousAdministrator)
+					task.run();
+				else
+					threadPool.execute(task);
+			}
 
 		}
 
@@ -4535,7 +4577,13 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 			// spawn new task which surely does not block
 			for (int i = 0; i < admins.length; i++)
-				threadPool.execute(new ComponentReleasedTask(admins[i], requestors, components));
+			{
+				Runnable task = new ComponentReleasedTask(admins[i], requestors, components);
+				if (admins[i] instanceof SynchronousAdministrator)
+					task.run();
+				else
+					threadPool.execute(task);
+			}
 
 		}
 
@@ -4594,7 +4642,13 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 			// spawn new task which surely does not block
 			for (int i = 0; i < clients.length; i++)
-				threadPool.execute(new ComponentAvailableTask(clients[i], info));
+			{
+				Runnable task = new ComponentAvailableTask(clients[i], info);
+				if (clients[i] instanceof SynchronousAdministrator)
+					task.run();
+				else
+					threadPool.execute(task);
+			}
 
 		}
 
@@ -4653,7 +4707,13 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 			// spawn new task which surely does not block
 			for (int i = 0; i < clients.length; i++)
-				threadPool.execute(new ComponentUnavailableTask(clients[i], names));
+			{
+				Runnable task = new ComponentUnavailableTask(clients[i], names);
+				if (clients[i] instanceof SynchronousAdministrator)
+					task.run();
+				else
+					threadPool.execute(task);
+			}
 
 		}
 

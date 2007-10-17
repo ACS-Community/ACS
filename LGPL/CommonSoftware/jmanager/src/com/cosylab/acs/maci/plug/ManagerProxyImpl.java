@@ -26,6 +26,7 @@ import si.ijs.maci.Container;
 import si.ijs.maci.ContainerHelper;
 import si.ijs.maci.ContainerInfo;
 import si.ijs.maci.ManagerPOA;
+import si.ijs.maci.SynchronousAdministratorHelper;
 import si.ijs.maci.LoggingConfigurablePackage.LogLevels;
 import alma.ACSErrTypeCommon.wrappers.AcsJBadParameterEx;
 import alma.acs.logging.ClientLogManager;
@@ -682,6 +683,10 @@ public class ManagerProxyImpl extends ManagerPOA
 				if (reference._is_a(ContainerHelper.id()))
 				{
 					clientProxy = new ContainerProxy(ContainerHelper.narrow(reference));
+				}
+				else if (reference._is_a(SynchronousAdministratorHelper.id()))
+				{
+					clientProxy = new SynchronousAdministratorProxy(SynchronousAdministratorHelper.narrow(reference));
 				}
 				else if (reference._is_a(AdministratorHelper.id()))
 				{
