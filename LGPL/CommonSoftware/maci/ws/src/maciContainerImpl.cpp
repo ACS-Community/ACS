@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciContainerImpl.cpp,v 1.96 2007/10/11 15:07:50 msekoran Exp $"
+* "@(#) $Id: maciContainerImpl.cpp,v 1.97 2007/10/17 16:00:01 cparedes Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -78,7 +78,7 @@
 #include <ACSAlarmSystemInterfaceFactory.h>
 #endif
 
-ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.96 2007/10/11 15:07:50 msekoran Exp $")
+ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.97 2007/10/17 16:00:01 cparedes Exp $")
 
  using namespace maci;
  using namespace cdb;
@@ -87,7 +87,8 @@ ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.96 2007/10/11
 ContainerImpl * ContainerImpl::m_container = 0;
 LoggingProxy * ContainerImpl::m_loggerProxy = 0;
 LibraryManager * ContainerImpl::m_dllmgr = 0;
-
+int ContainerImpl::m_logLevelConfigure = CDB_LOG_LEVEL; 
+int ContainerImpl::m_logLevelRefresh = CDB_LOG_LEVEL;
 CORBA::ULong ContainerImpl::m_invocationTimeout = 15000;		// in milliseconds; 15s
 
 // ************************************************************************
@@ -655,6 +656,7 @@ ContainerImpl::init(int argc, char *argv[])
       if (!m_loggerProxy)
 	ACS_SHORT_LOG((LM_WARNING, "Unable to create logging system. Using 'stdout'..."));
 
+      m_logLevelRefresh = CDB_LOG_LEVEL;
       if (m_dynamicContainer)
 	{
 	  ACS_LOG(LM_RUNTIME_CONTEXT, "maci::Container::init", (LM_INFO, "Starting as dynamic container."));
@@ -664,6 +666,7 @@ ContainerImpl::init(int argc, char *argv[])
 		// setup loggers
 		refresh_logging_config();
 	}
+	m_logLevelRefresh = CDB_REFRESH_LOG_LEVEL;
 	
       //
       // setup DLL manager
@@ -2588,25 +2591,13 @@ void ContainerImpl::set_default_logLevels(const maci::LoggingConfigurable::LogLe
 	if (!logLevels.useDefault)
 	{
 		Logging::Logger::getGlobalLogger()->setLevels(
+			static_cast<Logging::BaseLog::Priority>(logLevels.minLogLevel),
 			static_cast<Logging::BaseLog::Priority>(logLevels.minLogLevelLocal), 
-			static_cast<Logging::BaseLog::Priority>(logLevels.minLogLevel));
+			DYNAMIC_LOG_LEVEL);
 		m_defaultLogLevels = logLevels;
 	}
 }
 
-// void ContainerImpl::set_dynamic_default_logLevels(const maci::LoggingConfigurable::LogLevels& logLevels)
-// 	throw (CORBA::SystemException)
-// {
-// 	ACS_TRACE("maci::ContainerImpl::set_default_logLevels");
-// 
-// 	if (!logLevels.useDefault)
-// 	{
-// 		Logging::Logger::getGlobalLogger()->dynamicSetLevels(
-// 			static_cast<Logging::BaseLog::Priority>(logLevels.minLogLevelLocal), 
-// 			static_cast<Logging::BaseLog::Priority>(logLevels.minLogLevel));
-// 		m_defaultLogLevels = logLevels;
-// 	}
-// }
 
 maci::stringSeq* ContainerImpl::get_logger_names()
 	throw (CORBA::SystemException)
@@ -2674,41 +2665,18 @@ void ContainerImpl::set_logLevels(const char* loggerName, const maci::LoggingCon
  	}
 
 	m_logLevels[loggerName] = logLevels;
-	if (logLevels.useDefault)
+	if (logLevels.useDefault){
 		Logging::Logger::getGlobalLogger()->setLevels(loggerName, 
+			static_cast<Logging::BaseLog::Priority>(m_defaultLogLevels.minLogLevel),
 			static_cast<Logging::BaseLog::Priority>(m_defaultLogLevels.minLogLevelLocal),
-			static_cast<Logging::BaseLog::Priority>(m_defaultLogLevels.minLogLevel));
-	else
+			DYNAMIC_LOG_LEVEL);
+	}else{
 		Logging::Logger::getGlobalLogger()->setLevels(loggerName, 
+			static_cast<Logging::BaseLog::Priority>(logLevels.minLogLevel),
 			static_cast<Logging::BaseLog::Priority>(logLevels.minLogLevelLocal),
-			static_cast<Logging::BaseLog::Priority>(logLevels.minLogLevel));
+			DYNAMIC_LOG_LEVEL);
+	}
 }
-
-// void ContainerImpl::set_dynamic_logLevels(const char* loggerName, const maci::LoggingConfigurable::LogLevels& logLevels)
-// 	throw (CORBA::SystemException, maciErrType::LoggerDoesNotExistEx)
-// {
-// 	ACS_TRACE("maci::ContainerImpl::set_logLevels");
-//
-// 	if (!Logging::Logger::getGlobalLogger()->exists(loggerName))
-// 	{
-// 		maciErrType::LoggerDoesNotExistExImpl ex(__FILE__, __LINE__,
-// 					"maci::ContainerImpl::set_logLevels");
-// 		ex.setLoggerName(loggerName);
-// 		ex.log(LM_DEBUG);
-// 		throw ex.getLoggerDoesNotExistEx();
-// 		//return;
-//  	}
-// 
-// 	m_logLevels[loggerName] = logLevels;
-// 	if (logLevels.useDefault)
-// 		Logging::Logger::getGlobalLogger()->dynamicSetLevels(loggerName, 
-// 			static_cast<Logging::BaseLog::Priority>(m_defaultLogLevels.minLogLevelLocal),
-// 			static_cast<Logging::BaseLog::Priority>(m_defaultLogLevels.minLogLevel));
-// 	else
-// 		Logging::Logger::getGlobalLogger()->dynamicSetLevels(loggerName, 
-// 			static_cast<Logging::BaseLog::Priority>(logLevels.minLogLevelLocal),
-// 			static_cast<Logging::BaseLog::Priority>(logLevels.minLogLevel));
-// }
 
 void ContainerImpl::refresh_logging_config()
 	throw (CORBA::SystemException)
@@ -2737,9 +2705,9 @@ void ContainerImpl::refresh_logging_config()
 	
 	// set default logger levels 
 	Logging::Logger::getGlobalLogger()->setLevels(
+		static_cast<Logging::BaseLog::Priority>(m_defaultLogLevels.minLogLevel),
 		static_cast<Logging::BaseLog::Priority>(m_defaultLogLevels.minLogLevelLocal),
-		static_cast<Logging::BaseLog::Priority>(m_defaultLogLevels.minLogLevel));
-
+		m_logLevelRefresh);
 	// other loggers config
 	if (m_database->GetField(m_dbPrefix.c_str(), "LoggingConfig", fld))
 	{
@@ -2747,6 +2715,8 @@ void ContainerImpl::refresh_logging_config()
 		if (fld.GetStringArray(loggers))
 		{
 			cdb::StringArray::iterator iter;
+			int aux = m_logLevelConfigure;
+			m_logLevelConfigure = m_logLevelRefresh; 
 			for (iter = loggers.begin(); iter != loggers.end(); iter++)
 			{
 				// C++ CDB impl reutrns also attriburtes, we do not want
@@ -2764,6 +2734,7 @@ void ContainerImpl::refresh_logging_config()
 				// ... and configure
 				configureLogger(iter->c_str());				
 			}
+		  	m_logLevelConfigure = aux;	
 		}
 	}
 }
@@ -2775,15 +2746,19 @@ void ContainerImpl::configureLogger(const std::string& loggerName)
 		logLevels = getContainer()->m_logLevels[loggerName];
 	else
 		logLevels = getContainer()->m_defaultLogLevels;
-	
-	if (logLevels.useDefault)
+
+	if (logLevels.useDefault){
 		Logging::Logger::getGlobalLogger()->setLevels(loggerName, 
+			static_cast<Logging::BaseLog::Priority>(getContainer()->m_defaultLogLevels.minLogLevel),
 			static_cast<Logging::BaseLog::Priority>(getContainer()->m_defaultLogLevels.minLogLevelLocal),
-			static_cast<Logging::BaseLog::Priority>(getContainer()->m_defaultLogLevels.minLogLevel));
-	else
+		m_logLevelConfigure);
+	}else{
 		Logging::Logger::getGlobalLogger()->setLevels(loggerName, 
+			static_cast<Logging::BaseLog::Priority>(logLevels.minLogLevel),
 			static_cast<Logging::BaseLog::Priority>(logLevels.minLogLevelLocal),
-			static_cast<Logging::BaseLog::Priority>(logLevels.minLogLevel));
+		m_logLevelConfigure);
+	}
+
 }
 
 
