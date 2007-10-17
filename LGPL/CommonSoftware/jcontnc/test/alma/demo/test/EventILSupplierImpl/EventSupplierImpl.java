@@ -58,13 +58,7 @@ public class EventSupplierImpl extends ComponentImplBase implements SupplierComp
          for(short i=0; i<param; i++)
          {
             m_supplier.publishEvent(t_block);
-         }
-         
-         //next invoke some public methods to ensure they work
-         if (m_supplier.getHelper()==null)
-         {
-            System.out.println("Bad Helper!!!");
-         }
+         }         
          
 	 //fake a subscription change
 	 m_supplier.subscription_change(new org.omg.CosNotification.EventType[]
