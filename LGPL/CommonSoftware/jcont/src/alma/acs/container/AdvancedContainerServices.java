@@ -23,7 +23,10 @@ package alma.acs.container;
 
 import org.omg.CORBA.ORB;
 
-import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
+import si.ijs.maci.AdministratorOperations;
+import si.ijs.maci.SynchronousAdministratorOperations;
+
+import alma.JavaContainerError.wrappers.AcsJContainerEx;
 
 /**
  * This class defines the more exotic methods from the container services interface,
@@ -40,15 +43,6 @@ import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
  */
 public interface AdvancedContainerServices {
 	
-	/**
-	 * Provides explicit acces to the normally invisible ORB, for components that fulfill infrastructural tasks.
-	 * <p>
-	 * <b>Normal subsystem components must not use this method!</b> If they feel they should get access to the ORB, 
-	 * either ACS is missing a feature which should be reported, or there is a misunderstanding in how to develop software for Alma.
-	 * @return the ORB that connects the container and its components with other processes.
-	 */
-	public ORB getORB();
-	
     /**
      * Encapsulates {@link org.omg.CORBA.ORB#object_to_string(org.omg.CORBA.Object)}.
      * @param objRef the corba stub 
@@ -63,6 +57,15 @@ public interface AdvancedContainerServices {
      */
     public org.omg.CORBA.Object corbaObjectFromString(String strObjRef);
 
+	/**
+	 * Provides explicit access to the normally invisible ORB, for components that fulfill infrastructural tasks.
+	 * <p>
+	 * <b>Normal subsystem components must not use this method!</b> If they feel they should get access to the ORB, 
+	 * either ACS is missing a feature which should be reported, or there is a misunderstanding in how to develop software for Alma.
+	 * @return the ORB that connects the container and its components with other processes.
+	 */
+	public ORB getORB();
+	
     /**
      * Returns a reference to a new CORBA Any. Int Java the only way to do 
      * this is through the ORB itself (i.e., the create_any method).
@@ -74,4 +77,28 @@ public interface AdvancedContainerServices {
      */
     public org.omg.CORBA.Any getAny();
 
+    
+    /**
+     * Allows to connect a manager admin object to the manager, to receive notifications etc.
+     * <p>
+     * In the current implementation every call to this method establishes a new connection to the manager.
+     * Should a client ever need to call this method more than once, it must also call 
+     * {@link #disconnectManagerAdmin(String)} for each of its admin objects.  
+     * <p>
+     * This method accepts and distinguishes <code>AdministratorOperations</code> objects
+     * and the subtyped {@link SynchronousAdministratorOperations} objects.
+     * 
+     * @param adminOp  callback object
+     * @param retryConnectOnFailure  retry if the manager is not available or the connection failed.
+     * @throws AcsJContainerEx 
+     * @since ACS 7.0
+     */
+    public void connectManagerAdmin(AdministratorOperations adminOp, boolean retryConnectOnFailure) throws AcsJContainerEx;
+    
+    /**
+     * Releases a previously connected manager admin object.
+     * This call is ignored if the given object is not connected.
+     * @param componentUrl
+     */
+    public void disconnectManagerAdmin(AdministratorOperations adminOp);
 }
