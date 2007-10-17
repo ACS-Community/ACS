@@ -18,7 +18,7 @@
 
 /**
  * @author dfugate
- * @version $Id: ChannelProperties.java,v 1.8 2006/11/21 15:00:41 hsommer Exp $
+ * @version $Id: ChannelProperties.java,v 1.9 2007/10/17 16:04:29 hsommer Exp $
  * @since
  */
 
@@ -112,15 +112,6 @@ public class ChannelProperties {
 	}
 
 	// -----------------------------------------------------------
-	/**
-	 * @deprecated as of ACS 6.0.1 We renamed this method to 'isTraceEventsEnabled' because the old method name is misleading:
-	 *             this method does not return integration logs, and moreover tracing of events through log messages
-	 *             is not limited to software integration activities. 
-	 */
-	public boolean getIntegrationLogs(String channelName) throws alma.acs.exceptions.AcsJException {
-		return isTraceEventsEnabled(channelName);
-	}
-	
 	
 	/**
 	 * When some attribute is set within the CDB (currently <code>IntegrationLogs</code> 
@@ -182,7 +173,7 @@ public class ChannelProperties {
 	 * @throws AcsJException
 	 *            if the channel's CDB entry is corrupted in any way
 	 */
-	public Property[] getCDBAdminProps(String channelName) throws alma.acs.exceptions.AcsJException {
+	public Property[] getCDBAdminProps(String channelName) throws AcsJException {
 		// use this object to get at channel information from the CDB
 		DAO tempDAO = null;
 		try {
@@ -254,6 +245,8 @@ public class ChannelProperties {
 	 * Given a channel name that exists in the ACS CDB
 	 * ($ACS_CDB/CDB/MACI/Channels/channelName/channelName.xml), this function
 	 * returns the channel's quality of service properties in their CORBA format.
+	 * <p>
+	 * The schema for this channel configuration is <code>urn:schemas-cosylab-com:EventChannel:1.0</code>.
 	 * 
 	 * @param channelName
 	 *           name of the channel found in $ACS_CDB/CDB/MACI/Channels
