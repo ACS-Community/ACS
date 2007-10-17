@@ -21,6 +21,8 @@
  */
 package alma.acs.container;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import org.omg.CORBA.ORB;
@@ -49,7 +51,8 @@ public class AdvancedContainerServicesImpl implements AdvancedContainerServices
     // logger used by this class
 	protected Logger logger;
     
-	protected AdministratorOperations adminClient;
+	protected Map<AdministratorOperations, AcsManagerProxy> adminClientsToManagerProxy =
+		new HashMap<AdministratorOperations, AcsManagerProxy>();
 	
 	AdvancedContainerServicesImpl(ContainerServicesImpl containerServicesImpl, Logger logger) {
         this.containerServicesImpl = containerServicesImpl;
@@ -120,11 +123,21 @@ public class AdvancedContainerServicesImpl implements AdvancedContainerServices
      *       (2) Discuss if the <code>retryConnectOnFailure</code> flag makes sense,
      *       or if such a specialized component that uses this method should implement its own retry strategy
      *       and should rather be notified quickly if there are problems.
-     * @param adminOp
+     * @param adminOp  admin object for manager callbacks.  
      * @param retryConnectOnFailure  retry if the manager is not available or the connection failed.
-     * @throws AcsJContainerEx 
+     * @throws AcsJContainerEx
+     * @throws IllegalArgumentException  if adminOp == <code>null</code>. 
      */
     public void connectManagerAdmin(AdministratorOperations adminOp, boolean retryConnectOnFailure) throws AcsJContainerEx {
+    	
+    	if (adminOp == null) {
+    		throw new IllegalArgumentException("adminOp == null not allowed.");
+    	}
+    	if (adminClientsToManagerProxy.containsKey(adminOp)) {
+    		logger.info("Attempt to connect manager admin of type " + adminOp.getClass().getName() + " again will be ignored.");
+    		return;
+    	}
+    	
     	// need to create our own manager proxy
     	AcsManagerProxy acsManagerProxy = this.containerServicesImpl.m_acsManagerProxy.createInstance();
 
@@ -141,7 +154,16 @@ public class AdvancedContainerServicesImpl implements AdvancedContainerServices
     		admin = adminpoa._this(getORB());    		
     	}
         acsManagerProxy.loginToManager(admin, retryConnectOnFailure);
+
+        adminClientsToManagerProxy.put(adminOp, acsManagerProxy);
     }
     
+    
+    public void disconnectManagerAdmin(AdministratorOperations adminOp) {
+    	AcsManagerProxy prox = adminClientsToManagerProxy.get(adminOp);
+    	if (prox != null) {
+    		prox.logoutFromManager();
+    	}
+    }
 }
 
