@@ -19,7 +19,7 @@ package alma.acs.nc;
 
 /**
  * @author dfugate
- * @version $Id: LoggingConsumer.java,v 1.3 2006/03/09 21:52:10 dfugate Exp $
+ * @version $Id: LoggingConsumer.java,v 1.4 2007/10/17 16:03:29 hsommer Exp $
  * @since
  */
 
@@ -134,8 +134,7 @@ public class LoggingConsumer extends Consumer {
    /**
     * Overridden.
     */
-   public void push_structured_event(StructuredEvent structuredEvent)
-         throws org.omg.CosEventComm.Disconnected {
+   public void push_structured_event(StructuredEvent structuredEvent) {
       try {
          String xml = structuredEvent.remainder_of_body.extract_string();
 

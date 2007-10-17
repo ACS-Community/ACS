@@ -19,7 +19,7 @@ package alma.acs.nc;
 
 /**
  * @author dfugate
- * @version $Id: ArchiveConsumer.java,v 1.10 2007/01/04 12:29:16 hsommer Exp $
+ * @version $Id: ArchiveConsumer.java,v 1.11 2007/10/17 16:04:44 hsommer Exp $
  * @since
  */
 
@@ -136,8 +136,7 @@ public class ArchiveConsumer extends Consumer {
 	 * @param structuredEvent CORBA NC StructuredEvent
 	 * @throws Disconnected 
 	 */
-	public void push_structured_event(StructuredEvent structuredEvent)
-			throws org.omg.CosEventComm.Disconnected {
+	public void push_structured_event(StructuredEvent structuredEvent) {
 		try {
 			String[] eventNames = structuredEvent.header.fixed_header.event_name.split(":");
 
