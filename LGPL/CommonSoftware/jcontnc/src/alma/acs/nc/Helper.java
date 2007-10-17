@@ -202,7 +202,7 @@ public class Helper {
 					m_channelProperties.configAdminProps(channelName), new IntHolder());
 			// sanity check
 			if (retValue == null) {
-				// a null refernce implies we cannot go any further
+				// a null reference implies we cannot go any further
 				String reason = "Null reference obtained for the '" + channelName + "' channel!";
 				throw new alma.ACSErrTypeJavaNative.wrappers.AcsJJavaLangEx(reason); // @todo: more specific ex type
 			}
