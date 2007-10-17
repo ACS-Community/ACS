@@ -197,37 +197,6 @@ public class SimpleSupplier extends OSPushSupplierPOA
 	}
 
 	
-	// //////////////////////////////////////////////////////////////////////////
-// HSO: removed this because the channel is created anyway already in the ctor. For one release we keep the substitute method below.	
-//	/**
-//	 * This method gets a reference to the event channel. If it is not already
-//	 * registered with the naming service, it is created.
-//	 * 
-//	 * @return Reference to the event channel specified by channelName.
-//	 * @param channelName
-//	 *           Name of the event channel registered with the CORBA Naming
-//	 *           Service
-//	 * @throws AcsJException
-//	 *            Standard ACS Java exception.
-//	 */
-//	protected EventChannel getNotificationChannel(String channelName) throws AcsJException {
-//		if (m_channel == null) {
-//			m_channel = m_helper.getNotificationChannel(channelName, getChannelKind(), getNotificationFactoryName());
-//		}
-//		return m_channel;
-//	}
-
-	/**
-	 * @deprecated as of ACS 6.0.1. Use {@link #getNotificationChannel()} instead.
-	 */
-	protected EventChannel getNotificationChannel(String channelName) throws AcsJException {
-		if (!channelName.equals(m_channelName)) {
-			m_logger.warning("getNotificationChannel called for channel '" + channelName + "' while this SimpleSupplier was created for " + m_channelName);
-		}	
-		return m_channel;
-	}
-	
-	
 	protected void destroyNotificationChannel() throws AcsJException {
 		m_helper.destroyNotificationChannel(m_channelName, getChannelKind(), m_channel);
 	}
@@ -281,10 +250,8 @@ public class SimpleSupplier extends OSPushSupplierPOA
 	 * Gets a reference to the event channel specified during construction.
 	 * 
 	 * @return Reference to the event channel.
-	 * @throws AcsJException
-	 *            Standard ACS Java exception.
 	 */
-	protected EventChannel getNotificationChannel() throws AcsJException {
+	protected EventChannel getNotificationChannel() {
 		return m_channel;
 	}
 
@@ -445,18 +412,6 @@ public class SimpleSupplier extends OSPushSupplierPOA
 
 		publishCORBAEvent(event);
 		m_count++;
-	}
-
-	// //////////////////////////////////////////////////////////////////////////
-	/**
-	 * Returns a reference to the Helper instance. Not too useful outside this
-	 * class.
-	 * 
-	 * @return Returns a reference to the Helper instance.
-	 * @deprecated as of ACS 6.0.1
-	 */
-	public alma.acs.nc.Helper getHelper() {
-		return m_helper;
 	}
 
 	// //////////////////////////////////////////////////////////////////////////
