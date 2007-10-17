@@ -19,7 +19,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: loggingLoggingProxy.cpp,v 1.44 2007/10/03 19:57:23 cparedes Exp $"
+* "@(#) $Id: loggingLoggingProxy.cpp,v 1.45 2007/10/17 15:56:17 cparedes Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -57,12 +57,7 @@
 #define LOG_NAME "Log"
 #define DEFAULT_LOG_FILE_NAME "acs_local_log"
 
-#define DYNAMIC_LOG_LEVEL 1 
-#define ENV_LOG_LEVEL 2 
-#define CDB_LOG_LEVEL 3
-#define DEFAULT_LOG_LEVEL 4 
-
-ACE_RCSID(logging, logging, "$Id: loggingLoggingProxy.cpp,v 1.44 2007/10/03 19:57:23 cparedes Exp $");
+ACE_RCSID(logging, logging, "$Id: loggingLoggingProxy.cpp,v 1.45 2007/10/17 15:56:17 cparedes Exp $");
 
 ACSLoggingLog::LogType LoggingProxy::m_LogBinEntryTypeName[] =
 {
@@ -114,16 +109,13 @@ LoggingProxy::log(ACE_Log_Record &log_record)
     int privateFlags = (*tss)->privateFlags();
     // 1 - default/priority local prohibit
     // 2 - default/dynamic priority Remote prohibit
-    // 4 - default cdb log levels, false means that were dyn changed
-    // 8 - Default values, not even taken from CDB
-    bool cdbDefaultLevel = privateFlags & 4 ;
-    bool cdbLevelDefined = privateFlags & 8 ;
     bool prohibitLocal  = privateFlags & 1;
     bool prohibitRemote = privateFlags & 2;
-   
+    int localLogLevelPrecedence = (*tss)->logLevelLocalType(); 
+    int remoteLogLevelPrecedence = (*tss)->logLevelRemoteType(); 
     ACE_TCHAR timestamp[24];
     formatISO8601inUTC(log_record.time_stamp(), timestamp);
-    
+
     const ACE_TCHAR * entryType = (*tss)->logEntryType();
     //const int nEntryType;
     if (!entryType)
@@ -139,45 +131,36 @@ LoggingProxy::log(ACE_Log_Record &log_record)
 	}else{
 
     }
-    //Log Level Precedence for standar output log:
-    // 1. Dynamic log level changes
-    // 2. ACS_LOG_STDOUT
-    // 3. CDB log level configuration
-    //TODO: fix this
-    // ???4. Default values of CDB, minLogLevelLocal
-    // BJE: commented out  if(cdbDefaultLevel){ .. else } what does not work 
-    // if there is no CDB for the container TO BE Fixed !!!.
-    bool passed = true; 
-    int logLevelPrecedence = -1; 
-    if(cdbDefaultLevel){
-        if(m_envStdioPriority < 0){
-            if(!cdbLevelDefined){
-                logLevelPrecedence = DEFAULT_LOG_LEVEL;
-                //a local value for minCachePriority
-                if(priority < m_minCachePriority) passed = false;
-            }else{ 
-                logLevelPrecedence = CDB_LOG_LEVEL;
-                if(prohibitLocal) passed = false;
-            }
-        }else{
-             logLevelPrecedence = ENV_LOG_LEVEL;
-             if(priority<(unsigned int)m_envStdioPriority) passed = false;
-        }
-	  }else{
-        logLevelPrecedence = DYNAMIC_LOG_LEVEL;
-        if(prohibitLocal) passed = false;
+
+    if(localLogLevelPrecedence == NOT_DEFINED_LOG_LEVEL){
+	localLogLevelPrecedence = DEFAULT_LOG_LEVEL;
+	if(priority < m_minCachePriority) prohibitLocal = true;
+	else prohibitLocal = false;
     }
-	
+    //client exception in log level
+    if(localLogLevelPrecedence == DEFAULT_LOG_LEVEL){
+	if(m_envStdioPriority >= 0) {
+	    localLogLevelPrecedence=ENV_LOG_LEVEL;
+       	    if(priority>=(unsigned int)m_envStdioPriority){
+		prohibitLocal = false;	    
+	    }else
+		prohibitLocal = true;
+    	}
+    }else if (localLogLevelPrecedence == ENV_LOG_LEVEL){
+	if(priority>=(unsigned int)m_envStdioPriority){
+		prohibitLocal = false;
+	}else prohibitLocal = true;
+    }  
     LoggingTSSStorage::HASH_MAP_ENTRY *entry;
     LoggingTSSStorage::HASH_MAP_ITER hash_iter = (*tss)->getData();
 
-    if (passed && ACE_OS::strcmp(entryType, "Archive")!=0)      // do not print archive logs
+    if (!prohibitLocal && ACE_OS::strcmp(entryType, "Archive")!=0)      // do not print archive logs
 	{
 
 	// to make print outs nice
 	ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_printMutex);
 	
-	 if (logLevelPrecedence == DEFAULT_LOG_LEVEL)
+	 if (localLogLevelPrecedence == DEFAULT_LOG_LEVEL)
 	 //if (m_envStdioPriority < 0)
 	    {
 	    // log only LM_INFO and higher
@@ -249,50 +232,25 @@ LoggingProxy::log(ACE_Log_Record &log_record)
             ACE_OS::printf ("\n");
 	    ACE_OS::fflush (stdout); //(2004-01-05)msc: added
 	}
-/*else{
-	}*/
 	}//else//if
-    
-    //Log Level Precedence for remote log:
-    // 1. Dynamic log level changes
-    // 2. ACS_LOG_CENTRALIZE_LOGGER
-    // 3. CDB log level configuration
-    // 4. Default values of CDB, minLogLevel
-
-    // ???4. Default values of CDB, minLogLevelLocal
-    // BJE: commented out  if(cdbDefaultLevel){ .. else } what does not work 
-    // if there is no CDB for the container TO BE Fixed !!!.
-
-    passed = true;
-    logLevelPrecedence = -1; 
-    if(cdbDefaultLevel){
-        if(m_envCentralizePriority == -1){
-            if(!cdbLevelDefined){
-                logLevelPrecedence = 4;
-                if(priority < m_minCachePriority) passed = false;
-            }else{ 
-                logLevelPrecedence = 3;
-                if(prohibitRemote) passed = false;
-            }
-        }else{
-             logLevelPrecedence = 2;
-             if(priority<(unsigned int)m_envCentralizePriority) passed = false;
-                //if((long)priority < m_envCentralizePriority)
-        }
-	   }else{
-        logLevelPrecedence = 1;
-         if(prohibitRemote) passed = false;
-    }
 	
-    // if priority not match the bigger precedence log level 
-    //if (prohibitRemote || priority < m_minCachePriority)
-    if (!passed)
+    // this is the case of the proxy created not by maci
+    if(remoteLogLevelPrecedence >= DEFAULT_LOG_LEVEL){
+	if(m_envCentralizePriority >= 0) {
+	    remoteLogLevelPrecedence=ENV_LOG_LEVEL;
+       	    if(priority>=(unsigned int)m_envCentralizePriority){
+		prohibitRemote = false;	    
+	    }else
+		prohibitRemote = true;
+    	}else priority < m_minCachePriority? prohibitRemote = true: prohibitRemote = false;
+    }  
+    if (prohibitRemote)
 	{
 	// anyway we have to clear TSS data 
 	(*tss)->clear(); 
 	return;
 	}
-    
+   
     if(!m_logBin){
 	    sendXmlLogs(log_record, timestamp, entryType);
     }else{
@@ -791,6 +749,37 @@ LoggingProxy::PrivateFlags()
 {
   if (tss)
     return (*tss)->privateFlags();
+  else
+    return 0;
+}
+
+void
+LoggingProxy::LogLevelRemoteType(int logLevelRemoteType)
+{
+  if (tss)
+    (*tss)->logLevelRemoteType(logLevelRemoteType);
+}
+
+const int
+LoggingProxy::LogLevelRemoteType()
+{
+  if (tss)
+    return (*tss)->logLevelRemoteType();
+  else
+    return 0;
+}
+void
+LoggingProxy::LogLevelLocalType(int logLevelLocalType)
+{
+  if (tss)
+    (*tss)->logLevelLocalType(logLevelLocalType);
+}
+
+const int
+LoggingProxy::LogLevelLocalType()
+{
+  if (tss)
+    return (*tss)->logLevelLocalType();
   else
     return 0;
 }
@@ -1429,6 +1418,7 @@ LoggingProxy::sendCacheInternal()
             }
             if (!m_alreadyInformed){
                 ACE_OS::printf ("%s %s logger: Cache saved to '%s'.\n", timestamp, logger->getIdentification(), logger->getDestination());
+		ACE_OS::fflush (stdout); //(2004-01-05)msc: added
                 m_alreadyInformed=true;
             }
             
@@ -1595,7 +1585,7 @@ LoggingProxy::getPriority(ACE_Log_Record &log_record)
     unsigned long priority = log_record.priority()+1; 
     unsigned long flag_prio = (*tss)->flags() & 0x0F;
     if (flag_prio)
-	priority = flag_prio;
+ 	priority = flag_prio;
 
     return priority;
 }

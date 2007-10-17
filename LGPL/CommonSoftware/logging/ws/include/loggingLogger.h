@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingLogger.h,v 1.19 2007/10/03 19:57:23 cparedes Exp $"
+* "@(#) $Id: loggingLogger.h,v 1.20 2007/10/17 15:56:17 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -199,9 +199,7 @@ namespace Logging
 	 * @return void
 	 */
 	virtual void
-	setLevels(Priority localPriority, Priority remotePriority);
-	virtual void
-	dynamicSetLevels(Priority localPriority, Priority remotePriority);
+	setLevels(Priority remotePriority,Priority localPriority, int type);
 	
 	/**
 	 * Set levels for local and remote logging of a child logger with given name. 
@@ -210,10 +208,8 @@ namespace Logging
 	 * @return void
 	 */
 	virtual void
-	setLevels(const std::string &loggerName, Priority localPriority, Priority remotePriority);
+	setLevels(const std::string &loggerName, Priority remotePriority,Priority localPriority, int type);
 
-	virtual void
-	dynamicSetLevels(const std::string &loggerName, Priority localPriority, Priority remotePriority);
 	/**
 	 * Logger existance check.
 	 * @param loggerName logger name.

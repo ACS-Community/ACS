@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingLogSvcHandler.cpp,v 1.23 2007/10/03 19:57:23 cparedes Exp $"
+* "@(#) $Id: loggingLogSvcHandler.cpp,v 1.24 2007/10/17 15:56:17 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -31,10 +31,8 @@
 
 #include <ace/Log_Record.h>
 
-static char *rcsId="@(#) $Id: loggingLogSvcHandler.cpp,v 1.23 2007/10/03 19:57:23 cparedes Exp $"; 
+static char *rcsId="@(#) $Id: loggingLogSvcHandler.cpp,v 1.24 2007/10/17 15:56:17 cparedes Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
-
-
 
 
 namespace Logging {
@@ -153,13 +151,27 @@ namespace Logging {
     }
     // ----------------------------------------------------------
     LogSvcHandler::LogSvcHandler(const std::string& soName) :
-	sourceObjectName_m(soName), localPriority_m(LM_TRACE), remotePriority_m(LM_TRACE)
+	sourceObjectName_m(soName),priority_type_local_m(NOT_DEFINED_LOG_LEVEL),priority_type_remote_m(NOT_DEFINED_LOG_LEVEL)
     {
-	//if we ever do away with the LoggingProxy class, a more
-	//intelligent mechanism needs to be used here (i.e., read
-	//$ACS_LOG_STDOUT).
-	setLevelsDefined(false);
-	setLevelsDefault(true);
+	char *acsSTDIO = getenv("ACS_LOG_STDOUT");
+	int envStdioPriority = -1;
+	if (acsSTDIO && *acsSTDIO)
+	{
+		envStdioPriority = atoi(acsSTDIO);
+	}
+
+	char *acsCentralizeLogger = getenv("ACS_LOG_CENTRALIZE_LOGGER");
+	int envCentralizePriority = -1;
+	if (acsCentralizeLogger && *acsCentralizeLogger)
+	{
+		envCentralizePriority = atoi(acsCentralizeLogger);
+	}
+	setLevels(LM_TRACE, LM_TRACE,DEFAULT_LOG_LEVEL);
+	if(envStdioPriority >= 0)
+		setLevels((Priority)-1, (Priority)envStdioPriority, ENV_LOG_LEVEL);
+	
+	if(envCentralizePriority >= 0)
+		setLevels((Priority)envCentralizePriority, (Priority)-1, ENV_LOG_LEVEL);
     }
     // ----------------------------------------------------------
     void
@@ -229,10 +241,9 @@ namespace Logging {
 	// set private flags
 	const int prohibitLocal  = lr.priority <  localPriority_m ? 1 : 0;
 	const int prohibitRemote = lr.priority < remotePriority_m ? 2 : 0;
-    	const int isDefault = areLevelsDefault()? 4 : 0;
-    	const int isDefined = areLevelsDefined()? 8 : 0;
- 	LoggingProxy::PrivateFlags(prohibitLocal | prohibitRemote | isDefault | isDefined);
-	
+ 	LoggingProxy::PrivateFlags(prohibitLocal | prohibitRemote);
+  	LoggingProxy::LogLevelLocalType(priority_type_local_m);	
+  	LoggingProxy::LogLevelRemoteType(priority_type_remote_m);
 	ace___->log(log_record_, 0);
     }
     // ----------------------------------------------------------
@@ -243,23 +254,20 @@ namespace Logging {
     }
     // ----------------------------------------------------------
     void
-	LogSvcHandler::dynamicSetLevels(Priority localPriority, Priority remotePriority)
+	LogSvcHandler::setLevels(Priority remotePriority, Priority localPriority, int type)
 	{
-		 setLevelsDefault(false);
-       	    localPriority_m = localPriority;
-  	    remotePriority_m = remotePriority;
-	    // set global level (min of both)
-	    setLevel(localPriority_m < remotePriority_m ? localPriority_m : remotePriority_m);  
 		
-	}
-    void
-	LogSvcHandler::setLevels(Priority localPriority, Priority remotePriority)
-	{
-       	    localPriority_m = localPriority;
-  	    remotePriority_m = remotePriority;
-	    // set global level (min of both)
+	    if(remotePriority >0 && (type == CDB_REFRESH_LOG_LEVEL  || priority_type_remote_m >= type) ){
+		    priority_type_remote_m = type;
+		    remotePriority_m = remotePriority;
+	    	    // set global level (min of both)
+	    }
+	    if(localPriority > 0 && ( type == CDB_REFRESH_LOG_LEVEL || priority_type_local_m >= type )){
+		    priority_type_local_m = type;
+		    localPriority_m = localPriority;
+	    	    // set global level (min of both)
+	    }
 	    setLevel(localPriority_m < remotePriority_m ? localPriority_m : remotePriority_m);  
-		
 	}
     // ----------------------------------------------------------
     //--The following section exists solely to remain

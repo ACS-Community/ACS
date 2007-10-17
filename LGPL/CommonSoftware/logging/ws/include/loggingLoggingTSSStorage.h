@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingLoggingTSSStorage.h,v 1.6 2007/07/10 07:18:55 nbarriga Exp $"
+* "@(#) $Id: loggingLoggingTSSStorage.h,v 1.7 2007/10/17 15:56:17 cparedes Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -73,6 +73,8 @@ class LoggingTSSStorage
 	    m_uri = 0;
 	    m_logId = 0;
 	    m_privateFlags = 0;
+	    logLevelLocalType_m = 6;
+	    logLevelRemoteType_m = 6;
 	    m_ldata.unbind_all();
 	    m_attributes.unbind_all();
 	}
@@ -152,6 +154,11 @@ class LoggingTSSStorage
     int privateFlags() { return m_privateFlags; };
     void privateFlags(int privateFlags) { m_privateFlags=privateFlags; };
 
+    int logLevelLocalType() { return logLevelLocalType_m; };
+    void logLevelLocalType(int logLevelLocalType) { logLevelLocalType_m=logLevelLocalType; };
+
+    int logLevelRemoteType() { return logLevelRemoteType_m; };
+    void logLevelRemoteType(int logLevelRemoteType) { logLevelRemoteType_m=logLevelRemoteType; };
     typedef ACE_Hash_Map_Manager <ACE_CString, ACE_CString, ACE_Thread_Mutex> HASH_MAP;
     typedef ACE_Hash_Map_Iterator <ACE_CString, ACE_CString, ACE_Thread_Mutex> HASH_MAP_ITER;
     typedef ACE_Hash_Map_Entry <ACE_CString, ACE_CString> HASH_MAP_ENTRY;
@@ -197,7 +204,9 @@ class LoggingTSSStorage
     // bit 0 (LSB) = prohibit stdout
     // bit 1       = prohibit remote 
     int m_privateFlags;
-    
+    int logLevelLocalType_m;
+    int logLevelRemoteType_m;
+	    
     LoggingTSSStorage::HASH_MAP m_ldata;
     LoggingTSSStorage::HASH_MAP m_attributes;
 };

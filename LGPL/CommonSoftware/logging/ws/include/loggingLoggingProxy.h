@@ -21,7 +21,7 @@
  *    License along with this library; if not, write to the Free Software
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: loggingLoggingProxy.h,v 1.27 2007/09/28 09:22:14 cparedes Exp $"
+ * "@(#) $Id: loggingLoggingProxy.h,v 1.28 2007/10/17 15:56:17 cparedes Exp $"
  *
  * who       when        what
  * --------  ----------  ----------------------------------------------
@@ -53,6 +53,12 @@
 #include "loggingExport.h"
 #include "loggingLoggingTSSStorage.h"
 
+#define DYNAMIC_LOG_LEVEL 1 
+#define CDB_REFRESH_LOG_LEVEL 2
+#define ENV_LOG_LEVEL 3
+#define CDB_LOG_LEVEL 4
+#define DEFAULT_LOG_LEVEL 5 
+#define NOT_DEFINED_LOG_LEVEL 6
 
 /// maximum length for addData value. It means 255 characters + \0
 #define ADD_DATA_VALUE_MAX 256
@@ -107,7 +113,7 @@
  * </OL> 
  * @author <a href=mailto:matej.sekoranja@ijs.si>Matej Sekoranja</a>,
  * Jozef Stefan Institute, Slovenia<br>
- * @version "@(#) $Id: loggingLoggingProxy.h,v 1.27 2007/09/28 09:22:14 cparedes Exp $"
+ * @version "@(#) $Id: loggingLoggingProxy.h,v 1.28 2007/10/17 15:56:17 cparedes Exp $"
  */
 class logging_EXPORT LoggingProxy : public ACE_Log_Msg_Callback
 {
@@ -187,6 +193,14 @@ class logging_EXPORT LoggingProxy : public ACE_Log_Msg_Callback
 
     /// Private flags (to be used only internally).
     static const int PrivateFlags();
+
+    static void LogLevelLocalType(int logLevelLocalType);
+
+    static const int LogLevelLocalType();
+
+    static void LogLevelRemoteType(int logLevelRemoteType);
+
+    static const int LogLevelRemoteType();
 
     /// Set the stack level in the current logical thread. The value must be stored
     /// in the thread-specific storage!

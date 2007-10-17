@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingLogger.cpp,v 1.15 2007/10/03 19:57:23 cparedes Exp $"
+* "@(#) $Id: loggingLogger.cpp,v 1.16 2007/10/17 15:56:17 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -28,7 +28,7 @@
 #include <iostream>
 #include <Recursive_Thread_Mutex.h>
 
-static char *rcsId="@(#) $Id: loggingLogger.cpp,v 1.15 2007/10/03 19:57:23 cparedes Exp $"; 
+static char *rcsId="@(#) $Id: loggingLogger.cpp,v 1.16 2007/10/17 15:56:17 cparedes Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 // -------------------------------------------------------
 //helper function
@@ -134,6 +134,24 @@ namespace Logging {
 	configureLogger(loggerName_m);
     }
     // -------------------------------------------------------
+    void
+	Logger::setLevels(Priority remotePriority,Priority localPriority, int type)
+    {
+	//to be thread safe
+	acquireHandlerMutex();
+     
+	std::list<Handler::HandlerSmartPtr>::iterator pos;
+	
+	for (pos = handlers_m.begin();
+	     pos != handlers_m.end();
+	     pos++){
+		
+		(*pos)->setLevels(remotePriority,localPriority,type);
+	}
+	//make sure it's released
+	releaseHandlerMutex();
+    }
+
     bool
     Logger::removeHandler(const std::string &handlerName)
     {
@@ -168,41 +186,7 @@ namespace Logging {
 	return retVal;
     }
     void
-	Logger::dynamicSetLevels(Priority localPriority, Priority remotePriority)
-    {
-	//to be thread safe
-	acquireHandlerMutex();
-     
-	std::list<Handler::HandlerSmartPtr>::iterator pos;
-	
-	for (pos = handlers_m.begin();
-	     pos != handlers_m.end();
-	     pos++){
-		
-		(*pos)->dynamicSetLevels(localPriority, remotePriority);
-	}
-	//make sure it's released
-	releaseHandlerMutex();
-    }
-    void
-	Logger::setLevels(Priority localPriority, Priority remotePriority)
-    {
-	//to be thread safe
-	acquireHandlerMutex();
-     
-	std::list<Handler::HandlerSmartPtr>::iterator pos;
-	
-	for (pos = handlers_m.begin();
-	     pos != handlers_m.end();
-	     pos++){
-		
-		(*pos)->setLevels(localPriority, remotePriority);
-	}
-	//make sure it's released
-	releaseHandlerMutex();
-    }
-    void
-	Logger::dynamicSetLevels(const std::string &loggerName, Priority localPriority, Priority remotePriority)
+	Logger::setLevels(const std::string &loggerName, Priority remotePriority, Priority localPriority, int type)
     {
 	//to be thread safe
 	loggersMutex_m.acquire();
@@ -213,25 +197,7 @@ namespace Logging {
 	     pos != ACE_Singleton<Logger_ptr, ACE_Recursive_Thread_Mutex>::instance()->loggers_m.end();
 	     pos++)
 		if ((*pos)->getName() == loggerName){
-			(*pos)->dynamicSetLevels(localPriority, remotePriority);
-		}
-	//make sure it's released
-	loggersMutex_m.release();
-    }
-    // -------------------------------------------------------
-    void
-	Logger::setLevels(const std::string &loggerName, Priority localPriority, Priority remotePriority)
-    {
-	//to be thread safe
-	loggersMutex_m.acquire();
-     
-	LoggerList::iterator pos;
-	
-	for (pos = ACE_Singleton<Logger_ptr, ACE_Recursive_Thread_Mutex>::instance()->loggers_m.begin();
-	     pos != ACE_Singleton<Logger_ptr, ACE_Recursive_Thread_Mutex>::instance()->loggers_m.end();
-	     pos++)
-		if ((*pos)->getName() == loggerName){
-			(*pos)->setLevels(localPriority, remotePriority);
+			(*pos)->setLevels(remotePriority, localPriority, type);
 		}
 	//make sure it's released
 	loggersMutex_m.release();
@@ -308,8 +274,8 @@ namespace Logging {
 	    //if the priority of this log is greater than or equal
 	    //to the minimum logging level the handler is interested
 	    //in...(we cannot suppose this, because of the env variables
-	    if((*pos)->areLevelsDefined() && lr.priority < (*pos)->getLevel()) continue;
-	    else 
+	    
+	    if(lr.priority >= (*pos)->getLevel())
 	   	{
 		//...go ahead and pass the log message to the handler
 		try
