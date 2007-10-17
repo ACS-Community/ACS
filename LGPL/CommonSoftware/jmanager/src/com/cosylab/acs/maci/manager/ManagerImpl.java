@@ -4374,6 +4374,114 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	}
 
 	/**
+	 * Notifies administrators about Component activation.
+	 * @param	componentInfo	activated component info, non-<code>null</code>
+	 */
+	private void notifyComponentActivated(final ComponentInfo componentInfo, final long timeStamp, final long executionId)
+	{
+		assert (componentInfo != null);
+
+		// array of administrators to be notified
+		ClientInfo[] admins = getAdministrators(0);
+
+		if (admins != null)
+		{
+
+			/**
+			 * Task thats invokes <code>Administrator#component_activated</code> method.
+			 */
+			class ComponentActivatedTask implements Runnable
+			{
+				private ClientInfo administratorInfo;
+
+				public ComponentActivatedTask(ClientInfo administratorInfo)
+				{
+					this.administratorInfo = administratorInfo;
+				}
+
+				public void run()
+				{
+					final int MAX_RETRIES = 3;
+
+					for (int retries = 0; retries < MAX_RETRIES; retries++)
+					{
+						try
+						{
+							((Administrator)administratorInfo.getClient()).component_activated(componentInfo, timeStamp, executionId);
+							break;
+						}
+						catch (RemoteException re)
+						{
+							logger.log(Level.WARNING, "RemoteException caught while invoking 'Administrator.component_activated' on "+administratorInfo+".", re);
+						}
+					}
+				}
+			}
+
+
+			// spawn new task which surely does not block
+			for (int i = 0; i < admins.length; i++)
+				threadPool.execute(new ComponentActivatedTask(admins[i]));
+
+		}
+
+	}
+
+	/**
+	 * Notifies administrators about Component deactivation.
+	 * @param	component	deactivated component handle, non-<code>0</code>
+	 */
+	private void notifyComponentDeactivated(final int handle, final long timeStamp)
+	{
+		assert (handle != 0);
+
+		// array of administrators to be notified
+		ClientInfo[] admins = getAdministrators(0);
+
+		if (admins != null)
+		{
+
+			/**
+			 * Task thats invokes <code>Administrator#component_deactivated</code> method.
+			 */
+			class ComponentDeactivatedTask implements Runnable
+			{
+				private ClientInfo administratorInfo;
+
+				public ComponentDeactivatedTask(ClientInfo administratorInfo)
+				{
+					this.administratorInfo = administratorInfo;
+				}
+
+				public void run()
+				{
+					final int MAX_RETRIES = 3;
+
+					for (int retries = 0; retries < MAX_RETRIES; retries++)
+					{
+						try
+						{
+							((Administrator)administratorInfo.getClient()).component_deactivated(handle, timeStamp);
+							break;
+						}
+						catch (RemoteException re)
+						{
+							logger.log(Level.WARNING, "RemoteException caught while invoking 'Administrator.component_deactivated' on "+administratorInfo+".", re);
+						}
+					}
+				}
+			}
+
+
+			// spawn new task which surely does not block
+			for (int i = 0; i < admins.length; i++)
+				threadPool.execute(new ComponentDeactivatedTask(admins[i]));
+
+		}
+
+	}
+
+	/**
 	 * Notifies administrators about Component request.
 	 * @param	requestors	array of clients requesting the Component, non-<code>null</code>
 	 * @param	components		array of requested the components, non-<code>null</code>
@@ -5441,7 +5549,9 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		//
 
 		componentInfo = null;
-
+		long executionId = 0;
+		long activationTime = 0;
+		
 		if (isOtherDomainComponent)
 		{
 			//
@@ -5454,7 +5564,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			    StatusHolder statusHolder = new StatusHolder();
 			    // @todo MF tmp (handle)
 			    remoteManager.getComponent(INTERDOMAIN_MANAGER_HANDLE, curlName, true, statusHolder);
-
+			    activationTime = System.currentTimeMillis();
+			    
 			    if (statusHolder.getStatus() == ComponentStatus.COMPONENT_ACTIVATED)
 			    {
 				    // local name to be used
@@ -5492,7 +5603,9 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 			try
 			{
-				componentInfo = container.activate_component(h | COMPONENT_MASK, generateExecutionId(), name, code, type);
+				executionId = generateExecutionId();
+				activationTime = System.currentTimeMillis();
+				componentInfo = container.activate_component(h | COMPONENT_MASK, executionId, name, code, type);
 			}
 			catch (Throwable ex)
 			{
@@ -5687,8 +5800,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 			clients = componentInfo.getClients().toArray();
 		}
-
-
+		
 		if (!isOtherDomainComponent)
 		{
 			// add component to client component list to allow dependency checks
@@ -5786,7 +5898,12 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		//
 		bind(convertToHiearachical(name), "O", componentInfo.getComponent().getObject());
 
-
+		//
+		// notify administrators about the activation
+		//
+		if (!isOtherDomainComponent)
+			notifyComponentActivated(componentInfo, activationTime, executionId);
+		
 		//
 		// inform clients about availability
 		//
@@ -5798,7 +5915,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		//
 		// notify administrators about the activation
 		//
-		notifyComponentRequested(new int[] { requestor }, new int[] { componentInfo.getHandle() }, System.currentTimeMillis());
+		notifyComponentRequested(new int[] { requestor }, new int[] { componentInfo.getHandle() }, activationTime);
 
 		if (reactivate)
 			logger.log(Level.FINE,"Component '"+name+"' reactivated.");
@@ -6229,16 +6346,23 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 						logger.log(Level.SEVERE, re.getMessage(), re);
 					}
 
+					long deactivationTime = 0;
+
 					// deactivate component in anycase
 					try
 					{
 						container.deactivate_components(new int[] { componentInfo.getHandle() });
+					    deactivationTime = System.currentTimeMillis();
 					}
 					catch (Exception ex)
 					{
 						RemoteException re = new RemoteException("Failed to deactivate component '"+componentInfo.getName()+"' on container '"+containerInfo.getName()+"'.", ex);
 						logger.log(Level.SEVERE, re.getMessage(), re);
 					}
+
+					// notify administrators about deactivation, but not if failed
+					if (deactivationTime != 0)
+						notifyComponentDeactivated(componentInfo.getHandle(), deactivationTime);
 
 					// shutdown container if required (and necessary)
 					conditionalShutdownContainer(containerInfo);
@@ -6261,7 +6385,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 		// log info
 		logger.log(Level.INFO,"Component '"+componentInfo.getName()+"' deactivated.");
-
+		
 		// release all subcomponents (just like client logoff)
 		// component should have already done this by itself, but take care of clean cleanup
 		// what about that: if subcomponent becomes unavailable, does component also becomes?!

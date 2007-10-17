@@ -5,11 +5,11 @@ package com.cosylab.acs.maci.test;
 
 import java.util.ArrayList;
 
+import com.cosylab.acs.maci.Administrator;
+import com.cosylab.acs.maci.ClientInfo;
 import com.cosylab.acs.maci.ClientType;
 import com.cosylab.acs.maci.ComponentInfo;
 import com.cosylab.acs.maci.ContainerInfo;
-import com.cosylab.acs.maci.Administrator;
-import com.cosylab.acs.maci.ClientInfo;
 import com.cosylab.acs.maci.RemoteException;
 
 /**
@@ -127,6 +127,7 @@ public class TestAdministrator extends TestClient implements Administrator
 	public void components_released(int[] clients, int[] components, long timeStamp) throws RemoteException
 	{
 		// noop
+		// TODO @todo test this
 	}
 
 	/**
@@ -136,20 +137,23 @@ public class TestAdministrator extends TestClient implements Administrator
 		throws RemoteException
 	{
 			// noop
+			// TODO @todo test this
 	}
 
 	/**
 	 * @see com.cosylab.acs.maci.Administrator#component_activated(com.cosylab.acs.maci.ComponentInfo, long, long)
 	 */
 	public void component_activated(ComponentInfo info, long timeStamp, long executionId) throws RemoteException {
-		// TODO Auto-generated method stub
+		// noop
+		// TODO @todo test this
 	}
 
 	/**
 	 * @see com.cosylab.acs.maci.Administrator#component_deactivated(int, long)
 	 */
 	public void component_deactivated(int handle, long timeStamp) throws RemoteException {
-		// TODO Auto-generated method stub
+		// noop
+		// TODO @todo test this
 	}
 
 	/**
