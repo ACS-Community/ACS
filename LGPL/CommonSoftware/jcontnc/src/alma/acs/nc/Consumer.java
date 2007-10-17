@@ -536,14 +536,12 @@ public class Consumer extends OSPushConsumerPOA {
 	 *           The structured event sent by a supplier subclass.
 	 * @throws org.omg.CosEventComm.Disconnected
 	 */
-	public void push_structured_event(StructuredEvent structuredEvent)
-			throws org.omg.CosEventComm.Disconnected {
+	public void push_structured_event(StructuredEvent structuredEvent) {
 		// time to get the event description
 		EventDescription eDescrip = EventDescriptionHelper.extract(structuredEvent.remainder_of_body);
 
 		Object convertedAny = m_anyAide.complexAnyToObject(structuredEvent.filterable_data[0].value);
-		Object struct = null; // @TODO define this as IDLEntity instead of Object once we have removed
-		                      // the deprecated #processEvent(Object, EventDescription)
+		IDLEntity struct = null; 
 		try {
 			struct = (IDLEntity) convertedAny;
 			if (isTraceEventsEnabled) {
@@ -571,13 +569,6 @@ public class Consumer extends OSPushConsumerPOA {
 		}
 	}
 
-	/**
-	 * @deprecated since ACS 6.0.2; override / use {@link #processEvent(IDLEntity, EventDescription)} instead.
-	 */
-	protected void processEvent(Object corbaData, EventDescription eventDescrip) {
-		processEvent((IDLEntity) corbaData, eventDescrip); 
-	}
-	
 	/**
 	 * The method invoked each time an ICD-style event is received. Consumer
 	 * subclasses <B>must</B> override this method or the other signature of
@@ -743,7 +734,15 @@ public class Consumer extends OSPushConsumerPOA {
 		}
 	}
 
-	/** Used to temporarily halt receiving events of all types */
+	/** 
+	 * Used to temporarily halt receiving events of all types.
+	 * <p>
+	 * If the consumer has been connected already (method {@link #consumerReady()}, 
+	 * then after calling this method, incoming events will be buffered instead of being discarded; 
+	 * unexpired events will be received later, after a call to {@link #resume()}. <br>
+	 * This design follows CORBA NC standard, as described in 
+	 * <it>Notification Service Specification, Version 1.1, formal/04-10-11, 3.4.13 The StructuredProxyPushSupplier Interface.</it>
+	 */
 	public void suspend() {
 		
 		// do better than NPE if someone actually calls this twice
@@ -763,8 +762,11 @@ public class Consumer extends OSPushConsumerPOA {
 	}
 
 	/**
-	 * Used to reenable the Consumer. That is, it nullifies a call to the suspend
-	 * method.
+	 * Used to reenable the Consumer after a call to the <code>suspend()</code> method.
+	 * Queued events will be received after this call, see {@link #suspend()}.
+	 * <p> 
+	 * This call has no effect if the consumer is not connected at all (see {@link #consumerReady()}),
+	 * or if it has not been suspended. 
 	 */
 	public void resume() {
 		try {
@@ -780,6 +782,7 @@ public class Consumer extends OSPushConsumerPOA {
 		}
 	}
 
+	
 	/**
 	 * Returns a reference to this instance's helper. Not too useful outside this
 	 * class.
