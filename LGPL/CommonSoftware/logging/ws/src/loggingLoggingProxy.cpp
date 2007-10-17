@@ -19,7 +19,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: loggingLoggingProxy.cpp,v 1.45 2007/10/17 15:56:17 cparedes Exp $"
+* "@(#) $Id: loggingLoggingProxy.cpp,v 1.46 2007/10/17 19:38:56 cparedes Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -57,7 +57,7 @@
 #define LOG_NAME "Log"
 #define DEFAULT_LOG_FILE_NAME "acs_local_log"
 
-ACE_RCSID(logging, logging, "$Id: loggingLoggingProxy.cpp,v 1.45 2007/10/17 15:56:17 cparedes Exp $");
+ACE_RCSID(logging, logging, "$Id: loggingLoggingProxy.cpp,v 1.46 2007/10/17 19:38:56 cparedes Exp $");
 
 ACSLoggingLog::LogType LoggingProxy::m_LogBinEntryTypeName[] =
 {
@@ -132,25 +132,17 @@ LoggingProxy::log(ACE_Log_Record &log_record)
 
     }
 
-    if(localLogLevelPrecedence == NOT_DEFINED_LOG_LEVEL){
-	localLogLevelPrecedence = DEFAULT_LOG_LEVEL;
-	if(priority < m_minCachePriority) prohibitLocal = true;
-	else prohibitLocal = false;
-    }
     //client exception in log level
-    if(localLogLevelPrecedence == DEFAULT_LOG_LEVEL){
+    if(localLogLevelPrecedence >= CDB_LOG_LEVEL){
 	if(m_envStdioPriority >= 0) {
 	    localLogLevelPrecedence=ENV_LOG_LEVEL;
-       	    if(priority>=(unsigned int)m_envStdioPriority){
-		prohibitLocal = false;	    
-	    }else
-		prohibitLocal = true;
-    	}
-    }else if (localLogLevelPrecedence == ENV_LOG_LEVEL){
-	if(priority>=(unsigned int)m_envStdioPriority){
-		prohibitLocal = false;
-	}else prohibitLocal = true;
-    }  
+	    prohibitLocal = priority>=(unsigned int)m_envStdioPriority? false:true; 
+    	}else{
+	    prohibitLocal = priority >= m_minCachePriority? false:true;
+	}
+    }else if(localLogLevelPrecedence == ENV_LOG_LEVEL)
+	prohibitLocal = priority>=(unsigned int)m_envStdioPriority? false:true; 
+
     LoggingTSSStorage::HASH_MAP_ENTRY *entry;
     LoggingTSSStorage::HASH_MAP_ITER hash_iter = (*tss)->getData();
 
@@ -234,16 +226,18 @@ LoggingProxy::log(ACE_Log_Record &log_record)
 	}
 	}//else//if
 	
+
     // this is the case of the proxy created not by maci
-    if(remoteLogLevelPrecedence >= DEFAULT_LOG_LEVEL){
+    if(remoteLogLevelPrecedence >= CDB_LOG_LEVEL){
 	if(m_envCentralizePriority >= 0) {
 	    remoteLogLevelPrecedence=ENV_LOG_LEVEL;
-       	    if(priority>=(unsigned int)m_envCentralizePriority){
-		prohibitRemote = false;	    
-	    }else
-		prohibitRemote = true;
-    	}else priority < m_minCachePriority? prohibitRemote = true: prohibitRemote = false;
-    }  
+	    prohibitRemote = priority>=(unsigned int)m_envCentralizePriority? false:true; 
+    	}else{ 
+	    prohibitRemote = priority>=m_minCachePriority? false:true;
+    	}
+    }else if(remoteLogLevelPrecedence == ENV_LOG_LEVEL)
+	prohibitRemote = priority>=(unsigned int)m_envCentralizePriority? false:true; 
+
     if (prohibitRemote)
 	{
 	// anyway we have to clear TSS data 
