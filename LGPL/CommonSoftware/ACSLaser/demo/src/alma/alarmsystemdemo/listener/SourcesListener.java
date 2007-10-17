@@ -19,38 +19,29 @@
 
 /** 
  * @author  almadev   
- * @version $Id: SourcesListener.java,v 1.3 2006/10/06 09:09:33 acaproni Exp $
+ * @version $Id: SourcesListener.java,v 1.4 2007/10/17 16:26:52 hsommer Exp $
  * @since    
  */
 
 package alma.alarmsystemdemo.listener;
 
-import cern.laser.source.alarmsysteminterface.impl.XMLMessageHelper;
-import cern.laser.source.alarmsysteminterface.impl.ASIMessageHelper;
-import cern.laser.source.alarmsysteminterface.impl.message.ASIMessage;
-
-import alma.acs.alarmsystem.binding.ACSLaserFaultStateImpl;
-import alma.alarmsystem.source.ACSAlarmSystemInterfaceFactory;
-import alma.alarmsystem.source.ACSFaultState;
-import alma.alarmsystem.source.ACSAlarmSystemInterface;
-
-import cern.laser.source.alarmsysteminterface.impl.FaultStateImpl;
-
-import com.cosylab.acs.jms.ACSJMSMessageEntity;
-
-import alma.acs.nc.Consumer;
-
-import alma.acs.component.client.AdvancedComponentClient;
-import alma.acs.container.ContainerServices;
-
-import cern.cmw.mom.pubsub.impl.ACSJMSTopicConnectionImpl;
-
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.logging.Logger;
-import java.util.logging.Level;
 
+import cern.cmw.mom.pubsub.impl.ACSJMSTopicConnectionImpl;
+import cern.laser.source.alarmsysteminterface.impl.ASIMessageHelper;
+import cern.laser.source.alarmsysteminterface.impl.FaultStateImpl;
+import cern.laser.source.alarmsysteminterface.impl.XMLMessageHelper;
+import cern.laser.source.alarmsysteminterface.impl.message.ASIMessage;
+
+import com.cosylab.acs.jms.ACSJMSMessageEntity;
+
+import alma.acs.component.client.AdvancedComponentClient;
+import alma.acs.container.ContainerServices;
 import alma.acs.logging.ClientLogManager;
+import alma.acs.nc.Consumer;
+import alma.alarmsystem.source.ACSAlarmSystemInterfaceFactory;
 
 /**
  * A java client that listens for the alarms sent by sources.

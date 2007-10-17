@@ -19,28 +19,23 @@
 
 /** 
  * @author  almadev   
- * @version $Id: AlarmSystemClient.java,v 1.3 2006/10/06 09:09:34 acaproni Exp $
+ * @version $Id: AlarmSystemClient.java,v 1.4 2007/10/17 16:26:52 hsommer Exp $
  * @since    
  */
 
 package alma.alarmsystemdemo.client;
 
-import alma.acs.component.client.AdvancedComponentClient;
-
+import java.sql.Timestamp;
 import java.util.Properties;
 import java.util.logging.Logger;
 
-import alma.alarmsystem.source.ACSAlarmSystemInterfaceFactory;
-import alma.alarmsystem.source.ACSFaultState;
-import alma.alarmsystem.source.ACSAlarmSystemInterface;
-
 import cern.cmw.mom.pubsub.impl.ACSJMSTopicConnectionImpl;
 
-import si.ijs.maci.Manager;
-
-import java.sql.Timestamp;
-
+import alma.acs.component.client.AdvancedComponentClient;
 import alma.acs.logging.ClientLogManager;
+import alma.alarmsystem.source.ACSAlarmSystemInterface;
+import alma.alarmsystem.source.ACSAlarmSystemInterfaceFactory;
+import alma.alarmsystem.source.ACSFaultState;
 
 /**
  * A client that sends an alarm
