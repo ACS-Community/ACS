@@ -3947,7 +3947,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			for (int i = 0; i < admins.length; i++)
 			{
 				Runnable task = new ClientLoggedInTask(admins[i], clientInfo);
-				if (admins[i] instanceof SynchronousAdministrator)
+				if (admins[i].getClient() instanceof SynchronousAdministrator)
 					task.run();
 				else
 					threadPool.execute(task);
@@ -4008,7 +4008,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			for (int i = 0; i < admins.length; i++)
 			{
 				Runnable task = new ContainerLoggedInTask(admins[i], containerInfo);
-				if (admins[i] instanceof SynchronousAdministrator)
+				if (admins[i].getClient() instanceof SynchronousAdministrator)
 					task.run();
 				else
 					threadPool.execute(task);
@@ -4072,7 +4072,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			for (int i = 0; i < admins.length; i++)
 			{
 				Runnable task = new ClientLoggedOutTask(admins[i], clientInfo);
-				if (admins[i] instanceof SynchronousAdministrator)
+				if (admins[i].getClient() instanceof SynchronousAdministrator)
 					task.run();
 				else
 					threadPool.execute(task);
@@ -4134,7 +4134,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			for (int i = 0; i < admins.length; i++)
 			{
 				Runnable task = new ContainerLoggedOutTask(admins[i], containerInfo);
-				if (admins[i] instanceof SynchronousAdministrator)
+				if (admins[i].getClient() instanceof SynchronousAdministrator)
 					task.run();
 				else
 					threadPool.execute(task);
@@ -4394,7 +4394,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			for (int i = 0; i < admins.length; i++)
 			{
 				Runnable task = new ComponentRequestedTask(admins[i], requestors, components);
-				if (admins[i] instanceof SynchronousAdministrator)
+				if (admins[i].getClient() instanceof SynchronousAdministrator)
 					task.run();
 				else
 					threadPool.execute(task);
@@ -4454,7 +4454,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			for (int i = 0; i < admins.length; i++)
 			{
 				Runnable task = new ComponentActivatedTask(admins[i]);
-				if (admins[i] instanceof SynchronousAdministrator)
+				if (admins[i].getClient() instanceof SynchronousAdministrator)
 					task.run();
 				else
 					threadPool.execute(task);
@@ -4513,7 +4513,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			for (int i = 0; i < admins.length; i++)
 			{
 				Runnable task = new ComponentDeactivatedTask(admins[i]);
-				if (admins[i] instanceof SynchronousAdministrator)
+				if (admins[i].getClient() instanceof SynchronousAdministrator)
 					task.run();
 				else
 					threadPool.execute(task);
@@ -4579,7 +4579,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			for (int i = 0; i < admins.length; i++)
 			{
 				Runnable task = new ComponentReleasedTask(admins[i], requestors, components);
-				if (admins[i] instanceof SynchronousAdministrator)
+				if (admins[i].getClient() instanceof SynchronousAdministrator)
 					task.run();
 				else
 					threadPool.execute(task);
@@ -4644,7 +4644,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			for (int i = 0; i < clients.length; i++)
 			{
 				Runnable task = new ComponentAvailableTask(clients[i], info);
-				if (clients[i] instanceof SynchronousAdministrator)
+				if (clients[i].getClient() instanceof SynchronousAdministrator)
 					task.run();
 				else
 					threadPool.execute(task);
@@ -4709,7 +4709,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			for (int i = 0; i < clients.length; i++)
 			{
 				Runnable task = new ComponentUnavailableTask(clients[i], names);
-				if (clients[i] instanceof SynchronousAdministrator)
+				if (clients[i].getClient() instanceof SynchronousAdministrator)
 					task.run();
 				else
 					threadPool.execute(task);
