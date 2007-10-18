@@ -1,4 +1,4 @@
-# @(#) $Id: BaseClient.py,v 1.9 2007/10/12 14:54:59 agrimstrup Exp $
+# @(#) $Id: BaseClient.py,v 1.10 2007/10/18 00:54:26 agrimstrup Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA,  2001
@@ -21,7 +21,7 @@
 #    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: BaseClient.py,v 1.9 2007/10/12 14:54:59 agrimstrup Exp $"
+# "@(#) $Id: BaseClient.py,v 1.10 2007/10/18 00:54:26 agrimstrup Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -36,7 +36,7 @@ designed to be used in all Python servant implementations derived from Client.
 BaseClient is more of a helper class than anything else.
 '''
 
-__revision__ = "$Id: BaseClient.py,v 1.9 2007/10/12 14:54:59 agrimstrup Exp $"
+__revision__ = "$Id: BaseClient.py,v 1.10 2007/10/18 00:54:26 agrimstrup Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 from traceback import print_exc
@@ -163,8 +163,10 @@ class BaseClient(Client):
         question = None
         
 #        return self.getCode() + ' ' + self.name
-        return maci.AuthenticationData(self.getCode() + ' ' + self.name, maci.CLIENT_TYPE,
-                                  maci.PYTHON, False, getTimeStamp(), execution_id)
+#        return maci.AuthenticationData(self.getCode() + ' ' + self.name, maci.CLIENT_TYPE,
+#                                  maci.PYTHON, False, getTimeStamp().value, execution_id)
+        return maci.AuthenticationData(self.getCode() + self.name, maci.CLIENT_TYPE,
+                                 maci.PYTHON, False, getTimeStamp().value, execution_id)
     #--CLIENT IDL--------------------------------------------------------------
     def message (self, message_type, message):
         '''
