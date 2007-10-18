@@ -104,7 +104,6 @@ public class ErrorBrowserEditor extends JFrame {
 	private JPanel nodesEditPanel = null;
 	private JButton newNodeButton = null;
 	private JButton removeNodeButton = null;
-	private JButton cleanDocsButton = null;
 	private JSplitPane jSplitPane2 = null;
 	private JToolBar jToolBar = null;
 	private JButton editButton = null;
@@ -121,6 +120,9 @@ public class ErrorBrowserEditor extends JFrame {
 	private JPopupMenu newNodePopupMenu = null;  //  @jve:decl-index=0:visual-constraint="363,634"
 	private JMenuItem newErrorMenuItem = null;
 	private JMenuItem newCompletionMenuItem = null;
+	private JPopupMenu removePopupMenu = null;  //  @jve:decl-index=0:visual-constraint="134,8"
+	private JMenuItem removeSelectedItem = null;
+	private JMenuItem cleanAllFilesItem = null;
 	//  @jve:decl-index=0:visual-constraint=""
 	/**
 	 * This is the default constructor
@@ -138,9 +140,11 @@ public class ErrorBrowserEditor extends JFrame {
 
 	/**
 	 * This method initializes this class
+	 * 
+	 * @return void
 	 */
 	private void initialize() {
-		this.setSize(800, 600);
+		this.setSize(800, 630);
 		this.setJMenuBar(getEBEMenuBar());
 		this.setDefaultCloseOperation(javax.swing.JFrame.EXIT_ON_CLOSE);
 		this.setContentPane(getJContentPane());
@@ -174,7 +178,7 @@ public class ErrorBrowserEditor extends JFrame {
 			jSplitPane.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
 			jSplitPane.setTopComponent(getMainPanel());
 			jSplitPane.setBottomComponent(getJScrollPane());
-			jSplitPane.setDividerLocation(500);
+			jSplitPane.setDividerLocation(470);
 		}
 		return jSplitPane;
 	}
@@ -319,7 +323,7 @@ public class ErrorBrowserEditor extends JFrame {
 	private JScrollPane getJScrollPane2() {
 		if (jScrollPane2 == null) {
 			jScrollPane2 = new JScrollPane();
-			jScrollPane2.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Document info", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, null, null));
+			jScrollPane2.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Error file attributes", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Dialog", java.awt.Font.BOLD, 12), new java.awt.Color(51,51,51)));
 			jScrollPane2.setPreferredSize(new java.awt.Dimension(460,175));
 			jScrollPane2.setViewportView(getDocTable());
 		}
@@ -457,7 +461,7 @@ public class ErrorBrowserEditor extends JFrame {
 	private JScrollPane getJScrollPane1() {
 		if (jScrollPane1 == null) {
 			jScrollPane1 = new JScrollPane();
-			jScrollPane1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Documents", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, null, null));
+			jScrollPane1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Error definition files", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Dialog", java.awt.Font.BOLD, 12), new java.awt.Color(51,51,51)));
 			jScrollPane1.setViewportView(getDocsTree());
 		}
 		return jScrollPane1;
@@ -594,7 +598,6 @@ public class ErrorBrowserEditor extends JFrame {
 			jPanel2.setLayout(new GridBagLayout());
 			jPanel2.add(getAddButton(), gridBagConstraints);
 			jPanel2.add(getRemoveButton(), gridBagConstraints1);
-			jPanel2.add(getCleanDocsButton(), gridBagConstraints11);
 		}
 		return jPanel2;
 	}
@@ -607,7 +610,8 @@ public class ErrorBrowserEditor extends JFrame {
 	private JButton getAddButton() {
 		if (addButton == null) {
 			addButton = new JButton();
-			addButton.setText("Add");
+			addButton.setText("Load");
+			addButton.setFont(new java.awt.Font("Dialog", java.awt.Font.BOLD, 10));
 			addButton.addActionListener(new java.awt.event.ActionListener() {   
 				public void actionPerformed(java.awt.event.ActionEvent e) {    
 					int x = getAddButton().getX();
@@ -628,21 +632,14 @@ public class ErrorBrowserEditor extends JFrame {
 	private JButton getRemoveButton() {
 		if (removeButton == null) {
 			removeButton = new JButton();
-			removeButton.setText("Rem");
+			removeButton.setText("Remove");
+			removeButton.setFont(new java.awt.Font("Dialog", java.awt.Font.BOLD, 10));
 			removeButton.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
-					if(docSelected!=null){
-						manager.removeDocument(docSelected.toString());
-						docNodeSelected=null;
-						docSelected=null;
-						complexNodeSelected=null;
-						complexSelected=null;
-						refreshDocsTree();
-						refreshDocTable();
-						refreshMembersTable();
-						refreshNodeAttributesTable();
-						refreshNodesTree();
-					}
+					int x = getRemoveButton().getX();
+					int y = getRemoveButton().getY();
+					getRemovePopupMenu().show(getRemoveButton(),x-40,y);
+					
 				}
 			});
 		}
@@ -846,6 +843,7 @@ public class ErrorBrowserEditor extends JFrame {
 		if (newNodeButton == null) {
 			newNodeButton = new JButton();
 			newNodeButton.setText("New");
+			newNodeButton.setFont(new java.awt.Font("Dialog", java.awt.Font.BOLD, 10));
 			newNodeButton.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
 					int x = ErrorBrowserEditor.this.getMousePosition().x;
@@ -865,7 +863,8 @@ public class ErrorBrowserEditor extends JFrame {
 	private JButton getRemoveNodeButton() {
 		if (removeNodeButton == null) {
 			removeNodeButton = new JButton();
-			removeNodeButton.setText("Rem");
+			removeNodeButton.setText("Remove");
+			removeNodeButton.setFont(new java.awt.Font("Dialog", java.awt.Font.BOLD, 10));
 			removeNodeButton.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
 					if(complexSelected == null)
@@ -881,31 +880,6 @@ public class ErrorBrowserEditor extends JFrame {
 			});
 		}
 		return removeNodeButton;
-	}
-
-	/**
-	 * This method initializes jButton	
-	 * 	
-	 * @return javax.swing.JButton	
-	 */
-	private JButton getCleanDocsButton() {
-		if (cleanDocsButton == null) {
-			cleanDocsButton = new JButton();
-			cleanDocsButton.setText("Clean");
-			cleanDocsButton.addActionListener(new java.awt.event.ActionListener() {
-				public void actionPerformed(java.awt.event.ActionEvent e) {
-					manager.removeAll();
-					docSelected=null;
-					docNodeSelected=null;
-					refreshDocsTree();
-					refreshDocTable();
-					refreshNodesTree();
-					refreshNodeAttributesTable();
-					refreshMembersTable();
-				}
-			});
-		}
-		return cleanDocsButton;
 	}
 
 	/**
@@ -1069,7 +1043,7 @@ public class ErrorBrowserEditor extends JFrame {
 	private JButton getNewDocButton() {
 		if (newDocButton == null) {
 			newDocButton = new JButton();
-			newDocButton.setText("New doc");
+			newDocButton.setText("New error file");
 			newDocButton.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
 					JFileChooser fc = new JFileChooser();
@@ -1151,6 +1125,7 @@ public class ErrorBrowserEditor extends JFrame {
 		if (addMemmberButton == null) {
 			addMemmberButton = new JButton();
 			addMemmberButton.setText("Add");
+			addMemmberButton.setFont(new java.awt.Font("Dialog", java.awt.Font.BOLD, 10));
 			addMemmberButton.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
 					if(!(complexSelected instanceof Error))
@@ -1175,7 +1150,8 @@ public class ErrorBrowserEditor extends JFrame {
 	private JButton getRemoveMemberButton() {
 		if (removeMemberButton == null) {
 			removeMemberButton = new JButton();
-			removeMemberButton.setText("Rem");
+			removeMemberButton.setText("Remove");
+			removeMemberButton.setFont(new java.awt.Font("Dialog", java.awt.Font.BOLD, 10));
 			removeMemberButton.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
 					int selected = membersTable.getSelectedRow();
@@ -1257,6 +1233,74 @@ public class ErrorBrowserEditor extends JFrame {
 		return newCompletionMenuItem;
 	}
 
+	/**
+	 * This method initializes jPopupMenu	
+	 * 	
+	 * @return javax.swing.JPopupMenu	
+	 */
+	private JPopupMenu getRemovePopupMenu() {
+		if (removePopupMenu == null) {
+			removePopupMenu = new JPopupMenu();
+			removePopupMenu.add(getRemoveSelectedItem());
+			removePopupMenu.add(getCleanAllFilesItem());
+		}
+		return removePopupMenu;
+	}
+
+	/**
+	 * This method initializes jMenuItem	
+	 * 	
+	 * @return javax.swing.JMenuItem	
+	 */
+	private JMenuItem getRemoveSelectedItem() {
+		if (removeSelectedItem == null) {
+			removeSelectedItem = new JMenuItem();
+			removeSelectedItem.setText("Remove selected file");
+			removeSelectedItem.addActionListener(new java.awt.event.ActionListener() {
+				public void actionPerformed(java.awt.event.ActionEvent e) {
+					if(docSelected==null)
+						return;
+					manager.removeDocument(docSelected.toString());
+					docNodeSelected=null;
+					docSelected=null;
+					complexNodeSelected=null;
+					complexSelected=null;
+					refreshDocsTree();
+					refreshDocTable();
+					refreshMembersTable();
+					refreshNodeAttributesTable();
+					refreshNodesTree();
+				}
+			});
+		}
+		return removeSelectedItem;
+	}
+
+	/**
+	 * This method initializes jMenuItem1	
+	 * 	
+	 * @return javax.swing.JMenuItem	
+	 */
+	private JMenuItem getCleanAllFilesItem() {
+		if (cleanAllFilesItem == null) {
+			cleanAllFilesItem = new JMenuItem();
+			cleanAllFilesItem.setText("Clean list");
+			cleanAllFilesItem.addActionListener(new java.awt.event.ActionListener() {
+				public void actionPerformed(java.awt.event.ActionEvent e) {
+					manager.removeAll();
+					docSelected=null;
+					docNodeSelected=null;
+					refreshDocsTree();
+					refreshDocTable();
+					refreshNodesTree();
+					refreshNodeAttributesTable();
+					refreshMembersTable();
+				}
+			});
+		}
+		return cleanAllFilesItem;
+	}
+
 	public static void main(String[] args){
 		ErrorBrowserEditor ebe = new ErrorBrowserEditor();
 		ebe.setVisible(true);
@@ -1301,7 +1345,6 @@ public class ErrorBrowserEditor extends JFrame {
 		deleteDocButton.setEnabled(false);
 		addButton.setEnabled(false);
 		removeButton.setEnabled(false);
-		cleanDocsButton.setEnabled(false);
 		log("[Entering Edit Mode]");
 	}
 	
@@ -1320,7 +1363,6 @@ public class ErrorBrowserEditor extends JFrame {
 		deleteDocButton.setEnabled(true);
 		addButton.setEnabled(true);
 		removeButton.setEnabled(true);
-		cleanDocsButton.setEnabled(true);
 		log("[Exiting Edit Mode]");
 	}
 	

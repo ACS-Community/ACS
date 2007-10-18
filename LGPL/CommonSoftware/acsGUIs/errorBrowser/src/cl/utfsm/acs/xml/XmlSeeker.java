@@ -49,7 +49,7 @@ public class XmlSeeker implements FilenameFilter {
          * Get an Arraylist with the XMLs on the added dirs that conforms with the xsd filename.
          * @param xsd the filename of the xsd to seek inside the XML files
          * @return the XMLs list */
-        public ArrayList<File> getXmls(String xsd) {
+        public ArrayList getXmls(String xsd) {
                 File fileArr[];
                 ArrayList<File> files=new ArrayList<File>();
                 File dirArr[]=new File[dirs.size()];
@@ -77,7 +77,7 @@ public class XmlSeeker implements FilenameFilter {
                         // Type node may not even exist
                         if (typeNode != null) {
                                 NamedNodeMap atributes = typeNode.getAttributes();
-                                Node schema = atributes.getNamedItem("xsi:noNamespaceSchemaLocation");
+                                Node schema = atributes.getNamedItem("xsi:schemaLocation");
                                 if (schema.getNodeValue().contentEquals(xsd))
                                         files.add(fileArr[i]);
                         }
@@ -116,7 +116,6 @@ public class XmlSeeker implements FilenameFilter {
                 test.addDir(modroot + File.separator + "idl");
                 test.addDir(introot + File.separator + "idl");
                 test.addDir(acsroot + File.separator + "idl");
-                System.out.println(test.getXmls("ACSError.xsd"));
-                System.out.println(test.getXmls("ACSLogTS.xsd"));
+                System.out.println(test.getXmls("Alma/ACSError ACSError.xsd"));
         }
 }

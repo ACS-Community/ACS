@@ -89,8 +89,13 @@ public class ErrorSchema extends CommonSchema{
                         }
                         localNode = localNode.getNextSibling();
                 }
+                typeSchema.addAttr(new AcsAttribute("xmlns",(AcsSimpleType)getType("string"),"required"));
                 typeSchema.addAttr(new AcsAttribute("xmlns:xsi",(AcsSimpleType)getType("string"),"required"));
-                typeSchema.addAttr(new AcsAttribute("xsi:noNamespaceSchemaLocation",(AcsSimpleType)getType("string"),"required"));
+		typeSchema.addAttr(new AcsAttribute("xsi:schemaLocation",(AcsSimpleType)getType("string"),"required"));
+
+		// Removed on ACS 7.0 
+                //typeSchema.addAttr(new AcsAttribute("xsi:noNamespaceSchemaLocation",(AcsSimpleType)getType("string"),"required"));
+
                 /* Search for Completions and Error definitions */
                 /* Spagetti code... improve please */
                 localNode = no.getFirstChild();

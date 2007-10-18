@@ -18,9 +18,9 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import com.sun.org.apache.xerces.internal.dom.DocumentImpl;
-import com.sun.org.apache.xml.internal.serialize.OutputFormat;
-import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
+import org.apache.xerces.dom.DocumentImpl;
+import org.apache.xml.serialize.OutputFormat;
+import org.apache.xml.serialize.XMLSerializer;
 
 import cl.utfsm.acs.types.AcsComplexType;
 import cl.utfsm.acs.types.ComplexObject;
@@ -196,8 +196,9 @@ public class EbeDocument extends ComplexObject {
          * @param xsiLocation the xsi location
          * @param name the document name
          */
-        public void setDocumentInfo(String _prefix,String xsi, String xsiLocation, String name){
-                setAttributeValue("xsi:noNamespaceSchemaLocation",xsiLocation);
+        public void setDocumentInfo(String _prefix,String xsi,String xsiNamespace, String xsiLocation, String name){
+                setAttributeValue("xsi:schemaLocation",xsiNamespace + " " + xsiLocation);
+                setAttributeValue("xmlns",xsiNamespace);
                 setAttributeValue("xmlns:xsi",xsi);
                 setAttributeValue("_prefix",_prefix);
                 setAttributeValue("name",name);
@@ -206,7 +207,7 @@ public class EbeDocument extends ComplexObject {
          * @param name the document name
          */
         public void setDocumentInfo(String name){
-                setDocumentInfo("alma","http://www.w3.org/2001/XMLSchema-instance","ACSError.xsd",name);
+                setDocumentInfo("alma","http://www.w3.org/2001/XMLSchema-instance","Alma/ACSError","ACSError.xsd",name);
         }
 }
 

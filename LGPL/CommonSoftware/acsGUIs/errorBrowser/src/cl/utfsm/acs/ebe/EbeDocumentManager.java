@@ -83,7 +83,7 @@ public class EbeDocumentManager {
                 File f=new File(d.getPath());
                 f.delete();
                 documents.remove(name);
-               	ErrorBrowserEditor.log("[Nuclear strike over "+name+" successfully completed]");
+               	ErrorBrowserEditor.log("[File "+name+" successfully deleted from the Hard Disk]");
         }
         /** Load a filelist to the manager.
           * @param lst The Arraylist to load
@@ -109,7 +109,7 @@ public class EbeDocumentManager {
                 seeker.addDir(modroot + File.separator + "idl");
                 seeker.addDir(introot + File.separator + "idl");
                 seeker.addDir(acsroot + File.separator + "idl");
-                addFileList(seeker.getXmls("ACSError.xsd"));
+                addFileList(seeker.getXmls("Alma/ACSError ACSError.xsd"));
         }
         
         /** Add a specific directory to the manager 
@@ -120,7 +120,7 @@ public class EbeDocumentManager {
 		ErrorBrowserEditor.log("[Adding "+path+" directory]");
                 XmlSeeker seeker=new XmlSeeker();
                 seeker.addDir(path);
-                addFileList(seeker.getXmls("ACSError.xsd"));
+                addFileList(seeker.getXmls("Alma/ACSError ACSError.xsd"));
         }
         /** Get the document hashtable
           * @return the documents hashtable.
