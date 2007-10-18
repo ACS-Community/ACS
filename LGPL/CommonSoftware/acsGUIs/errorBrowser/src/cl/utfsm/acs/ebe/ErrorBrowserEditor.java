@@ -1284,7 +1284,7 @@ public class ErrorBrowserEditor extends JFrame {
 	private JMenuItem getCleanAllFilesItem() {
 		if (cleanAllFilesItem == null) {
 			cleanAllFilesItem = new JMenuItem();
-			cleanAllFilesItem.setText("Clean list");
+			cleanAllFilesItem.setText("Clear list");
 			cleanAllFilesItem.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
 					manager.removeAll();
