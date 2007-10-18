@@ -1,4 +1,4 @@
-# @(#) $Id: Container.py,v 1.28 2007/09/21 20:00:37 agrimstrup Exp $
+# @(#) $Id: Container.py,v 1.29 2007/10/18 20:55:10 agrimstrup Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -21,7 +21,7 @@
 # ALMA should be addressed as follows:
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: Container.py,v 1.28 2007/09/21 20:00:37 agrimstrup Exp $"
+# "@(#) $Id: Container.py,v 1.29 2007/10/18 20:55:10 agrimstrup Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -38,7 +38,7 @@ TODO LIST:
 - a ComponentLifecycleException has been defined in IDL now...
 '''
 
-__revision__ = "$Id: Container.py,v 1.28 2007/09/21 20:00:37 agrimstrup Exp $"
+__revision__ = "$Id: Container.py,v 1.29 2007/10/18 20:55:10 agrimstrup Exp $"
 
 #--Enable Searching Import-----------------------------------------------------
 import AcsutilPy.ACSImport
@@ -50,6 +50,7 @@ from traceback import print_exc
 import sys
 #--CORBA STUBS-----------------------------------------------------------------
 import PortableServer
+import maci
 import maci__POA
 from CORBA import FALSE
 from maci  import ComponentInfo
@@ -77,6 +78,7 @@ ACTIVATOR_EXIT   = 2
 #The fields of a component dictionary entry
 HANDLE      = 'HANDLE'
 NAME        = 'NAME'
+EXEID       = 'EXEID'
 EXE         = 'EXE'
 TYPE        = 'TYPE'
 POA         = 'POA'
@@ -120,6 +122,7 @@ class Container(maci__POA.Container, BaseClient):
         self.offShootPolicies = []  #Policy[] for offshoots
         self.corbaRef = None  #reference to this object's CORBA reference
         self.logger = getLogger(name,name)
+        self.client_type = maci.CONTAINER_TYPE
 
         #Configure CORBA
         self.configCORBA()
@@ -155,7 +158,7 @@ class Container(maci__POA.Container, BaseClient):
         self.shutdown(ACTIVATOR_EXIT<<8)
         return
     #--ACTIVATOR IDL-----------------------------------------------------------
-    def activate_component(self, h, name, exe, idl_type):
+    def activate_component(self, h, exeid, name, exe, idl_type):
         '''
         Activates a component (or returns a reference to it if already exists).
 
@@ -183,6 +186,7 @@ class Container(maci__POA.Container, BaseClient):
         try:
             temp[HANDLE] = h  #Handle of the component that is being activated
             temp[NAME] = name  #Name-redundant but possibly useful
+            temp[EXEID] = exeid  #Execution ID number for the component being activated.
             temp[EXE] = exe  #Python module containing servant implementation
             temp[TYPE] = idl_type  #The type of the component to instantiate
             temp[POA] = self.createPOAForComponent(name)  #POA for this component
@@ -810,4 +814,3 @@ class Container(maci__POA.Container, BaseClient):
             return "AR"
         else:
             return "A"
-    #--------------------------------------------------------------------------
