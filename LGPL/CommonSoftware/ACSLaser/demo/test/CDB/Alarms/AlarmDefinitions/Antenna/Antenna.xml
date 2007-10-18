@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<aas:fault-family name="Antenna" xmlns:aas="urn:schemas-acs:AcsAlarmSystem:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:schemas-acs:AcsAlarmSystem:1.0 ../../../acsalarm-fault-family.xsd ">
+  <aas:alarm-source>ALARM_SYSTEM_SOURCES</aas:alarm-source>
+  <aas:help-url>http://tempuri.org</aas:help-url>
+  <aas:contact email="" gsm="" name=""/>
+  <aas:fault-code value="1">
+    <aas:priority>3</aas:priority>
+    <aas:cause>The cause</aas:cause>
+    <aas:action>One action</aas:action>
+    <aas:consequence>Terrible consequence</aas:consequence>
+    <aas:problem-description>Test antenna alarm</aas:problem-description>
+  </aas:fault-code>
+  <aas:fault-member name="ALARM_SOURCE_ANTENNA">
+    <aas:location>
+      <aas:building>building</aas:building>
+      <aas:floor>floor</aas:floor>
+      <aas:room>room</aas:room>
+      <aas:mnemonic>mnemonic</aas:mnemonic>
+      <aas:position>Antenna position</aas:position>
+    </aas:location>
+  </aas:fault-member>
+</aas:fault-family>
