@@ -1,4 +1,4 @@
-# @(#) $Id: Container.py,v 1.29 2007/10/18 20:55:10 agrimstrup Exp $
+# @(#) $Id: Container.py,v 1.30 2007/10/18 21:23:48 agrimstrup Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -21,7 +21,7 @@
 # ALMA should be addressed as follows:
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: Container.py,v 1.29 2007/10/18 20:55:10 agrimstrup Exp $"
+# "@(#) $Id: Container.py,v 1.30 2007/10/18 21:23:48 agrimstrup Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -38,7 +38,7 @@ TODO LIST:
 - a ComponentLifecycleException has been defined in IDL now...
 '''
 
-__revision__ = "$Id: Container.py,v 1.29 2007/10/18 20:55:10 agrimstrup Exp $"
+__revision__ = "$Id: Container.py,v 1.30 2007/10/18 21:23:48 agrimstrup Exp $"
 
 #--Enable Searching Import-----------------------------------------------------
 import AcsutilPy.ACSImport
@@ -112,7 +112,7 @@ class Container(maci__POA.Container, BaseClient):
         #Member variables
         self.running = 1  #As long as this is true, container is not shutdown
         self.name = name  #Container Name
-        self.canRecover = 0  #Whether this container is capable of recovery
+        self.canRecover = False  #Whether this container is capable of recovery
         self.components = {}  #A dict where components are referenced by name
         self.compHandles = {}  #A dict where comp names are referenced by handles
         self.shutdownHandles = []
