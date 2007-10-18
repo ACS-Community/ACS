@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.3 2007/10/18 15:43:12 acaproni Exp $"
+# "@(#) $Id: Makefile,v 1.4 2007/10/18 16:20:23 hsommer Exp $"
 #
 # Makefile of ........
 #
@@ -127,7 +127,7 @@ jjj_DIRS=
 jjj_EXTRAS= 
 #
 # java sources in Jarfile on/off
-DEBUG= 
+DEBUG=on 
 #
 # ACS XmlIdl generation on/off
 #
@@ -139,7 +139,7 @@ COMPONENT_HELPERS=
 #
 # Java Entity Classes generation on/off
 #
-XSDBIND=
+XSDBIND=acsalarmSchemaBindings
 #
 # Schema Config files for the above
 #
