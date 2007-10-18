@@ -2,7 +2,7 @@
 #*******************************************************************************
 # E.S.O. - ALMA project
 #
-# "@(#) $Id: buildTAO,v 1.25 2007/10/04 09:22:43 bjeram Exp $"
+# "@(#) $Id: buildTAO,v 1.26 2007/10/18 06:57:34 bjeram Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -111,7 +111,8 @@ echo ""
 echo "copying config.h and platform_macros.GNU"
 cp $CURR_DIR/../PRODUCTS/ACE+TAO_PATCHES/$OSTAG/config.h $ACE_ROOT/ace
 cp $CURR_DIR/../PRODUCTS/ACE+TAO_PATCHES/$OSTAG/platform_macros.GNU $ACE_ROOT/include/makeinclude
-chmod oug+r $ACE_ROOT/ace/config.h $ACE_ROOT/include/makeinclude/platform_macros.GNU
+cp $CURR_DIR/../PRODUCTS/ACE+TAO_PATCHES/$OSTAG/platform_linux_common.GNU $ACE_ROOT/include/makeinclude
+chmod oug+r $ACE_ROOT/ace/config.h $ACE_ROOT/include/makeinclude/platform_macros.GNU $ACE_ROOT/include/makeinclude/platform_linux_common.GNU
 echo "done"
 echo ""
 

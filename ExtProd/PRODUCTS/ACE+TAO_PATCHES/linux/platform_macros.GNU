@@ -1,5 +1,5 @@
 # -*- Makefile -*-
-# $Id: platform_macros.GNU,v 1.7 2007/10/15 09:27:03 bjeram Exp $
+# $Id: platform_macros.GNU,v 1.8 2007/10/18 06:57:34 bjeram Exp $
 
 # According to Bryon G. Rigg <bgrigg@opus.bcbnet.com>, this file
 # should allow ACE to be built on Linux.
@@ -72,9 +72,9 @@ else
   endif #NUM_CPU
 endif
 
-# there is alkso problem with gcc 3.4.6!
+# there is also problem with gcc 3.4.6!
 ifeq ($(CXX_VERSION),3.4.6)
-  OCFLAGS ?= -O1
+  OCFLAGS = -O1
 endif
 
 CCFLAGS += $(CFLAGS) $(TEMPLATES_FLAG)
