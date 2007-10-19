@@ -2,7 +2,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: buildJacORB,v 1.18 2007/10/09 06:36:47 bjeram Exp $"
+# "@(#) $Id: buildJacORB,v 1.19 2007/10/19 12:50:08 hsommer Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -178,6 +178,30 @@ then
         exit 1
 else
     rm $JACORB_SOURCES/JacORB-ACS-IR-2007-02-12.patch
+fi
+
+#
+# JacORB JVM-fork patch to avoid spurious JVM death in
+# <jacorb-antlr package="${etcl.target.package}" source="${dir.etcl.grammar}/tcl-lexer.g" />
+#
+
+echo ==== JVM fork patch
+if [ -f $JACORB_SOURCES/JacORB-ACS-2007-10-19.patch.gz ]
+then
+    gunzip -c $JACORB_SOURCES/JacORB-ACS-2007-10-19.patch.gz >$JACORB_SOURCES/JacORB-ACS-2007-10-19.patch
+else
+    echo "file $JACORB_SOURCES/JacORB-ACS-2007-10-19.patch.gz not found"
+    echo "Installation aborted"
+    exit 3
+fi
+patch -p1 < $JACORB_SOURCES/JacORB-ACS-2007-10-19.patch
+if [ $? -ne 0 ]
+then
+    rm $JACORB_SOURCES/JacORB-ACS-2007-10-19.patch
+    echo "========= FAILED =========="
+        exit 1
+else
+    rm $JACORB_SOURCES/JacORB-ACS-2007-10-19.patch
 fi
 
 
