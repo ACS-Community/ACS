@@ -22,6 +22,7 @@
 package alma.acs.classloading;
 
 import java.io.File;
+import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -125,7 +126,7 @@ public class AcsSystemClassLoader extends URLClassLoader
 		for (Iterator<File> iter = jarFileList.iterator(); iter.hasNext();) {
 			File cpEntry = iter.next();
 			try {
-				addURL(cpEntry.toURL());
+				addURL(cpEntry.toURI().toURL());
 				if (verbose) {
 					System.out.println("added " + cpEntry.getAbsolutePath() + " to the custom system class loader's path.");
 				}
@@ -249,4 +250,23 @@ public class AcsSystemClassLoader extends URLClassLoader
 		return clazz;
 	}
 
+	/**
+	 * This method, even though private, allows jconsole and possibly similar profilers and other tools 
+	 * to add their required jar files, 
+	 * see {@linkplain java.lang.instrument.Instrumentation#appendToSystemClassLoaderSearch(java.util.jar.JarFile)}.
+	 * <p>
+	 * For example, jconsole would currently call this method with argument 
+	 * <code>/usr/java/jdk1.6.0_02/jre/lib/management-agent.jar </code>.
+	 * 
+	 * @since ACS 7.0
+	 */
+	private void appendToClassPathForInstrumentation(String jarPathName) {
+		File jarFile = new File(jarPathName);
+		try {
+			addURL(jarFile.toURI().toURL());
+			System.out.println("AcsSystemClassLoader#appendToClassPathForInstrumentation called with jar file " + jarPathName);
+		} catch (MalformedURLException ex) {
+			System.err.println("AcsSystemClassLoader#appendToClassPathForInstrumentation failed with MalformedURLException for jar file " + jarPathName);
+		}
+	}
 }
