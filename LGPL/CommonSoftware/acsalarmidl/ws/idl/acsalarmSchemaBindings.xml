@@ -3,7 +3,16 @@
 <EntitybuilderSettings>
 
 	<EntitySchema schemaName="acsalarm-fault-family.xsd" relativePathSchemafile="../config/CDB/schemas" xmlNamespace="urn:schemas-acs:AcsAlarmSystem:1.0"/>
-	<XmlNamespace2JPackage xmlNamespace="urn:schemas-acs:AcsAlarmSystem:1.0" jPackage="alma.alarmsystem.alarmmessage.generated"/>
+
+	<XmlNamespace2JPackage xmlNamespace="urn:schemas-acs:AcsAlarmSystem:1.0" jPackage="alma.acs.alarmsystem.generated"/>
+
+
+	<!-- HSO 2007-10: for some period of time we still use part of the castor classes from the old schema. 
+	     Castor code generation moved here from module laser-core where this schema was duplicated before.
+	     Later we need to change the java package of these classes (something with "old"), and gradually replace them
+	     as the new schema grows. --> 
+	<EntitySchema schemaName="AcsAlarmSystem.xsd" relativePathSchemafile="../config/CDB/schemas" xmlNamespace="urn:schemas-cosylab-com:AcsAlarmSystem:1.0"/>
+	<XmlNamespace2JPackage xmlNamespace="urn:schemas-cosylab-com:AcsAlarmSystem:1.0" jPackage="alma.alarmsystem.alarmmessage.generated"/>
 
 </EntitybuilderSettings>
 
