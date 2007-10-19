@@ -340,7 +340,7 @@ public class acssampPanel extends AbeansLaunchable {
 	    String strRate = textRate.getText();
 	    System.out.println(strRate); 
                        
-	    long lFreq = (long) ( (1 / Double.parseDouble(textFrequency.getText())) * 10000000);;
+	    long lFreq = (long) ( (1 / Double.parseDouble(textFrequency.getText())) * 10000000);
 	    long lRate = Long.parseLong(textRate.getText()) * 10000000;
 	    System.out.println(lFreq); 
 	    System.out.println(lRate); 
