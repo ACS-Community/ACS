@@ -1,6 +1,6 @@
 #*******************************************************************************
 #
-# "@(#) $Id: Makefile,v 1.7 2006/09/25 08:52:36 acaproni Exp $"
+# "@(#) $Id: Makefile,v 1.8 2007/10/19 20:25:09 hsommer Exp $"
 #
 # Makefile of ........
 #
@@ -65,7 +65,7 @@ all:	do_all manifest
 	@echo " . . . 'all' done" 
 
 clean : clean_all 
-	rm manifest.touch
+	rm -f manifest.touch
 	@echo " . . . clean done"
 
 clean_dist : clean_all clean_dist_all 
