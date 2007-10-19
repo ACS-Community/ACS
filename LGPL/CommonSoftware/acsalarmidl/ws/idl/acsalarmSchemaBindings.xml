@@ -3,7 +3,8 @@
 <EntitybuilderSettings>
 
 	<EntitySchema schemaName="acsalarm-fault-family.xsd" relativePathSchemafile="../config/CDB/schemas" xmlNamespace="urn:schemas-acs:AcsAlarmSystem:1.0"/>
-
+	<EntitySchema schemaName="acsalarm-categories.xsd" relativePathSchemafile="../config/CDB/schemas" xmlNamespace="urn:schemas-acs:AcsAlarmSystem:1.0"/>
+	
 	<XmlNamespace2JPackage xmlNamespace="urn:schemas-acs:AcsAlarmSystem:1.0" jPackage="alma.acs.alarmsystem.generated"/>
 
 
