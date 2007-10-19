@@ -10,7 +10,6 @@
  */
 package alma.acssampGUI;
 
-import org.omg.CosNotification.EventType;
 import org.omg.CosNotification.StructuredEvent;
 
 import com.cosylab.gui.components.spikechart.TrendDataModel;
@@ -61,8 +60,7 @@ public class acssampGUIConsumer extends alma.acs.nc.Consumer {
 		}
 	}
 
-	public void push_structured_event(StructuredEvent structuredEvent)
-			throws org.omg.CosEventComm.Disconnected {
+	public void push_structured_event(StructuredEvent structuredEvent) {
 
 		//Know how many events this instance has received.
 
