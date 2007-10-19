@@ -37,5 +37,11 @@
 	<classpathentry kind="lib" path="laser-extlib/lib/openide.jar"/>
 	<classpathentry kind="lib" path="laser-extlib/lib/selector-1.1.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="var" path="ACSROOT/lib/jcont.jar"/>
+	<classpathentry kind="var" path="INTROOT/lib/AlarmSystem.jar"/>
+	<classpathentry kind="var" path="JACORB_HOME/lib/jacorb.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/JavaContainerError.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acscomponent.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acsjlog.jar"/>
 	<classpathentry kind="output" path="alarmPanel/object/alarmPanel"/>
 </classpath>
