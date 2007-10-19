@@ -35,6 +35,11 @@
 			<xs:element name="problem-description" type="xs:string"/>
 		</xs:sequence>
 		<xs:attribute name="value" type="xs:integer" use="required"/>
+		<xs:attribute name="instant" type="xs:boolean" fixed="false">
+			<xs:annotation>
+				<xs:documentation>Fixed to false after rewrite of schema. The meaning of this flag should be understood later...</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>					
 	</xs:complexType>
 	<xs:complexType name="fault-member-default">
 		<xs:sequence>
