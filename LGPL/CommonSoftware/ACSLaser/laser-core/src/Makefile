@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.19 2006/09/27 09:50:06 acaproni Exp $"
+# "@(#) $Id: Makefile,v 1.20 2007/10/19 14:47:02 hsommer Exp $"
 #
 # Makefile of ........
 #
@@ -144,7 +144,7 @@ COMPONENT_HELPERS=
 #
 # Java Entity Classes generation on/off
 #
-XSDBIND= ACSAlarmMessage
+XSDBIND=
 #
 # Schema Config files for the above
 #
