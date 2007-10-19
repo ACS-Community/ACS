@@ -536,7 +536,8 @@ public class Consumer extends OSPushConsumerPOA {
 	 *           The structured event sent by a supplier subclass.
 	 * @throws org.omg.CosEventComm.Disconnected
 	 */
-	public void push_structured_event(StructuredEvent structuredEvent) {
+	public void push_structured_event(StructuredEvent structuredEvent)
+		throws org.omg.CosEventComm.Disconnected {
 		// time to get the event description
 		EventDescription eDescrip = EventDescriptionHelper.extract(structuredEvent.remainder_of_body);
 
