@@ -23,7 +23,6 @@
 package alma.acs.logging.adapters;
 
 import java.io.IOException;
-import java.util.logging.Filter;
 import java.util.logging.Level;
 
 import org.apache.avalon.framework.configuration.Configuration;
@@ -50,7 +49,7 @@ public class JacORBLoggerFactory implements LoggerFactory {
 
     private final static String BACKEND_NAME = "jdk14";
     
-    private AcsLogger delegate;
+    private Jdk14Logger delegate;
     
     /** verbosity level 0-4 from jacorb property */
 	private int jacOrbVerbosity;
@@ -71,7 +70,7 @@ public class JacORBLoggerFactory implements LoggerFactory {
 	 */
 	public org.apache.avalon.framework.logger.Logger getNamedLogger(String name) {
 		if (delegate == null) {  // reuse one acs logger for all jacorb loggers
-			delegate = ClientLogManager.getAcsLogManager().getLoggerForCorba("jacorb", true);
+			AcsLogger acsDelegate = ClientLogManager.getAcsLogManager().getLoggerForCorba("jacorb", true);
 
 			// we can't use the same log levels that the container logger uses, because JacORB is much too verbose compared with ALMA code. 
 			// Thus we restrict this Logger's level, assuming that the log handler will be generous enough always.
@@ -88,19 +87,20 @@ public class JacORBLoggerFactory implements LoggerFactory {
 			
 			if (jacOrbVerbosity >= 0 && jacOrbVerbosity <=4) {
 				Level level = levelMap[jacOrbVerbosity];
-				delegate.setLevel(level);
+				acsDelegate.setLevel(level);
 			}
 			else {
-				delegate.warning("Failed to adjust Corba logger level based on 'jacorb.log.default.verbosity'");
+				acsDelegate.warning("Failed to adjust Corba logger level based on 'jacorb.log.default.verbosity'");
 			}
-			delegate.addLoggerClass(Jdk14Logger.class);
+			acsDelegate.addLoggerClass(Jdk14Logger.class);
 			JacORBFilter logFilter = new JacORBFilter();
-			logFilter.setLogLevel(delegate.getLevel()); // AcsLogger will later update the filter log level if there are changes
-			delegate.setFilter(logFilter);
+			logFilter.setLogLevel(acsDelegate.getLevel()); // AcsLogger will later update the filter log level if there are changes
+			acsDelegate.setFilter(logFilter);
+			
+			delegate = new Jdk14Logger(acsDelegate);
 		}
 		
-		org.apache.avalon.framework.logger.Logger wrapper = new Jdk14Logger(delegate);
-		return wrapper;
+		return delegate;
 	}
 
 	/**
