@@ -2,7 +2,6 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry exported="true" kind="var" path="INTROOT/lib/ACSJMSMessageEntity.jar"/>
 	<classpathentry exported="true" kind="var" path="JACORB_HOME/lib/jacorb.jar"/>
 	<classpathentry exported="true" kind="var" path="ACSROOT/lib/jcont.jar"/>
 	<classpathentry exported="true" kind="var" path="ACSROOT/lib/jcontnc.jar"/>
@@ -10,13 +9,12 @@
 	<classpathentry exported="true" kind="var" path="ACSROOT/lib/acsnc.jar"/>
 	<classpathentry exported="true" kind="var" path="ACSROOT/lib/acscomponent.jar"/>
 	<classpathentry kind="src" path="test"/>
-	<classpathentry kind="var" path="INTROOT"/>
-	<classpathentry kind="var" path="ACSROOT"/>
-	<classpathentry exported="true" kind="lib" path="/diska/alma/ACS-5.0/ACSSW/lib/jms.jar"/>
-	<classpathentry exported="true" kind="lib" path="/diska/alma/ACS-5.0/ACSSW/lib/junit.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/junit.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acsASsources.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acsjlog.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/maci.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/ACSJMSMessageEntity.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/jms.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/selector-1.1.jar"/>
 	<classpathentry kind="output" path="src"/>
 </classpath>
