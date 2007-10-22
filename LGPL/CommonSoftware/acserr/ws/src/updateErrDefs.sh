@@ -17,7 +17,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: updateErrDefs.sh,v 1.1 2007/05/23 08:55:56 nbarriga Exp $"
+# "@(#) $Id: updateErrDefs.sh,v 1.2 2007/10/22 22:00:09 nbarriga Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -50,28 +50,28 @@
 #------------------------------------------------------------------------
 #
 
-RECUR=''
-ASTERISK='/*'
-if [ $1 = -h ]&&[ $2 = -r ]||[ $1 = -r ]&&[ $2 = -h ]||[ $1 = -rh ]||[ $1 = -hr ]; then
-    echo 'sorry, only one flag at a time.(-h for help)';
-    exit;
-elif [ -z $1 ]||[ $1 = -h ]; then
+if [ -z $1 ]||[ $1 = -h ]; then
     echo 'usage: updateErrDefs.sh [flag] dir';
     echo 'FLAGS:    -h      show this help';
-    echo '          -r      recursively search files';
     exit;
-elif [ $1 = -r ]; then
-    RECUR=$1;
-    DIR=$2;
-    ASTERISK='';
-else
-    DIR=$1;
 fi
-for file in $(grep -l $RECUR -e "xsi:noNamespaceSchemaLocation=\"ACSError\.xsd\"" $DIR$ASTERISK | grep "xml$");do
-    echo "Updating file: $file(backup saved as $file.bak)";
-    sed -i.bak "s/xsi:noNamespaceSchemaLocation=\"ACSError\.xsd\"/xmlns=\"Alma\/ACSError\" xsi:schemaLocation=\"Alma\/ACSError ACSError\.xsd\"/g" $file;
+DIR=$1
+
+for file in $(find $DIR -name 'Makefile' -exec grep -H 'ACSERRDEF[ \t]*=[ \t]*[A-Za-z_]' {} \; | awk "/src\/Makefile/ {directory = sub(\"src/Makefile:ACSERRDEF\",\"idl/\",\$1); for (i =3; i <= NF; i++)print \$directory\$i\".xml\" }"); do
+if [ -a $file ]; then
+    echo "Updating file: $file(backup will be saved as $file.bak)";
+    if [ $(grep -l -e "xsi:noNamespaceSchemaLocation=\"ACSError\.xsd\"" $file)X = X ]; then
+        if [ $(grep -l -e "xsi:schemaLocation=\"Alma\/ACSError ACSError\.xsd\"" $file)X = X ]; then
+            sed -i.bak "s/<Type /<Type xmlns=\"Alma\/ACSError\" xsi:schemaLocation=\"Alma\/ACSError ACSError\.xsd\" /g" $file;
+            #echo "File $file updated, xsi:noNamespaceSchemaLocation statement not found";
+        else
+            echo "File $file could not be updated";
+        fi
+    else
+        sed -i.bak "s/xsi:noNamespaceSchemaLocation=\"ACSError\.xsd\"/xmlns=\"Alma\/ACSError\" xsi:schemaLocation=\"Alma\/ACSError ACSError\.xsd\"/g" $file;
+        #echo "File $file updated, xsi:noNamespaceSchemaLocation statement found";
+    fi
+fi
 done;
-
-
 #
 # ___oOo___
