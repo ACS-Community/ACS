@@ -165,7 +165,8 @@ public class TestJDAL extends TestCase {
 			assertTrue(list.indexOf("Managers") != -1);
 
 			// try with a XML
-			ne = context.list("MACI/Managers/Manager");
+//			ne = context.list("MACI/Managers/Manager");
+			ne = ((Context) (((Context)context.lookup("MACI")).lookup("Managers")) ).list("Manager");
 			list = "";
 			while (ne.hasMore()) {
 				NameClassPair pair = (NameClassPair) ne.nextElement();
@@ -199,7 +200,8 @@ public class TestJDAL extends TestCase {
 			assertTrue(ob instanceof Context);
 
 			// try with a value inside XML
-			ob = context.lookup("MACI/Managers/Manager/CommandLine");
+//			ob = context.lookup("MACI/Managers/Manager/CommandLine");
+			ob = ((Context) (((Context) (((Context)context.lookup("MACI")).lookup("Managers")) ).lookup("Manager")) ).lookup("CommandLine");
 			assertTrue(ob instanceof String);
 			String cmdLine = (String) ob;
 
