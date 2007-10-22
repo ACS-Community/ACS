@@ -1,6 +1,6 @@
 #ifndef SIMPLE_CONSUMER_I
 #define SIMPLE_CONSUMER_I
-/*    @(#) $Id: acsncSimpleConsumer.i,v 1.20 2006/10/18 11:06:40 sharring Exp $
+/*    @(#) $Id: acsncSimpleConsumer.i,v 1.21 2007/10/22 08:20:06 bjeram Exp $
  *    ALMA - Atacama Large Millimiter Array
  *    (c) Associated Universities Inc., 2002 
  *    (c) European Southern Observatory, 2002
@@ -26,6 +26,7 @@
  *  Header file for the Consumer-derived class that should be used from within
  *  components to consume events.
  */
+
 
 namespace nc {
 //---------------------------------------------------------------
@@ -58,6 +59,22 @@ SimpleConsumer<T>::push_structured_event(const CosNotification::StructuredEvent 
     T *customIDLStruct_p = 0, customIDLStruct;
     customIDLStruct_p = &customIDLStruct;
     notification.filterable_data[0].value >>= customIDLStruct_p;
+
+    if(customIDLStruct_p==NULL)
+	{
+	CORBA::Any tmpEvent;
+	tmpEvent <<= customIDLStruct_p;
+	acsncErrType::WrongEventReceivedExImpl er(__FILE__, 
+						  __LINE__,
+						  "nc::SimpleConsumer<T>::push_structured_event");
+	er.setExceptedEvent(AnyAide::getId(tmpEvent).c_str());
+	er.setReceivedEvent(AnyAide::getId(notification.filterable_data[0].value).c_str());
+
+	er.log();
+
+//	throw CosEventComm::Disconnected(); // it has no effect !
+	return;
+	}
 
     acsnc::EventDescription *ed_p = 0, ed;
     ed_p = &ed;

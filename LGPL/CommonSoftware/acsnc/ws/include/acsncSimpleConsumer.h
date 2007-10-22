@@ -1,6 +1,6 @@
 #ifndef SIMPLE_CONSUMER_H
 #define SIMPLE_CONSUMER_H
-/*    @(#) $Id: acsncSimpleConsumer.h,v 1.8 2006/10/18 11:06:40 sharring Exp $
+/*    @(#) $Id: acsncSimpleConsumer.h,v 1.9 2007/10/22 08:20:06 bjeram Exp $
  *    ALMA - Atacama Large Millimiter Array
  *    (c) Associated Universities Inc., 2002 
  *    (c) European Southern Observatory, 2002
@@ -28,6 +28,8 @@
  */
 
 #include "acsncConsumer.h"
+#include <acsutilAnyAide.h>
+#include "acsncErrType.h"
 namespace nc {
 
 

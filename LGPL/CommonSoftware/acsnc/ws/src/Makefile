@@ -21,7 +21,7 @@
 # MA 02111-1307  USA
 #
 #*******************************************************************************
-# "@(#) $Id: Makefile,v 1.59 2007/10/12 20:10:45 nbarriga Exp $"
+# "@(#) $Id: Makefile,v 1.60 2007/10/22 08:20:06 bjeram Exp $"
 #------------------------------------------------------------------------
 #
 # Makefile for acsnc/ws/src
@@ -62,7 +62,7 @@ acsnc_OBJECTS  = acsncCDBProperties \
 		 acsncConsumerImpl acsncSimpleConsumerImpl \
                  acsncSupplierImpl acsncSimpleSupplierImpl acsncRTSupplierImpl \
                  acsncServiceChecker
-acsnc_LIBS     = ACSErrTypeCommon acsncStubs
+acsnc_LIBS     = ACSErrTypeCommon acsncStubs acsncErrType
 
 acsncServiceChecker_OBJECTS = acsncServiceCheckerExec
 acsncServiceChecker_LIBS = acsnc
@@ -74,6 +74,9 @@ acsncServiceChecker_LDFLAGS = -lmaciClient
 CSOURCENAMES = \
 	$(foreach exe, $(EXECUTABLES) $(EXECUTABLES_L), $($(exe)_OBJECTS)) \
 	$(foreach lib, $(LIBRARIES) $(LIBRARIES_L), $($(lib)_OBJECTS))
+
+
+ACSERRDEF = acsncErrType
 
 # IDL Files
 IDL_FILES = 
