@@ -8,16 +8,15 @@
 	<classpathentry kind="lib" path="lib/jfcunit.jar"/>
 	<classpathentry kind="lib" path="lib/AcsCommandCenterHelp.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/AcsCommandCenterEntities.jar"/>
-	<classpathentry kind="var" path="INTROOT/lib/maciErrType.jar" sourcepath="/INTROOT/lib/maciErrType.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/maciErrType.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acserr.jar" sourcepath="INTROOT/lib/acserr.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acserrj.jar" sourcepath="/INTROOT/lib/acserrj.jar"/>
-	<classpathentry kind="var" path="INTROOT/lib/JavaContainerError.jar" sourcepath="/INTROOT/lib/JavaContainerError.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/JavaContainerError.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/CDB.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/jManager.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/cosyframework-core.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/cdbDAL.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/endorsed/xercesImpl.jar"/>
-	<classpathentry kind="var" path="ACSROOT/lib/endorsed/xmlParserAPIs.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/jACSCommon.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/concurrent.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/activation.jar"/>
