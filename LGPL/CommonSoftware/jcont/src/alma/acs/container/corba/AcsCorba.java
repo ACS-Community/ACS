@@ -755,7 +755,7 @@ public class AcsCorba
 		ComponentServantManager servantManager;
 		try {
 			servantManager = new ComponentServantManager(m_logger);
-			componentPOA.set_servant_manager(servantManager._this(m_orb));
+			componentPOA.set_servant_manager(servantManager);
 		} catch (Throwable thr) {
 			String msg = "Failed to set a servant activator on the component POA " + componentPOA.the_name();
 			m_logger.log(Level.FINE, msg, thr);
