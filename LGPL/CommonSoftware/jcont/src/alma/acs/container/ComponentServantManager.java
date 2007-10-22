@@ -23,25 +23,29 @@ package alma.acs.container;
 
 import java.util.logging.Logger;
 
+import org.omg.CORBA.LocalObject;
 import org.omg.CORBA.OBJECT_NOT_EXIST;
-import org.omg.CORBA.ORB;
 import org.omg.PortableServer.ForwardRequest;
 import org.omg.PortableServer.POA;
 import org.omg.PortableServer.Servant;
 import org.omg.PortableServer.ServantActivator;
-import org.omg.PortableServer.ServantActivatorPOA;
 
 /**
  * We use one ComponentServantManager per component POA.
  * It's used to synchronize with component etherealization.
- *  
- * created on Nov 4, 2002 1:43:38 PM
+ * <p>
+ * Impl note: until ACS 6.0.x this class inherited from <code>org.omg.PortableServer.ServantActivatorPOA</code>
+ * and was activated like a normal Corba object (<code>componentPOA.set_servant_manager(servantManager._this(m_orb))</code>. 
+ * However this form of activation attached the servant manager instance to the ORB or root poa, with the effect
+ * that it was not garbage collected together with the component poa (memory leak!).
+ * It seems that a POJO (no Corba activation) inheriting from <code>LocalObject</code> is the correct choice instead.
+ * 
  * @author hsommer
  * $Id$
  */
-public class ComponentServantManager extends ServantActivatorPOA 
+public class ComponentServantManager extends LocalObject implements ServantActivator // extends ServantActivatorPOA 
 {
-	Logger m_logger;
+	private Logger m_logger;
 	private boolean DEBUG = false;
 	
 	private volatile boolean receivedEtherealizeCall;
@@ -170,19 +174,6 @@ public class ComponentServantManager extends ServantActivatorPOA
 //		m_logger.fine("ComponentServantManager#_invoke called.");
 //		return os;
 //	}
-
-
-	/**
-	 * @see org.omg.PortableServer.ServantActivatorPOA#_this(ORB)
-	 */
-	public ServantActivator _this(ORB orb)
-	{
-		ServantActivator sa = super._this(orb);
-		if (DEBUG) {		
-			m_logger.info("ComponentServantManager#_this(ORB orb) returns " + sa.getClass().getName());
-		}
-		return sa;
-	}
 
 	
 	/**
