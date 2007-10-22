@@ -1,25 +1,8 @@
-ACS Manager:
-ACS Interface Repository:
 java -classpath
-ACS abeans configuration directory:
-ACS abeans configuration directory
+Starting Java/abeans application: 
 Time:
 export
-Starting Java/abeans application
--D user.dir=
-Jlog will use cache for
-JacORB
-Gerald Brose
-Connected
-INFO
-WARNING
-POA RootPOA - ready
-POA offshootPoa - ready
-POA RootPOA - destroyed
-POA offshootPoa - destroyed
-almaacscontainerContainerServicesImpl getAdvancedContainerServices
-\[jacorb\.poa\] INFO : Using server ID
-[0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F]
-\[jacorb\.poa\] INFO : oid:
-object is activated
-
+FINEST
+FINER
+FINE
+getAdvancedContainerServices

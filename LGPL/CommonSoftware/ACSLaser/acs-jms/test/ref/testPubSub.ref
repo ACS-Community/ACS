@@ -1,0 +1,9 @@
+1 -  -D userdir=/diska/home/almadev/MODULES/ACS/LGPL/CommonSoftware/ACSLaser/acs-jms/test -- junittextuiTestRunner almaacsjmstestPubSubTest
+1 - ----------T--:--:----- INFO [PubSubTest#testTopicConnection] -------------------------------
+1 - ----------T--:--:----- INFO [PubSubTest#testTopicConnection] ComponentClientTestCase#setUp()
+1 - ----------T--:--:----- INFO [PubSubTest#testTopicConnection] component 'almaacsjmstestPubSubTest' requested AdvancedContainerServices
+1 - ----------T--:--:----- INFO [almaacsjmstestPubSubTest] Attempting to create the TOPICTEST channel
+1 - 
+1 - 
+1 - OK (1 test)
+1 - 

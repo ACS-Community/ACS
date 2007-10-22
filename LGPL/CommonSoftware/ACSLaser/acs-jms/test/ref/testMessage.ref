@@ -1,0 +1,14 @@
+1 -  -D userdir=/diska/home/almadev/MODULES/ACS/LGPL/CommonSoftware/ACSLaser/acs-jms/test -- junittextuiTestRunner almaacsjmstestMessageTest
+1 - ----------T--:--:----- INFO [MessageTest#testACSJMSMessage] -------------------------------
+1 - ----------T--:--:----- INFO [MessageTest#testACSJMSMessage] ComponentClientTestCase#setUp()
+1 - ----------T--:--:----- INFO [MessageTest#testACSJMSMessage] component 'almaacsjmstestMessageTest' requested AdvancedContainerServices
+1 - ----------T--:--:----- INFO [MessageTest#testTextMessage] -------------------------------
+1 - ----------T--:--:----- INFO [MessageTest#testTextMessage] ComponentClientTestCase#setUp()
+1 - ----------T--:--:----- INFO [MessageTest#testObjectMessage] -------------------------------
+1 - ----------T--:--:----- INFO [MessageTest#testObjectMessage] ComponentClientTestCase#setUp()
+1 - ----------T--:--:----- INFO [MessageTest#testEntity] -------------------------------
+1 - ----------T--:--:----- INFO [MessageTest#testEntity] ComponentClientTestCase#setUp()
+1 - 
+1 - 
+1 - OK (4 tests)
+1 - 
