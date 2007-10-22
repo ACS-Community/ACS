@@ -15,12 +15,11 @@ import javax.naming.NamingException;
 import javax.naming.NotContextException;
 
 import org.omg.CORBA.ORB;
-// The package containing our CORBA stubs.
-import com.cosylab.CDB.*;
 
-import alma.cdbErrType.CDBRecordDoesNotExistEx;
-import alma.cdbErrType.wrappers.AcsJCDBXMLErrorEx;
 import alma.cdbErrType.CDBXMLErrorEx;
+import alma.cdbErrType.wrappers.AcsJCDBXMLErrorEx;
+
+import com.cosylab.CDB.DAL;
 
 /*******************************************************************************
  *    ALMA - Atacama Large Millimiter Array
@@ -93,7 +92,7 @@ public class JNDIContext implements Context {
 
 	/**
 	 * @see Context#lookup(Name)
-	 */
+	 * THIS IS OLD CDB implementation
 	public Object lookup(Name name) throws NamingException {
 		//System.out.println("CDBContext lookup on " + this.name + " for " + name.toString());
 		String nameToLookup = this.name + "/" + name;
@@ -130,7 +129,64 @@ public class JNDIContext implements Context {
 			AcsJCDBXMLErrorEx acse = new AcsJCDBXMLErrorEx(e);
 			throw new NamingException(acse.getFilename());
 		}
-	}
+	}*/
+    /**
+     * This methos returns either a new JNDI_Context or a new JNDI_XMLContxt obj.
+     */
+    public Object lookup(Name name) throws NamingException {
+		final String lookupName = name.toString();
+    	final String fullLookupName = this.name + "/" + lookupName;
+
+    	String daoElements = dal.list_daos(fullLookupName);
+    	if (daoElements.length() == 0)
+    		daoElements = null;
+    	
+    	// is subnode
+		StringTokenizer token = new StringTokenizer(elements);
+		while (token.hasMoreTokens())
+			if (token.nextElement().equals(lookupName))
+			{
+				// is DAO?
+				if (daoElements != null)
+				{
+					try {
+						return new JNDIXMLContext(fullLookupName, dal.list_nodes(fullLookupName), dal.get_DAO(fullLookupName));
+					} catch (CDBXMLErrorEx th) {
+						AcsJCDBXMLErrorEx jex = AcsJCDBXMLErrorEx.fromCDBXMLErrorEx(th);
+						NamingException ex2 = new NamingException(jex.getFilename() + ": " + jex.getErrorString());
+						ex2.setRootCause(jex);
+						throw ex2;
+					} catch (Throwable th) {
+						throw new NamingException("Failed to retrieve DAO: " + fullLookupName);
+					}
+				}
+				else
+					return new JNDIContext(fullLookupName, dal.list_nodes(fullLookupName));
+			}
+		
+		if (daoElements != null)
+		{
+			// lookup in DAO
+			token = new StringTokenizer(daoElements);
+			while (token.hasMoreTokens())
+				if (token.nextElement().equals(lookupName))
+				{
+					try {
+						return new JNDIXMLContext(fullLookupName, dal.list_nodes(fullLookupName), dal.get_DAO(fullLookupName));
+					} catch (CDBXMLErrorEx th) {
+						AcsJCDBXMLErrorEx jex = AcsJCDBXMLErrorEx.fromCDBXMLErrorEx(th);
+						NamingException ex2 = new NamingException(jex.getFilename() + ": " + jex.getErrorString());
+						ex2.setRootCause(jex);
+						throw ex2;
+					} catch (Throwable th) {
+						throw new NamingException("Failed to retrieve DAO: " + fullLookupName);
+					}
+				}
+		}
+		
+		// not found
+		throw new NamingException("No name " + fullLookupName);
+    }
 
 	/**
 	 * @see Context#lookup(String)
