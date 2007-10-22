@@ -134,6 +134,7 @@ public class MaciSupervisor implements IMaciSupervisor {
 		// an interrupt will terminate the thread
 		protected class ConnectorThread extends Thread {
 			
+			@Override
 			public void run () {
 				ALIVE: while (true) {
 
@@ -430,6 +431,7 @@ public class MaciSupervisor implements IMaciSupervisor {
 
 	protected class RefreshIfNeeded extends TimerTask {
 
+		@Override
 		public void run () {
 
 			/* We reset it here. If the refresh succeeds this is redundant, but in case of
@@ -598,6 +600,7 @@ public class MaciSupervisor implements IMaciSupervisor {
 	/**
 	 * Overridden to provide pretty description.
 	 */
+	@Override
 	public String toString () {
 		String s1 = managerLoc;
 		if (s1 == null) {

@@ -54,6 +54,7 @@ public class ExternalToolsTest extends TestCase {
 	/**
 	 * @see TestCase#setUp()
 	 */
+	@Override
 	protected void setUp () throws Exception {
 		super.setUp();
 	}
@@ -68,6 +69,7 @@ public class ExternalToolsTest extends TestCase {
 		final ExecuteAcs x = _Tests.createExecuteAcs(ACS_INSTANCE);
 		AccTests.assertCompletion(TIMEOUT, new AccTests.AssertableTask("Start Acs") {
 
+			@Override
 			public void action () throws Throwable {
 				x.startLocalScript(listener);
 			}
@@ -191,6 +193,7 @@ public class ExternalToolsTest extends TestCase {
 		final ExecuteAcs x = _Tests.createExecuteAcs(ACS_INSTANCE);
 		AccTests.assertCompletion(TIMEOUT, new AccTests.AssertableTask("Stop Acs") {
 
+			@Override
 			public void action () throws Throwable {
 				x.stopLocalScript(listener);
 			}

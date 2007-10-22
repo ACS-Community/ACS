@@ -222,14 +222,16 @@ public class Executor {
        protected String host;
        protected int port;
        
-       public void connect(String host, int port) throws IOException {
+       @Override
+		public void connect(String host, int port) throws IOException {
            this.disconnectRequested = false;
            this.host = host;
            this.port = port;
            super.connect(host, port);
        }
 
-       public String toString() {
+       @Override
+		public String toString() {
            return "SSH Client on host '"+host+"', port '"+port+"'";
        }
 
@@ -239,7 +241,8 @@ public class Executor {
         */
        protected boolean disconnectRequested;
        
-       public void disconnect() throws IOException {
+       @Override
+		public void disconnect() throws IOException {
          this.disconnectRequested = true;
          super.disconnect();
       }
@@ -296,7 +299,8 @@ public class Executor {
       task.addListener(listener);
       
       task.addListener(new NativeCommand.ListenerAdapter() {
-         public void statusChanged(NativeCommand task, String oldStatus) {
+         @Override
+			public void statusChanged(NativeCommand task, String oldStatus) {
          	if (task.getStatus() == NativeCommand.RUNNING) {
          		remoteFlow.success(RemoteFlow.CONNECT);
          	}
@@ -386,7 +390,8 @@ public class Executor {
       System.setOut(new PrintStream(outstream));
 
       Thread t = new Thread() {
-         public void run() {
+         @Override
+			public void run() {
                //localInProcFlow.trying(LocalInProcFlow.ALIVE);
             try {
                runMain.runMain();
@@ -435,7 +440,8 @@ public class Executor {
 
       StringBuffer lineBuffer = new StringBuffer(512);
 
-      public void write(int b) throws IOException {
+      @Override
+		public void write(int b) throws IOException {
          char c = (char) b;
          // risk of infinite loop: 
          // if above we do System.setOut(), we must not do System.out.println() here
@@ -535,7 +541,8 @@ public class Executor {
       task.addListener(listener);
       
       task.addListener(new NativeCommand.ListenerAdapter() {
-         public void statusChanged(NativeCommand task, String oldStatus) {
+         @Override
+			public void statusChanged(NativeCommand task, String oldStatus) {
          	if (task.getStatus() == NativeCommand.RUNNING)
                localOutProcFlow.success(LocalOutProcFlow.RUN);
          }

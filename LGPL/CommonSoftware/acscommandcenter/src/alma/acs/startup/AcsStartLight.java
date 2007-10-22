@@ -92,46 +92,57 @@ public class AcsStartLight extends RunModelAdapter implements NativeCommand.List
 
 	// --- RunModel interface implemenation ---
 
+	@Override
 	public String getScriptBase() {
 		return acsInstance;
 	}
 	
+	@Override
 	public String getServicesLocalJavaPort () {
 		return cdbPort;
 	}
 
+	@Override
 	public String getServicesLocalJavaRoot () {
 		return cdbRoot;
 	}
 
+	@Override
 	public String getManagerLocalJavaPort () {
 		return mgrPort;
 	}
 
+	@Override
 	public String getContainerLocalJavaPort () {
 		return cntPort;
 	}
 
+	@Override
 	public String getManagerLocalJavaAgainstCDBHost () {
 		return ACSPorts.getIP();
 	}
 
+	@Override
 	public String getManagerLocalJavaAgainstCDBPort () {
 		return cdbPort;
 	}
 
+	@Override
 	public String getContainerAgainstManagerHost () {
 		return ACSPorts.getIP();
 	}
 
+	@Override
 	public String getContainerAgainstManagerPort () {
 		return mgrPort;
 	}
 
+	@Override
 	public String getContainerName () {
 		return cntName;
 	}
 
+	@Override
 	public String getContainerType () {
 		return "java";
 	}

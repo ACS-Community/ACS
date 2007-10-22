@@ -41,6 +41,7 @@ public class AddToDeployTreeTest extends JFCTestCase {
 		super(name);
 	}
 
+	@Override
 	protected void setUp () throws Exception {
 		super.setUp();
 
@@ -56,6 +57,7 @@ public class AddToDeployTreeTest extends JFCTestCase {
 		frame.setVisible(true);
 	}
 
+	@Override
 	protected void tearDown () throws Exception {
 		panel = null;
 		TestHelper.cleanUp(this);

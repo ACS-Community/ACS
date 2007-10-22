@@ -77,6 +77,7 @@ public class VariableString {
 	 * @return the <strong>resolved</strong> version of this instance.
 	 * @throws UnresolvableException if variables cannot be resolved and we are non-{@link #lenient}
 	 */
+	@Override
 	public String toString() throws UnresolvableException {
 		return toString(System.getProperties());
 	}

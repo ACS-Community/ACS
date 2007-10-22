@@ -235,7 +235,8 @@ public class MaciInfo extends DefaultTreeModel {
          	this.representedHandles = new int[]{value};
       }
 
-      public String toString() {
+      @Override
+		public String toString() {
          return  "Detail \""+key+"="+value+"\"";
        }
    }
@@ -251,7 +252,8 @@ public class MaciInfo extends DefaultTreeModel {
        this.name = name;  
       }
       
-      public String toString() {
+      @Override
+		public String toString() {
         return  "Folder \""+name+"\"";
       }
    }
@@ -273,6 +275,7 @@ public class MaciInfo extends DefaultTreeModel {
 		 * representedHandles will be the same as in the source node but children and
 		 * parent references will not be cloned.
 		 */
+		@Override
 		public SortingTreeNode clone () {
 			SortingTreeNode ret = (SortingTreeNode) super.clone();
 			ret.representedHandles = (this.representedHandles);

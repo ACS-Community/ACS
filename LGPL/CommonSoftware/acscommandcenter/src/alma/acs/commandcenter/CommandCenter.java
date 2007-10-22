@@ -173,7 +173,8 @@ public class CommandCenter {
 			// trying to tear down a hanging in-process Acs
          // can freeze the whole application.
          // thus, we use a watchdog to ensure termination.
-         new Thread(){public void run(){
+         new Thread(){@Override
+			public void run(){
             try {
                Thread.sleep(8*1000);
             } catch (InterruptedException exc) {}

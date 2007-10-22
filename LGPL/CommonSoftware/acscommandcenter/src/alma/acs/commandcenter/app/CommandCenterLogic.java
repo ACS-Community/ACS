@@ -631,6 +631,7 @@ public class CommandCenterLogic {
 		}
 
 		
+		@Override
 		public String getManagerLocalJavaAgainstCDBHost () {
 			return ACSPorts.getIP();
 		}
@@ -649,6 +650,7 @@ public class CommandCenterLogic {
 			super(clientName);
 			super.firestarterLog = firestarterLog;
 		}
+		@Override
 		public ORB giveOrb () throws OrbInitException {
 			return super.giveOrb();
 		}

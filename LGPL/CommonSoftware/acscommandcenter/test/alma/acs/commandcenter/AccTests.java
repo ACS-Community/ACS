@@ -21,7 +21,7 @@ import junit.framework.TestSuite;
  */
 public class AccTests {
 
-	/* $Id: AccTests.java,v 1.4 2005/10/27 13:14:05 mschilli Exp $ */
+	/* $Id: AccTests.java,v 1.5 2007/10/22 14:13:37 mschilli Exp $ */
 
 
 	public static Test suite() {
@@ -67,6 +67,7 @@ public class AccTests {
 			this.desc = description;
 		}
 	
+		@Override
 		public void run () {
 			try {
 				System.err.println(" + '" + desc + "' about to execute");

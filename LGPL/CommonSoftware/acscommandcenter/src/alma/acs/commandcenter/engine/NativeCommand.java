@@ -394,7 +394,8 @@ public class NativeCommand implements Runnable {
          this.interruptableThread = thread;
       }
 
-      public void run() {
+      @Override
+		public void run() {
 
          // nothing more to observe in these cases
          if (status.equals(TERMINATED) || status.equals(CANNOTRUN)) {

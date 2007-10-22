@@ -107,6 +107,7 @@ public class DeploymentTree extends JTree {
 
 		this.addMouseListener(new MouseAdapter() {
 
+			@Override
 			public void mouseClicked (MouseEvent evt) {
 				if (SwingUtilities.isRightMouseButton(evt)) {
 					showContextMenu(evt);
@@ -391,6 +392,7 @@ public class DeploymentTree extends JTree {
 
 		int[] currentlySelectedHandles = new int[]{};
 
+		@Override
 		public Component getTreeCellRendererComponent (JTree tree, Object value, boolean selected, boolean expanded, boolean leaf,
 				int row, boolean hasFocus) {
 
@@ -840,6 +842,7 @@ public class DeploymentTree extends JTree {
 			super("Remove from View");
 		}
 
+		@Override
 		public void actionPerformed () {
 			removeNode(target);
 		}
@@ -852,6 +855,7 @@ public class DeploymentTree extends JTree {
 			super("Refresh Info");
 		}
 
+		@Override
 		public void actionPerformed () {
 			shieldedRefreshManager(selectedSupervisor);
 		}
@@ -864,6 +868,7 @@ public class DeploymentTree extends JTree {
 			super("Send Ping Request");
 		}
 
+		@Override
 		public void actionPerformed () {
 			shieldedPingManager(selectedSupervisor);
 		}
@@ -876,6 +881,7 @@ public class DeploymentTree extends JTree {
 			super("Send Shutdown Request");
 		}
 
+		@Override
 		public void actionPerformed () throws Exception {
 			shieldedShutdownManager(selectedSupervisor);
 		}
@@ -887,6 +893,7 @@ public class DeploymentTree extends JTree {
 			super("Sort by name");
 		}
 
+		@Override
 		public void actionPerformed () {
 			sortNode(target, "name");
 		}
@@ -898,6 +905,7 @@ public class DeploymentTree extends JTree {
 			super("Sort by container needed");
 		}
 
+		@Override
 		public void actionPerformed () {
 			sortNode(target, "container_name");
 		}
@@ -909,6 +917,7 @@ public class DeploymentTree extends JTree {
 			super("Send Ping Request");
 		}
 
+		@Override
 		public void actionPerformed () throws Exception {
 			selectedSupervisor.containerPing((ContainerInfo) target.getUserObject());
 		}
@@ -920,6 +929,7 @@ public class DeploymentTree extends JTree {
 			super("Send Shutdown Request");
 		}
 
+		@Override
 		public void actionPerformed () throws Exception {
 			selectedSupervisor.containerShutdown((ContainerInfo) target.getUserObject());
 		}
@@ -931,6 +941,7 @@ public class DeploymentTree extends JTree {
 			super("Send Message...");
 		}
 
+		@Override
 		public void actionPerformed () throws Exception {
 			String msg = JOptionPane.showInputDialog(DeploymentTree.this, "Enter message text:");
 			if (msg != null)
@@ -944,6 +955,7 @@ public class DeploymentTree extends JTree {
 			super("Send Ping Request");
 		}
 
+		@Override
 		public void actionPerformed () throws Exception {
 			selectedSupervisor.clientPing((ClientInfo) target.getUserObject());
 		}
@@ -955,6 +967,7 @@ public class DeploymentTree extends JTree {
 			super("Send Disconnect Request");
 		}
 
+		@Override
 		public void actionPerformed () throws Exception {
 			selectedSupervisor.containerDisconnect((ContainerInfo) target.getUserObject());
 		}
@@ -966,6 +979,7 @@ public class DeploymentTree extends JTree {
 			super("Send Disconnect Request");
 		}
 
+		@Override
 		public void actionPerformed () throws Exception {
 			selectedSupervisor.clientDisconnect((ClientInfo) target.getUserObject());
 		}
@@ -977,6 +991,7 @@ public class DeploymentTree extends JTree {
 			super("Send Message...");
 		}
 
+		@Override
 		public void actionPerformed () throws Exception {
 			String msg = JOptionPane.showInputDialog(DeploymentTree.this, "Enter message text:");
 			if (msg != null)
@@ -990,6 +1005,7 @@ public class DeploymentTree extends JTree {
 			super("Have logged out by Manager");
 		}
 
+		@Override
 		public void actionPerformed () throws Exception {
 			shieldedLogoutContainer(selectedSupervisor, (ContainerInfo) target.getUserObject());
 		}
@@ -1001,6 +1017,7 @@ public class DeploymentTree extends JTree {
 			super("Have logged out by Manager");
 		}
 
+		@Override
 		public void actionPerformed () throws Exception {
 			shieldedLogoutClient(selectedSupervisor, (ClientInfo) target.getUserObject());
 		}
@@ -1012,6 +1029,7 @@ public class DeploymentTree extends JTree {
 			super("Have activated");
 		}
 
+		@Override
 		public void actionPerformed () throws Exception {
 			String name = ((ComponentInfo) target.getUserObject()).name;
 			shieldedGetComponent(selectedSupervisor, name);
@@ -1024,6 +1042,7 @@ public class DeploymentTree extends JTree {
 			super("Release own reference");
 		}
 
+		@Override
 		public void actionPerformed () throws Exception {
 			String name = ((ComponentInfo) target.getUserObject()).name;
 			shieldedReleaseComponents(selectedSupervisor, new String[]{name});
@@ -1036,6 +1055,7 @@ public class DeploymentTree extends JTree {
 			super("Force system-wide deactivation");
 		}
 
+		@Override
 		public void actionPerformed () throws Exception {
 			String name = ((ComponentInfo) target.getUserObject()).name;
 			shieldedForceReleaseComponent(selectedSupervisor, name);

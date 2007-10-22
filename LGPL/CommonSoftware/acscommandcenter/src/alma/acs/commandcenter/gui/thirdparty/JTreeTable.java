@@ -117,7 +117,8 @@ public class JTreeTable extends JTable {
      * Since the tree is not actually in the component hierarchy it will
      * never receive this unless we forward it in this manner.
      */
-    public void updateUI() {
+    @Override
+	public void updateUI() {
 	super.updateUI();
 	if(tree != null) {
 	    tree.updateUI();
@@ -139,7 +140,8 @@ public class JTreeTable extends JTable {
      * is not the right thing to do for an editor. Returning -1 for the 
      * editing row in this case, ensures the editor is never painted. 
      */
-    public int getEditingRow() {
+    @Override
+	public int getEditingRow() {
         return (getColumnClass(editingColumn) == TreeTableModel.class) ? -1 :
 	        editingRow;  
     }
@@ -159,7 +161,8 @@ public class JTreeTable extends JTable {
      * think the table is being edited, as <code>getEditingRow</code> returns
      * -1, and therefore doesn't automatically resize the editor for us.
      */
-    public void sizeColumnsToFit(int resizingColumn) { 
+    @Override
+	public void sizeColumnsToFit(int resizingColumn) { 
 	super.sizeColumnsToFit(resizingColumn);
 	if (getEditingColumn() != -1 && getColumnClass(editingColumn) ==
 	    TreeTableModel.class) {
@@ -174,7 +177,8 @@ public class JTreeTable extends JTable {
     /**
      * Overridden to pass the new rowHeight to the tree.
      */
-    public void setRowHeight(int rowHeight) { 
+    @Override
+	public void setRowHeight(int rowHeight) { 
         super.setRowHeight(rowHeight); 
 	if (tree != null && tree.getRowHeight() != rowHeight) {
             tree.setRowHeight(getRowHeight()); 
@@ -194,7 +198,8 @@ public class JTreeTable extends JTable {
      * not fill the bounds of the cell, we need the renderer to paint
      * the tree in the background, and then draw the editor over it.
      */
-    public boolean editCellAt(int row, int column, EventObject e){
+    @Override
+	public boolean editCellAt(int row, int column, EventObject e){
 	boolean retValue = super.editCellAt(row, column, e);
 	if (retValue && getColumnClass(column) == TreeTableModel.class) {
 	    repaint(getCellRect(row, column, false));
@@ -221,6 +226,7 @@ public class JTreeTable extends JTable {
 	 * updateUI is overridden to set the colors of the Tree's renderer
 	 * to match that of the table.
 	 */
+	@Override
 	public void updateUI() {
 	    super.updateUI();
 	    // Make the tree's cell renderer use the table's cell selection
@@ -243,6 +249,7 @@ public class JTreeTable extends JTable {
 	 * Sets the row height of the tree, and forwards the row height to
 	 * the table.
 	 */
+	@Override
 	public void setRowHeight(int rowHeight) { 
 	    if (rowHeight > 0) {
 		super.setRowHeight(rowHeight); 
@@ -256,6 +263,7 @@ public class JTreeTable extends JTable {
 	/**
 	 * This is overridden to set the height to match that of the JTable.
 	 */
+	@Override
 	public void setBounds(int x, int y, int w, int h) {
 	    super.setBounds(x, 0, w, JTreeTable.this.getHeight());
 	}
@@ -264,6 +272,7 @@ public class JTreeTable extends JTable {
 	 * Sublcassed to translate the graphics such that the last visible
 	 * row will be drawn at 0,0.
 	 */
+	@Override
 	public void paint(Graphics g) {
 	    g.translate(0, -visibleRow * getRowHeight());
 	    super.paint(g);
@@ -379,6 +388,7 @@ public class JTreeTable extends JTable {
 	 * <p>The offset is then set on the TreeTableTextField component
 	 * created in the constructor, and returned.
 	 */
+	@Override
 	public Component getTableCellEditorComponent(JTable table,
 						     Object value,
 						     boolean isSelected,
@@ -414,6 +424,7 @@ public class JTreeTable extends JTable {
 	 * This is overridden to forward the event to the tree. This will
 	 * return true if the click count >= 3, or the event is null.
 	 */
+	@Override
 	public boolean isCellEditable(EventObject e) {
 	    if (e instanceof MouseEvent) {
 		MouseEvent me = (MouseEvent)e;
@@ -460,6 +471,7 @@ public class JTreeTable extends JTable {
     static class TreeTableTextField extends JTextField {
 	public int offset;
 
+	@Override
 	public void setBounds(int x, int y, int w, int h) {
 	    int newX = Math.max(x, offset);
 	    super.setBounds(newX, y, w - (newX - x), h);
@@ -497,6 +509,7 @@ public class JTreeTable extends JTable {
 	 * and message super. This is the only place DefaultTreeSelectionModel
 	 * alters the ListSelectionModel.
 	 */
+	@Override
 	public void resetRowSelection() {
 	    if(!updatingListSelectionModel) {
 		updatingListSelectionModel = true;

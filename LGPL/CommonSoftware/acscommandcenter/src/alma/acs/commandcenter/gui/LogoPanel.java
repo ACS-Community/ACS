@@ -29,7 +29,8 @@ public class LogoPanel extends JPanel {
     private int oldH;
     protected GradientPaint gradientPaint = null;
     
-    protected void paintComponent(Graphics g) {
+    @Override
+	protected void paintComponent(Graphics g) {
         try {
             int w = getWidth();
             int h = getHeight();

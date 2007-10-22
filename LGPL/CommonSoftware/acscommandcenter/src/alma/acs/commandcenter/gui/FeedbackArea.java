@@ -90,6 +90,7 @@ public class FeedbackArea extends JPanel {
 
 			// expect the user to press "return" to confirm
 			// a value chosen with the arrow keys
+			@Override
 			public void keyPressed (KeyEvent e) {
 				/*
 				if (e.getKeyCode() == 10)

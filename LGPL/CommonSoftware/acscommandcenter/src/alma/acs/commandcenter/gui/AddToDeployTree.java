@@ -102,6 +102,7 @@ class AddToDeployTree extends JPanel {
 		public MyActionBaseClass(String name) {
 			master.super(name);
 		}
+		@Override
 		final protected void actionPerformed () throws Throwable {
 			setBusy(true);
 			deployTree.setBusy(true);
@@ -123,6 +124,7 @@ class AddToDeployTree extends JPanel {
 			super("Add to View");
 		}
 
+		@Override
 		protected void myActionPerformed () throws Throwable {
 			String host = hostF.getText().trim();
 			String port = portF.getText().trim();
@@ -163,6 +165,7 @@ class AddToDeployTree extends JPanel {
 			super("Full Refresh");
 		}
 
+		@Override
 		protected void myActionPerformed () throws Throwable {
 			/* if view is frozen, no updates will occur on the tree
 			 * including those that the user forces through the
@@ -196,6 +199,7 @@ class AddToDeployTree extends JPanel {
 			this.btn = btn;
 		}
 		
+		@Override
 		protected void myActionPerformed () throws Throwable {
 			boolean b = btn.isSelected();
 			deployTree.setViewFrozen(b);

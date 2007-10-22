@@ -151,6 +151,7 @@ public class CommandCenterGui {
 			frame = new JFrame(""); // title added later in doFrameTitle()
 			frame.addWindowListener(new WindowAdapter() {
 
+				@Override
 				public void windowClosing (WindowEvent evt) {
 					showExitDialog();
 					controller.stop();
@@ -457,6 +458,7 @@ public class CommandCenterGui {
 		if (cdbChooserDialog == null) {
 			cdbChooserDialog = new JDialog(frame) {
 
+				@Override
 				public void paint (Graphics g) {
 					// PENDING(msc): remove this hack for this swing-related concurrency problem
 					// there's a problem with setPage() when the dialog is invisible,
@@ -479,6 +481,7 @@ public class CommandCenterGui {
 		// cdbChooserDialog.setVisible(true);
 		new Thread() {
 
+			@Override
 			public void run () {
 				try {
 					while (!cdbChooser.isVisible()) {
@@ -564,6 +567,7 @@ public class CommandCenterGui {
 
 				new Thread() {
 
+					@Override
 					public void run () {
 						try {
 
@@ -987,6 +991,7 @@ public class CommandCenterGui {
 			super(name);
 		}
 
+		@Override
 		public void actionPerformed () {
 			controller.project = controller.createProject();
 			currentProjectFile = null;
@@ -1001,6 +1006,7 @@ public class CommandCenterGui {
 			super(name);
 		}
 
+		@Override
 		public void actionPerformed () {
 			showHelpBrowser();
 		}
@@ -1012,6 +1018,7 @@ public class CommandCenterGui {
 			super(name);
 		}
 
+		@Override
 		public void actionPerformed () throws Exception {
 			File f = showOpenDialog();
 			if (f == null)
@@ -1028,6 +1035,7 @@ public class CommandCenterGui {
 			super(name);
 		}
 
+		@Override
 		public void actionPerformed () throws Exception {
 			// as i learn from the OT, focus-listening is
 			// not 100% reliable, so we should probably enforce
@@ -1053,6 +1061,7 @@ public class CommandCenterGui {
 			super(name);
 		}
 
+		@Override
 		public void actionPerformed () throws Exception {
 			File f = showSaveDialog();
 			if (f == null)
@@ -1069,6 +1078,7 @@ public class CommandCenterGui {
 			super(name);
 		}
 
+		@Override
 		public void actionPerformed () {
 			controller.stop();
 		}
@@ -1080,6 +1090,7 @@ public class CommandCenterGui {
 			super(name);
 		}
 
+		@Override
 		public void actionPerformed () {
 			writeModelToManagerLocationForTools();
 
@@ -1098,6 +1109,7 @@ public class CommandCenterGui {
 			super(name);
 		}
 
+		@Override
 		public void actionPerformed () {
 			if (editCommandsDialog == null) {
 				editCommandsPanel = new EditCommandsPanel(controller);
@@ -1116,6 +1128,7 @@ public class CommandCenterGui {
 			super(name);
 		}
 
+		@Override
 		public void actionPerformed () {
 			if (editPexpectsDialog == null) {
 				editPexpectsPanel = new EditPexpectsPanel(controller);
@@ -1134,16 +1147,19 @@ public class CommandCenterGui {
 			super(name);
 		}
 
+		@Override
 		public void actionPerformed () {
 			// show file dialog
 			File f = null;
 			JFileChooser c = new JFileChooser();
 			c.setFileFilter(new FileFilter() {
 
+				@Override
 				public boolean accept (File f) {
 					return (f.isDirectory() || f.getName().endsWith(".xml") || f.getName().endsWith(".XML"));
 				}
 
+				@Override
 				public String getDescription () {
 					return "CommandCenter Tools (*.xml)";
 				}
@@ -1181,6 +1197,7 @@ public class CommandCenterGui {
 			this.killNativeSSH = killNativeSSH;
 		}
 		
+		@Override
 		public void actionPerformed () {
 			System.setProperty(Executor.SYSPROP_USE_NATIVE_SSH, Boolean.toString(this.useNativeSSH));
 			System.setProperty(Executor.SYSPROP_KILL_NATIVE_SSH, Boolean.toString(this.killNativeSSH));
@@ -1193,6 +1210,7 @@ public class CommandCenterGui {
 			super(name);
 		}
 
+		@Override
 		public void actionPerformed () {
 			showUrlContent(controller.currentExtraToolsUrl, "Tools");
 		}
@@ -1204,6 +1222,7 @@ public class CommandCenterGui {
 			super(name);
 		}
 
+		@Override
 		public void actionPerformed () {
 			showUrlContent(controller.latestBuiltinToolsUrl, "Built-in Tools");
 		}
@@ -1215,16 +1234,19 @@ public class CommandCenterGui {
 			super(name);
 		}
 
+		@Override
 		public void actionPerformed () {
 			// show file dialog
 			File f = null;
 			JFileChooser c = new JFileChooser();
 			c.setFileFilter(new FileFilter() {
 
+				@Override
 				public boolean accept (File f) {
 					return (f.isDirectory() || f.getName().endsWith(".xml") || f.getName().endsWith(".XML"));
 				}
 
+				@Override
 				public String getDescription () {
 					return "CommandCenter Built-in Tools (*.xml)";
 				}
@@ -1256,6 +1278,7 @@ public class CommandCenterGui {
 			super(name);
 		}
 
+		@Override
 		public void actionPerformed () {
 			showVariablesEditor();
 		}

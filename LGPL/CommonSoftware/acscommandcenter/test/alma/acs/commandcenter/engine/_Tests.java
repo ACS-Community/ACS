@@ -28,7 +28,7 @@ import alma.entity.xmlbinding.acscommandcentertools.Tool;
  */
 public class _Tests {
 
-	/* $Id: _Tests.java,v 1.5 2005/11/23 19:00:08 mschilli Exp $ */
+	/* $Id: _Tests.java,v 1.6 2007/10/22 14:13:37 mschilli Exp $ */
 
 	public static Test suite() {
 		TestSuite ret = new TestSuite("Test for " + _Tests.class.getPackage().getName());
@@ -82,6 +82,7 @@ public class _Tests {
 		final String[] output = new String[]{""};
 		NativeCommand.Listener listener = new NativeCommand.ListenerAdapter() {
 	
+			@Override
 			public void stdoutWritten (NativeCommand task, String additionalOutput) {
 				output[0] += additionalOutput;
 			}
@@ -120,6 +121,7 @@ public class _Tests {
 	
 		RunModel m = new RunModelAdapter() {
 	
+			@Override
 			public String getScriptBase () {
 				return acsInstance;
 			}
@@ -132,6 +134,7 @@ public class _Tests {
 	
 		RunModel m = new RunModelAdapter() {
 	
+			@Override
 			public String getScriptBase () {
 				return acsInstance;
 			}
@@ -143,6 +146,7 @@ public class _Tests {
 	
 		RunModel m = new RunModelAdapter() {
 	
+			@Override
 			public String getScriptBase () {
 				return acsInstance;
 			}
@@ -154,14 +158,17 @@ public class _Tests {
 	
 		RunModel m = new RunModelAdapter() {
 	
+			@Override
 			public String getContainerType () {
 				return type;
 			}
 	
+			@Override
 			public String getContainerScriptBase () {
 				return acsInstance;
 			}
 	
+			@Override
 			public String getContainerName () {
 				return name;
 			}
@@ -174,22 +181,27 @@ public class _Tests {
 	
 		RunModel m = new RunModelAdapter() {
 	
+			@Override
 			public String getScriptBase () {
 				return acsInstance;
 			}
 			
+			@Override
 			public String getToolAgainstManagerHost () {
 				return acsHost;
 			}
 	
+			@Override
 			public String getToolAgainstManagerPort () {
 				return mgrPort;
 			}
 			
+			@Override
 			public String getToolAgainstInterfaceRepository () {
 				return AcsLocations.convertToInterfaceRepositoryLocation(acsHost, irPort);
 			}
 	
+			@Override
 			public String getToolAgainstNameService () {
 				return AcsLocations.convertToNameServiceLocation(acsHost, nsPort);
 			}
@@ -262,6 +274,7 @@ public class _Tests {
 			final FileWriter writer = new FileWriter(f);
 			return new LogWriter() {
 
+				@Override
 				public void stdoutWritten (NativeCommand task, String additionalOutput) {
 					try {
 						if (! (additionalOutput.endsWith("\r") || additionalOutput.endsWith("\n") )) {
@@ -272,6 +285,7 @@ public class _Tests {
 					} catch (IOException exc) {}
 				}
 
+				@Override
 				public void stderrWritten (NativeCommand task, String additionalOutput) {
 					try {
 						if (! (additionalOutput.endsWith("\r") || additionalOutput.endsWith("\n") )) {

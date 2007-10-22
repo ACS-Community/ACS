@@ -75,6 +75,7 @@ public class PreparedString {
 		return buf.toString();
 	}
 
+	@Override
 	public String toString () {
 		return toString(new String[]{});
 	}

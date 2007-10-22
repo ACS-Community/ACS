@@ -98,6 +98,7 @@ public class StringRingBuffer {
 			return true;
 		}
 		
+		@Override
 		public String toString() {
 			return new String(getAll());
 		}

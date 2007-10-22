@@ -46,6 +46,7 @@ public class MapTableModel extends DefaultTableModel {
 		super.setDataVector(data, super.columnIdentifiers);
 	}
 
+	@Override
 	public boolean isCellEditable (int row, int column) {
 		return (column == 1);
 	}
