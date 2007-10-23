@@ -35,8 +35,8 @@ public class AcsLocations {
 
 
 	/**
-	 * Returns the stringified IP or "localhost" if an error were to occur. This method
-	 * forwards to {@link ACSPorts#getIP()}.
+	 * Returns the stringified IP or "localhost" if an error were to occur.
+	 * This method forwards to {@link ACSPorts#getIP()}.
 	 * 
 	 * @return the stringified IP or "localhost" if an error were to occur.
 	 */
@@ -111,7 +111,10 @@ public class AcsLocations {
 
 	/**
 	 * Extracts host and port from a location string (either a corbaloc or an IOR).
-	 * 
+	 * <p>
+	 * This method is the counterpart to all the <code>convertTo...</code> methods
+	 * defined in this class.
+	 * <p>
 	 * The location string's format is recognized by the prefix (case insensitive).
 	 * If the format is unknown, an exception will be thrown.
 	 * 
@@ -158,131 +161,148 @@ public class AcsLocations {
 
 	}
 
+
+// Manager	
+	
 	/**
-	 * The suffix for a manager location. Note: Not a constant, to allow for changes at
-	 * runtime in case this might be needed.
+	 * The suffix for a Manager location.
+	 * Note: Not a constant, to allow for changes at runtime in case this might be needed.
 	 */
 	static public String MANAGER_SYMBOL = "Manager";
 
 
 	/**
-	 * Composes a manager location string ("manager reference") from a host and a port.
-	 * 
-	 * @return a corbaloc of a manager
+	 * Composes a Manager corbaloc for the specified host and port.
 	 */
 	static public String convertToManagerLocation (String host, String port) {
 		return convertToManagerLocation(host, port, "");
 	}
 
 	/**
-	 * Composes a manager location string ("manager reference") from a host and a port and
-	 * a protocol.
-	 * 
-	 * @return a corbaloc of a manager
+	 * Composes a Manager corbaloc for the specified host, port, and protocol.
 	 */
 	static public String convertToManagerLocation (String host, String port, String protocol) {
 		return "corbaloc:" + protocol + ":" + host.trim() + ":" + port.trim() + "/" + MANAGER_SYMBOL;
 	}
 
+	
+// NameService
 
 	/**
-	 * The suffix for a nameservice location. Note: Not a constant, to allow for changes at
-	 * runtime in case this might be needed.
+	 * The suffix for a NameService location.
+	 * Note: Not a constant, to allow for changes at runtime in case this might be needed.
 	 */
 	static public String NAMESERVICE_SYMBOL = "NameService";
 
 
 	/**
-	 * Composes a nameservice location string ("nameservice reference") from a host and a
-	 * port.
-	 * 
-	 * @return a corbaloc of a nameservice
+	 * Composes a NameService corbaloc for the specified host and port.
 	 */
 	static public String convertToNameServiceLocation (String host, String port) {
 		return convertToNameServiceLocation(host, port, "");
 	}
 
 	/**
-	 * Composes a nameservice location string ("nameservice reference") from a host and a
-	 * port and a protocol.
-	 * 
-	 * @return a corbaloc of a nameservice
+	 * Composes a NameService corbaloc for the specified host, port, and protocol.
 	 */
 	static public String convertToNameServiceLocation (String host, String port, String protocol) {
 		return "corbaloc:" + protocol + ":" + host.trim() + ":" + port.trim() + "/" + NAMESERVICE_SYMBOL;
 	}
 
 
+// InterfaceRepository
+	
 	/**
-	 * The suffix for a interface repository location. Note: Not a constant, to allow for
-	 * changes at runtime in case this might be needed.
+	 * The suffix for a InterfaceRepository location.
+	 * Note: Not a constant, to allow for changes at runtime in case this might be needed.
 	 */
 	static public String INTERFACEREPOSITORY_SYMBOL = "InterfaceRepository";
 
 
 	/**
-	 * Composes a interface repository location string ("interface repository reference")
-	 * from a host and a port.
-	 * 
-	 * @return a corbaloc of a interface repository
+	 * Composes a InterfaceRepository corbaloc for the specified host and port.
 	 */
 	static public String convertToInterfaceRepositoryLocation (String host, String port) {
 		return convertToInterfaceRepositoryLocation(host, port, "");
 	}
 
 	/**
-	 * Composes a interface repository location string ("interface repository reference")
-	 * from a host and a port and a protocol.
-	 * 
-	 * @return a corbaloc of a interface repository
+	 * Composes a InterfaceRepository corbaloc for the specified host, port, and protocol.
 	 */
 	static public String convertToInterfaceRepositoryLocation (String host, String port, String protocol) {
 		return "corbaloc:" + protocol + ":" + host.trim() + ":" + port.trim() + "/" + INTERFACEREPOSITORY_SYMBOL;
 	}
 
+	
+// CDB
 
 	/**
-	 * The suffix for a cdb-dal location. Note: Not a constant, to allow for changes at
-	 * runtime in case this might be needed.
+	 * The suffix for a cdb-dal location.
+	 * Note: Not a constant, to allow for changes at runtime in case this might be needed.
 	 */
 	static public String CDB_SYMBOL = "CDB";
 
 
 	/**
-	 * Composes a cdb-dal location string ("cdb-dal reference") from a host and a port.
-	 * 
-	 * @return a corbaloc of a cdb-dal
+	 * Composes a CDB corbaloc for the specified host and port.
 	 */
 	static public String convertToCdbLocation (String host, String port) {
 		return convertToCdbLocation(host, port, "");
 	}
 
 	/**
-	 * Composes a cdb-dal location string ("cdb-dal reference") from a host and a port and
-	 * a protocol.
-	 * 
-	 * @return a corbaloc of a cdb-dal
+	 * Composes a CDB corbaloc for the specified host, port, and protocol.
 	 */
 	static public String convertToCdbLocation (String host, String port, String protocol) {
 		return "corbaloc:" + protocol + ":" + host.trim() + ":" + port.trim() + "/" + CDB_SYMBOL;
 	}
 
 
-	// //////////////////////////////////////////////////////
-	// / ----------------- Internal --------------------- ///
-	// //////////////////////////////////////////////////////
+// ACSServicesDaemon
+	
+	/**
+	 * The suffix for a ServicesDaemon location.
+	 * Note: Not a constant, to allow for changes at runtime in case this might be needed.
+	 */
+	static public String SERVICESDAEMON_SYMBOL = "ACSServicesDaemon";
 
+
+	/**
+	 * Composes a ServicesDaemon corbaloc for the specified host and port.
+	 */
+	static public String convertToServicesDaemonLocation (String host, String port) {
+		return convertToServicesDaemonLocation(host, port, "");
+	}
+
+	/**
+	 * Composes a ServicesDaemon corbaloc for the specified host, port, and protocol.
+	 */
+	static public String convertToServicesDaemonLocation (String host, String port, String protocol) {
+		return "corbaloc:" + protocol + ":" + host.trim() + ":" + port.trim() + "/" + SERVICESDAEMON_SYMBOL;
+	}
+
+// ACSContainerDaemon
+
+	/**
+	 * The suffix for a ContainerDaemon location.
+	 * Note: Not a constant, to allow for changes at runtime in case this might be needed.
+	 */
+	static public String CONTAINERDAEMON_SYMBOL = "ACSContainerDaemon";
+
+
+	/**
+	 * Composes a ContainerDaemon corbaloc for the specified host and port.
+	 */
+	static public String convertToContainerDaemonLocation (String host, String port) {
+		return convertToContainerDaemonLocation(host, port, "");
+	}
+
+	/**
+	 * Composes a ContainerDaemon corbaloc for the specified host, port, and protocol.
+	 */
+	static public String convertToContainerDaemonLocation (String host, String port, String protocol) {
+		return "corbaloc:" + protocol + ":" + host.trim() + ":" + port.trim() + "/" + CONTAINERDAEMON_SYMBOL;
+	}
+	
 }
 
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
