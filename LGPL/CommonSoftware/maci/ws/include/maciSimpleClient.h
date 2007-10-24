@@ -4,7 +4,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciSimpleClient.h,v 1.99 2007/10/11 15:07:50 msekoran Exp $"
+* "@(#) $Id: maciSimpleClient.h,v 1.100 2007/10/24 22:29:50 agrimstrup Exp $"
 *
 * who       when        what
 * --------  --------    ----------------------------------------------
@@ -30,15 +30,40 @@
 #include <ACSErrTypeCommon.h>
 #include <maciErrType.h>
 
-#include <lokiThreads.h>
-#include <lokiSmartPtr.h>
+#include <acsComponentSmartPtr.h>
 
 namespace maci {
 
+    class SimpleClient;
 
-// Forward definition of ComponentSmartPtr to allow SimpleClient to compile
-template <class T>
-class ComponentSmartPtr;
+
+    template<typename T, class H = SimpleClient> 
+    class ComponentSmartPtr : public SmartPtr<T, H, Loki::RefCountedMTAdj<Loki::ObjectLevelLockable>::RefCountedMT,
+			  Loki::DisallowConversion, Loki::NoCheck, ComponentStorage, Loki::LOKI_DEFAULT_CONSTNESS> {
+      public:
+	
+	/**
+	 * Default Constructor
+	 */
+	ComponentSmartPtr()
+	    {}
+	
+	/**
+	 * Constructor.
+	 * Create a smart pointer for the component described.
+	 * @param name is the name of the component.
+	 * @param m is the reference of the manager used to manage the connection.
+	 * @param h is the handle of the requestor of the component
+	 * @param s is the flag indicating if the reference is sticky.
+	 @ @param p is the pointer to the component.
+	*/
+	ComponentSmartPtr(const char *name, H* h, bool s, T* p)
+	{
+	    setValues(name, h, s, p);
+	}
+
+
+    };
 
 
 /**
@@ -588,170 +613,6 @@ ComponentSmartPtr<T> SimpleClient::getComponentNonStickySmartPtr(const char *nam
 {
     return ComponentSmartPtr<T>(name, this, false, this->getComponentNonSticky<T>(name));
 }    
-
-
-/**
- *  Storage Policy class for Component Pointers.
- *  In addition to storing the pointer to the component being managed by
- *  the smart pointer, this class caches information needed when the 
- *  component is finally released.
- */
-template <class T>
-class ClientStorage
-{
-  public:
-    typedef T* StoredType;    // the type of the pointee_ object
-    typedef T* PointerType;   // type returned by operator->
-    typedef T& ReferenceType; // type returned by operator*
-    
-    /**
-     * Default Constructor
-     */
-    ClientStorage() : client(0), component_name(0), sticky(true), pointee_(Default())
-	{}
-
-    /**
-     * Constructor that stores default management values with a live pointer.
-     */
-    ClientStorage(const StoredType& p) : client(0), component_name(0), sticky(true), pointee_(p)
-        {}
-    
-    // The storage policy doesn't initialize the stored pointer 
-    // which will be initialized by the OwnershipPolicy's Clone fn
-    /**
-     * Copy Constructor
-     */
-    ClientStorage(const ClientStorage& rhs) : client(rhs.client), component_name(rhs.component_name), sticky(rhs.sticky), pointee_(0)
-        {}
-    
-    /**
-     * Copy Constructor for ClientStores of other types.
-     * We don't allow copying of different types, so the attributes are set to default values.
-     */
-    template <class U>
-    ClientStorage(const ClientStorage<U>&) : client(0), component_name(0), sticky(true), pointee_(0)
-        {}
-    
-    /**
-     * SetValues
-     * Set the attribute values for the Component being managed.  This is a support
-     * method for the ComponentSmartPtr constructor.
-     * @param name is the name of the component that will be managed.
-     * @param client is a pointer to the SimpleClient that provided the component.
-     * @param s is flag that indicates if the component is sticky.
-     * @param p is a pointer to the component that will be managed.
-     */
-    void setValues(const char *name, SimpleClient *cl, bool s, const StoredType& p)
-	{
-	    component_name = name;
-	    client = cl;
-	    sticky = s;
-	    pointee_ = p;
-	};
-
-    /**
-     * Member Access Operator
-     */
-    PointerType operator->() const { return pointee_; }
-    
-    /**
-     * Dereference Operator
-     */
-    ReferenceType operator*() const { return *pointee_; }
-    
-    /**
-     * Swap
-     * Exchange values with another instance of ClientStorage.
-     * @param rhs is the instance to exchange attributes with.
-     */
-    void Swap(ClientStorage& rhs)
-        {
-	    std::swap(pointee_, rhs.pointee_);
-	    std::swap(sticky, rhs.sticky);
-	    std::swap(component_name, rhs.component_name);
-	    std::swap(client, rhs.client);
-	}
-    
-    // Accessors
-    /**
-     * GetImpl.
-     * Retrieve the Component pointer from its storage object.
-     */
-    friend inline PointerType GetImpl(const ClientStorage& sp)
-        { return sp.pointee_; }
-    
-    /**
-     * GetImplRef.
-     * Retrieve the Component reference from its storage object.
-     */
-    friend inline const StoredType& GetImplRef(const ClientStorage& sp)
-        { return sp.pointee_; }
-    
-    /**
-     * GetImplRef.
-     * Retrieve the Component reference from its storage object.
-     */
-    friend inline StoredType& GetImplRef(ClientStorage& sp)
-        { return sp.pointee_; }
-    
-  protected:
-
-    /**
-     * Destroy.
-     * Release the component reference managed by this object.
-     */
-    void Destroy()
-        {
-	    if (client && sticky)
-		client->releaseComponent(component_name);
-	}    
-    // Default value to initialize the pointer
-    static StoredType Default()
-        { return 0; }
-    
-  private:
-    // Data
-    SimpleClient *client;
-    const char *component_name;
-    bool sticky;
-    StoredType pointee_;
-};
-
-/**
- * ComponentSmartPtr.
- * This class implements a smart pointer for managing ACS Components within client applications.
- * It is based on the Loki SmartPtr class and uses the following policies: thread-safe reference
- * counting on that is locked on an object basis, no implicit conversions from SmartPtr to
- * the pointee type, no pointee checking before using the reference, and stores all information
- * needed to release the component within the storage object.
- */
-template<typename T>
-class ComponentSmartPtr :
-    public Loki::SmartPtr<T, Loki::RefCountedMTAdj<Loki::ObjectLevelLockable>::RefCountedMT,
-			  Loki::DisallowConversion, Loki::NoCheck, ClientStorage>
-{
-  public:
-
-    /**
-     * Default Constructor
-     */
-    ComponentSmartPtr()
-	{}
-
-    /**
-     * Constructor.
-     * Create a smart pointer for the component described.
-     * @param name is the name of the component.
-     * @param cl is the reference of the SimpleClient used to manage the connection.
-     * @param s is the flag indicating if the reference is sticky.
-     @ @param p is the pointer to the component.
-     */
-    ComponentSmartPtr(const char *name, SimpleClient *cl, bool s, T* p)
-	{
-	    setValues(name, cl, s, p);
-	};
-
-};
 
 }; 
 

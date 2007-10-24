@@ -4,7 +4,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciContainerServicesTestClassImpl.h,v 1.13 2007/09/03 06:07:12 cparedes Exp $"
+* "@(#) $Id: maciContainerServicesTestClassImpl.h,v 1.14 2007/10/24 22:29:50 agrimstrup Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -88,6 +88,21 @@ public:
   
   // Test the defaultComponent activation
   virtual void defaultComponentTest() throw (CORBA::SystemException);
+  
+  // Test the defaultComponentSmartPtr activation
+  virtual void getComponentSmartPtrTest() throw (CORBA::SystemException);
+  
+  // Test the getting a Component smart pointer as Non Sticky 
+  virtual void getComponentNonStickySmartPtrTest() throw (CORBA::SystemException);
+
+  // Test the dynamic component smart pointer activation
+  virtual void dynamicComponentSmartPtrTest() throw (CORBA::SystemException); 
+  
+  // Test the collocated component smart pointer activation
+  virtual void collocatedComponentSmartPtrTest() throw (CORBA::SystemException); 
+  
+  // Test the defaultComponent smart pointer activation
+  virtual void defaultComponentSmartPtrTest() throw (CORBA::SystemException);
   
   // Test the request of a component descriptor
   virtual void componentDescriptorTest() throw (CORBA::SystemException);

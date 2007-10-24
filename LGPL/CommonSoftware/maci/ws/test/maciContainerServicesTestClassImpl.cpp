@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - VLT project
 *
-* "@(#) $Id: maciContainerServicesTestClassImpl.cpp,v 1.16 2007/09/04 04:10:13 cparedes Exp $"
+* "@(#) $Id: maciContainerServicesTestClassImpl.cpp,v 1.17 2007/10/24 22:29:50 agrimstrup Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -61,7 +61,7 @@
 #define _POSIX_SOURCE 1
 #include "vltPort.h"
 
-static char *rcsId="@(#) $Id: maciContainerServicesTestClassImpl.cpp,v 1.16 2007/09/04 04:10:13 cparedes Exp $"; 
+static char *rcsId="@(#) $Id: maciContainerServicesTestClassImpl.cpp,v 1.17 2007/10/24 22:29:50 agrimstrup Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include "maciContainerServicesTestClassImpl.h"
@@ -126,6 +126,25 @@ void MaciContainerServicesTestClassImpl::dynamicComponentTest()
 	 getContainerServices()->releaseComponent(comp->name());
 }
 
+void MaciContainerServicesTestClassImpl::dynamicComponentSmartPtrTest() 
+	throw (CORBA::SystemException)
+{
+	 
+	 // Prepare the ComponentSpec struct
+	 ComponentSpec cSpec;
+	 cSpec.component_name="*";		
+	 cSpec.component_code="*";	
+	 cSpec.container_name="*";
+	 cSpec.component_type=IDLTYPE;
+	 
+	 // Get the default component for the given IDL interface
+	 SmartPtr<MACI_TEST::DynamicTestClass> comp = 
+	 	getContainerServices()->getDynamicComponentSmartPtr<MACI_TEST::DynamicTestClass>(cSpec,false);
+
+	 // Execute a method on the remote component
+	 comp->whoami();
+}
+
 void MaciContainerServicesTestClassImpl::collocatedComponentTest() 
 	throw (CORBA::SystemException)
 {
@@ -140,15 +159,31 @@ void MaciContainerServicesTestClassImpl::collocatedComponentTest()
 	 // Get the default component for the given IDL interface
 	 MACI_TEST::DynamicTestClass_var comp = 
 	 	getContainerServices()->getCollocatedComponent<MACI_TEST::DynamicTestClass>(cSpec,false,"MACI_DYN_TEST1");
-	 if (CORBA::is_nil(comp.in())) {
-	 	ACS_SHORT_LOG((LM_ERROR,"collocatedComponentTest: Error getting type %s",cSpec.component_type.in()));
-	 	return;
-	 }
+
 	 // Execute a method on the remote component
 	 comp->whoami();
 	 
 	 // Release the component
 	 getContainerServices()->releaseComponent(comp->name());
+}
+
+void MaciContainerServicesTestClassImpl::collocatedComponentSmartPtrTest() 
+	throw (CORBA::SystemException)
+{
+	 
+	 // Prepare the ComponentSpec struct
+	 ComponentSpec cSpec;
+	 cSpec.component_name="*";		
+	 cSpec.component_code="*";	
+	 cSpec.container_name="*";
+	 cSpec.component_type=IDLTYPE;
+	 
+	 // Get the default component for the given IDL interface
+	 SmartPtr<MACI_TEST::DynamicTestClass> comp = 
+	 	getContainerServices()->getCollocatedComponentSmartPtr<MACI_TEST::DynamicTestClass>(cSpec,false,"MACI_DYN_TEST1");
+
+	 // Execute a method on the remote component
+	 comp->whoami();
 }
 
 void MaciContainerServicesTestClassImpl::defaultComponentTest() 
@@ -167,6 +202,18 @@ void MaciContainerServicesTestClassImpl::defaultComponentTest()
 	 
 	 // Release the component
 	 getContainerServices()->releaseComponent(comp->name());
+}
+  
+void MaciContainerServicesTestClassImpl::defaultComponentSmartPtrTest() 
+	throw (CORBA::SystemException)
+{
+	 
+	 // Get the default component for the given IDL interface
+	 SmartPtr<MACI_TEST::DynamicTestClass> comp = 
+	 	getContainerServices()->getDefaultComponentSmartPtr<MACI_TEST::DynamicTestClass>(IDLTYPE);
+
+	 // Execute a method on the remote component
+	 comp->whoami();
 }
   
 void MaciContainerServicesTestClassImpl::componentDescriptorTest() 
@@ -220,6 +267,17 @@ void MaciContainerServicesTestClassImpl::getComponentTest()
 	 getContainerServices()->releaseComponent(COMPNAME);
 }
 
+void MaciContainerServicesTestClassImpl::getComponentSmartPtrTest() 
+	throw (CORBA::SystemException)
+{
+	 // Get the COMPNAME component
+	 SmartPtr<MACI_TEST::DynamicTestClass> comp = 
+	 	getContainerServices()->getComponentSmartPtr<MACI_TEST::DynamicTestClass>(COMPNAME);
+
+	 // Execute a method on the remote component
+	 comp->whoami();
+}
+
 void MaciContainerServicesTestClassImpl::getComponentNonStickyTest() 
 	throw (CORBA::SystemException)
 {
@@ -247,6 +305,39 @@ void MaciContainerServicesTestClassImpl::getComponentNonStickyTest()
 	{
 	MACI_TEST::DynamicTestClass_var cns = 
 	    getContainerServices()->getComponentNonSticky<MACI_TEST::DynamicTestClass>(COMPNAME);	
+	}
+    catch(maciErrType::CannotGetComponentExImpl &_ex)
+	{
+	ACS_SHORT_LOG((LM_ERROR, "getComponentNonStickyTest (%s): Got an exception (right behaviour)", COMPNAME));
+	_ex.log();
+	}//try-catch
+}
+
+void MaciContainerServicesTestClassImpl::getComponentNonStickySmartPtrTest() 
+	throw (CORBA::SystemException)
+{
+    try
+	{
+	 // 1st we have to activate the COMPNAME component
+	 SmartPtr<MACI_TEST::DynamicTestClass> comp = 
+	 	getContainerServices()->getComponentSmartPtr<MACI_TEST::DynamicTestClass>(COMPNAME);
+
+	 SmartPtr<MACI_TEST::DynamicTestClass> cns = 
+	     getContainerServices()->getComponentNonStickySmartPtr<MACI_TEST::DynamicTestClass>(COMPNAME);
+	 // Execute a method on the remote component
+	 cns->whoami();
+	 
+	}
+    catch(maciErrType::CannotGetComponentExImpl &_ex)
+	{
+	ACS_SHORT_LOG((LM_ERROR,"getComponentNonStickyTest: Error getting %s non sticky",COMPNAME));
+	_ex.log();
+	}
+// test w/o activating the component be4
+    try
+	{
+	SmartPtr<MACI_TEST::DynamicTestClass> cns = 
+	    getContainerServices()->getComponentNonStickySmartPtr<MACI_TEST::DynamicTestClass>(COMPNAME);	
 	}
     catch(maciErrType::CannotGetComponentExImpl &_ex)
 	{

@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: maciTestComponentSmartPtr.cpp,v 1.1 2007/03/06 08:17:24 agrimstrup Exp $"
+* "@(#) $Id: maciTestComponentSmartPtr.cpp,v 1.2 2007/10/24 22:29:50 agrimstrup Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -54,7 +54,7 @@
 #define _POSIX_SOURCE 1
 #include "vltPort.h"
 
-static char *rcsId="@(#) $Id: maciTestComponentSmartPtr.cpp,v 1.1 2007/03/06 08:17:24 agrimstrup Exp $"; 
+static char *rcsId="@(#) $Id: maciTestComponentSmartPtr.cpp,v 1.2 2007/10/24 22:29:50 agrimstrup Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <maciTestC.h>
@@ -92,7 +92,7 @@ int main (int argc, char **argv)
 	    {
 	    ComponentSmartPtr<MACI_TEST::MaciTestClass> foo;
 	    assert(foo.component_name == 0);
-	    assert(foo.client == 0);
+	    assert(foo.handle == 0);
 	    assert(foo.pointee_ == 0);
 	    assert(*foo.pCount_ == 1);
 	    ACS_SHORT_LOG((LM_INFO,"Default constructor... [OK]"));
@@ -106,10 +106,9 @@ int main (int argc, char **argv)
 	try
 	    {
 	    ComponentSmartPtr<MACI_TEST::MaciTestClass> foo("MACI04", &client, true,
-							    client.getComponent<MACI_TEST::MaciTestClass>(
-								"MACI04", 0, true));
+							    client.getComponent<MACI_TEST::MaciTestClass>("MACI04", 0, true));
 	    assert(foo.component_name == "MACI04");
-	    assert(foo.client == &client);
+	    assert(foo.handle == &client);
 	    assert(foo.pointee_ != 0);
 	    assert(*foo.pCount_ == 1);
 	    ACS_SHORT_LOG((LM_INFO,"Parameterized constructor... [OK]"));
@@ -123,12 +122,11 @@ int main (int argc, char **argv)
 	try
 	    {
 	    ComponentSmartPtr<MACI_TEST::MaciTestClass> foo("MACI04", &client, true,
-							    client.getComponent<MACI_TEST::MaciTestClass>(
-								"MACI04", 0, true));
+							    client.getComponent<MACI_TEST::MaciTestClass>("MACI04", 0, true));
 	    ComponentSmartPtr<MACI_TEST::MaciTestClass> bar(foo);
 
 	    assert(foo.component_name == bar.component_name);
-	    assert(foo.client == bar.client);
+	    assert(foo.handle == bar.handle);
 	    assert(foo.pointee_ == bar.pointee_);
 	    assert(*foo.pCount_ == 2);
 	    ACS_SHORT_LOG((LM_INFO,"Copy constructor... [OK]"));
@@ -142,13 +140,12 @@ int main (int argc, char **argv)
 	try
 	    {
 	    ComponentSmartPtr<MACI_TEST::MaciTestClass> foo("MACI04", &client, true,
-							    client.getComponent<MACI_TEST::MaciTestClass>(
-								"MACI04", 0, true));
+							    client.getComponent<MACI_TEST::MaciTestClass>("MACI04", 0, true));
 	    ComponentSmartPtr<MACI_TEST::MaciTestClass> bar;
 
 	    bar = foo;
 	    assert(foo.component_name == bar.component_name);
-	    assert(foo.client == bar.client);
+	    assert(foo.handle == bar.handle);
 	    assert(foo.pointee_ == bar.pointee_);
 	    assert(*foo.pCount_ == 2);
 	    ACS_SHORT_LOG((LM_INFO,"Assignment operator... [OK]"));

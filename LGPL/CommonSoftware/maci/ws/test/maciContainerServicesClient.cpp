@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - VLT project
 *
-* "@(#) $Id: maciContainerServicesClient.cpp,v 1.10 2007/09/03 06:49:02 cparedes Exp $"
+* "@(#) $Id: maciContainerServicesClient.cpp,v 1.11 2007/10/24 22:29:50 agrimstrup Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -39,7 +39,7 @@
 #define _POSIX_SOURCE 1
 #include "vltPort.h"
 
-static char *rcsId="@(#) $Id: maciContainerServicesClient.cpp,v 1.10 2007/09/03 06:49:02 cparedes Exp $"; 
+static char *rcsId="@(#) $Id: maciContainerServicesClient.cpp,v 1.11 2007/10/24 22:29:50 agrimstrup Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <maciTestC.h>
@@ -125,6 +125,33 @@ int main (int argc, char **argv)
 	// releaseComponent of the ContainerServices)
 	ACS_SHORT_LOG((LM_INFO,"Testing getCollocatedComponent..."));
 	comp->collocatedComponentTest();
+	
+	// Ask the remote component to get a component smart pointer (it will execute
+	// the getComponentSmartPtr of the ContainerServices)   
+	ACS_SHORT_LOG((LM_INFO,"Testing getComponentSmartPtr..."));
+	comp->getComponentSmartPtrTest();
+	
+	// Ask the remote component to get a component smart pointer in a non sticky way 
+	// (it will execute
+	// the getComponentSmartPtr first to activate the component, 
+        // get the component in a non sticky way from ContainerServices)   
+	ACS_SHORT_LOG((LM_INFO,"Testing getComponentNonStickySmartPtr..."));
+	comp->getComponentNonStickySmartPtrTest();
+
+	// Ask the remote component to get the default component smart pointer for the given
+	// IDL interface (it will execute the getDefaultComponentSmartPtr of the ContainerServices)
+	ACS_SHORT_LOG((LM_INFO,"Testing getDefaultComponentSmartPtr..."));
+	comp->defaultComponentSmartPtrTest();
+	
+	// Ask the remote component to get a dynamic component smart pointer for the given
+	// IDL interface (it will execute the getDynamicComponentSmartPtr of the ContainerServices)
+	ACS_SHORT_LOG((LM_INFO,"Testing getDynamicComponentSmartPtr..."));
+	comp->dynamicComponentSmartPtrTest();
+	
+	// Ask the remote component to get a collocated component smart pointer for the given
+	// IDL interface (it will execute the getCollocatedComponentSmartPtr of the ContainerServices)
+	ACS_SHORT_LOG((LM_INFO,"Testing getCollocatedComponentSmartPtr..."));
+	comp->collocatedComponentSmartPtrTest();
 	
 	// The remote component uses the ContainerServices to test the 
 	// releaseAllComponents method (it basically gets two components and

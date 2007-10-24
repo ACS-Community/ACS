@@ -47,6 +47,21 @@ interface ContainerServicesTestClass : ACS::ACSComponent {
   // Test the defaultComponent activation
   void defaultComponentTest();
   
+  // Test the get component
+  void getComponentSmartPtrTest();
+
+  // Test the get component in a non sticky way
+  void getComponentNonStickySmartPtrTest();
+  
+  // Test the dynamic component activation
+  void dynamicComponentSmartPtrTest();
+
+  // Test the collocated component activation
+  void collocatedComponentSmartPtrTest();
+
+  // Test the defaultComponent activation
+  void defaultComponentSmartPtrTest();
+  
   // Test the request of a component descriptor
   void componentDescriptorTest();
 
