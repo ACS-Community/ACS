@@ -21,7 +21,7 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
  *
- * "@(#) $Id: acsContainerServices.h,v 1.19 2007/09/04 04:07:52 cparedes Exp $"
+ * "@(#) $Id: acsContainerServices.h,v 1.20 2007/10/24 22:35:44 agrimstrup Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -43,9 +43,10 @@
 #include <loggingLoggable.h>
 #include <maciErrType.h>
 #include <acsComponentListener.h>
+#include <acsComponentSmartPtr.h>
 
 namespace maci {
-   
+
     /**
      * Specializing this class, the container offers services to its hosted components.
      * The component must call these methods explicitly; in this respect, 
@@ -245,6 +246,84 @@ namespace maci {
 		   maciErrType::NoDefaultComponentExImpl, 
 		   maciErrType::CannotGetComponentExImpl);
       
+         /**
+	  * Gets a smart pointer to the specified component
+	  * This method uses templates, so no cast to the request object is required
+	  * 
+	  * @param The name of the deployed component instance
+	  * @return A smart pointer containing the reference to the component
+	  * @htmlonly
+	  * <br><hr>
+	  * @endhtmlonly
+	  */
+         template <typename T>
+         SmartPtr<T> getComponentSmartPtr(const char *name)	    
+	     throw (maciErrType::CannotGetComponentExImpl);
+
+         /**
+	  * Gets a smart pointer to the specified component as non sticky.
+	  * for the details of getting a componet non sticky see #get_component_non_sticky
+	  * This method uses templates, so no cast to the request object is required
+	  * 
+	  * @param The name of the deployed component instance
+	  * @return A smart pointer containing the reference to the component
+	  * @htmlonly
+	  * <br><hr>
+	  * @endhtmlonly
+	  */
+         template <typename T>
+         SmartPtr<T> getComponentNonStickySmartPtr(const char *name)
+	     throw (maciErrType::CannotGetComponentExImpl);
+
+         /**
+	  * Gets a smart pointer to a dynamic component
+	  * This method uses templates, so no cast to the request object is required
+	  * 
+	  * @param compSpec The description of the component to activate
+	  * @param markAsDefault If true, the component becomes the default component 
+	  *                      for that IDL type
+	  * @return A smart pointer containing the reference to the component
+	  */
+         template <typename T>
+         SmartPtr<T> getDynamicComponentSmartPtr(maci::ComponentSpec compSpec, bool markAsDefault)
+	     throw(maciErrType::NoPermissionExImpl,
+		   maciErrType::IncompleteComponentSpecExImpl, 
+		   maciErrType::InvalidComponentSpecExImpl, 
+		   maciErrType::ComponentSpecIncompatibleWithActiveComponentExImpl, 
+		   maciErrType::CannotGetComponentExImpl);
+
+         /**
+	  * Gets a smart ponter to a collocated component
+	  * This method uses templates, so no cast to the request object is required
+	  * 
+	  * @param compSpec The description of the component to activate
+	  * @param markAsDefault If true, the component becomes the default component 
+	  *                      for that IDL type
+	  * @param targetComponent name of the target component (where to activate component)
+	  * @return A smart pointer containing the reference to the component
+	  */
+         template <typename T>
+         SmartPtr<T> getCollocatedComponentSmartPtr(maci::ComponentSpec compSpec, bool markAsDefault, const char* targetComponent)
+	     throw(maciErrType::NoPermissionExImpl,
+		   maciErrType::IncompleteComponentSpecExImpl, 
+		   maciErrType::InvalidComponentSpecExImpl, 
+		   maciErrType::ComponentSpecIncompatibleWithActiveComponentExImpl, 
+		   maciErrType::CannotGetComponentExImpl);  
+
+         /**
+	  * Gets a smart pointer to the default component specified by the IDL component type.
+	  * This method uses templates, so no cast to the request object is required
+	  * 
+	  * @param idlType: the idl type of the component to activate
+	  *                 For example IDL:alma/PS/PowerSupply:1.0
+	  * @return A smart pointer containing the reference to the component
+	  */
+         template <typename T>
+         SmartPtr<T> getDefaultComponentSmartPtr(const char* idlType)	 
+	     throw (maciErrType::NoPermissionExImpl,
+		    maciErrType::NoDefaultComponentExImpl, 
+		    maciErrType::CannotGetComponentExImpl);
+
         /**
          * Gets the component info for the component
          * 

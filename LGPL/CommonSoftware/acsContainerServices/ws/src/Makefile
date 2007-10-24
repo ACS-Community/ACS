@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.6 2007/09/03 05:59:27 cparedes Exp $"
+# "@(#) $Id: Makefile,v 1.7 2007/10/24 22:35:44 agrimstrup Exp $"
 #
 # Makefile of ........
 #
@@ -52,7 +52,7 @@ xxxxx_LIBS      =
 # Includes (.h) files (public only)
 # ---------------------------------
 INCLUDES        = acsComponentListener.h acsContainerServices.h acsContainerServices.i \
-				  acsComponentStateManager.h 
+				  acsComponentStateManager.h acsComponentSmartPtr.h
 
 #
 # Libraries (public and local)
