@@ -795,7 +795,27 @@ public class DALImpl extends JDALPOA implements Recoverer {
 			clear_cache((String)curls[i]);
 	}
 
-	// listing
+	private static String removeXMLs(String list)
+	{
+		final String XML_ENDING = ".xml";
+	    int pos = list.indexOf(XML_ENDING);
+	    while (pos > 0)
+	    {
+	    	String after = list.substring(pos + XML_ENDING.length());
+	    	String before = list.substring(0, pos);
+	    	int beforePos = before.lastIndexOf(' ');
+	    	if (beforePos == -1)
+	    		before = "";
+	    	else
+	    		before = before.substring(0, beforePos);
+	    	
+	    	list = before + after;
+		    pos = list.indexOf(XML_ENDING);
+	    }
+	    return list;
+	}
+
+    // listing
 	public String list_nodes(String name) {
 		// if we didn't create a root node yet or we are listing
 		// the root content then recreate the tree data
@@ -805,13 +825,7 @@ public class DALImpl extends JDALPOA implements Recoverer {
 		//System.out.println( "Listing " + name );
 		String list = rootNode.list(name);
 
-	    // remove .xml file (always first)
-		final String XML_ENDING = ".xml ";
-	    int pos = list.indexOf(XML_ENDING);
-	    if (pos > 0)
-	    	list = list.substring(pos+XML_ENDING.length()).trim();
-
-	    return list;
+		return removeXMLs(list);
 	}
 	
 	/* (non-Javadoc)
@@ -826,13 +840,13 @@ public class DALImpl extends JDALPOA implements Recoverer {
 		//System.out.println( "Listing " + name );
 		String list = rootNode.list(name);
 
-	    // remove .xml file (always first) and replace it with subnodes
+	    // remove .xml file and replace it with subnodes
 		// TODO @todo cachnig impl. possible (loadRecord actually loads the record)
-		final String XML_ENDING = ".xml ";
+		final String XML_ENDING = ".xml";
 	    int pos = list.indexOf(XML_ENDING);
 	    if (pos > 0)
 	    {
-	        list = list.substring(pos+XML_ENDING.length());
+	        list = removeXMLs(list);
 
 		    String curl = name;
 			// make sure CURL->DAO mapping is surjective function, remove leading slash
