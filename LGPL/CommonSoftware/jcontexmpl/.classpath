@@ -46,8 +46,7 @@
 	<classpathentry kind="var" path="ACSROOT/lib/avalon-framework.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/logkit.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acsASsources.jar"/>
-	<classpathentry kind="var" path="INTROOT/lib/CDB.jar"/>
-	<classpathentry kind="var" path="ACSROOT6/lib/cdbDAL.jar"/>
-	<classpathentry kind="var" path="ACSERRTYPEALARMSOURCEFACTORY_JAR"/>
+	<classpathentry kind="var" path="ACSROOT/lib/CDB.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/cdbDAL.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
