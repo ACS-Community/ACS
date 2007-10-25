@@ -39,5 +39,5 @@ echo " Starting C++ Container"
 acsutilAwaitContainerStart -cpp Container01
 
 echo " Starting Java Container"
-export JAVA_OPTIONS="-Dacs.container.fakeUIDsForTesting=true -Djacorb.log.loggerFactory=alma.acs.logging.adapters.JacORBLoggerFactory"
+export JAVA_OPTIONS="-Dacs.container.fakeUIDsForTesting=true"
 acsutilAwaitContainerStart -java frodoContainer
