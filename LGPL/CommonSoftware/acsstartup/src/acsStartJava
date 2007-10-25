@@ -6,10 +6,11 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: acsStartJava,v 1.45 2007/09/29 13:44:27 ntroncos Exp $"
+# "@(#) $Id: acsStartJava,v 1.46 2007/10/25 08:13:39 eallaert Exp $"
 #
-# who       when      what
-# --------  --------  ----------------------------------------------
+# who      when       what
+# -------- ---------- ----------------------------------------------
+# eallaert 2007-10-25 added setting of ACS.log.minlevel.remote property from ACS_LOG_CENTRAL
 # mschilli 2004-04-15 added proper command line parsing, added cmdline option -D for JAVA_OPTIONS
 # mschilli 2003-11-03 export of some env.vars can now be suppressed with option '-noexport' (as arg #1)
 # gchiozzi 2003-07-04 Set also Name Service reference
@@ -507,7 +508,7 @@ if [ "X$MAKE_PURE" = "Xon" ]; then
    JAVA_PUREFLAGS="-Xint -Xrunpagent:-OUT=["mempro.jpt"]"
 fi
 
-JAVA_COMMAND_LINE="java $JAVA_PUREFLAGS -classpath $CLASSPATH $JAVA_ENDORSED $XERCES_CONFIG $JAVA_ORB -Duser.timezone=UTC -Dabeans.home=$ACS_ABEANS_CONFIG -DACS.manager=$MANAGER_REFERENCE -DORBInitRef.NameService=$ACS_NAME_SERVICE  -DACS.repository=$ACS_INTERFACE_REPOSITORY -DACS.tmp=$ACS_TMP -DACS.baseport=$ACS_INSTANCE -DACS.data=$ACSDATA -DACS.logstdout=$ACS_LOG_STDOUT -DACS.loggingBin=$ACS_LOG_BIN $JAVA_OPTIONS $LAUNCHER $@"
+JAVA_COMMAND_LINE="java $JAVA_PUREFLAGS -classpath $CLASSPATH $JAVA_ENDORSED $XERCES_CONFIG $JAVA_ORB -Duser.timezone=UTC -Dabeans.home=$ACS_ABEANS_CONFIG -DACS.manager=$MANAGER_REFERENCE -DORBInitRef.NameService=$ACS_NAME_SERVICE  -DACS.repository=$ACS_INTERFACE_REPOSITORY -DACS.tmp=$ACS_TMP -DACS.baseport=$ACS_INSTANCE -DACS.data=$ACSDATA -DACS.logstdout=$ACS_LOG_STDOUT -DACS.log.minlevel.remote=$ACS_LOG_CENTRAL -DACS.loggingBin=$ACS_LOG_BIN $JAVA_OPTIONS $LAUNCHER $@"
 
 ACS_LOG_DEBUG "$JAVA_COMMAND_LINE"
 
