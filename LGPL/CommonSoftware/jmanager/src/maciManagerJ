@@ -25,7 +25,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@@(#) $Id: maciManagerJ,v 1.43 2007/10/24 07:37:30 bjeram Exp $"
+# "@@(#) $Id: maciManagerJ,v 1.44 2007/10/25 11:16:09 hsommer Exp $"
 #
 # who       when      what
 # -------- ---------- ----------------------------------------------
@@ -170,5 +170,3 @@ fi
 acsStartJava -endorsed -noClassLoader -noAutoClasspath \
     -addToClasspath jManager.jar:jmanagerErrType.jar:maci.jar:jACSCommon.jar:cosyframework-core.jar:cosyframework-gui.jar:cosyicons.jar:prevayler-1.02.001.jar:activation.jar:cdbErrType.jar:acserr.jar:acserrj.jar:CDB.jar:cdbDAL.jar:cdbJDAL.jar:jACSUtil.jar:acscomponent.jar:acsjlog.jar:maciErrType.jar:acsdaemon.jar:acsdaemonErrType.jar:ACSErrTypeCommon.jar:logging_idl.jar:maciSchemaBindings.jar:castor.jar:xalan.jar:xalan_serializer.jar:commons-logging.jar:acsASsources.jar:alarmsysteminterface.jar:acsErrTypeAlarmSourceFactory.jar:laserutil.jar:cmwmom.jar:jms.jar:acsjms.jar:log4j-1.2.8.jar \
     -Dabeans.home=$ACS_MANAGER_CONFIG -DNamingServiceRemoteDirectory.reference=$NAMESERVICE_REFERENCE -DDAL.defaultReference=corbaloc::$HOST:$ACS_CDB_PORT/CDB -DOAPort=$ACS_MANAGER_PORT -Djacorb.connection.client.pending_reply_timeout=60000 $ACS_FEDERATION com.cosylab.acs.maci.manager.app.Manager $1 $2 $3 $4 $5 $6 $7 $8 $9
-
-@
