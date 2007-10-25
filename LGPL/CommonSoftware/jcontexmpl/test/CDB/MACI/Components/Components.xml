@@ -1,10 +1,16 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<Components xmlns="urn:schemas-cosylab-com:Components:1.0" xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0" xmlns:baci="urn:schemas-cosylab-com:BACI:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-<!--	<_ Name="TEST_PS_1" Code="acsexmplPowerSupplyImpl" Type="IDL:alma/PS/PowerSupply:1.0" Container="Container"/>-->
+<Components xmlns="urn:schemas-cosylab-com:Components:1.0" xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0" xmlns:baci="urn:schemas-cosylab-com:BACI:1.0" xmlns:log="urn:schemas-cosylab-com:LoggingConfig:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<_ Name="MOUNT1" Code="acsexmplMountImpl" Type="IDL:alma/MOUNT_ACS/Mount:1.0" Container="Container"/>
 	<_ Name="LAMP1" Code="acsexmplLampImpl" Type="IDL:alma/acsexmplLamp/Lamp:1.0" Container="Container"/>
 	<_ Name="HELLODEMO1" Code="alma.demo.HelloDemoImpl.HelloDemoHelper" Type="IDL:alma/demo/HelloDemo:1.0" Container="frodoContainer"/>
-	<_ Name="XMLCOMP1" Code="alma.demo.XmlComponentImpl.XmlComponentHelper" Type="IDL:alma/demo/XmlComponent:1.0" Container="frodoContainer"/>
+	
+	<_	Name="XMLCOMP1" 
+		Code="alma.demo.XmlComponentImpl.XmlComponentHelper" 
+		Type="IDL:alma/demo/XmlComponent:1.0" 
+		Container="frodoContainer">
+		<ComponentLogger minLogLevel="4" minLogLevelLocal="4"/>
+	</_>		
+	
 	<_ Name="LAMPACCESS1" Code="alma.demo.LampAccessImpl.LampAccessHelper" Type="IDL:alma/demo/LampAccess:1.0" Container="frodoContainer"/>
 	<_ Name="LAMPCALLBACK1" Code="alma.demo.LampCallbackImpl.LampCallbackHelper" Type="IDL:alma/demo/LampCallback:1.0" Container="frodoContainer"/>
 	<_ Name="SUPPLIERCOMP1" Code="alma.demo.EventSupplierImpl.EventSupplierHelper" Type="IDL:alma/demo/SupplierComp:1.0" Container="eventContainer"/>
@@ -16,6 +22,7 @@
        Code="alma.acsexmplErrorComponent.ErrorComponentImpl.ErrorComponentHelper" 
        Type="IDL:alma/acsexmplErrorComponent/ErrorComponent:1.0" 
        Container="frodoContainer" />
+       
     <_ Name="CLOCK1"	    Code="acsclock"
                             Type="IDL:alma/acstime/Clock:1.0" 
                             Container="Container"
