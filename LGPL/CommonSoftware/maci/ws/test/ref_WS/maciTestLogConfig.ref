@@ -57,7 +57,6 @@
 1 - ----------T--:--:--.--- [GlobalLogger - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
 1 - ----------T--:--:--.--- [GlobalLogger - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
 1 - ----------T--:--:--.--- [GlobalLogger - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
-1 - ----------T--:--:--.--- [GlobalLogger - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
 1 - ----------T--:--:--.--- [ContainerTestLog - maci::ContainerImpl::message] Message from manager received. Type: 20. Message: Startup statistics: 1 components queued to be activated.
 1 - ----------T--:--:--.--- [ContainerTestLog - maci::ContainerImpl::activate_component] 
 1 - ----------T--:--:--.--- [ContainerTestLog - maci::ContainerImpl::loadDLL] 
