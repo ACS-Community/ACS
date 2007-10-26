@@ -145,70 +145,56 @@ public class TestJDAL extends TestCase {
 	 * We shouldn't see any difference in listing just 'directory' context
 	 * or listing inside a XML data
 	 */
-	public void testListContext() {
+	public void testListContext() throws Exception {
 		Hashtable env = new Hashtable();
 		env.put(Context.INITIAL_CONTEXT_FACTORY, "com.cosylab.cdb.jdal.JNDIContextFactory");
 		env.put(Context.PROVIDER_URL, strIOR);
 		Context context = null;
-		try {
-			context = new InitialContext(env);
-			assertNotNull(context);
-			// try simple listing
-			String list = "";
-			NamingEnumeration ne = context.list("MACI");
-			while (ne.hasMore()) {
-				NameClassPair pair = (NameClassPair) ne.nextElement();
-				list = list + pair.getName() + " ";
-			}
-			// same as we did listing
-			assertTrue(list.indexOf("Containers") != -1);
-			assertTrue(list.indexOf("Managers") != -1);
-
-			// try with a XML
-//			ne = context.list("MACI/Managers/Manager");
-			ne = ((Context) (((Context)context.lookup("MACI")).lookup("Managers")) ).list("Manager");
-			list = "";
-			while (ne.hasMore()) {
-				NameClassPair pair = (NameClassPair) ne.nextElement();
-				list = list + pair.getName() + " ";
-				//System.out.println(pair.getName() + " " + pair.getClassName());
-			}
-			// this should be in Manager data
-			assertTrue(list.indexOf("ServiceComponents") != -1);
-
-		} catch (NamingException e) {
-			e.printStackTrace();
-			assertTrue(false);
+		context = new InitialContext(env);
+		assertNotNull(context);
+		// try simple listing
+		String list = "";
+		NamingEnumeration ne = context.list("MACI");
+		while (ne.hasMore()) {
+			NameClassPair pair = (NameClassPair) ne.nextElement();
+			list = list + pair.getName() + " ";
 		}
+		// same as we did listing
+		assertTrue(list.indexOf("Containers") != -1);
+		assertTrue(list.indexOf("Managers") != -1);
+
+		// try with a XML
+		ne = ((Context) (((Context)context.lookup("MACI")).lookup("Managers")) ).list("Manager");
+		list = "";
+		while (ne.hasMore()) {
+			NameClassPair pair = (NameClassPair) ne.nextElement();
+			list = list + pair.getName() + " ";
+			//System.out.println(pair.getName() + " " + pair.getClassName());
+		}
+		// this should be in Manager data
+		assertTrue(list.indexOf("ServiceComponents") != -1);
 	}
 
 	/**
 	 * Test lookup functions. We can just obtain an InitialContext
 	 * and then use it to get any information in the CDB
 	 */
-	public void testLookupContext() {
+	public void testLookupContext() throws Exception {
 		Hashtable env = new Hashtable();
 		env.put(Context.INITIAL_CONTEXT_FACTORY, "com.cosylab.cdb.jdal.JNDIContextFactory");
 		env.put(Context.PROVIDER_URL, strIOR);
 		Context context = null;
-		try {
-			context = new InitialContext(env);
-			assertNotNull(context);
-			// try simple lookup
-			String list = "";
-			Object ob = context.lookup("MACI");
-			assertTrue(ob instanceof Context);
-
-			// try with a value inside XML
-//			ob = context.lookup("MACI/Managers/Manager/CommandLine");
-			ob = ((Context) (((Context) (((Context)context.lookup("MACI")).lookup("Managers")) ).lookup("Manager")) ).lookup("CommandLine");
-			assertTrue(ob instanceof String);
-			String cmdLine = (String) ob;
-
-		} catch (NamingException e) {
-			e.printStackTrace();
-			assertTrue(false);
-		}
+		context = new InitialContext(env);
+		assertNotNull(context);
+		// try simple lookup
+		String list = "";
+		Object ob = context.lookup("MACI");
+		assertTrue(ob instanceof Context);
+		// try with a value inside XML
+		ob = ((Context) (((Context) (((Context)context.lookup("MACI")).lookup("Managers")) ).lookup("Manager")) ).lookup("ContainerPingInterval");
+		assertTrue(ob instanceof String);
+		double contPingInt = Double.parseDouble((String) ob);
+		assertEquals(2.0, contPingInt);
 	}
 
 	/**

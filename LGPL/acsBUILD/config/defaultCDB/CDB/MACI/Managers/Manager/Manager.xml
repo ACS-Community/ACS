@@ -1,23 +1,18 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="ISO-8859-1"?>
 <Manager   xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0" 
            xmlns="urn:schemas-cosylab-com:Manager:1.0" 
            xmlns:baci="urn:schemas-cosylab-com:BACI:1.0" 
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-  CommandLine=""
-  Timeout="50.0"
-  HeartbeatTimeout="2.0"
-  CacheSize="10"
-  MinCachePriority="0"
-  MaxCachePriority="31"
-  CentralizedLogger="Log">
+      Timeout="50.0"
+      ClientPingInterval="2.0"
+      ContainerPingInterval="2.0"
+      AdministratorPingInterval="2.0">
   <Startup>
         <cdb:_ string="CLOCK1"/>
         <cdb:_ string="TIMER1"/>
 	<cdb:_ string="MOUNT1"/>
   </Startup>
-  <Execute>
-	<cdb:_ string=""/>
-  </Execute>
+
   <ServiceComponents>
 	<cdb:_ string="Log"/>
 	<cdb:_ string="LogFactory"/>
@@ -29,4 +24,10 @@
 	<cdb:_ string="ACSLogSvc"/>
 	<cdb:_ string="PDB"/>
   </ServiceComponents>
+  
+  <LoggingConfig
+    	minLogLevel="0"
+    	immediateDispatchLevel="31"
+    	dispatchPacketSize="5" />
+  
 </Manager>

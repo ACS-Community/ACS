@@ -62,7 +62,7 @@ try{
     curl = "MACI/Managers/Manager";
     
     // something for sure
-    field = "CentralizedLogger";
+    field = "Timeout";
     if (dataBase->GetField(curl, field, dbFld))
 	{
 	dbFld.GetString(strCmdLine);
@@ -76,7 +76,7 @@ try{
 	ACS_SHORT_LOG((LM_ERROR, "Curl %s does not have %s field", curl.c_str(), field.c_str() ));
     
     // litle bit conversion
-    field = "MaxCachePriority";
+    field = "ClientPingInterval";
     if (dataBase->GetField(curl, field, dbFld))
 	{
 	if( dbFld.GetULong(ul) ) 

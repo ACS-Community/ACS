@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <!--
-$Id: Manager.xml,v 1.2 2006/11/20 05:40:15 cparedes Exp $
+$Id: Manager.xml,v 1.3 2007/10/26 15:09:40 hsommer Exp $
 Copyright (C) 2004
 Associated Universities, Inc. Washington DC, USA.
 
@@ -32,10 +32,7 @@ Correspondence concerning ALMA should be addressed as follows:
     <cdb:_ string="CONTROL_lkmLoader:ABM001"/>
     <cdb:_ string="CONTROL_lkmLoader:ABM002"/>
     <cdb:_ string="CONTROL_AmbManager:ARTM"/>
- </Startup>
-  <Execute>
-    <cdb:_ string=""/>
-  </Execute>
+  </Startup>
   <ServiceComponents>
     <cdb:_ string="Log"/>
     <cdb:_ string="LogFactory"/>
@@ -47,5 +44,8 @@ Correspondence concerning ALMA should be addressed as follows:
     <cdb:_ string="ACSLogSvc"/>
     <cdb:_ string="PDB"/>
   </ServiceComponents>
+
+  <LoggingConfig />
+
 </Manager>
 
