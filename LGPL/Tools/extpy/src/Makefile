@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.26 2007/10/25 19:30:59 agrimstrup Exp $"
+# "@(#) $Id: Makefile,v 1.27 2007/10/26 15:51:48 agrimstrup Exp $"
 #
 # Makefile of ........
 #
@@ -20,7 +20,7 @@
 PY_SCRIPTS         = pythfilter
 PY_SCRIPTS_L       =
 
-PY_MODULES         = acs_python sitecustomize.py
+PY_MODULES         = acs_python sitecustomize
 PY_MODULES_L       =
 
 PY_PACKAGES        = Pmw
