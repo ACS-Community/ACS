@@ -2,19 +2,16 @@
 
 <EntitybuilderSettings>
 
-	<EntitySchema schemaName="acsalarm-fault-family.xsd" relativePathSchemafile="../config/CDB/schemas" xmlNamespace="urn:schemas-acs:AcsAlarmSystem:1.0"/>
-	<EntitySchema schemaName="acsalarm-categories.xsd" relativePathSchemafile="../config/CDB/schemas" xmlNamespace="urn:schemas-acs:AcsAlarmSystem:1.0"/>
+	<EntitySchema schemaName="acsalarm-fault-family.xsd" relativePathSchemafile="../config/CDB/schemas" xmlNamespace="urn:schemas-cosylab-com:acsalarm-fault-family:1.0"/>
+	<EntitySchema schemaName="acsalarm-categories.xsd" relativePathSchemafile="../config/CDB/schemas" xmlNamespace="urn:schemas-cosylab-com:acsalarm-fault-family:1.0"/>
 	
-	<XmlNamespace2JPackage xmlNamespace="urn:schemas-acs:AcsAlarmSystem:1.0" jPackage="alma.acs.alarmsystem.generated"/>
+	<XmlNamespace2JPackage xmlNamespace="urn:schemas-cosylab-com:acsalarm-fault-family:1.0" jPackage="alma.acs.alarmsystem.generated"/>
 
 
 	<EntitySchema schemaName="ACSAlarmMessage.xsd" xmlNamespace="Alma/AlarmSystem"/>    
 	<XmlNamespace2JPackage xmlNamespace="Alma/AlarmSystem" jPackage="alma.alarmsystem.alarmmessage.generated"/>
  
-	<!-- HSO 2007-10: for some period of time we still use part of the castor classes from the old schema. 
-	     Castor code generation moved here from module laser-core where this schema was duplicated before.
-	     Later we need to change the java package of these classes (something with "old"), and gradually replace them
-	     as the new schema grows. --> 
+	<!-- HSO 2007-10: Castor code generation done previously in module laser-core moved here to have one jar for all alarm castor classes. --> 
  	<EntitySchema schemaName="AcsAlarmSystem.xsd" relativePathSchemafile="../config/CDB/schemas" xmlNamespace="urn:schemas-cosylab-com:AcsAlarmSystem:1.0"/>
 	<XmlNamespace2JPackage xmlNamespace="urn:schemas-cosylab-com:AcsAlarmSystem:1.0" jPackage="alma.alarmsystem.alarmmessage.generated"/>
 
