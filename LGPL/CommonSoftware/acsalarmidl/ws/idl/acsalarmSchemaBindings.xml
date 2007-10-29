@@ -2,10 +2,13 @@
 
 <EntitybuilderSettings>
 
+	<!-- it currently appears necessary to use different namespaces in acsalarm-fault-family.xsd and acsalarm-categories.xsd
+	     which should be changed when refactoring the CDB code that reads schema files and matches namespaces -->
 	<EntitySchema schemaName="acsalarm-fault-family.xsd" relativePathSchemafile="../config/CDB/schemas" xmlNamespace="urn:schemas-cosylab-com:acsalarm-fault-family:1.0"/>
-	<EntitySchema schemaName="acsalarm-categories.xsd" relativePathSchemafile="../config/CDB/schemas" xmlNamespace="urn:schemas-cosylab-com:acsalarm-fault-family:1.0"/>
+	<EntitySchema schemaName="acsalarm-categories.xsd" relativePathSchemafile="../config/CDB/schemas" xmlNamespace="urn:schemas-cosylab-com:acsalarm-categories:1.0"/>
 	
 	<XmlNamespace2JPackage xmlNamespace="urn:schemas-cosylab-com:acsalarm-fault-family:1.0" jPackage="alma.acs.alarmsystem.generated"/>
+	<XmlNamespace2JPackage xmlNamespace="urn:schemas-cosylab-com:acsalarm-categories:1.0" jPackage="alma.acs.alarmsystem.generated"/>
 
 
 	<EntitySchema schemaName="ACSAlarmMessage.xsd" xmlNamespace="Alma/AlarmSystem"/>    
