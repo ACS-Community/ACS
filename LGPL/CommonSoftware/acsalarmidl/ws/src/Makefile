@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.4 2007/10/18 16:20:23 hsommer Exp $"
+# "@(#) $Id: Makefile,v 1.5 2007/10/29 19:45:04 acaproni Exp $"
 #
 # Makefile of ........
 #
@@ -111,7 +111,7 @@ ACSERRDEF = acsErrTypeAlarmSourceFactory
 #
 # Configuration Database Files
 # ----------------------------
-CDB_SCHEMAS = AcsAlarmSystem acsalarm-fault-family
+CDB_SCHEMAS = AcsAlarmSystem acsalarm-fault-family acsalarm-categories
 
 # 
 # IDL Files and flags
