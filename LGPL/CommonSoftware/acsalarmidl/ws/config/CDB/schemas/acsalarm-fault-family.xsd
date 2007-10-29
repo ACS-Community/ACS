@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<!-- edited with XMLSpy v2007 rel. 3 sp1 (http://www.altova.com) by ESO (ESO) -->
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:aas="urn:schemas-acs:AcsAlarmSystem:1.0" targetNamespace="urn:schemas-acs:AcsAlarmSystem:1.0" elementFormDefault="qualified">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="urn:schemas-cosylab-com:acsalarm-fault-family:1.0" targetNamespace="urn:schemas-cosylab-com:acsalarm-fault-family:1.0" elementFormDefault="qualified">
 	<xs:element name="fault-family">
 		<xs:complexType>
 			<xs:sequence>
 				<xs:element name="alarm-source" type="xs:string" fixed="ALARM_SYSTEM_SOURCES"/>
 				<xs:element name="help-url" type="xs:anyURI" minOccurs="0"/>
-				<xs:element name="contact" type="aas:contact"/>
-				<xs:element name="fault-code" type="aas:fault-code" maxOccurs="unbounded"/>
-				<xs:element name="fault-member-default" type="aas:fault-member-default" minOccurs="0"/>
-				<xs:element name="fault-member" type="aas:fault-member" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element name="contact" type="contact"/>
+				<xs:element name="fault-code" type="fault-code" maxOccurs="unbounded"/>
+				<xs:element name="fault-member-default" type="fault-member-default" minOccurs="0"/>
+				<xs:element name="fault-member" type="fault-member" minOccurs="0" maxOccurs="unbounded"/>
 			</xs:sequence>
 			<xs:attribute name="name" type="xs:NCName" use="required"/>
 		</xs:complexType>
@@ -43,12 +42,12 @@
 	</xs:complexType>
 	<xs:complexType name="fault-member-default">
 		<xs:sequence>
-			<xs:element name="location" type="aas:location" minOccurs="0"/>
+			<xs:element name="location" type="location" minOccurs="0"/>
 		</xs:sequence>
 	</xs:complexType>
 	<xs:complexType name="fault-member">
 		<xs:complexContent>
-			<xs:extension base="aas:fault-member-default">
+			<xs:extension base="fault-member-default">
 				<xs:attribute name="name" type="xs:NCName" use="required"/>
 			</xs:extension>
 		</xs:complexContent>
