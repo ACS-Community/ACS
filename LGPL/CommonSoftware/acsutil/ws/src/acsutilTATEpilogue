@@ -35,6 +35,6 @@ fi
 
 
 #stop everything except clients
-echo " Stopping containers, manager, the the services"
+echo " Stopping containers, manager, and the services"
 acsStop -b $ACS_INSTANCE >& $ACS_TMP/acsStop.log
 
