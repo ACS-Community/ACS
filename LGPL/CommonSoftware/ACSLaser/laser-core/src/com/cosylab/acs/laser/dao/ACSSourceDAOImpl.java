@@ -22,26 +22,35 @@
  */
 package com.cosylab.acs.laser.dao;
 
-import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.logging.Logger;
 
+import alma.acs.logging.AcsLogLevel;
 import cern.laser.business.LaserObjectNotFoundException;
 import cern.laser.business.dao.AlarmDAO;
 import cern.laser.business.dao.ResponsiblePersonDAO;
 import cern.laser.business.dao.SourceDAO;
 import cern.laser.business.data.Alarm;
-import cern.laser.business.data.ResponsiblePerson;
 import cern.laser.business.data.Source;
 
 import com.cosylab.acs.laser.dao.xml.SourceDefinition;
 import com.cosylab.acs.laser.dao.xml.SourceDefinitions;
 import com.cosylab.acs.laser.dao.xml.SourcesToCreate;
 
+/**
+ * The sources are now defined together with the alarms and read by
+ * ACSAlarmDAOImpl i.e. object from this class do not need to read
+ * again the sources from the CDB.
+ * The sources definition are queried to ACSAlarmDAOImpl.
+ * 
+ * @author acaproni
+ *
+ */
 public class ACSSourceDAOImpl implements SourceDAO
 {
 	ConfigurationAccessor conf;
@@ -50,15 +59,39 @@ public class ACSSourceDAOImpl implements SourceDAO
 	
 	String laserSourceID;
 	
-	HashMap sourceDefs=new HashMap();
-		
-	static String getSourcesPath()
-	{
-		return "/Alarms/SourceDefinitions";
-	}
+	HashMap<String, Source> sourceDefs;
 	
-	public ACSSourceDAOImpl ()
+	// The path in the CDB of the definitions of sources
+	private static final String SOURCE_PATH="/Alarms/SourceDefinitions";
+	
+	// The logger
+	private Logger logger;
+		
+	/**
+	 * Constructor.
+	 * 
+	 * The constructor takes the sources as parameter.
+	 * After the refactory of the CDB the sources are read by the ACSAlarmDAOImpl because
+	 * they are defined together with the alarms.
+	 * By passing the sources as parameter, objects from this class avoid to read again the
+	 * sources from the CDB.
+	 * 
+	 * @param log The logger
+	 * @param sources The sources
+	 */
+	public ACSSourceDAOImpl (Logger log, HashMap<String, Source> sources)
 	{
+		if (log==null) {
+			throw new IllegalArgumentException("Invalid null logger");
+		}
+		if (sources==null) {
+			throw new IllegalArgumentException("Invalid null sources in constructor");
+		}
+		logger =log;
+		if (sources.size()<1) {
+			logger.log(AcsLogLevel.WARNING,"No alarm sources defined");
+		}
+		sourceDefs=sources;
 	}
 	
 	public void setAlarmDAO(AlarmDAO alarmDAO)
@@ -144,58 +177,17 @@ public class ACSSourceDAOImpl implements SourceDAO
 		StringWriter sw=new StringWriter();
 		try {
 			out.marshal(sw);
-			conf.setConfiguration(getSourcesPath(), sw.toString());
+			conf.setConfiguration(SOURCE_PATH, sw.toString());
 		} catch (Exception e) {
 			throw new RuntimeException("Failed to write configuration", e);
 		}
 	}
 	
-	public void loadSources()
-	{
-		if (conf==null)
-			throw new IllegalStateException("No configuration accessor");
-		String xml;
-		try {
-			xml=conf.getConfiguration(getSourcesPath());
-		} catch (Exception e) {
-			throw new RuntimeException("Couldn't load "+getSourcesPath());
-		}
-		
-		SourceDefinitions sds;
-		try {
-			sds=(SourceDefinitions) SourceDefinitions.unmarshal(new StringReader(xml));
-		} catch (Exception e1) {
-			throw new RuntimeException("Couldn't parse "+getSourcesPath());
-		}
-		
-		SourcesToCreate stc=sds.getSourcesToCreate();
-		if (stc==null)
-			throw new RuntimeException("Source definition list must contain sources-to-create");
-		
-		SourceDefinition[] sdefs=stc.getSourceDefinition();
-		if (sdefs==null || sdefs.length<1)
-			throw new RuntimeException("no sources found");
-		
-		for (int a=0; a<sdefs.length; a++) {
-			SourceDefinition sd=sdefs[a];
-			
-			cern.laser.business.definition.data.SourceDefinition sourceDef =
-				new cern.laser.business.definition.data.SourceDefinition(sd.getName());
-			
-			cern.laser.business.data.ResponsiblePerson respP = responsiblePersonDAO.getResponsiblePerson(new Integer(sd.getResponsibleId()));
-			cern.laser.business.data.Source sii = new Source(sourceDef,respP);
-			sii.setDescription(sd.getDescription());
-			sii.setSourceId(sd.getName());
-			sii.setConnectionTimeout(new Integer(sd.getConnectionTimeout()));
-			
-			sourceDefs.put(sii.getSourceId(), sii);
-		}
-	}
-	
 	public String[] getAlarms(String sourceId)
 	{
-		if (alarmDAO==null)
+		if (alarmDAO==null) {
 			throw new IllegalStateException("alarmDAO not set");
+		}
 		
 		if (!(alarmDAO instanceof ACSAlarmDAOImpl))
 			throw new UnsupportedOperationException();
