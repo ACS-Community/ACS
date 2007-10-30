@@ -1,4 +1,5 @@
 1 - Testing long-hand style of sending alarms
+1 - [Unavailable] Using ACS alarm system
 1 - [Unavailable] Alarm sent: <AlarmSource,ALARM_SOURCE_MOUNT,1> ACTIVE
 1 - [Unavailable] Alarm sent: <AlarmSource,ALARM_SOURCE_MOUNT,1> ACTIVE
 1 - [Unavailable] Alarm sent: <AlarmSource,ALARM_SOURCE_MOUNT,1> ACTIVE
@@ -100,6 +101,7 @@
 1 - [Unavailable] Alarm sent: <AlarmSource,ALARM_SOURCE_MOUNT,1> ACTIVE
 1 - [Unavailable] Alarm sent: <AlarmSource,ALARM_SOURCE_MOUNT,1> ACTIVE
 1 - Testing short-hand style of sending alarms
+1 - [Unavailable] Using ACS alarm system
 1 - [Unavailable] Alarm sent: <AlarmSource,ALARM_SOURCE_MOUNT,1> ACTIVE
 1 - [Unavailable] Alarm sent: <AlarmSource,ALARM_SOURCE_MOUNT,1> ACTIVE
 1 - [Unavailable] Alarm sent: <AlarmSource,ALARM_SOURCE_MOUNT,1> ACTIVE
