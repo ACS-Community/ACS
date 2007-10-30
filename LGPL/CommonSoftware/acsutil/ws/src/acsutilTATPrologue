@@ -37,8 +37,15 @@ fi
 
 #---------------------------------------------------------------------------
 #Start the services and manager
-echo " Starting ORB Services and Manager"
-acsStart > $ACS_TMP/acsStart.log
+if [ "X$ACS_TMP" == "X" ]
+then 
+    echo "The environment variable ACS_TMP is not defined. Exiting!"
+    exit 1
+else
+    echo " Starting ORB Services and Manager"
+    acsStart > $ACS_TMP/acsStart.log
+fi
+
 #---------------------------------------------------------------------------
 #Get the ACS_INSTANCE from the log file just written out
 export ACS_INSTANCE=`grep -m 1 "For this ACS session, please do an" $ACS_TMP/acsStart.log | cut -d\' -f2 | cut -d= -f2`
