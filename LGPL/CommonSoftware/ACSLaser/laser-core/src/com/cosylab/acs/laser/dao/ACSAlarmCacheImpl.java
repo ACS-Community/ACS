@@ -44,7 +44,7 @@ public class ACSAlarmCacheImpl implements AlarmCache
 	// The key is a string (the same string generated 
 	// by Alarm.getTriplet().toIdentifier())
 	// The value is an alarm (AlarmImpl)
-	private HashMap alarms = new HashMap();
+	private HashMap<String,Alarm> alarms = new HashMap<String,Alarm>();
 	
 	// The object to access the database
 	private AlarmDAO dao;
@@ -53,17 +53,17 @@ public class ACSAlarmCacheImpl implements AlarmCache
 	private AlarmCacheListener listener;
 	
 	/**
-	 * The HashMap with the acitive alarms per each category
+	 * The HashMap with the active alarms per each category
 	 * The map contains a CategoryActiveList per each category 
 	 * (the key is the Integer identifying the category)
 	 * 
 	 * Policy: 
-	 *   the CategoryActiveList for a cetegory is created and inserted in the map 
+	 *   the CategoryActiveList for a category is created and inserted in the map 
 	 *   when a new alarm arrives (remember that an alarm has a Set of Categories)
 	 *   So it basically happens in the put and replace methods (based on the
 	 *   status of the alarm itself)
 	 */
-	private HashMap activeLists = new HashMap();
+	private HashMap<Integer,CategoryActiveList> activeLists = new HashMap<Integer,CategoryActiveList>();
 	
 	/**
 	 * The constructor
@@ -89,35 +89,6 @@ public class ACSAlarmCacheImpl implements AlarmCache
 		//
 		// All the alarms are load when the first request arrives 
 		// in the getReference method
-	}
-	
-	/**
-	 * Loads all the alarms at startup
-	 * This is the way the cache works in the Laser
-	 * 
-	 * It create a Map of the alarms by reading the CDB then call the 
-	 * initializeAlarmCache
-	 * 
-	 */
-	private void preloadAlarms() {
-		if (dao==null) {
-			throw new IllegalStateException("The DAO is null");
-		}
-		ACSAlarmDAOImpl daoImpl = (ACSAlarmDAOImpl)dao;
-		String[] alarmIDS = daoImpl.getAllAlarmIDs();
-		if (alarmIDS==null || alarmIDS.length==0) {
-			// Force the DAO to load the alarms
-			daoImpl.loadAlarms();
-			alarmIDS = daoImpl.getAllAlarmIDs();
-		}
-		HashMap alarmsMap = new HashMap(alarmIDS.length);
-		for (int t=0; t<alarmIDS.length; t++) {
-			Alarm alarm;
-			alarm = (Alarm)dao.findAlarm(alarmIDS[t]);
-			alarmsMap.put(alarmIDS[t],alarm);
-		}
-		HashMap activeMap = new HashMap();
-		initializeAlarmCache(alarmsMap,activeMap);
 	}
 
 	public void initializeAlarmCache(Map alarms, Map activeLists) {
@@ -147,17 +118,6 @@ public class ACSAlarmCacheImpl implements AlarmCache
 			throw new AlarmCacheException("ACSAlarmCache internal data corrupted!");
 		}
 		
-		// Load all the alarms
-		// The laser source loads the alarm during the startup and keep
-		// all of them in the cache: we load them when we receive the first
-		// request
-		// The reason is that if I try to load the alarm in the
-		// constructor then I have a failure because some object is not yet ready
-		// (It seems that some objects wait for some external initialization)
-		if (alarms.size()==0) {
-			preloadAlarms();
-		}
-		
 		if (!alarms.containsKey(identifier)) {
 			// Get the alarm from the database
 			try {
@@ -175,7 +135,7 @@ public class ACSAlarmCacheImpl implements AlarmCache
 			}
 		} else {
 			// Get the alarm from the cache
-			retAl=(Alarm)alarms.get(identifier);
+			retAl=alarms.get(identifier);
 		}
 		if (retAl==null) {
 			System.err.println("*** Invalid Alarm");
@@ -190,7 +150,7 @@ public class ACSAlarmCacheImpl implements AlarmCache
 			throw new IllegalArgumentException("Replacing with a null alarm is not allowed");
 		}
 		
-		Alarm oldAl=(Alarm)alarms.put(alarm.getTriplet().toIdentifier(),alarm);
+		Alarm oldAl=alarms.put(alarm.getTriplet().toIdentifier(),alarm);
 		sendMsgToListener(alarm,oldAl);
 		updateCategoryActiveLists(alarm);
 		//dumpAlarmsCache(false);
@@ -201,7 +161,7 @@ public class ACSAlarmCacheImpl implements AlarmCache
 			throw new IllegalArgumentException("Inserting a null alarm is not allowed");
 		}
 		
-		Alarm oldAl=(Alarm)alarms.put(alarm.getTriplet().toIdentifier(),alarm);
+		Alarm oldAl=alarms.put(alarm.getTriplet().toIdentifier(),alarm);
 		sendMsgToListener(alarm,oldAl);
 		updateCategoryActiveLists(alarm);
 		//dumpAlarmsCache(false);
@@ -221,7 +181,7 @@ public class ACSAlarmCacheImpl implements AlarmCache
 
 	public CategoryActiveList getActiveListReference(Integer identifier) throws AlarmCacheException {
 		if (activeLists.containsKey(identifier)) {
-			return (CategoryActiveList)activeLists.get(identifier);
+			return activeLists.get(identifier);
 		} else {
 			CategoryActiveList catList = new CategoryActiveList(identifier);
 			activeLists.put(identifier,catList);
@@ -275,12 +235,12 @@ public class ACSAlarmCacheImpl implements AlarmCache
 		} 
 		
 		// Get the keys
-		Set keys = alarms.keySet();
-		Iterator iter = keys.iterator();
+		Set<String> keys = alarms.keySet();
+		Iterator<String> iter = keys.iterator();
 		while ( iter.hasNext() ) {
-			String key = (String)iter.next();
+			String key = iter.next();
 			if (verbose) {
-				Alarm al = (Alarm)alarms.get(key);
+				Alarm al = alarms.get(key);
 			}
 		}
 	}
@@ -295,7 +255,7 @@ public class ACSAlarmCacheImpl implements AlarmCache
 	 */
 	private CategoryActiveList getCategoryList(Integer categoryId) {
 		if (activeLists.containsKey(categoryId)) {
-			return (CategoryActiveList)activeLists.get(categoryId);
+			return activeLists.get(categoryId);
 		} else {
 			CategoryActiveList catList = new CategoryActiveList(categoryId);
 			activeLists.put(categoryId,catList);
