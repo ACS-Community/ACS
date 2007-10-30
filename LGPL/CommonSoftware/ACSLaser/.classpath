@@ -23,6 +23,7 @@
 	<classpathentry kind="src" path="laser-source/src"/>
 	<classpathentry kind="src" path="laser-source/test"/>
 	<classpathentry kind="src" path="laser-util/src"/>
+	<classpathentry kind="src" path="Categories"/>
 	<classpathentry kind="lib" path="acs-jms/lib/acsjms.jar"/>
 	<classpathentry kind="lib" path="acs-jms/lib/ACSJMSMessageEntity.jar"/>
 	<classpathentry kind="lib" path="alarmPanel/lib/alarmPanel.jar"/>
@@ -46,5 +47,7 @@
 	<classpathentry kind="var" path="INTROOT/lib/acsalarmSchemaBindings.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acserr.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acserrj.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/castor.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/jACSUtil.jar"/>
 	<classpathentry kind="output" path="alarmPanel/object/alarmPanel"/>
 </classpath>
