@@ -51,17 +51,17 @@ void AlarmTestMountImpl::faultMount() throw (CORBA::SystemException )
 	// so that we will have test coverage of both styles of sending an alarm
 	if((counter++ % 2) == 0) 
 	{
-		sendAlarmLongHand("AlarmSource", "ALARM_SOURCE_MOUNT", 1, true);
+		sendAlarmLongHand("Mount", "ALARM_SOURCE_MOUNT", 1, true);
 	}
 	else 
 	{
-		sendAlarmShortHand("AlarmSource", "ALARM_SOURCE_MOUNT", 1, true);
+		sendAlarmShortHand("Mount", "ALARM_SOURCE_MOUNT", 1, true);
 	}
 }
 
 void AlarmTestMountImpl::terminate_faultMount() throw (CORBA::SystemException ) 
 {
-	sendAlarmLongHand("AlarmSource", "ALARM_SOURCE_MOUNT", 1, false);
+	sendAlarmLongHand("Mount", "ALARM_SOURCE_MOUNT", 1, false);
 }
 
 void AlarmTestMountImpl::sendAlarmLongHand(std::string family, std::string member, int code, bool active) 
