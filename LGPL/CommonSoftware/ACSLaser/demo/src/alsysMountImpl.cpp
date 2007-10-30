@@ -43,11 +43,11 @@ Mount::~Mount()
 }
 
 void Mount::faultMount() throw (CORBA::SystemException ) {
-	sendAlarm("AlarmSource","ALARM_SOURCE_MOUNTCPP",1,true);
+	sendAlarm("Mount","ALARM_SOURCE_MOUNTCPP",1,true);
 }
 
 void Mount::terminate_faultMount() throw (CORBA::SystemException ) {
-	sendAlarm("AlarmSource","ALARM_SOURCE_MOUNTCPP",1,false);
+	sendAlarm("Mount","ALARM_SOURCE_MOUNTCPP",1,false);
 }
 
 void Mount::sendAlarm(std::string family, std::string member, int code, bool active) {

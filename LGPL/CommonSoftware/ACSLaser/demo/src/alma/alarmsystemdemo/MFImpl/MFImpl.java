@@ -37,9 +37,9 @@ import  alma.acsErrTypeAlarmSourceFactory.SourceCreationErrorEx;
 
 public class MFImpl extends ComponentImplBase implements MFOperations {
 	
-	private final String FF="AlarmSource";
+	private final String FF="MF";
 	private final String FM="ALARM_SOURCE_MF";
-	private final int FC=1;
+	private final int FC=0;
 	
 	private ACSAlarmSystemInterface alarmSource=null;
 	private ACSFaultState[] faultStates=null;;

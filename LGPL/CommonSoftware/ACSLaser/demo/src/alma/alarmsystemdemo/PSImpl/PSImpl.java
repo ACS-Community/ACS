@@ -19,7 +19,7 @@ class PSImpl extends ComponentImplBase implements PSOperations {
 	Mount mount = null;
 	
 	public void faultPS() {
-		send_alarm("AlarmSource","ALARM_SOURCE_PS",1,ACSFaultState.ACTIVE);
+		send_alarm("PS","ALARM_SOURCE_PS",1,ACSFaultState.ACTIVE);
 		try { 
 			Thread.sleep(5000);
 		} catch (Exception e) {}
@@ -29,7 +29,7 @@ class PSImpl extends ComponentImplBase implements PSOperations {
 		}
 	}
 	public void terminate_faultPS() {
-		send_alarm("AlarmSource","ALARM_SOURCE_PS",1,ACSFaultState.TERMINATE);
+		send_alarm("PS","ALARM_SOURCE_PS",1,ACSFaultState.TERMINATE);
 		try { 
 			Thread.sleep(5000);
 		} catch (Exception e) {}

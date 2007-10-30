@@ -15,7 +15,7 @@ import java.util.Properties;
 class MountImpl extends ComponentImplBase implements MountOperations {
 	Antenna antenna;
 	public void faultMount() {
-		send_alarm("AlarmSource","ALARM_SOURCE_MOUNT",1,ACSFaultState.ACTIVE);
+		send_alarm("Mount","ALARM_SOURCE_MOUNT",1,ACSFaultState.ACTIVE);
 		try { 
 			Thread.sleep(5000);
 		} catch (Exception e) {}
@@ -25,7 +25,7 @@ class MountImpl extends ComponentImplBase implements MountOperations {
 		}
 	}
 	public void terminate_faultMount() {
-		send_alarm("AlarmSource","ALARM_SOURCE_MOUNT",1,ACSFaultState.TERMINATE);
+		send_alarm("Mount","ALARM_SOURCE_MOUNT",1,ACSFaultState.TERMINATE);
 		try { 
 			Thread.sleep(5000);
 		} catch (Exception e) {}

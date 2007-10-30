@@ -13,10 +13,10 @@ import java.util.Properties;
 class AntennaImpl extends ComponentImplBase implements AntennaOperations
 {
 	public void faultAntenna() {
-		send_alarm("AlarmSource","ALARM_SOURCE_ANTENNA",1,ACSFaultState.ACTIVE);
+		send_alarm("Antenna","ALARM_SOURCE_ANTENNA",1,ACSFaultState.ACTIVE);
 	}
 	public void terminate_faultAntenna() {
-		send_alarm("AlarmSource","ALARM_SOURCE_ANTENNA",1,ACSFaultState.TERMINATE);
+		send_alarm("Antenna","ALARM_SOURCE_ANTENNA",1,ACSFaultState.TERMINATE);
 	}
 	
 	public void send_alarm(String faultFamily, String faultMember, int faultCode, String faultState) {
