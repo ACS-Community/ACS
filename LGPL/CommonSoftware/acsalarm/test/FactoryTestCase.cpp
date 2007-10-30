@@ -229,7 +229,7 @@ void FactoryTestCase::replaceAlarmBranch(string CDBFolder)
 void FactoryTestCase::configureAlarmBranch(string CDBFolder, string ASImplementation) 
 {
 	string CDBdir = CDBFolder + "/CDB/Alarms";
-	string configDirName = CDBdir + "/AlarmSystemConfiguration";
+	string configDirName = CDBdir + "/Administrative/AlarmSystemConfiguration";
 	string configFileName = configDirName + "/AlarmSystemConfiguration.xml";
 	try 
 	{
