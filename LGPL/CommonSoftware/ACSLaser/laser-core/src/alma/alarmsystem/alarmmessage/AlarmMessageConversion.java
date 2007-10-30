@@ -410,19 +410,33 @@ public class AlarmMessageConversion {
 				new Integer(alarm.getTriplet().getFaultCode()));
 		
 		// The Building
-		Building building = new Building (
-				alarm.getLocation().getBuilding().getBuildingNumber(),
-				alarm.getLocation().getBuilding().getSite(),
-				new Integer(alarm.getLocation().getBuilding().getZone()),
-				alarm.getLocation().getBuilding().getMap());
+		Building building;
+		if (alarm.getLocation()!=null) {
+			if (alarm.getLocation().getBuilding()!=null){
+				building = new Building (
+					alarm.getLocation().getBuilding().getBuildingNumber(),
+					alarm.getLocation().getBuilding().getSite(),
+					new Integer(alarm.getLocation().getBuilding().getZone()),
+					alarm.getLocation().getBuilding().getMap());
+			} else {
+				building=new Building("N/A",",N/A",0,"N/A");
+			}
+		} else {
+			building=new Building("N/A",",N/A",0,"N/A");
+		}
 		
 		// The Location
-		Location location = new Location (
+		Location location;
+		if (alarm.getLocation()!=null) {
+			location = new Location (
 				alarm.getLocation().getLocationId(),
 				alarm.getLocation().getFloor(),
 				alarm.getLocation().getMnemonic(),
 				alarm.getLocation().getPosition(),
 				alarm.getLocation().getRoom());
+		} else {
+			location=new Location("N/A","N/A","N/A","N/A","N/A");
+		}
 		location.setBuilding(building);
 		
 		// The ResponsiblePerson
