@@ -25,11 +25,13 @@ package com.cosylab.acs.laser;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.logging.Logger;
 
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.Session;
+import javax.jms.TextMessage;
 import javax.jms.Topic;
 import javax.jms.TopicConnection;
 import javax.jms.TopicSession;
@@ -42,6 +44,7 @@ import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
 import alma.acs.component.ComponentImplBase;
 import alma.acs.component.ComponentLifecycleException;
 import alma.acs.container.ContainerServices;
+import alma.acs.logging.AcsLogLevel;
 import alma.alarmsystem.Alarm;
 import alma.alarmsystem.AlarmServiceOperations;
 import alma.alarmsystem.Category;
@@ -54,6 +57,7 @@ import alma.alarmsystem.Timestamp;
 import alma.alarmsystem.Triplet;
 
 import cern.cmw.mom.pubsub.impl.ACSJMSTopicConnectionImpl;
+import cern.laser.business.cache.AlarmCacheException;
 import cern.laser.business.cache.AlarmCacheListener;
 import cern.laser.business.cache.AlarmCacheListenerImpl;
 import cern.laser.business.pojo.AdminUserDefinitionServiceImpl;
@@ -86,7 +90,9 @@ import com.cosylab.acs.laser.dao.ConfigurationAccessorFactory;
 
 public class LaserComponent extends ComponentImplBase
 		implements AlarmServiceOperations {
-	ContainerServices cont;
+	ContainerServices contSvcs;
+	
+	Logger logger=null;
 
 	ACSAdminUserDAOImpl adminUserDAO;
 
@@ -129,12 +135,14 @@ public class LaserComponent extends ComponentImplBase
 	public void initialize(ContainerServices cont)
 			throws ComponentLifecycleException {
 		super.initialize(cont);
-		this.cont = cont;
+		if (cont==null) {
+			throw new ComponentLifecycleException("Invalid null ContainerServices in initialize");
+		}
+		this.contSvcs = cont;
+		this.logger=contSvcs.getLogger();
+		
+		logger.log(AcsLogLevel.DEBUG,"Initializing JMS");
 		ACSJMSTopicConnectionImpl.containerServices=cont;
-
-		cont.getLogger()
-				.entering("cern.laser.acs.LaserComponent", "initialize");
-
 		defaultTopicConnectionFactory = new ACSJMSTopicConnectionFactory(cont);
 
 		TopicConnection tc;
@@ -156,16 +164,27 @@ public class LaserComponent extends ComponentImplBase
 			subscriberAdminCacheLoader
 					.setMessageListener(new MessageListener() {
 						public void onMessage(Message message) {
+							if (message instanceof TextMessage) {
+								try {
+									logger.log(AcsLogLevel.DEBUG,"Received a JMS message");
+								} catch(Exception e) {}
+							} else {
+								logger.log(AcsLogLevel.DEBUG,"Received a non text JMS message");
+							}
 							try {
 								alarmMessageProcessor.process(message);
 							} catch (Exception e) {
+								logger.log(AcsLogLevel.ERROR," *** Exception processing a message:"+e.getMessage());
 								// XXX what to do???
 							}
 						}
 					});
+			logger.log(AcsLogLevel.DEBUG,"JMS initialized");
 		} catch (JMSException e) {
+			logger.log(AcsLogLevel.ERROR,"Error initializing JMS");
 			throw new ComponentLifecycleException("Failed to initialize JMS", e);
 		}
+		
 
 		ConfigurationAccessor conf;
 		try {
@@ -175,10 +194,10 @@ public class LaserComponent extends ComponentImplBase
 		}
 
 		adminUserDAO = new ACSAdminUserDAOImpl();
-		alarmDAO = new ACSAlarmDAOImpl();
-		categoryDAO = new ACSCategoryDAOImpl();
+		alarmDAO = new ACSAlarmDAOImpl(logger);
+		categoryDAO = new ACSCategoryDAOImpl(logger,alarmDAO);
 		responsiblePersonDAO = new ACSResponsiblePersonDAOImpl();
-		sourceDAO = new ACSSourceDAOImpl();
+		
 		adminUserDefinitionService = new AdminUserDefinitionServiceImpl();
 		alarmCacheServer = new AlarmCacheServerImpl();
 		alarmDefinitionService = new AlarmDefinitionServiceImpl();
@@ -196,20 +215,15 @@ public class LaserComponent extends ComponentImplBase
 		alarmDAO.setConfAccessor(conf);
 		alarmDAO.setSurveillanceAlarmId("SURVEILLANCE:SOURCE:1");
 		alarmDAO.setResponsiblePersonDAO(responsiblePersonDAO);
-		alarmDAO.setSourceDAO(sourceDAO);
 
 		categoryDAO.setConfAccessor(conf);
 //		categoryDAO.setCategoryTreeRoot("ACS");
 		categoryDAO.setCategoryTreeRoot("ROOT");
 		categoryDAO.setSurveillanceCategoryPath("ACS.SURVEILLANCE");
-		categoryDAO.setAlarmDAO(alarmDAO);
 
 		responsiblePersonDAO.setAlarmDAO(alarmDAO);
 
-		sourceDAO.setConfAccessor(conf);
-		sourceDAO.setLaserSourceId("LASER");
-		sourceDAO.setAlarmDAO(alarmDAO);
-		sourceDAO.setResponsiblePersonDAO(responsiblePersonDAO);
+		
 
 		adminUserDefinitionService.setCategoryDAO(categoryDAO);
 		adminUserDefinitionService.setAdminUserDAO(adminUserDAO);
@@ -267,10 +281,22 @@ public class LaserComponent extends ComponentImplBase
 		sourceDefinitionService
 				.setAlarmDefinitionService(alarmDefinitionService);
 
-		sourceDAO.loadSources();
-		alarmDAO.loadAlarms();
-		categoryDAO.loadCategories();
-		categoryDAO.linkWithAlarms();
+		
+		try {
+			alarmDAO.loadAlarms();
+		} catch (Exception ace) {
+			throw new ComponentLifecycleException("Error initializing alarms",ace);
+		}
+		try {
+			categoryDAO.loadCategories();
+		} catch (Exception ex) {
+			throw new ComponentLifecycleException("Error loading categories",ex);
+		}
+		sourceDAO = new ACSSourceDAOImpl(logger,alarmDAO.getSources());
+		sourceDAO.setConfAccessor(conf);
+		sourceDAO.setLaserSourceId("LASER");
+		sourceDAO.setAlarmDAO(alarmDAO);
+		sourceDAO.setResponsiblePersonDAO(responsiblePersonDAO);
 		
 		String[] allSources=sourceDAO.getAllSourceIDs();
 		if (allSources!=null) {
@@ -287,11 +313,18 @@ public class LaserComponent extends ComponentImplBase
 					subscriberAdminCacheLoader
 							.setMessageListener(new MessageListener() {
 								public void onMessage(Message message) {
+									if (message instanceof TextMessage) {
+										try {
+											logger.log(AcsLogLevel.DEBUG,"Received a JMS message");
+										} catch(Exception e) {}
+									} else {
+										logger.log(AcsLogLevel.DEBUG,"Received a non text JMS message");
+									}
 									try {
 										alarmMessageProcessor.process(message);
 									} catch (Exception e) {
 										// XXX what to do???
-										System.err.println(" *** Exception processing a message:"+e.getMessage());
+										logger.log(AcsLogLevel.ERROR," *** Exception processing a message:"+e.getMessage());
 										e.printStackTrace();
 									}
 								}
@@ -301,32 +334,22 @@ public class LaserComponent extends ComponentImplBase
 				}
 			}
 		}
-		
-		cont.getLogger().exiting("cern.laser.acs.LaserComponent", "initialize");
 	}
 
 	public void execute() throws ComponentLifecycleException {
-		cont.getLogger().entering("cern.laser.acs.LaserComponent", "execute");
 		super.execute();
 		heartbeat.start();
-		cont.getLogger().exiting("cern.laser.acs.LaserComponent", "execute");
 		ProcessingController.getInstance().startProcessing();
 	}
 
 	public void cleanUp() {
-		cont.getLogger().entering("cern.laser.acs.LaserComponent", "cleanUp");
 		heartbeat.stop();
 		super.cleanUp();
-		cont.getLogger().exiting("cern.laser.acs.LaserComponent", "cleanUp");
 	}
 
 	public void aboutToAbort() {
-		cont.getLogger().entering("cern.laser.acs.LaserComponent",
-				"aboutToAbort");
 		heartbeat.stop();
 		super.aboutToAbort();
-		cont.getLogger().exiting("cern.laser.acs.LaserComponent",
-				"aboutToAbort");
 	}
 	
 	/************************** CoreService **************************/
