@@ -131,9 +131,17 @@ bool ACSAlarmSystemInterfaceFactory::init(maci::Manager_ptr manager)
 		m_useACSAlarmSystem = new bool();
 		*m_useACSAlarmSystem=true;
 	}
+	// Print a debug message
+	Logging::Logger::LoggerSmartPtr myLoggerSmartPtr = getLogger();
+	if (*m_useACSAlarmSystem) {
+		myLoggerSmartPtr->log(Logging::Logger::LM_DEBUG, "Using ACS alarm system");
+	} else {
+		myLoggerSmartPtr->log(Logging::Logger::LM_DEBUG, "Using CERN alarm system");
+	}
 	if (!(*m_useACSAlarmSystem)) 
 	{
-		Logging::Logger::LoggerSmartPtr myLoggerSmartPtr = getLogger();
+		myLoggerSmartPtr->log(Logging::Logger::LM_DEBUG, "ACSAlarmSystemInterfaceFactory::init() loading CERN DLL...");
+		
 		// load the DLL and then set pointer m_AlarmSystemInterfaceFactory_p to point to the object
 		// that is returned from the DLL's entry point function. From then on, we can use the pointer/object directly.
 		ACSAlarmSystemInterfaceFactory::dllHandle = dlopen(CERN_ALARM_SYSTEM_DLL_PATH, RTLD_NOW|RTLD_GLOBAL);
@@ -148,9 +156,9 @@ bool ACSAlarmSystemInterfaceFactory::init(maci::Manager_ptr manager)
 		// CERN style alarms (i.e. alarms that go over the notification channel as opposed to just being logged)
 		void * publisherFactoryFunctionPtr = dlsym(ACSAlarmSystemInterfaceFactory::dllHandle, CERN_ALARM_SYSTEM_DLL_FUNCTION_NAME);
 		m_AlarmSystemInterfaceFactory_p = ((AlarmSystemInterfaceFactory*(*)())(publisherFactoryFunctionPtr))();
-		myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "ACSAlarmSystemInterfaceFactory::init() successfully loaded DLL");
+		myLoggerSmartPtr->log(Logging::Logger::LM_DEBUG, "ACSAlarmSystemInterfaceFactory::init() successfully loaded DLL");
 		return m_AlarmSystemInterfaceFactory_p->init();
-	}
+	} 
 	return true;
 }
 
