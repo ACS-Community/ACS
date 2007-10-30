@@ -30,7 +30,18 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.logging.Logger;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
+import org.exolab.castor.xml.Unmarshaller;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
+
+import alma.acs.logging.AcsLogLevel;
 import cern.laser.business.LaserObjectNotFoundException;
 import cern.laser.business.dao.AlarmDAO;
 import cern.laser.business.dao.CategoryDAO;
@@ -47,28 +58,71 @@ import com.cosylab.acs.laser.dao.xml.CategoryDefinition;
 import com.cosylab.acs.laser.dao.xml.CategoryDefinitions;
 import com.cosylab.acs.laser.dao.xml.CategoryLinksToCreate;
 
+import alma.acs.alarmsystem.generated.Categories;
+
+/**
+ * Read the categories from the CDB.
+ * 
+ * When the categories are available, the alarms are assigned to the categories
+ * (this complete the alarms initialization initiated by ACSAlarmDAOImpl)
+ * 
+ * @see ACSAlarmDAOImpl
+ * 
+ * @author acaproni
+ *
+ */
 public class ACSCategoryDAOImpl implements CategoryDAO
 {
 	int nextCatID=1;
 	AlarmDAO alarmDao;
 	ConfigurationAccessor conf;
-
-	HashMap catIDtoCategory;
-	HashMap catPathToCategory;
 	
-	static String getCategoriesPath()
-	{
-		return "/Alarms/CategoryDefinitions";
-	}
-	
-	static String getCategoryAlarmLinksPath()
-	{
-		return "/Alarms/AlarmCategoryDefinitions";
-	}
+	// The PATH in the CDB
+	private static final String CATEGORY_DEFINITION_PATH = "/Alarms/Administrative/Categories";
+	private static final String ALARM_CATEGORY_DEFINITION_PATH = "/Alarms/Administrative/AlarmCategoryDefinitions";
 
+	// The HashMap with the path of all the categories
+	HashMap<String, Category> catPathToCategory = new HashMap<String, Category>();
+	
+	// The HashMap of the categories (the key is the ID of the category)
+	HashMap<Integer, Category> categories = new HashMap<Integer, Category>(); 
+	
+	/**
+	 * The default category used to publish alarms not assigned to any category.
+	 * 
+	 * This is read by the CDB from the is-default attribute of a category.
+	 * In the configuration files there should be only one default category but 
+	 * we can't consider an error if there is more then one (in this case a log message 
+	 * is submitted). If the default category is defined more then once, the first 
+	 * definition is used.
+	 * 
+	 * If no default category is defined another log message is submitted. 
+	 * In this case alarms not assigned to any category will remain unassigned.
+	 */
+	private Category defaultCategory=null;
+	
 	String surveillanceCategoryPath;
 
 	String categoryTreeRoot;
+	
+	// The logger
+	Logger logger;
+	
+	/**
+	 * Constructor 
+	 * 
+	 * @param log The log (not null)
+	 */
+	public ACSCategoryDAOImpl(Logger log,ACSAlarmDAOImpl alarmDAO) {
+		if (log==null) {
+			throw new IllegalArgumentException("Invalid null logger");
+		}
+		if (alarmDAO==null) {
+			throw new IllegalArgumentException("Invalid null alarmDAO");
+		}
+		this.alarmDao=alarmDAO;
+		logger =log;
+	}
 	
 	public Category findCategory(Integer identifier)
 	{
@@ -83,7 +137,7 @@ public class ACSCategoryDAOImpl implements CategoryDAO
 
 	public Category getCategory(Integer identifier)
 	{
-		return (Category)catIDtoCategory.get(identifier);
+		return categories.get(identifier);
 	}
 
 	public Category findByCategoryTreeRoot()
@@ -98,7 +152,7 @@ public class ACSCategoryDAOImpl implements CategoryDAO
 
 	public Category[] findAllCategories()
 	{
-		Collection cats=catIDtoCategory.values();
+		Collection<Category> cats=categories.values();
 		Category[] result=new Category[cats.size()];
 		cats.toArray(result);
 		return result;
@@ -134,7 +188,7 @@ public class ACSCategoryDAOImpl implements CategoryDAO
 			cimpl.setCategoryId(new Integer(nextCatID++));
 		}
 		
-		catIDtoCategory.put(cimpl.getCategoryId(), cimpl);
+		categories.put(cimpl.getCategoryId(), cimpl);
 		if (cimpl.getPath()!=null)
 			catPathToCategory.put(cimpl.getPath(), cimpl);
 	}
@@ -146,11 +200,11 @@ public class ACSCategoryDAOImpl implements CategoryDAO
 		if (id==null)
 			throw new IllegalStateException();
 		
-		Category previous=(Category) catIDtoCategory.get(id);
+		Category previous=categories.get(id);
 		
 		catPathToCategory.values().remove(previous); // path may have changed
 		
-		catIDtoCategory.put(id, category);
+		categories.put(id, category);
 		if (category.getPath()!=null)
 			catPathToCategory.put(category.getPath(), category);
 	}
@@ -162,9 +216,9 @@ public class ACSCategoryDAOImpl implements CategoryDAO
 		if (id==null)
 			throw new IllegalStateException();
 		
-		Category previous=(Category) catIDtoCategory.get(id);
+		Category previous=categories.get(id);
 		
-		catIDtoCategory.remove(id);
+		categories.remove(id);
 		
 		// this one was in catPath, so remove that one instead
 		// have to use values(), because the path may have changed,
@@ -193,11 +247,11 @@ public class ACSCategoryDAOImpl implements CategoryDAO
 		if (cat==null)
 			return null;
 		
-		ArrayList result=new ArrayList();
+		ArrayList<Integer> result=new ArrayList<Integer>();
 		
-		Iterator i=catIDtoCategory.values().iterator();
+		Iterator<Category> i=categories.values().iterator();
 		while (i.hasNext()) {
-			CategoryImpl c=(CategoryImpl)i.next();
+			Category c=i.next();
 
 			// root categories have null parentId
 			if (c.getParentId() != null &&
@@ -211,54 +265,326 @@ public class ACSCategoryDAOImpl implements CategoryDAO
 		return out;
 	}
 	
-	public void loadCategories()
-	{
-		if (conf==null)
-			throw new IllegalStateException("null configuration accessor");
+	/**
+	 * Load the categories from the CDB.
+	 * 
+	 * Loads all the category from the CDB and build an internal
+	 * representation of category.
+	 * The category is also added to all the alarms having the
+	 * fault family specified in the XML.
+	 * 
+	 * All the categories derive from ROOT that is built here
+	 * as default (in this way the user does ot need to add the ROOT
+	 * entry in the CDB).
+	 * 
+	 * 
+	 * @throws Exception In case of error reading the values from the CDB
+	 */
+	public void loadCategories() throws Exception {
+		if (conf==null) {
+			throw new IllegalStateException("Missing dal");
+		}
 		
 		String xml;
-		
 		try {
-			xml=conf.getConfiguration(getCategoriesPath());
-		} catch (Exception e) {
-			throw new RuntimeException("Failed to read "+getCategoriesPath(), e);
+			xml=conf.getConfiguration(CATEGORY_DEFINITION_PATH);
+		} catch (Throwable t) {
+			throw new RuntimeException("Couldn't read alarm list", t);
 		}
-        System.out.println("\n\nCategoriesPath="+xml);
-		
-		CategoryDefinitions acds;
+		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+		DocumentBuilder builder;
 		try {
-			acds=(CategoryDefinitions) CategoryDefinitions.unmarshal(new StringReader(xml));
+			builder= factory.newDocumentBuilder();
 		} catch (Exception e) {
-			throw new RuntimeException("Failed to parse "+getCategoriesPath(), e);
+			throw new Exception("Error building the DocumentBuilder from the DocumentBuilderFactory",e);
+		}
+		StringReader stringReader = new StringReader(xml);
+		InputSource inputSource = new InputSource(stringReader);
+		Document doc;
+		try {
+			doc= builder.parse(inputSource);
+			if (doc==null) {
+				throw new Exception("The builder returned a null Document after parsing");
+			}
+		} catch (Exception e) {
+			throw new Exception("Error parsing XML: "+xml,e);
+		}
+		NodeList docChilds = doc.getChildNodes();
+		if (docChilds==null || docChilds.getLength()!=1) {
+			throw new Exception("Malformed xml: only one node (categories) expected");
+		}
+		Node categoriesNode = docChilds.item(0);
+		
+		Unmarshaller FF_unmarshaller = new Unmarshaller(Categories.class);
+		FF_unmarshaller.setValidation(false);
+		FF_unmarshaller.setWhitespacePreserve(true);
+		Categories daoCategories;
+		try {
+			daoCategories = (Categories) FF_unmarshaller.unmarshal(categoriesNode);
+			logger.log(AcsLogLevel.DEBUG,"Categories definition read");
+		} catch (Exception e) {
+			throw new Exception("Error parsing "+CATEGORY_DEFINITION_PATH,e);
+		}
+		alma.acs.alarmsystem.generated.Category[] daoCategory = daoCategories.getCategory();
+		if (daoCategory==null || daoCategory.length==0) {
+			logger.log(AcsLogLevel.DEBUG,"No category defined");
 		}
 		
-		CategoriesToCreate ctc=acds.getCategoriesToCreate();
-		if (ctc==null)
-			throw new RuntimeException(getCategoriesPath()+" must contain categories-to-create");
+		// Add the root Category
+		addRootCategory();
 		
-		CategoryDefinition[] cds=ctc.getCategoryDefinition();
-		if (cds==null || cds.length<1) {
-			throw new RuntimeException("No categories defined in "+getCategoriesPath());
-		}
-		
-		catIDtoCategory=new HashMap();
-		catPathToCategory=new HashMap();
-		
-		for (int a=0; a<cds.length; a++) {
-			CategoryDefinition cd=cds[a];
+		// Goes through all the Categories read from the CDB
+		for (alma.acs.alarmsystem.generated.Category category: daoCategory) {
+			cern.laser.business.definition.data.CategoryDefinition definition = new cern.laser.business.definition.data.CategoryDefinition(category.getPath(),category.getDescription());
+			
 			CategoryImpl ci=new CategoryImpl();
 			ci.setAlarmIds(new HashSet()); // will get filled in later
 			ci.setCategoryId(new Integer(nextCatID++));
-			ci.setChildrenIds(new HashSet());
-			ci.setDescription(cd.getDescription());
-			ci.setName(cd.getPath());
-			ci.setParentId(null);
-			ci.setPath(cd.getPath());
+			ci.setChildrenIds(new HashSet<Integer>());
+			ci.setDescription(definition.getDescription());
+			ci.setName(definition.getPath());
+			ci.setPath(definition.getPath());
 			ci.setAlarmIds(new HashSet());
+			setParentID(ci);
 			
-			catIDtoCategory.put(ci.getCategoryId(), ci);
+			// Stores the categories
+			categories.put(ci.getCategoryId(), ci);
 			catPathToCategory.put(ci.getPath(), ci);
-		}	
+			logger.log(AcsLogLevel.DEBUG,"Category "+ci.getName()+" added with ID="+ci.getCategoryId());
+
+			// Check if the category is defined as default.
+			if (category.hasIsDefault() && category.getIsDefault()==true) {
+				if (defaultCategory!=null) {
+					StringBuilder str = new StringBuilder("CDB misconfiguration: default category defined more then once (actual default: ");
+					str.append(defaultCategory.getPath());
+					str.append(", new default: ");
+					str.append(category.getPath());
+					logger.log(AcsLogLevel.WARNING,str.toString());
+				} else {
+					defaultCategory=ci;
+				}
+			}
+			
+			// A category contains a set of child ids.
+			// This method adjusts the references of categories between the parent 
+			// and the child
+			adjustParentIDs(ci.getName(),ci.getCategoryId()); 
+			
+			
+			// Connect alarms to this category
+			for (alma.acs.alarmsystem.generated.Category cat : daoCategories.getCategory()) {
+				String[] families=cat.getAlarms().getFaultFamily();
+				for (String faultFamily: families) {
+					assignCategoryToAlarms(ci, faultFamily);
+				}
+			}
+		}
+		// Log a message if no category has been defined in the CDB
+		if (defaultCategory==null) {
+			logger.log(AcsLogLevel.WARNING,"No default category defined in CDB");
+		} else {
+			// Check if there are alarms without category to assign to the default
+			assignDefaultCategory(defaultCategory);
+		}
+	}
+	
+	/**
+	 * Assign the default category to the alarms not assigned to any category
+	 * 
+	 * Scans all the alarms to check for alarms without any category and assign the default
+	 * category to them.
+	 * 
+	 * @param defCategory The default category
+	 */
+	private void assignDefaultCategory(Category defCategory) {
+		if (defCategory==null) {
+			throw new IllegalArgumentException("Invalid null category");
+		}
+		String[] IDs = ((ACSAlarmDAOImpl)alarmDao).getAllAlarmIDs();
+		for (String alarmID: IDs) {
+			Alarm alarm = alarmDao.getAlarm(alarmID);
+			if (alarm==null) {
+				logger.log(AcsLogLevel.WARNING,"Got a null alarm for ID="+alarmID);
+				continue;
+			}
+			Collection<Category> categories = alarm.getCategories();
+			if (categories==null) {
+				categories = new HashSet<Category>();
+			}
+			if (categories.size()==0) {
+				categories.add(defCategory);
+				alarm.setCategories(categories);
+				StringBuilder str = new StringBuilder("Alarm ");
+				str.append(alarm.getAlarmId());
+				str.append(" assigned to default category ");
+				str.append(defCategory.getPath());
+				logger.log(AcsLogLevel.DEBUG,str.toString());
+			}
+		}
+	}
+	
+	/**
+	 * Set the ID of this category in the children list of its parents
+	 * 
+	 * A category contains a list of all its children.
+	 * The first category is ROOT.
+	 * If a category is child of another category is inferred by its name.
+	 * If a category has no parents, it is set to be a ROOT child.
+	 * 
+	 * @param childrenName The name of this category
+	 * @param ID The ID of this category 
+	 */
+	private void adjustParentIDs(String childrenName, int ID) {
+		if (childrenName==null || childrenName.length()==0) {
+			throw new IllegalArgumentException("Invalid children name "+childrenName);
+		}
+		// If the name does not contains ':' then it is a child of ROOT
+		if (!childrenName.contains(":")) {
+			CategoryImpl root = (CategoryImpl)getCategoryByPath("ROOT");
+			Set<Integer> children = root.getChildrenIds();
+			if (children==null) {
+				children=new HashSet<Integer>();
+			}
+			children.add(new Integer(ID));
+			root.setChildrenIds(children);
+			return;
+		}
+		// The name contains ':' 
+		int pos = childrenName.lastIndexOf(':');
+		String parentID=childrenName.substring(0, pos);
+		CategoryImpl parent = (CategoryImpl)getCategoryByPath(parentID);
+		if (parent==null) {
+			logger.log(AcsLogLevel.WARNING,"Parent category of "+parentID+" NOT found");
+			return;
+		}
+		Set<Integer> children = parent.getChildrenIds();
+		if (children==null) {
+			children=new HashSet<Integer>();
+		}
+		children.add(new Integer(ID));
+		parent.setChildrenIds(children);
+	}
+	
+	/**
+	 * Set the parent ID of the passed category
+	 * 
+	 * Each category has a parent ID that can be evaluated by reading
+	 * the name of the category.
+	 * If the name does not contain ':' then the parent ID is the ROOT.
+	 * Otherwise its parent is the category whose name is represented
+	 * by the substring before the ':'
+	 * 
+	 * @param cat
+	 */
+	private void setParentID(CategoryImpl cat) {
+		if (cat.getPath().equals("ROOT")) {
+			// ROOT has no parent
+			cat.setParentId(null);
+			return;
+		}
+		String name = cat.getPath();
+		int pos =name.lastIndexOf(':');
+		if (pos==-1) {
+			// This category parent is ROOT
+			Category root = getCategoryByPath("ROOT");
+			cat.setParentId(root.getCategoryId());
+			cat.setPath(cat.getPath());
+			cat.setName(cat.getPath());
+			return;
+		}
+		String parentID=name.substring(0, pos);
+		CategoryImpl parent = (CategoryImpl)getCategoryByPath(parentID);
+		if (parent==null) {
+			logger.log(AcsLogLevel.WARNING,"Parent category of "+parentID+" NOT found");
+			return;
+		}
+		cat.setParentId(parent.getCategoryId());
+	}
+	
+	/**
+	 * Add the ROOT category
+	 * 
+	 * This avoid the user to add this entry in the CDB
+	 */
+	private void addRootCategory() {
+		CategoryImpl ci=new CategoryImpl();
+		ci.setAlarmIds(new HashSet()); // will get filled in later
+		ci.setCategoryId(new Integer(nextCatID++));
+		ci.setChildrenIds(new HashSet());
+		ci.setDescription("ROOT category");
+		ci.setName("ROOT");
+		ci.setParentId(null);
+		ci.setPath("ROOT");
+		ci.setAlarmIds(new HashSet());
+		
+		// Stores the categories
+		categories.put(ci.getCategoryId(), ci);
+		catPathToCategory.put(ci.getPath(), ci);
+	}
+	
+	/**
+	 * Dumps the category.
+	 * 
+	 */
+	private void dumpCategories() {
+		Set<Integer> keys=categories.keySet();
+		if (keys==null ||keys.size()==0) {
+			System.out.println("No categories");
+		}
+		for (Integer i : keys) {
+			CategoryImpl cat = (CategoryImpl)getCategory(i);
+			if (cat==null) {
+				System.out.println("Null categor for ID "+i);
+			}
+			System.out.println("Category ID="+cat.getCategoryId());
+			System.out.println("\tName: "+cat.getName());
+			System.out.println("\tPath: "+cat.getPath());
+			System.out.println("\tDesc: "+cat.getDescription());
+			System.out.println("\tParentID: "+cat.getParentId());
+			System.out.println("\tChildren: ");
+			Set<Integer> childs = cat.getChildrenIds();
+			if (childs==null || childs.size()==0) {
+				System.out.println("\t\tNo childs");
+			} else {
+				for (Integer child: childs) {
+					System.out.println("\t\t"+child);
+				}
+			}
+		}
+	}
+	
+	/**
+	 * Assign the category to the all the alarms of a given FaultFamily.
+	 * 
+	 * In the CDB each category has a list (eventually empty) of FaultFamily.
+	 * If a FaultFamily appear in the definition of a Category then add
+	 * such category to all the alarms of such FF.
+	 *   
+	 *  @param category The category to assign to the alarms
+	 *  @param FF The fault family of the alarms to assign the category to
+	 */
+	private void assignCategoryToAlarms(Category category, String FF) {
+		if (category==null) {
+			throw new IllegalArgumentException("Invalid null category");
+		}
+		if (FF==null) {
+			throw new IllegalArgumentException("Invalid null fault family");
+		}
+		String[] alarmIDs=((ACSAlarmDAOImpl)alarmDao).getAllAlarmIDs();
+		for (String id: alarmIDs) {
+			Alarm alarm = alarmDao.getAlarm(id);
+			if (alarm==null) {
+				logger.log(AcsLogLevel.WARNING,"Got a null alarm for ID="+id);
+				continue;
+			}
+			if (alarm.getTriplet().getFaultFamily().equals(FF)) {
+				Collection<Category> alarmCategories = alarm.getCategories();
+				if (!alarmCategories.contains(category)) {
+					alarmCategories.add(category);
+					logger.log(AcsLogLevel.DEBUG,"Category "+category.getName()+" assigned to alarm "+alarm.getAlarmId());
+				}
+			}
+		}
 	}
 	
 	public void linkWithAlarms()
@@ -268,7 +594,7 @@ public class ACSCategoryDAOImpl implements CategoryDAO
 		if (alarmDao==null)
 			throw new IllegalStateException("missing alarm DAO");
 		
-		String path=getCategoryAlarmLinksPath();
+		String path=ALARM_CATEGORY_DEFINITION_PATH;
 		
 		String xml;
 		try {
@@ -354,7 +680,7 @@ public class ACSCategoryDAOImpl implements CategoryDAO
 		CategoryLinksToCreate cltc=new CategoryLinksToCreate();
 		linksTop.setCategoryLinksToCreate(cltc);
 		
-		Iterator i=catPathToCategory.values().iterator();
+		Iterator<Category> i=catPathToCategory.values().iterator();
 		while (i.hasNext()) {
 			CategoryDefinition cd=new CategoryDefinition();
 			CategoryImpl ci=(CategoryImpl)i.next();
@@ -408,8 +734,8 @@ public class ACSCategoryDAOImpl implements CategoryDAO
 		}
 		
 		try {
-			conf.setConfiguration(getCategoriesPath(), catList.toString());
-			conf.setConfiguration(getCategoryAlarmLinksPath(), linkList.toString());
+			conf.setConfiguration(CATEGORY_DEFINITION_PATH, catList.toString());
+			conf.setConfiguration(ALARM_CATEGORY_DEFINITION_PATH, linkList.toString());
 		} catch (Exception e) {
 			throw new RuntimeException("Failed to store configuration", e);
 		}
@@ -418,11 +744,6 @@ public class ACSCategoryDAOImpl implements CategoryDAO
 	public void setConfAccessor(ConfigurationAccessor conf)
 	{
 		this.conf=conf;
-	}
-
-	public void setAlarmDAO(AlarmDAO alarmDAO)
-	{
-		this.alarmDao=alarmDAO;
 	}
 	
 	public void setCategoryTreeRoot(String categoryTreeRoot)
@@ -437,7 +758,7 @@ public class ACSCategoryDAOImpl implements CategoryDAO
 
 	public Integer[] getAllCategoryIDs()
 	{
-		Set keyset=catIDtoCategory.keySet();
+		Set<Integer> keyset=categories.keySet();
 		Integer[] result=new Integer[keyset.size()];
 		keyset.toArray(result);
 		return result;

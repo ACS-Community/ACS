@@ -33,25 +33,41 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
+import java.util.Vector;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
+import org.exolab.castor.xml.Unmarshaller;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
+
+import alma.acs.alarmsystem.generated.Contact;
+import alma.acs.alarmsystem.generated.FaultCode;
+import alma.acs.alarmsystem.generated.FaultFamily;
+import alma.acs.alarmsystem.generated.FaultMember;
+import alma.acs.alarmsystem.generated.FaultMemberDefault;
+import alma.acs.logging.AcsLogLevel;
 import cern.laser.business.LaserObjectNotFoundException;
 import cern.laser.business.dao.AlarmDAO;
 import cern.laser.business.dao.ResponsiblePersonDAO;
-import cern.laser.business.dao.SourceDAO;
 import cern.laser.business.data.Alarm;
 import cern.laser.business.data.AlarmImpl;
 import cern.laser.business.data.Building;
+import cern.laser.business.data.Category;
 import cern.laser.business.data.Location;
 import cern.laser.business.data.ResponsiblePerson;
 import cern.laser.business.data.Source;
 import cern.laser.business.data.Status;
 import cern.laser.business.data.Triplet;
+import cern.laser.business.definition.data.SourceDefinition;
 
 import com.cosylab.acs.laser.dao.xml.AlarmDefinition;
-import com.cosylab.acs.laser.dao.xml.AlarmDefinitionList;
 import com.cosylab.acs.laser.dao.xml.Child;
 import com.cosylab.acs.laser.dao.xml.LinksToCreate;
 import com.cosylab.acs.laser.dao.xml.Parent;
@@ -235,242 +251,403 @@ class LinkSpec
 	}
 }
 
+/**
+ * Read alarms from the CDB.
+ * 
+ * CDB contains one file per each possible FF and one entry per each FC and FM.
+ * It is possible to specify a default member to be used when the administrator
+ * did not specify the member.
+ * 
+ * The alarms are stored in an HashMap having the triplet as key.
+ * The default member has a triplet with a "*" replacing its name.
+ * 
+ *  The sources are defined together with an alarm definition so they are read here
+ *  and requested by the ACSSourceDAOImpl at startup (instead of being read again from CDB).
+ *  
+ *  The initialization of the alarms is not completely done by loadAlarms because not all the info
+ *  are available at this time. In fact the categories are assigned to alarms by ACSCategoryDAOImpl
+ *  
+ *  @see ACSSourceDAOImpl
+ *  @see ACSCategoryDAOImpl
+ * 
+ * @author acaproni
+ *
+ */
 public class ACSAlarmDAOImpl implements AlarmDAO
 {
 	static final HardcodedBuilding theBuilding=HardcodedBuilding.instance;
 	static final HardcodedLocation theLocation=HardcodedLocation.instance;
 	
-	ConfigurationAccessor conf;
+	// The path where alarm definitions are
+	private static final String ALARM_DEFINITION_PATH = "/Alarms/AlarmDefinitions";
+	
+	// The path in the CDB where reduction rules are defined
+	private static final String REDUCTION_DEFINITION_PATH = "/Alarms/Administrative/ReductionDefinitions";
+	
+	// The type of the alarm definition in the XML
+	private static final String XML_DOCUMENT_TYPE="AlarmDefinitions";
+	
+	// The FM for the default member
+	private static final String DEFAULT_FM = "*";
+	
+	// The ACS logger
 	Logger logger;
+	
+	ConfigurationAccessor conf;
 	String surveillanceAlarmId;
 	ResponsiblePersonDAO responsiblePersonDAO;
-	SourceDAO sourceDAO;
 	
-	HashMap alarmDefs=new HashMap();
-	HashSet loadedMembers=new HashSet();
+	/** The alarms read out the CDB
+	 *  The CDB contains fault families.
+	 *  The alarms are generated from the fault families.
+	 */
+	private HashMap<String,Alarm> alarmDefs=new HashMap<String,Alarm>();
 	
-	static String getAlarmDefPath(String alarmId)
-	{
-		if (alarmId==null)
-			throw new IllegalArgumentException("null alarmId");
-		
-		String[] tmp=alarmId.split("[:]");
-		if (tmp.length!=3)
-			throw new IllegalStateException("Unrecognized alarm ID: "+alarmId);
-
-		String dev=tmp[1];
-		int hash=dev.indexOf('#');
-		if (hash>=0)
-			dev=dev.substring(0, hash);
-		
-		if (dev.startsWith("/")) {
-			return "/Alarms/AlarmDefinitions"+dev;
-		} else {
-			return "/Alarms/AlarmDefinitions/"+dev;
+	/**
+	 * Source are defined together with alarms
+	 * This HashMap contains all the sources read from CDB
+	 */
+	private HashMap<String, Source> srcDefs = new HashMap<String, Source>();
+	
+	/**
+	 * Constructor 
+	 * 
+	 * @param log The log (not null)
+	 * @param 
+	 */
+	public ACSAlarmDAOImpl(Logger log) {
+		if (log==null) {
+			throw new IllegalArgumentException("Invalid null logger");
 		}
+		logger =log;
 	}
 	
-	static String getAlarmListPath()
-	{
-		return "/Alarms/List";
-	}
-	
-	static String getAlarmLinksPath(String alarmId)
-	{
-		return "/Alarms/ReductionDefinitions";
-	}
-	
-	public void loadAlarms()
-	{		
-		if (conf==null)
+	/**
+	 * Load alarms from CDB.
+	 * 
+	 * Read the alarms by the alarm definitions file of the CDB.
+	 * The initialization of the alarms is not complete at this stage.
+	 * In fact the categories are assigned to alarms when reading the
+	 * categories from the CDB by ACSCategoryDAOImpl
+	 * 
+	 *  
+	 * @throws Exception In case of error while parsing XML definition files
+	 * 
+	 * @see ACSCategoryDAOImpl
+	 */
+	public void loadAlarms() throws Exception{
+		if (conf==null) {
 			throw new IllegalStateException("Missing dal");
-		
-
-		Thresholds thresholds=null; 
-		String mama;
+		}
+		String xml;
 		try {
-			mama=conf.getConfiguration(getAlarmListPath());
+			xml=conf.getConfiguration(ALARM_DEFINITION_PATH);
+		} catch (Throwable t) {
+			throw new RuntimeException("Couldn't read alarm XML", t);
+		}
+		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+		DocumentBuilder builder;
+		try {
+			builder= factory.newDocumentBuilder();
 		} catch (Exception e) {
-			throw new RuntimeException("Couldn't read alarm list", e);
+			throw new Exception("Error building the DocumentBuilder from the DocumentBuilderFactory",e);
 		}
-		
-		AlarmDefinitionList adl;
+		StringReader stringReader = new StringReader(xml);
+		InputSource inputSource = new InputSource(stringReader);
+		Document doc;
 		try {
-			adl=(AlarmDefinitionList) AlarmDefinitionList.unmarshal(new StringReader(mama));
-		} catch (Exception e1) {
-			throw new RuntimeException("Unable to read "+getAlarmListPath(), e1);
+			doc= builder.parse(inputSource);
+			if (doc==null) {
+				throw new Exception("The builder returned a null Document after parsing");
+			}
+		} catch (Exception e) {
+			throw new Exception("Error parsing XML: "+xml,e);
 		}
-		
-		HashSet allAlarmIDs=new HashSet();
-		HashSet allAlarmDefFiles=new HashSet();
-		HashSet allLinkFiles=new HashSet();
-		
-		AlarmDefinition[] defs=adl.getAlarmDefinition();
-		for (int a=0; a<defs.length; a++) {
-			String member=defs[a].getFaultMember();
-			if (member==null) {
-				member="";
-			}
-			int code=defs[a].getFaultCode();
-			String family=defs[a].getFaultFamily();
-			if (family==null) {
-				family="";
-			}
-			
-			String alarmId=Triplet.toIdentifier(family, member, new Integer(code));
-			allAlarmIDs.add(alarmId);
-			allAlarmDefFiles.add(getAlarmDefPath(alarmId));
-			allLinkFiles.add(getAlarmLinksPath(alarmId));
+		NodeList docChilds = doc.getChildNodes();
+		if (docChilds==null || docChilds.getLength()!=1) {
+			throw new Exception("Malformed xml: only one node (AlarmDefinitions) expected");
 		}
-		
-		alarmDefs=new HashMap();
-		
-		Iterator i=allAlarmDefFiles.iterator();
-		while (i.hasNext()) {
-			String path=(String)i.next();
-			String xml;
+		Node alarmDefNode = docChilds.item(0);
+		if (alarmDefNode==null || alarmDefNode.getNodeName()!=XML_DOCUMENT_TYPE) {
+			throw new Exception("Malformed xml: "+XML_DOCUMENT_TYPE+" not found");
+		}
+		NodeList alarmDefsNodes = alarmDefNode.getChildNodes();
+		Unmarshaller FF_unmarshaller = new Unmarshaller(FaultFamily.class);
+		FF_unmarshaller.setValidation(false);
+		FF_unmarshaller.setWhitespacePreserve(true);
+		Vector<FaultFamily> cdbFamilies= new Vector<FaultFamily>();
+		for (int t=0; t<alarmDefsNodes.getLength(); t++) {
+			Node alarmDef = alarmDefsNodes.item(t);
 			try {
-				xml=conf.getConfiguration(path);
-			} catch (Exception e) {
-				throw new RuntimeException("Failed to read "+path, e);
-			}
-			AlarmDefinitionList realadl;
-			try {
-				realadl=(AlarmDefinitionList) AlarmDefinitionList.unmarshal(new StringReader(xml));
-			} catch (Exception e) {
-				throw new RuntimeException("Failed to read "+path, e);
-			}
-			
-			AlarmDefinition[] realdefs=realadl.getAlarmDefinition();
-			for (int a=0; a<realdefs.length; a++) {
-				AlarmDefinition ad=realdefs[a];
-				AlarmImpl ai=new AlarmImpl();
-				
-				ai.setMultiplicityChildrenIds(new HashSet());
-				ai.setMultiplicityParentIds(new HashSet());
-				ai.setNodeChildrenIds(new HashSet());
-				ai.setNodeParentIds(new HashSet());
-				
-				ai.setAction(ad.getAction());
-				ai.setTriplet(new Triplet(ad.getFaultFamily(), ad.getFaultMember(), new Integer(ad.getFaultCode())));
-				ai.setCategories(new HashSet());
-				ai.setCause(ad.getCause());
-				ai.setConsequence(ad.getConsequence());
-				try {
-					ai.setHelpURL(new URL(ad.getHelpUrl()));
-				} catch (MalformedURLException e) {
-					ai.setHelpURL(null);
+				FaultFamily family = (FaultFamily) FF_unmarshaller.unmarshal(alarmDef);
+				if (family==null) {
+					throw new Exception("Error unmarshalling a family node");
 				}
-				//ai.setDefinition(null);
-				ai.setInstant(ad.getInstant()?Boolean.TRUE:Boolean.FALSE);
-				ai.setLocation(theLocation);
-				ai.setPiquetEmail(ad.getPiquetEmail());
-				ai.setPiquetGSM(ad.getPiquetGSM());
-				ai.setPriority(new Integer(ad.getPriority()));
-				ai.setResponsiblePerson(responsiblePersonDAO.getResponsiblePerson(new Integer(ad.getResponsibleId())));
-				ai.setSource(sourceDAO.findSource(ad.getSourceName()));
-				
-				alarmDefs.put(ai.getAlarmId(), ai);
+				cdbFamilies.add(family);
+			} catch (Exception e) {
+				throw new Exception("Error parsing "+alarmDef.getNodeName(),e);
 			}
 		}
+		generateAlarmsMap(cdbFamilies);
 		
-		ArrayList links=new ArrayList();
-		
-		i=allLinkFiles.iterator();
-		while (i.hasNext()) {
-			String path=(String)i.next();
-			String xml;
-			try {
-				xml=conf.getConfiguration(path);
-			} catch (Exception e) {
-				throw new RuntimeException("Couldn't read "+path, e);
-			}
-			ReductionDefinitions rds;
-			try {
-				rds=(ReductionDefinitions) ReductionDefinitions.unmarshal(new StringReader(xml));
-			} catch (Exception e) {
-				throw new RuntimeException("Couldn't parse "+path, e);
-			}
+		loadReductionRules();
+	}
+	
+	/**
+	 * Generate the alarms from the definition of the fault families.
+	 * The alarms will be added into the HashMap with their triplet as key.
+	 * The default item has FM="*".
+	 * 
+	 * The sources read from the families are also added to the HashMap of the sources
+	 *  
+	 * @param families The FF read from the CDB
+	 */
+	private void generateAlarmsMap(Vector<FaultFamily> families) {
+		if (families==null) {
+			throw new IllegalArgumentException("Invalid null vector of FFs");
+		}
+		for (FaultFamily family: families) {
+			String FF= family.getName();
+			String helpUrl = family.getHelpUrl();
+			String source = family.getAlarmSource();
+			Contact contactPerson = family.getContact();
+			FaultMember[] FMs = family.getFaultMember();
+			FaultMemberDefault defaultFM = family.getFaultMemberDefault();
+			FaultCode[] FCs = family.getFaultCode();
+			// Iterate over all the FMs
+			for (FaultMember member: FMs) {
+				alma.acs.alarmsystem.generated.Location loc = member.getLocation();
+				if (loc==null) {
+					loc = new alma.acs.alarmsystem.generated.Location();
+				}
+				if (loc.getBuilding()==null) {
+					loc.setBuilding("");
+				}
+				if (loc.getFloor()==null) {
+					loc.setFloor("");
+				}
+				if (loc.getMnemonic()==null) {
+					loc.setMnemonic("");
+				}
+				if (loc.getPosition()==null) {
+					loc.setPosition("");
+				}
+				if (loc.getRoom()==null) {
+					loc.setRoom("");
+				}
 			
-			// Read the links to create from the CDB
-			LinksToCreate ltc=rds.getLinksToCreate();
-			//	Read the thresholds from the CDB
-			thresholds = rds.getThresholds();;
-			if (ltc!=null) { 
-				ReductionLink[] rls=ltc.getReductionLink();
-				for (int a=0; a<rls.length; a++) {
-					ReductionLink link=rls[a];
-					Parent p=link.getParent();
-					Child c=link.getChild();
-					if (p==null || c==null) {
-						throw new RuntimeException("Missing child or parent in a reduction link");
-					}
-					boolean isMulti;
-					if ("MULTIPLICITY".equals(link.getType())) {
-						isMulti=true;
-					} else
-					if ("NODE".equals(link.getType())) {
-						isMulti=false;
-					} else {
-						throw new RuntimeException("Unknown reduction-link type: "+link.getType());
+				String FM = member.getName();
+				if (FM.equals(DEFAULT_FM)) {
+					logger.log(AcsLogLevel.ERROR,"In the CDB, FM="+DEFAULT_FM+" in family "+FF+" is not allowed");
+				}
+				for (FaultCode code: FCs) {
+					int FC=code.getValue();
+					int priority = code.getPriority();
+					String action = code.getAction();
+					String cause = code.getCause();
+					String consequence = code.getConsequence();
+					String problemDesc = code.getProblemDescription();
+					boolean instant = code.getInstant();
+					AlarmImpl alarm = new AlarmImpl(); 
+					
+					alarm.setMultiplicityChildrenIds(new HashSet());
+					alarm.setMultiplicityParentIds(new HashSet());
+					alarm.setNodeChildrenIds(new HashSet());
+					alarm.setNodeParentIds(new HashSet());
+					
+					alarm.setAction(action);
+					alarm.setTriplet(new Triplet(FF, FM, FC));
+					alarm.setCategories(new HashSet<Category>());
+					alarm.setCause(cause);
+					alarm.setConsequence(consequence);
+					alarm.setProblemDescription(problemDesc);
+					try {
+						alarm.setHelpURL(new URL(helpUrl));
+					} catch (MalformedURLException e) {
+						alarm.setHelpURL(null);
 					}
 					
-					if (p.getAlarmDefinition()==null || c.getAlarmDefinition()==null)
-						throw new RuntimeException("Missing alarm-definition in child or parent");
+					alarm.setInstant(instant);
+					Location location = new Location("0",loc.getFloor(),loc.getMnemonic(),loc.getPosition(),loc.getRoom());
+					alarm.setLocation(location);
+					alarm.setPiquetEmail(contactPerson.getEmail());
+					alarm.setPiquetGSM(contactPerson.getGsm());
+					alarm.setPriority(priority);
+					ResponsiblePerson responsible = new ResponsiblePerson(0,contactPerson.getName(),"",contactPerson.getEmail(),contactPerson.getGsm(),"");
+					alarm.setResponsiblePerson(responsible);
+					SourceDefinition srcDef = new SourceDefinition(source,"SOURCE","",15,1);
+					Source src = new Source(srcDef,responsible);
+					alarm.setSource(src);
+					alarm.setIdentifier(alarm.getTriplet().toIdentifier());
 					
-					links.add(new LinkSpec(toMatcher(p.getAlarmDefinition()), toMatcher(c.getAlarmDefinition()), isMulti));
+					alarmDefs.put(alarm.getAlarmId(), alarm);
+					if (!srcDefs.containsKey(source)) {
+						srcDefs.put(src.getSourceId(),src);
+						logger.log(AcsLogLevel.DEBUG,"Source "+src.getName()+" (id="+src.getSourceId()+") added");
+					}
+					
+					logger.log(AcsLogLevel.DEBUG,"Alarm added "+alarm.getAlarmId());
+					
+					// Add the default
+					if (defaultFM!=null) {
+						AlarmImpl defaultAlarm = new AlarmImpl(); 
+						
+						defaultAlarm.setMultiplicityChildrenIds(new HashSet());
+						defaultAlarm.setMultiplicityParentIds(new HashSet());
+						defaultAlarm.setNodeChildrenIds(new HashSet());
+						defaultAlarm.setNodeParentIds(new HashSet());
+						
+						defaultAlarm.setAction(action);
+						defaultAlarm.setCategories(new HashSet<Category>());
+						defaultAlarm.setCause(cause);
+						defaultAlarm.setConsequence(consequence);
+						defaultAlarm.setProblemDescription(problemDesc);
+						try {
+							defaultAlarm.setHelpURL(new URL(helpUrl));
+						} catch (MalformedURLException e) {
+							defaultAlarm.setHelpURL(null);
+						}
+						
+						defaultAlarm.setInstant(instant);
+						location = new Location("0",loc.getFloor(),loc.getMnemonic(),loc.getPosition(),loc.getRoom());
+						defaultAlarm.setLocation(location);
+						defaultAlarm.setPiquetEmail(contactPerson.getEmail());
+						defaultAlarm.setPiquetGSM(contactPerson.getGsm());
+						defaultAlarm.setPriority(priority);
+						responsible = new ResponsiblePerson(0,contactPerson.getName(),"",contactPerson.getEmail(),contactPerson.getGsm(),"");
+						defaultAlarm.setResponsiblePerson(responsible);
+						srcDef = new SourceDefinition(source,"SOURCE","",15,1);
+						src = new Source(srcDef,responsible);
+						defaultAlarm.setSource(src);
+						defaultAlarm.setIdentifier(defaultAlarm.getTriplet().toIdentifier());
+						Triplet triplet = new Triplet(FF,DEFAULT_FM,FC);
+						defaultAlarm.setTriplet(triplet);
+						defaultAlarm.setIdentifier(triplet.toIdentifier());
+						alarmDefs.put(defaultAlarm.getAlarmId(), defaultAlarm);
+						logger.log(AcsLogLevel.DEBUG,"Default alarm added "+defaultAlarm.getAlarmId());
+					}
 				}
 			}
 		}
+	}
+	
+	/**
+	 * Load the reduction rules from the CDB.
+	 * 
+	 * Read the reduction rules from the CDB and set up the alarms accordingly
+	 */
+	private void loadReductionRules()
+	{		
+		if (conf==null) {
+			throw new IllegalStateException("Missing dal");
+		}
 		
-		Collection cc=alarmDefs.values();
+		// The reduction rules (<parent, child>)
+		ArrayList<LinkSpec> reductionRules=new ArrayList<LinkSpec>();
+		
+		String xml;
+		try {
+			xml=conf.getConfiguration(REDUCTION_DEFINITION_PATH);
+		} catch (Exception e) {
+			throw new RuntimeException("Couldn't read "+REDUCTION_DEFINITION_PATH, e);
+		}
+		ReductionDefinitions rds;
+		try {
+			rds=(ReductionDefinitions) ReductionDefinitions.unmarshal(new StringReader(xml));
+		} catch (Exception e) {
+			throw new RuntimeException("Couldn't parse "+REDUCTION_DEFINITION_PATH, e);
+		}
+		
+		// Read the links to create from the CDB
+		LinksToCreate ltc=rds.getLinksToCreate();
+		//	Read the thresholds from the CDB
+		Thresholds thresholds = rds.getThresholds();
+		if (ltc!=null) { 
+			ReductionLink[] rls=ltc.getReductionLink();
+			for (ReductionLink link: rls) {
+				Parent p=link.getParent();
+				Child c=link.getChild();
+				if (p==null || c==null) {
+					throw new RuntimeException("Missing child or parent in a reduction link");
+				}
+				boolean isMulti;
+				if ("MULTIPLICITY".equals(link.getType())) {
+					isMulti=true;
+				} else
+				if ("NODE".equals(link.getType())) {
+					isMulti=false;
+				} else {
+					throw new RuntimeException("Unknown reduction-link type: "+link.getType());
+				}
+				
+				if (p.getAlarmDefinition()==null || c.getAlarmDefinition()==null)
+					throw new RuntimeException("Missing alarm-definition in child or parent");
+				
+				LinkSpec newRule =new LinkSpec(toMatcher(p.getAlarmDefinition()), toMatcher(c.getAlarmDefinition()), isMulti);
+				reductionRules.add(newRule);
+				StringBuffer buf = new StringBuffer();
+				buf.replace(0, buf.length(), "");
+				if (newRule.isMultiplicity) {
+					buf.append("Found MULTIPLICITY RR: parent <");
+				} else {
+					buf.append("Found NODE RR: parent=<");
+				}
+				buf.append(newRule.parent.family+", "+newRule.parent.member+", "+newRule.parent.minCode+"-"+newRule.parent.minCode+">");
+				buf.append(" child=<"+newRule.child.family+", "+newRule.child.member+", "+newRule.child.minCode+"-"+newRule.child.minCode+">");
+				logger.log(AcsLogLevel.DEBUG,buf.toString());
+			}
+		}
+		logger.log(AcsLogLevel.DEBUG,reductionRules.size()+" reduction rules read from CDB");
+		
+		Collection<Alarm> cc=alarmDefs.values();
 		AlarmImpl[] allAlarms=new AlarmImpl[cc.size()];
 		cc.toArray(allAlarms);
 		
-		LinkSpec[] ls=new LinkSpec[links.size()];
-		links.toArray(ls);
+		LinkSpec[] ls=new LinkSpec[reductionRules.size()];
+		reductionRules.toArray(ls);
 		
 		int num=allAlarms.length;
 		int numls=ls.length;
 		
 		for (int a=0; a<num; a++) {
 			AlarmImpl parent=allAlarms[a];
-			for (int b=0; b<numls; b++) {
-				LinkSpec lsb;
-				if ((lsb=ls[b]).matchParent(parent)) {
+			for (LinkSpec lsb: ls) {
+				if (lsb.matchParent(parent)) {
 					AlarmRefMatcher childMatcher=lsb.child;
 					boolean isMulti=lsb.isMultiplicity();
 					for (int c=0; c<num; c++) {
-						if (a==c)
+						if (a==c) {
 							continue;
-						AlarmImpl aic;
-						if (childMatcher.isMatch(aic=allAlarms[c])) {
+						}
+						AlarmImpl aic=allAlarms[c];
+						if (childMatcher.isMatch(aic)) {
 							if (isMulti) {
 								parent.addMultiplicityChild(aic);
+								logger.log(AcsLogLevel.DEBUG,"Added MULTI RR node child "+aic.getAlarmId()+" to "+parent.getAlarmId());
 							} else {
 								parent.addNodeChild(aic);
+								logger.log(AcsLogLevel.DEBUG,"Added NODE RR node child "+aic.getAlarmId()+" to "+parent.getAlarmId());
 							}
-						}
+						} 
 					}
-				}
+				}  
 			}
 		}
 		
 		if (thresholds!=null && thresholds.getThresholdCount()>0) {
 			Threshold[] ta = thresholds.getThreshold();
-			for (int a=0; a<num; a++) {
-				System.out.println("Checking threshold for "+allAlarms[a].getAlarmId());
-				String aFF = allAlarms[a].getTriplet().getFaultFamily();
-				String aFM = allAlarms[a].getTriplet().getFaultMember();
-				Integer aFC= allAlarms[a].getTriplet().getFaultCode();
-				for (int t=0; t<ta.length; t++) {
-					String rFF=ta[t].getAlarmDefinition().getFaultFamily();
-					String rFM=ta[t].getAlarmDefinition().getFaultMember();
-					int rFC=ta[t].getAlarmDefinition().getFaultCode();
-					int thresholdVal = ta[t].getValue();
-					if (aFF.equals(rFF) && aFM.equals(rFM) && aFC==rFC) {
-						System.out.println("*** Setting threshold = "+thresholdVal+" to "+allAlarms[a].getAlarmId());
-						allAlarms[a].setMultiplicityThreshold(thresholdVal);
+			for (AlarmImpl alarm: allAlarms) {
+				String alarmFF = alarm.getTriplet().getFaultFamily();
+				String alarmFM = alarm.getTriplet().getFaultMember();
+				Integer alarmFC= alarm.getTriplet().getFaultCode();
+				for (Threshold threshold: ta) {
+					String thresholdFF=threshold.getAlarmDefinition().getFaultFamily();
+					String thresholdFM=threshold.getAlarmDefinition().getFaultMember();
+					int thresholdFC=threshold.getAlarmDefinition().getFaultCode();
+					int thresholdVal = threshold.getValue();
+					if (alarmFF.equals(thresholdFF) && alarmFM.equals(thresholdFM) && alarmFC==thresholdFC) {
+						alarm.setMultiplicityThreshold(thresholdVal);
+						logger.log(AcsLogLevel.DEBUG,"Threshold = "+thresholdVal+" set in alarm "+alarm.getAlarmId());
 					}
 				}
 			}
@@ -543,22 +720,65 @@ public class ACSAlarmDAOImpl implements AlarmDAO
 	{
 		Alarm res=getAlarm(alarmId);
 		
-		if (res==null)
+		if (res==null) {
 			throw new LaserObjectNotFoundException("Alarm ID "+alarmId+" expected, but not found");
+		}
 
 		return res;
 	}
 
+	/**
+	 * Get an alarm from the cache.
+	 * 
+	 * Get an alarm from the cache. If the alarm with the given triplet is not in the cache then it
+	 * looks for a default alarm before returning null.
+	 * 
+	 * If a default alarm is found, then a new alarm is created by cloning the default alarm.
+	 * The triplet of this new alarm is set to be equal to the passed alarm ID.
+	 * 
+	 * @param alarmId The ID of the alarm
+	 * @return An alarm with the given ID if it exists in the CDB
+	 * 	       If an alarm with the give ID does not exist but a matching default alarm
+	 *         is defined then it return a clone of the default alarm
+	 *         null If the alarm is not defined in the CDB and a default alarm does not exist
+	 *         
+	 * 
+	 */
 	public Alarm getAlarm(String alarmId)
 	{
-		if (conf==null)
+		if (conf==null) {
 			throw new IllegalStateException("Missing dal");
-
-		// get(id)!=null is not OK - there could be a null value 
-		// if (alarmDefs.containsKey(alarmId))
-			return (Alarm)alarmDefs.get(alarmId);
+		}
+		if (alarmId==null) {
+			throw new IllegalArgumentException("Invalid null alarm ID");
+		}
 		
-		//throw new UnsupportedOperationException("Incremental loading not implemented yet");
+		AlarmImpl alarm =(AlarmImpl)alarmDefs.get(alarmId);
+		if (alarm==null) {
+			// The alarm is not in the HashMap
+			// 
+			// Does it exist a default alarm?
+			String[] tripletItems = alarmId.split(":");
+			if (tripletItems.length!=3) {
+				logger.log(AcsLogLevel.ERROR,"Malformed alarm ID: "+alarmId);
+				return null;
+			}
+			// Build the default alarm ID by replacing the FM with DEFAULT_FM
+			String defaultTripletID=tripletItems[0]+":"+DEFAULT_FM+":"+tripletItems[2];
+			logger.log(AcsLogLevel.DEBUG,alarmId+" not found: looking for default alarm "+defaultTripletID);
+			AlarmImpl defaultalarm=(AlarmImpl)alarmDefs.get(defaultTripletID);
+			if (defaultalarm==null) {
+				// No available default alarm for this triplet
+				logger.log(AcsLogLevel.WARNING,"No default alarm found for "+alarmId);
+				return null;
+			}
+			logger.log(AcsLogLevel.DEBUG,"Default alarm found for "+alarmId);
+			alarm=(AlarmImpl)defaultalarm.clone();
+			Triplet alarmTriplet = new Triplet(tripletItems[0],tripletItems[1],Integer.parseInt(tripletItems[2]));
+			alarm.setTriplet(alarmTriplet);
+		}
+		return alarm;
+		
 	}
 	
 	Building loadBuilding(String buildingID)
@@ -769,16 +989,21 @@ public class ACSAlarmDAOImpl implements AlarmDAO
 		this.responsiblePersonDAO=responsiblePersonDAO;
 	}
 	
-	public void setSourceDAO(SourceDAO sourceDAO)
-	{
-		this.sourceDAO=sourceDAO;
-	}
-	
 	public String[] getAllAlarmIDs()
 	{
 		Set keyset=alarmDefs.keySet();
 		String[] result=new String[keyset.size()];
 		keyset.toArray(result);
 		return result;
+	}
+	
+	/**
+	 * Getter method
+	 * 
+	 * @return The sources
+	 */
+	public HashMap<String,Source> getSources() {
+		return srcDefs;
+		
 	}
 }
