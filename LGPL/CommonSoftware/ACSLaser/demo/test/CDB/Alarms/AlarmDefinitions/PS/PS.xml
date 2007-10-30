@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<aas:fault-family name="PS" xmlns:aas="urn:schemas-acs:AcsAlarmSystem:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:schemas-acs:AcsAlarmSystem:1.0 ../../../acsalarm-fault-family.xsd ">
-  <aas:alarm-source>ALARM_SYSTEM_SOURCES</aas:alarm-source>
-  <aas:help-url>http://tempuri.org</aas:help-url>
-  <aas:contact name="Alessandro"/>
-  <aas:fault-code value="1">
-    <aas:priority>2</aas:priority>
-    <aas:problem-description>PS test alarm</aas:problem-description>
-  </aas:fault-code>
-  <aas:fault-member name="ALARM_SOURCE_PS">
-  </aas:fault-member>
-</aas:fault-family>
+<fault-family name="PS" xmlns="urn:schemas-cosylab-com:acsalarm-fault-family:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alarm-source>ALARM_SYSTEM_SOURCES</alarm-source>
+  <help-url>http://tempuri.org</help-url>
+  <contact name="Alessandro"/>
+  <fault-code value="1">
+    <priority>2</priority>
+    <problem-description>PS test alarm</problem-description>
+  </fault-code>
+  <fault-member name="ALARM_SOURCE_PS">
+  </fault-member>
+</fault-family>

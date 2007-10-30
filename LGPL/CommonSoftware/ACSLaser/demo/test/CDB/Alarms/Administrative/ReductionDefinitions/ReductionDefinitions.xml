@@ -12,23 +12,15 @@
    xmlns="urn:schemas-cosylab-com:AcsAlarmSystem:1.0"
    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
-	<links-to-create> 
-		<reduction-link type="NODE">
-			<parent>
-				<alarm-definition fault-family="ROdouble" fault-member="ALARM_SOURCE_A#current" fault-code="1"/>
-			</parent>
-			<child>
-				<alarm-definition fault-family="AlarmSource" fault-member="ALARM_SOURCE_A" fault-code="1"/>
-			</child>
-		</reduction-link>
+	<links-to-create>
 
 		<reduction-link type="NODE">
 		<parent>
-		<alarm-definition fault-family="AlarmSource"
+		<alarm-definition fault-family="PS"
 		fault-member="ALARM_SOURCE_PS" fault-code="1"/>
 		</parent>
 		<child>
-		<alarm-definition fault-family="AlarmSource"
+		<alarm-definition fault-family="Mount"
 		fault-member="ALARM_SOURCE_MOUNT" fault-code="1"/>
 		</child>
 		</reduction-link>
@@ -45,53 +37,50 @@
 		
 		<reduction-link type="MULTIPLICITY">
 			<parent>
-				<alarm-definition fault-family="AlarmSource" fault-member="MULTIPLE_MF_FAILURES" fault-code="1"/>
+				<alarm-definition fault-family="MF" fault-member="MULTIPLE_MF_FAILURES" fault-code="1"/>
 			</parent>
 			<child>
-				<alarm-definition fault-family="AlarmSource" fault-member="ALARM_SOURCE_MF" fault-code="1"/>
+				<alarm-definition fault-family="MF" fault-member="ALARM_SOURCE_MF" fault-code="1"/>
 			</child>
 		</reduction-link>
 		<reduction-link type="MULTIPLICITY">
 			<parent>
-				<alarm-definition fault-family="AlarmSource" fault-member="MULTIPLE_MF_FAILURES" fault-code="1"/>
+				<alarm-definition fault-family="MF" fault-member="MULTIPLE_MF_FAILURES" fault-code="1"/>
 			</parent>
 			<child>
-				<alarm-definition fault-family="AlarmSource" fault-member="ALARM_SOURCE_MF" fault-code="2"/>
+				<alarm-definition fault-family="MF" fault-member="ALARM_SOURCE_MF" fault-code="2"/>
 			</child>
 		</reduction-link>
 		<reduction-link type="MULTIPLICITY">
 			<parent>
-				<alarm-definition fault-family="AlarmSource" fault-member="MULTIPLE_MF_FAILURES" fault-code="1"/>
+				<alarm-definition fault-family="MF" fault-member="MULTIPLE_MF_FAILURES" fault-code="1"/>
 			</parent>
 			<child>
-				<alarm-definition fault-family="AlarmSource" fault-member="ALARM_SOURCE_MF" fault-code="3"/>
+				<alarm-definition fault-family="MF" fault-member="ALARM_SOURCE_MF" fault-code="3"/>
 			</child>
 		</reduction-link>
 		<reduction-link type="MULTIPLICITY">
 			<parent>
-				<alarm-definition fault-family="AlarmSource" fault-member="MULTIPLE_MF_FAILURES" fault-code="1"/>
+				<alarm-definition fault-family="MF" fault-member="MULTIPLE_MF_FAILURES" fault-code="1"/>
 			</parent>
 			<child>
-				<alarm-definition fault-family="AlarmSource" fault-member="ALARM_SOURCE_MF" fault-code="4"/>
+				<alarm-definition fault-family="MF" fault-member="ALARM_SOURCE_MF" fault-code="4"/>
 			</child>
 		</reduction-link>
 		<reduction-link type="MULTIPLICITY">
 			<parent>
-				<alarm-definition fault-family="AlarmSource" fault-member="MULTIPLE_MF_FAILURES" fault-code="1"/>
+				<alarm-definition fault-family="MF" fault-member="MULTIPLE_MF_FAILURES" fault-code="1"/>
 			</parent>
 			<child>
-				<alarm-definition fault-family="AlarmSource" fault-member="ALARM_SOURCE_MF" fault-code="5"/>
+				<alarm-definition fault-family="MF" fault-member="ALARM_SOURCE_MF" fault-code="5"/>
 			</child>
 		</reduction-link>
 		
 	</links-to-create>
 
 		<thresholds>
-		<threshold value="2">
-			<alarm-definition fault-family="System" fault-member="ALARM_SOURCES" fault-code="1"/>
-		</threshold>
 		<threshold value="3">
-			<alarm-definition fault-family="AlarmSource" fault-member="MULTIPLE_MF_FAILURES" fault-code="1"/>
+			<alarm-definition fault-family="MF" fault-member="MULTIPLE_MF_FAILURES" fault-code="1"/>
 		</threshold>
 	</thresholds>
 </reduction-definitions>
