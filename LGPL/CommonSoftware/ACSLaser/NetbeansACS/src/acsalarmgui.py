@@ -277,7 +277,8 @@ acsRequiredJars= [ \
 	   "acsASsources.jar",\
 	   "cdbErrType.jar",\
 	   "JavaContainerError.jar",\
-           "selector-1.1.jar"]
+           "selector-1.1.jar",
+	   "acsalarmSchemaBindings.jar" ]
            
 # The properties for the Java Virtual Machine
 jvmProps = [ 
@@ -307,8 +308,7 @@ laserJars = [  "log4j-1.2.8.jar", \
               "laserdefinition.jar", \
               "laserutil.jar", \
               "ACSJMSMessageEntity.jar", \
-              "AlarmSystem.jar", \
-              "ACSAlarmMessage.jar" ]
+              "AlarmSystem.jar"]
               
 # All the jars are installed in this directory of the user
 # before launching the GUI
