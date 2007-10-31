@@ -8,6 +8,7 @@ package com.cosylab.acs.alarm;
 
 import alma.acs.component.ComponentLifecycleException;
 
+import com.cosylab.acs.laser.dao.ACSAlarmDAOImpl;
 import com.cosylab.acs.laser.dao.ACSCategoryDAOImpl;
 import com.cosylab.acs.laser.dao.ConfigurationAccessor;
 import com.cosylab.acs.laser.dao.ConfigurationAccessorFactory;
@@ -21,7 +22,8 @@ import com.cosylab.acs.laser.dao.ConfigurationAccessorFactory;
  */
 public class ACSCategoryDAOTest extends AlarmTestBase
 {
-	ACSCategoryDAOImpl categoryDAO;
+	private ACSCategoryDAOImpl categoryDAO;
+	private ACSAlarmDAOImpl alarmDAO;
 	
 	public ACSCategoryDAOTest()
 	{
@@ -39,7 +41,8 @@ public class ACSCategoryDAOTest extends AlarmTestBase
 		ConfigurationAccessor conf;
 		conf = ConfigurationAccessorFactory.getInstance(client.getContainerServices());
 		
-		categoryDAO = new ACSCategoryDAOImpl();
+		alarmDAO=new ACSAlarmDAOImpl(log);
+		categoryDAO = new ACSCategoryDAOImpl(log,alarmDAO);
 		categoryDAO.setConfAccessor(conf);
 	}
 		
