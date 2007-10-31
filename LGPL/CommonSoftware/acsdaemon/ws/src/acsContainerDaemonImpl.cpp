@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsContainerDaemonImpl.cpp,v 1.4 2007/10/15 22:13:46 nbarriga Exp $"
+* "@(#) $Id: acsContainerDaemonImpl.cpp,v 1.5 2007/10/31 13:59:33 ntroncos Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -214,8 +214,8 @@ ACSContainerDaemonImpl::start_container (
     std::string containerName(container_name);
     std::string::size_type pos=containerName.rfind("/"); 
     if(pos != std::string::npos){
-    	logDirectory.append(containerName,0,pos);
-    	containerName.erase(0,pos);
+    	logDirectory.append(containerName,0,pos+1);
+    	containerName.erase(0,pos+1);
     }
     //create the directory
     std::string mkdir("mkdir -p ");
