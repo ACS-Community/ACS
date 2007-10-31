@@ -19,7 +19,7 @@
 
 /** 
  * @author  acaproni   
- * @version $Id: CategorySubscriber.java,v 1.2 2007/09/28 10:41:26 acaproni Exp $
+ * @version $Id: CategorySubscriber.java,v 1.3 2007/10/31 14:28:37 acaproni Exp $
  * @since    
  */
 
@@ -187,6 +187,15 @@ public class CategorySubscriber   implements MessageListener {
 				Node priNode = childNode.getLastChild();
 				cause=priNode.getNodeValue();
 			}
+			// This tag sometimes appear inside visualFields (see below)
+			if (childNode.getNodeName().equals("problemDescription")) {
+				Node dateNode=childNode.getLastChild();
+				if (dateNode!=null) {
+					description=dateNode.getNodeValue();
+				} else {
+					description="N/A";
+				}
+			}
 			if (childNode.getNodeName().equals(("status"))) {
 				NodeList statusNodeList=childNode.getChildNodes();
 				for (int j=0; j<statusNodeList.getLength(); j++) {
@@ -207,6 +216,7 @@ public class CategorySubscriber   implements MessageListener {
 					}
 				}	
 			}
+			// Sometimes problemDescription appeared into visualFields
 			if (childNode.getNodeName().equals("visualFields")) {
 				NodeList visualFieldsNodeList=childNode.getChildNodes();
 				for (int m=0; m<visualFieldsNodeList.getLength(); m++) {
