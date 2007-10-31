@@ -42,7 +42,7 @@ public class MFImpl extends ComponentImplBase implements MFOperations {
 	private final int FC=0;
 	
 	private ACSAlarmSystemInterface alarmSource=null;
-	private ACSFaultState[] faultStates=null;;
+	private ACSFaultState[] faultStates=null;
 	
 	/**
 	 * Init i.e. create the fault state and the source
