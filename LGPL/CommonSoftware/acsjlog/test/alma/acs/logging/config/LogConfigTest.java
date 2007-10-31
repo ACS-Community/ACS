@@ -5,7 +5,6 @@ import junit.framework.TestCase;
 import alma.acs.logging.ACSCoreLevel;
 import alma.acs.testsupport.TestLogger;
 import alma.maci.loggingconfig.LoggingConfig;
-import alma.maci.loggingconfig.NamedLogger;
 import alma.maci.loggingconfig.UnnamedLogger;
 
 public class LogConfigTest extends TestCase {
@@ -40,7 +39,7 @@ public class LogConfigTest extends TestCase {
 	}
 	
 	/**
-	 * Tests adding and removing of subscribers, and whether {@link LogConfig#initialize()}
+	 * Tests adding and removing of subscribers, and whether {@link LogConfig#initialize(boolean)}
 	 * triggers correctly the notification of these subscribers. 
 	 */
 	public void testSubscriberNotification() throws LogConfigException {
@@ -49,7 +48,7 @@ public class LogConfigTest extends TestCase {
 		for (int i = 0; i < numSubscribers; i++) {
 			configSubscribers[i] = new CountingLogConfigSubscriber();
 			logConfig.addSubscriber(configSubscribers[i]);
-			// as a stupid client we add some subscribers again but expect this to have no effect
+			// as a stupid client we add some subscribers again but expect this to have no side effect
 			if (i%2 == 0) {
 				logConfig.addSubscriber(configSubscribers[i]);
 			}
@@ -59,7 +58,7 @@ public class LogConfigTest extends TestCase {
 			assertEquals(1, configSubscribers[i].count);
 		}
 		
-		// now remove a few subscribers and assert they don't get called again, and that the remaining ones get called twice
+		// now remove a few subscribers and assert they don't get called again, and that the remaining ones get called again
 		int numRemainingSubscribers = 3;
 		assertTrue(numSubscribers > numRemainingSubscribers);
 		for (int i = 0; i < numSubscribers - numRemainingSubscribers; i++) {
@@ -103,7 +102,7 @@ public class LogConfigTest extends TestCase {
 //		assertNotSame(defaultLogConfig, defaultLogConfig2); // commented out because currently we don't copy/hide the instance
 		assertEquals(defaultLogConfig, defaultLogConfig2);
 
-		UnnamedLogger namedLogConfig1 = logConfig.getNamedLoggerConfig(null);
+		UnnamedLogger namedLogConfig1 = logConfig.getNamedLoggerConfig(null); // name=null should yield default config
 		assertEquals(defaultLogConfig.getMinLogLevel(), namedLogConfig1.getMinLogLevel());
 		assertEquals(defaultLogConfig.getMinLogLevelLocal(), namedLogConfig1.getMinLogLevelLocal());
 		
@@ -112,7 +111,6 @@ public class LogConfigTest extends TestCase {
 		assertEquals(namedLogConfig1.getMinLogLevel(), namedLogConfig2.getMinLogLevel());
 		assertEquals(namedLogConfig1.getMinLogLevelLocal(), namedLogConfig2.getMinLogLevelLocal());
 	}
-	
 	
 	/**
 	 * 
@@ -133,23 +131,39 @@ public class LogConfigTest extends TestCase {
                                "<log:_ Name=\"MyMuteComponent\" minLogLevel=\"5\" minLogLevelLocal=\"6\" />" +
                           "</LoggingConfig>" +
                     "</Container>";
-        		
+        
 		TestCDB testCDB = new TestCDB();
 		testCDB.addCurlToXmlMapping(cdbContainerPath, frodoContainerXml);
 		
 		logConfig.setCDBLoggingConfigPath(cdbContainerPath);
-		logConfig.setCDB(testCDB);
-		
+		logConfig.setCDB(testCDB);		
 		logConfig.initialize(true);
 
 		LoggingConfig updatedConfig = logConfig.getLoggingConfig();
 		assertEquals("LogForFrodo", updatedConfig.getCentralizedLogger());
 		assertEquals(7, updatedConfig.getImmediateDispatchLevel());
 		assertEquals(33, updatedConfig.getDispatchPacketSize());		
-		assertEquals(10, updatedConfig.getFlushPeriodSeconds()); // was not in CDB, thus default should be used		
+		assertEquals(10, updatedConfig.getFlushPeriodSeconds()); // was not in CDB, thus default should be used
+		assertEquals(2, updatedConfig.getMinLogLevel());
+		assertEquals(3, updatedConfig.getMinLogLevelLocal());
+		
+		UnnamedLogger myMuteloggerConfig = logConfig.getNamedLoggerConfig("MyMuteComponent");
+		assertEquals(5, myMuteloggerConfig.getMinLogLevel());
+		assertEquals(6, myMuteloggerConfig.getMinLogLevelLocal());
 		
 		// TODO: test logConfig.setCDBComponentPath() with some real XML added to the test CDB, once this is implemented
+		// Problem currently is that <_> elements for each component can't be accessed. 
+		String componentsXml =
+			"<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?> " +
+			"<Components xmlns=\"urn:schemas-cosylab-com:Components:1.0\" xmlns:cdb=\"urn:schemas-cosylab-com:CDB:1.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"> " +
+			createComponentsCdbXml("testComp1", "IDL_TYPE_1", "some.class", "zampaione", true, 0, 8) +
+			"</Components>";
+//		String cdbComponentsPath = "MACI/Components";
+//		logConfig.setCDBComponentPath(compLoggerName, cdbComponentsPath)
+		
+		
 	}
+	
 	
 	
 	/**
@@ -198,5 +212,22 @@ public class LogConfigTest extends TestCase {
 		
 	}
 	
+	////////////////////////////////////////////////
+	//      helper methods 
+	////////////////////////////////////////////////
+	
+	private String createComponentsCdbXml(String compName, String type, String code, String container, boolean configureLogger, int minLogLevel, int minLogLevelLocal) {
+		String xml = 
+			"<_ Name=\"" + compName + "\"" +
+			"   Type=\"" + type + "\"" +
+			"   Code=\"" + code + "\"" +
+			"   Container=\"" + container + "\">";
+		if (configureLogger) {
+			xml += 
+			"<ComponentLogger minLogLevel=\"" + minLogLevel + "\" minLogLevelLocal=\"" + minLogLevelLocal + "\" />";
+		}
+		xml += "</_>";
+		return xml;
+	}
 }
 
