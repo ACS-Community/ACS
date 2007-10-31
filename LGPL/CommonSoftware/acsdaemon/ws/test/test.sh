@@ -23,17 +23,53 @@ if [ $? -ne 0 ]; then
     echo "FAILED - starting ACS"
     FLAG=1
 fi
-acsdaemonStartContainer -t cpp -c bilboContainer -i 0 &> startContainer.log
+acsdaemonStartContainer -t cpp -c bilboContainer -i 0 &> startbilboContainer.log
 if [ $? -ne 0 ]; then
     echo "FAILED - starting bilboContainer"
+    FLAG=1
+fi
+sleep 10
+acsdaemonStartContainer -t cpp -c ARCHIVE/ACC/cppContainer -i 0 &> startcppContainer.log
+if [ $? -ne 0 ]; then
+    echo "FAILED - starting ARCHIVE/ACC/cppContainer"
+    FLAG=1
+fi
+sleep 10
+acsdaemonStartContainer -t java -c ARCHIVE/ACC/javaContainer -i 0 &> startjavaContainer.log
+if [ $? -ne 0 ]; then
+    echo "FAILED - starting ARCHIVE/ACC/javaContainer"
+    FLAG=1
+fi
+sleep 10
+acsdaemonStartContainer -t py -c CONTROL/AMBSOCKETSERVER/pyContainer -i 0 &> startpyContainer.log
+if [ $? -ne 0 ]; then
+    echo "FAILED - starting CONTROL/AMBSOCKETSERVER/pyContainer"
     FLAG=1
 fi
 sleep 30
 
 
-acsdaemonStopContainer -c bilboContainer -i 0 >> stopContainer.log
+acsdaemonStopContainer -c bilboContainer -i 0 &> stopbilboContainer.log
 if [ $? -ne 0 ]; then
     echo "FAILED - stoping bilboContainer"
+    FLAG=1
+fi
+sleep 10
+acsdaemonStopContainer -c ARCHIVE/ACC/cppContainer -i 0 >> stopcppContainer.log
+if [ $? -ne 0 ]; then
+    echo "FAILED - stoping ARCHIVE/ACC/cppContainer"
+    FLAG=1
+fi
+sleep 10
+acsdaemonStopContainer -c ARCHIVE/ACC/javaContainer -i 0 >> stopjavaContainer.log
+if [ $? -ne 0 ]; then
+    echo "FAILED - stoping ARCHIVE/ACC/javaContainer"
+    FLAG=1
+fi
+sleep 10
+acsdaemonStopContainer -c CONTROL/AMBSOCKETSERVER/pyContainer -i 0 >> stoppyContainer.log
+if [ $? -ne 0 ]; then
+    echo "FAILED - stoping CONTROL/AMBSOCKETSERVER/pyContainer"
     FLAG=1
 fi
 sleep 10

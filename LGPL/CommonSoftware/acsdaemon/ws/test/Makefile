@@ -16,7 +16,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.2 2007/10/15 21:35:52 ntroncos Exp $"
+# "@(#) $Id: Makefile,v 1.3 2007/10/31 14:13:29 ntroncos Exp $"
 #
 # Makefile of ........
 #
@@ -84,7 +84,7 @@ lllll_OBJECTS   =
 # Scripts (public and local)
 # ----------------------------
 SCRIPTS         =
-SCRIPTS_L       = test.sh
+SCRIPTS_L       = acsdaemonTATPrologue acsdaemonTATEpilogue test.sh
 
 #
 # TCL scripts (public and local)

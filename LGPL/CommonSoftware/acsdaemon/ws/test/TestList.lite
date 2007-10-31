@@ -1,12 +1,12 @@
 #*******************************************************************************
 # ALMA - Atacama Large Millimiter Array
 #
-# " $Id: TestList.lite,v 1.1 2007/10/15 21:35:52 ntroncos Exp $"
+# " $Id: TestList.lite,v 1.2 2007/10/31 14:13:29 ntroncos Exp $"
 #
 # TestList
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
-
-
+PROLOGUE acsdaemonTATPrologue
 1 daemontest            "test.sh"
+EPILOGUE acsdaemonTATEpilogue

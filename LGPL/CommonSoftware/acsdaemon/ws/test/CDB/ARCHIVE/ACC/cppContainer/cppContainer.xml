@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Container xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0" 
+           xmlns="urn:schemas-cosylab-com:Container:1.0" 
+           xmlns:baci="urn:schemas-cosylab-com:BACI:1.0" 
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+           Timeout="30" 
+           UseIFR="1" 
+           ManagerRetry="10" 
+           Recovery="0"
+	   ServerThreads="30"
+           ImplLang="cpp">
+  <Autoload>
+    <cdb:_ string="baci"/>
+    <cdb:_ string="monitorReceiverLib" />
+    <cdb:_ string="bulkReceiverLib" />
+    <cdb:_ string="bulkDataDistributerLib" />
+  </Autoload>
+  <DeployInfo Type="cpp"
+              Host="gas01"
+              Instance="0"
+              Flags=""
+              KeepAliveTime="-1"/>
+  <LoggingConfig centralizedLogger="Log"
+                 minLogLevel="3"
+                 minLogLevelLocal="4"
+                 dispatchPacketSize="10"
+                 immediateDispatchLevel="5"
+                 flushPeriodSeconds="3"
+  />
+</Container>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Container xmlns="urn:schemas-cosylab-com:Container:1.0" 
+           xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0" 
+           xmlns:baci="urn:schemas-cosylab-com:BACI:1.0" 
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+           xmlns:log="urn:schemas-cosylab-com:LoggingConfig:1.0" 
+           Timeout="30" 
+           UseIFR="1" 
+           ManagerRetry="10" 
+           Recovery="0"
+           ImplLang="java">
+  <Autoload>
+    <cdb:_ string="baci" />
+  </Autoload>
+  <DeployInfo Type="java" 
+              Host="gas01"
+              Instance="0"
+              Flags="" 
+              KeepAliveTime="-1"
+              TypeModifiers="archive"/>
+  <LoggingConfig centralizedLogger="Log"
+                 minLogLevel="3"
+                 minLogLevelLocal="4"
+                 dispatchPacketSize="10"
+                 immediateDispatchLevel="5"
+                 flushPeriodSeconds="3"
+  />
+</Container>
+
