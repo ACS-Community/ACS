@@ -15,6 +15,7 @@ import org.w3c.dom.NamedNodeMap;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
+import alma.acs.logging.AcsLogLevel;
 import alma.acsErrTypeAlarmSourceFactory.acsErrTypeAlarmSourceFactoryEx;
 import alma.acsErrTypeAlarmSourceFactory.ACSASFactoryNotInitedEx;
 import alma.acsErrTypeAlarmSourceFactory.ErrorGettingDALEx;
@@ -45,6 +46,8 @@ import java.io.StringReader;
  *
  */
 public class ACSAlarmSystemInterfaceFactory {
+	
+	private static final String CONFIGURATION_PATH="Alarms/Administrative/AlarmSystemConfiguration";
 	// It is true if ACS implementation for sources must be used and
 	// null if it has not yet been initialized
 	// false means CERN implementation
@@ -59,7 +62,7 @@ public class ACSAlarmSystemInterfaceFactory {
 	 * method. 
 	 * 
 	 * @param logger The logger
-	 * @param dal The DAL to inti the AS with CERN or ACS implementation
+	 * @param dal The DAL to init the AS with CERN or ACS implementation
 	 */
 	public static void init(Logger logger, DAL dal) throws ErrorGettingDALEx {
 		if (logger==null) {
@@ -68,6 +71,13 @@ public class ACSAlarmSystemInterfaceFactory {
 		ACSAlarmSystemInterfaceFactory.logger = logger;
 		
 		useACSAlarmSystem = retrieveImplementationType(dal);
+		if (logger!=null) {
+			if (useACSAlarmSystem) {
+				logger.log(AcsLogLevel.DEBUG,"Alarm system type: ACS");
+			} else {
+				logger.log(AcsLogLevel.DEBUG,"Alarm system type: CERN");
+			}
+		}
 	}
 	
 	/**
@@ -94,7 +104,7 @@ public class ACSAlarmSystemInterfaceFactory {
 		}
 		String dao;
 		try {
-			dao = dal.get_DAO("Alarms/AlarmSystemConfiguration");
+			dao = dal.get_DAO(CONFIGURATION_PATH);
 		} catch (Exception e) {
 			return true;
 		}
