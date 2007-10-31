@@ -14,6 +14,8 @@
 
 package com.cosylab.acs.alarm;
 
+import java.util.logging.Logger;
+
 import junit.framework.TestCase;
 import alma.acs.component.client.ComponentClient;
 import alma.alarmsystem.AlarmService;
@@ -38,6 +40,8 @@ public class AlarmTestBase extends TestCase
 	protected ComponentClient client;
 	public static final String ADMIN_USERNAME = "test_admin";
 	public static final String ADMIN_PASSWORD = "password";
+	
+	protected Logger log;
 	
 	/**
 	 * Creates a new AlarmTestBase object.
@@ -78,6 +82,7 @@ public class AlarmTestBase extends TestCase
 			alarmService = AlarmServiceSingleton.getInstance();
 			client = AlarmServiceSingleton.getComponentClientInstance();
 			ACSJMSTopicConnectionImpl.containerServices = client.getContainerServices();
+			log=client.getContainerServices().getLogger();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
