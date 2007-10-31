@@ -22,8 +22,10 @@
 package alma.acs.logging;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Handler;
@@ -108,11 +110,29 @@ public class ClientLogManager implements LogConfigSubscriber
 	private boolean DEBUG = Boolean.getBoolean("alma.acs.logging.verbose");
     private boolean LOG_BIN_TYPE = Boolean.getBoolean("ACS.loggingBin");
 
-	/** the process name to be prepended to the name for the Corba logger, so that different ORB instances in the system can be distinguished */ 
+	/** 
+	 * The process name gets used as a data field in the log record, and also 
+	 * gets appended to the name for the Corba logger, 
+	 * so that different ORB instances in the system can be distinguished.
+	 */ 
     private String processName;
 
     private List<AcsLogger> loggersNeedingProcessNameUpdate = new ArrayList<AcsLogger>();
-    
+
+    /**
+     * ORB loggers are special because they may have to be silenced completely at some point, 
+     * when a component is loaded that processes log  messages from the Log service
+     * (see module jcont, <code>alma.acs.container.ComponentHelper#requiresOrbCentralLogSuppression()</code>.)
+     * Therefore we need to keep them (usually only one logger) in this list.
+     */
+    private Map<String, AcsLogger> corbaLoggers = new HashMap<String, AcsLogger>();
+
+	/**
+	 * If true then the Corba (ORB) logger will not send logs to the Log service.
+	 */
+	private boolean suppressCorbaRemoteLogging = false;
+
+	
 	/**
 	 * Singleton accessor.
      * <p>
@@ -424,6 +444,23 @@ public class ClientLogManager implements LogConfigSubscriber
         logQueue = null;
     }
 
+    /**
+     * Allows to suppress remote logging of Corba/ORB logger(s). 
+     * Internally this suppression is handled using log level changes
+     * that cannot be undone by other log level changes.
+     * Generally remote logging remains enabled though, which makes this method quite different 
+     * from {@linkplain #suppressRemoteLogging()}.
+     * <p>
+     * <strong>Application code such as components must not call this method!<strong> 
+     */
+    public void suppressCorbaRemoteLogging(boolean suppress) {
+    	suppressCorbaRemoteLogging = suppress;
+//    	// forward this info directly to the ORB loggers to ensure that no future level change can circumvent the suppression
+//    	for (Iterator<AcsLogger> iter = corbaLoggers.values().iterator(); iter.hasNext();) {
+//			AcsLogger corbaLogger = iter.next();
+//			corbaLogger.suppressRemoteLogging(suppress);
+//		}
+    }
     
 	/**
 	 * Gets a logger to be used by ORB and POA classes.
@@ -439,19 +476,31 @@ public class ClientLogManager implements LogConfigSubscriber
                 ns = ns + '.' + corbaName;
             }
         }
-        boolean needsProcessNameUpdate = false; // use boolean instead of another processName!=null check to avoid sync issues
-        if (autoConfigureContextName) {
-        	if (processName != null) {
-	        	// if the process name is already known, we can even use it for the regular logger name instead of using a later workaround 
-	        	ns += "@" + processName;
-		    }
-        	else {
-        		needsProcessNameUpdate = true;
-        	}
-        }
-        AcsLogger logger = createRemoteLogger(ns);
-        if (needsProcessNameUpdate) {
-        	loggersNeedingProcessNameUpdate.add(logger);
+        
+        AcsLogger logger =  null;
+        
+        // usually caching and reuse is done by the LogManager class, 
+        // but for Corba loggers we need to keep a map anyway and can use it for this,
+        // which avoids possibly different interpretation which loggers are equal
+        // between our corbaLoggers map and the LogManager cache.
+        logger = corbaLoggers.get(ns);
+        if (logger == null) {        	
+	        boolean needsProcessNameUpdate = false; // use boolean instead of another processName!=null check to avoid sync issues
+	        String ns2 = ns;
+	        if (autoConfigureContextName) {
+	        	if (processName != null) {
+		        	// if the process name is already known, we can even use it for the regular logger name instead of using a later workaround 
+		        	ns2 += "@" + processName;
+			    }
+	        	else {
+	        		needsProcessNameUpdate = true;
+	        	}
+	        }
+	        logger = createRemoteLogger(ns2);
+	        corbaLoggers.put(ns, logger); // store without process name
+	        if (needsProcessNameUpdate) {
+	        	loggersNeedingProcessNameUpdate.add(logger);
+	        }
         }
         return logger;
 	}
