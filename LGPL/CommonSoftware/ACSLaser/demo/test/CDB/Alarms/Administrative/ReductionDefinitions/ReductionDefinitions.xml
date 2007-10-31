@@ -26,11 +26,11 @@
 		</reduction-link>
 		<reduction-link type="NODE">
 		<parent>
-		<alarm-definition fault-family="AlarmSource"
+		<alarm-definition fault-family="Mount"
 		fault-member="ALARM_SOURCE_MOUNT" fault-code="1"/>
 		</parent>
 		<child>
-		<alarm-definition fault-family="AlarmSource"
+		<alarm-definition fault-family="Antenna"
 		fault-member="ALARM_SOURCE_ANTENNA" fault-code="1"/>
 		</child>
 		</reduction-link>
