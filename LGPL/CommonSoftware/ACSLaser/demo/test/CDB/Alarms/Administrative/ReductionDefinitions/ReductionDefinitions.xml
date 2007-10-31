@@ -37,7 +37,15 @@
 		
 		<reduction-link type="MULTIPLICITY">
 			<parent>
-				<alarm-definition fault-family="MF" fault-member="MULTIPLE_MF_FAILURES" fault-code="1"/>
+				<alarm-definition fault-family="MF" fault-member="MULTIPLE_MF_FAILURES" fault-code="5"/>
+			</parent>
+			<child>
+				<alarm-definition fault-family="MF" fault-member="ALARM_SOURCE_MF" fault-code="0"/>
+			</child>
+		</reduction-link>
+		<reduction-link type="MULTIPLICITY">
+			<parent>
+				<alarm-definition fault-family="MF" fault-member="MULTIPLE_MF_FAILURES" fault-code="5"/>
 			</parent>
 			<child>
 				<alarm-definition fault-family="MF" fault-member="ALARM_SOURCE_MF" fault-code="1"/>
@@ -45,7 +53,7 @@
 		</reduction-link>
 		<reduction-link type="MULTIPLICITY">
 			<parent>
-				<alarm-definition fault-family="MF" fault-member="MULTIPLE_MF_FAILURES" fault-code="1"/>
+				<alarm-definition fault-family="MF" fault-member="MULTIPLE_MF_FAILURES" fault-code="5"/>
 			</parent>
 			<child>
 				<alarm-definition fault-family="MF" fault-member="ALARM_SOURCE_MF" fault-code="2"/>
@@ -53,7 +61,7 @@
 		</reduction-link>
 		<reduction-link type="MULTIPLICITY">
 			<parent>
-				<alarm-definition fault-family="MF" fault-member="MULTIPLE_MF_FAILURES" fault-code="1"/>
+				<alarm-definition fault-family="MF" fault-member="MULTIPLE_MF_FAILURES" fault-code="5"/>
 			</parent>
 			<child>
 				<alarm-definition fault-family="MF" fault-member="ALARM_SOURCE_MF" fault-code="3"/>
@@ -61,18 +69,10 @@
 		</reduction-link>
 		<reduction-link type="MULTIPLICITY">
 			<parent>
-				<alarm-definition fault-family="MF" fault-member="MULTIPLE_MF_FAILURES" fault-code="1"/>
+				<alarm-definition fault-family="MF" fault-member="MULTIPLE_MF_FAILURES" fault-code="5"/>
 			</parent>
 			<child>
 				<alarm-definition fault-family="MF" fault-member="ALARM_SOURCE_MF" fault-code="4"/>
-			</child>
-		</reduction-link>
-		<reduction-link type="MULTIPLICITY">
-			<parent>
-				<alarm-definition fault-family="MF" fault-member="MULTIPLE_MF_FAILURES" fault-code="1"/>
-			</parent>
-			<child>
-				<alarm-definition fault-family="MF" fault-member="ALARM_SOURCE_MF" fault-code="5"/>
 			</child>
 		</reduction-link>
 		
@@ -80,7 +80,7 @@
 
 		<thresholds>
 		<threshold value="3">
-			<alarm-definition fault-family="MF" fault-member="MULTIPLE_MF_FAILURES" fault-code="1"/>
+			<alarm-definition fault-family="MF" fault-member="MULTIPLE_MF_FAILURES" fault-code="5"/>
 		</threshold>
 	</thresholds>
 </reduction-definitions>
