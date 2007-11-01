@@ -148,7 +148,7 @@ public class TestUtil {
 		if (!alarmsDir.exists()) {
 			return;
 		}
-		String configDirName = CDBdir+"/AlarmSystemConfiguration";
+		String configDirName = CDBdir+"/Administrative/AlarmSystemConfiguration";
 		String configFileName = configDirName+"/AlarmSystemConfiguration.xml";
 		File configDir = new File(configDirName);
 		File configFile = new File(configFileName);
@@ -170,7 +170,7 @@ public class TestUtil {
 	public static void setupAlarmBranch(String CDBFolder,String ASImplementation) {
 		deleteAlarmBranch(CDBFolder);
 		String CDBdir = CDBFolder+"/CDB/Alarms";
-		String configDirName = CDBdir+"/AlarmSystemConfiguration";
+		String configDirName = CDBdir+"/Administrative/AlarmSystemConfiguration";
 		String configFileName = configDirName+"/AlarmSystemConfiguration.xml";
 		try {
 			File alarmsDir = new File(CDBdir);
