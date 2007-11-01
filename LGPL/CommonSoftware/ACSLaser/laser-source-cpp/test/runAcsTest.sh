@@ -5,14 +5,14 @@ then
 fi
 NUM_TO_SEND=$1
 acsStopContainer bilboContainer
-cp $ACS_CDB/CDB/Alarms/AlarmSystemConfiguration/AlarmSystemConfiguration.xml .
-patch $ACS_CDB/CDB/Alarms/AlarmSystemConfiguration/AlarmSystemConfiguration.xml AlarmSystemConfiguration.xml.patch
+cp $ACS_CDB/CDB/Alarms/Administrative/AlarmSystemConfiguration/AlarmSystemConfiguration.xml .
+patch -l $ACS_CDB/CDB/Alarms/Administrative/AlarmSystemConfiguration/AlarmSystemConfiguration.xml AlarmSystemConfiguration.xml.patch
 cdbjDALClearCache
-acsutilAwaitContainerStart -cpp bilboContainer
 loggingClient Logging >& logs.xml &
-sleep 10
+acsutilAwaitContainerStart -cpp bilboContainer
+sleep 5
 testDriverAcs $NUM_TO_SEND
-sleep 10
+sleep 5
 numAlarmsFound=`grep -i alert logs.xml | grep -i alarm | wc -l`
 if [ "$numAlarmsFound" -eq "$NUM_TO_SEND" ]
 then
@@ -21,4 +21,4 @@ else
 	echo "FAILED: expected $NUM_TO_SEND alarms but only detected $numAlarmsFound alarms"
 fi
 kill -9 $!
-cp AlarmSystemConfiguration.xml $ACS_CDB/CDB/Alarms/AlarmSystemConfiguration/AlarmSystemConfiguration.xml
+#cp AlarmSystemConfiguration.xml $ACS_CDB/CDB/Alarms/Administrative/AlarmSystemConfiguration/AlarmSystemConfiguration.xml

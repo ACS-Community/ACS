@@ -20,7 +20,7 @@
 *
 *
 *
-* "@(#) $Id: testDriverAcs.cpp,v 1.9 2007/07/19 07:09:12 cparedes Exp $"
+* "@(#) $Id: testDriverAcs.cpp,v 1.10 2007/11/01 13:07:35 acaproni Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -69,7 +69,7 @@ class LoggingConsumer : public nc::Consumer
      string remainderOfBodyString(remainderOfBody);
 
      // check for the messages of interest
-     if(remainderOfBodyString.find("<Alert TimeStamp") == 0 && remainderOfBodyString.find("Alarm sent:") != std::string::npos) 
+     if(remainderOfBodyString.find("<Alert") == 0 && remainderOfBodyString.find("Alarm sent:") != std::string::npos) 
      {
        ACE_Guard<ACE_Mutex> guard(*mutex_m);
        {
