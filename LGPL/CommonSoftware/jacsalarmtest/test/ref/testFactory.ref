@@ -1,4 +1,10 @@
 1 - FINER: Logging configuration has been initialized, but not from CDB settings
+1 - ----------T--:--:----- DEBUG [almaalarmsystemsourcetestFactoryTest] Alarm system type: ACS
+1 - ----------T--:--:----- DEBUG [almaalarmsystemsourcetestFactoryTest] Alarm system type: ACS
+1 - ----------T--:--:----- DEBUG [almaalarmsystemsourcetestFactoryTest] Alarm system type: CERN
+1 - ----------T--:--:----- DEBUG [almaalarmsystemsourcetestFactoryTest] Alarm system type: ACS
+1 - ----------T--:--:----- DEBUG [almaalarmsystemsourcetestFactoryTest] Alarm system type: ACS
+1 - ----------T--:--:----- DEBUG [almaalarmsystemsourcetestFactoryTest] Alarm system type: ACS
 1 - ----------T--:--:----- FINE [almaalarmsystemsourcetestFactoryTest] Alarm source of SourceName connected to the logging
 1 - 
 1 - 
