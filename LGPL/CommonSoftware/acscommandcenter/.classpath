@@ -37,5 +37,8 @@
 	<classpathentry kind="var" path="JACORB_HOME/lib/jacorb.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="var" path="ACSROOT/lib/jhall-2.0_02.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acsdaemon.jar" sourcepath="/ACSROOT/lib/acsdaemon.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acsdaemonErrType.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/ACSErrTypeCommon.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
