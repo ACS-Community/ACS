@@ -178,7 +178,7 @@ public class LogFrame extends JFrame implements WindowListener {
 					name=initFileName;
 				}
 				public void run() {
-					LogFrame l = new LogFrame(f,name);
+					new LogFrame(f,name);
 				}
 			}
 			SwingUtilities.invokeLater(new FrameLauncher(filterFile,initLogFileName));
