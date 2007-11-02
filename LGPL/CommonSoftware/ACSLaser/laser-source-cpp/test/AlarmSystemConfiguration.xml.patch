@@ -7,4 +7,3 @@
 -	<configuration-property name="Implementation">CERN</configuration-property>
 +	<configuration-property name="Implementation">ACS</configuration-property>
  </alarm-system-configuration>
-
