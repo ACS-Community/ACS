@@ -417,7 +417,7 @@ public class LogFile extends Thread {
 		if (action.type!=IOAction.SAVE) {
 			throw new IllegalStateException("Trying to save but the action is not SAVE");
 		}
-		if (action.destFileName==null && action.destFileName.length()==0) {
+		if (action.destFileName==null || action.destFileName.length()==0) {
 			throw new IllegalArgumentException("Invalid dest name");
 		}
 		if (action.logs==null || action.logs.size()==0) {
