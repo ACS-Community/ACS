@@ -62,7 +62,7 @@ public final class LogEntryXML implements ILogEntry
 	private VectorNodeList datas = null;
 	public VectorNodeList complexLogEntryMessage = null;
 
-	private final Object[] fields = new Object[NUMBER_OF_FIELDS];
+	private final Object[] fields = new Object[Field.values().length];
 	
 
 	private Node log = null;
@@ -102,31 +102,31 @@ public final class LogEntryXML implements ILogEntry
 	{
 		// set whatever you want here (depending of the test you are performing);
 
-		setField(FIELD_TIMESTAMP, d);
-		setField(FIELD_ENTRYTYPE, new Integer(entrytype));
-		setField(FIELD_FILE, file);
-		setField(FIELD_LINE, new Integer(line));
-		setField(FIELD_ROUTINE, routine);
-		setField(FIELD_HOST, host);
-		setField(FIELD_PROCESS, process);
-		setField(FIELD_CONTEXT, context);
-		setField(FIELD_THREAD, thread);
-		setField(FIELD_LOGID, logid);
-		setField(FIELD_PRIORITY, new Integer(priority));
-		setField(FIELD_URI, uri);
-		setField(FIELD_STACKID, stackid);
-		setField(FIELD_STACKLEVEL, new Integer(stacklevel));
-		setField(FIELD_LOGMESSAGE, logmessage);
-        setField(FIELD_SOURCEOBJECT,srcObject);
-        setField(FIELD_AUDIENCE,audience);
-        setField(FIELD_ARRAY,array);
-        setField(FIELD_ANTENNA,antenna);
+		setField(Field.TIMESTAMP, d);
+		setField(Field.ENTRYTYPE, Integer.valueOf(entrytype));
+		setField(Field.FILE, file);
+		setField(Field.LINE, Integer.valueOf(line));
+		setField(Field.ROUTINE, routine);
+		setField(Field.HOST, host);
+		setField(Field.PROCESS, process);
+		setField(Field.CONTEXT, context);
+		setField(Field.THREAD, thread);
+		setField(Field.LOGID, logid);
+		setField(Field.PRIORITY,Integer.valueOf(priority));
+		setField(Field.URI, uri);
+		setField(Field.STACKID, stackid);
+		setField(Field.STACKLEVEL, Integer.valueOf(stacklevel));
+		setField(Field.LOGMESSAGE, logmessage);
+        setField(Field.SOURCEOBJECT,srcObject);
+        setField(Field.AUDIENCE,audience);
+        setField(Field.ARRAY,array);
+        setField(Field.ANTENNA,antenna);
 	}
 
 	public LogEntryXML(String stackId, int stackLevel) throws DOMException
 	{
-		setField(FIELD_STACKID, stackId);
-		setField(FIELD_STACKLEVEL, new Integer(stackLevel));
+		setField(Field.STACKID, stackId);
+		setField(Field.STACKLEVEL, Integer.valueOf(stackLevel));
 	}
     
 	/**
@@ -139,17 +139,17 @@ public final class LogEntryXML implements ILogEntry
 	{
 		// set whatever you want here (depending of the test you are performing);
 
-		setField(FIELD_TIMESTAMP, new Date());
-		setField(FIELD_ENTRYTYPE, new Integer((short) random.nextInt(LogTypeHelper.getNumberOfTypes())));
+		setField(Field.TIMESTAMP, new Date());
+		setField(Field.ENTRYTYPE, Integer.valueOf((short) random.nextInt(LogTypeHelper.getNumberOfTypes())));
 		if (random.nextInt(10) < 3)
 		{
-			setField(FIELD_LINE, new Integer(random.nextInt(100)));
+			setField(Field.LINE, Integer.valueOf(random.nextInt(100)));
 		}
 
 		if (random.nextInt(2) == 0)
-			setField(FIELD_STACKID, "Terminator");
+			setField(Field.STACKID, "Terminator");
 		else
-			setField(FIELD_STACKID, "Exterminator");
+			setField(Field.STACKID, "Exterminator");
 	}
     
 	/**
@@ -206,55 +206,34 @@ public final class LogEntryXML implements ILogEntry
 	 * @return java.lang.Object
 	 * @param fieldIndex int index of the field to return
 	 */
-	public Object getField(int fieldIndex)
+	public Object getField(Field f)
 	{
-		return (isValidFieldIndex(fieldIndex) ? fields[fieldIndex] : null);
+		return fields[f.ordinal()];
 	}
 	
 	/**
 	 * @see ILogEntry
 	 */
 	public Integer getType() {
-		return (Integer)getField(ILogEntry.FIELD_ENTRYTYPE);
+		return (Integer)getField(Field.ENTRYTYPE);
 	}
-    
-	/**
-	 * Return the class of a specific field 
-	 * @return java.lang.Class
-	 * @param fieldIndex int
-	 */
-	public static Class getFieldClass(int fieldIndex)
-	{
-		return (isValidFieldIndex(fieldIndex) ? fieldClasses[fieldIndex] : void.class);
-	}
-    
-	/**
-	 * Returns textual description of the field.
-	 * Creation date: (11/21/2001 20:09:52)
-	 * @return java.lang.String
-	 * @param fieldIndex int
-	 */
-	public static String getFieldDescription(int fieldIndex)
-	{
-		return (isValidFieldIndex(fieldIndex) ? fieldNames[fieldIndex] : "");
-	}
-    
+	
 	private void initAttributes(Node log) throws DOMException
 	{
 		//public void initAttributes(Node log) throws DOMException {
 		NamedNodeMap nnm = log.getAttributes();
 		Node attr;
 
-		attr = nnm.getNamedItem(tagAttributes[FIELD_TIMESTAMP]);
+		attr = nnm.getNamedItem(Field.TIMESTAMP.getTagAttribute());
 		if (attr == null)
 			throw new DOMException(
 				DOMException.NOT_FOUND_ERR,
-				"TimeStamp attribute is missing in " + getField(FIELD_ENTRYTYPE));
+				"TimeStamp attribute is missing in " + getField(Field.ENTRYTYPE));
 
         // The time stamp is required!
 		try
 		{
-			setField(FIELD_TIMESTAMP, dateFormat.parse(attr.getNodeValue()));
+			setField(Field.TIMESTAMP, dateFormat.parse(attr.getNodeValue()));
 		}
 		catch (ParseException pe)
 		{
@@ -263,69 +242,69 @@ public final class LogEntryXML implements ILogEntry
 
         // Search for the others fields (they are not required so nothing will
         // happen is some of them are missing)
-		attr = nnm.getNamedItem(tagAttributes[FIELD_FILE]);
+		attr = nnm.getNamedItem(Field.FILE.getTagAttribute());
 		if (attr != null)
-			setField(FIELD_FILE, attr.getNodeValue());
+			setField(Field.FILE, attr.getNodeValue());
 
-		attr = nnm.getNamedItem(tagAttributes[FIELD_LINE]);
+		attr = nnm.getNamedItem(Field.LINE.getTagAttribute());
 		if (attr != null)
-			setField(FIELD_LINE, new Integer(attr.getNodeValue()));
+			setField(Field.LINE, new Integer(attr.getNodeValue()));
 
-		attr = nnm.getNamedItem(tagAttributes[FIELD_ROUTINE]);
+		attr = nnm.getNamedItem(Field.ROUTINE.getTagAttribute());
 		if (attr != null)
-			setField(FIELD_ROUTINE, attr.getNodeValue());
+			setField(Field.ROUTINE, attr.getNodeValue());
 
-		attr = nnm.getNamedItem(tagAttributes[FIELD_HOST]);
+		attr = nnm.getNamedItem(Field.HOST.getTagAttribute());
 		if (attr != null)
-			setField(FIELD_HOST, attr.getNodeValue());
+			setField(Field.HOST, attr.getNodeValue());
 
-		attr = nnm.getNamedItem(tagAttributes[FIELD_PROCESS]);
+		attr = nnm.getNamedItem(Field.PROCESS.getTagAttribute());
 		if (attr != null)
-			setField(FIELD_PROCESS, attr.getNodeValue());
+			setField(Field.PROCESS, attr.getNodeValue());
 
-		attr = nnm.getNamedItem(tagAttributes[FIELD_CONTEXT]);
+		attr = nnm.getNamedItem(Field.CONTEXT.getTagAttribute());
 		if (attr != null)
-			setField(FIELD_CONTEXT, attr.getNodeValue());
+			setField(Field.CONTEXT, attr.getNodeValue());
 
-		attr = nnm.getNamedItem(tagAttributes[FIELD_THREAD]);
+		attr = nnm.getNamedItem(Field.THREAD.getTagAttribute());
 		if (attr != null)
-			setField(FIELD_THREAD, attr.getNodeValue());
+			setField(Field.THREAD, attr.getNodeValue());
 
-		attr = nnm.getNamedItem(tagAttributes[FIELD_STACKID]);
+		attr = nnm.getNamedItem(Field.STACKID.getTagAttribute());
 		if (attr != null)
-			setField(FIELD_STACKID, attr.getNodeValue());
+			setField(Field.STACKID, attr.getNodeValue());
 
-		attr = nnm.getNamedItem(tagAttributes[FIELD_STACKLEVEL]);
+		attr = nnm.getNamedItem(Field.STACKLEVEL.getTagAttribute());
 		if (attr != null)
-			setField(FIELD_STACKLEVEL, new Integer(attr.getNodeValue()));
+			setField(Field.STACKLEVEL, new Integer(attr.getNodeValue()));
 
-		attr = nnm.getNamedItem(tagAttributes[FIELD_LOGID]);
+		attr = nnm.getNamedItem(Field.LOGID.getTagAttribute());
 		if (attr != null)
-			setField(FIELD_LOGID, attr.getNodeValue());
+			setField(Field.LOGID, attr.getNodeValue());
 
-		attr = nnm.getNamedItem(tagAttributes[FIELD_PRIORITY]);
+		attr = nnm.getNamedItem(Field.PRIORITY.getTagAttribute());
 		if (attr != null)
-			setField(FIELD_PRIORITY, new Integer(attr.getNodeValue()));
+			setField(Field.PRIORITY, new Integer(attr.getNodeValue()));
 
-		attr = nnm.getNamedItem(tagAttributes[FIELD_URI]);
+		attr = nnm.getNamedItem(Field.URI.getTagAttribute());
 		if (attr != null)
-			setField(FIELD_URI, attr.getNodeValue());
+			setField(Field.URI, attr.getNodeValue());
 
-                attr = nnm.getNamedItem(tagAttributes[FIELD_SOURCEOBJECT]);
+                attr = nnm.getNamedItem(Field.SOURCEOBJECT.getTagAttribute());
                 if (attr != null) {
-                        setField(FIELD_SOURCEOBJECT, attr.getNodeValue());
+                        setField(Field.SOURCEOBJECT, attr.getNodeValue());
                 }
-                attr = nnm.getNamedItem(tagAttributes[FIELD_AUDIENCE]);
+                attr = nnm.getNamedItem(Field.AUDIENCE.getTagAttribute());
                 if (attr != null) {
-                        setField(FIELD_AUDIENCE, attr.getNodeValue());
+                        setField(Field.AUDIENCE, attr.getNodeValue());
                 }
-                attr = nnm.getNamedItem(tagAttributes[FIELD_ARRAY]);
+                attr = nnm.getNamedItem(Field.ARRAY.getTagAttribute());
                 if (attr != null) {
-                        setField(FIELD_ARRAY, attr.getNodeValue());
+                        setField(Field.ARRAY, attr.getNodeValue());
                 }
-                attr = nnm.getNamedItem(tagAttributes[FIELD_ANTENNA]);
+                attr = nnm.getNamedItem(Field.ANTENNA.getTagAttribute());
                 if (attr != null) {
-                        setField(FIELD_ANTENNA, attr.getNodeValue());
+                        setField(Field.ANTENNA, attr.getNodeValue());
                 }
         }
     
@@ -353,7 +332,7 @@ public final class LogEntryXML implements ILogEntry
 				if (isLogEntrySimple)
 				{
 					// simpleLogEntryMessage = node.getNodeValue();
-					setField(FIELD_LOGMESSAGE, node.getNodeValue());
+					setField(Field.LOGMESSAGE, node.getNodeValue());
 				}
 				else
 				{
@@ -380,9 +359,9 @@ public final class LogEntryXML implements ILogEntry
 			throw new DOMException(DOMException.SYNTAX_ERR, "logEntryType is null.");
 		
 		// todo: reuse Integer objects
-        setField(FIELD_ENTRYTYPE,LogTypeHelper.parseLogTypeDescription(logEntryType));
+        setField(Field.ENTRYTYPE,LogTypeHelper.parseLogTypeDescription(logEntryType));
 
-        if (getField(FIELD_ENTRYTYPE) == null)
+        if (getField(Field.ENTRYTYPE) == null)
 			throw new DOMException(DOMException.NOT_FOUND_ERR, "Unknown logEntryType: " + logEntryType);
 	}
     
@@ -401,17 +380,6 @@ public final class LogEntryXML implements ILogEntry
 	}
     
 	/**
-	 * Internal method to check if the specified field index is defined.
-	 * Creation date: (11/21/2001 20:10:50)
-	 * @return boolean
-	 * @param fieldIndex int
-	 */
-	public static boolean isValidFieldIndex(int fieldIndex)
-	{
-		return ((fieldIndex >= 0) && (fieldIndex < NUMBER_OF_FIELDS));
-	}
-    
-	/**
 	 * Insert the method's description here.
 	 * Creation date: (12/4/2001 12:21:35)
 	 * @return boolean
@@ -426,16 +394,12 @@ public final class LogEntryXML implements ILogEntry
 	 * Sets the specified field. This method is protected since the fields are not
 	 * to be modified. The only time this is called is during initialization.
 	 * Creation date: (11/21/2001 18:35:10)
-	 * @param fieldIndex int index of the field
+	 * @param field The field
 	 * @param value java.lang.Object value to set
 	 */
-	protected void setField(int fieldIndex, Object value)
+	protected void setField(Field field, Object value)
 	{
-		//public void setField(int fieldIndex, Object value) {
-		if (isValidFieldIndex(fieldIndex))
-		{
-			fields[fieldIndex] = value;
-		}
+		fields[field.ordinal()] = value;
 	}
 	
 	/**
@@ -446,13 +410,13 @@ public final class LogEntryXML implements ILogEntry
 		StringBuffer sb = new StringBuffer("--- LogEntryXML ---\n");
 
 		/* Attributes */
-		for (int i = 0; i < NUMBER_OF_FIELDS; i++)
+		for (Field f: Field.values())
 		{
-			if (getField(i) != null)
-				if (i == FIELD_ENTRYTYPE)
-					sb.append(getFieldDescription(i) + ": " + getEntryTypeAsString() + "\n");
-				else
-					sb.append(getFieldDescription(i) + ": " + getField(i) + "\n");
+			if (f==Field.ENTRYTYPE) {
+				sb.append(f.getName()+": "+ getEntryTypeAsString() + "\n");
+			} else {
+				sb.append(f.getName()+": " + getField(f) + "\n");
+			}
 		}
         
 		/* Data(s) */
@@ -503,11 +467,11 @@ public final class LogEntryXML implements ILogEntry
 		String logType =getEntryTypeAsString();
 		sb.append("<"+logType);
 		
-		for (int t=0; t<LogEntryXML.NUMBER_OF_FIELDS; t++) {
-			if (t==LogEntryXML.FIELD_LOGMESSAGE || t==LogEntryXML.FIELD_ENTRYTYPE) {
+		for (Field f: Field.values()) {
+			if (f==Field.LOGMESSAGE || f==Field.ENTRYTYPE) {
 				continue;
 			}
-			Object attrValue = getField(t);
+			Object attrValue = getField(f);
 			if (attrValue!=null) {
 				if (Date.class.isInstance(attrValue)) {
 					Date dt = (Date)attrValue;
@@ -519,15 +483,15 @@ public final class LogEntryXML implements ILogEntry
 				String attrValStr = attrValue.toString();
 				attrValStr=attrValStr.replaceAll("<","&lt;");
 				attrValStr=attrValStr.replaceAll(">","&gt;");
-				sb.append(" "+LogEntryXML.tagAttributes[t]+"=\""+attrValStr+"\"");
+				sb.append(" "+f.getTagAttribute()+"=\""+attrValStr+"\"");
 			}
 		}
 		
-		Integer type = (Integer)getField(LogEntryXML.FIELD_ENTRYTYPE);
+		Integer type = (Integer)getField(Field.ENTRYTYPE);
 		if (type==LogTypeHelper.ENTRYTYPE_TRACE) {
 			sb.append("/>");
 		} else {
-			sb.append("><![CDATA["+getField(LogEntryXML.FIELD_LOGMESSAGE).toString()+"]]>");
+			sb.append("><![CDATA["+getField(Field.LOGMESSAGE).toString()+"]]>");
 			sb.append(getXMLDatas());
 			sb.append("</"+logType+">");
 		}

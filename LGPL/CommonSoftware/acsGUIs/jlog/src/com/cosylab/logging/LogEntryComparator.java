@@ -22,6 +22,7 @@
 package com.cosylab.logging;
 
 import com.cosylab.logging.engine.log.ILogEntry;
+import com.cosylab.logging.engine.log.ILogEntry.Field;
 
 /**
  * This is specialized comparator to sort LogEntryXML objects using <code>Collections</code>.
@@ -48,8 +49,8 @@ public class LogEntryComparator implements java.util.Comparator<ILogEntry> {
 		if ((log1 == null) || (log2 == null))
 			return 0;
 			
-		Comparable item1 = (Comparable)(log1).getField(fieldIndex);
-		Comparable item2 = (Comparable)(log2).getField(fieldIndex);
+		Comparable item1 = (Comparable)(log1).getField(Field.values()[fieldIndex]);
+		Comparable item2 = (Comparable)(log2).getField(Field.values()[fieldIndex]);
 	
 		int returnValue = 0;
 	

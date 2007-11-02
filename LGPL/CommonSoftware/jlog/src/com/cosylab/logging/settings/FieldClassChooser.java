@@ -22,6 +22,7 @@
 package com.cosylab.logging.settings;
 
 import com.cosylab.logging.engine.log.ILogEntry;
+import com.cosylab.logging.engine.log.ILogEntry.Field;
 import com.cosylab.logging.engine.Filter;
 import javax.swing.*;
 import java.awt.event.*;
@@ -57,8 +58,8 @@ public class FieldClassChooser extends javax.swing.JComboBox {
 public FieldClassChooser() {
 	super();
 
-	for (int i=0; i < ILogEntry.NUMBER_OF_FIELDS; i++) {
-		addItem(ILogEntry.fieldNames[i]);
+	for (Field field: Field.values()) {
+		addItem(field.getName());
 	}
 
 	addItemListener(new ChangeListener());
@@ -116,7 +117,7 @@ public javax.swing.JPanel getMainPanel() {
  * @return java.lang.Class
  */
 public Class getSelectedClass() {
-	return ILogEntry.fieldClasses[getSelectedIndex()];
+	return Field.values()[getSelectedIndex()].getClass();
 }
 /**
  * Insert the method's description here.

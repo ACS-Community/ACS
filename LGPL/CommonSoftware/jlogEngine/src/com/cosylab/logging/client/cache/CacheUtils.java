@@ -31,6 +31,7 @@ import alma.ACSLoggingLog.NameValue;
 import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.engine.log.LogEntry;
 import com.cosylab.logging.engine.log.ILogEntry.AdditionalData;
+import com.cosylab.logging.engine.log.ILogEntry.Field;
 
 /**
  * A collection of utils methods 
@@ -136,9 +137,9 @@ public class CacheUtils {
 		}
         
         Vector<ILogEntry.AdditionalData> addDatas = null;
-        if (strs.length>ILogEntry.NUMBER_OF_FIELDS) {
+        if (strs.length>Field.values().length) {
         	addDatas = new Vector<ILogEntry.AdditionalData>();
-        	for (int t=ILogEntry.NUMBER_OF_FIELDS; t<strs.length; t+=2) {
+        	for (int t=Field.values().length; t<strs.length; t+=2) {
         		addDatas.add(new AdditionalData(strs[t],strs[t+1]));
         	}
         }

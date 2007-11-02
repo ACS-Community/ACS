@@ -29,6 +29,7 @@ import javax.swing.JOptionPane;
 
 import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.engine.log.LogTypeHelper;
+import com.cosylab.logging.engine.log.ILogEntry.Field;
 
 
 /**
@@ -104,7 +105,7 @@ public Filter(
 	if ((minimum == null) && (maximum == null)) throw new InvalidFilterConstraintException("No constraint specified");
 	 
 	if (minimum != null) {
-	    if (!(ILogEntry.fieldClasses[field].isInstance(minimum))) {
+	    if (!(Field.values()[field].getClass().isInstance(minimum))) {
 			throw new InvalidFilterConstraintException("Invalid minimum");
 	    }
 	    this.minimum = minimum;
@@ -113,7 +114,7 @@ public Filter(
 	}
 	
 	if (maximum != null) {
-	    if (!(ILogEntry.fieldClasses[field].isInstance(maximum)))
+	    if (!(Field.values()[field].getClass().isInstance(maximum)))
  	       throw new InvalidFilterConstraintException("Invalid maximum");
 	    this.maximum = maximum;
 	} else {
@@ -162,7 +163,7 @@ public Filter(int field, boolean isLethal, Integer minimum, Integer maximum, boo
 public Filter(int field, boolean isLethal, Object exact, boolean notFilter) throws InvalidFilterConstraintException {
 	this(field, EXACT, isLethal,notFilter);
 
-	if (ILogEntry.fieldClasses[field] != exact.getClass())
+	if (Field.values()[field].getClass() != exact.getClass())
  		throw new InvalidFilterConstraintException("Invalid exact value: "+exact);
 	 
 	this.exact = exact;
@@ -178,7 +179,7 @@ public Filter(int field, boolean isLethal, String regularExpression, boolean not
 //	System.out.println("short, boolean, String");
 //	System.out.println(field+" "+isLethal+" "+regularExpression);
 	
-	if (!(ILogEntry.fieldClasses[field].equals(String.class)))
+	if (!(Field.values()[field].getClass().equals(String.class)))
  		throw new InvalidFilterConstraintException("Invalid regular expression: "+regularExpression);
  	
 	// Build a pattern to ensure if the regular expression is valid
@@ -263,7 +264,7 @@ public boolean applyTo(ILogEntry logEntry, boolean lethalCircumstances) {
 	boolean maximumCondition = true;
 	boolean exactCondition = true;
 	
-	Object filterableField = logEntry.getField(field);
+	Object filterableField = logEntry.getField(Field.values()[field]);
 	if (filterableField == null) return false;
 	
 	// Temporary: Used to remember if the test passes
@@ -279,7 +280,7 @@ public boolean applyTo(ILogEntry logEntry, boolean lethalCircumstances) {
 			return true;
 		}
 	} else if (constraint == EXACT) {
-		res = exact.equals(logEntry.getField(field));
+		res = exact.equals(logEntry.getField(Field.values()[field]));
 	} else {
 		Comparable logField = (Comparable)(filterableField);
 		if ((constraint == MINIMUM) || (constraint == MINMAX)) {
@@ -339,7 +340,7 @@ public String toString() {
 			break;
 	}
 	
-	type.insert(0,ILogEntry.fieldNames[field]+", ");
+	type.insert(0,Field.values()[field].getName()+", ");
 	if (notFilter) type.insert(0,"NOT ");
 	return type.toString();
 }

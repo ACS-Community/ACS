@@ -48,6 +48,7 @@ import com.cosylab.logging.LoggingClient;
 import com.cosylab.logging.IOLogsHelper;
 
 import com.cosylab.logging.engine.log.LogTypeHelper;
+import com.cosylab.logging.engine.log.ILogEntry.Field;
 
 import com.cosylab.logging.client.cache.LogCache;
 import com.cosylab.logging.client.cache.LogCacheException;
@@ -258,7 +259,7 @@ public class LogTableDataModel extends AbstractTableModel implements Runnable
 	 * Return number of columns in table
 	 */
 	public final int getColumnCount() {
-		return ILogEntry.NUMBER_OF_FIELDS+2;
+		return Field.values().length+2;
 	}
 	
 	/**
@@ -313,7 +314,7 @@ public class LogTableDataModel extends AbstractTableModel implements Runnable
 			return new Boolean(log.hasDatas());
 		} else {
 			column = column - 2;
-			return log.getField(column);
+			return log.getField(Field.values()[column]);
 		}
 	}
 	
@@ -440,8 +441,8 @@ public class LogTableDataModel extends AbstractTableModel implements Runnable
 		} else {
 			column=column-2;
 		
-			if (column>=0 && column<ILogEntry.NUMBER_OF_FIELDS) {
-				return ILogEntry.fieldClasses[column];
+			if (column>=0 && column<Field.values().length) {
+				return Field.values()[column].getType();
 			}
 			return String.class;
 		}
@@ -456,14 +457,15 @@ public class LogTableDataModel extends AbstractTableModel implements Runnable
 	 */
 	public final String getColumnName(int columnIndex) {
 	
-		if (columnIndex == 0 || columnIndex==1)
+		if (columnIndex == 0 || columnIndex==1) {
 			return BLANK_STRING;
+		}
 	
 		columnIndex=columnIndex-2;
 		
-		return (columnIndex>=0 && columnIndex<ILogEntry.NUMBER_OF_FIELDS) ? 
-					ILogEntry.fieldNames[columnIndex] :
-					BLANK_STRING;
+		return (columnIndex>=0 && columnIndex<Field.values().length) ? 
+			Field.values()[columnIndex].getName() :
+			BLANK_STRING;
 	}
 	
 	/** 
@@ -804,7 +806,7 @@ public class LogTableDataModel extends AbstractTableModel implements Runnable
 				e.printStackTrace();
 				continue;
 			}
-			long dateInTable = ((java.util.Date)logInTable.getField(ILogEntry.FIELD_TIMESTAMP)).getTime();
+			long dateInTable = ((java.util.Date)logInTable.getField(Field.TIMESTAMP)).getTime();
 			
 			// Get the date from the cache (allLogs)
 			ILogEntry cacheLog=null;
@@ -813,7 +815,7 @@ public class LogTableDataModel extends AbstractTableModel implements Runnable
 			} catch (LogCacheException le) {
 				System.out.println("checkConsistency: Error geting log "+t);
 			}
-			long cacheDate=((java.util.Date)cacheLog.getField(ILogEntry.FIELD_TIMESTAMP)).getTime();
+			long cacheDate=((java.util.Date)cacheLog.getField(Field.TIMESTAMP)).getTime();
 			
 			if (cacheDate!=dateInTable) {
 				System.out.println("The date in cache (allLogs.get..) and that in the table (visibleLogs) differ:");
@@ -836,14 +838,14 @@ public class LogTableDataModel extends AbstractTableModel implements Runnable
 		for (int t=0; t<visibleLogs.size()-1; t++) {
 			ILogEntry log1=visibleLogs.get(t);
 			ILogEntry log2=visibleLogs.get(t+1);
-			long date1 = ((java.util.Date)log1.getField(ILogEntry.FIELD_TIMESTAMP)).getTime();
-			long date2 = ((java.util.Date)log2.getField(ILogEntry.FIELD_TIMESTAMP)).getTime();
+			long date1 = ((java.util.Date)log1.getField(Field.TIMESTAMP)).getTime();
+			long date2 = ((java.util.Date)log2.getField(Field.TIMESTAMP)).getTime();
 			if (date1<date2) {
 				int start = (t-5<0)?0:t-5;
 				int end=(t+5<visibleLogs.size())?t+5:visibleLogs.size();
 				for (int j=start; j<end; j++) {
 					ILogEntry l =visibleLogs.get(j);
-					long d =((java.util.Date)l.getField(ILogEntry.FIELD_TIMESTAMP)).getTime();
+					long d =((java.util.Date)l.getField(Field.TIMESTAMP)).getTime();
 				}
 			}
 		}

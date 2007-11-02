@@ -150,8 +150,8 @@ public class LogEntry implements ILogEntry {
 	 * @see LogEntryXML
 	 */
 	public LogEntry(LogEntryXML logXML) {
-		for (int fieldIndex=0; fieldIndex<NUMBER_OF_FIELDS; fieldIndex++) {
-			setField(fieldIndex,logXML.getField(fieldIndex));
+		for (Field f: Field.values()) {
+			setField(f,logXML.getField(f));
 		}
 		// Add the additional datas, if any
 		Vector<AdditionalData> addDatas=logXML.getAdditionalData();
@@ -170,8 +170,8 @@ public class LogEntry implements ILogEntry {
 		String logType =LogTypeHelper.getLogTypeDescription(type);
 		sb.append("<"+logType);
 		
-		for (int t=0; t<NUMBER_OF_FIELDS; t++) {
-			if (t==FIELD_LOGMESSAGE || t==FIELD_ENTRYTYPE) {
+		for (Field t: Field.values()) {
+			if (t==Field.LOGMESSAGE || t==Field.ENTRYTYPE) {
 				continue;
 			}
 			Object attrValue = getField(t);
@@ -187,7 +187,7 @@ public class LogEntry implements ILogEntry {
 				String attrValStr = attrValue.toString();
 				attrValStr=attrValStr.replaceAll("<","&lt;");
 				attrValStr=attrValStr.replaceAll(">","&gt;");
-				sb.append(" "+tagAttributes[t]+"=\""+attrValStr+"\"");
+				sb.append(" "+t.getTagAttribute()+"=\""+attrValStr+"\"");
 			}
 		}
 		
@@ -240,70 +240,70 @@ public class LogEntry implements ILogEntry {
 	}
 
 	/**
-	 * @param fieldIndex The index of the field of the object to get
+	 * @param field The field to get
 	 * @return The object of the given index
 	 */
-	public Object getField(int fieldIndex) {
-		switch (fieldIndex) {
-			case FIELD_TIMESTAMP: {
+	public Object getField(Field field) {
+		switch (field) {
+			case TIMESTAMP: {
 				return date;
 			}
-			case FIELD_ENTRYTYPE: {
+			case ENTRYTYPE: {
 				return type;
 			}
-			case FIELD_SOURCEOBJECT: {
+			case SOURCEOBJECT: {
 				return sourceObject;
 			}
-			case FIELD_AUDIENCE: {
+			case AUDIENCE: {
 				return audience;
 			}
-			case FIELD_ARRAY: {
+			case ARRAY: {
 				return array;
 			}
-			case FIELD_ANTENNA: {
+			case ANTENNA: {
 				return antenna;
 			}
-			case FIELD_FILE: {
+			case FILE: {
 				return file;
 			}
-			case FIELD_LINE: {
+			case LINE: {
 				return line;
 			}
-			case FIELD_ROUTINE: {
+			case ROUTINE: {
 				return routine;
 			}
-			case FIELD_HOST: {
+			case HOST: {
 				return host;
 			}
-			case FIELD_PROCESS: {
+			case PROCESS: {
 				return process;
 			}
-			case FIELD_CONTEXT: {
+			case CONTEXT: {
 				return context;
 			}
-			case FIELD_THREAD: {
+			case THREAD: {
 				return thread;
 			}
-			case FIELD_LOGID: {
+			case LOGID: {
 				return logId;
 			}
-			case FIELD_PRIORITY: {
+			case PRIORITY: {
 				return priority;
 			}
-			case FIELD_URI: {
+			case URI: {
 				return uri;
 			}
-			case FIELD_STACKID: {
+			case STACKID: {
 				return stackId;
 			}
-			case FIELD_STACKLEVEL: {
+			case STACKLEVEL: {
 				return stackLevel;
 			}
-			case FIELD_LOGMESSAGE: {
+			case LOGMESSAGE: {
 				return logMessage;
 			}
 			default: {
-				throw new IndexOutOfBoundsException("Illegal index "+fieldIndex);
+				throw new IllegalArgumentException("Unsupported field "+field);
 			}
 		}
 	}
@@ -312,90 +312,90 @@ public class LogEntry implements ILogEntry {
 	 * Sets the specified field. This method is protected since the fields are not
 	 * to be modified. The only time this is called is during initialization.
 	 * Creation date: (11/21/2001 18:35:10)
-	 * @param fieldIndex int index of the field
+	 * @param field The field to set
 	 * @param value java.lang.Object value to set
 	 */
-	protected void setField(int fieldIndex, Object value)
+	protected void setField(Field field, Object value)
 	{
-		switch (fieldIndex) {
-			case FIELD_TIMESTAMP: {
+		switch (field) {
+			case TIMESTAMP: {
 				date=(Date)value;
 				return;
 			}
-			case FIELD_ENTRYTYPE: {
+			case ENTRYTYPE: {
 				type=LogTypeHelper.logTypes[(Integer)value];
 				return;
 			}
-			case FIELD_SOURCEOBJECT: {
+			case SOURCEOBJECT: {
 				sourceObject=(String)value;
 				return;
 			}
-			case FIELD_AUDIENCE: {
+			case AUDIENCE: {
 				audience=(String)value;
 				return;
 			}
-			case FIELD_ARRAY: {
+			case ARRAY: {
 				array=(String)value;
 				return;
 			}
-			case FIELD_ANTENNA: {
+			case ANTENNA: {
 				antenna=(String)value;
 				return;
 			}
-			case FIELD_FILE: {
+			case FILE: {
 				file=(String)value;
 				return;
 			}
-			case FIELD_LINE: {
+			case LINE: {
 				line=(Integer)value;
 				return;
 			}
-			case FIELD_ROUTINE: {
+			case ROUTINE: {
 				routine=(String)value;
 				return;
 			}
-			case FIELD_HOST: {
+			case HOST: {
 				host=(String)value;
 				return;
 			}
-			case FIELD_PROCESS: {
+			case PROCESS: {
 				process=(String)value;
 				return;
 			}
-			case FIELD_CONTEXT: {
+			case CONTEXT: {
 				context=(String)value;
 				return;
 			}
-			case FIELD_THREAD: {
+			case THREAD: {
 				thread=(String)value;
 				return;
 			}
-			case FIELD_LOGID: {
+			case LOGID: {
 				logId=(String)value;
 				return;
 			}
-			case FIELD_PRIORITY: {
+			case PRIORITY: {
 				priority=(Integer)value;
 				return;
 			}
-			case FIELD_URI: {
+			case URI: {
 				uri=(String)value;
 				return;
 			}
-			case FIELD_STACKID: {
+			case STACKID: {
 				stackId=(String)value;
 				return;
 			}
-			case FIELD_STACKLEVEL: {
+			case STACKLEVEL: {
 				stackLevel=(Integer)value;
 				return;
 			}
-			case FIELD_LOGMESSAGE: {
+			case LOGMESSAGE: {
 				logMessage=(String)value;
 				return;
 			}
 			default: {
-				throw new IndexOutOfBoundsException("Illegal index "+fieldIndex);
+				throw new IllegalArgumentException("Unsupported field "+field);
 			}
 		}
 
@@ -422,18 +422,18 @@ public class LogEntry implements ILogEntry {
 		StringBuffer sb = new StringBuffer("--- LogEntry ---\n");
 
 		/* Attributes */
-		for (int i = 0; i < NUMBER_OF_FIELDS; i++)
+		for (Field f: Field.values())
 		{
-			if (getField(i) != null) {
-				sb.append(fieldNames[i] + ": ");
-				if (i == FIELD_ENTRYTYPE) {
+			if (getField(f) != null) {
+				sb.append(f.getName() + ": ");
+				if (f == Field.ENTRYTYPE) {
 					sb.append(LogTypeHelper.getLogTypeDescription(type));
-				} else if(i==FIELD_TIMESTAMP) {
+				} else if(f==Field.TIMESTAMP) {
 					SimpleDateFormat df = new SimpleDateFormat(TIME_FORMAT);
 					FieldPosition pos = new FieldPosition(0);
 					df.format(date,sb,pos);
 				} else {
-					sb.append(getField(i));
+					sb.append(getField(f));
 				}
 				sb.append("\n");
 			}

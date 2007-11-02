@@ -74,100 +74,104 @@ public interface ILogEntry extends Serializable {
 		
 	}
 	
-	public static final short FIELD_TIMESTAMP = 0;
-	public static final short FIELD_ENTRYTYPE = 1;
-    public static final short FIELD_SOURCEOBJECT=2;
-	public static final short FIELD_FILE = 3;
-	public static final short FIELD_LINE = 4;
-	public static final short FIELD_ROUTINE = 5;
-	public static final short FIELD_HOST = 6;
-	public static final short FIELD_PROCESS = 7;
-	public static final short FIELD_CONTEXT = 8;
-	public static final short FIELD_THREAD = 9;
-	public static final short FIELD_LOGID = 10;
-	public static final short FIELD_PRIORITY = 11;
-	public static final short FIELD_URI = 12;
-	public static final short FIELD_STACKID = 13;
-	public static final short FIELD_STACKLEVEL = 14;
-	public static final short FIELD_LOGMESSAGE = 15;
-        public static final short FIELD_AUDIENCE=16;
-        public static final short FIELD_ARRAY=17;
-        public static final short FIELD_ANTENNA=18;
+	/**
+	 * An enumerated describing each field of the log.
+	 * This allows to have all the attributes describing the fields
+	 * written together limiting the chance of typos, errors and so on.
+	 * 
+	 * NOTE: before introducing this enum each filed has an integer, the entryType.
+	 * This integer can be obtained with the ordinal() method of enum.
+	 * 
+	 * @author acaproni
+	 *
+	 */
+	public enum Field {
+		TIMESTAMP("TimeStamp",Date.class,"TimeStamp"),
+		ENTRYTYPE("Entry Type",Integer.class,null),
+	    SOURCEOBJECT("Source Object",String.class,"SourceObject"),
+		FILE("File",String.class,"File"),
+		LINE("Line",Integer.class,"Line"),
+		ROUTINE("Routine",String.class,"Routine"),
+		HOST("Host",String.class,"Host"),
+		PROCESS("Process",String.class,"Process"),
+		CONTEXT("Context",String.class,"Context"),
+		THREAD("Thread",String.class,"Thread"),
+		LOGID("Log ID",String.class,"LogId"),
+		PRIORITY("Priority",Integer.class,"Priority"),
+		URI("URI",String.class,"URI"),
+		STACKID("Stack ID",String.class,"StackId"),
+		STACKLEVEL("Stack Level",Integer.class,"StackLevel"),
+		LOGMESSAGE("Log Message",String.class,null),
+	    AUDIENCE("Audience",String.class, "Audience"),
+	    ARRAY("Array",String.class,"Array"),
+	    ANTENNA("Antenna",String.class,"Antenna");
+		
+		// The name of the field
+		private String name;
+		
+		// The class of the field
+		private Class fieldClass;
+		
+		// The name of the XML attribute containing this field 
+		// 
+		// It is null for non attribute fields (like the entry type or the log message)
+		private String tagAttribute;
+		
+		/**
+		 * Constructor 
+		 * 
+		 * @param type The type of this fields
+		 * @param name The name of the field
+		 * @param fClass The class of the field
+		 * @param tag The name of the XML tag containing this attribute
+		 *           (<code>null</code> for non tag attributes like the log message)
+		 */
+		Field(String name, Class fClass, String tag) {
+			if (name==null || fClass==null) {
+				throw new IllegalArgumentException("Invalid null initializer");
+			}
+			this.name=name;
+			fieldClass=fClass;
+			tagAttribute=tag;
+		}
+		
+		/**
+		 * Getter
+		 * 
+		 * @return The name of the field
+		 * 
+		 */
+		public String getName() {
+			return name;
+		}
+		
+		/**
+		 * Getter
+		 * 
+		 * @return The class of the field
+		 * 
+		 */
+		public Class getType() {
+			return fieldClass;
+		}
+		
+		/**
+		 * Getter
+		 * 
+		 * @return The XML tag name of the field
+		 * 
+		 */
+		public String getTagAttribute() {
+			return tagAttribute;
+		}
+	}
 	
 	public static final String DATA_ELEMENT_TAG_NAME = "Data";
 	public static final String HEADER_ELEMENT_TAG_NAME = "Header";
 	public static final String LOG_ELEMENT_TAG_NAME = "Log";
 	public static final String NAME_ATTRIBUTE_NAME = "Name";
-	
-	public static final String[] fieldNames =
-	{
-		"TimeStamp",
-		"Entry Type",
-        "Source Object",
-		"File",
-		"Line",
-		"Routine",
-		"Host",
-		"Process",
-		"Context",
-		"Thread",
-		"Log ID",
-		"Priority",
-		"URI",
-		"Stack ID",
-		"Stack Level",
-		"Log Message",
-                "Audience",
-                "Array",
-                "Antenna"} ;
-
-	public static final Class[] fieldClasses = { 
-	    Date.class, // Time Stamp
-		Integer.class, //EntryType
-	    String.class, //Source Object
-		String.class, //File
-		Integer.class, //Line
-		String.class, //Routine 
-		String.class, //Host
-		String.class, //Process
-		String.class, //Context
-		String.class, //Thread
-		String.class, //LogID
-		Integer.class, //Priority
-		String.class, //URI
-		String.class, //Stack ID
-		Integer.class, //Stack Level
-		String.class, // Log Message
-                String.class,//Audience
-                String.class,//Array
-                String.class};//Antenna
-	
-	// The name of the attributes in XML files
-	public static final String[] tagAttributes =
-	{
-		"TimeStamp",
-		"", // Place holeder: not an attribute in the XML
-	    "SourceObject",
-		"File",
-		"Line",
-		"Routine",
-		"Host",
-		"Process",
-		"Context",
-		"Thread",
-		"LogId",
-		"Priority",
-		"URI",
-		"StackId",
-		"StackLevel",
-		"", // Place holeder: not an attribute in the XML
-                "Audience",
-                "Array",
-                "Antenna"};
 	    
 	public static final String TIME_FORMAT = "yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'SSS";
-	
-	public static final int NUMBER_OF_FIELDS = fieldClasses.length;
 	
 	/**
 	 * 
@@ -192,7 +196,7 @@ public interface ILogEntry extends Serializable {
 	 * @param fieldIndex
 	 * @return Return the object in the field of the passed index
 	 */
-	public Object getField(int fieldIndex);
+	public Object getField(Field field);
 	
 	/**
 	 * 

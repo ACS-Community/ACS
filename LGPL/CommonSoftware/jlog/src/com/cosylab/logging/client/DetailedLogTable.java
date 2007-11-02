@@ -19,6 +19,7 @@ import javax.swing.table.TableModel;
 
 import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.engine.log.LogTypeHelper;
+import com.cosylab.logging.engine.log.ILogEntry.Field;
 
 /**
  * The table used to represent data in the right panel of the
@@ -75,10 +76,10 @@ public class DetailedLogTable extends JTable
 	 *
 	 */
 	private void setEmptyContent() {
-		rowsNum = ILogEntry.NUMBER_OF_FIELDS;
+		rowsNum = Field.values().length;
 		nameValue = new String[rowsNum][2];
-		for (int i=0; i<ILogEntry.NUMBER_OF_FIELDS; i++) {
-			nameValue[i][0]= "<HTML><B>"+ILogEntry.fieldNames[i]+"</B>";
+		for (int i=0; i<Field.values().length; i++) {
+			nameValue[i][0]= "<HTML><B>"+Field.values()[i].getName()+"</B>";
 			nameValue[i][1]=NOT_AVAILABLE;
 		}
 		
@@ -100,19 +101,20 @@ public class DetailedLogTable extends JTable
 		// The number of rows in the table is given by the number of fields
 		// of each LogEntry plus the number of the "data" elements for the selected log
 		Vector<ILogEntry.AdditionalData> additionalData = log.getAdditionalData();
-		rowsNum = ILogEntry.NUMBER_OF_FIELDS;
+		rowsNum = Field.values().length;
 		if (additionalData!=null) {
 			rowsNum+=additionalData.size();
 		}
 		if (rowsNum > 0) {
 			nameValue = new String[rowsNum][2];
-			for (int i=0; i<ILogEntry.NUMBER_OF_FIELDS; i++) {
-				nameValue[i][0]= "<HTML><B>"+ILogEntry.fieldNames[i]+"</B>";
-				Object obj = log.getField(i);
+			for (int i=0; i<Field.values().length; i++) {
+				Field field = Field.values()[i];
+				nameValue[i][0]= "<HTML><B>"+field.getName()+"</B>";
+				Object obj = log.getField(field);
 				if (obj!=null) {
-					if (i==ILogEntry.FIELD_ENTRYTYPE) {
+					if (field==Field.ENTRYTYPE) {
 						nameValue[i][1]=obj.toString()+" ("+LogTypeHelper.getLogTypeDescription((Integer)obj)+")";
-					} else if (i==ILogEntry.FIELD_TIMESTAMP) {
+					} else if (field==Field.TIMESTAMP) {
 						SimpleDateFormat df = new SimpleDateFormat(ILogEntry.TIME_FORMAT);
 						Date dt = (Date)obj;
 						StringBuffer dateSB = new StringBuffer();
@@ -126,9 +128,9 @@ public class DetailedLogTable extends JTable
 					nameValue[i][1]="";
 				}
 			}
-			for (int i=ILogEntry.NUMBER_OF_FIELDS; i < rowsNum; i++) {
-				nameValue[i][0] = "<HTML><B>Additional</B> <I>"+additionalData.get(i-ILogEntry.NUMBER_OF_FIELDS).getName()+"</I>";
-				nameValue[i][1] = additionalData.get(i-ILogEntry.NUMBER_OF_FIELDS).getValue();
+			for (int i=Field.values().length; i < rowsNum; i++) {
+				nameValue[i][0] = "<HTML><B>Additional</B> <I>"+additionalData.get(i-Field.values().length).getName()+"</I>";
+				nameValue[i][1] = additionalData.get(i-Field.values().length).getValue();
 			}
 
 			// Change the name of the columns

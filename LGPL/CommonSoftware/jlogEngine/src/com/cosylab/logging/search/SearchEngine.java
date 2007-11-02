@@ -18,6 +18,7 @@ import alma.acs.logging.dialogs.main.LogEntryTable;
 import com.cosylab.logging.LogTableDataModel;
 
 import com.cosylab.logging.engine.log.ILogEntry;
+import com.cosylab.logging.engine.log.ILogEntry.Field;
 
 /**
  * @author acaproni
@@ -136,13 +137,13 @@ public class SearchEngine {
         	ILogEntry log = logTableDataModel.getVisibleLogEntry(cursor);
         	String string=null; // The value of the field
         	for (int t=0; t<cols.length-1; t++) {
-        		Object obj = log.getField(t);
+        		Object obj = log.getField(Field.values()[t]);
         		if (obj==null) {
         			continue;
         		}
         		if (cols[t]) {
-        			switch (t) {
-        				case ILogEntry.FIELD_TIMESTAMP: {
+        			switch (Field.values()[t]) {
+        				case TIMESTAMP: {
         					SimpleDateFormat df = new SimpleDateFormat(ILogEntry.TIME_FORMAT);
         					Date dt = (Date)obj;
         					tempSB.delete(0,tempSB.length());
@@ -150,10 +151,10 @@ public class SearchEngine {
         					string=tempSB.toString();
         					break;
         				} 
-        				case ILogEntry.FIELD_ENTRYTYPE:        					
-        				case ILogEntry.FIELD_LINE: 
-        				case ILogEntry.FIELD_PRIORITY: 
-        				case ILogEntry.FIELD_STACKLEVEL: {
+        				case ENTRYTYPE:        					
+        				case LINE: 
+        				case PRIORITY: 
+        				case STACKLEVEL: {
         					string=obj.toString();
         					break;
         				}

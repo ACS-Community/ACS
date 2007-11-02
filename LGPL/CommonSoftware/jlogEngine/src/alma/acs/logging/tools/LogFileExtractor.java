@@ -32,6 +32,7 @@ import com.cosylab.logging.engine.ACS.ACSLogParser;
 import com.cosylab.logging.engine.ACS.ACSLogParserDOM;
 import com.cosylab.logging.engine.ACS.ACSRemoteRawLogListener;
 import com.cosylab.logging.engine.log.ILogEntry;
+import com.cosylab.logging.engine.log.ILogEntry.Field;
 
 /**
  * An object to extract the logs that matches the given criteria.
@@ -264,7 +265,7 @@ public class LogFileExtractor implements ACSRemoteRawLogListener, AsynchronousOp
 	 *              end date (inclusive)
 	 */
 	private boolean checkDate(ILogEntry log) {
-		Date logDate = (Date)log.getField(ILogEntry.FIELD_TIMESTAMP);
+		Date logDate = (Date)log.getField(Field.TIMESTAMP);
 		long date = logDate.getTime();
 		boolean matches = true;
 		matches = date>=start;

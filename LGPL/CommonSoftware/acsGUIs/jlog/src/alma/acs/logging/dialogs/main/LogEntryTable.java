@@ -53,6 +53,7 @@ import com.cosylab.logging.client.ExpandButtonRenderer;
 import com.cosylab.logging.client.InfoRenderer;
 import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.engine.log.LogTypeHelper;
+import com.cosylab.logging.engine.log.ILogEntry.Field;
 import com.cosylab.logging.settings.FieldChooserDialog;
 import com.cosylab.logging.settings.FilterChooserDialog;
 import java.awt.datatransfer.Clipboard;
@@ -741,7 +742,7 @@ public class LogEntryTable extends JTable
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'SSS");
 			tempStr = sdf.format(value);
 		} else if (value instanceof Integer) {
-			if (getColumnName(col).compareTo(ILogEntry.fieldNames[ILogEntry.FIELD_ENTRYTYPE])==0) {
+			if (getColumnName(col).compareTo(Field.ENTRYTYPE.getName())==0) {
 				tempStr=LogTypeHelper.getLogTypeDescription(((Integer)value).intValue());
 			} else {
 				tempStr = value.toString();
@@ -846,10 +847,10 @@ public class LogEntryTable extends JTable
 		tc.setWidth(18);
 		tc.setMaxWidth(18);
 		
-		tc = tcm.getColumn(ILogEntry.FIELD_ENTRYTYPE + 2);
+		tc = tcm.getColumn(Field.ENTRYTYPE.ordinal() + 2);
 		tc.setCellRenderer(new EntryTypeRenderer(LogTypeHelper.getAllIcons()));
 
-		tc = tcm.getColumn(ILogEntry.FIELD_TIMESTAMP + 2);
+		tc = tcm.getColumn(Field.TIMESTAMP.ordinal() + 2);
 		dateRenderer = new DateRenderer(shortDateFormat);
 		tc.setCellRenderer(dateRenderer);
 
@@ -863,7 +864,7 @@ public class LogEntryTable extends JTable
 		{
 			columnsList[i] = tcm.getColumn(i);
 			visibleColumns[i] = true;
-			if (i == ILogEntry.FIELD_LOGMESSAGE+2)
+			if (i == Field.LOGMESSAGE.ordinal()+2)
 			{
 				columnsList[i].setPreferredWidth(250);
 			}
@@ -879,21 +880,21 @@ public class LogEntryTable extends JTable
 		sizeColumnsToFit(JTable.AUTO_RESIZE_OFF);
 
         // Hide some columns (default at startuup)
-		hideColumn(ILogEntry.FIELD_LINE+2);
-		hideColumn(ILogEntry.FIELD_ROUTINE+2);
-		hideColumn(ILogEntry.FIELD_HOST+2);
-		hideColumn(ILogEntry.FIELD_PROCESS+2);
-		hideColumn(ILogEntry.FIELD_CONTEXT+2);
-		hideColumn(ILogEntry.FIELD_THREAD+2);
-		hideColumn(ILogEntry.FIELD_LOGID+2);
-		hideColumn(ILogEntry.FIELD_PRIORITY+2);
-		hideColumn(ILogEntry.FIELD_URI+2);
-        hideColumn(ILogEntry.FIELD_STACKID+2);
-        hideColumn(ILogEntry.FIELD_FILE+2);
-        hideColumn(ILogEntry.FIELD_STACKLEVEL+2);
-        hideColumn(ILogEntry.FIELD_AUDIENCE+2);
-        hideColumn(ILogEntry.FIELD_ARRAY+2);
-        hideColumn(ILogEntry.FIELD_ANTENNA+2);
+		hideColumn(Field.LINE.ordinal()+2);
+		hideColumn(Field.ROUTINE.ordinal()+2);
+		hideColumn(Field.HOST.ordinal()+2);
+		hideColumn(Field.PROCESS.ordinal()+2);
+		hideColumn(Field.CONTEXT.ordinal()+2);
+		hideColumn(Field.THREAD.ordinal()+2);
+		hideColumn(Field.LOGID.ordinal()+2);
+		hideColumn(Field.PRIORITY.ordinal()+2);
+		hideColumn(Field.URI.ordinal()+2);
+        hideColumn(Field.STACKID.ordinal()+2);
+        hideColumn(Field.FILE.ordinal()+2);
+        hideColumn(Field.STACKLEVEL.ordinal()+2);
+        hideColumn(Field.AUDIENCE.ordinal()+2);
+        hideColumn(Field.ARRAY.ordinal()+2);
+        hideColumn(Field.ANTENNA.ordinal()+2);
 
 		// Build and set the slection model
 		selectionModel = new DefaultListSelectionModel();
@@ -986,7 +987,11 @@ public class LogEntryTable extends JTable
 	 */
 	public void showFieldChooser()
 	{
-		String[] fieldNames = ILogEntry.fieldNames;
+		String[] fieldNames = new String[Field.values().length];
+		int t=0;
+		for (Field f: Field.values()) {
+			fieldNames[t++]=f.getName();
+		}
 		boolean[] fieldVisible = getVisibleColumns(true);
 		
 		if (fieldChooser==null) {
@@ -998,7 +1003,7 @@ public class LogEntryTable extends JTable
 
 		boolean[] newFields = fieldChooser.getChecked();
 
-		for (int i = 0; i < ILogEntry.NUMBER_OF_FIELDS; i++)
+		for (int i = 0; i < Field.values().length; i++)
 		{
 			if (newFields[i] != fieldVisible[i])
 			{
@@ -1021,7 +1026,7 @@ public class LogEntryTable extends JTable
      * @return An array of boolean describing which columns are displayed
      */
     public boolean[] getVisibleColumns(boolean zeroBased) {
-        int nFields = ILogEntry.NUMBER_OF_FIELDS;
+        int nFields = Field.values().length;
         // The array of visible columns to return
         boolean[] visibleCols = new boolean[nFields];
         

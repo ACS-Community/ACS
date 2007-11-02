@@ -25,6 +25,7 @@ import org.jdom.adapters.JAXPDOMAdapter;
 import org.jdom.JDOMException;
 
 import com.cosylab.logging.engine.log.ILogEntry;
+import com.cosylab.logging.engine.log.ILogEntry.Field;
 
 /**
  * @author acaproni
@@ -202,7 +203,7 @@ public class FiltersVector extends Vector<Filter> {
 		for (int t = 0; t<activeFilters.size(); t++) {
 			int pos = activeFilters.get(t).intValue();
 			if (t>0) returnValue.append(", ");
-			returnValue.append(ILogEntry.fieldNames[((Filter)elementAt(pos)).field]);
+			returnValue.append(Field.values()[((Filter)elementAt(pos)).field].getName());
 		}
 		return "Filtered by: "+returnValue.toString();
 	}

@@ -7,6 +7,7 @@ import java.util.regex.Pattern;
 
 import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.engine.log.LogTypeHelper;
+import com.cosylab.logging.engine.log.ILogEntry.Field;
 
 /**
  * Objects of this class produce a CSV string from a given log.
@@ -146,7 +147,7 @@ public class CSVConverter {
 			if (t>0) {
 				str.append(separator);
 			}
-			appendField(ILogEntry.fieldNames[index],str);
+			appendField(Field.values()[index].getName(),str);
 		}
 		str.append(0xD); // CR
 		str.append(0xA); // LF
@@ -170,17 +171,17 @@ public class CSVConverter {
 			int index;
 			if ((c>='0' && c<='9') || (c>='A' && c<='F')) {
 				index=Integer.parseInt(c.toString(),16);
-				Object obj = log.getField(index);
+				Object obj = log.getField(Field.values()[index]);
 				if (obj==null) {
 					appendField(null,str);
-				} else  if (index==ILogEntry.FIELD_TIMESTAMP) {
+				} else  if (index==Field.TIMESTAMP.ordinal()) {
 					// Write the date in the right format
 					Date dt = (Date)obj;
 					StringBuffer dateSB = new StringBuffer();
 					java.text.FieldPosition pos = new java.text.FieldPosition(0);
 					df.format(dt,dateSB,pos);
 					appendField(dateSB.toString(),str);
-				} else if (index==ILogEntry.FIELD_ENTRYTYPE) {
+				} else if (index==Field.ENTRYTYPE.ordinal()) {
 					appendField(LogTypeHelper.getLogTypeDescription(Integer.parseInt(obj.toString())),str);
 				} else {
 					appendField(obj.toString(),str);

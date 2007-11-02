@@ -32,6 +32,7 @@ import java.util.Set;
 import java.util.concurrent.ArrayBlockingQueue;
 
 import com.cosylab.logging.engine.log.ILogEntry;
+import com.cosylab.logging.engine.log.ILogEntry.Field;
 
 /**
  * The class extends the cache on file implemented in LogBufferedFileCache
@@ -146,7 +147,7 @@ public class LogCache extends LogBufferedFileCache implements ILogMap {
 			logTypes.put(key,(log.getType()));
 		}
 		synchronized (logTimes) {
-			logTimes.put(key,new Long(((Date)log.getField(ILogEntry.FIELD_TIMESTAMP)).getTime()));
+			logTimes.put(key,new Long(((Date)log.getField(Field.TIMESTAMP)).getTime()));
 		}
 		return key;
 	}

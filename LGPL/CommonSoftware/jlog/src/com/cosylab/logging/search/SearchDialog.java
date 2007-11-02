@@ -23,6 +23,7 @@ import java.util.regex.PatternSyntaxException;
 
 import com.cosylab.logging.LoggingClient;
 import com.cosylab.logging.engine.log.ILogEntry;
+import com.cosylab.logging.engine.log.ILogEntry.Field;
 
 /**
  * @author acaproni
@@ -62,10 +63,10 @@ public class SearchDialog extends JDialog {
      /**
       * One CheckBox per each field of a log entry
       */
-    private JCheckBox columnToSearchIn[]= new JCheckBox[ILogEntry.NUMBER_OF_FIELDS];
+    private JCheckBox columnToSearchIn[]= new JCheckBox[Field.values().length];
     
     /**
-     * The checkbox to searc also in the additional data field of the logs
+     * The checkbox to search also in the additional data field of the logs
      */
     private JCheckBox additionalDataCB;
     
@@ -106,17 +107,17 @@ public class SearchDialog extends JDialog {
      * 
      */
     private void initializeAdvancedPanel() {
-   		advancedPanel.setLayout(new GridLayout(ILogEntry.NUMBER_OF_FIELDS+1,1,5,3));
+   		advancedPanel.setLayout(new GridLayout(Field.values().length+1,1,5,3));
         boolean visibeColsInMainWindow[]=loggingClient.getLogEntryTable().getVisibleColumns(true);
         // Add one checkbox for each field of the logs
-        for (int t=0; t<ILogEntry.NUMBER_OF_FIELDS; t++) {
+        for (int t=0; t<Field.values().length; t++) {
         	if (columnToSearchIn[t]==null) {
-        		columnToSearchIn[t]=new JCheckBox(ILogEntry.fieldNames[t]);
+        		columnToSearchIn[t]=new JCheckBox(Field.values()[t].getName());
         	}
             advancedPanel.add(columnToSearchIn[t]);
             columnToSearchIn[t].setVisible(true);
             columnToSearchIn[t].setSelected(visibeColsInMainWindow[t]);
-            columnToSearchIn[t].setToolTipText("Search in "+ILogEntry.fieldNames[t]);
+            columnToSearchIn[t].setToolTipText("Search in "+Field.values()[t].getName());
         }
         // Add a checkbox for additional data
         additionalDataCB = new JCheckBox("Additional data",false);

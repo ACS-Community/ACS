@@ -37,6 +37,7 @@ import java.util.Vector;
 import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.engine.log.LogEntry;
 import com.cosylab.logging.engine.log.ILogEntry.AdditionalData;
+import com.cosylab.logging.engine.log.ILogEntry.Field;
 
 /**
  * This class implements the cache in order to be able to manage
@@ -383,8 +384,8 @@ public class LogFileCache implements ILogMap {
 	
 	protected String toCacheString(ILogEntry log) {
 		sb.delete(0,sb.length());
-		for (int t=0; t<ILogEntry.NUMBER_OF_FIELDS; t++) {
-			Object obj = log.getField(t);
+		for (Field field: Field.values()) {
+			Object obj = log.getField(field);
 			if (obj!=null) {
 				if (obj instanceof Date) {
 					sb.append(((Date)obj).getTime());
@@ -481,9 +482,9 @@ public class LogFileCache implements ILogMap {
 		}
         
         Vector<ILogEntry.AdditionalData> addDatas = null;
-        if (strs.length>ILogEntry.NUMBER_OF_FIELDS) {
+        if (strs.length>Field.values().length) {
         	addDatas = new Vector<ILogEntry.AdditionalData>();
-        	for (int t=ILogEntry.NUMBER_OF_FIELDS; t<strs.length; t+=2) {
+        	for (int t=Field.values().length; t<strs.length; t+=2) {
         		addDatas.add(new AdditionalData(strs[t],strs[t+1]));
         	}
         }

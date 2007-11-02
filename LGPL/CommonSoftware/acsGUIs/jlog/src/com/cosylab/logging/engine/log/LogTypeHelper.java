@@ -24,6 +24,7 @@ package com.cosylab.logging.engine.log;
 import javax.swing.ImageIcon;
 
 import com.cosylab.logging.engine.log.LogEntryXML;
+import com.cosylab.logging.engine.log.ILogEntry.Field;
 
 /**
  * @author acaproni
@@ -191,7 +192,7 @@ public class LogTypeHelper {
         if (log==null) {
             throw new IllegalArgumentException("Impossible to get the type of a null log");
         }
-        Integer type = (Integer)log.getField(LogEntryXML.FIELD_ENTRYTYPE);
+        Integer type = (Integer)log.getField(Field.ENTRYTYPE);
         if (type==null || type.intValue()<0 || type.intValue()>NUMBER_OF_ENTRYTYPES) {
             return "Undeclared";
         } else {

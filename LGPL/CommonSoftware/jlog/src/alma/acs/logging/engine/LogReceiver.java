@@ -43,6 +43,7 @@ import com.cosylab.logging.engine.ACS.ACSLogConnectionListener;
 import com.cosylab.logging.engine.ACS.LCEngine;
 import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.engine.log.LogEntry;
+import com.cosylab.logging.engine.log.ILogEntry.Field;
 
 
 /**
@@ -359,7 +360,7 @@ public class LogReceiver {
 			logRecordIndex = logRecordCounter.incrementAndGet();
 			this.logEntry = logEntry;
             this.delayTimeMillis = delayTimeMillis;
-			Date logDate = (Date) logEntry.getField(LogEntry.FIELD_TIMESTAMP);
+			Date logDate = (Date) logEntry.getField(Field.TIMESTAMP);
 			triggerTimeMillis = logDate.getTime() + delayTimeMillis;
 		}
 

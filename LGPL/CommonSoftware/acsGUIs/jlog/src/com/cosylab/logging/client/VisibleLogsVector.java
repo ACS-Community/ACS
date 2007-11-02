@@ -14,6 +14,7 @@ import com.cosylab.logging.client.cache.LogCache;
 import com.cosylab.logging.client.cache.LogCacheException;
 
 import com.cosylab.logging.engine.log.ILogEntry;
+import com.cosylab.logging.engine.log.ILogEntry.Field;
 
 import com.cosylab.logging.LoggingClient;
 
@@ -177,7 +178,7 @@ public class VisibleLogsVector extends Thread {
 		private int fastCompare(int first, int second) {
 			long firstVal=0;
 			long secondVal=0;
-			if (fieldIndex==ILogEntry.FIELD_TIMESTAMP) {
+			if (fieldIndex==Field.TIMESTAMP.ordinal()) {
 				try {
 					firstVal=(Long)cache.getLogTimestamp(first);
 				} catch (LogCacheException e) {
@@ -226,7 +227,7 @@ public class VisibleLogsVector extends Thread {
 		 * @see java.util.Comparable
 		 */
 		public final int compare(Integer firtsItem, Integer secondItem) {
-			if (fieldIndex==ILogEntry.FIELD_TIMESTAMP || fieldIndex==ILogEntry.FIELD_ENTRYTYPE) {
+			if (fieldIndex==Field.TIMESTAMP.ordinal() || fieldIndex==Field.ENTRYTYPE.ordinal()) {
 				return fastCompare(firtsItem,secondItem);
 			}
 			ILogEntry log1 = null;
@@ -270,14 +271,14 @@ public class VisibleLogsVector extends Thread {
 		 * @return
 		 */
 		public int compareLogs(ILogEntry log1, ILogEntry log2) {
-			if (fieldIndex<0 || fieldIndex>=ILogEntry.NUMBER_OF_FIELDS) {
+			if (fieldIndex<0 || fieldIndex>=Field.values().length) {
 				throw new IllegalStateException("Trying to compare with comparison disabled");
 			}
 			if ((log1 == null) || (log2 == null))
 				return 0;
 				
-			Comparable item1 = (Comparable)(log1).getField(fieldIndex);
-			Comparable item2 = (Comparable)(log2).getField(fieldIndex);
+			Comparable item1 = (Comparable)(log1).getField(Field.values()[fieldIndex]);
+			Comparable item2 = (Comparable)(log2).getField(Field.values()[fieldIndex]);
 		
 			int returnValue = 0;
 		
@@ -326,7 +327,7 @@ public class VisibleLogsVector extends Thread {
 		 * @param isAscending Set ascending/descening order of comparison
 		 */
 		public void setComparingParams(int field, boolean isAscending) {
-			if (field<-1 || field>ILogEntry.NUMBER_OF_FIELDS) {
+			if (field<-1 || field>Field.values().length) {
 				throw new IllegalArgumentException("Invalid comparator field "+field);
 			}
 			this.fieldIndex=field;
@@ -510,7 +511,7 @@ public class VisibleLogsVector extends Thread {
 		loggingClient=client;
 		this.cache=theCache;
 		this.comparator = new VisibleLogsComparator();
-		this.comparator.setComparingParams(ILogEntry.FIELD_TIMESTAMP,false);
+		this.comparator.setComparingParams(Field.TIMESTAMP.ordinal(),false);
 		this.tableModel=model;
 		visibleLogs = new Vector<Integer>(256,32);
 		// Start the thread for async operations
@@ -644,11 +645,11 @@ public class VisibleLogsVector extends Thread {
 		if (visibleLogs.size()==0) {
 			return 0;
 		}
-		if (comparator.getSortField()==ILogEntry.FIELD_TIMESTAMP) {
-			return findPosLogarthmicDate(((Date)log.getField(ILogEntry.FIELD_TIMESTAMP)).getTime());
+		if (comparator.getSortField()==Field.TIMESTAMP.ordinal()) {
+			return findPosLogarthmicDate(((Date)log.getField(Field.TIMESTAMP)).getTime());
 		}
-		if (comparator.getSortField()==ILogEntry.FIELD_ENTRYTYPE) {
-			return findPosLogarthmicType((Integer)log.getField(ILogEntry.FIELD_ENTRYTYPE));
+		if (comparator.getSortField()==Field.ENTRYTYPE.ordinal()) {
+			return findPosLogarthmicType((Integer)log.getField(Field.ENTRYTYPE));
 		}
 		//int ret=-1;
 		int minInter = 0;

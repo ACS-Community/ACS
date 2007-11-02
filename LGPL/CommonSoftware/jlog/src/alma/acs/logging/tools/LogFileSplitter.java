@@ -31,6 +31,7 @@ import java.util.Date;
 import com.cosylab.logging.engine.ACS.ACSLogParser;
 import com.cosylab.logging.engine.ACS.ACSLogParserDOM;
 import com.cosylab.logging.engine.ACS.ACSRemoteRawLogListener;import com.cosylab.logging.engine.log.ILogEntry;
+import com.cosylab.logging.engine.log.ILogEntry.Field;
 
 /**
  * An object to split a log file in several other shorter file.
@@ -188,11 +189,11 @@ public class LogFileSplitter implements ACSRemoteRawLogListener, AsynchronousOpe
 				System.err.println("The log that caused the exception: "+xmlLogString);
 				System.exit(-1);
 			}
-			long logDate = ((Date)log.getField(ILogEntry.FIELD_TIMESTAMP)).getTime();
+			long logDate = ((Date)log.getField(Field.TIMESTAMP)).getTime();
 			if (firstLogDate==-1 || logDate-firstLogDate>time) {
 				firstLogDate=logDate;
 				closeOutputFile(outF);
-				outF=getOutputFile(destFileName,index++,(Date)log.getField(ILogEntry.FIELD_TIMESTAMP));
+				outF=getOutputFile(destFileName,index++,(Date)log.getField(Field.TIMESTAMP));
 			}
 		}
 		if (writeAsCSV) {
