@@ -73,6 +73,8 @@ public class TabPanel extends JPanel {
 	protected DefaultChecklistPanel localJavaFlowPanel;
 	protected DefaultChecklistPanel localScriptFlowPanel;
 	protected DefaultChecklistPanel singleStepFlowPanel;
+	protected DefaultChecklistPanel remoteServicesDaemonFlowPanel;
+	protected DefaultChecklistPanel remoteContainerDaemonFlowPanel;
 
 
 	protected TabPanel(CommandCenterGui master) {
@@ -88,7 +90,8 @@ public class TabPanel extends JPanel {
 		localJavaFlowPanel = new DefaultChecklistPanel(Executor.localInProcFlow, null, null, null, okIcon, null, errIcon);
 		localScriptFlowPanel = new DefaultChecklistPanel(Executor.localOutProcFlow, null, null, null, okIcon, null, errIcon);
 		singleStepFlowPanel = new DefaultChecklistPanel(Executor.singleStepFlow, null, null, null, okIcon, null, errIcon);
-
+		remoteServicesDaemonFlowPanel = new DefaultChecklistPanel(Executor.remoteServicesDaemonFlow, null, null, null, okIcon, null, errIcon);
+		remoteContainerDaemonFlowPanel = new DefaultChecklistPanel(Executor.remoteContainerDaemonFlow, null, null, null, okIcon, null, errIcon);
 		init();
 	}
 
@@ -138,6 +141,7 @@ public class TabPanel extends JPanel {
 	MyRadioButton chkLocalScript = new MyRadioButton("Local");
 	MyRadioButton chkRemoteScript = new MyRadioButton("Remote");
 	MyRadioButton chkLocalJava = new MyRadioButton("Java-only Acs");
+	JCheckBox chkUseDaemons;
 
 	ButtonGroup buttonGroup1 = new ButtonGroup();
 	{
@@ -289,6 +293,7 @@ public class TabPanel extends JPanel {
 
 		JPanel j = new JPanel(new BorderLayout());
 		j.add(chkRemoteScript, BorderLayout.NORTH);
+
 		JPanel k = new JPanel(new SpringLayout());
 		k.add(lblB = new JLabel("Host"));
 		k.add(hostF);
@@ -309,8 +314,15 @@ public class TabPanel extends JPanel {
 		chkRemoteScript.disenable(passwordF);
 		passwordF.addFocusListener(focusListener);
 		SpringUtilities.makeCompactGrid(k, 3, 2, 30, 3, 6, 2);
-		j.add(k, BorderLayout.SOUTH);
+		j.add(k, BorderLayout.CENTER);
 
+		chkUseDaemons = new JCheckBox(new ActionUseDaemons());
+		chkUseDaemons.setToolTipText("Use Acs Daemons instead of ssh");
+		chkUseDaemons.setBorder(new EmptyBorder(6,30,3,0)); // align with textfields
+		chkRemoteScript.disenable(chkUseDaemons);
+		j.add(chkUseDaemons, BorderLayout.SOUTH);
+		
+		
 		remoteTab.add(j);
 
 		tabbedPane1LeftContent.add(remoteTab);
@@ -745,7 +757,7 @@ public class TabPanel extends JPanel {
 
 			// just to have a chance to see the final "ok" on the screen
 			try {
-				Thread.sleep(500);
+				Thread.sleep(800);
 			} catch (InterruptedException exc) {}
 
 			close();
@@ -1236,9 +1248,15 @@ public class TabPanel extends JPanel {
 					break;
 
 				case ModeType.REMOTE_TYPE :
-					setProgressPanelContent("Starting Acs", remoteFlowPanel);
-					master.controller.executeAcs.startRemote(master.giveComplexListener("Acs"));
-					managerStarted();
+					if (Boolean.getBoolean("AcsCommandCenter.useServicesDaemon")) {
+						setProgressPanelContent("Starting Acs", remoteServicesDaemonFlowPanel);
+						master.controller.executeAcs.startRemoteDemonic(master.giveSimpleListener("Acs"));
+						managerStarted();
+					} else {
+						setProgressPanelContent("Starting Acs", remoteFlowPanel);
+						master.controller.executeAcs.startRemote(master.giveComplexListener("Acs"));
+						managerStarted();
+					}
 					break;
 
 				case ModeType.JAVA_TYPE :
@@ -1273,9 +1291,15 @@ public class TabPanel extends JPanel {
 					managerStopped();
 					break;
 				case ModeType.REMOTE_TYPE :
-					setProgressPanelContent("Stopping Acs", remoteFlowPanel);
-					master.controller.executeAcs.stopRemote(master.giveComplexListener("Acs"));
-					managerStopped();
+					if (Boolean.getBoolean("AcsCommandCenter.useServicesDaemon")) {
+						setProgressPanelContent("Stopping Acs", remoteServicesDaemonFlowPanel);
+						master.controller.executeAcs.stopRemoteDemonic(master.giveSimpleListener("Acs"));
+						managerStopped();
+					} else {
+						setProgressPanelContent("Stopping Acs", remoteFlowPanel);
+						master.controller.executeAcs.stopRemote(master.giveComplexListener("Acs"));
+						managerStopped();
+					}
 					break;
 				case ModeType.JAVA_TYPE :
 					// --- trigger two steps (code is a duplicate of the single actions)
@@ -1447,8 +1471,13 @@ public class TabPanel extends JPanel {
 					master.controller.executeContainer.startLocalScript(runmodel, master.giveComplexListener(contName));
 					break;
 				case ModeType.REMOTE_TYPE :
-					setProgressPanelContent("Starting "+contName, remoteFlowPanel);
-					master.controller.executeContainer.startRemote(runmodel, master.giveComplexListener(contName));
+					if (Boolean.getBoolean("AcsCommandCenter.useContainerDaemon")) {
+						setProgressPanelContent("Starting "+contName, remoteContainerDaemonFlowPanel);
+						master.controller.executeContainer.startRemoteDemonic(runmodel, master.giveSimpleListener(contName));
+					} else {
+						setProgressPanelContent("Starting "+contName, remoteFlowPanel);
+						master.controller.executeContainer.startRemote(runmodel, master.giveComplexListener(contName));
+					}
 					break;
 				case ModeType.JAVA_TYPE :
 					setProgressPanelContent("Starting "+contName, localJavaFlowPanel);
@@ -1482,8 +1511,13 @@ public class TabPanel extends JPanel {
 					master.controller.executeContainer.stopLocalScript(runmodel, master.giveComplexListener(contName));
 					break;
 				case ModeType.REMOTE_TYPE :
-					setProgressPanelContent("Stopping "+contName, remoteFlowPanel);
-					master.controller.executeContainer.stopRemote(runmodel, master.giveComplexListener(contName));
+					if (Boolean.getBoolean("AcsCommandCenter.useContainerDaemon")) {
+						setProgressPanelContent("Stopping "+contName, remoteContainerDaemonFlowPanel);
+						master.controller.executeContainer.stopRemoteDemonic(runmodel, master.giveSimpleListener(contName));
+					} else {
+						setProgressPanelContent("Stopping "+contName, remoteFlowPanel);
+						master.controller.executeContainer.stopRemote(runmodel, master.giveComplexListener(contName));
+					}
 					break;
 				case ModeType.JAVA_TYPE :
 					setProgressPanelContent("Stopping "+contName, localJavaFlowPanel);
@@ -1668,6 +1702,39 @@ public class TabPanel extends JPanel {
 		protected void actionPerformed () throws Throwable {
 			boolean b = btnShowAdvanced.isSelected();
 			setAdvancedVisible(b);
+		}
+	}
+
+	protected class ActionUseDaemons extends CommandCenterGui.ActionBaseClass {
+
+		protected ActionUseDaemons() {
+			master.super("Use Acs 7.0 Daemons", null);
+		}
+
+		@Override
+		protected void actionPerformed () throws Throwable {
+			boolean b = chkUseDaemons.isSelected();
+			System.setProperty("AcsCommandCenter.useServicesDaemon", String.valueOf(b));
+			System.setProperty("AcsCommandCenter.useContainerDaemon", String.valueOf(b));
+			if (b) { 
+				String msg = " You have enabled daemon mode." //
+						+ "\n\n" //
+						+ "Acs Command Center will use Acs Daemons to start or stop:\n" //
+						+ "   * Acs Suite\n" //
+						+ "   * Containers\n" //
+						+ "Note that daemons will not be used for the Services and Manager controls in the\n" //
+						+ "advanced section. Instead, ssh will be used. The same is true for the \"Kill\" button.\n" //
+						+ "\n"
+						+ "In daemon mode, there's no need to specify\n" //
+						+ "   * Username\n" //
+						+ "   * Password\n" //
+						+ "Instead, all Acs processes will run under the account of their respective daemon.\n" //
+						+ "\n" //
+						+ "Finally note that the output of processes started through Acs Daemons\n" //
+						+ "will not be available in the Log Area of Acs Command Center" //
+						;
+				JOptionPane.showMessageDialog(master.frame, msg, "About Acs 7.0 Daemons", JOptionPane.OK_OPTION);
+			}
 		}
 	}
 
