@@ -54,6 +54,11 @@ public class Firestarter {
 	protected String clientName = null;
 
 
+	public Firestarter (String clientName, Logger firestarterLog) {
+		this(clientName);
+		this.firestarterLog = firestarterLog;
+	}
+	
 	/**
 	 * Creates a Firestarter for a client with the specified name (like "AcsCommandCenter"
 	 * or "OMC") and the specified Logger.
@@ -104,7 +109,7 @@ public class Firestarter {
 	 * @return the orb
 	 * @throws Exception any connection-related exception
 	 */
-	protected org.omg.CORBA.ORB giveOrb () throws OrbInitException {
+	public org.omg.CORBA.ORB giveOrb () throws OrbInitException {
 		prepareAcsCorba(); // may fail
 
 		return acsCorba.getORB();

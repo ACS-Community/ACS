@@ -85,7 +85,7 @@ public class CommandCenterLogic {
 
 	public ExecuteTools executeTools;
 
-	public CustomFirestarter firestarter;
+	public Firestarter firestarter;
 	
 
 	protected CommandCenterGui gui;
@@ -115,7 +115,8 @@ public class CommandCenterLogic {
 		executeAcs = new ExecuteAcs(model);
 		executeTools = new ExecuteTools(model);
 
-		firestarter = new CustomFirestarter("AcsCommandCenter", log);
+		firestarter = new Firestarter("AcsCommandCenter", log);
+		Executor.remoteDaemonEnable(firestarter); // msc (2007-11): needed for talking to daemons
 		
 		deploymentTreeControllerImpl = new DeploymentTreeControllerImpl();
 		
@@ -643,18 +644,6 @@ public class CommandCenterLogic {
 	//  ======= DeploymentTreeController implementation ==========
 	//
 
-	/** Exists to provide access to ORB */
-	class CustomFirestarter extends Firestarter {
-		
-		protected CustomFirestarter(String clientName, Logger firestarterLog) {
-			super(clientName);
-			super.firestarterLog = firestarterLog;
-		}
-		@Override
-		public ORB giveOrb () throws OrbInitException {
-			return super.giveOrb();
-		}
-	}
 	
 	public DeploymentTreeControllerImpl deploymentTreeControllerImpl;
 	
