@@ -21,4 +21,4 @@ else
 	echo "FAILED: expected $NUM_TO_SEND alarms but only detected $numAlarmsFound alarms"
 fi
 kill -9 $!
-#cp AlarmSystemConfiguration.xml $ACS_CDB/CDB/Alarms/Administrative/AlarmSystemConfiguration/AlarmSystemConfiguration.xml
+cp AlarmSystemConfiguration.xml $ACS_CDB/CDB/Alarms/Administrative/AlarmSystemConfiguration/AlarmSystemConfiguration.xml
