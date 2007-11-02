@@ -30,6 +30,7 @@ import com.cosylab.logging.engine.log.LogEntryXML;
 import com.cosylab.logging.engine.log.LogEntry;
 import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.engine.log.LogTypeHelper;
+import com.cosylab.logging.engine.log.ILogEntry.Field;
 import com.cosylab.logging.engine.ACS.ACSLogParser;
 import com.cosylab.logging.engine.ACS.ACSLogParserDOM;
 
@@ -51,7 +52,7 @@ public class LogEntryTest extends junit.framework.TestCase
 	Node node = null;
 	DocumentBuilderFactory factory = null;
 
-	java.util.Vector testEntries = new java.util.Vector();
+	java.util.Vector<TestEntry> testEntries = new java.util.Vector<TestEntry>();
 
 	ACSLogParserDOM logparser = null;
 
@@ -126,7 +127,7 @@ public class LogEntryTest extends junit.framework.TestCase
 	public void testGetEntryTypeAsString()
 	{ //public String getEntryTypeAsString()  
 
-		String actualEntryType = LogTypeHelper.getLogTypeDescription((Integer)log.getField(ILogEntry.FIELD_ENTRYTYPE));
+		String actualEntryType = LogTypeHelper.getLogTypeDescription((Integer)log.getField(Field.ENTRYTYPE));
 		String expectedEntryType = "Trace";
 		assertEquals(
 			"The two logs are not equal.",
@@ -143,11 +144,11 @@ public class LogEntryTest extends junit.framework.TestCase
 			String actualEntryTypeDesc = LogTypeHelper.getLogTypeDescription(j);
 			// can be anything: trace, debug, info
 			if (actualEntryTypeDesc
-				.equalsIgnoreCase(LogTypeHelper.getLogTypeDescription((Integer)log.getField(ILogEntry.FIELD_ENTRYTYPE))));
+				.equalsIgnoreCase(LogTypeHelper.getLogTypeDescription((Integer)log.getField(Field.ENTRYTYPE))));
 				actual = actualEntryTypeDesc; // is the one that matches
 				break;
 		}
-		String expected = LogTypeHelper.getLogTypeDescription((Integer)log.getField(ILogEntry.FIELD_ENTRYTYPE));
+		String expected = LogTypeHelper.getLogTypeDescription((Integer)log.getField(Field.ENTRYTYPE));
 		assertEquals("The two logs are not equal.", expected, actual);
 	}
 
@@ -159,14 +160,9 @@ public class LogEntryTest extends junit.framework.TestCase
 
 		Object expectedField = "maciHeartbeatController.cpp";
 
-		for (int j = 0; j < 15; j++)
-		{
-			curFieldDesc = LogEntryXML.getFieldDescription(j); // File
-			if (curFieldDesc.equalsIgnoreCase("File"))
-			{
-				actualField = log.getField(j);
-			}
-		}
+		Field fileField=Field.FILE;
+		actualField = log.getField(Field.FILE);
+		
 		assertEquals("The two logs are not equal.", expectedField, actualField);
 	}
 
@@ -180,29 +176,18 @@ public class LogEntryTest extends junit.framework.TestCase
 		currentFieldDesc = "File";
 		Class expectedFieldClass = String.class;
 
-		for (int j = 0; j < 15; j++)
+		for (Field f: Field.values())
 		{
-			curFieldDesc = LogEntryXML.getFieldDescription(j);
+			curFieldDesc = f.getName();
 			// can be anything: timstamp, entrytype, field
 			if (curFieldDesc.equals(currentFieldDesc))
-				curFieldClass = LogEntryXML.getFieldClass(j);
+				curFieldClass = f.getClass();
 			// gets the class of the "File" which is String
 		}
 		assertEquals(
 			"The two logs are not equal.",
 			expectedFieldClass,
 			actualFieldClass);
-	}
-
-	public void testIsValidFieldIndex()
-	{ //boolean isValidFieldIndex(int fieldIndex)
-		boolean expected = true;
-		boolean actual = false;
-		for (int j = 0; j < 15; j++)
-		{
-			actual = LogEntryXML.isValidFieldIndex(j);
-		}
-		assertEquals("The two logs are not equal.", expected, actual);
 	}
 
 	public void testIsValidLogEntryType()
@@ -220,19 +205,19 @@ public class LogEntryTest extends junit.framework.TestCase
 	public void testGetFieldDesc()
 	{ //String getFieldDescription(int fieldIndex) 
 		String actualFieldDesc = null;
-		Object field = null;
+		Object fieldContent = null;
 		String f = null;
 		String expectedFieldDesc = "File";
 		String expectedField = "maciHeartbeatController.cpp";
 
-		for (int j = 0; j < 15; j++)
+		for (Field field: Field.values())
 		{
-			field = log.getField(j); // all the fields 		
-			f = "" + field;
+			fieldContent = log.getField(field); // all the fields 		
+			f = "" + fieldContent;
 
 			if (f.equalsIgnoreCase(expectedField))
 			{ // maciHeartbeatController.cpp
-				actualFieldDesc = LogEntryXML.getFieldDescription(j);
+				actualFieldDesc = field.getName();
 			}
 		}
 		assertEquals(
@@ -247,20 +232,19 @@ public class LogEntryTest extends junit.framework.TestCase
 
 		try
 		{
-			for (int i = 0; i < testEntries.size(); i++)
+			for (TestEntry entry: testEntries)
 			{
-				TestEntry testEntry = (TestEntry) testEntries.get(i);
 				DocumentBuilder db = factory.newDocumentBuilder();
 
 				doc =
 					db.parse(
 						new InputSource(
-							new java.io.StringReader(testEntry.log)));
+							new java.io.StringReader(entry.log)));
 
 				Node root = doc.getFirstChild();
 				LogEntryXML le = new LogEntryXML(root);
 				String act = le.getEntryTypeAsString();
-				String exp = testEntry.logType;
+				String exp = entry.logType;
 
 				// Checks whether starting and supposedly starting tags match.
 				assertEquals(

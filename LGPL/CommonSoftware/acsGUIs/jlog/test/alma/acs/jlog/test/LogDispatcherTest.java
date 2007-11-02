@@ -42,6 +42,7 @@ import com.cosylab.logging.engine.ACS.ACSRemoteLogListener;
 import com.cosylab.logging.engine.ACS.ACSRemoteRawLogListener;
 import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.engine.log.ILogEntry.AdditionalData;
+import com.cosylab.logging.engine.log.ILogEntry.Field;
 
 /**
  * A class to the the dispatching of logs in XML and binary format.
@@ -230,39 +231,39 @@ public class LogDispatcherTest extends TestCase {
 	 */
 	private LogBinaryRecord convertLogToBinary(ILogEntry log) {
 		LogBinaryRecord logBin = new LogBinaryRecord();
-		logBin.Audience=(String)log.getField(ILogEntry.FIELD_AUDIENCE);
-		logBin.File=(String)log.getField(ILogEntry.FIELD_FILE);
-		logBin.Host=(String)log.getField(ILogEntry.FIELD_HOST);
-		Integer line =(Integer)log.getField(ILogEntry.FIELD_LINE);
+		logBin.Audience=(String)log.getField(Field.AUDIENCE);
+		logBin.File=(String)log.getField(Field.FILE);
+		logBin.Host=(String)log.getField(Field.HOST);
+		Integer line =(Integer)log.getField(Field.LINE);
 		if (line!=null) {
 			logBin.Line=line;
 		} else {
 			logBin.Line=0;
 		}
-		logBin.LogContext=(String)log.getField(ILogEntry.FIELD_CONTEXT);
-		logBin.LogId=(String)log.getField(ILogEntry.FIELD_LOGID);
-		logBin.MsgData=(String)log.getField(ILogEntry.FIELD_LOGMESSAGE);
-		Integer priority=(Integer)log.getField(ILogEntry.FIELD_PRIORITY);
+		logBin.LogContext=(String)log.getField(Field.CONTEXT);
+		logBin.LogId=(String)log.getField(Field.LOGID);
+		logBin.MsgData=(String)log.getField(Field.LOGMESSAGE);
+		Integer priority=(Integer)log.getField(Field.PRIORITY);
 		if (priority!=null) {
 			logBin.Priority=priority;
 		} else {
 			logBin.Priority=0;
 		}
-		logBin.Process=(String)log.getField(ILogEntry.FIELD_PROCESS);
-		logBin.Routine=(String)log.getField(ILogEntry.FIELD_ROUTINE);
-		logBin.SourceObject=(String)log.getField(ILogEntry.FIELD_SOURCEOBJECT);
-		logBin.StackId=(String)log.getField(ILogEntry.FIELD_STACKID);
-		Integer stackL=(Integer)log.getField(ILogEntry.FIELD_STACKLEVEL);
+		logBin.Process=(String)log.getField(Field.PROCESS);
+		logBin.Routine=(String)log.getField(Field.ROUTINE);
+		logBin.SourceObject=(String)log.getField(Field.SOURCEOBJECT);
+		logBin.StackId=(String)log.getField(Field.STACKID);
+		Integer stackL=(Integer)log.getField(Field.STACKLEVEL);
 		if (stackL!=null) {
 			logBin.StackLevel=stackL;
 		} else {
 			logBin.StackLevel=0;
 		}
-		logBin.Thread=(String)log.getField(ILogEntry.FIELD_THREAD);
-		Date date = (Date)log.getField(ILogEntry.FIELD_TIMESTAMP);
+		logBin.Thread=(String)log.getField(Field.THREAD);
+		Date date = (Date)log.getField(Field.TIMESTAMP);
 		logBin.TimeStamp=com.cosylab.logging.client.cache.CacheUtils.dateFormat.format(date);
 		logBin.type=LogType.from_int(log.getType().intValue());
-		logBin.Uri=(String)log.getField(ILogEntry.FIELD_URI);
+		logBin.Uri=(String)log.getField(Field.URI);
 		if (log.hasDatas()) {
 			Vector<AdditionalData> data=log.getAdditionalData();
 			logBin.log_data=new NameValue[data.size()];

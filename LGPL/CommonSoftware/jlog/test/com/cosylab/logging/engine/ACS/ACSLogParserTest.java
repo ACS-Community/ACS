@@ -7,6 +7,7 @@ import junit.framework.TestCase;
 import com.cosylab.logging.engine.log.LogEntryXML;
 import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.engine.log.LogTypeHelper;
+import com.cosylab.logging.engine.log.ILogEntry.Field;
 
 import com.cosylab.logging.engine.ACS.ACSLogParserDOM;
 
@@ -72,8 +73,8 @@ public class ACSLogParserTest extends TestCase {
 		ILogEntry log = parser.parse(xmlLogWarningWithException);
 		
 		// verify some fields
-		assertEquals("wrong typename string", "Warning", LogTypeHelper.getLogTypeDescription((Integer)log.getField(ILogEntry.FIELD_ENTRYTYPE)));
-		assertEquals("wrong type code", new Integer(LogTypeHelper.ENTRYTYPE_WARNING), log.getField(ILogEntry.FIELD_ENTRYTYPE));
+		assertEquals("wrong typename string", "Warning", LogTypeHelper.getLogTypeDescription((Integer)log.getField(Field.ENTRYTYPE)));
+		assertEquals("wrong type code", new Integer(LogTypeHelper.ENTRYTYPE_WARNING), log.getField(Field.ENTRYTYPE));
 		
 		Vector<ILogEntry.AdditionalData> datas = log.getAdditionalData();
 		assertFalse("There should have been 1 piece of attached data!", datas == null || datas.size() != 1);
