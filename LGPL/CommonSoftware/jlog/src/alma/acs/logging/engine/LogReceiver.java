@@ -436,6 +436,12 @@ public class LogReceiver {
 		 * Equals method, just to be consistent with <code>compareTo</code>.
 		 */
 		public boolean equals(Object other) {
+			if (other==null) {
+				return false;
+			}
+			if (other instanceof LogReceiver) {
+				return false;
+			}
 			DelayedLogEntry otherDelayedLogEntry = (DelayedLogEntry) other;
 			return ( otherDelayedLogEntry.triggerTimeMillis == triggerTimeMillis &&
 					otherDelayedLogEntry.logRecordIndex == logRecordIndex );
