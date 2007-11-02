@@ -203,13 +203,37 @@ public class ExecuteContainer {
                 listener, host);
     }
 
-}
+    
+    //
+    // ========================================================================================
+    //
+    
+    public void startRemoteDemonic (RunModel runModel, NativeCommand.Listener listener) {
 
-//
-//
-//
-//
-//
-//
-//
+   	 String contHost = runModel.getContainerRemoteHost();
+   	 String contName = runModel.getContainerName();
+   	 String contType = runModel.getContainerType();
+       int instance = MiscUtils.parseInt(runModel.getContainerScriptBase());
+		
+       boolean startStop = true;
+       String cmdFlags = "";
+
+   	 Executor.remoteDaemonForContainers(contHost, instance, startStop, contName, contType, cmdFlags, listener);
+    }
+    
+    public void stopRemoteDemonic (RunModel runModel, NativeCommand.Listener listener) {
+
+   	 String contHost = runModel.getContainerRemoteHost();
+   	 String contName = runModel.getContainerName();
+   	 String contType = runModel.getContainerType();
+       int instance = MiscUtils.parseInt(runModel.getContainerScriptBase());
+		
+       boolean startStop = false;
+       String cmdFlags = "";
+
+   	 Executor.remoteDaemonForContainers(contHost, instance, startStop, contName, contType, cmdFlags, listener);
+    }
+    
+    
+}
 

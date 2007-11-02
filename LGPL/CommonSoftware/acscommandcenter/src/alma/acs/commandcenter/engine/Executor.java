@@ -12,11 +12,23 @@ import java.util.Properties;
 import java.util.Vector;
 import java.util.logging.Logger;
 
-import alma.acs.commandcenter.CommandCenter;
+import alma.ACSErrTypeCommon.BadParameterEx;
+import alma.acs.commandcenter.meta.Firestarter;
+import alma.acs.commandcenter.meta.Firestarter.OrbInitException;
 import alma.acs.commandcenter.trace.Flow;
 import alma.acs.commandcenter.util.MiscUtils;
 import alma.acs.commandcenter.util.PreparedString;
 import alma.acs.commandcenter.util.StringRingBuffer;
+import alma.acs.util.ACSPorts;
+import alma.acs.util.AcsLocations;
+import alma.acsdaemon.ContainerDaemon;
+import alma.acsdaemon.ContainerDaemonHelper;
+import alma.acsdaemon.ServicesDaemon;
+import alma.acsdaemon.ServicesDaemonHelper;
+import alma.acsdaemonErrType.FailedToStartAcsEx;
+import alma.acsdaemonErrType.FailedToStartContainerEx;
+import alma.acsdaemonErrType.FailedToStopAcsEx;
+import alma.acsdaemonErrType.FailedToStopContainerEx;
 import de.mud.ssh.SshWrapper;
 
 /**
@@ -38,6 +50,8 @@ public class Executor {
    public static LocalInProcFlow localInProcFlow = new LocalInProcFlow();
    public static LocalOutProcFlow localOutProcFlow = new LocalOutProcFlow();
    public static SingleStepFlow singleStepFlow = new SingleStepFlow();
+   public static RemoteServicesDaemonFlow remoteServicesDaemonFlow = new RemoteServicesDaemonFlow();
+   public static RemoteContainerDaemonFlow remoteContainerDaemonFlow = new RemoteContainerDaemonFlow();
 
    private static Logger log = MiscUtils.getPackageLogger(Executor.class);
    
@@ -593,6 +607,167 @@ public class Executor {
    }
 
 
+   ////////////////////////////////////////////////////////////////////
+   // ------------------- Remote using Daemons --------------------- //
+   ////////////////////////////////////////////////////////////////////
+
+   static private Firestarter firestarter;
+   
+   static public void remoteDaemonEnable (Firestarter fs) {
+   	firestarter = fs;
+   }
+   
+   static public void remoteDaemonForServices (String host, int instance, boolean startStop, String cmdFlags, NativeCommand.Listener listener) {
+   	if (listener != null) {
+   		listener.stdoutWritten(null, "\nIn daemon mode, output cannot be displayed.\n" +
+   				"See logs in <daemon-owner>/.acs/commandcenter on host "+host+"\n");
+   	}
+   	
+   	remoteServicesDaemonFlow.reset();
+
+   	ACSPorts ports = ACSPorts.globalInstance(instance);
+		String daemonLoc = AcsLocations.convertToServicesDaemonLocation(host, ports.giveServicesDaemonPort());
+
+		org.omg.CORBA.ORB orb;
+		try {
+			orb = firestarter.giveOrb();
+		} catch (OrbInitException exc) {
+			remoteServicesDaemonFlow.failure(exc);
+			return;
+		}
+		remoteServicesDaemonFlow.success(RemoteServicesDaemonFlow.INIT_CORBA);
+
+		
+		ServicesDaemon daemon;
+		try {
+			org.omg.CORBA.Object object = orb.string_to_object(daemonLoc);
+			daemon = ServicesDaemonHelper.narrow(object);
+			if (daemon == null)
+				throw new NullPointerException("received null trying to retrieve acsdaemon on "+host);
+		} catch (RuntimeException exc) {
+			remoteServicesDaemonFlow.failure(exc);
+			return;
+		}
+		remoteServicesDaemonFlow.success(RemoteServicesDaemonFlow.CONNECT_DAEMON);
+		
+		
+		try {
+			if (startStop == true) {
+				daemon.start_acs((short)instance, cmdFlags);
+			} else {
+				daemon.stop_acs((short)instance, cmdFlags);
+			}
+		} catch (Exception exc) {
+			remoteServicesDaemonFlow.failure(exc);
+			return;
+		}
+		remoteServicesDaemonFlow.success(RemoteServicesDaemonFlow.SEND_COMMAND);
+
+
+		boolean isManagerThere;
+		String managerLoc = AcsLocations.convertToManagerLocation(host, ports.giveManagerPort());
+		int wait = 60;
+		int every = 3;
+		for (int i = 0; i < wait; i += every) {
+			try {
+				Thread.sleep(every * 1000);
+			} catch (InterruptedException exc) {
+				break; // who interrupted us? anyway, stop probing.
+			}
+			try {
+				org.omg.CORBA.Object obj = orb.string_to_object(managerLoc);
+				isManagerThere = !obj._non_existent(); // simple check if obj is null wouldn't work
+			} catch (RuntimeException exc) {
+				isManagerThere = false;
+			}
+			if (startStop == isManagerThere) {
+				remoteServicesDaemonFlow.success(RemoteServicesDaemonFlow.AWAIT_RESPONSE);
+				return;
+			}
+		}
+		remoteServicesDaemonFlow.failure("Couldn't verify daemon executed successfully");
+
+   }
+
+   static class RemoteServicesDaemonFlow extends Flow {
+   	static final String INIT_CORBA = "Assert corba connectivity";
+   	static final String CONNECT_DAEMON = "Connect to acsservicesdaemon";
+   	static final String SEND_COMMAND = "Send command to daemon";
+   	static final String AWAIT_RESPONSE = "Receive remote response";
+   	{
+   		consistsOf (null, new String[]{INIT_CORBA, CONNECT_DAEMON, SEND_COMMAND, AWAIT_RESPONSE});
+   	}
+   }
+   
+   /**
+    * @param contType - only needed for starting (i.e. startStop==true)
+    */
+   static public void remoteDaemonForContainers (String host, int instance, boolean startStop, String contName, String contType, String cmdFlags, NativeCommand.Listener listener) {
+   	if (listener != null) {
+   		listener.stdoutWritten(null, "\nIn daemon mode, output cannot be displayed.\n" +
+   				"See logs in <daemon-owner>/.acs/commandcenter on host "+host+"\n");
+   	}
+
+   	remoteContainerDaemonFlow.reset();
+
+   	ACSPorts ports = ACSPorts.globalInstance(instance);
+		String daemonLoc = AcsLocations.convertToContainerDaemonLocation(host, ports.giveContainerDaemonPort());
+
+		org.omg.CORBA.ORB orb = null;
+		try {
+			orb = firestarter.giveOrb();
+		} catch (OrbInitException exc) {
+			remoteContainerDaemonFlow.failure(exc);
+			return;
+		}
+		remoteContainerDaemonFlow.success(RemoteContainerDaemonFlow.INIT_CORBA);
+		
+		
+		ContainerDaemon daemon;
+		try {
+			org.omg.CORBA.Object object = orb.string_to_object(daemonLoc);
+			daemon = ContainerDaemonHelper.narrow(object);
+			if (daemon == null)
+				throw new NullPointerException("received null trying to retrieve acsdaemon on "+host);
+		} catch (RuntimeException exc) {
+			remoteContainerDaemonFlow.failure(exc);
+			return;
+		}
+		remoteContainerDaemonFlow.success(RemoteContainerDaemonFlow.CONNECT_DAEMON);
+
+		
+		
+		try {
+			if (startStop == true) {
+				daemon.start_container(contType, contName, (short)instance, cmdFlags);
+			} else {
+				daemon.stop_container(contName, (short)instance, cmdFlags);
+			}
+		} catch (Exception exc) {
+			remoteContainerDaemonFlow.failure(exc);
+			return;
+		}
+
+		// sleep a little to give the user a feeling of "something is happening"
+		try {
+			Thread.sleep(2500);
+		} catch (InterruptedException exc) {}
+		
+		remoteContainerDaemonFlow.success(RemoteContainerDaemonFlow.SEND_COMMAND);
+
+   }
+
+   static class RemoteContainerDaemonFlow extends Flow {
+   	static final String INIT_CORBA = "Assert corba connectivity";
+   	static final String CONNECT_DAEMON = "Connect to acscontainerdaemon";
+   	static final String SEND_COMMAND = "Send command to daemon";
+   	{
+   		consistsOf (null, new String[]{INIT_CORBA, CONNECT_DAEMON, SEND_COMMAND});
+   	}
+   }
+
+   
+   
 
 }
 

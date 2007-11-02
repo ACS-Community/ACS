@@ -110,16 +110,32 @@ public class ExecuteAcs {
 		Executor.remote(username, password, command, t.getExpectedOutput(), listener, host);
 	}
 
+	//
+	// ========================================================================================
+	//
+
+	public void startRemoteDemonic (NativeCommand.Listener listener) {
+		
+		String host = runModel.getRemoteHost();
+		int instance = MiscUtils.parseInt(runModel.getScriptBase());
+		
+		boolean startStop = true;
+		String cmdFlags = "";
+
+		Executor.remoteDaemonForServices(host, instance, startStop, cmdFlags, listener);
+	}
+	
+	public void stopRemoteDemonic (NativeCommand.Listener listener) {
+		
+		String host = runModel.getRemoteHost();
+		int instance = MiscUtils.parseInt(runModel.getScriptBase());
+		
+		boolean startStop = false;
+		String cmdFlags = "";
+		
+		Executor.remoteDaemonForServices(host, instance, startStop, cmdFlags, listener);
+	}
+
 }
 
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
