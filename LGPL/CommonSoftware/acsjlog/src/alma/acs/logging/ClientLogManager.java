@@ -23,11 +23,11 @@ package alma.acs.logging;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Handler;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
@@ -41,12 +41,9 @@ import si.ijs.maci.Manager;
 import alma.acs.logging.config.LogConfig;
 import alma.acs.logging.config.LogConfigException;
 import alma.acs.logging.config.LogConfigSubscriber;
-import alma.acs.logging.formatters.AcsXMLLogFormatter;
 import alma.acs.logging.formatters.AcsBinLogFormatter;
-//TODO: CARLI fix this to match the other formatters
+import alma.acs.logging.formatters.AcsXMLLogFormatter;
 import alma.acs.logging.formatters.ConsoleLogFormatter;
-
-import alma.maci.loggingconfig.LoggingConfig;
 
 
 /**
@@ -60,29 +57,25 @@ import alma.maci.loggingconfig.LoggingConfig;
  * at some point later, and all log messages that are meant for remote logging will be stored in
  * a queue. <code>suppressRemoteLogging</code> will throw away this queue, while <code>initRemoteLogging</code>
  * will send all queued log records to the remote logger.
+ * <p>
+ * Since ACS 7.0, this class acts pretty much as a replacement for the JDK's {@link LogManager}
+ * and the {@linkplain AcsLogManager} subclass. <br> 
+ * If needed, we should investigate how to support the JMX logger management 
+ * via {@linkplain java.util.logging.LoggingMXBean} which is useless now. 
  * 
  * @author hsommer
  */
 public class ClientLogManager implements LogConfigSubscriber
 {
-	/** logger namespace for CORBA classes (ORB, POAs, etc) */
-	public static final String NS_CORBA = "alma.acs.corba";
 
-	/** logger namespace for container classes during operation */
-	public static final String NS_CONTAINER = "alma.acs.container";
-
-	/** parent of logger namespaces for application components */
-    public static final String NS_COMPONENT = "alma.component";
-
-    /** logger namespace for logger classes from this module */
-    private static final String NS_LOGGER = "alma.acs.logger";
-
+	public enum LoggerOwnerType { ContainerLogger, ComponentLogger, OrbLogger, OtherLogger, UnknownLogger }
+	
     /** instance of a singleton */
 	private volatile static ClientLogManager s_instance;
 
 	
     /** The logging configurator shared by various classes of this package */  
-    private final LogConfig logConfig;
+    private final LogConfig sharedLogConfig;
     
 	/** The (CORBA-) name of the remote logging service to which logs will be sent */
 	private volatile String logServiceName;
@@ -91,19 +84,45 @@ public class ClientLogManager implements LogConfigSubscriber
 	private volatile int flushPeriodSeconds;
 
 
-    /** parent of all other remote loggers, so that its log handler gets shared */ 
+	private static class AcsLoggerInfo {
+		AcsLogger logger;
+		AcsLoggingHandler remoteHandler;
+		StdOutConsoleHandler localHandler;
+		LoggerOwnerType loggerOwnerType = LoggerOwnerType.UnknownLogger;
+		boolean needsProcessNameUpdate = false;		
+	}
+	
+	/**
+	 * We store all loggers in this map instead of giving them to 
+	 * {@link LogManager} which does not allow to remove loggers
+	 * and would thus prevent component loggers from being garbage collected. 
+	 */
+	private final Map<String, AcsLoggerInfo> loggers = new HashMap<String, AcsLoggerInfo>();
+	
+    /** 
+     * Parent logger of all remote loggers. 
+     * Not really needed any more now that handlers are not shared.
+     */ 
     private Logger parentRemoteLogger;
     
-    /** logging handler which feeds the queue for remote logging */ 
-    private AcsLoggingHandler sharedRemoteHandler;
-
+    /**
+     * The log queue can be null if remote logging has been suppressed.
+     * Otherwise it is non-null even if remote logging is not active, because it stores the records to be sent off later.
+     */
     protected DispatchingLogQueue logQueue;
+    
+    /**
+     * The log dispatcher object serves as a flag for whether 
+     * remote logging has been activated via 
+     * {@link #initRemoteLogging(ORB, Manager, int, boolean)}. 
+     */
     private RemoteLogDispatcher logDispatcher;
 
-    /** used for local logging */ 
-    private StdOutConsoleHandler sharedLocalHandler;
-
-    /** logger used by the classes in this logging package */
+    /** 
+     * Logger used by the classes in this logging package.
+     * TODO: allow container or client to replace this logger with their own 
+     * logger, because these classes belong to their respective process.  
+     */
 	private final Logger m_internalLogger;
 
 	/** for testing */
@@ -116,17 +135,8 @@ public class ClientLogManager implements LogConfigSubscriber
 	 * so that different ORB instances in the system can be distinguished.
 	 */ 
     private String processName;
-
-    private List<AcsLogger> loggersNeedingProcessNameUpdate = new ArrayList<AcsLogger>();
-
-    /**
-     * ORB loggers are special because they may have to be silenced completely at some point, 
-     * when a component is loaded that processes log  messages from the Log service
-     * (see module jcont, <code>alma.acs.container.ComponentHelper#requiresOrbCentralLogSuppression()</code>.)
-     * Therefore we need to keep them (usually only one logger) in this list.
-     */
-    private Map<String, AcsLogger> corbaLoggers = new HashMap<String, AcsLogger>();
-
+    private final ReentrantLock processNameLock = new ReentrantLock();
+    
 	/**
 	 * If true then the Corba (ORB) logger will not send logs to the Log service.
 	 */
@@ -141,8 +151,7 @@ public class ClientLogManager implements LogConfigSubscriber
 	 */
 	public static synchronized ClientLogManager getAcsLogManager()
 	{
-		if (s_instance == null)
-		{
+		if (s_instance == null) {
 			s_instance = new ClientLogManager();
 		}
 		return s_instance;
@@ -150,27 +159,24 @@ public class ClientLogManager implements LogConfigSubscriber
 
 	protected ClientLogManager()
 	{
-        logConfig = new LogConfig();
-        logConfig.addSubscriber(this);
+        sharedLogConfig = new LogConfig();
+        sharedLogConfig.addSubscriber(this);
         try {
-            logConfig.initialize(false); // will call configureLogging, using default values
+            sharedLogConfig.initialize(false); // will determine the default values and call #configureLogging
         } catch (LogConfigException ex) {
             System.err.println("Failed to configure logging: " + ex.toString());
         }
         
         // parentRemoteLogger is not removed in method disableRemoteLogging, and thus does not need to be
-        // (re-) created in method prepareRemoteLogging (unlike the queue and the handler)
+        // (re-) created in method prepareRemoteLogging (unlike the queue and the handler).
+        // Therefore we can create it once here in the ctor.
         parentRemoteLogger = Logger.getLogger("AcsRemoteLogger");
         parentRemoteLogger.setUseParentHandlers(false); // otherwise the default log handler on the root logger will dump all logs to stderr
         prepareRemoteLogging();
 
-        sharedLocalHandler = new StdOutConsoleHandler(logConfig);
-        
-        sharedLocalHandler.setFormatter(new ConsoleLogFormatter());
-        
-        m_internalLogger = createRemoteLogger(NS_LOGGER);
-        logConfig.setInternalLogger(m_internalLogger);
-        if (DEBUG){
+        m_internalLogger = getAcsLogger("alma.acs.logging", LoggerOwnerType.OtherLogger);
+        sharedLogConfig.setInternalLogger(m_internalLogger);
+        if (DEBUG) {
             m_internalLogger.fine("ClientLogManager instance is created.");
         }        
 	}
@@ -179,10 +185,10 @@ public class ClientLogManager implements LogConfigSubscriber
      * @see alma.acs.logging.config.LogConfigSubscriber#configureLogging(alma.acs.logging.LogConfig)
      */
     public void configureLogging(LogConfig logConfig) {
-    	LoggingConfig loggingConfig = logConfig.getLoggingConfig();
-        if (!loggingConfig.getCentralizedLogger().equals(logServiceName)) {
+    	
+        if (!logConfig.getCentralizedLogger().equals(logServiceName)) {
         	if (logServiceName == null) {
-        		logServiceName = loggingConfig.getCentralizedLogger();
+        		logServiceName = logConfig.getCentralizedLogger();
         	}
         	else {
         		m_internalLogger.warning("Dynamic switching of Log service not yet supported!");
@@ -191,139 +197,258 @@ public class ClientLogManager implements LogConfigSubscriber
         }
         
         // Only (re-)set the flushing if the value has changed, because the operation is expensive (stop/start)
-        if (loggingConfig.getFlushPeriodSeconds() != flushPeriodSeconds) {
-        	flushPeriodSeconds = loggingConfig.getFlushPeriodSeconds();
+        if (logConfig.getFlushPeriodSeconds() != flushPeriodSeconds) {
+        	flushPeriodSeconds = logConfig.getFlushPeriodSeconds();
         	if (logQueue != null) {
-        		logQueue.setPeriodicFlushing(loggingConfig.getFlushPeriodSeconds());
+        		logQueue.setPeriodicFlushing(logConfig.getFlushPeriodSeconds());
         	}
         }
      
         // Set the log queue size.   
     	if (logQueue != null) {
-    		logQueue.setMaxQueueSize(loggingConfig.getMaxLogQueueSize());
+    		logQueue.setMaxQueueSize(logConfig.getMaxLogQueueSize());
     	}
     }
 
-    /**
-     * Gets the <code>LogConfig</code> object that is shared between the ClientLogManager singleton
-     * and any other objects in the process (e.g. Java container or manager classes).
-     */
-    public LogConfig getLogConfig() {
-        return logConfig;
-    }
     
     /**
-     * If not done already, sets up a remote handler with queue, and adds that handler 
-     * to the shared (parent) remote logger.
+     * Gets the <code>LogConfig</code> object that is shared between the ClientLogManager singleton
+     * and any other objects in the process (e.g. Java container or manager classes, Loggers, Handlers).
+     */
+    public LogConfig getLogConfig() {
+        return sharedLogConfig;
+    }
+    
+    
+    /**
+     * If not done already, sets up remote handlers for all loggers using a shared queue.
      */
     protected void prepareRemoteLogging() {
         if (logQueue == null) {
             logQueue = new DispatchingLogQueue();
+            logQueue.setMaxQueueSize(getLogConfig().getMaxLogQueueSize());
         }
         
-        if (sharedRemoteHandler == null) {
-            sharedRemoteHandler = new AcsLoggingHandler(logQueue, logConfig);
-        }
-        else {
-            Handler[] handlers = parentRemoteLogger.getHandlers();
-            for (int i = 0; i < handlers.length; i++) {
-                if (sharedRemoteHandler == handlers[i]) {
-                    if (DEBUG) {
-                        System.err.println("Ignoring attempt to add remote handler twice to logger " + parentRemoteLogger.getName());
-                    }
-                    return;
-                }
-            }
-        }
-        parentRemoteLogger.addHandler(sharedRemoteHandler);
+        synchronized (loggers) {
+            // attach remote handlers to all loggers
+            for (String loggerName : loggers.keySet()) {
+           		AcsLoggerInfo loggerInfo = loggers.get(loggerName);
+           		AcsLogger logger = loggerInfo.logger;
+           		
+            	// sanity check on loggerName: map key vs. Logger 
+    			if (logger.getLoggerName() == null || !logger.getLoggerName().equals(loggerName)) {
+    				logger.setLoggerName(loggerName);
+					logger.info("Logging name mismatch resolved for '" + loggerName + "'. Should be reported to ACS developers");
+    			}
+
+            	addRemoteHandler(logger);
+    		}			
+		}
     }
 
     
     /**
-     * Removes, closes, and nulls the remote handler,
-     * so that no more records are put into the queue, and both queue and handler can be garbage collected.
+     * Removes, closes, and nulls all remote handlers,
+     * so that no more records are put into the queue, and queue and remote handlers can be garbage collected.
      * <p>
-     * GC can be an advantage when logs have been queued for remote sending,
+     * GC of the queue can be an advantage when logs have been queued for remote sending,
      * but instead of connecting to the remote logger, we get a call
      * to {@link #suppressRemoteLogging()}. All messages have been logged locally anyway,
      * so in this case we want to clean up all these <code>LogRecord</code>s.
      */
     protected void disableRemoteLogging() {
-        if (sharedRemoteHandler != null) {
-            logConfig.removeSubscriber(sharedRemoteHandler);
-            parentRemoteLogger.removeHandler(sharedRemoteHandler);
-            sharedRemoteHandler.close();
-            sharedRemoteHandler = null;
+        synchronized (loggers) {
+            for (String loggerName : loggers.keySet()) {
+            	try {
+	           		AcsLoggerInfo loggerInfo = loggers.get(loggerName);
+	            	AcsLogger logger = loggerInfo.logger;
+	            	if (loggerInfo.remoteHandler != null) {
+	            		logger.removeHandler(loggerInfo.remoteHandler);
+	            		loggerInfo.remoteHandler.close(); // also unsubscribes from sharedLogConfig
+	            		loggerInfo.remoteHandler = null;
+	            	}
+            	} catch (Throwable thr) {
+            		// better just print to stderr because remote logging may be in a delicate state
+            		System.err.println("Unexpected exception while disabling remote logging for '" + loggerName + "': " + thr.toString());
+            	}
+            }
         }
+    }
+
+    /**
+     * Attaches a remote log handler to the given logger, if remote logging has not been suppressed.
+     * 
+     * Note that this method does not require <code>logger</code> to be 
+     * already registered in {@linkplain #loggers}, but if it is, 
+     * then the new AcsLoggingHandler is set in the map's AcsLoggerInfo as well.
+     * 
+     * @param logger  logger to be set up for remote logging
+     * @return the remote handler that was added to the logger.
+     */
+    private AcsLoggingHandler addRemoteHandler(AcsLogger logger) {
+    	AcsLoggingHandler remoteHandler = null;
+        synchronized (loggers) {
+	    	String loggerName = logger.getLoggerName();
+	    	AcsLoggerInfo loggerInfo = loggers.get(loggerName);	    	
+	    	
+	    	// logQueue == null serves as indicator for remote log suppression
+	    	if (logQueue != null) {
+		    	// try to find an existing handler 
+		    	for (Handler handler : logger.getHandlers()) {
+					if (handler instanceof AcsLoggingHandler) {
+						remoteHandler = (AcsLoggingHandler) handler;
+						if (loggerInfo != null && !remoteHandler.equals(loggerInfo.remoteHandler)) {
+							logger.info("Remote logging handler mismatch resolved for '" + loggerName + "'. Should be reported to ACS developers");
+						}
+						break;
+					}
+				}
+		    	
+				if (remoteHandler == null) {
+					remoteHandler = new AcsLoggingHandler(logQueue, sharedLogConfig, loggerName); // subscribes to sharedLogConfig
+					logger.addHandler(remoteHandler);		
+					if (loggerInfo != null && loggerInfo.remoteHandler != null) {
+						logger.info("Logging handler mismatch resolved for '" + loggerName + "'. Should be reported to ACS developers");
+					}
+				}
+	    	}
+			if (loggerInfo != null) {
+				loggerInfo.remoteHandler = remoteHandler;
+			}
+        }
+        return remoteHandler;
+    }
+    
+    
+    /**
+     * Adds a local logging handler to the provided logger.
+     * Unlike with remote handlers in {@link #prepareRemoteLogging()}, for local handlers
+     * we don't allow removing and re-adding the handlers later.
+     * <p>
+     * Note that this method does not require <code>logger</code> to be 
+     * already registered in {@linkplain #loggers}, but if it is, 
+     * then the new StdOutConsoleHandler is set in the map's AcsLoggerInfo as well.
+     * 
+     * @param logger  logger to be set up for local logging
+     * @return the local handler that was added to the logger.
+     */
+    private StdOutConsoleHandler addLocalHandler(AcsLogger logger) {
+    	StdOutConsoleHandler localHandler = null;
+        synchronized (loggers) {
+	    	String loggerName = logger.getLoggerName();
+	    	AcsLoggerInfo loggerInfo = loggers.get(loggerName);	    	
+	    	
+	    	// try to find an existing handler (should not happen)
+	    	for (Handler handler : logger.getHandlers()) {
+				if (handler instanceof StdOutConsoleHandler) {
+					localHandler = (StdOutConsoleHandler) handler;
+					if (loggerInfo != null && !localHandler.equals(loggerInfo.localHandler)) {
+						logger.info("Stdout logging handler mismatch resolved for '" + loggerName + "'. Should be reported to ACS developers");
+					}
+					break;
+				}
+			}
+	    	
+			if (localHandler == null) {
+				localHandler = new StdOutConsoleHandler(sharedLogConfig, loggerName); // subscribes to sharedLogConfig
+				localHandler.setFormatter(new ConsoleLogFormatter());
+				logger.addHandler(localHandler);		
+				if (loggerInfo != null && loggerInfo.localHandler != null) {
+					logger.info("Logging handler mismatch resolved for '" + loggerName + "'. Should be reported to ACS developers");
+				}
+			}
+			if (loggerInfo != null) {
+				loggerInfo.localHandler = localHandler;
+			}
+        }
+        return localHandler;
     }
 
     
     /**
-     * Adds the local logging handler to the provided logger.
-     * Note that local handlers are not attached to the parent logger, 
-     * which is why this method must be called for every remote logger which also should output locally.
-     * @param logger  the remote logger to be set up also for local logging.
+     * Creates or reuses a logger, normally with both a local and a remote handler attached.
+     * If remote logging is suppressed then no remote handler is attached.
+     * <p>
+     * Logger names must be unique. If the requested logger name matches a given logger 
+     * of the same LoggerOwnerType then that logger is returned. If however a logger of a different
+     * type is matched, then a name uniqueness violation is avoided by appending 
+     * small integer numbers to the logger name. 
+     * Therefore the name of the returned Logger may be different from <code>loggerName</code>!
+     * The idea of this strategy is that uniqueness of component names will be enforced 
+     * by the system, while a component may in sick cases have the name of a container or the orb logger.
+     *  
+     * @param loggerName The unique logger name
+     * @param loggerOwnerType  enum for the type of the logger owner.
+     *        With ACS 7.0, this replaces the namespace strings previously prepended to the logger names.
+     * @return
+     * @throws IllegalArgumentException if loggerName is null or empty
      */
-    private void addLocalHandler(Logger logger) {
-        Handler[] handlers = logger.getHandlers();
-        for (int i = 0; i < handlers.length; i++) {
-            if (sharedLocalHandler == handlers[i]) {
-                if (DEBUG) {
-                    System.err.println("attempt to add local handler twice to logger " + logger.getName());
-                }
-                return;
-            }
-        }
-        logger.addHandler(sharedLocalHandler);
-    }
+    private AcsLogger getAcsLogger(String loggerName, LoggerOwnerType loggerOwnerType) {
 
-    
-    private AcsLogger createRemoteLogger(String loggerNamespace) {
-        if (loggerNamespace == null) {
-            loggerNamespace = "unknown";
-            System.err.println("illegal namespace 'null' in ClientLogManager#createRemoteLogger turned to 'unknown'.");
-        }
-        
-        AcsLogger logger = null;
+    	if (loggerName == null || loggerName.trim().isEmpty()) {
+    		throw new IllegalArgumentException("loggerName must not be null or empty");
+    	}
+    	
+        AcsLoggerInfo loggerInfo = null;
         
         // just to make sure we never throw an exception
         try {
-        	// @TODO: the LogManager-cache-check should better be moved to a static getter method of AcsLogger,
-        	//        instead of doing it externally here. Comes from the fact that in the past there was no subclass AcsLogger.
-            LogManager manager = LogManager.getLogManager();
-            logger = (AcsLogger) manager.getLogger(loggerNamespace);
-            if (logger == null) {
-            	// not yet in cache, so we create the logger
-                AcsLogger acsLogger = new AcsLogger(loggerNamespace, null, logConfig);
-                manager.addLogger(acsLogger);
-                
-                // get it from the cache
-                logger = (AcsLogger) manager.getLogger(loggerNamespace);
-            
-                logger.setParent(parentRemoteLogger);
-                logger.setUseParentHandlers(true);
-        
-                logger.setProcessName(this.processName);
-                if (loggerNamespace.startsWith(NS_COMPONENT)) {
-                	logger.setSourceObject(loggerNamespace.substring(NS_COMPONENT.length()+1));
-                }
-                else if (loggerNamespace.startsWith(NS_CORBA)){
-                	logger.setSourceObject(loggerNamespace.substring(NS_CORBA.length()+1));
-                }
-                else {
-                	logger.setSourceObject(this.processName);
-                }
-                // currently all remote loggers should also log locally
-                addLocalHandler(logger);
-                
+        	synchronized (loggers) {
+            	loggerInfo = loggers.get(loggerName);
+	        	// try to reuse existing logger
+            	// avoid false "reuse" by making new logger name unique
+	        	int counter = 2; // that is to make "name" into "name_2"
+	            while (loggerInfo != null && loggerOwnerType != loggerInfo.loggerOwnerType) {
+	            	// the current loggerName exists already for a different logger type. 
+	            	// Try a different logger name.
+	            	int lastIndexUnderscore = loggerName.lastIndexOf('_');
+	            	if (lastIndexUnderscore > 0 && loggerName.length() > lastIndexUnderscore + 1) {
+	            		try {
+							int oldCounter = Integer.parseInt(loggerName.substring(lastIndexUnderscore + 1));
+							counter = Math.max(counter, oldCounter+1);
+							loggerName = loggerName.substring(0, lastIndexUnderscore+1) + counter;
+			            	loggerInfo = loggers.get(loggerName);
+			            	continue;
+						} catch (NumberFormatException ex) {
+							// we had an '_' but no number behind it. Same as no '_' at all.
+						}
+	            	}
+	            	loggerName += "_" + counter;
+	            	loggerInfo = loggers.get(loggerName);
+            	}
+
+	            if (loggerInfo == null) {
+	            	
+	            	// not yet in cache, so we create the logger
+	            	loggerInfo = new AcsLoggerInfo();
+	            	loggerInfo.logger = new AcsLogger(loggerName, null, sharedLogConfig); // ctor registers itself in loggers map
+	            	loggerInfo.logger.setParent(parentRemoteLogger);
+	            	loggerInfo.logger.setUseParentHandlers(false); // since ACS 7.0 all AcsLoggers have their own handlers 
+	
+	                // set the value for the "ProcessName" and "SourceObject" fields in the produced log records
+	            	loggerInfo.logger.setProcessName(this.processName);
+	            	if (loggerOwnerType == LoggerOwnerType.ComponentLogger || loggerOwnerType == LoggerOwnerType.OrbLogger) {
+	            		loggerInfo.logger.setSourceObject(loggerName);
+	            	}
+	                else {
+	                	// TODO: check why we don't always use the logger name as SourceObject
+	                	loggerInfo.logger.setSourceObject(this.processName);
+	                }
+	            	
+	                loggerInfo.localHandler = addLocalHandler(loggerInfo.logger);
+	                loggerInfo.remoteHandler = addRemoteHandler(loggerInfo.logger); // may be null
+	                loggerInfo.loggerOwnerType = loggerOwnerType;
+	                
+	                loggers.put(loggerName, loggerInfo);
+	            }
                 if (DEBUG) {
-                    System.out.println("created remote logger '" + loggerNamespace + "' (level " + logger.getLevel() + ") and separate local handler.");
+                    System.out.println("created remote logger '" + loggerName + "' (level " + loggerInfo.logger.getLevel() + ") and separate local handler.");
                 }
             }
         } catch (Throwable thr) {
-            System.err.println("failed to create logger '" + loggerNamespace + "'.");
+            System.err.println("failed to create logger '" + loggerName + "'.");
         }
-        return logger;
+        return loggerInfo.logger;
     }
    
 
@@ -453,108 +578,87 @@ public class ClientLogManager implements LogConfigSubscriber
      * <p>
      * <strong>Application code such as components must not call this method!<strong> 
      */
-    public void suppressCorbaRemoteLogging(boolean suppress) {
-    	suppressCorbaRemoteLogging = suppress;
-//    	// forward this info directly to the ORB loggers to ensure that no future level change can circumvent the suppression
-//    	for (Iterator<AcsLogger> iter = corbaLoggers.values().iterator(); iter.hasNext();) {
-//			AcsLogger corbaLogger = iter.next();
-//			corbaLogger.suppressRemoteLogging(suppress);
-//		}
+    public void suppressCorbaRemoteLogging() {
+    	suppressCorbaRemoteLogging = true;
+    	
+    	synchronized (loggers) {
+	    	for (AcsLoggerInfo loggerInfo : loggers.values()) {
+	    		if (loggerInfo.loggerOwnerType == LoggerOwnerType.OrbLogger) {
+	    			int level = Integer.MAX_VALUE;
+	    			sharedLogConfig.setAndLockMinLogLevel(level, loggerInfo.logger.getLoggerName());
+	    		}
+			}    		
+    	}
     }
+
     
 	/**
 	 * Gets a logger to be used by ORB and POA classes.
 	 * The logger is connected to the central ACS logger.
-	 * <p>
-	 * @param autoConfigureContextName  if true, the context (e.g. container name) will be appended to this logger's name as soon as it is available.
+	 * @param corbaName e.g. <code>jacorb</code>.
+	 * @param autoConfigureContextName  if true, the context (e.g. container name) will be appended 
+	 *                                  to this logger's name as soon as it is available, making it e.g. <code>jacorb@frodoContainer</code>.
 	 */
 	public AcsLogger getLoggerForCorba(String corbaName, boolean autoConfigureContextName) {
-        String ns = NS_CORBA;
-        if (corbaName != null) {
-        	corbaName = corbaName.trim();
-            if (corbaName.length() > 0) {
-                ns = ns + '.' + corbaName;
-            }
+
+		String loggerName = corbaName;
+        AcsLogger corbaLogger = null;
+
+        processNameLock.lock();
+        try {
+	    	// if the process name is not known yet (e.g. during startup), then we need to schedule its update
+	        if (autoConfigureContextName && processName != null) {
+	        	// if the process name is already known, we can even use it for the regular logger name instead of using a later workaround 
+	        	loggerName += "@" + processName;
+	        }
+	        
+	        corbaLogger = getAcsLogger(loggerName, LoggerOwnerType.OrbLogger);
+	        
+	        if (autoConfigureContextName && processName == null) {
+	        	// mark this logger for process name update
+	        	AcsLoggerInfo loggerInfo = loggers.get(loggerName);
+	        	loggerInfo.needsProcessNameUpdate = true;
+	        }
+        } finally {
+        	processNameLock.unlock();
         }
         
-        AcsLogger logger =  null;
-        
-        // usually caching and reuse is done by the LogManager class, 
-        // but for Corba loggers we need to keep a map anyway and can use it for this,
-        // which avoids possibly different interpretation which loggers are equal
-        // between our corbaLoggers map and the LogManager cache.
-        logger = corbaLoggers.get(ns);
-        if (logger == null) {        	
-	        boolean needsProcessNameUpdate = false; // use boolean instead of another processName!=null check to avoid sync issues
-	        String ns2 = ns;
-	        if (autoConfigureContextName) {
-	        	if (processName != null) {
-		        	// if the process name is already known, we can even use it for the regular logger name instead of using a later workaround 
-		        	ns2 += "@" + processName;
-			    }
-	        	else {
-	        		needsProcessNameUpdate = true;
-	        	}
-	        }
-	        logger = createRemoteLogger(ns2);
-	        corbaLoggers.put(ns, logger); // store without process name
-	        if (needsProcessNameUpdate) {
-	        	loggersNeedingProcessNameUpdate.add(logger);
-	        }
+        // fix levels if we suppress corba remote logging
+        if (suppressCorbaRemoteLogging) {
+        	sharedLogConfig.setAndLockMinLogLevel(Integer.MAX_VALUE, loggerName);
         }
-        return logger;
+        
+        return corbaLogger;
 	}
+	
 	
 	/**
 	 * Gets a logger to be used by the Java container classes.
 	 * The logger is connected to the central ACS logger.
 	 */
 	public AcsLogger getLoggerForContainer(String containerName) {
-        String ns = NS_CONTAINER;
-        if (containerName != null) {
-            setProcessName(containerName);
-            containerName = containerName.trim();
-            if (containerName.length() > 0) {
-                ns = ns + '.' + containerName;
-            }
-        }
-        return createRemoteLogger(ns);
+		setProcessName(containerName);
+        return getAcsLogger(containerName, LoggerOwnerType.ContainerLogger);
 	}
 
     /**
 	 * Gets a logger object to be used by a component.
-     * The logger namespace will be <code>alma.component</code> with the value of <code>subNamespace</code> appended.
 	 * <p>
 	 * This method is not supposed to be accessed directly in the component implementation.
 	 * Instead, the implementation of <code>alma.acs.container.ContainerServices</code>
 	 * should call this method.
 	 * 
-	 * @param subNamespace	 optional logger namespace postfix; same kind as used by the JDK (<code>java.util.logging</code>).
-	 * @return Logger
-	 * 
+	 * @param componentName  component name (sufficiently qualified to be unique in the system or log domain)
+	 * @return AcsLogger
 	 */
-	public AcsLogger getLoggerForComponent(String subNamespace)
-	{
-		String ns = NS_COMPONENT;
-		if (subNamespace != null)
-		{
-			subNamespace = subNamespace.trim();
-			if (subNamespace.length() > 0)
-			{
-				if (subNamespace.charAt(0) != '.')
-				{
-					subNamespace = '.' + subNamespace;
-				}
-				ns += subNamespace;
-			}
-		}
-        return createRemoteLogger(ns);
+	public AcsLogger getLoggerForComponent(String componentName) {
+        return getAcsLogger(componentName, LoggerOwnerType.ComponentLogger);
 	}
     
 
     /**
      * Gets a logger for an application (which is not an ACS component itself), e.g. a GUI application using the ACS ComponentClient. 
-     * @param namespace  the logger namespace, should identify the application or the particular logger that gets requested.
+     * @param loggerName  the logger name, should identify the application or the particular logger that gets requested.
      * @param enableRemoteLogging  if true (generally recommended), the returned logger is set up to send the logs to the remote log service,
      *                             as it always happens for container and component loggers. 
      *                             <emph>This will only work if {@link #initRemoteLogging(ORB, Manager, int, boolean)} is also called,
@@ -563,26 +667,27 @@ public class ClientLogManager implements LogConfigSubscriber
      *                             even with enableRemoteLogging == true.</emph> 
 	 * @return a configured Logger
 	 */
-    public Logger getLoggerForApplication(String namespace, boolean enableRemoteLogging)
+    public Logger getLoggerForApplication(String loggerName, boolean enableRemoteLogging)
     {
-        if (namespace == null || namespace.trim().length() == 0) {
-            namespace = "unknownClientApplication";
+        if (loggerName == null || loggerName.trim().length() == 0) {
+        	loggerName = "unknownClientApplication";
         }
         else {
-           	setProcessName(namespace);
+           	setProcessName(loggerName);
         }
-        Logger logger = null;
+        AcsLogger logger = null;
         if (enableRemoteLogging) {
-            logger = createRemoteLogger(namespace);
+            logger = getAcsLogger(loggerName, LoggerOwnerType.OtherLogger);
         }
         else {
-            logger = Logger.getLogger(namespace);
+            logger = AcsLogger.createUnconfiguredLogger(loggerName, null);
             logger.setUseParentHandlers(false);
             addLocalHandler(logger);
             // this is a bit dirty: the local-only loggers are of the plain JDK Logger type which does not implement LogConfigSubscriber
             // and thus can't be configured in the normal way.
             // Nonetheless we want to configure its log level, for which we reuse code from AcsLogger
-            AcsLogger.configureJDKLogger(logger, logConfig.getLoggingConfig());            
+            // TODO: it looks that now with using AcsLogger.createUnconfiguredLogger we can get rid of this static method!
+            AcsLogger.configureJDKLogger(logger, sharedLogConfig.getNamedLoggerConfig(loggerName));
         }
         return logger;
     }
@@ -601,13 +706,29 @@ public class ClientLogManager implements LogConfigSubscriber
      */
     private void setProcessName(String processName) {
 		if (processName != null) {
-			this.processName = processName;
-			for (Iterator<AcsLogger> iter = loggersNeedingProcessNameUpdate.iterator(); iter.hasNext();) {
-				AcsLogger logger = iter.next();
-				logger.setLoggerName(logger.getName() + "@" + processName);
-				logger.setProcessName(processName);
+			processNameLock.lock();
+			try {
+				this.processName = processName;
+				synchronized (loggers) {
+					for (String oldLoggerName : new ArrayList<String>(loggers.keySet())) { // iterate over copy to avoid ConcurrentModif.Ex 
+						AcsLoggerInfo loggerInfo = loggers.get(oldLoggerName);
+						if (loggerInfo.needsProcessNameUpdate) {
+							String newLoggerName = oldLoggerName + "@" + processName;
+							loggerInfo.logger.setLoggerName(newLoggerName);
+							loggerInfo.logger.setProcessName(processName);
+							loggerInfo.needsProcessNameUpdate = false;
+							AcsLoggerInfo gonner = loggers.put(newLoggerName, loggerInfo);
+							if (gonner != null) {
+								m_internalLogger.info("Process name update on logger '" + newLoggerName + "' overwrote an existing logger. This should be reported to the ACS developers.");
+							}
+							loggers.remove(oldLoggerName);
+						}
+					}
+				}
+			} finally {
+				processNameLock.unlock();
 			}
-		}
+        }
 	}
 
 	/**
@@ -664,28 +785,4 @@ public class ClientLogManager implements LogConfigSubscriber
         }
     }
 
-	
-	/**
-	 * Strips the prepended constants {@link #NS_CORBA}, {@link #NS_CONTAINER}, {@link #NS_COMPONENT} etc from the logger namespace.
-	 * This allows for a short, but possibly not unique display of the logger name.   
-	 */
-	public static String stripKnownLoggerNamespacePrefix(String loggerName) {
-		if (loggerName != null) {
-            // try to strip off fixed prefix from logger namespace
-            try {
-                if (loggerName.startsWith(NS_COMPONENT)) {
-                	loggerName = loggerName.substring(NS_COMPONENT.length()+1);
-                }
-                else if (loggerName.startsWith(NS_CONTAINER)) {
-                	loggerName = loggerName.substring(NS_CONTAINER.length()+1);
-                }
-                else if (loggerName.startsWith(NS_CORBA)) {
-                	loggerName = loggerName.substring(NS_CORBA.length()+1);
-                }
-            } catch (Exception e) {
-                // fallback: use logger namespace
-            }            
-        }
-		return loggerName;		
-	}
 }
