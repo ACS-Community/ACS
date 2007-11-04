@@ -21,6 +21,7 @@
  */
 package alma.acs.logging;
 
+import java.util.Set;
 import java.util.logging.Formatter;
 import java.util.logging.Handler;
 import java.util.logging.Logger;
@@ -29,6 +30,7 @@ import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import alma.acs.logging.config.LogConfig;
 import alma.acs.logging.formatters.ConsoleLogFormatter;
 
 /**
@@ -64,24 +66,48 @@ public class ClientLogManagerTest extends junit.framework.TestCase
         Logger rootLogger = acsRemoteLogger.getParent();
         assertNotNull(rootLogger);
         assertNull(rootLogger.getParent());
-        
+                
         Handler[] handlers = containerLogger.getHandlers();
-        assertTrue(handlers.length == 1);
-        Handler localHandler = handlers[0];
-        assertTrue(localHandler instanceof StdOutConsoleHandler);
+        assertTrue(handlers.length == 2);
+        StdOutConsoleHandler localHandler = null;
+        AcsLoggingHandler remoteHandler = null;
+        for (Handler handler : handlers) {
+			if (handler instanceof StdOutConsoleHandler) {
+				localHandler = (StdOutConsoleHandler) handler;
+			} 
+			else if (handler instanceof AcsLoggingHandler) {
+				remoteHandler = (AcsLoggingHandler) handler;
+			} 
+			else {
+				fail("Unexpected handler type " + handler.getClass().getName() + " encountered.");
+			}		
+		}
+        assertNotNull(localHandler);
+        assertNotNull(remoteHandler);
         Formatter localFormatter = localHandler.getFormatter();
-        assertTrue(localFormatter instanceof ConsoleLogFormatter);
+        assertTrue("localFormatter should not be of type " + localFormatter.getClass().getName(), localFormatter instanceof ConsoleLogFormatter);
 
         Handler[] parentHandlers = acsRemoteLogger.getHandlers();
-        assertTrue(parentHandlers.length == 1);
-        Handler parentHandler = parentHandlers[0];
-        assertTrue(parentHandler instanceof AcsLoggingHandler);        
-        AcsLoggingHandler remoteHandler = (AcsLoggingHandler) parentHandler;
+        assertTrue(parentHandlers.length == 0);
         assertEquals(AcsLogLevel.TRACE, remoteHandler.getLevel());
         
         containerLogger.info("I'm a good pedigree logger.");
     }
 
+    
+    public void testLoggerNameUniqueness() {
+    	AcsLogger compLogger1 = clientLogManager.getLoggerForComponent("component");
+    	assertEquals("component", compLogger1.getLoggerName());
+    	AcsLogger compLogger2 = clientLogManager.getLoggerForComponent("component_1");
+    	assertEquals("component_1", compLogger2.getLoggerName());
+    	AcsLogger compLogger3 = clientLogManager.getLoggerForComponent("component");
+    	assertSame(compLogger1, compLogger3); // reuse for same name and same logger type
+    	AcsLogger orbLogger1 = clientLogManager.getLoggerForCorba("component", false); // what a stupid name for an orb logger!
+    	assertEquals("component_2", orbLogger1.getLoggerName());
+    	AcsLogger containerLogger1 = clientLogManager.getLoggerForContainer("component"); // what a stupid name for a container logger!
+    	assertEquals("component_3", containerLogger1.getLoggerName());
+    }
+    
     
     public void testShutdown() {
         Logger containerLogger = clientLogManager.getLoggerForContainer("test");
@@ -148,24 +174,48 @@ public class ClientLogManagerTest extends junit.framework.TestCase
             fail("The disabled log queue was not garbage collected. Probably some bad code changes have created an immortal reference to it, which should be removed.");
         }
     }
+    
+	/**
+	 */
+	public void testSuppressCorbaRemoteLogging() {
+		LogConfig config = clientLogManager.getLogConfig();
+		
+		assertEquals(1, config.getLoggerNames().size()); // the internal logger of ClientLogManager "alma.acs.logger"
+		AcsLogger orbLog1 = clientLogManager.getLoggerForCorba("jacorb_1", true);
+		
+		assertEquals(2, config.getLoggerNames().size());
+		AcsLogger orbLog1b = clientLogManager.getLoggerForCorba("jacorb_1", true);
+		assertSame(orbLog1, orbLog1b);
+		assertEquals(2, config.getLoggerNames().size());
 
-// For the time being we do not support logging configuration from properties, because values can be read from the CDB now.    
-//    /**
-//     * Assumes that the file acsjlog/test/test_userdef_logging.properties exists and defines the expected properties.
-//     */
-//    public void testUserdefinedLoglevels() {
-//    	String propertyFileName = "test_userdef_logging.properties";
-//    	System.setProperty("java.util.logging.config.file", propertyFileName);
-//    	
-//    	clientLogManager.setUserLogConfiguration();
-//    	
-//    	Level stdoutLevel = clientLogManager.getLoggerLevel("alma.acs.logging.StdOutConsoleHandler");
-//    	assertEquals(Level.FINE, stdoutLevel);
-//    	
-//    	Level containerLevel = clientLogManager.getLoggerLevel("alma.acs.container.frodoContainer");
-//    	assertEquals(Level.INFO, containerLevel);
-//    	
-//    	System.setProperty("java.util.logging.config.file", "");
-//    }    
-	
+		AcsLogger orbLog2 = clientLogManager.getLoggerForCorba("jacorb_2", true);
+		assertNotSame(orbLog1, orbLog2);
+		assertEquals(3, config.getLoggerNames().size());
+
+		// From the container logger, the process name will be derived, and the corba loggers will get it appended
+		AcsLogger contLog = clientLogManager.getLoggerForContainer("myContainer");
+			
+		Set<String> loggerNames = config.getLoggerNames();
+//		for (String loggerName : loggerNames) {
+//			System.out.println(loggerName);
+//		}				
+		assertEquals(4, loggerNames.size()); // alma.acs.logger, alma.acs.corba.jacorb_1@myContainer, alma.acs.corba.jacorb_2@myContainer, alma.acs.container.myContainer
+		
+		config.setDefaultMinLogLevelLocal(ACSCoreLevel.ACS_LEVEL_INFO);
+		config.setDefaultMinLogLevel(ACSCoreLevel.ACS_LEVEL_DEBUG);
+		// the log level must be the smaller one of stdout and remote level
+		assertEquals(AcsLogLevel.DEBUG.intValue(), orbLog1.getLevel().intValue());
+		assertEquals(AcsLogLevel.DEBUG.intValue(), orbLog2.getLevel().intValue());
+		assertEquals(AcsLogLevel.DEBUG.intValue(), contLog.getLevel().intValue());
+		
+		clientLogManager.suppressCorbaRemoteLogging();
+		
+		// now for corba loggers the remote handler's level must be infinite, and the local level should determine the logger level. 
+		assertEquals(AcsLogLevel.INFO.intValue(), orbLog1.getLevel().intValue()); // todo: check levels directly on the handlers
+		assertEquals(AcsLogLevel.INFO.intValue(), orbLog2.getLevel().intValue());
+		assertEquals(AcsLogLevel.DEBUG.intValue(), contLog.getLevel().intValue());
+		
+		assertEquals(4, loggerNames.size()); 
+	}
+		
 }
