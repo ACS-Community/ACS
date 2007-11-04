@@ -24,7 +24,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: cdbjDAL,v 1.43 2006/10/23 09:59:23 cparedes Exp $"
+# "@(#) $Id: cdbjDAL,v 1.44 2007/11/04 16:18:27 hsommer Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -104,6 +104,15 @@ fi
 # Finally adds the current module.
 SCHEMA_PATH=$PWD/../$SUB:$SCHEMA_PATH
 ACS_LOG_DEBUG "Searching for schema files in: $SCHEMA_PATH"
+
+# Set logger levels to INFO unless the env vars are set already.
+# This is to avoid especially the verbose jacorb logging we would get from the currently low schema default log levels of 2
+if [ "X$ACS_LOG_STDOUT" = "X" ]; then
+    export ACS_LOG_STDOUT=4
+fi
+if [ "X$ACS_LOG_CENTRAL" = "X" ]; then
+    export ACS_LOG_CENTRAL=4
+fi
 
 #
 # The easiest would be to delegate the rest to acsStartJava
