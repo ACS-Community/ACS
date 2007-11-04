@@ -28,7 +28,12 @@ import java.util.logging.LogManager;
  * <p>
  * Currently only differs from standard JDK LogManager in that it dodges the mean effects of the shutdown hook 
  * which calls {@link LogManager#reset()} too early. 
- * It thus allows the Java container (and potentially other clients of acsjlog) to send remote log messages until the end. 
+ * It thus allows the Java container (and the Java manager and potentially other users of acsjlog) 
+ * to send remote log messages until the end. 
+ * <p>
+ * Since ACS 7.0 the ClientLogManager no longer delegates logger requests to this class.
+ * It is just kept around until we know how to support the JVM logger introspection 
+ * via {@linkplain java.util.logging.LoggingMXBean} and if we could implement that interface somewhere else.
  *  
  * @author hsommer
  * created May 10, 2005 12:47:16 PM
