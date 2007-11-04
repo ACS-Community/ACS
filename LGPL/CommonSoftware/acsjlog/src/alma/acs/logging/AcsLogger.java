@@ -34,6 +34,7 @@ import java.util.logging.Logger;
 import alma.acs.logging.adapters.JacORBFilter;
 import alma.acs.logging.config.LogConfig;
 import alma.acs.logging.config.LogConfigSubscriber;
+import alma.acs.logging.config.LogConfig.LockableUnnamedLogger;
 import alma.maci.loggingconfig.UnnamedLogger;
 
 /**
@@ -55,15 +56,25 @@ public class AcsLogger extends Logger implements LogConfigSubscriber {
 	// private in base class, need to redeclare here
     protected static final int offValue = Level.OFF.intValue();
 
-	/** the logger class, which must be known to unwind the stack trace. Will be this class unless we use delegation. */
-    private Set<String> loggerClassNames = new HashSet<String>();
-        
+	/** the logger class, which must be known to unwind the stack trace. Will be this class unless we use delegation. 
+	 * TODO: looks like we can share this set among Logger instances
+	 */
+    private final Set<String> loggerClassNames = new HashSet<String>();
+      
+    private final LogConfig logConfig;
+    
     private String loggerName;
     private String processName;
+    
+    /**
+     * TODO: check why we set the SourceObject as a field here, and also take the loggerName 
+     * in the formatters to fill in the source object field there.
+     */
     private String sourceObject;
+    
     private boolean noLevelWarningPrinted = false;
 
-    private boolean DEBUG = Boolean.getBoolean("alma.acs.logging.verbose");
+    private final boolean DEBUG = Boolean.getBoolean("alma.acs.logging.verbose");
     
     /**
      * Standard constructor that configures this logger from <code>logConfig</code>
@@ -82,6 +93,7 @@ public class AcsLogger extends Logger implements LogConfigSubscriber {
      */
     protected AcsLogger(String name, String resourceBundleName, LogConfig logConfig, boolean allowNullLogConfig) {
         super(name, resourceBundleName);
+        this.logConfig = logConfig;
         
         if (DEBUG) {
         	System.out.println("*** AcsLogger running in DEBUG mode!");
@@ -138,11 +150,21 @@ public class AcsLogger extends Logger implements LogConfigSubscriber {
     /**
      * Optionally sets a logger name that can be different from the {@link Logger#name} passed in the constructor.
      * The new name will be used for the <code>LogRecord</code>s produced by this class.
-     * This allows changing the name later on, e.g. when a container name or JUnit test name should be prepended to the simple name of a Corba logger.
+     * This allows changing the name later on, e.g. when a container name or JUnit test name should be appended to the simple name of a Corba logger.
      * @param loggerName
      */
-    void setLoggerName(String loggerName) {
-            this.loggerName = loggerName;
+    void setLoggerName(String newLoggerName) {
+    	if (!getLoggerName().equals(newLoggerName)) {
+    		String oldLoggerName = getLoggerName();
+    		if (DEBUG) {
+    			System.out.println("Renaming logger '" + oldLoggerName + "' to '" + newLoggerName + "'."); 
+    		}
+           	this.loggerName = newLoggerName;
+           	// fix the named logger config 
+           	logConfig.renameNamedLoggerConfig(oldLoggerName, newLoggerName);
+           	configureLogging(logConfig);
+    	}
+            
     }
     String getLoggerName() {
     	return ( loggerName != null ? loggerName : getName() );
@@ -286,11 +308,10 @@ public class AcsLogger extends Logger implements LogConfigSubscriber {
      * @see alma.acs.logging.config.LogConfigSubscriber#configureLogging(alma.acs.logging.config.LogConfig)
      */
     public void configureLogging(LogConfig logConfig) {    	
-		try {
-			String shortName = ClientLogManager.stripKnownLoggerNamespacePrefix(getLoggerName());
-			UnnamedLogger config = logConfig.getNamedLoggerConfig(shortName);
+		try {			
+			UnnamedLogger config = logConfig.getNamedLoggerConfig(getLoggerName());
 			if (DEBUG) {
-				System.out.println("*** AcsLogger#configureLogging: name=" + shortName + 
+				System.out.println("*** AcsLogger#configureLogging: name=" + getLoggerName() + 
 						" minLevel=" + config.getMinLogLevel() + " minLevelLocal=" + config.getMinLogLevelLocal());
 			}
 	    	configureJDKLogger(this, config);
