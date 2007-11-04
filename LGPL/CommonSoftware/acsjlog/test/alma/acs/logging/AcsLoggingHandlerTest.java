@@ -42,7 +42,7 @@ public class AcsLoggingHandlerTest extends TestCase
 	protected void setUp() {
 		logQueue = new TestLogQueue();
 		LogConfig logConfig = new LogConfig();
-		loggingHandler = new AcsLoggingHandler(logQueue, logConfig);
+		loggingHandler = new AcsLoggingHandler(logQueue, logConfig, "dummyLoggerNameForHandlerLevelConfig");
 	}
 	
 	/**

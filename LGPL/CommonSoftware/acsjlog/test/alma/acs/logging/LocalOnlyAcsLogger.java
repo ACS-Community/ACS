@@ -32,7 +32,7 @@ public class LocalOnlyAcsLogger extends AcsLogger {
 			testLogConfig.setDefaultMinLogLevelLocal(AcsLogLevel.getNativeLevel(level).getAcsLevel());
 			instance = new LocalOnlyAcsLogger(namespace, testLogConfig);
 			instance.setUseParentHandlers(false);
-			Handler logHandler = new StdOutConsoleHandler(testLogConfig);
+			Handler logHandler = new StdOutConsoleHandler(testLogConfig, namespace);
 			logHandler.setFormatter(new AcsXMLLogFormatter() {
 				public String format(LogRecord lr) {
 					String xml = super.format(lr);
