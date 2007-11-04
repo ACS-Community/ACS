@@ -107,10 +107,10 @@ public class ClientWithLogReceiverTest extends ComponentClientTestCase {
 	            		fail("Unexpected end of log queue.");
 	            	}
 	                ILogEntry logEntry = delayedLogEntry.getLogEntry();
-	                String sourceObjectName = (String) logEntry.getField(ILogEntry.FIELD_SOURCEOBJECT);
+	                String sourceObjectName = (String) logEntry.getField(ILogEntry.Field.SOURCEOBJECT);
 	                if (sourceObjectName!=null && sourceObjectName.equals("ClientWithLogReceiverTest#testLogQueueNoDelay")) {
-		                assertEquals(logMessage, logEntry.getField(ILogEntry.FIELD_LOGMESSAGE));
-		                assertEquals(jlogLevelIndex, ((Integer)logEntry.getField(ILogEntry.FIELD_ENTRYTYPE)).intValue());
+		                assertEquals(logMessage, logEntry.getField(ILogEntry.Field.LOGMESSAGE));
+		                assertEquals(jlogLevelIndex, ((Integer)logEntry.getField(ILogEntry.Field.ENTRYTYPE)).intValue());
 		                System.out.println("Received back log record #" + i);
 		                break; // and continue outer loop with next log record
 	                }
