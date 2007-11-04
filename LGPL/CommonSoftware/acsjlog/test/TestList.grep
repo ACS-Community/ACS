@@ -1,4 +1,3 @@
-TEST_RUNNER_REPORT
 Starting Java/abeans application
 INFO - Using endorsed jar files
 ACS abeans configuration directory: 
@@ -8,5 +7,4 @@ ACS Name Service:
 ACS Interface Repository: 
 Running the following command:
 java -classpath 
-alma.acs.testsupport.tat.TATJUnitRunner
 1 - Time:
