@@ -83,7 +83,7 @@ public class ConsoleLogFormatter extends Formatter
 		// hso 2005-10-14: C++ logs source object and class and method name since a few months.
 		// These names are often long in Java, but at least the source object (e.g. component name) should be there.
 		// C++ sample: 2005-10-14T12:45:32.924 [GlobalLogger - baci::BACIComponent::startAllThreads] My log message...
-		String sourceObject = ClientLogManager.stripKnownLoggerNamespacePrefix(record.getLoggerName());
+		String sourceObject = record.getLoggerName();
 		if (sourceObject != null) {
 			sb.append(" [").append(sourceObject).append("] ");
         }

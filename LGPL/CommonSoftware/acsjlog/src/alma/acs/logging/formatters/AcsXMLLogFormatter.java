@@ -134,7 +134,7 @@ public class AcsXMLLogFormatter extends AcsLogFormatter
 			sb.append("SourceObject=\"" + sourceObject + "\" ");
 		}
 		else {
-			sourceObject = ClientLogManager.stripKnownLoggerNamespacePrefix(logRecord.getLoggerName());
+			sourceObject = logRecord.getLoggerName();
 			if (sourceObject != null) {
 				sb.append("SourceObject=\"" + sourceObject + "\" ");
 			}

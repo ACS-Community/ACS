@@ -118,7 +118,7 @@ public class AcsBinLogFormatter extends AcsLogFormatter
             else rLog.Process = "";
   //      }
 		// source object: the container name or component name
-		String sourceObject = ClientLogManager.stripKnownLoggerNamespacePrefix(logRecord.getLoggerName());
+		String sourceObject = logRecord.getLoggerName();
 		if (sourceObject != null) {
 			rLog.SourceObject = sourceObject;
         }else rLog.SourceObject = "";
