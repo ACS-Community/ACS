@@ -34,16 +34,24 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
 
 import org.exolab.castor.core.exceptions.CastorException;
+import org.exolab.castor.xml.Unmarshaller;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -54,6 +62,10 @@ import org.xml.sax.SAXException;
 import com.cosylab.CDB.DAL;
 import com.cosylab.CDB.DALOperations;
 
+import alma.acs.config.validators.XmlNamespaceContextContainer;
+import alma.acs.config.validators.ConfigFileRedeemerXml.XPathMatchSetup;
+import alma.acs.logging.ACSCoreLevel;
+import alma.acs.logging.ClientLogManager;
 import alma.cdbErrType.CDBRecordDoesNotExistEx;
 import alma.cdbErrType.CDBXMLErrorEx;
 import alma.maci.loggingconfig.LoggingConfig;
@@ -71,8 +83,28 @@ public class LogConfig {
 
 	// for the often-used min levels we offer properties, to avoid having an otherwise not needed CDB configuration 
 	public final static String PROPERTYNAME_MIN_LOG_LEVEL_LOCAL = "ACS.logstdout"; // todo: rename to "ACS.log.minlevel.local"
-	public final static String PROPERTYNAME_MIN_LOG_LEVEL = "ACS.log.minlevel.remote";
+	public final static String PROPERTYNAME_MIN_LOG_LEVEL = "ACS.log.minlevel.remote"; // from env var ACS_LOG_CENTRAL
 
+	/**
+	 * In CDB queries for the <code>LoggingConfig</code> child of a container or manager configuration
+	 * we need the "LoggingConfig" string. 
+	 * <p>
+	 * For type safety we get that name from the schema-generated castor class. 
+	 */
+	private final static String CDBNAME_LoggingConfig = LoggingConfig.class.getSimpleName();
+	
+	/**
+	 * In CDB queries for the <code>ComponentLogger</code> child of a component configuration
+	 * we need the "LoggingConfig" string.
+	 * <p> 
+	 * In the schema <code>Components.xsd</code> we are interested in the grand-child element
+	 * <code>ComponentLogger</code>. The generated Java class corresponds to the type
+	 * <code>UnnamedLogger</code> though.
+	 * The element name is only present in the method name
+	 * <code>alma.maci.componentconfig.components.ComponentInfo#getComponentLogger</code>
+	 * which cannot be used to define a constant. Therefore we hardcode the name here.
+	 */
+	private final static String CDBNAME_ComponentLogger = "ComponentLogger";
 	
     /**
      * The logger for messages logged by this class.
@@ -94,7 +126,7 @@ public class LogConfig {
     private String cdbLoggingConfigPath;
 
     /**
-     * Paths in the CDB to the element (container, manager etc) that contains a <code>LoggingConfig</code> child.
+     * Paths in the CDB to the element that contains component configuration with child elements of type <code>UnnamedLogger</code>.
      * key = component logger name, value = path in the CDB to the Component configuration.
      * Note that log levels given in the component configuration get overridden by named logger levels 
      * found in the container configuration, in case of conflicts. 
@@ -129,7 +161,7 @@ public class LogConfig {
 	/**
 	 * Subscribers get notified of logging config changes
 	 */
-	private List<LogConfigSubscriber> subscriberList;
+	private final List<LogConfigSubscriber> subscriberList;
 
 
 	
@@ -194,8 +226,8 @@ public class LogConfig {
 	 * &lt;log:UnnamedLogger/&gt; component logger node. 
 	 * This call does not access the CDB.
 	 * 
-	 * @param compLoggerName
-	 * @param path
+	 * @param compLoggerName  the component logger name, e.g. <code>MOUNT1</code>.
+	 * @param path  e.g. <code>MACI/Components</code>.
 	 */
 	public void setCDBComponentPath(String compLoggerName, String path) {
 		cdbComponentPaths.put(compLoggerName, path);
@@ -224,11 +256,11 @@ public class LogConfig {
 	public void initialize(boolean cdbBeatsProperties) throws LogConfigException {
 		StringBuffer errMsg = new StringBuffer();
 
-		LoggingConfig newLoggingConfig = null; // castor class, generated from LogggingConfig.xsd
+		LoggingConfig newLoggingConfig = null; // schema binding class generated from LogggingConfig.xsd
 		if (cdb != null) {
 			try {
 				if (cdbLoggingConfigPath != null) {
-					String loggingConfigXml = getLogConfigXml(cdbLoggingConfigPath, "LoggingConfig"); // todo derive from LoggingConfig.class.getName()
+					String loggingConfigXml = getLogConfigXml(cdbLoggingConfigPath, "//" + CDBNAME_LoggingConfig);
 					if (loggingConfigXml == null) {
 						// the LoggingConfig child is mandatory for containers and manager
 						throw new LogConfigException("Parent node " + cdbLoggingConfigPath + " does not contain one LoggingConfig element.");
@@ -249,25 +281,27 @@ public class LogConfig {
 					// We don't call namedLoggerConfigs.clear() because we don't want to lose logger names but only their configurations.
 					synchronized (namedLoggerConfigs) {
 						for (String loggerName : namedLoggerConfigs.keySet()) {							
-							storeNamedLoggerConfigs(loggerName, null);
+							storeNamedLoggerConfig(loggerName, null);
 						}
 						
 						// named logger levels from the LoggingConfig XML
 						NamedLogger[] namedLoggers = loggingConfig.get();
 						for (int i = 0; i < namedLoggers.length; i++) {
-							storeNamedLoggerConfigs(namedLoggers[i].getName(), new LockableUnnamedLogger(namedLoggers[i]));
+							storeNamedLoggerConfig(namedLoggers[i].getName(), new LockableUnnamedLogger(namedLoggers[i]));
 						}
 						
-						// named logger levels from separate component config
+						// Named logger levels from separate component config:
+						// check CDB config for all component loggers who got a CDB path configured
 						for (String loggerName : cdbComponentPaths.keySet()) {
 							// skip named logger if it's been already configured from the main XML, since those values have precedence
 							if (!namedLoggerConfigs.containsKey(loggerName)) {
 								String cdbPath = cdbComponentPaths.get(loggerName);
-								String componentConfigXML = getLogConfigXml(cdbPath, "ComponentLogger");
+								String xpath = "//_[@Name='" + loggerName + "']/" + CDBNAME_ComponentLogger;
+								String componentConfigXML = getLogConfigXml(cdbPath, xpath);
 								// the ComponentLogger xml child element is optional, we get a null if it's missing.
 								if (componentConfigXML != null) {
 									UnnamedLogger compLoggerConfig = UnnamedLogger.unmarshalUnnamedLogger(new StringReader(componentConfigXML));
-									storeNamedLoggerConfigs(loggerName, new LockableUnnamedLogger(compLoggerConfig));
+									storeNamedLoggerConfig(loggerName, new LockableUnnamedLogger(compLoggerConfig));
 								}
 							}
 						}
@@ -290,7 +324,8 @@ public class LogConfig {
 			}
 		}
 
-		if (!cdbBeatsProperties) {
+		// consider the env var based properties only if the CDB was not considered or if the CDB settings should not override the env vars 
+		if (cdb == null || !cdbBeatsProperties) {
 			configureDefaultLevelsFromProperties();
 		}
 
@@ -303,12 +338,14 @@ public class LogConfig {
 			String newXML = null;
 			try {
 				newLoggingConfig.marshal(writer);
-				newXML = writer.toString();
+				newXML = writer.toString().trim();
 			} catch (Throwable thr) {
 				; // nothing
 			}
-			log(Level.FINER, "Updated default logging configuration based on CDB entry " + newXML, null);
-			// @TODO: also log something for named loggers 
+			String msg = "Updated logging configuration based on CDB entry " + newXML;
+			msg += " with " + (cdbBeatsProperties ? "CDB" : "env vars" ) + " having precedence over " + (cdbBeatsProperties ? "env vars" : "CDB" ); 
+			log(Level.FINER, msg, null);			
+			// @TODO: also log something for named component loggers if any were considered 
 		} 
 		else {
 			log(Level.FINER, "Logging configuration has been initialized, but not from CDB settings.", null);
@@ -318,65 +355,90 @@ public class LogConfig {
 			throw new LogConfigException("Log config initialization at least partially failed. " + errMsg.toString());
 		}
 	}
+	
 
-	
-	
+
 	/**
 	 * Reads the CDB element from the given path as XML, 
-	 * and extracts the child element of name <code>childName</code>.
+	 * and extracts the child element that must be uniquely identified 
+	 * by the XPath expression in <code>xpathLogConfigNode</code>.
+	 * <p>
+	 * TODO: move the Node-to-XML-String code to a general utility package
+	 * and return just the Node -- any client can then easily turn it into a String if needed.
+	 * For Castor-parsing, a node is fine, see {@link Unmarshaller#unmarshal(Node)}. 
 	 * 
 	 * @param cdbPathParent  path to container, manager, or component config node
-	 * @param childName  "LoggingConfig" in case of manager or container, or "ComponentLogger" for a component node.
-	 * @return XML String for the requested child, or <code>null</code> if no unique xml child element <code>childName</code> was found.
+	 * @param xpathExpression  For example, for containers and managers <code>//LoggingConfig</code>, 
+	 *                         for multiple-components-xml <code>//_[@Name='myCompName']/ComponentLogger</code>
+	 * @return XML String for the requested child, or <code>null</code> if no unique xml child element was found.
+	 * @throws CDBRecordDoesNotExistEx 
+	 * @throws CDBXMLErrorEx 
+	 * @throws ParserConfigurationException 
+	 * @throws IOException 
+	 * @throws SAXException 
+	 * @throws XPathExpressionException 
+	 * @throws TransformerException 
 	 * @throws IllegalStateException if the cdb ref has not been set
 	 */
-	private String getLogConfigXml(String cdbPathParent, String childName) 
-			throws CDBXMLErrorEx, CDBRecordDoesNotExistEx, ParserConfigurationException, SAXException, IOException, TransformerException 
-	{
+	String getLogConfigXml(String cdbPathParent, String xpathLogConfigNode) throws CDBXMLErrorEx, CDBRecordDoesNotExistEx, ParserConfigurationException, SAXException, IOException, XPathExpressionException, TransformerException {
 		if (cdb == null) {
 			throw new IllegalStateException("CDB reference has not been set.");
 		}
 		String parentConfigXML = cdb.get_DAO(cdbPathParent);
 
+		Node loggingConfigElement = null;
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+		factory.setNamespaceAware(false);
 		DocumentBuilder builder = factory.newDocumentBuilder();
-		Document parentDoc = builder.parse(new InputSource(new StringReader(parentConfigXML)));
 
-		Element parentDocElement = parentDoc.getDocumentElement();
-		NodeList loggingConfigElements = parentDocElement.getElementsByTagName(childName);
-		if (loggingConfigElements.getLength() != 1) {
-//			throw new LogConfigException("Parent node does not contain one LoggingConfig element.");
+		// parse the XML file into a DOM
+		Document parentDoc = builder.parse(new InputSource(new StringReader(parentConfigXML)));
+		String encoding = parentDoc.getXmlEncoding();
+		Element rootElement = parentDoc.getDocumentElement();
+		
+		// eval xpath expression
+		XPath xpath = XPathFactory.newInstance().newXPath();
+		Object xpathResult = xpath.evaluate(xpathLogConfigNode, rootElement, XPathConstants.NODE);
+		
+		if (xpathResult == null || !(xpathResult instanceof Node)) {
 			return null;
 		}
-
-		Node loggingConfigElement = loggingConfigElements.item(0);
+		
+		loggingConfigElement = (Node) xpathResult;
+		
 		Document childDoc = builder.newDocument();
 		loggingConfigElement = childDoc.importNode(loggingConfigElement, true);
 		childDoc.appendChild(loggingConfigElement);
 
 		TransformerFactory transformerFactory = TransformerFactory.newInstance();
 		Transformer transformer = transformerFactory.newTransformer();
+		transformer.setOutputProperty(OutputKeys.ENCODING, encoding);
 		StringWriter sw = new StringWriter();
 		StreamResult result = new StreamResult(sw);
 		transformer.transform(new DOMSource(childDoc), result);
 
 		return sw.toString();
-		
 	}
 	
-    /**
-     * Gets the logging configuration data that contains all configuration values that apply to the entire process,
-     * ass well as the default log levels.
-     * <p> 
-     * Be careful to not modify this object!  
-     * TODO: better return a cloned or wrapped instance
-     */
-    public LoggingConfig getLoggingConfig() {
-        return this.loggingConfig;
-    }
+	public String getCentralizedLogger() {
+		return loggingConfig.getCentralizedLogger();
+	}
+	
+	public int getDispatchPacketSize() {
+		return loggingConfig.getDispatchPacketSize();
+	}
 
+	public int getImmediateDispatchLevel() {
+		return loggingConfig.getImmediateDispatchLevel();
+	}
 
-
+	public int getFlushPeriodSeconds() {
+		return loggingConfig.getFlushPeriodSeconds();
+	}
+	
+	public int getMaxLogQueueSize() {
+		return loggingConfig.getMaxLogQueueSize();
+	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////
 	// Getter and setter methods for default logger and named logger levels, local and remote logging.
@@ -442,6 +504,8 @@ public class LogConfig {
 		return (namedLoggerConfigs.get(loggerName) != null);
 	}
 
+	
+	
 	/**
 	 * Gets the (log level) configuration data for a named logger.
 	 * Resorts to the default configuration if a specialized configuration is not available. 
@@ -460,7 +524,8 @@ public class LogConfig {
 				ret.setMinLogLevel(loggingConfig.getMinLogLevel());
 				ret.setMinLogLevelLocal(loggingConfig.getMinLogLevelLocal());
 				if (loggerName != null && !loggerName.toLowerCase().equals("default")) {
-					storeNamedLoggerConfigs(loggerName, null); // null means "apply default values"
+					// register new logger, with a null config which means "apply default values"
+					storeNamedLoggerConfig(loggerName, null);
 				}
 			}
 			else {
@@ -484,7 +549,7 @@ public class LogConfig {
 	public void setNamedLoggerConfig(String loggerName, LockableUnnamedLogger config) {
 		if (loggerName != null && config != null) {
 			LockableUnnamedLogger config2 = new LockableUnnamedLogger(config);
-			storeNamedLoggerConfigs(loggerName, config2);
+			storeNamedLoggerConfig(loggerName, config2);
 			notifySubscribers();
 		}
 	}
@@ -498,8 +563,10 @@ public class LogConfig {
 	 * @since ACS 7.0
 	 */
 	public void setNamedLoggerConfig(String loggerName, UnnamedLogger config) {
-		LockableUnnamedLogger config2 = new LockableUnnamedLogger(config); // unlocked by default
-		setNamedLoggerConfig(loggerName, config2);
+		if (loggerName != null && config != null) {
+			LockableUnnamedLogger config2 = new LockableUnnamedLogger(config); // unlocked by default
+			setNamedLoggerConfig(loggerName, config2);
+		}
 	}
 	
 	
@@ -511,7 +578,7 @@ public class LogConfig {
 	 */
 	public void clearNamedLoggerConfig(String loggerName) {
 		if (loggerName != null) {
-			storeNamedLoggerConfigs(loggerName, null);
+			storeNamedLoggerConfig(loggerName, null);
 			notifySubscribers();
 		}
 	}
@@ -536,14 +603,14 @@ public class LogConfig {
 	 * The more abstract concept of locking log levels was chosen to keep the special scenario decribed above 
 	 * out of the logging config code.
 	 * 
-	 * @param newLevel
+	 * @param newLevel  small integer from {@link ACSCoreLevel}
 	 * @param loggerName
 	 */
 	public void setAndLockMinLogLevel(int newLevel, String loggerName) {
 		synchronized (namedLoggerConfigs) {	
 			LockableUnnamedLogger config = getNamedLoggerConfig(loggerName); // new object, with cached or default values
 			if (config.isLocked()) {
-				logger.warning("Ignoring attempt to lock logger " + loggerName + " to level " + newLevel + " because it is already locked to remote level " + config.getMinLogLevel());
+				log(Level.WARNING, "Ignoring attempt to lock logger " + loggerName + " to level " + newLevel + " because it is already locked to remote level " + config.getMinLogLevel(), null);
 			}
 			else {
 				config.setMinLogLevel(newLevel);
@@ -558,7 +625,7 @@ public class LogConfig {
 	 * and denies access if the old config is locked.
 	 * @see #namedLoggerConfigs
 	 */
-	private void storeNamedLoggerConfigs(String loggerName, LockableUnnamedLogger config) {
+	private void storeNamedLoggerConfig(String loggerName, LockableUnnamedLogger config) {
 		synchronized (namedLoggerConfigs) {	
 			LockableUnnamedLogger oldConfig = namedLoggerConfigs.get(loggerName);
 			if (oldConfig == null || !oldConfig.isLocked()) {
@@ -571,7 +638,32 @@ public class LogConfig {
 		}
 	}
 	
-	private static class LockableUnnamedLogger extends UnnamedLogger {
+	/**
+	 * Renaming of a logger can occur for example when an ORB logger undergoes a name change
+	 * as soon as the process name is determined by the container logger.
+	 * <p>
+	 * Renaming is not a regular part of a logger's life though. By the time that tools can look at the list of loggers,
+	 * no renaming should occur any more.
+	 * 
+	 * @param oldLoggerName
+	 * @param newLoggerName
+	 * @return true if the logger config was renamed. False for bad or unmatching parameters which result in no change. 
+	 */
+	public boolean renameNamedLoggerConfig(String oldLoggerName, String newLoggerName) {
+		synchronized (namedLoggerConfigs) {	
+			if (oldLoggerName == null || newLoggerName == null || !namedLoggerConfigs.containsKey(oldLoggerName)) {
+				return false;
+			}
+			else {
+				LockableUnnamedLogger config = namedLoggerConfigs.get(oldLoggerName);
+				namedLoggerConfigs.put(newLoggerName, config);
+				namedLoggerConfigs.remove(oldLoggerName);
+				return true;
+			}
+		}
+	}
+	
+	public static class LockableUnnamedLogger extends UnnamedLogger {
 		private boolean isLocked = false;
 		
 		LockableUnnamedLogger() {
@@ -608,20 +700,25 @@ public class LogConfig {
     /////////////////////////////////////////////////////////////////////
     
 	public void addSubscriber(LogConfigSubscriber subscriber) {
-        if (!subscriberList.contains(subscriber)) {
-            subscriberList.add(subscriber);
-        }
+		synchronized (subscriberList) {
+	        if (!subscriberList.contains(subscriber)) {
+	            subscriberList.add(subscriber);
+	        }
+		}
 	}
 	
 	void notifySubscribers() {
-		for (Iterator<LogConfigSubscriber> iter = subscriberList.iterator(); iter.hasNext();) {
-			LogConfigSubscriber subscriber = iter.next();
-			subscriber.configureLogging(this);
+		synchronized (subscriberList) {
+			for (LogConfigSubscriber subscriber : subscriberList) {
+				subscriber.configureLogging(this);
+			}
 		}
 	}
 
     public void removeSubscriber(LogConfigSubscriber subscriber) {
-        subscriberList.remove(subscriber);
+		synchronized (subscriberList) {
+			subscriberList.remove(subscriber);
+		}
     }
 
     // ///////////////////////////////////////////////////////////////////
