@@ -1,6 +1,18 @@
+ -- alma.acs.testsupport.tat.TATJUnitRunner alma.acs.logging.AcsLogLevelTest
+TEST_RUNNER_REPORT success/total: 4/4
 JUnit test run succeeded
+ -- alma.acs.testsupport.tat.TATJUnitRunner alma.acs.logging.formatters.AcsLogFormatterTest
+TEST_RUNNER_REPORT success/total: 5/5
 JUnit test run succeeded
+ -- alma.acs.testsupport.tat.TATJUnitRunner alma.acs.logging.AcsLoggingHandlerTest
+TEST_RUNNER_REPORT success/total: 1/1
 JUnit test run succeeded
+ -- alma.acs.testsupport.tat.TATJUnitRunner alma.acs.logging.RemoteLogDispatcherTest
+TEST_RUNNER_REPORT success/total: 1/1
 JUnit test run succeeded
+ -- alma.acs.testsupport.tat.TATJUnitRunner alma.acs.logging.ClientLogManagerTest
+TEST_RUNNER_REPORT success/total: 5/5
 JUnit test run succeeded
+ --endorsed -- alma.acs.testsupport.tat.TATJUnitRunner alma.acs.logging.config.LogConfigTest
+TEST_RUNNER_REPORT success/total: 7/7
 JUnit test run succeeded
