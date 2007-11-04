@@ -29,7 +29,6 @@ import org.omg.PortableServer.Servant;
 import alma.ACS.ACSComponentOperations;
 import alma.JavaContainerError.wrappers.AcsJJavaComponentHelperEx;
 import alma.acs.component.ComponentLifecycle;
-import alma.acs.component.dynwrapper.DynWrapperException;
 import alma.acs.component.dynwrapper.DynamicProxyFactory;
 import alma.acs.logging.ClientLogManager;
 import alma.maciErrType.wrappers.AcsJComponentCreationEx;
@@ -366,5 +365,34 @@ public abstract class ComponentHelper
      */
     protected String[] _getComponentMethodsExcludedFromInvocationLogging() {
     	return null;
+    }
+    
+    /**
+     * <strong>Do not overwrite this method unless you absolutely need to 
+     * (currently only for the archive logger component!)</strong>
+     * <p>
+     * If <code>true</code> then the ORB logger will not send any log messages to the central (remote) Log service
+     * after activation of this component, regardless of any kind (env var, CDB, dynamic) log level settings. 
+     * Local stdout logging by the ORB is not affected.
+     * Currently the ORB log suppression is not reversible: even when the component which requested this 
+     * is unloaded, the ORB logger will not resume sending remote log messages. 
+     * This may change in the future though.
+     * <p>
+     * Note that <code>getComponentMethodsExcludedFromInvocationLogging</code> can switch off automatic logging
+     * done by the container on behalf of the component. However, the ORB does not use a logger-per-component 
+     * concept, and thus can't be told selectively to not log anything for a particualar component.
+     * The entire process (container and all components) are affected by suppressing the ORB's remote logging.  
+     * <p>
+     * This method addresses the special problem of an infrastructural component that receives log messages 
+     * from the Log service and writes them to the archive. 
+     * Any message logged by the ORB on the receiver side would go back to the Log service and be received 
+     * by the infrastructural component, with positive feedback leading to an explosion of log messages. 
+     * Therefore we can't rely on log level settings and must categorically rule out such feedback loops.
+     * <p>
+     * @since ACS 7.0 when JacORB logs get sent to the Log service by default.  
+     * @return
+     */
+    boolean requiresOrbCentralLogSuppression() {
+    	return false;
     }
 }
