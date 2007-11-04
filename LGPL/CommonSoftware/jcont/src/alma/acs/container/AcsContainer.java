@@ -50,6 +50,7 @@ import si.ijs.maci.ContainerPOA;
 import si.ijs.maci.ImplLangType;
 import si.ijs.maci.LoggingConfigurablePackage.LogLevels;
 
+import alma.ACS.ACSComponentOperations;
 import alma.ACS.ComponentStates;
 import alma.JavaContainerError.wrappers.AcsJContainerEx;
 import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
@@ -381,8 +382,8 @@ public class AcsContainer extends ContainerPOA
 
 //m_logger.finest(compName + " component impl created, with classloader " + compImpl.getClass().getClassLoader().getClass().getName());
 
-            Class operationsIFClass = compHelper.getOperationsInterface();
-            Constructor poaTieCtor =
+            Class<? extends ACSComponentOperations> operationsIFClass = compHelper.getOperationsInterface();
+            Constructor<? extends Servant> poaTieCtor =
                 compHelper.getPOATieClass().getConstructor(new Class[]{operationsIFClass});
 
             Object operationsIFImpl = null;
@@ -408,7 +409,7 @@ public class AcsContainer extends ContainerPOA
             // construct the POATie skeleton with operationsIFImpl as the delegate object
             Servant servant = null;
             try {
-                servant = (Servant) poaTieCtor.newInstance(new Object[]{poaDelegate});
+                servant = poaTieCtor.newInstance(new Object[]{poaDelegate});
             }
             catch (Throwable thr) {
             	AcsJContainerEx ex = new AcsJContainerEx(thr);
@@ -430,6 +431,11 @@ public class AcsContainer extends ContainerPOA
 
             compAdapter.activateComponent(servant);
 
+            // now it's time to turn off ORB logging if the new component is requesting this
+            if (compHelper.requiresOrbCentralLogSuppression()) {
+            	ClientLogManager.getAcsLogManager().suppressCorbaRemoteLogging();
+            }
+            
             // even though the component is now an activated Corba object already,
             // it won't be called yet since the maciManager will only pass around
             // access information after we've returned from this activate_component method.
@@ -1377,6 +1383,5 @@ public class AcsContainer extends ContainerPOA
 
 		
 	/** ************************ END LoggingConfigurable ************************ */
-
 
 }
