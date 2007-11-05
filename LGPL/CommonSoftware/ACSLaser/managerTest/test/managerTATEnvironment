@@ -1,0 +1,14 @@
+#*******************************************************************************
+# ALMA - Atacama Large Millimiter Array
+#
+# "@(#) $Id: managerTATEnvironment,v 1.1 2007/11/05 14:12:40 acaproni Exp $"
+#
+# who       when      what
+# --------  --------  ----------------------------------------------
+# 
+
+set ACS_TMP $env(PWD)/tmp
+set env(ACS_TMP) $ACS_TMP
+#
+# ___oOo___
+

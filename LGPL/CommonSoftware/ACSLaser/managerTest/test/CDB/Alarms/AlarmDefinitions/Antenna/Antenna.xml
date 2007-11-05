@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fault-family name="Antenna" xmlns="urn:schemas-cosylab-com:acsalarm-fault-family:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:schemas-acs:AcsAlarmSystem:1.0 ../../../acsalarm-fault-family.xsd ">
+  <alarm-source>ALARM_SYSTEM_SOURCES</alarm-source>
+  <help-url>http://tempuri.org</help-url>
+  <contact email="" gsm="" name=""/>
+  <fault-code value="1">
+    <priority>3</priority>
+    <cause>The cause</cause>
+    <action>One action</action>
+    <consequence>Terrible consequence</consequence>
+    <problem-description>Test antenna alarm</problem-description>
+  </fault-code>
+  <fault-member name="ALARM_SOURCE_ANTENNA">
+    <location>
+      <building>building</building>
+      <floor>floor</floor>
+      <room>room</room>
+      <mnemonic>mnemonic</mnemonic>
+      <position>Antenna position</position>
+    </location>
+  </fault-member>
+</fault-family>
