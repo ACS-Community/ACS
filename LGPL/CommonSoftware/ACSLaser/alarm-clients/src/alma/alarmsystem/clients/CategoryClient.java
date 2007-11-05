@@ -67,11 +67,16 @@ public class CategoryClient {
 	 * 
 	 * @param svc ACS ContainerServices used to access the alarm service component
 	 */
-	public CategoryClient(ContainerServices svc) {
+	public CategoryClient(ContainerServices svc) throws Exception {
 		if (svc==null) {
 			throw new IllegalArgumentException("Invalid ContainerServices");
 		}
 		contSvc=svc;
+		try {
+			initialize();
+		} catch (Throwable t) {
+			throw new Exception("Error building CategoryClient",t);
+		}
 	}
 	
 	/**
@@ -110,7 +115,6 @@ public class CategoryClient {
 		}
 		alarmName=null;
 		alarm=null;
-		categories=null;
 	}
 	
 	/**
@@ -118,12 +122,12 @@ public class CategoryClient {
 	 * 
 	 * @return The categories
 	 */
-	private Category[] getCategories() throws Exception {
+	private void getCategories() throws Exception {
 		if (alarm==null) {
 			throw new IllegalStateException("No alarm component connected");
 		}
 		categoryRootTopic=alarm.getCategoryRootTopic();
-		return alarm.getCategories();
+		categories=alarm.getCategories();
 	}
 	
 	/**
@@ -134,13 +138,15 @@ public class CategoryClient {
 	 */
 	public void connect(Category[] categoriesToConnect) {
 		if (categoriesToConnect==null ||categoriesToConnect.length==0) {
-			contSvc.getLogger().log(AcsLogLevel.INFO,"No categories channels to connect to");
+			contSvc.getLogger().log(AcsLogLevel.INFO,"No categories to connect to");
+			return;
 		}
 		consumers=new CategorySubscriber[categoriesToConnect.length];
 		int t=0;
 		for (Category category: categoriesToConnect) {
 			try {
 				consumers[t++]=new CategorySubscriber(contSvc,categoryRootTopic,category.path,this);
+				contSvc.getLogger().log(AcsLogLevel.DEBUG,"Connected to "+categoryRootTopic+"."+category.path);
 			} catch (Exception jmse) {
 				contSvc.getLogger().log(AcsLogLevel.ERROR,"Error subscribing to "+categoryRootTopic+"."+category.path);
 			}
@@ -161,16 +167,16 @@ public class CategoryClient {
 	 */
 	private void dumpCategories() {
 		if (categories==null) {
-			System.out.println("Categories null");
+			contSvc.getLogger().log(AcsLogLevel.DEBUG,"Categories null");
+			return;
 		}
 		if (categories.length==0) {
-			System.out.println("Categories empty");
+			contSvc.getLogger().log(AcsLogLevel.DEBUG, "Categories empty");
+			return;
 		}
 		System.out.println("Category root topic="+categoryRootTopic);
 		for (Category cat: categories) {
-			System.out.println("Category name="+cat.name);
-			System.out.println("\tpath="+cat.path);
-			System.out.println("\tdescription="+cat.description);
+			contSvc.getLogger().log(AcsLogLevel.DEBUG, "Category name="+cat.name+"\tpath="+cat.path+"\tdescription="+cat.description);
 		}
 	}
 	
@@ -195,7 +201,7 @@ public class CategoryClient {
 		}
 		// Read the available categories
 		try {
-			categories=getCategories();
+			getCategories();
 		} catch (Exception e) {
 			releaseAlarmServiceComponent();
 			contSvc.getLogger().log(AcsLogLevel.ERROR,"Error getting the categories from AlarmService");
@@ -203,8 +209,9 @@ public class CategoryClient {
 		}
 		dumpCategories();
 		if (categories==null || categories.length==0) {
-			contSvc.getLogger().log(AcsLogLevel.INFO,"No categories to subscribe to");
+			contSvc.getLogger().log(AcsLogLevel.INFO,"No alarm categories to subscribe to");
 		}
+		releaseAlarmServiceComponent();
 	}
 	
 	/**
