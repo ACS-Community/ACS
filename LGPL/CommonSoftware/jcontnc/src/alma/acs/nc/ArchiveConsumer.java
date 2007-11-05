@@ -19,15 +19,16 @@ package alma.acs.nc;
 
 /**
  * @author dfugate
- * @version $Id: ArchiveConsumer.java,v 1.11 2007/10/17 16:04:44 hsommer Exp $
+ * @version $Id: ArchiveConsumer.java,v 1.12 2007/11/05 20:20:56 hsommer Exp $
  * @since
  */
 
 import java.lang.reflect.Method;
 
+import org.omg.CosEventComm.Disconnected;
 import org.omg.CosNotification.StructuredEvent;
 
-import alma.acs.container.ContainerServices;
+import alma.acs.container.ContainerServicesBase;
 import alma.acs.exceptions.AcsJException;
 
 /**
@@ -57,7 +58,7 @@ public class ArchiveConsumer extends Consumer {
 	 * @throws AcsJException
 	 *            Thrown on any <I>really bad</I> error conditions encountered.
 	 */
-	public ArchiveConsumer(ContainerServices services, Object receiver) throws AcsJException {
+	public ArchiveConsumer(ContainerServicesBase services, Object receiver) throws AcsJException {
 		// call the super.
 		super(alma.acscommon.ARCHIVING_CHANNEL_NAME.value, services);
 

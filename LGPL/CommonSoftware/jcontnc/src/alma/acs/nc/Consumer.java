@@ -46,6 +46,7 @@ import org.omg.CosNotifyFilter.FilterFactory;
 import alma.ACSErrTypeJavaNative.wrappers.AcsJJavaAnyEx;
 import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
 import alma.acs.container.ContainerServices;
+import alma.acs.container.ContainerServicesBase;
 import alma.acs.exceptions.AcsJException;
 import alma.acs.util.StopWatch;
 import alma.acsnc.EventDescription;
@@ -97,7 +98,7 @@ public class Consumer extends OSPushConsumerPOA {
 	 * @throws AcsJException
 	 *            Thrown on any <I>really bad</I> error conditions encountered.
 	 */
-	public Consumer(String channelName, ContainerServices services) throws AcsJException {
+	public Consumer(String channelName, ContainerServicesBase services) throws AcsJException {
 		m_channelName = channelName;
 
 		profiler = new StopWatch();

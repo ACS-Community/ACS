@@ -28,7 +28,8 @@
 package alma.acs.nc;
 
 import java.lang.reflect.Method;
-import alma.acs.container.ContainerServices;
+
+import alma.acs.container.ContainerServicesBase;
 import alma.acs.exceptions.AcsJException;
 import alma.acsnc.EventDescription;
 import alma.acsnc.EventDescriptionHelper;
@@ -46,7 +47,7 @@ public class ExecutiveConsumer extends alma.acs.nc.Consumer
     * @param services ContainerServices which provide access to the ACS logger among other things.
     * @throws AcsJException Thrown from superclass.
     */
-   public ExecutiveConsumer(String channelName, ContainerServices services) throws AcsJException
+   public ExecutiveConsumer(String channelName, ContainerServicesBase services) throws AcsJException
    {
       super(channelName, services);
       addSubscription(null);

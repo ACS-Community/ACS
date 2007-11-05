@@ -26,7 +26,7 @@ import java.util.HashMap;
 import com.cosylab.CDB.DAO;
 
 import alma.acs.component.client.ComponentClient;
-import alma.acs.container.ContainerServices;
+import alma.acs.container.ContainerServicesBase;
 
 /**
  * ChannelInfo is intended to provide various tidbits on information on CORBA
@@ -42,23 +42,23 @@ public class ChannelInfo {
     * 
     * @param args
     */
-   static public void main(String[] args) {
-      try {
-         // get a client to get at the CS
-         ComponentClient client = new ComponentClient(null, System
-               .getProperty("ACS.manager"), "ChannelInfoTestClient");
-         // create a channel info
-         ChannelInfo joe = new ChannelInfo(client.getContainerServices());
-         String[] cNames = { "cdb_channel", "blarIL", "no_channel" };
-         for (int i = 0; i < cNames.length; i++) {
-            System.out.println("Channel:" + cNames[i] + ", HashMap:"
-                  + joe.getEventHandlerTimeoutMap(cNames[i]));
-         }
-      }
-      catch (Exception e) {
-         e.printStackTrace();
-      }
-   }
+//   static public void main(String[] args) {
+//      try {
+//         // get a client to get at the CS
+//         ComponentClient client = new ComponentClient(null, System
+//               .getProperty("ACS.manager"), "ChannelInfoTestClient");
+//         // create a channel info
+//         ChannelInfo joe = new ChannelInfo(client.getContainerServices());
+//         String[] cNames = { "cdb_channel", "blarIL", "no_channel" };
+//         for (int i = 0; i < cNames.length; i++) {
+//            System.out.println("Channel:" + cNames[i] + ", HashMap:"
+//                  + joe.getEventHandlerTimeoutMap(cNames[i]));
+//         }
+//      }
+//      catch (Exception e) {
+//         e.printStackTrace();
+//      }
+//   }
 
    /**
     * standard logger
@@ -68,7 +68,7 @@ public class ChannelInfo {
    /** our own private copy of the container services. used
     * to access the ACS CDB among other things
     */
-   private ContainerServices m_services = null;
+   private ContainerServicesBase m_services = null;
 
    /**
     * Constructor.
@@ -76,7 +76,7 @@ public class ChannelInfo {
     * @param services
     *           A component or client's container services.
     */
-   public ChannelInfo(ContainerServices services) {
+   public ChannelInfo(ContainerServicesBase services) {
       m_services = services;
       // immediately grab a logger
       m_logger = m_services.getLogger();

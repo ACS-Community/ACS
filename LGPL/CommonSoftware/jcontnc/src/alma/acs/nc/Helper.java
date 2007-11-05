@@ -41,6 +41,7 @@ import org.omg.CosNotifyChannelAdmin.EventChannelHelper;
 import alma.ACSErrTypeCommon.wrappers.AcsJBadParameterEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJUnexpectedExceptionEx;
 import alma.acs.container.ContainerServices;
+import alma.acs.container.ContainerServicesBase;
 import alma.acs.exceptions.AcsJException;
 
 /**
@@ -53,7 +54,7 @@ public class Helper {
 	 * @param services A reference to the ContainerServices
 	 * @throws AcsJException Generic ACS exception will be thrown if anything in this class is broken.
 	 */
-	public Helper(ContainerServices services) throws AcsJException {
+	public Helper(ContainerServicesBase services) throws AcsJException {
 		if (services == null) {
 			// make sure this code is being run within a container or client
 			String reason = "Null reference obtained for the ContainerServices!";
@@ -81,7 +82,7 @@ public class Helper {
 	 * 
 	 * @return A valid reference to the ContainerServices instance.
 	 */
-	public ContainerServices getContainerServices() {
+	public ContainerServicesBase getContainerServices() {
 		return m_services;
 	}
 
@@ -292,7 +293,7 @@ public class Helper {
 	private static final String m_nameJavaProp = "ORBInitRef.NameService";
 
 	// / Access to the component's name along with the logging service.
-	private final ContainerServices m_services;
+	private final ContainerServicesBase m_services;
 
 	// / Our own personal logger
 	private final Logger m_logger;

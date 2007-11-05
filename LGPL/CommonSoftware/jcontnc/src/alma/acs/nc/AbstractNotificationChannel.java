@@ -28,7 +28,7 @@
 package alma.acs.nc;
 
 import java.lang.reflect.*;
-import alma.acs.container.ContainerServices;
+import alma.acs.container.ContainerServicesBase;
 /**
  * The AbstractNotificationChannel class forms the base class
  * from which Local and CORBA Notification Channel classes are
@@ -55,7 +55,7 @@ public abstract class AbstractNotificationChannel implements NotificationChannel
 	 * @param cs container services
 	 * @return notification channel
 	 */
-	static public AbstractNotificationChannel createNotificationChannel(int type,String channelName, ContainerServices cs) {
+	static public AbstractNotificationChannel createNotificationChannel(int type,String channelName, ContainerServicesBase cs) {
 		switch (type) {
 			case LOCAL: return new LocalNotificationChannel(channelName);
 			case CORBA: return new CorbaNotificationChannel(channelName,cs);
@@ -71,7 +71,7 @@ public abstract class AbstractNotificationChannel implements NotificationChannel
 	 * @param cs 
 	 * @return The reciever interface.
 	 */
-	static public Receiver getReceiver(int type, String channelName, ContainerServices cs) {
+	static public Receiver getReceiver(int type, String channelName, ContainerServicesBase cs) {
 		switch (type) {
 			case LOCAL: return LocalNotificationChannel.getLocalReceiver(channelName);
 			case CORBA: return CorbaNotificationChannel.getCorbaReceiver(channelName,cs);
@@ -95,7 +95,7 @@ public abstract class AbstractNotificationChannel implements NotificationChannel
 	 * @param inChannelName	The name of this channel.
 	 * @param cs	container services
 	 */
-	protected AbstractNotificationChannel (String inChannelName, ContainerServices cs) {
+	protected AbstractNotificationChannel (String inChannelName, ContainerServicesBase cs) {
 		// Make sure the argument is legal.
 		if (inChannelName == null || inChannelName.length() == 0)
 			throw new IllegalArgumentException("channelName cannot be null");

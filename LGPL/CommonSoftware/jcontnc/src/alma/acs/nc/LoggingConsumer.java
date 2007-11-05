@@ -19,7 +19,7 @@ package alma.acs.nc;
 
 /**
  * @author dfugate
- * @version $Id: LoggingConsumer.java,v 1.4 2007/10/17 16:03:29 hsommer Exp $
+ * @version $Id: LoggingConsumer.java,v 1.5 2007/11/05 20:20:56 hsommer Exp $
  * @since
  */
 
@@ -27,7 +27,7 @@ import java.lang.reflect.Method;
 
 import org.omg.CosNotification.StructuredEvent;
 
-import alma.acs.container.ContainerServices;
+import alma.acs.container.ContainerServicesBase;
 import alma.acs.exceptions.AcsJException;
 
 /**
@@ -55,7 +55,7 @@ public class LoggingConsumer extends Consumer {
     * @throws AcsJException
     *            Thrown on any <I>really bad</I> error conditions encountered.
     */
-   public LoggingConsumer(ContainerServices services, Object receiver)
+   public LoggingConsumer(ContainerServicesBase services, Object receiver)
          throws AcsJException {
       // call the super.
       super(alma.acscommon.LOGGING_CHANNEL_NAME.value, services);

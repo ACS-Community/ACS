@@ -51,7 +51,7 @@ import alma.ACSErrTypeCommon.wrappers.AcsJBadParameterEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJCORBAProblemEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJUnexpectedExceptionEx;
 import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
-import alma.acs.container.ContainerServices;
+import alma.acs.container.ContainerServicesBase;
 import alma.acs.exceptions.AcsJException;
 import alma.acsnc.EventDescription;
 import alma.acsnc.EventDescriptionHelper;
@@ -93,7 +93,7 @@ public class SimpleSupplier extends OSPushSupplierPOA
 	 *            converted into an ACS Error System exception for the
 	 *            developer's convenience.
 	 */
-	public SimpleSupplier(String cName, ContainerServices services) throws AcsJException 
+	public SimpleSupplier(String cName, ContainerServicesBase services) throws AcsJException 
 	{
 		// sanity check
 		if (cName == null) {
@@ -448,7 +448,7 @@ public class SimpleSupplier extends OSPushSupplierPOA
 	protected final Logger m_logger;
 
 	/** To access the ORB among other things*/
-	protected final ContainerServices m_services;
+	protected final ContainerServicesBase m_services;
 
 	/** Helper class used to manipulate CORBA anys */
 	protected final AnyAide m_anyAide;

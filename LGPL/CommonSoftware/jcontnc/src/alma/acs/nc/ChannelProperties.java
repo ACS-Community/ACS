@@ -18,7 +18,7 @@
 
 /**
  * @author dfugate
- * @version $Id: ChannelProperties.java,v 1.9 2007/10/17 16:04:29 hsommer Exp $
+ * @version $Id: ChannelProperties.java,v 1.10 2007/11/05 20:20:56 hsommer Exp $
  * @since
  */
 
@@ -60,6 +60,7 @@ import com.cosylab.CDB.DAO;
 
 import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
 import alma.acs.container.ContainerServices;
+import alma.acs.container.ContainerServicesBase;
 import alma.acs.exceptions.AcsJException;
 import alma.cdbErrType.CDBFieldDoesNotExistEx;
 import alma.cdbErrType.WrongCDBDataTypeEx;
@@ -80,7 +81,7 @@ public class ChannelProperties {
 	 *           A reference to the ContainerServices. Used to retrieve other
 	 *           CORBA references and to access the logger.
 	 */
-	public ChannelProperties(ContainerServices services) {
+	public ChannelProperties(ContainerServicesBase services) {
 		// save a local reference to the container services
 		m_services = services;
 
@@ -477,7 +478,7 @@ public class ChannelProperties {
 	/**
 	 * Access to the component's name along with the logging service.
 	 */
-	private final ContainerServices m_services;
+	private final ContainerServicesBase m_services;
 
 	/**
 	 * Standard logger

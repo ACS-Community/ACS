@@ -29,7 +29,7 @@ package alma.acs.nc;
 
 import org.omg.CORBA.portable.IDLEntity;
 
-import alma.acs.container.ContainerServices;
+import alma.acs.container.ContainerServicesBase;
 import alma.acs.exceptions.AcsJException;
 
 /**
@@ -49,7 +49,7 @@ public class CorbaPublisher extends alma.acs.nc.SimpleSupplier {
 	 * @param cs container services
     * @throws AcsJException 
 	 */
-	public CorbaPublisher (String channelName, ContainerServices cs) 
+	public CorbaPublisher (String channelName, ContainerServicesBase cs) 
       throws AcsJException {
 
 		super (channelName, cs);

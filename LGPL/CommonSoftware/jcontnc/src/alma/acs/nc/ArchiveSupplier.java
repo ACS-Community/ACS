@@ -22,7 +22,7 @@ package alma.acs.nc;
 import org.omg.CosNotification.Property;
 import org.omg.CosNotification.StructuredEvent;
 
-import alma.acs.container.ContainerServices;
+import alma.acs.container.ContainerServicesBase;
 import alma.acs.exceptions.AcsJException;
 import alma.acs.util.UTCUtility;
 import alma.acsnc.EventDescription;
@@ -32,7 +32,7 @@ import alma.acsnc.EventDescriptionHelper;
  * Used to supply (BACI property) events to the archiving notification channel.
  * 
  * @author dfugate
- * @version $Id: ArchiveSupplier.java,v 1.8 2007/01/04 12:28:24 hsommer Exp $
+ * @version $Id: ArchiveSupplier.java,v 1.9 2007/11/05 20:20:56 hsommer Exp $
  */
 public class ArchiveSupplier extends SimpleSupplier {
 	/**
@@ -47,7 +47,7 @@ public class ArchiveSupplier extends SimpleSupplier {
 	 *            converted into an ACS Error System exception for the
 	 *            developer's convenience.
 	 */
-	public ArchiveSupplier(ContainerServices services) throws AcsJException {
+	public ArchiveSupplier(ContainerServicesBase services) throws AcsJException {
 		super(alma.acscommon.ARCHIVING_CHANNEL_NAME.value, services);
 	}
 

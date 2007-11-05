@@ -38,7 +38,7 @@ import alma.ACS.stringSeqHelper;
 import alma.ACSErrTypeCommon.wrappers.AcsJBadParameterEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJUnexpectedExceptionEx;
 import alma.ACSErrTypeJavaNative.wrappers.AcsJJavaAnyEx;
-import alma.acs.container.ContainerServices;
+import alma.acs.container.ContainerServicesBase;
 import alma.acs.exceptions.AcsJException;
 
 /**
@@ -53,7 +53,7 @@ import alma.acs.exceptions.AcsJException;
 class AnyAide {
 
 	/** reference to the container services */
-	private final ContainerServices m_containerServices;
+	private final ContainerServicesBase m_containerServices;
 
 	/** our own logger */
 	private final Logger m_logger;
@@ -64,7 +64,7 @@ class AnyAide {
 	 * @param cs
 	 *           Container services reference of the component.
 	 */
-	public AnyAide(ContainerServices cs) {
+	public AnyAide(ContainerServicesBase cs) {
 		// save a local reference
 		m_containerServices = cs;
 

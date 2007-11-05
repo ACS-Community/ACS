@@ -28,6 +28,7 @@
 package alma.acs.nc;
 
 import alma.acs.container.ContainerServices;
+import alma.acs.container.ContainerServicesBase;
 import alma.acs.exceptions.AcsJException;
 
 import java.lang.reflect.*;
@@ -72,7 +73,7 @@ public class CorbaReceiver extends alma.acs.nc.Consumer implements Receiver {
 	 * @param cs container services
     * @throws AcsJException
 	 */
-	CorbaReceiver (String channelName, ContainerServices cs) throws AcsJException{
+	CorbaReceiver (String channelName, ContainerServicesBase cs) throws AcsJException{
 		super (channelName, cs);
 		receivers = new ArrayList ();
 		isBegin = false;

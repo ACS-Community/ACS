@@ -28,6 +28,7 @@ package alma.acs.nc;
 
 import alma.acs.exceptions.AcsJException;
 import alma.acs.container.ContainerServices;
+import alma.acs.container.ContainerServicesBase;
 
 import org.omg.CORBA.portable.IDLEntity;
 
@@ -49,7 +50,7 @@ public class CorbaNotificationChannel extends AbstractNotificationChannel {
 	 * @return A Receiver interface to the specified channel or 
 	 * 			null if the channel does not exist.
 	 */
-	static public Receiver getCorbaReceiver(String channelName, ContainerServices cs) {
+	static public Receiver getCorbaReceiver(String channelName, ContainerServicesBase cs) {
         try { 
     		CorbaReceiver r = new CorbaReceiver(channelName, cs);
 	    	return r;
@@ -82,7 +83,7 @@ public class CorbaNotificationChannel extends AbstractNotificationChannel {
 	 * @param inChannelName	The name of this channel.
 	 * @param cs container services
 	 */
-	public CorbaNotificationChannel (String inChannelName, ContainerServices cs) {
+	public CorbaNotificationChannel (String inChannelName, ContainerServicesBase cs) {
 		super(inChannelName, cs);
         try {
     		corbaPublisher = new CorbaPublisher(inChannelName, cs);
@@ -98,7 +99,7 @@ public class CorbaNotificationChannel extends AbstractNotificationChannel {
 	 * @param inCorbaPublisher	The CORBA publisher object.
 	 * @param cs Container services reference
 	 */
-	public CorbaNotificationChannel (CorbaPublisher inCorbaPublisher, ContainerServices cs) {
+	public CorbaNotificationChannel (CorbaPublisher inCorbaPublisher, ContainerServicesBase cs) {
     		super(inCorbaPublisher.getChannelName(), cs);
 	    	this.corbaPublisher = inCorbaPublisher;
         try {
