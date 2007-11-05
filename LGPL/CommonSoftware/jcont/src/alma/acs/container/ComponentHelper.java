@@ -392,7 +392,7 @@ public abstract class ComponentHelper
      * @since ACS 7.0 when JacORB logs get sent to the Log service by default.  
      * @return
      */
-    boolean requiresOrbCentralLogSuppression() {
+    protected boolean requiresOrbCentralLogSuppression() {
     	return false;
     }
 }
