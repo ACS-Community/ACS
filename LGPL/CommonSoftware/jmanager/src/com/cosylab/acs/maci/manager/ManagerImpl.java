@@ -85,6 +85,7 @@ import com.cosylab.acs.maci.SynchronousAdministrator;
 import com.cosylab.acs.maci.Transport;
 import com.cosylab.acs.maci.ContainerInfo.ImplementationLanguage;
 import com.cosylab.acs.maci.loadbalancing.LoadBalancingStrategy;
+import com.cosylab.acs.maci.manager.app.ManagerContainerServices;
 import com.cosylab.acs.maci.manager.recovery.AdministratorCommandAllocate;
 import com.cosylab.acs.maci.manager.recovery.AdministratorCommandDeallocate;
 import com.cosylab.acs.maci.manager.recovery.AdministratorCommandSet;
@@ -778,7 +779,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	 * @param	prevayler			implementation of prevayler system
 	 * @param	context				remote directory implementation
 	 */
-	public void initialize(Prevayler prevayler, CDBAccess cdbAccess, Context context, Logger logger)
+	public void initialize(Prevayler prevayler, CDBAccess cdbAccess, Context context, Logger logger, ManagerContainerServices managerContainerServices)
 	{
 		this.prevayler = prevayler;
 		this.remoteDirectory = context;

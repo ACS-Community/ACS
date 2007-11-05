@@ -19,11 +19,10 @@ import org.omg.PortableServer.POA;
 import org.prevayler.implementation.SnapshotPrevayler;
 
 import si.ijs.maci.ManagerHelper;
+import alma.acs.container.corba.AcsCorba;
 import alma.acs.logging.ClientLogManager;
 import alma.acs.logging.config.LogConfig;
 import alma.acs.logging.config.LogConfigException;
-
-import com.cosylab.cdb.client.CDBAccess;
 
 import com.cosylab.acs.maci.CoreException;
 import com.cosylab.acs.maci.HandleConstants;
@@ -34,6 +33,7 @@ import com.cosylab.acs.maci.plug.CORBATransport;
 import com.cosylab.acs.maci.plug.DefaultCORBAService;
 import com.cosylab.acs.maci.plug.ManagerProxyImpl;
 import com.cosylab.acs.maci.plug.NamingServiceRemoteDirectory;
+import com.cosylab.cdb.client.CDBAccess;
 import com.cosylab.util.FileHelper;
 
 /**
@@ -271,7 +271,10 @@ public class ManagerEngine
 			logger.log(Level.FINE, "Failed to configure logging (default values will be used). Reason: " + ex.getMessage());
 		}
 	    
-		manager.initialize(prevayler, cdbAccess, context, logger);
+		// initialize manager "mock" container servies
+		ManagerContainerServices managerContainerServices = new ManagerContainerServices(orb, cdbAccess.getDAL(), logger);
+		
+		manager.initialize(prevayler, cdbAccess, context, logger, managerContainerServices);
 		manager.setShutdownImplementation(shutdownImplementation);
 		
 		FileHelper.setFileAttributes( "g+w", recoveryLocation );
