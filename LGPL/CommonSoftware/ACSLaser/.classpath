@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="acs-jms/src"/>
+	<classpathentry kind="src" path="alarm-clients/src"/>
+	<classpathentry kind="src" path="managerTest/src"/>
+	<classpathentry kind="src" path="alarm-clients/test"/>
+	<classpathentry kind="src" path="managerTest/test"/>
 	<classpathentry kind="src" path="acs-jms/test"/>
 	<classpathentry kind="src" path="alarmPanel/src"/>
 	<classpathentry kind="src" path="cmw-mom/src"/>
