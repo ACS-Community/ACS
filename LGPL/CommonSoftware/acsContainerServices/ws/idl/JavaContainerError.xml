@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!-- 
+	ACS error system definitions for Java container exceptions.
+	These exceptions should be used in the Cotainer's interface to its components, 
+	or in the internal container implementation classes.
+	For the container's interface toward the manager, see maciErrType definitions.
+	
+	@TODO: eventually consolidate the ContainerServices exceptions in the containers 
+	of the different programming languages, and move this file to a more central location.
+	
+	See http://almasw.hq.eso.org/almasw/bin/view/HLA/CompletionErrorTypes 
+-->
+
+<Type xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	  xmlns="Alma/ACSError" xsi:schemaLocation="Alma/ACSError ACSError.xsd" 
+	  name="JavaContainerError"
+	  type="6666"
+	  _prefix="alma">
+	  
+	<ErrorCode name="ContainerServices" 
+			shortDescription="Generic wrapper for underlying exception" 
+			description="The ContainerServices in the Java container use this type to wrap any other exceptions whose details are not likely to interest the calling component.">
+			<Member name="ContextInfo" type="string" description="Some text explaining what has happened."/>
+	</ErrorCode>
+
+	<ErrorCode name="JavaComponentHelper" 
+			shortDescription="Exception thrown by a Java component helper." 
+			description="Exception thrown by a Java component helper. Don't confuse this with a CORBA IDL generated helper.">
+			<Member name="ContextInfo" type="string" description="Some text explaining what has happened."/>
+	</ErrorCode>	
+	
+	<ErrorCode name="Container" 
+			shortDescription="Generic exception in the container implementation." 
+			description="Generic exception in the container implementation. Should not be directly visible outside.">
+			<Member name="ContextInfo" type="string" description="Some text explaining what has happened."/>
+	</ErrorCode>	
+	
+</Type>
+
+
