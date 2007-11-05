@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="ws/src"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acscomponent.jar"/>
+	<classpathentry kind="var" path="JACORB_HOME/lib/jacorb.jar" sourcepath="JACORB_HOME/src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="var" path="ACSROOT/lib/maci.jar"/>
+	<classpathentry kind="lib" path="ws/lib/JavaContainerError.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acserrj.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/maciErrType.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acsjlog.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/cdbDAL.jar"/>
+	<classpathentry kind="output" path="object/eclipseOut"/>
+</classpath>
