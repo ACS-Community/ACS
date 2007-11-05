@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.14 2007/09/21 09:26:17 acaproni Exp $"
+# "@(#) $Id: Makefile,v 1.15 2007/11/05 14:11:24 acaproni Exp $"
 #
 #
 
@@ -18,15 +18,17 @@ MODULES = laser-extlib \
 	  laser-util \
 	  laser-source \
 	  gp-openide \
-          gp \
-          laser-core \
-          laser-client \
-          laser-definition \
-          laser-console \
-          laser-guiplatform \
-          NetbeansACS \
+      gp \
+      laser-core \
+      laser-client \
+      laser-definition \
+      laser-console \
+      laser-guiplatform \
+      NetbeansACS \
+      alarm-clients \
 	  alarmPanel \
-          demo 
+      demo \
+      managerTest 
 
 ifeq ($(os) $(VXWORKS_RTOS),Linux NO)
     MAKE_FLAGS = "NOCCS=1"
