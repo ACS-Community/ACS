@@ -644,6 +644,8 @@ public class Executor {
 			daemon = ServicesDaemonHelper.narrow(object);
 			if (daemon == null)
 				throw new NullPointerException("received null trying to retrieve acsdaemon on "+host);
+			if (daemon._non_existent()) // this may be superfluous with daemons but shouldn't hurt either
+				throw new RuntimeException("acsdaemon not existing on "+host);
 		} catch (RuntimeException exc) {
 			remoteServicesDaemonFlow.failure(exc);
 			return;
@@ -729,6 +731,8 @@ public class Executor {
 			daemon = ContainerDaemonHelper.narrow(object);
 			if (daemon == null)
 				throw new NullPointerException("received null trying to retrieve acsdaemon on "+host);
+			if (daemon._non_existent()) // this may be superfluous with daemons but shouldn't hurt either
+				throw new RuntimeException("acsdaemon not existing on "+host);
 		} catch (RuntimeException exc) {
 			remoteContainerDaemonFlow.failure(exc);
 			return;
