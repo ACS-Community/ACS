@@ -182,7 +182,7 @@ public class ComponentClient
 			
 			//	init the alarm system
 			try {
-				ACSAlarmSystemInterfaceFactory.init(m_logger, m_containerServices.getCDB());
+				ACSAlarmSystemInterfaceFactory.init(m_containerServices);
 			} catch (Throwable thr) {
 				throw new Exception("Error initializing the alarm system factory", thr);
 			}

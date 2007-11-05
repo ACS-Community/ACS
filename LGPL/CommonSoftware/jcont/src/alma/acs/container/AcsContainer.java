@@ -30,6 +30,7 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.RejectedExecutionException;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
@@ -199,7 +200,15 @@ public class AcsContainer extends ContainerPOA
 
 		// init the alarm system
 		try {
-			ACSAlarmSystemInterfaceFactory.init(m_logger, getCDB());
+			// TODO: clean up the construction of CS which is ad-hoc implemented before ACS 7.0
+			// in order to allow CERN alarm libs to get their static field for ContainerServices set.
+			String name = "Alarm system container services";
+			ThreadFactory threadFactory = new CleaningDaemonThreadFactory(name, m_logger);
+	        ContainerServicesImpl cs = new ContainerServicesImpl(m_managerProxy, m_acsCorba.getRootPOA(), 
+	        		m_acsCorba, m_logger, m_managerProxy.getManagerHandle(), 
+	        		name, null, threadFactory);
+			
+			ACSAlarmSystemInterfaceFactory.init(cs);
 		} catch (Throwable thr) {
 			AcsJContainerEx ex = new AcsJContainerEx(thr);
 			ex.setContextInfo("Error initializing the alarm system factory");
