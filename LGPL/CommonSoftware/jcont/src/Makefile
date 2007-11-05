@@ -32,7 +32,7 @@
 DEBUG = on
 
 # error definitions to generate ACS-style exceptions from
-ACSERRDEF = JavaContainerError
+ACSERRDEF = 
 
 # 
 # IDL Files and flags
