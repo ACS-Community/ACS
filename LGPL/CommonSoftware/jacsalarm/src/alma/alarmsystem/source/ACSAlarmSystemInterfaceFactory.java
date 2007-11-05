@@ -1,35 +1,30 @@
 package alma.alarmsystem.source;
 
-import com.cosylab.CDB.DAL;
-
+import java.io.StringReader;
 import java.lang.reflect.Constructor;
+import java.util.logging.Logger;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 
 import org.w3c.dom.Document;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.Node;
 import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
 
+import com.cosylab.CDB.DAL;
+
+import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
+import alma.acs.container.ContainerServicesBase;
 import alma.acs.logging.AcsLogLevel;
-import alma.acsErrTypeAlarmSourceFactory.acsErrTypeAlarmSourceFactoryEx;
 import alma.acsErrTypeAlarmSourceFactory.ACSASFactoryNotInitedEx;
 import alma.acsErrTypeAlarmSourceFactory.ErrorGettingDALEx;
-import alma.acsErrTypeAlarmSourceFactory.SourceCreationErrorEx;
 import alma.acsErrTypeAlarmSourceFactory.FaultStateCreationErrorEx;
+import alma.acsErrTypeAlarmSourceFactory.SourceCreationErrorEx;
 import alma.acsErrTypeAlarmSourceFactory.wrappers.AcsJACSASFactoryNotInitedEx;
-import alma.acsErrTypeAlarmSourceFactory.wrappers.AcsJInavalidManagerEx;
-import alma.acsErrTypeAlarmSourceFactory.wrappers.AcsJErrorGettingDALEx;
-import alma.acsErrTypeAlarmSourceFactory.wrappers.AcsJSourceCreationErrorEx;
 import alma.acsErrTypeAlarmSourceFactory.wrappers.AcsJFaultStateCreationErrorEx;
-
-import java.util.logging.Logger;
-
-import java.io.StringReader;
+import alma.acsErrTypeAlarmSourceFactory.wrappers.AcsJSourceCreationErrorEx;
 
 /**
  * ACSAlarmSystemInterfaceFactory extends the CERN AlarmSystemInterfaceFactory
@@ -63,8 +58,11 @@ public class ACSAlarmSystemInterfaceFactory {
 	 * 
 	 * @param logger The logger
 	 * @param dal The DAL to init the AS with CERN or ACS implementation
+	 * @throws AcsJContainerServicesEx 
 	 */
-	public static void init(Logger logger, DAL dal) throws ErrorGettingDALEx {
+	public static void init(ContainerServicesBase containerServices) throws AcsJContainerServicesEx {
+		logger = containerServices.getLogger();
+		DAL dal = containerServices.getCDB();
 		if (logger==null) {
 			throw new IllegalArgumentException("Invalid null logger");
 		}
@@ -193,6 +191,12 @@ public class ACSAlarmSystemInterfaceFactory {
 				  Class cl =loader.loadClass("alma.acs.alarmsystem.binding.ACSLaserSource");
 				  Class[] classes = {String.class , Logger.class };
 				  Constructor constructor = cl.getConstructor(classes);
+
+				  // TODO: take ContainerServicesBase object received in the init method, 
+				  // and set it on ACSJMSTopicConnectionImpl.containerServices
+				  // Of course in after the ACS 7.0 release rush, this static field communication 
+				  // must be replaced with with real calls, or at least the absence of such an object must be detected early.
+				  
 				  return (ACSAlarmSystemInterface)constructor.newInstance(sourceName,logger);
 			  } catch (Exception e) {
 				  System.out.println("ERROR: "+e.getMessage());
