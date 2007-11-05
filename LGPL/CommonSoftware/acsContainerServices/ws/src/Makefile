@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.7 2007/10/24 22:35:44 agrimstrup Exp $"
+# "@(#) $Id: Makefile,v 1.8 2007/11/05 20:08:25 hsommer Exp $"
 #
 # Makefile of ........
 #
@@ -60,7 +60,7 @@ INCLUDES        = acsComponentListener.h acsContainerServices.h acsContainerServ
 LIBRARIES       = acsComponentListener acsContainerServices 
 LIBRARIES_L     = 
 
-ACSERRDEF = acsErrTypeContainerServices acsErrTypeLifeCycle
+ACSERRDEF = acsErrTypeContainerServices acsErrTypeLifeCycle JavaContainerError
 
 #
 # <brief description of lllll library>
@@ -124,12 +124,12 @@ USER_IDL =
 #
 # Jarfiles and their directories
 #
-JARFILES= 
-jjj_DIRS=
-jjj_EXTRAS= 
+JARFILES=acsContainerServices 
+acsContainerServices_DIRS=alma
+
 #
 # java sources in Jarfile on/off
-DEBUG= 
+DEBUG=on 
 #
 # ACS XmlIdl generation on/off
 #
