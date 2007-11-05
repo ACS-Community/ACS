@@ -19,7 +19,7 @@
 
 /** 
  * @author  acaproni   
- * @version $Id: AlarmPanel.java,v 1.2 2007/09/28 12:56:46 acaproni Exp $
+ * @version $Id: AlarmPanel.java,v 1.3 2007/11/05 14:10:24 acaproni Exp $
  * @since    
  */
 
@@ -36,6 +36,8 @@ import alma.alarmsystem.Category;
 import alma.acs.container.ContainerServices;
 import alma.acs.logging.AcsLogLevel;
 import alma.alarmsystem.AlarmService;
+import alma.alarmsystem.clients.CategoryClient;
+import alma.alarmsystem.clients.category.CategoryListener;
 
 import java.awt.BorderLayout;
 
@@ -55,27 +57,11 @@ public class AlarmPanel extends JScrollPane implements IPanel {
 	private AlarmTableModel model = new AlarmTableModel();
 	private AlarmTable alarmTable = new AlarmTable(model);
 	
-	// The name of the AlarmSrvice component
-	private String alarmName;
-	
-	// The alarm service component and its IDL
-	private final String alarmServiceIDL = "*/AlarmService:*";
-	private AlarmService alarm;
-	
-	// The category root topic
-	private String categoryRootTopic;
-	
 	// The window that shows this panel
     private JFrame frame=null;
     
-	/**
-	 * The categories 
-	 * Each category is a notifcation channel we have to listen to.
-	 * The list of the categories is read from the AlarmServise componet
-	 */
-	private Category[] categories;
-	
-	private CategorySubscriber[] consumers;
+    // The client to listen alarms from categories
+    private CategoryClient categoryClient=null;
 	
 	/**
 	 * Constructor 
@@ -132,38 +118,16 @@ public class AlarmPanel extends JScrollPane implements IPanel {
 		if (contSvc==null) {
 			throw new Exception("PluginContainerServices not set");
 		}
-		// Get the AlarmService
-		try {
-			getAlarmServiceComponent();
-		} catch (Exception e) {
-			releaseAlarmServiceComponent();
-			contSvc.getLogger().log(AcsLogLevel.ERROR,"Error getting the AlarmSystem component: "+e.getMessage());
-			throw new Exception("Error getting the AlarmSystem component: "+e.getMessage(),e);
-		}
-		if (alarmName==null || alarm==null) {
-			contSvc.getLogger().log(AcsLogLevel.ERROR,"Unknown error getting the AlarmService");
-			throw new Exception("Unknown error getting the AlarmService");
-		}
-		// Read the available categories
-		try {
-			categories=getCategories();
-		} catch (Exception e) {
-			releaseAlarmServiceComponent();
-			contSvc.getLogger().log(AcsLogLevel.ERROR,"Error getting the categories from AlarmService");
-			throw new Exception("Error getting the categories from AlarmService",e);
-		}
-		dumpCategories();
-		if (categories==null || categories.length==0) {
-			contSvc.getLogger().log(AcsLogLevel.INFO,"No categories to subscribe to");
-		}
-		createConsumers();
+		categoryClient = new CategoryClient(contSvc);
+		categoryClient.addAlarmListener(model);
+		categoryClient.connect();
 	}
 	
 	/**
 	 * @see SubsystemPlugin
 	 */
 	public void stop() throws Exception {
-		releaseAlarmServiceComponent();
+		categoryClient.removeListener(model);
 	}
 	
 	/**
@@ -180,94 +144,7 @@ public class AlarmPanel extends JScrollPane implements IPanel {
 		return restricted;
 	}
 	
-	/**
-	 * Connect the AlarmSrevice component
-	 */
-	private void getAlarmServiceComponent() throws Exception {
-		String[] names  = contSvc.findComponents("*",alarmServiceIDL);
-		if (names==null || names.length==0) {
-			// Nothing has been found
-			throw new Exception("No available alarm component");
-		}
-		if (names.length>1) {
-			contSvc.getLogger().log(AcsLogLevel.WARNING,"More then one AlarmService component found");
-			
-		}
-		contSvc.getLogger().log(AcsLogLevel.INFO,"Getting "+names[0]);
-		// Get a reference to the first component
-		alarm=AlarmServiceHelper.narrow(contSvc.getComponent(names[0]));
-		alarmName=names[0];
-		contSvc.getLogger().log(AcsLogLevel.INFO,names[0]+" connected");
-	}
 	
-	/**
-	 * Release the alarm component
-	 *
-	 */
-	private void releaseAlarmServiceComponent() {
-		try {
-			if (alarmName!=null) {
-				contSvc.getLogger().log(AcsLogLevel.INFO,"Releasing "+alarmName);
-				contSvc.releaseComponent(alarmName);
-				contSvc.getLogger().log(AcsLogLevel.INFO,alarmName+" released");
-			}
-		} catch (Throwable t) {
-			System.err.println("Error releasing the AlarmService: "+t.getMessage());
-		}
-		alarmName=null;
-		alarm=null;
-		categories=null;
-	}
-	
-	/**
-	 * Read the categories and the category root topic from the component
-	 * 
-	 * @return The categories
-	 */
-	private Category[] getCategories() throws Exception {
-		if (alarm==null) {
-			throw new IllegalStateException("No alarm component connected");
-		}
-		categoryRootTopic=alarm.getCategoryRootTopic();
-		return alarm.getCategories();
-	}
-	
-	/**
-	 * Create the consumers for the categories
-	 *
-	 */
-	private void createConsumers() {
-		if (categories==null ||categories.length==0) {
-			contSvc.getLogger().log(AcsLogLevel.INFO,"No categories channels to connect to");
-		}
-		consumers=new CategorySubscriber[categories.length];
-		for (int t=0; t<categories.length; t++) {
-			try {
-				consumers[t]=new CategorySubscriber(contSvc,categoryRootTopic,categories[t].path,model);
-			} catch (Exception jmse) {
-				contSvc.getLogger().log(AcsLogLevel.ERROR,"Error subscribing to "+categoryRootTopic+"."+categories[t].path);
-			}
-		}
-	}
-	
-	/**
-	 * Dumps the category
-	 *
-	 */
-	private void dumpCategories() {
-		if (categories==null) {
-			System.out.println("Categories null");
-		}
-		if (categories.length==0) {
-			System.out.println("Categories empty");
-		}
-		System.out.println("Category root topic="+categoryRootTopic);
-		for (Category cat: categories) {
-			System.out.println("Category name="+cat.name);
-			System.out.println("\tpath="+cat.path);
-			System.out.println("\tdescription="+cat.description);
-		}
-	}
 	
 	/**
 	 * Set the ContainerServices

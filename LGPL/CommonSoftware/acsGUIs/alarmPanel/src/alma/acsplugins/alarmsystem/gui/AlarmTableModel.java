@@ -19,13 +19,16 @@
 
 /** 
  * @author  caproni   
- * @version $Id: AlarmTableModel.java,v 1.4 2007/09/28 12:58:42 acaproni Exp $
+ * @version $Id: AlarmTableModel.java,v 1.5 2007/11/05 14:10:24 acaproni Exp $
  * @since    
  */
 
 package alma.acsplugins.alarmsystem.gui;
 
 import javax.swing.table.AbstractTableModel;
+
+import alma.alarmsystem.clients.category.AlarmView;
+import alma.alarmsystem.clients.category.CategoryListener;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -36,7 +39,7 @@ import java.util.Vector;
  * The table model for the table alarms
  *
  */
-public class AlarmTableModel extends AbstractTableModel {
+public class AlarmTableModel extends AbstractTableModel implements CategoryListener {
 	
 		
 		
@@ -72,7 +75,7 @@ public class AlarmTableModel extends AbstractTableModel {
 	};
 	
 	// The alarms in the table
-	private Vector<AlarmTableView> items = new Vector<AlarmTableView>(); 
+	private Vector<AlarmView> items = new Vector<AlarmView>(); 
 
 	public int getRowCount() {
 		return items.size();
@@ -92,7 +95,7 @@ public class AlarmTableModel extends AbstractTableModel {
 	 * @return The string to display in the cell
 	 */
 	public String getCellContent(int rowIndex, int columnIndex) {
-		AlarmTableView alarm = items.get(rowIndex);
+		AlarmView alarm = items.get(rowIndex);
 		String ret="";
 		switch (columnIndex) {
 		case 0: {
@@ -131,7 +134,7 @@ public class AlarmTableModel extends AbstractTableModel {
 	 */
 	public Object getValueAt(int rowIndex, int columnIndex) {
 		String ret=getCellContent(rowIndex, columnIndex);
-		AlarmTableView alarm = items.get(rowIndex);
+		AlarmView alarm = items.get(rowIndex);
 		if (!alarm.active || alarm.priority==null || alarm.priority<0 || alarm.priority>3) {
 			return colors[4]+ret+endStr;
 		} else {
@@ -145,15 +148,7 @@ public class AlarmTableModel extends AbstractTableModel {
 	 * 
 	 * @param alarm The alarm to show in the table.
 	 */
-	public synchronized void addAlarm(String id, String pri, String timestamp, String desc, String cause, String act) {
-		AlarmTableView alarm=null;
-		try {
-			alarm = new AlarmTableView(id,pri,timestamp,desc,cause,act);
-		} catch (Exception e) {
-			System.err.println("Invalid alarm definition: "+id+", "+pri+", "+timestamp+", "+desc+", "+act);
-			System.err.println("Alarm discarded");
-			return;
-		}
+	public synchronized void alarmReceived(AlarmView alarm) {
 		if (items.size()>MAX_ALARMS && items.indexOf(alarm)>=0) {
 			items.remove(items.size()-1); // Remove the last one
 		}
