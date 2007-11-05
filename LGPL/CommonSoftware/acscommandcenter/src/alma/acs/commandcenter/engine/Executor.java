@@ -748,15 +748,19 @@ public class Executor {
 			return;
 		}
 
-		// sleep a little to give the user a feeling of "something is happening"
+		// i'm adding this possibility to sleep a little simply because 
+		// it gives the user a feeling of "something is happening".
+		// this can be reconfigured, however, if desired (omc will do so).
 		try {
-			Thread.sleep(2500);
+			Thread.sleep(remoteDaemonForContainersCompletionDelay);
 		} catch (InterruptedException exc) {}
 		
 		remoteContainerDaemonFlow.success(RemoteContainerDaemonFlow.SEND_COMMAND);
 
    }
 
+   static public int remoteDaemonForContainersCompletionDelay = 2500;
+   
    static class RemoteContainerDaemonFlow extends Flow {
    	static final String INIT_CORBA = "Assert corba connectivity";
    	static final String CONNECT_DAEMON = "Connect to acscontainerdaemon";
