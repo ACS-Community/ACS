@@ -3,6 +3,7 @@
  */
 package com.cosylab.acs.maci.manager.app;
 
+import java.awt.event.ComponentListener;
 import java.lang.reflect.Method;
 import java.util.concurrent.ThreadFactory;
 import java.util.logging.Level;
@@ -14,36 +15,34 @@ import org.omg.CORBA.Object;
 import org.omg.PortableServer.POA;
 import org.omg.PortableServer.Servant;
 
+import com.cosylab.CDB.DAL;
+
 import si.ijs.maci.AdministratorOperations;
 import si.ijs.maci.ComponentSpec;
+
 import alma.ACS.OffShoot;
 import alma.ACS.OffShootHelper;
 import alma.ACS.OffShootOperations;
 import alma.ACSErrTypeCommon.wrappers.AcsJBadParameterEx;
-import alma.acs.component.ComponentDescriptor;
-import alma.acs.component.ComponentQueryDescriptor;
-import alma.acs.component.ComponentStateManager;
+import alma.JavaContainerError.wrappers.AcsJContainerEx;
+import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
 import alma.acs.container.AdvancedContainerServices;
-import alma.acs.container.ContainerSealant;
-import alma.acs.container.ContainerServices;
-import alma.acs.container.corba.AcsCorba;
+import alma.acs.container.ContainerServicesBase;
 import alma.acs.logging.AcsLogger;
 import alma.acs.logging.ClientLogManager;
-
-import com.cosylab.CDB.DAL;
 
 /**
  * @author msekoranja
  */
-public class ManagerContainerServices implements ContainerServices,
+public class ManagerContainerServices implements ContainerServicesBase,
 		AdvancedContainerServices {
 
-	private ORB orb;
-	private AcsCorba acsCorba;
-	private DAL dal;
-	private Logger logger;
+	private final ORB orb;
+	private final DAL dal;
+	private final Logger logger;
     private AcsLogger componentLogger;
-	private POA clientPOA;
+	private final POA clientPOA;
+	private final POA offshootPoa;
 	
 	/**
 	 * @param orb
@@ -54,16 +53,12 @@ public class ManagerContainerServices implements ContainerServices,
 	{
 		this.orb = orb;
 		this.clientPOA = clientPOA;
+		this.offshootPoa = clientPOA; // @TODO: perhaps use child POA 
 		this.dal = dal;
 		this.logger = logger;
-
-		// AcsCorba is not completely initialized, but should work for offshots...
-		acsCorba = new AcsCorba(logger);
+		
 	}
 	
-	/* (non-Javadoc)
-	 * @see alma.acs.container.ContainerServices#activateOffShoot(org.omg.PortableServer.Servant)
-	 */
 	/**
 	 * @see alma.acs.container.ContainerServices#activateOffShoot(org.omg.PortableServer.Servant)
 	 */
@@ -71,44 +66,23 @@ public class ManagerContainerServices implements ContainerServices,
 		throws AcsJContainerServicesEx
 	{
 		checkOffShootServant(servant);
-		String servantName = servant.getClass().getName();
-		// check if the servant is the Tie variant, which allows proxy-based call interception by the container
-		boolean isTie = false;
-		if (servantName.endsWith("POATie")) {
-			try {
-				// the _delegate getter method is mandated by the IDL-to-Java mapping spec
-				Method implGetter = servant.getClass().getMethod("_delegate", (Class[]) null);
-				isTie = true;
-				Class operationsIF = implGetter.getReturnType();
-				java.lang.Object offshootImpl = implGetter.invoke(servant, (java.lang.Object[]) null);
-				// now we insert the interceptor between the tie skeleton and the impl.
-				// Offshoots have no name, so we construct one from the component name and the offshoot interface name
-				// 
-				String qualOffshootName = getName() + "/" + operationsIF.getName().substring(0, operationsIF.getName().length() - "Operations".length());
-				java.lang.Object interceptingOffshootImpl = ContainerSealant.createContainerSealant(
-						operationsIF, offshootImpl, qualOffshootName, true, logger, 
-// TODO @todo Heiko how to handle "methodsExcludedFromInvocationLogging" 
-						Thread.currentThread().getContextClassLoader(), /*methodsExcludedFromInvocationLogging*/ new Method[0]);
-				Method implSetter = servant.getClass().getMethod("_delegate", new Class[]{operationsIF});
-				implSetter.invoke(servant, new java.lang.Object[]{interceptingOffshootImpl});
-				logger.fine("created sealant for offshoot " + qualOffshootName);
-			} catch (NoSuchMethodException e) {
-				// so this was not a Tie skeleton, even though its name ends misleadingly with "POATie"
-			} catch (Exception e) {
-				logger.log(Level.WARNING, "Failed to create interceptor for offshoot " + servantName, e);
-			} 
-		}		
-
-		if (!isTie) {
-// TODO: perhaps require tie offshoots with ACS 5.0, and enable this warning log			
-//			logger.warning("Offshoot servant '" + servantName + "' from component '" + getName() + 
-//					"' does not follow the tie approach. Calls can thus not be intercepted by the container.");
-		}
 				
 		OffShoot shoot = null;
 		try  {
-			org.omg.CORBA.Object obj = acsCorba.activateOffShoot(servant, clientPOA);
-			shoot = OffShootHelper.narrow(obj);
+			if (servant == null) {
+				String msg = "activateOffShoot called with missing parameter.";
+				AcsJContainerEx ex = new AcsJContainerEx();
+				ex.setContextInfo(msg);
+				throw ex;
+			}
+			
+			org.omg.CORBA.Object actObj = null;
+			offshootPoa.activate_object(servant);
+			actObj = offshootPoa.servant_to_reference(servant);
+			actObj._hash(Integer.MAX_VALUE); // just to provoke an exc. if something is wrong with our new object
+			logger.finer("offshoot of type '" + servant.getClass().getName() + "' activated as a CORBA object.");
+			
+			shoot = OffShootHelper.narrow(actObj);
 		}
 		catch (Throwable thr) {
 			String msg = "failed to activate offshoot object of type '" + servant.getClass().getName() +
@@ -122,21 +96,34 @@ public class ManagerContainerServices implements ContainerServices,
 			AcsJContainerServicesEx ex = new AcsJContainerServicesEx(thr);
 			throw ex;
 		}	
-//		logger.fine("successfully activated offshoot of type " + cbServant.getClass().getName());
 		return shoot;
 	}
 
-	/* (non-Javadoc)
-	 * @see alma.acs.container.ContainerServices#deactivateOffShoot(org.omg.PortableServer.Servant)
-	 */
-	public void deactivateOffShoot(Servant cbServant)
+
+	
+	public void deactivateOffShoot(Servant servant)
 		throws AcsJContainerServicesEx
 	{
-		checkOffShootServant(cbServant);
+		checkOffShootServant(servant);
+		if (servant == null) {
+			String msg = "deactivateOffShoot called with missing parameter.";
+			AcsJContainerServicesEx ex = new AcsJContainerServicesEx();
+			ex.setContextInfo(msg);
+			throw ex;
+		}
+		
+		byte[] id = null;
 		try {
-			acsCorba.deactivateOffShoot(cbServant, clientPOA);
-		} catch (AcsJContainerEx e) {
-			throw new AcsJContainerServicesEx(e);
+			id = offshootPoa.servant_to_id(servant);
+			offshootPoa.deactivate_object(id);
+		}
+		catch (Throwable thr) {
+			String msg = "failed to deactivate offshoot of type '" + servant.getClass().getName() +
+							"' (ID=" + String.valueOf(id) + ")";
+			logger.log(Level.WARNING, msg, thr);
+			AcsJContainerServicesEx ex = new AcsJContainerServicesEx(thr);
+			ex.setContextInfo(msg);
+			throw ex;
 		}
 	}
 
@@ -161,96 +148,14 @@ public class ManagerContainerServices implements ContainerServices,
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see alma.acs.container.ContainerServices#findComponents(java.lang.String, java.lang.String)
-	 */
-	public String[] findComponents(String curlWildcard, String typeWildcard) {
-		throw new NO_IMPLEMENT();
-	}
-
-	/* (non-Javadoc)
-	 * @see alma.acs.container.ContainerServices#getAdvancedContainerServices()
-	 */
 	public AdvancedContainerServices getAdvancedContainerServices() {
 		return this;
 	}
 
-	/* (non-Javadoc)
-	 * @see alma.acs.container.ContainerServices#getCDB()
-	 */
 	public DAL getCDB() {
 		return dal;
 	}
 
-	/* (non-Javadoc)
-	 * @see alma.acs.container.ContainerServices#getCollocatedComponent(java.lang.String, java.lang.String)
-	 */
-	public Object getCollocatedComponent(String compUrl, String targetCompUrl) {
-		throw new NO_IMPLEMENT();
-	}
-
-	/* (non-Javadoc)
-	 * @see alma.acs.container.ContainerServices#getCollocatedComponent(alma.acs.component.ComponentQueryDescriptor, boolean, java.lang.String)
-	 */
-	public Object getCollocatedComponent(ComponentQueryDescriptor compSpec,
-			boolean markAsDefaul, String targetCompUrl) {
-		throw new NO_IMPLEMENT();
-	}
-
-	/* (non-Javadoc)
-	 * @see alma.acs.container.ContainerServices#getComponent(java.lang.String)
-	 */
-	public Object getComponent(String componentUrl) {
-		throw new NO_IMPLEMENT();
-	}
-
-	/* (non-Javadoc)
-	 * @see alma.acs.container.ContainerServices#getComponentDescriptor(java.lang.String)
-	 */
-	public ComponentDescriptor getComponentDescriptor(String componentUrl) {
-		throw new NO_IMPLEMENT();
-	}
-
-	/* (non-Javadoc)
-	 * @see alma.acs.container.ContainerServices#getComponentNonSticky(java.lang.String)
-	 */
-	public Object getComponentNonSticky(String curl) {
-		throw new NO_IMPLEMENT();
-	}
-
-	/* (non-Javadoc)
-	 * @see alma.acs.container.ContainerServices#getComponentStateManager()
-	 */
-	public ComponentStateManager getComponentStateManager() {
-		throw new NO_IMPLEMENT();
-	}
-
-	/* (non-Javadoc)
-	 * @see alma.acs.container.ContainerServices#getDefaultComponent(java.lang.String)
-	 */
-	public Object getDefaultComponent(String componentIDLType) {
-		throw new NO_IMPLEMENT();
-	}
-
-	/* (non-Javadoc)
-	 * @see alma.acs.container.ContainerServices#getDynamicComponent(alma.acs.component.ComponentQueryDescriptor, boolean)
-	 */
-	public Object getDynamicComponent(ComponentQueryDescriptor compSpec,
-			boolean markAsDefault) {
-		throw new NO_IMPLEMENT();
-	}
-
-	/* (non-Javadoc)
-	 * @see alma.acs.container.ContainerServices#getDynamicComponent(si.ijs.maci.ComponentSpec, boolean)
-	 */
-	public Object getDynamicComponent(ComponentSpec compSpec,
-			boolean markAsDefault) {
-		throw new NO_IMPLEMENT();
-	}
-
-	/* (non-Javadoc)
-	 * @see alma.acs.container.ContainerServices#getLogger()
-	 */
 	public synchronized AcsLogger getLogger() {
         if (componentLogger == null) {
     		componentLogger = ClientLogManager.getAcsLogManager().getLoggerForComponent(getName());
@@ -258,81 +163,28 @@ public class ManagerContainerServices implements ContainerServices,
         return componentLogger;
 	}
 
-	/* (non-Javadoc)
-	 * @see alma.acs.container.ContainerServices#getName()
-	 */
 	public String getName() {
 		return "ManagerContainerServices";
 	}
 
-	/* (non-Javadoc)
-	 * @see alma.acs.container.ContainerServices#getThreadFactory()
-	 */
 	public ThreadFactory getThreadFactory() {
 		throw new NO_IMPLEMENT();
 	}
 
-	/* (non-Javadoc)
-	 * @see alma.acs.container.ContainerServices#getTransparentXmlComponent(java.lang.Class, org.omg.CORBA.Object, java.lang.Class)
-	 */
-	public <T> T getTransparentXmlComponent(Class<T> transparentXmlIF,
-			Object componentReference, Class flatXmlIF) {
-		throw new NO_IMPLEMENT();
-	}
-
-	/* (non-Javadoc)
-	 * @see alma.acs.container.ContainerServices#registerComponentListener(alma.acs.container.ContainerServices.ComponentListener)
-	 */
-	public void registerComponentListener(ComponentListener listener) {
-		// TODO Auto-generated method stub
-
-	}
-
-	/* (non-Javadoc)
-	 * @see alma.acs.container.ContainerServices#releaseComponent(java.lang.String)
-	 */
-	public void releaseComponent(String componentUrl) {
-		// TODO Auto-generated method stub
-
-	}
-
-	/* (non-Javadoc)
-	 * @see alma.acs.container.AdvancedContainerServices#connectManagerAdmin(si.ijs.maci.AdministratorOperations, boolean)
-	 */
-	public void connectManagerAdmin(AdministratorOperations adminOp,
-			boolean retryConnectOnFailure) {
-		throw new NO_IMPLEMENT();
-	}
-
-	/* (non-Javadoc)
-	 * @see alma.acs.container.AdvancedContainerServices#corbaObjectToString(org.omg.CORBA.Object)
-	 */
 	public String corbaObjectToString(org.omg.CORBA.Object objRef)
 	{
-		ORB orb = getORB(); 
 		String str = orb.object_to_string(objRef);
 		logger.finer("converted corba object reference of type " + objRef.getClass().getName() +
 						" to the string " + str);
 		return str;
 	}
 
-	/* (non-Javadoc)
-	 * @see alma.acs.container.AdvancedContainerServices#corbaObjectFromString(java.lang.String)
-	 */
 	public org.omg.CORBA.Object corbaObjectFromString(String strObjRef)
 	{
-		ORB orb = getORB();
 		org.omg.CORBA.Object objRef = orb.string_to_object(strObjRef);
 		logger.finer("converted corba object reference string " + strObjRef + 
 						" back to a corba object reference.");
 		return objRef;
-	}
-
-	/* (non-Javadoc)
-	 * @see alma.acs.container.AdvancedContainerServices#disconnectManagerAdmin(si.ijs.maci.AdministratorOperations)
-	 */
-	public void disconnectManagerAdmin(AdministratorOperations adminOp) {
-		throw new NO_IMPLEMENT();
 	}
 
     /**
@@ -342,7 +194,6 @@ public class ManagerContainerServices implements ContainerServices,
      * @throws NullPointerException if the Any object could not be created.
      */
     public org.omg.CORBA.Any getAny() {
-    	ORB orb = getORB();
     	org.omg.CORBA.Any any = orb.create_any();
     	if (any == null) {
     		// should never happen, but we check just in case, 
@@ -354,11 +205,17 @@ public class ManagerContainerServices implements ContainerServices,
     	return any;
 	}
 
-	/* (non-Javadoc)
-	 * @see alma.acs.container.AdvancedContainerServices#getORB()
-	 */
 	public ORB getORB() {
 		return orb;
+	}
+
+	public void connectManagerAdmin(AdministratorOperations adminOp, boolean retryConnectOnFailure)
+			throws AcsJContainerEx {
+		throw new NO_IMPLEMENT();
+	}
+
+	public void disconnectManagerAdmin(AdministratorOperations adminOp) {
+		throw new NO_IMPLEMENT();
 	}
 
 }
