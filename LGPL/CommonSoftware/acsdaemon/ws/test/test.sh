@@ -49,6 +49,13 @@ fi
 sleep 30
 
 
+acsdaemonStatusAcs -i 0 &> acsStatus.log
+if [ $? -ne 0 ]; then
+    echo "FAILED - getting ACS status"
+    FLAG=1
+fi
+sleep 5
+
 acsdaemonStopContainer -c bilboContainer -i 0 &> stopbilboContainer.log
 if [ $? -ne 0 ]; then
     echo "FAILED - stoping bilboContainer"

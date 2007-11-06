@@ -19,5 +19,9 @@ type="55" _prefix="alma">
            shortDescription="Failed to start ACS services"
 	   description="Failed to start ACS services"
 />
+<ErrorCode name="FailedToGetAcsStatus"
+           shortDescription="Failed to get ACS status"
+	   description="Failed to get ACS status"
+/>
 </Type>
 

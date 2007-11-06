@@ -97,6 +97,14 @@ class ACSServicesDaemonImpl : public POA_acsdaemon::ServicesDaemon {
 	::ACSErrTypeCommon::BadParameterEx
       ));
 
+     virtual char * status_acs ( 
+	 ::CORBA::Short instance_number
+	 )
+      ACE_THROW_SPEC ((
+        CORBA::SystemException,
+        ::acsdaemonErrType::FailedToGetAcsStatusEx
+      ));
+
   protected:
 
     /**

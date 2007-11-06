@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.8 2007/10/12 17:09:16 nbarriga Exp $"
+# "@(#) $Id: Makefile,v 1.9 2007/11/06 14:20:05 bjeram Exp $"
 #
 # Makefile of ........
 #
@@ -38,7 +38,7 @@ USER_LIB = -lTAO -lACE -lTAO_PortableServer -lacserr -lTAO_DsLogAdmin -lTAO_CosN
 # -----------------------------
 EXECUTABLES     = acscontainerdaemon acsdaemonStartContainer \
                   acsdaemonStopContainer acsservicesdaemon acsdaemonStartAcs \
-                  acsdaemonStopAcs
+                  acsdaemonStopAcs acsdaemonStatusAcs
 EXECUTABLES_L   = 
 
 #
@@ -63,6 +63,8 @@ acsdaemonStartAcs_LIBS      =	acsdaemonErrType acsdaemonStubs
 acsdaemonStopAcs_OBJECTS   =	acsdaemonStopAcs
 acsdaemonStopAcs_LIBS      =	acsdaemonErrType acsdaemonStubs
 
+acsdaemonStatusAcs_OBJECTS   =	acsdaemonStatusAcs
+acsdaemonStatusAcs_LIBS      =	acsdaemonErrType acsdaemonStubs
 
 #
 # special compilation flags for single c sources
