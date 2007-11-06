@@ -33,11 +33,17 @@ public class ACSJMSMessage implements Message {
 	 * @param message
 	 */
 	public ACSJMSMessage(ACSJMSMessageEntity message, ContainerServices cs) {
+		if (cs==null) {
+			throw new IllegalArgumentException("Invalid null ContainerServices");
+		}
 		this.entity = message;
 		containerServices=cs;
 	}
 
 	public ACSJMSMessage(ContainerServices cs) {
+		if (cs==null) {
+			throw new IllegalArgumentException("Invalid null ContainerServices");
+		}
 		this.entity = new ACSJMSMessageEntity();
 		this.entity.properties = new Property[0];
 		containerServices=cs;

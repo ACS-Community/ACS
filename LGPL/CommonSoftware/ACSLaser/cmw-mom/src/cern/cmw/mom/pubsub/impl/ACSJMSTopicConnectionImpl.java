@@ -260,6 +260,9 @@ public class ACSJMSTopicConnectionImpl implements JMSTopicConnection {
    */
   public void start() throws ConnectionException {
     cat.debug("start()");
+    if (containerServices==null) {
+    	throw new ConnectionException("ContainerServices is null");
+    }
 
     if (isConnected()) {
       try {

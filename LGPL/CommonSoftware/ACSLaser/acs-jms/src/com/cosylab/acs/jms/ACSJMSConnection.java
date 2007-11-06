@@ -33,6 +33,9 @@ public class ACSJMSConnection implements Connection {
 	protected ContainerServices containerServices;
 	
 	public ACSJMSConnection(ContainerServices containerServices) {
+		if (containerServices==null) {
+			throw new IllegalArgumentException("Invalid null ContainerServices");
+		}
 		this.containerServices = containerServices;
 	}
 

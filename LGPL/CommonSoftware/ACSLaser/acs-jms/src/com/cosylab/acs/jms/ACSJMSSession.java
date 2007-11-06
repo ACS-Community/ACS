@@ -41,6 +41,9 @@ public class ACSJMSSession implements Session {
 
 	public ACSJMSSession(ContainerServices containerServices)
 	{
+		if (containerServices==null) {
+			throw new IllegalArgumentException("Invalid null ContainerServices");
+		}
 		this.containerServices = containerServices;
 	}
 
