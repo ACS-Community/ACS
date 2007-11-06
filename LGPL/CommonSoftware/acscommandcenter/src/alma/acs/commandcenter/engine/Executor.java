@@ -98,7 +98,7 @@ public class Executor {
       
       
       try {
-         remoteFlow.reset();
+         remoteFlow.reset(null);
 
          int port = 22;
          SshClient client = new SshClient();
@@ -264,7 +264,7 @@ public class Executor {
    }
 
 
-   static class RemoteFlow extends Flow {
+   public static class RemoteFlow extends Flow {
       static final String CONNECT = "Connect";
       static final String LOG_IN = "Log In";
       static final String SEND_COMMAND = "Send the Command";
@@ -287,7 +287,7 @@ public class Executor {
    	if (disableRemote)
          return;
 
-      remoteFlow.reset();
+      remoteFlow.reset(null);
 
       if (listener == null) {
          listener = new NativeCommand.ListenerAdapter(); // normalization: use a do-nothing implementation
@@ -391,7 +391,7 @@ public class Executor {
          listener = new NativeCommand.ListenerAdapter(); // normalization: use a do-nothing implementation
       }
       
-      localInProcFlow.reset();
+      localInProcFlow.reset(null);
 
       // insert given properties into system properties
       System.getProperties().putAll(properties);
@@ -496,7 +496,7 @@ public class Executor {
     * @param runMain the java instructions to perform
     */
    static public void local(final RunMain runMain) {
-      singleStepFlow.reset();
+      singleStepFlow.reset(null);
       try {
          runMain.runMain();
 
@@ -513,7 +513,7 @@ public class Executor {
    
    
    
-   static class LocalInProcFlow extends Flow {
+   public static class LocalInProcFlow extends Flow {
       static final String START = "Thread Start";
       static final String ALIVE = "Delegate Up";
       {
@@ -522,7 +522,7 @@ public class Executor {
    }
    
    
-   static class SingleStepFlow extends Flow {
+   public static class SingleStepFlow extends Flow {
       static final String DONE = "Task completion";
       {
          consistsOf(null, new String[] { DONE });
@@ -545,7 +545,7 @@ public class Executor {
          listener = new NativeCommand.ListenerAdapter(); // normalization: use a do-nothing implementation
       }
       
-      localOutProcFlow.reset();
+      localOutProcFlow.reset(null);
       log.fine("Now executing: '" + command + "'");
 
       // --- set up task
@@ -598,7 +598,7 @@ public class Executor {
    }
 
 
-   static class LocalOutProcFlow extends Flow {
+   public static class LocalOutProcFlow extends Flow {
       static final String RUN = "Process Launch";
       static final String COMPLETE = "Process Completion";
       {
@@ -622,8 +622,9 @@ public class Executor {
    		listener.stdoutWritten(null, "\nIn daemon mode, output cannot be displayed.\n" +
    				"See logs in <daemon-owner>/.acs/commandcenter on host "+host+"\n");
    	}
-   	
-   	remoteServicesDaemonFlow.reset();
+
+   	String info = ((startStop)? "Starting" : "Stopping") + " Acs Suite on host '"+host+"' (instance "+instance+")"; 
+   	remoteServicesDaemonFlow.reset(info);
 
    	ACSPorts ports = ACSPorts.globalInstance(instance);
 		String daemonLoc = AcsLocations.convertToServicesDaemonLocation(host, ports.giveServicesDaemonPort());
@@ -691,7 +692,7 @@ public class Executor {
 
    }
 
-   static class RemoteServicesDaemonFlow extends Flow {
+   public static class RemoteServicesDaemonFlow extends Flow {
    	static final String INIT_CORBA = "Assert corba connectivity";
    	static final String CONNECT_DAEMON = "Connect to acsservicesdaemon";
    	static final String SEND_COMMAND = "Send command to daemon";
@@ -700,7 +701,7 @@ public class Executor {
    		consistsOf (null, new String[]{INIT_CORBA, CONNECT_DAEMON, SEND_COMMAND, AWAIT_RESPONSE});
    	}
    }
-   
+
    /**
     * @param contType - only needed for starting (i.e. startStop==true)
     */
@@ -710,7 +711,8 @@ public class Executor {
    				"See logs in <daemon-owner>/.acs/commandcenter on host "+host+"\n");
    	}
 
-   	remoteContainerDaemonFlow.reset();
+   	String info = ((startStop)? "Starting" : "Stopping") + " container "+contName+" on host '"+host+"' (instance "+instance+")";
+   	remoteContainerDaemonFlow.reset(info);
 
    	ACSPorts ports = ACSPorts.globalInstance(instance);
 		String daemonLoc = AcsLocations.convertToContainerDaemonLocation(host, ports.giveContainerDaemonPort());
@@ -765,7 +767,7 @@ public class Executor {
 
    static public int remoteDaemonForContainersCompletionDelay = 2500;
    
-   static class RemoteContainerDaemonFlow extends Flow {
+   public static class RemoteContainerDaemonFlow extends Flow {
    	static final String INIT_CORBA = "Assert corba connectivity";
    	static final String CONNECT_DAEMON = "Connect to acscontainerdaemon";
    	static final String SEND_COMMAND = "Send command to daemon";
