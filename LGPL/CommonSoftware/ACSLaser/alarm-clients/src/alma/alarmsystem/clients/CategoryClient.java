@@ -19,6 +19,7 @@
 package alma.alarmsystem.clients;
 
 import java.util.HashSet;
+import java.util.Vector;
 
 import alma.acs.container.ContainerServices;
 import alma.acs.logging.AcsLogLevel;
@@ -136,20 +137,28 @@ public class CategoryClient {
 	 *   
 	 * @param categoriesToConnect The categories to connect to
 	 */
-	public void connect(Category[] categoriesToConnect) {
+	public void connect(Category[] categoriesToConnect) throws Exception {
 		if (categoriesToConnect==null ||categoriesToConnect.length==0) {
 			contSvc.getLogger().log(AcsLogLevel.INFO,"No categories to connect to");
 			return;
 		}
 		consumers=new CategorySubscriber[categoriesToConnect.length];
 		int t=0;
+		Vector<String> failingConnections = new Vector<String>();
 		for (Category category: categoriesToConnect) {
 			try {
 				consumers[t++]=new CategorySubscriber(contSvc,categoryRootTopic,category.path,this);
 				contSvc.getLogger().log(AcsLogLevel.DEBUG,"Connected to "+categoryRootTopic+"."+category.path);
-			} catch (Exception jmse) {
-				contSvc.getLogger().log(AcsLogLevel.ERROR,"Error subscribing to "+categoryRootTopic+"."+category.path);
+			} catch (Throwable throwable) {
+				failingConnections.add("Error subscribing to "+categoryRootTopic+"."+category.path+": "+throwable.getMessage());
 			}
+		}
+		if (failingConnections.size()>0) {
+			System.err.println("Error connecting categories: ");
+			for (String str: failingConnections) {
+				System.err.println("\t"+str);
+			}
+			throw new Exception("Error connecting categories");
 		}
 	}
 	
@@ -157,7 +166,7 @@ public class CategoryClient {
 	 * Connect to all available categories
 	 * 
 	 */
-	public void connect() {
+	public void connect() throws Exception {
 		connect(categories);
 	}
 	
