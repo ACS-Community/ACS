@@ -18,3 +18,4 @@ s/\.Jlog will use cache for [0-9]* log records\./Jlog will use cache for N log r
 s/\.The WriteBuffer stores [0-9]* logs/The WriteBuffer stores N logs/g
 s/.*\[ Connected to .*\]/[ Connected to XXX.XXX.XXX.XXX:PPPP ]/g
 s/\.//g
+s/Manager login done.*/Manager login done .../g
