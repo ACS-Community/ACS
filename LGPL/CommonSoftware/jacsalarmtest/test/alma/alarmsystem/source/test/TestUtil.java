@@ -17,7 +17,7 @@ import alma.acs.logging.ClientLogManager;
  * A class containing a set of useful methods needed by the tests
  * 
  * NOTE:
- * In this test I am interested in cheking if the alarms are sent to the log.
+ * In this test I am interested in checking if the alarms are sent to the log.
  * CurrentlyI have the following message in the stdout (I think I'll mask that
  * in the TestList.grep):
  * failed to flush logging queue because remote logging service has not been made available.
@@ -27,7 +27,7 @@ import alma.acs.logging.ClientLogManager;
  * To fix that I should define this class as a Client, log into the manager and initialize the log.
  * This would require a lot of time because I don't have the SimpleClient available at this point:
  * everything should be done by hand.
- * Ok... I don't care about thi error because if the message is in the stdout it means that 
+ * Ok... I don't care about the error because if the message is in the stdout it means that 
  * everything is working.
  * 
  * @author acaproni
@@ -43,99 +43,6 @@ public class TestUtil {
 	};
 	
 	private static String XMLTail = "</configuration-property>\n</alarm-system-configuration>\n";
-	
-	// A reference to the ORB
-	private static ORB orb = null;
-	
-	// A reference to the Manager
-	private static Manager manager=null;
-	
-	// A reference to the logger
-	private static Logger logger = null;
-	
-	/**
-	 * Return the logger
-	 * 
-	 * @return The logger
-	 */
-	public static Logger getLogger(String name) {
-		if (logger!=null) {
-			return logger;
-		}
-		// The logger should be initialized in order to send logs remotely:
-		// read the NOTE in header of the class
-		logger = ClientLogManager.getAcsLogManager().getLoggerForApplication(name,true);
-		return logger;
-	}
-	
-	/**
-	 * 
-	 * @return The ORB
-	 */
-	public static ORB getORB() {
-		if (orb!=null) {
-			return orb;
-		}
-		String args[] = {};
-		orb=ORB.init(args, null);
-		return orb;
-	}
-	
-	/**
-	 * Get a reference to the Manager
-	 */
-	public static Manager getManager() {
-		if (manager!=null) {
-			return manager;
-		}
-		String managerLoc = System.getProperty("ACS.manager");
-        if (managerLoc == null) {
-                System.out.println("Java property 'ACS.manager' must be set to the corbaloc of the ACS manager!");
-                System.exit(-1);
-        }
-		org.omg.CORBA.Object managerObj = getORB().string_to_object(managerLoc);
-		if (managerObj==null) {
-			return null;
-		}
-		try {
-			manager = ManagerHelper.narrow(managerObj);
-		} catch (Exception e) {
-			System.out.println("Error narrowing the manager: "+e.getMessage());
-			e.printStackTrace();
-			return null;
-		}
-        return manager;
-	}
-	
-	/**
-	 * Get a reference to the DAL
-	 * 
-	 * @param manager A reference to the Manager
-	 * @return The reference to the DAL or NULL
-	 */
-	public static JDAL getDAL(Manager manager) {
-		if (manager==null) {
-			throw new IllegalArgumentException("getDAL received a null manager reference!");
-		}
-		JDAL dal;
-		try {
-	        org.omg.CORBA.Object cdbObj = manager.get_service(0, "CDB", false);
-	        if (cdbObj==null) {
-				System.out.println("Error getting the CDB from the manager");
-				return null;
-			} 
-	        dal = JDALHelper.narrow(cdbObj);
-	        if (dal==null) {
-	        	System.out.println("Error narrowing the DAL");
-	        	return null;
-	        }
-		} catch (Exception e) {
-			System.out.println("Error getting DAL: ");
-			e.printStackTrace();
-			return null;
-		}
-		return dal;
-	}
 	
 	/**
 	 * Remove the Alarm branch from the CDB
