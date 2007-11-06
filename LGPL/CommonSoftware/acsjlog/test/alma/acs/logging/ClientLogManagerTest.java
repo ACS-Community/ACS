@@ -180,7 +180,7 @@ public class ClientLogManagerTest extends junit.framework.TestCase
 	public void testSuppressCorbaRemoteLogging() {
 		LogConfig config = clientLogManager.getLogConfig();
 		
-		assertEquals(1, config.getLoggerNames().size()); // the internal logger of ClientLogManager "alma.acs.logger"
+		assertEquals(1, config.getLoggerNames().size()); // the internal logger of ClientLogManager "alma.acs.logging"
 		AcsLogger orbLog1 = clientLogManager.getLoggerForCorba("jacorb_1", true);
 		
 		assertEquals(2, config.getLoggerNames().size());
@@ -196,10 +196,11 @@ public class ClientLogManagerTest extends junit.framework.TestCase
 		AcsLogger contLog = clientLogManager.getLoggerForContainer("myContainer");
 			
 		Set<String> loggerNames = config.getLoggerNames();
-//		for (String loggerName : loggerNames) {
-//			System.out.println(loggerName);
-//		}				
-		assertEquals(4, loggerNames.size()); // alma.acs.logger, alma.acs.corba.jacorb_1@myContainer, alma.acs.corba.jacorb_2@myContainer, alma.acs.container.myContainer
+		assertEquals(4, loggerNames.size());
+		assertTrue(loggerNames.contains("alma.acs.logging"));
+		assertTrue(loggerNames.contains("jacorb_1@myContainer"));
+		assertTrue(loggerNames.contains("jacorb_2@myContainer"));
+		assertTrue(loggerNames.contains("myContainer"));
 		
 		config.setDefaultMinLogLevelLocal(ACSCoreLevel.ACS_LEVEL_INFO);
 		config.setDefaultMinLogLevel(ACSCoreLevel.ACS_LEVEL_DEBUG);
