@@ -610,12 +610,16 @@ public class LogConfig {
 		synchronized (namedLoggerConfigs) {	
 			LockableUnnamedLogger config = getNamedLoggerConfig(loggerName); // new object, with cached or default values
 			if (config.isLocked()) {
-				log(Level.WARNING, "Ignoring attempt to lock logger " + loggerName + " to level " + newLevel + " because it is already locked to remote level " + config.getMinLogLevel(), null);
+				// only if the level is different we log the warning. This removes the need to check the lock status and level before calling this method.
+				if (config.getMinLogLevel() != newLevel) {
+					log(Level.WARNING, "Ignoring attempt to lock logger " + loggerName + " to level " + newLevel + " because it is already locked to remote level " + config.getMinLogLevel(), null);
+				}
 			}
-			else {
+			else if (newLevel != config.getMinLogLevel()) {
 				config.setMinLogLevel(newLevel);
 				config.lock();
 				setNamedLoggerConfig(loggerName, config);
+				log(Level.INFO, "Locked logger " + loggerName + " to level " + newLevel, null);
 			}
 		}
 	}
