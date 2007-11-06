@@ -200,11 +200,11 @@ public class AcsContainer extends ContainerPOA
 
 		// init the alarm system
 		try {
-			// TODO: clean up the construction of CS which is ad-hoc implemented before ACS 7.0
+			// TODO: clean up the construction of CS which is ad-hoc implemented right before ACS 7.0
 			// in order to allow CERN alarm libs to get their static field for ContainerServices set.
-			String name = "Alarm system container services";
+			String name = name(); // alarm system acts under container name
 			ThreadFactory threadFactory = new CleaningDaemonThreadFactory(name, m_logger);
-	        ContainerServicesImpl cs = new ContainerServicesImpl(m_managerProxy, m_acsCorba.getRootPOA(), 
+	        ContainerServicesImpl cs = new ContainerServicesImpl(m_managerProxy, m_acsCorba.createPOAForComponent("alarmSystem"), 
 	        		m_acsCorba, m_logger, m_managerProxy.getManagerHandle(), 
 	        		name, null, threadFactory);
 			
