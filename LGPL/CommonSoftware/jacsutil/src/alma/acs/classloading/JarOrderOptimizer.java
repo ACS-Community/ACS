@@ -64,7 +64,12 @@ public class JarOrderOptimizer implements Comparator<File>
 		"castor.jar",
 		"jacorb.jar",
 		"acscomponent.jar",
-		"jmanager.jar",
+		
+		"jManager.jar",
+		"jmanagerErrType.jar",
+		"prevayler-1.02.001.jar",
+		"CDB.jar",
+		
 		"cdbDAL.jar",
 		"cdbErrType.jar",
 		"archive_xmlstore_if.jar",
@@ -88,7 +93,8 @@ public class JarOrderOptimizer implements Comparator<File>
 		"acsErrTypeAlarmSourceFactory.jar",
 		"xalan.jar",
 		"xalan_serializer.jar",
-		"commons-logging.jar"
+		"commons-logging.jar",
+		"acsContainerServices.jar"
 	};
 	
 	/**
