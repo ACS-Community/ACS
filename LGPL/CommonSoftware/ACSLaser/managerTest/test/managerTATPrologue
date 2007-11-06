@@ -6,6 +6,6 @@ ACS_CDB=../test
 acsutilTATPrologue
 
 echo " Starting Test Java Container"
-acsutilAwaitContainerStart -java frodooContainer
+acsutilAwaitContainerStart -java frodoContainer
 echo " Starting Test C++ Container"
 acsutilAwaitContainerStart -cpp bilboContainer
