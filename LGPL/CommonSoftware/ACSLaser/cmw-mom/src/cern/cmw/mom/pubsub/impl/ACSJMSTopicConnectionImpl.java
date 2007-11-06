@@ -1,6 +1,7 @@
 package cern.cmw.mom.pubsub.impl;
 
-import alma.acs.container.ContainerServices;
+import alma.acs.container.ContainerServicesBase;
+
 import cern.cmw.mom.util.MomConfig;
 
 import org.apache.log4j.Category;
@@ -21,7 +22,7 @@ import javax.jms.TopicSession;
  * @see JMSTopicConnection
  */
 public class ACSJMSTopicConnectionImpl implements JMSTopicConnection {
-  public static ContainerServices containerServices = null;
+  public static ContainerServicesBase containerServices = null;
   static Category cat = Category.getInstance(ACSJMSTopicConnectionImpl.class.getName());
   private java.util.Properties momProperties = null;
   private String password = null;

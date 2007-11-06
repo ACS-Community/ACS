@@ -12,7 +12,7 @@ import javax.jms.TopicPublisher;
 import javax.jms.TopicSession;
 import javax.jms.TopicSubscriber;
 
-import alma.acs.container.ContainerServices;
+import alma.acs.container.ContainerServicesBase;
 
 /**
  * @author kzagar
@@ -25,7 +25,7 @@ public class ACSJMSTopicSession extends ACSJMSSession implements TopicSession {
 	/**
 	 * @param containerServices
 	 */
-	public ACSJMSTopicSession(ContainerServices containerServices) {
+	public ACSJMSTopicSession(ContainerServicesBase containerServices) {
 		super(containerServices);
 	}
 

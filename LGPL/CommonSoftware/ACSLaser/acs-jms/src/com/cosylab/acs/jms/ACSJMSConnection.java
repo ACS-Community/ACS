@@ -16,7 +16,7 @@ import javax.jms.ServerSessionPool;
 import javax.jms.Session;
 import javax.jms.Topic;
 
-import alma.acs.container.ContainerServices;
+import alma.acs.container.ContainerServicesBase;
 
 /**
  * @author kzagar
@@ -30,9 +30,9 @@ public class ACSJMSConnection implements Connection {
 
 	private ExceptionListener listener;
 
-	protected ContainerServices containerServices;
+	protected ContainerServicesBase containerServices;
 	
-	public ACSJMSConnection(ContainerServices containerServices) {
+	public ACSJMSConnection(ContainerServicesBase containerServices) {
 		if (containerServices==null) {
 			throw new IllegalArgumentException("Invalid null ContainerServices");
 		}

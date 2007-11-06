@@ -13,7 +13,7 @@ import javax.jms.JMSException;
 import javax.jms.Message;
 
 import org.omg.CosPropertyService.Property;
-import alma.acs.container.ContainerServices;
+import alma.acs.container.ContainerServicesBase;
 
 /**
  * @author kzagar
@@ -27,12 +27,12 @@ public class ACSJMSMessage implements Message {
 
 	protected ACSJMSMessageEntity entity;
 	
-	private ContainerServices containerServices;
+	private ContainerServicesBase containerServices;
 
 	/**
 	 * @param message
 	 */
-	public ACSJMSMessage(ACSJMSMessageEntity message, ContainerServices cs) {
+	public ACSJMSMessage(ACSJMSMessageEntity message, ContainerServicesBase cs) {
 		if (cs==null) {
 			throw new IllegalArgumentException("Invalid null ContainerServices");
 		}
@@ -40,7 +40,7 @@ public class ACSJMSMessage implements Message {
 		containerServices=cs;
 	}
 
-	public ACSJMSMessage(ContainerServices cs) {
+	public ACSJMSMessage(ContainerServicesBase cs) {
 		if (cs==null) {
 			throw new IllegalArgumentException("Invalid null ContainerServices");
 		}

@@ -8,7 +8,7 @@ package com.cosylab.acs.jms;
 
 import org.omg.CosNotification.StructuredEvent;
 
-import alma.acs.container.ContainerServices;
+import alma.acs.container.ContainerServicesBase;
 import alma.acs.exceptions.AcsJException;
 import alma.acs.nc.Consumer;
 
@@ -26,7 +26,7 @@ public class ACSJMSMessageEntityConsumer extends Consumer {
 	 * @param arg1
 	 * @throws alma.acs.exceptions.AcsJException
 	 */
-	public ACSJMSMessageEntityConsumer(String channelName, ContainerServices containerServices,
+	public ACSJMSMessageEntityConsumer(String channelName, ContainerServicesBase containerServices,
 			ACSJMSMessageEntityConsumerListener listener)
 			throws AcsJException {
 		super(channelName, containerServices);

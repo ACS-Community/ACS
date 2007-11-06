@@ -6,23 +6,23 @@ import java.util.HashMap;
 import javax.jms.JMSException;
 import javax.jms.ObjectMessage;
 
-import alma.acs.container.ContainerServices;
+import alma.acs.container.ContainerServicesBase;
 
 public class ACSJMSObjectMessage extends ACSJMSMessage implements ObjectMessage
 {
 	Serializable obj;
 	
-	public ACSJMSObjectMessage(Serializable obj, ContainerServices cs) {
+	public ACSJMSObjectMessage(Serializable obj, ContainerServicesBase cs) {
 		super(cs);
 		this.obj=obj;
 	}
 	
 	
-	public ACSJMSObjectMessage(ACSJMSMessageEntity message, ContainerServices cs) {
+	public ACSJMSObjectMessage(ACSJMSMessageEntity message, ContainerServicesBase cs) {
 		super(message,cs);
 	}
 	
-	public ACSJMSObjectMessage(ContainerServices cs) {
+	public ACSJMSObjectMessage(ContainerServicesBase cs) {
 		super(cs);
 	}
 	

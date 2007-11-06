@@ -10,7 +10,7 @@ import javax.jms.JMSException;
 import javax.jms.Topic;
 import javax.jms.TopicSubscriber;
 
-import alma.acs.container.ContainerServices;
+import alma.acs.container.ContainerServicesBase;
 import alma.acs.exceptions.AcsJException;
 import alma.acs.nc.Consumer;
 
@@ -33,7 +33,7 @@ public class ACSJMSTopicSubscriber
 	 * @throws AcsJException
 	 * @throws JMSException
 	 */
-	public ACSJMSTopicSubscriber(Topic topic, ContainerServices containerServices, String selector) throws JMSException {
+	public ACSJMSTopicSubscriber(Topic topic, ContainerServicesBase containerServices, String selector) throws JMSException {
 		super(topic, containerServices,selector);
 		try {
 			//this.consumer = new Consumer(topic.getTopicName(), containerServices);

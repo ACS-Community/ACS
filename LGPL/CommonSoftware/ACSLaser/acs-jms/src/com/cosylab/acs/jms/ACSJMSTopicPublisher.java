@@ -11,7 +11,7 @@ import javax.jms.Message;
 import javax.jms.Topic;
 import javax.jms.TopicPublisher;
 
-import alma.acs.container.ContainerServices;
+import alma.acs.container.ContainerServicesBase;
 import alma.acs.exceptions.AcsJException;
 import alma.acs.nc.CorbaPublisher;
 
@@ -33,7 +33,7 @@ public class ACSJMSTopicPublisher
 	 * @throws AcsJException
 	 * @throws JMSException
 	 */
-	public ACSJMSTopicPublisher(Topic topic, ContainerServices containerServices) throws JMSException {
+	public ACSJMSTopicPublisher(Topic topic, ContainerServicesBase containerServices) throws JMSException {
 		super(topic, containerServices);
 
 		if(topic != null) {
@@ -156,7 +156,7 @@ public class ACSJMSTopicPublisher
 		}
 	}
 	
-	private static CorbaPublisher createPublisher(Topic topic, ContainerServices containerServices) throws JMSException {
+	private static CorbaPublisher createPublisher(Topic topic, ContainerServicesBase containerServices) throws JMSException {
 		try {
 			return new CorbaPublisher(topic.getTopicName(), containerServices);
 		} catch (AcsJException e) {

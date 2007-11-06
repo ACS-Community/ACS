@@ -15,7 +15,7 @@ import javax.jms.Message;
 import javax.jms.MessageConsumer;
 import javax.jms.MessageListener;
 
-import alma.acs.container.ContainerServices;
+import alma.acs.container.ContainerServicesBase;
 
 import com.codestreet.selector.parser.InvalidSelectorException;
 
@@ -32,7 +32,7 @@ public abstract class ACSJMSConsumer implements MessageConsumer {
 
 	private List messages = new ArrayList();
 	
-	private ContainerServices containerServices;
+	private ContainerServicesBase containerServices;
 	
 	
 	private ACSJMSMessageSelector selector=null;
@@ -44,7 +44,7 @@ public abstract class ACSJMSConsumer implements MessageConsumer {
 	 * @param contServices The Container services
 	 * @param selector The message selector (can be empty or null)
 	 */
-	public ACSJMSConsumer(Destination destination, ContainerServices contServices, String selector) throws JMSException {
+	public ACSJMSConsumer(Destination destination, ContainerServicesBase contServices, String selector) throws JMSException {
 		this.destination = destination;
 		this.containerServices=contServices;
 		try {

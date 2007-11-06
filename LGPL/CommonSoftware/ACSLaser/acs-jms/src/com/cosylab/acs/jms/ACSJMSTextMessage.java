@@ -9,7 +9,7 @@ package com.cosylab.acs.jms;
 import javax.jms.JMSException;
 import javax.jms.TextMessage;
 
-import alma.acs.container.ContainerServices;
+import alma.acs.container.ContainerServicesBase;
 
 /**
  * @author kzagar
@@ -21,11 +21,11 @@ public class ACSJMSTextMessage extends ACSJMSMessage implements TextMessage {
 	/**
 	 * @param message
 	 */
-	public ACSJMSTextMessage(ACSJMSMessageEntity message, ContainerServices cs) {
+	public ACSJMSTextMessage(ACSJMSMessageEntity message, ContainerServicesBase cs) {
 		super(message,cs);
 	}
 
-	public ACSJMSTextMessage(ContainerServices cs) {
+	public ACSJMSTextMessage(ContainerServicesBase cs) {
 		super(cs);
 	}
 
