@@ -2,7 +2,6 @@ package alma.alarmsystem.source;
 
 import java.util.Collection;
 
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import java.util.Iterator;
