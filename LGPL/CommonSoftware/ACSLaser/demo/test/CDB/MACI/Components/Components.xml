@@ -16,14 +16,6 @@
 	   Code="alma.alarmsystem.AlarmServiceImpl.AlarmServiceHelper"
 	   Type="IDL:alma/alarmsystem/AlarmService:1.0"
 	   Container="frodoContainer" />
-	<_ Name="ALARM_SOURCE_A"
-	   Type="IDL:alma/alarmsystem/TestAlarmSource:1.0"
-	   Code="alma.alarmsystem.TestAlarmSourceImpl.TestAlarmSourceHelper"
-	   Container="frodoContainer" />
-	<_ Name="ALARM_SOURCE_B"
-	   Type="IDL:alma/alarmsystem/TestAlarmSource:1.0"
-	   Code="alma.alarmsystem.TestAlarmSourceImpl.TestAlarmSourceHelper"
-	   Container="frodoContainer" />
 	<_ Name="ALARM_SOURCE_PS"
 	   Type="IDL:alma/alarmsystemdemo/PS:1.0"
 	   Code="alma.alarmsystemdemo.PSImpl.PSHelper" 
@@ -35,7 +27,7 @@
 	<_ Name="ALARM_SOURCE_ANTENNA"
 	   Type="IDL:alma/alarmsystemdemo/Antenna:1.0"
 	   Code="alma.alarmsystemdemo.AntennaImpl.AntennaHelper" 
-	   Container="frodoContainer" />
+	   Container="javaContainer" />
         <_ Name="ALARM_SOURCE_MOUNTCPP"
 	   Type="IDL:alma/alarmsystemdemo/Mount:1.0"
 	   Code="alsysMountImpl" 
@@ -43,6 +35,6 @@
 	<_ Name="MULTIPLE_FAILURES"
 	   Type="IDL:alma/alarmsystemdemo/MF:1.0"
 	   Code="alma.alarmsystemdemo.MFImpl.MFHelper" 
-	   Container="frodoContainer" />
+	   Container="javaContainer" />
 </Components>
 
