@@ -27,20 +27,17 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
@@ -55,17 +52,13 @@ import org.exolab.castor.xml.Unmarshaller;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import com.cosylab.CDB.DAL;
 import com.cosylab.CDB.DALOperations;
 
-import alma.acs.config.validators.XmlNamespaceContextContainer;
-import alma.acs.config.validators.ConfigFileRedeemerXml.XPathMatchSetup;
 import alma.acs.logging.ACSCoreLevel;
-import alma.acs.logging.ClientLogManager;
 import alma.cdbErrType.CDBRecordDoesNotExistEx;
 import alma.cdbErrType.CDBXMLErrorEx;
 import alma.maci.loggingconfig.LoggingConfig;
@@ -91,7 +84,7 @@ public class LogConfig {
 	 * <p>
 	 * For type safety we get that name from the schema-generated castor class. 
 	 */
-	private final static String CDBNAME_LoggingConfig = LoggingConfig.class.getSimpleName();
+	final static String CDBNAME_LoggingConfig = LoggingConfig.class.getSimpleName();
 	
 	/**
 	 * In CDB queries for the <code>ComponentLogger</code> child of a component configuration
@@ -104,7 +97,7 @@ public class LogConfig {
 	 * <code>alma.maci.componentconfig.components.ComponentInfo#getComponentLogger</code>
 	 * which cannot be used to define a constant. Therefore we hardcode the name here.
 	 */
-	private final static String CDBNAME_ComponentLogger = "ComponentLogger";
+	final static String CDBNAME_ComponentLogger = "ComponentLogger";
 	
     /**
      * The logger for messages logged by this class.
@@ -263,7 +256,7 @@ public class LogConfig {
 					String loggingConfigXml = getLogConfigXml(cdbLoggingConfigPath, "//" + CDBNAME_LoggingConfig);
 					if (loggingConfigXml == null || loggingConfigXml.trim().isEmpty()) {
 						// the LoggingConfig child is mandatory for containers and manager
-						throw new LogConfigException("Parent node " + cdbLoggingConfigPath + " does not contain one LoggingConfig element.");
+						throw new LogConfigException("Node " + cdbLoggingConfigPath + " does not contain one LoggingConfig element.");
 					}
 					newLoggingConfig = LoggingConfig.unmarshalLoggingConfig(new StringReader(loggingConfigXml));
 					try {
