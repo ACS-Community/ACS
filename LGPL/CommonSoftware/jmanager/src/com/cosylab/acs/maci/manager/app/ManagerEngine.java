@@ -19,7 +19,6 @@ import org.omg.PortableServer.POA;
 import org.prevayler.implementation.SnapshotPrevayler;
 
 import si.ijs.maci.ManagerHelper;
-import alma.acs.container.corba.AcsCorba;
 import alma.acs.logging.ClientLogManager;
 import alma.acs.logging.config.LogConfig;
 import alma.acs.logging.config.LogConfigException;
@@ -272,7 +271,7 @@ public class ManagerEngine
 		}
 	    
 		// initialize manager "mock" container servies
-		ManagerContainerServices managerContainerServices = new ManagerContainerServices(orb, cdbAccess.getDAL(), logger);
+		ManagerContainerServices managerContainerServices = new ManagerContainerServices(orb, managerPOA, cdbAccess.getDAL(), logger);
 		
 		manager.initialize(prevayler, cdbAccess, context, logger, managerContainerServices);
 		manager.setShutdownImplementation(shutdownImplementation);
