@@ -32,7 +32,7 @@
 	</ServiceComponents>
 
 	<LoggingConfig immediateDispatchLevel="31">
-		<log:_ Name="jacorb@Manager" minLogLevel="5" minLogLevelLocal="4"/>
+		<log:_ Name="jacorb@Manager" minLogLevel="0" minLogLevelLocal="0"/>
 	</LoggingConfig>
 
 </Manager>
