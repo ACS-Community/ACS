@@ -4,7 +4,9 @@ import java.util.Vector;
 import java.util.Collection;
 
 import com.cosylab.CDB.JDAL;
+import com.cosylab.CDB.JDALHelper;
 
+import alma.acs.component.client.ComponentClientTestCase;
 import alma.alarmsystem.source.ACSAlarmSystemInterfaceFactory;
 import alma.alarmsystem.source.ACSFaultState;
 import alma.alarmsystem.source.ACSAlarmSystemInterface;
@@ -15,20 +17,16 @@ import alma.alarmsystem.source.ACSAlarmSystemInterface;
  * @author acaproni
  *
  */
-public class ProxyTest extends junit.framework.TestCase {
+public class ProxyTest extends ComponentClientTestCase {
 	
 	// The current directory
-	String curDir=System.getProperty("user.dir");
+	private String curDir=System.getProperty("user.dir");
 	
 	// The reference to the DAL (to make a clear cache)
-	JDAL jdal;
+	private JDAL jdal;
 	
-	public ProxyTest(String str) {
+	public ProxyTest(String str) throws Exception {
 		super(str);
-		assertNotNull("Error getting the manager",TestUtil.getManager());
-		// Get the reference to the DAL
-		jdal = TestUtil.getDAL(TestUtil.getManager());
-		assertNotNull("Error getting the jDAL",jdal);
 	}
 	
 	/**
@@ -39,18 +37,29 @@ public class ProxyTest extends junit.framework.TestCase {
 	 */ 
 	protected void setUp() throws Exception
 	{ 
+		super.setUp();
+		// Get the reference to the DAL
+		org.omg.CORBA.Object cdbObj = m_acsManagerProxy.get_service("CDB", false);
+        if (cdbObj==null) {
+			throw new Exception("Error getting the CDB from the manager");
+		} 
+        jdal = JDALHelper.narrow(cdbObj);
+        if (jdal==null) {
+        	throw new Exception("Error narrowing the DAL");
+        }
 		// Set the CDB to use ACS
 		TestUtil.setupAlarmBranch(curDir,"ACS");
 		// Init the Factory
-		ACSAlarmSystemInterfaceFactory.init(TestUtil.getLogger(this.getClass().getName()),jdal);
+		ACSAlarmSystemInterfaceFactory.init(getContainerServices());
 	}
 	
 	/** 
 	 * @see junit.framework.TestCase
 	 *
 	 */
-	protected void tearDown() {
+	protected void tearDown() throws Exception {
 		ACSAlarmSystemInterfaceFactory.done();
+		super.tearDown();
 	}
 
 	/**

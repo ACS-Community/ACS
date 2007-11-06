@@ -1,47 +1,50 @@
 package alma.alarmsystem.source.test;
 
+import alma.acs.component.client.ComponentClientTestCase;
 import alma.alarmsystem.source.ACSAlarmSystemInterfaceFactory;
 import alma.alarmsystem.source.ACSFaultState;
 import alma.alarmsystem.source.ACSAlarmSystemInterface;
 
 import com.cosylab.CDB.JDAL;
+import com.cosylab.CDB.JDALHelper;
 
-public class FactoryTest extends junit.framework.TestCase {
+public class FactoryTest extends ComponentClientTestCase {
 	
 	
 			
 	// The current directory
-	String curDir=System.getProperty("user.dir");
+	private String curDir=System.getProperty("user.dir");
 	
 	// The reference to the DAL (to make a clear cache)
-	JDAL jdal; 
+	private JDAL jdal; 
 	
-	public FactoryTest(String str) {
+	public FactoryTest(String str) throws Exception {
 		super(str);
-		// Get the reference to the DAL
-		jdal = TestUtil.getDAL(TestUtil.getManager());
 	}
 	
-	/**
-	 * This execute for each test and we want to have
-	 * a cache with some logs 
-	 * 
-	 * @see junit.framework.TestCase
-	 */ 
-	protected void setUp() throws Exception
-	{ 
+	protected void setUp() throws Exception {
+		super.setUp();
+        org.omg.CORBA.Object cdbObj = m_acsManagerProxy.get_service("CDB", false);
+        if (cdbObj==null) {
+			throw new Exception("Error getting the CDB from the manager");
+		} 
+        jdal = JDALHelper.narrow(cdbObj);
+        if (jdal==null) {
+        	throw new Exception("Error narrowing the DAL");
+        }
 	}
 	
 	/** 
 	 * @see junit.framework.TestCase
 	 *
 	 */
-	protected void tearDown() {
+	protected void tearDown() throws Exception {
 		ACSAlarmSystemInterfaceFactory.done();
+		super.tearDown();
 	}
 	
 	/**
-	 * Check if the ACS implementation of the AS is choosen when
+	 * Check if the ACS implementation of the AS is chosen when
 	 * there is no Alarm branch in the CDB
 	 * 
 	 * @throws Exception
@@ -49,7 +52,7 @@ public class FactoryTest extends junit.framework.TestCase {
 	public void testNoALarmBranch() throws Exception {
 		TestUtil.deleteAlarmBranch(curDir);
 		jdal.clear_cache_all();
-		ACSAlarmSystemInterfaceFactory.init(TestUtil.getLogger(this.getClass().getName()),jdal);
+		ACSAlarmSystemInterfaceFactory.init(getContainerServices());
 		assertTrue("Wrong implementation in use (no Alarms in CDB case)",ACSAlarmSystemInterfaceFactory.usingACSAlarmSystem());
 	}
 	
@@ -62,7 +65,7 @@ public class FactoryTest extends junit.framework.TestCase {
 	public void testACSAS() throws Exception {
 		TestUtil.setupAlarmBranch(curDir,"ACS");
 		jdal.clear_cache_all();
-		ACSAlarmSystemInterfaceFactory.init(TestUtil.getLogger(this.getClass().getName()),jdal);
+		ACSAlarmSystemInterfaceFactory.init(getContainerServices());
 		assertTrue("Wrong implementation in use (ACS case)",ACSAlarmSystemInterfaceFactory.usingACSAlarmSystem());
 	}
 	
@@ -75,7 +78,7 @@ public class FactoryTest extends junit.framework.TestCase {
 	public void testCERNAS() throws Exception {
 		TestUtil.setupAlarmBranch(curDir,"CERN");
 		jdal.clear_cache_all();
-		ACSAlarmSystemInterfaceFactory.init(TestUtil.getLogger(this.getClass().getName()),jdal);
+		ACSAlarmSystemInterfaceFactory.init(getContainerServices());
 		assertFalse("Wrong implementation in use (CERN case)",ACSAlarmSystemInterfaceFactory.usingACSAlarmSystem());
 	}
 	
@@ -86,7 +89,7 @@ public class FactoryTest extends junit.framework.TestCase {
 	public void testWrongImplementationProp() throws Exception {
 		TestUtil.setupAlarmBranch(curDir,"Wrong property");
 		jdal.clear_cache_all();
-		ACSAlarmSystemInterfaceFactory.init(TestUtil.getLogger(this.getClass().getName()),jdal);
+		ACSAlarmSystemInterfaceFactory.init(getContainerServices());
 		assertTrue("Wrong implementation in use (wrong prop case)",ACSAlarmSystemInterfaceFactory.usingACSAlarmSystem());
 	}
 	
@@ -98,7 +101,7 @@ public class FactoryTest extends junit.framework.TestCase {
 	public void testFaultStateCreation() throws Exception {
 		TestUtil.setupAlarmBranch(curDir,"ACS");
 		jdal.clear_cache_all();
-		ACSAlarmSystemInterfaceFactory.init(TestUtil.getLogger(this.getClass().getName()),jdal);
+		ACSAlarmSystemInterfaceFactory.init(getContainerServices());
 		ACSFaultState fs = ACSAlarmSystemInterfaceFactory.createFaultState("Family","Member",0);
 		assertNotNull("Error creating a FS",fs);
 	}
@@ -111,7 +114,7 @@ public class FactoryTest extends junit.framework.TestCase {
 	public void testAlarmSourceCreation() throws Exception {
 		TestUtil.setupAlarmBranch(curDir,"ACS");
 		jdal.clear_cache_all();
-		ACSAlarmSystemInterfaceFactory.init(TestUtil.getLogger(this.getClass().getName()),jdal);
+		ACSAlarmSystemInterfaceFactory.init(getContainerServices());
 		ACSAlarmSystemInterface proxy = ACSAlarmSystemInterfaceFactory.createSource("SourceName");
 		assertNotNull("Error creating an alarm source",proxy);
 	}
