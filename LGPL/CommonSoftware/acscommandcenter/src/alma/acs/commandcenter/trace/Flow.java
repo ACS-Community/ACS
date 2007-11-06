@@ -47,18 +47,18 @@ public class Flow {
    protected Node latestSuccess = UNDEF;
    protected Node nowTrying = UNDEF;
 
-   public void reset() {
+   public void reset (Object info) {
       this.latestSuccess = UNDEF;
       this.nowTrying = UNDEF;
-      fireReset();
+      fireReset(info);
    }
 
-   public void trying(String step) {
+   public void trying (String step) {
       this.nowTrying = node(step);
       fireTrying(step);
    }
 
-   public void success(String step) {
+   public void success (String step) {
       this.latestSuccess = node(step);
       this.nowTrying = UNDEF;
       fireSuccess(step);
@@ -67,7 +67,7 @@ public class Flow {
          fireCompletion();
    }
 
-   public void failure(Object info) {
+   public void failure (Object info) {
 
       // if the failed step was announced, it is easy
       Node failed = nowTrying;
@@ -96,11 +96,11 @@ public class Flow {
 
    // --- helpers for the foregoing section ---
 
-   protected void fireReset() {
+   protected void fireReset (Object info) {
       FlowListener[] l = new FlowListener[listeners.size()];
       listeners.copyInto(l);
       for (int i = 0; i < l.length; i++)
-         l[i].reset(this);
+         l[i].reset(this, info);
    }
 
    protected void fireTrying(String step) {

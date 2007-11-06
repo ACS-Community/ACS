@@ -763,7 +763,7 @@ public class TabPanel extends JPanel {
 			close();
 		}
 
-		public void reset (Flow f) {}
+		public void reset (Flow f, Object info) {}
 
 		public void trying (Flow f, String s) {}
 

@@ -90,7 +90,7 @@ public class DefaultChecklistPanel extends JPanel implements FlowListener {
 
 	Map<String, Stripe> name2stripe = new HashMap<String, Stripe>();
 
-	public void reset (Flow f) {
+	public void reset (Flow f, Object info) {
 		Iterator iter = name2stripe.values().iterator();
 		while (iter.hasNext()) {
 			Stripe s = (Stripe) iter.next();
