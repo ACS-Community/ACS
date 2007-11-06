@@ -29,5 +29,9 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acsASsources.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acsErrTypeAlarmSourceFactory.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/alarmsysteminterface.jar"/>
+	<classpathentry kind="var" path="INTROOT/lib/acsContainerServices.jar"/>
+	<classpathentry kind="var" path="INTROOT/lib/JavaContainerError.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/JavaContainerError.jar"/>
 	<classpathentry kind="output" path="object/eclipseOut"/>
 </classpath>
