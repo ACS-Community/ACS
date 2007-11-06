@@ -836,7 +836,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		// establish connect to the alarm system
 		try
 		{
-		        ACSAlarmSystemInterfaceFactory.init(logger, cdbAccess.getDAL());
+		        ACSAlarmSystemInterfaceFactory.init(managerContainerServices);
 		        alarmSource = ACSAlarmSystemInterfaceFactory.createSource("Manager");
 		}
 		catch (Throwable ex)
