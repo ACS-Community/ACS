@@ -24,6 +24,7 @@ import java.util.logging.Logger;
 
 import alma.acs.component.client.AdvancedComponentClient;
 import alma.acs.container.ContainerServices;
+import alma.acs.logging.AcsLogLevel;
 import alma.acs.nc.Consumer;
 import cern.cmw.mom.pubsub.impl.ACSJMSTopicConnectionImpl;
 import cern.laser.source.alarmsysteminterface.FaultState;
@@ -54,27 +55,19 @@ public class SourceClient {
 		}
 		contSvcs=svc;
 		logger=contSvcs.getLogger();
-		try {
-			initialize();
-		} catch (Throwable t) {
-			throw new Exception("Error building CategoryClient",t);
-		}
 	}
 	
 	/**
-	 * initialize the client
+	 * Connect to the sources NC
 	 * 
 	 * @throws Exception
 	 */
-	public void initialize() throws Exception {
+	public void connect() throws Exception {
+		logger.log(AcsLogLevel.DEBUG,"Connecting to source channel "+m_channelName);
 		m_consumer = new Consumer(m_channelName,contSvcs);
 		m_consumer.addSubscription(com.cosylab.acs.jms.ACSJMSMessageEntity.class,this);
 		m_consumer.consumerReady();
-	}
-	
-	public void tearDown() throws Exception {
-		m_consumer.disconnect();
-		m_consumer=null;
+		logger.log(AcsLogLevel.DEBUG,"Source channel "+m_channelName+" connected");
 	}
 	
 	/**
