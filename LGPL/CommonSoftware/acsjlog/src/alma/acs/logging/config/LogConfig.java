@@ -261,12 +261,18 @@ public class LogConfig {
 			try {
 				if (cdbLoggingConfigPath != null) {
 					String loggingConfigXml = getLogConfigXml(cdbLoggingConfigPath, "//" + CDBNAME_LoggingConfig);
-					if (loggingConfigXml == null) {
+					if (loggingConfigXml == null || loggingConfigXml.trim().isEmpty()) {
 						// the LoggingConfig child is mandatory for containers and manager
 						throw new LogConfigException("Parent node " + cdbLoggingConfigPath + " does not contain one LoggingConfig element.");
 					}
 					newLoggingConfig = LoggingConfig.unmarshalLoggingConfig(new StringReader(loggingConfigXml));
-				} 
+					try {
+						newLoggingConfig = LoggingConfig.unmarshalLoggingConfig(new StringReader(loggingConfigXml));
+					} catch (Throwable thr) {
+						log(Level.FINE, "Failed to unmarshal logging config xml '" + loggingConfigXml + "'.", thr);
+						throw thr;
+					}
+				}
 				else {
 					errMsg.append("CDB reference was set, but not the path to the logging configuration. ");
 				}
@@ -300,7 +306,13 @@ public class LogConfig {
 								String componentConfigXML = getLogConfigXml(cdbPath, xpath);
 								// the ComponentLogger xml child element is optional, we get a null if it's missing.
 								if (componentConfigXML != null) {
-									UnnamedLogger compLoggerConfig = UnnamedLogger.unmarshalUnnamedLogger(new StringReader(componentConfigXML));
+									UnnamedLogger compLoggerConfig;
+									try {
+										compLoggerConfig = UnnamedLogger.unmarshalUnnamedLogger(new StringReader(componentConfigXML));
+									} catch (Throwable thr) {
+										log(Level.FINE, "Failed to unmarshal component config xml '" + componentConfigXML + "'.", thr);
+										throw thr;
+									}
 									storeNamedLoggerConfig(loggerName, new LockableUnnamedLogger(compLoggerConfig));
 								}
 							}
