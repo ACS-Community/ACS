@@ -1,11 +1,89 @@
 1 - FINER: Logging configuration has been initialized, but not from CDB settings
+1 - ----------T--:--:----- INFO [testNoALarmBranch#testNoALarmBranch] -------------------------------
+1 - ----------T--:--:----- INFO [testNoALarmBranch#testNoALarmBranch] ComponentClientTestCase#setUp()
+1 - ----------T--:--:----- FINE [testNoALarmBranch#testNoALarmBranch] calling orbresolve_initial_references
+1 - ----------T--:--:----- FINE [testNoALarmBranch#testNoALarmBranch] POA activated
+1 - ----------T--:--:----- FINE [testNoALarmBranch#testNoALarmBranch] manager reference not yet available in method loginToManager; will try to find the manager first
+1 - ----------T--:--:----- FINEST [testNoALarmBranch#testNoALarmBranch] manager corbaloc 'corbaloc::xxxxxxx:yyyy/Manager' resolved
+1 - ----------T--:--:----- FINEST [testNoALarmBranch#testNoALarmBranch] manager narrow successful
+1 - ----------T--:--:----- FINE [testNoALarmBranch#testNoALarmBranch] Manager login done ...
 1 - ----------T--:--:----- DEBUG [almaalarmsystemsourcetestFactoryTest] Alarm system type: ACS
+1 - ----------T--:--:----- FINE [testNoALarmBranch#testNoALarmBranch] about to log out from manager
+1 - ----------T--:--:----- FINE [testNoALarmBranch#testNoALarmBranch] logged out from manager
+1 - ----------T--:--:----- FINE [testNoALarmBranch#testNoALarmBranch] about to destroy all POAs and the ORB
+1 - ----------T--:--:----- FINE [testNoALarmBranch#testNoALarmBranch] POAs and ORB destroyed successfully
+1 - FINER: Logging configuration has been initialized, but not from CDB settings
+1 - ----------T--:--:----- INFO [testACSAS#testACSAS] -------------------------------
+1 - ----------T--:--:----- INFO [testACSAS#testACSAS] ComponentClientTestCase#setUp()
+1 - ----------T--:--:----- FINE [testACSAS#testACSAS] calling orbresolve_initial_references
+1 - ----------T--:--:----- FINE [testACSAS#testACSAS] POA activated
+1 - ----------T--:--:----- FINE [testACSAS#testACSAS] manager reference not yet available in method loginToManager; will try to find the manager first
+1 - ----------T--:--:----- FINEST [testACSAS#testACSAS] manager corbaloc 'corbaloc::xxxxxxx:yyyy/Manager' resolved
+1 - ----------T--:--:----- FINEST [testACSAS#testACSAS] manager narrow successful
+1 - ----------T--:--:----- FINE [testACSAS#testACSAS] Manager login done ...
 1 - ----------T--:--:----- DEBUG [almaalarmsystemsourcetestFactoryTest] Alarm system type: ACS
+1 - ----------T--:--:----- FINE [testACSAS#testACSAS] about to log out from manager
+1 - ----------T--:--:----- FINE [testACSAS#testACSAS] logged out from manager
+1 - ----------T--:--:----- FINE [testACSAS#testACSAS] about to destroy all POAs and the ORB
+1 - ----------T--:--:----- FINE [testACSAS#testACSAS] POAs and ORB destroyed successfully
+1 - FINER: Logging configuration has been initialized, but not from CDB settings
+1 - ----------T--:--:----- INFO [testCERNAS#testCERNAS] -------------------------------
+1 - ----------T--:--:----- INFO [testCERNAS#testCERNAS] ComponentClientTestCase#setUp()
+1 - ----------T--:--:----- FINE [testCERNAS#testCERNAS] calling orbresolve_initial_references
+1 - ----------T--:--:----- FINE [testCERNAS#testCERNAS] POA activated
+1 - ----------T--:--:----- FINE [testCERNAS#testCERNAS] manager reference not yet available in method loginToManager; will try to find the manager first
+1 - ----------T--:--:----- FINEST [testCERNAS#testCERNAS] manager corbaloc 'corbaloc::xxxxxxx:yyyy/Manager' resolved
+1 - ----------T--:--:----- FINEST [testCERNAS#testCERNAS] manager narrow successful
+1 - ----------T--:--:----- FINE [testCERNAS#testCERNAS] Manager login done ...
 1 - ----------T--:--:----- DEBUG [almaalarmsystemsourcetestFactoryTest] Alarm system type: CERN
+1 - ----------T--:--:----- DEBUG [almaalarmsystemsourcetestFactoryTest] cmw-mom/acs-jms initialized
+1 - ----------T--:--:----- FINE [testCERNAS#testCERNAS] about to log out from manager
+1 - ----------T--:--:----- FINE [testCERNAS#testCERNAS] logged out from manager
+1 - ----------T--:--:----- FINE [testCERNAS#testCERNAS] about to destroy all POAs and the ORB
+1 - ----------T--:--:----- FINE [testCERNAS#testCERNAS] POAs and ORB destroyed successfully
+1 - FINER: Logging configuration has been initialized, but not from CDB settings
+1 - ----------T--:--:----- INFO [testWrongImplementationProp#testWrongImplementationProp] -------------------------------
+1 - ----------T--:--:----- INFO [testWrongImplementationProp#testWrongImplementationProp] ComponentClientTestCase#setUp()
+1 - ----------T--:--:----- FINE [testWrongImplementationProp#testWrongImplementationProp] calling orbresolve_initial_references
+1 - ----------T--:--:----- FINE [testWrongImplementationProp#testWrongImplementationProp] POA activated
+1 - ----------T--:--:----- FINE [testWrongImplementationProp#testWrongImplementationProp] manager reference not yet available in method loginToManager; will try to find the manager first
+1 - ----------T--:--:----- FINEST [testWrongImplementationProp#testWrongImplementationProp] manager corbaloc 'corbaloc::xxxxxxx:yyyy/Manager' resolved
+1 - ----------T--:--:----- FINEST [testWrongImplementationProp#testWrongImplementationProp] manager narrow successful
+1 - ----------T--:--:----- FINE [testWrongImplementationProp#testWrongImplementationProp] Manager login done ...
 1 - ----------T--:--:----- DEBUG [almaalarmsystemsourcetestFactoryTest] Alarm system type: ACS
+1 - ----------T--:--:----- FINE [testWrongImplementationProp#testWrongImplementationProp] about to log out from manager
+1 - ----------T--:--:----- FINE [testWrongImplementationProp#testWrongImplementationProp] logged out from manager
+1 - ----------T--:--:----- FINE [testWrongImplementationProp#testWrongImplementationProp] about to destroy all POAs and the ORB
+1 - ----------T--:--:----- FINE [testWrongImplementationProp#testWrongImplementationProp] POAs and ORB destroyed successfully
+1 - FINER: Logging configuration has been initialized, but not from CDB settings
+1 - ----------T--:--:----- INFO [testFaultStateCreation#testFaultStateCreation] -------------------------------
+1 - ----------T--:--:----- INFO [testFaultStateCreation#testFaultStateCreation] ComponentClientTestCase#setUp()
+1 - ----------T--:--:----- FINE [testFaultStateCreation#testFaultStateCreation] calling orbresolve_initial_references
+1 - ----------T--:--:----- FINE [testFaultStateCreation#testFaultStateCreation] POA activated
+1 - ----------T--:--:----- FINE [testFaultStateCreation#testFaultStateCreation] manager reference not yet available in method loginToManager; will try to find the manager first
+1 - ----------T--:--:----- FINEST [testFaultStateCreation#testFaultStateCreation] manager corbaloc 'corbaloc::xxxxxxx:yyyy/Manager' resolved
+1 - ----------T--:--:----- FINEST [testFaultStateCreation#testFaultStateCreation] manager narrow successful
+1 - ----------T--:--:----- FINE [testFaultStateCreation#testFaultStateCreation] Manager login done ...
 1 - ----------T--:--:----- DEBUG [almaalarmsystemsourcetestFactoryTest] Alarm system type: ACS
+1 - ----------T--:--:----- FINE [testFaultStateCreation#testFaultStateCreation] about to log out from manager
+1 - ----------T--:--:----- FINE [testFaultStateCreation#testFaultStateCreation] logged out from manager
+1 - ----------T--:--:----- FINE [testFaultStateCreation#testFaultStateCreation] about to destroy all POAs and the ORB
+1 - ----------T--:--:----- FINE [testFaultStateCreation#testFaultStateCreation] POAs and ORB destroyed successfully
+1 - FINER: Logging configuration has been initialized, but not from CDB settings
+1 - ----------T--:--:----- INFO [testAlarmSourceCreation#testAlarmSourceCreation] -------------------------------
+1 - ----------T--:--:----- INFO [testAlarmSourceCreation#testAlarmSourceCreation] ComponentClientTestCase#setUp()
+1 - ----------T--:--:----- FINE [testAlarmSourceCreation#testAlarmSourceCreation] calling orbresolve_initial_references
+1 - ----------T--:--:----- FINE [testAlarmSourceCreation#testAlarmSourceCreation] POA activated
+1 - ----------T--:--:----- FINE [testAlarmSourceCreation#testAlarmSourceCreation] manager reference not yet available in method loginToManager; will try to find the manager first
+1 - ----------T--:--:----- FINEST [testAlarmSourceCreation#testAlarmSourceCreation] manager corbaloc 'corbaloc::xxxxxxx:yyyy/Manager' resolved
+1 - ----------T--:--:----- FINEST [testAlarmSourceCreation#testAlarmSourceCreation] manager narrow successful
+1 - ----------T--:--:----- FINE [testAlarmSourceCreation#testAlarmSourceCreation] Manager login done ...
 1 - ----------T--:--:----- DEBUG [almaalarmsystemsourcetestFactoryTest] Alarm system type: ACS
 1 - ----------T--:--:----- FINE [almaalarmsystemsourcetestFactoryTest] Alarm source of SourceName connected to the logging
+1 - ----------T--:--:----- FINE [testAlarmSourceCreation#testAlarmSourceCreation] about to log out from manager
+1 - ----------T--:--:----- FINE [testAlarmSourceCreation#testAlarmSourceCreation] logged out from manager
+1 - ----------T--:--:----- FINE [testAlarmSourceCreation#testAlarmSourceCreation] about to destroy all POAs and the ORB
+1 - ----------T--:--:----- FINE [testAlarmSourceCreation#testAlarmSourceCreation] POAs and ORB destroyed successfully
 1 - 
 1 - 
 1 - OK (6 tests)
