@@ -2,6 +2,7 @@ package alma.alarmsystem.source;
 
 import java.io.StringReader;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.util.logging.Logger;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -19,7 +20,6 @@ import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
 import alma.acs.container.ContainerServicesBase;
 import alma.acs.logging.AcsLogLevel;
 import alma.acsErrTypeAlarmSourceFactory.ACSASFactoryNotInitedEx;
-import alma.acsErrTypeAlarmSourceFactory.ErrorGettingDALEx;
 import alma.acsErrTypeAlarmSourceFactory.FaultStateCreationErrorEx;
 import alma.acsErrTypeAlarmSourceFactory.SourceCreationErrorEx;
 import alma.acsErrTypeAlarmSourceFactory.wrappers.AcsJACSASFactoryNotInitedEx;
@@ -51,6 +51,9 @@ public class ACSAlarmSystemInterfaceFactory {
 	// The logger
 	private static Logger logger=null;
 	
+	// Container services
+	private static ContainerServicesBase containerServices;
+	
 	/**
 	 * Init the static variables of the class
 	 * This method has to be called before executing any other
@@ -61,10 +64,14 @@ public class ACSAlarmSystemInterfaceFactory {
 	 * @throws AcsJContainerServicesEx 
 	 */
 	public static void init(ContainerServicesBase containerServices) throws AcsJContainerServicesEx {
-		logger = containerServices.getLogger();
+		if (containerServices==null) {
+			throw new AcsJContainerServicesEx(new Exception("Invalid null ContainerServicesBase"));
+		}
+		ACSAlarmSystemInterfaceFactory.containerServices=containerServices;
+		ACSAlarmSystemInterfaceFactory.logger = containerServices.getLogger();
 		DAL dal = containerServices.getCDB();
-		if (logger==null) {
-			throw new IllegalArgumentException("Invalid null logger");
+		if (logger==null || dal==null) {
+			throw new IllegalArgumentException("Invalid DAL or Logger from ContainerServicesBase");
 		}
 		ACSAlarmSystemInterfaceFactory.logger = logger;
 		
@@ -74,7 +81,37 @@ public class ACSAlarmSystemInterfaceFactory {
 				logger.log(AcsLogLevel.DEBUG,"Alarm system type: ACS");
 			} else {
 				logger.log(AcsLogLevel.DEBUG,"Alarm system type: CERN");
+				try {
+					initCmwMom();
+				} catch (Throwable t) {
+					throw new AcsJContainerServicesEx(new Exception("Error initing cmw-mom",t));
+				}
 			}
+		}
+	}
+	
+	/**
+	 * Initialize cmw-mom (that in turn inits acs-jms) by setting the container services.
+	 * 
+	 * The container services must be set in a cmw-mom static variable in order the
+	 * messages are published into the NC.
+	 * The container services will be passed from this class down to the acs-jms classes.
+	 * 
+	 * @see cern.cmw.mom.pubsub.impl.ACSJMSTopicConnectionImpl
+	 */
+	private static void initCmwMom() throws Exception {
+		if (containerServices==null) {
+			throw new IllegalStateException("Trying to init cmw-mom with null ContainerServicesBase");
+		}
+		try {
+			Thread t = Thread.currentThread();
+			ClassLoader loader = t.getContextClassLoader();
+			Class cl =loader.loadClass("cern.cmw.mom.pubsub.impl.ACSJMSTopicConnectionImpl");
+			Field var = cl.getField("containerServices");
+			var.set(null, containerServices);
+			logger.log(AcsLogLevel.DEBUG,"cmw-mom/acs-jms initialized");
+		} catch (Throwable t) {
+			throw new Exception("Error setting ContainerServices into cmw-mom",t);
 		}
 	}
 	
@@ -198,10 +235,10 @@ public class ACSAlarmSystemInterfaceFactory {
 				  // must be replaced with with real calls, or at least the absence of such an object must be detected early.
 				  
 				  return (ACSAlarmSystemInterface)constructor.newInstance(sourceName,logger);
-			  } catch (Exception e) {
-				  System.out.println("ERROR: "+e.getMessage());
-				  e.printStackTrace();
-				  throw new AcsJSourceCreationErrorEx(e).toSourceCreationErrorEx();
+			  } catch (Throwable t) {
+				  System.out.println("ERROR: "+t.getMessage());
+				  t.printStackTrace();
+				  throw new AcsJSourceCreationErrorEx(t).toSourceCreationErrorEx();
 			  }
 		  }
 	  }
