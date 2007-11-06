@@ -60,6 +60,7 @@ import alma.acs.component.ComponentDescriptor;
 import alma.acs.component.ComponentLifecycle;
 import alma.acs.concurrent.DaemonThreadFactory;
 import alma.acs.container.corba.AcsCorba;
+import alma.acs.logging.AcsLogger;
 import alma.acs.logging.ClientLogManager;
 import alma.acs.logging.config.LogConfig;
 import alma.acs.logging.config.LogConfigException;
@@ -204,9 +205,19 @@ public class AcsContainer extends ContainerPOA
 			// in order to allow CERN alarm libs to get their static field for ContainerServices set.
 			String name = name(); // alarm system acts under container name
 			ThreadFactory threadFactory = new CleaningDaemonThreadFactory(name, m_logger);
-	        ContainerServicesImpl cs = new ContainerServicesImpl(m_managerProxy, m_acsCorba.createPOAForComponent("alarmSystem"), 
+
+			ContainerServicesImpl cs = new ContainerServicesImpl(m_managerProxy, m_acsCorba.createPOAForComponent("alarmSystem"), 
 	        		m_acsCorba, m_logger, m_managerProxy.getManagerHandle(), 
-	        		name, null, threadFactory);
+	        		name, null, threadFactory) {
+	        	private AcsLogger alarmLogger;
+	        	public AcsLogger getLogger() {
+	                if (alarmLogger == null) {
+	                	// @TODO perhaps get a container logger "alarms@containername"
+	                	alarmLogger = ClientLogManager.getAcsLogManager().getLoggerForContainer(getName());
+	                }
+	                return alarmLogger;
+	        	}	        	
+	        };
 			
 			ACSAlarmSystemInterfaceFactory.init(cs);
 		} catch (Throwable thr) {
