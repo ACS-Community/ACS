@@ -1,5 +1,7 @@
 package alma.acs.logging.config;
 
+import java.io.File;
+import java.io.FileReader;
 import java.io.StringReader;
 import java.util.Set;
 import java.util.logging.Logger;
@@ -10,6 +12,7 @@ import si.ijs.maci.LoggingConfigurable;
 
 import alma.acs.logging.ACSCoreLevel;
 import alma.acs.testsupport.TestLogger;
+import alma.acs.util.ReaderExtractor;
 import alma.maci.loggingconfig.LoggingConfig;
 import alma.maci.loggingconfig.UnnamedLogger;
 
@@ -161,8 +164,31 @@ public class LogConfigTest extends TestCase {
 	}
 	
 		
+	/**
+	 * Test for the XPath based {@link LogConfig#getLogConfigXml(String, String)} which extracts log info from the XML 
+	 * that we get from the CDB.
+	 */
 	public void testGetLogConfigXml() throws Exception {
 
+		File containerConfigFile = new File("frodoContainer.xml");
+		assertTrue("Cannot find file frodoContainer.xml. Check that file exists and test is run with working dir acsjlog/test.", containerConfigFile.exists());
+		String containerConfigXml = (new ReaderExtractor((new FileReader(containerConfigFile)))).extract();		
+		logger.info("containerConfigXml = " + containerConfigXml);
+		assertNotNull(containerConfigXml);
+		assertFalse(containerConfigXml.isEmpty());
+		
+		TestCDB testCDB = new TestCDB();
+		logConfig.setCDB(testCDB);
+		String cdbContainerConfigPath = "frodoContainer";
+		testCDB.addCurlToXmlMapping(cdbContainerConfigPath, containerConfigXml);
+		logConfig.setCDBLoggingConfigPath(cdbContainerConfigPath);
+
+		String xml = logConfig.getLogConfigXml(cdbContainerConfigPath, "//" + LogConfig.CDBNAME_LoggingConfig);
+		assertNotNull(xml);
+		logger.info("Got container logging config xml: " + xml);
+		LoggingConfig loggingConfig = LoggingConfig.unmarshalLoggingConfig(new StringReader(xml));
+		assertNotNull(loggingConfig);		
+		
 		String separateConfigComponent1 = "testComp1";
 		String separateConfigComponent2 = "testComp2";
 		String componentsXml =
@@ -173,14 +199,13 @@ public class LogConfigTest extends TestCase {
 			"</Components>";
 		logger.info("componentsXml = " + componentsXml);
 		String cdbComponentsPath = "MACI/Components";
-		TestCDB testCDB = new TestCDB();
 		logConfig.setCDB(testCDB);
 		testCDB.addCurlToXmlMapping(cdbComponentsPath, componentsXml);
 		logConfig.setCDBComponentPath(separateConfigComponent1, cdbComponentsPath);
 		logConfig.setCDBComponentPath(separateConfigComponent2, cdbComponentsPath);
 
 		String expr = "//_[@Name='" + separateConfigComponent2 + "']/ComponentLogger";
-		String xml = logConfig.getLogConfigXml("MACI/Components", expr);
+		xml = logConfig.getLogConfigXml("MACI/Components", expr);
 		assertNotNull(xml);
 		logger.info("Got component config xml: " + xml);
 		UnnamedLogger compLoggerConfig = UnnamedLogger.unmarshalUnnamedLogger(new StringReader(xml));
