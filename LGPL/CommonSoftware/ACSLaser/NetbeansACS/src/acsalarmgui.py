@@ -278,7 +278,8 @@ acsRequiredJars= [ \
 	   "cdbErrType.jar",\
 	   "JavaContainerError.jar",\
            "selector-1.1.jar",
-	   "acsalarmSchemaBindings.jar" ]
+	   "acsalarmSchemaBindings.jar", \
+	   "acsContainerServices.jar" ]
            
 # The properties for the Java Virtual Machine
 jvmProps = [ 
