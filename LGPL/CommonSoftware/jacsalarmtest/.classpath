@@ -11,5 +11,7 @@
 	<classpathentry kind="var" path="ACSROOT/lib/cdbjDAL.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/maci.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/maciErrType.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acsContainerServices.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/JavaContainerError.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
