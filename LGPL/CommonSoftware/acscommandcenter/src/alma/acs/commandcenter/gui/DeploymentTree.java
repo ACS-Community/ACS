@@ -125,6 +125,11 @@ public class DeploymentTree extends JTree {
 	protected void showContextMenu (MouseEvent evt) {
 
 		TreePath targetPath = this.getClosestPathForLocation(evt.getX(), evt.getY());
+		if (targetPath == null) {
+			// clicked into a totally empty tree (no manager shown): ignore click.
+			return;
+		}
+
 		setSelectionPath(targetPath);
 
 		if (targetPath.getPathCount() == 1) {
