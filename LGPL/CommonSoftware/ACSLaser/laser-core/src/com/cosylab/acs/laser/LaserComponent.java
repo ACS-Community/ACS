@@ -141,8 +141,6 @@ public class LaserComponent extends ComponentImplBase
 		this.contSvcs = cont;
 		this.logger=contSvcs.getLogger();
 		
-		logger.log(AcsLogLevel.DEBUG,"Initializing JMS");
-		ACSJMSTopicConnectionImpl.containerServices=cont;
 		defaultTopicConnectionFactory = new ACSJMSTopicConnectionFactory(cont);
 
 		TopicConnection tc;
