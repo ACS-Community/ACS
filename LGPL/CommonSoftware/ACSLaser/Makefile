@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.15 2007/11/05 14:11:24 acaproni Exp $"
+# "@(#) $Id: Makefile,v 1.16 2007/11/07 11:53:25 acaproni Exp $"
 #
 #
 
@@ -26,6 +26,7 @@ MODULES = laser-extlib \
       laser-guiplatform \
       NetbeansACS \
       alarm-clients \
+      alarmSourcePanel \
 	  alarmPanel \
       demo \
       managerTest 
