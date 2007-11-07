@@ -20,7 +20,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-sleep 15
+sleep 20
 ps >$ACS_TMP/tmp.txt
 awk '/maciContainer/ {print $1}' $ACS_TMP/tmp.txt >$ACS_TMP/awk.tmp
 kill -9 `cat $ACS_TMP/awk.tmp`

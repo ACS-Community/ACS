@@ -3,6 +3,7 @@ package alma.alarmsystem.test.manager;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Properties;
 import java.util.logging.Logger;
 
 import cern.laser.source.alarmsysteminterface.FaultState;
@@ -20,9 +21,6 @@ import alma.alarmsystem.clients.source.SourceListener;
 /**
  * Listen to alarms from sources and the alarm component.
  * The alarms are written to the stdout to be checked by tat.
- * 
- * The container is killed here by a separate thread. 
- * The file containing the PID of the container is passed in the command line
  * 
  * @author acaproni
  *
@@ -42,11 +40,7 @@ public class ManagerTest extends Thread implements SourceListener, CategoryListe
 	private ContainerServices containerServices;
 	
 	// The millisecs to wait for alarms
-	private static final int WAIT_TIME=120000;
-	
-	// The name of the file containing the PID number of the
-	// container to kill to trigger the alarm from the Manager
-	private String containerPIDFileName;
+	private static final int WAIT_TIME=90000;
 	
 	/**
 	 * Constructor.
@@ -56,11 +50,7 @@ public class ManagerTest extends Thread implements SourceListener, CategoryListe
 	 *  @param pidFileName The name of the file containing the PID of the
 	 *                     container to kill
 	 */
-	public ManagerTest(String pidFileName) {
-		if (pidFileName==null || pidFileName.length()==0) {
-			throw new IllegalArgumentException("Invalid PID file name");
-		}
-		containerPIDFileName=pidFileName;
+	public ManagerTest() {
 		// Get the logger
 		Logger logger = ClientLogManager.getAcsLogManager().getLoggerForApplication("Manager",true);
 		if (logger==null) {
@@ -157,56 +147,6 @@ public class ManagerTest extends Thread implements SourceListener, CategoryListe
 		str.append(">");
 		System.out.println(str.toString());
 	}
-	
-	/**
-	 * Kill the container whose PID number is written in the passed file
-	 * 
-	 * @param pidFile The name of the file containing the PID of the
-	 *                container to kill
-	 */
-	public void killContainer() {
-		if (containerPIDFileName==null || containerPIDFileName.length()==0) {
-			throw new IllegalStateException("No PID file name availbale");
-		}
-		File f = new File(containerPIDFileName);
-		if (!f.canRead()) {
-			System.out.println("Impossible to read "+containerPIDFileName);
-			return;
-		}
-		FileInputStream inF;
-		try {
-			inF=new FileInputStream(f);
-		} catch (Exception e) {
-			System.out.println("Error opening "+containerPIDFileName+": "+e.getMessage());
-			return;
-		}
-		byte[] buffer = new byte[128];
-		try {
-			inF.read(buffer);
-		} catch (IOException ioe) {
-			System.out.println("Error reading "+containerPIDFileName+": "+ioe.getMessage());
-		}
-		String str = new String(buffer);
-		int pid;
-		
-		try {
-			pid = Integer.parseInt(str.trim());
-		} catch (Exception e) {
-			System.out.println("Error parsing the pid file "+containerPIDFileName+": "+e.getMessage());
-			return;
-		}
-		String cmd = "kill -9 "+pid;
-		Runtime runTime = Runtime.getRuntime();
-		try {
-			Process proc=runTime.exec(cmd);
-			int t= proc.waitFor();
-			if (t!=0) {
-				throw new Exception("kill returned error "+t);
-			}
-		} catch (Exception e) {
-			System.out.println("Error executing command '"+cmd+"': "+e.getMessage());
-		}
-	}
 
 	/**
 	 * Start the program and wait to leave the manager enough time to detect
@@ -215,14 +155,11 @@ public class ManagerTest extends Thread implements SourceListener, CategoryListe
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		if (args==null || args.length!=1) {
-			System.out.println("Pass the file with the PID of the container to kill in the command line");
-		}
-		ManagerTest managertest=new ManagerTest(args[0]);
+		
+		ManagerTest managertest=new ManagerTest();
 		try {
 			Thread.sleep(3000);
 		} catch (InterruptedException e) {}
-		managertest.killContainer();
 		// Wait for alarms
 		System.out.println("Waiting");
 		try {
