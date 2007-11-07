@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: TestList.lite,v 1.1 2007/11/05 14:12:40 acaproni Exp $"
+# "@(#) $Id: TestList.lite,v 1.2 2007/11/07 18:52:30 acaproni Exp $"
 #
 # TestList
 #
@@ -30,6 +30,6 @@
 SOURCE managerTATEnvironment
 PROLOGUE managerTATPrologue
 
-1 managerTest	"managerTest"
+1 managerTest	"acsutilTATTestRunner managerTest"
 
 EPILOGUE acsutilTATEpilogue
