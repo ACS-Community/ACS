@@ -388,6 +388,7 @@ public class ACSAlarmDAOImpl implements AlarmDAO
 				throw new Exception("Error parsing "+alarmDef.getNodeName(),e);
 			}
 		}
+		System.out.println("Families found "+cdbFamilies.size());
 		generateAlarmsMap(cdbFamilies);
 		
 		loadReductionRules();
@@ -414,40 +415,56 @@ public class ACSAlarmDAOImpl implements AlarmDAO
 			FaultMember[] FMs = family.getFaultMember();
 			FaultMemberDefault defaultFM = family.getFaultMemberDefault();
 			FaultCode[] FCs = family.getFaultCode();
-			// Iterate over all the FMs
-			for (FaultMember member: FMs) {
-				alma.acs.alarmsystem.generated.Location loc = member.getLocation();
-				if (loc==null) {
-					loc = new alma.acs.alarmsystem.generated.Location();
-				}
-				if (loc.getBuilding()==null) {
-					loc.setBuilding("");
-				}
-				if (loc.getFloor()==null) {
-					loc.setFloor("");
-				}
-				if (loc.getMnemonic()==null) {
-					loc.setMnemonic("");
-				}
-				if (loc.getPosition()==null) {
-					loc.setPosition("");
-				}
-				if (loc.getRoom()==null) {
-					loc.setRoom("");
-				}
+			// Check the FCs
+			//
+			// There should be at least one FC in the CDB
+			if (FCs==null || FCs.length==0) {
+				logger.log(AcsLogLevel.WARNING,"No FC defined for family "+family.getName());
+				continue;
+			}
+			// Check the FM
+			//
+			// There should be at least one FM or a default FM defined in the CDB
+			if (defaultFM==null && (FMs==null || FMs.length==0)) {
+				logger.log(AcsLogLevel.WARNING,"No FM defined for family "+family.getName());
+				continue;
+			}
 			
-				String FM = member.getName();
-				if (FM.equals(DEFAULT_FM)) {
-					logger.log(AcsLogLevel.ERROR,"In the CDB, FM="+DEFAULT_FM+" in family "+FF+" is not allowed");
-				}
-				for (FaultCode code: FCs) {
-					int FC=code.getValue();
-					int priority = code.getPriority();
-					String action = code.getAction();
-					String cause = code.getCause();
-					String consequence = code.getConsequence();
-					String problemDesc = code.getProblemDescription();
-					boolean instant = code.getInstant();
+			// Iterate over the FCs
+			for (FaultCode code: FCs) {
+				int FC=code.getValue();
+				int priority = code.getPriority();
+				String action = code.getAction();
+				String cause = code.getCause();
+				String consequence = code.getConsequence();
+				String problemDesc = code.getProblemDescription();
+				boolean instant = code.getInstant();
+				// Iterate over all the FMs
+				for (FaultMember member: FMs) {
+					alma.acs.alarmsystem.generated.Location loc = member.getLocation();
+					if (loc==null) {
+						loc = new alma.acs.alarmsystem.generated.Location();
+					}
+					if (loc.getBuilding()==null) {
+						loc.setBuilding("");
+					}
+					if (loc.getFloor()==null) {
+						loc.setFloor("");
+					}
+					if (loc.getMnemonic()==null) {
+						loc.setMnemonic("");
+					}
+					if (loc.getPosition()==null) {
+						loc.setPosition("");
+					}
+					if (loc.getRoom()==null) {
+						loc.setRoom("");
+					}
+				
+					String FM = member.getName();
+					if (FM.equals(DEFAULT_FM)) {
+						logger.log(AcsLogLevel.ERROR,"In the CDB, FM="+DEFAULT_FM+" in family "+FF+" is not allowed");
+					}
 					AlarmImpl alarm = new AlarmImpl(); 
 					
 					alarm.setMultiplicityChildrenIds(new HashSet());
@@ -487,45 +504,63 @@ public class ACSAlarmDAOImpl implements AlarmDAO
 					}
 					
 					logger.log(AcsLogLevel.DEBUG,"Alarm added "+alarm.getAlarmId());
-					
-					// Add the default
-					if (defaultFM!=null) {
-						AlarmImpl defaultAlarm = new AlarmImpl(); 
-						
-						defaultAlarm.setMultiplicityChildrenIds(new HashSet());
-						defaultAlarm.setMultiplicityParentIds(new HashSet());
-						defaultAlarm.setNodeChildrenIds(new HashSet());
-						defaultAlarm.setNodeParentIds(new HashSet());
-						
-						defaultAlarm.setAction(action);
-						defaultAlarm.setCategories(new HashSet<Category>());
-						defaultAlarm.setCause(cause);
-						defaultAlarm.setConsequence(consequence);
-						defaultAlarm.setProblemDescription(problemDesc);
-						try {
-							defaultAlarm.setHelpURL(new URL(helpUrl));
-						} catch (MalformedURLException e) {
-							defaultAlarm.setHelpURL(null);
-						}
-						
-						defaultAlarm.setInstant(instant);
-						location = new Location("0",loc.getFloor(),loc.getMnemonic(),loc.getPosition(),loc.getRoom());
-						defaultAlarm.setLocation(location);
-						defaultAlarm.setPiquetEmail(contactPerson.getEmail());
-						defaultAlarm.setPiquetGSM(contactPerson.getGsm());
-						defaultAlarm.setPriority(priority);
-						responsible = new ResponsiblePerson(0,contactPerson.getName(),"",contactPerson.getEmail(),contactPerson.getGsm(),"");
-						defaultAlarm.setResponsiblePerson(responsible);
-						srcDef = new SourceDefinition(source,"SOURCE","",15,1);
-						src = new Source(srcDef,responsible);
-						defaultAlarm.setSource(src);
-						defaultAlarm.setIdentifier(defaultAlarm.getTriplet().toIdentifier());
-						Triplet triplet = new Triplet(FF,DEFAULT_FM,FC);
-						defaultAlarm.setTriplet(triplet);
-						defaultAlarm.setIdentifier(triplet.toIdentifier());
-						alarmDefs.put(defaultAlarm.getAlarmId(), defaultAlarm);
-						logger.log(AcsLogLevel.DEBUG,"Default alarm added "+defaultAlarm.getAlarmId());
+				}
+				// Add the default
+				if (defaultFM!=null) {
+					alma.acs.alarmsystem.generated.Location loc = defaultFM.getLocation();
+					if (loc==null) {
+						loc = new alma.acs.alarmsystem.generated.Location();
 					}
+					if (loc.getBuilding()==null) {
+						loc.setBuilding("");
+					}
+					if (loc.getFloor()==null) {
+						loc.setFloor("");
+					}
+					if (loc.getMnemonic()==null) {
+						loc.setMnemonic("");
+					}
+					if (loc.getPosition()==null) {
+						loc.setPosition("");
+					}
+					if (loc.getRoom()==null) {
+						loc.setRoom("");
+					}
+					AlarmImpl defaultAlarm = new AlarmImpl(); 
+					
+					defaultAlarm.setMultiplicityChildrenIds(new HashSet());
+					defaultAlarm.setMultiplicityParentIds(new HashSet());
+					defaultAlarm.setNodeChildrenIds(new HashSet());
+					defaultAlarm.setNodeParentIds(new HashSet());
+					
+					defaultAlarm.setAction(action);
+					defaultAlarm.setCategories(new HashSet<Category>());
+					defaultAlarm.setCause(cause);
+					defaultAlarm.setConsequence(consequence);
+					defaultAlarm.setProblemDescription(problemDesc);
+					try {
+						defaultAlarm.setHelpURL(new URL(helpUrl));
+					} catch (MalformedURLException e) {
+						defaultAlarm.setHelpURL(null);
+					}
+					
+					defaultAlarm.setInstant(instant);
+					Location location = new Location("0",loc.getFloor(),loc.getMnemonic(),loc.getPosition(),loc.getRoom());
+					defaultAlarm.setLocation(location);
+					defaultAlarm.setPiquetEmail(contactPerson.getEmail());
+					defaultAlarm.setPiquetGSM(contactPerson.getGsm());
+					defaultAlarm.setPriority(priority);
+					ResponsiblePerson responsible = new ResponsiblePerson(0,contactPerson.getName(),"",contactPerson.getEmail(),contactPerson.getGsm(),"");
+					defaultAlarm.setResponsiblePerson(responsible);
+					SourceDefinition srcDef = new SourceDefinition(source,"SOURCE","",15,1);
+					Source src = new Source(srcDef,responsible);
+					defaultAlarm.setSource(src);
+					defaultAlarm.setIdentifier(defaultAlarm.getTriplet().toIdentifier());
+					Triplet triplet = new Triplet(FF,DEFAULT_FM,FC);
+					defaultAlarm.setTriplet(triplet);
+					defaultAlarm.setIdentifier(triplet.toIdentifier());
+					alarmDefs.put(defaultAlarm.getAlarmId(), defaultAlarm);
+					logger.log(AcsLogLevel.DEBUG,"Default alarm added "+defaultAlarm.getAlarmId());
 				}
 			}
 		}
