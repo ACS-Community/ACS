@@ -3,27 +3,32 @@
  */
 package com.cosylab.acs.maci.manager.app;
 
-import java.awt.event.ComponentListener;
-import java.lang.reflect.Method;
 import java.util.concurrent.ThreadFactory;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.omg.CORBA.NO_IMPLEMENT;
 import org.omg.CORBA.ORB;
-import org.omg.CORBA.Object;
+import org.omg.CORBA.Policy;
+import org.omg.PortableServer.IdAssignmentPolicyValue;
+import org.omg.PortableServer.LifespanPolicyValue;
 import org.omg.PortableServer.POA;
+import org.omg.PortableServer.RequestProcessingPolicyValue;
 import org.omg.PortableServer.Servant;
+import org.omg.PortableServer.ServantRetentionPolicyValue;
+import org.omg.PortableServer.POAPackage.AdapterAlreadyExists;
+import org.omg.PortableServer.POAPackage.AdapterNonExistent;
+import org.omg.PortableServer.POAPackage.InvalidPolicy;
 
 import com.cosylab.CDB.DAL;
 
 import si.ijs.maci.AdministratorOperations;
-import si.ijs.maci.ComponentSpec;
 
 import alma.ACS.OffShoot;
 import alma.ACS.OffShootHelper;
 import alma.ACS.OffShootOperations;
 import alma.ACSErrTypeCommon.wrappers.AcsJBadParameterEx;
+import alma.ACSErrTypeCommon.wrappers.AcsJUnexpectedExceptionEx;
 import alma.JavaContainerError.wrappers.AcsJContainerEx;
 import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
 import alma.acs.container.AdvancedContainerServices;
@@ -42,7 +47,8 @@ public class ManagerContainerServices implements ContainerServicesBase,
 	private final Logger logger;
     private AcsLogger componentLogger;
 	private final POA clientPOA;
-	private final POA offshootPoa;
+	private POA offshootPoa;
+	private Policy[] offshootPolicies;
 	
 	/**
 	 * @param orb
@@ -53,7 +59,7 @@ public class ManagerContainerServices implements ContainerServicesBase,
 	{
 		this.orb = orb;
 		this.clientPOA = clientPOA;
-		this.offshootPoa = clientPOA; // @TODO: perhaps use child POA 
+		this.offshootPoa = null; // on demand  
 		this.dal = dal;
 		this.logger = logger;
 		
@@ -66,16 +72,12 @@ public class ManagerContainerServices implements ContainerServicesBase,
 		throws AcsJContainerServicesEx
 	{
 		checkOffShootServant(servant);
-				
+		
 		OffShoot shoot = null;
 		try  {
-			if (servant == null) {
-				String msg = "activateOffShoot called with missing parameter.";
-				AcsJContainerEx ex = new AcsJContainerEx();
-				ex.setContextInfo(msg);
-				throw ex;
-			}
-			
+
+			checkOffShootPOA();
+
 			org.omg.CORBA.Object actObj = null;
 			offshootPoa.activate_object(servant);
 			actObj = offshootPoa.servant_to_reference(servant);
@@ -105,12 +107,6 @@ public class ManagerContainerServices implements ContainerServicesBase,
 		throws AcsJContainerServicesEx
 	{
 		checkOffShootServant(servant);
-		if (servant == null) {
-			String msg = "deactivateOffShoot called with missing parameter.";
-			AcsJContainerServicesEx ex = new AcsJContainerServicesEx();
-			ex.setContextInfo(msg);
-			throw ex;
-		}
 		
 		byte[] id = null;
 		try {
@@ -124,6 +120,49 @@ public class ManagerContainerServices implements ContainerServicesBase,
 			AcsJContainerServicesEx ex = new AcsJContainerServicesEx(thr);
 			ex.setContextInfo(msg);
 			throw ex;
+		}
+	}
+
+	/**
+	 * Creates the shared offshoot poa on demand 
+	 */
+	public void checkOffShootPOA() throws AcsJContainerEx, AcsJUnexpectedExceptionEx {
+		final String offshootPoaName = "offshootPoa";
+		
+		synchronized (clientPOA) {
+			try {
+				// can we reuse it?
+				offshootPoa = clientPOA.find_POA(offshootPoaName, false);
+			} catch (AdapterNonExistent e) {
+				logger.finest("will have to create offshoot POA");
+
+				if (offshootPolicies == null) {
+					offshootPolicies = new Policy[4];
+
+					offshootPolicies[0] = clientPOA.create_id_assignment_policy(IdAssignmentPolicyValue.SYSTEM_ID);
+
+					offshootPolicies[1] = clientPOA.create_lifespan_policy(LifespanPolicyValue.TRANSIENT);
+
+					offshootPolicies[2] = clientPOA
+							.create_request_processing_policy(RequestProcessingPolicyValue.USE_ACTIVE_OBJECT_MAP_ONLY);
+
+					offshootPolicies[3] = clientPOA
+							.create_servant_retention_policy(ServantRetentionPolicyValue.RETAIN);
+				}
+
+				try {
+					offshootPoa = clientPOA.create_POA(offshootPoaName, clientPOA.the_POAManager(), offshootPolicies);
+
+					logger.finest("successfully created offshoot POA");
+				} catch (InvalidPolicy ex) {
+					AcsJContainerEx ex2 = new AcsJContainerEx(ex);
+					ex2.setContextInfo("Attempted to create offshoot POA with invalid policies.");
+					throw ex2;
+				} catch (AdapterAlreadyExists ex) {
+					// we sync on componentPOA, so this should never happen
+					throw new AcsJUnexpectedExceptionEx(ex);
+				}
+			}
 		}
 	}
 
