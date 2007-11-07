@@ -22,13 +22,9 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.logging.Logger;
 
-import com.cosylab.acs.jms.ACSJMSMessage;
 import com.cosylab.acs.jms.ACSJMSMessageEntity;
-import com.cosylab.acs.jms.ACSJMSObjectMessage;
-import com.cosylab.acs.jms.ACSJMSTextMessage;
 
 import alma.acs.container.ContainerServices;
-import alma.acs.container.ContainerServicesBase;
 import alma.acs.logging.AcsLogLevel;
 import alma.acs.nc.Consumer;
 import cern.laser.source.alarmsysteminterface.FaultState;
@@ -152,5 +148,12 @@ public class SourceClient {
 				listener.faultStateReceived(faultState);
 			}
 		}
+	}
+	
+	public void finalize() throws Throwable {
+		if (m_consumer!=null) {
+			m_consumer.disconnect();
+		}
+		super.finalize();
 	}
 }
