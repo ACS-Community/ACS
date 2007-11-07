@@ -388,7 +388,6 @@ public class ACSAlarmDAOImpl implements AlarmDAO
 				throw new Exception("Error parsing "+alarmDef.getNodeName(),e);
 			}
 		}
-		System.out.println("Families found "+cdbFamilies.size());
 		generateAlarmsMap(cdbFamilies);
 		
 		loadReductionRules();
