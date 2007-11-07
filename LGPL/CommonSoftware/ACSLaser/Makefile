@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.17 2007/11/07 14:07:04 acaproni Exp $"
+# "@(#) $Id: Makefile,v 1.18 2007/11/07 17:57:16 acaproni Exp $"
 #
 #
 
@@ -17,10 +17,10 @@ MODULES = laser-extlib \
 	  cmw-mom \
 	  laser-util \
 	  laser-source \
-	  alarm-clients \
 	  gp-openide \
       gp \
       laser-core \
+      alarm-clients \
       laser-client \
       laser-definition \
       laser-console \
