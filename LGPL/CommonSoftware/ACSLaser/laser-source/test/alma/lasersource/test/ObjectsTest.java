@@ -19,7 +19,7 @@
 
 /** 
  * @author  almadev   
- * @version $Id: ObjectsTest.java,v 1.4 2007/09/11 13:20:15 acaproni Exp $
+ * @version $Id: ObjectsTest.java,v 1.5 2007/11/07 10:24:56 acaproni Exp $
  * @since    
  */
 
@@ -29,12 +29,8 @@ import java.util.logging.Logger;
 
 import org.omg.CORBA.ORB;
 
-import si.ijs.maci.Manager;
-import si.ijs.maci.ManagerHelper;
-
+import alma.acs.component.client.ComponentClientTestCase;
 import alma.acs.logging.ClientLogManager;
-
-import junit.framework.TestCase;
 
 import alma.alarmsystem.source.ACSAlarmSystemInterfaceFactory;
 import alma.alarmsystem.source.ACSFaultState;
@@ -45,7 +41,7 @@ import cern.laser.source.alarmsysteminterface.impl.AlarmSystemInterfaceProxy;
 
 import alma.acsErrTypeAlarmSourceFactory.ErrorGettingDALEx;
 
-public class ObjectsTest extends TestCase {
+public class ObjectsTest extends ComponentClientTestCase {
 	
 	private String faultFamily = "TestFaultFamily";
 	private String faultMember = "TestFaultMember";
@@ -57,14 +53,7 @@ public class ObjectsTest extends TestCase {
 
 	public void setUp() throws Exception {
 		super.setUp();
-		// Init the AS factory
-		ORB orb = TestUtil.getORB();
-		assertNotNull("Error getting the orb",orb);
-		Manager manager = TestUtil.getManager();
-		assertNotNull("Error getting the manager",manager);
-		Logger logger = TestUtil.getLogger(getClass().getName());
-		assertNotNull("Error getting the logger",logger);
-		ACSAlarmSystemInterfaceFactory.init(logger,TestUtil.getDAL(manager));
+		ACSAlarmSystemInterfaceFactory.init(super.getContainerServices());
 		assertFalse("Using ACS implementation instead of CERN",ACSAlarmSystemInterfaceFactory.usingACSAlarmSystem());
 	}
 	

@@ -19,15 +19,13 @@
 
 /** 
  * @author  almadev   
- * @version $Id: SendTest.java,v 1.4 2006/10/10 09:43:59 acaproni Exp $
+ * @version $Id: SendTest.java,v 1.5 2007/11/07 10:24:56 acaproni Exp $
  * @since    
  */
 
 package alma.lasersource.test;
 
 import org.omg.CORBA.ORB;
-import si.ijs.maci.Manager;
-import si.ijs.maci.ManagerHelper;
 
 import alma.acs.alarmsystem.binding.ACSLaserFaultStateImpl;
 import alma.alarmsystem.source.ACSAlarmSystemInterfaceFactory;
@@ -36,7 +34,6 @@ import alma.alarmsystem.source.ACSAlarmSystemInterface;
 
 import cern.laser.source.alarmsysteminterface.impl.FaultStateImpl;
 
-import junit.framework.TestCase;
 
 import alma.acs.logging.ClientLogManager;
 
@@ -50,6 +47,7 @@ import java.sql.Timestamp;
 import alma.acs.nc.Consumer;
 
 import alma.acs.component.client.AdvancedComponentClient;
+import alma.acs.component.client.ComponentClientTestCase;
 import alma.acs.container.ContainerServices;
 
 import cern.cmw.mom.pubsub.impl.ACSJMSTopicConnectionImpl;
@@ -67,9 +65,9 @@ import cern.laser.source.alarmsysteminterface.impl.message.ASIMessage;
  * Each message is checked for integrity
  *
  */
-public class SendTest extends TestCase {
+public class SendTest extends ComponentClientTestCase {
 	
-	public SendTest() {
+	public SendTest() throws Exception {
 		super("SendTest");
 	}
 	
@@ -79,7 +77,7 @@ public class SendTest extends TestCase {
 	
 	private final int ITERATIONS=20000;
 	
-	// The number of the message recived
+	// The number of the message received
 	// Each FS has the FM and FM containing that number and the FC=num of msg
 	// In this way we can check the integrity
 	private int nMsgReceived;
@@ -89,29 +87,19 @@ public class SendTest extends TestCase {
 	private String faultFamily="AlarmSource";
 	private String faultMember ="ALARM_SOURCE_ANTENNA";
 	
-	private AdvancedComponentClient m_client;
 	
 	public void setUp() throws Exception {
 		super.setUp();
 		nMsgReceived=0;
-		Logger logger = TestUtil.getLogger(getClass().getName());
-		assertNotNull("Error getting the logger",logger);
-		String managerLoc = System.getProperty("ACS.manager");
-        if (managerLoc == null) {
-                System.out.println("Java property 'ACS.manager' must be set to the corbaloc of the ACS manager!");
-                System.exit(-1);
-        }
-        m_client = new AdvancedComponentClient(logger,managerLoc,"TestSendLaserSources");
-        assertNotNull("Error creating the AdvancedComponentClient",m_client);
 
-        m_contSvcs=m_client.getContainerServices();
+        m_contSvcs=super.getContainerServices();
         assertNotNull("Error getting the ContainerServices",m_contSvcs);
-        ACSJMSTopicConnectionImpl.containerServices=m_contSvcs;
+        ACSAlarmSystemInterfaceFactory.init(m_contSvcs);
         
         // Check if the CRN AS is in use
 		assertFalse("Using ACS implementation instead of CERN",ACSAlarmSystemInterfaceFactory.usingACSAlarmSystem());
 		
-		m_consumer = new Consumer(m_channelName,m_client.getContainerServices());
+		m_consumer = new Consumer(m_channelName,m_contSvcs);
 		assertNotNull("Error instantiating the Consumer",m_consumer);
 		m_consumer.addSubscription(com.cosylab.acs.jms.ACSJMSMessageEntity.class,this);
 		m_consumer.consumerReady();
@@ -120,13 +108,12 @@ public class SendTest extends TestCase {
 	public void tearDown() throws Exception {
 		m_consumer.disconnect();
 		m_consumer=null;
-		m_client=null;
 		ACSAlarmSystemInterfaceFactory.done();
 		super.tearDown();
 		
 	}
 	
-	// Send one message to check if the message recieved 
+	// Send one message to check if the message received 
 	// from the NC is coherent
 	public void testSend() throws Exception {
 		
