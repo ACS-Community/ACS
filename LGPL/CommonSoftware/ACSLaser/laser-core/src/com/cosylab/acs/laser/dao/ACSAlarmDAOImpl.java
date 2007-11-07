@@ -559,6 +559,10 @@ public class ACSAlarmDAOImpl implements AlarmDAO
 					defaultAlarm.setTriplet(triplet);
 					defaultAlarm.setIdentifier(triplet.toIdentifier());
 					alarmDefs.put(defaultAlarm.getAlarmId(), defaultAlarm);
+					if (!srcDefs.containsKey(source)) {
+						srcDefs.put(src.getSourceId(),src);
+						logger.log(AcsLogLevel.DEBUG,"Source "+src.getName()+" (id="+src.getSourceId()+") added");
+					}
 					logger.log(AcsLogLevel.DEBUG,"Default alarm added "+defaultAlarm.getAlarmId());
 				}
 			}
