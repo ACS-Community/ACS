@@ -69,6 +69,7 @@ public class SourcePanel extends JFrame {
 	 * Constructor
 	 */
 	public SourcePanel() throws Exception {
+		setTitle("AlarmSourcePanel");
 		initializeGUI();
 		try {
 			initializeACS();
