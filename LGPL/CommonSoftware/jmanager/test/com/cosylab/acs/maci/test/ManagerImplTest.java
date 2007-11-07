@@ -106,7 +106,7 @@ public class ManagerImplTest extends TestCase
 		manager = new ManagerImpl();
 		
 		corbaServce = new DefaultCORBAService(logger);
-		manager.initialize(null, new CDBAccess(corbaServce.getORB(), logger), null, logger);
+		manager.initialize(null, new CDBAccess(corbaServce.getORB(), logger), null, logger, null);
 		//manager.setDomain(domain);
 	
 		transport = new TestTransport();
