@@ -22,14 +22,17 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.logging.Logger;
 
-import alma.acs.component.client.AdvancedComponentClient;
+import com.cosylab.acs.jms.ACSJMSMessage;
+import com.cosylab.acs.jms.ACSJMSMessageEntity;
+import com.cosylab.acs.jms.ACSJMSObjectMessage;
+import com.cosylab.acs.jms.ACSJMSTextMessage;
+
 import alma.acs.container.ContainerServices;
+import alma.acs.container.ContainerServicesBase;
 import alma.acs.logging.AcsLogLevel;
 import alma.acs.nc.Consumer;
-import cern.cmw.mom.pubsub.impl.ACSJMSTopicConnectionImpl;
 import cern.laser.source.alarmsysteminterface.FaultState;
 import cern.laser.source.alarmsysteminterface.impl.ASIMessageHelper;
-import cern.laser.source.alarmsysteminterface.impl.FaultStateImpl;
 import cern.laser.source.alarmsysteminterface.impl.XMLMessageHelper;
 import cern.laser.source.alarmsysteminterface.impl.message.ASIMessage;
 
@@ -65,7 +68,7 @@ public class SourceClient {
 	public void connect() throws Exception {
 		logger.log(AcsLogLevel.DEBUG,"Connecting to source channel "+m_channelName);
 		m_consumer = new Consumer(m_channelName,contSvcs);
-		m_consumer.addSubscription(com.cosylab.acs.jms.ACSJMSMessageEntity.class,this);
+		m_consumer.addSubscription(ACSJMSMessageEntity.class,this);
 		m_consumer.consumerReady();
 		logger.log(AcsLogLevel.DEBUG,"Source channel "+m_channelName+" connected");
 	}
@@ -83,11 +86,11 @@ public class SourceClient {
 	 * @param msg The message received from the NC
 	 * @see alma.acs.nc.Consumer
 	 */
-	public void receive(com.cosylab.acs.jms.ACSJMSMessageEntity msg) {
+	public void receive(ACSJMSMessageEntity msg) {
 		ASIMessage asiMsg;
 		Collection<FaultState> faultStates;
 		try {
-			asiMsg = XMLMessageHelper.unmarshal(msg.text);
+			asiMsg=XMLMessageHelper.unmarshal(msg.text);
 			faultStates = ASIMessageHelper.unmarshal(asiMsg);
 		} catch (Exception e) {
 			System.out.println("Exception caught while unmarshalling the msg "+e.getMessage());
