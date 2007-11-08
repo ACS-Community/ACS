@@ -117,7 +117,7 @@ public javax.swing.JPanel getMainPanel() {
  * @return java.lang.Class
  */
 public Class getSelectedClass() {
-	return Field.values()[getSelectedIndex()].getClass();
+	return Field.values()[getSelectedIndex()].getType();
 }
 /**
  * Insert the method's description here.
@@ -186,14 +186,18 @@ public void setDoubleEditor(FilterParameterPanel newDoubleEditor) {
 public void setEditor(Class c) {
 	if (c == String.class) {
 		replaceEditor(stringEditor);
-	} if (c == Integer.class) {
+	} else if (c == Integer.class) {
 		if (getSelectedIndex()==1) {
 			replaceEditor(typeEditor);
 		} else { 
 			replaceEditor(intEditor);
 		}
-	} if (c == java.util.Date.class)
+	} else if (c == java.util.Date.class) {
 		replaceEditor(dateEditor);
+	} else {
+		JOptionPane.showMessageDialog(null, "Unknow class: "+c.getName(), "Error", JOptionPane.ERROR_MESSAGE);
+		System.err.println("Unknow class: "+c.getName());
+	}
 }
 /**
  * Insert the method's description here.
