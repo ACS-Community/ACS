@@ -174,7 +174,7 @@ public class ManagerImplSerializationTest extends TestCase {
 		HandleDataStore clients = newManager.getClients();
 		// the client now is still in stored data
 		assertEquals(clients.first(), 1);
-		newManager.initialize(null,null,null,null);
+		newManager.initialize(null,null,null,null,null);
 		// now wait for timer task to remove client
 		try {
 			Thread.sleep(1000);
@@ -221,7 +221,7 @@ public class ManagerImplSerializationTest extends TestCase {
 		HandleDataStore activators = newManager.getContainers();
 		// the client now is still in stored data
 		assertEquals(activators.first(), 1);
-		newManager.initialize(null,null,null,null);
+		newManager.initialize(null,null,null,null,null);
 		// now wait for timer task to remove client
 		try {
 			Thread.sleep(1000);
