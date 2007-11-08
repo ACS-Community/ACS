@@ -19,7 +19,7 @@ static struct option long_options[] = {
         {"instance",    required_argument, 0, 'i'},
         {"host",        required_argument, 0, 'H'},
         {"daemon",      required_argument, 0, 'd'},
-        {"aditional",   required_argument, 0, 'a'},
+        {"additional",   required_argument, 0, 'a'},
         {0, 0, 0, '\0'}};
 
 void 
@@ -30,7 +30,7 @@ usage(const char *argv)
     ACE_OS::printf ("\t   -i, --instance     ACS instance to stop\n");
     ACE_OS::printf ("\t   -H, --host         Host where to stop ACS\n");
     ACE_OS::printf ("\t   -d, --daemon       Daemon reference\n");
-    ACE_OS::printf ("\t   -a, --aditional    passthrough options for stopACS\n");
+    ACE_OS::printf ("\t   -a, --additional    passthrough options for stopACS. put option between \"\"\n");
 }
 
 
@@ -40,11 +40,11 @@ main (int argc, char *argv[])
     int c, instance = -1;
     ACE_CString daemonRef;
     ACE_CString hostName;
-    char *aditional=NULL;
+    ACE_CString additional;
     for(;;)
         {
         int option_index = 0;
-        c = getopt_long (argc, argv, "hi:d:H:a",
+        c = getopt_long (argc, argv, "hi:d:H:a:",
                          long_options, &option_index); 
         if (c==-1) break;
         switch(c)
@@ -62,7 +62,7 @@ main (int argc, char *argv[])
                     hostName = optarg;
                     break;
                 case 'a':
-                    aditional = argv[option_index];
+                    additional = optarg;
                     break;
             }
         }
@@ -120,9 +120,9 @@ main (int argc, char *argv[])
         }
 
 
-                ACS_SHORT_LOG((LM_INFO, "Calling stop_acs(%d, %s).", instance, aditional));
+                ACS_SHORT_LOG((LM_INFO, "Calling stop_acs(%d, %s).", instance, additional.c_str()));
 
-                daemon->stop_acs(instance, aditional);
+                daemon->stop_acs(instance, additional.c_str());
 
                 ACS_SHORT_LOG((LM_INFO, "ACS stop message issued."));
 

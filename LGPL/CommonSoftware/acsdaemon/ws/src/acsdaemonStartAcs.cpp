@@ -20,7 +20,7 @@ static struct option long_options[] = {
     {"instance", required_argument, 0, 'i'},
     {"host", required_argument, 0, 'H'},
     {"daemon", required_argument, 0, 'd'},
-    {"aditional", required_argument, 0, 'a'},
+    {"additional", required_argument, 0, 'a'},
     {0, 0, 0, '\0'}
 };
 
@@ -36,7 +36,7 @@ void usage(const char *argv)
     ACE_OS::printf("\t   -d, --daemon       Daemon reference\n");
     ACE_OS::
 	printf
-	("\t   -a, --aditional    passthrough options for startACS\n");
+	("\t   -a, --additional    passthrough options for startACS. Put options between \"\"\n");
 }
 
 int main(int argc, char *argv[])
@@ -44,10 +44,10 @@ int main(int argc, char *argv[])
     int c, instance = -1;
     ACE_CString daemonRef;
     ACE_CString hostName;
-    char *aditional = NULL;
+    ACE_CString additional;
     for (;;) {
 	int option_index = 0;
-	c = getopt_long(argc, argv, "hi:d:H:a",
+	c = getopt_long(argc, argv, "hi:d:H:a:",
 			long_options, &option_index);
 	if (c == -1)
 	    break;
@@ -65,7 +65,7 @@ int main(int argc, char *argv[])
 	    hostName = optarg;
 	    break;
 	case 'a':
-	    aditional = argv[option_index];
+	    additional = optarg;
 	    break;
 	}
     }
@@ -125,8 +125,8 @@ int main(int argc, char *argv[])
 	}
 
 	ACS_SHORT_LOG((LM_INFO, "Calling start_acs(%d, %s).", instance,
-		       aditional));
-	daemon->start_acs(instance, aditional);
+		       additional.c_str()));
+	daemon->start_acs(instance, additional.c_str());
 	ACS_SHORT_LOG((LM_INFO, "ACS start message issued."));
 
     }

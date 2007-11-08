@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: acsdaemonStartContainer.cpp,v 1.8 2007/10/15 22:13:46 nbarriga Exp $"
+* "@(#) $Id: acsdaemonStartContainer.cpp,v 1.9 2007/11/08 21:17:46 ntroncos Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -30,7 +30,7 @@ static struct option long_options[] = {
         {"instance",    required_argument, 0, 'i'},
         {"host",        required_argument, 0, 'H'},
         {"daemon",      required_argument, 0, 'd'},
-        {"aditional",   required_argument, 0, 'a'},
+        {"additional",   required_argument, 0, 'a'},
         {0, 0, 0, '\0'}};
 
 void 
@@ -43,7 +43,7 @@ usage(const char *argv)
     ACE_OS::printf ("\t   -i, --instance     ACS instance to use\n");
     ACE_OS::printf ("\t   -H, --host         Host where to start the container\n");
     ACE_OS::printf ("\t   -d, --daemon       Daemon reference\n");
-    ACE_OS::printf ("\t   -a, --aditional    passthrough options for startContaner\n");
+    ACE_OS::printf ("\t   -a, --additional    passthrough options for startContaner. Put option between \"\"\n");
 }
 
 int
@@ -54,11 +54,11 @@ main (int argc, char *argv[])
     ACE_CString hostName;
     ACE_CString containerType;
     ACE_CString containerName;
-    char *aditional=NULL;
+    ACE_CString additional;
     for(;;)
         {
         int option_index = 0;
-        c = getopt_long (argc, argv, "ht:c:i:d:H:a",
+        c = getopt_long (argc, argv, "ht:c:i:d:H:a:",
                          long_options, &option_index); 
         if (c==-1) break;
         switch(c)
@@ -76,14 +76,13 @@ main (int argc, char *argv[])
                     hostName = optarg;
                     break;
                 case 't':
-                    //create passthough option
                     containerType = optarg;
                     break;
                 case 'c':
                     containerName = optarg;
                     break;
                 case 'a':
-                    aditional = argv[option_index];
+                    additional = optarg;
                     break;
             }
         }
@@ -158,9 +157,9 @@ main (int argc, char *argv[])
 	  }
 
 
-      ACS_SHORT_LOG((LM_INFO, "Calling start_container(%s, %s, %d, %s).", containerType.c_str(), containerName.c_str(), instance, aditional));
+      ACS_SHORT_LOG((LM_INFO, "Calling start_container(%s, %s, %d, %s).", containerType.c_str(), containerName.c_str(), instance, additional.c_str()));
 
-      daemon->start_container(containerType.c_str(), containerName.c_str(), instance, aditional);
+      daemon->start_container(containerType.c_str(), containerName.c_str(), instance, additional.c_str());
       
       ACS_SHORT_LOG((LM_INFO, "Container start message issued."));
       
