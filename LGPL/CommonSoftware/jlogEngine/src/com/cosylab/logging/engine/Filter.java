@@ -105,7 +105,7 @@ public Filter(
 	if ((minimum == null) && (maximum == null)) throw new InvalidFilterConstraintException("No constraint specified");
 	 
 	if (minimum != null) {
-	    if (!(Field.values()[field].getClass().isInstance(minimum))) {
+	    if (!(Field.values()[field].getType().isInstance(minimum))) {
 			throw new InvalidFilterConstraintException("Invalid minimum");
 	    }
 	    this.minimum = minimum;
@@ -114,7 +114,7 @@ public Filter(
 	}
 	
 	if (maximum != null) {
-	    if (!(Field.values()[field].getClass().isInstance(maximum)))
+	    if (!(Field.values()[field].getType().isInstance(maximum)))
  	       throw new InvalidFilterConstraintException("Invalid maximum");
 	    this.maximum = maximum;
 	} else {
@@ -163,7 +163,7 @@ public Filter(int field, boolean isLethal, Integer minimum, Integer maximum, boo
 public Filter(int field, boolean isLethal, Object exact, boolean notFilter) throws InvalidFilterConstraintException {
 	this(field, EXACT, isLethal,notFilter);
 
-	if (Field.values()[field].getClass() != exact.getClass())
+	if (Field.values()[field].getType() != exact.getClass())
  		throw new InvalidFilterConstraintException("Invalid exact value: "+exact);
 	 
 	this.exact = exact;
@@ -179,7 +179,7 @@ public Filter(int field, boolean isLethal, String regularExpression, boolean not
 //	System.out.println("short, boolean, String");
 //	System.out.println(field+" "+isLethal+" "+regularExpression);
 	
-	if (!(Field.values()[field].getClass().equals(String.class)))
+	if (!(Field.values()[field].getType().equals(String.class)))
  		throw new InvalidFilterConstraintException("Invalid regular expression: "+regularExpression);
  	
 	// Build a pattern to ensure if the regular expression is valid
