@@ -25,164 +25,26 @@
 * nbarriga 2007-10-10 created
 */
 
-#include <acsServicesDaemonImpl.h>
-#include <acsutilPorts.h>
-#include <getopt.h>
+#include <acsDaemonImpl.h>
+#include <acsServicesHandlerImpl.h>
 
-// globals
-volatile bool g_blockTermination = false;
-ACSServicesDaemonImpl * g_service = 0;
+acsDaemonImpl<ACSServicesHandlerImpl>* g_daemon = 0;
+
 
 void TerminationSignalHandler(int)
 {
-    if (g_blockTermination) return;
-    g_blockTermination = true;
-
-    ACS_SHORT_LOG ((LM_INFO, "Stopping the ACS Services Daemon..."));
-
-    if (g_service)
-	{
-	g_service->shutdown ();
-	}
-}
-
-static struct option long_options[] = {
-        {"help",        no_argument,       0, 'h'},
-        {"outfile",     required_argument, 0, 'o'},
-        {"ORBEndpoint", required_argument, 0, 'O'},
-        {0, 0, 0, '\0'}};
-
-void 
-usage(const char *argv)
-{
-    ACE_OS::printf ("\n\tusage: %s {-h} [-O iiop://ip:port] [-o iorfile]\n", argv);
-    ACE_OS::printf ("\t   -h, --help         show this help message\n");
-    ACE_OS::printf ("\t   -O, --ORBEndpoint  ORB end point\n");
-    ACE_OS::printf ("\t   -o, --outfile      IOR output file\n");
+    if (g_daemon)
+	g_daemon->shutdown();
 }
 
 int
 main (int argc, char *argv[])
 {
-    ACE_CString iorFile;
-    ACE_CString ORBEndpoint;
-    int c;
-    for(;;)
-        {
-        int option_index = 0;
-        c = getopt_long (argc, argv, "ho:O:",
-                         long_options, &option_index); 
-        if (c==-1) break;
-        switch(c)
-            {
-                case 'h':
-                    usage(argv[0]);
-                    return 0;
-                case 'o':
-                    iorFile = optarg;
-                    break;
-                case 'O':
-                    ORBEndpoint = optarg;
-                    break;
-                default:
-                    ACE_OS::printf("Ignoring unrecognized option %s", 
-                                    argv[option_index]);
-            }
-        }
+    acsDaemonImpl<ACSServicesHandlerImpl> daemon(argc,argv);
 
-    const char* hostName = ACSPorts::getIP();
-
-    // create logging proxy
-    LoggingProxy::ProcessName(argv[0]);
-    LoggingProxy::ThreadName("main");
-    ACE_Log_Msg::instance()->local_host(hostName);
-
-    LoggingProxy m_logger (0, 0, 31, 0);
-    LoggingProxy::init (&m_logger);  
-
-
-    int nargc = 0;
-    char** nargv = 0;
-
-    ACE_CString argStr;
-
-    if(ORBEndpoint.length()<=0)
-        {
-        argStr = argStr + "-ORBEndpoint iiop://" + hostName + ":" + ACSPorts::getServicesDaemonPort().c_str();
-        }
-    else
-        {
-        argStr = "-ORBEndpoint " + ORBEndpoint;
-        }
-
-    // create new argv
-    ACS_SHORT_LOG((LM_INFO, "Command line is: %s", argStr.c_str()));
-    ACE_OS::string_to_argv ((ACE_TCHAR*)argStr.c_str(), nargc, nargv);
-
-
-    ACSServicesDaemonImpl service(m_logger);
-    if (!service.isInitialized())
-	{
-	return -1;
-	}
-    g_service = &service;
-
+    g_daemon = &daemon;
     ACE_OS::signal(SIGINT, TerminationSignalHandler);  // Ctrl+C
     ACE_OS::signal(SIGTERM, TerminationSignalHandler); // termination request
   
-    try
-	{
-	if (service.startup (nargc, nargv) != 0)
-	    {
-	    return -1;
-	    }
-
-	// write IOR to file, if necessary
-	if (iorFile.length() > 0)
-	    {
-	    FILE *output_file = ACE_OS::fopen (iorFile.c_str(), "w");
-	    if (output_file == 0) 
-		{
-		ACS_SHORT_LOG ((LM_ERROR, "Cannot open output file '%s' to write IOR.", iorFile.c_str()));
-		return  -1;
-		}
-
-	    int result = ACE_OS::fprintf (output_file, "%s", service.getIOR());
-	    if (result < 0) 
-		{
-		ACS_SHORT_LOG ((LM_ERROR, "ACE_OS::fprintf failed to write IOR."));
-		return  -1;
-		}
-
-	    ACE_OS::fclose (output_file);
-	    ACS_SHORT_LOG((LM_INFO, "ACS Services Daemon IOR has been written into file '%s'.", iorFile.c_str()));
-	    }
-
-	// run, run, run...
-	if (service.run () == -1)
-	    {
-	    service.shutdown ();
-	    ACS_SHORT_LOG ((LM_ERROR, "Failed to run the ACS Services Daemon."));
-	    return  1;
-	    }
-	}
-    catch(...)
-	{
-	ACS_SHORT_LOG((LM_ERROR, "Failed to start the ACS Services Daemon."));
-	return 1;
-	}
-  
-  
-    if (!g_blockTermination)
-	{
-	g_blockTermination=true;
-	service.shutdown ();
-	}
-  
-  
-    ACS_SHORT_LOG ((LM_INFO, "ACS Services Daemon stopped."));
-
-    LoggingProxy::done();
-  
-    return 0;
+    return daemon.run();
 }

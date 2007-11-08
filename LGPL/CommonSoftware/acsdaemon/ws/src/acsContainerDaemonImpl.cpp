@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsContainerDaemonImpl.cpp,v 1.6 2007/10/31 16:23:24 ntroncos Exp $"
+* "@(#) $Id: acsContainerDaemonImpl.cpp,v 1.7 2007/11/08 19:18:44 agrimstrup Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -119,6 +119,8 @@ int
 ACSContainerDaemonImpl::startup (int argc, char *argv[])
 {
     ACS_SHORT_LOG ((LM_INFO, "Starting up the ACS Container Daemon..."));
+
+//     ACS_SHORT_LOG ((LM_INFO, m_startmsg));
 
     // Initalize the ORB.
     if (init_ORB (argc, argv) != 0)

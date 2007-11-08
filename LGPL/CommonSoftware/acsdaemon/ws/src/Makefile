@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.9 2007/11/06 14:20:05 bjeram Exp $"
+# "@(#) $Id: Makefile,v 1.10 2007/11/08 19:18:44 agrimstrup Exp $"
 #
 # Makefile of ........
 #
@@ -43,7 +43,7 @@ EXECUTABLES_L   =
 
 #
 # <brief description of xxxxx program>
-acscontainerdaemon_OBJECTS   =	acscontainerdaemon acsContainerDaemonImpl
+acscontainerdaemon_OBJECTS   =	acscontainerdaemon acsContainerHandlerImpl
 acscontainerdaemon_LIBS      =	acsdaemonErrType acsdaemonStubs
 
 acsdaemonStartContainer_OBJECTS   =	acsdaemonStartContainer
@@ -53,7 +53,7 @@ acsdaemonStartContainer_LIBS      =	acsdaemonErrType acsdaemonStubs
 acsdaemonStopContainer_OBJECTS   =	acsdaemonStopContainer
 acsdaemonStopContainer_LIBS      =	acsdaemonErrType acsdaemonStubs
 
-acsservicesdaemon_OBJECTS   =	acsservicesdaemon acsServicesDaemonImpl
+acsservicesdaemon_OBJECTS   =	acsservicesdaemon acsServicesHandlerImpl
 acsservicesdaemon_LIBS      =	acsdaemonErrType acsdaemonStubs
 
 acsdaemonStartAcs_OBJECTS   =	acsdaemonStartAcs

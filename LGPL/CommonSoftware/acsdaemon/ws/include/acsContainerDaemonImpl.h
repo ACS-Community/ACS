@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsContainerDaemonImpl.h,v 1.1 2007/10/10 16:21:35 ntroncos Exp $"
+* "@(#) $Id: acsContainerDaemonImpl.h,v 1.2 2007/11/08 19:18:44 agrimstrup Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -123,6 +123,8 @@ class ACSContainerDaemonImpl : public POA_acsdaemon::ContainerDaemon {
 
     /** CORBA IOR **/
     CORBA::String_var m_ior;
+
+
 };
 
 #endif
