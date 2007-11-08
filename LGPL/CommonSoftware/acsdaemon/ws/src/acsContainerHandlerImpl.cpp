@@ -80,7 +80,14 @@ ACSContainerHandlerImpl::start_container (
     std::string timeStamp(getStringifiedTimeStamp().c_str());
 
     char command[1000];
-    snprintf(command, 1000, "acsStartContainer -%s -b %d %s %s &> %sacsStartContainer_%s_%s&", container_type, instance_number, container_name, cmdln, logDirectory.c_str(), containerName.c_str(), timeStamp.c_str());
+
+    // This nasty hack was put so that the ARCHIVE could modify the CLASSPATH to add
+    // some additional jar files.  The container_type is being used as the driver
+    // but this will be changed to something cleaner.
+    if (!strcmp(container_type,"java-archive"))
+	snprintf(command, 1000, "acsStartContainerOracleClasspath -%s -b %d %s %s &> %sacsStartContainer_%s_%s&", "java", instance_number, container_name, cmdln, logDirectory.c_str(), containerName.c_str(), timeStamp.c_str());
+    else
+	snprintf(command, 1000, "acsStartContainer -%s -b %d %s %s &> %sacsStartContainer_%s_%s&", container_type, instance_number, container_name, cmdln, logDirectory.c_str(), containerName.c_str(), timeStamp.c_str());
     
     ACS_SHORT_LOG ((LM_INFO, "Executing: '%s'.", command));
 

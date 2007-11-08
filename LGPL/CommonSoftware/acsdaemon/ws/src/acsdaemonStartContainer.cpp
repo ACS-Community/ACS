@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: acsdaemonStartContainer.cpp,v 1.9 2007/11/08 21:17:46 ntroncos Exp $"
+* "@(#) $Id: acsdaemonStartContainer.cpp,v 1.10 2007/11/08 23:06:28 agrimstrup Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -38,7 +38,7 @@ usage(const char *argv)
 {
     ACE_OS::printf ("\n\tusage: %s {-h} -i INSTANCE -t TYPE -c CONATIANER [-d DAEMONREF] [-H HOST] [-a more options]", argv);
     ACE_OS::printf ("\t   -h, --help         show this help message\n");
-    ACE_OS::printf ("\t   -t, --type         container type: cpp, java, py\n");
+    ACE_OS::printf ("\t   -t, --type         container type: cpp, java, java-archive, py\n");
     ACE_OS::printf ("\t   -c, --container     container name\n");
     ACE_OS::printf ("\t   -i, --instance     ACS instance to use\n");
     ACE_OS::printf ("\t   -H, --host         Host where to start the container\n");
