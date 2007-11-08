@@ -5,13 +5,24 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry exported="true" kind="var" path="ACSROOT/lib/log4j-1.2.8.jar"/>
 	<classpathentry exported="true" kind="var" path="ACSROOT/lib/castor.jar"/>
-	<classpathentry exported="true" kind="var" path="INTROOT/lib/jms.jar"/>
-	<classpathentry exported="true" kind="src" path="/cmw-mom"/>
-	<classpathentry exported="true" kind="src" path="/laser-util"/>
+	<classpathentry kind="var" path="ACSROOT/lib/jms.jar"/>
 	<classpathentry exported="true" kind="var" path="ACSROOT/lib/jcont.jar"/>
 	<classpathentry exported="true" kind="var" path="ACSROOT/lib/junit.jar"/>
 	<classpathentry exported="true" kind="var" path="ACSROOT/lib/acsASsources.jar"/>
 	<classpathentry exported="true" kind="var" path="ACSROOT/lib/acsjlog.jar"/>
 	<classpathentry exported="true" kind="var" path="ACSROOT/lib/maci.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/maciErrType.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acsContainerServices.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/JavaContainerError.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acsErrTypeAlarmSourceFactory.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acserrj.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/cmwmom.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/laserutil.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/jcontnc.jar"/>
+	<classpathentry kind="var" path="JACORB_HOME/lib/jacorb.jar" sourcepath="/JACORB_HOME/src"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acsnc.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/cdbjDAL.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/ACSJMSMessageEntity.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/jACSUtil.jar"/>
 	<classpathentry kind="output" path="src"/>
 </classpath>
