@@ -1,22 +1,5 @@
 1 -  Starting ORB Services
 1 -  -- alma.acs.testsupport.tat.NoDotJUnitRunner com.cosylab.acs.maci.test.ManagerImplTest
-1 - ----------T--:--:--.--- FINE [jacorb@CDB::DAOImpl] Delegate.getReference with POA <>
-1 - ----------T--:--:--.--- CONFIG [jacorb@CDB::DAOImpl] prepare ORB for shutdown...
-1 - ----------T--:--:--.--- CONFIG [jacorb@CDB::DAOImpl] ORB going down...
-1 - ----------T--:--:--.--- FINE [jacorb@CDB::DAOImpl] POA RootPOAshutdown is in progress
-1 - ----------T--:--:--.--- FINEST [jacorb@CDB::DAOImpl] Listener exited
-1 - ----------T--:--:--.--- FINE [jacorb@CDB::DAOImpl] GIOPConnectionManager.shutdown(), 0 connections
-1 - ----------T--:--:--.--- FINE [jacorb@CDB::DAOImpl] ORB going shutdown (cleaning up ORB...)
-1 - ----------T--:--:--.--- FINE [jacorb@CDB::DAOImpl] ClientGIOPConnection to 192.168.50.133:3012 (a352a5): close()
-1 - ----------T--:--:--.--- FINE [jacorb@CDB::DAOImpl] Transport to 192.168.50.133:3012: stream closed Socket closed
-1 - ----------T--:--:--.--- CONFIG [jacorb@CDB::DAOImpl] Client-side TCP transport to 192.168.50.133:3012 closed.
-1 - ----------T--:--:--.--- CONFIG [jacorb@CDB::DAOImpl] Client-side TCP transport to 192.168.50.133:3012 closed.
-1 - ----------T--:--:--.--- FINE [jacorb@CDB::DAOImpl] ClientConnectionManager shut down (all connections released)
-1 - ----------T--:--:--.--- FINE [jacorb@CDB::DAOImpl] ClientGIOPConnection to 192.168.50.133:3012 (a352a5): closeAllowReopen()
-1 - ----------T--:--:--.--- FINE [jacorb@CDB::DAOImpl] ClientGIOPConnection to 192.168.50.133:3012 (a352a5): getMessage() -- COMM_FAILURE
-1 - ----------T--:--:--.--- FINE [jacorb@CDB::DAOImpl] ClientGIOPConnection to 192.168.50.133:3012 (a352a5): streamClosed()
-1 - ----------T--:--:--.--- CONFIG [jacorb@CDB::DAOImpl] ORB run, exit
-1 - ----------T--:--:--.--- CONFIG [jacorb@CDB::DAOImpl] ORB shutdown complete
 1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ Reason='Invalid handle.' ]
 1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ Reason='Insufficient rights.' ]
 1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ Reason='Manager in shutdown state.' ]
