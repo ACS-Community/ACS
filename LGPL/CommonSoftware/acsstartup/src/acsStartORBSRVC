@@ -6,10 +6,11 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: acsStartORBSRVC,v 1.67 2007/09/29 13:44:27 ntroncos Exp $"
+# "@(#) $Id: acsStartORBSRVC,v 1.68 2007/11/09 17:44:33 jschwarz Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
+# jschwarz 2007-11-09 Added option to use TMCDB instead of (default) XML CDB
 # sharring 2004-06-23 restructured for performance
 # mschilli 2004-04-16 added proper command line parsing
 # gchiozzi 2003-06-04 Fixed usage of ORBOPTS="-ORBDottedDecimalAddresses 1"
@@ -385,10 +386,31 @@ fi
 #         performance.
 #######################################
 
-ACS_LOG_INFO "Starting ACS Configuration Database"
-ACS_LOG_INFO "    CDB data is in:  $ACS_CDB"
 
-cdbjDAL -OAIAddr $HOST -OAport $CDB_PORT -n 2>&1 | tee $CDB_OUT &
+ENABLE_TMCDB=`echo ${ENABLE_TMCDB:-"false"} | tr "[:upper:]" "[:lower:]"`
+if [ $ENABLE_TMCDB = "true" ] || [ $ENABLE_TMCDB = "y" ] || [ $ENABLE_TMCDB = "1" ]
+then
+	ACS_LOG_INFO "Starting ALMA Telescope and Monitor Configuration Database"
+	if [ `searchFile lib/TMCDB.jar` = "#error#" ] # sanity check
+	then
+		ACS_LOG_ERROR "The TMCDB implementation cannot be found. Did you build ICD/CONTROL/TMCDB?"
+		exit $EC_FAILURE;
+	fi
+	ACS_LOG_INFO "Using configuration $TMCDB_CONFIGURATION_NAME"
+	LOAD_FROM_XML=`echo ${LOAD_FROM_XML:-"false"} | tr "[:upper:]" "[:lower:]"`
+	if [ $LOAD_FROM_XML = "true" ] || [ $LOAD_FROM_XML = "y" ] || [ $LOAD_FROM_XML = "1" ]
+	then
+		loadfrom="-loadXMLCDB"
+		ACS_LOG_INFO "Will load TMCDB from existing XML CDB at $ACS_CDB"
+	else
+		loadfrom=""
+	fi
+	hibernateCdbJDal -OAIAddr $HOST -OAport $CDB_PORT -n $loadfrom 2>&1 | tee $CDB_OUT &
+else
+	ACS_LOG_INFO "Starting ACS Configuration Database"
+	ACS_LOG_INFO "    CDB data is in:  $ACS_CDB"
+	cdbjDAL -OAIAddr $HOST -OAport $CDB_PORT -n 2>&1 | tee $CDB_OUT &
+fi
 #copy tee's PID
 echo $! >> $INSTANCE_DIR/$ACS_PIDSFILE
 
