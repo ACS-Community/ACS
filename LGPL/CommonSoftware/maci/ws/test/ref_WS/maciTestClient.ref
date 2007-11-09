@@ -1147,7 +1147,7 @@
 4 - ----------T--:--:--.--- [GlobalLogger - ] 	 'Simple MACI Client'
 4 - ----------T--:--:--.--- [GlobalLogger - ] 	 'testAdmin'
 4 - ----------T--:--:--.--- [GlobalLogger - ] Getting components' info of '*' of type *', active only: 0, requested by 'testAdmin'
-4 - ----------T--:--:--.--- [GlobalLogger - ] 22 components returned:
+4 - ----------T--:--:--.--- [GlobalLogger - ] 23 components returned:
 4 - ----------T--:--:--.--- [GlobalLogger - ] 	 'MACI08' of type 'IDL:alma/MACI_TEST/MaciTestConstructableClass:1.0'
 4 - ----------T--:--:--.--- [GlobalLogger - ] 	 'MACI09' of type 'IDL:alma/MACI_TEST/MaciTestConstructableClass:1.0'
 4 - ----------T--:--:--.--- [GlobalLogger - ] 	 'MACI_SUB' of type 'IDL:alma/MACI_TEST/MaciTestClass:1.0'
@@ -1167,6 +1167,7 @@
 4 - ----------T--:--:--.--- [GlobalLogger - ] 	 'MACI_EXCEPTION_INIT' of type 'IDL:alma/MACI_TEST/DynamicTestClass:1.0'
 4 - ----------T--:--:--.--- [GlobalLogger - ] 	 'MACI_DYN_TEST3' of type 'IDL:alma/MACI_TEST/DynamicTestClass:1.0'
 4 - ----------T--:--:--.--- [GlobalLogger - ] 	 'MACI_DYN_TEST1' of type 'IDL:alma/MACI_TEST/DynamicTestClass:1.0'
+4 - ----------T--:--:--.--- [GlobalLogger - ] 	 'MACI_LOG_CONFIG' of type 'IDL:alma/MACI_TEST/LogConfigTestClass:1.0'
 4 - ----------T--:--:--.--- [GlobalLogger - ] 	 'MACI10' of type 'IDL:alma/MACI_TEST/MaciTestConstructableClass:1.0'
 4 - ----------T--:--:--.--- [GlobalLogger - ] 	 'MACI_DYN_TEST2' of type 'IDL:alma/MACI_TEST/DynamicTestClass:1.0'
 4 - ----------T--:--:--.--- [GlobalLogger - ] 	 'MACI_EXCEPTION_COSTR' of type 'IDL:alma/MACI_TEST/DynamicTestClass:1.0'
