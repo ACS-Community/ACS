@@ -19,7 +19,7 @@
 
 /** 
  * @author  acaproni   
- * @version $Id: CategorySubscriber.java,v 1.1 2007/11/05 13:36:16 acaproni Exp $
+ * @version $Id: CategorySubscriber.java,v 1.2 2007/11/09 10:44:16 acaproni Exp $
  * @since    
  */
 
@@ -49,6 +49,8 @@ import com.cosylab.acs.jms.ACSJMSTextMessage;
 import com.cosylab.acs.jms.ACSJMSTopicSubscriber;
 
 public class CategorySubscriber   implements MessageListener {
+	
+	public static final String NOT_AVAILABLE = "N/A";
 	// Container services
 	private ContainerServices acsCS;
 	
@@ -158,9 +160,10 @@ public class CategorySubscriber   implements MessageListener {
 		String alarmID=""; // Triplet
 		String priority = ""; // Priority
 		String sourceTimestamp=null; // Source timestamp
-		String description=""; // Problem description
-		String cause=""; // The cause of the alarm
-		String active=""; // Active
+		String description=NOT_AVAILABLE; // Problem description
+		String cause=NOT_AVAILABLE; // The cause of the alarm
+		String active=NOT_AVAILABLE; // Active
+		String hostName=NOT_AVAILABLE;
 		
 		System.out.println("Alarm received: "+xmlString);
 		
@@ -194,7 +197,7 @@ public class CategorySubscriber   implements MessageListener {
 				if (dateNode!=null) {
 					description=dateNode.getNodeValue();
 				} else {
-					description="N/A";
+					description=NOT_AVAILABLE;
 				}
 			}
 			if (childNode.getNodeName().equals(("status"))) {
@@ -217,6 +220,22 @@ public class CategorySubscriber   implements MessageListener {
 					}
 				}	
 			}
+			// Get the host name
+			if (childNode.getNodeName().equals("source")) {
+				NodeList sourceNodeList=childNode.getChildNodes();
+				for (int m=0; m<sourceNodeList.getLength(); m++) {
+					Node hostNameNode=sourceNodeList.item(m);
+					if (hostNameNode.getNodeName().equals("hostName")) {
+						Node hNameNode=hostNameNode.getLastChild();
+						if (hNameNode!=null) {
+							hostName=hNameNode.getNodeValue();
+						} else {
+							hostName=NOT_AVAILABLE;
+						}
+						break;
+					}
+				}
+			}
 			// Sometimes problemDescription appeared into visualFields
 			if (childNode.getNodeName().equals("visualFields")) {
 				NodeList visualFieldsNodeList=childNode.getChildNodes();
@@ -227,12 +246,14 @@ public class CategorySubscriber   implements MessageListener {
 						if (dateNode!=null) {
 							description=dateNode.getNodeValue();
 						} else {
-							description="N/A";
+							description=NOT_AVAILABLE;
 						}
+						break;
 					}
 				}
 			}
 		}
-		categoryClient.dispatchAlarm(new AlarmView(alarmID,priority,sourceTimestamp,description,cause,active));
+		System.out.println("CategorySubscriber.hostname "+hostName);
+		categoryClient.dispatchAlarm(new AlarmView(alarmID,priority,sourceTimestamp,description,cause,active,hostName));
 	}
 }
