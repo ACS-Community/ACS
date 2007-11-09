@@ -1054,6 +1054,7 @@
 4 - 		Components: XXXXX
 4 - 		Access: 02000000
 4 - ----------T--:--:--.--- [GlobalLogger - ] Logging out 'defunctionalClient'
+4 - ----------T--:--:--.--- [GlobalLogger - ProcessLogout] No permission exception caught.
 4 - ----------T--:--:--.--- [GlobalLogger - ] Logging in client 'transientPingClient'
 4 - ----------T--:--:--.--- [GlobalLogger - ] MaciTestAdministratorImpl::client_logged_out: XXXX
 4 - ----------T--:--:--.--- [GlobalLogger - ] MaciTestClientImpl::MaciTestClientImpl
@@ -1068,6 +1069,7 @@
 4 - 		Components: XXXXX
 4 - 		Access: 02000000
 4 - ----------T--:--:--.--- [GlobalLogger - ] Logging out 'transientPingClient'
+4 - ----------T--:--:--.--- [GlobalLogger - ProcessLogout] No permission exception caught.
 4 - ----------T--:--:--.--- [GlobalLogger - ] MaciTestAdministratorImpl::client_logged_out: XXXX
 4 - ----------T--:--:--.--- [GlobalLogger - ] Shutting down Container 'Container01'...
 4 - ----------T--:--:--.--- [GlobalLogger - ] Shutting down Container 'dummyContainer'...
