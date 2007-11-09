@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciContainerLogLevel.cpp,v 1.3 2007/10/05 14:10:47 hsommer Exp $"
+* "@(#) $Id: maciContainerLogLevel.cpp,v 1.4 2007/11/09 14:00:17 hsommer Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -37,8 +37,16 @@
 void
 printUsageAndExit(int argc, char *argv[])
 {
-	ACE_OS::printf("\n\tusage: %s <container name wildcard> {set,get,list,refresh} [<loggerName | \"default\"> <minLogLevel> <minLogLevelLocal>] [<ORB options>]\n\n", argv[0]);
+	ACE_OS::printf("\n\tusage: %s <container name wildcard> {set,get,list,refresh} [<loggerName | \"default\"> <minLogLevel> <minLogLevelLocal>] [<ORB options>]\nWith log level values {0,2-6,8-11}\n", argv[0]);
 	exit(-1);
+}
+
+// Only integer values for certain levels are defined, e.g. DEBUG = 3.
+// No illegal levels should be sent to the LoggingConfigurable processes (containers, manager, ...)
+int 
+isLogLevelValid(int logLevel) 
+{
+	return (logLevel >= 0 && logLevel <= 11 && logLevel != 1 && logLevel != 7);
 }
 
 int
@@ -79,19 +87,19 @@ main (int argc, char *argv[])
 	if (cmd == GET && argc < 4)
 	{
 		ACE_OS::printf("Not enough parameters.\n");
-	    printUsageAndExit(argc, argv);
+		printUsageAndExit(argc, argv);
 	}
 	
 
     LoggingProxy * logger = new LoggingProxy(0, 0, 31);
     if (logger)
     {
-	LoggingProxy::init(logger);
-	LoggingProxy::ProcessName(argv[0]);
-	LoggingProxy::ThreadName("main");
+    	LoggingProxy::init(logger);
+    	LoggingProxy::ProcessName(argv[0]);
+    	LoggingProxy::ThreadName("main");
     }
     else
-	ACS_SHORT_LOG((LM_INFO, "Failed to initialize logging."));
+    	ACS_SHORT_LOG((LM_INFO, "Failed to initialize logging."));
 
     
     try
@@ -168,6 +176,10 @@ main (int argc, char *argv[])
 			    {
 	    			logLevels.minLogLevel = atoi(argv[4]);
 	    			logLevels.minLogLevelLocal = atoi(argv[5]);
+			    	if (!isLogLevelValid(logLevels.minLogLevel) || !isLogLevelValid(logLevels.minLogLevelLocal)) 
+			    	{
+			    		printUsageAndExit(argc, argv);
+			    	}
 			    }
 			    else
 			    {
@@ -213,8 +225,5 @@ main (int argc, char *argv[])
   
   return 0;
 }
-
-
-
 
 
