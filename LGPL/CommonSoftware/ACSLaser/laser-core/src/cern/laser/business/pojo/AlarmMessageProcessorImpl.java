@@ -15,9 +15,11 @@ import org.apache.log4j.Logger;
 import cern.laser.business.cache.AlarmCache;
 import cern.laser.business.dao.SourceDAO;
 import cern.laser.business.data.Alarm;
+import cern.laser.business.data.ResponsiblePerson;
 import cern.laser.business.data.Source;
 import cern.laser.business.data.Status;
 import cern.laser.business.data.Triplet;
+import cern.laser.business.definition.data.SourceDefinition;
 import cern.laser.source.alarmsysteminterface.AlarmSystemInterfaceFactory;
 import cern.laser.source.alarmsysteminterface.FaultState;
 import cern.laser.source.alarmsysteminterface.impl.ASIMessageHelper;
@@ -96,6 +98,8 @@ public class AlarmMessageProcessorImpl {
     Timestamp system_timestamp = new Timestamp(System.currentTimeMillis());
     Alarm alarm = alarmCache.getCopy(Triplet.toIdentifier(faultState.getFamily(), faultState.getMember(), new Integer(
         faultState.getCode())));
+    
+    updateAlarmHost(faultState, sourceHostname);
     // XXX LOCKING EXPOSED
     // AlarmImpl alarm = alarmCache.acquire(triplet.toIdentifier());
     // boolean released = false;
@@ -500,6 +504,54 @@ public class AlarmMessageProcessorImpl {
       System.out.println("*** notifying multiplicity parent " + parent.getTriplet());
       updateMultiplicityNode(parent);
     }
+  }
+  
+  /**
+   * Check if the host name is set in the alarm in cache.
+   * If it is the case, the alarm in cache is updated with the host name
+   * 
+   * If the FaultState or the host name are null te method returns without error
+   */
+  private void updateAlarmHost(FaultState faultState, String hostName) {
+	  if (hostName==null || hostName.length()==0) {
+		  // No host name set
+		  return;
+	  }
+	  if (faultState==null) {
+		  return;
+	  }
+	  Alarm alarm=null;
+	  try { 
+		  alarm= alarmCache.getCopy(
+				  Triplet.toIdentifier(
+						  faultState.getFamily(), 
+						  faultState.getMember(), 
+						  new Integer(faultState.getCode())));
+	  } catch (Throwable t) {
+		  System.err.println("Error getting alarm "+alarm.getAlarmId()+" from cache to set source host name");
+		  t.printStackTrace(System.err);
+		  return;
+	  }
+	if (alarm==null) {
+		return;
+	}
+	Source source = alarm.getSource();
+	if (source==null) {
+		ResponsiblePerson responsible = new ResponsiblePerson(0,"N/A","N/A","N/A","N/A","N/A");
+		SourceDefinition srcDef= new SourceDefinition("Source", "", "N/A",Integer.valueOf(0),Integer.valueOf(0));
+		source = new Source(srcDef,responsible);
+	} 
+	if (!source.getHostName().equalsIgnoreCase(hostName)) {
+		source.setHostName(hostName.toLowerCase());
+		alarm.setSource(source);
+		try {
+			alarmCache.put(alarm);
+		} catch (Throwable t) {
+			System.err.println("Error putting alarm "+alarm.getAlarmId()+" in cache after setting source host name");
+			t.printStackTrace(System.err);
+		}
+	}
+
   }
 
 }
