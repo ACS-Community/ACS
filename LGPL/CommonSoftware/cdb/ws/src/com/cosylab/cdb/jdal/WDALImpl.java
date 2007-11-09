@@ -27,50 +27,45 @@
  */
 package com.cosylab.cdb.jdal;
 
-import com.cosylab.CDB.DAO;
-import com.cosylab.CDB.WDAO;
-import com.cosylab.CDB.WDAOHelper;
-
-import org.omg.CORBA.ORB;
-
-import org.omg.PortableServer.POA;
-
-import org.xml.sax.Attributes;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-import org.xml.sax.ext.LexicalHandler;
-
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
-
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.StringTokenizer;
+import java.util.logging.Logger;
 
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
-import alma.cdbErrType.CDBXMLErrorEx;
+import org.omg.CORBA.ORB;
+import org.omg.PortableServer.POA;
+import org.xml.sax.Attributes;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.ext.LexicalHandler;
+
+import alma.acs.logging.AcsLogLevel;
+import alma.acs.logging.ClientLogManager;
+import alma.cdbErrType.CDBExceptionEx;
+import alma.cdbErrType.CDBFieldDoesNotExistEx;
+import alma.cdbErrType.CDBRecordAlreadyExistsEx;
 import alma.cdbErrType.CDBRecordDoesNotExistEx;
 import alma.cdbErrType.CDBRecordIsReadOnlyEx;
-import alma.cdbErrType.CDBRecordAlreadyExistsEx;
-import alma.cdbErrType.CDBFieldDoesNotExistEx;
-import alma.cdbErrType.CDBExceptionEx;
-
-import alma.cdbErrType.wrappers.AcsJCDBRecordAlreadyExistsEx;
-import alma.cdbErrType.wrappers.AcsJCDBFieldDoesNotExistEx;
-import alma.cdbErrType.wrappers.AcsJCDBXMLErrorEx;
+import alma.cdbErrType.CDBXMLErrorEx;
 import alma.cdbErrType.wrappers.AcsJCDBExceptionEx;
+import alma.cdbErrType.wrappers.AcsJCDBFieldDoesNotExistEx;
+import alma.cdbErrType.wrappers.AcsJCDBRecordAlreadyExistsEx;
+import alma.cdbErrType.wrappers.AcsJCDBXMLErrorEx;
 
-import java.util.logging.Logger;
-import alma.acs.logging.ClientLogManager;
-import alma.acs.logging.AcsLogLevel;
+import com.cosylab.CDB.DAO;
+import com.cosylab.CDB.WDAO;
+import com.cosylab.CDB.WDAOHelper;
 
 /**
  * Implementation of Writable Data Access Layer (WDAL) interface.   Enables
@@ -855,6 +850,10 @@ public class WDALImpl extends WDALBaseImpl
 		public void startEntity(String name) throws SAXException
 		{
 		}
+	}
+	
+	public Logger getLogger() {
+		return m_logger;
 	}
 }
 
