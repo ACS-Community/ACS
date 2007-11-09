@@ -99,7 +99,6 @@ public class AlarmMessageProcessorImpl {
     Alarm alarm = alarmCache.getCopy(Triplet.toIdentifier(faultState.getFamily(), faultState.getMember(), new Integer(
         faultState.getCode())));
     
-    updateAlarmHost(faultState, sourceHostname);
     // XXX LOCKING EXPOSED
     // AlarmImpl alarm = alarmCache.acquire(triplet.toIdentifier());
     // boolean released = false;
@@ -199,6 +198,10 @@ public class AlarmMessageProcessorImpl {
         if (alarm_updated) {
           //          alarm.setStatus(new_status);
           if (LOGGER.isDebugEnabled()) LOGGER.debug("applying change...");
+          if (alarm.getSource()!=null && sourceHostname!=null) {
+        	  alarm.getSource().setHostName(sourceHostname.toLowerCase());
+          }
+          
           alarmCache.put(alarm);
           // XXX LOCKING EXPOSED
           //alarmCache.replace(alarm);
@@ -504,54 +507,6 @@ public class AlarmMessageProcessorImpl {
       System.out.println("*** notifying multiplicity parent " + parent.getTriplet());
       updateMultiplicityNode(parent);
     }
-  }
-  
-  /**
-   * Check if the host name is set in the alarm in cache.
-   * If it is the case, the alarm in cache is updated with the host name
-   * 
-   * If the FaultState or the host name are null te method returns without error
-   */
-  private void updateAlarmHost(FaultState faultState, String hostName) {
-	  if (hostName==null || hostName.length()==0) {
-		  // No host name set
-		  return;
-	  }
-	  if (faultState==null) {
-		  return;
-	  }
-	  Alarm alarm=null;
-	  try { 
-		  alarm= alarmCache.getCopy(
-				  Triplet.toIdentifier(
-						  faultState.getFamily(), 
-						  faultState.getMember(), 
-						  new Integer(faultState.getCode())));
-	  } catch (Throwable t) {
-		  System.err.println("Error getting alarm "+alarm.getAlarmId()+" from cache to set source host name");
-		  t.printStackTrace(System.err);
-		  return;
-	  }
-	if (alarm==null) {
-		return;
-	}
-	Source source = alarm.getSource();
-	if (source==null) {
-		ResponsiblePerson responsible = new ResponsiblePerson(0,"N/A","N/A","N/A","N/A","N/A");
-		SourceDefinition srcDef= new SourceDefinition("Source", "", "N/A",Integer.valueOf(0),Integer.valueOf(0));
-		source = new Source(srcDef,responsible);
-	} 
-	if (!source.getHostName().equalsIgnoreCase(hostName)) {
-		source.setHostName(hostName.toLowerCase());
-		alarm.setSource(source);
-		try {
-			alarmCache.put(alarm);
-		} catch (Throwable t) {
-			System.err.println("Error putting alarm "+alarm.getAlarmId()+" in cache after setting source host name");
-			t.printStackTrace(System.err);
-		}
-	}
-
   }
 
 }
