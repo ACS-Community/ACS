@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingLogSvcHandler.cpp,v 1.24 2007/10/17 15:56:17 cparedes Exp $"
+* "@(#) $Id: loggingLogSvcHandler.cpp,v 1.25 2007/11/09 09:48:24 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -31,7 +31,7 @@
 
 #include <ace/Log_Record.h>
 
-static char *rcsId="@(#) $Id: loggingLogSvcHandler.cpp,v 1.24 2007/10/17 15:56:17 cparedes Exp $"; 
+static char *rcsId="@(#) $Id: loggingLogSvcHandler.cpp,v 1.25 2007/11/09 09:48:24 cparedes Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 
@@ -160,7 +160,7 @@ namespace Logging {
 		envStdioPriority = atoi(acsSTDIO);
 	}
 
-	char *acsCentralizeLogger = getenv("ACS_LOG_CENTRALIZE_LOGGER");
+	char *acsCentralizeLogger = getenv("ACS_LOG_CENTRAL");
 	int envCentralizePriority = -1;
 	if (acsCentralizeLogger && *acsCentralizeLogger)
 	{

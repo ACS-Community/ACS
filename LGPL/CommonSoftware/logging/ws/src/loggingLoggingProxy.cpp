@@ -19,7 +19,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: loggingLoggingProxy.cpp,v 1.46 2007/10/17 19:38:56 cparedes Exp $"
+* "@(#) $Id: loggingLoggingProxy.cpp,v 1.47 2007/11/09 09:48:24 cparedes Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -57,7 +57,7 @@
 #define LOG_NAME "Log"
 #define DEFAULT_LOG_FILE_NAME "acs_local_log"
 
-ACE_RCSID(logging, logging, "$Id: loggingLoggingProxy.cpp,v 1.46 2007/10/17 19:38:56 cparedes Exp $");
+ACE_RCSID(logging, logging, "$Id: loggingLoggingProxy.cpp,v 1.47 2007/11/09 09:48:24 cparedes Exp $");
 
 ACSLoggingLog::LogType LoggingProxy::m_LogBinEntryTypeName[] =
 {
@@ -1040,7 +1040,7 @@ LoggingProxy::LoggingProxy(const unsigned long cacheSize,
     if(strcmp("true", acsLogType) == 0)
         m_logBin = true; 
   } 
-  char *acsCentralizeLogger = getenv("ACS_LOG_CENTRALIZE_LOGGER");
+  char *acsCentralizeLogger = getenv("ACS_LOG_CENTRAL");
   if (acsCentralizeLogger && *acsCentralizeLogger)
     {
       m_envCentralizePriority = atoi(acsCentralizeLogger);
