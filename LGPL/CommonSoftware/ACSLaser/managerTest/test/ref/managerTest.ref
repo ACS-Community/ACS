@@ -35,7 +35,7 @@
 1 -             <connected>true</connected>
 1 -             <enabled>true</enabled>
 1 -         </sourceStatus>
-1 -         <hostName></hostName>
+1 -         <hostName>alma</hostName>
 1 -     </source>
 1 -     <responsiblePerson>
 1 -         <responsibleId>0</responsibleId>
@@ -65,16 +65,16 @@
 1 -         <reduced>false</reduced>
 1 -         <terminatedByBackup>false</terminatedByBackup>
 1 -         <sourceTimestamp>
-<date>.......>
+1 -             <date>.......
 1 -             <nanos>.......
 1 -         </sourceTimestamp>
 1 -         <sourceHostname>ALMA</sourceHostname>
 1 -         <userTimestamp>
-<date>.......>
+1 -             <date>.......
 1 -             <nanos>.......
 1 -         </userTimestamp>
 1 -         <systemTimestamp>
-<date>.......>
+1 -             <date>.......
 1 -             <nanos>.......
 1 -         </systemTimestamp>
 1 -     </status>
@@ -84,4 +84,5 @@
 1 -     <multiplicityChild>false</multiplicityChild>
 1 - </ACS-Alarm-Message>
 1 - 
+1 - CategorySubscriberhostname alma
 1 - Alarm from category received: <Manager:bilboContainer:1> priority: 3
