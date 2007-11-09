@@ -39,6 +39,7 @@ public class AlarmView {
 	public String description=null; // Problem description
 	public String cause=null; // The cause
 	public Boolean active=null; // Active
+	public String hostName; // The name of the host of the source that sent the alarm
 	
 	/**
 	 * Constructor
@@ -49,13 +50,14 @@ public class AlarmView {
 	 * @param desc Problem description
 	 * @param act Active
 	 */
-	public AlarmView(String id, String pri, String timestamp, String desc, String cause,String act) {
+	public AlarmView(String id, String pri, String timestamp, String desc, String cause,String act,String hostName) {
 		if (id==null || id.length()==0) {
 			throw new IllegalArgumentException("Invalid triplet in constructor");
 		}
 		alarmID=id;
 		description=desc;
 		this.cause=cause;
+		this.hostName=hostName;
 		// Get the date
 		try {
 			long nsec=Long.parseLong(timestamp);
