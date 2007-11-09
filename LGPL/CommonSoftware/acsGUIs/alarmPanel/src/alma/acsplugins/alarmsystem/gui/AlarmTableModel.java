@@ -19,7 +19,7 @@
 
 /** 
  * @author  caproni   
- * @version $Id: AlarmTableModel.java,v 1.5 2007/11/05 14:10:24 acaproni Exp $
+ * @version $Id: AlarmTableModel.java,v 1.6 2007/11/09 10:43:56 acaproni Exp $
  * @since    
  */
 
@@ -71,7 +71,9 @@ public class AlarmTableModel extends AbstractTableModel implements CategoryListe
 		"Triplet",
 		"Priority",
 		"Description",
-		"Cause"
+		"Cause",
+		"Host"
+		
 	};
 	
 	// The alarms in the table
@@ -122,6 +124,10 @@ public class AlarmTableModel extends AbstractTableModel implements CategoryListe
 			ret=alarm.cause;
 			break;
 		}
+		case 5: {
+			ret=alarm.hostName;
+			break;
+		}
 		default: {
 				return "";
 			}
@@ -133,8 +139,8 @@ public class AlarmTableModel extends AbstractTableModel implements CategoryListe
 	 * @see javax.swing.table.AbstractTableModel
 	 */
 	public Object getValueAt(int rowIndex, int columnIndex) {
-		String ret=getCellContent(rowIndex, columnIndex);
 		AlarmView alarm = items.get(rowIndex);
+		String ret=getCellContent(rowIndex, columnIndex);
 		if (!alarm.active || alarm.priority==null || alarm.priority<0 || alarm.priority>3) {
 			return colors[4]+ret+endStr;
 		} else {
