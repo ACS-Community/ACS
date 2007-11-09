@@ -19,7 +19,7 @@
 
 /** 
  * @author  caproni   
- * @version $Id: AlarmTableModel.java,v 1.6 2007/11/09 10:43:56 acaproni Exp $
+ * @version $Id: AlarmTableModel.java,v 1.7 2007/11/09 11:03:29 acaproni Exp $
  * @since    
  */
 
@@ -59,7 +59,7 @@ public class AlarmTableModel extends AbstractTableModel implements CategoryListe
 			"<HTML><FONT Color=\"#FF8050\">", // Priority 1
 			"<HTML><FONT Color=\"#FF00FF\">", // Priority 2
 			"<HTML><FONT Color=\"#FF0000\">", // Priority 3
-			"<HTML><FONT Color=\"#00FF00\">" // Inactive
+			"<HTML><FONT Color=\"#008000\">" // Inactive
 	};
 	private final String endStr="</FONT>";
 	
