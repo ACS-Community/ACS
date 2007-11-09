@@ -19,42 +19,36 @@
 
 /** 
  * @author  almadev   
- * @version $Id: SendTest.java,v 1.5 2007/11/07 10:24:56 acaproni Exp $
+ * @version $Id: SendTest.java,v 1.6 2007/11/09 18:44:38 hsommer Exp $
  * @since    
  */
 
 package alma.lasersource.test;
 
-import org.omg.CORBA.ORB;
-
-import alma.acs.alarmsystem.binding.ACSLaserFaultStateImpl;
-import alma.alarmsystem.source.ACSAlarmSystemInterfaceFactory;
-import alma.alarmsystem.source.ACSFaultState;
-import alma.alarmsystem.source.ACSAlarmSystemInterface;
-
-import cern.laser.source.alarmsysteminterface.impl.FaultStateImpl;
-
-
-import alma.acs.logging.ClientLogManager;
-
-import java.util.Properties;
+import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.logging.Logger;
+import java.util.Properties;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+import java.util.logging.Level;
 
-import java.sql.Timestamp;
+import cern.laser.source.alarmsysteminterface.impl.ASIMessageHelper;
+import cern.laser.source.alarmsysteminterface.impl.FaultStateImpl;
+import cern.laser.source.alarmsysteminterface.impl.XMLMessageHelper;
+import cern.laser.source.alarmsysteminterface.impl.message.ASIMessage;
 
-import alma.acs.nc.Consumer;
-
-import alma.acs.component.client.AdvancedComponentClient;
 import alma.acs.component.client.ComponentClientTestCase;
 import alma.acs.container.ContainerServices;
-
-import cern.cmw.mom.pubsub.impl.ACSJMSTopicConnectionImpl;
-
-import cern.laser.source.alarmsysteminterface.impl.XMLMessageHelper;
-import cern.laser.source.alarmsysteminterface.impl.ASIMessageHelper;
-import cern.laser.source.alarmsysteminterface.impl.message.ASIMessage;
+import alma.acs.exceptions.AcsJException;
+import alma.acs.nc.Consumer;
+import alma.alarmsystem.source.ACSAlarmSystemInterface;
+import alma.alarmsystem.source.ACSAlarmSystemInterfaceFactory;
+import alma.alarmsystem.source.ACSFaultState;
 
 /**
  * A class to test the sources.
@@ -71,16 +65,23 @@ public class SendTest extends ComponentClientTestCase {
 		super("SendTest");
 	}
 	
-	private Consumer m_consumer = null;
-	private String m_channelName = "CMW.ALARM_SYSTEM.ALARMS.SOURCES.ALARM_SYSTEM_SOURCES";
-	private ContainerServices m_contSvcs;
+	private volatile Consumer m_consumer;
+	private static final String m_channelName = "CMW.ALARM_SYSTEM.ALARMS.SOURCES.ALARM_SYSTEM_SOURCES";
+//	private ContainerServices m_contSvcs;
 	
-	private final int ITERATIONS=20000;
+	private final int ITERATIONS = 10;
 	
 	// The number of the message received
 	// Each FS has the FM and FM containing that number and the FC=num of msg
 	// In this way we can check the integrity
 	private int nMsgReceived;
+	
+	/**
+	 * Alarm NC events are received in different threads than the tests run in.
+	 * In order to let the test fail when there are receiver exceptions or validation errors, we can 
+	 * communicate them in this variable.
+	 */
+	private volatile Object receiverError;
 	
 	// The FM and FF of a FaultState are composed of the following String
 	// with the num of the message appended
@@ -92,30 +93,55 @@ public class SendTest extends ComponentClientTestCase {
 		super.setUp();
 		nMsgReceived=0;
 
-        m_contSvcs=super.getContainerServices();
-        assertNotNull("Error getting the ContainerServices",m_contSvcs);
-        ACSAlarmSystemInterfaceFactory.init(m_contSvcs);
-        
-        // Check if the CRN AS is in use
-		assertFalse("Using ACS implementation instead of CERN",ACSAlarmSystemInterfaceFactory.usingACSAlarmSystem());
-		
-		m_consumer = new Consumer(m_channelName,m_contSvcs);
-		assertNotNull("Error instantiating the Consumer",m_consumer);
-		m_consumer.addSubscription(com.cosylab.acs.jms.ACSJMSMessageEntity.class,this);
-		m_consumer.consumerReady();
+		try {
+			final ContainerServices contSvcs = getContainerServices();
+			assertNotNull("Error getting the ContainerServices",contSvcs);
+			
+			ACSAlarmSystemInterfaceFactory.init(contSvcs);
+			
+			// Check if the CERN AS is in use
+			assertFalse("Using ACS implementation instead of CERN", ACSAlarmSystemInterfaceFactory.usingACSAlarmSystem());
+
+			m_logger.info("alarm system initialized.");
+
+			// Due to some problem with NC libs, the Consumer creation hangs
+			// when the second test gets executed.
+			// Going back to a simple TestCase that uses a ComponentClient (instead of writing a ComponentClientTestCase)
+			// would resolve this issue. 
+			// In order to fix it, we just provoke a timeout so that the other tests can run afterwards.
+			Future<Consumer> consumerCtorFuture = Executors.newSingleThreadExecutor(getContainerServices().getThreadFactory()).submit(
+					new Callable<Consumer>() {
+						public Consumer call() throws Exception {
+							// Register this object as a consumer of ACSJMSMessageEntity events.
+							return new Consumer(m_channelName, contSvcs);
+						}
+					});
+			m_consumer = consumerCtorFuture.get(10, TimeUnit.SECONDS); // will throw a TimeoutException if the call hangs
+			
+			m_consumer.addSubscription(com.cosylab.acs.jms.ACSJMSMessageEntity.class, this);
+			m_consumer.consumerReady();
+			m_logger.info("NC consumer installed on channel " + m_channelName);
+		} catch (Exception ex) {
+			super.tearDown();
+			throw ex;
+		}
 	}
 	
+	
 	public void tearDown() throws Exception {
+		m_logger.info("tearDown called.");
 		m_consumer.disconnect();
-		m_consumer=null;
+//		m_consumer=null;
 		ACSAlarmSystemInterfaceFactory.done();
-		super.tearDown();
-		
+		m_logger.info("tearDown: done clearing NC consumer and alarm factory.");
+		super.tearDown();		
 	}
+	
 	
 	// Send one message to check if the message received 
 	// from the NC is coherent
 	public void testSend() throws Exception {
+		m_logger.info("testSend() will send a single alarm message.");
 		
 		int faultCode=0;
 		String descriptor=ACSFaultState.ACTIVE;
@@ -133,18 +159,22 @@ public class SendTest extends ComponentClientTestCase {
 			props.setProperty(ACSFaultState.ASI_PREFIX_PROPERTY, "prefix");
 			props.setProperty(ACSFaultState.ASI_SUFFIX_PROPERTY, "suffix");
 			fs.setUserProperties(props);
+
+			m_logger.info("alarm message is prepared and will be sent now. Then test will wait for 10 seconds.");
+
 			alarmSource.push(fs);
 			try {
 				Thread.sleep(10000);
 			} catch (Exception e) {}
 		} catch (Exception e) {
-			
-			System.out.println("Exception caught while pushing"+e.getMessage());
-			System.out.println("Cause: "+e.getCause());
-			e.printStackTrace();
+			m_logger.log(Level.INFO, "Exception caught while pushing the alarm", e);
 			throw e;
 		}
+		finally {
+			assertNull(receiverError);
+		}
 	}
+	
 	
 	// Send 20K alarms
 	public void testStress() throws Exception {
@@ -168,11 +198,13 @@ public class SendTest extends ComponentClientTestCase {
 				faultStates[t].setUserProperties(props);
 				faultStates[t].setUserTimestamp(new Timestamp(System.currentTimeMillis()));
 			}
+			m_logger.info("all alarm messages are prepared.");
 			
 			for (int t=0; t<ITERATIONS; t++) {
+				m_logger.info("alarm message #" + t + " will be sent now.");
 				alarmSource.push(faultStates[t]);
 				try {
-					Thread.sleep(10);
+					Thread.sleep(10); // HSO: if alarm system needs 10 ms sleep, then this should be enforced in the alarm classes, not in the test!
 				} catch (Exception e) {}
 			}
 			
@@ -186,14 +218,17 @@ public class SendTest extends ComponentClientTestCase {
 			e.printStackTrace();
 			throw e;
 		}
+		finally {
+			assertNull(receiverError);
+		}
 	}
 	
 	/**
-	 * The method recives all the messages published in the NC
-	 * For each message recived it check if its content is right
+	 * The method receives all the messages published in the NC
+	 * For each message received it checks if its content is right
 	 * i.e. the name of the class, the member and the code contains the 
 	 * number of the message in the sequence. In this way it also checks
-	 * if the messages are recived in the same order they were sent.
+	 * if the messages are received in the same order they were sent.
 	 * The method also checks if all the messages have been received
 	 * and prints a message if receives more messages then the messages 
 	 * pushed
@@ -202,20 +237,22 @@ public class SendTest extends ComponentClientTestCase {
 	 * @see alma.acs.nc.Consumer
 	 */
 	public void receive(com.cosylab.acs.jms.ACSJMSMessageEntity msg) {
-		ASIMessage asiMsg;
 		Collection faultStates;
 		try {
-			asiMsg = XMLMessageHelper.unmarshal(msg.text);
+			ASIMessage asiMsg = XMLMessageHelper.unmarshal(msg.text);
 			faultStates = ASIMessageHelper.unmarshal(asiMsg);
 		} catch (Exception e) {
 			System.out.println("Exception caught while unmarshalling the msg "+e.getMessage());
 			e.printStackTrace();
+			receiverError = e;
 			return;
 		}
 		Iterator iter = faultStates.iterator();
 		while (iter.hasNext()) {
 			FaultStateImpl fs = (FaultStateImpl)iter.next();
-			assertTrue("The message received is not coherent",validateMsg(fs,nMsgReceived));
+			if (!isValidFSMessage(fs,nMsgReceived)) {
+				receiverError = "Invalid FaultState received as #" + nMsgReceived;
+			}
 			nMsgReceived++;
 			if (nMsgReceived==ITERATIONS) {
 				System.out.println("All alarms sent and received");
@@ -233,7 +270,7 @@ public class SendTest extends ComponentClientTestCase {
 	 * 
 	 * @return true if the message is right
 	 */
-	private boolean validateMsg(FaultStateImpl fs, int num) {
+	private boolean isValidFSMessage(FaultStateImpl fs, int num) {
 		boolean res = fs.getFamily().equals(faultFamily+num);
 		res = res && fs.getMember().equals(faultMember+num);
 		res = res && fs.getCode()==num;
