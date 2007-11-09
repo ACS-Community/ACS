@@ -40,6 +40,7 @@ import javax.swing.JRootPane;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JViewport;
+import javax.swing.ToolTipManager;
 import javax.swing.event.MenuEvent;
 
 import alma.acs.logging.archive.ArchiveConnectionManager;
@@ -631,6 +632,10 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 		try
 		{
 			setName("LoggingClientPanel");
+			
+			// Set the tooltip manager
+			ToolTipManager toolTipManager = ToolTipManager.sharedInstance();
+			toolTipManager.setDismissDelay(60000);
 			
 			Dimension d = new Dimension(750, 550);
 			setPreferredSize(d);
