@@ -17,7 +17,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: maciTestLogConfig.sh,v 1.2 2007/10/31 14:20:00 cparedes Exp $"
+# "@(#) $Id: maciTestLogConfig.sh,v 1.3 2007/11/11 20:19:20 hsommer Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -29,18 +29,18 @@
 
 #echo "Test with ACS_LOG_STDOUT=5 & ACS_LOG_REMOTE=5"
 #export ACS_LOG_STDOUT=5
-#export ACS_LOG_CENTRALIZE_LOGGER=5
+#export ACS_LOG_CENTRAL=5
 #maciTestLogConfigClient
 
-echo "Test ACS_LOG_STDOUT=0, ACS_LOG_CENTRALIZE_LOGGER unset and minLogLevel=9"
+echo "Test ACS_LOG_STDOUT=0, ACS_LOG_CENTRAL unset and minLogLevel=9"
 maciTestLogConfigClient
 
 echo "Test with dynamic change of log"
-maciContainerLogLevel ContainerTestLog set MACI_LOG_CONFIG 2 15 
+maciContainerLogLevel ContainerTestLog set MACI_LOG_CONFIG 2 11 
 maciTestLogConfigClient
 
 echo "Test with dynamic change of log (2)"
-maciContainerLogLevel ContainerTestLog set MACI_LOG_CONFIG 25 5 
+maciContainerLogLevel ContainerTestLog set MACI_LOG_CONFIG 11 5 
 maciTestLogConfigClient
 
 sleep 5
