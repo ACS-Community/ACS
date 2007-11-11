@@ -1,5 +1,5 @@
 1 - Starting Container...
-2 - Test ACS_LOG_STDOUT=0, ACS_LOG_CENTRALIZE_LOGGER unset and minLogLevel=9
+2 - Test ACS_LOG_STDOUT=0, ACS_LOG_CENTRAL unset and minLogLevel=9
 1 - Retrieving CDB reference from Manager using bootstrap ORB
 2 - Init maciLogConfigTestClient...
 1 - Bootstrap ORB parms: maciContainer ContainerTestLog
@@ -116,7 +116,7 @@
 2 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] Manager reference narrowed.
 2 - ----------T--:--:--.--- [GlobalLogger - ] Container: ContainerTestLog
 2 - ----------T--:--:--.--- [GlobalLogger - ] 		minLogLevel     : 2
-2 - ----------T--:--:--.--- [GlobalLogger - ] 		minLogLevelLocal: 15
+2 - ----------T--:--:--.--- [GlobalLogger - ] 		minLogLevelLocal: 11
 2 - ----------T--:--:--.--- [GlobalLogger - ] 	Setting levels for logger 'MACI_LOG_CONFIG':
 2 - ----------T--:--:--.--- [GlobalLogger - ] 		useDefault      : false
 1 - ----------T--:--:--.--- [ContainerTestLog - maci::ContainerImpl::set_logLevels] 
@@ -150,7 +150,7 @@
 2 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] Resolving reference: 'corbaloc::---:----/Manager'
 2 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] Manager reference narrowed.
 2 - ----------T--:--:--.--- [GlobalLogger - ] Container: ContainerTestLog
-2 - ----------T--:--:--.--- [GlobalLogger - ] 		minLogLevel     : 25
+2 - ----------T--:--:--.--- [GlobalLogger - ] 		minLogLevel     : 11
 2 - ----------T--:--:--.--- [GlobalLogger - ] 		minLogLevelLocal: 5
 2 - ----------T--:--:--.--- [GlobalLogger - ] 	Setting levels for logger 'MACI_LOG_CONFIG':
 2 - ----------T--:--:--.--- [GlobalLogger - ] 		useDefault      : false
