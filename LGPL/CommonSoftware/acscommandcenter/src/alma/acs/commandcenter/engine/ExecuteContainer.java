@@ -222,6 +222,10 @@ public class ExecuteContainer {
 
        boolean startStop = true;
 
+       // (2007-11-12): TODO remove this dirty hack for oracle archive
+       if ("archive".equals(contType))
+      	 contType = "java-archive";
+
    	 Executor.remoteDaemonForContainers(contHost, instance, startStop, contName, contType, cmdFlags, listener);
     }
     
