@@ -44,6 +44,8 @@ public class ContainerProxy extends ClientProxy implements Container
 		super(container);
 		
 		this.container = container;
+		
+		this.ior = serialize(container);
 	}
 
 
@@ -223,7 +225,7 @@ public class ContainerProxy extends ClientProxy implements Container
     private void writeObject(ObjectOutputStream stream)
         throws IOException
     {
-        stream.writeObject(serialize(container));
+        stream.writeObject(ior);
     }
 
     /**
@@ -234,12 +236,14 @@ public class ContainerProxy extends ClientProxy implements Container
         throws IOException, ClassNotFoundException
     {
 		try {
-			container = si.ijs.maci.ContainerHelper.narrow(deserialize((String)stream.readObject()));
+			ior = (String)stream.readObject();
+			container = si.ijs.maci.ContainerHelper.narrow(deserialize(ior));
 		}
 		catch (Exception e) {
 			// silent here and set reference to null.
 			// An method after deserialization should clean such invalid reference
 			container = null;
+			ior = null;
 		}
     }
 

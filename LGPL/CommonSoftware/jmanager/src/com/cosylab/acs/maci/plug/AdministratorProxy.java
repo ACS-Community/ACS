@@ -47,6 +47,8 @@ public class AdministratorProxy extends ClientProxy implements Administrator
 		super(administrator);
 		
 		this.administrator = administrator;
+		
+		this.ior = serialize(administrator);
 	}
 
 	/**
@@ -235,7 +237,7 @@ public class AdministratorProxy extends ClientProxy implements Administrator
     private void writeObject(ObjectOutputStream stream)
         throws IOException
     {
-        stream.writeObject(serialize(administrator));
+        stream.writeObject(ior);
     }
 
     /**
@@ -246,12 +248,14 @@ public class AdministratorProxy extends ClientProxy implements Administrator
         throws IOException, ClassNotFoundException
     {
 		try {
-			administrator = si.ijs.maci.AdministratorHelper.narrow(deserialize((String)stream.readObject()));
+			ior = (String)stream.readObject();
+			administrator = si.ijs.maci.AdministratorHelper.narrow(deserialize(ior));
 		}
 		catch (Exception e) {
 			// silent here and set reference to null.
 			// An method after deserialization should clean such invalid reference
 			administrator = null;
+			ior = null;
 		}
     }
 

@@ -41,6 +41,11 @@ public class ClientProxy extends CORBAReferenceSerializator implements Client, S
 	protected si.ijs.maci.Client client;
 
 	/**
+	 * Cached serialized reference.
+	 */
+	protected String ior;
+	
+	/**
 	 * Constructor for ClientProxy.
 	 * @param	client	CORBA reference, non-<code>null</code>.
 	 */
@@ -49,6 +54,8 @@ public class ClientProxy extends CORBAReferenceSerializator implements Client, S
 		assert (client != null);
 		
 		this.client = client;
+		
+		this.ior = serialize(client);
 	}
 
 	/**
@@ -270,7 +277,7 @@ public class ClientProxy extends CORBAReferenceSerializator implements Client, S
     private void writeObject(ObjectOutputStream stream)
         throws IOException
     {
-        stream.writeObject(serialize(client));
+    	stream.writeObject(ior);
     }
 
     /**
@@ -281,12 +288,14 @@ public class ClientProxy extends CORBAReferenceSerializator implements Client, S
         throws IOException, ClassNotFoundException
     {
 		try {
-        	client = si.ijs.maci.ClientHelper.narrow(deserialize((String)stream.readObject()));
+			ior = (String)stream.readObject();
+        	client = si.ijs.maci.ClientHelper.narrow(deserialize(ior));
 		}
 		catch (Exception e) {
 			// silent here and set reference to null.
 			// An method after deserialization should clean such invalid reference
 			client = null;
+			ior = null;
 		}
     }
 
