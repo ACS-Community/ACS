@@ -116,7 +116,7 @@
 2 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] Manager reference narrowed.
 2 - ----------T--:--:--.--- [GlobalLogger - ] Container: ContainerTestLog
 2 - ----------T--:--:--.--- [GlobalLogger - ] 		minLogLevel     : 2
-2 - ----------T--:--:--.--- [GlobalLogger - ] 		minLogLevelLocal: 11
+2 - ----------T--:--:--.--- [GlobalLogger - ] 		minLogLevelLocal: 5
 2 - ----------T--:--:--.--- [GlobalLogger - ] 	Setting levels for logger 'MACI_LOG_CONFIG':
 2 - ----------T--:--:--.--- [GlobalLogger - ] 		useDefault      : false
 1 - ----------T--:--:--.--- [ContainerTestLog - maci::ContainerImpl::set_logLevels] 
@@ -150,7 +150,7 @@
 2 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] Resolving reference: 'corbaloc::---:----/Manager'
 2 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] Manager reference narrowed.
 2 - ----------T--:--:--.--- [GlobalLogger - ] Container: ContainerTestLog
-2 - ----------T--:--:--.--- [GlobalLogger - ] 		minLogLevel     : 11
+2 - ----------T--:--:--.--- [GlobalLogger - ] 		minLogLevel     : 6
 2 - ----------T--:--:--.--- [GlobalLogger - ] 		minLogLevelLocal: 5
 2 - ----------T--:--:--.--- [GlobalLogger - ] 	Setting levels for logger 'MACI_LOG_CONFIG':
 2 - ----------T--:--:--.--- [GlobalLogger - ] 		useDefault      : false

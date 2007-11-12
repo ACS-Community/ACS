@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciContainerImpl.cpp,v 1.97 2007/10/17 16:00:01 cparedes Exp $"
+* "@(#) $Id: maciContainerImpl.cpp,v 1.98 2007/11/12 04:44:41 cparedes Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -78,7 +78,7 @@
 #include <ACSAlarmSystemInterfaceFactory.h>
 #endif
 
-ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.97 2007/10/17 16:00:01 cparedes Exp $")
+ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.98 2007/11/12 04:44:41 cparedes Exp $")
 
  using namespace maci;
  using namespace cdb;
@@ -2591,8 +2591,8 @@ void ContainerImpl::set_default_logLevels(const maci::LoggingConfigurable::LogLe
 	if (!logLevels.useDefault)
 	{
 		Logging::Logger::getGlobalLogger()->setLevels(
-			static_cast<Logging::BaseLog::Priority>(logLevels.minLogLevel),
-			static_cast<Logging::BaseLog::Priority>(logLevels.minLogLevelLocal), 
+			static_cast<Logging::BaseLog::Priority>(LoggingProxy::m_LogEntryCast[logLevels.minLogLevel]),
+			static_cast<Logging::BaseLog::Priority>(LoggingProxy::m_LogEntryCast[logLevels.minLogLevelLocal]), 
 			DYNAMIC_LOG_LEVEL);
 		m_defaultLogLevels = logLevels;
 	}
@@ -2667,13 +2667,13 @@ void ContainerImpl::set_logLevels(const char* loggerName, const maci::LoggingCon
 	m_logLevels[loggerName] = logLevels;
 	if (logLevels.useDefault){
 		Logging::Logger::getGlobalLogger()->setLevels(loggerName, 
-			static_cast<Logging::BaseLog::Priority>(m_defaultLogLevels.minLogLevel),
-			static_cast<Logging::BaseLog::Priority>(m_defaultLogLevels.minLogLevelLocal),
+			static_cast<Logging::BaseLog::Priority>(LoggingProxy::m_LogEntryCast[m_defaultLogLevels.minLogLevel]),
+			static_cast<Logging::BaseLog::Priority>(LoggingProxy::m_LogEntryCast[m_defaultLogLevels.minLogLevelLocal]),
 			DYNAMIC_LOG_LEVEL);
 	}else{
 		Logging::Logger::getGlobalLogger()->setLevels(loggerName, 
-			static_cast<Logging::BaseLog::Priority>(logLevels.minLogLevel),
-			static_cast<Logging::BaseLog::Priority>(logLevels.minLogLevelLocal),
+			static_cast<Logging::BaseLog::Priority>(LoggingProxy::m_LogEntryCast[logLevels.minLogLevel]),
+			static_cast<Logging::BaseLog::Priority>(LoggingProxy::m_LogEntryCast[logLevels.minLogLevelLocal]),
 			DYNAMIC_LOG_LEVEL);
 	}
 }
@@ -2705,8 +2705,8 @@ void ContainerImpl::refresh_logging_config()
 	
 	// set default logger levels 
 	Logging::Logger::getGlobalLogger()->setLevels(
-		static_cast<Logging::BaseLog::Priority>(m_defaultLogLevels.minLogLevel),
-		static_cast<Logging::BaseLog::Priority>(m_defaultLogLevels.minLogLevelLocal),
+		static_cast<Logging::BaseLog::Priority>(LoggingProxy::m_LogEntryCast[m_defaultLogLevels.minLogLevel]),
+		static_cast<Logging::BaseLog::Priority>(LoggingProxy::m_LogEntryCast[m_defaultLogLevels.minLogLevelLocal]),
 		m_logLevelRefresh);
 	// other loggers config
 	if (m_database->GetField(m_dbPrefix.c_str(), "LoggingConfig", fld))
@@ -2749,13 +2749,13 @@ void ContainerImpl::configureLogger(const std::string& loggerName)
 
 	if (logLevels.useDefault){
 		Logging::Logger::getGlobalLogger()->setLevels(loggerName, 
-			static_cast<Logging::BaseLog::Priority>(getContainer()->m_defaultLogLevels.minLogLevel),
-			static_cast<Logging::BaseLog::Priority>(getContainer()->m_defaultLogLevels.minLogLevelLocal),
+			static_cast<Logging::BaseLog::Priority>(LoggingProxy::m_LogEntryCast[getContainer()->m_defaultLogLevels.minLogLevel]),
+			static_cast<Logging::BaseLog::Priority>(LoggingProxy::m_LogEntryCast[getContainer()->m_defaultLogLevels.minLogLevelLocal]),
 		m_logLevelConfigure);
 	}else{
 		Logging::Logger::getGlobalLogger()->setLevels(loggerName, 
-			static_cast<Logging::BaseLog::Priority>(logLevels.minLogLevel),
-			static_cast<Logging::BaseLog::Priority>(logLevels.minLogLevelLocal),
+			static_cast<Logging::BaseLog::Priority>(LoggingProxy::m_LogEntryCast[logLevels.minLogLevel]),
+			static_cast<Logging::BaseLog::Priority>(LoggingProxy::m_LogEntryCast[logLevels.minLogLevelLocal]),
 		m_logLevelConfigure);
 	}
 
