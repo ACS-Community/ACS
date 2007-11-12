@@ -26,7 +26,7 @@ usage(const char *argv)
 {
     ACE_OS::printf ("\n\tusage: %s {-h} -i INSTANCE [-d DAEMONREF] [-H HOST]", argv);
     ACE_OS::printf ("\t   -h, --help         show this help message\n");
-    ACE_OS::printf ("\t   -i, --instance     ACS instance to stop\n");
+    ACE_OS::printf ("\t   -i, --instance     ACS instance to get status of\n");
     ACE_OS::printf ("\t   -H, --host         Host where to get status of ACS\n");
     ACE_OS::printf ("\t   -d, --daemon       Daemon reference\n");
 }
