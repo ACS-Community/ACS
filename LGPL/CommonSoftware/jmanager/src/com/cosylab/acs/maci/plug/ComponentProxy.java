@@ -58,6 +58,11 @@ public class ComponentProxy extends CORBAReferenceSerializator implements Compon
 	private Object reference;
 
 	/**
+	 * Cached serialized reference.
+	 */
+	protected String ior;
+
+	/**
 	 * Construct an implementaiton of Component.
 	 * 
 	 * @param	reference	CORBA reference of Component, non-<code>null</code>
@@ -65,6 +70,8 @@ public class ComponentProxy extends CORBAReferenceSerializator implements Compon
 	public ComponentProxy(Object reference)
 	{
 		this (null, reference);
+		
+		this.ior = serialize(reference);
 	}
 
 	/**
@@ -214,7 +221,7 @@ public class ComponentProxy extends CORBAReferenceSerializator implements Compon
     {
         stream.writeObject(name);
         stream.writeObject(interfaces);
-        stream.writeObject(serialize(reference));
+        stream.writeObject(ior);
     }
 
 
@@ -228,7 +235,8 @@ public class ComponentProxy extends CORBAReferenceSerializator implements Compon
     {
         name = (String)stream.readObject();
         interfaces = (String[])stream.readObject();
-        reference = deserialize((String)stream.readObject());
+        ior = (String)stream.readObject();
+        reference = deserialize(ior);
 
 		checkConstructable();
     }

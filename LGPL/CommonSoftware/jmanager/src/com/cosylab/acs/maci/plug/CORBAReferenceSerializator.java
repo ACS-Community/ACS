@@ -46,7 +46,7 @@ public class CORBAReferenceSerializator
 	 */
 	public static String serialize(Object reference)
 	{
-		if (CORBAReferenceSerializator.orb == null)
+		if (CORBAReferenceSerializator.orb == null || reference == null)
 			return null;
 
 		return orb.object_to_string(reference);			
@@ -59,7 +59,7 @@ public class CORBAReferenceSerializator
 	 */
 	public static Object deserialize(String ior)
 	{
-		if (CORBAReferenceSerializator.orb == null)
+		if (CORBAReferenceSerializator.orb == null || ior == null)
 			return null;
 			
 		return orb.string_to_object(ior);
