@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciContainerImpl.cpp,v 1.98 2007/11/12 04:44:41 cparedes Exp $"
+* "@(#) $Id: maciContainerImpl.cpp,v 1.99 2007/11/12 09:54:59 cparedes Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -78,7 +78,7 @@
 #include <ACSAlarmSystemInterfaceFactory.h>
 #endif
 
-ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.98 2007/11/12 04:44:41 cparedes Exp $")
+ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.99 2007/11/12 09:54:59 cparedes Exp $")
 
  using namespace maci;
  using namespace cdb;
@@ -2702,7 +2702,28 @@ void ContainerImpl::refresh_logging_config()
 		if (fld.GetULong(ul))
 			m_defaultLogLevels.minLogLevelLocal = ul;
 	}
+
+	int envStdioPriority = -1;
+	int envCentralizePriority = -1;
+	if(m_logLevelRefresh == CDB_LOG_LEVEL){
+		char *acsSTDIO = getenv("ACS_LOG_STDOUT");
+	  	if (acsSTDIO && *acsSTDIO)
+	    	{
+	     		envStdioPriority = atoi(acsSTDIO);
+	    	}
+		if (envStdioPriority >= 0 && envStdioPriority <=11 ) 
+			m_defaultLogLevels.minLogLevelLocal = envStdioPriority;
+	  	
+		char *acsCentralizeLogger = getenv("ACS_LOG_CENTRAL");
+	  	if (acsCentralizeLogger && *acsCentralizeLogger)
+	    	{
+	      		envCentralizePriority = atoi(acsCentralizeLogger);
+	    	}
+		if(envCentralizePriority >= 0 && envCentralizePriority <=11 )
+			m_defaultLogLevels.minLogLevel = envCentralizePriority;
 	
+	}	
+
 	// set default logger levels 
 	Logging::Logger::getGlobalLogger()->setLevels(
 		static_cast<Logging::BaseLog::Priority>(LoggingProxy::m_LogEntryCast[m_defaultLogLevels.minLogLevel]),
@@ -2731,6 +2752,12 @@ void ContainerImpl::refresh_logging_config()
 				
 				// load
 				loadLoggerConfiguration(iter->c_str());
+					
+				if(envStdioPriority > 0 && m_logLevels.find(iter->c_str()) != m_logLevels.end())
+					m_logLevels[iter->c_str()].minLogLevelLocal = envStdioPriority;
+
+				if(envCentralizePriority > 0 && m_logLevels.find(iter->c_str()) != m_logLevels.end())
+					m_logLevels[iter->c_str()].minLogLevel = envCentralizePriority;
 				// ... and configure
 				configureLogger(iter->c_str());				
 			}
