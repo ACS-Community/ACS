@@ -11,7 +11,7 @@
 ' $Modtime: $
 ' $Archive: $
 '
-' $Revision: 1.2 $
+' $Revision: 1.3 $
 '
 ' This script breaks all links and fields in a Word document
 ' located in the directory where this program runs
@@ -66,6 +66,7 @@ End Function
 ' CHECKARGS
 '
 ' Makes some preliminary checks of the arguments.
+
 ' Quits the application is any problem is found.
 '
 Function CheckArgs()
@@ -130,6 +131,9 @@ Function DOCBREAKLINKS( sDocFile, dDocFile )
   '
   ' First pass is supposed to break the INCLUDETEXT links
   '
+  WScript.Echo "   "
+  WScript.Echo "=== First pass to break INCLUDETEXT links"
+
   For Each aField In wdoc.Fields
     Set fieldCode = aField.Code
     If  InStr(fieldCode, "INCLUDETEXT") > 0 Then
@@ -140,6 +144,9 @@ Function DOCBREAKLINKS( sDocFile, dDocFile )
        Else
          WScript.Echo "Error updating field: " + fieldCode
        End If        
+    Else
+       ' Just for documentation lists the unchanged fields.
+       WScript.Echo "Field:                " + fieldCode + " left unchanged"
     End If
   Next
 
@@ -147,6 +154,9 @@ Function DOCBREAKLINKS( sDocFile, dDocFile )
   ' Second pass is supposed to break the INCLUDEPUCTURE links
   ' that have been created by breaking the INCLUDETEXT links
   '
+  WScript.Echo "   "
+  WScript.Echo "=== Second pass to break INCLUDEPICTURE links"
+
   For Each aField In wdoc.Fields
     Set fieldCode  = aField.Code
     If  InStr(fieldCode, "INCLUDEPICTURE") > 0 Then
