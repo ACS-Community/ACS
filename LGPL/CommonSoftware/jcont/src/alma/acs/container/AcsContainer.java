@@ -1334,11 +1334,17 @@ public class AcsContainer extends ContainerPOA
 	public void set_default_logLevels(LogLevels levels) {
 		logConfig.setDefaultMinLogLevel(levels.minLogLevel);
 		logConfig.setDefaultMinLogLevelLocal(levels.minLogLevelLocal);
-		String [] names = get_logger_names();
-		for(int i = 0 ; i< names.length;i++){
-			UnnamedLogger levels2 = logConfig.getNamedLoggerConfig(names[i]);
-			set_logLevels(names[i],levels);
-		}
+// HSO 2007-11-12 The following addition from rev. 1.106 is in my view not only unnecessary 
+// (I tested that default levels are correctly propagated already),
+// but probably wrong (which I have not tried out though).
+// When changing default levels we want to preserve the "use default" semantics,
+// which means that loggers that are set up to use default values (whatever these values are)
+// should not be changed to use the current default values as their specific log level values.
+//		String [] names = get_logger_names();
+//		for(int i = 0 ; i< names.length;i++){
+//			UnnamedLogger levels2 = logConfig.getNamedLoggerConfig(names[i]);
+//			set_logLevels(names[i],levels);
+//		}
 	}
 
 	/**
