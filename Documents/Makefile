@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ALMA project
 #
-# "@(#) $Id: Makefile,v 1.10 2005/12/08 09:33:07 gchiozzi Exp $"
+# "@(#) $Id: Makefile,v 1.11 2007/11/12 13:37:29 gchiozzi Exp $"
 #
 #
 
@@ -47,7 +47,7 @@ all: cvsUpdate changeLog acsarchitectureupd docs
 docs: $(PDFDOCS)
 
 cvsUpdate:
-	cvs -Q update -d -P $(CVSFLAGS) .
+	cvs update -d -P $(CVSFLAGS) .
 
 acsarchitectureupd:
 	@echo "Update ACS Architecture UML Model, HTML and pictures."
