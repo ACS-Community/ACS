@@ -69,8 +69,8 @@ ACSContainerHandlerImpl::start_container (
     std::string containerName(container_name);
     std::string::size_type pos=containerName.rfind("/"); 
     if(pos != std::string::npos){
-    	logDirectory.append(containerName,0,pos);
-    	containerName.erase(0,pos);
+    	logDirectory.append(containerName,0,pos+1);
+    	containerName.erase(0,pos+1);
     }
     //create the directory
     std::string mkdir("mkdir -p ");
@@ -132,8 +132,8 @@ ACSContainerHandlerImpl::stop_container (
     std::string containerName(container_name);
     std::string::size_type pos=containerName.rfind("/"); 
     if(pos != std::string::npos){
-    	logDirectory.append(containerName,0,pos);
-    	containerName.erase(0,pos);
+    	logDirectory.append(containerName,0,pos+1);
+    	containerName.erase(0,pos+1);
     }
     //create the directory
     std::string mkdir("mkdir -p ");
