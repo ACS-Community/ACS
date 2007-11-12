@@ -20,7 +20,7 @@
  *
  *
  *
- * "@(#) $Id: bulkDataNotificationTest.cpp,v 1.1 2007/09/25 13:24:49 rcirami Exp $"
+ * "@(#) $Id: bulkDataNotificationTest.cpp,v 1.2 2007/11/12 13:36:43 rcirami Exp $"
  *
  * who       when        what
  * --------  --------    ----------------------------------------------
@@ -86,22 +86,34 @@ int main(int argc, char *argv[])
 	    return -1;
 	    }
 
+	bulkdata::BulkDataReceiver_var receiver1 = client.get_object<bulkdata::BulkDataReceiver>("BulkDataNotifReceiver1", 0, true);
+	if (CORBA::is_nil(receiver1.in()))
+	    {
+	    ACS_SHORT_LOG((LM_ERROR,"Could not retrieve BulkDataNotifReceiver1 component"));
+	    return -1;
+	    }
+
+
+// Receiver connected to the Distributor
+
 	sender->connect(distributer.in());
 
 	distributer->multiConnect(receiver.in());
 
-	// instantiate and activate a user callback for the notification
+	// instantiate and activate user callbacks for the notification
 	BulkDataTestNotificationCb *notifCb = new BulkDataTestNotificationCb();
 	ACS::CBvoid_var cb = notifCb->_this();
 
 	// subscribe to the notification mechanism
 	distributer->subscribeNotification(cb);
 
+
 	sender->startSend();
 
 	sender->paceData();
 
 	sender->stopSend();
+
 
 	sender->disconnect();
 
@@ -110,6 +122,33 @@ int main(int argc, char *argv[])
 	distributer->multiDisconnect(receiver.in());
 
 	notifCb->_remove_ref();
+
+
+
+// Receiver 1 connected directly to the Sender
+
+	sender->connect(receiver1.in());
+
+	// instantiate and activate user callbacks for the notification
+	BulkDataTestNotificationCb *notifCb1 = new BulkDataTestNotificationCb();
+	ACS::CBvoid_var cb1 = notifCb1->_this();
+
+	// subscribe to the notification mechanism
+	receiver1->subscribeNotification(cb1);
+
+
+	sender->startSend();
+
+	sender->paceData();
+
+	sender->stopSend();
+
+
+	sender->disconnect();
+
+	receiver1->closeReceiver();
+
+	notifCb1->_remove_ref();
 	}
 
     catch (AVConnectErrorEx & ex)
@@ -166,6 +205,7 @@ int main(int argc, char *argv[])
 	}
     
     //We release our component and logout from manager
+    client.manager()->release_component(client.handle(), "BulkDataNotifReceiver1");
     client.manager()->release_component(client.handle(), "BulkDataNotifReceiver");
     client.manager()->release_component(client.handle(), "BulkDataDistributer");
     client.manager()->release_component(client.handle(), "BulkDataNotifSender");

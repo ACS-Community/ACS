@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.28 2007/09/25 13:24:49 rcirami Exp $"
+# "@(#) $Id: Makefile,v 1.29 2007/11/12 13:36:43 rcirami Exp $"
 #
 # Makefile of ........
 #
@@ -159,6 +159,7 @@ LIBRARIES       = bulkDataReceiverLibEx1 \
 		  bulkDataReceiverLibEx2 \
 		  bulkDataReceiverLibEx3 \
 		  bulkDataReceiverLibNotif \
+		  bulkDataReceiver1LibNotif \
 		  bulkDataSenderLibEx1 \
 		  bulkDataSenderLibEx2 \
 	 	  bulkDataSenderLibEx3 \
@@ -188,6 +189,10 @@ bulkDataReceiverLibEx3_LIBS      = bulkDataReceiverStubs bulkDataReceiverEx3Stub
 bulkDataReceiverLibNotif_OBJECTS   = bulkDataReceiverCbNotif
 bulkDataReceiverLibNotif_LIBS      = bulkDataReceiverStubs bulkDataStubs \
 				     bulkDataCallback ACSBulkDataError ACSBulkDataStatus
+
+bulkDataReceiver1LibNotif_OBJECTS   = bulkDataReceiver1CbNotif
+bulkDataReceiver1LibNotif_LIBS      = bulkDataReceiverStubs bulkDataStubs \
+				      bulkDataCallback ACSBulkDataError ACSBulkDataStatus
 
 bulkDataSenderLibEx1_OBJECTS   = bulkDataSenderEx1Impl
 bulkDataSenderLibEx1_LIBS      = bulkDataReceiverStubs bulkDataSenderStubs bulkDataStubs ACSBulkDataError bulkDataSenderEx1Stubs

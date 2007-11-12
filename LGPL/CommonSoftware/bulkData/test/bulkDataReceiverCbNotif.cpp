@@ -67,9 +67,16 @@ BulkDataReceiverCbNotif::cbStop()
 	{
 	AVFlowEndpointErrorCompletion comp(ex,__FILE__, __LINE__, "BulkDataReceiverCbNotif::cbStop");
 	comp.log();
-	// The notifySender method of the receiver is called in order to notify
-	// the sender (distributor) of the error. The completion is passed back as parameter.
-	recv_p->notifySender(comp);
+	if(recv_p)
+	    {
+	    // The notifySender method of the receiver is called in order to notify
+	    // the sender (distributor) of the error. The completion is passed back as parameter.
+	    recv_p->notifySender(comp);
+	    }
+	else
+	    {
+	    ACS_SHORT_LOG((LM_ERROR, "BulkDataReceiverCbNotif - Receiver reference NULL"));
+	    }
 	}
     
     return 0;

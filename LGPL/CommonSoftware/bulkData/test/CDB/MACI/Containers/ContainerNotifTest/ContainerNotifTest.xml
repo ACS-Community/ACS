@@ -13,6 +13,7 @@
     <cdb:_ string="bulkDataSenderLibNotif" />
     <cdb:_ string="bulkDataDistributerLib" />
     <cdb:_ string="bulkDataReceiverLibNotif" />
+    <cdb:_ string="bulkDataReceiver1LibNotif" />
   </Autoload>
   <LoggingConfig centralizedLogger="Log"
                  minLogLevel="0"

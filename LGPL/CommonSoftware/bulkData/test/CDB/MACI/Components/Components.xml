@@ -32,6 +32,9 @@
      <_ Name="BulkDataNotifReceiver"     Code="bulkDataReceiverLibNotif"	
                                          Type="IDL:alma/bulkdata/BulkDataReceiver:1.0"
                                          Container="ContainerNotifTest"/>
+     <_ Name="BulkDataNotifReceiver1"    Code="bulkDataReceiver1LibNotif"	
+                                         Type="IDL:alma/bulkdata/BulkDataReceiver:1.0"
+                                         Container="ContainerNotifTest"/>
      <_ Name="BulkDataNotifSender"       Code="bulkDataSenderLibNotif"	
                                          Type="IDL:alma/bulkdata/BulkDataSender:1.0"
                                          Container="ContainerNotifTest"/>
