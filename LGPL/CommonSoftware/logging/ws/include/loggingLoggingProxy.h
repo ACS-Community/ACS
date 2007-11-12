@@ -21,7 +21,7 @@
  *    License along with this library; if not, write to the Free Software
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: loggingLoggingProxy.h,v 1.28 2007/10/17 15:56:17 cparedes Exp $"
+ * "@(#) $Id: loggingLoggingProxy.h,v 1.29 2007/11/12 04:39:14 cparedes Exp $"
  *
  * who       when        what
  * --------  ----------  ----------------------------------------------
@@ -113,7 +113,7 @@
  * </OL> 
  * @author <a href=mailto:matej.sekoranja@ijs.si>Matej Sekoranja</a>,
  * Jozef Stefan Institute, Slovenia<br>
- * @version "@(#) $Id: loggingLoggingProxy.h,v 1.28 2007/10/17 15:56:17 cparedes Exp $"
+ * @version "@(#) $Id: loggingLoggingProxy.h,v 1.29 2007/11/12 04:39:14 cparedes Exp $"
  */
 class logging_EXPORT LoggingProxy : public ACE_Log_Msg_Callback
 {
@@ -289,6 +289,7 @@ class logging_EXPORT LoggingProxy : public ACE_Log_Msg_Callback
     /// ACE log type int-to-string mapping
     static ACE_TCHAR* m_LogEntryTypeName[];
     static ACSLoggingLog::LogType m_LogBinEntryTypeName[];    
+    static ACE_Log_Priority LoggingProxy::m_LogEntryCast[];    
 
     /// initializes ACE_LOG_MSG (must be done per each thread)
     static void init(LoggingProxy *loggingProxy);

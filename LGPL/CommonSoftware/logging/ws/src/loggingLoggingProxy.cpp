@@ -19,7 +19,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: loggingLoggingProxy.cpp,v 1.47 2007/11/09 09:48:24 cparedes Exp $"
+* "@(#) $Id: loggingLoggingProxy.cpp,v 1.48 2007/11/12 04:39:14 cparedes Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -57,7 +57,7 @@
 #define LOG_NAME "Log"
 #define DEFAULT_LOG_FILE_NAME "acs_local_log"
 
-ACE_RCSID(logging, logging, "$Id: loggingLoggingProxy.cpp,v 1.47 2007/11/09 09:48:24 cparedes Exp $");
+ACE_RCSID(logging, logging, "$Id: loggingLoggingProxy.cpp,v 1.48 2007/11/12 04:39:14 cparedes Exp $");
 
 ACSLoggingLog::LogType LoggingProxy::m_LogBinEntryTypeName[] =
 {
@@ -90,6 +90,21 @@ ACE_TCHAR* LoggingProxy::m_LogEntryTypeName[] =
     ACE_TEXT ("Emergency")
 };
 
+ACE_Log_Priority LoggingProxy::m_LogEntryCast[] =
+{
+    LM_TRACE,		// not in specs
+    LM_TRACE, 	// not in specs
+    LM_TRACE,
+    LM_DEBUG,
+    LM_INFO,
+    LM_NOTICE,
+    LM_WARNING,
+    LM_TRACE,		// not in specs
+    LM_ERROR,
+    LM_CRITICAL,
+    LM_ALERT,
+    LM_EMERGENCY
+};
 unsigned int LoggingProxy::setClrCount_m = 0;
 bool LoggingProxy::initialized = false;
 int LoggingProxy::instances = 0;
