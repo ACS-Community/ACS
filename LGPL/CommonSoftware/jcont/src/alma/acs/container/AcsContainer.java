@@ -1334,6 +1334,11 @@ public class AcsContainer extends ContainerPOA
 	public void set_default_logLevels(LogLevels levels) {
 		logConfig.setDefaultMinLogLevel(levels.minLogLevel);
 		logConfig.setDefaultMinLogLevelLocal(levels.minLogLevelLocal);
+		String [] names = get_logger_names();
+		for(int i = 0 ; i< names.length;i++){
+			UnnamedLogger levels2 = logConfig.getNamedLoggerConfig(names[i]);
+			set_logLevels(names[i],levels);
+		}
 	}
 
 	/**
