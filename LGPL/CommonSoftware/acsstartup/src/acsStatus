@@ -31,7 +31,7 @@ function printUsage {
    echo ""
 	echo "Usage: `basename $0` [OPTIONS]  "
 	echo "Options: "
-	echo "   -b | -baseport INSTANCE        the acs instance (0-9) you want to use"
+	echo "   -b | -baseport INSTANCE        the acs instance (0-9) you want to get status of"
         echo "   -h | -help                     prints this help and exits"
 }
 
