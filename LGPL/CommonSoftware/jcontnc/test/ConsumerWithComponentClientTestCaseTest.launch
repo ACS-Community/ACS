@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<launchConfiguration type="org.eclipse.jdt.junit.launchconfig">
+<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
+<listEntry value="/ACS_jcontnc/test/alma/acs/nc/ConsumerWithComponentClientTestCaseTest.java"/>
+</listAttribute>
+<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
+<listEntry value="1"/>
+</listAttribute>
+<booleanAttribute key="org.eclipse.debug.core.appendEnvironmentVariables" value="true"/>
+<stringAttribute key="org.eclipse.jdt.junit.CONTAINER" value=""/>
+<booleanAttribute key="org.eclipse.jdt.junit.KEEPRUNNING_ATTR" value="false"/>
+<stringAttribute key="org.eclipse.jdt.junit.TESTNAME" value=""/>
+<stringAttribute key="org.eclipse.jdt.junit.TEST_KIND" value="org.eclipse.jdt.junit.loader.junit3"/>
+<stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="alma.acs.nc.ConsumerWithComponentClientTestCaseTest"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="ACS_jcontnc"/>
+<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-DACS.manager=corbaloc::alma:3200/Manager -DORBInitRef.NameService=corbaloc::alma:3201/NameService"/>
+</launchConfiguration>
