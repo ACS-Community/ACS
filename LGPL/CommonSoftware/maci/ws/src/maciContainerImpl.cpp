@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciContainerImpl.cpp,v 1.99 2007/11/12 09:54:59 cparedes Exp $"
+* "@(#) $Id: maciContainerImpl.cpp,v 1.100 2007/11/13 16:09:11 bjeram Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -78,7 +78,7 @@
 #include <ACSAlarmSystemInterfaceFactory.h>
 #endif
 
-ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.99 2007/11/12 09:54:59 cparedes Exp $")
+ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.100 2007/11/13 16:09:11 bjeram Exp $")
 
  using namespace maci;
  using namespace cdb;
@@ -132,6 +132,7 @@ ContainerImpl::ContainerImpl() :
   // initialize default log levels
   m_defaultLogLevels.minLogLevel = 0;
   m_defaultLogLevels.minLogLevelLocal = 0;
+  m_defaultLogLevels.useDefault = true;
  
   // singleton check
   
@@ -2588,15 +2589,13 @@ void ContainerImpl::set_default_logLevels(const maci::LoggingConfigurable::LogLe
 {
 	ACS_TRACE("maci::ContainerImpl::set_default_logLevels");
 
-	if (!logLevels.useDefault)
-	{
-		Logging::Logger::getGlobalLogger()->setLevels(
-			static_cast<Logging::BaseLog::Priority>(LoggingProxy::m_LogEntryCast[logLevels.minLogLevel]),
-			static_cast<Logging::BaseLog::Priority>(LoggingProxy::m_LogEntryCast[logLevels.minLogLevelLocal]), 
-			DYNAMIC_LOG_LEVEL);
-		m_defaultLogLevels = logLevels;
-	}
-}
+	Logging::Logger::getGlobalLogger()->setLevels(
+	    static_cast<Logging::BaseLog::Priority>(LoggingProxy::m_LogEntryCast[logLevels.minLogLevel]),
+	    static_cast<Logging::BaseLog::Priority>(LoggingProxy::m_LogEntryCast[logLevels.minLogLevelLocal]), 
+	    DYNAMIC_LOG_LEVEL);
+	m_defaultLogLevels = logLevels;
+	m_defaultLogLevels.useDefault = true;
+}//ContainerImpl::set_default_logLevels
 
 
 maci::stringSeq* ContainerImpl::get_logger_names()
@@ -2634,7 +2633,7 @@ maci::LoggingConfigurable::LogLevels ContainerImpl::get_logLevels(const char* lo
 	ACS_TRACE("maci::ContainerImpl::get_logLevels");
 
 	if (m_logLevels.find(loggerName) != m_logLevels.end())
-		return m_logLevels[loggerName];
+	    return m_logLevels[loggerName];
 	else if (Logging::Logger::getGlobalLogger()->exists(loggerName))
 		return m_defaultLogLevels;
 	else
