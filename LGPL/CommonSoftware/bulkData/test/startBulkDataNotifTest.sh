@@ -4,4 +4,7 @@
 . acsstartupAcsPorts
 
 export ACS_INSTANCE=`cat $ACS_TMP/acs_instance`
-acsStartContainer -cpp Container1
+
+acsStartContainer -cpp ContainerNotifTest
+
+

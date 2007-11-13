@@ -19,7 +19,7 @@
 #  Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 #  MA 02111-1307  USA
 #
-# "@(#) $Id: TestList.lite,v 1.6 2007/07/20 12:30:36 rcirami Exp $"
+# "@(#) $Id: TestList.lite,v 1.7 2007/11/13 12:38:36 rcirami Exp $"
 #
 # TestList
 #
@@ -32,5 +32,6 @@ PROLOGUE bulkDataTATPrologue
 
 1 bulkDataEx1 "startBulkDataTest.sh" "@SLEEP 25" "bulkDataTestRun.sh bulkDataEx1"
 2 bulkDataDistributerEx "startBulkDataDistrTest.sh" "@SLEEP 25" "bulkDataDistrTestRun.sh bulkDataDistributerEx"
+3 bulkDataNotificationTest "startBulkDataNotifTest.sh" "@SLEEP 25" "bulkDataNotifTestRun.sh bulkDataNotificationTest"
 
 EPILOGUE bulkDataTATEpilogue

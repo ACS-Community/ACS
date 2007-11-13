@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.29 2007/11/12 13:36:43 rcirami Exp $"
+# "@(#) $Id: Makefile,v 1.30 2007/11/13 12:38:36 rcirami Exp $"
 #
 # Makefile of ........
 #
@@ -239,8 +239,10 @@ SCRIPTS_L       = bulkDataTATPrologue \
 		  bulkDataExportTATEnvironment \
 		  bulkDataTestRun.sh \
 		  bulkDataDistrTestRun.sh \
+		  bulkDataNotifTestRun.sh \
 		  startBulkDataTest.sh \
-		  startBulkDataDistrTest.sh
+		  startBulkDataDistrTest.sh \
+		  startBulkDataNotifTest.sh
 
 #
 # TCL scripts (public and local)
