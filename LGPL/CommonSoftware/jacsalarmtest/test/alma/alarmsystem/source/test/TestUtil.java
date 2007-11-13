@@ -2,16 +2,6 @@ package alma.alarmsystem.source.test;
 
 import java.io.File;
 import java.io.FileWriter;
-import java.util.logging.Logger;
-
-import org.omg.CORBA.ORB;
-
-import si.ijs.maci.Manager;
-import si.ijs.maci.ManagerHelper;
-import com.cosylab.CDB.JDAL;
-import com.cosylab.CDB.JDALHelper;
-
-import alma.acs.logging.ClientLogManager;
 
 /**
  * A class containing a set of useful methods needed by the tests
