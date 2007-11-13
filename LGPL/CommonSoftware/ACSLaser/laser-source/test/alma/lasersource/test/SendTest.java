@@ -19,7 +19,7 @@
 
 /** 
  * @author  almadev   
- * @version $Id: SendTest.java,v 1.6 2007/11/09 18:44:38 hsommer Exp $
+ * @version $Id: SendTest.java,v 1.7 2007/11/13 14:26:28 hsommer Exp $
  * @since    
  */
 
@@ -30,11 +30,9 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Properties;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 
 import cern.laser.source.alarmsysteminterface.impl.ASIMessageHelper;
@@ -44,8 +42,8 @@ import cern.laser.source.alarmsysteminterface.impl.message.ASIMessage;
 
 import alma.acs.component.client.ComponentClientTestCase;
 import alma.acs.container.ContainerServices;
-import alma.acs.exceptions.AcsJException;
 import alma.acs.nc.Consumer;
+import alma.acs.nc.Helper;
 import alma.alarmsystem.source.ACSAlarmSystemInterface;
 import alma.alarmsystem.source.ACSAlarmSystemInterfaceFactory;
 import alma.alarmsystem.source.ACSFaultState;
@@ -131,10 +129,10 @@ public class SendTest extends ComponentClientTestCase {
 	public void tearDown() throws Exception {
 		m_logger.info("tearDown called.");
 		m_consumer.disconnect();
-//		m_consumer=null;
 		ACSAlarmSystemInterfaceFactory.done();
 		m_logger.info("tearDown: done clearing NC consumer and alarm factory.");
-		super.tearDown();		
+		Helper.m_nContext = null;
+		super.tearDown();
 	}
 	
 	
