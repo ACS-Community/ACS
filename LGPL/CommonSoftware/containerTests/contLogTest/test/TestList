@@ -1,0 +1,145 @@
+#*******************************************************************************
+# ALMA - Atacama Large Millimiter Array
+# (c) European Southern Observatory, 2002
+# Copyright by ESO (in the framework of the ALMA collaboration)
+# and Cosylab 2002, All rights reserved
+#
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License as published by the Free Software Foundation; either
+# version 2.1 of the License, or (at your option) any later version.
+#
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public
+# License along with this library; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
+# MA 02111-1307  USA
+#
+# "@(#) $Id: TestList,v 1.1.1.1 2007/11/13 14:25:38 eallaert Exp $"
+#
+# TestList
+#
+# who       when        what
+# --------  ----------  ----------------------------------------------
+# eallaert  2007-01-02  Initial version
+#
+SOURCE setupTatEnvironment.tcl
+PROLOGUE acsutilTATPrologue -l
+
+#-------------JAVA, NO NAMED LOGGERS ----------------------
+1 SOURCE prepareHardcodedLevels.tcl \
+	PROLOGUE "acsutilAwaitContainerStart -java frodoContainer" \
+	javaHardcodedLevels "acsStartJava alma.contLogTest.LogLevelsImpl.LogLevelsTest TESTLOG1" \
+        EPILOGUE "acsStopContainer frodoContainer"
+
+2 SOURCE prepareCdbLevels.tcl \
+	PROLOGUE "acsutilAwaitContainerStart -java frodoContainer" \
+	javaCdbLevels "acsStartJava alma.contLogTest.LogLevelsImpl.LogLevelsTest TESTLOG1" \
+        EPILOGUE "acsStopContainer frodoContainer"
+
+# NOTE1: acsutilAwaitContainerStart will look for particular messages to stdout
+#   sent by the Container; if we would set here within prepareEnvLevels.tcl the
+#   env var ACS_LOG_STDOUT to a high value, these msgs to stdout are not
+#   produced, so acsutilAwaitContainerStart would time out.
+#   Workaround: use high levels in xml file, lower ones in env vars
+# NOTE2: similar for acsStopContainer.
+# NOTE3: the file $ACSROOT/bin/acsstartupConstants.sh sets the "script debugging
+#   var ACS_DEBUG_PRIORITY to 4, and acsStartJava will send extra debug messages
+#   to stdout if ACS_LOG_STDOUT exists and is less than ACS_DEBUG_PRIORITY.
+#   Be aware that this magic level 4 impacts the reference file more than just
+#   that number ...
+3 SOURCE prepareEnvLevels.tcl \
+	PROLOGUE "acsutilAwaitContainerStart -java frodoContainer" \
+	javaEnvironmentLevels "acsStartJava alma.contLogTest.LogLevelsImpl.LogLevelsTest TESTLOG1" \
+        EPILOGUE "acsStopContainer frodoContainer"
+
+4 SOURCE prepareDynLevels.tcl \
+	PROLOGUE "acsutilAwaitContainerStart -java frodoContainer" \
+	javaDynamicLevels "maciContainerLogLevel frodoContainer set default 8 9" \
+                      "@SLEEP 2" \
+                      "acsStartJava alma.contLogTest.LogLevelsImpl.LogLevelsTest TESTLOG1" \
+        EPILOGUE "acsStopContainer frodoContainer"
+
+#-------------JAVA, NAMED LOGGERS ----------------------
+11 SOURCE prepareHardcodedLevels.tcl \
+	PROLOGUE "acsutilAwaitContainerStart -java frodoContainerN" \
+	javaHardcodedNamedLoggerLevels "acsStartJava alma.contLogTest.LogLevelsImpl.LogLevelsTest TESTLOG2" \
+        EPILOGUE "acsStopContainer frodoContainerN"
+
+12 SOURCE prepareCdbLevels.tcl \
+	PROLOGUE "acsutilAwaitContainerStart -java frodoContainerN" \
+	javaCdbNamedLoggerLevels "acsStartJava alma.contLogTest.LogLevelsImpl.LogLevelsTest TESTLOG2" \
+        EPILOGUE "acsStopContainer frodoContainerN"
+
+# NOTE1: acsutilAwaitContainerStart will look for particular messages to stdout
+#   sent by the Container; if we would set here within prepareEnvLevels.tcl the
+#   env var ACS_LOG_STDOUT to a high value, these msgs to stdout are not
+#   produced, so acsutilAwaitContainerStart would time out.
+#   Workaround: use high levels in xml file, lower ones in env vars
+# NOTE2: similar for acsStopContainer.
+# NOTE3: the file $ACSROOT/bin/acsstartupConstants.sh sets the "script debugging
+#   var ACS_DEBUG_PRIORITY to 4, and acsStartJava will send extra debug messages
+#   to stdout if ACS_LOG_STDOUT exists and is less than ACS_DEBUG_PRIORITY.
+#   Be aware that this magic level 4 impacts the reference file more than just
+#   that number ...
+13 SOURCE prepareEnvLevels.tcl \
+	PROLOGUE "acsutilAwaitContainerStart -java frodoContainerN" \
+	javaEnvironmentNamedLoggerLevels "acsStartJava alma.contLogTest.LogLevelsImpl.LogLevelsTest TESTLOG2" \
+        EPILOGUE "acsStopContainer frodoContainerN"
+
+14 SOURCE prepareDynLevels.tcl \
+	PROLOGUE "acsutilAwaitContainerStart -java frodoContainerN" \
+	javaDynamicNamedLoggerLevels "maciContainerLogLevel frodoContainerN set default 8 9" \
+                      "@SLEEP 2" \
+                      "acsStartJava alma.contLogTest.LogLevelsImpl.LogLevelsTest TESTLOG2" \
+        EPILOGUE "acsStopContainer frodoContainerN"
+
+#----------------- CPP, NO NAMED LOGGERS -------------------------
+21 SOURCE prepareHardcodedLevels.tcl \
+	PROLOGUE "acsutilAwaitContainerStart -cpp bilboContainer" \
+	cppHardcodedLevels "maciContainerLogLevel bilboContainer get bilboContainer" \
+        EPILOGUE "acsStopContainer bilboContainer"
+
+22 SOURCE prepareCdbLevels.tcl \
+	PROLOGUE "acsutilAwaitContainerStart -cpp bilboContainer" \
+	cppCdbLevels "maciContainerLogLevel bilboContainer get bilboContainer" \
+        EPILOGUE "acsStopContainer bilboContainer"
+
+23 SOURCE prepareEnvLevels.tcl \
+	PROLOGUE "acsutilAwaitContainerStart -cpp bilboContainer" \
+	cppEnvironmentLevels "maciContainerLogLevel bilboContainer get bilboContainer" \
+        EPILOGUE "acsStopContainer bilboContainer"
+
+24 SOURCE prepareDynLevels.tcl \
+	PROLOGUE "acsutilAwaitContainerStart -cpp bilboContainer" \
+	cppDynamicLevels "maciContainerLogLevel bilboContainer set default 8 9" \
+                      "@SLEEP 2" \
+                      "maciContainerLogLevel bilboContainer get bilboContainer" \
+        EPILOGUE "acsStopContainer bilboContainer"
+
+#----------------- CPP, NO NAMED LOGGERS -------------------------
+31 SOURCE prepareHardcodedLevels.tcl \
+	PROLOGUE "acsutilAwaitContainerStart -cpp bilboContainerN" \
+	cppHardcodedNamedLoggerLevels "maciContainerLogLevel bilboContainerN get bilboContainerN" \
+        EPILOGUE "acsStopContainer bilboContainerN"
+
+32 SOURCE prepareCdbLevels.tcl \
+	PROLOGUE "acsutilAwaitContainerStart -cpp bilboContainerN" \
+	cppCdbNamedLoggerLevels "maciContainerLogLevel bilboContainerN get bilboContainerN" \
+        EPILOGUE "acsStopContainer bilboContainerN"
+
+33 SOURCE prepareEnvLevels.tcl \
+	PROLOGUE "acsutilAwaitContainerStart -cpp bilboContainerN" \
+	cppEnvironmentNamedLoggerLevels "maciContainerLogLevel bilboContainerN get bilboContainerN" \
+        EPILOGUE "acsStopContainer bilboContainerN"
+
+34 SOURCE prepareDynLevels.tcl \
+	PROLOGUE "acsutilAwaitContainerStart -cpp bilboContainerN" \
+	cppDynamicNamedLoggerLevels "maciContainerLogLevel bilboContainerN set bilboContainerN 8 9" \
+        EPILOGUE "acsStopContainer bilboContainerN"
+
+EPILOGUE acsutilTATEpilogue

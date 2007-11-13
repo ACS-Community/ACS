@@ -1,0 +1,84 @@
+############ build containerTest Software         #################
+############ contLogTest MAIN
+make[1]: Entering directory `/home/eallaert/eclipseWorkspace/containerTests/contLogTest/src'
+ . .Cleaning up . . . . . . . . . . . . . .
+ . . .
+Cleaning doxygen files...
+ . . . clean done
+make[1]: Leaving directory `/home/eallaert/eclipseWorkspace/containerTests/contLogTest/src'
+make[1]: Entering directory `/home/eallaert/eclipseWorkspace/containerTests/contLogTest/src'
+== Creating Missing directories
+== Dependencies: ../object/contLogTest.didl
+== IDL Compiling for TAO (C++): contLogTest.idl
+processing ../idl/contLogTest.idl
+== (preprocessing) contLogTest.idl
+== IDL Compiling for JacORB (Java): contLogTest.idl
+== IDL Compiling for XmlIdl  (Java): contLogTest.idl
+ACS IDL compilation for ../idl/contLogTest.idl
+ALMA IDL compiler done, now invoking component helper code generator...
+start generating helper classes 
+done generating helper classes 
+Note: ../object/src/alma/contLogTest/LogLevelsPOA.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+== IDL Compiling for OmniOrb (Python): contLogTest.idl
+== IDL Compiling Stubs into libraries/executable (C++): contLogTest.idl
+/alma/ACS-7.0/ACSSW/include/acsMakefile.all:382: ../object/contLogTestImpl.d: No such file or directory
+/alma/ACS-7.0/ACSSW/include/acsMakefile.all:399: ../object/contLogTestImpl.da: No such file or directory
+== Dependencies: ../object/contLogTestImpl.da
+== Dependencies: ../object/contLogTestImpl.d
+
+
+== C++ Compiling: contLogTestImpl.cpp
+== Making library: ../lib/libcontLogTestImpl.a
+== Making library: ../lib/libcontLogTestImpl.so
+
+== Dependencies: ../object/contLogTestClient.djar
+== Dependencies: ../object/contLogTestComp.dcjar
+== Making contLogTestClient.jar
+== Making contLogTestComp component jarfile 
+== Making contLogTestComp.jar
+ . . . 'all' done
+make[1]: Leaving directory `/home/eallaert/eclipseWorkspace/containerTests/contLogTest/src'
+make[1]: Entering directory `/home/eallaert/eclipseWorkspace/containerTests/contLogTest/src'
+
+Installing into target: /introot/eallaert
+
+.....includes:
+	contLogTestImpl.h
+
+
+
+
+
+....libraries:
+	contLogTestImpl
+
+
+
+        ---> installation recorded in /introot/eallaert
+
+
+ Copying current files 
+        from: /home/eallaert/eclipseWorkspace/containerTests/contLogTest/src
+          to: /introot/eallaert/Sources/contLogTest/src
+        from: /home/eallaert/eclipseWorkspace/containerTests/contLogTest/include
+          to: /introot/eallaert/Sources/contLogTest/include
+                                               . . . done 
+
+
+......jarfiles:
+	contLogTestClient.jar
+
+......component jarfiles:
+	contLogTestComp.jar
+
+.......idl:
+	contLogTest
+	contLogTest
+	contLogTest
+	contLogTest
+`../lib/libcontLogTestStubs.a' -> `/introot/eallaert/lib/libcontLogTestStubs.a'
+`../lib/libcontLogTestStubs.so' -> `/introot/eallaert/lib/libcontLogTestStubs.so'
+	contLogTest (Java)
+ . . . installation done
+make[1]: Leaving directory `/home/eallaert/eclipseWorkspace/containerTests/contLogTest/src'

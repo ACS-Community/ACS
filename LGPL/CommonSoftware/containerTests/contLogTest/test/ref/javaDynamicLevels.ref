@@ -1,0 +1,20 @@
+2 -  -- alma.contLogTest.LogLevelsImpl.LogLevelsTest TESTLOG1
+2 - INFO - Starting Java/abeans application: alma.contLogTest.LogLevelsImpl.LogLevelsTest TESTLOG1
+2 - .FINER: Logging configuration has been initialized, but not from CDB settings.
+1 - <timestamp> [GlobalLogger - maci::MACIHelper::resolveManager] ManagerReference generated using localhost address: 'corbaloc::<IP address>:<port>/Manager'
+1 - <timestamp> [GlobalLogger - ] Container: frodoContainer
+1 - <timestamp> [GlobalLogger - ] 		minLogLevel     : 8
+1 - <timestamp> [GlobalLogger - ] 		minLogLevelLocal: 9
+1 - <timestamp> [GlobalLogger - ] 	Setting levels for logger 'default':
+1 - <timestamp> [GlobalLogger - ] 		useDefault      : false
+1 - <timestamp> [GlobalLogger - ] 	... done.
+1 - <timestamp> [GlobalLogger - ] Done all.
+2 - <timestamp> INFO [alma.contLogTest.LogLevelsImpl.LogLevelsTest#testGetLevels] -------------------------------
+2 - <timestamp> INFO [alma.contLogTest.LogLevelsImpl.LogLevelsTest#testGetLevels] ComponentClientTestCase#setUp()
+2 - <timestamp> INFO [alma.contLogTest.LogLevelsImpl.LogLevelsTest#testGetLevels] levels from component's getLevels method (hardcoded remote, local, effective): 2, 2, 8, 8, 9
+2 - <timestamp> INFO [alma.contLogTest.LogLevelsImpl.LogLevelsTest#testGetLevels] client 'alma.contLogTest.LogLevelsImpl.LogLevelsTest' has successfully released  a component with curl=TESTLOG1
+2 - 
+2 - Time: <seconds>
+2 - 
+2 - OK (1 test)
+2 - 

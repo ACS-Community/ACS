@@ -1,0 +1,25 @@
+1 -  -- alma.contLogTest.LogLevelsImpl.LogLevelsTest TESTLOG2
+1 - INFO - Starting Java/abeans application: alma.contLogTest.LogLevelsImpl.LogLevelsTest TESTLOG2
+1 - .FINER: Logging configuration has been initialized, but not from CDB settings.
+1 - <timestamp> INFO [alma.contLogTest.LogLevelsImpl.LogLevelsTest#testGetLevels] -------------------------------
+1 - <timestamp> INFO [alma.contLogTest.LogLevelsImpl.LogLevelsTest#testGetLevels] ComponentClientTestCase#setUp()
+1 - <timestamp> FINE [alma.contLogTest.LogLevelsImpl.LogLevelsTest#testGetLevels] calling orb.resolve_initial_references
+1 - <timestamp> FINE [alma.contLogTest.LogLevelsImpl.LogLevelsTest#testGetLevels] POA activated
+1 - <timestamp> FINE [alma.contLogTest.LogLevelsImpl.LogLevelsTest#testGetLevels] manager reference not yet available in method loginToManager; will try to find the manager first...
+1 - <timestamp> FINEST [alma.contLogTest.LogLevelsImpl.LogLevelsTest#testGetLevels] manager corbaloc 'corbaloc::<IP address>:<port>/Manager' resolved.
+1 - <timestamp> FINEST [alma.contLogTest.LogLevelsImpl.LogLevelsTest#testGetLevels] manager narrow successful.
+1 - <timestamp> FINE [alma.contLogTest.LogLevelsImpl.LogLevelsTest#testGetLevels] Manager login done, handle <ID> obtained.
+1 - <timestamp> FINE [alma.contLogTest.LogLevelsImpl.LogLevelsTest#testGetLevels] will retrieve remote component 'TESTLOG2' using ACS Manager#get_component with client handle <ID>
+1 - <timestamp> FINE [alma.contLogTest.LogLevelsImpl.LogLevelsTest#testGetLevels] component TESTLOG2 retrieved successfully.
+1 - <timestamp> INFO [alma.contLogTest.LogLevelsImpl.LogLevelsTest#testGetLevels] levels from component's getLevels method (hardcoded remote, local, effective): 2, 2, 3, 3, 4
+1 - <timestamp> FINE [alma.contLogTest.LogLevelsImpl.LogLevelsTest#testGetLevels] about to release component TESTLOG2
+1 - <timestamp> INFO [alma.contLogTest.LogLevelsImpl.LogLevelsTest#testGetLevels] client 'alma.contLogTest.LogLevelsImpl.LogLevelsTest' has successfully released  a component with curl=TESTLOG2
+1 - <timestamp> FINE [alma.contLogTest.LogLevelsImpl.LogLevelsTest#testGetLevels] about to log out from manager...
+1 - <timestamp> FINE [alma.contLogTest.LogLevelsImpl.LogLevelsTest#testGetLevels] logged out from manager.
+1 - <timestamp> FINE [alma.contLogTest.LogLevelsImpl.LogLevelsTest#testGetLevels] about to destroy all POAs and the ORB
+1 - <timestamp> FINE [alma.contLogTest.LogLevelsImpl.LogLevelsTest#testGetLevels] POAs and ORB destroyed successfully.
+1 - 
+1 - Time: <seconds>
+1 - 
+1 - OK (1 test)
+1 - 
