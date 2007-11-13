@@ -441,7 +441,7 @@ public class SimpleSupplier extends OSPushSupplierPOA
 	 */
 	protected volatile long m_count = 0;
 
-	/** Channel we'll be sending events too*/
+	/** Channel we'll be sending events to*/
 	protected final EventChannel m_channel;
 
 	/** Standard logger*/
