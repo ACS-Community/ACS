@@ -40,7 +40,7 @@ import org.omg.CosNotifyChannelAdmin.EventChannelHelper;
 
 import alma.ACSErrTypeCommon.wrappers.AcsJBadParameterEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJUnexpectedExceptionEx;
-import alma.acs.container.ContainerServices;
+import alma.acs.container.AdvancedContainerServices;
 import alma.acs.container.ContainerServicesBase;
 import alma.acs.exceptions.AcsJException;
 
@@ -88,6 +88,12 @@ public class Helper {
 
 	/**
 	 * Returns a reference to the Naming Service.
+	 * <p>
+	 * @TODO: The dependence of NC libs on the NamingService should be expressed in a less hidden form 
+	 * than using a property, which leads to dangerous runtime-only failures if missing.
+	 * It would already be an improvement if we would obtain the NamingService reference
+	 * from {@link AdvancedContainerServices#getORB()}.
+	 * A more radical change would be to integrate the NC classes into the ContainerServices.
 	 * 
 	 * @return Valid reference to the Naming Service.
 	 * @throws AcsJException
@@ -148,6 +154,7 @@ public class Helper {
 		EventChannel retValue = null;
 
 		try {
+//			m_logger.fine("Will create notification channel " + channelName);
 			NameComponent[] t_NameSequence = { new NameComponent(channelName, channelKind) };
 			retValue = EventChannelHelper.narrow(getNamingService().resolve(t_NameSequence));
 		} 
@@ -254,6 +261,7 @@ public class Helper {
 			throws AcsJException 
 	{
 		try {
+//			m_logger.fine("Will destroy notification channel " + channelName);
 			// destroy the remote CORBA object
 			channelRef.destroy();
 
@@ -285,9 +293,17 @@ public class Helper {
 	}
 
 	// --------------------------------------------------------------------------
-	// /In a running system, there can be only one reference to the Naming
-	// Service
-	private static NamingContext m_nContext = null;
+
+	/**
+	 * In a running system, there can be only one reference to the Naming Service.
+	 * <p>
+	 * @TODO: This static variable is causing problems inside JUnit tests (discovered 2007-11). 
+	 *        As a workaround, it must be nulled in the TestCase's tearDown method.
+	 *        We should check if it really needs to be static, and if so, whether
+	 *        we could introduce a cleanUp() method in the NC librarires somewhere
+	 *        which would null this variable.
+	 */
+	public static NamingContext m_nContext;
 
 	// /Java property name for the CORBA Naming Service corbaloc.
 	private static final String m_nameJavaProp = "ORBInitRef.NameService";
