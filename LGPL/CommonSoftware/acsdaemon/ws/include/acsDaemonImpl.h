@@ -1,3 +1,39 @@
+#ifndef _ACS_DAEMON_IMPL_H_
+#define _ACS_DAEMON_IMPL_H_
+
+/*******************************************************************************
+*    ALMA - Atacama Large Millimiter Array
+*    (c) European Southern Observatory, 2002
+*    Copyright by ESO (in the framework of the ALMA collaboration)
+*    and Cosylab 2002, All rights reserved
+*
+*    This library is free software; you can redistribute it and/or
+*    modify it under the terms of the GNU Lesser General Public
+*    License as published by the Free Software Foundation; either
+*    version 2.1 of the License, or (at your option) any later version.
+*
+*    This library is distributed in the hope that it will be useful,
+*    but WITHOUT ANY WARRANTY; without even the implied warranty of
+*    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+*    Lesser General Public License for more details.
+*
+*    You should have received a copy of the GNU Lesser General Public
+*    License along with this library; if not, write to the Free Software
+*    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
+*
+* "@(#) $Id: acsDaemonImpl.h,v 1.2 2007/11/13 19:49:30 agrimstrup Exp $"
+*
+* who       when      what
+* --------  --------  ----------------------------------------------
+* msekoran 2006-06-21 created 
+* agrimstr 2007-11-07 refactored common daemon implementation code to
+*                     template classes
+*/
+
+#ifndef __cplusplus
+#error This is a C++ include file and cannot be used from plain C
+#endif
+
 #include "acsdaemonS.h"
 #include <ace/SString.h>
 #include "logging.h"
@@ -8,20 +44,26 @@
 #include <acsdaemonErrType.h>
 #include <ACSErrTypeCommon.h>
 
+/**
+ *  Service management class for daemon.
+ *
+ *  The ACSDaemonServiceImpl class manages the lifecycle of the
+ *  CORBA interface that the daemon is to provide.
+ */
 template <typename T>
-class ACSBaseDaemonImpl {
+class ACSDaemonServiceImpl {
 
   public:
     
    /**
     * Constructor
     */
-    ACSBaseDaemonImpl(LoggingProxy &logProxy);
+    ACSDaemonServiceImpl(LoggingProxy &logProxy);
   
     /**
      * Destructor
      */
-    virtual ~ACSBaseDaemonImpl();
+    virtual ~ACSDaemonServiceImpl();
     
     /**
      * Initalization status
@@ -31,37 +73,41 @@ class ACSBaseDaemonImpl {
     
 
     /**
-     * Retrieve the port for this type of daemon
+     * Retrieve the port for this service
      */
-    const char* getPort() { return handler.getPort(); }
+    const char*
+    getPort() { return handler.getPort(); }
 
     /**
-     * Retrieve the name for this daemon
+     * Retrieve the name for this service
      */
-    const char* getName() { return handler.getName(); }
+    const char*
+    getName() { return handler.getName(); }
 
     /**
-     * Initializes the daemon.
+     * Initializes the service.
      */
     int
     startup (int argc, char *argv[]);
 
     /**
-     * Run the daemon.
+     * Run the service.
      * @return Returns 0 on success, -1 on error.
      */
     int 
     run ();
 
     /**
-     * Shutdown the daemon.
+     * Shutdown the service.
      */
-    void shutdown (); 
+    void
+    shutdown (); 
 
     /**
      * Get CORBA IOR.
      */
-    const char* getIOR() const { return m_ior.in(); };
+    const char*
+    getIOR() const { return m_ior.in(); };
     
   protected:
     /**
@@ -84,11 +130,12 @@ class ACSBaseDaemonImpl {
     /** CORBA IOR **/
     CORBA::String_var m_ior;
 
+    /** Implementation of the CORBA interface this service provides **/
     T handler;
 };
 
 template <typename T>
-ACSBaseDaemonImpl<T>::ACSBaseDaemonImpl (LoggingProxy &logProxy) :
+ACSDaemonServiceImpl<T>::ACSDaemonServiceImpl (LoggingProxy &logProxy) :
     m_isInitialized(false), m_logProxy(logProxy)
 {
     // noop here
@@ -97,16 +144,14 @@ ACSBaseDaemonImpl<T>::ACSBaseDaemonImpl (LoggingProxy &logProxy) :
 }
 
 template <typename T>
-ACSBaseDaemonImpl<T>::~ACSBaseDaemonImpl (void)
+ACSDaemonServiceImpl<T>::~ACSDaemonServiceImpl (void)
 {
 }
 
 template <typename T>
-int ACSBaseDaemonImpl<T>::startup (int argc, char *argv[])
+int ACSDaemonServiceImpl<T>::startup (int argc, char *argv[])
 {
     ACS_SHORT_LOG ((LM_INFO, "Starting up the %s...", handler.getName()));
-
-//     ACS_SHORT_LOG ((LM_INFO, m_startmsg));
 
     // Initalize the ORB.
     if (init_ORB (argc, argv) != 0)
@@ -127,7 +172,7 @@ int ACSBaseDaemonImpl<T>::startup (int argc, char *argv[])
 }
 
 template <typename T>
-int ACSBaseDaemonImpl<T>::run (void)
+int ACSDaemonServiceImpl<T>::run (void)
 {
     ACS_SHORT_LOG ((LM_INFO, "%s is up and running...", handler.getName()));
 
@@ -145,7 +190,7 @@ int ACSBaseDaemonImpl<T>::run (void)
 }
 
 template <typename T>
-void ACSBaseDaemonImpl<T>::shutdown ()
+void ACSDaemonServiceImpl<T>::shutdown ()
 {
 
     // shutdown the ORB.
@@ -160,7 +205,7 @@ void ACSBaseDaemonImpl<T>::shutdown ()
 }
 
 template <typename T>
-int ACSBaseDaemonImpl<T>::init_ORB  (int& argc, char *argv [])
+int ACSDaemonServiceImpl<T>::init_ORB  (int& argc, char *argv [])
 {
     m_orb = CORBA::ORB_init(argc, argv, "TAO");
 
@@ -227,30 +272,66 @@ int ACSBaseDaemonImpl<T>::init_ORB  (int& argc, char *argv [])
     return 0;
 }
 
+/**
+ * ACS Daemon Implementation class.
+ *
+ * acsDaemonImpl provides a common implementation for the container and
+ * service daemons of ACS.  
+ */
+
 template <typename T>
 class acsDaemonImpl
 {
+
+  public:
+
+    /**
+     * Constructor.
+     */
+    acsDaemonImpl(int argc, char *argv[]);
+    
+    /**
+     * Destructor.
+     */
+    ~acsDaemonImpl();
+    
+    /**
+     * Display help information for the daemon.
+     */
+    void usage(const char *argv);
+
+    /**
+     * Process client requests.
+     */
+    int run();
+
+    /**
+     * Terminate the daemon.
+     */
+    void shutdown();
+
+  private:
+
+    /** Daemon shutdown in progress flag **/
     bool blockTermination;
-    ACSBaseDaemonImpl<T> *service;
+
+    /** Manager for the service provided by this daemon **/
+    ACSDaemonServiceImpl<T> *service;
+
+    /** File name where the IOR information is to be written **/
     ACE_CString iorFile;
+
+    /** Description of where the provided service listens for requests **/
     ACE_CString ORBEndpoint;
+
+    /** Configuration information for the service **/
     int nargc;
     char** nargv;
 
-
-
-  public:
-    acsDaemonImpl(int argc, char *argv[]);
-    
-    ~acsDaemonImpl();
-    
-    void usage(const char *argv);
-
-    int run();
-
-    void shutdown();
 };
 
+
+/** Valid command line options for daemons **/
 static struct option long_options[] = {
     {"help",        no_argument,       0, 'h'},
     {"outfile",     required_argument, 0, 'o'},
@@ -275,6 +356,7 @@ acsDaemonImpl<T>::acsDaemonImpl(int argc, char *argv[])
     service = 0;
 
 
+    // Extract and validate command line arguments
     int c;
     for(;;)
         {
@@ -299,6 +381,8 @@ acsDaemonImpl<T>::acsDaemonImpl(int argc, char *argv[])
             }
         }
 
+    // Host IP information is needed to initialize the logging system
+    // and for ORBEndpoint creation
    const char* hostName = ACSPorts::getIP();
 
     // create logging proxy
@@ -309,11 +393,12 @@ acsDaemonImpl<T>::acsDaemonImpl(int argc, char *argv[])
     LoggingProxy m_logger (0, 0, 31, 0);
     LoggingProxy::init (&m_logger);  
 
+    // Ready the service manager
+    service = new ACSDaemonServiceImpl<T>(m_logger);
 
+    // Generate the CORBA configuration for the service
     ACE_CString argStr;
     
-    service = new ACSBaseDaemonImpl<T>(m_logger);
-
     if(ORBEndpoint.length()<=0)
         {
         argStr = ACE_CString("-ORBEndpoint iiop://") + hostName + ":";
@@ -324,7 +409,6 @@ acsDaemonImpl<T>::acsDaemonImpl(int argc, char *argv[])
         argStr = ACE_CString("-ORBEndpoint ") + ORBEndpoint;
         }
 
-    // create new argv
     ACS_SHORT_LOG((LM_INFO, "Command line is: %s", argStr.c_str()));
     ACE_OS::string_to_argv ((ACE_TCHAR*)argStr.c_str(), nargc, nargv);
 }
@@ -404,3 +488,5 @@ void acsDaemonImpl<T>::shutdown()
 	service->shutdown ();
 	}
 }
+
+#endif

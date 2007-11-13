@@ -18,21 +18,22 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@$Id: acscontainerdaemon.cpp,v 1.5 2007/11/08 19:18:44 agrimstrup Exp $"
+* "@$Id: acscontainerdaemon.cpp,v 1.6 2007/11/13 19:49:30 agrimstrup Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
 * msekoran 2006-06-21 created
+* agrimstr 2007-11-07 refactored to use daemon implementation template class
 */
 
-static char *rcsId="@ $Id: acscontainerdaemon.cpp,v 1.5 2007/11/08 19:18:44 agrimstrup Exp $";
+static char *rcsId="@ $Id: acscontainerdaemon.cpp,v 1.6 2007/11/13 19:49:30 agrimstrup Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <acsDaemonImpl.h>
 #include <acsContainerHandlerImpl.h>
 
-acsDaemonImpl<ACSContainerHandlerImpl>* g_daemon = 0;
 
+acsDaemonImpl<ACSContainerHandlerImpl>* g_daemon = 0;  // Reference used by signal handler
 
 void TerminationSignalHandler(int)
 {
@@ -45,9 +46,10 @@ main (int argc, char *argv[])
 {
     acsDaemonImpl<ACSContainerHandlerImpl> daemon(argc,argv);
 
+    // Daemon is to be shutdown on receipt of SIGINT or SIGTERM
     g_daemon = &daemon;
     ACE_OS::signal(SIGINT, TerminationSignalHandler);  // Ctrl+C
     ACE_OS::signal(SIGTERM, TerminationSignalHandler); // termination request
-  
+
     return daemon.run();
 }

@@ -23,12 +23,13 @@
 * --------  --------  ----------------------------------------------
 * ntroncos
 * nbarriga 2007-10-10 created
+* agrimstr 2007-11-07 refactored to use daemon implementation template class
 */
 
 #include <acsDaemonImpl.h>
 #include <acsServicesHandlerImpl.h>
 
-acsDaemonImpl<ACSServicesHandlerImpl>* g_daemon = 0;
+acsDaemonImpl<ACSServicesHandlerImpl>* g_daemon = 0; //Reference used by signal handler
 
 
 void TerminationSignalHandler(int)
@@ -42,6 +43,7 @@ main (int argc, char *argv[])
 {
     acsDaemonImpl<ACSServicesHandlerImpl> daemon(argc,argv);
 
+    // Daemon is to be shutdown on receipt of SIGINT or SIGTERM
     g_daemon = &daemon;
     ACE_OS::signal(SIGINT, TerminationSignalHandler);  // Ctrl+C
     ACE_OS::signal(SIGTERM, TerminationSignalHandler); // termination request
