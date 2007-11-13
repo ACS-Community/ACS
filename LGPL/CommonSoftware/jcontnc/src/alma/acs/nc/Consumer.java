@@ -45,7 +45,6 @@ import org.omg.CosNotifyFilter.FilterFactory;
 
 import alma.ACSErrTypeJavaNative.wrappers.AcsJJavaAnyEx;
 import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
-import alma.acs.container.ContainerServices;
 import alma.acs.container.ContainerServicesBase;
 import alma.acs.exceptions.AcsJException;
 import alma.acs.util.StopWatch;
@@ -76,17 +75,58 @@ public class Consumer extends OSPushConsumerPOA {
 	 */
 	private static final long DEFAULT_MAX_PROCESS_TIME = 2000;
 
-	// /maps event names to the maximum amount of time allowed for
-	// /receiver methods to complete. Time is given in floating point seconds.
-	protected HashMap<String, Double> m_handlerTimeoutMap;
-
 	// /helper object contain yields various info about the
 	// /notification channel
-	protected ChannelInfo m_channelInfo = null;
+	protected final ChannelInfo m_channelInfo;
 
 	// /used to time the execution of receive methods
 	private final StopWatch profiler;
 
+	/** Provides access to the ACS logging system. */
+	protected final Logger m_logger;
+
+	/** Provides access to the naming service among other things. */
+	protected final Helper m_helper;
+
+	/** 
+	 * There can be only one notification channel for any given consumer. 
+	 * Constructed on demand. 
+	 */
+	protected EventChannel m_channel;
+
+	/** The channel has exactly one name registered in the CORBA Naming Service. */
+	protected final String m_channelName;
+	
+	/**
+	 * Contains a list of handler/receiver functions to be invoked when an event
+	 * of a particular type is received.
+	 */
+	protected final HashMap<String, Object> m_handlerFunctions = new HashMap<String, Object>();
+
+	/** maps event names to the maximum amount of time allowed for
+	 * receiver methods to complete. Time is given in floating point seconds.
+	 */ 
+	protected final HashMap<String, Double> m_handlerTimeoutMap;
+
+	/**
+	 * The consumer admin object used by consumers to get a reference to the
+	 * structured supplier proxy.
+	 */
+	protected ConsumerAdmin m_consumerAdmin;
+
+	/** The supplier proxy we are connected to. */
+	protected StructuredProxyPushSupplier m_proxySupplier;
+
+	/** CORBA reference to ourself */
+	protected OSPushConsumer m_corbaRef = null;
+
+	/** Helper class used to manipulate CORBA anys */
+	protected AnyAide m_anyAide = null;
+
+	/** Whether sending of events should be logged */
+	private final boolean isTraceEventsEnabled;
+
+	
 	/**
 	 * Creates a new instance of Consumer
 	 * 
@@ -99,6 +139,12 @@ public class Consumer extends OSPushConsumerPOA {
 	 *            Thrown on any <I>really bad</I> error conditions encountered.
 	 */
 	public Consumer(String channelName, ContainerServicesBase services) throws AcsJException {
+		// sanity check
+		if (channelName == null) {
+			String reason = "Null reference obtained for the channel name!";
+			throw new alma.ACSErrTypeJavaNative.wrappers.AcsJJavaLangEx(reason);
+		}
+		
 		m_channelName = channelName;
 
 		profiler = new StopWatch();
@@ -111,11 +157,6 @@ public class Consumer extends OSPushConsumerPOA {
 
 		m_handlerTimeoutMap = m_channelInfo.getEventHandlerTimeoutMap(channelName);
 
-		// sanity check
-		if (m_channelName == null) {
-			String reason = "Null reference obtained for the channel name!";
-			throw new alma.ACSErrTypeJavaNative.wrappers.AcsJJavaLangEx(reason);
-		}
 
 		// naming service, POA, and Any generator
 		m_helper = new Helper(services);
@@ -732,7 +773,7 @@ public class Consumer extends OSPushConsumerPOA {
 			m_consumerAdmin = null;
 			m_proxySupplier = null;
 		} catch (Exception e) {
-			e.printStackTrace();
+			m_logger.log(Level.INFO, "Failed to disconnect from NC '" + m_channelName + "'.", e);
 		}
 	}
 
@@ -795,40 +836,4 @@ public class Consumer extends OSPushConsumerPOA {
 		return m_helper;
 	}
 
-	// ----------------------------------------------------------------------
-	/** Provides access to the ACS logging system. */
-	protected Logger m_logger = null;
-
-	/** Provides access to the naming service among other things. */
-	protected Helper m_helper = null;
-
-	/** There can be only one notification channel for any given consumer. */
-	protected EventChannel m_channel = null;
-
-	/** The channel has exactly one name registered in the CORBA Naming Service. */
-	protected String m_channelName = null;
-
-	/**
-	 * Contains a list of handler/receiver functions to be invoked when an event
-	 * of a particular type is received.
-	 */
-	protected HashMap<String, Object> m_handlerFunctions = new HashMap<String, Object>();
-
-	/**
-	 * The consumer admin object used by consumers to get a reference to the
-	 * structured supplier proxy.
-	 */
-	protected ConsumerAdmin m_consumerAdmin = null;
-
-	/** The supplier proxy we are connected to. */
-	protected StructuredProxyPushSupplier m_proxySupplier = null;
-
-	/** CORBA reference to ourself */
-	protected OSPushConsumer m_corbaRef = null;
-
-	/** Helper class used to manipulate CORBA anys */
-	protected AnyAide m_anyAide = null;
-
-	/** Whether sending of events should be logged */
-	private boolean isTraceEventsEnabled = false;
 }
