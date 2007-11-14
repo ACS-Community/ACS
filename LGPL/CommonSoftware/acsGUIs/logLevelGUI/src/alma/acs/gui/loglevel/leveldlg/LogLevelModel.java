@@ -26,8 +26,6 @@ import javax.swing.table.DefaultTableModel;
 
 import com.cosylab.logging.engine.log.LogTypeHelper;
 
-import si.ijs.maci.LoggingConfigurablePackage.LogLevels;
-
 /**
  * The table model for the log levels table
  * 
@@ -39,7 +37,7 @@ public class LogLevelModel extends DefaultTableModel {
 	// The name of the columns (in the header)
 	private String[] colNames = new String[] {
 		"<HTML><B>Logger name</B></HTML>",
-		"<HTML><B>Use deafult</B></HTML>",
+		"<HTML><B>Use default</B></HTML>",
 		"<HTML><B>Local</B></HTML>",
 		"<HTML><B>Global</B></HTML>"
 	};
