@@ -21,11 +21,7 @@
  */
 package alma.acs.gui.loglevel.leveldlg;
 
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-
 import com.cosylab.logging.engine.log.LogTypeHelper;
-import com.cosylab.logging.settings.LogTypeRenderer;
 
 import si.ijs.maci.LoggingConfigurablePackage.LogLevels;
 
@@ -39,7 +35,7 @@ public class LogLevelHelper {
 	
 	// The LogLevels
 	// The value of this property can be changed by the user
-	private LogLevels level;
+	private LogLevels levels;
 	
 	// The original level i.e. the level set up
 	// in the constructor.
@@ -50,14 +46,14 @@ public class LogLevelHelper {
 	// The name of the logger
 	private String name;
 	
-	public LogLevelHelper(String name, LogLevels level) {
+	public LogLevelHelper(String name, LogLevels levels) {
 		if (name==null) {
 			throw new IllegalArgumentException("Invalid null logger name in constructor");
 		}
-		if (level==null) {
+		if (levels==null) {
 			throw new IllegalArgumentException("Invalid null LogLevels in constructor");
 		}
-		this.level=level;
+		this.levels=levels;
 		resetChanges();
 		this.name=name;
 	}
@@ -69,29 +65,29 @@ public class LogLevelHelper {
 	 *
 	 */
 	public void resetChanges() {
-		this.originalLevel= new LogLevels(level.useDefault,level.minLogLevel,level.minLogLevelLocal);
+		this.originalLevel= new LogLevels(levels.useDefault,levels.minLogLevel,levels.minLogLevelLocal);
 	}
 
 	public int getGlobalLevel() {
-		return level.minLogLevel;
+		return levels.minLogLevel;
 	}
 
 	public void setGlobalLevel(int globalLevel) {
 		if (globalLevel<0 || globalLevel>=LogTypeHelper.getNumberOfTypes()) {
 			throw new IllegalArgumentException("Global log level out of range: "+globalLevel);
 		}
-		level.minLogLevel = (short)globalLevel;
+		levels.minLogLevel = (short)globalLevel;
 	}
 
 	public int getLocalLevel() {
-		return level.minLogLevelLocal;
+		return levels.minLogLevelLocal;
 	}
 
 	public void setLocalLevel(int localLevel) {
 		if (localLevel<0 || localLevel>=LogTypeHelper.getNumberOfTypes()) {
 			throw new IllegalArgumentException("Local log level out of range: "+localLevel);
 		}
-		level.minLogLevelLocal = (short)localLevel;
+		levels.minLogLevelLocal = (short)localLevel;
 	}
 
 	public String getName() {
@@ -106,16 +102,16 @@ public class LogLevelHelper {
 	}
 
 	public boolean isUsingDefault() {
-		return level.useDefault;
+		return levels.useDefault;
 	}
 
 	public void setUseDefault(boolean useDefault) {
-		level.useDefault = useDefault;
+		levels.useDefault = useDefault;
 	}
 	
 	
 	public LogLevels getLogLevels() {
-		return level;
+		return levels;
 	}
 	
 	/**
@@ -124,9 +120,9 @@ public class LogLevelHelper {
 	 * @return true if the user changed the log levels
 	 */
 	public boolean modified() {
-		boolean equal = originalLevel.useDefault==level.useDefault;
-		equal = equal && originalLevel.minLogLevel==level.minLogLevel;
-		equal = equal && originalLevel.minLogLevelLocal==level.minLogLevelLocal;
+		boolean equal = originalLevel.useDefault==levels.useDefault;
+		equal = equal && originalLevel.minLogLevel==levels.minLogLevel;
+		equal = equal && originalLevel.minLogLevelLocal==levels.minLogLevelLocal;
 		return !equal;
 	}
 }
