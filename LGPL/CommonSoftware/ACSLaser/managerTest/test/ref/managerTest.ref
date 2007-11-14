@@ -1,18 +1,18 @@
-1 - Category root topic=CMWALARM_SYSTEMCATEGORIES
-1 - Connecting subscriber to CMWALARM_SYSTEMCATEGORIESROOT
-1 - Connecting subscriber to CMWALARM_SYSTEMCATEGORIESCATEGORY1
+1 - Category root topic=CMW.ALARM_SYSTEM.CATEGORIES
+1 - Connecting subscriber to CMW.ALARM_SYSTEM.CATEGORIES.ROOT
+1 - Connecting subscriber to CMW.ALARM_SYSTEM.CATEGORIES.CATEGORY1
 1 - ManagerTest ready to receive alarms
 1 - Waiting
 1 - Process xxxxx killed
 1 - Alarm from source received: <Manager, bilboContainer, 1>
-1 - Alarm received: <?xml version="10" encoding="UTF-8"?>
-1 - <ACS-Alarm-Message xmlns:xsi="http://wwww3org/2001/XMLSchema-instance" xsi:type="ACS-Alarm-Message">
+1 - Alarm received: <?xml version="1.0" encoding="UTF-8"?>
+1 - <ACS-Alarm-Message xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ACS-Alarm-Message">
 1 -     <alarmId>Manager:bilboContainer:1</alarmId>
 1 -     <ident>Manager:bilboContainer:1</ident>
 1 -     <problemDescription>Container crashed</problemDescription>
 1 -     <priority>3</priority>
-1 -     <piquetEmail>acaproni@esoorg</piquetEmail>
-1 -     <helpURLString>http://tempuriorg</helpURLString>
+1 -     <piquetEmail>acaproni@eso.org</piquetEmail>
+1 -     <helpURLString>http://tempuri.org</helpURLString>
 1 -     <instant>false</instant>
 1 -     <triplet>
 1 -         <faultFamily>Manager</faultFamily>
@@ -27,7 +27,7 @@
 1 -             <responsibleId>0</responsibleId>
 1 -             <firstName></firstName>
 1 -             <familyName>Alessandro Caproni</familyName>
-1 -             <eMail>acaproni@esoorg</eMail>
+1 -             <eMail>acaproni@eso.org</eMail>
 1 -             <phoneNumber></phoneNumber>
 1 -         </responsiblePerson>
 1 -         <sourceStatus>
@@ -35,13 +35,13 @@
 1 -             <connected>true</connected>
 1 -             <enabled>true</enabled>
 1 -         </sourceStatus>
-1 -         <hostName>alma</hostName>
+1 -         <hostName>xxxx</hostName>
 1 -     </source>
 1 -     <responsiblePerson>
 1 -         <responsibleId>0</responsibleId>
 1 -         <firstName></firstName>
 1 -         <familyName>Alessandro Caproni</familyName>
-1 -         <eMail>acaproni@esoorg</eMail>
+1 -         <eMail>acaproni@eso.org</eMail>
 1 -         <phoneNumber></phoneNumber>
 1 -     </responsiblePerson>
 1 -     <location>
@@ -68,7 +68,7 @@
 1 -             <date>.......
 1 -             <nanos>.......
 1 -         </sourceTimestamp>
-1 -         <sourceHostname>ALMA</sourceHostname>
+1 -         <sourceHostname>xxxx</sourceHostname>
 1 -         <userTimestamp>
 1 -             <date>.......
 1 -             <nanos>.......
@@ -84,5 +84,5 @@
 1 -     <multiplicityChild>false</multiplicityChild>
 1 - </ACS-Alarm-Message>
 1 - 
-1 - CategorySubscriberhostname alma
+1 - CategorySubscriber.hostname xxxx
 1 - Alarm from category received: <Manager:bilboContainer:1> priority: 3
