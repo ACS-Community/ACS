@@ -43,6 +43,7 @@ import com.cosylab.logging.settings.LogTypeRenderer;
 import alma.acs.gui.loglevel.LogLvlSelNotSupportedException;
 
 import si.ijs.maci.LoggingConfigurable;
+import si.ijs.maci.LoggingConfigurableOperations;
 
 /**
  * The panel to select the log level of the named loggers
@@ -56,7 +57,7 @@ public class LogLevelSelectorPanel extends JPanel implements ActionListener {
 	private JButton applyBtn = new JButton("Apply");
 	
 	// The LoggingConfigurable
-	private LoggingConfigurable logConf=null;
+	private LoggingConfigurableOperations logConf=null;
 	
 	// The table of log levels
 	private LogLevelTable table;
@@ -79,7 +80,7 @@ public class LogLevelSelectorPanel extends JPanel implements ActionListener {
 	 * @param title The name of the configurable to add to the tile
 	 * @throws LogLvlSelNotSupportedException If the configurable does not support selection
 	 */
-	public LogLevelSelectorPanel(LoggingConfigurable configurable, String name) throws LogLvlSelNotSupportedException {
+	public LogLevelSelectorPanel(LoggingConfigurableOperations configurable, String name) throws LogLvlSelNotSupportedException {
 		if (configurable==null) {
 			throw new IllegalArgumentException("Invalid null LoggingConfigurable in constructor");
 		}
