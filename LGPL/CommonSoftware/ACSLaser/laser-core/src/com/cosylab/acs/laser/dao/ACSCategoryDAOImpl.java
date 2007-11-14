@@ -100,6 +100,7 @@ public class ACSCategoryDAOImpl implements CategoryDAO
 	 * In this case alarms not assigned to any category will remain unassigned.
 	 */
 	private Category defaultCategory=null;
+	public Category getDefaultCategory() { return defaultCategory; }
 	
 	String surveillanceCategoryPath;
 
