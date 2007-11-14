@@ -278,10 +278,10 @@ public class ACSCategoryDAOImpl implements CategoryDAO
 	 * as default (in this way the user does ot need to add the ROOT
 	 * entry in the CDB).
 	 * 
-	 * 
+	 * @return list of Category entries read from CDB 
 	 * @throws Exception In case of error reading the values from the CDB
 	 */
-	public void loadCategories() throws Exception {
+	public alma.acs.alarmsystem.generated.Category[] loadCategories() throws Exception {
 		if (conf==null) {
 			throw new IllegalStateException("Missing dal");
 		}
@@ -387,6 +387,8 @@ public class ACSCategoryDAOImpl implements CategoryDAO
 			// Check if there are alarms without category to assign to the default
 			assignDefaultCategory(defaultCategory);
 		}
+
+                return daoCategory;
 	}
 	
 	/**
