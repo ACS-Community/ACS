@@ -30,6 +30,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
@@ -335,7 +336,7 @@ public class ACSAlarmDAOImpl implements AlarmDAO
 	 * 
 	 * @see ACSCategoryDAOImpl
 	 */
-	public void loadAlarms() throws Exception{
+	public List<FaultFamily> loadAlarms() throws Exception{
 		if (conf==null) {
 			throw new IllegalStateException("Missing dal");
 		}
@@ -391,6 +392,8 @@ public class ACSAlarmDAOImpl implements AlarmDAO
 		generateAlarmsMap(cdbFamilies);
 		
 		loadReductionRules();
+
+                return cdbFamilies;
 	}
 	
 	/**
