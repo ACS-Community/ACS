@@ -1,7 +1,7 @@
 #************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: tat.tcl,v 1.104 2007/10/05 14:08:02 psivera Exp $"
+# "@(#) $Id: tat.tcl,v 1.105 2007/11/14 17:00:08 psivera Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -1468,9 +1468,9 @@ proc runTest { testList generate rep } {
 	    set testid [concat $thisTest $testid]
 	    set outputFile   ./tatlogs/run$PID/$testName.out
 	    set refFile      ./ref/$testName.ref
-	    if { $generate == 1 } {
-		file delete -force -- $refFile
-	    }
+	    #if { $generate == 1 } {
+	#	file delete -force -- $refFile
+	#    }
 #	    The following line is a debug printing, not necessarily needed
 #	    puts "thisTest=$thisTest"
 	    if { $gv(testAll) == 0 && [lsearch $gv(toTest) $thisTest] == -1 } {
@@ -1502,9 +1502,9 @@ proc runTest { testList generate rep } {
 	    set outputFile   ./tatlogs/run$PID/$testid.out
 	    set refFile      ./ref/$testid.ref
 	    catch {file delete -force -- $outputFile}
- 	    if { $generate == 1 } {
-                file delete -force -- $refFile
- 	    }
+ 	    #if { $generate == 1 } {
+            #    file delete -force -- $refFile
+ 	    #}
 	    # make test script executable for cmmCopied dir:
 	    # only test scripts should be in the current dir.
 	    # not the binary generated under bin.
@@ -1652,7 +1652,7 @@ proc runTest { testList generate rep } {
 # SPR 20040140: the outputFile is saved in .orig before being processed with sed and grep
 	catch {file copy -force $outputFile $outputFile.orig}
 
-        egrepFilter $outputFile $testid $refFile
+        egrepFilter $outputFile $testid $refFile $generate
 
         sedFilter $outputFile $testid
 
@@ -1768,7 +1768,7 @@ proc runTest { testList generate rep } {
         catch {file copy -force $file ./tatlogs/run$PID/$testProc.out.orig}
 
         # Filter the files for lines that can change
-        egrepFilterx $file $testProc $refFile
+        egrepFilterx $file $testProc $refFile $generate
         sedFilterx $file $testProc
 
         # Copy the file in the definitive place
@@ -1873,22 +1873,23 @@ proc runTest { testList generate rep } {
 }
 
 ###############################################################################
-# procedure egrepFilter (fileName testName refName) 
+# procedure egrepFilter (fileName testName refName generate) 
 # Strips off from the file all the lines maching the reg. exps. in file
 # $grepFile (if it exist)
 ############################################################################## 
 
-proc egrepFilter {fileName testName refName} {
+proc egrepFilter {fileName testName refName generate} {
 
     global gv
     set userId [id user]
     set tmpGrep /tmp/${userId}_test[pid]
 
+
     # process tat .TestList.grep (for VxWorks tests only)
 
     if {[file exists $gv(grepFileBis)] && [file size $gv(grepFileBis)] != 0} {
 	# if the reference file for the test is supposed to be empty, we skip the egrep processing, if not egrep fails
-	if { [file size $refName] == 0 } {
+	if { [file size $refName] == 0 && $generate == 0 } {
             printLogVerbose "No grep filter applied: $refName is empty"
         } else {
 	    if { [catch {exec egrep -v -f $gv(grepFileBis) $fileName > $fileName.tmp}] } {
@@ -1901,7 +1902,7 @@ proc egrepFilter {fileName testName refName} {
 	    mvFiles $fileName.tmp $fileName
 	}
     } else {
-        printLogVerbose "No filter applied: $gv(grepFileBis) does not exist"
+        printLogVerbose "VxWorks (ignore this message if you do not use VxWorks): no filter applied: $gv(grepFileBis) does not exist"
     } 
 
     # process user TestList.grep or testName.grep
@@ -1921,21 +1922,63 @@ proc egrepFilter {fileName testName refName} {
     }
 
 
+    # first we start the circus only if a grep file exists
     if {[file exists $tmpGrep$gv(grepFile).tmp]} {
-	# if the reference file for the test is supposed to be empty, we skip the egrep processing, if not egrep fails
-	if { [file size $refName] == 0 } {
-            printLogVerbose "No grep filter applied: $refName is empty"
+      # then we have to distinguish whether we are in the case of creating the reference file or not: if we want to create the reference files, generate is 1
+      if { $generate == 1 } {
+	# then we should consider the case whether the ref file already exists or not:
+	if { [file exists $refName] } {
+	  # if the reference file for the test is supposed to be empty, we skip the egrep processing, if not egrep fails
+	  if { [file size $refName] == 0 } {
+              printLogVerbose "No grep filter applied: $refName is empty"
+          } else {
+	      if { [catch {exec egrep -v -f  $tmpGrep$gv(grepFile).tmp $fileName > $fileName.tmp}] } {
+		  # we want that tat exits with an error only if there is a syntax error in the grep file (if this is ever possible)
+		  # we do not want an error while processing the output file with egrep, if the output file is empty because of a test failure
+		  if { [file size $fileName] != 0 } {
+	              error "grep processing of $fileName failed. Check the  $tmpGrep$gv(grepFile).tmp file, please"
+		  }
+	      }
+	      mvFiles $fileName.tmp $fileName
+              catch {file delete -force -- $tmpGrep$gv(grepFile).tmp}
+	  }
+	# the ref file does not exist because I'm generating it for the first time
         } else {
-	    if { [catch {exec egrep -v -f  $tmpGrep$gv(grepFile).tmp $fileName > $fileName.tmp}] } {
-		# we want that tat exits with an error only if there is a syntax error in the grep file (if this is ever possible)
-		# we do not want an error while processing the output file with egrep, if the output file is empty because of a test failure
-		if { [file size $fileName] != 0 } {
-	            error "grep processing of $fileName failed. Check the  $tmpGrep$gv(grepFile).tmp file, please"
-		}
+	  if { [catch {exec egrep -v -f  $tmpGrep$gv(grepFile).tmp $fileName > $fileName.tmp}] } {
+	      # we want that tat exits with an error only if there is a syntax error in the grep file (if this is ever possible)
+	      # we do not want an error while processing the output file with egrep, if the output file is empty because of a test failure
+	      if { [file size $fileName] != 0 } {
+		  error "grep processing of $fileName failed. Check the  $tmpGrep$gv(grepFile).tmp file, please"
+	      }
 	    }
 	    mvFiles $fileName.tmp $fileName
-            catch {file delete -force -- $tmpGrep$gv(grepFile).tmp}
-	}
+	    catch {file delete -force -- $tmpGrep$gv(grepFile).tmp} 
+        }
+      # here we process the case where we do not want to generate the reference files
+      } elseif { $generate == 0 } {	
+	# then we should consider the case whether the ref file already exists or not:
+	if { [file exists $refName] } {
+	  # if the reference file for the test is supposed to be empty, we skip the egrep processing, if not egrep fails
+	  if { [file size $refName] == 0 } {
+              printLogVerbose "No grep filter applied: $refName is empty"
+          } else {
+	      if { [catch {exec egrep -v -f  $tmpGrep$gv(grepFile).tmp $fileName > $fileName.tmp}] } {
+		  # we want that tat exits with an error only if there is a syntax error in the grep file (if this is ever possible)
+		  # we do not want an error while processing the output file with egrep, if the output file is empty because of a test failure
+		  if { [file size $fileName] != 0 } {
+	              error "grep processing of $fileName failed. Check the  $tmpGrep$gv(grepFile).tmp file, please"
+		  }
+	      }
+	      mvFiles $fileName.tmp $fileName
+              catch {file delete -force -- $tmpGrep$gv(grepFile).tmp}
+	  }
+	# the ref file does not exist because I'm generating it for the first time
+        } else {
+	    error "you are executing a test wihout having a reference file; this is not allowed"
+        }
+
+      }
+    # the grep file does not exist, so we do not do anything
     } else {
         printLogVerbose "No filter applied: grepFile does not exist"
     } 
@@ -1945,12 +1988,12 @@ proc egrepFilter {fileName testName refName} {
 
 ###############################################################################
 #
-# procedure egrepFilterx (fileName testName refName)
+# procedure egrepFilterx (fileName testName refName generate)
 # Strips off from the file all the lines maching the reg. exps. in file
 # $grepFile (if it exist)
 ##############################################################################
 
-proc egrepFilterx {fileName testName refName} {
+proc egrepFilterx {fileName testName refName generate} {
 
     global gv
     set userId [id user]
@@ -1971,21 +2014,63 @@ proc egrepFilterx {fileName testName refName} {
     }
 
     # Clean the output file.
+    # first we start the circus only if a grep file exists
     if {[file exists $tmpGrep$gv(grepFile).tmp]} {
-	# if the reference file for the test is supposed to be empty, we skip the egrep processing, if not egrep fails
-	if { [file size $refName] == 0 } {
-	    printLogVerbose "No grep filter applied: $refName is empty"
-	} else {
-            if { [catch {exec egrep -v -f $tmpGrep$gv(grepFile).tmp $fileName > $fileName.tmp}] } {
-		# we want that tat exits with an error only if there is a syntax error in the grep file (if this is ever possible)
-		# we do not want an error while processing the output file with egrep, if the output file is empty because of a test failure
-		if { [file size $fileName] != 0 } {
-	            error "grep processing of $fileName failed. Check the file  $tmpGrep$gv(grepFile).tmp, please"
-		}
-	    }
+      # then we have to distinguish whether we are in the case of creating the reference file or not: if we want to create the reference files, generate is 1
+      if { $generate == 1 } {
+	# then we should consider the case whether the ref file already exists or not:
+        if { [file exists $refName] } {
+	  # if the reference file for the test is supposed to be empty, we skip the egrep processing, if not egrep fails
+	  if { [file size $refName] == 0 } {
+	      printLogVerbose "No grep filter applied: $refName is empty"
+	  } else {
+              if { [catch {exec egrep -v -f $tmpGrep$gv(grepFile).tmp $fileName > $fileName.tmp}] } {
+	  	  # we want that tat exits with an error only if there is a syntax error in the grep file (if this is ever possible)
+		  # we do not want an error while processing the output file with egrep, if the output file is empty because of a test failure
+		  if { [file size $fileName] != 0 } {
+	              error "grep processing of $fileName failed. Check the file  $tmpGrep$gv(grepFile).tmp, please"
+		  }
+	      }
+              catch {file rename -force -- $fileName.tmp $fileName}
+              catch {file delete -force -- $tmpGrep$gv(grepFile).tmp}
+	  }
+        # the ref file does not exist because I'm generating it for the first time
+        } else {
+	  if { [catch {exec egrep -v -f  $tmpGrep$gv(grepFile).tmp $fileName > $fileName.tmp}] } {
+              # we want that tat exits with an error only if there is a syntax error in the grep file (if this is ever possible)
+              # we do not want an error while processing the output file with egrep, if the output file is empty because of a test failure
+              if { [file size $fileName] != 0 } {
+                  error "grep processing of $fileName failed. Check the  $tmpGrep$gv(grepFile).tmp file, please"
+	      } else {
+		  printLogVerbose "INFO: while applying the grep filter, I noticed that the generated reference file will be empty"
+              }
+            }
             catch {file rename -force -- $fileName.tmp $fileName}
             catch {file delete -force -- $tmpGrep$gv(grepFile).tmp}
-	}
+        }
+      # here we process the case where we do not want to generate the reference files
+      } elseif { $generate == 0 } {
+	# again we consider the case whether the ref file exists or not:
+        if { [file exists $refName] } {
+          # if the reference file for the test is supposed to be empty, we skip the egrep processing, if not egrep fails
+          if { [file size $refName] == 0 } {
+              printLogVerbose "No grep filter applied: $refName is empty"
+          } else {
+	    if { [catch {exec egrep -v -f  $tmpGrep$gv(grepFile).tmp $fileName > $fileName.tmp}] } {
+	      # we want that tat exits with an error only if there is a syntax error in the grep file (if this is ever possible)
+   	      # we do not want an error while processing the output file with egrep, if the output file is empty because of a test failure
+   	      if { [file size $fileName] != 0 } {
+   		error "grep processing of $fileName failed. Check the  $tmpGrep$gv(grepFile).tmp file, please"
+   	      }
+   	    }
+   	    catch {file rename -force -- $fileName.tmp $fileName}
+   	    catch {file delete -force -- $tmpGrep$gv(grepFile).tmp}
+	 }
+        } else {
+            error "you are executing a test wihout having a reference file; this is not allowed"
+        }
+
+      }  
     } else {
 	printLogVerbose "No filter applied: grepFile does not exist"
     }
