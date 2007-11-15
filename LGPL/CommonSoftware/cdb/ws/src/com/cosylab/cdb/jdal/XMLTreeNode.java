@@ -138,10 +138,11 @@ public class XMLTreeNode {
 		// not defined, all the subNodes are actually XML elements
 		if (m_elementsMap == null || m_subNodesMap.size() == 0 || m_elementsMap.size() == m_subNodesMap.size())
 			return "";
-			
+
 		// list of subnodes
 		LinkedHashMap diff = new LinkedHashMap(m_subNodesMap);
-		diff.remove(m_elementsMap);
+		for (Object key : m_elementsMap.keySet())
+			diff.remove(key);
 		
 		String key;
 		StringBuffer retVal = new StringBuffer(128);
