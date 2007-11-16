@@ -68,7 +68,7 @@ public class Cvs2clXmlEntry
 			throw new IllegalArgumentException("Missing required data in entry element.");
 		}
 		
-		System.out.println("data = " + date.toString() + " and author = " + author + " msg = " + msg);
+//		System.out.println("data = " + date.toString() + " and author = " + author + " msg = " + msg);
 	}
 	
 
@@ -141,7 +141,7 @@ public class Cvs2clXmlEntry
 				// todo Give hint as to which element is lacking what data..
 				throw new IllegalArgumentException("Missing required data in file element.");
 			}
-			System.out.println("file = " + pathName); 
+//			System.out.println("file = " + pathName); 
 		}
 
 		String getPathName() {

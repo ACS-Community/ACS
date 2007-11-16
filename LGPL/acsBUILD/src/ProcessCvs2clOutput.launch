@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<launchConfiguration type="org.eclipse.jdt.launching.localJavaApplication">
+<stringAttribute key="bad_container_name" value="/acsBUILD/sr"/>
+<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
+<listEntry value="/acsBUILD/src/alma/acs/releasedoc/ProcessCvs2clOutput.java"/>
+</listAttribute>
+<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
+<listEntry value="1"/>
+</listAttribute>
+<booleanAttribute key="org.eclipse.debug.core.appendEnvironmentVariables" value="true"/>
+<stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="alma.acs.releasedoc.ProcessCvs2clOutput"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="/diska/data/jschwarz/MODULES/ACS7_Testing/ICD/ChangeLog"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="acsBUILD"/>
+</launchConfiguration>
