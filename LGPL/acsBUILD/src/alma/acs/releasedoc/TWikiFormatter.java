@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 import alma.acs.releasedoc.Cvs2clXmlEntry.EntryFile;
+import alma.acs.util.XmlNormalizer;
 
 //2007-08-03 09:45  hsommer
 //
@@ -86,7 +87,8 @@ public class TWikiFormatter
 	}
 	
 	protected String formatMessage(String indentAfterFirstLine, String message) {
-		StringTokenizer tok = new StringTokenizer(message, "\n\r\f");
+		String xmlMaskedMessage = XmlNormalizer.normalize(message);
+		StringTokenizer tok = new StringTokenizer(xmlMaskedMessage, "\n\r\f");
 		String ret = maskWikiWords(tok.nextToken());
 		while (tok.hasMoreTokens()) {
 			ret += " <br>" + LINE_SEPARATOR;
@@ -117,6 +119,10 @@ public class TWikiFormatter
 					return true;
 				}
 			}
+		}
+		// for some reason "CDB" is considered a wiki word
+		if (word.equals("CDB")) {
+			return true;
 		}
 		return false;
 	}
