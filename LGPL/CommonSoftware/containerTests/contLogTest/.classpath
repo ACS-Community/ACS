@@ -40,7 +40,7 @@
 	<classpathentry kind="var" path="ACSROOT/lib/logkit.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acsASsources.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/cdbDAL.jar"/>
-	<classpathentry kind="lib" path="/home/eallaert/eclipseWorkspace/contLogTest/lib/contLogTest.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acsContainerServices.jar"/>
+	<classpathentry kind="lib" path="lib/contLogTest_IF.jar"/>
 	<classpathentry kind="output" path="object/eclipseOut"/>
 </classpath>
