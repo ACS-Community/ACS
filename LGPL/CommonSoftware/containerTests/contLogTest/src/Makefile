@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.1.1.1 2007/11/13 14:25:38 eallaert Exp $"
+# "@(#) $Id: Makefile,v 1.2 2007/11/19 18:50:50 hsommer Exp $"
 #
 # Makefile of ........
 #
@@ -77,8 +77,6 @@ contLogTestClient_DIRS = \
 #
 DEBUG = on
 COMPONENT_HELPERS=on
-###XML_IDL="ObsProposal=alma.xmljbind.test.obsproposal.ObsProposal; \
-         SchedBlock=alma.xmljbind.test.schedblock.SchedBlock"
 
 #
 # Program to build
@@ -174,7 +172,7 @@ CSOURCENAMES = \
 # 
 # IDL Files and flags
 # 
-IDL_FILES = contLogTest
+IDL_FILES = contLogTest_IF
 IDL_TAO_FLAGS =
 USER_IDL =
 
