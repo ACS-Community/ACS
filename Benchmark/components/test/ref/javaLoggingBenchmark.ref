@@ -1,4 +1,4 @@
-1 -  -m 1 -l java --csv tmp/javaReport.csv -- 40000 1 0
+1 -  -m 2 -l java --csv tmp/javaReport.csv -- 40000 1 0
 1 -  Starting ORB Services and Manager
 1 - started ACS_INSTANCE <N>
 1 -  Starting Container 1
@@ -12,7 +12,7 @@
 1 - <timestamp> [GlobalLogger - ] 	Setting levels for logger 'default':
 1 - <timestamp> [GlobalLogger - ] 		useDefault      : false
 1 - <timestamp> [GlobalLogger - ] 		minLogLevel     : 2
-1 - <timestamp> [GlobalLogger - ] 		minLogLevelLocal: 1
+1 - <timestamp> [GlobalLogger - ] 		minLogLevelLocal: 2
 1 - <timestamp> [GlobalLogger - ] 	... done.
 1 - <timestamp> [GlobalLogger - ] Done all.
 1 -  Resetting/starting chronometer 1
@@ -40,7 +40,7 @@
 1 -  Stopping ACS
 1 - going about <directory>/ACS/Benchmark/components/test/tmp/loggingClient.pid...
 1 -   bringing down logging client with ID <pid>...
-1 -  Stopping containers, manager, the the services
+1 -  Stopping containers, manager, and the services
 1 -  Preparing the sar log files
 1 -  Generating the plots
 1 -  Generating the html file

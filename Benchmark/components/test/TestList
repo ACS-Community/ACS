@@ -20,7 +20,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: TestList,v 1.3 2007/08/28 16:04:35 eallaert Exp $"
+# "@(#) $Id: TestList,v 1.4 2007/11/19 16:55:46 eallaert Exp $"
 #
 # TestList
 #
@@ -47,13 +47,13 @@ SOURCE copyReferenceFiles.tcl
 #         in the foreground. To pass parameters to a program
 #         it is enough to write the complete command line for
 #         the program in quotes.
-1 cppLoggingBenchmark    "genLoggingProcessesReport -m 1 -l cpp  --csv tmp/cppReport.csv    40000 1 0"
+1 cppLoggingBenchmark    "genLoggingProcessesReport -m 2 -l cpp  --csv tmp/cppReport.csv    40000 1 0"
 2 cppPerformanceCheck    "calculatePerformance tmp/cppReport.csv     ref/cppPerformance.ref    0.9 1.1"
 
-3 javaLoggingBenchmark   "genLoggingProcessesReport -m 1 -l java --csv tmp/javaReport.csv   40000 1 0"
+3 javaLoggingBenchmark   "genLoggingProcessesReport -m 2 -l java --csv tmp/javaReport.csv   40000 1 0"
 4 javaPerformanceCheck   "calculatePerformance tmp/javaReport.csv    ref/javaPerformance.ref   0.9 1.1"
 
-5 pythonBenchmark        "genLoggingProcessesReport -m 1 -l py   --csv tmp/pythonReport.csv 40000 1 0"
+5 pythonBenchmark        "genLoggingProcessesReport -m 2 -l py   --csv tmp/pythonReport.csv 40000 1 0"
 6 pythonPerformanceCheck "calculatePerformance tmp/pythonReport.csv  ref/pythonPerformance.ref 0.9 1.1"
 
 
