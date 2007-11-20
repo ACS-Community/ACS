@@ -32,9 +32,12 @@
  *  test-log's IDL File
  */
 
+
+
 module contLogTest
 {
     typedef sequence<long> LongSeq;	// unbounded sequence of 32-bit integers
+        
     // a very simple component 
     interface LogLevels : ACS::ACSComponent
     {
@@ -45,7 +48,15 @@ module contLogTest
 	 	*  <br><hr>
 	 	*  @endhtmlonly
 		 */
-	    LongSeq getLevels() raises (ACSErrTypeCommon::CouldntPerformActionEx);
+		LongSeq getLevels() raises (ACSErrTypeCommon::CouldntPerformActionEx);
+	    
+		/**
+		 * Logs a series of dummy messages, one for each provided log level.
+		 * The test client can then check what actually was printed to stdout or sent to the Log service,
+		 * to see if log levels were applied correctly.
+		 * @param levels  ACS core levels (e.g. 0, 2, 3, ...) for the messages to be logged.  
+		 */
+		void logDummyMessages(in LongSeq levels);	    
 
     };
 };
