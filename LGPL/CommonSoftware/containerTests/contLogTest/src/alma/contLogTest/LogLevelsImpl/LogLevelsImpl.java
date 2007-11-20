@@ -26,6 +26,7 @@ import alma.ACSErrTypeCommon.CouldntPerformActionEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJCouldntPerformActionEx;
 import alma.acs.component.ComponentLifecycle;
 import alma.acs.container.ContainerServices;
+import alma.acs.logging.ACSCoreLevel;
 import alma.acs.logging.AcsLogLevel;
 import alma.acs.logging.AcsLoggingHandler;
 import alma.acs.logging.StdOutConsoleHandler;
@@ -143,4 +144,15 @@ public class LogLevelsImpl implements ComponentLifecycle, LogLevelsOperations
 		return levels;
 	}
 
+	
+	
+	/**
+	 * @see alma.contLogTest.LogLevelsOperations#logDummyMessagesForAllLevels()
+	 */
+	public void logDummyMessages(int[] coreLevels) {
+		for (int coreLevel : coreLevels) {
+			AcsLogLevel acsLogLevel = AcsLogLevel.fromAcsCoreLevel(coreLevel);
+			m_logger.log(acsLogLevel, "dummy log message for core level " + coreLevel);
+		}		
+	}
 }
