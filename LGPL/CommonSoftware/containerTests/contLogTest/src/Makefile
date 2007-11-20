@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.2 2007/11/19 18:50:50 hsommer Exp $"
+# "@(#) $Id: Makefile,v 1.3 2007/11/20 17:22:43 hsommer Exp $"
 #
 # Makefile of ........
 #
@@ -112,7 +112,7 @@ LIBRARIES =	contLogTestImpl
 LIBRARIES_L     =
 
 contLogTestImpl_OBJECTS = contLogTestImpl
-contLogTestImpl_LIBS    = contLogTestStubs ACSErrTypeCommon
+contLogTestImpl_LIBS    = contLogTest_IFStubs ACSErrTypeCommon
 #                  
 # Scripts (public and local)
 # ----------------------------
