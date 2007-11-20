@@ -21,7 +21,7 @@
 *
 *
 *
-* "@(#) $Id: contLogTestImpl.cpp,v 1.1.1.1 2007/11/13 14:25:38 eallaert Exp $"
+* "@(#) $Id: contLogTestImpl.cpp,v 1.2 2007/11/20 17:23:08 hsommer Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -33,7 +33,7 @@
 #include <ACSErrTypeCommon.h>
 #include <iostream>
 
-ACE_RCSID(contLogTest, contLogTestImpl, "$Id: contLogTestImpl.cpp,v 1.1.1.1 2007/11/13 14:25:38 eallaert Exp $")
+ACE_RCSID(contLogTest, contLogTestImpl, "$Id: contLogTestImpl.cpp,v 1.2 2007/11/20 17:23:08 hsommer Exp $")
 
 /* ----------------------------------------------------------------*/
 LogLevels::LogLevels( 
@@ -66,6 +66,13 @@ LogLevels::getLevels ()
     std::cout << "Done filling levels." << std::endl; 
     return level._retn();
 }
+
+void 
+LogLevels::logDummyMessages (const ::contLogTest::LongSeq & levels)
+{
+	
+}
+
 /* --------------- [ MACI DLL support functions ] -----------------*/
 #include <maciACSComponentDefines.h>
 MACI_DLL_SUPPORT_FUNCTIONS(LogLevels)
