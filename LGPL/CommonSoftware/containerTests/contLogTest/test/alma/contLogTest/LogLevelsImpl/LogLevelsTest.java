@@ -22,6 +22,12 @@
 package alma.contLogTest.LogLevelsImpl;
 
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.StringTokenizer;
+
+import com.cosylab.logging.engine.log.ILogEntry;
+
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
@@ -35,7 +41,7 @@ import si.ijs.maci.LoggingConfigurableOperations;
 import alma.ACSErrTypeCommon.CouldntPerformActionEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJCouldntPerformActionEx;
 import alma.JavaContainerError.wrappers.AcsJContainerEx;
-import alma.acs.component.client.ComponentClient;
+import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
 import alma.acs.component.client.ComponentClientTestCase;
 import alma.acs.container.AcsManagerProxy;
 import alma.contLogTest.LogLevels;
@@ -48,13 +54,15 @@ import alma.maciErrType.NoPermissionEx;
  */
 public class LogLevelsTest extends ComponentClientTestCase
 {
-	private ComponentClient hlc = null;
-
+	public static final String PROPERTYNAME_COMPONENTNAMES = "TEST_COMP_NAMES";
     private LogLevels m_testlogComp;
-    private static String component[];
+        
+    /**
+     * @TODO make not static once main method args are replaced with properties in the tests
+     */
+    private static List<String> componentNames = new ArrayList<String>();
 
     /**
-	 * @param name
 	 * @throws java.lang.Exception
 	 */
 	public LogLevelsTest() throws Exception
@@ -65,67 +73,37 @@ public class LogLevelsTest extends ComponentClientTestCase
 	/**
 	 * @see TestCase#setUp()
 	 */
-	protected void setUp() throws Exception
-	{
+	protected void setUp() throws Exception {
 		super.setUp();
-//		if (false) {
-//			String managerLoc = System.getProperty("ACS.manager");
-//			if (managerLoc == null) {
-//				System.out
-//						.println("Java property 'ACS.manager' must be set to the corbaloc of the ACS manager!");
-//				System.exit(-1);
-//			}
-//			/*
-//			String clientName = "LogLevelsClient";
-//			try {
-//				hlc = new ComponentClient(null, managerLoc, clientName);
-//				m_logger.info("got LogLevel client");
-//			} catch (Exception e) {
-//				try {
-//					Logger logger = hlc.getContainerServices().getLogger();
-//					logger.log(Level.SEVERE, "Client application failure", e);
-//				} catch (Exception e2) {
-//					e.printStackTrace(System.err);
-//				}
-//			}
-//			*/
-//		}
+		String compNames = System.getProperty(PROPERTYNAME_COMPONENTNAMES);
+		if (compNames != null) {
+			StringTokenizer tok = new StringTokenizer(compNames);
+			while (tok.hasMoreTokens()) {
+				componentNames.add(tok.nextToken());
+			}
+		}
 	}
 
 	/**
 	 * @see TestCase#tearDown()
 	 */
-	protected void tearDown() throws Exception
-	{
-//	    if (hlc != null)
-//		{
-//    	try 
-//    		{
-//    		hlc.tearDown();
-//    		}
-//    	catch (Exception e3) 
-//    		{
-//    		// bad luck
-//    		e3.printStack	Trace();
-//    		}
-//		}
+	protected void tearDown() throws Exception {
 		super.tearDown();
 	}
 	
 	
-//	public void testGetLoggingConfigurableInterface() throws Exception {
-//		LoggingConfigurableOperations containerLogConfig = getContainerLoggingIF("heikoContainer");
-//		String[] loggerNames = containerLogConfig.get_logger_names();
-//		assertNotNull(loggerNames);
-//	}
-//	
 	
+	/**
+	 * @TODO use getLogLevelsComponents method
+	 * @throws Exception
+	 */
 	public void testGetLevels() throws Exception
 	{
 		int levels[];
-		for (int i = 0; i < component.length; i++)
+		
+		for (int i = 0; i < componentNames.size(); i++)
 		{
-		        m_testlogComp = alma.contLogTest.LogLevelsHelper.narrow(getContainerServices().getComponent(component[i]));
+		        m_testlogComp = alma.contLogTest.LogLevelsHelper.narrow(getContainerServices().getComponent(componentNames.get(i)));
 
 			try {
 				levels = m_testlogComp.getLevels();
@@ -144,7 +122,40 @@ public class LogLevelsTest extends ComponentClientTestCase
 			Assert.assertEquals(levels[2], minLevel);
 		}
 	}
+	
+	
+	public void testRemoteLogReception() throws Exception {
+		LogSeriesExpectant expectant = new LogSeriesExpectant(getLogReceiver());
 
+		int[] logLevels = {2, 3, 4, 5, 6, 8, 9, 10, 11};
+		int waitTimeSeconds = 30;
+		
+		for (LogLevels testComp : getLogLevelsComponents()) {
+			// @TODO get logger name from the component via a new IDL method
+			String loggerName = "TESTLOG1";
+			
+			expectant.clearLogs();
+			m_logger.info("Will call 'logDummyMessages' on component " + testComp.name());
+			testComp.logDummyMessages(logLevels);
+			m_logger.info("Will wait " + waitTimeSeconds + " seconds to receive (some of) these log messages.");
+			List<ILogEntry> logRecordsReceived = expectant.awaitLogRecords(loggerName, waitTimeSeconds);
+			
+			// @TODO vary the log level settings and add hard asserts about which messages may come through
+			
+			System.out.println("Got " + logRecordsReceived.size() + " records from logger " + loggerName);
+			for (ILogEntry logEntry : logRecordsReceived) {
+				System.out.println(logEntry.getField(ILogEntry.Field.LOGMESSAGE));
+			}
+		}
+	}
+
+
+//	public void testGetLoggingConfigurableInterface() throws Exception {
+//	LoggingConfigurableOperations containerLogConfig = getContainerLoggingIF("heikoContainer");
+//	String[] loggerNames = containerLogConfig.get_logger_names();
+//	assertNotNull(loggerNames);
+//}
+//
 	
 	/**
 	 * Gets a reference to the LoggingConfigurableOperations interface of a container with a given name. 
@@ -154,7 +165,7 @@ public class LogLevelsTest extends ComponentClientTestCase
 	 *  
 	 * @param containerName
 	 */
-	public LoggingConfigurableOperations getContainerLoggingIF(String containerName) throws AcsJContainerEx, NoPermissionEx {
+	protected LoggingConfigurableOperations getContainerLoggingIF(String containerName) throws AcsJContainerEx, NoPermissionEx {
     	AdministratorPOATie adminpoa = new AdministratorPOATie(new ManagerAdminClient(getName(), m_logger)); 
 		Administrator adminCorbaObj = adminpoa._this(getContainerServices().getAdvancedContainerServices().getORB());
 		
@@ -183,16 +194,29 @@ public class LogLevelsTest extends ComponentClientTestCase
 	
 	
 	/**
+	 * @TODO Eliminate <code>component</code> field, see comment at main method.
+	 */
+	protected List<LogLevels> getLogLevelsComponents() throws AcsJContainerServicesEx 
+	{
+		List<LogLevels> compRefs = new ArrayList<LogLevels>();
+		
+		for (String compName : componentNames) {			
+			compRefs.add(alma.contLogTest.LogLevelsHelper.narrow(getContainerServices().getComponent(compName)));
+		}
+		return compRefs;
+	}
+	
+	
+	/**
 	 * @TODO We usually don't require a main method for a JUnit test to run successfully.
 	 * Therefore instead of getting component names from the arg list, 
-	 * they should be given in some Java property that can be evaluated in the setUp method.
+	 * they should be given in the PROPERTYNAME_COMPONENTNAMES Java property that gets evaluated in the setUp method.
 	 */
 	public static void main(String[] args)
 	{
-	    component = new String[args.length];
 	    for (int i = 0; i < args.length; i++)
 		{
-                component[i] = new String(args[i]);
+	    	componentNames.add(args[i]);
 		}
 		junit.textui.TestRunner.run(LogLevelsTest.class);
 	}
