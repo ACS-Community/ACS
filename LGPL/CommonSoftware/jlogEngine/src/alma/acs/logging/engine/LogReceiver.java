@@ -40,6 +40,7 @@ import com.cosylab.logging.engine.ACS.ACSLogConnectionListener;
 import com.cosylab.logging.engine.ACS.ACSRemoteLogListener;
 import com.cosylab.logging.engine.ACS.LCEngine;
 import com.cosylab.logging.engine.log.ILogEntry;
+import com.cosylab.logging.engine.log.LogTypeHelper;
 import com.cosylab.logging.engine.log.ILogEntry.Field;
 
 import si.ijs.maci.Manager;
@@ -397,11 +398,23 @@ public class LogReceiver {
 		/**
 		 * Returns the <code>ILogEntry</code> class that was wrapped for sorting inside the queue.
 		 * That class represents the log record as it was received from the logging service.
+		 * <b>Beware that the log level you get from this ILogEntry is not an ACS log level, but
+		 *    comes from some level representation internally used by the jlog application whose code got reused here!
+		 *    To get an ACS level, you must convert it using {@link LogTypeHelper#getAcsCoreLevel(Integer)}</b>
+		 * @deprecated use {@link #getLogRecord()} to avoid dealing with jlog-internal log level (=severity) number ranges.
 		 */
 		public ILogEntry getLogEntry() {
 			return logEntry;
 		}
 
+		/**
+		 * Returns the log record that was wrapped for sorting insdie the queue. 
+		 * The returned object represents the log record as it was received from the logging service.
+		 */
+		public ReceivedLogRecord getLogRecord() {
+			return new ReceivedLogRecord(logEntry);
+		}
+		
 		/**
 		 * This method is used by the queue to determine whether the log record may 
 		 * leave the queue already.
@@ -455,6 +468,52 @@ public class LogReceiver {
 		long getDelayTimeMillis() {
 			return delayTimeMillis;
 		}
+	}
+	
+	/**
+	 * A jlog-independent representation of the log record we received
+	 */
+	public static class ReceivedLogRecord {
+		private ILogEntry jlogRecord;
+		
+		public ReceivedLogRecord(ILogEntry jlogRecord) {
+			this.jlogRecord = jlogRecord;
+		}
+		
+		public long getTimestampMillis() {
+			return ((Long)jlogRecord.getField(ILogEntry.Field.TIMESTAMP)).longValue();
+		}
+		
+		public int getLevel() {
+			int jlogLevel = ((Integer)jlogRecord.getField(ILogEntry.Field.ENTRYTYPE)).intValue();
+			return LogTypeHelper.getAcsCoreLevel(jlogLevel);
+		}
+
+		public String getFile() {
+			return (String)jlogRecord.getField(ILogEntry.Field.FILE);
+		}
+
+		public int getLine() {
+			return ((Integer)jlogRecord.getField(ILogEntry.Field.LINE)).intValue();
+		}
+
+		public String getRoutine() {
+			return (String)jlogRecord.getField(ILogEntry.Field.ROUTINE);
+		}
+
+		public String getHost() {
+			return (String)jlogRecord.getField(ILogEntry.Field.HOST);
+		}
+
+		public String getProcess() {
+			return (String)jlogRecord.getField(ILogEntry.Field.PROCESS);
+		}
+
+		public String getMessage() {
+			return (String)jlogRecord.getField(ILogEntry.Field.LOGMESSAGE);
+		}
+
+		// @TODO add more getter methods if required...
 	}
 
     /**
