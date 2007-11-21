@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.24 2007/08/28 16:00:16 eallaert Exp $"
+# "@(#) $Id: Makefile,v 1.25 2007/11/21 10:53:18 eallaert Exp $"
 #
 # Makefile of ........
 #
@@ -62,7 +62,7 @@ USER_LIB = 	-lACE \
 # -----------------------------
 EXECUTABLES     = 
 EXECUTABLES_L   = 	componentsBulkDataTest \
-			componentsGenericTest componentsClientErrTest componentsClientSupplierTest componentsClientMethodTest componentsClientSimpleTest 
+			componentsGenericTest componentsClientErrTest componentsClientMethodTest componentsClientSimpleTest 
 
 #
 # <brief description of xxxxx program>
