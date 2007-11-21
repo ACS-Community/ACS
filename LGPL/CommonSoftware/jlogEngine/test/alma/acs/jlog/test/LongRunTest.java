@@ -27,9 +27,12 @@ import alma.acs.logging.ClientLogManager;
 /**
  * The class sends log till a certain time.
  * The purpose is to execute jlog for a long periodo of time.
+ * <p>
+ * @TODO: this class illegally uses code from module jcont 
+ * which is not availeble because jlog builds before jcont.
+ * It only works with the current practice of first building src in all modules and then the tests later.
  * 
  * @author acaproni
- *
  */
 public class LongRunTest extends Thread {
 	
