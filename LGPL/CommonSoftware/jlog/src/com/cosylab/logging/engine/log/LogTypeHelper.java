@@ -26,6 +26,8 @@ import javax.swing.ImageIcon;
 import com.cosylab.logging.engine.log.LogEntryXML;
 import com.cosylab.logging.engine.log.ILogEntry.Field;
 
+import alma.acs.logging.ACSCoreLevel;
+
 /**
  * @author acaproni
  *
@@ -146,6 +148,80 @@ public class LogTypeHelper {
             null  // emergency.gif
     };
      
+    
+	public static final int[] acsLevels = {
+		ACSCoreLevel.ACS_LEVEL_TRACE, 
+		ACSCoreLevel.ACS_LEVEL_DEBUG, 
+		ACSCoreLevel.ACS_LEVEL_INFO, 
+		ACSCoreLevel.ACS_LEVEL_NOTICE, 
+		ACSCoreLevel.ACS_LEVEL_WARNING, 
+		ACSCoreLevel.ACS_LEVEL_ERROR, 
+		ACSCoreLevel.ACS_LEVEL_CRITICAL, 
+		ACSCoreLevel.ACS_LEVEL_ALERT,
+		ACSCoreLevel.ACS_LEVEL_EMERGENCY };
+
+	
+	/**
+	 * Converts an ACS log level to an index-based level as used in jlog.
+	 * @param acsLevel  small integer as defined in logging architecture document
+	 * @return see {@link #logTypes}.
+	 */
+	public static Integer getIndexBasedLevel(int acsLevel) {
+		switch (acsLevel) {
+		case ACSCoreLevel.ACS_LEVEL_ALL:
+			return ENTRYTYPE_TRACE;
+			
+		case ACSCoreLevel.ACS_LEVEL_TRACE:
+			return ENTRYTYPE_TRACE;
+			
+		case ACSCoreLevel.ACS_LEVEL_DEBUG:
+			return ENTRYTYPE_DEBUG;
+			
+		case ACSCoreLevel.ACS_LEVEL_INFO:
+			return ENTRYTYPE_INFO;
+			
+		case ACSCoreLevel.ACS_LEVEL_NOTICE:
+			return ENTRYTYPE_NOTICE;
+			
+		case ACSCoreLevel.ACS_LEVEL_WARNING:
+			return ENTRYTYPE_WARNING;
+
+		case ACSCoreLevel.ACS_LEVEL_ERROR:
+			return ENTRYTYPE_ERROR;
+
+		case ACSCoreLevel.ACS_LEVEL_CRITICAL:
+			return ENTRYTYPE_CRITICAL;
+
+		case ACSCoreLevel.ACS_LEVEL_ALERT:
+			return ENTRYTYPE_ALERT;
+
+		case ACSCoreLevel.ACS_LEVEL_EMERGENCY:
+			return ENTRYTYPE_EMERGENCY;
+
+		default:
+			throw new IllegalArgumentException("Illegal ACS log level " + acsLevel);
+		}
+	}    
+    
+	
+	/**
+	 * Converts an index-based log level as it gets used internally by jlog 
+	 * to a standard ACS log level as defined in the logging architecture document.
+	 * 
+	 * @param indexBasedLevel see {@link #logTypes}.
+	 * @return
+	 */
+	public static int getAcsCoreLevel(Integer indexBasedLevel) {
+		int intlevelValue = indexBasedLevel.intValue();
+		if (intlevelValue >= 0 && intlevelValue < acsLevels.length) {
+			return acsLevels[intlevelValue];
+		}
+		else {
+			throw new IllegalArgumentException("Illegal index based level " + intlevelValue);
+		}
+	}
+	
+
     /**
      * Return the number of different log types defined
      * 
