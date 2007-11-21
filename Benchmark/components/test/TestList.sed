@@ -3,7 +3,7 @@
 s/[0-9][0-9][0-9][0-9]-[01][0-9]-[0-3][0-9]T[0-5][0-9]:[0-5][0-9]:[0-5][0-9][.0-9]*/<timestamp>/g
 #
 # Replace absolute directory path by symbolic name.
-s|/.*ACS/Benchmark/components/|<directory>/ACS/Benchmark/components/|g
+s|/.*components/|<components_dir>/|g
 #
 # Replace ACS_INSTANCE enumerated value by symbolic value.
 # (Note that also some port numbers depend on the value assigned to ACS_INSTANCE)
