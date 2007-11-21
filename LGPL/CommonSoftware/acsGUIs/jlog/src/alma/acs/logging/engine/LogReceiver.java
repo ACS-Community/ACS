@@ -36,14 +36,13 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.omg.CORBA.ORB;
 
-import si.ijs.maci.Manager;
-
-import com.cosylab.logging.engine.ACS.ACSRemoteLogListener;
 import com.cosylab.logging.engine.ACS.ACSLogConnectionListener;
+import com.cosylab.logging.engine.ACS.ACSRemoteLogListener;
 import com.cosylab.logging.engine.ACS.LCEngine;
 import com.cosylab.logging.engine.log.ILogEntry;
-import com.cosylab.logging.engine.log.LogEntry;
 import com.cosylab.logging.engine.log.ILogEntry.Field;
+
+import si.ijs.maci.Manager;
 
 
 /**
@@ -71,8 +70,8 @@ public class LogReceiver {
 
 	private boolean verbose = false;
 
-	protected LCEngine lct = null;
-	protected MyRemoteResponseCallback rrc = null;
+	protected LCEngine lct;
+	protected MyRemoteResponseCallback rrc;
 	
 	// the queue into which all log records are stored
 	private DelayQueue<DelayedLogEntry> logDelayQueue;
@@ -340,7 +339,10 @@ public class LogReceiver {
 	 * <p>
 	 * The <code>delayTimeMillis</code> parameter in the constructor sets the buffer time during which log entries
 	 * are not yet available for the consumer, so that late arriving records get a chance
-	 * to be sorted in according to timestamp.
+	 * to be sorted in according to timestamp. <br>
+	 * As of ACS 7.0.1 the issue of timestamps that lie in the future (e.g. logs from a different machine with unsync'd time)
+	 * is addressed in the way that "future" log records will become available to the consumer before
+	 * the local system time has reached the timestamp.  
 	 * 
 	 * @author hsommer
 	 */
@@ -361,7 +363,9 @@ public class LogReceiver {
 			this.logEntry = logEntry;
             this.delayTimeMillis = delayTimeMillis;
 			Date logDate = (Date) logEntry.getField(Field.TIMESTAMP);
-			triggerTimeMillis = logDate.getTime() + delayTimeMillis;
+			// if log record has a time stamp in the future (according to local machine time), then we clip it to the current time
+			long adjustedLogTimestamp = Math.min(System.currentTimeMillis(), logDate.getTime());
+			triggerTimeMillis = adjustedLogTimestamp + delayTimeMillis;
 		}
 
 		/**
