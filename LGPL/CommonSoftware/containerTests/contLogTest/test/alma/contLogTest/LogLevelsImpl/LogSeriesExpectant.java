@@ -4,14 +4,15 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
 
 import com.cosylab.logging.engine.log.ILogEntry;
 
+import alma.acs.logging.ACSCoreLevel;
 import alma.acs.logging.engine.LogReceiver;
 import alma.acs.logging.engine.LogReceiver.DelayedLogEntry;
+import alma.acs.logging.engine.LogReceiver.ReceivedLogRecord;
 
 
 /**
@@ -53,10 +54,10 @@ public class LogSeriesExpectant
 	 * @param logRoundtripTimeSeconds  Maximum roundtrip time of a log record 
 	 *                                 (incl. caching by container, sending to Log service, processing by Log service, arrival at LogReceiver).
 	 */
-	List<ILogEntry> awaitLogRecords(String loggerName, int logRoundtripTimeSeconds) {
+	LogList awaitLogRecords(String loggerName, int logRoundtripTimeSeconds) {
 		int sortingTimeWindowSeconds = 0; // doesn't look like we need a running time windows to sort log records as long as we sort the list in the end.
 		long endTimeMillis = System.currentTimeMillis() + (logRoundtripTimeSeconds + sortingTimeWindowSeconds) * 1000;
-		List<ILogEntry> logRecords = new ArrayList<ILogEntry>();
+		LogList logRecords = new LogList();
 		logReceiver.setDelayMillis(sortingTimeWindowSeconds * 1000);
 		BlockingQueue<DelayedLogEntry> queue = logReceiver.getLogQueue();
 		
@@ -69,27 +70,26 @@ public class LogSeriesExpectant
 				// continue
 			}
             if (delayedLogEntry != null) { // timeout yields a null
-                ILogEntry logEntry = delayedLogEntry.getLogEntry();
-            	System.out.println("**** Got an entry! ***");
-                String sourceObjectName = (String) logEntry.getField(ILogEntry.Field.SOURCEOBJECT);
+                ReceivedLogRecord logRecord = delayedLogEntry.getLogRecord();
+                String sourceObjectName = logRecord.getSourceObject();
                 if (sourceObjectName != null && sourceObjectName.equals(loggerName)) {
-                	logRecords.add(logEntry);
+                	logRecords.add(logRecord);
                 }
                 else {
-                	System.out.println("Dropped log message from " + sourceObjectName + ": " + logEntry.getField(ILogEntry.Field.LOGMESSAGE));
+                	// printing this could be useful for debugging the test
+//                	System.out.println("Dropped log message from " + sourceObjectName + ": " + logEntry.getField(ILogEntry.Field.LOGMESSAGE));
                 }
             }
         }
         // sort by timestamp
-        Collections.sort(logRecords, new Comparator<ILogEntry>() {
-			public int compare(ILogEntry o1, ILogEntry o2) {
-				return ((Date)o1.getField(ILogEntry.Field.TIMESTAMP)).compareTo((Date)o2.getField(ILogEntry.Field.TIMESTAMP));
+        Collections.sort(logRecords, new Comparator<ReceivedLogRecord>() {
+			public int compare(ReceivedLogRecord o1, ReceivedLogRecord o2) {
+				return o1.getTimestamp().compareTo(o2.getTimestamp()) ;
 			}        	
         });
         return logRecords;
 	}
-	
-	
+		
 	
 //	/**
 //	 * Sleeps as long as the granularity of OS time makes {@link System#currentTimeMillis()} return the same value.
@@ -105,5 +105,24 @@ public class LogSeriesExpectant
 //			}
 //		}
 //	}
+	
+	public static class LogList extends ArrayList<ReceivedLogRecord> {
+
+		public int getMinLogLevel() {
+			int minLevel = Integer.MAX_VALUE;
+			for (ReceivedLogRecord logRecord : this) {
+				minLevel = Math.min(minLevel, logRecord.getLevel());
+			}
+			return minLevel;
+		}
+		
+		public int getMaxLogLevel() {
+			int maxLevel = -1;
+			for (ReceivedLogRecord logRecord : this) {
+				maxLevel = Math.max(maxLevel, logRecord.getLevel());
+			}
+			return maxLevel;
+		}
+	}
 	
 }
