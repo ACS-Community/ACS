@@ -475,13 +475,13 @@ public class LogReceiver {
 	 */
 	public static class ReceivedLogRecord {
 		private ILogEntry jlogRecord;
-		
+				
 		public ReceivedLogRecord(ILogEntry jlogRecord) {
 			this.jlogRecord = jlogRecord;
 		}
 		
-		public long getTimestampMillis() {
-			return ((Long)jlogRecord.getField(ILogEntry.Field.TIMESTAMP)).longValue();
+		public Date getTimestamp() {
+			return (Date)jlogRecord.getField(ILogEntry.Field.TIMESTAMP);
 		}
 		
 		public int getLevel() {
@@ -513,11 +513,27 @@ public class LogReceiver {
 			return (String)jlogRecord.getField(ILogEntry.Field.PROCESS);
 		}
 
+		public String getLogID() {
+			return (String)jlogRecord.getField(ILogEntry.Field.LOGID);
+		}
+
+		public String getThread() {
+			return (String)jlogRecord.getField(ILogEntry.Field.THREAD);
+		}
+
 		public String getMessage() {
 			return (String)jlogRecord.getField(ILogEntry.Field.LOGMESSAGE);
 		}
 
 		// @TODO add more getter methods if required...
+//		CONTEXT("Context",String.class,"Context"),
+//		PRIORITY("Priority",Integer.class,"Priority"),
+//		URI("URI",String.class,"URI"),
+//		STACKID("Stack ID",String.class,"StackId"),
+//		STACKLEVEL("Stack Level",Integer.class,"StackLevel"),
+//	    AUDIENCE("Audience",String.class, "Audience"),
+//	    ARRAY("Array",String.class,"Array"),
+//	    ANTENNA("Antenna",String.class,"Antenna");		
 	}
 
     /**
