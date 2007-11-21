@@ -488,6 +488,10 @@ public class LogReceiver {
 			int jlogLevel = ((Integer)jlogRecord.getField(ILogEntry.Field.ENTRYTYPE)).intValue();
 			return LogTypeHelper.getAcsCoreLevel(jlogLevel);
 		}
+		
+		public String getSourceObject() {
+			return (String)jlogRecord.getField(ILogEntry.Field.SOURCEOBJECT);
+		}
 
 		public String getFile() {
 			return (String)jlogRecord.getField(ILogEntry.Field.FILE);
