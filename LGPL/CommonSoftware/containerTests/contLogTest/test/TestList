@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: TestList,v 1.1.1.1 2007/11/13 14:25:38 eallaert Exp $"
+# "@(#) $Id: TestList,v 1.2 2007/11/22 09:55:26 cparedes Exp $"
 #
 # TestList
 #
@@ -99,6 +99,11 @@ PROLOGUE acsutilTATPrologue -l
         EPILOGUE "acsStopContainer frodoContainerN"
 
 #----------------- CPP, NO NAMED LOGGERS -------------------------
+#20 SOURCE prepareHardcodedLevels.tcl \
+#	PROLOGUE "acsutilAwaitContainerStart -cpp bilboContainer" \
+#	cppHardcodedLevels2 "acsStartJava alma.contLogTest.LogLevelsImpl.LogLevelsTest TESTLOG3" \
+#        EPILOGUE "acsStopContainer bilboContainer"
+
 21 SOURCE prepareHardcodedLevels.tcl \
 	PROLOGUE "acsutilAwaitContainerStart -cpp bilboContainer" \
 	cppHardcodedLevels "maciContainerLogLevel bilboContainer get bilboContainer" \
