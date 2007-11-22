@@ -177,7 +177,7 @@ public class LogLevelsTest extends ComponentClientTestCase
 			
 			System.out.println("Got " + logRecordsReceived.size() + " records from logger " + loggerName);
 			for (LogReceiver.ReceivedLogRecord logRecord : logRecordsReceived) {
-				System.out.println("(level=" + logRecord.getLevel() + ") [" + logRecord.getTimestamp() + "] " + logRecord.getMessage());
+				System.out.println("(level=" + logRecord.getLevel() + ") " + logRecord.getMessage());
 			}
 			
 			assertEquals(minLogLevelCentral, logRecordsReceived.getMinLogLevel());

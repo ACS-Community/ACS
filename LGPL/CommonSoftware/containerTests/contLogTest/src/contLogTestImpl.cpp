@@ -21,7 +21,7 @@
 *
 *
 *
-* "@(#) $Id: contLogTestImpl.cpp,v 1.2 2007/11/20 17:23:08 hsommer Exp $"
+* "@(#) $Id: contLogTestImpl.cpp,v 1.3 2007/11/22 09:54:25 cparedes Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -33,7 +33,7 @@
 #include <ACSErrTypeCommon.h>
 #include <iostream>
 
-ACE_RCSID(contLogTest, contLogTestImpl, "$Id: contLogTestImpl.cpp,v 1.2 2007/11/20 17:23:08 hsommer Exp $")
+ACE_RCSID(contLogTest, contLogTestImpl, "$Id: contLogTestImpl.cpp,v 1.3 2007/11/22 09:54:25 cparedes Exp $")
 
 /* ----------------------------------------------------------------*/
 LogLevels::LogLevels( 
@@ -70,7 +70,10 @@ LogLevels::getLevels ()
 void 
 LogLevels::logDummyMessages (const ::contLogTest::LongSeq & levels)
 {
-	
+	for (CORBA::ULong t=0; t<levels.length(); t++){
+		ACE_Log_Priority p = LoggingProxy::m_LogEntryCast[levels[t]];
+		ACS_SHORT_LOG((p, "dummy log message for core level %d", levels[t]));
+	}
 }
 
 /* --------------- [ MACI DLL support functions ] -----------------*/

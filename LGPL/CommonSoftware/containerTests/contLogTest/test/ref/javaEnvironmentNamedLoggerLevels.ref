@@ -3,10 +3,26 @@
 1 - .FINER: Logging configuration has been initialized, but not from CDB settings.
 1 - <timestamp> INFO [alma.contLogTest.LogLevelsImpl.LogLevelsTest#testGetLevels] -------------------------------
 1 - <timestamp> INFO [alma.contLogTest.LogLevelsImpl.LogLevelsTest#testGetLevels] ComponentClientTestCase#setUp()
+1 - <timestamp> INFO [alma.contLogTest.LogLevelsImpl.LogLevelsTest#testGetLevels] component 'alma.contLogTest.LogLevelsImpl.LogLevelsTest' requested AdvancedContainerServices
+1 - <timestamp> INFO [alma.contLogTest.LogLevelsImpl.LogLevelsTest] authenticate called: id=XXX; question=Identify yourself
 1 - <timestamp> INFO [alma.contLogTest.LogLevelsImpl.LogLevelsTest#testGetLevels] levels from component's getLevels method (hardcoded remote, local, effective): 2, 2, 3, 3, 4
 1 - <timestamp> INFO [alma.contLogTest.LogLevelsImpl.LogLevelsTest#testGetLevels] client 'alma.contLogTest.LogLevelsImpl.LogLevelsTest' has successfully released  a component with curl=TESTLOG2
+1 - .FINER: Logging configuration has been initialized, but not from CDB settings.
+1 - <timestamp> INFO [alma.contLogTest.LogLevelsImpl.LogLevelsTest#testLoggingConfigurableCentralLogLevels] -------------------------------
+1 - <timestamp> INFO [alma.contLogTest.LogLevelsImpl.LogLevelsTest#testLoggingConfigurableCentralLogLevels] ComponentClientTestCase#setUp()
+1 - <timestamp> INFO [alma.contLogTest.LogLevelsImpl.LogLevelsTest#testLoggingConfigurableCentralLogLevels] component 'alma.contLogTest.LogLevelsImpl.LogLevelsTest' requested AdvancedContainerServices
+1 - <timestamp> INFO [alma.contLogTest.LogLevelsImpl.LogLevelsTest] authenticate called: id=XXX; question=Identify yourself
+1 - <timestamp> INFO [alma.contLogTest.LogLevelsImpl.LogLevelsTest#testLoggingConfigurableCentralLogLevels] Set default log level for container frodoContainerN to 8 to be used by component TESTLOG2
+1 - <timestamp> INFO [alma.contLogTest.LogLevelsImpl.LogLevelsTest#testLoggingConfigurableCentralLogLevels] Will call 'logDummyMessages' on component TESTLOG2
+1 - <timestamp> INFO [alma.contLogTest.LogLevelsImpl.LogLevelsTest#testLoggingConfigurableCentralLogLevels] Will wait 20 seconds to receive (some of) these log messages.
+1 - Got 4 records from logger TESTLOG2
+1 - (level=8) dummy log message for core level 8
+1 - (level=9) dummy log message for core level 9
+1 - (level=10) dummy log message for core level 10
+1 - (level=11) dummy log message for core level 11
+1 - <timestamp> INFO [alma.contLogTest.LogLevelsImpl.LogLevelsTest#testLoggingConfigurableCentralLogLevels] client 'alma.contLogTest.LogLevelsImpl.LogLevelsTest' has successfully released  a component with curl=TESTLOG2
 1 - 
 1 - Time: <seconds>
 1 - 
-1 - OK (1 test)
+1 - OK (2 tests)
 1 - 

@@ -10,3 +10,5 @@ s/handle ['0-9]['0-9]*/handle <ID>/g
 #
 # Remove timing data by symbolic value
 s/Time: [0-9.]*/Time: <seconds>/g
+s/id=[0-9.]*/id=XXX/g
+

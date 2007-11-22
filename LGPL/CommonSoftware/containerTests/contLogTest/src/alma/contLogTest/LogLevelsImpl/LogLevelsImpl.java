@@ -58,20 +58,20 @@ public class LogLevelsImpl implements ComponentLifecycle, LogLevelsOperations
 	public void initialize(ContainerServices containerServices) {
 		m_containerServices = containerServices;
 		m_logger = m_containerServices.getLogger();
-		m_logger.info("initialize() called...");
+	//	m_logger.info("initialize() called...");
 	}
 
 	public void execute() {
-		m_logger.info("execute() called...");
+	//	m_logger.info("execute() called...");
 	}
 
 	public void cleanUp() {
-		m_logger.info("cleanUp() called..., nothing to clean up.");
+	//	m_logger.info("cleanUp() called..., nothing to clean up.");
 	}
 
 	public void aboutToAbort() {
 		cleanUp();
-		m_logger.info("managed to abort...");
+	//	m_logger.info("managed to abort...");
 		System.out.println("LogLevels component managed to abort... you should know this even if the logger did not flush correctly!");
 	}
 
@@ -91,7 +91,7 @@ public class LogLevelsImpl implements ComponentLifecycle, LogLevelsOperations
 	/////////////////////////////////////////////////////////////
 
 	public int[] getLevels() throws CouldntPerformActionEx {
-		m_logger.info("getLevels called...");
+		//m_logger.info("getLevels called...");
     	/*
     	 *  alma.maci.loggingconfig.LoggingConfig got generated from LoggingConfig.xsd and
     	 *  it contains the "default values" (also called "hardcoded").
@@ -156,3 +156,4 @@ public class LogLevelsImpl implements ComponentLifecycle, LogLevelsOperations
 		}		
 	}
 }
+
