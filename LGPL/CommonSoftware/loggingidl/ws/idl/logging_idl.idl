@@ -19,10 +19,71 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
  *    MA 02111-1307  USA
  */
+ 
+#pragma prefix "alma"
+ 
 #ifndef _LOGGING_IDL
 #define _LOGGING_IDL
 
-#pragma prefix "alma"
+
+
+module AcsLogging {
+
+	typedef short logLevelValue;
+	
+    /**
+     * The log levels (numbers and names) defined here are used both to create log messages
+     * as well as to set filtering thresholds for log messages.
+     * <p>
+     * Note that the ACS logging architecture document defines "priorities" for log messages
+     * which have the meaning of the levels here, while the actual ACS levels ("Log entry type")
+     * follow the 2^n numbering scheme from $(ACE_ROOT)/ace/Log_Priority.h but don't seem
+     * to be used anywhere outside of the C++ container's internal log classes...
+     * <p>
+     * The constant values and strings defined here should be used to define enum classes in the 
+     * various languages. That way we have one central definition, but convenient classes 
+     * to work with that are guaranteed to use the correct numbers.
+     */
+	module LogLevels {
+	
+		// do we really need a value 0 for UNKNOWN or ALL? 
+		// Let's first try to do without.
+		 
+		const logLevelValue TRACE_VAL = 2;
+		const string TRACE_NAME = "Trace";
+
+		const logLevelValue DEBUG_VAL = 3;
+		const string DEBUG_NAME = "Debug";
+
+		const logLevelValue INFO_VAL = 4;
+		const string INFO_NAME = "Info";
+
+		const logLevelValue NOTICE_VAL = 5;
+		const string NOTICE_NAME = "Notice";
+
+		const logLevelValue WARNING_VAL = 6;
+		const string WARNING_NAME = "Warning";
+		
+		// anomaly: value 7 is not defined! Should we chance that?
+
+		const logLevelValue ERROR_VAL = 8;
+		const string ERROR_NAME = "Error";
+		
+		const logLevelValue CRITICAL_VAL = 9;
+		const string CRITICAL_NAME = "Critical";
+		
+		const logLevelValue ALERT_VAL = 10;
+		const string ALERT_NAME = "Alert";
+		
+		const logLevelValue EMERGENCY_VAL = 11;
+		const string EMERGENCY_NAME = "Emergency";
+		
+		// The proposed value 99 is more human friendly. Technically it would make more sense
+		// to define OFF_VAL as the maximum allowed value (2^15 - 1).
+		const logLevelValue OFF_VAL = 99;
+		const string OFF_NAME = "Off";
+	};
+};
 
 
 module ACSLoggingLog {
@@ -34,6 +95,11 @@ module ACSLoggingLog {
 
     typedef sequence<NameValue> NameValueSeq;
 
+    /**
+     * @TODO: revisit the use of these enum values, with the general IDL enum issues in mind.
+     * Probably LogBinaryRecord should use instead a logLevelValue from LogLevels,
+     * and this definition should be removed.
+     */
     enum LogType {
 	Unknown,
 	Shutdown,
