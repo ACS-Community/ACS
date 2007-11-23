@@ -21,6 +21,8 @@
  */
 package alma.acs.logging.level;
 
+import alma.ACSErrTypeCommon.wrappers.AcsJIllegalArgumentEx;
+import alma.ACSErrTypeCommon.wrappers.AcsJIllegalStateEventEx;
 import alma.AcsLogging.alma.LogLevels.TRACE_VAL;
 import alma.AcsLogging.alma.LogLevels.TRACE_NAME;
 import alma.AcsLogging.alma.LogLevels.DEBUG_VAL;
@@ -43,7 +45,11 @@ import alma.AcsLogging.alma.LogLevels.OFF_VAL;
 import alma.AcsLogging.alma.LogLevels.OFF_NAME;
 
 /**
- * An enum with the log levels, defined in the IDL
+ * An enum with the log levels, defined in the IDL.
+ * 
+ * Each entry is composed of a name and a value, both read from the IDL 
+ * definition LogLevels.
+ * The name from <type>_NAME and the value from <type>_VAL.
  * 
  * @author acaproni
  *
@@ -60,7 +66,14 @@ public enum AcsLogLevelDefinition {
 	EMERGENCY(EMERGENCY_VAL.value,EMERGENCY_NAME.value),
 	OFF(OFF_VAL.value,OFF_NAME.value);
 	
+	/**
+	 * The value of the log (the integer read from the IDL)
+	 */
 	public int value;
+	
+	/**
+	 * The name of the log (the string read from the IDL)
+	 */
 	public String name;
 	
 	/**
@@ -80,18 +93,37 @@ public enum AcsLogLevelDefinition {
 	 * @param val The value of the log level
 	 * @return The log level having val as its value
 	 */
-	public AcsLogLevelDefinition fromInteger(int val) {
-		return OFF;
+	public static AcsLogLevelDefinition fromInteger(int val) throws AcsJIllegalArgumentEx {
+		for (AcsLogLevelDefinition def: AcsLogLevelDefinition.values()) {
+			if (def.value==val) {
+				return def;
+			}
+		}
+		AcsJIllegalArgumentEx ex = new AcsJIllegalArgumentEx();
+		ex.setErrorDesc("Invalid value of log level "+val);
+		throw ex;
 	}
 	
 	/**
-	 * Return a log level, given its name
+	 * Return a log level, given its name.
 	 * 
 	 * @param name The (not null, not empty) name of the log level
 	 * @return The log level having the name as its name
 	 */
-	public AcsLogLevelDefinition fromName(String name) {
-		return OFF;
+	public static AcsLogLevelDefinition fromName(String name) throws AcsJIllegalArgumentEx {
+		if (name==null) {
+			AcsJIllegalArgumentEx ex = new AcsJIllegalArgumentEx();
+			ex.setErrorDesc("Name of log level can't be null");
+			throw ex;
+		}
+		for (AcsLogLevelDefinition def: AcsLogLevelDefinition.values()) {
+			if (def.name.equals(name)) {
+				return def;
+			}
+		}
+		AcsJIllegalArgumentEx ex = new AcsJIllegalArgumentEx();
+		ex.setErrorDesc("Invalid name of log level "+name);
+		throw ex;
 	}
 	
 }
