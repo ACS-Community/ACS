@@ -26,6 +26,7 @@
 	<ErrorCode name="CouldntPerformAction" shortDescription="Action couldn't be performed" description="Action couldn't be performed"/>
 	<ErrorCode name="TypeNotFound" shortDescription="Type Not Found" description="Type Not Found"/>
 	<ErrorCode name="TypeNotSupported" shortDescription="Type Not Supported" description="Type Not Supported"/>
+	
 	<ErrorCode name="CORBAProblem" 
 	           shortDescription="CORBA Problem" 
 		   description="CORBA Problem">
@@ -39,6 +40,7 @@
 		        type="string" 
 			description="String containing information about the exception. Availability is ORB dependent and not CORBA compliant."/>
 	</ErrorCode>
+	
 	<ErrorCode name="IllegalStateEvent" 
 		shortDescription="Illegal event sent to a state machine" 
 		description="An illegal event was sent to a state machine">
@@ -60,10 +62,18 @@
 	
 	<ErrorCode name="NullPointer"
 		shortDescription="Null pointer error"
-		description="Value of the pointer is equale to NULL">
-		<Member name="Variable" type="string" description="Name of varable which value is NULL"/>
+		description="A variable (pointer or reference) is NULL when a value is expected.">
+		<Member name="Variable" type="string" description="Name of variable whose value is NULL"/>
 	</ErrorCode>
 	
+	<ErrorCode name="IllegalArgument"
+		shortDescription="Illegal argument."
+		description="A variable passed as an argument to a function has an illegal value or is NULL.">
+		<Member name="Variable" type="string" description="Name of the variable with the illegal value."/>
+		<Member name="Value" type="string" description="The illegal value."/>
+		<Member name="ErrorDesc" type="string" description="Optional text about correct value range, circumstances, etc."/>
+	</ErrorCode>
+		
 	<ErrorCode name="BadParameter"
 		shortDescription="Bad parameter error"
 		description="Bad parameter error">
@@ -88,6 +98,7 @@
 		   details that can be better described by using
 		   another, more specific, ACS exception.">
 	</ErrorCode>
+	
 	<ErrorCode name="NotInitialized"
 		shortDescription="Not Initialized"
 		description="Generic Not Initialized Error">
@@ -95,6 +106,7 @@
 			type="string"
 			description="Name of the object that was not initalized"/>
 	</ErrorCode>
+	
 	<ErrorCode name="CannotLoad"
 		shortDescription="Can not load error"
 		description="Generic can not load for ex. library, package, ...">
@@ -102,6 +114,7 @@
 			type="string"
 			description="Name of the object that could not be loaded"/>
 	</ErrorCode>	
+	
 	<ErrorCode name="ParsingXMLProblem"
 		shortDescription="Problem with parsin XML"
 		description="A XML string/file can not be parsed">
