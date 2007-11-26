@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.3 2007/11/23 15:55:31 acaproni Exp $"
+# "@(#) $Id: Makefile,v 1.4 2007/11/26 09:52:40 acaproni Exp $"
 #
 # Makefile of ........
 #
@@ -118,8 +118,8 @@ USER_IDL =
 #
 # Jarfiles and their directories
 #
-JARFILES= acsLogLevel
-acsLogLevel_DIRS=alma
+JARFILES= 
+jjj_DIRS=
 jjj_EXTRAS= 
 #
 # java sources in Jarfile on/off
