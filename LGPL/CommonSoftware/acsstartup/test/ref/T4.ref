@@ -17,6 +17,7 @@
 6 - INFO - Stopping the CORBA Notification Service
 6 - INFO - Stopping the CORBA Logging Notification Service
 6 - INFO - Stopping the CORBA Archive Notification Service
+6 - INFO - Stopping the CORBA Alarm Notification Service
 6 - INFO - Stopping the CORBA Logging Service
 6 - INFO - Stopping the CORBA Interface Repository
 6 - INFO - Stopping the ACS Logging Service
@@ -31,6 +32,7 @@
 1 - JDAL is ready and waiting
 1 - INFO - Starting Logging Notify Service
 1 - INFO - Starting Archive Notify Service
+1 - INFO - Starting Alarm Notify Service
 1 - INFO - Starting Logging Service
 1 - INFO - Starting ACS Log service
 1 - INFO - For this ACS session, please do an 'export ACS_INSTANCE=9' on all terminals running ACS clients.

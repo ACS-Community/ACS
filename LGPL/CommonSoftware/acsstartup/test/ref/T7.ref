@@ -14,6 +14,8 @@
 1 - ERROR - Unable to determine logging's notify service process ID.
 1 - INFO - Stopping the CORBA Archive Notification Service
 1 - ERROR - Unable to determine archive notify service's process ID.
+1 - INFO - Stopping the CORBA Alarm Notification Service
+1 - ERROR - Unable to determine alarm notify service's process ID.
 1 - INFO - Stopping the CORBA Logging Service
 1 - ERROR - Unable to determine the logging service's process ID.
 1 - INFO - Stopping the CORBA Interface Repository
