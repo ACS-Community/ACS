@@ -51,6 +51,13 @@ echo $(( `getBasePort` * 100 + 3000 + 6 ))
 }
 
 #############################################################
+#Returns the port the CORBA (Alarm) Notification Service is running on.
+function getAlarmNotifyServicePort
+{
+echo $(( `getBasePort` * 100 + 3000 + 7 ))
+}
+
+#############################################################
 #Returns the port the ACS Logging Service is running on.
 function getLogPort
 {
@@ -78,4 +85,4 @@ fi
 #############################################################
 
 export getBasePort getManagerPort getNamingServicePort getNotifyServicePort getLoggingServicePort getIRPort getLogPort getCDBPort
-export getLoggingNotifyServicePort getArchiveNotifyServicePort
+export getLoggingNotifyServicePort getArchiveNotifyServicePort getAlarmNotifyServicePort

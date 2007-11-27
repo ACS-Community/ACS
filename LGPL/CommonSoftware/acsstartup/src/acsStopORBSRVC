@@ -7,7 +7,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: acsStopORBSRVC,v 1.37 2007/09/29 13:44:27 ntroncos Exp $"
+# "@(#) $Id: acsStopORBSRVC,v 1.38 2007/11/27 12:15:29 msekoran Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -185,6 +185,12 @@ ACS_LOG_INFO "Stopping the CORBA Archive Notification Service"
 if PID=`getArchiveNotifyServicePid`
 then
     acsKillProc $PID 2> /dev/null || (ACS_LOG_ERROR "Cannot kill the archive notification service")
+fi
+
+ACS_LOG_INFO "Stopping the CORBA Alarm Notification Service"
+if PID=`getAlarmNotifyServicePid`
+then
+    acsKillProc $PID 2> /dev/null || (ACS_LOG_ERROR "Cannot kill the alarm notification service")
 fi
 
 ACS_LOG_INFO "Stopping the CORBA Logging Service"

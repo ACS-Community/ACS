@@ -117,6 +117,11 @@ then
     echo "Archive notify service process ID is: $PID"
 fi
 #---------------------------
+if PID=`getAlarmNotifyServicePid`
+then
+    echo "Alarm notify service process ID is: $PID"
+fi
+#---------------------------
 if PID=`getLogPid`
 then
     echo "ACS Log Service process ID is: $PID"

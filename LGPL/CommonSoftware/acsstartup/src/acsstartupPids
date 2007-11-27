@@ -247,6 +247,31 @@ echo $PID
 
 export getArchiveNotifyServicePid
 #-------------------------------------
+#Sends the process ID of the alarm notify service to stdout or returns with an 
+#error code if there's some failure.
+function getAlarmNotifyServicePid
+{
+local INSTANCE_DIR
+local FILE
+local PID
+local PORT
+
+INSTANCE_DIR=`getInstanceDirName $ACS_INSTANCE`
+FILE=$INSTANCE_DIR/$ACS_ALARM_NOTIFY_SERVICE_PIDFILE
+
+PORT=`getAlarmNotifyServicePort`
+
+if ! PID=`getPid $FILE $PORT`
+then
+    ACS_LOG_ERROR "Unable to determine alarm notify service's process ID."
+    exit $EC_FAILURE
+fi
+
+echo $PID
+}
+
+export getAlarmNotifyServicePid
+#-------------------------------------
 #Sends the process ID of acsLogSvc to stdout or returns with an 
 #error code if there's some failure.
 function getLogPid
