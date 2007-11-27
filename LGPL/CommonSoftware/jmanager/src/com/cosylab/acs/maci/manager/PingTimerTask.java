@@ -69,7 +69,7 @@ public class PingTimerTask extends TimerTask
 	/**
 	 * Alarm System Interface.
 	 */
-        private ACSAlarmSystemInterface alarmSource;
+	private ACSAlarmSystemInterface alarmSource;
 
 	/**
 	 * Constructs a ping task which monitors client's state.
@@ -123,7 +123,7 @@ public class PingTimerTask extends TimerTask
 		try
 		{
 			
-			logger.finer("Invoking ping on "+HandleHelper.toString(clientInfo.getHandle())+"].");
+			logger.finest("Invoking ping on "+HandleHelper.toString(clientInfo.getHandle())+"].");
 
 			// malfunctioning client check
 			if (clientInfo.getClient().ping() == false)
