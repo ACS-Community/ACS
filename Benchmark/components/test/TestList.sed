@@ -22,5 +22,6 @@ s/[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*/<IP address>/g
 # Replace timing info by symbolic values
 ##s|logs in [0-9]{1,}s => [0-9]{1,} logs/s => within |logs in <number1>s => <number2> logs/s => within |g
 s|logs in [.0-9]*s = [0-9]* logs/s => within |logs in <number1>s => <number2> logs/s => within |g
+s/expected range (min [0-9][0-9]*, max [0-9][0-9]*)/expected range (min <min>, max <max>)/g
 s|Needed [.0-9]*s / [.0-9]*s to send all logs|Needed <number1>s / <number2>s to send all logs|g
 s/Last log digested within [.0-9]*s/Last log digested within <number>s/g

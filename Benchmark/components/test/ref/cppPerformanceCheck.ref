@@ -1,0 +1,2 @@
+1 - sent 40000 logs in <number1>s => <number2> logs/s => within expected range (min <min>, max <max>)
+1 - received 40000 logs in <number1>s => <number2> logs/s => within expected range (min <min>, max <max>)
