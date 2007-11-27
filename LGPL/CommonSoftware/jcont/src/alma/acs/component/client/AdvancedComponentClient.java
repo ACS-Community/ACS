@@ -85,7 +85,7 @@ public class AdvancedComponentClient extends ComponentClient {
 	    	AcsManagerProxy acsManagerProxy = m_acsManagerProxy.createInstance();
 			ManagerClient clImpl = new ManagerClient(clientName, csLogger);
 			Client managerClient = clImpl._this(acsCorba.getORB());
-	        acsManagerProxy.loginToManager(managerClient, false);
+	        acsManagerProxy.loginToManager(managerClient, true);
 	        int clientHandle = acsManagerProxy.getManagerHandle();
 	        
 	        ContainerServicesImpl cs = new ContainerServicesImpl(acsManagerProxy, acsCorba.getRootPOA(), acsCorba, csLogger, clientHandle, clientName, null, threadFactory);
