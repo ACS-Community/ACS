@@ -95,6 +95,13 @@ public class ACSPorts {
    }
 
    /**
+    * @return the port the CORBA Alarm Notification Service is running on.
+    */
+   public static String getAlarmNotifyServicePort() {
+      return globalInstanceForSystemProperty().giveAlarmNotifyServicePort();
+   }
+
+   /**
     * @return the port the CORBA Logging Service is running on.
     */
    public static String getLoggingServicePort() {
@@ -246,6 +253,13 @@ public class ACSPorts {
     */
    public String giveIRPort() {
       return String.valueOf(basePort * 100 + 3000 + 4);
+   }
+
+   /**
+    * @return the port the CORBA Alarm Notification Service is running on.
+    */
+   public String giveAlarmNotifyServicePort() {
+      return String.valueOf(basePort * 100 + 3000 + 7);
    }
 
    /**
