@@ -174,44 +174,6 @@ public class ErrorSchema extends CommonSchema{
                 }
                 // END SPagetti
         }
-        /** Primitive unit test */
-        public static void main(String args[]){
-                ErrorSchema test=new ErrorSchema();
-                //AcsType t=test.getType("ErrorCode");
-                AcsComplexType t=test.getTypeSchema();
-                System.out.println(t.namespace+":"+t.name+" : "+t.documentation);
-                for (AcsAttribute at : t.attrs){
-                        try{
-                        System.out.print(at.name + " ");
-                        System.out.print(at.type.name + " ");
-                        System.out.println(at.use);
-                        } catch (Exception e){
-                                System.out.println(e);
-                        }
-                }
-                t=test.getErrorSchema();
-                System.out.println(t.namespace+":"+t.name+" : "+t.documentation);
-                for (AcsAttribute at : t.attrs){
-                        try{
-                        System.out.print(at.name + " ");
-                        System.out.print(at.type.name + " ");
-                        System.out.println(at.use);
-                        } catch (Exception e){
-                                System.out.println(e);
-                        }
-                }
-                t=test.getCompletionSchema();
-                System.out.println(t.namespace+":"+t.name+" : "+t.documentation);
-                for (AcsAttribute at : t.attrs){
-                        try{
-                        System.out.print(at.name + " ");
-                        System.out.print(at.type.name + " ");
-                        System.out.println(at.use);
-                        } catch (Exception e){
-                                System.out.println(e);
-                        }
-                }
-        }
 }
 
 

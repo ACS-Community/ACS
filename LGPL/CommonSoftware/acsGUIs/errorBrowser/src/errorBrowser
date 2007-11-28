@@ -16,11 +16,10 @@ function printUsage {
 	echo ""
 }
 
-while getopts "th" Option
+while getopts "h" Option
 do
   case $Option in
     h     ) printUsage; exit 0;;
-    t     ) EXEC_CLASS="cl.utfsm.acs.ebe.TextErrorBrowser";; 
   esac
 done
 

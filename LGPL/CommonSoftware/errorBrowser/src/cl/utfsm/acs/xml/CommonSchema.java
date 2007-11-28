@@ -165,14 +165,4 @@ public class CommonSchema{
                 }
                 return null;
         }
-        
-        /** Primitive Unit Test */
-        public static void main(String args[]){
-                CommonSchema test=new CommonSchema();
-                AcsType t=test.getType("Member_");
-                System.out.println(t.namespace+":"+t.name+" : "+t.documentation);
-                for (AcsAttribute at : ((AcsComplexType)t).attrs){
-                        System.out.println(at.name + " "+ at.type.name + " " + at.use);
-                }
-        }
 }

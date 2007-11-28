@@ -7,8 +7,9 @@ package cl.utfsm.acs.ebe;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Hashtable;
+import java.util.TreeMap;
 
 import org.apache.xerces.parsers.DOMParser;
 import org.apache.xml.serialize.Method;
@@ -35,8 +36,8 @@ public class EbeDocument extends ComplexObject {
         static private DOMParser parser;
         /** The class type */
         protected static AcsComplexType typeType;
-        /** The nodes (completions and errors) hashtable */
-        protected Hashtable<String,ComplexObject> nodes;
+        /** The nodes (completions and errors) TreeMap */
+        protected TreeMap<String,ComplexObject> nodes;
         /** The file path */
         private String path;
         /** The DOM document */
@@ -52,7 +53,7 @@ public class EbeDocument extends ComplexObject {
         /** Initialize a new EbeDocument */
         public EbeDocument(){
                 super(typeType);
-                nodes=new Hashtable<String,ComplexObject>();
+                nodes=new TreeMap<String,ComplexObject>();
         }
         /** Set the Path of the Document
          * @param path the absolute path to the file */
@@ -130,9 +131,11 @@ public class EbeDocument extends ComplexObject {
         	 }
         }
         
-        /** Save the data to the selected path */
-        public void save(){
-        	Document docFile=new DocumentImpl();
+        /** Save the data to the selected path 
+         * @throws IOException 
+         * @throws FileNotFoundException */
+        public void save() throws FileNotFoundException, IOException{
+            Document docFile=new DocumentImpl();
             Element typeElement=docFile.createElement(EbeDocument.getClassType().name);
             fillAttributes(this,typeElement);
             for (ComplexObject node: nodes.values()){
@@ -153,11 +156,7 @@ public class EbeDocument extends ComplexObject {
                 typeElement.appendChild(nodeElement);
             }
             docFile.appendChild(typeElement);
-            try{
-            	saveXmlDocument(docFile,getPath());
-            } catch (Exception e){
-            	e.printStackTrace();
-            }
+            saveXmlDocument(docFile,getPath());
         }
         
         /** Save the DOM document into the name path 
@@ -178,10 +177,10 @@ public class EbeDocument extends ComplexObject {
         public void putNode(ComplexObject obj){
             nodes.put(obj.getValue(),obj);
         }
-        /** Get the nodes (completion/error) hashtable
-         * @return the nodes hashtable
+        /** Get the nodes (completion/error) TreeMap
+         * @return the nodes TreeMap
          */
-        public Hashtable<String,ComplexObject> getNodes(){
+        public TreeMap<String,ComplexObject> getNodes(){
                 return(nodes);
         }
         /** Get a node by name 

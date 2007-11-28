@@ -7,7 +7,7 @@ package cl.utfsm.acs.ebe;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Hashtable;
+import java.util.TreeMap;
 
 import cl.utfsm.acs.types.AcsComplexType;
 import cl.utfsm.acs.xml.XmlSeeker;
@@ -20,7 +20,7 @@ import cl.utfsm.acs.xml.XmlSeeker;
   */
 public class EbeDocumentManager {
         /** the list of current documents */
-        Hashtable<String,EbeDocument> documents;
+        TreeMap<String,EbeDocument> documents;
         /** The AcsError Schema class */
         ErrorSchema schema;
         /** Reads the schema files, setup classes and init the pool */
@@ -36,7 +36,7 @@ public class EbeDocumentManager {
         	Completion.setClassType(schema.getCompletionSchema());
         	EbeDocument.setClassType(schema.getTypeSchema());
         	ErrorBrowserEditor.log("   * Initializating Document pool");
-        	documents=new Hashtable<String,EbeDocument>();
+        	documents=new TreeMap<String,EbeDocument>();
         	ErrorBrowserEditor.log("[Done]");
         }
         /** Create a new document (a new file). This class setup the classic 
@@ -47,7 +47,8 @@ public class EbeDocumentManager {
         public void newDocument(String path, String name){
         		
                 EbeDocument myDoc=new EbeDocument();
-                myDoc.setPath(path);                myDoc.setDocumentInfo(name);
+                myDoc.setPath(path);                
+		myDoc.setDocumentInfo(name);
                 myDoc.setValue(name);
                 documents.put(myDoc.getValue(),myDoc);
                 ErrorBrowserEditor.log("[Created new document: "+name+"]");
@@ -61,7 +62,7 @@ public class EbeDocumentManager {
                 myDoc.setPath(path);
                 myDoc.load();
                 documents.put(myDoc.getValue(),myDoc);
-                ErrorBrowserEditor.log("[Document "+path+" (re)loaded]");
+                ErrorBrowserEditor.log("[Document "+path+" loaded]");
                 ErrorBrowserEditor.log("   * "+myDoc.getNodes().size()+" definitions loaded");
         }
         /** Remove a document from the manager by name.
@@ -81,27 +82,29 @@ public class EbeDocumentManager {
         public void deleteDocument(String name){
                 EbeDocument d=documents.get(name);
                 File f=new File(d.getPath());
-                f.delete();
-                documents.remove(name);
-               	ErrorBrowserEditor.log("[File "+name+" successfully deleted from the Hard Disk]");
+		if (f.delete()==true){
+			documents.remove(name);
+			ErrorBrowserEditor.log("[File "+name+" successfully deleted from the Hard Disk]");
+		}
+		else {
+			ErrorBrowserEditor.log("[ATENTION: File "+name+" *cannot* be deleted from the Hard Disk, please check permissions]");
+		}
         }
         /** Load a filelist to the manager.
           * @param lst The Arraylist to load
           */
         private void addFileList(ArrayList<File> lst){
-                System.out.println("Adding Files...");
+                ErrorBrowserEditor.log("Adding Files...");
                 for (File file: lst){
                         loadDocument(file.getAbsolutePath());
                 }
-                System.out.println("[Done]");
-
+                ErrorBrowserEditor.log("[Done]");
         }
         
         /** Add defaults directories, and load the files. */
 	@SuppressWarnings("unchecked")
 	public void addDefaults(){
-
-       	ErrorBrowserEditor.log("[Adding default directories]");
+     	  	ErrorBrowserEditor.log("[Adding default directories]");
                 XmlSeeker seeker=new XmlSeeker();
                 String modroot = System.getProperty("ACS.modroot");
                 String introot = System.getProperty("ACS.introot");
@@ -122,10 +125,10 @@ public class EbeDocumentManager {
                 seeker.addDir(path);
                 addFileList(seeker.getXmls("Alma/ACSError ACSError.xsd"));
         }
-        /** Get the document hashtable
-          * @return the documents hashtable.
+        /** Get the document TreeMap
+          * @return the documents TreeMap.
           */
-        public Hashtable<String,EbeDocument> getDocuments(){
+        public TreeMap<String,EbeDocument> getDocuments(){
                 return documents;
         }
 }

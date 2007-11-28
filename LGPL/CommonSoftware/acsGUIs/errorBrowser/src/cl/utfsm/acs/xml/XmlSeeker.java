@@ -104,18 +104,8 @@ public class XmlSeeker implements FilenameFilter {
                         if (path.compareTo(dir.getAbsolutePath())==0)
                         {
                                 dirs.remove(dir);
+				return;
                         }
                 }
-        }
-        /** Primitive unit test*/
-        public static void main(String args[]){
-                String modroot = System.getProperty("ACS.modroot");
-                String introot = System.getProperty("ACS.introot");
-                String acsroot = System.getProperty("ACS.acsroot");
-                XmlSeeker test=new XmlSeeker();
-                test.addDir(modroot + File.separator + "idl");
-                test.addDir(introot + File.separator + "idl");
-                test.addDir(acsroot + File.separator + "idl");
-                System.out.println(test.getXmls("Alma/ACSError ACSError.xsd"));
         }
 }

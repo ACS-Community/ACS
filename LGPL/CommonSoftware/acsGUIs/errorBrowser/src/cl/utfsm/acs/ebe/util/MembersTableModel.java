@@ -9,7 +9,7 @@
 package cl.utfsm.acs.ebe.util;
 
 import java.lang.reflect.Array;
-import java.util.Hashtable;
+import java.util.TreeMap;
 
 import javax.swing.table.AbstractTableModel;
 
@@ -29,7 +29,7 @@ import cl.utfsm.acs.types.SimpleObject;
  */
 public class MembersTableModel extends AbstractTableModel {
 	private Object[][]tableObjects;
-	private Hashtable<String,Member> members=null;
+	private TreeMap<String,Member> members=null;
 	private ErrorBrowserEditor editor;
 	                 
 	private static String[] columnNames = {
@@ -77,7 +77,7 @@ public class MembersTableModel extends AbstractTableModel {
 	}
 	
 	public void setValueAt(Object value, int row, int col){
-		Hashtable <String,SimpleObject>attrs = members.get(tableObjects[row][0].toString()).getAttributes();
+		TreeMap <String,SimpleObject>attrs = members.get(tableObjects[row][0].toString()).getAttributes();
 		String oldValue = tableObjects[row][col].toString();
 		tableObjects[row][col]=value;	
 		if(col==0){

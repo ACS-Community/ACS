@@ -13,7 +13,7 @@ package cl.utfsm.acs.types;
  * value.
  * @author Mauricio Araya (maray[at]inf.utfsm.cl)
  */
-public abstract class TypedObject{
+public abstract class TypedObject {
         /** The object type reference */
         protected AcsType type;
         /** The current value of the object */

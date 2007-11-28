@@ -9,7 +9,7 @@
 package cl.utfsm.acs.ebe.util;
 
 import java.lang.reflect.Array;
-import java.util.Hashtable;
+import java.util.TreeMap;
 
 import javax.swing.table.AbstractTableModel;
 
@@ -29,7 +29,7 @@ import cl.utfsm.acs.types.SimpleObject;
  */
 public class EbeTableModel extends AbstractTableModel {
 	private Object[][]tableObjects;
-	private Hashtable<String,SimpleObject> attrs=null;
+	private TreeMap<String,SimpleObject> attrs=null;
 	private ComplexObject complex;
 	private ErrorBrowserEditor editor;
 	                 
@@ -90,7 +90,7 @@ public class EbeTableModel extends AbstractTableModel {
 			editor.publicRefreshNodeTree();
 		}
 		else if((complex instanceof EbeDocument) && (key.compareTo("name")==0)){
-			Hashtable<String,EbeDocument> manager = editor.getManager().getDocuments();
+			TreeMap<String,EbeDocument> manager = editor.getManager().getDocuments();
 			manager.remove(complex.getValue());
 			complex.setValue(value.toString());
 			manager.put(complex.getValue(),(EbeDocument)complex);

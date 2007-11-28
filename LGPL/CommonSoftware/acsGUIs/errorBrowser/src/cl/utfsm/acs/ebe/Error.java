@@ -6,19 +6,19 @@
 package cl.utfsm.acs.ebe;
 import cl.utfsm.acs.types.AcsComplexType;
 import cl.utfsm.acs.types.ComplexObject;
-import java.util.Hashtable;
+import java.util.TreeMap;
 
 
 /** The internal representation of an Error.
- * This is a ComplexObject, but with a hashtable with
+ * This is a ComplexObject, but with a TreeMap with
  * members. This, includes some new methods.
  * @author Mauricio Araya (maray[at]inf.utfsm.cl)
  */
 public class Error extends ComplexObject{
         /** The class AcsType*/
         protected static AcsComplexType errorType;
-        /** The members hashtable*/
-        protected Hashtable<String,Member> members;
+        /** The members TreeMap*/
+        protected TreeMap<String,Member> members;
 
         /** The class method to setup the type */
         public static void setClassType(AcsComplexType t){
@@ -34,12 +34,12 @@ public class Error extends ComplexObject{
          */
         public Error(){
                 super(errorType);
-                members=new Hashtable<String,Member>();
+                members=new TreeMap<String,Member>();
         }
-        /** Return the members hashtable. 
-         * @return the hashtable with the members.
+        /** Return the members TreeMap. 
+         * @return the TreeMap with the members.
          */
-        public Hashtable<String,Member> getMembers(){
+        public TreeMap<String,Member> getMembers(){
                 return(members);
         }
         /** Get a member by name.
@@ -49,14 +49,14 @@ public class Error extends ComplexObject{
         public Member getMember(String name){
                 return(members.get(name));
         }
-        /** Add a member to the hashtable.
+        /** Add a member to the TreeMap.
          * @param name the member name
          * @param member the member object
          */
         public void putMember(String name,Member member){
                 members.put(name,member);
         }
-        /** Add a member to the hashtable. This includes the member
+        /** Add a member to the TreeMap. This includes the member
          * with the name of member value.
          * @param name the member name
          */

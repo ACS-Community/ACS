@@ -17,10 +17,13 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Hashtable;
+
+
+import java.util.TreeMap;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -41,6 +44,7 @@ import javax.swing.JTable;
 import javax.swing.JTextPane;
 import javax.swing.JToolBar;
 import javax.swing.JTree;
+import javax.swing.ToolTipManager;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
@@ -123,6 +127,7 @@ public class ErrorBrowserEditor extends JFrame {
 	private JPopupMenu removePopupMenu = null;  //  @jve:decl-index=0:visual-constraint="134,8"
 	private JMenuItem removeSelectedItem = null;
 	private JMenuItem cleanAllFilesItem = null;
+	public static boolean logInfo=true;
 	//  @jve:decl-index=0:visual-constraint=""
 	/**
 	 * This is the default constructor
@@ -407,6 +412,7 @@ public class ErrorBrowserEditor extends JFrame {
 				}
 			});
 		}
+		ToolTipManager.sharedInstance().registerComponent(nodesTree);
 		return nodesTree;
 	}
 
@@ -501,6 +507,7 @@ public class ErrorBrowserEditor extends JFrame {
 				}
 			});
 		}
+			ToolTipManager.sharedInstance().registerComponent(docsTree);
 		return docsTree;
 	}
 
@@ -732,7 +739,7 @@ public class ErrorBrowserEditor extends JFrame {
 	}
 	
 	public void refreshDocsTree(){
-		Hashtable<String,EbeDocument> docs = manager.getDocuments();
+		TreeMap<String,EbeDocument> docs = manager.getDocuments();
 		DefaultMutableTreeNode root = (DefaultMutableTreeNode)docsTree.getModel().getRoot();
 		root.removeAllChildren();
 		for(EbeDocument doc: docs.values()){
@@ -757,7 +764,7 @@ public class ErrorBrowserEditor extends JFrame {
 			model.reload();
 			return;
 		}
-		Hashtable<String,ComplexObject> nodes = docSelected.getNodes();
+		TreeMap<String,ComplexObject> nodes = docSelected.getNodes();
 		for(ComplexObject node: nodes.values()){
 			root.add(new DefaultMutableTreeNode(node));
 		}
@@ -812,7 +819,7 @@ public class ErrorBrowserEditor extends JFrame {
 		/*
 		model = ()membersTable.getModel();
 		Error error = (Error)complexSelected;
-		Hashtable<String,Member> members = error.getMembers();
+		TreeMap<String,Member> members = error.getMembers();
 		for(Member mem: members.values()){
 			model.addRow(mem.getAttributes().values().toArray());
 		}
@@ -958,7 +965,18 @@ public class ErrorBrowserEditor extends JFrame {
 			saveButton.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
 					exitEditMode();
-					docSelected.save();
+					try {
+						docSelected.save();
+					} catch (FileNotFoundException ex) {
+						JOptionPane.showMessageDialog(ErrorBrowserEditor.this,
+							    "You don't have permission to save the file",
+							    "Error",
+							    JOptionPane.ERROR_MESSAGE);
+
+					} catch (IOException ex) {
+						// TODO Auto-generated catch block
+						ex.printStackTrace();
+					}
 					log("[Document "+docSelected.getPath() +" saved ]");
 					docSelected.load();
 					refreshDocTable();
@@ -969,7 +987,7 @@ public class ErrorBrowserEditor extends JFrame {
 						loadXmlView();
 					} catch (IOException e1) {
 						// TODO Auto-generated catch block
-						e1.printStackTrace();
+						System.out.println("Error");
 					}
 				}
 			});
@@ -990,7 +1008,16 @@ public class ErrorBrowserEditor extends JFrame {
 			cancelEditButton.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
 					exitEditMode();
-					docSelected.load();
+					try {
+						docSelected.load();
+					} catch (java.lang.NullPointerException nullException){
+						manager.removeDocument(docSelected.getValue());
+						docNodeSelected=null;
+						docSelected=null;
+						complexNodeSelected=null;
+						complexSelected=null;
+					}
+					refreshDocsTree();
 					refreshDocTable();
 					refreshNodesTree();
 					refreshNodeAttributesTable();
@@ -1129,12 +1156,19 @@ public class ErrorBrowserEditor extends JFrame {
 			addMemmberButton.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
 					if(!(complexSelected instanceof Error))
-						return;
-					Member mem= new Member();
-					mem.setValue("NewMember");
-					mem.setAttributeValue("name","NewMember");
-					((Error)complexSelected).getMembers().put("NewMember",mem);
-					log("\t[New member added]");
+					return;
+					if (((Error)complexSelected).getMembers().get("NewMember")!=null){
+					//TODO: Check this problem at saving
+						log("\t[ATENTION: 'NewMember' is not allowed as a valid member name, please change it before adding new members]");
+
+					}
+					else{
+						Member mem= new Member();
+						mem.setValue("NewMember");
+						mem.setAttributeValue("name","NewMember");
+						((Error)complexSelected).getMembers().put("NewMember",mem);
+						log("\t[New member added]");
+					}
 					refreshMembersTable();
 				}
 			});
@@ -1158,7 +1192,7 @@ public class ErrorBrowserEditor extends JFrame {
 					if(selected == -1)
 						return;
 					Error error =(Error)complexSelected;
-					Hashtable members = error.getMembers();
+					TreeMap members = error.getMembers();
 					String name = membersTable.getValueAt(selected,0).toString();
 					members.remove(name);
 					log("\t[Member "+ name +" removed]");
@@ -1194,12 +1228,18 @@ public class ErrorBrowserEditor extends JFrame {
 			newErrorMenuItem.setText("Error");
 			newErrorMenuItem.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
-					ComplexObject newObj = new Error();
-					newObj.setValue("NewError");
-					newObj.setAttributeValue("name","NewError");
-					docSelected.putNode(newObj);
-					complexSelected=newObj; 
-					log("\t[New Error Added ]");
+
+					if (docSelected.getNode("NewError")!=null){
+                                                log("\t[ATENTION: 'NewError' is not allowed as a valid error name, please change it before adding new errors]");
+					}
+					else{
+						ComplexObject newObj = new Error();
+						newObj.setValue("NewError");
+						newObj.setAttributeValue("name","NewError");
+						docSelected.putNode(newObj);
+						complexSelected=newObj; 
+						log("\t[New Error Added ]");
+					}
 					refreshNodesTree();
 					refreshNodeAttributesTable();
 				}
@@ -1219,12 +1259,17 @@ public class ErrorBrowserEditor extends JFrame {
 			newCompletionMenuItem.setText("Completion");
 			newCompletionMenuItem.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
-					ComplexObject newObj = new Completion();
-					newObj.setValue("NewCompletion");
-					newObj.setAttributeValue("name","NewCompletion");
-					docSelected.putNode(newObj);
-					complexSelected=newObj;
-					log("\t[New Completion Added ]");
+ 				        if (docSelected.getNode("NewCompletion")!=null){
+                                                log("\t[ATENTION: 'NewCompletion' is not allowed as a valid completion name, please change it before adding new errors]");
+                                        }
+                                        else{
+						ComplexObject newObj = new Completion();
+						newObj.setValue("NewCompletion");
+						newObj.setAttributeValue("name","NewCompletion");
+						docSelected.putNode(newObj);
+						complexSelected=newObj;
+						log("\t[New Completion Added ]");
+					}
 					refreshNodesTree();
 					refreshNodeAttributesTable();
 				}
@@ -1329,11 +1374,30 @@ public class ErrorBrowserEditor extends JFrame {
 	}
 	
 	private void enterEditMode(){
+		boolean exist_flag=true;
 		if(docSelected == null)
 			return;
+		File doc = new File(docSelected.getPath());
+		log("[Entering Edit Mode]");
+		if(!doc.exists()){
+			exist_flag=false;
+			try{
+			doc.createNewFile();
+			} catch (IOException e){
+			}
+		}
+		if(!doc.canWrite()){
+			JOptionPane.showMessageDialog(this,"You don't have permission to change this " +
+					"document","Warning",JOptionPane.WARNING_MESSAGE);
+			log("[Save disabled]");
+		}
+		else{
+			saveButton.setEnabled(true);
+		}
+		if (!exist_flag)  
+			doc.delete();
 		editButton.setEnabled(false);
 		cancelEditButton.setEnabled(true);
-		saveButton.setEnabled(true);
 		nodesEditPanel.setVisible(true);
 		membersEditPanel.setVisible(true);
 		docTable.setEnabled(true);
@@ -1345,7 +1409,6 @@ public class ErrorBrowserEditor extends JFrame {
 		deleteDocButton.setEnabled(false);
 		addButton.setEnabled(false);
 		removeButton.setEnabled(false);
-		log("[Entering Edit Mode]");
 	}
 	
 	private void exitEditMode(){
@@ -1367,6 +1430,7 @@ public class ErrorBrowserEditor extends JFrame {
 	}
 	
 	public static void log(String text){
+		if (!logInfo) return;
 		getTextMessagePane().setText(getTextMessagePane().getText() +"\n"+text );
 		System.out.println(text);
 	}
@@ -1421,8 +1485,9 @@ class ErrorTreeCellRenderer extends DefaultTreeCellRenderer {
         	setIcon(documentIcon);
         }
         else {
-            setToolTipText(null); //no tool tip
-        } 
+            setToolTipText("Here comes a Tooltip :)");
+        }
+        setToolTipText("Here comes a Tooltip :)");
 
         return this;
     }

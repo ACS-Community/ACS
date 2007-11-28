@@ -8,7 +8,7 @@ package cl.utfsm.acs.types;
 /**
  * A standard ACS XML attribute type definition.
  * This class is used to define a new XML attribute, readed from a schema file, 
- * to setup the internal hashtables of Errorbrowser and other applications.
+ * to setup the internal HashMaps of Errorbrowser and other applications.
  * @author Mauricio Araya (maray[at]inf.utfsm.cl)
  */
 
