@@ -1,0 +1,10 @@
+#!/bin/bash
+
+# If the ACS_TMP dir doesn't exists, we create it
+if [ ! -d $ACS_TMP ]
+then
+	mkdir $ACS_TMP
+fi
+
+#acsutilTATPrologue
+

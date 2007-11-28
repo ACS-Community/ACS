@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Type   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns="Alma/ACSError" 
+	xsi:schemaLocation="wrong schema location" 
+	name="veryWrong"
+	type="3"
+	 _prefix="alma">
+
+	<Code name="Completion1"
+	    shortDescription="The Completion 1"
+	    description="The Completion number 1">
+	</Code>
+</Type>
+

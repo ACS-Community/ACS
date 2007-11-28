@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Type   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns="Alma/ACSError" 
+	xsi:schemaLocation="Alma/ACSError ACSError.xsd" 
+	name="veryOther"
+	type="3"
+	 _prefix="alma">
+
+	<ErrorCode name="Error2"
+	    shortDescription="The Error 2"
+	    description="The Error number 2 with members">
+		<Member name="member1"
+			type="string"
+			description="The member number 1"
+		/>
+		<Member name="member2"
+			type="string"
+			description="The member number 2"
+		/>
+	</ErrorCode>
+</Type>
+

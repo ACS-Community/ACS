@@ -1,0 +1,20 @@
+#*******************************************************************************
+# ALMA - Atacama Large Millimiter Array
+#
+# "@(#) $Id: TATEnvironment,v 1.1 2007/11/28 16:17:33 maraya Exp $"
+#
+# $Log: TATEnvironment,v $
+# Revision 1.1  2007/11/28 16:17:33  maraya
+# Add jUnit tests, dirven by TAT
+#
+# Revision 1.1.1.1  2007/07/09 12:47:39  wg8
+# Repository Setup
+#
+#
+global env
+
+set ACS_TMP $env(PWD)/tmp
+
+#
+# ___oOo___
+

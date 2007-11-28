@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Type URL="" _prefix="alma" description="" name="saveDocument"
+    shortDescription="" type="54" xmlns="Alma/ACSError"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="Alma/ACSError ACSError.xsd">
+    <Code URL="" description="" name="myCompletion" shortDescription="My own Completion"/>
+    <ErrorCode URL="" _suppressExceptionGeneration="" description=""
+        name="myError" shortDescription="My own Error">
+        <Member description="My own Member" name="myMember" type=""/>
+    </ErrorCode>
+</Type>
