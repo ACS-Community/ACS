@@ -10,7 +10,7 @@ import junit.framework.TestCase;
 
 import si.ijs.maci.LoggingConfigurable;
 
-import alma.acs.logging.ACSCoreLevel;
+import alma.acs.logging.level.AcsLogLevelDefinition;
 import alma.acs.testsupport.TestLogger;
 import alma.acs.util.ReaderExtractor;
 import alma.maci.loggingconfig.LoggingConfig;
@@ -118,8 +118,8 @@ public class LogConfigTest extends TestCase {
 		assertEquals(10, schemaDefaults.getFlushPeriodSeconds());
 		assertEquals(10, schemaDefaults.getImmediateDispatchLevel());
 		assertEquals(1000, schemaDefaults.getMaxLogQueueSize());
-		assertEquals(ACSCoreLevel.ACS_LEVEL_TRACE, schemaDefaults.getMinLogLevelLocal());
-		assertEquals(ACSCoreLevel.ACS_LEVEL_TRACE, schemaDefaults.getMinLogLevel());
+		assertEquals(AcsLogLevelDefinition.TRACE.value, schemaDefaults.getMinLogLevelLocal());
+		assertEquals(AcsLogLevelDefinition.TRACE.value, schemaDefaults.getMinLogLevel());
 		assertEquals("Log", schemaDefaults.getCentralizedLogger());
 
 		int defaultMinLogLevelLocal = schemaDefaults.getMinLogLevelLocal();
@@ -143,12 +143,12 @@ public class LogConfigTest extends TestCase {
     	}
     	
     	// our logConfig should give the correct default values, coming from schema or env var
-		assertEquals(defaultMinLogLevelLocal, logConfig.getDefaultMinLogLevelLocal());
-		assertEquals(defaultMinLogLevel, logConfig.getDefaultMinLogLevel());
+		assertEquals(defaultMinLogLevelLocal, logConfig.getDefaultMinLogLevelLocal().value);
+		assertEquals(defaultMinLogLevel, logConfig.getDefaultMinLogLevel().value);
 		
 		// Check default data other than log levels
 		assertEquals(schemaDefaults.getCentralizedLogger(), logConfig.getCentralizedLogger());
-		assertEquals(schemaDefaults.getImmediateDispatchLevel(), logConfig.getImmediateDispatchLevel());
+		assertEquals(schemaDefaults.getImmediateDispatchLevel(), logConfig.getImmediateDispatchLevel().value);
 		assertEquals(schemaDefaults.getDispatchPacketSize(), logConfig.getDispatchPacketSize());
 		assertEquals(schemaDefaults.getFlushPeriodSeconds(), logConfig.getFlushPeriodSeconds());
 
@@ -215,7 +215,7 @@ public class LogConfigTest extends TestCase {
 	
 	/**
 	 * Tests logging config from the CDB, for both cases
-	 * (a) that env vars beat CDB settings e.g. for normal CDB readign,
+	 * (a) that env vars beat CDB settings e.g. for normal CDB reading,
 	 * (b) that CDB beats env vars e.g. during a refresh from CDB triggered via LoggingConfigurable API. 
 	 */
 	public void testCDBValues() throws Exception {
@@ -224,7 +224,7 @@ public class LogConfigTest extends TestCase {
 		// we simulate an ACS_LOG_STDOUT env var setting
 		String ACS_LOG_STDOUT_ORIGINAL = System.getProperty(LogConfig.PROPERTYNAME_MIN_LOG_LEVEL_LOCAL);
 		String ACS_LOG_REMOTE_ORIGINAL = System.getProperty(LogConfig.PROPERTYNAME_MIN_LOG_LEVEL);
-		String ACS_LOG_STDOUT = "" + ACSCoreLevel.ACS_LEVEL_EMERGENCY;
+		String ACS_LOG_STDOUT = "" + AcsLogLevelDefinition.EMERGENCY.value;
 		assertFalse("Fix this test to chose a different env var than the default", ACS_LOG_STDOUT.equals(ACS_LOG_STDOUT_ORIGINAL));
 		System.setProperty(LogConfig.PROPERTYNAME_MIN_LOG_LEVEL_LOCAL, ACS_LOG_STDOUT);
 		logger.info("Set property (env var) for local default level to " + ACS_LOG_STDOUT);
@@ -240,8 +240,8 @@ public class LogConfigTest extends TestCase {
 
 		// before we read the CDB, let's verify that the env var and default log levels are correct
 		logConfig.initialize(false);
-		assertEquals(defaultMinLogLevel, logConfig.getDefaultMinLogLevel());
-		assertEquals(ACSCoreLevel.ACS_LEVEL_EMERGENCY, logConfig.getDefaultMinLogLevelLocal());
+		assertEquals(defaultMinLogLevel, logConfig.getDefaultMinLogLevel().value);
+		assertEquals(AcsLogLevelDefinition.EMERGENCY, logConfig.getDefaultMinLogLevelLocal());
 		
 		// the simulated test CDB to configure our loggers from
 		String cdbContainerPath = "MACI/Containers/frodoContainer";
@@ -253,7 +253,7 @@ public class LogConfigTest extends TestCase {
                           " minLogLevelLocal=\"3\" " +
                           " centralizedLogger=\"LogForFrodo\" " +
                           " maxLogQueueSize=\"200\" " +
-                          " immediateDispatchLevel=\"7\" " +
+                          " immediateDispatchLevel=\"8\" " +
                           " dispatchPacketSize=\"33\" " +
                           " >" +
                                "<log:_ Name=\"MyMuteComponent\" minLogLevel=\"5\" minLogLevelLocal=\"6\" />" +
@@ -267,10 +267,10 @@ public class LogConfigTest extends TestCase {
 		
 		// first the normal case where the env var default level beats the CDB default level
 		logConfig.initialize(false);
-		assertEquals("CDB must beat schema default", 4, logConfig.getDefaultMinLogLevel());
-		assertEquals("Env var must beat CDB", ACSCoreLevel.ACS_LEVEL_EMERGENCY, logConfig.getDefaultMinLogLevelLocal());		
+		assertEquals("CDB must beat schema default", AcsLogLevelDefinition.INFO, logConfig.getDefaultMinLogLevel());
+		assertEquals("Env var must beat CDB", AcsLogLevelDefinition.EMERGENCY, logConfig.getDefaultMinLogLevelLocal());		
 		assertEquals("LogForFrodo", logConfig.getCentralizedLogger());
-		assertEquals(7, logConfig.getImmediateDispatchLevel());
+		assertSame(AcsLogLevelDefinition.ERROR, logConfig.getImmediateDispatchLevel());
 		assertEquals(33, logConfig.getDispatchPacketSize());		
 		assertEquals(200, logConfig.getMaxLogQueueSize());
 		Set<String> loggerNames = logConfig.getLoggerNames();		
@@ -280,10 +280,10 @@ public class LogConfigTest extends TestCase {
 		
 		// next the special case of CDB refresh via dynamic API, where the CDB beats the env var default levels
 		logConfig.initialize(true);
-		assertEquals("CDB must beat schema default", 4, logConfig.getDefaultMinLogLevel());
-		assertEquals("CDB must beat env var", 3, logConfig.getDefaultMinLogLevelLocal());		
+		assertSame("CDB must beat schema default", AcsLogLevelDefinition.INFO, logConfig.getDefaultMinLogLevel());
+		assertSame("CDB must beat env var", AcsLogLevelDefinition.DEBUG, logConfig.getDefaultMinLogLevelLocal());		
 		assertEquals("LogForFrodo", logConfig.getCentralizedLogger());
-		assertEquals(7, logConfig.getImmediateDispatchLevel());
+		assertSame(AcsLogLevelDefinition.ERROR, logConfig.getImmediateDispatchLevel());
 		assertEquals(33, logConfig.getDispatchPacketSize());		
 		assertEquals(200, logConfig.getMaxLogQueueSize());
 		loggerNames = logConfig.getLoggerNames();		
@@ -392,31 +392,35 @@ public class LogConfigTest extends TestCase {
 		logger.info("============ Running testDynamicChanges ============");
 
 		// the default log levels from schema defaults and optional env var setting
-		int defaultMinLogLevel = logConfig.getDefaultMinLogLevel();
-		int defaultMinLogLevelLocal = logConfig.getDefaultMinLogLevelLocal();
+		AcsLogLevelDefinition defaultMinLogLevel = logConfig.getDefaultMinLogLevel();
+		AcsLogLevelDefinition defaultMinLogLevelLocal = logConfig.getDefaultMinLogLevelLocal();
 
 		// change the default log levels
-		logConfig.setDefaultMinLogLevel(defaultMinLogLevel + 1);
-		assertEquals(defaultMinLogLevel + 1, logConfig.getDefaultMinLogLevel());
-		assertEquals(defaultMinLogLevelLocal, logConfig.getDefaultMinLogLevelLocal());
-		logConfig.setDefaultMinLogLevel(defaultMinLogLevel + 2);
-		logConfig.setDefaultMinLogLevelLocal(defaultMinLogLevelLocal + 2);
-		assertEquals(defaultMinLogLevel + 2, logConfig.getDefaultMinLogLevel());
-		assertEquals(defaultMinLogLevelLocal + 2, logConfig.getDefaultMinLogLevelLocal());
+		AcsLogLevelDefinition newDefaultLevel = defaultMinLogLevel.getNextHigherLevel();
+		assertNotNull(newDefaultLevel);
+		logConfig.setDefaultMinLogLevel(newDefaultLevel);
+		assertSame(newDefaultLevel, logConfig.getDefaultMinLogLevel());
+		assertSame(defaultMinLogLevelLocal, logConfig.getDefaultMinLogLevelLocal());
+		newDefaultLevel = newDefaultLevel.getNextHigherLevel();
+		assertNotNull(newDefaultLevel);
+		logConfig.setDefaultMinLogLevel(newDefaultLevel);
+		logConfig.setDefaultMinLogLevelLocal(newDefaultLevel);
+		assertSame(newDefaultLevel, logConfig.getDefaultMinLogLevel());
+		assertSame(newDefaultLevel, logConfig.getDefaultMinLogLevelLocal());
 		logConfig.setDefaultMinLogLevel(defaultMinLogLevel); // restore initial values
 		logConfig.setDefaultMinLogLevelLocal(defaultMinLogLevelLocal);
 		
 		// named logger levels 
 		String knownLoggerName = "knownLogger";
 		UnnamedLogger knownLoggerConfig = logConfig.getNamedLoggerConfig(knownLoggerName); // now the logger is known, even though it has default values 
-		assertEquals(defaultMinLogLevel, knownLoggerConfig.getMinLogLevel());
-		assertEquals(defaultMinLogLevelLocal, knownLoggerConfig.getMinLogLevelLocal());
+		assertEquals(defaultMinLogLevel.value, knownLoggerConfig.getMinLogLevel());
+		assertEquals(defaultMinLogLevelLocal.value, knownLoggerConfig.getMinLogLevelLocal());
 		Set<String> loggerNames = logConfig.getLoggerNames();
 		assertEquals(1, loggerNames.size());
 		assertTrue(loggerNames.contains(knownLoggerName));
 
 		String unknownLoggerName = "unknownLogger";
-		logConfig.setMinLogLevel(3, unknownLoggerName); // first encounter with this logger when setting its levels
+		logConfig.setMinLogLevel(AcsLogLevelDefinition.DEBUG, unknownLoggerName); // first encounter with this logger when setting its levels
 		loggerNames = logConfig.getLoggerNames();		
 		assertEquals(2, loggerNames.size());
 		assertTrue(loggerNames.contains(knownLoggerName));
@@ -426,34 +430,33 @@ public class LogConfigTest extends TestCase {
 		knownLoggerConfig = logConfig.getNamedLoggerConfig(knownLoggerName);
 		UnnamedLogger knownLoggerConfig2 = logConfig.getNamedLoggerConfig(knownLoggerName);
 		assertNotSame(knownLoggerConfig, knownLoggerConfig2);
-		knownLoggerConfig.setMinLogLevel(defaultMinLogLevel + 3);
-		assertEquals(defaultMinLogLevel, logConfig.getDefaultMinLogLevel());
-		logConfig.setDefaultMinLogLevel(defaultMinLogLevel + 4);
-		assertEquals(defaultMinLogLevel, knownLoggerConfig2.getMinLogLevel());		
+		newDefaultLevel = newDefaultLevel.getNextHigherLevel();
+		assertNotNull(newDefaultLevel);
+		knownLoggerConfig.setMinLogLevel(newDefaultLevel.value);
+		assertSame(defaultMinLogLevel, logConfig.getDefaultMinLogLevel());
+		newDefaultLevel = newDefaultLevel.getNextHigherLevel();
+		assertNotNull(newDefaultLevel);
+		logConfig.setDefaultMinLogLevel(newDefaultLevel);
+		assertEquals(defaultMinLogLevel.value, knownLoggerConfig2.getMinLogLevel());		
 	}
 	
 	
 	public void testLockingRemoteLevel() throws Exception {
 		logger.info("============ Running testLockingLevels ============");
 
-		// the default log levels from schema defaults and optional env var setting
-		int defaultMinLogLevel = logConfig.getDefaultMinLogLevel();
-		int defaultMinLogLevelLocal = logConfig.getDefaultMinLogLevelLocal();
-
 		// named logger levels 
 		String loggerName = "jacorb@archiveContainer";
-		int lockedLevel = Integer.MAX_VALUE;
 		logConfig.getNamedLoggerConfig(loggerName); // now the logger is known, even though it has default values
-		logConfig.setAndLockMinLogLevel(lockedLevel, loggerName);
+		logConfig.setAndLockMinLogLevel(AcsLogLevelDefinition.OFF, loggerName);
 		
 		// once a level is locked, it must not be changed any more:
-		assertEquals(lockedLevel, logConfig.getNamedLoggerConfig(loggerName).getMinLogLevel());
-		logConfig.setMinLogLevel(2, loggerName); 
-		assertEquals(lockedLevel, logConfig.getNamedLoggerConfig(loggerName).getMinLogLevel());
-		logConfig.setAndLockMinLogLevel(2, loggerName);
-		assertEquals(lockedLevel, logConfig.getNamedLoggerConfig(loggerName).getMinLogLevel());
+		assertSame(AcsLogLevelDefinition.OFF.value, logConfig.getNamedLoggerConfig(loggerName).getMinLogLevel());
+		logConfig.setMinLogLevel(AcsLogLevelDefinition.TRACE, loggerName); 
+		assertSame(AcsLogLevelDefinition.OFF.value, logConfig.getNamedLoggerConfig(loggerName).getMinLogLevel());
+		logConfig.setAndLockMinLogLevel(AcsLogLevelDefinition.TRACE, loggerName);
+		assertSame(AcsLogLevelDefinition.OFF.value, logConfig.getNamedLoggerConfig(loggerName).getMinLogLevel());
 		logConfig.clearNamedLoggerConfig(loggerName);
-		assertEquals(lockedLevel, logConfig.getNamedLoggerConfig(loggerName).getMinLogLevel());
+		assertSame(AcsLogLevelDefinition.OFF.value, logConfig.getNamedLoggerConfig(loggerName).getMinLogLevel());
 		
 		logConfig.initialize(false);
 		logConfig.initialize(true);
@@ -473,7 +476,7 @@ public class LogConfigTest extends TestCase {
 		logConfig.setCDB(testCDB);
 		logConfig.initialize(true);
 		assertEquals(6, logConfig.getNamedLoggerConfig("unlockedLogger").getMinLogLevel()); // to make sure the CDB entry was considered
-		assertEquals(lockedLevel, logConfig.getNamedLoggerConfig(loggerName).getMinLogLevel());
+		assertSame(AcsLogLevelDefinition.OFF.value, logConfig.getNamedLoggerConfig(loggerName).getMinLogLevel());
 		assertTrue(logConfig.getNamedLoggerConfig(loggerName).isLocked());
 	}
 	

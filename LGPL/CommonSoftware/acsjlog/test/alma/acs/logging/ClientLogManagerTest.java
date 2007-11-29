@@ -32,6 +32,7 @@ import java.util.concurrent.TimeoutException;
 
 import alma.acs.logging.config.LogConfig;
 import alma.acs.logging.formatters.ConsoleLogFormatter;
+import alma.acs.logging.level.AcsLogLevelDefinition;
 
 /**
  *
@@ -202,8 +203,8 @@ public class ClientLogManagerTest extends junit.framework.TestCase
 		assertTrue(loggerNames.contains("jacorb_2@myContainer"));
 		assertTrue(loggerNames.contains("myContainer"));
 		
-		config.setDefaultMinLogLevelLocal(ACSCoreLevel.ACS_LEVEL_INFO);
-		config.setDefaultMinLogLevel(ACSCoreLevel.ACS_LEVEL_DEBUG);
+		config.setDefaultMinLogLevelLocal(AcsLogLevelDefinition.INFO);
+		config.setDefaultMinLogLevel(AcsLogLevelDefinition.DEBUG);
 		// the log level must be the smaller one of stdout and remote level
 		assertEquals(AcsLogLevel.DEBUG.intValue(), orbLog1.getLevel().intValue());
 		assertEquals(AcsLogLevel.DEBUG.intValue(), orbLog2.getLevel().intValue());

@@ -21,6 +21,8 @@
  */
 package alma.acs.container;
 
+import java.lang.management.ManagementFactory;
+import java.lang.management.ThreadMXBean;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -53,6 +55,8 @@ import si.ijs.maci.LoggingConfigurablePackage.LogLevels;
 
 import alma.ACS.ACSComponentOperations;
 import alma.ACS.ComponentStates;
+import alma.ACSErrTypeCommon.IllegalArgumentEx;
+import alma.ACSErrTypeCommon.wrappers.AcsJIllegalArgumentEx;
 import alma.JavaContainerError.wrappers.AcsJContainerEx;
 import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
 import alma.acs.classloading.AcsComponentClassLoader;
@@ -64,6 +68,7 @@ import alma.acs.logging.AcsLogger;
 import alma.acs.logging.ClientLogManager;
 import alma.acs.logging.config.LogConfig;
 import alma.acs.logging.config.LogConfigException;
+import alma.acs.logging.level.AcsLogLevelDefinition;
 import alma.acs.util.StopWatch;
 import alma.acs.util.UTCUtility;
 import alma.alarmsystem.source.ACSAlarmSystemInterfaceFactory;
@@ -1196,6 +1201,10 @@ public class AcsContainer extends ContainerPOA
             memStatus += "(= " + (usedMemKB*1000/maxMemKB)/10.0 + "% of JVM growth limit " + maxMemKB + " kB) ";
         }
         System.out.println("ping received, container alive. " + memStatus);
+        
+//        ThreadMXBean threadMX = ManagementFactory.getThreadMXBean();
+//        threadMX.
+        
         return true;
     }
 
@@ -1322,8 +1331,8 @@ public class AcsContainer extends ContainerPOA
 	public LogLevels get_default_logLevels() {
 		LogLevels logLevels = new LogLevels();
 		logLevels.useDefault = false;
-		logLevels.minLogLevel = (short) logConfig.getDefaultMinLogLevel();
-		logLevels.minLogLevelLocal = (short) logConfig.getDefaultMinLogLevelLocal();
+		logLevels.minLogLevel = (short) logConfig.getDefaultMinLogLevel().value;
+		logLevels.minLogLevelLocal = (short) logConfig.getDefaultMinLogLevelLocal().value;
 		return logLevels;
 	}
 
@@ -1331,20 +1340,13 @@ public class AcsContainer extends ContainerPOA
 	 * Sets the log levels of the default logging configuration. These levels
 	 * are used by all loggers that have not been configured individually.
 	 */
-	public void set_default_logLevels(LogLevels levels) {
-		logConfig.setDefaultMinLogLevel(levels.minLogLevel);
-		logConfig.setDefaultMinLogLevelLocal(levels.minLogLevelLocal);
-// HSO 2007-11-12 The following addition from rev. 1.106 is in my view not only unnecessary 
-// (I tested that default levels are correctly propagated already),
-// but probably wrong (which I have not tried out though).
-// When changing default levels we want to preserve the "use default" semantics,
-// which means that loggers that are set up to use default values (whatever these values are)
-// should not be changed to use the current default values as their specific log level values.
-//		String [] names = get_logger_names();
-//		for(int i = 0 ; i< names.length;i++){
-//			UnnamedLogger levels2 = logConfig.getNamedLoggerConfig(names[i]);
-//			set_logLevels(names[i],levels);
-//		}
+	public void set_default_logLevels(LogLevels levels) throws IllegalArgumentEx {
+		try {
+			logConfig.setDefaultMinLogLevel(AcsLogLevelDefinition.fromInteger(levels.minLogLevel));
+			logConfig.setDefaultMinLogLevelLocal(AcsLogLevelDefinition.fromInteger(levels.minLogLevelLocal));
+		} catch (AcsJIllegalArgumentEx ex) {
+			throw ex.toIllegalArgumentEx();
+		}
 	}
 
 	/**
@@ -1381,7 +1383,7 @@ public class AcsContainer extends ContainerPOA
 	 * true, then the logger will be reset to using default levels; otherwise it
 	 * will use the supplied local and remote levels.
 	 */
-	public void set_logLevels(String logger_name, LogLevels levels) {
+	public void set_logLevels(String logger_name, LogLevels levels) throws IllegalArgumentEx {
 		if (levels.useDefault) {
 			logConfig.clearNamedLoggerConfig(logger_name);
 		}
@@ -1389,7 +1391,11 @@ public class AcsContainer extends ContainerPOA
 			UnnamedLogger config = new UnnamedLogger();
 			config.setMinLogLevel(levels.minLogLevel);
 			config.setMinLogLevelLocal(levels.minLogLevelLocal);
-			logConfig.setNamedLoggerConfig(logger_name, config);
+			try {
+				logConfig.setNamedLoggerConfig(logger_name, config);
+			} catch (AcsJIllegalArgumentEx ex) {
+				throw ex.toIllegalArgumentEx();
+			}
 		}
 	}
 
