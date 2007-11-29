@@ -1,19 +1,16 @@
-# $Id: platform_macros.GNU,v 1.5 2007/11/29 07:05:22 maraya Exp $
+# $Id: platform_macros.GNU,v 1.6 2007/11/29 16:22:17 maraya Exp $
 # VxWorks 6.2
-
-# Modified for ACS by maray@inf.utfsm.cl
 
 #### Notes:
 #### 1) This file requires that the WIND_BASE and WIND_HOST_TYPE environment
-####    variables be set.  If the target CPU is not a PPC32, then your CPU
-####    environment variable must be set.  If perl is not on your path,
-####    you'll also need to set your PERL_PATH environment variable to
-####    the full path to perl.
-
+####    variables be set.  If the target CPU is not SIMNT, then your CPU
+####    environment variable must be set.
 #### 2) If you have problems with munch output not being compilable
 ####    because it contains identifiers with ".", e.g., ".cpp", in them:
 ####    add a global variable or function to that .cpp file.  See
 ####    ace/IOStream_T.cpp for an explanation and example.
+#### 3) The TOOL environment variable may be set to "diab" (default is "gnu").
+#### 4) If perl is not on your path, you'll also need to set your PERL_PATH
 ####    environment variable to the full path to perl.
 
 VXWORKS = 1
@@ -25,17 +22,18 @@ ifneq (,$(HOST_ROOT))
   TAO_IDLFLAGS += -g $(HOST_ROOT)/bin/gperf
 endif
 
-debug ?= 1
+# No debuging PLEASE
+debug ?= 0
 optimize ?= 1
 threads ?= 1
 exceptions ?= 1
-# not using Real Time Process API (userspace Real-Time Library)
+# Not using Real Time Process API (userspace Real-Time Library)
 # It breaks the ACE compilation right now
 rtp ?= 0
-# not using POSIX Threads, because also breaks the ACE build
+# Also breaks the compilation (posix threads)
 pthread ?= 0
-# compile with xerces, because it can be usefull
 xerces ?= 1
+shared_libs ?= 1
 
 ifeq ($(static_libs),1)
   shared_libs = 0
@@ -102,9 +100,8 @@ endif
 TGT_DIR = $(WIND_BASE)/target
 
 ifeq ($(CPU),)
-  # default CPU, originaly SIMNT, change it to PPC32
-  # In an older ACE/TAO, the CPU was PPC604, dont know why it change to PPC32.
-  CPU = PPC32
+  # default CPU
+  CPU = SIMNT
 else
   override CPU := $(CPU)
 endif
@@ -125,7 +122,8 @@ ifeq ($(rtp),0)
 endif
 
 BIN_UNCHECKED ?=
-SHLIB_UNCHECKED ?=
+# Very important to get a shared library
+SHLIB_UNCHECKED ?= 1
 
 ifneq ("$(BIN_UNCHECKED)","")
 VX_APP_BUILD := 1
