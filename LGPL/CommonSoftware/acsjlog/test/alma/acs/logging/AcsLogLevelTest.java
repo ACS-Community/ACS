@@ -21,7 +21,32 @@
  */
 package alma.acs.logging;
 
+import java.io.PrintStream;
 import java.util.logging.Level;
+
+import alma.ACSErrTypeCommon.wrappers.AcsJIllegalArgumentEx;
+import alma.AcsLogLevels.ALERT_NAME;
+import alma.AcsLogLevels.ALERT_VAL;
+import alma.AcsLogLevels.CRITICAL_NAME;
+import alma.AcsLogLevels.CRITICAL_VAL;
+import alma.AcsLogLevels.DEBUG_NAME;
+import alma.AcsLogLevels.DEBUG_VAL;
+import alma.AcsLogLevels.EMERGENCY_NAME;
+import alma.AcsLogLevels.EMERGENCY_VAL;
+import alma.AcsLogLevels.ERROR_NAME;
+import alma.AcsLogLevels.ERROR_VAL;
+import alma.AcsLogLevels.INFO_NAME;
+import alma.AcsLogLevels.INFO_VAL;
+import alma.AcsLogLevels.NOTICE_NAME;
+import alma.AcsLogLevels.NOTICE_VAL;
+import alma.AcsLogLevels.OFF_NAME;
+import alma.AcsLogLevels.OFF_VAL;
+import alma.AcsLogLevels.TRACE_NAME;
+import alma.AcsLogLevels.TRACE_VAL;
+import alma.AcsLogLevels.WARNING_NAME;
+import alma.AcsLogLevels.WARNING_VAL;
+import alma.acs.logging.level.AcsLogLevelDefinition;
+import alma.acs.util.StringOutputStream;
 
 /**
  * 
@@ -58,8 +83,8 @@ public class AcsLogLevelTest extends junit.framework.TestCase
 		assertSame(AcsLogLevel.DEBUG, AcsLogLevel.getNativeLevel(Level.FINE));
 		assertSame(AcsLogLevel.DEBUG, AcsLogLevel.getNativeLevel(Level.FINER));
 		assertSame(AcsLogLevel.TRACE, AcsLogLevel.getNativeLevel(Level.FINEST));
-		assertSame(AcsLogLevel.ALL, AcsLogLevel.getNativeLevel(Level.ALL));
-		assertSame(null, AcsLogLevel.getNativeLevel(Level.OFF));
+		assertSame(AcsLogLevel.TRACE, AcsLogLevel.getNativeLevel(Level.ALL));
+		assertNull(AcsLogLevel.getNativeLevel(Level.OFF));
 
 		// some repetitions to test lookup
 		assertSame(AcsLogLevel.TRACE, AcsLogLevel.getNativeLevel(AcsLogLevel.TRACE));
@@ -70,7 +95,7 @@ public class AcsLogLevelTest extends junit.framework.TestCase
 		assertSame(AcsLogLevel.INFO, AcsLogLevel.getNativeLevel(Level.INFO));
 
 		// compare expected and actual levels
-		assertEquals(Integer.MIN_VALUE, AcsLogLevel.getNativeLevel(AcsLogLevel.ALL).intValue());
+		assertEquals(300, AcsLogLevel.getNativeLevel(AcsLogLevel.ALL).intValue());
 		assertEquals(300, AcsLogLevel.getNativeLevel(AcsLogLevel.TRACE).intValue());
 		assertEquals(700, AcsLogLevel.getNativeLevel(AcsLogLevel.DEBUG).intValue());
 		assertEquals(800, AcsLogLevel.getNativeLevel(AcsLogLevel.INFO).intValue());
@@ -110,38 +135,129 @@ public class AcsLogLevelTest extends junit.framework.TestCase
 	}
 
 	/**
-	 * Test AcsLogLevel to ACS core levels.
+	 * Tests the encapsulation and conversion between the JDK-Logger-like levels used inside Java,
+	 * and the ACS-levels defined as IDL constants that are used outside of the JVM. 
 	 */
-	public void testACSCoreLevels()
+	public void testAcsCoreLevels() throws Exception
 	{
-		assertEquals(0, AcsLogLevel.ALL.getAcsLevel());
-		assertEquals(2, AcsLogLevel.TRACE.getAcsLevel());
-		assertEquals(3, AcsLogLevel.DEBUG.getAcsLevel());
-		assertEquals(4, AcsLogLevel.INFO.getAcsLevel());
-		assertEquals(5, AcsLogLevel.NOTICE.getAcsLevel());
-		assertEquals(6, AcsLogLevel.WARNING.getAcsLevel());
-		assertEquals(8, AcsLogLevel.ERROR.getAcsLevel());
-		assertEquals(9, AcsLogLevel.CRITICAL.getAcsLevel());
-		assertEquals(10, AcsLogLevel.ALERT.getAcsLevel());
-		assertEquals(11, AcsLogLevel.EMERGENCY.getAcsLevel());
+		// Checks that our loglevel-enum correctly encapsulates the IDL-defined constants  
+		assertEquals(TRACE_VAL.value, AcsLogLevelDefinition.TRACE.value);
+		assertEquals(DEBUG_VAL.value, AcsLogLevelDefinition.DEBUG.value);
+		assertEquals(INFO_VAL.value, AcsLogLevelDefinition.INFO.value);
+		assertEquals(NOTICE_VAL.value, AcsLogLevelDefinition.NOTICE.value);
+		assertEquals(WARNING_VAL.value, AcsLogLevelDefinition.WARNING.value);
+		assertEquals(ERROR_VAL.value, AcsLogLevelDefinition.ERROR.value);
+		assertEquals(CRITICAL_VAL.value, AcsLogLevelDefinition.CRITICAL.value);
+		assertEquals(ALERT_VAL.value, AcsLogLevelDefinition.ALERT.value);
+		assertEquals(EMERGENCY_VAL.value, AcsLogLevelDefinition.EMERGENCY.value);
+		assertEquals(OFF_VAL.value, AcsLogLevelDefinition.OFF.value);
+		assertEquals("Number of log levels has changed, need to update this test.", 10, AcsLogLevelDefinition.values().length);
 		
-		// ACS-core-level to ACS-Level
-		assertSame(AcsLogLevel.ALL, AcsLogLevel.fromAcsCoreLevel(ACSCoreLevel.ACS_LEVEL_ALL));
-		assertSame(AcsLogLevel.TRACE, AcsLogLevel.fromAcsCoreLevel(1)); // undefined core level, should round up
-		assertSame(AcsLogLevel.TRACE, AcsLogLevel.fromAcsCoreLevel(ACSCoreLevel.ACS_LEVEL_TRACE));
-		assertSame(AcsLogLevel.DEBUG, AcsLogLevel.fromAcsCoreLevel(ACSCoreLevel.ACS_LEVEL_DEBUG));
-		assertSame(AcsLogLevel.INFO, AcsLogLevel.fromAcsCoreLevel(ACSCoreLevel.ACS_LEVEL_INFO));
-		assertSame(AcsLogLevel.NOTICE, AcsLogLevel.fromAcsCoreLevel(ACSCoreLevel.ACS_LEVEL_NOTICE));
-		assertSame(AcsLogLevel.WARNING, AcsLogLevel.fromAcsCoreLevel(ACSCoreLevel.ACS_LEVEL_WARNING));
-		assertSame(AcsLogLevel.ERROR, AcsLogLevel.fromAcsCoreLevel(7)); // undefined core level, should round up
-		assertSame(AcsLogLevel.ERROR, AcsLogLevel.fromAcsCoreLevel(ACSCoreLevel.ACS_LEVEL_ERROR));
-		assertSame(AcsLogLevel.CRITICAL, AcsLogLevel.fromAcsCoreLevel(ACSCoreLevel.ACS_LEVEL_CRITICAL));
-		assertSame(AcsLogLevel.ALERT, AcsLogLevel.fromAcsCoreLevel(ACSCoreLevel.ACS_LEVEL_ALERT));
-		assertSame(AcsLogLevel.EMERGENCY, AcsLogLevel.fromAcsCoreLevel(ACSCoreLevel.ACS_LEVEL_EMERGENCY));
-		assertSame(AcsLogLevel.EMERGENCY, AcsLogLevel.fromAcsCoreLevel(ACSCoreLevel.ACS_LEVEL_EMERGENCY + 10)); // undefined core level, should round down
+		// check value to enum conversion
+		assertSame(AcsLogLevelDefinition.TRACE, AcsLogLevelDefinition.fromInteger(TRACE_VAL.value));
+		assertSame(AcsLogLevelDefinition.DEBUG, AcsLogLevelDefinition.fromInteger(DEBUG_VAL.value));
+		assertSame(AcsLogLevelDefinition.INFO, AcsLogLevelDefinition.fromInteger(INFO_VAL.value));
+		assertSame(AcsLogLevelDefinition.NOTICE, AcsLogLevelDefinition.fromInteger(NOTICE_VAL.value));
+		assertSame(AcsLogLevelDefinition.WARNING, AcsLogLevelDefinition.fromInteger(WARNING_VAL.value));
+		assertSame(AcsLogLevelDefinition.ERROR, AcsLogLevelDefinition.fromInteger(ERROR_VAL.value));
+		assertSame(AcsLogLevelDefinition.CRITICAL, AcsLogLevelDefinition.fromInteger(CRITICAL_VAL.value));
+		assertSame(AcsLogLevelDefinition.ALERT, AcsLogLevelDefinition.fromInteger(ALERT_VAL.value));
+		assertSame(AcsLogLevelDefinition.EMERGENCY, AcsLogLevelDefinition.fromInteger(EMERGENCY_VAL.value));
+		assertSame(AcsLogLevelDefinition.OFF, AcsLogLevelDefinition.fromInteger(OFF_VAL.value));
+		try {
+			AcsLogLevelDefinition.fromInteger(1);
+			fail("undefined log level not allowed.");
+		} catch (AcsJIllegalArgumentEx ex) {
+			// good
+		}		
+		try {
+			AcsLogLevelDefinition.fromInteger(Integer.MAX_VALUE);
+			fail("undefined log level not allowed.");
+		} catch (AcsJIllegalArgumentEx ex) {
+			// good
+		}		
+		
+		// check name to enum conversion
+		assertSame(AcsLogLevelDefinition.TRACE, AcsLogLevelDefinition.fromName(TRACE_NAME.value));
+		assertSame(AcsLogLevelDefinition.DEBUG, AcsLogLevelDefinition.fromName(DEBUG_NAME.value));
+		assertSame(AcsLogLevelDefinition.INFO, AcsLogLevelDefinition.fromName(INFO_NAME.value));
+		assertSame(AcsLogLevelDefinition.NOTICE, AcsLogLevelDefinition.fromName(NOTICE_NAME.value));
+		assertSame(AcsLogLevelDefinition.WARNING, AcsLogLevelDefinition.fromName(WARNING_NAME.value));
+		assertSame(AcsLogLevelDefinition.ERROR, AcsLogLevelDefinition.fromName(ERROR_NAME.value));
+		assertSame(AcsLogLevelDefinition.CRITICAL, AcsLogLevelDefinition.fromName(CRITICAL_NAME.value));
+		assertSame(AcsLogLevelDefinition.ALERT, AcsLogLevelDefinition.fromName(ALERT_NAME.value));
+		assertSame(AcsLogLevelDefinition.EMERGENCY, AcsLogLevelDefinition.fromName(EMERGENCY_NAME.value));
+		assertSame(AcsLogLevelDefinition.OFF, AcsLogLevelDefinition.fromName(OFF_NAME.value));
+		try {
+			AcsLogLevelDefinition.fromName(null);
+			fail("null log level name not allowed.");
+		} catch (AcsJIllegalArgumentEx ex) {
+			// good
+		}		
+		try {
+			AcsLogLevelDefinition.fromName("");
+			fail("empty log level name not allowed.");
+		} catch (AcsJIllegalArgumentEx ex) {
+			// good
+		}		
+		try {
+			AcsLogLevelDefinition.fromName(" " + TRACE_NAME.value);
+			fail("whitespace in log level name not allowed.");
+		} catch (AcsJIllegalArgumentEx ex) {
+			// good
+		}		
+		try {
+			AcsLogLevelDefinition.fromName("hmpfgrnzlsm");
+			fail("illegal log level name not allowed.");
+		} catch (AcsJIllegalArgumentEx ex) {
+			// good
+		}
+		
+		// test the next-level method that should be only used by other tests
+		assertSame(AcsLogLevelDefinition.DEBUG, AcsLogLevelDefinition.TRACE.getNextHigherLevel());
+		assertSame(AcsLogLevelDefinition.ERROR, AcsLogLevelDefinition.WARNING.getNextHigherLevel()); // values 6 -> 8
+		assertNull(AcsLogLevelDefinition.EMERGENCY.getNextHigherLevel());
+		assertNull(AcsLogLevelDefinition.OFF.getNextHigherLevel());
+		
+//		assertEquals(0, AcsLogLevel.ALL.getAcsLevel()); // ALL is not an AcsLogLevel any more
+		assertSame(AcsLogLevelDefinition.TRACE, AcsLogLevel.TRACE.getAcsLevel());
+		assertSame(AcsLogLevelDefinition.DEBUG, AcsLogLevel.DEBUG.getAcsLevel());
+		assertSame(AcsLogLevelDefinition.INFO, AcsLogLevel.INFO.getAcsLevel());
+		assertSame(AcsLogLevelDefinition.NOTICE, AcsLogLevel.NOTICE.getAcsLevel());
+		assertSame(AcsLogLevelDefinition.WARNING, AcsLogLevel.WARNING.getAcsLevel());
+		assertSame(AcsLogLevelDefinition.ERROR, AcsLogLevel.ERROR.getAcsLevel());
+		assertSame(AcsLogLevelDefinition.CRITICAL, AcsLogLevel.CRITICAL.getAcsLevel());
+		assertSame(AcsLogLevelDefinition.ALERT, AcsLogLevel.ALERT.getAcsLevel());
+		assertSame(AcsLogLevelDefinition.EMERGENCY, AcsLogLevel.EMERGENCY.getAcsLevel());
+
+		// ACS-core-level to ACS-Level 
+		assertSame(AcsLogLevel.TRACE, AcsLogLevel.fromAcsCoreLevel(AcsLogLevelDefinition.TRACE));
+		assertSame(AcsLogLevel.DEBUG, AcsLogLevel.fromAcsCoreLevel(AcsLogLevelDefinition.DEBUG));
+		assertSame(AcsLogLevel.INFO, AcsLogLevel.fromAcsCoreLevel(AcsLogLevelDefinition.INFO));
+		assertSame(AcsLogLevel.NOTICE, AcsLogLevel.fromAcsCoreLevel(AcsLogLevelDefinition.NOTICE));
+		assertSame(AcsLogLevel.WARNING, AcsLogLevel.fromAcsCoreLevel(AcsLogLevelDefinition.WARNING));
+		assertSame(AcsLogLevel.ERROR, AcsLogLevel.fromAcsCoreLevel(AcsLogLevelDefinition.ERROR));
+		assertSame(AcsLogLevel.CRITICAL, AcsLogLevel.fromAcsCoreLevel(AcsLogLevelDefinition.CRITICAL));
+		assertSame(AcsLogLevel.ALERT, AcsLogLevel.fromAcsCoreLevel(AcsLogLevelDefinition.ALERT));
+		assertSame(AcsLogLevel.EMERGENCY, AcsLogLevel.fromAcsCoreLevel(AcsLogLevelDefinition.EMERGENCY));
 	}
 	
 	public void testPrintMappings() {
-		AcsLogLevel.printMappings(System.out);
+		StringOutputStream stringOut = new StringOutputStream();
+		AcsLogLevel.printMappings(new PrintStream(stringOut));
+		System.out.println("Printed level mappings: " + stringOut);
+		
+		String sep = System.getProperty("line.separator");		
+		String expected = 
+			"Trace" +     '\t' +  "300" + '\t' +  "2" + sep + 
+			"Debug" +     '\t' +  "700" + '\t' +  "3" + sep + 
+			"Info" +      '\t' +  "800" + '\t' +  "4" + sep + 
+			"Notice" +    '\t' +  "801" + '\t' +  "5" + sep + 
+			"Warning" +   '\t' +  "900" + '\t' +  "6" + sep + 
+			"Error" +     '\t' +  "901" + '\t' +  "8" + sep + 
+			"Critical" +  '\t' +  "902" + '\t' +  "9" + sep + 
+			"Alert" +     '\t' +  "903" + '\t' + "10" + sep + 
+			"Emergency" + '\t' + "1000" + '\t' + "11" + sep;
+		assertEquals(expected, stringOut.toString());
 	}
 }
