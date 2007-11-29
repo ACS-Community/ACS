@@ -11,7 +11,7 @@
     </Autoload>
     
     <LoggingConfig
-    	minLogLevel="0"
+    	minLogLevel="2"
     	minLogLevelLocal="2"
     	centralizedLogger="Log"
     	maxLogQueueSize="1000"
