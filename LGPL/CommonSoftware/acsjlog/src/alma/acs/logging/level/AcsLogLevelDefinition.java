@@ -22,33 +22,32 @@
 package alma.acs.logging.level;
 
 import alma.ACSErrTypeCommon.wrappers.AcsJIllegalArgumentEx;
-import alma.ACSErrTypeCommon.wrappers.AcsJIllegalStateEventEx;
-import alma.AcsLogging.alma.LogLevels.TRACE_VAL;
-import alma.AcsLogging.alma.LogLevels.TRACE_NAME;
-import alma.AcsLogging.alma.LogLevels.DEBUG_VAL;
-import alma.AcsLogging.alma.LogLevels.DEBUG_NAME;
-import alma.AcsLogging.alma.LogLevels.INFO_VAL;
-import alma.AcsLogging.alma.LogLevels.INFO_NAME;
-import alma.AcsLogging.alma.LogLevels.NOTICE_VAL;
-import alma.AcsLogging.alma.LogLevels.NOTICE_NAME;
-import alma.AcsLogging.alma.LogLevels.WARNING_VAL;
-import alma.AcsLogging.alma.LogLevels.WARNING_NAME;
-import alma.AcsLogging.alma.LogLevels.ERROR_VAL;
-import alma.AcsLogging.alma.LogLevels.ERROR_NAME;
-import alma.AcsLogging.alma.LogLevels.CRITICAL_VAL;
-import alma.AcsLogging.alma.LogLevels.CRITICAL_NAME;
-import alma.AcsLogging.alma.LogLevels.ALERT_VAL;
-import alma.AcsLogging.alma.LogLevels.ALERT_NAME;
-import alma.AcsLogging.alma.LogLevels.EMERGENCY_VAL;
-import alma.AcsLogging.alma.LogLevels.EMERGENCY_NAME;
-import alma.AcsLogging.alma.LogLevels.OFF_VAL;
-import alma.AcsLogging.alma.LogLevels.OFF_NAME;
+import alma.AcsLogLevels.ALERT_NAME;
+import alma.AcsLogLevels.ALERT_VAL;
+import alma.AcsLogLevels.CRITICAL_NAME;
+import alma.AcsLogLevels.CRITICAL_VAL;
+import alma.AcsLogLevels.DEBUG_NAME;
+import alma.AcsLogLevels.DEBUG_VAL;
+import alma.AcsLogLevels.EMERGENCY_NAME;
+import alma.AcsLogLevels.EMERGENCY_VAL;
+import alma.AcsLogLevels.ERROR_NAME;
+import alma.AcsLogLevels.ERROR_VAL;
+import alma.AcsLogLevels.INFO_NAME;
+import alma.AcsLogLevels.INFO_VAL;
+import alma.AcsLogLevels.NOTICE_NAME;
+import alma.AcsLogLevels.NOTICE_VAL;
+import alma.AcsLogLevels.OFF_NAME;
+import alma.AcsLogLevels.OFF_VAL;
+import alma.AcsLogLevels.TRACE_NAME;
+import alma.AcsLogLevels.TRACE_VAL;
+import alma.AcsLogLevels.WARNING_NAME;
+import alma.AcsLogLevels.WARNING_VAL;
 
 /**
  * An enum with the log levels, defined in the IDL. It is a convenience
  * class encapsulating the IDL constants of the log levels.
  * 
- * Each itemo of the enumerated is composed of a name and a value, 
+ * Each item of the enumerated is composed of a name and a value, 
  * both read directly from the IDL definition LogLevels:
  *   -name  comes from <type>_NAME 
  *   -value comes from <type>_VAL.
@@ -71,12 +70,12 @@ public enum AcsLogLevelDefinition {
 	/**
 	 * The value of the log (the integer read from the IDL)
 	 */
-	public int value;
+	public final int value;
 	
 	/**
 	 * The name of the log (the string read from the IDL)
 	 */
-	public String name;
+	public final String name;
 	
 	/**
 	 * Constructor
@@ -96,36 +95,52 @@ public enum AcsLogLevelDefinition {
 	 * @return The log level having val as its value
 	 */
 	public static AcsLogLevelDefinition fromInteger(int val) throws AcsJIllegalArgumentEx {
-		for (AcsLogLevelDefinition def: AcsLogLevelDefinition.values()) {
+		for (AcsLogLevelDefinition def : AcsLogLevelDefinition.values()) {
 			if (def.value==val) {
 				return def;
 			}
 		}
 		AcsJIllegalArgumentEx ex = new AcsJIllegalArgumentEx();
-		ex.setErrorDesc("Invalid value of log level "+val);
+		ex.setVariable("val");
+		ex.setValue(Integer.toString(val));
 		throw ex;
 	}
 	
 	/**
 	 * Return a log level, given its name.
-	 * 
+	 * <p>
+	 * This method is similar to {@link #valueOf(String)} except that it throws 
+	 * an Acs exception instead of a RuntimeException.
+	 * @TODO: perhaps implement this method by forwarding to valueOf(name).
+	 *  
 	 * @param name The (not null, not empty) name of the log level
 	 * @return The log level having the name as its name
+	 * @throws AcsJIllegalArgumentEx if <code>name</code> is <code>null</code> or not a valid IDL-defined log level name.
 	 */
 	public static AcsLogLevelDefinition fromName(String name) throws AcsJIllegalArgumentEx {
-		if (name==null) {
-			AcsJIllegalArgumentEx ex = new AcsJIllegalArgumentEx();
-			ex.setErrorDesc("Name of log level can't be null");
-			throw ex;
-		}
-		for (AcsLogLevelDefinition def: AcsLogLevelDefinition.values()) {
+		for (AcsLogLevelDefinition def : AcsLogLevelDefinition.values()) {
 			if (def.name.equals(name)) {
 				return def;
 			}
 		}
 		AcsJIllegalArgumentEx ex = new AcsJIllegalArgumentEx();
-		ex.setErrorDesc("Invalid name of log level "+name);
+		ex.setVariable("name");
+		ex.setValue(name);			
 		throw ex;
 	}
 	
+	/**
+	 * <b>Use this method only for testing!</b>
+	 * Returns the next log level in the list of enum literals, or <code>null</code>
+	 * if there is no next level or the next level would be <code>OFF</code>.
+	 */
+	public AcsLogLevelDefinition getNextHigherLevel() {
+		if (ordinal()+1 < values().length) {
+			AcsLogLevelDefinition next = values()[ordinal() + 1];
+			if (next != OFF) {
+				return next;
+			}
+		}
+		return null;
+	}
 }
