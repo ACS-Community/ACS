@@ -23,10 +23,10 @@ package com.cosylab.logging.engine.log;
 
 import javax.swing.ImageIcon;
 
-import com.cosylab.logging.engine.log.LogEntryXML;
 import com.cosylab.logging.engine.log.ILogEntry.Field;
 
-import alma.acs.logging.ACSCoreLevel;
+import alma.ACSErrTypeCommon.wrappers.AcsJIllegalArgumentEx;
+import alma.acs.logging.level.AcsLogLevelDefinition;
 
 /**
  * @author acaproni
@@ -149,57 +149,66 @@ public class LogTypeHelper {
     };
      
     
-	public static final int[] acsLevels = {
-		ACSCoreLevel.ACS_LEVEL_TRACE, 
-		ACSCoreLevel.ACS_LEVEL_DEBUG, 
-		ACSCoreLevel.ACS_LEVEL_INFO, 
-		ACSCoreLevel.ACS_LEVEL_NOTICE, 
-		ACSCoreLevel.ACS_LEVEL_WARNING, 
-		ACSCoreLevel.ACS_LEVEL_ERROR, 
-		ACSCoreLevel.ACS_LEVEL_CRITICAL, 
-		ACSCoreLevel.ACS_LEVEL_ALERT,
-		ACSCoreLevel.ACS_LEVEL_EMERGENCY };
+	/**
+	 * @TODO: Fix this level business, now that we have the enum class AcsLogLevelDefinitions.
+	 *        Eventually jlog should use those enum literals and only translate to 0-indexed levels 
+	 *        when accessing values of GUI controls such as combo boxes etc. 
+	 */
+	public static final AcsLogLevelDefinition[] acsLevels = {
+		AcsLogLevelDefinition.TRACE, 
+		AcsLogLevelDefinition.DEBUG, 
+		AcsLogLevelDefinition.INFO, 
+		AcsLogLevelDefinition.NOTICE, 
+		AcsLogLevelDefinition.WARNING, 
+		AcsLogLevelDefinition.ERROR, 
+		AcsLogLevelDefinition.CRITICAL, 
+		AcsLogLevelDefinition.ALERT,
+		AcsLogLevelDefinition.EMERGENCY };
 
 	
 	/**
 	 * Converts an ACS log level to an index-based level as used in jlog.
+	 * <p>
+	 * @TODO: Use AcsLogLevelDefinition everywhere except with swing controls
+	 * 
 	 * @param acsLevel  small integer as defined in logging architecture document
 	 * @return see {@link #logTypes}.
+	 * @throws AcsJIllegalArgumentEx 
 	 */
-	public static Integer getIndexBasedLevel(int acsLevel) {
+	public static Integer getIndexBasedLevel(int outdatedAcsLevel) throws AcsJIllegalArgumentEx {
+		AcsLogLevelDefinition acsLevel = AcsLogLevelDefinition.fromInteger(outdatedAcsLevel);
+		
 		switch (acsLevel) {
-		case ACSCoreLevel.ACS_LEVEL_ALL:
+		
+		case TRACE:
 			return ENTRYTYPE_TRACE;
 			
-		case ACSCoreLevel.ACS_LEVEL_TRACE:
-			return ENTRYTYPE_TRACE;
-			
-		case ACSCoreLevel.ACS_LEVEL_DEBUG:
+		case DEBUG:
 			return ENTRYTYPE_DEBUG;
 			
-		case ACSCoreLevel.ACS_LEVEL_INFO:
+		case INFO:
 			return ENTRYTYPE_INFO;
 			
-		case ACSCoreLevel.ACS_LEVEL_NOTICE:
+		case NOTICE:
 			return ENTRYTYPE_NOTICE;
 			
-		case ACSCoreLevel.ACS_LEVEL_WARNING:
+		case WARNING:
 			return ENTRYTYPE_WARNING;
 
-		case ACSCoreLevel.ACS_LEVEL_ERROR:
+		case ERROR:
 			return ENTRYTYPE_ERROR;
 
-		case ACSCoreLevel.ACS_LEVEL_CRITICAL:
+		case CRITICAL:
 			return ENTRYTYPE_CRITICAL;
 
-		case ACSCoreLevel.ACS_LEVEL_ALERT:
+		case ALERT:
 			return ENTRYTYPE_ALERT;
 
-		case ACSCoreLevel.ACS_LEVEL_EMERGENCY:
+		case EMERGENCY:
 			return ENTRYTYPE_EMERGENCY;
 
 		default:
-			throw new IllegalArgumentException("Illegal ACS log level " + acsLevel);
+			throw new AcsJIllegalArgumentEx("Enum constants of AcsLogLevelDefinition have changed, need to update switch list for " + acsLevel);
 		}
 	}    
     
@@ -214,7 +223,7 @@ public class LogTypeHelper {
 	public static int getAcsCoreLevel(Integer indexBasedLevel) {
 		int intlevelValue = indexBasedLevel.intValue();
 		if (intlevelValue >= 0 && intlevelValue < acsLevels.length) {
-			return acsLevels[intlevelValue];
+			return acsLevels[intlevelValue].value;
 		}
 		else {
 			throw new IllegalArgumentException("Illegal index based level " + intlevelValue);
