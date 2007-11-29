@@ -2,7 +2,7 @@
 #*******************************************************************************
 # E.S.O. - ALMA project
 #
-# "@(#) $Id: buildTAO,v 1.26 2007/10/18 06:57:34 bjeram Exp $"
+# "@(#) $Id: buildTAO,v 1.27 2007/11/29 07:05:21 maraya Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -180,7 +180,9 @@ echo "build of ACE/TAO for $OSTAG finished"
 
 if [ ! "X$WIND_BASE" = X ]
 then
-    LINK_DEST=$OSTAG
+    # With HOST_ROOT defined, the (correct) tao_idl will be selected
+    HOST_OSTAG=$OSTAG
+    HOST_ROOT=$ACE_ROOT_DIR/$HOST_OSTAG
     OSTAG=vxworks
     ACE_ROOT_VW=$ACE_ROOT_DIR/vxworks
     ACE_ROOT=$ACE_ROOT_VW
@@ -199,6 +201,18 @@ then
     echo "done"
     echo ""
 
+    echo "making links..."
+     cd $ACE_ROOT_VW/bin
+     ln -s $HOST_ROOT/bin/gperf
+     ln -s $HOST_ROOT/bin/tao_idl
+#    cd $ACE_ROOT_VW/bin
+#    ln -s ../../$LINK_DEST/bin/gperf gperf
+#    cd $ACE_ROOT_VW/TAO
+#    rm -rf TAO_IDL
+#    ln -s ../../$LINK_DEST/TAO/TAO_IDL .
+    echo "done"
+    echo ""
+
     echo "building ace"
     cd $ACE_ROOT_VW/ace ; make
     echo "done"
@@ -208,14 +222,6 @@ then
     echo "done"
     echo ""
 
-    echo "making links..."
-    cd $ACE_ROOT_VW/bin
-    ln -s ../../$LINK_DEST/bin/gperf gperf
-    cd $ACE_ROOT_VW/TAO
-    rm -rf TAO_IDL
-    ln -s ../../$LINK_DEST/TAO/TAO_IDL .
-    echo "done"
-    echo ""
 
     echo "building orbsvcs"
     cd $ACE_ROOT_VW/TAO/orbsvcs/orbsvcs ; make
