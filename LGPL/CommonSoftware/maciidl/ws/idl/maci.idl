@@ -12,6 +12,8 @@
     which the services function and handles their life cycle.
 */
 
+#include <logging_idl.idl>
+#include <ACSErrTypeCommon.idl>
 #include <maciErrType.idl>
 #include <acscommon.idl>
 
@@ -132,49 +134,55 @@ module maci {
 			 */
 			boolean useDefault;
 			/** min log level for logging to the central log service */
-			short minLogLevel;
+			AcsLogLevels::logLevelValue minLogLevel;
 			/** min log level for printing logs to stdout */
-			short minLogLevelLocal;
+			AcsLogLevels::logLevelValue minLogLevelLocal;
 		};
 
-            /**
-             * Gets the log levels of the default logging configuration.
-             * These levels are used by all loggers that have not been configured individually.
-             */
-            LogLevels get_default_logLevels();
+		/**
+		 * Gets the log levels of the default logging configuration.
+		 * These levels "belong" to the entire process and are used by all loggers 
+		 * that have not been configured individually.
+		 */
+		LogLevels get_default_logLevels();
        
-            /**
-             * Sets the log levels of the default logging configuration.
-             * These levels are used by all loggers that have not been configured individually.
-             */
-            void set_default_logLevels(in LogLevels levels);
+		/**
+		 * Sets the log levels of the default logging configuration.
+		 * These levels are used by all loggers that have not been configured individually.
+		 */
+		void set_default_logLevels(in LogLevels levels)
+			raises (ACSErrTypeCommon::IllegalArgumentEx);
        
-            /** 
-             * Gets the names of all loggers, to allow configuring their levels individually.
-             * The names are those that appear in the log records in the field "SourceObject".
-             * This includes the container logger, ORB logger, component loggers, 
-             * and (only C++) "GlobalLogger"s which get treated as one named logger. 
-             */
-            stringSeq get_logger_names();
+		/** 
+		 * Gets the names of all loggers, to allow configuring their levels individually.
+		 * The names are those that appear in the log records in the field "SourceObject".
+		 * This includes the container logger, ORB logger, component loggers, 
+		 * and (only C++) "GlobalLogger"s which get treated as one named logger. 
+		 */
+		stringSeq get_logger_names();
        
-            /**
-             * Gets log levels for a particular named logger.
-             * If the returned field LogLevels.useDefault is true, then the
-             * logger uses the default levels, see get_default_logLevels();       
-             * otherwise the returned local and remote levels apply.
-             */
-            LogLevels get_logLevels(in string logger_name)
-		raises (maciErrType::LoggerDoesNotExistEx);
+		/**
+		 * Gets log levels for a particular named logger.
+		 * If the returned field LogLevels.useDefault is true, then the
+		 * logger uses the default levels (see get_default_logLevels())
+		 * and the local and remote levels have no meaning;       
+		 * otherwise the returned local and remote levels apply.
+		 */
+		LogLevels get_logLevels(in string logger_name)
+			raises (maciErrType::LoggerDoesNotExistEx);
        
-            /**
-             * Sets log levels for a particular named logger.
-             * If levels.useDefault is true, then the logger will be reset to
-             * using default levels;       
-             * otherwise it will use the supplied
-             * local and remote levels. 
-             */
-            void set_logLevels(in string logger_name, in LogLevels levels)
-		raises (maciErrType::LoggerDoesNotExistEx);
+		/**
+		 * Sets log levels for a particular named logger.
+		 * If levels.useDefault is true, then the logger will be reset to
+		 * using default levels;       
+		 * otherwise it will use the supplied local and remote levels.
+		 * Throws IllegalArgumentEx if a provided level is invalid. 
+		 * <p>
+		 * @TODO: Define if/when LoggerDoesNotExistEx should be thrown. It could make sense to allow 
+		 *        setting levels for a component logger even before that component gets loaded in the container.
+		 */
+		void set_logLevels(in string logger_name, in LogLevels levels)
+			raises (maciErrType::LoggerDoesNotExistEx, ACSErrTypeCommon::IllegalArgumentEx);
 
 		/**
 		 * Commands the container or manager to read in again the logging
