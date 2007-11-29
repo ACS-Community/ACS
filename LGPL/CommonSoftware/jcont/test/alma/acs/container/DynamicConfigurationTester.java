@@ -197,7 +197,7 @@ public class DynamicConfigurationTester extends ComponentClientTestCase {
                 assertEquals(2,logLevels.minLogLevelLocal);
         }
 
-        public void testSetDefaultLogLevels(){
+        public void testSetDefaultLogLevels() throws Exception {
                 m_logger.info("Starting testSetDefaultLogLevels");
                 LogLevels logLevels=embeddedRunner.m_container.get_default_logLevels();
                 assertEquals(0,logLevels.minLogLevel);

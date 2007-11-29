@@ -35,6 +35,7 @@ import alma.acs.logging.ClientLogManager;
 import alma.acs.logging.config.LogConfig;
 import alma.acs.logging.engine.LogReceiver;
 import alma.acs.logging.engine.LogReceiver.DelayedLogEntry;
+import alma.acs.logging.level.AcsLogLevelDefinition;
 import alma.maci.loggingconfig.LoggingConfig;
 
 /**
@@ -79,8 +80,7 @@ public class ClientWithLogReceiverTest extends ComponentClientTestCase {
      */
     public void testLogQueueNoDelay() throws Exception {
     	LogConfig logConfig = ClientLogManager.getAcsLogManager().getLogConfig();
-    	assertTrue("For this test, even low-level logs must be sent off remotely.", logConfig.getDefaultMinLogLevel() == 2);    	
-    	
+    	assertEquals("For this test, even low-level logs must be sent off remotely.", AcsLogLevelDefinition.TRACE, logConfig.getDefaultMinLogLevel());
         logReceiver.setDelayMillis(0);
         BlockingQueue<DelayedLogEntry> queue = logReceiver.getLogQueue();
         
