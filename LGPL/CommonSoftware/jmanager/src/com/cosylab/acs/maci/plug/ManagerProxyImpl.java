@@ -17,6 +17,18 @@ import org.omg.CORBA.NO_RESOURCES;
 import org.omg.CORBA.Object;
 import org.omg.CORBA.UNKNOWN;
 
+import com.cosylab.acs.maci.AccessRights;
+import com.cosylab.acs.maci.BadParametersException;
+import com.cosylab.acs.maci.Component;
+import com.cosylab.acs.maci.ComponentSpec;
+import com.cosylab.acs.maci.ComponentStatus;
+import com.cosylab.acs.maci.CoreException;
+import com.cosylab.acs.maci.Manager;
+import com.cosylab.acs.maci.NoDefaultComponentException;
+import com.cosylab.acs.maci.NoResourcesException;
+import com.cosylab.acs.maci.StatusHolder;
+import com.cosylab.acs.maci.manager.CURLHelper;
+
 import si.ijs.maci.AdministratorHelper;
 import si.ijs.maci.Client;
 import si.ijs.maci.ClientHelper;
@@ -28,10 +40,14 @@ import si.ijs.maci.ContainerInfo;
 import si.ijs.maci.ManagerPOA;
 import si.ijs.maci.SynchronousAdministratorHelper;
 import si.ijs.maci.LoggingConfigurablePackage.LogLevels;
+
+import alma.ACSErrTypeCommon.IllegalArgumentEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJBadParameterEx;
+import alma.ACSErrTypeCommon.wrappers.AcsJIllegalArgumentEx;
 import alma.acs.logging.ClientLogManager;
 import alma.acs.logging.config.LogConfig;
 import alma.acs.logging.config.LogConfigException;
+import alma.acs.logging.level.AcsLogLevelDefinition;
 import alma.maci.loggingconfig.UnnamedLogger;
 import alma.maciErrType.CannotGetComponentEx;
 import alma.maciErrType.CannotRegisterComponentEx;
@@ -51,18 +67,6 @@ import alma.maciErrType.wrappers.AcsJIncompleteComponentSpecEx;
 import alma.maciErrType.wrappers.AcsJInvalidComponentSpecEx;
 import alma.maciErrType.wrappers.AcsJNoDefaultComponentEx;
 import alma.maciErrType.wrappers.AcsJNoPermissionEx;
-
-import com.cosylab.acs.maci.AccessRights;
-import com.cosylab.acs.maci.BadParametersException;
-import com.cosylab.acs.maci.Component;
-import com.cosylab.acs.maci.ComponentSpec;
-import com.cosylab.acs.maci.ComponentStatus;
-import com.cosylab.acs.maci.CoreException;
-import com.cosylab.acs.maci.Manager;
-import com.cosylab.acs.maci.NoDefaultComponentException;
-import com.cosylab.acs.maci.NoResourcesException;
-import com.cosylab.acs.maci.StatusHolder;
-import com.cosylab.acs.maci.manager.CURLHelper;
 
 /**
  * Manager is the central point of interaction between the components
@@ -1817,8 +1821,8 @@ public class ManagerProxyImpl extends ManagerPOA
 		
 		LogLevels logLevels = new LogLevels();
 		logLevels.useDefault = false;
-		logLevels.minLogLevel = (short) logConfig.getDefaultMinLogLevel();
-		logLevels.minLogLevelLocal = (short) logConfig.getDefaultMinLogLevelLocal();
+		logLevels.minLogLevel = (short) logConfig.getDefaultMinLogLevel().value;
+		logLevels.minLogLevelLocal = (short) logConfig.getDefaultMinLogLevelLocal().value;
 		return logLevels;
 	}
 
@@ -1826,11 +1830,15 @@ public class ManagerProxyImpl extends ManagerPOA
 	 * Sets the log levels of the default logging configuration. These levels
 	 * are used by all loggers that have not been configured individually.
 	 */
-	public void set_default_logLevels(LogLevels levels) {
+	public void set_default_logLevels(LogLevels levels) throws IllegalArgumentEx {
 		LogConfig logConfig = ClientLogManager.getAcsLogManager().getLogConfig();
 		
-		logConfig.setDefaultMinLogLevel(levels.minLogLevel);
-		logConfig.setDefaultMinLogLevelLocal(levels.minLogLevelLocal);
+		try {
+			logConfig.setDefaultMinLogLevel(AcsLogLevelDefinition.fromInteger(levels.minLogLevel));
+			logConfig.setDefaultMinLogLevelLocal(AcsLogLevelDefinition.fromInteger(levels.minLogLevelLocal));
+		} catch (AcsJIllegalArgumentEx ex) {
+			throw ex.toIllegalArgumentEx();
+		}			
 	}
 
 	/**
@@ -1866,7 +1874,7 @@ public class ManagerProxyImpl extends ManagerPOA
 	 * true, then the logger will be reset to using default levels; otherwise it
 	 * will use the supplied local and remote levels.
 	 */
-	public void set_logLevels(String logger_name, LogLevels levels) {
+	public void set_logLevels(String logger_name, LogLevels levels) throws IllegalArgumentEx {
 		LogConfig logConfig = ClientLogManager.getAcsLogManager().getLogConfig();
 
 		if (levels.useDefault) {
@@ -1876,7 +1884,11 @@ public class ManagerProxyImpl extends ManagerPOA
 			UnnamedLogger config = new UnnamedLogger();
 			config.setMinLogLevel(levels.minLogLevel);
 			config.setMinLogLevelLocal(levels.minLogLevelLocal);
-			logConfig.setNamedLoggerConfig(logger_name, config);
+			try {
+				logConfig.setNamedLoggerConfig(logger_name, config);
+			} catch (AcsJIllegalArgumentEx ex) {
+				throw ex.toIllegalArgumentEx();
+			}			
 		}		
 	}
 
