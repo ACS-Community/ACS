@@ -27,6 +27,7 @@ import java.util.logging.LogRecord;
 
 import alma.acs.logging.config.LogConfig;
 import alma.acs.logging.config.LogConfigSubscriber;
+import alma.acs.logging.level.AcsLogLevelDefinition;
 
 /**
  * The logging handler used by ACS for remote logging.
@@ -47,7 +48,7 @@ public class AcsLoggingHandler extends Handler implements LogConfigSubscriber
 
 	private LogConfig logConfig;
 	private String loggerName;
-
+	private AcsLogLevelDefinition immediateDispatchLevel; 
     private boolean isClosed;
 
     
@@ -66,13 +67,18 @@ public class AcsLoggingHandler extends Handler implements LogConfigSubscriber
      * @see alma.acs.logging.config.LogConfigSubscriber#configureLogging(alma.acs.logging.config.LogConfig)
      */
     public void configureLogging(LogConfig logConfig) {
-        
+
+    	// we expect always the same singleton object, but there is no reason for this class to rely on this 
+    	// or even assert this behavior. Instead we just update our reference.
+    	this.logConfig = logConfig;
+    		
         // all remote Loggers get their levels configured so that isLoggable() returns correct results
         // for both local and remote logging. 
         // In case the threshold for local logging is lower than for remote logging,
         // this handler still needs to filter out log records whose levels are in between the thresholds.
         try {
-            int minLogLevelACS = logConfig.getNamedLoggerConfig(loggerName).getMinLogLevel();
+        	AcsLogLevelDefinition minLogLevelACS = AcsLogLevelDefinition.fromInteger(
+        			logConfig.getNamedLoggerConfig(loggerName).getMinLogLevel() );
             AcsLogLevel minLogLevelJDK = AcsLogLevel.fromAcsCoreLevel(minLogLevelACS); // JDK Level style
             if (minLogLevelJDK != null) {
             	setLevel(minLogLevelJDK);
@@ -80,6 +86,7 @@ public class AcsLoggingHandler extends Handler implements LogConfigSubscriber
             else {
             	throw new NullPointerException("No JDK log level found for ACS log level " + minLogLevelACS);
             }
+            immediateDispatchLevel = logConfig.getImmediateDispatchLevel();
         } catch (Exception ex) {
         	publish(new LogRecord(Level.WARNING, "Failed to configure remote log handler: " + ex.toString()));
         }
@@ -113,7 +120,8 @@ public class AcsLoggingHandler extends Handler implements LogConfigSubscriber
         logRecord.getSourceClassName();
 
         logQueue.log(logRecord);
-        if (AcsLogLevel.getNativeLevel(logRecord.getLevel()).getAcsLevel() >= logConfig.getImmediateDispatchLevel()) {
+        
+        if (AcsLogLevel.getNativeLevel(logRecord.getLevel()).getAcsLevel().compareTo(immediateDispatchLevel) >= 0) {
             if (DEBUG) {
                 System.out.println("flushing log queue because of log record with level " + logRecord.getLevel().getName());
             }
@@ -146,10 +154,7 @@ public class AcsLoggingHandler extends Handler implements LogConfigSubscriber
 	protected static void debug()
 	{
 		DEBUG = true;
-		if (DEBUG)
-		{
-			System.out.println("AcsLoggingHandler#DEBUG set to true...");
-		}
+		System.out.println("AcsLoggingHandler#DEBUG set to true...");
 	}
 
 }

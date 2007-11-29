@@ -34,6 +34,7 @@ import alma.acs.logging.AcsLogLevel;
 import alma.acs.logging.AcsLogRecord;
 import alma.acs.logging.ClientLogManager;
 import alma.acs.logging.LogParameterUtil;
+import alma.acs.logging.level.AcsLogLevelDefinition;
 import alma.acs.util.XmlNormalizer;
 
 /**
@@ -67,7 +68,7 @@ public class AcsXMLLogFormatter extends AcsLogFormatter
 		if (acsLevel == null) {
 			return "";
 		}
-		final int acsCoreLevel = acsLevel.getAcsLevel();
+		final AcsLogLevelDefinition acsCoreLevel = acsLevel.getAcsLevel();
 		final String levelName = acsLevel.getEntryName();
 
 		// get date
@@ -86,7 +87,7 @@ public class AcsXMLLogFormatter extends AcsLogFormatter
 
 		String file = logRecord.getSourceClassName();
 		if (file == null) {
-			if (acsCoreLevel == ACS_LEVEL_DEBUG)
+			if (acsCoreLevel == AcsLogLevelDefinition.DEBUG)
 				sb.append("File=\"unknown\" ");
 		}
 		else {
@@ -95,7 +96,7 @@ public class AcsXMLLogFormatter extends AcsLogFormatter
 
 		long line = logParamUtil.extractLongProperty(LogParameterUtil.PARAM_LINE, -1);
 		if (line < 0) {
-			if (acsCoreLevel == ACS_LEVEL_TRACE || acsCoreLevel == ACS_LEVEL_DEBUG)
+			if (acsCoreLevel == AcsLogLevelDefinition.TRACE || acsCoreLevel == AcsLogLevelDefinition.DEBUG)
 				sb.append("Line=\"0\" ");
 		}
 		else {
@@ -104,7 +105,7 @@ public class AcsXMLLogFormatter extends AcsLogFormatter
 
 		String Routine = logRecord.getSourceMethodName();
 		if (Routine == null) {
-			if (acsCoreLevel == ACS_LEVEL_TRACE)
+			if (acsCoreLevel == AcsLogLevelDefinition.TRACE)
 				sb.append("Routine=\"unknown\" ");
 		}
 		else {
@@ -156,7 +157,7 @@ public class AcsXMLLogFormatter extends AcsLogFormatter
 		}
 		
 		// add stack info
-		if (acsCoreLevel >= ACS_LEVEL_WARNING) {
+		if (acsCoreLevel.compareTo(AcsLogLevelDefinition.WARNING) >= 0) {
 			// add stack id
 			String stackId = logParamUtil.extractStringProperty(LogParameterUtil.PARAM_STACK_ID, null);
 			if (stackId == null)
@@ -186,8 +187,8 @@ public class AcsXMLLogFormatter extends AcsLogFormatter
 
 		// add priority
 		// to be written only different as entry priority		
-		long priority = logParamUtil.extractLongProperty(LogParameterUtil.PARAM_PRIORITY, acsCoreLevel);
-		if (priority != acsCoreLevel) {
+		long priority = logParamUtil.extractLongProperty(LogParameterUtil.PARAM_PRIORITY, acsCoreLevel.value);
+		if (priority != acsCoreLevel.value) {
 			sb.append("Priority=\"" + priority + "\" ");
 		}
 

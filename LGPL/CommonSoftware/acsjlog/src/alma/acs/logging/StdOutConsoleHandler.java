@@ -27,6 +27,7 @@ import java.util.logging.StreamHandler;
 
 import alma.acs.logging.config.LogConfig;
 import alma.acs.logging.config.LogConfigSubscriber;
+import alma.acs.logging.level.AcsLogLevelDefinition;
 
 /**
  * Copied over from <code>ConsoleHandler</code>, but using <code>System.out</code> instead of <code>System.err</code>.
@@ -53,9 +54,12 @@ public class StdOutConsoleHandler extends StreamHandler implements LogConfigSubs
     /**
      * @see alma.acs.logging.config.LogConfigSubscriber#configureLogging(alma.acs.logging.config.LogConfig)
      */
-    public void configureLogging(LogConfig logConfig) {
+    public void configureLogging(LogConfig newLogConfig) {
+    	// just in case some day LogConfig is no longer used as a singleton
+    	this.logConfig = newLogConfig;
+    	
         try {
-            int minLogLevelACS = logConfig.getNamedLoggerConfig(loggerName).getMinLogLevelLocal();
+        	AcsLogLevelDefinition minLogLevelACS = AcsLogLevelDefinition.fromInteger(logConfig.getNamedLoggerConfig(loggerName).getMinLogLevelLocal());
             AcsLogLevel minLogLevelJDK = AcsLogLevel.fromAcsCoreLevel(minLogLevelACS); // JDK Level style
             if (minLogLevelJDK != null) {
             	setLevel(minLogLevelJDK);

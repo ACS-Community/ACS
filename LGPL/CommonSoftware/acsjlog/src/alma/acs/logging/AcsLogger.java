@@ -34,7 +34,7 @@ import java.util.logging.Logger;
 import alma.acs.logging.adapters.JacORBFilter;
 import alma.acs.logging.config.LogConfig;
 import alma.acs.logging.config.LogConfigSubscriber;
-import alma.acs.logging.config.LogConfig.LockableUnnamedLogger;
+import alma.acs.logging.level.AcsLogLevelDefinition;
 import alma.maci.loggingconfig.UnnamedLogger;
 
 /**
@@ -335,10 +335,11 @@ public class AcsLogger extends Logger implements LogConfigSubscriber {
      * @param logConfigData
      */
     static void configureJDKLogger(Logger jdkLogger, UnnamedLogger loggerConfig) {
-        int minLogLevelACS; // small integer level
         try {
         	// the logger must let through the lowest log level required for either local or remote logging.
-            minLogLevelACS = Math.min(loggerConfig.getMinLogLevel(), loggerConfig.getMinLogLevelLocal());
+        	AcsLogLevelDefinition minLogLevelACS = AcsLogLevelDefinition.fromInteger(
+        			Math.min(loggerConfig.getMinLogLevel(), loggerConfig.getMinLogLevelLocal())
+        		);
             AcsLogLevel minLogLevelJDK = AcsLogLevel.fromAcsCoreLevel(minLogLevelACS); // JDK Level style 
             jdkLogger.setLevel(minLogLevelJDK);
         } catch (Exception ex) {

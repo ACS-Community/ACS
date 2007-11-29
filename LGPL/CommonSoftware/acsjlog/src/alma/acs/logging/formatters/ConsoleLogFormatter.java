@@ -29,8 +29,6 @@ import java.util.Date;
 import java.util.logging.Formatter;
 import java.util.logging.LogRecord;
 
-import alma.acs.logging.ClientLogManager;
-
 /**
  * An implementation of <code>java.util.logging.Formatter</code>.
  * Produces single line log reports meant to go to the console.

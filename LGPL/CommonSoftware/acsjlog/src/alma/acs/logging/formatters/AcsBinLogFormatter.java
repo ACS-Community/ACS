@@ -20,23 +20,25 @@
  *    MA 02111-1307  USA
  */
 package alma.acs.logging.formatters;
-import org.omg.CORBA.Any;
-
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.Date;
+import java.util.Map;
 import java.util.logging.Formatter;
 import java.util.logging.LogRecord;
-import java.util.Map;
-import java.util.Date;
 
-import alma.acs.logging.AcsLogLevel;
-import alma.acs.logging.ClientLogManager;
-import alma.acs.logging.LogParameterUtil;
+import org.omg.CORBA.Any;
 
-import alma.acs.logging.AcsLogRecord;
 import alma.ACSLoggingLog.LogBinaryRecord;
 import alma.ACSLoggingLog.LogBinaryRecordHelper;
+import alma.ACSLoggingLog.LogType;
 import alma.ACSLoggingLog.NameValue;
+import alma.acs.logging.AcsLogLevel;
+import alma.acs.logging.AcsLogRecord;
+import alma.acs.logging.LogParameterUtil;
+import alma.acs.logging.level.AcsLogLevelDefinition;
+
+
 /**
  * @author cparedes
  *
@@ -45,7 +47,6 @@ import alma.ACSLoggingLog.NameValue;
  */
 public class AcsBinLogFormatter extends AcsLogFormatter 
 {
-
     /**
      * This is the method used by ACS, for all AcsLogFormatters.
      */
@@ -63,7 +64,7 @@ public class AcsBinLogFormatter extends AcsLogFormatter
 		if (acsLevel == null) {
 			return null;
 		}		
-		final int acsCoreLevel = acsLevel.getAcsLevel();
+		final AcsLogLevelDefinition acsCoreLevel = acsLevel.getAcsLevel();
 
 		// get date
 		Date date = new Date(logRecord.getMillis());
@@ -71,13 +72,13 @@ public class AcsBinLogFormatter extends AcsLogFormatter
 		
 		LogParameterUtil logParamUtil = new LogParameterUtil(logRecord);
 
-		rLog.type = LogBinEntryTypeName[acsCoreLevel];
+		rLog.type = LogBinEntryTypeName[acsCoreLevel.value];
         rLog.TimeStamp = TimeStamp;
 
 		String file = logRecord.getSourceClassName();
 		if (file == null)
 		{
-			if (acsCoreLevel == ACS_LEVEL_DEBUG)
+			if (acsCoreLevel == AcsLogLevelDefinition.DEBUG)
 				rLog.File = "unknown";
 		}
 		else
@@ -86,17 +87,17 @@ public class AcsBinLogFormatter extends AcsLogFormatter
 		long line = logParamUtil.extractLongProperty(LogParameterUtil.PARAM_LINE, -1);
 		if (line < 0)
 		{
-			if (acsCoreLevel == ACS_LEVEL_TRACE || acsCoreLevel == ACS_LEVEL_DEBUG)
+			if (acsCoreLevel == AcsLogLevelDefinition.TRACE || acsCoreLevel == AcsLogLevelDefinition.DEBUG)
 		        rLog.Line = 0;		
 		}
 		else
 		    rLog.Line = (int)line;		
 
 		String Routine = logRecord.getSourceMethodName();
-		if (Routine == null)
-		{
-			if (acsCoreLevel == ACS_LEVEL_TRACE)
+		if (Routine == null) {
+			if (acsCoreLevel == AcsLogLevelDefinition.TRACE) {
 	            rLog.Routine = "unknown";			
+			}
 		}
 		else {
 	        rLog.Routine = Routine;			
@@ -139,8 +140,7 @@ public class AcsBinLogFormatter extends AcsLogFormatter
 		// add stack info
         rLog.StackId="";
         rLog.StackLevel = 0;
-		if (acsCoreLevel >= ACS_LEVEL_WARNING)
-		{
+		if (acsCoreLevel.compareTo(AcsLogLevelDefinition.WARNING) >= 0) {
 			// add stack id
 			String stackId = logParamUtil.extractStringProperty(LogParameterUtil.PARAM_STACK_ID, null);
 			if (stackId == null)
@@ -166,8 +166,8 @@ public class AcsBinLogFormatter extends AcsLogFormatter
         else rLog.Uri = "";
 		// add priority
 		// to be written only different as entry priority		
-		long priority = logParamUtil.extractLongProperty(LogParameterUtil.PARAM_PRIORITY, acsCoreLevel);
-		if (priority != acsCoreLevel)
+		long priority = logParamUtil.extractLongProperty(LogParameterUtil.PARAM_PRIORITY, acsCoreLevel.value);
+		if (priority != acsCoreLevel.value)
             rLog.Priority = (int)priority;
         else rLog.Priority = -1;
 
@@ -225,7 +225,9 @@ public class AcsBinLogFormatter extends AcsLogFormatter
 		}
 
         rLog.log_data = new NameValue[i];
-        for(int j=0; j<i;j++) rLog.log_data[j] = log_data[j]; 
+        for(int j=0; j<i;j++) {
+        	rLog.log_data[j] = log_data[j];
+        }
 
 		// end tag of BIN record
 
@@ -240,4 +242,26 @@ public class AcsBinLogFormatter extends AcsLogFormatter
 	public String format(LogRecord record) {		
 		return "Error: only binary format available!";
 	}
+	
+	
+    /**
+     * This strange list used to be inherited from the former base class ACSCoreLevel,
+     * which was replaced by the {@link AcsLogLevelDefinition} enum after ACS 7.0. 
+     * Probably the following LogType IDL enum (see logging_idl.idl) will need to go next.
+     * Till then we keep it here locally.
+     */
+    public final static LogType[] LogBinEntryTypeName = {
+        LogType.Unknown,		// not in specs
+        LogType.Shutdown, 	// not in specs
+        LogType.Trace,
+        LogType.Debug,
+        LogType.Info,
+        LogType.Notice,
+        LogType.Warning,
+        LogType.Startup,		// not in specs
+        LogType.Error,
+        LogType.Critical,
+        LogType.Alert,
+        LogType.Emergency
+    };
 }

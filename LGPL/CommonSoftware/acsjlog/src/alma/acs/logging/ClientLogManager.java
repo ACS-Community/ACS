@@ -44,6 +44,7 @@ import alma.acs.logging.config.LogConfigSubscriber;
 import alma.acs.logging.formatters.AcsBinLogFormatter;
 import alma.acs.logging.formatters.AcsXMLLogFormatter;
 import alma.acs.logging.formatters.ConsoleLogFormatter;
+import alma.acs.logging.level.AcsLogLevelDefinition;
 
 
 /**
@@ -584,8 +585,7 @@ public class ClientLogManager implements LogConfigSubscriber
     	synchronized (loggers) {
 	    	for (AcsLoggerInfo loggerInfo : loggers.values()) {
 	    		if (loggerInfo.loggerOwnerType == LoggerOwnerType.OrbLogger) {
-	    			int level = Integer.MAX_VALUE;
-	    			sharedLogConfig.setAndLockMinLogLevel(level, loggerInfo.logger.getLoggerName());
+	    			sharedLogConfig.setAndLockMinLogLevel(AcsLogLevelDefinition.OFF, loggerInfo.logger.getLoggerName());
 	    		}
 			}    		
     	}
@@ -625,7 +625,7 @@ public class ClientLogManager implements LogConfigSubscriber
         
         // fix levels if we suppress corba remote logging
         if (suppressCorbaRemoteLogging) {
-        	sharedLogConfig.setAndLockMinLogLevel(Integer.MAX_VALUE, loggerName);
+        	sharedLogConfig.setAndLockMinLogLevel(AcsLogLevelDefinition.OFF, loggerName);
         }
         
         return corbaLogger;

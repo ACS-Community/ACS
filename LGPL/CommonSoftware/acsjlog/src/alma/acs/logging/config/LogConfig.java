@@ -58,7 +58,8 @@ import org.xml.sax.SAXException;
 import com.cosylab.CDB.DAL;
 import com.cosylab.CDB.DALOperations;
 
-import alma.acs.logging.ACSCoreLevel;
+import alma.ACSErrTypeCommon.wrappers.AcsJIllegalArgumentEx;
+import alma.acs.logging.level.AcsLogLevelDefinition;
 import alma.cdbErrType.CDBRecordDoesNotExistEx;
 import alma.cdbErrType.CDBXMLErrorEx;
 import alma.maci.loggingconfig.LoggingConfig;
@@ -433,8 +434,8 @@ public class LogConfig {
 		return loggingConfig.getDispatchPacketSize();
 	}
 
-	public int getImmediateDispatchLevel() {
-		return loggingConfig.getImmediateDispatchLevel();
+	public AcsLogLevelDefinition getImmediateDispatchLevel() {
+		return convertLegalLogLevel(loggingConfig.getImmediateDispatchLevel());
 	}
 
 	public int getFlushPeriodSeconds() {
@@ -450,11 +451,28 @@ public class LogConfig {
 	///////////////////////////////////////////////////////////////////////////////////////////////////
 
 	/**
+	 * Helper method that converts an integer log level to the matching enum literal.
+	 * It suppresses the AcsJIllegalArgumentEx because the level must have been validated during the config init 
+	 * (and we wouldn't be bothered about exceptions here if we had stored the converted enum literal instead of the castor class)  
+	 * Therefore just a lame log and runtime ex are thrown, but no AcsJIllegalArgumentEx gets thrown on.
+	 * @param legalLogLevel
+	 * @return
+	 */
+	private AcsLogLevelDefinition convertLegalLogLevel(int legalLogLevel) {
+		try {
+			return AcsLogLevelDefinition.fromInteger(legalLogLevel);
+		} catch (AcsJIllegalArgumentEx ex) {
+			logger.warning("Failed to convert to AcsLogLevelDefinition the level integer " + loggingConfig.getImmediateDispatchLevel());
+			throw new RuntimeException(ex);
+		}
+	}
+	
+	/**
 	 * Gets the log level for stdout printing for default loggers 
 	 * (those that don't have custom levels set).
 	 */
-	public int getDefaultMinLogLevelLocal() {
-		return loggingConfig.getMinLogLevelLocal();
+	public AcsLogLevelDefinition getDefaultMinLogLevelLocal() {
+		return convertLegalLogLevel(loggingConfig.getMinLogLevelLocal());
 	}
 
 	/**
@@ -464,9 +482,9 @@ public class LogConfig {
 	 * The call is ignored for negative values of <code>newLevel</code>.
 	 * @param newLevel
 	 */
-	public void setDefaultMinLogLevelLocal(int newLevel) {
-		if (newLevel >= 0) {
-			loggingConfig.setMinLogLevelLocal(newLevel);
+	public void setDefaultMinLogLevelLocal(AcsLogLevelDefinition newLevel) {
+		if (newLevel.value >= 0) {
+			loggingConfig.setMinLogLevelLocal(newLevel.value);
 			notifySubscribers();
 		}
 	}
@@ -475,8 +493,8 @@ public class LogConfig {
 	 * Gets the log level for centralized logging for default loggers 
 	 * (those that don't have custom levels set).
 	 */
-	public int getDefaultMinLogLevel() {
-		return loggingConfig.getMinLogLevel();
+	public AcsLogLevelDefinition getDefaultMinLogLevel() {
+		return convertLegalLogLevel(loggingConfig.getMinLogLevel());
 	}
 
 	/**
@@ -486,9 +504,9 @@ public class LogConfig {
 	 * The call is ignored for negative values of <code>newLevel</code>.
 	 * @param newLevel
 	 */
-	public void setDefaultMinLogLevel(int newLevel) {
-		if (newLevel >= 0) {
-			loggingConfig.setMinLogLevel(newLevel);
+	public void setDefaultMinLogLevel(AcsLogLevelDefinition newLevel) {
+		if (newLevel.value >= 0) {
+			loggingConfig.setMinLogLevel(newLevel.value);
 			notifySubscribers();
 		}
 	}
@@ -550,9 +568,13 @@ public class LogConfig {
 	 * <p>
 	 * A copy of the supplied <code>config</code> is made
 	 * to isolate the stored data from later modifications.
+	 * @throws AcsJIllegalArgumentEx if the log level integers inside <code>config</code> are illegal.
 	 */
-	public void setNamedLoggerConfig(String loggerName, LockableUnnamedLogger config) {
+	public void setNamedLoggerConfig(String loggerName, LockableUnnamedLogger config) throws AcsJIllegalArgumentEx {
 		if (loggerName != null && config != null) {
+			// validate level integers. @TODO: use some other struct with level enums instead of these integers 
+			AcsLogLevelDefinition.fromInteger(config.getMinLogLevel());
+			AcsLogLevelDefinition.fromInteger(config.getMinLogLevelLocal());
 			LockableUnnamedLogger config2 = new LockableUnnamedLogger(config);
 			storeNamedLoggerConfig(loggerName, config2);
 			notifySubscribers();
@@ -567,7 +589,7 @@ public class LogConfig {
 	 * @param config
 	 * @since ACS 7.0
 	 */
-	public void setNamedLoggerConfig(String loggerName, UnnamedLogger config) {
+	public void setNamedLoggerConfig(String loggerName, UnnamedLogger config) throws AcsJIllegalArgumentEx {
 		if (loggerName != null && config != null) {
 			LockableUnnamedLogger config2 = new LockableUnnamedLogger(config); // unlocked by default
 			setNamedLoggerConfig(loggerName, config2);
@@ -588,16 +610,24 @@ public class LogConfig {
 		}
 	}
 
-	public void setMinLogLevelLocal(int newLevel, String loggerName) {
+	public void setMinLogLevelLocal(AcsLogLevelDefinition newLevel, String loggerName) {
 		LockableUnnamedLogger config = getNamedLoggerConfig(loggerName);  // new object, with cached or default values
-		config.setMinLogLevelLocal(newLevel);
-		setNamedLoggerConfig(loggerName, config);
+		config.setMinLogLevelLocal(newLevel.value);
+		try {
+			setNamedLoggerConfig(loggerName, config);
+		} catch (AcsJIllegalArgumentEx ex) {
+			// cannot happen because the level integer comes from a valid AcsLogLevelDefinition
+		}
 	}
 
-	public void setMinLogLevel(int newLevel, String loggerName) {
+	public void setMinLogLevel(AcsLogLevelDefinition newLevel, String loggerName) {
 		LockableUnnamedLogger config = getNamedLoggerConfig(loggerName); // new object, with cached or default values
-		config.setMinLogLevel(newLevel);
-		setNamedLoggerConfig(loggerName, config);
+		config.setMinLogLevel(newLevel.value);
+		try {
+			setNamedLoggerConfig(loggerName, config);
+		} catch (AcsJIllegalArgumentEx ex) {
+			// cannot happen because the level integer comes from a valid AcsLogLevelDefinition
+		}
 	}
 
 	/**
@@ -611,20 +641,24 @@ public class LogConfig {
 	 * @param newLevel  small integer from {@link ACSCoreLevel}
 	 * @param loggerName
 	 */
-	public void setAndLockMinLogLevel(int newLevel, String loggerName) {
+	public void setAndLockMinLogLevel(AcsLogLevelDefinition newLevel, String loggerName) {
 		synchronized (namedLoggerConfigs) {	
 			LockableUnnamedLogger config = getNamedLoggerConfig(loggerName); // new object, with cached or default values
 			if (config.isLocked()) {
 				// only if the level is different we log the warning. This removes the need to check the lock status and level before calling this method.
-				if (config.getMinLogLevel() != newLevel) {
+				if (config.getMinLogLevel() != newLevel.value) {
 					log(Level.WARNING, "Ignoring attempt to lock logger " + loggerName + " to level " + newLevel + " because it is already locked to remote level " + config.getMinLogLevel(), null);
 				}
 			}
-			else if (newLevel != config.getMinLogLevel()) {
-				config.setMinLogLevel(newLevel);
+			else if (newLevel.value != config.getMinLogLevel()) {
+				config.setMinLogLevel(newLevel.value);
 				config.lock();
-				setNamedLoggerConfig(loggerName, config);
-				log(Level.INFO, "Locked logger " + loggerName + " to level " + newLevel, null);
+				try {
+					setNamedLoggerConfig(loggerName, config);
+				} catch (AcsJIllegalArgumentEx ex) {
+					// cannot happen because the level integer comes from a valid AcsLogLevelDefinition 
+				}
+				log(Level.INFO, "Locked logger " + loggerName + " to level " + newLevel.value, null);
 			}
 		}
 	}
@@ -753,7 +787,7 @@ public class LogConfig {
 			logger.log(level, msg, thr);
 		} 
 		else {
-			if (level.intValue() >= getDefaultMinLogLevelLocal()) {
+			if (level.intValue() >= getDefaultMinLogLevelLocal().value) {
 				System.out.println(level.toString() + ": " + msg + (thr != null ? thr.toString() : ""));
 			}
 		}
