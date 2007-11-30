@@ -3,16 +3,16 @@
        xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0" 
        xmlns:baci="urn:schemas-cosylab-com:BACI:1.0" 
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-      <_ Name="TESTLOG1"    Code="alma.contLogTest.LogLevelsImpl.LogLevelsHelper"
-		             		Type="IDL:alma/contLogTest/LogLevels:1.0"
+      <_ Name="TESTLOG1"    Code="alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompHelper"
+		             		Type="IDL:alma/contLogTest/TestLogLevelsComp:1.0"
                             Container="frodoContainer"/>
-      <_ Name="TESTLOG2"    Code="alma.contLogTest.LogLevelsImpl.LogLevelsHelper"
-		             		Type="IDL:alma/contLogTest/LogLevels:1.0"
+      <_ Name="TESTLOG2"    Code="alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompHelper"
+		             		Type="IDL:alma/contLogTest/TestLogLevelsComp:1.0"
                             Container="frodoContainerN"/>
       <_ Name="TESTLOG3"    Code="contLogTestImpl"
-		             		Type="IDL:alma/contLogTest/LogLevels:1.0"
+		             		Type="IDL:alma/contLogTest/TestLogLevelsComp:1.0"
                             Container="bilboContainer"/>
       <_ Name="TESTLOG4"    Code="contLogTestImpl"
-		             		Type="IDL:alma/contLogTest/LogLevels:1.0"
+		             		Type="IDL:alma/contLogTest/TestLogLevelsComp:1.0"
                             Container="bilboContainerN"/>
 </Components>

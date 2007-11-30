@@ -21,7 +21,7 @@
 *
 *
 *
-* "@(#) $Id: contLogTestImpl.cpp,v 1.3 2007/11/22 09:54:25 cparedes Exp $"
+* "@(#) $Id: contLogTestImpl.cpp,v 1.4 2007/11/30 13:01:16 eallaert Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -33,27 +33,27 @@
 #include <ACSErrTypeCommon.h>
 #include <iostream>
 
-ACE_RCSID(contLogTest, contLogTestImpl, "$Id: contLogTestImpl.cpp,v 1.3 2007/11/22 09:54:25 cparedes Exp $")
+ACE_RCSID(contLogTest, contLogTestImpl, "$Id: contLogTestImpl.cpp,v 1.4 2007/11/30 13:01:16 eallaert Exp $")
 
 /* ----------------------------------------------------------------*/
-LogLevels::LogLevels( 
+TestLogLevelsComp::TestLogLevelsComp( 
 		       const ACE_CString &name,
 		       maci::ContainerServices * containerServices) :
     ACSComponentImpl(name, containerServices)
 {
     // ACS_TRACE is used for debugging purposes
-    ACS_TRACE("::LogLevels::LogLevels");
+    ACS_TRACE("::TestLogLevelsComp::TestLogLevelsComp");
 }
 /* ----------------------------------------------------------------*/
-LogLevels::~LogLevels()
+TestLogLevelsComp::~TestLogLevelsComp()
 {
     // ACS_TRACE is used for debugging purposes
-    ACS_TRACE("::LogLevels::~LogLevels");
-    ACS_DEBUG_PARAM("::LogLevels::~LogLevels", "Destroying %s...", name());
+    ACS_TRACE("::TestLogLevelsComp::~TestLogLevelsComp");
+    ACS_DEBUG_PARAM("::TestLogLevelsComp::~TestLogLevelsComp", "Destroying %s...", name());
 }
 /* --------------------- [ CORBA interface ] ----------------------*/
 ::contLogTest::LongSeq*
-LogLevels::getLevels ()
+TestLogLevelsComp::getLevels ()
     throw (CORBA::SystemException, ACSErrTypeCommon::CouldntPerformActionEx)
 {
     std::cout << "Hi there!" << std::endl; 
@@ -68,7 +68,7 @@ LogLevels::getLevels ()
 }
 
 void 
-LogLevels::logDummyMessages (const ::contLogTest::LongSeq & levels)
+TestLogLevelsComp::logDummyMessages (const ::contLogTest::LongSeq & levels)
 {
 	for (CORBA::ULong t=0; t<levels.length(); t++){
 		ACE_Log_Priority p = LoggingProxy::m_LogEntryCast[levels[t]];
@@ -78,7 +78,7 @@ LogLevels::logDummyMessages (const ::contLogTest::LongSeq & levels)
 
 /* --------------- [ MACI DLL support functions ] -----------------*/
 #include <maciACSComponentDefines.h>
-MACI_DLL_SUPPORT_FUNCTIONS(LogLevels)
+MACI_DLL_SUPPORT_FUNCTIONS(TestLogLevelsComp)
 /* ----------------------------------------------------------------*/
 
 

@@ -39,7 +39,7 @@ module contLogTest
     typedef sequence<long> LongSeq;	// unbounded sequence of 32-bit integers
         
     // a very simple component 
-    interface LogLevels : ACS::ACSComponent
+    interface TestLogLevelsComp : ACS::ACSComponent
     {
 		/** 
 	 	*  Retrieves the log-levels (hardcoded, etc) of this component.
@@ -56,7 +56,8 @@ module contLogTest
 		 * to see if log levels were applied correctly.
 		 * @param levels  ACS core levels (e.g. 0, 2, 3, ...) for the messages to be logged.  
 		 */
-		void logDummyMessages(in LongSeq levels);	    
+		void logDummyMessages(in LongSeq levels)
+			raises (ACSErrTypeCommon::IllegalArgumentEx);	    
 
     };
 };

@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.3 2007/11/20 17:22:43 hsommer Exp $"
+# "@(#) $Id: Makefile,v 1.4 2007/11/30 13:01:16 eallaert Exp $"
 #
 # Makefile of ........
 #
@@ -65,7 +65,7 @@ USER_LIB = 	-lACE \
 #
 COMPONENTS_JARFILES = contLogTestComp
 contLogTestComp_DIRS = \
-	alma/contLogTest/LogLevelsImpl
+	alma/contLogTest/TestLogLevelsCompImpl
 
 JARFILES = contLogTestClient
 contLogTestClient_DIRS = \
