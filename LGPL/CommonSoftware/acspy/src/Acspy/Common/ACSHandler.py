@@ -1,4 +1,4 @@
-# @(#) $Id: ACSHandler.py,v 1.7 2007/05/29 20:37:40 agrimstrup Exp $
+# @(#) $Id: ACSHandler.py,v 1.8 2007/11/30 23:52:45 agrimstrup Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA,  2001
@@ -27,7 +27,7 @@ TODO:
 - Everything
 '''
 
-__revision__ = "$Id: ACSHandler.py,v 1.7 2007/05/29 20:37:40 agrimstrup Exp $"
+__revision__ = "$Id: ACSHandler.py,v 1.8 2007/11/30 23:52:45 agrimstrup Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 from socket    import gethostname
@@ -104,7 +104,7 @@ class ACSHandler(logging.handlers.BufferingHandler):
 
     Parameters: capcity - the size of the log cache.
     '''
-    def __init__(self, contname, capacity=DEFAULT_RECORD_CAPACITY):
+    def __init__(self, capacity=DEFAULT_RECORD_CAPACITY):
         '''
         '''
         #ACS CORBA Logging Service Reference
@@ -112,9 +112,6 @@ class ACSHandler(logging.handlers.BufferingHandler):
         
         #call super's constructor
         logging.handlers.BufferingHandler.__init__(self, capacity)
-        
-        # save the container name
-        self.contname = contname
         
         #setup a file handler to handle the extremely bad case that the 
         #CORBA logging service is down
@@ -202,12 +199,15 @@ class ACSHandler(logging.handlers.BufferingHandler):
         '''
         Method which sends logs to the real ACS logging service.
         '''
+        # Extract the component and container name from the record name
+        namelist = record.name.split('.')
+
         # Create an RTContext object
         rt_context = ACSLog.RTContext(str(record.thread).replace("<", "").replace(">", ""),
-                                      str(self.contname).replace("<", "").replace(">", ""),
+                                      str(namelist[0]).replace("<", "").replace(">", ""),
                                       str(gethostname()).replace("<", "").replace(">", ""),
                                       "",
-                                      str(record.name).replace("<", "").replace(">", ""))
+                                      str(namelist[-1]).replace("<", "").replace(">", ""))
 
         src_info = ACSLog.SourceInfo(str(record.module).replace("<", "").replace(">", ""),
                                      "Unknown",

@@ -1,4 +1,4 @@
-# @(#) $Id: ContainerServices.py,v 1.24 2007/09/06 21:54:32 agrimstrup Exp $
+# @(#) $Id: ContainerServices.py,v 1.25 2007/11/30 23:52:45 agrimstrup Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -21,7 +21,7 @@
 # ALMA should be addressed as follows:
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: ContainerServices.py,v 1.24 2007/09/06 21:54:32 agrimstrup Exp $"
+# "@(#) $Id: ContainerServices.py,v 1.25 2007/11/30 23:52:45 agrimstrup Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -41,7 +41,7 @@ developer. For now, we can depend on Manager to keep track of whats going on
 but this solution is less than ideal.
 '''
 
-__revision__ = "$Id: ContainerServices.py,v 1.24 2007/09/06 21:54:32 agrimstrup Exp $"
+__revision__ = "$Id: ContainerServices.py,v 1.25 2007/11/30 23:52:45 agrimstrup Exp $"
 
 #--GLOBALS---------------------------------------------------------------------
 
@@ -53,8 +53,7 @@ import maci
 from maciErrTypeImpl          import CannotGetComponentExImpl
 #--ACS Imports-----------------------------------------------------------------
 from Acspy.Util.ACSCorba      import getORB, getManager
-from Acspy.Common.Log         import getLogger
-from Acspy.Common.Log         import acsPrintExcDebug
+from Acspy.Common.Log         import getLogger, acsPrintExcDebug
 from Acspy.Common.CDBAccess   import CDBaccess
 #------------------------------------------------------------------------------
 class ContainerServices:
@@ -84,8 +83,6 @@ class ContainerServices:
         self.__handle = None
         #Provides access to the ACS CDB
         self.__cdb_access = CDBaccess()
-        #Standard ACS Python logger
-        self.__logger = None
 
         #The real container/client method(s) invoked by this classes methods.
         #In doing this, we can hide the container/client completely as long
@@ -161,10 +158,7 @@ class ContainerServices:
 
         Raises: Nothing
         '''
-        if self.__logger is None:
-            self.__logger = getLogger(self.getName(), self.getContName())
-        
-        return self.__logger
+        return getLogger(".".join([self.__contname, self.__name]))
     #--------------------------------------------------------------------------
     def getComponent(self,
                      comp_name = None,  

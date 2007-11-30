@@ -1,4 +1,4 @@
-# @(#) $Id: Log.py,v 1.30 2007/10/04 21:56:15 agrimstrup Exp $
+# @(#) $Id: Log.py,v 1.31 2007/11/30 23:52:45 agrimstrup Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA,  2001
@@ -31,7 +31,8 @@ failure to log to a file, to log to stderr. Failure to log
 to stderr will cause an exception; I think this effect is desirable,
 but may change if I\'m persuaded otherwise.
 
-Logging also respects the "ACS_LOG_STDOUT" environment variable.
+Logging also respects the "ACS_LOG_STDOUT" and "ACS_LOG_CENTRAL" environment
+variables.
 
 Last but not least, developers should use the getLogger() function instead
 of creating new instances of the Logger class which can take a very long
@@ -42,7 +43,7 @@ TODO:
 XML-related methods are untested at this point.
 '''
 
-__revision__ = "$Id: Log.py,v 1.30 2007/10/04 21:56:15 agrimstrup Exp $"
+__revision__ = "$Id: Log.py,v 1.31 2007/11/30 23:52:45 agrimstrup Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 from os        import environ
@@ -56,6 +57,7 @@ import time
 from os import getpid
 from traceback import extract_stack
 #--ACS Imports-----------------------------------------------------------------
+import maci
 from Acspy.Common.ACSHandler import ACSHandler
 from Acspy.Common.ACSHandler import ACSFormatter
 from Acspy.Common.TimeHelper import TimeUtil
@@ -75,6 +77,42 @@ logging.addLevelName(logging.ALERT, "ALERT")
 
 logging.EMERGENCY = logging.ALERT + 1
 logging.addLevelName(logging.EMERGENCY, "EMERGENCY")
+
+
+# Log Levels are received as integer in the range [0,11]
+# with 1 and 7 undefined.  The current code interpolates
+# 1 and 7 to the next highest level, so that behaviour
+# has been incorporated in the lookup table.
+NLEVELS = { 0 : logging.NOTSET,
+            1 : logging.TRACE,  
+            2 : logging.TRACE,  
+            3 : logging.DEBUG,  
+            4 : logging.INFO,  
+            5 : logging.NOTICE,  
+            6 : logging.WARNING,  
+            7 : logging.ERROR,  
+            8 : logging.ERROR,  
+            9 : logging.CRITICAL,  
+           10 : logging.ALERT,  
+           11 : logging.EMERGENCY
+           }
+
+# Since the Python handlers only use the Python constants
+# we need to reverse map them back to the integer range.
+# The interpolated values, 1 and 7, are reported as their
+# effective log levels. 
+RLEVELS = { logging.NOTSET    : 0,
+            logging.TRACE     : 2,  
+            logging.DEBUG     : 3,  
+            logging.INFO      : 4,  
+            logging.NOTICE    : 5,  
+            logging.WARNING   : 6,  
+            logging.ERROR     : 8,  
+            logging.CRITICAL  : 9,  
+            logging.ALERT     : 10,  
+            logging.EMERGENCY : 11
+           }
+
 
 
 LEVELS = { ACSLog.ACS_LOG_TRACE     : logging.TRACE,  
@@ -120,23 +158,21 @@ def getSeverity(severity_number):
 #------------------------------------------------------------------------------           
 #determine ACS_LOG_STDOUT
 if environ.has_key('ACS_LOG_STDOUT'):
-    ACS_LOG_STDOUT = pow(2, max(0, int(environ['ACS_LOG_STDOUT'])-1))
+    ACS_LOG_STDOUT = int(environ['ACS_LOG_STDOUT'])
 else:
-    ACS_LOG_STDOUT = 010
+    ACS_LOG_STDOUT = 2
 
+#determine ACS_LOG_CENTRAL
+if environ.has_key('ACS_LOG_CENTRAL'):
+    ACS_LOG_CENTRAL = int(environ['ACS_LOG_CENTRAL'])
+else:
+    ACS_LOG_CENTRAL = 2
 
 def stdoutOk(log_priority):
     '''
     Helper method returns true if log_priority is greater than $ACS_LOG_STDOUT.
     '''
-    lvl = LEVELS[SEVERITIES[getSeverity(ACS_LOG_STDOUT)]]
-
-    return (lvl <= log_priority)
-
-    if lvl <= log_priority:
-        return 1
-    else:
-        return 0
+    return (ACS_LOG_STDOUT <= RLEVELS[log_priority])
     
 def acsPrintExcDebug():
     '''
@@ -154,7 +190,7 @@ class Logger(logging.Logger):
     of this class though as the getLogger() function returns a singled logger.
     '''
     #------------------------------------------------------------------------
-    def __init__(self, name, contname=None):
+    def __init__(self, name):
         '''
         Create a Logger instance.
 
@@ -178,12 +214,12 @@ class Logger(logging.Logger):
         #register the formatter with stdouthandler
         self.stdouthandler.setFormatter(self.acsformatter)
     
-        #set the filtering level for the stdout handler
-        self.stdouthandler.setLevel(LEVELS[SEVERITIES[getSeverity(ACS_LOG_STDOUT)]])
-
         #create an ACS log svc handler
-        self.acshandler = ACSHandler(contname)
-        
+        self.acshandler = ACSHandler()
+
+        #flag to indicate this is the default logger for this process
+        self.isdefault = False
+
         #add handlers
         self.addHandler(self.stdouthandler)
         self.addHandler(self.acshandler)
@@ -428,12 +464,95 @@ class Logger(logging.Logger):
         if antenna == None:
                 antenna = ""
         self.acshandler.logSvc.logWithAudience(priority, timestamp, msg, rtCont, srcInfo, audience, array, antenna)
+    #------------------------------------------------------------------------
+    def setLevels(self, loglevel):
+        '''
+        Adjust the priority level filter for log messages.
+
+        Parameter:
+        - maci.LoggingConfigurable.LogLevels object containing new level information
+
+        Returns: Nothing
+
+        Raises: Nothing
+        '''
+        if loglevel.useDefault:
+            self.usingDefault = True
+            self.stdouthandler.setLevel(self.getEffectiveHandlerLevel('stdouthandler'))
+            self.acshandler.setLevel(self.getEffectiveHandlerLevel('acshandler'))
+        else:
+            self.usingDefault = False
+            self.stdouthandler.setLevel(NLEVELS[loglevel.minLogLevelLocal]) 
+            self.acshandler.setLevel(NLEVELS[loglevel.minLogLevel])
+    #------------------------------------------------------------------------
+    def getLevels(self):
+        '''
+        Return the current priority level values for the stdout and central logs.
+
+        Parameter: None
+
+        Returns: maci.LoggingConfigurable.LogLevels object containing the current level settings
+
+        Raises: Nothing
+        '''
+        return maci.LoggingConfigurable.LogLevels(self.usingDefault or self.isdefault, RLEVELS[self.acshandler.level],
+                                                  RLEVELS[self.stdouthandler.level])
+    #------------------------------------------------------------------------
+    def getEffectiveHandlerLevel(self, handler):
+        """
+        Get the effective level for this handler.
+
+        Loop through this logger and its parents in the logger hierarchy,
+        looking for a handler with non-zero logging level. Return the first one found.
+        """
+        logger = self.parent
+        while logger:
+            if logger.__dict__[handler].level:
+                return logger.__dict__[handler].level
+            logger = logger.parent
+        return NOTSET
+    #------------------------------------------------------------------------
+    def updateChildren(self):
+        """
+        Update the log levels for the leaf nodes that are using default values.
+
+        Loop through this logger and its parents in the logger hierarchy,
+        looking for a handler with non-zero logging level. Return the first one found.
+        """
+        loggers = getLoggerNames(self.name)
+        for lname in loggers:
+            if lname != self.name:
+                l = getLogger(lname)
+                if l.usingDefault:
+                    l.setLevels(maci.LoggingConfigurable.LogLevels(True, 0, 0))
+                l.updateChildren()
+
+    #------------------------------------------------------------------------
+    def setDefault(self, val):
+        self.isdefault = val
+        
+    
+    
 
 #----------------------------------------------------------------------------
+# The Python logging module contains code to manage a hierarchy of loggers.
+# The root logger has a default level setting of WARNING and would return
+# logging.Logger objects.  These defaults were changed to reflect ACS
+# operations.
 logging.setLoggerClass(Logger)
+logging.root.setLevel(logging.NOTSET)
+
+# Moving to a hierarchical logging structure allows us to maintain default
+# level information in a common node in the tree.  This logger is named
+# "DefaultPythonLogger"
+defaultlogger = Logger("DefaultPythonLogger")
+defaultlogger.setLevels(maci.LoggingConfigurable.LogLevels(False,ACS_LOG_STDOUT, ACS_LOG_CENTRAL))
+defaultlogger.setDefault(True)
+logging.Logger.root = defaultlogger
+logging.Logger.manager = logging.Manager(logging.Logger.root)
 
 #----------------------------------------------------------------------------
-def getLogger(name=None, contname=None):
+def getLogger(name):
     '''
     This returns the singleton instance of logger.
 
@@ -446,5 +565,39 @@ def getLogger(name=None, contname=None):
 
     Raises: ???
     '''
-    return Logger(str(name), contname)
+    return logging.getLogger(str(name))
+#----------------------------------------------------------------------------
+def getLoggerNames(startfilter=None):
+    '''
+    This returns a list of defined known loggers.
+
+    Used to support the LoggingConfigurable method get_logger_names.
+
+    Parameters:  a string containing the beginning of the names to be returned. 
+
+    Returns: A list of logger name strings
+
+    Raises:  Nothing
+    '''
+    logkeys = logging.Logger.manager.loggerDict.keys()
+    if startfilter:
+        loggers = []
+        for l in logkeys:
+            if l.startswith(startfilter):
+                loggers.append(l)
+        return loggers
+    else:
+        return logkeys
+#----------------------------------------------------------------------------
+def doesLoggerExist(key_name):
+    '''
+    This method determines if a logger exists for the given name.
+
+    Parameters:  name of the logger being queried
+
+    Returns:  True if named logger already exists.
+
+    Raises:  Nothing
+    '''
+    return key_name in logging.Logger.manager.loggerDict
 #----------------------------------------------------------------------------
