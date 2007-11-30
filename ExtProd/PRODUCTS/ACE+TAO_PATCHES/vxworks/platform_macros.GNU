@@ -1,4 +1,4 @@
-# $Id: platform_macros.GNU,v 1.6 2007/11/29 16:22:17 maraya Exp $
+# $Id: platform_macros.GNU,v 1.7 2007/11/30 10:36:02 maraya Exp $
 # VxWorks 6.2
 
 #### Notes:
@@ -15,6 +15,8 @@
 
 VXWORKS = 1
 CROSS-COMPILE = 1
+
+HOST_ROOT = $(ACE_ROOT)/../linux
 
 ifneq (,$(HOST_ROOT))
   TAO_IDL ?= $(HOST_ROOT)/bin/tao_idl$(EXEEXT)
