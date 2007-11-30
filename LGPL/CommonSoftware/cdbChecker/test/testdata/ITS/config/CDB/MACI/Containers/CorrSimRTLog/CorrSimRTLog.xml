@@ -15,10 +15,12 @@
   </Autoload>
   <LoggingConfig 
              centralizedLogger="Log" 
-             minLogLevel="0" 
+             minLogLevel="2" 
              dispatchPacketSize="0" 
-             immediateDispatchLevel="31">
+             immediateDispatchLevel="99">
   </LoggingConfig>
 </Container>
+
+
 
 

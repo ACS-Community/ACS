@@ -10,11 +10,11 @@
     </Autoload>
     
     <LoggingConfig
-    	minLogLevel="0"
+    	minLogLevel="2"
     	minLogLevelLocal="2"
     	centralizedLogger="Log"
     	maxLogQueueSize="50000"
-    	immediateDispatchLevel="15"
+    	immediateDispatchLevel="99"
     	dispatchPacketSize="20"
     	flushPeriodSeconds="10"
     	>

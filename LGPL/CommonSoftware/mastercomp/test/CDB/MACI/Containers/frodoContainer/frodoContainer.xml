@@ -8,11 +8,12 @@
   <Autoload />
   <LoggingConfig 
            centralizedLogger="Log" 
-           minLogLevel="0" 
-           minLogLevelLocal="0"
+           minLogLevel="2" 
+           minLogLevelLocal="2"
            dispatchPacketSize="20" 
            immediateDispatchLevel="4">
   </LoggingConfig>
 </Container>
+
 
 

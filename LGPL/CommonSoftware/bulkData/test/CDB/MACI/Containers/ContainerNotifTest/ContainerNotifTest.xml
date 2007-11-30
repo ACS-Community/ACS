@@ -16,9 +16,11 @@
     <cdb:_ string="bulkDataReceiver1LibNotif" />
   </Autoload>
   <LoggingConfig centralizedLogger="Log"
-                 minLogLevel="0"
+                 minLogLevel="2"
                  dispatchPacketSize="10"
-                 immediateDispatchLevel="31">
+                 immediateDispatchLevel="99">
   </LoggingConfig>
 </Container>
+
+
 
