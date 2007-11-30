@@ -171,8 +171,10 @@ public class AcsLogLevelTest extends junit.framework.TestCase
 			// good
 		}		
 		try {
-			AcsLogLevelDefinition.fromInteger(Integer.MAX_VALUE);
-			fail("undefined log level not allowed.");
+			assertSame(AcsLogLevelDefinition.OFF, AcsLogLevelDefinition.fromInteger(Integer.MAX_VALUE));
+			// for a transition period, we fix wrong log levels	
+			// @TODO uncomment with ACS 8.0 and remove the above assertion
+			// fail("undefined log level not allowed.");
 		} catch (AcsJIllegalArgumentEx ex) {
 			// good
 		}		
