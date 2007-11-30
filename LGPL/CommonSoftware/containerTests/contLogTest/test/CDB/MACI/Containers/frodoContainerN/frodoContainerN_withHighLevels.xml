@@ -10,15 +10,16 @@
     </Autoload>
     
     <LoggingConfig
-    	minLogLevel="3"
-    	minLogLevelLocal="4"
+    	minLogLevel="2"
+    	minLogLevelLocal="3"
     	centralizedLogger="Log"
     	maxLogQueueSize="50000"
-    	immediateDispatchLevel="15"
+    	immediateDispatchLevel="11"
     	dispatchPacketSize="20"
     	flushPeriodSeconds="10"
     	>
-       <log:_ Name="frodoContainerN" minLogLevel="5" minLogLevelLocal="6" />
+       <log:_ Name="frodoContainerN" minLogLevel="4" minLogLevelLocal="5" />
+       <log:_ Name="TESTLOG2" minLogLevel="5" minLogLevelLocal="6" />
      </LoggingConfig>
     
 </Container>

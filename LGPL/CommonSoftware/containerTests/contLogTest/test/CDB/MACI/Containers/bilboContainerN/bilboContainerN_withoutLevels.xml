@@ -14,9 +14,10 @@
   <LoggingConfig 
 	centralizedLogger="Log" 
         dispatchPacketSize="0" 
-	immediateDispatchLevel="31"
+	immediateDispatchLevel="11"
        >
        <log:_ Name="bilboContainerN" />
+       <log:_ Name="TESTLOG4" />
   </LoggingConfig>
 </Container>
 

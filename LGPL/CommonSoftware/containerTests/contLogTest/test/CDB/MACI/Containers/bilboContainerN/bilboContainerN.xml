@@ -12,11 +12,14 @@
     <cdb:_ string="baci" />
   </Autoload>
   <LoggingConfig 
-	centralizedLogger="Log" 
-        dispatchPacketSize="0" 
-	immediateDispatchLevel="31"
+        minLogLevel="2"
+        minLogLevelLocal="3"
+        centralizedLogger="Log" 
+	dispatchPacketSize="0" 
+        immediateDispatchLevel="11"
        >
-       <log:_ Name="bilboContainerN" />
+       <log:_ Name="bilboContainerN" minLogLevel="4" minLogLevelLocal="5" />
+       <log:_ Name="TESTLOG4" minLogLevel="5" minLogLevelLocal="6" />
   </LoggingConfig>
 </Container>
 

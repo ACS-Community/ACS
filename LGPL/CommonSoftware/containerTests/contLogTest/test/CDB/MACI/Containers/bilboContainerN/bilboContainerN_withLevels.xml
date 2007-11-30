@@ -16,9 +16,10 @@
         minLogLevelLocal="3"
         centralizedLogger="Log" 
         dispatchPacketSize="0" 
-	immediateDispatchLevel="31"
+	immediateDispatchLevel="11"
        >
-       <log:_ Name="bilboContainerN" minLogLevel="3" minLogLevelLocal="4" />
+       <log:_ Name="bilboContainerN" minLogLevel="4" minLogLevelLocal="5" />
+       <log:_ Name="TESTLOG4" minLogLevel="3" minLogLevelLocal="4" />
   </LoggingConfig>
 </Container>
 

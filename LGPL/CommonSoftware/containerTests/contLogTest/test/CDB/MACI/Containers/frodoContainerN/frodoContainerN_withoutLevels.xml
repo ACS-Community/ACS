@@ -12,11 +12,12 @@
     <LoggingConfig
     	centralizedLogger="Log"
     	maxLogQueueSize="50000"
-    	immediateDispatchLevel="15"
+    	immediateDispatchLevel="11"
     	dispatchPacketSize="20"
     	flushPeriodSeconds="10"
     	>
        <log:_ Name="frodoContainerN" />
+       <log:_ Name="TESTLOG2" />
      </LoggingConfig>
     
 </Container>

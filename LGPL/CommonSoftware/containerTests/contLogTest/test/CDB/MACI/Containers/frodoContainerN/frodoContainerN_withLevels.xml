@@ -14,11 +14,12 @@
     	minLogLevelLocal="6"
     	centralizedLogger="Log"
     	maxLogQueueSize="50000"
-    	immediateDispatchLevel="15"
+    	immediateDispatchLevel="11"
     	dispatchPacketSize="20"
     	flushPeriodSeconds="10"
     	>
-       <log:_ Name="frodoContainerN" minLogLevel="3" minLogLevelLocal="4" />
+       <log:_ Name="frodoContainerN" minLogLevel="4" minLogLevelLocal="5" />
+       <log:_ Name="TESTLOG2" minLogLevel="3" minLogLevelLocal="4" />
      </LoggingConfig>
     
 </Container>
