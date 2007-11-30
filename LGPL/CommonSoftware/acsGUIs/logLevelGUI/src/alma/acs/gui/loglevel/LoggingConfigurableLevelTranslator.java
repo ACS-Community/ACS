@@ -5,7 +5,8 @@ import com.cosylab.logging.engine.log.LogTypeHelper;
 import si.ijs.maci.LoggingConfigurableOperations;
 import si.ijs.maci.LoggingConfigurablePackage.LogLevels;
 
-import alma.acs.logging.ACSCoreLevel;
+import alma.ACSErrTypeCommon.IllegalArgumentEx;
+import alma.ACSErrTypeCommon.wrappers.AcsJIllegalArgumentEx;
 import alma.maciErrType.LoggerDoesNotExistEx;
 
 /**
@@ -20,91 +21,36 @@ import alma.maciErrType.LoggerDoesNotExistEx;
 public class LoggingConfigurableLevelTranslator implements LoggingConfigurableOperations
 {
 
-	private final LoggingConfigurableOperations delegate;
-
-    public static final Integer ENTRYTYPE_TRACE = new Integer(0);
-    public static final Integer ENTRYTYPE_DEBUG = new Integer(1);
-    public static final Integer ENTRYTYPE_INFO = new Integer(2);
-    public static final Integer ENTRYTYPE_NOTICE = new Integer(3);
-    public static final Integer ENTRYTYPE_WARNING = new Integer(4);
-    public static final Integer ENTRYTYPE_ERROR = new Integer(5);
-    public static final Integer ENTRYTYPE_CRITICAL = new Integer(6);
-    public static final Integer ENTRYTYPE_ALERT = new Integer(7);
-    public static final Integer ENTRYTYPE_EMERGENCY = new Integer(8);
-
-    
-	private static int[] acsLevels = {
-		ACSCoreLevel.ACS_LEVEL_TRACE, 
-		ACSCoreLevel.ACS_LEVEL_DEBUG, 
-		ACSCoreLevel.ACS_LEVEL_INFO, 
-		ACSCoreLevel.ACS_LEVEL_NOTICE, 
-		ACSCoreLevel.ACS_LEVEL_WARNING, 
-		ACSCoreLevel.ACS_LEVEL_ERROR, 
-		ACSCoreLevel.ACS_LEVEL_CRITICAL, 
-		ACSCoreLevel.ACS_LEVEL_ALERT,
-		ACSCoreLevel.ACS_LEVEL_EMERGENCY };
-	
+	private final LoggingConfigurableOperations delegate;	
 	
 	public LoggingConfigurableLevelTranslator(LoggingConfigurableOperations delegate) {
 		this.delegate = delegate;
 	}
 	
-	short getIndexBasedLevel(int acsLevel) {
-		switch (acsLevel) {
-		case ACSCoreLevel.ACS_LEVEL_ALL:
-			return LogTypeHelper.ENTRYTYPE_TRACE.shortValue();
-			
-		case ACSCoreLevel.ACS_LEVEL_TRACE:
-			return LogTypeHelper.ENTRYTYPE_TRACE.shortValue();
-			
-		case ACSCoreLevel.ACS_LEVEL_DEBUG:
-			return LogTypeHelper.ENTRYTYPE_DEBUG.shortValue();
-			
-		case ACSCoreLevel.ACS_LEVEL_INFO:
-			return LogTypeHelper.ENTRYTYPE_INFO.shortValue();
-			
-		case ACSCoreLevel.ACS_LEVEL_NOTICE:
-			return LogTypeHelper.ENTRYTYPE_NOTICE.shortValue();
-			
-		case ACSCoreLevel.ACS_LEVEL_WARNING:
-			return LogTypeHelper.ENTRYTYPE_WARNING.shortValue();
-
-		case ACSCoreLevel.ACS_LEVEL_ERROR:
-			return LogTypeHelper.ENTRYTYPE_ERROR.shortValue();
-
-		case ACSCoreLevel.ACS_LEVEL_CRITICAL:
-			return LogTypeHelper.ENTRYTYPE_CRITICAL.shortValue();
-
-		case ACSCoreLevel.ACS_LEVEL_ALERT:
-			return LogTypeHelper.ENTRYTYPE_ALERT.shortValue();
-
-		case ACSCoreLevel.ACS_LEVEL_EMERGENCY:
-			return LogTypeHelper.ENTRYTYPE_EMERGENCY.shortValue();
-
-		default:
-			throw new IllegalArgumentException("Illegal ACS log level " + acsLevel);
-		}
-	}
-
 	
 	short getAcsLevel(short indexBasedLevel) {
-		if (indexBasedLevel >= 0 && indexBasedLevel < acsLevels.length) {
-			return (short) acsLevels[indexBasedLevel];
-		}
-		else {
-			throw new IllegalArgumentException("Illegal index based level " + indexBasedLevel);
-		}
+		return (short) LogTypeHelper.getAcsCoreLevel(new Integer(indexBasedLevel));
+	}
+	
+	short getIndexBasedLevel(int acsLevel) throws AcsJIllegalArgumentEx {
+		return LogTypeHelper.getIndexBasedLevel(acsLevel).shortValue();
 	}
 	
 	/////////////////////////////////
 	
 	public LogLevels get_default_logLevels() {
 		LogLevels realLevels = delegate.get_default_logLevels();
-		LogLevels indexLevels = new LogLevels(
+		try {
+			LogLevels indexLevels = new LogLevels(
 					realLevels.useDefault, 
 					getIndexBasedLevel(realLevels.minLogLevel), 
 					getIndexBasedLevel(realLevels.minLogLevelLocal) );
-		return indexLevels;
+			return indexLevels;
+		} catch (AcsJIllegalArgumentEx ex) {
+			// should never happen 
+			ex.printStackTrace();
+			throw new IllegalArgumentException(ex);
+		}
 	}
 
 	public String[] get_logger_names() {
@@ -113,18 +59,24 @@ public class LoggingConfigurableLevelTranslator implements LoggingConfigurableOp
 
 	public LogLevels get_logLevels(String logger_name) throws LoggerDoesNotExistEx {
 		LogLevels realLevels = delegate.get_logLevels(logger_name);
-		LogLevels indexLevels = new LogLevels(
+		try {
+			LogLevels indexLevels = new LogLevels(
 					realLevels.useDefault, 
 					getIndexBasedLevel(realLevels.minLogLevel), 
 					getIndexBasedLevel(realLevels.minLogLevelLocal) );
-		return indexLevels;
+			return indexLevels;
+		} catch (AcsJIllegalArgumentEx ex) {
+			// should never happen 
+			ex.printStackTrace();
+			throw new IllegalArgumentException(ex);
+		}
 	}
 
 	public void refresh_logging_config() {
 		delegate.refresh_logging_config();
 	}
 
-	public void set_default_logLevels(LogLevels indexLevels) {
+	public void set_default_logLevels(LogLevels indexLevels) throws IllegalArgumentEx {
 		LogLevels realLevels = new LogLevels(
 				indexLevels.useDefault, 
 				getAcsLevel(indexLevels.minLogLevel), 
@@ -132,7 +84,7 @@ public class LoggingConfigurableLevelTranslator implements LoggingConfigurableOp
 		delegate.set_default_logLevels(realLevels);
 	}
 
-	public void set_logLevels(String logger_name, LogLevels indexLevels) throws LoggerDoesNotExistEx {
+	public void set_logLevels(String logger_name, LogLevels indexLevels) throws LoggerDoesNotExistEx, IllegalArgumentEx {
 		LogLevels realLevels = new LogLevels(
 				indexLevels.useDefault, 
 				getAcsLevel(indexLevels.minLogLevel), 
