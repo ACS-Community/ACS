@@ -462,7 +462,7 @@ public class LogConfig {
 		try {
 			return AcsLogLevelDefinition.fromInteger(legalLogLevel);
 		} catch (AcsJIllegalArgumentEx ex) {
-			logger.warning("Failed to convert to AcsLogLevelDefinition the level integer " + loggingConfig.getImmediateDispatchLevel());
+			logger.warning("Failed to convert to AcsLogLevelDefinition the level integer " + legalLogLevel);
 			throw new RuntimeException(ex);
 		}
 	}
