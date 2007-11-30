@@ -15,4 +15,10 @@
       <_ Name="TESTLOG4"    Code="contLogTestImpl"
 		             		Type="IDL:alma/contLogTest/TestLogLevelsComp:1.0"
                             Container="bilboContainerN"/>
+	<_ Name="TESTLOG5" Code="pyContLogTest.LogLevels" 
+                                        Type="IDL:alma/contLogTest/LogLevels:1.0"
+                            Container="aragornContainer" />
+	<_ Name="TESTLOG6" Code="pyContLogTest.LogLevels"
+                                        Type="IDL:alma/contLogTest/LogLevels:1.0"
+                            Container="aragornContainerN" />
 </Components>

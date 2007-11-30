@@ -19,13 +19,14 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: TestList,v 1.3 2007/11/30 13:12:06 eallaert Exp $"
+# "@(#) $Id: TestList,v 1.4 2007/11/30 23:41:05 agrimstrup Exp $"
 #
 # TestList
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
 # eallaert  2007-01-02  Initial version
+# agrimstr  2007-11-14  Added tests for Python
 #
 SOURCE setupTatEnvironment.tcl
 PROLOGUE acsutilTATPrologue -l
@@ -166,5 +167,49 @@ PROLOGUE acsutilTATPrologue -l
         EPILOGUE "acsStopContainer bilboContainerN"
 
 # Should add a test here to set the level of TESTLOG4 before the component starts
+
+#----------------- PYTHON, NO NAMED LOGGERS -------------------------
+41 SOURCE prepareHardcodedLevels.tcl \
+	PROLOGUE "acsutilAwaitContainerStart -py aragornContainer" \
+	pyHardcodedLevels "maciContainerLogLevel aragornContainer get aragornContainer" \
+        EPILOGUE "acsStopContainer aragornContainer"
+
+42 SOURCE prepareCdbLevels.tcl \
+	PROLOGUE "acsutilAwaitContainerStart -py aragornContainer" \
+	pyCdbLevels "maciContainerLogLevel aragornContainer get aragornContainer" \
+        EPILOGUE "acsStopContainer aragornContainer"
+
+43 SOURCE prepareEnvLevels.tcl \
+	PROLOGUE "acsutilAwaitContainerStart -py aragornContainer" \
+	pyEnvironmentLevels "maciContainerLogLevel aragornContainer get aragornContainer" \
+        EPILOGUE "acsStopContainer aragornContainer"
+
+44 SOURCE prepareDynLevels.tcl \
+	PROLOGUE "acsutilAwaitContainerStart -py aragornContainer" \
+	pyDynamicLevels "maciContainerLogLevel aragornContainer set default 8 9" \
+                      "@SLEEP 2" \
+                      "maciContainerLogLevel aragornContainer get default" \
+        EPILOGUE "acsStopContainer aragornContainer"
+
+#----------------- PYTHON, NO NAMED LOGGERS -------------------------
+51 SOURCE prepareHardcodedLevels.tcl \
+	PROLOGUE "acsutilAwaitContainerStart -py aragornContainerN" \
+	pyHardcodedNamedLoggerLevels "maciContainerLogLevel aragornContainerN get aragornContainerN" \
+        EPILOGUE "acsStopContainer aragornContainerN"
+
+52 SOURCE prepareCdbLevels.tcl \
+	PROLOGUE "acsutilAwaitContainerStart -py aragornContainerN" \
+	pyCdbNamedLoggerLevels "maciContainerLogLevel aragornContainerN get aragornContainerN" \
+        EPILOGUE "acsStopContainer aragornContainerN"
+
+53 SOURCE prepareEnvLevels.tcl \
+	PROLOGUE "acsutilAwaitContainerStart -py aragornContainerN" \
+	pyEnvironmentNamedLoggerLevels "maciContainerLogLevel aragornContainerN get aragornContainerN" \
+        EPILOGUE "acsStopContainer aragornContainerN"
+
+54 SOURCE prepareDynLevels.tcl \
+	PROLOGUE "acsutilAwaitContainerStart -py aragornContainerN" \
+	pyDynamicNamedLoggerLevels "maciContainerLogLevel aragornContainerN set aragornContainerN 8 9" \
+        EPILOGUE "acsStopContainer aragornContainerN"
 
 EPILOGUE acsutilTATEpilogue
