@@ -89,12 +89,22 @@ public enum AcsLogLevelDefinition {
 	}
 	
 	/**
-	 * Return a log level given its integer value
+	 * Return a log level given its integer value.
+	 * <p>
+	 * For backward compatibility with CDB entries where often immediateDispatchLevel=31 
+	 * and other nonsense is used, we convert values > 11 to OFF instead of throwing the 
+	 * exception.
+	 * @TODO: Change this with next major release (ACS 8.0) 
 	 * 
 	 * @param val The value of the log level
 	 * @return The log level having val as its value
 	 */
 	public static AcsLogLevelDefinition fromInteger(int val) throws AcsJIllegalArgumentEx {
+		// @TODO remove value fix with next major acs release
+		if (val > EMERGENCY.value) {
+			val = OFF.value;
+		}
+		
 		for (AcsLogLevelDefinition def : AcsLogLevelDefinition.values()) {
 			if (def.value==val) {
 				return def;
