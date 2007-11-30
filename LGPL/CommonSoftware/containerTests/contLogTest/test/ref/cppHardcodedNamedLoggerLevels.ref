@@ -2,7 +2,7 @@
 1 - <timestamp> [GlobalLogger] Container: bilboContainerN
 1 - <timestamp> [GlobalLogger] 	... done.
 1 - <timestamp> [GlobalLogger] Done all.
-1 - <timestamp> [GlobalLogger] 	Log levels for logger 'bilboContainerN':
+1 - <timestamp> [GlobalLogger] 	Log levels for logger 'TESTLOG4':
 1 - <timestamp> [GlobalLogger] 		minLogLevel     : 2
 1 - <timestamp> [GlobalLogger] 		minLogLevelLocal: 2
 1 - <timestamp> [GlobalLogger] 		useDefault      : false

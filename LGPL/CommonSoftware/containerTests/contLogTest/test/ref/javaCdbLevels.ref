@@ -1,64 +1,64 @@
-1 -  -- alma.contLogTest.LogLevelsImpl.LogLevelsTest TESTLOG1
-1 - INFO - Starting Java/abeans application: alma.contLogTest.LogLevelsImpl.LogLevelsTest TESTLOG1
+1 -  -- alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest TESTLOG1
+1 - INFO - Starting Java/abeans application: alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest TESTLOG1
 1 - .FINER: Logging configuration has been initialized, but not from CDB settings.
-1 - <timestamp> INFO [alma.contLogTest.LogLevelsImpl.LogLevelsTest#testGetLevels] -------------------------------
-1 - <timestamp> INFO [alma.contLogTest.LogLevelsImpl.LogLevelsTest#testGetLevels] ComponentClientTestCase#setUp()
-1 - <timestamp> FINE [alma.contLogTest.LogLevelsImpl.LogLevelsTest#testGetLevels] calling orb.resolve_initial_references
-1 - <timestamp> FINE [alma.contLogTest.LogLevelsImpl.LogLevelsTest#testGetLevels] POA activated
-1 - <timestamp> FINE [alma.contLogTest.LogLevelsImpl.LogLevelsTest#testGetLevels] manager reference not yet available in method loginToManager; will try to find the manager first...
-1 - <timestamp> FINEST [alma.contLogTest.LogLevelsImpl.LogLevelsTest#testGetLevels] manager corbaloc 'corbaloc::<IP address>:<port>/Manager' resolved.
-1 - <timestamp> FINEST [alma.contLogTest.LogLevelsImpl.LogLevelsTest#testGetLevels] manager narrow successful.
-1 - <timestamp> FINE [alma.contLogTest.LogLevelsImpl.LogLevelsTest#testGetLevels] Manager login done, handle <ID> obtained.
-1 - <timestamp> FINE [alma.contLogTest.LogLevelsImpl.LogLevelsTest#testGetLevels] will retrieve remote component 'TESTLOG1' using ACS Manager#get_component with client handle <ID>
-1 - <timestamp> FINE [alma.contLogTest.LogLevelsImpl.LogLevelsTest#testGetLevels] component TESTLOG1 retrieved successfully.
-1 - <timestamp> INFO [alma.contLogTest.LogLevelsImpl.LogLevelsTest#testGetLevels] component 'alma.contLogTest.LogLevelsImpl.LogLevelsTest' requested AdvancedContainerServices
-1 - <timestamp> FINE [alma.contLogTest.LogLevelsImpl.LogLevelsTest#testGetLevels] manager reference not yet available in method loginToManager; will try to find the manager first...
-1 - <timestamp> FINEST [alma.contLogTest.LogLevelsImpl.LogLevelsTest#testGetLevels] manager corbaloc 'corbaloc::<IP address>:<port>/Manager' resolved.
-1 - <timestamp> FINEST [alma.contLogTest.LogLevelsImpl.LogLevelsTest#testGetLevels] manager narrow successful.
-1 - <timestamp> INFO [alma.contLogTest.LogLevelsImpl.LogLevelsTest] authenticate called: id=XXX; question=Identify yourself
-1 - <timestamp> FINE [alma.contLogTest.LogLevelsImpl.LogLevelsTest#testGetLevels] Manager login done, handle <ID> obtained.
-1 - <timestamp> FINE [alma.contLogTest.LogLevelsImpl.LogLevelsTest#testGetLevels] about to release component TESTLOG1
-1 - <timestamp> INFO [alma.contLogTest.LogLevelsImpl.LogLevelsTest#testGetLevels] levels from component's getLevels method (hardcoded remote, local, effective): 2, 2, 3, 3, 4
-1 - <timestamp> INFO [alma.contLogTest.LogLevelsImpl.LogLevelsTest#testGetLevels] client 'alma.contLogTest.LogLevelsImpl.LogLevelsTest' has successfully released  a component with curl=TESTLOG1
-1 - <timestamp> FINE [alma.contLogTest.LogLevelsImpl.LogLevelsTest#testGetLevels] about to log out from manager...
-1 - <timestamp> FINE [alma.contLogTest.LogLevelsImpl.LogLevelsTest#testGetLevels] logged out from manager.
-1 - <timestamp> FINE [alma.contLogTest.LogLevelsImpl.LogLevelsTest#testGetLevels] about to log out from manager...
-1 - <timestamp> FINE [alma.contLogTest.LogLevelsImpl.LogLevelsTest#testGetLevels] logged out from manager.
-1 - <timestamp> FINE [alma.contLogTest.LogLevelsImpl.LogLevelsTest#testGetLevels] about to destroy all POAs and the ORB
-1 - <timestamp> FINE [alma.contLogTest.LogLevelsImpl.LogLevelsTest#testGetLevels] POAs and ORB destroyed successfully.
+1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels] -------------------------------
+1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels] ComponentClientTestCase#setUp()
+1 - <timestamp> FINE [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels] calling orb.resolve_initial_references
+1 - <timestamp> FINE [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels] POA activated
+1 - <timestamp> FINE [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels] manager reference not yet available in method loginToManager; will try to find the manager first...
+1 - <timestamp> FINEST [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels] manager corbaloc 'corbaloc::<IP address>:<port>/Manager' resolved.
+1 - <timestamp> FINEST [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels] manager narrow successful.
+1 - <timestamp> FINE [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels] Manager login done, handle <ID> obtained.
+1 - <timestamp> FINE [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels] will retrieve remote component 'TESTLOG1' using ACS Manager#get_component with client handle <ID>
+1 - <timestamp> FINE [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels] component TESTLOG1 retrieved successfully.
+1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels] component 'alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest' requested AdvancedContainerServices
+1 - <timestamp> FINE [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels] manager reference not yet available in method loginToManager; will try to find the manager first...
+1 - <timestamp> FINEST [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels] manager corbaloc 'corbaloc::<IP address>:<port>/Manager' resolved.
+1 - <timestamp> FINEST [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels] manager narrow successful.
+1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest] authenticate called: id=XXX; question=Identify yourself
+1 - <timestamp> FINE [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels] Manager login done, handle <ID> obtained.
+1 - <timestamp> FINE [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels] about to release component TESTLOG1
+1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels] levels from component's getLevels method (hardcoded remote, local, effective): 2, 2, 3, 3, 4
+1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels] client 'alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest' has successfully released  a component with curl=TESTLOG1
+1 - <timestamp> FINE [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels] about to log out from manager...
+1 - <timestamp> FINE [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels] logged out from manager.
+1 - <timestamp> FINE [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels] about to log out from manager...
+1 - <timestamp> FINE [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels] logged out from manager.
+1 - <timestamp> FINE [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels] about to destroy all POAs and the ORB
+1 - <timestamp> FINE [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels] POAs and ORB destroyed successfully.
 1 - .FINER: Logging configuration has been initialized, but not from CDB settings.
-1 - <timestamp> INFO [alma.contLogTest.LogLevelsImpl.LogLevelsTest#testLoggingConfigurableCentralLogLevels] -------------------------------
-1 - <timestamp> INFO [alma.contLogTest.LogLevelsImpl.LogLevelsTest#testLoggingConfigurableCentralLogLevels] ComponentClientTestCase#setUp()
-1 - <timestamp> FINE [alma.contLogTest.LogLevelsImpl.LogLevelsTest#testLoggingConfigurableCentralLogLevels] calling orb.resolve_initial_references
-1 - <timestamp> FINE [alma.contLogTest.LogLevelsImpl.LogLevelsTest#testLoggingConfigurableCentralLogLevels] POA activated
-1 - <timestamp> FINE [alma.contLogTest.LogLevelsImpl.LogLevelsTest#testLoggingConfigurableCentralLogLevels] manager reference not yet available in method loginToManager; will try to find the manager first...
-1 - <timestamp> FINEST [alma.contLogTest.LogLevelsImpl.LogLevelsTest#testLoggingConfigurableCentralLogLevels] manager corbaloc 'corbaloc::<IP address>:<port>/Manager' resolved.
-1 - <timestamp> FINEST [alma.contLogTest.LogLevelsImpl.LogLevelsTest#testLoggingConfigurableCentralLogLevels] manager narrow successful.
-1 - <timestamp> FINE [alma.contLogTest.LogLevelsImpl.LogLevelsTest#testLoggingConfigurableCentralLogLevels] Manager login done, handle <ID> obtained.
-1 - <timestamp> FINE [alma.contLogTest.LogLevelsImpl.LogLevelsTest#testLoggingConfigurableCentralLogLevels] will retrieve remote component 'TESTLOG1' using ACS Manager#get_component with client handle <ID>
-1 - <timestamp> FINE [alma.contLogTest.LogLevelsImpl.LogLevelsTest#testLoggingConfigurableCentralLogLevels] component TESTLOG1 retrieved successfully.
-1 - <timestamp> INFO [alma.contLogTest.LogLevelsImpl.LogLevelsTest#testLoggingConfigurableCentralLogLevels] component 'alma.contLogTest.LogLevelsImpl.LogLevelsTest' requested AdvancedContainerServices
-1 - <timestamp> FINE [alma.contLogTest.LogLevelsImpl.LogLevelsTest#testLoggingConfigurableCentralLogLevels] manager reference not yet available in method loginToManager; will try to find the manager first...
-1 - <timestamp> FINEST [alma.contLogTest.LogLevelsImpl.LogLevelsTest#testLoggingConfigurableCentralLogLevels] manager corbaloc 'corbaloc::<IP address>:<port>/Manager' resolved.
-1 - <timestamp> FINEST [alma.contLogTest.LogLevelsImpl.LogLevelsTest#testLoggingConfigurableCentralLogLevels] manager narrow successful.
-1 - <timestamp> INFO [alma.contLogTest.LogLevelsImpl.LogLevelsTest] authenticate called: id=XXX; question=Identify yourself
-1 - <timestamp> FINE [alma.contLogTest.LogLevelsImpl.LogLevelsTest#testLoggingConfigurableCentralLogLevels] Manager login done, handle <ID> obtained.
-1 - <timestamp> INFO [alma.contLogTest.LogLevelsImpl.LogLevelsTest#testLoggingConfigurableCentralLogLevels] Set default log level for container frodoContainer to 8 to be used by component TESTLOG1
-1 - <timestamp> INFO [alma.contLogTest.LogLevelsImpl.LogLevelsTest#testLoggingConfigurableCentralLogLevels] Will call 'logDummyMessages' on component TESTLOG1
-1 - <timestamp> INFO [alma.contLogTest.LogLevelsImpl.LogLevelsTest#testLoggingConfigurableCentralLogLevels] Will wait 20 seconds to receive (some of) these log messages.
+1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] -------------------------------
+1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] ComponentClientTestCase#setUp()
+1 - <timestamp> FINE [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] calling orb.resolve_initial_references
+1 - <timestamp> FINE [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] POA activated
+1 - <timestamp> FINE [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] manager reference not yet available in method loginToManager; will try to find the manager first...
+1 - <timestamp> FINEST [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] manager corbaloc 'corbaloc::<IP address>:<port>/Manager' resolved.
+1 - <timestamp> FINEST [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] manager narrow successful.
+1 - <timestamp> FINE [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Manager login done, handle <ID> obtained.
+1 - <timestamp> FINE [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] will retrieve remote component 'TESTLOG1' using ACS Manager#get_component with client handle <ID>
+1 - <timestamp> FINE [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] component TESTLOG1 retrieved successfully.
+1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] component 'alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest' requested AdvancedContainerServices
+1 - <timestamp> FINE [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] manager reference not yet available in method loginToManager; will try to find the manager first...
+1 - <timestamp> FINEST [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] manager corbaloc 'corbaloc::<IP address>:<port>/Manager' resolved.
+1 - <timestamp> FINEST [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] manager narrow successful.
+1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest] authenticate called: id=XXX; question=Identify yourself
+1 - <timestamp> FINE [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Manager login done, handle <ID> obtained.
+1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Set default log level for container frodoContainer to 8 to be used by component TESTLOG1
+1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will call 'logDummyMessages' on component TESTLOG1
+1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will wait 20 seconds to receive (some of) these log messages.
 1 - Got 4 records from logger TESTLOG1
 1 - (level=8) dummy log message for core level 8
 1 - (level=9) dummy log message for core level 9
 1 - (level=10) dummy log message for core level 10
 1 - (level=11) dummy log message for core level 11
-1 - <timestamp> FINE [alma.contLogTest.LogLevelsImpl.LogLevelsTest#testLoggingConfigurableCentralLogLevels] about to release component TESTLOG1
-1 - <timestamp> INFO [alma.contLogTest.LogLevelsImpl.LogLevelsTest#testLoggingConfigurableCentralLogLevels] client 'alma.contLogTest.LogLevelsImpl.LogLevelsTest' has successfully released  a component with curl=TESTLOG1
-1 - <timestamp> FINE [alma.contLogTest.LogLevelsImpl.LogLevelsTest#testLoggingConfigurableCentralLogLevels] about to log out from manager...
-1 - <timestamp> FINE [alma.contLogTest.LogLevelsImpl.LogLevelsTest#testLoggingConfigurableCentralLogLevels] logged out from manager.
-1 - <timestamp> FINE [alma.contLogTest.LogLevelsImpl.LogLevelsTest#testLoggingConfigurableCentralLogLevels] about to log out from manager...
-1 - <timestamp> FINE [alma.contLogTest.LogLevelsImpl.LogLevelsTest#testLoggingConfigurableCentralLogLevels] logged out from manager.
-1 - <timestamp> FINE [alma.contLogTest.LogLevelsImpl.LogLevelsTest#testLoggingConfigurableCentralLogLevels] about to destroy all POAs and the ORB
-1 - <timestamp> FINE [alma.contLogTest.LogLevelsImpl.LogLevelsTest#testLoggingConfigurableCentralLogLevels] POAs and ORB destroyed successfully.
+1 - <timestamp> FINE [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] about to release component TESTLOG1
+1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] client 'alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest' has successfully released  a component with curl=TESTLOG1
+1 - <timestamp> FINE [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] about to log out from manager...
+1 - <timestamp> FINE [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] logged out from manager.
+1 - <timestamp> FINE [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] about to log out from manager...
+1 - <timestamp> FINE [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] logged out from manager.
+1 - <timestamp> FINE [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] about to destroy all POAs and the ORB
+1 - <timestamp> FINE [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] POAs and ORB destroyed successfully.
 1 - 
 1 - Time: <seconds>
 1 - 
