@@ -16,7 +16,7 @@
         minLogLevelLocal="6"
         centralizedLogger="Log" 
 	dispatchPacketSize="0" 
-        immediateDispatchLevel="31">
+        immediateDispatchLevel="11">
   </LoggingConfig>
 </Container>
 
