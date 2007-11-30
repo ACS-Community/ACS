@@ -33,10 +33,11 @@
 
 
   <LoggingConfig 
-    immediateDispatchLevel="31"
+    immediateDispatchLevel="99"
     >
-    <log:_ Name="jacorb@Manager" minLogLevel="0" minLogLevelLocal="0"/>
+    <log:_ Name="jacorb@Manager" minLogLevel="2" minLogLevelLocal="2"/>
   </LoggingConfig>
 
 </Manager>
+
 

@@ -25,10 +25,9 @@
 	<cdb:_ string="PDB"/>
   </ServiceComponents>
   
-  <LoggingConfig 
-    immediateDispatchLevel="31"
-    >
+  <LoggingConfig>
     <log:_ Name="jacorb@Manager" minLogLevel="5" minLogLevelLocal="4"/>
   </LoggingConfig>
 
 </Manager>
+

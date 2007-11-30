@@ -26,9 +26,10 @@
   </ServiceComponents>
 
   <LoggingConfig
-    	minLogLevel="0"
-    	immediateDispatchLevel="31"
+    	minLogLevel="2"
+    	immediateDispatchLevel="99"
     	dispatchPacketSize="0" />
 
 </Manager>
+
 

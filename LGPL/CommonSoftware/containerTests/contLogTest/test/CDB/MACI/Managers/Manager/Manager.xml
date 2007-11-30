@@ -23,9 +23,10 @@
   </ServiceComponents>
   
   <LoggingConfig 
-    immediateDispatchLevel="31"
+    immediateDispatchLevel="99"
     >
     <log:_ Name="jacorb@Manager" minLogLevel="5" minLogLevelLocal="4"/>
   </LoggingConfig>
 
 </Manager>
+
