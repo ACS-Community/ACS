@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: TestList,v 1.2 2007/11/22 09:55:26 cparedes Exp $"
+# "@(#) $Id: TestList,v 1.3 2007/11/30 13:12:06 eallaert Exp $"
 #
 # TestList
 #
@@ -33,12 +33,12 @@ PROLOGUE acsutilTATPrologue -l
 #-------------JAVA, NO NAMED LOGGERS ----------------------
 1 SOURCE prepareHardcodedLevels.tcl \
 	PROLOGUE "acsutilAwaitContainerStart -java frodoContainer" \
-	javaHardcodedLevels "acsStartJava alma.contLogTest.LogLevelsImpl.LogLevelsTest TESTLOG1" \
+	javaHardcodedLevels "acsStartJava alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest TESTLOG1" \
         EPILOGUE "acsStopContainer frodoContainer"
 
 2 SOURCE prepareCdbLevels.tcl \
 	PROLOGUE "acsutilAwaitContainerStart -java frodoContainer" \
-	javaCdbLevels "acsStartJava alma.contLogTest.LogLevelsImpl.LogLevelsTest TESTLOG1" \
+	javaCdbLevels "acsStartJava alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest TESTLOG1" \
         EPILOGUE "acsStopContainer frodoContainer"
 
 # NOTE1: acsutilAwaitContainerStart will look for particular messages to stdout
@@ -54,25 +54,34 @@ PROLOGUE acsutilTATPrologue -l
 #   that number ...
 3 SOURCE prepareEnvLevels.tcl \
 	PROLOGUE "acsutilAwaitContainerStart -java frodoContainer" \
-	javaEnvironmentLevels "acsStartJava alma.contLogTest.LogLevelsImpl.LogLevelsTest TESTLOG1" \
+	javaEnvironmentLevels "acsStartJava alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest TESTLOG1" \
         EPILOGUE "acsStopContainer frodoContainer"
 
 4 SOURCE prepareDynLevels.tcl \
 	PROLOGUE "acsutilAwaitContainerStart -java frodoContainer" \
 	javaDynamicLevels "maciContainerLogLevel frodoContainer set default 8 9" \
                       "@SLEEP 2" \
-                      "acsStartJava alma.contLogTest.LogLevelsImpl.LogLevelsTest TESTLOG1" \
+                      "acsStartJava alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest TESTLOG1" \
+        EPILOGUE "acsStopContainer frodoContainer"
+
+# Same as test 4, but now setting the levels of a specific logger which is not yet
+# defined when this dynamic setting is done.
+5 SOURCE prepareDynLevels.tcl \
+	PROLOGUE "acsutilAwaitContainerStart -java frodoContainer" \
+	javaDynamicLevelsUnknownLogger "maciContainerLogLevel frodoContainer set TESTLOG1 8 9" \
+                      "@SLEEP 2" \
+                      "acsStartJava alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest TESTLOG1" \
         EPILOGUE "acsStopContainer frodoContainer"
 
 #-------------JAVA, NAMED LOGGERS ----------------------
 11 SOURCE prepareHardcodedLevels.tcl \
 	PROLOGUE "acsutilAwaitContainerStart -java frodoContainerN" \
-	javaHardcodedNamedLoggerLevels "acsStartJava alma.contLogTest.LogLevelsImpl.LogLevelsTest TESTLOG2" \
+	javaHardcodedNamedLoggerLevels "acsStartJava alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest TESTLOG2" \
         EPILOGUE "acsStopContainer frodoContainerN"
 
 12 SOURCE prepareCdbLevels.tcl \
 	PROLOGUE "acsutilAwaitContainerStart -java frodoContainerN" \
-	javaCdbNamedLoggerLevels "acsStartJava alma.contLogTest.LogLevelsImpl.LogLevelsTest TESTLOG2" \
+	javaCdbNamedLoggerLevels "acsStartJava alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest TESTLOG2" \
         EPILOGUE "acsStopContainer frodoContainerN"
 
 # NOTE1: acsutilAwaitContainerStart will look for particular messages to stdout
@@ -88,63 +97,74 @@ PROLOGUE acsutilTATPrologue -l
 #   that number ...
 13 SOURCE prepareEnvLevels.tcl \
 	PROLOGUE "acsutilAwaitContainerStart -java frodoContainerN" \
-	javaEnvironmentNamedLoggerLevels "acsStartJava alma.contLogTest.LogLevelsImpl.LogLevelsTest TESTLOG2" \
+	javaEnvironmentNamedLoggerLevels "acsStartJava alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest TESTLOG2" \
         EPILOGUE "acsStopContainer frodoContainerN"
 
 14 SOURCE prepareDynLevels.tcl \
 	PROLOGUE "acsutilAwaitContainerStart -java frodoContainerN" \
-	javaDynamicNamedLoggerLevels "maciContainerLogLevel frodoContainerN set default 8 9" \
+	javaDynamicNamedLoggerLevels "maciContainerLogLevel frodoContainerN set TESTLOG2 8 9" \
                       "@SLEEP 2" \
-                      "acsStartJava alma.contLogTest.LogLevelsImpl.LogLevelsTest TESTLOG2" \
+                      "acsStartJava alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest TESTLOG2" \
         EPILOGUE "acsStopContainer frodoContainerN"
 
 #----------------- CPP, NO NAMED LOGGERS -------------------------
 #20 SOURCE prepareHardcodedLevels.tcl \
 #	PROLOGUE "acsutilAwaitContainerStart -cpp bilboContainer" \
-#	cppHardcodedLevels2 "acsStartJava alma.contLogTest.LogLevelsImpl.LogLevelsTest TESTLOG3" \
+#	cppHardcodedLevels2 "acsStartJava alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest TESTLOG3" \
 #        EPILOGUE "acsStopContainer bilboContainer"
 
 21 SOURCE prepareHardcodedLevels.tcl \
 	PROLOGUE "acsutilAwaitContainerStart -cpp bilboContainer" \
-	cppHardcodedLevels "maciContainerLogLevel bilboContainer get bilboContainer" \
+	cppHardcodedLevels "maciContainerLogLevel bilboContainer get default" \
         EPILOGUE "acsStopContainer bilboContainer"
 
 22 SOURCE prepareCdbLevels.tcl \
 	PROLOGUE "acsutilAwaitContainerStart -cpp bilboContainer" \
-	cppCdbLevels "maciContainerLogLevel bilboContainer get bilboContainer" \
+	cppCdbLevels "maciContainerLogLevel bilboContainer get default" \
         EPILOGUE "acsStopContainer bilboContainer"
 
 23 SOURCE prepareEnvLevels.tcl \
 	PROLOGUE "acsutilAwaitContainerStart -cpp bilboContainer" \
-	cppEnvironmentLevels "maciContainerLogLevel bilboContainer get bilboContainer" \
+	cppEnvironmentLevels "maciContainerLogLevel bilboContainer get default" \
         EPILOGUE "acsStopContainer bilboContainer"
 
 24 SOURCE prepareDynLevels.tcl \
 	PROLOGUE "acsutilAwaitContainerStart -cpp bilboContainer" \
 	cppDynamicLevels "maciContainerLogLevel bilboContainer set default 8 9" \
                       "@SLEEP 2" \
-                      "maciContainerLogLevel bilboContainer get bilboContainer" \
+                      "maciContainerLogLevel bilboContainer get default" \
         EPILOGUE "acsStopContainer bilboContainer"
 
-#----------------- CPP, NO NAMED LOGGERS -------------------------
+# Same as test 24, but now setting the levels of a specific logger which is not yet
+# defined when this dynamic setting is done.
+25 SOURCE prepareDynLevels.tcl \
+	PROLOGUE "acsutilAwaitContainerStart -cpp bilboContainer" \
+	cppDynamicLevelsUnknownLogger "maciContainerLogLevel bilboContainer set TESTLOG3 8 9" \
+                      "@SLEEP 2" \
+                      "maciContainerLogLevel bilboContainer get TESTLOG3" \
+        EPILOGUE "acsStopContainer bilboContainer"
+
+#----------------- CPP, NAMED LOGGERS -------------------------
 31 SOURCE prepareHardcodedLevels.tcl \
 	PROLOGUE "acsutilAwaitContainerStart -cpp bilboContainerN" \
-	cppHardcodedNamedLoggerLevels "maciContainerLogLevel bilboContainerN get bilboContainerN" \
+	cppHardcodedNamedLoggerLevels "maciContainerLogLevel bilboContainerN get TESTLOG4" \
         EPILOGUE "acsStopContainer bilboContainerN"
 
 32 SOURCE prepareCdbLevels.tcl \
 	PROLOGUE "acsutilAwaitContainerStart -cpp bilboContainerN" \
-	cppCdbNamedLoggerLevels "maciContainerLogLevel bilboContainerN get bilboContainerN" \
+	cppCdbNamedLoggerLevels "maciContainerLogLevel bilboContainerN get TESTLOG4" \
         EPILOGUE "acsStopContainer bilboContainerN"
 
 33 SOURCE prepareEnvLevels.tcl \
 	PROLOGUE "acsutilAwaitContainerStart -cpp bilboContainerN" \
-	cppEnvironmentNamedLoggerLevels "maciContainerLogLevel bilboContainerN get bilboContainerN" \
+	cppEnvironmentNamedLoggerLevels "maciContainerLogLevel bilboContainerN get TESTLOG4" \
         EPILOGUE "acsStopContainer bilboContainerN"
 
 34 SOURCE prepareDynLevels.tcl \
 	PROLOGUE "acsutilAwaitContainerStart -cpp bilboContainerN" \
-	cppDynamicNamedLoggerLevels "maciContainerLogLevel bilboContainerN set bilboContainerN 8 9" \
+	cppDynamicNamedLoggerLevels "maciContainerLogLevel bilboContainerN set TESTLOG4 8 9" \
         EPILOGUE "acsStopContainer bilboContainerN"
+
+# Should add a test here to set the level of TESTLOG4 before the component starts
 
 EPILOGUE acsutilTATEpilogue
