@@ -20,7 +20,7 @@
 # MA 02111-1307  USA
 #
 #
-# "@(#) $Id: Makefile,v 1.62 2007/09/28 08:29:53 cparedes Exp $" 
+# "@(#) $Id: Makefile,v 1.63 2007/11/30 11:04:31 cparedes Exp $" 
 #
 # Makefile of ........
 #
@@ -94,7 +94,7 @@ INCLUDES        = 	logging.h loggingExport.h loggingXMLElement.h loggingXMLParse
 			loggingCacheLogger.h \
 			loggingBaseLog.h loggingHandler.h loggingLogger.h loggingLoggable.h \
                         loggingLogTrace.h loggingACSLogger.h \
-			loggingLogSvcHandler.h \
+			loggingLogSvcHandler.h  loggingLogLevelDefinition.h \
 			loggingLoggingTSSStorage.h loggingLoggingProxy.h loggingMACROS.h \
 			loggingACEMACROS.h loggingGetLogger.h loggingGenericLogger.h loggingStdoutHandler.h 
 INCLUDES_L      = loggingService.h \
@@ -124,7 +124,7 @@ baselogging_LIBS =    loki
 baselogging_LDFLAGS = 	-lloki -ggdb
 logging_OBJECTS = 	logging loggingLoggable loggingXMLElement loggingXMLParser \
                         loggingLocalSyslog loggingRemoteSyslog loggingLocalFile \
-			loggingLoggingTSSStorage loggingLoggingProxy \
+			loggingLoggingTSSStorage loggingLogLevelDefinition loggingLoggingProxy \
 			loggingACSLogger loggingLogSvcHandler
 logging_LIBS    =	baselogging 
 logging_LDFLAGS =	-lACE -lTAO -lTAO_DsLogAdmin -lTAO_DsLogAdmin_Serv \

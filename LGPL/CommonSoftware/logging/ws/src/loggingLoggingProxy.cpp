@@ -19,7 +19,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: loggingLoggingProxy.cpp,v 1.48 2007/11/12 04:39:14 cparedes Exp $"
+* "@(#) $Id: loggingLoggingProxy.cpp,v 1.49 2007/11/30 11:04:31 cparedes Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -49,6 +49,7 @@
 #include <loggingLocalFile.h>
 #include <loggingLocalSyslog.h>
 #include <loggingRemoteSyslog.h>
+#include <loggingLogLevelDefinition.h>
 
 #include <acsutilTempFile.h>
 
@@ -57,7 +58,7 @@
 #define LOG_NAME "Log"
 #define DEFAULT_LOG_FILE_NAME "acs_local_log"
 
-ACE_RCSID(logging, logging, "$Id: loggingLoggingProxy.cpp,v 1.48 2007/11/12 04:39:14 cparedes Exp $");
+ACE_RCSID(logging, logging, "$Id: loggingLoggingProxy.cpp,v 1.49 2007/11/30 11:04:31 cparedes Exp $");
 
 ACSLoggingLog::LogType LoggingProxy::m_LogBinEntryTypeName[] =
 {
@@ -73,37 +74,6 @@ ACSLoggingLog::LogType LoggingProxy::m_LogBinEntryTypeName[] =
     ACSLoggingLog::Critical,
     ACSLoggingLog::Alert,
     ACSLoggingLog::Emergency
-};
-ACE_TCHAR* LoggingProxy::m_LogEntryTypeName[] =
-{
-    ACE_TEXT ("Unknown"),		// not in specs
-    ACE_TEXT ("Shutdown"), 	// not in specs
-    ACE_TEXT ("Trace"),
-    ACE_TEXT ("Debug"),
-    ACE_TEXT ("Info"),
-    ACE_TEXT ("Notice"),
-    ACE_TEXT ("Warning"),
-    ACE_TEXT ("Startup"),		// not in specs
-    ACE_TEXT ("Error"),
-    ACE_TEXT ("Critical"),
-    ACE_TEXT ("Alert"),
-    ACE_TEXT ("Emergency")
-};
-
-ACE_Log_Priority LoggingProxy::m_LogEntryCast[] =
-{
-    LM_TRACE,		// not in specs
-    LM_TRACE, 	// not in specs
-    LM_TRACE,
-    LM_DEBUG,
-    LM_INFO,
-    LM_NOTICE,
-    LM_WARNING,
-    LM_TRACE,		// not in specs
-    LM_ERROR,
-    LM_CRITICAL,
-    LM_ALERT,
-    LM_EMERGENCY
 };
 unsigned int LoggingProxy::setClrCount_m = 0;
 bool LoggingProxy::initialized = false;
@@ -135,17 +105,19 @@ LoggingProxy::log(ACE_Log_Record &log_record)
     //const int nEntryType;
     if (!entryType)
 	{
-	if (log_record.priority() <= ACE::log2(LM_MAX))
-	    {
-	    entryType = m_LogEntryTypeName[log_record.priority()+1];
-	    }
-	else
-	    {
-	    entryType = m_LogEntryTypeName[0];      // invalid priority ("programmer exception")
-	    }
+	//if (log_record.priority() <= ACE::log2(LM_MAX))
+	//    {
+	    //entryType = m_LogEntryTypeName[log_record.priority()+1];
+        entryType = LogLevelDefinition::fromInteger(log_record.priority()+1).getName().c_str(); 
+	//    }
+	//else
+	//    {
+	//    entryType = m_LogEntryTypeName[0];      // invalid priority ("programmer exception")
+	//    }
 	}else{
 
     }
+    std::string s_entryType(entryType); 
 
     //client exception in log level
     if(localLogLevelPrecedence >= CDB_LOG_LEVEL){
@@ -261,9 +233,9 @@ LoggingProxy::log(ACE_Log_Record &log_record)
 	}
    
     if(!m_logBin){
-	    sendXmlLogs(log_record, timestamp, entryType);
+	    sendXmlLogs(log_record, timestamp, s_entryType.c_str());
     }else{
-        sendBinLogs(log_record, timestamp, entryType);
+        sendBinLogs(log_record, timestamp, s_entryType.c_str());
     }
     
     // clear TSS data
@@ -1386,11 +1358,12 @@ LoggingProxy::sendCacheInternal()
                             prio = tprio;
                         }else{                                     // extract from entry type
                             const ACE_TCHAR * type = xmlElement->name();
-                            const int len = sizeof(m_LogEntryTypeName) / sizeof(m_LogEntryTypeName[0]);
+                            /*const int len = sizeof(m_LogEntryTypeName) / sizeof(m_LogEntryTypeName[0]);
                             for (int i = 1; i < len; i++)
                             if (ACE_OS::strcmp(m_LogEntryTypeName[i], type)==0)
                                 { prio = i; break; } 
-                            
+                            */
+                             prio = LogLevelDefinition::fromName(type).getValue(); 
                         }
                         delete xmlElement;
                     }
@@ -1413,10 +1386,13 @@ LoggingProxy::sendCacheInternal()
                                 prio = tprio;
                             else{                                     // extract from entry type
                                 ACSLoggingLog::LogType type = (*iter)->type;
-                                const int len = sizeof(m_LogEntryTypeName) / sizeof(m_LogEntryTypeName[0]);
+                               /* const int len = sizeof(m_LogEntryTypeName) / sizeof(m_LogEntryTypeName[0]);
                                 for (int i = 1; i < len; i++)
                                 if (type == i)
                                     { prio = i; break; } 
+                                */
+                                std::string name = LogLevelDefinition::fromInteger(type).getName();
+                                if(name != AcsLogLevels::OFF_NAME) prio = type;
                                     
                             }
                             logger->log(prio,BinToXml(*iter).c_str());   
@@ -1604,7 +1580,8 @@ std::string LoggingProxy::BinToXml(ACSLoggingLog::LogBinaryRecord* record){
     ACE_CString xml((size_t)512);    // create buffer of 512 chars to improove performace (avoid reallocating)
 
     ACE_OS::sprintf(line, "<%s TimeStamp=\"%s\"", 
-            m_LogEntryTypeName[record->type], 
+        //    m_LogEntryTypeName[record->type], 
+            LogLevelDefinition::fromInteger(record->type).getName().c_str(), 
             record->TimeStamp.in()); 
 
     xml = line;
@@ -1690,7 +1667,8 @@ std::string LoggingProxy::BinToXml(ACSLoggingLog::LogBinaryRecord* record){
 	xml+="]]>";
     
     // end tag
-    ACE_OS::sprintf(line, "</%s>", m_LogEntryTypeName[record->type]); 
+//    ACE_OS::sprintf(line, "</%s>", m_LogEntryTypeName[record->type]); 
+    ACE_OS::sprintf(line, "</%s>", LogLevelDefinition::fromInteger(record->type).getName().c_str()); 
     xml += line;
     return xml.c_str();
 }
