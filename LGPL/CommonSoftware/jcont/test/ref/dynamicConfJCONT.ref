@@ -1,32 +1,32 @@
 1 - ----------T--:--:--.--- [GlobalLogger - ] Container: dynamicTestContainer
-1 - ----------T--:--:--.--- [GlobalLogger - ] 	Log levels for logger 'default':
-1 - ----------T--:--:--.--- [GlobalLogger - ] 		useDefault      : false
-1 - ----------T--:--:--.--- [GlobalLogger - ] 		minLogLevel     : 0
-1 - ----------T--:--:--.--- [GlobalLogger - ] 		minLogLevelLocal: 4
 1 - ----------T--:--:--.--- [GlobalLogger - ] 	... done.
 1 - ----------T--:--:--.--- [GlobalLogger - ] Done all.
+1 - ----------T--:--:--.--- [GlobalLogger - ] 	Log levels for logger 'default':
+1 - ----------T--:--:--.--- [GlobalLogger - ] 		minLogLevel     : 2
+1 - ----------T--:--:--.--- [GlobalLogger - ] 		minLogLevelLocal: 4
+1 - ----------T--:--:--.--- [GlobalLogger - ] 		useDefault      : false
 1 - ----------T--:--:--.--- [GlobalLogger - ] Container: dynamicTestContainer
+1 - ----------T--:--:--.--- [GlobalLogger - ] 		minLogLevel     : 2
+1 - ----------T--:--:--.--- [GlobalLogger - ] 		minLogLevelLocal: 4
 1 - ----------T--:--:--.--- [GlobalLogger - ] 	Setting levels for logger 'default':
 1 - ----------T--:--:--.--- [GlobalLogger - ] 		useDefault      : false
-1 - ----------T--:--:--.--- [GlobalLogger - ] 		minLogLevel     : 2
-1 - ----------T--:--:--.--- [GlobalLogger - ] 		minLogLevelLocal: 4
 1 - ----------T--:--:--.--- [GlobalLogger - ] 	... done.
 1 - ----------T--:--:--.--- [GlobalLogger - ] Done all.
 1 - ----------T--:--:--.--- [GlobalLogger - ] Container: dynamicTestContainer
-1 - ----------T--:--:--.--- [GlobalLogger - ] 	Log levels for logger 'default':
-1 - ----------T--:--:--.--- [GlobalLogger - ] 		useDefault      : false
-1 - ----------T--:--:--.--- [GlobalLogger - ] 		minLogLevel     : 2
-1 - ----------T--:--:--.--- [GlobalLogger - ] 		minLogLevelLocal: 4
 1 - ----------T--:--:--.--- [GlobalLogger - ] 	... done.
 1 - ----------T--:--:--.--- [GlobalLogger - ] Done all.
+1 - ----------T--:--:--.--- [GlobalLogger - ] 	Log levels for logger 'default':
+1 - ----------T--:--:--.--- [GlobalLogger - ] 		minLogLevel     : 2
+1 - ----------T--:--:--.--- [GlobalLogger - ] 		minLogLevelLocal: 4
+1 - ----------T--:--:--.--- [GlobalLogger - ] 		useDefault      : false
 1 - ----------T--:--:--.--- [GlobalLogger - ] Container: dynamicTestContainer
 1 - ----------T--:--:--.--- [GlobalLogger - ] 	Refreshing logging config.
 1 - ----------T--:--:--.--- [GlobalLogger - ] 	... done.
 1 - ----------T--:--:--.--- [GlobalLogger - ] Done all.
 1 - ----------T--:--:--.--- [GlobalLogger - ] Container: dynamicTestContainer
-1 - ----------T--:--:--.--- [GlobalLogger - ] 	Log levels for logger 'default':
-1 - ----------T--:--:--.--- [GlobalLogger - ] 		useDefault      : false
-1 - ----------T--:--:--.--- [GlobalLogger - ] 		minLogLevel     : 0
-1 - ----------T--:--:--.--- [GlobalLogger - ] 		minLogLevelLocal: 2
 1 - ----------T--:--:--.--- [GlobalLogger - ] 	... done.
 1 - ----------T--:--:--.--- [GlobalLogger - ] Done all.
+1 - ----------T--:--:--.--- [GlobalLogger - ] 	Log levels for logger 'default':
+1 - ----------T--:--:--.--- [GlobalLogger - ] 		minLogLevel     : 2
+1 - ----------T--:--:--.--- [GlobalLogger - ] 		minLogLevelLocal: 2
+1 - ----------T--:--:--.--- [GlobalLogger - ] 		useDefault      : false
