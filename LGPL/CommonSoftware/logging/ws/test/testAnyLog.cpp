@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: testAnyLog.cpp,v 1.1 2007/06/11 03:35:05 cparedes Exp $"
+* "@(#) $Id: testAnyLog.cpp,v 1.2 2007/12/03 05:25:36 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -27,7 +27,7 @@
 #include "logging.h"
 #include <time.h>
 
-static char *rcsId="@(#) $Id: testAnyLog.cpp,v 1.1 2007/06/11 03:35:05 cparedes Exp $"; 
+static char *rcsId="@(#) $Id: testAnyLog.cpp,v 1.2 2007/12/03 05:25:36 cparedes Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 CORBA::Any bin_record; 
@@ -85,7 +85,7 @@ double packBinLogs(){
     ACE_CString xml((size_t)512);    // create buffer of 512 chars to improove performace (avoid reallocating)
     
     // source info
-    s_log->type = ACSLoggingLog::Info,
+    s_log->type = AcsLogLevels::INFO_VAL;
     s_log->TimeStamp = "2007-12-12";
     s_log->File="filename";
     s_log->Line=21;

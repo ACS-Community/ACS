@@ -19,7 +19,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: loggingLoggingProxy.cpp,v 1.49 2007/11/30 11:04:31 cparedes Exp $"
+* "@(#) $Id: loggingLoggingProxy.cpp,v 1.50 2007/12/03 05:25:36 cparedes Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -58,8 +58,8 @@
 #define LOG_NAME "Log"
 #define DEFAULT_LOG_FILE_NAME "acs_local_log"
 
-ACE_RCSID(logging, logging, "$Id: loggingLoggingProxy.cpp,v 1.49 2007/11/30 11:04:31 cparedes Exp $");
-
+ACE_RCSID(logging, logging, "$Id: loggingLoggingProxy.cpp,v 1.50 2007/12/03 05:25:36 cparedes Exp $");
+/*
 ACSLoggingLog::LogType LoggingProxy::m_LogBinEntryTypeName[] =
 {
     ACSLoggingLog::Unknown,		// not in specs
@@ -75,6 +75,7 @@ ACSLoggingLog::LogType LoggingProxy::m_LogBinEntryTypeName[] =
     ACSLoggingLog::Alert,
     ACSLoggingLog::Emergency
 };
+*/
 unsigned int LoggingProxy::setClrCount_m = 0;
 bool LoggingProxy::initialized = false;
 int LoggingProxy::instances = 0;
@@ -256,7 +257,8 @@ LoggingProxy::log(ACE_Log_Record &log_record)
     unsigned int flags = (*tss)->flags();
     unsigned long priority = getPriority(log_record);
 
-	s_log->type = m_LogBinEntryTypeName[log_record.priority()+1];
+	s_log->type = LogLevelDefinition::fromInteger(log_record.priority()+1).getValue();
+    //m_LogBinEntryTypeName[log_record.priority()+1];
 
 	s_log->TimeStamp = timestamp;
     if (flags & LM_SOURCE_INFO ||
@@ -1385,12 +1387,7 @@ LoggingProxy::sendCacheInternal()
                             if (tprio)                        // valid value
                                 prio = tprio;
                             else{                                     // extract from entry type
-                                ACSLoggingLog::LogType type = (*iter)->type;
-                               /* const int len = sizeof(m_LogEntryTypeName) / sizeof(m_LogEntryTypeName[0]);
-                                for (int i = 1; i < len; i++)
-                                if (type == i)
-                                    { prio = i; break; } 
-                                */
+                                AcsLogLevels::logLevelValue type = (*iter)->type;
                                 std::string name = LogLevelDefinition::fromInteger(type).getName();
                                 if(name != AcsLogLevels::OFF_NAME) prio = type;
                                     
