@@ -20,13 +20,15 @@
  *    MA 02111-1307  USA
  */
 package alma.acs.logging;
-import alma.ACSLoggingLog.LogBinaryRecord;
-import alma.ACSLoggingLog.LogType;
-import alma.ACSLoggingLog.LogBinaryRecordHelper;
+import java.util.Date;
+
 import org.omg.CORBA.Any;
+import org.omg.CORBA.ORB;
+
+import alma.ACSLoggingLog.LogBinaryRecord;
+import alma.ACSLoggingLog.LogBinaryRecordHelper;
 import alma.ACSLoggingLog.NameValue;
-import  java.util.Date;
-import org.omg.CORBA.*;
+import alma.acs.logging.level.AcsLogLevelDefinition;
 
 class AnyLogTest{
 
@@ -108,7 +110,7 @@ static Any xml_record;
 	LogBinaryRecord s_log = new LogBinaryRecord();
     
     // source info
-    s_log.type = LogType.Info;
+    s_log.type = (short) AcsLogLevelDefinition.INFO.value;
     s_log.TimeStamp = "2007-12-12";
     s_log.File="filename";
     s_log.Line=21;

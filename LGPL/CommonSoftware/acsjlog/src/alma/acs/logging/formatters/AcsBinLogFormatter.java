@@ -31,7 +31,6 @@ import org.omg.CORBA.Any;
 
 import alma.ACSLoggingLog.LogBinaryRecord;
 import alma.ACSLoggingLog.LogBinaryRecordHelper;
-import alma.ACSLoggingLog.LogType;
 import alma.ACSLoggingLog.NameValue;
 import alma.acs.logging.AcsLogLevel;
 import alma.acs.logging.AcsLogRecord;
@@ -72,7 +71,7 @@ public class AcsBinLogFormatter extends AcsLogFormatter
 		
 		LogParameterUtil logParamUtil = new LogParameterUtil(logRecord);
 
-		rLog.type = LogBinEntryTypeName[acsCoreLevel.value];
+		rLog.type = (short) acsCoreLevel.value;
         rLog.TimeStamp = TimeStamp;
 
 		String file = logRecord.getSourceClassName();
@@ -243,25 +242,4 @@ public class AcsBinLogFormatter extends AcsLogFormatter
 		return "Error: only binary format available!";
 	}
 	
-	
-    /**
-     * This strange list used to be inherited from the former base class ACSCoreLevel,
-     * which was replaced by the {@link AcsLogLevelDefinition} enum after ACS 7.0. 
-     * Probably the following LogType IDL enum (see logging_idl.idl) will need to go next.
-     * Till then we keep it here locally.
-     */
-    public final static LogType[] LogBinEntryTypeName = {
-        LogType.Unknown,		// not in specs
-        LogType.Shutdown, 	// not in specs
-        LogType.Trace,
-        LogType.Debug,
-        LogType.Info,
-        LogType.Notice,
-        LogType.Warning,
-        LogType.Startup,		// not in specs
-        LogType.Error,
-        LogType.Critical,
-        LogType.Alert,
-        LogType.Emergency
-    };
 }
