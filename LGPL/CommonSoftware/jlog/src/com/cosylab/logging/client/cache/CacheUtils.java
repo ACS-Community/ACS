@@ -178,7 +178,7 @@ public class CacheUtils {
 			sb.delete(0, sb.length());
 			sb.append(log.TimeStamp);
 			sb.append(CacheUtils.SEPARATOR_CHAR);
-			sb.append(log.type.value());
+			sb.append(log.type);
 			sb.append(CacheUtils.SEPARATOR_CHAR);
 			sb.append(log.SourceObject);
 			sb.append(CacheUtils.SEPARATOR_CHAR);
