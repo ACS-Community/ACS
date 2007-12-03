@@ -1,4 +1,4 @@
-# @(#) $Id: Log.py,v 1.31 2007/11/30 23:52:45 agrimstrup Exp $
+# @(#) $Id: Log.py,v 1.32 2007/12/03 17:53:02 agrimstrup Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA,  2001
@@ -43,7 +43,7 @@ TODO:
 XML-related methods are untested at this point.
 '''
 
-__revision__ = "$Id: Log.py,v 1.31 2007/11/30 23:52:45 agrimstrup Exp $"
+__revision__ = "$Id: Log.py,v 1.32 2007/12/03 17:53:02 agrimstrup Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 from os        import environ
@@ -552,7 +552,7 @@ logging.Logger.root = defaultlogger
 logging.Logger.manager = logging.Manager(logging.Logger.root)
 
 #----------------------------------------------------------------------------
-def getLogger(name):
+def getLogger(name=None):
     '''
     This returns the singleton instance of logger.
 
