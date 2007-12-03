@@ -2,7 +2,7 @@
 #******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: userScript,v 1.15 2006/06/20 06:47:58 bjeram Exp $"
+# "@(#) $Id: userScript,v 1.16 2007/12/03 12:02:21 hsommer Exp $"
 #
 # Generic VxWorks user-script
 #
@@ -64,7 +64,7 @@ lcubootAutoLoad 1,"Container"
 lcubootAutoLoad 1,"baciErrTypeDevIO"
 lcubootAutoLoad 1,"baciErrTypeProperty"
 
-putenv "ACS_LOG_STDOUT=0"
+putenv "ACS_LOG_STDOUT=2"
 putenv "ACS_LOG_FILE=ACSlogFile"
 putenv "DAL_REFERENCE=file://DAL.ior"
 

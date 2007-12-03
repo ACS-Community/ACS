@@ -1,5 +1,5 @@
 1 - Starting Container...
-2 - Test ACS_LOG_STDOUT=0, ACS_LOG_CENTRAL unset and minLogLevel=9
+2 - Test ACS_LOG_STDOUT=2, ACS_LOG_CENTRAL unset and minLogLevel=9
 1 - Retrieving CDB reference from Manager using bootstrap ORB
 2 - Init maciLogConfigTestClient...
 1 - Bootstrap ORB parms: maciContainer ContainerTestLog

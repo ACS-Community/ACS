@@ -20,7 +20,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: userScript,v 1.1 2006/07/04 13:30:58 bjeram Exp $"
+# "@(#) $Id: userScript,v 1.2 2007/12/03 12:02:21 hsommer Exp $"
 #
 # Generic VxWorks user-script
 #
@@ -60,7 +60,7 @@ lcubootAutoLoad 1,"acserr"
 lcubootAutoLoad 1,"acsthreadErrType"
 lcubootAutoLoad 1,"acsThread"
 
-putenv "ACS_LOG_STDOUT=0"
+putenv "ACS_LOG_STDOUT=2"
 putenv "ACS_LOG_FILE=logFile"
 
 

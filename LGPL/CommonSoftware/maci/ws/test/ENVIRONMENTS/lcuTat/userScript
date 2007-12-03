@@ -2,7 +2,7 @@
 #******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: userScript,v 1.92 2006/04/06 10:09:26 bjeram Exp $"
+# "@(#) $Id: userScript,v 1.93 2007/12/03 12:02:21 hsommer Exp $"
 #
 # Generic VxWorks user-script
 #
@@ -62,7 +62,7 @@ lcubootAutoLoad 1,"maciStubs"
 lcubootAutoLoad 1,"maciErrTypeComponent"
 lcubootAutoLoad 1,"Container"
 
-putenv "ACS_LOG_STDOUT=0"
+putenv "ACS_LOG_STDOUT=2"
 putenv "ACS_LOG_FILE=logFile"
 putenv "DAL_REFERENCE=file://DAL.ior"
 

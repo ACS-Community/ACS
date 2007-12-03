@@ -17,7 +17,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: maciTestLogConfig.sh,v 1.4 2007/11/12 04:44:41 cparedes Exp $"
+# "@(#) $Id: maciTestLogConfig.sh,v 1.5 2007/12/03 12:02:21 hsommer Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -32,7 +32,7 @@
 #export ACS_LOG_CENTRAL=5
 #maciTestLogConfigClient
 
-echo "Test ACS_LOG_STDOUT=0, ACS_LOG_CENTRAL unset and minLogLevel=9"
+echo "Test ACS_LOG_STDOUT=2, ACS_LOG_CENTRAL unset and minLogLevel=9"
 maciTestLogConfigClient
 
 echo "Test with dynamic change of log"
