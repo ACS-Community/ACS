@@ -99,6 +99,7 @@ module ACSLoggingLog {
      * Probably LogBinaryRecord should use instead a logLevelValue from LogLevels,
      * and this definition should be removed.
      */
+    /*
     enum LogType {
 	Unknown,
 	Shutdown,
@@ -114,6 +115,7 @@ module ACSLoggingLog {
 	Emergency,
 	Archive
     };
+    */
 /*
 Header,
  	Description,
@@ -127,7 +129,7 @@ Header,
      *
      */
     struct LogBinaryRecord {
-	LogType type;
+	AcsLogLevels::logLevelValue type;
 	string TimeStamp;
 	string File;
 	unsigned long Line;
