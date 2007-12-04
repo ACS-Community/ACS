@@ -24,7 +24,6 @@ package com.cosylab.logging.client.cache;
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -153,6 +152,18 @@ public class LogFileCache implements ILogMap {
 			size=index.size();
 		}
 		return size;
+	}
+	
+	/**
+	 * Return the length of the file on disk
+	 * 
+	 * @return The size of the file cache
+	 * 
+	 * @throws IOException in case of I/O error
+	 * @see java.io.RandomAccessFile
+	 */
+	public long getFileSize() throws IOException{
+		return file.length();
 	}
 	
 	/**
