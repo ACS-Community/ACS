@@ -2,7 +2,7 @@
 #*******************************************************************************
 # E.S.O. - ALMA project
 #
-# "@(#) $Id: buildTAO,v 1.27 2007/11/29 07:05:21 maraya Exp $"
+# "@(#) $Id: buildTAO,v 1.28 2007/12/04 07:45:21 maraya Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -207,9 +207,9 @@ then
      ln -s $HOST_ROOT/bin/tao_idl
 #    cd $ACE_ROOT_VW/bin
 #    ln -s ../../$LINK_DEST/bin/gperf gperf
-#    cd $ACE_ROOT_VW/TAO
-#    rm -rf TAO_IDL
-#    ln -s ../../$LINK_DEST/TAO/TAO_IDL .
+    cd $ACE_ROOT_VW/TAO
+    rm -rf TAO_IDL
+    ln -s ../../$HOST_ROOT/TAO/TAO_IDL .
     echo "done"
     echo ""
 
