@@ -17,21 +17,81 @@ import com.cosylab.logging.engine.log.ILogEntry;
  * It uses a WriteBuffer to store the logs to write on disk. 
  * The purpose of this class is to write several logs at once reducing
  * the write operations on disk.
+ * 
+ * The buffer stores the logs when  they are added. 
+ * It flushes the buffer on disk when the number of logs in memory 
+ * exceeds the maximum size. This means that the number of chars written on
+ * the file cache at once is not fixed but depends on the lengths of the
+ * logs stored in this buffer.
+ * To enhance performance and to have the size of the file always available,
+ * the buffer stores the log together with other info in Map of BufferedCacheItem    
  *  
  * @author acaproni
  */
 public class LogBufferedFileCache extends LogFileCache implements ILogMap {
 	
+	/**
+	 * Objects of this class represent an entry of the buffer.
+	 * For each log, the string to write on disk is also stored
+	 * This allows
+	 * 1 to know the size of the file on disk taking in account the size
+	 *   of the buffer
+	 * 2 to convert only once the log in a cache string
+	 * 
+	 * @author acaproni
+	 *
+	 */
+	private class BufferedCacheItem {
+		private ILogEntry logEntry;
+		private String logCacheString;
+		public BufferedCacheItem(ILogEntry log, String cacheString) {
+			if (log==null) {
+				throw new IllegalArgumentException("Invalid null log entry");
+			}
+			if (cacheString==null || cacheString.length()==0) {
+				throw new IllegalArgumentException("Invalid log cache string "+cacheString);
+			}
+			logEntry=log;
+			logCacheString= cacheString;
+		}
+
+		/**
+		 * Getter 
+		 * 
+		 * @return The log entry
+		 */
+		public ILogEntry getLogEntry() {
+			return logEntry;
+		}
+		
+		/**
+		 * Getter 
+		 * 
+		 * @return The string to write on disk
+		 */
+		public String getLogCacheString() {
+			return logCacheString;
+		}
+	}
+	
 	public static final String WRITEBUFFERSIZE_PROPERTY_NAME = "jlog.cache.writebuffersize";
 	public static final int DEFAULT_WRITEBUFFERSIZE = 8192;
 	
 	// The buffer of logs is a TreeMap having has key the identifier
-	// of the log and the log itself as value
-	private TreeMap<Integer,ILogEntry> buffer= new TreeMap<Integer,ILogEntry>();
+	// of the log and a BufferedCacheItem as value
+	private TreeMap<Integer,BufferedCacheItem> buffer= new TreeMap<Integer,BufferedCacheItem>();
 	
 	// The capacity of the buffer (measured as number of logs):
 	// when the buffer is full it is flushed on disk 
 	private int size;
+	
+	// The size of the chars in the buffer
+	// 
+	// It is the length of the string to write on disk containing all the logs
+	// translated in the cache format.
+	// This allows to know the size of the file on disk taking into account
+	// the size of the logs in the buffer
+	private volatile long bufferFileSize=0;
 	
 	/**
 	 * Build a LogBufferedFileCache with the given size for the cache and the
@@ -72,6 +132,7 @@ public class LogBufferedFileCache extends LogFileCache implements ILogMap {
 		synchronized (buffer){
 			buffer.clear();
 		}
+		bufferFileSize=0;
 	}
 	
 	/**
@@ -87,6 +148,7 @@ public class LogBufferedFileCache extends LogFileCache implements ILogMap {
 		synchronized(buffer) {
 			buffer.clear();
 		}
+		bufferFileSize=0;
 	}
 
 	/**
@@ -96,11 +158,11 @@ public class LogBufferedFileCache extends LogFileCache implements ILogMap {
 	 * @return The LogEntryXML or null in case of error
 	 */
 	public synchronized ILogEntry getLog(Integer key) throws LogCacheException {
-		ILogEntry log = buffer.get(key);
-		if (log==null) {
+		BufferedCacheItem item = buffer.get(key);
+		if (item==null) {
 			return super.getLog(key);
 		}
-		return log;
+		return  item.getLogEntry();
 	}
 	
 	/**
@@ -109,12 +171,14 @@ public class LogBufferedFileCache extends LogFileCache implements ILogMap {
 	 * @param pos The key of the log to delete
 	 */
 	public synchronized void deleteLog(Integer key) throws LogCacheException {
-		if (!buffer.containsKey(key)) {
+		BufferedCacheItem itemToDelete = buffer.get(key);
+		if (itemToDelete!=null) {
+			synchronized (buffer) {
+				buffer.remove(key);
+			}
+			bufferFileSize-=itemToDelete.getLogCacheString().length();
+		} else {
 			super.deleteLog(key);
-		}
-		ILogEntry log;
-		synchronized (buffer) {
-			log = buffer.remove(key);
 		}
 	}
 	
@@ -130,12 +194,13 @@ public class LogBufferedFileCache extends LogFileCache implements ILogMap {
 		Iterator<Integer> iter =keys.iterator();
 		while (iter.hasNext()) {
 			Integer key = iter.next();
-			ILogEntry log;
+			BufferedCacheItem cacheItem;
 			synchronized(buffer) {
-				log=buffer.remove(key);
+				cacheItem=buffer.remove(key);
 			}
-			if (log!=null) {
+			if (cacheItem!=null) {
 				iter.remove();
+				bufferFileSize-=cacheItem.getLogCacheString().length();
 			}
 		}
 		if (keys.size()>0) {
@@ -154,9 +219,11 @@ public class LogBufferedFileCache extends LogFileCache implements ILogMap {
 			throw new LogCacheException("Error: trying to add a null log to the buffer");
 		}
 		int logInBuffer;
+		BufferedCacheItem cacheItem = new BufferedCacheItem(log,toCacheString(log));
 		synchronized (buffer) {
-			buffer.put(logID,log);
+			buffer.put(logID,cacheItem);
 			logInBuffer=buffer.size();
+			bufferFileSize+=cacheItem.getLogCacheString().length();
 		}
 		if (logInBuffer==size) {
 			flushBuffer();
@@ -201,12 +268,11 @@ public class LogBufferedFileCache extends LogFileCache implements ILogMap {
 		// Prepare the buffer and the index
 		LogFileCache.LogCacheInfo info;
 		for (Integer key: buffer.keySet()) {
-			ILogEntry log = buffer.get(key);
+			BufferedCacheItem item = buffer.get(key);
 			info = new LogFileCache.LogCacheInfo();
 			info.start=startingPos+str.length();
-			String cacheLogStr=toCacheString(log);
-			str.append(cacheLogStr);
-			info.len=cacheLogStr.length();
+			str.append(item.getLogCacheString());
+			info.len=item.getLogCacheString().length();
 			if (buffer.containsKey(key)) {
 				index.put(key,info);
 			} 
@@ -225,6 +291,7 @@ public class LogBufferedFileCache extends LogFileCache implements ILogMap {
 		synchronized (buffer) {
 			buffer.clear();
 		}
+		bufferFileSize=0;
 	}
 	
 	/**
@@ -238,6 +305,20 @@ public class LogBufferedFileCache extends LogFileCache implements ILogMap {
 			sz=buffer.size();
 		}
 		return super.getSize()+sz;
+	}
+	
+	/**
+	 * Return the length of the file on disk taking into account
+	 * the length of the string to write on the disk for the logs in the
+	 * buffer.
+	 * 
+	 * @return The size of the file cache
+	 * 
+	 * @throws IOException in case of I/O error
+	 * @see java.io.RandomAccessFile
+	 */
+	public long getFileSize() throws IOException{
+		return super.getFileSize()+bufferFileSize;
 	}
 	
 	/**
