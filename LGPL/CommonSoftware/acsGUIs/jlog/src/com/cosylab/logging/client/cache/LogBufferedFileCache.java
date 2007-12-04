@@ -29,7 +29,8 @@ public class LogBufferedFileCache extends LogFileCache implements ILogMap {
 	// of the log and the log itself as value
 	private TreeMap<Integer,ILogEntry> buffer= new TreeMap<Integer,ILogEntry>();
 	
-	// The capacity of the buffer: when the buffer is full it is flushed on disk  
+	// The capacity of the buffer (measured as number of logs):
+	// when the buffer is full it is flushed on disk 
 	private int size;
 	
 	/**
@@ -183,7 +184,7 @@ public class LogBufferedFileCache extends LogFileCache implements ILogMap {
 	 * Flush all the logs on file
 	 *
 	 */
-	private void flushBuffer() throws LogCacheException {
+	public void flushBuffer() throws LogCacheException {
 		if (buffer.size()!=size) {
 			throw new IllegalStateException("Error: trying to flush but the buffer is not full");
 		}
@@ -210,6 +211,7 @@ public class LogBufferedFileCache extends LogFileCache implements ILogMap {
 				index.put(key,info);
 			} 
 		}
+		
 		// Write the buffer on disk
 		synchronized (file) {
 			try {
@@ -343,4 +345,5 @@ public class LogBufferedFileCache extends LogFileCache implements ILogMap {
 	public Iterator<ILogEntry> iterator() {
 		return new LogIterator(this);
 	}
+	
 }
