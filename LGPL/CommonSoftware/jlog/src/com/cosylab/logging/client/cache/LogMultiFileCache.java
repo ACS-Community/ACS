@@ -20,9 +20,9 @@
  */
 package com.cosylab.logging.client.cache;
 
+import java.io.IOException;
 import java.util.Vector;
 import com.cosylab.logging.engine.log.ILogEntry;
-import com.sun.jdi.InvalidStackFrameException;
 
 /**
 *
@@ -53,9 +53,9 @@ public class LogMultiFileCache {
 	
 	
 	// Current size of the log file.  
-	private int fileCurrSize;
+	private long fileCurrSize;
 	// Maximum size for the log file.
-	private int fileMaxSize;
+	private long fileMaxSize;
 	// Minimum absolute log index,that is, the smaller index of a valid log.
 //	private int minLogIndex;
 	// Array of records each describing an exiting log file.
@@ -190,14 +190,19 @@ public class LogMultiFileCache {
 			throw new LogCacheException("Null file record");
 		}
 		
-		int size = fileRecord.lbfc.getFileSize();
+		long size;
+		try {
+			size = fileRecord.lbfc.getFileSize();
+		} catch (IOException ioe) {
+			throw new LogCacheException(ioe);
+		}
 		
 		// If file Size exceeds maximum size :
 		// - Flush buffer 
 		// - Initialize next table record
 		
 		if (size >= fileMaxSize) {
-			fileRecord.lbfc.flush();
+			fileRecord.lbfc.flushBuffer();
 			// Replace old file record with new one.
 			fileRecord= createNewFileRecord();
 		} else {
