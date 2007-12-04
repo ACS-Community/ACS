@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: archiveeventsArchiveSupplier.cpp,v 1.4 2006/01/26 00:13:02 dfugate Exp $"
+* "@(#) $Id: archiveeventsArchiveSupplier.cpp,v 1.5 2007/12/04 12:04:30 maraya Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -55,7 +55,13 @@ ArchiveSupplier::send_event(CORBA::Short priority,
 
     //the eventName consists of container named concatenated with the
     //component and property names, delimited by ':'s.
-    std::string eventName = container + ":" + component + ":" + property;
+    const char *separator = ":";
+    ACE_CString eventName = container.c_str();
+    eventName += separator; 
+    eventName += component.c_str();
+    eventName += separator;
+    eventName += property.c_str();
+    //std::string eventName = container + ":" + component + ":" + property;
     
     //save a CORBA any by placing the container/component/property names in the event_name
     archiving_event.header.fixed_header.event_name = CORBA::string_dup(eventName.c_str());
