@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsThread.h,v 1.26 2006/07/06 13:35:20 vwang Exp $"
+* "@(#) $Id: acsThread.h,v 1.27 2007/12/04 13:25:01 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -113,7 +113,7 @@ namespace ACS
 	       const TimeInterval& sleepTime=ThreadBase::defaultSleepTime,
 //	       const bool del=false);
 	       const bool del=false, 
-	       const long _thrFlags=THR_NEW_LWP | THR_DETACHED);
+	       const long _thrFlags=THR_NEW_LWP | THR_DETACHED) throw (acsthreadErrType::CanNotSpawnThreadExImpl);
     
 
 	/*
