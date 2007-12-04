@@ -6,7 +6,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: acsStartORBSRVC,v 1.69 2007/11/27 12:15:29 msekoran Exp $"
+# "@(#) $Id: acsStartORBSRVC,v 1.70 2007/12/04 14:46:24 msekoran Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -65,12 +65,13 @@ export HOST=`getIP`
 #
 CL_BASEPORT=
 CL_HELP=
+CL_RECOVER=
 
 #
 # These options can be recognized (longopts comma-separated. colon means argument is required)
 #
-LONGOPTS=help,baseport:,timeout:
-SHORTOPTS=hb:t:
+LONGOPTS=help,recoverClientConnections,baseport:,timeout:
+SHORTOPTS=hrb:t:
 
 #
 # Usage info. Be nice and keep this up-to-date!
@@ -80,9 +81,10 @@ function printUsage {
    echo ""
 	echo "Usage: `basename $0` [OPTIONS]  "
 	echo "Options: "
-	echo "   -b | -baseport INSTANCE        the acs instance (0-9) you want to use"
-	echo "   -t | -timeout MULTIPLIER       the maximum timeout can be increased by specifying an integer value greater than 1"
-	echo "   -h | -help                     prints this help and exits"
+	echo "   -b | -baseport INSTANCE          the acs instance (0-9) you want to use"
+	echo "   -t | -timeout MULTIPLIER         the maximum timeout can be increased by specifying an integer value greater than 1"
+	echo "   -r | -recoverClientConnections   force services to recover client connections"
+	echo "   -h | -help                       prints this help and exits"
 }
 
 #
@@ -104,12 +106,14 @@ set -- `getopt -u -a -l $LONGOPTS $SHORTOPTS "$@"`
 while : 
 do
 	case "$1" in
-	--baseport)         CL_BASEPORT=$2 ; shift ;;
-	-b)                 CL_BASEPORT=$2 ; shift ;;
-	--timeout)          export ACS_STARTUP_TIMEOUT_MULTIPLIER=$2 ; shift ;;
-	-t)                 export ACS_STARTUP_TIMEOUT_MULTIPLIER=$2 ; shift ;;
-	--help)             CL_HELP=true ;; 
-	-h)                 CL_HELP=true ;; 
+	--baseport)                   CL_BASEPORT=$2 ; shift ;;
+	-b)                           CL_BASEPORT=$2 ; shift ;;
+	--timeout)                    export ACS_STARTUP_TIMEOUT_MULTIPLIER=$2 ; shift ;;
+	-t)                           export ACS_STARTUP_TIMEOUT_MULTIPLIER=$2 ; shift ;;
+	--help)                       CL_HELP=true ;; 
+	-h)                           CL_HELP=true ;; 
+	--recoverClientConnections)   CL_RECOVER=true ;; 
+	-r)                           CL_RECOVER=true ;; 
 	--) break ;;
 	esac
 	shift
@@ -391,7 +395,6 @@ fi
 
 ######################################
 #   ACS Configuration Database
-#   No recovery is attempted
 #
 #   Note: this is started immediately after the naming service 
 #         (which is its only dependency) in the background, 
@@ -401,6 +404,10 @@ fi
 #         performance.
 #######################################
 
+CDB_RECOVER_OPT=-n
+if [ "$CL_RECOVER" ] ; then
+	CDB_RECOVER_OPT=
+fi
 
 ENABLE_TMCDB=`echo ${ENABLE_TMCDB:-"false"} | tr "[:upper:]" "[:lower:]"`
 if [ $ENABLE_TMCDB = "true" ] || [ $ENABLE_TMCDB = "y" ] || [ $ENABLE_TMCDB = "1" ]
@@ -420,11 +427,11 @@ then
 	else
 		loadfrom=""
 	fi
-	hibernateCdbJDal -OAIAddr $HOST -OAport $CDB_PORT -n $loadfrom 2>&1 | tee $CDB_OUT &
+	hibernateCdbJDal -OAIAddr $HOST -OAport $CDB_PORT $CDB_RECOVER_OPT $loadfrom 2>&1 | tee $CDB_OUT &
 else
 	ACS_LOG_INFO "Starting ACS Configuration Database"
 	ACS_LOG_INFO "    CDB data is in:  $ACS_CDB"
-	cdbjDAL -OAIAddr $HOST -OAport $CDB_PORT -n 2>&1 | tee $CDB_OUT &
+	cdbjDAL -OAIAddr $HOST -OAport $CDB_PORT $CDB_RECOVER_OPT 2>&1 | tee $CDB_OUT &
 fi
 #copy tee's PID
 echo $! >> $INSTANCE_DIR/$ACS_PIDSFILE

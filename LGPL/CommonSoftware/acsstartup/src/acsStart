@@ -26,7 +26,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: acsStart,v 1.39 2007/08/06 08:50:51 cparedes Exp $"
+# "@(#) $Id: acsStart,v 1.40 2007/12/04 14:46:24 msekoran Exp $"
 #
 # who       when      what
 # -------- ---------- ----------------------------------------------
@@ -73,12 +73,13 @@ CL_TIMEOUT=
 CL_VERBOSE=
 CL_WAITIFR=true
 CL_LOG=
+CL_RECOVER=
 
 #
 # These options can be recognized (longopts comma-separated. colon means argument is required)
 #
-LONGOPTS=help,baseport:,timeout:,verbose,nowaitifr,log
-SHORTOPTS=hb:t:vl
+LONGOPTS=help,recoverClientConnections,baseport:,timeout:,verbose,nowaitifr,log
+SHORTOPTS=hrb:t:vl
 
 #
 # Usage info. Be nice and keep this up-to-date!
@@ -88,13 +89,14 @@ function printUsage {
    echo ""
    echo "Usage: `basename $0` [OPTIONS]  "
    echo "Options: "
-   echo "   -b | -baseport INSTANCE        the acs instance (0-9) you want to use"
-   echo "   -t | -timeout MULTIPLIER       the maximum timeout can be increased by specifying an integer value greater than 1"
-   echo "        -nowaitifr                does not wait for the CORBA Interface Repository to load before returning"
-   echo "  -l  | -log                      automatically starts a loggingClient process writing XML logs to"
-   echo "                                  \$ACSDATA/tmp/ACS_INSTANCE.\$ACS_INSTANCE/"
-   echo "   -v | -verbose                  print subprocess output to console (additionally to regular logfile)"
-   echo "   -h | -help                     prints this help and exits"
+   echo "   -b | -baseport INSTANCE          the acs instance (0-9) you want to use"
+   echo "   -t | -timeout MULTIPLIER         the maximum timeout can be increased by specifying an integer value greater than 1"
+   echo "        -nowaitifr                  does not wait for the CORBA Interface Repository to load before returning"
+   echo "   -l | -log                        automatically starts a loggingClient process writing XML logs to"
+   echo "                                    \$ACSDATA/tmp/ACS_INSTANCE.\$ACS_INSTANCE/"
+   echo "   -r | -recoverClientConnections   force services to recover client connections"
+   echo "   -v | -verbose                    print subprocess output to console (additionally to regular logfile)"
+   echo "   -h | -help                       prints this help and exits"
 }
 
 #
@@ -116,17 +118,19 @@ set -- `getopt -u -a -l $LONGOPTS $SHORTOPTS "$@"`
 while : 
 do
 	case "$1" in
-	--baseport)         CL_BASEPORT=$2 ; shift ;;
-	-b)                 CL_BASEPORT=$2 ; shift ;;
-	--timeout)          CL_TIMEOUT=$2 ; shift ;;
-	-t)                 CL_TIMEOUT=$2 ; shift ;;
-	--nowaitifr)        CL_WAITIFR=false ;;
-	--log)              CL_LOG=true ;;
-	-l)                 CL_LOG=true ;;
-	--verbose)          CL_VERBOSE=true ;;
-	-v)                 CL_VERBOSE=true ;;
-	--help)             CL_HELP=true ;; 
-	-h)                 CL_HELP=true ;; 
+	--baseport)                   CL_BASEPORT=$2 ; shift ;;
+	-b)                           CL_BASEPORT=$2 ; shift ;;
+	--timeout)                    CL_TIMEOUT=$2 ; shift ;;
+	-t)                           CL_TIMEOUT=$2 ; shift ;;
+	--nowaitifr)                  CL_WAITIFR=false ;;
+	--log)                        CL_LOG=true ;;
+	-l)                           CL_LOG=true ;;
+	--recoverClientConnections)   CL_RECOVER=true ;; 
+	-r)                           CL_RECOVER=true ;; 
+	--verbose)                    CL_VERBOSE=true ;;
+	-v)                           CL_VERBOSE=true ;;
+	--help)                       CL_HELP=true ;; 
+	-h)                           CL_HELP=true ;; 
 	--) break ;;
 	esac
 	shift
@@ -207,8 +211,14 @@ MAX_IRFEED_TIMEOUT=$(( $MAX_TIMEOUT * 5 ))
 
 export ACSSTARTLOG=$ACS_INSTANCES_DIR/.acsStart.$$
 #------------------------------------------------------
+
+SRVCS_RECOVER_OPT=
+if [ "$CL_RECOVER" ] ; then
+	SRVCS_RECOVER_OPT=-r
+fi
+
 #start the ORB services
-acsStartORBSRVC 2>&1 | tee -a $ACSSTARTLOG &
+acsStartORBSRVC $SRVCS_RECOVER_OPT 2>&1 | tee -a $ACSSTARTLOG &
 ORBSRVC_PID=$!
 
 if ! acsutilBlock -t $MAX_TIMEOUT -f $ACSSTARTLOG -b "acsStartORBSRVC script has now completed" -c "ERROR" -p $ORBSRVC_PID
@@ -230,8 +240,14 @@ fi
 export ACS_INSTANCE=`grep "For this ACS session, please do an" $ACSSTARTLOG | cut -d\' -f2 | cut -d= -f2`
 export INSTANCE_DIR=`getInstanceDirName $ACS_INSTANCE`
 #------------------------------------------------------
+
+MANAGER_RECOVER_OPT=
+if [ "$CL_RECOVER" ] ; then
+	MANAGER_RECOVER_OPT=-r
+fi
+
 #start the Manager
-acsStartManager 2>&1 | tee -a $ACSSTARTLOG &
+acsStartManager $MANAGER_RECOVER_OPT 2>&1 | tee -a $ACSSTARTLOG &
 MANAGER_PID=$!
 
 if ! acsutilBlock -t $MAX_TIMEOUT -f $ACSSTARTLOG -b "Manager Application initialized" -p $MANAGER_PID
