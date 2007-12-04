@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: acsMakefile,v 1.163 2007/06/11 11:27:07 mzampare Exp $" 
+# "@(#) $Id: acsMakefile,v 1.164 2007/12/04 07:50:22 maraya Exp $" 
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -615,16 +615,18 @@ endif
     #
     # CPU must be one of the supported types:
     ifeq ($(CPU),MC68000)
+	# TODO: This must be updated for the specific platform
         VX_CPU_FAMILY = 68k
         CPU_CFLAGS = -DCPU=$(CPU) -m68000
     endif
     ifeq ($(CPU),MC68040)
+	# TODO: This must be updated for the specific platform
         VX_CPU_FAMILY = 68k
         CPU_CFLAGS = -DCPU=$(CPU)
     endif
     ifeq ($(CPU),PPC604)
         VX_CPU_FAMILY = ppc
-        CPU_CFLAGS = -DCPU=$(CPU) -mlongcall -mcpu=604
+        CPU_CFLAGS = -DCPU=$(CPU) -mlongcall -mcpu=604 -mno-implicit-fp -mcpu=604 -DTOOL=gnu
     endif
 
     ifndef VX_CPU_FAMILY
@@ -635,7 +637,7 @@ $(error "UNSUPPORTED CPU type")
 
     #
     # GNU-VXWORKS environment
-    CC       = cc$(VX_CPU_FAMILY) -ansi -fno-builtin 
+    CC       = cc$(VX_CPU_FAMILY) -ansi -fno-builtin -mstrict-align
     CXX      = cc$(VX_CPU_FAMILY) -ansi -fno-builtin 
     CCDEP    = cc$(VX_CPU_FAMILY) -MM -ansi -fno-builtin 
 #    ifndef MAKE_NO_WARNINGS
@@ -652,7 +654,9 @@ $(error "UNSUPPORTED CPU type")
 #      CC_FLAGS = $(CPU_CFLAGS) -DMAKE_VXWORKS -Wall -c
 #    endif
 
-    CC_FLAGS = $(CPU_CFLAGS) -B$(WIND_BASE)/host/$(WIND_HOST_TYPE)/lib/gcc-lib/ -mstrict-align -fstrength-reduce -DMAKE_VXWORKS -Wall -c
+#    CC_FLAGS = $(CPU_CFLAGS) -B$(WIND_BASE)/host/$(WIND_HOST_TYPE)/lib/gcc-lib/ -mstrict-align -fstrength-reduce -DMAKE_VXWORKS -Wall -c
+    CC_FLAGS = $(CPU_CFLAGS) -DTOOL_FAMILY=gnu -DMAKE_VXWORKS -Wall -c 
+
 
     # all warnings left out for the default (see above) must be added here
     ifdef MAKE_ALL_WARNINGS
@@ -835,7 +839,7 @@ endif
 ifndef DEBUG
   ifndef OPTIMIZE
     ifdef MAKE_VXWORKS
-        CFLAGS = $(CC_FLAGS) -g -DDEBUG
+        CFLAGS = $(CC_FLAGS) -g -DDEBUG 
     else
         CFLAGS = $(CC_FLAGS) -g -DDEBUG -O
     endif
@@ -899,8 +903,8 @@ ifndef MAKE_VXWORKS
   CPPFLAGS = -fcheck-new
 #endif
 else
-  CFLAGS :=   -ansi -pipe -D_REENTRANT -fno-builtin -fno-defer-pop -fvolatile -nostdlib -W -DACE_VXWORKS=0x551 -Wno-uninitialized -DACE_LACKS_RTTI  -fcheck-new $(CFLAGS)
-  LD = perl $(ACE_ROOT)/bin/ace_ld -C ccppc $(CFLAGS) -traditional -- -m munch -n nm$(VX_CPU_FAMILY) ld$(VX_CPU_FAMILY) -X -r 
+  CFLAGS :=   -ansi -pipe -D_REENTRANT -fno-builtin -fno-defer-pop -fvolatile -nostdlib -W -DACE_VXWORKS=0x620 -Wno-uninitialized -DACE_LACKS_RTTI  -fcheck-new $(CFLAGS)
+  LD = perl $(ACE_ROOT)/bin/ace_ld -C ccppc $(CFLAGS) -- -m munch -n nm$(VX_CPU_FAMILY) ld$(VX_CPU_FAMILY) -X -r 
 
 endif
 endif  
@@ -952,7 +956,7 @@ endif
 #
 # ... for software products
 ifdef MAKE_VXWORKS
-    VXINC = -I$(VXROOT)/h
+    VXINC = -I$(VXROOT)/h -I$(VXROOT)/h/types -I$(VXROOT)/h/wrn/coreip/
     ifeq ($(VX_CPU_FAMILY),ppc)
         VXINC := $(VXINC) -I$(VXROOT)/h/arch/ppc
     endif
