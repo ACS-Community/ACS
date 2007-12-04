@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsncCDBProperties.cpp,v 1.8 2006/03/08 17:50:44 dfugate Exp $"
+* "@(#) $Id: acsncCDBProperties.cpp,v 1.9 2007/12/04 12:05:56 maraya Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -26,7 +26,7 @@
 #include "acsncCDBProperties.h"
 #include <maciContainerImpl.h>
 
-static char *rcsId="@(#) $Id: acsncCDBProperties.cpp,v 1.8 2006/03/08 17:50:44 dfugate Exp $"; 
+static char *rcsId="@(#) $Id: acsncCDBProperties.cpp,v 1.9 2007/12/04 12:05:56 maraya Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 namespace nc {
@@ -169,11 +169,11 @@ namespace nc {
 	std::string tString = tempDAO->get_string(name_p);
 	if(tString=="false")
 	    {
-	    retVal[i-1].value <<= false; 
+	    retVal[i-1].value <<= FALSE; 
 	    }
 	else
 	    {
-	    retVal[i-1].value <<= true;
+	    retVal[i-1].value <<= TRUE;
 	    }
 	}
 
