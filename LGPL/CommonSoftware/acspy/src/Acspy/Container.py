@@ -1,4 +1,4 @@
-# @(#) $Id: Container.py,v 1.31 2007/11/30 23:52:45 agrimstrup Exp $
+# @(#) $Id: Container.py,v 1.32 2007/12/04 21:57:57 agrimstrup Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -21,7 +21,7 @@
 # ALMA should be addressed as follows:
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: Container.py,v 1.31 2007/11/30 23:52:45 agrimstrup Exp $"
+# "@(#) $Id: Container.py,v 1.32 2007/12/04 21:57:57 agrimstrup Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -38,7 +38,7 @@ TODO LIST:
 - a ComponentLifecycleException has been defined in IDL now...
 '''
 
-__revision__ = "$Id: Container.py,v 1.31 2007/11/30 23:52:45 agrimstrup Exp $"
+__revision__ = "$Id: Container.py,v 1.32 2007/12/04 21:57:57 agrimstrup Exp $"
 
 #--Enable Searching Import-----------------------------------------------------
 import AcsutilPy.ACSImport
@@ -483,20 +483,23 @@ class Container(maci__POA.Container, maci__POA.LoggingConfigurable, BaseClient):
     def configureComponentLogger(self, name):
         clogger = getLogger(self.name + "." + name)
         defaultlevels = self.defaultlogger.getLevels()
-        logconfig = self.cdbAccess.getElement("MACI/Containers/"  + self.name, "Container/LoggingConfig/log:_")
-        for cfg in logconfig:
-            if cfg["Name"] == name:
-                try:
-                    centrallevel = int(cfg['minLogLevel'])
-                except KeyError:
-                    centrallevel = defaultlevels.minLogLevel
-                try:
-                    locallevel = int(cfg['minLogLevelLocal'])
-                except KeyError:
-                    locallevel = defaultlevels.minLogLevelLocal
-                clogger.setLevels(maci.LoggingConfigurable.LogLevels(False, centrallevel, locallevel))
-                break
-        else:
+        try:
+            logconfig = self.cdbAccess.getElement("MACI/Containers/"  + self.name, "Container/LoggingConfig/log:_")
+            for cfg in logconfig:
+                if cfg["Name"] == name:
+                    try:
+                        centrallevel = int(cfg['minLogLevel'])
+                    except KeyError:
+                        centrallevel = defaultlevels.minLogLevel
+                    try:
+                        locallevel = int(cfg['minLogLevelLocal'])
+                    except KeyError:
+                        locallevel = defaultlevels.minLogLevelLocal
+                    clogger.setLevels(maci.LoggingConfigurable.LogLevels(False, centrallevel, locallevel))
+                    break
+            else:
+                clogger.setLevels(maci.LoggingConfigurable.LogLevels(True, 0, 0))
+        except:
             clogger.setLevels(maci.LoggingConfigurable.LogLevels(True, 0, 0))
 
     def get_default_logLevels(self):

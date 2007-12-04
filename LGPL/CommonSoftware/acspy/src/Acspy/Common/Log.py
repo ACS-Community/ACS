@@ -1,4 +1,4 @@
-# @(#) $Id: Log.py,v 1.32 2007/12/03 17:53:02 agrimstrup Exp $
+# @(#) $Id: Log.py,v 1.33 2007/12/04 21:57:57 agrimstrup Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA,  2001
@@ -43,7 +43,7 @@ TODO:
 XML-related methods are untested at this point.
 '''
 
-__revision__ = "$Id: Log.py,v 1.32 2007/12/03 17:53:02 agrimstrup Exp $"
+__revision__ = "$Id: Log.py,v 1.33 2007/12/04 21:57:57 agrimstrup Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 from os        import environ
@@ -201,10 +201,13 @@ class Logger(logging.Logger):
         Raises: Nothing
         '''
         self.error_trace_list = []
-        
+
         #pass it on to baseclass. by default all logs are sent to the handlers
         logging.Logger.__init__(self, name, logging.NOTSET)
 
+        #disable the propagation of log messages to higher level loggers
+        self.propagate = 0
+        
         #create a stdout handler
         self.stdouthandler = logging.StreamHandler(sys.stdout)
         
@@ -548,6 +551,7 @@ logging.root.setLevel(logging.NOTSET)
 defaultlogger = Logger("DefaultPythonLogger")
 defaultlogger.setLevels(maci.LoggingConfigurable.LogLevels(False,ACS_LOG_STDOUT, ACS_LOG_CENTRAL))
 defaultlogger.setDefault(True)
+
 logging.Logger.root = defaultlogger
 logging.Logger.manager = logging.Manager(logging.Logger.root)
 

@@ -1,4 +1,4 @@
-# @(#) $Id: ContainerServices.py,v 1.26 2007/12/03 17:53:02 agrimstrup Exp $
+# @(#) $Id: ContainerServices.py,v 1.27 2007/12/04 21:57:57 agrimstrup Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -21,7 +21,7 @@
 # ALMA should be addressed as follows:
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: ContainerServices.py,v 1.26 2007/12/03 17:53:02 agrimstrup Exp $"
+# "@(#) $Id: ContainerServices.py,v 1.27 2007/12/04 21:57:57 agrimstrup Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -41,7 +41,7 @@ developer. For now, we can depend on Manager to keep track of whats going on
 but this solution is less than ideal.
 '''
 
-__revision__ = "$Id: ContainerServices.py,v 1.26 2007/12/03 17:53:02 agrimstrup Exp $"
+__revision__ = "$Id: ContainerServices.py,v 1.27 2007/12/04 21:57:57 agrimstrup Exp $"
 
 #--GLOBALS---------------------------------------------------------------------
 
@@ -81,6 +81,8 @@ class ContainerServices:
         self.__token = None
         #Handle give to us by manager
         self.__handle = None
+        #Logger for this client
+        self.__logger = None
         #Provides access to the ACS CDB
         self.__cdb_access = CDBaccess()
 
@@ -158,10 +160,12 @@ class ContainerServices:
 
         Raises: Nothing
         '''
-        if self.__contname:
-            return getLogger(".".join([self.__contname, self.__name]))
-        else:
-            return getLogger(self.__name)
+        if not self.__logger:
+            if self.__contname:
+                self.__logger = getLogger(".".join([self.__contname, self.__name]))
+            else:
+                self.__logger = getLogger(self.__name)
+        return self.__logger
     #--------------------------------------------------------------------------
     def getComponent(self,
                      comp_name = None,  
