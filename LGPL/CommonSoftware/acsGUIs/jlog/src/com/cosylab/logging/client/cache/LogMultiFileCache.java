@@ -21,6 +21,10 @@
 package com.cosylab.logging.client.cache;
 
 import java.io.IOException;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 import java.util.Vector;
 import com.cosylab.logging.engine.log.ILogEntry;
 
@@ -84,7 +88,7 @@ import com.cosylab.logging.engine.log.ILogEntry;
 * @author mcomin
 *
 */
-public class LogMultiFileCache {
+public class LogMultiFileCache  implements ILogMap {
 	
 	// This class defines a record of the file table.
 	// The file table has one record for each generated log file.
@@ -129,13 +133,17 @@ public class LogMultiFileCache {
 
 	// This vecotor implement a table whose recods are specified by the
 	// class LogFileTableRecord.
-
 	private long fileMaxSize;
 
+	// The vector of objects describing the buffers on disk
 	private Vector<LogFileTableRecord> logFileTable= new Vector<LogFileTableRecord>();
+	
+	// The number of logs in cache
+	private int logsInCache=0;
 
 	/**
-	 * 
+	 * Get the max size of the file out of the system properties or
+	 * uses the default value if the property does not exist
 	 */
 	private static int getDefaultMaxFileSize() {
 		Integer fileSizeFromProperty = Integer.getInteger(FILEMAXSIZE_PROPERTY_NAME);
@@ -223,6 +231,7 @@ public class LogMultiFileCache {
 		}
 		fileMaxSize = fileSize;
 		logFileTable.add(new LogFileTableRecord());
+		System.out.println("LogMultiFileCache uses file of max size: "+fileMaxSize);
 	}
 	
 	/**
@@ -289,7 +298,8 @@ public class LogMultiFileCache {
 			fileRecord.maxLogIdx ++;
 		}
 		
-		fileRecord.logCounter ++;		
+		fileRecord.logCounter ++;
+		logsInCache++;
 		return fileRecord.lbfc.add(log) + fileRecord.minLogIdx;
 	}
 	
@@ -312,12 +322,13 @@ public class LogMultiFileCache {
 		fileRecord.lbfc.deleteLog(newLogKey);
 
 		// Update table record
-		fileRecord.logCounter --;
+		fileRecord.logCounter--;
+		logsInCache--;
 		
 		// Remove file and element from the vector only if this is not
 		// the logFile we are using to add logs.
 		
-		if (fileRecord.logCounter == 0 && (recIdx < (logFileTable.size() - 1)) ) {		
+		if (fileRecord.logCounter==0 && (recIdx < (logFileTable.size() - 1)) ) {		
 			// Free resources.
 			// @see LogBufferedFileCache.clear
 			fileRecord.lbfc.clear(false,false);
@@ -325,5 +336,149 @@ public class LogMultiFileCache {
 			// Remove vector element
 			logFileTable.remove(fileRecord);
 		}
+	}
+	
+	/**
+	 * 
+	 * @return The number of logs in the map
+	 * @see com.cosylab.logging.client.cache.ILogMap
+	 */
+	public int getSize() {
+		return logsInCache;
+	}
+	
+	/**
+	 * Return the key of the last valid log (FIFO)
+	 * The key of the last log is the key of the last inserted log
+	 * but it can change if such log has been deleted
+	 * 
+	 * @return The key of the last inserted log
+	 *         null if the cache is empty
+	 * @see com.cosylab.logging.client.cache.ILogMap
+	 */
+	public Integer getLastLog() {
+		if (logsInCache==0) {
+			return null;
+		}
+		LogFileTableRecord lastRecord = logFileTable.lastElement();
+		Integer key= lastRecord.lbfc.getLastLog();
+		if (key==null) {
+			throw new IllegalStateException("Inconsistency between logsInCache and last LogBufferedFileCache");
+		}
+		return key;
+	}
+	
+	/**
+	 * Return the key of the first valid log (FIFO).
+	 * The key of the first log is 0 but it can change if the log 0 has
+	 * been deleted.
+	 * 
+	 * @return The key of the first log
+	 *         null if the cache is empty
+	 * @see com.cosylab.logging.client.cache.ILogMap
+	 */
+	public Integer getFirstLog() {
+		if (logsInCache==0) {
+			return null;
+		}
+		LogFileTableRecord firstRecord = logFileTable.get(0);
+		Integer key= firstRecord.lbfc.getFirstLog();
+		if (key==null) {
+			throw new IllegalStateException("Inconsistency between logsInCache and last LogBufferedFileCache");
+		}
+		return key;
+	}
+	
+	/**
+	 * Delete a set of logs
+	 * 
+	 * @param keys The keys of logs to delete
+	 * @see com.cosylab.logging.client.cache.ILogMap
+	 */
+	public void deleteLogs(Collection<Integer> keys) throws LogCacheException {
+		if (keys==null || keys.size()==0) {
+			return;
+		}
+		for (Integer key: keys) {
+			deleteLog(key);
+		}
+	}
+	
+	/**
+	 * Clear the Map i.e. remove all the logs and keys from the map
+	 * 
+	 * @throws LogCacheException
+	 * @see com.cosylab.logging.client.cache.ILogMap
+	 */
+	public synchronized void clear() throws LogCacheException {
+		for (LogFileTableRecord record: logFileTable) {
+			record.lbfc.clear();
+		}
+		logFileTable.clear();
+		logsInCache=0;
+		// Add the first item to be ready to add logs
+		logFileTable.add(new LogFileTableRecord());
+	}
+	
+	/**
+	 * Replace the log in the given position with the new one
+	 
+	 * @param position The position of the log to replace
+	 * @param log The key (identifier) of the log
+	 * @see com.cosylab.logging.client.cache.ILogMap
+	 */
+	public void replaceLog(Integer key, ILogEntry log) throws LogCacheException {
+		int pos= searchFileLogTable(key);
+		LogFileTableRecord tableRecord=logFileTable.get(pos);
+		tableRecord.lbfc.replaceLog(key, log);
+	}
+	
+	/**
+	 * Return an Iterator to browse the logs in the map.
+	 * The order the iterator returns the logs is that of the keys.
+	 * 
+	 * @return an Iterator over the elements in this map
+	 * @see com.cosylab.logging.client.cache.ILogMap
+	 */
+	public Iterator<ILogEntry> iterator() {
+		return new LogIterator(this);
+	}
+	
+
+	/**
+	 * The keys in the map
+	 * 
+	 * @return The key in the map
+	 * @see com.cosylab.logging.client.cache.ILogMap
+	 */
+	public Set<Integer> keySet() {
+		Set<Integer> ret = new HashSet<Integer>();
+		for (LogFileTableRecord record: logFileTable) {
+			ret.addAll(record.lbfc.keySet());
+		}
+		return ret;
+	}
+	
+	/**
+	 * Append at most n keys from the first valid logs to the collection.
+	 * First here means first in the FIFO policy.
+	 * 
+	 * The number of added keys can be less then n if the cache doesn't
+	 * contain enough logs.
+	 * 
+	 * @param n The desired number of keys of first logs
+	 * @param keys The collection to add they keys to
+	 * @return The number of keys effectively added
+	 * @see com.cosylab.logging.client.cache.ILogMap
+	 */
+	public int getFirstLogs(int n, Collection<Integer> keys) {
+		int ret=0;
+		for (LogFileTableRecord record: logFileTable) {
+			ret+=record.lbfc.getFirstLogs(n-ret, keys);
+			if (ret==n) {
+				break;
+			}
+		}
+		return ret;
 	}
 }
