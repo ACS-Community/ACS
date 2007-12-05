@@ -1,4 +1,4 @@
-# @(#) $Id: ACSHandler.py,v 1.8 2007/11/30 23:52:45 agrimstrup Exp $
+# @(#) $Id: ACSHandler.py,v 1.9 2007/12/05 22:02:52 agrimstrup Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA,  2001
@@ -27,7 +27,7 @@ TODO:
 - Everything
 '''
 
-__revision__ = "$Id: ACSHandler.py,v 1.8 2007/11/30 23:52:45 agrimstrup Exp $"
+__revision__ = "$Id: ACSHandler.py,v 1.9 2007/12/05 22:02:52 agrimstrup Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 from socket    import gethostname
@@ -69,6 +69,19 @@ else:
         LOG_FILE_NAME = path.join(environ['ACSDATA'], 'tmp/acs_local_log')
 
 LOG_FILE_NAME = LOG_FILE_NAME + "_" +  path.basename(sys.argv[0]) + "_" + str(getpid())
+#------------------------------------------------------------------------------
+class ACSLogRecord(logging.LogRecord):
+    '''
+    This class extends the regular LogRecord information to capture
+    specific information for ACS.
+    '''
+    def __init__(self, name, level, pathname, lineno,
+                 msg, args, exc_info, func=None):
+        logging.LogRecord.__init__(self,name,level,pathname,lineno,msg,args,exc_info,func)
+        try:
+            self.source,self.name = name.split('.',1)
+        except:
+            self.source = self.name
 #------------------------------------------------------------------------------
 class ACSFormatter(logging.Formatter):
     '''
@@ -199,15 +212,12 @@ class ACSHandler(logging.handlers.BufferingHandler):
         '''
         Method which sends logs to the real ACS logging service.
         '''
-        # Extract the component and container name from the record name
-        namelist = record.name.split('.')
-
         # Create an RTContext object
         rt_context = ACSLog.RTContext(str(record.thread).replace("<", "").replace(">", ""),
-                                      str(namelist[0]).replace("<", "").replace(">", ""),
+                                      str(record.source).replace("<", "").replace(">", ""),
                                       str(gethostname()).replace("<", "").replace(">", ""),
                                       "",
-                                      str(namelist[-1]).replace("<", "").replace(">", ""))
+                                      str(record.name).replace("<", "").replace(">", ""))
 
         src_info = ACSLog.SourceInfo(str(record.module).replace("<", "").replace(">", ""),
                                      "Unknown",

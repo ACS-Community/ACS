@@ -1,4 +1,4 @@
-# @(#) $Id: Container.py,v 1.32 2007/12/04 21:57:57 agrimstrup Exp $
+# @(#) $Id: Container.py,v 1.33 2007/12/05 22:02:52 agrimstrup Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -21,7 +21,7 @@
 # ALMA should be addressed as follows:
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: Container.py,v 1.32 2007/12/04 21:57:57 agrimstrup Exp $"
+# "@(#) $Id: Container.py,v 1.33 2007/12/05 22:02:52 agrimstrup Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -38,7 +38,7 @@ TODO LIST:
 - a ComponentLifecycleException has been defined in IDL now...
 '''
 
-__revision__ = "$Id: Container.py,v 1.32 2007/12/04 21:57:57 agrimstrup Exp $"
+__revision__ = "$Id: Container.py,v 1.33 2007/12/05 22:02:52 agrimstrup Exp $"
 
 #--Enable Searching Import-----------------------------------------------------
 import AcsutilPy.ACSImport
@@ -547,7 +547,6 @@ class Container(maci__POA.Container, maci__POA.LoggingConfigurable, BaseClient):
                 self.configureComponentLogger(log)
         except:
             self.defaultlogger.setLevels(maci.LoggingConfigurable.LogLevels(True, 0, 0))
-            self.defaultlogger.logDebug("No logging config information found in the CDB")
 
     #--CONTAINER IDL-----------------------------------------------------------
     def shutdown(self, action):

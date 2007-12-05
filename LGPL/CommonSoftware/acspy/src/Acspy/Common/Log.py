@@ -1,4 +1,4 @@
-# @(#) $Id: Log.py,v 1.33 2007/12/04 21:57:57 agrimstrup Exp $
+# @(#) $Id: Log.py,v 1.34 2007/12/05 22:02:52 agrimstrup Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA,  2001
@@ -43,7 +43,7 @@ TODO:
 XML-related methods are untested at this point.
 '''
 
-__revision__ = "$Id: Log.py,v 1.33 2007/12/04 21:57:57 agrimstrup Exp $"
+__revision__ = "$Id: Log.py,v 1.34 2007/12/05 22:02:52 agrimstrup Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 from os        import environ
@@ -60,6 +60,7 @@ from traceback import extract_stack
 import maci
 from Acspy.Common.ACSHandler import ACSHandler
 from Acspy.Common.ACSHandler import ACSFormatter
+from Acspy.Common.ACSHandler import ACSLogRecord
 from Acspy.Common.TimeHelper import TimeUtil
 #--CORBA STUBS-----------------------------------------------------------------
 import ACSLog
@@ -160,13 +161,13 @@ def getSeverity(severity_number):
 if environ.has_key('ACS_LOG_STDOUT'):
     ACS_LOG_STDOUT = int(environ['ACS_LOG_STDOUT'])
 else:
-    ACS_LOG_STDOUT = 2
+    ACS_LOG_STDOUT = 3
 
 #determine ACS_LOG_CENTRAL
 if environ.has_key('ACS_LOG_CENTRAL'):
     ACS_LOG_CENTRAL = int(environ['ACS_LOG_CENTRAL'])
 else:
-    ACS_LOG_CENTRAL = 2
+    ACS_LOG_CENTRAL = 3
 
 def stdoutOk(log_priority):
     '''
@@ -226,6 +227,9 @@ class Logger(logging.Logger):
         #add handlers
         self.addHandler(self.stdouthandler)
         self.addHandler(self.acshandler)
+
+        #set loglevels to default
+        self.setLevels(maci.LoggingConfigurable.LogLevels(False,ACS_LOG_STDOUT, ACS_LOG_CENTRAL))
     #------------------------------------------------------------------------    
     def __getCallerName(self):
         '''
@@ -533,7 +537,19 @@ class Logger(logging.Logger):
     #------------------------------------------------------------------------
     def setDefault(self, val):
         self.isdefault = val
-        
+    #------------------------------------------------------------------------
+    def makeRecord(self, name, level, fn, lno, msg, args, exc_info, func=None, extra=None):
+        """
+        Build the ACSLogRecord for this information.
+        """
+        rv = ACSLogRecord(name, level, fn, lno, msg, args, exc_info, func)
+        if extra:
+            for key in extra:
+                if (key in ["message", "asctime"]) or (key in rv.__dict__):
+                    raise KeyError("Attempt to overwrite %r in LogRecord" % key)
+                rv.__dict__[key] = extra[key]
+        return rv
+
     
     
 
@@ -549,7 +565,6 @@ logging.root.setLevel(logging.NOTSET)
 # level information in a common node in the tree.  This logger is named
 # "DefaultPythonLogger"
 defaultlogger = Logger("DefaultPythonLogger")
-defaultlogger.setLevels(maci.LoggingConfigurable.LogLevels(False,ACS_LOG_STDOUT, ACS_LOG_CENTRAL))
 defaultlogger.setDefault(True)
 
 logging.Logger.root = defaultlogger

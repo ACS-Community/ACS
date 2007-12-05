@@ -5,10 +5,10 @@
 2 - The end __oOo__
 1 - ----------T--:--:--.--- pyContainer getCDBInfo - No container information found in the CDB
 1 - ----------T--:--:--.--- pyContainer __init__ - Container pyContainer waiting for requests
+1 - ----------T--:--:--.--- pyContainer message - Info message from the manager: Startup statistics: 3 components queued to be activated.
 1 - ----------T--:--:--.--- pyContainer activate_component - Activated component: TESTCOMPONENT
 1 - ----------T--:--:--.--- pyContainer activate_component - Activated component: TESTCOMPONENT4
 1 - ----------T--:--:--.--- pyContainer activate_component - Activated component: TESTCOMPONENT5
-1 - ----------T--:--:--.--- pyContainer message - Info message from the manager: Startup statistics: 3 components queued to be activated.
 1 - ----------T--:--:--.--- pyContainer message - Info message from the manager: Startup statistics: 3 of 3 components activated.
 1 - HelloWorld
 1 - name is:  TESTCOMPONENT
@@ -32,31 +32,19 @@
 1 - 	<cdb:_ string="PDB"></cdb:_>
 1 -   </ServiceComponents>
 1 - 
-1 -   <LoggingConfig minLogLevel="0" immediateDispatchLevel="31" dispatchPacketSize="0" centralizedLogger="Log" flushPeriodSeconds="10" maxLogQueueSize="1000" minLogLevelLocal="2"></LoggingConfig>
+1 -   <LoggingConfig minLogLevel="2" immediateDispatchLevel="99" dispatchPacketSize="0" centralizedLogger="Log" flushPeriodSeconds="10" maxLogQueueSize="1000" minLogLevelLocal="2"></LoggingConfig>
 1 - 
 1 - </Manager>
 1 - getCDBElement is:  {}
 1 - ----------T--:--:--.--- pyContainer activate_component - Activated component: TESTCOMPONENT1
 1 - ----------T--:--:--.--- pyContainer activate_component - Activated component: TESTCOMPONENT2
-1 - ----------T--:--:--.--- pyContainer activate_component - Activated component: TESTCOMPONENT2
-1 - ----------T--:--:--.--- pyContainer activate_component - Activated component: TESTCOMPONENT2
-1 - ----------T--:--:--.--- pyContainer activate_component - Activated component: TESTCOMPONENT3
 1 - ----------T--:--:--.--- pyContainer deactivate_components - Deactivating component: TESTCOMPONENT2
-1 - ----------T--:--:--.--- pyContainer deactivate_components - Deactivating component: TESTCOMPONENT2
-1 - ----------T--:--:--.--- TESTCOMPONENT1 testServices - the logger works
 1 - ----------T--:--:--.--- TESTCOMPONENT testServices - the logger works
 1 - HelloWorld
 1 - HelloWorld
-1 - HelloWorld
-1 - HelloWorld
-1 - HelloWorld
 1 - ['TESTCOMPONENT', 'TESTCOMPONENT1', 'TESTCOMPONENT2', 'TESTCOMPONENT3', 'TESTCOMPONENT4', 'TESTCOMPONENT5', 'TEST_PS_1', 'TEST_QOS_COMPONENT']
-1 - ['TESTCOMPONENT', 'TESTCOMPONENT1', 'TESTCOMPONENT2', 'TESTCOMPONENT3', 'TESTCOMPONENT4', 'TESTCOMPONENT5', 'TEST_PS_1', 'TEST_QOS_COMPONENT']
-1 - HelloWorld
-1 - HelloWorld
 1 - name is:  TESTCOMPONENT1
 1 - getCDBRecord is:  <?xml version='1.0' encoding='ISO-8859-1'?>
-1 - HelloWorld
 1 - <Manager xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0" xmlns="urn:schemas-cosylab-com:Manager:1.0" xmlns:baci="urn:schemas-cosylab-com:BACI:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Timeout="50.0" ClientPingInterval="2.0" ContainerPingInterval="2.0" AdministratorPingInterval="2.0" ServerThreads="10" DeadlockTimeout="1.8E2">
 1 - 
 1 -   <Startup>
@@ -76,14 +64,26 @@
 1 - 	<cdb:_ string="PDB"></cdb:_>
 1 -   </ServiceComponents>
 1 - 
-1 -   <LoggingConfig minLogLevel="0" immediateDispatchLevel="31" dispatchPacketSize="0" centralizedLogger="Log" flushPeriodSeconds="10" maxLogQueueSize="1000" minLogLevelLocal="2"></LoggingConfig>
+1 -   <LoggingConfig minLogLevel="2" immediateDispatchLevel="99" dispatchPacketSize="0" centralizedLogger="Log" flushPeriodSeconds="10" maxLogQueueSize="1000" minLogLevelLocal="2"></LoggingConfig>
 1 - 
 1 - </Manager>
 1 - getCDBElement is:  {}
-1 - ----------T--:--:--.--- pyContainer deactivate_components - Deactivating component: TESTCOMPONENT
+1 - ----------T--:--:--.--- pyContainer activate_component - Activated component: TESTCOMPONENT2
+1 - ----------T--:--:--.--- pyContainer activate_component - Activated component: TESTCOMPONENT2
+1 - ----------T--:--:--.--- pyContainer activate_component - Activated component: TESTCOMPONENT3
+1 - ----------T--:--:--.--- pyContainer deactivate_components - Deactivating component: TESTCOMPONENT2
+1 - ----------T--:--:--.--- TESTCOMPONENT1 testServices - the logger works
+1 - HelloWorld
+1 - HelloWorld
+1 - HelloWorld
+1 - ['TESTCOMPONENT', 'TESTCOMPONENT1', 'TESTCOMPONENT2', 'TESTCOMPONENT3', 'TESTCOMPONENT4', 'TESTCOMPONENT5', 'TEST_PS_1', 'TEST_QOS_COMPONENT']
+1 - HelloWorld
+1 - HelloWorld
+1 - HelloWorld
 1 - ----------T--:--:--.--- pyContainer deactivate_components - Deactivating component: TESTCOMPONENT1
 1 - ----------T--:--:--.--- pyContainer deactivate_components - Deactivating component: TESTCOMPONENT2
 1 - ----------T--:--:--.--- pyContainer deactivate_components - Deactivating component: TESTCOMPONENT3
+1 - ----------T--:--:--.--- pyContainer deactivate_components - Deactivating component: TESTCOMPONENT
 1 - ----------T--:--:--.--- pyContainer deactivate_components - Deactivating component: TESTCOMPONENT4
 1 - ----------T--:--:--.--- pyContainer deactivate_components - Deactivating component: TESTCOMPONENT5
 1 - Goodbye
