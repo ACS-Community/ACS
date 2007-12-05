@@ -122,4 +122,17 @@ public interface ILogMap {
 	 *         null if the cache is empty
 	 */
 	public Integer getFirstLog();
+	
+	/**
+	 * Append at most n keys from the first valid logs to the collection.
+	 * First here means first in the FIFO policy.
+	 * 
+	 * The number of added keys can be less then n if the cache doesn't
+	 * contain enough logs.
+	 * 
+	 * @param n The desired number of keys of first logs
+	 * @param keys The collection to add they keys to
+	 * @return The number of keys effectively added
+	 */
+	public int getFirstLogs(int n, Collection<Integer> keys);
 }
