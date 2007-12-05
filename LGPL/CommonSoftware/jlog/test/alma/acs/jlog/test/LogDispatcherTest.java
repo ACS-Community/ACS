@@ -21,12 +21,8 @@
  */
 package alma.acs.jlog.test;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.Collection;
 import java.util.Date;
-import java.util.Random;
 import java.util.Vector;
 
 import junit.framework.TestCase;
@@ -45,8 +41,8 @@ import com.cosylab.logging.engine.log.ILogEntry.AdditionalData;
 import com.cosylab.logging.engine.log.ILogEntry.Field;
 
 /**
- * A class to the the dispatching of logs in XML and binary format.
- * It test the path of the logs betwween they are added in the ACSLogRetrieval 
+ * A class to test the dispatching of logs in XML and binary format.
+ * It test the flow of the logs between they are added in the ACSLogRetrieval 
  * till the moment they are published to the listeners.
  * 
  * @author acaproni
