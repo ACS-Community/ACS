@@ -1,12 +1,10 @@
 package com.cosylab.logging.client.cache;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeMap;
-import java.util.Vector;
 
 import com.cosylab.logging.engine.log.ILogEntry;
 
@@ -252,9 +250,6 @@ public class LogBufferedFileCache extends LogFileCache implements ILogMap {
 	 *
 	 */
 	public void flushBuffer() throws LogCacheException {
-		if (buffer.size()!=size) {
-			throw new IllegalStateException("Error: trying to flush but the buffer is not full");
-		}
 		// str is the buffer of logs to write on disk at once
 		StringBuilder str = new StringBuilder();
 		
