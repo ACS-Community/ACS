@@ -1027,6 +1027,12 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 			retVal,
 			arrayDomains.length,
 			arrayTypes.length);
+		java.util.Arrays.sort(retVal, new java.util.Comparator() { 
+			public int compare(Object obj1, Object obj2)
+			{
+			   return obj1.toString().compareTo(obj2.toString());
+			}
+		});
 		notifier.reportDebug(
 			"BACIRemoteAccess::explodeRootNodeByType",
 			"Root nodes processing complete.");
