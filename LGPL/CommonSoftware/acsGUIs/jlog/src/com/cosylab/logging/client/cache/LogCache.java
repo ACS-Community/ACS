@@ -47,7 +47,7 @@ import com.cosylab.logging.engine.log.ILogEntry.Field;
  * @author acaproni
  *
  */
-public class LogCache extends LogBufferedFileCache implements ILogMap {
+public class LogCache extends LogMultiFileCache implements ILogMap {
 
 	/**
 	 * The name of the property to set the size of the cache.
