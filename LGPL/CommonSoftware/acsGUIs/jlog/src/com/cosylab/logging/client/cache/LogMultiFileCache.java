@@ -26,6 +26,61 @@ import com.cosylab.logging.engine.log.ILogEntry;
 
 /**
 *
+* This class manages a set of LogBufferedFileCache objects allowing the storing of
+* logs in different files, though from the user point of view the logs are 
+* stored or retrieved from single data store.
+* 
+* This is due to the fact that files can grow up to a given size and hence setting 
+* a limit on the number of logs that can be collected.
+* 
+* Logs are added to a file until it reaches a given size, then a new file is created.
+* Logs have different length and therefore the number of logs in each File Buffered 
+* Cache will be different (see example below).
+* 
+* Logs are accessible by the user through a keyword (logKey) which is implemented 
+* as an increased running number.  On the other hand, within each File Buffered 
+* Cache they have their own numbering system which starts from 0 to the maximum 
+* number of logs.
+* 
+* Example :
+*   
+*     logKey    logCounter    Buffered       File
+*     Range                  Cache Range     
+*   --------------------------------------------------------
+*    0  - 10       11         0 - 10        file1
+*    11 - 25       15         0 - 14        file2
+*    26 - 32        7         0 -  6        file3
+*    33 - 50       18         0 - 18        file4
+*
+* When logs are deleted they are no longer accessible : when all logs stored in a 
+* single file are marked as deleted the corresponding logCounter = 0 and as 
+* consequence the file itself is removed.
+* 
+* Using the example let's assume we delete the logs with the following 
+* keyword : 26,27,28,31,32, from now on these logs will not be accessible for the user.
+* 
+*     logKey    logCounter    Buffered       File
+*     Range                  Cache Range     
+*   --------------------------------------------------------
+*    0  - 10       11         0 - 10        file1
+*    11 - 25       15         0 - 14        file2
+*    26 - 32        2         0 -  6        file3
+*    33 - 50       18         0 - 18        file4
+* 
+*  If we delete also logs with keywords 29 and 30 the logCounter will be zero 
+*  and file3 will be deleted.
+*  
+*  logKey Mapping
+*  When retrieving the log we need to re-map the global log keyword into
+*  the keyword used to add the log to the specific Buffered File Cache.
+*  This is done by simply subtracting the minimum key value from the 
+*  logKey.
+*  
+*  Example : Retrieve logKey 20.
+*  logKey 20 is stored in the second Buffered File Cache and it is 
+*  accessible with the local key = (20 - 11) =  9
+*
+*
 * @author mcomin
 *
 */
@@ -34,6 +89,18 @@ public class LogMultiFileCache {
 	// This class defines a record of the file table.
 	// The file table has one record for each generated log file.
 	
+	/**
+	 * This class defines a data set providing information on a single 
+	 * LogBufferedFileCache object. Each time a new file is created we
+	 * also create an instance of this class.
+	 * 
+	 * LogFileTableRecord objects are organized in a vector to form the
+	 * log file table used to retrieve the logs according to the user's
+	 * defined keyword.
+	 * 
+	 * @author mcomin
+	 */
+	
 	private class LogFileTableRecord {
 		public LogFileTableRecord() throws LogCacheException {
 			logCounter=0;
@@ -41,8 +108,13 @@ public class LogMultiFileCache {
 			maxLogIdx=0;
 			lbfc= new LogBufferedFileCache();
 		}
+		
+		// Reference to an LogBufferedFileCache object
 		LogBufferedFileCache lbfc;
+		// Number of valid in the LogBufferedFileCache.
 		int logCounter;
+		// Minimum and maximum log keys stored in the LogBufferedFileCache
+		// These two numbers are used to locate a given log by its keyword.
 		int minLogIdx;
 		int maxLogIdx;
 	}
@@ -51,16 +123,15 @@ public class LogMultiFileCache {
 	public static final String FILEMAXSIZE_PROPERTY_NAME = "jlog.cache.fileMaxSize";
 	public static final int DEFAULT_FILEMAXSIZE = 1000000;
 	
-	
 	// Current size of the log file.  
 	private long fileCurrSize;
-	// Maximum size for the log file.
+
+
+	// This vecotor implement a table whose recods are specified by the
+	// class LogFileTableRecord.
+
 	private long fileMaxSize;
-	// Minimum absolute log index,that is, the smaller index of a valid log.
-//	private int minLogIndex;
-	// Array of records each describing an exiting log file.
-//	private LogFileTableRecord logFileRecord = new LogFileTableRecord(); 
-	
+
 	private Vector<LogFileTableRecord> logFileTable= new Vector<LogFileTableRecord>();
 
 	/**
@@ -74,7 +145,12 @@ public class LogMultiFileCache {
 		return DEFAULT_FILEMAXSIZE;
 	}
 	
-	
+	/**
+	 * Creates a new record for the log file table : min/max log indexes are
+	 * initialized according to the total number of received logs.
+	 * 
+	 * @params none
+	 */
 	private LogFileTableRecord createNewFileRecord() throws LogCacheException {
 
 		// Check if file size exceeds fileMaxSize
@@ -97,11 +173,14 @@ public class LogMultiFileCache {
 	}
 		
 	/**
+	 * Looks in the log file table in which file buffered cache the log has 
+	 * been stored. It return the log file table record identifier.
 	 * 
-	 * @param pos The key of the log to delete
+	 * @param pos  The log keyword
 	 */
 	private int searchFileLogTable(Integer logKey) throws LogCacheException {
 				
+		// Check for key validity
 		if (logKey == null || logKey <= 0 ) {
 			throw new IllegalArgumentException("Invalid or null log key "+logKey);
 		}
@@ -122,7 +201,7 @@ public class LogMultiFileCache {
 			// log key belong to a set of logs that have already been deleted
 			// and therefore they are no longer accessible.
 			if (logKey < fileRecord.minLogIdx) {
-				throw new IllegalArgumentException("log key not in range"+logKey);
+				throw new IllegalArgumentException("log has been deleted"+logKey);
 			}
 			
 			if (logKey >= fileRecord.minLogIdx && logKey <= fileRecord.maxLogIdx) {
@@ -132,27 +211,8 @@ public class LogMultiFileCache {
 			idx ++;
 		}
 		
-		throw new IllegalArgumentException("log key not in range"+logKey);
+		throw new IllegalArgumentException("log key not found"+logKey);
 	}
-
-	
-	
-	/**
-	 * 
-	 * @param pos The key of the log to delete
-	 */
-	public ILogEntry getLog(Integer logKey) throws LogCacheException {
-						
-		LogFileTableRecord fileRecord = logFileTable.get(searchFileLogTable(logKey));
-			
-		// Re-map global index into specific LogFileBufferedCache
-		int newLogKey = logKey - fileRecord.minLogIdx;
-		return fileRecord.lbfc.getLog(newLogKey);	
-	}
-
-	
-	
-//	Vector logFileTable = new Vector();
 	
 	/**
 	 * 
@@ -174,12 +234,34 @@ public class LogMultiFileCache {
 		
 	
 	/**
+	 * Retrieves a log by means of its keyword. 
+	 * 
+	 * @param pos The key of the log to retrieve
+	 */
+	
+	public ILogEntry getLog(Integer logKey) throws LogCacheException {
+						
+		LogFileTableRecord fileRecord = logFileTable.get(searchFileLogTable(logKey));
+			
+		// Re-map global index into specific LogFileBufferedCache
+		int newLogKey = logKey - fileRecord.minLogIdx;
+		return fileRecord.lbfc.getLog(newLogKey);	
+	}
+	
+	/**
+	 * Logs are added using a keyword. 
+	 * 
+	 * 
+	 * 
+	 * @param pos The key of the log.
 	 * 
 	 */
+	
+	
 	public synchronized int add(ILogEntry log) throws LogCacheException {
 		
 		if (log==null) {
-			throw new LogCacheException("Error: trying to add a null log to the buffer");
+			throw new LogCacheException("Trying to add a null log to the buffer");
 		}
 		
 		// Check if file size exceeds fileMaxSize
@@ -190,19 +272,17 @@ public class LogMultiFileCache {
 			throw new LogCacheException("Null file record");
 		}
 		
-		long size;
+		long fileSize;
 		try {
-			size = fileRecord.lbfc.getFileSize();
+			fileSize = fileRecord.lbfc.getFileSize();
 		} catch (IOException ioe) {
 			throw new LogCacheException(ioe);
 		}
-		
-		// If file Size exceeds maximum size :
-		// - Flush buffer 
-		// - Initialize next table record
-		
-		if (size >= fileMaxSize) {
+
+		if (fileSize >= fileMaxSize) {
+			// Move logs from internal buffer to file
 			fileRecord.lbfc.flushBuffer();
+
 			// Replace old file record with new one.
 			fileRecord= createNewFileRecord();
 		} else {
@@ -216,13 +296,14 @@ public class LogMultiFileCache {
 	
 	
 	/**
-	 * Delete a log with the given key
+	 * Delete a log with the given key. 
 	 * 
 	 * @param pos The key of the log to delete
 	 */
 	public synchronized void deleteLog(Integer logKey) throws LogCacheException {
 		
-		LogFileTableRecord fileRecord = logFileTable.get(searchFileLogTable(logKey));
+		int recIdx = searchFileLogTable(logKey);
+		LogFileTableRecord fileRecord = logFileTable.get(recIdx);
 				
 		// Delete log in the LogBufferedFile cache
 		
@@ -233,7 +314,10 @@ public class LogMultiFileCache {
 		// Update table record
 		fileRecord.logCounter --;
 		
-		if (fileRecord.logCounter == 0) {		
+		// Remove file and element from the vector only if this is not
+		// the logFile we are using to add logs.
+		
+		if (fileRecord.logCounter == 0 && (recIdx < (logFileTable.size() - 1)) ) {		
 			// Free resources.
 			// @see LogBufferedFileCache.clear
 			fileRecord.lbfc.clear(false,false);
