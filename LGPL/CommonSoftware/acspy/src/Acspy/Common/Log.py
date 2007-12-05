@@ -1,4 +1,4 @@
-# @(#) $Id: Log.py,v 1.34 2007/12/05 22:02:52 agrimstrup Exp $
+# @(#) $Id: Log.py,v 1.35 2007/12/05 22:17:19 agrimstrup Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA,  2001
@@ -43,7 +43,7 @@ TODO:
 XML-related methods are untested at this point.
 '''
 
-__revision__ = "$Id: Log.py,v 1.34 2007/12/05 22:02:52 agrimstrup Exp $"
+__revision__ = "$Id: Log.py,v 1.35 2007/12/05 22:17:19 agrimstrup Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 from os        import environ
@@ -229,7 +229,7 @@ class Logger(logging.Logger):
         self.addHandler(self.acshandler)
 
         #set loglevels to default
-        self.setLevels(maci.LoggingConfigurable.LogLevels(False,ACS_LOG_STDOUT, ACS_LOG_CENTRAL))
+        self.setLevels(maci.LoggingConfigurable.LogLevels(False,ACS_LOG_CENTRAL, ACS_LOG_STDOUT))
     #------------------------------------------------------------------------    
     def __getCallerName(self):
         '''
