@@ -174,6 +174,7 @@ public class LogMultiFileCache  implements ILogMap {
 		// Initialize counter and indexes according to the received number of logs
 		newFileRec.minLogIdx = newFileRec.maxLogIdx = lastFileRec.maxLogIdx + 1;		
 		
+		System.out.println("LogMultiFileCache new file : min logId = "+newFileRec.minLogIdx);
 		// Add new record to vector
 		logFileTable.add(newFileRec);
 		
@@ -189,7 +190,7 @@ public class LogMultiFileCache  implements ILogMap {
 	private int searchFileLogTable(Integer logKey) throws LogCacheException {
 				
 		// Check for key validity
-		if (logKey == null || logKey <= 0 ) {
+		if (logKey == null || logKey < 0 ) {
 			throw new IllegalArgumentException("Invalid or null log key "+logKey);
 		}
 		
@@ -291,6 +292,8 @@ public class LogMultiFileCache  implements ILogMap {
 		if (fileSize >= fileMaxSize) {
 			// Move logs from internal buffer to file
 			fileRecord.lbfc.flushBuffer();
+			System.out.println("LogMultiFileCache log file : fileSize "+fileSize+" logs = "+fileRecord.logCounter+
+					" Range keys = "+fileRecord.minLogIdx+" "+fileRecord.maxLogIdx);
 
 			// Replace old file record with new one.
 			fileRecord= createNewFileRecord();
@@ -325,6 +328,10 @@ public class LogMultiFileCache  implements ILogMap {
 		fileRecord.logCounter--;
 		logsInCache--;
 		
+		System.out.println("LogMultiFileCache delete log : logKey = "+logKey+
+				" logs = "+fileRecord.logCounter);
+
+		
 		// Remove file and element from the vector only if this is not
 		// the logFile we are using to add logs.
 		
@@ -332,6 +339,9 @@ public class LogMultiFileCache  implements ILogMap {
 			// Free resources.
 			// @see LogBufferedFileCache.clear
 			fileRecord.lbfc.clear(false,false);
+			
+			System.out.println("LogMultiFileCache delete log file : Range keys = "
+					+fileRecord.minLogIdx+" "+fileRecord.maxLogIdx);
 			
 			// Remove vector element
 			logFileTable.remove(fileRecord);
