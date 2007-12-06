@@ -9,7 +9,6 @@
 	<classpathentry kind="var" path="ACSROOT/lib/jACSCommon.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/jACSUtil.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/jdom.jar"/>
-	<classpathentry kind="var" path="ACSROOT/lib/jManager.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/maci.jar" sourcepath="/ACSROOT/lib/maci.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/icons.jar"/>
 	<classpathentry kind="lib" path="src/lc.jar.extras"/>
@@ -19,6 +18,9 @@
 	<classpathentry kind="var" path="ACSROOT/lib/acsjlog.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/logging_idl.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acscommon.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/ACSErrTypeCommon.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acserrj.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acserr.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/jcont.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
