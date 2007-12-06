@@ -102,9 +102,10 @@ public class BrowserJNDIXMLContext extends BrowserJNDIContext
 	 node.getFieldMap().clear();                             
      }
      
-     public BrowserJNDIXMLContext(XMLTreeNode node) {
+     public BrowserJNDIXMLContext(String name, XMLTreeNode node) {
+	 this.name = name;
 	 this.node = node;
-
+	 
 	 //if(!node.getFieldMap().isEmpty())
 	 //{ 
 	 //CDBLogic.createTabbedPane(node.getName(), node.getFieldMap(), null);
@@ -146,14 +147,15 @@ public class BrowserJNDIXMLContext extends BrowserJNDIContext
      public Object lookup(Name name) throws NamingException {
 
 	 String nameToLookup = name.toString();        //last selected node
+	 String fullLookupName = this.name + "/" + nameToLookup;
 	 int slashIndex = nameToLookup.indexOf('/');   //if '/' does not exist, then: int slashIndex  = -1
-	 CDBLogic.setKey(this.name + "/" + nameToLookup);
+	 CDBLogic.setKey(fullLookupName);
 	 
 	 if( slashIndex != -1 ) { //nameToLookup is String rep. of the full path to last selected node
 	     String nodeName = nameToLookup.substring(0,slashIndex); //path of the parent node
 	     if (node.getNodesMap().containsKey(nodeName)) { //Returns true if map contains a mapping for the specified key.
 		 XMLTreeNode nextNode = (XMLTreeNode) node.getNodesMap().get(nodeName);
-		 return new BrowserJNDIXMLContext(nextNode).lookup(nameToLookup.substring(slashIndex+1));
+		 return new BrowserJNDIXMLContext(fullLookupName, nextNode).lookup(nameToLookup.substring(slashIndex+1));
 	     }
 	 }
 	 
@@ -177,7 +179,7 @@ public class BrowserJNDIXMLContext extends BrowserJNDIContext
 	     //System.out.println(nextNode.getAttributeNames());
 	     //System.out.println(nextNode.getAttributeValues());
 
-	     return new BrowserJNDIXMLContext(nextNode);
+	     return new BrowserJNDIXMLContext(fullLookupName, nextNode);
 	 }
 	 
 	 // ??
