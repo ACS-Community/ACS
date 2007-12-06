@@ -27,11 +27,6 @@ import java.util.Vector;
 
 import junit.framework.TestCase;
 
-import alma.ACSLoggingLog.LogBinaryRecord;
-import alma.ACSLoggingLog.LogType;
-import alma.ACSLoggingLog.NameValue;
-import alma.acs.util.StopWatch;
-
 import com.cosylab.logging.engine.ACS.ACSListenersDispatcher;
 import com.cosylab.logging.engine.ACS.ACSLogRetrieval;
 import com.cosylab.logging.engine.ACS.ACSRemoteLogListener;
@@ -39,6 +34,10 @@ import com.cosylab.logging.engine.ACS.ACSRemoteRawLogListener;
 import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.engine.log.ILogEntry.AdditionalData;
 import com.cosylab.logging.engine.log.ILogEntry.Field;
+
+import alma.ACSLoggingLog.LogBinaryRecord;
+import alma.ACSLoggingLog.NameValue;
+import alma.acs.util.StopWatch;
 
 /**
  * A class to test the dispatching of logs in XML and binary format.
@@ -258,7 +257,7 @@ public class LogDispatcherTest extends TestCase {
 		logBin.Thread=(String)log.getField(Field.THREAD);
 		Date date = (Date)log.getField(Field.TIMESTAMP);
 		logBin.TimeStamp=com.cosylab.logging.client.cache.CacheUtils.dateFormat.format(date);
-		logBin.type=LogType.from_int(log.getType().intValue());
+		logBin.type=(short)log.getType().intValue();
 		logBin.Uri=(String)log.getField(Field.URI);
 		if (log.hasDatas()) {
 			Vector<AdditionalData> data=log.getAdditionalData();
