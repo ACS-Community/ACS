@@ -7,6 +7,6 @@
 1 - cdb.getMethod('nonexistentMethod'): None
 1 - 
 1 - --BADCOMPONENT--
-1 - ----------T--:--:--.--- Acssim.Servants.Representations.CDB.CDB(BADCOMPONENT) handleInterfaces - Cannot parse 'crap' to a CDB location!
-1 - ----------T--:--:--.--- Acssim.Servants.Representations.CDB.CDB(BADCOMPONENT) handleInterfaces - Cannot parse 'morecrap' to a CDB location!
+1 - ----------T--:--:--.--- Servants.Representations.CDB.CDB(BADCOMPONENT) handleInterfaces - Cannot parse 'crap' to a CDB location!
+1 - ----------T--:--:--.--- Servants.Representations.CDB.CDB(BADCOMPONENT) handleInterfaces - Cannot parse 'morecrap' to a CDB location!
 1 - ['_BaseRepresentation__checkCompRef', '_CDB__logger', '__doc__', '__init__', '__module__', 'comp_ref', 'compname', 'exists', 'getCorbaAttributes', 'getCorbaMethods', 'getMethod', 'handleCDB', 'handleInterfaces', 'logger', 'methods', 'setMethod', 'setupLifecyleMethods']
