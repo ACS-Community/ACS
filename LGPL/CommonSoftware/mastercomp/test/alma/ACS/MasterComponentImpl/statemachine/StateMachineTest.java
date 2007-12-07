@@ -31,6 +31,7 @@ import alma.acs.genfw.runtime.sm.AcsState;
 import alma.acs.genfw.runtime.sm.AcsStateActionException;
 import alma.acs.genfw.runtime.sm.AcsStateChangeListener;
 import alma.acs.genfw.runtime.sm.AcsStateUtil;
+import alma.acs.logging.AcsLogger;
 
 
 /**
@@ -44,13 +45,13 @@ public class StateMachineTest extends TestCase implements AcsStateChangeListener
 {
     private AlmaSubsystemContext m_context;
     private DummyActionImpl m_actionImpl;
-	private Logger m_logger;
+	private AcsLogger m_logger;
 	
 	private MyStateChangeSemaphore m_sync;
 	
 	
     public void setUp() {
-    	m_logger = Logger.getLogger("StateMachineTest");
+    	m_logger = AcsLogger.createUnconfiguredLogger("StateMachineTest", null);
     	m_actionImpl = new DummyActionImpl(m_logger);
         m_context = new AlmaSubsystemContext(m_actionImpl, m_logger);
         m_context.addAcsStateChangeListener(this);
