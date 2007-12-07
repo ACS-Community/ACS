@@ -132,8 +132,8 @@ public class SubsysResourceMonitor {
         	delaySeconds = defaultDelaySeconds;
         }
         synchronized (resourceRunners) {
-            for (ResourceCheckRunner otherRunner : resourceRunners) {
-                ResourceChecker otherChecker = otherRunner.getResourceChecker();
+            for (ResourceCheckRunner<T> otherRunner : resourceRunners) {
+                ResourceChecker<T> otherChecker = otherRunner.getResourceChecker();
                 Object otherResource = otherChecker.getResource();
                 String otherResourceName = otherChecker.getResourceName();
                 // @TODO: enforce that no 2 resources can have the same name (important for #stopResourceMonitoring)
@@ -144,7 +144,7 @@ public class SubsysResourceMonitor {
                     }
                     msg += "Will re-schedule the monitoring now.";
                     logger.info(msg);
-                    Future future = otherRunner.getScheduleFuture();
+                    Future<?> future = otherRunner.getScheduleFuture();
                     future.cancel(true);
                     resourceRunners.remove(otherRunner);
                     break;
@@ -152,7 +152,7 @@ public class SubsysResourceMonitor {
             }
         	SubsysResourceMonitor.ResourceCheckRunner<T> checkRunner = new SubsysResourceMonitor.ResourceCheckRunner<T>(checker, err, logger, monitorCallThreadPool);
         	int initialDelaySeconds = random.nextInt(delaySeconds);
-        	Future future = scheduler.scheduleWithFixedDelay(checkRunner, initialDelaySeconds, delaySeconds, TimeUnit.SECONDS);
+        	Future<?> future = scheduler.scheduleWithFixedDelay(checkRunner, initialDelaySeconds, delaySeconds, TimeUnit.SECONDS);
             checkRunner.setScheduleFuture(future);
             resourceRunners.add(checkRunner);
 //            logger.info("Will monitor resource '" + checker.getResourceName() + "'.");
@@ -279,7 +279,7 @@ public class SubsysResourceMonitor {
 		private final ResourceErrorHandler<T> err;
         private final Logger logger;
     	private final ExecutorService threadPool;
-        private Future scheduleFuture;
+        private Future<?> scheduleFuture;
         private volatile boolean isSuspended;
         private volatile boolean lastCheckSucceeded;
 		
@@ -298,11 +298,11 @@ public class SubsysResourceMonitor {
          * Unfortunately this object is not yet available at construction time, 
          * that's why we have this separate setter method.
          */
-        void setScheduleFuture(Future scheduleFuture) {
+        void setScheduleFuture(Future<?> scheduleFuture) {
             this.scheduleFuture = scheduleFuture;
         }
         
-        Future getScheduleFuture() {
+        Future<?> getScheduleFuture() {
             return scheduleFuture;
         }
         
@@ -444,7 +444,7 @@ public class SubsysResourceMonitor {
             callTimeoutSeconds = timeout;
         }
         
-        ResourceChecker getResourceChecker() {
+        ResourceChecker<T> getResourceChecker() {
             return resourceChecker;
         }
         
