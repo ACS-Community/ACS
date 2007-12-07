@@ -1,4 +1,4 @@
-# @(#) $Id: ContainerServices.py,v 1.27 2007/12/04 21:57:57 agrimstrup Exp $
+# @(#) $Id: ContainerServices.py,v 1.28 2007/12/07 17:03:13 agrimstrup Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -21,7 +21,7 @@
 # ALMA should be addressed as follows:
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: ContainerServices.py,v 1.27 2007/12/04 21:57:57 agrimstrup Exp $"
+# "@(#) $Id: ContainerServices.py,v 1.28 2007/12/07 17:03:13 agrimstrup Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -41,7 +41,7 @@ developer. For now, we can depend on Manager to keep track of whats going on
 but this solution is less than ideal.
 '''
 
-__revision__ = "$Id: ContainerServices.py,v 1.27 2007/12/04 21:57:57 agrimstrup Exp $"
+__revision__ = "$Id: ContainerServices.py,v 1.28 2007/12/07 17:03:13 agrimstrup Exp $"
 
 #--GLOBALS---------------------------------------------------------------------
 
@@ -614,7 +614,7 @@ class ContainerServices:
 
         if comp_info is not None:
             corba_obj = comp_info.reference
-            comp_class = comp_info.type
+            comp_class = self.__importComponentStubs(None, comp_info.type)
             return self.__narrowComponentReference(corba_obj, comp_class)
 
         else:
