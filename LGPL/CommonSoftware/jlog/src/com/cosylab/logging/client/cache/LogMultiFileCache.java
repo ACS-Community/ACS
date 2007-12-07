@@ -139,7 +139,7 @@ public class LogMultiFileCache  implements ILogMap {
 	private Vector<LogFileTableRecord> logFileTable= new Vector<LogFileTableRecord>();
 	
 	// The number of logs in cache
-	private int logsInCache=0;
+	private volatile int logsInCache=0;
 
 	/**
 	 * Get the max size of the file out of the system properties or
