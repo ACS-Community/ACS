@@ -3,12 +3,13 @@ package alma.ACS.MasterComponentImpl.statemachine;
 import alma.ACS.SUBSYSSTATE_SHUTDOWN;
 import alma.acs.genfw.runtime.sm.AcsSimpleState;
 import alma.acs.genfw.runtime.sm.AcsState;
+import alma.acs.logging.AcsLogger;
 
 public class ShutdownState extends OfflineSubStateAbstract implements AcsSimpleState
 {
 
-    public ShutdownState(AlmaSubsystemContext superContext, OfflineState context) {
-        super(superContext, context);
+    public ShutdownState(AlmaSubsystemContext superContext, OfflineState context, AcsLogger logger) {
+        super(superContext, context, logger);
 
     }
 

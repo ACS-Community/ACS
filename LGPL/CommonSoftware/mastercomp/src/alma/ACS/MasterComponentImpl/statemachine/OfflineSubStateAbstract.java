@@ -2,17 +2,19 @@ package alma.ACS.MasterComponentImpl.statemachine;
 
 import alma.ACSErrTypeCommon.wrappers.AcsJIllegalStateEventEx;
 import alma.acs.genfw.runtime.sm.AcsState;
+import alma.acs.logging.AcsLogger;
 
 /**
  * Abstract class for substates of composite state 'Offline'.
  */
 public abstract class OfflineSubStateAbstract implements AcsState 
 {
-
+	protected final AcsLogger logger;
 	protected AlmaSubsystemContext m_superContext;
 	protected OfflineState m_offlineContext;
 
-    public OfflineSubStateAbstract(AlmaSubsystemContext superContext, OfflineState offlineContext) {
+    public OfflineSubStateAbstract(AlmaSubsystemContext superContext, OfflineState offlineContext, AcsLogger logger) {
+    	this.logger = logger;
         m_superContext = superContext;
         m_offlineContext = offlineContext;
     }

@@ -3,12 +3,13 @@ package alma.ACS.MasterComponentImpl.statemachine;
 import alma.ACS.SUBSYSSTATE_PRESHUTDOWN;
 import alma.acs.genfw.runtime.sm.AcsSimpleState;
 import alma.acs.genfw.runtime.sm.AcsState;
+import alma.acs.logging.AcsLogger;
 
 public class PreShutdownState extends OfflineSubStateAbstract implements AcsSimpleState
 {
 
-    public PreShutdownState(AlmaSubsystemContext superContext, OfflineState context) {
-        super(superContext, context);
+    public PreShutdownState(AlmaSubsystemContext superContext, OfflineState context, AcsLogger logger) {
+        super(superContext, context, logger);
     }
 
 	public String stateName() {

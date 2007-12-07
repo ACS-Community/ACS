@@ -5,14 +5,15 @@ import alma.acs.genfw.runtime.sm.AcsDoActivity;
 import alma.acs.genfw.runtime.sm.AcsSimpleState;
 import alma.acs.genfw.runtime.sm.AcsState;
 import alma.acs.genfw.runtime.sm.AcsStateActionException;
+import alma.acs.logging.AcsLogger;
 
 public class ShuttingdownPass1State extends OfflineSubStateAbstract implements AcsSimpleState
 {
 
 	private AcsDoActivity m_doActivity;
 	
-    public ShuttingdownPass1State(AlmaSubsystemContext superContext, OfflineState context) {
-        super(superContext, context);
+    public ShuttingdownPass1State(AlmaSubsystemContext superContext, OfflineState context, AcsLogger logger) {
+        super(superContext, context, logger);
     }
     
 	public String stateName() {
@@ -36,7 +37,7 @@ public class ShuttingdownPass1State extends OfflineSubStateAbstract implements A
 	public void entry() {
 		// perform do/ action asynchronously
         if (m_doActivity == null) {
-			m_doActivity = new AcsDoActivity("ShuttingdownPass1", m_superContext.m_statePreShutdown, m_superContext.m_stateError) {
+			m_doActivity = new AcsDoActivity("ShuttingdownPass1", m_superContext.m_statePreShutdown, m_superContext.m_stateError, logger) {
                 public void runActions() throws AcsStateActionException 
 				{
 					m_superContext.shutDownSubsysPass1();

@@ -5,13 +5,14 @@ import alma.acs.genfw.runtime.sm.AcsDoActivity;
 import alma.acs.genfw.runtime.sm.AcsSimpleState;
 import alma.acs.genfw.runtime.sm.AcsState;
 import alma.acs.genfw.runtime.sm.AcsStateActionException;
+import alma.acs.logging.AcsLogger;
 
 public class InitializingPass2State extends OfflineSubStateAbstract implements AcsSimpleState
 {
 	private AcsDoActivity m_doActivity;
 
-    public InitializingPass2State(AlmaSubsystemContext superContext, OfflineState offlineContext) {
-        super(superContext, offlineContext);
+    public InitializingPass2State(AlmaSubsystemContext superContext, OfflineState offlineContext, AcsLogger logger) {
+        super(superContext, offlineContext, logger);
     }
     
 	public String stateName() {
@@ -35,7 +36,7 @@ public class InitializingPass2State extends OfflineSubStateAbstract implements A
 	public void entry() {
 		// perform do/ action asynchronously
 		if (m_doActivity == null) {
-			m_doActivity = new AcsDoActivity("InitializingPass2", m_superContext.m_stateOnline, m_superContext.m_stateError) {
+			m_doActivity = new AcsDoActivity("InitializingPass2", m_superContext.m_stateOnline, m_superContext.m_stateError, logger) {
 				public void runActions() throws AcsStateActionException 
 				{
 					m_superContext.initSubsysPass2();

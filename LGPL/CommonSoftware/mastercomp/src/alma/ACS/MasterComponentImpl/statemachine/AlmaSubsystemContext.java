@@ -11,6 +11,7 @@ import alma.ACSErrTypeCommon.wrappers.AcsJIllegalStateEventEx;
 import alma.acs.genfw.runtime.sm.AcsState;
 import alma.acs.genfw.runtime.sm.AcsStateActionException;
 import alma.acs.genfw.runtime.sm.AcsStateChangeListener;
+import alma.acs.logging.AcsLogger;
 
 
 /**
@@ -22,7 +23,7 @@ public class AlmaSubsystemContext
 	private AlmaSubsystemActions m_actionDelegate;
 	private List<AcsStateChangeListener> m_stateChangeListeners;
 	private AcsState[] m_oldHierarchy;
-	private Logger m_logger;
+	private AcsLogger m_logger;
 	private boolean m_verbose = false;
 
 	
@@ -56,7 +57,7 @@ public class AlmaSubsystemContext
 	public ShuttingdownPass2State m_stateShuttingdownPass2;
 
 
-	public AlmaSubsystemContext(AlmaSubsystemActions actions, Logger logger) {
+	public AlmaSubsystemContext(AlmaSubsystemActions actions, AcsLogger logger) {
 		m_actionDelegate = actions;
 		m_stateChangeListeners = new ArrayList<AcsStateChangeListener>();
 		m_logger = logger;
@@ -71,21 +72,21 @@ public class AlmaSubsystemContext
 
 		m_stateOffline = new OfflineState(this, m_stateAvailable);
 
-		m_stateShutdown = new ShutdownState(this, m_stateOffline);
+		m_stateShutdown = new ShutdownState(this, m_stateOffline, m_logger);
 
-		m_stateShuttingdownPass1 = new ShuttingdownPass1State(this, m_stateOffline);
+		m_stateShuttingdownPass1 = new ShuttingdownPass1State(this, m_stateOffline, m_logger);
 
-		m_stateInitializingPass2 = new InitializingPass2State(this, m_stateOffline);
+		m_stateInitializingPass2 = new InitializingPass2State(this, m_stateOffline, m_logger);
 
-		m_stateInitializingPass1 = new InitializingPass1State(this, m_stateOffline);
+		m_stateInitializingPass1 = new InitializingPass1State(this, m_stateOffline, m_logger);
 
-		m_stateReinitializing = new ReinitializingState(this, m_stateOffline);
+		m_stateReinitializing = new ReinitializingState(this, m_stateOffline, m_logger);
 
-		m_statePreInitialized = new PreInitializedState(this, m_stateOffline);
+		m_statePreInitialized = new PreInitializedState(this, m_stateOffline, m_logger);
 
-		m_statePreShutdown = new PreShutdownState(this, m_stateOffline);
+		m_statePreShutdown = new PreShutdownState(this, m_stateOffline, m_logger);
 
-		m_stateShuttingdownPass2 = new ShuttingdownPass2State(this, m_stateOffline);
+		m_stateShuttingdownPass2 = new ShuttingdownPass2State(this, m_stateOffline, m_logger);
 
 
 		// initial state
@@ -258,24 +259,6 @@ public class AlmaSubsystemContext
 			sourceState.stateName() + "' to '" + targetState.stateName() + "'.";
 			m_logger.info(msg);
 		}
-	}
-
-	/**
-	 * @param sourceStateName  beginning of transition, or activity state
-	 * @param targetStateName  end of transition, 
-	 *                         or <code>null</code> if the action comes from the <code>do/</code> method of an activity state.
-	 * @param actionName 
-	 */
-	void logActionFailure(String sourceStateName, String targetStateName, String actionName, Throwable thr) {
-		String msg = "action '" + actionName + "' ";
-		if (targetStateName == null) {
-			msg += "associated with activity state '" + sourceStateName + "' ";
-		} else {
-			msg += "between states '" + sourceStateName + "' and '" + targetStateName + "' ";
-		}
-		
-		msg += "has thrown an exception.";
-		m_logger.log(Level.SEVERE, msg, thr);
 	}
 
 }
