@@ -22,10 +22,15 @@
 package alma.acs.genfw.runtime.sm;
 
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.RejectedExecutionException;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
 
 import alma.acs.concurrent.DaemonThreadFactory;
+import alma.acs.logging.AcsLogger;
 
 
 /**
@@ -39,9 +44,10 @@ import alma.acs.concurrent.DaemonThreadFactory;
  */
 public abstract class AcsDoActivity
 {
-	private AcsSimpleState m_nextState;
-	private AcsSimpleState m_errorState;
-	private String m_name;
+	private final AcsSimpleState m_nextState;
+	private final AcsSimpleState m_errorState;
+	private final String m_name;
+	private final AcsLogger logger;
 	
 	private volatile boolean m_completed;
 	
@@ -51,20 +57,33 @@ public abstract class AcsDoActivity
 	 * in a non-concurrent state machine.
 	 * todo: or maybe it's a queue, if a composite (super) state also has a /do method ? 
 	 */ 
-	private static ExecutorService s_executor = Executors.newSingleThreadExecutor(new DaemonThreadFactory());
+	private static final ThreadPoolExecutor s_executor;
 
+	static {
+		// @TODO Instead of using a single static ThreadFactory shared by all components, 
+		//       we could use the component's own thread factory from the container services.
+		ThreadFactory threadFactory = new DaemonThreadFactory();
+		
+		// this choice is copied from Executors.newSingleThreadExecutor which unfortunately hides the methods we need.
+		s_executor = new ThreadPoolExecutor(1, 1,
+                0L, TimeUnit.MILLISECONDS,
+                new LinkedBlockingQueue<Runnable>(),
+                threadFactory);
+	}
+	
     
 	/**
 	 * @param name  name for the activity
 	 * @param nextState  state to which the implicit "completion transition" will go.
 	 * @param errorState  error state to which we'll go in case of errors.
 	 */
-	public AcsDoActivity(String name, AcsSimpleState nextState, AcsSimpleState errorState) 
+	public AcsDoActivity(String name, AcsSimpleState nextState, AcsSimpleState errorState, AcsLogger logger) 
 	{
 		m_completed = true;
 		m_name = name;
 		m_nextState = nextState;
 		m_errorState = errorState;
+		this.logger = logger;
 	}
 	
 	/**
@@ -72,7 +91,7 @@ public abstract class AcsDoActivity
 	 * When the actions are completed, a transition to the next state is triggered,
 	 * as specified in the constructor.
 	 */
-	public void execute() //throws InterruptedException 
+	public void execute()  
 	{
 		m_completed = false;
 
@@ -86,24 +105,27 @@ public abstract class AcsDoActivity
 					// move on to next state
 					m_nextState.activate("/do-activities '" + m_name + " completed.");
 				}
-				catch (Throwable t) {
-					// todo: log
-//					m_superContext.logActionFailure(stateName(), null, "initSubsysPass1", t);
-					t.printStackTrace();
-					
-					// todo: decide if going into error state is appropriate...
+				catch (Throwable thr) {
+					String msg = "The asynchronous execution of actions for activity '" + m_name + "' has thrown an exception. Will go into error state.";
+					logger.log(Level.WARNING, msg, thr);
+					// Go into error state (@todo: decide if this is appropriate)
 					m_errorState.activate("/do-activities '" + m_name + "' failed.");
 				}
 			}
 		};
 		
+		if (logger.isLoggable(Level.FINE)) {
+			if (s_executor.getActiveCount() > 0) {
+				logger.fine("Execution of activity '" + m_name + "' gets delayed because another activity is still being executed");
+			}
+		}
 		try {
 			s_executor.execute(doActionRunner);
 		}
-		catch (RejectedExecutionException e) {
-			// TODO log in better ways
-			e.printStackTrace();
-			m_errorState.activate("/do-activities '" + m_name + "' failed: " + e.toString());
+		catch (RejectedExecutionException ex) {
+			String msg = "/do-activities '" + m_name + "' failed";
+			logger.log(Level.WARNING, msg, ex);
+			m_errorState.activate(msg + ": " + ex.toString());
 		}
 	}
 	
@@ -124,9 +146,28 @@ public abstract class AcsDoActivity
 	public void terminateActions()
 	{
 		if (!m_completed) {
-			// todo: log better warning.
-			System.err.println("*** /do-activities '" + m_name + "' terminated prematurely!");
+			logger.warning("/do-activities '" + m_name + "' terminated prematurely!");
 			s_executor.shutdownNow();
 		}
 	}
+	
+	
+	/**
+	 * @param sourceStateName  beginning of transition, or activity state
+	 * @param targetStateName  end of transition, 
+	 *                         or <code>null</code> if the action comes from the <code>do/</code> method of an activity state.
+	 * @param actionName 
+	 */
+	void logActionFailure(String sourceStateName, String targetStateName, String actionName, Throwable thr) {
+		String msg = "action '" + actionName + "' ";
+		if (targetStateName == null) {
+			msg += "associated with activity state '" + sourceStateName + "' ";
+		} else {
+			msg += "between states '" + sourceStateName + "' and '" + targetStateName + "' ";
+		}
+		
+		msg += "has thrown an exception.";
+		logger.log(Level.SEVERE, msg, thr);
+	}
+	
 }
