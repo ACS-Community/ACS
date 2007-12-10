@@ -15,6 +15,7 @@ s/\([0-9][0-9]:[0-9][0-9]:[0-9][0-9].[0-9][0-9][0-9]\)/12:00:00.000/g
 s/[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9][ T][0-9][0-9]:[0-9][0-9]/----------T--:--/g
 s/user='.*'/user=xxxx/g
 s/\.Jlog will use cache for [0-9]* log records\./Jlog will use cache for N log records/g
+s/LogMultiFileCache uses file of max size: [0-9]+/LogMultiFileCache uses file of max size: N/g
 s/\The WriteBuffer stores [0-9]* logs//g
 s/Local file logger: Cache saved to .*/Local file logger: Cache saved to XXXXXX/g
 s/Line="[0-9]*"/Line="NNN"/g

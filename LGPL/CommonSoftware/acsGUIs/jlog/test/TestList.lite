@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: TestList.lite,v 1.29 2007/06/11 12:40:39 acaproni Exp $"
+# "@(#) $Id: TestList.lite,v 1.30 2007/12/10 13:35:11 acaproni Exp $"
 #
 # TestList
 #
@@ -37,7 +37,8 @@ PROLOGUE jlogTATPrologue
 5 jlogTestXMLParser "jlogTestXMLParser"
 6 jlogTestDispatcher "jlogTestDispatcher"
 7 jlogLCEngineTest "jlogTestEngine" "@SLEEP 15" "logClient 1"
+8 jlogMultiFileCacheTest "jlogMultiFileCacheTest"
 
-#8 jlogEngineStressTest "jlogEngineStressTest" "@SLEEP 15" "jlogTestRun.sh"
+#9 jlogEngineStressTest "jlogEngineStressTest" "@SLEEP 15" "jlogTestRun.sh"
 
 EPILOGUE acsutilTATEpilogue
