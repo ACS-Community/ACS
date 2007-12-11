@@ -56,7 +56,7 @@ public class StateMachineTest extends TestCase implements AcsStateChangeListener
         m_context = new AlmaSubsystemContext(m_actionImpl, m_logger);
         m_context.addAcsStateChangeListener(this);
         
-        m_sync = new MyStateChangeSemaphore();
+        m_sync = new MyStateChangeSemaphore(m_logger);
         m_context.addAcsStateChangeListener(m_sync);
     }
 
@@ -170,6 +170,39 @@ public class StateMachineTest extends TestCase implements AcsStateChangeListener
         m_logger.info("============ testActionException successful! ===========\n");
     }
 
+    public void testReentryToCompositeState() throws Exception {
+        assertStateHierarchy("AVAILABLE/OFFLINE/SHUTDOWN");
+        m_logger.info("---> Event initPass1 will be sent.");
+        m_sync.reset();
+        m_context.initPass1();
+        m_sync.waitForStateChanges(2); 
+        assertStateHierarchy("AVAILABLE/OFFLINE/PREINITIALIZED");
+        
+        m_logger.info("---> Event initPass2 will be sent.");
+        m_sync.reset();
+        m_context.initPass2();
+        m_sync.waitForStateChanges(2); 
+        assertStateHierarchy("AVAILABLE/ONLINE");
+    	
+        m_logger.info("---> Event reinit will be sent.");
+    	assertEquals(0, m_actionImpl.getCallsToReinit());
+        m_sync.reset();
+        m_context.reinit();
+        m_sync.waitForStateChanges(2); 
+        assertStateHierarchy("AVAILABLE/ONLINE");
+    	Thread.sleep(200); // for the lack of sync'ing with the reinit action method
+    	assertEquals(1, m_actionImpl.getCallsToReinit());
+        
+    	// do another reinit. There used to be a bug (COMP-1776) with the reinit action method not called again, 
+    	// because from the point of view of its composite state (OFFLINE), the substate reinit did not change.    	
+        m_logger.info("---> Event reinit will be sent again.");
+        m_sync.reset();
+        m_context.reinit();
+        m_sync.waitForStateChanges(2);
+        assertStateHierarchy("AVAILABLE/ONLINE");
+    	Thread.sleep(200); // for the lack of sync'ing with the reinit action method
+    	assertEquals(2, m_actionImpl.getCallsToReinit());    	
+    }
     
     private void assertStateHierarchy(String expectedPath) {
 		AcsState[] actualHierarchy = m_context.getCurrentTopLevelState().getStateHierarchy();
@@ -186,6 +219,7 @@ public class StateMachineTest extends TestCase implements AcsStateChangeListener
 	{
     	private Logger m_actionLogger;
 		private boolean m_throwExInInitPass1;
+		private int callsToReinit;
     	
     	DummyActionImpl(Logger logger) {
     		m_actionLogger = logger;
@@ -200,6 +234,14 @@ public class StateMachineTest extends TestCase implements AcsStateChangeListener
     		m_throwExInInitPass1 = throwEx;
     	}
 
+    	/**
+    	 * Allows the tests to check how often reinit has been called.
+    	 * @TODO: better use a real sync mechanism so that test can wait till the method was called, or fail with a time out.
+    	 */
+    	int getCallsToReinit() {
+    		return callsToReinit;
+    	}
+    	
     	
         public synchronized void initSubsysPass1() throws AcsStateActionException {
             if (m_throwExInInitPass1) {
@@ -222,6 +264,7 @@ public class StateMachineTest extends TestCase implements AcsStateChangeListener
         }
 
         public synchronized void reinitSubsystem() {
+        	callsToReinit++;
             log("reinitSubsystem");
         }
 
@@ -242,6 +285,10 @@ public class StateMachineTest extends TestCase implements AcsStateChangeListener
     
     private static class MyStateChangeSemaphore extends StateChangeSemaphore implements AcsStateChangeListener 
 	{
+    	MyStateChangeSemaphore(Logger logger) {
+    		super(logger);
+    	}
+    	
 		public synchronized void stateChangedNotify(AcsState[] oldStateHierarchy, AcsState[] currentStateHierarchy) 
 		{
 			stateChangedNotify();
