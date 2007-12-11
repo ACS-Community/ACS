@@ -217,8 +217,13 @@ public abstract class MasterComponentImplBase extends CharacteristicComponentImp
 				break;
 
 				default :
-					m_logger.warning("unexpected SubsystemStateEvent with integer value " + event.value() +
-							" found; most likely " + MasterComponentImplBase.class.getName() + " must be updated.");
+					// we can only get here if this code is out of sync with the IDL event definitions
+					String msg = "Unexpected SubsystemStateEvent with integer value " + event.value() +
+								" found; most likely " + MasterComponentImplBase.class.getName() + " must be updated.";
+					m_logger.warning(msg);
+					AcsJIllegalStateEventEx ex = new AcsJIllegalStateEventEx();
+					ex.setEvent(event.toString());
+					throw ex.toIllegalStateEventEx();
 			}
 		}
 		catch (AcsJIllegalStateEventEx ex) {
