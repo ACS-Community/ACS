@@ -21,7 +21,7 @@
 *
 *
 *
-* "@(#) $Id: contLogTestImpl.cpp,v 1.4 2007/11/30 13:01:16 eallaert Exp $"
+* "@(#) $Id: contLogTestImpl.cpp,v 1.5 2007/12/11 09:34:17 cparedes Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -31,9 +31,10 @@
  
 #include <contLogTestImpl.h>
 #include <ACSErrTypeCommon.h>
+#include <loggingLogLevelDefinition.h>
 #include <iostream>
 
-ACE_RCSID(contLogTest, contLogTestImpl, "$Id: contLogTestImpl.cpp,v 1.4 2007/11/30 13:01:16 eallaert Exp $")
+ACE_RCSID(contLogTest, contLogTestImpl, "$Id: contLogTestImpl.cpp,v 1.5 2007/12/11 09:34:17 cparedes Exp $")
 
 /* ----------------------------------------------------------------*/
 TestLogLevelsComp::TestLogLevelsComp( 
@@ -71,7 +72,7 @@ void
 TestLogLevelsComp::logDummyMessages (const ::contLogTest::LongSeq & levels)
 {
 	for (CORBA::ULong t=0; t<levels.length(); t++){
-		ACE_Log_Priority p = LoggingProxy::m_LogEntryCast[levels[t]];
+		ACE_Log_Priority p = LogLevelDefinition::getACELogPriority(levels[t]);
 		ACS_SHORT_LOG((p, "dummy log message for core level %d", levels[t]));
 	}
 }
