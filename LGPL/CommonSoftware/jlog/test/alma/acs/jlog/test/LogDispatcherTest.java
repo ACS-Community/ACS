@@ -36,8 +36,9 @@ import com.cosylab.logging.engine.log.ILogEntry.AdditionalData;
 import com.cosylab.logging.engine.log.ILogEntry.Field;
 
 import alma.ACSLoggingLog.LogBinaryRecord;
-import alma.ACSLoggingLog.LogType;
 import alma.ACSLoggingLog.NameValue;
+import alma.acs.logging.AcsLogLevel;
+import alma.acs.logging.level.AcsLogLevelDefinition;
 import alma.acs.util.StopWatch;
 
 /**
@@ -205,7 +206,7 @@ public class LogDispatcherTest extends TestCase {
 	 * @param log The log to get the cache string in binary format
 	 * @return The cache string (binary format)
 	 */
-	private synchronized String toCacheString(ILogEntry log) {
+	private synchronized String toCacheString(ILogEntry log) throws Exception {
 		LogBinaryRecord logBin=convertLogToBinary(log);
 		String str=null;
 		try {
@@ -225,7 +226,7 @@ public class LogDispatcherTest extends TestCase {
 	 * @return The binary log
 	 * 
 	 */
-	private LogBinaryRecord convertLogToBinary(ILogEntry log) {
+	private LogBinaryRecord convertLogToBinary(ILogEntry log) throws Exception {
 		LogBinaryRecord logBin = new LogBinaryRecord();
 		logBin.Audience=(String)log.getField(Field.AUDIENCE);
 		logBin.File=(String)log.getField(Field.FILE);
@@ -258,7 +259,7 @@ public class LogDispatcherTest extends TestCase {
 		logBin.Thread=(String)log.getField(Field.THREAD);
 		Date date = (Date)log.getField(Field.TIMESTAMP);
 		logBin.TimeStamp=com.cosylab.logging.client.cache.CacheUtils.dateFormat.format(date);
-		logBin.type=LogType.from_int(log.getType());
+		logBin.type=(short)AcsLogLevelDefinition.fromInteger(log.getType().intValue()).value;
 		logBin.Uri=(String)log.getField(Field.URI);
 		if (log.hasDatas()) {
 			Vector<AdditionalData> data=log.getAdditionalData();
