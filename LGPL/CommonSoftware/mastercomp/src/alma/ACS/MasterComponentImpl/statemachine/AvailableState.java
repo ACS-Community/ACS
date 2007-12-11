@@ -48,7 +48,7 @@ public class AvailableState extends AlmaSubsystemStateAbstract
 		if (oldSubState != newSubState) {
 			m_subState.entry();
 		}
-}
+	}
 
 
 	// events to be handled by substate classes
