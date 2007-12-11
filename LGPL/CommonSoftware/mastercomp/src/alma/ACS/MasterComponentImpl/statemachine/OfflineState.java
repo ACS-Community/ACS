@@ -7,6 +7,7 @@ import alma.acs.genfw.runtime.sm.AcsState;
 public class OfflineState extends AvailableSubStateAbstract
 {
 	public OfflineSubStateAbstract m_subState;
+	public boolean newEntryToThis = false;
 
 	public OfflineState(AlmaSubsystemContext superContext, AvailableState context) {
 		super(superContext, context);
@@ -34,16 +35,19 @@ public class OfflineState extends AvailableSubStateAbstract
 			m_subState = newSubState;
 		}
 		
-		// always propagate state change upwards
+		// always propagate state change upwards. May result in a call to entry() if the previous state was not a substate of this state.
 		m_context.setSubstate(this, eventName);
 		
-		if (oldSubState != newSubState) {
+		if (newEntryToThis || oldSubState != newSubState) {
 			m_subState.entry();
 		}
+		
+		newEntryToThis = false;
 	}
 
 
 	public void entry() {
+		newEntryToThis = true;
 	}
 	
 	public void initPass1() throws AcsJIllegalStateEventEx {
