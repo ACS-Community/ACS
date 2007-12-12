@@ -2,7 +2,7 @@
 #*******************************************************************************
 # ALMA - Atacama Large Millimiter Array
 # (c) European Southern Observatory, 2002
-# "@(#) $Id: doxygenize,v 1.73 2005/06/22 07:29:09 mzampare Exp $"
+# "@(#) $Id: doxygenize,v 1.74 2007/12/12 13:04:26 mpasquat Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -254,13 +254,13 @@ then
         VARIABLE=$myline
         VARIABLE=${VARIABLE%%=*}
          
-        if grep $VARIABLE $FILE > /tmp/to_be_removed
+        if grep -e "^$VARIABLE " $FILE > /tmp/to_be_removed
         then
 	    # Substitution of the variable with the customized value
             echo $myline > /tmp/mytmp$$
             cat /tmp/mytmp$$ | sed s/#/\ /g > /tmp/mytmp2$$
             origin_line=$(< /tmp/mytmp2$$)
-            sed -e "s!$VARIABLE.*!$origin_line !" $FILE > $FILE.tmp
+            sed -e "s!^$VARIABLE .*!$origin_line !" $FILE > $FILE.tmp
             mv $FILE.tmp $FILE
         else
             # Addition of a new variable
