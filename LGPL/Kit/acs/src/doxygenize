@@ -2,7 +2,7 @@
 #*******************************************************************************
 # ALMA - Atacama Large Millimiter Array
 # (c) European Southern Observatory, 2002
-# "@(#) $Id: doxygenize,v 1.74 2007/12/12 13:04:26 mpasquat Exp $"
+# "@(#) $Id: doxygenize,v 1.75 2007/12/12 13:44:48 mpasquat Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -324,6 +324,15 @@ then
         PROCEED="NO"
      fi
    done
+   
+   # Removal of empty directory called object
+   find ../ -type d -name object -empty -exec rmdir {} \;
+
+   # Adding object directory if not empty
+   if [ -d "../object" ]
+   then
+      INPUT="$INPUT ../object"
+   fi
 
    # Proceed if all input directories exist
    if [ "$PROCEED" = "YES" ] 
@@ -340,6 +349,13 @@ then
 
        echo "calling doxygen for IDL"
        sed -e "s#^OUTPUT_DIRECTORY.*#OUTPUT_DIRECTORY  = $OUTPUT#g;s#^INPUT .*#INPUT = $INPUT#;s#^HTML_HEADER.*#HTML_HEADER = $HEADER#;s/^PROJECT_NAME.*/PROJECT_NAME = \"$MODULE_NAME IDL\"/;s/^PROJECT_NUMBER.*/PROJECT_NUMBER = $REVISION/;s#^HTML_FOOTER.*#HTML_FOOTER = $FOOTER#" $FILE | doxygen -
+
+      # Restore the emty directory object
+      if [ ! -d "../object" ]
+      then
+         mkdir object
+      fi
+
       # copy the nice picture. To be re-thought!
       cp -f $IMAGE $OUTPUT/html
       cp -f $IMAGE2 $OUTPUT/html

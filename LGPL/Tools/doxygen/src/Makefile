@@ -1,7 +1,7 @@
 #*************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: Makefile,v 1.21 2005/09/30 06:55:49 mpasquat Exp $"
+# "@(#) $Id: Makefile,v 1.22 2007/12/12 13:45:56 mpasquat Exp $"
 #
 # Makefile of ........
 #
@@ -22,7 +22,7 @@
 # user definable C-compilation flags
 #USER_CFLAGS = 
 PLATFORM := $(shell uname)
-DOX_VER = 1.3.6
+DOX_VER = 1.3.8
 GRAPH_VER = 2.6
 
 
@@ -31,9 +31,7 @@ GRAPH_VER = 2.6
 # -------
 all:    unpack patch all_first
 	@echo " . . . 'all' done" 
-	chmod -f +x doxygen-$(DOX_VER)/addon/doxywizard/CVS \
-                    doxygen-$(DOX_VER)/addon/doxywizard/obj \
-                    doxygen-$(DOX_VER)/addon/mifgen/obj
+	chmod -fR +x doxygen-$(DOX_VER)/addon/doxywizard
 
 all_first:
 	@echo ". . . building/installing code . . . "
