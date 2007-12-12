@@ -107,7 +107,7 @@ other_tools = [('ACE','more $ACE_ROOT/VERSION','5.5.2'),\
               ('TAO','more $ALMASW_ROOTDIR/$ALMASW_RELEASE/TAO/ACE_wrappers/TAO/VERSION','1.5.2'),\
               ('JacORB','more $JACORB_HOME/doc/REL_NOTES','2.2'),\
               ('Ant','$ANT_HOME/bin/ant -version','1.6.0'),\
-              ('doxygen','doxygen --version','1.3.6'),\
+              ('doxygen','doxygen --version','1.3.8'),\
               ('python','python -V','2.4'),\
               ('mico','more $ALMASW_ROOTDIR/$ALMASW_RELEASE/mico/VERSION','2.3.11'),\
               ('omniorb','cd $ALMASW_ROOTDIR/$ALMASW_RELEASE/omni/; ls THIS_IS_OMNIORB_4_0_3','THIS_IS_OMNIORB_4_0_3')\
