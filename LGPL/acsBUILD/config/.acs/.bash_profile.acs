@@ -20,7 +20,7 @@
 # MA 02111-1307  USA
 #
 #
-# "@(#) $Id: .bash_profile.acs,v 1.73 2007/11/30 17:40:28 hsommer Exp $"
+# "@(#) $Id: .bash_profile.acs,v 1.74 2007/12/13 14:53:27 bjeram Exp $"
 #
 #
 #
@@ -619,36 +619,60 @@ then
 fi
 
 
-if [ -d $ALMASW_ROOTDIR/$ALMASW_RELEASE/vw5.5 ]
+if [ -d $ALMASW_ROOTDIR/$ALMASW_RELEASE/WindRiver-3.2 ]
 then
-    WIND_BASE=$ALMASW_ROOTDIR/$ALMASW_RELEASE/vw5.5
-    ACC_HOST=$HOSTNAME
+    export WIND_HOST_TYPE=x86-linux2
+    export WIND_PREFERRED_PACKAGES=vxworks-6.2
+    export WIND_HOME=$ALMASW_INSTDIR/WindRiver-3.2
+    WIND_BASE=$WIND_HOME/vxworks-6.2
+    export WIND_USR=$WIND_BASE/target/usr
+    export WIND_DIAB_PATH=$WIND_HOME/diab/5.3.1.0
+    export WRSD_LICENSE_FILE=$WIND_HOME/license:$WIND_HOME/license/WRSLicense.lic
+    export WIND_GNU_PATH=$WIND_HOME/gnu/3.3.2-vxworks-6.2
+    export WIND_DOCS=$WIND_HOME/docs
+    export WIND_TOOLS=$WIND_HOME/workbench-2.4
+    export WIND_DFW_PATH=$WIND_HOME/workbench-2.4/dfw/0128
+    export WIND_JRE_HOME=$WIND_HOME/jre/1.4.2/x86-linux2
+    export WIND_WRWB_PATH=$WIND_HOME/workbench-2.4/wrwb/2.4
+    export WIND_FOUNDATION_PATH=$WIND_HOME/workbench-2.4/foundation/4.0.7
+    export WIND_WRSV_PATH=$WIND_HOME/workbench-2.4/wrsv/4.7
+    export WIND_SAMPLES=$WIND_BASE/target/usr/apps/samples:$WIND_BASE/target/src/demo:$WIND_HOME/scopetools-5.4/target/src/linux:$WIND_HOME/scopetools-5.4/target/src/vxworks:$WIND_HOME/workbench-2.4/samples
+    export WIND_USERMODE_AGENT_PATH=$WIND_HOME/linux-2.x/usermode-agent/1.1
+    export WIND_SCOPETOOLS_54=$WIND_HOME/scopetools-5.4
+    export WIND_EXTENSIONS=$WIND_HOME/scopetools-5.4/extensions
+    export TCLLIBPATH=$WIND_BASE/host/resource/tcl
+    export WIND_PLATFORM=vxworks-6.2	
+    export MANPATH=$MANPATH:$WIND_BASE/man
+
+    export ACC_HOST=$HOSTNAME
     CPU=${CPU:-PPC604}
-    WIND_REGISTRY=$HOSTNAME
-    WIND_VERSION=`basename $WIND_BASE | cut -c3-5`
+#    WIND_REGISTRY=$HOSTNAME
+#    WIND_VERSION=`basename $WIND_BASE | cut -c3-5`
     case $CPU in
             MC68040) VX_CPU_FAMILY=68k ;;
             PPC604)  VX_CPU_FAMILY=ppc ;;
             *)       VX_CPU_FAMILY="unknown_CPU_type_$CPU" ;;
     esac
-    if [ "$OSYSTEM" = "SunOS" ]
-    then
-        WIND_HOST_TYPE=sun4-solaris2
-        VX_HOST_TYPE=solaris
-    elif [ "$OSYSTEM" = "Linux" ]
-    then
-        WIND_HOST_TYPE=x86-linux
-        VX_HOST_TYPE=x86-linux
-    else
-        WIND_HOST_TYPE=IMPOSSIBLE_TO_DETERMINE_THE_SYSTEM_NAME_OR_OS_NOT_SUPPORTED
-        VX_HOST_TYPE=IMPOSSIBLE_TO_DETERMINE_THE_SYSTEM_NAME_OR_OS_NOT_SUPPORTED
-    fi
-    VXROOT=$WIND_BASE/target
-    VX_VW_BASE=$WIND_BASE/target
-    VX_HSP_BASE=$VXROOT
-    VX_BSP_BASE=$VXROOT
+#    if [ "$OSYSTEM" = "SunOS" ]
+#    then
+#        WIND_HOST_TYPE=sun4-solaris2
+#        VX_HOST_TYPE=solaris
+#    elif [ "$OSYSTEM" = "Linux" ]
+#    then
+
+#     WIND_HOST_TYPE=x86-linux
+     VX_HOST_TYPE=x86-linux
+#    else
+#        WIND_HOST_TYPE=IMPOSSIBLE_TO_DETERMINE_THE_SYSTEM_NAME_OR_OS_NOT_SUPPORTED
+#        VX_HOST_TYPE=IMPOSSIBLE_TO_DETERMINE_THE_SYSTEM_NAME_OR_OS_NOT_SUPPORTED
+#    fi
+     VXROOT=$WIND_BASE/target
+     VX_VW_BASE=$WIND_BASE/target
+     VX_HSP_BASE=$VXROOT
+     VX_BSP_BASE=$VXROOT
     export ACC_HOST WIND_BASE CPU VX_CPU_FAMILY WIND_HOST_TYPE 
-    export VX_HOST_TYPE VXROOT VX_VW_BASE VX_HSP_BASE VX_BSP_BASE WIND_REGISTRY 
+    export VX_HOST_TYPE VXROOT VX_VW_BASE VX_HSP_BASE VX_BSP_BASE
+# WIND_REGISTRY 
 fi
  
 # set the PATH, LD_LIBRARY_PATH and MANPATH and CLASSPATH accordingly to what 
@@ -719,7 +743,8 @@ fi
 
 if [ X"$WIND_BASE" != X ]
 then
-      PATH=$PATH:$WIND_BASE/host/$WIND_HOST_TYPE/bin
+       PATH=$PATH:$WIND_BASE/host/x86-linux2/bin:$WIND_HOME/scopetools-5.4/host/bin/x86-linux2:$WIND_HOME:$WIND_HOME/workbench-2.4/x86-linux2/bin:$WIND_HOME/workbench-2.4/foundation/4.0.7/x86-linux2/bin:$WIND_HOME/gnu/3.3.2-vxworks-6.2/x86-linux2/bin:$WIND_HOME/diab/5.3.1.0/LINUX386/bin
+#      PATH=$PATH:$WIND_BASE/host/$WIND_HOST_TYPE/bin
 fi
 
 # the PATH which comes with the operating system is preserved.
@@ -803,7 +828,8 @@ fi
 
 if [ X"$WIND_BASE" != X ]
 then
-      LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$WIND_BASE/host/$WIND_HOST_TYPE/lib
+       LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$WIND_BASE/host/x86-linux2/lib:$WIND_HOME/scopetools-5.4/host/bin/x86-linux2:$WIND_HOME/workbench-2.4/x86-linux2/lib:$WIND_HOME/workbench-2.4/foundation/4.0.7/x86-linux2/lib:
+#      LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$WIND_BASE/host/$WIND_HOST_TYPE/lib
 fi
 
 if  [ X"$INTLIST" != X ]
