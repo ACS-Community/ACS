@@ -1,4 +1,4 @@
-# @(#) $Id: Log.py,v 1.35 2007/12/05 22:17:19 agrimstrup Exp $
+# @(#) $Id: Log.py,v 1.36 2007/12/13 17:45:05 agrimstrup Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA,  2001
@@ -43,7 +43,7 @@ TODO:
 XML-related methods are untested at this point.
 '''
 
-__revision__ = "$Id: Log.py,v 1.35 2007/12/05 22:17:19 agrimstrup Exp $"
+__revision__ = "$Id: Log.py,v 1.36 2007/12/13 17:45:05 agrimstrup Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 from os        import environ
@@ -517,7 +517,7 @@ class Logger(logging.Logger):
             if logger.__dict__[handler].level:
                 return logger.__dict__[handler].level
             logger = logger.parent
-        return NOTSET
+        return logging.NOTSET
     #------------------------------------------------------------------------
     def updateChildren(self):
         """
