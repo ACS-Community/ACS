@@ -21,7 +21,7 @@
 *
 *
 *
-* "@(#) $Id: contLogTestImpl.cpp,v 1.5 2007/12/11 09:34:17 cparedes Exp $"
+* "@(#) $Id: contLogTestImpl.cpp,v 1.6 2007/12/14 16:48:44 eallaert Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -34,7 +34,7 @@
 #include <loggingLogLevelDefinition.h>
 #include <iostream>
 
-ACE_RCSID(contLogTest, contLogTestImpl, "$Id: contLogTestImpl.cpp,v 1.5 2007/12/11 09:34:17 cparedes Exp $")
+ACE_RCSID(contLogTest, contLogTestImpl, "$Id: contLogTestImpl.cpp,v 1.6 2007/12/14 16:48:44 eallaert Exp $")
 
 /* ----------------------------------------------------------------*/
 TestLogLevelsComp::TestLogLevelsComp( 
@@ -57,24 +57,27 @@ TestLogLevelsComp::~TestLogLevelsComp()
 TestLogLevelsComp::getLevels ()
     throw (CORBA::SystemException, ACSErrTypeCommon::CouldntPerformActionEx)
 {
-    std::cout << "Hi there!" << std::endl; 
 	::contLogTest::LongSeq_var level = new ::contLogTest::LongSeq(5);
 	level->length(5);
 
     // need the equivalent of Java's logConfig.getMinLogLevel() etc. in C++
     for (int i = 0; i <5 ; i++)
     	level[i] = static_cast< CORBA::Long >(i);
-    std::cout << "Done filling levels." << std::endl; 
     return level._retn();
 }
 
 void 
 TestLogLevelsComp::logDummyMessages (const ::contLogTest::LongSeq & levels)
 {
-	for (CORBA::ULong t=0; t<levels.length(); t++){
-		ACE_Log_Priority p = LogLevelDefinition::getACELogPriority(levels[t]);
-		ACS_SHORT_LOG((p, "dummy log message for core level %d", levels[t]));
+	ACE_Log_Priority p;
+	CORBA::ULong t=0;
+	for (t=0; t<levels.length(); t++){
+		p = LogLevelDefinition::getACELogPriority(levels[t]);
+		LogLevelDefinition lld = LogLevelDefinition::fromInteger(levels[t]);
+		ACS_SHORT_LOG((p, "dummy log message for core level %d/%s", lld.getValue(), lld.getName().c_str()));
 	}
+	ACS_SHORT_LOG((p, "===last log messsage===", levels[t]));
+	
 }
 
 /* --------------- [ MACI DLL support functions ] -----------------*/
