@@ -4,6 +4,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import alma.ACSErrTypeCommon.wrappers.AcsJIllegalStateEventEx;
 import alma.acs.genfw.runtime.sm.AcsState;
@@ -18,10 +22,24 @@ import alma.acs.logging.AcsLogger;
 public class AlmaSubsystemContext
 {
 	private AlmaSubsystemStateAbstract m_currentState;
-	private AlmaSubsystemActions m_actionDelegate;
+	
+	private final AlmaSubsystemActions m_actionDelegate;
+	
 	private List<AcsStateChangeListener> m_stateChangeListeners;
+	
 	private AcsState[] m_oldHierarchy;
-	private AcsLogger m_logger;
+	
+	private final AcsLogger m_logger;
+	
+	/**
+	 * Executor for do/ actions in activity states.
+	 * This executor only has one worker thread and therefore synchronizes
+	 * concurrent requests.
+	 * @TODO: Discuss if and how we want to escape from a hanging action method. 
+	 *        Both timeout and asynchronous actions pose ugly implementation issues for the subsystem MCs.
+	 */
+	private final ThreadPoolExecutor sharedActivityExecutor;
+	
 	private boolean m_verbose = false;
 
 	
@@ -55,10 +73,17 @@ public class AlmaSubsystemContext
 	public ShuttingdownPass2State m_stateShuttingdownPass2;
 
 
-	public AlmaSubsystemContext(AlmaSubsystemActions actions, AcsLogger logger) {
+	public AlmaSubsystemContext(AlmaSubsystemActions actions, AcsLogger logger, ThreadFactory threadFactory) {
 		m_actionDelegate = actions;
 		m_stateChangeListeners = new ArrayList<AcsStateChangeListener>();
 		m_logger = logger;
+		// This choice of parameters is copied from the implementation of 
+		// Executors.newSingleThreadExecutor which unfortunately hides 
+		// in its returned type some methods we need.
+		sharedActivityExecutor = new ThreadPoolExecutor(1, 1,
+		            0L, TimeUnit.MILLISECONDS,
+		            new LinkedBlockingQueue<Runnable>(),
+		            threadFactory);
 
 		m_stateAvailable = new AvailableState(this);
 
@@ -259,4 +284,8 @@ public class AlmaSubsystemContext
 		}
 	}
 
+	ThreadPoolExecutor getSharedActivityExecutor() {
+		return sharedActivityExecutor;		
+	}
+	
 }
