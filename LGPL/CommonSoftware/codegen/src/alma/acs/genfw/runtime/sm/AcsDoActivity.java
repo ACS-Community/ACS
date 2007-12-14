@@ -22,14 +22,10 @@
 package alma.acs.genfw.runtime.sm;
 
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.RejectedExecutionException;
-import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
-import alma.acs.concurrent.DaemonThreadFactory;
 import alma.acs.logging.AcsLogger;
 
 
@@ -49,41 +45,46 @@ public abstract class AcsDoActivity
 	private final String m_name;
 	private final AcsLogger logger;
 	
-	private volatile boolean m_completed;
-	
 	/** 
 	 * not actually used as a queue, but simply to wrap and reuse a <code>Thread</code>, 
 	 * since only one do-action method is supposed to run at a time
 	 * in a non-concurrent state machine.
 	 * todo: or maybe it's a queue, if a composite (super) state also has a /do method ? 
 	 */ 
-	private static final ThreadPoolExecutor s_executor;
+	private final ThreadPoolExecutor executor;
 
-	static {
-		// @TODO Instead of using a single static ThreadFactory shared by all components, 
-		//       we could use the component's own thread factory from the container services.
-		ThreadFactory threadFactory = new DaemonThreadFactory();
-		
-		// this choice is copied from Executors.newSingleThreadExecutor which unfortunately hides the methods we need.
-		s_executor = new ThreadPoolExecutor(1, 1,
-                0L, TimeUnit.MILLISECONDS,
-                new LinkedBlockingQueue<Runnable>(),
-                threadFactory);
-	}
+	private volatile boolean m_completed;
 	
-    
+	
 	/**
 	 * @param name  name for the activity
 	 * @param nextState  state to which the implicit "completion transition" will go.
 	 * @param errorState  error state to which we'll go in case of errors.
+	 * @param logger
+	 * 				Logger used by this class.
+	 * @param threadFactory 
+	 * 				The thread factory used for asynchronous execution of the {@link #runActions()} method. 
 	 */
-	public AcsDoActivity(String name, AcsSimpleState nextState, AcsSimpleState errorState, AcsLogger logger) 
+	public AcsDoActivity(String name, AcsSimpleState nextState, AcsSimpleState errorState, AcsLogger logger, ThreadPoolExecutor executor) 
 	{
-		m_completed = true;
+		if (name == null) {
+			throw new IllegalArgumentException("Parameter 'name' must not be null.");
+		}
+		if (nextState == null) {
+			throw new IllegalArgumentException("Parameter 'nextState' must not be null.");
+		}
+		if (errorState == null) {
+			throw new IllegalArgumentException("Parameter 'errorState' must not be null.");
+		}
+		if (executor == null) {
+			throw new IllegalArgumentException("Parameter 'executor' must not be null.");
+		}
 		m_name = name;
 		m_nextState = nextState;
 		m_errorState = errorState;
 		this.logger = logger;
+		this.executor = executor;
+		m_completed = true;
 	}
 	
 	/**
@@ -91,7 +92,7 @@ public abstract class AcsDoActivity
 	 * When the actions are completed, a transition to the next state is triggered,
 	 * as specified in the constructor.
 	 */
-	public void execute()  
+	public void execute()
 	{
 		m_completed = false;
 
@@ -115,12 +116,12 @@ public abstract class AcsDoActivity
 		};
 		
 		if (logger.isLoggable(Level.FINE)) {
-			if (s_executor.getActiveCount() > 0) {
+			if (executor.getActiveCount() > 0) {
 				logger.fine("Execution of activity '" + m_name + "' gets delayed because another activity is still being executed");
 			}
 		}
 		try {
-			s_executor.execute(doActionRunner);
+			executor.execute(doActionRunner);
 		}
 		catch (RejectedExecutionException ex) {
 			String msg = "/do-activities '" + m_name + "' failed";
@@ -139,15 +140,12 @@ public abstract class AcsDoActivity
 	
 	/**
 	 * Terminates the actions if they are still running. 
-	 * In the current implementation, this should never be called, since we don't allow
-	 * events in activitiy states which would force the termination from the current state's exit method.
-	 * Implemented nontheless, just to have things complete.
 	 */
 	public void terminateActions()
 	{
 		if (!m_completed) {
 			logger.warning("/do-activities '" + m_name + "' terminated prematurely!");
-			s_executor.shutdownNow();
+			executor.shutdownNow();
 		}
 	}
 	
