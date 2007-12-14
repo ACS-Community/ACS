@@ -86,6 +86,7 @@ module acsnc
      */
     const string FILTER_LANGUAGE_NAME = "ETCL";
 
+
     /**
      * The prefix used to derive the event type from the IDL struct name
      * in (the only partially supported) cases where the event data is not a single struct 
@@ -93,6 +94,15 @@ module acsnc
      */
     const string SEQUENCE_EVENT_TYPE_PREFIX = "_SequenceOf_";
 
+
+    /**
+     * Known event channel domains that allow a hardcoded or CDB-based mapping from a channel to a notification service.  
+     */
+    enum EventChannelDomains
+    {
+        ALARMSYSTEM   // currently just this one
+    };
+    
 
     ////////////////////////////////////////////////////////////////////////
     /** @interface ACSEventAdmin
