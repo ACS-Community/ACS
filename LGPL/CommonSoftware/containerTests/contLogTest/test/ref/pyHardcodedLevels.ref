@@ -1,8 +1,144 @@
-1 - <timestamp> [GlobalLogger] ManagerReference generated using localhost address: 'corbaloc::<IP address>:<port>/Manager'
-1 - <timestamp> [GlobalLogger] Container: aragornContainer
-1 - <timestamp> [GlobalLogger] 	... done.
-1 - <timestamp> [GlobalLogger] Done all.
-1 - <timestamp> [GlobalLogger] 	Log levels for logger 'aragornContainer':
-1 - <timestamp> [GlobalLogger] 		minLogLevel     : 2
-1 - <timestamp> [GlobalLogger] 		minLogLevelLocal: 2
-1 - <timestamp> [GlobalLogger] 		useDefault      : true
+1 -  -- alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest TESTLOG6
+1 - INFO - Starting Java/abeans application: alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest TESTLOG6
+1 - .FINER: Logging configuration has been initialized, but not from CDB settings.
+1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels] -------------------------------
+1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels] ComponentClientTestCase#setUp()
+1 - <timestamp> FINE [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels] calling orb.resolve_initial_references
+1 - <timestamp> FINE [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels] POA activated
+1 - <timestamp> FINE [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels] manager reference not yet available in method loginToManager; will try to find the manager first...
+1 - <timestamp> FINEST [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels] manager corbaloc 'corbaloc::<IP address>:<port>/Manager' resolved.
+1 - <timestamp> FINEST [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels] manager narrow successful.
+1 - <timestamp> FINE [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels] Manager login done, handle <ID> obtained.
+1 - <timestamp> FINE [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels] will retrieve remote component 'TESTLOG6' using ACS Manager#get_component with client handle <ID>
+1 - <timestamp> FINE [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels] component TESTLOG6 retrieved successfully.
+1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels] component 'alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest' requested AdvancedContainerServices
+1 - <timestamp> FINE [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels] manager reference not yet available in method loginToManager; will try to find the manager first...
+1 - <timestamp> FINEST [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels] manager corbaloc 'corbaloc::<IP address>:<port>/Manager' resolved.
+1 - <timestamp> FINEST [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels] manager narrow successful.
+1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest] authenticate called: id=XXX; question=Identify yourself
+1 - <timestamp> FINE [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels] Manager login done, handle <ID> obtained.
+1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels] levels from component's getLevels method and LoggingConfigurable: 1, 2, 3, 4, 5
+1 - <timestamp> WARNING [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels] JUnit test error in alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels
+1 - junit.framework.AssertionFailedError: expected:<3> but was:<4>
+1 - 	at junit.framework.Assert.fail(Assert.java:47)
+1 - <timestamp> FINE [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels] about to release component TESTLOG6
+1 - 	at junit.framework.Assert.failNotEquals(Assert.java:282)
+1 - 	at junit.framework.Assert.assertEquals(Assert.java:64)
+1 - 	at junit.framework.Assert.assertEquals(Assert.java:201)
+1 - 	at junit.framework.Assert.assertEquals(Assert.java:207)
+1 - 	at alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest.testGetLevels(TestLogLevelsCompTest.java:149)
+1 - 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+1 - 	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+1 - 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+1 - 	at java.lang.reflect.Method.invoke(Method.java:597)
+1 - 	at junit.framework.TestCase.runTest(TestCase.java:154)
+1 - 	at alma.acs.component.client.ComponentClientTestCase.runTest(ComponentClientTestCase.java:99)
+1 - 	at junit.framework.TestCase.runBare(TestCase.java:127)
+1 - 	at junit.framework.TestResult$1.protect(TestResult.java:106)
+1 - 	at junit.framework.TestResult.runProtected(TestResult.java:124)
+1 - 	at junit.framework.TestResult.run(TestResult.java:109)
+1 - 	at junit.framework.TestCase.run(TestCase.java:118)
+1 - 	at junit.framework.TestSuite.runTest(TestSuite.java:208)
+1 - 	at junit.framework.TestSuite.run(TestSuite.java:203)
+1 - 	at junit.textui.TestRunner.doRun(TestRunner.java:116)
+1 - 	at junit.textui.TestRunner.doRun(TestRunner.java:109)
+1 - 	at junit.textui.TestRunner.run(TestRunner.java:72)
+1 - 	at junit.textui.TestRunner.run(TestRunner.java:57)
+1 - 	at alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest.main(TestLogLevelsCompTest.java:245)
+1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels] client 'alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest' has successfully released  a component with curl=TESTLOG6
+1 - <timestamp> FINE [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels] about to log out from manager...
+1 - <timestamp> FINE [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels] logged out from manager.
+1 - <timestamp> FINE [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels] about to log out from manager...
+1 - <timestamp> FINE [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels] logged out from manager.
+1 - <timestamp> FINE [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels] about to destroy all POAs and the ORB
+1 - <timestamp> FINE [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels] POAs and ORB destroyed successfully.
+1 - F.FINER: Logging configuration has been initialized, but not from CDB settings.
+1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] -------------------------------
+1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] ComponentClientTestCase#setUp()
+1 - <timestamp> FINE [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] calling orb.resolve_initial_references
+1 - <timestamp> FINE [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] POA activated
+1 - <timestamp> FINE [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] manager reference not yet available in method loginToManager; will try to find the manager first...
+1 - <timestamp> FINEST [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] manager corbaloc 'corbaloc::<IP address>:<port>/Manager' resolved.
+1 - <timestamp> FINEST [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] manager narrow successful.
+1 - <timestamp> FINE [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Manager login done, handle <ID> obtained.
+1 - <timestamp> FINE [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] will retrieve remote component 'TESTLOG6' using ACS Manager#get_component with client handle <ID>
+1 - <timestamp> FINE [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] component TESTLOG6 retrieved successfully.
+1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] component 'alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest' requested AdvancedContainerServices
+1 - <timestamp> FINE [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] manager reference not yet available in method loginToManager; will try to find the manager first...
+1 - <timestamp> FINEST [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] manager corbaloc 'corbaloc::<IP address>:<port>/Manager' resolved.
+1 - <timestamp> FINEST [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] manager narrow successful.
+1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest] authenticate called: id=XXX; question=Identify yourself
+1 - <timestamp> FINE [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Manager login done, handle <ID> obtained.
+1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Set individual log level for component TESTLOG6 (running in container aragornContainer) to 2
+1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will call 'logDummyMessages' on component TESTLOG6
+1 - <timestamp> FINE [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] about to release component TESTLOG6
+1 - <timestamp> WARNING [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] JUnit test error in alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels
+1 - org.omg.CORBA.NO_IMPLEMENT: Server-side Exception: null  vmcid: 0x41540000  minor code: 99  completed: No
+1 - 	at sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
+1 - 	at sun.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:39)
+1 - 	at sun.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:27)
+1 - 	at java.lang.reflect.Constructor.newInstance(Constructor.java:513)
+1 - 	at org.jacorb.orb.SystemExceptionHelper.read(SystemExceptionHelper.java:173)
+1 - 	at org.jacorb.orb.ReplyReceiver.getReply(ReplyReceiver.java:326)
+1 - 	at org.jacorb.orb.Delegate.invoke_internal(Delegate.java:967)
+1 - 	at org.jacorb.orb.Delegate.invoke(Delegate.java:868)
+1 - 	at org.omg.CORBA.portable.ObjectImpl._invoke(ObjectImpl.java:457)
+1 - 	at alma.contLogTest._TestLogLevelsCompStub.logDummyMessages(_TestLogLevelsCompStub.java:31)
+1 - 	at alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest.testLoggingConfigurableCentralLogLevels(TestLogLevelsCompTest.java:205)
+1 - 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+1 - 	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+1 - 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+1 - 	at java.lang.reflect.Method.invoke(Method.java:597)
+1 - 	at junit.framework.TestCase.runTest(TestCase.java:154)
+1 - 	at alma.acs.component.client.ComponentClientTestCase.runTest(ComponentClientTestCase.java:99)
+1 - 	at junit.framework.TestCase.runBare(TestCase.java:127)
+1 - 	at junit.framework.TestResult$1.protect(TestResult.java:106)
+1 - 	at junit.framework.TestResult.runProtected(TestResult.java:124)
+1 - 	at junit.framework.TestResult.run(TestResult.java:109)
+1 - 	at junit.framework.TestCase.run(TestCase.java:118)
+1 - 	at junit.framework.TestSuite.runTest(TestSuite.java:208)
+1 - 	at junit.framework.TestSuite.run(TestSuite.java:203)
+1 - 	at junit.textui.TestRunner.doRun(TestRunner.java:116)
+1 - 	at junit.textui.TestRunner.doRun(TestRunner.java:109)
+1 - 	at junit.textui.TestRunner.run(TestRunner.java:72)
+1 - 	at junit.textui.TestRunner.run(TestRunner.java:57)
+1 - 	at alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest.main(TestLogLevelsCompTest.java:245)
+1 - <timestamp> FINE [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] about to log out from manager...
+1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] client 'alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest' has successfully released  a component with curl=TESTLOG6
+1 - <timestamp> FINE [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] logged out from manager.
+1 - <timestamp> FINE [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] about to log out from manager...
+1 - <timestamp> FINE [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] logged out from manager.
+1 - <timestamp> FINE [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] about to destroy all POAs and the ORB
+1 - <timestamp> FINE [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] POAs and ORB destroyed successfully.
+1 - E
+1 - Time: <seconds>
+1 - There was 1 error:
+1 - 1) testLoggingConfigurableCentralLogLevels(alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest)org.omg.CORBA.NO_IMPLEMENT: Server-side Exception: null  vmcid: 0x41540000  minor code: 99  completed: No
+1 - 	at sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
+1 - 	at sun.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:39)
+1 - 	at sun.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:27)
+1 - 	at java.lang.reflect.Constructor.newInstance(Constructor.java:513)
+1 - 	at org.jacorb.orb.SystemExceptionHelper.read(SystemExceptionHelper.java:173)
+1 - 	at org.jacorb.orb.ReplyReceiver.getReply(ReplyReceiver.java:326)
+1 - 	at org.jacorb.orb.Delegate.invoke_internal(Delegate.java:967)
+1 - 	at org.jacorb.orb.Delegate.invoke(Delegate.java:868)
+1 - 	at org.omg.CORBA.portable.ObjectImpl._invoke(ObjectImpl.java:457)
+1 - 	at alma.contLogTest._TestLogLevelsCompStub.logDummyMessages(_TestLogLevelsCompStub.java:31)
+1 - 	at alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest.testLoggingConfigurableCentralLogLevels(TestLogLevelsCompTest.java:205)
+1 - 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+1 - 	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+1 - 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+1 - 	at alma.acs.component.client.ComponentClientTestCase.runTest(ComponentClientTestCase.java:99)
+1 - 	at alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest.main(TestLogLevelsCompTest.java:245)
+1 - There was 1 failure:
+1 - 1) testGetLevels(alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest)junit.framework.AssertionFailedError: expected:<3> but was:<4>
+1 - 	at alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest.testGetLevels(TestLogLevelsCompTest.java:149)
+1 - 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+1 - 	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+1 - 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+1 - 	at alma.acs.component.client.ComponentClientTestCase.runTest(ComponentClientTestCase.java:99)
+1 - 	at alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest.main(TestLogLevelsCompTest.java:245)
+1 - 
+1 - FAILURES!!!
+1 - Tests run: 2,  Failures: 1,  Errors: 1
+1 - 

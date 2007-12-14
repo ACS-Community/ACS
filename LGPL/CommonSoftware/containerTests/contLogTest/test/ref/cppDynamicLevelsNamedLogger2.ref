@@ -1,0 +1,13 @@
+1 - <timestamp> [GlobalLogger - maci::MACIHelper::resolveManager] ManagerReference generated using localhost address: 'corbaloc::<IP address>:<port>/Manager'
+1 - <timestamp> [GlobalLogger - ] Container: bilboContainer
+1 - <timestamp> [GlobalLogger - ] 	Setting levels for logger 'TESTLOG4':
+1 - <timestamp> [GlobalLogger - ] 		useDefault      : false
+1 - <timestamp> [GlobalLogger - ] 		minLogLevel     : 8
+1 - <timestamp> [GlobalLogger - ] 		minLogLevelLocal: 9
+1 - <timestamp> [GlobalLogger - ] ... failed!
+1 - <timestamp> (<ID>) EXCEPTION, Exception caught while calling remote method.
+1 - user exception, ID 'IDL:alma/maciErrType/LoggerDoesNotExistEx:1.0'
+1 - 
+1 - <timestamp> [GlobalLogger - ] Done all.
+THERE IS A DISCREPANCY BETWEEN C++ AND JAVA LOGGING: C++ DOES NOT PERMIT TO SET THE LEVEL OF A NOT-ACTIVE LOGGER.
+REMOVE THIS TEST OR REGENERATE A NEW REF FILE AFTER THIS ISSUE GETS SORTED OUT !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

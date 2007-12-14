@@ -1,5 +1,5 @@
-1 -  -- alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest TESTLOG4
-1 - INFO - Starting Java/abeans application: alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest TESTLOG4
+1 -  -- alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest TESTLOG3
+1 - INFO - Starting Java/abeans application: alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest TESTLOG3
 1 - .FINER: Logging configuration has been initialized, but not from CDB settings.
 1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels] -------------------------------
 1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels] ComponentClientTestCase#setUp()
@@ -9,9 +9,9 @@
 1 - <timestamp> FINEST [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels] manager corbaloc 'corbaloc::<IP address>:<port>/Manager' resolved.
 1 - <timestamp> FINEST [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels] manager narrow successful.
 1 - <timestamp> FINE [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels] Manager login done, handle <ID> obtained.
-1 - <timestamp> FINE [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels] will retrieve remote component 'TESTLOG4' using ACS Manager#get_component with client handle <ID>
-1 - <timestamp> FINE [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels] Failed to retrieve component TESTLOG4
-1 - alma.maciErrType.wrappers.AcsJCannotGetComponentEx [ CURL='TESTLOG4' ]
+1 - <timestamp> FINE [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels] will retrieve remote component 'TESTLOG3' using ACS Manager#get_component with client handle <ID>
+1 - <timestamp> FINE [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels] Failed to retrieve component TESTLOG3
+1 - alma.maciErrType.wrappers.AcsJCannotGetComponentEx [ CURL='TESTLOG3' ]
 1 - 	at alma.maciErrType.wrappers.AcsJCannotGetComponentEx.fromCannotGetComponentEx(AcsJCannotGetComponentEx.java:178)
 1 - 	at alma.acs.container.AcsManagerProxy.get_component(AcsManagerProxy.java:589)
 1 - 	at alma.acs.container.ContainerServicesImpl.getComponent(ContainerServicesImpl.java:461)
@@ -38,9 +38,9 @@
 1 - <timestamp> FINE [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Manager login done, handle <ID> obtained.
 1 - Ignoring call to ClientLogManager#init: already initialized!
 1 - <timestamp> WARNING [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] ACS central logging not available. 
-1 - <timestamp> FINE [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] will retrieve remote component 'TESTLOG4' using ACS Manager#get_component with client handle <ID>
-1 - <timestamp> FINE [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Failed to retrieve component TESTLOG4
-1 - alma.maciErrType.wrappers.AcsJCannotGetComponentEx [ CURL='TESTLOG4' ]
+1 - <timestamp> FINE [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] will retrieve remote component 'TESTLOG3' using ACS Manager#get_component with client handle <ID>
+1 - <timestamp> FINE [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Failed to retrieve component TESTLOG3
+1 - alma.maciErrType.wrappers.AcsJCannotGetComponentEx [ CURL='TESTLOG3' ]
 1 - 	at alma.maciErrType.wrappers.AcsJCannotGetComponentEx.fromCannotGetComponentEx(AcsJCannotGetComponentEx.java:178)
 1 - 	at alma.acs.container.AcsManagerProxy.get_component(AcsManagerProxy.java:589)
 1 - 	at alma.acs.container.ContainerServicesImpl.getComponent(ContainerServicesImpl.java:461)
@@ -64,7 +64,7 @@
 1 - 	at alma.acs.container.ContainerServicesImpl.getComponent(ContainerServicesImpl.java:467)
 1 - 	at alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest.setUp(TestLogLevelsCompTest.java:85)
 1 - 	at alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest.main(TestLogLevelsCompTest.java:243)
-1 - Caused by: alma.maciErrType.wrappers.AcsJCannotGetComponentEx [ CURL='TESTLOG4' ]
+1 - Caused by: alma.maciErrType.wrappers.AcsJCannotGetComponentEx [ CURL='TESTLOG3' ]
 1 - 	at alma.maciErrType.wrappers.AcsJCannotGetComponentEx.fromCannotGetComponentEx(AcsJCannotGetComponentEx.java:178)
 1 - 	at alma.acs.container.AcsManagerProxy.get_component(AcsManagerProxy.java:589)
 1 - 	at alma.acs.container.ContainerServicesImpl.getComponent(ContainerServicesImpl.java:461)
@@ -73,7 +73,7 @@
 1 - 	at alma.acs.container.ContainerServicesImpl.getComponent(ContainerServicesImpl.java:467)
 1 - 	at alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest.setUp(TestLogLevelsCompTest.java:85)
 1 - 	at alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest.main(TestLogLevelsCompTest.java:243)
-1 - Caused by: alma.maciErrType.wrappers.AcsJCannotGetComponentEx [ CURL='TESTLOG4' ]
+1 - Caused by: alma.maciErrType.wrappers.AcsJCannotGetComponentEx [ CURL='TESTLOG3' ]
 1 - 	at alma.maciErrType.wrappers.AcsJCannotGetComponentEx.fromCannotGetComponentEx(AcsJCannotGetComponentEx.java:178)
 1 - 	at alma.acs.container.AcsManagerProxy.get_component(AcsManagerProxy.java:589)
 1 - 	at alma.acs.container.ContainerServicesImpl.getComponent(ContainerServicesImpl.java:461)

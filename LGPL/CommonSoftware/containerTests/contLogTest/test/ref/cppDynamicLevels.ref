@@ -1,16 +1,111 @@
 1 - <timestamp> [GlobalLogger - maci::MACIHelper::resolveManager] ManagerReference generated using localhost address: 'corbaloc::<IP address>:<port>/Manager'
 1 - <timestamp> [GlobalLogger - ] Container: bilboContainer
-1 - <timestamp> [GlobalLogger - ] 		minLogLevel     : 8
-1 - <timestamp> [GlobalLogger - ] 		minLogLevelLocal: 9
 1 - <timestamp> [GlobalLogger - ] 	Setting levels for logger 'default':
 1 - <timestamp> [GlobalLogger - ] 		useDefault      : false
+1 - <timestamp> [GlobalLogger - ] 		minLogLevel     : 8
+1 - <timestamp> [GlobalLogger - ] 		minLogLevelLocal: 9
 1 - <timestamp> [GlobalLogger - ] 	... done.
 1 - <timestamp> [GlobalLogger - ] Done all.
-2 - <timestamp> [GlobalLogger - maci::MACIHelper::resolveManager] ManagerReference generated using localhost address: 'corbaloc::<IP address>:<port>/Manager'
-2 - <timestamp> [GlobalLogger - ] Container: bilboContainer
-2 - <timestamp> [GlobalLogger - ] 	... done.
-2 - <timestamp> [GlobalLogger - ] Done all.
-2 - <timestamp> [GlobalLogger - ] 	Log levels for logger 'default':
-2 - <timestamp> [GlobalLogger - ] 		minLogLevel     : 8
-2 - <timestamp> [GlobalLogger - ] 		minLogLevelLocal: 9
-2 - <timestamp> [GlobalLogger - ] 		useDefault      : true
+2 -  -- alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest TESTLOG4
+2 - INFO - Starting Java/abeans application: alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest TESTLOG4
+2 - .FINER: Logging configuration has been initialized, but not from CDB settings.
+2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels] -------------------------------
+2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels] ComponentClientTestCase#setUp()
+2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels] component 'alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest' requested AdvancedContainerServices
+2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest] authenticate called: id=XXX; question=Identify yourself
+2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels] levels from component's getLevels method (hardcoded remote, local, effective): 0, 1, 2, 3, 4
+2 - <timestamp> WARNING [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels] JUnit test error in alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels
+2 - junit.framework.AssertionFailedError: expected:<3> but was:<8>
+2 - 	at junit.framework.Assert.fail(Assert.java:47)
+2 - 	at junit.framework.Assert.failNotEquals(Assert.java:282)
+2 - 	at junit.framework.Assert.assertEquals(Assert.java:64)
+2 - 	at junit.framework.Assert.assertEquals(Assert.java:201)
+2 - 	at junit.framework.Assert.assertEquals(Assert.java:207)
+2 - 	at alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest.testGetLevels(TestLogLevelsCompTest.java:134)
+2 - 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+2 - 	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+2 - 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+2 - 	at java.lang.reflect.Method.invoke(Method.java:597)
+2 - 	at junit.framework.TestCase.runTest(TestCase.java:154)
+2 - 	at alma.acs.component.client.ComponentClientTestCase.runTest(ComponentClientTestCase.java:99)
+2 - 	at junit.framework.TestCase.runBare(TestCase.java:127)
+2 - 	at junit.framework.TestResult$1.protect(TestResult.java:106)
+2 - 	at junit.framework.TestResult.runProtected(TestResult.java:124)
+2 - 	at junit.framework.TestResult.run(TestResult.java:109)
+2 - 	at junit.framework.TestCase.run(TestCase.java:118)
+2 - 	at junit.framework.TestSuite.runTest(TestSuite.java:208)
+2 - 	at junit.framework.TestSuite.run(TestSuite.java:203)
+2 - 	at junit.textui.TestRunner.doRun(TestRunner.java:116)
+2 - 	at junit.textui.TestRunner.doRun(TestRunner.java:109)
+2 - 	at junit.textui.TestRunner.run(TestRunner.java:72)
+2 - 	at junit.textui.TestRunner.run(TestRunner.java:57)
+2 - 	at alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest.main(TestLogLevelsCompTest.java:243)
+2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels] client 'alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest' has successfully released  a component with curl=TESTLOG4
+2 - F.FINER: Logging configuration has been initialized, but not from CDB settings.
+2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] -------------------------------
+2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] ComponentClientTestCase#setUp()
+2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] component 'alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest' requested AdvancedContainerServices
+2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest] authenticate called: id=XXX; question=Identify yourself
+2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Set default log level for container bilboContainer to 2 to be used by component TESTLOG4
+2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will call 'logDummyMessages' on component TESTLOG4
+2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will wait <N> seconds to receive (some of) these log messages.
+2 - Got 8 records from logger TESTLOG4
+2 - (level=3) dummy log message for core level 3/Debug
+2 - (level=4) dummy log message for core level 4/Info
+2 - (level=5) dummy log message for core level 5/Notice
+2 - (level=6) dummy log message for core level 6/Warning
+2 - (level=8) dummy log message for core level 8/Error
+2 - (level=9) dummy log message for core level 9/Critical
+2 - (level=10) dummy log message for core level 10/Alert
+2 - (level=11) dummy log message for core level 11/Emergency
+2 - <timestamp> WARNING [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] JUnit test error in alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels
+2 - junit.framework.AssertionFailedError: expected:<2> but was:<3>
+2 - 	at junit.framework.Assert.fail(Assert.java:47)
+2 - 	at junit.framework.Assert.failNotEquals(Assert.java:282)
+2 - 	at junit.framework.Assert.assertEquals(Assert.java:64)
+2 - 	at junit.framework.Assert.assertEquals(Assert.java:201)
+2 - 	at junit.framework.Assert.assertEquals(Assert.java:207)
+2 - 	at alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest.testLoggingConfigurableCentralLogLevels(TestLogLevelsCompTest.java:223)
+2 - 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+2 - 	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+2 - 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+2 - 	at java.lang.reflect.Method.invoke(Method.java:597)
+2 - 	at junit.framework.TestCase.runTest(TestCase.java:154)
+2 - 	at alma.acs.component.client.ComponentClientTestCase.runTest(ComponentClientTestCase.java:99)
+2 - 	at junit.framework.TestCase.runBare(TestCase.java:127)
+2 - 	at junit.framework.TestResult$1.protect(TestResult.java:106)
+2 - 	at junit.framework.TestResult.runProtected(TestResult.java:124)
+2 - 	at junit.framework.TestResult.run(TestResult.java:109)
+2 - 	at junit.framework.TestCase.run(TestCase.java:118)
+2 - 	at junit.framework.TestSuite.runTest(TestSuite.java:208)
+2 - 	at junit.framework.TestSuite.run(TestSuite.java:203)
+2 - 	at junit.textui.TestRunner.doRun(TestRunner.java:116)
+2 - 	at junit.textui.TestRunner.doRun(TestRunner.java:109)
+2 - 	at junit.textui.TestRunner.run(TestRunner.java:72)
+2 - 	at junit.textui.TestRunner.run(TestRunner.java:57)
+2 - 	at alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest.main(TestLogLevelsCompTest.java:243)
+2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] client 'alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest' has successfully released  a component with curl=TESTLOG4
+2 - F
+2 - Time: <seconds>
+2 - There were 2 failures:
+2 - 1) testGetLevels(alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest)junit.framework.AssertionFailedError: expected:<3> but was:<8>
+2 - 	at alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest.testGetLevels(TestLogLevelsCompTest.java:134)
+2 - 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+2 - 	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+2 - 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+2 - 	at alma.acs.component.client.ComponentClientTestCase.runTest(ComponentClientTestCase.java:99)
+2 - 	at alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest.main(TestLogLevelsCompTest.java:243)
+2 - 2) testLoggingConfigurableCentralLogLevels(alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest)junit.framework.AssertionFailedError: expected:<2> but was:<3>
+2 - 	at alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest.testLoggingConfigurableCentralLogLevels(TestLogLevelsCompTest.java:223)
+2 - 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+2 - 	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+2 - 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+2 - 	at alma.acs.component.client.ComponentClientTestCase.runTest(ComponentClientTestCase.java:99)
+2 - 	at alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest.main(TestLogLevelsCompTest.java:243)
+2 - 
+2 - FAILURES!!!
+2 - Tests run: 2,  Failures: 2,  Errors: 0
+2 - 
+THERE IS A BUG IN THE C++ LOGGING: CHANGING THE DEFAULT LEVEL DOES NOT GET PROPAGATED TO ACTIVE LOGGERS !!!!!!!!!!!!!
+(WHICH IS WHY THE ASSERTION FAILS)
+REGENERATE A NEW REF FILE AFTER THIS PROBLEM GETS FIXED !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
