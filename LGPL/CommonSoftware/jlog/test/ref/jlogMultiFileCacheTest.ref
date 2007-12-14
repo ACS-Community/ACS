@@ -1,0 +1,110 @@
+1 - .Start testFileCreation1
+1 - 
+1 - ACTION : Delete log from empty cache
+1 - Delete Log FAILS : cache is empty
+1 - 
+1 - ACTION : fill half of the cache with logs
+1 - 
+1 - logFileTable : total logs = 13
+1 - logFile0 log counter = 13  Range Keys 0  13 file size 835
+1 - 
+1 - 
+1 - 
+1 - ACTION : add single log
+1 - 
+1 - logFileTable : total logs = 14
+1 - logFile0 log counter = 14  Range Keys 0  14 file size 900
+1 - 
+1 - 
+1 - 
+1 - ACTION : delete two logs
+1 - 
+1 -  Delete log key = 12 newKey = 12  Tot. Logs 13 recId = 0  Range keys = 0 14
+1 - 
+1 -  Delete log key = 2 newKey = 2  Tot. Logs 12 recId = 0  Range keys = 0 14
+1 - 
+1 - logFileTable : total logs = 12
+1 - logFile0 log counter = 12  Range Keys 0  14 file size 771
+1 - 
+1 - 
+1 - 
+1 - ACTION : fill cache and create a new log file
+1 - LogMultiFileCache log file : fileSize 1551 logs = 24 Range keys = 0 26
+1 - LogMultiFileCache new file : min logId = 27
+1 - 
+1 - logFileTable : total logs = 25
+1 - logFile0 log counter = 24  Range Keys 0  26 file size 1551
+1 - logFile1 log counter = 1  Range Keys 27  27 file size 65
+1 - 
+1 - 
+1 - 
+1 - ACTION : delete first log of the new file
+1 - 
+1 -  Delete log key = 27 newKey = 0  Tot. Logs 24 recId = 1  Range keys = 27 27
+1 - 
+1 - logFileTable : total logs = 24
+1 - logFile0 log counter = 24  Range Keys 0  26 file size 1551
+1 - logFile1 log counter = 0  Range Keys 27  27 file size 0
+1 - 
+1 - 
+1 - 
+1 - ACTION : Add single log
+1 - 
+1 - logFileTable : total logs = 25
+1 - logFile0 log counter = 24  Range Keys 0  26 file size 1551
+1 - logFile1 log counter = 1  Range Keys 27  28 file size 65
+1 - 
+1 - 
+1 - 
+1 - ACTION : Delete a log twice
+1 - Delete Log FAILS : log has already been deleted
+1 - 
+1 - logFileTable : total logs = 25
+1 - logFile0 log counter = 24  Range Keys 0  26 file size 1551
+1 - logFile1 log counter = 1  Range Keys 27  28 file size 65
+1 - 
+1 - 
+1 - 
+1 - ACTION : fill cache and create a new log file
+1 - 
+1 - logFileTable : total logs = 48
+1 - logFile0 log counter = 24  Range Keys 0  26 file size 1551
+1 - logFile1 log counter = 24  Range Keys 27  51 file size 1560
+1 - 
+1 - 
+1 - 
+1 - ACTION : fill cache and create a new log file
+1 - LogMultiFileCache log file : fileSize 1560 logs = 24 Range keys = 27 51
+1 - LogMultiFileCache new file : min logId = 52
+1 - 
+1 - logFileTable : total logs = 72
+1 - logFile0 log counter = 24  Range Keys 0  26 file size 1551
+1 - logFile1 log counter = 24  Range Keys 27  51 file size 1560
+1 - logFile2 log counter = 24  Range Keys 52  75 file size 1560
+1 - 
+1 - 
+1 - 
+1 - ACTION : add one more log 
+1 - LogMultiFileCache log file : fileSize 1560 logs = 24 Range keys = 52 75
+1 - LogMultiFileCache new file : min logId = 76
+1 - 
+1 - logFileTable : total logs = 73
+1 - logFile0 log counter = 24  Range Keys 0  26 file size 1551
+1 - logFile1 log counter = 24  Range Keys 27  51 file size 1560
+1 - logFile2 log counter = 24  Range Keys 52  75 file size 1560
+1 - logFile3 log counter = 1  Range Keys 76  76 file size 65
+1 - 
+1 - 
+1 - 
+1 - ACTION : Delete all log keys within a log file
+1 - 
+1 - logFileTable : total logs = 49
+1 - logFile0 log counter = 24  Range Keys 0  26 file size 1551
+1 - logFile1 log counter = 24  Range Keys 52  75 file size 1560
+1 - logFile2 log counter = 1  Range Keys 76  76 file size 65
+1 - 
+1 - 
+1 - .
+1 - 
+1 - OK (2 tests)
+1 - 
