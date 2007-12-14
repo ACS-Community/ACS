@@ -1,24 +1,19 @@
 #*******************************************************************************
 # ALMA - Atacama Large Millimiter Array
 #
-# "@(#) $Id: prepareCdbLevels.tcl,v 1.3 2007/11/30 23:41:05 agrimstrup Exp $"
+# "@(#) $Id: prepareCdbLevels.tcl,v 1.4 2007/12/14 16:58:50 eallaert Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
 # eallaert  2007-11-02  original version
 # agrimstr  2007-11-14  Added tests for Python
+# eallaert  2007-12-13  source CDB independent part from other script
 
-# Unset relevant environment variables
-unset -nocomplain -- env(ACS_LOG_CENTRAL)
-unset -nocomplain -- env(ACS_LOG_STDOUT)
-
-# Clear out the CDB-cache, so the next time the container starts the proper
-# xml file gets read in again from $ACS_CDB
-exec cdbjDALClearCache
-sleep 2
+# First get the environment var settings etc. (identical to Hardcoded case)
+source prepareHardcodedLevelsNoCdb.tcl
 
 # Use the Container-xml file with entries for minLogLevel & minLogLevelLocal
-foreach cont {frodoContainer frodoContainerN bilboContainer bilboContainerN aragornContainer aragornContainerN} {
+foreach cont {frodoContainer bilboContainer aragornContainer} {
     file copy -force -- \
 	[file join $env(ACS_CDB) CDB MACI Containers $cont ${cont}_withLevels.xml] \
 	[file join $env(ACS_CDB) CDB MACI Containers $cont ${cont}.xml]

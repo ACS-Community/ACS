@@ -1,7 +1,7 @@
 #*******************************************************************************
 # ALMA - Atacama Large Millimiter Array
 #
-# "@(#) $Id: prepareHardcodedLevels.tcl,v 1.4 2007/12/14 16:58:50 eallaert Exp $"
+# "@(#) $Id: prepareHardcodedLevelsNamedLogger.tcl,v 1.1 2007/12/14 16:58:50 eallaert Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -15,6 +15,6 @@ source prepareHardcodedLevelsNoCdb.tcl
 # Use the Container-xml file without entries for minLogLevel & minLogLevelLocal
 foreach cont {frodoContainer bilboContainer aragornContainer} {
     file copy -force -- \
-	[file join $env(ACS_CDB) CDB MACI Containers $cont ${cont}_withoutLevels.xml] \
+	[file join $env(ACS_CDB) CDB MACI Containers $cont ${cont}_namedLoggerWithoutLevels.xml] \
 	[file join $env(ACS_CDB) CDB MACI Containers $cont ${cont}.xml] 
 }
