@@ -189,6 +189,54 @@ public class CacheUtils {
 		return v;
 	}
 	
+	
+	
+	/**
+	 * Generate a set of logs of a given type
+	 * Each log has 
+	 *    - a different time stamp.
+	 *    - the message contains the key of the log
+	 *
+	 * @param numOfLogs The number of logs to put in the collection
+	 * @return The collection with the logs
+	 */
+	
+	public static Collection<ILogEntry> generateLogsType(int numOfLogs, int logType) throws Exception {
+		Random rnd = new Random(Calendar.getInstance().getTimeInMillis());
+		long now = Calendar.getInstance().getTimeInMillis()-1000*60*60*24; // Yesterday
+		SimpleDateFormat df = new SimpleDateFormat(ILogEntry.TIME_FORMAT);
+		Vector<ILogEntry> v = new Vector<ILogEntry>(numOfLogs);
+		
+		for (int t=0; t<numOfLogs; t++) {
+			Date dt = new Date(now+t*1000);
+			StringBuffer dateSB = new StringBuffer();
+			FieldPosition pos = new FieldPosition(0);
+			df.format(dt,dateSB,pos);
+
+			StringBuilder logStr = new StringBuilder("<");
+			
+			if (logType==0) {
+				logType=LogTypeHelper.ENTRYTYPE_INFO;
+			}
+			logStr.append(LogTypeHelper.getLogTypeDescription(logType));
+			logStr.append(logHeaderStr);
+			logStr.append(dateSB.toString());
+			logStr.append(logBodyStr);
+			logStr.append(t);
+			logStr.append(logFooterStr);
+			logStr.append(LogTypeHelper.getLogTypeDescription(logType));
+			logStr.append('>');
+			if (parser==null) {
+				parser = new ACSLogParserDOM();
+			}
+			ILogEntry log = parser.parse(logStr.toString());
+			v.add(log);
+		}
+		return v;
+	}
+		
+	
+	
 	/**
 	 * Add numOfLogs log to the cache.
 	 * 
