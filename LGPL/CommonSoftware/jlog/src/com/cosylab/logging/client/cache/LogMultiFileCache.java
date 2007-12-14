@@ -125,11 +125,10 @@ public class LogMultiFileCache  implements ILogMap {
 	
 	// These two constants define the maximum size of the log file.
 	public static final String FILEMAXSIZE_PROPERTY_NAME = "jlog.cache.fileMaxSize";
-	public static final int DEFAULT_FILEMAXSIZE = 1000000;
+	public static final long DEFAULT_FILEMAXSIZE = 1000000;
 	
-	// Current size of the log file.  
-	private long fileCurrSize;
-
+	// Flag activating some info prints   
+	private boolean debugTrace=false;
 
 	// This vecotor implement a table whose recods are specified by the
 	// class LogFileTableRecord.
@@ -145,12 +144,40 @@ public class LogMultiFileCache  implements ILogMap {
 	 * Get the max size of the file out of the system properties or
 	 * uses the default value if the property does not exist
 	 */
-	private static int getDefaultMaxFileSize() {
+	private static long getDefaultMaxFileSize() {
 		Integer fileSizeFromProperty = Integer.getInteger(FILEMAXSIZE_PROPERTY_NAME);
 		if (fileSizeFromProperty != null) {
-			return fileSizeFromProperty.intValue();
+			return fileSizeFromProperty.longValue();
 		}
 		return DEFAULT_FILEMAXSIZE;
+	}
+	
+	/**
+	 * Prints trace info if traceDebug flag is true
+	 * 
+	 */
+	
+	private void printDebugTrace(String traceInfo) {
+		if (debugTrace) {
+			System.out.println(traceInfo); 
+		}
+	}
+	
+	
+	/**
+	 * Prints trace info if traceDebug flag is true
+	 * 
+	 */
+	
+	private long getFileSize(LogFileTableRecord fileRecord ) throws LogCacheException {
+		
+		long fileSize;
+		try {
+			fileSize = fileRecord.lbfc.getFileSize();
+		} catch (IOException ioe) {
+			throw new LogCacheException(ioe);
+		}
+		return fileSize;
 	}
 	
 	/**
@@ -173,8 +200,9 @@ public class LogMultiFileCache  implements ILogMap {
 		
 		// Initialize counter and indexes according to the received number of logs
 		newFileRec.minLogIdx = newFileRec.maxLogIdx = lastFileRec.maxLogIdx + 1;		
+				
+		printDebugTrace("LogMultiFileCache new file : min logId = "+newFileRec.minLogIdx);
 		
-		System.out.println("LogMultiFileCache new file : min logId = "+newFileRec.minLogIdx);
 		// Add new record to vector
 		logFileTable.add(newFileRec);
 		
@@ -209,6 +237,7 @@ public class LogMultiFileCache  implements ILogMap {
 			
 			// log key belong to a set of logs that have already been deleted
 			// and therefore they are no longer accessible.
+			
 			if (logKey < fileRecord.minLogIdx) {
 				throw new IllegalArgumentException("log has been deleted"+logKey);
 			}
@@ -226,13 +255,14 @@ public class LogMultiFileCache  implements ILogMap {
 	/**
 	 * 
 	 */
-	public LogMultiFileCache(int fileSize) throws LogCacheException {
+	public LogMultiFileCache(long fileSize) throws LogCacheException {
 		if (fileSize<=0) {
 			throw new IllegalArgumentException("Invalid size for logFile "+fileSize);
 		}
 		fileMaxSize = fileSize;
 		logFileTable.add(new LogFileTableRecord());
-		System.out.println("LogMultiFileCache uses file of max size: "+fileMaxSize);
+		
+		printDebugTrace("LogMultiFileCache uses file of max size: "+fileMaxSize);
 	}
 	
 	/**
@@ -282,17 +312,14 @@ public class LogMultiFileCache  implements ILogMap {
 			throw new LogCacheException("Null file record");
 		}
 		
-		long fileSize;
-		try {
-			fileSize = fileRecord.lbfc.getFileSize();
-		} catch (IOException ioe) {
-			throw new LogCacheException(ioe);
-		}
-
+		long fileSize = getFileSize(fileRecord);
+		
 		if (fileSize >= fileMaxSize) {
+						
 			// Move logs from internal buffer to file
 			fileRecord.lbfc.flushBuffer();
-			System.out.println("LogMultiFileCache log file : fileSize "+fileSize+" logs = "+fileRecord.logCounter+
+					
+			printDebugTrace("LogMultiFileCache log file : fileSize "+fileSize+" logs = "+fileRecord.logCounter+
 					" Range keys = "+fileRecord.minLogIdx+" "+fileRecord.maxLogIdx);
 
 			// Replace old file record with new one.
@@ -303,6 +330,7 @@ public class LogMultiFileCache  implements ILogMap {
 		
 		fileRecord.logCounter ++;
 		logsInCache++;
+		
 		return fileRecord.lbfc.add(log) + fileRecord.minLogIdx;
 	}
 	
@@ -322,16 +350,20 @@ public class LogMultiFileCache  implements ILogMap {
 		
 		// Re-map global index into specific LogFileBufferedCache
 		int newLogKey = logKey - fileRecord.minLogIdx;
+		
+		
 		fileRecord.lbfc.deleteLog(newLogKey);
-
+		
 		// Update table record
 		fileRecord.logCounter--;
 		logsInCache--;
 		
-		System.out.println("LogMultiFileCache delete log : logKey = "+logKey+
-				" logs = "+fileRecord.logCounter);
-
 		
+		printDebugTrace("\n Delete log key = "+logKey+
+				" newKey = " + newLogKey + "  Tot. Logs "+ logsInCache + " recId = " + recIdx +
+				"  Range keys = "+fileRecord.minLogIdx+" "+fileRecord.maxLogIdx);
+		
+
 		// Remove file and element from the vector only if this is not
 		// the logFile we are using to add logs.
 		
@@ -340,9 +372,9 @@ public class LogMultiFileCache  implements ILogMap {
 			// @see LogBufferedFileCache.clear
 			fileRecord.lbfc.clear(false,false);
 			
-			System.out.println("LogMultiFileCache delete log file : Range keys = "
+			printDebugTrace("Delete log file : recId " + recIdx + " logs = "+fileRecord.logCounter + "Range keys = "
 					+fileRecord.minLogIdx+" "+fileRecord.maxLogIdx);
-			
+
 			// Remove vector element
 			logFileTable.remove(fileRecord);
 		}
@@ -491,4 +523,72 @@ public class LogMultiFileCache  implements ILogMap {
 		}
 		return ret;
 	}
+	
+	
+
+	/**
+	 * Return the current size of the log file
+	 *
+	 * @see 
+	 */
+	public long getLogFileSize() throws LogCacheException {
+		LogFileTableRecord lastRecord = logFileTable.lastElement();
+		
+		if (lastRecord == null) {
+			throw new LogCacheException("Null file record");
+		}
+		
+		long fileSize;
+		try {
+			fileSize = lastRecord.lbfc.getFileSize();
+		} catch (IOException ioe) {
+			throw new LogCacheException(ioe);
+		}
+		
+		return fileSize;
+	}
+	
+	/**
+	 * Return the current maximum size of the log file
+	 *
+	 * @see 
+	 */
+	public long getMaxFileSize() throws LogCacheException {
+		return fileMaxSize;
+	}
+	
+	/**
+	 * Return the current maximum size of the log file
+	 *
+	 * @see 
+	 */
+	public void setDebugTrace(boolean flag) throws LogCacheException {
+		debugTrace = flag;
+		return;
+	}
+	
+	/**
+	 * Return the current maximum size of the log file
+	 *
+	 * @see 
+	 */
+	public void printFileTableInfo() throws LogCacheException {
+		int idx;
+		
+		System.out.println("\nlogFileTable : total logs = "+ logsInCache);
+		
+		for (idx = 0; idx < logFileTable.size(); idx ++) {
+			LogFileTableRecord fr = logFileTable.get(idx);
+						
+			long fileSize = getFileSize(fr);
+			
+			System.out.println("logFile"+idx+" log counter = "+ fr.logCounter + 
+					"  Range Keys " + fr.minLogIdx + "  " + fr.maxLogIdx +
+					" file size " + fileSize);
+		}
+		System.out.println("\n");
+		return;
+	}
+	
+	
 }
