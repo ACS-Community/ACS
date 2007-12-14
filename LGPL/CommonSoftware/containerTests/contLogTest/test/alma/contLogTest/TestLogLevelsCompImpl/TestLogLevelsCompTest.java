@@ -38,6 +38,7 @@ import alma.ACSErrTypeCommon.CouldntPerformActionEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJCouldntPerformActionEx;
 import alma.acs.component.client.ComponentClientTestCase;
 import alma.acs.logging.engine.LogReceiver;
+import alma.acs.logging.level.AcsLogLevelDefinition;
 import alma.contLogTest.TestLogLevelsComp;
 
 /**
@@ -161,48 +162,70 @@ public class TestLogLevelsCompTest extends ComponentClientTestCase
 
 		LogSeriesExpectant expectant = new LogSeriesExpectant(getLogReceiver());
 
-		// The min log level we set for the component and test its log output against.
-		// @TODO: loop over many different levels to improve the test.
-		short minLogLevelCentral = 8;
-		
-		int[] dummyLogLevels = {2, 3, 4, 5, 6, 8, 9, 10, 11};
+		int[] dummyLogLevels;
+		dummyLogLevels = new int[AcsLogLevelDefinition.values().length];
+		int i = 0;
+		int maxLogLevel = -1;
+		// Note: "OFF" is included in log-levels!
+		for (AcsLogLevelDefinition lld : AcsLogLevelDefinition.values()) {
+			if (!lld.name.equalsIgnoreCase("OFF")) {
+				maxLogLevel = Math.max(maxLogLevel, lld.value);
+			}
+			dummyLogLevels[i++] = lld.value;
+		}
 		int waitTimeSeconds = 20;
 		
-		for (TestLogLevelsComp testComp : components) {
-			String componentName = testComp.name();
-			// Prepare the log levels via the container's LoggingConfigurable interface
-			String containerName = containerTestUtil.resolveContainerName(componentName);
-			LoggingConfigurable containerLogConfig = containerTestUtil.getContainerLoggingIF(containerName);
-			
-			// @TODO get logger name from the component via a new IDL method, because the logger name 
-			//       may not be the same as the component name (e.g. for C++ components).
-			String loggerName = componentName;
+		for (int level : dummyLogLevels) {
+			// The min log level we set for the component and test its log output against.
+			short minLogLevelCentral = (short)level;
+			for (TestLogLevelsComp testComp : components) {
+				String componentName = testComp.name();
+				// Prepare the log levels via the container's LoggingConfigurable interface
+				String containerName = containerTestUtil.resolveContainerName(componentName);
+				LoggingConfigurable containerLogConfig = containerTestUtil.getContainerLoggingIF(containerName);
 
-			// Set the log level that our test component is subject to (either default level or individual level depending on CDB config)
-			si.ijs.maci.LoggingConfigurablePackage.LogLevels componentLogLevels = containerLogConfig.get_logLevels(loggerName);
-			componentLogLevels.minLogLevel = minLogLevelCentral;
-			if (componentLogLevels.useDefault) {
-				containerLogConfig.set_default_logLevels(componentLogLevels);
-				m_logger.info("Set default log level for container " + containerName + " to " + minLogLevelCentral + " to be used by component " + componentName);
-			}
-			else {
-				containerLogConfig.set_logLevels(loggerName, componentLogLevels);
-				m_logger.info("Set individual log level for component " + componentName + " (running in container " + containerName + ") to " + minLogLevelCentral);
-			}
+				// @TODO get logger name from the component via a new IDL method, because the logger name 
+				//       may not be the same as the component name (e.g. for C++ components).
+				String loggerName = componentName;
 
-			expectant.clearLogs();
-			m_logger.info("Will call 'logDummyMessages' on component " + componentName);
-			testComp.logDummyMessages(dummyLogLevels);
-			m_logger.info("Will wait " + waitTimeSeconds + " seconds to receive (some of) these log messages.");
-			LogSeriesExpectant.LogList logRecordsReceived = expectant.awaitLogRecords(loggerName, waitTimeSeconds);
-			
-			System.out.println("Got " + logRecordsReceived.size() + " records from logger " + loggerName);
-			for (LogReceiver.ReceivedLogRecord logRecord : logRecordsReceived) {
-				System.out.println("(level=" + logRecord.getLevel() + ") " + logRecord.getMessage());
+				// Set the log level that our test component is subject to (either default level or individual level depending on CDB config)
+				si.ijs.maci.LoggingConfigurablePackage.LogLevels componentLogLevels = containerLogConfig.get_logLevels(loggerName);
+				componentLogLevels.minLogLevel = minLogLevelCentral;
+				if (componentLogLevels.useDefault) {
+					containerLogConfig.set_default_logLevels(componentLogLevels);
+					m_logger.info("Set default log level for container " + containerName + " to " + minLogLevelCentral + " to be used by component " + componentName);
+				}
+				else {
+					containerLogConfig.set_logLevels(loggerName, componentLogLevels);
+					m_logger.info("Set individual log level for component " + componentName + " (running in container " + containerName + ") to " + minLogLevelCentral);
+				}
+
+				expectant.clearLogs();
+				m_logger.info("Will call 'logDummyMessages' on component " + componentName);
+				testComp.logDummyMessages(dummyLogLevels);
+				m_logger.info("Will wait " + waitTimeSeconds + " seconds to receive (some of) these log messages.");
+				LogSeriesExpectant.LogList logRecordsReceived = expectant.awaitLogRecords(loggerName, waitTimeSeconds);
+
+				System.out.println("Got " + logRecordsReceived.size() + " records from logger " + loggerName);
+				for (LogReceiver.ReceivedLogRecord logRecord : logRecordsReceived) {
+					System.out.println("(level=" + logRecord.getLevel() + ") " + logRecord.getMessage());
+				}
+
+				// there are a couple of issues with OFF (99):
+				// - if minLogLevelCentral is set to OFF (99), logs with level EMERGENCY (11) still get through
+				//   on Java, while for C++ no level seems to be blocked. 
+				// - messages with level OFF get recorded as having level EMERGENCY (for Java or TRACE (for C++)
+				// Work-around these issues here, for the time being.
+				if (minLogLevelCentral > maxLogLevel) {
+					assertEquals(maxLogLevel, logRecordsReceived.getMinLogLevel());
+				}
+				else {
+					// The next assertion will fail here if there were no logs received,
+					// as getMinLogLevel will return then the value 2147483647 (-1).
+					assertEquals(minLogLevelCentral, logRecordsReceived.getMinLogLevel());
+				}
+				assertEquals(maxLogLevel, logRecordsReceived.getMaxLogLevel());
 			}
-			
-			assertEquals(minLogLevelCentral, logRecordsReceived.getMinLogLevel());
-			assertEquals(11, logRecordsReceived.getMaxLogLevel()); // @todo Compute the max level from dummyLogLevels
 		}
 	}
 
