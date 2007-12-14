@@ -34,20 +34,22 @@ public class InitializingPass2State extends OfflineSubStateAbstract implements A
 	
 	
 	public void entry() {
-		// perform do/ action asynchronously
 		if (m_doActivity == null) {
-			m_doActivity = new AcsDoActivity("InitializingPass2", m_superContext.m_stateOnline, m_superContext.m_stateError, logger) {
-				public void runActions() throws AcsStateActionException 
-				{
-					m_superContext.initSubsysPass2();
-				}
-			};
+			m_doActivity = new AcsDoActivity(
+					"InitializingPass2", 
+					m_superContext.m_stateOnline, m_superContext.m_stateError, 
+					logger, m_superContext.getSharedActivityExecutor() ) 
+					{
+						public void runActions() throws AcsStateActionException  {
+							m_superContext.initSubsysPass2();
+						}
+					};			
 		}
+		// perform do/ action asynchronously
 		m_doActivity.execute();		
 	}
 
-	public void exit()
-	{
+	public void exit() {
 		m_doActivity.terminateActions();
 	}
 

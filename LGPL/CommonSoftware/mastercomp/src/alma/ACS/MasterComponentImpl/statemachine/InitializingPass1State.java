@@ -10,6 +10,10 @@ import alma.acs.logging.AcsLogger;
 
 public class InitializingPass1State extends OfflineSubStateAbstract implements AcsSimpleState
 {
+	/**
+	 * Would be nice to mark this field final, but the AcsDoActivity requires the nextState
+	 * which may not be constructed yet when this class's ctor is called.
+	 */
 	private AcsDoActivity m_doActivity;
 	
     public InitializingPass1State(AlmaSubsystemContext superContext, OfflineState context, AcsLogger logger) 
@@ -38,22 +42,24 @@ public class InitializingPass1State extends OfflineSubStateAbstract implements A
 	}
 	
 
-	public void entry() 
-	{
-		// perform do/ action asynchronously
+	public void entry() {
 		if (m_doActivity == null) {
-			m_doActivity = new AcsDoActivity("InitializingPass1", m_superContext.m_statePreInitialized, m_superContext.m_stateError, logger) {
-                public void runActions() throws AcsStateActionException 
-				{
-					m_superContext.initSubsysPass1();
-				}
-			};
+			m_doActivity = new AcsDoActivity(
+					"InitializingPass1", 
+					m_superContext.m_statePreInitialized, m_superContext.m_stateError, 
+					logger, m_superContext.getSharedActivityExecutor() ) 
+					{
+						public void runActions() throws AcsStateActionException  {
+							m_superContext.initSubsysPass1();
+						}
+					};        
+			
 		}
+		// perform do/ action asynchronously
 		m_doActivity.execute();
 	}
 
-	public void exit()
-	{
+	public void exit() {
 		m_doActivity.terminateActions();
 	}
 }

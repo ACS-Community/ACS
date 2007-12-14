@@ -9,7 +9,10 @@ import alma.acs.logging.AcsLogger;
 
 public class ReinitializingState extends OfflineSubStateAbstract implements AcsSimpleState
 {
-
+	/**
+	 * Would be nice to mark this field final, but the AcsDoActivity requires the nextState
+	 * which may not be constructed yet when this class's ctor is called.
+	 */
 	private AcsDoActivity m_doActivity;
 	
     public ReinitializingState(AlmaSubsystemContext superContext, OfflineState offlineContext, AcsLogger logger) {
@@ -35,20 +38,22 @@ public class ReinitializingState extends OfflineSubStateAbstract implements AcsS
 	
 
 	public void entry() {
-		// perform do/ action asynchronously
 		if (m_doActivity == null) {
-			m_doActivity = new AcsDoActivity("Reinitializing", m_superContext.m_stateOnline, m_superContext.m_stateError, logger) {
-                public void runActions() throws AcsStateActionException 
-				{
-					m_superContext.reinitSubsystem();
-				}
-			};
+			m_doActivity = new AcsDoActivity(
+					"Reinitializing", 
+					m_superContext.m_stateOnline, m_superContext.m_stateError, 
+					logger, m_superContext.getSharedActivityExecutor() ) 
+					{
+						public void runActions() throws AcsStateActionException  {
+							m_superContext.reinitSubsystem();
+						}
+					};        			
 		}
+		// perform do/ action asynchronously
 		m_doActivity.execute();
 	}
 
-	public void exit()
-	{
+	public void exit() {
 		m_doActivity.terminateActions();
 	}
 

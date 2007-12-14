@@ -9,7 +9,10 @@ import alma.acs.logging.AcsLogger;
 
 public class ShuttingdownPass2State extends OfflineSubStateAbstract implements AcsSimpleState
 {
-
+	/**
+	 * Would be nice to mark this field final, but the AcsDoActivity requires the nextState
+	 * which may not be constructed yet when this class's ctor is called.
+	 */
 	private AcsDoActivity m_doActivity;
 	
     public ShuttingdownPass2State(AlmaSubsystemContext superContext, OfflineState context, AcsLogger logger) {
@@ -35,16 +38,22 @@ public class ShuttingdownPass2State extends OfflineSubStateAbstract implements A
 	
 
 	public void entry() {
-		// perform do/ action asynchronously
 		if (m_doActivity == null) {
-			m_doActivity = new AcsDoActivity("ShuttingdownPass2", m_superContext.m_stateShutdown, m_superContext.m_stateError, logger) {
-                public void runActions() throws AcsStateActionException 
-				{
-					m_superContext.shutDownSubsysPass2();
-				}
-			};
+			m_doActivity = new AcsDoActivity(
+					"ShuttingdownPass2", 
+					m_superContext.m_stateShutdown, m_superContext.m_stateError, 
+					logger, m_superContext.getSharedActivityExecutor() ) 
+					{
+						public void runActions() throws AcsStateActionException  {
+							m_superContext.shutDownSubsysPass2();
+						}
+					};			
 		}
+		// perform do/ action asynchronously
 		m_doActivity.execute();
 	}
 
+	public void exit() {
+		m_doActivity.terminateActions();
+	}
 }
