@@ -113,7 +113,7 @@ public abstract class MasterComponentImplBase extends CharacteristicComponentImp
 		if (actionHandler == null) {
 			throw new ComponentLifecycleException("Action handler was null. Check implementation of method getActionHandler in concrete master component implementation class.");
 		}
-		m_stateMachine = new AlmaSubsystemContext(actionHandler, m_logger);
+		m_stateMachine = new AlmaSubsystemContext(actionHandler, m_logger, m_containerServices.getThreadFactory());
 		m_stateMachine.addAcsStateChangeListener(this);
 
 		
