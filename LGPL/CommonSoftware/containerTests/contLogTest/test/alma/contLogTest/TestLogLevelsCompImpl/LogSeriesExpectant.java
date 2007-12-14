@@ -74,10 +74,17 @@ public class LogSeriesExpectant
                 String sourceObjectName = logRecord.getSourceObject();
                 if (sourceObjectName != null && sourceObjectName.equals(loggerName)) {
                 	logRecords.add(logRecord);
+                	// printing this could be useful for debugging the test
+                	//System.out.println(logRecord.getMessage());
+                	if (logRecord.getMessage().equals("===last log message===")) {
+                		// don't wait for timeout
+                		break;
+                	}
                 }
                 else {
                 	// printing this could be useful for debugging the test
-//                	System.out.println("Dropped log message from " + sourceObjectName + ": " + logEntry.getField(ILogEntry.Field.LOGMESSAGE));
+                	//System.out.println("Dropped log message from " + sourceObjectName + ": " + logRecord.getMessage());
+                	//System.out.println("Dropped log message from " + sourceObjectName + ": " + logEntry.getField(ILogEntry.Field.LOGMESSAGE));
                 }
             }
         }
