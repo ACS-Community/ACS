@@ -27,6 +27,7 @@ import junit.framework.TestCase;
 
 import alma.ACS.MasterComponentImpl.StateChangeSemaphore;
 import alma.ACSErrTypeCommon.wrappers.AcsJIllegalStateEventEx;
+import alma.acs.concurrent.DaemonThreadFactory;
 import alma.acs.genfw.runtime.sm.AcsState;
 import alma.acs.genfw.runtime.sm.AcsStateActionException;
 import alma.acs.genfw.runtime.sm.AcsStateChangeListener;
@@ -53,7 +54,7 @@ public class StateMachineTest extends TestCase implements AcsStateChangeListener
     public void setUp() {
     	m_logger = AcsLogger.createUnconfiguredLogger("StateMachineTest", null);
     	m_actionImpl = new DummyActionImpl(m_logger);
-        m_context = new AlmaSubsystemContext(m_actionImpl, m_logger);
+        m_context = new AlmaSubsystemContext(m_actionImpl, m_logger, new DaemonThreadFactory());
         m_context.addAcsStateChangeListener(this);
         
         m_sync = new MyStateChangeSemaphore(m_logger);
