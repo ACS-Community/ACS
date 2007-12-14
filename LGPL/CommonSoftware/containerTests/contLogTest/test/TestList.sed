@@ -11,4 +11,7 @@ s/handle ['0-9]['0-9]*/handle <ID>/g
 # Remove timing data by symbolic value
 s/Time: [0-9.]*/Time: <seconds>/g
 s/id=[0-9.]*/id=XXX/g
-
+s/Will wait [0-9]* seconds/Will wait <N> seconds/g
+#
+# Remove exception data. "(" is hex 28, ")" is hex 29
+s/[(0-9][0-9|)]* EXCEPTION/(<ID>) EXCEPTION/g
