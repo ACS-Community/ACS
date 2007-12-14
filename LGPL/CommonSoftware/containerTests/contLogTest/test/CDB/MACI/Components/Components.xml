@@ -5,20 +5,20 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
       <_ Name="TESTLOG1"    Code="alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompHelper"
 		             		Type="IDL:alma/contLogTest/TestLogLevelsComp:1.0"
-                            Container="frodoContainer"/>
+                            Container="myDefaultJavaTestContainer"/>
       <_ Name="TESTLOG2"    Code="alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompHelper"
 		             		Type="IDL:alma/contLogTest/TestLogLevelsComp:1.0"
-                            Container="frodoContainerN"/>
+                            Container="frodoContainer"/>
       <_ Name="TESTLOG3"    Code="contLogTestImpl"
 		             		Type="IDL:alma/contLogTest/TestLogLevelsComp:1.0"
-                            Container="bilboContainer"/>
+                            Container="myDefaultCppTestContainer"/>
       <_ Name="TESTLOG4"    Code="contLogTestImpl"
 		             		Type="IDL:alma/contLogTest/TestLogLevelsComp:1.0"
-                            Container="bilboContainerN"/>
-	<_ Name="TESTLOG5" Code="pyContLogTest.LogLevels" 
-                                        Type="IDL:alma/contLogTest/LogLevels:1.0"
+                            Container="bilboContainer"/>
+      <_ Name="TESTLOG5" Code="pyContLogTest.TestLogLevelsComp" 
+                                        Type="IDL:alma/contLogTest/TestLogLevelsComp:1.0"
+                            Container="myDefaultPyTestContainer" />
+      <_ Name="TESTLOG6" Code="pyContLogTest.TestLogLevelsComp"
+                                        Type="IDL:alma/contLogTest/TestLogLevelsComp:1.0"
                             Container="aragornContainer" />
-	<_ Name="TESTLOG6" Code="pyContLogTest.LogLevels"
-                                        Type="IDL:alma/contLogTest/LogLevels:1.0"
-                            Container="aragornContainerN" />
 </Components>
