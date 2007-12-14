@@ -22,20 +22,13 @@
 package alma.acs.container;
 
 import java.util.List;
-import java.util.concurrent.ThreadFactory;
-
-import org.omg.PortableServer.Servant;
-
-import com.cosylab.CDB.DAL;
 
 import si.ijs.maci.ComponentSpec;
 
-import alma.ACS.OffShoot;
 import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
 import alma.acs.component.ComponentDescriptor;
 import alma.acs.component.ComponentQueryDescriptor;
 import alma.acs.component.ComponentStateManager;
-import alma.acs.logging.AcsLogger;
 import alma.entities.commonentity.EntityT;
 
 /**
@@ -57,19 +50,9 @@ import alma.entities.commonentity.EntityT;
 public interface ContainerServices extends ContainerServicesBase
 {
 	/////////////////////////////////////////////////////////////
-	// basic needs
+	// basic needs (the rest comes from the base class)
 	/////////////////////////////////////////////////////////////
 		
-//	/**
-//	 * Delivers the unique instance name for the component.
-//	 * The name must have been specified at deployment time in the CDB
-//	 * (for static components like the famous "LAMP1" example),
-//	 * or must have been given to the manager at runtime by the client who creates
-//	 * a dynamic component (or was invented by the manager if none was given). 
-//	 * @return the unique component instance name
-//	 */
-//	public String getName();
-
         
 	/**
 	 * Delivers the <code>ComponentStateManager</code> object
@@ -86,20 +69,6 @@ public interface ContainerServices extends ContainerServicesBase
 	 */
 	public ComponentStateManager getComponentStateManager();
 
-
-//	/**
-//	 * Gets a <code>Logger</code> object that the component should use for logging.
-//	 * <p>
-//	 * The <code>Logger</code> will be set up with a namespace specific to the component
-//	 * that uses this <code>ContainerServices</code> instance.  
-//	 * <p>
-//	 * Specific logger extensions that only apply to certain subsystems can be used
-//	 * by wrapping this logger with a class such as {@link alma.acs.logging.domainspecific.AntennaContextLogger}. 
-//	 * 
-//	 * @return Logger
-//	 */
-//	public AcsLogger getLogger();
-//	
 	
 	/////////////////////////////////////////////////////////////
 	// access to other components
@@ -239,17 +208,6 @@ public interface ContainerServices extends ContainerServicesBase
 
 
 	
-//	/**
-//	 * Convenience method for accessing the Configuration Database.
-//	 * <p>
-//	 * Currently more than a convenience, given that the CDB is not yet a Java component, 
-//	 * but a separate service...
-//	 * 
-//	 * @return  the CDB interface
-//	 * @throws ContainerException
-//	 */
-//	public DAL getCDB() throws AcsJContainerServicesEx;
-	
 	
 	/**
 	 * Finds components by their instance name (curl) and/or by their type.
@@ -328,63 +286,13 @@ public interface ContainerServices extends ContainerServicesBase
 	 * <p>
 	 * If the client wants to get notified even for components that it does not hold a reference to,
 	 * then <code>ComponentListener#includeForeignComponents()</code> should return <code>true</code>.
-	 * 
+	 * {@link ContainerServices}
 	 * @param listener
 	 * @see si.ijs.maci.ClientOperations#components_available(si.ijs.maci.ComponentInfo[])
 	 * @since ACS 6.0
 	 */
 	public void registerComponentListener(ComponentListener listener);
 	
-	
-	/////////////////////////////////////////////////////////////
-	// advanced stuff, only for special cases
-	/////////////////////////////////////////////////////////////
-		
-    
-//	/**
-//	 * Activates a CORBA servant that implements alma.ACS.OffShoot.
-//	 * The purpose of the OffShoot marker interface is to crack down on uncontrolled
-//	 * activation of just any CORBA services by Java components, 
-//	 * while allowing this for selected subtypes of OffShoot, like 
-//	 * {@link alma.ACS.Callback}.
-//	 * <p>
-//	 * The OffShoot servant can be either a subclass of the xyzPOA skeleton, or a xyzPOATie instance
-//	 * (delegation model).
-//	 * Since ACS 4.1.2, a tie servant is detected, and interception code gets inserted between the 
-//	 * POATie skeleton and the offshoot implementation class. This way, the container
-//	 * can intercept (and log) calls to offshoots in the same way as it does for calls to components.
-//	 * <b>It is therefore recommended to use the tie approach for all offshoot servants, 
-//	 * unless there is a reason to avoid container interception.</b>
-//	 * 
-//	 * @param cbServant  the CORBA-generated servant, e.g. CBdoublePOA; 
-//	 * 						 must implement <code>alma.ACS.OffShootOperations</code>.
-//	 * @return  needs a narrow-cast to the subtype, like
-//	 * 			<code>CBdouble myCBdouble = alma.ACS.CBdoubleHelper.narrow(...)</code>.  
-//	 * @throws ContainerException  if anything goes wrong, 
-//	 * 								especially if <code>cbServant</code> is not an OffShoot.
-//	 */
-//	public OffShoot activateOffShoot(Servant cbServant) 
-//			throws AcsJContainerServicesEx;
-	
-//	/**
-//	 * Deactivates the offshoot corba object.
-//	 * Caution: this method returns immediately, while the underlying 
-//	 * {@link org.omg.PortableServer.POAOperations#deactivate_object(byte[])} still
-//	 * works on the deactivation. If {@link #activateOffShoot(Servant)} is called too shortly
-//	 * after deactivation, an exception will be thrown. TODO: find a remedy
-//	 * 
-//	 * @param cbServant  must implement {@link alma.ACS.OffShootOperations}.
-//	 * @throws AcsJContainerServicesEx if something goes wrong, e.g., if the offshoot servant was not active.
-//	 */
-//	public void deactivateOffShoot(Servant cbServant) 
-//			throws AcsJContainerServicesEx; 
-	
-
-//    /**
-//     * More specialized methods are available from the <code>AdvancedContainerServices</code>. 
-//     */
-//    public AdvancedContainerServices getAdvancedContainerServices();
-    
 
 	/////////////////////////////////////////////////////////////
 	// support for XML entities and binding classes
@@ -446,26 +354,4 @@ public interface ContainerServices extends ContainerServicesBase
     /////////////////////////////////////////////////////////////
     // other
     /////////////////////////////////////////////////////////////
-    
-//    /**
-//     * Gets a <code>ThreadFactory</code>, to be used as input for other classes from the concurrent library 
-//     * (such as <code>ThreadPoolExecutor</code>), or simply to create new <code>Thread</code>s.
-//     * <p>
-//     * All user-created threads should come from the factory returned here, so "<code>new Thread(...)</code>" should
-//     * not appear anywhere in component code.
-//     * <p>
-//     * The returned thread factory creates new threads configured to run well in the container environment, e.g. 
-//     * <ul>
-//     * <li> all threads are <em>daeemon</em> threads so that they can't interfere with container shutdown.
-//     * <li> the priority is the same as that of the calling component thread (which is created by the ORB)
-//     * <li> uncaught user exceptions are logged as WARNING before the thread terminates.
-//     * <li> when a component is removed from the container, surviving user threads created by that component
-//     *      are killed using {@link Thread#stop()} (which even though deprecated, seems like the perfect choice 
-//     *      in this particular situation). 
-//     *      Otherwise a faulty components could permanently take away resources from a running container 
-//     *      and from the other components. 
-//     * </ul> 
-//     * @return the thread factory to be used by the component to create new threads.
-//     */
-//    public ThreadFactory getThreadFactory();
 }
