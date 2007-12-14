@@ -153,15 +153,18 @@ public class TestLogLevelsCompImpl implements ComponentLifecycle, TestLogLevelsC
 	 * @see alma.contLogTest.LogLevelsOperations#logDummyMessagesForAllLevels()
 	 */
 	public void logDummyMessages(int[] coreLevels) throws IllegalArgumentEx {
+		AcsLogLevel acsLogLevel = null;
 		for (int coreLevel : coreLevels) {
-			AcsLogLevel acsLogLevel;
+			String name;
 			try {
 				acsLogLevel = AcsLogLevel.fromAcsCoreLevel(AcsLogLevelDefinition.fromInteger(coreLevel));
+				name = AcsLogLevelDefinition.fromInteger(coreLevel).name();
 			} catch (AcsJIllegalArgumentEx e) {
 				throw e.toIllegalArgumentEx();
 			}
-			m_logger.log(acsLogLevel, "dummy log message for core level " + coreLevel);
-		}		
+			m_logger.log(acsLogLevel, "dummy log message for core level " + name + "/" + coreLevel);
+		}
+		m_logger.log(acsLogLevel, "===last log message===");
 	}
 }
 
