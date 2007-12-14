@@ -40,7 +40,7 @@ import org.openarchitectureware.meta.uml.ModelElement;
  */
 public class UniqueNameModelElementSet extends ElementSet
 {
-	private Map m_nameMap = new HashMap();
+	private Map<String, Object> m_nameMap = new HashMap<String, Object>();
 	
 	
 	/**
