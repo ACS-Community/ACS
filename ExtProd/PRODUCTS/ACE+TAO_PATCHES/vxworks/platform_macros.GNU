@@ -1,4 +1,4 @@
-# $Id: platform_macros.GNU,v 1.7 2007/11/30 10:36:02 maraya Exp $
+# $Id: platform_macros.GNU,v 1.8 2007/12/16 10:18:29 bjeram Exp $
 # VxWorks 6.2
 
 #### Notes:
@@ -23,6 +23,10 @@ ifneq (,$(HOST_ROOT))
   TAO_IDL_DEP ?= $(TAO_IDL)
   TAO_IDLFLAGS += -g $(HOST_ROOT)/bin/gperf
 endif
+
+# we have to set this here otherwise we get in trouble because we set debug to 0
+# (see also wrapper_macros.GNU)
+CPPFLAGS += -DACE_USE_RCSID=1
 
 # No debuging PLEASE
 debug ?= 0

@@ -1,5 +1,5 @@
 /* -*- C++ -*- */
-// $Id: config.h,v 1.6 2007/11/29 07:05:22 maraya Exp $
+// $Id: config.h,v 1.7 2007/12/16 10:18:29 bjeram Exp $
 
 // The following configuration file is designed to work for VxWorks
 // 6.2 platforms using one of these compilers:
@@ -8,6 +8,9 @@
 #ifndef ACE_CONFIG_VXWORKS_6_2_H
 #define ACE_CONFIG_VXWORKS_6_2_H
 #include /**/ "ace/pre.h"
+
+#define ACE_NEEDS_HUGE_THREAD_STACKSIZE 102400
+#define ACE_USE_RCSID 1
 
 #if ! defined (VXWORKS)
 # define VXWORKS
