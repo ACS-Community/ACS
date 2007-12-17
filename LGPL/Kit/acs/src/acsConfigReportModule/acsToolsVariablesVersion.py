@@ -110,7 +110,7 @@ other_tools = [('ACE','more $ACE_ROOT/VERSION','5.6.1'),\
               ('doxygen','doxygen --version','1.3.8'),\
               ('python','python -V','2.5.1'),\
               ('mico','more $ALMASW_ROOTDIR/$ALMASW_RELEASE/mico/VERSION','2.3.11'),\
-              ('omniorb','cd $ALMASW_ROOTDIR/$ALMASW_RELEASE/omni/; ls THIS_IS_OMNIORB_4_0_3','THIS_IS_OMNIORB_4_0_3')\
+              ('omniorb','cd $ALMASW_ROOTDIR/$ALMASW_RELEASE/Python/omni/; ls THIS_IS_OMNIORB_4_1_0','THIS_IS_OMNIORB_4_1_0')\
                ]
 
 
