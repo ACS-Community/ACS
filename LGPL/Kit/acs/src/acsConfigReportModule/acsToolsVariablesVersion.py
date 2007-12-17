@@ -41,7 +41,7 @@
 #
 
 
-basic_tools = [('gcc','gcc --version','3.4.3'),\
+basic_tools = [('gcc','gcc --version','3.4.6'),\
               ('binutils','ld --version','2.15.92.0.2'),\
               ('make','make --version','3.80'),\
               ('awk','awk --version','3.1.3'),\
@@ -62,13 +62,13 @@ basic_tools = [('gcc','gcc --version','3.4.3'),\
               ('texinfo','info --version','4.7'),\
               ('diffutils','diff --version','2.8.1'),\
               ('groff','true | groff -v','1.18.1.1'),\
-              ('java','java -version','(build 1.5.0_04-b05)'),\
-              ('Tcl','echo "puts [set ::tcl_patchLevel]; exit" | seqWish','8.4.7'),\
-              ('Tk','echo "puts [set ::tcl_patchLevel]; exit" | seqWish','8.4.7'),\
-              ('incr Tcl','echo "puts [package require Itcl]; exit" | seqWish','3.2'),\
-              ('incr TK','echo "puts [package require Itk]; exit" | seqWish','3.2'),\
+              ('java','java -version','(build 1.6.0_02-b05)'),\
+              ('Tcl','echo "puts [set ::tcl_patchLevel]; exit" | seqWish','8.4.15'),\
+              ('Tk','echo "puts [set ::tcl_patchLevel]; exit" | seqWish','8.4.15'),\
+              ('incr Tcl','echo "puts [package require Itcl]; exit" | seqWish','3.4'),\
+              ('incr TK','echo "puts [package require Itk]; exit" | seqWish','3.4'),\
               ('iwidgets','echo "puts [package require Iwidgets]; exit" | seqWish','3.0.1'),\
-              ('tclX','echo "puts [package require Tclx]; exit" | seqWish','8.3')]
+              ('tclX','echo "puts [package require Tclx]; exit" | seqWish','8.4')]
 
 basic_tools_RH9 = [('gcc','gcc --version','3.3'),\
               ('binutils','ld --version','2.14'),\
@@ -103,12 +103,12 @@ basic_tools_RH9 = [('gcc','gcc --version','3.3'),\
               ('snack','echo "puts [package require snack]; exit" | seqWish','2.2')]
 
 
-other_tools = [('ACE','more $ACE_ROOT/VERSION','5.5.2'),\
-              ('TAO','more $ALMASW_ROOTDIR/$ALMASW_RELEASE/TAO/ACE_wrappers/TAO/VERSION','1.5.2'),\
+other_tools = [('ACE','more $ACE_ROOT/VERSION','5.6.1'),\
+              ('TAO','more $ALMASW_ROOTDIR/$ALMASW_RELEASE/TAO/ACE_wrappers/TAO/VERSION','1.6.1'),\
               ('JacORB','more $JACORB_HOME/doc/REL_NOTES','2.2'),\
-              ('Ant','$ANT_HOME/bin/ant -version','1.6.0'),\
+              ('Ant','$ANT_HOME/bin/ant -version','1.7.0'),\
               ('doxygen','doxygen --version','1.3.8'),\
-              ('python','python -V','2.4'),\
+              ('python','python -V','2.5.1'),\
               ('mico','more $ALMASW_ROOTDIR/$ALMASW_RELEASE/mico/VERSION','2.3.11'),\
               ('omniorb','cd $ALMASW_ROOTDIR/$ALMASW_RELEASE/omni/; ls THIS_IS_OMNIORB_4_0_3','THIS_IS_OMNIORB_4_0_3')\
                ]
@@ -152,7 +152,7 @@ acs_variables = [('ACE_ROOT','$ACE_ROOT_DIR/linux'),\
                 ('INTROOT','--DUMP--'),\
                 ('JACORB_HOME','$ALMASW_ROOTDIR/$ALMASW_RELEASE/JacORB'),\
                 ('JAVA_ENDORSED','--DUMP--'),\
-                ('JAVA_HOME','/usr/java/jdk1.5.0_04'),\
+                ('JAVA_HOME','/usr/java/jdk1.6.0_02'),\
                 ('JAVA_ORB','--DUMP--'),\
                 ('MANAGER_REFERENCE','--DUMP--' ),\
                 ('NAMESERVICE_REFERENCE','--DUMP--'),\
@@ -160,7 +160,7 @@ acs_variables = [('ACE_ROOT','$ACE_ROOT_DIR/linux'),\
                 ('OMNI_ROOT','$ALMASW_ROOTDIR/$ALMASW_RELEASE/Python/omni'),\
                 ('OMNIORB_CONFIG','$OMNI_ROOT/config'),\
                 ('PYTHON_ROOT','$ALMASW_ROOTDIR/$ALMASW_RELEASE/Python'),\
-                ('TCLTK_ROOT','/usr'),\
+                ('TCLTK_ROOT','/alma/ACS-7.0/tcltk'),\
                 ('INTROOT','--DUMP--'),\
                 ('INTLIST','--DUMP--'),\
                 ('ACSROOT','--DUMP--'),\
