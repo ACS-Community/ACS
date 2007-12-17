@@ -451,7 +451,7 @@ if tmp_intlist[0] != '':
          tmp_PYTHONPATH='$INTROOT/lib/python/site-packages:'+tmp_list+'$ACSROOT/lib/python/site-packages:$OMNI_ROOT/lib/python:$OMNI_ROOT/lib:$PYTHON_ROOT/lib/python2.5/site-packages:$OMNI_ROOT/lib/python/site-packages'
    else:
       if tmp_acsroot == '':
-         tmp_PYTHONPATH=tmp_list+'$OMNI_ROOT/lib/python:$OMNI_ROOT/lib:$PYTHON_ROOT/lib/python2.3/site-packages:$OMNI_ROOT/lib/python/site-packages'
+         tmp_PYTHONPATH=tmp_list+'$OMNI_ROOT/lib/python:$OMNI_ROOT/lib:$PYTHON_ROOT/lib/python2.5/site-packages:$OMNI_ROOT/lib/python/site-packages'
       else:
          tmp_PYTHONPATH=tmp_list+'$ACSROOT/lib/python/site-packages:$OMNI_ROOT/lib/python:$OMNI_ROOT/lib:$PYTHON_ROOT/lib/python2.5/site-packages:$OMNI_ROOT/lib/python/site-packages'    
 else:
