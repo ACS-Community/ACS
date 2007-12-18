@@ -32,6 +32,7 @@ import java.util.Set;
 import java.util.concurrent.ArrayBlockingQueue;
 
 import com.cosylab.logging.engine.log.ILogEntry;
+import com.cosylab.logging.engine.log.LogTypeHelper;
 import com.cosylab.logging.engine.log.ILogEntry.Field;
 
 /**
@@ -96,7 +97,7 @@ public class LogCache extends LogMultiFileCache implements ILogMap {
 	 * The aray with the level of each log in the cache
 	 * (useful for setting the log level)
 	 */
-	private HashMap<Integer,Integer> logTypes = new HashMap<Integer,Integer>();
+	private HashMap<Integer,LogTypeHelper> logTypes = new HashMap<Integer,LogTypeHelper>();
 	
 	/**
 	 * The times of the logs
@@ -157,7 +158,7 @@ public class LogCache extends LogMultiFileCache implements ILogMap {
 	 * @param pos The key of the log
 	 * @return The type of the log with the given key
 	 */
-	public int getLogType(Integer key)  throws LogCacheException {
+	public LogTypeHelper getLogType(Integer key)  throws LogCacheException {
 		if (!logTypes.containsKey(key)) {
 			throw new LogCacheException("Error: getting the type of a deleted log "+key);
 		}

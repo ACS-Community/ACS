@@ -37,7 +37,6 @@ import com.cosylab.logging.engine.log.ILogEntry.Field;
 
 import alma.ACSLoggingLog.LogBinaryRecord;
 import alma.ACSLoggingLog.NameValue;
-import alma.acs.logging.AcsLogLevel;
 import alma.acs.logging.level.AcsLogLevelDefinition;
 import alma.acs.util.StopWatch;
 
@@ -259,7 +258,7 @@ public class LogDispatcherTest extends TestCase {
 		logBin.Thread=(String)log.getField(Field.THREAD);
 		Date date = (Date)log.getField(Field.TIMESTAMP);
 		logBin.TimeStamp=com.cosylab.logging.client.cache.CacheUtils.dateFormat.format(date);
-		logBin.type=(short)AcsLogLevelDefinition.fromInteger(log.getType().intValue()).value;
+		logBin.type=(short)log.getType().ordinal();
 		logBin.Uri=(String)log.getField(Field.URI);
 		if (log.hasDatas()) {
 			Vector<AdditionalData> data=log.getAdditionalData();

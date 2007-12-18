@@ -246,7 +246,7 @@ public Filter(int field, boolean isLethal, Date minimum, Date maximum, boolean n
 }
 
 /**
- * The most imporant method of this class. Returns true
+ * The most impporant method of this class. Returns true
  * if LogEntryXML passes through the filter and false
  * otherwise.
  *
@@ -314,20 +314,20 @@ public String toString() {
 		case UNDECLARED : type.append("Undeclared"); break;
 		case MINMAX : 
 			type.append("Mininum = ");
-			if (field==1) type.append(LogTypeHelper.getLogTypeDescription(Integer.parseInt(minimum.toString())));
+			if (field==1) type.append(LogTypeHelper.values()[(Integer.parseInt(minimum.toString()))].logEntryType);
 			else type.append(minimum.toString());
 			type.append(", Maximum = ");
-			if (field==1) type.append(LogTypeHelper.getLogTypeDescription(Integer.parseInt(maximum.toString())));
+			if (field==1) type.append(LogTypeHelper.values()[(Integer.parseInt(maximum.toString()))].logEntryType);
 			else type.append(maximum.toString());
 			break;
 		case MINIMUM : 
 			type.append("Minimum = ");
-			if (field==1) type.append(LogTypeHelper.getLogTypeDescription(Integer.parseInt(minimum.toString())));
+			if (field==1) type.append(LogTypeHelper.values()[(Integer.parseInt(minimum.toString()))].logEntryType);
 			else type.append(minimum.toString()); 
 			break;
 		case MAXIMUM : 
 			type.append("Maximum = ");
-			if (field==1) type.append(LogTypeHelper.getLogTypeDescription(Integer.parseInt(maximum.toString())));
+			if (field==1) type.append(LogTypeHelper.values()[(Integer.parseInt(maximum.toString()))].logEntryType);
 			else type.append(maximum.toString());
 			break;
 		case STRING_WILDCHAR : 
@@ -335,7 +335,7 @@ public String toString() {
 			break;
 		case EXACT : 
 			type.append("Exact value = ");
-			if (field==1) type.append(LogTypeHelper.getLogTypeDescription(Integer.parseInt(exact.toString())));
+			if (field==1) type.append(LogTypeHelper.values()[(Integer.parseInt(exact.toString()))].logEntryType);
 			else type.append(exact.toString()); 
 			break;
 	}

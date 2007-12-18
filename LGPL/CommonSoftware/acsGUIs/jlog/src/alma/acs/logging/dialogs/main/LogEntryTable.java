@@ -743,7 +743,7 @@ public class LogEntryTable extends JTable
 			tempStr = sdf.format(value);
 		} else if (value instanceof Integer) {
 			if (getColumnName(col).compareTo(Field.ENTRYTYPE.getName())==0) {
-				tempStr=LogTypeHelper.getLogTypeDescription(((Integer)value).intValue());
+				tempStr=LogTypeHelper.values()[((Integer)value).intValue()].logEntryType;
 			} else {
 				tempStr = value.toString();
 			}
@@ -848,7 +848,7 @@ public class LogEntryTable extends JTable
 		tc.setMaxWidth(18);
 		
 		tc = tcm.getColumn(Field.ENTRYTYPE.ordinal() + 2);
-		tc.setCellRenderer(new EntryTypeRenderer(LogTypeHelper.getAllIcons()));
+		tc.setCellRenderer(new EntryTypeRenderer());
 
 		tc = tcm.getColumn(Field.TIMESTAMP.ordinal() + 2);
 		dateRenderer = new DateRenderer(shortDateFormat);

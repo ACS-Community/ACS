@@ -35,6 +35,7 @@ import java.util.Vector;
 
 import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.engine.log.LogEntry;
+import com.cosylab.logging.engine.log.LogTypeHelper;
 import com.cosylab.logging.engine.log.ILogEntry.AdditionalData;
 import com.cosylab.logging.engine.log.ILogEntry.Field;
 
@@ -400,6 +401,8 @@ public class LogFileCache implements ILogMap {
 			if (obj!=null) {
 				if (obj instanceof Date) {
 					sb.append(((Date)obj).getTime());
+				} else if (obj instanceof LogTypeHelper ) {
+					sb.append(((LogTypeHelper)obj).ordinal());
 				} else {
 					sb.append(obj.toString());
 				}

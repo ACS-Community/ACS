@@ -39,7 +39,7 @@ import com.cosylab.logging.engine.log.LogTypeHelper;
 public class LogEntry implements ILogEntry {
 	
 	private Date date;
-	private Integer type;
+	private LogTypeHelper type;
 	private String file;
 	private Integer line;
 	private String routine;
@@ -118,7 +118,7 @@ public class LogEntry implements ILogEntry {
 		else {
 			this.date = null;
 		}
-		this.type=LogTypeHelper.logTypes[entrytype];
+		this.type=LogTypeHelper.values()[entrytype];
 		this.file=file;
 		this.line=line;
 		this.routine=routine;
@@ -167,7 +167,7 @@ public class LogEntry implements ILogEntry {
 	public String toXMLString() {
 		StringBuilder sb = new StringBuilder();
 
-		String logType =LogTypeHelper.getLogTypeDescription(type);
+		String logType =type.logEntryType;
 		sb.append("<"+logType);
 		
 		for (Field t: Field.values()) {
@@ -191,7 +191,7 @@ public class LogEntry implements ILogEntry {
 			}
 		}
 		
-		if (type==LogTypeHelper.ENTRYTYPE_TRACE && !hasDatas()) {
+		if (type==LogTypeHelper.TRACE && !hasDatas()) {
 			sb.append("/>");
 		} else {
 			sb.append(">");
@@ -323,7 +323,7 @@ public class LogEntry implements ILogEntry {
 				return;
 			}
 			case ENTRYTYPE: {
-				type=LogTypeHelper.logTypes[(Integer)value];
+				type=LogTypeHelper.values()[(Integer)value];
 				return;
 			}
 			case SOURCEOBJECT: {
@@ -427,7 +427,7 @@ public class LogEntry implements ILogEntry {
 			if (getField(f) != null) {
 				sb.append(f.getName() + ": ");
 				if (f == Field.ENTRYTYPE) {
-					sb.append(LogTypeHelper.getLogTypeDescription(type));
+					sb.append(type.logEntryType);
 				} else if(f==Field.TIMESTAMP) {
 					SimpleDateFormat df = new SimpleDateFormat(TIME_FORMAT);
 					FieldPosition pos = new FieldPosition(0);
@@ -461,8 +461,8 @@ public class LogEntry implements ILogEntry {
 	/**
 	 * @see ILogEntry
 	 */
-	public Integer getType() {
-		return type;
+	public LogTypeHelper getType() {
+		return this.type;
 	}
 
 }

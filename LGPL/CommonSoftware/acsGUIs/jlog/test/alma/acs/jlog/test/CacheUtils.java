@@ -168,17 +168,19 @@ public class CacheUtils {
 			df.format(dt,dateSB,pos);
 
 			StringBuilder logStr = new StringBuilder("<");
-			int type = rnd.nextInt(LogTypeHelper.getNumberOfTypes());
-			if (type==0) {
-				type=LogTypeHelper.ENTRYTYPE_INFO;
+			int typePos = rnd.nextInt(LogTypeHelper.values().length);
+			LogTypeHelper type = LogTypeHelper.values()[typePos];
+			
+			if (type==LogTypeHelper.TRACE) {
+				type=LogTypeHelper.INFO;
 			}
-			logStr.append(LogTypeHelper.getLogTypeDescription(type));
+			logStr.append(type.logEntryType);
 			logStr.append(logHeaderStr);
 			logStr.append(dateSB.toString());
 			logStr.append(logBodyStr);
 			logStr.append(t);
 			logStr.append(logFooterStr);
-			logStr.append(LogTypeHelper.getLogTypeDescription(type));
+			logStr.append(type.logEntryType);
 			logStr.append('>');
 			if (parser==null) {
 				parser = new ACSLogParserDOM();
@@ -201,7 +203,7 @@ public class CacheUtils {
 	 * @return The collection with the logs
 	 */
 	
-	public static Collection<ILogEntry> generateLogsType(int numOfLogs, int logType) throws Exception {
+	public static Collection<ILogEntry> generateLogsType(int numOfLogs, LogTypeHelper logType) throws Exception {
 		Random rnd = new Random(Calendar.getInstance().getTimeInMillis());
 		long now = Calendar.getInstance().getTimeInMillis()-1000*60*60*24; // Yesterday
 		SimpleDateFormat df = new SimpleDateFormat(ILogEntry.TIME_FORMAT);
@@ -215,16 +217,16 @@ public class CacheUtils {
 
 			StringBuilder logStr = new StringBuilder("<");
 			
-			if (logType==0) {
-				logType=LogTypeHelper.ENTRYTYPE_INFO;
+			if (logType==LogTypeHelper.TRACE) {
+				logType=LogTypeHelper.INFO;
 			}
-			logStr.append(LogTypeHelper.getLogTypeDescription(logType));
+			logStr.append(logType.logEntryType);
 			logStr.append(logHeaderStr);
 			logStr.append(dateSB.toString());
 			logStr.append(logBodyStr);
 			logStr.append(t);
 			logStr.append(logFooterStr);
-			logStr.append(LogTypeHelper.getLogTypeDescription(logType));
+			logStr.append(logType.logEntryType);
 			logStr.append('>');
 			if (parser==null) {
 				parser = new ACSLogParserDOM();

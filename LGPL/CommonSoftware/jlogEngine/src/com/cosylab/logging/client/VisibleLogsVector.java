@@ -14,6 +14,7 @@ import com.cosylab.logging.client.cache.LogCache;
 import com.cosylab.logging.client.cache.LogCacheException;
 
 import com.cosylab.logging.engine.log.ILogEntry;
+import com.cosylab.logging.engine.log.LogTypeHelper;
 import com.cosylab.logging.engine.log.ILogEntry.Field;
 
 import com.cosylab.logging.LoggingClient;
@@ -193,13 +194,13 @@ public class VisibleLogsVector extends Thread {
 				}
 			} else {
 				try {
-					firstVal=(Integer)cache.getLogType(first);
+					firstVal=cache.getLogType(first).ordinal();
 				} catch (LogCacheException e) {
 					System.err.println("Error getting the time stamp of "+first);
 					e.printStackTrace();
 				}
 				try {
-					secondVal=(Integer)cache.getLogType(second);
+					secondVal=cache.getLogType(second).ordinal();
 				} catch (LogCacheException e) {
 					System.err.println("Error getting the time stamp of "+second);
 					e.printStackTrace();
@@ -649,7 +650,7 @@ public class VisibleLogsVector extends Thread {
 			return findPosLogarthmicDate(((Date)log.getField(Field.TIMESTAMP)).getTime());
 		}
 		if (comparator.getSortField()==Field.ENTRYTYPE.ordinal()) {
-			return findPosLogarthmicType((Integer)log.getField(Field.ENTRYTYPE));
+			return findPosLogarthmicType(((LogTypeHelper)log.getField(Field.ENTRYTYPE)).ordinal());
 		}
 		//int ret=-1;
 		int minInter = 0;
@@ -858,13 +859,13 @@ public class VisibleLogsVector extends Thread {
 		boolean sortAscending = comparator.isSortAscending();
 		do {
 			try {
-				maxType = cache.getLogType(visibleLogs.get(maxInter));
+				maxType = cache.getLogType(visibleLogs.get(maxInter)).ordinal();
 			} catch (LogCacheException e) {
 				System.err.println("Error getting the type of "+visibleLogs.get(maxInter));
 				e.printStackTrace();
 			}
 			try {
-				minType = cache.getLogType(visibleLogs.get(minInter));
+				minType = cache.getLogType(visibleLogs.get(minInter)).ordinal();
 			} catch (LogCacheException e) {
 				System.err.println("Error getting the type of "+visibleLogs.get(minInter));
 				e.printStackTrace();
@@ -892,7 +893,7 @@ public class VisibleLogsVector extends Thread {
 			middle = minInter+(maxInter - minInter)/2;
 			int typeShift=0;
 			try {
-				typeShift = type-cache.getLogType(visibleLogs.get(middle));
+				typeShift = type-cache.getLogType(visibleLogs.get(middle)).ordinal();
 			} catch (LogCacheException e) {
 				System.err.println("Error getting the type of "+visibleLogs.get(middle));
 				e.printStackTrace();

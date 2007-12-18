@@ -26,6 +26,7 @@ import java.util.Iterator;
 
 import com.cosylab.logging.client.cache.LogMultiFileCache;
 import com.cosylab.logging.engine.log.ILogEntry;
+import com.cosylab.logging.engine.log.LogTypeHelper;
 
 import junit.framework.TestCase;
 
@@ -63,7 +64,7 @@ public class MultiFileCacheTest extends TestCase {
 		assertEquals("The cache size is not as expected",TESTCACHE_SIZE,cache.getMaxFileSize());
 		
 		// Create and populate the cache
-		logCollection = CacheUtils.generateLogsType(100,0);	
+		logCollection = CacheUtils.generateLogsType(100,LogTypeHelper.TRACE);	
 	}
 	
 	public void tearDown() throws Exception {

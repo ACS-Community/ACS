@@ -12,7 +12,7 @@ public class LogListenerStressTest implements ACSRemoteLogListener, ACSRemoteRaw
 	private int xmlReceived=0;
 	private int logReceived=0;
 	
-	private int[] logTypeReceived=new int[LogTypeHelper.getNumberOfTypes()];
+	private int[] logTypeReceived=new int[LogTypeHelper.values().length];
 	
 	public Object done = new Object();
 	
@@ -49,7 +49,7 @@ public class LogListenerStressTest implements ACSRemoteLogListener, ACSRemoteRaw
 	public void logEntryReceived(ILogEntry log) {
 		if (log.getField(Field.FILE).toString().indexOf("logClient.cpp")>=0) {
 			logReceived++;
-			Integer logType = ((Integer)log.getField(Field.ENTRYTYPE));
+			Integer logType = ((LogTypeHelper)log.getField(Field.ENTRYTYPE)).ordinal();
 			logTypeReceived[logType]++;
 			if (log.getField(Field.LOGMESSAGE).toString().indexOf("Done")>=0) {
 				System.out.println("logEntryReceived => Done received");
@@ -63,7 +63,7 @@ public class LogListenerStressTest implements ACSRemoteLogListener, ACSRemoteRaw
 		System.out.println("XML entries received: "+xmlReceived);
 		System.out.println("Log entries received: "+xmlReceived);
 		for (int t=0; t<logTypeReceived.length; t++) {
-			System.out.print("Num. of received logs of type "+LogTypeHelper.getLogTypeDescription(t));
+			System.out.print("Num. of received logs of type "+LogTypeHelper.values()[t].logEntryType);
 			System.out.println(": "+logTypeReceived[t]);
 		}
 		synchronized(this) {

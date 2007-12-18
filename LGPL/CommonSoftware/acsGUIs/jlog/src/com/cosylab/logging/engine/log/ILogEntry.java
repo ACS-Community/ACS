@@ -202,7 +202,7 @@ public interface ILogEntry extends Serializable {
 	 * 
 	 * @return The type of the log
 	 */
-	public Integer getType();
+	public LogTypeHelper getType();
 	
 	/**
 	 *	Add data to this log

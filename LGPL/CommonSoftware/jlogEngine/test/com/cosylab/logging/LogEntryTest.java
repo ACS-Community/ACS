@@ -127,7 +127,7 @@ public class LogEntryTest extends junit.framework.TestCase
 	public void testGetEntryTypeAsString()
 	{ //public String getEntryTypeAsString()  
 
-		String actualEntryType = LogTypeHelper.getLogTypeDescription((Integer)log.getField(Field.ENTRYTYPE));
+		String actualEntryType = ((LogTypeHelper)log.getField(Field.ENTRYTYPE)).logEntryType;
 		String expectedEntryType = "Trace";
 		assertEquals(
 			"The two logs are not equal.",
@@ -139,16 +139,16 @@ public class LogEntryTest extends junit.framework.TestCase
 	{ //public final static String getEntryTypeDescription(int index) 
 
 		String actual = null;
-		for (int j = 0; j < 9; j++)
+		for (int j = 0; j < LogTypeHelper.values().length; j++)
 		{
-			String actualEntryTypeDesc = LogTypeHelper.getLogTypeDescription(j);
+			String actualEntryTypeDesc = LogTypeHelper.values()[j].logEntryType;
 			// can be anything: trace, debug, info
 			if (actualEntryTypeDesc
-				.equalsIgnoreCase(LogTypeHelper.getLogTypeDescription((Integer)log.getField(Field.ENTRYTYPE))));
+				.equalsIgnoreCase(((LogTypeHelper)log.getField(Field.ENTRYTYPE)).logEntryType));
 				actual = actualEntryTypeDesc; // is the one that matches
 				break;
 		}
-		String expected = LogTypeHelper.getLogTypeDescription((Integer)log.getField(Field.ENTRYTYPE));
+		String expected = ((LogTypeHelper)log.getField(Field.ENTRYTYPE)).logEntryType;
 		assertEquals("The two logs are not equal.", expected, actual);
 	}
 

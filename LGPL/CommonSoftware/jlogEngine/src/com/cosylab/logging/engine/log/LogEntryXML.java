@@ -140,7 +140,7 @@ public final class LogEntryXML implements ILogEntry
 		// set whatever you want here (depending of the test you are performing);
 
 		setField(Field.TIMESTAMP, new Date());
-		setField(Field.ENTRYTYPE, Integer.valueOf((short) random.nextInt(LogTypeHelper.getNumberOfTypes())));
+		setField(Field.ENTRYTYPE, LogTypeHelper.values()[((short) random.nextInt(LogTypeHelper.values().length))]);
 		if (random.nextInt(10) < 3)
 		{
 			setField(Field.LINE, Integer.valueOf(random.nextInt(100)));
@@ -214,8 +214,8 @@ public final class LogEntryXML implements ILogEntry
 	/**
 	 * @see ILogEntry
 	 */
-	public Integer getType() {
-		return (Integer)getField(Field.ENTRYTYPE);
+	public LogTypeHelper getType() {
+		return LogTypeHelper.values()[(Integer)getField(Field.ENTRYTYPE)];
 	}
 	
 	private void initAttributes(Node log) throws DOMException
@@ -359,7 +359,7 @@ public final class LogEntryXML implements ILogEntry
 			throw new DOMException(DOMException.SYNTAX_ERR, "logEntryType is null.");
 		
 		// todo: reuse Integer objects
-        setField(Field.ENTRYTYPE,LogTypeHelper.parseLogTypeDescription(logEntryType));
+        setField(Field.ENTRYTYPE,LogTypeHelper.fromLogTypeDescription(logEntryType).ordinal());
 
         if (getField(Field.ENTRYTYPE) == null)
 			throw new DOMException(DOMException.NOT_FOUND_ERR, "Unknown logEntryType: " + logEntryType);
@@ -488,7 +488,7 @@ public final class LogEntryXML implements ILogEntry
 		}
 		
 		Integer type = (Integer)getField(Field.ENTRYTYPE);
-		if (type==LogTypeHelper.ENTRYTYPE_TRACE) {
+		if (type==LogTypeHelper.TRACE.ordinal()) {
 			sb.append("/>");
 		} else {
 			sb.append("><![CDATA["+getField(Field.LOGMESSAGE).toString()+"]]>");

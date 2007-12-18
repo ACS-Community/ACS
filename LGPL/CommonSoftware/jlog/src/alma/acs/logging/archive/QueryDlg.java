@@ -24,7 +24,6 @@ package alma.acs.logging.archive;
 import java.awt.BorderLayout;
 import java.awt.ComponentOrientation;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -46,7 +45,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRootPane;
 import javax.swing.JTextField;
-import javax.swing.KeyStroke;
 
 import alma.acs.logging.dialogs.LoadSwitchesPanel;
 
@@ -362,11 +360,11 @@ public class QueryDlg extends JDialog implements ActionListener {
 		c.gridx=1; c.gridy=5; c.gridwidth=GridBagConstraints.REMAINDER; c.insets = new Insets(5,5,5,5);
 		optionsPnl.add(sourceName,c);
 		minLogLevelCB = setupTypeCB(minLogLevelCB);
-		minLogLevelCB.setSelectedIndex(LogTypeHelper.ENTRYTYPE_INFO);
+		minLogLevelCB.setSelectedIndex(LogTypeHelper.INFO.ordinal());
 		c.gridx=1; c.gridy=6; c.gridwidth=GridBagConstraints.REMAINDER; c.insets = new Insets(5,5,5,5);
 		optionsPnl.add(minLogLevelCB,c);
 		maxLogLevelCB= setupTypeCB(maxLogLevelCB);
-		maxLogLevelCB.setSelectedIndex(LogTypeHelper.ENTRYTYPE_EMERGENCY);
+		maxLogLevelCB.setSelectedIndex(LogTypeHelper.EMERGENCY.ordinal());
 		c.gridx=1; c.gridy=7; c.gridwidth=GridBagConstraints.REMAINDER; c.insets = new Insets(5,5,10,5);
 		optionsPnl.add(maxLogLevelCB,c);
 		
@@ -391,13 +389,18 @@ public class QueryDlg extends JDialog implements ActionListener {
 	}
 	
 	private JComboBox setupTypeCB(JComboBox box) {
-		JComboBox logLevelCB = new JComboBox(LogTypeHelper.getAllTypesDescriptions());
+		String Descritpions[] = new String[LogTypeHelper.values().length];
+		int t=0;
+		for (LogTypeHelper log: LogTypeHelper.values()) {
+			Descritpions[t++]=log.logEntryType;
+		}
+		JComboBox logLevelCB = new JComboBox(Descritpions);
         
-        // Build the renderer for the combo boxex
+        // Build the renderer for the combo boxesx
         LogTypeRenderer rendererCB = new LogTypeRenderer();
         
         logLevelCB.setEditable(false);
-        logLevelCB.setMaximumRowCount(LogTypeHelper.getNumberOfTypes());
+        logLevelCB.setMaximumRowCount(LogTypeHelper.values().length);
         logLevelCB.setRenderer(rendererCB);
 		return logLevelCB;
 	}

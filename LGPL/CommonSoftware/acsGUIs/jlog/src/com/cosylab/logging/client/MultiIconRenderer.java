@@ -56,7 +56,6 @@ public MultiIconRenderer() {
 	setOpaque(true);
 	noFocusBorder = new EmptyBorder(1, 2, 1, 2);
 	setBorder(noFocusBorder);
-
 }
 /**
  * MultiIconRenderer constructor comment.

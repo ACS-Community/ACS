@@ -73,8 +73,8 @@ public class ACSLogParserTest extends TestCase {
 		ILogEntry log = parser.parse(xmlLogWarningWithException);
 		
 		// verify some fields
-		assertEquals("wrong typename string", "Warning", LogTypeHelper.getLogTypeDescription((Integer)log.getField(Field.ENTRYTYPE)));
-		assertEquals("wrong type code", new Integer(LogTypeHelper.ENTRYTYPE_WARNING), log.getField(Field.ENTRYTYPE));
+		assertEquals("wrong typename string", "Warning", ((LogTypeHelper)log.getField(Field.ENTRYTYPE)).logEntryType);
+		assertEquals("wrong type code", LogTypeHelper.WARNING.ordinal(), ((LogTypeHelper)log.getField(Field.ENTRYTYPE)).ordinal());
 		
 		Vector<ILogEntry.AdditionalData> datas = log.getAdditionalData();
 		assertFalse("There should have been 1 piece of attached data!", datas == null || datas.size() != 1);

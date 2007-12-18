@@ -113,7 +113,7 @@ public class DetailedLogTable extends JTable
 				Object obj = log.getField(field);
 				if (obj!=null) {
 					if (field==Field.ENTRYTYPE) {
-						nameValue[i][1]=obj.toString()+" ("+LogTypeHelper.getLogTypeDescription((Integer)obj)+")";
+						nameValue[i][1]=obj.toString();
 					} else if (field==Field.TIMESTAMP) {
 						SimpleDateFormat df = new SimpleDateFormat(ILogEntry.TIME_FORMAT);
 						Date dt = (Date)obj;

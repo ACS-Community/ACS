@@ -642,7 +642,7 @@ public class LogTableDataModel extends AbstractTableModel implements Runnable
 		try {
 			while (key <= allLogs.getLastLog()) {
 				try {
-					if (allLogs.getLogType(key) >= logLevel) {
+					if (allLogs.getLogType(key).ordinal() >= logLevel) {
 						visibleLogInsert(allLogs.getLog(key), key);
 					}
 				} catch (LogCacheException e) {
@@ -697,7 +697,7 @@ public class LogTableDataModel extends AbstractTableModel implements Runnable
 	 * @param pos The position of this log in the cache
 	 */
 	public void visibleLogInsert(ILogEntry log, int pos) {
-		if (log.getType()>=logLevel && filters.applyFilters(log)) {
+		if (log.getType().ordinal()>=logLevel && filters.applyFilters(log)) {
 			visibleLogs.add(pos,log);
 		}
 	}
@@ -752,7 +752,7 @@ public class LogTableDataModel extends AbstractTableModel implements Runnable
 	}
 	
 	public void setLogLevel(int newLevel) {
-		if (newLevel<0 || newLevel>LogTypeHelper.ENTRYTYPE_EMERGENCY) {
+		if (newLevel<0 || newLevel>LogTypeHelper.EMERGENCY.ordinal()) {
 			throw new IllegalArgumentException(""+newLevel+" is not valid");
 		}
 		logLevel=newLevel;

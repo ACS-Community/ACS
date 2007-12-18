@@ -652,7 +652,7 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
     		initConnections();
     		validate();
             
-			getLCModel1().setLogLevel(toolBar.DEFAULT_LOGLEVEL);
+			getLCModel1().setLogLevel(toolBar.DEFAULT_LOGLEVEL.ordinal());
 			
 			getLCModel1().setTimeFrame(userPreferences.getMillisecondsTimeFrame());
 			getLCModel1().setMaxLog(userPreferences.getMaxNumOfLogs());
@@ -1267,7 +1267,7 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
      * @see com.cosylab.logging.engine.ACS.ACSRemoteLogListener
      */
     public void logEntryReceived(ILogEntry logEntry) {
-    	if (logEntry.getType()>=toolBar.getDiscardLevelCB().getSelectedIndex()) {
+    	if (logEntry.getType().ordinal()>=toolBar.getDiscardLevelCB().getSelectedIndex()) {
 			getLogEntryTable().getLCModel().appendLog(logEntry);
 		} 
     }

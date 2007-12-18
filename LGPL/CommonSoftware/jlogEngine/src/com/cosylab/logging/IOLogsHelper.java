@@ -399,10 +399,6 @@ public class IOLogsHelper extends Thread  {
 		// The array that implements the buffer
 		private StringBuffer buffer = new StringBuffer();
 		
-		// The types of the log
-		// It is here so I don't need to get this reference very often
-		private String[] logTypes=LogTypeHelper.getAllTypesDescriptions();
-		
 		/**
 		 * The constructor
 		 * 
@@ -459,20 +455,20 @@ public class IOLogsHelper extends Thread  {
 		 *         as opening  TAG
 		 *         -1: if the buffer contains no opening TAG
 		 */
-		private int getOpeningTagIndex() {
-			for (int t=0; t<logTypes.length; t++) {
-				if (buffer.indexOf("<"+logTypes[t])!=-1) {
-					return t;
+		private LogTypeHelper getOpeningTagIndex() {
+			for (LogTypeHelper log: LogTypeHelper.values()) {
+				if (buffer.indexOf("<"+log.logEntryType)!=-1) {
+					return log;
 				}
 			}
-			return -1;
+			return null;
 		}
 		
 		/**
 		 * @return True is the buffer contains an opening tag
 		 */
 		public boolean hasOpeningTag() {
-			return getOpeningTagIndex()!=-1;
+			return getOpeningTagIndex()!=null;
 		}
 		
 		/**
@@ -482,11 +478,11 @@ public class IOLogsHelper extends Thread  {
 		 *         Return an empty string if there is no openin TAG in the buffer
 		 */
 		public String getOpeningTag() {
-			int idx = getOpeningTagIndex();
-			if (idx==-1) {
+			LogTypeHelper logType = getOpeningTagIndex();
+			if (logType==null) {
 				return "";
 			} else {
-				return LogTypeHelper.getAllTypesDescriptions()[idx];
+				return logType.logEntryType;
 			}
 		}
 		
@@ -506,7 +502,7 @@ public class IOLogsHelper extends Thread  {
 		public boolean hasClosingTag(String tag) {
 			String closingTag= "</"+tag+">";
 			boolean ret = buffer.indexOf(closingTag)!=-1;
-			if (tag.compareTo(LogTypeHelper.getLogTypeDescription(LogTypeHelper.ENTRYTYPE_TRACE))==0) {
+			if (tag.compareTo(LogTypeHelper.TRACE.logEntryType)==0) {
 				// Trace should terminate with "/>" but sometimes with </Trace>
 				// even if I think that the latter is wrong
 				ret = ret || buffer.indexOf("/>")!=-1;

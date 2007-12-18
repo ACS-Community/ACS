@@ -484,9 +484,8 @@ public class LogReceiver {
 			return (Date)jlogRecord.getField(ILogEntry.Field.TIMESTAMP);
 		}
 		
-		public int getLevel() {
-			int jlogLevel = ((Integer)jlogRecord.getField(ILogEntry.Field.ENTRYTYPE)).intValue();
-			return LogTypeHelper.getAcsCoreLevel(jlogLevel);
+		public LogTypeHelper getLevel() {
+			return LogTypeHelper.values()[((Integer)jlogRecord.getField(ILogEntry.Field.ENTRYTYPE)).intValue()];
 		}
 		
 		public String getSourceObject() {

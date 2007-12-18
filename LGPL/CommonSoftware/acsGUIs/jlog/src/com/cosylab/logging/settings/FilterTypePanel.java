@@ -75,10 +75,15 @@ public class FilterTypePanel extends FilterParameterPanel implements ItemListene
 		minimumCheck.addItemListener(this);
 		panelTop.add(minimumCheck, newConstraints(1, 4, 0, 0, 0));
 		
-		minimum = new JComboBox(LogTypeHelper.getAllTypesDescriptions());
+		String[] Descriptions = new String[LogTypeHelper.values().length];
+		int t=0;
+		for (LogTypeHelper log: LogTypeHelper.values()) {
+			Descriptions[t++]=log.logEntryType;
+		}
+		minimum = new JComboBox(Descriptions);
 		minimum.setSelectedIndex(0);
 		minimum.setEditable(false);
-		minimum.setMaximumRowCount(LogTypeHelper.getNumberOfTypes());
+		minimum.setMaximumRowCount(Descriptions.length);
 		minimum.setRenderer(rendererMin);
 		panelTop.add(minimum, newConstraints(2, 0, 0, 4, 0));
 
@@ -86,10 +91,10 @@ public class FilterTypePanel extends FilterParameterPanel implements ItemListene
 		maximumCheck.addItemListener(this);
 		panelTop.add(maximumCheck, newConstraints(3, 4, 0, 0, 0));
 
-		maximum = new JComboBox(LogTypeHelper.getAllTypesDescriptions());
+		maximum = new JComboBox(Descriptions);
 		maximum.setSelectedIndex(0);
 		maximum.setEditable(false);
-		maximum.setMaximumRowCount(LogTypeHelper.getNumberOfTypes());
+		maximum.setMaximumRowCount(Descriptions.length);
 		maximum.setRenderer(rendererMax);
 		panelTop.add(maximum, newConstraints(4, 0, 0, 4, 0));
 
@@ -100,10 +105,10 @@ public class FilterTypePanel extends FilterParameterPanel implements ItemListene
 		exactCheck.addItemListener(this);
 		panelBottom.add(exactCheck, newConstraints(0, 4, 0, 0, 0));
 
-		exact = new JComboBox(LogTypeHelper.getAllTypesDescriptions());
+		exact = new JComboBox(Descriptions);
 		exact.setSelectedIndex(0);
 		exact.setEditable(false);
-		exact.setMaximumRowCount(LogTypeHelper.getNumberOfTypes());
+		exact.setMaximumRowCount(Descriptions.length);
 		exact.setRenderer(rendererExact);
 		panelBottom.add(exact, newConstraints(1, 0, 0, 4, 0));
 	}

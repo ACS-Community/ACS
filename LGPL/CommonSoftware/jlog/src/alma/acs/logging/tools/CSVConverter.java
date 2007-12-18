@@ -182,7 +182,7 @@ public class CSVConverter {
 					df.format(dt,dateSB,pos);
 					appendField(dateSB.toString(),str);
 				} else if (index==Field.ENTRYTYPE.ordinal()) {
-					appendField(LogTypeHelper.getLogTypeDescription(Integer.parseInt(obj.toString())),str);
+					appendField(LogTypeHelper.values()[Integer.parseInt(obj.toString())].logEntryType,str);
 				} else {
 					appendField(obj.toString(),str);
 				}

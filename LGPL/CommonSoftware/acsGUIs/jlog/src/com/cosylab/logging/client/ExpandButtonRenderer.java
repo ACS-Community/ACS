@@ -29,12 +29,7 @@ import javax.swing.*;
  * @author: Ales Pucelj (ales.pucelj@kgb.ijs.si)
  */
 public class ExpandButtonRenderer extends MultiIconRenderer implements javax.swing.table.TableCellRenderer {
-/**
- * ExpandButtonRenderer constructor comment.
- */
-public ExpandButtonRenderer() {
-	super();
-}
+
 /**
  * ExpandButtonRenderer constructor comment.
  * @param resourceNames java.lang.String[]
@@ -42,29 +37,7 @@ public ExpandButtonRenderer() {
 public ExpandButtonRenderer(java.lang.String[] resourceNames) {
 	super(resourceNames);
 }
-/**
- * ExpandButtonRenderer constructor comment.
- * @param resourceNames java.lang.String[]
- * @param horizontalAlignement int
- */
-public ExpandButtonRenderer(java.lang.String[] resourceNames, int horizontalAlignement) {
-	super(resourceNames, horizontalAlignement);
-}
-/**
- * ExpandButtonRenderer constructor comment.
- * @param icons javax.swing.Icon[]
- */
-public ExpandButtonRenderer(javax.swing.Icon[] icons) {
-	super(icons);
-}
-/**
- * ExpandButtonRenderer constructor comment.
- * @param icons javax.swing.Icon[]
- * @param horizontalAlignment int
- */
-public ExpandButtonRenderer(javax.swing.Icon[] icons, int horizontalAlignment) {
-	super(icons, horizontalAlignment);
-}
+
 /**
  *  This method is sent to the renderer by the drawing table to
  *  configure the renderer appropriately before drawing.  Return
