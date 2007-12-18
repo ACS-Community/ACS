@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: testLoggable.cpp,v 1.1 2006/10/04 06:03:28 gchiozzi Exp $"
+* "@(#) $Id: testLoggable.cpp,v 1.2 2007/12/18 09:33:14 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -31,7 +31,7 @@
 #include "logging.h"
 #include "loggingLoggable.h"
 
-static char *rcsId="@(#) $Id: testLoggable.cpp,v 1.1 2006/10/04 06:03:28 gchiozzi Exp $"; 
+static char *rcsId="@(#) $Id: testLoggable.cpp,v 1.2 2007/12/18 09:33:14 bjeram Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 
@@ -51,6 +51,10 @@ class TestLoggable : public virtual Logging::Loggable
 	{
 	    std::string message = "This is a logger named: " + getLogger()->getName();
 	    getLogger()->log(Logging::Logger::LM_INFO, message);
+	}
+    static void doTestStaticLogs()
+	{
+	    AUTO_STATIC_TRACE("TestLoggable::doTestStaticLogs");
 	}
 };
 
@@ -74,6 +78,10 @@ int main(int argc, char *argv[])
     noName.doTestLogs();
     withName.doTestLogs();
     fromLogger.doTestLogs();
+
+    printf("-------------------------------------------------------------------------\n");
+    printf("Here we test if static log macro(s) work(s)\n");
+    TestLoggable::doTestStaticLogs();
 
     return 0;
 }
