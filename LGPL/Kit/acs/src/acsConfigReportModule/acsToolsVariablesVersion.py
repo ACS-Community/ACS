@@ -54,8 +54,8 @@ basic_tools = [('gcc','gcc --version','3.4.6'),\
               ('rcs','rcs -V','5.7'),\
               ('unzip','unzip -v','UnZip 5.51'),\
               ('tar','tar  --version','1.14'),\
-              ('expect','expect -version','5.42.1'),\
-              ('rman','rman -version','v3.0.8+X.Org'),\
+              ('expect','expect -version','expect version 5.43.0'),\
+              ('rman','rman -version','PolyglotMan v3.1 of $Date: 2007/12/18 09:38:33 $'),\
               ('cvs','cvs --version','1.11.17'),\
               ('perl','perl -v','v5.8'),\
               ('zip','zip -h','Zip 2.3'),\
