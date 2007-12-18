@@ -247,10 +247,6 @@ else:
 # Creates report file
 #
 
-print ' ATTENTION: If you see windows opening on the screen and not closing immediately,'
-print '            close them by hand to proceed!'
-print '            They are part of the tcl/tk checking procedure'
-
 # Removal of local html report file
 commands.getoutput('rm -f ./report.html')
 
