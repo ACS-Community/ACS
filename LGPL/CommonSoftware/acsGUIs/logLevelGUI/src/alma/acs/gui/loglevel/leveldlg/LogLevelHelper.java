@@ -72,22 +72,22 @@ public class LogLevelHelper {
 		return levels.minLogLevel;
 	}
 
-	public void setGlobalLevel(int globalLevel) {
-		if (globalLevel<0 || globalLevel>=LogTypeHelper.getNumberOfTypes()) {
+	public void setGlobalLevel(LogTypeHelper globalLevel) {
+		if (globalLevel==null) {
 			throw new IllegalArgumentException("Global log level out of range: "+globalLevel);
 		}
-		levels.minLogLevel = (short)globalLevel;
+		levels.minLogLevel = (short)globalLevel.acsCoreLevel.value;
 	}
 
 	public int getLocalLevel() {
 		return levels.minLogLevelLocal;
 	}
 
-	public void setLocalLevel(int localLevel) {
-		if (localLevel<0 || localLevel>=LogTypeHelper.getNumberOfTypes()) {
-			throw new IllegalArgumentException("Local log level out of range: "+localLevel);
+	public void setLocalLevel(LogTypeHelper localLevel) {
+		if (localLevel==null) {
+			throw new IllegalArgumentException("Invalid null log level");
 		}
-		levels.minLogLevelLocal = (short)localLevel;
+		levels.minLogLevelLocal = (short)localLevel.acsCoreLevel.value;
 	}
 
 	public String getName() {

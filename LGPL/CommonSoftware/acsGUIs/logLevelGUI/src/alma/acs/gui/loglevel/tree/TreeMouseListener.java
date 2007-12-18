@@ -206,7 +206,7 @@ public class TreeMouseListener extends MouseAdapter {
 		}
 		LoggingConfigurableOperations logConf;
 		try {
-			logConf = new LoggingConfigurableLevelTranslator(LoggingConfigurableHelper.narrow(mgr));
+			logConf = LoggingConfigurableHelper.narrow(mgr);
 		} catch (Throwable t) {
 			throw new Exception("Error getting the LoggingConfigurable out of Manager:\n"+t.getMessage(),t);
 		}
@@ -228,7 +228,7 @@ public class TreeMouseListener extends MouseAdapter {
 			throw new Exception("The reference to the container is null in ContainerInfo");
 		}
 		try {
-			logConf = new LoggingConfigurableLevelTranslator(LoggingConfigurableHelper.narrow(cnt));
+			logConf = LoggingConfigurableHelper.narrow(cnt);
 		} catch (Throwable t) {
 			throw new Exception("Error getting the LoggingConfigurable out of Container:\n"+t.getMessage(),t);
 		}

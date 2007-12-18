@@ -38,13 +38,18 @@ import com.cosylab.logging.settings.LogTypeRenderer;
  */
 public class LogTypeCellRenderer implements TableCellRenderer {
 	
-	private JComboBox levelCB=new JComboBox(LogTypeHelper.getAllTypesDescriptions());
+	private JComboBox levelCB;
 	private LogTypeRenderer levelRenderer = new LogTypeRenderer();
 	
 	public LogTypeCellRenderer() {
+		String[] descs = new String[LogTypeHelper.values().length];
+		for (int t=0; t<descs.length; t++) {
+			descs[t]=LogTypeHelper.values()[t].logEntryType;
+		}
+		levelCB=new JComboBox(descs);
 		levelCB.setSelectedIndex(0);
 		levelCB.setEditable(false);
-		levelCB.setMaximumRowCount(LogTypeHelper.getNumberOfTypes());
+		levelCB.setMaximumRowCount(LogTypeHelper.values().length);
 		levelCB.setRenderer(levelRenderer);
 	}
 	

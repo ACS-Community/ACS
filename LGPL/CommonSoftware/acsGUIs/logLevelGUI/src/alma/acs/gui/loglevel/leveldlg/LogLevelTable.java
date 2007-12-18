@@ -50,7 +50,7 @@ public class LogLevelTable extends JTable {
 	private LogTypeCellRenderer renderer = new LogTypeCellRenderer();
 	
 	// The editor for log levels
-	private JComboBox editor=new JComboBox(LogTypeHelper.getAllTypesDescriptions());;
+	private JComboBox editor;
 	public LogTypeRenderer editorRenderer= new LogTypeRenderer();
 	
 	// The identifiers of the cols
@@ -76,6 +76,12 @@ public class LogLevelTable extends JTable {
 			throw new IllegalArgumentException("Invalid null table model in constructor");
 		}
 		
+		String[] descs = new String[LogTypeHelper.values().length];
+		for (int t=0; t<LogTypeHelper.values().length; t++) {
+			descs[t]=LogTypeHelper.values()[t].logEntryType;
+		}
+		editor=new JComboBox(descs);
+		
 		setModel(model);
 		
 		// Set the row sorter
@@ -86,7 +92,7 @@ public class LogLevelTable extends JTable {
 		
 		editor.setSelectedIndex(0);
 		editor.setEditable(false);
-		editor.setMaximumRowCount(LogTypeHelper.getNumberOfTypes());
+		editor.setMaximumRowCount(LogTypeHelper.values().length);
 		editor.setRenderer(editorRenderer);
 		
 		columnModel.getColumn(2).setCellEditor(new DefaultCellEditor(editor));

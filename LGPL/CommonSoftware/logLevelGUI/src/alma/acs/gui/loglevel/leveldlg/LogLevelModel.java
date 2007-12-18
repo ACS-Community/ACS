@@ -24,6 +24,8 @@ package alma.acs.gui.loglevel.leveldlg;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
+import alma.acs.logging.level.AcsLogLevelDefinition;
+
 import com.cosylab.logging.engine.log.LogTypeHelper;
 
 /**
@@ -169,15 +171,27 @@ public class LogLevelModel extends DefaultTableModel {
 	 *  
 	 * @param obj The object representing the log type
 	 * @return The log type
+	 *         null if a log type for the given parameter is not found
 	 */
-	private int getLevelFromObject(Object obj) {
+	private LogTypeHelper getLevelFromObject(Object obj) {
 		if (obj==null) {
 			throw new IllegalArgumentException("Invalid null object");
 		}
+		LogTypeHelper logType;
 		if (obj instanceof Integer) {
-			return (Integer)obj;
+			try {
+				logType=LogTypeHelper.fromAcsCoreLevel(AcsLogLevelDefinition.fromInteger((Integer)obj));
+			} catch (Exception e) {
+				return null;
+			}
+		} else {
+			try {
+				logType=LogTypeHelper.fromLogTypeDescription(obj.toString());
+			} catch (Exception e) {
+				return null;
+			}
 		}
-		return LogTypeHelper.parseLogTypeDescription(obj.toString());
+		return logType;
 	}
 	
 	/**

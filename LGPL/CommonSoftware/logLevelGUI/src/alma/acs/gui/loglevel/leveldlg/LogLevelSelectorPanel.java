@@ -63,11 +63,11 @@ public class LogLevelSelectorPanel extends JPanel implements ActionListener {
 	private LogLevelTable table;
 	private LogLevelModel model;
 	
-	// The editor for local and global log levels
-	private JComboBox allLocalCB=new JComboBox(LogTypeHelper.getAllTypesDescriptions());;
-	private JComboBox allGlobalCB=new JComboBox(LogTypeHelper.getAllTypesDescriptions());;
-	public LogTypeRenderer editorLocal= new LogTypeRenderer();
-	public LogTypeRenderer editorGlobal= new LogTypeRenderer();
+	
+	private JComboBox allLocalCB;
+	private JComboBox allGlobalCB;
+	public LogTypeRenderer editorLocal;
+	public LogTypeRenderer editorGlobal;
 	
 	private JCheckBox defaultCB = new JCheckBox("",false);
 	
@@ -84,6 +84,18 @@ public class LogLevelSelectorPanel extends JPanel implements ActionListener {
 		if (configurable==null) {
 			throw new IllegalArgumentException("Invalid null LoggingConfigurable in constructor");
 		}
+		
+		// The editor for local and global log levels
+		String[] descs = new String[LogTypeHelper.values().length];
+		
+		for (int t=0; t<descs.length; t++) {
+			descs[t]=LogTypeHelper.values()[t].logEntryType;
+		}
+		allLocalCB=new JComboBox(descs);
+		allGlobalCB=new JComboBox(descs);
+		editorLocal= new LogTypeRenderer();
+		editorGlobal= new LogTypeRenderer();
+		
 		logConf=configurable;
 		setName(name);
 		initialize(name);
@@ -192,14 +204,14 @@ public class LogLevelSelectorPanel extends JPanel implements ActionListener {
 			int newLvl = allLocalCB.getSelectedIndex();
 			LogLevelHelper[] levels = ((LogLevelModel)table.getModel()).getLevels();
 			for (LogLevelHelper lvl: levels) {
-				lvl.setLocalLevel(newLvl);
+				lvl.setLocalLevel(LogTypeHelper.values()[newLvl]);
 			}
 			((LogLevelModel)table.getModel()).fireTableDataChanged();
 		} else if (e.getSource()==allGlobalCB) {
 			int newLvl = allGlobalCB.getSelectedIndex();
 			LogLevelHelper[] levels = ((LogLevelModel)table.getModel()).getLevels();
 			for (LogLevelHelper lvl: levels) {
-				lvl.setGlobalLevel(newLvl);
+				lvl.setGlobalLevel(LogTypeHelper.values()[newLvl]);
 			}
 			((LogLevelModel)table.getModel()).fireTableDataChanged();
 		} else {
