@@ -42,7 +42,6 @@ import si.ijs.maci.Manager;
 
 import alma.acs.gui.loglevel.LogLvlSelNotSupportedException;
 import alma.acs.gui.loglevel.LogPaneNotFoundException;
-import alma.acs.gui.loglevel.LoggingConfigurableLevelTranslator;
 import alma.acs.gui.loglevel.leveldlg.LogLevelSelectorPanel;
 import alma.acs.gui.loglevel.tree.node.TreeContainerInfo;
 
