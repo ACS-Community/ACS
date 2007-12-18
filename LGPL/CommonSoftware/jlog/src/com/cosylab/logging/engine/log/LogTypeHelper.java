@@ -99,11 +99,11 @@ public enum LogTypeHelper {
     }
     
     /**
-     * Parse the parameter to check which is its type
+     * Return an enumerated with the description equal to the parameter
      * 
      * @param logDescr The description of a log as a String
      * 
-     * @return The ENTRYTYPE described by the parameter 
+     * @return The LogTypeHelper described by the parameter 
      *         (null if the string does not match with any log description)
      */
     public static LogTypeHelper fromLogTypeDescription(String logDescr) {
@@ -115,6 +115,24 @@ public enum LogTypeHelper {
         // Description not found!
         return null; 
     }
+    
+    /**
+     * Return an enumerated with the ACS log level equal to the parameter
+     * 
+     * @param acsLevel The ACS log level
+     * 
+     * @return The LogTypeHelper with the passed ACS log level 
+     *         (null if the string does not match with any log description)
+     */
+    public static LogTypeHelper fromAcsCoreLevel(AcsLogLevelDefinition acsLevel) {
+        for (LogTypeHelper logType: LogTypeHelper.values()) {
+            if (acsLevel==logType.acsCoreLevel) {
+                return logType;
+            }
+        }
+        // ACS log level not found!
+        return null; 
+    } 
     
     /**
      * Evaluates and returns the highest vertical dimension
