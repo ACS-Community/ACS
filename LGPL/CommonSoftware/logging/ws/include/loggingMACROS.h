@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingMACROS.h,v 1.17 2007/07/13 08:24:33 nbarriga Exp $"
+* "@(#) $Id: loggingMACROS.h,v 1.18 2007/12/18 09:32:59 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -218,5 +218,14 @@ getNamedLogger(Logging::BaseLog::STATIC_LOGGER_NAME)->log(priority, text, __FILE
  */
 #define AUTO_TRACE(routine) \
 Logging::LogTrace::LogTraceSmartPtr __autoTraceLogTraceSmartPtrInstance(new Logging::LogTrace(getLogger(), routine, __FILE__, __LINE__));
+
+/**
+ * This macro is static version of AUTO_TRACE macro that can be used inside a static methods 
+ * where AUTO_TRACE does not work (it does not compile).
+ * For details see description of AUTO_TRACE macro.
+ * @param routine Name of the routine in which this macro is being used from (std::string)
+ */
+#define AUTO_STATIC_TRACE(routine) \
+Logging::LogTrace::LogTraceSmartPtr __autoTraceLogTraceSmartPtrInstance(new Logging::LogTrace(getNamedLogger(Logging::BaseLog::STATIC_LOGGER_NAME), routine, __FILE__, __LINE__));
 
 #endif /*!_H*/
