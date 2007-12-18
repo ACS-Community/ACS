@@ -84,14 +84,13 @@ public class ClientWithLogReceiverTest extends ComponentClientTestCase {
         logReceiver.setDelayMillis(0);
         BlockingQueue<DelayedLogEntry> queue = logReceiver.getLogQueue();
         
-        final int numLogs = 5;
         Level[] levels = new Level[] {Level.FINEST, Level.FINE, Level.INFO, Level.WARNING, Level.SEVERE};
         Random random = new Random(System.currentTimeMillis());
-        for (int i=0; i<numLogs; i++) {
+        for (int i=0; i<levels.length; i++) {
             Level level = levels[random.nextInt(levels.length)];
             String acsLevelName = AcsLogLevel.getNativeLevel(level).getEntryName();
             // it's pretty odd that jlog uses its own set of log type integers 
-            int jlogLevelIndex = LogTypeHelper.parseLogTypeDescription(acsLevelName).intValue();
+            LogTypeHelper logType = LogTypeHelper.fromLogTypeDescription(acsLevelName);
             
             String logMessage = "This is log number " + i;
             m_logger.log(level, logMessage);
@@ -110,7 +109,7 @@ public class ClientWithLogReceiverTest extends ComponentClientTestCase {
 	                String sourceObjectName = (String) logEntry.getField(ILogEntry.Field.SOURCEOBJECT);
 	                if (sourceObjectName!=null && sourceObjectName.equals("ClientWithLogReceiverTest#testLogQueueNoDelay")) {
 		                assertEquals(logMessage, logEntry.getField(ILogEntry.Field.LOGMESSAGE));
-		                assertEquals(jlogLevelIndex, ((Integer)logEntry.getField(ILogEntry.Field.ENTRYTYPE)).intValue());
+		                assertEquals(logType, ((LogTypeHelper)logEntry.getField(ILogEntry.Field.ENTRYTYPE)));
 		                System.out.println("Received back log record #" + i);
 		                break; // and continue outer loop with next log record
 	                }
