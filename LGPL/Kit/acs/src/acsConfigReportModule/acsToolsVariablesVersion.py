@@ -63,12 +63,17 @@ basic_tools = [('gcc','gcc --version','3.4.6'),\
               ('diffutils','diff --version','2.8.1'),\
               ('groff','true | groff -v','1.18.1.1'),\
               ('java','java -version','(build 1.6.0_02-b05)'),\
-              ('Tcl','echo "puts [set ::tcl_patchLevel]; exit" | seqWish','8.4.15'),\
-              ('Tk','echo "puts [set ::tcl_patchLevel]; exit" | seqWish','8.4.15'),\
-              ('incr Tcl','echo "puts [package require Itcl]; exit" | seqWish','3.4'),\
-              ('incr TK','echo "puts [package require Itk]; exit" | seqWish','3.4'),\
-              ('iwidgets','echo "puts [package require Iwidgets]; exit" | seqWish','3.0.1'),\
-              ('tclX','echo "puts [package require Tclx]; exit" | seqWish','8.4')]
+              ('Tcl','echo "puts [set ::tcl_patchLevel]; exit" | tclsh','8.4.15'),\
+              ('Tk','echo "package require Tk; puts [set ::tk_patchLevel]; exit" | tclsh','8.4.15'),\
+              ('incr Tcl','echo "puts [package require Itcl]; exit" | tclsh','3.4'),\
+              ('incr TK','echo "puts [package require Itk]; exit" | tclsh','3.4'),\
+              ('iwidgets','echo "puts [package require Iwidgets]; exit" | tclsh','4.0.2'),\
+              ('tclX','echo "puts [package require Tclx]; exit" | tclsh','8.4'),\
+              ('img','echo "puts [package require Img]; exit" | tclsh','1.3'),\
+              ('BLT','echo "puts [package require BLT]; exit" | tclsh','2.4'),\
+              ('Tktable','echo "puts [package require Tktable]; exit" | tclsh','2.9'),\
+              ('snack','echo "puts [package require snack]; exit" | tclsh','2.2'),\
+              ('expect','echo "puts [package require Expect]; exit" | tclsh','5.43.0')]
 
 basic_tools_RH9 = [('gcc','gcc --version','3.3'),\
               ('binutils','ld --version','2.14'),\
