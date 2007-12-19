@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.45 2006/10/26 14:26:01 bjeram Exp $" 
+# "@(#) $Id: Makefile,v 1.46 2007/12/19 14:53:49 bjeram Exp $" 
 #
 # Makefile of logging
 #
@@ -44,7 +44,8 @@ OPTIMIZE=0
 # Can be overwritten in the call
 
 PROG = 
-
+#USER_CFLAGS = -frepo 
+#-fno-implicit-templates
 
 
 #
@@ -68,7 +69,7 @@ EXECUTABLES_L   =
 # <brief description of xxxxx program>
 
 loggingService_OBJECTS   = logging loggingXMLElement loggingXMLParser loggingLocalSyslog loggingRemoteSyslog loggingLocalFile \
-                           loggingLoggingTSSStorage loggingLoggingProxy  \
+                           loggingLoggingTSSStorage loggingLogLevelDefinition loggingLoggingProxy  \
 			   loggingACSLogger  loggingLogSvcHandler \
                            loggingLoggable \
 			   loggingBaseLog loggingHandler loggingLogger loggingLogTrace loggingGetLogger loggingGenericLogger loggingStdoutHandler
