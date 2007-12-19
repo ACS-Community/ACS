@@ -20,7 +20,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: userScript,v 1.45 2007/12/03 12:02:21 hsommer Exp $"
+# "@(#) $Id: userScript,v 1.46 2007/12/19 16:50:30 bjeram Exp $"
 #
 # Generic VxWorks user-script
 #
@@ -57,8 +57,10 @@ lcubootAutoLoad 1,"libTAO_CosEvent.so"
 lcubootAutoLoad 1,"libTAO_CosNotification.so"
 lcubootAutoLoad 1,"libTAO_IFR_Client.so"
 lcubootAutoLoad 1,"libTAO_Codeset.so"
+lcubootAutoLoad 1,"loki"
 lcubootAutoLoad 1,"acscommonStubs"
 lcubootAutoLoad 1,"acsutil"
+lcubootAutoLoad 1,"logging_idlStubs"
 lcubootAutoLoad 1,"loggingService"
 lcubootAutoLoad 1,"acserr"
 lcubootAutoLoad 1,"ACSErrTypeTest"
