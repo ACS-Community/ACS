@@ -1636,7 +1636,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 		// log info
 		String requestorName = getRequestorName(id);
-		logger.log(Level.INFO,"'" + requestorName + "' requested non-sticky component '" + curl + "'.");
+		logger.log(Level.FINE,"'" + requestorName + "' requested non-sticky component '" + curl + "'.");
 	
 		Component component = null;
 		synchronized (components)
@@ -1656,7 +1656,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	
 		// log info
 		if (component != null && component.getObject() != null)
-			logger.log(Level.INFO,"Non-sticky component '" + curl + "' provided to '" + requestorName + "'.");
+			logger.log(Level.FINE,"Non-sticky component '" + curl + "' provided to '" + requestorName + "'.");
 		else
 			logger.log(Level.INFO,"Failed to provide non-sticky component '" + curl + "' to '" + requestorName + "'.");
 	
