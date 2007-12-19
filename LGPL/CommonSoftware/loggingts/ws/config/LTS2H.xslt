@@ -27,7 +27,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: LTS2H.xslt,v 1.4 2007/07/12 11:29:53 nbarriga Exp $"
+* "@(#) $Id: LTS2H.xslt,v 1.5 2007/12/19 14:19:31 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -44,7 +44,7 @@
 #endif
 
 #include &lt;string>
-#include &lt;acslogS.h>
+#include &lt;logging_idlS.h>
 #include &lt;loggingACSLogger.h>
 #include &lt;logging.h>
 #include &lt;TypeSafeLog.h>
@@ -69,7 +69,7 @@ namespace </xsl:text><xsl:value-of select="@name"/>
                 string array;
                 string antenna;
                 string shortDescription;
-                ACSLog::NVPairSeq members;
+                ACSLoggingLog::NameValueSeq members;
 	protected:
 
 	public:

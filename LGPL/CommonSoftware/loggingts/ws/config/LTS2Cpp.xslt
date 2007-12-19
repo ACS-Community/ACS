@@ -20,7 +20,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: LTS2Cpp.xslt,v 1.4 2007/07/12 11:29:53 nbarriga Exp $"
+* "@(#) $Id: LTS2Cpp.xslt,v 1.5 2007/12/19 14:19:31 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -108,7 +108,7 @@ void </xsl:text><xsl:value-of select="$logName"/><xsl:text>::log(){
 		<xsl:value-of select="$memberName"/>
 		<xsl:text>(</xsl:text><xsl:value-of select="@type"/><xsl:text> value){
 
-	ACSLog::NVPair nv;
+	ACSLoggingLog::NameValue nv;
 	nv.name=CORBA::string_dup("</xsl:text><xsl:value-of select="$memberName"/><xsl:text>");
 </xsl:text>
 	<xsl:choose>
