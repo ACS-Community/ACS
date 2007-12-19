@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acserrOldTestImpl.cpp,v 1.4 2005/09/21 08:53:00 vwang Exp $"
+* "@(#) $Id: acserrOldTestImpl.cpp,v 1.5 2007/12/19 14:29:23 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -27,7 +27,7 @@
 * rlemke   30/08/01  integrated into tat
 */
 
-static char *rcsId="@(#) $Id: acserrOldTestImpl.cpp,v 1.4 2005/09/21 08:53:00 vwang Exp $"; 
+static char *rcsId="@(#) $Id: acserrOldTestImpl.cpp,v 1.5 2007/12/19 14:29:23 bjeram Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include "acserrOldTestImpl.h"
@@ -36,15 +36,23 @@ static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 extern CORBA::ORB_var orb;
 
-acserrOldTestImpl::acserrOldTestImpl(acserrOldTest* dest, const char* sn){
+acserrOldTestImpl::acserrOldTestImpl(acserrOldTest* dest, const char* sn)
+throw (CORBA::SystemException)
+{
   this->dest = dest;
   srvName = sn;
-}
+} 
 
-ACSErr::ErrorTrace * acserrOldTestImpl::testNoError (  )
-    throw ( CORBA::SystemException)
+ACSErr::ErrorTrace* acserrOldTestImpl::testNoError ()
+    throw (CORBA::SystemException)
 {
-  ACSError *er = new ACS_ERROR();
+#ifndef MAKE_VXWORKS
+    ACSError *er = new ACS_ERROR();
+#else
+    // for some reason expansion of ACS_ERROR macro w/o arguments does not work for VxWorks 6.2
+    // last comma in macro with variable list of parameters is not eaten if arg list is empty
+    ACSError *er = new ACSError(__FILE__, __LINE__ );
+#endif
 
   return er->returnErrorTrace();
 }  
