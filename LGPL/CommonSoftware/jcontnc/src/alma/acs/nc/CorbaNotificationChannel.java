@@ -26,11 +26,10 @@
  
 package alma.acs.nc;
 
-import alma.acs.exceptions.AcsJException;
-import alma.acs.container.ContainerServices;
-import alma.acs.container.ContainerServicesBase;
-
 import org.omg.CORBA.portable.IDLEntity;
+
+import alma.acs.container.ContainerServicesBase;
+import alma.acs.exceptions.AcsJException;
 
 /**
  * The CorbaNotificationChannel class implements the notification
