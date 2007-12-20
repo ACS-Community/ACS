@@ -34,7 +34,7 @@
 
 /**
  * @author  nbarriga
- * @version $Id: LTS2Java.xslt,v 1.5 2007/07/12 11:29:53 nbarriga Exp $
+ * @version $Id: LTS2Java.xslt,v 1.6 2007/12/20 17:22:50 hsommer Exp $
  * @since
  */
 
@@ -54,49 +54,72 @@ import alma.acs.logging.AcsLogRecord;
 <xsl:text>
 /**
  * Generated class that produces a type-safe log message, as configured in </xsl:text><xsl:value-of select="$logdefname"/><xsl:text>.xml.
+ * &lt;p&gt;
+ * The description is: </xsl:text><xsl:value-of select="@description"/><xsl:text>
  */
 public class </xsl:text>
         	<xsl:variable name="logName"><xsl:value-of select="@logName"/></xsl:variable>
-		<xsl:value-of select="$logName"/><xsl:text>{
-	private Logger m_logger;
-	private Map&lt;String, Object> nameValue;
-	private AcsLogRecord lr;
-        public </xsl:text><xsl:value-of select="$logName"/><xsl:text>(Logger logger, String array, String antenna)
-            {
-                init(logger)    ;
-                lr.setArray(array);
-                lr.setAntenna(antenna);
-        }	
+		<xsl:value-of select="$logName"/><xsl:text> {
+	private final Logger logger;
+	private final Map&lt;String, Object> nameValue;
+	private final AcsLogRecord lr;
+	
 	public </xsl:text><xsl:value-of select="$logName"/><xsl:text>(Logger logger) {
-                init(logger);
-	}
-        public void init(Logger logger){
-		this.m_logger=logger;
-		if (m_logger instanceof AcsLogger) {
-			((AcsLogger)m_logger).addLoggerClass(this.getClass());
+		this.logger=logger;
+		if (logger instanceof AcsLogger) {
+			((AcsLogger)logger).addLoggerClass(this.getClass());
 		}
 		nameValue = new LinkedHashMap&lt;String, Object>();
 		nameValue.put("logName","</xsl:text><xsl:value-of select="$logName"/><xsl:text>");
 		lr = new AcsLogRecord(AcsLogLevel.</xsl:text><xsl:value-of select="@priority"/><xsl:text>, "</xsl:text><xsl:value-of select="@shortDescription"/><xsl:text>", nameValue, logger.getName());
 		lr.setAudience("</xsl:text><xsl:value-of select="@audience"/><xsl:text>");
-        }
-	public void setArray(String array){
-                lr.setArray(array);
-        }
-	public void setAntenna(String antenna){
-                lr.setAntenna(antenna);
-        }
+	}
+	public </xsl:text><xsl:value-of select="$logName"/><xsl:text>(Logger logger, String array, String antenna) {
+		this(logger);
+		lr.setArray(array);
+		lr.setAntenna(antenna);
+	}	
+	
+	/**
+	 * Convenience method for compact one-line logs
+	 */
+	public static void log(Logger logger</xsl:text>
+	<xsl:for-each select="loggingts:Member">
+		<xsl:text>, </xsl:text>
+			<xsl:choose>
+                <xsl:when test='@type="string"'><xsl:text>String</xsl:text></xsl:when>
+				<xsl:when test='@type="double"'><xsl:text>double</xsl:text></xsl:when>
+                <xsl:when test='@type="long"'><xsl:text>long</xsl:text></xsl:when>
+			</xsl:choose>
+		<xsl:text> </xsl:text><xsl:value-of select="@name"/>
+		<!-- xsl:text> param</xsl:text><xsl:number value="position()"/ -->
+	</xsl:for-each>
+	<xsl:text>) {
+		</xsl:text><xsl:value-of select="$logName"/><xsl:text> instance = new </xsl:text><xsl:value-of select="$logName"/><xsl:text>(logger);</xsl:text>
+	<xsl:for-each select="loggingts:Member"><xsl:text>
+		instance.set</xsl:text><xsl:value-of select="@name"/><xsl:text>(</xsl:text><xsl:value-of select="@name"/><xsl:text>);</xsl:text>
+	</xsl:for-each><xsl:text>
+		instance.log();
+	}
+	
+	public void setArray(String array) {
+		lr.setArray(array);
+	}
+	public void setAntenna(String antenna) {
+		lr.setAntenna(antenna);
+	}
 	public String getArray(){
-                return lr.getArray();
-        }
+		return lr.getArray();
+	}
 	public String getAntenna(){
-                return lr.getAntenna();
-        }
+		return lr.getAntenna();
+	}
+	
 	/**
 	 * Logs the message through the Logger supplied in the constructor, with the configured log level.
 	 */	
 	public void log() {
-		m_logger.log(lr);
+		logger.log(lr);
 	}
 </xsl:text>
 		<xsl:for-each select="loggingts:Member">
@@ -113,8 +136,8 @@ public class </xsl:text>
 	        	<xsl:text>Long</xsl:text>
           	</xsl:when>
         </xsl:choose>
-	<xsl:text> value){
-		nameValue.put("</xsl:text><xsl:value-of select="@name"/><xsl:text>",value);
+	<xsl:text> value) {
+		nameValue.put("</xsl:text><xsl:value-of select="@name"/><xsl:text>", value);
 	}
 </xsl:text>	
 		</xsl:for-each>
