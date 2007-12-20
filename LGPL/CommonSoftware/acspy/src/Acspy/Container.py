@@ -1,4 +1,4 @@
-# @(#) $Id: Container.py,v 1.33 2007/12/05 22:02:52 agrimstrup Exp $
+# @(#) $Id: Container.py,v 1.34 2007/12/20 22:47:59 agrimstrup Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -21,7 +21,7 @@
 # ALMA should be addressed as follows:
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: Container.py,v 1.33 2007/12/05 22:02:52 agrimstrup Exp $"
+# "@(#) $Id: Container.py,v 1.34 2007/12/20 22:47:59 agrimstrup Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -38,7 +38,7 @@ TODO LIST:
 - a ComponentLifecycleException has been defined in IDL now...
 '''
 
-__revision__ = "$Id: Container.py,v 1.33 2007/12/05 22:02:52 agrimstrup Exp $"
+__revision__ = "$Id: Container.py,v 1.34 2007/12/20 22:47:59 agrimstrup Exp $"
 
 #--Enable Searching Import-----------------------------------------------------
 import AcsutilPy.ACSImport
@@ -124,6 +124,7 @@ class Container(maci__POA.Container, maci__POA.LoggingConfigurable, BaseClient):
         self.corbaRef = None  #reference to this object's CORBA reference
         self.defaultlogger = getLogger(name) # Holder for container's default log level
         self.defaultlogger.setDefault(True)
+        self.configureComponentLogger(name)
         myname = ".".join([name, name])
         self.logger = getLogger(myname) # Container's logger
         self.client_type = maci.CONTAINER_TYPE

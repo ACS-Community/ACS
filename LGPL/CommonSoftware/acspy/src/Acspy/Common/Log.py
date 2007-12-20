@@ -1,4 +1,4 @@
-# @(#) $Id: Log.py,v 1.36 2007/12/13 17:45:05 agrimstrup Exp $
+# @(#) $Id: Log.py,v 1.37 2007/12/20 22:47:59 agrimstrup Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA,  2001
@@ -43,7 +43,7 @@ TODO:
 XML-related methods are untested at this point.
 '''
 
-__revision__ = "$Id: Log.py,v 1.36 2007/12/13 17:45:05 agrimstrup Exp $"
+__revision__ = "$Id: Log.py,v 1.37 2007/12/20 22:47:59 agrimstrup Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 from os        import environ
@@ -79,6 +79,8 @@ logging.addLevelName(logging.ALERT, "ALERT")
 logging.EMERGENCY = logging.ALERT + 1
 logging.addLevelName(logging.EMERGENCY, "EMERGENCY")
 
+logging.OFF = logging.EMERGENCY + 1
+logging.addLevelName(logging.OFF, "OFF")
 
 # Log Levels are received as integer in the range [0,11]
 # with 1 and 7 undefined.  The current code interpolates
@@ -95,7 +97,8 @@ NLEVELS = { 0 : logging.NOTSET,
             8 : logging.ERROR,  
             9 : logging.CRITICAL,  
            10 : logging.ALERT,  
-           11 : logging.EMERGENCY
+           11 : logging.EMERGENCY,
+           99 : logging.OFF
            }
 
 # Since the Python handlers only use the Python constants
@@ -111,7 +114,8 @@ RLEVELS = { logging.NOTSET    : 0,
             logging.ERROR     : 8,  
             logging.CRITICAL  : 9,  
             logging.ALERT     : 10,  
-            logging.EMERGENCY : 11
+            logging.EMERGENCY : 11,  
+            logging.OFF       : 99
            }
 
 
@@ -138,6 +142,10 @@ SEVERITIES = { 002 : ACSLog.ACS_LOG_TRACE,
                01000 : ACSLog.ACS_LOG_ALERT,
                02000 : ACSLog.ACS_LOG_EMERGENCY
                }
+
+#------------------------------------------------------------------------------
+def getLevelName(lnum):
+    return logging.getLevelName(NLEVELS[lnum])
                
 #------------------------------------------------------------------------------
 def getSeverity(severity_number):
@@ -252,6 +260,22 @@ class Logger(logging.Logger):
         msg = func_name + " - " + msg
         
         return msg
+    #------------------------------------------------------------------------
+    def logAtLevel(self, lvl, msg):
+        '''
+        Log a message at the given level.
+
+        Parameters:
+        - lvl is the log level to send the message at
+        - msg is a string to be sent to the logging system
+
+        Returns: Nothing
+
+        Raises: Nothing
+        '''
+        msg = self.__formatMessage(msg)
+        self.log(NLEVELS[lvl], msg)
+        
     #------------------------------------------------------------------------
     def logAlert(self, msg):
         '''
@@ -483,7 +507,7 @@ class Logger(logging.Logger):
 
         Raises: Nothing
         '''
-        if loglevel.useDefault:
+        if loglevel.useDefault and not self.isdefault:
             self.usingDefault = True
             self.stdouthandler.setLevel(self.getEffectiveHandlerLevel('stdouthandler'))
             self.acshandler.setLevel(self.getEffectiveHandlerLevel('acshandler'))
