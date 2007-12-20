@@ -39,7 +39,10 @@ import org.omg.CosNotifyChannelAdmin.EventChannelFactoryHelper;
 import org.omg.CosNotifyChannelAdmin.EventChannelHelper;
 
 import alma.ACSErrTypeCommon.wrappers.AcsJBadParameterEx;
+import alma.ACSErrTypeCommon.wrappers.AcsJCORBAProblemEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJUnexpectedExceptionEx;
+import alma.AcsNCTraceLog.LOG_NC_ChannelCreated_OK;
+import alma.AcsNCTraceLog.LOG_NC_ChannelDestroyed_OK;
 import alma.acs.container.AdvancedContainerServices;
 import alma.acs.container.ContainerServicesBase;
 import alma.acs.exceptions.AcsJException;
@@ -200,7 +203,7 @@ public class Helper {
 		EventChannel retValue = null;
 		try {
 			// get the Notification Factory first.
-			NameComponent[] t_NameFactory = { new NameComponent(notifyFactoryName, /* alma.acscommon.NOTIFICATION_FACTORY_NAME.value, */"") };
+			NameComponent[] t_NameFactory = { new NameComponent(notifyFactoryName, "") };
 			EventChannelFactory notifyFactory = EventChannelFactoryHelper.narrow(getNamingService().resolve(t_NameFactory));
 
 			// create the channel
@@ -218,9 +221,12 @@ public class Helper {
 			// register our new channel with the naming service
 			NameComponent[] t_NameChannel = { new NameComponent(channelName, channelKind) };
 			getNamingService().rebind(t_NameChannel, retValue);
+			
 		} catch (org.omg.CosNaming.NamingContextPackage.NotFound e) {
-			String reason = "The CORBA Notification Service is not registered in the Naming Service: ";
-			throw new alma.ACSErrTypeCommon.wrappers.AcsJCORBAProblemEx(reason + e.getMessage());
+			String reason = "The CORBA Notification Service is not registered in the Naming Service: " + e.getMessage();
+			AcsJCORBAProblemEx ex2 = new AcsJCORBAProblemEx();
+			ex2.setInfo(reason);
+			throw ex2;
 		} catch (org.omg.CosNaming.NamingContextPackage.CannotProceed e) {
 			// Think there is virtually no chance of this every happening but...
 			throw new alma.ACSErrTypeCommon.wrappers.AcsJCORBAProblemEx(e.getMessage());
@@ -236,6 +242,9 @@ public class Helper {
 					+ "' channel are unsupported: ";
 			throw new alma.ACSErrTypeCommon.wrappers.AcsJCORBAProblemEx(reason + e.getMessage());
 		}
+		
+		LOG_NC_ChannelCreated_OK.log(m_logger, channelName, notifyFactoryName); 
+		
 		return retValue;
 	}
 
@@ -261,13 +270,12 @@ public class Helper {
 			throws AcsJException 
 	{
 		try {
-//			m_logger.fine("Will destroy notification channel " + channelName);
 			// destroy the remote CORBA object
 			channelRef.destroy();
 
 			// unregister our channel with the naming service
 			NameComponent[] t_NameChannel = { new NameComponent(channelName, channelKind) };
-			getNamingService().unbind(t_NameChannel);
+			getNamingService().unbind(t_NameChannel);			
 		} catch (org.omg.CosNaming.NamingContextPackage.NotFound e) {
 			// Think there is virtually no chance of this every happening but...
 			String msg = "Cannot unbind the '" + channelName + "' channel from the Naming Service!";
@@ -279,6 +287,9 @@ public class Helper {
 			// Think there is virtually no chance of this every happening but...
 			throw new alma.ACSErrTypeCommon.wrappers.AcsJCORBAProblemEx(e.getMessage());
 		}
+		
+		LOG_NC_ChannelDestroyed_OK.log(m_logger, channelName, ""); // @TODO use notif.service name 
+
 	}
 
 	
