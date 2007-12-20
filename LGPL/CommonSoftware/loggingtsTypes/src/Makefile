@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.3 2007/02/08 10:47:16 nbarriga Exp $"
+# "@(#) $Id: Makefile,v 1.4 2007/12/20 17:28:43 hsommer Exp $"
 #
 # Makefile of ........
 #
@@ -32,7 +32,9 @@
 # As a general rule:  public file are "cleaned" and "installed"  
 #                     local (_L) are not "installed".
 
-ACSLOGTSDEF = SampleLog AnotherSampleLog
+#
+# Type-safe log code generation
+ACSLOGTSDEF = AcsNCTraceLog
 
 #
 # C programs (public and local)
@@ -125,7 +127,7 @@ jjj_DIRS=
 jjj_EXTRAS= 
 #
 # java sources in Jarfile on/off
-DEBUG= 
+DEBUG=on 
 #
 # ACS XmlIdl generation on/off
 #
