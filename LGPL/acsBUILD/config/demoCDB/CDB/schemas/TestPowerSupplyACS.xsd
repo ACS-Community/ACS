@@ -13,7 +13,7 @@
 	<xs:import namespace="urn:schemas-cosylab-com:PowerSupply:1.0" schemaLocation="PowerSupply.xsd"/>
 	<xs:complexType name="TestPowerSupplyACS">
 		<xs:complexContent>
-			<xs:restriction base="powerSupply:PowerSupply">
+			<xs:restriction base="powerSupply:PowerSupplyType">
 				<xs:sequence>
 					<xs:element name="current">
 						<xs:complexType>
