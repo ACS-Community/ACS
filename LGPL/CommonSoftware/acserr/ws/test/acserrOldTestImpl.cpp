@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acserrOldTestImpl.cpp,v 1.5 2007/12/19 14:29:23 bjeram Exp $"
+* "@(#) $Id: acserrOldTestImpl.cpp,v 1.6 2007/12/20 08:00:47 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -27,7 +27,7 @@
 * rlemke   30/08/01  integrated into tat
 */
 
-static char *rcsId="@(#) $Id: acserrOldTestImpl.cpp,v 1.5 2007/12/19 14:29:23 bjeram Exp $"; 
+static char *rcsId="@(#) $Id: acserrOldTestImpl.cpp,v 1.6 2007/12/20 08:00:47 bjeram Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include "acserrOldTestImpl.h"
@@ -37,7 +37,6 @@ static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 extern CORBA::ORB_var orb;
 
 acserrOldTestImpl::acserrOldTestImpl(acserrOldTest* dest, const char* sn)
-throw (CORBA::SystemException)
 {
   this->dest = dest;
   srvName = sn;
