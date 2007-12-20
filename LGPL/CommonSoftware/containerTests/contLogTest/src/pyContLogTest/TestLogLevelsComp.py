@@ -17,7 +17,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: TestLogLevelsComp.py,v 1.1 2007/12/14 16:53:32 eallaert Exp $"
+# "@(#) $Id: TestLogLevelsComp.py,v 1.2 2007/12/20 22:50:33 agrimstrup Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -33,6 +33,7 @@ import contLogTest
 from Acspy.Servants.ContainerServices  import ContainerServices
 from Acspy.Servants.ComponentLifecycle import ComponentLifecycle
 from Acspy.Servants.ACSComponent       import ACSComponent
+from Acspy.Common.Log                  import getLevelName
 #--GLOBALS---------------------------------------------------------------------
 
 #------------------------------------------------------------------------------
@@ -57,14 +58,14 @@ class TestLogLevelsComp(contLogTest__POA.TestLogLevelsComp,  #CORBA stubs for ID
         '''
         Override this method inherited from ComponentLifecycle
         '''
-        self.getLogger().logTrace("called...")
+        self.getLogger().logTrace("TestLogLevelsComp.TestLogLevelsComp")
 
     #------------------------------------------------------------------------------
     def cleanUp(self):
         '''
         Override this method inherited from ComponentLifecycle
         '''
-        self.getLogger().logInfo("called...") 
+        self.getLogger().logInfo("Destroying " + self.name + "...") 
     #------------------------------------------------------------------------------
     #--Implementation of IDL methods-----------------------------------------------
     #------------------------------------------------------------------------------
@@ -73,8 +74,11 @@ class TestLogLevelsComp(contLogTest__POA.TestLogLevelsComp,  #CORBA stubs for ID
         Python implementation of IDL method.
         LongSeq getLevels();
         '''
-        self.getLogger().logInfo("called...") 
-        return [1, 2, 3, 4, 5]
+        mylogger = self.getLogger()
+        mylogger.logInfo("called...")
+        levels = mylogger.getLevels()
+        
+        return [2, 2, min(levels.minLogLevel, levels.minLogLevelLocal), levels.minLogLevel, levels.minLogLevelLocal]
 
     #------------------------------------------------------------------------------
     def logDummyMessages(self, levels):
@@ -82,7 +86,10 @@ class TestLogLevelsComp(contLogTest__POA.TestLogLevelsComp,  #CORBA stubs for ID
         Python implementation of IDL method.
         void logDummyMessages(in LongSeq levels);
         '''
-        self.getLogger().logInfo("called...") 
+        mylogger = self.getLogger()
+        for l in levels[:-1]:
+            mylogger.logAtLevel(l, "dummy log message for core level %d/%s" % (l, getLevelName(l)))
+        mylogger.logAtLevel(levels[-1], "===last log message===")
         
 #------------------------------------------------------------------------------
 #--Main defined only for generic testing---------------------------------------
