@@ -8,6 +8,9 @@
 	<xsl:variable name="Prefix">
 		<xsl:value-of select="@_prefix"/>
 	</xsl:variable>
+	<xsl:variable name="LogGroupDescription">
+		<xsl:value-of select="@description"/>
+	</xsl:variable>
         <xsl:for-each select="loggingts:LogDefinition">
 	<xsl:variable name="FileName">
 		<xsl:value-of select="$Prefix"/><xsl:text>/</xsl:text><xsl:value-of select="$logdefname"/><xsl:text>/</xsl:text><xsl:value-of select="@logName"/><xsl:text>.java</xsl:text>
@@ -34,7 +37,7 @@
 
 /**
  * @author  nbarriga
- * @version $Id: LTS2Java.xslt,v 1.6 2007/12/20 17:22:50 hsommer Exp $
+ * @version $Id: LTS2Java.xslt,v 1.7 2007/12/20 18:43:45 hsommer Exp $
  * @since
  */
 
@@ -55,14 +58,16 @@ import alma.acs.logging.AcsLogRecord;
 /**
  * Generated class that produces a type-safe log message, as configured in </xsl:text><xsl:value-of select="$logdefname"/><xsl:text>.xml.
  * &lt;p&gt;
- * The description is: </xsl:text><xsl:value-of select="@description"/><xsl:text>
+ * The description for this log is: </xsl:text><xsl:value-of select="@description"/><xsl:text> &lt;br&gt;
+ * The description for this group of logs is: </xsl:text><xsl:value-of select="$LogGroupDescription"/><xsl:text>
  */
 public class </xsl:text>
         	<xsl:variable name="logName"><xsl:value-of select="@logName"/></xsl:variable>
 		<xsl:value-of select="$logName"/><xsl:text> {
+	public static final AcsLogLevel level = AcsLogLevel.</xsl:text><xsl:value-of select="@priority"/><xsl:text>;
 	private final Logger logger;
 	private final Map&lt;String, Object> nameValue;
-	private final AcsLogRecord lr;
+	private final AcsLogRecord lr;	
 	
 	public </xsl:text><xsl:value-of select="$logName"/><xsl:text>(Logger logger) {
 		this.logger=logger;
@@ -71,7 +76,7 @@ public class </xsl:text>
 		}
 		nameValue = new LinkedHashMap&lt;String, Object>();
 		nameValue.put("logName","</xsl:text><xsl:value-of select="$logName"/><xsl:text>");
-		lr = new AcsLogRecord(AcsLogLevel.</xsl:text><xsl:value-of select="@priority"/><xsl:text>, "</xsl:text><xsl:value-of select="@shortDescription"/><xsl:text>", nameValue, logger.getName());
+		lr = new AcsLogRecord(level, "</xsl:text><xsl:value-of select="@shortDescription"/><xsl:text>", nameValue, logger.getName());
 		lr.setAudience("</xsl:text><xsl:value-of select="@audience"/><xsl:text>");
 	}
 	public </xsl:text><xsl:value-of select="$logName"/><xsl:text>(Logger logger, String array, String antenna) {
@@ -81,7 +86,8 @@ public class </xsl:text>
 	}	
 	
 	/**
-	 * Convenience method for compact one-line logs
+	 * Convenience method for compact one-line logs.
+	 * @since ACS 7.0.1
 	 */
 	public static void log(Logger logger</xsl:text>
 	<xsl:for-each select="loggingts:Member">
@@ -92,14 +98,15 @@ public class </xsl:text>
                 <xsl:when test='@type="long"'><xsl:text>long</xsl:text></xsl:when>
 			</xsl:choose>
 		<xsl:text> </xsl:text><xsl:value-of select="@name"/>
-		<!-- xsl:text> param</xsl:text><xsl:number value="position()"/ -->
 	</xsl:for-each>
 	<xsl:text>) {
-		</xsl:text><xsl:value-of select="$logName"/><xsl:text> instance = new </xsl:text><xsl:value-of select="$logName"/><xsl:text>(logger);</xsl:text>
-	<xsl:for-each select="loggingts:Member"><xsl:text>
-		instance.set</xsl:text><xsl:value-of select="@name"/><xsl:text>(</xsl:text><xsl:value-of select="@name"/><xsl:text>);</xsl:text>
-	</xsl:for-each><xsl:text>
-		instance.log();
+		if (logger.isLoggable(level)) {	
+			</xsl:text><xsl:value-of select="$logName"/><xsl:text> instance = new </xsl:text><xsl:value-of select="$logName"/><xsl:text>(logger);</xsl:text>
+			<xsl:for-each select="loggingts:Member"><xsl:text>
+			instance.set</xsl:text><xsl:value-of select="@name"/><xsl:text>(</xsl:text><xsl:value-of select="@name"/><xsl:text>);</xsl:text>
+			</xsl:for-each><xsl:text>
+			instance.log();
+		}
 	}
 	
 	public void setArray(String array) {
@@ -121,9 +128,15 @@ public class </xsl:text>
 	public void log() {
 		logger.log(lr);
 	}
+	
 </xsl:text>
-		<xsl:for-each select="loggingts:Member">
-		<xsl:text>	public void set</xsl:text><xsl:value-of select="@name"/>
+	<xsl:for-each select="loggingts:Member"><xsl:text>
+	/**
+	 * Sets log parameter </xsl:text><xsl:value-of select="@name"/><xsl:text>.
+	 * @param </xsl:text><xsl:value-of select="@name"/><xsl:text>
+	 *			</xsl:text><xsl:value-of select="@description"/><xsl:text>
+	 */
+	public void set</xsl:text><xsl:value-of select="@name"/>
 		<xsl:text>(</xsl:text>        
 		<xsl:choose>
                 <xsl:when test='@type="string"'>
@@ -138,9 +151,8 @@ public class </xsl:text>
         </xsl:choose>
 	<xsl:text> value) {
 		nameValue.put("</xsl:text><xsl:value-of select="@name"/><xsl:text>", value);
-	}
-</xsl:text>	
-		</xsl:for-each>
+	}</xsl:text>	
+	</xsl:for-each>
 <xsl:text>
 }
 
