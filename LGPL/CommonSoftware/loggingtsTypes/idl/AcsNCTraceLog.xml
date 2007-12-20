@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<LogDefinitionType xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="Alma/ACSLogTS"	
+	name="AcsNCTraceLog" 
+	type="10"
+	shortDescription="ACS trace logs for interaction with notification services/channels"
+	description="ACS uses these messages to log notification service related activities such as creating channels, subscribing to a channel etc." 
+	_prefix="alma" 
+	>
+	
+	<!-- =========== Channel creation =========== -->
+	 
+	<LogDefinition
+		logName="LOG_NC_ChannelCreated_OK"
+		shortDescription="Successfully created a notification channel"
+		description="Successfully created a notification channel"
+		priority="INFO"
+		audience="Developer">
+		<Member name="ChannelName" type="string" description="Name of the channel created." />
+		<Member name="Service" type="string" description="Name or ID of the notification service that hosts the channel." />
+	</LogDefinition>
+	
+	<!-- @TODO: FIGURE OUT IF WE ACTUALLY (SHOULD) DESTROY NCs. IN JAVA THIS FEATURE IS NOT USED IN PRACTICE AS OF ALMA-5_0_1_9 -->
+	<LogDefinition
+		logName="LOG_NC_ChannelDestroyed_OK"
+		shortDescription="Successfully destroyed a notification channel"
+		description="Successfully destroyed a notification channel"
+		priority="INFO"
+		audience="Developer">
+		<Member name="ChannelName" type="string" description="Name of the channel destroyed." />
+		<Member name="Service" type="string" description="Name or ID of the notification service that hosted the channel." />
+	</LogDefinition>
+	
+
+	<!-- =========== Channel subscriptions =========== -->
+	
+	<LogDefinition
+		logName="LOG_NC_SubscriptionConnect_OK"
+		shortDescription="Successfully connected to a notification channel"
+		description="Successfully connected to a notification channel"
+		priority="DEBUG"
+		audience="Developer">
+		<!-- Member name="Subscriber" type="string" description="Name of the subscriber component or tool." / -->
+		<Member name="ChannelName" type="string" description="Name of the channel subscribed to." />
+		<Member name="Service" type="string" description="Name or ID of the notification service that hosts the channel." />
+	</LogDefinition>
+	
+	<LogDefinition
+		logName="LOG_NC_SubscriptionConnect_FAIL"
+		shortDescription="Failed connecting to a notification channel"
+		description="Failed connecting to a notification channel"
+		priority="DEBUG"
+		audience="Developer">
+		<Member name="ChannelName" type="string" description="Name of the channel not subscribed to." />
+		<Member name="Service" type="string" description="Name or ID of the notification service that hosts the channel." />
+	</LogDefinition>
+
+	<LogDefinition
+		logName="LOG_NC_SubscriptionDisconnect_OK"
+		shortDescription="Disconnected from a notification channel"
+		description="Disconnected from a notification channel"
+		priority="DEBUG"
+		audience="Developer">
+		<Member name="ChannelName" type="string" description="Name of the channel subscribed to." />
+		<Member name="Service" type="string" description="Name or ID of the notification service that hosts the channel." />
+	</LogDefinition>
+	
+	<LogDefinition
+		logName="LOG_NC_SubscriptionDisconnect_FAIL"
+		shortDescription="Failed to disconnect from a notification channel"
+		description="Failed to disconnect from a notification channel. Perhaps resources could not be deallocated."
+		priority="DEBUG"
+		audience="Developer">
+		<Member name="ChannelName" type="string" description="Name of the channel subscribed to." />
+		<Member name="Service" type="string" description="Name or ID of the notification service that hosts the channel." />
+	</LogDefinition>
+	
+	
+</LogDefinitionType>
+
