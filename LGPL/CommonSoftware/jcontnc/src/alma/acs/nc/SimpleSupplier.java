@@ -197,6 +197,11 @@ public class SimpleSupplier extends OSPushSupplierPOA
 	}
 
 	
+	/**
+	 * Destroys the notification channel, which may be in use by other suppliers or receivers.
+	 * @Deprecated  This feature is luckily not used as of ALMA-5_0_1_9 (2007-12). We must first investigate 
+	 *              when/how we can know that it is safe to destroy a channel object.
+	 */
 	protected void destroyNotificationChannel() throws AcsJException {
 		m_helper.destroyNotificationChannel(m_channelName, getChannelKind(), m_channel);
 	}
