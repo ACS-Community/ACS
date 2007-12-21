@@ -65,7 +65,8 @@ module demo
 
     interface NCPublisher : ACS::ACSComponent
     {
-        void publish(in string name);
+        void publish(in string name)
+        	raises (ACSErrTypeCommon::CouldntPerformActionEx);        	
     };
 
 };
