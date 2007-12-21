@@ -4,7 +4,7 @@
 1 - INFO - Starting Java/abeans application: alma.acs.container.AcsContainerRunner -OAIAddr xxx.xxx.xxx.xxx -OAport xxx -m corbaloc::xxxx:xxxx/Manager -containerName javaContainer
 1 - INFO - Using endorsed jar files in: -Djava.endorsed.dirs=/somepath
 1 - FINER: Logging configuration has been initialized, but not from CDB settings.
-1 - ----------T--:--:--.--- INFO [AcsContainerRunner] AcsContainerRunner#run 
+1 - ----------T--:--:--.--- INFO [AcsContainerRunner] AcsContainerRunner#run with arguments -OAIAddr xxx.xxx.xxx.xxx -OAport xxx -m corbaloc::xxxx:xxxx/Manager -containerName javaContainer 
 1 - ----------T--:--:--.--- INFO [javaContainer] Info message from the manager: Startup statistics: 0 components queued to be activated.
 1 - ----------T--:--:--.--- INFO [javaContainer] Info message from the manager: Startup statistics: 0 of 0 components activated.
 2 - ----------T--:--:--.--- Python Client TestReceiveRemoteException - Example 1: Calls a method that throws an exception.
