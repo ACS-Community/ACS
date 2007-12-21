@@ -485,7 +485,7 @@ public class LogReceiver {
 		}
 		
 		public LogTypeHelper getLevel() {
-			return LogTypeHelper.values()[((Integer)jlogRecord.getField(ILogEntry.Field.ENTRYTYPE)).intValue()];
+			return (LogTypeHelper)jlogRecord.getField(ILogEntry.Field.ENTRYTYPE);
 		}
 		
 		public String getSourceObject() {
