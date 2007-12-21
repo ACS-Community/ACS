@@ -1117,7 +1117,7 @@
 1 - ________________________________________________________
 1 -  --endorsed -- com.cosylab.cdb.DALRead MACI/Components/NotExist -d corbaloc::xxxxxxx:yyyy/CDB
 1 - INFO - Starting Java/abeans application: com.cosylab.cdb.DALRead MACI/Components/NotExist -d corbaloc::xxxxxxx:yyyy/CDB
-1 - ----------T--:--:--.--- ERROR [] CDB record does not exist (type=51, code=9)
+1 - ----------T--:--:--.--- ERROR [] CDB record does not exist (type=51, code=9) [ Curl='MACI/Components/NotExist' ]
 1 - ----------T--:--:--.--- NOTICE [DALRead] Record does not exist 	CURL='MACI/Components/NotExist'
 1 - alma.cdbErrType.wrappers.AcsJCDBRecordDoesNotExistEx [ Curl='MACI/Components/NotExist' ]
 1 - 	at alma.cdbErrType.wrappers.AcsJCDBRecordDoesNotExistEx.fromCDBRecordDoesNotExistEx(AcsJCDBRecordDoesNotExistEx.java:xx)
