@@ -3,7 +3,7 @@
 1 - AcsSystemClassLoader running in test mode: will only use jar files from priority list.
 1 - Listening for transport dt_socket at address: ----
 1 - FINER: Logging configuration has been initialized, but not from CDB settings.
-1 - ----------T--:--:--.--- INFO [AcsContainerRunner] AcsContainerRunner#run 
+1 - ----------T--:--:--.--- INFO [AcsContainerRunner] AcsContainerRunner#run with arguments -OAIAddr 192.168.50.133 -OAport 4004 -m corbaloc::192.168.50.133:3000/Manager -containerName testContainer 
 1 - ----------T--:--:--.--- FINER [testContainer] ORB initialized.
 1 - ----------T--:--:--.--- FINE [testContainer] calling orb.resolve_initial_references
 1 - ----------T--:--:--.--- FINE [testContainer] POA activated
