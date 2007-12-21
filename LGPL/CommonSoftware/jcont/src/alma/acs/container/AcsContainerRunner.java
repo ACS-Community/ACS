@@ -143,8 +143,12 @@ public class AcsContainerRunner
 		StopWatch containerStartWatch = new StopWatch();
 		
         // just a temp logger
-		m_logger = ClientLogManager.getAcsLogManager().getLoggerForApplication("AcsContainerRunner", true);        
-		m_logger.log(Level.INFO, "AcsContainerRunner#run ", args);
+		m_logger = ClientLogManager.getAcsLogManager().getLoggerForApplication("AcsContainerRunner", true);
+		String argsString = "";
+		for (String arg : args) {
+			argsString += arg + " ";
+		}
+		m_logger.log(Level.INFO, "AcsContainerRunner#run with arguments " + argsString);
                 
 		setOptions(args);
 		
