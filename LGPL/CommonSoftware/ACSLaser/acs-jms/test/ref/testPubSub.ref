@@ -3,6 +3,7 @@
 1 - ----------T--:--:--.--- INFO [PubSubTest#testTopicConnection] ComponentClientTestCase#setUp()
 1 - ----------T--:--:--.--- INFO [PubSubTest#testTopicConnection] component 'alma.acsjms.test.PubSubTest' requested AdvancedContainerServices
 1 - ----------T--:--:--.--- INFO [alma.acsjms.test.PubSubTest] Attempting to create the TOPIC.TEST channel.
+1 - ----------T--:--:--.--- INFO [alma.acsjms.test.PubSubTest] Successfully created a notification channel [ logName='LOG_NC_ChannelCreated_OK' ChannelName='TOPIC.TEST' Service='NotifyEventChannelFactory' ]
 1 - 
 1 - 
 1 - OK (1 test)
