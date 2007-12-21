@@ -1,24 +1,15 @@
 package alma.acsexmpl.clients;
 
-import org.omg.CORBA.SystemException;
-
-import alma.acs.exceptions.AcsJException;
-import alma.acs.exceptions.AcsJCompletion;
-
+import alma.ACSErrTypeCommon.ACSErrTypeCommonEx;
 import alma.ACSErrTypeCommon.GenericErrorEx;
 import alma.ACSErrTypeCommon.UnexpectedExceptionEx;
-import alma.ACSErrTypeCommon.ACSErrTypeCommonEx;
-import alma.ACSErrTypeCommon.UnknownEx;
-import alma.ACSErr.ACSErrTypeOK;
-
-import alma.ACSErrTypeCommon.wrappers.AcsJACSErrTypeCommonEx;
+import alma.ACSErrTypeCommon.wrappers.AcsJCORBAProblemEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJGenericErrorEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJUnexpectedExceptionEx;
-import alma.ACSErrTypeCommon.wrappers.AcsJCORBAProblemEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJUnknownEx;
-import alma.ACSErrTypeOK.wrappers.ACSErrOKAcsJCompletion;
-
 import alma.acs.component.client.ComponentClientTestCase;
+import alma.acs.exceptions.AcsJCompletion;
+import alma.acs.exceptions.AcsJException;
 import alma.acsexmplErrorComponent.ErrorComponent;
 import alma.acsexmplErrorComponent.ErrorComponentHelper;
 
