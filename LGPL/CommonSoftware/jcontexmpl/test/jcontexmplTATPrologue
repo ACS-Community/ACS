@@ -32,7 +32,7 @@
 echo " ****************** jcontexmplTATPrologue ************* "
 ACS_CDB=$PWD
 
-echo " Staring ORB Services and Manager"
+# Starting ORB Services, Manager, CDB, loggingClient etc
 acsutilTATPrologue -l
 
 echo " Starting C++ Container"
