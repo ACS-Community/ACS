@@ -26,8 +26,11 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Map;
 import java.util.logging.Formatter;
 import java.util.logging.LogRecord;
+
+import alma.acs.logging.LogParameterUtil;
 
 /**
  * An implementation of <code>java.util.logging.Formatter</code>.
@@ -66,43 +69,41 @@ public class ConsoleLogFormatter extends Formatter
 			sb.append(timeFormatter.format(date));
 		}
 		
-		// GCH: 
-		// Commented out automatically adding 
-		// class and method name.
-		// This is not conformant to the logging format for the 
-		// other languages and logs formatted int this way can be 
-		// confusing for users that are not developers.
-		// But uncommented the log level. Java developers are used to 
-		// that and it is often convenient
-
 		sb.append(' ');
 		sb.append(record.getLevel().getLocalizedName());
 		
-		// hso 2005-10-14: C++ logs source object and class and method name since a few months.
-		// These names are often long in Java, but at least the source object (e.g. component name) should be there.
-		// C++ sample: 2005-10-14T12:45:32.924 [GlobalLogger - baci::BACIComponent::startAllThreads] My log message...
 		String sourceObject = record.getLoggerName();
 		if (sourceObject != null) {
 			sb.append(" [").append(sourceObject).append("] ");
         }
 		sb.append(record.getMessage());
-
-
-		// source
-		// sb.append('[');
-		// if (record.getSourceClassName() != null) 	
-		//	sb.append(record.getSourceClassName());
-	
-		// method name
-		// if (record.getSourceMethodName() != null)
-		// {	
-		// 	sb.append('#');
-		//	sb.append(record.getSourceMethodName());
-		// }
-		// sb.append(']');
-		
+				
+		// log parameters (except for the special properties which were used already to set specific fields)
+		// @TODO check if analyzing the parameters both here and in AcsXMLLogFormatter uses lots of CPU and thus should be unified.
+		//       This would probably require us to either use only one log handler for remote and stdout log,
+		//       or to no longer stuff all parameters and other extra data into maps that become log parameters,
+		//       which allows us to deal with standard LogRecords and not just custom AcsLogRecords.
+		LogParameterUtil logParamUtil = new LogParameterUtil(record);
+		String paramString = "";
+		for (Object param : logParamUtil.getNonSpecialPropertiesMapParameters()) {
+			if (param instanceof Map) {
+				// any map that is not the special properties map we interpret as name-value pairs.
+				Map propertiesMap = (Map) param;
+				for (Object keyName : propertiesMap.keySet()) {
+					String value = propertiesMap.get(keyName).toString();
+					paramString += keyName + "='" + value + "' "; 
+				}
+			}
+			else {
+				// a single parameter was logged, but we have to fit it into our name-value scheme using a fake name
+				String value = param.toString();
+				paramString += "LoggedParameter" + "='" + value + "' "; 
+			}
+		}
+		if (!paramString.isEmpty()) {
+			sb.append(" [ " + paramString + "]");
+		}
 		sb.append(lineSeparator);
-
 
 		// exceptions
 		if (record.getThrown() != null)
