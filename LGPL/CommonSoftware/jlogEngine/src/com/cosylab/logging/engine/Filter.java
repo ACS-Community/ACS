@@ -266,6 +266,9 @@ public boolean applyTo(ILogEntry logEntry, boolean lethalCircumstances) {
 	
 	Object filterableField = logEntry.getField(Field.values()[field]);
 	if (filterableField == null) return false;
+	if (field==ILogEntry.Field.ENTRYTYPE.ordinal()) {
+		filterableField= new Integer(((LogTypeHelper)filterableField).ordinal());
+	}
 	
 	// Temporary: Used to remember if the test passes
 	// and apply the not policy (if requested)
