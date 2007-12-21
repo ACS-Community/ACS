@@ -65,7 +65,7 @@ public class ErrorComponentHelper extends ComponentHelper
 	/**
 	* @see alma.acs.container.ComponentHelper#_getPOATieClass()
 	*/
-	protected Class _getPOATieClass()
+	protected Class<ErrorComponentPOATie> _getPOATieClass()
 	{
 		return ErrorComponentPOATie.class;
 	}
@@ -73,9 +73,18 @@ public class ErrorComponentHelper extends ComponentHelper
 	/**
 	* @see alma.acs.container.ComponentHelper#getOperationsInterface()
 	*/
-	protected Class _getOperationsInterface()
+	protected Class<ErrorComponentOperations> _getOperationsInterface()
 	{
 		return ErrorComponentOperations.class;
+	}
+	
+	/** 
+	 * Just to test this feature, this component will suppress remote JacORB logs
+	 * for the entire container.  
+	 * @see alma.acs.container.ComponentHelper#requiresOrbCentralLogSuppression()
+	 */
+	protected boolean requiresOrbCentralLogSuppression() {
+		return true;
 	}
 
 }
