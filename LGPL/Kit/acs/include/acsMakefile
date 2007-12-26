@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: acsMakefile,v 1.164 2007/12/04 07:50:22 maraya Exp $" 
+# "@(#) $Id: acsMakefile,v 1.165 2007/12/26 19:32:22 maraya Exp $" 
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -663,12 +663,12 @@ $(error "UNSUPPORTED CPU type")
 	CC_FLAGS   := $(CC_FLAGS) -Wshadow     \
                         -Wcast-qual            \
                         -Wcast-align           \
-                        -W                     \
+#                       -W                     
                         -Wno-unused            \
                         -Wpointer-arith        \
-                        -Wwrite-strings        \
-                        -Wmissing-prototypes   \
-                        -Wmissing-declarations 
+                        -Wwrite-strings        
+#                        -Wmissing-prototypes   \
+#                        -Wmissing-declarations 
     endif
 
     LD       = ld$(VX_CPU_FAMILY)
@@ -903,7 +903,7 @@ ifndef MAKE_VXWORKS
   CPPFLAGS = -fcheck-new
 #endif
 else
-  CFLAGS :=   -ansi -pipe -D_REENTRANT -fno-builtin -fno-defer-pop -fvolatile -nostdlib -W -DACE_VXWORKS=0x620 -Wno-uninitialized -DACE_LACKS_RTTI  -fcheck-new $(CFLAGS)
+  CFLAGS :=   -ansi -pipe -D_REENTRANT -fno-builtin -fno-defer-pop -fvolatile -nostdlib -DACE_VXWORKS=0x620 -Wno-uninitialized -DACE_LACKS_RTTI  -fcheck-new $(CFLAGS)
   LD = perl $(ACE_ROOT)/bin/ace_ld -C ccppc $(CFLAGS) -- -m munch -n nm$(VX_CPU_FAMILY) ld$(VX_CPU_FAMILY) -X -r 
 
 endif
