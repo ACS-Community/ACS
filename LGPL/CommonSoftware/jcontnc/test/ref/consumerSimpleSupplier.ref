@@ -1,6 +1,7 @@
 1 - FINER: Logging configuration has been initialized, but not from CDB settings.
 1 - ----------T--:--:--.--- INFO [CONSUMERCOMP1] initialize() called...
 1 - ----------T--:--:--.--- INFO [CONSUMERCOMP1] Attempting to create the blar channel.
+1 - ----------T--:--:--.--- INFO [CONSUMERCOMP1] Successfully created a notification channel [ logName='LOG_NC_ChannelCreated_OK' ChannelName='blar' Service='NotifyEventChannelFactory' ]
 1 - ----------T--:--:--.--- INFO [CONSUMERCOMP1] Subscribed to 'EventDescription' and 'NestedFridgeEventSeqHolder' types of events on channel 'blar'
 1 - ----------T--:--:--.--- WARNING [CONSUMERCOMP1] The 'blar' channel: the receiver object is incapable of handling 'org.omg.CosNotification.StructuredEvent' type of events! It must have a method 'public void receive(org.omg.CosNotification.StructuredEvent)'.
 1 - java.lang.NoSuchMethodException: alma.demo.test.EventConsumerImpl.EventConsumerImpl.receive(org.omg.CosNotification.StructuredEvent)
