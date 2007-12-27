@@ -270,6 +270,7 @@
 2 - 
 2 - 
 2 - 
+1 - ----------T--:--:--.--- INFO [alma.acs.logging] Locked logger jacorb@javaContainer to level 99
 1 - ----------T--:--:--.--- WARNING [javaContainer] unexpected exception was thrown in functional method 'ERRORCOMP_JAVA#corbaSystemException': 
 1 - ----------T--:--:--.--- INFO [jacorb@javaContainer] rid: 20 opname: corbaSystemException invocation: system exception was thrown (org.omg.CORBA.BAD_PARAM: Test throwing a CORBA Exception  vmcid: 0x0  minor code: 0  completed: No)
 1 - org.omg.CORBA.BAD_PARAM: Test throwing a CORBA Exception  vmcid: 0x0  minor code: 0  completed: No
