@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingLogger.h,v 1.20 2007/10/17 15:56:17 cparedes Exp $"
+* "@(#) $Id: loggingLogger.h,v 1.21 2007/12/28 04:13:33 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -84,7 +84,15 @@ namespace Logging
 	 */
 	virtual LoggerSmartPtr
 	getLogger(const std::string &loggerName) = 0;
-	
+
+    int
+    getLocalLevel();
+    int
+    getLocalLevel(const std::string &loggerName);
+    int
+    getRemoteLevel();
+    int
+    getRemoteLevel(const std::string &loggerName);
 	/**
 	 * Static method used to get a nameless Logger object. 
 	 * @return A Logger with an empty name.

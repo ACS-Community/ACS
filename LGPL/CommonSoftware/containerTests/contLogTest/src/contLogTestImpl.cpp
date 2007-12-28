@@ -21,7 +21,7 @@
 *
 *
 *
-* "@(#) $Id: contLogTestImpl.cpp,v 1.6 2007/12/14 16:48:44 eallaert Exp $"
+* "@(#) $Id: contLogTestImpl.cpp,v 1.7 2007/12/28 04:13:32 cparedes Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -32,9 +32,11 @@
 #include <contLogTestImpl.h>
 #include <ACSErrTypeCommon.h>
 #include <loggingLogLevelDefinition.h>
+#include <loggingLogger.h>
+#include "loggingGetLogger.h"
 #include <iostream>
 
-ACE_RCSID(contLogTest, contLogTestImpl, "$Id: contLogTestImpl.cpp,v 1.6 2007/12/14 16:48:44 eallaert Exp $")
+ACE_RCSID(contLogTest, contLogTestImpl, "$Id: contLogTestImpl.cpp,v 1.7 2007/12/28 04:13:32 cparedes Exp $")
 
 /* ----------------------------------------------------------------*/
 TestLogLevelsComp::TestLogLevelsComp( 
@@ -57,12 +59,16 @@ TestLogLevelsComp::~TestLogLevelsComp()
 TestLogLevelsComp::getLevels ()
     throw (CORBA::SystemException, ACSErrTypeCommon::CouldntPerformActionEx)
 {
-	::contLogTest::LongSeq_var level = new ::contLogTest::LongSeq(5);
+    Logging::Logger *l = getLogger();
+    ::contLogTest::LongSeq_var level = new ::contLogTest::LongSeq(5);
 	level->length(5);
 
     // need the equivalent of Java's logConfig.getMinLogLevel() etc. in C++
     for (int i = 0; i <5 ; i++)
     	level[i] = static_cast< CORBA::Long >(i);
+
+    level[3] = static_cast< CORBA::Long >(l->getRemoteLevel());
+    level[4] = static_cast< CORBA::Long >(l->getLocalLevel());
     return level._retn();
 }
 

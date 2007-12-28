@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingLogSvcHandler.cpp,v 1.25 2007/11/09 09:48:24 cparedes Exp $"
+* "@(#) $Id: loggingLogSvcHandler.cpp,v 1.26 2007/12/28 04:13:33 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -31,7 +31,7 @@
 
 #include <ace/Log_Record.h>
 
-static char *rcsId="@(#) $Id: loggingLogSvcHandler.cpp,v 1.25 2007/11/09 09:48:24 cparedes Exp $"; 
+static char *rcsId="@(#) $Id: loggingLogSvcHandler.cpp,v 1.26 2007/12/28 04:13:33 cparedes Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 
@@ -151,8 +151,10 @@ namespace Logging {
     }
     // ----------------------------------------------------------
     LogSvcHandler::LogSvcHandler(const std::string& soName) :
-	sourceObjectName_m(soName),priority_type_local_m(NOT_DEFINED_LOG_LEVEL),priority_type_remote_m(NOT_DEFINED_LOG_LEVEL)
+	sourceObjectName_m(soName)
     {
+        setRemoteLevelType(NOT_DEFINED_LOG_LEVEL);
+        setLocalLevelType(NOT_DEFINED_LOG_LEVEL);
 	char *acsSTDIO = getenv("ACS_LOG_STDOUT");
 	int envStdioPriority = -1;
 	if (acsSTDIO && *acsSTDIO)
@@ -239,11 +241,11 @@ namespace Logging {
 	log_record_.msg_data(message.c_str());
 	
 	// set private flags
-	const int prohibitLocal  = lr.priority <  localPriority_m ? 1 : 0;
-	const int prohibitRemote = lr.priority < remotePriority_m ? 2 : 0;
+	const int prohibitLocal  = lr.priority <  getLocalLevel() ? 1 : 0;
+	const int prohibitRemote = lr.priority < getRemoteLevel() ? 2 : 0;
  	LoggingProxy::PrivateFlags(prohibitLocal | prohibitRemote);
-  	LoggingProxy::LogLevelLocalType(priority_type_local_m);	
-  	LoggingProxy::LogLevelRemoteType(priority_type_remote_m);
+  	LoggingProxy::LogLevelLocalType(getLocalLevelType());	
+  	LoggingProxy::LogLevelRemoteType(getRemoteLevelType());
 	ace___->log(log_record_, 0);
     }
     // ----------------------------------------------------------
@@ -257,17 +259,17 @@ namespace Logging {
 	LogSvcHandler::setLevels(Priority remotePriority, Priority localPriority, int type)
 	{
 		
-	    if(remotePriority >0 && (type == CDB_REFRESH_LOG_LEVEL  || priority_type_remote_m >= type) ){
-		    priority_type_remote_m = type;
-		    remotePriority_m = remotePriority;
+	    if(remotePriority >0 && (type == CDB_REFRESH_LOG_LEVEL  || getRemoteLevelType() >= type) ){
+		    setRemoteLevelType(type);
+		    setRemoteLevel(remotePriority);
 	    	    // set global level (min of both)
 	    }
-	    if(localPriority > 0 && ( type == CDB_REFRESH_LOG_LEVEL || priority_type_local_m >= type )){
-		    priority_type_local_m = type;
-		    localPriority_m = localPriority;
+	    if(localPriority > 0 && ( type == CDB_REFRESH_LOG_LEVEL || getLocalLevelType() >= type )){
+		    setLocalLevelType(type);
+		    setLocalLevel(localPriority);
 	    	    // set global level (min of both)
 	    }
-	    setLevel(localPriority_m < remotePriority_m ? localPriority_m : remotePriority_m);  
+	    setLevel(getLocalLevel() < getRemoteLevel() ? getLocalLevel() : getRemoteLevel());  
 	}
     // ----------------------------------------------------------
     //--The following section exists solely to remain
