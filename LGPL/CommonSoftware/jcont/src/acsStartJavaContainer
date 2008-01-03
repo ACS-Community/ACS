@@ -82,4 +82,4 @@ export JAVA_OPTIONS="$JAVA_OPTIONS -Dacs.components.classpath.jardirs=$component
 
 #--------------------------------------------------------------------------------
 #just delegate to acsStartJava
-acsStartJava -endorsed -DACS.manager=$CL_MANAGERREF -Dalma.MicroArchive.DbDir=$ACSDATA/config/MicroArchive $ORIGINAL_COMMAND_LINE -containerName $CONTAINER_NAME 
+acsStartJava -endorsed -DACS.manager=$CL_MANAGERREF $ORIGINAL_COMMAND_LINE -containerName $CONTAINER_NAME 
