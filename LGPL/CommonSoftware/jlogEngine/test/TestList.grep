@@ -1,7 +1,4 @@
-ACS Manager:
-ACS Interface Repository:
 java -classpath
-ACS abeans configuration directory:
 ACS abeans configuration directory
 Time:
 export
@@ -9,7 +6,6 @@ Starting Java/abeans application
 -D user.dir=
 Jlog will use cache for
 INFO
-WARN
 [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F]
 object is activated
 Local file logger: Cache saved to
