@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.39 2006/09/26 12:10:49 bjeram Exp $" 
+# "@(#) $Id: Makefile,v 1.40 2008/01/04 16:49:50 hsommer Exp $" 
 #
 # Makefile of ........
 #
@@ -143,6 +143,9 @@ ASCII_TO_MIF =
 CSOURCENAMES = \
 	$(foreach exe, $(EXECUTABLES) $(EXECUTABLES_L), $($(exe)_OBJECTS)) \
 	$(foreach lib, $(LIBRARIES) $(LIBRARIES_L), $($(lib)_OBJECTS))
+
+
+DEBUG=on
 
 #
 # IDL FILES
