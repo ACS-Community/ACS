@@ -1,5 +1,5 @@
 2 - starting acspyexmplClientErrorComponent
-1 -  --endorsed -D ACS.manager=corbaloc::xxxx:xxxx/Manager -D alma.MicroArchive.DbDir=/somepath -- alma.acs.container.AcsContainerRunner -OAIAddr xxx.xxx.xxx.xxx -OAport xxx -m corbaloc::xxxx:xxxx/Manager -containerName javaContainer
+1 -  --endorsed -D ACS.manager=corbaloc::xxxx:xxxx/Manager -- alma.acs.container.AcsContainerRunner -OAIAddr xxx.xxx.xxx.xxx -OAport xxx -m corbaloc::xxxx:xxxx/Manager -containerName javaContainer
 2 - Creating ClientErrorComponent
 1 - INFO - Starting Java/abeans application: alma.acs.container.AcsContainerRunner -OAIAddr xxx.xxx.xxx.xxx -OAport xxx -m corbaloc::xxxx:xxxx/Manager -containerName javaContainer
 1 - INFO - Using endorsed jar files in: -Djava.endorsed.dirs=/somepath
