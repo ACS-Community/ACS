@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.10 2007/11/08 19:18:44 agrimstrup Exp $"
+# "@(#) $Id: Makefile,v 1.11 2008/01/04 14:06:57 hsommer Exp $"
 #
 # Makefile of ........
 #
@@ -135,12 +135,12 @@ CDB_SCHEMAS =
 # IDL Files and flags
 # 
 
-#IDL_FILES = acsdaemon
+IDL_FILES = 
 IDL_TAO_FLAGS =
 USER_IDL =
 
 
-#ACSERRDEF = acsdaemonErrType
+ACSERRDEF = 
 
 #
 # Jarfiles and their directories
