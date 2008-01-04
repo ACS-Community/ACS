@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="lib" path="ws/lib/acsdaemon.jar"/>
-	<classpathentry kind="lib" path="ws/lib/acsdaemonErrType.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acsdaemon.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acsdaemonErrType.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
