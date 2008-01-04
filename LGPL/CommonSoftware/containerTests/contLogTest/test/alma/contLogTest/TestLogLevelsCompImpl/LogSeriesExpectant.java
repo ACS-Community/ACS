@@ -118,7 +118,7 @@ public class LogSeriesExpectant
 		public int getMinLogLevel() {
 			int minLevel = Integer.MAX_VALUE;
 			for (ReceivedLogRecord logRecord : this) {
-				minLevel = Math.min(minLevel, logRecord.getLevel());
+				minLevel = Math.min(minLevel, logRecord.getLevel().acsCoreLevel.value);
 			}
 			return minLevel;
 		}
@@ -126,7 +126,7 @@ public class LogSeriesExpectant
 		public int getMaxLogLevel() {
 			int maxLevel = -1;
 			for (ReceivedLogRecord logRecord : this) {
-				maxLevel = Math.max(maxLevel, logRecord.getLevel());
+				maxLevel = Math.max(maxLevel, logRecord.getLevel().acsCoreLevel.value);
 			}
 			return maxLevel;
 		}
