@@ -208,7 +208,7 @@ public class TestLogLevelsCompTest extends ComponentClientTestCase
 
 				System.out.println("Got " + logRecordsReceived.size() + " records from logger " + loggerName);
 				for (LogReceiver.ReceivedLogRecord logRecord : logRecordsReceived) {
-					System.out.println("(level=" + logRecord.getLevel() + ") " + logRecord.getMessage());
+					System.out.println("(level=" + logRecord.getLevel().acsCoreLevel.value + ") " + logRecord.getMessage());
 				}
 
 				// there are a couple of issues with OFF (99):
