@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: TestList,v 1.6 2007/12/17 16:05:07 eallaert Exp $"
+# "@(#) $Id: TestList,v 1.7 2008/01/07 15:14:23 eallaert Exp $"
 #
 # TestList
 #
@@ -269,8 +269,6 @@ PROLOGUE acsutilTATPrologue -l
         EPILOGUE "acsStopContainer myDefaultCppTestContainer"
 
 # - - - - - - Here start the tests using only the maciContainerLogLevel utility - - - - - - - 
-# 36-38 will fail because for a C++ container without xml-file in the CDB, 
-# the default log-levels are 0/0
 36 SOURCE prepareHardcodedLevelsNoCdb.tcl \
 	PROLOGUE "acsutilAwaitContainerStart -cpp myDefaultCppTestContainer" \
 	cppHardcodedLevelsNoCdb2 "maciContainerLogLevel myDefaultCppTestContainer get default" \
@@ -279,6 +277,8 @@ PROLOGUE acsutilTATPrologue -l
 # As there is no CDB file for this container, we must skip the test for the container
 # default log-levels as set in the CDB. 
 
+# 38 fails because for a C++ container the env-var setting is not propagated
+# to the 'default'.
 38 SOURCE prepareEnvLevelsNoCdb.tcl \
 	PROLOGUE "acsutilAwaitContainerStart -cpp myDefaultCppTestContainer" \
 	cppEnvironmentLevelsNoCdb2 "maciContainerLogLevel myDefaultCppTestContainer get default" \
@@ -291,6 +291,8 @@ PROLOGUE acsutilTATPrologue -l
                       "maciContainerLogLevel myDefaultCppTestContainer get default" \
         EPILOGUE "acsStopContainer myDefaultCppTestContainer"
 
+# Outcome of 40 depends on outcome of debate: C++ does not permit to set the
+# log-level of a not-active logger, while Java does. TBD what is right.
 40 SOURCE prepareDynLevelsNoCdb.tcl \
 	PROLOGUE "acsutilAwaitContainerStart -cpp myDefaultCppTestContainer" \
 	cppDynamicLevelsUnknownLoggerNoCdb2 "maciContainerLogLevel myDefaultCppTestContainer set TESTLOG3 8 9" \
@@ -301,13 +303,15 @@ PROLOGUE acsutilTATPrologue -l
 ########################################################
 # CPP-CONTAINER WITH CDB FILE, NO NAMED LOGGERS
 ########################################################
+# 41-45 will fail as for C++ containers changing the default levels does not
+# get propagated to active loggers. Needs to be fixed in C++.
 41 SOURCE prepareHardcodedLevels.tcl \
 	PROLOGUE "acsutilAwaitContainerStart -cpp bilboContainer" \
 	cppHardcodedLevels "acsStartJava alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest TESTLOG4" \
         EPILOGUE "acsStopContainer bilboContainer"
 
 42 SOURCE prepareCdbLevels.tcl \
-	PROLOGUE "acsutilAwaitContainerStart -java bilboContainer" \
+	PROLOGUE "acsutilAwaitContainerStart -cpp bilboContainer" \
 	cppCdbLevels "acsStartJava alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest TESTLOG4" \
         EPILOGUE "acsStopContainer bilboContainer"
 
@@ -357,6 +361,8 @@ PROLOGUE acsutilTATPrologue -l
 
 # Same as test 49, but now setting the levels of a specific logger which is not yet
 # defined when this dynamic setting is done.
+# What 50 should produce depends on outcome of debate: C++ does not permit to set the
+# log-level of a not-active logger, while Java does. TBD what is right.
 50 SOURCE prepareDynLevels.tcl \
 	PROLOGUE "acsutilAwaitContainerStart -cpp bilboContainer" \
 	cppDynamicLevelsUnknownLogger2 "maciContainerLogLevel bilboContainer set TESTLOG4 8 9" \
@@ -367,13 +373,14 @@ PROLOGUE acsutilTATPrologue -l
 ########################################################
 # CPP-CONTAINER WITH CDB FILE AND NAMED LOGGERS
 ########################################################
+# 51 fails because setting level to 99 lets all logs through
 51 SOURCE prepareHardcodedLevelsNamedLogger.tcl \
 	PROLOGUE "acsutilAwaitContainerStart -cpp bilboContainer" \
 	cppHardcodedLevelsNamedLogger "acsStartJava alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest TESTLOG4" \
         EPILOGUE "acsStopContainer bilboContainer"
 
 52 SOURCE prepareCdbLevelsNamedLogger.tcl \
-	PROLOGUE "acsutilAwaitContainerStart -java bilboContainer" \
+	PROLOGUE "acsutilAwaitContainerStart -cpp bilboContainer" \
 	cppCdbLevelsNamedLogger "acsStartJava alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest TESTLOG4" \
         EPILOGUE "acsStopContainer bilboContainer"
 
@@ -390,6 +397,7 @@ PROLOGUE acsutilTATPrologue -l
         EPILOGUE "acsStopContainer bilboContainer"
 
 # - - - - - - Here start the tests using only the maciContainerLogLevel utility - - - - - - - 
+# 56 and 57 are OK
 56 SOURCE prepareHardcodedLevelsNamedLogger.tcl \
 	PROLOGUE "acsutilAwaitContainerStart -cpp bilboContainer" \
 	cppHardcodedLevelsNamedLogger2 "maciContainerLogLevel bilboContainer get TESTLOG4" \
@@ -400,11 +408,13 @@ PROLOGUE acsutilTATPrologue -l
 	cppCdbLevelsNamedLogger2 "maciContainerLogLevel bilboContainer get TESTLOG4" \
         EPILOGUE "acsStopContainer bilboContainer"
 
+# 58 fails: for C++ the env vars override the specific CDB values - that is wrong.
 58 SOURCE prepareEnvLevelsNamedLogger.tcl \
 	PROLOGUE "acsutilAwaitContainerStart -cpp bilboContainer" \
 	cppEnvironmentLevelsNamedLogger2 "maciContainerLogLevel bilboContainer get TESTLOG4" \
         EPILOGUE "acsStopContainer bilboContainer"
 
+# 59 will fail: cannot set level of not-active logger.
 59 SOURCE prepareDynLevelsNamedLogger.tcl \
 	PROLOGUE "acsutilAwaitContainerStart -cpp bilboContainer" \
 	cppDynamicLevelsNamedLogger2 "maciContainerLogLevel bilboContainer set TESTLOG4 8 9" \
@@ -479,7 +489,7 @@ PROLOGUE acsutilTATPrologue -l
         EPILOGUE "acsStopContainer aragornContainer"
 
 72 SOURCE prepareCdbLevels.tcl \
-	PROLOGUE "acsutilAwaitContainerStart -java aragornContainer" \
+	PROLOGUE "acsutilAwaitContainerStart -py aragornContainer" \
 	pyCdbLevels "acsStartJava alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest TESTLOG6" \
         EPILOGUE "acsStopContainer aragornContainer"
 
@@ -545,7 +555,7 @@ PROLOGUE acsutilTATPrologue -l
         EPILOGUE "acsStopContainer aragornContainer"
 
 82 SOURCE prepareCdbLevelsNamedLogger.tcl \
-	PROLOGUE "acsutilAwaitContainerStart -java aragornContainer" \
+	PROLOGUE "acsutilAwaitContainerStart -py aragornContainer" \
 	pyCdbLevelsNamedLogger "acsStartJava alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest TESTLOG6" \
         EPILOGUE "acsStopContainer aragornContainer"
 
