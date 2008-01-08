@@ -214,7 +214,7 @@ public class TestLogLevelsCompTest extends ComponentClientTestCase
 				// there are a couple of issues with OFF (99):
 				// - if minLogLevelCentral is set to OFF (99), logs with level EMERGENCY (11) still get through
 				//   on Java, while for C++ no level seems to be blocked. 
-				// - messages with level OFF get recorded as having level EMERGENCY (for Java or TRACE (for C++)
+				// - messages with level OFF get recorded as having level EMERGENCY (for Java) or TRACE (for C++)
 				// Work-around these issues here, for the time being.
 				if (minLogLevelCentral > maxLogLevel) {
 					assertEquals(maxLogLevel, logRecordsReceived.getMinLogLevel());
