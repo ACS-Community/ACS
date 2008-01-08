@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsComponentSmartPtr.h,v 1.1 2007/10/24 22:35:44 agrimstrup Exp $"
+* "@(#) $Id: acsComponentSmartPtr.h,v 1.2 2008/01/08 01:04:27 agrimstrup Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -159,10 +159,24 @@ class ComponentStorage
      */
     void Destroy()
         {
-	    if (handle && sticky) {
-// 		ACS_SHORT_LOG((LM_DEBUG, "Releasing component: '%s'.",  component_name));
-		handle->releaseComponent( component_name);
-	    }
+	    try
+		{
+	        if (handle && sticky)
+		    {
+		    handle->releaseComponent( component_name);
+	            }
+	        free((void *)component_name);
+	        }
+	    catch(maciErrType::CannotReleaseComponentExImpl ex)
+		{
+		ACS_LOG(LM_RUNTIME_CONTEXT, "maci::ComponentStorage::Destroy",
+			(LM_ERROR, "Unable to release component"));
+		}
+	    catch(...) 
+		{
+ 		ACS_LOG(LM_RUNTIME_CONTEXT, "maci::ComponentStorage::Destroy",
+			 (LM_ERROR, "Unexpected exception caught when releasing component."));
+		}
 	}    
     // Default value to initialize the pointer
     static StoredType Default()

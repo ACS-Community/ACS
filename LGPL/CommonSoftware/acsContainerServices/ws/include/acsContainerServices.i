@@ -21,7 +21,7 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
  *
- * "@(#) $Id: acsContainerServices.i,v 1.10 2007/10/24 22:35:44 agrimstrup Exp $"
+ * "@(#) $Id: acsContainerServices.i,v 1.11 2008/01/08 01:04:27 agrimstrup Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -274,14 +274,16 @@ template <typename T>
 SmartPtr<T> ContainerServices::getComponentSmartPtr(const char *name)
     throw (maciErrType::CannotGetComponentExImpl)
 {
-    return SmartPtr<T>(name, this, true, this->getComponent<T>(name));
+    T* tmpptr = this->getComponent<T>(name);
+    return SmartPtr<T>(tmpptr->name(), this, true, tmpptr);
 }//getComponentSmartPtr
 
 template <typename T>
 SmartPtr<T> ContainerServices::getComponentNonStickySmartPtr(const char *name)
     throw (maciErrType::CannotGetComponentExImpl)
 { 
-    return SmartPtr<T>(name, this, false, this->getComponentNonSticky<T>(name));
+    T* tmpptr = this->getComponentNonSticky<T>(name);
+    return SmartPtr<T>(tmpptr->name(), this, false, tmpptr);
 }//getComponentNonStickySmartPtr
 
 template <typename T>
