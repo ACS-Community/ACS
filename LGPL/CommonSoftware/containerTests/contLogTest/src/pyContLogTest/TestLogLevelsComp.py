@@ -17,7 +17,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: TestLogLevelsComp.py,v 1.2 2007/12/20 22:50:33 agrimstrup Exp $"
+# "@(#) $Id: TestLogLevelsComp.py,v 1.3 2008/01/08 10:15:33 eallaert Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -87,9 +87,9 @@ class TestLogLevelsComp(contLogTest__POA.TestLogLevelsComp,  #CORBA stubs for ID
         void logDummyMessages(in LongSeq levels);
         '''
         mylogger = self.getLogger()
-        for l in levels[:-1]:
+        for l in levels:
             mylogger.logAtLevel(l, "dummy log message for core level %d/%s" % (l, getLevelName(l)))
-        mylogger.logAtLevel(levels[-1], "===last log message===")
+        mylogger.logAtLevel(levels[-2], "===last log message===")
         
 #------------------------------------------------------------------------------
 #--Main defined only for generic testing---------------------------------------
