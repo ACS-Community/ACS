@@ -21,7 +21,7 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
  *
- * "@(#) $Id: acsContainerServices.i,v 1.11 2008/01/08 01:04:27 agrimstrup Exp $"
+ * "@(#) $Id: acsContainerServices.i,v 1.12 2008/01/09 21:12:37 agrimstrup Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -274,16 +274,14 @@ template <typename T>
 SmartPtr<T> ContainerServices::getComponentSmartPtr(const char *name)
     throw (maciErrType::CannotGetComponentExImpl)
 {
-    T* tmpptr = this->getComponent<T>(name);
-    return SmartPtr<T>(tmpptr->name(), this, true, tmpptr);
+    return SmartPtr<T>(this, true, this->getComponent<T>(name));
 }//getComponentSmartPtr
 
 template <typename T>
 SmartPtr<T> ContainerServices::getComponentNonStickySmartPtr(const char *name)
     throw (maciErrType::CannotGetComponentExImpl)
 { 
-    T* tmpptr = this->getComponentNonSticky<T>(name);
-    return SmartPtr<T>(tmpptr->name(), this, false, tmpptr);
+    return SmartPtr<T>(this, false, this->getComponentNonSticky<T>(name));
 }//getComponentNonStickySmartPtr
 
 template <typename T>
@@ -294,8 +292,7 @@ SmartPtr<T> ContainerServices::getDynamicComponentSmartPtr(maci::ComponentSpec c
 	   maciErrType::ComponentSpecIncompatibleWithActiveComponentExImpl, 
 	   maciErrType::CannotGetComponentExImpl)
 {
-    T* tmpptr = this->getDynamicComponent<T>(compSpec, markAsDefault);
-    return SmartPtr<T>(tmpptr->name(), this, true, tmpptr);
+    return SmartPtr<T>(this, true, this->getDynamicComponent<T>(compSpec, markAsDefault));
 }//getDynamicComponentSmartPtr
 
 
@@ -307,8 +304,7 @@ SmartPtr<T> ContainerServices::getCollocatedComponentSmartPtr(maci::ComponentSpe
 	  maciErrType::ComponentSpecIncompatibleWithActiveComponentExImpl, 
 	  maciErrType::CannotGetComponentExImpl)
 {
-    T* tmpptr = this->getCollocatedComponent<T>(compSpec, markAsDefault, targetComponent);
-    return SmartPtr<T>(tmpptr->name(), this, true, tmpptr);
+    return SmartPtr<T>(this, true, this->getCollocatedComponent<T>(compSpec, markAsDefault, targetComponent));
 }//getCollocatedComponentSmartPtr
 
 template <typename T>
@@ -317,7 +313,6 @@ SmartPtr<T> ContainerServices::getDefaultComponentSmartPtr(const char* idlType)
 	   maciErrType::NoDefaultComponentExImpl, 
 	   maciErrType::CannotGetComponentExImpl)
 {
-    T* tmpptr = this->getDefaultComponent<T>(idlType);
-    return SmartPtr<T>(tmpptr->name(), this, true, tmpptr);
+    return SmartPtr<T>(this, true, this->getDefaultComponent<T>(idlType));
 }//getDefaultComponentSmartPtr
 #endif

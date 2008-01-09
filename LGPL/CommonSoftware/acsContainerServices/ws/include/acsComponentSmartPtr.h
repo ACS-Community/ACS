@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsComponentSmartPtr.h,v 1.2 2008/01/08 01:04:27 agrimstrup Exp $"
+* "@(#) $Id: acsComponentSmartPtr.h,v 1.3 2008/01/09 21:12:37 agrimstrup Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -63,13 +63,13 @@ class ComponentStorage
     /**
      * Default Constructor
      */
-    ComponentStorage() : handle(0), component_name(0), sticky(true), pointee_(Default())
+    ComponentStorage() : handle(0), sticky(true), pointee_(Default())
 	{}
 
     /**
      * Constructor that stores default management values with a live pointer.
      */
-    ComponentStorage(const StoredType& p) : handle(0), component_name(0), sticky(true), pointee_(p)
+    ComponentStorage(const StoredType& p) : handle(0), sticky(true), pointee_(p)
         {}
     
     // The storage policy doesn't initialize the stored pointer 
@@ -77,8 +77,7 @@ class ComponentStorage
     /**
      * Copy Constructor
      */
-    ComponentStorage(const ComponentStorage& rhs) : handle(rhs.handle), component_name(rhs.component_name),
-					      sticky(rhs.sticky), pointee_(0)
+    ComponentStorage(const ComponentStorage& rhs) : handle(rhs.handle), sticky(rhs.sticky), pointee_(0)
         {}
     
     /**
@@ -86,7 +85,7 @@ class ComponentStorage
      * We don't allow copying of different types, so the attributes are set to default values.
      */
     template <typename U, typename V>
-    ComponentStorage(const ComponentStorage<U,V>&) : handle(0), component_name(0), sticky(true), pointee_(0)
+    ComponentStorage(const ComponentStorage<U,V>&) : handle(0), sticky(true), pointee_(0)
         {}
     
     /**
@@ -98,9 +97,8 @@ class ComponentStorage
      * @param s is flag that indicates if the component is sticky.
      * @param p is a pointer to the component that will be managed.
      */
-    void setValues(const char *name, H *h, bool s, const StoredType& p)
+    void setValues(H *h, bool s, const StoredType& p)
 	{
-	    component_name = name;
             handle = h;
 	    sticky = s;
 	    pointee_ = p;
@@ -125,7 +123,6 @@ class ComponentStorage
         {
 	    std::swap(pointee_, rhs.pointee_);
 	    std::swap(sticky, rhs.sticky);
-	    std::swap(component_name, rhs.component_name);
 	    std::swap(handle, rhs.handle);
 	}
     
@@ -163,9 +160,8 @@ class ComponentStorage
 		{
 	        if (handle && sticky)
 		    {
-		    handle->releaseComponent( component_name);
+		    handle->releaseComponent(pointee_->name());
 	            }
-	        free((void *)component_name);
 	        }
 	    catch(maciErrType::CannotReleaseComponentExImpl ex)
 		{
@@ -185,7 +181,6 @@ class ComponentStorage
   private:
     // Data
     H *handle;
-    const char *component_name;
     bool sticky;
     StoredType pointee_;
 };
@@ -270,9 +265,9 @@ class SmartPtr
 	 * @param s is the flag indicating if the reference is sticky.
 	 @ @param p is the pointer to the component.
 	*/
-        SmartPtr(const char *name, H* h, bool s, T* p)
+        SmartPtr(H* h, bool s, T* p)
 	{
-	    setValues(name, h, s, p);
+	    setValues(h, s, p);
 	}
 
         explicit
