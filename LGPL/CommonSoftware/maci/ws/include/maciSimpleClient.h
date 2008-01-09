@@ -4,7 +4,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciSimpleClient.h,v 1.100 2007/10/24 22:29:50 agrimstrup Exp $"
+* "@(#) $Id: maciSimpleClient.h,v 1.101 2008/01/09 21:14:49 agrimstrup Exp $"
 *
 * who       when        what
 * --------  --------    ----------------------------------------------
@@ -57,9 +57,9 @@ namespace maci {
 	 * @param s is the flag indicating if the reference is sticky.
 	 @ @param p is the pointer to the component.
 	*/
-	ComponentSmartPtr(const char *name, H* h, bool s, T* p)
+	ComponentSmartPtr(H* h, bool s, T* p)
 	{
-	    setValues(name, h, s, p);
+	    setValues(h, s, p);
 	}
 
 
@@ -519,7 +519,7 @@ template<class T>
 ComponentSmartPtr<T> SimpleClient::getComponentSmartPtr(const char *name, const char *domain, bool activate)
     throw (maciErrType::CannotGetComponentExImpl)
 {
-    return ComponentSmartPtr<T>(name, this, true, this->getComponent<T>(name, domain, activate));
+    return ComponentSmartPtr<T>(this, true, this->getComponent<T>(name, domain, activate));
 }    
 
 
@@ -611,7 +611,7 @@ template<class T>
 ComponentSmartPtr<T> SimpleClient::getComponentNonStickySmartPtr(const char *name)
     throw (maciErrType::CannotGetComponentExImpl)
 {
-    return ComponentSmartPtr<T>(name, this, false, this->getComponentNonSticky<T>(name));
+    return ComponentSmartPtr<T>(this, false, this->getComponentNonSticky<T>(name));
 }    
 
 }; 
