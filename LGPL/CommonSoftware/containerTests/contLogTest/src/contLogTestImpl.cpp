@@ -21,7 +21,7 @@
 *
 *
 *
-* "@(#) $Id: contLogTestImpl.cpp,v 1.7 2007/12/28 04:13:32 cparedes Exp $"
+* "@(#) $Id: contLogTestImpl.cpp,v 1.8 2008/01/09 10:11:38 eallaert Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -36,7 +36,7 @@
 #include "loggingGetLogger.h"
 #include <iostream>
 
-ACE_RCSID(contLogTest, contLogTestImpl, "$Id: contLogTestImpl.cpp,v 1.7 2007/12/28 04:13:32 cparedes Exp $")
+ACE_RCSID(contLogTest, contLogTestImpl, "$Id: contLogTestImpl.cpp,v 1.8 2008/01/09 10:11:38 eallaert Exp $")
 
 /* ----------------------------------------------------------------*/
 TestLogLevelsComp::TestLogLevelsComp( 
@@ -82,7 +82,10 @@ TestLogLevelsComp::logDummyMessages (const ::contLogTest::LongSeq & levels)
 		LogLevelDefinition lld = LogLevelDefinition::fromInteger(levels[t]);
 		ACS_SHORT_LOG((p, "dummy log message for core level %d/%s", lld.getValue(), lld.getName().c_str()));
 	}
-	ACS_SHORT_LOG((p, "===last log messsage===", levels[t]));
+	// log last message always at highest, non-OFF level (so it should get always through,
+	// unless the central level is put to OFF).
+	p = LogLevelDefinition::getACELogPriority(levels[levels.length()-2]);
+	ACS_SHORT_LOG((p, "===last log messsage==="));
 	
 }
 
