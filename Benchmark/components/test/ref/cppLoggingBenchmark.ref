@@ -2,7 +2,6 @@
 1 -  Starting ORB Services and Manager
 1 - started ACS_INSTANCE <N>
 1 -  Starting Container 1
-1 -  Warning: changing minLogLevel from 0 to 2
 1 - <timestamp> [GlobalLogger - maci::MACIHelper::resolveManager] 
 1 - <timestamp> [GlobalLogger - maci::MACIHelper::resolveManager] ManagerReference generated using localhost address: 'corbaloc::<IP address>:<port>/Manager'
 1 - <timestamp> [GlobalLogger - maci::MACIHelper::resolveManager] 
