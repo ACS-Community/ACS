@@ -1,6 +1,7 @@
 package alma.acs.eventbrowser.views;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.part.*;
@@ -12,6 +13,9 @@ import org.eclipse.ui.*;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.SWT;
 import org.eclipse.core.runtime.IAdaptable;
+
+import alma.acs.eventbrowser.model.ChannelData;
+import alma.acs.eventbrowser.model.EventModel;
 
 
 /**
@@ -135,21 +139,40 @@ public class ChannelTreeView extends ViewPart {
  * expose its hierarchy.
  */
 		private void initialize() {
-			TreeObject to1 = new TreeObject("Admin 1");
-			TreeObject to2 = new TreeObject("Admin 2");
-			TreeObject to3 = new TreeObject("Admin 3");
-			TreeParent p1 = new TreeParent("CONTROL_SYSTEM Channel");
-			p1.addChild(to1);
-			p1.addChild(to2);
-			p1.addChild(to3);
-			
-			TreeObject to4 = new TreeObject("Admin 4");
-			TreeParent p2 = new TreeParent("TEL_CAL Channel 2");
-			p2.addChild(to4);
-			
+			ArrayList<ChannelData> clist = null;
+			try {
+				EventModel em = new EventModel();
+				clist = em.getChannelStatistics();
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			TreeParent root = new TreeParent("Notify Service");
-			root.addChild(p1);
-			root.addChild(p2);
+
+			for (Iterator<ChannelData> iterator = clist.iterator(); iterator.hasNext();) {
+				ChannelData cd = iterator.next();
+				TreeParent tp = new TreeParent(cd.getName());
+				TreeObject tcon = new TreeObject(cd.getNumberConsumers()+" consumers.");
+				TreeObject tsup = new TreeObject(cd.getNumberSuppliers()+" suppliers.");
+				tp.addChild(tcon);
+				tp.addChild(tsup);
+				root.addChild(tp);	
+			}
+//			TreeObject to1 = new TreeObject("Admin 1");
+//			TreeObject to2 = new TreeObject("Admin 2");
+//			TreeObject to3 = new TreeObject("Admin 3");
+//			TreeParent p1 = new TreeParent("CONTROL_SYSTEM Channel");
+//			p1.addChild(to1);
+//			p1.addChild(to2);
+//			p1.addChild(to3);
+//			
+//			TreeObject to4 = new TreeObject("Admin 4");
+//			TreeParent p2 = new TreeParent("TEL_CAL Channel 2");
+//			p2.addChild(to4);
+//			
+//
+//			root.addChild(p1);
+//			root.addChild(p2);
 			
 			invisibleRoot = new TreeParent("");
 			invisibleRoot.addChild(root);
