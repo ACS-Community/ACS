@@ -122,10 +122,7 @@
 2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Set individual log level for component TESTLOG1 (running in container myDefaultJavaTestContainer) to 99
 2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will call 'logDummyMessages' on component TESTLOG1
 2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will wait <N> seconds to receive (some of) these log messages.
-2 - Got 3 records from logger TESTLOG1
-2 - (level=11) dummy log message for core level 11/EMERGENCY
-2 - (level=11) dummy log message for core level 99/OFF
-2 - (level=11) ===last log message===
+2 - Got 0 records from logger TESTLOG1
 2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] client 'alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest' has successfully released  a component with curl=TESTLOG1
 2 - 
 2 - Time: <seconds>
