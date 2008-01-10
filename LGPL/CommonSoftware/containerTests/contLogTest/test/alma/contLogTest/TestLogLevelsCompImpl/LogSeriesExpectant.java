@@ -73,10 +73,14 @@ public class LogSeriesExpectant
                 ReceivedLogRecord logRecord = delayedLogEntry.getLogRecord();
                 String sourceObjectName = logRecord.getSourceObject();
                 if (sourceObjectName != null && sourceObjectName.equals(loggerName)) {
-                	logRecords.add(logRecord);
                 	// printing this could be useful for debugging the test
                 	//System.out.println(logRecord.getMessage());
-                	if (logRecord.getMessage().equals("===last log message===")) {
+                	
+                	// Filter out messages which are a work-around for a python issue 
+                	if (!logRecord.getMessage().endsWith("===packet fill-up message===")) {
+                		logRecords.add(logRecord);
+                	}
+                	if (logRecord.getMessage().endsWith("===last log message===")) {
                 		// don't wait for timeout
                 		break;
                 	}
