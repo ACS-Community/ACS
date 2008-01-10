@@ -17,7 +17,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: TestLogLevelsComp.py,v 1.4 2008/01/10 14:54:52 eallaert Exp $"
+# "@(#) $Id: TestLogLevelsComp.py,v 1.5 2008/01/10 16:12:06 eallaert Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -93,7 +93,7 @@ class TestLogLevelsComp(contLogTest__POA.TestLogLevelsComp,  #CORBA stubs for ID
         # Python seems to sends logs in packets of 10 logs, so add 9 messages to
         # ensure all the above logs get sent across right now.
         for i in range(1,10):
-            mylogger.logAtLevel(levels[-2], "packet fill-up messages %d" % i)
+            mylogger.logAtLevel(levels[-2], "===packet fill-up message===")
            
         
 #------------------------------------------------------------------------------
