@@ -162,8 +162,9 @@ public class TestLogLevelsCompImpl implements ComponentLifecycle, TestLogLevelsC
 			} catch (AcsJIllegalArgumentEx e) {
 				throw e.toIllegalArgumentEx();
 			}
-			m_logger.log(acsLogLevel, "dummy log message for core level " + name + "/" + coreLevel);
+			m_logger.log(acsLogLevel, "dummy log message for core level " + coreLevel + "/" + name);
 		}
+		acsLogLevel = AcsLogLevel.fromAcsCoreLevel(AcsLogLevelDefinition.EMERGENCY);
 		m_logger.log(acsLogLevel, "===last log message===");
 	}
 }
