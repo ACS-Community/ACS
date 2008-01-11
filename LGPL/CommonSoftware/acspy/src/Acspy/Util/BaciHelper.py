@@ -1,4 +1,4 @@
-# @(#) $Id: BaciHelper.py,v 1.9 2007/09/04 22:21:23 agrimstrup Exp $
+# @(#) $Id: BaciHelper.py,v 1.10 2008/01/11 18:20:50 agrimstrup Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -21,7 +21,7 @@
 # ALMA should be addressed as follows:
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: BaciHelper.py,v 1.9 2007/09/04 22:21:23 agrimstrup Exp $"
+# "@(#) $Id: BaciHelper.py,v 1.10 2008/01/11 18:20:50 agrimstrup Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -37,7 +37,7 @@ TODO:
 to be changed.
 '''
 
-__revision__ = "$Id: BaciHelper.py,v 1.9 2007/09/04 22:21:23 agrimstrup Exp $"
+__revision__ = "$Id: BaciHelper.py,v 1.10 2008/01/11 18:20:50 agrimstrup Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 from new import instancemethod
@@ -122,39 +122,23 @@ def addProperty(comp_ref,
     '''
     #string of the form 'IDL:alma/someModule/someInterface:1.0'
     comp_type = comp_ref._NP_RepositoryId
+    modarray = comp_type.split(':')[1].split('/')
     
     #------------------------------------------------------------------------------
     #determine the name of the property within the ACS CDB
     if cdb_location == None:
-        cdb_name = comp_type.split(':')[1].split('/').pop() + "/"
+        cdb_name = modarray[-1] + "/"
         cdb_name = cdb_name + prop_name
     else:
         cdb_name = cdb_location
     #------------------------------------------------------------------------------
-    #determine the real type of the BACI property using the IFR
-    #look up the component's description in the IFR
-    if INTERFACE_DICT.has_key(comp_type) == False:
-        interf = IFR.lookup_id(comp_type)
-        if interf is None:
-            ex = CannotGetComponentExImpl()
-            ex.setReason("Interface for %s not found or Interface Repository not responding" % comp_type)
-            raise ex
-        interf = interf._narrow(CORBA.InterfaceDef)
-        interf = interf.describe_interface()
-        INTERFACE_DICT[comp_type] = interf
-    else:
-        interf = INTERFACE_DICT[comp_type]
-
     #if developer has not specified the property's type
     if prop_type == "":
-        #iterate through all the component's attributes until the attribute
-        #we're looking for is found.
-        for attr in interf.attributes:
-            if prop_name == attr.name:
-                #good...we found a match. now save the type (e.g., "ROdouble")
-                prop_ifr_name = attr.type.id()
-                prop_type = attr.type.id().split(':')[1].split('/').pop()
-                break
+        # Retrieve the property type from the module information
+        newmod = __import__(modarray[1], globals(), locals(), modarray[2])
+        prop_ifr_name = newmod.__dict__[modarray[2]].__dict__['_d__get_'+prop_name][1][0][1]
+        prop_type = newmod.__dict__[modarray[2]].__dict__['_d__get_'+prop_name][1][0][2]
+
     #------------------------------------------------------------------------------
     #create the BACI property object and set it as a member of the component
     prop_py_name = "__" + prop_name + "Object"
