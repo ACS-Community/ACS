@@ -40,17 +40,35 @@ public class TWikiFormatter
 	public static final String LINE_SEPARATOR = System.getProperty("line.separator");
 	
 	List<Cvs2clXmlEntry> sortByDate(Collection<Cvs2clXmlEntry> entries) {
-		List<Cvs2clXmlEntry> list = new ArrayList<Cvs2clXmlEntry>(entries);
-		
-		Comparator<Cvs2clXmlEntry> comp = new Comparator<Cvs2clXmlEntry>() {
+		return sort(entries, new Comparator<Cvs2clXmlEntry>() {
 			public int compare(Cvs2clXmlEntry entry1, Cvs2clXmlEntry entry2) {
 				return entry1.getDate().compareTo(entry2.getDate());
 			}
-		};
-		
+		});
+	}
+	
+	List<Cvs2clXmlEntry> sortByAuthor(Collection<Cvs2clXmlEntry> entries) {		
+		return sort(entries, new Comparator<Cvs2clXmlEntry>() {
+			public int compare(Cvs2clXmlEntry entry1, Cvs2clXmlEntry entry2) {
+				return entry1.getAuthor().compareTo(entry2.getAuthor());
+			}
+		} );
+	}
+	
+//	List<Cvs2clXmlEntry> sortByPath(Collection<Cvs2clXmlEntry> entries) {		
+//		return sort(entries, new Comparator<Cvs2clXmlEntry>() {
+//			public int compare(Cvs2clXmlEntry entry1, Cvs2clXmlEntry entry2) {
+//				// @todo deal with commondir  
+//			}
+//		} );
+//	}
+	
+	List<Cvs2clXmlEntry> sort(Collection<Cvs2clXmlEntry> entries, Comparator<Cvs2clXmlEntry> comp) {
+		List<Cvs2clXmlEntry> list = new ArrayList<Cvs2clXmlEntry>(entries);		
 		Collections.sort(list, comp);
 		return list;
 	}
+	
 	
 	void printTwiki(List<Cvs2clXmlEntry> entryList) {
 		for (Cvs2clXmlEntry entry : entryList) {
@@ -98,6 +116,9 @@ public class TWikiFormatter
 		return ret;
 	}
 	
+	/**
+	 * @TODO: try to use <code>&lt;noautolink&gt;</code> pair around our text and stop masking individual words
+	 */
 	protected String maskWikiWords(String msgLine) {
 		StringTokenizer wordTok = new StringTokenizer(msgLine);
 		String ret = "";
