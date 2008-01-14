@@ -21,7 +21,6 @@
  */
 package alma.acs.util;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 
@@ -33,7 +32,7 @@ import java.util.TimeZone;
  */
 public class UTCUtility
 {
-    private static final SimpleDateFormat df = new SimpleDateFormat("yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'SSS");
+    private static final IsoDateFormat df = new IsoDateFormat();
     
     /**
      * Converts from OMG time ("long-epoch UTC", 100-ns since Oct 15, 1582) 
@@ -62,6 +61,7 @@ public class UTCUtility
      *  to a stringified format: "yyyy-MM-ddTHH:mm:ss.SSS"
      * <p>
      * @return given date/time in UTC format
+     * @see IsoDateFormat#pattern
      */
     public static String getUTCDate(long jTime)
 	{
