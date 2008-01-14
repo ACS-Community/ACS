@@ -63,6 +63,11 @@ module jconttest
 		void callThatTakesSomeTime(in long timeInMillisec);
 	};
 	
+
+	interface DummyComponentWrapper : ACS::ACSComponent
+	{
+		boolean callDummyComponentWithTime(in long timeInMillisec);
+	};
 };
 
 #endif 

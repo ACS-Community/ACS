@@ -12,6 +12,13 @@
 		Container="frodoContainer"
 		Default="true"
 		/>
+
+	<_ Name="DefaultDummyCompWrapper"
+		Code="alma.jconttest.DummyComponentWrapperImpl.DummyComponentWrapperHelper"
+		Type="IDL:alma/jconttest/DummyComponentWrapper:1.0" 
+		Container="frodoContainer"
+		Default="true"
+		/>
 	
 	<!-- to be used for retrieving as a dynamic component. Name will be assigned to instances automatically -->	
 	<_ Name="*" 
