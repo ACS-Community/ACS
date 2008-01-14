@@ -1,4 +1,4 @@
-# $Id: platform_macros.GNU,v 1.8 2007/12/16 10:18:29 bjeram Exp $
+# $Id: platform_macros.GNU,v 1.9 2008/01/14 18:10:59 maraya Exp $
 # VxWorks 6.2
 
 #### Notes:
@@ -39,7 +39,8 @@ rtp ?= 0
 # Also breaks the compilation (posix threads)
 pthread ?= 0
 xerces ?= 1
-shared_libs ?= 1
+shared_libs ?= 0
+static_libs ?= 1
 
 ifeq ($(static_libs),1)
   shared_libs = 0
