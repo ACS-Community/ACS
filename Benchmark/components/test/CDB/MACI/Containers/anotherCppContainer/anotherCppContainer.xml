@@ -17,7 +17,9 @@
              centralizedLogger="Log" 
              minLogLevel="2" 
              dispatchPacketSize="10" 
-             immediateDispatchLevel="99">
+             immediateDispatchLevel="11"
+    >
+    <log:_ Name="jacorb@anotherCppContainer" minLogLevel="5" minLogLevelLocal="5"/>
   </LoggingConfig>
 </Container>
 

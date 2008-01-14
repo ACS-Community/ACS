@@ -4,7 +4,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
 	xmlns="urn:schemas-cosylab-com:Container:1.0" 
 	xmlns:log="urn:schemas-cosylab-com:LoggingConfig:1.0" 
-	ImplLang="java">
+    ImplLang="java">
     
     <Autoload>
     </Autoload>
@@ -14,11 +14,12 @@
     	minLogLevelLocal="2"
     	centralizedLogger="Log"
     	maxLogQueueSize="50000"
-    	immediateDispatchLevel="99"
+    	immediateDispatchLevel="11"
     	dispatchPacketSize="20"
     	flushPeriodSeconds="10"
     	>
-     </LoggingConfig>
+    	<log:_ Name="jacorb@javaContainer1" minLogLevel="5" minLogLevelLocal="5" />
+    </LoggingConfig>
     
 </Container>
 
