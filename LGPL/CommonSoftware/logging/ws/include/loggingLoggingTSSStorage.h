@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingLoggingTSSStorage.h,v 1.7 2007/10/17 15:56:17 cparedes Exp $"
+* "@(#) $Id: loggingLoggingTSSStorage.h,v 1.8 2008/01/15 12:04:36 bjeram Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -72,6 +72,7 @@ class LoggingTSSStorage
 	    m_context = 0;		
 	    m_uri = 0;
 	    m_logId = 0;
+	    m_host = 0;
 	    m_privateFlags = 0;
 	    logLevelLocalType_m = 6;
 	    logLevelRemoteType_m = 6;
@@ -150,6 +151,9 @@ class LoggingTSSStorage
     
     const ACE_TCHAR * uri() { return m_uri; };
     void uri(const ACE_TCHAR * uri) { m_uri=uri; };
+
+    const ACE_TCHAR * host() { return m_host; };
+    void host(const ACE_TCHAR * host) { m_host=host; };
     
     int privateFlags() { return m_privateFlags; };
     void privateFlags(int privateFlags) { m_privateFlags=privateFlags; };
@@ -199,6 +203,7 @@ class LoggingTSSStorage
     const ACE_TCHAR * m_context;
     const ACE_TCHAR * m_logId;
     const ACE_TCHAR * m_uri;
+    const ACE_TCHAR * m_host;
     
     // used internally by logger
     // bit 0 (LSB) = prohibit stdout
