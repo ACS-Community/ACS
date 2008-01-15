@@ -1,4 +1,4 @@
-# @(#) $Id: ACSCorba.py,v 1.24 2007/10/18 00:54:26 agrimstrup Exp $
+# @(#) $Id: ACSCorba.py,v 1.25 2008/01/15 00:41:40 agrimstrup Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA,  2001
@@ -27,7 +27,7 @@ Takes care of initializing the ORB and setting initial reference to MACI
 manager. Also provides functions to get service and device references
 from the manager.
 '''
-__revision__ = "$Id: ACSCorba.py,v 1.24 2007/10/18 00:54:26 agrimstrup Exp $"
+__revision__ = "$Id: ACSCorba.py,v 1.25 2008/01/15 00:41:40 agrimstrup Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 from sys       import argv
@@ -39,6 +39,7 @@ import os
 #--CORBA STUBS-----------------------------------------------------------------
 from omniORB import CORBA
 from omniORB import importIRStubs
+from omniORB import installTransientExceptionHandler
 import maci__POA
 import maci
 from maci import Manager
@@ -276,8 +277,13 @@ class _Client (maci__POA.Client):
         global POA_ROOT
         global POA_MANAGER
         global MGR_REF
-        
-        self.mgr.logout(self.token.h)
+
+        installTransientExceptionHandler(self, maxRetry)
+
+        try:
+            self.mgr.logout(self.token.h)
+        except:
+            pass
         
         #According to Duncan Grisby, maintainer of omniORBPy,
         #one should not use the textbook shutdown calls to
@@ -501,4 +507,11 @@ def nameService():
     ns = getClient().getService('NameService')
     return ns._narrow(CosNaming.NamingContext)
 #----------------------------------------------------------------------------
+def maxRetry(cookie, retries, exc):
+    if retries < 5:
+        return True
+    else:
+        return False
+#----------------------------------------------------------------------------
+
 
