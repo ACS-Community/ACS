@@ -19,7 +19,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: loggingLoggingProxy.cpp,v 1.50 2007/12/03 05:25:36 cparedes Exp $"
+* "@(#) $Id: loggingLoggingProxy.cpp,v 1.51 2008/01/15 12:11:31 bjeram Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -58,7 +58,7 @@
 #define LOG_NAME "Log"
 #define DEFAULT_LOG_FILE_NAME "acs_local_log"
 
-ACE_RCSID(logging, logging, "$Id: loggingLoggingProxy.cpp,v 1.50 2007/12/03 05:25:36 cparedes Exp $");
+ACE_RCSID(logging, logging, "$Id: loggingLoggingProxy.cpp,v 1.51 2008/01/15 12:11:31 bjeram Exp $");
 /*
 ACSLoggingLog::LogType LoggingProxy::m_LogBinEntryTypeName[] =
 {
@@ -719,6 +719,23 @@ const ACE_TCHAR * LoggingProxy::antenna()
     else
 	return 0;
 }//antenna
+
+void
+LoggingProxy::host(const ACE_TCHAR *h)
+{
+    if (tss)
+        (*tss)->host(h);
+}//host
+
+
+const ACE_TCHAR * LoggingProxy::host()
+{
+    if (tss)
+	return (*tss)->host();
+    else
+	return 0;
+}//host
+
 
 void
 LoggingProxy::PrivateFlags(int privateFlags)
