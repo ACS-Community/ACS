@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acserr.cpp,v 1.86 2007/03/30 09:18:00 bjeram Exp $"
+* "@(#) $Id: acserr.cpp,v 1.87 2008/01/15 14:40:36 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -34,7 +34,7 @@
 #include <iomanip>
 #include "ace/UUID.h"
 
-static char *rcsId="@(#) $Id: acserr.cpp,v 1.86 2007/03/30 09:18:00 bjeram Exp $"; 
+static char *rcsId="@(#) $Id: acserr.cpp,v 1.87 2008/01/15 14:40:36 bjeram Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 
@@ -234,7 +234,7 @@ void ErrorTraceHelper::log (ACSErr::ErrorTrace * c,
 			    ACE_Log_Priority priorty)
 {
     unsigned int j;
-    ACE_CString oldProcessName, oldThreadName;
+    ACE_CString oldProcessName, oldThreadName, oldHost;
     Logging::BaseLog::Priority prio; 
 
     LoggingProxy::StackLevel (level);
@@ -244,9 +244,10 @@ void ErrorTraceHelper::log (ACSErr::ErrorTrace * c,
       LoggingProxy::AddData (c->data[j].name.in(), c->data[j].value.in());
 
   // set runtime context
-  ACE_Log_Msg::instance()->local_host(c->host.in()); 
+//  ACE_Log_Msg::instance()->local_host(c->host.in()); 
 
-  // here we save old process and thread names
+  // here we save old process, host  and thread names
+  oldHost = LoggingProxy::host();
   oldProcessName = LoggingProxy::ProcessName();
   oldThreadName = LoggingProxy::ThreadName();
 
@@ -289,6 +290,7 @@ void ErrorTraceHelper::log (ACSErr::ErrorTrace * c,
   // reset process and thread name
   LoggingProxy::ProcessName (oldProcessName.c_str());
   LoggingProxy::ThreadName (oldThreadName.c_str());
+  LoggingProxy::host (oldHost.c_str());
 }//log
 
 void ErrorTraceHelper::log(ACE_Log_Priority priorty)
