@@ -19,7 +19,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: loggingLoggingProxy.cpp,v 1.51 2008/01/15 12:11:31 bjeram Exp $"
+* "@(#) $Id: loggingLoggingProxy.cpp,v 1.52 2008/01/15 13:57:05 bjeram Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -58,7 +58,7 @@
 #define LOG_NAME "Log"
 #define DEFAULT_LOG_FILE_NAME "acs_local_log"
 
-ACE_RCSID(logging, logging, "$Id: loggingLoggingProxy.cpp,v 1.51 2008/01/15 12:11:31 bjeram Exp $");
+ACE_RCSID(logging, logging, "$Id: loggingLoggingProxy.cpp,v 1.52 2008/01/15 13:57:05 bjeram Exp $");
 /*
 ACSLoggingLog::LogType LoggingProxy::m_LogBinEntryTypeName[] =
 {
@@ -288,8 +288,10 @@ LoggingProxy::log(ACE_Log_Record &log_record)
     if (flags & LM_RUNTIME_CONTEXT)
 	{
 	    ACE_Log_Msg *log_msg = ACE_Log_Msg::instance ();
-        if (log_msg){
-            s_log->Host = log_msg->local_host();
+        if (log_msg)
+	    {
+	    //BJE: Here before was not CORBA::string_dup ???
+	    s_log->Host = CORBA::string_dup( (host()==0) ? log_msg->local_host() : host());
             if (m_process){
                 s_log->Process =CORBA::string_dup( m_process);
             }
@@ -490,7 +492,7 @@ LoggingProxy::log(ACE_Log_Record &log_record)
 	if (log_msg)
 	    {
 	    xml += " Host=\"";
-	    xml += log_msg->local_host();
+	    xml += ((host()==0) ? log_msg->local_host() : host());
 	    xml += "\" Process=\"";
 	    if (m_process/*.c_str()*/)
 		{
