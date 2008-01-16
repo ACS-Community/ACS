@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: TestList,v 1.9 2008/01/10 09:42:42 eallaert Exp $"
+# "@(#) $Id: TestList,v 1.10 2008/01/16 09:22:37 cparedes Exp $"
 #
 # TestList
 #
@@ -425,6 +425,8 @@ PROLOGUE acsutilTATPrologue -l
 59 SOURCE prepareDynLevelsNamedLogger.tcl \
 	PROLOGUE "acsutilAwaitContainerStart -cpp bilboContainer" \
 	cppDynamicLevelsNamedLogger2 "maciContainerLogLevel bilboContainer set TESTLOG4 8 9" \
+                      "@SLEEP 2" \
+                      "maciContainerLogLevel frodoContainer get TESTLOG2" \
         EPILOGUE "acsStopContainer bilboContainer"
 
 ########################################################
