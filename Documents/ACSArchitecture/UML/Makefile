@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ALMA project
 #
-# "@(#) $Id: Makefile,v 1.4 2005/05/17 11:21:43 gchiozzi Exp $"
+# "@(#) $Id: Makefile,v 1.5 2008/01/16 10:03:43 gchiozzi Exp $"
 #
 #
 
@@ -11,7 +11,17 @@
 
 # Define where to find the Rose binaries.
 # Unfortunately it seems there is no better way to do it.
-export ROSE_HOME:=/cygdrive/c/Program Files/Rational/Rose
+
+ifndef ROSE_HOME
+  export ROSE_HOME:=/cygdrive/e/Rational/Rose
+  export ROSE_SET_LOCALLY:=true
+endif
+
+rose_home:
+	@echo "Value of ROSE_HOME is: $(ROSE_HOME)"
+	@if [ "X$(ROSE_SET_LOCALLY)" != "X" ]; then \
+          echo "   The value of ROSE_HOME was set to the default in the Makefile";\
+        fi
 
 DESTDIR=out
 
@@ -21,7 +31,7 @@ endif
 
 PLATFORM := $(shell uname)
 
-rosewp: 
+rosewp: rose_home
 	@echo "Producing HTML from Rational Rose UML model!"
 	@rm -rf Html; mkdir -p Html
 	@./makeRosewp.py
