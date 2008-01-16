@@ -19,7 +19,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: loggingLogLevelDefinition.cpp,v 1.1 2007/11/30 11:04:31 cparedes Exp $"
+* "@(#) $Id: loggingLogLevelDefinition.cpp,v 1.2 2008/01/16 09:57:50 cparedes Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -38,6 +38,22 @@ std::string LogLevelDefinition::getName(){
 
 int LogLevelDefinition::getValue(){
     return m_value;    
+}
+
+int LogLevelDefinition::fromACEPriority(ACE_Log_Priority p){
+
+    if(p == LM_SHUTDOWN) return 1;
+    if(p == LM_TRACE) return AcsLogLevels::TRACE_VAL;
+    if(p == LM_DEBUG) return AcsLogLevels::DEBUG_VAL;
+    if(p == LM_INFO) return AcsLogLevels::INFO_VAL;
+    if(p == LM_NOTICE) return AcsLogLevels::NOTICE_VAL;
+    if(p == LM_WARNING) return AcsLogLevels::WARNING_VAL;
+    if(p == LM_ERROR) return AcsLogLevels::ERROR_VAL;
+    if(p == LM_CRITICAL) return AcsLogLevels::CRITICAL_VAL;
+    if(p == LM_ALERT) return AcsLogLevels::ALERT_VAL;
+    if(p == LM_EMERGENCY) return AcsLogLevels::EMERGENCY_VAL;
+    
+    return AcsLogLevels::OFF_VAL;
 }
 
 LogLevelDefinition LogLevelDefinition::fromInteger(int val){
@@ -102,14 +118,14 @@ LogLevelDefinition LogLevelDefinition::fromName(std::string name){
 
 ACE_Log_Priority LogLevelDefinition::m_LogEntryCast[] =
 {
-    LM_TRACE,		// not in specs
-    LM_TRACE, 	// not in specs
+    LM_SHUTDOWN,		// not in specs
+    LM_SHUTDOWN, 	// not in specs
     LM_TRACE,
     LM_DEBUG,
     LM_INFO,
     LM_NOTICE,
     LM_WARNING,
-    LM_TRACE,		// not in specs
+    LM_SHUTDOWN,		// not in specs
     LM_ERROR,
     LM_CRITICAL,
     LM_ALERT,
@@ -119,7 +135,7 @@ ACE_Log_Priority LogLevelDefinition::m_LogEntryCast[] =
 ACE_Log_Priority LogLevelDefinition::getACELogPriority(int p){
     if(p >= 0 && p < 12 )
         return m_LogEntryCast[p];
-    else return LM_TRACE;
+    else return LM_SHUTDOWN;
 }
 
 //---------------------------------------------------------------------------------------

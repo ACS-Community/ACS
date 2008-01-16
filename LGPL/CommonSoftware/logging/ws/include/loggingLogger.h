@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingLogger.h,v 1.21 2007/12/28 04:13:33 cparedes Exp $"
+* "@(#) $Id: loggingLogger.h,v 1.22 2008/01/16 09:57:50 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -85,12 +85,10 @@ namespace Logging
 	virtual LoggerSmartPtr
 	getLogger(const std::string &loggerName) = 0;
 
-    int
-    getLocalLevel();
+    int getLocalLevel();
+    int getRemoteLevel();
     int
     getLocalLevel(const std::string &loggerName);
-    int
-    getRemoteLevel();
     int
     getRemoteLevel(const std::string &loggerName);
 	/**
@@ -217,7 +215,8 @@ namespace Logging
 	 */
 	virtual void
 	setLevels(const std::string &loggerName, Priority remotePriority,Priority localPriority, int type);
-
+    
+    void setLevelsLoggerHandlers(Priority remotePriority,Priority localPriority, int type);
 	/**
 	 * Logger existance check.
 	 * @param loggerName logger name.

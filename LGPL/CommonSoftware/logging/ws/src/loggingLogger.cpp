@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingLogger.cpp,v 1.17 2007/12/28 04:13:33 cparedes Exp $"
+* "@(#) $Id: loggingLogger.cpp,v 1.18 2008/01/16 09:57:50 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -28,7 +28,7 @@
 #include <iostream>
 #include <Recursive_Thread_Mutex.h>
 
-static char *rcsId="@(#) $Id: loggingLogger.cpp,v 1.17 2007/12/28 04:13:33 cparedes Exp $"; 
+static char *rcsId="@(#) $Id: loggingLogger.cpp,v 1.18 2008/01/16 09:57:50 cparedes Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 // -------------------------------------------------------
 //helper function
@@ -133,9 +133,8 @@ namespace Logging {
 	// configure logger (this will also configure handler)
 	configureLogger(loggerName_m);
     }
-    // -------------------------------------------------------
     void
-	Logger::setLevels(Priority remotePriority,Priority localPriority, int type)
+	Logger::setLevelsLoggerHandlers(Priority remotePriority,Priority localPriority, int type)
     {
 	//to be thread safe
 	acquireHandlerMutex();
@@ -150,6 +149,22 @@ namespace Logging {
 	}
 	//make sure it's released
 	releaseHandlerMutex();
+    }
+    // -------------------------------------------------------
+    void
+	Logger::setLevels(Priority remotePriority,Priority localPriority, int type)
+    {
+	//to be thread safe
+	loggersMutex_m.acquire();
+     
+	LoggerList::iterator pos;
+	
+	for (pos = ACE_Singleton<Logger_ptr, ACE_Recursive_Thread_Mutex>::instance()->loggers_m.begin();
+	     pos != ACE_Singleton<Logger_ptr, ACE_Recursive_Thread_Mutex>::instance()->loggers_m.end();
+	     pos++)
+			(*pos)->setLevelsLoggerHandlers(remotePriority, localPriority, type);
+	//make sure it's released
+	loggersMutex_m.release();
     }
 
     bool
@@ -191,31 +206,33 @@ namespace Logging {
         for (pos = handlers_m.begin();
              pos != handlers_m.end();
              pos++){
-            
-            return (*pos)->getLocalLevel();
+                return (*pos)->getLocalLevel();
         }
         return -1;
     }
+
+        
     int Logger::getRemoteLevel(){
        std::list<Handler::HandlerSmartPtr>::iterator pos; 
         for (pos = handlers_m.begin();
              pos != handlers_m.end();
              pos++){
-            
-            return (*pos)->getRemoteLevel();
+                return (*pos)->getRemoteLevel();
         }
         return -1;
     }
+
     int Logger::getLocalLevel(const std::string &loggerName){
             
         LoggerList::iterator pos;
         
         for (pos = ACE_Singleton<Logger_ptr, ACE_Recursive_Thread_Mutex>::instance()->loggers_m.begin();
              pos != ACE_Singleton<Logger_ptr, ACE_Recursive_Thread_Mutex>::instance()->loggers_m.end();
-             pos++)
+             pos++){
             if ((*pos)->getName() == loggerName){
                 return (*pos)->getLocalLevel();
             }
+        }
         return -1;
     }
 
@@ -225,10 +242,11 @@ namespace Logging {
         
         for (pos = ACE_Singleton<Logger_ptr, ACE_Recursive_Thread_Mutex>::instance()->loggers_m.begin();
              pos != ACE_Singleton<Logger_ptr, ACE_Recursive_Thread_Mutex>::instance()->loggers_m.end();
-             pos++)
+             pos++){
             if ((*pos)->getName() == loggerName){
                 return (*pos)->getRemoteLevel();
             }
+        }
         return -1;
     }
 
@@ -245,7 +263,7 @@ namespace Logging {
 	     pos != ACE_Singleton<Logger_ptr, ACE_Recursive_Thread_Mutex>::instance()->loggers_m.end();
 	     pos++)
 		if ((*pos)->getName() == loggerName){
-			(*pos)->setLevels(remotePriority, localPriority, type);
+			(*pos)->setLevelsLoggerHandlers(remotePriority, localPriority, type);
 		}
 	//make sure it's released
 	loggersMutex_m.release();

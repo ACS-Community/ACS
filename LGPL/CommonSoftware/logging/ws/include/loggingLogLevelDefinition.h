@@ -41,6 +41,7 @@ class LogLevelDefinition {
     static LogLevelDefinition fromInteger(int val); 
     static LogLevelDefinition fromName(std::string name); 
     static ACE_Log_Priority getACELogPriority(int p);
+    static int fromACEPriority(ACE_Log_Priority p);
     int getValue();
     std::string getName();
   private:

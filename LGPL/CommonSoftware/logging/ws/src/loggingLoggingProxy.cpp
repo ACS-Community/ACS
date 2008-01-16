@@ -19,7 +19,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: loggingLoggingProxy.cpp,v 1.52 2008/01/15 13:57:05 bjeram Exp $"
+* "@(#) $Id: loggingLoggingProxy.cpp,v 1.53 2008/01/16 09:57:50 cparedes Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -58,7 +58,7 @@
 #define LOG_NAME "Log"
 #define DEFAULT_LOG_FILE_NAME "acs_local_log"
 
-ACE_RCSID(logging, logging, "$Id: loggingLoggingProxy.cpp,v 1.52 2008/01/15 13:57:05 bjeram Exp $");
+ACE_RCSID(logging, logging, "$Id: loggingLoggingProxy.cpp,v 1.53 2008/01/16 09:57:50 cparedes Exp $");
 /*
 ACSLoggingLog::LogType LoggingProxy::m_LogBinEntryTypeName[] =
 {
@@ -136,12 +136,11 @@ LoggingProxy::log(ACE_Log_Record &log_record)
 
     if (!prohibitLocal && ACE_OS::strcmp(entryType, "Archive")!=0)      // do not print archive logs
 	{
-
+        bool printed = false; 
 	// to make print outs nice
 	ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_printMutex);
 	
 	 if (localLogLevelPrecedence == DEFAULT_LOG_LEVEL)
-	 //if (m_envStdioPriority < 0)
 	    {
 	    // log only LM_INFO and higher
 	    if (log_record.priority()>=ACE::log2(LM_INFO)) 
@@ -158,20 +157,16 @@ LoggingProxy::log(ACE_Log_Record &log_record)
 		    ACE_OS::printf ("%s [%s] %s", timestamp, (*tss)->sourceObject(), log_record.msg_data());
 		    }
 
-                if (priority>=ACE::log2(LM_WARNING))   // LM_WARNING+
-                    {
-                    for (; hash_iter.next(entry) != 0; hash_iter.advance() )
-	               {
-                          ACE_OS::printf(",%s=%s", entry->ext_id_.c_str(), entry->int_id_.c_str() );
-                       }
-                    }
-                ACE_OS::printf ("\n");
-		ACE_OS::fflush (stdout); //(2004-01-05)msc: added
+            if (priority>=ACE::log2(LM_WARNING))   // LM_WARNING+
+            {
+                for (; hash_iter.next(entry) != 0; hash_iter.advance() )
+                {
+                      ACE_OS::printf(",%s=%s", entry->ext_id_.c_str(), entry->int_id_.c_str() );
+                }
+            }
+            printed = true;
 		}
-		//else{
-	//	}
 	    }
-      //else if (priority>=(unsigned int)m_envStdioPriority){
       else{
 
 	    ACE_OS::printf ("%s ", timestamp);
@@ -202,17 +197,23 @@ LoggingProxy::log(ACE_Log_Record &log_record)
 		}
 	    
 	    ACE_OS::printf ("%s", log_record.msg_data());
-            if (priority>=ACE::log2(LM_WARNING))   // LM_WARNING+
-                {
-                for (; hash_iter.next(entry) != 0; hash_iter.advance() )
-	           {
-                   ACE_OS::printf(",%s=%s", entry->ext_id_.c_str(), entry->int_id_.c_str() );
-                   }
-                }
-            ACE_OS::printf ("\n");
+        if (priority>=ACE::log2(LM_WARNING))   // LM_WARNING+
+        {
+            for (; hash_iter.next(entry) != 0; hash_iter.advance() )
+            {
+               ACE_OS::printf(",%s=%s", entry->ext_id_.c_str(), entry->int_id_.c_str() );
+            }
+        }
+        printed = true;
+	}
+
+    //Here we will print the log parameters
+    if(printed){
+        ACE_OS::printf ("\n");
 	    ACE_OS::fflush (stdout); //(2004-01-05)msc: added
 	}
-	}//else//if
+    
+    }//else//if
 	
 
     // this is the case of the proxy created not by maci
