@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciContainerImpl.cpp,v 1.102 2007/12/18 07:15:04 cparedes Exp $"
+* "@(#) $Id: maciContainerImpl.cpp,v 1.103 2008/01/16 10:07:34 cparedes Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -79,7 +79,7 @@
 #include <ACSAlarmSystemInterfaceFactory.h>
 #endif
 
-ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.102 2007/12/18 07:15:04 cparedes Exp $")
+ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.103 2008/01/16 10:07:34 cparedes Exp $")
 
  using namespace maci;
  using namespace cdb;
@@ -88,7 +88,6 @@ ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.102 2007/12/1
 ContainerImpl * ContainerImpl::m_container = 0;
 LoggingProxy * ContainerImpl::m_loggerProxy = 0;
 LibraryManager * ContainerImpl::m_dllmgr = 0;
-int ContainerImpl::m_logLevelConfigure = CDB_LOG_LEVEL; 
 int ContainerImpl::m_logLevelRefresh = CDB_LOG_LEVEL;
 CORBA::ULong ContainerImpl::m_invocationTimeout = 15000;		// in milliseconds; 15s
 
@@ -659,6 +658,24 @@ ContainerImpl::init(int argc, char *argv[])
 	ACS_SHORT_LOG((LM_WARNING, "Unable to create logging system. Using 'stdout'..."));
 
       m_logLevelRefresh = CDB_LOG_LEVEL;
+	int envStdioPriority = -1;
+	int envCentralizePriority = -1;
+    char *acsSTDIO = getenv("ACS_LOG_STDOUT");
+    if (acsSTDIO && *acsSTDIO)
+        {
+            envStdioPriority = atoi(acsSTDIO);
+        }
+    if (envStdioPriority >= 0 && envStdioPriority <=11 ) 
+        m_defaultLogLevels.minLogLevelLocal = envStdioPriority;
+    
+    char *acsCentralizeLogger = getenv("ACS_LOG_CENTRAL");
+    if (acsCentralizeLogger && *acsCentralizeLogger)
+        {
+            envCentralizePriority = atoi(acsCentralizeLogger);
+        }
+    if(envCentralizePriority >= 0 && envCentralizePriority <=11 )
+        m_defaultLogLevels.minLogLevel = envCentralizePriority;
+	
       if (m_dynamicContainer)
 	{
 	  ACS_LOG(LM_RUNTIME_CONTEXT, "maci::Container::init", (LM_INFO, "Starting as dynamic container."));
@@ -2596,6 +2613,7 @@ void ContainerImpl::set_default_logLevels(const maci::LoggingConfigurable::LogLe
 	    DYNAMIC_LOG_LEVEL);
 	m_defaultLogLevels = logLevels;
 	m_defaultLogLevels.useDefault = true;
+    
 }//ContainerImpl::set_default_logLevels
 
 
@@ -2633,11 +2651,12 @@ maci::LoggingConfigurable::LogLevels ContainerImpl::get_logLevels(const char* lo
 {
 	ACS_TRACE("maci::ContainerImpl::get_logLevels");
 
-	if (m_logLevels.find(loggerName) != m_logLevels.end())
+	if (m_logLevels.find(loggerName) != m_logLevels.end()){
 	    return m_logLevels[loggerName];
-	else if (Logging::Logger::getGlobalLogger()->exists(loggerName))
+        
+	}else if (Logging::Logger::getGlobalLogger()->exists(loggerName)){
 		return m_defaultLogLevels;
-	else
+	}else
 	{
 		maciErrType::LoggerDoesNotExistExImpl ex(__FILE__, __LINE__,
 					"maci::ContainerImpl::get_logLevels");
@@ -2689,40 +2708,36 @@ void ContainerImpl::refresh_logging_config()
 	Field fld;
 
 	// m_defaultLogLevels.minLogLevel
+	int envStdioPriority = -1;
+	int envCentralizePriority = -1;
+    char *acsSTDIO = getenv("ACS_LOG_STDOUT");
+    if (acsSTDIO && *acsSTDIO)
+        {
+            envStdioPriority = atoi(acsSTDIO);
+        }
+    char *acsCentralizeLogger = getenv("ACS_LOG_CENTRAL");
+    if (acsCentralizeLogger && *acsCentralizeLogger)
+        {
+            envCentralizePriority = atoi(acsCentralizeLogger);
+        }
 	cdb::ULong ul;
-	if (m_database->GetField(m_dbPrefix, "LoggingConfig/minLogLevel", fld))
+    if (m_logLevelRefresh == CDB_LOG_LEVEL && envCentralizePriority >= 0 && envCentralizePriority <=11)
+        m_defaultLogLevels.minLogLevel = envCentralizePriority;
+	else if (m_database->GetField(m_dbPrefix, "LoggingConfig/minLogLevel", fld))
 	{
 		if (fld.GetULong(ul))
 			m_defaultLogLevels.minLogLevel = ul;
 	}
 	
 	// m_defaultLogLevels.minLogLevelLocal
-	if (m_database->GetField(m_dbPrefix, "LoggingConfig/minLogLevelLocal", fld))
+    if (m_logLevelRefresh == CDB_LOG_LEVEL && envStdioPriority >= 0 && envStdioPriority <=11)
+        m_defaultLogLevels.minLogLevelLocal = envStdioPriority;
+	else if (m_database->GetField(m_dbPrefix, "LoggingConfig/minLogLevelLocal", fld))
 	{
 		if (fld.GetULong(ul))
 			m_defaultLogLevels.minLogLevelLocal = ul;
 	}
 
-	int envStdioPriority = -1;
-	int envCentralizePriority = -1;
-	if(m_logLevelRefresh == CDB_LOG_LEVEL){
-		char *acsSTDIO = getenv("ACS_LOG_STDOUT");
-	  	if (acsSTDIO && *acsSTDIO)
-	    	{
-	     		envStdioPriority = atoi(acsSTDIO);
-	    	}
-		if (envStdioPriority >= 0 && envStdioPriority <=11 ) 
-			m_defaultLogLevels.minLogLevelLocal = envStdioPriority;
-	  	
-		char *acsCentralizeLogger = getenv("ACS_LOG_CENTRAL");
-	  	if (acsCentralizeLogger && *acsCentralizeLogger)
-	    	{
-	      		envCentralizePriority = atoi(acsCentralizeLogger);
-	    	}
-		if(envCentralizePriority >= 0 && envCentralizePriority <=11 )
-			m_defaultLogLevels.minLogLevel = envCentralizePriority;
-	
-	}	
 
 	// set default logger levels 
 	Logging::Logger::getGlobalLogger()->setLevels(
@@ -2736,8 +2751,6 @@ void ContainerImpl::refresh_logging_config()
 		if (fld.GetStringArray(loggers))
 		{
 			cdb::StringArray::iterator iter;
-			int aux = m_logLevelConfigure;
-			m_logLevelConfigure = m_logLevelRefresh; 
 			for (iter = loggers.begin(); iter != loggers.end(); iter++)
 			{
 				// C++ CDB impl reutrns also attriburtes, we do not want
@@ -2753,15 +2766,9 @@ void ContainerImpl::refresh_logging_config()
 				// load
 				loadLoggerConfiguration(iter->c_str());
 					
-				if(envStdioPriority > 0 && m_logLevels.find(iter->c_str()) != m_logLevels.end())
-					m_logLevels[iter->c_str()].minLogLevelLocal = envStdioPriority;
-
-				if(envCentralizePriority > 0 && m_logLevels.find(iter->c_str()) != m_logLevels.end())
-					m_logLevels[iter->c_str()].minLogLevel = envCentralizePriority;
 				// ... and configure
 				configureLogger(iter->c_str());				
 			}
-		  	m_logLevelConfigure = aux;	
 		}
 	}
 }
@@ -2778,12 +2785,12 @@ void ContainerImpl::configureLogger(const std::string& loggerName)
 		Logging::Logger::getGlobalLogger()->setLevels(loggerName, 
 			static_cast<Logging::BaseLog::Priority>(LogLevelDefinition::getACELogPriority(getContainer()->m_defaultLogLevels.minLogLevel)),
 			static_cast<Logging::BaseLog::Priority>(LogLevelDefinition::getACELogPriority(getContainer()->m_defaultLogLevels.minLogLevelLocal)),
-		m_logLevelConfigure);
+		DYNAMIC_LOG_LEVEL);
 	}else{
 		Logging::Logger::getGlobalLogger()->setLevels(loggerName, 
 			static_cast<Logging::BaseLog::Priority>(LogLevelDefinition::getACELogPriority(logLevels.minLogLevel)),
 			static_cast<Logging::BaseLog::Priority>(LogLevelDefinition::getACELogPriority(logLevels.minLogLevelLocal)),
-		m_logLevelConfigure);
+		DYNAMIC_LOG_LEVEL);
 	}
 
 }
