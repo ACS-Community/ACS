@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingLogger.h,v 1.22 2008/01/16 09:57:50 cparedes Exp $"
+* "@(#) $Id: loggingLogger.h,v 1.23 2008/01/16 10:25:31 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -95,40 +95,49 @@ namespace Logging
 	 * Static method used to get a nameless Logger object. 
 	 * @return A Logger with an empty name.
 	 */
-	static LoggerSmartPtr 
-	getAnonymousLogger();
+	static LoggerSmartPtr getAnonymousLogger();
 
 	/**
 	 * Static method used to set the anonymous Logger
 	 * object.
 	 * @param The anonymous Logger.
 	 */
-	static void
-	setAnonymousLogger(LoggerSmartPtr anonyLogger);
+	static void	setAnonymousLogger(LoggerSmartPtr anonyLogger);
+	
+	/**
+	 * Static method used to get the Logger object for logging from static methods.
+	 *  getStaticLogger() is used in ACS_STATIC_XXX macros
+	 * @return The static Logger.
+	 */
+	static LoggerSmartPtr getStaticLogger();
+
+	/**
+	 * Static method used to set the static Logger
+	 * object.
+	 * @param The static Logger.
+	 */
+	static void	setStaticLogger(LoggerSmartPtr anonyLogger);
 	
 	/**
 	 * Static method used to get the global Logger
 	 * object.
 	 * @return The global Logger.
 	 */
-	static LoggerSmartPtr
-	getGlobalLogger();
+	static LoggerSmartPtr getGlobalLogger();
 	
 	/**
 	 * Static method used to set the global Logger
 	 * object.
 	 * @param The global Logger.
 	 */
-	static void
-	setGlobalLogger(LoggerSmartPtr globalLogger);
+	static void setGlobalLogger(LoggerSmartPtr globalLogger);
 	
 	/**
 	 * Retrieves the name (usually a container/component/client/)
 	 * of this Logger instance
 	 * @return The name of this Logger instance
 	 */
-	virtual std::string
-	getName() const;
+	virtual std::string	getName() const;
 	
 	/**
 	 * Destructor.
@@ -303,6 +312,12 @@ namespace Logging
                          * irrelevant.
                          */
                         LoggerSmartPtr anonymousLogger_m;
+                        
+                        /**
+                          * Static logger. To be used in static methods.
+                          */
+                        LoggerSmartPtr staticLogger_m;
+                        
                         /**
                          * List of all child loggers.
                          */

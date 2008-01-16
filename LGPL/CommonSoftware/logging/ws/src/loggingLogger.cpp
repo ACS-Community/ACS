@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingLogger.cpp,v 1.18 2008/01/16 09:57:50 cparedes Exp $"
+* "@(#) $Id: loggingLogger.cpp,v 1.19 2008/01/16 10:25:31 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -28,7 +28,7 @@
 #include <iostream>
 #include <Recursive_Thread_Mutex.h>
 
-static char *rcsId="@(#) $Id: loggingLogger.cpp,v 1.18 2008/01/16 09:57:50 cparedes Exp $"; 
+static char *rcsId="@(#) $Id: loggingLogger.cpp,v 1.19 2008/01/16 10:25:31 bjeram Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 // -------------------------------------------------------
 //helper function
@@ -52,6 +52,24 @@ namespace Logging {
     Logger::ConfigureLoggerFunction Logger::configureLoggerFunction_m = (ConfigureLoggerFunction)0;
     // -------------------------------------------------------
     Logger::LoggerSmartPtr
+        Logger::getStaticLogger()
+        {
+    	if (ACE_Singleton<Logger_ptr, ACE_Recursive_Thread_Mutex>::instance()->staticLogger_m == 0)
+    	    {
+    	    //ok, now check is getGlobalLogger returns something other than null...
+    	    if (getGlobalLogger()!=0)
+    		{
+    		//delegate to the global logger
+    		ACE_Singleton<Logger_ptr, ACE_Recursive_Thread_Mutex>::instance()->staticLogger_m = getGlobalLogger()->getLogger(BaseLog::STATIC_LOGGER_NAME);
+    		}//if
+    	 }//if
+
+    	//just delegate to abstract method implementation
+    	return ACE_Singleton<Logger_ptr, ACE_Recursive_Thread_Mutex>::instance()->staticLogger_m;
+
+        }//Logger::getStaticLogger()
+        // -------------------------------------------------------
+    Logger::LoggerSmartPtr
     Logger::getAnonymousLogger()
     {
 	if (ACE_Singleton<Logger_ptr, ACE_Recursive_Thread_Mutex>::instance()->anonymousLogger_m == 0)
@@ -68,7 +86,7 @@ namespace Logging {
 	//just delegate to abstract method implementation
 	return ACE_Singleton<Logger_ptr, ACE_Recursive_Thread_Mutex>::instance()->anonymousLogger_m;
 
-    }
+    }//Logger::getAnonymousLogger()
     // -------------------------------------------------------
     Logger::LoggerSmartPtr
     Logger::getGlobalLogger()
@@ -80,6 +98,12 @@ namespace Logging {
     Logger::setGlobalLogger(Logger::LoggerSmartPtr globalLogger)
     {
 	ACE_Singleton<Logger_ptr, ACE_Recursive_Thread_Mutex>::instance()->globalLogger_m = globalLogger;
+    }
+    // -------------------------------------------------------
+    void
+    Logger::setStaticLogger(Logger::LoggerSmartPtr staticLogger)
+    {
+    ACE_Singleton<Logger_ptr, ACE_Recursive_Thread_Mutex>::instance()->staticLogger_m = staticLogger;
     }
     // -------------------------------------------------------
     void
@@ -104,13 +128,16 @@ namespace Logging {
     {
     // remove from loggers list
     if (loggerName_m != BaseLog::GLOBAL_LOGGER_NAME &&
-    	this != ACE_Singleton<Logger_ptr, ACE_Recursive_Thread_Mutex>::instance()->globalLogger_m && this != ACE_Singleton<Logger_ptr, ACE_Recursive_Thread_Mutex>::instance()->anonymousLogger_m)
+    	this != ACE_Singleton<Logger_ptr, ACE_Recursive_Thread_Mutex>::instance()->globalLogger_m && 
+    	this != ACE_Singleton<Logger_ptr, ACE_Recursive_Thread_Mutex>::instance()->anonymousLogger_m && 
+    	this != ACE_Singleton<Logger_ptr, ACE_Recursive_Thread_Mutex>::instance()->staticLogger_m
+    	)
 	{
-                //printf("Deleting Logger: \"%s\"\n",loggerName_m.c_str());
-                loggersMutex_m.acquire();
-                ACE_Singleton<Logger_ptr, ACE_Recursive_Thread_Mutex>::instance()->loggers_m.remove(this);
-   		loggersMutex_m.release();
-	}
+        //printf("Deleting Logger: \"%s\"\n",loggerName_m.c_str());
+        loggersMutex_m.acquire();
+        ACE_Singleton<Logger_ptr, ACE_Recursive_Thread_Mutex>::instance()->loggers_m.remove(this);
+        loggersMutex_m.release();
+	}//if
 	
 	//to be thread safe
 	acquireHandlerMutex();
@@ -118,7 +145,7 @@ namespace Logging {
 	handlers_m.clear();
 	//make sure it's released
 	releaseHandlerMutex();
-    }
+    }//Logger::~Logger
     // -------------------------------------------------------
     void
     Logger::addHandler(Handler::HandlerSmartPtr newHandler_p)
