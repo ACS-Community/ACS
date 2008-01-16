@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingMACROS.h,v 1.18 2007/12/18 09:32:59 bjeram Exp $"
+* "@(#) $Id: loggingMACROS.h,v 1.19 2008/01/16 10:44:06 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -185,7 +185,7 @@ else \
  * @param text Log message (std::string)
  */
 #define STATIC_LOG(priority, routine, text) \
-getNamedLogger(Logging::BaseLog::STATIC_LOGGER_NAME)->log(priority, text, __FILE__, __LINE__, routine);
+Logging::Logger::getStaticLogger()->log(priority, text, __FILE__, __LINE__, routine);
 
 /**
  * Used to publish a log record from a static context. Useful for doing things like setting
@@ -207,7 +207,7 @@ getNamedLogger(Logging::BaseLog::STATIC_LOGGER_NAME)->log(priority, text, __FILE
     lr.line      = logLine; \
     lr.method    = logRoutine; \
     lr.timeStamp = logTime; \
-    getNamedLogger(Logging::BaseLog::STATIC_LOGGER_NAME)->log(lr); \
+    Logging::Logger::getStaicLogger()->log(lr); \
 }
 
 /**
@@ -226,6 +226,6 @@ Logging::LogTrace::LogTraceSmartPtr __autoTraceLogTraceSmartPtrInstance(new Logg
  * @param routine Name of the routine in which this macro is being used from (std::string)
  */
 #define AUTO_STATIC_TRACE(routine) \
-Logging::LogTrace::LogTraceSmartPtr __autoTraceLogTraceSmartPtrInstance(new Logging::LogTrace(getNamedLogger(Logging::BaseLog::STATIC_LOGGER_NAME), routine, __FILE__, __LINE__));
+Logging::LogTrace::LogTraceSmartPtr __autoTraceLogTraceSmartPtrInstance(new Logging::LogTrace(Logging::Logger::getStaticLogger(), routine, __FILE__, __LINE__));
 
 #endif /*!_H*/
