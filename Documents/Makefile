@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ALMA project
 #
-# "@(#) $Id: Makefile,v 1.11 2007/11/12 13:37:29 gchiozzi Exp $"
+# "@(#) $Id: Makefile,v 1.12 2008/01/16 10:05:38 gchiozzi Exp $"
 #
 #
 
@@ -42,9 +42,14 @@ listDocs:
 ifeq ($(PLATFORM),CYGWIN_NT-5.1)
   PLATFORM := Sun
 
-all: cvsUpdate changeLog acsarchitectureupd docs
+all: loginfo cvsUpdate changeLog acsarchitectureupd docs
 
 docs: $(PDFDOCS)
+
+loginfo:
+	@echo Generating ACS Documentation on Windows
+	@echo I am in: $(PWD)
+	@echo Target is: $(DESTDIR)
 
 cvsUpdate:
 	cvs update -d -P $(CVSFLAGS) .
