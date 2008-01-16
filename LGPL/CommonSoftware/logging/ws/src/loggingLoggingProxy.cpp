@@ -19,7 +19,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: loggingLoggingProxy.cpp,v 1.53 2008/01/16 09:57:50 cparedes Exp $"
+* "@(#) $Id: loggingLoggingProxy.cpp,v 1.54 2008/01/16 16:01:07 bjeram Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -58,7 +58,7 @@
 #define LOG_NAME "Log"
 #define DEFAULT_LOG_FILE_NAME "acs_local_log"
 
-ACE_RCSID(logging, logging, "$Id: loggingLoggingProxy.cpp,v 1.53 2008/01/16 09:57:50 cparedes Exp $");
+ACE_RCSID(logging, logging, "$Id: loggingLoggingProxy.cpp,v 1.54 2008/01/16 16:01:07 bjeram Exp $");
 /*
 ACSLoggingLog::LogType LoggingProxy::m_LogBinEntryTypeName[] =
 {
@@ -103,22 +103,25 @@ LoggingProxy::log(ACE_Log_Record &log_record)
     formatISO8601inUTC(log_record.time_stamp(), timestamp);
 
     const ACE_TCHAR * entryType = (*tss)->logEntryType();
+    std::string s_entryType;
     //const int nEntryType;
     if (!entryType)
 	{
 	//if (log_record.priority() <= ACE::log2(LM_MAX))
 	//    {
 	    //entryType = m_LogEntryTypeName[log_record.priority()+1];
-        entryType = LogLevelDefinition::fromInteger(log_record.priority()+1).getName().c_str(); 
+        s_entryType = LogLevelDefinition::fromInteger(log_record.priority()+1).getName();
+	entryType = s_entryType.c_str();
 	//    }
 	//else
 	//    {
 	//    entryType = m_LogEntryTypeName[0];      // invalid priority ("programmer exception")
 	//    }
-	}else{
-
-    }
-    std::string s_entryType(entryType); 
+	}
+    else
+	{
+	s_entryType = (const char*)entryType;
+	}
 
     //client exception in log level
     if(localLogLevelPrecedence >= CDB_LOG_LEVEL){
