@@ -34,7 +34,7 @@
 2 - (level=10) dummy log message for core level 10/Alert
 2 - (level=11) dummy log message for core level 11/Emergency
 2 - (level=11) dummy log message for core level 99/Off
-2 - (level=11) ===last log messsage===
+2 - (level=11) ===last log message===
 2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Set default log level for container bilboContainer to 3 to be used by component TESTLOG4
 2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will call 'logDummyMessages' on component TESTLOG4
 2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will wait <N> seconds to receive (some of) these log messages.
@@ -48,7 +48,7 @@
 2 - (level=10) dummy log message for core level 10/Alert
 2 - (level=11) dummy log message for core level 11/Emergency
 2 - (level=11) dummy log message for core level 99/Off
-2 - (level=11) ===last log messsage===
+2 - (level=11) ===last log message===
 2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Set default log level for container bilboContainer to 4 to be used by component TESTLOG4
 2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will call 'logDummyMessages' on component TESTLOG4
 2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will wait <N> seconds to receive (some of) these log messages.
@@ -61,7 +61,7 @@
 2 - (level=10) dummy log message for core level 10/Alert
 2 - (level=11) dummy log message for core level 11/Emergency
 2 - (level=11) dummy log message for core level 99/Off
-2 - (level=11) ===last log messsage===
+2 - (level=11) ===last log message===
 2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Set default log level for container bilboContainer to 5 to be used by component TESTLOG4
 2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will call 'logDummyMessages' on component TESTLOG4
 2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will wait <N> seconds to receive (some of) these log messages.
@@ -73,7 +73,7 @@
 2 - (level=10) dummy log message for core level 10/Alert
 2 - (level=11) dummy log message for core level 11/Emergency
 2 - (level=11) dummy log message for core level 99/Off
-2 - (level=11) ===last log messsage===
+2 - (level=11) ===last log message===
 2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Set default log level for container bilboContainer to 6 to be used by component TESTLOG4
 2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will call 'logDummyMessages' on component TESTLOG4
 2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will wait <N> seconds to receive (some of) these log messages.
@@ -84,7 +84,7 @@
 2 - (level=10) dummy log message for core level 10/Alert
 2 - (level=11) dummy log message for core level 11/Emergency
 2 - (level=11) dummy log message for core level 99/Off
-2 - (level=11) ===last log messsage===
+2 - (level=11) ===last log message===
 2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Set default log level for container bilboContainer to 8 to be used by component TESTLOG4
 2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will call 'logDummyMessages' on component TESTLOG4
 2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will wait <N> seconds to receive (some of) these log messages.
@@ -94,7 +94,7 @@
 2 - (level=10) dummy log message for core level 10/Alert
 2 - (level=11) dummy log message for core level 11/Emergency
 2 - (level=11) dummy log message for core level 99/Off
-2 - (level=11) ===last log messsage===
+2 - (level=11) ===last log message===
 2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Set default log level for container bilboContainer to 9 to be used by component TESTLOG4
 2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will call 'logDummyMessages' on component TESTLOG4
 2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will wait <N> seconds to receive (some of) these log messages.
@@ -103,7 +103,7 @@
 2 - (level=10) dummy log message for core level 10/Alert
 2 - (level=11) dummy log message for core level 11/Emergency
 2 - (level=11) dummy log message for core level 99/Off
-2 - (level=11) ===last log messsage===
+2 - (level=11) ===last log message===
 2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Set default log level for container bilboContainer to 10 to be used by component TESTLOG4
 2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will call 'logDummyMessages' on component TESTLOG4
 2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will wait <N> seconds to receive (some of) these log messages.
@@ -111,14 +111,14 @@
 2 - (level=10) dummy log message for core level 10/Alert
 2 - (level=11) dummy log message for core level 11/Emergency
 2 - (level=11) dummy log message for core level 99/Off
-2 - (level=11) ===last log messsage===
+2 - (level=11) ===last log message===
 2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Set default log level for container bilboContainer to 11 to be used by component TESTLOG4
 2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will call 'logDummyMessages' on component TESTLOG4
 2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will wait <N> seconds to receive (some of) these log messages.
 2 - Got 3 records from logger TESTLOG4
 2 - (level=11) dummy log message for core level 11/Emergency
 2 - (level=11) dummy log message for core level 99/Off
-2 - (level=11) ===last log messsage===
+2 - (level=11) ===last log message===
 2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Set default log level for container bilboContainer to 99 to be used by component TESTLOG4
 2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will call 'logDummyMessages' on component TESTLOG4
 2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will wait <N> seconds to receive (some of) these log messages.
