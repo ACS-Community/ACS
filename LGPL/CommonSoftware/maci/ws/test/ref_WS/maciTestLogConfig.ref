@@ -25,32 +25,33 @@
 1 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] ManagerReference generated using localhost address: 'corbaloc::---:----/Manager'
 1 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] Resolving reference: 'corbaloc::---:----/Manager'
 1 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] Manager reference narrowed.
+1 - ----------T--:--:--.--- [ContainerTestLog - maci::ContainerImpl::init] Using DLL path: .....
 1 - ----------T--:--:--.--- [ContainerTestLog - maci::Container::init] Recovery enabled.
 1 - ----------T--:--:--.--- [GlobalLogger - ] Using ACS alarm system
-1 - ----------T--:--:--.--- [ContainerTestLog - maci::ContainerImpl::activateCORBAObject] 
-1 - ----------T--:--:--.--- [ContainerTestLog - maci::ContainerImpl::init] Using DLL path: .....
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::setSearchPath] 
+1 - ----------T--:--:--.--- [ContainerTestLog - maci::ContainerImpl::activateCORBAObject] 
 1 - ----------T--:--:--.--- [ContainerTestLog - maci::ContainerImpl::init] Container 'ContainerTestLog' activated.
 1 - ----------T--:--:--.--- [ContainerTestLog - maci::ContainerImpl::init] Container 'ContainerTestLog' initialized successfuly
+1 - ----------T--:--:--.--- [GlobalLogger - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
 1 - ----------T--:--:--.--- [ContainerTestLog - maci::ContainerImpl::init] Connected to the InterfaceRepository.
 1 - ----------T--:--:--.--- [ContainerTestLog - maci::ContainerImpl::init] Connecting to the Manager...
 1 - ----------T--:--:--.--- [ContainerTestLog - maci::ContainerImpl::resolveManager] 
 1 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] 
-1 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] 
 1 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] ManagerReference generated using localhost address: 'corbaloc::---:----/Manager'
+1 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] 
 1 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] Resolving reference: 'corbaloc::---:----/Manager'
 1 - ----------T--:--:--.--- [ContainerTestLog - maci::ContainerImpl::init] Connected to the Manager.
 1 - ----------T--:--:--.--- [ContainerTestLog - maci::ContainerImpl::init] Connecting to the Archiving Channel.
 1 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] Manager reference narrowed.
 1 - ----------T--:--:--.--- [ContainerTestLog - maci::ContainerImpl::init] Connecting to the Centralized Logger...
 1 - ----------T--:--:--.--- [ContainerTestLog - maci::ContainerImpl::init] Connected to the Centralized Logger.
-1 - ----------T--:--:--.--- [ContainerTestLog - maci::ContainerImpl::init] Logging into the Manager...
 1 - ----------T--:--:--.--- [ContainerTestLog - maci::ContainerImpl::init] Set Naming Context to Logger.
+1 - ----------T--:--:--.--- [ContainerTestLog - maci::ContainerImpl::init] Logging into the Manager...
 1 - ----------T--:--:--.--- [ContainerTestLog - maci::ContainerImpl:::authenticate] 
+1 - ----------T--:--:--.--- [ContainerTestLog - maci::ContainerServices::ContainerServices] 
 1 - ----------T--:--:--.--- [ContainerTestLog - maci::ContainerImpl::getManager] 
 1 - ----------T--:--:--.--- [ContainerTestLog - maci::ContainerImpl::init] Logged into the Manager.
 1 - ----------T--:--:--.--- [ContainerTestLog - maci::ContainerImpl::run] 
-1 - ----------T--:--:--.--- [ContainerTestLog - maci::ContainerServices::ContainerServices] 
 1 - ----------T--:--:--.--- [ContainerTestLog - maci::MACIContainerServices::MACIContainerServices] 
 1 - ----------T--:--:--.--- [ContainerTestLog - ContainerImpl::run] Container running...
 1 - ----------T--:--:--.--- [GlobalLogger - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
@@ -67,22 +68,22 @@
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loading '/----/libmaciTestLogConfig.so'.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'maciTestLogConfig'.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::locateLibrary] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::getSymbol] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] DLLOpen executed.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Executing DLLOpen
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loaded '/----/libmaciTestLogConfig.so'.
 1 - ----------T--:--:--.--- [ContainerTestLog - maci::ContainerImpl::activateCORBAObject] 
 1 - ----------T--:--:--.--- [ContainerTestLog - maci::ContainerImpl::getManager] 
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::getSymbol] 
 1 - ----------T--:--:--.--- [MACI_LOG_CONFIG - acscomponent::ACSComponentImpl::ACSComponentImpl] 
 1 - ----------T--:--:--.--- [MACI_LOG_CONFIG - maci::ContainerServices::ContainerServices] 
 1 - ----------T--:--:--.--- [MACI_LOG_CONFIG - maci::MACIContainerServices::MACIContainerServices] 
 1 - ----------T--:--:--.--- [GlobalLogger - ] Switched state of component MACI_LOG_CONFIG: INITIALIZED -> OPERATIONAL
 1 - ----------T--:--:--.--- [GlobalLogger - ] Switched state of component MACI_LOG_CONFIG: INITIALIZING -> INITIALIZED
 1 - ----------T--:--:--.--- [GlobalLogger - ] Switched state of component MACI_LOG_CONFIG: NEW -> INITIALIZING
-1 - ----------T--:--:--.--- [MACI_LOG_CONFIG - acscomponent::ACSComponentImpl::__initialize] 
-1 - ----------T--:--:--.--- [MACI_LOG_CONFIG - acscomponent::ACSComponentImpl::initialize] 
 1 - ----------T--:--:--.--- [MACI_LOG_CONFIG - acscomponent::ACSComponentImpl::__execute] 
 1 - ----------T--:--:--.--- [MACI_LOG_CONFIG - acscomponent::ACSComponentImpl::execute] 
+1 - ----------T--:--:--.--- [MACI_LOG_CONFIG - acscomponent::ACSComponentImpl::__initialize] 
+1 - ----------T--:--:--.--- [MACI_LOG_CONFIG - acscomponent::ACSComponentImpl::initialize] 
 1 - ----------T--:--:--.--- [ContainerTestLog - maci::ContainerImpl::activate_component] Component 'MACI_LOG_CONFIG' activated.
 1 - ----------T--:--:--.--- [ContainerTestLog - maci::ContainerImpl::message] Message from manager received. Type: 20. Message: Startup statistics: 1 of 1 components activated.
 2 - ----------T--:--:--.--- [GlobalLogger - ] Logging proxy successfully created.
@@ -145,23 +146,23 @@
 2 - ----------T--:--:--.--- [GlobalLogger - ] Client destroyed.
 2 - Test with dynamic change of log (2)
 2 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] 
-2 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] ManagerReference generated using localhost address: 'corbaloc::---:----/Manager'
 2 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] 
+2 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] ManagerReference generated using localhost address: 'corbaloc::---:----/Manager'
 2 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] Resolving reference: 'corbaloc::---:----/Manager'
 2 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] Manager reference narrowed.
 2 - ----------T--:--:--.--- [GlobalLogger - ] Container: ContainerTestLog
-2 - ----------T--:--:--.--- [GlobalLogger - ] 		minLogLevel     : 6
-2 - ----------T--:--:--.--- [GlobalLogger - ] 		minLogLevelLocal: 4
 2 - ----------T--:--:--.--- [GlobalLogger - ] 	Setting levels for logger 'MACI_LOG_CONFIG':
 2 - ----------T--:--:--.--- [GlobalLogger - ] 		useDefault      : false
+2 - ----------T--:--:--.--- [GlobalLogger - ] 		minLogLevel     : 6
+2 - ----------T--:--:--.--- [GlobalLogger - ] 		minLogLevelLocal: 4
 1 - ----------T--:--:--.--- [ContainerTestLog - maci::ContainerImpl::set_logLevels] 
 2 - ----------T--:--:--.--- [GlobalLogger - ] 	... done.
 2 - ----------T--:--:--.--- [GlobalLogger - ] Done all.
 2 - Init maciLogConfigTestClient...
 2 - ----------T--:--:--.--- [GlobalLogger - ] Logging proxy successfully created.
 2 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] 
-2 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] ManagerReference generated using localhost address: 'corbaloc::---:----/Manager'
 2 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] 
+2 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] ManagerReference generated using localhost address: 'corbaloc::---:----/Manager'
 2 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] Resolving reference: 'corbaloc::---:----/Manager'
 2 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] Manager reference narrowed.
 2 - ----------T--:--:--.--- [GlobalLogger - ] Logged in.
