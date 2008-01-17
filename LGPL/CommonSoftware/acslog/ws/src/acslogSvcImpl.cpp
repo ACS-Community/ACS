@@ -18,18 +18,75 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acslogSvcImpl.cpp,v 1.20 2007/07/11 12:14:45 nbarriga Exp $"
+* "@(#) $Id: acslogSvcImpl.cpp,v 1.21 2008/01/17 22:56:19 agrimstrup Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
 * bjeram  11/09/01  created 
 */
 
-static char *rcsId="@(#) $Id: acslogSvcImpl.cpp,v 1.20 2007/07/11 12:14:45 nbarriga Exp $"; 
+static char *rcsId="@(#) $Id: acslogSvcImpl.cpp,v 1.21 2008/01/17 22:56:19 agrimstrup Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include "acslogSvcImpl.h"
 #include "acserr.h"
+
+// ----------------------------------------------------------
+//helper function used to convert from ACSLog logging priorities
+//to Logging log priorities
+Logging::BaseLog::Priority acslog2loggingPriority(ACSLog::Priorities acslogPriority)
+{
+    Logging::BaseLog::Priority retVal = Logging::BaseLog::LM_TRACE;
+	
+    switch(acslogPriority)
+	{
+	case ACSLog::ACS_LOG_TRACE:
+	    retVal = Logging::BaseLog::LM_TRACE;
+	    break;
+		
+	case ACSLog::ACS_LOG_DEBUG:
+	    retVal = Logging::BaseLog::LM_DEBUG;
+	    break;
+		
+	case ACSLog::ACS_LOG_INFO:
+	    retVal = Logging::BaseLog::LM_INFO;
+	    break;
+		
+	case ACSLog::ACS_LOG_NOTICE:
+	    retVal = Logging::BaseLog::LM_NOTICE;
+	    break;
+		
+	case ACSLog::ACS_LOG_WARNING:
+	    retVal = Logging::BaseLog::LM_WARNING;
+	    break;
+	    
+	case ACSLog::ACS_LOG_ERROR:
+	    retVal = Logging::BaseLog::LM_ERROR;
+	    break;
+		
+	case ACSLog::ACS_LOG_CRITICAL:
+	    retVal = Logging::BaseLog::LM_CRITICAL;
+	    break;
+		
+	case ACSLog::ACS_LOG_ALERT:
+	    retVal = Logging::BaseLog::LM_ALERT;
+	    break;
+		
+	case ACSLog::ACS_LOG_EMERGENCY:
+	    retVal = Logging::BaseLog::LM_EMERGENCY;
+	    break;
+		
+	default:
+	    //should NEVER be the case but 
+	    //if this does occur we default
+	    //to a level that will always be
+	    //logged
+	    retVal = Logging::BaseLog::LM_EMERGENCY;
+	}
+	
+    return retVal;
+}
+
     
 void ACSLogImpl::logTrace (acscommon::TimeStamp time,
 			   const char * msg,
@@ -132,7 +189,7 @@ void ACSLogImpl::logWithPriority (ACSLog::Priorities p,
   if(audience!=NULL)LoggingProxy::audience(audience);
   if(array!=NULL)LoggingProxy::array(array);
   if(antenna!=NULL)LoggingProxy::antenna(antenna);
-  LOG_RECORD(Logging::ace2acsPriority(ACE_Log_Priority(1 << (p+1)))/*awfull!!! need to check how to do it cleanly*/, msg, srcInfo.file.in(), srcInfo.line, srcInfo.routine.in(), time, rtCont.sourceObject.in());
+  LOG_RECORD(acslog2loggingPriority(p), msg, srcInfo.file.in(), srcInfo.line, srcInfo.routine.in(), time, rtCont.sourceObject.in());
 }
 void ACSLogImpl::logWithAudience (ACSLog::Priorities p,
 			      acscommon::TimeStamp time,
@@ -150,7 +207,7 @@ void ACSLogImpl::logWithAudience (ACSLog::Priorities p,
   if(audience!=NULL)LoggingProxy::audience(audience);
   if(array!=NULL)LoggingProxy::array(array);
   if(antenna!=NULL)LoggingProxy::antenna(antenna);
-  LOG_RECORD(Logging::ace2acsPriority(ACE_Log_Priority(1 << (p+1)))/*awfull!!! need to check how to do it cleanly*/, msg, srcInfo.file.in(), srcInfo.line, srcInfo.routine.in(), time, rtCont.sourceObject.in());
+  LOG_RECORD(acslog2loggingPriority(p), msg, srcInfo.file.in(), srcInfo.line, srcInfo.routine.in(), time, rtCont.sourceObject.in());
 }
 
 void ACSLogImpl::logCritical (acscommon::TimeStamp time,

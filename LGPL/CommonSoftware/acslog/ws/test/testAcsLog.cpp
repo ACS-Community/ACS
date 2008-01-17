@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: testAcsLog.cpp,v 1.17 2006/12/14 08:35:29 bjeram Exp $"
+* "@(#) $Id: testAcsLog.cpp,v 1.18 2008/01/17 22:56:19 agrimstrup Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -28,7 +28,7 @@
 // Uncomment this if you are using the VLT environment
 // #include "vltPort.h"
 
-static char *rcsId="@(#) $Id: testAcsLog.cpp,v 1.17 2006/12/14 08:35:29 bjeram Exp $"; 
+static char *rcsId="@(#) $Id: testAcsLog.cpp,v 1.18 2008/01/17 22:56:19 agrimstrup Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <stdlib.h>
@@ -185,6 +185,42 @@ int main(int argc, char *argv[])
       ACE_OS::printf("Test #11 (Emergency)\n");
       si.line = __LINE__+1;
       log->logEmergency(ts, "test Emergency msg (there should be Context and  Source info and Data)", con, si, data);
+      
+      ACE_OS::printf("logWithAudience Test #12 (Trace)\n");
+      si.line = __LINE__+1;
+      log->logWithAudience(ACSLog::ACS_LOG_TRACE, ts, "test logWithAudience Trace msg (there should be Context and  Source info)", con, si, "", "", "");
+      
+      ACE_OS::printf("logWithAudience Test #13 (Debug)\n");
+      si.line = __LINE__+1;
+      log->logWithAudience(ACSLog::ACS_LOG_DEBUG, ts, "test logWithAudience Debug msg (there should be Context and  Source info)", con, si, "", "", "");
+      
+      ACE_OS::printf("logWithAudience Test #14 (Info)\n");
+      si.line = __LINE__+1;
+      log->logWithAudience(ACSLog::ACS_LOG_INFO, ts, "test logWithAudience Info msg (there should be Context and  Source info)", con, si, "", "", "");
+      
+      ACE_OS::printf("logWithAudience Test #15 (Notice)\n");
+      si.line = __LINE__+1;
+      log->logWithAudience(ACSLog::ACS_LOG_NOTICE, ts, "test logWithAudience Notice msg (there should be Context and  Source info)", con, si, "", "", "");
+      
+      ACE_OS::printf("logWithAudience Test #16 (Warning)\n");
+      si.line = __LINE__+1;
+      log->logWithAudience(ACSLog::ACS_LOG_WARNING, ts, "test logWithAudience Warning msg (there should be Context and  Source info)", con, si, "", "", "");
+      
+      ACE_OS::printf("logWithAudience Test #17 (Error)\n");
+      si.line = __LINE__+1;
+      log->logWithAudience(ACSLog::ACS_LOG_ERROR, ts, "test logWithAudience Error msg (there should be Context and  Source info)", con, si, "", "", "");
+      
+      ACE_OS::printf("logWithAudience Test #18 (Critical)\n");
+      si.line = __LINE__+1;
+      log->logWithAudience(ACSLog::ACS_LOG_CRITICAL, ts, "test logWithAudience Critical msg (there should be Context and  Source info)", con, si, "", "", "");
+      
+      ACE_OS::printf("logWithAudience Test #19 (Alert)\n");
+      si.line = __LINE__+1;
+      log->logWithAudience(ACSLog::ACS_LOG_ALERT, ts, "test logWithAudience Alert msg (there should be Context and  Source info)", con, si, "", "", "");
+      
+      ACE_OS::printf("logWithAudience Test #20 (Emergency)\n");
+      si.line = __LINE__+1;
+      log->logWithAudience(ACSLog::ACS_LOG_EMERGENCY, ts, "test logWithAudience Emergency msg (there should be Context and  Source info)", con, si, "", "", "");
       
 
     }
