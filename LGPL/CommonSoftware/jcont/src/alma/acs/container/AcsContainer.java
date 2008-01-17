@@ -21,8 +21,6 @@
  */
 package alma.acs.container;
 
-import java.lang.management.ManagementFactory;
-import java.lang.management.ThreadMXBean;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -69,6 +67,7 @@ import alma.acs.logging.ClientLogManager;
 import alma.acs.logging.config.LogConfig;
 import alma.acs.logging.config.LogConfigException;
 import alma.acs.logging.level.AcsLogLevelDefinition;
+import alma.acs.util.IsoDateFormat;
 import alma.acs.util.StopWatch;
 import alma.acs.util.UTCUtility;
 import alma.alarmsystem.source.ACSAlarmSystemInterfaceFactory;
@@ -400,10 +399,8 @@ public class AcsContainer extends ContainerPOA
             // Objects for container interception ("tight container") and for automatic xml binding class
             // de-/serialization are chained up and inserted here. End-to-end they have to translate between the
             // operations interface derived from corba IDL and the component's declared internalInterface.
-            //
 
-            // guarantees that it implements ComponentLifecycle
-            Object compImpl = compHelper.getComponentImpl();
+            ComponentLifecycle compImpl = compHelper.getComponentImpl();
 
 //m_logger.finest(compName + " component impl created, with classloader " + compImpl.getClass().getClassLoader().getClass().getName());
 
@@ -448,7 +445,7 @@ public class AcsContainer extends ContainerPOA
             //
 
             compAdapter = new ComponentAdapter(compName, type, exe, componentHandle,
-                    m_managerProxy.getManagerHandle(), m_containerName, (ComponentLifecycle) compImpl,
+                    m_managerProxy.getManagerHandle(), m_containerName, compImpl,
                     m_managerProxy, compCL, m_logger, m_acsCorba);
 
             // for future offshoots created by this component we must pass on the no-auto-logging info
@@ -819,7 +816,7 @@ public class AcsContainer extends ContainerPOA
     	try {
 			ComponentAdapter compAdapter = m_activeComponentMap.get(compHandle);
 			if (compAdapter != null) {
-				curl = compAdapter.getName();
+				curl = compAdapter.getName(); 
 			}
 			
 			m_logger.warning("method restart_component not yet implemented.");
@@ -1185,25 +1182,32 @@ public class AcsContainer extends ContainerPOA
 
     /**
      * Replies with <code>true</code> so that Manager sees that this container is alive.
+     * <p>
      * Prints a message to System.out, so that it's visible on the local console that the container is doing ok.
      * Does not log anything, because a failure to reply would show up remotely anyway.
+     * <p>
+     * No message is printed if the container log level is above INFO, see http://jira.alma.cl/browse/COMP-1736.
+     * 
      * @see si.ijs.maci.ClientOperations#ping()
      */
-    public boolean ping()
-    {
-        Runtime rt = Runtime.getRuntime();
-        long totalMemKB = rt.totalMemory()/1024;
-        long usedMemKB = totalMemKB - rt.freeMemory()/1024;
-        String memStatus = "Memory usage " + usedMemKB + " of " + totalMemKB + " kB ";
-        long maxMem = rt.maxMemory();
-        if (maxMem < Long.MAX_VALUE) {
-            long maxMemKB = maxMem/1024;
-            memStatus += "(= " + (usedMemKB*1000/maxMemKB)/10.0 + "% of JVM growth limit " + maxMemKB + " kB) ";
-        }
-        System.out.println("ping received, container alive. " + memStatus);
-        
-//        ThreadMXBean threadMX = ManagementFactory.getThreadMXBean();
-//        threadMX.
+    public boolean ping() {
+    	// we cannot use m_logger.isLoggable because only the stdout log level should be considered,
+    	// and it would be even worse a hack to go from the logger to its stdout handler to ask for the level there.
+    	if (logConfig.getNamedLoggerConfig(m_containerName).getMinLogLevelLocal() <= AcsLogLevelDefinition.INFO.value) {
+	        Runtime rt = Runtime.getRuntime();
+	        long totalMemKB = rt.totalMemory()/1024;
+	        long usedMemKB = totalMemKB - rt.freeMemory()/1024;
+	        String memStatus = "Memory usage " + usedMemKB + " of " + totalMemKB + " kB ";
+	        long maxMem = rt.maxMemory();
+	        if (maxMem < Long.MAX_VALUE) {
+	            long maxMemKB = maxMem/1024;
+	            memStatus += "(= " + (usedMemKB*1000/maxMemKB)/10.0 + "% of JVM growth limit " + maxMemKB + " kB) ";
+	        }
+	        String timestamp = IsoDateFormat.formatCurrentDate();
+	        System.out.println(timestamp + " [" + m_containerName + "] ping received, container alive. " + memStatus);        
+    	}
+//      ThreadMXBean threadMX = ManagementFactory.getThreadMXBean();
+//      threadMX.
         
         return true;
     }
