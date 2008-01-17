@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingClient.cpp,v 1.50 2007/09/28 09:22:14 cparedes Exp $"
+* "@(#) $Id: loggingClient.cpp,v 1.51 2008/01/17 10:33:59 eallaert Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -362,7 +362,7 @@ ACSStructuredPushConsumer::push_structured_event (const CosNotification::Structu
             {
                 if(toFile){
                     ACE_OS::fprintf(outputFile,"%s\n", xmlLog);
-                    ACE_OS::fflush (stdout);
+                    ACE_OS::fflush (outputFile);
                 }else{
                     ACE_OS::printf("%s\n", xmlLog);
                     ACE_OS::fflush (stdout);
@@ -383,7 +383,7 @@ ACSStructuredPushConsumer::push_structured_event (const CosNotification::Structu
             {
                 if(toFile){
                     ACE_OS::fprintf(outputFile,"%s\n",LoggingProxy::BinToXml(log).c_str());
-                    ACE_OS::fflush (stdout);
+                    ACE_OS::fflush (outputFile);
                 }else{
                     ACE_OS::printf("%s\n",LoggingProxy::BinToXml(log).c_str());
                     ACE_OS::fflush (stdout);
