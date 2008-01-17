@@ -32,8 +32,6 @@ import java.util.TimeZone;
  */
 public class UTCUtility
 {
-    private static final IsoDateFormat df = new IsoDateFormat();
-    
     /**
      * Converts from OMG time ("long-epoch UTC", 100-ns since Oct 15, 1582) 
      * to Java time ("short-epoch UTC", ms since Jan 01, 1970).
@@ -57,8 +55,8 @@ public class UTCUtility
 	}
 
     /**
-     *  Converts the given java time ("short-epoch UTC", ms since Jan 01, 1970) 
-     *  to a stringified format: "yyyy-MM-ddTHH:mm:ss.SSS"
+     * Converts the given java time ("short-epoch UTC", ms since Jan 01, 1970) 
+     * to a stringified format: "yyyy-MM-ddTHH:mm:ss.SSS"
      * <p>
      * @return given date/time in UTC format
      * @see IsoDateFormat#pattern
@@ -67,6 +65,6 @@ public class UTCUtility
 	{
 	    TimeZone timezone = TimeZone.getDefault();
 	    jTime = jTime - timezone.getOffset(jTime);
-	    return df.format(new Date(jTime));
+	    return IsoDateFormat.formatDate(new Date(jTime));
 	}
 }
