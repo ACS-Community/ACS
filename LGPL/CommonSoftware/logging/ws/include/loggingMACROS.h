@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingMACROS.h,v 1.19 2008/01/16 10:44:06 bjeram Exp $"
+* "@(#) $Id: loggingMACROS.h,v 1.20 2008/01/19 21:14:12 jschwarz Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -207,7 +207,7 @@ Logging::Logger::getStaticLogger()->log(priority, text, __FILE__, __LINE__, rout
     lr.line      = logLine; \
     lr.method    = logRoutine; \
     lr.timeStamp = logTime; \
-    Logging::Logger::getStaicLogger()->log(lr); \
+    Logging::Logger::getStaticLogger()->log(lr); \
 }
 
 /**
