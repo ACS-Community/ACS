@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingLogger.cpp,v 1.19 2008/01/16 10:25:31 bjeram Exp $"
+* "@(#) $Id: loggingLogger.cpp,v 1.20 2008/01/19 21:40:32 jschwarz Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -28,7 +28,7 @@
 #include <iostream>
 #include <Recursive_Thread_Mutex.h>
 
-static char *rcsId="@(#) $Id: loggingLogger.cpp,v 1.19 2008/01/16 10:25:31 bjeram Exp $"; 
+static char *rcsId="@(#) $Id: loggingLogger.cpp,v 1.20 2008/01/19 21:40:32 jschwarz Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 // -------------------------------------------------------
 //helper function
@@ -201,11 +201,12 @@ namespace Logging {
 	//exist
 	bool retVal = false;
 
-	//initial number of elements
-	unsigned int numElements = handlers_m.size();
 
 	//to be thread safe
 	acquireHandlerMutex();
+	
+	//initial number of elements
+	unsigned int numElements = handlers_m.size();
      
 	//sanity check. should be the case but who knows?
 	if (handlers_m.empty()==false)
