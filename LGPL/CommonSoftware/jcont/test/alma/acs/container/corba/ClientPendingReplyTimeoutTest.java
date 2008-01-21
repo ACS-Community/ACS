@@ -62,6 +62,7 @@ public class ClientPendingReplyTimeoutTest extends ComponentClientTestCase {
 			} catch (org.omg.CORBA.TIMEOUT e) {
 				timeoutException = true;
 			}
+			assertTrue(timeoutException);
 		}
 		
 		// This call should take no time, so no exception should be trhown
