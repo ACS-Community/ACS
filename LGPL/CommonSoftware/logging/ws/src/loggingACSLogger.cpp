@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingACSLogger.cpp,v 1.4 2005/04/13 20:50:54 dfugate Exp $"
+* "@(#) $Id: loggingACSLogger.cpp,v 1.5 2008/01/22 12:00:35 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -26,7 +26,7 @@
 #include "loggingACSLogger.h"
 #include "loggingLogSvcHandler.h"
 
-static char *rcsId="@(#) $Id: loggingACSLogger.cpp,v 1.4 2005/04/13 20:50:54 dfugate Exp $"; 
+static char *rcsId="@(#) $Id: loggingACSLogger.cpp,v 1.5 2008/01/22 12:00:35 bjeram Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 namespace Logging {
@@ -52,7 +52,13 @@ namespace Logging {
     void
     ACSLogger::acquireHandlerMutex()
     {
-	handlersMutex_m.acquire();
+	ACE_Time_Value rs_timevalue(30, 0);
+        ACE_Time_Value sleepTime(ACE_OS::gettimeofday() + rs_timevalue);
+        if(handlersMutex_m.acquire(&sleepTime)==-1)
+	    {
+	    printf("====================ACSLogger::acquireHandlerMutex Mutex acquiring failed!!!!!!!!!!!! Forcing abort\n\n\n");
+	    abort();
+	    }
     }
     // -------------------------------------------------------------
     void
