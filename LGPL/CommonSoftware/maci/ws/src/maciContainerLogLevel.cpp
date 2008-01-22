@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciContainerLogLevel.cpp,v 1.5 2008/01/16 10:07:34 cparedes Exp $"
+* "@(#) $Id: maciContainerLogLevel.cpp,v 1.6 2008/01/22 17:09:55 hsommer Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -37,7 +37,7 @@
 void
 printUsageAndExit(int argc, char *argv[])
 {
-	ACE_OS::printf("\n\tusage: %s <container name wildcard> {set,get,list,refresh} [<loggerName | \"default\"> <minLogLevel> <minLogLevelLocal>] [<ORB options>]\nWith log level values {0,2-6,8-11}\n", argv[0]);
+	ACE_OS::printf("\n\tusage: %s <container name wildcard> {set,get,list,refresh} [<loggerName | \"default\"> <minLogLevel> <minLogLevelLocal>] [<ORB options>]\nWith log level values {2-6,8-11,99=OFF}\n", argv[0]);
 	exit(-1);
 }
 
@@ -46,7 +46,7 @@ printUsageAndExit(int argc, char *argv[])
 int 
 isLogLevelValid(int logLevel) 
 {
-	return (logLevel >= 0 && logLevel <= 11 && logLevel != 1 && logLevel != 7);
+	return ( (logLevel >= 2 && logLevel <= 11 && logLevel != 7) || logLevel==99 );
 }
 
 int
@@ -194,6 +194,7 @@ main (int argc, char *argv[])
 			    	ACS_SHORT_LOG((LM_INFO, "\t\tminLogLevel     : %d", logLevels.minLogLevel));
 			    	ACS_SHORT_LOG((LM_INFO, "\t\tminLogLevelLocal: %d", logLevels.minLogLevelLocal));
 			    }
+			    
 			    if (ACE_OS::strcmp(loggerName, "default") == 0)
 	    			containers[i].reference->set_default_logLevels(logLevels);
 				else
