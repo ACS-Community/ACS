@@ -9,6 +9,8 @@ import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.engine.log.LogTypeHelper;
 import com.cosylab.logging.engine.log.ILogEntry.Field;
 
+import alma.acs.util.IsoDateFormat;
+
 /**
  * Objects of this class produce a CSV string from a given log.
  * The CSV adhere to the definition in RFC4180.
@@ -162,7 +164,7 @@ public class CSVConverter {
 	 */
 	public String convert(ILogEntry log) {
 		StringBuilder str = new StringBuilder();
-		SimpleDateFormat df = new SimpleDateFormat(ILogEntry.TIME_FORMAT);
+		SimpleDateFormat df = new IsoDateFormat();
 		for (int t=0; t<colIndex.length(); t++) {
 			if (t>0) {
 				str.append(separator);

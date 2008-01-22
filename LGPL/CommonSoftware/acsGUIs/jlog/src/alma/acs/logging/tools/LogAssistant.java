@@ -28,7 +28,6 @@ import java.util.Date;
 import java.util.regex.Pattern;
 
 import alma.acs.util.CmdLineArgs;
-import alma.acs.util.CmdLineOption;
 import alma.acs.util.CmdLineRegisteredOption;
 
 /**

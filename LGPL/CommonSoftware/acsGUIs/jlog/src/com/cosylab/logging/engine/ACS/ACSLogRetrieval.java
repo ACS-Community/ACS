@@ -19,7 +19,7 @@
 
 /** 
  * @author  acaproni   
- * @version $Id: ACSLogRetrieval.java,v 1.21 2007/06/22 12:31:24 acaproni Exp $
+ * @version $Id: ACSLogRetrieval.java,v 1.22 2008/01/22 17:34:48 hsommer Exp $
  * @since    
  */
 
@@ -29,20 +29,15 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Random;
-import java.util.Vector;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
+import javax.xml.parsers.ParserConfigurationException;
+
 import com.cosylab.logging.client.cache.CacheUtils;
 import com.cosylab.logging.engine.log.ILogEntry;
-import com.cosylab.logging.engine.log.LogEntry;
-import com.cosylab.logging.engine.log.ILogEntry.AdditionalData;
 import com.cosylab.logging.settings.ErrorLogDialog;
-
-import  javax.xml.parsers.ParserConfigurationException;
 /**
  * ACSLogRetireval stores the XML string (or a String in case of binary logs) 
  * representing logs on a file when the engine is not able to follow the flow 
@@ -94,12 +89,9 @@ public class ACSLogRetrieval extends Thread {
 	// The parser
 	private ACSLogParser parser=null;
 	
-	// true if the binary format is in use, falso otherwise
+	// true if the binary format is in use, false otherwise
 	private boolean binaryFormat;
-	
-	// The simple date format used to write and read dates from a string
-	private SimpleDateFormat dateFormat = new SimpleDateFormat(ILogEntry.TIME_FORMAT);
-	
+		
 	/**
 	 * Constructor
 	 * 

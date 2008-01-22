@@ -75,6 +75,8 @@ import com.cosylab.logging.settings.UserInfoDlg;
 
 import com.cosylab.logging.client.DateRenderer;
 
+import alma.acs.util.IsoDateFormat;
+
 /**
  * Subclasses JTable allowing grouping and sorting depending on user's input. 
  * Creation date: (11/11/2001 13:45:22)
@@ -739,7 +741,7 @@ public class LogEntryTable extends JTable
 		
 		String tempStr = "";
 		if (value instanceof Date) {
-			SimpleDateFormat sdf = new SimpleDateFormat("yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'SSS");
+			IsoDateFormat sdf = new IsoDateFormat();
 			tempStr = sdf.format(value);
 		} else if (value instanceof Integer) {
 			if (getColumnName(col).compareTo(Field.ENTRYTYPE.getName())==0) {

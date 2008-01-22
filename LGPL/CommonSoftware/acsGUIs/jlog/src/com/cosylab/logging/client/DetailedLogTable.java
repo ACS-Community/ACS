@@ -18,8 +18,9 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableModel;
 
 import com.cosylab.logging.engine.log.ILogEntry;
-import com.cosylab.logging.engine.log.LogTypeHelper;
 import com.cosylab.logging.engine.log.ILogEntry.Field;
+
+import alma.acs.util.IsoDateFormat;
 
 /**
  * The table used to represent data in the right panel of the
@@ -115,7 +116,7 @@ public class DetailedLogTable extends JTable
 					if (field==Field.ENTRYTYPE) {
 						nameValue[i][1]=obj.toString();
 					} else if (field==Field.TIMESTAMP) {
-						SimpleDateFormat df = new SimpleDateFormat(ILogEntry.TIME_FORMAT);
+						SimpleDateFormat df = new IsoDateFormat();
 						Date dt = (Date)obj;
 						StringBuffer dateSB = new StringBuffer();
 						java.text.FieldPosition pos = new java.text.FieldPosition(0);

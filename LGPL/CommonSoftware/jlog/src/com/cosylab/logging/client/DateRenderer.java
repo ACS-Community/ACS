@@ -23,14 +23,13 @@ package com.cosylab.logging.client;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 
-import java.text.SimpleDateFormat;
-
-import com.cosylab.logging.engine.log.ILogEntry;
+import alma.acs.util.IsoDateFormat;
 
 /**
  * DateRenderer defines the label for displaying the time format.
@@ -45,7 +44,7 @@ public class DateRenderer extends javax.swing.JLabel implements javax.swing.tabl
 	private Color bColor;
 	private Color fColor;
 	
-	private final SimpleDateFormat longDateFormat = new SimpleDateFormat(ILogEntry.TIME_FORMAT);
+	private final SimpleDateFormat longDateFormat = new IsoDateFormat();
 	private final SimpleDateFormat shortDateFormat = new SimpleDateFormat("HH:mm:ss.SSS");
 	
 	// If it is true the date is shown as HH:mm:ss

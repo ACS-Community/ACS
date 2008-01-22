@@ -38,6 +38,8 @@ import com.cosylab.logging.engine.ACS.ACSLogParserDOM;
 import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.engine.log.LogTypeHelper;
 
+import alma.acs.util.IsoDateFormat;
+
 /**
  * A collection of methods to be used in the tests
  * 
@@ -159,7 +161,7 @@ public class CacheUtils {
 	public static Collection<ILogEntry> generateLogs(int numOfLogs) throws Exception {
 		Random rnd = new Random(Calendar.getInstance().getTimeInMillis());
 		long now = Calendar.getInstance().getTimeInMillis()-1000*60*60*24; // Yesterday
-		SimpleDateFormat df = new SimpleDateFormat(ILogEntry.TIME_FORMAT);
+		SimpleDateFormat df = new IsoDateFormat();
 		Vector<ILogEntry> v = new Vector<ILogEntry>(numOfLogs);
 		for (int t=0; t<numOfLogs; t++) {
 			Date dt = new Date(now+t*1000);
@@ -206,7 +208,7 @@ public class CacheUtils {
 	public static Collection<ILogEntry> generateLogsType(int numOfLogs, LogTypeHelper logType) throws Exception {
 		Random rnd = new Random(Calendar.getInstance().getTimeInMillis());
 		long now = Calendar.getInstance().getTimeInMillis()-1000*60*60*24; // Yesterday
-		SimpleDateFormat df = new SimpleDateFormat(ILogEntry.TIME_FORMAT);
+		SimpleDateFormat df = new IsoDateFormat();
 		Vector<ILogEntry> v = new Vector<ILogEntry>(numOfLogs);
 		
 		for (int t=0; t<numOfLogs; t++) {

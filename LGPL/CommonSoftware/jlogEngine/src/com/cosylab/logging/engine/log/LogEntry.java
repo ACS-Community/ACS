@@ -21,13 +21,12 @@
  */
 package com.cosylab.logging.engine.log;
 
+import java.text.FieldPosition;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Vector;
 
-import java.text.SimpleDateFormat;
-import java.text.FieldPosition;
-
-import com.cosylab.logging.engine.log.LogTypeHelper;
+import alma.acs.util.IsoDateFormat;
 
 /**
  * Objects of this class holds implements the ILogEntry interface
@@ -177,7 +176,7 @@ public class LogEntry implements ILogEntry {
 			Object attrValue = getField(t);
 			if (attrValue!=null) {
 				if (Date.class.isInstance(attrValue)) {
-					SimpleDateFormat df = new SimpleDateFormat(TIME_FORMAT);
+					SimpleDateFormat df = new IsoDateFormat();
 					Date dt = (Date)attrValue;
 					StringBuffer dateSB = new StringBuffer();
 					java.text.FieldPosition pos = new java.text.FieldPosition(0);
@@ -429,7 +428,7 @@ public class LogEntry implements ILogEntry {
 				if (f == Field.ENTRYTYPE) {
 					sb.append(type.logEntryType);
 				} else if(f==Field.TIMESTAMP) {
-					SimpleDateFormat df = new SimpleDateFormat(TIME_FORMAT);
+					SimpleDateFormat df = new IsoDateFormat();
 					FieldPosition pos = new FieldPosition(0);
 					df.format(date,sb,pos);
 				} else {

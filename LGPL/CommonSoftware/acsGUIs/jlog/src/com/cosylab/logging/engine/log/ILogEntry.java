@@ -171,8 +171,6 @@ public interface ILogEntry extends Serializable {
 	public static final String LOG_ELEMENT_TAG_NAME = "Log";
 	public static final String NAME_ATTRIBUTE_NAME = "Name";
 	    
-	public static final String TIME_FORMAT = "yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'SSS";
-	
 	/**
 	 * 
 	 * @return The XML string representing the object

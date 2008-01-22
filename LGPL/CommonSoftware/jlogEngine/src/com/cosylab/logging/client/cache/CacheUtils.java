@@ -25,13 +25,14 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Vector;
 
-import alma.ACSLoggingLog.LogBinaryRecord;
-import alma.ACSLoggingLog.NameValue;
-
 import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.engine.log.LogEntry;
 import com.cosylab.logging.engine.log.ILogEntry.AdditionalData;
 import com.cosylab.logging.engine.log.ILogEntry.Field;
+
+import alma.ACSLoggingLog.LogBinaryRecord;
+import alma.ACSLoggingLog.NameValue;
+import alma.acs.util.IsoDateFormat;
 
 /**
  * A collection of utils methods 
@@ -42,7 +43,7 @@ import com.cosylab.logging.engine.log.ILogEntry.Field;
 public class CacheUtils {
 	
 	// The simple date format used to write and read dates from a string
-	public static final SimpleDateFormat dateFormat = new SimpleDateFormat(ILogEntry.TIME_FORMAT);
+	public static final SimpleDateFormat dateFormat = new IsoDateFormat();
 	
 	// The separator for the field of the logs in the file
 	public static final char SEPARATOR_CHAR = (char)0;

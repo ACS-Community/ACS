@@ -6,19 +6,19 @@
  */
 package com.cosylab.logging.search;
 
-import java.text.SimpleDateFormat;
 import java.text.FieldPosition;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Vector;
-import java.util.regex.Pattern;
 import java.util.regex.Matcher;
-
-import alma.acs.logging.dialogs.main.LogEntryTable;
+import java.util.regex.Pattern;
 
 import com.cosylab.logging.LogTableDataModel;
-
 import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.engine.log.ILogEntry.Field;
+
+import alma.acs.logging.dialogs.main.LogEntryTable;
+import alma.acs.util.IsoDateFormat;
 
 /**
  * @author acaproni
@@ -144,7 +144,7 @@ public class SearchEngine {
         		if (cols[t]) {
         			switch (Field.values()[t]) {
         				case TIMESTAMP: {
-        					SimpleDateFormat df = new SimpleDateFormat(ILogEntry.TIME_FORMAT);
+        					SimpleDateFormat df = new IsoDateFormat();
         					Date dt = (Date)obj;
         					tempSB.delete(0,tempSB.length());
         					df.format(dt,tempSB,pos);

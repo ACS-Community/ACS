@@ -30,8 +30,11 @@ import java.util.Date;
 
 import com.cosylab.logging.engine.ACS.ACSLogParser;
 import com.cosylab.logging.engine.ACS.ACSLogParserDOM;
-import com.cosylab.logging.engine.ACS.ACSRemoteRawLogListener;import com.cosylab.logging.engine.log.ILogEntry;
+import com.cosylab.logging.engine.ACS.ACSRemoteRawLogListener;
+import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.engine.log.ILogEntry.Field;
+
+import alma.acs.util.IsoDateFormat;
 
 /**
  * An object to split a log file in several other shorter file.
@@ -80,7 +83,7 @@ public class LogFileSplitter implements ACSRemoteRawLogListener, AsynchronousOpe
 	private BufferedWriter outF=null;
 	
 	// The format of the date in the name of the file
-	private SimpleDateFormat dateFormat = new SimpleDateFormat(ILogEntry.TIME_FORMAT);
+	private SimpleDateFormat dateFormat = new IsoDateFormat();
 	
 //	 If true the output is written as CSV
 	private boolean writeAsCSV = false;

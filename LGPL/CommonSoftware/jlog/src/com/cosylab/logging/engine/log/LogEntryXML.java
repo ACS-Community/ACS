@@ -38,6 +38,8 @@ import org.w3c.dom.Text;
 import com.cosylab.logging.engine.DataNode;
 import com.cosylab.logging.engine.VectorNodeList;
 
+import alma.acs.util.IsoDateFormat;
+
 /**
  * This is the container class for generic Log Entries.
  * Attributes, messages and Data(s) are obtained via public
@@ -69,7 +71,7 @@ public final class LogEntryXML implements ILogEntry
 	private boolean isLogEntrySimple = true;
 	
 	// The simple date format used to write and read dates from a string
-	private SimpleDateFormat dateFormat = new SimpleDateFormat(TIME_FORMAT);
+	private SimpleDateFormat dateFormat = new IsoDateFormat();
 
 	// Should be set through FIELD_LOGMESSAGE
 	// public String simpleLogEntryMessage = null;

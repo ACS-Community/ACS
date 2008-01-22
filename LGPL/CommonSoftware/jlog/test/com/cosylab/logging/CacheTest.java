@@ -9,11 +9,12 @@ import java.util.Date;
 import java.util.Set;
 
 import com.cosylab.logging.client.cache.LogCache;
-import com.cosylab.logging.engine.ACS.ACSLogParserDOM;
 import com.cosylab.logging.engine.ACS.ACSLogParser;
+import com.cosylab.logging.engine.ACS.ACSLogParserDOM;
 import com.cosylab.logging.engine.log.ILogEntry;
-import com.cosylab.logging.engine.log.LogEntryXML;
 import com.cosylab.logging.engine.log.ILogEntry.Field;
+
+import alma.acs.util.IsoDateFormat;
 
 /**
  * The class to test the LogFileCache and the LogCache
@@ -24,9 +25,7 @@ import com.cosylab.logging.engine.log.ILogEntry.Field;
  */
 public class CacheTest extends junit.framework.TestCase {
 	
-	public static final String TIME_FORMAT = "yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'SSS";
-	
-	// The cahce to stress
+	// The cache to stress
 
 	private LogCache cache;
 	
@@ -85,7 +84,7 @@ public class CacheTest extends junit.framework.TestCase {
 		String logMsg = "Test log nr. ";
 		
 		long now = Calendar.getInstance().getTimeInMillis()-1000*60*60*24; // Yesterday
-		SimpleDateFormat df = new SimpleDateFormat(TIME_FORMAT);
+		SimpleDateFormat df = new IsoDateFormat();
 		
 		cache.clear();
 		long logToInsert = 2*cache.getCacheSize(); 
