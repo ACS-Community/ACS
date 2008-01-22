@@ -19,7 +19,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: loggingLoggingProxy.cpp,v 1.54 2008/01/16 16:01:07 bjeram Exp $"
+* "@(#) $Id: loggingLoggingProxy.cpp,v 1.55 2008/01/22 09:15:07 cparedes Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -58,24 +58,7 @@
 #define LOG_NAME "Log"
 #define DEFAULT_LOG_FILE_NAME "acs_local_log"
 
-ACE_RCSID(logging, logging, "$Id: loggingLoggingProxy.cpp,v 1.54 2008/01/16 16:01:07 bjeram Exp $");
-/*
-ACSLoggingLog::LogType LoggingProxy::m_LogBinEntryTypeName[] =
-{
-    ACSLoggingLog::Unknown,		// not in specs
-    ACSLoggingLog::Shutdown, 	// not in specs
-    ACSLoggingLog::Trace,
-    ACSLoggingLog::Debug,
-    ACSLoggingLog::Info,
-    ACSLoggingLog::Notice,
-    ACSLoggingLog::Warning,
-    ACSLoggingLog::Startup,		// not in specs
-    ACSLoggingLog::Error,
-    ACSLoggingLog::Critical,
-    ACSLoggingLog::Alert,
-    ACSLoggingLog::Emergency
-};
-*/
+ACE_RCSID(logging, logging, "$Id: loggingLoggingProxy.cpp,v 1.55 2008/01/22 09:15:07 cparedes Exp $");
 unsigned int LoggingProxy::setClrCount_m = 0;
 bool LoggingProxy::initialized = false;
 int LoggingProxy::instances = 0;
@@ -210,8 +193,15 @@ LoggingProxy::log(ACE_Log_Record &log_record)
         printed = true;
 	}
 
-    //Here we will print the log parameters
+    //Here we will print the log parameters (attributes)
     if(printed){
+        for (hash_iter = (*tss)->getAttributes();
+         (hash_iter.next (entry) != 0);
+         hash_iter.advance ())
+        {
+            ACE_OS::printf(" %s=\"%s\"",entry->ext_id_.c_str(),entry->int_id_.c_str());
+	    }
+    
         ACE_OS::printf ("\n");
 	    ACE_OS::fflush (stdout); //(2004-01-05)msc: added
 	}
@@ -247,15 +237,6 @@ LoggingProxy::log(ACE_Log_Record &log_record)
    // (*tss)->clear();    
   }
 
-/*  int LoggingProxy::typeStringToInt(ACE_TCHAR* str){
-        
-    for(int i=0;i<12;i++){
-        if(strcmp(str, m_LogEntryTypeName[i])) return i;
-    }
-    else return -1;
-
-  }
-*/
   void LoggingProxy::sendBinLogs(ACE_Log_Record &log_record, const ACE_TCHAR * timestamp, const ACE_TCHAR * entryType){
 	ACSLoggingLog::LogBinaryRecord *s_log = new ACSLoggingLog::LogBinaryRecord();
     unsigned int flags = (*tss)->flags();
