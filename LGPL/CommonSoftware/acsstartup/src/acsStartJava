@@ -6,7 +6,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: acsStartJava,v 1.46 2007/10/25 08:13:39 eallaert Exp $"
+# "@(#) $Id: acsStartJava,v 1.47 2008/01/22 15:33:04 hsommer Exp $"
 #
 # who      when       what
 # -------- ---------- ----------------------------------------------
@@ -388,9 +388,11 @@ fi
 JAVA_OPTIONS=$JAVA_OPTIONS\ -Djava.util.logging.manager=alma.acs.logging.AcsLogManager
 
 #
-# Not interested in verbose and non-informative jacorb messages
+# In orb.properties we set jacorb.log.loggerFactory=alma.acs.logging.adapters.JacORBLoggerFactory
+# which sends filtered JacORB logs messages to the central Log service. 
+# Here we can overrule this.
 #
-JAVA_OPTIONS=$JAVA_OPTIONS\ -Djacorb.log.loggerFactory=alma.acs.logging.adapters.JacORBLoggerFactory
+#JAVA_OPTIONS=$JAVA_OPTIONS\ -Djacorb.log.loggerFactory=
 
 #
 # Creates default values for configuration files directory
@@ -507,6 +509,17 @@ ACS_LOG_DEBUG "Running the following command:"
 if [ "X$MAKE_PURE" = "Xon" ]; then
    JAVA_PUREFLAGS="-Xint -Xrunpagent:-OUT=["mempro.jpt"]"
 fi
+
+#
+# Print information about actually used JVM, such as
+#   Java HotSpot(TM) Client VM (build 1.6.0_02-b05, mixed mode, sharing)
+# which are not identical to what "java -version" prints (e.g. when -server is used) 
+#
+if [ "X$ACS_LOG_STDOUT" != "X" ] && [ $ACS_LOG_STDOUT -lt $ACS_DEBUG_PRIORITY ]
+then
+   export JAVA_OPTIONS=$JAVA_OPTIONS\ -showversion
+fi
+
 
 JAVA_COMMAND_LINE="java $JAVA_PUREFLAGS -classpath $CLASSPATH $JAVA_ENDORSED $XERCES_CONFIG $JAVA_ORB -Duser.timezone=UTC -Dabeans.home=$ACS_ABEANS_CONFIG -DACS.manager=$MANAGER_REFERENCE -DORBInitRef.NameService=$ACS_NAME_SERVICE  -DACS.repository=$ACS_INTERFACE_REPOSITORY -DACS.tmp=$ACS_TMP -DACS.baseport=$ACS_INSTANCE -DACS.data=$ACSDATA -DACS.logstdout=$ACS_LOG_STDOUT -DACS.log.minlevel.remote=$ACS_LOG_CENTRAL -DACS.loggingBin=$ACS_LOG_BIN $JAVA_OPTIONS $LAUNCHER $@"
 
