@@ -19,7 +19,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: loggingLoggingProxy.cpp,v 1.55 2008/01/22 09:15:07 cparedes Exp $"
+* "@(#) $Id: loggingLoggingProxy.cpp,v 1.56 2008/01/22 09:44:00 cparedes Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -58,7 +58,7 @@
 #define LOG_NAME "Log"
 #define DEFAULT_LOG_FILE_NAME "acs_local_log"
 
-ACE_RCSID(logging, logging, "$Id: loggingLoggingProxy.cpp,v 1.55 2008/01/22 09:15:07 cparedes Exp $");
+ACE_RCSID(logging, logging, "$Id: loggingLoggingProxy.cpp,v 1.56 2008/01/22 09:44:00 cparedes Exp $");
 unsigned int LoggingProxy::setClrCount_m = 0;
 bool LoggingProxy::initialized = false;
 int LoggingProxy::instances = 0;
@@ -143,13 +143,13 @@ LoggingProxy::log(ACE_Log_Record &log_record)
 		    ACE_OS::printf ("%s [%s] %s", timestamp, (*tss)->sourceObject(), log_record.msg_data());
 		    }
 
-            if (priority>=ACE::log2(LM_WARNING))   // LM_WARNING+
+        /*    if (priority>=ACE::log2(LM_WARNING))   // LM_WARNING+
             {
                 for (; hash_iter.next(entry) != 0; hash_iter.advance() )
                 {
                       ACE_OS::printf(",%s=%s", entry->ext_id_.c_str(), entry->int_id_.c_str() );
                 }
-            }
+            }*/
             printed = true;
 		}
 	    }
@@ -183,24 +183,36 @@ LoggingProxy::log(ACE_Log_Record &log_record)
 		}
 	    
 	    ACE_OS::printf ("%s", log_record.msg_data());
-        if (priority>=ACE::log2(LM_WARNING))   // LM_WARNING+
+      /*  if (priority>=ACE::log2(LM_WARNING))   // LM_WARNING+
         {
             for (; hash_iter.next(entry) != 0; hash_iter.advance() )
             {
                ACE_OS::printf(",%s=%s", entry->ext_id_.c_str(), entry->int_id_.c_str() );
             }
         }
+        */
         printed = true;
 	}
 
-    //Here we will print the log parameters (attributes)
+    //Here we will print the log parameters (attributes) and Data ALWAYS
     if(printed){
+        
         for (hash_iter = (*tss)->getAttributes();
          (hash_iter.next (entry) != 0);
          hash_iter.advance ())
         {
             ACE_OS::printf(" %s=\"%s\"",entry->ext_id_.c_str(),entry->int_id_.c_str());
 	    }
+        
+        for (hash_iter = (*tss)->getData();
+         (hash_iter.next (entry) != 0);
+         hash_iter.advance ())
+        {
+        if(entry->int_id_.length() != 0)
+            {
+            ACE_OS::printf(" %s=\"%s\"",entry->ext_id_.c_str(),entry->int_id_.c_str());
+            }
+        }
     
         ACE_OS::printf ("\n");
 	    ACE_OS::fflush (stdout); //(2004-01-05)msc: added
