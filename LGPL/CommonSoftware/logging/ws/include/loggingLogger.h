@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingLogger.h,v 1.23 2008/01/16 10:25:31 bjeram Exp $"
+* "@(#) $Id: loggingLogger.h,v 1.24 2008/01/23 08:17:18 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -300,8 +300,8 @@ namespace Logging
 
         class Logger_ptr{
                 public:
-                        Logger_ptr(){globalLogger_m=(Logger *)0;anonymousLogger_m=(Logger *)0;}
-                        ~Logger_ptr(){globalLogger_m=(Logger *)0;anonymousLogger_m=(Logger *)0;}
+                        Logger_ptr(){globalLogger_m=(Logger *)0;anonymousLogger_m=(Logger *)0;staticLogger_m=(Logger *)0;}
+                        ~Logger_ptr(){globalLogger_m=(Logger *)0;anonymousLogger_m=(Logger *)0;staticLogger_m=(Logger *)0;}
                         /**
                          * Global logger. By changing this (via the the setGlobalLogger),
                          * one can completely alter the way logs are handled throughout the system.
