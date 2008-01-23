@@ -6,7 +6,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: acsStartJava,v 1.47 2008/01/22 15:33:04 hsommer Exp $"
+# "@(#) $Id: acsStartJava,v 1.48 2008/01/23 12:29:56 hsommer Exp $"
 #
 # who      when       what
 # -------- ---------- ----------------------------------------------
@@ -203,7 +203,7 @@ fi
 
 # append java system properties to JAVA_OPTIONS if such were specified on the command line
 if [ "$CL_JAVAPROPS" ] ; then
-	export JAVA_OPTIONS=$JAVA_OPTIONS\ $CL_JAVAPROPS
+	JAVA_OPTIONS=$JAVA_OPTIONS\ $CL_JAVAPROPS
 fi
 
 # setup jar file search path that will be fed to 
@@ -240,6 +240,15 @@ fi
 
 function export {
 
+	## Needed this restriction (with 7.0.1) as a quick bug fix for export failures 
+	## when the exported value contains blanks, as in JAVA_OPTIONS, and therefore the quotes were added around $1.
+	## @TODO: use a loop if many env vars must be exported in one call.
+	if [ "X$2" != "X" ] 
+	then
+		echo "Exporting more than one variable is not possible with this export function!"
+		exit 1
+	fi
+	 
 	if [ "$CL_NOEXPORT" ] ; then 
 		## special treatment
 
@@ -248,18 +257,17 @@ function export {
 		  -o "x${1:0:16}" == "xACS_NAME_SERVICE" \
 		  -o "x${1:0:24}" == "xACS_INTERFACE_REPOSITORY" ]
 		then
-			ACS_LOG_DEBUG "(did NOT export $1 $2 $3 $4 $5 $6 $7 $8 $9)"
+			ACS_LOG_DEBUG "(did NOT export $1)"
 		else
 			## default behavior
-			builtin export $1 $2 $3 $4 $5 $6 $7 $8 $9
-			ACS_LOG_DEBUG "exported $1 $2 $3 $4 $5 $6 $7 $8 $9"
+			builtin export "$1" 
+			ACS_LOG_DEBUG "exported $1"
 		fi
 
 	else
 		## default behavior
-		
-		builtin export $1 $2 $3 $4 $5 $6 $7 $8 $9
-		ACS_LOG_DEBUG "exported $1 $2 $3 $4 $5 $6 $7 $8 $9"
+		builtin export "$1"
+		ACS_LOG_DEBUG "exported $1"
 	fi
 }
 ### ------------- End of "-noexport" handling --------------
@@ -517,7 +525,7 @@ fi
 #
 if [ "X$ACS_LOG_STDOUT" != "X" ] && [ $ACS_LOG_STDOUT -lt $ACS_DEBUG_PRIORITY ]
 then
-   export JAVA_OPTIONS=$JAVA_OPTIONS\ -showversion
+	JAVA_OPTIONS=$JAVA_OPTIONS\ -showversion
 fi
 
 
