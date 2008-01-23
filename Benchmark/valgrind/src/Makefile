@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.6 2005/05/27 13:15:11 mpasquat Exp $"
+# "@(#) $Id: Makefile,v 1.7 2008/01/23 16:53:16 bjeram Exp $"
 #
 # Makefile of ........
 #
@@ -188,12 +188,12 @@ endif
 
 VALGRIND_all: valgrind-2.4.0.tar.bz2
 	@echo "== Building valgrind"
-	@bunzip2 -k valgrind-2.4.0.tar.bz2; tar -xvf valgrind-2.4.0.tar
-	@cd valgrind-2.4.0; ./configure --prefix=$(INSTALL_ROOT); make
+	@bunzip2 -k valgrind-3.3.0.tar.bz2; tar -xvf valgrind-3.3.0.tar
+	@cd valgrind-3.3.0; ./configure --prefix=$(INSTALL_ROOT); make
 
 VALGRIND_install: 
 	@echo "== Installing valgrind"
-	@cd valgrind-2.4.0 && make install
+	@cd valgrind-3.3.0 && make install
 
 #
 # TARGETS
@@ -202,7 +202,7 @@ all:	do_all VALGRIND_all
 	@echo " . . . 'all' done" 
 
 clean : clean_all 
-	$(RM) *~ valgrind-2.4.0 valgrind-2.4.0.tar
+	$(RM) *~ valgrind-3.3.0 valgrind-3.3.0.tar
 	@echo " . . . clean done"
 
 clean_dist : clean_all clean_dist_all 
