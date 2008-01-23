@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingLogger.cpp,v 1.20 2008/01/19 21:40:32 jschwarz Exp $"
+* "@(#) $Id: loggingLogger.cpp,v 1.21 2008/01/23 09:45:08 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -28,7 +28,7 @@
 #include <iostream>
 #include <Recursive_Thread_Mutex.h>
 
-static char *rcsId="@(#) $Id: loggingLogger.cpp,v 1.20 2008/01/19 21:40:32 jschwarz Exp $"; 
+static char *rcsId="@(#) $Id: loggingLogger.cpp,v 1.21 2008/01/23 09:45:08 bjeram Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 // -------------------------------------------------------
 //helper function
@@ -152,9 +152,17 @@ namespace Logging {
     {
 	//to be thread safe
 	acquireHandlerMutex();
+	// just in case we put here try-catch
+	try
+	    {
 	//add the copy to our own list of handlers
 	//if(exists(newHandler_p->getName())){ return;}
 	handlers_m.push_back(newHandler_p);
+	    }
+	catch(...)
+	    {
+	    printf("\n\n ===> Logger::addHandler exception thrown !!!!!! Thread ID: %lu.\n\n", (long)ACE_Thread_Manager::instance()->thr_self());
+	    }
 	//make sure it's released
 	releaseHandlerMutex();
 	// configure logger (this will also configure handler)
@@ -165,15 +173,22 @@ namespace Logging {
     {
 	//to be thread safe
 	acquireHandlerMutex();
-     
-	std::list<Handler::HandlerSmartPtr>::iterator pos;
+	// just in case - for debugging 
+	try
+	    {
+	    std::list<Handler::HandlerSmartPtr>::iterator pos;
 	
-	for (pos = handlers_m.begin();
-	     pos != handlers_m.end();
-	     pos++){
-		
-		(*pos)->setLevels(remotePriority,localPriority,type);
-	}
+	    for (pos = handlers_m.begin();
+		 pos != handlers_m.end();
+		 pos++){
+	    
+	    (*pos)->setLevels(remotePriority,localPriority,type);
+	    }
+	    }
+	catch(...)
+	    {
+	    printf("\n\n ===> Logger::setLevelsLoggerHandlers exception thrown !!!!!! Thread ID: %lu.\n\n", (long)ACE_Thread_Manager::instance()->thr_self());
+	    }
 	//make sure it's released
 	releaseHandlerMutex();
     }

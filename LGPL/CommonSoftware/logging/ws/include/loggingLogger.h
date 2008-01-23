@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingLogger.h,v 1.24 2008/01/23 08:17:18 bjeram Exp $"
+* "@(#) $Id: loggingLogger.h,v 1.25 2008/01/23 09:45:08 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -40,6 +40,7 @@
 #include "loggingHandler.h"
 #include <ace/Thread_Mutex.h>
 #include <Singleton.h>
+#include <Thread_Manager.h>   // it is here just that we can print ID of the thread !!!
 
 namespace Logging 
 {

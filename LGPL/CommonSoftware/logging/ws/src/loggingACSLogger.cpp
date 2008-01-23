@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingACSLogger.cpp,v 1.5 2008/01/22 12:00:35 bjeram Exp $"
+* "@(#) $Id: loggingACSLogger.cpp,v 1.6 2008/01/23 09:45:08 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -26,7 +26,7 @@
 #include "loggingACSLogger.h"
 #include "loggingLogSvcHandler.h"
 
-static char *rcsId="@(#) $Id: loggingACSLogger.cpp,v 1.5 2008/01/22 12:00:35 bjeram Exp $"; 
+static char *rcsId="@(#) $Id: loggingACSLogger.cpp,v 1.6 2008/01/23 09:45:08 bjeram Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 namespace Logging {
@@ -52,11 +52,14 @@ namespace Logging {
     void
     ACSLogger::acquireHandlerMutex()
     {
+	int ret;
 	ACE_Time_Value rs_timevalue(30, 0);
         ACE_Time_Value sleepTime(ACE_OS::gettimeofday() + rs_timevalue);
-        if(handlersMutex_m.acquire(&sleepTime)==-1)
+	ret = handlersMutex_m.acquire(&sleepTime);
+        if(ret!=0)
 	    {
-	    printf("====================ACSLogger::acquireHandlerMutex Mutex acquiring failed!!!!!!!!!!!! Forcing abort\n\n\n");
+	    printf("====================ACSLogger::acquireHandlerMutex Mutex acquiring failed. Error: %d (-1 means timeout). \n Thread ID: %lu !!!!!!!!!!!! Forcing abort\n\n\n", 
+		   ret, (long)ACE_Thread_Manager::instance()->thr_self());
 	    abort();
 	    }
     }
@@ -64,7 +67,12 @@ namespace Logging {
     void
     ACSLogger::releaseHandlerMutex()
     {
-	handlersMutex_m.release();
+	int ret=handlersMutex_m.release();
+	if (ret!=0)
+	    {
+	    printf("====================ACSLogger::releaseHandlerMutex. Mutex releasing failed. Error: %d!!\n  Thread ID: %lu.\n\n\n", ret,(long)ACE_Thread_Manager::instance()->thr_self() );
+	    
+	    }
     }
     // -------------------------------------------------------------
 };
