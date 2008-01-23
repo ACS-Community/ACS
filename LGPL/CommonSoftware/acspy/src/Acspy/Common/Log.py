@@ -1,4 +1,4 @@
-# @(#) $Id: Log.py,v 1.37 2007/12/20 22:47:59 agrimstrup Exp $
+# @(#) $Id: Log.py,v 1.38 2008/01/23 23:57:26 agrimstrup Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA,  2001
@@ -43,7 +43,7 @@ TODO:
 XML-related methods are untested at this point.
 '''
 
-__revision__ = "$Id: Log.py,v 1.37 2007/12/20 22:47:59 agrimstrup Exp $"
+__revision__ = "$Id: Log.py,v 1.38 2008/01/23 23:57:26 agrimstrup Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 from os        import environ
@@ -82,25 +82,6 @@ logging.addLevelName(logging.EMERGENCY, "EMERGENCY")
 logging.OFF = logging.EMERGENCY + 1
 logging.addLevelName(logging.OFF, "OFF")
 
-# Log Levels are received as integer in the range [0,11]
-# with 1 and 7 undefined.  The current code interpolates
-# 1 and 7 to the next highest level, so that behaviour
-# has been incorporated in the lookup table.
-NLEVELS = { 0 : logging.NOTSET,
-            1 : logging.TRACE,  
-            2 : logging.TRACE,  
-            3 : logging.DEBUG,  
-            4 : logging.INFO,  
-            5 : logging.NOTICE,  
-            6 : logging.WARNING,  
-            7 : logging.ERROR,  
-            8 : logging.ERROR,  
-            9 : logging.CRITICAL,  
-           10 : logging.ALERT,  
-           11 : logging.EMERGENCY,
-           99 : logging.OFF
-           }
-
 # Since the Python handlers only use the Python constants
 # we need to reverse map them back to the integer range.
 # The interpolated values, 1 and 7, are reported as their
@@ -120,50 +101,37 @@ RLEVELS = { logging.NOTSET    : 0,
 
 
 
-LEVELS = { ACSLog.ACS_LOG_TRACE     : logging.TRACE,  
+# Log Levels are received as integer in the range [0,11]
+# with 1 and 7 undefined.  The current code interpolates
+# 1 and 7 to the next highest level, so that behaviour
+# has been incorporated in the lookup table.
+LEVELS = { 0                        : logging.NOTSET,
+           1                        : logging.TRACE,  
+           2                        : logging.TRACE,  
+           ACSLog.ACS_LOG_TRACE     : logging.TRACE,
+           3                        : logging.DEBUG,  
            ACSLog.ACS_LOG_DEBUG     : logging.DEBUG,  
+           4                        : logging.INFO,  
            ACSLog.ACS_LOG_INFO      : logging.INFO,  
+           5                        : logging.NOTICE,  
            ACSLog.ACS_LOG_NOTICE    : logging.NOTICE,  
+           6                        : logging.WARNING,  
            ACSLog.ACS_LOG_WARNING   : logging.WARNING,  
+           7                        : logging.ERROR,  
+           8                        : logging.ERROR,  
            ACSLog.ACS_LOG_ERROR     : logging.ERROR,  
+           9                        : logging.CRITICAL,  
            ACSLog.ACS_LOG_CRITICAL  : logging.CRITICAL,  
+           10                       : logging.ALERT,  
            ACSLog.ACS_LOG_ALERT     : logging.ALERT,  
-           ACSLog.ACS_LOG_EMERGENCY : logging.EMERGENCY
+           11                       : logging.EMERGENCY,
+           ACSLog.ACS_LOG_EMERGENCY : logging.EMERGENCY,
+           99                       : logging.OFF
            }
-
-# List of standard log message severities in ranked order
-SEVERITIES = { 002 : ACSLog.ACS_LOG_TRACE,
-               004 : ACSLog.ACS_LOG_DEBUG,
-               010 : ACSLog.ACS_LOG_INFO,
-               020 : ACSLog.ACS_LOG_NOTICE,
-               040 : ACSLog.ACS_LOG_WARNING,
-               0200 : ACSLog.ACS_LOG_ERROR,
-               0400 : ACSLog.ACS_LOG_CRITICAL,
-               01000 : ACSLog.ACS_LOG_ALERT,
-               02000 : ACSLog.ACS_LOG_EMERGENCY
-               }
 
 #------------------------------------------------------------------------------
 def getLevelName(lnum):
-    return logging.getLevelName(NLEVELS[lnum])
-               
-#------------------------------------------------------------------------------
-def getSeverity(severity_number):
-    '''
-    Helper function returns the nearest severity which is greater than or equal
-    to the parameter.
-    '''
-    #get a list of the severities
-    severity_list = SEVERITIES.keys()
-    #sort it in place
-    severity_list.sort()
-
-    #traverse the list...
-    for num in severity_list:
-        #until we find the first occurence where the input param is less than
-        #or equal
-        if severity_number <= num:
-            return num
+    return logging.getLevelName(LEVELS[lnum])
 #------------------------------------------------------------------------------           
 #determine ACS_LOG_STDOUT
 if environ.has_key('ACS_LOG_STDOUT'):
@@ -232,6 +200,9 @@ class Logger(logging.Logger):
         #flag to indicate this is the default logger for this process
         self.isdefault = False
 
+        #flag to indicate if this logger is using default values
+        self.usingDefault = False
+
         #add handlers
         self.addHandler(self.stdouthandler)
         self.addHandler(self.acshandler)
@@ -271,11 +242,12 @@ class Logger(logging.Logger):
 
         Returns: Nothing
 
-        Raises: Nothing
+        Raises: ValueError if lvl is NOTSET or OFF
         '''
         msg = self.__formatMessage(msg)
-        self.log(NLEVELS[lvl], msg)
-        
+        if lvl == 0 or lvl == 99:
+            raise ValueError("Cannot log messages at level %d" % lvl)
+        self.log(LEVELS[lvl], msg)
     #------------------------------------------------------------------------
     def logAlert(self, msg):
         '''
@@ -338,6 +310,22 @@ class Logger(logging.Logger):
         '''
         msg = self.__formatMessage(msg)
         self.log(LEVELS[ACSLog.ACS_LOG_EMERGENCY], msg)
+        
+    #------------------------------------------------------------------------
+    def logError(self, msg):
+        '''
+        Log an error message.
+
+        Parameters:
+        - msg is a string to be sent to the logging system
+        
+        
+        Returns: Nothing
+
+        Raises: Nothing
+        '''
+        msg = self.__formatMessage(msg)
+        self.log(LEVELS[ACSLog.ACS_LOG_ERROR], msg)
         
     #------------------------------------------------------------------------
     def logInfo(self, msg):
@@ -428,10 +416,12 @@ class Logger(logging.Logger):
 
         Returns: Nothing
 
-        Raises: Nothing
+        Raises: KeyError if priority is not in the ACSLog.Priorities
         '''
         #ok to send it directly
-        if self.acshandler.logSvc!=None:
+        if not priority in ACSLog.Priorities._items:
+            raise KeyError("Invalid Log Level")
+        if self.acshandler.logSvc is not None:
             self.acshandler.logSvc.logErrorWithPriority(errortrace, priority)
 
             #could have old errors cached up
@@ -459,13 +449,15 @@ class Logger(logging.Logger):
 
         Returns: Nothing
 
-        Raises: Nothing
+        Raises: KeyError if priority is not in the ACSLog.Priorities
         '''
-        if audience == None:
+        if not priority in ACSLog.Priorities._items:
+            raise KeyError("Invalid Log Level")
+        if audience is None:
                 audience = ""
-        if array == None:
+        if array is None:
                 array = ""
-        if antenna == None:
+        if antenna is None:
                 antenna = ""
         self.acshandler.logSvc.logWithPriority(priority, timestamp, msg, rtCont, srcInfo, data, audience, array, antenna)
     #------------------------------------------------------------------------
@@ -482,17 +474,19 @@ class Logger(logging.Logger):
         
         Returns: Nothing
 
-        Raises: Nothing
+        Raises: KeyError if priority is not in the ACSLog.Priorities
         '''
+        if not priority in ACSLog.Priorities._items:
+            raise KeyError("Invalid Log Level")
         cur_stack=extract_stack()
         rtCont=ACSLog.RTContext("",str(getpid()),str(gethostname()).replace("<", "").replace(">", ""),"","")
         srcInfo=ACSLog.SourceInfo(str(cur_stack[0][0]),str(cur_stack[0][2]),long(cur_stack[0][1]))
         timestamp=TimeUtil().py2epoch(time.time()).value
-        if audience == None:
+        if audience is None:
                 audience = ""
-        if array == None:
+        if array is None:
                 array = ""
-        if antenna == None:
+        if antenna is None:
                 antenna = ""
         self.acshandler.logSvc.logWithAudience(priority, timestamp, msg, rtCont, srcInfo, audience, array, antenna)
     #------------------------------------------------------------------------
@@ -513,8 +507,8 @@ class Logger(logging.Logger):
             self.acshandler.setLevel(self.getEffectiveHandlerLevel('acshandler'))
         else:
             self.usingDefault = False
-            self.stdouthandler.setLevel(NLEVELS[loglevel.minLogLevelLocal]) 
-            self.acshandler.setLevel(NLEVELS[loglevel.minLogLevel])
+            self.stdouthandler.setLevel(LEVELS[loglevel.minLogLevelLocal]) 
+            self.acshandler.setLevel(LEVELS[loglevel.minLogLevel])
     #------------------------------------------------------------------------
     def getLevels(self):
         '''

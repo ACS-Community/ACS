@@ -21,14 +21,14 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# @(#) $Id: acspyTestLogging.py,v 1.15 2006/09/11 14:16:45 bjeram Exp $
+# @(#) $Id: acspyTestLogging.py,v 1.16 2008/01/23 23:57:26 agrimstrup Exp $
 
 '''
 Demonstration of how to use the acspyPySimpleClient class
 to access an ACS DO from a Python program
 '''
 
-__version__ = "$Id: acspyTestLogging.py,v 1.15 2006/09/11 14:16:45 bjeram Exp $"
+__version__ = "$Id: acspyTestLogging.py,v 1.16 2008/01/23 23:57:26 agrimstrup Exp $"
 
 from Acspy.Common.Log import getLogger
 import sys
@@ -48,6 +48,10 @@ logger.logTrace('Test TRACE message')
 logger.logDebug('Test DEBUG message')
 
 logger.logWarning('Test WARNING message')
+
+logger.logAtLevel(7,'Test ERROR message')
+
+logger.logError('Test ERROR message')
 
 logger.logAlert('Test ALERT message')
 

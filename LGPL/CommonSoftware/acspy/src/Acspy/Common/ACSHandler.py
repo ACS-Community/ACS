@@ -1,4 +1,4 @@
-# @(#) $Id: ACSHandler.py,v 1.10 2007/12/20 22:47:59 agrimstrup Exp $
+# @(#) $Id: ACSHandler.py,v 1.11 2008/01/23 23:57:26 agrimstrup Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA,  2001
@@ -27,7 +27,7 @@ TODO:
 - Everything
 '''
 
-__revision__ = "$Id: ACSHandler.py,v 1.10 2007/12/20 22:47:59 agrimstrup Exp $"
+__revision__ = "$Id: ACSHandler.py,v 1.11 2008/01/23 23:57:26 agrimstrup Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 from socket    import gethostname
@@ -42,6 +42,7 @@ from atexit    import register
 #--ACS Imports-----------------------------------------------------------------
 from Acspy.Util.ACSCorba     import acsLogSvc
 from Acspy.Common.TimeHelper import TimeUtil
+from log_audience            import NO_AUDIENCE
 #--CORBA STUBS-----------------------------------------------------------------
 import ACSLog
 import CORBA
@@ -159,7 +160,7 @@ class ACSHandler(logging.handlers.BufferingHandler):
         #check the super class to see if it's OK to flush the record
         if logging.handlers.BufferingHandler.shouldFlush(self, record):
             #and also check to ensure the real logging service is up and running
-            if self.getCORBALogger() != None:
+            if self.getCORBALogger() is not None:
                 return 1
             
             #well it is possible that this cache will use up too much resources
@@ -263,11 +264,12 @@ class ACSHandler(logging.handlers.BufferingHandler):
         #this is a special case because logError only takes
         #in error traces
         elif record.levelname=='ERROR':
-            self.logSvc.logCritical(acs_timestamp,
-                                   record.getMessage(),
-                                   rt_context,
-                                   src_info,
-                                   data)
+            self.logSvc.logWithAudience(ACSLog.ACS_LOG_ERROR,
+                                        acs_timestamp,
+                                        record.getMessage(),
+                                        rt_context,
+                                        src_info,
+                                        NO_AUDIENCE, "", "")
         elif record.levelname=='CRITICAL':
             self.logSvc.logCritical(acs_timestamp,
                                    record.getMessage(),
@@ -301,14 +303,14 @@ class ACSHandler(logging.handlers.BufferingHandler):
         '''
         #quick sanity check ensures we do not make a CORBA call to manager for
         #each and every log
-        if self.logSvc != None:
+        if self.logSvc is not None:
             return self.logSvc
         #CORBA logging service wasn't up yet. let's see if it's available now
         else:
             try:
                 # Get log service ref via acsCORBA
                 obj = acsLogSvc()
-                if obj == None:
+                if obj is None:
                     raise Exception("Logging service unavailable")
                 self.logSvc = obj
             except:

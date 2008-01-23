@@ -6,6 +6,8 @@
 1 - ----------T--:--:--.--- None Main - Test CRITICAL message
 1 - ----------T--:--:--.--- None Main - Test DEBUG message
 1 - ----------T--:--:--.--- None Main - Test EMERGENCY message
+1 - ----------T--:--:--.--- None Main - Test ERROR message
+1 - ----------T--:--:--.--- None Main - Test ERROR message
 1 - ----------T--:--:--.--- None Main - Test INFO message
 1 - ----------T--:--:--.--- None Main - Test NOTICE message
 1 - ----------T--:--:--.--- None Main - Test WARNING message
