@@ -74,5 +74,5 @@
 1 - ----------T--:--:--.--- [GlobalLogger - acslogErrorServer] Writing ior to the file: s1 .... 
 1 - ----------T--:--:--.--- [GlobalLogger - acslogErrorServer] Waiting for requests ...
 1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (0)] Test error 1 (type=900902, code=2)
-1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (1)] Test error 2 (type=900902, code=3)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (1)] Test error 2 (type=900902, code=3) isErr="true" depth="0"
 1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Test error 0 (type=900902, code=1)
