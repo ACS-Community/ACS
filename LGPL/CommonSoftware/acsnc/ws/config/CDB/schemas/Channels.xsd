@@ -69,7 +69,7 @@
 		</xs:annotation>
 		<xs:sequence>
 			<xs:element name="Domains" type="Domains" minOccurs="0" />
-			<xs:element name="Channels" type="Domains" minOccurs="0" />
+			<xs:element name="Channels_" type="Domains" minOccurs="0" />
 		</xs:sequence>
 		<xs:attribute name="DefaultNotificationService" type="xs:string" use="required">
 			<xs:annotation>
