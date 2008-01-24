@@ -1,4 +1,5 @@
 1 -  --noDirectory -- alma.acs.logclient.LogListener
+1 - 
 1 - Connection disconnected
 1 - Connecting
 1 - FINER: Logging configuration has been initialized, but not from CDB settings.
