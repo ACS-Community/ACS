@@ -1,12 +1,11 @@
-TEST_RUNNER_REPORT
 Running the following command:
 Starting Java/abeans application
+^[jJ]ava
 Using endorsed jar files in: -Djava.endorsed.dirs=
 ACS abeans configuration directory:
 ACS Manager: corbaloc::
 ACS Name Service: corbaloc::
 ACS Interface Repository: corbaloc::
-java -classpath
 Logging to ACS log server.
 RTContext:
 SourceInfo:
