@@ -21,7 +21,7 @@
 *
 *
 *
-* "@(#) $Id: contLogTestImpl.cpp,v 1.10 2008/01/16 09:52:27 cparedes Exp $"
+* "@(#) $Id: contLogTestImpl.cpp,v 1.11 2008/01/24 13:05:25 eallaert Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -36,7 +36,7 @@
 #include "loggingGetLogger.h"
 #include <iostream>
 
-ACE_RCSID(contLogTest, contLogTestImpl, "$Id: contLogTestImpl.cpp,v 1.10 2008/01/16 09:52:27 cparedes Exp $")
+ACE_RCSID(contLogTest, contLogTestImpl, "$Id: contLogTestImpl.cpp,v 1.11 2008/01/24 13:05:25 eallaert Exp $")
 
 /* ----------------------------------------------------------------*/
 TestLogLevelsComp::TestLogLevelsComp( 
@@ -63,13 +63,17 @@ TestLogLevelsComp::getLevels ()
     ::contLogTest::LongSeq_var level = new ::contLogTest::LongSeq(5);
 	level->length(5);
 
-    // First 3 values are always 2
-    for (int i = 0; i <2 ; i++)
-    	level[i] = static_cast< CORBA::Long >(2);
+    // need a way to retrieve default/hardcoded settings, i.e. the
+    // equivalent of Java's logConfig.getMinLogLevel() etc. in C++.
+	// Hardcode these values for the time being ;-)
+	level[0] = static_cast< CORBA::Long >(2);
+	level[1] = static_cast< CORBA::Long >(2);
+	
+    level[3] = static_cast< CORBA::Long >(LogLevelDefinition::fromACEPriority(ACE_Log_Priority(l->getRemoteLevel())));
+    level[4] = static_cast< CORBA::Long >(LogLevelDefinition::fromACEPriority(ACE_Log_Priority(l->getLocalLevel())));
+    
+    level[2] = (level[3] < level[4] ? level[3] : level[4]);
 
-    level[3] = static_cast< CORBA::Long >(LogLevelDefinition::fromACEPriority(l->getRemoteLevel(name())));
-    level[4] = static_cast< CORBA::Long >(LogLevelDefinition::fromACEPriority(l->getLocalLevel(name())));
-    level[2] = level[3] < level[4]? level[3]:level[4];
     return level._retn();
 }
 
