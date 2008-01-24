@@ -1,17 +1,17 @@
+1 - <timestamp> [GlobalLogger - maci::MACIHelper::resolveManager] ManagerReference generated using localhost address: 'corbaloc::<IP address>:<port>/Manager'
+1 - <timestamp> [GlobalLogger - ] Container: myDefaultCppTestContainer
+1 - <timestamp> [GlobalLogger - ] 	Setting levels for logger 'TESTLOG3':
+1 - <timestamp> [GlobalLogger - ] 		useDefault      : false
+1 - <timestamp> [GlobalLogger - ] 		minLogLevel     : 8
+1 - <timestamp> [GlobalLogger - ] 		minLogLevelLocal: 9
+1 - <timestamp> [GlobalLogger - ] ... failed!
+1 - <timestamp> (<ID>) EXCEPTION, Exception caught while calling remote method.
+1 - user exception, ID 'IDL:alma/maciErrType/LoggerDoesNotExistEx:1.0'
+1 - 
+1 - <timestamp> [GlobalLogger - ] Done all.
 2 -  -- alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest TESTLOG3
 2 - INFO - Starting Java/abeans application: alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest TESTLOG3
 2 - .FINER: Logging configuration has been initialized, but not from CDB settings.
-1 - <timestamp> [GlobalLogger - maci::MACIHelper::resolveManager] ManagerReference generated using localhost address: 'corbaloc::<IP address>:<port>/Manager'
-1 - <timestamp> [GlobalLogger - ] Container: myDefaultCppTestContainer
-1 - <timestamp> [GlobalLogger - ] 		minLogLevel     : 8
-1 - <timestamp> [GlobalLogger - ] 	Setting levels for logger 'TESTLOG3':
-1 - <timestamp> [GlobalLogger - ] 		useDefault      : false
-1 - <timestamp> [GlobalLogger - ] 		minLogLevelLocal: 9
-1 - <timestamp> (<ID>) EXCEPTION, Exception caught while calling remote method.
-1 - <timestamp> [GlobalLogger - ] ... failed!
-1 - <timestamp> [GlobalLogger - ] Done all.
-1 - user exception, ID 'IDL:alma/maciErrType/LoggerDoesNotExistEx:1.0'
-1 - 
 2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels] -------------------------------
 2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels] ComponentClientTestCase#setUp()
 2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels] component 'alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest' requested AdvancedContainerServices

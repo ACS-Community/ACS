@@ -1,6 +1,3 @@
-2 -  -- alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest TESTLOG3
-2 - INFO - Starting Java/abeans application: alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest TESTLOG3
-2 - .FINER: Logging configuration has been initialized, but not from CDB settings.
 1 - <timestamp> [GlobalLogger - maci::MACIHelper::resolveManager] ManagerReference generated using localhost address: 'corbaloc::<IP address>:<port>/Manager'
 1 - <timestamp> [GlobalLogger - ] Container: myDefaultCppTestContainer
 1 - <timestamp> [GlobalLogger - ] 	Setting levels for logger 'default':
@@ -9,6 +6,9 @@
 1 - <timestamp> [GlobalLogger - ] 		minLogLevelLocal: 9
 1 - <timestamp> [GlobalLogger - ] 	... done.
 1 - <timestamp> [GlobalLogger - ] Done all.
+2 -  -- alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest TESTLOG3
+2 - INFO - Starting Java/abeans application: alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest TESTLOG3
+2 - .FINER: Logging configuration has been initialized, but not from CDB settings.
 2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels] -------------------------------
 2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels] ComponentClientTestCase#setUp()
 2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels] component 'alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest' requested AdvancedContainerServices
