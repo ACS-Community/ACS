@@ -46,6 +46,12 @@ import alma.AcsNCTraceLog.LOG_NC_ChannelDestroyed_OK;
 import alma.acs.container.AdvancedContainerServices;
 import alma.acs.container.ContainerServicesBase;
 import alma.acs.exceptions.AcsJException;
+import alma.acs.logging.AcsLogLevel;
+
+import com.cosylab.CDB.DAO;
+import com.cosylab.cdb.client.CDBAccess;
+import com.cosylab.cdb.client.DAOProxy;
+import com.cosylab.util.WildcharMatcher;
 
 /**
  * This class provides methods useful to both supplier and consumer objects.
@@ -76,6 +82,10 @@ public class Helper {
 		// the only reason these are invoked so we know immediately if something
 		// is going to fail in this class.
 		getNamingService();
+		
+		// create CDB access
+		m_cdbAccess = new CDBAccess(getContainerServices().getAdvancedContainerServices().getORB(), m_logger);
+		m_cdbAccess.setDAL(getContainerServices().getCDB());
 	}
 
 	
@@ -303,6 +313,69 @@ public class Helper {
 		return m_channelProperties;
 	}
 
+	/**
+	 * Get notification channel factory name for given channel.
+	 * @param channelName	name of the channel.
+	 * @return notification channel factory name.
+	 */
+	public String getNotificationFactoryNameForChannel(String channelName)
+	{
+		return getNotificationFactoryNameForChannel(channelName, null);
+	}
+	
+	/**
+	 * Get notification channel factory name for given channel/domain.
+	 * @param channelName	name of the channel.
+	 * @param domainName	name of the domain, <code>null</code> if undefined.
+	 * @return notification channel factory name.
+	 */
+	public String getNotificationFactoryNameForChannel(String channelName, String domainName)
+	{
+		// layz initialization
+		if (channelsDAO == null)
+		{
+			try {
+				channelsDAO = m_cdbAccess.createDAO("MACI/Channels");
+			} catch (Throwable th) {
+				m_logger.log(AcsLogLevel.CONFIG, "Failed to get MACI/Channels DAO from CDB, using default notification service.", th);
+			}
+		}
+		
+		// query CDB... 
+		if (channelsDAO != null)
+		{
+			// if channel mapping exists take it, wildchars are also supported
+			try {
+				String[] channelNameList = channelsDAO.get_string_seq("NotificationServiceMapping/Channels_");
+				for (String pattern : channelNameList)
+					if (WildcharMatcher.match(pattern, channelName))
+						return channelsDAO.get_string("NotificationServiceMapping/Channels_/" + pattern + "/NotificationService");
+			} catch (Throwable th) {
+				m_logger.finer("No Channel to NotificationService mapping found for channel: " + channelName);
+			}
+
+			// try domain mapping, if given
+			if (domainName != null)
+			{
+				try {
+					return channelsDAO.get_string("NotificationServiceMapping/Domains/" + domainName + "/NotificationService");
+				} catch (Throwable th) {
+					m_logger.finer("No Domain to NotificationService mapping found for domain/channel: " + domainName + "/" + channelName);
+				}
+			}
+	
+			// return default
+			try {
+				return channelsDAO.get_string("NotificationServiceMapping/DefaultNotificationService");
+			} catch (Throwable th) {
+				m_logger.finer("No NotificationServiceMapping/DefaultNotificationService attribute found, returning hardcoded default.");
+			}
+		}
+		
+		// return default
+		return alma.acscommon.NOTIFICATION_FACTORY_NAME.value;
+	}
+	
 	// --------------------------------------------------------------------------
 
 	/**
@@ -327,4 +400,10 @@ public class Helper {
 
 	// / Provides access to channel's quality of service properties
 	private final ChannelProperties m_channelProperties;
+	
+	// CDB access helper (factory)
+	private final CDBAccess m_cdbAccess;
+	
+	// cached MACI/Channels DAO
+	private DAOProxy channelsDAO = null;
 }

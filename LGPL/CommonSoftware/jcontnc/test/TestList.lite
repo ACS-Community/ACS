@@ -20,7 +20,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: TestList.lite,v 1.19 2006/11/22 08:14:30 cparedes Exp $"
+# "@(#) $Id: TestList.lite,v 1.20 2008/01/24 17:41:01 msekoran Exp $"
 #
 # TestList
 #
@@ -47,5 +47,6 @@ PROLOGUE acsutilTATPrologue -l
 6  integrationLogs  "acsutilTATTestRunner acsStartContainer -java frodoContainer" "@SLEEP 15" "acsutilTATTestRunner jcontncTATRunTest.sh acsStartJava alma.demo.test.client.EventILComponentTest" 
 
 7 testArchiveSupplier "acsutilTATTestRunner acsStartJava alma.demo.test.client.ArchiveConsumerTest" "@SLEEP 3" "acsutilTATTestRunner acsStartJava alma.demo.test.client.ArchiveSupplierTest" "@SLEEP 30"
-EPILOGUE acsutilTATEpilogue
 
+8 testNotificationServiceConfiguration "acsutilTATTestRunner acsStartJava alma.demo.test.client.NotificationServiceConfigurationTest"
+EPILOGUE acsutilTATEpilogue

@@ -1,0 +1,8 @@
+1 -  -- alma.demo.test.client.NotificationServiceConfigurationTest
+1 - FINER: Logging configuration has been initialized, but not from CDB settings.
+1 - ----------T--:--:--.--- INFO [alma.demo.test.client.NotificationServiceConfigurationTest] component 'alma.demo.test.client.NotificationServiceConfigurationTest' requested AdvancedContainerServices
+1 - DefaultNotificationService
+1 - ParticularNotifyService
+1 - ControlNotifyService
+1 - AlarmNotifyService
+1 - DefaultNotificationService
