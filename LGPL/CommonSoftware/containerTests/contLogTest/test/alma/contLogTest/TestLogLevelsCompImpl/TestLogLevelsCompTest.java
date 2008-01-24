@@ -204,10 +204,13 @@ public class TestLogLevelsCompTest extends ComponentClientTestCase
 				short minLogLevelCentral = (short)level;
 				componentLogLevels.minLogLevel = minLogLevelCentral;
 				if (componentLogLevels.useDefault) {
+					// @TODO: add a test as well to change the specific level, and then verify
+					// if useDefault becomes false.
 					containerLogConfig.set_default_logLevels(componentLogLevels);
 					m_logger.info("Set default log level for container " + containerName + " to " + minLogLevelCentral + " to be used by component " + componentName);
 				}
 				else {
+					// @TODO: add a test to change the default level, and see if it impacts specific logger
 					containerLogConfig.set_logLevels(loggerName, componentLogLevels);
 					m_logger.info("Set individual log level for component " + componentName + " (running in container " + containerName + ") to " + minLogLevelCentral);
 				}
