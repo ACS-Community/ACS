@@ -1,5 +1,6 @@
 1 -  --endorsed -- com.cosylab.cdb.DALWrite MACI/Containers/OnDemandContainer LoggingConfig/minLogLevel 1 -d corbaloc::xxxxxxx:yyyy/CDB
 1 - INFO - Starting Java/abeans application: com.cosylab.cdb.DALWrite MACI/Containers/OnDemandContainer LoggingConfig/minLogLevel 1 -d corbaloc::xxxxxxx:yyyy/CDB
+1 - 
 1 - Reading 'MACI/Containers/OnDemandContainer/LoggingConfig/minLogLevel'='2'
 1 - Setting 'MACI/Containers/OnDemandContainer/LoggingConfig/minLogLevel'='1'
 1 - 5d4
