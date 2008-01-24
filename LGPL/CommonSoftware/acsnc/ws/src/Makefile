@@ -21,7 +21,7 @@
 # MA 02111-1307  USA
 #
 #*******************************************************************************
-# "@(#) $Id: Makefile,v 1.60 2007/10/22 08:20:06 bjeram Exp $"
+# "@(#) $Id: Makefile,v 1.61 2008/01/24 10:50:41 msekoran Exp $"
 #------------------------------------------------------------------------
 #
 # Makefile for acsnc/ws/src
@@ -85,7 +85,7 @@ USER_IDL  =
 #
 # On-Line Database Files
 # ----------------------
-CDB_SCHEMAS = EventChannel
+CDB_SCHEMAS = Channels EventChannel
 
 #
 # Java Entity Classes generation on/off
