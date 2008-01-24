@@ -9,3 +9,11 @@
 1 - user exception, ID 'IDL:alma/maciErrType/LoggerDoesNotExistEx:1.0'
 1 - 
 1 - <timestamp> [GlobalLogger - ] Done all.
+2 - <timestamp> [GlobalLogger - maci::MACIHelper::resolveManager] ManagerReference generated using localhost address: 'corbaloc::<IP address>:<port>/Manager'
+2 - <timestamp> [GlobalLogger - ] Container: bilboContainer
+2 - <timestamp> [GlobalLogger - ] 	Log levels for logger 'TESTLOG4':
+2 - <timestamp> [GlobalLogger - ] 		useDefault      : false
+2 - <timestamp> [GlobalLogger - ] 		minLogLevel     : 5
+2 - <timestamp> [GlobalLogger - ] 		minLogLevelLocal: 6
+2 - <timestamp> [GlobalLogger - ] 	... done.
+2 - <timestamp> [GlobalLogger - ] Done all.
