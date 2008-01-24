@@ -15,7 +15,6 @@
       <_ Name="TESTLOG4"    Code="contLogTestImpl"
 		             		Type="IDL:alma/contLogTest/TestLogLevelsComp:1.0"
                             Container="bilboContainer"
-                            Autostart = "true"
                             />
       <_ Name="TESTLOG5" Code="pyContLogTest.TestLogLevelsComp" 
                                         Type="IDL:alma/contLogTest/TestLogLevelsComp:1.0"
