@@ -97,6 +97,9 @@ public class Consumer extends OSPushConsumerPOA {
 	/** The channel has exactly one name registered in the CORBA Naming Service. */
 	protected final String m_channelName;
 	
+	/** The channel notification service domain name, can be <code>null</code>. */
+	protected final String m_channelNotifyServiceDomainName;
+
 	/**
 	 * Contains a list of handler/receiver functions to be invoked when an event
 	 * of a particular type is received.
@@ -139,6 +142,23 @@ public class Consumer extends OSPushConsumerPOA {
 	 *            Thrown on any <I>really bad</I> error conditions encountered.
 	 */
 	public Consumer(String channelName, ContainerServicesBase services) throws AcsJException {
+		this(channelName, null, services);
+	}
+
+	/**
+	 * Creates a new instance of Consumer
+	 * 
+	 * @param channelName
+	 *           Subscribe to events on this channel registered in the CORBA
+	 *           Naming Service.
+	 * @param channelNotifyServiceDomainName
+	 *           Channel domain name, which is being used to determine notification service.
+	 * @param services
+	 *           This is used to access ACS logging system.
+	 * @throws AcsJException
+	 *            Thrown on any <I>really bad</I> error conditions encountered.
+	 */
+	public Consumer(String channelName, String channelNotifyServiceDomainName, ContainerServicesBase services) throws AcsJException {
 		// sanity check
 		if (channelName == null) {
 			String reason = "Null reference obtained for the channel name!";
@@ -147,6 +167,8 @@ public class Consumer extends OSPushConsumerPOA {
 		
 		m_channelName = channelName;
 
+		m_channelNotifyServiceDomainName = channelNotifyServiceDomainName;
+		
 		profiler = new StopWatch();
 
 		m_logger = services.getLogger();
@@ -234,7 +256,8 @@ public class Consumer extends OSPushConsumerPOA {
 	 * @return string
 	 */
 	protected String getNotificationFactoryName() {
-		return alma.acscommon.NOTIFICATION_FACTORY_NAME.value;
+		return m_helper.getNotificationFactoryNameForChannel(m_channelName, m_channelNotifyServiceDomainName);
+		//return alma.acscommon.NOTIFICATION_FACTORY_NAME.value;
 	}
 
 	/**

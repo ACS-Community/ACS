@@ -95,6 +95,28 @@ public class SimpleSupplier extends OSPushSupplierPOA
 	 */
 	public SimpleSupplier(String cName, ContainerServicesBase services) throws AcsJException 
 	{
+		this(cName, null, services);
+	}
+
+	/**
+	 * Creates a new instance of SimpleSupplier.
+	 * Make sure you call {@link #disconnect()} when you no longer need this event supplier object.
+	 * 
+	 * @param cName
+	 *           name of the notification channel events will be published to.
+	 * @param channelNotifyServiceDomainName
+	 *           Channel domain name, which is being used to determine notification service.
+	 * @param services
+	 *           This is used to get the name of the component and to access the
+	 *           ACS logging system.
+	 * @throws AcsJException
+	 *            There are literally dozens of CORBA exceptions that could be
+	 *            thrown by the SimpleSupplier class. Instead, these are
+	 *            converted into an ACS Error System exception for the
+	 *            developer's convenience.
+	 */
+	public SimpleSupplier(String cName, String channelNotifyServiceDomainName, ContainerServicesBase services) throws AcsJException 
+	{
 		// sanity check
 		if (cName == null) {
 			String reason = "Null reference obtained for the channel name!";
@@ -102,6 +124,7 @@ public class SimpleSupplier extends OSPushSupplierPOA
 		}
 
 		m_channelName = cName;
+		m_channelNotifyServiceDomainName = channelNotifyServiceDomainName;
 		m_services = services;
 		m_logger = services.getLogger();
 
@@ -247,7 +270,8 @@ public class SimpleSupplier extends OSPushSupplierPOA
 	 * @return string
 	 */
 	protected String getNotificationFactoryName() {
-		return alma.acscommon.NOTIFICATION_FACTORY_NAME.value;
+		return m_helper.getNotificationFactoryNameForChannel(m_channelName, m_channelNotifyServiceDomainName);
+		//return alma.acscommon.NOTIFICATION_FACTORY_NAME.value;
 	}
 
 	// //////////////////////////////////////////////////////////////////////////
@@ -427,6 +451,9 @@ public class SimpleSupplier extends OSPushSupplierPOA
 
 	/** The event channel has exactly one name registered in the naming service. */
 	protected final String m_channelName;
+
+	/** The channel notification service domain name, can be <code>null</code>. */
+	protected final String m_channelNotifyServiceDomainName;
 
 	/**
 	 * Supplier Admin object is responsible for creating & managing proxy
