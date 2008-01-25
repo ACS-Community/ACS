@@ -9,3 +9,4 @@ s/([0-9]*|[0-9]*)/(XXXX|XXXXX)/g
 s/Unloaded '\/[a-z,A-Z,0-9,.,_,\/,-]*\//'XXXXXX\//g
 s/\/[a-z,A-Z,0-9,.,_,\/,-]*\/libbaci.so/XXXXXX\/libbaci.so/g
 s/Component-[0-9]*/Component-XXXX/g
+s/Using DLL path: \/[a-z,A-Z,0-9,.,_,\/,-,:,-]*/Using DLL path: (check the out.orig file for the real path)/g
