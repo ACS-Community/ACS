@@ -257,15 +257,15 @@
 4 - ----------T--:--:--.--- [GlobalLogger - ] Getting component 'MACI01' requested by 'SimpleClient' (activation: 0)
 4 - ----------T--:--:--.--- [GlobalLogger - resolveCURL (= maci::ManagerImpl::resolveCURL)] 
 4 - ----------T--:--:--.--- [GlobalLogger - ] Getting component: 'curl:///MACI01'. Creating it...
-4 - ----------T--:--:--.--- [GlobalLogger - getComponent] Error retrieving component (type=25, code=1),CURL=MACI01,javaex.class=alma.maciErrType.wrappers.AcsJCannotGetComponentEx
-4 - ----------T--:--:--.--- [GlobalLogger - maci::SimpleCleint::getComponent&lt;&gt;] Error retrieving component (type=25, code=1),CURL=MACI01
+4 - ----------T--:--:--.--- [GlobalLogger - getComponent] Error retrieving component (type=25, code=1) CURL="MACI01" javaex.class="alma.maciErrType.wrappers.AcsJCannotGetComponentEx"
+4 - ----------T--:--:--.--- [GlobalLogger - maci::SimpleCleint::getComponent&lt;&gt;] Error retrieving component (type=25, code=1) CURL="MACI01"
 4 - ----------T--:--:--.--- [GlobalLogger - ] Processing of command FAILED!
 4 - ----------T--:--:--.--- [GlobalLogger - ] Getting component 'dummyDO' requested by 'SimpleClient' (activation: 1)
 4 - ----------T--:--:--.--- [GlobalLogger - resolveCURL (= maci::ManagerImpl::resolveCURL)] 
 4 - ----------T--:--:--.--- [GlobalLogger - ] Getting component: 'curl:///dummyDO'. Creating it...
-4 - ----------T--:--:--.--- [GlobalLogger - getComponent] Error retrieving component (type=25, code=1),CURL=dummyDO,javaex.class=alma.maciErrType.wrappers.AcsJCannotGetComponentEx
-4 - ----------T--:--:--.--- [GlobalLogger - internalNoSyncRequestComponent] Error retrieving component (type=25, code=1),javaex.class=alma.maciErrType.wrappers.AcsJCannotGetComponentEx
-4 - ----------T--:--:--.--- [GlobalLogger - maci::SimpleCleint::getComponent&lt;&gt;] Error retrieving component (type=25, code=1),CURL=dummyDO
+4 - ----------T--:--:--.--- [GlobalLogger - getComponent] Error retrieving component (type=25, code=1) CURL="dummyDO" javaex.class="alma.maciErrType.wrappers.AcsJCannotGetComponentEx"
+4 - ----------T--:--:--.--- [GlobalLogger - internalNoSyncRequestComponent] Error retrieving component (type=25, code=1) javaex.class="alma.maciErrType.wrappers.AcsJCannotGetComponentEx"
+4 - ----------T--:--:--.--- [GlobalLogger - maci::SimpleCleint::getComponent&lt;&gt;] Error retrieving component (type=25, code=1) CURL="dummyDO"
 4 - ----------T--:--:--.--- [GlobalLogger - ] Processing of command FAILED!
 4 - ----------T--:--:--.--- [GlobalLogger - ] Getting component 'MACI_FAKE' requested by 'SimpleClient' (activation: 1)
 4 - ----------T--:--:--.--- [GlobalLogger - resolveCURL (= maci::ManagerImpl::resolveCURL)] 
@@ -297,6 +297,7 @@
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::~ThreadManagerBase] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::terminateAll] 
 1 - ----------T--:--:--.--- [GlobalLogger - maci::ContainerImpl::activate_component] Error activating component (type=25, code=9)
+1 - ----------T--:--:--.--- [GlobalLogger - maci::ContainerImpl::activate_component] Error activating component (type=25, code=9) CURL="MACI_FAKE" ComponentType="IDL:alma/MACI_TEST/MaciTestClass:1.0" ComponentCode="maciTestClass"
 1 - ----------T--:--:--.--- [GlobalLogger - maciTestClassImpl::ConstructComponent] Object couldn't be created (type=10, code=6)
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unlock] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] 
@@ -305,8 +306,8 @@
 1 - ----------T--:--:--.--- [GlobalLogger - ] maciTestClassImpl::DLLClose
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] DLLClose executed
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Unloaded '/----/libmaciTestClass.so'.
-4 - ----------T--:--:--.--- [GlobalLogger - getComponent] Error retrieving component (type=25, code=1),CURL=MACI_FAKE,javaex.class=alma.maciErrType.wrappers.AcsJCannotGetComponentEx
-4 - ----------T--:--:--.--- [GlobalLogger - maci::SimpleCleint::getComponent&lt;&gt;] Error retrieving component (type=25, code=1),CURL=MACI_FAKE
+4 - ----------T--:--:--.--- [GlobalLogger - getComponent] Error retrieving component (type=25, code=1) CURL="MACI_FAKE" javaex.class="alma.maciErrType.wrappers.AcsJCannotGetComponentEx"
+4 - ----------T--:--:--.--- [GlobalLogger - maci::SimpleCleint::getComponent&lt;&gt;] Error retrieving component (type=25, code=1) CURL="MACI_FAKE"
 4 - ----------T--:--:--.--- [GlobalLogger - ] Processing of command FAILED!
 4 - ----------T--:--:--.--- [GlobalLogger - ] Getting component 'MACI04' requested by 'SimpleClient' (activation: 1)
 4 - ----------T--:--:--.--- [GlobalLogger - resolveCURL (= maci::ManagerImpl::resolveCURL)] 
@@ -1181,14 +1182,14 @@
 4 - ----------T--:--:--.--- [GlobalLogger - ] Getting component 'MACI01' requested by 'SimpleClient' (activation: 1)
 4 - ----------T--:--:--.--- [GlobalLogger - resolveCURL (= maci::ManagerImpl::resolveCURL)] 
 4 - ----------T--:--:--.--- [GlobalLogger - ] Getting component: 'curl:///MACI01'. Creating it...
-4 - ----------T--:--:--.--- [GlobalLogger - getComponent] Error retrieving component (type=25, code=1),CURL=MACI01,javaex.class=alma.maciErrType.wrappers.AcsJCannotGetComponentEx
-4 - ----------T--:--:--.--- [GlobalLogger - maci::SimpleCleint::getComponent&lt;&gt;] Error retrieving component (type=25, code=1),CURL=MACI01
+4 - ----------T--:--:--.--- [GlobalLogger - getComponent] Error retrieving component (type=25, code=1) CURL="MACI01" javaex.class="alma.maciErrType.wrappers.AcsJCannotGetComponentEx"
+4 - ----------T--:--:--.--- [GlobalLogger - maci::SimpleCleint::getComponent&lt;&gt;] Error retrieving component (type=25, code=1) CURL="MACI01"
 4 - ----------T--:--:--.--- [GlobalLogger - ] Processing of command FAILED!
 4 - ----------T--:--:--.--- [GlobalLogger - ] Getting component 'MACI10' requested by 'SimpleClient' (activation: 1)
 4 - ----------T--:--:--.--- [GlobalLogger - resolveCURL (= maci::ManagerImpl::resolveCURL)] 
 4 - ----------T--:--:--.--- [GlobalLogger - ] Getting component: 'curl:///MACI10'. Creating it...
-4 - ----------T--:--:--.--- [GlobalLogger - getComponent] Error retrieving component (type=25, code=1),CURL=MACI10,javaex.class=alma.maciErrType.wrappers.AcsJCannotGetComponentEx
-4 - ----------T--:--:--.--- [GlobalLogger - maci::SimpleCleint::getComponent&lt;&gt;] Error retrieving component (type=25, code=1),CURL=MACI10
+4 - ----------T--:--:--.--- [GlobalLogger - getComponent] Error retrieving component (type=25, code=1) CURL="MACI10" javaex.class="alma.maciErrType.wrappers.AcsJCannotGetComponentEx"
+4 - ----------T--:--:--.--- [GlobalLogger - maci::SimpleCleint::getComponent&lt;&gt;] Error retrieving component (type=25, code=1) CURL="MACI10"
 4 - ----------T--:--:--.--- [GlobalLogger - ] Processing of command FAILED!
 4 - ----------T--:--:--.--- [GlobalLogger - ] Shutting down Container '*'...
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::etherealizeComponent] Component 'MACI_SUB' etherealized.
