@@ -15,7 +15,6 @@
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::init] Generated CommandLine: maciContainer Container01 -ORBEndpoint iiop://------:----  -ORBDottedDecimalAddresses 1 -ORBInitRef InterfaceRepository=corbaloc::---:----/InterfaceRepository
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::init] Destroy bootstrap ORB
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::initializeCORBA] 
-1 - ----------T--:--:--.--- [GlobalLogger - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::getManager] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::getManager] Resolving manager...
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::resolveManager] 
@@ -24,23 +23,24 @@
 1 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] ManagerReference generated using localhost address: 'corbaloc::---:----/Manager'
 1 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] Resolving reference: 'corbaloc::---:----/Manager'
 1 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] Manager reference narrowed.
-1 - ----------T--:--:--.--- [Container01 - maci::Container::init] Recovery enabled.
+1 - ----------T--:--:--.--- [GlobalLogger - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
 1 - ----------T--:--:--.--- [GlobalLogger - ] Using ACS alarm system
+1 - ----------T--:--:--.--- [Container01 - maci::Container::init] Recovery enabled.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::setSearchPath] 
-1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activateCORBAObject] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::init] Using DLL path: .....
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activateCORBAObject] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::init] Container 'Container01' activated.
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::init] Container 'Container01' initialized successfuly
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::init] Connected to the InterfaceRepository.
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::init] Connecting to the Manager...
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::resolveManager] 
 1 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] 
-1 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] 
 1 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] ManagerReference generated using localhost address: 'corbaloc::---:----/Manager'
+1 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] 
 1 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] Resolving reference: 'corbaloc::---:----/Manager'
+1 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] Manager reference narrowed.
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::init] Connected to the Manager.
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::init] Connecting to the Archiving Channel.
-1 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] Manager reference narrowed.
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::init] Connecting to the Centralized Logger...
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::init] Connected to the Centralized Logger.
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::init] Set Naming Context to Logger.
@@ -198,9 +198,9 @@
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'MACI_DYN_TEST1' deactivated.
 1 - ----------T--:--:--.--- [MACI_CS_TEST - ] ContainerServices::getComponentNonSticky(MACI_DYN_TEST1)
 1 - ----------T--:--:--.--- [MACI_CS_TEST - ] Getting component non sticky: 'MACI_DYN_TEST1'.
-1 - ----------T--:--:--.--- [GlobalLogger - get_component_non_sticky] The requested Component had not been already activated at request time (type=25, code=2),javaex.class=alma.maciErrType.wrappers.AcsJComponentNotAlreadyActivatedEx
-1 - ----------T--:--:--.--- [GlobalLogger - ContainerServices::getComponentNonSticky] Error retrieving component (type=25, code=1),CURL=MACI_DYN_TEST1
-1 - ----------T--:--:--.--- [GlobalLogger - MACIContainerServices::getCORBAComponentNonSticky] Error retrieving component (type=25, code=1),CURL=MACI_DYN_TEST1
+1 - ----------T--:--:--.--- [GlobalLogger - get_component_non_sticky] The requested Component had not been already activated at request time (type=25, code=2) javaex.class="alma.maciErrType.wrappers.AcsJComponentNotAlreadyActivatedEx"
+1 - ----------T--:--:--.--- [GlobalLogger - MACIContainerServices::getCORBAComponentNonSticky] Error retrieving component (type=25, code=1) CURL="MACI_DYN_TEST1"
+1 - ----------T--:--:--.--- [GlobalLogger - ContainerServices::getComponentNonSticky] Error retrieving component (type=25, code=1) CURL="MACI_DYN_TEST1"
 1 - ----------T--:--:--.--- [MACI_CS_TEST - ] getComponentNonStickyTest (MACI_DYN_TEST1): Got an exception (right behaviour)
 2 - ----------T--:--:--.--- [GlobalLogger - ] Testing getDefaultComponent...
 1 - ----------T--:--:--.--- [MACI_CS_TEST - ContainerServices::getDefaultComponent] 
@@ -468,9 +468,9 @@
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'MACI_DYN_TEST1' deactivated.
 1 - ----------T--:--:--.--- [MACI_CS_TEST - ] ContainerServices::getComponentNonSticky(MACI_DYN_TEST1)
 1 - ----------T--:--:--.--- [MACI_CS_TEST - ] Getting component non sticky: 'MACI_DYN_TEST1'.
-1 - ----------T--:--:--.--- [GlobalLogger - get_component_non_sticky] The requested Component had not been already activated at request time (type=25, code=2),javaex.class=alma.maciErrType.wrappers.AcsJComponentNotAlreadyActivatedEx
-1 - ----------T--:--:--.--- [GlobalLogger - ContainerServices::getComponentNonSticky] Error retrieving component (type=25, code=1),CURL=MACI_DYN_TEST1
-1 - ----------T--:--:--.--- [GlobalLogger - MACIContainerServices::getCORBAComponentNonSticky] Error retrieving component (type=25, code=1),CURL=MACI_DYN_TEST1
+1 - ----------T--:--:--.--- [GlobalLogger - get_component_non_sticky] The requested Component had not been already activated at request time (type=25, code=2) javaex.class="alma.maciErrType.wrappers.AcsJComponentNotAlreadyActivatedEx"
+1 - ----------T--:--:--.--- [GlobalLogger - MACIContainerServices::getCORBAComponentNonSticky] Error retrieving component (type=25, code=1) CURL="MACI_DYN_TEST1"
+1 - ----------T--:--:--.--- [GlobalLogger - ContainerServices::getComponentNonSticky] Error retrieving component (type=25, code=1) CURL="MACI_DYN_TEST1"
 1 - ----------T--:--:--.--- [MACI_CS_TEST - ] getComponentNonStickyTest (MACI_DYN_TEST1): Got an exception (right behaviour)
 2 - ----------T--:--:--.--- [GlobalLogger - ] Testing getDefaultComponentSmartPtr...
 1 - ----------T--:--:--.--- [MACI_CS_TEST - ContainerServices::getDefaultComponent] 
@@ -784,8 +784,8 @@
 1 - ----------T--:--:--.--- [MACI_SUB - acscomponent::ACSComponentImpl::execute] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activate_component] Component 'MACI_SUB' activated.
 1 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] 
-1 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] 
 1 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] ManagerReference generated using localhost address: 'corbaloc::---:----/Manager'
+1 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] 
 1 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] Resolving reference: 'corbaloc::---:----/Manager'
 1 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] Manager reference narrowed.
 1 - ----------T--:--:--.--- [GlobalLogger - ] Logged in.
@@ -813,9 +813,9 @@
 1 - ----------T--:--:--.--- [GlobalLogger - ] Component released (component has 1 clients left).
 1 - ----------T--:--:--.--- [Container01 - ] Informing Components Unavailable
 1 - ----------T--:--:--.--- [GlobalLogger - ] Informing components Unavailable n=1
-1 - ----------T--:--:--.--- [GlobalLogger - ] Done.
-1 - ----------T--:--:--.--- [GlobalLogger - ] Logged out.
 1 - ----------T--:--:--.--- [GlobalLogger - ] unavailable: MACI_SUB
+1 - ----------T--:--:--.--- [GlobalLogger - ] Logged out.
+1 - ----------T--:--:--.--- [GlobalLogger - ] Done.
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Deactivating component with handle XXXXXX (MACI01 of type IDL:alma/MACI_TEST/MaciTestClass:1.0)
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'MACI01': calling cleanUp Lifecycle .
