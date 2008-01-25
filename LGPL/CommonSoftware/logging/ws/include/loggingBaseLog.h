@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingBaseLog.h,v 1.11 2007/02/28 16:14:00 bjeram Exp $"
+* "@(#) $Id: loggingBaseLog.h,v 1.12 2008/01/25 10:11:17 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -54,6 +54,7 @@ namespace Logging
 	 */
 	enum Priority
 	{
+	    LM_SHUTDOWN = 01,
 	    /// Messages indicating function-calling sequence
 	    LM_TRACE = 02,
 	    

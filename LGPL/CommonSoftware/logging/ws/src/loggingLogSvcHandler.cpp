@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingLogSvcHandler.cpp,v 1.27 2008/01/16 09:57:50 cparedes Exp $"
+* "@(#) $Id: loggingLogSvcHandler.cpp,v 1.28 2008/01/25 10:11:17 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -32,7 +32,7 @@
 
 #include <ace/Log_Record.h>
 
-static char *rcsId="@(#) $Id: loggingLogSvcHandler.cpp,v 1.27 2008/01/16 09:57:50 cparedes Exp $"; 
+static char *rcsId="@(#) $Id: loggingLogSvcHandler.cpp,v 1.28 2008/01/25 10:11:17 cparedes Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 
@@ -43,7 +43,7 @@ namespace Logging {
     ACE_Log_Priority
     acs2acePriority(Logging::BaseLog::Priority acsPriority)
     {
-	ACE_Log_Priority retVal = LM_TRACE;
+	ACE_Log_Priority retVal = LM_SHUTDOWN;
 	
 	switch(acsPriority)
 	    {
@@ -82,13 +82,17 @@ namespace Logging {
 	    case Logging::BaseLog::LM_EMERGENCY:
 		retVal = LM_EMERGENCY;
 		break;
+	    
+        case Logging::BaseLog::LM_SHUTDOWN:
+		retVal = LM_SHUTDOWN;
+		break;
 		
 	    default:
 		//should NEVER be the case but 
 		//if this does occur we default
 		//to a level that will always be
 		//logged
-		retVal = LM_EMERGENCY;
+		retVal = LM_SHUTDOWN;
 	    }
 	
 	return retVal;
@@ -100,7 +104,7 @@ namespace Logging {
     Logging::BaseLog::Priority
     ace2acsPriority(ACE_Log_Priority acePriority)
     {
-	Logging::BaseLog::Priority retVal = Logging::BaseLog::LM_TRACE;
+	Logging::BaseLog::Priority retVal = Logging::BaseLog::LM_SHUTDOWN;
 	
 	switch(acePriority)
 	    {
@@ -139,13 +143,17 @@ namespace Logging {
 	    case LM_EMERGENCY:
 		retVal = Logging::BaseLog::LM_EMERGENCY;
 		break;
+	    
+        case LM_SHUTDOWN:
+		retVal = Logging::BaseLog::LM_SHUTDOWN;
+		break;
 		
 	    default:
 		//should NEVER be the case but 
 		//if this does occur we default
 		//to a level that will always be
 		//logged
-		retVal = Logging::BaseLog::LM_EMERGENCY;
+		retVal = Logging::BaseLog::LM_SHUTDOWN;
 	    }
 	
 	return retVal;
