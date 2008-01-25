@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.7 2008/01/23 16:53:16 bjeram Exp $"
+# "@(#) $Id: Makefile,v 1.8 2008/01/25 09:23:13 bjeram Exp $"
 #
 # Makefile of ........
 #
@@ -186,7 +186,7 @@ ifneq ($(MAKEDIRTMP),\#error\#)
 endif
 
 
-VALGRIND_all: valgrind-2.4.0.tar.bz2
+VALGRIND_all: valgrind-3.3.0.tar.bz2
 	@echo "== Building valgrind"
 	@bunzip2 -k valgrind-3.3.0.tar.bz2; tar -xvf valgrind-3.3.0.tar
 	@cd valgrind-3.3.0; ./configure --prefix=$(INSTALL_ROOT); make
