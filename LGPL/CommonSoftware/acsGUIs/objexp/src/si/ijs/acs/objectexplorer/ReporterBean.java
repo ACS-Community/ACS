@@ -1,22 +1,21 @@
 package si.ijs.acs.objectexplorer;
 
+import java.awt.Color;
+import java.util.Date;
 import java.util.Hashtable;
 
+import javax.swing.text.Style;
+import javax.swing.text.StyleConstants;
+
+import com.cosylab.gui.components.r2.DataFormatter;
+import com.cosylab.gui.components.r2.SmartTextPane;
 
 import si.ijs.acs.objectexplorer.engine.Converter;
 import si.ijs.acs.objectexplorer.engine.Invocation;
 import si.ijs.acs.objectexplorer.engine.RemoteCall;
 import si.ijs.acs.objectexplorer.engine.RemoteResponse;
 
-import com.cosylab.gui.components.r2.DataFormatter;
-import com.cosylab.gui.components.r2.SmartTextPane;
-
-import java.awt.Color;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
-import javax.swing.text.Style;
-import javax.swing.text.StyleConstants;
+import alma.acs.util.IsoDateFormat;
 
 /**
  * Insert the type's description here.
@@ -33,8 +32,6 @@ public class ReporterBean {
   private boolean window=true;
   private Hashtable responseWindows=new Hashtable(10);
   static int raID=0;
-
-  private static final SimpleDateFormat df = new SimpleDateFormat("yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'SSS");
 
   private Style redStyle = null;
   private Style blackStyle = null;
@@ -234,7 +231,7 @@ public static String toString(RemoteCall call, boolean expand) {
   result.append(call.getSN());
   result.append("] : ");
   //result.append(System.currentTimeMillis());
-  result.append(df.format(new Date(System.currentTimeMillis())));
+  result.append(IsoDateFormat.formatCurrentDate());
   result.append(" |--------------------------------------------------------\n");
   result.append(call.getIntrospectable().getName());
 
@@ -303,7 +300,7 @@ public static String toString(RemoteResponse response, boolean expand) {
 	result.append("] : ");
 	//result.append(System.currentTimeMillis());
 	//result.append(df.format(new Date(System.currentTimeMillis())));
-	result.append(df.format(new Date(response.getTimestamp())));
+	result.append(IsoDateFormat.formatDate(new Date(response.getTimestamp())));
 	result.append(" |-----------------------------------------------------\n");
 	result.append(" --> Response for: ");
 	result.append(response.getInvocation().getName());
