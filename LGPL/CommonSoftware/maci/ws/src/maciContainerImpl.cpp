@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciContainerImpl.cpp,v 1.103 2008/01/16 10:07:34 cparedes Exp $"
+* "@(#) $Id: maciContainerImpl.cpp,v 1.104 2008/01/25 02:56:34 cparedes Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -79,7 +79,7 @@
 #include <ACSAlarmSystemInterfaceFactory.h>
 #endif
 
-ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.103 2008/01/16 10:07:34 cparedes Exp $")
+ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.104 2008/01/25 02:56:34 cparedes Exp $")
 
  using namespace maci;
  using namespace cdb;
@@ -2651,20 +2651,19 @@ maci::LoggingConfigurable::LogLevels ContainerImpl::get_logLevels(const char* lo
 {
 	ACS_TRACE("maci::ContainerImpl::get_logLevels");
 
-	if (m_logLevels.find(loggerName) != m_logLevels.end()){
-	    return m_logLevels[loggerName];
-        
-	}else if (Logging::Logger::getGlobalLogger()->exists(loggerName)){
-		return m_defaultLogLevels;
-	}else
-	{
+    if(! Logging::Logger::getGlobalLogger()->exists(loggerName)){
 		maciErrType::LoggerDoesNotExistExImpl ex(__FILE__, __LINE__,
 					"maci::ContainerImpl::get_logLevels");
 		ex.setLoggerName(loggerName);
 		ex.log(LM_DEBUG);
 		throw ex.getLoggerDoesNotExistEx();
-		//return m_defaultLogLevels;
-	}
+        
+        }
+
+	if (m_logLevels.find(loggerName) != m_logLevels.end())
+	    return m_logLevels[loggerName];
+	else
+		return m_defaultLogLevels;
 }
 
 
