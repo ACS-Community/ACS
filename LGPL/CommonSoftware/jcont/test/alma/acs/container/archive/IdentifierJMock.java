@@ -23,13 +23,13 @@
 package alma.acs.container.archive;
 
 import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.logging.Logger;
 
 import org.apache.commons.lang.StringUtils;
 
 import alma.ACS.ComponentStates;
+import alma.acs.util.IsoDateFormat;
 import alma.archive.range.IdentifierRange;
 import alma.archive.range.IdentifierRangeEntityT;
 import alma.archive.range.RangeT;
@@ -47,8 +47,6 @@ public class IdentifierJMock implements IdentifierJ {
 	private final long archiveid;
 	private long rangeid;
 	private final int archiveIdLength = 2;
-	
-	protected static final SimpleDateFormat isoFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
 	
 	public IdentifierJMock(Logger logger, long archiveid, long rangeid) {
 		this.logger = logger;
@@ -86,7 +84,7 @@ public class IdentifierJMock implements IdentifierJ {
 		range.setIdentifierRangeEntity(entityt);
 		
 		//set the time stamp
-		String ts = isoFormat.format(new Timestamp(System.currentTimeMillis()));  // todo: pass in time externally?
+		String ts = IsoDateFormat.formatCurrentDate();  // todo: pass in time externally?
 		range.setCreatedTimeStamp(ts);
 		
 		range.setIsLocked(false);
