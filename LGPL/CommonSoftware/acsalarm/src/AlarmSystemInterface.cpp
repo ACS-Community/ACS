@@ -7,8 +7,7 @@ using namespace acsalarm;
  * Push a collection of fault states.
  * @param states
  *
- * TODO later:
- * @throws ASIException if the fault state collection can not be pushed.
+ * TODO later: @throws ASIException if the fault state collection can not be pushed.
  */
 void AlarmSystemInterface::push(vector<FaultState> & states)
 {
@@ -22,8 +21,7 @@ void AlarmSystemInterface::push(vector<FaultState> & states)
  * Push a fault state.
  * @param state the fault state change to push.
  *
- * TODO later:
- * @throws ASIException if the fault state can not be pushed.
+ * TODO later: @throws ASIException if the fault state can not be pushed.
  */
 void AlarmSystemInterface::push(FaultState & state)
 {
@@ -44,8 +42,7 @@ void AlarmSystemInterface::push(FaultState & state)
  * Push the set of active fault states.
  * @param activeFaults the active fault states.
  *
- * TODO later:
- * @throws ASIException if the fault state active list can not be pushed.
+ * TODO later: @throws ASIException if the fault state active list can not be pushed.
  */
 void AlarmSystemInterface::pushActiveList(vector<FaultState> & activeFaults)
 {
@@ -64,8 +61,7 @@ void AlarmSystemInterface::pushActiveList(vector<FaultState> & activeFaults)
  *        are alarms in the active list that are sent on startup, when the source
  *        starts and periodically according to the expected backup frequency.
  *
- * TODO later:
- * @throws ASIException if the fault state collection can not be pushed.
+ * TODO later: @throws ASIException if the fault state collection can not be pushed.
  */
 void AlarmSystemInterface::commonPush(vector<FaultState> & states, bool backup)
 {

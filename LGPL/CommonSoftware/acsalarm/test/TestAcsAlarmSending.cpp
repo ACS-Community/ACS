@@ -84,9 +84,9 @@ int main(int argc, char *argv[])
 	}
 	*/
 
-	std::cout << "Testing short-hand style of sending alarms" << std::endl;
+	std::cout << "Testing experimental short-hand style of sending alarms with properties" << std::endl;
 
-	// TEST 2: the "short hand" way to send alarms
+	// TEST 2: the "short hand" way to send alarms, with properties
 	//try 
 	{
 		// initialize the AlarmSystemInterfaceFactory 
@@ -102,6 +102,30 @@ int main(int argc, char *argv[])
 		{
 			// push the FaultState using the AlarmSystemInterface previously created
 			ACSAlarmSystemInterfaceFactory::createAndSendAlarm(family, member, code, faultState::ACTIVE_STRING, props);
+		}
+
+		ACSAlarmSystemInterfaceFactory::done();
+	}
+	/* 
+	// TODO later:
+	catch (ASIException e) 
+	{
+		e.printStackTrace();
+	}
+	*/
+
+	std::cout << "Testing experimental short-hand style of sending alarms without properties" << std::endl;
+
+	// TEST 3: the "short hand" way to send alarms, without properties
+	//try 
+	{
+		// initialize the AlarmSystemInterfaceFactory 
+		ACSAlarmSystemInterfaceFactory::init(NULL);
+
+		for(int i = 0; i < numAlarmsToSend; i++)
+		{
+			// push the FaultState using the AlarmSystemInterface previously created
+			ACSAlarmSystemInterfaceFactory::createAndSendAlarm(family, member, code, faultState::ACTIVE_STRING);
 		}
 
 		ACSAlarmSystemInterfaceFactory::done();

@@ -196,16 +196,17 @@ string FaultState::toXML(int amountToIndent)
   */
 void  FaultState::setFamily(const string & faultFamily) {
 	unsigned int pos;
+	string nonConstFaultFamily(faultFamily);
 	do
-        {
-                pos=faultFamily.find(":");
-                if (pos!=string::npos)
-                {
-                        faultFamily.replace(pos,1,"#");
-                }
-        }
-	while(pos!=string::npos);
-	family=faultFamily;
+	{
+		pos = nonConstFaultFamily.find(":");
+		if (pos != string::npos)
+		{
+			nonConstFaultFamily.replace(pos,1,"#");
+		}
+	}
+	while(pos != string::npos);
+	family = nonConstFaultFamily;
 }
 
 /** 
@@ -214,15 +215,16 @@ void  FaultState::setFamily(const string & faultFamily) {
 */
 void  FaultState::setMember(const string & newFaultMember) {
 	unsigned int pos;
+	string nonConstFaultMember(newFaultMember);
 	do 
 	{
-		pos=newFaultMember.find(":");
-		if (pos!=string::npos) 
+		pos = nonConstFaultMember.find(":");
+		if (pos != string::npos) 
 		{
-			newFaultMember.replace(pos,1,"#");
+			nonConstFaultMember.replace(pos,1,"#");
 		}
 	} 
-	while(pos!=string::npos);
-	member=newFaultMember;
+	while(pos != string::npos);
+	member = nonConstFaultMember;
 }
 

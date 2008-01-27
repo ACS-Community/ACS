@@ -33,80 +33,118 @@ static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include "ACSAlarmSystemInterfaceFactory.h"
 #include "FaultState.h"
+#include "asiConfigurationConstants.h"
 #include <logging.h>
 
 using namespace acsalarm;
+using asiConfigurationConstants::ALARM_SOURCE_NAME;
 
-bool* ACSAlarmSystemInterfaceFactory::m_useACSAlarmSystem=NULL;
-maci::Manager_ptr ACSAlarmSystemInterfaceFactory::m_manager=maci::Manager::_nil();
+bool* ACSAlarmSystemInterfaceFactory::m_useACSAlarmSystem = NULL;
+maci::Manager_ptr ACSAlarmSystemInterfaceFactory::m_manager = maci::Manager::_nil();
 AlarmSystemInterfaceFactory * ACSAlarmSystemInterfaceFactory::m_AlarmSystemInterfaceFactory_p = NULL;
-auto_ptr<acsalarm::AlarmSystemInterface> ACSAlarmSystemInterfaceFactory::sharedSource(NULL);
 void* ACSAlarmSystemInterfaceFactory::dllHandle = NULL;
+ACE_Recursive_Thread_Mutex ACSAlarmSystemInterfaceFactory::main_mutex;
+auto_ptr<acsalarm::AlarmSystemInterface> ACSAlarmSystemInterfaceFactory::sharedSource;
 
-void ACSAlarmSystemInterfaceFactory::done() {
-	// TODO: mutual exclusion?
-	if (m_manager!=maci::Manager::_nil()) {
+void ACSAlarmSystemInterfaceFactory::done() 
+{
+	Logging::Logger::LoggerSmartPtr myLoggerSmartPtr = getLogger();
+	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "ACSAlarmSystemInterfaceFactory::done entering");
+
+	ACE_Guard<ACE_Recursive_Thread_Mutex> guard(main_mutex);
+	if (!CORBA::is_nil(m_manager)) {
 		CORBA::release(m_manager);
-		m_manager=maci::Manager::_nil();
+		m_manager = maci::Manager::_nil();
 	}
 	 
 	if (NULL != m_useACSAlarmSystem && !(*m_useACSAlarmSystem) && NULL != m_AlarmSystemInterfaceFactory_p) {
 		m_AlarmSystemInterfaceFactory_p->done();
+		myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "ACSAlarmSystemInterfaceFactory::done deleting alarm system interface ptr");
 		delete m_AlarmSystemInterfaceFactory_p;
 		m_AlarmSystemInterfaceFactory_p = NULL;
 	}
+	if(NULL != sharedSource.get())
+	{
+		// (re)assign the shared source auto_ptr to a null auto_ptr which will force 
+		// the deletion of the allocated memory for the original auto_ptr; this is 
+		// necessary to do prior to the unloading of the DLL so as to avoid a crash at shutdown when
+		// the static shared auto_ptr would then be deleted after DLL is already unloaded, which
+		// is not valid and may cause seg faults.
+		myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "ACSAlarmSystemInterfaceFactory::done nulling out shared source auto_ptr");
+		auto_ptr<acsalarm::AlarmSystemInterface> nulledAutoPtr;
+		sharedSource = nulledAutoPtr;
+	}
 	if(NULL != ACSAlarmSystemInterfaceFactory::dllHandle)
 	{
+		myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "ACSAlarmSystemInterfaceFactory::done closing DLL");
 		dlclose(ACSAlarmSystemInterfaceFactory::dllHandle);
 		ACSAlarmSystemInterfaceFactory::dllHandle = NULL;
 	}
 	if(NULL != m_useACSAlarmSystem) 
 	{
+		myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "ACSAlarmSystemInterfaceFactory::done deleting m_useACSAlarmSystem ptr");
 		delete m_useACSAlarmSystem;
 		m_useACSAlarmSystem=NULL;
 	}
+
+	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "ACSAlarmSystemInterfaceFactory::done exiting");
 }
 
 /**
  * Create a new instance of an alarm system interface without binding it to any source.
- * @return the interface instance.
- * @throws ASIException if the AlarmSystemInterface instance can not be created.
  */
-auto_ptr<acsalarm::AlarmSystemInterface> ACSAlarmSystemInterfaceFactory::createSource() 
+auto_ptr<acsalarm::AlarmSystemInterface> ACSAlarmSystemInterfaceFactory::createSource() throw (acsErrTypeAlarmSourceFactory::ACSASFactoryNotInitedExImpl)
 {
+	Logging::Logger::LoggerSmartPtr myLoggerSmartPtr = getLogger();
+	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "ACSAlarmSystemInterfaceFactory::createSource entering");
+
+	ACE_Guard<ACE_Recursive_Thread_Mutex> guard(main_mutex);
+	auto_ptr<acsalarm::AlarmSystemInterface> retVal;
 	if (m_useACSAlarmSystem == NULL) {
 		throw acsErrTypeAlarmSourceFactory::ACSASFactoryNotInitedExImpl(__FILE__,__LINE__,"ACSAlarmSystemInterfaceFactory::createSource");
 	}
 	if (!(*m_useACSAlarmSystem)) {
-		return m_AlarmSystemInterfaceFactory_p->createSource();
+		retVal = m_AlarmSystemInterfaceFactory_p->createSource();
 	} else {
-		return createSource("UNDEFINED");
+		retVal = createSource("UNDEFINED");
 	}
+
+	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "ACSAlarmSystemInterfaceFactory::createSource exiting");
+	return retVal;
 }
 
 /**
  * Create a new instance of an alarm system interface.
- * @param sourceName the source name.
- * @return the interface instance.
- * @throws ASIException if the AlarmSystemInterface instance can not be created.
  */
-auto_ptr<acsalarm::AlarmSystemInterface> ACSAlarmSystemInterfaceFactory::createSource(string sourceName)
+auto_ptr<acsalarm::AlarmSystemInterface> ACSAlarmSystemInterfaceFactory::createSource(string sourceName) throw (acsErrTypeAlarmSourceFactory::ACSASFactoryNotInitedExImpl)
 {
-	if (m_useACSAlarmSystem==NULL) {
+	Logging::Logger::LoggerSmartPtr myLoggerSmartPtr = getLogger();
+	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "ACSAlarmSystemInterfaceFactory::createSource(string) entering...");
+
+	ACE_Guard<ACE_Recursive_Thread_Mutex> guard(main_mutex);
+	auto_ptr<acsalarm::AlarmSystemInterface> retVal;
+	if (m_useACSAlarmSystem == NULL) {
 		throw acsErrTypeAlarmSourceFactory::ACSASFactoryNotInitedExImpl(__FILE__,__LINE__,"ACSAlarmSystemInterfaceFactory::createSource");
 	}
 	if (!(*m_useACSAlarmSystem)) {
-		return m_AlarmSystemInterfaceFactory_p->createSource(sourceName);
+		retVal = m_AlarmSystemInterfaceFactory_p->createSource(sourceName);
 	} else {
 		ACSAlarmSystemInterfaceProxy * asIfProxyPtr = new ACSAlarmSystemInterfaceProxy(sourceName);
 		auto_ptr<acsalarm::AlarmSystemInterface> asIfAutoPtr(asIfProxyPtr);
-		return asIfAutoPtr;
+		retVal = asIfAutoPtr;
 	}
+
+	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "ACSAlarmSystemInterfaceFactory::createSource(string) exiting");
+	return retVal;
 }
 
-bool ACSAlarmSystemInterfaceFactory::init(maci::Manager_ptr manager) 
+bool ACSAlarmSystemInterfaceFactory::init(maci::Manager_ptr manager) throw (acsErrTypeAlarmSourceFactory::ErrorLoadingCERNDLLExImpl)
 {
-	// TODO - mutual exclusion?
+	Logging::Logger::LoggerSmartPtr myLoggerSmartPtr = getLogger();
+	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "ACSAlarmSystemInterfaceFactory::init() entering");
+
+	ACE_Guard<ACE_Recursive_Thread_Mutex> guard(main_mutex);
+	bool retVal = true;
 	if (manager!=maci::Manager::_nil()) 
 	{
 		m_manager=maci::Manager::_duplicate(manager);
@@ -132,7 +170,6 @@ bool ACSAlarmSystemInterfaceFactory::init(maci::Manager_ptr manager)
 		*m_useACSAlarmSystem=true;
 	}
 	// Print a debug message
-	Logging::Logger::LoggerSmartPtr myLoggerSmartPtr = getLogger();
 	if (*m_useACSAlarmSystem) {
 		myLoggerSmartPtr->log(Logging::Logger::LM_DEBUG, "Using ACS alarm system");
 	} else {
@@ -157,29 +194,20 @@ bool ACSAlarmSystemInterfaceFactory::init(maci::Manager_ptr manager)
 		void * publisherFactoryFunctionPtr = dlsym(ACSAlarmSystemInterfaceFactory::dllHandle, CERN_ALARM_SYSTEM_DLL_FUNCTION_NAME);
 		m_AlarmSystemInterfaceFactory_p = ((AlarmSystemInterfaceFactory*(*)())(publisherFactoryFunctionPtr))();
 		myLoggerSmartPtr->log(Logging::Logger::LM_DEBUG, "ACSAlarmSystemInterfaceFactory::init() successfully loaded DLL");
-		return m_AlarmSystemInterfaceFactory_p->init();
+		retVal = m_AlarmSystemInterfaceFactory_p->init();
 	} 
-	return true;
+	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "ACSAlarmSystemInterfaceFactory::init() exiting");
+	return retVal;
 }
 
-auto_ptr<acsalarm::FaultState>ACSAlarmSystemInterfaceFactory::createFaultState(string family, string member, int code) {
-	if (m_useACSAlarmSystem==NULL) {
-		throw acsErrTypeAlarmSourceFactory::ACSASFactoryNotInitedExImpl(__FILE__,__LINE__,"ACSAlarmSystemInterfaceFactory::createSource");
-	}
-	if (!(*m_useACSAlarmSystem)) {
-		return m_AlarmSystemInterfaceFactory_p->createFaultState(family, member, code);
-	} else {
-		acsalarm::FaultState * asFaultStatePtr = new acsalarm::FaultState(family, member, code);
-		auto_ptr<acsalarm::FaultState> asFaultStateAutoPtr(asFaultStatePtr);
-		return asFaultStateAutoPtr;
-	}
-}
-	
 /**
  * Getter for whether we're using the ACS Alarm system (true) or not (false).
  */
-bool ACSAlarmSystemInterfaceFactory::usingACSAlarmSystem()
+bool ACSAlarmSystemInterfaceFactory::usingACSAlarmSystem() throw (acsErrTypeAlarmSourceFactory::ACSASFactoryNotInitedExImpl)
 { 
+	Logging::Logger::LoggerSmartPtr myLoggerSmartPtr = getLogger();
+	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "ACSAlarmSystemInterfaceFactory::usingACSAlarmSystem() entering");
+	ACE_Guard<ACE_Recursive_Thread_Mutex> guard(main_mutex);
 	bool retVal = true;
 	if(NULL == m_useACSAlarmSystem)
 	{ 
@@ -189,25 +217,84 @@ bool ACSAlarmSystemInterfaceFactory::usingACSAlarmSystem()
 	{
 		retVal = *m_useACSAlarmSystem; 
 	}
+	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "ACSAlarmSystemInterfaceFactory::usingACSAlarmSystem() exiting");
 	return retVal;
 }
 
-auto_ptr<acsalarm::FaultState>ACSAlarmSystemInterfaceFactory::createFaultState() {
+auto_ptr<acsalarm::FaultState>ACSAlarmSystemInterfaceFactory::createFaultState(string family, string member, int code) 
+	throw (acsErrTypeAlarmSourceFactory::ACSASFactoryNotInitedExImpl)
+{
+	Logging::Logger::LoggerSmartPtr myLoggerSmartPtr = getLogger();
+	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "ACSAlarmSystemInterfaceFactory::createFaultState(string, string, int) entering");
+	ACE_Guard<ACE_Recursive_Thread_Mutex> guard(main_mutex);
+	auto_ptr<acsalarm::FaultState> retVal;
 	if (m_useACSAlarmSystem==NULL) {
-		throw acsErrTypeAlarmSourceFactory::ACSASFactoryNotInitedExImpl(__FILE__,__LINE__,"ACSAlarmSystemInterfaceFactory::createSource");
+		throw acsErrTypeAlarmSourceFactory::ACSASFactoryNotInitedExImpl(__FILE__,__LINE__,"ACSAlarmSystemInterfaceFactory::createFaultState(string, string, int)");
 	}
 	if (!(*m_useACSAlarmSystem)) {
-		return m_AlarmSystemInterfaceFactory_p->createFaultState();
+		retVal = m_AlarmSystemInterfaceFactory_p->createFaultState(family, member, code);
+	} else {
+		acsalarm::FaultState * asFaultStatePtr = new acsalarm::FaultState(family, member, code);
+		auto_ptr<acsalarm::FaultState> asFaultStateAutoPtr(asFaultStatePtr);
+		retVal = asFaultStateAutoPtr;
+	}
+	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "ACSAlarmSystemInterfaceFactory::createFaultState(string, string, int) exiting");
+	return retVal;
+}
+	
+auto_ptr<acsalarm::FaultState>ACSAlarmSystemInterfaceFactory::createFaultState() throw (acsErrTypeAlarmSourceFactory::ACSASFactoryNotInitedExImpl)
+{
+	Logging::Logger::LoggerSmartPtr myLoggerSmartPtr = getLogger();
+	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "ACSAlarmSystemInterfaceFactory::createFaultState() entering");
+	ACE_Guard<ACE_Recursive_Thread_Mutex> guard(main_mutex);
+	auto_ptr<acsalarm::FaultState> retVal;
+	if (m_useACSAlarmSystem==NULL) {
+		throw acsErrTypeAlarmSourceFactory::ACSASFactoryNotInitedExImpl(__FILE__,__LINE__,"ACSAlarmSystemInterfaceFactory::createFaultState()");
+	}
+	if (!(*m_useACSAlarmSystem)) {
+		retVal = m_AlarmSystemInterfaceFactory_p->createFaultState();
 	} else {
 		acsalarm::FaultState * asIfProxyPtr = new acsalarm::FaultState();
 		auto_ptr<acsalarm::FaultState> asIfAutoPtr(asIfProxyPtr);
-		return asIfAutoPtr;
+		retVal = asIfAutoPtr;
 	}
+	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "ACSAlarmSystemInterfaceFactory::createFaultState() exiting");
+	return retVal;
 }
 
-void ACSAlarmSystemInterfaceFactory::createAndSendAlarm(string & faultFamily, string & faultMember, 
-	int faultCode, bool active, Properties & faultProperties)
+maci::Manager_ptr ACSAlarmSystemInterfaceFactory::getManager()
+{ 
+	Logging::Logger::LoggerSmartPtr myLoggerSmartPtr = getLogger();
+	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "ACSAlarmSystemInterfaceFactory::getManager() entering/exiting");
+	ACE_Guard<ACE_Recursive_Thread_Mutex> guard(main_mutex);
+	return m_manager; 
+}
+
+/**
+ * Short-hand convenience API to create and send an alarm in a single step.
+ */
+void ACSAlarmSystemInterfaceFactory::createAndSendAlarm(string & faultFamily, string & faultMember, int faultCode, bool active, string sourceName) 
+	throw (acsErrTypeAlarmSourceFactory::ACSASFactoryNotInitedExImpl)
 {
+	Logging::Logger::LoggerSmartPtr myLoggerSmartPtr = getLogger();
+	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "ACSAlarmSystemInterfaceFactory::createAndSendAlarm(string, string, int, bool, string) entering");
+
+	// create a Properties object and configure it, then assign to the FaultState
+	Properties properties;
+
+	ACSAlarmSystemInterfaceFactory::createAndSendAlarm(faultFamily, faultMember, faultCode, active, properties, sourceName);
+	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "ACSAlarmSystemInterfaceFactory::createAndSendAlarm(string, string, int, bool, string) exiting");
+}
+
+/**
+ * Short-hand convenience API to create and send an alarm in a single step.
+ */
+void ACSAlarmSystemInterfaceFactory::createAndSendAlarm(string & faultFamily, string & faultMember, int faultCode, bool active, Properties & faultProperties, string sourceName) 
+	throw (acsErrTypeAlarmSourceFactory::ACSASFactoryNotInitedExImpl)
+{
+	Logging::Logger::LoggerSmartPtr myLoggerSmartPtr = getLogger();
+	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "ACSAlarmSystemInterfaceFactory::createAndSendAlarm(string, string, int, bool, Properties, string) entering");
+
 	// create the FaultState
 	auto_ptr<acsalarm::FaultState> fltstate = ACSAlarmSystemInterfaceFactory::createFaultState(faultFamily, faultMember, faultCode);
 
@@ -228,18 +315,21 @@ void ACSAlarmSystemInterfaceFactory::createAndSendAlarm(string & faultFamily, st
 	auto_ptr<Timestamp> tstampAutoPtr(tstampPtr);
 	fltstate->setUserTimestamp(tstampAutoPtr);
 
-	// create a Properties object and configure it, then assign to the FaultState
+	// create an empty Properties object and assign to the FaultState
 	Properties * propsPtr = new Properties(faultProperties);
 	auto_ptr<Properties> propsAutoPtr(propsPtr);
 	fltstate->setUserProperties(propsAutoPtr);
 
+	ACE_Guard<ACE_Recursive_Thread_Mutex> guard(main_mutex);
 	if(NULL == sharedSource.get())
 	{
-		// TODO: mutual exclusion for this instantiation?
-		sharedSource = ACSAlarmSystemInterfaceFactory::createSource();
+		// Send the fault. We must use the "ALARM_SYSTEM_SOURCES" to match the name defined on CDB
+		myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "ACSAlarmSystemInterfaceFactory::createAndSendAlarm(string, string, int, bool, Properties, string) creating shared source");
+		sharedSource = ACSAlarmSystemInterfaceFactory::createSource(ALARM_SOURCE_NAME);
 	}
+
 	// push the FaultState using the source
 	ACSAlarmSystemInterfaceFactory::sharedSource->push(*fltstate);
+
+	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "ACSAlarmSystemInterfaceFactory::createAndSendAlarm(string, string, int, bool, Properties, string) exiting");
 }
-
-

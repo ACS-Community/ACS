@@ -43,8 +43,11 @@
 #include "acsErrTypeAlarmSourceFactory.h"
 #include <orbsvcs/CosNotifyChannelAdminS.h>
 #include <orbsvcs/CosNotifyCommC.h>
+#include "asiConfigurationConstants.h"
+#include "ace/Task.h"
 
 using acsalarm::AlarmSystemInterface;
+using asiConfigurationConstants::ALARM_SOURCE_NAME;
 
 /**
  * The class to create sources and fault states.
@@ -67,9 +70,8 @@ class ACSAlarmSystemInterfaceFactory
 	// the logic in ACSLaser/laser-source-cpp
 	static void *dllHandle;
 
-	// used for the convenience method createAndSendAlarms, so that it need not create a new source
-	// for each time it is invoked
-	static auto_ptr<AlarmSystemInterface> sharedSource;
+	// a shared source for use by the single-line "createAndSendAlarm" methods
+	static auto_ptr<acsalarm::AlarmSystemInterface> sharedSource;
 
 	// It is true if ACS implementation for sources must be used,  and
 	// false means CERN implementation
@@ -82,25 +84,33 @@ class ACSAlarmSystemInterfaceFactory
 	// Pointer to CERN alarm system object; will remain null if we are not using CERN implementation
 	static AlarmSystemInterfaceFactory * m_AlarmSystemInterfaceFactory_p;
 
+	// used to synchronize access to shared vars
+	static ACE_Recursive_Thread_Mutex main_mutex;
+
 	/** Default constructor.  */
 	ACSAlarmSystemInterfaceFactory();
 	virtual ~ACSAlarmSystemInterfaceFactory();
 	
 	public:
 
-	static maci::Manager_ptr getManager() { return m_manager; }
+	static maci::Manager_ptr getManager();
 
 	/**
 	 * Init the object of the class: must be called before using the other
 	 * methods of this class otherwise an exception will be thrown.
-	 * Return true if the initialization went ok
+	 * @param manager ptr to the acs manager.
+	 * @throw acsErrTypeAlarmSourceFactory::ErrorLoadingCERNDLLExImpl if there was a problem loading the DLL
+	 * @return true if the initialization went ok
 	 */
-	static bool init(maci::Manager_ptr manager);
+	static bool init(maci::Manager_ptr manager) throw (acsErrTypeAlarmSourceFactory::ErrorLoadingCERNDLLExImpl);
 
 	/**
 	 * Getter for whether we're using the ACS Alarm system (true) or not (false).
+	 * @throw ACSASFactoryNotInitedExImpl if the alarm system has not been previously initialized.
+	 * @return boolean indicating whether the ACS alarm system is in use (true) or not (false), where ACS
+	 * alarm system means alarms are sent to the logs, otherwise they are sent to the alarm channel.
 	 */
-	static bool usingACSAlarmSystem();
+	static bool usingACSAlarmSystem() throw (acsErrTypeAlarmSourceFactory::ACSASFactoryNotInitedExImpl);
 		
 	/**
 	 * Release the resources: must be called when finished using the
@@ -111,30 +121,58 @@ class ACSAlarmSystemInterfaceFactory
 	/**
  	 * Create a new instance of an alarm system interface.
 	 * @param sourceName the source name.
+	 * @throw ACSASFactoryNotInitedExImpl if the alarm system has not been previously initialized.
 	 * @return the interface instance.
 	 */
-	static auto_ptr<AlarmSystemInterface> createSource(string sourceName);
+	static auto_ptr<AlarmSystemInterface> createSource(string sourceName) throw (acsErrTypeAlarmSourceFactory::ACSASFactoryNotInitedExImpl);
 		
 	/**
 	 * Create a new instance of an alarm system interface without binding it to any source.
+	 * @throw ACSASFactoryNotInitedExImpl if the alarm system has not been previously initialized.
 	 * @return the interface instance.
 	 */
-	static auto_ptr<AlarmSystemInterface> createSource();
+	static auto_ptr<AlarmSystemInterface> createSource() throw (acsErrTypeAlarmSourceFactory::ACSASFactoryNotInitedExImpl);
 	
 	/**
 	 * Create a fault state with the given family, member and code
+	 * @param family a string indicating the 'family' of the alarm (see alarm system documentation for explanation).
+	 * @param member a string indicating the 'member' of the alarm (see alarm system documentation for explanation).
+	 * @param code an int indicating the 'code' of the alarm (see alarm system documentation for explanation).
+	 * @throw ACSASFactoryNotInitedExImpl if the alarm system has not been previously initialized.
 	 */
-	static auto_ptr<acsalarm::FaultState>createFaultState(string family, string member, int code);
+	static auto_ptr<acsalarm::FaultState>createFaultState(string family, string member, int code) throw (acsErrTypeAlarmSourceFactory::ACSASFactoryNotInitedExImpl);
 	
 	/**
 	 * Create a fault state 
+	 * @throw ACSASFactoryNotInitedExImpl if the alarm system has not been previously initialized.
 	 */
-	static auto_ptr<acsalarm::FaultState>createFaultState();
+	static auto_ptr<acsalarm::FaultState>createFaultState() throw (acsErrTypeAlarmSourceFactory::ACSASFactoryNotInitedExImpl);
 
 	/**
-	 * Experimental: Convenience API for creating/sending an alarm in a single step.
+	 * Convenience API for creating/sending an alarm in a single step, without user defined properties.
+	 * @param family a string indicating the 'family' of the alarm (see alarm system documentation for explanation).
+	 * @param member a string indicating the 'member' of the alarm (see alarm system documentation for explanation).
+	 * @param code an int indicating the 'code' of the alarm (see alarm system documentation for explanation).
+	 * @param active a boolean indicating if the alarm is active (true) or not (false)
+	 * @param sourceName the source name, defaults to ALARM_SOURCE_NAME constant defined in "asiConfigurationConstants.h"
+	 * @throw ACSASFactoryNotInitedExImpl if the alarm system has not been previously initialized.
 	 */
-	static void createAndSendAlarm(string & faultFamily, string & faultMember, int faultCode, bool active, Properties & faultProperties);
+	static void createAndSendAlarm(string & faultFamily, string & faultMember, int faultCode, bool active, string sourceName = ALARM_SOURCE_NAME)
+                          throw (acsErrTypeAlarmSourceFactory::ACSASFactoryNotInitedExImpl);
+
+	/**
+	 * Convenience API for creating/sending an alarm in a single step, with user-defined properties.
+	 * @param family a string indicating the 'family' of the alarm (see alarm system documentation for explanation).
+	 * @param member a string indicating the 'member' of the alarm (see alarm system documentation for explanation).
+	 * @param code an int indicating the 'code' of the alarm (see alarm system documentation for explanation).
+	 * @param active a boolean indicating if the alarm is active (true) or not (false)
+	 * @param faultProperties user-defined properties associated with the alarm.
+	 * @param sourceName the source name, defaults to ALARM_SOURCE_NAME constant defined in "asiConfigurationConstants.h"
+	 * @throw ACSASFactoryNotInitedExImpl if the alarm system has not been previously initialized.
+	 */
+	static void createAndSendAlarm(string & faultFamily, string & faultMember, int faultCode, bool active, Properties & faultProperties, 
+		string sourceName = ALARM_SOURCE_NAME) throw (acsErrTypeAlarmSourceFactory::ACSASFactoryNotInitedExImpl);
+
 };
 
 #endif /*!ACS_ALARM_SYSTEM_INTERFACE_FACTORY_H*/
