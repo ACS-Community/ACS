@@ -49,10 +49,10 @@ import com.cosylab.logging.client.cache.LogCache;
 import com.cosylab.logging.client.cache.LogCacheException;
 import com.cosylab.logging.engine.ACS.ACSLogParser;
 import com.cosylab.logging.engine.ACS.ACSLogParserDOM;
+import com.cosylab.logging.engine.ACS.ACSRemoteErrorListener;
 import com.cosylab.logging.engine.ACS.ACSRemoteLogListener;
 import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.engine.log.LogTypeHelper;
-import com.cosylab.logging.settings.ErrorLogDialog;
 import com.cosylab.logging.stats.ResourceChecker;
 
 
@@ -290,21 +290,55 @@ public class IOLogsHelper extends Thread  {
 		public final static int TERMINATE_THREAD_ACTION=2;
 		
 		// The type of the action to perform
-		private int type;
+		public final int type;
 		
 		// The buffered reader to read the logs
-		private BufferedReader inFile;
+		public final BufferedReader inFile;
 		
 		// The buffered writer to write the logs to save into
-		private BufferedWriter outFile;
+		public final BufferedWriter outFile;
 		
 		// The cache with all the logs
-		private LogCache logsCache; 
+		public final LogCache logsCache; 
 		
 		/**
 		 * The listener i.e. the callback to push the loaded logs in 
 		 */
-		private ACSRemoteLogListener logListener;
+		public final ACSRemoteLogListener logListener;
+		
+		/**
+		 * The listener for errors parsing logs
+		 * 
+		 */
+		public final ACSRemoteErrorListener errorListener;
+		
+		/**
+		 * The constructor with all arguments.
+		 * 
+		 * Each overloaded public constructor calls this method with the right 
+		 * parameters 
+		 * 
+		 * @param type The type of the action
+		 * @param inFile The file to read logs from
+		 * @param outF The file to write logs into
+		 * @param listener The listener for each read log
+		 * @param errorListener The listener for errors reading logs
+		 * @param theCache The cache
+		 */
+		private IOAction(
+				int type,
+				BufferedReader inFile, 
+				BufferedWriter outF,
+				ACSRemoteLogListener listener, 
+				ACSRemoteErrorListener errorListener, 
+				LogCache theCache) {
+			this.type=type;
+			this.logsCache=theCache;
+			this.inFile=inFile;
+			this.logListener=listener;
+			this.errorListener=errorListener;
+			this.outFile=outF;
+		}
 		
 		/**
 		 * Build an action for asynchronous load operations
@@ -314,11 +348,8 @@ public class IOLogsHelper extends Thread  {
 		 * @param theCache The cache of logs (used to shown values in the 
 		 *                 progress dialog)
 		 */
-		public IOAction(BufferedReader inFile, ACSRemoteLogListener listener, LogCache theCache) {
-			this.logsCache=theCache;
-			this.inFile=inFile;
-			this.logListener=listener;
-			this.type=IOAction.LOAD_ACTION;
+		public IOAction(BufferedReader inFile, ACSRemoteLogListener listener, ACSRemoteErrorListener errorListener, LogCache theCache) {
+			this(IOAction.LOAD_ACTION,inFile,(BufferedWriter)null,listener,errorListener,theCache);
 		}
 		
 		/**
@@ -327,9 +358,7 @@ public class IOLogsHelper extends Thread  {
 		 * @param outF The buffered file to save the logs into
 		 */
 		public IOAction(BufferedWriter outF, LogCache theCache) {
-			this.type=IOAction.SAVE_ACTION;
-			this.logsCache = theCache;
-			this.outFile=outF;
+			this(IOAction.SAVE_ACTION,(BufferedReader)null,outF,(ACSRemoteLogListener)null,(ACSRemoteErrorListener)null,theCache);
 		}
 		
 		/** 
@@ -339,49 +368,7 @@ public class IOLogsHelper extends Thread  {
 		 *
 		 */
 		public IOAction() {
-			this.type=IOAction.TERMINATE_THREAD_ACTION;
-		}
-		
-		/**
-		 * Getter method 
-		 * @return The input file
-		 */
-		public BufferedReader getInputFile() {
-			return inFile;
-		}
-		
-		/**
-		 * Getter method 
-		 * @return The output file
-		 */
-		public BufferedWriter getOutputFile() {
-			return outFile;
-		}
-		
-		/**
-		 * Getter method
-		 *  
-		 * @return The cache of logs
-		 */
-		public LogCache getLogsCache() {
-			return logsCache;
-		}
-		
-		/**
-		 * Getter method
-		 *  
-		 * @return The listener to push loaded logs in
-		 */
-		public ACSRemoteLogListener getLogListener() {
-			return logListener;
-		}
-		
-		/**
-		 * Getter method 
-		 * @return The type of the action requested
-		 */
-		public int getActionType() {
-			return type;
+			this(IOAction.TERMINATE_THREAD_ACTION,(BufferedReader)null,(BufferedWriter)null,(ACSRemoteLogListener)null,(ACSRemoteErrorListener)null,(LogCache)null);
 		}
 	}
 	
@@ -561,8 +548,8 @@ public class IOLogsHelper extends Thread  {
 	 * @param logListener The callback for each new log read from the IO
 	 * @param cache The cache of logs
 	 */
-	private void loadLogs(BufferedReader br,ACSRemoteLogListener logListener, LogCache cache) {
-		if (br==null || logListener==null) {
+	private void loadLogs(BufferedReader br,ACSRemoteLogListener logListener, ACSRemoteErrorListener errorListener, LogCache cache) {
+		if (br==null || logListener==null|| errorListener==null) {
 			throw new IllegalArgumentException("Null parameter received!");
 		}
 		
@@ -625,7 +612,7 @@ public class IOLogsHelper extends Thread  {
 					}
 					if (buffer.hasClosingTag(tag)) {
 						//System.out.println("\tClosing tag found (buffer ["+buffer.toString()+")");
-						injectLog(buffer.toString(),logListener);
+						injectLog(buffer.toString(),logListener,errorListener);
 						buffer.clear();
 						logRecordsRead++;
 //							if (logRecordsRead % 100 == 0) {
@@ -678,6 +665,7 @@ public class IOLogsHelper extends Thread  {
 	public void loadLogs (
 			BufferedReader reader,
 			ACSRemoteLogListener listener,
+			ACSRemoteErrorListener errorListener,
 			LogCache cache,
 			boolean showProgress,
 			int progressRange) {
@@ -686,8 +674,8 @@ public class IOLogsHelper extends Thread  {
 			throw new IllegalStateException("Unable to execute asynchronous operation");
 		}
 		// Check the params
-		if (listener==null || reader==null) {
-			throw new IllegalArgumentException("Engine and Reader can't be null");
+		if (listener==null || reader==null || errorListener==null) {
+			throw new IllegalArgumentException("Listseners and Reader can't be null");
 		}
 		
 		IOOperationInProgress=true;
@@ -709,7 +697,7 @@ public class IOLogsHelper extends Thread  {
 		}
 		
 		// Add an action in the queue
-		IOAction action = new IOAction(reader,listener,cache);
+		IOAction action = new IOAction(reader,listener,errorListener,cache);
 		synchronized(actions) {
 			actions.add(action);
 		}
@@ -726,7 +714,10 @@ public class IOLogsHelper extends Thread  {
 	 * @param logStr The string representation of the log
 	 * @param logListener The listener i.e. the callback for each new log to add
 	 */
-	private void injectLog(String logStr, ACSRemoteLogListener logListener) {
+	private void injectLog(String logStr, ACSRemoteLogListener logListener, ACSRemoteErrorListener errorListener) {
+		if (errorListener==null || logListener==null) {
+			throw new IllegalArgumentException("Listeners can't be null");
+		}
 		ILogEntry log=null;
 		try {
 			if (parser == null) {
@@ -734,13 +725,9 @@ public class IOLogsHelper extends Thread  {
 			}
 			log = parser.parse(logStr.trim());
 		} catch (Exception e) {
+			errorListener.errorReceived(logStr.trim());
 			System.err.println("Exception parsing a log: "+e.getMessage());
-			System.out.println("Log Str: ["+logStr+"]");
-			//JOptionPane.showMessageDialog(null, formatErrorMsg(e.getMessage(),logStr),"Error parsing a log!",JOptionPane.ERROR_MESSAGE);
-			StringBuilder strBuilder = new StringBuilder("\nError parsing the following Log:\n");
-			strBuilder.append(formatErrorMsg(logStr));
-			strBuilder.append("\n");
-			ErrorLogDialog.getErrorLogDlg(true).appendText(strBuilder.toString());
+			e.printStackTrace(System.err);
 			return;
 		}
 		logListener.logEntryReceived(log);
@@ -842,9 +829,9 @@ public class IOLogsHelper extends Thread  {
 				synchronized(actions) {
 					action = actions.removeFirst();
 				}
-				switch (action.getActionType()) {
+				switch (action.type) {
 					case IOAction.LOAD_ACTION: {
-						loadLogs(action.getInputFile(),action.getLogListener(),action.getLogsCache());
+						loadLogs(action.inFile,action.logListener,action.errorListener,action.logsCache);
 						break;
 					}
 					case IOAction.TERMINATE_THREAD_ACTION: {
@@ -852,7 +839,7 @@ public class IOLogsHelper extends Thread  {
 						return;
 					}
 					case IOAction.SAVE_ACTION: {
-						saveLogs(action.getOutputFile(),action.getLogsCache());
+						saveLogs(action.outFile,action.logsCache);
 						break;
 					}
 				}
