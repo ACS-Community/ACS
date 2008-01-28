@@ -31,10 +31,10 @@ import javax.swing.text.PlainDocument;
  * The dialog stores errors till maxLength chars is reached. If the log exceeds that number,
  * they are automatically flushed in ACS_TMP.
  * 
- * The dimension defaults to ERROR_LOG_DEFAULT_SIZE and can be changed seeting
+ * The dimension defaults to ERROR_LOG_DEFAULT_SIZE and can be changed setting
  * the ERRORLOG_SIZE_PROP_NAME property.
  * 
- * The dialog is instantiated only once. Its content can be saved and cleared.
+ * The content of the dialog can be saved and cleared.
  * 
  * The dimension of the file on disk can grows too much.
  * 
@@ -83,8 +83,6 @@ public class ErrorLogDialog extends JDialog implements ActionListener {
 	private File tmpFile = null;
 	private FileOutputStream outF=null;
 	
-	private static ErrorLogDialog instance =null;
-
 	/**
 	 * Constructor
 	 * 
@@ -92,14 +90,14 @@ public class ErrorLogDialog extends JDialog implements ActionListener {
 	 * @param title The title
 	 * @param modal Modal type
 	 */
-	private ErrorLogDialog(Frame owner, String title, boolean modal) {
+	public ErrorLogDialog(Frame owner, String title, boolean modal) {
 		super(owner, title, modal);
 		this.setDefaultCloseOperation(HIDE_ON_CLOSE);
 		initGUI();
 		pack();
 		maxLength = Long.getLong(ERRORLOG_SIZE_PROP_NAME, ERROR_LOG_DEFAULT_SIZE);
 		System.out.println("Max length of in-memory error log "+maxLength);
-		setVisible(true);
+		setVisible(false);
 		toFront();
 	}
 	
@@ -388,36 +386,4 @@ public class ErrorLogDialog extends JDialog implements ActionListener {
 		};
 		SwingUtilities.invokeLater(ratio);
 	}
-	
-	/**
-	 * Create an instance of the erro dialog singleton
-	 * 
-	 * @param wait Wait the creation of the dialog before returning
-	 * @return A reference to the Error log dialog
-	 */
-	public synchronized static ErrorLogDialog getErrorLogDlg(boolean wait) {
-		// The dialog is created using the SwingUtilities.invokeAndWait
-		// It helps avoiding deadlocks
-		if (instance==null) {
-			Runnable createObj = new Runnable() {
-				public void run() {
-					ErrorLogDialog.instance = new ErrorLogDialog(null,"Error log",false);
-				}
-			};
-			try {
-				if (wait) {
-					SwingUtilities.invokeAndWait(createObj);
-				} else {
-					SwingUtilities.invokeLater(createObj);
-				}
-			} catch (Throwable t) {
-				System.out.println("Error creating the dialog: "+t.getMessage());
-				t.printStackTrace();
-				return null;
-			}
-		}
-
-		return instance;
-	}
-	
 }
