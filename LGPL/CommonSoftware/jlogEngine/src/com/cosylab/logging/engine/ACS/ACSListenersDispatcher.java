@@ -27,7 +27,9 @@ import java.util.Vector;
 import com.cosylab.logging.engine.log.ILogEntry;
 
 /**
- * Dispatches messages to listeners
+ * Dispatches messages to listeners.
+ * 
+ * At least one error listener must be present.
  * 
  * @author acaproni
  *
@@ -39,19 +41,27 @@ public class ACSListenersDispatcher {
 	private Vector<ACSRemoteLogListener> logListeners = new Vector<ACSRemoteLogListener>();
 	// The number of listeners (it is the same of listeners.size() but It avoids
 	// executing a method)
-	private int logListenersNum=0;
+	private volatile int logListenersNum=0;
 	
 	/**
 	 * The listeners of the status of the connection and report messages
 	 */
 	private Vector<ACSLogConnectionListener> connectionListeners = new Vector<ACSLogConnectionListener>();
-	private int connListenersNum=0;
+	private volatile int connListenersNum=0;
 	
 	/**
 	 * The listeners of the XML strings representing a log
 	 */
 	private Vector<ACSRemoteRawLogListener> rawLogListeners = new Vector<ACSRemoteRawLogListener>();
-	private int rawLogListenersNum=0;
+	private volatile int rawLogListenersNum=0;
+	
+	/**
+	 * The listeners for the errors generated when a generating logs (parsing an XML or building a log
+	 * from a cache string)
+	 * 
+	 */
+	private Vector<ACSRemoteErrorListener> errorListeners = new Vector<ACSRemoteErrorListener>();
+	private volatile int errorListenersNum=0;
 	
 	/**
 	 * Add a log listener
@@ -65,6 +75,21 @@ public class ACSListenersDispatcher {
 		synchronized(logListeners) {
 			logListeners.add(listener);
 			logListenersNum=logListeners.size();
+		}
+	}
+	
+	/**
+	 * Add an error listener
+	 * 
+	 * @param listener The listener to add
+	 */
+	public void addErrorListener(ACSRemoteErrorListener listener) {
+		if (listener==null) {
+			throw new IllegalArgumentException("The error listener can't be null");
+		}
+		synchronized(errorListeners) {
+			errorListeners.add(listener);
+			errorListenersNum=errorListeners.size();
 		}
 	}
 	
@@ -109,6 +134,27 @@ public class ACSListenersDispatcher {
 				ACSLogConnectionListener listener = connectionListeners.get(t);
 				if (listener!=null) {
 					listener.reportStatus(message);
+				}
+			}
+		}
+	}
+	
+	/**
+	 * Notify the listener that an error happened parsing a log.
+	 * If there are no listeners then prints a message in the stderr
+	 * 
+	 * @param error The string that generated the error
+	 */
+	public void publishError(String error){
+		synchronized(errorListeners) {
+			if (errorListeners==null || errorListeners.size()==0) {
+				StringBuilder str = new StringBuilder("Error parsing the following log: \n");
+				str.append(error);
+				str. append("\n The log has been lost.");
+				System.err.println(str.toString());
+			} else {
+				for (ACSRemoteErrorListener errorListener: errorListeners) {
+						errorListener.errorReceived(error);
 				}
 			}
 		}
@@ -229,6 +275,25 @@ public class ACSListenersDispatcher {
 		synchronized(logListeners) {
 			ret=logListeners.remove(listener);
 			logListenersNum=logListeners.size();
+		}
+		return ret;
+	}
+	
+	/**
+	 * Remove an error listener.
+	 * 
+	 * @param listener The listener to remove
+	 * @return true if the listener has been effectively removed
+	 * 
+	 */
+	public boolean removeErrorListener(ACSRemoteErrorListener listener) {
+		if (listener==null) {
+			throw new IllegalArgumentException("Invalid null ACSRemoteErrorListener");
+		}
+		boolean ret=false;
+		synchronized(errorListeners) {
+			ret=errorListeners.remove(listener);
+			errorListenersNum=errorListeners.size();
 		}
 		return ret;
 	}
