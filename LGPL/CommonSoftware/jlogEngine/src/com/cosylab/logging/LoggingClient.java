@@ -1425,7 +1425,7 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 	public void errorReceived(String xml) {
 		StringBuilder str = new StringBuilder("Error parsing the following log: \n");
 		str.append(xml);
-		str. append("\n The log has been lost.");
+		str. append("\n The log has been lost.\n\n");
 		errorDialog.appendText(str.toString());
 	}
 }
