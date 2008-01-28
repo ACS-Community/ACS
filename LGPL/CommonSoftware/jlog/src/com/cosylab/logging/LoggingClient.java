@@ -1069,6 +1069,7 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 				engine = new LCEngine();
 				engine.addLogConnectionListener(this);
 				engine.addLogListener(this);
+				engine.addLogErrorListener(this);
 
 			}
 			catch (java.lang.Throwable ivjExc)
