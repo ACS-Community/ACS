@@ -19,7 +19,7 @@
 
 /** 
  * @author  acaproni   
- * @version $Id: ACSLogRetrieval.java,v 1.22 2008/01/22 17:34:48 hsommer Exp $
+ * @version $Id: ACSLogRetrieval.java,v 1.23 2008/01/28 10:56:29 acaproni Exp $
  * @since    
  */
 
@@ -96,6 +96,7 @@ public class ACSLogRetrieval extends Thread {
 	 * Constructor
 	 * 
 	 * @param listenersDispatcher The object to send messages to the listeners
+	 *                            Can't be null
 	 * @param binFormat true if the lags are binary, 
 	 *                  false if XML format is used 
 	 */
@@ -103,6 +104,9 @@ public class ACSLogRetrieval extends Thread {
 			ACSListenersDispatcher listenersDispatcher,
 			boolean binFormat) {
 		super("ACSLogRetrieval");
+		if (listenersDispatcher==null) {
+			throw new IllegalArgumentException("The ACSListenersDispatcher can't be null");
+		}
 		this.listenersDispatcher=listenersDispatcher;
 		this.binaryFormat=binFormat;
 		initialize();
@@ -259,12 +263,10 @@ public class ACSLogRetrieval extends Thread {
 						log = parser.parse(tempStr);
 						listenersDispatcher.publishLog(log);
 					} catch (Exception e) {
-						StringBuilder strB = new StringBuilder("\nException occurred while dispatching the XML log.\n");
-						strB.append("This log has been lost: "+tempStr);
-						ErrorLogDialog.getErrorLogDlg(true).appendText(strB.toString());
-						listenersDispatcher.publishReport(strB.toString());
-						System.err.println("error parsing a log "+e.getMessage());
-						e.printStackTrace();
+						listenersDispatcher.publishError(tempStr);
+						listenersDispatcher.publishReport(tempStr);
+						System.err.println("Exception parsing a log: "+e.getMessage());
+						e.printStackTrace(System.err);
 						continue;
 					}
 				} else {
@@ -274,12 +276,10 @@ public class ACSLogRetrieval extends Thread {
 						listenersDispatcher.publishRawLog(xmlStr);
 						listenersDispatcher.publishLog(log);
 					} catch (Exception e) {
-						StringBuilder strB = new StringBuilder("\nException occurred while dispatching the XML log.\n");
-						strB.append("This log has been lost: "+tempStr);
-						ErrorLogDialog.getErrorLogDlg(true).appendText(strB.toString());
-						listenersDispatcher.publishReport(strB.toString());
-						System.err.println("error parsing a log "+e.getMessage());
-						e.printStackTrace();
+						listenersDispatcher.publishError(tempStr);
+						listenersDispatcher.publishReport(tempStr);
+						System.err.println("Exception parsing a log: "+e.getMessage());
+						e.printStackTrace(System.err);
 						continue;
 					}
 				}

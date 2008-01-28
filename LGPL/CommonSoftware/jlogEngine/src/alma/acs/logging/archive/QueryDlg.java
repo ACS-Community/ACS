@@ -51,6 +51,7 @@ import alma.acs.logging.dialogs.LoadSwitchesPanel;
 import com.cosylab.logging.LoggingClient;
 import com.cosylab.logging.engine.ACS.ACSLogParser;
 import com.cosylab.logging.engine.ACS.ACSLogParserDOM;
+import com.cosylab.logging.engine.ACS.ACSRemoteErrorListener;
 import com.cosylab.logging.engine.ACS.ACSRemoteLogListener;
 import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.engine.log.LogTypeHelper;
@@ -67,6 +68,9 @@ public class QueryDlg extends JDialog implements ActionListener {
 	
 	//	The listener for the logs read from the DB
 	private ACSRemoteLogListener logListener;
+	
+	// The listener for errors parsing logs
+	private ACSRemoteErrorListener errorListener;
 	
 	private JButton submitBtn;
 	private JButton doneBtn;
@@ -144,12 +148,7 @@ public class QueryDlg extends JDialog implements ActionListener {
 				try {
 					logEntry = parser.parse(str);
 				} catch (Exception e) {
-					System.err.println("Exception parsing a log: "+e.getMessage());
-					System.out.println("Log Str: ["+str+"]");
-					StringBuilder strBuilder = new StringBuilder("\nError parsing the following Log:\n");
-					strBuilder.append(formatErrorMsg(str));
-					strBuilder.append("\n");
-					ErrorLogDialog.getErrorLogDlg(true).appendText(strBuilder.toString());
+					errorListener.errorReceived(str);
 					continue;
 				}
 				logListener.logEntryReceived(logEntry);
@@ -186,12 +185,19 @@ public class QueryDlg extends JDialog implements ActionListener {
 	}
 
 	/**
-	 * Empty constructor
+	 * Constructor
 	 */
-	public QueryDlg(ArchiveConnectionManager archiveConn, ACSRemoteLogListener listener, LoggingClient client) {
+	public QueryDlg(
+			ArchiveConnectionManager archiveConn, 
+			ACSRemoteLogListener listener,
+			ACSRemoteErrorListener errorListener,
+			LoggingClient client) {
 		super();
 		if (listener==null) {
 			throw new IllegalArgumentException("Invalid null listener!");
+		}
+		if (errorListener==null) {
+			throw new IllegalArgumentException("Invalid null error listener!");
 		}
 		if (client==null) {
 			throw new IllegalArgumentException("Invalid null LoggingClient!");
@@ -207,7 +213,8 @@ public class QueryDlg extends JDialog implements ActionListener {
 			pce.printStackTrace();
 			parser=null;
 		}
-		logListener=listener;
+		this.logListener=listener;
+		this.errorListener=errorListener;
 		setTitle("Load from database");
 		archive = archiveConn;
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);

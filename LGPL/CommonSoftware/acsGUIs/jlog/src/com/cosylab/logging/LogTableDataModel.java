@@ -498,7 +498,7 @@ public class LogTableDataModel extends AbstractTableModel implements Runnable
 			isSuspended = true;
 			clearAll();
 
-			getIOHelper().loadLogs(in, loggingClient, allLogs, true, 0);
+			getIOHelper().loadLogs(in, loggingClient, loggingClient, allLogs, true, 0);
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			JOptionPane.showInternalMessageDialog(null, "Exception reading "
@@ -549,7 +549,7 @@ public class LogTableDataModel extends AbstractTableModel implements Runnable
 			System.err.println("File not found: "+fileName);
 			return;
 		}
-		getIOHelper().loadLogs(br,loggingClient,allLogs,true,len);
+		getIOHelper().loadLogs(br,loggingClient,loggingClient,allLogs,true,len);
 		
 	}
 

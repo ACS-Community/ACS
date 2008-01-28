@@ -53,6 +53,7 @@ import alma.acs.logging.preferences.UserPreferences;
 
 import com.cosylab.gui.components.r2.SmartTextArea;
 import com.cosylab.logging.client.DetailedLogTable;
+import com.cosylab.logging.engine.ACS.ACSRemoteErrorListener;
 import com.cosylab.logging.engine.ACS.ACSRemoteLogListener;
 import com.cosylab.logging.engine.ACS.ACSLogConnectionListener;
 import com.cosylab.logging.engine.ACS.LCEngine;
@@ -97,7 +98,7 @@ import com.cosylab.logging.stats.StatsDlg;
  *  - by LogFrame 
  *  - as an EXEC plugin
  */
-public class LoggingClient extends JRootPane implements ACSRemoteLogListener, ACSLogConnectionListener
+public class LoggingClient extends JRootPane implements ACSRemoteLogListener, ACSLogConnectionListener, ACSRemoteErrorListener
 {
 	
 	private ArchiveConnectionManager archive;
@@ -132,7 +133,7 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 
 	private JPanel ivjJFrameContentPane = null;
     
- 
+	private ErrorLogDialog errorDialog = new ErrorLogDialog(null,"jlog: Error log", false);
     
     // The progress bar for long time operations
     private JProgressBar progressBar = new JProgressBar(JProgressBar.HORIZONTAL);
@@ -195,7 +196,7 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
             	getLCModel1().saveFile();
             } else if (e.getSource() == menuBar.getLoadDBMenuItem()) {
             	if (archive.getDBStatus()==ArchiveConnectionManager.DATABASE_OK) {
-            		QueryDlg dlg = new QueryDlg(archive,LoggingClient.this,LoggingClient.this);
+            		QueryDlg dlg = new QueryDlg(archive,LoggingClient.this,LoggingClient.this,LoggingClient.this);
             		dlg.setVisible(true);
             	}
             } else if (e.getSource() == menuBar.getClearLogsMenuItem() || e.getSource()==toolBar.getClearLogsBtn()) {
@@ -240,9 +241,8 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
             } else if (e.getSource()==menuBar.getStatisticsMenuItem()) {
             	// Show the statistics dialog
             	StatsDlg statsDlg = new StatsDlg(LoggingClient.this); 
-            } else if (e.getSource()==menuBar.getViewErrorLogMenuItem()) {
-            	if (ErrorLogDialog.getErrorLogDlg(false)!=null) 
-            		ErrorLogDialog.getErrorLogDlg(false).setVisible(true);
+            } else if (e.getSource()==menuBar.getViewErrorLogMenuItem()) { 
+            		errorDialog.setVisible(true);
             } else if (e.getSource()==menuBar.getViewStatusAreaMenuItem()) {
             	getStatusAreaPanel().setVisible(menuBar.getViewStatusAreaMenuItem().getState());
             	if (menuBar.getViewStatusAreaMenuItem().getState()) {
@@ -1277,7 +1277,10 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
      * @see com.cosylab.logging.engine.ACS.ACSRemoteLogListener
      */
     public void reportStatus(String status) {
-    	getStatusArea().append(status+"\n");
+    	StringBuilder str = new StringBuilder("Error parsing the following log: \n");
+		str.append(status);
+		str. append("\n The log has been lost.\n");
+    	getStatusArea().append(str.toString());
     }
     
    /**
@@ -1413,6 +1416,16 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 	public void enableFiltersWidgets(boolean enable) {
 		toolBar.getFiltersBtn().setEnabled(enable);
 		menuBar.getFiltersMenuItem().setEnabled(enable);
+	}
+	
+	/**
+	 * @see ACSRemoteErrorListener
+	 */
+	public void errorReceived(String xml) {
+		StringBuilder str = new StringBuilder("Error parsing the following log: \n");
+		str.append(xml);
+		str. append("\n The log has been lost.");
+		errorDialog.appendText(str.toString());
 	}
 }
 
