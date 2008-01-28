@@ -387,6 +387,8 @@ public class LCEngine {
 	 * Add a log listener
 	 * 
 	 * @param listener The listener to add
+	 * 
+	 * @see ACSRemoteLogListener
 	 */
 	public void addLogListener(ACSRemoteLogListener listener) {
 		listenersDispatcher.addLogListener(listener);
@@ -396,15 +398,31 @@ public class LCEngine {
 	 * Add a RAW log listener
 	 * 
 	 * @param listener The listener to add
+	 * 
+	 * @see ACSRemoteRawLogListener
 	 */
 	public void addRawLogListener(ACSRemoteRawLogListener listener) {
 		listenersDispatcher.addRawLogListener(listener);
 	}
 	
 	/**
-	 * Add a RAW log listener
+	 * Add an error listener
+	 * 
+	 * @param listener The error listener to add
+	 * 
+	 * @see ACSRemoteErrorListener
+	 */
+	public void addLogErrorListener(ACSRemoteErrorListener listener) {
+		listenersDispatcher.addErrorListener(listener);
+	}
+	
+	/**
+	 * Add a connection listener
 	 * 
 	 * @param listener The listener to add
+	 * 
+	 * @see ACSLogConnectionListener
+	 * 
 	 */
 	public void addLogConnectionListener(ACSLogConnectionListener listener) {
 		listenersDispatcher.addLogConnectionListener(listener);
