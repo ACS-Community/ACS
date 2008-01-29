@@ -52,11 +52,7 @@ void ACSAlarmSystemInterfaceFactory::done()
 	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "ACSAlarmSystemInterfaceFactory::done entering");
 
 	ACE_Guard<ACE_Recursive_Thread_Mutex> guard(main_mutex);
-	if (!CORBA::is_nil(m_manager)) {
-		CORBA::release(m_manager);
-		m_manager = maci::Manager::_nil();
-	}
-	 
+
 	if (NULL != m_useACSAlarmSystem && !(*m_useACSAlarmSystem) && NULL != m_AlarmSystemInterfaceFactory_p) {
 		m_AlarmSystemInterfaceFactory_p->done();
 		myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "ACSAlarmSystemInterfaceFactory::done deleting alarm system interface ptr");
@@ -65,14 +61,9 @@ void ACSAlarmSystemInterfaceFactory::done()
 	}
 	if(NULL != sharedSource.get())
 	{
-		// (re)assign the shared source auto_ptr to a null auto_ptr which will force 
-		// the deletion of the allocated memory for the original auto_ptr; this is 
-		// necessary to do prior to the unloading of the DLL so as to avoid a crash at shutdown when
-		// the static shared auto_ptr would then be deleted after DLL is already unloaded, which
-		// is not valid and may cause seg faults.
+		// force the deletion of the allocated memory for the shared source auto_ptr
 		myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "ACSAlarmSystemInterfaceFactory::done nulling out shared source auto_ptr");
-		auto_ptr<acsalarm::AlarmSystemInterface> nulledAutoPtr;
-		sharedSource = nulledAutoPtr;
+		sharedSource.reset();
 	}
 	if(NULL != ACSAlarmSystemInterfaceFactory::dllHandle)
 	{
@@ -84,9 +75,14 @@ void ACSAlarmSystemInterfaceFactory::done()
 	{
 		myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "ACSAlarmSystemInterfaceFactory::done deleting m_useACSAlarmSystem ptr");
 		delete m_useACSAlarmSystem;
-		m_useACSAlarmSystem=NULL;
+		m_useACSAlarmSystem = NULL;
 	}
-
+	if (!CORBA::is_nil(m_manager)) {
+		CORBA::release(m_manager);
+		m_manager = maci::Manager::_nil();
+		myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "ACSAlarmSystemInterfaceFactory::done nilling manager reference");
+	}
+	 
 	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "ACSAlarmSystemInterfaceFactory::done exiting");
 }
 
@@ -98,7 +94,6 @@ auto_ptr<acsalarm::AlarmSystemInterface> ACSAlarmSystemInterfaceFactory::createS
 	Logging::Logger::LoggerSmartPtr myLoggerSmartPtr = getLogger();
 	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "ACSAlarmSystemInterfaceFactory::createSource entering");
 
-	ACE_Guard<ACE_Recursive_Thread_Mutex> guard(main_mutex);
 	auto_ptr<acsalarm::AlarmSystemInterface> retVal;
 	if (m_useACSAlarmSystem == NULL) {
 		throw acsErrTypeAlarmSourceFactory::ACSASFactoryNotInitedExImpl(__FILE__,__LINE__,"ACSAlarmSystemInterfaceFactory::createSource");
@@ -121,7 +116,6 @@ auto_ptr<acsalarm::AlarmSystemInterface> ACSAlarmSystemInterfaceFactory::createS
 	Logging::Logger::LoggerSmartPtr myLoggerSmartPtr = getLogger();
 	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "ACSAlarmSystemInterfaceFactory::createSource(string) entering...");
 
-	ACE_Guard<ACE_Recursive_Thread_Mutex> guard(main_mutex);
 	auto_ptr<acsalarm::AlarmSystemInterface> retVal;
 	if (m_useACSAlarmSystem == NULL) {
 		throw acsErrTypeAlarmSourceFactory::ACSASFactoryNotInitedExImpl(__FILE__,__LINE__,"ACSAlarmSystemInterfaceFactory::createSource");
@@ -129,9 +123,7 @@ auto_ptr<acsalarm::AlarmSystemInterface> ACSAlarmSystemInterfaceFactory::createS
 	if (!(*m_useACSAlarmSystem)) {
 		retVal = m_AlarmSystemInterfaceFactory_p->createSource(sourceName);
 	} else {
-		ACSAlarmSystemInterfaceProxy * asIfProxyPtr = new ACSAlarmSystemInterfaceProxy(sourceName);
-		auto_ptr<acsalarm::AlarmSystemInterface> asIfAutoPtr(asIfProxyPtr);
-		retVal = asIfAutoPtr;
+		retVal.reset(new ACSAlarmSystemInterfaceProxy(sourceName));
 	}
 
 	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "ACSAlarmSystemInterfaceFactory::createSource(string) exiting");
@@ -207,7 +199,6 @@ bool ACSAlarmSystemInterfaceFactory::usingACSAlarmSystem() throw (acsErrTypeAlar
 { 
 	Logging::Logger::LoggerSmartPtr myLoggerSmartPtr = getLogger();
 	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "ACSAlarmSystemInterfaceFactory::usingACSAlarmSystem() entering");
-	ACE_Guard<ACE_Recursive_Thread_Mutex> guard(main_mutex);
 	bool retVal = true;
 	if(NULL == m_useACSAlarmSystem)
 	{ 
@@ -226,7 +217,6 @@ auto_ptr<acsalarm::FaultState>ACSAlarmSystemInterfaceFactory::createFaultState(s
 {
 	Logging::Logger::LoggerSmartPtr myLoggerSmartPtr = getLogger();
 	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "ACSAlarmSystemInterfaceFactory::createFaultState(string, string, int) entering");
-	ACE_Guard<ACE_Recursive_Thread_Mutex> guard(main_mutex);
 	auto_ptr<acsalarm::FaultState> retVal;
 	if (m_useACSAlarmSystem==NULL) {
 		throw acsErrTypeAlarmSourceFactory::ACSASFactoryNotInitedExImpl(__FILE__,__LINE__,"ACSAlarmSystemInterfaceFactory::createFaultState(string, string, int)");
@@ -234,9 +224,7 @@ auto_ptr<acsalarm::FaultState>ACSAlarmSystemInterfaceFactory::createFaultState(s
 	if (!(*m_useACSAlarmSystem)) {
 		retVal = m_AlarmSystemInterfaceFactory_p->createFaultState(family, member, code);
 	} else {
-		acsalarm::FaultState * asFaultStatePtr = new acsalarm::FaultState(family, member, code);
-		auto_ptr<acsalarm::FaultState> asFaultStateAutoPtr(asFaultStatePtr);
-		retVal = asFaultStateAutoPtr;
+		retVal.reset(new acsalarm::FaultState(family, member, code));
 	}
 	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "ACSAlarmSystemInterfaceFactory::createFaultState(string, string, int) exiting");
 	return retVal;
@@ -246,7 +234,6 @@ auto_ptr<acsalarm::FaultState>ACSAlarmSystemInterfaceFactory::createFaultState()
 {
 	Logging::Logger::LoggerSmartPtr myLoggerSmartPtr = getLogger();
 	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "ACSAlarmSystemInterfaceFactory::createFaultState() entering");
-	ACE_Guard<ACE_Recursive_Thread_Mutex> guard(main_mutex);
 	auto_ptr<acsalarm::FaultState> retVal;
 	if (m_useACSAlarmSystem==NULL) {
 		throw acsErrTypeAlarmSourceFactory::ACSASFactoryNotInitedExImpl(__FILE__,__LINE__,"ACSAlarmSystemInterfaceFactory::createFaultState()");
@@ -254,9 +241,7 @@ auto_ptr<acsalarm::FaultState>ACSAlarmSystemInterfaceFactory::createFaultState()
 	if (!(*m_useACSAlarmSystem)) {
 		retVal = m_AlarmSystemInterfaceFactory_p->createFaultState();
 	} else {
-		acsalarm::FaultState * asIfProxyPtr = new acsalarm::FaultState();
-		auto_ptr<acsalarm::FaultState> asIfAutoPtr(asIfProxyPtr);
-		retVal = asIfAutoPtr;
+		retVal.reset(new acsalarm::FaultState());
 	}
 	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "ACSAlarmSystemInterfaceFactory::createFaultState() exiting");
 	return retVal;
@@ -266,7 +251,6 @@ maci::Manager_ptr ACSAlarmSystemInterfaceFactory::getManager()
 { 
 	Logging::Logger::LoggerSmartPtr myLoggerSmartPtr = getLogger();
 	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "ACSAlarmSystemInterfaceFactory::getManager() entering/exiting");
-	ACE_Guard<ACE_Recursive_Thread_Mutex> guard(main_mutex);
 	return m_manager; 
 }
 
@@ -311,11 +295,10 @@ void ACSAlarmSystemInterfaceFactory::createAndSendAlarm(string & faultFamily, st
 	fltstate->setDescriptor(stateString);
 		
 	// create a Timestamp and use it to configure the FaultState
-	Timestamp * tstampPtr = new Timestamp();
-	auto_ptr<Timestamp> tstampAutoPtr(tstampPtr);
+	auto_ptr<Timestamp> tstampAutoPtr(new Timestamp());
 	fltstate->setUserTimestamp(tstampAutoPtr);
 
-	// create an empty Properties object and assign to the FaultState
+	// create a Properties object (using copy constructor) and assign to the FaultState 
 	Properties * propsPtr = new Properties(faultProperties);
 	auto_ptr<Properties> propsAutoPtr(propsPtr);
 	fltstate->setUserProperties(propsAutoPtr);
