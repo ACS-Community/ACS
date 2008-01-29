@@ -13,6 +13,9 @@ using namespace laserSource;
  */
 CERNAlarmSystemInterfaceFactory::CERNAlarmSystemInterfaceFactory()
 {
+	myLoggerSmartPtr = getLogger();
+	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "CERNAlarmSystemInterfaceFactory::constructor(): entering.");
+	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "CERNAlarmSystemInterfaceFactory::constructor(): exiting.");
 }
 
 /**
@@ -20,7 +23,9 @@ CERNAlarmSystemInterfaceFactory::CERNAlarmSystemInterfaceFactory()
  */
 CERNAlarmSystemInterfaceFactory::~CERNAlarmSystemInterfaceFactory()
 {
+	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "CERNAlarmSystemInterfaceFactory::destructor(): entering.");
 	done();
+	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "CERNAlarmSystemInterfaceFactory::destructor(): exiting.");
 }
 
 /**
@@ -30,6 +35,8 @@ CERNAlarmSystemInterfaceFactory::~CERNAlarmSystemInterfaceFactory()
  */
 bool CERNAlarmSystemInterfaceFactory::init()
 {
+	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "CERNAlarmSystemInterfaceFactory::init(): entering.");
+	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "CERNAlarmSystemInterfaceFactory::init(): exiting.");
 	return true;
 }
 	
@@ -39,6 +46,8 @@ bool CERNAlarmSystemInterfaceFactory::init()
  */
 void CERNAlarmSystemInterfaceFactory::done()
 {
+	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "CERNAlarmSystemInterfaceFactory::done(): entering.");
+	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "CERNAlarmSystemInterfaceFactory::done(): exiting.");
 }
 
 /**
@@ -49,8 +58,11 @@ void CERNAlarmSystemInterfaceFactory::done()
  */
 auto_ptr<AlarmSystemInterface> CERNAlarmSystemInterfaceFactory::createSource(string sourceName)
 {
-	AlarmSystemInterface * asIfProxyPtr = new CERNAlarmSystemInterfaceProxy(sourceName);
-	auto_ptr<AlarmSystemInterface> asIfAutoPtr(asIfProxyPtr);
+	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "CERNAlarmSystemInterfaceFactory::createSource(): entering.");
+
+	auto_ptr<AlarmSystemInterface> asIfAutoPtr(new CERNAlarmSystemInterfaceProxy(sourceName));
+
+	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "CERNAlarmSystemInterfaceFactory::createSource(): exiting.");
 	return asIfAutoPtr;
 }
 	
@@ -61,7 +73,9 @@ auto_ptr<AlarmSystemInterface> CERNAlarmSystemInterfaceFactory::createSource(str
  */
 auto_ptr<AlarmSystemInterface> CERNAlarmSystemInterfaceFactory::createSource()
 {
+	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "CERNAlarmSystemInterfaceFactory::createSource(): entering.");
 	return createSource(ALARM_SOURCE_NAME);
+	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "CERNAlarmSystemInterfaceFactory::createSource(): entering.");
 }
 
 /*

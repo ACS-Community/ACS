@@ -16,7 +16,7 @@ using asiConfigurationConstants::ALARM_SOURCE_NAME;
  */
 CERNAlarmSystemInterfaceProxy::CERNAlarmSystemInterfaceProxy()
 {
-	Logging::Logger::LoggerSmartPtr myLoggerSmartPtr = getLogger();
+	myLoggerSmartPtr = getLogger();
 	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "CERNAlarmSystemInterfaceProxy::CERNAlarmSystemInterfaceProxy(): entering.");
 	setSourceName(ALARM_SOURCE_NAME);
 	init();
@@ -30,7 +30,7 @@ CERNAlarmSystemInterfaceProxy::CERNAlarmSystemInterfaceProxy()
  */
 CERNAlarmSystemInterfaceProxy::CERNAlarmSystemInterfaceProxy(string theSourceName)
 {
-	Logging::Logger::LoggerSmartPtr myLoggerSmartPtr = getLogger();
+	myLoggerSmartPtr = getLogger();
 	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "CERNAlarmSystemInterfaceProxy::CERNAlarmSystemInterfaceProxy(string): entering.");
 	string expectedSrcName(ALARM_SOURCE_NAME);
 	if(theSourceName != expectedSrcName)
@@ -49,7 +49,6 @@ CERNAlarmSystemInterfaceProxy::CERNAlarmSystemInterfaceProxy(string theSourceNam
  */
 CERNAlarmSystemInterfaceProxy::~CERNAlarmSystemInterfaceProxy()
 {
-	Logging::Logger::LoggerSmartPtr myLoggerSmartPtr = getLogger();
 	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "CERNAlarmSystemInterfaceProxy::~CERNAlarmSystemInterfaceProxy(): entering.");
 	if (laserPublisher != NULL) {
 		delete laserPublisher;
@@ -61,7 +60,6 @@ CERNAlarmSystemInterfaceProxy::~CERNAlarmSystemInterfaceProxy()
 // initialization logic
 void CERNAlarmSystemInterfaceProxy::init()
 {
-	Logging::Logger::LoggerSmartPtr myLoggerSmartPtr = getLogger();
 	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "AlarmSystemInterface::init(): entering.");
 
 	laserPublisher = NULL; 
@@ -78,7 +76,6 @@ void CERNAlarmSystemInterfaceProxy::init()
 // cleanup logic
 void CERNAlarmSystemInterfaceProxy::close()
 {
-	Logging::Logger::LoggerSmartPtr myLoggerSmartPtr = getLogger();
 	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "AlarmSystemInterface::close(): entering.");
 	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "AlarmSystemInterface::close(): exiting.");
 
@@ -91,7 +88,6 @@ void CERNAlarmSystemInterfaceProxy::close()
  */
 bool CERNAlarmSystemInterfaceProxy::publishMessage(ASIMessage msg)
 {
-	Logging::Logger::LoggerSmartPtr myLoggerSmartPtr = getLogger();
 	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "CERNAlarmSystemInterfaceProxy::publishMessage(): entering.");
 	bool retVal = false;
 

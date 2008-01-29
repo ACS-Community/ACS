@@ -15,7 +15,7 @@ using nc::Helper;
  */
 AcsAlarmPublisher::AcsAlarmPublisher(string topicName)
 { 
-	Logging::Logger::LoggerSmartPtr myLoggerSmartPtr = getLogger();
+	myLoggerSmartPtr = getLogger();
 	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "AcsAlarmPublisher::AcsAlarmPublisher(): entering.");
 
 
@@ -45,7 +45,6 @@ AcsAlarmPublisher::AcsAlarmPublisher(string topicName)
  */
 AcsAlarmPublisher::~AcsAlarmPublisher()
 {
-	Logging::Logger::LoggerSmartPtr myLoggerSmartPtr = getLogger();
 	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "AcsAlarmPublisher::~AcsAlarmPublisher(): entering.");
 	if(NULL != alarmSupplier)
 	{
@@ -62,7 +61,6 @@ AcsAlarmPublisher::~AcsAlarmPublisher()
  */
 bool AcsAlarmPublisher::publishAlarm(ASIMessage msg)
 {
-	Logging::Logger::LoggerSmartPtr myLoggerSmartPtr = getLogger();
 	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "AcsAlarmPublisher::publishAlarm(): entering.");
 	alarmSupplier->publishEvent(msg);
 	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "AcsAlarmPublisher::publishAlarm(): exiting.");

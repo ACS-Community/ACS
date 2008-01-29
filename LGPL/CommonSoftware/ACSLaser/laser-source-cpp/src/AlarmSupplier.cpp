@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: AlarmSupplier.cpp,v 1.5 2008/01/29 00:09:17 sharring Exp $"
+* "@(#) $Id: AlarmSupplier.cpp,v 1.6 2008/01/29 01:37:40 sharring Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -58,7 +58,6 @@
 #include "AlarmSupplier.h"
 #include "ACSJMSMessageEntityC.h"
 #include "acsutilTimeStamp.h"
-#include <logging.h>
 #include <string>
 
 using acsalarm::ASIMessage;
@@ -71,7 +70,7 @@ AlarmSupplier::AlarmSupplier(const char* channelName) :
     BaseSupplier(channelName)
 {
    //no-op
-	Logging::Logger::LoggerSmartPtr myLoggerSmartPtr = getLogger();
+	myLoggerSmartPtr = getLogger();
 	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "AlarmSupplier::AlarmSupplier(): entering.");
 	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "AlarmSupplier::AlarmSupplier(): exiting.");
 }
@@ -82,7 +81,6 @@ AlarmSupplier::AlarmSupplier(const char* channelName) :
 AlarmSupplier::~AlarmSupplier()
 {
    //no-op
-	Logging::Logger::LoggerSmartPtr myLoggerSmartPtr = getLogger();
 	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "AlarmSupplier::~AlarmSupplier(): entering.");
 	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "AlarmSupplier::~AlarmSupplier(): exiting.");
 }
@@ -94,7 +92,6 @@ AlarmSupplier::~AlarmSupplier()
  */
 void AlarmSupplier::publishEvent(ASIMessage &msg)
 { 
-	Logging::Logger::LoggerSmartPtr myLoggerSmartPtr = getLogger();
 	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "AlarmSupplier::publishEvent(): entering.");
 
 	CosNotification::StructuredEvent event;
