@@ -22,7 +22,6 @@
 package alma.acs.logging.formatters;
 
 import java.net.InetAddress;
-import java.text.SimpleDateFormat;
 import java.util.logging.Formatter;
 import java.util.logging.LogRecord;
 
@@ -36,9 +35,6 @@ import org.omg.CORBA.Any;
  */
 public abstract class AcsLogFormatter extends Formatter 
 {
-
-	protected static final SimpleDateFormat df = new SimpleDateFormat("yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'SSS");
-
 	protected static String localHostName;
     
     abstract public Any formatAny(Any anyLogRecord, LogRecord logRecord);   
