@@ -23,7 +23,12 @@ namespace laserSource
 		private:
 			// initialization logic used by the constructors
 			void init();
+
+			// pointer to our publisher object
 			AcsAlarmPublisher * laserPublisher;
+
+			// smart ptr to the logger
+			Logging::Logger::LoggerSmartPtr myLoggerSmartPtr;
 	};
 };
 #endif

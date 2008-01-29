@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: AlarmSupplier.h,v 1.4 2006/10/19 17:50:02 sharring Exp $"
+* "@(#) $Id: AlarmSupplier.h,v 1.5 2008/01/29 01:38:45 sharring Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -37,6 +37,7 @@
 
 #include <basencSupplier.h>
 #include <acscommonC.h>
+#include <logging.h>
 #include "ASIMessage.h"
 
 /**
@@ -77,6 +78,10 @@ class AlarmSupplier : public BaseSupplier
 		 * Overrides method from BaseSupplier.
 		 */
 		virtual const char* getEventType() { return "ACSJMSMessageEntity"; }
+
+	private:
+		// logger smart pointer
+		Logging::Logger::LoggerSmartPtr myLoggerSmartPtr;
 
 };
 

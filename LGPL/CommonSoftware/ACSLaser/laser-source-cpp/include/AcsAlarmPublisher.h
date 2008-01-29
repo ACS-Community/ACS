@@ -28,6 +28,7 @@ namespace laserSource
 	
 		private:
 			AlarmSupplier * alarmSupplier;
+			Logging::Logger::LoggerSmartPtr myLoggerSmartPtr;
 	};
 };
 

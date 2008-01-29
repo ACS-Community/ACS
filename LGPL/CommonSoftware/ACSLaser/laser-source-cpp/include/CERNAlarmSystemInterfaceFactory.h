@@ -40,6 +40,10 @@ namespace laserSource
 		 * @return the interface instance.
 		 */
 		virtual auto_ptr<AlarmSystemInterface> createSource();
+		
+		private:
+		// logger
+		Logging::Logger::LoggerSmartPtr myLoggerSmartPtr;
 	};
 };
 #endif /* ifndef CERN_ALARM_SYSTEM_INTERFACE_FACTORY_H */
