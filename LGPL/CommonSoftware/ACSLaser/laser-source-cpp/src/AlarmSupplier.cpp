@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: AlarmSupplier.cpp,v 1.4 2006/10/25 10:11:12 sharring Exp $"
+* "@(#) $Id: AlarmSupplier.cpp,v 1.5 2008/01/29 00:09:17 sharring Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -62,9 +62,6 @@
 #include <string>
 
 using acsalarm::ASIMessage;
-
-static char *rcsId="@(#) $Id: AlarmSupplier.cpp,v 1.4 2006/10/25 10:11:12 sharring Exp $"; 
-static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 /**
  * Constructor.
@@ -116,7 +113,7 @@ void AlarmSupplier::publishEvent(ASIMessage &msg)
 	com::cosylab::acs::jms::ACSJMSMessageEntity msgForNotificationChannel;
 	string xmlToSend = msg.toXML();
 	string xmlToLog = "AlarmSupplier::publishEvent()\n\nAbout to send XML of: \n\n" + xmlToSend + "\n\n";
-	myLoggerSmartPtr->log(Logging::Logger::LM_DEBUG, xmlToLog);
+	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, xmlToLog);
 	msgForNotificationChannel.text = CORBA::string_dup(xmlToSend.c_str());
 	event.filterable_data[0].value <<= msgForNotificationChannel;
 	
