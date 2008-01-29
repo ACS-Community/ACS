@@ -24,13 +24,13 @@ package alma.acs.logging.formatters;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
 import java.util.logging.Formatter;
 import java.util.logging.LogRecord;
 
 import alma.acs.logging.LogParameterUtil;
+import alma.acs.util.IsoDateFormat;
 
 /**
  * An implementation of <code>java.util.logging.Formatter</code>.
@@ -44,11 +44,6 @@ public class ConsoleLogFormatter extends Formatter
 	 */
 	private static final String lineSeparator = System.getProperty("line.separator");
 
-	/**
-	 * ISO 8601 date formatter.
-	 */
-	private final SimpleDateFormat timeFormatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
-	
 	/**
 	 * Date object (used not to recreate it every time).
 	 */
@@ -66,7 +61,7 @@ public class ConsoleLogFormatter extends Formatter
 		synchronized (date)
 		{
 			date.setTime(record.getMillis());
-			sb.append(timeFormatter.format(date));
+			sb.append(IsoDateFormat.formatDate(date));
 		}
 		
 		sb.append(' ');
