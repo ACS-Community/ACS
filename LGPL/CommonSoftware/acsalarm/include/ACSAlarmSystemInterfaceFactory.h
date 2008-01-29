@@ -92,6 +92,14 @@ class ACSAlarmSystemInterfaceFactory
 	ACSAlarmSystemInterfaceFactory(const ACSAlarmSystemInterfaceFactory&);
 	ACSAlarmSystemInterfaceFactory operator=(const ACSAlarmSystemInterfaceFactory&);
 	~ACSAlarmSystemInterfaceFactory();
+
+	static void cleanUpAlarmSystemInterfacePtr();
+	static void cleanUpSharedSource();
+	static void cleanUpDLL();
+	static void cleanUpBooleanPtr();
+	static void cleanUpManagerReference();
+	static void initImplementationType(maci::Manager_ptr manager);
+	static bool initDLL();
 	
 	public:
 

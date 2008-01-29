@@ -17,5 +17,6 @@ entering
 exiting
 loaded DLL
 : OK
+::
 1 - $
 ^[0-9 ]*- [jJ]ava

@@ -46,46 +46,6 @@ void* ACSAlarmSystemInterfaceFactory::dllHandle = NULL;
 ACE_Recursive_Thread_Mutex ACSAlarmSystemInterfaceFactory::main_mutex;
 auto_ptr<acsalarm::AlarmSystemInterface> ACSAlarmSystemInterfaceFactory::sharedSource;
 
-void ACSAlarmSystemInterfaceFactory::done() 
-{
-	Logging::Logger::LoggerSmartPtr myLoggerSmartPtr = getLogger();
-	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "ACSAlarmSystemInterfaceFactory::done entering");
-
-	ACE_Guard<ACE_Recursive_Thread_Mutex> guard(main_mutex);
-
-	if (NULL != m_useACSAlarmSystem && !(*m_useACSAlarmSystem) && NULL != m_AlarmSystemInterfaceFactory_p) {
-		m_AlarmSystemInterfaceFactory_p->done();
-		myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "ACSAlarmSystemInterfaceFactory::done deleting alarm system interface ptr");
-		delete m_AlarmSystemInterfaceFactory_p;
-		m_AlarmSystemInterfaceFactory_p = NULL;
-	}
-	if(NULL != sharedSource.get())
-	{
-		// force the deletion of the allocated memory for the shared source auto_ptr
-		myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "ACSAlarmSystemInterfaceFactory::done nulling out shared source auto_ptr");
-		sharedSource.reset();
-	}
-	if(NULL != ACSAlarmSystemInterfaceFactory::dllHandle)
-	{
-		myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "ACSAlarmSystemInterfaceFactory::done closing DLL");
-		dlclose(ACSAlarmSystemInterfaceFactory::dllHandle);
-		ACSAlarmSystemInterfaceFactory::dllHandle = NULL;
-	}
-	if(NULL != m_useACSAlarmSystem) 
-	{
-		myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "ACSAlarmSystemInterfaceFactory::done deleting m_useACSAlarmSystem ptr");
-		delete m_useACSAlarmSystem;
-		m_useACSAlarmSystem = NULL;
-	}
-	if (!CORBA::is_nil(m_manager)) {
-		CORBA::release(m_manager);
-		m_manager = maci::Manager::_nil();
-		myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "ACSAlarmSystemInterfaceFactory::done nilling manager reference");
-	}
-	 
-	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "ACSAlarmSystemInterfaceFactory::done exiting");
-}
-
 /**
  * Create a new instance of an alarm system interface without binding it to any source.
  */
@@ -127,68 +87,6 @@ auto_ptr<acsalarm::AlarmSystemInterface> ACSAlarmSystemInterfaceFactory::createS
 	}
 
 	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "ACSAlarmSystemInterfaceFactory::createSource(string) exiting");
-	return retVal;
-}
-
-bool ACSAlarmSystemInterfaceFactory::init(maci::Manager_ptr manager) throw (acsErrTypeAlarmSourceFactory::ErrorLoadingCERNDLLExImpl)
-{
-	Logging::Logger::LoggerSmartPtr myLoggerSmartPtr = getLogger();
-	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "ACSAlarmSystemInterfaceFactory::init() entering");
-
-	ACE_Guard<ACE_Recursive_Thread_Mutex> guard(main_mutex);
-	bool retVal = true;
-	if (manager!=maci::Manager::_nil()) 
-	{
-		m_manager=maci::Manager::_duplicate(manager);
-		m_useACSAlarmSystem = new bool(); // It implicitly says that the init has been called
-		try
-		{
-			ConfigPropertyGetter pGetter(m_manager);
-			string str = pGetter.getProperty("Implementation");
-			*m_useACSAlarmSystem = !(str=="CERN");
-		}
-		catch(...)
-		{
-			// if we get any exception from accessing CDB we use the default ACS alarm system
-			*m_useACSAlarmSystem=true;
-		}
-	} 
-	else 
-	{
-		// if we were passed a NULL for the manager reference, this means we should use the ACS (logging) style for alarms
-		// this typically will only happen in test code within the acsalarm module, which due to build/dependency order issues
-		// cannot access things in the ACSLaser package (which is built later). 
-		m_useACSAlarmSystem = new bool();
-		*m_useACSAlarmSystem=true;
-	}
-	// Print a debug message
-	if (*m_useACSAlarmSystem) {
-		myLoggerSmartPtr->log(Logging::Logger::LM_DEBUG, "Using ACS alarm system");
-	} else {
-		myLoggerSmartPtr->log(Logging::Logger::LM_DEBUG, "Using CERN alarm system");
-	}
-	if (!(*m_useACSAlarmSystem)) 
-	{
-		myLoggerSmartPtr->log(Logging::Logger::LM_DEBUG, "ACSAlarmSystemInterfaceFactory::init() loading CERN DLL...");
-		
-		// load the DLL and then set pointer m_AlarmSystemInterfaceFactory_p to point to the object
-		// that is returned from the DLL's entry point function. From then on, we can use the pointer/object directly.
-		ACSAlarmSystemInterfaceFactory::dllHandle = dlopen(CERN_ALARM_SYSTEM_DLL_PATH, RTLD_NOW|RTLD_GLOBAL);
-		if(ACSAlarmSystemInterfaceFactory::dllHandle == NULL)
-		{
-			string errString = "ACSAlarmSystemInterfaceFactory::init(): could not open DLL; error was:\n\n" + string(dlerror()); 
-			myLoggerSmartPtr->log(Logging::Logger::LM_ERROR, errString);
-			throw acsErrTypeAlarmSourceFactory::ErrorLoadingCERNDLLExImpl(__FILE__,__LINE__,"ACSAlarmSystemInterfaceFactory::init");
-		}
-		// Call the well-defined entry point function of the DLL, to get an object 
-		// which implements the AlarmSystemInterfaceFactory interface, which will be used for publishing 
-		// CERN style alarms (i.e. alarms that go over the notification channel as opposed to just being logged)
-		void * publisherFactoryFunctionPtr = dlsym(ACSAlarmSystemInterfaceFactory::dllHandle, CERN_ALARM_SYSTEM_DLL_FUNCTION_NAME);
-		m_AlarmSystemInterfaceFactory_p = ((AlarmSystemInterfaceFactory*(*)())(publisherFactoryFunctionPtr))();
-		myLoggerSmartPtr->log(Logging::Logger::LM_DEBUG, "ACSAlarmSystemInterfaceFactory::init() successfully loaded DLL");
-		retVal = m_AlarmSystemInterfaceFactory_p->init();
-	} 
-	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "ACSAlarmSystemInterfaceFactory::init() exiting");
 	return retVal;
 }
 
@@ -315,4 +213,192 @@ void ACSAlarmSystemInterfaceFactory::createAndSendAlarm(string & faultFamily, st
 	ACSAlarmSystemInterfaceFactory::sharedSource->push(*fltstate);
 
 	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "ACSAlarmSystemInterfaceFactory::createAndSendAlarm(string, string, int, bool, Properties, string) exiting");
+}
+
+// called at shutdown by maciContainer
+void ACSAlarmSystemInterfaceFactory::done() 
+{
+	Logging::Logger::LoggerSmartPtr myLoggerSmartPtr = getLogger();
+	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "ACSAlarmSystemInterfaceFactory::done entering");
+
+	ACE_Guard<ACE_Recursive_Thread_Mutex> guard(main_mutex);
+	cleanUpAlarmSystemInterfacePtr();
+	cleanUpSharedSource();
+	cleanUpDLL();
+	cleanUpBooleanPtr();
+	cleanUpManagerReference();
+	 
+	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "ACSAlarmSystemInterfaceFactory::done exiting");
+}
+
+// private method called at shutdown
+void ACSAlarmSystemInterfaceFactory::cleanUpManagerReference()
+{
+	Logging::Logger::LoggerSmartPtr myLoggerSmartPtr = getLogger();
+	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "ACSAlarmSystemInterfaceFactory::cleanUpManagerReference entering");
+
+	ACE_Guard<ACE_Recursive_Thread_Mutex> guard(main_mutex);
+	if (!CORBA::is_nil(m_manager)) {
+		CORBA::release(m_manager);
+		m_manager = maci::Manager::_nil();
+		myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "ACSAlarmSystemInterfaceFactory::cleanUpManagerReference nilling manager reference");
+	}
+	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "ACSAlarmSystemInterfaceFactory::cleanUpManagerReference exiting");
+}
+
+// private method called at shutdown
+void ACSAlarmSystemInterfaceFactory::cleanUpBooleanPtr()
+{
+	Logging::Logger::LoggerSmartPtr myLoggerSmartPtr = getLogger();
+	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "ACSAlarmSystemInterfaceFactory::cleanUpBooleanPtr entering");
+
+	ACE_Guard<ACE_Recursive_Thread_Mutex> guard(main_mutex);
+	if(NULL != m_useACSAlarmSystem) 
+	{
+		myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "ACSAlarmSystemInterfaceFactory::cleanUpBooleanPtr deleting m_useACSAlarmSystem ptr");
+		delete m_useACSAlarmSystem;
+		m_useACSAlarmSystem = NULL;
+	}
+	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "ACSAlarmSystemInterfaceFactory::cleanUpBooleanPtr exiting");
+}
+
+// private method called at shutdown
+void ACSAlarmSystemInterfaceFactory::cleanUpDLL()
+{
+	Logging::Logger::LoggerSmartPtr myLoggerSmartPtr = getLogger();
+	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "ACSAlarmSystemInterfaceFactory::cleanUpDLL entering");
+
+	ACE_Guard<ACE_Recursive_Thread_Mutex> guard(main_mutex);
+	if(NULL != ACSAlarmSystemInterfaceFactory::dllHandle)
+	{
+		myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "ACSAlarmSystemInterfaceFactory::cleanUpDLL closing DLL");
+		dlclose(ACSAlarmSystemInterfaceFactory::dllHandle);
+		ACSAlarmSystemInterfaceFactory::dllHandle = NULL;
+	}
+	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "ACSAlarmSystemInterfaceFactory::cleanUpDLL exiting");
+}
+
+// private method called at shutdown
+void ACSAlarmSystemInterfaceFactory::cleanUpSharedSource()
+{
+	Logging::Logger::LoggerSmartPtr myLoggerSmartPtr = getLogger();
+	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "ACSAlarmSystemInterfaceFactory::cleanUpSharedSource entering");
+
+	ACE_Guard<ACE_Recursive_Thread_Mutex> guard(main_mutex);
+	if(NULL != sharedSource.get())
+	{
+		// force the deletion of the allocated memory for the shared source auto_ptr
+		myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "ACSAlarmSystemInterfaceFactory::cleanUpSharedSource nulling out shared source auto_ptr");
+		sharedSource.reset();
+	}
+	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "ACSAlarmSystemInterfaceFactory::cleanUpSharedSource exiting");
+}
+
+// private method called at shutdown
+void ACSAlarmSystemInterfaceFactory::cleanUpAlarmSystemInterfacePtr()
+{
+	Logging::Logger::LoggerSmartPtr myLoggerSmartPtr = getLogger();
+	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "ACSAlarmSystemInterfaceFactory::cleanUpAlarmSystemInterfacePtr entering");
+
+	ACE_Guard<ACE_Recursive_Thread_Mutex> guard(main_mutex);
+	if (NULL != m_useACSAlarmSystem && !(*m_useACSAlarmSystem) && NULL != m_AlarmSystemInterfaceFactory_p) {
+		m_AlarmSystemInterfaceFactory_p->done();
+		myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "ACSAlarmSystemInterfaceFactory::cleanUpAlarmSystemInterfacePtr deleting alarm system interface ptr");
+		delete m_AlarmSystemInterfaceFactory_p;
+		m_AlarmSystemInterfaceFactory_p = NULL;
+	}
+	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "ACSAlarmSystemInterfaceFactory::cleanUpAlarmSystemInterfacePtr exiting");
+}
+
+// public method: called at startup by maciContainer
+bool ACSAlarmSystemInterfaceFactory::init(maci::Manager_ptr manager) throw (acsErrTypeAlarmSourceFactory::ErrorLoadingCERNDLLExImpl)
+{
+	Logging::Logger::LoggerSmartPtr myLoggerSmartPtr = getLogger();
+	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "ACSAlarmSystemInterfaceFactory::init() entering");
+
+	ACE_Guard<ACE_Recursive_Thread_Mutex> guard(main_mutex);
+	bool retVal = true;
+
+	initImplementationType(manager);
+
+	if (!(*m_useACSAlarmSystem)) 
+	{
+		retVal = initDLL();
+	}
+
+	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "ACSAlarmSystemInterfaceFactory::init() exiting");
+	return retVal;
+}
+
+// private method callled during initialization (at container startup)
+void ACSAlarmSystemInterfaceFactory::initImplementationType(maci::Manager_ptr manager)
+{
+	Logging::Logger::LoggerSmartPtr myLoggerSmartPtr = getLogger();
+	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "ACSAlarmSystemInterfaceFactory::initImplementationType entering");
+
+	ACE_Guard<ACE_Recursive_Thread_Mutex> guard(main_mutex);
+	if (manager!=maci::Manager::_nil()) 
+	{
+		m_manager = maci::Manager::_duplicate(manager);
+		m_useACSAlarmSystem = new bool(); // It implicitly says that the init has been called
+		try
+		{
+			ConfigPropertyGetter pGetter(m_manager);
+			string str = pGetter.getProperty("Implementation");
+			*m_useACSAlarmSystem = !(str=="CERN");
+		}
+		catch(...)
+		{
+			// if we get any exception from accessing CDB we use the default ACS alarm system
+			*m_useACSAlarmSystem=true;
+		}
+	} 
+	else 
+	{
+		// if we were passed a NULL for the manager reference, this means we should use the ACS (logging) style for alarms
+		// this typically will only happen in test code within the acsalarm module, which due to build/dependency order issues
+		// cannot access things in the ACSLaser package (which is built later). 
+		m_useACSAlarmSystem = new bool();
+		*m_useACSAlarmSystem=true;
+	}
+
+	// Print a debug message
+	if (*m_useACSAlarmSystem) {
+		myLoggerSmartPtr->log(Logging::Logger::LM_DEBUG, "Using ACS alarm system");
+	} else {
+		myLoggerSmartPtr->log(Logging::Logger::LM_DEBUG, "Using CERN alarm system");
+	}
+
+	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "ACSAlarmSystemInterfaceFactory::initImplementationType exiting");
+}
+
+// private method callled during initialization (at container startup), if using CERN alarm style
+bool ACSAlarmSystemInterfaceFactory::initDLL()
+{
+	Logging::Logger::LoggerSmartPtr myLoggerSmartPtr = getLogger();
+	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "ACSAlarmSystemInterfaceFactory::initDLL entering");
+	bool retVal = true;
+
+	myLoggerSmartPtr->log(Logging::Logger::LM_DEBUG, "ACSAlarmSystemInterfaceFactory::initDLL() loading CERN DLL...");
+
+	ACE_Guard<ACE_Recursive_Thread_Mutex> guard(main_mutex);
+	// load the DLL and then set pointer m_AlarmSystemInterfaceFactory_p to point to the object
+	// that is returned from the DLL's entry point function. From then on, we can use the pointer/object directly.
+	ACSAlarmSystemInterfaceFactory::dllHandle = dlopen(CERN_ALARM_SYSTEM_DLL_PATH, RTLD_NOW|RTLD_GLOBAL);
+	if(ACSAlarmSystemInterfaceFactory::dllHandle == NULL)
+	{
+		string errString = "ACSAlarmSystemInterfaceFactory::initDLL(): could not open DLL; error was:\n\n" + string(dlerror()); 
+		myLoggerSmartPtr->log(Logging::Logger::LM_ERROR, errString);
+		throw acsErrTypeAlarmSourceFactory::ErrorLoadingCERNDLLExImpl(__FILE__,__LINE__,"ACSAlarmSystemInterfaceFactory::initDLL");
+	}
+	// Call the well-defined entry point function of the DLL, to get an object 
+	// which implements the AlarmSystemInterfaceFactory interface, which will be used for publishing 
+	// CERN style alarms (i.e. alarms that go over the notification channel as opposed to just being logged)
+	void * publisherFactoryFunctionPtr = dlsym(ACSAlarmSystemInterfaceFactory::dllHandle, CERN_ALARM_SYSTEM_DLL_FUNCTION_NAME);
+	m_AlarmSystemInterfaceFactory_p = ((AlarmSystemInterfaceFactory*(*)())(publisherFactoryFunctionPtr))();
+	myLoggerSmartPtr->log(Logging::Logger::LM_DEBUG, "ACSAlarmSystemInterfaceFactory::initDLL() successfully loaded DLL");
+	retVal = m_AlarmSystemInterfaceFactory_p->init();
+
+	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "ACSAlarmSystemInterfaceFactory::initDLL() exiting.");
+	return retVal;
 }
