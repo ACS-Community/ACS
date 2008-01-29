@@ -462,7 +462,7 @@ public class LogConfig {
 		try {
 			return AcsLogLevelDefinition.fromInteger(legalLogLevel);
 		} catch (AcsJIllegalArgumentEx ex) {
-			logger.warning("Failed to convert to AcsLogLevelDefinition the level integer " + legalLogLevel);
+			logger.log(Level.WARNING, "Failed to convert to AcsLogLevelDefinition the level integer " + legalLogLevel, ex);
 			throw new RuntimeException(ex);
 		}
 	}
@@ -658,7 +658,7 @@ public class LogConfig {
 				} catch (AcsJIllegalArgumentEx ex) {
 					// cannot happen because the level integer comes from a valid AcsLogLevelDefinition 
 				}
-				log(Level.INFO, "Locked logger " + loggerName + " to level " + newLevel.value, null);
+				log(Level.INFO, "Locked logger " + loggerName + " to remote level " + newLevel.value, null);
 			}
 		}
 	}
