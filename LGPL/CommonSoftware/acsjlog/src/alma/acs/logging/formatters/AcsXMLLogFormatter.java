@@ -21,20 +21,19 @@
  */
 package alma.acs.logging.formatters;
 
-import org.omg.CORBA.Any;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Date;
 import java.util.Map;
-//import java.util.logging.Formatter;
 import java.util.logging.LogRecord;
 
-//import alma.acs.logging.ACSCoreLevel;
+import org.omg.CORBA.Any;
+
 import alma.acs.logging.AcsLogLevel;
 import alma.acs.logging.AcsLogRecord;
-import alma.acs.logging.ClientLogManager;
 import alma.acs.logging.LogParameterUtil;
 import alma.acs.logging.level.AcsLogLevelDefinition;
+import alma.acs.util.IsoDateFormat;
 import alma.acs.util.XmlNormalizer;
 
 /**
@@ -45,13 +44,6 @@ import alma.acs.util.XmlNormalizer;
  */
 public class AcsXMLLogFormatter extends AcsLogFormatter 
 {
-/*<<<<<<< AcsXMLLogFormatter.java
-	private static final SimpleDateFormat df = new SimpleDateFormat("yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'SSS");
-
-	private static String localHostName;
-
-=======
-*/
     public Any formatAny( Any anyLogRecord, LogRecord logRecord){
         String xmlLogRecord = format(logRecord);
         anyLogRecord.insert_string(xmlLogRecord);
@@ -72,8 +64,7 @@ public class AcsXMLLogFormatter extends AcsLogFormatter
 		final String levelName = acsLevel.getEntryName();
 
 		// get date
-		Date date = new Date(logRecord.getMillis());
-		String TimeStamp = df.format(date);
+		String TimeStamp = IsoDateFormat.formatDate(new Date(logRecord.getMillis()));
 
 		LogParameterUtil logParamUtil = new LogParameterUtil(logRecord);
 

@@ -36,6 +36,7 @@ import alma.acs.logging.AcsLogLevel;
 import alma.acs.logging.AcsLogRecord;
 import alma.acs.logging.LogParameterUtil;
 import alma.acs.logging.level.AcsLogLevelDefinition;
+import alma.acs.util.IsoDateFormat;
 
 
 /**
@@ -67,7 +68,7 @@ public class AcsBinLogFormatter extends AcsLogFormatter
 
 		// get date
 		Date date = new Date(logRecord.getMillis());
-		String TimeStamp = df.format(date);
+		String TimeStamp = IsoDateFormat.formatDate(date);
 		
 		LogParameterUtil logParamUtil = new LogParameterUtil(logRecord);
 
