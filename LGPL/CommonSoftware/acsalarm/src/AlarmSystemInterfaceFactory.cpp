@@ -13,8 +13,7 @@ using namespace acsalarm;
  */
 auto_ptr<FaultState> AlarmSystemInterfaceFactory::createFaultState(string family, string member, int code)
 {
-	FaultState * fsPtr = new FaultState(family, member, code);
-	auto_ptr<FaultState> fsAutoPtr(fsPtr);
+	auto_ptr<FaultState> fsAutoPtr(new FaultState(family, member, code));
 	return fsAutoPtr;
 }
 
@@ -24,7 +23,6 @@ auto_ptr<FaultState> AlarmSystemInterfaceFactory::createFaultState(string family
  */
 auto_ptr<FaultState> AlarmSystemInterfaceFactory::createFaultState()
 {
-	FaultState * fsPtr = new FaultState();
-	auto_ptr<FaultState> fsAutoPtr(fsPtr);
+	auto_ptr<FaultState> fsAutoPtr(new FaultState());
 	return fsAutoPtr;
 }

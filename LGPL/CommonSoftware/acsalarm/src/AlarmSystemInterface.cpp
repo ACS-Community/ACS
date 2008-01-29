@@ -69,8 +69,7 @@ void AlarmSystemInterface::commonPush(vector<FaultState> & states, bool backup)
 	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "AlarmSystemInterface::commonPush(): entering.");
 
 	// create the ASIMessage, supplying the faults which are to be published to the alarm server
-	vector<FaultState> * statesPtr = new vector<FaultState>(states);
-	auto_ptr<vector<FaultState> > statesAutoPtr(statesPtr); 
+	auto_ptr<vector<FaultState> > statesAutoPtr(new vector<FaultState>(states)); 
 	ASIMessage asiMessage(statesAutoPtr);
 
 	// populate the ASIMessage's source timestamp (with the current time)
