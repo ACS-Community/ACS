@@ -89,7 +89,9 @@ class ACSAlarmSystemInterfaceFactory
 
 	/** Default constructor.  */
 	ACSAlarmSystemInterfaceFactory();
-	virtual ~ACSAlarmSystemInterfaceFactory();
+	ACSAlarmSystemInterfaceFactory(const ACSAlarmSystemInterfaceFactory&);
+	ACSAlarmSystemInterfaceFactory operator=(const ACSAlarmSystemInterfaceFactory&);
+	~ACSAlarmSystemInterfaceFactory();
 	
 	public:
 
