@@ -1,22 +1,22 @@
 ACS Manager:
 ACS Interface Repository:
 java -classpath
-ACS abeans configuration directory:
-ACS abeans configuration directory
+^. - [jJ]ava
 Time:
 export
 Starting Java/abeans application
--D user.dir=
-Jlog will use cache for
-JacORB
-Gerald Brose
-Connected
-failed to flush logging queue because remote logging service has not been made available
-<Info
-DEBUG
-FINE
-INFO
-jacorb
 endorsed
+ACS abeans configuration directory
+ACS Name Service
+Running the following command:
+java  -classpath
+calling orbresolve_initial_references
+manager reference not yet available in method loginToManager
+Manager login done
+FINER
+FINEST
+will retrieve remote component
+retrieved successfully
+about to release component
+has successfully released
 [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F]
-activated
