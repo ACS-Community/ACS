@@ -1,7 +1,7 @@
 #************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: tat.tcl,v 1.105 2007/11/14 17:00:08 psivera Exp $"
+# "@(#) $Id: tat.tcl,v 1.106 2008/01/30 14:03:16 psivera Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -1974,7 +1974,7 @@ proc egrepFilter {fileName testName refName generate} {
 	  }
 	# the ref file does not exist because I'm generating it for the first time
         } else {
-	    error "you are executing a test wihout having a reference file; this is not allowed"
+	    error "you are executing a test without having a reference file; this is not allowed"
         }
 
       }
@@ -2067,7 +2067,7 @@ proc egrepFilterx {fileName testName refName generate} {
    	    catch {file delete -force -- $tmpGrep$gv(grepFile).tmp}
 	 }
         } else {
-            error "you are executing a test wihout having a reference file; this is not allowed"
+            error "you are executing a test without having a reference file; this is not allowed"
         }
 
       }  
