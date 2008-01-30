@@ -21,7 +21,7 @@
 *
 *
 *
-* "@(#) $Id: contLogTestImpl.cpp,v 1.11 2008/01/24 13:05:25 eallaert Exp $"
+* "@(#) $Id: contLogTestImpl.cpp,v 1.12 2008/01/30 11:08:07 eallaert Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -36,7 +36,7 @@
 #include "loggingGetLogger.h"
 #include <iostream>
 
-ACE_RCSID(contLogTest, contLogTestImpl, "$Id: contLogTestImpl.cpp,v 1.11 2008/01/24 13:05:25 eallaert Exp $")
+ACE_RCSID(contLogTest, contLogTestImpl, "$Id: contLogTestImpl.cpp,v 1.12 2008/01/30 11:08:07 eallaert Exp $")
 
 /* ----------------------------------------------------------------*/
 TestLogLevelsComp::TestLogLevelsComp( 
@@ -91,6 +91,16 @@ TestLogLevelsComp::logDummyMessages (const ::contLogTest::LongSeq & levels)
 	// unless the central level is put to OFF).
 	p = LogLevelDefinition::getACELogPriority(AcsLogLevels::EMERGENCY_VAL);
 	ACS_SHORT_LOG((p, "===last log message==="));
+
+	// Note that these tests may be running in a container with default
+	// settings, i.e. whereby " immediateDispatchLevel" can be anything,
+	// and dispatchPacketSize as well. Empirically, in such case, 
+	// C++ seems to sends logs in packets of 5 logs, so add 4 messages to
+	// ensure all the above logs get sent across right now.
+	for (int i = 0; i < 4; i++) {
+		ACS_SHORT_LOG((p, "===packet fill-up message==="));
+	}
+   
 	
 }
 
