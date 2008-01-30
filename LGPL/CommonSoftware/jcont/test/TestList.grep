@@ -8,6 +8,7 @@ DEBUG - exported
 ORB options -OAIAddr 
 Running the following command
 Running the container with these arguments
+^. - [jJ]ava
 java  -classpath
 Connected to
 elapsed time in ms to start the container
