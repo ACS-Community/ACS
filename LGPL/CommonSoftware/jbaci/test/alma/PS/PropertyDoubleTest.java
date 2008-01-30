@@ -8,6 +8,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Vector;
 
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
+
 import org.omg.CORBA.NO_IMPLEMENT;
 import org.omg.CORBA.ORB;
 import org.omg.PortableServer.POA;
@@ -21,19 +24,17 @@ import alma.ACS.CBDescIn;
 import alma.ACS.CBDescOut;
 import alma.ACS.CBdoublePOA;
 import alma.ACS.CBvoidPOA;
-import alma.ACSErr.Completion;
-import alma.ACSErr.CompletionHolder;
 import alma.ACS.Monitordouble;
 import alma.ACS.NoSuchCharacteristic;
 import alma.ACS.ROdouble;
 import alma.ACS.RWdouble;
 import alma.ACS.TimeSeqHolder;
 import alma.ACS.doubleSeqHolder;
+import alma.ACSErr.Completion;
+import alma.ACSErr.CompletionHolder;
 import alma.acs.util.ACSPorts;
+import alma.acs.util.IsoDateFormat;
 import alma.acs.util.UTCUtility;
-
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
 
 /**
  * @author <a href="mailto:matej.sekoranjaATcosylab.com">Matej Sekoranja</a>
@@ -136,7 +137,7 @@ System.out.println(timeFormatter.format(new Date(UTCUtility.utcOmgToJava(complet
  * ISO 8601 date formatter.
  */
 //TODO tmp
-private SimpleDateFormat timeFormatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
+private SimpleDateFormat timeFormatter = new IsoDateFormat();
 
 
 		/**

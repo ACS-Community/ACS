@@ -12,14 +12,6 @@ import org.omg.PortableServer.POA;
 import org.omg.PortableServer.POAHelper;
 import org.omg.PortableServer.POAManager;
 
-import alma.ACS.CBDescIn;
-import alma.ACS.CBDescOut;
-import alma.ACS.CBstringPOA;
-import alma.ACS.Monitor;
-import alma.ACS.ROstring;
-import alma.ACSErr.Completion;
-import alma.ACSErr.CompletionHolder;
-
 import si.ijs.maci.AuthenticationData;
 import si.ijs.maci.Client;
 import si.ijs.maci.ClientInfo;
@@ -30,12 +22,16 @@ import si.ijs.maci.ImplLangType;
 import si.ijs.maci.Manager;
 import si.ijs.maci.ManagerHelper;
 
+import alma.ACS.CBDescIn;
+import alma.ACS.CBDescOut;
+import alma.ACS.CBstringPOA;
+import alma.ACS.Monitor;
+import alma.ACS.ROstring;
+import alma.ACSErr.Completion;
+import alma.ACSErr.CompletionHolder;
 import alma.acs.util.ACSPorts;
+import alma.acs.util.IsoDateFormat;
 import alma.acs.util.UTCUtility;
-import alma.maciErrType.CannotGetComponentEx;
-import alma.maciErrType.ComponentConfigurationNotFoundEx;
-import alma.maciErrType.ComponentNotAlreadyActivatedEx;
-import alma.maciErrType.NoPermissionEx;
 
 /**
  * @author <a href="mailto:matej.sekoranjaATcosylab.com">Matej Sekoranja</a>
@@ -112,7 +108,7 @@ public class BuildingTest implements Runnable
 		/**
 		 * ISO 8601 date formatter.
 		 */
-		private SimpleDateFormat timeFormatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
+		private SimpleDateFormat timeFormatter = new IsoDateFormat();
 
 		/**
 		 * @see alma.ACS.CBstringOperations#done(java.lang.String, alma.ACSErr.Completion, alma.ACS.CBDescOut)

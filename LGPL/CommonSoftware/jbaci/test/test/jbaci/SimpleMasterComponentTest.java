@@ -12,6 +12,19 @@ import org.omg.PortableServer.POA;
 import org.omg.PortableServer.POAHelper;
 import org.omg.PortableServer.POAManager;
 
+import si.ijs.maci.AuthenticationData;
+import si.ijs.maci.Client;
+import si.ijs.maci.ClientInfo;
+import si.ijs.maci.ClientPOA;
+import si.ijs.maci.ClientType;
+import si.ijs.maci.ComponentInfo;
+import si.ijs.maci.ImplLangType;
+import si.ijs.maci.Manager;
+import si.ijs.maci.ManagerHelper;
+
+import test.jbaci.SimpleMasterComponent;
+import test.jbaci.SimpleMasterComponentHelper;
+
 import alma.ACS.CBDescIn;
 import alma.ACS.CBDescOut;
 import alma.ACS.CBstringSeqPOA;
@@ -19,18 +32,9 @@ import alma.ACS.MonitorstringSeq;
 import alma.ACS.ROstringSeq;
 import alma.ACSErr.Completion;
 import alma.ACSErr.CompletionHolder;
-
-import si.ijs.maci.Client;
-import si.ijs.maci.ClientInfo;
-import si.ijs.maci.ClientPOA;
-import si.ijs.maci.ComponentInfo;
-import si.ijs.maci.Manager;
-import si.ijs.maci.ManagerHelper;
 import alma.acs.util.ACSPorts;
+import alma.acs.util.IsoDateFormat;
 import alma.acs.util.UTCUtility;
-import alma.maciErrType.CannotGetComponentEx;
-import alma.maciErrType.ComponentConfigurationNotFoundEx;
-import alma.maciErrType.ComponentNotAlreadyActivatedEx;
 
 /**
  * @author <a href="mailto:matej.sekoranjaATcosylab.com">Matej Sekoranja</a>
@@ -44,12 +48,16 @@ public class SimpleMasterComponentTest implements Runnable
 	 */
 	private class ClientImpl extends ClientPOA
 	{
-
-		/**
-		 * @see si.ijs.maci.ClientOperations#authenticate(java.lang.String)
-		 */
-		public String authenticate(String arg0) {
-			return "C";
+		public AuthenticationData authenticate(long execution_id, String question)
+		{
+			AuthenticationData ret = new AuthenticationData(
+					 "C", 
+					 ClientType.CLIENT_TYPE,
+					 ImplLangType.JAVA,
+					 false, 
+					 UTCUtility.utcJavaToOmg(System.currentTimeMillis()),
+					 execution_id);
+			return ret;
 		}
 
 		/**
@@ -102,7 +110,7 @@ public class SimpleMasterComponentTest implements Runnable
 		/**
 		 * ISO 8601 date formatter.
 		 */
-		private SimpleDateFormat timeFormatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
+		private SimpleDateFormat timeFormatter = new IsoDateFormat();
 
 		/**
 		 * @see alma.ACS.CBstringSeqOperations#done(java.lang.String[], alma.ACSErr.Completion, alma.ACS.CBDescOut)
@@ -385,7 +393,7 @@ public class SimpleMasterComponentTest implements Runnable
 				}
 
 				// release now
-				manager.release_components(clientInfo.h, new String[] { COMPONENT_NAME });
+				manager.release_component(clientInfo.h, COMPONENT_NAME);
 
 				logout(manager, clientInfo);
 			}
