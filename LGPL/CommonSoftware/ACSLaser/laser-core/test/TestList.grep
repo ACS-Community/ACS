@@ -14,3 +14,5 @@ Connected
 failed to flush logging queue because remote logging service has not been made available
 <Info
 [jacorb.poa]
+endorsed
+user.dir
