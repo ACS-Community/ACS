@@ -143,8 +143,8 @@ public class AlarmSender extends ComponentClientTestCase implements SourceListen
 	public void testSource() throws Exception {
 		sourceClient.connect();
 		// send 2 alarms active and inactive
-		send_alarm(FF, FF, FC, true);
-		send_alarm(FF, FF, FC, false);
+		send_alarm(FF, FM, FC, true);
+		send_alarm(FF, FM, FC, false);
 		
 		// wait until 2 alarms are received in the source NC
 		long now = System.currentTimeMillis();
@@ -154,5 +154,18 @@ public class AlarmSender extends ComponentClientTestCase implements SourceListen
 			} catch (Exception e) {}
 		}
 		assertEquals("Not all the alarms appeared in the source channel", 2, faultStatesReceived.size());
+		
+		// Check the content of the 2 alarms
+		FaultState fs1 = faultStatesReceived.get(0);
+		assertNotNull(fs1);
+		assertEquals(fs1.getFamily(), FF);
+		assertEquals(fs1.getMember(), FM);
+		assertEquals(fs1.getCode(), FC);
+		
+		FaultState fs2 = faultStatesReceived.get(1);
+		assertNotNull(fs1);
+		assertEquals(fs2.getFamily(), FF);
+		assertEquals(fs2.getMember(), FM);
+		assertEquals(fs2.getCode(), FC);
 	}
 }
