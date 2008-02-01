@@ -12,7 +12,6 @@
   <category is-default="false" path="CATEGORY2">
   	<description>Test category 2</description>
   	<alarms>
-  		<FaultFamily>MF</FaultFamily>
   		<FaultFamily>PS</FaultFamily>
   	</alarms>
   </category>
