@@ -13,7 +13,6 @@ import org.eclipse.ui.*;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.SWT;
 import org.eclipse.core.runtime.IAdaptable;
-
 import alma.acs.eventbrowser.model.ChannelData;
 import alma.acs.eventbrowser.model.EventModel;
 
@@ -39,9 +38,13 @@ import alma.acs.eventbrowser.model.EventModel;
 public class ChannelTreeView extends ViewPart {
 	private TreeViewer viewer;
 	private DrillDownAdapter drillDownAdapter;
-	private Action action1;
+	private Action refreshAction;
 	private Action action2;
 	private Action doubleClickAction;
+	private ViewContentProvider vcp;
+	private IViewSite vs;
+	
+	private EventModel em;
 	
 	public static final String ID = "alma.acs.eventbrowser.views.channeltree";
 
@@ -106,9 +109,11 @@ public class ChannelTreeView extends ViewPart {
 		private TreeParent invisibleRoot;
 
 		public void inputChanged(Viewer v, Object oldInput, Object newInput) {
+			viewer = (TreeViewer)v;
 		}
 		public void dispose() {
 		}
+		
 		public Object[] getElements(Object parent) {
 			if (parent.equals(getViewSite())) {
 				if (invisibleRoot==null) initialize();
@@ -138,10 +143,12 @@ public class ChannelTreeView extends ViewPart {
  * In a real code, you will connect to a real model and
  * expose its hierarchy.
  */
-		private void initialize() {
+		public void initialize() {
 			ArrayList<ChannelData> clist = null;
 			try {
-				EventModel em = new EventModel();
+				if (em == null) {
+					em = new EventModel();
+				}
 				clist = em.getChannelStatistics();
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
@@ -176,6 +183,7 @@ public class ChannelTreeView extends ViewPart {
 			
 			invisibleRoot = new TreeParent("");
 			invisibleRoot.addChild(root);
+//			System.out.println("Root has following children: "+root.children);
 		}
 	}
 	class ViewLabelProvider extends LabelProvider {
@@ -206,9 +214,11 @@ public class ChannelTreeView extends ViewPart {
 	public void createPartControl(Composite parent) {
 		viewer = new TreeViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
 		drillDownAdapter = new DrillDownAdapter(viewer);
-		viewer.setContentProvider(new ViewContentProvider());
+		vcp = new ViewContentProvider();
+		viewer.setContentProvider(vcp);
 		viewer.setLabelProvider(new ViewLabelProvider());
 		viewer.setSorter(new NameSorter());
+		vs = getViewSite();
 		viewer.setInput(getViewSite());
 
 		// Create the help context id for the viewer's control
@@ -239,13 +249,13 @@ public class ChannelTreeView extends ViewPart {
 	}
 
 	private void fillLocalPullDown(IMenuManager manager) {
-		manager.add(action1);
+		manager.add(refreshAction);
 		manager.add(new Separator());
 		manager.add(action2);
 	}
 
 	private void fillContextMenu(IMenuManager manager) {
-		manager.add(action1);
+		manager.add(refreshAction);
 		manager.add(action2);
 		manager.add(new Separator());
 		drillDownAdapter.addNavigationActions(manager);
@@ -254,21 +264,24 @@ public class ChannelTreeView extends ViewPart {
 	}
 	
 	private void fillLocalToolBar(IToolBarManager manager) {
-		manager.add(action1);
+		manager.add(refreshAction);
 		manager.add(action2);
 		manager.add(new Separator());
 		drillDownAdapter.addNavigationActions(manager);
 	}
 
 	private void makeActions() {
-		action1 = new Action() {
+		refreshAction = new Action() {
 			public void run() {
-				showMessage("Action 1 executed");
+				vcp.initialize();
+				viewer.setInput(vs);
+				viewer.refresh();
+//				showMessage("Channel statistics refreshed.");
 			}
 		};
-		action1.setText("Action 1");
-		action1.setToolTipText("Action 1 tooltip");
-		action1.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().
+		refreshAction.setText("Refresh");
+		refreshAction.setToolTipText("Update the channel statistics");
+		refreshAction.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().
 			getImageDescriptor(ISharedImages.IMG_OBJS_INFO_TSK));
 		
 		action2 = new Action() {
