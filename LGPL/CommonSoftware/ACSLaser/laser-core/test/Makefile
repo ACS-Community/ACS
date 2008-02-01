@@ -79,7 +79,7 @@ TCL_SCRIPTS_L   =
 # Python stuff (public and local)
 # ----------------------------
 PY_SCRIPTS         =
-PY_SCRIPTS_L       = lasercoreTATPrologue testCategoryDAO
+PY_SCRIPTS_L       = lasercoreTATPrologue testCategoryDAO testAlarmSender
 
 PY_MODULES         =
 PY_MODULES_L       =
@@ -128,7 +128,7 @@ USER_IDL =
 # Jarfiles and their directories
 #
 JARFILES= lasercoretest
-lasercoretest_DIRS=com
+lasercoretest_DIRS=alma com
 #
 # java sources in Jarfile on/off
 DEBUG= 
