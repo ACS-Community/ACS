@@ -79,7 +79,7 @@ TCL_SCRIPTS_L   =
 # Python stuff (public and local)
 # ----------------------------
 PY_SCRIPTS         =
-PY_SCRIPTS_L       = lasercoreTATPrologue testCategoryDAO testAlarmSender testAlarmService
+PY_SCRIPTS_L       = lasercoreTATPrologue testCategoryDAO testAlarmSender testAlarmService testAlarmDAO
 
 PY_MODULES         =
 PY_MODULES_L       =
