@@ -126,6 +126,6 @@ public class TestAlarmService extends ComponentClientTestCase {
 		
 		assertEquals(1, sources.length);
 		Source src =sources[0];
-		assertEquals(0, src.sourceId);
+		assertEquals("ALARM_SYSTEM_SOURCES", src.sourceId);
 	}
 }
