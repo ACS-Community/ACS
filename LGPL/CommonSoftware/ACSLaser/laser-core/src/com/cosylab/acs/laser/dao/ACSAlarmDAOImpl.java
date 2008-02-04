@@ -882,25 +882,7 @@ public class ACSAlarmDAOImpl implements AlarmDAO
 
 	public void saveMemberAlarms(String member)
 	{
-		if (conf==null || !conf.isWriteable())
-			throw new IllegalStateException("No writeable configuration accessor available");
-		
-		StringBuffer sb=new StringBuffer();
-		sb.append("<?xml version=\"1.0\"?>\n");
-		sb.append("<alarm-definition-list>\n");
-		Iterator i=alarmDefs.values().iterator();
-		while (i.hasNext()) {
-			Alarm a=(Alarm)i.next();
-			if (a.getTriplet().getFaultMember().equals(member))
-				encodeToXML(sb, (Alarm)i.next());
-		}
-		sb.append("</alarm-definition-list>\n");
-		
-		try {
-			conf.setConfiguration(member+"/alarms", sb.toString());
-		} catch (Exception e) {
-			throw new RuntimeException("Failed while writing to "+member+"/alarms", e);
-		}
+		return;
 	}
 	
 	public void saveAlarm(Alarm alarm)
