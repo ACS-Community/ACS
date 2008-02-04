@@ -47,20 +47,28 @@ public class TestAlarmDAO extends ComponentClientTestCase {
 	 *
 	 */
 	private enum AlarmTriplets {
-		TEST_TM1_1("TEST:TEST_MEMBER1:1",2),
-		TEST_TM1_2("TEST:TEST_MEMBER1:2",3),
-		TEST_TM2_1("TEST:TEST_MEMBER2:1",2),
-		TEST_TM2_2("TEST:TEST_MEMBER2:2",3),
-		TEST_DEF_1("TEST:*:1",2),
-		TEST_DEF_2("TEST:*:2",3),
-		PS_PSM_1("PS:PS_MEMBER:1",2);
+		TEST_TM1_1("TEST:TEST_MEMBER1:1",2,"Test alarm 1","The cause","Run and fix quickly","A disaster"),
+		TEST_TM1_2("TEST:TEST_MEMBER1:2",3,"Test alarm 2",null,null,null),
+		TEST_TM2_1("TEST:TEST_MEMBER2:1",2,"Test alarm 1","The cause","Run and fix quickly","A disaster"),
+		TEST_TM2_2("TEST:TEST_MEMBER2:2",3,"Test alarm 2",null,null,null),
+		TEST_DEF_1("TEST:*:1",2,"Test alarm 1","The cause","Run and fix quickly","A disaster"),
+		TEST_DEF_2("TEST:*:2",3,"Test alarm 2",null,null,null),
+		PS_PSM_1("PS:PS_MEMBER:1",2,"PS test alarm","A terrible mistake",null,null);
 		
 		public final String ID;
 		public final int priority;
+		public final String description;
+		public final String cause;
+		public final String action;
+		public final String consequence;
 		
-		private AlarmTriplets(String ID, int priority) {
+		private AlarmTriplets(String ID, int priority, String desc,String cause, String action, String consequence) {
 			this.ID=ID;
 			this.priority=priority;
+			this.description=desc;
+			this.cause=cause;
+			this.action=action;
+			this.consequence=consequence;
 		}
 		
 		/**
@@ -148,7 +156,8 @@ public class TestAlarmDAO extends ComponentClientTestCase {
 	/**
 	 * Test the getting of alarms by their ID.
 	 * 
-	 * it check the alarm, its ID, its triplet and its priority
+	 * it check the alarm, its ID, its triplet, its priority, its description,
+	 * action, cause, consequence
 	 */
 	public void testGetAlarmID() throws Exception {
 		for (AlarmTriplets triplet: AlarmTriplets.values()) {
@@ -166,6 +175,14 @@ public class TestAlarmDAO extends ComponentClientTestCase {
 				assertEquals(defTriplet.getFaultCode(), alarmTriplet.getFaultCode());
 				// Check the priority
 				assertEquals(Integer.valueOf(triplet.priority), alarm.getPriority());
+				// Check the description
+				assertEquals(triplet.description, alarm.getProblemDescription());
+				// Action
+				assertEquals(triplet.action, alarm.getAction());
+				// The cause
+				assertEquals(triplet.cause, alarm.getCause());
+				// Conseuqnces
+				assertEquals(triplet.consequence, alarm.getConsequence());
 			}
 		}
 	}
