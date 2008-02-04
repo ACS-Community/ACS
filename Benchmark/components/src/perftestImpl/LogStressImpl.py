@@ -22,7 +22,7 @@ class SendingThread(threading.Thread):
       return
 
    def run(self):
-      for i in range(1, self.numLogs + 1):
+      for i in range(0, self.numLogs):
          self.logger.logInfo("Python stress msg: " + str(i))
          if(self.delay != 0):
             time.sleep(self.delay/1000.)
