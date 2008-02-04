@@ -5,6 +5,9 @@
   <contact name="Alex" />
   <fault-code value="1">
     <priority>2</priority>
+    <cause>The cause</cause>
+    <action>Run and fix quickly</action>
+    <consequence>A disaster</consequence>
     <problem-description>Test alarm 1</problem-description>
   </fault-code>
   <fault-code value="2">

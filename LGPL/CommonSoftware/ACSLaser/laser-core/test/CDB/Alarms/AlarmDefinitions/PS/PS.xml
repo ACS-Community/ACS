@@ -5,6 +5,7 @@
   <contact name="Alessandro" gsm="123456" email="test@eso.org" />
   <fault-code value="1">
     <priority>2</priority>
+    <cause>A terrible mistake</cause>
     <problem-description>PS test alarm</problem-description>
   </fault-code>
   <fault-member name="PS_MEMBER">
