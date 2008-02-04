@@ -489,8 +489,16 @@ public class ACSAlarmDAOImpl implements AlarmDAO
 					alarm.setInstant(instant);
 					Location location = new Location("0",loc.getFloor(),loc.getMnemonic(),loc.getPosition(),loc.getRoom());
 					alarm.setLocation(location);
-					alarm.setPiquetEmail(contactPerson.getEmail());
-					alarm.setPiquetGSM(contactPerson.getGsm());
+					if (contactPerson.getEmail()!=null) {
+						alarm.setPiquetEmail(contactPerson.getEmail());
+					} else {
+						alarm.setPiquetEmail("");
+					}
+					if (contactPerson.getGsm()!=null) {
+						alarm.setPiquetGSM(contactPerson.getGsm());
+					} else {
+						alarm.setPiquetGSM("");
+					}
 					alarm.setPriority(priority);
 					ResponsiblePerson responsible = new ResponsiblePerson(0,contactPerson.getName(),"",contactPerson.getEmail(),contactPerson.getGsm(),"");
 					alarm.setResponsiblePerson(responsible);
