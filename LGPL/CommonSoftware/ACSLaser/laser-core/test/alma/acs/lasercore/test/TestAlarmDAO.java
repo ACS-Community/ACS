@@ -21,7 +21,11 @@
  */
 package alma.acs.lasercore.test;
 
+import java.util.HashMap;
+import java.util.Set;
+
 import cern.laser.business.data.Alarm;
+import cern.laser.business.data.Source;
 import cern.laser.business.data.Triplet;
 
 import com.cosylab.acs.laser.dao.ACSAlarmDAOImpl;
@@ -208,6 +212,53 @@ public class TestAlarmDAO extends ComponentClientTestCase {
 		assertEquals("", test.getResponsiblePerson().getEMail());
 		assertEquals("", test.getResponsiblePerson().getFirstName());
 		assertEquals("Alex", test.getResponsiblePerson().getFamilyName());
+	}
+	
+	/**
+	 * Test the sources read from CDB (only one at the moment)
+	 * 
+	 * @throws Exception
+	 */
+	public void testGetSources() throws Exception {
+		HashMap<String,cern.laser.business.data.Source> sources = alarmDAO.getSources();
+		assertNotNull(sources);
+		assertEquals("There should be only one source and not "+sources.size(),1, sources.size());
+		Set<String> keys =sources.keySet();
+		assertNotNull(keys);
+		assertEquals("Invalid number of keys", 1, keys.size());
+		for (String key: keys) {
+			Source src = sources.get(key);
+			assertNotNull(src);
+			// The key is the Source ID
+			assertEquals(src.getSourceId(), key);
+			// Check the description
+			assertEquals("SOURCE", src.getDescription());
+			// Check the name
+			assertEquals("ALARM_SYSTEM_SOURCES", src.getName());
+		}
+	}
+	
+	/**
+	 * Find alarm is like getAlarm but throws an exception
+	 * if the alarm is not found
+	 * 
+	 * @throws Exception
+	 */
+	public void testFindAlarm() throws Exception {
+		// Get an alarm that exist
+		Alarm alarm = alarmDAO.findAlarm(AlarmTriplets.TEST_TM2_1.ID);
+		assertNotNull(alarm);
+		assertEquals(AlarmTriplets.TEST_TM2_1.ID, alarm.getAlarmId());
+		
+		// Get an unknown alarm ==> thorws an exception
+		Alarm alarm2=null;
+		try {
+			alarm2 = alarmDAO.findAlarm("A:b:1");
+			alarm2=alarm; // Should not be executed
+		} catch (Exception e) {
+			// Ok
+		}
+		assertNull(alarm2);
 	}
 
 }
