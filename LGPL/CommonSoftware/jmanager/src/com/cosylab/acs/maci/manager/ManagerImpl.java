@@ -89,6 +89,8 @@ import com.cosylab.acs.maci.manager.app.ManagerContainerServices;
 import com.cosylab.acs.maci.manager.recovery.AdministratorCommandAllocate;
 import com.cosylab.acs.maci.manager.recovery.AdministratorCommandDeallocate;
 import com.cosylab.acs.maci.manager.recovery.AdministratorCommandSet;
+import com.cosylab.acs.maci.manager.recovery.AlarmCleared;
+import com.cosylab.acs.maci.manager.recovery.AlarmRaised;
 import com.cosylab.acs.maci.manager.recovery.ClientCommandAllocate;
 import com.cosylab.acs.maci.manager.recovery.ClientCommandDeallocate;
 import com.cosylab.acs.maci.manager.recovery.ClientCommandSet;
@@ -475,6 +477,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
                       	new ObjectStreamField("unavailableComponents", Map.class),
 						new ObjectStreamField("defaultComponents", Map.class),
 						new ObjectStreamField("domains", HashSet.class)};
+    					new ObjectStreamField("activeAlarms", HashSet.class)};
 
 	/**
 	 * Interdomain manager handle mask.
@@ -769,6 +772,11 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	 */
     private transient ACSAlarmSystemInterface alarmSource;
 
+	/**
+	 * Persistent set of raised (timer task) alarms.
+	 */
+    private HashSet activeAlarms = new HashSet();
+
     /**
      * Last execution id;
      */
@@ -844,7 +852,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		        logger.log(Level.SEVERE, "Failed to initialize Alarm System Interface " + ex.getMessage(), ex);
 		        alarmSource = null;
 	        }
-
+		
 		// register ping tasks
 		initializePingTasks();
 
@@ -9092,6 +9100,44 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		if (cdbAccess != null) {
 			getManagerDAOProxy();
 			getComponentsDAOProxy();
+		}
+	}
+
+	/*****************************************************************************/
+	/*****************************************************************************/
+	/*****************************************************************************/
+
+	/**
+	 * @return the activeAlarms
+	 */
+	public HashSet getActiveAlarms() {
+		return activeAlarms;
+	}
+
+	/**
+	 * Flag if alarm is active.
+	 */
+	public boolean hasActiveAlarm(String faultMember) {
+		synchronized (activeAlarms) {
+			return activeAlarms.contains(faultMember);
+		}
+	}
+	
+	/**
+	 * Remember that alarms has been raised.
+	 */
+	public void alarmRaised(String faultMember) {
+		synchronized (activeAlarms) {
+			executeCommand(new AlarmRaised(faultMember));
+		}
+	}
+
+	/**
+	 * Remember that alarms has been cleared.
+	 */
+	public void alarmCleared(String faultMember) {
+		synchronized (activeAlarms) {
+			executeCommand(new AlarmCleared(faultMember));
 		}
 	}
 }
