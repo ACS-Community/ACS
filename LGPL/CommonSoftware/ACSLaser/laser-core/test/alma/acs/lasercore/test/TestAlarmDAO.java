@@ -21,6 +21,9 @@
  */
 package alma.acs.lasercore.test;
 
+import cern.laser.business.data.Alarm;
+import cern.laser.business.data.Triplet;
+
 import com.cosylab.acs.laser.dao.ACSAlarmDAOImpl;
 import com.cosylab.acs.laser.dao.ConfigurationAccessor;
 import com.cosylab.acs.laser.dao.ConfigurationAccessorFactory;
@@ -69,6 +72,15 @@ public class TestAlarmDAO extends ComponentClientTestCase {
 				}
 			}
 			return false;
+		}
+		
+		/**
+		 * Build the triplet for the given alarm
+		 */
+		public Triplet getTriplet() {
+			String[] parts = ID.split(":");
+			Triplet ret = new Triplet(parts[0],parts[1],Integer.parseInt(parts[2]));
+			return ret;
 		}
 	}
 	
@@ -126,6 +138,25 @@ public class TestAlarmDAO extends ComponentClientTestCase {
 		// Check if all the triplets exist
 		for (String id: ids) {
 			assertTrue(AlarmTriplets.exist(id));
+		}
+	}
+	
+	/**
+	 * Test the getting of alarms by their ID
+	 */
+	public void testGetAlarmID() throws Exception {
+		for (AlarmTriplets triplet: AlarmTriplets.values()) {
+			if (!triplet.ID.contains("*")) {
+				Alarm alarm = alarmDAO.getAlarm(triplet.ID);
+				assertNotNull(alarm);
+				assertEquals(triplet.ID, alarm.getAlarmId());
+				Triplet alarmTriplet = alarm.getTriplet();
+				assertNotNull(alarmTriplet);
+				Triplet defTriplet = triplet.getTriplet();
+				assertEquals(defTriplet.getFaultFamily(), alarmTriplet.getFaultFamily());
+				assertEquals(defTriplet.getFaultMember(), alarmTriplet.getFaultMember());
+				assertEquals(defTriplet.getFaultCode(), alarmTriplet.getFaultCode());
+			}
 		}
 	}
 
