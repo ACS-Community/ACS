@@ -1,8 +1,8 @@
 /*
- * $Id: ResponsiblePerson.java,v 1.2 2006/09/25 08:52:36 acaproni Exp $
+ * $Id: ResponsiblePerson.java,v 1.3 2008/02/04 14:42:14 acaproni Exp $
  *
- * $Date: 2006/09/25 08:52:36 $ 
- * $Revision: 1.2 $ 
+ * $Date: 2008/02/04 14:42:14 $ 
+ * $Revision: 1.3 $ 
  * $Author: acaproni $
  *
  * Copyright CERN, All Rights Reserved.
@@ -15,7 +15,7 @@ import java.io.Serializable;
  * 
  * 
  * 
- * @version $Revision: 1.2 $ $Date: 2006/09/25 08:52:36 $
+ * @version $Revision: 1.3 $ $Date: 2008/02/04 14:42:14 $
  * @author Niall Stapley
  * @author Katarina Sigerud
  * 
@@ -53,8 +53,16 @@ public class ResponsiblePerson implements Serializable, Cloneable {
     setResponsibleId(responsibleId);
     setFamilyName(familyName);
     setFirstName(firstName);
-    setEMail(email);
-    setGsmNumber(gsm);
+    if (email!=null) {
+    	setEMail(email);
+    } else {
+    	setEMail("");
+    }
+    if (gsm!=null) {
+    	setGsmNumber(gsm);
+    } else {
+    	setGsmNumber("");
+    }
     setPhoneNumber(phone);
   }
 
