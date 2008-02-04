@@ -39,24 +39,28 @@ import alma.acs.component.client.ComponentClientTestCase;
 public class TestAlarmDAO extends ComponentClientTestCase {
 	
 	/**
-	 * The triplets of the alarms defined in the CDB
+	 * The triplets of the alarms defined in the CDB.
+	 * It should be enough to change this enum if the alarm
+	 * definitions in the CDB are modified.
 	 * 
 	 * @author acaproni
 	 *
 	 */
 	private enum AlarmTriplets {
-		TEST_TM1_1("TEST:TEST_MEMBER1:1"),
-		TEST_TM1_2("TEST:TEST_MEMBER1:2"),
-		TEST_TM2_1("TEST:TEST_MEMBER2:1"),
-		TEST_TM2_2("TEST:TEST_MEMBER2:2"),
-		TEST_DEF_1("TEST:*:1"),
-		TEST_DEF_2("TEST:*:2"),
-		PS_PSM_1("PS:PS_MEMBER:1");
+		TEST_TM1_1("TEST:TEST_MEMBER1:1",2),
+		TEST_TM1_2("TEST:TEST_MEMBER1:2",3),
+		TEST_TM2_1("TEST:TEST_MEMBER2:1",2),
+		TEST_TM2_2("TEST:TEST_MEMBER2:2",3),
+		TEST_DEF_1("TEST:*:1",2),
+		TEST_DEF_2("TEST:*:2",3),
+		PS_PSM_1("PS:PS_MEMBER:1",2);
 		
 		public final String ID;
+		public final int priority;
 		
-		private AlarmTriplets(String ID) {
+		private AlarmTriplets(String ID, int priority) {
 			this.ID=ID;
+			this.priority=priority;
 		}
 		
 		/**
@@ -142,22 +146,51 @@ public class TestAlarmDAO extends ComponentClientTestCase {
 	}
 	
 	/**
-	 * Test the getting of alarms by their ID
+	 * Test the getting of alarms by their ID.
+	 * 
+	 * it check the alarm, its ID, its triplet and its priority
 	 */
 	public void testGetAlarmID() throws Exception {
 		for (AlarmTriplets triplet: AlarmTriplets.values()) {
 			if (!triplet.ID.contains("*")) {
 				Alarm alarm = alarmDAO.getAlarm(triplet.ID);
 				assertNotNull(alarm);
+				// CHeck the ID
 				assertEquals(triplet.ID, alarm.getAlarmId());
+				// Check the triplet
 				Triplet alarmTriplet = alarm.getTriplet();
 				assertNotNull(alarmTriplet);
 				Triplet defTriplet = triplet.getTriplet();
 				assertEquals(defTriplet.getFaultFamily(), alarmTriplet.getFaultFamily());
 				assertEquals(defTriplet.getFaultMember(), alarmTriplet.getFaultMember());
 				assertEquals(defTriplet.getFaultCode(), alarmTriplet.getFaultCode());
+				// Check the priority
+				assertEquals(Integer.valueOf(triplet.priority), alarm.getPriority());
 			}
 		}
+	}
+	
+	/**
+	 * Test the setting of the responsible person
+	 * by getting PS and one of the TEST member
+	 * 
+	 * @throws Exception
+	 */
+	public void testResponsiblePerson() throws Exception {
+		Alarm ps = alarmDAO.getAlarm(AlarmTriplets.PS_PSM_1.ID);
+		assertNotNull(ps);
+		assertEquals("123456",ps.getResponsiblePerson().getGsmNumber());
+		assertEquals("test@eso.org", ps.getResponsiblePerson().getEMail());
+		assertEquals("", ps.getResponsiblePerson().getFirstName());
+		assertEquals("Alessandro", ps.getResponsiblePerson().getFamilyName());
+		
+		
+		Alarm test = alarmDAO.getAlarm(AlarmTriplets.TEST_TM1_1.ID);
+		assertNotNull(test);
+		assertEquals("",test.getResponsiblePerson().getGsmNumber());
+		assertEquals("", test.getResponsiblePerson().getEMail());
+		assertEquals("", test.getResponsiblePerson().getFirstName());
+		assertEquals("Alex", test.getResponsiblePerson().getFamilyName());
 	}
 
 }
