@@ -50,7 +50,7 @@ public class TestAlarmService extends ComponentClientTestCase {
 	 * @throws Exception
 	 */
 	public TestAlarmService() throws Exception {
-		super("AlarmSender");
+		super("TestAlarmService");
 	}
 	
 	/**
