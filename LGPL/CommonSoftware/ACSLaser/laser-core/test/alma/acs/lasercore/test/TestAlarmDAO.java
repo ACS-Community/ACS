@@ -260,5 +260,25 @@ public class TestAlarmDAO extends ComponentClientTestCase {
 		}
 		assertNull(alarm2);
 	}
+	
+	/**
+	 * Test the deletion of alarms
+	 */
+	public void testDeleteAlarm() {
+		int size =alarmDAO.getAllAlarmIDs().length;
+		
+		Alarm alarmToDelete = alarmDAO.getAlarm(AlarmTriplets.PS_PSM_1.ID);
+		assertNotNull(alarmToDelete);
+		
+		alarmDAO.deleteAlarm(alarmToDelete);
+		assertEquals(size-1, alarmDAO.getAllAlarmIDs().length);
+		Alarm deletedAlarm=alarmDAO.getAlarm(alarmToDelete.getAlarmId());
+		assertNull(deletedAlarm);
+		
+		// Try to delete an alarm that does not exist
+		size =alarmDAO.getAllAlarmIDs().length;
+		alarmDAO.deleteAlarm(alarmToDelete);
+		assertEquals(size, alarmDAO.getAllAlarmIDs().length);
+	}
 
 }
