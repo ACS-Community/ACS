@@ -55,9 +55,8 @@ import alma.alarmsystem.Source;
 import alma.alarmsystem.Status;
 import alma.alarmsystem.Timestamp;
 import alma.alarmsystem.Triplet;
+import alma.alarmsystem.core.mail.ACSMailAndSmsServer;
 
-import cern.cmw.mom.pubsub.impl.ACSJMSTopicConnectionImpl;
-import cern.laser.business.cache.AlarmCacheException;
 import cern.laser.business.cache.AlarmCacheListener;
 import cern.laser.business.cache.AlarmCacheListenerImpl;
 import cern.laser.business.pojo.AdminUserDefinitionServiceImpl;
@@ -193,8 +192,26 @@ public class LaserComponent extends ComponentImplBase
 
 		adminUserDAO = new ACSAdminUserDAOImpl();
 		alarmDAO = new ACSAlarmDAOImpl(logger);
+		alarmDAO.setConfAccessor(conf);
 		categoryDAO = new ACSCategoryDAOImpl(logger,alarmDAO);
+		categoryDAO.setConfAccessor(conf);
 		responsiblePersonDAO = new ACSResponsiblePersonDAOImpl();
+		
+		try {
+			alarmDAO.loadAlarms();
+		} catch (Exception ace) {
+			throw new ComponentLifecycleException("Error initializing alarms",ace);
+		}
+		try {
+			categoryDAO.loadCategories();
+		} catch (Exception ex) {
+			throw new ComponentLifecycleException("Error loading categories",ex);
+		}
+		sourceDAO = new ACSSourceDAOImpl(logger,alarmDAO.getSources());
+		sourceDAO.setConfAccessor(conf);
+		sourceDAO.setLaserSourceId("LASER");
+		sourceDAO.setAlarmDAO(alarmDAO);
+		sourceDAO.setResponsiblePersonDAO(responsiblePersonDAO);
 		
 		adminUserDefinitionService = new AdminUserDefinitionServiceImpl();
 		alarmCacheServer = new AlarmCacheServerImpl();
@@ -205,16 +222,14 @@ public class LaserComponent extends ComponentImplBase
 		categoryDefinitionService = new CategoryDefinitionServiceImpl();
 		coreService = new CoreServiceImpl();
 		heartbeat = new HeartbeatImpl();
-		mailAndSmsServer = new MailAndSmsServerImpl();
+		mailAndSmsServer = new ACSMailAndSmsServer(logger);
 		sourceDefinitionService = new SourceDefinitionServiceImpl();
 		alarmCacheListener = new AlarmCacheListenerImpl(alarmCacheServer);
 		alarmCache = new ACSAlarmCacheImpl(alarmDAO, alarmCacheListener);
-
-		alarmDAO.setConfAccessor(conf);
+		
 		alarmDAO.setSurveillanceAlarmId("SURVEILLANCE:SOURCE:1");
 		alarmDAO.setResponsiblePersonDAO(responsiblePersonDAO);
-
-		categoryDAO.setConfAccessor(conf);
+		
 //		categoryDAO.setCategoryTreeRoot("ACS");
 		categoryDAO.setCategoryTreeRoot("ROOT");
 		categoryDAO.setSurveillanceCategoryPath("ACS.SURVEILLANCE");
@@ -280,21 +295,7 @@ public class LaserComponent extends ComponentImplBase
 				.setAlarmDefinitionService(alarmDefinitionService);
 
 		
-		try {
-			alarmDAO.loadAlarms();
-		} catch (Exception ace) {
-			throw new ComponentLifecycleException("Error initializing alarms",ace);
-		}
-		try {
-			categoryDAO.loadCategories();
-		} catch (Exception ex) {
-			throw new ComponentLifecycleException("Error loading categories",ex);
-		}
-		sourceDAO = new ACSSourceDAOImpl(logger,alarmDAO.getSources());
-		sourceDAO.setConfAccessor(conf);
-		sourceDAO.setLaserSourceId("LASER");
-		sourceDAO.setAlarmDAO(alarmDAO);
-		sourceDAO.setResponsiblePersonDAO(responsiblePersonDAO);
+		
 		
 		String[] allSources=sourceDAO.getAllSourceIDs();
 		if (allSources!=null) {
@@ -688,15 +689,13 @@ public class LaserComponent extends ComponentImplBase
 	 * @see alma.alarmsystem.CoreServiceOperations#getSources()
 	 */
 	public Source[] getSources() {
-        Collection sources = coreService.getSources();
+        Collection<cern.laser.business.data.Source> sources = coreService.getSources();
         Source[] retVal = new Source[sources.size()];
         int pos = 0;
-        for (Iterator iter = sources.iterator(); iter.hasNext(); )
+        for (cern.laser.business.data.Source source: sources )
         {
-        	cern.laser.business.data.Source source = (cern.laser.business.data.Source)iter.next();
         	retVal[pos++] = fromBusinessSource(source);
         }
-        
         return retVal;
 	}
 
