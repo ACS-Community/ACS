@@ -476,7 +476,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
                       	new ObjectStreamField("components", HandleDataStore.class),
                       	new ObjectStreamField("unavailableComponents", Map.class),
 						new ObjectStreamField("defaultComponents", Map.class),
-						new ObjectStreamField("domains", HashSet.class)};
+						new ObjectStreamField("domains", HashSet.class),
     					new ObjectStreamField("activeAlarms", HashSet.class)};
 
 	/**
