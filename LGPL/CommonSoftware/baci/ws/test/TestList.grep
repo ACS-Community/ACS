@@ -10,3 +10,7 @@ baci::Monitor&lt;&gt;::getName
 baci::Monitor&lt;&gt;::getObjectState
 baci::Monitor&lt;&gt;::monitorStateChanged
 baci::Monitor&lt;&gt;::set_timer_trigger
+ACSAlarmSystemInterfaceFactory::init
+ACSAlarmSystemInterfaceFactory::init
+ACSAlarmSystemInterfaceFactory::initImplementationType entering
+ACSAlarmSystemInterfaceFactory::initImplementationType exiting
