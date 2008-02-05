@@ -23,7 +23,6 @@ package alma.acs.logging;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -105,19 +104,19 @@ public class ClientLogManager implements LogConfigSubscriber
      * Not really needed any more now that handlers are not shared.
      */ 
     private Logger parentRemoteLogger;
-    
-    /**
-     * The log queue can be null if remote logging has been suppressed.
-     * Otherwise it is non-null even if remote logging is not active, because it stores the records to be sent off later.
-     */
-    protected DispatchingLogQueue logQueue;
-    
-    /**
-     * The log dispatcher object serves as a flag for whether 
-     * remote logging has been activated via 
-     * {@link #initRemoteLogging(ORB, Manager, int, boolean)}. 
-     */
-    private RemoteLogDispatcher logDispatcher;
+
+	/**
+	 * The log queue can be null if remote logging has been suppressed. Otherwise it is non-null even if remote logging
+	 * is not active, because it stores the records to be sent off later.
+	 */
+	protected volatile DispatchingLogQueue logQueue;
+	private final ReentrantLock logQueueLock = new ReentrantLock();
+	
+	/**
+	 * The log dispatcher object serves as a flag for whether remote logging has been activated via
+	 * {@link #initRemoteLogging(ORB, Manager, int, boolean)}.
+	 */
+	private RemoteLogDispatcher logDispatcher;
 
     /** 
      * Logger used by the classes in this logging package.
@@ -142,7 +141,7 @@ public class ClientLogManager implements LogConfigSubscriber
 	 * If true then the Corba (ORB) logger will not send logs to the Log service.
 	 */
 	private boolean suppressCorbaRemoteLogging = false;
-
+	
 	
 	/**
 	 * Singleton accessor.
@@ -182,81 +181,87 @@ public class ClientLogManager implements LogConfigSubscriber
         }        
 	}
 
-    /**
-     * @see alma.acs.logging.config.LogConfigSubscriber#configureLogging(alma.acs.logging.LogConfig)
-     */
-    public void configureLogging(LogConfig logConfig) {
-    	
-        if (!logConfig.getCentralizedLogger().equals(logServiceName)) {
-        	if (logServiceName == null) {
-        		logServiceName = logConfig.getCentralizedLogger();
-        	}
-        	else {
-        		m_internalLogger.warning("Dynamic switching of Log service not yet supported!");
-        		// TODO: switch connection to new log service
-        	}
-        }
-        
-        // Only (re-)set the flushing if the value has changed, because the operation is expensive (stop/start)
-        if (logConfig.getFlushPeriodSeconds() != flushPeriodSeconds) {
-        	flushPeriodSeconds = logConfig.getFlushPeriodSeconds();
-        	if (logQueue != null) {
-        		logQueue.setPeriodicFlushing(logConfig.getFlushPeriodSeconds());
-        	}
-        }
-     
-        // Set the log queue size.   
-    	if (logQueue != null) {
-    		logQueue.setMaxQueueSize(logConfig.getMaxLogQueueSize());
-    	}
-    }
+	/**
+	 * @see alma.acs.logging.config.LogConfigSubscriber#configureLogging(alma.acs.logging.LogConfig)
+	 */
+	public void configureLogging(LogConfig logConfig) {
+
+		if (!logConfig.getCentralizedLogger().equals(logServiceName)) {
+			if (logServiceName == null) {
+				logServiceName = logConfig.getCentralizedLogger();
+			} else {
+				m_internalLogger.warning("Dynamic switching of Log service not yet supported!");
+				// TODO: switch connection to new log service
+			}
+		}
+
+		logQueueLock.lock();
+		try {
+			if (logQueue != null) {
+				// Only (re-)set the flushing if the value has changed, because the operation is expensive (stop/start)
+				if (logConfig.getFlushPeriodSeconds() != flushPeriodSeconds) {
+					flushPeriodSeconds = logConfig.getFlushPeriodSeconds();
+					logQueue.setPeriodicFlushing(logConfig.getFlushPeriodSeconds());
+				}
+
+				// Set the log queue size.
+				logQueue.setMaxQueueSize(logConfig.getMaxLogQueueSize());
+			}
+		} finally {
+			logQueueLock.unlock();
+		}
+	}
 
     
     /**
-     * Gets the <code>LogConfig</code> object that is shared between the ClientLogManager singleton
-     * and any other objects in the process (e.g. Java container or manager classes, Loggers, Handlers).
-     */
+	 * Gets the <code>LogConfig</code> object that is shared between the ClientLogManager singleton and any other
+	 * objects in the process (e.g. Java container or manager classes, Loggers, Handlers).
+	 */
     public LogConfig getLogConfig() {
         return sharedLogConfig;
     }
     
     
     /**
-     * If not done already, sets up remote handlers for all loggers using a shared queue.
-     */
-    protected void prepareRemoteLogging() {
-        if (logQueue == null) {
-            logQueue = new DispatchingLogQueue();
-            logQueue.setMaxQueueSize(getLogConfig().getMaxLogQueueSize());
-        }
-        
-        synchronized (loggers) {
-            // attach remote handlers to all loggers
-            for (String loggerName : loggers.keySet()) {
-           		AcsLoggerInfo loggerInfo = loggers.get(loggerName);
-           		AcsLogger logger = loggerInfo.logger;
-           		
-            	// sanity check on loggerName: map key vs. Logger 
-    			if (logger.getLoggerName() == null || !logger.getLoggerName().equals(loggerName)) {
-    				logger.setLoggerName(loggerName);
-					logger.info("Logging name mismatch resolved for '" + loggerName + "'. Should be reported to ACS developers");
-    			}
-
-            	addRemoteHandler(logger);
-    		}			
+	 * If not done already, sets up remote handlers for all loggers using a shared queue.
+	 */
+	protected void prepareRemoteLogging() {
+		logQueueLock.lock();
+		try {
+			if (logQueue == null) {
+				logQueue = new DispatchingLogQueue();
+				logQueue.setMaxQueueSize(getLogConfig().getMaxLogQueueSize());
+			}
+		} finally {
+			logQueueLock.unlock();
 		}
-    }
+		synchronized (loggers) {
+			// attach remote handlers to all loggers
+			for (String loggerName : loggers.keySet()) {
+				AcsLoggerInfo loggerInfo = loggers.get(loggerName);
+				AcsLogger logger = loggerInfo.logger;
+
+				// sanity check on loggerName: map key vs. Logger
+				if (logger.getLoggerName() == null || !logger.getLoggerName().equals(loggerName)) {
+					logger.setLoggerName(loggerName);
+					logger.info("Logging name mismatch resolved for '" + loggerName
+							+ "'. Should be reported to ACS developers");
+				}
+
+				addRemoteHandler(logger);
+			}
+		}
+	}
 
     
     /**
-     * Removes, closes, and nulls all remote handlers,
-     * so that no more records are put into the queue, and queue and remote handlers can be garbage collected.
-     * <p>
-     * GC of the queue can be an advantage when logs have been queued for remote sending,
-     * but instead of connecting to the remote logger, we get a call
-     * to {@link #suppressRemoteLogging()}. All messages have been logged locally anyway,
-     * so in this case we want to clean up all these <code>LogRecord</code>s.
-     */
+	 * Removes, closes, and nulls all remote handlers, so that no more records are put into the queue, and queue and
+	 * remote handlers can be garbage collected.
+	 * <p>
+	 * GC of the queue can be an advantage when logs have been queued for remote sending, but then instead of connecting
+	 * to the remote logger, we get a call to {@link #suppressRemoteLogging()}. All messages have been logged locally
+	 * anyway, so in this case we want to clean up all these <code>LogRecord</code>s.
+	 */
     protected void disableRemoteLogging() {
         synchronized (loggers) {
             for (String loggerName : loggers.keySet()) {
@@ -458,7 +463,8 @@ public class ClientLogManager implements LogConfigSubscriber
 	 * Enables loggers to send log records to the central ACS logger service.
      * Tries to connect to the log service using the supplied ACS manager.
      * As long as this connection fails, this method can sleep for 10 seconds and then try to connect again,
-     * if the parameter <code>retry</code> is <code>true</code>.
+     * if the parameter <code>retry</code> is <code>true</code>. Total retries are limited to 5,
+     * to detect a permanent problem before the log queue overflows.
      * <p>
      * Execution time can be significant, so consider calling this method in a separate thread 
      * (which has no negative effect on the logging since all log records are cached and automatically sent off
@@ -472,7 +478,7 @@ public class ClientLogManager implements LogConfigSubscriber
 	 * @param orb  the ORB used in this JVM
 	 * @param manager  the ACS manager
 	 * @param managerHandle  handle assigned by the ACS Manager for this client
-     * @param retry  if true, a failing connection to the log service will trigger another attempt 10 seconds later.
+     * @param retry  if true, a failing connection to the log service will trigger up to 5 other attempts, every 10 seconds.
      * @return true if remote logging was initialized successfully
      * @see #shutdown(boolean)
 	 */
@@ -492,7 +498,6 @@ public class ClientLogManager implements LogConfigSubscriber
             System.err.println("can't connect to log service: manager is null, or invalid handle " + managerHandle);
             return false;
 		}
-                
         Log logService = null;
         int count = 0;
         String errMsg;
@@ -503,25 +508,36 @@ public class ClientLogManager implements LogConfigSubscriber
                 // normally there will be a remote handler and log queue already, which has captured all log records produced so far.
                 // However, if suppressRemoteLogging was called, we need to set up remote logging from scratch. 
                 prepareRemoteLogging();
-
                 logService = LogHelper.narrow(manager.get_service(managerHandle, logServiceName, true));
                 if (logService == null) {
                     errMsg = "Failed to obtain central log service '" + logServiceName + "': reference is 'null'. ";
                 }
                 else { 
-                    if (count > 1) {
-                        // all is fine, but we report the difficulty
-                        m_internalLogger.info("Connected to central log service after initial failure. ");
-                    }
-                    // make log service available to our dispatcher, and flush the records collected so far
-                    if(LOG_BIN_TYPE){
-                        logDispatcher = new RemoteLogDispatcher(orb, logService, new AcsBinLogFormatter());
-                    }else{
-                        logDispatcher = new RemoteLogDispatcher(orb, logService, new AcsXMLLogFormatter());
-                    }
-                    logQueue.setRemoteLogDispatcher(logDispatcher);
-                    logQueue.flushAllAndWait();
-                    logQueue.setPeriodicFlushing(flushPeriodSeconds * 1000);
+                	logQueueLock.lock(); // we keep the above get_service call outside this locked section in order to not block shutdown() too long
+                	if (logQueue == null) {
+                		// this can happen if shutdown or suppressRemoteLogging is called concurrently
+                		System.out.println("Will interrupt ClientLogManager#initRemoteLogging because remote logging seems no longer needed.");
+                		return false;
+                	}
+                	try {
+	                    if (count > 1) {
+	                        // all is fine, but we report the difficulty
+	                        m_internalLogger.info("Connected to central log service after initial failure. ");
+	                    }
+	                    // make log service available to our dispatcher, and flush the records collected so far
+	                    if(LOG_BIN_TYPE){
+	                        logDispatcher = new RemoteLogDispatcher(orb, logService, new AcsBinLogFormatter());
+	                    }else{
+	                        logDispatcher = new RemoteLogDispatcher(orb, logService, new AcsXMLLogFormatter());
+	                    }
+	                    
+	                    logQueue.setRemoteLogDispatcher(logDispatcher);
+	                    logQueue.flushAllAndWait();
+	                    logQueue.setPeriodicFlushing(flushPeriodSeconds * 1000);
+                	}
+	                finally {
+	                	logQueueLock.unlock();
+	                }
                 }
             }
             catch (Throwable thr) {
@@ -537,48 +553,56 @@ public class ClientLogManager implements LogConfigSubscriber
             }
             if (errMsg != null) {
             	// can't use the loggers, so println is ok here
-                System.err.println(errMsg + "Will try again in 10 seconds.");
-                try {
-                    Thread.sleep(10000);
-                } catch (InterruptedException e) {
-                    break;
-                }
+            	if (retry) {
+            		System.err.println(errMsg + "Will try again in 10 seconds.");
+            		try {
+	                    Thread.sleep(10000);
+	                } catch (InterruptedException e) {
+	                	System.err.println("Abandoning ClientLogManager#initRemoteLogging retries because of thread interruption.");
+	                    retry = false; 
+	                }
+            	}
+            	else {
+            		System.err.println(errMsg);
+            	}
             }
-        } while (retry && (errMsg != null));
+        } while (retry && count <= 5 && errMsg != null);
         
         return (errMsg == null);
 	}
-	
-    
-    /**
-     * Suppresses remote logging.
-     * If log messages destined for remote logging have not been sent to the central log service yet
-     * (e.g. because {@link #initRemoteLogging(ORB, Manager, int, boolean) initRemoteLogging} has not been called,
-     * or because of sending failures), these log messages will be lost for remote logging.
-     * Log messages produced after this call will not even be queued for remote logging.
-     * <p>
-     * This method should only be called by special ALMA applications such as the Observation Preparation tool,
-     * which runs stand-alone, with all containers, managers, etc. in one JVM. 
-     * In this case, no central logger is available, and all loggers which normally send their output to the central 
-     * logger should be limited to local logging (stdout). 
-     * <p>
-     * It is possible (probably not useful in real life) to re-enable remote logging later,
-     * by calling <code>initRemoteLogging</code>. 
-     */
-    public void suppressRemoteLogging() {
-        disableRemoteLogging();
-        logQueue = null;
-    }
+
+	/**
+	 * Suppresses remote logging. If log messages destined for remote logging have not been sent to the central log
+	 * service yet (e.g. because {@link #initRemoteLogging(ORB, Manager, int, boolean) initRemoteLogging} has not been
+	 * called, or because of sending failures), these log messages will be lost for remote logging. Log messages
+	 * produced after this call will not even be queued for remote logging.
+	 * <p>
+	 * This method should only be called by special ALMA applications such as the Observation Preparation tool, which
+	 * runs stand-alone, with all containers, managers, etc. in one JVM. In this case, no central logger is available,
+	 * and all loggers which normally send their output to the central logger should be limited to local logging
+	 * (stdout).
+	 * <p>
+	 * It is possible (probably not useful in real life) to re-enable remote logging later, by calling
+	 * <code>initRemoteLogging</code>.
+	 */
+	public void suppressRemoteLogging() {
+		logQueueLock.lock();
+		try {
+			System.out.println("suppressRemoteLogging called");
+			disableRemoteLogging();
+			logQueue = null;
+		} finally {
+			logQueueLock.unlock();
+		}
+	}
 
     /**
-     * Allows to suppress remote logging of Corba/ORB logger(s). 
-     * Internally this suppression is handled using log level changes
-     * that cannot be undone by other log level changes.
-     * Generally remote logging remains enabled though, which makes this method quite different 
-     * from {@linkplain #suppressRemoteLogging()}.
-     * <p>
-     * <strong>Application code such as components must not call this method!<strong> 
-     */
+	 * Allows to suppress remote logging of Corba/ORB logger(s). Internally this suppression is handled using log level
+	 * changes that cannot be undone by other log level changes. Generally remote logging remains enabled though, which
+	 * makes this method quite different from {@linkplain #suppressRemoteLogging()}.
+	 * <p>
+	 * <strong>Application code such as components must not call this method!<strong>
+	 */
     public void suppressCorbaRemoteLogging() {
     	suppressCorbaRemoteLogging = true;
     	
@@ -732,47 +756,50 @@ public class ClientLogManager implements LogConfigSubscriber
 	}
 
 	/**
-     * Shuts down remote ACS logging. 
-     * The loggers can still be used, but will only log locally. 
-     * @param wait
-     */
-    public void shutdown(boolean wait) {
-        
-        if (DEBUG) {
-            System.out.println("ClientLogManager#shutdown(" + wait + ") called.");
-        }
-        
-        // clean up remote logging, if it's still active
-        if (logQueue != null) {
-            // stop adding more log records for remote logging
-            disableRemoteLogging();             
-            
-            if (wait) {
-                flushAll();
-            }
-            else {
-                // trigger one last flush, which may itself attempt to trigger more flushes, 
-                // but only until shutDown prohibits further scheduling.
-                Future<Boolean> flushFuture = logQueue.flush();
-                // wait at most 200 milliseconds, to give the flush a chance to reach the central log service.
-                // we don't care about the result.
-                try {
-                    flushFuture.get(200, TimeUnit.MILLISECONDS);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                } 
-            }
-            
-            logQueue.shutDown();
-            logQueue = null;
-        }
-        
-        // junit classloaders don't manage to reload this class between tests, so we explicitly null the instance
-        s_instance = null;
-        
-        // todo: check if we should release the Log service with the manager 
-        // (probably not since currently it doesn't even require us to be logged in to access the Log service). 
-    }
+	 * Shuts down remote ACS logging. 
+	 * The loggers can still be used, but will only log locally. 
+	 * @param wait
+	 */
+	public void shutdown(boolean wait) {
+
+		if (DEBUG) {
+			System.out.println("ClientLogManager#shutdown(" + wait + ") called.");
+		}
+
+		// clean up remote logging, if it's still active
+		logQueueLock.lock();
+		try {
+			if (logQueue != null) {
+				// stop adding more log records for remote logging
+				disableRemoteLogging();
+
+				if (wait) {
+					flushAll();
+				} else {
+					// trigger one last flush, which may itself attempt to trigger more flushes, 
+					// but only until shutDown prohibits further scheduling.
+					Future<Boolean> flushFuture = logQueue.flush();
+					// wait at most 200 milliseconds, to give the flush a chance to reach the central log service.
+					// we don't care about the result.
+					try {
+						flushFuture.get(200, TimeUnit.MILLISECONDS);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+				logQueue.shutDown();
+				logQueue = null;
+			}
+
+			// junit classloaders don't manage to reload this class between tests, so we explicitly null the instance
+			s_instance = null;
+
+			// todo: check if we should release the Log service with the manager 
+			// (probably not since currently it doesn't even require us to be logged in to access the Log service).
+		} finally {
+			logQueueLock.unlock();
+		}
+	}
     
     
 	/**
