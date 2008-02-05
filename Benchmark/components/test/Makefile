@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.25 2007/11/21 10:53:18 eallaert Exp $"
+# "@(#) $Id: Makefile,v 1.26 2008/02/05 13:34:12 eallaert Exp $"
 #
 # Makefile of ........
 #
@@ -51,6 +51,7 @@ USER_LIB = 	-lACE \
 		-lACSBulkDataError \
 		-lbulkDataReceiverStubs
 
+ACS_VERSION = $(shell cat $(ACSROOT)/ACS_VERSION)
 #
 # MODULE CODE DESCRIPTION:
 # ------------------------
@@ -240,7 +241,7 @@ endif
 #
 # TARGETS
 # -------
-all:	do_all
+all:	fix_xml do_all
 	@echo " . . . 'all' done" 
 
 clean : clean_all 
@@ -267,4 +268,8 @@ clean_dbm:
 	$(RM) ../doc/compError.dbm
 	$(RM) ../doc/compMethod.dbm
 	$(RM) ../doc/compBulkData.dbm
+
+# Temporary target, to deal with changes for Manager.xml introduced with ACS 7.0
+fix_xml :
+	$(AT)cp -f CDB/MACI/Managers/Manager/Manager.xml_$(ACS_VERSION) CDB/MACI/Managers/Manager/Manager.xml
 #___oOo___
