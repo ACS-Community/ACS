@@ -11,3 +11,7 @@ baci::Monitor&lt;&gt;::getObjectState
 baci::Monitor&lt;&gt;::monitorStateChanged
 baci::Monitor&lt;&gt;::set_timer_trigger
 baci::Monitor&lt;&gt;::set_value_trigger
+ACSAlarmSystemInterfaceFactory::createFaultState
+ACSAlarmSystemInterfaceFactory::createSource
+ACSAlarmSystemInterfaceFactory::initImplementationType
+ACSAlarmSystemInterfaceFactory::init
