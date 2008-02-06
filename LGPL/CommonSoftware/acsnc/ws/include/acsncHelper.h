@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsncHelper.h,v 1.65 2006/10/17 11:19:10 sharring Exp $"
+* "@(#) $Id: acsncHelper.h,v 1.66 2008/02/06 15:26:39 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -79,11 +79,12 @@ class Helper
     /**
      *  Constructor
      *  @param channelName Name of the channel
+     *  @param notifyServiceDomainName Name of the notification service domain name used to determine notification service.
      *  @htmlonly
         <br><hr>
         @endhtmlonly
      */
-    Helper(const char* channelName);
+    Helper(const char* channelName, const char* notifyServiceDomainName = 0);
     
     /**
      *  Resolve the TAO naming service.
@@ -161,7 +162,16 @@ class Helper
      */
     virtual const char*
     getNotificationFactoryName()
-	{return acscommon::NOTIFICATION_FACTORY_NAME;}
+	{
+		if (!notificationServiceName_mp)
+		{
+			notificationServiceName_mp = CDBProperties::getNotificationFactoryNameForChannel(channelName_mp, notifyServiceDomainName_mp);
+			if (!notificationServiceName_mp)
+				notificationServiceName_mp = CORBA::string_dup(acscommon::NOTIFICATION_FACTORY_NAME);
+		}
+		
+		return notificationServiceName_mp;
+	}
 
     /**
      * Utility method.
@@ -240,6 +250,17 @@ class Helper
      *  Name of the notification channel.
      */
     char *channelName_mp;
+
+    
+    /**
+     *  Name of the nofitication service domain.
+     */
+    char *notifyServiceDomainName_mp;
+    
+    /**
+     * Name of "resovled" notification service.
+     */
+    char *notificationServiceName_mp;
 
     /**
      *  In case of standalone mode, this must be used!

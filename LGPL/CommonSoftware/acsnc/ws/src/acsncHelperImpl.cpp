@@ -19,7 +19,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsncHelperImpl.cpp,v 1.74 2008/02/06 14:29:25 msekoran Exp $"
+* "@(#) $Id: acsncHelperImpl.cpp,v 1.75 2008/02/06 15:26:44 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -43,6 +43,7 @@ Helper::Helper(const char* channelName, const char* notifyServiceDomainName):
     notifyChannel_m(CosNotifyChannelAdmin::EventChannel::_nil()),
     channelName_mp(0),
     notifyServiceDomainName_mp(0),
+    notificationServiceName_mp(0),
     orbHelper_mp(0),
     notifyFactory_m(0),
     channelID_m(0),
@@ -88,7 +89,14 @@ Helper::~Helper()
 	delete orbHelper_mp; 
 	orbHelper_mp=0;
 	}
-    // @todo channelName_mp and notifyServiceDomainName_mp should be freed here??!
+
+	// set them free...	
+	if (channelName_mp != 0)
+		CORBA::string_free(channelName_mp);
+	if (notifyServiceDomainName_mp != 0)
+		CORBA::string_free(notifyServiceDomainName_mp);
+	if (notificationServiceName_mp != 0)
+		CORBA::string_free(notificationServiceName_mp);
 }
 //-----------------------------------------------------------------------------
 void 

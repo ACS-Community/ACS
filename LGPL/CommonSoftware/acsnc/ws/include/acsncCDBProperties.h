@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsncCDBProperties.h,v 1.6 2006/03/08 22:10:00 dfugate Exp $"
+* "@(#) $Id: acsncCDBProperties.h,v 1.7 2008/02/06 15:26:39 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -73,6 +73,14 @@ namespace nc {
 	static CosNotification::AdminProperties
 	getCDBAdminProps(const std::string& channelName);
 	
+	/**
+	 * Get notification channel factory name for given channel/domain.
+	 * @param channelName	name of the channel.
+	 * @param domainName	name of the domain, <code>0</code> if undefined.
+	 * @return notification channel factory name.
+	 */
+	static char*  getNotificationFactoryNameForChannel(const char* channelName, const char* domainName = 0);
+
 	/**
 	 * Given a channel name that exists in the ACS CDB
 	 * ($ACS_CDB/CDB/MACI/Channels/channelName/channelName.xml), this
