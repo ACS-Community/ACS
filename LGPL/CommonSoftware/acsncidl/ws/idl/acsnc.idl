@@ -96,13 +96,19 @@ module acsnc
 
 
     /**
-     * Known event channel domains that allow a hardcoded or CDB-based mapping from a channel to a notification service.  
+     * Typedef for "enum" values of known event channel domains that allow a hardcoded or CDB-based mapping from a channel to a notification service.  
      */
-    enum EventChannelDomains
-    {
-        ALARMSYSTEM   // currently just this one
-    };
-    
+    typedef short domainNameValue;
+
+    /**
+     * Alarm System NC CDB mapping domain "enum" value.
+     */
+    const domainNameValue ALARMSYSTEM_DOMAIN_VAL = 0;
+
+    /**
+     * Alarm System NC CDB mapping domain name.
+     */
+    const string ALARMSYSTEM_DOMAIN_NAME = "ALARMSYSTE";
 
     ////////////////////////////////////////////////////////////////////////
     /** @interface ACSEventAdmin
