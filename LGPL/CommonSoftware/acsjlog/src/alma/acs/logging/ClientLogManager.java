@@ -32,8 +32,8 @@ import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
 import org.omg.CORBA.ORB;
-import org.omg.DsLogAdmin.Log;
 import org.omg.DsLogAdmin.LogHelper;
+import org.omg.DsLogAdmin.LogOperations;
 
 import si.ijs.maci.Manager;
 
@@ -44,6 +44,10 @@ import alma.acs.logging.formatters.AcsBinLogFormatter;
 import alma.acs.logging.formatters.AcsXMLLogFormatter;
 import alma.acs.logging.formatters.ConsoleLogFormatter;
 import alma.acs.logging.level.AcsLogLevelDefinition;
+import alma.maciErrType.CannotGetComponentEx;
+import alma.maciErrType.ComponentConfigurationNotFoundEx;
+import alma.maciErrType.ComponentNotAlreadyActivatedEx;
+import alma.maciErrType.NoPermissionEx;
 
 
 /**
@@ -186,6 +190,8 @@ public class ClientLogManager implements LogConfigSubscriber
 	 */
 	public void configureLogging(LogConfig logConfig) {
 
+//System.out.println("ClientLogManager#configureLogging called ");
+
 		if (!logConfig.getCentralizedLogger().equals(logServiceName)) {
 			if (logServiceName == null) {
 				logServiceName = logConfig.getCentralizedLogger();
@@ -196,12 +202,13 @@ public class ClientLogManager implements LogConfigSubscriber
 		}
 
 		logQueueLock.lock();
+//System.out.println("ClientLogManager#configureLogging got the logQueue lock");
 		try {
 			if (logQueue != null) {
-				// Only (re-)set the flushing if the value has changed, because the operation is expensive (stop/start)
-				if (logConfig.getFlushPeriodSeconds() != flushPeriodSeconds) {
-					flushPeriodSeconds = logConfig.getFlushPeriodSeconds();
-					logQueue.setPeriodicFlushing(logConfig.getFlushPeriodSeconds());
+				flushPeriodSeconds = logConfig.getFlushPeriodSeconds();
+				// don't call this while logQueue is not ready for remote dispatching, because it would produce an ugly error message.
+				if (logQueue.hasRemoteDispatcher()) {
+					logQueue.setPeriodicFlushing(flushPeriodSeconds * 1000);
 				}
 
 				// Set the log queue size.
@@ -209,6 +216,7 @@ public class ClientLogManager implements LogConfigSubscriber
 			}
 		} finally {
 			logQueueLock.unlock();
+//System.out.println("ClientLogManager#configureLogging released the logQueue lock");
 		}
 	}
 
@@ -227,6 +235,7 @@ public class ClientLogManager implements LogConfigSubscriber
 	 */
 	protected void prepareRemoteLogging() {
 		logQueueLock.lock();
+//System.out.println("ClientLogManager#prepareRemoteLogging got the logQueue lock");
 		try {
 			if (logQueue == null) {
 				logQueue = new DispatchingLogQueue();
@@ -234,6 +243,7 @@ public class ClientLogManager implements LogConfigSubscriber
 			}
 		} finally {
 			logQueueLock.unlock();
+//System.out.println("ClientLogManager#prepareRemoteLogging released the logQueue lock.");			
 		}
 		synchronized (loggers) {
 			// attach remote handlers to all loggers
@@ -498,7 +508,7 @@ public class ClientLogManager implements LogConfigSubscriber
             System.err.println("can't connect to log service: manager is null, or invalid handle " + managerHandle);
             return false;
 		}
-        Log logService = null;
+        LogOperations logService = null;
         int count = 0;
         String errMsg;
         do {
@@ -508,15 +518,16 @@ public class ClientLogManager implements LogConfigSubscriber
                 // normally there will be a remote handler and log queue already, which has captured all log records produced so far.
                 // However, if suppressRemoteLogging was called, we need to set up remote logging from scratch. 
                 prepareRemoteLogging();
-                logService = LogHelper.narrow(manager.get_service(managerHandle, logServiceName, true));
+                logService = getLogService(manager, managerHandle);
                 if (logService == null) {
                     errMsg = "Failed to obtain central log service '" + logServiceName + "': reference is 'null'. ";
                 }
                 else { 
                 	logQueueLock.lock(); // we keep the above get_service call outside this locked section in order to not block shutdown() too long
+//System.out.println("ClientLogManager#initRemoteLogging got the logQueue lock");
                 	if (logQueue == null) {
                 		// this can happen if shutdown or suppressRemoteLogging is called concurrently
-                		System.out.println("Will interrupt ClientLogManager#initRemoteLogging because remote logging seems no longer needed.");
+                		System.out.println("Will abort ClientLogManager#initRemoteLogging because remote logging seems no longer needed.");
                 		return false;
                 	}
                 	try {
@@ -525,9 +536,10 @@ public class ClientLogManager implements LogConfigSubscriber
 	                        m_internalLogger.info("Connected to central log service after initial failure. ");
 	                    }
 	                    // make log service available to our dispatcher, and flush the records collected so far
-	                    if(LOG_BIN_TYPE){
+	                    if (LOG_BIN_TYPE){
 	                        logDispatcher = new RemoteLogDispatcher(orb, logService, new AcsBinLogFormatter());
-	                    }else{
+	                    } 
+	                    else {
 	                        logDispatcher = new RemoteLogDispatcher(orb, logService, new AcsXMLLogFormatter());
 	                    }
 	                    
@@ -537,6 +549,7 @@ public class ClientLogManager implements LogConfigSubscriber
                 	}
 	                finally {
 	                	logQueueLock.unlock();
+//	                	System.out.println("ClientLogManager#initRemoteLogging released the logQueue lock");
 	                }
                 }
             }
@@ -571,6 +584,15 @@ public class ClientLogManager implements LogConfigSubscriber
         return (errMsg == null);
 	}
 
+	/**
+	 * This method is broken out from {@link #initRemoteLogging(ORB, Manager, int, boolean)} to allow mock implementation by tests
+	 * without a functional manager object. Note that module acsjlog comes before jmanager.
+	 */
+	protected LogOperations getLogService(Manager manager, int managerHandle) throws ComponentNotAlreadyActivatedEx, CannotGetComponentEx, NoPermissionEx, ComponentConfigurationNotFoundEx {
+		return LogHelper.narrow(manager.get_service(managerHandle, logServiceName, true));
+	}
+
+	
 	/**
 	 * Suppresses remote logging. If log messages destined for remote logging have not been sent to the central log
 	 * service yet (e.g. because {@link #initRemoteLogging(ORB, Manager, int, boolean) initRemoteLogging} has not been
