@@ -65,7 +65,7 @@ public class DispatchingLogQueue {
     // 
     private final ReentrantLock flushLock;
     
-    private ScheduledThreadPoolExecutor executor;
+    private final ScheduledThreadPoolExecutor executor;
     private ScheduledFuture<?> flushScheduleFuture;
     
     // system time in millisec when last flush finished (either scheduled or explicit flush)
@@ -457,7 +457,10 @@ public class DispatchingLogQueue {
      * Triggers periodic calls to {@link #flush(boolean)}, 
      * or terminates such automatic flushing if <code>periodMillisec == 0</code>.
      * <p>
-     * All control over periodic log flushing is confined in this method. 
+     * All control over periodic log flushing is confined in this method.
+     * <p> 
+     * The call returns without further action if flushing is already enabled 
+     * with the same period as <code>periodMillisec</code>.
      * 
      * @param periodMillisec the delay between end of last scheduled flush() and the next scheduled flush().
      */
@@ -466,6 +469,11 @@ public class DispatchingLogQueue {
             System.err.println("DispatchingLogQueue#setPeriodicFlushing is ignored until setRemoteLogDispatcher() has been called!");
             return;
         }        
+        
+        // Only re-set the flushing if the value has changed, because the operation is expensive (stop/start).
+        if (currentFlushPeriod == periodMillisec && flushesPeriodically()) {
+        	return;
+        }
         
         // store period 
         currentFlushPeriod = periodMillisec;
