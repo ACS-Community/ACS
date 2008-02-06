@@ -11,7 +11,19 @@ exported MANAGER_COMPUTER_NAME
 Manager will be run on port
 Interrupted system call or resource temporarily anavailable
 Local file logger
-entering
-exiting
 ACSAlarmSystemInterfaceFactory::cleanUpBooleanPtr deleting m_useACSAlarmSystem ptr
 ACSAlarmSystemInterfaceFactory::cleanUpManagerReference nilling manager reference
+ACSAlarmSystemInterfaceFactory::init
+ACSAlarmSystemInterfaceFactory::init
+ACSAlarmSystemInterfaceFactory::cleanUpAlarmSystemInterfacePtr entering
+ACSAlarmSystemInterfaceFactory::cleanUpAlarmSystemInterfacePtr exiting
+ACSAlarmSystemInterfaceFactory::cleanUpBooleanPtr entering
+ACSAlarmSystemInterfaceFactory::cleanUpBooleanPtr exiting
+ACSAlarmSystemInterfaceFactory::cleanUpDLL entering
+ACSAlarmSystemInterfaceFactory::cleanUpDLL exiting
+ACSAlarmSystemInterfaceFactory::cleanUpManagerReference entering
+ACSAlarmSystemInterfaceFactory::cleanUpManagerReference exiting
+ACSAlarmSystemInterfaceFactory::cleanUpSharedSource entering
+ACSAlarmSystemInterfaceFactory::cleanUpSharedSource exiting
+ACSAlarmSystemInterfaceFactory::done entering
+ACSAlarmSystemInterfaceFactory::done exiting
