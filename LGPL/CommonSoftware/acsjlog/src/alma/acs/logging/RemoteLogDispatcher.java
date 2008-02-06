@@ -30,6 +30,8 @@ import org.omg.CORBA.Any;
 import org.omg.CORBA.ORB;
 import org.omg.CORBA.UserException;
 import org.omg.DsLogAdmin.Log;
+import org.omg.DsLogAdmin.LogOperations;
+
 import alma.acs.logging.formatters.AcsLogFormatter;
 
 /**
@@ -49,7 +51,7 @@ class RemoteLogDispatcher {
     private int bufferSize = 30;
 
     private ORB orb;
-    private Log logService;
+    private LogOperations logService;
     
     private AcsLogFormatter logFormatter;  
 
@@ -64,11 +66,13 @@ class RemoteLogDispatcher {
      *                    we can keep working with this object the whole time.
      *                    May be <code>null</code> for unit tests, in which case {@link #sendLogRecords(LogRecord[])} 
      *                    will fail and return the all log records inside the <code>FailedLogRecords</code> structure.
+     *                    With ACS 7.0.1 we allow the super type {@link LogOperations} instead of the usually
+     *                    expected {@link Log}, to allow unit tests with a mock Log service.
      * @param logFormatter  used to format LogRecords to Any representation. 
      *                    No direct assumption on XML is made, so technically any valid Any returned by the formatter will do 
      *                    (as far as this class is concerned).  
      */
-    RemoteLogDispatcher(ORB orb, Log logService, AcsLogFormatter logFormatter) {
+    RemoteLogDispatcher(ORB orb, LogOperations logService, AcsLogFormatter logFormatter) {
         this.orb = orb;
         this.logService = logService;
         this.logFormatter = logFormatter;
