@@ -3,8 +3,9 @@
 #include <sstream>
 #include <iostream>
 
-using namespace acsalarm;
 using std::stringstream;
+using std::string;
+using acsalarm::Timestamp;
 
 /**
  * Default no-args constructor, creates an instance with the time at instantiation.

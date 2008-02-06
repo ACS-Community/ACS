@@ -7,9 +7,6 @@
 #include "Timestamp.h"
 #include "FaultState.h"
 
-using acsalarm::FaultState;
-using acsalarm::Timestamp;
-
 namespace acsalarm
 {
 	/*
@@ -20,37 +17,37 @@ namespace acsalarm
 	{
 		public:
 			ASIMessage();
-			ASIMessage(auto_ptr<vector<FaultState> > & faults);
+			ASIMessage(std::auto_ptr<std::vector<acsalarm::FaultState> > & faults);
 			virtual ~ASIMessage();
 
-			vector<FaultState> & getFaultStates() { return *faultStates; }
-			void setFaultStates(auto_ptr<vector<FaultState> > & faults) { faultStates = faults; }
+			std::vector<acsalarm::FaultState> & getFaultStates() { return *faultStates; }
+			void setFaultStates(std::auto_ptr<std::vector<acsalarm::FaultState> > & faults) { faultStates = faults; }
 
 			bool getBackup() { return backup; }
 			void setBackup(bool bkup) { backup = bkup; }
 
-			string getVersion() { return version; }
-			void setVersion(string ver) { version = ver; }
+			std::string getVersion() { return version; }
+			void setVersion(std::string ver) { version = ver; }
 
-			string getSourceName() { return sourceName; }
-			void setSourceName(string name) { sourceName = name; }
+			std::string getSourceName() { return sourceName; }
+			void setSourceName(std::string name) { sourceName = name; }
 
-			string getSourceHostname() { return sourceHostname; }
-			void setSourceHostname(string name) { sourceHostname = name; }
+			std::string getSourceHostname() { return sourceHostname; }
+			void setSourceHostname(std::string name) { sourceHostname = name; }
 
-			Timestamp & getSourceTimestamp() { return *sourceTimestamp; }
-			void setSourceTimestamp(auto_ptr<Timestamp> ts) { sourceTimestamp = ts; }
+			acsalarm::Timestamp & getSourceTimestamp() { return *sourceTimestamp; }
+			void setSourceTimestamp(std::auto_ptr<acsalarm::Timestamp> ts) { sourceTimestamp = ts; }
 
 			// builds the xml representation of the message which will be sent to the alarm server
-			string toXML();
+			std::string toXML();
 
 		private:
-			auto_ptr<vector<FaultState> > faultStates;
+			std::auto_ptr<std::vector<acsalarm::FaultState> > faultStates;
 			bool backup;
-			string version;
-			string sourceName;
-			string sourceHostname;
-			auto_ptr<Timestamp> sourceTimestamp;
+			std::string version;
+			std::string sourceName;
+			std::string sourceHostname;
+			std::auto_ptr<acsalarm::Timestamp> sourceTimestamp;
 	};
 };
 #endif

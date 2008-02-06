@@ -31,6 +31,9 @@
 static char *rcsId="@(#) $Id$"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
+using std::string;
+using std::vector;
+
 ACSAlarmSystemInterfaceProxy::ACSAlarmSystemInterfaceProxy(string name): AlarmSystemInterface() {
 	setSourceName(name);
 	// Get the logger

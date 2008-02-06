@@ -4,8 +4,6 @@
 #include "utilConstants.h"
 #include <string>
 
-using std::string;
-
 namespace acsalarm
 {
 	/*
@@ -56,7 +54,7 @@ namespace acsalarm
 			 *
 			 * @param amountToIndent - used to specify a level of indentation (in spaces) for readability
  			 */
-			string toXML(string elementName = USER_TIMESTAMP_ELEMENT_NAME, int amountToIndent = 6);
+			std::string toXML(std::string elementName = USER_TIMESTAMP_ELEMENT_NAME, int amountToIndent = 6);
 
 		private:
 			long seconds;

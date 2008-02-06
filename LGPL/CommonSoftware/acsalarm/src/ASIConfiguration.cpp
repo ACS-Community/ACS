@@ -1,8 +1,15 @@
 #include "ASIConfiguration.h"
 #include "asiConfigurationConstants.h"
 
-using namespace asiConfigurationConstants;
-using namespace acsalarm;
+using acsalarm::ASIConfiguration;
+using asiConfigurationConstants::ASI_VERSION;
+using asiConfigurationConstants::ALARMS_TOPIC;
+using asiConfigurationConstants::BACKUP_DELIVERY_MODE;
+using asiConfigurationConstants::BACKUP_PRIORITY;
+using asiConfigurationConstants::BACKUP_TIME_TO_LIVE;
+using asiConfigurationConstants::CHANGES_DELIVERY_MODE;
+using asiConfigurationConstants::CHANGES_PRIORITY;
+using asiConfigurationConstants::CHANGES_TIME_TO_LIVE;
 
 /*
  * Constructor.

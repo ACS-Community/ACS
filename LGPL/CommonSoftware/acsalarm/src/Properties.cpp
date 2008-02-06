@@ -3,8 +3,11 @@
 #include <logging.h>
 #include <string>
 
-using namespace acsalarm;
 using std::string;
+using std::map;
+using std::vector;
+using std::invalid_argument;
+using acsalarm::Properties;
 
 /*
  * Default no-args constructor.

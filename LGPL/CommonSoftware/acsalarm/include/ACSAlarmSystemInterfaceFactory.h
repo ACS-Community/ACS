@@ -46,9 +46,6 @@
 #include "asiConfigurationConstants.h"
 #include "ace/Task.h"
 
-using acsalarm::AlarmSystemInterface;
-using asiConfigurationConstants::ALARM_SOURCE_NAME;
-
 /**
  * The class to create sources and fault states.
  * It extends the laser source but it returns different implementations of the
@@ -71,7 +68,7 @@ class ACSAlarmSystemInterfaceFactory
 	static void *dllHandle;
 
 	// a shared source for use by the single-line "createAndSendAlarm" methods
-	static auto_ptr<acsalarm::AlarmSystemInterface> sharedSource;
+	static std::auto_ptr<acsalarm::AlarmSystemInterface> sharedSource;
 
 	// It is true if ACS implementation for sources must be used,  and
 	// false means CERN implementation
@@ -134,14 +131,14 @@ class ACSAlarmSystemInterfaceFactory
 	 * @throw ACSASFactoryNotInitedExImpl if the alarm system has not been previously initialized.
 	 * @return the interface instance.
 	 */
-	static auto_ptr<AlarmSystemInterface> createSource(string sourceName) throw (acsErrTypeAlarmSourceFactory::ACSASFactoryNotInitedExImpl);
+	static std::auto_ptr<acsalarm::AlarmSystemInterface> createSource(std::string sourceName) throw (acsErrTypeAlarmSourceFactory::ACSASFactoryNotInitedExImpl);
 		
 	/**
 	 * Create a new instance of an alarm system interface without binding it to any source.
 	 * @throw ACSASFactoryNotInitedExImpl if the alarm system has not been previously initialized.
 	 * @return the interface instance.
 	 */
-	static auto_ptr<AlarmSystemInterface> createSource() throw (acsErrTypeAlarmSourceFactory::ACSASFactoryNotInitedExImpl);
+	static std::auto_ptr<acsalarm::AlarmSystemInterface> createSource() throw (acsErrTypeAlarmSourceFactory::ACSASFactoryNotInitedExImpl);
 	
 	/**
 	 * Create a fault state with the given family, member and code
@@ -150,13 +147,13 @@ class ACSAlarmSystemInterfaceFactory
 	 * @param code an int indicating the 'code' of the alarm (see alarm system documentation for explanation).
 	 * @throw ACSASFactoryNotInitedExImpl if the alarm system has not been previously initialized.
 	 */
-	static auto_ptr<acsalarm::FaultState>createFaultState(string family, string member, int code) throw (acsErrTypeAlarmSourceFactory::ACSASFactoryNotInitedExImpl);
+	static std::auto_ptr<acsalarm::FaultState>createFaultState(std::string family, std::string member, int code) throw (acsErrTypeAlarmSourceFactory::ACSASFactoryNotInitedExImpl);
 	
 	/**
 	 * Create a fault state 
 	 * @throw ACSASFactoryNotInitedExImpl if the alarm system has not been previously initialized.
 	 */
-	static auto_ptr<acsalarm::FaultState>createFaultState() throw (acsErrTypeAlarmSourceFactory::ACSASFactoryNotInitedExImpl);
+	static std::auto_ptr<acsalarm::FaultState>createFaultState() throw (acsErrTypeAlarmSourceFactory::ACSASFactoryNotInitedExImpl);
 
 	/**
 	 * Convenience API for creating/sending an alarm in a single step, without user defined properties.
@@ -167,7 +164,7 @@ class ACSAlarmSystemInterfaceFactory
 	 * @param sourceName the source name, defaults to ALARM_SOURCE_NAME constant defined in "asiConfigurationConstants.h"
 	 * @throw ACSASFactoryNotInitedExImpl if the alarm system has not been previously initialized.
 	 */
-	static void createAndSendAlarm(string & faultFamily, string & faultMember, int faultCode, bool active, string sourceName = ALARM_SOURCE_NAME)
+	static void createAndSendAlarm(std::string & faultFamily, std::string & faultMember, int faultCode, bool active, std::string sourceName = asiConfigurationConstants::ALARM_SOURCE_NAME)
                           throw (acsErrTypeAlarmSourceFactory::ACSASFactoryNotInitedExImpl);
 
 	/**
@@ -180,8 +177,8 @@ class ACSAlarmSystemInterfaceFactory
 	 * @param sourceName the source name, defaults to ALARM_SOURCE_NAME constant defined in "asiConfigurationConstants.h"
 	 * @throw ACSASFactoryNotInitedExImpl if the alarm system has not been previously initialized.
 	 */
-	static void createAndSendAlarm(string & faultFamily, string & faultMember, int faultCode, bool active, Properties & faultProperties, 
-		string sourceName = ALARM_SOURCE_NAME) throw (acsErrTypeAlarmSourceFactory::ACSASFactoryNotInitedExImpl);
+	static void createAndSendAlarm(std::string & faultFamily, std::string & faultMember, int faultCode, bool active, acsalarm::Properties & faultProperties, 
+		std::string sourceName = asiConfigurationConstants::ALARM_SOURCE_NAME) throw (acsErrTypeAlarmSourceFactory::ACSASFactoryNotInitedExImpl);
 
 };
 

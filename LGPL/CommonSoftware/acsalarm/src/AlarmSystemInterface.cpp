@@ -1,7 +1,11 @@
 #include "AlarmSystemInterface.h" 
 #include "logging.h"
 
-using namespace acsalarm;
+using std::vector;
+using std::string;
+using std::auto_ptr;
+using acsalarm::FaultState;
+using acsalarm::AlarmSystemInterface;
 
 /**
  * Push a collection of fault states.

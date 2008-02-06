@@ -1,7 +1,9 @@
 #include "AlarmSystemInterfaceFactory.h"
 #include "FaultState.h"
 
-using namespace acsalarm;
+using std::auto_ptr;
+using std::string;
+using acsalarm::FaultState;
 
 //TODO: add namespace
 

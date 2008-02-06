@@ -11,6 +11,8 @@
 //#include "asiConfigurationConstants.h"
 
 using namespace acsalarm;
+using std::string;
+using std::auto_ptr;
 
 void printUsageAndExit()
 {

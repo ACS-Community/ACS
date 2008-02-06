@@ -38,8 +38,6 @@
 #include "AlarmSystemInterface.h"
 #include "FaultState.h"
 
-using namespace Logging;
-
 /**
  * Implementation of a source that log messages instead of sending msg
  * to the AlarmSrevice
@@ -55,7 +53,7 @@ class ACSAlarmSystemInterfaceProxy: public acsalarm::AlarmSystemInterface {
 	
 	public:
 	
-		ACSAlarmSystemInterfaceProxy(string name);
+		ACSAlarmSystemInterfaceProxy(std::string name);
 		
 		virtual ~ACSAlarmSystemInterfaceProxy() {}
 		/**
@@ -68,13 +66,13 @@ class ACSAlarmSystemInterfaceProxy: public acsalarm::AlarmSystemInterface {
 	 	 * Push a collection of fault states.
 	 	 * @param states
 	 	 */
-		virtual void push(vector<acsalarm::FaultState> & states);
+		virtual void push(std::vector<acsalarm::FaultState> & states);
 	
 		/**
 	 	 * Push the set of active fault states.
 	 	 * @param activeFaults the active fault states.
 	 	 */
-		virtual void pushActiveList(vector<acsalarm::FaultState> & activeFaults);
+		virtual void pushActiveList(std::vector<acsalarm::FaultState> & activeFaults);
 
 	protected:
 		virtual bool publishMessage(acsalarm::ASIMessage){ return true; /* NOOP: nothing needed here */ }

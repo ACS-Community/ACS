@@ -68,6 +68,10 @@ using Parameters::acsDOMErrorHandler;
 using Parameters::StrX;
 using acsalarm::FaultState;
 using acsalarm::Properties;
+using acsalarm::Timestamp;
+using std::string;
+using std::vector;
+using std::auto_ptr;
 
 class AcsAlarmTestCase : public CPPUNIT_NS::TestFixture
 {

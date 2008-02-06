@@ -3,8 +3,6 @@
 
 #include <string>
 
-using std::string;
-
 namespace acsalarm
 {
 	/*
@@ -14,8 +12,8 @@ namespace acsalarm
 	class ASIConfiguration
 	{
 		private:
-			string asiVersion;
-			string alarmsTopic;
+			std::string asiVersion;
+			std::string alarmsTopic;
 			int backupDeliveryMode;
 			int backupPriority;
 			long backupTimeToLive;
@@ -27,11 +25,11 @@ namespace acsalarm
 			ASIConfiguration();
 			virtual ~ASIConfiguration() {}
 
-			string getASIVersion() { return asiVersion; }
-			void setASIVersion(string version) { asiVersion = version; }
+			std::string getASIVersion() { return asiVersion; }
+			void setASIVersion(std::string version) { asiVersion = version; }
 
-			string getAlarmsTopic() { return alarmsTopic; }
-			void setAlarmsTopic(string topic) { alarmsTopic = topic; }
+			std::string getAlarmsTopic() { return alarmsTopic; }
+			void setAlarmsTopic(std::string topic) { alarmsTopic = topic; }
 
 			int getBackupDeliveryMode() { return backupDeliveryMode; }
 			void setBackupDeliveryMode(int mode) { backupDeliveryMode = mode; }

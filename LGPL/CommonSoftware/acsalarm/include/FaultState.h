@@ -6,10 +6,6 @@
 #include "Properties.h"
 #include "Timestamp.h"
 
-using std::string;
-using acsalarm::Properties;
-using acsalarm::Timestamp;
-
 namespace acsalarm 
 {
 	/*
@@ -33,7 +29,7 @@ namespace acsalarm
 			/**
 			 * Constructor for initializing a fault state with values
 			 */
-			FaultState(string family, string member, int code);
+			FaultState(std::string family, std::string member, int code);
 
 			/*
 			 * Destructor
@@ -62,14 +58,14 @@ namespace acsalarm
 			 * Fault descriptor accessor method.
 			 * @param descriptor the fault descriptor.
 			 */
-			void setDescriptor(const string & newDescriptor) {
+			void setDescriptor(const std::string & newDescriptor) {
 				descriptor=newDescriptor;
 			}
 
 			/** Fault descriptor accessor method.
 			 * @return string the fault descriptor.
 			 */
-			string getDescriptor() const {
+			std::string getDescriptor() const {
 				return descriptor;
 			}
 
@@ -77,7 +73,7 @@ namespace acsalarm
 			 * Fault family accessor method.
 			 * @return the fault family.
 			 */
-			string getFamily() const {
+			std::string getFamily() const {
 				return family;
 			}
 	 
@@ -85,7 +81,7 @@ namespace acsalarm
 			 * Fault member accessor method.
 			 * @return the fault member.
 			 */
-			string getMember() const {
+			std::string getMember() const {
 				return member;
 			}
 
@@ -94,13 +90,13 @@ namespace acsalarm
 			  * Fault family accessor method.
 			  * @param faultFamily the fault family.
 			  */
-			void  FaultState::setFamily(const string & faultFamily);
+			void  FaultState::setFamily(const std::string & faultFamily);
 
 			/** 
 			  * Fault member accessor method.
 			  * @param member the fault member.
 			*/
-			void  FaultState::setMember(const string & newFaultMember);
+			void  FaultState::setMember(const std::string & newFaultMember);
 
 			/**
  			 * Returns an XML representation of the fault state. NOTE: this 
@@ -120,27 +116,27 @@ namespace acsalarm
  			 *     <user-timestamp seconds="1129902763" microseconds="105000"/>
  			 *  </fault-state>
  			 */
-			virtual string toXML(int amountToIndent = 3);
+			virtual std::string toXML(int amountToIndent = 3);
 
 			/** User properties accessor method.
 			 * @param properties the user properties.
 			 */
-			virtual void setUserProperties(auto_ptr<Properties> theProperties) { userProperties = theProperties; }
+			virtual void setUserProperties(std::auto_ptr<acsalarm::Properties> theProperties) { userProperties = theProperties; }
 
 			/** User properties accessor method.
 			 * @return Properties the user properties.
 			 */
-			const virtual Properties & getUserProperties() const { return *userProperties; }
+			const virtual acsalarm::Properties & getUserProperties() const { return *userProperties; }
 
 			/** Timestamp accessor method.
 			 * @param timestamp the timestamp.
 			 */
-			virtual void setUserTimestamp(auto_ptr<Timestamp> theTimestamp) { userTimestamp = theTimestamp; }
+			virtual void setUserTimestamp(std::auto_ptr<acsalarm::Timestamp> theTimestamp) { userTimestamp = theTimestamp; }
 
 			/** Timestamp accessor method.
 			 * @return long the timestamp.
 			 */
-			const virtual Timestamp & getUserTimestamp() const { return *userTimestamp; }
+			const virtual acsalarm::Timestamp & getUserTimestamp() const { return *userTimestamp; }
 
 			virtual bool getActivatedByBackup() const { return activatedByBackup; }
 			virtual void setActivatedByBackup(bool newActivatedByBackup) { activatedByBackup = newActivatedByBackup; }
@@ -150,14 +146,14 @@ namespace acsalarm
 
 		private:
 
-			string member;
-			string family;
-			string descriptor;
+			std::string member;
+			std::string family;
+			std::string descriptor;
 			int code;
 			bool activatedByBackup; 
 			bool terminatedByBackup;
-			auto_ptr<Properties> userProperties;
-			auto_ptr<Timestamp> userTimestamp;
+			std::auto_ptr<acsalarm::Properties> userProperties;
+			std::auto_ptr<acsalarm::Timestamp> userTimestamp;
 	};
 };
 #endif /*FAULTSTATE_H_*/

@@ -3,8 +3,9 @@
 #include <sstream>
 
 using std::string;
-using namespace acsalarm;
 using std::stringstream;
+using std::auto_ptr;
+using acsalarm::FaultState;
 
 /**
  * Default Constructor

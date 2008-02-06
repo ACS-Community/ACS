@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: AlarmSystemInterface.h,v 1.2 2006/10/20 07:37:46 gchiozzi Exp $"
+* "@(#) $Id: AlarmSystemInterface.h,v 1.3 2008/02/06 21:09:18 sharring Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -37,13 +37,8 @@
 #include "FaultState.h"
 #include "ASIMessage.h"
 #include "ASIConfiguration.h"
-
 #include <vector>
 #include <string>
-
-using std::string;
-using std::vector;
-using acsalarm::ASIConfiguration;
 
 namespace acsalarm
 {
@@ -63,25 +58,25 @@ namespace acsalarm
 		 	 * Set the source name.
 		 	 * @param newSourceName the source name.
 		 	 */	
-			virtual void setSourceName(string newSourceName) { sourceName = newSourceName; }
+			virtual void setSourceName(std::string newSourceName) { sourceName = newSourceName; }
 
 			/**
 		 	 * Get the source name.
 		 	 * @return the source name.
 		 	 */
-			virtual string getSourceName() { return sourceName; }
+			virtual std::string getSourceName() { return sourceName; }
 
 			/**
 		 	 * Set the host name.
 		 	 * @param newHostName the source name.
 		 	 */	
-			virtual void setHostName(string newHostName) { hostName = newHostName; }
+			virtual void setHostName(std::string newHostName) { hostName = newHostName; }
 
 			/**
 		 	 * Get the host name.
 		 	 * @return the host name.
 		 	 */
-			virtual string getHostName() { return hostName; }
+			virtual std::string getHostName() { return hostName; }
 
 			/**
 		 	 * Push a fault state.
@@ -95,14 +90,14 @@ namespace acsalarm
 		 	 * @param states
 		 	 * @throws ASIException if the fault state collection can not be pushed.
 		 	 */
-			virtual void push(vector<FaultState> & states); // raises ASIException = 0;
+			virtual void push(std::vector<FaultState> & states); // raises ASIException = 0;
 
 			/**
 		 	 * Push the set of active fault states.
 		 	 * @param activeFaults the active fault states.
 		 	 * @throws ASIException if the fault state active list can not be pushed.
 		 	 */
-			virtual void pushActiveList(vector<FaultState> & activeFaults); // raises ASIException = 0;
+			virtual void pushActiveList(std::vector<FaultState> & activeFaults); // raises ASIException = 0;
 
 			/**
 		 	 * Cleanup. Must be implemented by concrete sub classes; may be called by destructor or explicitly 
@@ -116,9 +111,9 @@ namespace acsalarm
 			 */
 			virtual bool publishMessage(ASIMessage msg) = 0;
 
-			string sourceName;
-			string hostName;
-			ASIConfiguration configuration;
+			std::string sourceName;
+			std::string hostName;
+			acsalarm::ASIConfiguration configuration;
 
 		private:
 			/**
@@ -132,7 +127,7 @@ namespace acsalarm
  			 *
  			 * @throws ASIException if the fault state collection can not be pushed.
  			 */
-			void commonPush(vector<FaultState> & states, bool backup);
+			void commonPush(std::vector<FaultState> & states, bool backup);
 	};
 };
 #endif

@@ -2,8 +2,12 @@
 #include "utilConstants.h"
 #include <sstream>
 
-using namespace acsalarm;
 using std::stringstream;
+using std::auto_ptr;
+using std::vector;
+using std::string;
+using acsalarm::ASIMessage;
+using acsalarm::FaultState;
 
 /*
  * Default no-args constructor.

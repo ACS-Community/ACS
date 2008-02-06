@@ -9,8 +9,6 @@
 
 namespace maci 
 {
-	using namespace cdb;
-
 	class maci_EXPORT MockManager: public virtual POA_maci::Manager, public virtual maci::Manager
 	{
 		public:

@@ -7,15 +7,9 @@
 #include <memory>
 #include <stdexcept>
 
-using std::map;
-using std::string;
-using std::vector;
-using std::auto_ptr;
-using std::invalid_argument;
-
 namespace acsalarm
 {
-	typedef map< string, string >::value_type PropertyMapEntryType;
+	typedef std::map< std::string, std::string >::value_type PropertyMapEntryType;
 
 	/*
 	 * Utility class containing a collection of properties, which are name/value pairs of strings.
@@ -24,7 +18,7 @@ namespace acsalarm
 	{
 		private:
 
-			map<string, string> propertiesMap;
+			std::map<std::string, std::string> propertiesMap;
 
 		public:
 
@@ -42,21 +36,21 @@ namespace acsalarm
 			int operator==(const Properties &rhs) const;
 
 			//Searches for the property with the specified key in this property list.
-			string getProperty(string key); 
+			std::string getProperty(std::string key); 
 
  			// Returns an enumeration of all the keys in this property list, 
 			// including distinct keys in the default property list if a key 
 			// of the same name has not already been found from the main properties list.
-			auto_ptr<vector<string> > propertyNames();
+			std::auto_ptr<std::vector<std::string> > propertyNames();
 
 			// Calls the map method put.
-			void setProperty(string key, string value) throw(invalid_argument);
+			void setProperty(std::string key, std::string value) throw(std::invalid_argument);
 
 			// Returns an XML fragment (NOT a complete document) representing all of 
 			// the properties contained in this table, for use in the message transported
 			// from an alarm source to the alarm server.
 			// @param amountToIndent - used to specify a level of indentation (in spaces) for readability
-			string toXML(int amountToIndent = 6);
+			std::string toXML(int amountToIndent = 6);
 	};
 }
 #endif

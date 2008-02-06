@@ -36,8 +36,15 @@ static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 #include "asiConfigurationConstants.h"
 #include <logging.h>
 
-using namespace acsalarm;
 using asiConfigurationConstants::ALARM_SOURCE_NAME;
+using acsalarm::CERN_ALARM_SYSTEM_DLL_PATH;
+using acsalarm::CERN_ALARM_SYSTEM_DLL_FUNCTION_NAME;
+using std::auto_ptr;
+using std::string;
+using acsalarm::FaultState;
+using acsalarm::AlarmSystemInterface;
+using acsalarm::Properties;
+using acsalarm::Timestamp;
 
 bool* ACSAlarmSystemInterfaceFactory::m_useACSAlarmSystem = NULL;
 maci::Manager_ptr ACSAlarmSystemInterfaceFactory::m_manager = maci::Manager::_nil();
