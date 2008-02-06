@@ -36,7 +36,7 @@ public class ACSJMSTopicSubscriber
 	public ACSJMSTopicSubscriber(Topic topic, ContainerServicesBase containerServices, String selector) throws JMSException {
 		super(topic, containerServices,selector);
 		try {
-			//this.consumer = new Consumer(topic.getTopicName(), containerServices);
+			//this.consumer = new Consumer(topic.getTopicName(), alma.acsnc.ALARMSYSTEM_DOMAIN_NAME.value, containerServices);
 			//this.consumer.addSubscription(ACSJMSMessageEntity.class, this);
 			this.consumer = new ACSJMSMessageEntityConsumer(topic.getTopicName(), containerServices, this);
 			this.consumer.consumerReady();
