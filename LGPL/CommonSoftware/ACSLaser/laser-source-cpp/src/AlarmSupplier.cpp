@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: AlarmSupplier.cpp,v 1.6 2008/01/29 01:37:40 sharring Exp $"
+* "@(#) $Id: AlarmSupplier.cpp,v 1.7 2008/02/06 21:09:59 sharring Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -61,6 +61,7 @@
 #include <string>
 
 using acsalarm::ASIMessage;
+using std::string;
 
 /**
  * Constructor.

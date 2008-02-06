@@ -27,6 +27,10 @@
 
 using namespace acscomponent;
 using namespace testalarmsystem;
+using std::string;
+using std::auto_ptr;
+using acsalarm::Properties;
+using acsalarm::Timestamp;
 
 AlarmTestMountImpl::AlarmTestMountImpl(const ACE_CString &name,maci::ContainerServices * containerServices) : 
     ACSComponentImpl(name, containerServices)

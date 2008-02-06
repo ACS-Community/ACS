@@ -4,8 +4,6 @@
 #include "AlarmSupplier.h"
 #include "ASIMessage.h"
 
-using acsalarm::ASIMessage;
-
 namespace laserSource
 {
 	/*
@@ -17,14 +15,14 @@ namespace laserSource
 	class AcsAlarmPublisher
 	{
 		public:
-			AcsAlarmPublisher(string topicName);
+			AcsAlarmPublisher(std::string topicName);
 			virtual ~AcsAlarmPublisher();
 
 			/*
  			 * Method to publish an alarm to the laser alarm server.
 			 * @param msg the ASIMessage to publish.
 			 */
-			virtual bool publishAlarm(ASIMessage msg);
+			virtual bool publishAlarm(acsalarm::ASIMessage msg);
 	
 		private:
 			AlarmSupplier * alarmSupplier;

@@ -5,8 +5,10 @@
 #include "asiConfigurationConstants.h"
 
 using asiConfigurationConstants::ALARM_SOURCE_NAME;
-using namespace acsalarm;
-using namespace laserSource;
+using std::string;
+using std::auto_ptr;
+using laserSource::CERNAlarmSystemInterfaceFactory;
+using acsalarm::AlarmSystemInterface;
 
 /**
  * Constructor

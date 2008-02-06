@@ -5,8 +5,9 @@
 #include <acsncHelper.h>
 #include <ACSAlarmSystemInterfaceFactory.h>
 
-using namespace laserSource;
+using acsalarm::ASIMessage;
 using nc::Helper;
+using laserSource::AcsAlarmPublisher;
 
 /*
  * Constructor.

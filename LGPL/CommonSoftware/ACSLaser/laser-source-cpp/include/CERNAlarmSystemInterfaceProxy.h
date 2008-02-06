@@ -4,28 +4,25 @@
 #include "AlarmSystemInterface.h"
 #include "AcsAlarmPublisher.h"
 
-using acsalarm::AlarmSystemInterface;
-using laserSource::AcsAlarmPublisher;
-
 namespace laserSource
 {
-	class CERNAlarmSystemInterfaceProxy : public AlarmSystemInterface
+	class CERNAlarmSystemInterfaceProxy : public acsalarm::AlarmSystemInterface
 	{
 		public:
 			CERNAlarmSystemInterfaceProxy();
-			CERNAlarmSystemInterfaceProxy(string theSourceName);
+			CERNAlarmSystemInterfaceProxy(std::string theSourceName);
 			virtual ~CERNAlarmSystemInterfaceProxy();
 			virtual void close();
 
 		protected:
-			bool CERNAlarmSystemInterfaceProxy::publishMessage(ASIMessage msg);
+			bool CERNAlarmSystemInterfaceProxy::publishMessage(acsalarm::ASIMessage msg);
 	
 		private:
 			// initialization logic used by the constructors
 			void init();
 
 			// pointer to our publisher object
-			AcsAlarmPublisher * laserPublisher;
+			laserSource::AcsAlarmPublisher * laserPublisher;
 
 			// smart ptr to the logger
 			Logging::Logger::LoggerSmartPtr myLoggerSmartPtr;

@@ -34,11 +34,9 @@
 
 #include "AlarmSystemInterface.h"
 
-using namespace acscomponent;
-
 namespace testalarmsystem
 {
-	class AlarmTestMountImpl: public ACSComponentImpl,     
+	class AlarmTestMountImpl: public acscomponent::ACSComponentImpl,     
 			     public virtual POA_testalarmsystem::AlarmTestMount
 	{
 		public:

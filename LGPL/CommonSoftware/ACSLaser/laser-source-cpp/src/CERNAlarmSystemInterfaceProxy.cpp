@@ -7,9 +7,10 @@
 #include "AcsAlarmPublisher.h"
 #include "logging.h"
 
-using namespace acsalarm;
-using namespace laserSource;
 using asiConfigurationConstants::ALARM_SOURCE_NAME;
+using std::string;
+using laserSource::CERNAlarmSystemInterfaceProxy;
+using acsalarm::ASIMessage;
 
 /*
  * Default no-args constructor.

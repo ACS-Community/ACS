@@ -4,8 +4,6 @@
 #include "AlarmSystemInterfaceFactory.h"
 #include <logging.h>
 
-using acsalarm::AlarmSystemInterface;
-
 namespace laserSource
 {
 	class CERNAlarmSystemInterfaceFactory: public AlarmSystemInterfaceFactory
@@ -33,13 +31,13 @@ namespace laserSource
 		 * @param sourceName the source name.
 		 * @return the interface instance.
 		 */
-		virtual auto_ptr<AlarmSystemInterface> createSource(string sourceName);
+		virtual std::auto_ptr<acsalarm::AlarmSystemInterface> createSource(std::string sourceName);
 		
 		/**
 		 * Create a new instance of an alarm system interface without binding it to any source.
 		 * @return the interface instance.
 		 */
-		virtual auto_ptr<AlarmSystemInterface> createSource();
+		virtual std::auto_ptr<acsalarm::AlarmSystemInterface> createSource();
 		
 		private:
 		// logger
