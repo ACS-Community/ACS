@@ -208,7 +208,7 @@ public class ClientLogManager implements LogConfigSubscriber
 				flushPeriodSeconds = logConfig.getFlushPeriodSeconds();
 				// don't call this while logQueue is not ready for remote dispatching, because it would produce an ugly error message.
 				if (logQueue.hasRemoteDispatcher()) {
-					logQueue.setPeriodicFlushing(flushPeriodSeconds * 1000);
+					logQueue.setPeriodicFlushing(flushPeriodSeconds * 1000); 
 				}
 
 				// Set the log queue size.
