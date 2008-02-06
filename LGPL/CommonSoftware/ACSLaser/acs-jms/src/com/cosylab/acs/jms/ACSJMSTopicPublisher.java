@@ -158,7 +158,7 @@ public class ACSJMSTopicPublisher
 	
 	private static CorbaPublisher createPublisher(Topic topic, ContainerServicesBase containerServices) throws JMSException {
 		try {
-			return new CorbaPublisher(topic.getTopicName(), containerServices);
+			return new CorbaPublisher(topic.getTopicName(), alma.acsnc.ALARMSYSTEM_DOMAIN_NAME.value, containerServices);
 		} catch (AcsJException e) {
 			throw new JMSException("Error creating topic publisher: " + e.getMessage());
 		}

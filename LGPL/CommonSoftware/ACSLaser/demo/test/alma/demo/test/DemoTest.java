@@ -97,7 +97,7 @@ public class DemoTest {
 	private void connectSrcChannel() {
 		// Connect to the NC used by the sources
         try {
-        	m_consumer = new Consumer(srcChName,m_contSvcs);
+        	m_consumer = new Consumer(srcChName,alma.acsnc.ALARMSYSTEM_DOMAIN_NAME.value,m_contSvcs);
         } catch (Exception e) {
         	logger.severe("Error instantiating the consumer: "+e.getMessage());
         	e.printStackTrace();
@@ -308,7 +308,7 @@ public class DemoTest {
 	private void setupSourceListener() {
 		// Connect to the NC used by the sources
 	    try {
-	    	m_consumer = new Consumer(srcChName,m_contSvcs);
+	    	m_consumer = new Consumer(srcChName,alma.acsnc.ALARMSYSTEM_DOMAIN_NAME.value,m_contSvcs);
 	    } catch (AcsJException e) {
 	    	logger.severe("Error instantiating the consumer: "+e.getMessage());
 	    	e.printStackTrace();

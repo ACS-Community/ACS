@@ -19,7 +19,7 @@
 
 /** 
  * @author  almadev   
- * @version $Id: SourcesListener.java,v 1.4 2007/10/17 16:26:52 hsommer Exp $
+ * @version $Id: SourcesListener.java,v 1.5 2008/02/06 09:57:37 msekoran Exp $
  * @since    
  */
 
@@ -95,7 +95,7 @@ public class SourcesListener {
         }
         // Connect to the NC used by the sources
         try {
-        	m_consumer = new Consumer(srcChName,m_contSvcs);
+        	m_consumer = new Consumer(srcChName,alma.acsnc.ALARMSYSTEM_DOMAIN_NAME.value,m_contSvcs);
         } catch (Exception e) {
         	logger.severe("Error instantiating the consumer: "+e.getMessage());
         	e.printStackTrace();

@@ -29,7 +29,7 @@ public class ACSJMSMessageEntityConsumer extends Consumer {
 	public ACSJMSMessageEntityConsumer(String channelName, ContainerServicesBase containerServices,
 			ACSJMSMessageEntityConsumerListener listener)
 			throws AcsJException {
-		super(channelName, containerServices);
+		super(channelName, alma.acsnc.ALARMSYSTEM_DOMAIN_NAME.value, containerServices);
 		this.listener = listener;
 		addSubscription(ACSJMSMessageEntity.class);
 	}

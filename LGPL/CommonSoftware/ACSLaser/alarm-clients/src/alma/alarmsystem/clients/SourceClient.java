@@ -63,7 +63,7 @@ public class SourceClient {
 	 */
 	public void connect() throws Exception {
 		logger.log(AcsLogLevel.DEBUG,"Connecting to source channel "+m_channelName);
-		m_consumer = new Consumer(m_channelName,contSvcs);
+		m_consumer = new Consumer(m_channelName,alma.acsnc.ALARMSYSTEM_DOMAIN_NAME.value,contSvcs);
 		m_consumer.addSubscription(ACSJMSMessageEntity.class,this);
 		m_consumer.consumerReady();
 		logger.log(AcsLogLevel.DEBUG,"Source channel "+m_channelName+" connected");

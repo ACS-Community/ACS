@@ -19,7 +19,7 @@
 
 /** 
  * @author  almadev   
- * @version $Id: SendTest.java,v 1.7 2007/11/13 14:26:28 hsommer Exp $
+ * @version $Id: SendTest.java,v 1.8 2008/02/06 10:00:48 msekoran Exp $
  * @since    
  */
 
@@ -111,7 +111,7 @@ public class SendTest extends ComponentClientTestCase {
 					new Callable<Consumer>() {
 						public Consumer call() throws Exception {
 							// Register this object as a consumer of ACSJMSMessageEntity events.
-							return new Consumer(m_channelName, contSvcs);
+							return new Consumer(m_channelName, alma.acsnc.ALARMSYSTEM_DOMAIN_NAME.value, contSvcs);
 						}
 					});
 			m_consumer = consumerCtorFuture.get(10, TimeUnit.SECONDS); // will throw a TimeoutException if the call hangs
