@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: testCDBProps.cpp,v 1.4 2006/09/01 02:20:54 cparedes Exp $"
+* "@(#) $Id: testCDBProps.cpp,v 1.5 2008/02/06 14:29:59 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -149,6 +149,28 @@ class CDBPropsCompImpl: public virtual acscomponent::ACSComponentImpl,
 	    nc::CDBProperties::EventHandlerTimeoutMap ncMap = nc::CDBProperties::getEventHandlerTimeoutMap("nah");
 	    std::cout << "getEventHandlerTimeoutMap(nah):" << ncMap.count("EventDescription") << std::endl;
 	    }
+
+	    //-----------------------------------------------
+		
+		// default expected
+		CORBA::String_var res = nc::CDBProperties::getNotificationFactoryNameForChannel("any");
+		std::cout << "default: " << (res.in() ? res.in() : "(null)") << std::endl;
+		
+		// channel mapping 
+		res = nc::CDBProperties::getNotificationFactoryNameForChannel("PARTICULAR");
+		std::cout << "particular: " << (res.in() ? res.in() : "(null)") << std::endl;
+		
+		// wildchars channel mapping 
+		res = nc::CDBProperties::getNotificationFactoryNameForChannel("CONTROL_CHANNEL");
+		std::cout << "wildcard: " << (res.in() ? res.in() : "(null)") << std::endl;
+		
+		// domain mapping
+		res = nc::CDBProperties::getNotificationFactoryNameForChannel("anyOnLaser", "ALARMSYSTEM");
+		std::cout << "domain: " << (res.in() ? res.in() : "(null)") << std::endl;
+		
+		// fallback to default
+		res = nc::CDBProperties::getNotificationFactoryNameForChannel("anyOnNonExistingDomain", "NONEXISTING_DOMAIN");
+		std::cout << "non-existing domain: " << (res.in() ? res.in() : "(null)") << std::endl;
 	}
     
   private:

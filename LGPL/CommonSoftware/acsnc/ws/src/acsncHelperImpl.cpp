@@ -19,7 +19,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsncHelperImpl.cpp,v 1.73 2006/10/17 11:19:11 sharring Exp $"
+* "@(#) $Id: acsncHelperImpl.cpp,v 1.74 2008/02/06 14:29:25 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -38,10 +38,11 @@
 //-----------------------------------------------------------------------------
 namespace nc {
 //-----------------------------------------------------------------------------
-Helper::Helper(const char* channelName):
+Helper::Helper(const char* channelName, const char* notifyServiceDomainName):
     namingContext_m(CosNaming::NamingContext::_nil()),
     notifyChannel_m(CosNotifyChannelAdmin::EventChannel::_nil()),
     channelName_mp(0),
+    notifyServiceDomainName_mp(0),
     orbHelper_mp(0),
     notifyFactory_m(0),
     channelID_m(0),
@@ -50,6 +51,9 @@ Helper::Helper(const char* channelName):
     ACS_TRACE("Helper::Helper");
     //make a copy of the channel's name
     channelName_mp = CORBA::string_dup(channelName);
+    // make a copy of the NS domain name (if given)
+    if (notifyServiceDomainName)
+        notifyServiceDomainName_mp = CORBA::string_dup(notifyServiceDomainName);
     //this is common to both suppliers and consumers, but what does it really
     //do?
     ifgop_m = CosNotifyChannelAdmin::AND_OP;
@@ -84,6 +88,7 @@ Helper::~Helper()
 	delete orbHelper_mp; 
 	orbHelper_mp=0;
 	}
+    // @todo channelName_mp and notifyServiceDomainName_mp should be freed here??!
 }
 //-----------------------------------------------------------------------------
 void 
