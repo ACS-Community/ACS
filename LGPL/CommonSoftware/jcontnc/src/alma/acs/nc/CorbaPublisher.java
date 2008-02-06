@@ -56,6 +56,19 @@ public class CorbaPublisher extends alma.acs.nc.SimpleSupplier {
 	}
 	
 	/**
+	 * The parameters are:
+	 * @param channelName	the name of the channel -- e.g., Progress
+	 * @param channelNotifyDomaiName	the name of notify. service domain -- e.g., ALARMSYSTEM
+	 * @param cs container services
+    * @throws AcsJException 
+	 */
+	public CorbaPublisher (String channelName, String channelNotifyDomaiName, ContainerServicesBase cs) 
+      throws AcsJException {
+
+		super (channelName, channelNotifyDomaiName, cs);
+	}
+
+	/**
 	 * This is the main method for publishing an event.  The IDLEntity must be
 	 * the IDL structure that defines the event data.  It must match the names of
 	 * the events in the list when the channel was created.
