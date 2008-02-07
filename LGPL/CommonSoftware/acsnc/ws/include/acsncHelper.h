@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsncHelper.h,v 1.66 2008/02/06 15:26:39 msekoran Exp $"
+* "@(#) $Id: acsncHelper.h,v 1.67 2008/02/07 10:18:17 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -46,6 +46,7 @@
 #include "acsncS.h"
 #include "acsncC.h"
 #include "acsncORBHelper.h"
+#include "acsncCDBProperties.h"
 
 #include <ACSErrTypeCommon.h>
 
