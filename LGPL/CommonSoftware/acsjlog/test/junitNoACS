@@ -1,3 +1,5 @@
+# Pure JUnit tests that don't require an ACS infrastructure, nor TAT comparison of output.
+
 export ACS_TMP=../test
 
 acsStartJava alma.acs.testsupport.tat.TATJUnitRunner  alma.acs.logging.AcsLogLevelTest
