@@ -25,7 +25,7 @@ import alma.acs.logging.mocks.LogEmptyImpl;
 public class RemoteLoggingTest extends TestCase
 {	
     protected void setUp() throws Exception {
-        System.out.println("------------ " + getName() + " --------------");
+        System.out.println("\n------------ " + getName() + " --------------");
     }
 	
 	
