@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: basencHelper.h,v 1.4 2006/07/19 16:57:28 dfugate Exp $"
+* "@(#) $Id: basencHelper.h,v 1.5 2008/02/07 10:42:00 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -32,6 +32,7 @@
 #include <orbsvcs/CosNotifyChannelAdminS.h>
 #include <orbsvcs/CosNamingC.h>
 #include <acsncC.h>
+#include <acsncCDBProperties.h>
 
 /**
  * Baseclass for all NC objects. Provides common functionality
@@ -43,8 +44,10 @@ class BaseHelper
     
     /**
      * Standard constructor.
+     * @param channelName Name of the channel
+     * @param notifyServiceDomainName Name of the notification service domain name used to determine notification service.
      */
-    BaseHelper(const char* channelName);
+    BaseHelper(const char* channelName, const char* notifyServiceDomainName = 0);
     
     /**
      * Initialization method. In short, no method of this class can be
@@ -95,7 +98,16 @@ class BaseHelper
      */
     virtual const char*
     getNotificationFactoryName()
-	{return acscommon::NOTIFICATION_FACTORY_NAME;}
+	{
+		if (!notificationServiceName_mp)
+		{
+			notificationServiceName_mp = nc::CDBProperties::getNotificationFactoryNameForChannel(channelName_mp, notifyServiceDomainName_mp);
+			if (!notificationServiceName_mp)
+				notificationServiceName_mp = CORBA::string_dup(acscommon::NOTIFICATION_FACTORY_NAME);
+		}
+		
+		return notificationServiceName_mp;
+	}
 
     /**
      * Utility method.
@@ -194,7 +206,17 @@ class BaseHelper
     /**
      * Name of the channel.
      */
-    const char* channelName_mp;
+    char* channelName_mp;
+
+    /**
+     *  Name of the nofitication service domain.
+     */
+    char *notifyServiceDomainName_mp;
+    
+    /**
+     * Name of "resovled" notification service.
+     */
+    char *notificationServiceName_mp;
 
     /**
      * Shows whether the init method has been called yet.

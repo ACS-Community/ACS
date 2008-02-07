@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: basencHelper.cpp,v 1.4 2006/07/19 16:57:28 dfugate Exp $"
+* "@(#) $Id: basencHelper.cpp,v 1.5 2008/02/07 10:42:00 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -75,26 +75,38 @@
 
 #include "basencHelper.h"
 //-----------------------------------------------------------------------------
-static char *rcsId="@(#) $Id: basencHelper.cpp,v 1.4 2006/07/19 16:57:28 dfugate Exp $"; 
+static char *rcsId="@(#) $Id: basencHelper.cpp,v 1.5 2008/02/07 10:42:00 msekoran Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 //-----------------------------------------------------------------------------
-BaseHelper::BaseHelper(const char* channelName) :
+BaseHelper::BaseHelper(const char* channelName, const char* notifyServiceDomainName) :
     namingContext_m(CosNaming::NamingContext::_nil()),
     notifyFactory_m(CosNotifyChannelAdmin::EventChannelFactory::_nil()),
     channelID_m(0),
     ifgop_m(CosNotifyChannelAdmin::AND_OP),
     notifyChannel_m(CosNotifyChannelAdmin::EventChannel::_nil()),
-    channelName_mp(channelName),
+    notifyServiceDomainName_mp(0),
+    notificationServiceName_mp(0),
     initCalled_m(false)
 {
-    //no-op
+    channelName_mp = CORBA::string_dup(channelName);
+    
+    // make a copy of the NS domain name (if given)
+    if (notifyServiceDomainName)
+        notifyServiceDomainName_mp = CORBA::string_dup(notifyServiceDomainName);
 }
 //-----------------------------------------------------------------------------
 BaseHelper::~BaseHelper()
 {
-    //no-op
-    //because all members of this class are _var's, we don't even have to call
+    //most of all members of this class are _var's, we don't even have to call
     //the disconnect method.
+	// set them free...	
+
+	if (channelName_mp != 0)
+		CORBA::string_free(channelName_mp);
+	if (notifyServiceDomainName_mp != 0)
+		CORBA::string_free(notifyServiceDomainName_mp);
+	if (notificationServiceName_mp != 0)
+		CORBA::string_free(notificationServiceName_mp);
 }
 //-----------------------------------------------------------------------------
 void

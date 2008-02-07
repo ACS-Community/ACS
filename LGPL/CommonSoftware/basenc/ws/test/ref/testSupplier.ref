@@ -1,3 +1,5 @@
 1 - ORBHelper::runORB the ORB is now running!
+1 - CDBProperties::getCDB
+1 - CDBProperties::getNotificationFactoryNameForChannel
 1 - Thread runOrbThread
 1 - Thread stopped:runOrbThread
