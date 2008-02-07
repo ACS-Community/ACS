@@ -13,8 +13,8 @@ public class AcsLoggerTest extends TestCase {
 	private AcsLogger acsLogger;
 	
 	protected void setUp() throws Exception {
+        System.out.println("\n------------ " + getName() + " --------------");
 		acsLogger = LocalOnlyAcsLogger.getInstance(AcsLoggerTest.class.getName(), Level.ALL);
-
 	}
 	
 	public void testSimpleLog() {
