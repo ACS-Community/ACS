@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: AlarmSupplier.cpp,v 1.7 2008/02/06 21:09:59 sharring Exp $"
+* "@(#) $Id: AlarmSupplier.cpp,v 1.8 2008/02/07 10:52:26 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -59,6 +59,7 @@
 #include "ACSJMSMessageEntityC.h"
 #include "acsutilTimeStamp.h"
 #include <string>
+#include <acsncC.h>
 
 using acsalarm::ASIMessage;
 using std::string;
@@ -68,7 +69,7 @@ using std::string;
  * @param channelName the name of the channel to use for publishing events
  */
 AlarmSupplier::AlarmSupplier(const char* channelName) :
-    BaseSupplier(channelName)
+    BaseSupplier(channelName, acsnc::ALARMSYSTEM_DOMAIN_NAME)
 {
    //no-op
 	myLoggerSmartPtr = getLogger();

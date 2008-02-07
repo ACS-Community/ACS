@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: basencSupplier.cpp,v 1.7 2006/10/24 16:41:57 sharring Exp $"
+* "@(#) $Id: basencSupplier.cpp,v 1.8 2008/02/07 10:51:11 msekoran Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -28,8 +28,8 @@
 #include <iostream>
 
 //-----------------------------------------------------------------------------
-BaseSupplier::BaseSupplier(const char* channelName) :
-    BaseHelper(channelName)
+BaseSupplier::BaseSupplier(const char* channelName, const char* notifyServiceDomainName) :
+    BaseHelper(channelName, notifyServiceDomainName)
 {
     //no-op
 }

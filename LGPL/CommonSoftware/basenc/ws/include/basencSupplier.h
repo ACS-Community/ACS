@@ -20,7 +20,7 @@
  *    License along with this library; if not, write to the Free Software
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: basencSupplier.h,v 1.4 2005/11/18 00:17:58 dfugate Exp $"
+ * "@(#) $Id: basencSupplier.h,v 1.5 2008/02/07 10:51:11 msekoran Exp $"
  *
  * who       when        what
  * --------  ----------  ----------------------------------------------
@@ -53,8 +53,9 @@ class BaseSupplier : public POA_acsnc::OSPushSupplier,
     /**
      * Standard constructor.
      * @param channelName Name of the channel to use.
+     * @param notifyServiceDomainName Name of the notification service domain name used to determine notification service.
      */
-    BaseSupplier(const char* channelName);
+    BaseSupplier(const char* channelName, const char* notifyServiceDomainName = 0);
     
     /**
      * Overridden.
