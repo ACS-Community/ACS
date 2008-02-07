@@ -108,7 +108,7 @@ module acsnc
     /**
      * Alarm System NC CDB mapping domain name.
      */
-    const string ALARMSYSTEM_DOMAIN_NAME = "ALARMSYSTE";
+    const string ALARMSYSTEM_DOMAIN_NAME = "ALARMSYSTEM";
 
     ////////////////////////////////////////////////////////////////////////
     /** @interface ACSEventAdmin
