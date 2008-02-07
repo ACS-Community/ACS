@@ -1,3 +1,3 @@
 export ACS_TMP=../test
 
-acsStartJava -endorsed junit.textui.TestRunner alma.acs.logging.AcsLoggerTest
+acsStartJava -endorsed alma.acs.testsupport.tat.NoDotJUnitRunner alma.acs.logging.AcsLoggerTest
