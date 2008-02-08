@@ -66,15 +66,15 @@ void AlarmSystemMonitor<TPROP>::sendAlarm(std::string family, std::string member
 		fs->setDescriptor(faultState::TERMINATE_STRING);
 	}
 	// create a Timestamp and use it to configure the FaultState
-	Timestamp * tstampPtr = new Timestamp();
-	auto_ptr<Timestamp> tstampAutoPtr(tstampPtr);
+	acsalarm::Timestamp * tstampPtr = new acsalarm::Timestamp();
+	auto_ptr<acsalarm::Timestamp> tstampAutoPtr(tstampPtr);
 	fs->setUserTimestamp(tstampAutoPtr);
 	// create a Properties object and configure it, then assign to the FaultState
-	Properties * propsPtr = new Properties();
+	acsalarm::Properties * propsPtr = new acsalarm::Properties();
 	propsPtr->setProperty(faultState::ASI_PREFIX_PROPERTY_STRING, "prefix");
 	propsPtr->setProperty(faultState::ASI_SUFFIX_PROPERTY_STRING, "suffix");
 	propsPtr->setProperty("TEST_PROPERTY", "TEST_VALUE");
-	auto_ptr<Properties> propsAutoPtr(propsPtr);
+	auto_ptr<acsalarm::Properties> propsAutoPtr(propsPtr);
 	fs->setUserProperties(propsAutoPtr);
 	alarmSource_map->push(*fs);
 #endif
