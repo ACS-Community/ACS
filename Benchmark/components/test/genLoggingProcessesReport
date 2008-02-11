@@ -262,19 +262,31 @@ setLogLevelLocal ()
 }
 
 # Definition of a function to reset and start a chronometer. The number of the
-# chronometer is given as first (and only) argument.
+# chronometer is given as first argument. If there is a a second argument,
+# it is interpreted as an offset in time (i.e. number of seconds ago that this
+# timer should have started)
 startChrono () 
 {
-    eval START_CHRONO$1=`echo "puts [clock clicks -milliseconds]" | tclsh`
+    if [ X"$2" = X ] ; then
+	eval START_CHRONO$1=`echo "puts [clock clicks -milliseconds]" | tclsh`
+    else
+	eval START_CHRONO$1=`echo "puts [expr {[clock clicks -milliseconds] - int($2 * 1000.)}]" | tclsh`
+    fi
 }
 
-# Definition of a function to read the time elapsed (seconds) since the
+# Definition of a function to read the time elapsed (seconds, float) since the
 # chronometer was last started. The number of the chronometer is given as
 # first (and only) argument.
 getChrono () 
 {
     eval CHRONO=\$START_CHRONO$1
     echo "puts [format %.3f [expr {([clock clicks -milliseconds] - $CHRONO) /1000.}]]" | tclsh
+}
+
+getChronoInt () 
+{
+    eval CHRONO=\$START_CHRONO$1
+    echo "puts [expr {int(([clock clicks -milliseconds] - $CHRONO) /1000.)}]" | tclsh
 }
 
 # Definition of a function to sleep a number of ms
@@ -299,6 +311,7 @@ REMOTE_HOST=
 COMPONENT_LANGUAGE=cpp
 NO_REDIRECTION=
 CSVFILE=/dev/null
+CPU_LOAD=1
 
 #
 # These options can be recognized (longopts comma-separated. Colon means 1 argument is required)
@@ -418,6 +431,7 @@ PUBLISHER_LOG_FILE=publisher
 
 # Set the property to not drop logs
 if [ "${COMPONENT_LANGUAGE}" = "java" ] ; then
+    #JAVA_OPTIONS="$JAVA_OPTIONS -Dalma.acs.logging.lossless=true -Djacorb.log.loggerFactory="
     JAVA_OPTIONS="$JAVA_OPTIONS -Dalma.acs.logging.lossless=true"
     export JAVA_OPTIONS
 fi
@@ -428,18 +442,21 @@ do
   if [ -z "$REMOTE_HOST" ]
       then
       if [ $NO_REDIRECTION ] ; then
-	  echo " Starting Container $i without redirecting output to file"
-	  acsutilBlock -s -b "components activated." -x acsStartContainer -${COMPONENT_LANGUAGE} ${COMPONENT_LANGUAGE}Container$i
+		  echo " Starting Container $i without redirecting output to file"
+		  acsutilBlock -s -b "components activated." -x acsStartContainer -${COMPONENT_LANGUAGE} ${COMPONENT_LANGUAGE}Container$i
       else
-	  echo " Starting Container $i"
-	  acsutilAwaitContainerStart -${COMPONENT_LANGUAGE} ${COMPONENT_LANGUAGE}Container$i >& $ACS_TMP/${COMPONENT_LANGUAGE}Container$i.log
+		  echo " Starting Container $i"
+		  acsutilAwaitContainerStart -${COMPONENT_LANGUAGE} ${COMPONENT_LANGUAGE}Container$i >& $ACS_TMP/${COMPONENT_LANGUAGE}Container$i.log
       fi
       publisherPid[$i]=`ps -ef | grep "${CONTAINER_GREP_STRING}$i"  | grep -v acsStartJava | grep -v bash | grep -v grep | gawk '{ print $2 }'`
       debugPrint "publisherPid$i is: ${publisherPid[${i}]}"
       sleep 5
       setLogLevelLocal ${COMPONENT_LANGUAGE}Container$i $ACS_LOG_STDOUT
-      `sar -x ${publisherPid[${i}]} 1 9999 >& $ACS_TMP/$PUBLISHER_LOG_FILE$i.orig.log` &
-      ./monitorProcess ${publisherPid[${i}]} 1 $ACS_TMP/$PUBLISHER_LOG_FILE-memory$i &
+      if [ "$CPU_LOAD" ] ; 
+      then 
+    	  `sar -x ${publisherPid[${i}]} 1 9999 >& $ACS_TMP/$PUBLISHER_LOG_FILE$i.orig.log` &
+    	  ./monitorProcess ${publisherPid[${i}]} 1 $ACS_TMP/$PUBLISHER_LOG_FILE-memory$i &
+  	  fi
   else
       echo " Starting Remote Container $i"
       export MANAGER_REFERENCE=corbaloc::`getIP`:`getManagerPort`/Manager
@@ -455,8 +472,11 @@ do
       publisherPid[$i]=`ssh -f $USER@$REMOTE_HOST ps -ef | grep "${CONTAINER_GREP_STRING}$i"  | grep -v acsStartJava | grep -v bash \
 	  | grep -v grep | gawk '{ print $2 }'`
       debugPrint "publisherPid$i is: ${publisherPid[${i}]}"
-      ssh -f $USER@$REMOTE_HOST "sar -x ${publisherPid[${i}]} 1 9999" >& $ACS_TMP/$PUBLISHER_LOG_FILE$i.orig.log &
-      ssh -f $USER@$REMOTE_HOST "remoteMonitorProcess ${publisherPid[${i}]} 1" >& $ACS_TMP/$PUBLISHER_LOG_FILE-memory$i &
+      if [ "$CPU_LOAD" ] ; 
+      then 
+      	ssh -f $USER@$REMOTE_HOST "sar -x ${publisherPid[${i}]} 1 9999" >& $ACS_TMP/$PUBLISHER_LOG_FILE$i.orig.log &
+      	ssh -f $USER@$REMOTE_HOST "remoteMonitorProcess ${publisherPid[${i}]} 1" >& $ACS_TMP/$PUBLISHER_LOG_FILE-memory$i &
+      fi
   fi
   i=`expr $i + 1`
 done
@@ -464,44 +484,42 @@ done
 # find the pids for all the processes that we're interested in monitoring
 # don't use the "-e" option in the call to ps, as we're only interested in
 # the processes started by *this* user.
-while [ -z "$logSvcPid" ]
-do
-  logSvcPid=`ps -f | grep acsLogSvc | grep -v grep | gawk '{ print $2 }'`
+while [ -z "$logSvcPid" ] ; do
+    logSvcPid=`ps -f | grep acsLogSvc | grep -v grep | gawk '{ print $2 }'`
 done
 debugPrint "logSvcPid is: $logSvcPid"
-while [ -z "$loggingServicePid" ]
-  do
-  loggingServicePid=`ps -f | grep loggingService | grep -v grep | gawk '{ print $2 }'`
+while [ -z "$loggingServicePid" ] ; do
+    loggingServicePid=`ps -f | grep loggingService | grep -v grep | gawk '{ print $2 }'`
 done
 debugPrint "loggingServicePid is: $loggingServicePid"
-while [ -z "$loggingNotifyServicePid" ]
-do
-  loggingNotifyServicePid=`ps -f | grep Notify_Service | grep -v grep | grep LoggingNotify | gawk '{ print $2 }'`
+while [ -z "$loggingNotifyServicePid" ] ; do
+    loggingNotifyServicePid=`ps -f | grep Notify_Service | grep -v grep | grep LoggingNotify | gawk '{ print $2 }'`
 done
 debugPrint "loggingNotifyServicePid is: $loggingNotifyServicePid"
-while [ -z "$loggingClientPid" ]
-  do
-  loggingClientPid=`ps -f | grep loggingClient  | grep -v grep | gawk '{ print $2 }'`
+while [ -z "$loggingClientPid" ] ; do
+    loggingClientPid=`ps -f | grep loggingClient  | grep -v grep | gawk '{ print $2 }'`
 done
 # Should actually check here is loggingClientPid is a single number,
 # as there could be several (not terminated) loggingClients running
 debugPrint "loggingClientPid is: $loggingClientPid"
 
 # monitor the relevant processes using the unix 'sar' command
-debugPrint "sar -x $logSvcPid 1 9999 >& $ACS_TMP/$ACS_LOG_SVC_LOG_FILE.orig.log"
-sar -x $logSvcPid 1 9999 >& $ACS_TMP/$ACS_LOG_SVC_LOG_FILE.orig.log &
-./monitorProcess $logSvcPid 1 $ACS_TMP/$ACS_LOG_SVC_LOG_FILE-memory &
-debugPrint "sar -x $loggingServicePid 1 9999 >& $ACS_TMP/$LOGGING_SERVICE_LOG_FILE.orig.log"
-sar -x $loggingServicePid 1 9999 >& $ACS_TMP/$LOGGING_SERVICE_LOG_FILE.orig.log &
-./monitorProcess $loggingServicePid 1 $ACS_TMP/$LOGGING_SERVICE_LOG_FILE-memory  &
-debugPrint "sar -x $loggingNotifyServicePid 1 9999 >& $ACS_TMP/$LOGGING_NOTIFY_SERVICE_LOG_FILE.orig.log"
-sar -x $loggingNotifyServicePid 1 9999 >& $ACS_TMP/$LOGGING_NOTIFY_SERVICE_LOG_FILE.orig.log &
-./monitorProcess $loggingNotifyServicePid 1 $ACS_TMP/$LOGGING_NOTIFY_SERVICE_LOG_FILE-memory  &
-debugPrint "sar -x $loggingClientPid 1 9999 >& $ACS_TMP/$LOGGING_CLIENT_LOG_FILE.orig.log"
-sar -x $loggingClientPid 1 9999 >& $ACS_TMP/$LOGGING_CLIENT_LOG_FILE.orig.log &
-./monitorProcess $loggingClientPid 1 $ACS_TMP/$LOGGING_CLIENT_LOG_FILE-memory  &
-if [ "$PROFILE_JLOG" ] ;
-then
+if [ "$CPU_LOAD" ] ; then
+    debugPrint "sar -x $logSvcPid 1 9999 >& $ACS_TMP/$ACS_LOG_SVC_LOG_FILE.orig.log"
+    sar -x $logSvcPid 1 9999 >& $ACS_TMP/$ACS_LOG_SVC_LOG_FILE.orig.log &
+    ./monitorProcess $logSvcPid 1 $ACS_TMP/$ACS_LOG_SVC_LOG_FILE-memory &
+    debugPrint "sar -x $loggingServicePid 1 9999 >& $ACS_TMP/$LOGGING_SERVICE_LOG_FILE.orig.log"
+    sar -x $loggingServicePid 1 9999 >& $ACS_TMP/$LOGGING_SERVICE_LOG_FILE.orig.log &
+    ./monitorProcess $loggingServicePid 1 $ACS_TMP/$LOGGING_SERVICE_LOG_FILE-memory  &
+    debugPrint "sar -x $loggingNotifyServicePid 1 9999 >& $ACS_TMP/$LOGGING_NOTIFY_SERVICE_LOG_FILE.orig.log"
+    sar -x $loggingNotifyServicePid 1 9999 >& $ACS_TMP/$LOGGING_NOTIFY_SERVICE_LOG_FILE.orig.log &
+    ./monitorProcess $loggingNotifyServicePid 1 $ACS_TMP/$LOGGING_NOTIFY_SERVICE_LOG_FILE-memory  &
+    debugPrint "sar -x $loggingClientPid 1 9999 >& $ACS_TMP/$LOGGING_CLIENT_LOG_FILE.orig.log"
+    sar -x $loggingClientPid 1 9999 >& $ACS_TMP/$LOGGING_CLIENT_LOG_FILE.orig.log &
+    ./monitorProcess $loggingClientPid 1 $ACS_TMP/$LOGGING_CLIENT_LOG_FILE-memory  &
+fi
+
+if [ "$PROFILE_JLOG" ] ; then
     echo " Starting jlog..."
     jlog >& $ACS_TMP/jlogOutput.log &
     while [ -z "$jlogPid" ]
@@ -510,9 +528,11 @@ then
     done
     debugPrint "jlogPid is: $jlogPid"
     sleep 5
-    # start monitoring jlog process with 'sar' command
-    sar -x $jlogPid 1 9999 >& $ACS_TMP/$JLOG_LOG_FILE.orig.log &
-    ./monitorProcess $jlogPid 1 $ACS_TMP/$JLOG_LOG_FILE-memory  &
+    if [ "$CPU_LOAD" ] ; then
+    	# start monitoring jlog process with 'sar' command
+    	sar -x $jlogPid 1 9999 >& $ACS_TMP/$JLOG_LOG_FILE.orig.log &
+    	./monitorProcess $jlogPid 1 $ACS_TMP/$JLOG_LOG_FILE-memory  &
+    fi
 fi
 
 # Reset the chronometer
@@ -529,46 +549,67 @@ acsStartJava -D NumLogs=$NUM_LOGS -D NumComponents=$NUM_COMPONENTS -D Delay=$DEL
 # as there is some delay (25s) coded into ClientJavaClass
 sleep 25
 startChrono 2
-sleepUnit=75
-timeout=5000
+sleepUnit=13
+timeout=30000
 # Note that on a fully loaded system, "milliSleep" may take a lot more
-# than 75 ms wall-clock time to execute. So we'll have to take
+# than 13 ms wall-clock time to execute. So we'll have to take
 # measures for that - see below this "while" loop.
 # Waiting till all_logs.xml gets filled seems not to be the proper way to
 # measure when the logs start to arrive, as this may take a while for
 # fully loaded CPU on a system with Real-Time extensions an not a lot
 # of RAM (=> swapping)...
-while [ `grep "msg: " $ACS_TMP/all_logs.xml | wc -l` -eq 0 ]; do
+delay=0
+firstBatchOfLogs=0
+# Note: in this loop chrono3 is to measure the time between seeing the first logs
+# arrive, and the complete arrival of all logs. We reset it as close as possible
+# to gathering the test data used below. 
+# Also, we attempt to correct this timer for the execution time of grep|wc
+# (which can be substantial on a heavily loaded machine - and that'll be the
+# case as soon as we spit out logs at full speed)
+while [ $delay -lt $timeout ] ; do
     milliSleep $sleepUnit
-    offset2=`getChrono 2`
-    debugPrint "waiting for all_logs.xml since ${offset2}s"
-    delay=$(printf %.0f `echo "$offset2 * 1000." | bc -l`)
-    if [ $delay -gt $timeout ] ; then
-        break
+    startChrono 3
+    firstBatchOfLogs=`grep "msg: " $ACS_TMP/all_logs.xml | wc -l`
+    if [ $firstBatchOfLogs -ne 0 ] ; then
+	break
+    else
+	delay=`getChronoInt 2`
+    	debugPrint "waiting for all_logs.xml since ${delay}s"
     fi
 done
+ 
+# Restart timer, correcting it for execution time of loop (particularly "grep")
+startChrono 2 `getChrono 3`/2.
+
+debugPrint "firstBatchOfLogs = $firstBatchOfLogs"
 # We can use offset2 as the value to subtract from chrono2 to
 # measure the time from the reception of the 1st log.
+# In case we got more than 1 log already, we'll have to
+# extrapolate the time back to the 1st log (done later).
 # However, if we timed-out waiting on all_logs.xml being filled,
 # it is likely due to an overloaded system. In this case, we don't
 # have a clear trigger for our time-measurement. So we'll have to
-# assume a default offset in this case.
+# assume a default offset in this case, or signal that the measurement
+# is not reliable.
+
 if [ $delay -gt $timeout ] ; then
-    offset2=2.5
+    debugPrint "Something is very wrong: we needed more than 30s to see the first log in all_logs.xml"
 fi
 
 # wait until the most recently started background processes (acsStartJava) has completed.
 echo " Waiting for all logs to be sent..."
 wait $!
-##echo " Resetting/starting chronometer 3"
-startChrono 3
+##echo " Resetting/starting chronometer 4"
+startChrono 4
 
 # Tell how long it took to send all these logs
 chrono1=`getChrono 1`
-chrono2=`getChrono 2`
-# chrono2 was started "too early" (see above)
-chrono2=$(printf %.3f `echo "$chrono2 - $offset2" | bc -l`)
-echo " Needed ${chrono1}s / ${chrono2}s to send all logs"
+chrono2Snap=`getChrono 2`
+# chrono2 is the time it took to between getting the first batch of logs 
+# ($firstBatchOfLogs) into all_logs.xml and the sending of all logs. We will
+# need to extrapolate to get estimate the point in time the very first log arrived,
+# and to be able to do that we have to wait till we have them all in.
+echo " Needed ${chrono1}s to send all logs / ${chrono2Snap}s after first $firstBatchOfLogs logs came to all_logs.xml"
 
 # sleep a bit longer to allow things to 'settle'
 echo " Sleeping (at most) $EXTRA_WAIT_TIME seconds to allow logs to be processed..."
@@ -576,32 +617,39 @@ totalLogsExpected=`expr $NUM_LOGS \* $NUM_COMPONENTS`
 lastMsgId=`expr $NUM_LOGS - 1`
 delay=0
 # First look for the last log(s), then check later if no logs are lost
-while [ $delay -le $EXTRA_WAIT_TIME ]
-do
-  chrono3=`getChrono 3`
-  startChrono 4
-  nrLastLogs=`grep "msg: $lastMsgId]" $ACS_TMP/all_logs.xml | wc -l`
-  chrono4=`getChrono 4`
-  #!#debugPrint "overhead of grep|wc is ${chrono4}s"
-  # Note that a grep|wc on all_logs.xml can take a few seconds if lots of logs are sent,
-  # and that duration is anyway proportional to the size of all_logs.xml.
-  # So don't assume that loop duration is determined by the "sleep 1" further on.
-  if [ "$nrLastLogs" -eq " $NUM_COMPONENTS" ] ; then
-      debugPrint "received last log of all components, no need to wait any longer"
-      break
-  fi
-  delay=`getChrono 3`
-  #!#debugPrint "waiting since $delay s"
-  # convert to integer (needed for expression in "while" control statement above)
-  delay=`printf %.0f $delay`
-  ##sleep 1
+while [ $delay -le $EXTRA_WAIT_TIME ] ; do
+    nrLastLogs=`grep "msg: $lastMsgId]" $ACS_TMP/all_logs.xml | wc -l`
+    # Note that a grep|wc on all_logs.xml can take a few seconds if lots of logs are sent,
+    # and that duration is anyway proportional to the size of all_logs.xml.
+    # So don't assume that loop duration is determined by the "sleep 1" further on.
+    if [ "$nrLastLogs" -eq " $NUM_COMPONENTS" ] ; then
+	chrono2=`getChrono 2`
+	chrono4=`getChrono 4`
+	debugPrint "received last log of all components, no need to wait any longer"
+	break
+    fi
+    delay=`getChronoInt 4`
+    #!#debugPrint "waiting since $delay s"
+    ##sleep 1
 done
 
 if [ $delay -le $EXTRA_WAIT_TIME ] ; then
-  echo " Last log digested within ${chrono3}s after generating process stopped."
+    echo " Last log digested within ${chrono4}s after generating process stopped."
 else
-  echo " Log digestion timed out after ${chrono3}s after last log was sent."
+    chrono4=`getChrono 4`
+    echo " Log digestion timed out after ${chrono4}s after last log was sent."
 fi
+
+# Calculate now how long it took to receive all logs, starting from the
+# first; remember that we only know at what point in time arrived the
+# first batch of logs (firstBatchOfLogs).
+if [ $firstBatchOfLogs -lt $totalLogsExpected ]
+then
+    timeForAllLogs=$(printf %.3f `echo "$chrono2 * $totalLogsExpected / ($totalLogsExpected - $firstBatchOfLogs)" | bc -l`)
+else
+    timeForAllLogs=$chrono2
+fi
+debugPrint " Time to receive remaining logs (after $firstBatchOfLogs logs) = ${chrono2}s / all logs = ${timeForAllLogs}s"
 
 # verify the proper number of logs were received
 startChrono 4
@@ -644,7 +692,7 @@ then
 fi
 
 # append timing data to a CSV file, for import into Excel
-echo "$COMPONENT_LANGUAGE,$NUM_LOGS,$totalLogsReceivedByLoggingClient,$ACS_LOG_STDOUT,$DELAY,$sysPerformance,$chrono1,$chrono2,$chrono3" >> $CSVFILE
+echo "$COMPONENT_LANGUAGE,$NUM_LOGS,$totalLogsReceivedByLoggingClient,$ACS_LOG_STDOUT,$DELAY,$sysPerformance,$chrono1,$chrono2,$chrono4" >> $CSVFILE
 
 # stop the container(s)
 i=1
@@ -669,48 +717,52 @@ echo " Stopping ACS"
 #!#acsStop >& $ACS_TMP/acsStop.log
 acsutilTATEpilogue
 
+
 # prep the log files
+if [ "$CPU_LOAD" ] ;
+then
 echo " Preparing the sar log files"
-cat $ACS_TMP/$ACS_LOG_SVC_LOG_FILE.orig.log | grep -v -i average | grep -v -i linux \
-    | grep -v -i pid | sed -e /^[^0-9]/d > $ACS_TMP/$ACS_LOG_SVC_LOG_FILE.log 
-cat $ACS_TMP/$LOGGING_SERVICE_LOG_FILE.orig.log | grep -v -i average | grep -v -i linux \
-    | grep -v -i pid | sed -e /^[^0-9]/d > $ACS_TMP/$LOGGING_SERVICE_LOG_FILE.log
-cat $ACS_TMP/$LOGGING_NOTIFY_SERVICE_LOG_FILE.orig.log | grep -v -i average | grep -v -i linux \
-    | grep -v -i pid | sed -e /^[^0-9]/d > $ACS_TMP/$LOGGING_NOTIFY_SERVICE_LOG_FILE.log
-cat $ACS_TMP/$LOGGING_CLIENT_LOG_FILE.orig.log | grep -v -i average | grep -v -i linux \
-    | grep -v -i pid | sed -e /^[^0-9]/d > $ACS_TMP/$LOGGING_CLIENT_LOG_FILE.log
+	cat $ACS_TMP/$ACS_LOG_SVC_LOG_FILE.orig.log | grep -v -i average | grep -v -i linux \
+    	| grep -v -i pid | sed -e /^[^0-9]/d > $ACS_TMP/$ACS_LOG_SVC_LOG_FILE.log 
+	cat $ACS_TMP/$LOGGING_SERVICE_LOG_FILE.orig.log | grep -v -i average | grep -v -i linux \
+ 	   | grep -v -i pid | sed -e /^[^0-9]/d > $ACS_TMP/$LOGGING_SERVICE_LOG_FILE.log
+	cat $ACS_TMP/$LOGGING_NOTIFY_SERVICE_LOG_FILE.orig.log | grep -v -i average | grep -v -i linux \
+  	  | grep -v -i pid | sed -e /^[^0-9]/d > $ACS_TMP/$LOGGING_NOTIFY_SERVICE_LOG_FILE.log
+	cat $ACS_TMP/$LOGGING_CLIENT_LOG_FILE.orig.log | grep -v -i average | grep -v -i linux \
+ 	   | grep -v -i pid | sed -e /^[^0-9]/d > $ACS_TMP/$LOGGING_CLIENT_LOG_FILE.log
 
-i=1
-while [ "$i" -le $NUM_COMPONENTS ]
-do
-  cat $ACS_TMP/$PUBLISHER_LOG_FILE$i.orig.log | grep -v -i average | grep -v -i linux \
-      | grep -v -i pid | sed -e /^[^0-9]/d > $ACS_TMP/$PUBLISHER_LOG_FILE$i.log
+	i=1
+	while [ "$i" -le $NUM_COMPONENTS ]
+	do
+	  cat $ACS_TMP/$PUBLISHER_LOG_FILE$i.orig.log | grep -v -i average | grep -v -i linux \
+	      | grep -v -i pid | sed -e /^[^0-9]/d > $ACS_TMP/$PUBLISHER_LOG_FILE$i.log
   
-  i=`expr $i + 1`
-done
+	  i=`expr $i + 1`
+	done
 
-if [ "$PROFILE_JLOG" ] ; then
-    cat $ACS_TMP/$JLOG_LOG_FILE.orig.log | grep -v -i average | grep -v -i linux \
-	| grep -v -i pid > $ACS_TMP/$JLOG_LOG_FILE.log
-fi
+	if [ "$PROFILE_JLOG" ] ; then
+	    cat $ACS_TMP/$JLOG_LOG_FILE.orig.log | grep -v -i average | grep -v -i linux \
+		| grep -v -i pid > $ACS_TMP/$JLOG_LOG_FILE.log
+	fi
 
-# plot the data from the prepped log files
-echo " Generating the plots"
-genplot $ACS_LOG_SVC_LOG_FILE $ACS_TMP
-genmemoryplot $ACS_LOG_SVC_LOG_FILE-memory $ACS_TMP acsLogSvc
-genplot $LOGGING_SERVICE_LOG_FILE $ACS_TMP 
-genmemoryplot $LOGGING_SERVICE_LOG_FILE-memory $ACS_TMP loggingService
-genplot $LOGGING_NOTIFY_SERVICE_LOG_FILE $ACS_TMP
-genmemoryplot $LOGGING_NOTIFY_SERVICE_LOG_FILE-memory $ACS_TMP
-genplot $LOGGING_CLIENT_LOG_FILE $ACS_TMP
-genmemoryplot $LOGGING_CLIENT_LOG_FILE-memory $ACS_TMP loggingClient
-gencontainerplot $PUBLISHER_LOG_FILE $ACS_TMP
-gencontainermemoryplot $PUBLISHER_LOG_FILE-memory $ACS_TMP $NUM_COMPONENTS 
+	# plot the data from the prepped log files
+	echo " Generating the plots"
+	genplot $ACS_LOG_SVC_LOG_FILE $ACS_TMP
+	genmemoryplot $ACS_LOG_SVC_LOG_FILE-memory $ACS_TMP acsLogSvc
+	genplot $LOGGING_SERVICE_LOG_FILE $ACS_TMP 
+	genmemoryplot $LOGGING_SERVICE_LOG_FILE-memory $ACS_TMP loggingService
+	genplot $LOGGING_NOTIFY_SERVICE_LOG_FILE $ACS_TMP
+	genmemoryplot $LOGGING_NOTIFY_SERVICE_LOG_FILE-memory $ACS_TMP
+	genplot $LOGGING_CLIENT_LOG_FILE $ACS_TMP
+	genmemoryplot $LOGGING_CLIENT_LOG_FILE-memory $ACS_TMP loggingClient
+	gencontainerplot $PUBLISHER_LOG_FILE $ACS_TMP
+	gencontainermemoryplot $PUBLISHER_LOG_FILE-memory $ACS_TMP $NUM_COMPONENTS 
 
-if [ "$PROFILE_JLOG" ] ;
-    then
-    genplot $JLOG_LOG_FILE $ACS_TMP
-    genmemoryplot $JLOG_LOG_FILE-memory $ACS_TMP jlog
+	if [ "$PROFILE_JLOG" ] ;
+	    then
+	    genplot $JLOG_LOG_FILE $ACS_TMP
+	    genmemoryplot $JLOG_LOG_FILE-memory $ACS_TMP jlog
+	fi
 fi
 
 # generate the html page summarizing the test results
