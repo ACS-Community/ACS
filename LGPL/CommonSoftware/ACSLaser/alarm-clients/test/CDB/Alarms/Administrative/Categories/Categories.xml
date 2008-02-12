@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<categories 
+	xmlns="urn:schemas-cosylab-com:acsalarm-categories:1.0" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <category is-default="true" path="CATEGORY1">
+    <description>Test category 1</description>
+    <alarms>
+      <FaultFamily>Antenna</FaultFamily>
+      <FaultFamily>Mount</FaultFamily>
+    </alarms>
+  </category>
+  <category is-default="false" path="CATEGORY2">
+  	<description>Test category 2</description>
+  	<alarms>
+  		<FaultFamily>PS</FaultFamily>
+  	</alarms>
+  </category>
+</categories>

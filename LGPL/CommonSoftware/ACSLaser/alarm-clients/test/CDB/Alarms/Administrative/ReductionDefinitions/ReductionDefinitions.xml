@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+  - Sample configuration of alarm reduction links.
+  -
+  - Author:
+  -    Klemen Zagar (Cosylab)
+  -
+  - History:
+  -   2005-06-13  KZ  Created
+ -->
+<reduction-definitions 
+   xmlns="urn:schemas-cosylab-com:AcsAlarmSystem:1.0"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+	<links-to-create>
+
+		<reduction-link type="NODE">
+		<parent>
+		<alarm-definition fault-family="PS"
+		fault-member="ALARM_SOURCE_PS" fault-code="1"/>
+		</parent>
+		<child>
+		<alarm-definition fault-family="Mount"
+		fault-member="ALARM_SOURCE_MOUNT" fault-code="1"/>
+		</child>
+		</reduction-link>
+		<reduction-link type="NODE">
+		<parent>
+		<alarm-definition fault-family="Mount"
+		fault-member="ALARM_SOURCE_MOUNT" fault-code="1"/>
+		</parent>
+		<child>
+		<alarm-definition fault-family="Antenna"
+		fault-member="ALARM_SOURCE_ANTENNA" fault-code="1"/>
+		</child>
+		</reduction-link>
+		
+		<reduction-link type="MULTIPLICITY">
+			<parent>
+				<alarm-definition fault-family="MF" fault-member="MULTIPLE_MF_FAILURES" fault-code="5"/>
+			</parent>
+			<child>
+				<alarm-definition fault-family="MF" fault-member="ALARM_SOURCE_MF" fault-code="0"/>
+			</child>
+		</reduction-link>
+		<reduction-link type="MULTIPLICITY">
+			<parent>
+				<alarm-definition fault-family="MF" fault-member="MULTIPLE_MF_FAILURES" fault-code="5"/>
+			</parent>
+			<child>
+				<alarm-definition fault-family="MF" fault-member="ALARM_SOURCE_MF" fault-code="1"/>
+			</child>
+		</reduction-link>
+		<reduction-link type="MULTIPLICITY">
+			<parent>
+				<alarm-definition fault-family="MF" fault-member="MULTIPLE_MF_FAILURES" fault-code="5"/>
+			</parent>
+			<child>
+				<alarm-definition fault-family="MF" fault-member="ALARM_SOURCE_MF" fault-code="2"/>
+			</child>
+		</reduction-link>
+		<reduction-link type="MULTIPLICITY">
+			<parent>
+				<alarm-definition fault-family="MF" fault-member="MULTIPLE_MF_FAILURES" fault-code="5"/>
+			</parent>
+			<child>
+				<alarm-definition fault-family="MF" fault-member="ALARM_SOURCE_MF" fault-code="3"/>
+			</child>
+		</reduction-link>
+		<reduction-link type="MULTIPLICITY">
+			<parent>
+				<alarm-definition fault-family="MF" fault-member="MULTIPLE_MF_FAILURES" fault-code="5"/>
+			</parent>
+			<child>
+				<alarm-definition fault-family="MF" fault-member="ALARM_SOURCE_MF" fault-code="4"/>
+			</child>
+		</reduction-link>
+		
+	</links-to-create>
+
+		<thresholds>
+		<threshold value="3">
+			<alarm-definition fault-family="MF" fault-member="MULTIPLE_MF_FAILURES" fault-code="5"/>
+		</threshold>
+	</thresholds>
+</reduction-definitions>
+
