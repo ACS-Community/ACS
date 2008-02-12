@@ -18,66 +18,87 @@
  */
 package alma.alarmsystem.clients;
 
-import java.util.HashSet;
-import java.util.Vector;
+import java.util.logging.Logger;
 
 import alma.acs.container.ContainerServices;
 import alma.acs.logging.AcsLogLevel;
 import alma.alarmsystem.AlarmService;
 import alma.alarmsystem.AlarmServiceHelper;
 import alma.alarmsystem.Category;
-import alma.alarmsystem.clients.category.AlarmView;
-import alma.alarmsystem.clients.category.CategoryListener;
-import alma.alarmsystem.clients.category.CategorySubscriber;
+import alma.alarmsystem.clients.alarm.AlarmClientException;
+
+import cern.laser.client.services.selection.AlarmSelectionHandler;
+import cern.laser.client.services.selection.AlarmSelectionListener;
+import cern.laser.client.services.selection.CategorySelection;
+import cern.laser.client.services.selection.Selection;
+import cern.laser.console.Configuration;
+import cern.laser.console.User;
+import cern.laser.console.impl.UserHandlerImpl;
+import cern.laser.guiplatform.alarms.AlarmSelectionHandlerFactory;
 
 /**
- * A client that listen alarms from all the categories
+ * A client that listen to alarms from all the categories.
+ * 
+ * It is a wrapper to CERN classes in order to simplify
+ * the usage from ACS without dealing with low level
+ * details of the alarm system.
+ * 
+ * The class connects to the alarm system as a CERN client,
+ * logging in a generic user.
+ * The listern receives alarms and errors from the alarm system by means 
+ * of a callback.
+ * The alarm system sends all the already active alarms when the user logs is.
+ * 
+ * The close() method has to be called in order to free all the resources.
  * 
  * @author acaproni
  *
  */
 public class CategoryClient {
 	
-	// Container services
+	// The user handle
+	private UserHandlerImpl userHandler;
+	
+	// The user to log in (test for instance)
+	private User testUser;
+	
+	// The user's default configuration
+	private Configuration defaultConf;
+	
+	// The alarm selection handler
+	private AlarmSelectionHandler jms_selectionHandler;
+	
+	// ACS ContainerServices
 	private ContainerServices contSvc;
 	
-	// The category root topic
-	private String categoryRootTopic;
-	
-	/**
-	 * The categories 
-	 * Each category is a notifcation channel we have to listen to.
-	 * The list of the categories is read from the AlarmServise componet
-	 */
-	private Category[] categories;
-	
-	// The consumers to listen to alarms from the categories
-	private CategorySubscriber[] consumers;
-	
-	// The name of the AlarmSrvice component
-	private String alarmName;
+	// The logger
+	private Logger logger;
 	
 	// The alarm service component and its IDL
 	private final String alarmServiceIDL = "*/AlarmService:*";
 	private AlarmService alarm;
 	
-	private HashSet<CategoryListener> listeners = new HashSet<CategoryListener>();
-	
 	/**
-	 * Constructor 
+	 * Constructor
 	 * 
-	 * @param svc ACS ContainerServices used to access the alarm service component
+	 * @param contServices The containerServices
+	 * @throws AlarmClientException
 	 */
-	public CategoryClient(ContainerServices svc) throws Exception {
-		if (svc==null) {
-			throw new IllegalArgumentException("Invalid ContainerServices");
+	public CategoryClient(ContainerServices contServices) throws AlarmClientException {
+		if (contServices==null) {
+			throw new IllegalArgumentException("ContainerServices can't be null");
 		}
-		contSvc=svc;
-		try {
-			initialize();
-		} catch (Throwable t) {
-			throw new Exception("Error building CategoryClient",t);
+		contSvc=contServices;
+		
+		logger=contSvc.getLogger();
+		if (logger==null) {
+			throw new IllegalStateException("Got a null logger from the container services!");
 		}
+		
+		
+		
+		System.out.println("AlarmSystemClient built");
+		
 	}
 	
 	/**
@@ -93,185 +114,101 @@ public class CategoryClient {
 			contSvc.getLogger().log(AcsLogLevel.WARNING,"More then one AlarmService component found");
 			
 		}
-		contSvc.getLogger().log(AcsLogLevel.INFO,"Getting "+names[0]);
+		contSvc.getLogger().log(AcsLogLevel.DEBUG,"Getting "+names[0]);
 		// Get a reference to the first component
 		alarm=AlarmServiceHelper.narrow(contSvc.getComponent(names[0]));
-		alarmName=names[0];
-		contSvc.getLogger().log(AcsLogLevel.INFO,names[0]+" connected");
+		contSvc.getLogger().log(AcsLogLevel.DEBUG,names[0]+" connected");
 	}
 	
 	/**
-	 * Release the alarm component
-	 *
-	 */
-	private void releaseAlarmServiceComponent() {
-		try {
-			if (alarmName!=null) {
-				contSvc.getLogger().log(AcsLogLevel.INFO,"Releasing "+alarmName);
-				contSvc.releaseComponent(alarmName);
-				contSvc.getLogger().log(AcsLogLevel.INFO,alarmName+" released");
-			}
-		} catch (Throwable t) {
-			System.err.println("Error releasing the AlarmService: "+t.getMessage());
-		}
-		alarmName=null;
-		alarm=null;
-	}
-	
-	/**
-	 * Read the categories and the category root topic from the component
+	 * Add the categories to the configuration i.e. add the categories 
+	 * the client wants to listen to
 	 * 
-	 * @return The categories
+	 * @param config The Configuration
+	 * @param categories The categories to listen to
+	 *                   If it is null, it adds all the categories returned
+	 *                   by the alarm system component
+	 * @throws Exception 
 	 */
-	private void getCategories() throws Exception {
-		if (alarm==null) {
-			throw new IllegalStateException("No alarm component connected");
-		}
-		categoryRootTopic=alarm.getCategoryRootTopic();
-		categories=alarm.getCategories();
-	}
-	
-	/**
-	 * Create the consumers for the passed categories
-	 * 
-	 *   
-	 * @param categoriesToConnect The categories to connect to
-	 */
-	public void connect(Category[] categoriesToConnect) throws Exception {
-		if (categoriesToConnect==null ||categoriesToConnect.length==0) {
-			contSvc.getLogger().log(AcsLogLevel.INFO,"No categories to connect to");
-			return;
-		}
-		consumers=new CategorySubscriber[categoriesToConnect.length];
-		int t=0;
-		Vector<String> failingConnections = new Vector<String>();
-		for (Category category: categoriesToConnect) {
-			try {
-				consumers[t++]=new CategorySubscriber(contSvc,categoryRootTopic,category.path,this);
-				contSvc.getLogger().log(AcsLogLevel.DEBUG,"Connected to "+categoryRootTopic+"."+category.path);
-			} catch (Throwable throwable) {
-				failingConnections.add("Error subscribing to "+categoryRootTopic+"."+category.path+": "+throwable.getMessage());
-			}
-		}
-		if (failingConnections.size()>0) {
-			System.err.println("Error connecting categories: ");
-			for (String str: failingConnections) {
-				System.err.println("\t"+str);
-			}
-			throw new Exception("Error connecting categories");
-		}
-	}
-	
-	/**
-	 * Connect to all available categories
-	 * 
-	 */
-	public void connect() throws Exception {
-		connect(categories);
-	}
-	
-	/**
-	 * Dumps the category
-	 *
-	 */
-	private void dumpCategories() {
+	private void addCategories(Configuration config,Category[] categories) throws Exception {
+		System.out.println("addCategories");
 		if (categories==null) {
-			contSvc.getLogger().log(AcsLogLevel.DEBUG,"Categories null");
-			return;
+			categories = alarm.getCategories();
 		}
 		if (categories.length==0) {
-			contSvc.getLogger().log(AcsLogLevel.DEBUG, "Categories empty");
+			logger.log(AcsLogLevel.WARNING,"No categories to connect to");
 			return;
 		}
-		System.out.println("Category root topic="+categoryRootTopic);
+		Selection selection = config.getSelection();
+		CategorySelection catSel = selection.createCategorySelection();
 		for (Category cat: categories) {
-			contSvc.getLogger().log(AcsLogLevel.DEBUG, "Category name="+cat.name+"\tpath="+cat.path+"\tdescription="+cat.description);
+			cern.laser.business.data.CategoryImpl businessCategory = new cern.laser.business.data.CategoryImpl(
+					cat.categoryId,
+					cat.name,
+					cat.description,
+					cat.path,
+					cat.leaf);
+			cern.laser.client.impl.data.CategoryImpl cImpl=new cern.laser.client.impl.data.CategoryImpl(businessCategory);
+			
+			catSel.add(cImpl);
 		}
+		selection.setCategorySelection(catSel);
 	}
 	
 	/**
-	 * Initialize the client.
-	 * It connects to the alarm component, get the list of the categories and release 
-	 * the component.
-	 * 
+	 * Connects to all the categories of the alarm system
+	 *  
+	 * @param listener The lister to notify of the alarms received from the categories
+	 * @throws AlarmClientException
 	 */
-	private void initialize() throws Exception {
-		// Get the AlarmService
+	public void connect(AlarmSelectionListener listener) throws AlarmClientException {
+		connect(listener,null);
+	}
+	
+	/**
+	 * Connects to the passed categories of the alarm system
+	 * 
+	 * @param listener The lister to notify of the alarms received from the categories
+	 * @param categories The categories to connect to
+	 * @throws AlarmClientException
+	 */
+	public void connect(AlarmSelectionListener listener, Category[] categories) throws AlarmClientException {
+		if (listener==null) {
+			throw new IllegalArgumentException("The listener can't be null");
+		}
 		try {
 			getAlarmServiceComponent();
-		} catch (Exception e) {
-			releaseAlarmServiceComponent();
-			contSvc.getLogger().log(AcsLogLevel.ERROR,"Error getting the AlarmSystem component: "+e.getMessage());
-			throw new Exception("Error getting the AlarmSystem component: "+e.getMessage(),e);
+			userHandler=new UserHandlerImpl();
+			logger.log(AcsLogLevel.DEBUG,"UserHandler succesfully built");
+			
+			testUser = userHandler.getUser("test");
+			logger.log(AcsLogLevel.DEBUG,"User generated");
+			
+			defaultConf=testUser.getDefaultConfiguration();
+			logger.log(AcsLogLevel.DEBUG,"Getting the selection handler");
+			jms_selectionHandler = AlarmSelectionHandlerFactory.getHandler();
+			System.out.println("Adding categories");
+			addCategories(defaultConf,categories);
+			
+			// Get the active alarms (they are received by the listener)
+			jms_selectionHandler.select(defaultConf.getSelection(),listener);
+			
+		} catch (Throwable t) {
+			throw new AlarmClientException("Exception in ctor: ",t);
 		}
-		if (alarmName==null || alarm==null) {
-			contSvc.getLogger().log(AcsLogLevel.ERROR,"Unknown error getting the AlarmService");
-			throw new Exception("Unknown error getting the AlarmService");
-		}
-		// Read the available categories
+	}
+	
+	/**
+	 * Release all the resource,
+	 * 
+	 * @throws AlarmClientException 
+	 */
+	public void close() throws AlarmClientException {
 		try {
-			getCategories();
+			jms_selectionHandler.close();
+			contSvc.releaseComponent(alarm.name());
 		} catch (Exception e) {
-			releaseAlarmServiceComponent();
-			contSvc.getLogger().log(AcsLogLevel.ERROR,"Error getting the categories from AlarmService");
-			throw new Exception("Error getting the categories from AlarmService",e);
-		}
-		dumpCategories();
-		if (categories==null || categories.length==0) {
-			contSvc.getLogger().log(AcsLogLevel.INFO,"No alarm categories to subscribe to");
-		}
-		releaseAlarmServiceComponent();
-	}
-	
-	/**
-	 * Add a listener for the alarms.
-	 * 
-	 * Add the listeners to the set of listeners to be notified when
-	 * a new alarms is received from the categories.
-	 * 
-	 * @param newListener The listener for alarms from categories
-	 */
-	public void addAlarmListener(CategoryListener newListener) {
-		if (newListener==null) {
-			throw new IllegalArgumentException("Invalid null listener");
-		}
-		synchronized(listeners) {
-			listeners.add(newListener);
-		}
-	}
-	
-	/**
-	 * Remove a listener from the list of listeners to be notified
-	 * when a new alarm is received 
-	 * 
-	 * @param listener The not null listener to remove
-	 * @return true if thle list of isteners contained the specified listener
-	 */
-	public boolean removeListener(CategoryListener listener) {
-		if (listener==null) {
-			throw new IllegalArgumentException("Invalid null listener");
-		}
-		boolean ret;
-		synchronized(listeners) {
-			ret=listeners.remove(listener);
-		}
-		return ret;
-	}
-	
-	/**
-	 * This method is called by categories when a new message arrives and dispatches
-	 * the alarm to the listeners.
-	 * 
-	 * @param newAlarm The alarm to send to the listeners
-	 */
-	public synchronized void dispatchAlarm(AlarmView newAlarm) {
-		if (newAlarm==null) {
-			throw new IllegalArgumentException("Invalid null alarm to dispatch");
-		}
-		synchronized(listeners) {
-			for (CategoryListener listener: listeners) {
-				listener.alarmReceived(newAlarm);
-			}
+			throw new AlarmClientException("Exception closing: ",e);
 		}
 	}
 }
