@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsContainerDaemonImpl.cpp,v 1.7 2007/11/08 19:18:44 agrimstrup Exp $"
+* "@(#) $Id: acsContainerDaemonImpl.cpp,v 1.8 2008/02/12 22:53:13 agrimstrup Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -180,7 +180,8 @@ ACSContainerDaemonImpl::start_container (
     const char * container_type,
     const char * container_name,
     ::CORBA::Short instance_number,
-    const char * additional_command_line
+    const ::ACS::stringSeq & type_modifiers,
+    const char * flags
     )
     ACE_THROW_SPEC ((
 			CORBA::SystemException,

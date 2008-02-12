@@ -80,21 +80,22 @@ class ACSServicesDaemonImpl : public POA_acsdaemon::ServicesDaemon {
 
     virtual void start_acs (
         ::CORBA::Short instance_number,
-        const char * additional_command_line
+        const char * flags,
+        ::ACS::CBvoid_ptr callback
       )
       ACE_THROW_SPEC ((
         CORBA::SystemException,
-        ::acsdaemonErrType::FailedToStartAcsEx,
-	::ACSErrTypeCommon::BadParameterEx
+        ::ACSErrTypeCommon::BadParameterEx
       ));
+    
     virtual void stop_acs (
         ::CORBA::Short instance_number,
-        const char * additional_command_line
+        const char * flags,
+        ::ACS::CBvoid_ptr callback
       )
       ACE_THROW_SPEC ((
         CORBA::SystemException,
-        ::acsdaemonErrType::FailedToStopAcsEx,
-	::ACSErrTypeCommon::BadParameterEx
+        ::ACSErrTypeCommon::BadParameterEx
       ));
 
      virtual char * status_acs ( 

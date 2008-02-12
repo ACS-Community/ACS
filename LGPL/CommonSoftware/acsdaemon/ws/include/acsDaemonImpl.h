@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsDaemonImpl.h,v 1.2 2007/11/13 19:49:30 agrimstrup Exp $"
+* "@(#) $Id: acsDaemonImpl.h,v 1.3 2008/02/12 22:53:13 agrimstrup Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -179,6 +179,7 @@ int ACSDaemonServiceImpl<T>::run (void)
   
     try
 	{
+	handler.startCmdProcessor();
 	this->m_orb->run ();
 	}
     catch(...)
@@ -197,7 +198,7 @@ void ACSDaemonServiceImpl<T>::shutdown ()
     if (!CORBA::is_nil (m_orb.in ()))
 	{
 	this->m_orb->shutdown (true);
-      
+	handler.stopCmdProcessor();
 	}
 
     // shutdown AES
@@ -327,7 +328,9 @@ class acsDaemonImpl
     /** Configuration information for the service **/
     int nargc;
     char** nargv;
-
+    
+    /** logger **/
+    LoggingProxy *m_logger;
 };
 
 
@@ -389,12 +392,12 @@ acsDaemonImpl<T>::acsDaemonImpl(int argc, char *argv[])
     LoggingProxy::ProcessName(argv[0]);
     LoggingProxy::ThreadName("main");
     ACE_Log_Msg::instance()->local_host(hostName);
-
-    LoggingProxy m_logger (0, 0, 31, 0);
-    LoggingProxy::init (&m_logger);  
+    m_logger = new LoggingProxy (0, 0, 31, 0);
+    
+    LoggingProxy::init (m_logger);  
 
     // Ready the service manager
-    service = new ACSDaemonServiceImpl<T>(m_logger);
+    service = new ACSDaemonServiceImpl<T>(*m_logger);
 
     // Generate the CORBA configuration for the service
     ACE_CString argStr;
@@ -418,12 +421,14 @@ acsDaemonImpl<T>::~acsDaemonImpl()
 {
     delete service;
     LoggingProxy::done();
+    delete m_logger;
 }
 
 
 template <typename T>
 int acsDaemonImpl<T>::run()
 {
+    ACS_TRACE("acsDaemonImpl<T>::run");
     if (!service || !service->isInitialized())
 	{
 	return -1;

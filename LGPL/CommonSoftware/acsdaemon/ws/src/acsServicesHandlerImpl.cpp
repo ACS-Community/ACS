@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@$Id: acsServicesHandlerImpl.cpp,v 1.2 2007/11/13 19:49:30 agrimstrup Exp $"
+* "@$Id: acsServicesHandlerImpl.cpp,v 1.3 2008/02/12 22:53:13 agrimstrup Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -31,12 +31,91 @@
 
 /*****************************************************************/
 
+void CommandProcessorThread::onStart()
+{
+    running = true;
+}
+
+void CommandProcessorThread::onStop()
+{
+    Request *nowreq;
+    ACSErr::Completion_var comp;
+    acsdaemonErrType::AcsStartServicesCompletion ok(__FILE__, __LINE__, "ACSServicesHandlerImpl::onStop");
+
+    running = false;
+    comp = ok.returnCompletion(false);
+
+    m_mutex->acquire();
+    while (!pending.empty())
+    {
+	nowreq = pending.front();
+	pending.pop();
+	nowreq->cb->done(comp.in());
+	free(nowreq);
+    }
+    m_mutex->release();
+    m_wait->signal();
+}
+
+void CommandProcessorThread::runLoop()
+    ACE_THROW_SPEC ((
+			CORBA::SystemException,
+			::ACSErrTypeCommon::BadParameterEx
+			))
+{
+    Request *nowreq;
+    ACSErr::Completion_var comp;
+    acsdaemonErrType::AcsStartServicesCompletion ok(__FILE__, __LINE__, "ACSServicesHandlerImpl::runLoop");
+
+    while (running)
+    {
+        m_mutex->acquire();
+        if (pending.empty())
+	    m_wait->wait();
+
+	if (!running) break;
+
+	nowreq = pending.front();
+	pending.pop();
+
+	m_mutex->release();
+
+	comp = ok.returnCompletion(false);
+	nowreq->cb->working(comp.in());
+
+	ACS_SHORT_LOG ((LM_INFO, "Executing: '%s'.", nowreq->cmd));
+
+	int result = ACE_OS::system(nowreq->cmd);
+
+	if (result < 0)
+	{
+	    ACS_SHORT_LOG ((LM_INFO, "Result is: '%s'.", result));
+ 	}
+
+	comp = ok.returnCompletion(false);
+	free(nowreq->cmd);
+	nowreq->cb->done(comp.in());
+	free(nowreq);
+    }
+}
+
+void CommandProcessorThread::addRequest(Request* r)
+{
+    m_mutex->acquire();
+    pending.push(r);
+    m_mutex->release();
+    m_wait->signal();
+}
+
+
 ACSServicesHandlerImpl::ACSServicesHandlerImpl () : h_name("ACS Services Daemon"), h_type("ACSServicesDaemon")
 {
+    cmdproc = tm.create<CommandProcessorThread>(h_name.c_str());
 }
 
 ACSServicesHandlerImpl::~ACSServicesHandlerImpl (void)
 {
+    tm.destroy(cmdproc);
 }
 
 const char* ACSServicesHandlerImpl::getName ()
@@ -54,62 +133,62 @@ const char* ACSServicesHandlerImpl::getPort(void)
     return ACSPorts::getServicesDaemonPort().c_str();
 }
 
+void ACSServicesHandlerImpl::startCmdProcessor(void)
+{
+    cmdproc->resume();
+}
+
+void ACSServicesHandlerImpl::stopCmdProcessor(void)
+{
+    cmdproc->exit();
+}
 
 /************************** CORBA interface ****************************/
 
 void
 ACSServicesHandlerImpl::start_acs (
+    acsdaemon::DaemonCallback_ptr callback,
     ::CORBA::Short instance_number,
     const char * additional_command_line
     )
     ACE_THROW_SPEC ((
 			CORBA::SystemException,
-			::acsdaemonErrType::FailedToStartAcsEx,
 			::ACSErrTypeCommon::BadParameterEx
 			))
 {
-
     const char * cmdln = (additional_command_line ? additional_command_line : "");
-
-    // execute: "acsStart  -b <instance> <args>"
-    // TODO checks for ';', '&', '|' chars, they can run any other command!
-
-    //get the directory name to store the container stdout
+    
     std::string logDirectory="~/.acs/commandcenter/";
     
     //create the directory
     std::string mkdir("mkdir -p ");
     mkdir.append(logDirectory);
     ACE_OS::system(mkdir.c_str());
-
+    
     std::string timeStamp(getStringifiedTimeStamp().c_str());
-
-
-    char command[1000];
-    snprintf(command, 1000, "acsStart -b %d %s &> %sacsStart_%s&", instance_number, cmdln, logDirectory.c_str(), timeStamp.c_str());
-
-    ACS_SHORT_LOG ((LM_INFO, "Executing: '%s'.", command));
-
-    int result = ACE_OS::system(command);
-
-    if (result < 0)
-	{
-	throw ::acsdaemonErrType::FailedToStartAcsExImpl(
-	    __FILE__, __LINE__, 
-	    "::ACSServicesDaemonImpl::start_acs").getFailedToStartAcsEx();
-	}
+    
+    
+    char commandline[1000];
+    snprintf(commandline, 1000, "acsStart -b %d %s &> %sacsStart_%s", instance_number, cmdln, logDirectory.c_str(), timeStamp.c_str());
+    
+    Request *newreq = new Request(acsdaemon::DaemonCallback::_duplicate(callback), strdup(commandline));
+    cmdproc->addRequest(newreq);
+    ACSErr::Completion_var comp;
+    acsdaemonErrType::AcsStartServicesCompletion ok(__FILE__, __LINE__, "ACSServicesHandlerImpl::start_acs");
+    comp = ok.returnCompletion(false);
+    callback->working(comp);
 }
 
 
 
 void
 ACSServicesHandlerImpl::stop_acs (
+    acsdaemon::DaemonCallback_ptr callback,
     ::CORBA::Short instance_number,
     const char * additional_command_line
     )
     ACE_THROW_SPEC ((
 			CORBA::SystemException,
-			::acsdaemonErrType::FailedToStopAcsEx,
 			::ACSErrTypeCommon::BadParameterEx
 			))
 {
@@ -129,19 +208,16 @@ ACSServicesHandlerImpl::stop_acs (
     char command[1000];
     // execute: "acsStop -b <instance> <args>"
     // TODO checks for ';', '&', '|' chars, they can run any other command!
-    snprintf(command, 1000, "acsStop -b %d %s &> %sacsStop_%s&", instance_number, cmdln, logDirectory.c_str(), timeStamp.c_str());
+    snprintf(command, 1000, "acsStop -b %d %s &> %sacsStop_%s", instance_number, cmdln, logDirectory.c_str(), timeStamp.c_str());
 
-    ACS_SHORT_LOG ((LM_INFO, "Executing: '%s'.", command));
+    Request *newreq = new Request(acsdaemon::DaemonCallback::_duplicate(callback), strdup(command));
+    cmdproc->addRequest(newreq);
+    ACSErr::Completion_var comp;
+    acsdaemonErrType::AcsStartServicesCompletion ok(__FILE__, __LINE__, "ACSServicesHandlerImpl::stop_acs");
+    comp = ok.returnCompletion(false);
+    callback->working(comp);
 
-    int result = ACE_OS::system(command);
 
-    if (result < 0)
-	{
-	throw ::acsdaemonErrType::FailedToStopAcsExImpl(
-	    __FILE__, __LINE__, 
-	    "::ACSServicesDaemonImpl::stop_acs").getFailedToStopAcsEx();
-	}
-   
 }//ACSServicesDaemonImpl::stop_acs
 
 char * ACSServicesHandlerImpl::status_acs ( 

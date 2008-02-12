@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsServicesHandlerImpl.h,v 1.2 2007/11/13 19:49:30 agrimstrup Exp $"
+* "@(#) $Id: acsServicesHandlerImpl.h,v 1.3 2008/02/12 22:53:13 agrimstrup Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -38,9 +38,60 @@
 #include "acsdaemonS.h"
 #include "logging.h"
 #include <acserr.h>
+#include <ACSErrTypeOK.h>
 #include <acsdaemonErrType.h>
 #include <ACSErrTypeCommon.h>
 #include <acsutilPorts.h>
+#include <acsThread.h>
+#include "acsThreadManager.h"
+#include <ace/Synch.h>
+#include <queue>
+
+struct Request
+{
+    acsdaemon::DaemonCallback_ptr cb;
+    const char *cmd;
+    Request(acsdaemon::DaemonCallback_ptr icbp, const char *icmd) :
+	cb(icbp), cmd(icmd) {}
+};
+
+class CommandProcessorThread : public ACS::Thread
+{
+  public:
+    CommandProcessorThread(const ACE_CString &name,
+	       const ACS::TimeInterval& responseTime=ThreadBase::defaultResponseTime, 
+	       const ACS::TimeInterval& sleepTime=ThreadBase::defaultSleepTime) :
+	ACS::Thread(name, responseTime, sleepTime, false, THR_DETACHED) 
+	{
+	    ACS_TRACE("ACSServicesHandlerImpl::CommandProcessorThread"); 
+	    m_mutex = new ACE_Thread_Mutex();
+	    m_wait = new ACE_Condition<ACE_Thread_Mutex>(*m_mutex);
+	}
+    
+    ~CommandProcessorThread() 
+	{ 
+	    ACS_TRACE("ACSServicesHandlerImpl::~CommandProcessorThread"); 
+	}
+    
+    void onStart();
+
+    void onStop();
+
+    void runLoop()
+      ACE_THROW_SPEC ((
+        CORBA::SystemException,
+	::ACSErrTypeCommon::BadParameterEx
+      ));
+
+    void addRequest(Request* r);
+
+  private:
+    ACE_Thread_Mutex *m_mutex;
+    ACE_Condition<ACE_Thread_Mutex> *m_wait;
+    std::queue<Request*> pending;
+    bool running;
+};
+
 
 class ACSServicesHandlerImpl : public POA_acsdaemon::ServicesDaemon {
 
@@ -71,24 +122,29 @@ class ACSServicesHandlerImpl : public POA_acsdaemon::ServicesDaemon {
      */
     const char* getPort();
     
+
+    void startCmdProcessor();
+
+    void stopCmdProcessor();
     /*************************** CORBA interface *****************************/
 
-    virtual void start_acs (
+    void start_acs (
+	acsdaemon::DaemonCallback_ptr callback,
         ::CORBA::Short instance_number,
         const char * additional_command_line
       )
       ACE_THROW_SPEC ((
         CORBA::SystemException,
-        ::acsdaemonErrType::FailedToStartAcsEx,
 	::ACSErrTypeCommon::BadParameterEx
       ));
-    virtual void stop_acs (
+    
+    void stop_acs (
+	acsdaemon::DaemonCallback_ptr callback,
         ::CORBA::Short instance_number,
         const char * additional_command_line
       )
       ACE_THROW_SPEC ((
         CORBA::SystemException,
-        ::acsdaemonErrType::FailedToStopAcsEx,
 	::ACSErrTypeCommon::BadParameterEx
       ));
 
@@ -103,7 +159,8 @@ class ACSServicesHandlerImpl : public POA_acsdaemon::ServicesDaemon {
   private:
     std::string h_name; // Name of services handler (used for logging purposes
     std::string h_type; // CORBA-type for this services handler
-
+    CommandProcessorThread *cmdproc;
+    ACS::ThreadManager tm;
 };
 
 

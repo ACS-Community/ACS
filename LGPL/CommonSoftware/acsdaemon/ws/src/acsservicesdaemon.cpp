@@ -34,6 +34,9 @@ acsDaemonImpl<ACSServicesHandlerImpl>* g_daemon = 0; //Reference used by signal 
 
 void TerminationSignalHandler(int)
 {
+   LoggingProxy * logger = new LoggingProxy(0, 0, 31);
+   LoggingProxy::init(logger);
+   LoggingProxy::ThreadName("termination");
     if (g_daemon)
 	g_daemon->shutdown();
 }

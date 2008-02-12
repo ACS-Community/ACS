@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: acsdaemonStartContainer.cpp,v 1.10 2007/11/08 23:06:28 agrimstrup Exp $"
+* "@(#) $Id: acsdaemonStartContainer.cpp,v 1.11 2008/02/12 22:53:13 agrimstrup Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -36,7 +36,7 @@ static struct option long_options[] = {
 void 
 usage(const char *argv)
 {
-    ACE_OS::printf ("\n\tusage: %s {-h} -i INSTANCE -t TYPE -c CONATIANER [-d DAEMONREF] [-H HOST] [-a more options]", argv);
+    ACE_OS::printf ("\n\tusage: %s {-h} -i INSTANCE -t TYPE -c CONTAINER [-d DAEMONREF] [-H HOST] [-a more options]", argv);
     ACE_OS::printf ("\t   -h, --help         show this help message\n");
     ACE_OS::printf ("\t   -t, --type         container type: cpp, java, java-archive, py\n");
     ACE_OS::printf ("\t   -c, --container     container name\n");
@@ -156,10 +156,11 @@ main (int argc, char *argv[])
 	  return -1;
 	  }
 
+// @TODO: implement support for 
+      ACS::stringSeq dummy_type_modifiers;
+      ACS_SHORT_LOG((LM_INFO, "Calling start_container(%s, %s, %d, dummy_type_modifiers, %s).", containerType.c_str(), containerName.c_str(), instance, additional.c_str()));
 
-      ACS_SHORT_LOG((LM_INFO, "Calling start_container(%s, %s, %d, %s).", containerType.c_str(), containerName.c_str(), instance, additional.c_str()));
-
-      daemon->start_container(containerType.c_str(), containerName.c_str(), instance, additional.c_str());
+      daemon->start_container(containerType.c_str(), containerName.c_str(), instance, dummy_type_modifiers, additional.c_str());
       
       ACS_SHORT_LOG((LM_INFO, "Container start message issued."));
       

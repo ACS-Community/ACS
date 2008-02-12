@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsContainerDaemonImpl.h,v 1.2 2007/11/08 19:18:44 agrimstrup Exp $"
+* "@(#) $Id: acsContainerDaemonImpl.h,v 1.3 2008/02/12 22:53:13 agrimstrup Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -84,7 +84,8 @@ class ACSContainerDaemonImpl : public POA_acsdaemon::ContainerDaemon {
         const char * container_type,
         const char * container_name,
         ::CORBA::Short instance_number,
-        const char * additional_command_line
+        const ::ACS::stringSeq & type_modifiers,
+        const char * flags
       )
       ACE_THROW_SPEC ((
         CORBA::SystemException,

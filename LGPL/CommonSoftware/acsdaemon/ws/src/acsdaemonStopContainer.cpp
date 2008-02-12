@@ -1,7 +1,7 @@
 /*******************************************************************************
  * E.S.O. - ACS project
  *
- * "@(#) $Id: acsdaemonStopContainer.cpp,v 1.7 2007/11/08 21:17:46 ntroncos Exp $"
+ * "@(#) $Id: acsdaemonStopContainer.cpp,v 1.8 2008/02/12 22:53:13 agrimstrup Exp $"
  *
  * who       when        what
  * --------  ----------  ----------------------------------------------
@@ -34,7 +34,7 @@ static struct option long_options[] = {
 void 
 usage(const char *argv)
 {
-    ACE_OS::printf ("\n\tusage: %s {-h} -i INSTANCE -t TYPE -c CONATIANER [-d DAEMONREF] [-H HOST] [-a more options]", argv);
+    ACE_OS::printf ("\n\tusage: %s {-h} -i INSTANCE -t TYPE -c CONTAINER [-d DAEMONREF] [-H HOST] [-a more options]", argv);
     ACE_OS::printf ("\t   -h, --help         show this help message\n");
     ACE_OS::printf ("\t   -c, --container     container name\n");
     ACE_OS::printf ("\t   -i, --instance     ACS instance to use\n");

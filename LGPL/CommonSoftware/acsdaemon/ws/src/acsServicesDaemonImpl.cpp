@@ -158,16 +158,17 @@ ACSServicesDaemonImpl::run (void)
 void
 ACSServicesDaemonImpl::shutdown ()
 {
-
+    printf("=>ACSServicesDaemonImpl::shutdown\n");
     // shutdown the ORB.
     if (!CORBA::is_nil (m_orb.in ()))
 	{
 	this->m_orb->shutdown (true);
       
 	}
-
+  printf("be4 ACSServicesDaemonImpl::shutdown AES \n");
     // shutdown AES
     ACSError::done();
+ printf("after ACSServicesDaemonImpl::shutdown AES \n");
 }
 
 /************************** CORBA interface ****************************/
@@ -175,11 +176,11 @@ ACSServicesDaemonImpl::shutdown ()
 void
 ACSServicesDaemonImpl::start_acs (
     ::CORBA::Short instance_number,
-    const char * additional_command_line
+    const char * flags,
+    ::ACS::CBvoid_ptr callback
     )
     ACE_THROW_SPEC ((
 			CORBA::SystemException,
-			::acsdaemonErrType::FailedToStartAcsEx,
 			::ACSErrTypeCommon::BadParameterEx
 			))
 {
@@ -209,6 +210,7 @@ ACSServicesDaemonImpl::start_acs (
 
     if (result < 0)
 	{
+    	//@TODO send this error via the callback
 	throw ::acsdaemonErrType::FailedToStartAcsExImpl(
 	    __FILE__, __LINE__, 
 	    "::ACSServicesDaemonImpl::start_acs").getFailedToStartAcsEx();
@@ -220,11 +222,11 @@ ACSServicesDaemonImpl::start_acs (
 void
 ACSServicesDaemonImpl::stop_acs (
     ::CORBA::Short instance_number,
-    const char * additional_command_line
+    const char * additional_command_line,
+    ::ACS::CBvoid_ptr callback
     )
     ACE_THROW_SPEC ((
 			CORBA::SystemException,
-			::acsdaemonErrType::FailedToStopAcsEx,
 			::ACSErrTypeCommon::BadParameterEx
 			))
 {
@@ -250,6 +252,7 @@ ACSServicesDaemonImpl::stop_acs (
 
     int result = ACE_OS::system(command);
 
+    // @todo pass exception via callback
     if (result < 0)
 	{
 	throw ::acsdaemonErrType::FailedToStopAcsExImpl(

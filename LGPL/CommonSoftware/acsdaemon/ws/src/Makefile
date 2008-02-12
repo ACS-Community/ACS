@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.11 2008/01/04 14:06:57 hsommer Exp $"
+# "@(#) $Id: Makefile,v 1.12 2008/02/12 22:53:13 agrimstrup Exp $"
 #
 # Makefile of ........
 #
@@ -24,8 +24,7 @@
 #
 # additional include and library search paths
 #USER_INC = 
-#USER_LIB = 
-USER_LIB = -lTAO -lACE -lTAO_PortableServer -lacserr -lTAO_DsLogAdmin -lTAO_CosNaming -lTAO_IORTable -llogging -lTAO_DynamicAny -lacsutil -lACSErrTypeCommon
+USER_LIB = -lTAO -lACE -lTAO_PortableServer -lacserr -lTAO_DsLogAdmin -lTAO_CosNaming -lTAO_CosProperty_Serv -lTAO_IORTable -llogging -lTAO_DynamicAny -lacsutil -lACSErrTypeCommon -lTAO_Messaging
 
 #
 # MODULE CODE DESCRIPTION:
@@ -44,27 +43,27 @@ EXECUTABLES_L   =
 #
 # <brief description of xxxxx program>
 acscontainerdaemon_OBJECTS   =	acscontainerdaemon acsContainerHandlerImpl
-acscontainerdaemon_LIBS      =	acsdaemonErrType acsdaemonStubs
+acscontainerdaemon_LIBS      =	baciStubs acscomponentStubs acsdaemonErrType acsdaemonStubs
 
 acsdaemonStartContainer_OBJECTS   =	acsdaemonStartContainer
-acsdaemonStartContainer_LIBS      =	acsdaemonErrType acsdaemonStubs
+acsdaemonStartContainer_LIBS      =	baciStubs acscomponentStubs acsdaemonErrType acsdaemonStubs
 
 
 acsdaemonStopContainer_OBJECTS   =	acsdaemonStopContainer
-acsdaemonStopContainer_LIBS      =	acsdaemonErrType acsdaemonStubs
+acsdaemonStopContainer_LIBS      =	baciStubs acscomponentStubs acsdaemonErrType acsdaemonStubs
 
 acsservicesdaemon_OBJECTS   =	acsservicesdaemon acsServicesHandlerImpl
-acsservicesdaemon_LIBS      =	acsdaemonErrType acsdaemonStubs
+acsservicesdaemon_LIBS      =	baciStubs acscomponentStubs acsdaemonErrType acsdaemonStubs acsThread
 
-acsdaemonStartAcs_OBJECTS   =	acsdaemonStartAcs
-acsdaemonStartAcs_LIBS      =	acsdaemonErrType acsdaemonStubs
+acsdaemonStartAcs_OBJECTS   =	acsdaemonStartAcs acsDaemonCallbackImpl
+acsdaemonStartAcs_LIBS      =	baciStubs acscomponentStubs acsdaemonErrType acsdaemonStubs
 
 
 acsdaemonStopAcs_OBJECTS   =	acsdaemonStopAcs
-acsdaemonStopAcs_LIBS      =	acsdaemonErrType acsdaemonStubs
+acsdaemonStopAcs_LIBS      =	baciStubs acscomponentStubs acsdaemonErrType acsdaemonStubs
 
 acsdaemonStatusAcs_OBJECTS   =	acsdaemonStatusAcs
-acsdaemonStatusAcs_LIBS      =	acsdaemonErrType acsdaemonStubs
+acsdaemonStatusAcs_LIBS      =	baciStubs acscomponentStubs acsdaemonErrType acsdaemonStubs
 
 #
 # special compilation flags for single c sources

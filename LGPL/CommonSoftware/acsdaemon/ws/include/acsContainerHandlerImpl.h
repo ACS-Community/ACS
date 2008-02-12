@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsContainerHandlerImpl.h,v 1.2 2007/11/13 19:49:30 agrimstrup Exp $"
+* "@(#) $Id: acsContainerHandlerImpl.h,v 1.3 2008/02/12 22:53:13 agrimstrup Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -71,12 +71,16 @@ class ACSContainerHandlerImpl : public POA_acsdaemon::ContainerDaemon {
      */
     const char* getPort();
 
+    void startCmdProcessor() {}
+    void stopCmdProcessor() {}
+
     /*************************** CORBA interface *****************************/
 
     virtual void start_container (
         const char * container_type,
         const char * container_name,
         ::CORBA::Short instance_number,
+        const ::ACS::stringSeq & type_modifiers,
         const char * additional_command_line
       )
       ACE_THROW_SPEC ((
