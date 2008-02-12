@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsncCDBProperties.cpp,v 1.10 2008/02/06 14:29:25 msekoran Exp $"
+* "@(#) $Id: acsncCDBProperties.cpp,v 1.11 2008/02/12 01:10:38 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -25,9 +25,8 @@
 
 #include "acsncCDBProperties.h"
 #include <maciContainerImpl.h>
-#include <acsutilWildcard.h>
 
-static char *rcsId="@(#) $Id: acsncCDBProperties.cpp,v 1.10 2008/02/06 14:29:25 msekoran Exp $"; 
+static char *rcsId="@(#) $Id: acsncCDBProperties.cpp,v 1.11 2008/02/12 01:10:38 msekoran Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 namespace nc {
@@ -383,89 +382,6 @@ namespace nc {
 	
 	return retVal;
     }
-    //------------------------------------------------------
-	char*
-	CDBProperties::getNotificationFactoryNameForChannel(const char* channelName, const char* domainName)
-	{
-	//CDB
-	CDB::DAL_var cdbRef = getCDB();
-
-	//sanity check
-	if(cdbRef.in()==0)
-	    {
-	    ACS_STATIC_SHORT_LOG((LM_DEBUG,
-				  "CDBProperties::getNotificationFactoryNameForChannel",
-				  "CDB ref null."));
-	    return 0;
-	    }
-
-	std::string cdbChannelsName = "MACI/Channels";
-	CDB::DAO_var tempDAO;
-	//try reading the entry from the CDB
-	try
-	    {
- 		tempDAO = cdbRef->get_DAO_Servant(cdbChannelsName.c_str());
- 		//sanity check, should not happen
- 	    if (tempDAO.in()==0)
- 	      return 0;
-	//DAL throws exceptions if the entry being searched for does not
-	//exist
-	    }
-	catch(...)
-	    {
-	    ACS_STATIC_SHORT_LOG((LM_DEBUG,
-				  "CDBProperties::getNotificationFactoryNameForChannel",
-				  "No CDB entry found for '%s' channel. OK.",
-				  cdbChannelsName.c_str()));
-	    return 0;
-	    }
-
-	// if channel mapping exists take it, wildchars are also supported
-	try
-	    {
-	    CDB::stringSeq_var channelNameList = tempDAO->get_string_seq("NotificationServiceMapping/Channels_");
-	    for (CORBA::ULong n = 0; n < channelNameList->length(); n++)
-	        if (Wildcard::wildcardfit(channelNameList[n], channelName))
-	            return CORBA::string_dup(tempDAO->get_string((std::string("NotificationServiceMapping/Channels_/") + channelNameList[n].in() + "/NotificationService").c_str())); 
-	    }
-	catch(...)
-	    {
-	    ACS_STATIC_SHORT_LOG((LM_DEBUG,
-				  "CDBProperties::getNotificationFactoryNameForChannel",
-				  "No Channel to NotificationService mapping found for channel'%s' channel.",
-				  channelName));
-	    }
-	    
-	// if domain mapping, if given
-	if (domainName)
- 	try
-	    {
-	    return CORBA::string_dup(tempDAO->get_string((std::string("NotificationServiceMapping/Domains/") + domainName + "/NotificationService").c_str())); 
-	    }
-	catch(...)
-	    {
-	    ACS_STATIC_SHORT_LOG((LM_DEBUG,
-				  "CDBProperties::getNotificationFactoryNameForChannel",
-				  "No Domain to NotificationService mapping found for domain/channel'%s/%s' channel. OK.",
-				  domainName, channelName));
-	    }
-	    
-	// if default
- 	try
-	    {
-	    return CORBA::string_dup(tempDAO->get_string("NotificationServiceMapping/DefaultNotificationService")); 
-	    }
-	catch(...)
-	    {
-	    ACS_STATIC_SHORT_LOG((LM_DEBUG,
-				  "CDBProperties::getNotificationFactoryNameForChannel",
-				  "No NotificationServiceMapping/DefaultNotificationService attribute found. OK.",
-				  domainName, channelName));
-	    }
-
-		// not found
-	    return 0;
-	}
     //------------------------------------------------------
     bool
     CDBProperties::getIntegrationLogs(const std::string& channelName)

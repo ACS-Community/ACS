@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: basencHelper.h,v 1.5 2008/02/07 10:42:00 msekoran Exp $"
+* "@(#) $Id: basencHelper.h,v 1.6 2008/02/12 01:06:22 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -32,7 +32,7 @@
 #include <orbsvcs/CosNotifyChannelAdminS.h>
 #include <orbsvcs/CosNamingC.h>
 #include <acsncC.h>
-#include <acsncCDBProperties.h>
+#include <cdbDALC.h>
 
 /**
  * Baseclass for all NC objects. Provides common functionality
@@ -40,6 +40,16 @@
  */
 class BaseHelper
 {
+  public:
+  
+	/**
+	 * Get notification channel factory name for given channel/domain.
+	 * @param channelName	name of the channel.
+	 * @param domainName	name of the domain, <code>0</code> if undefined.
+	 * @return notification channel factory name.
+	 */
+	static char*  getNotificationFactoryNameForChannel(CDB::DAL_ptr dal, const char* channelName, const char* domainName = 0);
+  
   protected:
     
     /**
@@ -101,7 +111,33 @@ class BaseHelper
 	{
 		if (!notificationServiceName_mp)
 		{
-			notificationServiceName_mp = nc::CDBProperties::getNotificationFactoryNameForChannel(channelName_mp, notifyServiceDomainName_mp);
+			// @todo temporary implementation, containerServices to be used
+			CDB::DAL_var cdb;
+			
+		    //Common name sequence. This little object defines the name of 
+		    //channel as registered with the CORBA Naming Service.
+		    CosNaming::Name name(1);
+		    name.length(1);
+		    
+		    //name of the channel
+		    name[0].id   = CORBA::string_dup("CDB");
+		    //channel kind
+		    name[0].kind = CORBA::string_dup("");
+		
+		    try 
+			{
+				//use the naming service to get our object
+				CORBA::Object_var dal_obj =  namingContext_m->resolve(name);
+				
+				//narrow it
+				cdb = CDB::DAL::_narrow(dal_obj.in());
+			}
+		    catch(CosNaming::NamingContext::NotFound ex)
+			{
+			// noop
+			}
+
+			notificationServiceName_mp = getNotificationFactoryNameForChannel(cdb.in(), channelName_mp, notifyServiceDomainName_mp);
 			if (!notificationServiceName_mp)
 				notificationServiceName_mp = CORBA::string_dup(acscommon::NOTIFICATION_FACTORY_NAME);
 		}

@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsncHelper.h,v 1.67 2008/02/07 10:18:17 msekoran Exp $"
+* "@(#) $Id: acsncHelper.h,v 1.68 2008/02/12 01:10:33 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -47,6 +47,8 @@
 #include "acsncC.h"
 #include "acsncORBHelper.h"
 #include "acsncCDBProperties.h"
+
+#include <basencHelper.h>
 
 #include <ACSErrTypeCommon.h>
 
@@ -166,7 +168,8 @@ class Helper
 	{
 		if (!notificationServiceName_mp)
 		{
-			notificationServiceName_mp = CDBProperties::getNotificationFactoryNameForChannel(channelName_mp, notifyServiceDomainName_mp);
+			CDB::DAL_var dal = CDBProperties::getCDB();
+			notificationServiceName_mp = BaseHelper::getNotificationFactoryNameForChannel(dal.in(), channelName_mp, notifyServiceDomainName_mp);
 			if (!notificationServiceName_mp)
 				notificationServiceName_mp = CORBA::string_dup(acscommon::NOTIFICATION_FACTORY_NAME);
 		}
