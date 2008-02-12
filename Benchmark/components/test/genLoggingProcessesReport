@@ -1,4 +1,5 @@
-#!/bin/bash
+#! /bin/bash
+# Note that acsstartupAcsPorts defines the functions getIP() and getManagerPort()
 . acsstartupAcsPorts
 
 #################################################################################
@@ -283,6 +284,7 @@ getChrono ()
     echo "puts [format %.3f [expr {([clock clicks -milliseconds] - $CHRONO) /1000.}]]" | tclsh
 }
 
+# Same as getChrono, except that the value returned is a (truncated) integer instead of float 
 getChronoInt () 
 {
     eval CHRONO=\$START_CHRONO$1
@@ -294,6 +296,13 @@ milliSleep ()
 {
     echo "after $1" | tclsh
 }
+
+# Definition of a function to get this hosts IP address 
+# (is already in acsstartupAcsPorts)
+#!#getIP () 
+#!#{
+#!#    echo "puts [lindex [fconfigure [socket -server dummy -myaddr [info hostname] 0] -sockname] 0]" | tclsh
+#!#}
 
 ##########################################################################################
 # Script logic starts here...                                                            #
@@ -462,9 +471,11 @@ do
       export MANAGER_REFERENCE=corbaloc::`getIP`:`getManagerPort`/Manager
       if [ $NO_REDIRECTION ] ;
 	  then 
-	  ssh -f $USER@$REMOTE_HOST -f "acsStartContainer -m $MANAGER_REFERENCE -$COMPONENT_LANGUAGE ${COMPONENT_LANGUAGE}Container$i" 
+          # command is specified instead of login shell - make sure PATH settings are OK
+	  ssh -f $USER@$REMOTE_HOST ". ~/.bash_profile; acsStartContainer -m $MANAGER_REFERENCE -$COMPONENT_LANGUAGE ${COMPONENT_LANGUAGE}Container$i" 
       else
-	  ssh -f $USER@$REMOTE_HOST -f "acsStartContainer -m $MANAGER_REFERENCE -$COMPONENT_LANGUAGE ${COMPONENT_LANGUAGE}Container$i" \
+          # command is specified instead of login shell - make sure PATH settings are OK
+	  ssh -f $USER@$REMOTE_HOST ". ~/.bash_profile; acsStartContainer -m $MANAGER_REFERENCE -$COMPONENT_LANGUAGE ${COMPONENT_LANGUAGE}Container$i" \
 	      >& $ACS_TMP/${COMPONENT_LANGUAGE}Container$i.log
       fi
       debugPrint "waiting for remote container $i to start..."
@@ -475,7 +486,7 @@ do
       if [ "$CPU_LOAD" ] ; 
       then 
       	ssh -f $USER@$REMOTE_HOST "sar -x ${publisherPid[${i}]} 1 9999" >& $ACS_TMP/$PUBLISHER_LOG_FILE$i.orig.log &
-      	ssh -f $USER@$REMOTE_HOST "remoteMonitorProcess ${publisherPid[${i}]} 1" >& $ACS_TMP/$PUBLISHER_LOG_FILE-memory$i &
+      	ssh -f $USER@$REMOTE_HOST ". ~/.bash_profile; remoteMonitorProcess ${publisherPid[${i}]} 1" >& $ACS_TMP/$PUBLISHER_LOG_FILE-memory$i &
       fi
   fi
   i=`expr $i + 1`
@@ -492,10 +503,12 @@ while [ -z "$loggingServicePid" ] ; do
     loggingServicePid=`ps -f | grep loggingService | grep -v grep | gawk '{ print $2 }'`
 done
 debugPrint "loggingServicePid is: $loggingServicePid"
-while [ -z "$loggingNotifyServicePid" ] ; do
-    loggingNotifyServicePid=`ps -f | grep Notify_Service | grep -v grep | grep LoggingNotify | gawk '{ print $2 }'`
-done
-debugPrint "loggingNotifyServicePid is: $loggingNotifyServicePid"
+if [ -z "$REMOTE_HOST" ] ; then
+    while [ -z "$loggingNotifyServicePid" ] ; do
+	loggingNotifyServicePid=`ps -f | grep Notify_Service | grep -v grep | grep LoggingNotify | gawk '{ print $2 }'`
+    done
+    debugPrint "loggingNotifyServicePid is: $loggingNotifyServicePid"
+fi
 while [ -z "$loggingClientPid" ] ; do
     loggingClientPid=`ps -f | grep loggingClient  | grep -v grep | gawk '{ print $2 }'`
 done
@@ -511,9 +524,11 @@ if [ "$CPU_LOAD" ] ; then
     debugPrint "sar -x $loggingServicePid 1 9999 >& $ACS_TMP/$LOGGING_SERVICE_LOG_FILE.orig.log"
     sar -x $loggingServicePid 1 9999 >& $ACS_TMP/$LOGGING_SERVICE_LOG_FILE.orig.log &
     ./monitorProcess $loggingServicePid 1 $ACS_TMP/$LOGGING_SERVICE_LOG_FILE-memory  &
-    debugPrint "sar -x $loggingNotifyServicePid 1 9999 >& $ACS_TMP/$LOGGING_NOTIFY_SERVICE_LOG_FILE.orig.log"
-    sar -x $loggingNotifyServicePid 1 9999 >& $ACS_TMP/$LOGGING_NOTIFY_SERVICE_LOG_FILE.orig.log &
-    ./monitorProcess $loggingNotifyServicePid 1 $ACS_TMP/$LOGGING_NOTIFY_SERVICE_LOG_FILE-memory  &
+    if [ -z "$REMOTE_HOST" ] ; then
+	debugPrint "sar -x $loggingNotifyServicePid 1 9999 >& $ACS_TMP/$LOGGING_NOTIFY_SERVICE_LOG_FILE.orig.log"
+	sar -x $loggingNotifyServicePid 1 9999 >& $ACS_TMP/$LOGGING_NOTIFY_SERVICE_LOG_FILE.orig.log &
+	./monitorProcess $loggingNotifyServicePid 1 $ACS_TMP/$LOGGING_NOTIFY_SERVICE_LOG_FILE-memory  &
+    fi
     debugPrint "sar -x $loggingClientPid 1 9999 >& $ACS_TMP/$LOGGING_CLIENT_LOG_FILE.orig.log"
     sar -x $loggingClientPid 1 9999 >& $ACS_TMP/$LOGGING_CLIENT_LOG_FILE.orig.log &
     ./monitorProcess $loggingClientPid 1 $ACS_TMP/$LOGGING_CLIENT_LOG_FILE-memory  &
@@ -525,6 +540,7 @@ if [ "$PROFILE_JLOG" ] ; then
     while [ -z "$jlogPid" ]
       do
       jlogPid=`ps -ef | grep LogFrame  | grep -v grep | grep -v acsStartJava | gawk '{ print $2 }'`
+      ###jlogPid=`ps -ef | grep bin/jlog | grep -v grep | grep -v acsStartJava | gawk '{ print $2 }'`
     done
     debugPrint "jlogPid is: $jlogPid"
     sleep 5
@@ -550,7 +566,7 @@ acsStartJava -D NumLogs=$NUM_LOGS -D NumComponents=$NUM_COMPONENTS -D Delay=$DEL
 sleep 25
 startChrono 2
 sleepUnit=13
-timeout=30000
+timeout=30
 # Note that on a fully loaded system, "milliSleep" may take a lot more
 # than 13 ms wall-clock time to execute. So we'll have to take
 # measures for that - see below this "while" loop.
@@ -592,7 +608,7 @@ debugPrint "firstBatchOfLogs = $firstBatchOfLogs"
 # assume a default offset in this case, or signal that the measurement
 # is not reliable.
 
-if [ $delay -gt $timeout ] ; then
+if [ $delay -ge $timeout ] ; then
     debugPrint "Something is very wrong: we needed more than 30s to see the first log in all_logs.xml"
 fi
 
@@ -609,7 +625,11 @@ chrono2Snap=`getChrono 2`
 # ($firstBatchOfLogs) into all_logs.xml and the sending of all logs. We will
 # need to extrapolate to get estimate the point in time the very first log arrived,
 # and to be able to do that we have to wait till we have them all in.
-echo " Needed ${chrono1}s to send all logs / ${chrono2Snap}s after first $firstBatchOfLogs logs came to all_logs.xml"
+if [ $delay -ge $timeout ] ; then
+    echo " Needed ${chrono1}s to send all logs / ${chrono2Snap}s after timing out on all_logs.xml (see above)"
+else
+    echo " Needed ${chrono1}s to send all logs / ${chrono2Snap}s after first $firstBatchOfLogs logs came to all_logs.xml"
+fi
 
 # sleep a bit longer to allow things to 'settle'
 echo " Sleeping (at most) $EXTRA_WAIT_TIME seconds to allow logs to be processed..."
@@ -674,8 +694,8 @@ killall -q monitorProcess >& $ACS_TMP/killallLocalMonitorProcess.log
 killall -q sar >& $ACS_TMP/killallLocalSar.log
 if [ ! -z "$REMOTE_HOST" ] 
 then
-    ssh -f $USER@$REMOTE_HOST "killall -q remoteMonitorProcess" >& $ACS_TMP/killallMonitorProcess.log
-    ssh -f $USER@$REMOTE_HOST "killall -q sar >& /dev/null" >& $ACS_TMP/killallSar.log
+    ssh -f $USER@$REMOTE_HOST ". ~/.bash_profile; killall -q remoteMonitorProcess" >& $ACS_TMP/killallMonitorProcess.log
+    ssh -f $USER@$REMOTE_HOST ". ~/.bash_profile; killall -q sar >& /dev/null" >& $ACS_TMP/killallSar.log
 fi
 echo ""
 
@@ -704,7 +724,7 @@ do
       acsStopContainer ${COMPONENT_LANGUAGE}Container$i >& $ACS_TMP/Stop${COMPONENT_LANGUAGE}Container$i.log
   else
       echo " Stopping Remote Container $i"
-      ssh -f $USER@$REMOTE_HOST -f "acsStopContainer ${COMPONENT_LANGUAGE}Container$i" \
+      ssh -f $USER@$REMOTE_HOST -f ". ~/.bash_profile; acsStopContainer ${COMPONENT_LANGUAGE}Container$i" \
 	  >& $ACS_TMP/Stop${COMPONENT_LANGUAGE}Container$i.log
       debugPrint "waiting for remote container $i to stop..."
       sleep 15
