@@ -1,27 +1,34 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
-<Type xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-xmlns="Alma/ACSError" xsi:schemaLocation="Alma/ACSError ACSError.xsd" name="acsdaemonErrType"
-type="55" _prefix="alma">
-<ErrorCode name="FailedToStopContainer"
-           shortDescription="Failed to stop container"
-	   description="Failed to stop container"
-/>
-<ErrorCode name="FailedToStartContainer"
-           shortDescription="Failed to start container"
-	   description="Failed to start container"
-/>
-<ErrorCode name="FailedToStopAcs"
-           shortDescription="Failed to stop ACS services"
-	   description="Failed to stop ACS services"
-/>
-<ErrorCode name="FailedToStartAcs"
-           shortDescription="Failed to start ACS services"
-	   description="Failed to start ACS services"
-/>
-<ErrorCode name="FailedToGetAcsStatus"
-           shortDescription="Failed to get ACS status"
-	   description="Failed to get ACS status"
-/>
-</Type>
+<Type xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="Alma/ACSError" xsi:schemaLocation="Alma/ACSError ACSError.xsd" 
+	name="acsdaemonErrType"
+	type="55" 
+	_prefix="alma">
+	
+	<ErrorCode name="FailedToStartContainer"
+		shortDescription="Failed to start container"
+		description="Failed to start container"
+	/>
 
+	<ErrorCode name="FailedToStopContainer"
+		shortDescription="Failed to stop container"
+		description="Failed to stop container"
+	/>
+
+	<ErrorCode name="AcsStartServices"
+		shortDescription="Status of ACS services start"
+		description="The status of starting the ACS services, optionally with an exception list."
+	/>
+
+	<ErrorCode name="FailedToStopAcs"
+		shortDescription="Failed to stop ACS services"
+		description="Failed to stop ACS services"
+	/>
+
+
+	<ErrorCode name="FailedToGetAcsStatus"
+		shortDescription="Failed to get ACS status"
+		description="Failed to get ACS status"
+	/>
+	
+</Type>

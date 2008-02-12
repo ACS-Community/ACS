@@ -22,7 +22,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsdaemon.idl,v 1.3 2008/01/04 12:51:28 hsommer Exp $"
+* "@(#) $Id: acsdaemon.idl,v 1.4 2008/02/12 22:36:38 agrimstrup Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -32,6 +32,7 @@
 */
 
 #include <acscommon.idl>
+#include <baci.idl>
 #include <acsdaemonErrType.idl>
 #include <ACSErrTypeCommon.idl>
 
@@ -43,15 +44,33 @@
 
 module acsdaemon 
 {
-    /** @interface ContainerDaemon
-     * Interface ContainerDaemon is used to (remotely) control the lifecycle of ACS containers.
-     * In the future we intend to add monitoring capabilities to the daemon, which should be exposed 
-     * to operator tools via this interface or some inherited management interface. 
+    /** @interface Callback
+     *  Interface Callback is used to signal operation completions from the daemon processes
+     *  to the clients.
      */
-    interface ContainerDaemon
+        interface DaemonCallback
+	{
+        /**
+	 * Report the result of the operation
+	 */
+	void done(in ACSErr::Completion comp);
+
+	/**
+	 * Report the progress of the operation
+	 */
+	void working(in ACSErr::Completion comp);
+	};
+
+	/** @interface ContainerDaemon
+	 * Interface ContainerDaemon is used to (remotely) control the lifecycle of ACS containers.
+	 * In the future we intend to add monitoring capabilities to the daemon, which should be exposed 
+	 * to operator tools via this interface or some inherited management interface. 
+	 */
+	interface ContainerDaemon
 	{
 	/** 
-	 *  Start a container.
+	 *  Starts a container.
+	 * 
 	 *  @param type_modifiers To be added! See Container.xsd (DeployInfo.TypeModifiers) and http://jira.alma.cl/browse/COMP-1316 
 	 *  @return void
 	 *  @htmlonly
@@ -62,8 +81,8 @@ module acsdaemon
 			in string container_type, 
 			in string container_name, 
 			in short instance_number,
-// @todo Uncomment this when backward incompatibility is allowed (e.g. ACS 8.0)		in ACS::stringSeq type_modifiers,   
-			in string flags) 
+			in ACS::stringSeq type_modifiers,
+			in string flags)
 				raises (acsdaemonErrType::FailedToStartContainerEx, ACSErrTypeCommon::BadParameterEx);
 	/** 
 	 *  Stop a container.
@@ -79,34 +98,48 @@ module acsdaemon
 	};
 
 
-    interface ServicesDaemon
+	interface ServicesDaemon
 	{
+	/**
+	 * Starts ACS services. 
+	 * Returns immediately. The client will be notified through the callback object 
+	 * when the services are up, or if an error has occurred.
+	 * @return void
+	 * @htmlonly
+	 * <br><hr>
+	 * @endhtmlonly
+	 */
+	void start_acs( in DaemonCallback callback,
+			in short instance_number, 
+			in string flags)
+				raises (ACSErrTypeCommon::BadParameterEx);
+
 	/** 
-	 *  Start ACS services.
-	 *  @return void
-	 *  @htmlonly
-	 *  <br><hr>
-	 *  @endhtmlonly
+	 * Stops ACS services.
+	 * Returns immediately. The client will be notified through the callback object 
+	 * when the services are stopped, or if an error has occurred.
+	 * @return void
+	 * @htmlonly
+	 * <br><hr>
+	 * @endhtmlonly
 	 */
-	void start_acs(in short instance_number, in string flags) raises (acsdaemonErrType::FailedToStartAcsEx, ACSErrTypeCommon::BadParameterEx);
+	void stop_acs( in DaemonCallback callback,
+		       in short instance_number, 
+		       in string flags)
+				raises (ACSErrTypeCommon::BadParameterEx);
+
 	/** 
-	 *  Stop ACS services.
-	 *  @return void
-	 *  @htmlonly
-	 *  <br><hr>
-	 *  @endhtmlonly
+	 * Returns status of ACS (i.e. invokes acsStatus).
+	 * @parm instance_number ACS instance number
+	 * @return string Status of ACS.
+	 * @htmlonly
+	 * <br><hr>
+	 * @endhtmlonly
+	 * @tbd return a structure or similar instead string
 	 */
-	void stop_acs(in short instance_number, in string flags) raises (acsdaemonErrType::FailedToStopAcsEx, ACSErrTypeCommon::BadParameterEx);
-       /** 
-	 *  Returns status of ACS (i.e. invokes acsStatus).
-         *  @parm instance_number ACS instance number
-	 *  @return string Status of ACS.
-	 *  @htmlonly
-	 *  <br><hr>
-	 *  @endhtmlonly
-         * @tbd return a structure or similar instead string
-	 */
-	string status_acs(in short instance_number) raises (acsdaemonErrType::FailedToGetAcsStatusEx);
+	string status_acs(
+			in short instance_number)
+				raises (acsdaemonErrType::FailedToGetAcsStatusEx);
 	};
 };
 
