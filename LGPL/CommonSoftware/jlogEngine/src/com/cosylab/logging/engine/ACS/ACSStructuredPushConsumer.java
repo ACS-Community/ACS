@@ -208,10 +208,18 @@ public final class ACSStructuredPushConsumer extends StructuredPushConsumerPOA
 	
 	public void destroy()
 	{
-		try {
-			structuredProxyPushSupplier.disconnect_structured_push_supplier();
-		} catch (Throwable t) {}
-		//close(false);
+		class DestroyClass extends Thread {
+			public void run() {
+				
+				try {
+					structuredProxyPushSupplier.disconnect_structured_push_supplier();
+				} catch (Throwable t) {}
+			}			
+		}
+		Thread t = new DestroyClass();
+		t.setName("DestroyClass");
+		t.setDaemon(true);
+		t.start();
 	}
 
 	public void disconnect_structured_push_consumer()
