@@ -54,16 +54,28 @@ public class LCEngine {
 	 */
 	private final int CHECK_INTERVAL = 15;
 	
-	// The boolean remeber if the client was connected before
+	// The boolean remember if the client was connected before
 	// checking for the connection (needed to understand if the
 	// connection has been lost or never happened)
-	private boolean wasConnected=false;
+	private volatile boolean wasConnected=false;
 	
 	// Signal the thread to terminate
 	private AccessChecker connCheckerThread=null;
-	private boolean terminateThread=false;
+	private volatile boolean terminateThread=false;
 	
 	private RemoteAccess remoteAccess = null;
+	
+	// It is true if the engine is connected.
+	//
+	// The checking of the state of the connection is made
+	// asynchronously by the AccessChecker thread because 
+	// we need to decoupling the check with SWING thread
+	//
+	//
+	// This imply that the connection is considered established
+	// or not depanending on the test made by the thread and not relative
+	// to the instant the method isConnected is called
+	private volatile boolean isConnected=false;
 
 	/** 
 	 * A thread used to set and initialize RemoteAccess
@@ -120,6 +132,7 @@ public class LCEngine {
 				listenersDispatcher.publishReport("Connected to " + accessType + " remote access.");
 				listenersDispatcher.publishConnected(true);
 				LCEngine.this.wasConnected=true;
+				LCEngine.this.isConnected=true;
 			} else {
 				listenersDispatcher.publishConnected(false);
 			}
@@ -140,6 +153,7 @@ public class LCEngine {
 		 */
 		public AccessChecker() {
 			super("AccessChecker");
+			setDaemon(true);
 		}
 		
 		/**
@@ -169,9 +183,9 @@ public class LCEngine {
 				
 				currentSec=0;
 				// Check the connection!
-				boolean connected = isConnected();
+				LCEngine.this.isConnected = isRemoteConnectionEstablished();
 				//publishConnected(connected);
-				if (wasConnected && !connected) {
+				if (wasConnected && !isConnected) {
 					listenersDispatcher.publishReport("Connection lost");
 					wasConnected=false;
 					disconnectRA();
@@ -182,7 +196,7 @@ public class LCEngine {
 					}
 					
 				}
-				if (autoReconnect && !connected) {
+				if (autoReconnect && !isConnected) {
 					connect();
 				}
 			}
@@ -283,6 +297,7 @@ public class LCEngine {
 			}
 			connCheckerThread=null;
 		}
+		isConnected=false;
 	}
 	
 	/**
@@ -339,10 +354,26 @@ public class LCEngine {
 	
 	
 	/**
+	 * Return the status of the connection
 	 * 
-	 * @return ture if the engine is connected to the notification channel
+	 * The state is checked by a separate thread in AccessChecker, so the
+	 * state returned by this method is what the thread checked at its last iteration
+	 * 
+	 * @return true if the engine is connected to the notification channel
 	 */
 	public boolean isConnected() {
+		if (remoteAccess==null) {
+			return false;
+		} 
+		return isConnected;
+	}
+	
+	/**
+	 * Check the state of the remote access connection
+	 * 
+	 * @return
+	 */
+	public boolean isRemoteConnectionEstablished() {
 		if (remoteAccess==null) {
 			return false;
 		} 
