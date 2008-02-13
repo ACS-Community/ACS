@@ -18,6 +18,7 @@
  */
 package alma.alarmsystem.clients;
 
+import java.util.Set;
 import java.util.logging.Logger;
 
 import alma.acs.container.ContainerServices;
@@ -27,6 +28,7 @@ import alma.alarmsystem.AlarmServiceHelper;
 import alma.alarmsystem.Category;
 import alma.alarmsystem.clients.alarm.AlarmClientException;
 
+import cern.laser.client.data.Alarm;
 import cern.laser.client.services.selection.AlarmSelectionHandler;
 import cern.laser.client.services.selection.AlarmSelectionListener;
 import cern.laser.client.services.selection.CategorySelection;
@@ -131,7 +133,6 @@ public class CategoryClient {
 	 * @throws Exception 
 	 */
 	private void addCategories(Configuration config,Category[] categories) throws Exception {
-		System.out.println("addCategories");
 		if (categories==null) {
 			categories = alarm.getCategories();
 		}
@@ -187,12 +188,16 @@ public class CategoryClient {
 			defaultConf=testUser.getDefaultConfiguration();
 			logger.log(AcsLogLevel.DEBUG,"Getting the selection handler");
 			jms_selectionHandler = AlarmSelectionHandlerFactory.getHandler();
-			System.out.println("Adding categories");
 			addCategories(defaultConf,categories);
 			
 			// Get the active alarms (they are received by the listener)
-			jms_selectionHandler.select(defaultConf.getSelection(),listener);
-			
+			java.util.Map<String, Alarm> alreadyActive=jms_selectionHandler.select(defaultConf.getSelection(),listener);
+			if (alreadyActive!=null && alreadyActive.size()>0) {
+				Set<String> keys = alreadyActive.keySet();
+				for (String key: keys) {
+					listener.onAlarm(alreadyActive.get(key));
+				}
+			}
 		} catch (Throwable t) {
 			throw new AlarmClientException("Exception in ctor: ",t);
 		}
