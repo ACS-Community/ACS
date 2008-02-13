@@ -24,7 +24,9 @@ package alma.acs.lasercore.test;
 import java.sql.Timestamp;
 import java.util.Vector;
 
-import alma.alarmsystem.Category;
+import cern.laser.client.data.Alarm;
+import cern.laser.client.services.selection.AlarmSelectionListener;
+import cern.laser.client.services.selection.LaserSelectionException;
 import cern.laser.source.alarmsysteminterface.FaultState;
 
 import alma.acs.component.client.ComponentClientTestCase;
@@ -33,8 +35,6 @@ import alma.alarmsystem.AlarmService;
 import alma.alarmsystem.AlarmServiceHelper;
 import alma.alarmsystem.clients.CategoryClient;
 import alma.alarmsystem.clients.SourceClient;
-import alma.alarmsystem.clients.category.AlarmView;
-import alma.alarmsystem.clients.category.CategoryListener;
 import alma.alarmsystem.clients.source.SourceListener;
 import alma.alarmsystem.source.ACSAlarmSystemInterface;
 import alma.alarmsystem.source.ACSAlarmSystemInterfaceFactory;
@@ -48,7 +48,7 @@ import alma.alarmsystem.source.ACSFaultState;
  * @author acaproni
  *
  */
-public class AlarmSender extends ComponentClientTestCase implements SourceListener, CategoryListener {
+public class AlarmSender extends ComponentClientTestCase implements SourceListener, AlarmSelectionListener {
 	
 	// The triplet
 	private static final String FF = "PS";
@@ -58,19 +58,13 @@ public class AlarmSender extends ComponentClientTestCase implements SourceListen
 	// The object waits up to TIMEOUT seconds for the receipt of alarms
 	private static final int TIMEOUT = 60;
 	
-	// The category client
-	private CategoryClient categoryClient;
-	
-	// The source client
-	private SourceClient sourceClient;
-	
 	// The vector of the received alarms and sources
 	//
 	// For the category we need to remember the number of received alarms
 	// because AlarmView redefines equalsTo and the adding of alarms with the
 	// same triplet causes a replace in the Vector
 	private Vector<FaultState> faultStatesReceived;
-	private Vector<AlarmView> alarmsReceived;
+	private Vector<Alarm> alarmsReceived;
 	private volatile int numOfAlarmsReceived;
 	
 	// Container services
@@ -103,21 +97,9 @@ public class AlarmSender extends ComponentClientTestCase implements SourceListen
 		alarmService =AlarmServiceHelper.narrow(contSvcs.getComponent("AlarmService"));
 		assertNotNull(alarmService);
 		
-		sourceClient = new SourceClient(contSvcs);
-		assertNotNull(sourceClient);
-		
-		categoryClient = new CategoryClient(contSvcs);
-		assertNotNull(categoryClient);
-		
 		faultStatesReceived=new Vector<FaultState>();
-		alarmsReceived=new Vector<AlarmView>();
+		alarmsReceived=new Vector<Alarm>();
 		numOfAlarmsReceived=0;
-		
-		// Connects the listeners
-		categoryClient.addAlarmListener(this);
-		sourceClient.addAlarmListener(this);
-		
-		
 	}
 	
 	/**
@@ -128,8 +110,7 @@ public class AlarmSender extends ComponentClientTestCase implements SourceListen
 		contSvcs.releaseComponent(alarmService.name());
 		alarmService=null;
 		
-		sourceClient.removeListener(this);
-		categoryClient.removeListener(this);
+		contSvcs=null;
 		
 		faultStatesReceived.clear();
 		alarmsReceived.clear();
@@ -162,13 +143,61 @@ public class AlarmSender extends ComponentClientTestCase implements SourceListen
 		}
 	}
 	
-	public void alarmReceived(AlarmView alarm) {
-		synchronized(alarmsReceived) {
+	/**
+	 * @see AlarmSelectionListener
+	 */
+	public void onAlarm(Alarm alarm) {
+		synchronized (alarmsReceived) {
 			alarmsReceived.add(alarm);
-			numOfAlarmsReceived++;
 		}
 	}
 	
+	/**
+	 * @see AlarmSelectionListener
+	 */
+	public void onException(LaserSelectionException e) {
+		System.err.println("onException: "+e.getMessage());
+		e.printStackTrace(System.err);
+	}
+	
+	
+	/**
+	 * Test the alarms received in the categories
+	 * @throws Exception
+	 */
+	public void testCategories() throws Exception {
+		CategoryClient categoryClient = new CategoryClient(contSvcs);
+		assertNotNull(categoryClient);
+		categoryClient.connect(this);
+		
+		// send 2 alarms active and inactive
+		send_alarm(FF, FM, FC, true);
+		send_alarm(FF, FM, FC, false);
+		
+		// wait until 2 alarms are received in the source NC
+		long now = System.currentTimeMillis();
+		while (numOfAlarmsReceived<2 && now+TIMEOUT*1000>System.currentTimeMillis()) {
+			try {
+				Thread.sleep(500);
+			} catch (Exception e) {}
+		}
+		assertEquals("Not all the alarms appeared in the category channels", 2, alarmsReceived.size());
+		
+		// Check the content of the 2 alarms
+		Alarm al1 = alarmsReceived.get(0);
+		assertNotNull(al1);
+		assertEquals(al1.getAlarmId(), FF+":"+FM+":"+FC);
+		assertEquals(al1.getProblemDescription(),"PS test alarm");
+		assertFalse(al1.getStatus().isActive());
+		assertEquals(al1.getPriority(), Integer.valueOf(2));
+		
+		Alarm al2 = alarmsReceived.get(1);
+		assertNotNull(al2);
+		assertEquals(al2.getAlarmId(), FF+":"+FM+":"+FC);
+		assertEquals(al2.getProblemDescription(),"PS test alarm");
+		assertTrue(al2.getStatus().isActive());
+		assertEquals(al2.getPriority(), Integer.valueOf(2));
+	}
 	
 	/**
 	 * Send some alarms and checks if they appear in the source NC.
@@ -177,6 +206,9 @@ public class AlarmSender extends ComponentClientTestCase implements SourceListen
 	 * @throws Exception
 	 */
 	public void testSource() throws Exception {
+		SourceClient sourceClient = new SourceClient(contSvcs);
+		assertNotNull(sourceClient);
+		sourceClient.addAlarmListener(this);
 		sourceClient.connect();
 		// send 2 alarms active and inactive
 		send_alarm(FF, FM, FC, true);
@@ -203,41 +235,5 @@ public class AlarmSender extends ComponentClientTestCase implements SourceListen
 		assertEquals(fs2.getFamily(), FF);
 		assertEquals(fs2.getMember(), FM);
 		assertEquals(fs2.getCode(), FC);
-	}
-	
-	/**
-	 * Test the alarms received in the categories
-	 * @throws Exception
-	 */
-	public void testCategories() throws Exception {
-		categoryClient.connect();
-		
-		// send 2 alarms active and inactive
-		send_alarm(FF, FM, FC, true);
-		send_alarm(FF, FM, FC, false);
-		
-		// wait until 2 alarms are received in the source NC
-		long now = System.currentTimeMillis();
-		while (numOfAlarmsReceived<2 && now+TIMEOUT*1000>System.currentTimeMillis()) {
-			try {
-				Thread.sleep(500);
-			} catch (Exception e) {}
-		}
-		assertEquals("Not all the alarms appeared in the category channels", 2, alarmsReceived.size());
-		
-		// Check the content of the 2 alarms
-		AlarmView al1 = alarmsReceived.get(0);
-		assertNotNull(al1);
-		assertEquals(al1.alarmID, FF+":"+FM+":"+FC);
-		assertEquals(al1.description,"PS test alarm");
-		assertFalse(al1.active);
-		assertEquals(al1.priority, Integer.valueOf(2));
-		
-		AlarmView al2 = alarmsReceived.get(0);
-		assertNotNull(al2);
-		assertEquals(al2.alarmID, FF+":"+FM+":"+FC);
-		assertEquals(al2.description,"PS test alarm");
-		assertTrue(al2.active);
-		assertEquals(al2.priority, Integer.valueOf(2));
 	}
 }
