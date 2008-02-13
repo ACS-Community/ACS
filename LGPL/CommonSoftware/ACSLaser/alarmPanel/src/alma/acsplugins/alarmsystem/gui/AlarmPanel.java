@@ -19,7 +19,7 @@
 
 /** 
  * @author  acaproni   
- * @version $Id: AlarmPanel.java,v 1.3 2007/11/05 14:10:24 acaproni Exp $
+ * @version $Id: AlarmPanel.java,v 1.4 2008/02/13 01:17:55 acaproni Exp $
  * @since    
  */
 
@@ -30,16 +30,10 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
-import alma.alarmsystem.AlarmServiceHelper;
-import alma.alarmsystem.Category;
+import cern.laser.client.services.selection.AlarmSelectionListener;
 
 import alma.acs.container.ContainerServices;
-import alma.acs.logging.AcsLogLevel;
-import alma.alarmsystem.AlarmService;
 import alma.alarmsystem.clients.CategoryClient;
-import alma.alarmsystem.clients.category.CategoryListener;
-
-import java.awt.BorderLayout;
 
 import alma.acs.gui.util.panel.IPanel;
 
@@ -119,15 +113,14 @@ public class AlarmPanel extends JScrollPane implements IPanel {
 			throw new Exception("PluginContainerServices not set");
 		}
 		categoryClient = new CategoryClient(contSvc);
-		categoryClient.addAlarmListener(model);
-		categoryClient.connect();
+		categoryClient.connect((AlarmSelectionListener)model);
 	}
 	
 	/**
 	 * @see SubsystemPlugin
 	 */
 	public void stop() throws Exception {
-		categoryClient.removeListener(model);
+		categoryClient.close();
 	}
 	
 	/**

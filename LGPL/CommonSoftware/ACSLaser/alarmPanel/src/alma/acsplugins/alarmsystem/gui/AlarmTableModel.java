@@ -19,7 +19,7 @@
 
 /** 
  * @author  caproni   
- * @version $Id: AlarmTableModel.java,v 1.7 2007/11/09 11:03:29 acaproni Exp $
+ * @version $Id: AlarmTableModel.java,v 1.8 2008/02/13 01:17:55 acaproni Exp $
  * @since    
  */
 
@@ -27,8 +27,9 @@ package alma.acsplugins.alarmsystem.gui;
 
 import javax.swing.table.AbstractTableModel;
 
-import alma.alarmsystem.clients.category.AlarmView;
-import alma.alarmsystem.clients.category.CategoryListener;
+import cern.laser.client.data.Alarm;
+import cern.laser.client.services.selection.AlarmSelectionListener;
+import cern.laser.client.services.selection.LaserSelectionException;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -39,11 +40,37 @@ import java.util.Vector;
  * The table model for the table alarms
  *
  */
-public class AlarmTableModel extends AbstractTableModel implements CategoryListener {
+public class AlarmTableModel extends AbstractTableModel implements AlarmSelectionListener {
 	
+	/**
+	 * Add an alarm in the table.
+	 * If an alarm with the same triplet is already in the table it is replaced.
+	 * 
+	 * @param alarm The alarm to show in the table.
+	 * @see AlarmSelectionListener
+	 */
+	public void onAlarm(Alarm alarm) {
+		System.out.println("Got alarm <"+alarm.getAlarmId()+"> "+alarm.getStatus().isActive());
 		
-		
-	
+		synchronized (items) {
+			if (items.size()>MAX_ALARMS && items.indexOf(alarm)>=0) {
+				items.remove(items.size()-1); // Remove the last one
+			}
+			if (items.indexOf(alarm)>=0) {
+				items.setElementAt(alarm,items.indexOf(alarm));
+			} else {
+				items.add(0,alarm); 
+			}
+		}
+		fireTableDataChanged();
+	}
+
+	@Override
+	public void onException(LaserSelectionException e) {
+		System.err.println("Exception: "+e.getMessage());
+		e.printStackTrace(System.err);		
+	}
+
 	/**
 	 * The max number of alarms in the table
 	 * When the max has been reach, the oldest alarm is removed 
@@ -77,10 +104,12 @@ public class AlarmTableModel extends AbstractTableModel implements CategoryListe
 	};
 	
 	// The alarms in the table
-	private Vector<AlarmView> items = new Vector<AlarmView>(); 
+	private Vector<Alarm> items = new Vector<Alarm>(); 
 
 	public int getRowCount() {
-		return items.size();
+		synchronized (items) {
+			return items.size();
+		}
 	}
 
 	public int getColumnCount() {
@@ -97,35 +126,39 @@ public class AlarmTableModel extends AbstractTableModel implements CategoryListe
 	 * @return The string to display in the cell
 	 */
 	public String getCellContent(int rowIndex, int columnIndex) {
-		AlarmView alarm = items.get(rowIndex);
+		Alarm alarm;
+		synchronized (items) {
+			alarm = items.get(rowIndex);
+		}
+		
 		String ret="";
 		switch (columnIndex) {
 		case 0: {
 			// Timestamp
-			ret=alarm.getTimestamp();
+			ret=""+alarm.getStatus().getSourceTimestamp().getTime();
 			break;
 		}
 		case 1: {
 			// Triplet
-			ret=alarm.alarmID;
+			ret=alarm.getAlarmId();
 			break;
 		}
 		case 2: {
 			// Priority
-			ret=alarm.priority.toString();
+			ret=alarm.getPriority().toString();
 			break;
 		}
 		case 3: {
 			// Description
-			ret=alarm.description;
+			ret=alarm.getProblemDescription();
 			break;
 		}
 		case 4: {
-			ret=alarm.cause;
+			ret=alarm.getCause();
 			break;
 		}
 		case 5: {
-			ret=alarm.hostName;
+			ret="N/A";
 			break;
 		}
 		default: {
@@ -139,31 +172,17 @@ public class AlarmTableModel extends AbstractTableModel implements CategoryListe
 	 * @see javax.swing.table.AbstractTableModel
 	 */
 	public Object getValueAt(int rowIndex, int columnIndex) {
-		AlarmView alarm = items.get(rowIndex);
+		Alarm alarm;
+		synchronized (items) {
+			alarm = items.get(rowIndex);
+		}
+		
 		String ret=getCellContent(rowIndex, columnIndex);
-		if (!alarm.active || alarm.priority==null || alarm.priority<0 || alarm.priority>3) {
+		if (!alarm.getStatus().isActive() || alarm.getPriority()==null || alarm.getPriority()<0 || alarm.getPriority()>3) {
 			return colors[4]+ret+endStr;
 		} else {
-			return colors[alarm.priority]+ret+endStr;
+			return colors[alarm.getPriority()]+ret+endStr;
 		}
-	}
-
-	/**
-	 * Add an alarm in the table.
-	 * If an alarm with the same triplet is already in the table it is replaced.
-	 * 
-	 * @param alarm The alarm to show in the table.
-	 */
-	public synchronized void alarmReceived(AlarmView alarm) {
-		if (items.size()>MAX_ALARMS && items.indexOf(alarm)>=0) {
-			items.remove(items.size()-1); // Remove the last one
-		}
-		if (items.indexOf(alarm)>=0) {
-			items.setElementAt(alarm,items.indexOf(alarm));
-		} else {
-			items.add(0,alarm); 
-		}
-		fireTableDataChanged();
 	}
 	
 	@Override
