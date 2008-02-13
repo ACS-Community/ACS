@@ -23,5 +23,6 @@ s/[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*/<IP address>/g
 ##s|logs in [0-9]{1,}s => [0-9]{1,} logs/s => within |logs in <number1>s => <number2> logs/s => within |g
 s|logs in [.0-9]*s = [0-9]* logs/s => within |logs in <number1>s => <number2> logs/s => within |g
 s/expected range (min [0-9][0-9]*, max [0-9][0-9]*)/expected range (min <min>, max <max>)/g
-s|Needed [.0-9]*s / [.0-9]*s to send all logs|Needed <number1>s / <number2>s to send all logs|g
+s/Needed [.0-9]*s to send all logs/Needed <time1>s to send all logs/g
+s/ [.0-9]*s after first [0-9][0-9]* logs came to / <time2>s after first <number> logs came to /g
 s/Last log digested within [.0-9]*s/Last log digested within <number>s/g
