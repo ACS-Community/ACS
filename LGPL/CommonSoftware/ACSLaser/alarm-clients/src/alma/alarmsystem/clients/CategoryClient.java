@@ -79,6 +79,9 @@ public class CategoryClient {
 	private final String alarmServiceIDL = "*/AlarmService:*";
 	private AlarmService alarm;
 	
+	// To avoid to release the resources twice
+	private volatile boolean closed=false;
+	
 	/**
 	 * Constructor
 	 * 
@@ -176,6 +179,9 @@ public class CategoryClient {
 		if (listener==null) {
 			throw new IllegalArgumentException("The listener can't be null");
 		}
+		if (closed) {
+			throw new IllegalStateException("SourceClient is closed!");
+		}
 		try {
 			getAlarmServiceComponent();
 			userHandler=new UserHandlerImpl();
@@ -208,11 +214,22 @@ public class CategoryClient {
 	 * @throws AlarmClientException 
 	 */
 	public void close() throws AlarmClientException {
+		closed=true;
 		try {
 			jms_selectionHandler.close();
 			contSvc.releaseComponent(alarm.name());
 		} catch (Exception e) {
 			throw new AlarmClientException("Exception closing: ",e);
 		}
+	}
+	
+	/**
+	 * Ensure that the resources have been released before destroying the object
+	 */
+	public void finalize() throws Throwable {
+		if (!closed) {
+			close();
+		}
+		super.finalize();
 	}
 }

@@ -45,6 +45,9 @@ public class SourceClient {
 	// Container services
 	private ContainerServices contSvcs;
 	
+	// To avoid to release the resources twice
+	private volatile boolean closed=false;
+	
 	// Logger
 	private Logger logger;
 
@@ -62,6 +65,9 @@ public class SourceClient {
 	 * @throws Exception
 	 */
 	public void connect() throws Exception {
+		if (closed) {
+			throw new IllegalStateException("SourceClient is closed!");
+		}
 		logger.log(AcsLogLevel.DEBUG,"Connecting to source channel "+m_channelName);
 		m_consumer = new Consumer(m_channelName,alma.acsnc.ALARMSYSTEM_DOMAIN_NAME.value,contSvcs);
 		m_consumer.addSubscription(ACSJMSMessageEntity.class,this);
@@ -110,6 +116,9 @@ public class SourceClient {
 		if (newListener==null) {
 			throw new IllegalArgumentException("Invalid null listener");
 		}
+		if (closed) {
+			throw new IllegalStateException("SourceClient is closed!");
+		}
 		synchronized(listeners) {
 			listeners.add(newListener);
 		}
@@ -125,6 +134,9 @@ public class SourceClient {
 	public boolean removeListener(SourceListener listener) {
 		if (listener==null) {
 			throw new IllegalArgumentException("Invalid null listener");
+		}
+		if (closed) {
+			throw new IllegalStateException("SourceClient is closed!");
 		}
 		boolean ret;
 		synchronized(listeners) {
@@ -150,9 +162,20 @@ public class SourceClient {
 		}
 	}
 	
+	/**
+	 * Frees all the resources
+	 */
+	public void close() {
+		closed=true;
+		m_consumer.disconnect();
+	}
+	
+	/**
+	 * Ensure that the resources have been released before destroying the object
+	 */
 	public void finalize() throws Throwable {
-		if (m_consumer!=null) {
-			m_consumer.disconnect();
+		if (!closed) {
+			close();
 		}
 		super.finalize();
 	}
