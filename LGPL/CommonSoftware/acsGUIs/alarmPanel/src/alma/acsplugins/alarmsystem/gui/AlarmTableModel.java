@@ -19,13 +19,15 @@
 
 /** 
  * @author  caproni   
- * @version $Id: AlarmTableModel.java,v 1.8 2008/02/13 01:17:55 acaproni Exp $
+ * @version $Id: AlarmTableModel.java,v 1.9 2008/02/13 21:42:22 acaproni Exp $
  * @since    
  */
 
 package alma.acsplugins.alarmsystem.gui;
 
 import javax.swing.table.AbstractTableModel;
+
+import alma.acs.util.IsoDateFormat;
 
 import cern.laser.client.data.Alarm;
 import cern.laser.client.services.selection.AlarmSelectionListener;
@@ -42,6 +44,8 @@ import java.util.Vector;
  */
 public class AlarmTableModel extends AbstractTableModel implements AlarmSelectionListener {
 	
+	private SimpleDateFormat dateFormat = new IsoDateFormat();
+	
 	/**
 	 * Add an alarm in the table.
 	 * If an alarm with the same triplet is already in the table it is replaced.
@@ -50,7 +54,6 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 	 * @see AlarmSelectionListener
 	 */
 	public void onAlarm(Alarm alarm) {
-		System.out.println("Got alarm <"+alarm.getAlarmId()+"> "+alarm.getStatus().isActive());
 		
 		synchronized (items) {
 			if (items.size()>MAX_ALARMS && items.indexOf(alarm)>=0) {
@@ -76,24 +79,24 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 	 * When the max has been reach, the oldest alarm is removed 
 	 * before adding a new one
 	 */
-	private final int MAX_ALARMS=10000;
+	private static final int MAX_ALARMS=10000;
 	
 	/**
 	 * The colors used to show alarms in the table
 	 */
-	private final String[] colors = {
+	private static final String[] colors = {
 			"<HTML><FONT Color=\"#0000FF\">", // Priority 0
 			"<HTML><FONT Color=\"#FF8050\">", // Priority 1
 			"<HTML><FONT Color=\"#FF00FF\">", // Priority 2
 			"<HTML><FONT Color=\"#FF0000\">", // Priority 3
 			"<HTML><FONT Color=\"#008000\">" // Inactive
 	};
-	private final String endStr="</FONT>";
+	private static final String endStr="</FONT>";
 	
 	
 	
 	 // The names of the cols of the table
-	private String headerNames[] = new String[] {
+	private static String headerNames[] = new String[] {
 		"Time",
 		"Triplet",
 		"Priority",
@@ -135,7 +138,7 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 		switch (columnIndex) {
 		case 0: {
 			// Timestamp
-			ret=""+alarm.getStatus().getSourceTimestamp().getTime();
+			ret=dateFormat.format(alarm.getStatus().getSourceTimestamp());
 			break;
 		}
 		case 1: {
