@@ -19,16 +19,14 @@
 
 /** 
  * @author  acaproni   
- * @version $Id: AlarmPanel.java,v 1.4 2008/02/13 01:17:55 acaproni Exp $
+ * @version $Id: AlarmPanel.java,v 1.5 2008/02/13 21:40:47 acaproni Exp $
  * @since    
  */
 
 package alma.acsplugins.alarmsystem.gui;
 
 import javax.swing.JFrame;
-import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTable;
 
 import cern.laser.client.services.selection.AlarmSelectionListener;
 
@@ -86,8 +84,8 @@ public class AlarmPanel extends JScrollPane implements IPanel {
 	 */
 	private void initialize() {
 		setViewportView(alarmTable);
-		setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-		alarmTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+		setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+		setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 	}
 	
 	/**
