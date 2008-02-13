@@ -36,7 +36,6 @@ import cern.laser.client.services.selection.Selection;
 import cern.laser.console.Configuration;
 import cern.laser.console.User;
 import cern.laser.console.impl.UserHandlerImpl;
-import cern.laser.guiplatform.alarms.AlarmSelectionHandlerFactory;
 
 /**
  * A client that listen to alarms from all the categories.
@@ -58,7 +57,7 @@ import cern.laser.guiplatform.alarms.AlarmSelectionHandlerFactory;
  */
 public class CategoryClient {
 	
-	// The user handle
+	// The user handler
 	private UserHandlerImpl userHandler;
 	
 	// The user to log in (test for instance)
@@ -187,7 +186,7 @@ public class CategoryClient {
 			
 			defaultConf=testUser.getDefaultConfiguration();
 			logger.log(AcsLogLevel.DEBUG,"Getting the selection handler");
-			jms_selectionHandler = AlarmSelectionHandlerFactory.getHandler();
+			jms_selectionHandler = AlarmSelectionHandler.get();
 			addCategories(defaultConf,categories);
 			
 			// Get the active alarms (they are received by the listener)
