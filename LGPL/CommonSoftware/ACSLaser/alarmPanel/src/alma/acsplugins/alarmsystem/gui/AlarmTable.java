@@ -19,7 +19,7 @@
 
 /** 
  * @author  aaproni
- * @version $Id: AlarmTable.java,v 1.2 2007/09/28 12:56:04 acaproni Exp $
+ * @version $Id: AlarmTable.java,v 1.3 2008/02/13 21:39:40 acaproni Exp $
  * @since    
  */
 
@@ -29,8 +29,11 @@ import java.awt.Component;
 
 import javax.swing.JTable;
 import javax.swing.JComponent;
+import javax.swing.RowSorter;
+import javax.swing.SortOrder;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableRowSorter;
 
 /**
  * 
@@ -40,6 +43,9 @@ import javax.swing.table.TableCellRenderer;
 public class AlarmTable extends JTable {
 	// The model of the table
 	private TableModel model;
+	
+	// The sorter for sorting the rows of the table
+	private TableRowSorter<TableModel> sorter;
 	
 	/**
 	 * Constructor 
@@ -52,6 +58,11 @@ public class AlarmTable extends JTable {
 		}
 		this.model=model;
 		this.setCellSelectionEnabled(false);
+		sorter = new TableRowSorter<TableModel>(model);
+		this.setRowSorter(sorter);
+		sorter.setMaxSortKeys(2);
+		sorter.setSortsOnUpdates(true);
+		// Initially sorts by time
 	}
 	
 	public Component prepareRenderer(TableCellRenderer renderer, int rowIndex,
