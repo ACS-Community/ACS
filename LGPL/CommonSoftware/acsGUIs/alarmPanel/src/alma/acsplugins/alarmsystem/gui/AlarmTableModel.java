@@ -19,7 +19,7 @@
 
 /** 
  * @author  acaproni   
- * @version $Id: AlarmTableModel.java,v 1.10 2008/02/14 00:23:31 acaproni Exp $
+ * @version $Id: AlarmTableModel.java,v 1.11 2008/02/14 01:37:29 acaproni Exp $
  * @since    
  */
 
@@ -42,6 +42,28 @@ import java.util.Vector;
  *
  */
 public class AlarmTableModel extends AbstractTableModel implements AlarmSelectionListener {
+	
+	/**
+	 * The title of each column
+	 * 
+	 * @author acaproni
+	 *
+	 */
+	public enum AlarmTableColumn {
+		TIME("Time"),
+		TRIPLET("Triplet"),
+		PRIORITY("Priority"),
+		DESCRIPTION("Description"),
+		CAUSE("Cause"),
+		HOST("Host");
+		
+		public final String title;
+		
+		private AlarmTableColumn(String title) {
+			this.title=title;
+		}
+			
+	};
 	
 	private SimpleDateFormat dateFormat = new IsoDateFormat();
 	
@@ -79,17 +101,6 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 	 * before adding a new one
 	 */
 	private static final int MAX_ALARMS=10000;
-		
-	 // The names of the cols of the table
-	private static String headerNames[] = new String[] {
-		"Time",
-		"Triplet",
-		"Priority",
-		"Description",
-		"Cause",
-		"Host"
-		
-	};
 	
 	// The alarms in the table
 	private Vector<Alarm> items = new Vector<Alarm>(); 
@@ -101,7 +112,7 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 	}
 
 	public int getColumnCount() {
-		return headerNames.length;
+		return AlarmTableColumn.values().length;
 	}
 	
 	/**
@@ -120,32 +131,33 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 		}
 		
 		String ret="";
-		switch (columnIndex) {
-		case 0: {
+		AlarmTableColumn col = AlarmTableColumn.values()[columnIndex];
+		switch (col) {
+		case TIME: {
 			// Timestamp
 			ret=dateFormat.format(alarm.getStatus().getSourceTimestamp());
 			break;
 		}
-		case 1: {
+		case TRIPLET: {
 			// Triplet
 			ret=alarm.getAlarmId();
 			break;
 		}
-		case 2: {
+		case PRIORITY: {
 			// Priority
 			ret=alarm.getPriority().toString();
 			break;
 		}
-		case 3: {
+		case DESCRIPTION: {
 			// Description
 			ret=alarm.getProblemDescription();
 			break;
 		}
-		case 4: {
+		case CAUSE: {
 			ret=alarm.getCause();
 			break;
 		}
-		case 5: {
+		case HOST: {
 			ret="N/A";
 			break;
 		}
@@ -165,12 +177,7 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 	
 	@Override
 	public String getColumnName(int col) {
-		if (col>=0 && col<headerNames.length) {
-			return headerNames[col];
-			
-		} else {
-			return"?????????????????????";
-		}
+		return AlarmTableColumn.values()[col].title;
 	}
 	
 	/**
