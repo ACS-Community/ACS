@@ -23,10 +23,8 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.FontMetrics;
-import java.awt.Graphics2D;
-import java.awt.Toolkit;
-import java.awt.font.FontRenderContext;
-import java.awt.geom.Rectangle2D;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -43,7 +41,7 @@ import alma.acsplugins.alarmsystem.gui.CellColor;
  * @author acaproni
  *
  */
-public class Toolbar extends JPanel {
+public class Toolbar extends JPanel implements ActionListener {
 	
 	/** 
 	 * The rendered for the auto acknowledge combo box
@@ -54,11 +52,17 @@ public class Toolbar extends JPanel {
 	 */
 	public class ComboBoxRenderer implements ListCellRenderer {
 		
+		// The label shown by the combo box (i.e. the text of the 
+		// selected item)
+		private JLabel selectedLabel=new JLabel();
+
 		/**
 		 * Constructor
 		 */
 		public ComboBoxRenderer() {
-			setOpaque(true);
+			selectedLabel.setOpaque(false);
+			Dimension d = new Dimension(ComboBoxValues.getWidth(),ComboBoxValues.getHeight());
+			selectedLabel.setMinimumSize(d);
 		}
 
 		/**
@@ -66,14 +70,21 @@ public class Toolbar extends JPanel {
 		 */
 		public Component getListCellRendererComponent(JList list, Object value,
 				int index, boolean isSelected, boolean cellHasFocus) {
+			
 			if (index==-1) {
-				return ((ComboBoxValues)value).normalRenderer;
+				System.out.println("Returning -1 "+(ComboBoxValues)value+" selected: "+isSelected);
+				ComboBoxValues val = (ComboBoxValues)value;
+				selectedLabel.setText(val.title);
+				selectedLabel.setBackground(val.normalRenderer.getBackground());
+				selectedLabel.setForeground(val.normalRenderer.getForeground());
+				return selectedLabel;
 			}
-			JLabel renderer=null;
 			if (cellHasFocus) {
-				return (ComboBoxValues.values()[index].focusRenderer);
+				System.out.println("Returning focus "+(ComboBoxValues)value);
+				return ((ComboBoxValues)value).focusRenderer;
 			} else {
-				return (ComboBoxValues.values()[index].normalRenderer);
+				System.out.println("Returning normal "+(ComboBoxValues)value);
+				return ((ComboBoxValues)value).normalRenderer;
 			}
 		}
 		
@@ -117,15 +128,21 @@ public class Toolbar extends JPanel {
 			normalRenderer.setForeground(color.foreg);
 			normalRenderer.setHorizontalAlignment(SwingConstants.CENTER);
 			normalRenderer.setVerticalAlignment(SwingConstants.CENTER);
+			normalRenderer.setOpaque(true);
+			Font fnt = normalRenderer.getFont();
+			Font newFont = fnt.deriveFont(fnt.getSize()*80/100);
+			normalRenderer.setFont(newFont);
 			focusRenderer = new JLabel(tit);
 			focusRenderer.setBackground(color.foreg);
 			focusRenderer.setForeground(color.backg);
 			focusRenderer.setHorizontalAlignment(SwingConstants.CENTER);
 			focusRenderer.setVerticalAlignment(SwingConstants.CENTER);
+			focusRenderer.setFont(newFont);
+			focusRenderer.setOpaque(true);
 		}
 		
 		/**
-		 * Init the sizes of all the lables
+		 * Init the sizes of all the labels
 		 */
 		public static void initSizes() {
 			for (ComboBoxValues val: ComboBoxValues.values()) {
@@ -143,8 +160,6 @@ public class Toolbar extends JPanel {
 				val.focusRenderer.setPreferredSize(d);
 				val.normalRenderer.setMinimumSize(d);
 				val.focusRenderer.setMinimumSize(d);
-				val.normalRenderer.setMaximumSize(d);
-				val.focusRenderer.setMaximumSize(d);
 			}
 			
 			System.out.println(d);
@@ -219,14 +234,23 @@ public class Toolbar extends JPanel {
 		add(autoAckLbl);
 		autoAckLevelCB.setFont(newFont);
 		autoAckLevelCB.setEditable(false);
+		autoAckLevelCB.setOpaque(true);
 		// Set the colors of the renderers
 		ComboBoxValues.initSizes();
 		autoAckLevelCB.setRenderer(new ComboBoxRenderer());
 		autoAckLevelCB.setSelectedIndex(ComboBoxValues.NONE.ordinal());
 		autoAckLevelCB.setMaximumRowCount(ComboBoxValues.values().length);
+		autoAckLevelCB.addActionListener(this);
 		Dimension d = new Dimension(ComboBoxValues.getWidth(),ComboBoxValues.getHeight());
-		//autoAckLevelCB.setPreferredSize(d);
 		autoAckLevelCB.setMinimumSize(d);
 		add(autoAckLevelCB);
+	}
+	
+	/**
+	 * @see ActionListener
+	 */
+	public void actionPerformed(ActionEvent e) {
+		System.out.println("Selected item: "+autoAckLevelCB.getSelectedItem());
+		
 	}
 }
