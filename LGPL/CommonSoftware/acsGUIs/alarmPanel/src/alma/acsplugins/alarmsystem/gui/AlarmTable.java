@@ -19,7 +19,7 @@
 
 /** 
  * @author  aaproni
- * @version $Id: AlarmTable.java,v 1.4 2008/02/14 00:24:10 acaproni Exp $
+ * @version $Id: AlarmTable.java,v 1.5 2008/02/14 01:19:09 acaproni Exp $
  * @since    
  */
 
@@ -29,8 +29,7 @@ import java.awt.Component;
 
 import javax.swing.JTable;
 import javax.swing.JComponent;
-import javax.swing.RowSorter;
-import javax.swing.SortOrder;
+import javax.swing.event.RowSorterListener;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableRowSorter;
@@ -60,6 +59,7 @@ public class AlarmTable extends JTable {
 		}
 		this.model=model;
 		this.setCellSelectionEnabled(false);
+		this.setOpaque(false);
 		sorter = new TableRowSorter<TableModel>(model);
 		this.setRowSorter(sorter);
 		sorter.setMaxSortKeys(2);
@@ -67,23 +67,38 @@ public class AlarmTable extends JTable {
 		// Initially sorts by time
 	}
 	
+	/**
+	 * @see JTable
+	 */
 	public Component prepareRenderer(TableCellRenderer renderer, int rowIndex,
 			int vColIndex) {
 		Component c = super.prepareRenderer(renderer, rowIndex, vColIndex);
-		Alarm alarm = model.getRowAlarm(rowIndex);
-		if (alarm.getStatus().isActive()) {
-			CellColor cellColor = CellColor.fromPriority(alarm.getPriority());
-			c.setForeground(cellColor.foreg);
-			c.setBackground(cellColor.backg);
-		} else {
-			c.setForeground(CellColor.INACTIVE.foreg);
-			c.setBackground(CellColor.INACTIVE.backg);
-		}
+		Alarm alarm = model.getRowAlarm(sorter.convertRowIndexToModel(rowIndex));
+		colorizeCell(c, alarm.getPriority(), alarm.getStatus().isActive());
+	
 		if (c instanceof JComponent) {
 			JComponent jc = (JComponent) c;
 			jc.setToolTipText("<HTML>"+((AlarmTableModel)model).getCellContent(rowIndex, vColIndex));
 		}
 		return c;
 	}
-
+	
+	/**
+	 * Set the background and the foreground of the component depending
+	 * on the priority and the state
+	 * 
+	 * @param c The component to color
+	 * @param priority The priority to set the color
+	 * @param active The state active/inactive to set the color
+	 */
+	private void colorizeCell(Component c, int priority, boolean active) {
+		if (active) {
+			CellColor cellColor = CellColor.fromPriority(priority);
+			c.setForeground(cellColor.foreg);
+			c.setBackground(cellColor.backg);
+		} else {
+			c.setForeground(CellColor.INACTIVE.foreg);
+			c.setBackground(CellColor.INACTIVE.backg);
+		}
+	}
 }
