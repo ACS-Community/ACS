@@ -19,13 +19,16 @@
 
 /** 
  * @author  acaproni   
- * @version $Id: AlarmPanel.java,v 1.5 2008/02/13 21:40:47 acaproni Exp $
+ * @version $Id: AlarmPanel.java,v 1.6 2008/02/14 17:28:28 acaproni Exp $
  * @since    
  */
 
 package alma.acsplugins.alarmsystem.gui;
 
+import java.awt.BorderLayout;
+
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
 import cern.laser.client.services.selection.AlarmSelectionListener;
@@ -34,13 +37,15 @@ import alma.acs.container.ContainerServices;
 import alma.alarmsystem.clients.CategoryClient;
 
 import alma.acs.gui.util.panel.IPanel;
+import alma.acsplugins.alarmsystem.gui.statusline.StatusLine;
+import alma.acsplugins.alarmsystem.gui.toolbar.Toolbar;
 
 /**
  * 
  * The panel showing alarms
  *
  */
-public class AlarmPanel extends JScrollPane implements IPanel {
+public class AlarmPanel extends JPanel implements IPanel {
 	
 	// The container services
     private ContainerServices contSvc=null;
@@ -49,18 +54,28 @@ public class AlarmPanel extends JScrollPane implements IPanel {
 	private AlarmTableModel model = new AlarmTableModel();
 	private AlarmTable alarmTable = new AlarmTable(model);
 	
+	private JScrollPane tableScrollPane = new JScrollPane(
+			JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+			JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+	
 	// The window that shows this panel
     private JFrame frame=null;
     
     // The client to listen alarms from categories
     private CategoryClient categoryClient=null;
+    
+    // The toolbar
+    private Toolbar toolbar=new Toolbar();
+    
+    // The status line
+    private StatusLine statusLine = new StatusLine();
 	
 	/**
 	 * Constructor 
 	 *
 	 */
 	public AlarmPanel() {
-		super(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		super(true);
 		initialize();
 	}
 	
@@ -70,7 +85,7 @@ public class AlarmPanel extends JScrollPane implements IPanel {
 	 * @param frame The window that owns this panel
 	 */
 	public AlarmPanel(JFrame frame) {
-		super(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		super(true);
 		if (frame==null) {
 			throw new IllegalArgumentException("Invalid null frame in constructor");
 		}
@@ -83,9 +98,18 @@ public class AlarmPanel extends JScrollPane implements IPanel {
 	 *
 	 */
 	private void initialize() {
-		setViewportView(alarmTable);
-		setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-		setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		setLayout(new BorderLayout());
+		// Add the toolbr
+		add(toolbar,BorderLayout.NORTH);
+		
+		// Add the table of alarms
+		tableScrollPane.setViewportView(alarmTable);
+		tableScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+		tableScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		add(tableScrollPane,BorderLayout.CENTER);
+		
+		// Add the status line
+		add(statusLine,BorderLayout.SOUTH);
 	}
 	
 	/**
