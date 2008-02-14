@@ -19,7 +19,7 @@
 
 /** 
  * @author  acaproni   
- * @version $Id: AlarmTableModel.java,v 1.13 2008/02/14 01:57:37 acaproni Exp $
+ * @version $Id: AlarmTableModel.java,v 1.14 2008/02/14 23:31:37 acaproni Exp $
  * @since    
  */
 
@@ -28,6 +28,7 @@ package alma.acsplugins.alarmsystem.gui;
 import javax.swing.table.AbstractTableModel;
 
 import alma.acs.util.IsoDateFormat;
+import alma.acsplugins.alarmsystem.gui.toolbar.Toolbar.ComboBoxValues;
 
 import cern.laser.client.data.Alarm;
 import cern.laser.client.services.selection.AlarmSelectionListener;
@@ -42,6 +43,68 @@ import java.util.Vector;
  *
  */
 public class AlarmTableModel extends AbstractTableModel implements AlarmSelectionListener {
+	
+	/**
+	 * The number of alarms for each type in the table
+	 * 
+	 * Priorities contains only active alarms
+	 * 
+	 * @author acaproni
+	 *
+	 */
+	private enum AlarmCounter {
+		
+		PRI0,
+		PRI1,
+		PRI2,
+		PRI3,
+		INACTIVE,
+		AUTOACKNOWLEDGED;
+		
+		public long count=0;
+		
+		/**
+		 * Print the values of all the counters in the stdout.
+		 * 
+		 * It is a debugging helper
+		 */
+		public static void dumpCounters() {
+			System.out.println("Counters values");
+			for (AlarmCounter counter: AlarmCounter.values()) {
+				System.out.println("\t"+counter+" = "+counter.count);
+			}
+		}
+		
+		/**
+		 * Increase the counter of the alarm of the given priority
+		 * 
+		 * @param priority The priority of the given alarm
+		 */
+		public static void incActiveAlarm(int priority) {
+			if (priority<PRI0.ordinal() || priority>PRI3.ordinal()) {
+				throw new IllegalArgumentException("Priority out of range");
+			}
+			if (AlarmCounter.values()[priority-PRI0.ordinal()].count==Long.MAX_VALUE) {
+				AlarmCounter.values()[priority-PRI0.ordinal()].count=0;
+			}
+			AlarmCounter.values()[priority-PRI0.ordinal()].count++;
+		}
+		
+		/**
+		 * Decrease the counter of the alarm of the given priority
+		 * 
+		 * @param priority The priority of the given alarm
+		 */
+		public static void decActiveAlarm(int priority) {
+			if (priority<PRI0.ordinal() || priority>PRI3.ordinal()) {
+				throw new IllegalArgumentException("Priority out of range");
+			}
+			if (AlarmCounter.values()[priority-PRI0.ordinal()].count<=0) {
+				throw new IllegalStateException("Wrong countering of alarms");
+			}
+			AlarmCounter.values()[priority-PRI0.ordinal()].count--;
+		}
+	}
 	
 	/**
 	 * The title of each column.
@@ -93,21 +156,112 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 	 * @see AlarmSelectionListener
 	 */
 	public void onAlarm(Alarm alarm) {
-		
 		synchronized (items) {
 			if (items.size()>MAX_ALARMS && items.indexOf(alarm)>=0) {
-				items.remove(items.size()-1); // Remove the last one
+				Alarm removedAlarm = items.remove(items.size()-1); // Remove the last one
+				if (removedAlarm.getStatus().isActive()) {
+					AlarmCounter.decActiveAlarm(removedAlarm.getPriority());
+				} else {
+					AlarmCounter.INACTIVE.count--;
+				}
 			}
-			if (items.indexOf(alarm)>=0) {
-				items.setElementAt(alarm,items.indexOf(alarm));
+			int pos =items.indexOf(alarm); 
+			if (pos>=0) {
+				replaceAlarm(alarm,pos);
 			} else {
-				items.add(0,alarm); 
+				addAlarm(alarm);
 			}
 		}
 		fireTableDataChanged();
+		AlarmCounter.dumpCounters();
+	}
+	
+	/**
+	 * @param alarm The alarm to add
+	 */
+	private void addAlarm(Alarm alarm) {
+		if (alarm==null) {
+			throw new IllegalArgumentException("The alarm can't be null");
+		}
+		if (!alarm.getStatus().isActive()) {
+			// do not add inactive alarms
+			return;
+		}
+		items.add(0,alarm); 
+		AlarmCounter.incActiveAlarm(alarm.getPriority());
+	}
+	
+	/**
+	 * 
+	 * @param alarm
+	 */
+	private void removeAcknowledged(Alarm alarm) {
+		if (alarm==null) {
+			throw new IllegalArgumentException("The alarm can't be null");
+		}
+		if (alarm.getStatus().isActive()) {
+			throw new IllegalArgumentException("Trying to acknowledge an active alarm");
+		}
+		if (autoAckLvl==ComboBoxValues.NONE) {
+			return;
+		}
+		
+		int priority=999999; // Big enough 
+		switch (autoAckLvl) {
+		case PRIORITY1: {
+			priority = 1;
+			break;
+		}
+		case PRIORITY2: {
+			priority = 2;
+			break;
+		}
+		case PRIORITY3: {
+			priority = 3;
+			break;
+		}
+		}
+		if (alarm.getPriority()>=priority) {
+			// Remove from the table
+			items.remove(alarm);
+			AlarmCounter.INACTIVE.count--;
+			AlarmCounter.AUTOACKNOWLEDGED.count++;
+		}
+	}
+	
+	/**
+	 * Replace an alarm already in the table
+	 * 
+	 * @param alarm The alarm to put in the table
+	 * @param pos The position of the alarm to be replaced
+	 */
+	private void replaceAlarm(Alarm alarm, int pos) {
+		if (pos<0 || pos>=items.size()) {
+			throw new IllegalArgumentException("Invalid position for replacement");
+		}
+		if (alarm==null) {
+			throw new IllegalArgumentException("The alarm can't be null");
+		}
+		boolean oldAlarmState = items.get(pos).getStatus().isActive();
+		items.setElementAt(alarm,items.indexOf(alarm));
+		if (oldAlarmState==alarm.getStatus().isActive()) {
+			return;
+		}
+		if (alarm.getStatus().isActive()) {
+			// The alarm was inactive and now is again ACTIVE
+			AlarmCounter.INACTIVE.count--;
+			AlarmCounter.incActiveAlarm(alarm.getPriority());
+		} else {
+			// The alarm became INACTIVE
+			AlarmCounter.INACTIVE.count++;
+			AlarmCounter.decActiveAlarm(alarm.getPriority());
+			removeAcknowledged(alarm);
+		}
 	}
 
-	@Override
+	/**
+	 * @see AlarmSelectionListener
+	 */
 	public void onException(LaserSelectionException e) {
 		System.err.println("Exception: "+e.getMessage());
 		e.printStackTrace(System.err);		
@@ -121,7 +275,10 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 	private static final int MAX_ALARMS=10000;
 	
 	// The alarms in the table
-	private Vector<Alarm> items = new Vector<Alarm>(); 
+	private Vector<Alarm> items = new Vector<Alarm>();
+	
+	// The auto acknowledge level
+	private ComboBoxValues autoAckLvl = ComboBoxValues.NONE ;
 
 	public int getRowCount() {
 		synchronized (items) {
@@ -190,6 +347,21 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 				return "";
 			}
 		}
+	}
+	
+	/**
+	 * Set the auto acknowledge level
+	 * i.e. All the inactive alarms having a level equal or lower
+	 * the the passed level automatically disappear from the table
+	 * (i.e. with no user intervention)
+	 * 
+	 * @param lvl The new auto acknowledge level
+	 */
+	public void setAutoAckLevel(ComboBoxValues lvl) {
+		if (lvl==null) {
+			throw new IllegalArgumentException("The level can't be null");
+		}
+		autoAckLvl=lvl;
 	}
 
 	/**
