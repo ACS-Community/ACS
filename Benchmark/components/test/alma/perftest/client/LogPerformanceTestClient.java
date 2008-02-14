@@ -146,6 +146,14 @@ public class LogPerformanceTestClient extends ComponentClient
 		int doneCount = 0;
 		while(doneCount < numComponents) 
 		{
+			try 
+			{
+				Thread.sleep(355);
+			}
+			catch(InterruptedException ex) 
+			{
+				//noop	
+			}
 			for(int i = 0; i < numComponents; i++) 
 			{
 				if(!doneArray[i] && m_logStressComp[i].getThreadDone()) 
@@ -154,17 +162,6 @@ public class LogPerformanceTestClient extends ComponentClient
 					doneArray[i] = true;
 					doneCount++;
 					logger.log(Level.SEVERE, "releasing component: " + i);
-				}
-				else 
-				{
-					try 
-					{
-						Thread.sleep(1000);
-					}
-					catch(InterruptedException ex) 
-					{
-						//noop	
-					}
 				}
 			}
 		}
