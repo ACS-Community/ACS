@@ -34,6 +34,7 @@ import javax.swing.JPanel;
 import javax.swing.ListCellRenderer;
 import javax.swing.SwingConstants;
 
+import alma.acsplugins.alarmsystem.gui.AlarmTableModel;
 import alma.acsplugins.alarmsystem.gui.CellColor;
 
 /**
@@ -208,15 +209,24 @@ public class Toolbar extends JPanel implements ActionListener {
 		}
 	}
 	
+	// The combo box for autoacknowledgement of alarms
 	private JComboBox autoAckLevelCB=new JComboBox(ComboBoxValues.values());
 
+	// The label box for autoacknowledgement of alarms
 	private JLabel autoAckLbl = new JLabel("Auto ack: ");
+	
+	// The table model
+	private AlarmTableModel model;
 	
 	/**
 	 * Constructor
 	 */
-	public Toolbar() {
+	public Toolbar(AlarmTableModel model) {
 		super();
+		if (model==null) {
+			throw new IllegalArgumentException("the model can't be null");
+		}
+		this.model=model;
 		initialize();
 	}
 	
@@ -252,6 +262,6 @@ public class Toolbar extends JPanel implements ActionListener {
 	 */
 	public void actionPerformed(ActionEvent e) {
 		System.out.println("Selected item: "+autoAckLevelCB.getSelectedItem());
-		
+		model.setAutoAckLevel((ComboBoxValues)autoAckLevelCB.getSelectedItem());
 	}
 }
