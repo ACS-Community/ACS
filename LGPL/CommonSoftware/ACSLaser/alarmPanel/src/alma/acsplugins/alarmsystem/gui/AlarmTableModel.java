@@ -19,7 +19,7 @@
 
 /** 
  * @author  acaproni   
- * @version $Id: AlarmTableModel.java,v 1.12 2008/02/14 01:44:14 acaproni Exp $
+ * @version $Id: AlarmTableModel.java,v 1.13 2008/02/14 01:57:37 acaproni Exp $
  * @since    
  */
 
@@ -53,17 +53,32 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 	 *
 	 */
 	public enum AlarmTableColumn {
-		TIME("Time"),
-		COMPONENT("Component"),
-		CODE("Code"),
-		PRIORITY("Priority"),
-		DESCRIPTION("Description"),
-		CAUSE("Cause");
+		TIME("Time",true),
+		COMPONENT("Component",true),
+		CODE("Code",true),
+		PRIORITY("Priority",true),
+		DESCRIPTION("Description",true),
+		CAUSE("Cause",true),
+		ACTION("Action",false),
+		CONSEQUENCE("Consequence",false),
+		URL("URL",false),
+		CONTACT("Contact",false),
+		EMAIL("email",false),
+		GSM("GSM",false);
 		
+		// The title of the header
 		public final String title;
 		
-		private AlarmTableColumn(String title) {
+		// If true the column is shown at startup
+		public boolean visible;
+		
+		/**
+		 * Constructor: set the final properties
+		 * 
+		 */
+		private AlarmTableColumn(String title, boolean initiallyVisible) {
 			this.title=title;
+			this.visible=initiallyVisible;
 		}
 			
 	};
@@ -152,6 +167,24 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 		}
 		case CAUSE: {
 			return alarm.getCause();
+		}
+		case ACTION: {
+			return alarm.getAction();
+		}
+		case CONSEQUENCE: {
+			return alarm.getConsequence();
+		}
+		case GSM: {
+			return alarm.getResponsiblePerson().getGsmNumber();
+		}
+		case CONTACT: {
+			return alarm.getResponsiblePerson().getFirstName();
+		}
+		case EMAIL: {
+			return alarm.getResponsiblePerson().getEMail();
+		}
+		case URL: {
+			return alarm.getHelpURL();
 		}
 		default: {
 				return "";
