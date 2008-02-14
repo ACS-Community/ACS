@@ -33,6 +33,7 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.ListCellRenderer;
 import javax.swing.SwingConstants;
+import javax.swing.border.EtchedBorder;
 
 import alma.acsplugins.alarmsystem.gui.AlarmTableModel;
 import alma.acsplugins.alarmsystem.gui.CellColor;
@@ -236,6 +237,7 @@ public class Toolbar extends JPanel implements ActionListener {
 	private void initialize() {
 		FlowLayout layout = (FlowLayout)getLayout();
 		layout.setAlignment(FlowLayout.LEFT);
+		setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
 		
 		// Add the label and the combobox for auto ack
 		Font fnt = autoAckLbl.getFont();

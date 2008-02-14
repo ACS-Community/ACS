@@ -18,6 +18,7 @@
  */
 package alma.acsplugins.alarmsystem.gui.statusline;
 
+import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 
 /**
@@ -28,4 +29,17 @@ import javax.swing.JPanel;
  */
 public class StatusLine extends JPanel {
 
+	/**
+	 * Constructor
+	 */
+	public StatusLine() {
+		initialize();
+	}
+	
+	/**
+	 * Init the status line
+	 */
+	private void initialize() {
+		setBorder(BorderFactory.createLoweredBevelBorder());
+	}
 }
