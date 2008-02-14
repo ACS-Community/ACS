@@ -19,7 +19,7 @@
 
 /** 
  * @author  aaproni
- * @version $Id: AlarmTable.java,v 1.5 2008/02/14 01:19:09 acaproni Exp $
+ * @version $Id: AlarmTable.java,v 1.6 2008/02/14 02:31:40 acaproni Exp $
  * @since    
  */
 
@@ -30,9 +30,14 @@ import java.awt.Component;
 import javax.swing.JTable;
 import javax.swing.JComponent;
 import javax.swing.event.RowSorterListener;
+import javax.swing.table.DefaultTableColumnModel;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableRowSorter;
+
+import alma.acsplugins.alarmsystem.gui.AlarmTableModel.AlarmTableColumn;
 
 import cern.laser.client.data.Alarm;
 
@@ -47,6 +52,8 @@ public class AlarmTable extends JTable {
 	
 	// The sorter for sorting the rows of the table
 	private TableRowSorter<TableModel> sorter;
+	
+	private TableColumn[] columns;
 	
 	/**
 	 * Constructor 
@@ -64,7 +71,18 @@ public class AlarmTable extends JTable {
 		this.setRowSorter(sorter);
 		sorter.setMaxSortKeys(2);
 		sorter.setSortsOnUpdates(true);
-		// Initially sorts by time
+		
+		// Remove all the columns that are not visible at startup
+		TableColumnModel colModel = getColumnModel();
+		columns = new TableColumn[colModel.getColumnCount()];
+		for (int t=0; t<columns.length; t++) {
+			columns[t]=colModel.getColumn(t);
+		}
+		for (AlarmTableColumn col: AlarmTableColumn.values()) {
+			if (!col.visible) {
+				colModel.removeColumn(columns[col.ordinal()]);
+			} 
+		}
 	}
 	
 	/**
