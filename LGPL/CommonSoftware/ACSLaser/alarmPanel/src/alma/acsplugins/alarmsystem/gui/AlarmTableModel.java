@@ -19,7 +19,7 @@
 
 /** 
  * @author  acaproni   
- * @version $Id: AlarmTableModel.java,v 1.14 2008/02/14 23:31:37 acaproni Exp $
+ * @version $Id: AlarmTableModel.java,v 1.15 2008/02/14 23:42:34 acaproni Exp $
  * @since    
  */
 
@@ -43,68 +43,6 @@ import java.util.Vector;
  *
  */
 public class AlarmTableModel extends AbstractTableModel implements AlarmSelectionListener {
-	
-	/**
-	 * The number of alarms for each type in the table
-	 * 
-	 * Priorities contains only active alarms
-	 * 
-	 * @author acaproni
-	 *
-	 */
-	private enum AlarmCounter {
-		
-		PRI0,
-		PRI1,
-		PRI2,
-		PRI3,
-		INACTIVE,
-		AUTOACKNOWLEDGED;
-		
-		public long count=0;
-		
-		/**
-		 * Print the values of all the counters in the stdout.
-		 * 
-		 * It is a debugging helper
-		 */
-		public static void dumpCounters() {
-			System.out.println("Counters values");
-			for (AlarmCounter counter: AlarmCounter.values()) {
-				System.out.println("\t"+counter+" = "+counter.count);
-			}
-		}
-		
-		/**
-		 * Increase the counter of the alarm of the given priority
-		 * 
-		 * @param priority The priority of the given alarm
-		 */
-		public static void incActiveAlarm(int priority) {
-			if (priority<PRI0.ordinal() || priority>PRI3.ordinal()) {
-				throw new IllegalArgumentException("Priority out of range");
-			}
-			if (AlarmCounter.values()[priority-PRI0.ordinal()].count==Long.MAX_VALUE) {
-				AlarmCounter.values()[priority-PRI0.ordinal()].count=0;
-			}
-			AlarmCounter.values()[priority-PRI0.ordinal()].count++;
-		}
-		
-		/**
-		 * Decrease the counter of the alarm of the given priority
-		 * 
-		 * @param priority The priority of the given alarm
-		 */
-		public static void decActiveAlarm(int priority) {
-			if (priority<PRI0.ordinal() || priority>PRI3.ordinal()) {
-				throw new IllegalArgumentException("Priority out of range");
-			}
-			if (AlarmCounter.values()[priority-PRI0.ordinal()].count<=0) {
-				throw new IllegalStateException("Wrong countering of alarms");
-			}
-			AlarmCounter.values()[priority-PRI0.ordinal()].count--;
-		}
-	}
 	
 	/**
 	 * The title of each column.
@@ -160,9 +98,9 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 			if (items.size()>MAX_ALARMS && items.indexOf(alarm)>=0) {
 				Alarm removedAlarm = items.remove(items.size()-1); // Remove the last one
 				if (removedAlarm.getStatus().isActive()) {
-					AlarmCounter.decActiveAlarm(removedAlarm.getPriority());
+					AlarmsCounter.decActiveAlarm(removedAlarm.getPriority());
 				} else {
-					AlarmCounter.INACTIVE.count--;
+					AlarmsCounter.INACTIVE.decCounter();
 				}
 			}
 			int pos =items.indexOf(alarm); 
@@ -173,7 +111,7 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 			}
 		}
 		fireTableDataChanged();
-		AlarmCounter.dumpCounters();
+		AlarmsCounter.dumpCounters();
 	}
 	
 	/**
@@ -188,7 +126,7 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 			return;
 		}
 		items.add(0,alarm); 
-		AlarmCounter.incActiveAlarm(alarm.getPriority());
+		AlarmsCounter.incActiveAlarm(alarm.getPriority());
 	}
 	
 	/**
@@ -224,8 +162,8 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 		if (alarm.getPriority()>=priority) {
 			// Remove from the table
 			items.remove(alarm);
-			AlarmCounter.INACTIVE.count--;
-			AlarmCounter.AUTOACKNOWLEDGED.count++;
+			AlarmsCounter.INACTIVE.decCounter();
+			AlarmsCounter.AUTOACKNOWLEDGED.incCounter();
 		}
 	}
 	
@@ -249,12 +187,12 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 		}
 		if (alarm.getStatus().isActive()) {
 			// The alarm was inactive and now is again ACTIVE
-			AlarmCounter.INACTIVE.count--;
-			AlarmCounter.incActiveAlarm(alarm.getPriority());
+			AlarmsCounter.INACTIVE.decCounter();
+			AlarmsCounter.incActiveAlarm(alarm.getPriority());
 		} else {
 			// The alarm became INACTIVE
-			AlarmCounter.INACTIVE.count++;
-			AlarmCounter.decActiveAlarm(alarm.getPriority());
+			AlarmsCounter.INACTIVE.incCounter();
+			AlarmsCounter.decActiveAlarm(alarm.getPriority());
 			removeAcknowledged(alarm);
 		}
 	}
