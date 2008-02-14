@@ -26,6 +26,7 @@ import java.awt.FontMetrics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.BorderFactory;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -70,20 +71,18 @@ public class Toolbar extends JPanel implements ActionListener {
 		 */
 		public Component getListCellRendererComponent(JList list, Object value,
 				int index, boolean isSelected, boolean cellHasFocus) {
-			
 			if (index==-1) {
 				System.out.println("Returning -1 "+(ComboBoxValues)value+" selected: "+isSelected);
 				ComboBoxValues val = (ComboBoxValues)value;
 				selectedLabel.setText(val.title);
 				selectedLabel.setBackground(val.normalRenderer.getBackground());
 				selectedLabel.setForeground(val.normalRenderer.getForeground());
+
 				return selectedLabel;
 			}
-			if (cellHasFocus) {
-				System.out.println("Returning focus "+(ComboBoxValues)value);
-				return ((ComboBoxValues)value).focusRenderer;
+			if (isSelected) {
+				return ((ComboBoxValues)value).selectedRenderer;
 			} else {
-				System.out.println("Returning normal "+(ComboBoxValues)value);
 				return ((ComboBoxValues)value).normalRenderer;
 			}
 		}
@@ -107,7 +106,7 @@ public class Toolbar extends JPanel implements ActionListener {
 		
 		public final String title;
 		public final JLabel normalRenderer;
-		public final JLabel focusRenderer;
+		public final JLabel selectedRenderer;
 		
 		// Width and height of the label
 		// They are calculated from the dimension of the strings
@@ -132,13 +131,14 @@ public class Toolbar extends JPanel implements ActionListener {
 			Font fnt = normalRenderer.getFont();
 			Font newFont = fnt.deriveFont(fnt.getSize()*80/100);
 			normalRenderer.setFont(newFont);
-			focusRenderer = new JLabel(tit);
-			focusRenderer.setBackground(color.foreg);
-			focusRenderer.setForeground(color.backg);
-			focusRenderer.setHorizontalAlignment(SwingConstants.CENTER);
-			focusRenderer.setVerticalAlignment(SwingConstants.CENTER);
-			focusRenderer.setFont(newFont);
-			focusRenderer.setOpaque(true);
+			selectedRenderer = new JLabel(tit);
+			selectedRenderer.setBackground(color.foreg);
+			selectedRenderer.setForeground(color.backg);
+			selectedRenderer.setHorizontalAlignment(SwingConstants.CENTER);
+			selectedRenderer.setVerticalAlignment(SwingConstants.CENTER);
+			selectedRenderer.setFont(newFont);
+			selectedRenderer.setOpaque(true);
+			selectedRenderer.setBorder(BorderFactory.createLineBorder(color.backg));
 		}
 		
 		/**
@@ -157,9 +157,9 @@ public class Toolbar extends JPanel implements ActionListener {
 			Dimension d = new Dimension(ComboBoxValues.getWidth(),ComboBoxValues.getHeight());
 			for (ComboBoxValues val: ComboBoxValues.values()) {
 				val.normalRenderer.setPreferredSize(d);
-				val.focusRenderer.setPreferredSize(d);
+				val.selectedRenderer.setPreferredSize(d);
 				val.normalRenderer.setMinimumSize(d);
-				val.focusRenderer.setMinimumSize(d);
+				val.selectedRenderer.setMinimumSize(d);
 			}
 			
 			System.out.println(d);
@@ -240,6 +240,7 @@ public class Toolbar extends JPanel implements ActionListener {
 		autoAckLevelCB.setRenderer(new ComboBoxRenderer());
 		autoAckLevelCB.setSelectedIndex(ComboBoxValues.NONE.ordinal());
 		autoAckLevelCB.setMaximumRowCount(ComboBoxValues.values().length);
+		autoAckLevelCB.setEditable(false);
 		autoAckLevelCB.addActionListener(this);
 		Dimension d = new Dimension(ComboBoxValues.getWidth(),ComboBoxValues.getHeight());
 		autoAckLevelCB.setMinimumSize(d);
