@@ -19,7 +19,7 @@
 
 /** 
  * @author  acaproni   
- * @version $Id: AlarmPanel.java,v 1.6 2008/02/14 17:28:28 acaproni Exp $
+ * @version $Id: AlarmPanel.java,v 1.7 2008/02/14 23:30:59 acaproni Exp $
  * @since    
  */
 
@@ -65,7 +65,7 @@ public class AlarmPanel extends JPanel implements IPanel {
     private CategoryClient categoryClient=null;
     
     // The toolbar
-    private Toolbar toolbar=new Toolbar();
+    private Toolbar toolbar;
     
     // The status line
     private StatusLine statusLine = new StatusLine();
@@ -99,7 +99,8 @@ public class AlarmPanel extends JPanel implements IPanel {
 	 */
 	private void initialize() {
 		setLayout(new BorderLayout());
-		// Add the toolbr
+		// Add the toolbar
+		toolbar=new Toolbar(model);
 		add(toolbar,BorderLayout.NORTH);
 		
 		// Add the table of alarms
