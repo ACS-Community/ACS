@@ -18,8 +18,8 @@
  */
 
 /** 
- * @author  caproni   
- * @version $Id: AlarmTableModel.java,v 1.9 2008/02/13 21:42:22 acaproni Exp $
+ * @author  acaproni   
+ * @version $Id: AlarmTableModel.java,v 1.10 2008/02/14 00:23:31 acaproni Exp $
  * @since    
  */
 
@@ -34,7 +34,6 @@ import cern.laser.client.services.selection.AlarmSelectionListener;
 import cern.laser.client.services.selection.LaserSelectionException;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Vector;
 
 /** 
@@ -80,21 +79,7 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 	 * before adding a new one
 	 */
 	private static final int MAX_ALARMS=10000;
-	
-	/**
-	 * The colors used to show alarms in the table
-	 */
-	private static final String[] colors = {
-			"<HTML><FONT Color=\"#0000FF\">", // Priority 0
-			"<HTML><FONT Color=\"#FF8050\">", // Priority 1
-			"<HTML><FONT Color=\"#FF00FF\">", // Priority 2
-			"<HTML><FONT Color=\"#FF0000\">", // Priority 3
-			"<HTML><FONT Color=\"#008000\">" // Inactive
-	};
-	private static final String endStr="</FONT>";
-	
-	
-	
+		
 	 // The names of the cols of the table
 	private static String headerNames[] = new String[] {
 		"Time",
@@ -175,17 +160,7 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 	 * @see javax.swing.table.AbstractTableModel
 	 */
 	public Object getValueAt(int rowIndex, int columnIndex) {
-		Alarm alarm;
-		synchronized (items) {
-			alarm = items.get(rowIndex);
-		}
-		
-		String ret=getCellContent(rowIndex, columnIndex);
-		if (!alarm.getStatus().isActive() || alarm.getPriority()==null || alarm.getPriority()<0 || alarm.getPriority()>3) {
-			return colors[4]+ret+endStr;
-		} else {
-			return colors[alarm.getPriority()]+ret+endStr;
-		}
+		return getCellContent(rowIndex, columnIndex);
 	}
 	
 	@Override
@@ -198,4 +173,18 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 		}
 	}
 	
+	/**
+	 * Return the alarm whose content fills the given row
+	 * 
+	 * @param row The given showing the alarm
+	 * @return The alarm shown in the row row
+	 */
+	public Alarm getRowAlarm(int row) {
+		synchronized (items) {
+			if (row<0 || row>=items.size()) {
+				throw new IllegalArgumentException("Invalid row: "+row+" not in [0,"+items.size()+"[");
+			}
+			return items.get(row);
+		}
+	}	
 }
