@@ -25,13 +25,21 @@ printUsageAndExit ()
     echo "   <numComponents> is the number of publishing components to use.";
     echo "   <delayBetweenLogs> is the number of milliseconds to pause between sending each log.";
     echo "Options: "
-    echo "   -j | --jlog: indicates whether to profile the jlog GUI (default if not specified is true)";
+    echo "   -j | --jlog: indicates whether to profile the jlog GUI (default if not"
+    echo "            specified is true)";
     echo "   -h | --help: print this usage message and exit."
     echo "   -d | --debug: print additional debugging info about this script to stdout."
-    echo "   -r | --remoteHost <hostname>: remote host name on which to run the container(s)."
-    echo "   -l | --language <py | cpp | java>: the implementation language of the publishing component (cpp, java, python) - NOTE: default is cpp."
-    echo "   -m | --minLogLevelLocal <level>: the local log level to set for all containers - NOTE: default is no change."
-    echo "   -s | --stdout: leave output of Containers to stdout instead of redirecting to a temp file."
+    echo "   -p | --publishingHost [<user>@]<hostname>: remote host name on which to run the"
+    echo "            publishing container(s), via ssh. Optionally, a username different"
+    echo "            than the local username can be passed as well. Default: current user"
+    echo "            on local machine."
+    echo "   -l | --language <py | cpp | java>: the implementation language of the publishing"
+    echo "            component (cpp, java, python) - NOTE: default is cpp."
+    echo "   -m | --minLogLevelLocal <level>: the local log level to set for all containers."
+    echo "            NOTE: default is no change."
+    echo "   -s | --skipReport: do not run sar to produce html reports about CPU load"
+    echo "   -n | --noRedirection: leave output of Containers to stdout instead of redirecting"
+    echo "            to a temporary file."
     echo "   -c | --csv <fileName>: append timing info in CSV format to <fileName>."
     echo ""
     exit -1;
@@ -320,13 +328,13 @@ REMOTE_HOST=
 COMPONENT_LANGUAGE=cpp
 NO_REDIRECTION=
 CSVFILE=/dev/null
-CPU_LOAD=1
+NO_REPORT=
 
 #
 # These options can be recognized (longopts comma-separated. Colon means 1 argument is required)
 #
-LONGOPTS=help,jlog,debug,stdout,remoteHost:,language:,minLogLevelLocal:,csv:
-SHORTOPTS=h,j,d,s,r:,l:,m:,c:
+LONGOPTS=csv:,debug,help,jlog,language:,minLogLevelLocal:,noRedirection,publishingHost:,skipReport
+SHORTOPTS=c:,d,h,j,l:,m:,n,p:,s
 
 #
 # Run getopt (posixly_correct needed). We run twice:
@@ -344,22 +352,24 @@ set -- `getopt -u -a -l $LONGOPTS $SHORTOPTS "$@"` >& /dev/null ;
 while : 
   do
   case "$1" in
-      --help)       HELP=true ;;
-      -h)           HELP=true ;;
-      --jlog)       PROFILE_JLOG=true ;;
-      -j)           PROFILE_JLOG=true ;;
-      --debug)      DEBUG_MODE=true ;;
-      -d)           DEBUG_MODE=true ;;
-      -r)           REMOTE_HOST=$2 ; shift ;;
-      --remoteHost) REMOTE_HOST=$2 ; shift ;;
-      -l)           COMPONENT_LANGUAGE=$2 ; shift ;;
-      --language)   COMPONENT_LANGUAGE=$2 ; shift ;;
-      -m)           export ACS_LOG_STDOUT=$2 ; shift ;;
+      --help)           HELP=true ;;
+      -h)               HELP=true ;;
+      --jlog)           PROFILE_JLOG=true ;;
+      -j)               PROFILE_JLOG=true ;;
+      --debug)          DEBUG_MODE=true ;;
+      -d)               DEBUG_MODE=true ;;
+      -p)               REMOTE_HOST=$2 ; shift ;;
+      --publishingHost) REMOTE_HOST=$2 ; shift ;;
+      -l)               COMPONENT_LANGUAGE=$2 ; shift ;;
+      --language)       COMPONENT_LANGUAGE=$2 ; shift ;;
+      -m)               export ACS_LOG_STDOUT=$2 ; shift ;;
       --minLogLevelLocal)  export ACS_LOG_STDOUT=$2 ; shift ;;
-      -s)           NO_REDIRECTION=true ;;
-      --stdout)     NO_REDIRECTION=true ;;
-      -c)           CSVFILE=$2 ; shift ;;
-      --csv)        CSVFILE=$2 ; shift ;;
+      -n)               NO_REDIRECTION=true ;;
+      --noRedirection) 	NO_REDIRECTION=true ;;
+      -s)               NO_REPORT=true ;;
+      --skipReport) 	NO_REPORT=true ;;
+      -c)               CSVFILE=$2 ; shift ;;
+      --csv)            CSVFILE=$2 ; shift ;;
       --) break ;;
   esac
   shift
@@ -400,13 +410,13 @@ NUM_COMPONENTS=$2
 DELAY=$3
 
 # 'guesstimate' the amount of time we need to monitor the processes using the unix
-# sar command by a rough rule of thumb that 100,000 logs requires ~ 4 minutes (240 secs)
+# sar command by a rough rule of thumb that 100000 logs require ~ 100 secs
 debugPrint "NUM_LOGS was: $NUM_LOGS"
-EXTRA_WAIT_TIME=`expr \( $NUM_LOGS / 100000 \) \* 80`
+EXTRA_WAIT_TIME=`expr \( $NUM_LOGS / 1000 \)`
 debugPrint "EXTRA_WAIT_TIME was calculated as: $EXTRA_WAIT_TIME"
-if [ "$EXTRA_WAIT_TIME" -le "60" ] ;
+if [ "$EXTRA_WAIT_TIME" -le "40" ] ;
 then
-    EXTRA_WAIT_TIME=60
+    EXTRA_WAIT_TIME=40
 fi
 
 debugPrint "Extra wait time will be: $EXTRA_WAIT_TIME"
@@ -461,7 +471,7 @@ do
       debugPrint "publisherPid$i is: ${publisherPid[${i}]}"
       sleep 5
       setLogLevelLocal ${COMPONENT_LANGUAGE}Container$i $ACS_LOG_STDOUT
-      if [ "$CPU_LOAD" ] ; 
+      if [ ! $NO_REPORT ] ; 
       then 
     	  `sar -x ${publisherPid[${i}]} 1 9999 >& $ACS_TMP/$PUBLISHER_LOG_FILE$i.orig.log` &
     	  ./monitorProcess ${publisherPid[${i}]} 1 $ACS_TMP/$PUBLISHER_LOG_FILE-memory$i &
@@ -472,21 +482,21 @@ do
       if [ $NO_REDIRECTION ] ;
 	  then 
           # command is specified instead of login shell - make sure PATH settings are OK
-	  ssh -f $USER@$REMOTE_HOST ". ~/.bash_profile; acsStartContainer -m $MANAGER_REFERENCE -$COMPONENT_LANGUAGE ${COMPONENT_LANGUAGE}Container$i" 
+	  ssh -f $REMOTE_HOST ". ~/.bash_profile; acsStartContainer -m $MANAGER_REFERENCE -$COMPONENT_LANGUAGE ${COMPONENT_LANGUAGE}Container$i" 
       else
           # command is specified instead of login shell - make sure PATH settings are OK
-	  ssh -f $USER@$REMOTE_HOST ". ~/.bash_profile; acsStartContainer -m $MANAGER_REFERENCE -$COMPONENT_LANGUAGE ${COMPONENT_LANGUAGE}Container$i" \
+	  ssh -f $REMOTE_HOST ". ~/.bash_profile; acsStartContainer -m $MANAGER_REFERENCE -$COMPONENT_LANGUAGE ${COMPONENT_LANGUAGE}Container$i" \
 	      >& $ACS_TMP/${COMPONENT_LANGUAGE}Container$i.log
       fi
       debugPrint "waiting for remote container $i to start..."
       sleep 15
-      publisherPid[$i]=`ssh -f $USER@$REMOTE_HOST ps -ef | grep "${CONTAINER_GREP_STRING}$i"  | grep -v acsStartJava | grep -v bash \
+      publisherPid[$i]=`ssh -f $REMOTE_HOST ps -ef | grep "${CONTAINER_GREP_STRING}$i"  | grep -v acsStartJava | grep -v bash \
 	  | grep -v grep | gawk '{ print $2 }'`
       debugPrint "publisherPid$i is: ${publisherPid[${i}]}"
-      if [ "$CPU_LOAD" ] ; 
+      if [ ! $NO_REPORT ] ; 
       then 
-      	ssh -f $USER@$REMOTE_HOST "sar -x ${publisherPid[${i}]} 1 9999" >& $ACS_TMP/$PUBLISHER_LOG_FILE$i.orig.log &
-      	ssh -f $USER@$REMOTE_HOST ". ~/.bash_profile; remoteMonitorProcess ${publisherPid[${i}]} 1" >& $ACS_TMP/$PUBLISHER_LOG_FILE-memory$i &
+      	ssh -f $REMOTE_HOST "sar -x ${publisherPid[${i}]} 1 9999" >& $ACS_TMP/$PUBLISHER_LOG_FILE$i.orig.log &
+      	ssh -f $REMOTE_HOST ". ~/.bash_profile; remoteMonitorProcess ${publisherPid[${i}]} 1" >& $ACS_TMP/$PUBLISHER_LOG_FILE-memory$i &
       fi
   fi
   i=`expr $i + 1`
@@ -499,16 +509,17 @@ while [ -z "$logSvcPid" ] ; do
     logSvcPid=`ps -f | grep acsLogSvc | grep -v grep | gawk '{ print $2 }'`
 done
 debugPrint "logSvcPid is: $logSvcPid"
+
 while [ -z "$loggingServicePid" ] ; do
     loggingServicePid=`ps -f | grep loggingService | grep -v grep | gawk '{ print $2 }'`
 done
 debugPrint "loggingServicePid is: $loggingServicePid"
-if [ -z "$REMOTE_HOST" ] ; then
-    while [ -z "$loggingNotifyServicePid" ] ; do
+
+while [ -z "$loggingNotifyServicePid" ] ; do
 	loggingNotifyServicePid=`ps -f | grep Notify_Service | grep -v grep | grep LoggingNotify | gawk '{ print $2 }'`
-    done
-    debugPrint "loggingNotifyServicePid is: $loggingNotifyServicePid"
-fi
+done
+debugPrint "loggingNotifyServicePid is: $loggingNotifyServicePid"
+
 while [ -z "$loggingClientPid" ] ; do
     loggingClientPid=`ps -f | grep loggingClient  | grep -v grep | gawk '{ print $2 }'`
 done
@@ -517,18 +528,19 @@ done
 debugPrint "loggingClientPid is: $loggingClientPid"
 
 # monitor the relevant processes using the unix 'sar' command
-if [ "$CPU_LOAD" ] ; then
+if [ ! $NO_REPORT ] ; then
     debugPrint "sar -x $logSvcPid 1 9999 >& $ACS_TMP/$ACS_LOG_SVC_LOG_FILE.orig.log"
     sar -x $logSvcPid 1 9999 >& $ACS_TMP/$ACS_LOG_SVC_LOG_FILE.orig.log &
     ./monitorProcess $logSvcPid 1 $ACS_TMP/$ACS_LOG_SVC_LOG_FILE-memory &
+
     debugPrint "sar -x $loggingServicePid 1 9999 >& $ACS_TMP/$LOGGING_SERVICE_LOG_FILE.orig.log"
     sar -x $loggingServicePid 1 9999 >& $ACS_TMP/$LOGGING_SERVICE_LOG_FILE.orig.log &
     ./monitorProcess $loggingServicePid 1 $ACS_TMP/$LOGGING_SERVICE_LOG_FILE-memory  &
-    if [ -z "$REMOTE_HOST" ] ; then
+
 	debugPrint "sar -x $loggingNotifyServicePid 1 9999 >& $ACS_TMP/$LOGGING_NOTIFY_SERVICE_LOG_FILE.orig.log"
 	sar -x $loggingNotifyServicePid 1 9999 >& $ACS_TMP/$LOGGING_NOTIFY_SERVICE_LOG_FILE.orig.log &
 	./monitorProcess $loggingNotifyServicePid 1 $ACS_TMP/$LOGGING_NOTIFY_SERVICE_LOG_FILE-memory  &
-    fi
+
     debugPrint "sar -x $loggingClientPid 1 9999 >& $ACS_TMP/$LOGGING_CLIENT_LOG_FILE.orig.log"
     sar -x $loggingClientPid 1 9999 >& $ACS_TMP/$LOGGING_CLIENT_LOG_FILE.orig.log &
     ./monitorProcess $loggingClientPid 1 $ACS_TMP/$LOGGING_CLIENT_LOG_FILE-memory  &
@@ -544,7 +556,7 @@ if [ "$PROFILE_JLOG" ] ; then
     done
     debugPrint "jlogPid is: $jlogPid"
     sleep 5
-    if [ "$CPU_LOAD" ] ; then
+    if [ ! $NO_REPORT ] ; then
     	# start monitoring jlog process with 'sar' command
     	sar -x $jlogPid 1 9999 >& $ACS_TMP/$JLOG_LOG_FILE.orig.log &
     	./monitorProcess $jlogPid 1 $ACS_TMP/$JLOG_LOG_FILE-memory  &
@@ -555,7 +567,7 @@ fi
 echo " Resetting/starting chronometer 1"
 startChrono 1
 
-# start up the client which will send the appropriate number of logs
+# start up the client which will activate the components that will send the appropriate number of logs
 ClientJavaClass=LogPerformanceTestClient
 echo " Sending logs"
 acsStartJava -D NumLogs=$NUM_LOGS -D NumComponents=$NUM_COMPONENTS -D Delay=$DELAY -D ComponentName=$COMPONENT_NAME \
@@ -609,10 +621,16 @@ debugPrint "firstBatchOfLogs = $firstBatchOfLogs"
 # is not reliable.
 
 if [ $delay -ge $timeout ] ; then
-    debugPrint "Something is very wrong: we needed more than 30s to see the first log in all_logs.xml"
+    if [ $firstBatchOfLogs -ne 0 ] ; then
+    	debugPrint "Something is wrong: we needed more than ${timeout}s to see the first log in all_logs.xml"
+    else
+    	debugPrint "Something is very wrong: after ${timeout}s still no logs in all_logs.xml"
+    fi
 fi
 
-# wait until the most recently started background processes (acsStartJava) has completed.
+# Wait until the most recently started background process (acsStartJava ... LogPerformanceTestClient) 
+# has completed. Note that LogPerformanceTestClient polls the components to see when they are done
+# sending the logs, and when they are, this client will terminate.
 echo " Waiting for all logs to be sent..."
 wait $!
 ##echo " Resetting/starting chronometer 4"
@@ -639,9 +657,9 @@ delay=0
 # First look for the last log(s), then check later if no logs are lost
 while [ $delay -le $EXTRA_WAIT_TIME ] ; do
     nrLastLogs=`grep "msg: $lastMsgId]" $ACS_TMP/all_logs.xml | wc -l`
-    # Note that a grep|wc on all_logs.xml can take a few seconds if lots of logs are sent,
+    # Note that a grep|wc on all_logs.xml can take its time if lots of logs are sent,
     # and that duration is anyway proportional to the size of all_logs.xml.
-    # So don't assume that loop duration is determined by the "sleep 1" further on.
+    # So don't assume that loop duration is determined by the "sleep" further on.
     if [ "$nrLastLogs" -eq " $NUM_COMPONENTS" ] ; then
 	chrono2=`getChrono 2`
 	chrono4=`getChrono 4`
@@ -650,7 +668,7 @@ while [ $delay -le $EXTRA_WAIT_TIME ] ; do
     fi
     delay=`getChronoInt 4`
     #!#debugPrint "waiting since $delay s"
-    ##sleep 1
+    milliSleep 157
 done
 
 if [ $delay -le $EXTRA_WAIT_TIME ] ; then
@@ -694,8 +712,8 @@ killall -q monitorProcess >& $ACS_TMP/killallLocalMonitorProcess.log
 killall -q sar >& $ACS_TMP/killallLocalSar.log
 if [ ! -z "$REMOTE_HOST" ] 
 then
-    ssh -f $USER@$REMOTE_HOST ". ~/.bash_profile; killall -q remoteMonitorProcess" >& $ACS_TMP/killallMonitorProcess.log
-    ssh -f $USER@$REMOTE_HOST ". ~/.bash_profile; killall -q sar >& /dev/null" >& $ACS_TMP/killallSar.log
+    ssh -f $REMOTE_HOST ". ~/.bash_profile; killall -q remoteMonitorProcess" >& $ACS_TMP/killallMonitorProcess.log
+    ssh -f $REMOTE_HOST ". ~/.bash_profile; killall -q sar >& /dev/null" >& $ACS_TMP/killallSar.log
 fi
 echo ""
 
@@ -724,7 +742,7 @@ do
       acsStopContainer ${COMPONENT_LANGUAGE}Container$i >& $ACS_TMP/Stop${COMPONENT_LANGUAGE}Container$i.log
   else
       echo " Stopping Remote Container $i"
-      ssh -f $USER@$REMOTE_HOST -f ". ~/.bash_profile; acsStopContainer ${COMPONENT_LANGUAGE}Container$i" \
+      ssh -f $REMOTE_HOST ". ~/.bash_profile; acsStopContainer ${COMPONENT_LANGUAGE}Container$i" \
 	  >& $ACS_TMP/Stop${COMPONENT_LANGUAGE}Container$i.log
       debugPrint "waiting for remote container $i to stop..."
       sleep 15
@@ -739,7 +757,7 @@ acsutilTATEpilogue
 
 
 # prep the log files
-if [ "$CPU_LOAD" ] ;
+if [ ! $NO_REPORT ] ;
 then
 echo " Preparing the sar log files"
 	cat $ACS_TMP/$ACS_LOG_SVC_LOG_FILE.orig.log | grep -v -i average | grep -v -i linux \
