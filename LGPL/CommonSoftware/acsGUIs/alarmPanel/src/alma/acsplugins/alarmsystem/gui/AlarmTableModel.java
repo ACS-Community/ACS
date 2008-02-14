@@ -19,7 +19,7 @@
 
 /** 
  * @author  acaproni   
- * @version $Id: AlarmTableModel.java,v 1.11 2008/02/14 01:37:29 acaproni Exp $
+ * @version $Id: AlarmTableModel.java,v 1.12 2008/02/14 01:44:14 acaproni Exp $
  * @since    
  */
 
@@ -44,18 +44,21 @@ import java.util.Vector;
 public class AlarmTableModel extends AbstractTableModel implements AlarmSelectionListener {
 	
 	/**
-	 * The title of each column
+	 * The title of each column.
+	 * 
+	 * To change the initial order of the columns, change the order of the
+	 * declaration of this enumerated.
 	 * 
 	 * @author acaproni
 	 *
 	 */
 	public enum AlarmTableColumn {
 		TIME("Time"),
-		TRIPLET("Triplet"),
+		COMPONENT("Component"),
+		CODE("Code"),
 		PRIORITY("Priority"),
 		DESCRIPTION("Description"),
-		CAUSE("Cause"),
-		HOST("Host");
+		CAUSE("Cause");
 		
 		public final String title;
 		
@@ -124,48 +127,36 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 	 * @param columnIndex The col of the cell
 	 * @return The string to display in the cell
 	 */
-	public String getCellContent(int rowIndex, int columnIndex) {
+	public Object getCellContent(int rowIndex, int columnIndex) {
 		Alarm alarm;
 		synchronized (items) {
 			alarm = items.get(rowIndex);
 		}
 		
-		String ret="";
 		AlarmTableColumn col = AlarmTableColumn.values()[columnIndex];
 		switch (col) {
 		case TIME: {
-			// Timestamp
-			ret=dateFormat.format(alarm.getStatus().getSourceTimestamp());
-			break;
+			return dateFormat.format(alarm.getStatus().getSourceTimestamp());
 		}
-		case TRIPLET: {
-			// Triplet
-			ret=alarm.getAlarmId();
-			break;
+		case COMPONENT: {
+			return alarm.getTriplet().getFaultFamily();
+		}
+		case CODE: {
+			return alarm.getTriplet().getFaultCode();
 		}
 		case PRIORITY: {
-			// Priority
-			ret=alarm.getPriority().toString();
-			break;
+			return alarm.getPriority().toString();
 		}
 		case DESCRIPTION: {
-			// Description
-			ret=alarm.getProblemDescription();
-			break;
+			return alarm.getProblemDescription();
 		}
 		case CAUSE: {
-			ret=alarm.getCause();
-			break;
-		}
-		case HOST: {
-			ret="N/A";
-			break;
+			return alarm.getCause();
 		}
 		default: {
 				return "";
 			}
 		}
-		return ret;
 	}
 
 	/**
