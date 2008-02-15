@@ -22,7 +22,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsdaemon.idl,v 1.4 2008/02/12 22:36:38 agrimstrup Exp $"
+* "@(#) $Id: acsdaemon.idl,v 1.5 2008/02/15 17:25:10 hsommer Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -32,9 +32,9 @@
 */
 
 #include <acscommon.idl>
-#include <baci.idl>
-#include <acsdaemonErrType.idl>
+#include <acscomponent.idl>
 #include <ACSErrTypeCommon.idl>
+#include <acsdaemonErrType.idl>
 
 #pragma prefix "alma"
 
@@ -44,21 +44,24 @@
 
 module acsdaemon 
 {
-    /** @interface Callback
-     *  Interface Callback is used to signal operation completions from the daemon processes
-     *  to the clients.
-     */
-        interface DaemonCallback
+	/** @interface Callback
+	 *  Interface Callback is used to signal operation completions from the daemon processes
+	 *  to the clients. 
+	 * Note that this interface is very similar to the CBvoid interface defined in baci.idl. Here we currently define our own interface,
+	 * mainly to avoid the unnecessary CBDescOut parameter in the callback methods, but also because the CBxxx interfaces
+	 * are mainly associated with baci. This should perhaps be changed once ACS has more general callback interfaces.
+	 */
+	interface DaemonCallback : ACS::OffShoot
 	{
-        /**
-	 * Report the result of the operation
-	 */
-	void done(in ACSErr::Completion comp);
+		/**
+		 * Report the result of the operation
+		 */
+		void done(in ACSErr::Completion comp);
 
-	/**
-	 * Report the progress of the operation
-	 */
-	void working(in ACSErr::Completion comp);
+		/**
+		 * Report the progress of the operation
+		 */
+		void working(in ACSErr::Completion comp);
 	};
 
 	/** @interface ContainerDaemon
@@ -109,7 +112,8 @@ module acsdaemon
 	 * <br><hr>
 	 * @endhtmlonly
 	 */
-	void start_acs( in DaemonCallback callback,
+	void start_acs( 
+			in DaemonCallback callback,
 			in short instance_number, 
 			in string flags)
 				raises (ACSErrTypeCommon::BadParameterEx);
@@ -123,9 +127,10 @@ module acsdaemon
 	 * <br><hr>
 	 * @endhtmlonly
 	 */
-	void stop_acs( in DaemonCallback callback,
-		       in short instance_number, 
-		       in string flags)
+	void stop_acs(
+			in DaemonCallback callback,
+			in short instance_number, 
+			in string flags)
 				raises (ACSErrTypeCommon::BadParameterEx);
 
 	/** 
