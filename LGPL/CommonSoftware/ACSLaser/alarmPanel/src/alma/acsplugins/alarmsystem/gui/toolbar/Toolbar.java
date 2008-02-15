@@ -74,7 +74,6 @@ public class Toolbar extends JPanel implements ActionListener {
 		public Component getListCellRendererComponent(JList list, Object value,
 				int index, boolean isSelected, boolean cellHasFocus) {
 			if (index==-1) {
-				System.out.println("Returning -1 "+(ComboBoxValues)value+" selected: "+isSelected);
 				ComboBoxValues val = (ComboBoxValues)value;
 				selectedLabel.setText(val.title);
 				selectedLabel.setBackground(val.normalRenderer.getBackground());
