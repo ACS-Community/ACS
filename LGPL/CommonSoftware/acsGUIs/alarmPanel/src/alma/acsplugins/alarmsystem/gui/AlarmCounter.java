@@ -53,7 +53,7 @@ public class AlarmCounter {
 	 * 
 	 * @return The value of the counter
 	 */
-	public long getCount() {
+	public int getCount() {
 		return count;
 	}
 	
