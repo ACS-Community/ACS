@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.12 2008/02/12 22:53:13 agrimstrup Exp $"
+# "@(#) $Id: Makefile,v 1.13 2008/02/15 16:42:26 agrimstrup Exp $"
 #
 # Makefile of ........
 #
@@ -55,7 +55,7 @@ acsdaemonStopContainer_LIBS      =	baciStubs acscomponentStubs acsdaemonErrType 
 acsservicesdaemon_OBJECTS   =	acsservicesdaemon acsServicesHandlerImpl
 acsservicesdaemon_LIBS      =	baciStubs acscomponentStubs acsdaemonErrType acsdaemonStubs acsThread
 
-acsdaemonStartAcs_OBJECTS   =	acsdaemonStartAcs acsDaemonCallbackImpl
+acsdaemonStartAcs_OBJECTS   =	acsdaemonStartAcs
 acsdaemonStartAcs_LIBS      =	baciStubs acscomponentStubs acsdaemonErrType acsdaemonStubs
 
 
