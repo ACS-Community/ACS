@@ -26,13 +26,13 @@ package alma.acsplugins.alarmsystem.gui;
  */
 public class AlarmCounter {
 	
-	private volatile long count=0;
+	private volatile int count=0;
 	
 	/**
 	 * Increase the counter
 	 */
 	public void incCounter() {
-		if (count==Long.MAX_VALUE) {
+		if (count==Integer.MAX_VALUE) {
 			count=1;
 			return;
 		}
