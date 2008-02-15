@@ -19,7 +19,7 @@
 
 /** 
  * @author  aaproni
- * @version $Id: AlarmTable.java,v 1.9 2008/02/15 23:08:39 acaproni Exp $
+ * @version $Id: AlarmTable.java,v 1.10 2008/02/15 23:21:53 acaproni Exp $
  * @since    
  */
 
@@ -130,6 +130,9 @@ public class AlarmTable extends JTable implements ActionListener {
 	// The alarm adapter that recives events from the mouse
 	private AlarmTableMouseAdapter mouseAdapter = new AlarmTableMouseAdapter();
 	
+	// The clipboard
+	private ClipboardHelper clipboard = new ClipboardHelper();
+	
 	// The popup menu shown when the user presses the right mouse button over a row
 	private JPopupMenu popupM = new JPopupMenu("Alarm");
 	private JMenuItem ackMI = new JMenuItem("Acknowledge");
@@ -226,6 +229,8 @@ public class AlarmTable extends JTable implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource()==saveMI) {
 			saveAlarm(mouseAdapter.selectedAlarm);
+		} else if (e.getSource()==clipMI) {
+			clipboard.setClipboardContents(mouseAdapter.selectedAlarm.toString());
 		}
 	}
 	
