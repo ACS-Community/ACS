@@ -19,7 +19,7 @@
 
 /** 
  * @author  acaproni   
- * @version $Id: AlarmPanel.java,v 1.8 2008/02/15 20:16:55 acaproni Exp $
+ * @version $Id: AlarmPanel.java,v 1.9 2008/02/15 20:54:10 acaproni Exp $
  * @since    
  */
 
@@ -117,14 +117,14 @@ public class AlarmPanel extends JPanel implements IPanel {
 	 * @see IpauseResume
 	 */
 	public void pause() throws Exception {
-		
+		statusLine.pause();
 	}
 	
 	/**
 	 * @see IPauseResume
 	 */
 	public void resume() throws Exception {
-		
+		statusLine.resume();
 	}
 	
 	/**
@@ -140,6 +140,7 @@ public class AlarmPanel extends JPanel implements IPanel {
 				try {
 					categoryClient = new CategoryClient(contSvc);
 					categoryClient.connect((AlarmSelectionListener)model);
+					statusLine.start();
 				} catch (Throwable t) {
 					System.err.println("Error connecting CategoryClient: "+t.getMessage());
 					t.printStackTrace(System.err);
@@ -159,6 +160,7 @@ public class AlarmPanel extends JPanel implements IPanel {
 		class StopAlarmPanel extends Thread {
 			public void run() {
 				try {
+					statusLine.stop();
 					categoryClient.close();
 				} catch (Throwable t) {
 					System.err.println("Error closinging CategoryClient: "+t.getMessage());
@@ -169,8 +171,7 @@ public class AlarmPanel extends JPanel implements IPanel {
 		Thread t = new StopAlarmPanel();
 		t.setName("StopAlarmPanel");
 		t.setDaemon(true);
-		t.start();
-		
+		t.start();	
 	}
 	
 	/**
