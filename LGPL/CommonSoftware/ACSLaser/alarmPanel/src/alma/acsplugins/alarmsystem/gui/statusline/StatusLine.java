@@ -18,8 +18,15 @@
  */
 package alma.acsplugins.alarmsystem.gui.statusline;
 
+import java.awt.FlowLayout;
+
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
+
+import alma.acsplugins.alarmsystem.gui.AlarmGUIType;
+import alma.acsplugins.alarmsystem.gui.AlarmTableModel;
+import alma.acsplugins.alarmsystem.gui.AlarmsCounter;
 
 /**
  * The status line showing info to the user
@@ -28,6 +35,9 @@ import javax.swing.JPanel;
  *
  */
 public class StatusLine extends JPanel {
+	
+	// the widgets to show the numbers of alarms in the table 
+	private JTextField[] valuesLbl = new JTextField[AlarmsCounter.values().length-1];
 
 	/**
 	 * Constructor
@@ -41,5 +51,21 @@ public class StatusLine extends JPanel {
 	 */
 	private void initialize() {
 		setBorder(BorderFactory.createLoweredBevelBorder());
+		((FlowLayout)getLayout()).setAlignment(FlowLayout.LEFT);
+		
+		// The num of cols in each text field depends on the MAX_ALARMS that
+		// the mode shows in the table
+		int len = Integer.valueOf(AlarmTableModel.MAX_ALARMS).toString().length()+2;
+		// Build the text fields
+		
+		for (int t=0; t<valuesLbl.length; t++) {
+			valuesLbl[t]= new JTextField(len);
+			valuesLbl[t].setHorizontalAlignment(JTextField.CENTER);
+			valuesLbl[t].setForeground(AlarmGUIType.values()[t].foreg);
+			valuesLbl[t].setBackground(AlarmGUIType.values()[t].backg);
+			
+			// Add the widget
+			add(valuesLbl[t]);
+		}
 	}
 }
