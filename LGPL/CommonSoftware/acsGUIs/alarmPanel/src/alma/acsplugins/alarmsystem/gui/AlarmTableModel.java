@@ -19,7 +19,7 @@
 
 /** 
  * @author  acaproni   
- * @version $Id: AlarmTableModel.java,v 1.16 2008/02/15 17:38:14 acaproni Exp $
+ * @version $Id: AlarmTableModel.java,v 1.17 2008/02/15 18:28:00 acaproni Exp $
  * @since    
  */
 
@@ -35,6 +35,7 @@ import cern.laser.client.services.selection.AlarmSelectionListener;
 import cern.laser.client.services.selection.LaserSelectionException;
 
 import java.text.SimpleDateFormat;
+import java.util.HashMap;
 import java.util.Vector;
 
 /** 
@@ -84,7 +85,21 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 			
 	};
 	
+	// The date format
 	private SimpleDateFormat dateFormat = new IsoDateFormat();
+	
+	// The counter for the alarms
+	private HashMap<AlarmGUIType, AlarmCounter> counters = new HashMap<AlarmGUIType, AlarmCounter>();
+	
+	/**
+	 * Constructor
+	 */
+	public AlarmTableModel() {
+		// Put each alarm type in the has map of the counters
+		for (AlarmGUIType alarmType: AlarmGUIType.values()) {
+			counters.put(alarmType, new AlarmCounter());
+		}
+	}
 	
 	/**
 	 * Add an alarm in the table.
@@ -97,11 +112,7 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 		synchronized (items) {
 			if (items.size()>MAX_ALARMS && items.indexOf(alarm)>=0) {
 				Alarm removedAlarm = items.remove(items.size()-1); // Remove the last one
-				if (removedAlarm.getStatus().isActive()) {
-					AlarmsCounter.decActiveAlarm(removedAlarm.getPriority());
-				} else {
-					AlarmsCounter.INACTIVE.decCounter();
-				}
+				counters.get(AlarmGUIType.fromAlarm(removedAlarm)).decCounter();
 			}
 			int pos =items.indexOf(alarm); 
 			if (pos>=0) {
@@ -111,7 +122,6 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 			}
 		}
 		fireTableDataChanged();
-		AlarmsCounter.dumpCounters();
 	}
 	
 	/**
@@ -125,8 +135,8 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 			// do not add inactive alarms
 			return;
 		}
-		items.add(0,alarm); 
-		AlarmsCounter.incActiveAlarm(alarm.getPriority());
+		items.add(0,alarm);
+		counters.get(AlarmGUIType.fromAlarm(alarm)).incCounter();
 	}
 	
 	/**
@@ -162,38 +172,34 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 		if (alarm.getPriority()>=priority) {
 			// Remove from the table
 			items.remove(alarm);
-			AlarmsCounter.INACTIVE.decCounter();
-			AlarmsCounter.AUTOACKNOWLEDGED.incCounter();
+			counters.get(AlarmGUIType.fromAlarm(alarm)).decCounter();
 		}
 	}
 	
 	/**
 	 * Replace an alarm already in the table
 	 * 
-	 * @param alarm The alarm to put in the table
+	 * @param newAlarm The alarm to put in the table
 	 * @param pos The position of the alarm to be replaced
 	 */
-	private void replaceAlarm(Alarm alarm, int pos) {
+	private void replaceAlarm(Alarm newAlarm, int pos) {
 		if (pos<0 || pos>=items.size()) {
 			throw new IllegalArgumentException("Invalid position for replacement");
 		}
-		if (alarm==null) {
+		if (newAlarm==null) {
 			throw new IllegalArgumentException("The alarm can't be null");
 		}
-		boolean oldAlarmState = items.get(pos).getStatus().isActive();
-		items.setElementAt(alarm,items.indexOf(alarm));
-		if (oldAlarmState==alarm.getStatus().isActive()) {
+		Alarm oldAlarm = items.get(pos);
+		items.setElementAt(newAlarm,items.indexOf(newAlarm));
+		if (oldAlarm.getStatus().isActive()==newAlarm.getStatus().isActive()) {
 			return;
 		}
-		if (alarm.getStatus().isActive()) {
-			// The alarm was inactive and now is again ACTIVE
-			AlarmsCounter.INACTIVE.decCounter();
-			AlarmsCounter.incActiveAlarm(alarm.getPriority());
-		} else {
+		// Update the counters
+		counters.get(AlarmGUIType.fromAlarm(oldAlarm)).decCounter();
+		counters.get(AlarmGUIType.fromAlarm(newAlarm)).incCounter();
+		if (!newAlarm.getStatus().isActive()) {
 			// The alarm became INACTIVE
-			AlarmsCounter.INACTIVE.incCounter();
-			AlarmsCounter.decActiveAlarm(alarm.getPriority());
-			removeAcknowledged(alarm);
+			removeAcknowledged(newAlarm);
 		}
 	}
 
