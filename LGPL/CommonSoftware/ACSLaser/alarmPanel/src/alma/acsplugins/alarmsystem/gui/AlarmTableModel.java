@@ -19,7 +19,7 @@
 
 /** 
  * @author  acaproni   
- * @version $Id: AlarmTableModel.java,v 1.18 2008/02/15 18:33:37 acaproni Exp $
+ * @version $Id: AlarmTableModel.java,v 1.19 2008/02/15 23:50:08 acaproni Exp $
  * @since    
  */
 
@@ -72,7 +72,7 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 		public final String title;
 		
 		// If true the column is shown at startup
-		public boolean visible;
+		public boolean visibleAtStartup;
 		
 		/**
 		 * Constructor: set the final properties
@@ -80,7 +80,7 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 		 */
 		private AlarmTableColumn(String title, boolean initiallyVisible) {
 			this.title=title;
-			this.visible=initiallyVisible;
+			this.visibleAtStartup=initiallyVisible;
 		}
 			
 	};
