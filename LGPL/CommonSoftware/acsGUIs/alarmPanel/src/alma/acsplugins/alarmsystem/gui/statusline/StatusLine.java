@@ -20,10 +20,13 @@ package alma.acsplugins.alarmsystem.gui.statusline;
 
 import java.awt.Component;
 import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.Timer;
 
 import alma.acsplugins.alarmsystem.gui.AlarmCounter;
 import alma.acsplugins.alarmsystem.gui.AlarmGUIType;
@@ -35,7 +38,7 @@ import alma.acsplugins.alarmsystem.gui.AlarmTableModel;
  * @author acaproni
  *
  */
-public class StatusLine extends JPanel {
+public class StatusLine extends JPanel implements ActionListener {
 	
 	/**
 	 * The counter for each type of alarm
@@ -64,7 +67,7 @@ public class StatusLine extends JPanel {
 			counter=alarmCounter;
 			// The number of cols in each text field depends on the MAX_ALARMS that
 			// the mode shows in the table
-			int len = Integer.valueOf(AlarmTableModel.MAX_ALARMS).toString().length()+2;
+			int len = Integer.valueOf(AlarmTableModel.MAX_ALARMS).toString().length();
 			
 			widget= new JTextField(len);
 			widget.setHorizontalAlignment(JTextField.CENTER);
@@ -95,6 +98,10 @@ public class StatusLine extends JPanel {
 	
 	// The table model
 	private final AlarmTableModel tableModel;
+	
+	// The time to refresh the values shown by the StatusLine
+	private Timer timer=null;
+	private static final int TIMER_INTERVAL=2000;
 	/**
 	 * Constructor
 	 */
@@ -113,9 +120,7 @@ public class StatusLine extends JPanel {
 		setBorder(BorderFactory.createLoweredBevelBorder());
 		((FlowLayout)getLayout()).setAlignment(FlowLayout.LEFT);
 		
-		
-		// Build the text fields
-		
+		// Build the text fields	
 		for (int t=0; t<counters.length; t++) {
 			counters[t]=new Counter(AlarmGUIType.values()[t],tableModel.getAlarmCounter(AlarmGUIType.values()[t]));
 			
@@ -123,4 +128,53 @@ public class StatusLine extends JPanel {
 			add(counters[t].getComponent());
 		}
 	}
+	
+	/** 
+	 * Start the thread to update values
+	 */
+	public void start() {
+		if (timer!=null) {
+			throw new IllegalStateException("Already started");
+		}
+		timer = new Timer(TIMER_INTERVAL, this);
+		timer.setRepeats(true);
+		timer.addActionListener(this);
+		timer.start();
+	}
+	
+	/** 
+	 * Start the thread to update values
+	 */
+	public void stop() {
+		timer.stop();
+		timer.removeActionListener(this);
+		timer=null;
+	}
+	
+	/** 
+	 * Pause the thread to update values
+	 */
+	public void pause() {
+		timer.stop();
+	}
+	
+	/** 
+	 * Resume the thread to update values
+	 */
+	public void resume() {
+		timer.start();
+	}
+
+	/**
+	 * @see ActionListener
+	 */
+	public void actionPerformed(ActionEvent e) {
+		if (e.getSource()==timer) {
+			for (Counter cnt: counters) {
+				cnt.update();
+			}
+		}
+	}
+	
+	
 }
