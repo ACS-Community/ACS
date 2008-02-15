@@ -19,7 +19,7 @@
 
 /** 
  * @author  acaproni   
- * @version $Id: AlarmTableModel.java,v 1.17 2008/02/15 18:28:00 acaproni Exp $
+ * @version $Id: AlarmTableModel.java,v 1.18 2008/02/15 18:33:37 acaproni Exp $
  * @since    
  */
 
@@ -333,5 +333,22 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 			}
 			return items.get(row);
 		}
-	}	
+	}
+	
+	/**
+	 * Return the counter for the given alarm type
+	 * 
+	 * @param type The type of the alarm
+	 * @return The counter for the alarm type
+	 */
+	public AlarmCounter getAlarmCounter(AlarmGUIType type) {
+		if (type==null) {
+			throw new IllegalArgumentException("The alarm type can't be null");
+		}
+		AlarmCounter ret = counters.get(type);
+		if (ret==null) {
+			throw new IllegalStateException("A counter for the type "+type+"does not exist");
+		}
+		return ret;
+	}
 }
