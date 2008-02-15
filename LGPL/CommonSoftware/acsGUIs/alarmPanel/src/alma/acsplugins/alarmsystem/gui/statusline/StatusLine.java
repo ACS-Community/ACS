@@ -51,13 +51,17 @@ public class StatusLine extends JPanel {
 		private final AlarmGUIType alarmType;
 		
 		// The counter to read the number shown by the widget
-		private final AlarmCounter counter=null;
+		private final AlarmCounter counter;
 		
-		public Counter(AlarmGUIType type) {
+		public Counter(AlarmGUIType type, AlarmCounter alarmCounter) {
 			if (type==null) {
 				throw new IllegalArgumentException("The type can't be null");
 			}
+			if (alarmCounter==null) {
+				throw new IllegalArgumentException("The AlarmCountercan't be null");
+			}
 			alarmType=type;
+			counter=alarmCounter;
 			// The number of cols in each text field depends on the MAX_ALARMS that
 			// the mode shows in the table
 			int len = Integer.valueOf(AlarmTableModel.MAX_ALARMS).toString().length()+2;
@@ -77,14 +81,28 @@ public class StatusLine extends JPanel {
 		public Component getComponent() {
 			return widget;
 		}
+		
+		/**
+		 * Update the value shown in the widget
+		 */
+		public void update() {
+			widget.setText(Integer.valueOf(counter.getCount()).toString());
+		}
 	}
 	
 	// The counters showing the number of alarms
 	private Counter[] counters = new Counter[AlarmGUIType.values().length];
+	
+	// The table model
+	private final AlarmTableModel tableModel;
 	/**
 	 * Constructor
 	 */
-	public StatusLine() {
+	public StatusLine(AlarmTableModel model) {
+		if (model==null) {
+			throw new IllegalArgumentException("The AlarmTableModel can't be null");
+		}
+		tableModel=model;
 		initialize();
 	}
 	
@@ -99,7 +117,7 @@ public class StatusLine extends JPanel {
 		// Build the text fields
 		
 		for (int t=0; t<counters.length; t++) {
-			counters[t]=new Counter(AlarmGUIType.values()[t]);
+			counters[t]=new Counter(AlarmGUIType.values()[t],tableModel.getAlarmCounter(AlarmGUIType.values()[t]));
 			
 			// Add the widget
 			add(counters[t].getComponent());

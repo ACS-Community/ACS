@@ -19,7 +19,7 @@
 
 /** 
  * @author  acaproni   
- * @version $Id: AlarmPanel.java,v 1.7 2008/02/14 23:30:59 acaproni Exp $
+ * @version $Id: AlarmPanel.java,v 1.8 2008/02/15 20:16:55 acaproni Exp $
  * @since    
  */
 
@@ -68,7 +68,7 @@ public class AlarmPanel extends JPanel implements IPanel {
     private Toolbar toolbar;
     
     // The status line
-    private StatusLine statusLine = new StatusLine();
+    private StatusLine statusLine = new StatusLine(model);
 	
 	/**
 	 * Constructor 
@@ -135,15 +135,42 @@ public class AlarmPanel extends JPanel implements IPanel {
 		if (contSvc==null) {
 			throw new Exception("PluginContainerServices not set");
 		}
-		categoryClient = new CategoryClient(contSvc);
-		categoryClient.connect((AlarmSelectionListener)model);
+		class StartAlarmPanel extends Thread {
+			public void run() {
+				try {
+					categoryClient = new CategoryClient(contSvc);
+					categoryClient.connect((AlarmSelectionListener)model);
+				} catch (Throwable t) {
+					System.err.println("Error connecting CategoryClient: "+t.getMessage());
+					t.printStackTrace(System.err);
+				}
+			}
+		}
+		Thread t = new StartAlarmPanel();
+		t.setName("StartAlarmPanel");
+		t.setDaemon(true);
+		t.start();
 	}
 	
 	/**
 	 * @see SubsystemPlugin
 	 */
 	public void stop() throws Exception {
-		categoryClient.close();
+		class StopAlarmPanel extends Thread {
+			public void run() {
+				try {
+					categoryClient.close();
+				} catch (Throwable t) {
+					System.err.println("Error closinging CategoryClient: "+t.getMessage());
+					t.printStackTrace(System.err);
+				}
+			}
+		}
+		Thread t = new StopAlarmPanel();
+		t.setName("StopAlarmPanel");
+		t.setDaemon(true);
+		t.start();
+		
 	}
 	
 	/**
