@@ -19,7 +19,7 @@
 
 /** 
  * @author  aaproni
- * @version $Id: AlarmTable.java,v 1.8 2008/02/15 22:21:22 acaproni Exp $
+ * @version $Id: AlarmTable.java,v 1.9 2008/02/15 23:08:39 acaproni Exp $
  * @since    
  */
 
@@ -33,11 +33,18 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
+import javax.swing.JFileChooser;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.JTable;
 import javax.swing.JComponent;
+import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.RowSorterListener;
 import javax.swing.table.DefaultTableColumnModel;
@@ -47,6 +54,7 @@ import javax.swing.table.TableModel;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableRowSorter;
 
+import alma.acs.util.IsoDateFormat;
 import alma.acsplugins.alarmsystem.gui.AlarmTableModel.AlarmTableColumn;
 
 import cern.laser.client.data.Alarm;
@@ -59,6 +67,11 @@ import cern.laser.client.data.Alarm;
 public class AlarmTable extends JTable implements ActionListener {
 	
 	private class AlarmTableMouseAdapter extends MouseAdapter {
+		
+		// The last selected alarm
+		//
+		// It is set when the user presses over a row (i,e. selects an alarm)
+		public Alarm selectedAlarm;
 		/**
 		 * @see MouseListener
 		 */
@@ -90,9 +103,18 @@ public class AlarmTable extends JTable implements ActionListener {
 				return;
 			}
 			int row=rowAtPoint(new Point(e.getX(),+e.getY()));
-			Alarm alarm = AlarmTable.this.model.getRowAlarm(getRowSorter().convertRowIndexToModel(row));
-			ackMI.setEnabled(!alarm.getStatus().isActive());
-			popupM.show(AlarmTable.this,e.getX(),e.getY());
+			selectedAlarm = AlarmTable.this.model.getRowAlarm(getRowSorter().convertRowIndexToModel(row));
+			class ShowPopup extends Thread {
+				MouseEvent e;
+				public ShowPopup(MouseEvent e) {
+					this.e=e;
+				}
+				public void run() {
+					ackMI.setEnabled(!selectedAlarm.getStatus().isActive());
+					popupM.show(AlarmTable.this,e.getX(),e.getY());
+				}
+			}
+			SwingUtilities.invokeLater(new ShowPopup(e));	
 		}
 	}
 	
@@ -104,6 +126,9 @@ public class AlarmTable extends JTable implements ActionListener {
 	
 	// The cols of the table
 	private TableColumn[] columns;
+	
+	// The alarm adapter that recives events from the mouse
+	private AlarmTableMouseAdapter mouseAdapter = new AlarmTableMouseAdapter();
 	
 	// The popup menu shown when the user presses the right mouse button over a row
 	private JPopupMenu popupM = new JPopupMenu("Alarm");
@@ -147,7 +172,7 @@ public class AlarmTable extends JTable implements ActionListener {
 				colModel.removeColumn(columns[col.ordinal()]);
 			} 
 		}
-		addMouseListener(new AlarmTableMouseAdapter());
+		addMouseListener(mouseAdapter);
 		
 		buildPopupMenu();
 	}
@@ -199,9 +224,39 @@ public class AlarmTable extends JTable implements ActionListener {
 	 * @see ActionListener
 	 */
 	public void actionPerformed(ActionEvent e) {
-		System.out.println("Event: "+e.getSource());
-		
+		if (e.getSource()==saveMI) {
+			saveAlarm(mouseAdapter.selectedAlarm);
+		}
 	}
 	
-	
+	/**
+	 * Save the alarm in a file
+	 * 
+	 * @param The alarm to save in a plain text file
+	 */
+	public void saveAlarm(Alarm alarm) {
+		// Get the user dir property
+		JFileChooser fileChooser = new JFileChooser();
+		if (fileChooser.showSaveDialog(this)!=JFileChooser.APPROVE_OPTION) {
+			return;
+		}
+		// Build the text to write
+		SimpleDateFormat dateFormat = new IsoDateFormat();
+		StringBuilder str = new StringBuilder(alarm.toString());
+		str.append("\n\n");
+		str.append("Saved at ");
+		str.append(dateFormat.format(new Date(System.currentTimeMillis())));
+		str.append("\n\n");
+		// Save the file
+		File outF = fileChooser.getSelectedFile();
+		FileOutputStream fOutS;
+		try {
+			fOutS = new FileOutputStream(outF,false);
+			fOutS.write(str.toString().getBytes());
+			fOutS.flush();
+			fOutS.close();
+		} catch (Exception e) {
+			JOptionPane.showInternalMessageDialog(this, e.getMessage(), "Error saving", JOptionPane.ERROR_MESSAGE);
+		}
+	}
 }
