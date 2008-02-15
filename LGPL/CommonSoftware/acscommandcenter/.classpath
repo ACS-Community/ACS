@@ -18,7 +18,6 @@
 	<classpathentry kind="var" path="ACSROOT/lib/cdbDAL.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/endorsed/xercesImpl.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/jACSCommon.jar"/>
-	<classpathentry kind="var" path="ACSROOT/lib/concurrent.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/activation.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/prevayler-1.02.001.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/maci.jar"/>
@@ -29,7 +28,6 @@
 	<classpathentry kind="var" path="ACSROOT/lib/castor.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/commons-logging.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/cosyframework-gui.jar"/>
-	<classpathentry kind="var" path="ACSROOT/lib/backport-util-concurrent.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/jACSUtil.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/systementities.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/jcont.jar" sourcepath="ACSROOT/lib/jcont.jar"/>
@@ -40,5 +38,6 @@
 	<classpathentry kind="var" path="ACSROOT/lib/acsdaemon.jar" sourcepath="/ACSROOT/lib/acsdaemon.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acsdaemonErrType.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/ACSErrTypeCommon.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acsContainerServices.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
