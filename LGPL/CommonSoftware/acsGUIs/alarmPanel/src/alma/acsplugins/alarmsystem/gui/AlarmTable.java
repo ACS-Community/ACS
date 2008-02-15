@@ -19,7 +19,7 @@
 
 /** 
  * @author  aaproni
- * @version $Id: AlarmTable.java,v 1.6 2008/02/14 02:31:40 acaproni Exp $
+ * @version $Id: AlarmTable.java,v 1.7 2008/02/15 17:38:14 acaproni Exp $
  * @since    
  */
 
@@ -92,7 +92,7 @@ public class AlarmTable extends JTable {
 			int vColIndex) {
 		Component c = super.prepareRenderer(renderer, rowIndex, vColIndex);
 		Alarm alarm = model.getRowAlarm(sorter.convertRowIndexToModel(rowIndex));
-		colorizeCell(c, alarm.getPriority(), alarm.getStatus().isActive());
+		colorizeCell(c, alarm);
 	
 		if (c instanceof JComponent) {
 			JComponent jc = (JComponent) c;
@@ -103,20 +103,14 @@ public class AlarmTable extends JTable {
 	
 	/**
 	 * Set the background and the foreground of the component depending
-	 * on the priority and the state
+	 * on the priority and the state of the passed alarm
 	 * 
 	 * @param c The component to color
-	 * @param priority The priority to set the color
-	 * @param active The state active/inactive to set the color
+	 * @param priority The alarm to set the color
 	 */
-	private void colorizeCell(Component c, int priority, boolean active) {
-		if (active) {
-			CellColor cellColor = CellColor.fromPriority(priority);
-			c.setForeground(cellColor.foreg);
-			c.setBackground(cellColor.backg);
-		} else {
-			c.setForeground(CellColor.INACTIVE.foreg);
-			c.setBackground(CellColor.INACTIVE.backg);
-		}
+	private void colorizeCell(Component c, Alarm alarm ) {
+		AlarmGUIType alarmType = AlarmGUIType.fromAlarm(alarm);
+		c.setForeground(alarmType.foreg);
+		c.setBackground(alarmType.backg);
 	}
 }

@@ -19,7 +19,7 @@
 
 /** 
  * @author  acaproni   
- * @version $Id: AlarmTableModel.java,v 1.15 2008/02/14 23:42:34 acaproni Exp $
+ * @version $Id: AlarmTableModel.java,v 1.16 2008/02/15 17:38:14 acaproni Exp $
  * @since    
  */
 
@@ -210,7 +210,7 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 	 * When the max has been reach, the oldest alarm is removed 
 	 * before adding a new one
 	 */
-	private static final int MAX_ALARMS=10000;
+	public static final int MAX_ALARMS=10000;
 	
 	// The alarms in the table
 	private Vector<Alarm> items = new Vector<Alarm>();

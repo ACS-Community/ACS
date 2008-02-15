@@ -35,8 +35,8 @@ import javax.swing.ListCellRenderer;
 import javax.swing.SwingConstants;
 import javax.swing.border.EtchedBorder;
 
+import alma.acsplugins.alarmsystem.gui.AlarmGUIType;
 import alma.acsplugins.alarmsystem.gui.AlarmTableModel;
-import alma.acsplugins.alarmsystem.gui.CellColor;
 
 /**
  * The toolbar for the alarm panel
@@ -101,10 +101,10 @@ public class Toolbar extends JPanel implements ActionListener {
 	 *
 	 */
 	public enum ComboBoxValues {
-		NONE("None",CellColor.INACTIVE),
-		PRIORITY3("Priority 3",CellColor.PRI_3),
-		PRIORITY2("Priority 2",CellColor.PRI_2),
-		PRIORITY1("Priority 1",CellColor.PRI_1);
+		NONE("None",AlarmGUIType.INACTIVE),
+		PRIORITY3("Priority 3",AlarmGUIType.PRIORITY_3),
+		PRIORITY2("Priority 2",AlarmGUIType.PRIORITY_2),
+		PRIORITY1("Priority 1",AlarmGUIType.PRIORITY_1);
 		
 		public final String title;
 		public final JLabel normalRenderer;
@@ -122,7 +122,7 @@ public class Toolbar extends JPanel implements ActionListener {
 		 * @param title
 		 * @param color
 		 */
-		private ComboBoxValues(String tit, CellColor color) {
+		private ComboBoxValues(String tit, AlarmGUIType color) {
 			title=tit;
 			normalRenderer = new JLabel(tit);
 			normalRenderer.setBackground(color.backg);
