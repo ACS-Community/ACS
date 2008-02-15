@@ -12,24 +12,25 @@ import java.util.Properties;
 import java.util.Vector;
 import java.util.logging.Logger;
 
-import alma.ACSErrTypeCommon.BadParameterEx;
+import de.mud.ssh.SshWrapper;
+
+import alma.ACSErr.Completion;
 import alma.acs.commandcenter.meta.Firestarter;
 import alma.acs.commandcenter.meta.Firestarter.OrbInitException;
 import alma.acs.commandcenter.trace.Flow;
 import alma.acs.commandcenter.util.MiscUtils;
 import alma.acs.commandcenter.util.PreparedString;
 import alma.acs.commandcenter.util.StringRingBuffer;
+import alma.acs.container.ContainerServicesBase;
 import alma.acs.util.ACSPorts;
 import alma.acs.util.AcsLocations;
 import alma.acsdaemon.ContainerDaemon;
 import alma.acsdaemon.ContainerDaemonHelper;
+import alma.acsdaemon.DaemonCallback;
+import alma.acsdaemon.DaemonCallbackHelper;
+import alma.acsdaemon.DaemonCallbackPOA;
 import alma.acsdaemon.ServicesDaemon;
 import alma.acsdaemon.ServicesDaemonHelper;
-import alma.acsdaemonErrType.FailedToStartAcsEx;
-import alma.acsdaemonErrType.FailedToStartContainerEx;
-import alma.acsdaemonErrType.FailedToStopAcsEx;
-import alma.acsdaemonErrType.FailedToStopContainerEx;
-import de.mud.ssh.SshWrapper;
 
 /**
  * @author mschilli
@@ -656,9 +657,24 @@ public class Executor {
 		
 		try {
 			if (startStop == true) {
-				daemon.start_acs((short)instance, cmdFlags);
+				DaemonCallbackPOA startAcsCallbackImpl = new DaemonCallbackPOA() {
+					public void done(Completion comp) {
+						// @TODO
+					}
+					public void working(Completion comp) {
+						// @TODO
+					}
+				};
+				// @TODO : this should be 
+				// DaemonCallback startAcsCallback = DaemonCallbackHelper.narrow(containerServices.activateOffShoot(startAcsCallbackImpl));
+				DaemonCallback startAcsCallback = null;
+				remoteServicesDaemonFlow.failure("Using null parameter in call to daemon.start_acs");
+				daemon.start_acs(startAcsCallback, (short)instance, cmdFlags);
 			} else {
-				daemon.stop_acs((short)instance, cmdFlags);
+				// @TODO add callback object, similar to above case
+				DaemonCallback stopAcsCallback = null; 
+				remoteServicesDaemonFlow.failure("Using null parameter in call to daemon.stop_acs");
+				daemon.stop_acs(stopAcsCallback, (short)instance, cmdFlags);
 			}
 		} catch (Exception exc) {
 			remoteServicesDaemonFlow.failure(exc);
@@ -745,7 +761,10 @@ public class Executor {
 		
 		try {
 			if (startStop == true) {
-				daemon.start_container(contType, contName, (short)instance, cmdFlags);
+				// @TODO: get typeModifiers from the CDB, 
+				// see http://www.eso.org/projects/alma/develop/acs/OnlineDocs/ACS_docs/schemas/urn_schemas-cosylab-com_Container_1.0/complexType/DeployInfo.html
+				String[] typeModifiers = new String[0];
+				daemon.start_container(contType, contName, (short)instance, typeModifiers, cmdFlags);
 			} else {
 				daemon.stop_container(contName, (short)instance, cmdFlags);
 			}
