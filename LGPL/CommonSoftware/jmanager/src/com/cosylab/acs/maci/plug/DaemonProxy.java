@@ -50,7 +50,10 @@ public class DaemonProxy extends CORBAReferenceSerializator implements Daemon, S
 			short instanceNumber, String flags) throws RemoteException {
 		try
 		{
-			daemon.start_container(containerType, containerName, instanceNumber, flags);
+			// @TODO: get typeModifiers from the CDB, 
+			// see http://www.eso.org/projects/alma/develop/acs/OnlineDocs/ACS_docs/schemas/urn_schemas-cosylab-com_Container_1.0/complexType/DeployInfo.html
+			String[] typeModifiers = new String[0];
+			daemon.start_container(containerType, containerName, instanceNumber, typeModifiers, flags);
 		}
 		catch (Exception ex)
 		{
