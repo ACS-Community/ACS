@@ -19,16 +19,26 @@
 
 /** 
  * @author  aaproni
- * @version $Id: AlarmTable.java,v 1.7 2008/02/15 17:38:14 acaproni Exp $
+ * @version $Id: AlarmTable.java,v 1.8 2008/02/15 22:21:22 acaproni Exp $
  * @since    
  */
 
 package alma.acsplugins.alarmsystem.gui;
 
 import java.awt.Component;
+import java.awt.MenuItem;
+import java.awt.Point;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
 import javax.swing.JTable;
 import javax.swing.JComponent;
+import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.RowSorterListener;
 import javax.swing.table.DefaultTableColumnModel;
 import javax.swing.table.TableColumn;
@@ -46,14 +56,60 @@ import cern.laser.client.data.Alarm;
  * The table of alarms
  *
  */
-public class AlarmTable extends JTable {
+public class AlarmTable extends JTable implements ActionListener {
+	
+	private class AlarmTableMouseAdapter extends MouseAdapter {
+		/**
+		 * @see MouseListener
+		 */
+		public void mouseClicked(MouseEvent e) {
+			showPopup(e);
+		}
+
+		/**
+		 * @see MouseListener
+		 */
+		public void mousePressed(MouseEvent e) {
+			showPopup(e);
+		}
+
+		/**
+		 * @see MouseListener
+		 */
+		public void mouseReleased(MouseEvent e) {
+			showPopup(e);
+		}
+		
+		/**
+		 * Show the popup
+		 * 
+		 * @param e The mouse event that triggered the pop
+		 */
+		private void showPopup(MouseEvent e) {
+			if (!e.isPopupTrigger()) {
+				return;
+			}
+			int row=rowAtPoint(new Point(e.getX(),+e.getY()));
+			Alarm alarm = AlarmTable.this.model.getRowAlarm(getRowSorter().convertRowIndexToModel(row));
+			ackMI.setEnabled(!alarm.getStatus().isActive());
+			popupM.show(AlarmTable.this,e.getX(),e.getY());
+		}
+	}
+	
 	// The model of the table
 	private AlarmTableModel model;
 	
 	// The sorter for sorting the rows of the table
 	private TableRowSorter<TableModel> sorter;
 	
+	// The cols of the table
 	private TableColumn[] columns;
+	
+	// The popup menu shown when the user presses the right mouse button over a row
+	private JPopupMenu popupM = new JPopupMenu("Alarm");
+	private JMenuItem ackMI = new JMenuItem("Acknowledge");
+	private JMenuItem saveMI = new JMenuItem("Save...");
+	private JMenuItem clipMI = new JMenuItem("To clipboard");
 	
 	/**
 	 * Constructor 
@@ -65,14 +121,22 @@ public class AlarmTable extends JTable {
 			throw new IllegalArgumentException("Invalid null model in constructor");
 		}
 		this.model=model;
+		initialize();
+	}
+	
+	/**
+	 * Init the GUI
+	 */
+	private void initialize() {
 		this.setCellSelectionEnabled(false);
+		setRowSelectionAllowed(false);
 		this.setOpaque(false);
 		sorter = new TableRowSorter<TableModel>(model);
 		this.setRowSorter(sorter);
 		sorter.setMaxSortKeys(2);
 		sorter.setSortsOnUpdates(true);
 		
-		// Remove all the columns that are not visible at startup
+		// Remove all the columns not visible at startup
 		TableColumnModel colModel = getColumnModel();
 		columns = new TableColumn[colModel.getColumnCount()];
 		for (int t=0; t<columns.length; t++) {
@@ -83,6 +147,23 @@ public class AlarmTable extends JTable {
 				colModel.removeColumn(columns[col.ordinal()]);
 			} 
 		}
+		addMouseListener(new AlarmTableMouseAdapter());
+		
+		buildPopupMenu();
+	}
+	
+	/**
+	 * Build the popup menu
+	 */
+	private void buildPopupMenu() {
+		popupM.add(ackMI);
+		popupM.add(saveMI);
+		popupM.add(clipMI);
+		popupM.pack();
+		
+		ackMI.addActionListener(this);
+		saveMI.addActionListener(this);
+		clipMI.addActionListener(this);
 	}
 	
 	/**
@@ -113,4 +194,14 @@ public class AlarmTable extends JTable {
 		c.setForeground(alarmType.foreg);
 		c.setBackground(alarmType.backg);
 	}
+
+	/**
+	 * @see ActionListener
+	 */
+	public void actionPerformed(ActionEvent e) {
+		System.out.println("Event: "+e.getSource());
+		
+	}
+	
+	
 }
