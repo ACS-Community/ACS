@@ -20,6 +20,10 @@ package alma.acsplugins.alarmsystem.gui;
 
 import java.awt.Color;
 
+import javax.swing.ImageIcon;
+
+import com.cosylab.logging.engine.log.LogTypeHelper;
+
 import cern.laser.client.data.Alarm;
 
 /**
@@ -36,11 +40,14 @@ import cern.laser.client.data.Alarm;
  *
  */
 public enum AlarmGUIType {
-	PRIORITY_0(Color.white,Color.red,"Priority 0"),
-	PRIORITY_1(Color.black, new Color(255,165,31),"Priority 1"),
-	PRIORITY_2(Color.black,Color.yellow,"Priority 2"),
-	PRIORITY_3(Color.black,new Color(255,255,198),"Priority 3"),
-	INACTIVE(Color.black,new Color(188,255,188),"Inactive");
+	PRIORITY_0(Color.white,Color.red,"Priority 0","flag_red.png"),
+	PRIORITY_1(Color.black, new Color(255,165,31),"Priority 1","flag_red.png"),
+	PRIORITY_2(Color.black,Color.yellow,"Priority 2","flag_red.png"),
+	PRIORITY_3(Color.black,new Color(255,255,198),"Priority 3","flag_red.png"),
+	INACTIVE(Color.black,new Color(188,255,188),"Inactive",null);
+	
+	// The name of the folder with icons
+	private static final String iconFolder = "/alma/acsplugins/alarmsystem/gui/resources/";
 	
 	// Background and foreground colors
 	public final Color backg;
@@ -52,17 +59,27 @@ public enum AlarmGUIType {
 	// The unique identifier of this type of alarm
 	public final int id;
 	
+	public final ImageIcon icon;
+	
 	/**
 	 * Constructor
 	 * 
 	 * @param fg Foreground
 	 * @param bg Background
+	 * @param title The string to show for this alarm type
+	 * @param iconName The name of the icon of this alarm type
 	 */
-	private AlarmGUIType(Color fg, Color bg, String title) {
+	private AlarmGUIType(Color fg, Color bg, String title, String iconName) {
 		this.backg=bg;
 		this.foreg=fg;
 		this.tile=title;
 		id=this.ordinal();
+		// Load the icon
+		if (iconName!=null) {
+			icon=new ImageIcon(AlarmGUIType.this.getClass().getResource(iconFolder+iconName));
+		} else {
+			icon=null;
+		}
 	}
 	
 	public AlarmGUIType fromID(int id) {
