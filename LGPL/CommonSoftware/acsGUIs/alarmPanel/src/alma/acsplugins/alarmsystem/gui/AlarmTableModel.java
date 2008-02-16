@@ -19,7 +19,7 @@
 
 /** 
  * @author  acaproni   
- * @version $Id: AlarmTableModel.java,v 1.20 2008/02/16 00:58:05 acaproni Exp $
+ * @version $Id: AlarmTableModel.java,v 1.21 2008/02/16 18:22:35 acaproni Exp $
  * @since    
  */
 
@@ -56,6 +56,7 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 	 *
 	 */
 	public enum AlarmTableColumn {
+		ICON("",true),
 		TIME("Time",true),
 		COMPONENT("Component",true),
 		CODE("Code",true),
