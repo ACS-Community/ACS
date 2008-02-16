@@ -19,7 +19,7 @@
 
 /** 
  * @author  aaproni
- * @version $Id: AlarmTable.java,v 1.1 2008/02/16 18:34:41 acaproni Exp $
+ * @version $Id: AlarmTable.java,v 1.2 2008/02/16 22:46:22 acaproni Exp $
  * @since    
  */
 
@@ -346,6 +346,11 @@ public class AlarmTable extends JTable implements ActionListener {
 	 */
 	public Component prepareRenderer(TableCellRenderer renderer, int rowIndex,
 			int vColIndex) {
+		if (vColIndex==0) {
+			Alarm alarm = model.getRowAlarm(rowIndex);
+			System.out.println("returning renderer for ["+rowIndex+", "+vColIndex+"]");
+			return AlarmGUIType.fromAlarm(alarm).renderer;
+		}
 		Component c = super.prepareRenderer(renderer, rowIndex, vColIndex);
 		Alarm alarm = model.getRowAlarm(sorter.convertRowIndexToModel(rowIndex));
 		colorizeCell(c, alarm);
