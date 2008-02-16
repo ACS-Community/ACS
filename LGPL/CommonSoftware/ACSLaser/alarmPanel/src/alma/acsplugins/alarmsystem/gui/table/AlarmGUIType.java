@@ -21,6 +21,7 @@ package alma.acsplugins.alarmsystem.gui.table;
 import java.awt.Color;
 
 import javax.swing.ImageIcon;
+import javax.swing.JLabel;
 
 import cern.laser.client.data.Alarm;
 
@@ -57,7 +58,11 @@ public enum AlarmGUIType {
 	// The unique identifier of this type of alarm
 	public final int id;
 	
+	// The icon 
 	public final ImageIcon icon;
+	
+	// The renderer for the table showing the icon
+	public final JLabel renderer;
 	
 	/**
 	 * Constructor
@@ -78,6 +83,7 @@ public enum AlarmGUIType {
 		} else {
 			icon=null;
 		}
+		renderer = new JLabel(icon,JLabel.CENTER);
 	}
 	
 	public AlarmGUIType fromID(int id) {
