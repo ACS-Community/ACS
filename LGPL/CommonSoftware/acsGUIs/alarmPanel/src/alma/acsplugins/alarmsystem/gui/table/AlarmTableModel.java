@@ -19,7 +19,7 @@
 
 /** 
  * @author  acaproni   
- * @version $Id: AlarmTableModel.java,v 1.1 2008/02/16 18:34:41 acaproni Exp $
+ * @version $Id: AlarmTableModel.java,v 1.2 2008/02/16 19:12:02 acaproni Exp $
  * @since    
  */
 
@@ -113,8 +113,8 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 	public void onAlarm(Alarm alarm) {
 		synchronized (items) {
 			if (items.size()>MAX_ALARMS && items.indexOf(alarm)>=0) {
-				Alarm removedAlarm = items.remove(items.size()-1); // Remove the last one
-				counters.get(AlarmGUIType.fromAlarm(removedAlarm)).decCounter();
+				AlarmTableEntry removedAlarm = items.remove(items.size()-1); // Remove the last one
+				counters.get(removedAlarm.getAlarmType()).decCounter();
 			}
 			int pos =items.indexOf(alarm); 
 			if (pos>=0) {
@@ -137,13 +137,14 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 			// do not add inactive alarms
 			return;
 		}
-		items.add(0,alarm);
-		counters.get(AlarmGUIType.fromAlarm(alarm)).incCounter();
+		AlarmTableEntry newEntry=new AlarmTableEntry(alarm);
+		items.add(0,newEntry);
+		counters.get(newEntry.getAlarmType()).incCounter();
 	}
 	
 	/**
-	 * Automatically acknoledge an alarm depending on its 
-	 * piority and the selected priority level
+	 * Automatically acknowledge an alarm depending on its 
+	 * priority and the selected priority level
 	 * 
 	 * @param alarm The alarm to acknowledge if its priority
 	 *              if greater the the selected priority level
@@ -221,14 +222,15 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 		if (newAlarm==null) {
 			throw new IllegalArgumentException("The alarm can't be null");
 		}
-		Alarm oldAlarm = items.get(pos);
-		items.setElementAt(newAlarm,items.indexOf(newAlarm));
-		if (oldAlarm.getStatus().isActive()==newAlarm.getStatus().isActive()) {
+		AlarmTableEntry oldAlarm = items.get(pos);
+		AlarmTableEntry newEntry = new AlarmTableEntry(newAlarm);
+		items.setElementAt(newEntry,items.indexOf(newAlarm));
+		if (oldAlarm.getAlarm().getStatus().isActive()==newAlarm.getStatus().isActive()) {
 			return;
 		}
 		// Update the counters
-		counters.get(AlarmGUIType.fromAlarm(oldAlarm)).decCounter();
-		counters.get(AlarmGUIType.fromAlarm(newAlarm)).incCounter();
+		counters.get(oldAlarm.getAlarmType()).decCounter();
+		counters.get(newEntry.getAlarmType()).incCounter();
 		if (!newAlarm.getStatus().isActive()) {
 			// The alarm became INACTIVE
 			autoAcknowledged(newAlarm);
@@ -251,7 +253,7 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 	public static final int MAX_ALARMS=10000;
 	
 	// The alarms in the table
-	private Vector<Alarm> items = new Vector<Alarm>();
+	private Vector<AlarmTableEntry> items = new Vector<AlarmTableEntry>();
 	
 	// The auto acknowledge level
 	private ComboBoxValues autoAckLvl = ComboBoxValues.NONE ;
@@ -278,7 +280,7 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 	public Object getCellContent(int rowIndex, int columnIndex) {
 		Alarm alarm;
 		synchronized (items) {
-			alarm = items.get(rowIndex);
+			alarm = items.get(rowIndex).getAlarm();
 		}
 		
 		AlarmTableColumn col = AlarmTableColumn.values()[columnIndex];
@@ -363,7 +365,7 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 			if (row<0 || row>=items.size()) {
 				throw new IllegalArgumentException("Invalid row: "+row+" not in [0,"+items.size()+"[");
 			}
-			return items.get(row);
+			return items.get(row).getAlarm();
 		}
 	}
 	
