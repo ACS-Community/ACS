@@ -19,12 +19,13 @@
 
 /** 
  * @author  acaproni   
- * @version $Id: AlarmTableModel.java,v 1.19 2008/02/15 23:50:08 acaproni Exp $
+ * @version $Id: AlarmTableModel.java,v 1.20 2008/02/16 00:58:05 acaproni Exp $
  * @since    
  */
 
 package alma.acsplugins.alarmsystem.gui;
 
+import javax.swing.SwingUtilities;
 import javax.swing.table.AbstractTableModel;
 
 import alma.acs.util.IsoDateFormat;
@@ -140,10 +141,13 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 	}
 	
 	/**
+	 * Automatically acknoledge an alarm depending on its 
+	 * piority and the selected priority level
 	 * 
-	 * @param alarm
+	 * @param alarm The alarm to acknowledge if its priority
+	 *              if greater the the selected priority level
 	 */
-	private void removeAcknowledged(Alarm alarm) {
+	private void autoAcknowledged(Alarm alarm) {
 		if (alarm==null) {
 			throw new IllegalArgumentException("The alarm can't be null");
 		}
@@ -170,10 +174,37 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 		}
 		}
 		if (alarm.getPriority()>=priority) {
-			// Remove from the table
-			items.remove(alarm);
-			counters.get(AlarmGUIType.fromAlarm(alarm)).decCounter();
+			acknowledge(alarm);
 		}
+	}
+	
+	/**
+	 * Acknowledge an alarm that in this version ends up to removing
+	 * from the table
+	 * 
+	 * @param alarm The inactive alarm to acknowledge
+	 */
+	public void acknowledge(Alarm alarm) {
+		if (alarm==null) {
+			throw new IllegalArgumentException("The alarm can't be null");
+		}
+		if (alarm.getStatus().isActive()) {
+			throw new IllegalArgumentException("Trying to acknowledge an active alarm");
+		}
+		class RemoveAlarm extends Thread {
+			public Alarm alarmToRemove;
+			public void run() {
+				// Remove the alarm from the table
+				synchronized (items) {
+					items.remove(alarmToRemove);	
+				}
+				counters.get(AlarmGUIType.fromAlarm(alarmToRemove)).decCounter();
+				fireTableDataChanged();
+			}
+		}
+		RemoveAlarm thread = new RemoveAlarm();
+		thread.alarmToRemove=alarm;
+		SwingUtilities.invokeLater(thread);
 	}
 	
 	/**
@@ -199,7 +230,7 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 		counters.get(AlarmGUIType.fromAlarm(newAlarm)).incCounter();
 		if (!newAlarm.getStatus().isActive()) {
 			// The alarm became INACTIVE
-			removeAcknowledged(newAlarm);
+			autoAcknowledged(newAlarm);
 		}
 	}
 
