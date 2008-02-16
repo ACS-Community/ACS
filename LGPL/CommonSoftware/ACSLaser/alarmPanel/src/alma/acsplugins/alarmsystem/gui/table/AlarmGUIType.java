@@ -43,7 +43,7 @@ public enum AlarmGUIType {
 	PRIORITY_1(Color.black, new Color(255,165,31),"Priority 1","flag_orange.png"),
 	PRIORITY_2(Color.black,Color.yellow,"Priority 2","flag_light_yellow.png"),
 	PRIORITY_3(Color.black,new Color(255,255,198),"Priority 3","flag_yellow.png"),
-	INACTIVE(Color.black,new Color(188,255,188),"Inactive",null);
+	INACTIVE(Color.black,new Color(188,255,188),"Inactive","flag_green.png");
 	
 	// The name of the folder with icons
 	private static final String iconFolder = "/alma/acsplugins/alarmsystem/gui/resources/";
