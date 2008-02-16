@@ -19,7 +19,7 @@
 
 /** 
  * @author  aaproni
- * @version $Id: AlarmTable.java,v 1.12 2008/02/16 00:58:37 acaproni Exp $
+ * @version $Id: AlarmTable.java,v 1.13 2008/02/16 18:22:02 acaproni Exp $
  * @since    
  */
 
@@ -307,6 +307,13 @@ public class AlarmTable extends JTable implements ActionListener {
 		for (int t=0; t<columns.length; t++) {
 			columns[t]=colModel.getColumn(t);
 			columns[t].setIdentifier(AlarmTableColumn.values()[t]);
+			if (columns[t].getIdentifier()==AlarmTableColumn.ICON) {
+				columns[t].setWidth(20);
+				columns[t].setResizable(false);
+				columns[t].setPreferredWidth(20);
+				columns[t].setMaxWidth(20);
+				columns[t].setMinWidth(20);
+			}
 		}
 		for (AlarmTableColumn col: AlarmTableColumn.values()) {
 			if (!col.visibleAtStartup) {
