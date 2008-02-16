@@ -19,7 +19,7 @@
 
 /** 
  * @author  acaproni   
- * @version $Id: AlarmTableModel.java,v 1.3 2008/02/16 22:06:13 acaproni Exp $
+ * @version $Id: AlarmTableModel.java,v 1.4 2008/02/16 23:15:50 acaproni Exp $
  * @since    
  */
 
@@ -225,7 +225,7 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 		}
 		AlarmTableEntry oldAlarm = items.get(pos);
 		AlarmTableEntry newEntry = new AlarmTableEntry(newAlarm);
-		items.setElementAt(newEntry,items.indexOf(newAlarm));
+		items.setElementAt(newEntry,items.indexOf(oldAlarm));
 		if (oldAlarm.getAlarm().getStatus().isActive()==newAlarm.getStatus().isActive()) {
 			return;
 		}
@@ -370,6 +370,19 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 				throw new IllegalArgumentException("Invalid row: "+row+" not in [0,"+items.size()+"[");
 			}
 			return items.get(row).getAlarm();
+		}
+	}
+	
+	/**
+	 * 
+	 * @param row Return true if the alarm is new
+	 */
+	public boolean isRowAlarmNew(int row) {
+		synchronized (items) {
+			if (row<0 || row>=items.size()) {
+				throw new IllegalArgumentException("Invalid row: "+row+" not in [0,"+items.size()+"[");
+			}
+			return items.get(row).isNew();
 		}
 	}
 	
