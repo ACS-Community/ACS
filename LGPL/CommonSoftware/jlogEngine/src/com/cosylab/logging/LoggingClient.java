@@ -138,6 +138,12 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
     // The progress bar for long time operations
     private JProgressBar progressBar = new JProgressBar(JProgressBar.HORIZONTAL);
     
+    // Remeber if the engine is connected
+    //
+    // The check is done by LCEngine and a callback is called depending
+    // on the status of the connection
+    private boolean isConnected=false;
+    
     /**
      * The search dialog 
      * The object is built the first time the user requests a search
@@ -1252,7 +1258,7 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
      *
      */
     public boolean isConnected() {
-    	return getEngine().isConnected();
+    	return isConnected;
     }
     
     /**
@@ -1286,29 +1292,30 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
     
    /**
     * Notify that the connection with ACS NC has been established
-    * @see com.cosylab.logging.engine.ACS.ACSRemoteLogListener
+    * @see com.cosylab.logging.engine.ACS.ACSLogConnectionListener
 	 */
 	public void acsLogConnEstablished() {
-		//setTitle("LoggingClient");
+		isConnected=true;
 		connectionStatusLbl.setIcon(connectionStatusIcons[CONNECTED_ICON]);
 		connectionStatusLbl.setToolTipText("Connected");
 	}
 	
 	/**
      * 
-     * @see com.cosylab.logging.engine.ACS.ACSRemoteLogListener
+     * @see com.cosylab.logging.engine.ACS.ACSLogConnectionListener
      */
 	public void acsLogConnDisconnected() {
-		//setTitle("LoggingClient - Offline");
+		isConnected=false;
 		connectionStatusLbl.setIcon(connectionStatusIcons[DISCONNECTED_ICON]);
 		connectionStatusLbl.setToolTipText("Disconnected");
 	}
 	
 	/**
 	 * Notify that the connection with ACS NC has been lost
-	 *@see com.cosylab.logging.engine.ACS.ACSRemoteLogListener
+	 *@see com.cosylab.logging.engine.ACS.ACSLogConnectionListener
 	 */
 	public void acsLogConnLost() {
+		isConnected=false;
 		JOptionPane.showMessageDialog(null,"Connection lost!","LoggingClient error",JOptionPane.ERROR_MESSAGE);
 		connectionStatusLbl.setIcon(connectionStatusIcons[DISCONNECTED_ICON]);
 		connectionStatusLbl.setToolTipText("Disconnected");
@@ -1316,20 +1323,18 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 	
 	/**
 	 * Notify that an attempt to connect to ACS NC is in progress
-	 * @see com.cosylab.logging.engine.ACS.ACSRemoteLogListener
+	 * @see com.cosylab.logging.engine.ACS.ACSLogConnectionListener
 	 */
 	public void acsLogConnConnecting() {
-		//setTitle("LoggingClient - Connecting");
 		connectionStatusLbl.setIcon(connectionStatusIcons[CONNECTING_ICON]);
 		connectionStatusLbl.setToolTipText("Connecting");
 	}
 	
 	/**
 	 * Notify that the service is supended 
-	 * @see com.cosylab.logging.engine.ACS.ACSRemoteLogListener
+	 * @see com.cosylab.logging.engine.ACS.ACSLogConnectionListener
 	 */
 	public void acsLogConnSuspended() {
-		//setTitle("LoggingClient - Suspended");
 		connectionStatusLbl.setIcon(connectionStatusIcons[SUSPENDED_ICON]);
 		connectionStatusLbl.setToolTipText("Suspended");
 	}
