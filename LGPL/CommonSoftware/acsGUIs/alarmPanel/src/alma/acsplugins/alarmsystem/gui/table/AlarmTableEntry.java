@@ -91,4 +91,13 @@ public class AlarmTableEntry {
 	public Alarm getAlarm() {
 		return alarm;
 	}
+	
+	/**
+	 * Return true if the alarm is new
+	 * 
+	 * @return true if the alarm is new
+	 */
+	public boolean isNew() {
+		return isNew;
+	}
 }
