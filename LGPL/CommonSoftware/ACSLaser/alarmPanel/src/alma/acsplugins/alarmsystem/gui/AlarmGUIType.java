@@ -22,8 +22,6 @@ import java.awt.Color;
 
 import javax.swing.ImageIcon;
 
-import com.cosylab.logging.engine.log.LogTypeHelper;
-
 import cern.laser.client.data.Alarm;
 
 /**
