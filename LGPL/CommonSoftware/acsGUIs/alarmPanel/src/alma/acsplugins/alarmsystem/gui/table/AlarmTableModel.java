@@ -19,7 +19,7 @@
 
 /** 
  * @author  acaproni   
- * @version $Id: AlarmTableModel.java,v 1.4 2008/02/16 23:15:50 acaproni Exp $
+ * @version $Id: AlarmTableModel.java,v 1.5 2008/02/16 23:19:33 acaproni Exp $
  * @since    
  */
 
@@ -150,7 +150,7 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 	 * @param alarm The alarm to acknowledge if its priority
 	 *              if greater the the selected priority level
 	 */
-	private void autoAcknowledged(Alarm alarm) {
+	private void autoAcknowledge(Alarm alarm) {
 		if (alarm==null) {
 			throw new IllegalArgumentException("The alarm can't be null");
 		}
@@ -234,7 +234,7 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 		counters.get(newEntry.getAlarmType()).incCounter();
 		if (!newAlarm.getStatus().isActive()) {
 			// The alarm became INACTIVE
-			autoAcknowledged(newAlarm);
+			autoAcknowledge(newAlarm);
 		}
 	}
 
