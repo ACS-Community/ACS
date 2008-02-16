@@ -1,4 +1,4 @@
-package alma.acsplugins.alarmsystem.gui;
+package alma.acsplugins.alarmsystem.gui.table;
 
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;

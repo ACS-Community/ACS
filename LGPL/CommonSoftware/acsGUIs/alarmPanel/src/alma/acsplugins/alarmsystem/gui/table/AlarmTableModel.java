@@ -19,11 +19,11 @@
 
 /** 
  * @author  acaproni   
- * @version $Id: AlarmTableModel.java,v 1.21 2008/02/16 18:22:35 acaproni Exp $
+ * @version $Id: AlarmTableModel.java,v 1.1 2008/02/16 18:34:41 acaproni Exp $
  * @since    
  */
 
-package alma.acsplugins.alarmsystem.gui;
+package alma.acsplugins.alarmsystem.gui.table;
 
 import javax.swing.SwingUtilities;
 import javax.swing.table.AbstractTableModel;

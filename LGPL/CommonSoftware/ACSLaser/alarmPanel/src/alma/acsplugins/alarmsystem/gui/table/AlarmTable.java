@@ -19,11 +19,11 @@
 
 /** 
  * @author  aaproni
- * @version $Id: AlarmTable.java,v 1.13 2008/02/16 18:22:02 acaproni Exp $
+ * @version $Id: AlarmTable.java,v 1.1 2008/02/16 18:34:41 acaproni Exp $
  * @since    
  */
 
-package alma.acsplugins.alarmsystem.gui;
+package alma.acsplugins.alarmsystem.gui.table;
 
 import java.awt.Component;
 import java.awt.MenuItem;
@@ -57,7 +57,7 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableRowSorter;
 
 import alma.acs.util.IsoDateFormat;
-import alma.acsplugins.alarmsystem.gui.AlarmTableModel.AlarmTableColumn;
+import alma.acsplugins.alarmsystem.gui.table.AlarmTableModel.AlarmTableColumn;
 
 import cern.laser.client.data.Alarm;
 

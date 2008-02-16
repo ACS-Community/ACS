@@ -16,7 +16,7 @@
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  * 
  */
-package alma.acsplugins.alarmsystem.gui;
+package alma.acsplugins.alarmsystem.gui.table;
 
 import java.awt.Color;
 

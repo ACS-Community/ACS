@@ -35,8 +35,8 @@ import javax.swing.ListCellRenderer;
 import javax.swing.SwingConstants;
 import javax.swing.border.EtchedBorder;
 
-import alma.acsplugins.alarmsystem.gui.AlarmGUIType;
-import alma.acsplugins.alarmsystem.gui.AlarmTableModel;
+import alma.acsplugins.alarmsystem.gui.table.AlarmGUIType;
+import alma.acsplugins.alarmsystem.gui.table.AlarmTableModel;
 
 /**
  * The toolbar for the alarm panel

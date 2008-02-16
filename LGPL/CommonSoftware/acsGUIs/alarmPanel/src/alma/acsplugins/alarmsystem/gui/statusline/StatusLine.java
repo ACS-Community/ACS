@@ -28,9 +28,9 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.Timer;
 
-import alma.acsplugins.alarmsystem.gui.AlarmCounter;
-import alma.acsplugins.alarmsystem.gui.AlarmGUIType;
-import alma.acsplugins.alarmsystem.gui.AlarmTableModel;
+import alma.acsplugins.alarmsystem.gui.table.AlarmCounter;
+import alma.acsplugins.alarmsystem.gui.table.AlarmGUIType;
+import alma.acsplugins.alarmsystem.gui.table.AlarmTableModel;
 
 /**
  * The status line showing info to the user

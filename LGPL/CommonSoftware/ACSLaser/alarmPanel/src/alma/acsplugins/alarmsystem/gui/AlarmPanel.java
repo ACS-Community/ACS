@@ -19,7 +19,7 @@
 
 /** 
  * @author  acaproni   
- * @version $Id: AlarmPanel.java,v 1.9 2008/02/15 20:54:10 acaproni Exp $
+ * @version $Id: AlarmPanel.java,v 1.10 2008/02/16 18:34:41 acaproni Exp $
  * @since    
  */
 
@@ -38,6 +38,8 @@ import alma.alarmsystem.clients.CategoryClient;
 
 import alma.acs.gui.util.panel.IPanel;
 import alma.acsplugins.alarmsystem.gui.statusline.StatusLine;
+import alma.acsplugins.alarmsystem.gui.table.AlarmTable;
+import alma.acsplugins.alarmsystem.gui.table.AlarmTableModel;
 import alma.acsplugins.alarmsystem.gui.toolbar.Toolbar;
 
 /**
