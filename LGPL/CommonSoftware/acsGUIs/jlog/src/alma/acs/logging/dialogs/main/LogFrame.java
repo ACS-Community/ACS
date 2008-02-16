@@ -243,9 +243,10 @@ public class LogFrame extends JFrame implements WindowListener {
 		if (closing) {
 			return;
 		}
+		setVisible(false);
 		closing=true;
 		loggingClient.close(true);
-		setVisible(false);
+		
 		dispose();
 	}
 }

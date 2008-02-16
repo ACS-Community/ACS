@@ -1401,6 +1401,7 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 	 * @param sync If it is true wait the termination of the threads before returning
 	 */
 	public void close(boolean sync) {
+		setVisible(false);
 		if (tableModel!=null) {
 			tableModel.close(sync);
 		}
