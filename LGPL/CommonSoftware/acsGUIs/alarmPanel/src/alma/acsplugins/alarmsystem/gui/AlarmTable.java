@@ -19,7 +19,7 @@
 
 /** 
  * @author  aaproni
- * @version $Id: AlarmTable.java,v 1.10 2008/02/15 23:21:53 acaproni Exp $
+ * @version $Id: AlarmTable.java,v 1.11 2008/02/16 00:35:17 acaproni Exp $
  * @since    
  */
 
@@ -38,6 +38,7 @@ import java.io.FileOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFileChooser;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
@@ -48,6 +49,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.RowSorterListener;
 import javax.swing.table.DefaultTableColumnModel;
+import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
@@ -66,6 +68,13 @@ import cern.laser.client.data.Alarm;
  */
 public class AlarmTable extends JTable implements ActionListener {
 	
+	/**
+	 * The mouse adapter receiving mouse events generated
+	 * over the table of the alarms
+	 * 
+	 * @author acaproni
+	 *
+	 */
 	private class AlarmTableMouseAdapter extends MouseAdapter {
 		
 		// The last selected alarm
@@ -94,7 +103,7 @@ public class AlarmTable extends JTable implements ActionListener {
 		}
 		
 		/**
-		 * Show the popup
+		 * Show the popup menu
 		 * 
 		 * @param e The mouse event that triggered the pop
 		 */
@@ -116,6 +125,134 @@ public class AlarmTable extends JTable implements ActionListener {
 			}
 			SwingUtilities.invokeLater(new ShowPopup(e));	
 		}
+	}
+	
+	/**
+	 * The mouse adapter receiving mouse events generated
+	 * over the header of the table of the alarms
+	 * 
+	 * @author acaproni
+	 *
+	 */
+	private class AlarmHeaderMouseAdapter extends MouseAdapter implements ActionListener {
+		
+		// The popup
+		private JPopupMenu headerPopup = new JPopupMenu("Header");
+		private JCheckBoxMenuItem[] menuItems;
+		
+		/**
+		 * Constructor
+		 */
+		public AlarmHeaderMouseAdapter() {
+			// Build the popup menu
+			//
+			// Each item has the same order of the AlarmTableColumn
+			menuItems = new JCheckBoxMenuItem[AlarmTableColumn.values().length];
+			int t=0;
+			for (AlarmTableColumn col: AlarmTableColumn.values()) {
+				menuItems[t]= new JCheckBoxMenuItem(col.title);
+				menuItems[t].addActionListener(this);
+				headerPopup.add(menuItems[t++]);
+			}
+		}
+
+		/**
+		 * @see MouseListener
+		 */
+		public void mouseClicked(MouseEvent e) {
+			showPopup(e);
+		}
+
+		/**
+		 * @see MouseListener
+		 */
+		public void mousePressed(MouseEvent e) {
+			showPopup(e);
+		}
+
+		/**
+		 * @see MouseListener
+		 */
+		public void mouseReleased(MouseEvent e) {
+			showPopup(e);
+		}
+		
+		/**
+		 * Show the popup menu
+		 * 
+		 * @param e The mouse event that triggered the pop
+		 */
+		private void showPopup(MouseEvent e) {
+			if (!e.isPopupTrigger()) {
+				return;
+			}
+			class ShowHeaderPopup extends Thread {
+				MouseEvent e;
+				public ShowHeaderPopup(MouseEvent e) {
+					this.e=e;
+				}
+				public void run() {
+					ratioMenu();
+					headerPopup.show(AlarmTable.this,e.getX(),e.getY());
+				}
+			}
+			SwingUtilities.invokeLater(new ShowHeaderPopup(e));	
+		}
+		
+		/**
+		 * Set/unset all the checkbox depending on the
+		 * visible/hidden columns
+		 */
+		private void ratioMenu() {
+			TableColumnModel colModel = getColumnModel();
+			int pos=0;
+			for (AlarmTableColumn col: AlarmTableColumn.values()) {
+				try {
+					colModel.getColumnIndex(col);
+					menuItems[pos].setSelected(true);
+				} catch (IllegalArgumentException iae) {
+					menuItems[pos].setSelected(false);
+				}
+				pos++;
+			}
+		}
+
+		/**
+		 * @see ActionListener
+		 */
+		public void actionPerformed(ActionEvent e) {
+			// Look for the source of this event
+			JCheckBoxMenuItem source=null;
+			TableColumn column=null;
+			for (int t=0; t<menuItems.length; t++) {
+				if (e.getSource()==menuItems[t]) {
+					source=menuItems[t];
+					column=columns[t];
+					break;
+				}
+			}
+			if (source==null) {
+				System.out.println("Unknown source of event: "+e.getSource());
+				return;
+			}
+			class AddRemoveCol extends Thread {
+				public TableColumn col;
+				public boolean toAdd;
+				public void run() {
+					TableColumnModel colModel = getColumnModel();
+					if (toAdd) {
+						colModel.addColumn(col);
+					} else {
+						colModel.removeColumn(col);
+					}
+				}
+			}
+			AddRemoveCol thread = new AddRemoveCol();
+			thread.col=column;
+			thread.toAdd=source.isSelected();
+			SwingUtilities.invokeLater(thread);
+		}
+		
 	}
 	
 	// The model of the table
@@ -169,13 +306,16 @@ public class AlarmTable extends JTable implements ActionListener {
 		columns = new TableColumn[colModel.getColumnCount()];
 		for (int t=0; t<columns.length; t++) {
 			columns[t]=colModel.getColumn(t);
+			columns[t].setIdentifier(AlarmTableColumn.values()[t]);
 		}
 		for (AlarmTableColumn col: AlarmTableColumn.values()) {
-			if (!col.visible) {
+			if (!col.visibleAtStartup) {
 				colModel.removeColumn(columns[col.ordinal()]);
 			} 
 		}
 		addMouseListener(mouseAdapter);
+		
+		getTableHeader().addMouseListener(new AlarmHeaderMouseAdapter());
 		
 		buildPopupMenu();
 	}
