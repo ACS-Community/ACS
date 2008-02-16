@@ -19,7 +19,7 @@
 
 /** 
  * @author  aaproni
- * @version $Id: AlarmTable.java,v 1.11 2008/02/16 00:35:17 acaproni Exp $
+ * @version $Id: AlarmTable.java,v 1.12 2008/02/16 00:58:37 acaproni Exp $
  * @since    
  */
 
@@ -371,6 +371,8 @@ public class AlarmTable extends JTable implements ActionListener {
 			saveAlarm(mouseAdapter.selectedAlarm);
 		} else if (e.getSource()==clipMI) {
 			clipboard.setClipboardContents(mouseAdapter.selectedAlarm.toString());
+		} else if (e.getSource()==ackMI) {
+			model.acknowledge(mouseAdapter.selectedAlarm);
 		}
 	}
 	
