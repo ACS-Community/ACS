@@ -19,7 +19,7 @@
 
 /** 
  * @author  acaproni   
- * @version $Id: AlarmPanel.java,v 1.10 2008/02/16 18:34:41 acaproni Exp $
+ * @version $Id: AlarmPanel.java,v 1.11 2008/02/17 02:21:57 acaproni Exp $
  * @since    
  */
 
@@ -53,8 +53,8 @@ public class AlarmPanel extends JPanel implements IPanel {
     private ContainerServices contSvc=null;
 	
 	// The table of logs and its model
-	private AlarmTableModel model = new AlarmTableModel();
-	private AlarmTable alarmTable = new AlarmTable(model);
+	private AlarmTableModel model;
+	private AlarmTable alarmTable;
 	
 	private JScrollPane tableScrollPane = new JScrollPane(
 			JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
@@ -70,7 +70,7 @@ public class AlarmPanel extends JPanel implements IPanel {
     private Toolbar toolbar;
     
     // The status line
-    private StatusLine statusLine = new StatusLine(model);
+    private StatusLine statusLine;
 	
 	/**
 	 * Constructor 
@@ -100,6 +100,11 @@ public class AlarmPanel extends JPanel implements IPanel {
 	 *
 	 */
 	private void initialize() {
+		// Build GUI objects
+		model = new AlarmTableModel(this);
+		alarmTable = new AlarmTable(model);
+		statusLine = new StatusLine(model);
+		
 		setLayout(new BorderLayout());
 		// Add the toolbar
 		toolbar=new Toolbar(model);
