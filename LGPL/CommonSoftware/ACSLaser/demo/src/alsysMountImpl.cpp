@@ -27,9 +27,11 @@
 #include "AlarmSystemInterface.h"
 #include "FaultState.h"
 #include "faultStateConstants.h"
+#include "Timestamp.h"
+#include "Properties.h"
 
 using namespace acscomponent;
-using acsalarm::AlarmSystemInterface;
+using namespace acsalarm;
 
 Mount::Mount(const ACE_CString &name,maci::ContainerServices * containerServices) : 
     ACSComponentImpl(name, containerServices)
@@ -60,7 +62,7 @@ void Mount::sendAlarm(std::string family, std::string member, int code, bool act
 		auto_ptr<acsalarm::FaultState> fltstate = ACSAlarmSystemInterfaceFactory::createFaultState(family, member, code);
 
 		// set the fault state's descriptor
-		string stateString;
+		std::string stateString;
 		if (active) 
 		{
 			stateString = faultState::ACTIVE_STRING;
