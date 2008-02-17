@@ -218,8 +218,8 @@ public class LogReceiver {
 	static class MyRemoteResponseCallback implements ACSRemoteLogListener, ACSLogConnectionListener {
 		private boolean verbose = false;
 		
-		private ArrayList<String> statusReports;
-		private DelayQueue<DelayedLogEntry> logDelayQueue;
+		private final ArrayList<String> statusReports;
+		private final DelayQueue<DelayedLogEntry> logDelayQueue;
         private long delayMillis = 20000;
         
         private boolean isConnected = false;
@@ -408,7 +408,7 @@ public class LogReceiver {
 		}
 
 		/**
-		 * Returns the log record that was wrapped for sorting insdie the queue. 
+		 * Returns the log record that was wrapped for sorting inside the queue. 
 		 * The returned object represents the log record as it was received from the logging service.
 		 */
 		public ReceivedLogRecord getLogRecord() {
@@ -570,14 +570,14 @@ public class LogReceiver {
             public void run() {
 //            	System.out.println("logRetriever.run called...");
 				try {
-					BlockingQueue logQueue = getLogQueue();
+					BlockingQueue<DelayedLogEntry> logQueue = getLogQueue();
 					
 					listenForLogs = true;
 					// loop until "queue poison" entry is found
 					while (true) {						
 						try {
 							// extract logs from queue
-							DelayedLogEntry delayedLogEntry = (DelayedLogEntry) logQueue.take();
+							DelayedLogEntry delayedLogEntry = logQueue.take();
 							if (delayedLogEntry.isQueuePoison()) {
 								if (verbose) {
 									System.out.println("got queue poison, will terminate method 'startCaptureLogs'.");
