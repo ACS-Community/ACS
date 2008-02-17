@@ -19,7 +19,7 @@
 
 /** 
  * @author  acaproni   
- * @version $Id: AlarmTableModel.java,v 1.6 2008/02/17 02:21:12 acaproni Exp $
+ * @version $Id: AlarmTableModel.java,v 1.7 2008/02/17 02:24:14 acaproni Exp $
  * @since    
  */
 
@@ -124,12 +124,12 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 				try {
 					removedAlarm = items.removeOldest(); // Remove the last one
 				} catch (Exception e) {
-					System.err.println("Error adding an alarm: "+e.getMessage());
+					System.err.println("Error removing the oldest alarm: "+e.getMessage());
 					e.printStackTrace(System.err);
 					JOptionPane.showInternalMessageDialog(
 							owner, 
 							e.getMessage(), 
-							"Error adding alarm", 
+							"Error removing the oldest alarm", 
 							JOptionPane.ERROR_MESSAGE);
 					return;
 				}
@@ -228,12 +228,12 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 				items.remove(alarm);	
 			}
 		} catch (Exception e) {
-			System.err.println("Error adding an alarm: "+e.getMessage());
+			System.err.println("Error removing an alarm: "+e.getMessage());
 			e.printStackTrace(System.err);
 			JOptionPane.showInternalMessageDialog(
 					owner, 
 					e.getMessage(), 
-					"Error adding alarm", 
+					"Error removing alarm", 
 					JOptionPane.ERROR_MESSAGE);
 			return;
 		}
@@ -257,6 +257,12 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 		} catch (Exception e) {
 			System.err.println("Error replacing an alarm: "+e.getMessage());
 			e.printStackTrace(System.err);
+			JOptionPane.showInternalMessageDialog(
+					owner, 
+					e.getMessage(), 
+					"Error replacing alarm", 
+					JOptionPane.ERROR_MESSAGE);
+			return;
 		}
 		if (oldAlarm.getAlarm().getStatus().isActive()==newAlarm.getStatus().isActive()) {
 			return;
