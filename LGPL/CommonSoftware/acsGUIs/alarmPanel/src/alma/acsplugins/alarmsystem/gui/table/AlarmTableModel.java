@@ -19,12 +19,13 @@
 
 /** 
  * @author  acaproni   
- * @version $Id: AlarmTableModel.java,v 1.5 2008/02/16 23:19:33 acaproni Exp $
+ * @version $Id: AlarmTableModel.java,v 1.6 2008/02/17 02:21:12 acaproni Exp $
  * @since    
  */
 
 package alma.acsplugins.alarmsystem.gui.table;
 
+import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.table.AbstractTableModel;
 
@@ -35,6 +36,7 @@ import cern.laser.client.data.Alarm;
 import cern.laser.client.services.selection.AlarmSelectionListener;
 import cern.laser.client.services.selection.LaserSelectionException;
 
+import java.awt.Component;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Vector;
@@ -97,7 +99,11 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 	/**
 	 * Constructor
 	 */
-	public AlarmTableModel() {
+	public AlarmTableModel(Component owner) {
+		if (owner==null) {
+			throw new IllegalArgumentException("The owner component can't be null");
+		}
+		this.owner=owner;
 		// Put each alarm type in the has map of the counters
 		for (AlarmGUIType alarmType: AlarmGUIType.values()) {
 			counters.put(alarmType, new AlarmCounter());
@@ -113,13 +119,24 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 	 */
 	public void onAlarm(Alarm alarm) {
 		synchronized (items) {
-			if (items.size()>MAX_ALARMS && items.indexOf(alarm)>=0) {
-				AlarmTableEntry removedAlarm = items.remove(items.size()-1); // Remove the last one
+			if (items.size()==MAX_ALARMS && !items.contains(alarm.getAlarmId())) {
+				AlarmTableEntry removedAlarm=null;
+				try {
+					removedAlarm = items.removeOldest(); // Remove the last one
+				} catch (Exception e) {
+					System.err.println("Error adding an alarm: "+e.getMessage());
+					e.printStackTrace(System.err);
+					JOptionPane.showInternalMessageDialog(
+							owner, 
+							e.getMessage(), 
+							"Error adding alarm", 
+							JOptionPane.ERROR_MESSAGE);
+					return;
+				}
 				counters.get(removedAlarm.getAlarmType()).decCounter();
 			}
-			int pos =items.indexOf(alarm); 
-			if (pos>=0) {
-				replaceAlarm(alarm,pos);
+			if (items.contains(alarm.getAlarmId())) {
+				replaceAlarm(alarm);
 			} else {
 				addAlarm(alarm);
 			}
@@ -139,7 +156,18 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 			return;
 		}
 		AlarmTableEntry newEntry=new AlarmTableEntry(alarm);
-		items.add(0,newEntry);
+		try {
+			items.add(newEntry);
+		} catch (Exception e) {
+			System.err.println("Error adding an alarm: "+e.getMessage());
+			e.printStackTrace(System.err);
+			JOptionPane.showInternalMessageDialog(
+					owner, 
+					e.getMessage(), 
+					"Error adding alarm", 
+					JOptionPane.ERROR_MESSAGE);
+			return;
+		}
 		counters.get(newEntry.getAlarmType()).incCounter();
 	}
 	
@@ -194,38 +222,42 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 		if (alarm.getStatus().isActive()) {
 			throw new IllegalArgumentException("Trying to acknowledge an active alarm");
 		}
-		class RemoveAlarm extends Thread {
-			public Alarm alarmToRemove;
-			public void run() {
-				// Remove the alarm from the table
-				synchronized (items) {
-					items.remove(alarmToRemove);	
-				}
-				counters.get(AlarmGUIType.fromAlarm(alarmToRemove)).decCounter();
-				fireTableDataChanged();
+		// Remove the alarm from the table
+		try {
+			synchronized (items) {
+				items.remove(alarm);	
 			}
+		} catch (Exception e) {
+			System.err.println("Error adding an alarm: "+e.getMessage());
+			e.printStackTrace(System.err);
+			JOptionPane.showInternalMessageDialog(
+					owner, 
+					e.getMessage(), 
+					"Error adding alarm", 
+					JOptionPane.ERROR_MESSAGE);
+			return;
 		}
-		RemoveAlarm thread = new RemoveAlarm();
-		thread.alarmToRemove=alarm;
-		SwingUtilities.invokeLater(thread);
+		counters.get(AlarmGUIType.fromAlarm(alarm)).decCounter();
+		fireTableDataChanged();
 	}
 	
 	/**
 	 * Replace an alarm already in the table
 	 * 
 	 * @param newAlarm The alarm to put in the table
-	 * @param pos The position of the alarm to be replaced
 	 */
-	private void replaceAlarm(Alarm newAlarm, int pos) {
-		if (pos<0 || pos>=items.size()) {
-			throw new IllegalArgumentException("Invalid position for replacement");
-		}
+	private void replaceAlarm(Alarm newAlarm) {
 		if (newAlarm==null) {
 			throw new IllegalArgumentException("The alarm can't be null");
 		}
-		AlarmTableEntry oldAlarm = items.get(pos);
+		AlarmTableEntry oldAlarm = items.get(newAlarm.getAlarmId());
 		AlarmTableEntry newEntry = new AlarmTableEntry(newAlarm);
-		items.setElementAt(newEntry,items.indexOf(oldAlarm));
+		try {
+			items.replace(newEntry);
+		} catch (Exception e) {
+			System.err.println("Error replacing an alarm: "+e.getMessage());
+			e.printStackTrace(System.err);
+		}
 		if (oldAlarm.getAlarm().getStatus().isActive()==newAlarm.getStatus().isActive()) {
 			return;
 		}
@@ -253,8 +285,11 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 	 */
 	public static final int MAX_ALARMS=10000;
 	
+	// The owner component (used to show dialog messages) 
+	private Component owner;
+	
 	// The alarms in the table
-	private Vector<AlarmTableEntry> items = new Vector<AlarmTableEntry>();
+	private AlarmsContainer items = new AlarmsContainer(MAX_ALARMS);
 	
 	// The auto acknowledge level
 	private ComboBoxValues autoAckLvl = ComboBoxValues.NONE ;
