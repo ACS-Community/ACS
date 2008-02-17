@@ -19,12 +19,13 @@
 
 /** 
  * @author  aaproni
- * @version $Id: AlarmTable.java,v 1.3 2008/02/16 23:17:24 acaproni Exp $
+ * @version $Id: AlarmTable.java,v 1.4 2008/02/17 22:42:12 acaproni Exp $
  * @since    
  */
 
 package alma.acsplugins.alarmsystem.gui.table;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.MenuItem;
 import java.awt.Point;
@@ -40,6 +41,7 @@ import java.util.Date;
 
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFileChooser;
+import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
@@ -85,6 +87,7 @@ public class AlarmTable extends JTable implements ActionListener {
 		 * @see MouseListener
 		 */
 		public void mouseClicked(MouseEvent e) {
+			alarmSelected(e);
 			showPopup(e);
 		}
 
@@ -92,6 +95,7 @@ public class AlarmTable extends JTable implements ActionListener {
 		 * @see MouseListener
 		 */
 		public void mousePressed(MouseEvent e) {
+			alarmSelected(e);
 			showPopup(e);
 		}
 
@@ -99,7 +103,19 @@ public class AlarmTable extends JTable implements ActionListener {
 		 * @see MouseListener
 		 */
 		public void mouseReleased(MouseEvent e) {
+			alarmSelected(e);
 			showPopup(e);
+		}
+		
+		/**
+		 * The user selected a row, i.e. an alarm.
+		 * alarmSected notifies the model that the icon showd be removed
+		 * 
+		 * @param e The event to get the selected row from
+		 */
+		private void alarmSelected(MouseEvent e) {
+			int row=rowAtPoint(new Point(e.getX(),+e.getY()));
+			AlarmTable.this.model.alarmSelected(getRowSorter().convertRowIndexToModel(row));	
 		}
 		
 		/**
@@ -276,6 +292,10 @@ public class AlarmTable extends JTable implements ActionListener {
 	private JMenuItem saveMI = new JMenuItem("Save...");
 	private JMenuItem clipMI = new JMenuItem("To clipboard");
 	
+	// The label returned as renderer when no flag is shown in the 
+	// first column of the table
+	private JLabel emptyLbl = new JLabel();
+	
 	/**
 	 * Constructor 
 	 * @param model The model for this table
@@ -351,7 +371,7 @@ public class AlarmTable extends JTable implements ActionListener {
 				Alarm alarm = model.getRowAlarm(rowIndex);
 				return AlarmGUIType.fromAlarm(alarm).renderer;
 			} else {
-				return super.prepareRenderer(renderer, rowIndex, vColIndex);
+				return emptyLbl;
 			}
 		}
 		Component c = super.prepareRenderer(renderer, rowIndex, vColIndex);
