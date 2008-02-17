@@ -57,13 +57,13 @@ public enum LogTypeHelper {
     EMERGENCY(AcsLogLevelDefinition.EMERGENCY,"Emergency","/emergency.gif");
 	
 	// The string describing this entry type
-	public String logEntryType;
+	public final String logEntryType;
 	
 	// The icon to show in the GUI for a given log type
-	public ImageIcon icon;
+	public final ImageIcon icon;
 	
 	// The ACSLogLevelDefinition
-	public AcsLogLevelDefinition acsCoreLevel;
+	public final AcsLogLevelDefinition acsCoreLevel;
     
     /**
      * Constructor
@@ -147,5 +147,9 @@ public enum LogTypeHelper {
             if (logType.icon.getIconHeight()>vDim) vDim=logType.icon.getIconHeight();
         }
         return vDim;
+    }
+    
+    public AcsLogLevelDefinition getAcsCoreLevel() {
+    	return acsCoreLevel;
     }
 }
