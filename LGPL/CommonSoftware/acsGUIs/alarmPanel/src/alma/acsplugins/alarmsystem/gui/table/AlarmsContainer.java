@@ -269,8 +269,10 @@ public class AlarmsContainer {
 			// There was no entry for this ID
 			throw new IllegalStateException("Inconsistent stae of index and entries");
 		}
-		// Move the item in the head of the container
-		String key = index.remove(pos);
-		index.insertElementAt(key, 0);
+		// If active, move the item in the head of the container
+		if (newEntry.getAlarm().getStatus().isActive()) {
+			String key = index.remove(pos);
+			index.insertElementAt(key, 0);
+		}
 	}
 }
