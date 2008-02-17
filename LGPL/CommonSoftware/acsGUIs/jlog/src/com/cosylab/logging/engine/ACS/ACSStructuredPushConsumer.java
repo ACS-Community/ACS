@@ -216,6 +216,8 @@ public final class ACSStructuredPushConsumer extends StructuredPushConsumerPOA
 				} catch (Throwable t) {}
 			}			
 		}
+		// @TODO check why disconnect_structured_push_supplier takes too long sometimes, since ACS 7.0.
+		// It should not be necessary to run this in a separate thread.
 		Thread t = new DestroyClass();
 		t.setName("DestroyClass");
 		t.setDaemon(true);
