@@ -249,28 +249,29 @@ public class AlarmsContainer {
 	}
 	
 	/**
-	 * Replace an entry with the passed one
+	 * Replace the alarm in a row with passed one.
 	 * 
-	 * The entry to replace is given by the alarm ID of the parameter.
+	 * The entry to replace the alarm is given by the alarm ID of the parameter.
 	 * 
-	 * @param newEntry The not null new entry 
+	 * @param newAlarm The not null new alarm 
 	 * @throws AlarmContainerException if the entry is not in the container
 	 */
-	public synchronized void replace(AlarmTableEntry newEntry) throws AlarmContainerException {
-		if (newEntry==null) {
-			throw new IllegalArgumentException("The entry can't be null");
+	public synchronized void replace(Alarm newAlarm) throws AlarmContainerException {
+		if (newAlarm==null) {
+			throw new IllegalArgumentException("The alarm can't be null");
 		}
-		int pos = index.indexOf(newEntry.getAlarm().getAlarmId());
+		int pos = index.indexOf(newAlarm.getAlarmId());
 		if (pos<0) {
 			throw new AlarmContainerException("Entry no present in the container");
 		}
-		AlarmTableEntry old = entries.put(newEntry.getAlarm().getAlarmId(), newEntry);
-		if (old==null) {
+		AlarmTableEntry entry = entries.get(newAlarm.getAlarmId());
+		if (entry==null) {
 			// There was no entry for this ID
 			throw new IllegalStateException("Inconsistent stae of index and entries");
 		}
+		entry.updateAlarm(newAlarm);
 		// If active, move the item in the head of the container
-		if (newEntry.getAlarm().getStatus().isActive()) {
+		if (newAlarm.getStatus().isActive()) {
 			String key = index.remove(pos);
 			index.insertElementAt(key, 0);
 		}
