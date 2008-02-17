@@ -27,16 +27,13 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
-import com.cosylab.logging.engine.log.ILogEntry;
-import com.cosylab.logging.engine.log.LogTypeHelper;
-
 import alma.acs.logging.AcsLogLevel;
 import alma.acs.logging.ClientLogManager;
 import alma.acs.logging.config.LogConfig;
 import alma.acs.logging.engine.LogReceiver;
 import alma.acs.logging.engine.LogReceiver.DelayedLogEntry;
 import alma.acs.logging.level.AcsLogLevelDefinition;
-import alma.maci.loggingconfig.LoggingConfig;
+import alma.acs.util.IsoDateFormat;
 
 /**
  * Tests the {@link alma.acs.logging.engine.LogReceiver} obtained 
@@ -55,8 +52,9 @@ public class ClientWithLogReceiverTest extends ComponentClientTestCase {
     
     protected void setUp() throws Exception {
     	// to not suppress any remote logging (would usually be configured through the CDB)  
-    	System.setProperty("ACS.log.minlevel.remote", "2");
+    	System.setProperty(LogConfig.PROPERTYNAME_MIN_LOG_LEVEL, "2");
         super.setUp();
+        m_logger.info("------------ setUp " + getName() + " --------------");
         logReceiver = getLogReceiver();
     }
 
@@ -80,52 +78,71 @@ public class ClientWithLogReceiverTest extends ComponentClientTestCase {
      */
     public void testLogQueueNoDelay() throws Exception {
     	LogConfig logConfig = ClientLogManager.getAcsLogManager().getLogConfig();
-    	assertEquals("For this test, even low-level logs must be sent off remotely.", AcsLogLevelDefinition.TRACE, logConfig.getDefaultMinLogLevel());
+    	assertEquals("For this test, even low-level logs must be sent off remotely.", 
+    			AcsLogLevelDefinition.TRACE, logConfig.getDefaultMinLogLevel());
         logReceiver.setDelayMillis(0);
         BlockingQueue<DelayedLogEntry> queue = logReceiver.getLogQueue();
         
-        Level[] levels = new Level[] {Level.FINEST, Level.FINE, Level.INFO, Level.WARNING, Level.SEVERE};
-        Random random = new Random(System.currentTimeMillis());
-        for (int i=0; i<levels.length; i++) {
-            Level level = levels[random.nextInt(levels.length)];
-            String acsLevelName = AcsLogLevel.getNativeLevel(level).getEntryName();
-            // it's pretty odd that jlog uses its own set of log type integers 
-            LogTypeHelper logType = LogTypeHelper.fromLogTypeDescription(acsLevelName);
-            
+        // the set of log levels to be randomly selected for the test logs 
+        AcsLogLevelDefinition[] coreLevels = new AcsLogLevelDefinition[] {
+        		AcsLogLevelDefinition.TRACE,
+        		AcsLogLevelDefinition.DEBUG,
+        		AcsLogLevelDefinition.INFO,
+        		AcsLogLevelDefinition.WARNING, 
+        		AcsLogLevelDefinition.EMERGENCY };
+        
+        int numberOfTestLogs = 10;
+        Random random = new Random(System.currentTimeMillis());        
+        
+        // loop for sending several test logs
+        for (int i=0; i < numberOfTestLogs; i++) {
+        	AcsLogLevelDefinition coreLevel = coreLevels[random.nextInt(coreLevels.length)];
+        	AcsLogLevel acsJdkLevel = AcsLogLevel.fromAcsCoreLevel(coreLevel);
+        	
+        	// Log the test record
             String logMessage = "This is log number " + i;
-            m_logger.log(level, logMessage);
+            m_logger.log(acsJdkLevel, logMessage);
             
-            // in spite of zero queue sorting delay, we need a long timeout 
-            // to compensate travel delay when sending log records to Log service,
-            // and then getting them back over the network.
-            long timeoutSec = 10L + logConfig.getFlushPeriodSeconds();
-            while (true) {
-	            DelayedLogEntry delayedLogEntry = queue.poll(timeoutSec, TimeUnit.SECONDS);            
+            // Wait for the test record to come back from the Log service.
+            // In spite of zero queue sorting delay, we need a long timeout 
+            // to compensate for travel delays to and from the Log service.
+            int delayLogServiceSec = 20; // should be much less, but currently we have problems there.
+            int timeoutSec = logConfig.getFlushPeriodSeconds() + delayLogServiceSec;
+            long timeoutSysMillis = System.currentTimeMillis() + timeoutSec*1000;
+            while (true) { // System.currentTimeMillis() < timeoutSysMillis
+            	// wait on the queue for a log record to arrive
+	            DelayedLogEntry delayedLogEntry = queue.poll(timeoutSysMillis - System.currentTimeMillis(), TimeUnit.MILLISECONDS);            
 	            if (delayedLogEntry != null) {
+	            	// got something, must check if it was the record we sent
 	            	if (delayedLogEntry.isQueuePoison()) {
 	            		fail("Unexpected end of log queue.");
 	            	}
-	                ILogEntry logEntry = delayedLogEntry.getLogEntry();
-	                String sourceObjectName = (String) logEntry.getField(ILogEntry.Field.SOURCEOBJECT);
+	                LogReceiver.ReceivedLogRecord logRecord = delayedLogEntry.getLogRecord();
+	                String sourceObjectName = logRecord.getSourceObject();
 	                if (sourceObjectName!=null && sourceObjectName.equals("ClientWithLogReceiverTest#testLogQueueNoDelay")) {
-		                assertEquals(logMessage, logEntry.getField(ILogEntry.Field.LOGMESSAGE));
-		                assertEquals(logType, ((LogTypeHelper)logEntry.getField(ILogEntry.Field.ENTRYTYPE)));
+	                	// it's a log record sent from this process 
+		                assertEquals("Log message text must match the test log record", 
+		                		logMessage, logRecord.getMessage());
+		                assertEquals("Log level must match the test log record", 
+		                		coreLevel, logRecord.getLevel().getAcsCoreLevel());
 		                System.out.println("Received back log record #" + i);
 		                break; // and continue outer loop with next log record
 	                }
 	                else {
-	                	// was some other stray log, perhaps from a previously running ACS component
-	                	System.out.println("Ignoring log from SourceObject=" + sourceObjectName);
+	                	// was some other stray log, perhaps from a previously running ACS component, or the pinging jmanager
+	                	// we stay in the while loop and wait again for another record to be delivered by the queue
+	                	System.out.println(IsoDateFormat.formatCurrentDate() + ": Ignoring received log " + IsoDateFormat.formatDate(logRecord.getTimestamp()) + 
+	                			" [" + sourceObjectName + "]");
 	                }
 	            }
 	            else {
-	            	// todo: change this timeout to be not circumvented by stray log messages from other clients.
 	                fail("Did not receive the expected log record #" + i + " within " + timeoutSec + " seconds.");
 	            }
             }
         }
         logReceiver.stop();
     }
+    
     
     public void testLogCapture() throws Exception {
     	PrintWriter logWriter = new PrintWriter(System.out, true); //new BufferedWriter(new FileWriter(logFile)));
