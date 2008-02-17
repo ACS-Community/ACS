@@ -54,7 +54,7 @@ public class LCEngine {
 	 */
 	private final int CHECK_INTERVAL = 15;
 	
-	// The boolean remeber if the client was connected before
+	// The boolean remember if the client was connected before
 	// checking for the connection (needed to understand if the
 	// connection has been lost or never happened)
 	private boolean wasConnected=false;
