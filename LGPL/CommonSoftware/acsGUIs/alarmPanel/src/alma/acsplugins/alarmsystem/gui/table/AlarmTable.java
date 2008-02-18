@@ -19,15 +19,13 @@
 
 /** 
  * @author  aaproni
- * @version $Id: AlarmTable.java,v 1.4 2008/02/17 22:42:12 acaproni Exp $
+ * @version $Id: AlarmTable.java,v 1.5 2008/02/18 01:06:34 acaproni Exp $
  * @since    
  */
 
 package alma.acsplugins.alarmsystem.gui.table;
 
-import java.awt.Color;
 import java.awt.Component;
-import java.awt.MenuItem;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -48,6 +46,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.JTable;
 import javax.swing.JComponent;
 import javax.swing.SwingUtilities;
+import javax.swing.ToolTipManager;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.RowSorterListener;
 import javax.swing.table.DefaultTableColumnModel;
@@ -345,6 +344,11 @@ public class AlarmTable extends JTable implements ActionListener {
 		getTableHeader().addMouseListener(new AlarmHeaderMouseAdapter());
 		
 		buildPopupMenu();
+		
+		// Set the tooltip
+		ToolTipManager ttm = ToolTipManager.sharedInstance();
+		ttm.setDismissDelay(Integer.MAX_VALUE);
+		ttm.setLightWeightPopupEnabled(true);
 	}
 	
 	/**
@@ -380,7 +384,11 @@ public class AlarmTable extends JTable implements ActionListener {
 	
 		if (c instanceof JComponent) {
 			JComponent jc = (JComponent) c;
-			jc.setToolTipText("<HTML>"+((AlarmTableModel)model).getCellContent(rowIndex, vColIndex));
+			if (((AlarmTableModel)model).getCellContent(sorter.convertRowIndexToModel(rowIndex), vColIndex)==null) {
+				jc.setToolTipText(null);
+			} else { 
+				jc.setToolTipText("<HTML>"+((AlarmTableModel)model).getCellContent(sorter.convertRowIndexToModel(rowIndex), vColIndex));
+			}
 		}
 		return c;
 	}
