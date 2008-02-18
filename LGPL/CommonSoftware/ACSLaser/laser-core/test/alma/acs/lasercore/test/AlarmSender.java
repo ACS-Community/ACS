@@ -50,6 +50,13 @@ import alma.alarmsystem.source.ACSFaultState;
  */
 public class AlarmSender extends ComponentClientTestCase implements SourceListener, AlarmSelectionListener {
 	
+	private static void initClients(ContainerServices cSvc, AlarmSender sender) throws Exception {
+		if (categoryClient==null) {
+			categoryClient=new CategoryClient(cSvc);
+			categoryClient.connect(sender);
+		}
+	}
+	
 	// The triplet
 	private static final String FF = "PS";
 	private static final String FM = "PS_MEMBER";
@@ -66,6 +73,12 @@ public class AlarmSender extends ComponentClientTestCase implements SourceListen
 	private Vector<FaultState> faultStatesReceived;
 	private Vector<Alarm> alarmsReceived;
 	private volatile int numOfAlarmsReceived;
+	
+	// The category client
+	private static CategoryClient categoryClient=null;
+	
+	// The source client
+	private SourceClient sourceClient=null;
 	
 	// Container services
 	private ContainerServices contSvcs;
@@ -100,6 +113,17 @@ public class AlarmSender extends ComponentClientTestCase implements SourceListen
 		faultStatesReceived=new Vector<FaultState>();
 		alarmsReceived=new Vector<Alarm>();
 		numOfAlarmsReceived=0;
+		
+		initClients(contSvcs,this);
+		assertNotNull(categoryClient);
+		
+		sourceClient = new SourceClient(contSvcs);
+		assertNotNull(sourceClient);
+		sourceClient.addAlarmListener(this);
+		sourceClient.connect();
+		
+		alarmsReceived.clear();
+		faultStatesReceived.clear();
 	}
 	
 	/**
@@ -114,6 +138,8 @@ public class AlarmSender extends ComponentClientTestCase implements SourceListen
 		
 		faultStatesReceived.clear();
 		alarmsReceived.clear();
+		
+		sourceClient.close();
 		
 		super.tearDown();
 	}
@@ -138,8 +164,10 @@ public class AlarmSender extends ComponentClientTestCase implements SourceListen
 	}
 	
 	public void faultStateReceived(FaultState faultState) {
+		assertNotNull(faultState);
 		synchronized(faultStatesReceived){
 			faultStatesReceived.add(faultState);
+			System.out.println("FAULT STATE Received >>>>>>\n"+faultState+"\n<<<<<<<<<<<<<<<<<<<\n");
 		}
 	}
 	
@@ -147,8 +175,11 @@ public class AlarmSender extends ComponentClientTestCase implements SourceListen
 	 * @see AlarmSelectionListener
 	 */
 	public void onAlarm(Alarm alarm) {
+		assertNotNull(alarm);
 		synchronized (alarmsReceived) {
 			alarmsReceived.add(alarm);
+			numOfAlarmsReceived++;
+			System.out.println("ALARM Received >>>>>>\n"+alarm+"\n<<<<<<<<<<<<<<<<<<<\n");
 		}
 	}
 	
@@ -166,12 +197,12 @@ public class AlarmSender extends ComponentClientTestCase implements SourceListen
 	 * @throws Exception
 	 */
 	public void testCategories() throws Exception {
-		CategoryClient categoryClient = new CategoryClient(contSvcs);
-		assertNotNull(categoryClient);
-		categoryClient.connect(this);
 		
 		// send 2 alarms active and inactive
 		send_alarm(FF, FM, FC, true);
+		try {
+			Thread.sleep(5000);
+		} catch (Exception e) {}
 		send_alarm(FF, FM, FC, false);
 		
 		// wait until 2 alarms are received in the source NC
@@ -181,21 +212,23 @@ public class AlarmSender extends ComponentClientTestCase implements SourceListen
 				Thread.sleep(500);
 			} catch (Exception e) {}
 		}
-		assertEquals("Not all the alarms appeared in the category channels", 2, alarmsReceived.size());
+		assertEquals("Not all the alarms appeared in the category channels", 2, numOfAlarmsReceived);
 		
 		// Check the content of the 2 alarms
 		Alarm al1 = alarmsReceived.get(0);
+		System.out.println("al1 "+al1+"\n\n");
 		assertNotNull(al1);
 		assertEquals(al1.getAlarmId(), FF+":"+FM+":"+FC);
 		assertEquals(al1.getProblemDescription(),"PS test alarm");
-		assertFalse(al1.getStatus().isActive());
+		assertTrue(al1.getStatus().isActive());
 		assertEquals(al1.getPriority(), Integer.valueOf(2));
 		
 		Alarm al2 = alarmsReceived.get(1);
+		System.out.println("al2 "+al2+"\n\n");
 		assertNotNull(al2);
 		assertEquals(al2.getAlarmId(), FF+":"+FM+":"+FC);
 		assertEquals(al2.getProblemDescription(),"PS test alarm");
-		assertTrue(al2.getStatus().isActive());
+		assertFalse(al2.getStatus().isActive());
 		assertEquals(al2.getPriority(), Integer.valueOf(2));
 	}
 	
@@ -205,11 +238,8 @@ public class AlarmSender extends ComponentClientTestCase implements SourceListen
 	 * 
 	 * @throws Exception
 	 */
-	public void testSource() throws Exception {
-		SourceClient sourceClient = new SourceClient(contSvcs);
-		assertNotNull(sourceClient);
-		sourceClient.addAlarmListener(this);
-		sourceClient.connect();
+	public void trestSource() throws Exception {
+		
 		// send 2 alarms active and inactive
 		send_alarm(FF, FM, FC, true);
 		send_alarm(FF, FM, FC, false);
@@ -229,11 +259,13 @@ public class AlarmSender extends ComponentClientTestCase implements SourceListen
 		assertEquals(fs1.getFamily(), FF);
 		assertEquals(fs1.getMember(), FM);
 		assertEquals(fs1.getCode(), FC);
+		assertEquals(fs1.getDescriptor(),FaultState.ACTIVE);
 		
 		FaultState fs2 = faultStatesReceived.get(1);
-		assertNotNull(fs1);
+		assertNotNull(fs2);
 		assertEquals(fs2.getFamily(), FF);
 		assertEquals(fs2.getMember(), FM);
 		assertEquals(fs2.getCode(), FC);
+		assertEquals(fs2.getDescriptor(),FaultState.TERMINATE);
 	}
 }
