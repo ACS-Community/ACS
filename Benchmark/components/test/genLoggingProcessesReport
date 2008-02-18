@@ -409,14 +409,16 @@ NUM_LOGS=$1
 NUM_COMPONENTS=$2
 DELAY=$3
 
-# 'guesstimate' the amount of time we need to monitor the processes using the unix
-# sar command by a rough rule of thumb that 100000 logs require ~ 100 secs
+# 'guesstimate' the amount of time we need to monitor the processes using the
+# unix sar command by a rough rule of thumb that 100000 logs require ~ 100 s.
+# But as we'll wait anyway till the producing component has finished, we
+# can cut this extra-wait time down
 debugPrint "NUM_LOGS was: $NUM_LOGS"
-EXTRA_WAIT_TIME=`expr \( $NUM_LOGS / 1000 \)`
+EXTRA_WAIT_TIME=`expr \( $NUM_LOGS / 2000 \)`
 debugPrint "EXTRA_WAIT_TIME was calculated as: $EXTRA_WAIT_TIME"
-if [ "$EXTRA_WAIT_TIME" -le "40" ] ;
+if [ "$EXTRA_WAIT_TIME" -le "30" ] ;
 then
-    EXTRA_WAIT_TIME=40
+    EXTRA_WAIT_TIME=30
 fi
 
 debugPrint "Extra wait time will be: $EXTRA_WAIT_TIME"
