@@ -10,6 +10,9 @@ import java.net.SocketException;
 import java.util.Enumeration;
 import java.util.Properties;
 import java.util.Vector;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 import de.mud.ssh.SshWrapper;
@@ -21,7 +24,8 @@ import alma.acs.commandcenter.trace.Flow;
 import alma.acs.commandcenter.util.MiscUtils;
 import alma.acs.commandcenter.util.PreparedString;
 import alma.acs.commandcenter.util.StringRingBuffer;
-import alma.acs.container.ContainerServicesBase;
+import alma.acs.container.corba.AcsCorba;
+import alma.acs.exceptions.AcsJCompletion;
 import alma.acs.util.ACSPorts;
 import alma.acs.util.AcsLocations;
 import alma.acsdaemon.ContainerDaemon;
@@ -612,27 +616,35 @@ public class Executor {
    // ------------------- Remote using Daemons --------------------- //
    ////////////////////////////////////////////////////////////////////
 
-   static private Firestarter firestarter;
-   
-   static public void remoteDaemonEnable (Firestarter fs) {
-   	firestarter = fs;
-   }
-   
-   static public void remoteDaemonForServices (String host, int instance, boolean startStop, String cmdFlags, NativeCommand.Listener listener) {
-   	if (listener != null) {
-   		listener.stdoutWritten(null, "\nIn daemon mode, output cannot be displayed.\n" +
-   				"See logs in <daemon-owner>/.acs/commandcenter on host "+host+"\n");
-   	}
+	static private Firestarter firestarter;
 
-   	String info = ((startStop)? "Starting" : "Stopping") + " Acs Suite on host '"+host+"' (instance "+instance+")"; 
-   	remoteServicesDaemonFlow.reset(info);
+	static public void remoteDaemonEnable(Firestarter fs) {
+		firestarter = fs;
+	}
 
-   	ACSPorts ports = ACSPorts.globalInstance(instance);
+	/**
+	 * Starts or stops ACS via the ACS services daemon. 
+	 * This call returns only when the action has completed.
+	 */
+	static public void remoteDaemonForServices(String host, int instance, boolean startStop, String cmdFlags,
+			NativeCommand.Listener listener) {
+		if (listener != null) {
+			listener.stdoutWritten(null, "\nIn daemon mode, output cannot be displayed.\n"
+					+ "See logs in <daemon-owner>/.acs/commandcenter on host " + host + "\n");
+		}
+
+		String info = ((startStop) ? "Starting" : "Stopping") + " Acs Suite on host '" + host + "' (instance "
+				+ instance + ")";
+		remoteServicesDaemonFlow.reset(info);
+
+		ACSPorts ports = ACSPorts.globalInstance(instance);
 		String daemonLoc = AcsLocations.convertToServicesDaemonLocation(host, ports.giveServicesDaemonPort());
 
 		org.omg.CORBA.ORB orb;
+		AcsCorba acsCorba = null;
 		try {
-			orb = firestarter.giveOrb();
+			acsCorba = firestarter.giveAcsCorba();			
+			orb = acsCorba.getORB();
 		} catch (OrbInitException exc) {
 			remoteServicesDaemonFlow.failure(exc);
 			return;
@@ -654,57 +666,75 @@ public class Executor {
 		}
 		remoteServicesDaemonFlow.success(RemoteServicesDaemonFlow.CONNECT_DAEMON);
 		
-		
 		try {
+			final BlockingQueue<Completion> sync = new ArrayBlockingQueue<Completion>(1);
+			DaemonCallbackPOA daemonCallbackImpl = new DaemonCallbackPOA() {
+				public void done(Completion comp) {
+					sync.add(comp);
+				}
+				public void working(Completion comp) {
+					// @TODO negotiate with daemon module developers 
+					//       what intermittent data should be sent when, if at all.
+				}
+			};
+			DaemonCallback daemonCallback = DaemonCallbackHelper.narrow(
+					acsCorba.activateOffShoot(daemonCallbackImpl, acsCorba.getRootPOA()) );
 			if (startStop == true) {
-				DaemonCallbackPOA startAcsCallbackImpl = new DaemonCallbackPOA() {
-					public void done(Completion comp) {
-						// @TODO
-					}
-					public void working(Completion comp) {
-						// @TODO
-					}
-				};
-				// @TODO : this should be 
-				// DaemonCallback startAcsCallback = DaemonCallbackHelper.narrow(containerServices.activateOffShoot(startAcsCallbackImpl));
-				DaemonCallback startAcsCallback = null;
-				remoteServicesDaemonFlow.failure("Using null parameter in call to daemon.start_acs");
-				daemon.start_acs(startAcsCallback, (short)instance, cmdFlags);
+				daemon.start_acs(daemonCallback, (short)instance, cmdFlags);
 			} else {
-				// @TODO add callback object, similar to above case
-				DaemonCallback stopAcsCallback = null; 
-				remoteServicesDaemonFlow.failure("Using null parameter in call to daemon.stop_acs");
-				daemon.stop_acs(stopAcsCallback, (short)instance, cmdFlags);
+				daemon.stop_acs(daemonCallback, (short)instance, cmdFlags);
+			}
+			remoteServicesDaemonFlow.success(RemoteServicesDaemonFlow.SEND_COMMAND);
+			
+			// The services daemon's start/stop methods are implemented asynchronously,
+			// which means we need to wait for the callback notification.
+			// @TODO: Perhaps a 10 minute timeout is too much though?
+			long timeout = 10;
+			TimeUnit timeoutUnit = TimeUnit.MINUTES;
+			Completion daemonReplyRaw = sync.poll(timeout, timeoutUnit);
+			if (daemonReplyRaw != null) {
+				AcsJCompletion daemonReply = AcsJCompletion.fromCorbaCompletion(daemonReplyRaw);
+				if (daemonReply.isError()) {
+					daemonReply.getAcsJException();
+				}
+			}
+			else {
+				// timeout while waiting for callback from the daemon
+				remoteServicesDaemonFlow.failure("ACS services daemon did not finish to " + 
+						( startStop ? "start" : "stop" ) + " ACS within timout of " +
+						timeout + " " + timeoutUnit.toString());
 			}
 		} catch (Exception exc) {
 			remoteServicesDaemonFlow.failure(exc);
 			return;
 		}
-		remoteServicesDaemonFlow.success(RemoteServicesDaemonFlow.SEND_COMMAND);
+		remoteServicesDaemonFlow.success(RemoteServicesDaemonFlow.AWAIT_RESPONSE);
 
 
-		boolean isManagerThere;
-		String managerLoc = AcsLocations.convertToManagerLocation(host, ports.giveManagerPort());
-		int wait = 60;
-		int every = 3;
-		for (int i = 0; i < wait; i += every) {
-			try {
-				Thread.sleep(every * 1000);
-			} catch (InterruptedException exc) {
-				break; // who interrupted us? anyway, stop probing.
-			}
-			try {
-				org.omg.CORBA.Object obj = orb.string_to_object(managerLoc);
-				isManagerThere = !obj._non_existent(); // simple check if obj is null wouldn't work
-			} catch (RuntimeException exc) {
-				isManagerThere = false;
-			}
-			if (startStop == isManagerThere) {
-				remoteServicesDaemonFlow.success(RemoteServicesDaemonFlow.AWAIT_RESPONSE);
-				return;
-			}
-		}
-		remoteServicesDaemonFlow.failure("Couldn't verify daemon executed successfully");
+// The following hacked up synchronization should no longer be needed, now that the daemons provide proper
+// sync'ing via the done() callback method
+//		boolean isManagerThere;
+//		String managerLoc = AcsLocations.convertToManagerLocation(host, ports.giveManagerPort());
+//		int wait = 60;
+//		int every = 3;
+//		for (int i = 0; i < wait; i += every) {
+//			try {
+//				Thread.sleep(every * 1000);
+//			} catch (InterruptedException exc) {
+//				break; // who interrupted us? anyway, stop probing.
+//			}
+//			try {
+//				org.omg.CORBA.Object obj = orb.string_to_object(managerLoc);
+//				isManagerThere = !obj._non_existent(); // simple check if obj is null wouldn't work
+//			} catch (RuntimeException exc) {
+//				isManagerThere = false;
+//			}
+//			if (startStop == isManagerThere) {
+//				remoteServicesDaemonFlow.success(RemoteServicesDaemonFlow.AWAIT_RESPONSE);
+//				return;
+//			}
+//		}
+//		remoteServicesDaemonFlow.failure("Couldn't verify daemon executed successfully");
 
    }
 
