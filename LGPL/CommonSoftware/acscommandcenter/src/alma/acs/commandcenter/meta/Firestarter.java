@@ -110,9 +110,18 @@ public class Firestarter {
 	 * @throws Exception any connection-related exception
 	 */
 	public org.omg.CORBA.ORB giveOrb () throws OrbInitException {
-		prepareAcsCorba(); // may fail
+		return giveAcsCorba().getORB();
+	}
 
-		return acsCorba.getORB();
+	/**
+	 * Should only be used by people who know what they're doing!
+	 * 
+	 * @return the object that encapsulates orb and poas
+	 * @throws Exception any connection-related exception
+	 */
+	public AcsCorba giveAcsCorba() throws OrbInitException {
+		prepareAcsCorba(); // may fail
+		return acsCorba;
 	}
 
 
