@@ -703,6 +703,7 @@ public class Executor {
 				remoteServicesDaemonFlow.failure("ACS services daemon did not finish to " + 
 						( startStop ? "start" : "stop" ) + " ACS within timout of " +
 						timeout + " " + timeoutUnit.toString());
+				return;
 			}
 		} catch (Exception exc) {
 			remoteServicesDaemonFlow.failure(exc);
