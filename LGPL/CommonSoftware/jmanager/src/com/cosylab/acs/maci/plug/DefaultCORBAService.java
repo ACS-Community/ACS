@@ -37,17 +37,23 @@ public class DefaultCORBAService implements Runnable
 	private POA rootPOA = null;
 	
 	/**
+	 * Logger.
+	 */
+	private Logger logger = null;
+
+	/**
 	 * Constructor for DefaultCORBAService.
 	 */
 	public DefaultCORBAService(Logger logger)
 	{
-		internalInitialize(logger);
+		this.logger = logger;
+		internalInitialize();
 	}
 
 	/**
 	 * Initializes the CORBA.
 	 */
-	private void internalInitialize(Logger logger) 
+	private void internalInitialize() 
 	{
 
 		// ORB stanza
@@ -101,15 +107,22 @@ public class DefaultCORBAService implements Runnable
 		// destory ORB
 		if (orb != null)
 		{
-			// possible solution with orb.work_pending
-			// but JacORB has no implementation of it
-			
-			// do not wait for completion
-			orb.shutdown(false);
-			
-			// and finally destroy
-			orb.destroy();
-			orb = null;
+			try
+			{
+				// possible solution with orb.work_pending
+				// but JacORB has no implementation of it
+				
+				// do not wait for completion
+				orb.shutdown(false);
+				
+				// and finally destroy
+				orb.destroy();
+				orb = null;
+			}
+			catch (Throwable th) {
+				// @TODO revisit org.omg.CORBA.COMM_FAILURE in ORB.shutdown() after JacORB upgrade
+				//logger.log(Level.FINER, "Harmless exception caught while destroying ORB.", th);
+			}
 		}
 
 	}
