@@ -19,7 +19,7 @@
 
 /** 
  * @author  acaproni   
- * @version $Id: AlarmTableModel.java,v 1.7 2008/02/17 02:24:14 acaproni Exp $
+ * @version $Id: AlarmTableModel.java,v 1.8 2008/02/18 00:02:26 acaproni Exp $
  * @since    
  */
 
@@ -250,10 +250,13 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 		if (newAlarm==null) {
 			throw new IllegalArgumentException("The alarm can't be null");
 		}
-		AlarmTableEntry oldAlarm = items.get(newAlarm.getAlarmId());
-		AlarmTableEntry newEntry = new AlarmTableEntry(newAlarm);
+		AlarmTableEntry oldAlarmEntry = items.get(newAlarm.getAlarmId());
+		AlarmGUIType oldAlarmType = oldAlarmEntry.getAlarmType();
+		boolean oldAlarmStatus = oldAlarmEntry.getAlarm().getStatus().isActive();
 		try {
-			items.replace(newEntry);
+			synchronized (items) {
+				items.replace(newAlarm);
+			}
 		} catch (Exception e) {
 			System.err.println("Error replacing an alarm: "+e.getMessage());
 			e.printStackTrace(System.err);
@@ -264,12 +267,12 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 					JOptionPane.ERROR_MESSAGE);
 			return;
 		}
-		if (oldAlarm.getAlarm().getStatus().isActive()==newAlarm.getStatus().isActive()) {
+		if (oldAlarmStatus==newAlarm.getStatus().isActive()) {
 			return;
 		}
 		// Update the counters
-		counters.get(oldAlarm.getAlarmType()).decCounter();
-		counters.get(newEntry.getAlarmType()).incCounter();
+		counters.get(oldAlarmEntry.getAlarmType()).incCounter();
+		counters.get(oldAlarmType).decCounter();
 		if (!newAlarm.getStatus().isActive()) {
 			// The alarm became INACTIVE
 			autoAcknowledge(newAlarm);
@@ -442,5 +445,15 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 			throw new IllegalStateException("A counter for the type "+type+"does not exist");
 		}
 		return ret;
+	}
+	
+	/**
+	 * The user pressed one mouse button over a row
+	 */
+	public void alarmSelected(int row) {
+		synchronized (items) {
+			items.get(row).alarmSeen();
+		}
+		fireTableRowsUpdated(row, row);
 	}
 }
