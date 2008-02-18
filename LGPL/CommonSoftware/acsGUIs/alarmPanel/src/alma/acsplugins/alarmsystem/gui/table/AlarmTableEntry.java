@@ -108,7 +108,7 @@ public class AlarmTableEntry {
 	 * The user saw the alarm and press one mouse button over its line
 	 * so the alarm is not new anymore
 	 */
-	public void alrmSeen() {
+	public void alarmSeen() {
 		isNew=false;
 	}
 }
