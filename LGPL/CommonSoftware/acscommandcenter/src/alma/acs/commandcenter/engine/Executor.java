@@ -695,13 +695,13 @@ public class Executor {
 			if (daemonReplyRaw != null) {
 				AcsJCompletion daemonReply = AcsJCompletion.fromCorbaCompletion(daemonReplyRaw);
 				if (daemonReply.isError()) {
-					daemonReply.getAcsJException();
+					remoteServicesDaemonFlow.failure(daemonReply.getAcsJException());
 				}
 			}
 			else {
 				// timeout while waiting for callback from the daemon
 				remoteServicesDaemonFlow.failure("ACS services daemon did not finish to " + 
-						( startStop ? "start" : "stop" ) + " ACS within timout of " +
+						( startStop ? "start" : "stop" ) + " ACS within timeout of " +
 						timeout + " " + timeoutUnit.toString());
 				return;
 			}
@@ -710,34 +710,7 @@ public class Executor {
 			return;
 		}
 		remoteServicesDaemonFlow.success(RemoteServicesDaemonFlow.AWAIT_RESPONSE);
-
-
-// The following hacked up synchronization should no longer be needed, now that the daemons provide proper
-// sync'ing via the done() callback method
-//		boolean isManagerThere;
-//		String managerLoc = AcsLocations.convertToManagerLocation(host, ports.giveManagerPort());
-//		int wait = 60;
-//		int every = 3;
-//		for (int i = 0; i < wait; i += every) {
-//			try {
-//				Thread.sleep(every * 1000);
-//			} catch (InterruptedException exc) {
-//				break; // who interrupted us? anyway, stop probing.
-//			}
-//			try {
-//				org.omg.CORBA.Object obj = orb.string_to_object(managerLoc);
-//				isManagerThere = !obj._non_existent(); // simple check if obj is null wouldn't work
-//			} catch (RuntimeException exc) {
-//				isManagerThere = false;
-//			}
-//			if (startStop == isManagerThere) {
-//				remoteServicesDaemonFlow.success(RemoteServicesDaemonFlow.AWAIT_RESPONSE);
-//				return;
-//			}
-//		}
-//		remoteServicesDaemonFlow.failure("Couldn't verify daemon executed successfully");
-
-   }
+	}
 
    public static class RemoteServicesDaemonFlow extends Flow {
    	static final String INIT_CORBA = "Assert corba connectivity";
