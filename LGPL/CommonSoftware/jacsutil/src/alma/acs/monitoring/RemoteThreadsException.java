@@ -21,6 +21,11 @@
  */
 package alma.acs.monitoring;
 
+/**
+ * Exception used by the RemoteThreadsClient class to catch and throw information
+ * when errors are present in the execution of the process.
+ * @author rtobar
+ */
 public class RemoteThreadsException extends Exception {
 
 	public RemoteThreadsException(String string, Throwable e) {
@@ -39,6 +44,5 @@ public class RemoteThreadsException extends Exception {
 	 * Default serialVersionUID
 	 */
 	private static final long serialVersionUID = 1L;
-
 	
 }

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry path="" kind="src"/>
+	<classpathentry path="org.eclipse.jdt.launching.JRE_CONTAINER" kind="con"/>
+	<classpathentry path="/usr/java/jdk1.6.0_02/lib/tools.jar" kind="lib"/>
+	<classpathentry path="org.eclipse.jdt.USER_LIBRARY/ACS jars" kind="con"/>
+	<classpathentry path="" kind="output"/>
+</classpath>

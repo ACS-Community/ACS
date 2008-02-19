@@ -21,6 +21,9 @@
  */
 package alma.acs.monitoring;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+
 public class RemoteThreadsMonitor {
 	
 	private RemoteThreadsClient rtc = null;
@@ -38,6 +41,7 @@ public class RemoteThreadsMonitor {
 		RemoteThreadsMonitor rtm = new RemoteThreadsMonitor(args);
 		RemoteThreadsMBean mbean = rtm.getMBean();
 		System.out.println(mbean.getAcsContainerThreadsCount());
+		rtm.close();
 	}
 
 	public RemoteThreadsMonitor(String[] args) {
@@ -52,7 +56,14 @@ public class RemoteThreadsMonitor {
 			}
 		} else if ( args.length == 2 ){
 			try {
-				rtc = new RemoteThreadsClient(args[0],Integer.valueOf(args[1]).intValue());
+				InetAddress remoteHost = null;
+				try {
+					remoteHost = InetAddress.getByName(args[0]);
+				} catch (UnknownHostException e) {
+					System.err.println("Unknown host " + args[0]);
+					System.exit(1);
+				}
+				rtc = new RemoteThreadsClient(remoteHost,Integer.valueOf(args[1]).intValue());
 			} catch (NumberFormatException e) {
 				System.err.println("The given port is not a number");
 				e.printStackTrace();
@@ -94,5 +105,13 @@ public class RemoteThreadsMonitor {
 		}
 		
 		return mbean;
+	}
+	
+	public void close() {
+		try {
+			rtc.close();
+		} catch (RemoteThreadsException e) {
+			System.err.println("Can't close connection to the MBean server");
+		}
 	}
 }
