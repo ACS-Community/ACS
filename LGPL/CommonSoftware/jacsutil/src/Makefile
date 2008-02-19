@@ -19,15 +19,17 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.16 2006/12/07 17:01:17 mschilli Exp $"
+# "@(#) $Id: Makefile,v 1.17 2008/02/19 15:00:58 rtobar Exp $"
 #
 # Makefile of ........
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
 # gchiozzi 2003-05-17 created
+# rtobar   2008-02-19 added tools.jar file to classpath
 #
 
+CLASSPATH = $(JAVA_HOME)/lib/tools.jar:.
 
 #
 # 3rd party Install files
