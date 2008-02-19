@@ -283,7 +283,11 @@ public boolean applyTo(ILogEntry logEntry, boolean lethalCircumstances) {
 			return true;
 		}
 	} else if (constraint == EXACT) {
-		res = exact.equals(logEntry.getField(Field.values()[field]));
+		if (field==ILogEntry.Field.ENTRYTYPE.ordinal()) {
+			res = (Integer)exact == logEntry.getType().ordinal();
+		} else {
+			res = exact.equals(logEntry.getField(Field.values()[field]));
+		}
 	} else {
 		Comparable logField = (Comparable)(filterableField);
 		if ((constraint == MINIMUM) || (constraint == MINMAX)) {
