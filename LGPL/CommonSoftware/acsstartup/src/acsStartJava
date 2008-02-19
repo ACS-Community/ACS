@@ -6,7 +6,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: acsStartJava,v 1.48 2008/01/23 12:29:56 hsommer Exp $"
+# "@(#) $Id: acsStartJava,v 1.49 2008/02/19 12:52:53 eallaert Exp $"
 #
 # who      when       what
 # -------- ---------- ----------------------------------------------
@@ -122,19 +122,31 @@ function printUsage {
 
 #
 # Run getopt (posixly_correct needed). We run twice:
-# First run is simply to check the commandline for correctness
-# Second run is the real deal which replaces the command line args with getopt's output
+# First run is simply to check the commandline for correctness.
+# Second run is the real deal which replaces the command line args with getopt's output.
 export POSIXLY_CORRECT=1
 
+# The "-u" is kept in this first getopt simply to avoid that too many tat ref-files
+# would need to be regenerated (as this command prints to stdout, and removing
+# -u leads to additional quotes around options and args).
 getopt -n `basename $0` -u -a -l $LONGOPTS $SHORTOPTS "$@" || {
    printUsage
 	exit $EC_BADARGS;
 }
 
-set -- `getopt -u -a -l $LONGOPTS $SHORTOPTS "$@"`
+# Note that as some options for this script (e.g. -D) can contain spaces,
+# we cannot use getopt's "--unquoted" option.
+# This means also that all parameters will be enclosed by single quotes, that
+# need to be removed by e.g. "eval".
+temp=`getopt -a -l $LONGOPTS $SHORTOPTS "$@"`
+# Note the quotes around '$temp': they are essential!
+eval set -- "$temp"
 
 #
 # Iterate over getopt's output and set CL_XXX variables accordingly
+# Note that for the -D option we can get spaces in the option-value,
+# so we need to protect these spaces with quotes, against interpretation
+# by bash as a field separator for argument splitting.
 #
 while : 
 do
@@ -145,7 +157,7 @@ do
 	-m)                 CL_MANAGERREF=$2 ; shift ;;
 	--baseport)         CL_BASEPORT=$2 ; shift ;;
 	-b)                 CL_BASEPORT=$2 ; shift ;;
-	-D)                 CL_JAVAPROPS=$CL_JAVAPROPS\ -D$2 ; shift ;;
+	-D)                 CL_JAVAPROPS="$CL_JAVAPROPS -D'$2'" ; shift ;;
 	--jarpath)          CL_JARPATH=$2 ; shift ;;
 	-j)                 CL_JARPATH=$2 ; shift ;;
 	--addToClasspath)   CL_JARS=$2 ; shift ;;
@@ -156,8 +168,8 @@ do
 	--vmtools)          CL_VMTOOLS=true ;;
 	--help)             CL_HELP=true ;; 
 	-h)                 CL_HELP=true ;; 
-	-v)					CL_JVMOPTIONS=$CL_JVMOPTIONS\ $2 ; shift ;;
-	--jvmOption)		CL_JVMOPTIONS=$CL_JVMOPTIONS\ $2 ; shift ;;
+	-v)                 CL_JVMOPTIONS=$CL_JVMOPTIONS\ $2 ; shift ;;
+	--jvmOption)        CL_JVMOPTIONS=$CL_JVMOPTIONS\ $2 ; shift ;;
 	--) break ;;
 	esac
 	shift
@@ -196,14 +208,14 @@ if [ "$CL_BASEPORT" ] ; then
 fi
 
 # set ACS_LOG_BIN if not defined
-if [ "X$ACS_LOG_BIN" == "X" ]
+if [ X"$ACS_LOG_BIN" = X ]
 then 
     export ACS_LOG_BIN="false"
 fi
 
 # append java system properties to JAVA_OPTIONS if such were specified on the command line
 if [ "$CL_JAVAPROPS" ] ; then
-	JAVA_OPTIONS=$JAVA_OPTIONS\ $CL_JAVAPROPS
+	JAVA_OPTIONS="$JAVA_OPTIONS $CL_JAVAPROPS"
 fi
 
 # setup jar file search path that will be fed to 
@@ -240,35 +252,31 @@ fi
 
 function export {
 
-	## Needed this restriction (with 7.0.1) as a quick bug fix for export failures 
-	## when the exported value contains blanks, as in JAVA_OPTIONS, and therefore the quotes were added around $1.
-	## @TODO: use a loop if many env vars must be exported in one call.
-	if [ "X$2" != "X" ] 
-	then
-		echo "Exporting more than one variable is not possible with this export function!"
-		exit 1
-	fi
-	 
-	if [ "$CL_NOEXPORT" ] ; then 
-		## special treatment
+	until [ X"$1" = X ]
+	do
+		if [ "$CL_NOEXPORT" ] ; then 
+			## special treatment
 
-		if [ "x${1:0:17}" == "xMANAGER_REFERENCE" \
-		  -o "x${1:0:21}" == "xMANAGER_COMPUTER_NAME" \
-		  -o "x${1:0:16}" == "xACS_NAME_SERVICE" \
-		  -o "x${1:0:24}" == "xACS_INTERFACE_REPOSITORY" ]
-		then
-			ACS_LOG_DEBUG "(did NOT export $1)"
+			if [ x"${1:0:17}" = xMANAGER_REFERENCE \
+			  -o x"${1:0:21}" = xMANAGER_COMPUTER_NAME \
+			  -o x"${1:0:16}" = xACS_NAME_SERVICE \
+			  -o x"${1:0:24}" = xACS_INTERFACE_REPOSITORY ]
+			then
+				ACS_LOG_DEBUG "(did NOT export $1)"
+			else
+				## default behaviour; protect eventual spaces with quotes
+				builtin export "$1" 
+				ACS_LOG_DEBUG "exported $1"
+			fi
+
 		else
-			## default behavior
-			builtin export "$1" 
+			## default behaviour; protect eventual spaces with quotes
+			builtin export "$1"
 			ACS_LOG_DEBUG "exported $1"
 		fi
-
-	else
-		## default behavior
-		builtin export "$1"
-		ACS_LOG_DEBUG "exported $1"
-	fi
+		# get next argument passed to this export function
+		shift
+	done
 }
 ### ------------- End of "-noexport" handling --------------
 
@@ -311,7 +319,7 @@ if [ "$CL_ENDORSED" ]; then
   then
      JAVA_ENDORSED=../lib/endorsed$CPSEP$JAVA_ENDORSED
   fi
-  if [ "X$JAVA_ENDORSED" != X ]; then
+  if [ X"$JAVA_ENDORSED" != X ]; then
      JAVA_ENDORSED="-Djava.endorsed.dirs=$JAVA_ENDORSED"
   fi
   ACS_LOG_INFO "Using endorsed jar files in: $JAVA_ENDORSED"
@@ -336,7 +344,7 @@ fi
 #
 # CORBA ORB specification
 #
-if [ "X$JAVA_ORB" == X ]; then
+if [ X"$JAVA_ORB" = X ]; then
     # take JacORB as default
     JAVA_ORB="-Dorg.omg.CORBA.ORBClass=org.jacorb.orb.ORB -Dorg.omg.CORBA.ORBSingletonClass=org.jacorb.orb.ORBSingleton"
 fi
@@ -353,7 +361,7 @@ fi
 # the system even before the classloader can take over
 # (is requested).
 #
-if [ "X$CL_JARS" != "X" ]
+if [ X"$CL_JARS" != X ]
 then
     CLASSPATH=`acsGetSpecificJars $CPSEP $CL_JARS`$CLASSPATH
 fi
@@ -363,7 +371,7 @@ fi
 # the command acsGetAllJars is used to retrieve all
 # jar files in the $CL_JARPATH.
 #
-if [ "X$CL_NCL" = "Xtrue" -a "X$CL_NAC" = "X" ]
+if [ X"$CL_NCL" = Xtrue -a X"$CL_NAC" = X ]
 then
     #
     # Retrieves all jar files for the CLASSPATH
@@ -373,15 +381,15 @@ then
 # By default the custom Java class loader is used.
 # In this case we need to have jACSUtil.jar in the CLASSPATH
 #
-elif [ "X$CL_NCL" = "X" ]
+elif [ X"$CL_NCL" = X ]
 then
    # 
    # Sets the class loader and adds ACSUtil.jar to the CLASSPATH
    # 
-   JAVA_OPTIONS=$JAVA_OPTIONS\ -Djava.system.class.loader=alma.acs.classloading.AcsSystemClassLoader\ -Dacs.system.classpath.jardirs=$CL_JARPATH
+   JAVA_OPTIONS="$JAVA_OPTIONS -Djava.system.class.loader=alma.acs.classloading.AcsSystemClassLoader -Dacs.system.classpath.jardirs=$CL_JARPATH"
 
    JACSUTIL_JAR=`acsGetSpecificJars $CPSEP jACSUtil.jar`
-   if [ "X$JACSUTIL_JAR" = "X" ]
+   if [ X"$JACSUTIL_JAR" = X ]
    then    
        ACS_LOG_ERROR "Expected to find jACSUtil.jar in the ALMA Software directory structure but did not!"
        exit $EC_FAILURE
@@ -393,20 +401,20 @@ fi
 #
 # AcsLogManager should be used instead of JDK's LogManager to allow logging during Ctrl-C shutdown
 #
-JAVA_OPTIONS=$JAVA_OPTIONS\ -Djava.util.logging.manager=alma.acs.logging.AcsLogManager
+JAVA_OPTIONS="$JAVA_OPTIONS -Djava.util.logging.manager=alma.acs.logging.AcsLogManager"
 
 #
 # In orb.properties we set jacorb.log.loggerFactory=alma.acs.logging.adapters.JacORBLoggerFactory
 # which sends filtered JacORB logs messages to the central Log service. 
 # Here we can overrule this.
 #
-#JAVA_OPTIONS=$JAVA_OPTIONS\ -Djacorb.log.loggerFactory=
+#JAVA_OPTIONS="$JAVA_OPTIONS -Djacorb.log.loggerFactory="
 
 #
 # Creates default values for configuration files directory
 # if not already given as environment variables.
 #
-if [ "X$ACS_ABEANS_CONFIG" = X ]
+if [ X"$ACS_ABEANS_CONFIG" = X ]
 then
     export ACS_ABEANS_CONFIG=$ACSDATA/config/abeans/Config
 fi
@@ -431,7 +439,7 @@ if [ "$CL_MANAGERREF" ]; then
    ACS_LOG_DEBUG "Command-line Manager Reference: $CL_MANAGERREF"
 fi
 
-if [ "X$MANAGER_REFERENCE" = X ]; then  
+if [ X"$MANAGER_REFERENCE" = X ]; then  
    export MANAGER_REFERENCE=corbaloc::$HOST:$ACS_MANAGER_PORT/Manager
 fi
 
@@ -442,7 +450,7 @@ export MANAGER_COMPUTER_NAME=`echo $MANAGER_REFERENCE |  awk -F: '{print $3}'`
 # If $ACS_NAME_SERVICE is not set, take the computer
 # where Manager is located
 
-if [ "X$ACS_NAME_SERVICE" = X ]; then
+if [ X"$ACS_NAME_SERVICE" = X ]; then
    export ACS_NAME_SERVICE=corbaloc::$MANAGER_COMPUTER_NAME:$ACS_NAMING_SERVICE_PORT/NameService
 fi
 
@@ -451,7 +459,7 @@ ACS_LOG_DEBUG "ACS Name Service: $ACS_NAME_SERVICE"
 #If $ACS_INTERFACE_REPOSITORY is not set, take the computer, where Manager
 #is located
 
-if [ "X$ACS_INTERFACE_REPOSITORY" = X ]; then
+if [ X"$ACS_INTERFACE_REPOSITORY" = X ]; then
    export ACS_INTERFACE_REPOSITORY=corbaloc::$MANAGER_COMPUTER_NAME:$ACS_IR_PORT/InterfaceRepository
 fi
 
@@ -462,7 +470,7 @@ ACS_LOG_DEBUG "ACS Interface Repository: $ACS_INTERFACE_REPOSITORY"
 # if not already given as environment variables.
 #
 if [ ! $CL_NODIRECTORY ] ; then
-   if [ "X$ACS_TMP" = X ]; then  
+   if [ X"$ACS_TMP" = X ]; then  
       export ACS_TMP=`getInstanceDirName $ACS_INSTANCE`
 
       #
@@ -514,7 +522,7 @@ fi
 
 ACS_LOG_DEBUG "Running the following command:"
     
-if [ "X$MAKE_PURE" = "Xon" ]; then
+if [ X"$MAKE_PURE" = Xon ]; then
    JAVA_PUREFLAGS="-Xint -Xrunpagent:-OUT=["mempro.jpt"]"
 fi
 
@@ -523,12 +531,16 @@ fi
 #   Java HotSpot(TM) Client VM (build 1.6.0_02-b05, mixed mode, sharing)
 # which are not identical to what "java -version" prints (e.g. when -server is used) 
 #
-if [ "X$ACS_LOG_STDOUT" != "X" ] && [ $ACS_LOG_STDOUT -lt $ACS_DEBUG_PRIORITY ]
+if [ X"$ACS_LOG_STDOUT" != X ] && [ $ACS_LOG_STDOUT -lt $ACS_DEBUG_PRIORITY ]
 then
-	JAVA_OPTIONS=$JAVA_OPTIONS\ -showversion
+	JAVA_OPTIONS="$JAVA_OPTIONS -showversion"
 fi
 
-
+# While building the JAVA_COMMAND_LINE, we assume that the variables do not contain spaces,
+# or if they do, that they contain also quotes where necessary (see e.g. dealing with the
+# -D option above while parsing this script's options/arguments). To get rid of these
+# eventual quote characters, we need an "eval" of this JAVA_COMMAND_LINE instead of
+# a mere execution.
 JAVA_COMMAND_LINE="java $JAVA_PUREFLAGS -classpath $CLASSPATH $JAVA_ENDORSED $XERCES_CONFIG $JAVA_ORB -Duser.timezone=UTC -Dabeans.home=$ACS_ABEANS_CONFIG -DACS.manager=$MANAGER_REFERENCE -DORBInitRef.NameService=$ACS_NAME_SERVICE  -DACS.repository=$ACS_INTERFACE_REPOSITORY -DACS.tmp=$ACS_TMP -DACS.baseport=$ACS_INSTANCE -DACS.data=$ACSDATA -DACS.logstdout=$ACS_LOG_STDOUT -DACS.log.minlevel.remote=$ACS_LOG_CENTRAL -DACS.loggingBin=$ACS_LOG_BIN $JAVA_OPTIONS $LAUNCHER $@"
 
 ACS_LOG_DEBUG "$JAVA_COMMAND_LINE"
@@ -538,7 +550,7 @@ ACS_LOG_DEBUG "$JAVA_COMMAND_LINE"
 #      storing the JVM return code
 #
 
-$JAVA_COMMAND_LINE
+eval $JAVA_COMMAND_LINE
 JVM_RETURN_CODE=$?
 
 exit $JVM_RETURN_CODE
