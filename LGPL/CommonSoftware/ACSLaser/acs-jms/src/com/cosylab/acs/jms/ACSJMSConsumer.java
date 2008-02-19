@@ -16,22 +16,28 @@ import javax.jms.MessageConsumer;
 import javax.jms.MessageListener;
 
 import alma.acs.container.ContainerServicesBase;
+import alma.acs.logging.AcsLogLevel;
 
 import com.codestreet.selector.parser.InvalidSelectorException;
 
 /**
+ * This class supports only the listener mechanism.
+ * 
+ * The overloaded <code>receive</code> methods and <code>receiveNoWait</code> 
+ * are not implemented and throw an <code>UnsupportedOperationException</code>.
+ * Having both methods (receive and callback) in place causes an out of memory
+ * if the queue of message is not flushed on disk.
+ * To avoid memory neverending memory consumption I have preferred to remove 
+ * the implementations of the calls leaving only the callback 
+ * (given that at the present this is the only one used) 
+ * 
  * @author kzagar
- *
- * To change the template for this generated type comment go to
- * Window&gt;Preferences&gt;Java&gt;Code Generation&gt;Code and Comments
  */
 public abstract class ACSJMSConsumer implements MessageConsumer {
 	private MessageListener listener;
 
 	protected Destination destination;
 
-	private List messages = new ArrayList();
-	
 	private ContainerServicesBase containerServices;
 	
 	
@@ -45,6 +51,9 @@ public abstract class ACSJMSConsumer implements MessageConsumer {
 	 * @param selector The message selector (can be empty or null)
 	 */
 	public ACSJMSConsumer(Destination destination, ContainerServicesBase contServices, String selector) throws JMSException {
+		if (contServices==null) {
+			throw new IllegalArgumentException("The ContainerServicesBase can't be null");
+		}
 		this.destination = destination;
 		this.containerServices=contServices;
 		try {
@@ -102,45 +111,14 @@ public abstract class ACSJMSConsumer implements MessageConsumer {
 	 * @see javax.jms.MessageConsumer#receive()
 	 */
 	public Message receive() throws JMSException {
-		// TODO Synchronized receiving of messages should be implemented with events.
-		while(true) {
-			try {
-				Thread.sleep(100);
-			} catch (InterruptedException e) {
-				return null;
-			}
-			synchronized(messages) {
-				if(!messages.isEmpty()) {
-					Message retVal = (Message) messages.get(0);
-					messages.remove(0);
-					return retVal;
-				}
-			}
-		}
+		throw new UnsupportedOperationException();
 	}
 
 	/* (non-Javadoc)
 	 * @see javax.jms.MessageConsumer#receive(long)
 	 */
 	public Message receive(long timeout) throws JMSException {
-		// TODO Synchronized receiving of messages should be implemented with events.
-		long sleep = 0;
-		while(sleep < timeout) {
-			synchronized(messages) {
-				if(!messages.isEmpty()) {
-					Message retVal = (Message) messages.get(0);
-					messages.remove(0);
-					return retVal;
-				}
-			}
-			try {
-				sleep += 100;
-				Thread.sleep(100);
-			} catch (InterruptedException e) {
-				return null;
-			}
-		}
-		return null;
+		throw new UnsupportedOperationException();
 	}
 
 	/* (non-Javadoc)
@@ -162,18 +140,13 @@ public abstract class ACSJMSConsumer implements MessageConsumer {
 		if (message==null) {
 			throw new NullPointerException("The message received is null");
 		}
-		
+		containerServices.getLogger().log(AcsLogLevel.DEBUG,"acs-jms message received");
 		ACSJMSMessage jmsMessage = null;
 		if (message.type.compareTo("com.cosylab.acs.jms.ACSJMSObjectMessage")==0){
 			jmsMessage = new ACSJMSObjectMessage(message,containerServices);
 		} else {
 			jmsMessage = new ACSJMSTextMessage(message,containerServices);
 		}
-		
-		synchronized(messages) {
-			this.messages.add(jmsMessage);
-		}
-		
 		if(this.listener == null) {
 			return;
 		} else if (selector.match(jmsMessage)) {
