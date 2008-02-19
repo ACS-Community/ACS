@@ -28,6 +28,10 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
+/**
+ * @author rtobar
+ * created Feb 18, 2008 2:06:46 PM
+ */
 public class RemoteThreadsClientTest extends TestCase {
 
 	private RemoteThreadsClient rtc = null;
