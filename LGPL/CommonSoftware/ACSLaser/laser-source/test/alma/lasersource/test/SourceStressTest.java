@@ -207,7 +207,7 @@ public class SourceStressTest extends ComponentClientTestCase {
 		int timeout = 60; // timeout in secs
 		int count=0;
 		// Wait for all the alarms to be in the vector
-		while (receivedFS.size()<statesToPublish.length || count>=2*60) {
+		while (receivedFS.size()<statesToPublish.length && count<=2*60) {
 			if (count!=receivedFS.size()) {
 				count=0;
 			}
