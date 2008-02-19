@@ -22,7 +22,8 @@
 package alma.acs.monitoring;
 
 import java.lang.management.ManagementFactory;
-import java.util.ArrayList;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.List;
 
 import junit.framework.TestCase;
@@ -98,10 +99,60 @@ public class RemoteThreadsClientTest extends TestCase {
 	}
 
 	/*
-	 * Test method for 'alma.acs.monitoring.RemoteThreadsClient.RemoteThreadsClient(String, int)'
+	 * Test method for 'alma.acs.monitoring.RemoteThreadsClient.RemoteThreadsClient(InetAddress)'
 	 */
-	public void testRemoteThreadsClientStringInt() {
+	public void testRemoteThreadsClientInetAddress() {
+		
+		rtc = null;
+		boolean remoteThreadsException = false;
+		boolean unknownHostException   = false;
+		
+		try {
+			InetAddress localhost = InetAddress.getByName("localhost");
+			rtc = new RemoteThreadsClient(localhost);
+		} catch (RemoteThreadsException e) {
+			remoteThreadsException = true;
+		} catch (UnknownHostException e) {
+			unknownHostException = true;
+		}
+		
+		assertTrue(!remoteThreadsException);
+		assertTrue(!unknownHostException);
+		assertNotNull(rtc);
+	}
+	
+	/*
+	 * Test method for 'alma.acs.monitoring.RemoteThreadsClient.RemoteThreadsClient(InetAddress, int)'
+	 */
+	public void testRemoteThreadsClientInetAddressInt() {
 
+		rtc = null;
+		boolean remoteThreadsException = false;
+		
+		// Let's try with a negative port...
+		try {
+			InetAddress localhost = InetAddress.getByName("localhost");
+			rtc = new RemoteThreadsClient(localhost,-12);
+		} catch (RemoteThreadsException e) {
+			remoteThreadsException = true;
+		} catch (UnknownHostException e) {
+		}
+		
+		assertTrue(remoteThreadsException);
+		assertNull(rtc);
+		
+		// Now with a good port...
+		remoteThreadsException = false;
+		try {
+			InetAddress localhost = InetAddress.getByName("localhost");
+			rtc = new RemoteThreadsClient(localhost,1234);
+		} catch (RemoteThreadsException e) {
+			remoteThreadsException = true;
+		} catch (UnknownHostException e) {
+		}
+		
+		assertTrue(!remoteThreadsException);
+		assertNotNull(rtc);
 	}
 
 	/*
