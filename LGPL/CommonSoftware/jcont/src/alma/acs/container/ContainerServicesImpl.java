@@ -715,7 +715,7 @@ public class ContainerServicesImpl implements ContainerServices
 	 * 
 	 * @see alma.acs.container.ContainerServices#releaseComponent(java.lang.String)
 	 */
-	public void releaseComponent(String curl) {
+	public void releaseComponent(String curl) {	
 		// we keep the "forceful" release option as a switch in the code. 
 		// It was taken out for ACS 7.0, but may come back in the future. 
 		final boolean forcefully = false;
@@ -725,39 +725,40 @@ public class ContainerServicesImpl implements ContainerServices
 			return;
 		}
 		
-		if (!m_usedComponentsMap.containsKey(curl)) 
-		{
-			if (m_usedNonStickyComponentsMap.containsKey(curl)) {
-				m_logger.info("ignoring request by client '" + m_clientName + 
-						"' to release component '" + curl + "' because the reference is non-sticky and does not need to be released.");				
-			}
-			else {
-				m_logger.info("ignoring request by client '" + m_clientName + 
-									"' to release other component with unknown curl='" + curl + "'.");
-			}
-		}
-		else
-		{
-			org.omg.CORBA.Object stub = m_usedComponentsMap.get(curl);
-			
-			m_logger.fine("about to release component " + curl + (forcefully ? " forcefully" : ""));
-			try {
-				if (forcefully) {
-					m_acsManagerProxy.force_release_component(m_clientHandle, curl);
+		org.omg.CORBA.Object stub = null;
+		// thread safe without locking across the remote call to manager#release_component etc
+		synchronized (m_usedComponentsMap) {
+			if (!m_usedComponentsMap.containsKey(curl))
+			{
+				if (m_usedNonStickyComponentsMap.containsKey(curl)) {
+					m_logger.info("ignoring request by client '" + m_clientName + 
+							"' to release component '" + curl + "' because the reference is non-sticky and does not need to be released.");				
 				}
 				else {
-					m_acsManagerProxy.release_component(m_clientHandle, curl);
+					m_logger.info("ignoring request by client '" + m_clientName + 
+										"' to release other component with unknown curl='" + curl + "'.");
 				}
-				m_logger.info("client '" + m_clientName + "' has successfully released " +  " a component with curl=" + curl);
-				stub._release();
+				return;
 			}
-			catch (Throwable thr) { // mainly thinking of org.omg.CORBA.NO_PERMISSION
-				m_logger.log(Level.WARNING, "client '" + m_clientName + "' (handle " + m_clientHandle + ") failed to release " + 
-						" with the manager the component with curl=" + curl, thr);
+			// the CURL is in the map and gets removed now
+			stub = m_usedComponentsMap.get(curl);
+			m_usedComponentsMap.remove(curl);
+		}
+		
+		m_logger.fine("about to release component " + curl + (forcefully ? " forcefully" : ""));
+		try {
+			if (forcefully) {
+				m_acsManagerProxy.force_release_component(m_clientHandle, curl);
 			}
-			finally {
-				m_usedComponentsMap.remove(curl);				
+			else {
+				m_acsManagerProxy.release_component(m_clientHandle, curl);
 			}
+			m_logger.info("client '" + m_clientName + "' has successfully released " +  " a component with curl=" + curl);
+			stub._release();
+		}
+		catch (Throwable thr) { // mainly thinking of org.omg.CORBA.NO_PERMISSION
+			m_logger.log(Level.WARNING, "client '" + m_clientName + "' (handle " + m_clientHandle + ") failed to release " + 
+					" with the manager the component with curl=" + curl, thr);
 		}
 	}
 
