@@ -208,7 +208,7 @@ public class SourceStressTest extends ComponentClientTestCase {
 		int count=0;
 		int old; // The number of items read in the previous iteration
 		// Wait for all the alarms to be in the vector
-		while (receivedFS.size()<statesToPublish.length && count<=2*60) {
+		while (receivedFS.size()<statesToPublish.length && count<2*timeout) {
 			if (old!=receivedFS.size()) {
 				count=0;
 				old=receivedFS.size();
