@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.13 2006/07/12 21:36:02 dfugate Exp $"
+# "@(#) $Id: Makefile,v 1.14 2008/02/20 00:44:18 agrimstrup Exp $"
 #
 # Makefile of ........
 #
@@ -73,7 +73,7 @@ SCRIPTS_L       = acsstartupTATPrologue acsstartupTATEpilogue \
 	acsstartupGenericProcess.sh \
 	maciManagerJ cdbjDAL loggingService acsLogSvc ACSStartContainerPy maciContainer  \
 	maciManagerShutdown maciContainerShutdown acsStartJavaContainer \
-	testContainerPort.sh
+	testContainerPort.sh acsstartupTestLoadIFR.sh
 #
 # TCL scripts (public and local)
 # ------------------------------
@@ -84,7 +84,7 @@ TCL_SCRIPTS_L   =
 # Python stuff (public and local)
 # ----------------------------
 PY_SCRIPTS         =
-PY_SCRIPTS_L       = tcpBlocker
+PY_SCRIPTS_L       = tcpBlocker acsstartupTestLoadIFR
 
 PY_MODULES         =
 PY_MODULES_L       =

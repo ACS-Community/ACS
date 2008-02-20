@@ -26,7 +26,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: acsStart,v 1.40 2007/12/04 14:46:24 msekoran Exp $"
+# "@(#) $Id: acsStart,v 1.41 2008/02/20 00:44:18 agrimstrup Exp $"
 #
 # who       when      what
 # -------- ---------- ----------------------------------------------
@@ -72,13 +72,14 @@ CL_HELP=
 CL_TIMEOUT=
 CL_VERBOSE=
 CL_WAITIFR=true
+CL_LOADIFR=true
 CL_LOG=
 CL_RECOVER=
 
 #
 # These options can be recognized (longopts comma-separated. colon means argument is required)
 #
-LONGOPTS=help,recoverClientConnections,baseport:,timeout:,verbose,nowaitifr,log
+LONGOPTS=help,recoverClientConnections,baseport:,timeout:,verbose,nowaitifr,noloadifr,log
 SHORTOPTS=hrb:t:vl
 
 #
@@ -92,6 +93,7 @@ function printUsage {
    echo "   -b | -baseport INSTANCE          the acs instance (0-9) you want to use"
    echo "   -t | -timeout MULTIPLIER         the maximum timeout can be increased by specifying an integer value greater than 1"
    echo "        -nowaitifr                  does not wait for the CORBA Interface Repository to load before returning"
+   echo "        -noloadifr                  does not load the CORBA Interface Repository before returning"
    echo "   -l | -log                        automatically starts a loggingClient process writing XML logs to"
    echo "                                    \$ACSDATA/tmp/ACS_INSTANCE.\$ACS_INSTANCE/"
    echo "   -r | -recoverClientConnections   force services to recover client connections"
@@ -123,6 +125,7 @@ do
 	--timeout)                    CL_TIMEOUT=$2 ; shift ;;
 	-t)                           CL_TIMEOUT=$2 ; shift ;;
 	--nowaitifr)                  CL_WAITIFR=false ;;
+	--noloadifr)                  CL_LOADIFR=false ;;
 	--log)                        CL_LOG=true ;;
 	-l)                           CL_LOG=true ;;
 	--recoverClientConnections)   CL_RECOVER=true ;; 
@@ -217,8 +220,13 @@ if [ "$CL_RECOVER" ] ; then
 	SRVCS_RECOVER_OPT=-r
 fi
 
+IFR_OPT=
+if [ "$CL_LOADIFR" = "false" ] ; then
+        IFR_OPT=-noloadIFR
+fi
+
 #start the ORB services
-acsStartORBSRVC $SRVCS_RECOVER_OPT 2>&1 | tee -a $ACSSTARTLOG &
+acsStartORBSRVC $SRVCS_RECOVER_OPT $IFR_OPT 2>&1 | tee -a $ACSSTARTLOG &
 ORBSRVC_PID=$!
 
 if ! acsutilBlock -t $MAX_TIMEOUT -f $ACSSTARTLOG -b "acsStartORBSRVC script has now completed" -c "ERROR" -p $ORBSRVC_PID
@@ -257,7 +265,7 @@ then
 fi
 #------------------------------------------------------
 #block until the interface repository has fully loaded
-if [ "$CL_WAITIFR" = "true" ]
+if [ "$CL_LOADIFR" = "true" ] && [ "$CL_WAITIFR" = "true" ]
 then
     export IRFEED_PIDFILE=$INSTANCE_DIR/$ACS_IRFEED_PIDFILE
     export IRFEED_PID=`cat $IRFEED_PIDFILE`

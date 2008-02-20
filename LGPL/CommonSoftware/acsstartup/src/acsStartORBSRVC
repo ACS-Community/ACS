@@ -6,7 +6,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: acsStartORBSRVC,v 1.70 2007/12/04 14:46:24 msekoran Exp $"
+# "@(#) $Id: acsStartORBSRVC,v 1.71 2008/02/20 00:44:18 agrimstrup Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -66,11 +66,12 @@ export HOST=`getIP`
 CL_BASEPORT=
 CL_HELP=
 CL_RECOVER=
+CL_LOADIFR=true
 
 #
 # These options can be recognized (longopts comma-separated. colon means argument is required)
 #
-LONGOPTS=help,recoverClientConnections,baseport:,timeout:
+LONGOPTS=help,noloadIFR,recoverClientConnections,baseport:,timeout:
 SHORTOPTS=hrb:t:
 
 #
@@ -82,6 +83,7 @@ function printUsage {
 	echo "Usage: `basename $0` [OPTIONS]  "
 	echo "Options: "
 	echo "   -b | -baseport INSTANCE          the acs instance (0-9) you want to use"
+	echo "   -noloadIFR                         load the CORBA Interface Repository using all the IDL files"
 	echo "   -t | -timeout MULTIPLIER         the maximum timeout can be increased by specifying an integer value greater than 1"
 	echo "   -r | -recoverClientConnections   force services to recover client connections"
 	echo "   -h | -help                       prints this help and exits"
@@ -108,6 +110,7 @@ do
 	case "$1" in
 	--baseport)                   CL_BASEPORT=$2 ; shift ;;
 	-b)                           CL_BASEPORT=$2 ; shift ;;
+	--noloadIFR)                   CL_LOADIFR=false ;; 
 	--timeout)                    export ACS_STARTUP_TIMEOUT_MULTIPLIER=$2 ; shift ;;
 	-t)                           export ACS_STARTUP_TIMEOUT_MULTIPLIER=$2 ; shift ;;
 	--help)                       CL_HELP=true ;; 
@@ -371,10 +374,14 @@ fi
 #
 # Loading ACS IDL Interfaces in Interface Repository, as a background job, so processing can continue in parallel.
 
-acsstartupLoadIFR & #this C++ based script is a couple of seconds faster than acsIrFeed.
+if [ "$CL_LOADIFR" = "true" ]
+then
+
+    acsstartupLoadIFR & #this C++ based script is a couple of seconds faster than acsIrFeed.
 #acsIrfeed  -IRcorbaloc corbaloc::$HOST:$ACS_IR_PORT/InterfaceRepository &
-IRFEED_PID=$!
-echo $IRFEED_PID > $IRFEED_PIDFILE
+    IRFEED_PID=$!
+    echo $IRFEED_PID > $IRFEED_PIDFILE
+fi
 
 ################################
 # Naming Service
