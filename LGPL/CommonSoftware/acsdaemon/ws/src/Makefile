@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.13 2008/02/15 16:42:26 agrimstrup Exp $"
+# "@(#) $Id: Makefile,v 1.14 2008/02/20 14:21:24 hsommer Exp $"
 #
 # Makefile of ........
 #
@@ -43,27 +43,27 @@ EXECUTABLES_L   =
 #
 # <brief description of xxxxx program>
 acscontainerdaemon_OBJECTS   =	acscontainerdaemon acsContainerHandlerImpl
-acscontainerdaemon_LIBS      =	baciStubs acscomponentStubs acsdaemonErrType acsdaemonStubs
+acscontainerdaemon_LIBS      =	acscomponentStubs acsdaemonErrType acsdaemonStubs
 
 acsdaemonStartContainer_OBJECTS   =	acsdaemonStartContainer
-acsdaemonStartContainer_LIBS      =	baciStubs acscomponentStubs acsdaemonErrType acsdaemonStubs
+acsdaemonStartContainer_LIBS      =	acscomponentStubs acsdaemonErrType acsdaemonStubs
 
 
 acsdaemonStopContainer_OBJECTS   =	acsdaemonStopContainer
-acsdaemonStopContainer_LIBS      =	baciStubs acscomponentStubs acsdaemonErrType acsdaemonStubs
+acsdaemonStopContainer_LIBS      =	acscomponentStubs acsdaemonErrType acsdaemonStubs
 
 acsservicesdaemon_OBJECTS   =	acsservicesdaemon acsServicesHandlerImpl
-acsservicesdaemon_LIBS      =	baciStubs acscomponentStubs acsdaemonErrType acsdaemonStubs acsThread
+acsservicesdaemon_LIBS      =	acscomponentStubs acsdaemonErrType acsdaemonStubs acsThread
 
 acsdaemonStartAcs_OBJECTS   =	acsdaemonStartAcs
-acsdaemonStartAcs_LIBS      =	baciStubs acscomponentStubs acsdaemonErrType acsdaemonStubs
+acsdaemonStartAcs_LIBS      =	acscomponentStubs acsdaemonErrType acsdaemonStubs
 
 
 acsdaemonStopAcs_OBJECTS   =	acsdaemonStopAcs
-acsdaemonStopAcs_LIBS      =	baciStubs acscomponentStubs acsdaemonErrType acsdaemonStubs
+acsdaemonStopAcs_LIBS      =	acscomponentStubs acsdaemonErrType acsdaemonStubs
 
 acsdaemonStatusAcs_OBJECTS   =	acsdaemonStatusAcs
-acsdaemonStatusAcs_LIBS      =	baciStubs acscomponentStubs acsdaemonErrType acsdaemonStubs
+acsdaemonStatusAcs_LIBS      =	acscomponentStubs acsdaemonErrType acsdaemonStubs
 
 #
 # special compilation flags for single c sources
