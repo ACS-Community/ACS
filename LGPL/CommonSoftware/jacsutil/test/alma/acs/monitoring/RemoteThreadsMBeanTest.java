@@ -22,6 +22,9 @@
 package alma.acs.monitoring;
 
 import java.lang.management.ManagementFactory;
+import java.lang.management.ThreadInfo;
+
+import javax.management.openmbean.CompositeData;
 
 import junit.framework.TestCase;
 
@@ -36,7 +39,7 @@ public class RemoteThreadsMBeanTest extends TestCase {
 	private RemoteThreadsClient rtc   = null;
 	private RemoteThreadsMBean  mbean = null;
 	
-	public void setUp() throws Exception {
+	protected void setUp() throws Exception {
 		
 		boolean throwedException = false;
 		
@@ -56,7 +59,7 @@ public class RemoteThreadsMBeanTest extends TestCase {
 		assertNotNull(mbean);
 	}
 	
-	public void tearDown() throws Exception {
+	protected void tearDown() throws Exception {
 		
 		boolean throwedException = false;
 		
@@ -83,20 +86,48 @@ public class RemoteThreadsMBeanTest extends TestCase {
 	 * Test method for 'alma.acs.monitoring.RemoteThreads.getAllThreadsInfo()'
 	 */
 	public void testGetAllThreadsInfo() {
-
+		assertNotNull(mbean.getAllThreadsInfo());
 	}
 
 	/*
 	 * Test method for 'alma.acs.monitoring.RemoteThreads.getJacORBThreadsCount()'
 	 */
 	public void testGetJacORBThreadsCount() {
-		
+		assertTrue( mbean.getJacORBThreadsCount() >= 0 );
 	}
 
 	/*
 	 * Test method for 'alma.acs.monitoring.RemoteThreads.getJacORBThreadsInfo()'
 	 */
 	public void testGetJacORBThreadsInfo() {
+		CompositeData []data = null;
+		ThreadInfo[] info    = null;
+		
+		// Get the threads info
+		data = mbean.getJacORBThreadsInfo();
+		assertNotNull(data);
+		
+		info = RemoteThreadsUtil.toThreadsInfo(data);
+		assertNotNull(info);
+		
+		System.out.println(mbean.getJacORBThreadsCount());
+		// See if these are ACS threads...
+		for(int i=0; i!= info.length; i++) {
+			int idx = info[i].getStackTrace().length - 1;
+			String className = info[i].getStackTrace()[idx].getClassName();
+			if( className.equals("java.lang.Thread") ) {
+				className = info[i].getStackTrace()[idx - 1].getClassName();
+			}
+			
+			boolean isJacORBThread = false;
+			for(int j=0; j!=RemoteThreads.JACORB_CLASSES.length; j++) {
+				if( className.startsWith(RemoteThreads.JACORB_CLASSES[j]) ) {
+					isJacORBThread = true;
+					break;
+				}
+			}
+			assertTrue(isJacORBThread);
+		}
 
 	}
 
@@ -104,7 +135,38 @@ public class RemoteThreadsMBeanTest extends TestCase {
 	 * Test method for 'alma.acs.monitoring.RemoteThreads.getJacORBThreadsInfo(State)'
 	 */
 	public void testGetJacORBThreadsInfoState() {
-
+		CompositeData []data = null;
+		ThreadInfo[] info    = null;
+		
+		// Loop over different thread's states
+		for(Thread.State state : Thread.State.values()) {
+			
+			// Get the threads info for this state
+			data = mbean.getJacORBThreadsInfo(state);
+			assertNotNull(data);
+			
+			info = RemoteThreadsUtil.toThreadsInfo(data);
+			assertNotNull(info);
+			
+			// See if these are ACS threads...
+			for(int i=0; i!= info.length; i++) {
+				int idx = info[i].getStackTrace().length - 1;
+				String className = info[i].getStackTrace()[idx].getClassName();
+				if( className.equals("java.lang.Thread") ) {
+					className = info[i].getStackTrace()[idx - 1].getClassName();
+				}
+				
+				boolean isJacORBThreadAndState = false;
+				for(int j=0; j!=RemoteThreads.JACORB_CLASSES.length; j++) {
+					if( className.startsWith(RemoteThreads.JACORB_CLASSES[j]) && 
+							info[i].getThreadState() == state ) {
+						isJacORBThreadAndState = true;
+						break;
+					}
+				}
+				assertTrue(isJacORBThreadAndState);
+			}
+		}
 	}
 
 	/*
@@ -158,14 +220,113 @@ public class RemoteThreadsMBeanTest extends TestCase {
 	 * Test method for 'alma.acs.monitoring.RemoteThreads.getAcsContainerThreadsInfo()'
 	 */
 	public void testGetAcsContainerThreadsInfo() {
-
+		CompositeData []data = null;
+		ThreadInfo[] info    = null;
+		Thread[] myThreads = new Thread[MAX_THREADS];
+		
+		// We start MAX_THREADS new threads on this class
+		for(int i=0; i!= MAX_THREADS; i++) {
+			myThreads[i] = new Thread(new Runnable() {
+				public void run() {
+					try {
+						Thread.sleep(5000);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			});
+			myThreads[i].start();
+		}
+		try { Thread.sleep(1000);} catch (InterruptedException e) {}
+		
+		// Get the threads info
+		data = mbean.getAcsContainerThreadsInfo();
+		assertNotNull(data);
+		
+		info = RemoteThreadsUtil.toThreadsInfo(data);
+		assertNotNull(info);
+		
+		// See if these are ACS threads...
+		for(int i=0; i!= info.length; i++) {
+			int idx = info[i].getStackTrace().length - 1;
+			String className = info[i].getStackTrace()[idx].getClassName();
+			if( className.equals("java.lang.Thread") ) {
+				className = info[i].getStackTrace()[idx - 1].getClassName();
+			}
+			
+			boolean isACSThread = false;
+			for(int j=0; j!=RemoteThreads.ACS_CLASSES.length; j++) {
+				if( className.startsWith(RemoteThreads.ACS_CLASSES[j]) ) {
+					isACSThread = true;
+					break;
+				}
+			}
+			assertTrue(isACSThread);
+		}
+		
+		//	Finish all the threads
+		for(int i=0; i!= MAX_THREADS; i++)
+			try {myThreads[i].join();} catch (InterruptedException e) {}
+		try { Thread.sleep(1000);} catch (InterruptedException e) {}
 	}
 
 	/*
 	 * Test method for 'alma.acs.monitoring.RemoteThreads.getAcsContainerThreadsInfo(State)'
 	 */
 	public void testGetAcsContainerThreadsInfoState() {
-
+		CompositeData []data = null;
+		ThreadInfo[] info    = null;
+		Thread[] myThreads = new Thread[MAX_THREADS];
+		
+		// We start MAX_THREADS new threads on this class
+		for(int i=0; i!= MAX_THREADS; i++) {
+			myThreads[i] = new Thread(new Runnable() {
+				public void run() {
+					try {
+						Thread.sleep(10000);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			});
+			myThreads[i].start();
+		}
+		try { Thread.sleep(1000);} catch (InterruptedException e) {}
+		
+		// Loop over thread's state
+		for(Thread.State state : Thread.State.values()) {
+			// Get the threads info
+			data = mbean.getAcsContainerThreadsInfo(state);
+			assertNotNull(data);
+			
+			info = RemoteThreadsUtil.toThreadsInfo(data);
+			assertNotNull(info);
+			
+			// See if these are ACS threads...
+			for(int i=0; i!= info.length; i++) {
+				int idx = info[i].getStackTrace().length - 1;
+				String className = info[i].getStackTrace()[idx].getClassName();
+				if( className.equals("java.lang.Thread") ) {
+					className = info[i].getStackTrace()[idx - 1].getClassName();
+				}
+				
+				boolean isACSThreadState = false;
+				for(int j=0; j!=RemoteThreads.ACS_CLASSES.length; j++) {
+					if( className.startsWith(RemoteThreads.ACS_CLASSES[j]) &&
+					    info[i].getThreadState() == state) {
+						isACSThreadState = true;
+						break;
+					}
+				}
+				assertTrue(isACSThreadState);
+			}
+		}
+		//	Finish all the threads
+		for(int i=0; i!= MAX_THREADS; i++)
+			try {myThreads[i].join();} catch (InterruptedException e) {}
+		try { Thread.sleep(1000);} catch (InterruptedException e) {}
 	}
 
 }

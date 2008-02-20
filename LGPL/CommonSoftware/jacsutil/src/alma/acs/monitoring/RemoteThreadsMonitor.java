@@ -24,12 +24,20 @@ package alma.acs.monitoring;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
+/**
+ * Example on how {@link alma.acs.monitoring.RemoteThreadsClient} is intended
+ * to be used.
+ * @author rtobar
+ * @since ACS 7.0
+ */
 public class RemoteThreadsMonitor {
 	
 	private RemoteThreadsClient rtc = null;
 	
 	/**
-	 * @param args
+	 * Starts the application
+	 * @param args See {@link #usage()}
+	 * @see #usage()
 	 */
 	public static void main(String[] args) {
 		
@@ -40,20 +48,74 @@ public class RemoteThreadsMonitor {
 		
 		RemoteThreadsMonitor rtm = new RemoteThreadsMonitor(args);
 		RemoteThreadsMBean mbean = rtm.getMBean();
-		System.out.println(mbean.getAcsContainerThreadsCount());
+		System.out.println("Total JacORB threads: " + mbean.getJacORBThreadsCount());
+		System.out.println("Runnable JacORB's threads:");
+		RemoteThreadsUtil.printThreadsInfo(RemoteThreadsUtil.toThreadsInfo(mbean.getJacORBThreadsInfo(Thread.State.RUNNABLE)) ,System.out,false);
+		System.out.println("\nRunnable JacORB's threads (grouped):");
+		RemoteThreadsUtil.printThreadsInfo(RemoteThreadsUtil.toThreadsInfo(mbean.getJacORBThreadsInfo(Thread.State.RUNNABLE)) ,System.out,true);
 		rtm.close();
 	}
 
+	/**
+	 * Creates a new RemoteThreadsMonitor with the given command line args
+	 * @param args The command line arguments.
+	 */
 	public RemoteThreadsMonitor(String[] args) {
 		
+		// Can be PID, className or host
 		if( args.length == 1 ) {
+			
+			// Check if the arg is a className, a host or a PID
+			boolean isNumber = true;
+			boolean isHost = true;
+			int pid = 0;
+			InetAddress remoteHost = null;
+			
 			try {
-				rtc = new RemoteThreadsClient(args[0]);
-			} catch (RemoteThreadsException e) {
-				System.err.println("Can't create a RemoteThreadsClient");
-				e.printStackTrace();
-				System.exit(1);
+				pid = Integer.valueOf(args[0]);
+			} catch(NumberFormatException e) {
+				isNumber = false;
 			}
+
+			try {
+				remoteHost = InetAddress.getByName(args[0]);
+			} catch (UnknownHostException e) {
+				isHost = false;
+			}
+			
+			// If args[0] is an integer it might be a PID
+			if( isNumber ) {
+				try {
+					rtc = new RemoteThreadsClient(pid);
+				} catch(RemoteThreadsException e) {
+					System.err.println("Can't create a RemoteThreadsClient");
+					e.printStackTrace();
+					System.exit(1);
+				}
+			}
+			
+			// It might be a IP address or host name
+			else if( isHost ) {
+				try {
+					rtc = new RemoteThreadsClient(remoteHost);
+				} catch(RemoteThreadsException e) {
+					System.err.println("Can't create a RemoteThreadsClient");
+					e.printStackTrace();
+					System.exit(1);
+				}
+			}
+			
+			// Try with a class name
+			else {
+				try {
+					rtc = new RemoteThreadsClient(args[0]);
+				} catch (RemoteThreadsException e) {
+					System.err.println("Can't create a RemoteThreadsClient");
+					e.printStackTrace();
+					System.exit(1);
+				}
+			}
+			
 		} else if ( args.length == 2 ){
 			try {
 				InetAddress remoteHost = null;
@@ -84,6 +146,16 @@ public class RemoteThreadsMonitor {
 		
 	}
 	
+	/**
+	 * Prints the usage. The command line accepts four different arguments
+	 * combinations:
+	 * <ul>
+	 * 	<li><i>PID</i></li>
+	 * 	<li><i>className</i></li>
+	 * 	<li><i>host</i></li>
+	 * 	<li><i>host</i> <i>port</i></li>
+	 * </ul>
+	 */
 	public static void usage() {
 		System.out.println("Usage:\n");
 		System.out.println("For local processes:  RemoteThreadsMonitor <pid>");
@@ -93,6 +165,12 @@ public class RemoteThreadsMonitor {
 		return;
 	}
 	
+	/**
+	 * Returns the {@link RemoteThreadsMBean} retreived by the internal
+	 * {@link RemoteThreadsClient} instance.
+	 * @return The {@link RemoteThreadsMBean} retreived by the 
+	 * internal {@link RemoteThreadsClient} instance.
+	 */
 	public RemoteThreadsMBean getMBean() {
 		
 		RemoteThreadsMBean mbean = null;
@@ -107,6 +185,10 @@ public class RemoteThreadsMonitor {
 		return mbean;
 	}
 	
+	/**
+	 * Closes the connection of the internal {@link RemoteThreadsClient}
+	 * instance.
+	 */
 	public void close() {
 		try {
 			rtc.close();

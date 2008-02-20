@@ -46,9 +46,10 @@ import com.sun.tools.attach.VirtualMachine;
  * Class used for connecting with a {@link RemoteThreads} MBean implementation.
  * The connection can be done with a local process, as well as with a process
  * running in a remote machine, with the RMI connector enabled on it.
- * 
+ * <p>
  * For further details on the activation of the RMI connector, you can see
- * @{link http://java.sun.com/docs/books/tutorial/jmx/remote/jconsole.html}
+ * <a href="http://java.sun.com/docs/books/tutorial/jmx/remote/jconsole.html">
+ * http://java.sun.com/docs/books/tutorial/jmx/remote/jconsole.html</a>
  * 
  * @author rtobar
  * @since ACS 7.0

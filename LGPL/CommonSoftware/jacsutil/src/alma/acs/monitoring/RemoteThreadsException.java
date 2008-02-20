@@ -22,7 +22,7 @@
 package alma.acs.monitoring;
 
 /**
- * Exception used by the RemoteThreadsClient class to catch and throw information
+ * Exception used by the {@link RemoteThreadsClient} class to catch and throw information
  * when errors are present in the execution of the process.
  * @author rtobar
  */

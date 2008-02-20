@@ -30,18 +30,25 @@ import javax.management.openmbean.CompositeData;
 
 import sun.management.ThreadInfoCompositeData;
 
+/**
+ * Main implementation of the {@link alma.acs.monitoring.RemoteThreadsMBean}
+ * interface. Further implementations of the implemented interface could
+ * inherit from this class.
+ * @author rtobar
+ * @since ACS 7.0
+ */
 public class RemoteThreads implements RemoteThreadsMBean {
 
-	private static String[] JACORB_CLASSES = {
+	public static String[] JACORB_CLASSES = {
 			"org.jacorb.",
 			"org.omg."
 	};
 	
-	private static String[] ACS_CLASSES = {
+	public static String[] ACS_CLASSES = {
 			"alma."
 	};
 	
-	private ThreadMXBean tmxb = null;
+	protected ThreadMXBean tmxb = null;
 	
 	public RemoteThreads() {
 		tmxb = ManagementFactory.getThreadMXBean();
@@ -85,7 +92,7 @@ public class RemoteThreads implements RemoteThreadsMBean {
 		return tmxb.dumpAllThreads(true,true).length;
 	}
 
-	private CompositeData[] getThreadsInfo(String [] classes,State state) {
+	protected CompositeData[] getThreadsInfo(String [] classes,State state) {
 		
 		ThreadInfo []info = tmxb.dumpAllThreads(true,true);
 		CompositeData[] dataList = new CompositeData[info.length];
@@ -121,7 +128,7 @@ public class RemoteThreads implements RemoteThreadsMBean {
 		return newDataList;
 	}
 	
-	private int getThreadsCount(String [] classes, State state) {
+	protected int getThreadsCount(String [] classes, State state) {
 		ThreadInfo []info = tmxb.dumpAllThreads(true,true);
 		int threadCount = 0;
 

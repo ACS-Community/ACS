@@ -29,9 +29,9 @@ import javax.management.openmbean.CompositeData;
  * should use the {@link <code>ThreadMXBean</code>} platform MXBean to get all
  * the necessary information.<br/>
  * 
- * All the methods returning <code>CompositeData</code> arrays actually return
- * {@link java.lang.management.ThreadInfo} objects transformed into 
- * <code>CompositeData</code> ones. Since <code>ThreadInfo</code> is not 
+ * All the methods returning {@link <code>CompositeData</code>} arrays 
+ * actually return {@link java.lang.management.ThreadInfo} objects transformed
+ * into <code>CompositeData</code> ones. Since <code>ThreadInfo</code> is not 
  * serializable, then <code>CompositeData</code> type must be used to get the 
  * information. When calling these methods, therefore, the 
  * <code>CompositeData</code> type should be transformed into 
