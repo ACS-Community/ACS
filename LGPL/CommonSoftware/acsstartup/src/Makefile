@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.45 2006/09/01 09:35:13 gchiozzi Exp $"
+# "@(#) $Id: Makefile,v 1.46 2008/02/20 18:10:33 agrimstrup Exp $"
 #
 # Makefile of ........
 #
@@ -71,7 +71,7 @@ acsstartupIrFeed_LIBS    =
 # 
 # IDL Files and flags
 # 
-IDL_FILES =
+IDL_FILES = ACSIRSentinel
 IDL_TAO_FLAGS =
 USER_IDL =
 

@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsstartupIrFeed.cpp,v 1.5 2007/10/04 11:24:03 bjeram Exp $"
+* "@(#) $Id: acsstartupIrFeed.cpp,v 1.6 2008/02/20 18:10:33 agrimstrup Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -59,7 +59,7 @@
 #include <stdio.h>
 #include <string.h>
 
-static char *rcsId="@(#) $Id: acsstartupIrFeed.cpp,v 1.5 2007/10/04 11:24:03 bjeram Exp $"; 
+static char *rcsId="@(#) $Id: acsstartupIrFeed.cpp,v 1.6 2008/02/20 18:10:33 agrimstrup Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <iostream>
@@ -98,7 +98,8 @@ void addIdlFiles(std::string dirName,
 	//good, found a match
 	if(t_file.rfind(".idl") != string::npos)
 	    {
-	    files.push_back(t_file);
+	    if (t_file != "ACSIRSentinel.idl")
+		files.push_back(t_file);
 	    }
 	
 	file = readdir(dir);
@@ -167,6 +168,7 @@ int main(int argc, char *argv[])
     //remove duplicates
  //   idlFiles.sort();
     idlFiles.unique();
+    idlFiles.push_back("ACSIRSentinel.idl");
 
     file << "#ifndef acsIrfeedDyn_" << processId <<"_idl" << std::endl;
     file << "#define acsIrfeedDyn_" << processId <<"_idl" << std::endl;
