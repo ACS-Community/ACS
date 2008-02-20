@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@$Id: acsServicesHandlerImpl.cpp,v 1.3 2008/02/12 22:53:13 agrimstrup Exp $"
+* "@$Id: acsServicesHandlerImpl.cpp,v 1.4 2008/02/20 13:46:30 hsommer Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -208,7 +208,7 @@ ACSServicesHandlerImpl::stop_acs (
     char command[1000];
     // execute: "acsStop -b <instance> <args>"
     // TODO checks for ';', '&', '|' chars, they can run any other command!
-    snprintf(command, 1000, "acsStop -b %d %s &> %sacsStop_%s", instance_number, cmdln, logDirectory.c_str(), timeStamp.c_str());
+    snprintf(command, 1000, "acsStop -noShutdownLocalContainers -baseport %d %s &> %sacsStop_%s", instance_number, cmdln, logDirectory.c_str(), timeStamp.c_str());
 
     Request *newreq = new Request(acsdaemon::DaemonCallback::_duplicate(callback), strdup(command));
     cmdproc->addRequest(newreq);
