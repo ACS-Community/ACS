@@ -17,20 +17,32 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: acsstartupTestLoadIFR.py,v 1.1 2008/02/20 00:45:21 agrimstrup Exp $"
+# "@(#) $Id: acsstartupTestLoadIFR.py,v 1.2 2008/02/20 02:59:25 agrimstrup Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
 # arne  2008-02-19  created
 #
 
-from Acspy.Util.ACSCorba import interfaceRepository
+from __future__ import with_statement
+import os
+import omniORB
+import CORBA
 
-print "Retrieving IR object..."
-IR = interfaceRepository()
-print "Looking up Container Interface..."
-interf = IR.lookup_id('IDL:ijs.si/maci/Container:1.0')
-print "Interface is: ", interf
+omniORB.importIRStubs()
+
+fname = "%s/tmp/ACS_INSTANCE.%s/iors/InterfaceRepositoryIOR" % (os.environ['ACSDATA'], os.environ['ACS_INSTANCE'])
+
+with open(fname,'r') as ior :
+    
+    print "Retrieving IR object..."
+    orb = CORBA.ORB_init()
+    obj = orb.string_to_object(ior.read())
+    IR = obj._narrow(CORBA.Repository)
+
+    print "Looking up Container Interface..."
+    interf = IR.lookup_id('IDL:ijs.si/maci/Container:1.0')
+    print "Interface is: ", interf
 
 #
 # ___oOo___

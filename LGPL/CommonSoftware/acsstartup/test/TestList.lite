@@ -20,7 +20,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: TestList.lite,v 1.12 2007/05/17 11:23:11 msekoran Exp $"
+# "@(#) $Id: TestList.lite,v 1.13 2008/02/20 02:59:25 agrimstrup Exp $"
 #
 # TestList
 #
@@ -62,6 +62,8 @@ PROLOGUE acsstartupTATPrologue
        "acsStop -b 9" 
 
 7  T7  "acsStop -b 0"
+
+8  T8  "acsstartupTestLoadIFR.sh"
 
 10 testContainerPort "testContainerPort.sh"
 
