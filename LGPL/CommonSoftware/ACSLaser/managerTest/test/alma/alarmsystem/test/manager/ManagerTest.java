@@ -6,6 +6,9 @@ import java.io.IOException;
 import java.util.Properties;
 import java.util.logging.Logger;
 
+import cern.laser.client.data.Alarm;
+import cern.laser.client.services.selection.AlarmSelectionListener;
+import cern.laser.client.services.selection.LaserSelectionException;
 import cern.laser.source.alarmsysteminterface.FaultState;
 
 import alma.acs.component.client.AdvancedComponentClient;
@@ -14,8 +17,6 @@ import alma.acs.logging.AcsLogLevel;
 import alma.acs.logging.ClientLogManager;
 import alma.alarmsystem.clients.CategoryClient;
 import alma.alarmsystem.clients.SourceClient;
-import alma.alarmsystem.clients.category.AlarmView;
-import alma.alarmsystem.clients.category.CategoryListener;
 import alma.alarmsystem.clients.source.SourceListener;
 
 /**
@@ -25,7 +26,7 @@ import alma.alarmsystem.clients.source.SourceListener;
  * @author acaproni
  *
  */
-public class ManagerTest extends Thread implements SourceListener, CategoryListener {
+public class ManagerTest extends Thread implements SourceListener, AlarmSelectionListener {
 	
 	// ACS component client
 	private AdvancedComponentClient client;
@@ -103,7 +104,7 @@ public class ManagerTest extends Thread implements SourceListener, CategoryListe
         	System.exit(-1);
         }
         try {
-        	categoryClient.connect();
+        	categoryClient.connect(this);
         } catch (Exception e) {
         	System.err.println("Error connecting categoies: "+e.getMessage());
         	logger.log(AcsLogLevel.ERROR,"Source client connected");
@@ -111,25 +112,35 @@ public class ManagerTest extends Thread implements SourceListener, CategoryListe
         }
         // Connect the listeners
         sourceClient.addAlarmListener(this);
-        categoryClient.addAlarmListener(this);
         System.out.println("ManagerTest ready to receive alarms");
 	}
 	
+	
 	/**
-	 * @see alma.alarmsystem.clients.CategoryClient
+	 * @see AlarmSelectionListener
 	 */
-	public void alarmReceived(AlarmView alarm) {
+	@Override
+	public void onAlarm(Alarm alarm) {
 		if (alarm==null) {
 			System.out.println("ERROR: received a null alarm from category!");
 			return;
 		}
 		StringBuffer str = new StringBuffer("Alarm from category received: <");
-		str.append(alarm.alarmID);
+		str.append(alarm.getAlarmId());
 		str.append("> priority: ");
-		str.append(alarm.priority);
+		str.append(alarm.getPriority());
 		System.out.println(str.toString());
 	}
-	
+
+	/**
+	 * @see AlarmSelectionListener
+	 */
+	@Override
+	public void onException(LaserSelectionException e) {
+		System.out.println("Exception got from CategoryClient: "+e.getMessage());
+		e.printStackTrace();
+	}
+
 	/**
 	 * @see alma.alarmsystem.clients.SourceClient
 	 */
