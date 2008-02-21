@@ -19,7 +19,7 @@
 
 /** 
  * @author  acaproni   
- * @version $Id: AlarmTableModel.java,v 1.8 2008/02/18 00:02:26 acaproni Exp $
+ * @version $Id: AlarmTableModel.java,v 1.9 2008/02/21 02:41:38 acaproni Exp $
  * @since    
  */
 
@@ -334,7 +334,7 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 			return dateFormat.format(alarm.getStatus().getSourceTimestamp());
 		}
 		case COMPONENT: {
-			return alarm.getTriplet().getFaultFamily();
+			return alarm.getTriplet().getFaultMember();
 		}
 		case CODE: {
 			return alarm.getTriplet().getFaultCode();
