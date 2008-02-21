@@ -302,20 +302,15 @@ public class LaserComponent extends ComponentImplBase
 			for (int a=0; a<allSources.length; a++) {
 				Topic topicAdminCacheLoader = new ACSJMSTopic(
 				"CMW.ALARM_SYSTEM.ALARMS.SOURCES."+allSources[a]);
-
-				System.out.println("CMW.ALARM_SYSTEM.ALARMS.SOURCES."+allSources[a]);
-				
 				try {
 					TopicSubscriber subscriberAdminCacheLoader = ts
 							.createSubscriber(topicAdminCacheLoader);
 			
 					subscriberAdminCacheLoader
 							.setMessageListener(new MessageListener() {
-								public void onMessage(Message message) {
+								public synchronized void onMessage(Message message) {
 									if (message instanceof TextMessage) {
-										try {
-											logger.log(AcsLogLevel.DEBUG,"Received a JMS message");
-										} catch(Exception e) {}
+										logger.log(AcsLogLevel.DEBUG,"Received a JMS message");
 									} else {
 										logger.log(AcsLogLevel.DEBUG,"Received a non text JMS message");
 									}
