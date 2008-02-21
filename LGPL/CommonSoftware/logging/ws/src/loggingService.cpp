@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingService.cpp,v 1.55 2007/05/28 06:23:39 cparedes Exp $"
+* "@(#) $Id: loggingService.cpp,v 1.56 2008/02/21 08:39:36 cparedes Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -275,8 +275,8 @@ LoggingService::resolve_notify_factory ()
 int
 LoggingService::run (void)
 {
-  ACS_SHORT_LOG ((LM_DEBUG, "ACS Centralized Logger is running..."));
-
+    //CP: This message is important/expected from acs scripts in order to start ACS
+  ACS_SHORT_LOG ((LM_EMERGENCY, "ACS Centralized Logger is running..."));
   
   try
     {
@@ -613,6 +613,9 @@ main (int argc, char *argv[])
 // REVISION HISTORY:
 //
 // $Log: loggingService.cpp,v $
+// Revision 1.56  2008/02/21 08:39:36  cparedes
+// Incrementing the message level of the logging service start up
+//
 // Revision 1.55  2007/05/28 06:23:39  cparedes
 // Adding the new alternate method to log binaries
 //
