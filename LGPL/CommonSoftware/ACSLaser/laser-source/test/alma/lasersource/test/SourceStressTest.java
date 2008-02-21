@@ -20,6 +20,7 @@ package alma.lasersource.test;
 
 import java.sql.Timestamp;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Random;
 import java.util.Vector;
 import java.util.concurrent.Callable;
@@ -42,10 +43,17 @@ import alma.alarmsystem.source.ACSAlarmSystemInterfaceFactory;
 import alma.alarmsystem.source.ACSFaultState;
 
 /**
- * A stress test: it sends a great number of alarm sources and checkes
+ * A stress test: it sends a great number of alarm sources and checks
  *  - if all of them have been published and if their
  *  - they arrived in the right order
- *  - thier contents match with the sent fault states
+ *  - their contents match with the sent fault states
+ *  
+ *  The FaultStates are sent in the same order their are published if the sending
+ *  is done with one source per each FS.
+ *  If the source is only one for all the alarms, then it applies a kind of
+ *  caching and the FSs do not arrive in the same order the are published.
+ *  In the latter case, the FSs published and the FSs received are both sorted
+ *  by FM and compared.
  *   
  * @author acaproni
  *
@@ -59,7 +67,7 @@ public class SourceStressTest extends ComponentClientTestCase {
 	 * @author acaproni
 	 *
 	 */
-	private class MiniFaultState {
+	private class MiniFaultState implements Comparable<MiniFaultState> {
 		// The fields of the fault state
 		public final String FF, FM;
 		public final int FC;
@@ -69,7 +77,7 @@ public class SourceStressTest extends ComponentClientTestCase {
 		
 		public MiniFaultState() {
 			FF=SourceStressTest.FF+Math.abs(rnd.nextInt());
-			FM=SourceStressTest.FM+Math.abs(rnd.nextInt());
+			FM=SourceStressTest.FM+(count++);
 			FC=Math.abs(rnd.nextInt());
 			msec=System.currentTimeMillis();
 			timestamp=new Timestamp(msec);
@@ -82,6 +90,41 @@ public class SourceStressTest extends ComponentClientTestCase {
 			assertNotNull(FM);
 			assertNotNull(description);
 			assertNotNull(timestamp);
+		}
+
+		/** 
+		 * @see <code>java.lang.Comparable</code>
+		 */
+		@Override
+		public int compareTo(MiniFaultState o) {
+			return FM.compareTo(o.FM);
+		}
+	}
+	
+	/**
+	 * A class to store the FaultStates received from the NC
+	 * This calls is needed to reimplement Comparable
+	 * 
+	 * @author acaproni
+	 *
+	 */
+	private class FaultStateReceived implements Comparable {
+
+		public final FaultState faultState;
+		
+		public FaultStateReceived(FaultState fs) {
+			if (fs==null) {
+				throw new IllegalArgumentException("The FaultState can't be null");
+			}
+			faultState=fs;
+		}
+		
+		@Override
+		public int compareTo(Object o) {
+			if (! (o instanceof FaultState)) {
+				
+			}
+			return faultState.getMember().compareTo(((FaultStateReceived)o).faultState.getMember());
 		}
 	}
 	
@@ -111,9 +154,14 @@ public class SourceStressTest extends ComponentClientTestCase {
 	private ACSAlarmSystemInterface alarmSource;
 	
 	// The fault states received from the NC
-	private Vector<FaultState> receivedFS;
+	private Vector<FaultStateReceived> receivedFS;
 	
-	private MiniFaultState[] statesToPublish;
+	 // The fault state ready to be published
+	private Vector<MiniFaultState> statesToPublish;
+	
+	// This is to generate the name of the fault state sequencially
+	// by postponing the numer to a string
+	private static int count=0;
 	
 	/**
 	 * Constructor 
@@ -156,7 +204,7 @@ public class SourceStressTest extends ComponentClientTestCase {
 		alarmSource = ACSAlarmSystemInterfaceFactory.createSource();
 		assertNotNull("Error instantiating the source",alarmSource);
 		
-		receivedFS= new Vector<FaultState>();
+		receivedFS= new Vector<FaultStateReceived>();
 		assertNotNull(receivedFS);
 	}
 
@@ -178,7 +226,7 @@ public class SourceStressTest extends ComponentClientTestCase {
 		for (FaultState fs: faultStates) {
 			assertNotNull(fs);
 			synchronized (receivedFS) {
-				receivedFS.add(fs);	
+				receivedFS.add(new FaultStateReceived(fs));	
 			}
 		}
 	}
@@ -222,27 +270,27 @@ public class SourceStressTest extends ComponentClientTestCase {
 	 * @param len The number of items to biuld and put in the array
 	 */
 	private void buildData(int len) throws Exception {
-		statesToPublish= new MiniFaultState[len];
+		statesToPublish= new Vector<MiniFaultState>(len);
 		assertNotNull(statesToPublish);
 		// Build the array of state to publish
-		for (int t=0; t<statesToPublish.length; t++) {
+		for (int t=0; t<len; t++) {
 			MiniFaultState fs = new MiniFaultState();
 			assertNotNull(fs);
-			statesToPublish[t]=fs;
+			statesToPublish.add(fs);
 		}
 	}
 	
 	/**
 	 * Wait until all the fault states are received or a timeout happened.
-	 * If all the fault states are received, it compares what has been sent
-	 * with what has been received.
+	 * 
+	 * @throws Exception in case of timeout
 	 */
-	private void waitAndCheck() throws Exception {
+	private void waitForFSs() throws Exception {
 		int timeout = 60; // timeout in secs
 		int count=0;
 		int old=0; // The number of items read in the previous iteration
 		// Wait for all the alarms to be in the vector
-		while (receivedFS.size()<statesToPublish.length && count<2*timeout) {
+		while (receivedFS.size()<statesToPublish.size() && count<2*timeout) {
 			if (old!=receivedFS.size()) {
 				count=0;
 				old=receivedFS.size();
@@ -252,17 +300,19 @@ public class SourceStressTest extends ComponentClientTestCase {
 				count++;
 			} catch (Exception e) {}
 		}
-		assertEquals(statesToPublish.length, receivedFS.size());
+		assertEquals(statesToPublish.size(), receivedFS.size());
 		
-		for (int t=0; t< statesToPublish.length; t++) {
-			checkFaultStates(statesToPublish[t], receivedFS.get(t));
-		}
+		
 	}
 	
 	/**
 	 * Test by sending all the fault states using the same source. 
 	 * When all the alarms have arrived it checks for their
-	 * correctness 
+	 * correctness.
+	 * 
+	 * NOTE: when using only on source, not all the FS arrive in the same
+	 *      order they are submitted to the source.
+	 *      For this reason the collection are sorted before comparing.
 	 * 
 	 * @throws Exception
 	 */
@@ -270,11 +320,19 @@ public class SourceStressTest extends ComponentClientTestCase {
 		buildData(NUM_OF_FS_TO_SEND_ONE_SOURCE);
 		
 		// Send the alarms
-		for (int t=0; t<statesToPublish.length; t++) {
-			send(statesToPublish[t],true);
+		for (int t=0; t<statesToPublish.size(); t++) {
+			send(statesToPublish.get(t),true);
 		}
 		
-		waitAndCheck();
+		waitForFSs();
+		
+		// Resort the collection before comparing
+		Collections.sort(receivedFS);
+		Collections.sort(statesToPublish);
+		
+		for (int t=0; t< statesToPublish.size(); t++) {
+			checkFaultStates(statesToPublish.get(t), receivedFS.get(t).faultState);
+		}
 	}
 	
 	/**
@@ -288,10 +346,17 @@ public class SourceStressTest extends ComponentClientTestCase {
 		buildData(NUM_OF_FS_TO_SEND_MORE_SOURCES);
 		
 		// Send the alarms
-		for (int t=0; t<statesToPublish.length; t++) {
-			send(statesToPublish[t],false);
+		for (int t=0; t<statesToPublish.size(); t++) {
+			send(statesToPublish.get(t),false);
 		}
 		
-		waitAndCheck();
+		waitForFSs();
+		
+		Collections.sort(receivedFS);
+		Collections.sort(statesToPublish);
+		
+		for (int t=0; t< statesToPublish.size(); t++) {
+			checkFaultStates(statesToPublish.get(t), receivedFS.get(t).faultState);
+		}
 	}
 }
