@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingService.cpp,v 1.57 2008/02/21 08:47:36 cparedes Exp $"
+* "@(#) $Id: loggingService.cpp,v 1.58 2008/02/21 09:20:45 cparedes Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -276,8 +276,9 @@ int
 LoggingService::run (void)
 {
     //CP: This message is important/expected from acs scripts in order to start ACS
-  ACS_SHORT_LOG ((LM_INFO, "ACS Centralized Logger is running..."));
-  
+  //ACS_SHORT_LOG ((LM_INFO, "ACS Centralized Logger is running..."));
+  ACE_OS::printf("ACS Centralized Logger is running..."); 
+  ACE_OS::fflush (stdout);
   try
     {
       this->m_orb->run ();
@@ -613,6 +614,9 @@ main (int argc, char *argv[])
 // REVISION HISTORY:
 //
 // $Log: loggingService.cpp,v $
+// Revision 1.58  2008/02/21 09:20:45  cparedes
+// Changing the message to printf
+//
 // Revision 1.57  2008/02/21 08:47:36  cparedes
 // Change it from emergency to info
 //
