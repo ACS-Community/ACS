@@ -31,7 +31,6 @@ import cern.laser.source.alarmsysteminterface.impl.message.ASIMessage;
 import com.cosylab.acs.jms.ACSJMSMessageEntity;
 
 import alma.acs.component.client.ComponentClientTestCase;
-import alma.acs.logging.AcsLogLevel;
 import alma.acs.nc.Consumer;
 import alma.alarmsystem.source.ACSAlarmSystemInterface;
 import alma.alarmsystem.source.ACSAlarmSystemInterfaceFactory;
@@ -82,10 +81,15 @@ public class SourceStressTest extends ComponentClientTestCase {
 	}
 	
 	// The consumer
-	private volatile Consumer m_consumer;
+	private Consumer m_consumer;
 
-	// The number of fault states to send
-	private static final int NUM_OF_FS_TO_SEND = 50000;
+	// The number of fault states to send with the same source
+	private static final int NUM_OF_FS_TO_SEND_ONE_SOURCE = 10000;
+	
+	// The number of fault states to send with the more sources
+	// Chenging this number remeber that CERN code SynchroBuffer
+	// create a thread per each source
+	private static final int NUM_OF_FS_TO_SEND_MORE_SOURCES = 1000;
 	
 	// The NC name to listen for published fault states
 	private static final String m_channelName = "CMW.ALARM_SYSTEM.ALARMS.SOURCES.ALARM_SYSTEM_SOURCES";
@@ -125,9 +129,9 @@ public class SourceStressTest extends ComponentClientTestCase {
 		
 		ACSAlarmSystemInterfaceFactory.init(getContainerServices());
 		
+		
 		m_consumer= new Consumer(m_channelName, alma.acsnc.ALARMSYSTEM_DOMAIN_NAME.value, getContainerServices());
 		assertNotNull("Error instantiating the consumer",m_consumer);
-		
 		m_consumer.addSubscription(com.cosylab.acs.jms.ACSJMSMessageEntity.class, this);
 		m_consumer.consumerReady();
 		
@@ -136,9 +140,6 @@ public class SourceStressTest extends ComponentClientTestCase {
 		
 		receivedFS= new Vector<FaultState>();
 		assertNotNull(receivedFS);
-		
-		statesToPublish= new MiniFaultState[NUM_OF_FS_TO_SEND];
-		assertNotNull(statesToPublish);
 	}
 
 	/**
@@ -146,7 +147,7 @@ public class SourceStressTest extends ComponentClientTestCase {
 	 * @see alma.acs.component.client.ComponentClientTestCase#tearDown()
 	 */
 	protected void tearDown() throws Exception {
-		// TODO Auto-generated method stub
+		m_consumer.disconnect();
 		super.tearDown();
 	}
 	
@@ -163,17 +164,28 @@ public class SourceStressTest extends ComponentClientTestCase {
 	}
 	
 	/**
-	 * Send a fault state to the NC
+	 * Send a fault state to the NC.
+	 * It uses the global source or build a new one depending on the
+	 * parameter
 	 * 
 	 * @param mfs The fault state to publish
+	 * @param sameSource If true the same source is used to send the alarm
+	 *                   if true a new source is built and the fault state is
+	 *                           sent using this new source
 	 */
-	private void send(MiniFaultState mfs) throws Exception {
+	private void send(MiniFaultState mfs, boolean sameSource) throws Exception {
 		assertNotNull(mfs);
 		ACSFaultState fs = ACSAlarmSystemInterfaceFactory.createFaultState(mfs.FF, mfs.FM, mfs.FC);
 		assertNotNull("Error instantiating the FS",fs);
 		fs.setDescriptor(mfs.description);
 		fs.setUserTimestamp(mfs.timestamp);
-		alarmSource.push(fs);
+		if (sameSource) {
+			alarmSource.push(fs);
+		} else {
+			ACSAlarmSystemInterface newSource= ACSAlarmSystemInterfaceFactory.createSource();
+			assertNotNull(newSource);
+			newSource.push(fs);
+		}
 	}
 	
 	private void checkFaultStates(MiniFaultState sent, FaultState recv) throws Exception {
@@ -185,25 +197,27 @@ public class SourceStressTest extends ComponentClientTestCase {
 	}
 	
 	/**
-	 * Test by sending all the fault states. 
-	 * When all the alarms have arrived it checks for their
-	 * coorectness 
+	 * Build the data to publish and check for correctness
 	 * 
-	 * @throws Exception
+	 * @param len The number of items to biuld and put in the array
 	 */
-	public void testStress() throws Exception {
+	private void buildData(int len) throws Exception {
+		statesToPublish= new MiniFaultState[len];
+		assertNotNull(statesToPublish);
 		// Build the array of state to publish
 		for (int t=0; t<statesToPublish.length; t++) {
 			MiniFaultState fs = new MiniFaultState();
 			assertNotNull(fs);
 			statesToPublish[t]=fs;
 		}
-		
-		// Send the alarms
-		for (int t=0; t<statesToPublish.length; t++) {
-			send(statesToPublish[t]);
-		}
-		
+	}
+	
+	/**
+	 * Wait until all the fault states are received or a timeout happened.
+	 * If all the fault states are received, it compares what has been sent
+	 * with what has been received.
+	 */
+	private void waitAndCheck() throws Exception {
 		int timeout = 60; // timeout in secs
 		int count=0;
 		int old=0; // The number of items read in the previous iteration
@@ -223,5 +237,41 @@ public class SourceStressTest extends ComponentClientTestCase {
 		for (int t=0; t< statesToPublish.length; t++) {
 			checkFaultStates(statesToPublish[t], receivedFS.get(t));
 		}
+	}
+	
+	/**
+	 * Test by sending all the fault states using the same source. 
+	 * When all the alarms have arrived it checks for their
+	 * correctness 
+	 * 
+	 * @throws Exception
+	 */
+	public void testStressSameSource() throws Exception {
+		buildData(NUM_OF_FS_TO_SEND_ONE_SOURCE);
+		
+		// Send the alarms
+		for (int t=0; t<statesToPublish.length; t++) {
+			send(statesToPublish[t],true);
+		}
+		
+		waitAndCheck();
+	}
+	
+	/**
+	 * Test by sending all the fault states using the same source. 
+	 * When all the alarms have arrived it checks for their
+	 * correctness 
+	 * 
+	 * @throws Exception
+	 */
+	public void testStressDifferentSources() throws Exception {
+		buildData(NUM_OF_FS_TO_SEND_MORE_SOURCES);
+		
+		// Send the alarms
+		for (int t=0; t<statesToPublish.length; t++) {
+			send(statesToPublish[t],false);
+		}
+		
+		waitAndCheck();
 	}
 }
