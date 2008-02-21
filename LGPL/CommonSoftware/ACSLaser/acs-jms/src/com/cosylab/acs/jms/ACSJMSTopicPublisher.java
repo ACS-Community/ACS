@@ -6,6 +6,9 @@
  */
 package com.cosylab.acs.jms;
 
+import java.util.Collection;
+import java.util.HashMap;
+
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.Topic;
@@ -16,28 +19,156 @@ import alma.acs.exceptions.AcsJException;
 import alma.acs.nc.CorbaPublisher;
 
 /**
+ * 
+ * To avoid creating a <code>CorbaPublisher</code> for each message to publish,
+ * an pool of <code>CorbaPublisher</code> has been introduced by means
+ * of a <code>HashMap</code>.
+ * The key of the <code>HasMap</code> is the name of the NC.
+ * To made the publisher reusable for all the topics, the <code>HashMap</code>
+ * is static.
+ * 
+ * The <code>DefaultPublisherImpl</code> instantiates an object of this class and 
+ * publishes messages passing the topic i.e. it never calls the method without topic.
+ * In particular it calls:
+ *   - <code>publish(Topic,Message)</code> for Heartbeat, Category, clients
+ *   - <code>publish(Topic topic, Message message, int deliveryMode, int priority, long timeToLive)</code>
+ *       for Sources
+ *       
+ * For our point of view the two methods have the same functioning because we
+ * do not use the deliveryMode, priority and timeToLive at least for now ;-)
+ * 
+ * @see {@link cern.cmw.mom.pubsub.impl.DefaultPublisherImpl}
+ * 
  * @author kzagar
  *
- * To change the template for this generated type comment go to
- * Window&gt;Preferences&gt;Java&gt;Code Generation&gt;Code and Comments
  */
-public class ACSJMSTopicPublisher
-	extends ACSJMSProducer
-	implements TopicPublisher {
+public class ACSJMSTopicPublisher extends ACSJMSProducer implements TopicPublisher {
+	
+	/**
+	 * Objects from this class associate a time to the <code>CorbaPublisher</code>
+	 * in order to remember when the NC has been accessed the last time.
+	 * In this way it is possible to implement a policy to free not used NC.
+	 * 
+	 * @author acaproni
+	 *
+	 */
+	private class PublisherPoolItem {
 		
-	private CorbaPublisher publisher; 
+		/**
+		 * The publisher
+		 */ 
+		private CorbaPublisher publisher;
+		
+		/**
+		 * The last time the publisher has been accessed
+		 */
+		private long lastAccessTime;
+		
+		/**
+		 * Constructor
+		 * 
+		 * Create a </code>PoolMenuItem</code> building a new
+		 * <code>CorbaPublisher</code> and updating the access time
+		 * 
+		 * @param name The name of the topic (i.e. of the NC)
+		 * @throws AcsJException In case of error building the <code>CorbaPublisher</code>
+		 */
+		public PublisherPoolItem(String name, ContainerServicesBase contSvcs) throws AcsJException {
+			publisher= new CorbaPublisher(
+					name, 
+					alma.acsnc.ALARMSYSTEM_DOMAIN_NAME.value, 
+					contSvcs);
+			lastAccessTime=System.currentTimeMillis();
+		}
+		
+		/**
+		 * Publish a message on this publisher
+		 * @param message
+		 */
+		public void sendMessage(Message message)
+		{
+			if (publisher==null) {
+				throw new IllegalStateException("Trying to publish on a null publisher");
+			}
+			if(message instanceof ACSJMSMessage) {
+				((ACSJMSMessage)message).getEntity().type=message.getClass().getName();
+				publisher.publish(((ACSJMSMessage)message).getEntity());
+				lastAccessTime=System.currentTimeMillis();
+			} else {
+				throw new IllegalArgumentException("ACSJMSProducer can only send ACSJMSMessage messages!");
+			}
+		}
+		
+		/**
+		 * Release the publisher
+		 * 
+		 * @see {@link CorbaPublisher}
+		 */
+		public void close() {
+			if (publisher==null) {
+				throw new IllegalStateException("Trying to close a null publisher");
+			}
+			publisher.disconnect();
+			publisher=null;
+		}
+
+		/**
+		 * Return the last access time for this item.
+		 * 
+		 * The value returned is the number of milliseconds 
+		 * as returned by <code>System.currentTimeMillis()</code>
+		 * 
+		 * @return The instant (msec) when this item has been accessed the last time
+		 */
+		public long getLastAccessTime() {
+			return lastAccessTime;
+		}
+	}
+	
+	/**
+	 * The name of the topic passed in the constructor
+	 */
+	private String topicName;
+	
+	/** The publishers
+	 * The key is the name of the NC (i.e. the name of the topic)
+	 * The value is the CorbaPublisher
+	 */
+	private static HashMap<String, PublisherPoolItem> publishersPool = new HashMap<String, PublisherPoolItem>(); 
 
 	/**
-	 * @param destination
-	 * @param containerServices
-	 * @throws AcsJException
-	 * @throws JMSException
+	 * Constructor 
+	 * 
+	 * @param topic The topic to publish messages into
+	 * @param containerServices The container service
+
+	 * @throws JMSException In case of error building the <code>CorbaPublisher</code>
 	 */
 	public ACSJMSTopicPublisher(Topic topic, ContainerServicesBase containerServices) throws JMSException {
 		super(topic, containerServices);
-
+		
 		if(topic != null) {
-			this.publisher = createPublisher(topic, containerServices);
+			if (topic.getTopicName()==null || topic.getTopicName().isEmpty()) {
+				throw new IllegalArgumentException("Invalid topic name");
+			}
+			topicName=topic.getTopicName();
+			synchronized(publishersPool) {
+				if (publishersPool.containsKey(topic.getTopicName())) {
+					// A CorbaPublisher for this topic is already present
+					//
+					// Of course it can never happen ;-)
+					return;
+				}
+			}
+			try {
+				PublisherPoolItem item = new PublisherPoolItem(topic.getTopicName(), containerServices);
+				synchronized(publishersPool) {
+					publishersPool.put(topic.getTopicName(),item);	
+				}
+			} catch (Exception e) {
+				e.printStackTrace(System.err);
+				throw new JMSException("Excepion building a PublisherPoolItem "+e.getMessage());
+			}
 		}
 	}
 
@@ -48,119 +179,101 @@ public class ACSJMSTopicPublisher
 		return (Topic)this.destination;
 	}
 
-	/* (non-Javadoc)
+	/**
+	 * Publish a message in the topic
+	 * 
+	 * The topic is the topic whose name has been passed in the constructor.
+	 * However for this implementation there is no difference when the topic 
+	 * has been built because all the topics are in the pool.
+	 * The name of the topic built in the constructor can be accessed through
+	 * the <code>topicName</code> field.
+	 * 
 	 * @see javax.jms.TopicPublisher#publish(javax.jms.Message)
 	 */
 	public void publish(Message message) throws JMSException {
-		if(this.publisher == null) {
-			// This method can not be used on an identified message producer.
-			throw new UnsupportedOperationException();
+		if (message==null) {
+			throw new IllegalArgumentException("The message can't be null");
 		}
-
-		sendMessage(this.publisher, message);
+		PublisherPoolItem item;
+		synchronized (publishersPool) {
+			item = publishersPool.get(topicName);	
+		}
+		
+		if (item==null) {
+			throw new IllegalStateException("Impossible to use this method without building the publisher passing valid topic");
+		}
+		item.sendMessage(message);
 	}
 
 	/* (non-Javadoc)
 	 * @see javax.jms.TopicPublisher#publish(javax.jms.Message, int, int, long)
 	 */
 	public void publish(Message message, int deliveryMode, int priority, long timeToLive) throws JMSException {
-		if(this.publisher == null) {
-			// This method can not be used on an identified message producer.
-			throw new UnsupportedOperationException();
-		}
-
 		message.setJMSDeliveryMode(deliveryMode);
 		message.setJMSPriority(priority);
 		message.setJMSExpiration(timeToLive + System.currentTimeMillis());
 
-		sendMessage(this.publisher, message);
+		publish(message);
 	}
 
 	/* (non-Javadoc)
 	 * @see javax.jms.TopicPublisher#publish(javax.jms.Topic, javax.jms.Message)
 	 */
 	public void publish(Topic topic, Message message) throws JMSException {
-		if(this.publisher != null) {
-			// This method can not be used on an unidentified message producer.
-			throw new UnsupportedOperationException();
-		}
 		if (message==null) {
-			throw new NullPointerException("The message is null");
+			throw new NullPointerException("The message can't be null");
 		}
-		
-		CorbaPublisher tempPublisher = createPublisher(topic, this.containerServices);
-		sendMessage(tempPublisher, message);
-		tempPublisher.disconnect();
+		if (topic==null) {
+			throw new NullPointerException("The topic can't be null");
+		}
+		if (topic.getTopicName()==null || topic.getTopicName().isEmpty()) {
+			throw new IllegalArgumentException("Invalid topic name");
+		}
+		PublisherPoolItem item;
+		synchronized (publishersPool) {
+			item= publishersPool.get(topic.getTopicName());
+		}
+		if (item==null) {
+			try {
+				item = new PublisherPoolItem(topic.getTopicName(),containerServices);
+			} catch (Exception e) {
+				throw new JMSException("Error building a CorbaPublisher");
+			}
+			synchronized (publishersPool) {
+				publishersPool.put(topic.getTopicName(), item);
+			}
+		}
+		item.sendMessage(message);
 	}
 
 	/* (non-Javadoc)
 	 * @see javax.jms.TopicPublisher#publish(javax.jms.Topic, javax.jms.Message, int, int, long)
 	 */
 	public void publish(Topic topic, Message message, int deliveryMode, int priority, long timeToLive) throws JMSException {
-		if(this.publisher != null) {
-			// This method can not be used on an unidentified message producer.
-			throw new UnsupportedOperationException();
-		}
-		
 		message.setJMSDeliveryMode(deliveryMode);
 		message.setJMSPriority(priority);
 		message.setJMSExpiration(timeToLive + System.currentTimeMillis());
 		
-		CorbaPublisher tempPublisher = createPublisher(topic, this.containerServices); 
-		sendMessage(createPublisher(topic, this.containerServices), message);
-		tempPublisher.disconnect();
+		publish(topic,message);
 	}
 
 	/* (non-Javadoc)
 	 * @see javax.jms.MessageProducer#close()
 	 */
 	public void close() throws JMSException {
-		if (this.publisher != null) {
-			this.publisher.disconnect();
+		Collection<PublisherPoolItem> values;
+		synchronized (publishersPool) {
+			values= publishersPool.values();
+			for (PublisherPoolItem item: values) {
+				item.close();
+			}
 		}
-		this.publisher = null;
 	}
 
 	/* (non-Javadoc)
 	 * @see javax.jms.MessageProducer#send(javax.jms.Message)
 	 */
 	public void send(Message message) throws JMSException {
-		if(this.publisher == null) {
-			// This method can not be used on an identified message producer.
-			throw new UnsupportedOperationException();
-		}
-
-		sendMessage(this.publisher, message);
-	}
-
-	private static void sendMessage(CorbaPublisher publisher, Message message)
-	{
-		if(message instanceof ACSJMSMessage) {
-			
-			// Debug print the props of the message
-			/*System.out.println("===> Properties of the message to send: ");
-			for(int i = 0; i < ((ACSJMSMessage)message).entity.properties.length; ++i) {
-				System.out.print("Props: "+
-						((ACSJMSMessage)message).entity.properties[i].property_name);
-				System.out.print("=====> "+((ACSJMSMessage)message).entity.properties[i].property_value);
-				System.out.println(" class ["+((ACSJMSMessage)message).entity.properties[i].property_value.getClass().getName()+"]");
-			}*/
-			
-			
-			
-			((ACSJMSMessage)message).getEntity().type=message.getClass().getName();
-			publisher.publish(((ACSJMSMessage)message).getEntity());			
-			//this.publisher.publish(new EventDescription("a", 32, 64));
-		} else {
-			throw new IllegalArgumentException("ACSJMSProducer can only send ACSJMSMessage messages!");
-		}
-	}
-	
-	private static CorbaPublisher createPublisher(Topic topic, ContainerServicesBase containerServices) throws JMSException {
-		try {
-			return new CorbaPublisher(topic.getTopicName(), alma.acsnc.ALARMSYSTEM_DOMAIN_NAME.value, containerServices);
-		} catch (AcsJException e) {
-			throw new JMSException("Error creating topic publisher: " + e.getMessage());
-		}
+		publish(message);
 	}
 }
