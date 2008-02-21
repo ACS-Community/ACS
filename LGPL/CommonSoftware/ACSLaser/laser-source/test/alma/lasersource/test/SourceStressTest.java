@@ -22,6 +22,10 @@ import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.Random;
 import java.util.Vector;
+import java.util.concurrent.Callable;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 import cern.laser.source.alarmsysteminterface.FaultState;
 import cern.laser.source.alarmsysteminterface.impl.ASIMessageHelper;
@@ -32,6 +36,7 @@ import com.cosylab.acs.jms.ACSJMSMessageEntity;
 
 import alma.acs.component.client.ComponentClientTestCase;
 import alma.acs.nc.Consumer;
+import alma.acs.nc.Helper;
 import alma.alarmsystem.source.ACSAlarmSystemInterface;
 import alma.alarmsystem.source.ACSAlarmSystemInterfaceFactory;
 import alma.alarmsystem.source.ACSFaultState;
@@ -81,13 +86,13 @@ public class SourceStressTest extends ComponentClientTestCase {
 	}
 	
 	// The consumer
-	private Consumer m_consumer;
+	private volatile Consumer m_consumer;
 
 	// The number of fault states to send with the same source
 	private static final int NUM_OF_FS_TO_SEND_ONE_SOURCE = 10000;
 	
 	// The number of fault states to send with the more sources
-	// Chenging this number remeber that CERN code SynchroBuffer
+	// Changing this number remember that CERN code SynchroBuffer
 	// create a thread per each source
 	private static final int NUM_OF_FS_TO_SEND_MORE_SOURCES = 1000;
 	
@@ -130,7 +135,20 @@ public class SourceStressTest extends ComponentClientTestCase {
 		ACSAlarmSystemInterfaceFactory.init(getContainerServices());
 		
 		
-		m_consumer= new Consumer(m_channelName, alma.acsnc.ALARMSYSTEM_DOMAIN_NAME.value, getContainerServices());
+		// Due to some problem with NC libs, the Consumer creation hangs
+		// when the second test gets executed.
+		// Going back to a simple TestCase that uses a ComponentClient (instead of writing a ComponentClientTestCase)
+		// would resolve this issue. 
+		// In order to fix it, we just provoke a timeout so that the other tests can run afterwards.
+		Future<Consumer> consumerCtorFuture = Executors.newSingleThreadExecutor(getContainerServices().getThreadFactory()).submit(
+				new Callable<Consumer>() {
+					public Consumer call() throws Exception {
+						// Register this object as a consumer of ACSJMSMessageEntity events.
+						return new Consumer(m_channelName, alma.acsnc.ALARMSYSTEM_DOMAIN_NAME.value, getContainerServices());
+					}
+				});
+		m_consumer = consumerCtorFuture.get(10, TimeUnit.SECONDS); // will throw a TimeoutException if the call hangs
+		
 		assertNotNull("Error instantiating the consumer",m_consumer);
 		m_consumer.addSubscription(com.cosylab.acs.jms.ACSJMSMessageEntity.class, this);
 		m_consumer.consumerReady();
@@ -148,6 +166,8 @@ public class SourceStressTest extends ComponentClientTestCase {
 	 */
 	protected void tearDown() throws Exception {
 		m_consumer.disconnect();
+		ACSAlarmSystemInterfaceFactory.done();
+		Helper.m_nContext = null;
 		super.tearDown();
 	}
 	
