@@ -154,9 +154,6 @@ public class ACSJMSTopicPublisher extends ACSJMSProducer implements TopicPublish
 			topicName=topic.getTopicName();
 			synchronized(publishersPool) {
 				if (publishersPool.containsKey(topic.getTopicName())) {
-					// A CorbaPublisher for this topic is already present
-					//
-					// Of course it can never happen ;-)
 					return;
 				}
 			}
