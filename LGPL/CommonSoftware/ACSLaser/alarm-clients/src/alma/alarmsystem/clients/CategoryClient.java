@@ -46,7 +46,7 @@ import cern.laser.console.impl.UserHandlerImpl;
  * 
  * The class connects to the alarm system as a CERN client,
  * logging in a generic user.
- * The listern receives alarms and errors from the alarm system by means 
+ * The listener receives alarms and errors from the alarm system by means 
  * of a callback.
  * The alarm system sends all the already active alarms when the user logs is.
  * 
