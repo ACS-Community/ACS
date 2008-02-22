@@ -19,7 +19,7 @@
 
 /** 
  * @author  acaproni   
- * @version $Id: CategorySubscriber.java,v 1.2 2008/02/22 01:34:08 acaproni Exp $
+ * @version $Id: CategorySubscriber.java,v 1.3 2008/02/22 01:44:08 acaproni Exp $
  * @since    
  */
 
@@ -148,7 +148,6 @@ public class CategorySubscriber   implements MessageListener {
 	 * @throws JMSException 
 	 */
 	private void connectSubscriber() throws JMSException {
-		System.out.println("Connecting subscriber to "+rootName+"."+pathName);
 		acsCS.getLogger().log(AcsLogLevel.INFO,"Connecting subscriber to "+rootName+"."+pathName);
 		session = new ACSJMSSession(acsCS);
 		topic = session.createTopic(rootName+"."+pathName);
@@ -201,8 +200,6 @@ public class CategorySubscriber   implements MessageListener {
 		String cause=NOT_AVAILABLE; // The cause of the alarm
 		String active=NOT_AVAILABLE; // Active
 		String hostName=NOT_AVAILABLE;
-		
-		System.out.println("Alarm received: "+xmlString);
 		
 		Document document = null;
 		try {
@@ -290,7 +287,6 @@ public class CategorySubscriber   implements MessageListener {
 				}
 			}
 		}
-		System.out.println("CategorySubscriber.hostname "+hostName);
 		categoryClient.dispatchAlarm(new AlarmView(alarmID,priority,sourceTimestamp,description,cause,active,hostName));
 	}
 }
