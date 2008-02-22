@@ -19,14 +19,13 @@
 
 /** 
  * @author  acaproni   
- * @version $Id: AlarmTableModel.java,v 1.9 2008/02/21 02:41:38 acaproni Exp $
+ * @version $Id: AlarmTableModel.java,v 1.10 2008/02/22 18:21:42 acaproni Exp $
  * @since    
  */
 
 package alma.acsplugins.alarmsystem.gui.table;
 
 import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
 import javax.swing.table.AbstractTableModel;
 
 import alma.acs.util.IsoDateFormat;
@@ -39,7 +38,6 @@ import cern.laser.client.services.selection.LaserSelectionException;
 import java.awt.Component;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
-import java.util.Vector;
 
 /** 
  * 
