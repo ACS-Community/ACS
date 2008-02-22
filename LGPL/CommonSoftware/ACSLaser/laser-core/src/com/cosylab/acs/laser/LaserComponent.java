@@ -310,9 +310,9 @@ public class LaserComponent extends ComponentImplBase
 							.setMessageListener(new MessageListener() {
 								public synchronized void onMessage(Message message) {
 									if (message instanceof TextMessage) {
-										logger.log(AcsLogLevel.DEBUG,"Received a JMS message");
+										logger.log(AcsLogLevel.DEBUG,"Received a source message");
 									} else {
-										logger.log(AcsLogLevel.DEBUG,"Received a non text JMS message");
+										logger.log(AcsLogLevel.DEBUG,"Received a non text source message");
 									}
 									try {
 										alarmMessageProcessor.process(message);
