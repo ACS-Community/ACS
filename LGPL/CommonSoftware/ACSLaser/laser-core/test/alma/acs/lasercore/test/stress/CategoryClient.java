@@ -46,8 +46,8 @@ public class CategoryClient {
 	
 	/**
 	 * The categories 
-	 * Each category is a notifcation channel we have to listen to.
-	 * The list of the categories is read from the AlarmServise componet
+	 * Each category is a notification channel we have to listen to.
+	 * The list of the categories is read from the AlarmServise component
 	 */
 	private Category[] categories;
 	
@@ -168,6 +168,15 @@ public class CategoryClient {
 	 */
 	public void connect() throws Exception {
 		connect(categories);
+	}
+	
+	/**
+	 * Disconnect all the categories
+	 */
+	public void disconnect() {
+		for (CategorySubscriber cat: consumers) {
+			cat.close();
+		}
 	}
 	
 	/**

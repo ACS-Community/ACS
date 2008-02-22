@@ -19,7 +19,7 @@
 
 /** 
  * @author  acaproni   
- * @version $Id: CategorySubscriber.java,v 1.1 2008/02/21 00:38:49 acaproni Exp $
+ * @version $Id: CategorySubscriber.java,v 1.2 2008/02/22 01:34:08 acaproni Exp $
  * @since    
  */
 
@@ -69,6 +69,9 @@ public class CategorySubscriber   implements MessageListener {
 	// The listener of alarms
 	private CategoryClient categoryClient;
 	
+	// Remember if the Subscriber has been closed
+	private volatile boolean closed=false;
+	
 	/**
 	 * Constructor 
 	 * 
@@ -95,6 +98,37 @@ public class CategorySubscriber   implements MessageListener {
 		this.pathName=pathName;
 		initParser();
 		connectSubscriber();
+	}
+	
+	/**
+	 * Close the subscriber
+	 * 
+	 * Should be called when done. 
+	 */
+	public void close() {
+		if (closed) {
+			return;
+		}
+		closed=true;
+		try {
+			consumer.close();
+		} catch (Exception e) {
+			System.err.println("Error closing the consumer "+e.getMessage());
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * @see Object.<code>finalize</code>
+	 */
+	public void finalize() {
+		close();
+		try {
+			super.finalize();
+		} catch (Throwable t) {
+			System.err.println("Error finalizing "+t.getMessage());
+			t.printStackTrace();
+		}
 	}
 	
 	/**
@@ -131,6 +165,9 @@ public class CategorySubscriber   implements MessageListener {
 	 * @param msg
 	 */
 	public void onMessage(Message msg) {
+		if (closed) {
+			return;
+		}
 		acsCS.getLogger().log(AcsLogLevel.DEBUG,"Message received from "+rootName+"."+pathName);
 		if (msg instanceof ACSJMSTextMessage) {
 			ACSJMSTextMessage textMsg = (ACSJMSTextMessage)msg;
