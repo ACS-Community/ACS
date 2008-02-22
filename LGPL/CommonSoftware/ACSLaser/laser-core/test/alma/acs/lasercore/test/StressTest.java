@@ -19,31 +19,28 @@
 package alma.acs.lasercore.test;
 
 import java.sql.Timestamp;
-import java.util.Collection;
+import java.util.HashMap;
 import java.util.Random;
 import java.util.Vector;
 
-import com.cosylab.acs.jms.ACSJMSMessageEntity;
-
 import cern.laser.source.alarmsysteminterface.FaultState;
-import cern.laser.source.alarmsysteminterface.impl.ASIMessageHelper;
-import cern.laser.source.alarmsysteminterface.impl.XMLMessageHelper;
-import cern.laser.source.alarmsysteminterface.impl.message.ASIMessage;
 
 import alma.acs.component.client.ComponentClientTestCase;
 import alma.acs.lasercore.test.stress.CategoryClient;
 import alma.acs.lasercore.test.stress.category.AlarmView;
 import alma.acs.lasercore.test.stress.category.CategoryListener;
-import alma.acs.nc.Consumer;
+import alma.alarmsystem.Alarm;
 import alma.alarmsystem.source.ACSAlarmSystemInterface;
 import alma.alarmsystem.source.ACSAlarmSystemInterfaceFactory;
 import alma.alarmsystem.source.ACSFaultState;
 
 /**
  * This test sends a lot of fault states and check if they are published in the
- * categories as expected'.
+ * categories as expected.
  * To avoid defining a great number of alarms in the CDB, a default alarm
  * has been set in the TEST family
+ * 
+ * Sources are not tested here because they have already been tested in laser-source
  * 
  * NOTE: the test is performed without using the CategoryClient that at this level
  *       is not available (it requires modules compiled later in the build
@@ -94,7 +91,7 @@ public class StressTest extends ComponentClientTestCase implements CategoryListe
 	private static final String FM = "Member";
 	
 	// The number of alarms to publish
-	private static final int NUM_ALARMS_TO_SEND = 10000;
+	private static final int NUM_ALARMS_TO_SEND = 1000;
 	
 	// The random number generator to create FMs
 	private static Random rnd = new Random(System.currentTimeMillis());
@@ -113,15 +110,6 @@ public class StressTest extends ComponentClientTestCase implements CategoryListe
 	
 	private static int count=0;
 	
-	// The consumer
-	private Consumer m_consumer;
-	
-	// The NC name to listen for published fault states
-	private static final String m_channelName = "CMW.ALARM_SYSTEM.ALARMS.SOURCES.ALARM_SYSTEM_SOURCES";
-	
-	// The fault states received from the NC
-	private Vector<FaultState> receivedFS=new Vector<FaultState>();
-	
 	/**
 	 * Constructor
 	 * @throws Exception
@@ -131,7 +119,8 @@ public class StressTest extends ComponentClientTestCase implements CategoryListe
 	}
 	
 	// The vector with the alarms received from the categories
-	private Vector<AlarmView> alarms = new Vector<AlarmView>(); 
+	// The kei is the alarm ID
+	private HashMap<String,AlarmView> alarms = new HashMap<String,AlarmView>(); 
 
 	@Override
 	protected void setUp() throws Exception {
@@ -156,18 +145,12 @@ public class StressTest extends ComponentClientTestCase implements CategoryListe
 			assertNotNull(mfs);
 			statesToPublish[t]=mfs;
 		}
-		
-		// Connect the consumer
-		m_consumer= new Consumer(m_channelName, alma.acsnc.ALARMSYSTEM_DOMAIN_NAME.value, getContainerServices());
-		assertNotNull("Error instantiating the consumer",m_consumer);
-		m_consumer.addSubscription(com.cosylab.acs.jms.ACSJMSMessageEntity.class, this);
-		m_consumer.consumerReady();
 	}
 
 	@Override
 	protected void tearDown() throws Exception {
 		cleanActiveAlarms();
-		m_consumer.disconnect();
+		categoryClient.disconnect();
 		super.tearDown();
 	}
 	
@@ -178,7 +161,7 @@ public class StressTest extends ComponentClientTestCase implements CategoryListe
 	public void alarmReceived(AlarmView alarm) {
 		synchronized (alarms) {
 			if (alarm.active) {
-				alarms.add(alarm);
+				alarms.put(alarm.alarmID,alarm);
 			}
 		}
 	}
@@ -236,32 +219,14 @@ public class StressTest extends ComponentClientTestCase implements CategoryListe
 				count++;
 			} catch (Exception e) {}
 		}
-		System.out.println("Sources received: "+receivedFS.size());
-		System.out.println("Alarms sent: "+statesToPublish.length);
-		System.out.println("Active alarms: "+activeFS);
-		
-		System.out.println("Alarms");
-		for (AlarmView av: alarms) {
-			System.out.println(av.alarmID+", "+av.active);
-		}
-		System.out.println("Received FS ");
-		for (FaultState st: receivedFS) {
-			if (st.getDescriptor().equals(FaultState.ACTIVE)) {
-				System.out.println(st.getFamily()+":"+st.getMember()+":"+st.getCode()+" "+st.getDescriptor());
-			}
-		}
 		assertEquals("Wrong number of alarms received",activeFS, alarms.size());
-	}
-	
-	public synchronized void receive(ACSJMSMessageEntity msg) throws Exception {
-		ASIMessage asiMsg = XMLMessageHelper.unmarshal(msg.text);
-		Collection<FaultState>faultStates = ASIMessageHelper.unmarshal(asiMsg);
-		assertNotNull(faultStates);
-		for (FaultState fs: faultStates) {
-			assertNotNull(fs);
-			synchronized (receivedFS) {
-				receivedFS.add(fs);	
+		
+		// Check the correctness of the alarms against the fault states
+		for (MiniFaultState mfs: statesToPublish) {
+			if (mfs.description.equals(FaultState.TERMINATE)) {
+				continue;
 			}
+			assertNotNull("Alarm not published",alarm);
 		}
 	}
 	
