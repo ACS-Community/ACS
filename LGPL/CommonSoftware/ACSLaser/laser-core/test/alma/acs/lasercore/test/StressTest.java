@@ -226,6 +226,7 @@ public class StressTest extends ComponentClientTestCase implements CategoryListe
 			if (mfs.description.equals(FaultState.TERMINATE)) {
 				continue;
 			}
+			AlarmView alarm = alarms.get(mfs.FF+":"+mfs.FM+":"+mfs.FC);
 			assertNotNull("Alarm not published",alarm);
 		}
 	}
