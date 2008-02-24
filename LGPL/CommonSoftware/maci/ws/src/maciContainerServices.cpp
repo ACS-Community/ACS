@@ -19,7 +19,7 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
  *
- * "@(#) $Id: maciContainerServices.cpp,v 1.28 2007/09/04 04:10:13 cparedes Exp $"
+ * "@(#) $Id: maciContainerServices.cpp,v 1.29 2008/02/24 17:07:39 msekoran Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -48,7 +48,6 @@ MACIContainerServices::MACIContainerServices(
   m_manager = maci::Manager::_duplicate(m_containerImpl->getManager());
   m_offShootPOA = PortableServer::POA::_nil();
   componentStateManager_mp = new MACIComponentStateManager(name);
-  m_usedComponents.clear(); // Redundant 
 }
 
 //
@@ -58,7 +57,7 @@ MACIContainerServices::~MACIContainerServices()
 {
   ACS_TRACE("maci::MACIContainerServices::~MACIContainerServices");
   delete componentStateManager_mp;
-  m_usedComponents.clear();
+  m_usedComponents.unbind_all();
 }
 
 ACE_CString_Vector
@@ -128,7 +127,7 @@ CORBA::Object*  MACIContainerServices::getCORBAComponent(const char* name)
 	CORBA::Object_var obj = 
 	    m_manager->get_component(m_componentHandle, curl.c_str(), true);
 	
-	m_usedComponents.push_back(name);
+	m_usedComponents.bind(name, m_componentHandle);
 	return CORBA::Object::_narrow(obj.in());
 	}
     catch (maciErrType::NoPermissionEx &ex) 
@@ -206,7 +205,7 @@ CORBA::Object*  MACIContainerServices::getCORBAComponentNonSticky(const char* na
 	CORBA::Object_var obj = 
 	    m_manager->get_component_non_sticky(m_componentHandle, name);
     // @todo not really sure if we have to add non sticky component 
-//	m_usedComponents.push_back(name);  
+//	m_usedComponents.bind(name, m_componentHandle);
 	return CORBA::Object::_narrow(obj.in());
 	}
     catch (maciErrType::CannotGetComponentEx &ex) 
@@ -282,7 +281,7 @@ MACIContainerServices::getCORBADynamicComponent(maci::ComponentSpec compSpec, bo
 	   ex.setVariable("cInfo->reference");
 	   throw ex; // it will be caught down
 	   }//if
-       m_usedComponents.push_back(cInfo->name.in());
+       m_usedComponents.bind(cInfo->name.in(), m_componentHandle);
        return CORBA::Object::_narrow(obj.in());
        } 
    catch (maciErrType::NoPermissionEx &ex) 
@@ -380,7 +379,7 @@ MACIContainerServices::getCORBACollocatedComponent(maci::ComponentSpec compSpec,
 	   ex.setVariable("cInfo->reference");
 	   throw ex;
 	   }//if
-       m_usedComponents.push_back(cInfo->name.in());
+       m_usedComponents.bind(cInfo->name.in(), m_componentHandle);
        return CORBA::Object::_narrow(obj.in());
        } 
    catch (maciErrType::NoPermissionEx &_ex)
@@ -467,7 +466,7 @@ MACIContainerServices::getCORBADefaultComponent(const char* idlType)
 	ex.setVariable("cInfo->reference");
 	throw ex;
 	}//if
-    m_usedComponents.push_back(cInfo->name.in());
+    m_usedComponents.bind(cInfo->name.in(), m_componentHandle);
     return CORBA::Object::_narrow(obj.in());
     }
    catch (maciErrType::NoPermissionEx &ex) 
@@ -545,11 +544,12 @@ void
 MACIContainerServices::releaseComponent(const char *name)
     throw (maciErrType::CannotReleaseComponentExImpl)
 {
+	int found = m_usedComponents.unbind(name); 
     try
 	{
-    // Check if the component is used
-    std::vector<std::string>::iterator pos = findUsedComponent(name);
-    if (pos==m_usedComponents.end()) 
+		
+    // Check if the component is used and unbind
+    if (found == -1) 
 	{	
 	maciErrType::ComponentNotInUseExImpl ex(__FILE__, __LINE__,
 						     "MACIContainerServices::releaseComponent");
@@ -559,9 +559,6 @@ MACIContainerServices::releaseComponent(const char *name)
     
    
 	m_manager->release_component(m_componentHandle, name);
-	// Remove the component from the list of the used components
-	m_usedComponents.erase(pos);
-    
 	}
     catch (maciErrType::NoPermissionEx &_ex) 
 	{
@@ -572,6 +569,8 @@ MACIContainerServices::releaseComponent(const char *name)
 	}
     catch (ACSErr::ACSbaseExImpl &_ex) 
 	{
+	// failed to release, bind back
+	if (found != -1) m_usedComponents.bind(name, m_componentHandle);
 	maciErrType::CannotReleaseComponentExImpl ex(_ex, __FILE__, __LINE__,
 						     "MACIContainerServices::releaseComponent");
 	ex.setCURL(name);
@@ -579,6 +578,8 @@ MACIContainerServices::releaseComponent(const char *name)
 	}
     catch( CORBA::SystemException &ex ) 
 	{
+	// failed to release, bind back
+	m_usedComponents.bind(name, m_componentHandle);
 	ACSErrTypeCommon::CORBAProblemExImpl corbaProblemEx(__FILE__, __LINE__,
 							  "MACIContainerServices::releaseComponent");
 	corbaProblemEx.setMinor(ex.minor());
@@ -591,6 +592,8 @@ MACIContainerServices::releaseComponent(const char *name)
 	}
     catch (...) 
 	{
+	// failed to release, bind back
+	if (found != -1) m_usedComponents.bind(name, m_componentHandle);
 	ACSErrTypeCommon::UnexpectedExceptionExImpl uex(__FILE__, __LINE__,
 							"MACIContainerServices::releaseComponent");
 	maciErrType::CannotReleaseComponentExImpl ex(uex,  __FILE__, __LINE__,
@@ -602,24 +605,63 @@ MACIContainerServices::releaseComponent(const char *name)
 
 void MACIContainerServices::releaseAllComponents()
 {
-	/* Implementation note:
-	 * at the beginning the m_usedComponents was a list
-	 * but I had an error whenever the releaseComponent deleted
-	 * the entry in the list. Maybe this was due to the fact that 
-	 * the entry was still in use somewhere in the tree of calls
-	 * With the vector this doesn't happen. Probably for the different
-	 * implementation of this container.
-	 * I wonder if it is safe...
-	 */
-	 
-	// Scans the list to release all the components
-	// The item is removed in the releaseComponent method
-	// so here I'm using a collateral effect (bad!)
-	while (!m_usedComponents.empty())
+	ACE_CString_Vector componentsToRelease;
 	{
-		this->releaseComponent(m_usedComponents[0].c_str());
+	  ACE_Guard<ACE_Recursive_Thread_Mutex> guard(m_usedComponents.mutex());
+  
+	  // get reverse deactivation order of components
+	  for (COMPONENT_HASH_MAP::CONST_ITERATOR iter(m_usedComponents); !iter.done(); iter.advance())
+	    componentsToRelease.push_back(iter->key());
 	}
+	
+	unsigned int len = componentsToRelease.size();
+	for (unsigned int i = 0; i < len; i++) 
+		this->releaseComponent(componentsToRelease[i].c_str());
 }
+
+
+void MACIContainerServices::fireComponentsAvailable (ACE_CString_Vector& compNames) {
+	if (!withCompListener || compListener == NULL) {
+	    return;
+	}
+
+    if (compListener->includeForeignComponents()) {
+		ContainerServices::fireComponentsAvailable(compNames);
+    }
+    else if (m_usedComponents.current_size() > 0) {
+        ACE_CString_Vector interesting;
+        for (int i=0; i < (int)compNames.size(); i++) {
+           ACE_CString cn = compNames[i];
+            if (m_usedComponents.find(cn) != -1) {
+                interesting.push_back(cn);
+            }
+        }
+		if (interesting.size() > 0)
+			ContainerServices::fireComponentsAvailable(interesting);
+    }
+}
+
+void MACIContainerServices::fireComponentsUnavailable(ACE_CString_Vector& compNames){
+	if (!withCompListener || compListener == NULL) {
+	    return;
+	}
+
+    if (compListener->includeForeignComponents()) {
+		ContainerServices::fireComponentsUnavailable(compNames);
+    }
+    else if (m_usedComponents.current_size() > 0) {
+        ACE_CString_Vector interesting;
+        for (int i=0; i < (int)compNames.size(); i++) {
+           ACE_CString cn = compNames[i];
+            if (m_usedComponents.find(cn) != -1) {
+                interesting.push_back(cn);
+            }
+        }
+		if (interesting.size() > 0)
+			ContainerServices::fireComponentsUnavailable(interesting);
+    }
+ }
+
 
 CDB::DAL_ptr
 MACIContainerServices::getCDB() throw (acsErrTypeContainerServices::CanNotGetCDBExImpl)
@@ -776,18 +818,3 @@ MACIContainerServices::getComponentStateManager()
 {
   return componentStateManager_mp;
 }
-
-std::vector<std::string>::iterator MACIContainerServices::findUsedComponent(std::string name)
-{
-	std::vector<std::string>::iterator pos;
-	for (pos=m_usedComponents.begin(); pos!=m_usedComponents.end(); pos++)
-	{
-		std::string temp = *pos;
-		if (temp==name) 
-		{
-			return pos;
-		}
-	}
-	return pos;
-}
-

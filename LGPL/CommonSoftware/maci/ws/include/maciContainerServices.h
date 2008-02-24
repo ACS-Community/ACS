@@ -21,7 +21,7 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
  *
- * "@(#) $Id: maciContainerServices.h,v 1.27 2007/09/04 04:10:13 cparedes Exp $"
+ * "@(#) $Id: maciContainerServices.h,v 1.28 2008/02/24 17:07:39 msekoran Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -41,6 +41,9 @@
 #include <vector>
 #include <string>
 #include <iterator>
+
+#include <ace/Synch.h>
+#include <ace/Hash_Map_Manager.h>
 
 namespace maci {
 	
@@ -213,6 +216,9 @@ class MACIContainerServices: public ContainerServices
    */
    maci::ComponentStateManager* getComponentStateManager();
 
+    void fireComponentsUnavailable(ACE_CString_Vector& compNames);
+    void fireComponentsAvailable(ACE_CString_Vector& compNames);
+
  private:
 
   /// Reference to the manager
@@ -227,21 +233,16 @@ class MACIContainerServices: public ContainerServices
   /// Component handle
   maci::Handle m_componentHandle;
   
-  /// The vector of the activated components 
-  std::vector<std::string> m_usedComponents;
-  
+  /// Component hash map (used as hash set, value is owner handle)
+  typedef ACE_Hash_Map_Manager <ACE_CString, maci::Handle, ACE_Recursive_Thread_Mutex> COMPONENT_HASH_MAP;
+  typedef ACE_Hash_Map_Iterator <ACE_CString, maci::Handle, ACE_Recursive_Thread_Mutex> COMPONENT_HASH_MAP_ITER;
+  typedef ACE_Hash_Map_Entry <ACE_CString, maci::Handle> COMPONENT_HASH_MAP_ENTRY;
+
+  /// Map (used as set) of activated components
+  COMPONENT_HASH_MAP m_usedComponents;
+
   /// The component state manager
   maci::ComponentStateManager* componentStateManager_mp;
-
-  /**
-   * Find the component with the given name in the list of the used
-   * components
-   * 
-   * @param name The name of the component to look for
-   * @return The position of the component in the list
-   *         If the name is not found returns m_usedComponents.end()
-   */
-  std::vector<std::string>::iterator findUsedComponent(std::string name); 
 };
 
 } // end namespace maci
