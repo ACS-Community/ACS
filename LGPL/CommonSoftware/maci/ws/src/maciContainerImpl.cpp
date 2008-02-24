@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciContainerImpl.cpp,v 1.104 2008/01/25 02:56:34 cparedes Exp $"
+* "@(#) $Id: maciContainerImpl.cpp,v 1.105 2008/02/24 17:06:33 msekoran Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -79,7 +79,7 @@
 #include <ACSAlarmSystemInterfaceFactory.h>
 #endif
 
-ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.104 2008/01/25 02:56:34 cparedes Exp $")
+ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.105 2008/02/24 17:06:33 msekoran Exp $")
 
  using namespace maci;
  using namespace cdb;
@@ -2424,7 +2424,7 @@ ContainerImpl::components_available (
         for (COMPONENT_LIST::CONST_ITERATOR iter(m_activeComponentList); !iter.done(); iter.advance()){
             if (m_activeComponents.find(*iter, info)!=-1 && !CORBA::is_nil(info.info.reference.in())){
                 
-                CORBA::Object_ptr ref = CORBA::Object::_duplicate(info.info.reference.in());
+                CORBA::Object_ptr ref = info.info.reference.in();
                 PortableServer::Servant servant = poaContainer->reference_to_servant(ref);
                 if (acscomponent::ACSComponentImpl *tempComp = 
                     dynamic_cast<acscomponent::ACSComponentImpl*>(servant)){ 
@@ -2472,7 +2472,7 @@ ContainerImpl::components_unavailable (
     for (COMPONENT_LIST::CONST_ITERATOR iter(m_activeComponentList); !iter.done(); iter.advance()){
         if (m_activeComponents.find(*iter, info)!=-1 && !CORBA::is_nil(info.info.reference.in())){
 	        
-            CORBA::Object_ptr ref = CORBA::Object::_duplicate(info.info.reference.in());
+            CORBA::Object_ptr ref = info.info.reference.in();
 	        PortableServer::Servant servant = poaContainer->reference_to_servant(ref);
 	        if (acscomponent::ACSComponentImpl *tempComp = 
 	            dynamic_cast<acscomponent::ACSComponentImpl*>(servant)){ 
