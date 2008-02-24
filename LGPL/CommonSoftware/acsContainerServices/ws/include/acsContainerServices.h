@@ -21,7 +21,7 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
  *
- * "@(#) $Id: acsContainerServices.h,v 1.20 2007/10/24 22:35:44 agrimstrup Exp $"
+ * "@(#) $Id: acsContainerServices.h,v 1.21 2008/02/24 16:58:10 msekoran Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -436,7 +436,7 @@ namespace maci {
 	*/
        virtual ACS::ThreadManager* getThreadManager(){ return &threadManager_m; }
 
-   private:
+   protected:
         ACE_CString m_componentName;
         
         ComponentListener* compListener; 
