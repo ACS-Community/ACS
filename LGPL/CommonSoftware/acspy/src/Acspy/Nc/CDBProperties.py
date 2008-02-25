@@ -1,4 +1,4 @@
-# @(#) $Id: CDBProperties.py,v 1.12 2006/07/18 21:52:57 dfugate Exp $
+# @(#) $Id: CDBProperties.py,v 1.13 2008/02/25 21:02:42 agrimstrup Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -29,7 +29,7 @@ TODO:
 - lots
 '''
 
-__revision__ = "$Id: CDBProperties.py,v 1.12 2006/07/18 21:52:57 dfugate Exp $"
+__revision__ = "$Id: CDBProperties.py,v 1.13 2008/02/25 21:02:42 agrimstrup Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 from traceback import print_exc
@@ -45,6 +45,11 @@ from Acspy.Util.XmlObjectifier import XmlObject
 #--GLOBALS---------------------------------------------------------------------
 _cdb_access = None
 
+_nsmappings = { 'Channel': 'Channels/NotificationServiceMapping/Channels_/_',
+                'Domain':  'Channels/NotificationServiceMapping/Domains/_',
+                'Default' : 'Channels/NotificationServiceMapping'
+                }
+
 def get_cdb_access():
     '''
     This function is only around to fix some problems with pydoc documentation
@@ -58,6 +63,26 @@ def get_cdb_access():
     
     return _cdb_access
 
+#------------------------------------------------------------------------------
+def get_notification_service_mapping(maptype):
+    '''
+    Retrieves the Notification Service mapping information for the given type
+    from the CDB.
+
+    Params:
+    - maptype is a string indicating which kind of mapping information should
+    be returned.  One of: Channel, Domain or Default
+
+    Returns: list containing all the data for the requested mapping.
+
+    Raises:  Nothing.
+    '''
+    global _nsmappings
+    
+    try:
+        return get_cdb_access().getElement("MACI/Channels/", _nsmappings[maptype])
+    except:
+        return []
 #------------------------------------------------------------------------------
 def cdb_channel_config_exists(channel_name):
     '''

@@ -1,4 +1,4 @@
-# @(#) $Id: Supplier.py,v 1.16 2006/03/29 18:42:07 dfugate Exp $
+# @(#) $Id: Supplier.py,v 1.17 2008/02/25 21:02:42 agrimstrup Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -29,7 +29,7 @@ TODO:
 - nada
 '''
 
-__revision__ = "$Id: Supplier.py,v 1.16 2006/03/29 18:42:07 dfugate Exp $"
+__revision__ = "$Id: Supplier.py,v 1.17 2008/02/25 21:02:42 agrimstrup Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 from traceback import print_exc
@@ -67,7 +67,7 @@ class Supplier (CosNotifyComm__POA.StructuredPushSupplier, CommonNC):
     overriding the correct methods in this class.
     '''
     #--------------------------------------------------------------------------
-    def __init__ (self, channelname, component=None):
+    def __init__ (self, channelname, component=None, domain=None):
         '''
         Constructor.
 
@@ -76,6 +76,9 @@ class Supplier (CosNotifyComm__POA.StructuredPushSupplier, CommonNC):
         - component is the component this supplier has been instantiated from
         (if applicable). This parameter is likely to become mandatory in future
         version of ACS
+        - domain is the name of the domain of notification channels the channel
+        belongs to
+
 
         Returns: Nothing
 
@@ -86,7 +89,7 @@ class Supplier (CosNotifyComm__POA.StructuredPushSupplier, CommonNC):
         self.logger = getLogger(str(channelname) + "-Supplier")
 
         #Call the super's constructor
-        CommonNC.__init__(self, channelname, component)
+        CommonNC.__init__(self, channelname, component, domain)
         
         #CORBA ref to the channels supplier admin
         self.supplierAdmin = None  

@@ -1,4 +1,4 @@
-# @(#) $Id: CommonNC.py,v 1.2 2006/01/27 19:07:07 dfugate Exp $
+# @(#) $Id: CommonNC.py,v 1.3 2008/02/25 21:02:42 agrimstrup Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -25,10 +25,11 @@
 Provides functionality common to both NC suppliers and consumers.
 '''
 
-__revision__ = "$Id: CommonNC.py,v 1.2 2006/01/27 19:07:07 dfugate Exp $"
+__revision__ = "$Id: CommonNC.py,v 1.3 2008/02/25 21:02:42 agrimstrup Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 from traceback import print_exc
+import re
 #--CORBA STUBS-----------------------------------------------------------------
 from ACSErrTypeCommonImpl         import CORBAProblemExImpl
 from ACSErr                       import NameValue
@@ -40,6 +41,7 @@ from Acspy.Util               import NameTree
 from Acspy.Nc.CDBProperties   import cdb_channel_config_exists
 from Acspy.Nc.CDBProperties   import get_channel_qofs_props
 from Acspy.Nc.CDBProperties   import get_channel_admin_props
+from Acspy.Nc.CDBProperties   import get_notification_service_mapping
 #--GLOBALS---------------------------------------------------------------------
 
 #------------------------------------------------------------------------------
@@ -48,13 +50,14 @@ class CommonNC:
     Serves as a baseclass for notification channel objects.
     '''
     #--------------------------------------------------------------------------
-    def __init__ (self, channelname, component):
+    def __init__ (self, channelname, component, domainname=None):
         '''
         Constructor.
         
         Params:
         - channelName is the channel name
         - component is the component this object resides within
+        - domainName is the domain the channel belongs to
         
         Returns: Nothing
         
@@ -64,6 +67,8 @@ class CommonNC:
         self.connected = 0  
         #name of the channel we'll be working with
         self.channelName = str(channelname) 
+        #domainname of the channel we'll be working with
+        self.domainName = str(domainname) 
         #CORBA ref to the channel
         self.evtChan = None
         #Python Naming Service helper class
@@ -142,6 +147,37 @@ class CommonNC:
         '''
         return acscommon.ALMADOMAIN
     #------------------------------------------------------------------------------
+    def getNotificationFactoryNameForChannel(self,channel,domain=None):
+        '''
+        This method returns the name of the notification service for the channel
+        or domain from the configuration information given in the CDB.
+
+        Parameters:
+        - channel is the channel name of the desired factory
+        - domain is the domain of the desired factory
+
+        Returns: string containing the factory name or None
+
+        Raises: Nothing
+        '''
+
+        if channel is not None:
+            crec = [ chan for chan in get_notification_service_mapping('Channel') if re.match(chan['Name'], channel)]
+            if crec != []:
+                return crec[0]['NotificationService']
+
+        if domain is not None:
+            crec = [ chan for chan in get_notification_service_mapping('Domain') if re.match(chan['Name'], domain)]
+            if crec != []:
+                return crec[0]['NotificationService']
+
+        crec = get_notification_service_mapping('Default')
+        if crec != []:
+            return crec[0]['DefaultNotificationService']
+        else:
+            return None
+            
+    #------------------------------------------------------------------------------
     def getNotificationFactoryName(self):
         '''
         This method returns the name of the notification service as registered
@@ -154,7 +190,7 @@ class CommonNC:
 
         Raises: Nothing
         '''
-        return acscommon.NOTIFICATION_FACTORY_NAME
+        return self.getNotificationFactoryNameForChannel(self.channelName, self.domainName) or acscommon.NOTIFICATION_FACTORY_NAME
     #------------------------------------------------------------------------------
     def initCORBA(self):
         '''

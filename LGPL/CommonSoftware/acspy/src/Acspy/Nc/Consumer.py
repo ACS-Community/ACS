@@ -1,4 +1,4 @@
-# @(#) $Id: Consumer.py,v 1.18 2006/03/08 18:53:20 dfugate Exp $
+# @(#) $Id: Consumer.py,v 1.19 2008/02/25 21:02:42 agrimstrup Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -27,7 +27,7 @@ This module includes classes to be used as Consumers for the CORBA Notification
 service.
 '''
 
-__revision__ = "$Id: Consumer.py,v 1.18 2006/03/08 18:53:20 dfugate Exp $"
+__revision__ = "$Id: Consumer.py,v 1.19 2008/02/25 21:02:42 agrimstrup Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 from traceback import print_exc
@@ -62,7 +62,7 @@ class Consumer (CosNotifyComm__POA.StructuredPushConsumer, CommonNC):
     the developer should override the processEvent method.
     '''
     #--------------------------------------------------------------------------
-    def __init__ (self, name, component=None):
+    def __init__ (self, name, component=None, domain=None):
         '''
         Constructor.
 
@@ -71,6 +71,8 @@ class Consumer (CosNotifyComm__POA.StructuredPushConsumer, CommonNC):
         - component is the component this supplier has been instantiated from
         (if applicable). This parameter is likely to become mandatory in future
         version of ACS
+        - domain is the name of the domain of notification channels the channel
+        belongs to
 
         Returns: Nothing
 
@@ -79,7 +81,7 @@ class Consumer (CosNotifyComm__POA.StructuredPushConsumer, CommonNC):
         self.logger = getLogger(str(name) + "-Consumer")
 
         #Call the super's constructor
-        CommonNC.__init__(self, name, component)
+        CommonNC.__init__(self, name, component, domain)
         
         #CORBA ref to the channels consumer admin
         self.consumerAdmin = None  
