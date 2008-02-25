@@ -57,7 +57,7 @@ public class RemoteThreads implements RemoteThreadsMBean {
 	public CompositeData[] getAllThreadsInfo() {
 		ThreadInfo []info = tmxb.dumpAllThreads(true,true);
 		CompositeData []data = new CompositeData[info.length];
-		
+
 		for(int i=0; i!=info.length; i++)
 			data[i] = ThreadInfoCompositeData.toCompositeData(info[i]);
 
@@ -92,12 +92,20 @@ public class RemoteThreads implements RemoteThreadsMBean {
 		return tmxb.dumpAllThreads(true,true).length;
 	}
 
+	public CompositeData[] getThreadsInfo(String className, State state) {
+		return getThreadsInfo(new String[] {className}, state);
+	}
+
+	public int getThreadsCount(String className, State state) {
+		return getThreadsCount(new String[] {className}, state);
+	}
+
 	protected CompositeData[] getThreadsInfo(String [] classes,State state) {
 		
 		ThreadInfo []info = tmxb.dumpAllThreads(true,true);
 		CompositeData[] dataList = new CompositeData[info.length];
 		int includedData = 0;
-
+	
 		for(int i=0; i!=info.length; i++) {
 			
 			// Get the last StackTraceElement from the thread information
@@ -127,11 +135,11 @@ public class RemoteThreads implements RemoteThreadsMBean {
 		System.arraycopy(dataList,0,newDataList,0,includedData);
 		return newDataList;
 	}
-	
+
 	protected int getThreadsCount(String [] classes, State state) {
 		ThreadInfo []info = tmxb.dumpAllThreads(true,true);
 		int threadCount = 0;
-
+	
 		for(int i=0; i!=info.length; i++) {
 			
 			// Get the last StackTraceElement from the thread information

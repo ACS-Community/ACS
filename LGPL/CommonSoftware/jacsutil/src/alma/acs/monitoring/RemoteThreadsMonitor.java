@@ -45,7 +45,7 @@ public class RemoteThreadsMonitor {
 			RemoteThreadsMonitor.usage();
 			System.exit(1);
 		}
-		
+
 		RemoteThreadsMonitor rtm = new RemoteThreadsMonitor(args);
 		RemoteThreadsMBean mbean = rtm.getMBean();
 		System.out.println("Total JacORB threads: " + mbean.getJacORBThreadsCount());
@@ -53,6 +53,9 @@ public class RemoteThreadsMonitor {
 		RemoteThreadsUtil.printThreadsInfo(RemoteThreadsUtil.toThreadsInfo(mbean.getJacORBThreadsInfo(Thread.State.RUNNABLE)) ,System.out,false);
 		System.out.println("\nRunnable JacORB's threads (grouped):");
 		RemoteThreadsUtil.printThreadsInfo(RemoteThreadsUtil.toThreadsInfo(mbean.getJacORBThreadsInfo(Thread.State.RUNNABLE)) ,System.out,true);
+		System.out.println("\nTotal number of threads: " + mbean.getAllThreadsCount());
+		RemoteThreadsUtil.printThreadsInfo(RemoteThreadsUtil.toThreadsInfo(mbean.getAllThreadsInfo()) ,System.out,true);
+		System.out.println("\nThreads staying at org.jacorb.poa.RequestProcessor: " + mbean.getThreadsCount("org.jacorb.poa.RequestProcessor",null));
 		rtm.close();
 	}
 

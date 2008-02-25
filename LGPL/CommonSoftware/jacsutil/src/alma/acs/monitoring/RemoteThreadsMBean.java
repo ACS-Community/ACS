@@ -85,9 +85,10 @@ public interface RemoteThreadsMBean {
 	public CompositeData[] getAcsContainerThreadsInfo();
 
 	/**
-	 * Returns all theACS related threads' information for a given thread
+	 * Returns all the ACS related threads' information for a given thread
 	 * state.
-	 * @param state The desired threads' state
+	 * @param state The desired threads' state. If null, then all states are
+	 * considered
 	 * @return All the ACS related threads' information for the given thread 
 	 * state. If <code>state</code> is null, then return all threads
 	 */
@@ -98,4 +99,24 @@ public interface RemoteThreadsMBean {
 	 * @return The total count of ACS-related threads
 	 */
 	public int getAcsContainerThreadsCount();
+	
+	/**
+	 * Returns all the threads that are currently placed on the class given by
+	 * <code>className</code> and that present the state <code>state</code>.
+	 * @param className The class name where the threads are placed. Full class name
+	 * should be given (e.g., java.lang.String).
+	 * @param state The threads' state
+	 * @return All the threads placed at that class
+	 */
+	public CompositeData[] getThreadsInfo(String className, Thread.State state);
+
+	/**
+	 * Returns the count of all the threads that are currently placed on the class
+	 * given by <code>className</code> and that present the given state.
+	 * @param className The class name where the threads are placed. Full class name
+	 * should be given (e.g., java.lang.String). 
+	 * @param state The threads' state. If null, then all states are considered.
+	 * @return The threads' count for the given class name and thread state.
+	 */
+	public int getThreadsCount(String className, Thread.State state);
 }
