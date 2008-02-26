@@ -56,18 +56,23 @@ module jconttest
 		void testGetComponentNonSticky(in string curl, in boolean release) raises (ACSErrTypeCommon::CouldntPerformActionEx);
 	};
 	
-	
 	interface DummyComponent : ACS::ACSComponent
 	{
 		void dummyComponentsCanDoCloseToNothing();
 		void callThatTakesSomeTime(in long timeInMillisec);
 	};
-	
 
 	interface DummyComponentWrapper : ACS::ACSComponent
 	{
 		boolean callDummyComponentWithTime(in long timeInMillisec);
 	};
+
+	interface DataReceiver : ACS::ACSComponent
+	{
+		void storeThis(in string data);
+		double stop();
+	};
+
 };
 
 #endif 

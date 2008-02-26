@@ -1,6 +1,6 @@
 /*
  *    ALMA - Atacama Large Millimiter Array
- *    (c) European Southern Observatory, 2002
+ *    (c) Universidad Tecnica Federico Santa Maria, 2008
  *    Copyright by ESO (in the framework of the ALMA collaboration),
  *    All rights reserved
  *
@@ -21,10 +21,7 @@
  */
 package alma.jconttest.DummyComponentWrapperImpl;
 
-import java.util.logging.Logger;
-
 import alma.acs.component.ComponentImplBase;
-import alma.acs.logging.ClientLogManager;
 import alma.jconttest.DummyComponentWrapperOperations;
 import alma.jconttest.DummyComponent;
 import alma.jconttest.DummyComponentHelper;
