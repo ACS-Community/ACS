@@ -54,6 +54,7 @@ import alma.acs.alarmsystem.generated.FaultFamily;
 import alma.acs.alarmsystem.generated.FaultMember;
 import alma.acs.alarmsystem.generated.FaultMemberDefault;
 import alma.acs.logging.AcsLogLevel;
+import alma.cdbErrType.CDBRecordDoesNotExistEx;
 import cern.laser.business.LaserObjectNotFoundException;
 import cern.laser.business.dao.AlarmDAO;
 import cern.laser.business.dao.ResponsiblePersonDAO;
@@ -597,6 +598,11 @@ public class ACSAlarmDAOImpl implements AlarmDAO
 		String xml;
 		try {
 			xml=conf.getConfiguration(REDUCTION_DEFINITION_PATH);
+		} catch (CDBRecordDoesNotExistEx cdbEx) {
+			// No reduction rules defined in CDB
+			logger.log(AcsLogLevel.WARNING,"No reduction rules defined in CDB");
+			return;
+			
 		} catch (Exception e) {
 			throw new RuntimeException("Couldn't read "+REDUCTION_DEFINITION_PATH, e);
 		}
