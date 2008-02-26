@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.6 2005/01/31 21:45:24 dfugate Exp $"
+# "@(#) $Id: Makefile,v 1.7 2008/02/26 15:26:21 bjeram Exp $"
 #
 # Makefile of ........
 #
@@ -117,8 +117,10 @@ IDL_FILES =
 IDL_TAO_FLAGS =
 USER_IDL =
 
-ACSERRDEF = ACSErrTypeOK ACSErrTypeMonitor ACSErrTypeAlarm ACSErrTypeCommon ACSErrTypePythonNative ACSErrTypeCppNative ACSErrTypeJavaNative ACSErrTypeCORBA ACSErrTypeDevIO ACSErrTICS ACSErrTicsTCorr
-
+ACSERRDEF = 	ACSErrTypeOK ACSErrTypeMonitor ACSErrTypeAlarm ACSErrTypeCommon \
+		ACSErrTypePythonNative ACSErrTypeCppNative ACSErrTypeJavaNative \
+		ACSErrTypeCORBA ACSErrTypeDevIO ACSErrTICS ACSErrTicsTCorr \
+		PatternAlarmCleared PatternAlarmTriggered
 # Jarfiles and their directories
 #
 JARFILES= 
