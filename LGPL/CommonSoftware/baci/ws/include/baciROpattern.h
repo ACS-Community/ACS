@@ -2,32 +2,32 @@
 #define _baciROpattern_H_
 
 /*******************************************************************
-* ALMA - Atacama Large Millimiter Array
-* (c) European Southern Observatory, 2003 
-*
-*This library is free software; you can redistribute it and/or
-*modify it under the terms of the GNU Lesser General Public
-*License as published by the Free Software Foundation; either
-*version 2.1 of the License, or (at your option) any later version.
-*
-*This library is distributed in the hope that it will be useful,
-*but WITHOUT ANY WARRANTY; without even the implied warranty of
-*MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-*Lesser General Public License for more details.
-*
-*You should have received a copy of the GNU Lesser General Public
-*License along with this library; if not, write to the Free Software
-*Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
-*
-* "@(#) $Id: baciROpattern.h,v 1.106 2006/09/24 18:43:34 bjeram Exp $"
-*
-* who       when        what
-* --------  ----------  ----------------------------------------------
-* bjeram    2003/02/22  ROpattern is using templates
-* bjeram    2002/11/29  changed to Monitorpattern 
-* bjeram    2002/02/25  added support for DevIO 
-* msekoran  2001/03/09  modified
-*/
+ * ALMA - Atacama Large Millimiter Array
+ * (c) European Southern Observatory, 2003 
+ *
+ *This library is free software; you can redistribute it and/or
+ *modify it under the terms of the GNU Lesser General Public
+ *License as published by the Free Software Foundation; either
+ *version 2.1 of the License, or (at your option) any later version.
+ *
+ *This library is distributed in the hope that it will be useful,
+ *but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *Lesser General Public License for more details.
+ *
+ *You should have received a copy of the GNU Lesser General Public
+ *License along with this library; if not, write to the Free Software
+ *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
+ *
+ * "@(#) $Id: baciROpattern.h,v 1.107 2008/02/26 08:52:03 rcirami Exp $"
+ *
+ * who       when        what
+ * --------  ----------  ----------------------------------------------
+ * bjeram    2003/02/22  ROpattern is using templates
+ * bjeram    2002/11/29  changed to Monitorpattern 
+ * bjeram    2002/02/25  added support for DevIO 
+ * msekoran  2001/03/09  modified
+ */
 
 /** 
  * @file 
@@ -44,7 +44,7 @@
 
 namespace baci {
 
-class ROpatternImpl;
+    class ROpatternImpl;
 
 /** @defgroup ROpatternTemplate ROpattern Class
  * The ROpattern class is a templated typedef so there is no actual inline doc generated for it per-se.
@@ -52,28 +52,66 @@ class ROpatternImpl;
  * The ROpattern class is an implementation of the ACS::ROpattern IDL interface. 
  * See ROpatternImpl for the real descriptions.
  */
-typedef ROpatternImpl ROpattern;
+    typedef ROpatternImpl ROpattern;
 /** @} */
 
 
-class baci_EXPORT ROpatternImpl : public virtual POA_ACS::ROpattern,
-				  public ROdiscImpl<ACS_RO_T(pattern, ACS::pattern)>,
-				  public PpatternImpl
+    class baci_EXPORT ROpatternImpl : public virtual POA_ACS::ROpattern,
+				      public ROdiscImpl<ACS_RO_T(pattern, ACS::pattern)>,
+				      public PpatternImpl
 				  
-{			 
- public:
-    ROpatternImpl(const ACE_CString& name, BACIComponent *component_p, DevIO<ACS::pattern> *devIO=0, bool flagdeldevIO=false);
-    ~ROpatternImpl();
-  protected:
+    {			 
+      public:
+	ROpatternImpl(const ACE_CString& name, BACIComponent *component_p, DevIO<ACS::pattern> *devIO=0, bool flagdeldevIO=false);
+
+	~ROpatternImpl();
+
+/* -------------------- [ RO interface ] -------------------- */
+  
+// for the pattern type only the value low_on and high_on for the alarm are implemented (no hysteresis)
+
+	virtual ACS::pattern alarm_low_on ()
+	    throw (CORBA::SystemException);
+	
+	virtual ACS::pattern alarm_high_on ()
+	    throw (CORBA::SystemException);
+
+	virtual ACS::Subscription_ptr 
+	    new_subscription_Alarm (ACS::Alarmpattern *cb,
+				    const ACS::CBDescIn & desc) 
+	    throw (CORBA::SystemException);
+
+
+      protected:
+
+	/**
+	 * Read characteristics from CDB
+	 * @return true on success, false on failure
+	 */
+	virtual bool readCharacteristics();
 
 // for time being we have AlarmSystemMonitorDisc just here we have to move to ROdisc
 /**
-     * monitor which sends information (alarms) to the alarm system
-     */
-    AlarmSystemMonitorDisc<ACS::pattern, ROdiscImpl<ACS_RO_T(pattern, ACS::pattern)>::PropType> *alarmSystemMonitor_mp;
-};
+ * monitor which sends information (alarms) to the alarm system
+ */
+	/////////AlarmSystemMonitorDisc<ACS::pattern, ROdiscImpl<ACS_RO_T(pattern, ACS::pattern)>::PropType> *alarmSystemMonitor_mp;
+	AlarmSystemMonitorDisc<ACS::pattern, ROpatternImpl> *alarmSystemMonitor_mp;
 
- }; 
+
+      private:
+	///
+	/// Characteristics
+	///
+	
+	// RO
+        // for the pattern type only the values
+        // low_on and high_on for the alarm are implemented (no hysteresis)
+	ACS::pattern alarmLowOn_m;
+			
+	ACS::pattern alarmHighOn_m;			
+    };
+
+}; 
 
 #endif  /* baciROpattern */
 
