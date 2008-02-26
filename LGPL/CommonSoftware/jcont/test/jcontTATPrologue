@@ -30,9 +30,6 @@ export ACS_CDB=$PWD
 echo $ACS_CDB
 acsutilTATPrologue -l
 
-# For the JMX test
-export CLASSPATH=$CLASSPATH:$JAVA_HOME/lib/tools.jar
-
 echo " Starting Test Java Container"
 acsutilAwaitContainerStart -java frodoContainer
 acsutilAwaitContainerStart -java silentContainer

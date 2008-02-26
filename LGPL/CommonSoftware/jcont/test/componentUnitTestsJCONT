@@ -20,6 +20,9 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
+
+export CLASSPATH=$JAVA_HOME/lib/tools.jar:$CLASSPATH
+
 echo "=== Running all JUnit tests of module jcont which require a container infrastructure"
     acsStartJava -endorsed alma.acs.testsupport.tat.TATJUnitRunner  alma.acs.container.ComponentTestclient
     acsStartJava -endorsed alma.acs.testsupport.tat.TATJUnitRunner  alma.acs.container.corba.AcsCorbaTestWithContainer
