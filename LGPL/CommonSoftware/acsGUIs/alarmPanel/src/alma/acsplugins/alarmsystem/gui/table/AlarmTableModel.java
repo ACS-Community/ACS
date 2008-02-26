@@ -19,7 +19,7 @@
 
 /** 
  * @author  acaproni   
- * @version $Id: AlarmTableModel.java,v 1.10 2008/02/22 18:21:42 acaproni Exp $
+ * @version $Id: AlarmTableModel.java,v 1.11 2008/02/26 11:14:34 acaproni Exp $
  * @since    
  */
 
@@ -115,7 +115,7 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 	 * @param alarm The alarm to show in the table.
 	 * @see AlarmSelectionListener
 	 */
-	public void onAlarm(Alarm alarm) {
+	public synchronized void onAlarm(Alarm alarm) {
 		synchronized (items) {
 			if (items.size()==MAX_ALARMS && !items.contains(alarm.getAlarmId())) {
 				AlarmTableEntry removedAlarm=null;
@@ -213,7 +213,7 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 	 * 
 	 * @param alarm The inactive alarm to acknowledge
 	 */
-	public void acknowledge(Alarm alarm) {
+	public synchronized void acknowledge(Alarm alarm) {
 		if (alarm==null) {
 			throw new IllegalArgumentException("The alarm can't be null");
 		}
@@ -453,5 +453,35 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 			items.get(row).alarmSeen();
 		}
 		fireTableRowsUpdated(row, row);
+	}
+	
+	/**
+	 * Remove all the inactive alarms of a given type
+	 * delegating to the AlarmsContainer.
+	 * If the type is <code>INACTIVE</code> all inactive alarms are deleted
+	 * regardless of their priority
+	 * 
+	 * @param type The type of the inactive alarms
+	 * 
+	 * @see AlarmsContainer.removeInactiveAlarms
+	 */
+	public synchronized void removeInactiveAlarms(AlarmGUIType type) {
+		if (type==null) {
+			throw new IllegalArgumentException("The type can't be null");
+		}
+		System.out.println("removing inactive alarms of type "+type);
+		int removed=0;
+		try {
+			removed=items.removeInactiveAlarms(type);
+		} catch (Exception e) {
+			System.out.println("Error removing inactive alarms "+e.getMessage());
+			e.printStackTrace(System.err);
+		}
+		if (removed>0) {
+			for (int t=0; t<removed; t++) {
+				counters.get(AlarmGUIType.INACTIVE).decCounter();
+			}
+			fireTableDataChanged();
+		}
 	}
 }

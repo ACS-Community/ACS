@@ -112,7 +112,7 @@ public class AlarmsContainer {
 	/**
 	 * @return The number of alarms in the container
 	 */
-	public int size() {
+	public synchronized int size() {
 		return index.size();
 	}
 	
@@ -246,6 +246,41 @@ public class AlarmsContainer {
 		if (oldEntry==null) {
 			throw new IllegalStateException("The ID was in index but not in entries");
 		}
+	}
+	
+	/**
+	 * Remove all the inactive alarms of a given type
+	 * delegating to the AlarmsContainer.
+	 * If the type is INACTIVE all inactive alarms are deleted
+	 * regardless of their priority
+	 * 
+	 * @param type The type of the inactive alarms
+	 * @return The number of alarms removed
+	 */
+	public synchronized int removeInactiveAlarms(AlarmGUIType type) throws AlarmContainerException {
+		if (type==null) {
+			throw new IllegalArgumentException("The type can't be null");
+		}
+		Vector<String> keys = new Vector<String>();
+		for (String key: entries.keySet()) {
+			keys.add(new String(key));
+		}
+		int ret=0;
+		for (String key: keys) {
+			AlarmTableEntry alarm = entries.get(key);
+			if (alarm==null) {
+				throw new IllegalStateException("Got a null alarm for key "+key);
+			}
+			if (alarm.getAlarm().getStatus().isActive()) {
+				continue;
+			}
+			if (type==AlarmGUIType.INACTIVE || alarm.getAlarm().getPriority()==type.id) {
+				// Remove the alarm
+				remove(alarm.getAlarm());
+				ret++;
+			}
+		}
+		return ret;
 	}
 	
 	/**
