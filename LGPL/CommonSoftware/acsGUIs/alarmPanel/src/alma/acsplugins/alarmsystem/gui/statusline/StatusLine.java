@@ -24,7 +24,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.BorderFactory;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JTextField;
 import javax.swing.Timer;
 
@@ -40,61 +42,8 @@ import alma.acsplugins.alarmsystem.gui.table.AlarmTableModel;
  */
 public class StatusLine extends JPanel implements ActionListener {
 	
-	/**
-	 * The counter for each type of alarm
-	 * 
-	 * @author acaproni
-	 *
-	 */
-	private class Counter {
-		// The text field showing the value
-		private final JTextField widget;
-		
-		// The type of alarm whose number is show by the widget
-		private final AlarmGUIType alarmType;
-		
-		// The counter to read the number shown by the widget
-		private final AlarmCounter counter;
-		
-		public Counter(AlarmGUIType type, AlarmCounter alarmCounter) {
-			if (type==null) {
-				throw new IllegalArgumentException("The type can't be null");
-			}
-			if (alarmCounter==null) {
-				throw new IllegalArgumentException("The AlarmCountercan't be null");
-			}
-			alarmType=type;
-			counter=alarmCounter;
-			// The number of cols in each text field depends on the MAX_ALARMS that
-			// the mode shows in the table
-			int len = Integer.valueOf(AlarmTableModel.MAX_ALARMS).toString().length();
-			
-			widget= new JTextField(len);
-			widget.setHorizontalAlignment(JTextField.CENTER);
-			widget.setForeground(alarmType.foreg);
-			widget.setBackground(alarmType.backg);
-			widget.setEditable(false);
-		}
-		
-		/**
-		 * Return the component
-		 * 
-		 * @return the component
-		 */
-		public Component getComponent() {
-			return widget;
-		}
-		
-		/**
-		 * Update the value shown in the widget
-		 */
-		public void update() {
-			widget.setText(Integer.valueOf(counter.getCount()).toString());
-		}
-	}
-	
 	// The counters showing the number of alarms
-	private Counter[] counters = new Counter[AlarmGUIType.values().length];
+	private CounterWidget[] counters = new CounterWidget[AlarmGUIType.values().length];
 	
 	// The table model
 	private final AlarmTableModel tableModel;
@@ -102,6 +51,7 @@ public class StatusLine extends JPanel implements ActionListener {
 	// The time to refresh the values shown by the StatusLine
 	private Timer timer=null;
 	private static final int TIMER_INTERVAL=2000;
+
 	/**
 	 * Constructor
 	 */
@@ -122,7 +72,10 @@ public class StatusLine extends JPanel implements ActionListener {
 		
 		// Build the text fields	
 		for (int t=0; t<counters.length; t++) {
-			counters[t]=new Counter(AlarmGUIType.values()[t],tableModel.getAlarmCounter(AlarmGUIType.values()[t]));
+			counters[t]=new CounterWidget(
+					AlarmGUIType.values()[t],
+					tableModel.getAlarmCounter(AlarmGUIType.values()[t]),
+					tableModel);
 			
 			// Add the widget
 			add(counters[t].getComponent());
@@ -170,7 +123,7 @@ public class StatusLine extends JPanel implements ActionListener {
 	 */
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource()==timer) {
-			for (Counter cnt: counters) {
+			for (CounterWidget cnt: counters) {
 				cnt.update();
 			}
 		}
