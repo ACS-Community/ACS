@@ -1,6 +1,6 @@
 /*
  *    ALMA - Atacama Large Millimiter Array
- *    (c) European Southern Observatory, 2002
+ *    (c) Universidad Tecnica Federico Santa Maria, 2008
  *    Copyright by ESO (in the framework of the ALMA collaboration),
  *    All rights reserved
  *
@@ -50,19 +50,19 @@ public interface RemoteThreadsMBean {
 	 * {@link CompositeData}  type.
 	 */
 	public CompositeData[] getAllThreadsInfo();
-	
+
 	/**
 	 * Returns the total number of threads, for all states
 	 * @return The total number of threads
 	 */
 	public int getAllThreadsCount();
-	
+
 	/**
 	 * Returns all the JacORB related threads' information
 	 * @return All the JacORB related threads' information
 	 */
 	public CompositeData[] getJacORBThreadsInfo();
-	
+
 	/**
 	 * Returns all the JacORB related threads' information for a given thread
 	 * state.
@@ -71,13 +71,13 @@ public interface RemoteThreadsMBean {
 	 * state. If <code>state</code> is null, then return all threads
 	 */
 	public CompositeData[] getJacORBThreadsInfo(Thread.State state);
-	
+
 	/**
 	 * Returns the total count of JacORB-related threads, for all thread states
 	 * @return The total count of JacORB-related threads
 	 */
 	public int getJacORBThreadsCount();
-	
+
 	/**
 	 * Returns all the JacORB related threads' information
 	 * @return All the JacORB related threads' information
@@ -93,13 +93,13 @@ public interface RemoteThreadsMBean {
 	 * state. If <code>state</code> is null, then return all threads
 	 */
 	public CompositeData[] getAcsContainerThreadsInfo(Thread.State state);
-	
+
 	/**
 	 * Returns the total count of ACS-related threads, for all thread states
 	 * @return The total count of ACS-related threads
 	 */
 	public int getAcsContainerThreadsCount();
-	
+
 	/**
 	 * Returns all the threads that are currently placed on the class given by
 	 * <code>className</code> and that present the state <code>state</code>.
