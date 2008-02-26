@@ -19,7 +19,7 @@
  *License along with this library; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: baciROpattern.h,v 1.107 2008/02/26 08:52:03 rcirami Exp $"
+ * "@(#) $Id: baciROpattern.h,v 1.108 2008/02/26 15:06:15 bjeram Exp $"
  *
  * who       when        what
  * --------  ----------  ----------------------------------------------
@@ -40,7 +40,7 @@
 
 #include <baciPpatternImpl.h>
 #include <baciROdiscImpl_T.h>
-
+#include "baciAlarmSystemMonitorPattern.h"
 
 namespace baci {
 
@@ -70,10 +70,10 @@ namespace baci {
   
 // for the pattern type only the value low_on and high_on for the alarm are implemented (no hysteresis)
 
-	virtual ACS::pattern alarm_low_on ()
+	virtual ACS::pattern alarm_mask ()
 	    throw (CORBA::SystemException);
 	
-	virtual ACS::pattern alarm_high_on ()
+	virtual ACS::pattern alarm_trigger ()
 	    throw (CORBA::SystemException);
 
 	virtual ACS::Subscription_ptr 
@@ -90,12 +90,10 @@ namespace baci {
 	 */
 	virtual bool readCharacteristics();
 
-// for time being we have AlarmSystemMonitorDisc just here we have to move to ROdisc
 /**
  * monitor which sends information (alarms) to the alarm system
  */
-	/////////AlarmSystemMonitorDisc<ACS::pattern, ROdiscImpl<ACS_RO_T(pattern, ACS::pattern)>::PropType> *alarmSystemMonitor_mp;
-	AlarmSystemMonitorDisc<ACS::pattern, ROpatternImpl> *alarmSystemMonitor_mp;
+	AlarmSystemMonitorPattern *alarmSystemMonitor_mp;
 
 
       private:

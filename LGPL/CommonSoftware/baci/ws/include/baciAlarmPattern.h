@@ -18,7 +18,7 @@
  *License along with this library; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: baciAlarmPattern.h,v 1.1 2008/02/26 08:52:03 rcirami Exp $"
+ * "@(#) $Id: baciAlarmPattern.h,v 1.2 2008/02/26 15:06:15 bjeram Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -48,23 +48,31 @@ namespace baci {
     {
       public:
 
-	AlarmEventStrategyPattern(ROpatternImpl * property, EventDispatcher * eventDispatcher) :
-	    AlarmEventStrategyDisc<ACS::pattern, ROpatternImpl, ACS::Alarmpattern>(property, eventDispatcher)
-	    {};
+	AlarmEventStrategyPattern(ROpatternImpl * property, EventDispatcher * eventDispatcher);
     
 	AlarmEventStrategyPattern(Callback_ptr callback_p,
 				  const CBDescIn& descIn,
 				  const ACS::TimeInterval& interval,
 				  ROpatternImpl * property,
-				  EventDispatcher * eventDispatcher) :
-	    AlarmEventStrategyDisc<ACS::pattern, ROpatternImpl, ACS::Alarmpattern>(callback_p, descIn, interval, property, eventDispatcher)
-	    {};
+				  EventDispatcher * eventDispatcher);
  
 	virtual void check(BACIValue &value,
 			   const ACSErr::Completion & c,
 			   const ACS::CBDescOut & desc);
     
       private:
+	  // lastValue that	  
+	  ACS::pattern lastValue_m;
+
+	  //size of pattern type in bits
+	  const unsigned short patternSize_m;
+
+	  // postion of bit 
+	  unsigned short bitPos_m;
+
+
+	  ACS::pattern alarmTrigger_m,
+	  alarmMask_m;
 	/**
 	 * ALMA C++ coding standards state assignment operators should be disabled.
 	 */

@@ -18,7 +18,7 @@
  *    License along with this library; if not, write to the Free Software
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: baciROpattern.cpp,v 1.109 2008/02/26 08:52:10 rcirami Exp $"
+ * "@(#) $Id: baciROpattern.cpp,v 1.110 2008/02/26 15:06:11 bjeram Exp $"
  *
  * who       when        what
  * --------  ----------  ----------------------------------------------
@@ -28,12 +28,12 @@
 
 
 #include "baciROpattern.h"
+#include "baciAlarmSystemMonitorPattern.h"
 #include "baciAlarm_T.i"
 #include "baciAlarmPattern.h"
-#include "baciAlarmSystemMonitorPattern_T.i"
-/////#include "baciAlarmSystemMonitorPattern.cpp"
 #include "baciROdiscImpl_T.i"
 #include "baciMonitor_T.i"
+
 
 namespace baci {
 
@@ -58,8 +58,7 @@ namespace baci {
 
 	if (this->monitorEventDispatcher_mp!=0 && this->alarmTimerTrig_m!=0)
 	    {
-	    //////alarmSystemMonitor_mp = new AlarmSystemMonitorDisc<ACS::pattern, ROdiscImpl<ACS_RO_T(pattern, ACS::pattern)>::PropType>(this, this->monitorEventDispatcher_mp);
-	    alarmSystemMonitor_mp = new AlarmSystemMonitorDisc<ACS::pattern, ROpatternImpl>(this, this->monitorEventDispatcher_mp);
+	    alarmSystemMonitor_mp = new AlarmSystemMonitorPattern(this, this->monitorEventDispatcher_mp);
 	    }//if
 	initialization_m = 0;
 	ACS_DEBUG("baci::ROpatternImpl::ROpatternImpl", "Successfully created.");
@@ -117,14 +116,14 @@ namespace baci {
 
 /* ---------------------- [ CORBA interface ] ---------------------- */
 
-    ACS::pattern ROpatternImpl::alarm_low_on ()
+    ACS::pattern ROpatternImpl::alarm_mask ()
 	throw (CORBA::SystemException)
     {
 	return CORBAMem<ACS::pattern, ACS::pattern>::retn(alarmLowOn_m);
     }
 
 
-    ACS::pattern ROpatternImpl::alarm_high_on ()
+    ACS::pattern ROpatternImpl::alarm_trigger ()
 	throw (CORBA::SystemException) 
     {
 
