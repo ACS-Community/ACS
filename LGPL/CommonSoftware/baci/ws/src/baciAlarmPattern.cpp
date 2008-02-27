@@ -1,6 +1,9 @@
 #include "baciAlarmPattern.h"
 #include "baciAlarm_T.h"
 #include "baciAlarm_T.i"
+#include <PatternAlarmTriggered.h>
+#include <PatternAlarmCleared.h>
+
 
 AlarmEventStrategyPattern::AlarmEventStrategyPattern(ROpatternImpl * property, EventDispatcher * eventDispatcher):
 	AlarmEventStrategyDisc<ACS::pattern, ROpatternImpl, ACS::Alarmpattern>(property, eventDispatcher),
@@ -46,15 +49,19 @@ void AlarmEventStrategyPattern::check(BACIValue &val,
     			// how the bit has changed (we could merge this with if above but would	 not be cleare then)	
     			if ( ~(value ^ alarmTrigger_m) & 1 )
     			{
-    				//TODO: different completion
-    				Completion c=ACSErrTypeAlarm::ACSErrAlarmLowCompletion();
+    				//here should be PatternAlarmTriggered::TriggeredBit[bitPos_m]Completion
+    				// ... but would be too complicated to implement
+    				Completion c = PatternAlarmTriggered::TriggeredBit0Completion(); 
+    				c.code = bitPos_m; // code contains bit position
     				callback_mp->alarm_raised(value, c, desc);
     				succeeded();
     			}
     			else
     			{
-    				//TODO: different completion
-    				Completion c=ACSErrTypeAlarm::ACSErrAlarmClearedCompletion(); 
+    				//here should be PatternAlarmCleared::ClearedBit[bitPos_m]Completion
+    				// ... but would be too complicated to implement
+    				Completion c = PatternAlarmCleared::ClearedBit0Completion(); 
+    				c.code = bitPos_m; // code contains bit position
     				callback_mp->alarm_cleared(value, c, desc);
     				succeeded();
     			}//if-else

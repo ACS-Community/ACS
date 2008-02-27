@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.131 2008/02/26 15:06:11 bjeram Exp $"
+# "@(#) $Id: Makefile,v 1.132 2008/02/27 08:11:43 bjeram Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -144,7 +144,8 @@ baci_OBJECTS =  baciValue baciBACIAction baciBACICallback baciBACIMonitor baciUt
 	        baciROstring baciRWstring \
 		baciROdoubleSeq baciROfloatSeq baciROlongSeq \
 		baciRWdoubleSeq baciRWfloatSeq baciRWlongSeq 
-baci_LIBS = baciErrTypeProperty baciErrTypeDevIO acsThread acsErrTypeLifeCycle acsAlSysSource acsErrTypeAlarmSourceFactory ACSErrTypeMonitor
+baci_LIBS = baciErrTypeProperty baciErrTypeDevIO acsThread acsErrTypeLifeCycle acsAlSysSource \
+			acsErrTypeAlarmSourceFactory ACSErrTypeMonitor PatternAlarmCleared PatternAlarmTriggered
  
 #
 # Scripts (public and local)
