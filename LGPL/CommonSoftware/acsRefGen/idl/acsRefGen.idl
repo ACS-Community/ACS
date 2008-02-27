@@ -1,0 +1,17 @@
+#ifdef ACSREFGEN_IDL
+#define ACSREFGEN_IDL
+
+
+
+module ACS
+{
+interface acsRefGen
+{
+
+Object createRef(in string host, in string objectKey, in string RID, in string protocol);
+};
+
+};//module ACS
+
+
+#endif
