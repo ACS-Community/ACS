@@ -20,6 +20,7 @@ s/Process=[0-9]*/Process=xxx/g
 s/The current time is:  [0-9]*$/The current time is:  xxx/g
 s/Thread=omniORB--\([0-9]\)\+/Thread=omniORB--XXXXXXX/g 
 s/-OAIAddr [0-9]*\.[0-9]*\.[0-9]*\.[0-9]*/-OAIAddr xxx.xxx.xxx.xxx/g
+s/-ORBEndpoint iiop:\/\/[0-9]*\.[0-9]*\.[0-9]*\.[0-9]*:[0-9]*/-ORBEndpoint iiop:\/\/xxx.xxx.xxx.xxx:xxxx/g
 s/-OAport [0-9]*/-OAport xxx/g
 s/activate_component: handle=[0-9]*/activate_component: handle=xxx/g
 s/alma\.MicroArchive\.DbDir=\/[^ ]*/alma.MicroArchive.DbDir=\/somepath/g
@@ -31,3 +32,4 @@ s/Unloaded '\/.*\/\([^\/]*\.so\)'/Unloaded '\/somepath\/\1'/g
 s/1 - \/.*\/\([^\/]*\.so\)/1 - \/somepath\/\1/g
 s/2 -   File "\/.*\/\([^\/]*\)"/2 -   File "\/somepath\/\1/g
 s/\(2 -[ ]*Thread=RequestProcessor-\)[0-9]*,/\1xxx,/g
+s/Using DLL path: .*/Using DLL path: xxxx/
