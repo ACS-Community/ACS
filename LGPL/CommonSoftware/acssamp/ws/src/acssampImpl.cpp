@@ -17,7 +17,7 @@
  *License along with this library; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: acssampImpl.cpp,v 1.30 2006/10/19 15:20:19 rcirami Exp $"
+ * "@(#) $Id: acssampImpl.cpp,v 1.31 2008/02/27 16:44:06 bjeram Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -30,7 +30,7 @@
 
 #include <vltPort.h>
 
-static char *rcsId="@(#) $Id: acssampImpl.cpp,v 1.30 2006/10/19 15:20:19 rcirami Exp $";
+static char *rcsId="@(#) $Id: acssampImpl.cpp,v 1.31 2008/02/27 16:44:06 bjeram Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <Request.h>
@@ -347,6 +347,46 @@ ACSSampImpl::initSampObj(const char* name, const char* property,
 			    }
 
 			}
+		    else if (myPropIntf.find("ROfloat") != -1)
+			{
+
+			ACS_DEBUG("acssamp::ACSSampImpl::initSampObj","discovered ROfloat property type");
+
+			ACSSampObjImpl<ACS::ROfloat, ACS::ROfloat_var,CORBA::Float>* sampling = NULL;
+
+			try
+			    { 
+			    sampling = new ACSSampObjImpl<ACS::ROfloat,ACS::ROfloat_var,CORBA::Float>(name, property, frequency, reportRate, getComponent(), cobProperty,this);
+			    if (!sampling)
+				{
+				ACS_SHORT_LOG((LM_INFO,"Failed to allocate memory for the sampling object"));
+				MemoryFaultExImpl err = 
+				    MemoryFaultExImpl(__FILE__,__LINE__,"acssamp::ACSSampImpl::initSampObj");
+				throw err;
+				}
+
+			    sampling->initialize();
+
+			    samp = acssamp::SampObj::_narrow(sampling->getCORBAReference());
+			    if (CORBA::is_nil(samp.in()))
+				{
+				ACS_SHORT_LOG((LM_INFO,"Failed to narrow the sampling object"));
+				CORBAProblemExImpl err = 
+				    CORBAProblemExImpl(__FILE__,__LINE__,"acssamp::ACSSampImpl::initSampObj");
+				throw err;
+				}
+			    }
+			catch(...)
+			    {
+			    if (sampling)
+				delete sampling;
+                            // just re-throw
+			    throw;
+			    }
+
+			}
+
+
 		    else 
 			{
 			ACS_DEBUG("acssamp::ACSSampImpl::initSampObj","type not supported");
