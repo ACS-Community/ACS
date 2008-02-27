@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsRefGenImpl.h,v 1.1 2008/02/27 15:42:54 bjeram Exp $"
+* "@(#) $Id: acsRefGenImpl.h,v 1.2 2008/02/27 15:55:51 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -35,8 +35,14 @@
 namespace ACS
 {
 
-    class acsRefGenImpl : public POA_ACS::acsRefGenImpl
+    class acsRefGenImpl : public POA_ACS::acsRefGen
     {
+    public:
+    	virtual CORBA::Object_ptr createRef (
+    	        const char * host,
+    	        const char * objectKey,
+    	        const char * RID,
+    	        const char * protocol);
     };
 };
 

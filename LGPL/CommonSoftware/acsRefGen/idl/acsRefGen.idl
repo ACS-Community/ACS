@@ -1,4 +1,4 @@
-#ifdef ACSREFGEN_IDL
+#ifndef ACSREFGEN_IDL
 #define ACSREFGEN_IDL
 
 

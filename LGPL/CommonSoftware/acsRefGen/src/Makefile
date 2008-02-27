@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.1 2008/02/27 15:42:54 bjeram Exp $"
+# "@(#) $Id: Makefile,v 1.2 2008/02/27 15:55:51 bjeram Exp $"
 #
 # Makefile of ........
 #
@@ -23,8 +23,8 @@
 
 #
 # additional include and library search paths
-#USER_INC = 
-#USER_LIB = 
+#USER_INC =  
+USER_LIB = -lACE -lTAO -lTAO_DsLogAdmin -lTAO_CosNaming -lTAO_IORTable -lTAO_PortableServer -lTAO_Svc_Utils -lTAO_CosTrading -lTAO_DynamicAny -lTAO_CosProperty -lTAO_CosProperty_Serv -lTAO_IFR_Client -lacsutil -lcdb -llogging -lacscomponent -lrecovery -lacserr -lbaciStubs -larchiveevents
 
 #
 # MODULE CODE DESCRIPTION:
@@ -41,8 +41,7 @@ EXECUTABLES_L   =
 #
 # <brief description of xxxxx program>
 acsRefGen_OBJECTS   = 	acsRefGen acsRefGenImpl
-xxxxx_LDFLAGS   =
-xxxxx_LIBS      =
+acsRefGen_LIBS   = acsRefGenStubs
 
 #
 # special compilation flags for single c sources
