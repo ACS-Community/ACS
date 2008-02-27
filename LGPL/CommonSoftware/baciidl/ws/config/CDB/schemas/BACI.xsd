@@ -383,31 +383,14 @@ NOTE: This is normally not used, since the concept or "delta" does not really ma
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="Ppattern">
-				<xs:attribute name="alarm_low_on" type="xs:int" use="optional" default="0">
+				<xs:attribute name="alarm_mask" type="xs:int" use="optional" default="0">
 					<xs:annotation>
-						<xs:documentation>For a description of this characteristic, see documentation 
-of the ROlong propery.	
-NOTE: This is normally not used, since the concept  does not really match well with the concept of a bit patterns. The charasteristic is defined because used in the template implementation of properties in C++. It might be possible to remove it using less generic templates.				</xs:documentation>
+						<xs:documentation>Bit mask: alarm can be sent just for bits that are set.</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
-				<xs:attribute name="alarm_low_off" type="xs:int" use="optional" default="0">
+				<xs:attribute name="alarm_trigger" type="xs:int" use="optional" default="0">
 					<xs:annotation>
-						<xs:documentation>For a description of this characteristic, see documentation 
-of the ROlong propery.								NOTE: This is normally not used, since the concept  does not really match well with the concept of a bit patterns. The charasteristic is defined because used in the template implementation of properties in C++. It might be possible to remove it using less generic templates.	</xs:documentation>
-					</xs:annotation>
-				</xs:attribute>
-				<xs:attribute name="alarm_high_on" type="xs:int" use="optional" default="0">
-					<xs:annotation>
-						<xs:documentation>For a description of this characteristic, see documentation 
-of the ROlong propery.								
-NOTE: This is normally not used, since the concept  does not really match well with the concept of a bit patterns. The charasteristic is defined because used in the template implementation of properties in C++. It might be possible to remove it using less generic templates.</xs:documentation>
-					</xs:annotation>
-				</xs:attribute>
-				<xs:attribute name="alarm_high_off" type="xs:int" use="optional" default="0">
-					<xs:annotation>
-						<xs:documentation>For a description of this characteristic, see documentation 
-of the ROlong propery.		
-NOTE: This is normally not used, since the concept  does not really match well with the concept of a bit patterns. The charasteristic is defined because used in the template implementation of properties in C++. It might be possible to remove it using less generic templates.							</xs:documentation>
+						<xs:documentation>Conditions for alarm triggering: if value is 0 or 1.</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
 				<xs:attribute name="alarm_timer_trig" type="xs:double" use="optional" default="0.0">
