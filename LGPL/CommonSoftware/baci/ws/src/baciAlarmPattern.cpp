@@ -39,7 +39,7 @@ void AlarmEventStrategyPattern::check(BACIValue &val,
     	// here we read the values every time! This can be done just once in ctor, but what if values in CDB change
     	alarmMask_m = property_mp->alarm_mask();
     	alarmTrigger_m = property_mp->alarm_trigger();
-
+    	ACS::pattern tmpVal = value; // temporary storage of the value
     	for(bitPos_m=0; bitPos_m<patternSize_m; bitPos_m++)
     	{
     		//we check if the bit at position bitPos has been changed
@@ -72,7 +72,7 @@ void AlarmEventStrategyPattern::check(BACIValue &val,
     		alarmMask_m >>= 1;
     		alarmTrigger_m >>= 1;
     	}//for
-    	lastValue_m = value;
+    	lastValue_m = tmpVal;
     }//if
         
 }//check

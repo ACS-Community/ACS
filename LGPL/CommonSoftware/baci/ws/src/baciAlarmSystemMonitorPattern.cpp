@@ -36,7 +36,7 @@ void AlarmSystemMonitorPattern::check(BACIValue &val,
     	alarmMask_m = property_mp->alarm_mask();
     	alarmTrigger_m = property_mp->alarm_trigger();
     	bitDescriptions_mp = property_mp->bitDescription();
-    	
+    	ACS::pattern tmpVal = value; //tmp storage of the value
     	for(bitPos_m=0; bitPos_m<patternSize_m; bitPos_m++)
     	{
     		//we check if the bit at position bitPos has been changed
@@ -74,7 +74,7 @@ void AlarmSystemMonitorPattern::check(BACIValue &val,
     		alarmMask_m >>= 1;
     		alarmTrigger_m >>= 1;
     	}//for
-    	lastValue_m = value;
+    	lastValue_m = tmpVal;
     }//if
 }//check
 
