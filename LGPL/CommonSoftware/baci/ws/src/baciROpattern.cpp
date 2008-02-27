@@ -18,7 +18,7 @@
  *    License along with this library; if not, write to the Free Software
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: baciROpattern.cpp,v 1.110 2008/02/26 15:06:11 bjeram Exp $"
+ * "@(#) $Id: baciROpattern.cpp,v 1.111 2008/02/27 08:54:19 bjeram Exp $"
  *
  * who       when        what
  * --------  ----------  ----------------------------------------------
@@ -95,8 +95,8 @@ namespace baci {
 	  throw cdbErrType::WrongCDBDataTypeEx(); \
       }
 
-	    READ_VALUE("alarm_low_on", alarmLowOn_m);
-	    READ_VALUE("alarm_high_on", alarmHighOn_m);
+	    READ_VALUE("alarm_mask", alarmMask_m);
+	    READ_VALUE("alarm_trigger", alarmTrigger_m);
 
 #undef READ_VALUE
 
@@ -119,7 +119,7 @@ namespace baci {
     ACS::pattern ROpatternImpl::alarm_mask ()
 	throw (CORBA::SystemException)
     {
-	return CORBAMem<ACS::pattern, ACS::pattern>::retn(alarmLowOn_m);
+	return alarmMask_m;
     }
 
 
@@ -127,7 +127,7 @@ namespace baci {
 	throw (CORBA::SystemException) 
     {
 
-	return CORBAMem<ACS::pattern, ACS::pattern>::retn(alarmHighOn_m);
+	return alarmTrigger_m;
     }
 
 

@@ -19,7 +19,7 @@
  *License along with this library; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: baciROpattern.h,v 1.108 2008/02/26 15:06:15 bjeram Exp $"
+ * "@(#) $Id: baciROpattern.h,v 1.109 2008/02/27 08:54:23 bjeram Exp $"
  *
  * who       when        what
  * --------  ----------  ----------------------------------------------
@@ -102,11 +102,11 @@ namespace baci {
 	///
 	
 	// RO
-        // for the pattern type only the values
-        // low_on and high_on for the alarm are implemented (no hysteresis)
-	ACS::pattern alarmLowOn_m;
-			
-	ACS::pattern alarmHighOn_m;			
+    /// bit mask: which bits can trigger an alarm
+	ACS::pattern alarmMask_m;
+	
+	/// when a bit can trigger an alarm: if it is 0 or 1
+	ACS::pattern alarmTrigger_m;			
     };
 
 }; 
