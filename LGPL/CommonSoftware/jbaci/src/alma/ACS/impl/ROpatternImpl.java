@@ -224,7 +224,7 @@ public class ROpatternImpl
 	public int alarm_mask() {
 		try
 		{
-			return characteristicModelImpl.getInteger("alarm_mask")
+			return characteristicModelImpl.getInteger("alarm_mask");
 		}
 		catch (NoSuchCharacteristic ncs)
 		{
@@ -235,7 +235,7 @@ public class ROpatternImpl
 	public int alarm_trigger() {
 		try
 		{
-			return characteristicModelImpl.getInteger("alarm_trigger")
+			return characteristicModelImpl.getInteger("alarm_trigger");
 		}
 		catch (NoSuchCharacteristic ncs)
 		{
