@@ -110,11 +110,20 @@ public class ManagerTest extends Thread implements SourceListener, AlarmSelectio
         	logger.log(AcsLogLevel.ERROR,"Source client connected");
         	return;
         }
-        // Connect the listeners
+        // Connect the source listeners
         sourceClient.addAlarmListener(this);
         System.out.println("ManagerTest ready to receive alarms");
 	}
 	
+	public void close() {
+		sourceClient.close();
+		try {
+			categoryClient.close();
+		} catch (Exception e) {
+			System.out.println("Exception while closing: "+e.getMessage());
+			e.printStackTrace();
+		}
+	}
 	
 	/**
 	 * @see AlarmSelectionListener
@@ -176,5 +185,8 @@ public class ManagerTest extends Thread implements SourceListener, AlarmSelectio
 		try {
 			Thread.sleep(WAIT_TIME);
 		} catch (InterruptedException e) {}
+		System.out.println("Closing");
+		managertest.close();
+		System.out.println("Done");
 	}
 }
