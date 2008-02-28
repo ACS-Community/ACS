@@ -1,88 +1,28 @@
-1 - Category root topic=CMW.ALARM_SYSTEM.CATEGORIES
-1 - Connecting subscriber to CMW.ALARM_SYSTEM.CATEGORIES.ROOT
-1 - Connecting subscriber to CMW.ALARM_SYSTEM.CATEGORIES.CATEGORY1
+1 - java version "1.6.0_02"
+1 - Java(TM) SE Runtime Environment (build 1.6.0_02-b05)
+1 - Java HotSpot(TM) Client VM (build 1.6.0_02-b05, mixed mode)
+1 - 
+1 - AlarmSystemClient built
+1 - Ignoring call to ClientLogManager#init: already initialized!
+1 - ----------T--:--:--.--- WARNING [laser-client] ACS central logging not available!
+1 - suppressRemoteLogging called
+1 - AlarmSevice instance IOR:000000000000002649444C3A616C6D612F616C61726D73797374656D2F416C61726D536572766963653A312E3000000000000001000000000000009C00010200000000103139322E3136382E3135302E313239000FA00000000000445374616E64617264496D706C4E616D652F436F6D706F6E656E74504F412F436F6D706F6E656E74504F415F416C61726D536572766963652F416C61726D53657276696365000000020000000000000008000000004A414300000000010000001C00000000000100010000000105010001000101090000000105010001
+1 - log4j:WARN No appenders could be found for logger (cern.laser.client.services.selection.AlarmSelectionHandler).
+1 - log4j:WARN Please initialize the log4j system properly.
+1 - AlarmSevice instance IOR:000000000000002649444C3A616C6D612F616C61726D73797374656D2F416C61726D536572766963653A312E3000000000000001000000000000009C00010200000000103139322E3136382E3135302E313239000FA00000000000445374616E64617264496D706C4E616D652F436F6D706F6E656E74504F412F436F6D706F6E656E74504F415F416C61726D536572766963652F416C61726D53657276696365000000020000000000000008000000004A414300000000010000001C00000000000100010000000105010001000101090000000105010001
+1 - AlarmSevice instance IOR:000000000000002649444C3A616C6D612F616C61726D73797374656D2F416C61726D536572766963653A312E3000000000000001000000000000009C00010200000000103139322E3136382E3135302E313239000FA00000000000445374616E64617264496D706C4E616D652F436F6D706F6E656E74504F412F436F6D706F6E656E74504F415F416C61726D536572766963652F416C61726D53657276696365000000020000000000000008000000004A414300000000010000001C00000000000100010000000105010001000101090000000105010001
+1 - ******************************
+1 - Msg is: 
+1 - 
+1 - ******************************
 1 - ManagerTest ready to receive alarms
 1 - Waiting
 1 - Process xxxxx killed
 1 - Alarm from source received: <Manager, bilboContainer, 1>
-1 - Alarm received: <?xml version="1.0" encoding="UTF-8"?>
-1 - <ACS-Alarm-Message xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ACS-Alarm-Message">
-1 -     <alarmId>Manager:bilboContainer:1</alarmId>
-1 -     <ident>Manager:bilboContainer:1</ident>
-1 -     <problemDescription>Container crashed</problemDescription>
-1 -     <priority>3</priority>
-1 -     <piquetEmail>acaproni@eso.org</piquetEmail>
-1 -     <helpURLString>http://tempuri.org</helpURLString>
-1 -     <instant>false</instant>
-1 -     <triplet>
-1 -         <faultFamily>Manager</faultFamily>
-1 -         <faultMember>bilboContainer</faultMember>
-1 -         <faultCode>1</faultCode>
-1 -     </triplet>
-1 -     <source>
-1 -         <sourceId>ALARM_SYSTEM_SOURCES</sourceId>
-1 -         <description>SOURCE</description>
-1 -         <connectionTimeout>15</connectionTimeout>
-1 -         <responsiblePerson>
-1 -             <responsibleId>0</responsibleId>
-1 -             <firstName></firstName>
-1 -             <familyName>Alessandro Caproni</familyName>
-1 -             <eMail>acaproni@eso.org</eMail>
-1 -             <phoneNumber></phoneNumber>
-1 -         </responsiblePerson>
-1 -         <sourceStatus>
-1 -             <statusId>ALARM_SYSTEM_SOURCES</statusId>
-1 -             <connected>true</connected>
-1 -             <enabled>true</enabled>
-1 -         </sourceStatus>
-1 -         <hostName>xxxx</hostName>
-1 -     </source>
-1 -     <responsiblePerson>
-1 -         <responsibleId>0</responsibleId>
-1 -         <firstName></firstName>
-1 -         <familyName>Alessandro Caproni</familyName>
-1 -         <eMail>acaproni@eso.org</eMail>
-1 -         <phoneNumber></phoneNumber>
-1 -     </responsiblePerson>
-1 -     <location>
-1 -         <locationId>0</locationId>
-1 -         <floor></floor>
-1 -         <room></room>
-1 -         <mnemonic></mnemonic>
-1 -         <position></position>
-1 -     </location>
-1 -     <categories>
-1 -         <categoryId>2</categoryId>
-1 -         <name>CATEGORY1</name>
-1 -         <description>Test category 1</description>
-1 -         <parentId>1</parentId>
-1 -         <path>CATEGORY1</path>
-1 -         <isLeaf>true</isLeaf>
-1 -     </categories>
-1 -     <status>
-1 -         <active>true</active>
-1 -         <masked>false</masked>
-1 -         <reduced>false</reduced>
-1 -         <terminatedByBackup>false</terminatedByBackup>
-1 -         <sourceTimestamp>
-1 -             <date>.......
-1 -             <nanos>.......
-1 -         </sourceTimestamp>
-1 -         <sourceHostname>xxxx</sourceHostname>
-1 -         <userTimestamp>
-1 -             <date>.......
-1 -             <nanos>.......
-1 -         </userTimestamp>
-1 -         <systemTimestamp>
-1 -             <date>.......
-1 -             <nanos>.......
-1 -         </systemTimestamp>
-1 -     </status>
-1 -     <nodeParent>false</nodeParent>
-1 -     <multiplicityParent>false</multiplicityParent>
-1 -     <nodeChild>false</nodeChild>
-1 -     <multiplicityChild>false</multiplicityChild>
-1 - </ACS-Alarm-Message>
-1 - 
-1 - CategorySubscriber.hostname xxxx
+1 - ## FaultFamily: Manager
+1 - ## FaultMember: bilboContainer
+1 - ## FaultCode:   1
 1 - Alarm from category received: <Manager:bilboContainer:1> priority: 3
+1 - Closing
+1 - ### DefaultSubscriberImpl::unSubscribeAll
+1 - Done
