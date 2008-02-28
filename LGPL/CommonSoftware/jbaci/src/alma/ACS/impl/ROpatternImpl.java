@@ -218,6 +218,30 @@ public class ROpatternImpl
 		return MonitorpatternHelper.narrow(this.registerMonitor(monitorImpl, monitorTie));
 	
 	}
+	
+	
+
+	public int alarm_mask() {
+		try
+		{
+			return characteristicModelImpl.getInteger("alarm_mask")
+		}
+		catch (NoSuchCharacteristic ncs)
+		{
+			throw new NO_RESOURCES();
+		}
+	}
+
+	public int alarm_trigger() {
+		try
+		{
+			return characteristicModelImpl.getInteger("alarm_trigger")
+		}
+		catch (NoSuchCharacteristic ncs)
+		{
+			throw new NO_RESOURCES();
+		}
+	}
 
 	/**
 	 * @see alma.ACS.jbaci.CallbackDispatcher#dispatchCallback(int, java.lang.Object, alma.ACS.Callback, alma.ACSErr.Completion, alma.ACS.CBDescOut)
