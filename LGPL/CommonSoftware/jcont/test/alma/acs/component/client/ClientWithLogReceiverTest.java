@@ -92,7 +92,7 @@ public class ClientWithLogReceiverTest extends ComponentClientTestCase {
         		AcsLogLevelDefinition.EMERGENCY };
         
         int numberOfTestLogs = 10;
-        Random random = new Random(System.currentTimeMillis());        
+        Random random = new Random(System.currentTimeMillis());
         
         // loop for sending several test logs
         for (int i=0; i < numberOfTestLogs; i++) {
@@ -119,7 +119,9 @@ public class ClientWithLogReceiverTest extends ComponentClientTestCase {
 	            	}
 	                LogReceiver.ReceivedLogRecord logRecord = delayedLogEntry.getLogRecord();
 	                String sourceObjectName = logRecord.getSourceObject();
-	                if (sourceObjectName!=null && sourceObjectName.equals("ClientWithLogReceiverTest#testLogQueueNoDelay")) {
+	                if (sourceObjectName!=null && 
+	                		sourceObjectName.equals("ClientWithLogReceiverTest#testLogQueueNoDelay") &&
+	                		!logRecord.getMessage().startsWith("------------ setUp")) {
 	                	// it's a log record sent from this process 
 		                assertEquals("Log message text must match the test log record", 
 		                		logMessage, logRecord.getMessage());
