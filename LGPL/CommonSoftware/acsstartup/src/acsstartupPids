@@ -23,7 +23,7 @@ local PID
 TCP=$1
 
 #this little command picks off the process ID if it exists...
-PID=`netstat -t -p -e -e -l 2> /dev/null| grep ":$TCP " | awk '{printf("%s", $9)}'| sed s/"\/"/" "/g | awk '{printf("%s", $1)}'`
+PID=`netstat -t -p -e -e -l -n 2> /dev/null| grep ":$TCP " | awk '{printf("%s", $9)}'| sed s/"\/"/" "/g | awk '{printf("%s", $1)}'`
 
 #sanity check
 if [ "$PID" = "" ]

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 ################################################################################################
-# @(#) $Id: tcpBlocker.py,v 1.1 2006/07/12 21:36:02 dfugate Exp $
+# @(#) $Id: tcpBlocker.py,v 1.2 2008/02/29 00:24:55 agrimstrup Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA, 2001
@@ -92,10 +92,10 @@ while 1:
     try:
         sleep(1)
     except:
-        s.close()
-        s = None
+        server.close()
+        server = None
         break
     
 
-if s!=None:
-    s.close()
+if server is not None:
+    server.close()

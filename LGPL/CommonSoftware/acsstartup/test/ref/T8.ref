@@ -35,8 +35,6 @@
 1 - INFO - acsStopManager: done.
 1 - INFO - Stopping the ORB Services and CDB using 'ACS_INSTANCE=0'
 1 - INFO - Stopping the CDB
-1 - ERROR - Unable to determine CDB's process ID.
-1 - ERROR - Cannot kill the CDB
 1 - INFO - Stopping the CORBA Naming Service
 1 - INFO - Stopping the CORBA Notification Service
 1 - INFO - Stopping the CORBA Logging Notification Service
