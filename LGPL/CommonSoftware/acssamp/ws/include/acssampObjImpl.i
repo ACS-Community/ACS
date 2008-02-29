@@ -16,7 +16,7 @@
  *License along with this library; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: acssampObjImpl.i,v 1.6 2007/06/14 09:14:54 nbarriga Exp $"
+ * "@(#) $Id: acssampObjImpl.i,v 1.7 2008/02/29 09:48:48 bjeram Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -234,7 +234,7 @@ void ACSSampObjImpl<ACS_SAMP_TL>::start ()
     
     DBConnector::writeCommand(cob_p->getName(), "start", getStringifiedTimeStamp());
     
-    const ACS::TimeInterval responseTime=1*1000*1000*10;    // 1s
+    const ACS::TimeInterval responseTime=1*1000*1000*1;    // 0.1s
 
     ACE_CString sampThreadName = sampObjName + "_thread";
 

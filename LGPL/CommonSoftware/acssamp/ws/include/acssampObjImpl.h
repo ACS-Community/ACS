@@ -21,7 +21,7 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
  *
- * "@(#) $Id: acssampObjImpl.h,v 1.27 2007/06/14 09:14:54 nbarriga Exp $"
+ * "@(#) $Id: acssampObjImpl.h,v 1.28 2008/02/29 09:48:48 bjeram Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -72,49 +72,17 @@ class SamplingThread : public ACS::Thread
 		   ACSSampObjImpl<ACS_SAMP_TL> *sampObj,
 		   const ACS::TimeInterval& responseTime=ThreadBase::defaultResponseTime, 
 		   const ACS::TimeInterval& sleepTime=ThreadBase::defaultSleepTime) :
-	ACS::Thread(name)
+	ACS::Thread(name, responseTime, sleepTime),
+	sampObj_p(sampObj) {}
+
+    ~SamplingThread() {}
+
+    virtual void runLoop()
 	{
-	    sampObj_p = sampObj;
-	}
-
-    ~SamplingThread()
-	{
-	}
-
-    virtual void run()
-	{
-// initialize thread
-	    if (ThreadBase::InitThread)
-		ThreadBase::InitThread(getName().c_str());
-
-	    //ACS_DEBUG_PARAM("acssamp::ACSSampObjImpl::sampThreadWorker","Starting thread %s",myself_p->getName().c_str());  
-	    //ACS_SHORT_LOG((LM_INFO,"ACSSamp Starting thread %s", getName().c_str()));
-
-	    while(check() && !sampObj_p->isInDestructState())
-		{
-
-		if(!isSuspended() && !sampObj_p->isInDestructState())
-		    {
-	
-		    //  ACS_DEBUG("acssamp::ACSSampObjImpl::sampThreadWorker","sampling ...");
-
-		    // perform the sampling
-		    sampObj_p->doSamp();
-
-		    sleep();
-		    }
-
-		}
-	    /*if (BACIThread::DoneThread) 
-	      {
-	      BACIThread::DoneThread();
-	      }*/
- 
-	    // cleanup thread
-	    if (ThreadBase::DoneThread)
-		ThreadBase::DoneThread();
-
-	    setStopped();
+	    if ( sampObj_p->isInDestructState() ) exit();
+//	    ACS_DEBUG("acssamp::ACSSampObjImpl::sampThreadWorker","sampling ...");		    
+	    // perform the sampling
+	    sampObj_p->doSamp();
 	}
 		
   private:
@@ -131,42 +99,18 @@ class SamplingThreadFlush : public ACS::Thread
 			ACSSampObjImpl<ACS_SAMP_TL> *sampObj,
 			const ACS::TimeInterval& responseTime=ThreadBase::defaultResponseTime, 
 			const ACS::TimeInterval& sleepTime=ThreadBase::defaultSleepTime) :
-	ACS::Thread(name)
-	{
-	    sampObj_p = sampObj;
-	}
+	ACS::Thread(name, responseTime, sleepTime),
+	sampObj_p(sampObj) {}
 
-    ~SamplingThreadFlush()
-	{
-	}
+    ~SamplingThreadFlush() {}
 
-    virtual void run()
+    virtual void runLoop()
 	{
-// initialize thread
-	    if (ThreadBase::InitThread)
-		ThreadBase::InitThread(getName().c_str());
-    
-
 	    ACS_DEBUG_PARAM("acssamp::ACSSampObjImpl::sampThreadFlush","Starting thread %s",getName().c_str());  
       
-	    while(check() && !sampObj_p->isInDestructState())
-		{
-
-		if(!isSuspended() && !sampObj_p->isInDestructState())
-		    {
-	    
-		    //  ACS_DEBUG("acssamp::ACSSampObjImpl::sampThreadWorker","flushing on the NC ...");
-		    sampObj_p->flushSamp();
-		    sleep();
-		    }
-
-		}
-	    // cleanup thread
-	    if (ThreadBase::DoneThread)
-		ThreadBase::DoneThread();
-
-	    setStopped();
-
+	    if (sampObj_p->isInDestructState()) exit();
+	    //  ACS_DEBUG("acssamp::ACSSampObjImpl::sampThreadWorker","flushing on the NC ...");
+	    sampObj_p->flushSamp();
 	}
 		
   private:
