@@ -18,3 +18,5 @@ logged out from manager
 about to exit the JVM...
 Local file logger: Cache saved to
 Waiting for the container to really shutdown
+^. - Time: [0-9]+.[0-9]+
+^. - $
