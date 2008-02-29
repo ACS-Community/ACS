@@ -130,11 +130,13 @@ public class ComponentClientTestCase extends TestCase
 			connectToManager();
 
 			m_threadFactory = new CleaningDaemonThreadFactory(m_namePrefix, m_logger);
+			// @TODO: harmonize usage of Logger and AcsLogger and then subclass the containerservices
+			// so that getLogger() returns m_logger and not a new component logger.
 			m_containerServices = new ContainerServicesImpl(m_acsManagerProxy, rootPOA, acsCorba,
 										m_logger, m_acsManagerProxy.getManagerHandle(), 
 										this.getClass().getName(), null, m_threadFactory);
 			managerClientImpl.setContainerServices(m_containerServices);
-            initRemoteLogging();
+			initRemoteLogging();
 		}
 		catch (Exception ex)
 		{
@@ -222,11 +224,13 @@ public class ComponentClientTestCase extends TestCase
 	protected void tearDown() throws Exception
 	{
 		try {
+			m_acsManagerProxy.shutdownNotify();
 			m_containerServices.releaseAllComponents();
 			if (logReceiver != null && logReceiver.isInitialized()) {
                 logReceiver.stop();
             }
 			m_acsManagerProxy.logoutFromManager();
+            m_threadFactory.cleanUp();
 			
             ClientLogManager.getAcsLogManager().shutdown(true);
 		}
@@ -274,34 +278,35 @@ public class ComponentClientTestCase extends TestCase
 	
     
     /**
-     * Gets a {@link LogReceiver} which can be used 
-     * to verify log messages from both local and remote processes.
-     * The returned <code>LogReceiver</code> is already initialized.
-     * If initialization fails, an exception is thrown.
-     * <p>
-     * To receive logs from the log service, use either 
-     * {@link LogReceiver#getLogQueue()} or {@link LogReceiver#startCaptureLogs(java.io.PrintWriter)}.
-     *  
-     * @throws AcsJContainerServicesEx if the LogReceiver fails to initialize within 20 seconds.
-     */
-    protected LogReceiver getLogReceiver() throws AcsJContainerServicesEx {
-        if (logReceiver == null) {
-        	boolean initOk = false;
-        	try {
-	            logReceiver = new LogReceiver();
-	            initOk = logReceiver.initialize(acsCorba.getORB(), m_acsManagerProxy.getManager(), 20);
-        	}
-        	catch (Throwable thr) {
-        		AcsJContainerServicesEx ex = new AcsJContainerServicesEx(thr);
-        		ex.setContextInfo("Failed to obtain an initialized LogReceiver.");
-        		throw ex;
-        	}
-            if (!initOk) {
-        		AcsJContainerServicesEx ex = new AcsJContainerServicesEx();
-        		ex.setContextInfo("LogReceiver failed to initialize within 20 seconds.");
-        		throw ex;
-            }
-        }
-        return logReceiver;
-    }
+	 * Gets a {@link LogReceiver} which can be used 
+	 * to verify log messages from both local and remote processes.
+	 * The returned <code>LogReceiver</code> is already initialized.
+	 * If initialization fails, an exception is thrown.
+	 * <p>
+	 * To receive logs from the log service, use either 
+	 * {@link LogReceiver#getLogQueue()} or {@link LogReceiver#startCaptureLogs(java.io.PrintWriter)}.
+	 *  
+	 * @throws AcsJContainerServicesEx if the LogReceiver fails to initialize within 20 seconds.
+	 */
+	protected LogReceiver getLogReceiver() throws AcsJContainerServicesEx {
+		if (logReceiver == null) {
+			boolean initOk = false;
+			try {
+				logReceiver = new LogReceiver();
+				// logReceiver.setVerbose(true);
+				initOk = logReceiver.initialize(acsCorba.getORB(), m_acsManagerProxy.getManager(), 20);
+			}
+			catch (Throwable thr) {
+				AcsJContainerServicesEx ex = new AcsJContainerServicesEx(thr);
+				ex.setContextInfo("Failed to obtain an initialized LogReceiver.");
+				throw ex;
+			}
+			if (!initOk) {
+				AcsJContainerServicesEx ex = new AcsJContainerServicesEx();
+				ex.setContextInfo("LogReceiver failed to initialize within 20 seconds.");
+				throw ex;
+			}
+		}
+		return logReceiver;
+	}
 }
