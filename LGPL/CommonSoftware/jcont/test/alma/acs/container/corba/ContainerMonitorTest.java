@@ -69,6 +69,24 @@ public class ContainerMonitorTest extends ComponentClientTestCase {
 		int containerPID = 0;
 
 		try {
+
+			// The only way to get the java processes list is to use the
+			// jps command (it's like a ps, but for only java processes).
+			// The command output is parsed to get the name of the runnable
+			// class. Then, we search for the alma.acs.container.AcsContainerRunner
+			// class, and then for the name of the ontainer. Finally, we get the
+			// associated PID, which we store.
+			//
+			// The sun.tools.jps.Jps class in the tools.jar jarfile is used
+			// by the jps process. Anyways, this class only has a main
+			// method, so no information can be retrieved by means of
+			// public methods. So, if the main method is invoked in a static
+			// way, the output should be parsed as well as it's being done
+			// now (this is far more complex, since the stdout should be
+			// redirected to another PrinterStream, and then read from it).
+			// Better we execute the jps command and read directly from its
+			// associated InputStream.
+
 			String s;
 			Process p = Runtime.getRuntime().exec("jps -lm");
 			

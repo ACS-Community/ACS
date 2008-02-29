@@ -262,6 +262,22 @@ public class RemoteThreadsClient {
 	private int getRemotePID(String className) throws IOException {
 		String s;
 		Integer remotePID = null;
+
+		// The only way to get the java processes list is to use the
+		// jps command (it's like a ps, but for only java processes).
+		// The command output is parsed to get the name of the runnable
+		// class. Then, the associated PID is stored.
+		//
+		// The sun.tools.jps.Jps class in the tools.jar jarfile is used
+		// by the jps process. Anyways, this class only has a main
+		// method, so no information can be retrieved by means of
+		// public methods. So, if the main method is invoked in a static
+		// way, the output should be parsed as well as it's being done
+		// now (this is far more complex, since the stdout should be
+		// redirected to another PrinterStream, and then read from it).
+		// Better we execute the jps command and read directly from its
+		// associated InputStream.
+
 		Process p = Runtime.getRuntime().exec("jps -lm");
 		
 		BufferedReader stdInput = new BufferedReader(new 
