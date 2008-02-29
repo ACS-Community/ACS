@@ -182,7 +182,7 @@ public class ClientLogManager implements LogConfigSubscriber
         sharedLogConfig.setInternalLogger(m_internalLogger);
         if (DEBUG) {
             m_internalLogger.fine("ClientLogManager instance is created.");
-        }        
+        }
 	}
 
 	/**
@@ -201,11 +201,11 @@ public class ClientLogManager implements LogConfigSubscriber
 			}
 		}
 
+		flushPeriodSeconds = logConfig.getFlushPeriodSeconds();
+		
 		logQueueLock.lock();
-//System.out.println("ClientLogManager#configureLogging got the logQueue lock");
 		try {
 			if (logQueue != null) {
-				flushPeriodSeconds = logConfig.getFlushPeriodSeconds();
 				// don't call this while logQueue is not ready for remote dispatching, because it would produce an ugly error message.
 				if (logQueue.hasRemoteDispatcher()) {
 					logQueue.setPeriodicFlushing(flushPeriodSeconds * 1000); 
@@ -216,7 +216,6 @@ public class ClientLogManager implements LogConfigSubscriber
 			}
 		} finally {
 			logQueueLock.unlock();
-//System.out.println("ClientLogManager#configureLogging released the logQueue lock");
 		}
 	}
 
