@@ -4,6 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.omg.CORBA.IntHolder;
 import org.omg.CORBA.ORB;
 import org.omg.CosNaming.Binding;
@@ -39,10 +43,37 @@ public class EventModel {
 	private final NamingContext nctx;
 	private final AcsManagerProxy mproxy;
 	private final EventChannelFactory nsvc;
+	private final static String eventGuiId = "eventGUI";
 
 	public EventModel() throws Exception {
-		m_logger = ClientLogManager.getAcsLogManager().getLoggerForApplication("eventGUI", false);
-		compClient = new AdvancedComponentClient(m_logger, "corbaloc::pc013018:3000/Manager", "eventGUI");
+		String connectionString;
+		String managerHost;
+		int acsInstance;
+		if ((connectionString = System.getProperty("ACS.Manager")) == null) { // Joe's Linux box in Garching is the default!
+			acsInstance = 0;
+			managerHost = "pc013018";
+			connectionString = getConnectionString(managerHost, acsInstance);
+		}
+		else {
+			String temp = connectionString.substring("corbaloc::".length());
+			int endIndex = temp.indexOf(":");
+			managerHost = temp.substring(0, endIndex);
+			acsInstance = Integer.parseInt(temp.substring(endIndex+1, temp.indexOf("/")));
+		}
+		m_logger = ClientLogManager.getAcsLogManager().getLoggerForApplication(eventGuiId, false);
+		AdvancedComponentClient acc = null;
+		try {
+			acc = new AdvancedComponentClient(m_logger, connectionString, eventGuiId);
+		} catch (Exception e) {
+			MessageDialog dialog = new MessageDialog(null,"Can't create client",null,"The eventGUI client cannot be created. You might want to check the ACS host and instance.\n"+
+					"ACS instance used: "+acsInstance+"; Looked for manager on host: "+managerHost,
+			MessageDialog.ERROR, new String[]{"OK"}, 0);
+			dialog.open();
+			IStatus status = new Status(IStatus.ERROR, eventGuiId,0, "Couldn't create component client", e);
+			Platform.getLog(Platform.getBundle(eventGuiId)).log(status);
+			System.exit(1);
+		}
+		compClient = acc;
 		mproxy = compClient.getAcsManagerProxy();
 		nsvc = EventChannelFactoryHelper.narrow(mproxy.get_service("NotifyEventChannelFactory", true));
 		cs = compClient.getContainerServices();
@@ -51,6 +82,11 @@ public class EventModel {
 		nctx = h.getNamingService();
 	}
 	
+	private String getConnectionString(String managerHost, int acsInstance) {
+		String port = Integer.toString(3000+acsInstance);
+		return "corbaloc::"+managerHost+":"+port+"/Manager";
+	}
+
 	public ArrayList<ChannelData> getChannelStatistics() {
 		ArrayList<ChannelData> clist = new ArrayList<ChannelData>();
 		int[] chans = nsvc.get_all_channels();
