@@ -16,5 +16,3 @@
 2 - user exception, ID 'IDL:alma/maciErrType/LoggerDoesNotExistEx:1.0'
 2 - 
 2 - <timestamp> [GlobalLogger - ] Done all.
-THERE IS A DISCREPANCY BETWEEN PYTHON AND JAVA LOGGING: PYTHON DOES NOT PERMIT TO SET THE LEVEL OF A NOT-ACTIVE LOGGER.
-REMOVE THIS TEST OR REGENERATE A NEW REF FILE AFTER THIS ISSUE GETS SORTED OUT !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
