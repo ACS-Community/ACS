@@ -317,7 +317,7 @@ public class CDBDALTest extends TestCase implements ApplicationEngine
 			// test string sequence - query sub node
 			sref = new String[] {
 				"description", "format", "units", "resolution", "bitDescription", "whenSet", "whenCleared",
-				"alarm_low_on", "alarm_low_off", "alarm_high_on", "alarm_high_off", "alarm_timer_trig",
+				"alarm_mask", "alarm_trigger", "alarm_timer_trig",
 				"default_value", "min_step",
 				"archive_delta", "initialize_devio", "archive_priority", "archive_min_int", "archive_max_int",
 				"default_timer_trig", "min_timer_trig"
