@@ -21,9 +21,7 @@
  */
 package com.cosylab.logging.engine.ACS;
 
-import java.util.Date;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.TimeUnit;
 
 import org.omg.CORBA.Any;
 import org.omg.CosNotification.StructuredEvent;
@@ -35,15 +33,8 @@ import org.omg.CosNotifyComm.StructuredPushConsumerPOA;
 
 import alma.ACSLoggingLog.LogBinaryRecord;
 import alma.ACSLoggingLog.LogBinaryRecordHelper;
-import alma.ACSLoggingLog.NameValue;
-
-import com.cosylab.logging.engine.log.LogTypeHelper;
 
 import com.cosylab.logging.client.cache.CacheUtils;
-import com.cosylab.logging.client.cache.LogBufferedFileCache;
-import com.cosylab.logging.engine.log.ILogEntry;
-import com.cosylab.logging.settings.ErrorLogDialog;
-import com.cosylab.logging.settings.LogTypeRenderer;
 
 /**
  * ACSStructuredPushConsumer gets logs from the NC 
@@ -53,100 +44,23 @@ import com.cosylab.logging.settings.LogTypeRenderer;
  */
 public final class ACSStructuredPushConsumer extends StructuredPushConsumerPOA
 {
-	private class Dispatcher extends Thread
-	{
-		// Signal the thread to terminate
-		private volatile boolean terminateThread=false;
-		/**
-		 * Constructor 
-		 *
-		 */
-		public Dispatcher() {
-			super("Dispatcher");
-			setDaemon(true);
-		}
-		
-		/**
-		 * Close the threads and free all the resources
-		 * @param sync If it is true wait the termination of the threads before returning
-		 */
-		public void close(boolean sync) {
-			terminateThread=true;
-			if (sync) {
-				while (isAlive()) {
-					try {
-						Thread.sleep(250);
-					} catch (InterruptedException ie) {
-						continue;
-					}
-				}
-			}
-		}
-		
-		/**
-		 * The thread that takes log from the vector and publish the log to the
-		 * listeners
-		 */
-		public void run()
-		{
-			String log = null;
-			ILogEntry logEntry = null;
-			while (!terminateThread) {
-				try {
-					log = xmlLogs.poll(250,TimeUnit.MILLISECONDS);
-				} catch (InterruptedException ie) {
-					System.out.println("Exception while taking a log out of the queue: "+ie.getMessage());
-					ie.printStackTrace();
-					continue;
-				}
-                if (log==null) {
-                    // No logs received before the timeout elapsed
-                	continue;
-                }
-                listenersDispatcher.publishRawLog(log);
-				try {
-					logEntry = parser.parse(log);
-				} catch (Exception e) {
-					listenersDispatcher.publishError(log);
-					listenersDispatcher.publishReport(log);
-					System.err.println("Exception in ACSStructuredPushConsumer$Dispatcher::run(): " + e.getMessage());
-					System.err.println("An XML string that could not be parsed: " + log);
-					e.printStackTrace(System.err);
-					continue;
-				}
-				listenersDispatcher.publishLog(logEntry);
-			}
-		}
-	}
+
 	
 	protected StructuredProxyPushSupplier structuredProxyPushSupplier = null;
 	protected boolean isConnected = false;
 	protected boolean isEventSetup = false;
 	protected boolean isInitialized = false;
 
-	private ACSLogParser parser = null;
 	private ACSRemoteAccess acsra = null;
 	
 	// true if the binary format is in use, falso otherwise
 	private boolean binaryFormat;
 	
 	/**
-	 * true if the consumer is discarding logs because is not able
-	 * to follow the flow of the incoming messages
-	 */
-	private boolean discarding=false;
-	
-	/**
-	 * If it is supended then the incoming messages are discarded
+	 * If it is suspended then the incoming messages are discarded
 	 * instead of being notified to the listeners
 	 */
 	private boolean suspended=false;
-	
-	/// The queue where the logs read from the NC are pushed
-	// The dispatcher pos up and injects the logs in the GUI
-	private LinkedBlockingQueue<String> xmlLogs = new LinkedBlockingQueue<String>(2048);
-	
-	private Dispatcher dispatcher = new Dispatcher();
 	
 	// The object to dispatch messages to the listeners
 	private ACSListenersDispatcher listenersDispatcher = null;
@@ -172,27 +86,16 @@ public final class ACSStructuredPushConsumer extends StructuredPushConsumerPOA
 		this.binaryFormat=binaryFormat;
 		this.acsra = acsra;
 		this.listenersDispatcher=listenersDispatcher;
-		dispatcher.setPriority(Thread.MAX_PRIORITY);
+//		dispatcher.setPriority(Thread.MAX_PRIORITY);
 		logRetrieval = new ACSLogRetrieval(listenersDispatcher,this.binaryFormat);
 		initialize();
 	}
 
-	public LinkedBlockingQueue<String> getXmlLogs()
-	{
-		LinkedBlockingQueue<String> XmlLogs = xmlLogs;
-		XmlLogs.add(
-			"<Info TimeStamp=\"2001-11-07T09:24:11.096\" Routine=\"msaci::ContainerImpl::init\" Host=\"disna\" Process=\"maciManager\" Thread=\"main\" Context=\"\"><Data Name=\"StupidData\">All your base are belong to us.</Data>Connected to the Centralized Logger.</Info>");
-		XmlLogs.add(
-			"<Info TimeStamp=\"2001-11-07T09:24:11.096\" Routine=\"msaci::ContainerImpl::init\" Host=\"disna\" Process=\"maciManager\" Thread=\"main\" Context=\"\"><Data Name=\"StupidData\">All your base are belong to us.</Data>Connected to the Centralized Logger.</Info>");
-		return XmlLogs;
-	}
-	
 	/**
 	 * Connects the push supplier to the push consumer.
 	 */
 	public void connect()
 	{
-		dispatcher.start();
 		try
 		{
 			structuredProxyPushSupplier.connect_structured_push_consumer(this._this(acsra.getORB()));
@@ -235,18 +138,6 @@ public final class ACSStructuredPushConsumer extends StructuredPushConsumerPOA
 	 */
 	private void initialize()
 	{
-		if (!binaryFormat) {
-			try
-			{
-				parser = new ACSLogParserDOM();
-			}
-			catch (javax.xml.parsers.ParserConfigurationException pce)
-			{
-				listenersDispatcher.publishReport("Exception occurred when initializing the XML parser.");
-				System.out.println("Exception in ACSStructuredPushConsumer::initialize(): " + pce);
-				return;
-			}
-		}
 		org.omg.CORBA.IntHolder proxyId = new org.omg.CORBA.IntHolder();
 
 		ProxySupplier proxySupplier = null;
@@ -320,7 +211,7 @@ public final class ACSStructuredPushConsumer extends StructuredPushConsumerPOA
 	}
 
 	/**
-	 * Check if the consumer is connecetd by reconnecting the channel 
+	 * Check if the consumer is connected by reconnecting the channel 
 	 * 
 	 * @return true if the consumer is connected
 	 */
@@ -338,7 +229,7 @@ public final class ACSStructuredPushConsumer extends StructuredPushConsumerPOA
 			isConnected=false;
 			return false;
 		}
-		// No exceptions so the pusher reconneted
+		// No exceptions so the pusher reconnected
 		isConnected=true;
 		return true;
 	}
@@ -371,7 +262,7 @@ public final class ACSStructuredPushConsumer extends StructuredPushConsumerPOA
 	/**
 	 * Pause/unpause the thread that publishes logs
 	 * The logs received in pause mode are cached and will be
-	 * published wneh the application will be unpaused
+	 * published when the application will be unpaused
 	 * 
 	 * @param pause
 	 */
@@ -386,9 +277,6 @@ public final class ACSStructuredPushConsumer extends StructuredPushConsumerPOA
 	public void close(boolean sync) {
 		closed=true;
 		
-		if (dispatcher!=null) {			
-			dispatcher.close(sync);
-		}
 		if (logRetrieval!=null) {
 			logRetrieval.close(sync);
 		}
