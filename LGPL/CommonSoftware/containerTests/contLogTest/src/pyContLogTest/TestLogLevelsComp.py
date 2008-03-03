@@ -17,7 +17,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: TestLogLevelsComp.py,v 1.5 2008/01/10 16:12:06 eallaert Exp $"
+# "@(#) $Id: TestLogLevelsComp.py,v 1.6 2008/03/03 15:16:16 eallaert Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -88,7 +88,8 @@ class TestLogLevelsComp(contLogTest__POA.TestLogLevelsComp,  #CORBA stubs for ID
         '''
         mylogger = self.getLogger()
         for l in levels:
-            mylogger.logAtLevel(l, "dummy log message for core level %d/%s" % (l, getLevelName(l)))
+            if l != 99:
+                mylogger.logAtLevel(l, "dummy log message for core level %d/%s" % (l, getLevelName(l)))
         mylogger.logAtLevel(levels[-2], "===last log message===")
         # Python seems to sends logs in packets of 10 logs, so add 9 messages to
         # ensure all the above logs get sent across right now.
@@ -103,16 +104,6 @@ if __name__ == "__main__":
     print "Creating an object"
     g = TestLogLevelsComp()
     print "Done..."
-
-
-
-
-
-
-
-
-
-
 
 
 #
