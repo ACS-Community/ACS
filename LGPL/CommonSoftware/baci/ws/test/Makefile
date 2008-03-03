@@ -20,7 +20,7 @@
 #  MA 02111-1307  USA
 #
 #
-# "@(#) $Id: Makefile,v 1.108 2006/10/16 07:56:40 cparedes Exp $" 
+# "@(#) $Id: Makefile,v 1.109 2008/03/03 14:54:30 rcirami Exp $" 
 #
 # Makefile of ........
 #
@@ -67,7 +67,7 @@ EXECUTABLES_L     = 	$(PROG) baciTestValue \
 			baciTestClient baciTestActions \
 			baciTestDescriptor baciTestPropertySync \
 			baciTestMonitor baciTestThreads baciTestErrSys baciTestCosProperty \
-	                baciTestTurningOnOffMonitoring
+	                baciTestTurningOnOffMonitoring baciTestAlarmServer baciTestAlarmClient
 
 # ---> CDB_Test in text directory
 
@@ -105,12 +105,17 @@ baciTestValue_LIBS    = dl cppunit C++ baciTestStubs
 baciTestCosProperty_OBJECTS	= baciTestCosProperty baciTestC
 baciTestCosProperty_LIBS	= baciTestUtils
 
+baciTestAlarmServer_OBJECTS     = baciTestAlarmServer baciTestAlarmClassImpl baciTestC baciTestS
+baciTestAlarmServer_LIBS        = baciTestUtils acsContainerServices maciStubs ACSErrTypeCommon
+
+baciTestAlarmClient_OBJECTS     = baciTestAlarmClient baciTestC
+baciTestAlarmClient_LIBS        = baciTestUtils
 
 #
 # Includes (.h) files (public and local)
 # ---------------------------------
 INCLUDES        = 
-INCLUDES_L      = baciTestDevIO.h baciTestClassImpl.h baciTestUtils.h baciTest.h
+INCLUDES_L      = baciTestDevIO.h baciTestClassImpl.h baciTestUtils.h baciTest.h baciTestAlarmClassImpl.h 
 
 #
 # Libraries (public and local)
@@ -124,7 +129,7 @@ acsexmplPropTest_OBJECTS = baciTestClassImpl baciTestC baciTestS
 #
 # Scripts (public and local)
 # ----------------------------
-SCRIPTS_L         = 	startBaciTest.sh startBaciTestNoMonitoring.sh \
+SCRIPTS_L         = 	startBaciTest.sh startBaciTestNoMonitoring.sh startBaciAlarmTest.sh \
 			startBaciThreads.sh \
 			startBaciTestClient.sh \
 			baciTATPrologue baciTATEpilogue baciTATEnvironment

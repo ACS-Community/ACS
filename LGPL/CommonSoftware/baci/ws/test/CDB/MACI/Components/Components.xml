@@ -8,6 +8,7 @@
   <_ Name="BACI2"	Code=""	Type=""						Container="Container"/>
   <_ Name="BACI3"	Code=""	Type=""						Container="Container"/>
   <_ Name="BACI_DEF"	Code=""	Type=""						Container="Container"/>
+  <_ Name="BACIALARM"	Code=""	Type="IDL:alma/BACI_TEST/BaciTestAlarmClass:1.0"	Container="Container"/>
 
 </Components>
 

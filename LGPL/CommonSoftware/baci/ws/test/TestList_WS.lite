@@ -19,7 +19,7 @@
 #  Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 #  MA 02111-1307  USA
 #
-# "@(#) $Id: TestList_WS.lite,v 1.95 2006/06/21 15:17:28 bjeram Exp $"
+# "@(#) $Id: TestList_WS.lite,v 1.96 2008/03/03 14:54:30 rcirami Exp $"
 #
 # TestList
 #
@@ -41,6 +41,7 @@ PROLOGUE baciTATPrologue
 8 baciTestValue         "baciTestValue"
 9 baciTestCosProperty	"startBaciTest.sh" "startBaciTestClient.sh baciTestCosProperty"
 10 baciTestTurningOnOffMonitoring	"startBaciTestNoMonitoring.sh" "startBaciTestClient.sh baciTestTurningOnOffMonitoring"
+11 baciTestAlarmServer  "startBaciAlarmTest.sh" "startBaciTestClient.sh baciTestAlarmClient"
 #----------
 #
 # ___oOo___

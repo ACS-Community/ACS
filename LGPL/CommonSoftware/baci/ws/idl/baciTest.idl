@@ -11,41 +11,54 @@ module BACI_TEST {
     enum BaciTestEnum { ENUM_A, ENUM_B, ENUM_C };
 	
 
-interface BaciTestClass: ACS::CharacteristicComponent{                         // @distributed objects
+    interface BaciTestClass: ACS::CharacteristicComponent{                         // @distributed objects
   
-  // Method to request shutdown of the server
-  oneway void shutdown ();
+    // Method to request shutdown of the server
+    oneway void shutdown ();
 
-  void on(in ACS::CBvoid cb, in ACS::CBDescIn desc);      // @actions
-  void off(in ACS::CBvoid cb, in ACS::CBDescIn desc);     // @actions
-  void reset(in ACS::CBvoid cb, in ACS::CBDescIn desc);   // @actions
+    void on(in ACS::CBvoid cb, in ACS::CBDescIn desc);      // @actions
+    void off(in ACS::CBvoid cb, in ACS::CBDescIn desc);     // @actions
+    void reset(in ACS::CBvoid cb, in ACS::CBDescIn desc);   // @actions
 
-  // methods that we can turing monitoring on/off from the client
-  void turnOnMonitoring(); // @action
-  void turnOffMonitoring(); // @action 
-  boolean isPropertiesMonitoringActive(); // @action 
+    // methods that we can turing monitoring on/off from the client
+    void turnOnMonitoring(); // @action
+    void turnOffMonitoring(); // @action 
+    boolean isPropertiesMonitoringActive(); // @action 
 
-  readonly attribute ACS::RWdouble  RWdoubleWithErrorDevIOProp;   // @Properties
-  readonly attribute ACS::RWdouble  RWdoubleWithDevIOProp;   // @Properties
-  readonly attribute ACS::RWdouble  RWdoubleProp;   // @Properties
-  readonly attribute ACS::ROdouble  ROdoubleProp;   // @Properties
-  readonly attribute ACS::RWfloat   RWfloatProp;   // @Properties
-  readonly attribute ACS::ROfloat   ROfloatProp;   // @Properties
-  readonly attribute ACS::RWlong    RWlongProp;     // @Properties
-  readonly attribute ACS::ROlong    ROlongProp;     // @Properties
-  readonly attribute ACS::ROpattern ROpatternProp;  // @Properties
-  readonly attribute ACS::RWpattern RWpatternProp;  // @Properties
-  readonly attribute ACS::ROstring  ROstringProp;   // @Properties
-  readonly attribute ACS::RWstring  RWstringProp;   // @Properties
+    readonly attribute ACS::RWdouble  RWdoubleWithErrorDevIOProp;   // @Properties
+    readonly attribute ACS::RWdouble  RWdoubleWithDevIOProp;   // @Properties
+    readonly attribute ACS::RWdouble  RWdoubleProp;   // @Properties
+    readonly attribute ACS::ROdouble  ROdoubleProp;   // @Properties
+    readonly attribute ACS::RWfloat   RWfloatProp;   // @Properties
+    readonly attribute ACS::ROfloat   ROfloatProp;   // @Properties
+    readonly attribute ACS::RWlong    RWlongProp;     // @Properties
+    readonly attribute ACS::ROlong    ROlongProp;     // @Properties
+    readonly attribute ACS::ROpattern ROpatternProp;  // @Properties
+    readonly attribute ACS::RWpattern RWpatternProp;  // @Properties
+    readonly attribute ACS::ROstring  ROstringProp;   // @Properties
+    readonly attribute ACS::RWstring  RWstringProp;   // @Properties
 
-  readonly attribute ACS::RWdoubleSeq  RWdoubleSeqProp;   // @Properties
-  readonly attribute ACS::ROdoubleSeq  ROdoubleSeqProp;   // @Properties
-  readonly attribute ACS::RWfloatSeq   RWfloatSeqProp;   // @Properties
-  readonly attribute ACS::ROfloatSeq   ROfloatSeqProp;   // @Properties
-  readonly attribute ACS::RWlongSeq    RWlongSeqProp;     // @Properties
-  readonly attribute ACS::ROlongSeq    ROlongSeqProp;     // @Properties
+    readonly attribute ACS::RWdoubleSeq  RWdoubleSeqProp;   // @Properties
+    readonly attribute ACS::ROdoubleSeq  ROdoubleSeqProp;   // @Properties
+    readonly attribute ACS::RWfloatSeq   RWfloatSeqProp;   // @Properties
+    readonly attribute ACS::ROfloatSeq   ROfloatSeqProp;   // @Properties
+    readonly attribute ACS::RWlongSeq    RWlongSeqProp;     // @Properties
+    readonly attribute ACS::ROlongSeq    ROlongSeqProp;     // @Properties
 
-};
+    };
+
+
+    interface BaciTestAlarmClass: ACS::CharacteristicComponent{                         // @distributed objects
+  
+    // Method to request shutdown of the server
+    oneway void shutdown ();
+
+    boolean isPropertiesMonitoringActive(); // @action 
+
+    readonly attribute ACS::ROpattern roPatternProperty;     // @Properties
+    readonly attribute ACS::RWpattern rwPatternProperty;     // @Properties
+
+    };
 
 };
 
