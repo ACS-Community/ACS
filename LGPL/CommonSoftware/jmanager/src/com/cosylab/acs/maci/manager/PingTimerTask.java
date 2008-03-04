@@ -246,11 +246,11 @@ public class PingTimerTask extends TimerTask
 
 		try {
 			ACSFaultState fs = ACSAlarmSystemInterfaceFactory.createFaultState(FAULT_FAMILY, faultMember, FAULT_CODE);
-			fs.setDescriptor(ACSFaultState.ACTIVE);
+			fs.setDescriptor(state);
 			fs.setUserTimestamp(new Timestamp(System.currentTimeMillis()));
 			alarmSource.push(fs);
 
-			// @todo TODO via prevayler
+			// seve alarm state
 			if (ACSFaultState.ACTIVE.equals(state))
 				manager.alarmRaised(faultMember);
 			else if (ACSFaultState.TERMINATE.equals(state))
