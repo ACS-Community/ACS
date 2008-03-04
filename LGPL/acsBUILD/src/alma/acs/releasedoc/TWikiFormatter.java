@@ -50,7 +50,11 @@ public class TWikiFormatter
 	List<Cvs2clXmlEntry> sortByAuthor(Collection<Cvs2clXmlEntry> entries) {		
 		return sort(entries, new Comparator<Cvs2clXmlEntry>() {
 			public int compare(Cvs2clXmlEntry entry1, Cvs2clXmlEntry entry2) {
-				return entry1.getAuthor().compareTo(entry2.getAuthor());
+				if (!entry1.getAuthor().equals(entry2.getAuthor())) {
+					return entry1.getAuthor().compareTo(entry2.getAuthor());
+				}
+				// fallback to sort by date
+				return entry1.getDate().compareTo(entry2.getDate());
 			}
 		} );
 	}
