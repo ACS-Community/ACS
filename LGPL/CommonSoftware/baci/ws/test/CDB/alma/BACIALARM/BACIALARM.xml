@@ -6,10 +6,10 @@
 
   <roPatternProperty
 	description="RO pattern property"
-        bitDescription="first bit,second bit,third bit"
+        bitDescription="first bit,second bit,third bit,fourth bit"
         default_value="2"
-	alarm_mask="7"
-	alarm_trigger="5"
+	alarm_mask="11"
+	alarm_trigger="13"
 	alarm_timer_trig="2.0"
 />
   <rwPatternProperty

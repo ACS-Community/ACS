@@ -18,14 +18,14 @@
  *    License along with this library; if not, write to the Free Software
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: baciTestAlarmClient.cpp,v 1.1 2008/03/03 14:54:30 rcirami Exp $"
+ * "@(#) $Id: baciTestAlarmClient.cpp,v 1.2 2008/03/04 14:11:51 rcirami Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
  * oat      2008-02-02 created
  */
  
-static char *rcsId="@(#) $Id: baciTestAlarmClient.cpp,v 1.1 2008/03/03 14:54:30 rcirami Exp $";
+static char *rcsId="@(#) $Id: baciTestAlarmClient.cpp,v 1.2 2008/03/04 14:11:51 rcirami Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <tao/corba.h>
@@ -57,7 +57,7 @@ using namespace BACI_TEST;
  * of done invocations as well as the name of the BACI property it's monitoring, receiving
  * an asynchronous value from, etc.
  * 
- * @version "@(#) $Id: baciTestAlarmClient.cpp,v 1.1 2008/03/03 14:54:30 rcirami Exp $"
+ * @version "@(#) $Id: baciTestAlarmClient.cpp,v 1.2 2008/03/04 14:11:51 rcirami Exp $"
  */
 class CommonCallback
 {
@@ -96,7 +96,7 @@ class CommonCallback
  * property.  There are only two useful methods: alarm_raised and alarm_cleared.  They
  * do just what their names imply.
  * 
- * @version "@(#) $Id: baciTestAlarmClient.cpp,v 1.1 2008/03/03 14:54:30 rcirami Exp $"
+ * @version "@(#) $Id: baciTestAlarmClient.cpp,v 1.2 2008/03/04 14:11:51 rcirami Exp $"
  */
 class MyAlarmpattern : public virtual POA_ACS::Alarmpattern,    //CORBA servant stub
 		       protected CommonCallback
@@ -192,18 +192,19 @@ class WorkerThreadPattern : public ACS::Thread
 	    ACS_TRACE("WorkerThreadPattern::WorkerThreadPattern");
 	    rwPattern_m = rwPattern;
 	    count = 0;
-	    numValues = 7;
-	    values = new int[7];
-	    // 111 - alarm_mask read from the CDB (decimal 7), the three rigthmost bits considered
-	    // 101 - alarm_trigger read from the CDB (decimal 5)
-	    // 010 - default value read from the CDB (decimal 2), no alarm raised 
-	    values[0] = 3; // 011 - 1 bit present in alarm_trigger, 1 alarm raised
-	    values[1] = 2; // 010 - no bit present in alarm_trigger, alarm cleared
-	    values[2] = 7; // 111 - 2 bits present in alarm_trigger, 2 alarms raised
-	    values[3] = 3; // 011 - 1 bit present in alarm_trigger, 1 alarm cleared
-	    values[4] = 2; // 010 - no bit present in alarm_trigger, the other alarm cleared 
-	    values[5] = 5; // 101 - 3 bits present in alarm_trigger, 3 alarms raised
-	    values[6] = 2; // 010 - no bit present in alarm_trigger, all 3 alarms cleared
+	    numValues = 8;
+	    values = new int[8];
+	                    // 1011 - alarm_mask read from the CDB (decimal 11), three bits considered
+                            // 1101 - alarm_trigger read from the CDB (decimal 13)
+                            // 0010 - default value read from the CDB (decimal 2), no alarm raised 
+	    values[0] = 10; // 0110 - 1 bit present in alarm_trigger, 1 alarm raised
+	    values[1] = 2;  // 0010 - no bit present in alarm_trigger, alarm cleared
+	    values[2] = 1;  // 0001 - 2 bits present in alarm_trigger, 2 alarms raised
+	    values[3] = 3;  // 0011 - 1 bit present in alarm_trigger, 1 alarm cleared
+	    values[4] = 2;  // 0010 - no bit present in alarm_trigger, the other alarm cleared 
+	    values[5] = 9;  // 1001 - 3 bits present in alarm_trigger, 3 alarms raised
+	    values[6] = 2;  // 0010 - no bit present in alarm_trigger, all 3 alarms cleared
+	    values[7] = 6;  // 0110 - the bit present in alarm_trigger is not present in alarm_mask, no alarm raised
 
 	    ACS_SHORT_LOG((LM_INFO, "%s: Created thread", getName().c_str()));
 	}
