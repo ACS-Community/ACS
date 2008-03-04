@@ -1,4 +1,4 @@
-# @(#) $Id: Log.py,v 1.38 2008/01/23 23:57:26 agrimstrup Exp $
+# @(#) $Id: Log.py,v 1.39 2008/03/04 00:01:47 nbarriga Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA,  2001
@@ -43,7 +43,7 @@ TODO:
 XML-related methods are untested at this point.
 '''
 
-__revision__ = "$Id: Log.py,v 1.38 2008/01/23 23:57:26 agrimstrup Exp $"
+__revision__ = "$Id: Log.py,v 1.39 2008/03/04 00:01:47 nbarriga Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 from os        import environ
@@ -480,7 +480,7 @@ class Logger(logging.Logger):
             raise KeyError("Invalid Log Level")
         cur_stack=extract_stack()
         rtCont=ACSLog.RTContext("",str(getpid()),str(gethostname()).replace("<", "").replace(">", ""),"","")
-        srcInfo=ACSLog.SourceInfo(str(cur_stack[0][0]),str(cur_stack[0][2]),long(cur_stack[0][1]))
+        srcInfo=ACSLog.SourceInfo(str(cur_stack[0][0]).replace("<", "").replace(">", ""),str(cur_stack[0][2]).replace("<", "").replace(">", ""),long(cur_stack[0][1]))
         timestamp=TimeUtil().py2epoch(time.time()).value
         if audience is None:
                 audience = ""
