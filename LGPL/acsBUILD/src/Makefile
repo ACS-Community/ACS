@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: Makefile,v 1.155 2006/10/30 08:30:18 gchiozzi Exp $"
+# "@(#) $Id: Makefile,v 1.156 2008/03/04 12:01:17 hsommer Exp $"
 #
 # Makefile of ........
 #
@@ -83,6 +83,19 @@ LIBRARIES_L     =
 #
 # <brief description of lllll library>
 lllll_OBJECTS   =
+
+
+DEBUG = on
+
+#
+# Jarfiles and their directories
+# Currently the produced JAR file is not installed, 
+# so just uncomment the following two lines to  build it manually.
+# This will provide the ProcessCvs2clOutput command to generate ChangeLog files for the wiki.
+#
+#JARFILES = acsBUILD 
+#acsBUILD_DIRS =  alma
+
 
 #
 # Scripts (public and local)
