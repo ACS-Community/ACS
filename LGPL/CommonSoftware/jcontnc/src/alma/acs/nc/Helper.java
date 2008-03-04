@@ -48,7 +48,6 @@ import alma.acs.container.ContainerServicesBase;
 import alma.acs.exceptions.AcsJException;
 import alma.acs.logging.AcsLogLevel;
 
-import com.cosylab.CDB.DAO;
 import com.cosylab.cdb.client.CDBAccess;
 import com.cosylab.cdb.client.DAOProxy;
 import com.cosylab.util.WildcharMatcher;
@@ -337,7 +336,7 @@ public class Helper {
 			try {
 				channelsDAO = m_cdbAccess.createDAO("MACI/Channels");
 			} catch (Throwable th) {
-				m_logger.log(AcsLogLevel.CONFIG, "Failed to get MACI/Channels DAO from CDB, using default notification service.", th);
+				m_logger.log(AcsLogLevel.CONFIG, "Failed to get MACI/Channels DAO from CDB, using default notification service."/*, th*/);
 			}
 		}
 		
