@@ -149,7 +149,7 @@ public class RemoteThreads implements RemoteThreadsMBean {
 				
 				// Get the class name of the top class of this thread
 				String cName = stackElements[idx].getClassName();
-				if( cName.equals("java.lang.Thread")) {
+				if( cName.equals("java.lang.Thread") && stackElements.length >= 2) {
 					cName = stackElements[idx - 1].getClassName();
 				}
 				
@@ -160,7 +160,7 @@ public class RemoteThreads implements RemoteThreadsMBean {
 						threadCount++;
 						break;
 					}
-				
+
 			}
 		}
 		
