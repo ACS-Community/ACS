@@ -8,3 +8,5 @@ s/Max\/Min for JacORB's thread pool: [0-9]\+\/[0-9]\+/Max\/Min for JacORB's thre
 s/Got silentContainer's PID: [0-9]\+/Got silentContainer's PID: xxxx/g
 s/ACS Container threads average (idle\/stress): [0-9]\+\.[0-9]\+\/[0-9]\+\.[0-9]\+/ACS Container threads average (idle\/stress): xx\.xx\/xx\.xx/g
 s/JacORB threads average        (idle\/stress): [0-9]\+\.[0-9]\+\/[0-9]\+\.[0-9]\+/JacORB threads average        (idle\/stress): xx\.xx\/xx\.xx/g
+s/Total number of JacORB threads: [0-9]\+/Total number of JacORB threads: xx/g
+s/Total number of ACS threads: [0-9]\+/Total number of ACS threads: xx/g

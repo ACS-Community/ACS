@@ -147,11 +147,23 @@ public class ContainerMonitorTest extends ComponentClientTestCase {
 		
 		Thread []myThreads = new Thread[max_threads];
 
+		// Print some info that should be sed'ed and grep'ed by
+		// tat .sed and .grep files
+		m_logger.info("Total number of JacORB threads: " + mbean.getJacORBThreadsCount());
+		m_logger.info("Total number of ACS threads: " + mbean.getAcsContainerThreadsCount());
+		
+		// The present threads should be more that the min
+		assertTrue(mbean.getThreadsCount("org.jacorb.poa.RequestProcessor",null) >= min_threads);
+		
+		// The present threads should be less than max
+		assertTrue(mbean.getThreadsCount("org.jacorb.poa.RequestProcessor",null) <= max_threads);
+		
+		// Test the thread counting on idle mode
 		for(int i = 0; i!= max_threads*MAX_ITERATIONS; i++) {
 			acsThreads[0][acs++] = mbean.getAcsContainerThreadsCount();
 			jacorbThreads[0][jacorb++] = mbean.getThreadsCount("org.jacorb.poa.RequestProcessor",null);
 		}
-		
+
 		acs = 0;
 		jacorb = 0;
 		
