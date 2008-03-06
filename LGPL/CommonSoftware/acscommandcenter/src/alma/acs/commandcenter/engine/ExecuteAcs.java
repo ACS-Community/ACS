@@ -120,7 +120,10 @@ public class ExecuteAcs {
 		int instance = MiscUtils.parseInt(runModel.getScriptBase());
 		
 		boolean startStop = true;
-		String cmdFlags = "";
+		 // this is to mimic the pre-ACS 7.0.1 behavior, 
+		// where commandcenter and OMC would only check the manager state, 
+		// but not the actual execution state of the acsStart script.
+		String cmdFlags = "-nowaitifr";
 
 		Executor.remoteDaemonForServices(host, instance, startStop, cmdFlags, listener);
 	}
