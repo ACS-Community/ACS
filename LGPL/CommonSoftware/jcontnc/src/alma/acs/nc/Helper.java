@@ -27,6 +27,8 @@
 
 package alma.acs.nc;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import org.omg.CORBA.IntHolder;
@@ -56,6 +58,15 @@ import com.cosylab.util.WildcharMatcher;
  * This class provides methods useful to both supplier and consumer objects.
  */
 public class Helper {
+
+	/**
+	 * Map that's used similar to a log repeat guard, because the OMC was flooded with NC config problem logs 
+	 * (as of 2008-03-06). 
+	 * <p>
+	 * key = channel name; value = timestamp in ms when config error was found for the given channel.
+	 */
+	private Map<String, Long> channelConfigProblems = new HashMap<String, Long>();
+
 	/**
 	 * Creates a new instance of Helper.
 	 * 
@@ -330,13 +341,19 @@ public class Helper {
 	 */
 	public String getNotificationFactoryNameForChannel(String channelName, String domainName)
 	{
-		// layz initialization
+		// lazy initialization
 		if (channelsDAO == null)
 		{
 			try {
 				channelsDAO = m_cdbAccess.createDAO("MACI/Channels");
 			} catch (Throwable th) {
-				m_logger.log(AcsLogLevel.CONFIG, "Failed to get MACI/Channels DAO from CDB, using default notification service."/*, th*/);
+				// keep track of when this occurs
+				Long timeLastError = channelConfigProblems.get(channelName);
+				channelConfigProblems.put(channelName, System.currentTimeMillis());
+				// don't log this too often (currently only once)
+				if (timeLastError == null) {
+					m_logger.log(AcsLogLevel.CONFIG, "Failed to get MACI/Channels DAO from CDB, using default notification service."/*, th*/);
+				}
 			}
 		}
 		
