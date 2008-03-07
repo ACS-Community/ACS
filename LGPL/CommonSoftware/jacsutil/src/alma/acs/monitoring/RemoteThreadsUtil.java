@@ -31,6 +31,8 @@ import java.util.List;
 
 import javax.management.openmbean.CompositeData;
 
+import alma.acs.util.StringOutputStream;
+
 /** 
  * This class is intended to have only <code>public static</code> methods to
  * help in the management of information given by the {@link RemoteThreadsMBean}
@@ -56,6 +58,26 @@ public class RemoteThreadsUtil {
 			info[i] = ThreadInfo.from(data[i]);
 		
 		return info;
+	}
+	
+	/**
+	 * Returns an array with the information of a group of threads that can be
+	 * printed. The information can be grouped or not by 
+	 * thread state and by the name of the class where the thread "started". 
+	 * @param info The {@link ThreadInfo} array with the information to be printed
+	 * @param grouped If true, the information is grouped by class name and state,
+	 * printing the count for each group. 
+	 */
+	public static String printThreadsInfo(ThreadInfo[] info,boolean grouped) {
+		
+		// We use the alma.acs.util.StringOutputStream class
+		StringOutputStream stringOS = new StringOutputStream();
+		PrintStream printer = new PrintStream(stringOS);
+		
+		printThreadsInfo(info,printer,grouped);
+		printer.flush();
+		
+		return stringOS.toString();
 	}
 	
 	/**
