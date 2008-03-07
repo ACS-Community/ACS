@@ -26,6 +26,7 @@ import java.io.InputStreamReader;
 import alma.acs.component.client.ComponentClientTestCase;
 import alma.acs.monitoring.RemoteThreadsClient;
 import alma.acs.monitoring.RemoteThreadsMBean;
+import alma.acs.monitoring.RemoteThreadsUtil;
 import alma.jconttest.DummyComponent;
 import alma.jconttest.DummyComponentHelper;
 
@@ -151,6 +152,15 @@ public class ContainerMonitorTest extends ComponentClientTestCase {
 		// tat .sed and .grep files
 		m_logger.info("Total number of JacORB threads: " + mbean.getJacORBThreadsCount());
 		m_logger.info("Total number of ACS threads: " + mbean.getAcsContainerThreadsCount());
+		
+		String threadInfo = RemoteThreadsUtil.printThreadsInfo(RemoteThreadsUtil.toThreadsInfo(
+				mbean.getThreadsInfo("org.jacorb.poa.RequestProcessor",Thread.State.WAITING)), true
+		);
+		
+		String[] threadInfoSeparated = threadInfo.split("\n");
+		
+		for(int i=0; i!= threadInfoSeparated.length; i++)
+			m_logger.info(threadInfoSeparated[i]);
 		
 		// The present threads should be more that the min
 		assertTrue(mbean.getThreadsCount("org.jacorb.poa.RequestProcessor",null) >= min_threads);
