@@ -80,13 +80,23 @@ public class ProcessCvs2clOutput
 		List<Cvs2clXmlEntry> entries2 = null;
 		switch (sortBy) {
 		case time:
-			entries2 = formatter.sortByDate(entries1);			
+			entries2 = formatter.sortByDate(entries1);
 			break;
 		case user:
-			entries2 = formatter.sortByAuthor(entries1);			
+			entries2 = formatter.sortByAuthor(entries1);
+			TWikiFormatter.HeadingInserter hi = new TWikiFormatter.HeadingInserter() {
+				boolean needsHeading(Cvs2clXmlEntry entry) {
+					return (lastEntry == null || !lastEntry.getAuthor().equals(entry.getAuthor()));
+				}
+				String headingText(Cvs2clXmlEntry entry) {
+					return entry.getAuthor();
+				}
+			};
+			formatter.setHeadingInserter(hi);
 			break;
-			
 		// @TODO: other sorting options!!
+//		case path:
+//			entries2 = formatter.sortByPath(entries1);			
 		default:
 			entries2 = new ArrayList<Cvs2clXmlEntry>(entries1);
 			break;

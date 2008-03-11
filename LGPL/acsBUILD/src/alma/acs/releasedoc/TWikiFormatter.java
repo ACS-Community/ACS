@@ -39,6 +39,8 @@ public class TWikiFormatter
 {
 	public static final String LINE_SEPARATOR = System.getProperty("line.separator");
 	
+	private HeadingInserter headingInserter;
+	
 	List<Cvs2clXmlEntry> sortByDate(Collection<Cvs2clXmlEntry> entries) {
 		return sort(entries, new Comparator<Cvs2clXmlEntry>() {
 			public int compare(Cvs2clXmlEntry entry1, Cvs2clXmlEntry entry2) {
@@ -82,6 +84,9 @@ public class TWikiFormatter
 	
 	void printTwiki(Cvs2clXmlEntry entry) {
 		
+		if (headingInserter != null) {
+			headingInserter.processRecord(entry);
+		}
 		String output = SimpleDateFormat.getDateTimeInstance().format(entry.getDate());
 		output += "  ";
 		output += entry.getAuthor();
@@ -152,4 +157,21 @@ public class TWikiFormatter
 		return false;
 	}
 	
+	
+	abstract static class HeadingInserter {
+		protected Cvs2clXmlEntry lastEntry;
+		abstract boolean needsHeading(Cvs2clXmlEntry entry);
+		abstract String headingText(Cvs2clXmlEntry entry);
+		void processRecord(Cvs2clXmlEntry entry) {
+			if (needsHeading(entry)) {
+				System.out.println();
+				System.out.println("---++ " + headingText(entry));
+			}
+			lastEntry = entry;
+		}
+	}
+	
+	protected void setHeadingInserter(HeadingInserter hi) {
+		headingInserter = hi;
+	}
 }
