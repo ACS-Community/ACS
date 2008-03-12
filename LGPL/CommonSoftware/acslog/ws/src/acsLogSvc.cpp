@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsLogSvc.cpp,v 1.20 2007/05/28 06:39:36 cparedes Exp $"
+* "@(#) $Id: acsLogSvc.cpp,v 1.21 2008/03/12 15:24:48 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -31,7 +31,7 @@
 * bjeram 2001-09-11 created
 */
 
-static char *rcsId="@(#) $Id: acsLogSvc.cpp,v 1.20 2007/05/28 06:39:36 cparedes Exp $"; 
+static char *rcsId="@(#) $Id: acsLogSvc.cpp,v 1.21 2008/03/12 15:24:48 bjeram Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <acslogSvcImpl.h>
@@ -55,6 +55,7 @@ void TerminationSignalHandler(int)
 
 int main(int argc, char *argv[])
 {
+ 
   CosNaming::NamingContext_var naming_context; 
   int  nargc=0;
   char **nargv=0;
@@ -65,7 +66,14 @@ int main(int argc, char *argv[])
      ACE_OS::printf ("USAGE: acsLogSvc  [-ORBInitRef NameService=iiop://yyy:xxxx/NameService] [-ORBEndpoint iiop://ip:port] [-o iorfile] [-silent]\n");
      return -1;
   }
-
+ 
+ // here we have to unset ACS_LOG_CENTRAL that we prevent filtering of log messages
+ char *logCent=getenv("ACS_LOG_CENTRAL");
+ if (logCent)
+     {
+     unsetenv("ACS_LOG_CENTRAL");
+     printf("Unset ACS_LOG_CENTRAL which was previously set to %s\n", logCent);
+     }//if
 
 // create logging proxy
   LoggingProxy::ProcessName(argv[0]);
