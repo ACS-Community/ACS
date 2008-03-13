@@ -12,11 +12,10 @@
 1 - FINER: Logging configuration has been initialized, but not from CDB settings.
 1 - --iso_time-- FINE [testConcurrentRemoteInitAndStop] now that was fine.
 1 - --iso_time-- INFO [testConcurrentRemoteInitAndStop] A healthy info log
-1 - Will abort ClientLogManager#initRemoteLogging because remote logging seems no longer needed.
-1 - --iso_time-- FINE [testConcurrentRemoteInitAndStop] now that was fine.
-1 - --iso_time-- INFO [testConcurrentRemoteInitAndStop] A healthy info log
 1 - *** Network delay = 0 and shutdown delay = 20 ***
 1 - FINER: Logging configuration has been initialized, but not from CDB settings.
+1 - --iso_time-- INFO [testConcurrentRemoteInitAndStop] A healthy info log
+1 - --iso_time-- FINE [testConcurrentRemoteInitAndStop] now that was fine.
 1 - Remote log: <Info TimeStamp="xxx" File="alma.acs.logging.RemoteLoggingTest"  Line="xxx" Routine="testConcurrentRemoteInitAndStop" Host="xxx" Process="testConcurrentRemoteInitAndStop" SourceObject="testConcurrentRemoteInitAndStop" Thread="main" LogId="4"><![CDATA[A healthy info log]]></Info>
 1 - Remote log: <Debug TimeStamp="xxx" File="alma.acs.logging.RemoteLoggingTest"  Line="xxx" Routine="testConcurrentRemoteInitAndStop" Host="xxx" Process="testConcurrentRemoteInitAndStop" SourceObject="testConcurrentRemoteInitAndStop" Thread="main" LogId="5"><![CDATA[now that was fine.]]></Debug>
 1 - *** Network delay = 0 and shutdown delay = 100 ***
@@ -35,12 +34,10 @@
 1 - FINER: Logging configuration has been initialized, but not from CDB settings.
 1 - --iso_time-- FINE [testConcurrentRemoteInitAndStop] now that was fine.
 1 - --iso_time-- INFO [testConcurrentRemoteInitAndStop] A healthy info log
-1 - Will abort ClientLogManager#initRemoteLogging because remote logging seems no longer needed.
 1 - *** Network delay = 20 and shutdown delay = 20 ***
 1 - FINER: Logging configuration has been initialized, but not from CDB settings.
 1 - --iso_time-- FINE [testConcurrentRemoteInitAndStop] now that was fine.
 1 - --iso_time-- INFO [testConcurrentRemoteInitAndStop] A healthy info log
-1 - Will abort ClientLogManager#initRemoteLogging because remote logging seems no longer needed.
 1 - *** Network delay = 20 and shutdown delay = 100 ***
 1 - FINER: Logging configuration has been initialized, but not from CDB settings.
 1 - --iso_time-- FINE [testConcurrentRemoteInitAndStop] now that was fine.
@@ -57,17 +54,14 @@
 1 - FINER: Logging configuration has been initialized, but not from CDB settings.
 1 - --iso_time-- FINE [testConcurrentRemoteInitAndStop] now that was fine.
 1 - --iso_time-- INFO [testConcurrentRemoteInitAndStop] A healthy info log
-1 - Will abort ClientLogManager#initRemoteLogging because remote logging seems no longer needed.
 1 - *** Network delay = 100 and shutdown delay = 20 ***
 1 - FINER: Logging configuration has been initialized, but not from CDB settings.
 1 - --iso_time-- FINE [testConcurrentRemoteInitAndStop] now that was fine.
 1 - --iso_time-- INFO [testConcurrentRemoteInitAndStop] A healthy info log
-1 - Will abort ClientLogManager#initRemoteLogging because remote logging seems no longer needed.
 1 - *** Network delay = 100 and shutdown delay = 100 ***
 1 - FINER: Logging configuration has been initialized, but not from CDB settings.
 1 - --iso_time-- FINE [testConcurrentRemoteInitAndStop] now that was fine.
 1 - --iso_time-- INFO [testConcurrentRemoteInitAndStop] A healthy info log
-1 - Will abort ClientLogManager#initRemoteLogging because remote logging seems no longer needed.
 1 - *** Network delay = 100 and shutdown delay = 500 ***
 1 - FINER: Logging configuration has been initialized, but not from CDB settings.
 1 - --iso_time-- FINE [testConcurrentRemoteInitAndStop] now that was fine.
@@ -78,22 +72,18 @@
 1 - FINER: Logging configuration has been initialized, but not from CDB settings.
 1 - --iso_time-- FINE [testConcurrentRemoteInitAndStop] now that was fine.
 1 - --iso_time-- INFO [testConcurrentRemoteInitAndStop] A healthy info log
-1 - Will abort ClientLogManager#initRemoteLogging because remote logging seems no longer needed.
 1 - *** Network delay = 500 and shutdown delay = 20 ***
 1 - FINER: Logging configuration has been initialized, but not from CDB settings.
 1 - --iso_time-- FINE [testConcurrentRemoteInitAndStop] now that was fine.
 1 - --iso_time-- INFO [testConcurrentRemoteInitAndStop] A healthy info log
-1 - Will abort ClientLogManager#initRemoteLogging because remote logging seems no longer needed.
 1 - *** Network delay = 500 and shutdown delay = 100 ***
 1 - FINER: Logging configuration has been initialized, but not from CDB settings.
-1 - --iso_time-- INFO [testConcurrentRemoteInitAndStop] A healthy info log
 1 - --iso_time-- FINE [testConcurrentRemoteInitAndStop] now that was fine.
-1 - Will abort ClientLogManager#initRemoteLogging because remote logging seems no longer needed.
+1 - --iso_time-- INFO [testConcurrentRemoteInitAndStop] A healthy info log
 1 - *** Network delay = 500 and shutdown delay = 500 ***
 1 - FINER: Logging configuration has been initialized, but not from CDB settings.
 1 - --iso_time-- FINE [testConcurrentRemoteInitAndStop] now that was fine.
 1 - --iso_time-- INFO [testConcurrentRemoteInitAndStop] A healthy info log
-1 - Will abort ClientLogManager#initRemoteLogging because remote logging seems no longer needed.
 1 - 
 1 - 
 1 - OK (2 tests)
