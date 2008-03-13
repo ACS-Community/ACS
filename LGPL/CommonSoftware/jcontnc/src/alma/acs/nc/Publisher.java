@@ -29,19 +29,25 @@ package alma.acs.nc;
 
 import org.omg.CORBA.portable.IDLEntity;
 
+import alma.acs.exceptions.AcsJException;
+
 /**
  * The Publisher interface alllows one to publish events to a
  * notification channel that already exists.
  * 
  * @version 1.00 Apr 10, 2003
  * @author Allen Farris
- */
+ * @deprecated since ACS 7.0.2, see COMP-1786. Class {@link CorbaNotificationChannel} will be used directly.
+*/
 public interface Publisher {
 
 	/**
 	 * Publish an event on this notification channel.
+	 * <p>
+	 * With ACS 7.0.2 we had to add the "throws AcsJException" declaration even though this is an incompatible change.
+	 * Before, the implementation of publish just suppressed any exceptions.
 	 * @param event Object to publish.
 	 */
-	public void publish(IDLEntity event);
+	public void publish(IDLEntity event) throws AcsJException; 
 
 }
