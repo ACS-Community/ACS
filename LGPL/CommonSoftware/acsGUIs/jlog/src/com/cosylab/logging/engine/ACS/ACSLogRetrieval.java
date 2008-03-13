@@ -19,7 +19,7 @@
 
 /** 
  * @author  acaproni   
- * @version $Id: ACSLogRetrieval.java,v 1.23 2008/01/28 10:56:29 acaproni Exp $
+ * @version $Id: ACSLogRetrieval.java,v 1.24 2008/03/13 10:59:38 acaproni Exp $
  * @since    
  */
 
@@ -36,14 +36,21 @@ import java.util.concurrent.TimeUnit;
 import javax.xml.parsers.ParserConfigurationException;
 
 import com.cosylab.logging.client.cache.CacheUtils;
+import com.cosylab.logging.engine.Filter;
+import com.cosylab.logging.engine.FiltersVector;
 import com.cosylab.logging.engine.log.ILogEntry;
-import com.cosylab.logging.settings.ErrorLogDialog;
+import com.cosylab.logging.engine.log.LogTypeHelper;
+
 /**
  * ACSLogRetireval stores the XML string (or a String in case of binary logs) 
  * representing logs on a file when the engine is not able to follow the flow 
  * of the incoming logs 
  * The strings are stored on disk and the logs published to
  * the listeners when there is enough CPU available.
+ * 
+ * In addition, <code>ACSLogretrieval</code> applies the filters
+ * before sending logs to the listeners.
+ * The filters apply only to regular log listeners (i.e. not for XML listeners).
  * 
  * @see ACSRemoteLogListener
  * @see ACSRemoteRawLogListener
@@ -78,8 +85,14 @@ public class ACSLogRetrieval extends Thread {
 	// Signal the thread to terminate
 	private volatile boolean terminateThread=false;
 	
-	// Remeber if the object is closed to avoid adding new logs
+	// Remember if the object is closed to avoid adding new logs
 	private volatile boolean closed=false;
+	
+	/**
+	 * The filters to apply before publishing logs to the listeners.
+	 * The filters are not applied to XML listeners.
+	 */
+	private FiltersVector filters;
 	
 	/**
 	 * The ending position of each log is stored in this queue
@@ -110,6 +123,24 @@ public class ACSLogRetrieval extends Thread {
 		this.listenersDispatcher=listenersDispatcher;
 		this.binaryFormat=binFormat;
 		initialize();
+	}
+	
+	/**
+	 * Constructor
+	 * 
+	 * @param listenersDispatcher The object to send messages to the listeners
+	 *                            Can't be null
+	 * @param binFormat true if the lags are binary, 
+	 *                  false if XML format is used
+	 * @param filters The filters to apply to incoming logs
+	 *                If <code>null</code> or empty no filters are applied 
+	 */
+	public ACSLogRetrieval(
+			ACSListenersDispatcher listenersDispatcher,
+			boolean binFormat,
+			FiltersVector filters) {
+		this(listenersDispatcher,binFormat);
+		this.filters=filters;
 	}
 	
 	/**
@@ -156,6 +187,7 @@ public class ACSLogRetrieval extends Thread {
 			} catch (IOException ioe) {
 				System.err.println("Log Discarded: "+XMLLogStr);
 				System.err.println("Reason: "+ioe.getMessage());
+				listenersDispatcher.publishError("Log discarded"+ioe.getMessage());
 				return;
 			}
 		}
@@ -258,10 +290,8 @@ public class ACSLogRetrieval extends Thread {
 			if (tempStr.length()>0) {
 				ILogEntry log;
 				if (!binaryFormat) {
-					listenersDispatcher.publishRawLog(tempStr);
 					try {
 						log = parser.parse(tempStr);
-						listenersDispatcher.publishLog(log);
 					} catch (Exception e) {
 						listenersDispatcher.publishError(tempStr);
 						listenersDispatcher.publishReport(tempStr);
@@ -269,12 +299,12 @@ public class ACSLogRetrieval extends Thread {
 						e.printStackTrace(System.err);
 						continue;
 					}
+					publishLog(tempStr, log);
 				} else {
+					String xmlStr=null;
 					try {
 						log=CacheUtils.fromCacheString(tempStr);
-						String xmlStr=log.toXMLString();
-						listenersDispatcher.publishRawLog(xmlStr);
-						listenersDispatcher.publishLog(log);
+						xmlStr=log.toXMLString();
 					} catch (Exception e) {
 						listenersDispatcher.publishError(tempStr);
 						listenersDispatcher.publishReport(tempStr);
@@ -282,10 +312,34 @@ public class ACSLogRetrieval extends Thread {
 						e.printStackTrace(System.err);
 						continue;
 					}
+					publishLog(xmlStr, log);
 				}
 			}
 		}
 	}
+	
+	/**
+	 * Send the logs to the listeners.
+	 * <P>
+	 * The filters are applied before sending the log to the listener.
+	 * <P>
+	 * XML logs are not filtered.
+	 * <P>
+	 * 
+	 * @param xmlLog The XML (RAW) log
+	 * @param log The log
+	 */
+	private void publishLog(String xmlLog, ILogEntry log) {
+		if (xmlLog!=null) {
+			listenersDispatcher.publishRawLog(xmlLog);
+		}
+		if (log==null) {
+			return;
+		}
+		if (filters==null || filters.applyFilters(log)) {
+			listenersDispatcher.publishLog(log);
+		} 
+	} 
 	
 	/**
 	 * Pause/unpause the thread that publishes logs
@@ -323,4 +377,14 @@ public class ACSLogRetrieval extends Thread {
 		return !endingPositions.isEmpty();
 	}
 	
+	/**
+	 * Set the filters to apply to incoming logs before sending to
+	 * the listeners
+	 * 
+	 * @param filters The filters to apply
+	 *                If <code>null</code> or empty the filtering is disabled
+	 */
+	public void setFilters(FiltersVector filters) {
+		this.filters=filters;
+	}
 }
