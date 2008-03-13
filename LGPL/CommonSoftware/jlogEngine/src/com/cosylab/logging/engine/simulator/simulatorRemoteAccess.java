@@ -21,6 +21,7 @@
  */
 package com.cosylab.logging.engine.simulator;
 
+import com.cosylab.logging.engine.FiltersVector;
 import com.cosylab.logging.engine.log.LogEntryXML;
 import com.cosylab.logging.engine.ACS.ACSRemoteLogListener;
 
@@ -103,4 +104,12 @@ public class simulatorRemoteAccess extends Thread implements com.cosylab.logging
 	}
 	
 	public void close(boolean sync) {}
+
+	/**
+	 * @see com.cosylab.logging.engine.RemoteAccess#setFilters(com.cosylab.logging.engine.FiltersVector)
+	 */
+	@Override
+	public void setFilters(FiltersVector filters) {	}
+	
+	
 }

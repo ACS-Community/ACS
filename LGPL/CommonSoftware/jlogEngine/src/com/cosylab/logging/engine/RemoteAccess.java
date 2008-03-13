@@ -40,6 +40,15 @@ public interface RemoteAccess {
 	public void pause(boolean pause);
 	
 	/**
+	 * Set the filters to apply to incoming logs before sending to
+	 * the listeners
+	 * 
+	 * @param filters The filters to apply
+	 *                If <code>null</code> or empty the filtering is disabled
+	 */
+	public void setFilters(FiltersVector filters);
+	
+	/**
 	 * Close the threads and free all the resources
 	 * @param sync If it is true wait the termination of the threads before returning
 	 */

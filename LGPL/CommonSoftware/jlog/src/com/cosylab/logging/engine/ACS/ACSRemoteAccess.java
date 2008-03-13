@@ -39,6 +39,7 @@ import org.omg.PortableServer.POAManager;
 
 import si.ijs.maci.Manager;
 
+import com.cosylab.logging.engine.FiltersVector;
 import com.cosylab.logging.engine.RemoteAccess;
 
 import alma.maciErrType.CannotGetComponentEx;
@@ -391,4 +392,14 @@ public final class ACSRemoteAccess implements RemoteAccess {
 		}
 		destroy();
 	}
+
+	/**
+	 * @see com.cosylab.logging.engine.RemoteAccess#setFilters(com.cosylab.logging.engine.FiltersVector)
+	 */
+	@Override
+	public void setFilters(FiltersVector filters) {
+		acsSPS.setFilters(filters);
+	}
+	
+	
 }
