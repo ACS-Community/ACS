@@ -21,10 +21,12 @@ s/Local file logger: Cache saved to .*/Local file logger: Cache saved to XXXXXX/
 s/Line="[0-9]*"/Line="NNN"/g
 s/Line: [0-9]*/Line: NNN/g
 s/Thread="[0-9]*"/Thread="NNN"/g
-s/Thread: [0-9]*/Thread: NNN/g
+s/Thread: [0-9]*.*/Thread: NNN/g
 s/LogId="[0-9]*"/ LogId="NNN"/g
 s/Log ID: [0-9]*/Log ID: NNN/g
 s/Host: .*/Host: hostname/g
 s/Host=".*"/Host="hostname"/g
+s/Time: .*/Time: xxx/g
 s/LoggingChannelBin/LogChannel_Name/g
 s/LoggingChannel/LogChannel_Name/g
+s/Manager login done.*/Manager login donee, handle 'xxxxxxxxxx' obtained./g
