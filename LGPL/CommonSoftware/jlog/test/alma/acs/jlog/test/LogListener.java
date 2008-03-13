@@ -1,5 +1,6 @@
 package alma.acs.jlog.test;
 
+import com.cosylab.logging.engine.ACS.ACSRemoteErrorListener;
 import com.cosylab.logging.engine.ACS.LCEngine;
 import com.cosylab.logging.engine.ACS.ACSLogConnectionListener;
 import com.cosylab.logging.engine.ACS.ACSRemoteLogListener;
@@ -19,7 +20,16 @@ import com.cosylab.logging.engine.log.ILogEntry.Field;
 public class LogListener implements 
 	ACSLogConnectionListener, 
 	ACSRemoteLogListener, 
-	ACSRemoteRawLogListener {
+	ACSRemoteRawLogListener,
+	ACSRemoteErrorListener {
+
+	/* (non-Javadoc)
+	 * @see com.cosylab.logging.engine.ACS.ACSRemoteErrorListener#errorReceived(java.lang.String)
+	 */
+	@Override
+	public void errorReceived(String xml) {
+		System.err.println("Error received: "+xml);
+	}
 
 	// The engine that connects to the logging client
 	private LCEngine engine;
@@ -33,6 +43,7 @@ public class LogListener implements
 		engine.addLogConnectionListener(this);
 		engine.addLogListener(this);
 		engine.addRawLogListener(this);
+		engine.addLogErrorListener(this);
 		engine.connect();
 	}
 	
@@ -46,7 +57,7 @@ public class LogListener implements
 		try {
 			Thread.sleep(90000);
 		} catch (InterruptedException ie) {}
-		ll.disconnet();
+		ll.disconnect();
 		System.exit(0);
 	}
 	
@@ -138,7 +149,7 @@ public class LogListener implements
 	 * Disconnect from the logging channel
 	 *
 	 */
-	public void disconnet() {
+	public void disconnect() {
 		engine.disconnect();
 	}
 }
