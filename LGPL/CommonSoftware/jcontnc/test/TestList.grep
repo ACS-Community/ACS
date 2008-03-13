@@ -1,12 +1,7 @@
-JacORB V
-Gerald Brose
-\[ POA
-\[ Connected to
 ping received, container alive
 Local file logger: Cache saved to
 	at 
 AcsContainerRunner
--- alma.demo.test.LocalNC.TestLocalNC
 -- alma.demo.test.client.ArchiveConsumerTest
 Using endorsed jar files in
 LogConfig was initialized, but not from CDB settings
@@ -16,9 +11,6 @@ FINE \[alma.demo.test.client.ArchiveConsumerTest\]
 Logging proxy successfully created
 ManagerReference generated using localhost
 Took too long to handle an 'alma.acsnc.EventDescription' event
-\[jacorb\.poa\] INFO : Using server ID 
-\[jacorb\.poa\] INFO : oid:
-\[jacorb\.poa\] INFO : POA
 [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F]
 object is activated
 object is deactivated
