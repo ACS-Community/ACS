@@ -1,19 +1,32 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <Type xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-      xmlns="Alma/ACSError"
-      xsi:schemaLocation="Alma/ACSError ACSError.xsd"
-      name="acsncErrType"
-      type="38"
-      _prefix="alma">
-<ErrorCode name="WrongEventReceived"
-           shortDescription="Wrong Event Received"
-           description="Wrong type of Event has been received">
-	<Member name="ExceptedEvent"
-                type="string"
-                description="Excepted type of Event"/>
-        <Member name="ReceivedEvent"
-                type="string"
-                description="REceived type of Event"/>
-</ErrorCode>
+	xmlns="Alma/ACSError"
+	xsi:schemaLocation="Alma/ACSError ACSError.xsd"
+	name="acsncErrType"
+	type="38"
+	_prefix="alma">
+
+	<ErrorCode name="WrongEventReceived"
+		shortDescription="Wrong Event Received"
+		description="Wrong type of Event has been received">
+		<Member name="ExpectedEvent"
+			type="string"
+			description="Expected type of Event"/>
+		<Member name="ReceivedEvent"
+			type="string"
+			description="Received type of Event"/>
+	</ErrorCode>
+	
+	<ErrorCode name="EventSubscriptionFailure"
+		shortDescription="Subscription failure"
+		description="Failed to subscribe to one or more events on a given channel">
+		<Member name="EventName"
+			type="string"
+			description="Event name for which subscription failed. Use '*' if the subscription attempt was for all events."/>
+		<Member name="ChannelName"
+			type="string"
+			description="Channel on which subscription failed."/>
+	</ErrorCode>
+	
 </Type>
 
