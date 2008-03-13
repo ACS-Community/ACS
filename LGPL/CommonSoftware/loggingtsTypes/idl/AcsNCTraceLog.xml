@@ -10,6 +10,16 @@
 	<!-- =========== Channel creation =========== -->
 	 
 	<LogDefinition
+		logName="LOG_NC_ChannelCreated_ATTEMPT"
+		shortDescription="About to create a notification channel"
+		description="About to create a notification channel"
+		priority="TRACE"
+		audience="Developer">
+		<Member name="ChannelName" type="string" description="Name of the channel to be created." />
+		<Member name="Service" type="string" description="Name or ID of the notification service that should host the channel." />
+	</LogDefinition>
+	
+	<LogDefinition
 		logName="LOG_NC_ChannelCreated_OK"
 		shortDescription="Successfully created a notification channel"
 		description="Successfully created a notification channel"
