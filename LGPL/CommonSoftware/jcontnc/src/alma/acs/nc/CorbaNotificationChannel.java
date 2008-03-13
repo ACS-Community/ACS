@@ -35,6 +35,8 @@ import alma.acs.exceptions.AcsJException;
  * The CorbaNotificationChannel class implements the notification
  * channel concepts using a CORBA-based approach that employs the CORBA
  * notification services.
+ * <p>
+ * @TODO: Remove inheritance from AbstractNotificationChannel, see COMP-1786
  * 
  * @version 1.00 Apr 10, 2003
  * @author Allen Farris
@@ -68,7 +70,7 @@ public class CorbaNotificationChannel extends AbstractNotificationChannel {
 	 * The CORBA publisher object that is used to create, access, and publish 
 	 * events on the CORBA channel.
 	 */
-	private CorbaPublisher corbaPublisher;
+	private SimpleSupplier corbaPublisher;
 	
 	/**
 	 * The CORBA receiver object that is used to attach and detach receivers 
@@ -81,15 +83,12 @@ public class CorbaNotificationChannel extends AbstractNotificationChannel {
 	 * Create a CORBA Notification Channel.
 	 * @param inChannelName	The name of this channel.
 	 * @param cs container services
+	 * @throws AcsJException 
 	 */
-	public CorbaNotificationChannel (String inChannelName, ContainerServicesBase cs) {
+	public CorbaNotificationChannel (String inChannelName, ContainerServicesBase cs) throws AcsJException {
 		super(inChannelName, cs);
-        try {
-    		corbaPublisher = new CorbaPublisher(inChannelName, cs);
-	    	corbaReceiver = new CorbaReceiver(inChannelName, cs);
-        } catch(AcsJException e) {
-           //OK to swallow???
-        }
+   		corbaPublisher = new SimpleSupplier(inChannelName, cs);
+    	corbaReceiver = new CorbaReceiver(inChannelName, cs);
 	}
 	
 	/**
@@ -98,15 +97,10 @@ public class CorbaNotificationChannel extends AbstractNotificationChannel {
 	 * @param inCorbaPublisher	The CORBA publisher object.
 	 * @param cs Container services reference
 	 */
-	public CorbaNotificationChannel (CorbaPublisher inCorbaPublisher, ContainerServicesBase cs) {
+	public CorbaNotificationChannel (SimpleSupplier inCorbaPublisher, ContainerServicesBase cs) throws AcsJException {
     		super(inCorbaPublisher.getChannelName(), cs);
 	    	this.corbaPublisher = inCorbaPublisher;
-        try {
-		    this.corbaReceiver = new CorbaReceiver(channelName, cs);
-        }catch(AcsJException e) {
-           //OK to swallow???
-        }
-
+	    this.corbaReceiver = new CorbaReceiver(channelName, cs);
 	}
 	
 	/**
@@ -168,23 +162,21 @@ public class CorbaNotificationChannel extends AbstractNotificationChannel {
 	/**
 	 * Publish an event on this notification channel.
 	 * @param event The event must be an IDL structure.
+	 * @throws AcsJException 
 	 */
-	public void publish(IDLEntity event) {
+	public void publish(IDLEntity event) throws AcsJException {
 		// Publish the event.		
-		corbaPublisher.publish(event);
+		corbaPublisher.publishEvent(event);
 	}
 	
 	/**
 	 * Deactivate this notification channel. The publisher gets disconnected 
      * and then the channel is destroyed.
+	 * @throws AcsJException 
 	 */
-	public void deactivate() {
+	public void deactivate() throws AcsJException {
 		corbaPublisher.disconnect();
-        try {
-            corbaPublisher.destroyNotificationChannel();
-        } catch(Exception e) {
-           //OK to swallow???
-        }
+        corbaPublisher.destroyNotificationChannel();
 	}
 	
 }
