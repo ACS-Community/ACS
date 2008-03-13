@@ -21,8 +21,6 @@
  */
 package com.cosylab.logging.engine.ACS;
 
-import java.util.concurrent.LinkedBlockingQueue;
-
 import org.omg.CORBA.Any;
 import org.omg.CosNotification.StructuredEvent;
 import org.omg.CosNotifyChannelAdmin.ClientType;
@@ -35,6 +33,7 @@ import alma.ACSLoggingLog.LogBinaryRecord;
 import alma.ACSLoggingLog.LogBinaryRecordHelper;
 
 import com.cosylab.logging.client.cache.CacheUtils;
+import com.cosylab.logging.engine.FiltersVector;
 
 /**
  * ACSStructuredPushConsumer gets logs from the NC 
@@ -282,6 +281,15 @@ public final class ACSStructuredPushConsumer extends StructuredPushConsumerPOA
 		}
 	}
 	
-	
+	/**
+	 * Set the filters to apply to incoming logs before sending to
+	 * the listeners
+	 * 
+	 * @param filters The filters to apply
+	 *                If <code>null</code> or empty the filtering is disabled
+	 */
+	public void setFilters(FiltersVector filters) {
+		logRetrieval.setFilters(filters);
+	}
 }
 
