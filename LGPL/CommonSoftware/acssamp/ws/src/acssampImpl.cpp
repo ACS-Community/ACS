@@ -17,7 +17,7 @@
  *License along with this library; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: acssampImpl.cpp,v 1.31 2008/02/27 16:44:06 bjeram Exp $"
+ * "@(#) $Id: acssampImpl.cpp,v 1.32 2008/03/13 18:07:28 blopez Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -30,7 +30,7 @@
 
 #include <vltPort.h>
 
-static char *rcsId="@(#) $Id: acssampImpl.cpp,v 1.31 2008/02/27 16:44:06 bjeram Exp $";
+static char *rcsId="@(#) $Id: acssampImpl.cpp,v 1.32 2008/03/13 18:07:28 blopez Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <Request.h>
@@ -221,7 +221,7 @@ ACSSampImpl::initSampObj(const char* name, const char* property,
 				ACS_SHORT_LOG((LM_INFO,"Failed to narrow the sampling object"));
 				CORBAProblemExImpl err = 
 				    CORBAProblemExImpl(__FILE__,__LINE__,"acssamp::ACSSampImpl::initSampObj");
-				throw err;
+				throw err.getCORBAProblemEx();
 				}
 			    }
 			catch(...)
@@ -248,7 +248,7 @@ ACSSampImpl::initSampObj(const char* name, const char* property,
 				ACS_SHORT_LOG((LM_INFO,"Failed to allocate memory for the sampling object"));
 				MemoryFaultExImpl err = 
 				    MemoryFaultExImpl(__FILE__,__LINE__,"acssamp::ACSSampImpl::initSampObj");
-				throw err;
+				throw err.getMemoryFaultEx();
 				}
 
 			    sampling->initialize();
@@ -259,7 +259,7 @@ ACSSampImpl::initSampObj(const char* name, const char* property,
 				ACS_SHORT_LOG((LM_INFO,"Failed to narrow the sampling object"));
 				CORBAProblemExImpl err = 
 				    CORBAProblemExImpl(__FILE__,__LINE__,"acssamp::ACSSampImpl::initSampObj");
-				throw err;
+				throw err.getCORBAProblemEx();
 				}
 			    }
 			catch(...)
@@ -286,7 +286,7 @@ ACSSampImpl::initSampObj(const char* name, const char* property,
 				ACS_SHORT_LOG((LM_INFO,"Failed to allocate memory for the sampling object"));
 				MemoryFaultExImpl err = 
 				    MemoryFaultExImpl(__FILE__,__LINE__,"acssamp::ACSSampImpl::initSampObj");
-				throw err;
+				throw err.getMemoryFaultEx();
 				}
 
 			    sampling->initialize();
@@ -297,7 +297,7 @@ ACSSampImpl::initSampObj(const char* name, const char* property,
 				ACS_SHORT_LOG((LM_INFO,"Failed to narrow the sampling object"));
 				CORBAProblemExImpl err = 
 				    CORBAProblemExImpl(__FILE__,__LINE__,"acssamp::ACSSampImpl::initSampObj");
-				throw err;
+				throw err.getCORBAProblemEx();
 				}
 			    }
 			catch(...)
@@ -324,7 +324,7 @@ ACSSampImpl::initSampObj(const char* name, const char* property,
 				ACS_SHORT_LOG((LM_INFO,"Failed to allocate memory for the sampling object"));
 				MemoryFaultExImpl err = 
 				    MemoryFaultExImpl(__FILE__,__LINE__,"acssamp::ACSSampImpl::initSampObj");
-				throw err;
+				throw err.getMemoryFaultEx();
 				}
 
 			    sampling->initialize();
@@ -335,7 +335,7 @@ ACSSampImpl::initSampObj(const char* name, const char* property,
 				ACS_SHORT_LOG((LM_INFO,"Failed to narrow the sampling object"));
 				CORBAProblemExImpl err = 
 				    CORBAProblemExImpl(__FILE__,__LINE__,"acssamp::ACSSampImpl::initSampObj");
-				throw err;
+				throw err.getCORBAProblemEx();
 				}
 			    }
 			catch(...)
@@ -362,7 +362,7 @@ ACSSampImpl::initSampObj(const char* name, const char* property,
 				ACS_SHORT_LOG((LM_INFO,"Failed to allocate memory for the sampling object"));
 				MemoryFaultExImpl err = 
 				    MemoryFaultExImpl(__FILE__,__LINE__,"acssamp::ACSSampImpl::initSampObj");
-				throw err;
+				throw err.getMemoryFaultEx();
 				}
 
 			    sampling->initialize();
@@ -373,7 +373,7 @@ ACSSampImpl::initSampObj(const char* name, const char* property,
 				ACS_SHORT_LOG((LM_INFO,"Failed to narrow the sampling object"));
 				CORBAProblemExImpl err = 
 				    CORBAProblemExImpl(__FILE__,__LINE__,"acssamp::ACSSampImpl::initSampObj");
-				throw err;
+				throw err.getCORBAProblemEx();
 				}
 			    }
 			catch(...)
@@ -393,7 +393,7 @@ ACSSampImpl::initSampObj(const char* name, const char* property,
 			TypeNotSupportedExImpl exc =
 			    TypeNotSupportedExImpl(__FILE__,__LINE__,"acssamp::ACSSampImpl::initSampObj");
 			exc.addData("Type Name",myPropIntf.c_str());
-			throw exc;
+			throw exc.getTypeNotSupportedEx();
 			}
 
 		    errGuard = 0;
@@ -409,7 +409,7 @@ ACSSampImpl::initSampObj(const char* name, const char* property,
 		CouldntAccessPropertyExImpl exc =
 		    CouldntAccessPropertyExImpl(__FILE__,__LINE__,"acssamp::ACSSampImpl::initSampObj");
 		exc.addData("Property Name",property);
-		throw exc;
+		throw exc.getCouldntAccessPropertyEx();
 		}
     
 	    } 
@@ -419,34 +419,34 @@ ACSSampImpl::initSampObj(const char* name, const char* property,
 	    CouldntAccessComponentExImpl exc =
 		CouldntAccessComponentExImpl(__FILE__,__LINE__,"acssamp::ACSSampImpl::initSampObj");
 	    exc.addData("Component Name",name);
-	    throw exc;
+	    throw exc.getCouldntAccessComponentEx();
 	    }
 	}
     catch (OutOfBoundsExImpl & exc)
 	{
 	ACS_SHORT_LOG((LM_INFO,"Catched by acssamp::ACSSampImpl OutOfBoundsExImpl"));
-	throw;
+	throw exc.getOutOfBoundsEx();
 	}
     catch (CouldntAccessComponentExImpl & exc)
 	{
 	ACS_SHORT_LOG((LM_INFO,"Catched by acssamp::ACSSampImpl CouldntAccessComponentEx"));
 //	exc.addData("Rethrow","again");
-	throw;
+	throw exc.getCouldntAccessComponentEx();
 	}
     catch (CouldntAccessPropertyExImpl & exc)
 	{
 	ACS_SHORT_LOG((LM_INFO,"Catched by acssamp::ACSSampImpl CouldntAccessPropertyEx"));
-	throw;
+	throw exc.getCouldntAccessPropertyEx();
 	}
     catch (CouldntCreateObjectExImpl & exc)
 	{
 	ACS_SHORT_LOG((LM_INFO,"Catched by acssamp::ACSSampImpl CouldntCreateObjectEx"));
-	throw;
+	throw exc.getCouldntCreateObjectEx();
 	}
     catch (TypeNotSupportedExImpl & exc)
 	{
 	ACS_SHORT_LOG((LM_INFO,"Catched by acssamp::ACSSampImpl TypeNotSupportedEx"));
-	throw;
+	throw exc.getTypeNotSupportedEx();
 	}
     catch(...)
 	{
