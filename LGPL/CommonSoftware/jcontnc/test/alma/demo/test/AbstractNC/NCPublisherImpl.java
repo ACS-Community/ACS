@@ -37,11 +37,14 @@ import alma.acs.component.client.ComponentClient;
 import alma.acs.container.ContainerServices;
 import alma.acs.container.ContainerException;
 */
+import alma.ACSErrTypeCommon.CouldntPerformActionEx;
+import alma.ACSErrTypeCommon.wrappers.AcsJCouldntPerformActionEx;
 import alma.acs.nc.*;
 
 import alma.acs.component.ComponentImplBase;
 import alma.acs.component.ComponentLifecycleException;
 import alma.acs.container.ContainerServices;
+import alma.acs.exceptions.AcsJException;
 
 import alma.demo.NCPublisherOperations;
 import alma.acsnc.EventDescription;
@@ -68,20 +71,32 @@ public class NCPublisherImpl
         /* If you want a local channel put in
          * AbstractNotificationChannel.LOCAL
          */
-        nc = AbstractNotificationChannel.createNotificationChannel(
-                        AbstractNotificationChannel.CORBA,
-                            "AbstractNC_Channel", m_containerServices);
+        try {
+			nc = AbstractNotificationChannel.createNotificationChannel(
+			                AbstractNotificationChannel.CORBA,
+			                "AbstractNC_Channel", m_containerServices);
+		} catch (AcsJException ex) {
+			throw new ComponentLifecycleException(ex);
+		}
         System.out.println("Created NC Pulisher");
 
     }
 
-    public void publish(String name) {
+    public void publish(String name) throws CouldntPerformActionEx {
         EventDescription event = new EventDescription(name, 32L, 64L);
-        nc.publish(event);
+        try {
+			nc.publish(event);
+		} catch (AcsJException ex) {
+			throw (new AcsJCouldntPerformActionEx(ex)).toCouldntPerformActionEx();
+		}
     }
 
     public void cleanUp() {
-        nc.deactivate();
+        try {
+			nc.deactivate();
+		} catch (AcsJException ex) {
+			ex.printStackTrace();
+		}
     }
 
 
