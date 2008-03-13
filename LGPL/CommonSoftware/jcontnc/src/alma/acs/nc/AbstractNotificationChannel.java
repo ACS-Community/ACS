@@ -27,8 +27,11 @@
 //package alma.scheduling.define.nc;
 package alma.acs.nc;
 
-import java.lang.reflect.*;
+import java.lang.reflect.Method;
+
 import alma.acs.container.ContainerServicesBase;
+import alma.acs.exceptions.AcsJException;
+
 /**
  * The AbstractNotificationChannel class forms the base class
  * from which Local and CORBA Notification Channel classes are
@@ -36,11 +39,14 @@ import alma.acs.container.ContainerServicesBase;
  * 
  * @version 1.00 Apr 17, 2003
  * @author Allen Farris
- */
+ * @deprecated since ACS 7.0.2, see COMP-1786. Will be merged into {@link CorbaNotificationChannel} 
+ *             which should be created directly without using this class.
+*/
 public abstract class AbstractNotificationChannel implements NotificationChannel {
 	
 	/**
 	 * The designation for a local notification channel.
+	 * @deprecated
 	 */
 	public static final int LOCAL = 0;
 	/**
@@ -50,15 +56,19 @@ public abstract class AbstractNotificationChannel implements NotificationChannel
 	
 	/**
 	 * Create a Notification Channel.
-	 * @param type Either LOCAL or CORBA.
+	 * @param type must be CORBA.
 	 * @param channelName	The name of this channel.
 	 * @param cs container services
 	 * @return notification channel
+	 * @throws AcsJException 
+	 * @deprecated  use {@link CorbaNotificationChannel} directly
 	 */
-	static public AbstractNotificationChannel createNotificationChannel(int type,String channelName, ContainerServicesBase cs) {
+	static public AbstractNotificationChannel createNotificationChannel(int type,String channelName, ContainerServicesBase cs) throws AcsJException {
 		switch (type) {
-			case LOCAL: return new LocalNotificationChannel(channelName);
-			case CORBA: return new CorbaNotificationChannel(channelName,cs);
+			case LOCAL:
+				cs.getLogger().warning("Channel type LOCAL generally does not work as intended and must not be used! Will return CORBA channel instead!");
+			case CORBA: 
+				return new CorbaNotificationChannel(channelName,cs);
 		}
 		throw new IllegalArgumentException("Illeagl type value (" + type + 
 			").  Must be LOCAL or CORBA.");
@@ -69,12 +79,15 @@ public abstract class AbstractNotificationChannel implements NotificationChannel
 	 * @param type Either LOCAL or CORBA.
 	 * @param channelName	The name of the requested channel.
 	 * @param cs 
-	 * @return The reciever interface.
+	 * @return The receiver interface.
+	 * @deprecated will be removed at the latest with ACS 8.0
 	 */
 	static public Receiver getReceiver(int type, String channelName, ContainerServicesBase cs) {
 		switch (type) {
-			case LOCAL: return LocalNotificationChannel.getLocalReceiver(channelName);
-			case CORBA: return CorbaNotificationChannel.getCorbaReceiver(channelName,cs);
+			case LOCAL:
+				cs.getLogger().warning("Channel type LOCAL generally does not work as intended and must not be used! Will return CORBA channel instead!");
+			case CORBA: 
+				return CorbaNotificationChannel.getCorbaReceiver(channelName,cs);
 		}
 		throw new IllegalArgumentException("Illeagl type value (" + type + 
 			").  Must be LOCAL or CORBA.");
@@ -83,7 +96,7 @@ public abstract class AbstractNotificationChannel implements NotificationChannel
 	/**
 	 * The name of this channel.
 	 */
-	protected String channelName;
+	protected final String channelName;
 
 	// CheckEventType
 	// * The type of events that are published on this channel.
@@ -112,7 +125,7 @@ public abstract class AbstractNotificationChannel implements NotificationChannel
 	/**
 	 * Deactivate this notification channel.
 	 */
-	public abstract void deactivate();
+	public abstract void deactivate() throws AcsJException;
 
 	/**
 	 * Get the channelName.
