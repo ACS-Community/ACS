@@ -20,7 +20,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: TestList.lite,v 1.20 2008/01/24 17:41:01 msekoran Exp $"
+# "@(#) $Id: TestList.lite,v 1.21 2008/03/13 15:59:26 hsommer Exp $"
 #
 # TestList
 #
@@ -33,15 +33,12 @@ PROLOGUE acsutilTATPrologue -l
 #Test a Consumer connecting to a non-existent channel that is later created by the Supplier
 1  consumerSimpleSupplier  "acsutilTATTestRunner acsStartContainer -java frodoContainer" "@SLEEP 15" "acsutilTATTestRunner jcontncTATRunTest.sh acsStartJava alma.demo.test.client.EventComponentTest" 
 
-2  testCDBChannel  "acsutilTATTestRunner acsStartContainer -java frodoContainer" "@SLEEP 15"                                                                                                       "acsutilTATTestRunner jcontncTATRunTest.sh acsStartJava alma.demo.test.client.SupplierCDBChannelTest"
+2 testCDBChannel  "acsutilTATTestRunner acsStartContainer -java frodoContainer" "@SLEEP 15"                                                                                                       "acsutilTATTestRunner jcontncTATRunTest.sh acsStartJava alma.demo.test.client.SupplierCDBChannelTest"
 
 3 testArchiveConsumer "acsutilTATTestRunner acsStartJava alma.demo.test.client.ArchiveConsumerTest" "@SLEEP 3" "acsutilTATTestRunner archiveeventsSupplier" "@SLEEP 30"
 
 #Test scheduling publisher/receiver classes
 4  T3  "acsutilTATTestRunner acsStartContainer -java frodoContainer" "@SLEEP 15" "acsutilTATTestRunner jcontncTATRunTest.sh acsStartJava alma.demo.test.client.AbstractNCComponentTest" 
-
-#Test simulated channels
-5  T4  "acsutilTATTestRunner acsStartJava alma.demo.test.LocalNC.TestLocalNC"
 
 #Test so-called NC integration logs
 6  integrationLogs  "acsutilTATTestRunner acsStartContainer -java frodoContainer" "@SLEEP 15" "acsutilTATTestRunner jcontncTATRunTest.sh acsStartJava alma.demo.test.client.EventILComponentTest" 
