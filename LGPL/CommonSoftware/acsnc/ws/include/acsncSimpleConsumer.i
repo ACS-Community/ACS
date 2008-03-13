@@ -1,6 +1,6 @@
 #ifndef SIMPLE_CONSUMER_I
 #define SIMPLE_CONSUMER_I
-/*    @(#) $Id: acsncSimpleConsumer.i,v 1.21 2007/10/22 08:20:06 bjeram Exp $
+/*    @(#) $Id: acsncSimpleConsumer.i,v 1.22 2008/03/13 15:43:50 hsommer Exp $
  *    ALMA - Atacama Large Millimiter Array
  *    (c) Associated Universities Inc., 2002 
  *    (c) European Southern Observatory, 2002
@@ -67,7 +67,7 @@ SimpleConsumer<T>::push_structured_event(const CosNotification::StructuredEvent 
 	acsncErrType::WrongEventReceivedExImpl er(__FILE__, 
 						  __LINE__,
 						  "nc::SimpleConsumer<T>::push_structured_event");
-	er.setExceptedEvent(AnyAide::getId(tmpEvent).c_str());
+	er.setExpectedEvent(AnyAide::getId(tmpEvent).c_str());
 	er.setReceivedEvent(AnyAide::getId(notification.filterable_data[0].value).c_str());
 
 	er.log();
