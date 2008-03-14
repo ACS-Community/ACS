@@ -111,22 +111,16 @@ public class LCEngine {
 				if (accessType.indexOf(".") == -1)
 					raName = "com.cosylab.logging.engine." + accessType + "."
 							+ accessType + "RemoteAccess"; // com.cosylab.logging.engine.ACS.ACSRemoteAccess
-				// remoteAccess = (RemoteAccess)
-				// Class.forName(raName).getConstructors()[0].newInstance(parameters);
 				remoteAccess = (RemoteAccess) Class.forName(raName)
 						.getConstructor(parameters).newInstance(
 								listenersDispatcher);
-				// if (remoteAccess == null)
-				// System.out.println("RemoteAccess == null");
 				remoteAccess.initialize(orb, manager);
 			} catch (Throwable e) {
 				listenersDispatcher
 						.publishReport("Exception occurred when initializing "
 								+ accessType + " remote access.");
 				listenersDispatcher.publishConnected(false);
-				System.out
-						.println("Exception in LCEngine$AccessSetter::run(): "
-								+ e);
+				System.out.println("Exception in LCEngine$AccessSetter::run(): "+ e);
 				return;
 			}
 			if (remoteAccess != null && remoteAccess.isInitialized()) {
@@ -330,19 +324,16 @@ public class LCEngine {
 	private void disconnectRA() {
 		if (remoteAccess != null && remoteAccess.isInitialized()) {
 			try {
-				listenersDispatcher.publishReport("Disconnecting from "
-						+ accessType + " remote access...");
+				listenersDispatcher.publishReport(
+						"Disconnecting from "+accessType+" remote access...");
 				remoteAccess.destroy();
 			} catch (Exception e) {
-				listenersDispatcher
-						.publishReport("Exception occurred when destroying "
-								+ accessType + " remote access.");
-				System.out
-						.println("Exception in LCEngine$AccessDestroyer::run(): "
-								+ e);
+				listenersDispatcher.publishReport(
+						"Exception occurred when destroying "+ accessType + " remote access.");
+				System.out.println("Exception in LCEngine$AccessDestroyer::run(): "+ e);
+				e.printStackTrace();
 			}
-			listenersDispatcher.publishReport("Disconnected from " + accessType
-					+ " remote access.");
+			listenersDispatcher.publishReport("Disconnected from " + accessType	+ " remote access.");
 		}
 		if (remoteAccess != null) {
 			remoteAccess.close(false);
