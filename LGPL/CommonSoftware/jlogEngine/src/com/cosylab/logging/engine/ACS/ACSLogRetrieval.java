@@ -19,27 +19,19 @@
 
 /** 
  * @author  acaproni   
- * @version $Id: ACSLogRetrieval.java,v 1.24 2008/03/13 10:59:38 acaproni Exp $
+ * @version $Id: ACSLogRetrieval.java,v 1.25 2008/03/14 17:24:41 acaproni Exp $
  * @since    
  */
 
 package com.cosylab.logging.engine.ACS;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.RandomAccessFile;
-import java.util.Random;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.TimeUnit;
 
 import javax.xml.parsers.ParserConfigurationException;
 
 import com.cosylab.logging.client.cache.CacheUtils;
-import com.cosylab.logging.engine.Filter;
 import com.cosylab.logging.engine.FiltersVector;
 import com.cosylab.logging.engine.log.ILogEntry;
-import com.cosylab.logging.engine.log.LogTypeHelper;
 
 /**
  * ACSLogRetireval stores the XML string (or a String in case of binary logs) 
@@ -64,19 +56,8 @@ public class ACSLogRetrieval extends Thread {
 	// The thread will publish this situation to the listeners
 	private static final int DELAY_NUMBER=1000;
 	
-	
-	
 	// The object to dispatch messages to the listeners
 	private ACSListenersDispatcher listenersDispatcher = null;
-	
-	// The name of the temp file
-	private String fileName;
-	
-	// The temporary random file
-	private RandomAccessFile rOutF=null;
-	
-	// The position where a read starts
-	private long readCursor=0;
 	
 	// If it is true, the thread will not publish logs 
 	// to the listeners
@@ -94,16 +75,13 @@ public class ACSLogRetrieval extends Thread {
 	 */
 	private FiltersVector filters;
 	
-	/**
-	 * The ending position of each log is stored in this queue
-	 */
-	private LinkedBlockingQueue<Long> endingPositions = new LinkedBlockingQueue<Long>();
-	
 	// The parser
 	private ACSLogParser parser=null;
 	
 	// true if the binary format is in use, false otherwise
 	private boolean binaryFormat;
+	
+	private EngineCache cache = new EngineCache();
 		
 	/**
 	 * Constructor
@@ -148,11 +126,6 @@ public class ACSLogRetrieval extends Thread {
 	 *
 	 */
 	private void initialize() {
-		try {
-			rOutF = new RandomAccessFile(getFile(),"rw");
-		} catch (FileNotFoundException fne) {
-			rOutF=null;
-		}
 		if (!binaryFormat) {
 			try {
 				parser = new ACSLogParserDOM();
@@ -160,12 +133,8 @@ public class ACSLogRetrieval extends Thread {
 				parser=null;
 			}
 		}
-		if (rOutF!=null) {
-			this.setPriority(Thread.MIN_PRIORITY);
-			this.start();
-		} else {
-			System.err.println("Retrieval of discarded logs disabled");
-		}
+		this.setName("ACSLogRetrieval");
+		this.start();
 	}
 	
 	/**
@@ -174,66 +143,17 @@ public class ACSLogRetrieval extends Thread {
 	 * @param XMLLogStr The XML string of the new log to add
 	 */
 	public void addLog(String XMLLogStr) {
-		if (rOutF==null || closed) {
+		if (closed) {
 			return;
 		}
-		long pos;
-		synchronized (rOutF) {
-			try {
-				pos = rOutF.length();
-				rOutF.seek(pos);
-				rOutF.writeBytes(XMLLogStr);
-				pos = rOutF.length();
-			} catch (IOException ioe) {
-				System.err.println("Log Discarded: "+XMLLogStr);
-				System.err.println("Reason: "+ioe.getMessage());
-				listenersDispatcher.publishError("Log discarded"+ioe.getMessage());
-				return;
-			}
-		}
-		boolean inserted = false;
-		while (!inserted) {
-			try {
-				endingPositions.put(pos);
-				inserted=true;
-			} catch (InterruptedException ie) {	}
-		}
-	}
-	
-	/**
-	 * Attempts to create the file for the strings in several places
-	 * before giving up.
-	 * 
-	 * @ return The file for the temporary log file 
-	 * 
-	 */
-	private File getFile() {
-		String name=null;
-		File f=null;
 		try {
-			// Try to create the file in $ACSDATA/tmp
-			String acsdata = System.getProperty("ACS.data");
-			acsdata=acsdata+"/tmp/";
-			File dir = new File(acsdata);
-			f = File.createTempFile("jlogLongRetrieval",".tmp",dir);
-			name=acsdata+f.getName();
-		} catch (IOException ioe) {
-			// Another error :-O
-			String homeDir = System.getProperty("user.dir");
-			do {
-				// Try to create the file in the home diretory
-				int random = new Random().nextInt();
-				name = homeDir + "/jlogLongRetrieval"+random+".jlog";
-				f = new File(name);
-			} while (f.exists());
+			cache.push(XMLLogStr);
+		} catch (Exception e) {
+			System.err.println("Log los while inserting in cache: "+XMLLogStr);
+			System.err.println("Reason: "+e.getMessage());
+			listenersDispatcher.publishError("Log los while inserting in cache: "+e.getMessage());
+			e.printStackTrace();
 		}
-		if (f!=null) {
-			fileName=name;
-			f.deleteOnExit();
-		} else {
-			fileName=null;
-		}
-		return f;
 	}
 	
 	/**
@@ -246,8 +166,8 @@ public class ACSLogRetrieval extends Thread {
 		// bigger then DELAY_NUMBER
 		boolean delay=false;
 		while (!terminateThread) {
-			//	Check if a delay has to be notifyed to the listeners
-			if (endingPositions.size()>ACSLogRetrieval.DELAY_NUMBER) {
+			//	Check if a delay has to be notified to the listeners
+			if (cache.size()>ACSLogRetrieval.DELAY_NUMBER) {
 				if (!delay) {
 					delay=true;
 					listenersDispatcher.publishDiscarding();
@@ -263,30 +183,20 @@ public class ACSLogRetrieval extends Thread {
 				} catch(InterruptedException e) {}
 				continue;
 			}
-			// Get from the queue the final position of the next log to read
-			Long endPos;
+			String tempStr = null;
 			try {
-				endPos = endingPositions.poll(250,TimeUnit.MILLISECONDS);
+				tempStr=cache.pop(250);
 			} catch (InterruptedException ie) {
 				continue;
-			}
-			if (endPos==null) {
-				// Timeout i.e. no logs received
+			} catch (Exception e) {
+				System.err.println("Exception from cache.pop: "+e.getMessage());
+				e.printStackTrace();
 				continue;
-			} 
-			byte buffer[] = new byte[endPos.intValue()-(int)readCursor];
-			synchronized (rOutF) {
-				try {
-					rOutF.seek(readCursor);
-					rOutF.read(buffer);
-				} catch (IOException ioe) {
-					System.out.println("Log lost "+ioe.getMessage());
-					continue;
-				} finally {
-					readCursor=endPos;
-				}
 			}
-			String tempStr = new String(buffer).trim();
+			if (tempStr==null) {
+				// Timeout
+				continue;
+			}
 			if (tempStr.length()>0) {
 				ILogEntry log;
 				if (!binaryFormat) {
@@ -366,6 +276,7 @@ public class ACSLogRetrieval extends Thread {
 				}
 			}
 		}
+		cache.close();
 	}
 	
 	/**
@@ -374,7 +285,7 @@ public class ACSLogRetrieval extends Thread {
 	 * @return true if there are logs to be processed in the file
 	 */
 	public boolean hasPendingEntries() {
-		return !endingPositions.isEmpty();
+		return cache.size()!=0;
 	}
 	
 	/**
