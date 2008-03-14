@@ -501,7 +501,7 @@ public class LogTableDataModel extends AbstractTableModel implements Runnable
 			getIOHelper().loadLogs(in, loggingClient, loggingClient, allLogs, true, 0);
 		} catch (Exception ex) {
 			ex.printStackTrace();
-			JOptionPane.showInternalMessageDialog(null, "Exception reading "
+			JOptionPane.showMessageDialog(null, "Exception reading "
 					+ ex.getMessage(), "Error reading " + url.toString(),
 					JOptionPane.ERROR_MESSAGE);
 		}
