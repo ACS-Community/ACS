@@ -122,7 +122,6 @@ public final class ACSStructuredPushConsumer extends StructuredPushConsumerPOA
 		// It should not be necessary to run this in a separate thread.
 		Thread t = new DestroyClass();
 		t.setName("DestroyClass");
-		t.setDaemon(true);
 		t.start();
 	}
 
