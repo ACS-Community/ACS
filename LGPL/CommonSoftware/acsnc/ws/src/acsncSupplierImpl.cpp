@@ -1,4 +1,4 @@
-/* @(#) $Id: acsncSupplierImpl.cpp,v 1.74 2007/10/09 15:18:04 bjeram Exp $
+/* @(#) $Id: acsncSupplierImpl.cpp,v 1.75 2008/03/14 07:32:25 cparedes Exp $
  *
  *    Structured event push supplier implementation.
  *    ALMA - Atacama Large Millimiter Array
@@ -35,7 +35,8 @@ Supplier::Supplier(const char* channelName, acscomponent::ACSComponentImpl* comp
     reference_m(0),
     component_mp(component),
     typeName_mp(0),
-    count_m(0)
+    count_m(0),
+    guardbl(10000000,50)
 {     
     ACS_TRACE("Supplier::Supplier");    
     init(static_cast<CORBA::ORB_ptr>(0));
@@ -48,7 +49,8 @@ Supplier::Supplier(const char* channelName, CORBA::ORB_ptr orb_mp, acscomponent:
     reference_m(0),
     component_mp(component),
     typeName_mp(0),
-    count_m(0)
+    count_m(0),
+    guardbl(10000000,50)
 {
     ACS_TRACE("Supplier::Supplier");
     init(orb_mp);
@@ -61,7 +63,8 @@ Supplier::Supplier(const char* channelName, int argc, char *argv[], acscomponent
     reference_m(0),
     component_mp(component),
     typeName_mp(0),
-    count_m(0)
+    count_m(0),
+    guardbl(10000000,50)
 {
     ACS_TRACE("Supplier::Supplier");
 
@@ -170,8 +173,11 @@ Supplier::publishEvent(const CosNotification::StructuredEvent &event)
     //First a sanity check.
     if(CORBA::is_nil(proxyConsumer_m.in()) == true)
 	{
-	ACS_SHORT_LOG((LM_ERROR, "Supplier::publishEvent() error occured for the '%s' channel!",
-		       channelName_mp));
+        char msg[100];
+        sprintf(msg,"Supplier::publishEvent() error occured for the '%s' channel!",channelName_mp);
+        Logging::Logger::LoggerSmartPtr logger = getLogger();
+        guardbl.log(logger, Logging::Logger::LM_DEBUG, msg,__FILE__,__LINE__, "publishEvent");
+	//ACS_SHORT_LOG((LM_DEBUG, "Supplier::publishEvent() error occured for the '%s' channel!", channelName_mp));
 	CORBAProblemExImpl err = CORBAProblemExImpl(__FILE__,__LINE__,"nc::Supplier::publishData");
 	throw err.getCORBAProblemEx();
 	}
@@ -183,14 +189,20 @@ Supplier::publishEvent(const CosNotification::StructuredEvent &event)
 	}
     catch(CosEventComm::Disconnected e)
 	{
-	ACS_SHORT_LOG((LM_ERROR, "Supplier::publishEvent() failed to send the event for the '%s' channel - disconnected!",
-		       channelName_mp));
+        char msg[100];
+        Logging::Logger::LoggerSmartPtr logger = getLogger();
+        sprintf(msg,"Supplier::publishEvent() failed to send the event for the '%s' channel - disconnected!",channelName_mp);
+        guardbl.log(logger, Logging::Logger::LM_DEBUG,msg,__FILE__,__LINE__, "publishEvent");
+	//ACS_SHORT_LOG((LM_DEBUG, "Supplier::publishEvent() failed to send the event for the '%s' channel - disconnected!",channelName_mp));
 	}
 
     catch(...)
 	{
-	ACS_SHORT_LOG((LM_ERROR, "Supplier::publishEvent() failed to send the event for the '%s' channel!",
-		       channelName_mp));
+        char msg[100];
+        sprintf(msg,"Supplier::publishEvent() failed to send the event for the '%s' channel!",channelName_mp);
+        Logging::Logger::LoggerSmartPtr logger = getLogger();
+        guardbl.log(logger, Logging::Logger::LM_DEBUG,msg,__FILE__,__LINE__, "publishEvent");
+	//ACS_SHORT_LOG((LM_DEBUG, "Supplier::publishEvent() failed to send the event for the '%s' channel!",channelName_mp));
 	CORBAProblemExImpl err = CORBAProblemExImpl(__FILE__,__LINE__,"nc::Supplier::publishData");
 	throw err.getCORBAProblemEx();
 	}
