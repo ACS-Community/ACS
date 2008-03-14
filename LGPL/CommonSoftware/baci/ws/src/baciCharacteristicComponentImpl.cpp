@@ -19,13 +19,13 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: baciCharacteristicComponentImpl.cpp,v 1.44 2007/02/08 08:11:53 bjeram Exp $"
+* "@(#) $Id: baciCharacteristicComponentImpl.cpp,v 1.45 2008/03/14 09:23:17 bjeram Exp $"
 *
 */
 
 #include <vltPort.h>
 
-static char *rcsId="@(#) $Id: baciCharacteristicComponentImpl.cpp,v 1.44 2007/02/08 08:11:53 bjeram Exp $"; 
+static char *rcsId="@(#) $Id: baciCharacteristicComponentImpl.cpp,v 1.45 2008/03/14 09:23:17 bjeram Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <baci.h>
@@ -101,10 +101,18 @@ void CharacteristicComponentImpl::__execute() throw (ACSErr::ACSbaseExImpl)
 	}//
     if( monitoringProperties_mp == true )
 	{
-	if (component_mp->startAllThreads() == false) 
+	bool st;
+	try
 	    {
-	    throw acsErrTypeLifeCycle::StartingThreadsFailureExImpl(__FILE__,__LINE__,"ACSComponentImpl::__execute");
+	    st = component_mp->startAllThreads();
 	    }
+	catch(ACSErr::ACSbaseExImpl &_ex)
+	    {
+	    throw acsErrTypeLifeCycle::StartingThreadsFailureExImpl(_ex, __FILE__,__LINE__,"ACSComponentImpl::__execute");
+	    }//try-catch
+	
+	if (st == false) 
+	    throw acsErrTypeLifeCycle::StartingThreadsFailureExImpl(__FILE__,__LINE__,"ACSComponentImpl::__execute");
 	}
     else
 	{
