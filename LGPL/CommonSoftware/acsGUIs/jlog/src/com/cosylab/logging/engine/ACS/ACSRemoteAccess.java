@@ -169,7 +169,10 @@ public final class ACSRemoteAccess implements RemoteAccess {
 	/**
 	 * destroy method comment. Not implemented yet.
 	 */
-	public void destroy() {
+	public synchronized void destroy() {
+		if (orb==null) {
+			return;
+		}
 		if (acsSPS!=null) {
 			acsSPS.destroy();
 		}
