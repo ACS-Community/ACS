@@ -66,7 +66,6 @@
 5 - INFO - The acsStartORBSRVC script has now completed!
 5 - Manager Application initialized
 5 - INFO - Manager is up and running
-5 - INFO - Loading of IDL interfaces in Interface Repository completed OK
 5 - INFO - For this ACS session, please do an 'export ACS_INSTANCE=8' on all terminals running ACS clients.
 5 - INFO - ACS is up and running
 1 - INFO - Starting CORBA Services
@@ -85,6 +84,5 @@
 1 - INFO - The acsStartORBSRVC script has now completed!
 1 - Manager Application initialized
 1 - INFO - Manager is up and running
-1 - INFO - Loading of IDL interfaces in Interface Repository completed OK
 1 - INFO - For this ACS session, please do an 'export ACS_INSTANCE=9' on all terminals running ACS clients.
 1 - INFO - ACS is up and running

@@ -31,4 +31,3 @@
 1 - INFO - Starting ACS Log service
 1 - INFO - For this ACS session, please do an 'export ACS_INSTANCE=9' on all terminals running ACS clients.
 1 - INFO - The acsStartORBSRVC script has now completed!
-1 - INFO - Loading of IDL interfaces in Interface Repository completed OK
