@@ -1,7 +1,7 @@
 #ifndef SUPPLIER_H
 #define SUPPLIER_H
 
-/* @(#) $Id: acsncSupplier.h,v 1.59 2006/09/01 02:20:54 cparedes Exp $
+/* @(#) $Id: acsncSupplier.h,v 1.60 2008/03/17 01:29:13 cparedes Exp $
  *
  *    Supplier Abstract base class for notification channel push structured event
  *    supplier.
@@ -32,6 +32,7 @@
 
 #include "acsncHelper.h"
 #include <acscomponentImpl.h>
+#include "RepeatGuardLogger.h"
 namespace nc {
 /** 
  * Supplier provides an implementation of the structured event push supplier interface 
@@ -287,7 +288,7 @@ class Supplier :
      * The total number of events sent from this particular supplier.
      */
     unsigned long long count_m;
-
+    Logging::RepeatGuardLogger<Logging::BaseLog> guardbl;
     /**
      * A single structured event. This was taken out of the publishEvent() method
      * for a small performance gain.
