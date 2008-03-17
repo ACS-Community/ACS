@@ -16,7 +16,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.1 2008/03/17 14:27:25 acaproni Exp $"
+# "@(#) $Id: Makefile,v 1.2 2008/03/17 14:45:50 acaproni Exp $"
 #
 # Makefile of ........
 #
@@ -127,7 +127,7 @@ CDB_SCHEMAS =
 # 
 # IDL Files and flags
 # 
-IDL_FILES =
+IDL_FILES =testComponent
 IDL_TAO_FLAGS =
 USER_IDL =
 #
@@ -138,7 +138,7 @@ jjj_DIRS=
 jjj_EXTRAS= 
 #
 # java sources in Jarfile on/off
-DEBUG= 
+DEBUG=On 
 #
 # ACS XmlIdl generation on/off
 #
