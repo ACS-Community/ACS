@@ -1,9 +1,5 @@
 package alma.alarmsystem.test.manager;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.util.Properties;
 import java.util.logging.Logger;
 
 import cern.laser.client.data.Alarm;
@@ -138,6 +134,8 @@ public class ManagerTest extends Thread implements SourceListener, AlarmSelectio
 		str.append(alarm.getAlarmId());
 		str.append("> priority: ");
 		str.append(alarm.getPriority());
+		str.append(" active: ");
+		str.append(alarm.getStatus().isActive());
 		System.out.println(str.toString());
 	}
 
@@ -164,7 +162,8 @@ public class ManagerTest extends Thread implements SourceListener, AlarmSelectio
 		str.append(faultState.getMember());
 		str.append(", ");
 		str.append(faultState.getCode());
-		str.append(">");
+		str.append("> ");
+		str.append(faultState.getDescriptor());
 		System.out.println(str.toString());
 	}
 
