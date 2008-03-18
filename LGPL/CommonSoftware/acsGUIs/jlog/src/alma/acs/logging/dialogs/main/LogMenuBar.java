@@ -29,6 +29,7 @@ import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JSeparator;
 import javax.swing.KeyStroke;
 import javax.swing.event.MenuListener;
@@ -104,9 +105,13 @@ public class LogMenuBar extends JMenuBar {
      */
     private JCheckBoxMenuItem viewStatusAreaMI;
     
+    // The menu to choose between operator and standard mode
+    private JRadioButtonMenuItem operatorMode;
+    private JRadioButtonMenuItem engineeringMode;
+    
     /**
      * The menu item to select the format of the date column in the table of logs
-     * If it is true, the date appear as hh:mm:ss otherwise it's shown with a complet
+     * If it is true, the date appear as hh:mm:ss otherwise it's shown with a complete
      * longest format
      * shortDateViewMI defaults to true
      */
@@ -171,6 +176,11 @@ public class LogMenuBar extends JMenuBar {
         expertMenu = new JMenu();
         expertMenu.setName("ExpertMenu");
         expertMenu.setText("Expert");
+        JMenu modeMenu =new JMenu("Mode");
+        expertMenu.add(modeMenu);
+        modeMenu.add(getOperatorMode());
+        modeMenu.add(getEngineeringMode());
+        expertMenu.addSeparator();
         expertMenu.add(getSuspendMenuItem());
         expertMenu.add(getPrefsMenuItem());
         add(expertMenu);
@@ -461,6 +471,26 @@ public class LogMenuBar extends JMenuBar {
 			fileMenu.add(exitSeparator);
 			fileMenu.add(exitMenuItem);
 		}
+	}
+
+	/**
+	 * @return the operatorMode
+	 */
+	public JRadioButtonMenuItem getOperatorMode() {
+		if (operatorMode==null) {
+			operatorMode= new JRadioButtonMenuItem("Operator");
+		}
+		return operatorMode;
+	}
+
+	/**
+	 * @return the standardMode
+	 */
+	public JRadioButtonMenuItem getEngineeringMode() {
+		if (engineeringMode==null) {
+			engineeringMode=new JRadioButtonMenuItem("Engineering");
+		}
+		return engineeringMode;
 	}
 	
 }
