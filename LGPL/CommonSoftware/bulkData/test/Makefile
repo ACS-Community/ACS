@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.30 2007/11/13 12:38:36 rcirami Exp $"
+# "@(#) $Id: Makefile,v 1.31 2008/03/18 12:03:24 rcirami Exp $"
 #
 # Makefile of ........
 #
@@ -64,7 +64,8 @@ EXECUTABLES     = bulkDataEx1 \
 		  bulkDataDistributerEx \
 		  bulkDataPerf \
 		  bulkDataDistrPerf \
-		  bulkDataNotificationTest
+		  bulkDataNotificationTest \
+	   	  bulkDataThreadTest
 
 EXECUTABLES_L   = 
 
@@ -142,6 +143,15 @@ bulkDataNotificationTest_LIBS      = bulkDataReceiverStubs \
 			             bulkDataCallback \
 			             ACSBulkDataError
 
+bulkDataThreadTest_OBJECTS   = bulkDataThreadTest	
+bulkDataThreadTest_LIBS      = bulkDataSenderStubs \
+			       bulkDataSenderDistrStubs \
+			       bulkDataDistributerStubs \
+			       bulkDataReceiverStubs \
+			       bulkDataStubs \
+			       bulkDataCallback \
+			       ACSBulkDataError
+
 
 #
 # special compilation flags for single c sources
@@ -169,7 +179,9 @@ LIBRARIES       = bulkDataReceiverLibEx1 \
 		  bulkDataSendRecvLib \
 		  bulkDataSenderDistrLib \
 		  bulkDataReceiverDistr1Lib \
-		  bulkDataReceiverDistr2Lib
+		  bulkDataReceiverDistr2Lib \
+		  bulkDataSenderLibThread \
+		  bulkDataReceiverLibThread
 LIBRARIES_L     =
 
 #
@@ -229,6 +241,12 @@ bulkDataReceiverDistr2Lib_OBJECTS   = bulkDataReceiverDistr2Impl bulkDataReceive
 bulkDataReceiverDistr2Lib_LIBS      = bulkDataReceiverStubs bulkDataReceiverDistr2Stubs bulkDataStubs \
 				      bulkDataCallback ACSBulkDataError
 
+bulkDataSenderLibThread_OBJECTS   = bulkDataSenderThreadImpl
+bulkDataSenderLibThread_LIBS      = bulkDataSenderDistrStubs bulkDataReceiverStubs bulkDataSenderStubs bulkDataStubs ACSBulkDataError
+
+bulkDataReceiverLibThread_OBJECTS = bulkDataReceiverCbThread
+bulkDataReceiverLibThread_LIBS    = bulkDataReceiverStubs bulkDataStubs bulkDataCallback ACSBulkDataError
+
 #
 # Scripts (public and local)
 # ----------------------------
@@ -240,9 +258,11 @@ SCRIPTS_L       = bulkDataTATPrologue \
 		  bulkDataTestRun.sh \
 		  bulkDataDistrTestRun.sh \
 		  bulkDataNotifTestRun.sh \
+		  bulkDataThreadTestRun.sh \
 		  startBulkDataTest.sh \
 		  startBulkDataDistrTest.sh \
-		  startBulkDataNotifTest.sh
+		  startBulkDataNotifTest.sh \
+		  startBulkDataThreadTest.sh
 
 #
 # TCL scripts (public and local)

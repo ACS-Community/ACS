@@ -39,5 +39,15 @@
                                          Type="IDL:alma/bulkdata/BulkDataSender:1.0"
                                          Container="ContainerNotifTest"/>
 
+     <_ Name="BulkDataThreadSender"      Code="bulkDataSenderLibThread"	
+                                         Type="IDL:alma/bulkdatadistr/BulkDataSenderDistr:1.0"
+                                         Container="ContainerThreadTest"/>
+     <_ Name="BulkDataThreadDistributer" Code="bulkDataDistributerLib"	
+                                         Type="IDL:alma/bulkdata/BulkDataDistributer:1.0"
+                                         Container="ContainerThreadTest"/>
+     <_ Name="BulkDataThreadReceiver"    Code="bulkDataReceiverLibThread"	
+                                         Type="IDL:alma/bulkdata/BulkDataReceiver:1.0"
+                                         Container="ContainerThreadTest"/>
+
 </Components>		     
 
