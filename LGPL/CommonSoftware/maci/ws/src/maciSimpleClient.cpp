@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciSimpleClient.cpp,v 1.103 2007/10/11 15:43:39 msekoran Exp $"
+* "@(#) $Id: maciSimpleClient.cpp,v 1.104 2008/03/18 15:52:28 bjeram Exp $"
 *
 * who       when        what
 * --------  --------    ----------------------------------------------
@@ -116,6 +116,7 @@ SimpleClient::destroy ()
   LoggingProxy::done();
 
   delete m_logger;
+  m_logger =0;
   return result;
 }
 
