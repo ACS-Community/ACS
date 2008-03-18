@@ -1,3 +1,4 @@
+1 - Process xxxxx killed
 1 - java version "1.6.0_02"
 1 - Java(TM) SE Runtime Environment (build 1.6.0_02-b05)
 1 - Java HotSpot(TM) Client VM (build 1.6.0_02-b05, mixed mode)
@@ -17,12 +18,26 @@
 1 - ******************************
 1 - ManagerTest ready to receive alarms
 1 - Waiting
-1 - Process xxxxx killed
-1 - Alarm from source received: <Manager, bilboContainer, 1>
+1 - Alarm from source received: <Manager, bilboContainer, 1> ACTIVE
 1 - ## FaultFamily: Manager
 1 - ## FaultMember: bilboContainer
 1 - ## FaultCode:   1
-1 - Alarm from category received: <Manager:bilboContainer:1> priority: 3
-1 - Closing
-1 - ### DefaultSubscriberImpl::unSubscribeAll
-1 - Done
+1 - Alarm from category received: <Manager:bilboContainer:1> priority: 3 active: true
+1 - Starting Container...
+1 - Retrieving CDB reference from Manager using bootstrap ORB
+1 - Bootstrap ORB parms: maciContainer bilboContainer -m corbaloc::xxxxxxx:yyyy/Manager
+1 - 
+1 - ManagerReference obtained via command line: 'corbaloc::xxxxxxx:yyyy/Manager'
+1 - 
+1 - Resolving reference: 'corbaloc::xxxxxxx:yyyy/Manager'
+1 - Manager reference narrowed.
+1 - 
+1 - 
+1 - 
+1 - Manager hostname obtained via command line: '192.168.150.129'
+1 - 
+1 - Alarm from source received: <Manager, bilboContainer, 1> TERMINATE
+1 - ## FaultFamily: Manager
+1 - ## FaultMember: bilboContainer
+1 - ## FaultCode:   1
+1 - Alarm from category received: <Manager:bilboContainer:1> priority: 3 active: false
