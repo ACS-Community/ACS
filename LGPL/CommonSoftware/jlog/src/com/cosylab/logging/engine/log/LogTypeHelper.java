@@ -60,7 +60,7 @@ public enum LogTypeHelper {
 	public final String logEntryType;
 	
 	// The icon to show in the GUI for a given log type
-	public final ImageIcon icon;
+	public ImageIcon icon;
 	
 	// The ACSLogLevelDefinition
 	public final AcsLogLevelDefinition acsCoreLevel;
@@ -75,7 +75,15 @@ public enum LogTypeHelper {
     private LogTypeHelper(AcsLogLevelDefinition acsCoreLvl, String logEntryType, String iconName) {
     	this.acsCoreLevel=acsCoreLvl;
     	this.logEntryType=logEntryType;
-    	this.icon=new ImageIcon(LogTypeHelper.this.getClass().getResource(iconName));
+    	// The loading of the icon fails if the engine is executed without 
+    	// an X server running.
+    	// In this case the icon is set to null.
+    	// 
+    	try {
+    		this.icon=new ImageIcon(LogTypeHelper.this.getClass().getResource(iconName));
+    	} catch (Throwable t) {
+    		this.icon=null;
+    	}
     }
     
     /**
@@ -143,8 +151,8 @@ public enum LogTypeHelper {
     public static int getIconsVSize() {
         int vDim=0;
         for (LogTypeHelper logType: LogTypeHelper.values()) {
-            // Load the Images if they are null
-            if (logType.icon.getIconHeight()>vDim) vDim=logType.icon.getIconHeight();
+        	int height = (logType.icon==null)?10:logType.icon.getIconHeight();
+            if (height>vDim) vDim=height;
         }
         return vDim;
     }
