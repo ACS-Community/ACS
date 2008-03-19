@@ -24,6 +24,7 @@ package com.cosylab.logging.engine.simulator;
 import com.cosylab.logging.engine.FiltersVector;
 import com.cosylab.logging.engine.log.LogEntryXML;
 import com.cosylab.logging.engine.ACS.ACSRemoteLogListener;
+import com.cosylab.logging.engine.ACS.EngineAudienceHelper;
 
 import org.omg.CORBA.ORB;
 
@@ -110,6 +111,12 @@ public class simulatorRemoteAccess extends Thread implements com.cosylab.logging
 	 */
 	@Override
 	public void setFilters(FiltersVector filters) {	}
+
+	/**
+	 * @see com.cosylab.logging.engine.RemoteAccess#setAudience(java.lang.String)
+	 */
+	@Override
+	public void setAudience(EngineAudienceHelper audience) { }
 	
 	
 }
