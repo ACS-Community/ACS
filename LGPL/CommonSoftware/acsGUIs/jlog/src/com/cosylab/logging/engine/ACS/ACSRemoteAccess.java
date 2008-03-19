@@ -403,6 +403,18 @@ public final class ACSRemoteAccess implements RemoteAccess {
 	public void setFilters(FiltersVector filters) {
 		acsSPS.setFilters(filters);
 	}
+
+	/* (non-Javadoc)
+	 * @see com.cosylab.logging.engine.RemoteAccess#setAudience(java.lang.String)
+	 */
+	@Override
+	public void setAudience(EngineAudienceHelper audience) {
+		if (audience==null) {
+			throw new IllegalArgumentException("The audience can't be null");
+		}
+		acsSPS.setAudience(audience);
+		
+	}
 	
 	
 }
