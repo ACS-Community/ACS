@@ -6532,7 +6532,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 		} catch (Throwable th)
 		{
-			RemoteException re = new RemoteException("Failed to connect to ACS daemon on host '"+host+"'.", th);
+			RemoteException re = new RemoteException("Failed to connect to ACS daemon on host '"+host+"' to start container '"+containerName+"'.", th);
 			logger.log(Level.SEVERE, re.getMessage(), re);
 			return null;
 		}
