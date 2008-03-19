@@ -49,9 +49,9 @@ import alma.acs.util.IsoDateFormat;
 public class CacheUtils {
 	
 	// The header and footer to create log to fill the caches
-	private static final String logHeaderStr = " TimeStamp=\"";
-	private static final String logBodyStr = "\" Routine=\"CacheTest::testGet\" Host=\"this\" Process=\"test\" Thread=\"main\" Context=\"\"><![CDATA[";
-	private static final String logFooterStr = "]]></";
+	public static final String logHeaderStr = " TimeStamp=\"";
+	public static final String logBodyStr = "\" Routine=\"CacheTest::testGet\" Host=\"this\" Process=\"test\" Thread=\"main\" Context=\"\"><![CDATA[";
+	public static final String logFooterStr = "]]></";
 	
 	// The parser
 	private static ACSLogParser parser;
