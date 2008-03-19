@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: TestList_WS.lite,v 1.92 2007/09/28 08:37:16 cparedes Exp $"
+# "@(#) $Id: TestList_WS.lite,v 1.93 2008/03/19 11:55:50 bjeram Exp $"
 #
 # TestList
 #
@@ -21,3 +21,4 @@ PROLOGUE acsutilTATPrologue -l
 EPILOGUE acsutilTATEpilogue
 7 maciTestSimpleClient "startContainerWS.sh Container01 3061" "@SLEEP 20" "acsutilTATTestRunner maciTestSimpleClient"
 8 maciTestComponentSmartPtr "startContainerWS.sh Container01 3062" "@SLEEP 20" "acsutilTATTestRunner maciTestComponentSmartPtr"
+9 maciTestSimpleClientMulti "acsutilTATTestRunner maciTestSimpleClientMulti"

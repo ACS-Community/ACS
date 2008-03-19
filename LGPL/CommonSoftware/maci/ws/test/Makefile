@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: Makefile,v 1.98 2007/09/28 08:37:16 cparedes Exp $" 
+# "@(#) $Id: Makefile,v 1.99 2008/03/19 11:55:50 bjeram Exp $" 
 #
 # Makefile of ........
 #
@@ -37,12 +37,15 @@ PROG =
 # -----------------------------
 EXECUTABLES_L     = $(PROG) maciTestClient maciTestLogConfigClient maciTestRegistrar \
 			maciContainerServicesClient maciLifeCycleClient \
-			maciTestSimpleClient maciTestComponentSmartPtr
+			maciTestSimpleClient maciTestComponentSmartPtr \
+			maciTestSimpleClientMulti
 
 $(PROG)_OBJECTS            = $(PROG)
 $(PROG)_LDFLAGS            =
 $(PROG)_LIBS               = C++
 
+maciTestSimpleClientMulti_OBJECTS			= maciTestSimpleClientMulti
+maciTestSimpleClientMulti_LIBS			= maciClient
 maciTestClient_OBJECTS          = maciTestClient \
                                   maciTestC \
                                   maciTestClientImpl
