@@ -133,7 +133,12 @@ public class ACSListenersDispatcher {
 			for (int t=0; t<connListenersNum; t++) {
 				ACSLogConnectionListener listener = connectionListeners.get(t);
 				if (listener!=null) {
+					try {
 					listener.reportStatus(message);
+					} catch (Throwable thr) {
+						System.err.println("Exception publishing to listener: "+thr.getMessage());
+						thr.printStackTrace(System.err);
+					}
 				}
 			}
 		}
@@ -154,7 +159,12 @@ public class ACSListenersDispatcher {
 				System.err.println(str.toString());
 			} else {
 				for (ACSRemoteErrorListener errorListener: errorListeners) {
+					try {
 						errorListener.errorReceived(error);
+					} catch (Throwable thr) {
+						System.err.println("Exception publishing to listener: "+thr.getMessage());
+						thr.printStackTrace(System.err);
+					}
 				}
 			}
 		}
@@ -172,9 +182,19 @@ public class ACSListenersDispatcher {
 				ACSLogConnectionListener listener = connectionListeners.get(t);
 				if (listener!=null) {
 						if (connected) {
-							listener.acsLogConnEstablished();
+							try {
+								listener.acsLogConnEstablished();
+							} catch (Throwable thr) {
+								System.err.println("Exception publishing to listener: "+thr.getMessage());
+								thr.printStackTrace(System.err);
+							}
 						} else {
-							listener.acsLogConnDisconnected();
+							try {
+								listener.acsLogConnDisconnected();
+							} catch (Throwable thr) {
+								System.err.println("Exception publishing to listener: "+thr.getMessage());
+								thr.printStackTrace(System.err);
+							}
 						}
 				}
 			}
@@ -190,7 +210,12 @@ public class ACSListenersDispatcher {
 			for (int t=0; t<connListenersNum; t++) {
 				ACSLogConnectionListener listener = connectionListeners.get(t);
 				if (listener!=null) {
+					try {
 						listener.acsLogConnLost();
+					} catch (Throwable thr) {
+						System.err.println("Exception publishing to listener: "+thr.getMessage());
+						thr.printStackTrace(System.err);
+					}
 				}
 			}
 		}
@@ -204,7 +229,12 @@ public class ACSListenersDispatcher {
 			for (int t=0; t<connListenersNum; t++) {
 				ACSLogConnectionListener listener = connectionListeners.get(t);
 				if (listener!=null) {
-					listener.acsLogConnConnecting();
+					try {
+						listener.acsLogConnConnecting();
+					} catch (Throwable thr) {
+						System.err.println("Exception publishing to listener: "+thr.getMessage());
+						thr.printStackTrace(System.err);
+					}
 				}
 			}
 		}
@@ -219,7 +249,12 @@ public class ACSListenersDispatcher {
 		synchronized(logListeners) {
 			for (int t=0; t<logListenersNum; t++) {
 				ACSRemoteLogListener listener = logListeners.get(t);
-				listener.logEntryReceived(newLog);
+				try {
+					listener.logEntryReceived(newLog);
+				} catch (Throwable thr) {
+					System.err.println("Exception publishing to listener: "+thr.getMessage());
+					thr.printStackTrace(System.err);
+				}
 			}
 		}
 	}
@@ -233,7 +268,12 @@ public class ACSListenersDispatcher {
 		synchronized(rawLogListeners) {
 			for (int t=0; t<rawLogListenersNum; t++) {
 				ACSRemoteRawLogListener listener = rawLogListeners.get(t);
-				listener.xmlEntryReceived(xmlStr);
+				try {
+					listener.xmlEntryReceived(xmlStr);
+				} catch (Throwable thr) {
+					System.err.println("Exception publishing to listener: "+thr.getMessage());
+					thr.printStackTrace(System.err);
+				}
 			}
 		}
 	}
@@ -243,7 +283,12 @@ public class ACSListenersDispatcher {
 			for (int t=0; t<connListenersNum; t++) {
 				ACSLogConnectionListener listener = connectionListeners.get(t);
 				if (listener!=null) {
-					listener.acsLogConnSuspended();
+					try {
+						listener.acsLogConnSuspended();
+					} catch (Throwable thr) {
+						System.err.println("Exception publishing to listener: "+thr.getMessage());
+						thr.printStackTrace(System.err);
+					}
 				}
 			}
 		}
@@ -254,7 +299,12 @@ public class ACSListenersDispatcher {
 			for (int t=0; t<connListenersNum; t++) {
 				ACSLogConnectionListener listener = connectionListeners.get(t);
 				if (listener!=null) {
-					listener.acsLogsDelay();
+					try {
+						listener.acsLogsDelay();
+					} catch (Throwable thr) {
+						System.err.println("Exception publishing to listener: "+thr.getMessage());
+						thr.printStackTrace(System.err);
+					}
 				}
 			}
 		}
