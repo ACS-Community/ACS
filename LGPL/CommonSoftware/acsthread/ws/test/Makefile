@@ -16,7 +16,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.12 2006/08/31 13:04:52 gchiozzi Exp $"
+# "@(#) $Id: Makefile,v 1.13 2008/03/19 15:57:42 bjeram Exp $"
 #
 # Makefile of ........
 #
@@ -56,10 +56,13 @@ EXECUTABLES_L   = testACSThread testACSThreadWithParameter testSelfDelThread \
                   testACSThreadStop testACSThreadTiming testACSThreadSuspend \
                   testACSThreadCorrExmpl testACSThreadNoTM \
                   testACSThreadDoubleLoop testACSThreadSleep	\
-                  testACSThreadJoinable testACSThreadRestart testACSThreadGuard
+                  testACSThreadJoinable testACSThreadRestart testACSThreadGuard \
+		  testPosixThreads
 
 #
 # <brief description of xxxxx program>
+testPosixThreads_OBJECTS = testPosixThreads
+
 testACSThreadWithParameter_OBJECTS = testACSThreadWithParameter
 testACSThreadWithParameter_LIBS = acsThread
 

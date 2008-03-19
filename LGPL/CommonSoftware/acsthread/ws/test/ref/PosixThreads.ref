@@ -1,0 +1,2 @@
+1 - Usage: ../bin/testPosixThreads n
+1 -   where n is no. of threads
