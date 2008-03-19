@@ -282,13 +282,24 @@ public final class ACSStructuredPushConsumer extends StructuredPushConsumerPOA
 	
 	/**
 	 * Set the filters to apply to incoming logs before sending to
-	 * the listeners
+	 * the listeners.
+	 * These custom filters are applied after the audience
 	 * 
 	 * @param filters The filters to apply
 	 *                If <code>null</code> or empty the filtering is disabled
 	 */
 	public void setFilters(FiltersVector filters) {
 		logRetrieval.setFilters(filters);
+	}
+	
+	/**
+	 * Set the audience.
+	 * 
+	 * @param audience The audience
+	 * @see <code>LCEngine.setAudience()</code>
+	 */
+	public void setAudience(EngineAudienceHelper audience) {
+		logRetrieval.setAudience(audience);
 	}
 }
 

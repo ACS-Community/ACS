@@ -32,9 +32,13 @@ import com.cosylab.logging.engine.RemoteAccess;
 /**
  * LCEngine connects to the logging NC and sends messages to the listeners.
  * 
- * It is possible to define the filters to apply to the incoming logs. In this
+ * A LCEngine object can have an audience (as defined in the log_audience IDL
+ * module). If an audience is in use, a special set of filters will be applied.
+ * 
+ * It is possible to define custom filters to apply to the incoming logs. In this
  * case, only the logs that pass all the filters are sent to the listeners. The
  * filters do not apply to RAW (i.e. XML) log listeners.
+ * The custom filters are applied after the audience filtering.
  * 
  * There are three type of listeners supported: - ACSLogConnectionListener:
  * listens events related to the connection with the logging NC and
@@ -50,6 +54,7 @@ import com.cosylab.logging.engine.RemoteAccess;
  * 
  */
 public class LCEngine {
+	
 	/**
 	 * The connection is checked every CHECK_INTERVAL seconds
 	 */
@@ -65,6 +70,13 @@ public class LCEngine {
 	private boolean terminateThread = false;
 
 	private RemoteAccess remoteAccess = null;
+	
+	/** 
+	 * The audience used to filter out messages
+	  * 
+	  * @see setAudience()
+	  */
+	private EngineAudienceHelper audience = EngineAudienceHelper.NO_AUDIENCE;
 
 	/**
 	 * The filters to apply to the incoming logs.
@@ -129,6 +141,7 @@ public class LCEngine {
 				listenersDispatcher.publishConnected(true);
 				LCEngine.this.wasConnected = true;
 				remoteAccess.setFilters(filters);
+				remoteAccess.setAudience(audience);
 			} else {
 				listenersDispatcher.publishConnected(false);
 			}
@@ -215,7 +228,7 @@ public class LCEngine {
 	private ACSListenersDispatcher listenersDispatcher = new ACSListenersDispatcher();
 
 	/**
-	 * LCEngine constructor.
+	 * LCEngine constructor
 	 * 
 	 */
 	public LCEngine() {
@@ -501,6 +514,22 @@ public class LCEngine {
 		if (remoteAccess!=null) {
 			remoteAccess.setFilters(filters);
 		}
+	}
+	
+	/**
+	 * Set the audience for the engine.
+	 * If an audience is defined, a special set of filters is applied.
+	 * 
+	 * @param newAudience The not <code>null</code >audience
+	 */
+	public void setAudience(EngineAudienceHelper newAudience) {
+		if (newAudience==null) {
+			throw new IllegalArgumentException("The audience can't be null");
+		}
+		if (remoteAccess!=null) {
+			remoteAccess.setAudience(newAudience);
+		}
+		audience=newAudience;
 	}
 
 	/**
