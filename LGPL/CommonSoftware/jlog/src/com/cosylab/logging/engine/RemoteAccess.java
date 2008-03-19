@@ -23,6 +23,8 @@ package com.cosylab.logging.engine;
 
 import org.omg.CORBA.ORB;
 
+import com.cosylab.logging.engine.ACS.EngineAudienceHelper;
+
 import si.ijs.maci.Manager;
 
 /**
@@ -47,6 +49,14 @@ public interface RemoteAccess {
 	 *                If <code>null</code> or empty the filtering is disabled
 	 */
 	public void setFilters(FiltersVector filters);
+	
+	/**
+	 * Set the audience for the engine.
+	 * If an audience is defined, a special set of filters is applied.
+	 * 
+	 * @param audience The not <code>null</code> audience
+	 */
+	public void setAudience(EngineAudienceHelper audience);
 	
 	/**
 	 * Close the threads and free all the resources
