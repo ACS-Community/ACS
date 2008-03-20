@@ -102,6 +102,21 @@ import com.cosylab.logging.stats.StatsDlg;
  */
 public class LoggingClient extends JRootPane implements ACSRemoteLogListener, ACSLogConnectionListener, ACSRemoteErrorListener
 {
+	/**
+	 * The default audience.
+	 * 
+	 * When initializing the audience, at startup, the LoggingClient
+	 * searches for the property and if such a property is not found then 
+	 * the default is used.
+	 * 
+	 * @see 
+	 */
+	private static final EngineAudienceHelper DEFAULT_AUDIENCE = EngineAudienceHelper.NO_AUDIENCE;
+	
+	/**
+	 * The name of the property to set for enabling the operator mode at startup
+	 */
+	private static final String AUDIENCE_PROPERTY = "jlog.mode.operator";
 	
 	private ArchiveConnectionManager archive;
 	
@@ -298,7 +313,6 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
             	}
             } else if (e.getSource()==menuBar.getOperatorMode()) {
             	getEngine().setAudience(EngineAudienceHelper.OPERATOR);
-            	
             } else if (e.getSource()==menuBar.getEngineeringMode()) {
             	getEngine().setAudience(EngineAudienceHelper.NO_AUDIENCE);
             } else {
@@ -364,13 +378,13 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 	{
 		super();
 		initialize();
+		initAudience();
 	}
 	
 	public LoggingClient(LogFrame frame)
 	{
-		super();
+		this();
 		logFrame=frame;
-		initialize();
 	}
 	
 	
@@ -1471,6 +1485,18 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 			statsDlg=new StatsDlg(this);
 		}
 		return statsDlg;
+	}
+	
+	/**
+	 * Init the audience
+	 */
+	private void initAudience() {
+		System.out.println("Initing audience");
+		if (Boolean.getBoolean(AUDIENCE_PROPERTY)) {
+			menuBar.getOperatorMode().doClick();
+		} else {
+			menuBar.getEngineeringMode().doClick();
+		}
 	}
 }
 
