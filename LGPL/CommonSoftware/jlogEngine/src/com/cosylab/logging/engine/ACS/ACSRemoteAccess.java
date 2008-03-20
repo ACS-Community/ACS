@@ -75,6 +75,12 @@ public final class ACSRemoteAccess implements RemoteAccess {
 	// The object to dispatch messages to the listeners
 	private ACSListenersDispatcher listenersDispatcher = null;
 	
+	// The engine filters 
+	private FiltersVector filters = null;
+	
+	// The audience
+	private EngineAudienceHelper audience = EngineAudienceHelper.NO_AUDIENCE;
+	
 	/**
 	 * ACSRemoteAccss constructor comment.
 	 * 
@@ -155,6 +161,9 @@ public final class ACSRemoteAccess implements RemoteAccess {
 				listenersDispatcher,
 				Boolean.parseBoolean(ACSRemoteAccess.LOGGING_BINARY_FORMAT));
 		if (!acsSPS.isInitialized) return false;
+		
+		acsSPS.setFilters(filters);
+		acsSPS.setAudience(audience);
 	
 		acsSPS.connect();
 		if (!acsSPS.isConnected) return false;
@@ -401,7 +410,10 @@ public final class ACSRemoteAccess implements RemoteAccess {
 	 */
 	@Override
 	public void setFilters(FiltersVector filters) {
-		acsSPS.setFilters(filters);
+		this.filters=filters;
+		if (acsSPS!=null) {
+			acsSPS.setFilters(filters);
+		}
 	}
 
 	/* (non-Javadoc)
@@ -412,7 +424,10 @@ public final class ACSRemoteAccess implements RemoteAccess {
 		if (audience==null) {
 			throw new IllegalArgumentException("The audience can't be null");
 		}
-		acsSPS.setAudience(audience);
+		this.audience=audience;
+		if (acsSPS!=null) {
+			acsSPS.setAudience(audience);
+		}
 		
 	}
 	
