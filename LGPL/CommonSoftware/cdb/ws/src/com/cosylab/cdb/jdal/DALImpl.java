@@ -25,6 +25,7 @@ import javax.xml.parsers.SAXParserFactory;
 import org.omg.CORBA.ORB;
 import org.omg.PortableServer.POA;
 import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 
 import alma.acs.logging.AcsLogLevel;
 import alma.acs.logging.ClientLogManager;
@@ -313,16 +314,15 @@ public class DALImpl extends JDALPOA implements Recoverer {
 	 * @throws AcsJCDBRecordDoesNotExistEx
 	 * @throws AcsJCDBXMLErrorEx
 	 */
-	public XMLHandler loadRecords(String curl, boolean toString)
-		throws AcsJCDBRecordDoesNotExistEx, AcsJCDBXMLErrorEx{
+	public XMLHandler loadRecords(String curl, boolean toString) throws AcsJCDBRecordDoesNotExistEx, AcsJCDBXMLErrorEx {
 
 		// create hierarchy of all nodes if it is not created yet 
 		if( rootNode == null) {
-			//no Error throwed
+			//no Error thrown
 			rootNode = DALNode.getRoot(m_root);
 		}
 
-		//no Error throwed
+		//no Error thrown
 		String strFileCurl = curl;
 		String strNodeCurl = "";
 		DALNode curlNode = null;
@@ -336,15 +336,13 @@ public class DALImpl extends JDALPOA implements Recoverer {
 		    }else break;
 		}
 		
-		m_logger.log(AcsLogLevel.DEBUG, "loadRecords(curl="+curl+"), strFileCurl="+strFileCurl+", strNodeCurl="+ strNodeCurl);
-	    	if(strFileCurl == null) {
-		    m_logger.log(AcsLogLevel.NOTICE,"Record does not exists: " + curl);
-		    AcsJCDBRecordDoesNotExistEx recordDoesNotExist = 
-		        new AcsJCDBRecordDoesNotExistEx();
-		    recordDoesNotExist.setCurl(curl);
-		    throw recordDoesNotExist; 
-	        }
-		//no Error throwed
+		m_logger.log(AcsLogLevel.DEBUG, "loadRecords(curl=" + curl + "), strFileCurl=" + strFileCurl + ", strNodeCurl=" + strNodeCurl);
+		if (strFileCurl == null) {
+			AcsJCDBRecordDoesNotExistEx recordDoesNotExist = new AcsJCDBRecordDoesNotExistEx();
+			recordDoesNotExist.setCurl(curl);
+			throw recordDoesNotExist;
+		}
+		// no Error thrown
 		if(curlNode.isSimple()){
 			m_logger.log(AcsLogLevel.DEBUG, "loadRecords(curl="+curl+"), curlNode is Simple");
 			if(curl.equals(strFileCurl)){
@@ -371,40 +369,34 @@ public class DALImpl extends JDALPOA implements Recoverer {
 			//xmlSolver.closeElement();
 			     return xmlSolver;
 			}else{
-			    //here we must to return the node inside the xmlSolver with curl= strNodeCurl		
+			    //here we must return the node inside the xmlSolver with curl= strNodeCurl		
 			    xmlSolver = new XMLHandler(false);
 		 	    xmlSolver.setMarkArrays(1);
 			    xmlSolver.setAutoCloseStartingElement(false);
 			    parseNode(curlNode, xmlSolver);
 			    return xmlSolver.getChild(strNodeCurl);
 			}
-		} catch (AcsJCDBXMLErrorEx e) {
-			e.setCurl(curl);
-			throw e;
 		} catch (AcsJCDBRecordDoesNotExistEx e){
 			e.setCurl(strFileCurl+e.getCurl());
 			throw e;
-		} catch (Throwable t) {
-			String info = "SAXException " + t;
-		        //CDBXMLError xmlErr = new CDBXMLError(info);	
-			AcsJCDBXMLErrorEx cdbxmlErr = new AcsJCDBXMLErrorEx(t);
-			cdbxmlErr.setErrorString(info);
-			m_logger.log(AcsLogLevel.INFO,info); 
+		} catch (SAXParseException e) {
+			AcsJCDBXMLErrorEx cdbxmlErr = new AcsJCDBXMLErrorEx();
+			cdbxmlErr.setErrorString("SAXParseException: " + e.getMessage());
+			cdbxmlErr.setCurl(curl);
+			cdbxmlErr.setFilename(e.getSystemId() + ", line=" + e.getLineNumber());
+			throw cdbxmlErr;
+		} catch (Throwable thr) {
+			AcsJCDBXMLErrorEx cdbxmlErr = new AcsJCDBXMLErrorEx(thr);
+			cdbxmlErr.setCurl(curl);
 			throw cdbxmlErr;
 		}
 	}
 
 	private XMLHandler loadRecord(String curl, boolean toString)
 		throws AcsJCDBRecordDoesNotExistEx, AcsJCDBXMLErrorEx {
-	    return loadRecord(curl, toString, false);
-	}
-	
-	private XMLHandler loadRecord(String curl, boolean toString, boolean silent)
-		throws AcsJCDBRecordDoesNotExistEx, AcsJCDBXMLErrorEx {
 		String xmlPath = getRecordPath(curl);
 		File xmlFile = new File(xmlPath);
 		if (!xmlFile.exists()) {
-			if (!silent) m_logger.log(AcsLogLevel.NOTICE,"Record does not exists: " + curl); 
 			AcsJCDBRecordDoesNotExistEx recordDoesNotExist = 
 			    new AcsJCDBRecordDoesNotExistEx();
 			recordDoesNotExist.setCurl(curl);
@@ -418,22 +410,18 @@ public class DALImpl extends JDALPOA implements Recoverer {
 			saxParser.parse(xmlFile, xmlSolver);
 			if (xmlSolver.m_errorString != null) {
 				String info = "XML parser error: " + xmlSolver.m_errorString;
-				if (!silent) m_logger.log(AcsLogLevel.NOTICE, info);
-				
 				//CDBXMLError xmlErr = new CDBXMLError(info);
 				AcsJCDBXMLErrorEx cdbxmlErr = new AcsJCDBXMLErrorEx();
 				cdbxmlErr.setFilename(xmlPath);
 				cdbxmlErr.setCurl(curl);
 				cdbxmlErr.setErrorString(info);
 				throw cdbxmlErr;
-
 			}
 			return xmlSolver;
 		} catch (AcsJCDBXMLErrorEx cdbxmlErr) {
 			throw cdbxmlErr;
 		} catch (Throwable t) {
 			String info = "SAXException " + t;
-			if (!silent) m_logger.log(AcsLogLevel.NOTICE, info);
 			//CDBXMLError xmlErr = new CDBXMLError(info);
 			AcsJCDBXMLErrorEx cdbxmlErr = new AcsJCDBXMLErrorEx(t);
 			cdbxmlErr.setCurl(curl);
@@ -443,23 +431,26 @@ public class DALImpl extends JDALPOA implements Recoverer {
 	}
 
 	/**
-	 * returns full expanded XML string 
+	 * returns full expanded XML string
 	 */
 	public synchronized String get_DAO(String curl) throws CDBRecordDoesNotExistEx, CDBXMLErrorEx {
-		try{
-		    if(curl.lastIndexOf('/') == curl.length()-1)
-			curl = curl.substring(0,curl.length()-1);
-		    XMLHandler xmlSolver = loadRecords(curl, true);
-		if (xmlSolver == null)
-			return null;
-		
-		m_logger.log(AcsLogLevel.INFO, "Returning XML record for: " + curl);
-		return xmlSolver.toString(false);
-		}catch(AcsJCDBXMLErrorEx e){
-			String smsg = "XML Error \tCURL='" + e.getCurl()+"'\n\t\tFilename='"+e.getFilename()+"'\n\t\tNodename='"+e.getNodename()+"'\n\t\tMSG='"+e.getErrorString()+"'";
-			m_logger.log(AcsLogLevel.NOTICE, smsg, e);	
+		try {
+			if (curl.lastIndexOf('/') == curl.length() - 1)
+				curl = curl.substring(0, curl.length() - 1);
+			XMLHandler xmlSolver = loadRecords(curl, true);
+			if (xmlSolver == null) {
+				// @TODO: shouldn't loadRecords be fixed to throw an exception instead??
+				m_logger.warning("xmlSolver was null.");
+				return null;				
+			}
+
+			m_logger.log(AcsLogLevel.INFO, "Returning XML record for: " + curl);
+			return xmlSolver.toString(false);
+		} catch (AcsJCDBXMLErrorEx e) {
+			m_logger.log(AcsLogLevel.NOTICE, "Failed to read curl '" + curl + "'.", e);
 			throw e.toCDBXMLErrorEx();
-		}catch(AcsJCDBRecordDoesNotExistEx e){
+		} catch (AcsJCDBRecordDoesNotExistEx e) {
+			m_logger.log(AcsLogLevel.NOTICE, "Curl '" + e.getCurl() + "' does not exist.");
 			throw e.toCDBRecordDoesNotExistEx();
 		}
 	}
@@ -485,15 +476,16 @@ public class DALImpl extends JDALPOA implements Recoverer {
 		try{
 			xmlSolver  = loadRecords(curl, false);
 		}catch(AcsJCDBXMLErrorEx e){
-			String smsg = "XML Error \tCURL='" + e.getCurl()+"'\n\t\tFilename='"+e.getFilename()+"'\n\t\tNodename='"+e.getNodename()+"'\n\t\tMSG='"+e.getErrorString()+"'";
-			m_logger.log(AcsLogLevel.NOTICE, smsg, e);	
+			m_logger.log(AcsLogLevel.NOTICE, "Failed to read curl '" + curl + "'.", e);
 			throw e.toCDBXMLErrorEx();
 		}catch(AcsJCDBRecordDoesNotExistEx e){
+			m_logger.log(AcsLogLevel.NOTICE, "Curl '" + e.getCurl() + "' does not exist.");
 			throw e.toCDBRecordDoesNotExistEx();
 		}
-		if (xmlSolver == null)
+		if (xmlSolver == null) {
+			// @TODO can this happen? Should we not throw an exception then?
 			return null;
-
+		}
 		try {
 			DAO href = null;
 
@@ -855,7 +847,7 @@ public class DALImpl extends JDALPOA implements Recoverer {
 
 			XMLHandler xmlSolver = null;
 	        try {
-	            xmlSolver = loadRecord(curl, false, true);
+	            xmlSolver = loadRecord(curl, false);
 	        } catch (Throwable th) {
 	            // noop
 	        }
