@@ -12,6 +12,7 @@ import java.awt.event.ActionEvent;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
+import java.awt.Point;
 import java.util.Calendar;
 
 import com.cosylab.logging.LoggingClient;
@@ -45,13 +46,13 @@ public class StatsDlg extends JDialog
 	 */
 	public StatsDlg(LoggingClient mainWin) {
 		super();
+		if (mainWin==null) {
+			throw new IllegalArgumentException("The LoggingClient can't be null");
+		}
 		logging =mainWin;
 		
 		initialize();
         pack();
-        // Start the thread
-        refreshGUI();
-        setVisible(true);
 	}
 	
 	/**
@@ -112,6 +113,21 @@ public class StatsDlg extends JDialog
 		mainPnl.add(buttonPanel,BorderLayout.SOUTH);
 		
 		setContentPane(mainPnl);
+	}
+	/**
+	 * Override <code>setVisible()</code> to move the statistic window
+	 * over the logging client and in front of other windows
+	 */
+	@Override
+	public void setVisible(boolean visible) {
+		super.setVisible(visible);
+		// Move the statistic win on top of jlog
+		if (visible && isShowing()) {
+			Point loggingPos = logging.getLocationOnScreen();
+			setLocation(loggingPos);
+			toFront();
+			refreshGUI();
+		}
 	}
 	
 	/**
