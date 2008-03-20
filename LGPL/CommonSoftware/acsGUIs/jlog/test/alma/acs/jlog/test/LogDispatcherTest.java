@@ -37,12 +37,11 @@ import com.cosylab.logging.engine.log.ILogEntry.Field;
 
 import alma.ACSLoggingLog.LogBinaryRecord;
 import alma.ACSLoggingLog.NameValue;
-import alma.acs.logging.level.AcsLogLevelDefinition;
 import alma.acs.util.StopWatch;
 
 /**
  * A class to test the dispatching of logs in XML and binary format.
- * It test the flow of the logs between they are added in the ACSLogRetrieval 
+ * It tests the flow of the logs between they are added in the ACSLogRetrieval 
  * till the moment they are published to the listeners.
  * 
  * @author acaproni
