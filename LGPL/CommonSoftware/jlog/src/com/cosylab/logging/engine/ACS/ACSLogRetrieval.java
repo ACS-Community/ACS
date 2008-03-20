@@ -19,7 +19,7 @@
 
 /** 
  * @author  acaproni   
- * @version $Id: ACSLogRetrieval.java,v 1.26 2008/03/19 17:03:29 acaproni Exp $
+ * @version $Id: ACSLogRetrieval.java,v 1.27 2008/03/20 08:42:36 acaproni Exp $
  * @since    
  */
 
@@ -81,7 +81,7 @@ public class ACSLogRetrieval extends Thread {
 	 * 
 	 * @see <code>LCEngine.setFilters()</code>
 	 */
-	private EngineAudienceHelper audience; 
+	private EngineAudienceHelper audience=EngineAudienceHelper.NO_AUDIENCE; 
 	
 	/**
 	 * The filters to apply before publishing logs to the listeners.
