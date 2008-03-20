@@ -57,6 +57,7 @@ import com.cosylab.logging.client.DetailedLogTable;
 import com.cosylab.logging.engine.ACS.ACSRemoteErrorListener;
 import com.cosylab.logging.engine.ACS.ACSRemoteLogListener;
 import com.cosylab.logging.engine.ACS.ACSLogConnectionListener;
+import com.cosylab.logging.engine.ACS.EngineAudienceHelper;
 import com.cosylab.logging.engine.ACS.LCEngine;
 import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.search.SearchDialog;
@@ -296,12 +297,10 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
             		getLCModel1().setTimeFrame(userPreferences.getMillisecondsTimeFrame());
             	}
             } else if (e.getSource()==menuBar.getOperatorMode()) {
-            	System.out.println("Operator mode");
+            	getEngine().setAudience(EngineAudienceHelper.OPERATOR);
             	
             } else if (e.getSource()==menuBar.getEngineeringMode()) {
-            	if (engine!=null) {
-            		engine.setFilters(null, false);
-            	}
+            	getEngine().setAudience(EngineAudienceHelper.NO_AUDIENCE);
             } else {
             	System.err.println("Unrecognized ActionEvent "+e);
             }
