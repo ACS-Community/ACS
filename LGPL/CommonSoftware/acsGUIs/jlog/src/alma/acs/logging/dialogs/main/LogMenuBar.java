@@ -24,6 +24,7 @@ package alma.acs.logging.dialogs.main;
 import java.awt.Toolkit;
 import java.awt.event.ActionListener;
 
+import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenu;
@@ -180,6 +181,9 @@ public class LogMenuBar extends JMenuBar {
         expertMenu.add(modeMenu);
         modeMenu.add(getOperatorMode());
         modeMenu.add(getEngineeringMode());
+        ButtonGroup group = new ButtonGroup();
+        group.add(getOperatorMode());
+        group.add(getEngineeringMode());
         expertMenu.addSeparator();
         expertMenu.add(getSuspendMenuItem());
         expertMenu.add(getPrefsMenuItem());
@@ -372,6 +376,9 @@ public class LogMenuBar extends JMenuBar {
 		exitMenuItem.addActionListener(actionListener); // Exit
 		fieldsMenuItem.addActionListener(actionListener); // Fields
 		filtersMenuItem.addActionListener(actionListener); // Filters
+		
+		operatorMode.addActionListener(actionListener); // Operator mode
+		engineeringMode.addActionListener(actionListener); // Engineering mode
 	}
 	
 	public JCheckBoxMenuItem getViewToolbarMenuItem() {
