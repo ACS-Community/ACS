@@ -25,12 +25,14 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.WindowEvent;
 
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -103,20 +105,18 @@ import com.cosylab.logging.stats.StatsDlg;
 public class LoggingClient extends JRootPane implements ACSRemoteLogListener, ACSLogConnectionListener, ACSRemoteErrorListener
 {
 	/**
-	 * The default audience.
+	 * The name of the property to set for enabling the operator mode at startup.
 	 * 
-	 * When initializing the audience, at startup, the LoggingClient
-	 * searches for the property and if such a property is not found then 
-	 * the default is used.
+	 * If the property is not found, NO_AUDIENCE is set in the engine
 	 * 
-	 * @see 
-	 */
-	private static final EngineAudienceHelper DEFAULT_AUDIENCE = EngineAudienceHelper.NO_AUDIENCE;
-	
-	/**
-	 * The name of the property to set for enabling the operator mode at startup
+	 * @sse <code>initAudience()</code>
 	 */
 	private static final String AUDIENCE_PROPERTY = "jlog.mode.operator";
+	
+	/**
+	 * The audience in use by the engine and shown in the status line
+	 */
+	private JLabel audienceLbl = new JLabel();
 	
 	private ArchiveConnectionManager archive;
 	
@@ -135,7 +135,7 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 	
 	// The panel with the suspend btn, the filter string...
 	// It is immediately under the table of logs
-	private JPanel filterStatusPnl = null;
+	private JPanel statusLinePnl = null;
 
 	private JScrollPane statusAreaPanel = null; // The bottom scrolling panel with the status messages
 	private JScrollPane detailedInfoScrollPane = null;
@@ -313,8 +313,10 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
             	}
             } else if (e.getSource()==menuBar.getOperatorMode()) {
             	getEngine().setAudience(EngineAudienceHelper.OPERATOR);
+            	audienceLbl.setText(" "+EngineAudienceHelper.OPERATOR.val+" ");
             } else if (e.getSource()==menuBar.getEngineeringMode()) {
             	getEngine().setAudience(EngineAudienceHelper.NO_AUDIENCE);
+            	audienceLbl.setText(" Engineering ");
             } else {
             	System.err.println("Unrecognized ActionEvent "+e);
             }
@@ -888,7 +890,7 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 				ivjJPanel2 = new javax.swing.JPanel();
 				ivjJPanel2.setName("JPanel2");
 				ivjJPanel2.setLayout(new java.awt.BorderLayout());
-				ivjJPanel2.add(getFilterStatusPnl(), "South");
+				ivjJPanel2.add(getStatusLinePnl(), "South");
 				ivjJPanel2.add(getJSplitPane2(), "Center");
 
 			}
@@ -931,9 +933,9 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 	 * Returns the JPanel4 property value.
 	 * @return javax.swing.JPanel
 	 */
-	private JPanel getFilterStatusPnl()
+	private JPanel getStatusLinePnl()
 	{
-		if (filterStatusPnl == null)
+		if (statusLinePnl == null)
 		{
 			try
 			{
@@ -949,9 +951,9 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 				// Create a label to show the status of the connection with the DB
 				connectionDBLbl = new JLabel();
 				
-				filterStatusPnl = new javax.swing.JPanel();
-				filterStatusPnl.setName("JPanel4");
-				filterStatusPnl.setLayout(new java.awt.GridBagLayout());
+				statusLinePnl = new javax.swing.JPanel();
+				statusLinePnl.setName("Status_line");
+				statusLinePnl.setLayout(new java.awt.GridBagLayout());
 				
 				GridBagConstraints constraintsFilterStatus = new GridBagConstraints();
 				constraintsFilterStatus.gridx = 0;
@@ -960,26 +962,37 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 				constraintsFilterStatus.anchor = GridBagConstraints.WEST;
 				constraintsFilterStatus.weightx = 1.0;
 				constraintsFilterStatus.insets = new Insets(1, 2, 1, 1);
-				filterStatusPnl.add(getFilterStatus(), constraintsFilterStatus);
+				statusLinePnl.add(getFilterStatus(), constraintsFilterStatus);
 
 				GridBagConstraints constraintsProgressBar = new GridBagConstraints();
 		        constraintsProgressBar.gridx=1;
 		        constraintsProgressBar.gridy=0;
 		        constraintsProgressBar.insets = new Insets(1,1,1,1);
 		        progressBar.setVisible(false);
-		        filterStatusPnl.add(progressBar,constraintsProgressBar);
+		        statusLinePnl.add(progressBar,constraintsProgressBar);
+		        
+		        GridBagConstraints constraintsAudience = new GridBagConstraints();
+		        constraintsAudience.gridx=2;
+		        constraintsAudience.gridy=0;
+		        constraintsAudience.insets = new Insets(1,1,1,1);
+		        audienceLbl.setVisible(true);
+		        audienceLbl.setBorder(BorderFactory.createLoweredBevelBorder());
+		        Font fnt = audienceLbl.getFont();
+		        Font newFont = fnt.deriveFont(fnt.getSize()-2);
+		        audienceLbl.setFont(newFont);
+		        statusLinePnl.add(audienceLbl,constraintsAudience);
 				
 		        GridBagConstraints constraintsConnectionDBStatus = new GridBagConstraints();
-				constraintsConnectionDBStatus.gridx = 2;
+				constraintsConnectionDBStatus.gridx = 3;
 				constraintsConnectionDBStatus.gridy = 0;
 				constraintsConnectionDBStatus.insets = new Insets(1, 2, 1, 2);
-				filterStatusPnl.add(connectionDBLbl,constraintsConnectionDBStatus);
+				statusLinePnl.add(connectionDBLbl,constraintsConnectionDBStatus);
 		        
 				GridBagConstraints constraintsConnectionStatus = new GridBagConstraints();
-				constraintsConnectionStatus.gridx = 3;
+				constraintsConnectionStatus.gridx = 4;
 				constraintsConnectionStatus.gridy = 0;
 				constraintsConnectionStatus.insets = new Insets(1, 2, 1, 2);
-				filterStatusPnl.add(connectionStatusLbl,constraintsConnectionStatus);
+				statusLinePnl.add(connectionStatusLbl,constraintsConnectionStatus);
 			}
 			catch (java.lang.Throwable ivjExc)
 			{
@@ -987,7 +1000,7 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 				handleException(ivjExc);
 			}
 		}
-		return filterStatusPnl;
+		return statusLinePnl;
 	}
 
 	/**
@@ -1495,6 +1508,7 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 		if (Boolean.getBoolean(AUDIENCE_PROPERTY)) {
 			menuBar.getOperatorMode().doClick();
 		} else {
+			// Default
 			menuBar.getEngineeringMode().doClick();
 		}
 	}
