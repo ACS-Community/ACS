@@ -38,7 +38,7 @@ import alma.acs.logging.AcsLogLevel;
 
 public class ClearCache {
 	public static void main(String args[]) {
-		Logger m_logger = ClientLogManager.getAcsLogManager().getLoggerForApplication("ClearCache", true);
+		Logger m_logger = ClientLogManager.getAcsLogManager().getLoggerForApplication("ClearCache", false);
 		try {
 			String curl = null;
 			String strIOR = null;

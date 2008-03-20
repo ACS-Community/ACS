@@ -55,7 +55,7 @@ public class DALRead {
 
 	public static void main(String args[]) {
 
-	        Logger m_logger = ClientLogManager.getAcsLogManager().getLoggerForApplication("DALRead", true);
+	        Logger m_logger = ClientLogManager.getAcsLogManager().getLoggerForApplication("DALRead", false);
 
 		try {
 			String curl;
