@@ -1,102 +1,3 @@
-/*
-#include <stdio.h>
-#include <pthread.h>
-  
-  
-class TestThread
-{
-public:
-    TestThread() {if (_mutex == NULL )
-                    {
-                        _mutex = new pthread_mutex_t;
-                        pthread_mutex_init(_mutex,0);
-                    }
-                }
-    ~TestThread() {}
-    void start(int input_parameter);
-    static void *entryPoint(void *pthis);
-    void *run();
-private:
-    int _input_parameter;
-    pthread_t _thread;
-    static pthread_mutex_t* _mutex;
-};
-
- 
-
-#include <unistd.h>
-#include <stdlib.h>
-#include <string.h>
-  
-int STACKSIZE;
-  
-pthread_mutex_t* TestThread::_mutex = NULL;
-void get_thread_stack_info();
-  
-int main(int argc, char **argv)
-{
-    if(argc > 2)
-        STACKSIZE = 65536*atoi(argv[2]);
-    else
-        STACKSIZE = 65536*32;
-//    STACKSIZE = 10485760;
-    get_thread_stack_info();
-    for ( int i = 0; i < atoi(argv[1]); i++)
-    {
-        TestThread tt;
-  
-        printf("%i\n",i);
-        tt.start(i);
-    }
-    sleep(10);
-}
-void get_thread_stack_info()
-{
-    size_t stacksize;
-    pthread_attr_t attr;
-    pthread_attr_init(&attr);
-    pthread_attr_getstacksize(&attr, &stacksize);
-    printf("default stacksize: %i\n",stacksize);
-    pthread_attr_setstacksize(&attr,STACKSIZE);
-    pthread_attr_getstacksize(&attr, &stacksize);
-    printf("new stacksize: %i\n",stacksize);
-    //printf("PTHREAD_STACK_SIZE: %i\n",PTHREAD_STACK_SIZE);
-}
-  
-void *TestThread::run()
-{
-  printf("GOT TO thread: %i\n", _input_parameter);
-  pthread_mutex_unlock(_mutex);
-  sleep(10);
-    
-  return (void *)0;
-    
-}
-  
-void *TestThread::entryPoint(void *pthis)
-{
-  //fprintf(stdout,"GOT TO entryPoint()\n");
-  TestThread *pt = (TestThread*)pthis;
-  pt->run();
-    
-  return (void *)0;
-}
-  
-void TestThread::start(int input_parameter)
-{
-    pthread_attr_t attr;
-    pthread_attr_init(&attr);
-    pthread_attr_setstacksize(&attr,STACKSIZE);
-    pthread_mutex_lock(_mutex);
-    _input_parameter = input_parameter;
-    int ret = pthread_create( &_thread, &attr, TestThread::entryPoint, this);
-    printf("ret: %i : [%s]\n",ret, strerror(ret));
-                      
-} 
-
-*/
-
-
 #include <stdio.h>
 #include <sys/types.h>
 #include <pthread.h>
@@ -148,19 +49,24 @@ int main(int argc, char* argv[]) {
     size_t stacksize;
     int STACKSIZE =  1024*1024;
 
-    if (argc != 2)
+    if (argc < 2)
 	{
-	printf ("Usage: %s n\n  where n is no. of threads\n",argv[0]);
+	printf ("Usage: %s threads# [stacksize in kB]\n",argv[0]);
 	return 1;
 	}
 
-    n=atoi(argv[1]);
+    n = atoi(argv[1]);
     
     if ((n < 1) || (n > MAX_THREAD))
 	{
 	printf ("The # of thread should between 1 and %d.\n",MAX_THREAD);
 	exit(1);
 	}
+    
+    if (n>2)
+	STACKSIZE = atoi(argv[2]) * 1024;
+	
+
 
     pthread_attr_init(&pthread_custom_attr);
 
