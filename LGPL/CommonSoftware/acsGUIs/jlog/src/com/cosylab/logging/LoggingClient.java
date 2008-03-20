@@ -40,6 +40,7 @@ import javax.swing.JRootPane;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JViewport;
+import javax.swing.SwingUtilities;
 import javax.swing.ToolTipManager;
 import javax.swing.event.MenuEvent;
 
@@ -149,6 +150,12 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
      * The object is built the first time the user requests a search
      */
     private SearchDialog searchDialog;
+    
+    /**
+     * Statistic dialog.
+     * The object is built the first time the user selects the menu item
+     */
+    private StatsDlg statsDlg;
 
 	private EventHandler eventHandler = new EventHandler();
 
@@ -246,7 +253,13 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
                 toolBar.setVisible(menuBar.getViewToolbarMenuItem().getState());
             } else if (e.getSource()==menuBar.getStatisticsMenuItem()) {
             	// Show the statistics dialog
-            	StatsDlg statsDlg = new StatsDlg(LoggingClient.this); 
+            	class ShowStatisticDlg extends Thread {
+            		public void run() {
+            			getStatisticDialog().setVisible(true);
+            		}
+            	}
+            	ShowStatisticDlg showStat = new ShowStatisticDlg();
+            	SwingUtilities.invokeLater(showStat);
             } else if (e.getSource()==menuBar.getViewErrorLogMenuItem()) { 
             		errorDialog.setVisible(true);
             } else if (e.getSource()==menuBar.getViewStatusAreaMenuItem()) {
@@ -281,6 +294,13 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
             		userPreferences.setTimeFrame(dlg.getTimeFrame());
             		getLCModel1().setMaxLog(userPreferences.getMaxNumOfLogs());
             		getLCModel1().setTimeFrame(userPreferences.getMillisecondsTimeFrame());
+            	}
+            } else if (e.getSource()==menuBar.getOperatorMode()) {
+            	System.out.println("Operator mode");
+            	
+            } else if (e.getSource()==menuBar.getEngineeringMode()) {
+            	if (engine!=null) {
+            		engine.setFilters(null, false);
             	}
             } else {
             	System.err.println("Unrecognized ActionEvent "+e);
@@ -1414,6 +1434,11 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 		errorDialog.setVisible(false);
 		errorDialog.dispose();
 		errorDialog=null;
+		if (statsDlg!=null) {
+			statsDlg.setVisible(false);
+			statsDlg.dispose();
+			statsDlg=null;
+		}
 	}
 	
 	/**
@@ -1435,6 +1460,18 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 		str.append(xml);
 		str. append("\n The log has been lost.\n\n");
 		errorDialog.appendText(str.toString());
+	}
+	
+	/**
+	 * Return a dialog showing the statistics
+	 * 
+	 * @return The dialog showing the statistic
+	 */
+	public StatsDlg getStatisticDialog() {
+		if (statsDlg==null) {
+			statsDlg=new StatsDlg(this);
+		}
+		return statsDlg;
 	}
 }
 
