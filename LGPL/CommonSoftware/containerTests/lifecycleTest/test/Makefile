@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.1 2008/03/24 07:43:35 cparedes Exp $"
+# "@(#) $Id: Makefile,v 1.2 2008/03/24 08:17:17 cparedes Exp $"
 #
 # Makefile of ........
 #
@@ -53,7 +53,7 @@ DEBUG = on
 #
 # Scripts (public and local)
 # ----------------------------
-SCRIPTS         = 
+SCRIPTS         = runMultipleComponents.sh 
 
 PY_SCRIPTS_L    = 
 
