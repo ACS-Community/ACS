@@ -20,7 +20,7 @@
 *
 *
 *
-* "@(#) $Id: baciTestImpl.cpp,v 1.3 2008/03/25 15:00:54 acaproni Exp $"
+* "@(#) $Id: baciTestImpl.cpp,v 1.4 2008/03/25 15:44:03 acaproni Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -31,7 +31,7 @@
 
 #include <baciTestImpl.h>
 
-ACE_RCSID(acsexmpl, baciTestImpl, "$Id: baciTestImpl.cpp,v 1.3 2008/03/25 15:00:54 acaproni Exp $")
+ACE_RCSID(acsexmpl, baciTestImpl, "$Id: baciTestImpl.cpp,v 1.4 2008/03/25 15:44:03 acaproni Exp $")
 
 using namespace baci;
 
@@ -57,6 +57,13 @@ ACS::ROdouble_ptr BaciPropTest::testDoubleVar ()
 
     ACS::ROdouble_var prop = ACS::ROdouble::_narrow(m_testDoubleVar_sp->getCORBAReference());
     return prop._retn();
+}
+
+void BaciPropTest::execute() throw (ACSErr::ACSbaseExImpl)
+{
+	ACS::Time timestamp;
+		    
+	m_testDoubleVar_sp->getDevIO()->write(0, timestamp);
 }
 
 void BaciPropTest::setDoubleVar(CORBA::Float val) throw (CORBA::SystemException) {

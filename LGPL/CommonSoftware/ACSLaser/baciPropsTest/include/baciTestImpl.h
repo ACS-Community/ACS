@@ -21,7 +21,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: baciTestImpl.h,v 1.2 2008/03/25 14:32:27 acaproni Exp $"
+* "@(#) $Id: baciTestImpl.h,v 1.3 2008/03/25 15:44:03 acaproni Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -63,6 +63,9 @@ class BaciPropTest: public CharacteristicComponentImpl,     //Standard component
      * @param containerService The pointer to the container services
      */
 	  BaciPropTest(ACE_CString name, maci::ContainerServices * containerServices);
+	  
+	  virtual void execute() throw (ACSErr::ACSbaseExImpl);
+
     
     /**
      * Destructor
