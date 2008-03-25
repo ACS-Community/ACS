@@ -4,7 +4,7 @@
        xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
-<testVar
+<testDoubleVar
         description="Test property"
         units="int"
         alarm_low_on="-110.0"
