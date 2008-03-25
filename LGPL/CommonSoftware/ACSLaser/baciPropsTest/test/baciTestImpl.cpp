@@ -20,7 +20,7 @@
 *
 *
 *
-* "@(#) $Id: baciTestImpl.cpp,v 1.2 2008/03/25 14:33:07 acaproni Exp $"
+* "@(#) $Id: baciTestImpl.cpp,v 1.3 2008/03/25 15:00:54 acaproni Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -31,13 +31,13 @@
 
 #include <baciTestImpl.h>
 
-ACE_RCSID(acsexmpl, baciTestImpl, "$Id: baciTestImpl.cpp,v 1.2 2008/03/25 14:33:07 acaproni Exp $")
+ACE_RCSID(acsexmpl, baciTestImpl, "$Id: baciTestImpl.cpp,v 1.3 2008/03/25 15:00:54 acaproni Exp $")
 
 using namespace baci;
 
 BaciPropTest::BaciPropTest(ACE_CString name, maci::ContainerServices * containerServices) : 
     CharacteristicComponentImpl(name, containerServices),
-    m_testDoubleVar_sp(new ROdouble(name+":testVar", getComponent()),this)
+    m_testDoubleVar_sp(new ROdouble(name+":testDoubleVar", getComponent()),this)
 {
     ACS_TRACE("::BaciPropTest::BaciPropTest");
 }
@@ -59,8 +59,10 @@ ACS::ROdouble_ptr BaciPropTest::testDoubleVar ()
     return prop._retn();
 }
 
-void BaciPropTest::setDoubleVar(CORBA::Float) throw (CORBA::SystemException) {
-	
+void BaciPropTest::setDoubleVar(CORBA::Float val) throw (CORBA::SystemException) {
+	ACS::Time timestamp;
+	    
+	m_testDoubleVar_sp->getDevIO()->write(val, timestamp);
 }
 
 
