@@ -16,7 +16,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.2 2008/03/17 14:45:50 acaproni Exp $"
+# "@(#) $Id: Makefile,v 1.3 2008/03/25 14:06:19 acaproni Exp $"
 #
 # Makefile of ........
 #
@@ -39,7 +39,29 @@
 #
 # additional include and library search paths
 #USER_INC = 
-#USER_LIB = 
+USER_LIB =      -lACE \
+                -lTAO \
+                -lTAO_DsLogAdmin \
+                -lTAO_CosNaming \
+                -lTAO_IORTable \
+                -lTAO_PortableServer \
+                -lTAO_Svc_Utils \
+                -lTAO_CosTrading \
+                -lTAO_CosNotification \
+                -lTAO_DynamicAny \
+                -lTAO_IFR_Client \
+                -lTAO_CosProperty \
+                -lacsutil \
+                -lcdb \
+                -llogging \
+                -lacscomponent \
+                -lbaci \
+                -lmaci \
+                -lmaciClient \
+                -lacserr \
+                -lm \
+                -lloki \
+                -lACSErrTypeCommon
 
 #
 # MODULE CODE DESCRIPTION:
@@ -47,7 +69,7 @@
 # As a general rule:  public file are "cleaned" and "installed"  
 #                     local (_L) are not "installed".
 
-#
+
 # C programs (public and local)
 # -----------------------------
 EXECUTABLES     =
@@ -71,13 +93,11 @@ INCLUDES        =
 #
 # Libraries (public and local)
 # ----------------------------
-LIBRARIES       =
+LIBRARIES       = 
 LIBRARIES_L     =
 
 #
 # <brief description of lllll library>
-lllll_OBJECTS   =
-
 #
 # Scripts (public and local)
 # ----------------------------
