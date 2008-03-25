@@ -8,3 +8,5 @@ s/Process [0-9]* killed/Process xxxxx killed/g
 s/<date>[0-9]*<.date>/<date>......./g
 s/<nanos>[0-9]*<.nanos>/<nanos>......./g
 s/AlarmSevice instance IOR.*/AlarmSevice instance IOR: .../g
+s/Time:.*/Time: xx.xx/g
+s/Manager login done, handle .* obtained./Manager login done, handle xxxxxx obtained./g
