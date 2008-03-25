@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.1 2008/03/25 14:05:54 acaproni Exp $"
+# "@(#) $Id: Makefile,v 1.2 2008/03/25 15:09:07 acaproni Exp $"
 #
 # Makefile of ........
 #
@@ -142,15 +142,15 @@ USER_IDL =
 #
 # Jarfiles and their directories
 #
-JARFILES= 
-alSysManagerTest_DIRS=
+JARFILES= baciAlTest
+baciAlTest_DIRS=alma
 #
 # java sources in Jarfile on/off
 DEBUG= 
 #
 # ACS XmlIdl generation on/off
 #
-XML_IDL= 
+XML_IDL=On 
 #
 # Java Component Helper Classes generation on/off
 #
