@@ -33,15 +33,13 @@ module alarmsystemPropTest
 interface BaciPropTest :  ACS::CharacteristicComponent
 	{
 		// Methods to change the value of the property and trigger an alarm
-		void valueTooLow();
-		void valueNormal();
-		void valueTooHigh();
+		void setDoubleVar(in float val);
 	
 		/**
 		 * The property to set of the limits defined in the CDB
 		 * and checks if baci sends an alarm
 		 */
-		readonly attribute ACS::ROdouble testVar;
+		readonly attribute ACS::ROdouble testDoubleVar;
         };
 };
 

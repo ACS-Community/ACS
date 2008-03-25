@@ -21,7 +21,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: baciTestImpl.h,v 1.1 2008/03/25 14:04:18 acaproni Exp $"
+* "@(#) $Id: baciTestImpl.h,v 1.2 2008/03/25 14:32:27 acaproni Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -73,9 +73,7 @@ class BaciPropTest: public CharacteristicComponentImpl,     //Standard component
     /**
      * 
      */   
-    virtual void valueTooLow() throw (CORBA::SystemException); 
-    virtual void valueTooHigh() throw (CORBA::SystemException);
-    virtual void valueNormal() throw (CORBA::SystemException);
+    virtual void setDoubleVar(CORBA::Float) throw (CORBA::SystemException); 
     
     /**
      * Returns a reference to the cmdEl property
@@ -85,14 +83,14 @@ class BaciPropTest: public CharacteristicComponentImpl,     //Standard component
        <br><hr>
        @endhtmlonly
      */
-    virtual ACS::ROdouble_ptr testVar() throw (CORBA::SystemException);
+    virtual ACS::ROdouble_ptr testDoubleVar() throw (CORBA::SystemException);
     
   private:
     
     /**
      *  The test variable
      */
-    SmartPropertyPointer<ROdouble> m_testVar_sp;
+    SmartPropertyPointer<ROdouble> m_testDoubleVar_sp;
 
 };
 /*\@}*/

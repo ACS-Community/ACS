@@ -20,7 +20,7 @@
 *
 *
 *
-* "@(#) $Id: baciTestImpl.cpp,v 1.1 2008/03/25 14:04:45 acaproni Exp $"
+* "@(#) $Id: baciTestImpl.cpp,v 1.2 2008/03/25 14:33:07 acaproni Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -31,13 +31,13 @@
 
 #include <baciTestImpl.h>
 
-ACE_RCSID(acsexmpl, baciTestImpl, "$Id: baciTestImpl.cpp,v 1.1 2008/03/25 14:04:45 acaproni Exp $")
+ACE_RCSID(acsexmpl, baciTestImpl, "$Id: baciTestImpl.cpp,v 1.2 2008/03/25 14:33:07 acaproni Exp $")
 
 using namespace baci;
 
 BaciPropTest::BaciPropTest(ACE_CString name, maci::ContainerServices * containerServices) : 
     CharacteristicComponentImpl(name, containerServices),
-    m_testVar_sp(new ROdouble(name+":testVar", getComponent()),this)
+    m_testDoubleVar_sp(new ROdouble(name+":testVar", getComponent()),this)
 {
     ACS_TRACE("::BaciPropTest::BaciPropTest");
 }
@@ -47,27 +47,19 @@ BaciPropTest::~BaciPropTest()
 }
 
 /* --------------------- [ CORBA interface ] ----------------------*/
-ACS::ROdouble_ptr BaciPropTest::testVar ()
+ACS::ROdouble_ptr BaciPropTest::testDoubleVar ()
     throw (CORBA::SystemException)
 {
-    if (m_testVar_sp == 0)
+    if (m_testDoubleVar_sp == 0)
 	{
 	return ACS::ROdouble::_nil();
 	}
 
-    ACS::ROdouble_var prop = ACS::ROdouble::_narrow(m_testVar_sp->getCORBAReference());
+    ACS::ROdouble_var prop = ACS::ROdouble::_narrow(m_testDoubleVar_sp->getCORBAReference());
     return prop._retn();
 }
 
-void BaciPropTest::valueTooLow() throw (CORBA::SystemException) {
-	
-}
-
-void BaciPropTest::valueTooHigh() throw (CORBA::SystemException) {
-	
-}
-
-void BaciPropTest::valueNormal()  throw (CORBA::SystemException) {
+void BaciPropTest::setDoubleVar(CORBA::Float) throw (CORBA::SystemException) {
 	
 }
 
