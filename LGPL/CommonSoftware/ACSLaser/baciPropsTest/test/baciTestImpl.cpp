@@ -20,7 +20,7 @@
 *
 *
 *
-* "@(#) $Id: baciTestImpl.cpp,v 1.4 2008/03/25 15:44:03 acaproni Exp $"
+* "@(#) $Id: baciTestImpl.cpp,v 1.5 2008/03/25 17:30:18 acaproni Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -31,13 +31,14 @@
 
 #include <baciTestImpl.h>
 
-ACE_RCSID(acsexmpl, baciTestImpl, "$Id: baciTestImpl.cpp,v 1.4 2008/03/25 15:44:03 acaproni Exp $")
+ACE_RCSID(acsexmpl, baciTestImpl, "$Id: baciTestImpl.cpp,v 1.5 2008/03/25 17:30:18 acaproni Exp $")
 
 using namespace baci;
 
 BaciPropTest::BaciPropTest(ACE_CString name, maci::ContainerServices * containerServices) : 
     CharacteristicComponentImpl(name, containerServices),
-    m_testDoubleVar_sp(new ROdouble(name+":testDoubleVar", getComponent()),this)
+    m_testDoubleVar_sp(new ROdouble(name+":testDoubleVar", getComponent()),this),
+    m_testPatternVar_sp(new ROEnumImpl<ACS_ENUM_T(alarmsystemPropTest::AlarmEnum), POA_alarmsystemPropTest::ROAlarmEnum>(name+":testPatternVar",getComponent()),this)
 {
     ACS_TRACE("::BaciPropTest::BaciPropTest");
 }
@@ -47,8 +48,7 @@ BaciPropTest::~BaciPropTest()
 }
 
 /* --------------------- [ CORBA interface ] ----------------------*/
-ACS::ROdouble_ptr BaciPropTest::testDoubleVar ()
-    throw (CORBA::SystemException)
+ACS::ROdouble_ptr BaciPropTest::testDoubleVar () throw (CORBA::SystemException)
 {
     if (m_testDoubleVar_sp == 0)
 	{
@@ -56,6 +56,17 @@ ACS::ROdouble_ptr BaciPropTest::testDoubleVar ()
 	}
 
     ACS::ROdouble_var prop = ACS::ROdouble::_narrow(m_testDoubleVar_sp->getCORBAReference());
+    return prop._retn();
+}
+
+::alarmsystemPropTest::ROAlarmEnum_ptr BaciPropTest::testPatternVar () throw (CORBA::SystemException)
+{
+    if (m_testPatternVar_sp == 0)
+	{
+	return ::alarmsystemPropTest::ROAlarmEnum::_nil();
+	}
+
+    ::alarmsystemPropTest::ROAlarmEnum_var prop = ::alarmsystemPropTest::ROAlarmEnum::_narrow(m_testPatternVar_sp->getCORBAReference());
     return prop._retn();
 }
 

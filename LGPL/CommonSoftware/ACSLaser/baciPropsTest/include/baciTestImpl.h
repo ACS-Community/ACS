@@ -21,7 +21,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: baciTestImpl.h,v 1.3 2008/03/25 15:44:03 acaproni Exp $"
+* "@(#) $Id: baciTestImpl.h,v 1.4 2008/03/25 17:30:03 acaproni Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -40,6 +40,8 @@
 
 ///Includes for each BACI property used in this example
 #include <baciROdouble.h>
+#include <baciROpattern.h>
+#include <enumpropROImpl.h>
 
 ///Include the smart pointer for properties
 #include <baciSmartPropertyPointer.h>
@@ -79,22 +81,26 @@ class BaciPropTest: public CharacteristicComponentImpl,     //Standard component
     virtual void setDoubleVar(CORBA::Float) throw (CORBA::SystemException); 
     
     /**
-     * Returns a reference to the cmdEl property
-     * Implementation of IDL interface for the property.
-     * @return pointer to read-only double property cmdEl
-     * @htmlonly
-       <br><hr>
-       @endhtmlonly
+     * Returns a reference to the double property
      */
     virtual ACS::ROdouble_ptr testDoubleVar() throw (CORBA::SystemException);
+    
+    /**
+     * Returns a reference to the pattern property
+     */
+    virtual ::alarmsystemPropTest::ROAlarmEnum_ptr testPatternVar() throw (CORBA::SystemException);
     
   private:
     
     /**
-     *  The test variable
+     *  The test properties
      */
-    SmartPropertyPointer<ROdouble> m_testDoubleVar_sp;
-
+    SmartPropertyPointer<ROdouble>  m_testDoubleVar_sp;
+    
+    
+    SmartPropertyPointer<ROEnumImpl<ACS_ENUM_T(alarmsystemPropTest::AlarmEnum),  POA_alarmsystemPropTest::ROAlarmEnum>
+        > m_testPatternVar_sp;
+    
 };
 /*\@}*/
 /*\@}*/

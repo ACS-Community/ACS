@@ -10,6 +10,7 @@
   <xs:complexType name="TEST_COMPONENT">
     <xs:sequence>
       <xs:element name="testDoubleVar" type="baci:ROdouble"/>
+      <xs:element name="testPatternVar" type="baci:ROpattern"/>
     </xs:sequence>
   </xs:complexType>
   <xs:element name="TEST_COMPONENT" type="TEST_COMPONENT"/>
