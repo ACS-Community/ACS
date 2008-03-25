@@ -24,11 +24,15 @@
 #define _ALARMSERVICEDEMO_IDL_
                                                                                                                        
 #include <baci.idl>
+#include <enumpropMACRO.idl>
                                                                                                                        
 #pragma prefix "alma"
                                                                                                                        
 module alarmsystemPropTest
 {
+	// The enum to trigger alarms
+	enum AlarmEnum { Ok, Nop };
+	ACS_ENUM(AlarmEnum);
 
 interface BaciPropTest :  ACS::CharacteristicComponent
 	{
@@ -40,6 +44,9 @@ interface BaciPropTest :  ACS::CharacteristicComponent
 		 * and checks if baci sends an alarm
 		 */
 		readonly attribute ACS::ROdouble testDoubleVar;
+		
+		// A pattern property
+		readonly attribute ROAlarmEnum testPatternVar;
         };
 };
 
