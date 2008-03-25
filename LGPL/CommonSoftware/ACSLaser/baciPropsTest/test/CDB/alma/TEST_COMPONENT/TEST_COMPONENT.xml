@@ -16,5 +16,6 @@
         graph_max="360"
         min_step="0.1"
         archive_min_int="5.0"
-        archive_max_int="10.0" />
+        archive_max_int="10.0"
+        alarm_timer_trig="1.0" />
 </TEST_COMPONENT>
