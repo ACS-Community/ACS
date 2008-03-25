@@ -12,5 +12,12 @@
 				type="string"
 				description="Name of varable / reference which value is nil"/>
 	</ErrorCode>
+	<ErrorCode name="NarrowFailed"
+			shortDescription="Narrow failed"
+			description="Reference narrow failed">
+			<Member name="NarrowType"
+				type="string"
+				description="Narrow type"/>
+	</ErrorCode>
 </Type>
 
