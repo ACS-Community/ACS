@@ -50,10 +50,7 @@ public class TestLogLevelsCompTest extends ComponentClientTestCase
 {
 	public static final String PROPERTYNAME_COMPONENTNAMES = "TEST_COMP_NAMES";
         
-    /**
-     * @TODO make not static once main method args are replaced with properties in the tests
-     */
-    private static Set<String> componentNames = new LinkedHashSet<String>();
+    private Set<String> componentNames = new LinkedHashSet<String>();
     private List<TestLogLevelsComp> components;
     private ContainerTestUtil containerTestUtil; 
     
@@ -99,7 +96,6 @@ public class TestLogLevelsCompTest extends ComponentClientTestCase
 		containerTestUtil.logoutFromManager();
 		super.tearDown();
 	}
-	
 	
 	
 	/**
@@ -148,7 +144,11 @@ public class TestLogLevelsCompTest extends ComponentClientTestCase
 				minLevel = levels[4];
 			Assert.assertEquals(levels[2], minLevel);
 		}
+		// Sleep is to work-around a race condition, whereby the tearDown() can get called "too early"
+		// (logging not properly initialised when it is already  stopped after running this short method).
+		Thread.sleep(2000);
 	}
+	
 	
 	
 	/**
@@ -252,17 +252,8 @@ public class TestLogLevelsCompTest extends ComponentClientTestCase
 
 	
 	
-	/**
-	 * @TODO We usually don't require a main method for a JUnit test to run successfully.
-	 * Therefore instead of getting component names from the arg list, 
-	 * they should be given in the PROPERTYNAME_COMPONENTNAMES Java property that gets evaluated in the setUp method.
-	 */
 	public static void main(String[] args)
 	{
-	    for (int i = 0; i < args.length; i++)
-		{
-	    	componentNames.add(args[i]);
-		}
 		junit.textui.TestRunner.run(TestLogLevelsCompTest.class);
 	}
 
