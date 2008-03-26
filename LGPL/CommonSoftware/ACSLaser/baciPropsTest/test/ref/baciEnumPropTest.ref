@@ -1,0 +1,25 @@
+1 - java version "1.6.0_02"
+1 - Java(TM) SE Runtime Environment (build 1.6.0_02-b05)
+1 - Java HotSpot(TM) Client VM (build 1.6.0_02-b05, mixed mode)
+1 - 
+1 - AlarmSystemClient built
+1 - Ignoring call to ClientLogManager#init: already initialized!
+1 - ----------T--:--:--.--- WARNING [laser-client] ACS central logging not available!
+1 - suppressRemoteLogging called
+1 - AlarmSevice instance IOR: ...
+1 - log4j:WARN No appenders could be found for logger (cern.laser.client.services.selection.AlarmSelectionHandler).
+1 - log4j:WARN Please initialize the log4j system properly.
+1 - AlarmSevice instance IOR: ...
+1 - AlarmSevice instance IOR: ...
+1 - ******************************
+1 - Msg is: 
+1 - 
+1 - ******************************
+1 - Source alarm received: <enumprop, TEST_COMPONENT#testEnumVar, 1> ACTIVE
+1 - Source alarm received: <enumprop, TEST_COMPONENT#testEnumVar, 1> TERMINATE
+1 - Source alarm received: <enumprop, TEST_COMPONENT#testEnumVar, 1> ACTIVE
+1 - Source alarm received: <enumprop, TEST_COMPONENT#testEnumVar, 1> TERMINATE
+1 - 
+1 - 
+1 - OK (1 test)
+1 - 
