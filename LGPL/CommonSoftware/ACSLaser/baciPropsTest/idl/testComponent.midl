@@ -31,13 +31,19 @@
 module alarmsystemPropTest
 {
 	// The enum to trigger alarms
-	enum AlarmEnum { Ok, Nop };
+	enum AlarmEnum { Ok, Not, Initing, Busy };
 	ACS_ENUM(AlarmEnum);
 
 interface BaciPropTest :  ACS::CharacteristicComponent
 	{
-		// Methods to change the value of the property and trigger an alarm
+		// Methods to change the value of the double property and trigger an alarm
 		void setDoubleVar(in float val);
+		
+		// Set the value of the pattern property
+		void setPatternVar(in short bit, in boolean set);
+		
+		// Set the value of the enum property
+		void setEnumVar(in AlarmEnum val);
 	
 		/**
 		 * The property to set of the limits defined in the CDB
@@ -46,7 +52,10 @@ interface BaciPropTest :  ACS::CharacteristicComponent
 		readonly attribute ACS::ROdouble testDoubleVar;
 		
 		// A pattern property
-		readonly attribute ROAlarmEnum testPatternVar;
+		readonly attribute ACS::ROpattern testPatternVar;
+		
+		// An enum property
+		readonly attribute ROAlarmEnum testEnumVar;
         };
 };
 

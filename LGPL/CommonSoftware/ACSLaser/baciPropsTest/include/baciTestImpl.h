@@ -21,7 +21,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: baciTestImpl.h,v 1.4 2008/03/25 17:30:03 acaproni Exp $"
+* "@(#) $Id: baciTestImpl.h,v 1.5 2008/03/26 09:55:39 acaproni Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -78,7 +78,9 @@ class BaciPropTest: public CharacteristicComponentImpl,     //Standard component
     /**
      * 
      */   
-    virtual void setDoubleVar(CORBA::Float) throw (CORBA::SystemException); 
+    virtual void setDoubleVar(CORBA::Float) throw (CORBA::SystemException);
+    virtual void setPatternVar(CORBA::Short, CORBA::Boolean) throw (CORBA::SystemException);
+    virtual void setEnumVar(alarmsystemPropTest::AlarmEnum) throw (CORBA::SystemException);
     
     /**
      * Returns a reference to the double property
@@ -88,7 +90,12 @@ class BaciPropTest: public CharacteristicComponentImpl,     //Standard component
     /**
      * Returns a reference to the pattern property
      */
-    virtual ::alarmsystemPropTest::ROAlarmEnum_ptr testPatternVar() throw (CORBA::SystemException);
+     virtual ACS::ROpattern_ptr testPatternVar() throw (CORBA::SystemException);
+    
+    /**
+     * Returns a reference to the enum property
+     */
+    virtual ::alarmsystemPropTest::ROAlarmEnum_ptr testEnumVar() throw (CORBA::SystemException);
     
   private:
     
@@ -99,7 +106,9 @@ class BaciPropTest: public CharacteristicComponentImpl,     //Standard component
     
     
     SmartPropertyPointer<ROEnumImpl<ACS_ENUM_T(alarmsystemPropTest::AlarmEnum),  POA_alarmsystemPropTest::ROAlarmEnum>
-        > m_testPatternVar_sp;
+        > m_testEnumVar_sp;
+    
+    SmartPropertyPointer<ROpattern>  m_testPatternVar_sp;
     
 };
 /*\@}*/
