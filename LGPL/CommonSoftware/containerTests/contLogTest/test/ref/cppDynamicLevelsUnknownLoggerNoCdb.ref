@@ -9,8 +9,8 @@
 1 - user exception, ID 'IDL:alma/maciErrType/LoggerDoesNotExistEx:1.0'
 1 - 
 1 - <timestamp> [GlobalLogger - ] Done all.
-2 -  -- alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest TESTLOG3
-2 - INFO - Starting Java/abeans application: alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest TESTLOG3
+2 -  -D TEST_COMP_NAMES=TESTLOG3 -- alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest
+2 - INFO - Starting Java/abeans application: alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest
 2 - .FINER: Logging configuration has been initialized, but not from CDB settings.
 2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels] -------------------------------
 2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels] ComponentClientTestCase#setUp()
@@ -26,7 +26,7 @@
 2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Set default log level for container myDefaultCppTestContainer to 2 to be used by component TESTLOG3
 2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will call 'logDummyMessages' on component TESTLOG3
 2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will wait <N> seconds to receive (some of) these log messages.
-2 - Got 11 records from logger TESTLOG3
+2 - Got 10 records from logger TESTLOG3
 2 - (level=2) dummy log message for core level 2/Trace
 2 - (level=3) dummy log message for core level 3/Debug
 2 - (level=4) dummy log message for core level 4/Info
@@ -36,12 +36,11 @@
 2 - (level=9) dummy log message for core level 9/Critical
 2 - (level=10) dummy log message for core level 10/Alert
 2 - (level=11) dummy log message for core level 11/Emergency
-2 - (level=11) dummy log message for core level 99/Off
 2 - (level=11) ===last log message===
 2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Set default log level for container myDefaultCppTestContainer to 3 to be used by component TESTLOG3
 2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will call 'logDummyMessages' on component TESTLOG3
 2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will wait <N> seconds to receive (some of) these log messages.
-2 - Got 10 records from logger TESTLOG3
+2 - Got 9 records from logger TESTLOG3
 2 - (level=3) dummy log message for core level 3/Debug
 2 - (level=4) dummy log message for core level 4/Info
 2 - (level=5) dummy log message for core level 5/Notice
@@ -50,12 +49,11 @@
 2 - (level=9) dummy log message for core level 9/Critical
 2 - (level=10) dummy log message for core level 10/Alert
 2 - (level=11) dummy log message for core level 11/Emergency
-2 - (level=11) dummy log message for core level 99/Off
 2 - (level=11) ===last log message===
 2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Set default log level for container myDefaultCppTestContainer to 4 to be used by component TESTLOG3
 2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will call 'logDummyMessages' on component TESTLOG3
 2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will wait <N> seconds to receive (some of) these log messages.
-2 - Got 9 records from logger TESTLOG3
+2 - Got 8 records from logger TESTLOG3
 2 - (level=4) dummy log message for core level 4/Info
 2 - (level=5) dummy log message for core level 5/Notice
 2 - (level=6) dummy log message for core level 6/Warning
@@ -63,64 +61,57 @@
 2 - (level=9) dummy log message for core level 9/Critical
 2 - (level=10) dummy log message for core level 10/Alert
 2 - (level=11) dummy log message for core level 11/Emergency
-2 - (level=11) dummy log message for core level 99/Off
 2 - (level=11) ===last log message===
 2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Set default log level for container myDefaultCppTestContainer to 5 to be used by component TESTLOG3
 2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will call 'logDummyMessages' on component TESTLOG3
 2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will wait <N> seconds to receive (some of) these log messages.
-2 - Got 8 records from logger TESTLOG3
+2 - Got 7 records from logger TESTLOG3
 2 - (level=5) dummy log message for core level 5/Notice
 2 - (level=6) dummy log message for core level 6/Warning
 2 - (level=8) dummy log message for core level 8/Error
 2 - (level=9) dummy log message for core level 9/Critical
 2 - (level=10) dummy log message for core level 10/Alert
 2 - (level=11) dummy log message for core level 11/Emergency
-2 - (level=11) dummy log message for core level 99/Off
 2 - (level=11) ===last log message===
 2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Set default log level for container myDefaultCppTestContainer to 6 to be used by component TESTLOG3
 2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will call 'logDummyMessages' on component TESTLOG3
 2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will wait <N> seconds to receive (some of) these log messages.
-2 - Got 7 records from logger TESTLOG3
+2 - Got 6 records from logger TESTLOG3
 2 - (level=6) dummy log message for core level 6/Warning
 2 - (level=8) dummy log message for core level 8/Error
 2 - (level=9) dummy log message for core level 9/Critical
 2 - (level=10) dummy log message for core level 10/Alert
 2 - (level=11) dummy log message for core level 11/Emergency
-2 - (level=11) dummy log message for core level 99/Off
 2 - (level=11) ===last log message===
 2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Set default log level for container myDefaultCppTestContainer to 8 to be used by component TESTLOG3
 2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will call 'logDummyMessages' on component TESTLOG3
 2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will wait <N> seconds to receive (some of) these log messages.
-2 - Got 6 records from logger TESTLOG3
+2 - Got 5 records from logger TESTLOG3
 2 - (level=8) dummy log message for core level 8/Error
 2 - (level=9) dummy log message for core level 9/Critical
 2 - (level=10) dummy log message for core level 10/Alert
 2 - (level=11) dummy log message for core level 11/Emergency
-2 - (level=11) dummy log message for core level 99/Off
 2 - (level=11) ===last log message===
 2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Set default log level for container myDefaultCppTestContainer to 9 to be used by component TESTLOG3
 2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will call 'logDummyMessages' on component TESTLOG3
 2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will wait <N> seconds to receive (some of) these log messages.
-2 - Got 5 records from logger TESTLOG3
+2 - Got 4 records from logger TESTLOG3
 2 - (level=9) dummy log message for core level 9/Critical
 2 - (level=10) dummy log message for core level 10/Alert
 2 - (level=11) dummy log message for core level 11/Emergency
-2 - (level=11) dummy log message for core level 99/Off
 2 - (level=11) ===last log message===
 2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Set default log level for container myDefaultCppTestContainer to 10 to be used by component TESTLOG3
 2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will call 'logDummyMessages' on component TESTLOG3
 2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will wait <N> seconds to receive (some of) these log messages.
-2 - Got 4 records from logger TESTLOG3
+2 - Got 3 records from logger TESTLOG3
 2 - (level=10) dummy log message for core level 10/Alert
 2 - (level=11) dummy log message for core level 11/Emergency
-2 - (level=11) dummy log message for core level 99/Off
 2 - (level=11) ===last log message===
 2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Set default log level for container myDefaultCppTestContainer to 11 to be used by component TESTLOG3
 2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will call 'logDummyMessages' on component TESTLOG3
 2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will wait <N> seconds to receive (some of) these log messages.
-2 - Got 3 records from logger TESTLOG3
+2 - Got 2 records from logger TESTLOG3
 2 - (level=11) dummy log message for core level 11/Emergency
-2 - (level=11) dummy log message for core level 99/Off
 2 - (level=11) ===last log message===
 2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Set default log level for container myDefaultCppTestContainer to 99 to be used by component TESTLOG3
 2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will call 'logDummyMessages' on component TESTLOG3
