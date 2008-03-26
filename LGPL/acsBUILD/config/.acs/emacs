@@ -2,7 +2,7 @@
 ;;*****************************************************************************
 ;; E.S.O. - VLT project
 ;;
-;; "@(#) $Id: emacs,v 1.3 2004/11/09 09:03:44 gchiozzi Exp $"
+;; "@(#) $Id: emacs,v 1.4 2008/03/26 12:51:33 gchiozzi Exp $"
 ;;
 ;; 
 ;; who      when     what
@@ -285,6 +285,7 @@
             ("\\.i$"  . c++-mode)             ; ALMASW2001089 
             ("\\.c$"  . c-mode)               ; to edit C code
             ("\\.idl$" . c++-mode)            ; ALMASW2001089 
+            ("\\.midl$" . c++-mode)            ; ALMASW2001089 
             ("\\.tcl$" . tcl-mode)            ; to edit tcl code
             ("\\.itk$" . tcl-mode)            ; to edit incrTk code
             (".*\\.pan" . tcl-mode)
