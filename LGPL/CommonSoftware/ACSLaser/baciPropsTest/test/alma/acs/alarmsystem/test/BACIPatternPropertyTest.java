@@ -44,5 +44,30 @@ public class BACIPatternPropertyTest extends BACITest {
 	 * Test the sending of alarms for a pattern property
 	 */
 	public void testROPattern() throws Exception {
+		// No alarm
+		testComponent.setPatternVar(0);
+		try {
+			Thread.sleep(5000);
+		} catch (Exception e) {}
+		// No alarm
+		testComponent.setPatternVar(1);
+		try {
+			Thread.sleep(5000);
+		} catch (Exception e) {}
+		// Alarm
+		testComponent.setPatternVar(2);
+		try {
+			Thread.sleep(5000);
+		} catch (Exception e) {}
+		// No alarm
+		testComponent.setPatternVar(3);
+		try {
+			Thread.sleep(5000);
+		} catch (Exception e) {}
+		// No alarm
+		testComponent.setPatternVar(4);
+		try {
+			Thread.sleep(20000);
+		} catch (Exception e) {}
 	}
 }
