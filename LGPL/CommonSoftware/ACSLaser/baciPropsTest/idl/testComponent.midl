@@ -40,7 +40,7 @@ interface BaciPropTest :  ACS::CharacteristicComponent
 		void setDoubleVar(in float val);
 		
 		// Set the value of the pattern property
-		void setPatternVar(in short bit, in boolean set);
+		void setPatternVar(in long val);
 		
 		// Set the value of the enum property
 		void setEnumVar(in AlarmEnum val);

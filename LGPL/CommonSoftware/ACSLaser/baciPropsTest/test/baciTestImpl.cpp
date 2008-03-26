@@ -20,7 +20,7 @@
 *
 *
 *
-* "@(#) $Id: baciTestImpl.cpp,v 1.7 2008/03/26 10:33:34 acaproni Exp $"
+* "@(#) $Id: baciTestImpl.cpp,v 1.8 2008/03/26 14:18:29 acaproni Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -32,7 +32,7 @@
 #include <baciTestImpl.h>
 #include <testComponentC.h>
 
-ACE_RCSID(acsexmpl, baciTestImpl, "$Id: baciTestImpl.cpp,v 1.7 2008/03/26 10:33:34 acaproni Exp $")
+ACE_RCSID(acsexmpl, baciTestImpl, "$Id: baciTestImpl.cpp,v 1.8 2008/03/26 14:18:29 acaproni Exp $")
 
 using namespace baci;
 
@@ -99,9 +99,9 @@ void BaciPropTest::setDoubleVar(CORBA::Float val) throw (CORBA::SystemException)
 	m_testDoubleVar_sp->getDevIO()->write(val, timestamp);
 }
 
-void BaciPropTest::setPatternVar(CORBA::Short bit, CORBA::Boolean set) throw (CORBA::SystemException) {
+void BaciPropTest::setPatternVar(CORBA::Long val) throw (CORBA::SystemException) {
 	ACS::Time timestamp;
-	m_testPatternVar_sp->getDevIO()->write(0, timestamp);
+	m_testPatternVar_sp->getDevIO()->write(val, timestamp);
 }
 
 void BaciPropTest::setEnumVar(alarmsystemPropTest::AlarmEnum val) throw (CORBA::SystemException) {

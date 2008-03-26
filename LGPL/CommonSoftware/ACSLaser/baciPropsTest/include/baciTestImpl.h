@@ -21,7 +21,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: baciTestImpl.h,v 1.5 2008/03/26 09:55:39 acaproni Exp $"
+* "@(#) $Id: baciTestImpl.h,v 1.6 2008/03/26 14:18:29 acaproni Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -79,7 +79,7 @@ class BaciPropTest: public CharacteristicComponentImpl,     //Standard component
      * 
      */   
     virtual void setDoubleVar(CORBA::Float) throw (CORBA::SystemException);
-    virtual void setPatternVar(CORBA::Short, CORBA::Boolean) throw (CORBA::SystemException);
+    virtual void setPatternVar(CORBA::Long) throw (CORBA::SystemException);
     virtual void setEnumVar(alarmsystemPropTest::AlarmEnum) throw (CORBA::SystemException);
     
     /**
