@@ -15,6 +15,10 @@
 1 - Msg is: 
 1 - 
 1 - ******************************
+1 - Source alarm received: <BACIProperty, TEST_COMPONENT#testPatternVar#AlarmSet, 1> ACTIVE
+1 - Alarm from categories: <BACIProperty:TEST_COMPONENT#testPatternVar#AlarmSet:1> ACTIVE=true
+1 - Source alarm received: <BACIProperty, TEST_COMPONENT#testPatternVar#AlarmSet, 1> TERMINATE
+1 - Alarm from categories: <BACIProperty:TEST_COMPONENT#testPatternVar#AlarmSet:1> ACTIVE=false
 1 - 
 1 - 
 1 - OK (1 test)
