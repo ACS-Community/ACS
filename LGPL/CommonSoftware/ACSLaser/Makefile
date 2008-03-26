@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.20 2008/02/13 18:20:09 acaproni Exp $"
+# "@(#) $Id: Makefile,v 1.21 2008/03/26 14:44:11 acaproni Exp $"
 #
 #
 
@@ -29,7 +29,8 @@ MODULES = laser-extlib \
       alarmSourcePanel \
 	  alarmPanel \
       demo \
-      managerTest 
+      managerTest \
+      baciPropsTest
 
 ifeq ($(os) $(VXWORKS_RTOS),Linux NO)
     MAKE_FLAGS = "NOCCS=1"
