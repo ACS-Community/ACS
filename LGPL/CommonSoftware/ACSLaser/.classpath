@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="acs-jms/src"/>
+	<classpathentry kind="src" path="baciPropsTest/src"/>
+	<classpathentry kind="src" path="baciPropsTest/test"/>
 	<classpathentry kind="src" path="alarm-clients/src"/>
 	<classpathentry kind="src" path="managerTest/src"/>
 	<classpathentry kind="src" path="alarm-clients/test"/>
@@ -27,7 +29,6 @@
 	<classpathentry kind="src" path="laser-source/src"/>
 	<classpathentry kind="src" path="laser-source/test"/>
 	<classpathentry kind="src" path="laser-util/src"/>
-	<classpathentry kind="src" path="Categories"/>
 	<classpathentry kind="lib" path="acs-jms/lib/acsjms.jar"/>
 	<classpathentry kind="lib" path="acs-jms/lib/ACSJMSMessageEntity.jar"/>
 	<classpathentry kind="lib" path="alarmPanel/lib/alarmPanel.jar"/>
@@ -43,7 +44,6 @@
 	<classpathentry kind="lib" path="laser-extlib/lib/selector-1.1.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="var" path="ACSROOT/lib/jcont.jar"/>
-	<classpathentry kind="var" path="INTROOT/lib/AlarmSystem.jar"/>
 	<classpathentry kind="var" path="JACORB_HOME/lib/jacorb.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/JavaContainerError.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acscomponent.jar"/>
@@ -53,12 +53,14 @@
 	<classpathentry kind="var" path="ACSROOT/lib/acserrj.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/castor.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/jACSUtil.jar"/>
-	<classpathentry kind="var" path="INTROOT/lib/acsContainerServices.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/jcontnc.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/log4j-1.2.8.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/junit.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acsContainerServices.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acsASsources.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acsErrTypeAlarmSourceFactory.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/cdbErrType.jar"/>
+	<classpathentry kind="var" path="INTROOT/lib/testComponent.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/baci.jar"/>
 	<classpathentry kind="output" path="alarmPanel/object/alarmPanel"/>
 </classpath>
