@@ -62,5 +62,8 @@
 	<classpathentry kind="var" path="ACSROOT/lib/cdbErrType.jar"/>
 	<classpathentry kind="var" path="INTROOT/lib/testComponent.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/baci.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/AlarmSystem.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/maciErrType.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acsGUIutil.jar"/>
 	<classpathentry kind="output" path="alarmPanel/object/alarmPanel"/>
 </classpath>
