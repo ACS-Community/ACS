@@ -56,7 +56,8 @@ public class StatusLine extends JPanel implements ActionListener, ConnectionList
 	private enum ConnectionStatus {
 		CONNECTED("Connected","/console-connected.png"),
 		CONNECTING("Connecting","/console-connecting.png"),
-		DISCONNECTED("Disconnected","/console-disconnected.png");
+		DISCONNECTED("Disconnected","/console-disconnected.png"),
+		HEARTBEAT_LOST("ASC down","/console-delay.png");
 		
 		// The icon for each connection state
 		public final ImageIcon icon;
@@ -209,6 +210,16 @@ public class StatusLine extends JPanel implements ActionListener, ConnectionList
 	}
 	
 	/**
+	 * The heartbeat from the alarm system component has been lost
+	 * 
+	 * @see alma.acsplugins.alarmsystem.gui.ConnectionListener#heartbeatLost()
+	 */
+	@Override
+	public void heartbeatLost() {
+		setConnectionState(ConnectionStatus.HEARTBEAT_LOST);
+	}
+	
+	/**
 	 * Set the icon and the tooltip of the connection label.
 	 * 
 	 * @param state The state of the connection
@@ -228,4 +239,6 @@ public class StatusLine extends JPanel implements ActionListener, ConnectionList
 		thread.status=state;
 		SwingUtilities.invokeLater(thread);
 	}
+
+	
 }
