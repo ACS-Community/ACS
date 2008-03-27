@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - VLT project
 *
-* "@(#) $Id: maciTestSimpleClient.cpp,v 1.3 2006/10/23 15:39:24 bjeram Exp $"
+* "@(#) $Id: maciTestSimpleClient.cpp,v 1.4 2008/03/27 13:49:31 bjeram Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -11,7 +11,7 @@
 #define _POSIX_SOURCE 1
 #include "vltPort.h"
 
-static char *rcsId="@(#) $Id: maciTestSimpleClient.cpp,v 1.3 2006/10/23 15:39:24 bjeram Exp $"; 
+static char *rcsId="@(#) $Id: maciTestSimpleClient.cpp,v 1.4 2008/03/27 13:49:31 bjeram Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <maciTestC.h>
@@ -46,7 +46,7 @@ int main (int argc, char **argv)
 	try
 	    {
 	    // first we test old way of getting and releasing a component
-	    ACS_SHORT_LOG((LM_INFO,"Getting MACI01 (deprecated way)"));
+		ACS_SHORT_LOG((LM_INFO,"Getting MACI01 (deprecated way)"));
 	    MACI_TEST::MaciTestClass_var costr = client.get_object<MACI_TEST::MaciTestClass>("MACI01", 0, true);
 	    ACS_SHORT_LOG((LM_INFO,"Releasing MACI01 (calling release_componen on manger)"));
 	    client.manager()->release_component(client.handle(), "MACI01");
@@ -78,7 +78,8 @@ int main (int argc, char **argv)
 	    corbaProblemEx.log();
 	}//try-catch
 
-// test error situation
+	// test error situation
+	ACS_SHORT_LOG((LM_INFO,"Testing error handling"));
 	try
 	    {
 	    ACS_SHORT_LOG((LM_INFO,"Getting MACI07"));
@@ -90,7 +91,29 @@ int main (int argc, char **argv)
 	    ACS_SHORT_LOG((LM_INFO, "Right behaviour: Got exception!"));
 	    _ex.log();
 	    }//try-catch
+	
+	try
+	{
+		ACS_SHORT_LOG((LM_INFO,"Testing error handling: getComponent (Narrow problem)"));
+		// here we try to narrow to wrong type (DynamicTestClass) !
+		MACI_TEST::DynamicTestClass_var co = client.getComponent<MACI_TEST::DynamicTestClass>("MACI04", 0, true);
+	}catch(ACSErr::ACSbaseExImpl &ex)
+	{
+		ex.log();
+	}//try-catch
 
+	try
+	{
+		ACS_SHORT_LOG((LM_INFO,"Testing error handling: getComponentNonSticky (Narrow problem)"));
+		// 1st we have to activate the component!
+		MACI_TEST::MaciTestClass_var costr = client.getComponent<MACI_TEST::MaciTestClass>("MACI04", 0, true);
+		// here we try to narrow to wrong type (DynamicTestClass) !
+		MACI_TEST::DynamicTestClass_var co = client.getComponentNonSticky<MACI_TEST::DynamicTestClass>("MACI04");
+	}catch(ACSErr::ACSbaseExImpl &ex)
+	{
+		ex.log();
+	}//try-catch
+	client.releaseComponent("MACI04");
 	client.logout();
 }//main
 
