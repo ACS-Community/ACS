@@ -19,7 +19,7 @@
 
 /** 
  * @author  acaproni   
- * @version $Id: AlarmPanel.java,v 1.13 2008/03/27 14:14:25 acaproni Exp $
+ * @version $Id: AlarmPanel.java,v 1.14 2008/03/27 14:16:28 acaproni Exp $
  * @since    
  */
 
@@ -184,8 +184,7 @@ public class AlarmPanel extends JPanel implements IPanel {
 				while (true) {
 					try {
 						categoryClient.connect((AlarmSelectionListener)model);
-						System.out.println("ASC connected");
-						// If the connection succeded then exit the loop
+						// If the connection succeeded then exit the loop
 						break;
 					} catch (AcsJCannotGetComponentEx cgc) {
 						System.out.println("Error getting the alarm service "+cgc.getMessage());
@@ -201,7 +200,6 @@ public class AlarmPanel extends JPanel implements IPanel {
 						return;
 					}
 				}
-				System.out.println("Connected");
 				statusLine.start();
 				connListener.connected();
 			}

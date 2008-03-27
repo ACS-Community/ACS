@@ -19,7 +19,7 @@
 
 /** 
  * @author  acaproni   
- * @version $Id: AlarmTableModel.java,v 1.12 2008/03/27 14:12:41 acaproni Exp $
+ * @version $Id: AlarmTableModel.java,v 1.13 2008/03/27 14:16:28 acaproni Exp $
  * @since    
  */
 
@@ -298,7 +298,6 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 			System.err.println("Exception: "+e.getCode());
 			return;
 		}
-		System.err.println("Exception: "+e.getCode());
 		if (e.getCode().equals(LaserHeartbeatException.HEARTBEAT_LOST)) {
 			connectionListener.heartbeatLost();
 		} else if (e.getCode().equals(LaserHeartbeatException.HEARTBEAT_RECONNECTED)) {
