@@ -19,7 +19,7 @@
 
 /** 
  * @author  acaproni   
- * @version $Id: AlarmPanel.java,v 1.14 2008/03/27 14:16:28 acaproni Exp $
+ * @version $Id: AlarmPanel.java,v 1.15 2008/03/27 15:33:28 acaproni Exp $
  * @since    
  */
 
@@ -72,6 +72,9 @@ public class AlarmPanel extends JPanel implements IPanel {
     
     // The status line
     private StatusLine statusLine;
+    
+    // The listener of the connection
+    private ConnectionListener connectionListener;
 	
 	/**
 	 * Constructor 
@@ -105,6 +108,7 @@ public class AlarmPanel extends JPanel implements IPanel {
 		model = new AlarmTableModel(this);
 		alarmTable = new AlarmTable(model);
 		statusLine = new StatusLine(model);
+		connectionListener=statusLine;
 		model.setConnectionListener(statusLine);
 		
 		setLayout(new BorderLayout());
@@ -151,62 +155,13 @@ public class AlarmPanel extends JPanel implements IPanel {
 			throw new Exception("PluginContainerServices not set");
 		}
 		class StartAlarmPanel extends Thread {
-			
-			/**
-			 * Constructor
-			 * 
-			 * @param listener The listener of the state of the connection
-			 */
-			public StartAlarmPanel( ConnectionListener listener) {
-				if (listener==null) {
-					throw new IllegalArgumentException("The ConnectionListener can't be null");
-				}
-				connListener=listener;
-			}
-			
-			// The listener of the state of the connection
-			private ConnectionListener connListener;
-			
 			public void run() {
-				connListener.connecting();
-				try {
-					categoryClient = new CategoryClient(contSvc);
-				} catch (Throwable t) {
-					System.err.println("Error instantiating the CategoryClient: "+t.getMessage());
-					t.printStackTrace(System.err);
-					connListener.disconnected();
-					categoryClient=null;
-					return;
-				}
-				/**
-				 * Try to connect to the alarm service until it becomes available
-				 */
-				while (true) {
-					try {
-						categoryClient.connect((AlarmSelectionListener)model);
-						// If the connection succeeded then exit the loop
-						break;
-					} catch (AcsJCannotGetComponentEx cgc) {
-						System.out.println("Error getting the alarm service "+cgc.getMessage());
-						// Wait 30 secs before retrying
-						try {
-							Thread.sleep(30000);
-						} catch (Exception e) {}
-						continue; // Try again
-					} catch (Throwable t) {
-						System.err.println("Error connecting CategoryClient: "+t.getMessage());
-						t.printStackTrace(System.err);
-						connListener.disconnected();
-						return;
-					}
-				}
-				statusLine.start();
-				connListener.connected();
+				AlarmPanel.this.connect();
 			}
 		}
 		// Connect the categoryClient only if it is null
 		if (categoryClient==null) {
-			Thread t = new StartAlarmPanel(statusLine);
+			Thread t = new StartAlarmPanel();
 			t.setName("StartAlarmPanel");
 			t.setDaemon(true);
 			t.start();
@@ -219,14 +174,7 @@ public class AlarmPanel extends JPanel implements IPanel {
 	public void stop() throws Exception {
 		class StopAlarmPanel extends Thread {
 			public void run() {
-				try {
-					statusLine.stop();
-					categoryClient.close();
-					categoryClient=null;
-				} catch (Throwable t) {
-					System.err.println("Error closinging CategoryClient: "+t.getMessage());
-					t.printStackTrace(System.err);
-				}
+				AlarmPanel.this.disconnect();
 			}
 		}
 		Thread t = new StopAlarmPanel();
@@ -271,4 +219,59 @@ public class AlarmPanel extends JPanel implements IPanel {
 	public boolean isOMCPlugin() {
 		return frame==null;
 	}
+	
+	/**
+	 * Connect
+	 */
+	public void connect() {
+		connectionListener.connecting();
+		try {
+			categoryClient = new CategoryClient(contSvc);
+		} catch (Throwable t) {
+			System.err.println("Error instantiating the CategoryClient: "+t.getMessage());
+			t.printStackTrace(System.err);
+			connectionListener.disconnected();
+			categoryClient=null;
+			return;
+		}
+		/**
+		 * Try to connect to the alarm service until it becomes available
+		 */
+		while (true) {
+			try {
+				categoryClient.connect((AlarmSelectionListener)model);
+				// If the connection succeeded then exit the loop
+				break;
+			} catch (AcsJCannotGetComponentEx cgc) {
+				// Wait 30 secs before retrying
+				try {
+					Thread.sleep(30000);
+				} catch (Exception e) {}
+				continue; // Try again
+			} catch (Throwable t) {
+				System.err.println("Error connecting CategoryClient: "+t.getMessage());
+				t.printStackTrace(System.err);
+				connectionListener.disconnected();
+				return;
+			}
+		}
+		statusLine.start();
+		connectionListener.connected();
+	}
+	
+	/**
+	 * Disconnect
+	 */
+	public void disconnect() {
+		statusLine.stop();
+		try {
+			categoryClient.close();
+		} catch (Throwable t) {
+			System.err.println("Error closinging CategoryClient: "+t.getMessage());
+			t.printStackTrace(System.err);
+		} finally {
+			categoryClient=null;
+			connectionListener.disconnected();
+		}
+	}		
 }
