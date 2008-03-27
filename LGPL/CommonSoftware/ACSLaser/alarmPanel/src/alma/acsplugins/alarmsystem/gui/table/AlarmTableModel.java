@@ -19,7 +19,7 @@
 
 /** 
  * @author  acaproni   
- * @version $Id: AlarmTableModel.java,v 1.11 2008/02/26 11:14:34 acaproni Exp $
+ * @version $Id: AlarmTableModel.java,v 1.12 2008/03/27 14:12:41 acaproni Exp $
  * @since    
  */
 
@@ -29,10 +29,12 @@ import javax.swing.JOptionPane;
 import javax.swing.table.AbstractTableModel;
 
 import alma.acs.util.IsoDateFormat;
+import alma.acsplugins.alarmsystem.gui.ConnectionListener;
 import alma.acsplugins.alarmsystem.gui.toolbar.Toolbar.ComboBoxValues;
 
 import cern.laser.client.data.Alarm;
 import cern.laser.client.services.selection.AlarmSelectionListener;
+import cern.laser.client.services.selection.LaserHeartbeatException;
 import cern.laser.client.services.selection.LaserSelectionException;
 
 import java.awt.Component;
@@ -93,6 +95,13 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 	
 	// The counter for the alarms
 	private HashMap<AlarmGUIType, AlarmCounter> counters = new HashMap<AlarmGUIType, AlarmCounter>();
+	
+	/**
+	 * The listener about the status of the connection
+	 * 
+	 * @see <code>onException</code>
+	 */
+	private ConnectionListener connectionListener=null;
 	
 	/**
 	 * Constructor
@@ -278,11 +287,31 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 	}
 
 	/**
+	 * Get exception from the client.
+	 * A message is notified to the listener or written in the
+	 * standard output if the listener is <code>null</code>.
+	 * 
 	 * @see AlarmSelectionListener
 	 */
 	public void onException(LaserSelectionException e) {
-		System.err.println("Exception: "+e.getMessage());
-		e.printStackTrace(System.err);		
+		if (connectionListener==null) {
+			System.err.println("Exception: "+e.getCode());
+			return;
+		}
+		System.err.println("Exception: "+e.getCode());
+		if (e.getCode().equals(LaserHeartbeatException.HEARTBEAT_LOST)) {
+			connectionListener.heartbeatLost();
+		} else if (e.getCode().equals(LaserHeartbeatException.HEARTBEAT_RECONNECTED)) {
+			connectionListener.connected();
+		} else if (e.getCode().equals(LaserHeartbeatException.CONNECTION_DROPPED)) {
+			connectionListener.disconnected();
+		} else if (e.getCode().equals(LaserHeartbeatException.CONNECTION_REESTABILISHED)) {
+			connectionListener.connected();
+		} else {
+			// Unrecognized code
+			System.err.println("Exception: "+e.getCode());
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -483,5 +512,14 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 			}
 			fireTableDataChanged();
 		}
+	}
+	
+	/**
+	 * Set the connection listener
+	 * 
+	 * @param listener The listener
+	 */
+	public void setConnectionListener(ConnectionListener listener) {
+		connectionListener=listener;
 	}
 }
