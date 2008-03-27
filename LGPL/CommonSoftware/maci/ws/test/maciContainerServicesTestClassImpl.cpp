@@ -1,67 +1,17 @@
 /*******************************************************************************
 * E.S.O. - VLT project
 *
-* "@(#) $Id: maciContainerServicesTestClassImpl.cpp,v 1.17 2007/10/24 22:29:50 agrimstrup Exp $"
+* "@(#) $Id: maciContainerServicesTestClassImpl.cpp,v 1.18 2008/03/27 12:05:32 bjeram Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
 * acaproni  2005-02-28  created 
 */
 
-/************************************************************************
-*   NAME
-*   
-* 
-*   SYNOPSIS
-*
-*   
-*   PARENT CLASS
-*
-* 
-*   DESCRIPTION
-*
-*
-*   PUBLIC METHODS
-*
-*
-*   PUBLIC DATA MEMBERS
-*
-*
-*   PROTECTED METHODS
-*
-*
-*   PROTECTED DATA MEMBERS
-*
-*
-*   PRIVATE METHODS
-*
-*
-*   PRIVATE DATA MEMBERS
-*
-*
-*   FILES
-*
-*   ENVIRONMENT
-*
-*   COMMANDS
-*
-*   RETURN VALUES
-*
-*   CAUTIONS 
-*
-*   EXAMPLES
-*
-*   SEE ALSO
-*
-*   BUGS   
-* 
-*------------------------------------------------------------------------
-*/
-
 #define _POSIX_SOURCE 1
 #include "vltPort.h"
 
-static char *rcsId="@(#) $Id: maciContainerServicesTestClassImpl.cpp,v 1.17 2007/10/24 22:29:50 agrimstrup Exp $"; 
+static char *rcsId="@(#) $Id: maciContainerServicesTestClassImpl.cpp,v 1.18 2008/03/27 12:05:32 bjeram Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include "maciContainerServicesTestClassImpl.h"
@@ -121,10 +71,21 @@ void MaciContainerServicesTestClassImpl::dynamicComponentTest()
 	 }
 	 // Execute a method on the remote component
 	 comp->whoami();
-	 
 	 // Release the component
 	 getContainerServices()->releaseComponent(comp->name());
-}
+	 
+	 // here we test some error handling
+	 try
+	 {
+		 // we try to narrow to the wrong type (MaciTestClass)!
+	 MACI_TEST::MaciTestClass_var comp = 
+	 	 	getContainerServices()->getDynamicComponent<MACI_TEST::MaciTestClass>(cSpec,false);
+	 }
+	 catch(ACSErr::ACSbaseExImpl &ex)
+	 {
+		 ex.log();
+	 }//try-catch
+}//dynamicComponentTest
 
 void MaciContainerServicesTestClassImpl::dynamicComponentSmartPtrTest() 
 	throw (CORBA::SystemException)
@@ -162,9 +123,20 @@ void MaciContainerServicesTestClassImpl::collocatedComponentTest()
 
 	 // Execute a method on the remote component
 	 comp->whoami();
-	 
 	 // Release the component
 	 getContainerServices()->releaseComponent(comp->name());
+	 
+	 // here we test some error handling
+	 	 try
+	 	 {
+	 		 // we try to narrow to the wrong type (MaciTestClass)!
+	 		MACI_TEST::MaciTestClass_var comp =
+	 			 	getContainerServices()->getCollocatedComponent<MACI_TEST::MaciTestClass>(cSpec,false,"MACI_DYN_TEST1");
+	 	 }
+	 	 catch(ACSErr::ACSbaseExImpl &ex)
+	 	 {
+	 		 ex.log();
+	 	 }//try-catch 
 }
 
 void MaciContainerServicesTestClassImpl::collocatedComponentSmartPtrTest() 
@@ -199,9 +171,20 @@ void MaciContainerServicesTestClassImpl::defaultComponentTest()
 	 }
 	 // Execute a method on the remote component
 	 comp->whoami();
-	 
 	 // Release the component
 	 getContainerServices()->releaseComponent(comp->name());
+	 
+	 // here we test some error handling
+	 try
+	 {
+		 // we try to narrow to the wrong type (MaciTestClass)!
+		 MACI_TEST::MaciTestClass_var comp =
+			 getContainerServices()->getDefaultComponent<MACI_TEST::MaciTestClass>(IDLTYPE);
+	 }
+	 catch(ACSErr::ACSbaseExImpl &ex)
+	 {
+		 ex.log();
+	 }//try-catch 
 }
   
 void MaciContainerServicesTestClassImpl::defaultComponentSmartPtrTest() 
@@ -265,7 +248,19 @@ void MaciContainerServicesTestClassImpl::getComponentTest()
 	 
 	 // Release the component
 	 getContainerServices()->releaseComponent(COMPNAME);
-}
+	 
+	 // here we test some error handling
+	 try
+	 {
+		 // we try to narrow to the wrong type (MaciTestClass)!
+		 MACI_TEST::MaciTestClass_var comp =
+			 getContainerServices()->getComponent<MACI_TEST::MaciTestClass>(COMPNAME);
+	 }
+	 catch(ACSErr::ACSbaseExImpl &ex)
+	 {
+		 ex.log();
+	 }//try-catch 
+}//getComponentTest
 
 void MaciContainerServicesTestClassImpl::getComponentSmartPtrTest() 
 	throw (CORBA::SystemException)
@@ -300,6 +295,7 @@ void MaciContainerServicesTestClassImpl::getComponentNonStickyTest()
 	ACS_SHORT_LOG((LM_ERROR,"getComponentNonStickyTest: Error getting %s non sticky",COMPNAME));
 	_ex.log();
 	}
+    
 // test w/o activating the component be4
     try
 	{
@@ -311,7 +307,25 @@ void MaciContainerServicesTestClassImpl::getComponentNonStickyTest()
 	ACS_SHORT_LOG((LM_ERROR, "getComponentNonStickyTest (%s): Got an exception (right behaviour)", COMPNAME));
 	_ex.log();
 	}//try-catch
-}
+    
+    // here we test some error handling
+    try
+    {
+    	// 1st we have to activate the COMPNAME component
+    	MACI_TEST::DynamicTestClass_var c1 = 
+    		getContainerServices()->getComponent<MACI_TEST::DynamicTestClass>(COMPNAME);
+
+    	// we try to narrow to the wrong type (MaciTestClass)!
+    	MACI_TEST::MaciTestClass_var comp =
+    		getContainerServices()->getComponentNonSticky<MACI_TEST::MaciTestClass>(COMPNAME);
+    }
+    catch(ACSErr::ACSbaseExImpl &ex)
+    {
+    	ex.log();
+    }//try-catch 
+    // Release the component
+    getContainerServices()->releaseComponent(COMPNAME);
+}//getComponentNonStickyTest
 
 void MaciContainerServicesTestClassImpl::getComponentNonStickySmartPtrTest() 
 	throw (CORBA::SystemException)
@@ -326,7 +340,6 @@ void MaciContainerServicesTestClassImpl::getComponentNonStickySmartPtrTest()
 	     getContainerServices()->getComponentNonStickySmartPtr<MACI_TEST::DynamicTestClass>(COMPNAME);
 	 // Execute a method on the remote component
 	 cns->whoami();
-	 
 	}
     catch(maciErrType::CannotGetComponentExImpl &_ex)
 	{
