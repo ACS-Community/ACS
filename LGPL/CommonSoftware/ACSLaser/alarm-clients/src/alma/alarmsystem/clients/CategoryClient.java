@@ -27,6 +27,7 @@ import alma.alarmsystem.AlarmService;
 import alma.alarmsystem.AlarmServiceHelper;
 import alma.alarmsystem.Category;
 import alma.alarmsystem.clients.alarm.AlarmClientException;
+import alma.maciErrType.wrappers.AcsJCannotGetComponentEx;
 
 import cern.laser.client.data.Alarm;
 import cern.laser.client.services.selection.AlarmSelectionHandler;
@@ -159,12 +160,17 @@ public class CategoryClient {
 	}
 	
 	/**
-	 * Connects to all the categories of the alarm system
+	 * Connects to all the categories of the alarm system.
+	 * 
+	 * It is equivalent to <code>connect(listener,null)</code>. 
 	 *  
 	 * @param listener The lister to notify of the alarms received from the categories
-	 * @throws AlarmClientException
+	 * @throws AlarmClientException In case of failure connecting the client
+	 * @throws AcsJCannotGetComponentEx If the alarm service component is not available
+	 * 
+	 * @see {@link CategoryClient.connect(AlarmSelectionListener listener, Category[] categories)}
 	 */
-	public void connect(AlarmSelectionListener listener) throws AlarmClientException {
+	public void connect(AlarmSelectionListener listener) throws AlarmClientException, AcsJCannotGetComponentEx {
 		connect(listener,null);
 	}
 	
@@ -173,9 +179,10 @@ public class CategoryClient {
 	 * 
 	 * @param listener The lister to notify of the alarms received from the categories
 	 * @param categories The categories to connect to
-	 * @throws AlarmClientException
+	 * @throws AcsJCannotGetComponentEx In case the AlarmService is not available
+	 * @throws AlarmClientException In case of failure connecting the client
 	 */
-	public void connect(AlarmSelectionListener listener, Category[] categories) throws AlarmClientException {
+	public void connect(AlarmSelectionListener listener, Category[] categories) throws AlarmClientException, AcsJCannotGetComponentEx {
 		if (listener==null) {
 			throw new IllegalArgumentException("The listener can't be null");
 		}
@@ -184,6 +191,12 @@ public class CategoryClient {
 		}
 		try {
 			getAlarmServiceComponent();
+		} catch (Throwable t) {
+			AcsJCannotGetComponentEx ex = new AcsJCannotGetComponentEx(t);
+			ex.setReason("Alarm service component unavailable");
+			throw ex;
+		}
+		try {
 			userHandler=new UserHandlerImpl();
 			logger.log(AcsLogLevel.DEBUG,"UserHandler succesfully built");
 			
@@ -204,7 +217,7 @@ public class CategoryClient {
 				}
 			}
 		} catch (Throwable t) {
-			throw new AlarmClientException("Exception in ctor: ",t);
+			throw new AlarmClientException("Exception connecting the category client",t);
 		}
 	}
 	
