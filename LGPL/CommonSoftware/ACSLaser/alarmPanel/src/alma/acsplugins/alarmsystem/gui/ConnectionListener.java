@@ -23,4 +23,11 @@ public interface ConnectionListener {
 	 * The client is connecting.
 	 */
 	public void connecting();
+	
+	/**
+	 * The heartbeat with the ASC has been lost.
+	 * 
+	 * The reconnection is signaled by <code>connected()</code>
+	 */
+	public void heartbeatLost();
 }
