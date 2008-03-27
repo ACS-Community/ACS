@@ -21,7 +21,7 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
  *
- * "@(#) $Id: acsContainerServices.i,v 1.14 2008/03/27 10:02:40 bjeram Exp $"
+ * "@(#) $Id: acsContainerServices.i,v 1.15 2008/03/27 12:04:16 bjeram Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -139,68 +139,79 @@ ContainerServices::getDynamicComponent(maci::ComponentSpec compSpec, bool markAs
     ACS_TRACE("ContainerServices::getDynamicComponent");
 
     try 
-	{
-	// Get the component as a CORBA object
+    {
+    	// Get the component as a CORBA object
     	obj = getCORBADynamicComponent(compSpec,markAsDefault);   // obj should be null, but if it is  ..
-	T* tmpRef = T::_narrow(obj);  
-	if (tmpRef==T::_nil())
-		{
-		releaseComponent(compSpec.component_name.in()); // first we have to release the component! 
-		ACSErrTypeCORBA::NarrowFailedExImpl ex(__FILE__, __LINE__, "ContainerServices<>::getDynamicComponent");
-		ex.setNarrowType(typeid(T).name());
-		throw ex;
-		}//if
-	return tmpRef;
-	} 
+    	T* tmpRef = T::_narrow(obj);  
+    	if (tmpRef==T::_nil())
+    	{
+    		// here we try to obtain name of the collocated component that we can release it
+    		ACS::ACSComponent* tComp =  ACS::ACSComponent::_narrow(obj);
+    		if ( tComp!=ACS::ACSComponent::_nil() )
+    		{
+    			char *cName = tComp->name();
+    			releaseComponent(cName);
+    			CORBA::string_free(cName);
+    		}
+    		else
+    		{
+    			releaseComponent(compSpec.component_name.in()); // first we have to release the component!
+    		}//if-else
+    		ACSErrTypeCORBA::NarrowFailedExImpl ex(__FILE__, __LINE__, "ContainerServices<>::getDynamicComponent");
+    		ex.setNarrowType(typeid(T).name());
+    		throw ex;
+    	}//if
+    	return tmpRef;
+    }
     catch (maciErrType::NoPermissionExImpl &ex) 
-	{
-	maciErrType::NoPermissionExImpl	 lex(ex, __FILE__, __LINE__,
-					     "ContainerServices::getDynamicComponent");
-	throw lex;
+    {
+    	maciErrType::NoPermissionExImpl	 lex(ex, __FILE__, __LINE__,
+    			"ContainerServices::getDynamicComponent");
+    	throw lex;
     }
     catch (maciErrType::IncompleteComponentSpecExImpl &ex) 
-	{
-	maciErrType::IncompleteComponentSpecExImpl lex(ex, __FILE__, __LINE__,
-					  "ContainerServices::getDynamicComponent");
-	lex.setCURL(compSpec.component_name.in());
-	throw lex;
+    {
+    	maciErrType::IncompleteComponentSpecExImpl lex(ex, __FILE__, __LINE__,
+    			"ContainerServices::getDynamicComponent");
+    	lex.setCURL(compSpec.component_name.in());
+    	throw lex;
     }
     catch (maciErrType::InvalidComponentSpecExImpl &ex) 
-	{
-	maciErrType::InvalidComponentSpecExImpl lex(ex, __FILE__, __LINE__,
-						    "ContainerServices::getDynamicComponent");
-	throw lex;
-	}
+    {
+    	maciErrType::InvalidComponentSpecExImpl lex(ex, __FILE__, __LINE__,
+    			"ContainerServices::getDynamicComponent");
+    	throw lex;
+    }
     catch (maciErrType::ComponentSpecIncompatibleWithActiveComponentExImpl &ex) 
-	{
-	maciErrType::ComponentSpecIncompatibleWithActiveComponentExImpl lex(ex, __FILE__, __LINE__,
-							       "ContainerServices::getDynamicComponent");
-	lex.setCURL(compSpec.component_name.in());
-	throw lex;
-	}
+    {
+    	maciErrType::ComponentSpecIncompatibleWithActiveComponentExImpl lex(ex, __FILE__, __LINE__,
+    			"ContainerServices::getDynamicComponent");
+    	lex.setCURL(compSpec.component_name.in());
+    	throw lex;
+    }
     catch (maciErrType::CannotGetComponentExImpl &ex) 
-	{
-	maciErrType::CannotGetComponentExImpl lex(ex, __FILE__, __LINE__,
-				     "ContainerServices::getDynamicComponent");
-	lex.setCURL(compSpec.component_name.in());
-	throw lex;
-	}
-	catch (ACSErr::ACSbaseExImpl &ex) 
-	{
-	maciErrType::CannotGetComponentExImpl lex(ex, __FILE__, __LINE__,
-				     "ContainerServices::getDynamicComponent");
-	lex.setCURL(compSpec.component_name.in());
-	throw lex;
-	}
+    {
+    	maciErrType::CannotGetComponentExImpl lex(ex, __FILE__, __LINE__,
+    			"ContainerServices::getDynamicComponent");
+    	lex.setCURL(compSpec.component_name.in());
+    	throw lex;
+    }
+    catch (ACSErr::ACSbaseExImpl &ex) 
+    {
+    	maciErrType::CannotGetComponentExImpl lex(ex, __FILE__, __LINE__,
+    			"ContainerServices::getDynamicComponent");
+    	lex.setCURL(compSpec.component_name.in());
+    	throw lex;
+    }
     catch (...) 
-	{
-	ACSErrTypeCommon::UnexpectedExceptionExImpl uex(__FILE__, __LINE__,
-							"ContainerServices::getDynamicComponent");
-	maciErrType::CannotGetComponentExImpl lex(uex, __FILE__, __LINE__,
-				     "ContainerServices::getDynamicComponent");
-	lex.setCURL(compSpec.component_name.in());
-	throw lex;
-	}//try-catch
+    {
+    	ACSErrTypeCommon::UnexpectedExceptionExImpl uex(__FILE__, __LINE__,
+    			"ContainerServices::getDynamicComponent");
+    	maciErrType::CannotGetComponentExImpl lex(uex, __FILE__, __LINE__,
+    			"ContainerServices::getDynamicComponent");
+    	lex.setCURL(compSpec.component_name.in());
+    	throw lex;
+    }//try-catch
 }//getDynamicComponent
 
 template<class T> T* 
@@ -222,7 +233,18 @@ ContainerServices::getCollocatedComponent(maci::ComponentSpec compSpec, bool mar
 	T* tmpRef = T::_narrow(obj);  
     if (tmpRef==T::_nil())
 		{
-		releaseComponent(compSpec.component_name.in()); // first we have to release the component!
+    	// here we try to obtain name of the collocated component that we can release it
+    			ACS::ACSComponent* tComp =  ACS::ACSComponent::_narrow(obj);
+    			if ( tComp!=ACS::ACSComponent::_nil() )
+    			{
+    				char *cName = tComp->name();
+    				releaseComponent(cName);
+    				CORBA::string_free(cName);
+    			}
+    			else
+    			{
+    				releaseComponent(compSpec.component_name.in()); // first we have to release the component!
+    			}//if-else
 		ACSErrTypeCORBA::NarrowFailedExImpl ex(__FILE__, __LINE__, "ContainerServices<>::getCollocatedComponent");
 		ex.setNarrowType(typeid(T).name());
 		throw ex;
@@ -297,7 +319,7 @@ ContainerServices::getDefaultComponent(const char* idlType)
 	T* tmpRef = T::_narrow(obj);  
 	if (tmpRef==T::_nil())
 		{
-		// here we try toobtain name of the default component that we can release it
+		// here we try to obtain name of the default component that we can release it
 		ACS::ACSComponent* tComp =  ACS::ACSComponent::_narrow(obj);
 		if ( tComp!=ACS::ACSComponent::_nil() )
 		{
