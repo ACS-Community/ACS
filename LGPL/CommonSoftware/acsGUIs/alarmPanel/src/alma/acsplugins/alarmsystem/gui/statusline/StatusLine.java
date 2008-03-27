@@ -19,23 +19,16 @@
 package alma.acsplugins.alarmsystem.gui.statusline;
 
 import java.awt.BorderLayout;
-import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.BorderFactory;
-import javax.swing.ImageIcon;
-import javax.swing.JLabel;
-import javax.swing.JMenuItem;
 import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
-import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
+import alma.acsplugins.alarmsystem.gui.AlarmPanel;
 import alma.acsplugins.alarmsystem.gui.ConnectionListener;
-import alma.acsplugins.alarmsystem.gui.table.AlarmCounter;
 import alma.acsplugins.alarmsystem.gui.table.AlarmGUIType;
 import alma.acsplugins.alarmsystem.gui.table.AlarmTableModel;
 
@@ -47,35 +40,9 @@ import alma.acsplugins.alarmsystem.gui.table.AlarmTableModel;
  */
 public class StatusLine extends JPanel implements ActionListener, ConnectionListener {
 	
-	/**
-	 *  The possible states of the connection of the category client
-	 *  
-	 * @author acaproni
-	 *
-	 */
-	private enum ConnectionStatus {
-		CONNECTED("Connected","/console-connected.png"),
-		CONNECTING("Connecting","/console-connecting.png"),
-		DISCONNECTED("Disconnected","/console-disconnected.png"),
-		HEARTBEAT_LOST("ASC down","/console-delay.png");
-		
-		// The icon for each connection state
-		public final ImageIcon icon;
-		
-		// The tooltip for each connection state
-		public String tooltip;
-		
-		/**
-		 * The constructor that load the icon.
-		 * 
-		 * @param iconName The file containing the connection icon
-		 */
-		private ConnectionStatus(String tooltip, String iconName) {
-			icon=new ImageIcon(this.getClass().getResource(iconName));
-			this.tooltip=tooltip;
-		}
-		
-	};
+	
+	
+	
 	
 	// The counters showing the number of alarms
 	private CounterWidget[] counters = new CounterWidget[AlarmGUIType.values().length];
@@ -83,24 +50,31 @@ public class StatusLine extends JPanel implements ActionListener, ConnectionList
 	// The table model
 	private final AlarmTableModel tableModel;
 	
+	// The alarm panel
+	private final AlarmPanel alarmPanel;
+	
 	// The time to refresh the values shown by the StatusLine
 	private Timer timer=null;
 	private static final int TIMER_INTERVAL=2000;
 	
-	// The label showing the icon and the tooltip for the status of the connection
-	private JLabel connectionLbl = new JLabel();
+	// The widget showing the icon and the tooltip for the status of the connection
+	private ConnectionWidget connectionWidget;
 
 	/**
 	 * Constructor
 	 */
-	public StatusLine(AlarmTableModel model) {
+	public StatusLine(AlarmTableModel model, AlarmPanel panel) {
 		if (model==null) {
 			throw new IllegalArgumentException("The AlarmTableModel can't be null");
 		}
+		if (panel==null) {
+			throw new IllegalArgumentException("The AlarmPanel can't be null");
+		}
+		alarmPanel=panel;
 		tableModel=model;
 		initialize();
 		
-		setConnectionState(ConnectionStatus.DISCONNECTED);
+		connectionWidget.setConnectionState(ConnectionWidget.ConnectionStatus.DISCONNECTED);
 	}
 	
 	/**
@@ -128,7 +102,8 @@ public class StatusLine extends JPanel implements ActionListener, ConnectionList
 		// Add the label with the connection status to the right
 		JPanel connectionPnl = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 		connectionPnl.setBorder(BorderFactory.createLoweredBevelBorder());
-		connectionPnl.add(connectionLbl);
+		connectionWidget = new ConnectionWidget(alarmPanel);
+		connectionPnl.add(connectionWidget);
 		add(connectionPnl,BorderLayout.EAST);
 	}
 	
@@ -149,9 +124,11 @@ public class StatusLine extends JPanel implements ActionListener, ConnectionList
 	 * Start the thread to update values
 	 */
 	public void stop() {
-		timer.stop();
-		timer.removeActionListener(this);
-		timer=null;
+		if (timer!=null) {
+			timer.stop();
+			timer.removeActionListener(this);
+			timer=null;
+		}
 	}
 	
 	/** 
@@ -186,7 +163,7 @@ public class StatusLine extends JPanel implements ActionListener, ConnectionList
 	 */
 	@Override
 	public void connected() {
-		setConnectionState(ConnectionStatus.CONNECTED);
+		connectionWidget.setConnectionState(ConnectionWidget.ConnectionStatus.CONNECTED);
 	}
 
 	/**
@@ -196,7 +173,7 @@ public class StatusLine extends JPanel implements ActionListener, ConnectionList
 	 */
 	@Override
 	public void connecting() {
-		setConnectionState(ConnectionStatus.CONNECTING);
+		connectionWidget.setConnectionState(ConnectionWidget.ConnectionStatus.CONNECTING);
 	}
 
 	/**
@@ -206,7 +183,7 @@ public class StatusLine extends JPanel implements ActionListener, ConnectionList
 	 */
 	@Override
 	public void disconnected() {
-		setConnectionState(ConnectionStatus.DISCONNECTED);
+		connectionWidget.setConnectionState(ConnectionWidget.ConnectionStatus.DISCONNECTED);
 	}
 	
 	/**
@@ -216,29 +193,7 @@ public class StatusLine extends JPanel implements ActionListener, ConnectionList
 	 */
 	@Override
 	public void heartbeatLost() {
-		setConnectionState(ConnectionStatus.HEARTBEAT_LOST);
+		connectionWidget.setConnectionState(ConnectionWidget.ConnectionStatus.HEARTBEAT_LOST);
 	}
-	
-	/**
-	 * Set the icon and the tooltip of the connection label.
-	 * 
-	 * @param state The state of the connection
-	 */
-	private void setConnectionState(ConnectionStatus state) {
-		if (state==null) {
-			throw new IllegalArgumentException("The state can't be null");
-		}
-		class SetConnState extends Thread {
-			public ConnectionStatus status;
-			public void run() {
-				connectionLbl.setIcon(status.icon);
-				connectionLbl.setToolTipText(status.tooltip);
-			}
-		}
-		SetConnState thread = new SetConnState();
-		thread.status=state;
-		SwingUtilities.invokeLater(thread);
-	}
-
 	
 }
