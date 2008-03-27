@@ -19,7 +19,7 @@
 
 /** 
  * @author  acaproni   
- * @version $Id: AlarmPanel.java,v 1.15 2008/03/27 15:33:28 acaproni Exp $
+ * @version $Id: AlarmPanel.java,v 1.16 2008/03/27 16:38:26 acaproni Exp $
  * @since    
  */
 
@@ -75,6 +75,9 @@ public class AlarmPanel extends JPanel implements IPanel {
     
     // The listener of the connection
     private ConnectionListener connectionListener;
+    
+    // Say if there is an attempt to connect
+    private volatile boolean connecting=false;
 	
 	/**
 	 * Constructor 
@@ -107,7 +110,7 @@ public class AlarmPanel extends JPanel implements IPanel {
 		// Build GUI objects
 		model = new AlarmTableModel(this);
 		alarmTable = new AlarmTable(model);
-		statusLine = new StatusLine(model);
+		statusLine = new StatusLine(model,this);
 		connectionListener=statusLine;
 		model.setConnectionListener(statusLine);
 		
@@ -223,7 +226,11 @@ public class AlarmPanel extends JPanel implements IPanel {
 	/**
 	 * Connect
 	 */
-	public void connect() {
+	public synchronized void connect() {
+		if (connecting) {
+			return;
+		}
+		connecting=true;
 		connectionListener.connecting();
 		try {
 			categoryClient = new CategoryClient(contSvc);
@@ -232,6 +239,7 @@ public class AlarmPanel extends JPanel implements IPanel {
 			t.printStackTrace(System.err);
 			connectionListener.disconnected();
 			categoryClient=null;
+			connecting=false;
 			return;
 		}
 		/**
@@ -252,17 +260,19 @@ public class AlarmPanel extends JPanel implements IPanel {
 				System.err.println("Error connecting CategoryClient: "+t.getMessage());
 				t.printStackTrace(System.err);
 				connectionListener.disconnected();
+				connecting=false;
 				return;
 			}
 		}
-		statusLine.start();
+		connecting=false;
 		connectionListener.connected();
+		statusLine.start();
 	}
 	
 	/**
 	 * Disconnect
 	 */
-	public void disconnect() {
+	public synchronized void disconnect() {
 		statusLine.stop();
 		try {
 			categoryClient.close();
@@ -273,5 +283,12 @@ public class AlarmPanel extends JPanel implements IPanel {
 			categoryClient=null;
 			connectionListener.disconnected();
 		}
-	}		
+	}
+	
+	/**
+	 * @return <code>true</code> if an attempt to connect is running
+	 */
+	public boolean isConencting() {
+		return connecting;
+	}
 }
