@@ -19,7 +19,7 @@
 
 /** 
  * @author  acaproni   
- * @version $Id: AlarmPanel.java,v 1.11 2008/02/17 02:21:57 acaproni Exp $
+ * @version $Id: AlarmPanel.java,v 1.12 2008/03/27 11:59:05 acaproni Exp $
  * @since    
  */
 
@@ -41,6 +41,7 @@ import alma.acsplugins.alarmsystem.gui.statusline.StatusLine;
 import alma.acsplugins.alarmsystem.gui.table.AlarmTable;
 import alma.acsplugins.alarmsystem.gui.table.AlarmTableModel;
 import alma.acsplugins.alarmsystem.gui.toolbar.Toolbar;
+import alma.maciErrType.wrappers.AcsJCannotGetComponentEx;
 
 /**
  * 
@@ -143,18 +144,59 @@ public class AlarmPanel extends JPanel implements IPanel {
 			throw new Exception("PluginContainerServices not set");
 		}
 		class StartAlarmPanel extends Thread {
+			
+			/**
+			 * Constructor
+			 * 
+			 * @param listener The listener of the state of the connection
+			 */
+			public StartAlarmPanel( ConnectionListener listener) {
+				if (listener==null) {
+					throw new IllegalArgumentException("The ConnectionListener can't be null");
+				}
+				connListener=listener;
+			}
+			
+			// The listener of the state of the connection
+			private ConnectionListener connListener;
+			
 			public void run() {
+				connListener.connecting();
 				try {
 					categoryClient = new CategoryClient(contSvc);
-					categoryClient.connect((AlarmSelectionListener)model);
-					statusLine.start();
 				} catch (Throwable t) {
-					System.err.println("Error connecting CategoryClient: "+t.getMessage());
+					System.err.println("Error instantiating the CategoryClient: "+t.getMessage());
 					t.printStackTrace(System.err);
+					connListener.disconnected();
+					return;
 				}
+				/**
+				 * Try to connect to the alarm service until it becomes available
+				 */
+				while (true) {
+					try {
+						categoryClient.connect((AlarmSelectionListener)model);
+						// If the connection succeded then exit the loop
+						break;
+					} catch (AcsJCannotGetComponentEx cgc) {
+						System.out.println("Error getting the alarm service");
+						// Wait 30 secs before retrying
+						try {
+							Thread.sleep(30000);
+						} catch (Exception e) {}
+						continue; // Try again
+					} catch (Throwable t) {
+						System.err.println("Error connecting CategoryClient: "+t.getMessage());
+						t.printStackTrace(System.err);
+						connListener.disconnected();
+						return;
+					}
+				}
+				statusLine.start();
+				connListener.connected();
 			}
 		}
-		Thread t = new StartAlarmPanel();
+		Thread t = new StartAlarmPanel(statusLine);
 		t.setName("StartAlarmPanel");
 		t.setDaemon(true);
 		t.start();
