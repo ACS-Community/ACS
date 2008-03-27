@@ -19,7 +19,7 @@
 
 /** 
  * @author  acaproni   
- * @version $Id: AlarmPanel.java,v 1.12 2008/03/27 11:59:05 acaproni Exp $
+ * @version $Id: AlarmPanel.java,v 1.13 2008/03/27 14:14:25 acaproni Exp $
  * @since    
  */
 
@@ -105,6 +105,7 @@ public class AlarmPanel extends JPanel implements IPanel {
 		model = new AlarmTableModel(this);
 		alarmTable = new AlarmTable(model);
 		statusLine = new StatusLine(model);
+		model.setConnectionListener(statusLine);
 		
 		setLayout(new BorderLayout());
 		// Add the toolbar
@@ -136,6 +137,12 @@ public class AlarmPanel extends JPanel implements IPanel {
 	}
 	
 	/**
+	 * Connect the Client and listens to the categories.
+	 * 
+	 * The <code>CategoryClient</code> is built only if its reference is null.
+	 * Otherwise it means that the client is still trying to connect and the user 
+	 * restarted the plugin.
+	 *  
 	 * @see SubsystemPlugin
 	 */
 	public void start() throws Exception {
@@ -168,6 +175,7 @@ public class AlarmPanel extends JPanel implements IPanel {
 					System.err.println("Error instantiating the CategoryClient: "+t.getMessage());
 					t.printStackTrace(System.err);
 					connListener.disconnected();
+					categoryClient=null;
 					return;
 				}
 				/**
@@ -176,10 +184,11 @@ public class AlarmPanel extends JPanel implements IPanel {
 				while (true) {
 					try {
 						categoryClient.connect((AlarmSelectionListener)model);
+						System.out.println("ASC connected");
 						// If the connection succeded then exit the loop
 						break;
 					} catch (AcsJCannotGetComponentEx cgc) {
-						System.out.println("Error getting the alarm service");
+						System.out.println("Error getting the alarm service "+cgc.getMessage());
 						// Wait 30 secs before retrying
 						try {
 							Thread.sleep(30000);
@@ -192,14 +201,18 @@ public class AlarmPanel extends JPanel implements IPanel {
 						return;
 					}
 				}
+				System.out.println("Connected");
 				statusLine.start();
 				connListener.connected();
 			}
 		}
-		Thread t = new StartAlarmPanel(statusLine);
-		t.setName("StartAlarmPanel");
-		t.setDaemon(true);
-		t.start();
+		// Connect the categoryClient only if it is null
+		if (categoryClient==null) {
+			Thread t = new StartAlarmPanel(statusLine);
+			t.setName("StartAlarmPanel");
+			t.setDaemon(true);
+			t.start();
+		}
 	}
 	
 	/**
@@ -211,6 +224,7 @@ public class AlarmPanel extends JPanel implements IPanel {
 				try {
 					statusLine.stop();
 					categoryClient.close();
+					categoryClient=null;
 				} catch (Throwable t) {
 					System.err.println("Error closinging CategoryClient: "+t.getMessage());
 					t.printStackTrace(System.err);
