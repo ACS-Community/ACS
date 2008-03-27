@@ -21,7 +21,7 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
  *
- * "@(#) $Id: acsContainerServices.i,v 1.13 2008/03/25 18:45:41 bjeram Exp $"
+ * "@(#) $Id: acsContainerServices.i,v 1.14 2008/03/27 10:02:40 bjeram Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -52,6 +52,7 @@ T* ContainerServices::getComponent(const char *name)
 	T* tmpRef = T::_narrow(obj);  
 	if (tmpRef==T::_nil())
 		{
+		releaseComponent(name); // first we have to release the component!
 		ACSErrTypeCORBA::NarrowFailedExImpl ex(__FILE__, __LINE__, "ContainerServices<>::getComponent");
 		ex.setNarrowType(typeid(T).name());
 		throw ex;
@@ -93,6 +94,7 @@ T* ContainerServices::getComponentNonSticky(const char *name)
 	T* tmpRef = T::_narrow(obj);  
 	if (tmpRef==T::_nil())
 		{
+		// here we do not have to release the component because it is non sticky!
 		ACSErrTypeCORBA::NarrowFailedExImpl ex(__FILE__, __LINE__, "ContainerServices<>::getComponentNonSticky");
 		ex.setNarrowType(typeid(T).name());
 		throw ex;
@@ -143,6 +145,7 @@ ContainerServices::getDynamicComponent(maci::ComponentSpec compSpec, bool markAs
 	T* tmpRef = T::_narrow(obj);  
 	if (tmpRef==T::_nil())
 		{
+		releaseComponent(compSpec.component_name.in()); // first we have to release the component! 
 		ACSErrTypeCORBA::NarrowFailedExImpl ex(__FILE__, __LINE__, "ContainerServices<>::getDynamicComponent");
 		ex.setNarrowType(typeid(T).name());
 		throw ex;
@@ -219,6 +222,7 @@ ContainerServices::getCollocatedComponent(maci::ComponentSpec compSpec, bool mar
 	T* tmpRef = T::_narrow(obj);  
     if (tmpRef==T::_nil())
 		{
+		releaseComponent(compSpec.component_name.in()); // first we have to release the component!
 		ACSErrTypeCORBA::NarrowFailedExImpl ex(__FILE__, __LINE__, "ContainerServices<>::getCollocatedComponent");
 		ex.setNarrowType(typeid(T).name());
 		throw ex;
@@ -293,6 +297,14 @@ ContainerServices::getDefaultComponent(const char* idlType)
 	T* tmpRef = T::_narrow(obj);  
 	if (tmpRef==T::_nil())
 		{
+		// here we try toobtain name of the default component that we can release it
+		ACS::ACSComponent* tComp =  ACS::ACSComponent::_narrow(obj);
+		if ( tComp!=ACS::ACSComponent::_nil() )
+		{
+			char *cName = tComp->name();
+			releaseComponent(cName);
+			CORBA::string_free(cName);
+		}//if
 		ACSErrTypeCORBA::NarrowFailedExImpl ex(__FILE__, __LINE__, "ContainerServices<>::getDefaultComponent");
 		ex.setNarrowType(typeid(T).name());
 		throw ex;
