@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: RepeatGuard.cpp,v 1.7 2007/07/23 10:26:49 nbarriga Exp $"
+* "@(#) $Id: RepeatGuard.cpp,v 1.8 2008/03/28 16:11:08 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -25,7 +25,7 @@
 
 #include "vltPort.h"
 
-static char *rcsId="@(#) $Id: RepeatGuard.cpp,v 1.7 2007/07/23 10:26:49 nbarriga Exp $"; 
+static char *rcsId="@(#) $Id: RepeatGuard.cpp,v 1.8 2008/03/28 16:11:08 msekoran Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 
@@ -40,10 +40,10 @@ RepeatGuard::RepeatGuard(ACS::TimeInterval _interval, unsigned int _maxRepetitio
         interval(_interval),
         lastTime(0)
 {
-        if(_interval==0){
+        if(_interval<=0){
             method=COUNTER;
         }
-        if(_maxRepetitions==0){
+        if(_maxRepetitions<=0){
             method=TIMER;
         }
 }
@@ -107,55 +107,7 @@ bool RepeatGuard::check(){
 bool RepeatGuard::checkAndIncrement(){
         ACS::ThreadSyncGuard guard(&mutex);
         counter++;
-        ACS::Time currentTime=getTimeStamp();
-        if(firstTime){
-                firstTime=false;
-                counterAtLastCheck=counter;
-                counter=0;
-                lastTime=currentTime;
-                return true;
-
-        }
-        switch(method){
-                case AND:
-                        if(lastTime+interval<=currentTime&&counter>=maxRepetitions){
-                                counterAtLastCheck=counter;
-                                counter=0;
-                                lastTime=currentTime;
-                                return true;
-                        }
-                        return false;
-                        break;
-                case OR:
-                        if(lastTime+interval<=currentTime||counter>=maxRepetitions){
-                                counterAtLastCheck=counter;
-                                counter=0;
-                                lastTime=currentTime;
-                                return true;
-                        }
-                        return false;
-                        break;
-                case TIMER:
-                        if(lastTime+interval<=currentTime){
-                                counterAtLastCheck=counter;
-                                counter=0;
-                                lastTime=currentTime;
-                                return true;
-                        }
-                        return false;
-                        break;
-                case COUNTER:
-                        if(counter>=maxRepetitions){
-                                counterAtLastCheck=counter;
-                                counter=0;
-                                lastTime=currentTime;
-                                return true;
-                        }
-                        return false;
-                        break;
-        }
-        return false;
-
+	return check();
 }
 
 void RepeatGuard::increment(){
@@ -179,8 +131,8 @@ void RepeatGuard::reset(ACS::TimeInterval interval, unsigned int maxRepetitions,
         ACS::ThreadSyncGuard guard(&mutex);
         //method=OR;
         method = or_or_and;
-        if(interval==0)method=COUNTER;
-        if(maxRepetitions==0)method=TIMER;
+        if(interval<=0)method=COUNTER;
+        if(maxRepetitions<=0)method=TIMER;
 
 	this->maxRepetitions=maxRepetitions;
 	this->interval=interval;
