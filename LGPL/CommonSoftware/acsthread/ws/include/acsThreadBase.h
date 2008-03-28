@@ -19,7 +19,7 @@
  *License along with this library; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: acsThreadBase.h,v 1.27 2006/10/03 22:17:12 gchiozzi Exp $"
+ * "@(#) $Id: acsThreadBase.h,v 1.28 2008/03/28 12:33:41 bjeram Exp $"
  *
  * who       when        what
  * --------  ----------  ----------------------------------------------
@@ -436,6 +436,13 @@ namespace ACS {
 	 */
 	bool create(const long _thrFlags= THR_NEW_LWP | THR_DETACHED);
 
+	/**
+	 * Yield the thread to another another ready-to-run, active thread.
+	 * This method shall (and can) be called just from inside the thread, 
+	 * because we can yield just from actaul/current thread! We can not ask another thread to yield!
+	 */
+	virtual void yield();
+	
       private:
 
 	/// thread worker function. Signature shall be compatible with ACE_THR_FUNC

@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsThreadBase.cpp,v 1.30 2006/10/03 22:18:08 gchiozzi Exp $"
+* "@(#) $Id: acsThreadBase.cpp,v 1.31 2008/03/28 12:33:41 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -549,6 +549,11 @@ ThreadBase::SleepReturn ThreadBase::sleep(TimeInterval timeIn100ns) const
     return SLEEP_OK;
 
 }
+
+void ThreadBase::yield()
+{
+	ACE_Thread::yield();
+}//yield
  
 /////////////////////////////////////////////////
 // ThreadManagerBase
