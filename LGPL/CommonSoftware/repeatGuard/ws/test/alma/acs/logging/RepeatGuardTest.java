@@ -24,9 +24,12 @@
  */
  
   
-// $Author: nbarriga $
-// $Date: 2007/07/23 10:03:47 $
+// $Author: msekoran $
+// $Date: 2008/03/28 13:05:33 $
 // $Log: RepeatGuardTest.java,v $
+// Revision 1.5  2008/03/28 13:05:33  msekoran
+// Java code cleanup.
+//
 // Revision 1.4  2007/07/23 10:03:47  nbarriga
 // Default evaluation method is now OR, to be consistent with cpp implementation.
 // Some minor bugs fixed(not reseting counters the first time, time drift).
@@ -45,6 +48,8 @@
  
 package alma.acs.logging;
 
+import java.util.concurrent.TimeUnit;
+
 import junit.framework.TestCase;
 
 /**
@@ -58,9 +63,9 @@ public class RepeatGuardTest extends TestCase {
 	}
 	
 	public void testRepeatGuard() throws InterruptedException {
-		RepeatGuard rg = new RepeatGuard(10000000,10);  // interval is 1 sec
+		RepeatGuard rg = new RepeatGuard(1, TimeUnit.SECONDS, 10);
 
-        System.out.println("******************RepeatGuard(10000000,10)***************");
+        System.out.println("******************RepeatGuard(1sec, 10)***************");
 		int countSucceeded=0;
         int total = 0;
 		for(int i=0;i<50;i++){
@@ -76,7 +81,7 @@ public class RepeatGuardTest extends TestCase {
 		assertEquals(5, countSucceeded);
 
         System.out.println("******************RepeatGuard(0,10)***************");
-        rg.reset(0,10);
+        rg.reset(0,TimeUnit.SECONDS,10);
         countSucceeded=0;
         for (int i=0;i<25;i++) {
             Thread.sleep(200);  // 200 millisecs;
@@ -97,8 +102,8 @@ public class RepeatGuardTest extends TestCase {
         }
         assertEquals(3, countSucceeded);
         
-        System.out.println("******************RepeatGuard.reset(10000000,10,RepeatGuard.OR)***************");
-        rg.reset(10000000, 10, RepeatGuard.OR);
+        System.out.println("******************RepeatGuard.reset(1sec,10,OR)***************");
+        rg.reset(1,TimeUnit.SECONDS,10,RepeatGuard.Logic.OR);
         countSucceeded=0;
         for(int i=0;i<25;i++) {
             if(rg.checkAndIncrement()) {
@@ -107,8 +112,8 @@ public class RepeatGuardTest extends TestCase {
         }
         assertEquals(3, countSucceeded);
             
-        System.out.println("******************RepeatGuard(10000000,10)***************");
-        rg.reset(10000000,0);
+        System.out.println("******************RepeatGuard(1sec,10)***************");
+        rg.reset(1,TimeUnit.SECONDS,0);
         countSucceeded=0;
         for (int i=0;i<25;i++) {
             Thread.sleep(200);  // 200 millisecs;
@@ -118,8 +123,8 @@ public class RepeatGuardTest extends TestCase {
         }
         assertEquals(5, countSucceeded);
         
-        System.out.println("******************RepeatGuard(10000000,10,RepeatGuard.AND)***************");
-        rg.reset(10000000,10,RepeatGuard.AND);
+        System.out.println("******************RepeatGuard(1sec,10,AND)***************");
+        rg.reset(1,TimeUnit.SECONDS,10,RepeatGuard.Logic.AND);
         countSucceeded=0;
         for (int i=0;i<25;i++) {
             Thread.sleep(200);  // 200 millisecs;
@@ -129,8 +134,8 @@ public class RepeatGuardTest extends TestCase {
         }
         assertEquals(3, countSucceeded);
         
-        System.out.println("******************RepeatGuard(10000000,4,RepeatGuard.AND)***************");
-        rg.reset(10000000,4,RepeatGuard.AND);
+        System.out.println("******************RepeatGuard(1sec,4,AND)***************");
+        rg.reset(1,TimeUnit.SECONDS,4,RepeatGuard.Logic.AND);
         countSucceeded=0;
         for (int i=0;i<25;i++) {
             Thread.sleep(200);  // 200 millisecs;
@@ -139,18 +144,6 @@ public class RepeatGuardTest extends TestCase {
             }
         }
         assertEquals(5, countSucceeded);
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	protected void setUp() throws Exception {
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	protected void tearDown() throws Exception {
 	}
 
 }

@@ -23,191 +23,193 @@
  *
  */
 
-// $Author: nbarriga $
-// $Date: 2007/07/23 10:03:46 $
-// $Log: RepeatGuard.java,v $
-// Revision 1.4  2007/07/23 10:03:46  nbarriga
-// Default evaluation method is now OR, to be consistent with cpp implementation.
-// Some minor bugs fixed(not reseting counters the first time, time drift).
-// References in asserts fixed.
-// Added filter to TesList.grep.
-//
-// Revision 1.3  2007/07/17 09:34:17  cparedes
-// Added a little cleaning and always true for the first check
-//
-// Revision 1.2  2007/07/13 07:21:45  cparedes
-// Changing the 2nd ctor, to work fine
-//
-// Revision 1.1  2007/07/10 14:59:18  hmeuss
-// Added Java implementation, but for some reason TAT does not work for the test here. Needs repair!
-// 
 package alma.acs.logging;
+
+import java.security.InvalidParameterException;
+import java.util.concurrent.TimeUnit;
 
 /**
  * This is a copy from Nicolas' C++ RepeatGuard implementation. See there all
  * the description, comments and documentation.
  * 
  * @author hmeuss
- * 
  */
 public class RepeatGuard {
 
-	int evaluationMethod; // specifies whether time interval and number of
+	/*** Evaluation logic: TIMER (time based guard), COUNTER (count based guard), AND/OR (conjunction/disjunction or both) */
+	public enum Logic { AND, OR, TIMER, COUNTER }
 
-	// repetitions
+	private Logic evaluationMethod;
 
-	// should be evaluated conjunctive or diskunctive. Must be one
-	// of the following values:
+	private int maxRepetitions;
 
-	public static final int AND = 0;
+	private long endTimeNs, intervalNs;
 
-	public static final int OR = 1;
+	private int counter;
 
-	public static final int TIMER = 2;
+	private int counterAtLastCheck;
 
-	public static final int COUNTER = 3;
-
-	int maxRepetitions;
-
-	long endTime, interval;
-
-	int counter;
-
-    boolean firstTime=true;
-
-	int counterAtLastCheck;
+	private boolean firstTime;
 
 	/**
-	 * ctor
+	 * Constructor.
 	 * 
-	 * @param interval
-	 *            Time interval in 100 nanosecond units!
-	 * @param maxRepetitions
-	 * @param or_or_and
-	 *            0 for AND, 1 for OR
+	 * @param interval Time interval (in <code>timeUnit</code> units).
+	 * @param timeUnit Time unit of <code>interval</code> parameter.
+	 * @param maxRepetitions Maximum number of repetitions.
+	 * @param logic Evaluation logic.
 	 */
-	RepeatGuard(long interv, int maxRep, int or_or_and) {
-        firstTime=true;
-		evaluationMethod = or_or_and;
-		if (interv == 0) {
-			evaluationMethod = COUNTER;
-		}
-		if (maxRep == 0) {
-			evaluationMethod = TIMER;
-		}
- 
-		maxRepetitions = maxRep;
-		counter = 0;
-		counterAtLastCheck = 0;
-		interval = interv / 100;// interval is measured
-		// in 100 nanosconds as
-		// base unit
-		endTime = System.nanoTime() + interval;
+	public RepeatGuard(long interval, TimeUnit timeUnit, int maxRepetitions, Logic logic) {
+		reset(interval, timeUnit, maxRepetitions, logic);
     }
 
 	/**
-	 * ctor, convenience fo rthe above, using OR evaluationMethod
-	 * 
-	 * @param interval
-	 *            Time interval in 100 nanosecond units!
-	 * @param maxRepetitions
+	 * Constructor, convenience for the above, using OR evaluation method.
+	 * @param interval Time interval (in <code>timeUnit</code> units).
+	 * @param timeUnit Time unit of <code>interval</code> parameter.
+	 * @param maxRepetitions Maximum number of repetitions.
 	 */
-	RepeatGuard(long interv, int maxRep) {
-		this(interv, maxRep, 1);
+	public RepeatGuard(long interval, TimeUnit timeUnit, int maxRepetitions) {
+		this(interval, timeUnit, maxRepetitions, Logic.OR);
 	}
 
-	// check returns true, iff the last call for check was longer ago than
-	// interval, and (or) increment has been called more than maxRepetitions
-        boolean check() {
-                long now = System.nanoTime();
-                if(firstTime){
-                        firstTime=false; 
-                        counterAtLastCheck = counter;
-                        counter = 0;
-                        endTime = now + interval;
+	/**
+	 * Check returns true, if the last call for check was longer ago than
+	 * interval and/or increment has been called more than maxRepetitions.
+	 * @return <code>true</code> if OK, <code>false</code> if should be guarded
+	 */
+    public synchronized boolean check() {
+        long now = System.nanoTime();
 
-                        return true;
-                }
+        // first time log
+        if (firstTime)
+        {
+	        firstTime = false; 
+	        counterAtLastCheck = counter;
+	        counter = 0;
+	        endTimeNs = now + intervalNs;
+	        return true;
+        }
+
         switch (evaluationMethod) {
-		case AND:
-			if ((now >= endTime) && (counter >= maxRepetitions)) {
-                counterAtLastCheck = counter;
-				counter = 0;
-				endTime = now + interval;
-				return true;
-			}
-			return false;
-		case OR:
-			if ((now >= endTime) || (counter >= maxRepetitions)) {
-				counterAtLastCheck = counter;
-				counter = 0;
-				endTime = now + interval;
-				return true;
-			}
-			return false;
-		case TIMER:
-			if (now >= endTime) {
-				counterAtLastCheck = counter;
-				counter = 0;
-				endTime = endTime + interval; //endTime +interval instead of now + interval to prevent drift
-				return true;
-			}
-			return false;
-		case COUNTER:
-			if (counter >= maxRepetitions) {
-				counterAtLastCheck = counter;
-				counter = 0;
-				endTime = now + interval;
-				return true;
-			}
-			return false;
+			case AND:
+				if ((now >= endTimeNs) && (counter >= maxRepetitions)) {
+	                counterAtLastCheck = counter;
+					counter = 0;
+					endTimeNs = now + intervalNs;
+					return true;
+				}
+				return false;
+				
+			case OR:
+				if ((now >= endTimeNs) || (counter >= maxRepetitions)) {
+					counterAtLastCheck = counter;
+					counter = 0;
+					endTimeNs = now + intervalNs;
+					return true;
+				}
+				return false;
+			case TIMER:
+				if (now >= endTimeNs) {
+					counterAtLastCheck = counter;
+					counter = 0;
+					endTimeNs = endTimeNs + intervalNs; //endTime + interval instead of now + interval to prevent drift
+					return true;
+				}
+				return false;
+			case COUNTER:
+				if (counter >= maxRepetitions) {
+					counterAtLastCheck = counter;
+					counter = 0;
+					endTimeNs = now + intervalNs;
+					return true;
+				}
+				return false;
 		}
-		return false;
+
+        return false;
 	}
 
-	 boolean checkAndIncrement() {
+    /**
+     * Increments and checks (see {@link #check()}).
+	 * @return <code>true</code> if OK, <code>false</code> if should be guarded
+     * @see #check()
+     */
+	public synchronized boolean checkAndIncrement() {
 		counter++;
 		return check();
 	}
 
-	 void increment() {
+	/**
+	 * Reset and reconfigure logic of guard using OR logic.
+	 * @param interval Time interval (in <code>timeUnit</code> units).
+	 * @param timeUnit Time unit of <code>interval</code> parameter.
+	 * @param maxRepetitions Maximum number of repetitions.
+	 */
+	public void reset(long interval, TimeUnit timeUnit, int maxRepetitions) {
+		reset(interval, timeUnit, maxRepetitions, Logic.OR);
+	}
+
+	/**
+	 * Reset and reconfigure logic of guard.
+	 * @param interval Time interval (in <code>timeUnit</code> units).
+	 * @param timeUnit Time unit of <code>interval</code> parameter.
+	 * @param maxRepetitions Maximum number of repetitions.
+	 * @param logic Evaluation logic.
+	 */
+	public synchronized void reset(long interval, TimeUnit timeUnit, int maxRepetitions, Logic logic) {
+		this.evaluationMethod = logic;
+
+		// check paramaters
+		if (maxRepetitions <= 0 && interval <= 0) {
+			throw new InvalidParameterException("maxRepetitions <= 0 && interval <= 0");
+		}
+		// check interval parameter, counter fallback
+		else if (interval <= 0) {
+			evaluationMethod = Logic.COUNTER;
+		}
+		// check max repetitions parameter, timer fallback
+		else if (maxRepetitions <= 0) {
+			evaluationMethod = Logic.TIMER;
+		}
+ 
+		this.intervalNs = timeUnit.toNanos(interval);
+		this.maxRepetitions = maxRepetitions;
+
+		reset();
+	}
+
+	/**
+	 * Reset and reconfigure logic of guard.
+	 */
+	public synchronized void reset() {
+		counter = 0;
+		counterAtLastCheck = 0;
+		firstTime = true;
+		this.endTimeNs = System.nanoTime() + intervalNs;
+	}
+
+	/**
+	 * Increase couter value.
+	 */
+	public synchronized void increment() {
 		counter++;
 	}
-	
-    int counter() {
+		
+	/**
+	 * Get current counter value.
+	 * @return current counter value.
+	 */
+	public synchronized int counter() {
 		return counter;
 	}
 
-	int count() {
+	/**
+	 * Get count at last check.
+	 * @return count at last check.
+	 */
+	public synchronized int count() {
 		return counterAtLastCheck;
 	}
-
-	 void reset() {
-		counter = 0;
-		counterAtLastCheck = 0;
-		endTime = System.nanoTime() + interval;
-        firstTime=true;
-	}
-
-	 void reset(long interv, int maxRep) {
-		reset(interv, maxRep, 1);
-	}
-
-	 void reset(long interv, int maxRep, int or_or_and) {
-        firstTime=true;
-		evaluationMethod = or_or_and;
-		if (interv == 0) {
-			evaluationMethod = COUNTER;
-		}
-		if (maxRep == 0) {
-			evaluationMethod = TIMER;
-		}
-		maxRepetitions = maxRep;
-		counter = 0;
-		counterAtLastCheck = 0;
-		interval = interv * 100;// interval is measured
-		// in 100 nanosconds as
-		// base unit
-		endTime = System.nanoTime() + interval;
-	}
+	
 }

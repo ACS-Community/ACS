@@ -24,9 +24,12 @@
  */
  
   
-// $Author: cparedes $
-// $Date: 2007/07/13 07:51:45 $
+// $Author: msekoran $
+// $Date: 2008/03/28 13:05:33 $
 // $Log: RepeatGuardLoggerTest.java,v $
+// Revision 1.2  2008/03/28 13:05:33  msekoran
+// Java code cleanup.
+//
 // Revision 1.1  2007/07/13 07:51:45  cparedes
 // Adding the rest of the files for repeatGuardLogger
 //
@@ -36,8 +39,10 @@
  
 package alma.acs.logging;
 
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import junit.framework.TestCase;
 
 /**
@@ -50,10 +55,11 @@ public class RepeatGuardLoggerTest extends TestCase {
 		super(name);
 	}
 	
+	/* simple test only, RepeatGuard is throughly tested in RepeatGuardTest */
 	public void testRepeatGuardLogger() throws InterruptedException {
-        Logger logger = ClientLogManager.getAcsLogManager().getLoggerForApplication("RepeatGuardLoggerTest", true);
-
-        RepeatGuardLogger guardbl = new RepeatGuardLogger(10000000,10);
+	    Logger logger = ClientLogManager.getAcsLogManager().getLoggerForApplication("RepeatGuardLoggerTest", true);
+	    
+	    RepeatGuardLogger guardbl = new RepeatGuardLogger(1, TimeUnit.SECONDS, 10);
         
         logger.log(Level.INFO,"Simple test.");
 
@@ -63,52 +69,6 @@ public class RepeatGuardLoggerTest extends TestCase {
 	        guardbl.log(logger, Level.INFO, "Log B without incrementing");
 	        guardbl.logAndIncrement(logger, Level.INFO, "Log C with incrementing");
 	    }
-        
-       // RepeatGuardLogger guardbl = new RepeatGuardLogger(10000000,10);
-/*
-
-    Logging::RepeatGuardLogger<Logging::TypeSafeLog> guard(10000000,10);
-
-    repeatGuardLogTypeExample::simpleLog my_simpleLog(__FILE__,__LINE__,"main");
-    my_simpleLog.log();
-
-
-    guard.log(my_simpleLog);
-
-    for(int i=0;i<50;i++)
-	{
-	guard.logAndIncrement(my_simpleLog);
-	}
-
-
-
-    Logging::RepeatGuardLogger<ACSErr::ACSbaseExImpl> guardex(10000000,10);
-
-    ACSErrTypeCommon::GenericErrorExImpl displayMessageEx(
-	__FILE__, __LINE__, "main");
-    displayMessageEx.log();
-
-
-    guardex.log(displayMessageEx);
-
-    for(int i=0;i<50;i++)
-	{
-	guardex.logAndIncrement(displayMessageEx);
-	}
-
-       */
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	protected void setUp() throws Exception {
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	protected void tearDown() throws Exception {
 	}
 
 }
