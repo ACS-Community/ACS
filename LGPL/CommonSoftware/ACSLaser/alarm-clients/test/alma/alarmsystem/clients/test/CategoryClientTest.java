@@ -41,7 +41,7 @@ public class CategoryClientTest extends ComponentClientTestCase implements Alarm
 	 * @author acaproni
 	 *
 	 */
-	private enum AlarmsFromCDB {
+	public enum AlarmsFromCDB {
 		M1_1A("TEST", "TEST_MEMBER1", 1, true,2,"The cause","Run and fix quickly","Test alarm 1","A disaster"),
 		M1_2A("TEST", "TEST_MEMBER1", 2, true,3,null,null,"Test alarm 2",null),
 		M2_1A("TEST", "TEST_MEMBER2", 1, true,2,"The cause","Run and fix quickly","Test alarm 1","A disaster"),
