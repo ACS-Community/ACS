@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: Makefile,v 1.99 2008/03/19 11:55:50 bjeram Exp $" 
+# "@(#) $Id: Makefile,v 1.100 2008/03/28 13:03:57 hsommer Exp $" 
 #
 # Makefile of ........
 #
@@ -95,7 +95,7 @@ maciDynComp_OBJECTS = maciDynCompImpl maciTestS maciTestC
 #
 # Scripts (public and local)
 # ----------------------------
-SCRIPTS_L         = startMaciTest.sh startMaciTestClient.sh startContainerWS.sh maciStopWrongCDB.sh maciStartWrongCDB.sh maciTestLogConfig.sh
+SCRIPTS_L         = startMaciTest.sh startMaciTestClient.sh startContainerWS.sh maciStartStopWrongCDB.sh maciTestLogConfig.sh
 
 #
 # TCL scripts (public and local)
