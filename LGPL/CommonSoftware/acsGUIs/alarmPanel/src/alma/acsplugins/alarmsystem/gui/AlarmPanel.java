@@ -19,7 +19,7 @@
 
 /** 
  * @author  acaproni   
- * @version $Id: AlarmPanel.java,v 1.16 2008/03/27 16:38:26 acaproni Exp $
+ * @version $Id: AlarmPanel.java,v 1.17 2008/03/28 09:12:14 acaproni Exp $
  * @since    
  */
 
@@ -78,6 +78,14 @@ public class AlarmPanel extends JPanel implements IPanel {
     
     // Say if there is an attempt to connect
     private volatile boolean connecting=false;
+    
+    // true if the panel has been closed
+    // It helps stopping the connection thread
+    private volatile boolean closed=false;
+    
+    // The thread to connect/disconnect
+    private Thread connectThread;
+    private Thread disconnectThread;
 	
 	/**
 	 * Constructor 
@@ -162,12 +170,13 @@ public class AlarmPanel extends JPanel implements IPanel {
 				AlarmPanel.this.connect();
 			}
 		}
+		closed=false;
 		// Connect the categoryClient only if it is null
 		if (categoryClient==null) {
-			Thread t = new StartAlarmPanel();
-			t.setName("StartAlarmPanel");
-			t.setDaemon(true);
-			t.start();
+			connectThread = new StartAlarmPanel();
+			connectThread.setName("StartAlarmPanel");
+			connectThread.setDaemon(true);
+			connectThread.start();
 		}
 	}
 	
@@ -180,10 +189,11 @@ public class AlarmPanel extends JPanel implements IPanel {
 				AlarmPanel.this.disconnect();
 			}
 		}
-		Thread t = new StopAlarmPanel();
-		t.setName("StopAlarmPanel");
-		t.setDaemon(true);
-		t.start();	
+		closed=true;
+		disconnectThread = new StopAlarmPanel();
+		disconnectThread.setName("StopAlarmPanel");
+		disconnectThread.setDaemon(true);
+		disconnectThread.start();	
 	}
 	
 	/**
@@ -227,7 +237,7 @@ public class AlarmPanel extends JPanel implements IPanel {
 	 * Connect
 	 */
 	public synchronized void connect() {
-		if (connecting) {
+		if (connecting || closed) {
 			return;
 		}
 		connecting=true;
@@ -245,24 +255,35 @@ public class AlarmPanel extends JPanel implements IPanel {
 		/**
 		 * Try to connect to the alarm service until it becomes available
 		 */
-		while (true) {
+		while (true && !closed) {
 			try {
 				categoryClient.connect((AlarmSelectionListener)model);
 				// If the connection succeeded then exit the loop
 				break;
 			} catch (AcsJCannotGetComponentEx cgc) {
 				// Wait 30 secs before retrying
-				try {
-					Thread.sleep(30000);
-				} catch (Exception e) {}
+				// but checks if it is closed every second.
+				int t=0;
+				while (t<30) {
+					if (closed) {
+						return;
+					}
+					try {
+						Thread.sleep(1000);
+					} catch (Exception e) {}
+					t++;
+				}
 				continue; // Try again
 			} catch (Throwable t) {
-				System.err.println("Error connecting CategoryClient: "+t.getMessage());
+				System.err.println("Error connecting CategoryClient: "+t.getMessage()+", "+t.getClass().getName());
 				t.printStackTrace(System.err);
 				connectionListener.disconnected();
 				connecting=false;
 				return;
 			}
+		}
+		if (closed) {
+			return;
 		}
 		connecting=false;
 		connectionListener.connected();
@@ -274,6 +295,12 @@ public class AlarmPanel extends JPanel implements IPanel {
 	 */
 	public synchronized void disconnect() {
 		statusLine.stop();
+		// wait until the connect thread terminates (if it is running)
+		while (connectThread!=null && connectThread.isAlive()) {
+			try {
+				Thread.sleep(1500);
+			} catch (Exception e) {}
+		}
 		try {
 			categoryClient.close();
 		} catch (Throwable t) {
