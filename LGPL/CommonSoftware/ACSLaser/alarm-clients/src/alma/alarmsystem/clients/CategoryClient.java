@@ -229,8 +229,12 @@ public class CategoryClient {
 	public void close() throws AlarmClientException {
 		closed=true;
 		try {
-			jms_selectionHandler.close();
-			contSvc.releaseComponent(alarm.name());
+			if (jms_selectionHandler!=null) {
+				jms_selectionHandler.close();
+			}
+			if (contSvc!=null && alarm!=null) {
+				contSvc.releaseComponent(alarm.name());
+			}
 		} catch (Exception e) {
 			throw new AlarmClientException("Exception closing: ",e);
 		}
