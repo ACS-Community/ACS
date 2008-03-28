@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: testACSThreadWithParameter.cpp,v 1.10 2006/03/24 12:42:31 vwang Exp $"
+* "@(#) $Id: testACSThreadWithParameter.cpp,v 1.11 2008/03/28 12:34:25 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -30,7 +30,7 @@
 #include "acsThreadManager.h"
 
 
-static char *rcsId="@(#) $Id: testACSThreadWithParameter.cpp,v 1.10 2006/03/24 12:42:31 vwang Exp $"; 
+static char *rcsId="@(#) $Id: testACSThreadWithParameter.cpp,v 1.11 2008/03/28 12:34:25 bjeram Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 
@@ -61,6 +61,8 @@ class TestACSThreadWithParameter :public ACS::Thread
 
     virtual void runLoop()
 	{
+	    if (loopCounter_m==2) 
+		yield();
 	    if (loopCounter_m==10)
 		{
 		exit();
