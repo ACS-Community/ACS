@@ -22,7 +22,7 @@
 #
 # Internet email: dmuders@mpifr-bonn.mpg.de
 #
-# "@(#) $Id: Callbacks.py,v 1.6 2005/02/23 00:04:55 dfugate Exp $"
+# "@(#) $Id: Callbacks.py,v 1.7 2008/03/31 21:21:40 agrimstrup Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -42,7 +42,7 @@ Todo:
 - 
 '''
 
-__revision__ = "$Id: Callbacks.py,v 1.6 2005/02/23 00:04:55 dfugate Exp $"
+__revision__ = "$Id: Callbacks.py,v 1.7 2008/03/31 21:21:40 agrimstrup Exp $"
 
 #------------------------------------------------------------------------------
 import ACS__POA                   # Import the Python CORBA stubs for BACI
@@ -187,6 +187,8 @@ class BaseValueCB:
         # Save the value for later use
         if self.archive:
             self.values.append(value)
+        else:
+            self.values = value
 
         # Set flag.
         self.status = 'WORKING'
@@ -212,6 +214,8 @@ class BaseValueCB:
         # Save the value for later use
         if self.archive:
             self.values.append(value)
+        else:
+            self.values = value
         
         # Save completion to be able to fetch the error code.
         self.completion = completion
@@ -235,6 +239,21 @@ class BaseValueCB:
         desc = None
         
         return TRUE
+    #--------------------------------------------------------------------------
+    def last (self):
+        '''
+        Return the last value received by the DO.
+
+        Parameters: None.
+
+        Returns: last archived value
+
+        Raises: Nothing
+        '''
+        if self.archive:
+            return self.values[-1]
+        else:
+            return self.values
 #------------------------------------------------------------------------------
 class CBlong(BaseValueCB, ACS__POA.CBlong):
     '''
@@ -365,6 +384,22 @@ class CBstringSeq(BaseValueCB, ACS__POA.CBstringSeq):
         BaseValueCB.__init__(self, name, archive)
 #------------------------------------------------------------------------------
 class CBpattern(BaseValueCB, ACS__POA.CBpattern):
+    '''
+    This class defines the method(s) that will be invoked asynchronously by the
+    device for any monitors we may create.
+    '''
+    #--------------------------------------------------------------------------
+    def __init__ (self, name=None, archive=0): 
+        '''
+        Constructor.
+
+        Parameters: name of this callback instance
+
+        Raises: Nothing
+        '''
+        BaseValueCB.__init__(self, name, archive)
+#------------------------------------------------------------------------------
+class CBfloat(BaseValueCB, ACS__POA.CBfloat):
     '''
     This class defines the method(s) that will be invoked asynchronously by the
     device for any monitors we may create.
