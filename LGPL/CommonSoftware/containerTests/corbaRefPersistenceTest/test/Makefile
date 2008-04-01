@@ -16,7 +16,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.1 2008/04/01 09:29:56 acaproni Exp $"
+# "@(#) $Id: Makefile,v 1.2 2008/04/01 09:51:55 acaproni Exp $"
 #
 # Makefile of ........
 #
@@ -34,12 +34,34 @@
 
 #
 # user definable C-compilation flags
-#USER_CFLAGS = 
+USER_CFLAGS = 
 
 #
 # additional include and library search paths
 #USER_INC = 
-#USER_LIB = 
+USER_LIB =      -lACE \
+                -lTAO \
+                -lTAO_DsLogAdmin \
+                -lTAO_CosNaming \
+                -lTAO_IORTable \
+                -lTAO_PortableServer \
+                -lTAO_Svc_Utils \
+                -lTAO_CosTrading \
+                -lTAO_CosNotification \
+                -lTAO_DynamicAny \
+                -lTAO_IFR_Client \
+                -lTAO_CosProperty \
+                -lacsutil \
+                -lcdb \
+                -llogging \
+                -lacscomponent \
+                -lbaci \
+                -lmaci \
+                -lmaciClient \
+                -lacserr \
+                -lm \
+                -lloki \
+                -lACSErrTypeCommon
 
 #
 # MODULE CODE DESCRIPTION:
@@ -71,12 +93,13 @@ INCLUDES        =
 #
 # Libraries (public and local)
 # ----------------------------
-LIBRARIES       =
+LIBRARIES       = corbaRefTest
 LIBRARIES_L     =
 
 #
 # <brief description of lllll library>
-lllll_OBJECTS   =
+corbaRefTest_OBJECTS   = HelloWorldImpl
+corbaRefTest_LIBSS     = HelloWorldStubs
 
 #
 # Scripts (public and local)
@@ -138,7 +161,7 @@ jjj_DIRS=
 jjj_EXTRAS= 
 #
 # java sources in Jarfile on/off
-DEBUG= 
+DEBUG=On
 #
 # ACS XmlIdl generation on/off
 #
