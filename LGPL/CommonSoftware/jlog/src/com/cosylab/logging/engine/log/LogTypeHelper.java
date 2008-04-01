@@ -46,21 +46,18 @@ public enum LogTypeHelper {
 	 * We need that to reduce the amount of memory used by the software.
 	 * 
 	 */
-    TRACE(AcsLogLevelDefinition.TRACE,"Trace","/trace.gif"),
-    DEBUG(AcsLogLevelDefinition.DEBUG,"Debug","/debug.gif"),
-    INFO(AcsLogLevelDefinition.INFO,"Info","/information.gif"),
-    NOTICE(AcsLogLevelDefinition.NOTICE,"Notice","/notice.gif"),
-    WARNING(AcsLogLevelDefinition.WARNING,"Warning","/warning.gif"),
-    ERROR(AcsLogLevelDefinition.ERROR,"Error","/error.gif"),
-    CRITICAL(AcsLogLevelDefinition.CRITICAL,"Critical","/critical.gif"),
-    ALERT(AcsLogLevelDefinition.ALERT,"Alert","/alert.gif"),
-    EMERGENCY(AcsLogLevelDefinition.EMERGENCY,"Emergency","/emergency.gif");
+    TRACE(AcsLogLevelDefinition.TRACE,"Trace"),
+    DEBUG(AcsLogLevelDefinition.DEBUG,"Debug"),
+    INFO(AcsLogLevelDefinition.INFO,"Info"),
+    NOTICE(AcsLogLevelDefinition.NOTICE,"Notice"),
+    WARNING(AcsLogLevelDefinition.WARNING,"Warning"),
+    ERROR(AcsLogLevelDefinition.ERROR,"Error"),
+    CRITICAL(AcsLogLevelDefinition.CRITICAL,"Critical"),
+    ALERT(AcsLogLevelDefinition.ALERT,"Alert"),
+    EMERGENCY(AcsLogLevelDefinition.EMERGENCY,"Emergency");
 	
 	// The string describing this entry type
 	public final String logEntryType;
-	
-	// The icon to show in the GUI for a given log type
-	public ImageIcon icon;
 	
 	// The ACSLogLevelDefinition
 	public final AcsLogLevelDefinition acsCoreLevel;
@@ -72,18 +69,9 @@ public enum LogTypeHelper {
      * @param logEntryType The entry type
      * @param iconName The name of the icon
      */
-    private LogTypeHelper(AcsLogLevelDefinition acsCoreLvl, String logEntryType, String iconName) {
+    private LogTypeHelper(AcsLogLevelDefinition acsCoreLvl, String logEntryType) {
     	this.acsCoreLevel=acsCoreLvl;
     	this.logEntryType=logEntryType;
-    	// The loading of the icon fails if the engine is executed without 
-    	// an X server running.
-    	// In this case the icon is set to null.
-    	// 
-    	try {
-    		this.icon=new ImageIcon(LogTypeHelper.this.getClass().getResource(iconName));
-    	} catch (Throwable t) {
-    		this.icon=null;
-    	}
     }
     
     /**
@@ -141,21 +129,6 @@ public enum LogTypeHelper {
         // ACS log level not found!
         return null; 
     } 
-    
-    /**
-     * Evaluates and returns the highest vertical dimension
-     * of the icons (it is needed to optimize the display of some widgets)
-     *  
-     * @return The max vertical dimension of the icons 
-     */
-    public static int getIconsVSize() {
-        int vDim=0;
-        for (LogTypeHelper logType: LogTypeHelper.values()) {
-        	int height = (logType.icon==null)?10:logType.icon.getIconHeight();
-            if (height>vDim) vDim=height;
-        }
-        return vDim;
-    }
     
     public AcsLogLevelDefinition getAcsCoreLevel() {
     	return acsCoreLevel;
