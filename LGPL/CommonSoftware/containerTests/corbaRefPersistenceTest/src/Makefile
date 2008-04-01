@@ -1,13 +1,13 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.1.1.1 2008/04/01 08:54:09 acaproni Exp $"
+# "@(#) $Id: Makefile,v 1.1 2008/04/01 09:29:56 acaproni Exp $"
 #
 # Makefile of ........
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
-# almadev  31/03/08  created
+# almadev  01/04/08  created
 #
 
 #*******************************************************************************
@@ -24,7 +24,7 @@
 #
 # additional include and library search paths
 #USER_INC = 
- 
+#USER_LIB = 
 
 #
 # MODULE CODE DESCRIPTION:
@@ -56,12 +56,12 @@ INCLUDES        =
 #
 # Libraries (public and local)
 # ----------------------------
-LIBRARIES       = 
+LIBRARIES       =
 LIBRARIES_L     =
 
 #
 # <brief description of lllll library>
-jjjjjj_OBJECTS   = 
+lllll_OBJECTS   =
 
 #
 # Scripts (public and local)
@@ -123,7 +123,7 @@ jjj_DIRS=
 jjj_EXTRAS= 
 #
 # java sources in Jarfile on/off
-DEBUG=On
+DEBUG=On 
 #
 # ACS XmlIdl generation on/off
 #
