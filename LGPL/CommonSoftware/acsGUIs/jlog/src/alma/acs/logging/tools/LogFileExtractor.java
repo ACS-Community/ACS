@@ -99,6 +99,7 @@ public class LogFileExtractor implements ACSRemoteRawLogListener, AsynchronousOp
 	 *                   logs (can be null)
 	 * @param csvFormat if true the output is written as CSV instead of XML
 	 * @param cols The fields to write in the CSV
+	 * @throws <code>Exception</code> In case of error
 	 */
 	public LogFileExtractor(
 			String inputFile, 
@@ -107,8 +108,8 @@ public class LogFileExtractor implements ACSRemoteRawLogListener, AsynchronousOp
 			Date endDate, 
 			String filterName,
 			boolean csvFormat,
-			String cols) {
-		if (startDate==null && endDate==null && filterName==null) {
+			String cols)  throws Exception {
+		if (startDate==null && endDate==null && filterName==null){
 			throw new IllegalArgumentException("No criteria for extraction");
 		}
 		if (inputFile==null || outputFile==null) {
