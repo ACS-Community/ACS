@@ -34,7 +34,7 @@ public class EntryTypeRenderer extends MultiIconRenderer {
 	public EntryTypeRenderer() {
 		super();
 		for (LogTypeHelper logType: LogTypeHelper.values()) {
-			addIcon(logType.icon);
+			addIcon(EntryTypeIcon.getIcon(logType));
 		}
 	}
 
@@ -73,7 +73,7 @@ public class EntryTypeRenderer extends MultiIconRenderer {
 		}
 
 		if (value instanceof LogTypeHelper) {
-			setIcon(((LogTypeHelper)value).icon);
+			setIcon(EntryTypeIcon.getIcon((LogTypeHelper)value));
 			setFont(table.getFont());
 			setText(((LogTypeHelper)value).logEntryType);
 		} 

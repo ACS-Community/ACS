@@ -13,6 +13,7 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.ListCellRenderer;
 
+import com.cosylab.logging.client.EntryTypeIcon;
 import com.cosylab.logging.engine.log.LogTypeHelper;
 
 /**
@@ -33,7 +34,7 @@ public class LogTypeRenderer extends JLabel  implements ListCellRenderer {
      */
     public LogTypeRenderer () {
         super();
-        setPreferredSize(new Dimension(100,LogTypeHelper.getIconsVSize()));
+        setPreferredSize(new Dimension(100,EntryTypeIcon.getIconsVSize()));
         setOpaque(true);
         setVerticalTextPosition(CENTER);
         setHorizontalTextPosition(TRAILING);
@@ -63,7 +64,7 @@ public class LogTypeRenderer extends JLabel  implements ListCellRenderer {
         if (!value.toString().equals("None")) {
 	        LogTypeHelper logType = LogTypeHelper.fromLogTypeDescription(value.toString());
 	        if (logType!=null) {
-	            setIcon(logType.icon);
+	            setIcon(EntryTypeIcon.getIcon(logType));
 	        } 
         } else {
         	setIcon(null);
