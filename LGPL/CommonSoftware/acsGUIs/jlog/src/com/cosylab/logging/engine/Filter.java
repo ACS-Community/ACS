@@ -25,8 +25,6 @@ import java.util.Date;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
-import javax.swing.JOptionPane;
-
 import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.engine.log.LogTypeHelper;
 import com.cosylab.logging.engine.log.ILogEntry.Field;
@@ -483,6 +481,7 @@ public boolean getIsLethal() {
  * @param wildChar The regularExpression parameter of Filter
  * 
  * @return The Filter object built or null if an error occurred decoding the parameters
+ * @throws Exception in case of error building the filter
  */
 public static Filter buildFilter(
 		String field,
@@ -494,7 +493,7 @@ public static Filter buildFilter(
 		String maxType,
 		String exact,
 		String exactType,
-		String wildChar) {
+		String wildChar) throws Exception {
 	Filter f = null;
 	// Trim all the strings
 	if (field!=null) {
@@ -530,68 +529,44 @@ public static Filter buildFilter(
 	// Read the int from field
 	int fieldInt;
 	if (field==null) {
-		JOptionPane.showMessageDialog(null,"Missing parameter field","Error",JOptionPane.ERROR_MESSAGE);
-		return null;
+		throw new IllegalArgumentException("Parameter field can't be null");
 	} 
-	try {
-		fieldInt=Integer.parseInt(field);
-	} catch (Exception e) {
-		JOptionPane.showMessageDialog(null,"Wrong parameter "+field,"Error",JOptionPane.ERROR_MESSAGE);
-		return null;
-	}
+	fieldInt=Integer.parseInt(field);
 	// Translate lethal into boolean
 	int temp;
 	if (lethal==null) {
-		JOptionPane.showMessageDialog(null,"Missing parameter lethal","Error",JOptionPane.ERROR_MESSAGE);
-		return null;
+		throw new IllegalArgumentException("Parameter lethal can't be null");
 	}
-	try {
-		temp = Integer.parseInt(lethal);
-	} catch (Exception e) {
-		JOptionPane.showMessageDialog(null,"Wrong parameter "+lethal,"Error",JOptionPane.ERROR_MESSAGE);
-		return null;
-	}
+	temp = Integer.parseInt(lethal);
 	boolean isLethal = (temp==1);
 	// Translate not into boolean
 	if (not==null) {
-		JOptionPane.showMessageDialog(null,"Missing parameter not","Error",JOptionPane.ERROR_MESSAGE);
-		return null;
+		throw new IllegalArgumentException("Parameter not can't be null");
 	}
-	try {
-		temp = Integer.parseInt(not);
-	} catch (Exception e) {
-		JOptionPane.showMessageDialog(null,"Wrong parameter ","Error",JOptionPane.ERROR_MESSAGE);
-		return null;
-	}
+	temp = Integer.parseInt(not);
 	boolean notPolicy = (temp==1);
 	// If wildChar is defined then min, max and exact should not
 	if (wildChar!=null && (min!=null || max!=null || exact!=null)) {
-		JOptionPane.showMessageDialog(null,"Ambiguous parameters","Error",JOptionPane.ERROR_MESSAGE);
-		return null;
+		throw new IllegalArgumentException("Ambiguous parameters: wildChar, min, max");
 	}
 	// If exact is defined then min and max should not
 	if (exact!=null && (min!=null || max!=null)) {
-		JOptionPane.showMessageDialog(null,"Ambiguous parameters","Error",JOptionPane.ERROR_MESSAGE);
-		return null;
+		throw new IllegalArgumentException("Ambiguous parameters: exact, min, max");
 	}
 	// For min, max and exact the type must be specified
 	if (exact!=null && exactType==null) {
-		JOptionPane.showMessageDialog(null,"Exact type not defined","Error",JOptionPane.ERROR_MESSAGE);
-		return null;
+		throw new IllegalArgumentException("Exact parameter can't be null");
 	}
 	if (min!=null && minType==null) {
-		JOptionPane.showMessageDialog(null,"Min not defined","Error",JOptionPane.ERROR_MESSAGE);
-		return null;
+		throw new IllegalArgumentException("Min - minType parameters wrong");
 	}
 	if (max!=null && maxType==null) {
-		JOptionPane.showMessageDialog(null,"Max type not defined","Error",JOptionPane.ERROR_MESSAGE);
-		return null;
+		throw new IllegalArgumentException("Max - maxType parameters wrong");
 	}
 	// If both min and max are specified they must have the same type
 	if (minType!=null && maxType!=null) {
 		if (minType.compareTo(maxType)!=0) {
-			JOptionPane.showMessageDialog(null,"Type mismatch","Error",JOptionPane.ERROR_MESSAGE);
-			return null;
+			throw new IllegalArgumentException("minType- maxType mismatch");
 		}
 	}
 	//
@@ -600,15 +575,7 @@ public static Filter buildFilter(
 	
 	// WILDCHAR
 	if (wildChar!=null) {
-		try {
-			f = new Filter(fieldInt,isLethal,wildChar,notPolicy);
-		} catch(InvalidFilterConstraintException e) {
-			JOptionPane.showMessageDialog(null,"Exception "+e.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
-			return null;
-		} catch(PatternSyntaxException e) {
-			JOptionPane.showMessageDialog(null,"Exception "+e.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
-			return null;
-		}
+		f = new Filter(fieldInt,isLethal,wildChar,notPolicy);
 		return f;
 	}
 	//EXACT
@@ -618,40 +585,22 @@ public static Filter buildFilter(
 			try {
 				integer = new Integer(exact);
 			} catch (NumberFormatException e) {
-				JOptionPane.showMessageDialog(null,"Wrong int parameter "+e.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
-				return null;
+				throw new IllegalArgumentException("Wrong int parameter "+exact);
 			}
-			try {
-				f = new Filter(fieldInt,isLethal,integer,notPolicy);
-			} catch(InvalidFilterConstraintException e) {
-				JOptionPane.showMessageDialog(null,"Exception "+e.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
-				return null;
-			} 
+			f = new Filter(fieldInt,isLethal,integer,notPolicy);
 		} else if (exactType.compareTo("java.util.Date")==0) {
 			Date date=null;
 			try {
 				date = new Date(Long.parseLong(exact));
 			} catch (NumberFormatException e) {
-				JOptionPane.showMessageDialog(null,"Wrong date parameter "+e.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
-				return null;
+				throw new IllegalArgumentException("Wrong date parameter "+exact);
 			}
-			try {
-				f = new Filter(fieldInt,isLethal,date,notPolicy);
-			} catch (InvalidFilterConstraintException e) {
-				JOptionPane.showMessageDialog(null,"Exception "+e.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
-				return null;
-			}
+			f = new Filter(fieldInt,isLethal,date,notPolicy);
 		} else if (exactType.compareTo("java.lang.String")==0) {
-			try {
 				f = new Filter(fieldInt,isLethal,(Object)exact,notPolicy);
-			} catch(InvalidFilterConstraintException e) {
-				JOptionPane.showMessageDialog(null,"Exception "+e.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
-				return null;
-			}
-		} else {
+			} else {
 			// Unrecognized type
-			JOptionPane.showMessageDialog(null,"Unrecognized type "+exactType,"Error",JOptionPane.ERROR_MESSAGE);
-			return null;
+			throw new IllegalArgumentException("Unrecognized type "+exactType);
 		}
 		return f;
 	}
@@ -661,12 +610,7 @@ public static Filter buildFilter(
 		minType=maxType;
 	} 
 	if (minType.compareTo("java.lang.String")==0) {
-		try {
-			f = new Filter(fieldInt,isLethal,min,max,notPolicy);
-		} catch(InvalidFilterConstraintException e) {
-			JOptionPane.showMessageDialog(null,"Exception "+e.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
-			return null;
-		}
+		f = new Filter(fieldInt,isLethal,min,max,notPolicy);
 	} else if (minType.compareTo("java.util.Date")==0) {
 		Date minDate=null;
 		Date maxDate=null;
@@ -675,47 +619,35 @@ public static Filter buildFilter(
 				minDate = new Date(Long.parseLong(min));
 			}
 		} catch (NumberFormatException e) {
-			JOptionPane.showMessageDialog(null,"Wrong date parameter "+e.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
-			return null;
+			throw new IllegalArgumentException("Wrong min date parameter "+min);
 		}
 		try {
 			if (max!=null) {
 				maxDate = new Date(Long.parseLong(max));
 			}
 		} catch (NumberFormatException e) {
-			JOptionPane.showMessageDialog(null,"Wrong date parameter "+e.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
-			return null;
+			throw new IllegalArgumentException("Wrong max date parameter "+max);
 		}
-		try {
-			f = new Filter(fieldInt,isLethal,minDate,maxDate,notPolicy);
-		} catch(InvalidFilterConstraintException e) {
-			JOptionPane.showMessageDialog(null,"Exception "+e.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
-			return null;
-		}
+		f = new Filter(fieldInt,isLethal,minDate,maxDate,notPolicy);
 	} else if (minType.compareTo("java.lang.Integer")==0) {
 		Integer minInt=null;
 		Integer maxInt=null;
+		if (min==null) {
+			throw new IllegalArgumentException("Invalid min "+min);
+		}
+		if (max==null) {
+			throw new IllegalArgumentException("Invalid max "+min);
+		}
 		try {
-			if (min!=null) {
-				minInt=new Integer(min);
-			}
-			if (max!=null) {
-				maxInt=new Integer(max);
-			}
+			minInt=new Integer(min);
+			maxInt=new Integer(max);
 		} catch (NumberFormatException e) {
-			JOptionPane.showMessageDialog(null,"Wrong int parameter "+e.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
-			return null;
+			throw new IllegalArgumentException("invalid min/max "+min+"/"+max);
 		}
-		try {
-			f=new Filter(fieldInt,isLethal,minInt,maxInt,notPolicy);
-		} catch(InvalidFilterConstraintException e) {
-			JOptionPane.showMessageDialog(null,"Exception "+e.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
-			return null;
-		}
+		f=new Filter(fieldInt,isLethal,minInt,maxInt,notPolicy);
 	} else {
 		// Unrecognized type
-		JOptionPane.showMessageDialog(null,"Unrecognized type "+exactType,"Error",JOptionPane.ERROR_MESSAGE);
-		return null;
+		throw new IllegalArgumentException("Unrecognized type");
 	}
 	return f;
 }
