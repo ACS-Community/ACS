@@ -477,8 +477,11 @@ public class FilterChooserDialog extends JDialog {
 			// Load filters from file
 			File fileToLoad = fileChooserDlg.getSelectedFile();
 			if (fileToLoad != null) {
-				filters.loadFilters(fileToLoad,
-						eraseOldFilters, null);
+				try {
+					filters.loadFilters(fileToLoad,	eraseOldFilters, null);
+				} catch (Throwable t) {
+					JOptionPane.showMessageDialog(null, "Error: "+t.getMessage(), "Error loading filters", JOptionPane.ERROR_MESSAGE);
+				}
 				setupFields(filters);
 				filterFileName = fileToLoad.getAbsolutePath();
 			}

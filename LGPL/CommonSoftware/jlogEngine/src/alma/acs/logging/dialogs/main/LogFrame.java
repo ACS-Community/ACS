@@ -27,6 +27,7 @@ import java.awt.event.WindowListener;
 import java.io.File;
 
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
 import com.cosylab.logging.LoggingClient;
@@ -68,7 +69,11 @@ public class LogFrame extends JFrame implements WindowListener {
 		
 		//	Load the filters (if any)
 		if (filterFile!=null) {
-			loggingClient.getLCModel1().getFilters().loadFilters(filterFile,true,null);
+			try {
+				loggingClient.getLCModel1().getFilters().loadFilters(filterFile,true,null);
+			} catch (Throwable t) {
+				JOptionPane.showMessageDialog(null, "Error: "+t.getMessage(), "Error loading filters", JOptionPane.ERROR_MESSAGE);
+			}
 		}
 		// If there is no file name in the command line then connect
 		// the client to the CORBA notification channel
