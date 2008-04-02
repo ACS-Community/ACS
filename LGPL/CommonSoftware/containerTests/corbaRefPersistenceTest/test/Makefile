@@ -16,7 +16,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.2 2008/04/01 09:51:55 acaproni Exp $"
+# "@(#) $Id: Makefile,v 1.3 2008/04/02 10:21:21 acaproni Exp $"
 #
 # Makefile of ........
 #
@@ -99,7 +99,7 @@ LIBRARIES_L     =
 #
 # <brief description of lllll library>
 corbaRefTest_OBJECTS   = HelloWorldImpl
-corbaRefTest_LIBSS     = HelloWorldStubs
+corbaRefTest_LIBS     = HelloWorldStubs
 
 #
 # Scripts (public and local)
@@ -156,8 +156,8 @@ USER_IDL =
 #
 # Jarfiles and their directories
 #
-JARFILES= 
-jjj_DIRS=
+JARFILES= refTest
+refTest_DIRS=alma
 jjj_EXTRAS= 
 #
 # java sources in Jarfile on/off
