@@ -9,7 +9,7 @@
          Type="IDL:alma/CorbaRefTest/HelloWorld:1.0" 	
          Container="cppContainer"/>
       <_ Name="HELLOWORLD_JAVA"
-         Code="alma.test.corbareftest.HelloWorldHelper" 
+         Code="alma.test.corbareftest.component.HelloWorldHelper" 
          Type="IDL:alma/CorbaRefTest/HelloWorld:1.0" 
          Container="javaContainer"/> 
        <_ Name="HELLOWORLD_PY" 
