@@ -7,10 +7,14 @@
       <_ Name="HELLOWORLD_CPP" 	    
          Code="corbaRefTest" 
          Type="IDL:alma/CorbaRefTest/HelloWorld:1.0" 	
-         Container="bilboContainer"/>
+         Container="cppContainer"/>
       <_ Name="HELLOWORLD_JAVA"
          Code="alma.test.corbareftest.HelloWorldHelper" 
          Type="IDL:alma/CorbaRefTest/HelloWorld:1.0" 
-         Container="frodoContainer"/> 
+         Container="javaContainer"/> 
+       <_ Name="HELLOWORLD_PY" 
+          Code="pythonImpl.HelloWorld" 
+          Type="IDL:alma/CorbaRefTest/HelloWorld:1.0" 
+          Container="pyContainer" />
 </Components>
 
