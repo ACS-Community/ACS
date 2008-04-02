@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: HelloWorldImpl.h,v 1.1 2008/04/01 09:51:39 acaproni Exp $"
+* "@(#) $Id: HelloWorldImpl.h,v 1.2 2008/04/02 10:20:37 acaproni Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -55,29 +55,25 @@ using namespace acscomponent;
  * This class define an IDL module for ttesting persistence
  * of CORMA references
  */
-class HelloWorldImpl: public virtual ACSComponentImpl,     //Component superclass
-		  public POA_CorbaRefTest::HelloWorld    //CORBA servant stub
+class HelloWorld: public virtual ACSComponentImpl,     //Component superclass
+		  public virtual POA_CorbaRefTest::HelloWorld    //CORBA servant stub
 {    
   public:
     /**
      * Constructor
      */
-	  HelloWorldImpl(
-	       const ACE_CString& name,
-	       maci::ContainerServices * containerServices);
+	  HelloWorld(const ACE_CString& name, maci::ContainerServices * containerServices);
     
     /**
      * Destructor
      */
-    virtual ~HelloWorldImpl();
+    virtual ~HelloWorld();
     
     /* --------------------- [ CORBA interface ] ----------------------*/    
     /**
      * Displays "Hello World" to the console.
      */     
-    virtual void 
-    displayMessage ()
-	throw (CORBA::SystemException);
+    virtual void displayMessage () throw (CORBA::SystemException);
 
 };
 /*\@}*/

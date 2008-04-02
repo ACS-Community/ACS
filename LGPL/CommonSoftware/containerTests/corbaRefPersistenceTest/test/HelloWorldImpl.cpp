@@ -21,7 +21,7 @@
 *
 *
 *
-* "@(#) $Id: HelloWorldImpl.cpp,v 1.1 2008/04/01 09:51:39 acaproni Exp $"
+* "@(#) $Id: HelloWorldImpl.cpp,v 1.2 2008/04/02 10:20:37 acaproni Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -32,27 +32,27 @@
 #include <ACSErrTypeCommon.h>
 #include <iostream>
 
-ACE_RCSID(corbaRefPeristenceTest, HelloWorldImpl, "$Id: HelloWorldImpl.cpp,v 1.1 2008/04/01 09:51:39 acaproni Exp $")
+ACE_RCSID(corbaRefPeristenceTest, HelloWorld, "$Id: HelloWorldImpl.cpp,v 1.2 2008/04/02 10:20:37 acaproni Exp $")
 
 /* ----------------------------------------------------------------*/
-HelloWorldImpl::HelloWorldImpl( 
+HelloWorld::HelloWorld( 
 		       const ACE_CString &name,
 		       maci::ContainerServices * containerServices) :
     ACSComponentImpl(name, containerServices)
 {
     // ACS_TRACE is used for debugging purposes
-    ACS_TRACE("::HelloWorldImpl::HelloWorldImpl");
+    ACS_TRACE("::HelloWorld::HelloWorld");
 }
 /* ----------------------------------------------------------------*/
-HelloWorldImpl::~HelloWorldImpl()
+HelloWorld::~HelloWorld()
 {
     // ACS_TRACE is used for debugging purposes
-    ACS_TRACE("::HelloWorldImpl::~HelloWorldImpl");
-    ACS_DEBUG_PARAM("::HelloWorldImpl::~HelloWorldImpl", "Destroying %s...", name());
+    ACS_TRACE("::HelloWorld::~HelloWorld");
+    ACS_DEBUG_PARAM("::HelloWorld::~HelloWorld", "Destroying %s...", name());
 }
 /* --------------------- [ CORBA interface ] ----------------------*/
 void
-HelloWorldImpl::displayMessage ()
+HelloWorld::displayMessage ()
     throw (CORBA::SystemException)
 {
     std::cout << "Hello World" << std::endl; 
@@ -60,7 +60,7 @@ HelloWorldImpl::displayMessage ()
 
 /* --------------- [ MACI DLL support functions ] -----------------*/
 #include <maciACSComponentDefines.h>
-MACI_DLL_SUPPORT_FUNCTIONS(HelloWorldImpl)
+MACI_DLL_SUPPORT_FUNCTIONS(HelloWorld)
 /* ----------------------------------------------------------------*/
 
 
