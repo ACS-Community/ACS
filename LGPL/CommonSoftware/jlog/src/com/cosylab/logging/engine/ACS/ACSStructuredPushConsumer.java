@@ -114,8 +114,14 @@ public final class ACSStructuredPushConsumer extends StructuredPushConsumerPOA
 			public void run() {
 				
 				try {
+				        teardownEvents();
 					structuredProxyPushSupplier.disconnect_structured_push_supplier();
-				} catch (Throwable t) {}
+					acsra.getConsumerAdmin().destroy();
+					
+				} catch (Throwable t) 
+				    {
+				    System.out.println("Exception in ACSStructuredPushConsumer::destroy(): " + t);
+				    }
 			}			
 		}
 		// @TODO check why disconnect_structured_push_supplier takes too long sometimes, since ACS 7.0.
@@ -195,6 +201,30 @@ public final class ACSStructuredPushConsumer extends StructuredPushConsumerPOA
 		added[0] = new org.omg.CosNotification.EventType();
 		added[0].domain_name = "*";
 		added[0].type_name = "*";
+		try
+		{
+			acsra.getConsumerAdmin().subscription_change(added, removed);
+		}
+		catch (Exception e)
+		{
+			listenersDispatcher.publishReport("Exception occurred when changing subscription on Consumer Admin.");
+			System.out.println("Exception in ACSStructuredPushConsumer::setupEvents(): " + e);
+			return;
+		}
+		isEventSetup = true;
+	}
+
+	/**
+	 * Remove subscription on ConsumerAdmin.
+	 */
+	public void teardownEvents()
+	{
+		org.omg.CosNotification.EventType[] added = new org.omg.CosNotification.EventType[0];
+		org.omg.CosNotification.EventType[] removed = new org.omg.CosNotification.EventType[1];
+
+		removed[0] = new org.omg.CosNotification.EventType();
+		removed[0].domain_name = "*";
+		removed[0].type_name = "*";
 		try
 		{
 			acsra.getConsumerAdmin().subscription_change(added, removed);
