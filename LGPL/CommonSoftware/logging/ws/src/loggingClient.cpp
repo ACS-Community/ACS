@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingClient.cpp,v 1.51 2008/01/17 10:33:59 eallaert Exp $"
+* "@(#) $Id: loggingClient.cpp,v 1.52 2008/04/03 21:10:56 bjeram Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -141,8 +141,9 @@ Subscribe::shutdown ()
 {
     try
       {
+      teardown_events();
 	this->consumer_->disconnect ();
-	
+	this->consumer_admin_->destroy();
       }
     catch(...)
       {
@@ -242,8 +243,26 @@ Subscribe::setup_events ()
   //  this->consumer_->get_proxy_supplier ()->subscription_change (added, removed,
   //						       );
   //
+}//setup_events
 
-}
+void
+Subscribe::teardown_events ()
+{
+  // Remove subscription from the 
+  CosNotification::EventTypeSeq added(0);
+  CosNotification::EventTypeSeq removed (1);
+  added.length (0);
+  removed.length (1);
+
+  removed[0].domain_name =  CORBA::string_dup ("*");
+  removed[0].type_name = CORBA::string_dup ("*");
+
+  this->consumer_admin_->subscription_change (added, removed);
+
+  //just in case...
+  added.length(0);
+  removed.length(0);
+}//teardown_events
 
 /*****************************************************************/
 ACSStructuredPushConsumer::ACSStructuredPushConsumer (Subscribe* subscribe)

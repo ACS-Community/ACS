@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingClient.h,v 1.42 2007/09/28 09:22:14 cparedes Exp $"
+* "@(#) $Id: loggingClient.h,v 1.43 2008/04/03 21:10:56 bjeram Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -117,6 +117,9 @@ class Subscribe
     
     void setup_events ();
     // Setup events
+
+    void teardown_events();
+    // Tear down (remove) events
     
     // = Data Members
     PortableServer::POA_var root_poa_;
