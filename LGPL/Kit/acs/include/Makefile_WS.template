@@ -1,7 +1,7 @@
 #%# #*******************************************************************************
 #%# # E.S.O. - ACS project
 #%# #
-#%# # "@(#) $Id: Makefile_WS.template,v 1.68 2004/10/05 03:22:59 srankin Exp $"
+#%# # "@(#) $Id: Makefile_WS.template,v 1.69 2008/04/04 15:04:45 mpasquat Exp $"
 #%# #
 #%# #      REMARK: This file belongs to the "vltMake" module.
 #%# #
@@ -132,7 +132,7 @@ CDB_SCHEMAS =
 # IDL Files and flags
 # 
 IDL_FILES =
-IDL_TAO_FLAGS =
+TAO_IDLFLAGS =
 USER_IDL =
 #
 # Jarfiles and their directories
