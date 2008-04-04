@@ -47,7 +47,6 @@ public class ShutdownHook extends ShutdownHookBase {
 
 	@Override
 	protected void interruptDetected() {
-		System.out.println("Here");
 		logFrame.closeApplication();
 	}
 
