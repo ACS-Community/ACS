@@ -1326,14 +1326,12 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
     }
     
     /**
+     * Append the report status message to the status area
      * 
      * @see com.cosylab.logging.engine.ACS.ACSRemoteLogListener
      */
     public void reportStatus(String status) {
-    	StringBuilder str = new StringBuilder("Error parsing the following log: \n");
-		str.append(status);
-		str. append("\n The log has been lost.\n");
-    	getStatusArea().append(str.toString());
+    	getStatusArea().append(status);
     }
     
    /**
