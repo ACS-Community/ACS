@@ -1,22 +1,39 @@
 package alma.acs.eventbrowser.views;
 
 
-import java.nio.channels.Channels;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IMenuListener;
+import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.viewers.ColumnLabelProvider;
+import org.eclipse.jface.viewers.DoubleClickEvent;
+import org.eclipse.jface.viewers.IDoubleClickListener;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredContentProvider;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.ITableLabelProvider;
+import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.viewers.TableViewerColumn;
+import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerComparator;
+import org.eclipse.jface.viewers.ViewerSorter;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
-import org.eclipse.ui.part.*;
-import org.eclipse.jface.viewers.*;
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.jface.action.*;
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.ui.*;
-import org.eclipse.swt.widgets.Menu;
-import org.eclipse.swt.SWT;
+import org.eclipse.ui.IActionBars;
+import org.eclipse.ui.ISharedImages;
+import org.eclipse.ui.IWorkbenchActionConstants;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.part.ViewPart;
 
 import alma.acs.eventbrowser.model.ChannelData;
 import alma.acs.eventbrowser.model.EventModel;
@@ -72,36 +89,65 @@ public class ServiceSummaryView extends ViewPart {
 			return l;
 		}
 	}
-	class ViewLabelProvider extends LabelProvider implements ITableLabelProvider {
-		public String getColumnText(Object obj, int index) {
-			ChannelData cd;
-			if (obj instanceof ChannelData) 
-				cd = (ChannelData)obj;
-			else
-				return "";
-			switch (index) {
-			case 0:
-				return cd.getName();
-			case 1:
-				return ""+cd.getNumberConsumers();
-			case 2:
-				return ""+cd.getNumberSuppliers();
-			default:
-				break;
-			}
-				
+	
+	class ServiceNameLabelProvider extends ColumnLabelProvider {
+
+		@Override
+		public String getText(Object element) {
+			if (element instanceof ChannelData)
+				return ((ChannelData)element).getName();
 			return "";
 		}
-		public Image getColumnImage(Object obj, int index) {
-			return getImage(obj);
-		}
-		public Image getImage(Object obj) {
+
+		@Override
+		public Image getImage(Object element) {
 			return null;
-			//return PlatformUI.getWorkbench().
-			//		getSharedImages().getImage(ISharedImages.IMG_OBJ_ELEMENT);
+		}
+		
+	}
+	
+	class NumConsumersLabelProvider extends ColumnLabelProvider {
+		
+		@Override
+		public String getText(Object element) {
+			if (element instanceof ChannelData) 
+				return ""+((ChannelData)element).getNumberConsumers();
+			else
+				return "";
+		}
+		
+		@Override
+		public Image getImage(Object element) {
+			return null;
+		}
+		
+	}
+	
+	class NumSuppliersLabelProvider extends ColumnLabelProvider {
+		
+		@Override
+		public String getText(Object element) {
+			if (element instanceof ChannelData) 
+				return ""+((ChannelData)element).getNumberSuppliers();
+			else
+				return "";
+		}
+		
+		@Override
+		public Image getImage(Object element) {
+			return null;
 		}
 	}
-	class NameSorter extends ViewerSorter {
+	
+	class ServiceViewerComparator extends ViewerComparator {
+
+		@Override
+		public int compare(Viewer viewer, Object e1, Object e2) {
+			String s1 = ((ChannelData)e1).getName();
+			String s2 = ((ChannelData)e2).getName();
+			return s1.compareTo(s2);
+		}
+		
 	}
 
 	/**
@@ -127,23 +173,28 @@ public class ServiceSummaryView extends ViewPart {
 		table.setHeaderVisible(true);
 		table.setLinesVisible(true);
 		
-		TableColumn col = new TableColumn(table,SWT.NONE, 0);
+		TableViewerColumn tvcol = new TableViewerColumn(viewer,SWT.NONE, 0);
+		tvcol.setLabelProvider(new ServiceNameLabelProvider());
+		TableColumn col = tvcol.getColumn();
 		col.setText("Service");
 		col.setWidth(110);
 		col.setAlignment(SWT.LEFT);
-		
-		col = new TableColumn(table,SWT.NONE, 1);
+
+		tvcol = new TableViewerColumn(viewer,SWT.NONE, 1);
+		tvcol.setLabelProvider(new NumConsumersLabelProvider());
+		col = tvcol.getColumn();
 		col.setText("#consumers");
 		col.setWidth(50);
 		col.setAlignment(SWT.LEFT);
-		col = new TableColumn(table,SWT.NONE, 2);
+		tvcol = new TableViewerColumn(viewer,SWT.NONE, 2);
+		tvcol.setLabelProvider(new NumSuppliersLabelProvider());
+		col = tvcol.getColumn();
 		col.setText("#suppliers");
 		col.setWidth(50);
 		col.setAlignment(SWT.LEFT);
 		
 		viewer.setContentProvider(new ViewContentProvider());
-		viewer.setLabelProvider(new ViewLabelProvider());
-		viewer.setSorter(new NameSorter());
+		viewer.setComparator(new ServiceViewerComparator());
 		viewer.setInput(getViewSite());
 
 		makeActions();
@@ -151,6 +202,7 @@ public class ServiceSummaryView extends ViewPart {
 		hookDoubleClickAction();
 		contributeToActionBars();
 	}
+	
 
 	private void hookContextMenu() {
 		MenuManager menuMgr = new MenuManager("#PopupMenu");
