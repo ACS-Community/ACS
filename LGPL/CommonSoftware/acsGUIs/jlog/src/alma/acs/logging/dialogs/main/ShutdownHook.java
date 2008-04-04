@@ -21,6 +21,7 @@
  */
 package alma.acs.logging.dialogs.main;
 
+import java.awt.event.WindowEvent;
 import java.util.logging.Logger;
 
 import alma.acs.shutdown.ShutdownHookBase;
@@ -47,7 +48,8 @@ public class ShutdownHook extends ShutdownHookBase {
 
 	@Override
 	protected void interruptDetected() {
-		logFrame.closeApplication();
+		WindowEvent wEvt = new WindowEvent(logFrame,WindowEvent.WINDOW_CLOSING);
+		logFrame.dispatchEvent(wEvt);
 	}
 
 }
