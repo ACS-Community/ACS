@@ -25,10 +25,14 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.WindowListener;
 import java.io.File;
+import java.util.logging.Logger;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
+
+import alma.acs.logging.AcsLogLevel;
+import alma.acs.logging.ClientLogManager;
 
 import com.cosylab.logging.LoggingClient;
 
@@ -38,11 +42,19 @@ import com.cosylab.logging.LoggingClient;
  * @author acaproni
  *
  */
-public class LogFrame extends JFrame implements WindowListener { 
+public class LogFrame extends JFrame implements WindowListener {
 	
+	// A boolean to signal that the application is closing
 	private volatile boolean closing =false;
 	
+	// The GUI showed into the frame
 	private LoggingClient loggingClient;
+	
+	// The logger
+	private Logger logger;
+	
+	// The Shutdown hook
+	private ShutdownHook shutdownHook;
 	
 	/**
 	 * Constructor
@@ -56,6 +68,9 @@ public class LogFrame extends JFrame implements WindowListener {
 	public LogFrame(File filterFile, String logFileName) {
 		super();
 		setName("LogFrame");
+		
+		logger = ClientLogManager.getAcsLogManager().getLoggerForApplication("Logging client GUI",true);
+		initShutdownHook(); 
 		
 		initialize();
 		// Move the window to the center of the screen 
@@ -248,10 +263,26 @@ public class LogFrame extends JFrame implements WindowListener {
 		if (closing) {
 			return;
 		}
+		closeApplication();
+	}
+	
+	/**
+	 * Close the application
+	 */
+	public void closeApplication() {
 		setVisible(false);
 		closing=true;
 		loggingClient.close(true);
 		
 		dispose();
+	}
+	
+	/**
+	 * Init the shutdown hook that intercept CTRL+C events
+	 * and cleanly terminates the application
+	 */
+	private void initShutdownHook() {
+		shutdownHook = new ShutdownHook(logger,"Logging client GUI", this);
+		Runtime.getRuntime().addShutdownHook(shutdownHook);
 	}
 }
