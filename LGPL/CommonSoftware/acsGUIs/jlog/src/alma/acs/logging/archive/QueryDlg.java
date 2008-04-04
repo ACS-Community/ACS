@@ -55,7 +55,6 @@ import com.cosylab.logging.engine.ACS.ACSRemoteErrorListener;
 import com.cosylab.logging.engine.ACS.ACSRemoteLogListener;
 import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.engine.log.LogTypeHelper;
-import com.cosylab.logging.settings.ErrorLogDialog;
 import com.cosylab.logging.settings.LogTypeRenderer;
 
 /**
@@ -105,84 +104,6 @@ public class QueryDlg extends JDialog implements ActionListener {
 	// The switches to clear the table and disconnect from the NC 
 	// before submitting a query
 	private LoadSwitchesPanel guiSwitches;
-	
-	/**
-	 * A class with a thread to publish the logs to the listener
-	 * @author acaproni
-	 *
-	 */
-	private class LogsPublisher extends Thread {
-		Collection logsToFlush;
-		JButton subBtn;
-		
-		/**
-		 * Constructor 
-		 * 
-		 * @param logs The logs to publish
-		 * @param prsr The parser
-		 * @param btn The submit button to enable at the end of the flush
-		 */
-		public LogsPublisher(Collection logs, ACSLogParser prsr, JButton btn) {
-			if (logs==null || btn==null) {
-				throw new IllegalArgumentException("Invalid null argument in the constructor");
-			}
-			logsToFlush =logs;
-			subBtn=btn;
-		}
-		/**
-		 * The thread to publish the logs to the listener
-		 *
-		 */
-		public void run () {
-			System.out.println("Flushing logs");
-			if (logsToFlush==null || logsToFlush.size()==0) {
-				logsToFlush.clear();
-				logsToFlush=null;
-				subBtn.setEnabled(true);
-				return;
-			}
-			Iterator iter = logsToFlush.iterator();
-			while (iter.hasNext()) {
-				String str = (String)iter.next();
-				ILogEntry logEntry=null;
-				try {
-					logEntry = parser.parse(str);
-				} catch (Exception e) {
-					errorListener.errorReceived(str);
-					continue;
-				}
-				logListener.logEntryReceived(logEntry);
-			}
-			logsToFlush.clear();
-			logsToFlush=null;
-			subBtn.setEnabled(true);
-		}
-		
-		/**
-		 * Return a string formatted for JOptionPane making a word wrap
-		 * 
-		 * @param error The error i.e. the exception
-		 * @param msg The message to show
-		 * @return A formatted string
-		 */
-		private String formatErrorMsg(String msg) {
-			StringBuilder sb = new StringBuilder();
-			int count = 0;
-			for (int t=0; t<msg.length(); t++) {
-				char c = msg.charAt(t);
-				sb.append(c);
-				if (c=='\n') {
-					count=0;
-					continue;
-				}
-				if (++count >= 80 && c==' ') {
-					count=0;
-					sb.append('\n');
-				}
-			}
-			return sb.toString();
-		}
-	}
 
 	/**
 	 * Constructor
@@ -231,7 +152,14 @@ public class QueryDlg extends JDialog implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource()==submitBtn) {
 			submitBtn.setEnabled(false);
-			submitQuery();
+			Thread t = new Thread() {
+				public void run() {
+					submitQuery();
+				}
+			};
+			t.setDaemon(false);
+			t.setName("DatabaseQuery");
+			t.start();
 		} else if (e.getSource()==doneBtn) {
 			setVisible(false);
 			dispose();
@@ -502,14 +430,27 @@ public class QueryDlg extends JDialog implements ActionListener {
 		} catch (Throwable t) {
 			System.err.println("Error executing the query: "+t.getMessage());
 			t.printStackTrace(System.err);
-			JOptionPane.showMessageDialog(this,"Error executing the query:\n"+t.getMessage(),"Database error!",JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this,formatErrorMsg("Error executing the query:\n"+t.getMessage()),"Database error!",JOptionPane.ERROR_MESSAGE);
 			submitBtn.setEnabled(true);
 			loggingClient.reportStatus("Query terminated with error");
 		}
 		if (logs!=null) {
 			loggingClient.reportStatus("Num. of logs read from DB: "+logs.size());
-			LogsPublisher flusher = new LogsPublisher(logs,parser,submitBtn);
-			flusher.start();
+			
+			Iterator iter = logs.iterator();
+			while (iter.hasNext()) {
+				String str = (String)iter.next();
+				ILogEntry logEntry=null;
+				try {
+					logEntry = parser.parse(str);
+				} catch (Exception e) {
+					errorListener.errorReceived(str);
+					continue;
+				}
+				logListener.logEntryReceived(logEntry);
+			}
+			
+			logs.clear();
 			logs=null;
 		}
 		// Update the state of the switches
@@ -571,6 +512,29 @@ public class QueryDlg extends JDialog implements ActionListener {
         return ret;
 	}
 	
-	
+	/**
+	 * Return a string formatted for JOptionPane making a word wrap
+	 * 
+	 * @param error The error i.e. the exception
+	 * @param msg The message to show
+	 * @return A formatted string
+	 */
+	private String formatErrorMsg(String msg) {
+		StringBuilder sb = new StringBuilder();
+		int count = 0;
+		for (int t=0; t<msg.length(); t++) {
+			char c = msg.charAt(t);
+			sb.append(c);
+			if (c=='\n') {
+				count=0;
+				continue;
+			}
+			if (++count >= 80 && c==' ') {
+				count=0;
+				sb.append('\n');
+			}
+		}
+		return sb.toString();
+	}
 	
 }
