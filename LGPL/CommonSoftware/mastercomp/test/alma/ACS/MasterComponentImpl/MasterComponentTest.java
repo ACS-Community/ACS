@@ -58,7 +58,7 @@ public class MasterComponentTest extends ComponentClientTestCase
 	protected void setUp() throws Exception {
 		super.setUp();
 		
-		org.omg.CORBA.Object compObj = getContainerServices().getComponent("MASTERCOMP1");		
+		org.omg.CORBA.Object compObj = getContainerServices().getComponent("MASTERCOMP1");
 		assertNotNull(compObj);
 		m_masterComp = alma.ACS.MasterComponentHelper.narrow(compObj);
 		assertNotNull(m_masterComp);
@@ -146,7 +146,7 @@ public class MasterComponentTest extends ComponentClientTestCase
 		ROstringSeq statesProperty = m_masterComp.currentStateHierarchy();
 		assertNotNull(statesProperty);
 
-		StateChangeListener listener = new StateChangeListener(m_logger);		
+		StateChangeListener listener = new StateChangeListener(m_logger);
 		listener.createMonitor(statesProperty, getContainerServices());
 
 		for (int i=0; i < 100; i++) {
@@ -170,7 +170,14 @@ public class MasterComponentTest extends ComponentClientTestCase
 				SUBSYSSTATE_AVAILABLE.value, SUBSYSSTATE_OFFLINE.value, SUBSYSSTATE_SHUTDOWN.value };
 		listener.verifyCurrentState(expectedHierarchy);
 		
-		StateChangeSemaphore sync = listener.getStateChangeSemaphore();		
+		StateChangeSemaphore sync = listener.getStateChangeSemaphore();
+		// @TODO: At the moment it is not deterministic whether we have received already the notification 
+		//        for the MC going to initial shutdown state, 
+		//        or if we never get it because we registered the monitor too late (check with Matej if history is sent to new monitors...),
+		//        or if we will get the shutdown state notification later, which will cause a test failure because
+		//        the test assumes a clean starting state without pending notifications.
+		//        As a really ugly workaround we sleep for a second, to make "sure" we got the shutdown notification if we get it at all...
+		Thread.sleep(1000);
 		sync.reset();
 		
 		m_masterComp.doTransition(SubsystemStateEvent.SUBSYSEVENT_INITPASS1);
