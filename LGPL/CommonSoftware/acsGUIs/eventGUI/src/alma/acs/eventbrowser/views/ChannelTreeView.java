@@ -146,9 +146,7 @@ public class ChannelTreeView extends ViewPart {
 		public void initialize() {
 			ArrayList<ChannelData> clist = null;
 			try {
-				if (em == null) {
-					em = new EventModel();
-				}
+				em = EventModel.getInstance();
 				clist = em.getChannelStatistics();
 			} catch (Exception e) {
 				// TODO Auto-generated catch block

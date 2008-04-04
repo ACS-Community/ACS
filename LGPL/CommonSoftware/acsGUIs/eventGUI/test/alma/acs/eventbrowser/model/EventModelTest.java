@@ -12,7 +12,7 @@ public class EventModelTest extends TestCase {
 	public EventModelTest(String name) {
 		super(name);
 		try {
-			em = new EventModel();
+			em = EventModel.getInstance();
 		} catch (Exception e) {
 			e.printStackTrace();
 			fail();
@@ -35,7 +35,7 @@ public class EventModelTest extends TestCase {
 	public void testGetChannelStatistics() {
 		ArrayList<ChannelData> clist = null;
 		try {
-			EventModel em = new EventModel();
+			EventModel em = EventModel.getInstance();
 			clist = em.getChannelStatistics();
 			for (Iterator<ChannelData> iterator = clist.iterator(); iterator.hasNext();) {
 				ChannelData object = iterator.next();

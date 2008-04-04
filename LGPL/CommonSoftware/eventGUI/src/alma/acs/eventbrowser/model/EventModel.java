@@ -18,6 +18,7 @@ import org.omg.CosNaming.NamingContext;
 import org.omg.CosNotification.Property;
 import org.omg.CosNotifyChannelAdmin.AdminLimitExceeded;
 import org.omg.CosNotifyChannelAdmin.AdminNotFound;
+import org.omg.CosNotifyChannelAdmin.ChannelNotFound;
 import org.omg.CosNotifyChannelAdmin.ClientType;
 import org.omg.CosNotifyChannelAdmin.ConsumerAdmin;
 import org.omg.CosNotifyChannelAdmin.EventChannel;
@@ -43,11 +44,17 @@ public class EventModel {
 	private final NamingContext nctx;
 	private final AcsManagerProxy mproxy;
 	private final EventChannelFactory nsvc;
+	private final EventChannelFactory lsvc;	// For logging service
 	private final static String eventGuiId = "eventGUI";
+	private final EventChannelFactory alsvc;
+	private final EventChannelFactory arsvc;
+	
+	private static EventModel instance;
 
-	public EventModel() throws Exception {
+	private EventModel() throws Exception {
 		String connectionString;
 		String managerHost;
+		
 		int acsInstance;
 		if ((connectionString = System.getProperty("ACS.Manager")) == null) { // Joe's Linux box in Garching is the default!
 			acsInstance = 0;
@@ -58,7 +65,7 @@ public class EventModel {
 			String temp = connectionString.substring("corbaloc::".length());
 			int endIndex = temp.indexOf(":");
 			managerHost = temp.substring(0, endIndex);
-			acsInstance = Integer.parseInt(temp.substring(endIndex+1, temp.indexOf("/")));
+			acsInstance = (Integer.parseInt(temp.substring(endIndex+1, temp.indexOf("/"))) - 3000)/100;
 		}
 		m_logger = ClientLogManager.getAcsLogManager().getLoggerForApplication(eventGuiId, false);
 		AdvancedComponentClient acc = null;
@@ -75,28 +82,73 @@ public class EventModel {
 		}
 		compClient = acc;
 		mproxy = compClient.getAcsManagerProxy();
+
 		nsvc = EventChannelFactoryHelper.narrow(mproxy.get_service("NotifyEventChannelFactory", true));
+		lsvc = EventChannelFactoryHelper.narrow(mproxy.get_service("LoggingNotifyEventChannelFactory", true));
+		alsvc = EventChannelFactoryHelper.narrow(mproxy.get_service("AlarmNotifyEventChannelFactory", true));
+		arsvc = EventChannelFactoryHelper.narrow(mproxy.get_service("ArchiveNotifyEventChannelFactory", true));
 		cs = compClient.getContainerServices();
 		orb = compClient.getAcsCorba().getORB();
 		h = new Helper(cs);
 		nctx = h.getNamingService();
+		getServiceTotals(); // temporarily, for testing
 	}
 	
 	private String getConnectionString(String managerHost, int acsInstance) {
 		String port = Integer.toString(3000+acsInstance);
 		return "corbaloc::"+managerHost+":"+port+"/Manager";
 	}
+	
+	public static EventModel getInstance() throws Exception {
+		if (instance == null) 
+			instance = new EventModel();
+		return instance;
+	}
+	
+	public ArrayList<ChannelData> getServiceTotals() {
+		ArrayList<ChannelData> clist = new ArrayList<ChannelData>();
+		EventChannelFactory[] efacts = {nsvc, lsvc, alsvc, arsvc};
+		String[] efactNames = {"Notification", "Logging", "Alarm", "Property Archiving"};
+
+		int nconsumers;
+		int nsuppliers;
+		for (int i = 0; i < efacts.length; i++) {
+			int[] chans;
+			chans = efacts[i].get_all_channels();
+			nconsumers = 0;
+			nsuppliers = 0;
+			for (int j = 0; j < chans.length; j++) {
+				try {
+					nconsumers += efacts[i].get_event_channel(chans[j])
+							.get_all_consumeradmins().length;
+					nsuppliers += efacts[i].get_event_channel(chans[j])
+							.get_all_supplieradmins().length;
+				} catch (ChannelNotFound e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
+			}
+			System.out.printf("%s consumers: %d\n", efactNames[i], nconsumers);
+			System.out.printf("%s suppliers: %d\n", efactNames[i], nsuppliers);
+			System.out.printf("Number of channels for: %s %d \n", efactNames[i],
+					chans.length);
+			clist.add(new ChannelData(efactNames[i], nconsumers, nsuppliers));
+		}
+
+		return clist;
+	}
 
 	public ArrayList<ChannelData> getChannelStatistics() {
 		ArrayList<ChannelData> clist = new ArrayList<ChannelData>();
-		int[] chans = nsvc.get_all_channels();
-		System.out.println("Number of channels: "+chans.length);
+		EventChannelFactory[] efacts = {nsvc, lsvc, alsvc, arsvc};
 
 		BindingListHolder bl = new BindingListHolder();
 		BindingIteratorHolder bi = new BindingIteratorHolder();
 		nctx.list(-1, bl, bi);
 		for (Binding binding : bl.value) {
-			if (binding.binding_name[0].kind.equals(alma.acscommon.NC_KIND.value)) {
+			String serviceKind = alma.acscommon.NC_KIND.value;
+			if (binding.binding_name[0].kind.equals(serviceKind)) {
 				String channelName = binding.binding_name[0].id;
 				System.out.println("Channel: "+binding.binding_name[0].id);
 				EventChannel ec;

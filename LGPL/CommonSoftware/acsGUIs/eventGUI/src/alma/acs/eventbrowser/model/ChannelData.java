@@ -1,6 +1,6 @@
 package alma.acs.eventbrowser.model;
 
-public class ChannelData {
+public class ChannelData implements Comparable<ChannelData> {
 	private String name;
 	private int numberConsumers;
 	private int numberSuppliers;
@@ -27,6 +27,11 @@ public class ChannelData {
 		this.name = name;
 		this.numberConsumers = numberConsumers;
 		this.numberSuppliers = numberSuppliers;
+	}
+
+	@Override
+	public int compareTo(ChannelData o) {
+		return getName().compareTo(o.getName());
 	}
 
 }
