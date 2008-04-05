@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsThread.cpp,v 1.35 2007/12/04 13:25:01 bjeram Exp $"
+* "@(#) $Id: acsThread.cpp,v 1.36 2008/04/05 23:15:25 sharring Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -25,7 +25,7 @@
 
 #include "vltPort.h"
 
-static char *rcsId="@(#) $Id: acsThread.cpp,v 1.35 2007/12/04 13:25:01 bjeram Exp $"; 
+static char *rcsId="@(#) $Id: acsThread.cpp,v 1.36 2008/04/05 23:15:25 sharring Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include "acsThread.h"
@@ -54,9 +54,16 @@ Thread::Thread(const ACE_CString & name,
     ACS_TRACE("ACS::Thread::Thread");
     thrMgr_mp = ACS::ThreadManager::threadManagerTSS->getThreadManager(true);
     if (thrMgr_mp != NULL)
-	{
-	thrMgr_mp->add2map(name, static_cast<ACS::Thread*>(this));
-	}
+    {
+        if(!thrMgr_mp->add(name, static_cast<ACS::Thread*>(this))) 
+        {
+            acsthreadErrType::ThreadAlreadyExistExImpl ex1(__FILE__, __LINE__, "ACS::Thread::Thread");
+            ex1.setThreadName(getName());
+            acsthreadErrType::CanNotSpawnThreadExImpl ex2(ex1, __FILE__, __LINE__, "ACS::Thread::Thread");
+            ex2.setThreadName(getName());
+            throw ex2;
+        }
+    }
 
     /*
      * We create a Kernel Thread and the thread is:
@@ -64,12 +71,12 @@ Thread::Thread(const ACE_CString & name,
      * we HAVE TO JOIN to it to release resources!!!!
      */
     if (!create(_thrFlags))
-	{
-	if (thrMgr_mp != NULL)  thrMgr_mp->removeFromMap(name);
-	acsthreadErrType::CanNotSpawnThreadExImpl ex(__FILE__, __LINE__, "ACS::Thread::Thread");
-	ex.setThreadName(getName());
-	throw ex;
-	}//if
+    {
+        if (thrMgr_mp != NULL)  thrMgr_mp->removeFromMap(name);
+        acsthreadErrType::CanNotSpawnThreadExImpl ex(__FILE__, __LINE__, "ACS::Thread::Thread");
+        ex.setThreadName(getName());
+        throw ex;
+    }//if
 }
 
 Thread::~Thread()
