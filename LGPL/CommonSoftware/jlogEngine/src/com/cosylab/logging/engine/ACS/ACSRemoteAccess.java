@@ -352,7 +352,7 @@ public final class ACSRemoteAccess implements RemoteAccess {
 		listenersDispatcher.publishReport("Resolving channel \"" + channelName + "\" from Notify Service...");
 		try {
 			NameComponent[] nc = new NameComponent[1];
-			nc[0] = new NameComponent(channelName, "");
+			nc[0] = new NameComponent(channelName, alma.acscommon.LOGGING_CHANNEL_KIND.value);
 			
 			org.omg.CORBA.Object obj = namingContext.resolve(nc);
 	
