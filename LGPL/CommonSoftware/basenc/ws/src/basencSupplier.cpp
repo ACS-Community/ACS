@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: basencSupplier.cpp,v 1.8 2008/02/07 10:51:11 msekoran Exp $"
+* "@(#) $Id: basencSupplier.cpp,v 1.9 2008/04/06 03:41:22 sharring Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -57,7 +57,7 @@ void
 BaseSupplier::connect()
 {
     //turn ourselves into a CORBA object
-    corbaRef_m = acsnc::OSPushSupplier::_duplicate(getCORBARef());
+    corbaRef_m = getCORBARef();
     ACE_ASSERT(!CORBA::is_nil(corbaRef_m.in()));
     
     //get the proxy consumer from the supplier admin.
@@ -94,7 +94,8 @@ BaseSupplier::disconnect()
     supplierAdmin->destroy();
 
     // deactivate our own CORBA servant
-    this->_default_POA()->deactivate_object(*(this->_default_POA()->servant_to_id(this)));
+    PortableServer::ObjectId_var objectId = this->_default_POA()->servant_to_id(this);
+    this->_default_POA()->deactivate_object(*objectId.ptr());
 
     BaseHelper::disconnect();
 }
@@ -161,9 +162,10 @@ void
 BaseSupplier::populateHeader(CosNotification::StructuredEvent& event)
 {
     //just delegate this to other functions
-    event.header.fixed_header.event_type.domain_name = CORBA::string_dup(getChannelDomain());
-    event.header.fixed_header.event_type.type_name   = CORBA::string_dup(getEventType());    
-    event.header.fixed_header.event_name             = CORBA::string_dup(getEventName());
+
+    event.header.fixed_header.event_type.domain_name = getChannelDomain();
+    event.header.fixed_header.event_type.type_name   = getEventType();    
+    event.header.fixed_header.event_name             = getEventName();
 
     //no reason to put anything in the variable header.
     event.header.variable_header.length(0);
