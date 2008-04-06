@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.10 2006/10/25 10:45:22 sharring Exp $"
+# "@(#) $Id: Makefile,v 1.11 2008/04/06 04:32:09 sharring Exp $"
 #
 # Makefile of ........
 #
@@ -36,15 +36,23 @@ USER_LIB = -lstdc++ -lxerces-c
 # C programs (public and local)
 # -----------------------------
 EXECUTABLES     = 
-EXECUTABLES_L   = testDriver testDriverAcs 
+EXECUTABLES_L   = testDriver testDriverAcs testDriverMultiThreaded FactoryTestCase
+
+# <brief description of xxxxx program>
+FactoryTestCase_OBJECTS  = FactoryTestCase 
+FactoryTestCase_LIBS     = acsErrTypeAlarmSourceFactory cdb cppunit logging acsAlSysSource maciErrType laserSourceAcsSpecific
+
+# <brief description of xxxxx program>
+testDriverMultiThreaded_OBJECTS   = testDriverMultiThreaded
+testDriverMultiThreaded_LIBS      = AlarmTestMountMultiThreadedImpl testCppAlarmSourceComponentsStubs maciClient AlarmSystemStubs ACSJMSMessageEntityStubs acsnc laserSourceAcsSpecific
 
 # <brief description of xxxxx program>
 testDriver_OBJECTS   = testDriver
-testDriver_LIBS      = AlarmTestMountImpl testCppAlarmSourceComponentsStubs maciClient AlarmSystemStubs ACSJMSMessageEntityStubs acsnc
+testDriver_LIBS      = AlarmTestMountImpl testCppAlarmSourceComponentsStubs maciClient AlarmSystemStubs ACSJMSMessageEntityStubs acsnc laserSourceAcsSpecific
 
 # <brief description of xxxxx program>
 testDriverAcs_OBJECTS   = testDriverAcs
-testDriverAcs_LIBS      = AlarmTestMountImpl testCppAlarmSourceComponentsStubs maciClient AlarmSystemStubs acsnc 
+testDriverAcs_LIBS      = AlarmTestMountImpl testCppAlarmSourceComponentsStubs maciClient AlarmSystemStubs acsnc  laserSourceAcsSpecific
 
 #
 # special compilation flags for single c sources
@@ -58,12 +66,16 @@ testDriverAcs_LIBS      = AlarmTestMountImpl testCppAlarmSourceComponentsStubs m
 #
 # Libraries (public and local)
 # ----------------------------
-LIBRARIES       = AlarmTestMountImpl
-LIBRARIES_L     = 
+LIBRARIES       = 
+LIBRARIES_L     = AlarmTestMountImpl AlarmTestMountMultiThreadedImpl
 
 # <brief description of alsysTestMountImpl library>
 AlarmTestMountImpl_OBJECTS  = AlarmTestMountImpl
 AlarmTestMountImpl_LIBS		= testCppAlarmSourceComponentsStubs acsAlSysSource acsErrTypeAlarmSourceFactory maciErrType
+
+# <brief description of alsysTestMountImpl library>
+AlarmTestMountMultiThreadedImpl_OBJECTS  = AlarmTestMountMultiThreadedImpl
+AlarmTestMountMultiThreadedImpl_LIBS		= testCppAlarmSourceComponentsStubs acsAlSysSource acsErrTypeAlarmSourceFactory maciErrType
 
 #
 # Scripts (public and local)

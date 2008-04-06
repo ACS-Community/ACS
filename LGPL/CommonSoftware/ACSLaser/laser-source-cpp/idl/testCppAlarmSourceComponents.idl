@@ -35,6 +35,12 @@ module testalarmsystem
       void faultMount();
       void terminate_faultMount();
    };
+
+	interface AlarmTestMountMultiThreaded : ACS::ACSComponent
+   {
+      void faultMount(in long threads, in long numFaultsPerThread, in long mountNumber);
+      void terminate_faultMount();
+   };
 };
 
 #endif

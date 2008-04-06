@@ -20,5 +20,13 @@
 	   Type="IDL:alma/testalarmsystem/AlarmTestMount:1.0"
 	   Code="AlarmTestMountImpl" 
 	   Container="bilboContainer" />
+  <_ Name="ALARM_SOURCE_MOUNT_MULTITHREAD_CPP"
+	   Type="IDL:alma/testalarmsystem/AlarmTestMountMultiThreaded:1.0"
+	   Code="AlarmTestMountMultiThreadedImpl" 
+	   Container="bilboContainer" />
+  <_ Name="ALARM_SOURCE_MOUNT_MULTITHREAD_CPP2"
+	   Type="IDL:alma/testalarmsystem/AlarmTestMountMultiThreaded:1.0"
+	   Code="AlarmTestMountMultiThreadedImpl" 
+	   Container="bilboContainer2" />
 </Components>
 
