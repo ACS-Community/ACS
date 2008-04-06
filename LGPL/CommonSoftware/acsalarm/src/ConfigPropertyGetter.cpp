@@ -57,6 +57,7 @@ ConfigPropertyGetter::ConfigPropertyGetter(maci::Manager_ptr manager):m_properti
 ConfigPropertyGetter::~ConfigPropertyGetter() {
 	if (m_properties!=NULL) {
 		m_properties->clear();
+		delete m_properties;
 		m_properties=NULL;
 	}
 }
@@ -100,7 +101,10 @@ std::string ConfigPropertyGetter::getDAO(maci::Manager_ptr manager) {
     
     // Get the DAO
     try {
-        return cdbDAL->get_DAO("Alarms/Administrative/AlarmSystemConfiguration");
+        char * retVal = cdbDAL->get_DAO("Alarms/Administrative/AlarmSystemConfiguration");
+        std::string retString(retVal);
+        CORBA::string_free(retVal);
+        return retString;
     } catch (cdbErrType::CDBRecordDoesNotExistEx) {
         return "";
     }
