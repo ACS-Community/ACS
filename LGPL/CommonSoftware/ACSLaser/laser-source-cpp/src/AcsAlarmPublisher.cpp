@@ -27,8 +27,8 @@ AcsAlarmPublisher::AcsAlarmPublisher(string topicName)
 	// initialize the AlarmSupplier with the naming context
 	maci::Manager_ptr mgr = ACSAlarmSystemInterfaceFactory::getManager();
   	CORBA::Object_var namingObj = mgr->get_service(0, "NameService", true);
-	CosNaming::NamingContext_var naming_context = CosNaming::NamingContext::_narrow(namingObj.in());
-  	CosNaming::NamingContext_ptr naming_p = naming_context._retn();
+	CosNaming::NamingContext_var naming_context = CosNaming::NamingContext::_narrow(namingObj.ptr());
+  	CosNaming::NamingContext_ptr naming_p = naming_context.ptr();
 		
 	if(CORBA::is_nil(naming_p)) {
 		myLoggerSmartPtr->log(Logging::Logger::LM_ERROR, "AcsAlarmPublisher::AcsAlarmPublisher(): naming_p was nil.");

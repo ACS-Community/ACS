@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: AlarmSupplier.cpp,v 1.8 2008/02/07 10:52:26 msekoran Exp $"
+* "@(#) $Id: AlarmSupplier.cpp,v 1.9 2008/04/06 03:59:38 sharring Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -104,7 +104,7 @@ void AlarmSupplier::publishEvent(ASIMessage &msg)
 	acsnc::EventDescription description;
 	description.timestamp = getTimeStamp();
 	description.count = 0;
-	description.name = CORBA::string_dup("AlarmSupplier");
+	description.name = "AlarmSupplier";
 	event.remainder_of_body <<= description;
 
 	// populate event's filterable data with XML representation of the alarm
@@ -113,7 +113,7 @@ void AlarmSupplier::publishEvent(ASIMessage &msg)
 	string xmlToSend = msg.toXML();
 	string xmlToLog = "AlarmSupplier::publishEvent()\n\nAbout to send XML of: \n\n" + xmlToSend + "\n\n";
 	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, xmlToLog);
-	msgForNotificationChannel.text = CORBA::string_dup(xmlToSend.c_str());
+	msgForNotificationChannel.text = xmlToSend.c_str();
 	event.filterable_data[0].value <<= msgForNotificationChannel;
 	
 	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "AlarmSupplier::publishEvent(): Preparing to send XML.");
