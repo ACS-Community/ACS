@@ -21,8 +21,6 @@
  */
 package com.cosylab.logging.engine.log;
 
-import javax.swing.ImageIcon;
-
 import com.cosylab.logging.engine.log.ILogEntry.Field;
 
 import alma.acs.logging.level.AcsLogLevelDefinition;
