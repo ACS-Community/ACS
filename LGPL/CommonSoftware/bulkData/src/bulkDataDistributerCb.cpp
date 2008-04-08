@@ -313,7 +313,14 @@ BulkDataDistributerCb::cbFwdStart(ACE_Message_Block * userParam_p)
 
     try
 	{
-	distr_m->getDistributer()->distSendData(flowname_m,userParam_p, flowNumber_m);
+    	if (distr_m!=NULL)
+    	{
+    		distr_m->getDistributer()->distSendData(flowname_m,userParam_p, flowNumber_m);
+    	}
+    	else
+    	{
+    		ACS_SHORT_LOG((LM_ERROR,"BulkDataDistributerCb::cbFwdStart distr_m==NULL !!!"));
+    	}
 	}
     catch(...)
 	{
@@ -339,7 +346,10 @@ BulkDataDistributerCb::cbFwdReceive(ACE_Message_Block * frame_p)
 
     try
 	{
-	distr_m->getDistributer()->distSendData(flowname_m, frame_p, flowNumber_m);
+    	if (distr_m!=NULL)
+    		distr_m->getDistributer()->distSendData(flowname_m, frame_p, flowNumber_m);
+    	else
+    		ACS_SHORT_LOG((LM_ERROR,"BulkDataDistributerCb::cbFwdReceive distr_m==NULL !!!"));
 	}
     catch(...)
 	{
@@ -368,7 +378,10 @@ BulkDataDistributerCb::cbFwdStop()
 
     try
 	{
-	timeout_m = distr_m->getDistributer()->distSendStopTimeout(flowname_m, flowNumber_m);
+    	if (distr_m!=NULL)
+    		timeout_m = distr_m->getDistributer()->distSendStopTimeout(flowname_m, flowNumber_m);
+    	else
+    		ACS_SHORT_LOG((LM_ERROR,"BulkDataDistributerCb::cbFwdStop distr_m==NULL !!!"));
 	}
     catch(...)
 	{
@@ -387,11 +400,14 @@ BulkDataDistributerCb::cbFwdUserStop()
 
     try
 	{
-	distr_m->getDistributer()->distSendStop(flowname_m, flowNumber_m);
+    	if (distr_m!=NULL)
+    		distr_m->getDistributer()->distSendStop(flowname_m, flowNumber_m);
+    	else
+    		ACS_SHORT_LOG((LM_ERROR,"BulkDataDistributerCb::cbFwdUserStop distr_m==NULL !!!"));
 	}
     catch(...)
 	{
-	ACS_SHORT_LOG((LM_ERROR,"BulkDataDistributerCb::cbFwdStop exception"));
+	ACS_SHORT_LOG((LM_ERROR,"BulkDataDistributerCb::cbFwdUserStop exception"));
 	}
 
     return 0;
