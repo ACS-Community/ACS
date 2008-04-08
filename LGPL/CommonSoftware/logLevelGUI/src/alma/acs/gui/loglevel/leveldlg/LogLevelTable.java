@@ -33,10 +33,10 @@ import javax.swing.RowSorter;
 import javax.swing.SortOrder;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
-import javax.swing.table.TableModel;
 
 import com.cosylab.logging.engine.log.LogTypeHelper;
 import com.cosylab.logging.settings.LogTypeRenderer;
+import com.cosylab.logging.client.EntryTypeIcon;
 
 /**
  * The table showing the log levels
@@ -103,7 +103,7 @@ public class LogLevelTable extends JTable {
 		}
 		
 		setRowMargin(2);
-		setRowHeight(LogTypeHelper.getIconsVSize()+5+getRowMargin());
+		setRowHeight(EntryTypeIcon.getIconsVSize()+5+getRowMargin());
 		getColumn(LogLevelTable.DEFAULT_ID).sizeWidthToFit();
 		
 		setRowSelectionAllowed(false);
