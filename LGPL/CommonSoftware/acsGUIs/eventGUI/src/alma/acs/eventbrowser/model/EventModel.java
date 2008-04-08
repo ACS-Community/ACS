@@ -1,14 +1,12 @@
 package alma.acs.eventbrowser.model;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Logger;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.omg.CORBA.IntHolder;
 import org.omg.CORBA.ORB;
 import org.omg.CosNaming.Binding;
 import org.omg.CosNaming.BindingIteratorHolder;
@@ -16,16 +14,11 @@ import org.omg.CosNaming.BindingListHolder;
 import org.omg.CosNaming.NameComponent;
 import org.omg.CosNaming.NamingContext;
 import org.omg.CosNotification.Property;
-import org.omg.CosNotifyChannelAdmin.AdminLimitExceeded;
-import org.omg.CosNotifyChannelAdmin.AdminNotFound;
 import org.omg.CosNotifyChannelAdmin.ChannelNotFound;
-import org.omg.CosNotifyChannelAdmin.ClientType;
-import org.omg.CosNotifyChannelAdmin.ConsumerAdmin;
 import org.omg.CosNotifyChannelAdmin.EventChannel;
 import org.omg.CosNotifyChannelAdmin.EventChannelFactory;
 import org.omg.CosNotifyChannelAdmin.EventChannelFactoryHelper;
 import org.omg.CosNotifyChannelAdmin.EventChannelHelper;
-import org.omg.CosNotifyChannelAdmin.ProxySupplier;
 
 import alma.ACSErrTypeCommon.wrappers.AcsJUnexpectedExceptionEx;
 import alma.acs.component.client.AdvancedComponentClient;
@@ -48,7 +41,6 @@ public class EventModel {
 	private final static String eventGuiId = "eventGUI";
 	private final EventChannelFactory alsvc;
 	private final EventChannelFactory arsvc;
-	
 	private static EventModel instance;
 
 	private EventModel() throws Exception {
@@ -83,10 +75,10 @@ public class EventModel {
 		compClient = acc;
 		mproxy = compClient.getAcsManagerProxy();
 
-		nsvc = EventChannelFactoryHelper.narrow(mproxy.get_service("NotifyEventChannelFactory", true));
-		lsvc = EventChannelFactoryHelper.narrow(mproxy.get_service("LoggingNotifyEventChannelFactory", true));
+		nsvc = EventChannelFactoryHelper.narrow(mproxy.get_service(alma.acscommon.NOTIFICATION_FACTORY_NAME.value, true));
+		lsvc = EventChannelFactoryHelper.narrow(mproxy.get_service(alma.acscommon.LOGGING_NOTIFICATION_FACTORY_NAME.value, true));
 		alsvc = EventChannelFactoryHelper.narrow(mproxy.get_service("AlarmNotifyEventChannelFactory", true));
-		arsvc = EventChannelFactoryHelper.narrow(mproxy.get_service("ArchiveNotifyEventChannelFactory", true));
+		arsvc = EventChannelFactoryHelper.narrow(mproxy.get_service(alma.acscommon.ARCHIVE_NOTIFICATION_FACTORY_NAME.value, true));
 		cs = compClient.getContainerServices();
 		orb = compClient.getAcsCorba().getORB();
 		h = new Helper(cs);
@@ -141,8 +133,6 @@ public class EventModel {
 
 	public ArrayList<ChannelData> getChannelStatistics() {
 		ArrayList<ChannelData> clist = new ArrayList<ChannelData>();
-		EventChannelFactory[] efacts = {nsvc, lsvc, alsvc, arsvc};
-
 		BindingListHolder bl = new BindingListHolder();
 		BindingIteratorHolder bi = new BindingIteratorHolder();
 		nctx.list(-1, bl, bi);
@@ -234,5 +224,6 @@ public class EventModel {
 
 		return orb.list_initial_services();
 	}
+
 	
 }

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.part.*;
 import org.eclipse.jface.viewers.*;
 import org.eclipse.swt.graphics.Image;
@@ -13,6 +14,8 @@ import org.eclipse.ui.*;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.SWT;
 import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.core.runtime.jobs.Job;
+
 import alma.acs.eventbrowser.model.ChannelData;
 import alma.acs.eventbrowser.model.EventModel;
 
@@ -39,12 +42,16 @@ public class ChannelTreeView extends ViewPart {
 	private TreeViewer viewer;
 	private DrillDownAdapter drillDownAdapter;
 	private Action refreshAction;
-	private Action action2;
+	private Action startMonitoringAction;
 	private Action doubleClickAction;
 	private ViewContentProvider vcp;
 	private IViewSite vs;
 	
+	private Thread monitorThread;
+	
 	private EventModel em;
+	private boolean monitoring = false;
+	private long howOften = 10000l; // Default is every 10 seconds
 	
 	public static final String ID = "alma.acs.eventbrowser.views.channeltree";
 
@@ -83,10 +90,10 @@ public class ChannelTreeView extends ViewPart {
 	}
 	
 	class TreeParent extends TreeObject {
-		private ArrayList children;
+		private ArrayList<TreeObject> children;
 		public TreeParent(String name) {
 			super(name);
-			children = new ArrayList();
+			children = new ArrayList<TreeObject>();
 		}
 		public void addChild(TreeObject child) {
 			children.add(child);
@@ -249,12 +256,12 @@ public class ChannelTreeView extends ViewPart {
 	private void fillLocalPullDown(IMenuManager manager) {
 		manager.add(refreshAction);
 		manager.add(new Separator());
-		manager.add(action2);
+		manager.add(startMonitoringAction);
 	}
 
 	private void fillContextMenu(IMenuManager manager) {
 		manager.add(refreshAction);
-		manager.add(action2);
+		manager.add(startMonitoringAction);
 		manager.add(new Separator());
 		drillDownAdapter.addNavigationActions(manager);
 		// Other plug-ins can contribute there actions here
@@ -263,7 +270,7 @@ public class ChannelTreeView extends ViewPart {
 	
 	private void fillLocalToolBar(IToolBarManager manager) {
 		manager.add(refreshAction);
-		manager.add(action2);
+		manager.add(startMonitoringAction);
 		manager.add(new Separator());
 		drillDownAdapter.addNavigationActions(manager);
 	}
@@ -272,7 +279,7 @@ public class ChannelTreeView extends ViewPart {
 		refreshAction = new Action() {
 			public void run() {
 				vcp.initialize();
-				viewer.setInput(vs);
+//				viewer.setInput(vs);
 				viewer.refresh();
 //				showMessage("Channel statistics refreshed.");
 			}
@@ -282,14 +289,16 @@ public class ChannelTreeView extends ViewPart {
 		refreshAction.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().
 			getImageDescriptor(ISharedImages.IMG_OBJS_INFO_TSK));
 		
-		action2 = new Action() {
+		startMonitoringAction = new Action() {
 			public void run() {
-				showMessage("Action 2 executed");
+				startMonitoring();
+				setEnabled(false);
+//				showMessage("Monitoring started");
 			}
 		};
-		action2.setText("Action 2");
-		action2.setToolTipText("Action 2 tooltip");
-		action2.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().
+		startMonitoringAction.setText("Start monitoring");
+		startMonitoringAction.setToolTipText("Begin periodic updating of channel data");
+		startMonitoringAction.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().
 				getImageDescriptor(ISharedImages.IMG_OBJS_INFO_TSK));
 		doubleClickAction = new Action() {
 			public void run() {
@@ -320,4 +329,45 @@ public class ChannelTreeView extends ViewPart {
 	public void setFocus() {
 		viewer.getControl().setFocus();
 	}
+	
+	
+	public void startMonitoring() {
+		monitoring = true;
+
+		Runnable t = new Runnable()  {
+			int i = 0;
+			public Runnable r = new Runnable() {
+				public void run() {
+					final Display display = viewer.getControl().getDisplay();
+					if (!display.isDisposed()) {
+						viewer.refresh();
+						viewer.expandAll();
+					}
+				}
+			};
+			
+			public void run() {
+				final Display display = viewer.getControl().getDisplay();
+
+				while (monitoring) {
+					vcp.initialize();
+					if (!display.isDisposed())
+						display.asyncExec(r);
+					try {
+						Thread.sleep(howOften);
+						System.out.println("Iteration "+ ++i);
+					} catch (InterruptedException e) {
+						System.out.println("Monitoring was interrupted!");
+						monitoring = false;
+						startMonitoringAction.setEnabled(true);
+					}
+				}
+				monitoring = false;
+				startMonitoringAction.setEnabled(true);
+			}
+		};
+		Thread th = new Thread(t);
+		th.start();
+	}
+
 }

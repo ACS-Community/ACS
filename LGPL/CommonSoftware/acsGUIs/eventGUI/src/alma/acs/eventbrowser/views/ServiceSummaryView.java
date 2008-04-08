@@ -26,6 +26,7 @@ import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
@@ -60,10 +61,12 @@ import alma.acs.eventbrowser.model.EventModel;
 public class ServiceSummaryView extends ViewPart {
 	private TableViewer viewer;
 	private Action refresh;
-	private Action action2;
+	private Action startMonitoringAction;
 	private Action doubleClickAction;
 	
 	private EventModel em;
+	private boolean monitoring = false;
+	private long howOften = 10000l;
 	
 	public static final String ID = "alma.acs.eventbrowser.views.servicesummary";
 
@@ -226,19 +229,19 @@ public class ServiceSummaryView extends ViewPart {
 	private void fillLocalPullDown(IMenuManager manager) {
 		manager.add(refresh);
 		manager.add(new Separator());
-		manager.add(action2);
+		manager.add(startMonitoringAction);
 	}
 
 	private void fillContextMenu(IMenuManager manager) {
 		manager.add(refresh);
-		manager.add(action2);
+		manager.add(startMonitoringAction);
 		// Other plug-ins can contribute there actions here
 		manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
 	}
 	
 	private void fillLocalToolBar(IToolBarManager manager) {
 		manager.add(refresh);
-		manager.add(action2);
+		manager.add(startMonitoringAction);
 	}
 
 	private void makeActions() {
@@ -253,14 +256,16 @@ public class ServiceSummaryView extends ViewPart {
 		refresh.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().
 			getImageDescriptor(ISharedImages.IMG_OBJS_INFO_TSK));
 		
-		action2 = new Action() {
+		startMonitoringAction = new Action() {
 			public void run() {
-				showMessage("Action 2 executed");
+				startMonitoring();
+				setEnabled(false);
+				showMessage("Monitoring started");
 			}
 		};
-		action2.setText("Action 2");
-		action2.setToolTipText("Action 2 tooltip");
-		action2.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().
+		startMonitoringAction.setText("Start monitoring");
+		startMonitoringAction.setToolTipText("Begin periodic updating of service data");
+		startMonitoringAction.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().
 				getImageDescriptor(ISharedImages.IMG_OBJS_INFO_TSK));
 		doubleClickAction = new Action() {
 			public void run() {
@@ -291,4 +296,44 @@ public class ServiceSummaryView extends ViewPart {
 	public void setFocus() {
 		viewer.getControl().setFocus();
 	}
+	
+	public void startMonitoring() {
+		monitoring  = true;
+
+		Runnable t = new Runnable()  {
+			int i = 0;
+			public Runnable r = new Runnable() {
+				public void run() {
+					final Display display = viewer.getControl().getDisplay();
+					if (!display.isDisposed()) {
+						viewer.refresh();
+					}
+				}
+			};
+
+
+			
+			public void run() {
+				final Display display = viewer.getControl().getDisplay();
+
+				while (monitoring) {
+					if (!display.isDisposed())
+						display.asyncExec(r);
+					try {
+						Thread.sleep(howOften);
+						System.out.println("Iteration "+ ++i);
+					} catch (InterruptedException e) {
+						System.out.println("Monitoring was interrupted!");
+						monitoring = false;
+						startMonitoringAction.setEnabled(true);
+					}
+				}
+				monitoring = false;
+				startMonitoringAction.setEnabled(true);
+			}
+		};
+		Thread th = new Thread(t);
+		th.start();
+	}
+
 }
