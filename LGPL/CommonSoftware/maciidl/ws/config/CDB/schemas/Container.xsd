@@ -77,7 +77,8 @@ The ACS daemon that starts the container must understand the modifiers in order 
 		</xs:attribute>
 		<xs:attribute name="Timeout" type="xs:double" use="optional" default="2">
 			<xs:annotation>
-				<xs:documentation>Standard timeout in seconds for remote (CORBA) calls. Every call will timeout after this period of time, ensuring protection from deadlock. Notice that ACS QoS features can be used to trim specific calls.</xs:documentation>
+				<xs:documentation>Standard timeout in seconds for remote (CORBA) calls. Every call will timeout after this period of time, ensuring protection from deadlock. Notice that ACS QoS features can be used to trim specific calls.
+				Notice also that this container-level timeout is currently not supported by the Java container, which applies only the general timeout from the orb properties file.</xs:documentation>
 			</xs:annotation>
 		</xs:attribute>
 		<xs:attribute name="UseIFR" type="xs:boolean" use="optional" default="true">
