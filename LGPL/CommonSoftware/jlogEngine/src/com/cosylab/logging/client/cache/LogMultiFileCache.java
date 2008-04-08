@@ -515,8 +515,14 @@ public class LogMultiFileCache  implements ILogMap {
 	 */
 	public int getFirstLogs(int n, Collection<Integer> keys) {
 		int ret=0;
+		Vector<Integer>temp = new Vector<Integer>();
 		for (LogFileTableRecord record: logFileTable) {
-			ret+=record.lbfc.getFirstLogs(n-ret, keys);
+			temp.clear();
+			ret+=record.lbfc.getFirstLogs(n-ret, temp);
+			for (int t=0; t<temp.size(); t++) {
+				temp.set(t, temp.get(t)+record.minLogIdx);
+			}
+			keys.addAll(temp);
 			if (ret==n) {
 				break;
 			}
