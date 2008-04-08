@@ -135,34 +135,74 @@ public class StatsDlg extends JDialog
 	 *
 	 */
 	private void refreshGUI() {
-		Runnable refresh = new Runnable() {
+		int pippo;
+		/**
+		 * A class to refresh the labels of the dialog
+		 * The thread is executed inside the swing thread
+		 * 
+		 * @author acaproni
+		 *
+		 */
+		class GuiRefresher implements Runnable {
+			long totLogs;
+			long visLogs;
+			long hidLogs;
+			long availMem;
+			long totMem;
+			String timeFrameStr;
 			public void run() {
-				totNumOfLogsLbl.setText(""+logging.getLogEntryTable().getLCModel().totalLogNumber());
-				visibleLogsLbl.setText(""+logging.getLCModel1().getRowCount());
-				hiddenLogsLbl.setText(""+(logging.getLogEntryTable().getLCModel().totalLogNumber()-logging.getLCModel1().getRowCount()));
-				Runtime rt = Runtime.getRuntime();
-				long freeMem = rt.freeMemory();
-				long totMem = rt.totalMemory();
-				availMemLbl.setText(""+(freeMem/1024)+"Kb");
-		        usedMemLbl.setText(""+((totMem-freeMem)/1024)+"Kb");
-		        Calendar cal = logging.getLogEntryTable().getLCModel().getTimeFrame();
-		        StringBuilder str = new StringBuilder();
-		        str.append(cal.get(Calendar.DAY_OF_YEAR)-1);
-		        str.append("days - ");
-		        str.append(cal.get(Calendar.HOUR_OF_DAY));
-		        str.append(":");
-		        str.append(cal.get(Calendar.MINUTE));
-		        str.append(":");
-		        str.append(cal.get(Calendar.SECOND));
-		        str.append(".");
-		        str.append(cal.get(Calendar.MILLISECOND));
-		        timeFrameLbl.setText(str.toString());
+				totNumOfLogsLbl.setText(Long.valueOf(totLogs).toString());
+				visibleLogsLbl.setText(Long.valueOf(visLogs).toString());
+				hiddenLogsLbl.setText(Long.valueOf(hidLogs).toString());
+				availMemLbl.setText(""+(availMem/1024)+"Kb");
+		        usedMemLbl.setText(""+((totMem-availMem)/1024)+"Kb");
+		        timeFrameLbl.setText(timeFrameStr);
 		        pack();
 			}
+		}
+		
+		/**
+		 * The thread reading values from the table of logs.
+		 * 
+		 * This operation is too slow to be executed inside the swing thread.
+		 * At the end it executes a swing thread to update the content of the 
+		 * labels of the GUI.
+		 */
+		Runnable updater = new Runnable() {
+			public void run() {
+				GuiRefresher refresher = new GuiRefresher();
+				refresher.totLogs = logging.getLogEntryTable().getLCModel().totalLogNumber();
+				refresher.visLogs = logging.getLCModel1().getRowCount();
+				refresher.hidLogs = refresher.totLogs-refresher.visLogs;
+				Runtime rt = Runtime.getRuntime();
+				refresher.availMem = rt.freeMemory();
+				refresher.totMem = rt.totalMemory();
+				Calendar timeFrame = logging.getLogEntryTable().getLCModel().getTimeFrame();
+		        StringBuilder str = new StringBuilder();
+		        str.append(timeFrame.get(Calendar.DAY_OF_YEAR)-1);
+		        str.append("days - ");
+		        str.append(timeFrame.get(Calendar.HOUR_OF_DAY));
+		        str.append(":");
+		        str.append(timeFrame.get(Calendar.MINUTE));
+		        str.append(":");
+		        str.append(timeFrame.get(Calendar.SECOND));
+		        str.append(".");
+		        str.append(timeFrame.get(Calendar.MILLISECOND));
+		        refresher.timeFrameStr=str.toString();
+		        
+		        // Start the swing thread
+		        SwingUtilities.invokeLater(refresher);
+			}
 		};
-		SwingUtilities.invokeLater(refresh);
+		
+		Thread t = new Thread(updater,"Stats dialog updater");
+		t.setDaemon(true);
+		t.start();
 	}
 	
+	/**
+	 * @see <code>ActionListener<?code>
+	 */
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource()==closeBtn) {
 			setVisible(false);
