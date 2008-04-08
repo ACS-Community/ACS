@@ -154,6 +154,13 @@ public abstract class MasterComponentImplBase extends CharacteristicComponentImp
 		} catch (Exception e) {
 			m_logger.log(Level.WARNING, "Failed to destroy the monitor object that checks state change notification", e);
 		}
+		
+		try {
+			m_stateMachine.cleanUp();
+		} catch (Exception e) {
+			m_logger.log(Level.WARNING, "Failed to clean up the state machine's context object", e);
+		}
+		
 	}
 	
 	
@@ -558,7 +565,7 @@ public abstract class MasterComponentImplBase extends CharacteristicComponentImp
 			if (!matched) {
 				logger.severe("The auto-monitoring of mastercomp state change notifications has detected an unexpected notification for '" + newStatesFlat + "'.");
 			}
-		}				
+		}
 	}	
 	
 }

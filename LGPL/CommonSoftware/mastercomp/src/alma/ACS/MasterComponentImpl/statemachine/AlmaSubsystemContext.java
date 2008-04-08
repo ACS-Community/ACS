@@ -285,7 +285,16 @@ public class AlmaSubsystemContext
 	}
 
 	ThreadPoolExecutor getSharedActivityExecutor() {
-		return sharedActivityExecutor;		
+		return sharedActivityExecutor;
+	}
+
+	/**
+	 * Final clean-up, must be called before unloading this class.
+	 * Afterwards it may be in an undefined state.
+	 */
+	public void cleanUp() {
+		// wake up and terminate the activity worker thread.
+		sharedActivityExecutor.shutdownNow();
 	}
 	
 }
