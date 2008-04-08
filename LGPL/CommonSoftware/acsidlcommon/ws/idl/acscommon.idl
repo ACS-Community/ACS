@@ -159,6 +159,12 @@ module acscommon
      *  event channels for events sent directly to the ALMA Archive.
      */
     const string ARCHIVE_NOTIFICATION_FACTORY_NAME = "ArchiveNotifyEventChannelFactory";
+    
+    /**
+     *  ALARM_NOTIFICATION_FACTORY_NAME is the CORBA service used to create new
+     *  event channels for Alarms.
+     */
+    const string ALARM_NOTIFICATION_FACTORY_NAME = "AlarmNotifyEventChannelFactory";
 
     /**
      *  NAMING_SERVICE_NAME is the name of the CORBA service which binds names to
