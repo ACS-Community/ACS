@@ -110,6 +110,9 @@ public class LogMenuBar extends JMenuBar {
     private JRadioButtonMenuItem operatorMode;
     private JRadioButtonMenuItem engineeringMode;
     
+    // The menu to add filters to the engine
+    private JMenuItem engineFiltersMI;
+    
     /**
      * The menu item to select the format of the date column in the table of logs
      * If it is true, the date appear as hh:mm:ss otherwise it's shown with a complete
@@ -187,6 +190,7 @@ public class LogMenuBar extends JMenuBar {
         expertMenu.addSeparator();
         expertMenu.add(getSuspendMenuItem());
         expertMenu.add(getPrefsMenuItem());
+        expertMenu.add(getEngineFiltersMenuItem());
         add(expertMenu);
     }
     
@@ -379,6 +383,7 @@ public class LogMenuBar extends JMenuBar {
 		
 		operatorMode.addActionListener(actionListener); // Operator mode
 		engineeringMode.addActionListener(actionListener); // Engineering mode
+		engineFiltersMI.addActionListener(actionListener); // Engine filters
 	}
 	
 	public JCheckBoxMenuItem getViewToolbarMenuItem() {
@@ -498,6 +503,16 @@ public class LogMenuBar extends JMenuBar {
 			engineeringMode=new JRadioButtonMenuItem("Engineering");
 		}
 		return engineeringMode;
+	}
+
+	/**
+	 * @return the engineFiltersMI
+	 */
+	public JMenuItem getEngineFiltersMenuItem() {
+		if (engineFiltersMI==null) {
+			engineFiltersMI = new JMenuItem("Engine filters...");
+		}
+		return engineFiltersMI;
 	}
 	
 }
