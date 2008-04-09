@@ -131,4 +131,8 @@ public enum LogTypeHelper {
     public AcsLogLevelDefinition getAcsCoreLevel() {
     	return acsCoreLevel;
     }
+    
+    public String toString() {
+    	return logEntryType;
+    }
 }
