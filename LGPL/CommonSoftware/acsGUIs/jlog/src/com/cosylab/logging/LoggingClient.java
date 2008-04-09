@@ -1464,6 +1464,11 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 			statsDlg.dispose();
 			statsDlg=null;
 		}
+		if (searchDialog!=null) {
+			searchDialog.setVisible(false);
+			searchDialog.dispose();
+			searchDialog=null;
+		}
 	}
 	
 	/**
