@@ -644,5 +644,17 @@ public class FilterChooserDialog extends JDialog {
 		deactivateAllMI.addActionListener(bl);
 		clearAllMI.addActionListener(bl);
 	}
+	
+	/**
+	 * Override <code>JDialog.setVisible</code> to show this dialog over
+	 * the <code>LogsingClient</code> component.
+	 */
+	@Override
+	public void setVisible(boolean visible) {
+		setLocationRelativeTo(loggingClient);
+		pack();
+		super.setVisible(visible);
+		toFront();
+	}
 
 }
