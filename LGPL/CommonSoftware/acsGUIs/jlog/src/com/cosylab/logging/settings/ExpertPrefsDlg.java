@@ -1,9 +1,9 @@
 package com.cosylab.logging.settings;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.ComponentOrientation;
 import java.awt.Dimension;
-import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -44,6 +44,9 @@ public class ExpertPrefsDlg extends JDialog implements ActionListener {
 	// Options for the max number of logs
 	private JComboBox maxLogNumCB;
 	
+	// The component to show this dialog over
+	private Component owner;
+	
 	/**
 	 * Constructor
 	 * 
@@ -51,16 +54,18 @@ public class ExpertPrefsDlg extends JDialog implements ActionListener {
 	 * @param initialNumOfLogs The initial value for the num of logs
 	 * @param initialTimeFrame The initial value for the time frame (minutes)
 	 */
-	public ExpertPrefsDlg(int initialNumOfLogs, int initialTimeFrame) {
+	public ExpertPrefsDlg(Component owner, int initialNumOfLogs, int initialTimeFrame) {
 		super();
+		if (owner==null) {
+			throw new IllegalArgumentException("The owner can't be null");
+		}
 		setTitle("Preferences");
 		setName("ExpertPrefsDlg");
+		this.owner=owner;
 		setModal(true);
 		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		initGUI();
 		initCombos(initialNumOfLogs,initialTimeFrame);
-		setBounds(50,50,50,50);
-		pack();
 		setVisible(true);
 	}
 	
@@ -177,5 +182,17 @@ public class ExpertPrefsDlg extends JDialog implements ActionListener {
 	 */
 	public int getMaxNumOfLogs() {
 		return ((UserPreferences.NumberOption)maxLogNumCB.getSelectedItem()).getNumOfLogs();
+	}
+	
+	/**
+	 * Override <code>JDialog.setVisible</code> to show this dialog over
+	 * the <code>LogsingClient</code> component.
+	 */
+	@Override
+	public void setVisible(boolean visible) {
+		setLocationRelativeTo(owner);
+		pack();
+		super.setVisible(visible);
+		toFront();
 	}
 }

@@ -305,7 +305,7 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
             } else if (e.getSource()==menuBar.getSuspendMenuItem()) {
             	getEngine().setSupended(menuBar.getSuspendMenuItem().isSelected());
             } else if (e.getSource()==menuBar.getPrefsMenuItem()) {
-            	ExpertPrefsDlg dlg = new ExpertPrefsDlg(userPreferences.getMaxNumOfLogs(),userPreferences.getMinuteTimeFrame());
+            	ExpertPrefsDlg dlg = new ExpertPrefsDlg(LoggingClient.this,userPreferences.getMaxNumOfLogs(),userPreferences.getMinuteTimeFrame());
             	if (dlg.okPressed()) {
             		userPreferences.setMaxLogs(dlg.getMaxNumOfLogs());
             		userPreferences.setTimeFrame(dlg.getTimeFrame());
