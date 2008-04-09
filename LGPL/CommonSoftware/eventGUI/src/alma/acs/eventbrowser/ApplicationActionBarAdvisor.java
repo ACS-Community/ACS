@@ -11,6 +11,7 @@ import org.eclipse.ui.application.IActionBarConfigurer;
 public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 
     private IWorkbenchAction preferencesAction;
+	private IWorkbenchAction exitAction;
 
 	public ApplicationActionBarAdvisor(IActionBarConfigurer configurer) {
         super(configurer);
@@ -19,12 +20,15 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
     protected void makeActions(IWorkbenchWindow window) {
         preferencesAction = ActionFactory.PREFERENCES.create(window);
         register(preferencesAction);
+        exitAction = ActionFactory.QUIT.create(window);
+        register(exitAction);
 
     }
 
     protected void fillMenuBar(IMenuManager menuBar) {
     	MenuManager eventGuiMenu = new MenuManager("Event Browser", "eventbrowser");
     	eventGuiMenu.add(preferencesAction);
+    	eventGuiMenu.add(exitAction);
     	menuBar.add(eventGuiMenu);
     }
     
