@@ -1054,7 +1054,10 @@ public class LogEntryTable extends JTable
     		filterChooserDialog.dispose();
     		filterChooserDialog=null;
     	}
-    	
+    	if (fieldChooser!=null) {
+    		fieldChooser.dispose();
+    		fieldChooser=null;
+    	}
     }
     
 	/**
