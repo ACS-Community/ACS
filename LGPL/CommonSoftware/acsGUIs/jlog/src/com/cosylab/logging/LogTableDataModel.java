@@ -209,9 +209,11 @@ public class LogTableDataModel extends AbstractTableModel implements Runnable
 	private final FiltersVector filters = new FiltersVector();
     
 	/**
-	 * The level of the log to show in the table
+	 * The level of the log to show in the table.
+	 * The logs shown in the table are those having a log level equal or greater
+	 * to this property.
 	 */
-    private int logLevel;
+    private LogTypeHelper logLevel;
     
     // The LoggingClient that owns this table model
     private LoggingClient loggingClient=null;
@@ -642,9 +644,7 @@ public class LogTableDataModel extends AbstractTableModel implements Runnable
 		try {
 			while (key <= allLogs.getLastLog()) {
 				try {
-					if (allLogs.getLogType(key).ordinal() >= logLevel) {
-						visibleLogInsert(allLogs.getLog(key), key);
-					}
+					visibleLogInsert(allLogs.getLog(key), key);
 				} catch (LogCacheException e) {
 					// This can happen if the log has been removed by a separate
 					// thread
@@ -696,8 +696,8 @@ public class LogTableDataModel extends AbstractTableModel implements Runnable
 	 * @param log The log to show or hide
 	 * @param pos The position of this log in the cache
 	 */
-	public void visibleLogInsert(ILogEntry log, int pos) {
-		if (log.getType().ordinal()>=logLevel && filters.applyFilters(log)) {
+	private void visibleLogInsert(ILogEntry log, int pos) {
+		if (log.getType().ordinal()>=logLevel.ordinal() && filters.applyFilters(log)) {
 			visibleLogs.add(pos,log);
 		}
 	}
@@ -751,9 +751,14 @@ public class LogTableDataModel extends AbstractTableModel implements Runnable
 		return allLogs.getSize();
 	}
 	
-	public void setLogLevel(int newLevel) {
-		if (newLevel<0 || newLevel>LogTypeHelper.EMERGENCY.ordinal()) {
-			throw new IllegalArgumentException(""+newLevel+" is not valid");
+	/**
+	 * Set the new log level i.e. the level of the logs shown in the table.
+	 * 
+	 * @param newLevel
+	 */
+	public void setLogLevel(LogTypeHelper newLevel) {
+		if (newLevel==null) {
+			throw new IllegalArgumentException("The log level can't be null");
 		}
 		logLevel=newLevel;
 		invalidateVisibleLogs();
