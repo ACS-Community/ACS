@@ -13,5 +13,7 @@ public class Perspective implements IPerspectiveFactory {
 		layout.setEditorAreaVisible(false);
 		layout.addView(ChannelTreeView.ID, IPageLayout.LEFT, 1.0f, layout.getEditorArea());
 		layout.addView(ServiceSummaryView.ID, IPageLayout.RIGHT, 0.25f, ChannelTreeView.ID);
+		layout.addShowViewShortcut(ChannelTreeView.ID);
+		layout.addShowViewShortcut(ServiceSummaryView.ID);
 	}
 }
