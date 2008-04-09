@@ -61,7 +61,11 @@ public class LogTypeRenderer extends JLabel  implements ListCellRenderer {
         setFont(list.getFont());
         
         // If the type of log is known, set the icon
-        if (!value.toString().equals("None")) {
+        if (value==null) {
+        	setIcon(null);
+        } else if (value instanceof LogTypeHelper) {
+        	setIcon(EntryTypeIcon.getIcon((LogTypeHelper)value));
+        } else if (!value.toString().equals("None")) {
 	        LogTypeHelper logType = LogTypeHelper.fromLogTypeDescription(value.toString());
 	        if (logType!=null) {
 	            setIcon(EntryTypeIcon.getIcon(logType));
