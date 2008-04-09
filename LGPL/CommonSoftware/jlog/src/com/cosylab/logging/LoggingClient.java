@@ -56,6 +56,7 @@ import alma.acs.logging.preferences.UserPreferences;
 
 import com.cosylab.gui.components.r2.SmartTextArea;
 import com.cosylab.logging.client.DetailedLogTable;
+import com.cosylab.logging.engine.FiltersVector;
 import com.cosylab.logging.engine.ACS.ACSRemoteErrorListener;
 import com.cosylab.logging.engine.ACS.ACSRemoteLogListener;
 import com.cosylab.logging.engine.ACS.ACSLogConnectionListener;
@@ -1529,10 +1530,18 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 		}
 	}
 	
+	/**
+	 * Shows the dialog to set filters in the engine
+	 */
 	private void showEngineFilterDialog() {
 		if (engineFiltersDlg==null) {
-			engineFiltersDlg = new FilterChooserDialog("Engine filters",this,logEntryTable.getLCModel());
+			engineFiltersDlg = new FilterChooserDialog("Engine filters",this,engine);
 		}
+		FiltersVector engineFilters = engine.getFilters();
+		if (engineFilters==null) {
+			engineFilters = new FiltersVector();
+		}
+		engineFiltersDlg.setFilters(engineFilters);
 		engineFiltersDlg.setVisible(true);
 	}
 }
