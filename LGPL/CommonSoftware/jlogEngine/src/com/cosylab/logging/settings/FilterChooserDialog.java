@@ -26,6 +26,8 @@ import java.awt.Dialog;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
@@ -50,15 +52,16 @@ import javax.swing.filechooser.FileFilter;
 
 import com.cosylab.gui.components.r2.CheckListModel;
 import com.cosylab.gui.components.r2.JCheckList;
-import com.cosylab.logging.LogTableDataModel;
 import com.cosylab.logging.LoggingClient;
 import com.cosylab.logging.engine.Filter;
+import com.cosylab.logging.engine.Filterable;
 import com.cosylab.logging.engine.FiltersVector;
 
 /**
- * Serves the purpose of selecting the right filters (Timestamp, Entry Type,
- * File, etc.) to be displayed in the table according to the user's preferences.
- * Used by LogEntryTable.
+ * Serves the purpose of selecting the right filters.
+ * Filters are used to display logs in the table according to the user's preferences.
+ * They are used by the engine too.
+ * 
  * <p>
  * Creation date: (1/2/2002 22:53:33)
  * 
@@ -98,8 +101,8 @@ public class FilterChooserDialog extends JDialog {
 	// The logging client
 	private LoggingClient loggingClient;
 	
-	// The table model
-	private LogTableDataModel tableModel=null;
+	// The Filterable object to apply filters to
+	private Filterable filterable=null;
 	
 	// The filters whose description appears in the
 	// filter list
@@ -126,7 +129,7 @@ public class FilterChooserDialog extends JDialog {
 	 * @author acaproni
 	 *
 	 */
-	private class ButtonListener implements java.awt.event.ActionListener {
+	private class ButtonListener implements ActionListener {
 		private FilterChooserDialog fcd = FilterChooserDialog.this;
 
 		private Filter editFilter(Filter f) {
@@ -139,7 +142,11 @@ public class FilterChooserDialog extends JDialog {
 			return null;
 		}
 
-		public void actionPerformed(java.awt.event.ActionEvent e) {
+		/**
+		 * @see <code>ActionListener</code>
+		 * @see <code>ActionEvent</code>
+		 */
+		public void actionPerformed(ActionEvent e) {
 			if (e.getSource() == buttonClose || e.getSource() == closeMI) { // Close
 				if (modified) {
 					int ret = JOptionPane.showConfirmDialog(null,
@@ -260,9 +267,9 @@ public class FilterChooserDialog extends JDialog {
 	 * @param logLci The loggingClient showing this dialog
 	 * @param model The table model
 	 */
-	public FilterChooserDialog(String title, LoggingClient logCli, LogTableDataModel model) {
+	public FilterChooserDialog(String title, LoggingClient logCli, Filterable filterable) {
 		super((Dialog)null,title);
-		if (model == null) {
+		if (filterable == null) {
 			throw new IllegalArgumentException(
 					"Invalid null LogTableDataModel in constructor");
 		}
@@ -271,7 +278,7 @@ public class FilterChooserDialog extends JDialog {
 					"Invalid null LoggingClient in constructor");
 		}
 		loggingClient = logCli;
-		tableModel=model;
+		this.filterable=filterable;
 		setModal(false);
 		
 		ImageIcon filterIcon = new ImageIcon(FilterChooserDialog.class.getResource("/filters.png"));
@@ -403,12 +410,12 @@ public class FilterChooserDialog extends JDialog {
 	}
 
 	/**
-	 * Set the enties in the list of filters
+	 * Set the entries in the list of filters
 	 * (one row per each filter) 
 	 * 
 	 * @param filters The list of filters
 	 */
-	public void setupFields(FiltersVector filters) {
+	private void setupFields(FiltersVector filters) {
 		if (filters==null) {
 			throw new IllegalArgumentException("The FiltersVector can't be null");
 		}
@@ -568,9 +575,12 @@ public class FilterChooserDialog extends JDialog {
 		for (int t=0; t<clm.getSize(); t++) {
 			actives[t]=clm.isChecked(t);
 		}
-		tableModel.setFilters(theFilters,actives);
+		FiltersVector newFilters = new FiltersVector();
+		for (int t=0; t<theFilters.length; t++) {
+			newFilters.addFilter(theFilters[t], actives[t]);
+		}
+		filterable.setFilters(newFilters,false);
 		loggingClient.getLogEntryTable().updateFilteredString();
-		tableModel.invalidateVisibleLogs();
 	}
 	
 	/**
