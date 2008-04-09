@@ -67,7 +67,6 @@ public class FieldChooserDialog extends JDialog {
 				modalResult = 0;
 			}
 			FieldChooserDialog.this.setVisible(false);
-			return;
 		}
 	}
 /**
@@ -78,7 +77,7 @@ public FieldChooserDialog(Component displayOverComponent) {
 	if (displayOverComponent==null) {
 		throw new IllegalArgumentException("Invalid null Component in constructor");
 	}
-
+	
 	displayHelperComponent=displayOverComponent;
 	setTitle("Field chooser");
 	setModal(true);
