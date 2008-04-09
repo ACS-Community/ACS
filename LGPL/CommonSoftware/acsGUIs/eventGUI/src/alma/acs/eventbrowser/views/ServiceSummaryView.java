@@ -1,6 +1,7 @@
 package alma.acs.eventbrowser.views;
 
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 import org.eclipse.jface.action.Action;
@@ -36,6 +37,7 @@ import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 
+import alma.acs.eventbrowser.Application;
 import alma.acs.eventbrowser.model.ChannelData;
 import alma.acs.eventbrowser.model.EventModel;
 
@@ -65,7 +67,7 @@ public class ServiceSummaryView extends ViewPart {
 	private Action doubleClickAction;
 	
 	private EventModel em;
-	private boolean monitoring = false;
+
 	private long howOften = 10000l;
 	
 	public static final String ID = "alma.acs.eventbrowser.views.servicesummary";
@@ -87,7 +89,12 @@ public class ServiceSummaryView extends ViewPart {
 		}
 		public Object[] getElements(Object parent) {
 			ChannelData[] a = new ChannelData[4];
-			ChannelData[] l = em.getServiceTotals().toArray(a);
+			ArrayList<ChannelData> cdlist = em.getServiceTotals();
+			ChannelData[] l;
+			if (cdlist != null)
+				l = cdlist.toArray(a);
+			else
+				return new ChannelData[]{};
 			Arrays.sort(l);
 			return l;
 		}
@@ -204,6 +211,10 @@ public class ServiceSummaryView extends ViewPart {
 		hookContextMenu();
 		hookDoubleClickAction();
 		contributeToActionBars();
+		if (Application.isMonitoring()) {
+			startMonitoringAction.setEnabled(false);
+			startMonitoring();
+		}
 	}
 	
 
@@ -260,7 +271,7 @@ public class ServiceSummaryView extends ViewPart {
 			public void run() {
 				startMonitoring();
 				setEnabled(false);
-				showMessage("Monitoring started");
+//				showMessage("Monitoring started");
 			}
 		};
 		startMonitoringAction.setText("Start monitoring");
@@ -298,8 +309,7 @@ public class ServiceSummaryView extends ViewPart {
 	}
 	
 	public void startMonitoring() {
-		monitoring  = true;
-
+		Application.setMonitoring(true);
 		Runnable t = new Runnable()  {
 			int i = 0;
 			public Runnable r = new Runnable() {
@@ -316,7 +326,7 @@ public class ServiceSummaryView extends ViewPart {
 			public void run() {
 				final Display display = viewer.getControl().getDisplay();
 
-				while (monitoring) {
+				while (Application.isMonitoring()) {
 					if (!display.isDisposed())
 						display.asyncExec(r);
 					try {
@@ -324,11 +334,11 @@ public class ServiceSummaryView extends ViewPart {
 						System.out.println("Iteration "+ ++i);
 					} catch (InterruptedException e) {
 						System.out.println("Monitoring was interrupted!");
-						monitoring = false;
+						Application.setMonitoring(false);
 						startMonitoringAction.setEnabled(true);
 					}
 				}
-				monitoring = false;
+				Application.setMonitoring(false);
 				startMonitoringAction.setEnabled(true);
 			}
 		};

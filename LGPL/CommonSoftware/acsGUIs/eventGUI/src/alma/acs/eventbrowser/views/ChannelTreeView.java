@@ -16,8 +16,10 @@ import org.eclipse.swt.SWT;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.jobs.Job;
 
+import alma.acs.eventbrowser.Application;
 import alma.acs.eventbrowser.model.ChannelData;
 import alma.acs.eventbrowser.model.EventModel;
+import alma.acs.eventbrowser.Application.*;
 
 
 /**
@@ -50,7 +52,6 @@ public class ChannelTreeView extends ViewPart {
 	private Thread monitorThread;
 	
 	private EventModel em;
-	private boolean monitoring = false;
 	private long howOften = 10000l; // Default is every 10 seconds
 	
 	public static final String ID = "alma.acs.eventbrowser.views.channeltree";
@@ -232,6 +233,10 @@ public class ChannelTreeView extends ViewPart {
 		hookContextMenu();
 		hookDoubleClickAction();
 		contributeToActionBars();
+		if (Application.isMonitoring()) {
+			startMonitoringAction.setEnabled(false);
+			startMonitoring();
+		}
 	}
 
 	private void hookContextMenu() {
@@ -332,7 +337,8 @@ public class ChannelTreeView extends ViewPart {
 	
 	
 	public void startMonitoring() {
-		monitoring = true;
+		Application.setMonitoring(true);
+
 
 		Runnable t = new Runnable()  {
 			int i = 0;
@@ -349,7 +355,7 @@ public class ChannelTreeView extends ViewPart {
 			public void run() {
 				final Display display = viewer.getControl().getDisplay();
 
-				while (monitoring) {
+				while (Application.isMonitoring()) {
 					vcp.initialize();
 					if (!display.isDisposed())
 						display.asyncExec(r);
@@ -358,11 +364,11 @@ public class ChannelTreeView extends ViewPart {
 						System.out.println("Iteration "+ ++i);
 					} catch (InterruptedException e) {
 						System.out.println("Monitoring was interrupted!");
-						monitoring = false;
+						Application.setMonitoring(false);
 						startMonitoringAction.setEnabled(true);
 					}
 				}
-				monitoring = false;
+				Application.setMonitoring(false);
 				startMonitoringAction.setEnabled(true);
 			}
 		};
