@@ -43,6 +43,7 @@ import alma.acs.logging.dialogs.LoadURLDlg;
 import com.cosylab.logging.client.VisibleLogsVector;
 import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.engine.Filter;
+import com.cosylab.logging.engine.Filterable;
 import com.cosylab.logging.engine.FiltersVector;
 import com.cosylab.logging.LoggingClient;
 import com.cosylab.logging.IOLogsHelper;
@@ -63,7 +64,7 @@ import com.cosylab.logging.client.CustomFileChooser;
  * Creation date: (11/11/2001 13:46:06)
  * @author: Ales Pucelj (ales.pucelj@kgb.ijs.si)
  */
-public class LogTableDataModel extends AbstractTableModel implements Runnable
+public class LogTableDataModel extends AbstractTableModel implements Runnable, Filterable
 {
 	/**
 	 * The class contains a thread to delete asynchronously
@@ -681,7 +682,7 @@ public class LogTableDataModel extends AbstractTableModel implements Runnable
 		if (invalidateThread.isAlive()) {
 			throw new IllegalStateException("Trying to start an already running thread");
 		}
-		if (allLogs.getSize()>1) {
+		if (allLogs.getSize()>0) {
 			invalidateThread=new Thread(this);
 			invalidateThread.setName("LogTableDataModel");
 			invalidateThread.start();
@@ -793,6 +794,8 @@ public class LogTableDataModel extends AbstractTableModel implements Runnable
 	
 	/**
 	 * Check if each logs in the table has the same date of the related log in the cache
+	 * 
+	 * It is used for debugging.
 	 *
 	 */
 	private void checkConsistency() {
@@ -874,21 +877,25 @@ public class LogTableDataModel extends AbstractTableModel implements Runnable
 			ioHelper=null;
 		}
 	}
-	
-	/**
-	 * Set the specified filters in the vector
-	 * 
-	 * @param newFilters The array of the new filters
-	 * @param actives The array of booleans saying if a filter is active/inactive
+
+	/* (non-Javadoc)
+	 * @see com.cosylab.logging.engine.Filterable#setFilters(com.cosylab.logging.engine.FiltersVector, boolean)
 	 */
-	public void setFilters(Filter[] newFilters, boolean[] actives) {
-		if (newFilters==null || actives==null) {
-			throw new IllegalArgumentException("Invalid null parameter");
+	@Override
+	public void setFilters(FiltersVector newFilters, boolean append) {
+		if (append) {
+			for (int t=0; t<newFilters.size(); t++) {
+				Filter f = newFilters.get(t);
+				filters.addFilter(f, newFilters.isActive(t));
+			}
+		} else {
+			if (newFilters==null) {
+				filters.clear();
+			} else {
+				filters.setFilters(newFilters);
+			}
 		}
-		if (newFilters.length!=actives.length) {
-			throw new IllegalArgumentException("The size of the filters and the active booleans differ");
-		}
-		filters.setFilters(newFilters, actives);
+		invalidateVisibleLogs();
 	}
 
 }
