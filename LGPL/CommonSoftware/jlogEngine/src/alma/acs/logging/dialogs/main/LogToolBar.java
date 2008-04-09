@@ -33,7 +33,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JToolBar;
 
-import com.cosylab.logging.LoggingClient;
 import com.cosylab.logging.engine.log.LogTypeHelper;
 import com.cosylab.logging.settings.LogTypeRenderer;
 
@@ -173,17 +172,17 @@ public class LogToolBar extends JToolBar {
     public JComboBox getLogLevelCB() {
     	if (logLevelCB==null) {
 	    	// Add the ComboBox for the log level
-    		String[] Descriptions = new String[LogTypeHelper.values().length];
+    		LogTypeHelper[] types = LogTypeHelper.values();
     		int t=0;
-    		for (LogTypeHelper logType: LogTypeHelper.values()) {
-    			Descriptions[t++]=logType.logEntryType;
-            }
-	        logLevelCB = new JComboBox(Descriptions);
+//    		for (LogTypeHelper logType: LogTypeHelper.values()) {
+//    			Descriptions[t++]=logType.logEntryType;
+//            }
+	        logLevelCB = new JComboBox(types);
 	        
 	        // Build the renderer for the combo boxes
 	        LogTypeRenderer rendererCB = new LogTypeRenderer();
 	        
-	        logLevelCB.setSelectedIndex(DEFAULT_LOGLEVEL.ordinal());
+	        logLevelCB.setSelectedItem(DEFAULT_LOGLEVEL);
 	        logLevelCB.setEditable(false);
 	        logLevelCB.setMaximumRowCount(LogTypeHelper.values().length);
 	        logLevelCB.setRenderer(rendererCB);

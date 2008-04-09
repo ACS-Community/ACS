@@ -62,6 +62,7 @@ import com.cosylab.logging.engine.ACS.ACSLogConnectionListener;
 import com.cosylab.logging.engine.ACS.EngineAudienceHelper;
 import com.cosylab.logging.engine.ACS.LCEngine;
 import com.cosylab.logging.engine.log.ILogEntry;
+import com.cosylab.logging.engine.log.LogTypeHelper;
 import com.cosylab.logging.search.SearchDialog;
 import com.cosylab.logging.settings.ErrorLogDialog;
 import com.cosylab.logging.settings.ExpertPrefsDlg;
@@ -249,7 +250,7 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 				// Pause/unpause the engine
 				engine.setPaused(toolBar.isPaused());
 			} else if (e.getSource()==toolBar.getLogLevelCB()) {
-				getLCModel1().setLogLevel(toolBar.getLogLevelCB().getSelectedIndex());
+				getLCModel1().setLogLevel((LogTypeHelper)toolBar.getLogLevelCB().getSelectedItem());
             } else if (e.getSource()==toolBar.getSearchBtn() ||
                     e.getSource()==menuBar.getSearchMenuItem()) {
                 if (searchDialog==null) {
@@ -693,7 +694,7 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
     		initConnections();
     		validate();
             
-			getLCModel1().setLogLevel(toolBar.DEFAULT_LOGLEVEL.ordinal());
+			getLCModel1().setLogLevel(toolBar.DEFAULT_LOGLEVEL);
 			
 			getLCModel1().setTimeFrame(userPreferences.getMillisecondsTimeFrame());
 			getLCModel1().setMaxLog(userPreferences.getMaxNumOfLogs());
