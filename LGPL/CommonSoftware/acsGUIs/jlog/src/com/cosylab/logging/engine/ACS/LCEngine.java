@@ -26,6 +26,7 @@ import org.omg.CORBA.ORB;
 import si.ijs.maci.Manager;
 
 import com.cosylab.logging.engine.Filter;
+import com.cosylab.logging.engine.Filterable;
 import com.cosylab.logging.engine.FiltersVector;
 import com.cosylab.logging.engine.RemoteAccess;
 
@@ -53,7 +54,7 @@ import com.cosylab.logging.engine.RemoteAccess;
  * @see ACSLogConnectionListener
  * 
  */
-public class LCEngine {
+public class LCEngine implements Filterable {
 	
 	/**
 	 * The connection is checked every CHECK_INTERVAL seconds
