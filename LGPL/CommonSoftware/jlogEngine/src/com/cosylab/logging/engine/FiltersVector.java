@@ -41,34 +41,12 @@ public class FiltersVector extends Vector<Filter> {
 	private Vector<Integer> activeFilters= new Vector<Integer>();
 
 	/**
-	 * @param arg0
-	 * @param arg1
-	 */
-	public FiltersVector(int arg0, int arg1) {
-		super(arg0, arg1);
-	}
-
-	/**
-	 * @param arg0
-	 */
-	public FiltersVector(int arg0) {
-		super(arg0);
-	}
-
-	/**
-	 * 
+	 * Constructor 
 	 */
 	public FiltersVector() {
 		super();
 	}
 
-	/**
-	 * @param arg0
-	 */
-	public FiltersVector(Collection<Filter> arg0) {
-		super(arg0);
-	}
-	
 	/**
 	 * Add a filter to the vector. 
 	 * If it is active, its index is added to the vector of the
