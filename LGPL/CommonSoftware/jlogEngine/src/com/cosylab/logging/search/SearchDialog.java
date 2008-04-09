@@ -22,7 +22,6 @@ import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
 import com.cosylab.logging.LoggingClient;
-import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.engine.log.ILogEntry.Field;
 
 /**
@@ -544,4 +543,16 @@ public class SearchDialog extends JDialog {
             }
         }
     }
+    
+    /**
+	 * Override <code>JDialog.setVisible</code> to show this dialog over
+	 * the <code>LogsingClient</code> component.
+	 */
+	@Override
+	public void setVisible(boolean visible) {
+		setLocationRelativeTo(loggingClient);
+		pack();
+		super.setVisible(visible);
+		toFront();
+	}
 }
