@@ -66,6 +66,7 @@ import com.cosylab.logging.engine.log.LogTypeHelper;
 import com.cosylab.logging.search.SearchDialog;
 import com.cosylab.logging.settings.ErrorLogDialog;
 import com.cosylab.logging.settings.ExpertPrefsDlg;
+import com.cosylab.logging.settings.FilterChooserDialog;
 import com.cosylab.logging.stats.StatsDlg;
 
 /**
@@ -204,6 +205,9 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
     // The menu bar
     private LogMenuBar menuBar = new LogMenuBar();
     
+    // The dialog to choose filters to apply to the engine
+    private FilterChooserDialog engineFiltersDlg=null;
+    
     // The frame containing this logging client
     // It is not null only if the application is executed in stand alone mode
     private LogFrame logFrame=null;
@@ -318,6 +322,8 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
             } else if (e.getSource()==menuBar.getEngineeringMode()) {
             	getEngine().setAudience(EngineAudienceHelper.NO_AUDIENCE);
             	audienceLbl.setText(" Engineering ");
+            } else if (e.getSource()==menuBar.getEngineFiltersMenuItem()) {
+            	showEngineFilterDialog();
             } else {
             	System.err.println("Unrecognized ActionEvent "+e);
             }
@@ -1469,6 +1475,11 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 			searchDialog.dispose();
 			searchDialog=null;
 		}
+		if (engineFiltersDlg!=null) {
+			engineFiltersDlg.setVisible(false);
+			engineFiltersDlg.dispose();
+			engineFiltersDlg=null;
+		}
 	}
 	
 	/**
@@ -1480,6 +1491,7 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 	public void enableFiltersWidgets(boolean enable) {
 		toolBar.getFiltersBtn().setEnabled(enable);
 		menuBar.getFiltersMenuItem().setEnabled(enable);
+		menuBar.getEngineFiltersMenuItem().setEnabled(enable);
 	}
 	
 	/**
@@ -1515,6 +1527,13 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 			// Default
 			menuBar.getEngineeringMode().doClick();
 		}
+	}
+	
+	private void showEngineFilterDialog() {
+		if (engineFiltersDlg==null) {
+			engineFiltersDlg = new FilterChooserDialog("Engine filters",this,logEntryTable.getLCModel());
+		}
+		engineFiltersDlg.setVisible(true);
 	}
 }
 
