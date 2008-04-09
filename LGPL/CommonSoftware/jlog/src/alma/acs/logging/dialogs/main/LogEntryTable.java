@@ -1071,7 +1071,7 @@ public class LogEntryTable extends JTable
 	{
 		if (show) {
 			if (filterChooserDialog==null) {
-				filterChooserDialog=new FilterChooserDialog(loggingClient,getLCModel());
+				filterChooserDialog=new FilterChooserDialog("Filter chooser",loggingClient,getLCModel());
 			}
 			filterChooserDialog.setFilters(getLCModel().getFilters());
 			filterChooserDialog.setVisible(true);

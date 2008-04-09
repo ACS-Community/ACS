@@ -22,7 +22,7 @@
 package com.cosylab.logging.settings;
 
 import java.awt.BorderLayout;
-import java.awt.Component;
+import java.awt.Dialog;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -54,7 +54,6 @@ import com.cosylab.logging.LogTableDataModel;
 import com.cosylab.logging.LoggingClient;
 import com.cosylab.logging.engine.Filter;
 import com.cosylab.logging.engine.FiltersVector;
-import com.cosylab.logging.engine.log.LogTypeHelper;
 
 /**
  * Serves the purpose of selecting the right filters (Timestamp, Entry Type,
@@ -256,9 +255,13 @@ public class FilterChooserDialog extends JDialog {
 	
 	/**
 	 * FilterChooserDialog constructor.
+	 * 
+	 * @param title The tile of the window
+	 * @param logLci The loggingClient showing this dialog
+	 * @param model The table model
 	 */
-	public FilterChooserDialog(LoggingClient logCli, LogTableDataModel model) {
-		super();
+	public FilterChooserDialog(String title, LoggingClient logCli, LogTableDataModel model) {
+		super((Dialog)null,title);
 		if (model == null) {
 			throw new IllegalArgumentException(
 					"Invalid null LogTableDataModel in constructor");
@@ -269,11 +272,10 @@ public class FilterChooserDialog extends JDialog {
 		}
 		loggingClient = logCli;
 		tableModel=model;
-		setTitle("Filter chooser");
 		setModal(false);
-		// Enable when ACS will use jdk 1.6
-		//ImageIcon filterIcon = new ImageIcon(LogTypeHelper.class.getResource("/filters.png"));
-		//setIconImage(filterIcon.getImage());
+		
+		ImageIcon filterIcon = new ImageIcon(FilterChooserDialog.class.getResource("/filters.png"));
+		setIconImage(filterIcon.getImage());
 		initialize();
 		setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
 		addWindowListener(new WindowAdapter() {
