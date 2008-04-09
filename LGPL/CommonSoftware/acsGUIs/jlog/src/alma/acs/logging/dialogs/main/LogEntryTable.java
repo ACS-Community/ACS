@@ -1051,10 +1051,12 @@ public class LogEntryTable extends JTable
     public void close() {
     	showFilterChooser(false);
     	if (filterChooserDialog!=null) {
+    		filterChooserDialog.setVisible(false);
     		filterChooserDialog.dispose();
     		filterChooserDialog=null;
     	}
     	if (fieldChooser!=null) {
+    		fieldChooser.setVisible(false);
     		fieldChooser.dispose();
     		fieldChooser=null;
     	}
