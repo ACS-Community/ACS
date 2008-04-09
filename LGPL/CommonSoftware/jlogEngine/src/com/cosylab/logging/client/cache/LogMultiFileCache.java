@@ -403,11 +403,7 @@ public class LogMultiFileCache  implements ILogMap {
 			return null;
 		}
 		LogFileTableRecord lastRecord = logFileTable.lastElement();
-		Integer key= lastRecord.lbfc.getLastLog();
-		if (key==null) {
-			throw new IllegalStateException("Inconsistency between logsInCache and last LogBufferedFileCache");
-		}
-		return key;
+		return lastRecord.maxLogIdx;
 	}
 	
 	/**
@@ -428,7 +424,7 @@ public class LogMultiFileCache  implements ILogMap {
 		if (key==null) {
 			throw new IllegalStateException("Inconsistency between logsInCache and last LogBufferedFileCache");
 		}
-		return key;
+		return key+firstRecord.minLogIdx;
 	}
 	
 	/**
