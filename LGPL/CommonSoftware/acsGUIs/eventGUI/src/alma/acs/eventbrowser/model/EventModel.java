@@ -14,11 +14,15 @@ import org.omg.CosNaming.BindingListHolder;
 import org.omg.CosNaming.NameComponent;
 import org.omg.CosNaming.NamingContext;
 import org.omg.CosNotification.Property;
+import org.omg.CosNotification.EventType;
+import org.omg.CosNotifyChannelAdmin.AdminNotFound;
 import org.omg.CosNotifyChannelAdmin.ChannelNotFound;
+import org.omg.CosNotifyChannelAdmin.ConsumerAdmin;
 import org.omg.CosNotifyChannelAdmin.EventChannel;
 import org.omg.CosNotifyChannelAdmin.EventChannelFactory;
 import org.omg.CosNotifyChannelAdmin.EventChannelFactoryHelper;
 import org.omg.CosNotifyChannelAdmin.EventChannelHelper;
+import org.omg.CosNotifyComm.InvalidEventType;
 
 import alma.ACSErrTypeCommon.wrappers.AcsJUnexpectedExceptionEx;
 import alma.acs.component.client.AdvancedComponentClient;
@@ -147,9 +151,14 @@ public class EventModel {
 					int numConsumers = ec.get_all_consumeradmins().length;
 					int numSuppliers = ec.get_all_supplieradmins().length;
 					System.out.println("... has "+numConsumers+" consumers and "+numSuppliers+" suppliers.");
-//					int[] admins = ec.get_all_consumeradmins();
-//					ConsumerAdmin adm = ec.get_consumeradmin(admins[0]);
-//					int[] pulls = adm.pull_suppliers();
+					int[] admins = ec.get_all_consumeradmins();
+					try {
+						ConsumerAdmin adm = ec.get_consumeradmin(admins[0]);
+						// TODO This would be an opportunity to create the AdminConsumer, but let's not do it here...
+					} catch (AdminNotFound e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} //					int[] pulls = adm.pull_suppliers();
 //					ClientType arg0 = ClientType.ANY_EVENT;
 //					IntHolder ih = new IntHolder();
 //					ProxySupplier ps = adm.obtain_notification_pull_supplier(arg0, ih);
