@@ -16,7 +16,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.4 2008/04/02 13:23:15 acaproni Exp $"
+# "@(#) $Id: Makefile,v 1.5 2008/04/10 13:48:26 acaproni Exp $"
 #
 # Makefile of ........
 #
@@ -105,7 +105,7 @@ corbaRefTest_LIBS     = HelloWorldStubs
 # Scripts (public and local)
 # ----------------------------
 SCRIPTS         =
-SCRIPTS_L       =
+SCRIPTS_L       = testComponents
 
 #
 # TCL scripts (public and local)
@@ -230,6 +230,8 @@ all:	do_all
 	@echo " . . . 'all' done" 
 
 clean : clean_all 
+	rm -rf tmp/*
+	rm -rf tatlogs/*
 	@echo " . . . clean done"
 
 clean_dist : clean_all clean_dist_all 
