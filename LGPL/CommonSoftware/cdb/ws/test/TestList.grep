@@ -14,8 +14,8 @@ ACS Manager:
 ACS Name Service:
 Running the following command:
 modified by jDAL
-INFO - Using endorsed jar files in: -Djava.endorsed.dirs=
-INFO : Using server ID 
+Using endorsed jar files in: -Djava.endorsed.dirs=
+Using server ID 
 [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F]
 object is activated
 FINER: Logging configuration has been initialized, but not from CDB settings.
