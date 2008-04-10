@@ -3,8 +3,8 @@ endorsed -- alma.acs.testsupport.tat.TATJUnitRunner alma.jconttest.ComponentTest
 --endorsed
 Starting Java/abeans application
 Using endorsed jar files in
-DEBUG - ACS 
-DEBUG - exported
+DEBUG \[acsStartJava\] ACS
+DEBUG \[acsStartJava\] exported
 ORB options -OAIAddr 
 Running the following command
 Running the container with these arguments
