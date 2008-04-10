@@ -1,6 +1,4 @@
 1 -  -- com.cosylab.cdb.jdal.ClearCache -d corbaloc::xxxx:xxxx/CDB
-1 - INFO - Starting Java/abeans application: com.cosylab.cdb.jdal.ClearCache -d corbaloc::xxxx:xxxx/CDB
-1 - FINER: Logging configuration has been initialized, but not from CDB settings.
 1 - ----------T--:--:--.--- INFO [ClearCache] clear_cache is invoked for all curls
 1 - ----------T--:--:--.--- INFO [Manager] 'Python Client' requested component 'curl:///COMP99'.
 1 - ----------T--:--:--.--- INFO [Manager] Activating component 'COMP99' on container 'Container'.
@@ -15,6 +13,8 @@
 1 - ----------T--:--:--.--- INFO [Manager] Component 'COMP99' deactivated.
 1 - ----------T--:--:--.--- INFO [Manager] Component 'curl:///COMP99' released by 'Python Client'.
 1 -  -- com.cosylab.cdb.jdal.ClearCache -d corbaloc::xxxx:xxxx/CDB
-1 - INFO - Starting Java/abeans application: com.cosylab.cdb.jdal.ClearCache -d corbaloc::xxxx:xxxx/CDB
-1 - FINER: Logging configuration has been initialized, but not from CDB settings.
 1 - ----------T--:--:--.--- INFO [ClearCache] clear_cache is invoked for all curls
+1 - ----------T--:--:--.--- INFO [acsStartJava] Starting Java/abeans application: com.cosylab.cdb.jdal.ClearCache -d corbaloc::xxxx:xxxx/CDB
+1 - FINER: Logging configuration has been initialized, but not from CDB settings.
+1 - ----------T--:--:--.--- INFO [acsStartJava] Starting Java/abeans application: com.cosylab.cdb.jdal.ClearCache -d corbaloc::xxxx:xxxx/CDB
+1 - FINER: Logging configuration has been initialized, but not from CDB settings.
