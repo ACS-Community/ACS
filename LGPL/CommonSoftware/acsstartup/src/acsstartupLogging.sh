@@ -58,9 +58,10 @@ export getLogFile
 function getTimeStamp
 {
 local TS
-TS=`date --iso-8601=seconds`
+#TS=`date --iso-8601=seconds`
+TS=`date +%Y-%m-%dT%H:%M:%S`
 
-echo $TS
+echo "$TS.000"
 }
 
 export getTimeStamp
@@ -113,8 +114,11 @@ function ACS_LOG_FORCED
 {
 local TS
 TS=`getTimeStamp`
-
-echo "$@"
+PRIORITY=$2
+PROGRAM_NAME=$1
+shift
+shift
+echo "$TS $PRIORITY [$PROGRAM_NAME] $@"
 
 ACS_LOG "$@"
 }
@@ -131,11 +135,12 @@ function ACS_LOG_DEBUG
 {
 local TS
 TS=`getTimeStamp`
-
+PROGRAM_NAME=$1
+shift
 
 if [ "X$ACS_LOG_STDOUT" != "X" ] && [ $ACS_LOG_STDOUT -lt $ACS_DEBUG_PRIORITY ]
 then
-	echo "DEBUG - $@"
+	echo "$TS DEBUG [$PROGRAM_NAME] $@"
 fi
 
 ACS_LOG $TS DEBUG $@
@@ -153,10 +158,12 @@ function ACS_LOG_INFO
 {
 local TS
 TS=`getTimeStamp`
+PROGRAM_NAME=$1
+shift
 
 if [ "X$ACS_LOG_STDOUT" = "X" ] || [ $ACS_LOG_STDOUT -lt $ACS_INFO_PRIORITY ]
 then
-	echo "INFO - $@"
+	echo "$TS INFO [$PROGRAM_NAME] $@"
 fi
 
 ACS_LOG $TS INFO $@
@@ -174,10 +181,12 @@ function ACS_LOG_ERROR
 {
 local TS
 TS=`getTimeStamp`
+PROGRAM_NAME=$1
+shift
 
 if [ "X$ACS_LOG_STDOUT" = "X" ] || [ $ACS_LOG_STDOUT -lt $ACS_ERROR_PRIORITY ]
 then
-	echo "ERROR - $@" >&2
+	echo "$TS ERROR [$PROGRAM_NAME] $@" >&2
 fi
 
 ACS_LOG $TS ERROR $@

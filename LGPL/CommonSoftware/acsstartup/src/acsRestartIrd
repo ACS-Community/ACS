@@ -120,26 +120,26 @@ ACS_INSTANCE_DIR=`getInstanceDirName $ACS_INSTANCE`
 #Cannot shutdown everything if this user does not own the processes.
 if [ ! -w $ACS_INSTANCE_DIR ]
 then
-    ACS_LOG_ERROR "Unable to shutdown because the lock directory '$ACS_INSTANCE_DIR' is not owned by '$USER'!"
+    ACS_LOG_ERROR "acsRestartIrd" "Unable to shutdown because the lock directory '$ACS_INSTANCE_DIR' is not owned by '$USER'!"
     exit $EC_CANNOTUSE
 fi
 
 #go to the directory where all process IDs are stored
-cd $ACS_INSTANCE_DIR &> /dev/null || (ACS_LOG_ERROR "Cannot cd to $ACS_INSTANCE_DIR"; exit $EC_FAILURE)
+cd $ACS_INSTANCE_DIR &> /dev/null || (ACS_LOG_ERROR "acsRestartIrd" "Cannot cd to $ACS_INSTANCE_DIR"; exit $EC_FAILURE)
 
-ACS_LOG_INFO "Stopping the CORBA Interface Repository"
+ACS_LOG_INFO "acsRestartIrd" "Stopping the CORBA Interface Repository"
 if [ -e ACS_IR_PID ]
 then
-    acsKillProc ACS_IR_PID 2> /dev/null || (ACS_LOG_ERROR "Cannot kill the interface repository")
+    acsKillProc ACS_IR_PID 2> /dev/null || (ACS_LOG_ERROR "acsRestartIrd" "Cannot kill the interface repository")
     rm -f ACS_IR_PID
 else
-    ACS_LOG_ERROR "The file containing the interface repository's process ID, 'ACS_IR_PID', does not exist"
+    ACS_LOG_ERROR "acsRestartIrd" "The file containing the interface repository's process ID, 'ACS_IR_PID', does not exist"
 fi
 
 ACS_IR_PORT=`getIRPort`
 IR_IOR=$ACS_INSTANCE_DIR/InterfaceRepositoryIOR
 
-ACS_LOG_INFO "Starting the CORBA Interface Repository"
+ACS_LOG_INFO "acsRestartIrd" "Starting the CORBA Interface Repository"
 LD_LIBRARY_PATH=$MICO_HOME/lib:$LD_LIBRARY_PATH
 $MICO_HOME/bin/ird -ORBNoResolve -ORBIIOPAddr inet:$HOST:$ACS_IR_PORT --ior $IR_IOR  &
 

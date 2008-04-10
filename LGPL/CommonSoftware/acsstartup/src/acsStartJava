@@ -6,7 +6,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: acsStartJava,v 1.49 2008/02/19 12:52:53 eallaert Exp $"
+# "@(#) $Id: acsStartJava,v 1.50 2008/04/10 05:24:41 cparedes Exp $"
 #
 # who      when       what
 # -------- ---------- ----------------------------------------------
@@ -262,17 +262,17 @@ function export {
 			  -o x"${1:0:16}" = xACS_NAME_SERVICE \
 			  -o x"${1:0:24}" = xACS_INTERFACE_REPOSITORY ]
 			then
-				ACS_LOG_DEBUG "(did NOT export $1)"
+				ACS_LOG_DEBUG "acsStartJava" "(did NOT export $1)"
 			else
 				## default behaviour; protect eventual spaces with quotes
 				builtin export "$1" 
-				ACS_LOG_DEBUG "exported $1"
+				ACS_LOG_DEBUG "acsStartJava" "exported $1"
 			fi
 
 		else
 			## default behaviour; protect eventual spaces with quotes
 			builtin export "$1"
-			ACS_LOG_DEBUG "exported $1"
+			ACS_LOG_DEBUG "acsStartJava" "exported $1"
 		fi
 		# get next argument passed to this export function
 		shift
@@ -283,7 +283,7 @@ function export {
 
 
 
-ACS_LOG_INFO "Starting Java/abeans application: $@"
+ACS_LOG_INFO "acsStartJava" "Starting Java/abeans application: $@"
 #
 # Checks if the first parameter is -endorsed
 # This force using the endorsed libraries, 
@@ -322,7 +322,7 @@ if [ "$CL_ENDORSED" ]; then
   if [ X"$JAVA_ENDORSED" != X ]; then
      JAVA_ENDORSED="-Djava.endorsed.dirs=$JAVA_ENDORSED"
   fi
-  ACS_LOG_INFO "Using endorsed jar files in: $JAVA_ENDORSED"
+  ACS_LOG_INFO "acsStartJava" "Using endorsed jar files in: $JAVA_ENDORSED"
 fi
 
 
@@ -391,7 +391,7 @@ then
    JACSUTIL_JAR=`acsGetSpecificJars $CPSEP jACSUtil.jar`
    if [ X"$JACSUTIL_JAR" = X ]
    then    
-       ACS_LOG_ERROR "Expected to find jACSUtil.jar in the ALMA Software directory structure but did not!"
+       ACS_LOG_ERROR "acsStartJava" "Expected to find jACSUtil.jar in the ALMA Software directory structure but did not!"
        exit $EC_FAILURE
    fi
    
@@ -419,7 +419,7 @@ then
     export ACS_ABEANS_CONFIG=$ACSDATA/config/abeans/Config
 fi
 
-ACS_LOG_DEBUG "ACS abeans configuration directory: $ACS_ABEANS_CONFIG"
+ACS_LOG_DEBUG "acsStartJava" "ACS abeans configuration directory: $ACS_ABEANS_CONFIG"
 
 #
 # Then add it to the CLASSPATH together with .jacorb.properties
@@ -436,14 +436,14 @@ export CLASSPATH
 #
 if [ "$CL_MANAGERREF" ]; then
    export MANAGER_REFERENCE=$CL_MANAGERREF
-   ACS_LOG_DEBUG "Command-line Manager Reference: $CL_MANAGERREF"
+   ACS_LOG_DEBUG "acsStartJava" "Command-line Manager Reference: $CL_MANAGERREF"
 fi
 
 if [ X"$MANAGER_REFERENCE" = X ]; then  
    export MANAGER_REFERENCE=corbaloc::$HOST:$ACS_MANAGER_PORT/Manager
 fi
 
-ACS_LOG_DEBUG "ACS Manager: $MANAGER_REFERENCE"
+ACS_LOG_DEBUG "acsStartJava" "ACS Manager: $MANAGER_REFERENCE"
 
 export MANAGER_COMPUTER_NAME=`echo $MANAGER_REFERENCE |  awk -F: '{print $3}'`
 
@@ -454,7 +454,7 @@ if [ X"$ACS_NAME_SERVICE" = X ]; then
    export ACS_NAME_SERVICE=corbaloc::$MANAGER_COMPUTER_NAME:$ACS_NAMING_SERVICE_PORT/NameService
 fi
 
-ACS_LOG_DEBUG "ACS Name Service: $ACS_NAME_SERVICE"
+ACS_LOG_DEBUG "acsStartJava" "ACS Name Service: $ACS_NAME_SERVICE"
 
 #If $ACS_INTERFACE_REPOSITORY is not set, take the computer, where Manager
 #is located
@@ -463,7 +463,7 @@ if [ X"$ACS_INTERFACE_REPOSITORY" = X ]; then
    export ACS_INTERFACE_REPOSITORY=corbaloc::$MANAGER_COMPUTER_NAME:$ACS_IR_PORT/InterfaceRepository
 fi
 
-ACS_LOG_DEBUG "ACS Interface Repository: $ACS_INTERFACE_REPOSITORY"
+ACS_LOG_DEBUG "acsStartJava" "ACS Interface Repository: $ACS_INTERFACE_REPOSITORY"
 
 #
 # Creates default values tmp directory
@@ -482,8 +482,8 @@ if [ ! $CL_NODIRECTORY ] ; then
         then
 	  if ! createInstanceDirectory $ACS_INSTANCE
           then 
-	      ACS_LOG_ERROR "For some reason this script could not create `getInstanceDirName $ACS_INSTANCE`!"
-	      ACS_LOG_ERROR "    Check $ACS_INSTANCES_DIR for free base ports!"
+	      ACS_LOG_ERROR "acsStartJava" "For some reason this script could not create `getInstanceDirName $ACS_INSTANCE`!"
+	      ACS_LOG_ERROR "acsStartJava" "    Check $ACS_INSTANCES_DIR for free base ports!"
 	      exit $EC_CANNOTCREATE
 	  fi
       fi
@@ -496,7 +496,7 @@ fi
 if [ "$CL_DEBUGPORT" ] ; then
 	JAVA_OPTIONS="$JAVA_OPTIONS -Xdebug -Xnoagent -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=$CL_DEBUGPORT -Djava.compiler=NONE"
 
-   ACS_LOG_INFO "The JVM will accept a remote debugger on port $CL_DEBUGPORT"
+   ACS_LOG_INFO "acsStartJava" "The JVM will accept a remote debugger on port $CL_DEBUGPORT"
 fi
 ### ---------- End of "remoteDebug" handling -------------
 
@@ -520,7 +520,7 @@ fi
 ### ---------- End of "JVM options" handling -------------
 
 
-ACS_LOG_DEBUG "Running the following command:"
+ACS_LOG_DEBUG "acsStartJava" "Running the following command:"
     
 if [ X"$MAKE_PURE" = Xon ]; then
    JAVA_PUREFLAGS="-Xint -Xrunpagent:-OUT=["mempro.jpt"]"
@@ -543,7 +543,7 @@ fi
 # a mere execution.
 JAVA_COMMAND_LINE="java $JAVA_PUREFLAGS -classpath $CLASSPATH $JAVA_ENDORSED $XERCES_CONFIG $JAVA_ORB -Duser.timezone=UTC -Dabeans.home=$ACS_ABEANS_CONFIG -DACS.manager=$MANAGER_REFERENCE -DORBInitRef.NameService=$ACS_NAME_SERVICE  -DACS.repository=$ACS_INTERFACE_REPOSITORY -DACS.tmp=$ACS_TMP -DACS.baseport=$ACS_INSTANCE -DACS.data=$ACSDATA -DACS.logstdout=$ACS_LOG_STDOUT -DACS.log.minlevel.remote=$ACS_LOG_CENTRAL -DACS.loggingBin=$ACS_LOG_BIN $JAVA_OPTIONS $LAUNCHER $@"
 
-ACS_LOG_DEBUG "$JAVA_COMMAND_LINE"
+ACS_LOG_DEBUG "acsStartJava" "$JAVA_COMMAND_LINE"
 
 #
 # .... and finally executes the Java command line

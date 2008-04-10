@@ -25,7 +25,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: acsStartManager,v 1.32 2007/12/04 14:46:24 msekoran Exp $"
+# "@(#) $Id: acsStartManager,v 1.33 2008/04/10 05:24:41 cparedes Exp $"
 #
 # who       when      what
 # -------- ---------- ----------------------------------------------
@@ -153,8 +153,8 @@ MANAGER_OUT=$INSTANCE_DIR/$ACS_MANAGER_OUT
 #using the same baseport
 if [ -e $MANAGER_OUT ]
 then
-    ACS_LOG_ERROR "It appears as if you're trying to run the `basename $0` command twice"
-    ACS_LOG_ERROR "    in a row using the same ACS_INSTANCE ($ACS_INSTANCE). This is not possible."
+    ACS_LOG_ERROR "acsStartManager" "It appears as if you're trying to run the `basename $0` command twice"
+    ACS_LOG_ERROR "acsStartManager" "    in a row using the same ACS_INSTANCE ($ACS_INSTANCE). This is not possible."
     exit $EC_CANNOTCREATE
 fi
 
@@ -191,9 +191,9 @@ do
   #not operational => check if we've waited too long.
   if [ "$i" = "$MAX_TIMEOUT" ]
   then
-      ACS_LOG_ERROR "Unable to start Manager in a timely fashion! Try increasing the value of \$ACS_STARTUP_TIMEOUT_MULTIPLIER"
+      ACS_LOG_ERROR "acsStartManager" "Unable to start Manager in a timely fashion! Try increasing the value of \$ACS_STARTUP_TIMEOUT_MULTIPLIER"
       MANAGER_PID=`cat $INSTANCE_DIR/$ACS_MANAGER_PIDFILE`
-      acsKillProc $MANAGER_PID 2> /dev/null || ACS_LOG_ERROR "Cannot kill the manager"
+      acsKillProc $MANAGER_PID 2> /dev/null || ACS_LOG_ERROR "acsStartManager" "Cannot kill the manager"
       exit $EC_TIMEOUT
   #got the output we need
   elif [ "X$joe" != "X" ] 
@@ -203,4 +203,4 @@ do
       i=$(( $i + 1 ))
   fi
 done
-ACS_LOG_FORCED "INFO - Manager is up and running"
+ACS_LOG_FORCED "acsStartManager" "INFO" "Manager is up and running"

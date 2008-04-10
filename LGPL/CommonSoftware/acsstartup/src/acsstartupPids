@@ -89,7 +89,7 @@ PORT=`getManagerPort`
 
 if ! PID=`getPid $FILE $PORT`
 then
-    ACS_LOG_ERROR "Unable to determine manager's process ID."
+    ACS_LOG_ERROR "acsstartupPids" "Unable to determine manager's process ID."
     exit $EC_FAILURE
 fi
 
@@ -113,7 +113,7 @@ PORT=`getNamingServicePort`
 
 if ! PID=`getPid $FILE $PORT`
 then
-    ACS_LOG_ERROR "Unable to determine the naming service's process ID."
+    ACS_LOG_ERROR "acsstartupPids" "Unable to determine the naming service's process ID."
     exit $EC_FAILURE
 fi
 
@@ -138,7 +138,7 @@ PORT=`getNotifyServicePort`
 
 if ! PID=`getPid $FILE $PORT`
 then
-    ACS_LOG_ERROR "Unable to determine the notification service's process ID."
+    ACS_LOG_ERROR "acsstartupPids" "Unable to determine the notification service's process ID."
     exit $EC_FAILURE
 fi
 
@@ -163,7 +163,7 @@ PORT=`getLoggingServicePort`
 
 if ! PID=`getPid $FILE $PORT`
 then
-    ACS_LOG_ERROR "Unable to determine the logging service's process ID."
+    ACS_LOG_ERROR "acsstartupPids" "Unable to determine the logging service's process ID."
     exit $EC_FAILURE
 fi
 
@@ -188,7 +188,7 @@ PORT=`getIRPort`
 
 if ! PID=`getPid $FILE $PORT`
 then
-    ACS_LOG_ERROR "Unable to determine the interface repository's process ID."
+    ACS_LOG_ERROR "acsstartupPids" "Unable to determine the interface repository's process ID."
     exit $EC_FAILURE
 fi
 
@@ -213,7 +213,7 @@ PORT=`getLoggingNotifyServicePort`
 
 if ! PID=`getPid $FILE $PORT`
 then
-    ACS_LOG_ERROR "Unable to determine logging's notify service process ID."
+    ACS_LOG_ERROR "acsstartupPids" "Unable to determine logging's notify service process ID."
     exit $EC_FAILURE
 fi
 
@@ -238,7 +238,7 @@ PORT=`getArchiveNotifyServicePort`
 
 if ! PID=`getPid $FILE $PORT`
 then
-    ACS_LOG_ERROR "Unable to determine archive notify service's process ID."
+    ACS_LOG_ERROR "acsstartupPids" "Unable to determine archive notify service's process ID."
     exit $EC_FAILURE
 fi
 
@@ -263,7 +263,7 @@ PORT=`getAlarmNotifyServicePort`
 
 if ! PID=`getPid $FILE $PORT`
 then
-    ACS_LOG_ERROR "Unable to determine alarm notify service's process ID."
+    ACS_LOG_ERROR "acsstartupPids" "Unable to determine alarm notify service's process ID."
     exit $EC_FAILURE
 fi
 
@@ -288,7 +288,7 @@ PORT=`getLogPort`
 
 if ! PID=`getPid $FILE $PORT`
 then
-    ACS_LOG_ERROR "Unable to determine acsLogSvc's process ID."
+    ACS_LOG_ERROR "acsstartupPids" "Unable to determine acsLogSvc's process ID."
     exit $EC_FAILURE
 fi
 
@@ -313,7 +313,7 @@ PORT=`getCDBPort`
 
 if ! PID=`getPid $FILE $PORT`
 then
-    ACS_LOG_ERROR "Unable to determine CDB's process ID."
+    ACS_LOG_ERROR "acsstartupPids" "Unable to determine CDB's process ID."
     exit $EC_FAILURE
 fi
 
@@ -337,7 +337,7 @@ if MANAGER_PID=`getManagerPid 2>/dev/null`
 then
     if [ "`ps h --pid $MANAGER_PID`" = "" ] 
     then
-	ACS_LOG_ERROR "Manager 'ghost' existed in $INSTANCE_DIR!"
+	ACS_LOG_ERROR "acsstartupPids" "Manager 'ghost' existed in $INSTANCE_DIR!"
 	rm -f  $INSTANCE_DIR/$ACS_MANAGER_OUT
 	rm -f  $INSTANCE_DIR/$ACS_MANAGER_PIDFILE
 	rm -rf $INSTANCE_DIR/jManager
@@ -368,7 +368,7 @@ if TEMP_PID=`getNamingServicePid 2>/dev/null`
 then
     if [ "`ps h --pid $TEMP_PID`" = "" ] 
     then
-	ACS_LOG_ERROR "Naming Service 'ghost' existed in $INSTANCE_DIR!"
+	ACS_LOG_ERROR "acsstartupPids" "Naming Service 'ghost' existed in $INSTANCE_DIR!"
 	rm -f $INSTANCE_DIR/$ACS_NAMING_SERVICE_PIDFILE
 	rm -f $INSTANCE_DIR/$ACS_NAMING_SERVICE_IORFILE
     else
@@ -382,7 +382,7 @@ if TEMP_PID=`getNotifyServicePid 2>/dev/null`
 then
     if [ "`ps h --pid $TEMP_PID`" = "" ] 
     then
-	ACS_LOG_ERROR "Notify Service 'ghost' existed in $INSTANCE_DIR!"
+	ACS_LOG_ERROR "acsstartupPids" "Notify Service 'ghost' existed in $INSTANCE_DIR!"
 	rm -f $INSTANCE_DIR/$ACS_NOTIFY_SERVICE_PIDFILE
 	rm -f $INSTANCE_DIR/$ACS_NOTIFY_OUT
 	rm -f $INSTANCE_DIR/$ACS_NOTIFY_SERVICE_IORFILE
@@ -397,7 +397,7 @@ if TEMP_PID=`getLoggingServicePid 2>/dev/null`
 then
     if [ "`ps h --pid $TEMP_PID`" = "" ] 
     then
-	ACS_LOG_ERROR "Logging Service 'ghost' existed in $INSTANCE_DIR!"
+	ACS_LOG_ERROR "acsstartupPids" "Logging Service 'ghost' existed in $INSTANCE_DIR!"
 	rm -f $INSTANCE_DIR/$ACS_LOGGING_SERVICE_PIDFILE
 	rm -f $INSTANCE_DIR/$ACS_LOGGING_OUT
     else
@@ -411,7 +411,7 @@ if TEMP_PID=`getIRPid 2>/dev/null`
 then
     if [ "`ps h --pid $TEMP_PID`" = "" ] 
     then
-	ACS_LOG_ERROR "Interface Repository 'ghost' existed in $INSTANCE_DIR!"
+	ACS_LOG_ERROR "acsstartupPids" "Interface Repository 'ghost' existed in $INSTANCE_DIR!"
 	rm -f $INSTANCE_DIR/$ACS_IR_PIDFILE
 	rm -f $INSTANCE_DIR/$ACS_IR_IORFILE
     else
@@ -425,7 +425,7 @@ if TEMP_PID=`getLoggingNotifyServicePid 2>/dev/null`
 then
     if [ "`ps h --pid $TEMP_PID`" = "" ] 
     then
-	ACS_LOG_ERROR "Logging Notify Service 'ghost' existed in $INSTANCE_DIR!"
+	ACS_LOG_ERROR "acsstartupPids" "Logging Notify Service 'ghost' existed in $INSTANCE_DIR!"
 	rm -f $INSTANCE_DIR/$ACS_LOGGING_NOTIFY_SERVICE_PIDFILE
 	rm -f $INSTANCE_DIR/$ACS_LOG_NOTIFY_OUT
 	rm -f $INSTANCE_DIR/$ACS_LOGGING_NOTIFY_SERVICE_IORFILE
@@ -440,7 +440,7 @@ if TEMP_PID=`getArchiveNotifyServicePid 2>/dev/null`
 then
     if [ "`ps h --pid $TEMP_PID`" = "" ] 
     then
-	ACS_LOG_ERROR "Archiving Notify Service 'ghost' existed in $INSTANCE_DIR!"
+	ACS_LOG_ERROR "acsstartupPids" "Archiving Notify Service 'ghost' existed in $INSTANCE_DIR!"
 	rm -f $INSTANCE_DIR/$ACS_ARCHIVE_NOTIFY_SERVICE_PIDFILE
 	rm -f $INSTANCE_DIR/$ACS_ARCHIVE_NOTIFY_OUT
 	rm -f $INSTANCE_DIR/$ACS_ARCHIVE_NOTIFY_SERVICE_IORFILE
@@ -455,7 +455,7 @@ if TEMP_PID=`getLogPid 2>/dev/null`
 then
     if [ "`ps h --pid $TEMP_PID`" = "" ] 
     then
-	ACS_LOG_ERROR "Log Service 'ghost' existed in $INSTANCE_DIR!"
+	ACS_LOG_ERROR "acsstartupPids" "Log Service 'ghost' existed in $INSTANCE_DIR!"
 	rm -f $INSTANCE_DIR/$ACS_LOG_SERVICE_PIDFILE
 	rm -f $INSTANCE_DIR/$ACS_LOG_SERVICE_OUT
     else
@@ -469,7 +469,7 @@ if TEMP_PID=`getCDBPid 2>/dev/null`
 then
     if [ "`ps h --pid $TEMP_PID`" = "" ] 
     then
-	ACS_LOG_ERROR "CDB 'ghost' existed in $INSTANCE_DIR!"
+	ACS_LOG_ERROR "acsstartupPids" "CDB 'ghost' existed in $INSTANCE_DIR!"
 	rm -f $INSTANCE_DIR/$ACS_CDB_PIDFILE
 	rm -f $INSTANCE_DIR/$ACS_CDB_OUT
 	rm -f $INSTANCE_DIR/CDB_Recovery.txt
@@ -521,10 +521,10 @@ fi
 
 if [ "$SOMETHING_ALIVE" = "0" ]
 then
-    ACS_LOG_DEBUG "All ACS processes appear to be dead for ACS_INSTANCE=$ACS_INSTANCE"
+    ACS_LOG_DEBUG "acsstartupPids" "All ACS processes appear to be dead for ACS_INSTANCE=$ACS_INSTANCE"
     rm -f $INSTANCE_DIR/pids/ACS_PIDS
 else
-    ACS_LOG_ERROR "There are still living processes for ACS_INSTANCE=$ACS_INSTANCE!"
+    ACS_LOG_ERROR "acsstartupPids" "There are still living processes for ACS_INSTANCE=$ACS_INSTANCE!"
 fi
 
 return $SOMETHING_ALIVE

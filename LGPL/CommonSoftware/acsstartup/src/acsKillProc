@@ -26,7 +26,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: acsKillProc,v 1.18 2006/06/02 22:19:13 dfugate Exp $"
+# "@(#) $Id: acsKillProc,v 1.19 2008/04/10 05:24:41 cparedes Exp $"
 #
 # who       when      what
 # -------- ---------- ----------------------------------------------
@@ -139,7 +139,7 @@ then
         #so far so good. get the PID now.
 	TEMP_PID=`cat $TEMP_PID`
     else
-	ACS_LOG_ERROR "The file specified from the command-line '$TEMP_PID' is empty and does not contain a process ID"
+	ACS_LOG_ERROR "acsKillProc" "The file specified from the command-line '$TEMP_PID' is empty and does not contain a process ID"
 	exit $EC_BADARGS
     fi
 fi

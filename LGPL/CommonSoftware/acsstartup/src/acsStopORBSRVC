@@ -7,7 +7,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: acsStopORBSRVC,v 1.38 2007/11/27 12:15:29 msekoran Exp $"
+# "@(#) $Id: acsStopORBSRVC,v 1.39 2008/04/10 05:24:41 cparedes Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -134,28 +134,28 @@ export INSTANCE_DIR=`getInstanceDirName $ACS_INSTANCE`
 
 if [ ! -d $INSTANCE_DIR ]
 then
-    ACS_LOG_DEBUG "Lock directory '$INSTANCE_DIR' does not exist!"
+    ACS_LOG_DEBUG "acsStopORBSRVC" "Lock directory '$INSTANCE_DIR' does not exist!"
 
 elif [ ! -w $INSTANCE_DIR ]
 then
-    ACS_LOG_ERROR "Lock directory '$INSTANCE_DIR' is not owned by '$USER'!"
+    ACS_LOG_ERROR "acsStopORBSRVC" "Lock directory '$INSTANCE_DIR' is not owned by '$USER'!"
     exit $EC_CANNOTUSE
 fi
 
-ACS_LOG_INFO "Stopping the ORB Services and CDB using 'ACS_INSTANCE=$ACS_INSTANCE'"
+ACS_LOG_INFO "acsStopORBSRVC" "Stopping the ORB Services and CDB using 'ACS_INSTANCE=$ACS_INSTANCE'"
 
 
 ########################################################################
 #SHUTDOWN CDB-----------------------------------------------------------
 #Since the CDB is just a Java process, it must be treated a little differently
-ACS_LOG_INFO "Stopping the CDB"
+ACS_LOG_INFO "acsStopORBSRVC" "Stopping the CDB"
 ACS_CDB_PORT=`getCDBPort`
 
 #Try the "correct" way of shutting down the CDB
 if ! acsutilBlock -t 15 -k cdbjDALShutdown -d corbaloc::$HOST:$ACS_CDB_PORT/CDB &> /dev/null
 then
     PID=`getCDBPid`
-    acsKillProc $PID 2> /dev/null || (ACS_LOG_ERROR "Cannot kill the CDB")
+    acsKillProc $PID 2> /dev/null || (ACS_LOG_ERROR "acsStopORBSRVC" "Cannot kill the CDB")
 fi
 
 ########################################################################
@@ -163,52 +163,52 @@ fi
 
 #kill the processes one at a time
 
-ACS_LOG_INFO "Stopping the CORBA Naming Service"
+ACS_LOG_INFO "acsStopORBSRVC" "Stopping the CORBA Naming Service"
 if PID=`getNamingServicePid`
 then
-    acsKillProc $PID 2> /dev/null || (ACS_LOG_ERROR "Cannot kill the naming service")
+    acsKillProc $PID 2> /dev/null || (ACS_LOG_ERROR "acsStopORBSRVC" "Cannot kill the naming service")
 fi
 
-ACS_LOG_INFO "Stopping the CORBA Notification Service"
+ACS_LOG_INFO "acsStopORBSRVC" "Stopping the CORBA Notification Service"
 if PID=`getNotifyServicePid`
 then
-    acsKillProc $PID 2> /dev/null || (ACS_LOG_ERROR "Cannot kill the notification service")
+    acsKillProc $PID 2> /dev/null || (ACS_LOG_ERROR "acsStopORBSRVC" "Cannot kill the notification service")
 fi
 
-ACS_LOG_INFO "Stopping the CORBA Logging Notification Service"
+ACS_LOG_INFO "acsStopORBSRVC" "Stopping the CORBA Logging Notification Service"
 if PID=`getLoggingNotifyServicePid`
 then
-    acsKillProc $PID 2> /dev/null || (ACS_LOG_ERROR "Cannot kill the logging notification service")
+    acsKillProc $PID 2> /dev/null || (ACS_LOG_ERROR "acsStopORBSRVC" "Cannot kill the logging notification service")
 fi
 
-ACS_LOG_INFO "Stopping the CORBA Archive Notification Service"
+ACS_LOG_INFO "acsStopORBSRVC" "Stopping the CORBA Archive Notification Service"
 if PID=`getArchiveNotifyServicePid`
 then
-    acsKillProc $PID 2> /dev/null || (ACS_LOG_ERROR "Cannot kill the archive notification service")
+    acsKillProc $PID 2> /dev/null || (ACS_LOG_ERROR "acsStopORBSRVC" "Cannot kill the archive notification service")
 fi
 
-ACS_LOG_INFO "Stopping the CORBA Alarm Notification Service"
+ACS_LOG_INFO "acsStopORBSRVC" "Stopping the CORBA Alarm Notification Service"
 if PID=`getAlarmNotifyServicePid`
 then
-    acsKillProc $PID 2> /dev/null || (ACS_LOG_ERROR "Cannot kill the alarm notification service")
+    acsKillProc $PID 2> /dev/null || (ACS_LOG_ERROR "acsStopORBSRVC" "Cannot kill the alarm notification service")
 fi
 
-ACS_LOG_INFO "Stopping the CORBA Logging Service"
+ACS_LOG_INFO "acsStopORBSRVC" "Stopping the CORBA Logging Service"
 if PID=`getLoggingServicePid`
 then
-    acsKillProc $PID 2> /dev/null || (ACS_LOG_ERROR "Cannot kill the logging service")
+    acsKillProc $PID 2> /dev/null || (ACS_LOG_ERROR "acsStopORBSRVC" "Cannot kill the logging service")
 fi
 
-ACS_LOG_INFO "Stopping the CORBA Interface Repository"
+ACS_LOG_INFO "acsStopORBSRVC" "Stopping the CORBA Interface Repository"
 if PID=`getIRPid`
 then
-    acsKillProc $PID 2> /dev/null || (ACS_LOG_ERROR "Cannot kill the interface repository")
+    acsKillProc $PID 2> /dev/null || (ACS_LOG_ERROR "acsStopORBSRVC" "Cannot kill the interface repository")
 fi
 
-ACS_LOG_INFO "Stopping the ACS Logging Service"
+ACS_LOG_INFO "acsStopORBSRVC" "Stopping the ACS Logging Service"
 if PID=`getLogPid`
 then
-    acsKillProc $PID 2> /dev/null || (ACS_LOG_ERROR "Cannot kill the ACS logging service")
+    acsKillProc $PID 2> /dev/null || (ACS_LOG_ERROR "acsStopORBSRVC" "Cannot kill the ACS logging service")
 fi
 
 ########################################################################
@@ -218,15 +218,15 @@ if [ -e $PIDSFILE ]
 then
     file=`cat $PIDSFILE`
     
-    ACS_LOG_INFO "Killing any rogue ACS processes..."
+    ACS_LOG_INFO "acsStopORBSRVC" "Killing any rogue ACS processes..."
     for line in $file
     do
       acsKillProc $line &> /dev/null
     done
 fi
 
-ACS_LOG_INFO "Freeing $INSTANCE_DIR"
-rm -rf $INSTANCE_DIR &> /dev/null || (ACS_LOG_ERROR "Cannot remove $INSTANCE_DIR")
+ACS_LOG_INFO "acsStopORBSRVC" "Freeing $INSTANCE_DIR"
+rm -rf $INSTANCE_DIR &> /dev/null || (ACS_LOG_ERROR "acsStopORBSRVC" "Cannot remove $INSTANCE_DIR")
 
 
 #

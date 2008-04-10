@@ -22,7 +22,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: acsIrfeed,v 1.14 2007/10/04 11:24:03 bjeram Exp $"
+# "@(#) $Id: acsIrfeed,v 1.15 2008/04/10 05:24:41 cparedes Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -114,17 +114,17 @@ else
     FUNCTION_STRING="Loading"
 fi
 
-ACS_LOG_INFO "acsIrfeed - $FUNCTION_STRING IDL interfaces in Interface Repository"
+ACS_LOG_INFO "acsIrFeed" "$FUNCTION_STRING IDL interfaces in Interface Repository"
 
 ORBInitRef="InterfaceRepository=$IRcorbaloc"
-ACS_LOG_INFO "           ORBInitRef: $ORBInitRef"
+ACS_LOG_INFO "acsIrFeed" "           ORBInitRef: $ORBInitRef"
 
 #
 # Check if files have been given on the command line
 #
 if [ "X" != "X$files" ]
     then
-    ACS_LOG_INFO "Loading files passed on the command line: $files"
+    ACS_LOG_INFO "acsIrFeed" "Loading files passed on the command line: $files"
     tot_list=$files
 else
 
@@ -241,7 +241,7 @@ echo "#endif /*!$ACS_IDL_IRFEED_DEF*/" >> $ACS_IDL_IRFEED_FILE
 echo "" >> $ACS_IDL_IRFEED_FILE
 
 ACS_SILENT_LOG "Contents of IRFEED file is: `cat $ACS_IDL_IRFEED_FILE`"
-ACS_LOG_DEBUG "            loading: $ACS_IDL_IRFEED_FILE"
+ACS_LOG_DEBUG "acsIrfeed" "            loading: $ACS_IDL_IRFEED_FILE"
 
 
 #
@@ -277,9 +277,9 @@ RET_CODE=$?
 
 if [ "$RET_CODE" = "0" ]
 then
-    ACS_LOG_INFO "$FUNCTION_STRING of IDL interfaces in Interface Repository completed OK"
+    ACS_LOG_INFO "acsIrFeed" "$FUNCTION_STRING of IDL interfaces in Interface Repository completed OK"
 else
-    ACS_LOG_ERROR "$FUNCTION_STRING of IDL interfaces in Interface Repository FAILED"
+    ACS_LOG_ERROR "acsIrFeed" "$FUNCTION_STRING of IDL interfaces in Interface Repository FAILED"
 fi
 
 exit $RET_CODE

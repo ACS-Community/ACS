@@ -123,13 +123,13 @@ fi
 #Cannot do much if the directory doesn't exist
 if [ ! -d `getInstanceDirName $ACS_INSTANCE` ]
 then
-    ACS_LOG_DEBUG "The directory '`getInstanceDirName $ACS_INSTANCE`' does not exist!"
-    ACS_LOG_DEBUG "This implies an ACS instance with ACS_INSTANCE=$ACS_INSTANCE is not really running!"
+    ACS_LOG_DEBUG "acsStopContainer" "The directory '`getInstanceDirName $ACS_INSTANCE`' does not exist!"
+    ACS_LOG_DEBUG "acsStopContainer" "This implies an ACS instance with ACS_INSTANCE=$ACS_INSTANCE is not really running!"
 
 #Stop user A from interfering with user B
 elif [ ! -w `getInstanceDirName $ACS_INSTANCE` ]
 then
-    ACS_LOG_ERROR "The directory '`getInstanceDirName $ACS_INSTANCE`' is not owned by $USER!"
+    ACS_LOG_ERROR "acsStopContainer" "The directory '`getInstanceDirName $ACS_INSTANCE`' is not owned by $USER!"
     exit $EC_CANNOTUSE
 fi
 
@@ -172,8 +172,8 @@ else
     #sanity check
     if [ "$LINE" = "" ]
 	then
-	ACS_LOG_DEBUG "There was no mention of the container name, $1, in $CONTAINER_TCP_FILE."
-	ACS_LOG_DEBUG "As a result, no attempt to forcefully shutdown this container will be made."
+	ACS_LOG_DEBUG "acsStopContainer" "There was no mention of the container name, $1, in $CONTAINER_TCP_FILE."
+	ACS_LOG_DEBUG "acsStopContainer" "As a result, no attempt to forcefully shutdown this container will be made."
 	exit 1
     fi
 
@@ -192,6 +192,6 @@ else
     #sleep $MAX_TIMEOUT
     if $COMMAND
     then
-	ACS_LOG_ERROR "The container, $1, hung and had to be killed. Please investigate!"
+	ACS_LOG_ERROR "acsStopContainer" "The container, $1, hung and had to be killed. Please investigate!"
     fi
 fi

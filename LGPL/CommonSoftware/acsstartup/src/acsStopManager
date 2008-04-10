@@ -125,21 +125,21 @@ fi
 
 if [ ! -d $INSTANCE_DIR ]
 then
-    ACS_LOG_DEBUG "The lock directory '$INSTANCE_DIR' does not exist!"
+    ACS_LOG_DEBUG "acsStopManager" "The lock directory '$INSTANCE_DIR' does not exist!"
 
 elif [ ! -e $MANAGER_PIDFILE ]
 then
-    ACS_LOG_DEBUG "The temporary file '$MANAGER_PIDFILE' does not exist!"
+    ACS_LOG_DEBUG "acsStopManager" "The temporary file '$MANAGER_PIDFILE' does not exist!"
 
 #Stop user A from interfering with user B
 elif [ ! -w $INSTANCE_DIR ]
 then
-    ACS_LOG_ERROR "The directory '$INSTANCE_DIR' is not owned by $USER!"
+    ACS_LOG_ERROR "acsStopManager" "The directory '$INSTANCE_DIR' is not owned by $USER!"
     exit $EC_CANNOTUSE
 
 elif [ ! -w $MANAGER_PIDFILE ]
 then
-    ACS_LOG_ERROR "The temporary file '$MANAGER_PIDFILE' is not owned by $USER!"
+    ACS_LOG_ERROR "acsStopManager" "The temporary file '$MANAGER_PIDFILE' is not owned by $USER!"
     exit $EC_CANNOTUSE
 fi
 
@@ -183,4 +183,4 @@ then
     rm $MANAGER_OUT
 fi
 
-ACS_LOG_INFO "`basename $0`: done."
+ACS_LOG_INFO "acsStopManager" "`basename $0`: done."

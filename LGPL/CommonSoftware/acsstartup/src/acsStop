@@ -6,7 +6,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: acsStop,v 1.22 2008/02/20 10:47:39 hsommer Exp $"
+# "@(#) $Id: acsStop,v 1.23 2008/04/10 05:24:41 cparedes Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -136,13 +136,13 @@ export INSTANCE_DIR=`getInstanceDirName $ACS_INSTANCE`
 #Cannot shutdown everything if we don't know the process IDs.
 if [ ! -d $INSTANCE_DIR ]
 then
-    ACS_LOG_ERROR "The lock directory '$ACSDATA/tmp/ACS_INSTANCE.$ACS_INSTANCE' does not exist!"
-    ACS_LOG_INFO "Will continue trying to shutdown ACS although containers cannot be stopped."
+    ACS_LOG_ERROR "acsStop" "The lock directory '$ACSDATA/tmp/ACS_INSTANCE.$ACS_INSTANCE' does not exist!"
+    ACS_LOG_INFO "acsStop" "Will continue trying to shutdown ACS although containers cannot be stopped."
 
 #Cannot shutdown everything if this user does not own the processes.
 elif [ ! -w $INSTANCE_DIR ]
 then
-    ACS_LOG_ERROR "Unable to shutdown because the lock directory '$INSTANCE_DIR' is not owned by '$USER'!"
+    ACS_LOG_ERROR "acsStop" "Unable to shutdown because the lock directory '$INSTANCE_DIR' is not owned by '$USER'!"
     exit $EC_CANNOTUSE
 
 #instance directory exists
@@ -150,8 +150,8 @@ else
     #Lock file specifically for the acsStop script
     if [ -e $INSTANCE_DIR/.stoplock ]
     then
-	ACS_LOG_ERROR "Unable to shutdown because another process is attempting to stop the '$ACS_INSTANCE' instance of ACS!"
-	ACS_LOG_ERROR "    Please be patient (or try removing $INSTANCE_DIR/.stoplock)."
+	ACS_LOG_ERROR "acsStop" "Unable to shutdown because another process is attempting to stop the '$ACS_INSTANCE' instance of ACS!"
+	ACS_LOG_ERROR "acsStop" "    Please be patient (or try removing $INSTANCE_DIR/.stoplock)."
 	exit $EC_CANNOTUSE
     else
 	touch $INSTANCE_DIR/.stoplock
@@ -159,19 +159,19 @@ else
 fi
 
 
-ACS_LOG_INFO "Stopping all ACS processes using 'ACS_INSTANCE=$ACS_INSTANCE'"
+ACS_LOG_INFO "acsStop" "Stopping all ACS processes using 'ACS_INSTANCE=$ACS_INSTANCE'"
 
 ########################################################################
 #SHUTDOWN CONTAINERS----------------------------------------------------
 if [ ! "$CL_NOCONTSHUTDOWN" ]
 then
-	ACS_LOG_INFO "Shutting down containers..."
+	ACS_LOG_INFO "acsStop" "Shutting down containers..."
 
 	file=`getLocalContainerNames`
 
 	for line in $file
 	do
-	  ACS_LOG_INFO "Shutting down $line container"
+	  ACS_LOG_INFO "acsStop" "Shutting down $line container"
 	  acsStopContainer $line &> /dev/null
 	done
 fi
@@ -182,13 +182,13 @@ export LC_PIDFILE=$INSTANCE_DIR/$ACS_LOGCLIENT_PIDFILE
 if [ -e $LC_PIDFILE ]
 then
     export LC_PID=`cat $LC_PIDFILE`
-    ACS_LOG_INFO  "Stopping file-based logging client."
+    ACS_LOG_INFO "acsStop"  "Stopping file-based logging client."
     kill $LC_PID &> /dev/null
 fi
 
 ########################################################################
 #SHUTDOWN MANAGER-------------------------------------------------------
-ACS_LOG_INFO "Stopping Manager"
+ACS_LOG_INFO "acsStop" "Stopping Manager"
 ACS_MANAGER_PORT=`getManagerPort`
 acsStopManager -m corbaloc::$HOST:$ACS_MANAGER_PORT/Manager
 

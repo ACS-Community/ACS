@@ -47,16 +47,16 @@ then
 
     if ! createInstanceDirectory $ACS_INSTANCE
     then 
-	ACS_LOG_ERROR "For some reason this script could not create `getInstanceDirName $ACS_INSTANCE`!"
-	ACS_LOG_ERROR "    Check $ACS_INSTANCES_DIR for free base ports!"
+	ACS_LOG_ERROR "acsStartContainer" "For some reason this script could not create `getInstanceDirName $ACS_INSTANCE`!"
+	ACS_LOG_ERROR "acsStartContainer" "    Check $ACS_INSTANCES_DIR for free base ports!"
 	exit $EC_CANNOTCREATE
     fi
 
 #Stop user A from interfering with user B
 elif [ ! -w `getInstanceDirName $ACS_INSTANCE` ]
 then
-    ACS_LOG_ERROR "The directory '`getInstanceDirName $ACS_INSTANCE`' is not writeable by $USER!"
-    ACS_LOG_ERROR "Please specify an ACS instance that is owned by $USER"
+    ACS_LOG_ERROR "acsStartContainer" "The directory '`getInstanceDirName $ACS_INSTANCE`' is not writeable by $USER!"
+    ACS_LOG_ERROR "acsStartContainer" "Please specify an ACS instance that is owned by $USER"
     exit $EC_CANNOTUSE
 fi
 
@@ -64,8 +64,8 @@ fi
 #--Get the correct commandline
 if ! COMMANDLINE=`acsstartupContainerPort $@`
 then
-    ACS_LOG_ERROR "There was an error when trying to generate the command to start the container!"
-    ACS_LOG_ERROR "Unable to proceed!"
+    ACS_LOG_ERROR "acsStartContainer" "There was an error when trying to generate the command to start the container!"
+    ACS_LOG_ERROR "acsStartContainer" "Unable to proceed!"
     exit $EC_CANNOTUSE
 else
     CONTAINERNAME=`echo $COMMANDLINE | awk '{print $2}'`
@@ -81,7 +81,7 @@ echo $CONTAINER_PID >> `getInstanceDirName $ACS_INSTANCE`/$ACS_PID_DIR/$CONTAINE
 
 #-----------------------------------------------------------------------
 # Now run the container
-ACS_LOG_INFO "Running the container with these arguments: '$COMMANDLINE'"
+ACS_LOG_INFO "acsStartContainer" "Running the container with these arguments: '$COMMANDLINE'"
 $COMMANDLINE
 
 #-----------------------------------------------------------------------

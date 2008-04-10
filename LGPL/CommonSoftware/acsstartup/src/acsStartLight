@@ -23,7 +23,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# @(#) $Id: acsStartLight,v 1.8 2006/06/07 16:51:49 dfugate Exp $
+# @(#) $Id: acsStartLight,v 1.9 2008/04/10 05:24:41 cparedes Exp $
 #
 # who       when      what
 # -------- ---------- ----------------------------------------------
@@ -114,12 +114,12 @@ fi
 function sanitycheckCdb {
 
    if [ ! -d $cdbroot ] ; then
-      ACS_LOG_ERROR "The specified cdb root directory does not exist"
+      ACS_LOG_ERROR "acsStartLight" "The specified cdb root directory does not exist"
       return
    fi
 
    if [ ! -d $cdbroot/CDB ] ; then
-      ACS_LOG_ERROR "The specified cdb root directory doesn't contain a directory named 'CDB'"
+      ACS_LOG_ERROR "acsStartLight" "The specified cdb root directory doesn't contain a directory named 'CDB'"
       return
    fi
 
@@ -196,10 +196,10 @@ addToCdbSchemaPath $ACSROOT
 ###
 ### some logging / sanitychecking
 ###
-ACS_LOG_DEBUG "Using Acs instance: $acsinstance"
-ACS_LOG_DEBUG "Using Cdb root directory: $cdbroot"
-ACS_LOG_DEBUG "Using additional Cdb schemas from: $cdbschemapath"
-ACS_LOG_DEBUG "Using Container name: $contname"
+ACS_LOG_DEBUG "acsStartLight" "Using Acs instance: $acsinstance"
+ACS_LOG_DEBUG "acsStartLight" "Using Cdb root directory: $cdbroot"
+ACS_LOG_DEBUG "acsStartLight" "Using additional Cdb schemas from: $cdbschemapath"
+ACS_LOG_DEBUG "acsStartLight" "Using Container name: $contname"
 
 sanitycheckCdb
 

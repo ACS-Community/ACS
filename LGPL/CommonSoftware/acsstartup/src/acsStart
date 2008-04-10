@@ -26,7 +26,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: acsStart,v 1.41 2008/02/20 00:44:18 agrimstrup Exp $"
+# "@(#) $Id: acsStart,v 1.42 2008/04/10 05:24:41 cparedes Exp $"
 #
 # who       when      what
 # -------- ---------- ----------------------------------------------
@@ -182,7 +182,7 @@ fi
 ###to fix it
 if ! checkDeadACS
 then
-    ACS_LOG_ERROR "Unable to continue as the ACS_INSTANCE, $ACS_INSTANCE, is currently in use!"
+    ACS_LOG_ERROR "acsStart" "Unable to continue as the ACS_INSTANCE, $ACS_INSTANCE, is currently in use!"
     exit $EC_FAILURE
 fi
 
@@ -225,6 +225,18 @@ if [ "$CL_LOADIFR" = "false" ] ; then
         IFR_OPT=-noloadIFR
 fi
 
+#Print version message
+VERSION=`cat $ACSROOT/ACS_VERSION`
+PATCH=`cat $ACSROOT/ACS_PATCH_LEVEL`
+TAG=`cat $ACSROOT/ACS_TAG`
+if [ $PATCH -eq $PATCH 2> /dev/null ]; then
+VERSION="$VERSION.$PATCH"
+else
+VERSION="$VERSION.0"
+fi
+
+ACS_LOG_INFO "acsStart" "Starting ACS version $VERSION"
+ACS_LOG_INFO "acsStart" "Using ALMA Base Software tag $TAG"
 #start the ORB services
 acsStartORBSRVC $SRVCS_RECOVER_OPT $IFR_OPT 2>&1 | tee -a $ACSSTARTLOG &
 ORBSRVC_PID=$!
@@ -238,9 +250,9 @@ then
     # and we try a stop to kill any leftover.
     #
     acsutilBlock -t $MAX_TIMEOUT -f $ACSSTARTLOG -b "acsStartORBSRVC script has now completed" -p $ORBSRVC_PID
-    ACS_LOG_ERROR "Detected the acsStartORBSRVC process has exited with an error! Cleaning up."
+    ACS_LOG_ERROR "acsStart" "Detected the acsStartORBSRVC process has exited with an error! Cleaning up."
     acsStopORBSRVC 2>&1 | tee -a $ACSSTARTLOG
-    ACS_LOG_ERROR "acsStart aborted because of error in acsStartORBSRVC."
+    ACS_LOG_ERROR "acsStart" "acsStart aborted because of error in acsStartORBSRVC."
     exit $EC_FAILURE
 fi
 #------------------------------------------------------
@@ -260,7 +272,7 @@ MANAGER_PID=$!
 
 if ! acsutilBlock -t $MAX_TIMEOUT -f $ACSSTARTLOG -b "Manager Application initialized" -p $MANAGER_PID
 then
-    ACS_LOG_ERROR "Detected the acsStartManager process has exited with an error!"
+    ACS_LOG_ERROR "acsStart" "Detected the acsStartManager process has exited with an error!"
     exit $EC_FAILURE
 fi
 #------------------------------------------------------
@@ -270,15 +282,15 @@ then
     export IRFEED_PIDFILE=$INSTANCE_DIR/$ACS_IRFEED_PIDFILE
     export IRFEED_PID=`cat $IRFEED_PIDFILE`
 
-    ACS_LOG_DEBUG "Waiting for the interface repository to finish loading."
+    ACS_LOG_DEBUG "acsStart" "Waiting for the interface repository to finish loading."
     if ! acsutilBlock -t $MAX_IRFEED_TIMEOUT -p $IRFEED_PID
     then
-	ACS_LOG_ERROR "The acsstartupLoadIFR script is still loading IDLs into the interface repository after $MAX_IFREED_TIMEOUT seconds."
-	ACS_LOG_INFO  "There could be something genuinely wrong here or maybe your machine is just slow."
-	ACS_LOG_INFO  "Try increasing \$ACS_STARTUP_TIMEOUT_MULTIPLIER next time (was $ACS_STARTUP_TIMEOUT_MULTIPLIER)."
+	ACS_LOG_ERROR "acsStart" "The acsstartupLoadIFR script is still loading IDLs into the interface repository after $MAX_IFREED_TIMEOUT seconds."
+	ACS_LOG_INFO "acsStart" "There could be something genuinely wrong here or maybe your machine is just slow."
+	ACS_LOG_INFO "acsStart" "Try increasing \$ACS_STARTUP_TIMEOUT_MULTIPLIER next time (was $ACS_STARTUP_TIMEOUT_MULTIPLIER)."
 	kill -9 $IRFEED_PID
     else
-	ACS_LOG_DEBUG "The interface repository has finished loading."
+	ACS_LOG_DEBUG "acsStart" "The interface repository has finished loading."
     fi
 fi
 
@@ -291,13 +303,13 @@ then
     export LOGFILE=$INSTANCE_DIR/$ACS_LOGFILE
     export LC_PIDFILE=$INSTANCE_DIR/$ACS_LOGCLIENT_PIDFILE
     export LOGGING_CHANNEL=Logging
-    ACS_LOG_INFO  "Sending all future CORBA-based logs to $LOGFILE."
+    ACS_LOG_INFO "acsStart" "Sending all future CORBA-based logs to $LOGFILE."
     loggingClient -f $LOGFILE $LOGGING_CHANNEL > $ACS_TMP/logstdfile.out  2>1  &
     echo $! > $LC_PIDFILE
 fi
 
 #--------------------------------------------------------------------------------------------------------------------------
-ACS_LOG_FORCED "INFO - For this ACS session, please do an 'export ACS_INSTANCE=$ACS_INSTANCE' on all terminals running ACS clients."
-ACS_LOG_FORCED "INFO - ACS is up and running"
+ACS_LOG_FORCED "acsStart" "INFO" "For this ACS session, please do an 'export ACS_INSTANCE=$ACS_INSTANCE' on all terminals running ACS clients."
+ACS_LOG_FORCED "acsStart" "INFO" "ACS is up and running"
 rm $ACSSTARTLOG
 

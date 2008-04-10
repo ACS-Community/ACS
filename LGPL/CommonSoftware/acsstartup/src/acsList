@@ -5,7 +5,7 @@
 #*******************************************************************************
 # E.S.O. - ALMA project
 #
-# "@(#) $Id: acsList,v 1.7 2006/01/09 22:18:51 dfugate Exp $"
+# "@(#) $Id: acsList,v 1.8 2008/04/10 05:24:41 cparedes Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -121,7 +121,7 @@ function printDetails() {
 		popd >/dev/null
 	
 	else
-		ACS_LOG_ERROR "$1: doesn't exist"
+		ACS_LOG_ERROR "acsList" "$1: doesn't exist"
 	fi
 
 }

@@ -22,7 +22,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: acsstartupLoadIFR,v 1.4 2007/05/28 06:41:27 cparedes Exp $"
+# "@(#) $Id: acsstartupLoadIFR,v 1.5 2008/04/10 05:24:41 cparedes Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -111,7 +111,7 @@ fi
 
 if [ "X" != "X$files" ]
     then
-    ACS_LOG_INFO "Loading files passed on the command line: $files"
+    ACS_LOG_INFO "acsstartupLoadIFR" "Loading files passed on the command line: $files"
 fi
 #***************************************************************
 # Creates dynamically the IDL file to include everything
@@ -124,7 +124,7 @@ ACS_IDL_IRFEED_FILE=/tmp/acsIrfeedDyn.$$.idl
 acsstartupIrFeed $ACS_IDL_IRFEED_FILE $$ $files
 
 
-ACS_LOG_DEBUG "            loading: $ACS_IDL_IRFEED_FILE"
+ACS_LOG_DEBUG "acsstartupLoadIFR" "            loading: $ACS_IDL_IRFEED_FILE"
 # This is the line that loads interface repository
 LD_LIBRARY_PATH=$MICO_HOME/lib:$LD_LIBRARY_PATH
 PATH=$MICO_HOME/bin:$PATH
@@ -146,9 +146,9 @@ rm $ACS_IDL_IRFEED_FILE
 # One final check
 if [ "$RET_CODE" = "0" ]
 then
-    ACS_LOG_INFO "$FUNCTION_STRING of IDL interfaces in Interface Repository completed OK"
+    ACS_LOG_INFO "acsstartupLoadIFR" "$FUNCTION_STRING of IDL interfaces in Interface Repository completed OK"
 else
-    ACS_LOG_ERROR "$FUNCTION_STRING of IDL interfaces in Interface Repository FAILED"
+    ACS_LOG_ERROR "acsstartupLoadIFR" "$FUNCTION_STRING of IDL interfaces in Interface Repository FAILED"
 fi
 
 exit $RET_CODE
