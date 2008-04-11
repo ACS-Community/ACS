@@ -60,7 +60,7 @@ public class SimpleMasterComponentImpl extends CharacteristicComponentImpl
 				this, new String[] { "SpecialState", "BoringState", "StatelessState", "InvalidState" }, 2
 			);
 			// currentStateHierarchy
-			ROstringSeqImpl currentStateHierarchyImpl = new ROstringSeqImpl("currentStateHierarchy", this, csha);
+			ROstringSeqImpl currentStateHierarchyImpl = new ROstringSeqImpl("currentStateHierarchy", this, csha, containerServices.getThreadFactory());
 			ROstringSeqPOATie currentStateHierarchyTie = new ROstringSeqPOATie(currentStateHierarchyImpl);
 			currentStateHierarchy = ROstringSeqHelper.narrow(this.registerProperty(currentStateHierarchyImpl, currentStateHierarchyTie));
 		}
