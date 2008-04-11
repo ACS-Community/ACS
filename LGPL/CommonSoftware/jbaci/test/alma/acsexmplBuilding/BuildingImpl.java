@@ -53,7 +53,7 @@ public class BuildingImpl extends CharacteristicComponentImpl
 		try
 		{
 			// version
-			ROstringImpl versionImpl = new ROstringImpl("version", this);
+			ROstringImpl versionImpl = new ROstringImpl("version", this, containerServices.getThreadFactory());
 			ROstringPOATie versionTie = new ROstringPOATie(versionImpl);
 			version = ROstringHelper.narrow(this.registerProperty(versionImpl, versionTie));
 		}
