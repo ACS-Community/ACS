@@ -111,12 +111,12 @@ public class StateChangeListener extends CBstringSeqPOA
 		CBstringSeq cbStringSeq = CBstringSeqHelper.narrow(offshoot);
 		
 		// register callback CORBA object with the statesProperty as a monitor  
-		monitor = statesProperty.create_monitor(cbStringSeq, new CBDescIn());			
+		monitor = statesProperty.create_monitor(cbStringSeq, new CBDescIn());
 		
 		// baci.idl: "On creation, the only trigger present will be the timer trigger. 
 		// Calling the set_value_trigger method determines the behaviour of the value trigger. 
 		// The enable parameter determines whether the value trigger is active or not ." 
-		// Strings have no triggerable value, thus don't care 		
+		// Strings have no triggerable value, thus don't care 
 		monitor.set_value_trigger(new String[0], true);
 		// baci.idl: "Timer trigger can be disabled by passing the value 0 for timer parameter." 
 		monitor.set_timer_trigger(0);
@@ -131,9 +131,9 @@ public class StateChangeListener extends CBstringSeqPOA
 	public void destroyMonitor() throws Exception
 	{
 		if (monitor != null) {
-			contSrv.deactivateOffShoot(this);
 			monitor.destroy();
 			monitor = null;
+			contSrv.deactivateOffShoot(this);
 		}
 	}
 	
