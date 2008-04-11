@@ -20,7 +20,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston,
 # MA 02111-1307  USA
 #
-# "@(#) $Id: jbaciTATPrologue,v 1.1 2006/11/01 10:52:40 cparedes Exp $"
+# "@(#) $Id: jbaciTATPrologue,v 1.2 2008/04/11 15:42:47 hsommer Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -36,6 +36,6 @@ echo " Starting C++ Container"
 acsutilAwaitContainerStart -cpp Container01
 
 echo " Starting Java Container"
-export JAVA_OPTIONS="-Dacs.container.fakeUIDsForTesting=true -Djacorb.log.loggerFactory=alma.acs.logging.adapters.JacORBLoggerFactory"
+export JAVA_OPTIONS="-Dacs.container.fakeUIDsForTesting=true"
 acsutilAwaitContainerStart -java frodoContainer
 
