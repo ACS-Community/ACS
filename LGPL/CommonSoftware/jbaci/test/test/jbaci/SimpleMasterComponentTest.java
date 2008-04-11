@@ -35,6 +35,7 @@ import alma.ACSErr.CompletionHolder;
 import alma.acs.util.ACSPorts;
 import alma.acs.util.IsoDateFormat;
 import alma.acs.util.UTCUtility;
+import alma.maciErrType.NoPermissionEx;
 
 /**
  * @author <a href="mailto:matej.sekoranjaATcosylab.com">Matej Sekoranja</a>
@@ -393,7 +394,11 @@ public class SimpleMasterComponentTest implements Runnable
 				}
 
 				// release now
-				manager.release_component(clientInfo.h, COMPONENT_NAME);
+				try {
+					manager.release_component(clientInfo.h, COMPONENT_NAME);
+				} catch (NoPermissionEx ex) {
+					ex.printStackTrace();
+				}
 
 				logout(manager, clientInfo);
 			}
