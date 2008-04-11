@@ -99,7 +99,7 @@ public abstract class MasterComponentImplBase extends CharacteristicComponentImp
 		
 		try
 		{
-			ROstringSeqImpl currentStateHierarchyImpl = new ROstringSeqImpl("currentStateHierarchy", this);
+			ROstringSeqImpl currentStateHierarchyImpl = new ROstringSeqImpl("currentStateHierarchy", this, containerServices.getThreadFactory());
 			m_currentStateHierarchyDataAccess = currentStateHierarchyImpl.getDataAccess();
 			ROstringSeqPOATie currentStateHierarchyTie = new ROstringSeqPOATie(currentStateHierarchyImpl);
 			m_currentStateHierarchy = ROstringSeqHelper.narrow(this.registerProperty(currentStateHierarchyImpl, currentStateHierarchyTie));
