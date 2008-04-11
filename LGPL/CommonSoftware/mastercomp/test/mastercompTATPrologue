@@ -36,6 +36,6 @@ acsutilTATPrologue -l
 sleep 10
 
 echo " Starting Test Java Container"
-export JAVA_OPTIONS="-Djacorb.log.loggerFactory=alma.acs.logging.adapters.JacORBLoggerFactory -Dacs.mastercomp.monitorStateChangeNotification=true"
+export JAVA_OPTIONS="-Dacs.mastercomp.monitorStateChangeNotification=true"
 acsutilAwaitContainerStart -java frodoContainer
 
