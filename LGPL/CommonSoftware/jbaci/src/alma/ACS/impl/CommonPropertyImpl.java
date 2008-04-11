@@ -24,6 +24,7 @@ package alma.ACS.impl;
 import java.lang.reflect.Array;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -161,9 +162,10 @@ public abstract class CommonPropertyImpl
 	public CommonPropertyImpl(
 		Class propertyType,
 		String name,
-		CharacteristicComponentImpl parentComponent)
+		CharacteristicComponentImpl parentComponent,
+		ThreadFactory threadFactory)
 		throws PropertyInitializationFailed {
-		this(propertyType, name, parentComponent, new MemoryDataAccess());
+		this(propertyType, name, parentComponent, new MemoryDataAccess(), threadFactory);
 	}
 
 	/**
@@ -178,9 +180,10 @@ public abstract class CommonPropertyImpl
 		Class propertyType,
 		String name,
 		CharacteristicComponentImpl parentComponent,
-		DataAccess dataAccess)
+		DataAccess dataAccess, 
+		ThreadFactory threadFactory)
 		throws PropertyInitializationFailed {
-		super(name, parentComponent);
+		super(name, parentComponent, threadFactory);
 		
 		this.propertyType = propertyType;
 		this.dataAccess = dataAccess;
@@ -212,7 +215,7 @@ public abstract class CommonPropertyImpl
 		monitors = new HashMap();
 		
 		// create history monitor
-		registerMonitor(new HistoryMonitorImpl(this), null);
+		registerMonitor(new HistoryMonitorImpl(this, threadFactory), null);
 	}
 
 	/**
@@ -445,8 +448,8 @@ public abstract class CommonPropertyImpl
 		/**
 		 * @see alma.ACS.jbaci.BACIAction
 		 */
-		public GetAsyncAction(Callback callback, CBDescIn descIn) {
-			super(callback, descIn, CommonPropertyImpl.this);
+		public GetAsyncAction(Callback callback, CBDescIn descIn, ThreadFactory threadFactory) {
+			super(callback, descIn, CommonPropertyImpl.this, threadFactory);
 		}
 
 		/**
@@ -455,8 +458,9 @@ public abstract class CommonPropertyImpl
 		public GetAsyncAction(
 			Callback callback,
 			CBDescIn descIn,
-			BACIPriority priority) {
-			super(callback, descIn, CommonPropertyImpl.this, priority);
+			BACIPriority priority,
+			ThreadFactory threadFactory) {
+			super(callback, descIn, CommonPropertyImpl.this, priority, threadFactory);
 		}
 
 		/**
@@ -484,7 +488,7 @@ public abstract class CommonPropertyImpl
 	 * @see alma.ACS.P<type>Operations#get_async(alma.ACS.CB<type>, alma.ACS.CBDescIn)
 	 */
 	protected void getAsync(Callback callback, CBDescIn desc) {
-		new GetAsyncAction(callback, desc).submit();
+		new GetAsyncAction(callback, desc, threadFactory).submit();
 	}
 
 	
@@ -493,7 +497,7 @@ public abstract class CommonPropertyImpl
 	 * Registration is needed for monitor destruction on property destruction.
 	 * @param monitorImpl		monitor implementation (e.g. class implementing <code>MonitorOperations</code> interface).
 	 * @param monitorServant	monitor CORBA servant (e.g. Monitor<type>POATie class). If <code>null</code> monitor will
-	 * 						be threated as non-CORBA monitor and no CORBA activation will be done.
+	 * 						be treated as non-CORBA monitor and no CORBA activation will be done.
 	 * @return CORBA activated monitor reference, <code>null</code> if <code>monitorServant == null</code>.
 	 */
 	public Monitor registerMonitor(MonitorOperations monitorImpl, Servant monitorServant) {
@@ -591,8 +595,8 @@ public abstract class CommonPropertyImpl
 		/**
 		 * @see alma.ACS.jbaci.BACIAction
 		 */
-		public SetAsyncAction(Object value, Callback callback, CBDescIn descIn) {
-			super(callback, descIn, CommonPropertyImpl.this);
+		public SetAsyncAction(Object value, Callback callback, CBDescIn descIn, ThreadFactory threadFactory) {
+			super(callback, descIn, CommonPropertyImpl.this, threadFactory);
 			this.value = value;
 		}
 
@@ -603,8 +607,9 @@ public abstract class CommonPropertyImpl
 			Object value, 
 			Callback callback,
 			CBDescIn descIn,
-			BACIPriority priority) {
-			super(callback, descIn, CommonPropertyImpl.this, priority);
+			BACIPriority priority,
+			ThreadFactory threadFactory) {
+			super(callback, descIn, CommonPropertyImpl.this, priority, threadFactory);
 			this.value = value;
 		}
 
@@ -630,7 +635,7 @@ public abstract class CommonPropertyImpl
 	 * @see alma.ACS.RW<type>Operations#get_async(<type>, alma.ACS.CBvoid, alma.ACS.CBDescIn)
 	 */
 	protected void setAsync(Object value, CBvoid callback, CBDescIn desc) {
-		new SetAsyncAction(value, callback, desc).submit();
+		new SetAsyncAction(value, callback, desc, threadFactory).submit();
 	}
 
 	/**

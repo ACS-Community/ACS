@@ -21,6 +21,8 @@
 
 package alma.ACS.impl;
 
+import java.util.concurrent.ThreadFactory;
+
 import alma.ACS.CBDescIn;
 import alma.ACS.CBDescOut;
 import alma.ACS.CBdouble;
@@ -58,9 +60,10 @@ public class RWdoubleImpl
 	 */
 	public RWdoubleImpl(
 		String name,
-		CharacteristicComponentImpl parentComponent)
+		CharacteristicComponentImpl parentComponent,
+		ThreadFactory threadFactory)
 		throws PropertyInitializationFailed {
-		super(double.class, name, parentComponent);
+		super(double.class, name, parentComponent, threadFactory);
 	}
 
 	/**
@@ -72,9 +75,9 @@ public class RWdoubleImpl
 	public RWdoubleImpl(
 		String name,
 		CharacteristicComponentImpl parentComponent,
-		DataAccess dataAccess)
+		DataAccess dataAccess, ThreadFactory threadFactory)
 		throws PropertyInitializationFailed {
-		super(double.class, name, parentComponent, dataAccess);
+		super(double.class, name, parentComponent, dataAccess, threadFactory);
 	}
 
 	/**
@@ -101,7 +104,7 @@ public class RWdoubleImpl
 		CBDescIn descIn) {
 			
 		// create monitor and its servant
-		MonitordoubleImpl monitorImpl = new MonitordoubleImpl(this, callback, descIn, startTime);
+		MonitordoubleImpl monitorImpl = new MonitordoubleImpl(this, callback, descIn, startTime, threadFactory);
 		MonitordoublePOATie monitorTie = new MonitordoublePOATie(monitorImpl);
 
 		// register and activate		

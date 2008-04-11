@@ -23,6 +23,7 @@ package alma.ACS.jbaci;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.concurrent.ThreadFactory;
 
 import alma.ACS.CBDescIn;
 import alma.ACS.CBvoid;
@@ -59,9 +60,10 @@ public class ReflectionBACIAction extends BACIAction {
 	 */
 	public ReflectionBACIAction(
 							Object invokee, Method method,
-							CBvoid callback, CBDescIn descIn)
+							CBvoid callback, CBDescIn descIn, 
+							ThreadFactory threadFactory)
 	{
-		this(invokee, method, callback, descIn, (CallbackDispatcher)null);
+		this(invokee, method, callback, descIn, (CallbackDispatcher)null, threadFactory);
 	}
 	
 	/**
@@ -75,9 +77,10 @@ public class ReflectionBACIAction extends BACIAction {
 	public ReflectionBACIAction(
 					  Object invokee, Method method,
 					  Callback callback, CBDescIn descIn,
-					  CallbackDispatcher callbackDispatcher)
+					  CallbackDispatcher callbackDispatcher,
+					  ThreadFactory threadFactory)
 	{
-		this(invokee, method, callback, descIn, callbackDispatcher, BACIPriority.NORMAL);
+		this(invokee, method, callback, descIn, callbackDispatcher, BACIPriority.NORMAL, threadFactory);
 	}
 
 	/**
@@ -90,9 +93,10 @@ public class ReflectionBACIAction extends BACIAction {
 	 */
 	public ReflectionBACIAction(
 							Object invokee, Method method,
-							CBvoid callback, CBDescIn descIn, BACIPriority priority)
+							CBvoid callback, CBDescIn descIn, BACIPriority priority, 
+							ThreadFactory threadFactory)
 	{
-		this(invokee, method, callback, descIn, null, priority);
+		this(invokee, method, callback, descIn, null, priority, threadFactory);
 	}
 
 	/**
@@ -107,9 +111,10 @@ public class ReflectionBACIAction extends BACIAction {
 	public ReflectionBACIAction(
 					  Object invokee, Method method,
 					  Callback callback, CBDescIn descIn, 
-					  CallbackDispatcher callbackDispatcher, BACIPriority priority)
+					  CallbackDispatcher callbackDispatcher, BACIPriority priority, 
+					  ThreadFactory threadFactory)
 	{
-		super(callback, descIn, callbackDispatcher, priority);
+		super(callback, descIn, callbackDispatcher, priority, threadFactory);
 		this.invokee = invokee;
 		this.method = method;
 	}
@@ -124,10 +129,11 @@ public class ReflectionBACIAction extends BACIAction {
 	 */
 	public ReflectionBACIAction(
 							Object invokee, Class invokeeClass, String methodName,
-							CBvoid callback, CBDescIn descIn)
+							CBvoid callback, CBDescIn descIn,
+							ThreadFactory threadFactory)
 	{
 		this(invokee, invokeeClass, methodName,
-			 callback, descIn, null, BACIPriority.NORMAL);
+			 callback, descIn, null, BACIPriority.NORMAL, threadFactory);
 	}
 
 	/**
@@ -142,10 +148,11 @@ public class ReflectionBACIAction extends BACIAction {
 	public ReflectionBACIAction(
 							Object invokee, Class invokeeClass, String methodName,
 							Callback callback, CBDescIn descIn,
-							CallbackDispatcher callbackDispatcher)
+							CallbackDispatcher callbackDispatcher,
+							ThreadFactory threadFactory)
 	{
 		this(invokee, invokeeClass, methodName,
-			 callback, descIn, callbackDispatcher, BACIPriority.NORMAL);
+			 callback, descIn, callbackDispatcher, BACIPriority.NORMAL, threadFactory);
 	}
 
 	/**
@@ -161,9 +168,9 @@ public class ReflectionBACIAction extends BACIAction {
 	public ReflectionBACIAction(
 							Object invokee, Class invokeeClass, String methodName,
 							Callback callback, CBDescIn descIn,
-							CallbackDispatcher callbackDispatcher, BACIPriority priority)
+							CallbackDispatcher callbackDispatcher, BACIPriority priority, ThreadFactory threadFactory)
 	{
-		super(callback, descIn, callbackDispatcher, priority);
+		super(callback, descIn, callbackDispatcher, priority, threadFactory);
 		try
 		{
 			method = invokeeClass.getMethod(methodName, null);

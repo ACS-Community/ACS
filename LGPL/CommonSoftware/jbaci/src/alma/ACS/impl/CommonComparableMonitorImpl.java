@@ -21,6 +21,7 @@
 
 package alma.ACS.impl;
 
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.omg.CORBA.BooleanHolder;
@@ -62,7 +63,7 @@ public class CommonComparableMonitorImpl
 			// if none is queued, initiate executor otherwise override old value 
 			if (queuedKeyPoolTime.getAndSet(timeToRun) == 0)
 			{
-				BACIExecutor.getInstance().execute(this);
+				BACIExecutor.getInstance(threadFactory).execute(this);
 			}
 		}
 		/**
@@ -134,8 +135,8 @@ public class CommonComparableMonitorImpl
 	 * @param callback	callback, non-<code>null</code>.
 	 * @param descIn	callback in-descriptor.
 	 */
-	public CommonComparableMonitorImpl(CommonPropertyImpl property, Callback callback, CBDescIn descIn) {
-		this(property, callback, descIn, 0);
+	public CommonComparableMonitorImpl(CommonPropertyImpl property, Callback callback, CBDescIn descIn, ThreadFactory threadFactory) {
+		this(property, callback, descIn, 0, threadFactory);
 	}
 
 	/**
@@ -150,8 +151,9 @@ public class CommonComparableMonitorImpl
 		CommonPropertyImpl property,
 		Callback callback,
 		CBDescIn descIn,
-		long startTime) {
-		super(property, callback, descIn, startTime);
+		long startTime,
+		ThreadFactory threadFactory) {
+		super(property, callback, descIn, startTime, threadFactory);
 		enabled = false;
 		
 		if (property instanceof CommonComparablePropertyImpl)
@@ -191,7 +193,7 @@ public class CommonComparableMonitorImpl
 			// determine start time to align with sync monitors - might improve performance
 			long startTime = (System.currentTimeMillis()/poolTime + 1) * poolTime;
 			// pool
-			poolTimerTask = BACITimer.getInstance().executePeriodically(poolTime, new PoolTimer(), startTime);
+			poolTimerTask = BACITimer.getInstance(threadFactory).executePeriodically(poolTime, new PoolTimer(), startTime);
 		}
 		
 		enabled = true;

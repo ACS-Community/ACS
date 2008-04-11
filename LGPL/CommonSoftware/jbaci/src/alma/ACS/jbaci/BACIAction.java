@@ -21,6 +21,8 @@
 
 package alma.ACS.jbaci;
 
+import java.util.concurrent.ThreadFactory;
+
 import alma.ACS.CBDescIn;
 import alma.ACS.CBDescOut;
 import alma.ACS.CBvoid;
@@ -66,14 +68,16 @@ public abstract class BACIAction implements PrioritizedRunnable {
 	 */
 	protected Object returnValue;
 
+	protected final ThreadFactory threadFactory;
+
 	/**
 	 * Constructor of NORMAL priority action (CBvoid callback).
 	 * @param callback	action callback.
 	 * @param descIn	action callback in descriptor.
 	 */
-	public BACIAction(CBvoid callback, CBDescIn descIn)
+	public BACIAction(CBvoid callback, CBDescIn descIn, ThreadFactory threadFactory)
 	{
-		this(callback, descIn, (CallbackDispatcher)null);
+		this(callback, descIn, (CallbackDispatcher)null, threadFactory);
 	}
 	
 	/**
@@ -83,9 +87,10 @@ public abstract class BACIAction implements PrioritizedRunnable {
 	 * @param callbackDispatcher	callback dispatcher (value dependend).
 	 */
 	public BACIAction(Callback callback, CBDescIn descIn,
-					  CallbackDispatcher callbackDispatcher)
+					  CallbackDispatcher callbackDispatcher, 
+					  ThreadFactory threadFactory)
 	{
-		this(callback, descIn, callbackDispatcher, BACIPriority.NORMAL);
+		this(callback, descIn, callbackDispatcher, BACIPriority.NORMAL, threadFactory);
 	}
 
 	/**
@@ -94,9 +99,9 @@ public abstract class BACIAction implements PrioritizedRunnable {
 	 * @param descIn	action in descriptor.
 	 * @param priority	action priority.
 	 */
-	public BACIAction(CBvoid callback, CBDescIn descIn, BACIPriority priority)
+	public BACIAction(CBvoid callback, CBDescIn descIn, BACIPriority priority, ThreadFactory threadFactory)
 	{
-		this(callback, descIn, null, priority);
+		this(callback, descIn, null, priority, threadFactory);
 	}
 
 	/**
@@ -107,11 +112,12 @@ public abstract class BACIAction implements PrioritizedRunnable {
 	 * @param priority	action priority.
 	 */
 	public BACIAction(Callback callback, CBDescIn descIn, 
-					  CallbackDispatcher callbackDispatcher, BACIPriority priority)
+					  CallbackDispatcher callbackDispatcher, BACIPriority priority, ThreadFactory threadFactory)
 	{
 		this.callback = callback;
 		this.callbackDispatcher = callbackDispatcher;
 		this.priority = priority;
+		this.threadFactory = threadFactory;
 		descOut = generateCBDescOut(descIn);
 	}
 
@@ -208,7 +214,7 @@ public abstract class BACIAction implements PrioritizedRunnable {
 	 */
 	public void submit()
 	{
-		BACIExecutor.getInstance().execute(this);
+		BACIExecutor.getInstance(threadFactory).execute(this);
 	}
 
 }

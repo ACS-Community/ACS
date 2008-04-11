@@ -22,6 +22,7 @@
 package alma.ACS.jbaci;
 
 import java.util.Date;
+import java.util.concurrent.ThreadFactory;
 
 /**
  * BACI timer.
@@ -40,22 +41,24 @@ public class BACITimer  {
 	 * Singleton instance.
 	 */
 	private static BACITimer instance = null;
+	private final ThreadFactory threadFactory;
 
 	
 	/**
 	 * Protected constructor (singleton pattern). 
 	 */
-	public BACITimer() {
+	public BACITimer(ThreadFactory threadFactory) {
+		this.threadFactory = threadFactory;
 		runLoop_ = new RunLoop();
 	}
 
 	/**
 	 * Singleton pattern.
 	 */
-	public static synchronized BACITimer getInstance()
+	public static synchronized BACITimer getInstance(ThreadFactory threadFactory)
 	{
 		if (instance == null)
-			instance = new BACITimer();
+			instance = new BACITimer(threadFactory);
 		return instance;
 	}
 
@@ -210,14 +213,16 @@ public class BACITimer  {
    * due to an unrecoverable exception in an executed command.
    **/
 
-  public synchronized void restart() {
-	if (thread_ == null) {
-	  thread_ = new Thread(runLoop_, this.getClass().getName());
-	  thread_.start();
+	public synchronized void restart() {
+		if (thread_ == null) {
+			thread_ = threadFactory.newThread(runLoop_);
+			thread_.setName(this.getClass().getName());
+			thread_.start();
+		} 
+		else {
+			notify();
+		}
 	}
-	else
-	  notify();
-  }
 
 
   /**
@@ -225,7 +230,7 @@ public class BACITimer  {
    * the current task, if any.
    * A new background thread will be started if new execution
    * requests are encountered. If the currently executing task
-   * does not repsond to interrupts, the current thread may persist, even
+   * does not respond to interrupts, the current thread may persist, even
    * if a new thread is started via restart().
    **/
   public synchronized void shutDown() {
@@ -275,7 +280,9 @@ public class BACITimer  {
 		}
 	  }
 	}
-	catch (InterruptedException ex) {  } // fall through
+	catch (InterruptedException ex) { 
+		System.out.println("Fucking damn InterruptedException man!");
+	} // fall through
 
 	return null; // on interrupt
   }

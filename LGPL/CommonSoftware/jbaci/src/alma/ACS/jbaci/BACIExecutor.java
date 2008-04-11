@@ -22,6 +22,7 @@
 package alma.ACS.jbaci;
 
 import java.util.concurrent.PriorityBlockingQueue;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
@@ -56,23 +57,23 @@ public class BACIExecutor {
 	/**
 	 * Protected constructor (singleton pattern). 
 	 */
-	protected BACIExecutor()
+	protected BACIExecutor(ThreadFactory threadFactory)
 	{
         // TODO make PriorityBlockingQueue bounded!!! (to MAX_REQUESTS)
 		// TODO should I use PooledExecutorWithWaitInNewThreadWhenBlocked...
 		threadPool = new ThreadPoolExecutor(POOL_THREADS, POOL_THREADS,
         								  Long.MAX_VALUE, TimeUnit.NANOSECONDS,
-        								  new PriorityBlockingQueue(MAX_REQUESTS, new PrioritizedRunnableComparator()));
+        								  new PriorityBlockingQueue(MAX_REQUESTS, new PrioritizedRunnableComparator()), threadFactory);
 		threadPool.prestartAllCoreThreads();
 	}
 	
 	/**
 	 * Singleton pattern.
 	 */
-	public static synchronized BACIExecutor getInstance()
+	public static synchronized BACIExecutor getInstance(ThreadFactory threadFactory)
 	{
 		if (instance == null)
-			instance = new BACIExecutor();
+			instance = new BACIExecutor(threadFactory);
 		return instance;
 	}
 

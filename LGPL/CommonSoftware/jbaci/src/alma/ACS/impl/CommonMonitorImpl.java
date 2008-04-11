@@ -21,6 +21,7 @@
 
 package alma.ACS.impl;
 
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.omg.CORBA.LongHolder;
@@ -93,10 +94,13 @@ public class CommonMonitorImpl implements MonitorOperations,
 	 */
 	protected AtomicLong queuedKeyTime = new AtomicLong(0);
 
+	protected final ThreadFactory threadFactory;
+
 	/**
 	 * Default constructor.
 	 */
-	protected CommonMonitorImpl() {
+	protected CommonMonitorImpl(ThreadFactory threadFactory) {
+		this.threadFactory = threadFactory;
 	}
 
 	/**
@@ -105,8 +109,8 @@ public class CommonMonitorImpl implements MonitorOperations,
 	 * @param callback	callback, non-<code>null</code>.
 	 * @param descIn	callback in-descriptor.
 	 */
-	public CommonMonitorImpl(CommonPropertyImpl property, Callback callback, CBDescIn descIn) {
-		this(property, callback, descIn, 0);
+	public CommonMonitorImpl(CommonPropertyImpl property, Callback callback, CBDescIn descIn, ThreadFactory threadFactory) {
+		this(property, callback, descIn, 0, threadFactory);
 	}
 
 	/**
@@ -117,7 +121,7 @@ public class CommonMonitorImpl implements MonitorOperations,
 	 * @param startTime startTime (OMG time), values less or equal to current time mean immediately,
 	 * 					value 0 means that start time should be controlled automatically (synchronized monitors).  
 	 */
-	public CommonMonitorImpl(CommonPropertyImpl property, Callback callback, CBDescIn descIn, long startTime) {
+	public CommonMonitorImpl(CommonPropertyImpl property, Callback callback, CBDescIn descIn, long startTime, ThreadFactory threadFactory) {
 		
 		if (property == null)
 			throw new NullPointerException("property == null");
@@ -127,9 +131,10 @@ public class CommonMonitorImpl implements MonitorOperations,
 
 		this.property = property;
 		this.startTime = startTime;
+		this.threadFactory = threadFactory;
 		
 		// create dispatch action
-		dispatchAction = new BACIDispatchAction(callback, descIn, property, getPriority());
+		dispatchAction = new BACIDispatchAction(callback, descIn, property, getPriority(), threadFactory);
 		
 		// TODO 
 		// make override policy configurable per instance, perhaps using a finite queue...
@@ -194,7 +199,7 @@ public class CommonMonitorImpl implements MonitorOperations,
 			return;
 
 		// schedule
-		monitorTimerTask = BACITimer.getInstance().executePeriodically(timeTrigger, this, startTime);
+		monitorTimerTask = BACITimer.getInstance(threadFactory).executePeriodically(timeTrigger, this, startTime);
 	}
 	
 	/**
@@ -262,7 +267,7 @@ public class CommonMonitorImpl implements MonitorOperations,
 		// if none is queued, initiate executor otherwise override old value 
 		if (queuedKeyTime.getAndSet(timeToRun) == 0)
 		{
-			BACIExecutor.getInstance().execute(CommonMonitorImpl.this);
+			BACIExecutor.getInstance(threadFactory).execute(CommonMonitorImpl.this);
 		}
 	}
 

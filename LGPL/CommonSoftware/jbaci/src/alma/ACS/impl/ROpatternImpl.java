@@ -21,6 +21,8 @@
 
 package alma.ACS.impl;
 
+import java.util.concurrent.ThreadFactory;
+
 import org.omg.CORBA.NO_IMPLEMENT;
 import org.omg.CORBA.NO_RESOURCES;
 
@@ -64,9 +66,10 @@ public class ROpatternImpl
 	 */
 	public ROpatternImpl(
 		String name,
-		CharacteristicComponentImpl parentComponent)
+		CharacteristicComponentImpl parentComponent,
+		ThreadFactory threadFactory)
 		throws PropertyInitializationFailed {
-		super(int.class, name, parentComponent);
+		super(int.class, name, parentComponent, threadFactory);
 	}
 
 	/**
@@ -79,9 +82,10 @@ public class ROpatternImpl
 	public ROpatternImpl(
 		String name,
 		CharacteristicComponentImpl parentComponent,
-		DataAccess dataAccess)
+		DataAccess dataAccess,
+		ThreadFactory threadFactory)
 		throws PropertyInitializationFailed {
-		super(int.class, name, parentComponent, dataAccess);
+		super(int.class, name, parentComponent, dataAccess, threadFactory);
 	}
 
 	/**
@@ -211,7 +215,7 @@ public class ROpatternImpl
 		CBDescIn descIn) {
 			
 		// create monitor and its servant
-		MonitorpatternImpl monitorImpl = new MonitorpatternImpl(this, callback, descIn, startTime);
+		MonitorpatternImpl monitorImpl = new MonitorpatternImpl(this, callback, descIn, startTime, threadFactory);
 		MonitorpatternPOATie monitorTie = new MonitorpatternPOATie(monitorImpl);
 
 		// register and activate		

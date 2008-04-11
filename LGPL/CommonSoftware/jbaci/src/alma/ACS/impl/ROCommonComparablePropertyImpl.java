@@ -21,6 +21,8 @@
 
 package alma.ACS.impl;
 
+import java.util.concurrent.ThreadFactory;
+
 import alma.ACS.jbaci.DataAccess;
 import alma.ACS.jbaci.MemoryDataAccess;
 import alma.ACS.jbaci.PropertyInitializationFailed;
@@ -62,9 +64,10 @@ public abstract class ROCommonComparablePropertyImpl extends CommonComparablePro
 	public ROCommonComparablePropertyImpl(
 		Class propertyType,
 		String name,
-		CharacteristicComponentImpl parentComponent)
+		CharacteristicComponentImpl parentComponent,
+		ThreadFactory threadFactory)
 		throws PropertyInitializationFailed {
-		this(propertyType, name, parentComponent, new MemoryDataAccess());
+		this(propertyType, name, parentComponent, new MemoryDataAccess(), threadFactory);
 	}
 
 	/**
@@ -79,9 +82,10 @@ public abstract class ROCommonComparablePropertyImpl extends CommonComparablePro
 		Class propertyType,
 		String name,
 		CharacteristicComponentImpl parentComponent,
-		DataAccess dataAccess)
+		DataAccess dataAccess,
+		ThreadFactory threadFactory)
 		throws PropertyInitializationFailed {
-		super(propertyType, name, parentComponent, dataAccess);
+		super(propertyType, name, parentComponent, dataAccess, threadFactory);
 	}
 
 	/**

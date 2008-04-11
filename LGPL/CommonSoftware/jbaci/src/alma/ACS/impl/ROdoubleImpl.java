@@ -21,6 +21,8 @@
 
 package alma.ACS.impl;
 
+import java.util.concurrent.ThreadFactory;
+
 import org.omg.CORBA.NO_IMPLEMENT;
 
 import alma.ACS.Alarmdouble;
@@ -61,9 +63,10 @@ public class ROdoubleImpl
 	 */
 	public ROdoubleImpl(
 		String name,
-		CharacteristicComponentImpl parentComponent)
+		CharacteristicComponentImpl parentComponent,
+		ThreadFactory threadFactory)
 		throws PropertyInitializationFailed {
-		super(double.class, name, parentComponent);
+		super(double.class, name, parentComponent, threadFactory);
 	}
 
 	/**
@@ -75,9 +78,10 @@ public class ROdoubleImpl
 	public ROdoubleImpl(
 		String name,
 		CharacteristicComponentImpl parentComponent,
-		DataAccess dataAccess)
+		DataAccess dataAccess,
+		ThreadFactory threadFactory)
 		throws PropertyInitializationFailed {
-		super(double.class, name, parentComponent, dataAccess);
+		super(double.class, name, parentComponent, dataAccess, threadFactory);
 	}
 
 	/**
@@ -142,7 +146,7 @@ public class ROdoubleImpl
 		CBDescIn descIn) {
 			
 		// create monitor and its servant
-		MonitordoubleImpl monitorImpl = new MonitordoubleImpl(this, callback, descIn, startTime);
+		MonitordoubleImpl monitorImpl = new MonitordoubleImpl(this, callback, descIn, startTime, threadFactory);
 		MonitordoublePOATie monitorTie = new MonitordoublePOATie(monitorImpl);
 
 		// register and activate		

@@ -23,6 +23,7 @@ package alma.ACS.jbaci;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.concurrent.ThreadFactory;
 
 import alma.ACS.CBDescIn;
 import alma.ACS.CBDescOut;
@@ -160,14 +161,16 @@ public class BACIDispatchAction implements PrioritizedRunnable {
 	 */
 	protected ArrayList listeners = new ArrayList();
 
+	private ThreadFactory threadFactory;
+
 	/**
 	 * Constructor of NORMAL priority action (CBvoid callback).
 	 * @param callback	action callback.
 	 * @param descIn	action callback in descriptor.
 	 */
-	public BACIDispatchAction(CBvoid callback, CBDescIn descIn)
+	public BACIDispatchAction(CBvoid callback, CBDescIn descIn, ThreadFactory threadFactory)
 	{
-		this(callback, descIn, (CallbackDispatcher)null);
+		this(callback, descIn, (CallbackDispatcher)null, threadFactory);
 	}
 	
 	/**
@@ -177,9 +180,10 @@ public class BACIDispatchAction implements PrioritizedRunnable {
 	 * @param callbackDispatcher	callback dispatcher (value dependend).
 	 */
 	public BACIDispatchAction(Callback callback, CBDescIn descIn,
-					  		  CallbackDispatcher callbackDispatcher)
+					  		  CallbackDispatcher callbackDispatcher,
+					  		ThreadFactory threadFactory)
 	{
-		this(callback, descIn, callbackDispatcher, BACIPriority.NORMAL);
+		this(callback, descIn, callbackDispatcher, BACIPriority.NORMAL, threadFactory);
 	}
 
 	/**
@@ -188,9 +192,9 @@ public class BACIDispatchAction implements PrioritizedRunnable {
 	 * @param descIn	action in descriptor.
 	 * @param priority	action priority.
 	 */
-	public BACIDispatchAction(CBvoid callback, CBDescIn descIn, BACIPriority priority)
+	public BACIDispatchAction(CBvoid callback, CBDescIn descIn, BACIPriority priority, ThreadFactory threadFactory)
 	{
-		this(callback, descIn, null, priority);
+		this(callback, descIn, null, priority, threadFactory);
 	}
 
 	/**
@@ -201,11 +205,13 @@ public class BACIDispatchAction implements PrioritizedRunnable {
 	 * @param priority	action priority.
 	 */
 	public BACIDispatchAction(Callback callback, CBDescIn descIn, 
-					  		  CallbackDispatcher callbackDispatcher, BACIPriority priority)
+					  		  CallbackDispatcher callbackDispatcher, BACIPriority priority,
+					  		  ThreadFactory threadFactory)
 	{
 		this.callback = callback;
 		this.callbackDispatcher = callbackDispatcher;
 		this.priority = priority;
+		this.threadFactory = threadFactory;
 		descOut = generateCBDescOut(descIn);
 		failureCountLimit = DEFAULT_FAILURE_COUNT_LIMIT;
 	}
@@ -431,7 +437,7 @@ public class BACIDispatchAction implements PrioritizedRunnable {
 				return;
 
 			// non blocking...
-			submitPending = BACIDispatcher.getInstance().execute(this);
+			submitPending = BACIDispatcher.getInstance(threadFactory).execute(this);
 		}
 	}
 

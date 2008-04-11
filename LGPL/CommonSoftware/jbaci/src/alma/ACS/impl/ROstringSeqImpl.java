@@ -21,6 +21,8 @@
 
 package alma.ACS.impl;
 
+import java.util.concurrent.ThreadFactory;
+
 import org.omg.CORBA.NO_IMPLEMENT;
 
 import alma.ACS.AlarmstringSeq;
@@ -61,9 +63,10 @@ public class ROstringSeqImpl
 	 */
 	public ROstringSeqImpl(
 		String name,
-		CharacteristicComponentImpl parentComponent)
+		CharacteristicComponentImpl parentComponent,
+		ThreadFactory threadFactory)
 		throws PropertyInitializationFailed {
-		super(String[].class, name, parentComponent);
+		super(String[].class, name, parentComponent, threadFactory);
 	}
 
 	/**
@@ -75,9 +78,10 @@ public class ROstringSeqImpl
 	public ROstringSeqImpl(
 		String name,
 		CharacteristicComponentImpl parentComponent,
-		DataAccess dataAccess)
+		DataAccess dataAccess,
+		ThreadFactory threadFactory)
 		throws PropertyInitializationFailed {
-		super(String[].class, name, parentComponent, dataAccess);
+		super(String[].class, name, parentComponent, dataAccess, threadFactory);
 	}
 
 	/**
@@ -100,7 +104,7 @@ public class ROstringSeqImpl
 	 */
 	public MonitorstringSeq create_postponed_monitor(long startTime,	CBstringSeq callback, CBDescIn desc) {
 		// create monitor and its servant
-		MonitorstringSeqImpl monitorImpl = new MonitorstringSeqImpl(this, callback, desc, startTime);
+		MonitorstringSeqImpl monitorImpl = new MonitorstringSeqImpl(this, callback, desc, startTime, threadFactory);
 		MonitorstringSeqPOATie monitorTie = new MonitorstringSeqPOATie(monitorImpl);
 
 		// register and activate		
