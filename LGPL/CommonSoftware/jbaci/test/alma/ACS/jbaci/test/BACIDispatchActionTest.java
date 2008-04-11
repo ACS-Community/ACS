@@ -23,6 +23,9 @@
 package alma.ACS.jbaci.test;
 
 import java.util.Vector;
+import java.util.logging.Logger;
+
+import junit.framework.TestCase;
 
 import org.omg.CORBA.Context;
 import org.omg.CORBA.ContextList;
@@ -37,11 +40,12 @@ import org.omg.CORBA.SetOverrideType;
 import alma.ACS.CBDescIn;
 import alma.ACS.CBDescOut;
 import alma.ACS.Callback;
-import alma.ACSErr.Completion;
 import alma.ACS.jbaci.BACIDispatchAction;
 import alma.ACS.jbaci.CallbackDispatcher;
 import alma.ACS.jbaci.CompletionUtil;
-import junit.framework.TestCase;
+import alma.ACSErr.Completion;
+import alma.acs.container.CleaningDaemonThreadFactory;
+import alma.acs.logging.ClientLogManager;
 
 /**
  * <code>BACIDispatchAction</code> test.
@@ -60,6 +64,10 @@ public class BACIDispatchActionTest extends TestCase {
 	 */
 	private static final int DUMMY_WAIT_TIME = 2000;
 
+	private CleaningDaemonThreadFactory threadFactory;
+
+	private Logger logger;
+	
 	/**
 	 * Dispatch action. 
 	 */
@@ -454,6 +462,19 @@ public class BACIDispatchActionTest extends TestCase {
 		super(name);
 	}
 
+	protected void setUp() throws Exception {
+		String name = getClass().getSimpleName();
+		logger = ClientLogManager.getAcsLogManager().getLoggerForApplication(name, false);
+		logger.info("START----------------------------" + getName() + "-------------");
+		threadFactory = new CleaningDaemonThreadFactory(name, logger);
+	}
+
+	protected void tearDown() throws Exception {
+		threadFactory.cleanUp();
+		logger.info("END------------------------------" + getName() + "-------------\n\n");
+	}
+
+
 	/**
 	 * Methods that check dispatcher response.
 	 */
@@ -502,7 +523,7 @@ public class BACIDispatchActionTest extends TestCase {
 		Callback callback = new TestCallback();
 		TestCallbackDispatcher dispatcher = new PerfectCallbackDispatcher();
 		
-		BACIDispatchAction action = new BACIDispatchAction(callback, descIn, dispatcher);
+		BACIDispatchAction action = new BACIDispatchAction(callback, descIn, dispatcher, threadFactory);
 		
 		synchronized (dispatcher)
 		{
@@ -538,7 +559,7 @@ public class BACIDispatchActionTest extends TestCase {
 		Callback callback = new TestCallback();
 		TestCallbackDispatcher dispatcher = new FirstFailedCallbackDispatcher();
 		
-		BACIDispatchAction action = new BACIDispatchAction(callback, descIn, dispatcher);
+		BACIDispatchAction action = new BACIDispatchAction(callback, descIn, dispatcher, threadFactory);
 		
 		synchronized (dispatcher)
 		{
@@ -579,7 +600,7 @@ public class BACIDispatchActionTest extends TestCase {
 		Callback callback = new TestCallback();
 		TestCallbackDispatcher dispatcher = new DisasterCallbackDispatcher();
 		
-		BACIDispatchAction action = new BACIDispatchAction(callback, descIn, dispatcher);
+		BACIDispatchAction action = new BACIDispatchAction(callback, descIn, dispatcher, threadFactory);
 		
 		synchronized (dispatcher)
 		{
@@ -619,7 +640,7 @@ public class BACIDispatchActionTest extends TestCase {
 		Callback callback = new TestCallback();
 		TestCallbackDispatcher dispatcher = new ExceptionCallbackDispatcher();
 		
-		BACIDispatchAction action = new BACIDispatchAction(callback, descIn, dispatcher);
+		BACIDispatchAction action = new BACIDispatchAction(callback, descIn, dispatcher, threadFactory);
 		
 		synchronized (dispatcher)
 		{
@@ -660,7 +681,7 @@ public class BACIDispatchActionTest extends TestCase {
 		Callback callback = new TestCallback();
 		TestCallbackDispatcher dispatcher = new OverrideTestCallbackDispatcher(blockingFails);
 		
-		BACIDispatchAction action = new BACIDispatchAction(callback, descIn, dispatcher);
+		BACIDispatchAction action = new BACIDispatchAction(callback, descIn, dispatcher, threadFactory);
 		action.setOverridePolicy(true);
 		
 
@@ -738,7 +759,7 @@ public class BACIDispatchActionTest extends TestCase {
 		Callback callback = new TestCallback();
 		TestCallbackDispatcher dispatcher = new OverrideTestCallbackDispatcher(true);
 		
-		BACIDispatchAction action = new BACIDispatchAction(callback, descIn, dispatcher);
+		BACIDispatchAction action = new BACIDispatchAction(callback, descIn, dispatcher, threadFactory);
 		action.setOverridePolicy(true);
 		
 
@@ -775,7 +796,7 @@ public class BACIDispatchActionTest extends TestCase {
 		// check response
 		checkResponse(value, completion, descIn, callback, response);
 	}
-
+	
 	public static void main(String[] args) {
 		junit.textui.TestRunner.run(BACIDispatchActionTest.class);
 		// System.exit(0);
