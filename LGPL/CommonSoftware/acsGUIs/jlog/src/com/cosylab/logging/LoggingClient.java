@@ -1461,7 +1461,7 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 			logEntryTable.close();
 		}
 		if (engine!=null) {
-			engine.disconnect();
+			engine.close(sync);
 		}
 		errorDialog.setVisible(false);
 		errorDialog.dispose();
