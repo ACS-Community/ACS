@@ -19,7 +19,7 @@
 
 /** 
  * @author  acaproni   
- * @version $Id: ACSLogRetrieval.java,v 1.27 2008/03/20 08:42:36 acaproni Exp $
+ * @version $Id: ACSLogRetrieval.java,v 1.28 2008/04/14 16:22:56 acaproni Exp $
  * @since    
  */
 
@@ -88,7 +88,7 @@ public class ACSLogRetrieval extends Thread {
 	 * The filters are not applied to XML listeners.
 	 * These filters are applied after the audience.
 	 */
-	private FiltersVector filters;
+	private FiltersVector filters=null;
 	
 	// The parser
 	private ACSLogParser parser=null;
@@ -372,4 +372,5 @@ public class ACSLogRetrieval extends Thread {
 	public int size() {
 		return cache.size();
 	}
+	
 }
