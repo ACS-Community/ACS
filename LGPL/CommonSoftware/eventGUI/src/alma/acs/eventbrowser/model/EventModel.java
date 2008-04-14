@@ -7,6 +7,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.ui.PlatformUI;
 import org.omg.CORBA.ORB;
 import org.omg.CosNaming.Binding;
 import org.omg.CosNaming.BindingIteratorHolder;
@@ -68,13 +69,19 @@ public class EventModel {
 		try {
 			acc = new AdvancedComponentClient(m_logger, connectionString, eventGuiId);
 		} catch (Exception e) {
+			if (PlatformUI.isWorkbenchRunning()) {
 			MessageDialog dialog = new MessageDialog(null,"Can't create client",null,"The eventGUI client cannot be created. You might want to check the ACS host and instance.\n"+
 					"ACS instance used: "+acsInstance+"; Looked for manager on host: "+managerHost,
 			MessageDialog.ERROR, new String[]{"OK"}, 0);
 			dialog.open();
 			IStatus status = new Status(IStatus.ERROR, eventGuiId,0, "Couldn't create component client", e);
 			Platform.getLog(Platform.getBundle(eventGuiId)).log(status);
-			System.exit(1);
+			}
+			else {
+				System.out.println("Can't create advanced componenet client.");
+				e.printStackTrace();
+			}
+			throw(e);
 		}
 		compClient = acc;
 		mproxy = compClient.getAcsManagerProxy();
@@ -152,8 +159,10 @@ public class EventModel {
 					int numSuppliers = ec.get_all_supplieradmins().length;
 					System.out.println("... has "+numConsumers+" consumers and "+numSuppliers+" suppliers.");
 					int[] admins = ec.get_all_consumeradmins();
+					ConsumerAdmin adm = null;
 					try {
-						ConsumerAdmin adm = ec.get_consumeradmin(admins[0]);
+						if (numConsumers > 0)
+							adm = ec.get_consumeradmin(admins[0]);
 						// TODO This would be an opportunity to create the AdminConsumer, but let's not do it here...
 					} catch (AdminNotFound e) {
 						// TODO Auto-generated catch block
@@ -232,6 +241,10 @@ public class EventModel {
 	public String[] getServices() {
 
 		return orb.list_initial_services();
+	}
+	
+	public ContainerServices getContainerServices() {
+		return cs;
 	}
 
 	
