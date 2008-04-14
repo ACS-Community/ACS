@@ -106,17 +106,4 @@ public class simulatorRemoteAccess extends Thread implements com.cosylab.logging
 	
 	public void close(boolean sync) {}
 
-	/**
-	 * @see com.cosylab.logging.engine.RemoteAccess#setFilters(com.cosylab.logging.engine.FiltersVector)
-	 */
-	@Override
-	public void setFilters(FiltersVector filters) {	}
-
-	/**
-	 * @see com.cosylab.logging.engine.RemoteAccess#setAudience(java.lang.String)
-	 */
-	@Override
-	public void setAudience(EngineAudienceHelper audience) { }
-	
-	
 }
