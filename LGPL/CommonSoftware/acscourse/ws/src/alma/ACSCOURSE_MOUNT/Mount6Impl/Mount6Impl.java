@@ -21,6 +21,7 @@
  */
 package alma.ACSCOURSE_MOUNT.Mount6Impl;
 
+import java.util.concurrent.ThreadFactory;
 import java.util.logging.Level;
 
 import alma.ACS.ROdouble;
@@ -54,21 +55,23 @@ public class Mount6Impl extends CharacteristicComponentImpl implements Mount6J
 		super.initialize(containerServices);
 		
 		try
-		{			
-			ROdoubleImpl actAzImpl = new ROdoubleImpl("actAz", this);
+		{ 
+			ThreadFactory tf = containerServices.getThreadFactory();
+			
+			ROdoubleImpl actAzImpl = new ROdoubleImpl("actAz", this, tf);
 //			m_actAzDataAccess = actAzImpl.getDataAccess();
 			ROdoublePOATie actAzTie = new ROdoublePOATie(actAzImpl);
 			m_actAz = ROdoubleHelper.narrow(this.registerProperty(actAzImpl, actAzTie));
 
-			ROdoubleImpl actElImpl = new ROdoubleImpl("actEl", this);
+			ROdoubleImpl actElImpl = new ROdoubleImpl("actEl", this, tf);
 			ROdoublePOATie actElTie = new ROdoublePOATie(actElImpl);
 			m_actEl = ROdoubleHelper.narrow(this.registerProperty(actElImpl, actElTie));
 
-			ROdoubleImpl cmdAzImpl = new ROdoubleImpl("cmdAz", this);
+			ROdoubleImpl cmdAzImpl = new ROdoubleImpl("cmdAz", this, tf);
 			ROdoublePOATie cmdAzTie = new ROdoublePOATie(cmdAzImpl);
 			m_cmdAz = ROdoubleHelper.narrow(this.registerProperty(cmdAzImpl, cmdAzTie));
 
-			ROdoubleImpl cmdElImpl = new ROdoubleImpl("cmdEl", this);
+			ROdoubleImpl cmdElImpl = new ROdoubleImpl("cmdEl", this, tf);
 			ROdoublePOATie cmdElTie = new ROdoublePOATie(cmdElImpl);
 			m_cmdEl = ROdoubleHelper.narrow(this.registerProperty(cmdElImpl, cmdElTie));
 		}
