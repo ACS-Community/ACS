@@ -24,6 +24,7 @@ package com.cosylab.logging;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -170,16 +171,8 @@ public class IOLogsHelper extends Thread  {
 			buttonPanel.add(abortBtn);
 			bottomPanel.add(buttonPanel,BorderLayout.SOUTH);
 			
-			
 			add(bottomPanel,BorderLayout.SOUTH);
-			
-			pack();
-			toFront();
-			
-			Toolkit tk = Toolkit.getDefaultToolkit();
-			Dimension screenDim = tk.getScreenSize();
-			setLocation(screenDim.width/2-this.getWidth()/2,screenDim.height/2-this.getHeight()/2);
-			
+
 			setVisible(true);
 		}
 		
@@ -271,6 +264,22 @@ public class IOLogsHelper extends Thread  {
 		 * @see java.awt.event.WindowListener
 		 */
 		public void windowOpened(WindowEvent e) {}
+		
+		/**
+		 * Override <code>setVisible()</code> to move the statistic window
+		 * over the logging client and in front of other windows
+		 */
+		@Override
+		public void setVisible(boolean visible) {
+			super.setVisible(visible);
+			// Move the statistic win on top of jlog
+			if (visible && isShowing()) {
+				Point loggingPos = IOLogsHelper.this.loggingClient.getLocationOnScreen();
+				setLocation(loggingPos);
+				pack();
+				toFront();
+			}
+		}
 		
 	}
 	
@@ -511,6 +520,14 @@ public class IOLogsHelper extends Thread  {
 			return buffer.indexOf(str);
 		}
 	}
+	
+	// A queue of actions to perform in a separate thread
+	private LinkedList<IOAction> actions = new LinkedList<IOAction>();
+	
+	private ProgressDialog progressDialog;
+	
+	// The logging client
+	private LoggingClient loggingClient=null;
 
 	/**
 	 * Build an IOCacheHelper object
@@ -528,14 +545,6 @@ public class IOLogsHelper extends Thread  {
 		setDaemon(true);
 		start();
 	}
-	
-	// A queue of actions to perform in a separate thread
-	private LinkedList<IOAction> actions = new LinkedList<IOAction>();
-	
-	private ProgressDialog progressDialog;
-	
-	// The logging client
-	private LoggingClient loggingClient=null;
 	
 	/**
 	 * Load the logs from the given file in the Cache appending their
