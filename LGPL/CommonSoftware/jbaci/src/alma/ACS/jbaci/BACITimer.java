@@ -281,7 +281,6 @@ public class BACITimer  {
 	  }
 	}
 	catch (InterruptedException ex) { 
-		System.out.println("Fucking damn InterruptedException man!");
 	} // fall through
 
 	return null; // on interrupt
