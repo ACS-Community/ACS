@@ -33,7 +33,6 @@ public class AdminConsumer extends Consumer {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		// TODO Auto-generated constructor stub
 	}
 
 	public AdminConsumer(String arg0, String arg1, ContainerServicesBase arg2)
@@ -61,6 +60,7 @@ public class AdminConsumer extends Consumer {
 		long count = eDescrip.count;
 		m_logger.fine("Time "+timeStamp+" "+m_channelName+" "+component+" "+count+" "+channelEventCount+" "
 				+" "+evtTypeName+" "+evtCounter.get(evtTypeName));
+		//TODO: Send this info to the viewer
 	}
 
 }
