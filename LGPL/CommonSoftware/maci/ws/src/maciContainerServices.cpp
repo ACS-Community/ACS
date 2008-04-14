@@ -19,7 +19,7 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
  *
- * "@(#) $Id: maciContainerServices.cpp,v 1.29 2008/02/24 17:07:39 msekoran Exp $"
+ * "@(#) $Id: maciContainerServices.cpp,v 1.30 2008/04/14 09:04:43 bjeram Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -549,13 +549,18 @@ MACIContainerServices::releaseComponent(const char *name)
 	{
 		
     // Check if the component is used and unbind
-    if (found == -1) 
-	{	
-	maciErrType::ComponentNotInUseExImpl ex(__FILE__, __LINE__,
-						     "MACIContainerServices::releaseComponent");
-	ex.setCURL(name);
-	throw ex;
-	}//if
+    	if (found == -1) 
+    	{	
+    		maciErrType::ComponentNotInUseExImpl ex1(__FILE__, __LINE__,
+    				"MACIContainerServices::releaseComponent");
+    		ex1.setCURL(name);
+
+    		maciErrType::CannotReleaseComponentExImpl ex(ex1, __FILE__, __LINE__,
+    				"MACIContainerServices::releaseComponent");
+    		ex.setCURL(name);
+
+    		throw ex;
+    	}//if
     
    
 	m_manager->release_component(m_componentHandle, name);
