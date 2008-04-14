@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: acsMakefile,v 1.165 2007/12/26 19:32:22 maraya Exp $" 
+# "@(#) $Id: acsMakefile,v 1.166 2008/04/14 09:49:46 mpasquat Exp $" 
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -764,9 +764,9 @@ else # we are now on linux in OCI
     endif
 
     ifdef ENABLE_PURECOV
-           PURECOV = purecov -always-use-cache-dir -counts-file=./.purifydir/purecov-%v.pcv
+           PURECOV = purecov -dlclose-mode=2 -follow-child-processes=yes -always-use-cache-dir -counts-file=./.purifydir/purecov-%v.pcv
            ifdef MAKE_PUREGUI
-              PURECOV = purecov -always-use-cache-dir 
+              PURECOV = purecov -dlclose-mode=2 -follow-child-processes=yes -always-use-cache-dir 
            endif
            NEED_DEBUG = on
     else 
