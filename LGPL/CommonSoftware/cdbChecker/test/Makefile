@@ -16,7 +16,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.4 2006/06/01 01:07:09 sharring Exp $"
+# "@(#) $Id: Makefile,v 1.5 2008/04/14 08:38:06 cparedes Exp $"
 #
 # Makefile of ........
 #
@@ -44,7 +44,8 @@
 SCRIPTS         =
 SCRIPTS_L       = test-acsexmpl.sh test-basic.sh \
                   test-defaultCDB.sh  test-ITS.sh test-subsystems.sh \
-                  test-defaultCDB-withcheckerscript.sh prologue.sh epilogue.sh
+                  test-defaultCDB-withcheckerscript.sh test-interfaceRepository.sh \
+		  prologue.sh epilogue.sh
 
 #
 #>>>>> END OF standard rules
