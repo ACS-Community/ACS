@@ -13,6 +13,14 @@ class CDBContentHandler extends DefaultHandler implements ContentHandler{
 		if(localname=="schema"){
 			CDBChecker.setTargetNamespaceString(attributes.getValue("targetNamespace"));
 		}
+
+		if(CDBChecker.checkidl && ( (localname == "Component") || (localname == "_" && namespace == "urn:schemas-cosylab-com:Components:1.0") ) ){
+			String idl = attributes.getValue("Type");
+			if(CDBChecker.rep.lookup_id(idl) == null){
+				System.out.println("[Error] IDL: "+idl+ " not found in Interface Repository.");
+				CDBChecker.globalErrorFlag = true;
+			}else if(CDBChecker.verbose) System.out.println("    "+idl+ " [OK]");
+		}
 	}
 }
 

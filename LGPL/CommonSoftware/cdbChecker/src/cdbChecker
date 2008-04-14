@@ -2,7 +2,7 @@
 #*******************************************************************************
 # cdbChecker
 #
-# "@(#) $Id: cdbChecker,v 1.6 2006/07/13 08:32:35 cparedes Exp $"
+# "@(#) $Id: cdbChecker,v 1.7 2008/04/14 08:21:53 cparedes Exp $"
 #
 
 #************************************************************************
@@ -70,11 +70,12 @@
 function printUsage {
 	echo " Wrapper for the java command: CDBChecker [-flags] [XMLPath] [XSDPath]"
   	echo "    Flags:"
-	echo "      -v | --verbose    Verbose output"
-	echo "      -r | --recursive  Disable recursive traversal of XMLPath and XSDPath"
-	echo "                        when searching for .xml/.xsd files"
-	echo "      -n | --network    Get required schemas from the network"
-	echo "      -h | --help       Show this help"
+	echo "      -v | --verbose        Verbose output"
+	echo "      -r | --recursive      Disable recursive traversal of XMLPath and XSDPath"
+	echo "                            when searching for .xml/.xsd files"
+	echo "      -n | --network        Get required schemas from the network"
+	echo "	    -c | --checkIdlTypes  Check if the idl types in CDB are available"
+	echo "      -h | --help           Show this help"
 	echo "    The XMLPath and XSDPath can have multiple paths separated by \":\"."
 	echo "    The paths must be absolute (i.e. they should start with '/')"
 	echo "    The checker will search for files recursively inside the given paths,"
@@ -139,6 +140,27 @@ SCHEMA_PATH=$PWD/../$SUB:$SCHEMA_PATH
 echo Searching for schema files in: $SCHEMA_PATH
 
 config_path=$(searchFile config/reqSchemas.xml)
+
+#Check if we have to check idl
+for arg in "$@"
+do
+    case $arg in
+	-c)	         CHECK_IDL=true ;;
+	--checkIdlTypes) CHECK_IDL=true ;;
+    esac
+done
+if [ "X$CHECK_IDL" != "X" ]; then
+    ird_running=`ps -fea| grep "\/bin\/ird" `
+    if [ "X$ird_running" == "X" ]; then
+        echo Running Interface Repository and loading schemas
+        RUN_IR=true
+	LD_LIBRARY_PATH=$MICO_HOME/lib:$LD_LIBRARY_PATH
+	$MICO_HOME/bin/ird -ORBNoResolve -ORBIIOPAddr inet:$HOST:3004 &
+	PID_IR=$!
+	acsstartupLoadIFR
+    fi
+fi
+
 if [ "$config_path" != "#error#" ]
 then
    acsStartJava --noDirectory -endorsed -DACS.tmp=$TMP_PATH -DACS.config_path=$config_path -DACS.cdbpath=$SCHEMA_PATH cl.utfsm.cdbChecker.CDBChecker $1 $2 $3 $4 $5 $6 $7 $8 $9 
@@ -147,6 +169,11 @@ else
    echo "[Error] The configuration files are missing... Do a 'make install'"	   
    returnCode=1
 fi					     
+
+if [ "X$RUN_IR" != "X" ]; then
+echo Killing Interface Repository
+kill -9 $PID_IR > /dev/null 2>&1
+fi
 
 # Final return code
 exit $returnCode

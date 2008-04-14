@@ -18,6 +18,9 @@ import java.util.Hashtable;
 import java.util.Properties;
 import java.util.Vector;
 
+import org.omg.CORBA.ORB;
+import org.omg.CORBA.Repository;
+import org.omg.CORBA.RepositoryHelper;
 import org.apache.xerces.parsers.SAXParser;
 import org.xml.sax.SAXException;
 
@@ -33,6 +36,7 @@ public class CDBChecker {
 	private SAXParser SP;
 	private Properties props = new Properties();
 	private Hashtable xsd_targetns;
+	public static final String IR_CORBALOC = "ACS.repository";
 	private String schemaFolder;
 
 	private static String targetNamespace;
@@ -54,10 +58,12 @@ public class CDBChecker {
 	 * error code.
 	 */
         public  static boolean globalErrorFlag = false;
+	public static Repository rep= null;
 
 	// Command line parameter flags
 	public  static  boolean verbose       = false;
 	private         boolean network       = false;
+	public  static 	boolean checkidl      = false;
 	private         boolean recursive     = true;
 
 	/**
@@ -152,6 +158,29 @@ public class CDBChecker {
                                 System.out.print((String)filename.get(i)+": [Warning] file is empty.\n");
                         }
 		}	
+	}
+
+	/**
+	 * This method check if the idl types on CDB are available
+	 * 
+	 */
+
+	protected void checkIdlTypes(){
+		//first check if IR is available
+		org.omg.CORBA.Object repRef = null;
+		ORB orb = org.omg.CORBA.ORB.init(new String[0], null);	
+		String IRloc = props.getProperty(IR_CORBALOC);
+		try{
+			repRef = orb.string_to_object(IRloc);
+		}catch(Exception e){
+			System.out.println("[Error] - Interface repository is not running, no check will be done.");
+		}
+		rep = RepositoryHelper.narrow(repRef);
+
+		//iterate trough all idlTypes
+		//done in parseElement
+			
+
 	}
 	
 	/**
@@ -324,11 +353,12 @@ public class CDBChecker {
 	protected static void printUsage(){
 		System.out.println("\n[usage:]\n\n    cdbChecker [-flags] [XMLPath] [XSDPath]");
 		System.out.println("\n\n    Flags:\n");
-		System.out.println("      -v | --verbose    Verbose output");
-		System.out.println("      -r | --recursive  Disable recursive traversal of XMLPath and XSDPath");
-		System.out.println("                        when searching for .xml/.xsd files");
-		System.out.println("      -n | --network    Get required schemas from the network");
-		System.out.println("      -h | --help       Show this help");
+		System.out.println("      -v | --verbose        Verbose output");
+		System.out.println("      -r | --recursive      Disable recursive traversal of XMLPath and XSDPath");
+		System.out.println("                            when searching for .xml/.xsd files");
+		System.out.println("      -n | --network        Get required schemas from the network");
+		System.out.println("      -c | --checkIdlTypes  Check if the idl types in CDB are available");
+		System.out.println("      -h | --help           Show this help");
 		System.out.println("\n    The XMLPath and XSDPath can have multiple paths separated by \":\".");
 		System.out.println("    The paths must be absolute (i.e. they should start with '/')");
 		System.out.println("    The checker will search for files recursively inside the given paths,");
@@ -349,13 +379,13 @@ public class CDBChecker {
 		boolean retVal = true;
 		int c;
 		String arg;
-		LongOpt[] longopts = new LongOpt[4];
+		LongOpt[] longopts = new LongOpt[5];
 		longopts[0] = new LongOpt("help", LongOpt.NO_ARGUMENT, null, 'h');
 		longopts[1] = new LongOpt("network", LongOpt.NO_ARGUMENT, null, 'n'); 
 		longopts[2] = new LongOpt("verbose", LongOpt.NO_ARGUMENT, null, 'v');
 		longopts[3] = new LongOpt("recursive", LongOpt.NO_ARGUMENT, null, 'r');
-
-		Getopt myGetOpt = new Getopt("cdbChecker", args, "rhnvW;", longopts);
+		longopts[4] = new LongOpt("checkIdlTypes", LongOpt.NO_ARGUMENT, null, 'c');
+		Getopt myGetOpt = new Getopt("cdbChecker", args, "rhncvW;", longopts);
 		myGetOpt.setOpterr(false); // We'll do our own error handling
 
 		while ((c = myGetOpt.getopt()) != -1) {
@@ -371,6 +401,9 @@ public class CDBChecker {
 					break;
 				case 'h':
 					retVal = false;
+					break;
+				case 'c':
+					this.checkidl = true;
 					break;
 				case 'W':
 					System.out.println("[Error] : you tried a -W with an incorrect long option name");
@@ -549,6 +582,11 @@ public class CDBChecker {
                                     // initialised to the empty string and never null
 				    cdbchecker.XSDPath = cdbchecker.XSDPath + ":" + ACS_cdbpath;
 				    }
+				if(cdbchecker.verbose && checkidl){
+					System.out.println("*** Checking Idl Types");
+				}
+				if (checkidl)
+					cdbchecker.checkIdlTypes();
 
 				String paths[]=cdbchecker.XSDPath.split(""+File.pathSeparatorChar);
 				Vector XSDFilenames=new Vector();
@@ -572,6 +610,7 @@ public class CDBChecker {
 				//Validating XML files
 				if(cdbchecker.verbose)System.out.println("*** Validating XML files");						
 				cdbchecker.XMLValidate(XMLFilenames);
+				
 			}
 		} 
       else {
