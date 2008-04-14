@@ -21,6 +21,8 @@
  */
 package com.cosylab.logging.engine.ACS;
 
+import java.lang.reflect.Constructor;
+
 import org.omg.CORBA.ORB;
 
 import si.ijs.maci.Manager;
@@ -48,6 +50,10 @@ import com.cosylab.logging.engine.RemoteAccess;
  * 
  * It there are no ACSRemoteLogLiestenersRegistered then the string received
  * from the NC is not parsed
+ * 
+ * The logs read from the NC are sent to the <code>logRetrieval</code> that, 
+ * in turn, send them to the registered listeners.
+ * Audience and filtering are implemented by <code>ACSLogRetrieval</code>.
  * 
  * @see ACSRemoteLogListener
  * @see ACSRemoteRawLogListener
@@ -113,20 +119,23 @@ public class LCEngine implements Filterable {
 		 * can happen if the connection has been lost)
 		 */
 		public void run() {
+			if (listenersDispatcher==null || logRetrieval==null) {
+				throw new IllegalStateException("The listener and the log retrieval can't be null");
+			}
 			disconnectRA();
 			listenersDispatcher.publishConnecting();
 			listenersDispatcher.publishReport("Connecting to " + accessType
 					+ " remote access...");
 			try {
 
-				Class[] parameters = { listenersDispatcher.getClass() };
+				Class[] parameters = { listenersDispatcher.getClass(), logRetrieval.getClass() };
 				String raName = accessType;
 				if (accessType.indexOf(".") == -1)
 					raName = "com.cosylab.logging.engine." + accessType + "."
 							+ accessType + "RemoteAccess"; // com.cosylab.logging.engine.ACS.ACSRemoteAccess
-				remoteAccess = (RemoteAccess) Class.forName(raName)
-						.getConstructor(parameters).newInstance(
-								listenersDispatcher);
+				Class theClass = Class.forName(raName);
+				Constructor ctor = theClass.getConstructor(parameters);
+				remoteAccess = (RemoteAccess)ctor.newInstance(listenersDispatcher,logRetrieval);
 				remoteAccess.initialize(orb, manager);
 			} catch (Throwable e) {
 				listenersDispatcher
@@ -134,6 +143,7 @@ public class LCEngine implements Filterable {
 								+ accessType + " remote access.");
 				listenersDispatcher.publishConnected(false);
 				System.out.println("Exception in LCEngine$AccessSetter::run(): "+ e);
+				e.printStackTrace();
 				return;
 			}
 			if (remoteAccess != null && remoteAccess.isInitialized()) {
@@ -141,8 +151,6 @@ public class LCEngine implements Filterable {
 						+ " remote access.");
 				listenersDispatcher.publishConnected(true);
 				LCEngine.this.wasConnected = true;
-				remoteAccess.setFilters(filters);
-				remoteAccess.setAudience(audience);
 			} else {
 				listenersDispatcher.publishConnected(false);
 			}
@@ -227,12 +235,17 @@ public class LCEngine implements Filterable {
 
 	// Dispatches messages to the listeners
 	private ACSListenersDispatcher listenersDispatcher = new ACSListenersDispatcher();
+	
+	// The log retrieval i,e. the object receiving logs and dispatching
+	// to the listeners
+	private ACSLogRetrieval logRetrieval=null;
 
 	/**
 	 * LCEngine constructor
 	 * 
 	 */
 	public LCEngine() {
+		logRetrieval=new ACSLogRetrieval(listenersDispatcher, Boolean.parseBoolean(ACSRemoteAccess.LOGGING_BINARY_FORMAT));
 	}
 
 	/**
@@ -242,6 +255,7 @@ public class LCEngine implements Filterable {
 	 *            If true the engine automatically reconnects
 	 */
 	public LCEngine(boolean autoReconn) {
+		this();
 		autoReconnect = autoReconn;
 	}
 
@@ -260,7 +274,8 @@ public class LCEngine implements Filterable {
 	 */
 	public LCEngine(boolean autoReconn, FiltersVector filters) {
 		this(autoReconn);
-		this.filters = filters;
+		setFilters(filters,false);
+		
 	}
 
 	/**
@@ -307,6 +322,16 @@ public class LCEngine implements Filterable {
 	public void connect(ORB theORB, Manager mgr) {
 		setConnectionParams(theORB, mgr);
 		connect();
+	}
+	
+	/**
+	 * Close the engine and free the resources.
+	 * 
+	 * @param sync If <code>true</code> the closing is made in a synchronized way.
+	 */
+	public void close(boolean sync) {
+		logRetrieval.close(sync);
+		disconnect();
 	}
 
 	/**
@@ -434,7 +459,7 @@ public class LCEngine implements Filterable {
 	 * @param pause
 	 */
 	public void setPaused(boolean pause) {
-		remoteAccess.pause(pause);
+		logRetrieval.pause(pause);
 	}
 
 	/**
@@ -512,9 +537,7 @@ public class LCEngine implements Filterable {
 		for (int t=0; t<newFilters.size(); t++) {
 			filters.addFilter(newFilters.get(t), newFilters.isActive(t));
 		}
-		if (remoteAccess!=null) {
-			remoteAccess.setFilters(filters);
-		}
+		logRetrieval.setFilters(filters);
 	}
 	
 	/**
@@ -527,9 +550,7 @@ public class LCEngine implements Filterable {
 		if (newAudience==null) {
 			throw new IllegalArgumentException("The audience can't be null");
 		}
-		if (remoteAccess!=null) {
-			remoteAccess.setAudience(newAudience);
-		}
+		logRetrieval.setAudience(newAudience);
 		audience=newAudience;
 	}
 
@@ -550,9 +571,7 @@ public class LCEngine implements Filterable {
 			filters = new FiltersVector();
 		}
 		filters.addFilter(filter, true);
-		if (remoteAccess != null) {
-			remoteAccess.setFilters(filters);
-		}
+		logRetrieval.setFilters(filters);
 	}
 
 	/**
@@ -563,9 +582,7 @@ public class LCEngine implements Filterable {
 	 */
 	public void clearFilters() {
 		filters = null;
-		if (remoteAccess != null) {
-			remoteAccess.setFilters(null);
-		}
+		logRetrieval.setFilters(null);
 	}
 
 	/**
