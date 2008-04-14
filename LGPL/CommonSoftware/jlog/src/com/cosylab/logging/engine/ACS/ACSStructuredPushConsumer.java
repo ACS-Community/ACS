@@ -64,12 +64,12 @@ public final class ACSStructuredPushConsumer extends StructuredPushConsumerPOA
 	// The object to dispatch messages to the listeners
 	private ACSListenersDispatcher listenersDispatcher = null;
 	
-	// The log retrieval object
-	private ACSLogRetrieval logRetrieval;
-	
 	// This boolean signal that the object has been closed:
 	// all the logs received while closed will be discarded
 	private volatile boolean closed=false;
+	
+	// The object to send new logs to
+	private ACSLogRetrieval logRetrieval;
 	
 	/**
 	 * StructuredPushConsumer constructor comment.
@@ -77,16 +77,18 @@ public final class ACSStructuredPushConsumer extends StructuredPushConsumerPOA
 	 * @param acsra The remote access obj to ACS NC
 	 * @param theEngine The LCEngine
 	 */
-	public ACSStructuredPushConsumer(ACSRemoteAccess acsra, ACSListenersDispatcher listenersDispatcher, boolean binaryFormat)
+	public ACSStructuredPushConsumer(ACSRemoteAccess acsra, ACSListenersDispatcher listenersDispatcher, ACSLogRetrieval logRetrieval, boolean binaryFormat)
 	{
 		if (acsra==null || listenersDispatcher==null) {
 			throw new IllegalArgumentException("Illegal null argument");
 		}
+		if (logRetrieval==null) {
+			throw new IllegalArgumentException("The ACSLogRetrieval can't be null");
+		}
 		this.binaryFormat=binaryFormat;
 		this.acsra = acsra;
 		this.listenersDispatcher=listenersDispatcher;
-//		dispatcher.setPriority(Thread.MAX_PRIORITY);
-		logRetrieval = new ACSLogRetrieval(listenersDispatcher,this.binaryFormat);
+		this.logRetrieval = logRetrieval;
 		initialize();
 	}
 
@@ -114,14 +116,13 @@ public final class ACSStructuredPushConsumer extends StructuredPushConsumerPOA
 			public void run() {
 				
 				try {
-				        teardownEvents();
+				    teardownEvents();
 					structuredProxyPushSupplier.disconnect_structured_push_supplier();
 					acsra.getConsumerAdmin().destroy();
 					
-				} catch (Throwable t) 
-				    {
+				} catch (Throwable t) {
 				    System.out.println("Exception in ACSStructuredPushConsumer::destroy(): " + t);
-				    }
+				}
 			}			
 		}
 		// @TODO check why disconnect_structured_push_supplier takes too long sometimes, since ACS 7.0.
@@ -288,48 +289,13 @@ public final class ACSStructuredPushConsumer extends StructuredPushConsumerPOA
 	}
 	
 	/**
-	 * Pause/unpause the thread that publishes logs
-	 * The logs received in pause mode are cached and will be
-	 * published when the application will be unpaused
-	 * 
-	 * @param pause
-	 */
-	public void setPaused(boolean pause) {
-		logRetrieval.pause(pause);
-	}
-	
-	/**
 	 * Close the threads and free all the resources
 	 * @param sync If it is true wait the termination of the threads before returning
 	 */
 	public void close(boolean sync) {
 		closed=true;
-		
-		if (logRetrieval!=null) {
-			logRetrieval.close(sync);
-		}
 	}
 	
-	/**
-	 * Set the filters to apply to incoming logs before sending to
-	 * the listeners.
-	 * These custom filters are applied after the audience
-	 * 
-	 * @param filters The filters to apply
-	 *                If <code>null</code> or empty the filtering is disabled
-	 */
-	public void setFilters(FiltersVector filters) {
-		logRetrieval.setFilters(filters);
-	}
-	
-	/**
-	 * Set the audience.
-	 * 
-	 * @param audience The audience
-	 * @see <code>LCEngine.setAudience()</code>
-	 */
-	public void setAudience(EngineAudienceHelper audience) {
-		logRetrieval.setAudience(audience);
-	}
+
 }
 

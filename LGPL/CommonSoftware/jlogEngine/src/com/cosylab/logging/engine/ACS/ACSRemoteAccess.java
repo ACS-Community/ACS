@@ -81,16 +81,23 @@ public final class ACSRemoteAccess implements RemoteAccess {
 	// The audience
 	private EngineAudienceHelper audience = EngineAudienceHelper.NO_AUDIENCE;
 	
+	// The object to send new logs to
+	private ACSLogRetrieval logRetrieval;
+	
 	/**
 	 * ACSRemoteAccss constructor comment.
 	 * 
 	 * @param listeners The object to send messages to the listeners
 	 */
-	public ACSRemoteAccess(ACSListenersDispatcher listeners) {
+	public ACSRemoteAccess(ACSListenersDispatcher listeners, ACSLogRetrieval retrieval) {
 		if (listeners==null) {
 			throw new IllegalArgumentException("The object to dispatch messages to listeners can't be null");
 		}
+		if (retrieval==null) {
+			throw new IllegalArgumentException("The ACSLogRetrieval can't be null");
+		}
 		listenersDispatcher=listeners;
+		logRetrieval=retrieval;
 	}
 	
 	/**
@@ -159,12 +166,10 @@ public final class ACSRemoteAccess implements RemoteAccess {
 		acsSPS = new ACSStructuredPushConsumer(
 				this,
 				listenersDispatcher,
+				logRetrieval,
 				Boolean.parseBoolean(ACSRemoteAccess.LOGGING_BINARY_FORMAT));
 		if (!acsSPS.isInitialized) return false;
 		
-		acsSPS.setFilters(filters);
-		acsSPS.setAudience(audience);
-	
 		acsSPS.connect();
 		if (!acsSPS.isConnected) return false;
 		
@@ -386,15 +391,6 @@ public final class ACSRemoteAccess implements RemoteAccess {
 	}
 	
 	/**
-	 * Pause/unpause the thread that publishes logs
-	 * 
-	 * @param pause
-	 */
-	public void pause(boolean pause) {
-		acsSPS.setPaused(pause);
-	}
-	
-	/**
 	 * Close the threads and free all the resources
 	 * @param sync If it is true wait the termination of the threads before returning
 	 */
@@ -405,31 +401,4 @@ public final class ACSRemoteAccess implements RemoteAccess {
 		destroy();
 	}
 
-	/**
-	 * @see com.cosylab.logging.engine.RemoteAccess#setFilters(com.cosylab.logging.engine.FiltersVector)
-	 */
-	@Override
-	public void setFilters(FiltersVector filters) {
-		this.filters=filters;
-		if (acsSPS!=null) {
-			acsSPS.setFilters(filters);
-		}
-	}
-
-	/* (non-Javadoc)
-	 * @see com.cosylab.logging.engine.RemoteAccess#setAudience(java.lang.String)
-	 */
-	@Override
-	public void setAudience(EngineAudienceHelper audience) {
-		if (audience==null) {
-			throw new IllegalArgumentException("The audience can't be null");
-		}
-		this.audience=audience;
-		if (acsSPS!=null) {
-			acsSPS.setAudience(audience);
-		}
-		
-	}
-	
-	
 }
