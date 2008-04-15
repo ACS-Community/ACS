@@ -1,7 +1,7 @@
 #************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: tat.tcl,v 1.106 2008/01/30 14:03:16 psivera Exp $"
+# "@(#) $Id: tat.tcl,v 1.107 2008/04/15 09:36:04 eallaert Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -467,14 +467,6 @@
 #
 #   ------------------------------------------------------------------------
 #
-#   The directives PROLOGUE and EPILOGUE do not support yet the possibility of 
-#   passing a string (between quotes) . To be extended in the future!
-#
-#   At the moment, one can pass to the programs to be run as PROLOGUE or as 
-#   EPILOGUE one and only one argument.
-#
-#   ------------------------------------------------------------------------
-#
 #   When writing the TestList.lite (or TestList), first put the WS envir.
 #   then the LCU environments. Use blanks, not tabs (at list one blank) 
 #   to separate the symbolic name of the environment and the type of env, 
@@ -635,18 +627,18 @@ proc buildLists {} {
     while { [gets $fd line] >= 0} {
 
         # Skips comments and empty lines
-	if {[regexp {^[ ]*#.+|^#$} $line] != 0} {
+	if {[regexp {^[ \t]*#.+|^#$} $line] != 0} {
 	    continue
 	}
-	if {[regexp "^\[ \t]*$" $line] != 0} {
+	if {[regexp {^[ \t]*$} $line] != 0} {
 	    continue
 	}
 
 	# Save in longLine a line with continuation character
 	set nrbline [string trimright $line]
-	if {[regexp {\\$} $nrbline] != 0} {
-	    regsub {\\$} $nrbline "" line1
-	    append longLine " $line1"
+
+	if {[string equal [string index $line end] \\]} {
+	    append longLine " [string range $line 0 end-1]"
 	    continue
 	}
 
@@ -679,20 +671,20 @@ proc buildLists {} {
 		set word2 [lindex $ll 1]
 		set word3 [lindex $ll 2]
 		if { $word3 != "LCU" && $word3 !="WS" && $word3 != "RWS" && $word3 != "QS" && $word3 != "RQS"} {
-		   puts "$tlfn: $line: invalid environment type"
-		   set lineOK 0
-		   break
-		     }
+		    puts "$tlfn: $line: invalid environment type"
+		    set lineOK 0
+		    break
+		}
 		if { $gv(withRtap) == 1} {
-		   if { $word3 == "QS" } {
-		     puts "$tlfn: $line: invalid QS environment type with RTAP"
-		     set lineOK 0
-	             break
-		   }
+		    if { $word3 == "QS" } {
+			puts "$tlfn: $line: invalid QS environment type with RTAP"
+			set lineOK 0
+			break
+		    }
 	        } elseif { $word3 == "WS" } {
-		   puts "$tlfn: $line: invalid (R)WS environment with no RTAP"
-	           set lineOK 0
-	           break
+		    puts "$tlfn: $line: invalid (R)WS environment with no RTAP"
+		    set lineOK 0
+		    break
 	        }
 		set gv(envNameList) [concat $gv(envNameList) $word2 $word3]
 		break
@@ -1446,7 +1438,7 @@ proc runTest { testList generate rep } {
 		set prologueProg [lindex $prologueTestId 0]
 		set prologueArgs [lrange $prologueTestId 1 end]
 	        tatPuts "Executing prologue script $prologueTestId"
-	        if {[ catch {exec $prologueProg [join $prologueArgs ] } out ]} {
+	        if {[ catch {eval exec $prologueProg $prologueArgs} out ]} {
 	    	    tatPuts "The prologue script $prologueTestId fails: $out"
 	        }
 	        tatPuts "End of prologue script"
@@ -1736,7 +1728,7 @@ proc runTest { testList generate rep } {
 
 	if { $epilogueTestId != "" } {
 	    tatPuts "Executing epilogue script $epilogueTestId"
-	    if {[ catch {exec $epilogueProg [join $epilogueArgs ] } out ]} {
+	    if {[ catch {eval exec $epilogueProg $epilogueArgs} out ]} {
 	        tatPuts "The epilogue script $epilogueTestId fails: $out"
 	    }
 	    tatPuts "End of epilogue script"
@@ -2350,7 +2342,7 @@ proc doMakeEnv {} {
 	if { $gv(prologueScript) != "" } {
 	    tatPuts "Executing prologue script..."
 	    set gv(execEpilogue) "ON"
-	    if {[ catch {exec $gv(prologueScript) $gv(prologueArgs)} out ]} {
+	    if {[ catch {eval exec $gv(prologueScript) $gv(prologueArgs)} out ]} {
 		error "The prologue script fails: $out"
 	    }
 	    tatPuts "End of prologue script"
@@ -2385,7 +2377,7 @@ proc doCleanEnv {} {
 	# epilogue script handling
         if { $gv(epilogueScript) != "" } {
 	    tatPuts "Executing epilogue script..."
-	    if {[ catch {exec $gv(epilogueScript) $gv(epilogueArgs)} out ]} {
+	    if {[ catch {eval exec $gv(epilogueScript) $gv(epilogueArgs)} out ]} {
 		error "The epilogue script fails: $out"
 	    }
 	    set gv(execEpilogue) "OFF"
@@ -2411,115 +2403,115 @@ proc doRunTest  {} {
 
     execMakeAll $gv(noClean) $gv(TAT_MAKE_ARGS)
 
-    if { $gv(testAll) == 1 } {
-    #if { [llength $gv(userTestList) ] == 0 || $gv(testAll) == 1 } 
+     if { $gv(testAll) == 1 } {
+	 #if { [llength $gv(userTestList) ] == 0 || $gv(testAll) == 1 } 
 
-    #  no test. id on the command line: 
-    #  if no test session, option "all" by default
-    #  if test session active, run all the tests
+	 #  no test. id on the command line: 
+	 #  if no test session, option "all" by default
+	 #  if test session active, run all the tests
 
-       if { ![file exists $gv(sessionFile)] } {
+	 if { ![file exists $gv(sessionFile)] } {
 
-	   # source script handling
-	   if { $gv(sourceScript) != "" } {
-	       tatPuts "Sourcing script..."
-	       source $gv(sourceScript) 
-  	   }
-	   # prologue script handling
-	   if { $gv(prologueScript) != "" } {
-		tatPuts "Executing prologue script..."
-	       set gv(execEpilogue) "ON"
-	       if {[ catch {exec $gv(prologueScript) $gv(prologueArgs)} out ]} {
-	    	    error "The prologue script fails: $out"
-	        }
-	        tatPuts "End of prologue script"
-	   }
+	     # source script handling
+	     if { $gv(sourceScript) != "" } {
+		 tatPuts "Sourcing script..."
+		 source $gv(sourceScript) 
+	     }
+	     # prologue script handling
+	     if { $gv(prologueScript) != "" } {
+		 tatPuts "Executing prologue script..."
+		 set gv(execEpilogue) "ON"
+		 if {[ catch {eval exec $gv(prologueScript) $gv(prologueArgs)} out ]} {
+		     error "The prologue script fails: $out"
+		 }
+		 tatPuts "End of prologue script"
+	     }
 
-	   allocEnv
-	   replaceScanEnv
-	   makeEnv
-	   # cannot be done any more in allocEnv (vcc conflict)
-           setEnv
-	   for { set i $repeat } { $i > 0 } {incr i -1 } {
-	       runTest $gv(testListToRun) $gv(generate) $i
-	   }
-	   cleanEnv
+	     allocEnv
+	     replaceScanEnv
+	     makeEnv
+	     # cannot be done any more in allocEnv (vcc conflict)
+	     setEnv
+	     for { set i $repeat } { $i > 0 } {incr i -1 } {
+		 runTest $gv(testListToRun) $gv(generate) $i
+	     }
+	     cleanEnv
 
-	   # epilogue script handling
-	   if { $gv(epilogueScript) != "" } {
-	        tatPuts "Executing epilogue script..."
-	        if {[ catch {exec $gv(epilogueScript) $gv(epilogueArgs)} out ]} {
-	    	    error "The epilogue script fails: $out"
-	        }
-	        set gv(execEpilogue) "OFF"
-	        tatPuts "End of epilogue script"
-	   }
+	     # epilogue script handling
+	     if { $gv(epilogueScript) != "" } {
+		 tatPuts "Executing epilogue script..."
+		 if {[ catch {eval exec $gv(epilogueScript) $gv(epilogueArgs)} out ]} {
+		     error "The epilogue script fails: $out"
+		 }
+		 set gv(execEpilogue) "OFF"
+		 tatPuts "End of epilogue script"
+	     }
 
-	   # SPR 960020 (EAL request)
-	   execMakeClean $gv(noClean)
-       } else {
-	   # source script handling
-	   if { $gv(sourceScript) != "" } {
-	       tatPuts "Sourcing script..."
-	       source $gv(sourceScript) 
-  	   }
-           # and environment variables need to be set	
-	   setEnv
-	   for { set i $repeat } { $i > 0 } {incr i -1 } {
-	     runTest $gv(testListToRun) $gv(generate) $i
-	   }
-	}
+	     # SPR 960020 (EAL request)
+	     execMakeClean $gv(noClean)
+	 } else {
+	     # source script handling
+	     if { $gv(sourceScript) != "" } {
+		 tatPuts "Sourcing script..."
+		 source $gv(sourceScript) 
+	     }
+	     # and environment variables need to be set	
+	     setEnv
+	     for { set i $repeat } { $i > 0 } {incr i -1 } {
+		 runTest $gv(testListToRun) $gv(generate) $i
+	     }
+	 }
 
-    } else {
+     } else {
 
-    #  if testid is specified, run only that test
+	 #  if testid is specified, run only that test
 
-# To BE INVESTIGATED: why is buildLists here repeated?
-	#buildLists
+	 # To BE INVESTIGATED: why is buildLists here repeated?
+	 #buildLists
 
-	# it has been explictely asked not to stop in case the
-	# specififed test id. is wrong (SPR 960586).
-	# check that the specified testid are defined in TestList ...
-	if { [llength $gv(userTestList) ] != 0 } {
-	set concList {}
-	foreach item $gv(testList) {
-	    set concList [concat $concList $item]
-	}
-	foreach userTest $gv(userTestList) {
-	    if {[lsearch $concList $userTest] == -1 } {
-		    puts "$userTest not found in $gv(testListFileName)."
-	    }
-	}
-	}
+	 # it has been explictely asked not to stop in case the
+	 # specififed test id. is wrong (SPR 960586).
+	 # check that the specified testid are defined in TestList ...
+	 if { [llength $gv(userTestList) ] != 0 } {
+	     set concList {}
+	     foreach item $gv(testList) {
+		 set concList [concat $concList $item]
+	     }
+	     foreach userTest $gv(userTestList) {
+		 if {[lsearch $concList $userTest] == -1 } {
+		     puts "$userTest not found in $gv(testListFileName)."
+		 }
+	     }
+	 }
 
-	if { ![llength $gv(envNameList)] } {
-	    # TestList has no LCU/WS env.
-	    # source script handling
-	    if { $gv(sourceScript) != "" } {
-	       tatPuts "Sourcing script..."
-	       source $gv(sourceScript) 
-  	    }
-	    for { set i $repeat } { $i > 0 } {incr i -1 } {
-	      runTest $gv(testListToRun) $gv(generate) $i
-	    }
-	} else {
-	    # TestList has LCU/WS env.
-	    if { ![file exists $gv(sessionFile)] } {
-		error "No test session active"
-	    } else {
-	        # source script handling
-	        if { $gv(sourceScript) != "" } {
-	           tatPuts "Sourcing script..."
-	           source $gv(sourceScript) 
-  	        }
-		setEnv
-	    }
-	    for { set i $repeat } { $i > 0 } {incr i -1 } {
-	      runTest $gv(testListToRun) $gv(generate) $i
-	    }
-	}
-    }
-}
+	 if { ![llength $gv(envNameList)] } {
+	     # TestList has no LCU/WS env.
+	     # source script handling
+	     if { $gv(sourceScript) != "" } {
+		 tatPuts "Sourcing script..."
+		 source $gv(sourceScript) 
+	     }
+	     for { set i $repeat } { $i > 0 } {incr i -1 } {
+		 runTest $gv(testListToRun) $gv(generate) $i
+	     }
+	 } else {
+	     # TestList has LCU/WS env.
+	     if { ![file exists $gv(sessionFile)] } {
+		 error "No test session active"
+	     } else {
+		 # source script handling
+		 if { $gv(sourceScript) != "" } {
+		     tatPuts "Sourcing script..."
+		     source $gv(sourceScript) 
+		 }
+		 setEnv
+	     }
+	     for { set i $repeat } { $i > 0 } {incr i -1 } {
+		 runTest $gv(testListToRun) $gv(generate) $i
+	     }
+	 }
+     }
+ }
 
 ############################################################################
 #
@@ -2856,8 +2848,7 @@ global gv
     } elseif {[file exists ../lib]} {
         error "Non-directory ../lib already exists."
     } else {
-        catch { exec mkdir ../lib } out
-        if { $out != ""  } {
+        if { [catch {file mkdir ../lib} msg] } {
     	    error "Cannot create directory ../lib"
         } else {
 	    cd ../lib
@@ -2895,8 +2886,7 @@ global gv
     } elseif {[file exists ../bin]} {
         error "Non-directory ../bin already exists."
     } else {
-        catch { exec mkdir ../bin } out
-        if { $out != ""  } {
+        if { [catch {file mkdir ../bin} msg] } {
             error "Cannot create directory ../bin"
         } else {
     	    cd ../bin
@@ -3155,7 +3145,7 @@ signal trap { SIGINT SIGQUIT SIGABRT }  {
     if { $gv(execEpilogue) == "ON" } {
 	if { $gv(epilogueScript) != "" } {
 	    tatPuts "Executing epilogue script..."
-	    if {[ catch {exec $gv(epilogueScript) $gv(epilogueArgs)} out ]} {
+	    if {[ catch {eval exec $gv(epilogueScript) $gv(epilogueArgs)} out ]} {
 		error "The epilogue script fails: $out"
 	    }
 	    tatPuts "End of epilogue script"
@@ -3167,7 +3157,7 @@ signal trap { SIGINT SIGQUIT SIGABRT }  {
 if { [catch { tatBody } result] } {
 
     puts "Error: $result"
-#   release the allocated environments if done by this process
+    #   release the allocated environments if done by this process
     if { $gv(envCreatedNow) == 1 } {
 	puts "Releasing environments. Please wait ..."
 	catch cleanEnv fatalError
@@ -3177,36 +3167,36 @@ if { [catch { tatBody } result] } {
 	# always remove session file if no allocated environment
 	file delete -force -- $gv(sessionFile)
     }
-#   execute the epilogue script (if any) to clean up processes
+    #   execute the epilogue script (if any) to clean up processes
     if { $gv(execEpilogue) == "ON" } {
 	if { $gv(epilogueScript) != "" } {
 	    tatPuts "Executing epilogue script..."
-	    if {[ catch {exec $gv(epilogueScript) $gv(epilogueArgs)} out ]} {
+	    if {[ catch {eval exec $gv(epilogueScript) $gv(epilogueArgs)} out ]} {
 		error "The epilogue script fails: $out"
 	    }
 	    tatPuts "End of epilogue script"
 	}
     }
-#   remove logs directory if empty
-   if { [file isdirectory ./tatlogs/run$PID] } {
-       if { [readdir ./tatlogs/run$PID] == "" } {
-    	   file delete -force -- ./tatlogs/run$PID
-	   tatPuts "Removing empty log directory ./tatlogs/run$PID"
-       }
-   }
-#   result contains an error message
-   exit 1
+    #   remove logs directory if empty
+    if { [file isdirectory ./tatlogs/run$PID] } {
+	if { [readdir ./tatlogs/run$PID] == "" } {
+	    file delete -force -- ./tatlogs/run$PID
+	    tatPuts "Removing empty log directory ./tatlogs/run$PID"
+	}
+    }
+    #   result contains an error message
+    exit 1
 
 } else {
 
-#   remove logs directory if empty
-   if { [file isdirectory ./tatlogs/run$PID] } {
-       if { [readdir ./tatlogs/run$PID] == "" } {
-    	   file delete -force -- ./tatlogs/run$PID
-	   tatPuts "Removing empty log directory ./tatlogs/run$PID"
-       }
-   }
-# result contains the value returned by tatBody (i.e. nothing)
+    #   remove logs directory if empty
+    if { [file isdirectory ./tatlogs/run$PID] } {
+	if { [readdir ./tatlogs/run$PID] == "" } {
+	    file delete -force -- ./tatlogs/run$PID
+	    tatPuts "Removing empty log directory ./tatlogs/run$PID"
+	}
+    }
+    # result contains the value returned by tatBody (i.e. nothing)
     exit 0
 }
 
