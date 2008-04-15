@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: TestList,v 1.15 2008/03/26 14:14:07 eallaert Exp $"
+# "@(#) $Id: TestList,v 1.16 2008/04/15 11:15:06 eallaert Exp $"
 #
 # TestList
 #
@@ -147,7 +147,7 @@ PROLOGUE acsutilTATPrologue --noloadifr -l
                       "@SLEEP 2" \
                       "maciContainerLogLevel frodoContainer get TESTLOG2"
 # Execute always together with previous test - it assumes proper container is already/still up        
-20  javaDynamicLevelsUnknownLogger "acsStartJava -D TEST_COMP_NAMES=TESTLOG2 alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest" \ 
+20  javaDynamicLevelsUnknownLogger "acsStartJava -D TEST_COMP_NAMES=TESTLOG2 alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest" \
     EPILOGUE "acsStopContainer frodoContainer"
 
 ########################################################
@@ -157,7 +157,7 @@ PROLOGUE acsutilTATPrologue --noloadifr -l
 	PROLOGUE "acsutilAwaitContainerStart -java frodoContainer" \
     javaHardcodedLevelsNamedLogger2 "maciContainerLogLevel frodoContainer get TESTLOG2"
 # Execute always together with previous test - it assumes proper container is already/still up        
-22  javaHardcodedLevelsNamedLogger "acsStartJava -D TEST_COMP_NAMES=TESTLOG2 alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest" \ 
+22  javaHardcodedLevelsNamedLogger "acsStartJava -D TEST_COMP_NAMES=TESTLOG2 alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest" \
     EPILOGUE "acsStopContainer frodoContainer"
 
 
@@ -194,7 +194,7 @@ PROLOGUE acsutilTATPrologue --noloadifr -l
                       "@SLEEP 2" \
                       "maciContainerLogLevel frodoContainer get TESTLOG2"
 # Execute always together with previous test - it assumes proper container is already/still up        
-28  javaDynamicLevelsNamedLogger "acsStartJava -D TEST_COMP_NAMES=TESTLOG2 alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest" \ 
+28  javaDynamicLevelsNamedLogger "acsStartJava -D TEST_COMP_NAMES=TESTLOG2 alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest" \
     EPILOGUE "acsStopContainer frodoContainer"
 
 ########################################################
@@ -317,7 +317,7 @@ PROLOGUE acsutilTATPrologue --noloadifr -l
 	PROLOGUE "acsutilAwaitContainerStart -cpp bilboContainer" \
     cppEnvironmentLevelsNamedLogger2 "maciContainerLogLevel bilboContainer get TESTLOG4"
 # Execute always together with previous test - it assumes proper container is already/still up        
-56  cppEnvironmentLevelsNamedLogger "acsStartJava -D TEST_COMP_NAMES=TESTLOG4 alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest" \ 
+56  cppEnvironmentLevelsNamedLogger "acsStartJava -D TEST_COMP_NAMES=TESTLOG4 alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest" \
     EPILOGUE "acsStopContainer bilboContainer"
 
 57 SOURCE prepareDynLevelsNamedLogger.tcl \
@@ -433,7 +433,7 @@ PROLOGUE acsutilTATPrologue --noloadifr -l
 	PROLOGUE "acsutilAwaitContainerStart -py aragornContainer" \
     pyHardcodedNamedLoggerLevels2 "maciContainerLogLevel aragornContainer get TESTLOG6"
 # Execute always together with previous test - it assumes proper container is already/still up        
-82  pyHardcodedLevelsNamedLogger "acsStartJava -D TEST_COMP_NAMES=TESTLOG6 alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest" \ 
+82  pyHardcodedLevelsNamedLogger "acsStartJava -D TEST_COMP_NAMES=TESTLOG6 alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest" \
     EPILOGUE "acsStopContainer aragornContainer"
 
 
