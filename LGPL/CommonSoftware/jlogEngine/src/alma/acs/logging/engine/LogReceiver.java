@@ -80,7 +80,7 @@ public class LogReceiver {
 	private ArrayList<String> statusReports;
 	
 	private volatile boolean listenForLogs;
-    private volatile long sortingDelayMillis = 20000;
+	private volatile long sortingDelayMillis = 20000;
 
 	
 	public LogReceiver() {
@@ -205,7 +205,7 @@ public class LogReceiver {
 		if (verbose) {
 			System.out.println("Attempting to destroy LogConnect...");
 		}
-		lct.disconnect();
+		lct.close();
 		listenForLogs = false;
 		logDelayQueue.offer(DelayedLogEntry.createQueuePoison(0));
 	}
