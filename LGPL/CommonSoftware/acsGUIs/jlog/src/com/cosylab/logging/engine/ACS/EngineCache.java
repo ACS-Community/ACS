@@ -19,6 +19,7 @@
 package com.cosylab.logging.engine.ACS;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.Random;
@@ -60,8 +61,14 @@ public class EngineCache {
 	
 	/**
 	 * An entry of the cache.
-	 * It contains the file where the entry is stored together with the
-	 * position of the entry
+	 * It contains the name of the file where the entry is stored together with the
+	 * position of the entry.
+	 * 
+	 * Having the name of the file allows to open and close the file when needed.
+	 * In a previous version there was a <code>RandomAccessFile</code> instead of the name
+	 * but it ended up with an error because the number of open file was exceeding
+	 * the maximum allowed.
+	 * 
 	 * 
 	 * @author acaproni
 	 *
@@ -70,7 +77,7 @@ public class EngineCache {
 		/**
 		 * The file where the entry is stored
 		 */
-		public final RandomAccessFile file;
+		public final String fileName;
 		/**
 		 * The starting position of the entry in the file
 		 */
@@ -83,42 +90,75 @@ public class EngineCache {
 		/**
 		 * Constructor
 		 * 
-		 * @param outF The file where the entry is stored
+		 * @param fileName The name of the file where the entry is stored
 		 * @param startPos The starting position of the entry in the file
 		 * @param endPos The ending position of the entry in the file
 		 */
-		public CacheEntry(RandomAccessFile outF, long startPos, long endPos) {
-			if (outF==null) {
-				throw new IllegalArgumentException("The file can't be null");
+		public CacheEntry(String fileName, long startPos, long endPos) {
+			if (fileName==null || fileName.isEmpty()) {
+				throw new IllegalArgumentException("The file name can't be null nor empty");
 			}
 			if (startPos<0 || endPos<=0 || startPos>=endPos) {
 				throw new IllegalArgumentException("Invalid start/end positions: "+startPos+", "+endPos);
 			}
-			file=outF;
+			this.fileName=fileName;
 			start=startPos;
 			end=endPos;
 		}
 	}
 	
 	/**
-	 * Each file used by the cache
+	 * Each file used by the cache.
+	 * The file represented by the name must be readable and writable.
 	 * 
 	 * @author acaproni
 	 *
 	 */
 	private class CacheFile {
-		public final File file;
-		public final RandomAccessFile rndFile;
+		public final String fileName;
 		
-		public CacheFile(File theFile, RandomAccessFile rFile) {
-			if (theFile==null) {
-				throw new IllegalArgumentException("The File can't be null");
+		public CacheFile(String fName) {
+			if (fName==null || fName.isEmpty()) {
+				throw new IllegalArgumentException("The file name can't be null not empty");
 			}
-			if (rFile==null) {
-				throw new IllegalArgumentException("The RandomAccessFile can't be null");
+			fileName=fName;
+		}
+		
+		/**
+		 * An helper methods that returns the <code>File</code> represented by this item.
+		 * 
+		 * The returned <code>File</code> is built from the name.
+		 * 
+		 * @return The file
+		 * @throws FileNotFoundException If the file does not exist
+		 */
+		public File getFile() throws FileNotFoundException {
+			File f = new File(fileName);
+			if (!f.exists()) {
+				throw new FileNotFoundException("The cache file "+fileName+" does not exist");
 			}
-			file=theFile;
-			rndFile=rFile;
+			if (!f.canRead() || !f.canWrite()) {
+				throw new IllegalStateException("Impossible to read/write "+fileName);
+			}
+			return f;
+		}
+		
+		/**
+		 * An helper method that returns a <code>RandomAccessFile</code> by the file name 
+		 * <code>fileName</code>.
+		 * <P>
+		 * The random access file is built starting from the <code>fileName</code>.
+		 * 
+		 * @return The file to read and/or write items
+		 * @throws IOException In case of error creating the <code>File</code>.
+		 * @throws FileNotFoundException If the file does not exist
+		 */
+		public RandomAccessFile getRandomFile() throws IOException, FileNotFoundException {
+			File f = new File(fileName);
+			if (f==null) {
+				throw new IOException("Error creating a file");
+			}
+			return new RandomAccessFile(f,"rw");
 		}
 	}
 	
@@ -151,12 +191,23 @@ public class EngineCache {
 	private volatile RandomAccessFile outFile=null;
 	
 	/**
+	 * The name of the file used to write strings into
+	 */
+	private volatile String outFileName=null;
+	
+	/**
 	 * The file used to read the previous record.
 	 * It is used to know when all the record in a file have been read:
 	 * when the next read must be done in a different file.
+	 * <P>
 	 * In this case <code>inFile</code> can be deleted.
 	 */
 	private volatile RandomAccessFile inFile=null;
+	
+	/**
+	 * The name of the file used to read strings from
+	 */
+	private volatile String inFileName=null;
 	
 	/**
 	 * The entries in the cache.
@@ -246,25 +297,26 @@ public class EngineCache {
 	 * Close and delete a file.
 	 * The file to delete is the first item in the <code>file</code> vector.
 	 * 
-	 * @param fileToRelease The file to close and delete
+	 * @param fileToRelease The name of the file to close and delete
 	 * @return true if the file is deleted
 	 */
-	private boolean releaseFile(RandomAccessFile fileToRelease) {
-		if (fileToRelease==null) {
-			throw new IllegalArgumentException("The file can't be null");
+	private boolean releaseFile(String fileToRelease) {
+		if (fileToRelease==null || fileToRelease.isEmpty()) {
+			throw new IllegalArgumentException("The file name can't be null nor empty");
 		}
 		CacheFile item = files.remove(0);
-		if (!item.rndFile.equals(fileToRelease)) {
+		if (!item.fileName.equals(fileToRelease)) {
 			throw new IllegalStateException("Vector of files not consistent");
 		}
+		File f=null;
 		try {
-			fileToRelease.close();
-		} catch (IOException ioe) {
-			System.err.println("Error closing file "+ioe.getMessage());
-			ioe.printStackTrace(System.err);
+			f = item.getFile();
+		} catch (FileNotFoundException fnfe) {
+			System.err.println("Error deleting "+fileToRelease);
+			fnfe.printStackTrace(System.err);
 			return false;
 		}
-		return item.file.delete();
+		return f.delete();
 	}
 	
 	/**
@@ -293,7 +345,7 @@ public class EngineCache {
 	 */
 	public void push(String string) throws IOException {
 		if (string==null || string.length()==0) {
-			throw new IllegalArgumentException("The string can't be null or empty");
+			throw new IllegalArgumentException("The string can't be null nor empty");
 		}
 		if (closed) {
 			return;
@@ -304,10 +356,12 @@ public class EngineCache {
 			if (f==null) {
 				throw new IOException("Error creating a cache file");
 			}
+			String name = f.getAbsolutePath();
 			RandomAccessFile raF = new RandomAccessFile(f,"rw");
-			CacheFile cacheFile = new CacheFile(f,raF);
+			CacheFile cacheFile = new CacheFile(name);
 			files.add(cacheFile);
 			outFile=raF;
+			outFileName=name;
 		}
 		// Write the string in the file
 		long startPos;
@@ -318,7 +372,7 @@ public class EngineCache {
 			outFile.writeBytes(string);
 			endPos = outFile.length();	
 		}
-		CacheEntry entry = new CacheEntry(outFile,startPos,endPos);
+		CacheEntry entry = new CacheEntry(outFileName,startPos,endPos);
 		boolean inserted = false;
 		while (!inserted) {
 			try {
@@ -352,10 +406,14 @@ public class EngineCache {
 		}
 		byte buffer[] = new byte[(int)(entry.end-entry.start)];
 		if (inFile==null) {
-			inFile=entry.file;
-		} else if (inFile!=entry.file) {
-			releaseFile(inFile);
-			inFile=entry.file;
+			inFileName=entry.fileName;
+			inFile = new RandomAccessFile(inFileName,"r");
+		} else if (inFileName!=entry.fileName) {
+			inFile.close();
+			inFile=null;
+			releaseFile(inFileName);
+			inFileName=entry.fileName;
+			inFile = new RandomAccessFile(inFileName,"r");
 		}
 		synchronized (inFile) {
 			inFile.seek(entry.start);
