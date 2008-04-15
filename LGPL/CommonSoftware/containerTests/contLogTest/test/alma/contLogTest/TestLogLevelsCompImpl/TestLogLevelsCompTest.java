@@ -255,7 +255,6 @@ public class TestLogLevelsCompTest extends ComponentClientTestCase
 	public static void main(String[] args)
 	{
 		junit.textui.TestRunner.run(TestLogLevelsCompTest.class);
-		System.exit(0);
 	}
 
 }
