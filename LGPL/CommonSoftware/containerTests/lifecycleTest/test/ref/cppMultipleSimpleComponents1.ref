@@ -1,12 +1,11 @@
 1 -  -- alma.lifecycleTest.TestLifeCycleCompImpl.TestMultipleComponents TESTCPPSIMPLE 1 SIMPLE
-1 - INFO - Starting Java/abeans application: alma.lifecycleTest.TestLifeCycleCompImpl.TestMultipleComponents TESTCPPSIMPLE 1 SIMPLE
-1 - .FINER: Logging configuration has been initialized, but not from CDB settings.
 1 - <timestamp> INFO [alma.lifecycleTest.TestLifeCycleCompImpl.TestMultipleComponents#testGetGivenComponents] -------------------------------
 1 - <timestamp> INFO [alma.lifecycleTest.TestLifeCycleCompImpl.TestMultipleComponents#testGetGivenComponents] ComponentClientTestCase#setUp()
-1 - object is activated
 1 - <timestamp> INFO [alma.lifecycleTest.TestLifeCycleCompImpl.TestMultipleComponents#testGetGivenComponents] client 'alma.lifecycleTest.TestLifeCycleCompImpl.TestMultipleComponents' has successfully released  a component with curl=TESTCPPSIMPLE1
 1 - 
 1 - Time: <seconds>
 1 - 
 1 - OK (1 test)
 1 - 
+1 - <timestamp> INFO [acsStartJava] Starting Java/abeans application: alma.lifecycleTest.TestLifeCycleCompImpl.TestMultipleComponents TESTCPPSIMPLE 1 SIMPLE
+1 - .FINER: Logging configuration has been initialized, but not from CDB settings.
