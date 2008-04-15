@@ -127,7 +127,10 @@ public class EngineCache {
 	 * The default value is used when the java property is not found and the 
 	 * size is not given explicitly.
 	 */
-	public static long DEFAULT_SIZE = 1000000;
+	public static long DEFAULT_SIZE = 2*1073741824; // 2Gb
+	
+	// The name of the property with the size of the file
+	public static String MAXSIZE_PROPERTY_NAME = "jlog.enine.cache.maxFilesSize";
 	
 	/**
 	 * The max length of each file of the cache
@@ -135,7 +138,7 @@ public class EngineCache {
 	private long maxSize;
 	
 	/**
-	 * The file used to write the stringss into.
+	 * The file used to write the strings into.
 	 * When the size of this file is greater then <code>maxSize</code> then a new file
 	 * is created for output.
 	 * <P>
@@ -188,7 +191,7 @@ public class EngineCache {
 	 * 2. the default size is used
 	 */
 	public EngineCache() {
-		maxSize=DEFAULT_SIZE;
+		maxSize=getDefaultMaxFileSize();
 	}
 	
 	/**
@@ -370,4 +373,15 @@ public class EngineCache {
 		files.clear();
 	}
 
+	/**
+	 * Get the max size of the files out of the system properties or
+	 * uses the default value if the property does not exist
+	 */
+	private static long getDefaultMaxFileSize() {
+		Integer fileSizeFromProperty = Integer.getInteger(MAXSIZE_PROPERTY_NAME);
+		if (fileSizeFromProperty != null) {
+			return fileSizeFromProperty.longValue();
+		}
+		return DEFAULT_SIZE;
+	}
 }
