@@ -205,7 +205,7 @@ public class LogReceiver {
 		if (verbose) {
 			System.out.println("Attempting to destroy LogConnect...");
 		}
-		lct.close();
+		lct.close(true);
 		listenForLogs = false;
 		logDelayQueue.offer(DelayedLogEntry.createQueuePoison(0));
 	}
