@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: Makefile,v 1.156 2008/03/04 12:01:17 hsommer Exp $"
+# "@(#) $Id: Makefile,v 1.157 2008/04/15 12:35:19 bjeram Exp $"
 #
 # Makefile of ........
 #
@@ -258,7 +258,7 @@ man_errors:
 	@python acsGenErrorsDocumentation.py $(VLTTOP) $(VLTTOP)/man/errors
 
 
-install : install_doc install_config install_cdb install_all
+install : install_doc install_config install_cdb install_svc_conf install_all
 	@echo " . . . installation done"
 
 install_doc:
@@ -282,4 +282,8 @@ install_cdb:
 	-@gtar -cf - --exclude="CVS" -C ../config demoCDB  | gtar -xf - -C $(ACSDATA)/config; \
 	         chmod -R ug+rw $(ACSDATA)/config/demoCDB;
 
+install_svc_conf:
+	@echo " . . . copying svc.conf files"
+	-@cp -r ../config/svc.conf $(ACSDATA)/config;\
+	     	 chmod -R ug+rw $(ACSDATA)/config/svc.conf;
 #___oOo___
