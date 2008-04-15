@@ -126,8 +126,10 @@ public class EngineCache {
 	 * The default max size for each file of the cache.
 	 * The default value is used when the java property is not found and the 
 	 * size is not given explicitly.
+	 * 
+	 * NFS could be limited to 2GB depending on the installed version
 	 */
-	public static long DEFAULT_SIZE = 2*1073741824; // 2Gb
+	public static long DEFAULT_SIZE = 1073741824; // 1Gb
 	
 	// The name of the property with the size of the file
 	public static String MAXSIZE_PROPERTY_NAME = "jlog.enine.cache.maxFilesSize";
