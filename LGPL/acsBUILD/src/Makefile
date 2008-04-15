@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: Makefile,v 1.157 2008/04/15 12:35:19 bjeram Exp $"
+# "@(#) $Id: Makefile,v 1.158 2008/04/15 12:37:10 bjeram Exp $"
 #
 # Makefile of ........
 #
@@ -284,6 +284,6 @@ install_cdb:
 
 install_svc_conf:
 	@echo " . . . copying svc.conf files"
-	-@cp -r ../config/svc.conf $(ACSDATA)/config;\
-	     	 chmod -R ug+rw $(ACSDATA)/config/svc.conf;
+	-@cp -r ../config/svc.conf $(ACSROOT)/config;\
+	     	 chmod -R ug+rw $(ACSROOT)/config/svc.conf;
 #___oOo___
