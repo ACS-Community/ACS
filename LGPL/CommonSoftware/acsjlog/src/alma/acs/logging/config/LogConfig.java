@@ -58,6 +58,8 @@ import org.xml.sax.SAXException;
 import com.cosylab.CDB.DAL;
 import com.cosylab.CDB.DALOperations;
 
+import si.ijs.maci.LoggingConfigurable;
+
 import alma.ACSErrTypeCommon.wrappers.AcsJIllegalArgumentEx;
 import alma.acs.logging.level.AcsLogLevelDefinition;
 import alma.cdbErrType.CDBRecordDoesNotExistEx;
@@ -76,7 +78,7 @@ import alma.maci.loggingconfig.UnnamedLogger;
 public class LogConfig {
 
 	// for the often-used min levels we offer properties, to avoid having an otherwise not needed CDB configuration 
-	public final static String PROPERTYNAME_MIN_LOG_LEVEL_LOCAL = "ACS.logstdout"; // todo: rename to "ACS.log.minlevel.local"
+	public final static String PROPERTYNAME_MIN_LOG_LEVEL_LOCAL = "ACS.logstdout"; 
 	public final static String PROPERTYNAME_MIN_LOG_LEVEL = "ACS.log.minlevel.remote"; // from env var ACS_LOG_CENTRAL
 
 	/**
@@ -150,7 +152,7 @@ public class LogConfig {
 	 * 
 	 * key = [String] logger name, value = [LockableUnnamedLogger or null] level config
 	 */
-	private Map<String, LockableUnnamedLogger> namedLoggerConfigs;
+	private final Map<String, LockableUnnamedLogger> namedLoggerConfigs;
 
 	/**
 	 * Subscribers get notified of logging config changes
@@ -226,26 +228,24 @@ public class LogConfig {
 	public void setCDBComponentPath(String compLoggerName, String path) {
 		cdbComponentPaths.put(compLoggerName, path);
 	}
-    
-    
+
+
 	/**
-	 * Initializes the values based on CDB settings, logging properties, etc.
-	 * All subscribing classes are notified of the new configuration, see
-	 * {@link LogConfigSubscriber#configureLogging(LogConfig)}.
+	 * Initializes the values based on CDB settings, logging properties, etc. All subscribing classes are notified of
+	 * the new configuration, see {@link LogConfigSubscriber#configureLogging(LogConfig)}.
 	 * <p>
-	 * This method can be called more than once: if some settings have changed,
-	 * should be read in, and the logging classes should be notified of these
-	 * changes. For example, the container could call this method when it gets
-	 * notified that the logging configuration in the CDB has been changed at
-	 * runtime.
+	 * This method can be called more than once: if some settings have changed, should be read in, and the logging
+	 * classes should be notified of these changes. For example, the container could call this method when it gets
+	 * notified that the logging configuration in the CDB has been changed at runtime.
 	 * 
 	 * @param cdbBeatsProperties
-	 *            if true then the default logger level values from the CDB override the properties (env vars). 
-	 *            True is foreseen for dynamic updates from the CDB, whereas for the initial configuration it should be a "false".
+	 *            if true then the default logger level values from the CDB override the properties (env vars).
+	 *            <code>True</code> is foreseen for dynamic updates from the CDB, whereas for the initial
+	 *            configuration it should be a <code>false</code>.
 	 * 
 	 * @throws LogConfigException
-	 *             if reading the configuration data failed and thus default values were used, or if there were problems during
-	 *             configuration even though some of the configuring went ok (best-effort approach).
+	 *            if reading the configuration data failed and thus default values were used, or if there were problems
+	 *            during configuration even though some of the configuring went ok (best-effort approach).
 	 */
 	public void initialize(boolean cdbBeatsProperties) throws LogConfigException {
 		StringBuffer errMsg = new StringBuffer();
@@ -259,7 +259,6 @@ public class LogConfig {
 						// the LoggingConfig child is mandatory for containers and manager
 						throw new LogConfigException("Node " + cdbLoggingConfigPath + " does not contain one LoggingConfig element.");
 					}
-					newLoggingConfig = LoggingConfig.unmarshalLoggingConfig(new StringReader(loggingConfigXml));
 					try {
 						newLoggingConfig = LoggingConfig.unmarshalLoggingConfig(new StringReader(loggingConfigXml));
 					} catch (Throwable thr) {
@@ -273,18 +272,19 @@ public class LogConfig {
 				if (newLoggingConfig != null) {
 					loggingConfig = newLoggingConfig;
 					
-					// named logger configs under LoggingConfig we process right away, while separate configs (component loggers) we do separately
+					// named logger configs under LoggingConfig we process right away, while other separate configs (those from component configurations) we do later.
 					
 					// @TODO: check if we really want to lose named logger settings that had been added dynamically before this refresh from CDB.
 					// If not, then we must dinstinguish between dynamic API and from-CDB config, and leave those objects that have no CDB-equivalent.
 
-					// We don't call namedLoggerConfigs.clear() because we don't want to lose logger names but only their configurations.
 					synchronized (namedLoggerConfigs) {
-						for (String loggerName : namedLoggerConfigs.keySet()) {							
+						// We don't call namedLoggerConfigs.clear() because we don't want to lose logger names 
+						// but only null their configurations.
+						for (String loggerName : namedLoggerConfigs.keySet()) {
 							storeNamedLoggerConfig(loggerName, null);
 						}
 						
-						// named logger levels from the LoggingConfig XML
+						// named logger levels from children of the <LoggingConfig/> 
 						NamedLogger[] namedLoggers = loggingConfig.get();
 						for (int i = 0; i < namedLoggers.length; i++) {
 							storeNamedLoggerConfig(namedLoggers[i].getName(), new LockableUnnamedLogger(namedLoggers[i]));
@@ -406,6 +406,7 @@ public class LogConfig {
 		XPath xpath = XPathFactory.newInstance().newXPath();
 		Object xpathResult = xpath.evaluate(xpathLogConfigNode, rootElement, XPathConstants.NODE);
 		
+		log(Level.FINER, "XML for logging config parent node " + cdbPathParent + " and xpath result:\n" + parentConfigXML + "\n" + xpathResult, null);
 		if (xpathResult == null || !(xpathResult instanceof Node)) {
 			return null;
 		}
@@ -425,6 +426,7 @@ public class LogConfig {
 
 		return sw.toString();
 	}
+	
 	
 	public String getCentralizedLogger() {
 		return loggingConfig.getCentralizedLogger();
@@ -453,10 +455,8 @@ public class LogConfig {
 	/**
 	 * Helper method that converts an integer log level to the matching enum literal.
 	 * It suppresses the AcsJIllegalArgumentEx because the level must have been validated during the config init 
-	 * (and we wouldn't be bothered about exceptions here if we had stored the converted enum literal instead of the castor class)  
-	 * Therefore just a lame log and runtime ex are thrown, but no AcsJIllegalArgumentEx gets thrown on.
-	 * @param legalLogLevel
-	 * @return
+	 * (and we wouldn't be bothered about exceptions here if we had stored the converted enum literal instead of the castor class).
+	 * Therefore a lame log and runtime ex are thrown just in case, but no AcsJIllegalArgumentEx gets thrown on.
 	 */
 	private AcsLogLevelDefinition convertLegalLogLevel(int legalLogLevel) {
 		try {
@@ -523,6 +523,28 @@ public class LogConfig {
 		}
 	}
 
+	/**
+	 * Checks if the given logger name is known, either for default or custom config.
+	 * <p>
+	 * The current {@link LoggingConfigurable} interface semantics don't allow 
+	 * configuration of a logger that does not yet exist. Therefore this method can be used
+	 * to check first before calling {@link #getNamedLoggerConfig(String)} 
+	 * or {@link #setNamedLoggerConfig(String, alma.acs.logging.config.LogConfig.LockableUnnamedLogger)},
+	 * which would automatically add a previously unknown logger.
+	 * 
+	 * @param loggerName
+	 * @since ACS 7.0.2
+	 */
+	public boolean isKnownLogger(String loggerName) {
+		return namedLoggerConfigs.containsKey(loggerName);
+	}
+	
+	
+	/**
+	 * Checks if there is a level configuration for this particular logger.
+	 * @param loggerName  
+	 * @return  false if the logger is not known or uses the default configuration
+	 */
 	public boolean hasCustomConfig(String loggerName) {
 		return (namedLoggerConfigs.get(loggerName) != null);
 	}
@@ -536,7 +558,8 @@ public class LogConfig {
 	 * Note that a copy of the config data is returned, so changes to it will
 	 * not affect any other object's configuration.
 	 * <p>
-	 * A previously unknown logger gets registered by its name.
+	 * A previously unknown logger gets registered by its name. 
+	 * If this is not intended, check first with {@link #isKnownLogger(String)}.
 	 */
 	public LockableUnnamedLogger getNamedLoggerConfig(String loggerName) {
 		
@@ -568,6 +591,10 @@ public class LogConfig {
 	 * <p>
 	 * A copy of the supplied <code>config</code> is made
 	 * to isolate the stored data from later modifications.
+	 * <p>
+	 * If <code>loggerName</code> is previously unknown, then this logger is added automatically 
+	 * to the list of known loggers. If this is not intended, check first using {@link #isKnownLogger(String)}.
+	 * 
 	 * @throws AcsJIllegalArgumentEx if the log level integers inside <code>config</code> are illegal.
 	 */
 	public void setNamedLoggerConfig(String loggerName, LockableUnnamedLogger config) throws AcsJIllegalArgumentEx {
@@ -635,7 +662,7 @@ public class LogConfig {
 	 * the archive logger component runs is guaranteed to not produce any logs 
 	 * (which would lead to log record explosion through positive feedback). 
 	 * <p>
-	 * The more abstract concept of locking log levels was chosen to keep the special scenario decribed above 
+	 * The more abstract concept of locking log levels was chosen to keep the special scenario described above 
 	 * out of the logging config code.
 	 * 
 	 * @param newLevel  small integer from {@link ACSCoreLevel}
@@ -644,7 +671,7 @@ public class LogConfig {
 	public void setAndLockMinLogLevel(AcsLogLevelDefinition newLevel, String loggerName) {
 		synchronized (namedLoggerConfigs) {	
 			LockableUnnamedLogger config = getNamedLoggerConfig(loggerName); // new object, with cached or default values
-			if (config.isLocked()) {
+			if (config.isLockedRemote()) {
 				// only if the level is different we log the warning. This removes the need to check the lock status and level before calling this method.
 				if (config.getMinLogLevel() != newLevel.value) {
 					log(Level.WARNING, "Ignoring attempt to lock logger " + loggerName + " to level " + newLevel + " because it is already locked to remote level " + config.getMinLogLevel(), null);
@@ -652,7 +679,7 @@ public class LogConfig {
 			}
 			else if (newLevel.value != config.getMinLogLevel()) {
 				config.setMinLogLevel(newLevel.value);
-				config.lock();
+				config.lockRemote();
 				try {
 					setNamedLoggerConfig(loggerName, config);
 				} catch (AcsJIllegalArgumentEx ex) {
@@ -666,17 +693,38 @@ public class LogConfig {
 	/**
 	 * Method that guards <code>namedLoggerConfigs.put(loggerName, config)</code>
 	 * and denies access if the old config is locked.
+	 * @param loggerName
+	 *             logger name, must not be null
+	 * @param config
+	 *             new level values, or <code>null</code> to "link" to default log levels.
 	 * @see #namedLoggerConfigs
 	 */
 	private void storeNamedLoggerConfig(String loggerName, LockableUnnamedLogger config) {
-		synchronized (namedLoggerConfigs) {	
+		if (loggerName == null) {
+			throw new IllegalArgumentException("loggerName must not be null");
+		}
+		synchronized (namedLoggerConfigs) {
 			LockableUnnamedLogger oldConfig = namedLoggerConfigs.get(loggerName);
-			if (oldConfig == null || !oldConfig.isLocked()) {
+			if (oldConfig == null) {
 				namedLoggerConfigs.put(loggerName, config);
 			} 
+			else if (config == null) {
+				// null clears the named logger levels
+				if (!oldConfig.isLockedLocal && !oldConfig.isLockedRemote) {
+					namedLoggerConfigs.put(loggerName, null);
+				}
+				else {
+					log(Level.INFO, "Ignoring attempt to clear locked logger config for " + loggerName, null);
+				}
+			}
 			else {
-				// todo: perhaps we should log the attempt, but should apply some repeat guard
-				// because clearing the log configs would produce a lot of messages in a row.
+				// need to selectively update the values, watching out for locked levels
+				if (!oldConfig.isLockedRemote()) {
+					oldConfig.setMinLogLevel(config.getMinLogLevel());
+				}
+				if (!oldConfig.isLockedLocal()) {
+					oldConfig.setMinLogLevelLocal(config.getMinLogLevelLocal());
+				}
 			}
 		}
 	}
@@ -707,7 +755,8 @@ public class LogConfig {
 	}
 	
 	public static class LockableUnnamedLogger extends UnnamedLogger {
-		private boolean isLocked = false;
+		private boolean isLockedRemote = false;
+		private boolean isLockedLocal = false;
 		
 		LockableUnnamedLogger() {
 			init(null);
@@ -717,27 +766,37 @@ public class LogConfig {
 		}		
 		LockableUnnamedLogger(LockableUnnamedLogger config) {
 			init(config);
-			isLocked = config.isLocked;
+			isLockedRemote = config.isLockedRemote;
+			isLockedLocal = config.isLockedLocal;
 		}
 		private void init(UnnamedLogger config) {
-			unlock();
+			unlockRemote();
 			if (config != null) {
 				setMinLogLevel(config.getMinLogLevel());
 				setMinLogLevelLocal(config.getMinLogLevelLocal());
 			}
 		}
-		void lock() {
-			isLocked = true;
+		void lockRemote() {
+			isLockedRemote = true;
 		}
-		void unlock() {
-			isLocked = false;
+		void lockLocal() {
+			isLockedLocal = true;
 		}
-		boolean isLocked() {
-			return isLocked;
+		void unlockRemote() {
+			isLockedRemote = false;
+		}
+		void unlockLocal() {
+			isLockedLocal = false;
+		}
+		boolean isLockedRemote() {
+			return isLockedRemote;
+		}
+		boolean isLockedLocal() {
+			return isLockedLocal;
 		}
 	}
 	
-    
+
     // ///////////////////////////////////////////////////////////////////
     // Propagation of configuration updates to various logging classes
     /////////////////////////////////////////////////////////////////////
