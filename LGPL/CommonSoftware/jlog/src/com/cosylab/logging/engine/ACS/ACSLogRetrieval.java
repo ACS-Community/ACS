@@ -19,7 +19,7 @@
 
 /** 
  * @author  acaproni   
- * @version $Id: ACSLogRetrieval.java,v 1.28 2008/04/14 16:22:56 acaproni Exp $
+ * @version $Id: ACSLogRetrieval.java,v 1.29 2008/04/15 12:57:22 acaproni Exp $
  * @since    
  */
 
@@ -115,6 +115,7 @@ public class ACSLogRetrieval extends Thread {
 		}
 		this.listenersDispatcher=listenersDispatcher;
 		this.binaryFormat=binFormat;
+		setDaemon(true);
 		initialize();
 	}
 	
