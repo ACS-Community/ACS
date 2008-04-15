@@ -6,7 +6,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: acsStartORBSRVC,v 1.72 2008/04/10 05:24:41 cparedes Exp $"
+# "@(#) $Id: acsStartORBSRVC,v 1.73 2008/04/15 16:39:52 bjeram Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -218,6 +218,7 @@ else
     mkdir -p $INSTANCE_DIR/$ACS_PID_DIR
     mkdir -p $INSTANCE_DIR/$ACS_OUT_DIR
     mkdir -p $INSTANCE_DIR/$ACS_IOR_DIR
+    mkdir -p $INSTANCE_DIR/$ACS_CNF_DIR
 fi
 
 #
@@ -460,7 +461,7 @@ ACS_LOG_INFO "acsStartORBSRVC" "Starting Notify Service"
 # in order to get the correct svc.conf service configuration file.
 STARTUP_DIR=$PWD
 cd $ACE_ROOT/TAO/orbsvcs/Notify_Service
-$ACE_ROOT/TAO/orbsvcs/Notify_Service/Notify_Service -ORBEndpoint iiop://$HOST:$NOTIFY_SERVICE_PORT -ORBInitRef NameService=corbaloc::$HOST:$NAMING_SERVICE_PORT/NameService -IORoutput $NOTIFY_IOR $ORBOPTS -Boot &> $NOTIFY_OUT &
+$ACE_ROOT/TAO/orbsvcs/Notify_Service/Notify_Service -ORBEndpoint iiop://$HOST:$NOTIFY_SERVICE_PORT -ORBInitRef NameService=corbaloc::$HOST:$NAMING_SERVICE_PORT/NameService -IORoutput $NOTIFY_IOR -ORBDebug -ORBDebugLevel 1 $ORBOPTS -Boot &> $NOTIFY_OUT &
 cd $STARTUP_DIR
 
 NOTIFY_SERVICE_PID=$!
@@ -482,12 +483,17 @@ fi
 
 ACS_LOG_INFO "acsStartORBSRVC" "Starting Logging Notify Service"
 
+# Let's create configuration file
+# we replace slashes(/) with \/ which can be used in sed
+LOGGING_NOTIFY_MC_IOR=`echo $INSTANCE_DIR | sed 's/\//\\\\\//g'`"\/iors\/LoggingNotifyMCIOR"
+sed -e "s/NS_HOST/$HOST/" -e "s/NS_PORT/$NAMING_SERVICE_PORT/" -e "s/MC_IOR/$LOGGING_NOTIFY_MC_IOR/"  $ACSROOT/config/svc.conf/LoggingNotify.svc.conf > $INSTANCE_DIR/$ACS_CNF_DIR/LoggingNotify.svc.conf
+
 # I need to cd to $ACE_ROOT/TAO/orbsvcs/Notify_Service
 # in order to get the correct svc.conf service configuration file.
-STARTUP_DIR=$PWD
-cd $ACE_ROOT/TAO/orbsvcs/Notify_Service
-$ACE_ROOT/TAO/orbsvcs/Notify_Service/Notify_Service -ORBEndpoint iiop://$HOST:$LOGGING_NOTIFY_SERVICE_PORT -ORBInitRef NameService=corbaloc::$HOST:$NAMING_SERVICE_PORT/NameService -IORoutput $LOGGING_NOTIFY_IOR $ORBOPTS -Factory LoggingNotifyEventChannelFactory -Boot &> $LOG_NOTIFY_OUT &
-cd $STARTUP_DIR
+# STARTUP_DIR=$PWD
+# cd $ACE_ROOT/TAO/orbsvcs/Notify_Service
+$ACE_ROOT/TAO/orbsvcs/Notify_Service/Notify_Service -ORBSvcConf $INSTANCE_DIR/$ACS_CNF_DIR/LoggingNotify.svc.conf  -ORBEndpoint iiop://$HOST:$LOGGING_NOTIFY_SERVICE_PORT -ORBInitRef NameService=corbaloc::$HOST:$NAMING_SERVICE_PORT/NameService -IORoutput $LOGGING_NOTIFY_IOR $ORBOPTS -Factory LoggingNotifyEventChannelFactory -Boot &> $LOG_NOTIFY_OUT &
+# cd $STARTUP_DIR
 
 LOGGING_NOTIFY_SERVICE_PID=$!
 echo $LOGGING_NOTIFY_SERVICE_PID  > $LOGGING_NOTIFY_SERVICE_PIDFILE

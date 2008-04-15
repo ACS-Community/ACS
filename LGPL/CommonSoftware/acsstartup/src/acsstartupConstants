@@ -24,6 +24,7 @@ ACS_INSTANCES_DIR=$ACSDATA/tmp
 ACS_PID_DIR=pids
 ACS_OUT_DIR=out
 ACS_IOR_DIR=iors
+ACS_CNF_DIR=conf
 
 ### Instance files
 ACS_NOTIFY_OUT=$ACS_OUT_DIR/notify.out
