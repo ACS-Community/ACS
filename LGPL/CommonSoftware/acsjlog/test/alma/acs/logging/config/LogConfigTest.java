@@ -477,7 +477,7 @@ public class LogConfigTest extends TestCase {
 		logConfig.initialize(true);
 		assertEquals(6, logConfig.getNamedLoggerConfig("unlockedLogger").getMinLogLevel()); // to make sure the CDB entry was considered
 		assertSame(AcsLogLevelDefinition.OFF.value, logConfig.getNamedLoggerConfig(loggerName).getMinLogLevel());
-		assertTrue(logConfig.getNamedLoggerConfig(loggerName).isLocked());
+		assertTrue(logConfig.getNamedLoggerConfig(loggerName).isLockedRemote());
 	}
 	
 	
