@@ -407,7 +407,7 @@ public class LogMultiFileCache  implements ILogMap {
 		if (key==null) {
 			throw new IllegalStateException("Inconsistency between logsInCache and last LogBufferedFileCache");
 		}
-		return key;
+		return key+lastRecord.minLogIdx;
 	}
 	
 	/**
