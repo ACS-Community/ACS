@@ -22,6 +22,7 @@
 package alma.acs.jlog.test;
 
 import java.util.Collection;
+import java.util.Set;
 import java.util.Iterator;
 
 import com.cosylab.logging.client.cache.LogMultiFileCache;
@@ -44,9 +45,6 @@ public class MultiFileCacheTest extends TestCase {
 	// The size of the cache
 	private static int TESTCACHE_SIZE=1500;
 	
-	private Collection<ILogEntry> logCollection;
-	
-	
 	/**
 	 * Constructor
 	 *
@@ -55,7 +53,7 @@ public class MultiFileCacheTest extends TestCase {
 		super("MultiFileCacheTest");
 	}
 	
-	
+	@Override
 	public void setUp() throws Exception {
 		super.setUp();
 		cache=new LogMultiFileCache(TESTCACHE_SIZE);
@@ -63,17 +61,19 @@ public class MultiFileCacheTest extends TestCase {
 		
 		assertEquals("The cache size is not as expected",TESTCACHE_SIZE,cache.getMaxFileSize());
 		
-		// Create and populate the cache
-		logCollection = CacheUtils.generateLogsType(100,LogTypeHelper.TRACE);	
 	}
 	
+	@Override
 	public void tearDown() throws Exception {
 		super.tearDown();
 		cache.clear();
 		cache=null;
 	}
 	
-	public void testFileCreation1() throws Exception {
+	public void testFileCreation() throws Exception {
+		// Create and populate the cache
+		Collection<ILogEntry> logCollection = CacheUtils.generateLogsType(100,LogTypeHelper.TRACE);
+		assertEquals(100, logCollection.size());
 		long fileSize = 0;
 		
 		Iterator<ILogEntry> ii = logCollection.iterator();
@@ -134,8 +134,7 @@ public class MultiFileCacheTest extends TestCase {
 		
 		
 		System.out.println("\nACTION : delete first log of the new file");
-
-		cache.deleteLog(27);
+		cache.deleteLog(26);
 		cache.printFileTableInfo();
 
 		System.out.println("\nACTION : Add single log");
@@ -200,7 +199,172 @@ public class MultiFileCacheTest extends TestCase {
 
 	}
 	
+	/**
+	 * Test deletion of logs
+	 * 
+	 * @throws Exception
+	 */
 	public void testFileDeletion() throws Exception {
+		// Create and populate the cache
+		Collection<ILogEntry> logCollection = CacheUtils.generateLogs(1000);
+		assertEquals(1000, logCollection.size());
+		
+		for (ILogEntry log: logCollection) {
+			cache.add(log);
+		}
+		assertTrue(cache.getActiveCacheFiles()>0);
+		assertEquals(Integer.valueOf(0), cache.getFirstLog());
+		assertEquals(Integer.valueOf(999), cache.getLastLog());
+		
+		cache.printFileTableInfo();
+		
+		int start = cache.getFirstLog();
+		int end = cache.getLastLog();
+		for (int t=start; t<=end; t++) {
+			System.out.println(">>>>"+t);
+			cache.deleteLog(t);
+		}
+		System.out.println("First "+cache.getFirstLog()+", Last "+cache.getLastLog());
+		cache.printFileTableInfo();
+		assertEquals(0, cache.getSize());
+		assertEquals(0, cache.getActiveCacheFiles());
+	}
+	
+	/**
+	 * Test the functioning of getSize()
+	 * @throws Exception
+	 */
+	public void testGetSize() throws Exception {
+		// Create and populate the cache
+		Collection<ILogEntry> logCollection = CacheUtils.generateLogs(1000);
+		assertEquals(1000, logCollection.size());
+		for (ILogEntry log: logCollection) {
+			cache.add(log);
+		}
+		assertEquals(Integer.valueOf(0), cache.getFirstLog());
+		assertEquals(Integer.valueOf(999), cache.getLastLog());
+		
+		assertEquals(logCollection.size(), cache.getSize());
+		
+		// Remove the logs and check the size
+		int removed=0;
+		int start = cache.getFirstLog();
+		int end = cache.getLastLog();
+		for (int t=start; t<=end; t++) {
+			cache.deleteLog(t);
+			assertEquals(logCollection.size()-(++removed), cache.getSize());
+		}
+		assertEquals(0, cache.getSize());
+	}
+	
+	/**
+	 * Test the clearing of the cache
+	 */
+	public void testClear() throws Exception {
+		// Create and populate the cache
+		Collection<ILogEntry> logCollection = CacheUtils.generateLogs(1000);
+		assertEquals(1000, logCollection.size());
+		for (ILogEntry log: logCollection) {
+			cache.add(log);
+		}
+		assertEquals(Integer.valueOf(0), cache.getFirstLog());
+		assertEquals(Integer.valueOf(999), cache.getLastLog());
+		
+		assertEquals(logCollection.size(), cache.getSize());
+		
+		cache.clear();
+		assertEquals(0, cache.getSize());
+		assertEquals(0, cache.getActiveCacheFiles());
+		assertNull(cache.getFirstLog());
+		assertNull(cache.getLastLog());
+	}
+	
+	/**
+	 * Test getFirstLog()
+	 */
+	public void testGetFirstLog() throws Exception {
+		// Create and populate the cache
+		Collection<ILogEntry> logCollection = CacheUtils.generateLogs(1000);
+		assertEquals(1000, logCollection.size());
+		for (ILogEntry log: logCollection) {
+			cache.add(log);
+		}
+		assertEquals(Integer.valueOf(0), cache.getFirstLog());
+		assertEquals(Integer.valueOf(999), cache.getLastLog());
+		
+		assertEquals(logCollection.size(), cache.getSize());
+		
+		int start = cache.getFirstLog();
+		int end = cache.getLastLog();
+		for (int t=start; t<=end; t++) {
+			cache.deleteLog(t);
+			if (t<end) {
+				assertEquals(Integer.valueOf(t+1), cache.getFirstLog());
+			} else {
+				assertNull(cache.getFirstLog());
+			}
+		}
+	}
+	
+	/**
+	 * Test getLastLog()
+	 */
+	public void testGetLastLog() throws Exception {
+		// Create and populate the cache
+		Collection<ILogEntry> logCollection = CacheUtils.generateLogs(1000);
+		assertEquals(1000, logCollection.size());
+		for (ILogEntry log: logCollection) {
+			cache.add(log);
+		}
+		assertEquals(Integer.valueOf(0), cache.getFirstLog());
+		assertEquals(Integer.valueOf(999), cache.getLastLog());
+		
+		assertEquals(logCollection.size(), cache.getSize());
+		
+		int start = cache.getFirstLog();
+		int end = cache.getLastLog();
+		for (int t=end; t>=start; t--) {
+			System.out.println("Deleting "+t+", size="+cache.getSize());
+			cache.deleteLog(t);
+			if (t>start) {
+				assertEquals(Integer.valueOf(t-1), cache.getLastLog());
+			} else {
+				cache.printFileTableInfo();
+				assertNull(cache.getLastLog());
+			}
+		}
+	}
+	
+	/**
+	 * Test keySet()
+	 * 
+	 * @throws Exception
+	 */
+	public void testkKeySet() throws Exception {
+		// Create and populate the cache
+		Collection<ILogEntry> logCollection = CacheUtils.generateLogs(1000);
+		assertEquals(1000, logCollection.size());
+		for (ILogEntry log: logCollection) {
+			cache.add(log);
+		}
+		assertEquals(Integer.valueOf(0), cache.getFirstLog());
+		assertEquals(Integer.valueOf(999), cache.getLastLog());
+		
+		assertEquals(logCollection.size(), cache.getSize());
+		
+		Set<Integer> keys = cache.keySet();
+		assertEquals(cache.getSize(), keys.size());
+		
+		// to check if the keys are all the integers in the cache without duplication
+		// we iterate over the keys, get and remove the log having such a key
+		// If the key appears twice the get will fail the second time
+		for (Integer key: keys) {
+			ILogEntry log = cache.getLog(key);
+			assertNotNull(log);
+			cache.deleteLog(key);
+		}
+		// If keySet() returned all the key, the cache is empty at the end
+		assertTrue(cache.getSize()==0);
 	}
 		
 
