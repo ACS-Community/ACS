@@ -881,7 +881,7 @@ public class IOLogsHelper extends Thread  {
 			System.err.println("Warning exception ignored "+e.getMessage());
 			e.printStackTrace(System.err);
 		}
-		
+		System.out.println("First key: "+cache.getFirstLog()+", last "+cache.getLastLog());
 		int key=cache.getFirstLog();
 		while (key <= cache.getLastLog()) {
 			try {
@@ -896,6 +896,8 @@ public class IOLogsHelper extends Thread  {
 				// This can happen if the log has been removed by a separate
 				// thread
 				// It is not an error and the exception can be ignored
+				System.out.println(lce.getMessage());
+				lce.printStackTrace();
 				break;
 			}
 			
