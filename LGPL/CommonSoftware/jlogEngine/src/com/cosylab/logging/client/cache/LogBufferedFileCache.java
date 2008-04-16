@@ -2,6 +2,7 @@ package com.cosylab.logging.client.cache;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeMap;
@@ -410,9 +411,10 @@ public class LogBufferedFileCache extends LogFileCache implements ILogMap {
 	 * @return The keys of the logs in cache
 	 */
 	public Set<Integer> keySet() {
-		Set<Integer> keys = super.keySet();
-		keys.addAll(buffer.keySet());
-		return keys;
+		HashSet<Integer> ret = new HashSet<Integer>();
+		ret.addAll(super.keySet());
+		ret.addAll(buffer.keySet());
+		return ret;
 	}
 	
 	/**
