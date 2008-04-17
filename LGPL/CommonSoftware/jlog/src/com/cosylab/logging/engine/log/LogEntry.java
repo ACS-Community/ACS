@@ -190,7 +190,7 @@ public class LogEntry implements ILogEntry {
 			}
 		}
 		
-		if (type==LogTypeHelper.TRACE && !hasDatas()) {
+		if (type==LogTypeHelper.TRACE && !hasDatas() && logMessage!=null && logMessage.trim().isEmpty()) {
 			sb.append("/>");
 		} else {
 			sb.append(">");

@@ -489,8 +489,8 @@ public final class LogEntryXML implements ILogEntry
 			}
 		}
 		
-		Integer type = (Integer)getField(Field.ENTRYTYPE);
-		if (type==LogTypeHelper.TRACE.ordinal()) {
+		LogTypeHelper type = getType();
+		if (type==LogTypeHelper.TRACE && getField(Field.LOGMESSAGE)!=null && getField(Field.LOGMESSAGE).toString().trim().isEmpty()) {	
 			sb.append("/>");
 		} else {
 			sb.append("><![CDATA["+getField(Field.LOGMESSAGE).toString()+"]]>");
