@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.1 2008/04/17 12:45:58 bjeram Exp $"
+# "@(#) $Id: Makefile,v 1.2 2008/04/17 12:57:41 bjeram Exp $"
 #
 # Makefile of ........
 #
@@ -60,6 +60,7 @@ install :
 	@echo " . . . installation done"
 
 do_copy :
+	@mkdir -p ../idl
 	@cp -f $(ACE_ROOT)/TAO/orbsvcs/orbsvcs/NotifyExt.idl ../idl
 	@cp -f $(ACE_ROOT)/TAO/orbsvcs/orbsvcs/Notify/MonitorControl/NotificationServiceMC.idl ../idl
 	@cp -f $(ACE_ROOT)/TAO/orbsvcs/orbsvcs/Notify/MonitorControlExt/NotifyMonitoringExt.idl ../idl
@@ -68,5 +69,6 @@ do_remove :
 	@rm -f ../idl/NotifyExt.idl
 	@rm -f ../idl/NotificationServiceMC.idl
 	@rm -f ../idl/NotifyMonitoringExt.idl
+	@rm -rf ../idl
 
 #___oOo___
