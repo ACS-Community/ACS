@@ -366,6 +366,33 @@ public class MultiFileCacheTest extends TestCase {
 		// If keySet() returned all the key, the cache is empty at the end
 		assertTrue(cache.getSize()==0);
 	}
+	
+	/**
+	 * Test the getting of logs out of the cache
+	 * 
+	 * @throws Exception
+	 */
+	public void testGet() throws Exception {
+		// Create and populate the cache
+		Collection<ILogEntry> logCollection = CacheUtils.generateLogs(1000);
+		assertEquals(1000, logCollection.size());
+		for (ILogEntry log: logCollection) {
+			cache.add(log);
+		}
+		assertEquals(Integer.valueOf(0), cache.getFirstLog());
+		assertEquals(Integer.valueOf(999), cache.getLastLog());
+		
+		assertEquals(logCollection.size(), cache.getSize());
+		
+		for (Integer t=cache.getFirstLog(); t<=cache.getLastLog(); t++) {
+			ILogEntry log = cache.getLog(t);
+			// To be sure the log is what we expect, it checks is the log message
+			// contains the key
+			String message = (String)log.getField(ILogEntry.Field.LOGMESSAGE);
+			assertNotNull(message);
+			assertTrue(message.contains(t.toString()));
+		}
+	}
 		
 
 }
