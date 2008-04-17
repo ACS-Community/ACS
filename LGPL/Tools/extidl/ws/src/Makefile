@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.2 2008/04/17 12:57:41 bjeram Exp $"
+# "@(#) $Id: Makefile,v 1.3 2008/04/17 12:58:47 bjeram Exp $"
 #
 # Makefile of ........
 #
@@ -41,7 +41,7 @@ clean : do_remove
 	@$(MAKE) -f Makefile.c++  clean
 	@echo " . . . clean done"
 
-clean_dist : 
+clean_dist : do_remove
 	@$(MAKE) -f Makefile.java  clean_dist
 	@$(MAKE) -f Makefile.python  clean_dist
 	@$(MAKE) -f Makefile.c++  clean_dist
