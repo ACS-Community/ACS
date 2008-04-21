@@ -897,5 +897,18 @@ public class LogTableDataModel extends AbstractTableModel implements Runnable, F
 		}
 		invalidateVisibleLogs();
 	}
+	
+	/**
+	 * 
+	 * @return A description of the active filters
+	 * @see FiltersVector.getFilterString()
+	 */
+	public String getFiltersString() {
+		if (filters==null) {
+			return "Not filtered";
+		} else {
+			return filters.getFilterString();
+		}
+	}
 
 }
