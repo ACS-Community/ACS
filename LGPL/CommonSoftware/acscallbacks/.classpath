@@ -7,10 +7,14 @@
 	<classpathentry kind="var" path="ACSROOT/lib/acscomponent.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acserr.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acserrj.jar"/>
-	<classpathentry sourcepath="ACSROOT/lib/junit.jar" kind="var" path="ACSROOT/lib/junit.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/junit.jar" sourcepath="ACSROOT/lib/junit.jar"/>
 	<classpathentry kind="lib" path="lib/DemoCallbackResponderIF.jar"/>
 	<classpathentry kind="var" path="JACORB_HOME/lib/jacorb.jar"/>
-	<classpathentry sourcepath="ACSROOT/lib/jcont.jar" kind="var" path="ACSROOT/lib/jcont.jar"/>
-	<classpathentry kind="var" path="INTROOT/lib/JavaContainerError.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/jcont.jar" sourcepath="ACSROOT/lib/jcont.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/JavaContainerError.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acsContainerServices.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/maciErrType.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acsalarmSchemaBindings.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acsjlog.jar"/>
 	<classpathentry kind="output" path="object/eclipseOut"/>
 </classpath>
