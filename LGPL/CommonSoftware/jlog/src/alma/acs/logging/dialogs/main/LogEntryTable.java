@@ -90,14 +90,6 @@ public class LogEntryTable extends JTable
 	private FieldChooserDialog fieldChooser = null;
 	private ColumnMenu popupMenu = new ColumnMenu();
 	
-	/**
-	 *  The dialog to manage filters
-	 *  There is only one instance of this dialog that can be visible or invisible.
-	 *  It is disposed by calling the close() (usually done by
-	 *  the LoggingClient before exiting.
-	 */
-	private FilterChooserDialog filterChooserDialog = null;
-
 	private LoggingClient loggingClient;
 	
 	public TextTransfer textTransfer;
@@ -1049,39 +1041,13 @@ public class LogEntryTable extends JTable
      *
      */
     public void close() {
-    	showFilterChooser(false);
-    	if (filterChooserDialog!=null) {
-    		filterChooserDialog.setVisible(false);
-    		filterChooserDialog.dispose();
-    		filterChooserDialog=null;
-    	}
     	if (fieldChooser!=null) {
     		fieldChooser.setVisible(false);
     		fieldChooser.dispose();
     		fieldChooser=null;
     	}
     }
-    
-	/**
-	 * Display/hide the filter configuration dialog.
-	 * @param show If true the dialog is shown, otherwise it is closed
-	 * 
-	 */
-	public void showFilterChooser(boolean show)
-	{
-		if (show) {
-			if (filterChooserDialog==null) {
-				filterChooserDialog=new FilterChooserDialog("Filter chooser",loggingClient,getLCModel());
-			}
-			filterChooserDialog.setFilters(getLCModel().getFilters());
-			filterChooserDialog.setVisible(true);
-		} else {
-			if (filterChooserDialog!=null) {
-				filterChooserDialog.setVisible(false);
-			}
-		}
-	}
-	
+    	
 	/**
 	 * Set the format used to show the timestamp in the date column
 	 * 
