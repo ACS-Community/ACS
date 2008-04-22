@@ -36,6 +36,14 @@
             id="alma.acs.eventbrowser.views.servicesummary"
             name="Service Summary">
       </view>
+      <view
+            allowMultiple="true"
+            class="alma.acs.eventbrowser.views.EventDetailView"
+            icon="icons/sample.gif"
+            id="alma.acs.eventbrowser.views.eventdetail"
+            name="Event Details"
+            restorable="true">
+      </view>
    </extension>
    <extension
          point="org.eclipse.ui.perspectiveExtensions">
