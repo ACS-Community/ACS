@@ -594,4 +594,33 @@ public class LCEngine implements Filterable {
 	public FiltersVector getFilters() {
 		return filters;
 	}
+
+	/**
+	 * Return <code>true</code> if the engine is applying filters.
+	 * If a filter is in place but not enabled then it is ignored.
+	 * 
+	 * @return <code>true</code> if there are filters active in the engine
+	 * @see FiltersVector.hasActiveFilters()
+	 */
+	public boolean isFiltered() {
+		if (filters==null) {
+			return false;
+		} else {
+			return filters.hasActiveFilters();
+		}
+	}
+	
+	/**
+	 * 
+	 * @return A description of the active filters
+	 * @see FiltersVector.getFilterString()
+	 */
+	public String getFiltersString() {
+		if (filters==null) {
+			return "Not filtered";
+		} else {
+			return filters.getFilterString();
+		}
+	}
+
 }
