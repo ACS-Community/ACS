@@ -1,5 +1,7 @@
 package alma.acs.eventbrowser;
 
+import java.util.concurrent.ArrayBlockingQueue;
+
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.equinox.app.IApplication;
@@ -9,6 +11,7 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
 
 import alma.acs.eventbrowser.preferences.MonitoringPreferencePage;
+import alma.acs.eventbrowser.views.EventData;
 
 /**
  * This class controls all aspects of the application's execution
@@ -16,6 +19,8 @@ import alma.acs.eventbrowser.preferences.MonitoringPreferencePage;
 public class Application implements IApplication {
 	
 	public static final String PLUGIN_ID = "alma.acs.eventbrowser";
+	
+	public static ArrayBlockingQueue<EventData> equeue = new ArrayBlockingQueue<EventData>(50000);
 	
 	private static boolean monitoring = false;
 

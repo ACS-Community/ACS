@@ -46,7 +46,8 @@ public class EventModel {
 	private final static String eventGuiId = "eventGUI";
 	private final EventChannelFactory alsvc;
 	private final EventChannelFactory arsvc;
-	private static EventModel instance;
+	private static EventModel modelInstance;
+	private static AdminConsumer consumerInstance;
 
 	private EventModel() throws Exception {
 		String connectionString;
@@ -103,9 +104,9 @@ public class EventModel {
 	}
 	
 	public static EventModel getInstance() throws Exception {
-		if (instance == null) 
-			instance = new EventModel();
-		return instance;
+		if (modelInstance == null) 
+			modelInstance = new EventModel();
+		return modelInstance;
 	}
 	
 	public ArrayList<ChannelData> getServiceTotals() {
@@ -245,6 +246,12 @@ public class EventModel {
 	
 	public ContainerServices getContainerServices() {
 		return cs;
+	}
+
+	public AdminConsumer getAdminConsumer() throws AcsJException {
+		if (consumerInstance == null)
+			consumerInstance = new AdminConsumer("blar",cs);
+		return consumerInstance;
 	}
 
 	

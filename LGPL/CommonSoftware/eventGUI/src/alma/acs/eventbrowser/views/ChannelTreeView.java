@@ -171,21 +171,6 @@ public class ChannelTreeView extends ViewPart {
 				tp.addChild(tsup);
 				root.addChild(tp);	
 			}
-//			TreeObject to1 = new TreeObject("Admin 1");
-//			TreeObject to2 = new TreeObject("Admin 2");
-//			TreeObject to3 = new TreeObject("Admin 3");
-//			TreeParent p1 = new TreeParent("CONTROL_SYSTEM Channel");
-//			p1.addChild(to1);
-//			p1.addChild(to2);
-//			p1.addChild(to3);
-//			
-//			TreeObject to4 = new TreeObject("Admin 4");
-//			TreeParent p2 = new TreeParent("TEL_CAL Channel 2");
-//			p2.addChild(to4);
-//			
-//
-//			root.addChild(p1);
-//			root.addChild(p2);
 			
 			invisibleRoot = new TreeParent("");
 			invisibleRoot.addChild(root);
@@ -269,7 +254,7 @@ public class ChannelTreeView extends ViewPart {
 		manager.add(startMonitoringAction);
 		manager.add(new Separator());
 		drillDownAdapter.addNavigationActions(manager);
-		// Other plug-ins can contribute there actions here
+		// Other plug-ins can contribute their actions here
 		manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
 	}
 	
@@ -284,9 +269,7 @@ public class ChannelTreeView extends ViewPart {
 		refreshAction = new Action() {
 			public void run() {
 				vcp.initialize();
-//				viewer.setInput(vs);
 				viewer.refresh();
-//				showMessage("Channel statistics refreshed.");
 			}
 		};
 		refreshAction.setText("Refresh");
@@ -298,7 +281,6 @@ public class ChannelTreeView extends ViewPart {
 			public void run() {
 				startMonitoring();
 				setEnabled(false);
-//				showMessage("Monitoring started");
 			}
 		};
 		startMonitoringAction.setText("Start monitoring");
@@ -338,7 +320,6 @@ public class ChannelTreeView extends ViewPart {
 	
 	public void startMonitoring() {
 		Application.setMonitoring(true);
-
 
 		Runnable t = new Runnable()  {
 			int i = 0;
