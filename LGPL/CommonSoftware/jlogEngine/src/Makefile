@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.25 2006/12/13 16:42:10 acaproni Exp $"
+# "@(#) $Id: Makefile,v 1.26 2008/04/22 09:49:55 acaproni Exp $"
 #
 # Makefile of Java Logging Client
 #
@@ -46,13 +46,13 @@
 # Java code
 # ------------------------------
 DEBUG = on
-JARFILES = lc
-lc_DIRS = com alma
+JARFILES = lcEngine
+lcEngine_DIRS = com alma
 
 #
 # Scripts (public and local)
 # ----------------------------
-SCRIPTS         = jlog acsLogAssistant
+SCRIPTS         = 
 SCRIPTS_L       =
 
 
@@ -91,8 +91,6 @@ endif
 # TARGETS
 # -------
 all:	do_all
-	@echo "== Adding extra files to lc.jar"
-	@cd lc.jar.extras; jar -uf ../../lib/lc.jar *
 	@echo " . . . 'all' done" 
 
 clean : clean_all 
