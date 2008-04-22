@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.34 2008/04/22 14:43:56 acaproni Exp $" 
+# "@(#) $Id: Makefile,v 1.35 2008/04/22 14:52:08 acaproni Exp $" 
 #
 # Makefile of lcTest for jlog.
 #
@@ -72,9 +72,7 @@ USER_LIB =      -lACE \
                 -lloki \
                 -lACSErrTypeCommon
 
-EXECUTABLES = logClient
-logClient_OBJECTS = logClient
-logClient_LIBS =
+EXECUTABLES = 
 
 #
 # Scripts (public and local)
