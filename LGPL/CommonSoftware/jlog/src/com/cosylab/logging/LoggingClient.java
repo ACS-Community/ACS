@@ -56,6 +56,7 @@ import alma.acs.logging.preferences.UserPreferences;
 
 import com.cosylab.gui.components.r2.SmartTextArea;
 import com.cosylab.logging.client.DetailedLogTable;
+import com.cosylab.logging.engine.Filterable;
 import com.cosylab.logging.engine.FiltersVector;
 import com.cosylab.logging.engine.ACS.ACSRemoteErrorListener;
 import com.cosylab.logging.engine.ACS.ACSRemoteLogListener;
@@ -121,6 +122,16 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 	 */
 	private JLabel audienceLbl = new JLabel();
 	
+	/**
+	 * The label showing if there are active filters in the engine
+	 */
+	private JLabel engineFiltersLbl = new JLabel();
+	
+	/**
+	 * The label showing if there are active filters in the table
+	 */
+	private JLabel tableFiltersLbl = new JLabel();
+	
 	private ArchiveConnectionManager archive;
 	
 	// Create an instance of the preferences with default values
@@ -158,7 +169,7 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
     // The progress bar for long time operations
     private JProgressBar progressBar = new JProgressBar(JProgressBar.HORIZONTAL);
     
-    // Remeber if the engine is connected
+    // Remember if the engine is connected
     //
     // The check is done by LCEngine and a callback is called depending
     // on the status of the connection
@@ -209,6 +220,14 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
     // The dialog to choose filters to apply to the engine
     private FilterChooserDialog engineFiltersDlg=null;
     
+	/**
+	 *  The dialog to manage table filters
+	 *  There is only one instance of this dialog that can be visible or invisible.
+	 *  It is disposed by calling the close() (usually done by
+	 *  the LoggingClient before exiting.
+	 */
+	private FilterChooserDialog filterChooserDialog = null;
+    
     // The frame containing this logging client
     // It is not null only if the application is executed in stand alone mode
     private LogFrame logFrame=null;
@@ -248,7 +267,7 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
             }else if (e.getSource() == menuBar.getFieldsMenuItem()) {
 				connFields(e);
             } else if (e.getSource() == menuBar.getFiltersMenuItem() || e.getSource()==toolBar.getFiltersBtn()) {
-				showFiltersPanel(e);
+				showTableFiltersDialog(e);
             } else if (e.getSource()==toolBar.getPauseBtn()) {
 				// Swap set the pause mode in the toolbar
 				toolBar.clickPauseBtn();
@@ -324,7 +343,7 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
             	getEngine().setAudience(EngineAudienceHelper.NO_AUDIENCE);
             	audienceLbl.setText(" Engineering ");
             } else if (e.getSource()==menuBar.getEngineFiltersMenuItem()) {
-            	showEngineFilterDialog();
+            	showEngineFiltersDialog();
             } else {
             	System.err.println("Unrecognized ActionEvent "+e);
             }
@@ -512,18 +531,71 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 	 * as soon as the item "Filters" is clicked.
 	 * @param arg1 java.awt.event.ActionEvent
 	 */
-	private void showFiltersPanel(java.awt.event.ActionEvent arg1)
-	{
-		try
-		{
-			enableFiltersWidgets(false);
-			getLogEntryTable().showFilterChooser(true);
+	private void showTableFiltersDialog(java.awt.event.ActionEvent arg1) {
+		class TableFilterable implements Filterable {
+
+			/* (non-Javadoc)
+			 * @see com.cosylab.logging.engine.Filterable#getFilters()
+			 */
+			@Override
+			public FiltersVector getFilters() {
+				return tableModel.getFilters();
+			}
+
+			/* (non-Javadoc)
+			 * @see com.cosylab.logging.engine.Filterable#setFilters(com.cosylab.logging.engine.FiltersVector, boolean)
+			 */
+			@Override
+			public void setFilters(FiltersVector newFilters, boolean append) {
+				tableModel.setFilters(newFilters, append);
+				setTableFilterLbl();
+			}
+			
 		}
-		catch (java.lang.Throwable ivjExc)
-		{
-			handleException(ivjExc);
-			enableFiltersWidgets(true);
+		if (filterChooserDialog==null) {
+			filterChooserDialog=new FilterChooserDialog("Filter chooser",this,new TableFilterable());
 		}
+		filterChooserDialog.setFilters(tableModel.getFilters());
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				enableFiltersWidgets(false);
+				filterChooserDialog.setVisible(true);
+			}
+		});
+	}
+	
+	/**
+	 * Update the label of the filtering of the table
+	 */
+	private void setTableFilterLbl() {
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				if (tableModel.getFilters().hasActiveFilters()) {
+					tableFiltersLbl.setText("Table filtered");
+					tableFiltersLbl.setToolTipText(tableModel.getFiltersString());
+				} else {
+					tableFiltersLbl.setText("Table not filtered");
+					tableFiltersLbl.setToolTipText(null);
+				}
+			}
+		});
+	}
+	
+	/**
+	 * Update the label of the filtering of the table
+	 */
+	private void setEngineFilterLbl() {
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				if (engine==null || engine.getFilters()==null || !engine.getFilters().hasActiveFilters()) {
+					engineFiltersLbl.setText("Engine not filtered");
+					engineFiltersLbl.setToolTipText(null);
+				} else {
+					engineFiltersLbl.setText("Engine filtered");
+					engineFiltersLbl.setToolTipText(engine.getFiltersString());
+				} 
+			}
+		});
 	}
 
 	/**
@@ -707,6 +779,9 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 			getLCModel1().setMaxLog(userPreferences.getMaxNumOfLogs());
 			
 			archive = new ArchiveConnectionManager(this);
+			
+			setTableFilterLbl();
+			setEngineFilterLbl();
 		}
 		catch (java.lang.Throwable ivjExc)
 		{
@@ -979,8 +1054,30 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 		        progressBar.setVisible(false);
 		        statusLinePnl.add(progressBar,constraintsProgressBar);
 		        
+		        GridBagConstraints constraintsEngineFlt = new GridBagConstraints();
+		        constraintsEngineFlt.gridx=2;
+		        constraintsEngineFlt.gridy=0;
+		        constraintsEngineFlt.insets = new Insets(1,1,1,1);
+		        engineFiltersLbl.setVisible(true);
+		        engineFiltersLbl.setBorder(BorderFactory.createLoweredBevelBorder());
+		        Font fntEngineFlt = engineFiltersLbl.getFont();
+		        Font newFontEngineFlt = fntEngineFlt.deriveFont(fntEngineFlt.getSize()-2);
+		        engineFiltersLbl.setFont(newFontEngineFlt);
+		        statusLinePnl.add(engineFiltersLbl,constraintsEngineFlt);
+		        
+		        GridBagConstraints constraintsTableFlt= new GridBagConstraints();
+		        constraintsTableFlt.gridx=3;
+		        constraintsTableFlt.gridy=0;
+		        constraintsTableFlt.insets = new Insets(1,1,1,1);
+		        tableFiltersLbl.setVisible(true);
+		        tableFiltersLbl.setBorder(BorderFactory.createLoweredBevelBorder());
+		        Font fntTableFlt = tableFiltersLbl.getFont();
+		        Font newFontTableFlt = fntTableFlt.deriveFont(fntTableFlt.getSize()-2);
+		        tableFiltersLbl.setFont(newFontTableFlt);
+		        statusLinePnl.add(tableFiltersLbl,constraintsTableFlt);
+		        
 		        GridBagConstraints constraintsAudience = new GridBagConstraints();
-		        constraintsAudience.gridx=2;
+		        constraintsAudience.gridx=4;
 		        constraintsAudience.gridy=0;
 		        constraintsAudience.insets = new Insets(1,1,1,1);
 		        audienceLbl.setVisible(true);
@@ -991,13 +1088,13 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 		        statusLinePnl.add(audienceLbl,constraintsAudience);
 				
 		        GridBagConstraints constraintsConnectionDBStatus = new GridBagConstraints();
-				constraintsConnectionDBStatus.gridx = 3;
+				constraintsConnectionDBStatus.gridx = 5;
 				constraintsConnectionDBStatus.gridy = 0;
 				constraintsConnectionDBStatus.insets = new Insets(1, 2, 1, 2);
 				statusLinePnl.add(connectionDBLbl,constraintsConnectionDBStatus);
 		        
 				GridBagConstraints constraintsConnectionStatus = new GridBagConstraints();
-				constraintsConnectionStatus.gridx = 4;
+				constraintsConnectionStatus.gridx = 6;
 				constraintsConnectionStatus.gridy = 0;
 				constraintsConnectionStatus.insets = new Insets(1, 2, 1, 2);
 				statusLinePnl.add(connectionStatusLbl,constraintsConnectionStatus);
@@ -1481,6 +1578,11 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 			engineFiltersDlg.dispose();
 			engineFiltersDlg=null;
 		}
+    	if (filterChooserDialog!=null) {
+    		filterChooserDialog.setVisible(false);
+    		filterChooserDialog.dispose();
+    		filterChooserDialog=null;
+    	}
 	}
 	
 	/**
@@ -1521,7 +1623,6 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 	 * Init the audience
 	 */
 	private void initAudience() {
-		System.out.println("Initing audience");
 		if (Boolean.getBoolean(AUDIENCE_PROPERTY)) {
 			menuBar.getOperatorMode().doClick();
 		} else {
@@ -1533,9 +1634,28 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 	/**
 	 * Shows the dialog to set filters in the engine
 	 */
-	private void showEngineFilterDialog() {
+	private void showEngineFiltersDialog() {
+		class EngineFilterable implements Filterable {
+
+			/* (non-Javadoc)
+			 * @see com.cosylab.logging.engine.Filterable#getFilters()
+			 */
+			@Override
+			public FiltersVector getFilters() {
+				return engine.getFilters();
+			}
+
+			/* (non-Javadoc)
+			 * @see com.cosylab.logging.engine.Filterable#setFilters(com.cosylab.logging.engine.FiltersVector, boolean)
+			 */
+			@Override
+			public void setFilters(FiltersVector newFilters, boolean append) {
+				engine.setFilters(newFilters, append);
+				setEngineFilterLbl();
+			}
+		}
 		if (engineFiltersDlg==null) {
-			engineFiltersDlg = new FilterChooserDialog("Engine filters",this,engine);
+			engineFiltersDlg = new FilterChooserDialog("Engine filters",this,new EngineFilterable());
 		}
 		FiltersVector engineFilters = engine.getFilters();
 		if (engineFilters==null) {
