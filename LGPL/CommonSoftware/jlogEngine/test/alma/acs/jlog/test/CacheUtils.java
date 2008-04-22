@@ -29,10 +29,6 @@ import java.util.Date;
 import java.util.Random;
 import java.util.Vector;
 
-import com.cosylab.logging.client.cache.ILogMap;
-import com.cosylab.logging.client.cache.LogBufferedFileCache;
-import com.cosylab.logging.client.cache.LogCache;
-import com.cosylab.logging.client.cache.LogFileCache;
 import com.cosylab.logging.engine.ACS.ACSLogParser;
 import com.cosylab.logging.engine.ACS.ACSLogParserDOM;
 import com.cosylab.logging.engine.log.ILogEntry;
@@ -55,14 +51,6 @@ public class CacheUtils {
 	
 	// The parser
 	private static ACSLogParser parser;
-	
-	// The type of cache to create
-	public static final int LOGFILECACHE_TYPE=0;
-	public static final int LOGBUFFEREDFILECACHE_TYPE=1;
-	public static final int LOGCACHE_TYPE=2;
-	
-	// The number of possible cache types
-	public static final int NUMOFCACHETYPES=3;
 	
 	/**
 	 * Generate a random collection of keys.
@@ -237,61 +225,5 @@ public class CacheUtils {
 			v.add(log);
 		}
 		return v;
-	}
-		
-	
-	
-	/**
-	 * Add numOfLogs log to the cache.
-	 * 
-	 * @param cache The cache to fill with logs
-	 * @param numOfLogs The number of logs to insert in cache
-	 */
-	public static void populateCache(ILogMap cache, int numOfLogs) throws Exception {
-		if (cache ==null) {
-			throw new IllegalArgumentException("The cache is null");
-		}
-		if (numOfLogs<=0) {
-			throw new IllegalArgumentException("Impossible to add "+numOfLogs+" logs");
-		}
-		Collection<ILogEntry> logs = generateLogs(numOfLogs);
-		for (ILogEntry log: logs) {
-			cache.add(log);
-		}
-	}
-	
-	/**
-	 * Create a cache of the given type.
-	 * The cache is created with the empty constructor if the opt
-	 * param is null.
-	 * If opt is not null the cache is created passing opt in the
-	 * constructor.
-	 * LogFileCache has only the empty constructor: for this class
-	 * opt is ignored.
-	 * 
-	 * @param type The type of the cache
-	 * @param opt The optional integer argument (if it is null,
-	 *            the cache is created with the empty constructor)
-	 * @return The cache implementing ILogMap
-	 */
-	public static ILogMap getCache(int type, Integer opt) throws Exception {
-		switch (type) {
-		case LOGFILECACHE_TYPE:
-			return new LogFileCache();
-		case LOGBUFFEREDFILECACHE_TYPE:
-			if (opt==null) {
-				return new LogBufferedFileCache();
-			} else {
-				return new LogBufferedFileCache(opt);
-			}
-		case LOGCACHE_TYPE:
-			if (opt==null) {
-				return new LogCache();
-			} else {
-				return new LogCache(opt);
-			}
-		default:
-			throw new IllegalArgumentException("Invalid cache type "+type);
-		}
 	}
 }

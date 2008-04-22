@@ -208,7 +208,7 @@ public class LogDispatcherTest extends TestCase {
 		LogBinaryRecord logBin=convertLogToBinary(log);
 		String str=null;
 		try {
-			str=com.cosylab.logging.client.cache.CacheUtils.toCacheString(logBin);
+			str=com.cosylab.logging.engine.ACS.CacheUtils.toCacheString(logBin);
 		} catch (Throwable t) {
 			t.printStackTrace(System.err);
 			System.err.println("Log with error "+logBin.toString());
@@ -256,7 +256,7 @@ public class LogDispatcherTest extends TestCase {
 		}
 		logBin.Thread=(String)log.getField(Field.THREAD);
 		Date date = (Date)log.getField(Field.TIMESTAMP);
-		logBin.TimeStamp=com.cosylab.logging.client.cache.CacheUtils.dateFormat.format(date);
+		logBin.TimeStamp=com.cosylab.logging.engine.ACS.CacheUtils.dateFormat.format(date);
 		logBin.type=(short)log.getType().ordinal();
 		logBin.Uri=(String)log.getField(Field.URI);
 		if (log.hasDatas()) {
