@@ -47,5 +47,29 @@ public class EventModelTest extends TestCase {
 			fail();
 		}
 	}
+	
+	public void testSubscribeToAnEventChannel() throws Exception {
+		String testChannel = "JoesTestChannel";
+		int startConsumers = 0;
+		ChannelData cData = getChannelData(testChannel);
+		if (cData != null) startConsumers = cData.getNumberConsumers();
+		AdminConsumer ac = new AdminConsumer(testChannel,em.getContainerServices());
+		cData = getChannelData(testChannel);
+		assertEquals(startConsumers+1,cData.getNumberConsumers());
+		ac.disconnect();
+		cData = getChannelData(testChannel);
+		assertEquals(startConsumers,cData.getNumberConsumers());
+	}
+	
+	private ChannelData getChannelData(String channel) {
+		ArrayList<ChannelData> cstat = em.getChannelStatistics();
+		for (Iterator iterator = cstat.iterator(); iterator.hasNext();) {
+			ChannelData channelData = (ChannelData) iterator.next();
+			if (channelData.getName().equals(channel)) {
+				return channelData;
+			}
+		}
+		return null;
+	}
 
 }
