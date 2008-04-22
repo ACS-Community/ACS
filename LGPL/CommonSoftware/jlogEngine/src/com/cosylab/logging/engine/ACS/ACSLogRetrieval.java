@@ -19,7 +19,7 @@
 
 /** 
  * @author  acaproni   
- * @version $Id: ACSLogRetrieval.java,v 1.29 2008/04/15 12:57:22 acaproni Exp $
+ * @version $Id: ACSLogRetrieval.java,v 1.30 2008/04/22 13:38:05 acaproni Exp $
  * @since    
  */
 
@@ -27,7 +27,6 @@ package com.cosylab.logging.engine.ACS;
 
 import javax.xml.parsers.ParserConfigurationException;
 
-import com.cosylab.logging.client.cache.CacheUtils;
 import com.cosylab.logging.engine.FiltersVector;
 import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.engine.log.LogTypeHelper;

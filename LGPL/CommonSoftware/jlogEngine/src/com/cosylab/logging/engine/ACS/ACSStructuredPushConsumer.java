@@ -32,7 +32,6 @@ import org.omg.CosNotifyComm.StructuredPushConsumerPOA;
 import alma.ACSLoggingLog.LogBinaryRecord;
 import alma.ACSLoggingLog.LogBinaryRecordHelper;
 
-import com.cosylab.logging.client.cache.CacheUtils;
 import com.cosylab.logging.engine.FiltersVector;
 
 /**
