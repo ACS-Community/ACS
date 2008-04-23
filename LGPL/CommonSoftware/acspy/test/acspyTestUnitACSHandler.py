@@ -17,7 +17,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: acspyTestUnitACSHandler.py,v 1.1 2008/04/10 20:06:54 agrimstrup Exp $"
+# "@(#) $Id: acspyTestUnitACSHandler.py,v 1.2 2008/04/23 18:28:27 agrimstrup Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -25,7 +25,7 @@
 #
 
 #------------------------------------------------------------------------------
-__revision__ = "$Id: acspyTestUnitACSHandler.py,v 1.1 2008/04/10 20:06:54 agrimstrup Exp $"
+__revision__ = "$Id: acspyTestUnitACSHandler.py,v 1.2 2008/04/23 18:28:27 agrimstrup Exp $"
 #--REGULAR IMPORTS-------------------------------------------------------------
 import unittest
 import mock
@@ -103,27 +103,32 @@ class ACSHandlerCheck(unittest.TestCase):
 
     def testConstructorDefault(self):
         """ACSHandler initialized"""
-        h = ACSHandler.ACSHandler(flushinterval=None)
+        h = ACSHandler.ACSHandler()
         self.assertEqual(ACSHandler.DEFAULT_MAXIMUM_QUEUE, h.capacity)
         self.assertEqual(ACSHandler.DEFAULT_RECORD_CAPACITY, h.batchsize)
         self.assertEqual(ACSHandler.DEFAULT_IMMEDIATE_DISPATCH, h.dispatchlevel)
         self.assertEqual(mockLogSvc.__repr__(), h.logSvc.__repr__())
 
+    def testConstructorNoFlushThread(self):
+        """ACSHandler initialized with no periodic flush thread"""
+        h = ACSHandler.ACSHandler()
+        self.assertEqual(False, 'sched' in h.__dict__)
+
     def testConstructorNoLogSvc(self):
         """ACSHandler initialized when acsLogSvc not available"""
         ACSHandler.acsLogSvc = dummyACSLogSvc
-        h = ACSHandler.ACSHandler(flushinterval=None)
+        h = ACSHandler.ACSHandler()
         self.assertEqual(ACSHandler.DEFAULT_MAXIMUM_QUEUE, h.capacity)
         self.assertEqual(None, h.logSvc)
 
     def testGetCORBALoggerCache(self):
         """ACSHandler returns cached CORBA logging service"""
-        h = ACSHandler.ACSHandler(flushinterval=None)
+        h = ACSHandler.ACSHandler()
         self.assertEqual(mockLogSvc.__repr__(), h.getCORBALogger().__repr__())
 
     def testGetCORBALoggerCacheReload(self):
         """ACSHandler reloads CORBA logging service when cache is empty"""
-        h = ACSHandler.ACSHandler(flushinterval=None)
+        h = ACSHandler.ACSHandler()
         h.logSvc = None
         self.assertEqual(mockLogSvc.__repr__(), h.getCORBALogger().__repr__())
         self.assertEqual(mockLogSvc.__repr__(), h.logSvc.__repr__())
@@ -131,7 +136,7 @@ class ACSHandlerCheck(unittest.TestCase):
     def testSendLog(self):
         """ACSHandler sends Log messages at the appropriate levels"""
         import Acspy.Common.Log
-        h = ACSHandler.ACSHandler(flushinterval=None)
+        h = ACSHandler.ACSHandler()
 
         # Make logging calls for all known logging levels except OFF and NOTSET
         expected = []
@@ -155,9 +160,50 @@ class ACSHandlerCheck(unittest.TestCase):
         
         self.assertEquals(expected, [ n.getName() for n in mockLogSvc.mockGetAllCalls()[-len(keys)+1:]])
 
+    def testSendLogErrorTrace(self):
+        """ACSHandler sends errortrace messages at the appropriate levels"""
+        import Acspy.Common.Log
+        import Acspy.Common.ErrorTrace as ErrorTrace
+        l = Acspy.Common.Log.Logger('test')
+        h = ACSHandler.ACSHandler()
+        et = ErrorTrace.ErrorTrace(1,1)
+        extras = { 'errortrace' : et, 'priority' : ACSLog.ACS_LOG_ERROR }
+        lr = l.makeRecord("Sample", Acspy.Common.Log.LEVELS[8], "/path/to/file.py",
+                                     100, 'ErrorTrace', (), None, 'dummy', extras)
+        h.sendLog(lr)
+        logcall = mockLogSvc.mockGetAllCalls()[-1]
+        self.assertEquals("logErrorWithPriority", logcall.getName())
+        self.assertEquals(ACSLog.ACS_LOG_ERROR, logcall.getParam(1))
+
+    def testSendLogWithAudience(self):
+        """ACSHandler sends logWithAudience messages at the appropriate levels"""
+        import Acspy.Common.Log
+        l = Acspy.Common.Log.Logger('test')
+        h = ACSHandler.ACSHandler()
+        extras = { 'priority' : ACSLog.ACS_LOG_ERROR, 'audience' : "", 'array' : "", 'antenna' : "" }
+        lr = l.makeRecord("Sample", Acspy.Common.Log.LEVELS[8], "/path/to/file.py",
+                                     100, 'ErrorTrace', (), None, 'dummy', extras)
+        h.sendLog(lr)
+        logcall = mockLogSvc.mockGetAllCalls()[-1]
+        self.assertEquals("logWithAudience", logcall.getName())
+        self.assertEquals(ACSLog.ACS_LOG_ERROR, logcall.getParam(0))
+
+    def testSendLogWithPriority(self):
+        """ACSHandler sends logWithPriority messages at the appropriate levels"""
+        import Acspy.Common.Log
+        l = Acspy.Common.Log.Logger('test')
+        h = ACSHandler.ACSHandler()
+        extras = { 'priority' : ACSLog.ACS_LOG_ERROR, 'data': [], 'audience' : "", 'array' : "", 'antenna' : "" }
+        lr = l.makeRecord("Sample", Acspy.Common.Log.LEVELS[8], "/path/to/file.py",
+                                     100, 'ErrorTrace', (), None, 'dummy', extras)
+        h.sendLog(lr)
+        logcall = mockLogSvc.mockGetAllCalls()[-1]
+        self.assertEquals("logWithPriority", logcall.getName())
+        self.assertEquals(ACSLog.ACS_LOG_ERROR, logcall.getParam(0))
+
     def testShouldFlushCapacity(self):
         """ACSHandler flushes when capacity is reached"""
-        h = ACSHandler.ACSHandler(flushinterval=None)
+        h = ACSHandler.ACSHandler()
         lr = ACSHandler.ACSLogRecord("Nested.Name", logging.NOTSET+1, "/path/to/file.py", 100, "Test text", [], None)
         self.assertEqual(False, h.shouldFlush(lr))
         h.buffer += [ lr, lr, lr, lr, lr, lr, lr, lr, lr, lr ]
@@ -165,13 +211,13 @@ class ACSHandlerCheck(unittest.TestCase):
         
     def testShouldFlushPriority(self):
         """ACSHandler flushes when high priority message is received"""
-        h = ACSHandler.ACSHandler(flushinterval=None)
+        h = ACSHandler.ACSHandler()
         hr = ACSHandler.ACSLogRecord("High.Name", logging.CRITICAL+2, "/path/to/file.py", 100, "High Test text", [], None)
         self.assertEqual(True, h.shouldFlush(hr))
         
     def testFlushLevel(self):
         """ACSHandler flushes buffer when message priority greater than threshold arrives"""
-        h = ACSHandler.ACSHandler(flushinterval=None)
+        h = ACSHandler.ACSHandler()
         lr = ACSHandler.ACSLogRecord("Nested.Name", logging.INFO, "/path/to/file.py", 100, "Test text", [], None)
         self.assertEqual(False, h.shouldFlush(lr))
         lr = ACSHandler.ACSLogRecord("Nested.Name", logging.CRITICAL+1, "/path/to/file.py", 100, "Test text", [], None)
@@ -179,7 +225,7 @@ class ACSHandlerCheck(unittest.TestCase):
         
     def testFlushToFile(self):
         """ACSHandler writes log messages to a file"""
-        h = ACSHandler.ACSHandler(flushinterval=None)
+        h = ACSHandler.ACSHandler()
         h.file_handler = mock.Mock([],logging.Handler)
         lr = ACSHandler.ACSLogRecord("Nested.Name", "TRACE", "/path/to/file.py", 100, "Test text", [], None)
         h.flushToFile(lr)
@@ -191,7 +237,7 @@ class ACSHandlerCheck(unittest.TestCase):
             self.file_handler = mock.Mock([],logging.FileHandler)
         holdmethod = ACSHandler.ACSHandler.initFileHandler
         ACSHandler.ACSHandler.initFileHandler = mockInitFileHandler 
-        h = ACSHandler.ACSHandler(flushinterval=None)
+        h = ACSHandler.ACSHandler()
         lr = ACSHandler.ACSLogRecord("Nested.Name", "TRACE", "/path/to/file.py", 100, "Test text", [], None)
         self.assertEqual(True, h.file_handler is None)
         h.flushToFile(lr)
@@ -200,20 +246,11 @@ class ACSHandlerCheck(unittest.TestCase):
 
     def testFlush(self):
         """ACSHandler flushes buffer correctly"""
-        h = ACSHandler.ACSHandler(flushinterval=None)
+        h = ACSHandler.ACSHandler()
         lr = ACSHandler.ACSLogRecord("Nested.Name", logging.INFO, "/path/to/file.py", 100, "Test text", None, None)
         h.buffer = [ lr, lr ]
         expected = [ 'logInfo' , 'logInfo' ]
         h.flush()
-        self.assertEquals(expected, [ n.getName() for n in mockLogSvc.mockGetAllCalls()[-2:]])
-
-    def testFlushPeriodic(self):
-        """ACSHandler periodic flushing works correctly"""
-        h = ACSHandler.ACSHandler(flushinterval=0.1)
-        lr = ACSHandler.ACSLogRecord("Nested.Name", logging.INFO, "/path/to/file.py", 100, "Test text", None, None)
-        h.buffer = [ lr, lr ]
-        expected = [ 'logInfo' , 'logInfo' ]
-        sleep(0.1)
         self.assertEquals(expected, [ n.getName() for n in mockLogSvc.mockGetAllCalls()[-2:]])
 
     def testFlushException(self):
@@ -221,7 +258,7 @@ class ACSHandlerCheck(unittest.TestCase):
         def mockSendLog(self, record): raise Exception()
         holdSendLog = ACSHandler.ACSHandler.sendLog
         ACSHandler.ACSHandler.sendLog = mockSendLog
-        h = ACSHandler.ACSHandler(flushinterval=None)
+        h = ACSHandler.ACSHandler()
         h.file_handler = mock.Mock([],logging.Handler)
         lr = ACSHandler.ACSLogRecord("Nested.Name", logging.INFO, "/path/to/file.py", 100, "Test text", None, None)
         h.buffer = [ lr, lr ]
@@ -235,7 +272,7 @@ class ACSHandlerCheck(unittest.TestCase):
         def mockFlush(self): return 0
         holdFlush = ACSHandler.ACSHandler.flush
         ACSHandler.ACSHandler.flush = mockFlush
-        h = ACSHandler.ACSHandler(capacity=ACSHandler.DEFAULT_RECORD_CAPACITY,flushinterval=None)
+        h = ACSHandler.ACSHandler(capacity=ACSHandler.DEFAULT_RECORD_CAPACITY)
         lr = ACSHandler.ACSLogRecord("Nested.Name", logging.INFO, "/path/to/file.py", 100, "Test text", None, None)
         lrn = ACSHandler.ACSLogRecord("Name", logging.INFO, "/path/to/file.py", 100, "Test text", None, None)
         h.buffer += [ lr, lr, lr, lr, lr, lr, lr, lr, lr, lr ]
@@ -250,7 +287,7 @@ class ACSHandlerCheck(unittest.TestCase):
         def mockShouldFlush(self, record): return 0
         holdShouldFlush = ACSHandler.ACSHandler.shouldFlush
         ACSHandler.ACSHandler.shouldFlush = mockShouldFlush
-        h = ACSHandler.ACSHandler(capacity=ACSHandler.DEFAULT_RECORD_CAPACITY,flushinterval=None)
+        h = ACSHandler.ACSHandler(capacity=ACSHandler.DEFAULT_RECORD_CAPACITY)
         lra = ACSHandler.ACSLogRecord("Nested.Name", logging.NOTSET+1, "/path/to/file.py", 100, "Test text", None, None)
         lrb = ACSHandler.ACSLogRecord("Name", logging.DEBUG, "/path/to/file.py", 100, "Test text", None, None)
         lrc = ACSHandler.ACSLogRecord("Name", logging.INFO, "/path/to/file.py", 100, "Test text", None, None)
@@ -261,25 +298,6 @@ class ACSHandlerCheck(unittest.TestCase):
         self.assertEqual([ lrd, lrc, lrd, lrc, lrd, lrd ], h.buffer)
         ACSHandler.ACSHandler.shouldFlush = holdShouldFlush
         
-    def testFlushInterval(self):
-        """ACSHandler changes periodic flush interval correctly"""
-        h = ACSHandler.ACSHandler()
-        self.assertEqual(ACSHandler.DEFAULT_FLUSH_PERIOD, h.flushinterval)
-        h.setFlushInterval(ACSHandler.DEFAULT_FLUSH_PERIOD * 2)
-        self.assertEqual(ACSHandler.DEFAULT_FLUSH_PERIOD * 2, h.flushinterval)
-
-    def testInvalidFlushInterval(self):
-        """ACSHandler handles invalid periodic flush interval correctly"""
-        h = ACSHandler.ACSHandler()
-        h.setFlushInterval(-2)
-        self.assertEqual(0, h.flushinterval)
-        self.assertEqual(True, h.nextevent is None)
-
-    def testNoFlushInterval(self):
-        """ACSHandler does not create periodic flush thread when interval is None"""
-        h = ACSHandler.ACSHandler(flushinterval = None)
-        self.assertEqual(True, h.nextevent is None)
-    
 
 def suite():
     suite = unittest.TestSuite()

@@ -14,6 +14,7 @@
 1 - ============= End basic tests ============
 1 - == Test logError
 1 -  
-1 - == The end __oOo__
 1 - ============= Complex tests ============
 1 - == Logging INFO message in "aFunction"
+1 - ----------T--:--:--.--- None Error Trace
+1 - == The end __oOo__

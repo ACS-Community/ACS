@@ -17,7 +17,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: acspyTestUnitContainerServices.py,v 1.1 2007/09/06 21:54:32 agrimstrup Exp $"
+# "@(#) $Id: acspyTestUnitContainerServices.py,v 1.2 2008/04/23 18:28:27 agrimstrup Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -25,10 +25,22 @@
 #
 
 #------------------------------------------------------------------------------
-__revision__ = "$Id: acspyTestUnitContainerServices.py,v 1.1 2007/09/06 21:54:32 agrimstrup Exp $"
+__revision__ = "$Id: acspyTestUnitContainerServices.py,v 1.2 2008/04/23 18:28:27 agrimstrup Exp $"
 #--REGULAR IMPORTS-------------------------------------------------------------
+import sys
 import unittest
 import mock
+import CDB
+
+# Replace CDB reference
+mockCDB = mock.Mock({},CDB._objref_DAL)
+
+def mockcdb():
+    return mockCDB
+
+import Acspy.Util.ACSCorba
+Acspy.Util.ACSCorba.cdb = mockcdb
+
 #--ACS IMPORTS____-------------------------------------------------------------
 import Acspy.Servants.ContainerServices
 from maciErrTypeImpl          import CannotGetComponentExImpl
@@ -38,7 +50,7 @@ mockLogger = mock.Mock( { "logWarning" : None } )
 def mockGetManager():
     return mock.Mock( { "get_component_info" : [] } )
 
-def mockGetLogger(n, c):
+def mockGetLogger(n):
     return mockLogger
 
 def mockacsPrintExcDebug():
@@ -69,7 +81,7 @@ class ImportComponentStubsCheck(unittest.TestCase):
 
     def testGetLogger(self):
         """Mock Logger recorded correct log message"""
-        self.assertEquals(None, Acspy.Servants.ContainerServices.getLogger("a", "b").logWarning("Spoon!"))
+        self.assertEquals(None, Acspy.Servants.ContainerServices.getLogger("a").logWarning("Spoon!"))
         self.assertEquals("Spoon!", mockLogger.mockGetNamedCalls("logWarning")[-1].getParam(0))
 
     def testUnknownComponent(self):

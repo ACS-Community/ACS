@@ -17,7 +17,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: acspyTestUnitLog.py,v 1.1 2008/01/23 23:57:26 agrimstrup Exp $"
+# "@(#) $Id: acspyTestUnitLog.py,v 1.2 2008/04/23 18:28:27 agrimstrup Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -25,12 +25,15 @@
 #
 
 #------------------------------------------------------------------------------
-__revision__ = "$Id: acspyTestUnitLog.py,v 1.1 2008/01/23 23:57:26 agrimstrup Exp $"
+__revision__ = "$Id: acspyTestUnitLog.py,v 1.2 2008/04/23 18:28:27 agrimstrup Exp $"
 #--REGULAR IMPORTS-------------------------------------------------------------
 import unittest
 import mock
 from os import environ
 import time
+import sched
+import threading
+import pprint
 #--ACS IMPORTS____-------------------------------------------------------------
 import ACSLog
 import Acspy.Util.ACSCorba
@@ -158,6 +161,7 @@ class StdoutEnvVariableCheck(unittest.TestCase):
 
     def setUp(self):
         environ['ACS_LOG_STDOUT'] = '2'
+        reload(Log)
 
     def tearDown(self):
         environ.pop('ACS_LOG_STDOUT')
@@ -175,6 +179,7 @@ class CentralEnvVariableCheck(unittest.TestCase):
 
     def setUp(self):
         environ['ACS_LOG_CENTRAL'] = '2'
+        reload(Log)
 
     def tearDown(self):
         environ.pop('ACS_LOG_CENTRAL')
@@ -188,99 +193,25 @@ class CentralEnvVariableCheck(unittest.TestCase):
         self.assertEquals(3, Log.ACS_LOG_STDOUT)
 
 class LoggerClassCheck(unittest.TestCase):
-    """Test the integrity and function of the Logger class"""
+    """Test the integrity and function of the Logger class and calls that directly access the central logger"""
     
     def setUp(self):
+        Log.setBatchSize(0)
         self.mylogger = Log.Logger("mylogger")
-        self.mylogger.acshandler.capacity = 0
-
 
     def tearDown(self):
-        pass
-
+        Log.setBatchSize(10)
+    
     def testLoggerInit(self):
         """Logger class default initialization is correct"""
-        self.assertEquals([],self.mylogger.error_trace_list)
         self.assertEquals("mylogger", self.mylogger.name)
-        self.assertEquals(0, self.mylogger.propagate)
         self.assertNotEquals(None, self.mylogger.stdouthandler)
         self.assertNotEquals(None, self.mylogger.acshandler)
-        self.assertEquals(False, self.mylogger.isdefault)
-        self.assertEquals(Log.LEVELS[Log.ACS_LOG_STDOUT], self.mylogger.stdouthandler.level)
-        self.assertEquals(Log.LEVELS[Log.ACS_LOG_CENTRAL], self.mylogger.acshandler.level)
+        self.assertEquals(True,self.mylogger.usingDefault)
+        self.assertEquals(Log.DEFAULTLOCALHANDLER, self.mylogger.stdouthandler)
+        self.assertEquals(Log.DEFAULTCENTRALHANDLER, self.mylogger.acshandler)
         self.assertEquals([self.mylogger.stdouthandler, self.mylogger.acshandler], self.mylogger.handlers)
         self.assertEquals(None, self.mylogger.parent)
-
-    def testLogTrace(self):
-        """Logger class Trace level logging"""
-        self.mylogger.setLevels(maci.LoggingConfigurable.LogLevels(False,0, 0))
-        self.mylogger.logTrace("Trace Message")
-        self.assertEquals('logTrace', mockLogSvc.mockGetAllCalls()[-1].getName())
-        
-    def testLogDebug(self):
-        """Logger class Debug level logging"""
-        self.mylogger.setLevels(maci.LoggingConfigurable.LogLevels(False,0, 0))
-        self.mylogger.logDebug("Debug Message")
-        self.assertEquals('logDebug', mockLogSvc.mockGetAllCalls()[-1].getName())
-        
-    def testLogInfo(self):
-        """Logger class Info level logging"""
-        self.mylogger.logInfo("Info Message")
-        self.assertEquals('logInfo', mockLogSvc.mockGetAllCalls()[-1].getName())
-        
-    def testLogNotice(self):
-        """Logger class Notice level logging"""
-        self.mylogger.logNotice("Notice Message")
-        self.assertEquals('logNotice', mockLogSvc.mockGetAllCalls()[-1].getName())
-        
-    def testLogWarning(self):
-        """Logger class Warning level logging"""
-        self.mylogger.logWarning("Warning Message")
-        self.assertEquals('logWarning', mockLogSvc.mockGetAllCalls()[-1].getName())
-        
-    def testLogError(self):
-        """Logger class Error level logging"""
-        self.mylogger.logError("Error Message")
-        self.assertEquals('logWithAudience', mockLogSvc.mockGetAllCalls()[-1].getName())
-        self.assertEquals(ACSLog.ACS_LOG_ERROR, mockLogSvc.mockGetAllCalls()[-1].getParam(0))
-        
-    def testLogCritical(self):
-        """Logger class Critical level logging"""
-        self.mylogger.logCritical("Critical Message")
-        self.assertEquals('logCritical', mockLogSvc.mockGetAllCalls()[-1].getName())
-        
-    def testLogAlert(self):
-        """Logger class Alert level logging"""
-        self.mylogger.logAlert("Alert Message")
-        self.assertEquals('logAlert', mockLogSvc.mockGetAllCalls()[-1].getName())
-        
-    def testLogEmergency(self):
-        """Logger class Emergency level logging"""
-        self.mylogger.logEmergency("Emergency Message")
-        self.assertEquals('logEmergency', mockLogSvc.mockGetAllCalls()[-1].getName())
-        
-    def testLogXML(self):
-        """Logger class XML logging"""
-        self.mylogger.setLevels(maci.LoggingConfigurable.LogLevels(False,0, 0))
-        self.mylogger.logXML("<msg>Emergency Message</msg>")
-        self.assertEquals('logDebug', mockLogSvc.mockGetAllCalls()[-1].getName())
-        
-    def testLogAtLevel(self):
-        """Logger class User-specified level logging"""
-        self.mylogger.setLevels(maci.LoggingConfigurable.LogLevels(False,0, 0))
-        expected = []
-        keys = Acspy.Common.Log.LEVELS.keys()
-        keys.sort()
-        for l in keys:
-            if l == 0 or l == 99:
-                self.assertRaises(ValueError, self.mylogger.logAtLevel, l, "logAtLevel Message")
-            else:
-                if l in [7, 8, ACSLog.ACS_LOG_ERROR]:
-                    expected.append("logWithAudience")
-                else:
-                    expected.append("log" + Acspy.Common.Log.getLevelName(l).capitalize())
-                self.mylogger.logAtLevel(l, "logAtLevel Message")
-        self.assertEquals(expected, [ n.getName() for n in mockLogSvc.mockGetAllCalls()[1:]])
 
     def testLogErrorTrace(self):
         """Logger class ErrorTrace logging with default priority"""
@@ -295,28 +226,13 @@ class LoggerClassCheck(unittest.TestCase):
         et = Acspy.Common.ErrorTrace.ErrorTrace(1,1)
         self.assertRaises(KeyError, self.mylogger.logErrorTrace, et, 25)
 
-    def testLogErrorTraceQueuing(self):
-        """Logger class ErrorTrace logging with queued messages"""
-        savelogsvc = self.mylogger.acshandler.logSvc
-        self.mylogger.acshandler.logSvc = None
-        et = Acspy.Common.ErrorTrace.ErrorTrace(1,1)
-        self.mylogger.logErrorTrace(et)
-        self.assertEqual([et], self.mylogger.error_trace_list)
-        self.mylogger.acshandler.logSvc = savelogsvc
-        self.mylogger.logErrorTrace(et)
-        for lc in mockLogSvc.mockGetAllCalls()[-2:]:
-            self.assertEquals("logErrorWithPriority", lc.getName())
-            self.assertEquals(ACSLog.ACS_LOG_ERROR, lc.getParam(1))
-
     def testLogTypeSafe(self):
         """Logger class Type-safe logging"""
         msg = "LogTypeSafe Message"
-        ts = TimeUtil().py2epoch(time.time()).value
-        self.mylogger.logTypeSafe(ACSLog.ACS_LOG_ERROR, ts, msg, None, None, None)
+        self.mylogger.logTypeSafe(ACSLog.ACS_LOG_ERROR, None, msg, None, None, None)
         logcall = mockLogSvc.mockGetAllCalls()[-1]
         self.assertEquals("logWithPriority", logcall.getName())
         self.assertEquals(ACSLog.ACS_LOG_ERROR, logcall.getParam(0))
-        self.assertEquals(ts, logcall.getParam(1))
         self.assertEquals(msg, logcall.getParam(2))
         self.assertEquals("", logcall.getParam(6))
         self.assertEquals("", logcall.getParam(7))
@@ -345,15 +261,27 @@ class LoggerClassCheck(unittest.TestCase):
         msg = "LogTypeSafe Message"
         self.assertRaises(KeyError, self.mylogger.logNotSoTypeSafe, 25, msg)
 
+    def testSetLevels(self):
+        """Logger class set log levels to user-defined levels"""
+        self.mylogger.setLevels(maci.LoggingConfigurable.LogLevels(False,9, 9))
+        self.assertEqual(False, self.mylogger.usingDefault)
+        self.assertNotEqual(Log.DEFAULTLOCALHANDLER, self.mylogger.stdouthandler)
+        self.assertNotEqual(Log.DEFAULTCENTRALHANDLER, self.mylogger.acshandler)
+        self.assertEqual(Log.LEVELS[9], self.mylogger.stdouthandler.level)
+        self.assertEqual(Log.LEVELS[9], self.mylogger.acshandler.level)
+        
     def testSetLevelsDefault(self):
-        """Logger class set log levels to using Default"""
+        """Logger class set log levels to using Default from user-defined level"""
+        self.mylogger.setLevels(maci.LoggingConfigurable.LogLevels(False,9, 9))
         self.mylogger.setLevels(maci.LoggingConfigurable.LogLevels(True,0, 0))
         self.assertEqual(True, self.mylogger.usingDefault)
-        self.assertEqual(Log.LEVELS[0], self.mylogger.stdouthandler.level)
-        self.assertEqual(Log.LEVELS[0], self.mylogger.acshandler.level)
+        self.assertEqual(Log.DEFAULTLOCALHANDLER, self.mylogger.stdouthandler)
+        self.assertEqual(Log.DEFAULTCENTRALHANDLER, self.mylogger.acshandler)
         
     def testSetLevelsValidInputs(self):
         """Logger class set log levels for valid inputs"""
+        self.assertEqual(Log.DEFAULTLOCALHANDLER, self.mylogger.stdouthandler)
+        self.assertEqual(Log.DEFAULTCENTRALHANDLER, self.mylogger.acshandler)
         for k in Acspy.Common.Log.LEVELS:
             self.mylogger.setLevels(maci.LoggingConfigurable.LogLevels(False, k, k))
             self.assertEqual(False, self.mylogger.usingDefault)
@@ -366,12 +294,227 @@ class LoggerClassCheck(unittest.TestCase):
         loglvls = self.mylogger.getLevels()
         self.assertEqual(True, loglvls.useDefault)
 
-    def testGetEffectiveHandlerLevel(self):
-        """Logger class effective log levels are correct"""
-        self.assertEqual(Log.logging.NOTSET, self.mylogger.getEffectiveHandlerLevel('stdouthandler'))
-        self.assertEqual(Log.logging.NOTSET, self.mylogger.getEffectiveHandlerLevel('acshandler'))
-    
+    def testMakeRecord(self):
+        """Logger class creates logging records correctly"""
+        rv = self.mylogger.makeRecord('foo', Log.LEVELS[ACSLog.ACS_LOG_INFO], '/path/to/file.py',
+                                      596, 'Main - Text', (), None, 'logInfo')
+        self.assertEqual('foo', rv.name)
+        self.assertEqual(Log.LEVELS[ACSLog.ACS_LOG_INFO], rv.levelno)
+        self.assertEqual('/path/to/file.py', rv.pathname)
+        self.assertEqual(596, rv.lineno)
+        self.assertEqual('Main - Text', rv.msg)
+        self.assertEqual((), rv.args)
+        self.assertEqual(True, rv.exc_info is None)
+        self.assertEqual('logInfo', rv.funcName)
         
+    def testMakeRecordEmptyExtra(self):
+        """Logger class creates logging records correctly"""
+        expectedkeys = ['threadName', 'name', 'thread', 'created', 'process', 'args', 'source',
+                        'module', 'filename', 'levelno', 'exc_text', 'pathname', 'lineno',
+                        'msg', 'exc_info', 'funcName', 'relativeCreated', 'levelname', 'msecs']
+        rv = self.mylogger.makeRecord('foo', Log.LEVELS[ACSLog.ACS_LOG_INFO], '/path/to/file.py',
+                                      596, 'Main - Text', (), None, 'logInfo', {})
+        self.assertEqual(expectedkeys, rv.__dict__.keys())
+        
+    def testMakeRecordExtras(self):
+        """Logger class creates logging records correctly"""
+        extras = { 'AddName' : 'bar', 'AddValue' : 15 }
+        rv = self.mylogger.makeRecord('foo', Log.LEVELS[ACSLog.ACS_LOG_INFO], '/path/to/file.py',
+                                      596, 'Main - Text', (), None, 'logInfo', extras)
+        self.assertEqual(True, 'AddName' in rv.__dict__.keys())
+        self.assertEqual(True, 'AddValue' in rv.__dict__.keys())
+        self.assertEqual('bar', rv.AddName)
+        self.assertEqual(15, rv.AddValue)
+        
+
+class LoggerFunctionCheck(unittest.TestCase):
+    """Test the integrity and function of the Logger logging methods"""
+    
+    def setUp(self):
+        self.mylogger = Log.Logger("mylogger")
+        self.mylogger.acshandler = mock.Mock({},Log.ACSHandler)
+        self.mylogger.stdouthandler = mock.Mock()
+        self.mylogger.handlers[0] = self.mylogger.stdouthandler
+        self.mylogger.handlers[1] = self.mylogger.acshandler
+        
+
+    def tearDown(self):
+        pass
+    
+    def verifyOutput(self, handler, level, msg):
+        logcall = handler.mockGetAllCalls()[-1]
+        self.assertEquals("handle", logcall.getName())
+        outrecord = logcall.getParam(0)
+        self.assertEquals(level, outrecord.levelno)
+        self.assertEquals(msg, outrecord.msg)
+        
+    def testLogTrace(self):
+        """Logger class Trace level logging"""
+        self.mylogger.logTrace("Trace Message")
+        self.verifyOutput(self.mylogger.acshandler, Log.LEVELS[ACSLog.ACS_LOG_TRACE], "testLogTrace - Trace Message")
+        self.verifyOutput(self.mylogger.stdouthandler, Log.LEVELS[ACSLog.ACS_LOG_TRACE], "testLogTrace - Trace Message")
+
+        
+    def testLogDebug(self):
+        """Logger class Debug level logging"""
+        self.mylogger.logDebug("Debug Message")
+        self.verifyOutput(self.mylogger.acshandler, Log.LEVELS[ACSLog.ACS_LOG_DEBUG], "testLogDebug - Debug Message")
+        self.verifyOutput(self.mylogger.stdouthandler, Log.LEVELS[ACSLog.ACS_LOG_DEBUG], "testLogDebug - Debug Message")
+        
+    def testLogInfo(self):
+        """Logger class Info level logging"""
+        self.mylogger.logInfo("Info Message")
+        self.verifyOutput(self.mylogger.acshandler, Log.LEVELS[ACSLog.ACS_LOG_INFO], "testLogInfo - Info Message")
+        self.verifyOutput(self.mylogger.stdouthandler, Log.LEVELS[ACSLog.ACS_LOG_INFO], "testLogInfo - Info Message")
+        
+    def testLogNotice(self):
+        """Logger class Notice level logging"""
+        self.mylogger.logNotice("Notice Message")
+        self.verifyOutput(self.mylogger.acshandler, Log.LEVELS[ACSLog.ACS_LOG_NOTICE], "testLogNotice - Notice Message")
+        self.verifyOutput(self.mylogger.stdouthandler, Log.LEVELS[ACSLog.ACS_LOG_NOTICE], "testLogNotice - Notice Message")
+        
+    def testLogWarning(self):
+        """Logger class Warning level logging"""
+        self.mylogger.logWarning("Warning Message")
+        self.verifyOutput(self.mylogger.acshandler, Log.LEVELS[ACSLog.ACS_LOG_WARNING], "testLogWarning - Warning Message")
+        self.verifyOutput(self.mylogger.stdouthandler, Log.LEVELS[ACSLog.ACS_LOG_WARNING], "testLogWarning - Warning Message")
+
+    def testLogError(self):
+        """Logger class Error level logging"""
+        self.mylogger.logError("Error Message")
+        self.verifyOutput(self.mylogger.acshandler, Log.LEVELS[ACSLog.ACS_LOG_ERROR], "testLogError - Error Message")
+        self.verifyOutput(self.mylogger.stdouthandler, Log.LEVELS[ACSLog.ACS_LOG_ERROR], "testLogError - Error Message")
+        
+    def testLogCritical(self):
+        """Logger class Critical level logging"""
+        self.mylogger.logCritical("Critical Message")
+        self.verifyOutput(self.mylogger.acshandler, Log.LEVELS[ACSLog.ACS_LOG_CRITICAL], "testLogCritical - Critical Message")
+        self.verifyOutput(self.mylogger.stdouthandler, Log.LEVELS[ACSLog.ACS_LOG_CRITICAL], "testLogCritical - Critical Message")
+        
+    def testLogAlert(self):
+        """Logger class Alert level logging"""
+        self.mylogger.logAlert("Alert Message")
+        self.verifyOutput(self.mylogger.acshandler, Log.LEVELS[ACSLog.ACS_LOG_ALERT], "testLogAlert - Alert Message")
+        self.verifyOutput(self.mylogger.stdouthandler, Log.LEVELS[ACSLog.ACS_LOG_ALERT], "testLogAlert - Alert Message")
+        
+    def testLogEmergency(self):
+        """Logger class Emergency level logging"""
+        self.mylogger.logEmergency("Emergency Message")
+        self.verifyOutput(self.mylogger.acshandler, Log.LEVELS[ACSLog.ACS_LOG_EMERGENCY], "testLogEmergency - Emergency Message")
+        self.verifyOutput(self.mylogger.stdouthandler, Log.LEVELS[ACSLog.ACS_LOG_EMERGENCY], "testLogEmergency - Emergency Message")
+        
+    def testLogXML(self):
+        """Logger class XML logging"""
+        self.mylogger.logXML("<msg>Emergency Message</msg>")
+        self.verifyOutput(self.mylogger.acshandler, Log.LEVELS[ACSLog.ACS_LOG_DEBUG], "<msg>Emergency Message</msg>")
+        self.verifyOutput(self.mylogger.stdouthandler, Log.LEVELS[ACSLog.ACS_LOG_DEBUG], "<msg>Emergency Message</msg>")
+        
+    def testLogAtLevel(self):
+        """Logger class User-specified level logging"""
+#        self.mylogger.setLevels(maci.LoggingConfigurable.LogLevels(False,0, 0))
+        keys = Acspy.Common.Log.LEVELS.keys()
+        keys.sort()
+        for l in keys:
+            if l == 0 or l == 99:
+                self.assertRaises(ValueError, self.mylogger.logAtLevel, l, "logAtLevel Message")
+            else:
+                self.mylogger.logAtLevel(l, "logAtLevel Message")
+                self.verifyOutput(self.mylogger.acshandler, Log.LEVELS[l], "testLogAtLevel - logAtLevel Message")
+                self.verifyOutput(self.mylogger.stdouthandler, Log.LEVELS[l], "testLogAtLevel - logAtLevel Message")
+
+class LoggerHandlerConfigCheck(unittest.TestCase):
+    """Test the integrity and function of the Logger methods used to set CDB configuration values"""
+    
+    def setUp(self):
+        pass
+    
+    def tearDown(self):
+        Log.CENTRALHANDLER.capacity = 1000
+        Log.CENTRALHANDLER.batchsize = 10
+        Log.CENTRALHANDLER.dispatchlevel = Log.logging.ALERT
+        Log.DEFAULTLOCALHANDLER.setLevel(10)
+        Log.DEFAULTCENTRALHANDLER.setLevel(10)
+
+    def testInitialization(self):
+        """Log initializes handlers correctly"""
+        self.assertEqual(False, Log.LOCALHANDLER is None)
+        self.assertEqual(False, Log.LOCALHANDLER.formatter is None)
+        self.assertEqual(True, isinstance(Log.LOCALHANDLER.formatter, Log.ACSFormatter))
+        self.assertEqual(False, Log.CENTRALHANDLER is None)
+        self.assertEqual(False, Log.DEFAULTCENTRALHANDLER is None)
+        self.assertEqual(False, Log.DEFAULTLOCALHANDLER is None)
+        self.assertEqual(Log.LEVELS[Log.ACS_LOG_STDOUT], Log.DEFAULTLOCALHANDLER.level)
+        self.assertEqual(Log.LEVELS[Log.ACS_LOG_CENTRAL], Log.DEFAULTCENTRALHANDLER.level)
+        self.assertEqual(0, Log.DEFAULTLOCALHANDLER.capacity)
+        self.assertEqual(0, Log.DEFAULTCENTRALHANDLER.capacity)
+    
+    def testQueueCapacity(self):
+        """Log sets log queue capacity correctly"""
+        self.assertEqual(1000, Log.CENTRALHANDLER.capacity)
+        Log.setCapacity(15)
+        self.assertEqual(15, Log.CENTRALHANDLER.capacity)
+
+    def testInvalidQueueCapacity(self):
+        """Log handles invalid queue capacity correctly"""
+        self.assertEqual(1000, Log.CENTRALHANDLER.capacity)
+        Log.setCapacity(-2)
+        self.assertEqual(0, Log.CENTRALHANDLER.capacity)
+
+    def testBatchSize(self):
+        """Log changes log batch size correctly"""
+        self.assertEqual(10, Log.CENTRALHANDLER.batchsize)
+        self.assertEqual(1000, Log.CENTRALHANDLER.capacity)
+        Log.setBatchSize(15)
+        self.assertEqual(15, Log.CENTRALHANDLER.batchsize)
+
+    def testInvalidBatchSize(self):
+        """Log handles invalid batch size correctly"""
+        self.assertEqual(10, Log.CENTRALHANDLER.batchsize)
+        Log.setBatchSize(-2)
+        self.assertEqual(0, Log.CENTRALHANDLER.batchsize)
+
+    def testBatchSizeExceedCapacity(self):
+        """Log handles batch size greater than capacity correctly"""
+        self.assertEqual(True, Log.CENTRALHANDLER.capacity >= Log.CENTRALHANDLER.batchsize)
+        Log.setBatchSize(Log.CENTRALHANDLER.capacity + 2)
+        self.assertEqual(Log.CENTRALHANDLER.capacity, Log.CENTRALHANDLER.batchsize)
+
+    def testSetImmediateDispatchLevel(self):
+        """Log sets immediate dispatch level correctly"""
+        self.assertEqual(Log.LEVELS[10], Log.CENTRALHANDLER.dispatchlevel)
+        Log.setImmediateDispatchLevel(3)
+        self.assertEqual(Log.LEVELS[3], Log.CENTRALHANDLER.dispatchlevel)
+
+    def testBoundaryDispatchLevel(self):
+        """Log handles lowest and highest immediate dispatch level correctly"""
+        Log.setImmediateDispatchLevel(0)
+        self.assertEqual(Log.LEVELS[0], Log.CENTRALHANDLER.dispatchlevel)
+        Log.setImmediateDispatchLevel(99)
+        self.assertEqual(Log.LEVELS[99], Log.CENTRALHANDLER.dispatchlevel)
+
+    def testUnknownDispatchLevel(self):
+        """Log handles undefined immediate dispatch level correctly"""
+        self.assertRaises(KeyError, Log.setImmediateDispatchLevel,-1)
+        self.assertRaises(KeyError, Log.setImmediateDispatchLevel,125)
+
+    def testSetDefaultLevels(self):
+        """Log sets default handlers levels correctly for valid inputs"""
+        for k in Log.LEVELS:
+            Log.setDefaultLevels(maci.LoggingConfigurable.LogLevels(False, k, k))
+            self.assertEqual(Log.LEVELS[k], Log.DEFAULTLOCALHANDLER.level)
+            self.assertEqual(Log.LEVELS[k], Log.DEFAULTCENTRALHANDLER.level)
+
+    def testSetDefaultLevelsInvalidInputs(self):
+        """Log handles invalid log levels correctly"""
+        self.assertEqual(10,Log.DEFAULTLOCALHANDLER.level)
+        self.assertEqual(10,Log.DEFAULTCENTRALHANDLER.level)
+        self.assertRaises(KeyError, Log.setDefaultLevels,
+                          maci.LoggingConfigurable.LogLevels(False, 25, 25))
+        self.assertEqual(10,Log.DEFAULTLOCALHANDLER.level)
+        self.assertEqual(10,Log.DEFAULTCENTRALHANDLER.level)
+        
+        
+
 class NoLoggerCheck(unittest.TestCase):
     """Test state and operation of Logging system when no loggers have been requested"""
 
@@ -401,13 +544,12 @@ class OneLoggerCheck(unittest.TestCase):
     
     def tearDown(self):
         pass
-
+    
     def testUnnamedLogger(self):
         """OneLoggerCheck unnamed logger request"""
         self.assertEquals('None', self.mylogger.name)
-        self.assertEquals(Log.defaultlogger, self.mylogger.parent)
-        self.assertEquals(Log.ACS_LOG_STDOUT, Log.RLEVELS[self.mylogger.stdouthandler.level])
-        self.assertEquals(Log.ACS_LOG_CENTRAL, Log.RLEVELS[self.mylogger.acshandler.level])
+        self.assertEquals(Log.DEFAULTLOCALHANDLER, self.mylogger.stdouthandler)
+        self.assertEquals(Log.DEFAULTCENTRALHANDLER, self.mylogger.acshandler)
         
     def testUnnamedLoggerNamesList(self):
         """OneLoggerCheck names list has unnamed logger"""
@@ -425,65 +567,48 @@ class SeveralLoggerCheck(unittest.TestCase):
     """Check the state and operation of the Logging system when multiple loggers have been requested"""
     
     def setUp(self):
-        self.pname = "MyLogger"
+        self.pname = "MyLogger1"
         self.plogger = Log.getLogger(self.pname)
-        self.cname = "MyLogger.child"
+        self.cname = "MyLogger2"
         self.clogger = Log.getLogger(self.cname)
 
     def tearDown(self):
-        pass
-
-    def testNestedLogger(self):
-        """SeveralLoggerCheck nested loggers"""
-        self.assertEquals(self.cname, self.clogger.name)
-        self.assertEquals(self.plogger, self.clogger.parent)
-        self.assertEquals(self.plogger.stdouthandler.level, self.clogger.getEffectiveHandlerLevel('stdouthandler'))
-        self.assertEquals(self.plogger.acshandler.level, self.clogger.getEffectiveHandlerLevel('acshandler'))
-
-    def testNestedLoggersRequested(self):
-        """SeveralLoggerCheck getLoggerNames when nested loggers requested"""
-        self.assertEquals(Log.logging.Logger.manager.loggerDict.keys(), Log.getLoggerNames())
-
-    def testNestedLoggersRequestedFiltered(self):
-        """SeveralLoggerCheck getLoggerNames when nested loggers requested with filtering"""
-        self.assertEquals([self.cname, self.pname], Log.getLoggerNames(self.pname))
-        self.assertEquals([self.cname], Log.getLoggerNames(self.cname))
-
-    def testNestedNamedLoggerDefaultChild(self):
-        """SeveralLoggerCheck Nested Named Loggers with child using default levels"""
-        self.plogger.setLevels(maci.LoggingConfigurable.LogLevels(False,4, 5))
-        self.clogger.setLevels(maci.LoggingConfigurable.LogLevels(True,0, 0))
-        self.assertEquals(True, self.clogger.usingDefault)
-        self.assertEquals(self.plogger.stdouthandler.level, self.clogger.stdouthandler.level)
-        self.assertEquals(self.plogger.acshandler.level, self.clogger.acshandler.level)
-
-    def testNestedNamedLoggerDefaultParentChild(self):
-        """SeveralLoggerCheck Nested Named Loggers with parent and child using default levels"""
-        Log.defaultlogger.setLevels(maci.LoggingConfigurable.LogLevels(False,4, 5))
+        Log.setDefaultLevels(maci.LoggingConfigurable.LogLevels(False,3, 3))
         self.plogger.setLevels(maci.LoggingConfigurable.LogLevels(True,0, 0))
         self.clogger.setLevels(maci.LoggingConfigurable.LogLevels(True,0, 0))
+    
+    def testLoggerNamesRequested(self):
+        """SeveralLoggerCheck getLoggerNames returns all known loggers"""
+        self.assertEquals(Log.logging.Logger.manager.loggerDict.keys(), Log.getLoggerNames())
+
+    def testLoggerNamesRequestedFiltered(self):
+        """SeveralLoggerCheck getLoggerNames returns correct logger names when requested with filtering"""
+        self.assertEquals([self.cname, self.pname], Log.getLoggerNames(self.pname[:-1]))
+        self.assertEquals([self.cname], Log.getLoggerNames(self.cname))
+
+    def testLoggerSingleDefault(self):
+        """SeveralLoggerCheck Changing a logger's levels does not affect other loggers"""
+        beforecent = Log.DEFAULTCENTRALHANDLER.level
+        beforeloc = Log.DEFAULTLOCALHANDLER.level
+        self.plogger.setLevels(maci.LoggingConfigurable.LogLevels(False,4, 5))
+        self.assertEquals(beforeloc, Log.DEFAULTLOCALHANDLER.level)
+        self.assertEquals(beforecent, Log.DEFAULTCENTRALHANDLER.level)
+        self.assertEquals(False, self.plogger.usingDefault)
+        self.assertEquals(True, self.clogger.usingDefault)
+        self.assertNotEquals(self.plogger.stdouthandler, self.clogger.stdouthandler)
+        self.assertNotEquals(self.plogger.acshandler, self.clogger.acshandler)
+        self.assertNotEquals(self.plogger.stdouthandler.level, self.clogger.stdouthandler.level)
+        self.assertNotEquals(self.plogger.acshandler.level, self.clogger.acshandler.level)
+
+    def testLoggerDefault(self):
+        """SeveralLoggerCheck Levels changes on all loggers using default level"""
+        Log.setDefaultLevels(maci.LoggingConfigurable.LogLevels(False,4, 5))
         self.assertEquals(True, self.plogger.usingDefault)
         self.assertEquals(True, self.clogger.usingDefault)
-        self.assertEquals(Log.defaultlogger.stdouthandler.level, self.plogger.stdouthandler.level)
-        self.assertEquals(Log.defaultlogger.acshandler.level, self.plogger.acshandler.level)
-        self.assertEquals(Log.defaultlogger.stdouthandler.level, self.clogger.stdouthandler.level)
-        self.assertEquals(Log.defaultlogger.acshandler.level, self.clogger.acshandler.level)
-
-    def testNestedNamedLoggerUpdateDefaultChild(self):
-        """SeveralLoggerCheck Nested Named Loggers parent level updated with children using default levels"""
-        clogger1 = Log.getLogger(self.cname+".1")
-        clogger2 = Log.getLogger(self.cname+".2")
-        self.plogger.setLevels(maci.LoggingConfigurable.LogLevels(False,4, 5))
-        clogger1.setLevels(maci.LoggingConfigurable.LogLevels(True,0, 0))
-        clogger2.setLevels(maci.LoggingConfigurable.LogLevels(True,0, 0))
-        self.plogger.setLevels(maci.LoggingConfigurable.LogLevels(False,6, 7))
-        self.plogger.updateChildren()
-        self.assertEquals(self.plogger.stdouthandler.level, self.clogger.stdouthandler.level)
-        self.assertEquals(self.plogger.acshandler.level, self.clogger.acshandler.level)
-        self.assertEquals(self.plogger.stdouthandler.level, clogger1.stdouthandler.level)
-        self.assertEquals(self.plogger.acshandler.level, clogger1.acshandler.level)
-        self.assertEquals(self.plogger.stdouthandler.level, clogger2.stdouthandler.level)
-        self.assertEquals(self.plogger.acshandler.level, clogger2.acshandler.level)
+        self.assertEquals(Log.DEFAULTLOCALHANDLER.level, self.plogger.stdouthandler.level)
+        self.assertEquals(Log.DEFAULTCENTRALHANDLER.level, self.plogger.acshandler.level)
+        self.assertEquals(Log.DEFAULTLOCALHANDLER.level, self.clogger.stdouthandler.level)
+        self.assertEquals(Log.DEFAULTCENTRALHANDLER.level, self.plogger.acshandler.level)
 
     def testWrong(self):
         """SeveralLoggerCheck Search with non-existing key"""
@@ -501,14 +626,114 @@ class SeveralLoggerCheck(unittest.TestCase):
         """SeveralLoggerCheck search with the nested child's name as key"""
         self.assertEqual(True, Log.doesLoggerExist(self.cname))
 
+
+class DispatchPacketCheck(unittest.TestCase):
+    """Check the operation of the logger under differing dispatchPacket values"""
+    def setUp(self):
+        self.logger = Log.getLogger("dispatchcheck")
+        self.logger.stdouthandler = mock.Mock()
+        self.logger.handlers[0] = self.logger.stdouthandler
+
+    def tearDown(self):
+        pass
+
+    def testBuffering(self):
+        """DispatchPacketCheck messages buffer correctly"""
+        before = mockLogSvc.mockGetAllCalls()
+        self.logger.logInfo("Dispatch buffered")
+        after = mockLogSvc.mockGetAllCalls()
+        self.assertEquals(before, after)
+        self.assertEquals(1, len(Log.CENTRALHANDLER.buffer))
+        Log.CENTRALHANDLER.buffer = []
+        
+    def testDispatch(self):
+        """DispatchPacketCheck messages buffer correctly"""
+        self.assertEquals(0, len(Log.CENTRALHANDLER.buffer))
+        self.logger.logEmergency("Dispatch Sent")
+        self.assertEquals(0, len(Log.CENTRALHANDLER.buffer))
+        self.assertEquals('logEmergency',mockLogSvc.mockGetAllCalls()[-1].getName())
+
+    def testBufferingandDispatch(self):
+        """DispatchPacketCheck clears sends pending messages before priority message"""
+        self.assertEquals(0, len(Log.CENTRALHANDLER.buffer))
+        self.logger.logNotice("Dispatch buffered")
+        self.assertEquals(0, len(Log.DEFAULTCENTRALHANDLER.buffer))
+        self.assertEquals(1, len(Log.CENTRALHANDLER.buffer))
+        self.logger.logAlert("Dispatch Sent")
+        self.assertEquals(0, len(Log.CENTRALHANDLER.buffer))
+        self.assertEquals('logNotice',mockLogSvc.mockGetAllCalls()[-2].getName())
+        self.assertEquals('logAlert',mockLogSvc.mockGetAllCalls()[-1].getName())
+        
+class PeriodicFlushCheck(unittest.TestCase):
+    """Check the lifecycle operation of the periodic flushing thread"""
+    def setUp(self):
+        pass
+
+    def tearDown(self):
+        pass
+
+    def testCreation(self):
+        """PeriodicFlushCheck is correct and consistent after import."""
+        self.assertEqual(True, Log.FLUSHTHREAD is None)
+        self.assertEqual(True, Log.SCHEDULER is None)
+        self.assertEqual(True, Log.NEXTEVENT is None)
+        self.assertEqual(True, Log.INTERVAL is None)
+
+    def testCycleStartStop(self):
+        """PeriodicFlushCheck flushing thread start and stops correctly."""
+        Log.startPeriodicFlush()
+        self.assertEqual(Log.DEFAULT_FLUSH_PERIOD, Log.INTERVAL)
+        self.assertEqual(True, isinstance(Log.SCHEDULER, sched.scheduler))
+        self.assertEqual(True, isinstance(Log.FLUSHTHREAD, threading.Thread))
+        self.assertEqual(True, Log.FLUSHTHREAD.isAlive())
+        self.assertEqual(False, Log.NEXTEVENT is None)
+        Log.stopPeriodicFlush()
+        self.assertEqual(False, Log.FLUSHTHREAD.isAlive())
+
+    def testDoubleStart(self):
+        """PeriodicFlushCheck only one thread is created if start is called twice."""
+        Log.startPeriodicFlush()
+        ft = Log.FLUSHTHREAD
+        sc = Log.SCHEDULER
+        ne = Log.NEXTEVENT
+        Log.startPeriodicFlush()
+        self.assertEqual(ft, Log.FLUSHTHREAD)
+        self.assertEqual(sc, Log.SCHEDULER)
+        self.assertEqual(ne, Log.NEXTEVENT)
+        Log.stopPeriodicFlush()
+
+    def testSetFlushInterval(self):
+        """PeriodicFlushCheck updates flush interval correctly"""
+        Log.startPeriodicFlush()
+        now = time.time()
+        next = Log.NEXTEVENT
+        Log.setFlushInterval(5)
+        self.assertNotEqual(next, Log.NEXTEVENT)
+        self.assertAlmostEqual(now + Log.INTERVAL, Log.NEXTEVENT[0],1)
+        Log.stopPeriodicFlush()
+
+    def testSetFlushIntervalInvalid(self):
+        """PeriodicFlushCheck flush thread stopped when invalid interval is set"""
+        Log.startPeriodicFlush()
+        Log.setFlushInterval(-5)
+        self.assertEqual(False, Log.FLUSHTHREAD.isAlive())
+        
+        
+
 def suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(LogLevelsCheck))
-    suite.addTest(unittest.makeSuite(EnvVariableDefaultCheck))
+    suite.addTest(unittest.makeSuite(LoggerHandlerConfigCheck))
+    suite.addTest(unittest.makeSuite(LoggerFunctionCheck))
     suite.addTest(unittest.makeSuite(LoggerClassCheck))
     suite.addTest(unittest.makeSuite(NoLoggerCheck))
     suite.addTest(unittest.makeSuite(OneLoggerCheck))
     suite.addTest(unittest.makeSuite(SeveralLoggerCheck))
+    suite.addTest(unittest.makeSuite(DispatchPacketCheck))
+    suite.addTest(unittest.makeSuite(PeriodicFlushCheck))
+    suite.addTest(unittest.makeSuite(EnvVariableDefaultCheck))
+    suite.addTest(unittest.makeSuite(StdoutEnvVariableCheck))
+    suite.addTest(unittest.makeSuite(CentralEnvVariableCheck))
     return suite
 
 if __name__ == "__main__":
