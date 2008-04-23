@@ -51,7 +51,6 @@ import com.cosylab.logging.engine.ACS.ACSLogParserDOM;
 import com.cosylab.logging.engine.ACS.ACSRemoteErrorListener;
 import com.cosylab.logging.engine.ACS.ACSRemoteLogListener;
 import com.cosylab.logging.engine.log.ILogEntry;
-import com.cosylab.logging.engine.log.LogTypeHelper;
 import com.cosylab.logging.stats.ResourceChecker;
 
 
@@ -386,6 +385,9 @@ public class IOLogsHelper extends Thread  {
 	
 	// The logging client
 	private LoggingClient loggingClient=null;
+	
+	// Signal that the object has been closed
+	private volatile boolean closed=false;
 
 	/**
 	 * Build an IOCacheHelper object
@@ -457,7 +459,7 @@ public class IOLogsHelper extends Thread  {
 		try {
 			StopWatch stopWatch = new StopWatch();
 		
-			while (true) {
+			while (true && !closed) {
 				// Read a block from the file if the buffer is empty
 				if (bytesInBuffer==0) {
 					bytesInBuffer = br.read(buf,0,size);
@@ -673,6 +675,8 @@ public class IOLogsHelper extends Thread  {
 	 *
 	 */
 	public void done() {
+		// Stop every load/save operation
+		closed=true;
 		// Check if the thread is alive
 		IOAction terminateAction = new IOAction();
 		synchronized(actions) {
@@ -741,7 +745,7 @@ public class IOLogsHelper extends Thread  {
 		}
 		System.out.println("First key: "+cache.getFirstLog()+", last "+cache.getLastLog());
 		int key=cache.getFirstLog();
-		while (key <= cache.getLastLog()) {
+		while (key <= cache.getLastLog() && !closed) {
 			try {
 				ILogEntry log = cache.getLog(key);
 				outBW.write((log.toXMLString()+"\n").toCharArray());
@@ -756,7 +760,7 @@ public class IOLogsHelper extends Thread  {
 				// It is not an error and the exception can be ignored
 				System.out.println(lce.getMessage());
 				lce.printStackTrace();
-				break;
+				continue;
 			}
 			
 			
