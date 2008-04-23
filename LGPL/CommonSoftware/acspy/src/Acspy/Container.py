@@ -1,4 +1,4 @@
-# @(#) $Id: Container.py,v 1.34 2007/12/20 22:47:59 agrimstrup Exp $
+# @(#) $Id: Container.py,v 1.35 2008/04/23 18:26:01 agrimstrup Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -21,7 +21,7 @@
 # ALMA should be addressed as follows:
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: Container.py,v 1.34 2007/12/20 22:47:59 agrimstrup Exp $"
+# "@(#) $Id: Container.py,v 1.35 2008/04/23 18:26:01 agrimstrup Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -38,10 +38,8 @@ TODO LIST:
 - a ComponentLifecycleException has been defined in IDL now...
 '''
 
-__revision__ = "$Id: Container.py,v 1.34 2007/12/20 22:47:59 agrimstrup Exp $"
+__revision__ = "$Id: Container.py,v 1.35 2008/04/23 18:26:01 agrimstrup Exp $"
 
-#--Enable Searching Import-----------------------------------------------------
-import AcsutilPy.ACSImport
 #--REGULAR IMPORTS-------------------------------------------------------------
 from time      import sleep
 from signal    import signal, SIGINT
@@ -60,7 +58,7 @@ from ACSErrTypeCommonImpl              import CORBAProblemExImpl, CouldntCreateO
 from maciErrTypeImpl                   import CannotActivateComponentExImpl
 from maciErrTypeImpl                   import LoggerDoesNotExistExImpl
 #--ACS Imports-----------------------------------------------------------------
-from Acspy.Common.Log                       import getLogger, getLoggerNames, doesLoggerExist
+import Acspy.Common.Log as Log
 from Acspy.Common.CDBAccess                 import CDBaccess
 from Acspy.Clients.BaseClient               import BaseClient
 from Acspy.Servants.ContainerServices       import ContainerServices
@@ -122,11 +120,8 @@ class Container(maci__POA.Container, maci__POA.LoggingConfigurable, BaseClient):
         self.compPolicies = []  #Policy[] for components
         self.offShootPolicies = []  #Policy[] for offshoots
         self.corbaRef = None  #reference to this object's CORBA reference
-        self.defaultlogger = getLogger(name) # Holder for container's default log level
-        self.defaultlogger.setDefault(True)
+        self.logger = Log.getLogger(name) # Container's logger
         self.configureComponentLogger(name)
-        myname = ".".join([name, name])
-        self.logger = getLogger(myname) # Container's logger
         self.client_type = maci.CONTAINER_TYPE
 
         #Configure CORBA
@@ -138,6 +133,7 @@ class Container(maci__POA.Container, maci__POA.LoggingConfigurable, BaseClient):
         self.logger.logTrace('CORBA configured for Container: ' + self.name)
 
         self.cdbAccess = CDBaccess()
+        
         self.cdbContainerInfo = {}
         self.autoLoadPackages = []
         #dictionary which maps package names to the number of active components
@@ -482,8 +478,8 @@ class Container(maci__POA.Container, maci__POA.LoggingConfigurable, BaseClient):
         return
     #--LOGGINGCONFIGURABLE IDL-----------------------------------------------------------
     def configureComponentLogger(self, name):
-        clogger = getLogger(self.name + "." + name)
-        defaultlevels = self.defaultlogger.getLevels()
+        clogger = Log.getLogger(name)
+        defaultlevels = Log.getDefaultLevels()
         try:
             logconfig = self.cdbAccess.getElement("MACI/Containers/"  + self.name, "Container/LoggingConfig/log:_")
             for cfg in logconfig:
@@ -504,27 +500,17 @@ class Container(maci__POA.Container, maci__POA.LoggingConfigurable, BaseClient):
             clogger.setLevels(maci.LoggingConfigurable.LogLevels(True, 0, 0))
 
     def get_default_logLevels(self):
-        return self.defaultlogger.getLevels()
+        return Log.getDefaultLevels()
 
     def set_default_logLevels(self, levels):
-        self.defaultlogger.setLevels(levels)
-        self.defaultlogger.updateChildren()
+        Log.setDefaultLevels(levels)
 
     def get_logger_names(self):
-        loggers = []
-        for l in getLoggerNames():
-            try:
-                container,component = l.split('.', 1)
-                loggers.append(component)
-            except:
-                pass
-        
-        return loggers
+        return Log.getLoggerNames()
 
     def get_logLevels(self, logger_name):
-        key_name = ".".join([self.name, logger_name])
-        if doesLoggerExist(key_name):
-            levels = getLogger(key_name).getLevels()
+        if Log.doesLoggerExist(logger_name):
+            levels = Log.getLogger(logger_name).getLevels()
             if levels.minLogLevelLocal or levels.minLogLevel:
                 return levels
             else:
@@ -533,21 +519,58 @@ class Container(maci__POA.Container, maci__POA.LoggingConfigurable, BaseClient):
             raise LoggerDoesNotExistExImpl()
     
     def set_logLevels(self, logger_name, levels):
-        key_name = self.name + '.' + logger_name
-        if doesLoggerExist(key_name):
-            getLogger(key_name).setLevels(levels)
+        if Log.doesLoggerExist(logger_name):
+            Log.getLogger(logger_name).setLevels(levels)
         else:
             raise LoggerDoesNotExistExImpl()
 
     def refresh_logging_config(self):
+        cap = 1000
+        batch = 10
+        displevel = 10
+        locallevel = 2
+        centrallevel = 2
+        flush = 10
         try:
             logconfig = self.cdbAccess.getElement("MACI/Containers/"  + self.name, "Container/LoggingConfig")
-            newlevels = maci.LoggingConfigurable.LogLevels(False, int(logconfig[0]['minLogLevel']), int(logconfig[0]['minLogLevelLocal']))
-            self.defaultlogger.setLevels(newlevels)
+            try: 
+                centrallevel = int(logconfig[0]['minLogLevel'])
+            except:
+                pass
+            try:
+                locallevel = int(logconfig[0]['minLogLevelLocal'])
+            except:
+                pass
+            try: 
+                cap = int(logconfig[0]['maxLogQueueSize'])
+            except:
+                pass
+            try: 
+                batch = int(logconfig[0]['dispatchPacketSize'])
+            except:
+                pass
+            try: 
+                displevel = int(logconfig[0]['immediateDispatchLevel'])
+            except:
+                pass
+            try: 
+                flush = int(logconfig[0]['flushPeriodSeconds'])
+            except:
+                pass
+
             for log in self.get_logger_names():
                 self.configureComponentLogger(log)
         except:
-            self.defaultlogger.setLevels(maci.LoggingConfigurable.LogLevels(True, 0, 0))
+            pass
+        
+        Log.setDefaultLevels(maci.LoggingConfigurable.LogLevels(False, centrallevel, locallevel))
+        Log.setCapacity(cap)
+        Log.setBatchSize(batch)
+        Log.setImmediateDispatchLevel(displevel)
+        if Log.isFlushRunning():
+            Log.setFlushInterval(flush)
+        else:
+            Log.startPeriodicFlush(flush)
 
     #--CONTAINER IDL-----------------------------------------------------------
     def shutdown(self, action):
@@ -576,6 +599,7 @@ class Container(maci__POA.Container, maci__POA.LoggingConfigurable, BaseClient):
             else:
                 #tell the main thread of execution to stop
                 self.running = 0
+                Log.stopPeriodicFlush()
         else:
             self.logger.logWarning("Unable to process 'shutdown' request at this time: " + str(action))
         

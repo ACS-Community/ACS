@@ -1,4 +1,4 @@
-# @(#) $Id: ACSHandler.py,v 1.11 2008/01/23 23:57:26 agrimstrup Exp $
+# @(#) $Id: ACSHandler.py,v 1.12 2008/04/23 18:26:01 agrimstrup Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA,  2001
@@ -19,6 +19,8 @@
 #    You should have received a copy of the GNU Lesser General Public
 #    License along with this library; if not, write to the Free Software
 #    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
+from __future__ import with_statement
+
 '''
 Contains the implementation of logging objects designed to send logs to the
 (CORBA) ACS logging service.
@@ -27,11 +29,11 @@ TODO:
 - Everything
 '''
 
-__revision__ = "$Id: ACSHandler.py,v 1.11 2008/01/23 23:57:26 agrimstrup Exp $"
+__revision__ = "$Id: ACSHandler.py,v 1.12 2008/04/23 18:26:01 agrimstrup Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 from socket    import gethostname
-from time      import gmtime
+from time      import gmtime,sleep,time
 import logging
 import logging.handlers
 from os        import getpid
@@ -39,6 +41,8 @@ from os        import path
 from os        import environ
 import sys
 from atexit    import register
+import sched
+import threading
 #--ACS Imports-----------------------------------------------------------------
 from Acspy.Util.ACSCorba     import acsLogSvc
 from Acspy.Common.TimeHelper import TimeUtil
@@ -49,6 +53,8 @@ import CORBA
 #--GLOBALS---------------------------------------------------------------------
 #default logging cache size
 DEFAULT_RECORD_CAPACITY = 10
+DEFAULT_MAXIMUM_QUEUE = 1000
+DEFAULT_IMMEDIATE_DISPATCH = logging.CRITICAL+1
 
 #------------------------------------------------------------------------------
 LEVELS = { 'CRITICAL' : ACSLog.ACS_LOG_CRITICAL,
@@ -113,13 +119,16 @@ class ACSHandler(logging.handlers.BufferingHandler):
     messages are lost from this handlers perspective.
     '''
     #--------------------------------------------------------------------------
-    '''
-    Constructor.
-
-    Parameters: capcity - the size of the log cache.
-    '''
-    def __init__(self, capacity=DEFAULT_RECORD_CAPACITY):
+    def __init__(self, capacity=DEFAULT_MAXIMUM_QUEUE, dispatchlevel=DEFAULT_IMMEDIATE_DISPATCH,
+                 batchsize=DEFAULT_RECORD_CAPACITY):
         '''
+        Constructor.
+
+        Parameters:
+            capacity - the maximum size of the log cache.
+            dispatchlevel - level of message that should be immediately sent
+            batchsize - the number of log records to be held before sending
+            flushinterval - maximum period that a message can wait in the send queue
         '''
         #ACS CORBA Logging Service Reference
         self.logSvc = None
@@ -130,14 +139,22 @@ class ACSHandler(logging.handlers.BufferingHandler):
         #setup a file handler to handle the extremely bad case that the 
         #CORBA logging service is down
         self.file_handler = None
+
+        #messages of equal or greater level trigger a buffer flush
+        self.dispatchlevel = dispatchlevel
         
+        #number of records sent in a group
+        self.batchsize = batchsize
+
         #try to get the corba logger now
         self.getCORBALogger()
         
+        #mutex for controlling access to the buffer
+        self.bufferlock = threading.RLock()
+
         #we want to make sure the buffer is flushed
         #before exiting the Python interpreter
         register(self.flush)
-        
     #--------------------------------------------------------------------------
     def initFileHandler(self):
         '''
@@ -146,36 +163,33 @@ class ACSHandler(logging.handlers.BufferingHandler):
         self.file_handler = logging.FileHandler(LOG_FILE_NAME)
         self.file_handler.setLevel(logging.NOTSET)
         self.file_handler.setFormatter(ACSFormatter())
-        
     #--------------------------------------------------------------------------
     def shouldFlush(self, record):
         '''
         Overridden.
 
-        This method returns true if the superclass method of the same name
-        returns true. Additionally, this method will empty the buffer if the
-        superclass method returns true and the CORBA logging service is
-        unavailable.
+        This method returns true if the number of pending records exceeds
+        the batchsize or if the new record matches or exceeds the immediate
+        dispatch priority.
         '''
-        #check the super class to see if it's OK to flush the record
-        if logging.handlers.BufferingHandler.shouldFlush(self, record):
-            #and also check to ensure the real logging service is up and running
-            if self.getCORBALogger() is not None:
-                return 1
-            
-            #well it is possible that this cache will use up too much resources
-            #and there's a chance the CORBA logger will never be available.
-            #due to this fact, the buffer is sent to a file handler instead!
-            else:
-                for record in self.buffer:
-                    self.flushToFile(record)
+        return len(self.buffer) >= self.batchsize or \
+              record.levelno >= self.dispatchlevel
+    #--------------------------------------------------------------------------
+    def emit(self, record):
+        """
+        Overridden.
+
+        Append the record. If shouldFlush() tells us to, call flush() to process
+        the buffer.
+        """
+        with self.bufferlock:
+            if len(self.buffer) >= self.capacity:
+                self.buffer = [ n for n in self.buffer if n.levelno >= logging.INFO ]
+            if len(self.buffer) < self.capacity:
+                self.buffer.append(record)
                 
-                self.buffer = []
-                #OK to return true because the buffer is now empty
-                return 1
-        
-        #for some reason or another it's not OK to flush the buffer.
-        return 0
+        if self.shouldFlush(record):
+            self.flush()
     #--------------------------------------------------------------------------
     def flushToFile(self, record):
         '''
@@ -190,7 +204,7 @@ class ACSHandler(logging.handlers.BufferingHandler):
         Raises: ???
         '''
         #sanity check
-        if self.file_handler == None:
+        if self.file_handler is None:
             #create the file handler on demand only
             self.initFileHandler()
             
@@ -200,14 +214,14 @@ class ACSHandler(logging.handlers.BufferingHandler):
         '''
         Overridden
         '''
-        for record in self.buffer:
-            try:
-                self.sendLog(record)
-            except:
-                self.flushToFile(record)
-
-        self.buffer = []
-    
+        with self.bufferlock:
+            for record in self.buffer:
+                try:
+                    self.sendLog(record)
+                except:
+                    self.flushToFile(record)
+                    
+            self.buffer = []
     #--------------------------------------------------------------------------
     def sendLog(self, record):
         '''
@@ -230,8 +244,35 @@ class ACSHandler(logging.handlers.BufferingHandler):
         
         # Put remaining keyword arguments into NVPairSeq
         data = []
-
-        if record.levelname=='TRACE':
+        
+        if 'priority' in record.__dict__:
+            # The more exotic log functions have priority keyword arguments
+            if 'errortrace' in record.__dict__:
+                # The message is an ErrorTrace.
+                self.logSvc.logErrorWithPriority(record.errortrace,
+                                                 record.priority)
+            elif 'data' in record.__dict__:
+                # The message is a type-safe log message
+                self.logSvc.logWithPriority(record.priority,
+                                            acs_timestamp,
+                                            record.getMessage(),
+                                            rt_context,
+                                            src_info,
+                                            record.data,
+                                            record.audience,
+                                            record.array,
+                                            record.antenna)
+            else:
+                # The message is a not-so-type-safe message
+                self.logSvc.logWithAudience(record.priority,
+                                            acs_timestamp,
+                                            record.getMessage(),
+                                            rt_context,
+                                            src_info,
+                                            record.audience,
+                                            record.array,
+                                            record.antenna)
+        elif record.levelname=='TRACE':
             self.logSvc.logTrace(acs_timestamp,
                                  record.getMessage(),
                                  rt_context,

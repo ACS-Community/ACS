@@ -1,4 +1,4 @@
-# @(#) $Id: Log.py,v 1.39 2008/03/04 00:01:47 nbarriga Exp $
+# @(#) $Id: Log.py,v 1.40 2008/04/23 18:26:01 agrimstrup Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA,  2001
@@ -37,13 +37,9 @@ variables.
 Last but not least, developers should use the getLogger() function instead
 of creating new instances of the Logger class which can take a very long
 time depending on managers load.
-
-TODO:
-- make sure all methods are tested in the modular test. Have a feeling
-XML-related methods are untested at this point.
 '''
 
-__revision__ = "$Id: Log.py,v 1.39 2008/03/04 00:01:47 nbarriga Exp $"
+__revision__ = "$Id: Log.py,v 1.40 2008/04/23 18:26:01 agrimstrup Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 from os        import environ
@@ -51,11 +47,15 @@ from inspect   import stack
 import sys
 import math
 import logging
+from logging.handlers import MemoryHandler
 from traceback import print_exc
 from socket import gethostname
 import time
 from os import getpid
 from traceback import extract_stack
+from atexit import register
+import sched
+import threading
 #--ACS Imports-----------------------------------------------------------------
 import maci
 from Acspy.Common.ACSHandler import ACSHandler
@@ -159,6 +159,262 @@ def acsPrintExcDebug():
     '''
     if stdoutOk(logging.INFO):
         print_exc()
+
+# The ACS logger uses two handlers one for local messages and one for
+# central messages.  There should be only one pair of handlers per
+# process.
+
+# Create a singleton handler for the local messages.  These messages
+# sent to stdout stream.
+try:
+    LOCALHANDLER
+except NameError:
+    LOCALHANDLER = logging.StreamHandler(sys.stdout)
+    LOCALHANDLER.setFormatter(ACSFormatter())
+
+
+# Create a singleton handler for messages destined for the central
+# logging service.
+try:
+    CENTRALHANDLER
+except NameError:
+    CENTRALHANDLER = ACSHandler()
+
+#------------------------------------------------------------------------
+def setCapacity(capacity):
+    '''
+    Set the maximum capacity for the central log queue.
+    
+    Parameters:
+    - capacity is the new maximum number of pending records
+    
+    Returns: Nothing
+    
+    Raises: Nothing
+    '''
+    if capacity > 0:
+        CENTRALHANDLER.capacity = capacity
+    else:
+        CENTRALHANDLER.capacity = 0
+#------------------------------------------------------------------------
+def setBatchSize(batchsize):
+    '''
+    Set the batch size for the central log queue.  Batch size cannot
+    exceed the capacity.
+    
+    Parameters:
+    - batchsize is the new number of records to be sent as a group.
+    
+    Returns: Nothing
+    
+    Raises: Nothing
+    '''
+    if batchsize > CENTRALHANDLER.capacity:
+        CENTRALHANDLER.batchsize = CENTRALHANDLER.capacity
+    elif batchsize >= 0:
+        CENTRALHANDLER.batchsize = batchsize
+    else:
+        CENTRALHANDLER.batchsize = 0
+#------------------------------------------------------------------------
+def setImmediateDispatchLevel(level):
+    '''
+    Set the immediate dispatch threshold for the central log queue.
+    
+    Parameters:
+    - level is the new level that triggers immediate flushing of the queue.
+    
+    Returns: Nothing
+    
+    Raises: KeyError if level is not defined
+    '''
+    CENTRALHANDLER.dispatchlevel = LEVELS[level]
+#------------------------------------------------------------------------
+
+# The default filtering level for the local and central loggers
+# are held in separate handlers.  By moving the management of the
+# logging levels to these handlers, we can allow users to set
+# log levels lower than the default value.
+
+
+# Singleton wrapper for the local message handler
+try:
+    DEFAULTLOCALHANDLER
+except NameError:
+    DEFAULTLOCALHANDLER = MemoryHandler(capacity=0, target=LOCALHANDLER)
+    DEFAULTLOCALHANDLER.setLevel(LEVELS[ACS_LOG_STDOUT])
+
+# Singleton wrapper for the central message handler
+try:
+    DEFAULTCENTRALHANDLER
+except NameError:
+    DEFAULTCENTRALHANDLER = MemoryHandler(capacity=0, target=CENTRALHANDLER)
+    DEFAULTCENTRALHANDLER.setLevel(LEVELS[ACS_LOG_CENTRAL])
+
+#------------------------------------------------------------------------
+def setDefaultLevels(levels):
+    '''
+    Set the default log level filtering for this process.
+
+    Parameters:
+    - level is the LogLevels object containing the new values
+
+    Returns:  Nothing
+
+    Raises:  Nothing
+    '''
+    DEFAULTLOCALHANDLER.setLevel(LEVELS[levels.minLogLevelLocal]) 
+    DEFAULTCENTRALHANDLER.setLevel(LEVELS[levels.minLogLevel])
+#------------------------------------------------------------------------
+def getDefaultLevels():
+    '''
+    Retrive the current default log levels
+
+    Parameters:  None
+
+    Returns: LogLevels object containing the current default log levels.
+
+    Raises:  Nothing
+    '''
+    return maci.LoggingConfigurable.LogLevels(True, RLEVELS[DEFAULTCENTRALHANDLER.level],
+                                              RLEVELS[DEFAULTLOCALHANDLER.level])
+#------------------------------------------------------------------------
+
+# The ACS logging system attempts to reduce the amount of network traffic
+# by batching log messages.  However, batching can cause long delays in
+# propagating the information, especially if the process doesn't log many
+# messages or if the log level is set at a high level.
+#
+# To address this problem, the Python logger implements a periodic flush
+# thread that may be used to clear the buffered messages.  It is optional.
+#
+
+# Flush every 10 seconds is the default operation.
+DEFAULT_FLUSH_PERIOD = 10
+
+# Initialize the singleton.
+#
+# FLUSHTHREAD is the thread the handles the flush processing
+# SCHEDULER is the manager of the event queue
+# NEXTEVENT is a tuple containing the information for the next scheduled event
+# INTERVAL is the time between events
+try:
+    FLUSHTHREAD
+except:
+    FLUSHTHREAD = None
+    SCHEDULER = None
+    NEXTEVENT = None
+    INTERVAL = None
+#------------------------------------------------------------------------
+def flush():
+    '''
+    Flush the messages from the buffer and schedule the next event.
+
+    Returns:  Nothing
+
+    Raises: Nothing
+    '''
+    global NEXTEVENT
+
+    NEXTEVENT = SCHEDULER.enter(INTERVAL,1,flush,())
+    CENTRALHANDLER.flush()
+#------------------------------------------------------------------------
+def delay(remaining):
+    '''
+    Pause before checking if the next event should be processed.
+
+    Parameter:
+    - remaining is the number of seconds to wait before the next event.
+    '''
+    # We can't sleep the entire interval period.  If we did, we could
+    # never change the interval.  As a compromise, we check the event
+    # queue every second.
+    time.sleep(1) 
+#------------------------------------------------------------------------
+def startPeriodicFlush(interval=DEFAULT_FLUSH_PERIOD):
+    '''
+    Configure and start the periodic flush thread.  
+
+    Parameter:
+    - interval is the number of seconds between flushes
+
+    Returns:  Nothing
+
+    Raises:  Nothing
+    '''
+    global FLUSHTHREAD
+    global SCHEDULER
+    global NEXTEVENT
+    global INTERVAL
+
+    # Only one flush thread is allowed per process
+    if FLUSHTHREAD is None:
+        INTERVAL = interval
+
+        # Only one event queue per process
+        if SCHEDULER is None:
+            SCHEDULER = sched.scheduler(time.time,delay)
+        NEXTEVENT = SCHEDULER.enter(INTERVAL,1,flush,())
+        FLUSHTHREAD = threading.Thread(target=SCHEDULER.run)
+        FLUSHTHREAD.start()
+
+        # To ensure a clean interpreter shutdown
+        register(stopPeriodicFlush)
+#------------------------------------------------------------------------
+def stopPeriodicFlush():
+    '''
+    Stop the periodic flush thread.
+
+    Returns:  Nothing
+
+    Raises:  Nothing
+    '''
+    try:
+        SCHEDULER.cancel(NEXTEVENT)
+    except:
+        pass
+    FLUSHTHREAD.join()
+#------------------------------------------------------------------------
+def setFlushInterval(interval):
+    '''
+    Change the period between flushes.
+
+    Parameter:
+    - interval is the number of seconds between flushes
+
+    Return:  Nothing
+
+    Raise:  Nothing
+    '''
+    global NEXTEVENT
+    global INTERVAL
+
+    if interval <= 0:
+        # We can't go back in time so we shutdown the thread instead.
+        stopPeriodicFlush()
+    else:
+        # The interval change takes effect immediately so the pending
+        # flush has to be rescheduled
+        INTERVAL = interval
+        newevent = SCHEDULER.enter(INTERVAL,1,flush,())
+        try:
+            SCHEDULER.cancel(NEXTEVENT)
+        except:
+            pass
+        NEXTEVENT = newevent
+#------------------------------------------------------------------------
+def isFlushRunning():
+    '''
+    Is the flush thread running?
+
+    Returns: the state of the flush thread or False if thread has not been
+             created.
+
+    Raises:  Nothing
+    '''
+    try:
+        return FLUSHTHREAD.isAlive()
+    except:
+        return False
 #------------------------------------------------------------------------------
 class Logger(logging.Logger):
     '''
@@ -177,38 +433,21 @@ class Logger(logging.Logger):
 
         Raises: Nothing
         '''
-        self.error_trace_list = []
-
         #pass it on to baseclass. by default all logs are sent to the handlers
         logging.Logger.__init__(self, name, logging.NOTSET)
 
-        #disable the propagation of log messages to higher level loggers
-        self.propagate = 0
-        
         #create a stdout handler
-        self.stdouthandler = logging.StreamHandler(sys.stdout)
+        self.stdouthandler = DEFAULTLOCALHANDLER
         
-        #create our own formatter
-        self.acsformatter = ACSFormatter()
-
-        #register the formatter with stdouthandler
-        self.stdouthandler.setFormatter(self.acsformatter)
-    
         #create an ACS log svc handler
-        self.acshandler = ACSHandler()
-
-        #flag to indicate this is the default logger for this process
-        self.isdefault = False
+        self.acshandler = DEFAULTCENTRALHANDLER
 
         #flag to indicate if this logger is using default values
-        self.usingDefault = False
+        self.usingDefault = True
 
         #add handlers
         self.addHandler(self.stdouthandler)
         self.addHandler(self.acshandler)
-
-        #set loglevels to default
-        self.setLevels(maci.LoggingConfigurable.LogLevels(False,ACS_LOG_CENTRAL, ACS_LOG_STDOUT))
     #------------------------------------------------------------------------    
     def __getCallerName(self):
         '''
@@ -421,19 +660,7 @@ class Logger(logging.Logger):
         #ok to send it directly
         if not priority in ACSLog.Priorities._items:
             raise KeyError("Invalid Log Level")
-        if self.acshandler.logSvc is not None:
-            self.acshandler.logSvc.logErrorWithPriority(errortrace, priority)
-
-            #could have old errors cached up
-            for et in self.error_trace_list:
-                self.acshandler.logSvc.logErrorWithPriority(et, priority)
-
-            #zero the list
-            self.error_trace_list = []
-                
-        else:
-            #save it to be processes later
-            self.error_trace_list.append(errortrace)
+        self.log(LEVELS[priority], 'Error Trace', extra={ 'errortrace' : errortrace, 'priority' : priority})
     #------------------------------------------------------------------------
     def logTypeSafe(self, priority, timestamp, msg, rtCont, srcInfo, data, audience=None, array=None, antenna=None):
         '''
@@ -459,7 +686,8 @@ class Logger(logging.Logger):
                 array = ""
         if antenna is None:
                 antenna = ""
-        self.acshandler.logSvc.logWithPriority(priority, timestamp, msg, rtCont, srcInfo, data, audience, array, antenna)
+        self.log(LEVELS[priority], msg, extra={ 'priority' : priority, 'data' : data, 'audience' : audience,
+                                                'array' : array, 'antenna' : antenna})
     #------------------------------------------------------------------------
     def logNotSoTypeSafe(self, priority, msg, audience=None, array=None, antenna=None):
         '''
@@ -478,17 +706,14 @@ class Logger(logging.Logger):
         '''
         if not priority in ACSLog.Priorities._items:
             raise KeyError("Invalid Log Level")
-        cur_stack=extract_stack()
-        rtCont=ACSLog.RTContext("",str(getpid()),str(gethostname()).replace("<", "").replace(">", ""),"","")
-        srcInfo=ACSLog.SourceInfo(str(cur_stack[0][0]).replace("<", "").replace(">", ""),str(cur_stack[0][2]).replace("<", "").replace(">", ""),long(cur_stack[0][1]))
-        timestamp=TimeUtil().py2epoch(time.time()).value
         if audience is None:
                 audience = ""
         if array is None:
                 array = ""
         if antenna is None:
                 antenna = ""
-        self.acshandler.logSvc.logWithAudience(priority, timestamp, msg, rtCont, srcInfo, audience, array, antenna)
+        self.log(LEVELS[priority], msg, extra={ 'priority' : priority, 'audience' : audience,
+                                                'array' : array, 'antenna' : antenna})
     #------------------------------------------------------------------------
     def setLevels(self, loglevel):
         '''
@@ -501,13 +726,24 @@ class Logger(logging.Logger):
 
         Raises: Nothing
         '''
-        if loglevel.useDefault and not self.isdefault:
+        if loglevel.useDefault and not self.usingDefault:
             self.usingDefault = True
-            self.stdouthandler.setLevel(self.getEffectiveHandlerLevel('stdouthandler'))
-            self.acshandler.setLevel(self.getEffectiveHandlerLevel('acshandler'))
-        else:
-            self.usingDefault = False
-            self.stdouthandler.setLevel(LEVELS[loglevel.minLogLevelLocal]) 
+            self.removeHandler(self.stdouthandler)
+            self.removeHandler(self.acshandler)
+            self.addHandler(DEFAULTLOCALHANDLER)
+            self.addHandler(DEFAULTCENTRALHANDLER)
+            self.stdouthandler = DEFAULTLOCALHANDLER
+            self.acshandler = DEFAULTCENTRALHANDLER
+        elif not loglevel.useDefault:
+            if self.usingDefault:
+                self.usingDefault = False
+                self.removeHandler(self.stdouthandler)
+                self.removeHandler(self.acshandler)
+                self.stdouthandler = MemoryHandler(capacity=0, target=LOCALHANDLER)
+                self.acshandler = MemoryHandler(capacity=0, target=CENTRALHANDLER)
+                self.addHandler(self.stdouthandler)
+                self.addHandler(self.acshandler)
+            self.stdouthandler.setLevel(LEVELS[loglevel.minLogLevelLocal])
             self.acshandler.setLevel(LEVELS[loglevel.minLogLevel])
     #------------------------------------------------------------------------
     def getLevels(self):
@@ -520,41 +756,8 @@ class Logger(logging.Logger):
 
         Raises: Nothing
         '''
-        return maci.LoggingConfigurable.LogLevels(self.usingDefault or self.isdefault, RLEVELS[self.acshandler.level],
+        return maci.LoggingConfigurable.LogLevels(self.usingDefault, RLEVELS[self.acshandler.level],
                                                   RLEVELS[self.stdouthandler.level])
-    #------------------------------------------------------------------------
-    def getEffectiveHandlerLevel(self, handler):
-        """
-        Get the effective level for this handler.
-
-        Loop through this logger and its parents in the logger hierarchy,
-        looking for a handler with non-zero logging level. Return the first one found.
-        """
-        logger = self.parent
-        while logger:
-            if logger.__dict__[handler].level:
-                return logger.__dict__[handler].level
-            logger = logger.parent
-        return logging.NOTSET
-    #------------------------------------------------------------------------
-    def updateChildren(self):
-        """
-        Update the log levels for the leaf nodes that are using default values.
-
-        Loop through this logger and its parents in the logger hierarchy,
-        looking for a handler with non-zero logging level. Return the first one found.
-        """
-        loggers = getLoggerNames(self.name)
-        for lname in loggers:
-            if lname != self.name:
-                l = getLogger(lname)
-                if l.usingDefault:
-                    l.setLevels(maci.LoggingConfigurable.LogLevels(True, 0, 0))
-                l.updateChildren()
-
-    #------------------------------------------------------------------------
-    def setDefault(self, val):
-        self.isdefault = val
     #------------------------------------------------------------------------
     def makeRecord(self, name, level, fn, lno, msg, args, exc_info, func=None, extra=None):
         """
@@ -578,15 +781,6 @@ class Logger(logging.Logger):
 # operations.
 logging.setLoggerClass(Logger)
 logging.root.setLevel(logging.NOTSET)
-
-# Moving to a hierarchical logging structure allows us to maintain default
-# level information in a common node in the tree.  This logger is named
-# "DefaultPythonLogger"
-defaultlogger = Logger("DefaultPythonLogger")
-defaultlogger.setDefault(True)
-
-logging.Logger.root = defaultlogger
-logging.Logger.manager = logging.Manager(logging.Logger.root)
 
 #----------------------------------------------------------------------------
 def getLogger(name=None):
