@@ -254,8 +254,21 @@ public class IOHelper {
 		FileWriter fw = new FileWriter(outFileName,append);
 		BufferedWriter outBW = new BufferedWriter(fw);
 		// Write the XML header
-		outBW.write("<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n<Log>\n<Header Name=\"NameForXmlDocument\" Type=\"LOGFILE\" />\n<Log>\n");
+		writeHeader(outBW);
 		return outBW;
+	}
+	
+	/**
+	 * Write the XML header in the buffered writer
+	 * 
+	 * @param bw
+	 * @throws IOException
+	 */
+	public synchronized void writeHeader(BufferedWriter bw) throws IOException {
+		if (bw==null) {
+			throw new IllegalArgumentException("The BufferedWriter can't be null");
+		}
+		bw.write("<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n<Log>\n<Header Name=\"NameForXmlDocument\" Type=\"LOGFILE\" />\n<Log>\n");
 	}
 	
 	/**
