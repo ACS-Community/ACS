@@ -28,6 +28,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.Iterator;
 
 import javax.swing.JOptionPane;
 
@@ -40,8 +41,38 @@ import com.cosylab.logging.engine.ACS.ACSRemoteLogListener;
 import com.cosylab.logging.engine.log.ILogEntry;
 
 /**
- * An helper class to perform I/O operations like load and save
+ * An helper class to perform synchronous I/O operations like load and save.
+ * <P>
+ * Load and save methods are executed in a synchronous way i.e. they do not return
+ * until the I/O is terminated (or an exception occurs).
+ * <BR>
+ * Intermediate results useful to monitor the progress of the I/O are communicated
+ * to the listeners implementing the <code>IOProgressListener</code> interface.
+ * <P>
+ * The load and save methods of this class are <code>synchronized</code> but I would not say
+ * that this class is thread safe because it does not hold and lock the objects it receives
+ * as parameters like for example the <code>BufferReader</code> and the <code>BufferWriter</code>.
+ * So thread safety must be ensured by the owner of such objects.
+ * <P><B>Loading</B><BR>
+ * The loading is performed through one of the overloaded <code>loadLogs</code> methods.
+ * The bytes read and the number of the logs successfully read are sent to the listeners 
+ * implementing the <code>IOProgressListener</code> interface.
  * 
+ *  <P><B>Saving</B><BR>
+ *  The saving of logs can be done by passing a <code>Collection </code> of logs or an <code>Iterator</code>to one of the 
+ *  overloaded <code>saveLogs</code> methods.
+ *  Such methods communicates the progress to the listener implementing the 
+ *  <code>IOProgressListener</code> interface.
+ *  <P>
+ *  Saving logs by passing the name of the file does not require any extra steps.
+ *  <BR>
+ *  Saving logs by passing a <code>BufferedWriter</code> is always a three steps procedure:
+ *  <OL>
+ *  	<LI>call the <code>prepareSaveFile</code> to write XML header
+ *  	<LI>save the logs by calling one of the <code>saveLogs</code> or the <code>saveLog</code>
+ *  	<LI>execute <code>Save</code> to add the closing XML tags, flush and close the buffer
+ *  </OL> 
+ * <P>
  * @author acaproni
  *
  */
@@ -94,7 +125,7 @@ public class IOHelper {
 	 * @return The legth of the file to read
 	 * @throws IOException In case of an IO error while reading the file
 	 */
-	public long loadLogs(String fileName ,ACSRemoteLogListener logListener, ACSRemoteErrorListener errorListener, IOPorgressListener progressListener) throws IOException {
+	public synchronized long loadLogs(String fileName ,ACSRemoteLogListener logListener, ACSRemoteErrorListener errorListener, IOPorgressListener progressListener) throws IOException {
 		if (fileName==null || fileName.isEmpty()) {
 			throw new IllegalArgumentException("Invalid file name: "+fileName);
 		}
@@ -118,7 +149,7 @@ public class IOHelper {
 	 * @param progressListener The listener to be notified about the bytes read
 	 * @throws IOException In case of an IO error while reading the file
 	 */
-	public void loadLogs(BufferedReader br,ACSRemoteLogListener logListener, ACSRemoteErrorListener errorListener, IOPorgressListener progressListener) throws IOException {
+	public synchronized void loadLogs(BufferedReader br,ACSRemoteLogListener logListener, ACSRemoteErrorListener errorListener, IOPorgressListener progressListener) throws IOException {
 		if (br==null || logListener==null|| errorListener==null) {
 			throw new IllegalArgumentException("Parameters can't be null");
 		}
@@ -215,7 +246,7 @@ public class IOHelper {
 	 *         in the file
 	 * @throws IOException In case of an IO error
 	 */
-	public BufferedWriter prepareSaveFile (String outFileName,boolean append) throws IOException {
+	public synchronized BufferedWriter prepareSaveFile (String outFileName,boolean append) throws IOException {
 		if (outFileName==null || outFileName.isEmpty()) {
 			throw new IllegalArgumentException("Invalid file name");
 		}
@@ -238,12 +269,15 @@ public class IOHelper {
 	 *  <li>close the file
 	 * </UL>
 	 * @param outBW The file to close
+	 * @param close If <code>true</code> the <code>BufferedWriter</code> is closed
 	 * @throws IOException In case of an IO error
 	 */
-	public void terminateSave(BufferedWriter outBW) throws IOException {
+	public void terminateSave(BufferedWriter outBW, boolean close) throws IOException {
 		outBW.write("</Log>");
 		outBW.flush();
-		outBW.close();
+		if (close) {
+			outBW.close();
+		}
 	}
 	
 	/** 
@@ -254,7 +288,7 @@ public class IOHelper {
 	 * @param progressListener The listener to be notified about the bytes written
 	 * @throws IOException In case of an IO error while writing logs into the file
 	 */
-	public int saveLog(BufferedWriter outBW, ILogEntry log) throws IOException {
+	public synchronized int saveLog(BufferedWriter outBW, ILogEntry log) throws IOException {
 		if (outBW==null) {
 			throw new IllegalArgumentException("BufferedWriter can't be null");
 		}
@@ -277,16 +311,15 @@ public class IOHelper {
 	 *               </UL> 
 	 * @throws IOException In case of error writing
 	 */
-	public void saveLogs(String fileName, Collection<ILogEntry> logs, IOPorgressListener progressListener, boolean append) throws IOException {
+	public synchronized void saveLogs(String fileName, Collection<ILogEntry> logs, IOPorgressListener progressListener, boolean append) throws IOException {
 		if (logs==null || logs.isEmpty()) {
 			throw new IllegalArgumentException("No logs to save");
 		}
 		if (progressListener==null) {
 			throw new IllegalArgumentException("The progress listener can't be null");
 		}
-		BufferedWriter buffer=prepareSaveFile(fileName, append);
-		saveLogs(buffer, logs,progressListener);
-		terminateSave(buffer);
+		Iterator<ILogEntry> iterator = logs.iterator();
+		saveLogs(fileName, iterator, progressListener,append);
 	}
 	
 	/**
@@ -300,15 +333,61 @@ public class IOHelper {
 	 * @param progressListener The listener to be notified about the number of bytes written
 	 * @throws IOException In case of error writing
 	 */
-	public void saveLogs(BufferedWriter outBW, Collection<ILogEntry> logs, IOPorgressListener progressListener) throws IOException {
+	public synchronized void saveLogs(BufferedWriter outBW, Collection<ILogEntry> logs, IOPorgressListener progressListener) throws IOException {
 		if (logs==null || logs.isEmpty()) {
 			throw new IllegalArgumentException("No logs to save");
 		}
 		if (progressListener==null) {
 			throw new IllegalArgumentException("The progress listener can't be null");
 		}
+		Iterator<ILogEntry> iterator = logs.iterator();
+		saveLogs(outBW, iterator, progressListener);
+	}
+	
+	/**
+	 * Save the logs available through an <code>Iterator</code>
+	 * 
+	 * @param filename The name of the file to write logs into
+	 * @param logs The non empty collection of logs to save
+	 * @param progressListener The listener to be notified about the number of bytes written
+	 * @param append <UL><LI>if <code>true</code> if the logs in the collection must be appended to an existing file</LI>
+	 *               <LI>if <code>false</code> and the file already exists, it is deleted before writing 
+	 *               </UL> 
+	 * @throws IOException In case of error writing
+	 */
+	public synchronized void saveLogs(String fileName, Iterator<ILogEntry>iterator, IOPorgressListener progressListener, boolean append) throws IOException {
+		if (iterator==null || !iterator.hasNext()) {
+			throw new IllegalArgumentException("No logs to save");
+		}
+		if (progressListener==null) {
+			throw new IllegalArgumentException("The progress listener can't be null");
+		}
+		BufferedWriter buffer=prepareSaveFile(fileName, append);
+		saveLogs(buffer, iterator,progressListener);
+		terminateSave(buffer,true);
+	}
+	
+	/**
+	 * Save a collection of logs on a <code>BufferedWriter</code>.
+	 * <P>
+	 * The buffer must be initialized and terminated i.e. the <code>prepareSaveFile</code>
+	 * and the <code>terminateSave</code> are not executed by this method.
+	 * 
+	 * @param outBW The buffer to write logs into
+	 * @param logs The non empty collection of logs to save
+	 * @param progressListener The listener to be notified about the number of bytes written
+	 * @throws IOException In case of error writing
+	 */
+	public synchronized void saveLogs(BufferedWriter outBW, Iterator<ILogEntry> iterator, IOPorgressListener progressListener) throws IOException {
+		if (iterator==null || !iterator.hasNext()) {
+			throw new IllegalArgumentException("No logs to save");
+		}
+		if (progressListener==null) {
+			throw new IllegalArgumentException("The progress listener can't be null");
+		}
 		long len=0; 
-		for (ILogEntry log: logs) {
+		while (iterator.hasNext()) {
+			ILogEntry log = iterator.next();
 			len+=saveLog(outBW, log);
 			progressListener.bytesWritten(len);
 		}
