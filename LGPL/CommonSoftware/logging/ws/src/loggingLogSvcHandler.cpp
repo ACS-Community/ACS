@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingLogSvcHandler.cpp,v 1.28 2008/01/25 10:11:17 cparedes Exp $"
+* "@(#) $Id: loggingLogSvcHandler.cpp,v 1.29 2008/04/24 09:07:38 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -32,7 +32,7 @@
 
 #include <ace/Log_Record.h>
 
-static char *rcsId="@(#) $Id: loggingLogSvcHandler.cpp,v 1.28 2008/01/25 10:11:17 cparedes Exp $"; 
+static char *rcsId="@(#) $Id: loggingLogSvcHandler.cpp,v 1.29 2008/04/24 09:07:38 cparedes Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 
@@ -83,7 +83,7 @@ namespace Logging {
 		retVal = LM_EMERGENCY;
 		break;
 	    
-        case Logging::BaseLog::LM_SHUTDOWN:
+            case Logging::BaseLog::LM_SHUTDOWN:
 		retVal = LM_SHUTDOWN;
 		break;
 		
@@ -144,7 +144,7 @@ namespace Logging {
 		retVal = Logging::BaseLog::LM_EMERGENCY;
 		break;
 	    
-        case LM_SHUTDOWN:
+            case LM_SHUTDOWN:
 		retVal = Logging::BaseLog::LM_SHUTDOWN;
 		break;
 		
@@ -225,6 +225,8 @@ namespace Logging {
 	    LoggingProxy::Routine("");
             }
 
+ 	if(lr.priority == LM_SHUTDOWN)
+	   message = " -- ERROR in the priority of this message, please check the source --" + message;
 	//set the component/container/etc name
 	LoggingProxy::SourceObject(sourceObjectName_m.c_str());
 	
@@ -250,9 +252,9 @@ namespace Logging {
 	log_record_.msg_data(message.c_str());
 	
 	// set private flags
-	const int prohibitLocal  = getLocalLevel() == LM_SHUTDOWN || lr.priority <  getLocalLevel() ? 1 : 0;
-	const int prohibitRemote = getRemoteLevel() == LM_SHUTDOWN ||lr.priority < getRemoteLevel() ? 2 : 0;
- 	LoggingProxy::PrivateFlags(prohibitLocal | prohibitRemote);
+ 	const int prohibitLocal  = getLocalLevel() == LM_SHUTDOWN || lr.priority <  getLocalLevel() ? 1 : 0;
+ 	const int prohibitRemote = getRemoteLevel() == LM_SHUTDOWN ||lr.priority < getRemoteLevel() ? 2 : 0;
+  	LoggingProxy::PrivateFlags(prohibitLocal | prohibitRemote);
   	LoggingProxy::LogLevelLocalType(getLocalLevelType());	
   	LoggingProxy::LogLevelRemoteType(getRemoteLevelType());
 	ace___->log(log_record_, 0);

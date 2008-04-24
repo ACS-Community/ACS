@@ -19,7 +19,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: loggingLoggingProxy.cpp,v 1.56 2008/01/22 09:44:00 cparedes Exp $"
+* "@(#) $Id: loggingLoggingProxy.cpp,v 1.57 2008/04/24 09:07:38 cparedes Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -58,7 +58,7 @@
 #define LOG_NAME "Log"
 #define DEFAULT_LOG_FILE_NAME "acs_local_log"
 
-ACE_RCSID(logging, logging, "$Id: loggingLoggingProxy.cpp,v 1.56 2008/01/22 09:44:00 cparedes Exp $");
+ACE_RCSID(logging, logging, "$Id: loggingLoggingProxy.cpp,v 1.57 2008/04/24 09:07:38 cparedes Exp $");
 unsigned int LoggingProxy::setClrCount_m = 0;
 bool LoggingProxy::initialized = false;
 int LoggingProxy::instances = 0;
@@ -87,26 +87,16 @@ LoggingProxy::log(ACE_Log_Record &log_record)
 
     const ACE_TCHAR * entryType = (*tss)->logEntryType();
     std::string s_entryType;
-    //const int nEntryType;
     if (!entryType)
 	{
-	//if (log_record.priority() <= ACE::log2(LM_MAX))
-	//    {
-	    //entryType = m_LogEntryTypeName[log_record.priority()+1];
         s_entryType = LogLevelDefinition::fromInteger(log_record.priority()+1).getName();
 	entryType = s_entryType.c_str();
-	//    }
-	//else
-	//    {
-	//    entryType = m_LogEntryTypeName[0];      // invalid priority ("programmer exception")
-	//    }
 	}
     else
 	{
 	s_entryType = (const char*)entryType;
 	}
 
-    //client exception in log level
     if(localLogLevelPrecedence >= CDB_LOG_LEVEL){
 	if(m_envStdioPriority >= 0) {
 	    localLogLevelPrecedence=ENV_LOG_LEVEL;
@@ -131,9 +121,6 @@ LoggingProxy::log(ACE_Log_Record &log_record)
 	    // log only LM_INFO and higher
 	    if (log_record.priority()>=ACE::log2(LM_INFO)) 
 		{
-                // GCH: if (log_record.priority()>=6)   // LM_WARNING+
-                // GCH:     ACE_OS::printf( "ERROR!! " );
-
 		if ((*tss)->sourceObject()==0)
 		    {
 		    ACE_OS::printf ("%s %s", timestamp, log_record.msg_data());
@@ -143,13 +130,6 @@ LoggingProxy::log(ACE_Log_Record &log_record)
 		    ACE_OS::printf ("%s [%s] %s", timestamp, (*tss)->sourceObject(), log_record.msg_data());
 		    }
 
-        /*    if (priority>=ACE::log2(LM_WARNING))   // LM_WARNING+
-            {
-                for (; hash_iter.next(entry) != 0; hash_iter.advance() )
-                {
-                      ACE_OS::printf(",%s=%s", entry->ext_id_.c_str(), entry->int_id_.c_str() );
-                }
-            }*/
             printed = true;
 		}
 	    }
@@ -183,14 +163,6 @@ LoggingProxy::log(ACE_Log_Record &log_record)
 		}
 	    
 	    ACE_OS::printf ("%s", log_record.msg_data());
-      /*  if (priority>=ACE::log2(LM_WARNING))   // LM_WARNING+
-        {
-            for (; hash_iter.next(entry) != 0; hash_iter.advance() )
-            {
-               ACE_OS::printf(",%s=%s", entry->ext_id_.c_str(), entry->int_id_.c_str() );
-            }
-        }
-        */
         printed = true;
 	}
 
