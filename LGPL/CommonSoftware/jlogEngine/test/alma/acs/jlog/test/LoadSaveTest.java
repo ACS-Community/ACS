@@ -62,6 +62,11 @@ public class LoadSaveTest extends TestCase implements IOPorgressListener, ACSRem
 	private Vector<ILogEntry> logsRead;
 	
 	/**
+	 * The number of logs read since the beginning of a load
+	 */
+	private int numOfLogsRead;
+	
+	/**
 	 * The number of logs in <code>logs</code> to load/save
 	 */
 	private static final int NUMBER_OF_LOGS=1500;
@@ -91,7 +96,7 @@ public class LoadSaveTest extends TestCase implements IOPorgressListener, ACSRem
 	 */
 	@Override
 	public void bytesWritten(long bytes) {
-		bytesWritten+=bytes;
+		bytesWritten=bytes;
 	}
 
 	/**
@@ -102,6 +107,7 @@ public class LoadSaveTest extends TestCase implements IOPorgressListener, ACSRem
 		super.setUp();
 		bytesRead=0;
 		bytesWritten=0;
+		numOfLogsRead=0;
 		logs=CacheUtils.generateLogs(NUMBER_OF_LOGS);
 		assertEquals(NUMBER_OF_LOGS, logs.size());
 		// Read the folder name and generate the file name
@@ -150,9 +156,12 @@ public class LoadSaveTest extends TestCase implements IOPorgressListener, ACSRem
 		
 		// Save the logs on file
 		ioHelper.saveLogs(fileName, logs, this, false);
+		assertEquals(assumedLen, bytesWritten);
 		
 		// Read the logs
 		ioHelper.loadLogs(fileName, this, this, this);
+		assertEquals(logs.size(),numOfLogsRead);
+		assertTrue(bytesRead>assumedLen); // bytes read includes the XML header
 	
 		// Compare the 2 collections
 		assertEquals(logs.size(), logsRead.size());
@@ -180,5 +189,12 @@ public class LoadSaveTest extends TestCase implements IOPorgressListener, ACSRem
 	public void logEntryReceived(ILogEntry logEntry) {
 		logsRead.add(logEntry);
 	}
-	
+
+	/**
+	 * @see alma.acs.logging.engine.io.IOPorgressListener#logsRead(int)
+	 */
+	@Override
+	public void logsRead(int numOfLogs) {
+		numOfLogsRead=numOfLogs;
+	}
 }
