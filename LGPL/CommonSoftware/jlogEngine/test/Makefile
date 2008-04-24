@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.34 2008/04/22 14:35:37 acaproni Exp $" 
+# "@(#) $Id: Makefile,v 1.35 2008/04/24 10:31:30 acaproni Exp $" 
 #
 # Makefile of lcTest for jlog.
 #
@@ -89,7 +89,8 @@ SCRIPTS_L       =	jlogLogEntryTest \
 					jlogTestRun.sh \
 					jlogTestEngineFiltering \
 					jlogTestEngineCache \
-					jlogTestEngineAudience
+					jlogTestEngineAudience \
+					LoadSaveTest
 
 #>>>>> END OF standard rules
   
