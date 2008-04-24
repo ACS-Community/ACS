@@ -275,4 +275,25 @@ public class LoadSaveTest extends TestCase implements IOPorgressListener, ACSRem
 		ioHelper.loadLogs(fileName, this, this, this);
 		assertEquals(specialLogs.length, logsRead.size());
 	}
+	
+	/**
+	 * Test the append switch while saving logs by saving the same
+	 * collection twice in the same file but with the append switch set to
+	 * <code>true</code>.
+	 * @throws Exception
+	 */
+	public void testAppend() throws Exception {
+		IOHelper ioHelper = new IOHelper();
+		assertNotNull(ioHelper);
+		
+		// First save with no append
+		ioHelper.saveLogs(fileName, logs, this, false);
+		// Second save with no append
+		ioHelper.saveLogs(fileName, logs, this, true);
+		
+		// Load the logs
+		ioHelper.loadLogs(fileName, this, this, this);
+		assertEquals(2*logs.size(), logsRead.size());
+		assertEquals(2*logs.size(), numOfLogsRead);
+	}
 }
