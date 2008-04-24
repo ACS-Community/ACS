@@ -1,4 +1,4 @@
-# @(#) $Id: Container.py,v 1.36 2008/04/24 21:41:21 agrimstrup Exp $
+# @(#) $Id: Container.py,v 1.37 2008/04/24 22:00:22 agrimstrup Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -21,7 +21,7 @@
 # ALMA should be addressed as follows:
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: Container.py,v 1.36 2008/04/24 21:41:21 agrimstrup Exp $"
+# "@(#) $Id: Container.py,v 1.37 2008/04/24 22:00:22 agrimstrup Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -38,7 +38,7 @@ TODO LIST:
 - a ComponentLifecycleException has been defined in IDL now...
 '''
 
-__revision__ = "$Id: Container.py,v 1.36 2008/04/24 21:41:21 agrimstrup Exp $"
+__revision__ = "$Id: Container.py,v 1.37 2008/04/24 22:00:22 agrimstrup Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 from time      import sleep
@@ -598,6 +598,12 @@ class Container(maci__POA.Container, maci__POA.LoggingConfigurable, BaseClient):
 
         # Default values from the XML Schema
         lcfg = LoggingConfig_xsd.LoggingConfig()
+        centrallevel = lcfg.minLogLevel
+        locallevel = lcfg.minLogLevelLocal
+        cap = lcfg.maxLogQueueSize
+        batch = lcfg.dispatchPacketSize
+        displevel = lcfg.immediateDispatchLevel
+        flush = lcfg.flushPeriodSeconds
 
         # Retrieve the CDB information
         try:
@@ -610,7 +616,7 @@ class Container(maci__POA.Container, maci__POA.LoggingConfigurable, BaseClient):
                     centrallevel = int(logconfig[0]['minLogLevel'])
             except:
                 # Default value used because CDB has no setting for this attribute
-                centrallevel = lcfg.minLogLevel
+                pass
             try:
                 # Environment variable takes precedence over the CDB value
                 if 'ACS_LOG_STDOUT' in environ:
@@ -619,27 +625,27 @@ class Container(maci__POA.Container, maci__POA.LoggingConfigurable, BaseClient):
                     locallevel = int(logconfig[0]['minLogLevelLocal'])
             except:
                 # Default value used because CDB has no setting for this attribute
-                locallevel = lcfg.minLogLevelLocal
+                pass
             try: 
                 cap = int(logconfig[0]['maxLogQueueSize'])
             except:
                 # Default value used because CDB has no setting for this attribute
-                cap = lcfg.maxLogQueueSize
+                pass
             try: 
                 batch = int(logconfig[0]['dispatchPacketSize'])
             except:
                 # Default value used because CDB has no setting for this attribute
-                batch = lcfg.dispatchPacketSize
+                pass
             try: 
                 displevel = int(logconfig[0]['immediateDispatchLevel'])
             except:
                 # Default value used because CDB has no setting for this attribute
-                displevel = lcfg.immediateDispatchLevel
+                pass
             try: 
                 flush = int(logconfig[0]['flushPeriodSeconds'])
             except:
                 # Default value used because CDB has no setting for this attribute
-                flush = lcfg.flushPeriodSeconds
+                pass
 
             # Refresh all named loggers from the CDB as well.
             for log in self.get_logger_names():
