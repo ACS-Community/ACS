@@ -223,7 +223,7 @@ public class IOHelper {
 		FileWriter fw = new FileWriter(outFileName,append);
 		BufferedWriter outBW = new BufferedWriter(fw);
 		// Write the XML header
-		outBW.write("<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n<Log>\n<Header Name=\"NameForXmlDocument\" Type=\"LOGFILE\" />\n");
+		outBW.write("<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n<Log>\n<Header Name=\"NameForXmlDocument\" Type=\"LOGFILE\" />\n<Log>\n");
 		return outBW;
 	}
 	
