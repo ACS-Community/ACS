@@ -2,7 +2,6 @@ package alma.acs.eventbrowser.views;
 
 import java.util.ArrayList;
 
-import org.eclipse.jface.viewers.IContentProvider;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 
@@ -24,7 +23,11 @@ public class EventDetailViewContentProvider implements IStructuredContentProvide
 
 	@Override
 	public Object[] getElements(Object inputElement) {
-		return Application.equeue.toArray();
+		if (Application.equeue.isEmpty())
+			return new EventData[0];
+		EventData[] ed = Application.equeue.toArray(new EventData[0]);
+		Application.equeue.clear();
+		return ed;
 	}
 
 }

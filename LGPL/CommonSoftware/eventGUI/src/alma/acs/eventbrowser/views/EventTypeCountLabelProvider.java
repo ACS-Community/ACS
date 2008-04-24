@@ -2,13 +2,11 @@ package alma.acs.eventbrowser.views;
 
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 
-public class ChannelNameLabelProvider extends ColumnLabelProvider {
-
+public class EventTypeCountLabelProvider extends ColumnLabelProvider {
 	@Override
 	public String getText(Object element) {
 		if (element instanceof EventData)
-			return ((EventData) element).getChannelName();
+			return ""+((EventData) element).getEventTypeCount();
 		return super.getText(element);
 	}
-
 }

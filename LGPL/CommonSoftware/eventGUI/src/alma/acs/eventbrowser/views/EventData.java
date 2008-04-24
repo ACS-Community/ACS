@@ -5,15 +5,15 @@ public class EventData {
 	 * "Time "+timeStamp+" "+m_channelName+" "+component+" "+count+" "+channelEventCount+" "
 			+" "+evtTypeName+" "+evtCounter.get(evtTypeName)
 	 */
-	private long timestamp;
-	private String channelName;
-	private long channelEventCount;
-	private String eventTypeName;
-	private long eventTypeCount;
+	private final long timestamp;
+	private final String sourceObject;
+	private final long channelEventCount;
+	private final String eventTypeName;
+	private final long eventTypeCount;
 	
-	public EventData(long time, String channel, long count, String type, Integer typeCount) {
+	public EventData(long time, String srcObj, long count, String type, Integer typeCount) {
 		timestamp = time;
-		channelName = channel;
+		sourceObject = srcObj;
 		channelEventCount = count;
 		eventTypeName = type;
 		eventTypeCount = typeCount;
@@ -24,7 +24,7 @@ public class EventData {
 	}
 
 	public String getChannelName() {
-		return channelName;
+		return sourceObject;
 	}
 
 	public long getChannelEventCount() {
