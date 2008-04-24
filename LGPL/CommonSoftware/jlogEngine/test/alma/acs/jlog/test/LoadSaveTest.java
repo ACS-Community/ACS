@@ -25,6 +25,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.Properties;
 import java.util.Vector;
 
@@ -295,5 +296,31 @@ public class LoadSaveTest extends TestCase implements IOPorgressListener, ACSRem
 		ioHelper.loadLogs(fileName, this, this, this);
 		assertEquals(2*logs.size(), logsRead.size());
 		assertEquals(2*logs.size(), numOfLogsRead);
+	}
+	
+	/**
+	 * Check the load and save of logs by passing an <code>Iterator</code>
+	 * 
+	 * @throws Exception
+	 */
+	public void testSaveLoadIterator() throws Exception {
+		IOHelper ioHelper = new IOHelper();
+		assertNotNull(ioHelper);
+		
+		Iterator<ILogEntry> iterator = logs.iterator();
+		
+		long assumedLen=0;
+		for (ILogEntry log: logs) {
+			char[] chars = (log.toXMLString()+"\n").toCharArray();
+			assumedLen+=chars.length;
+		}
+		
+		// Save the logs on file
+		ioHelper.saveLogs(fileName, iterator, this, false);
+		assertEquals(assumedLen, bytesWritten);
+		
+		// Read the logs
+		ioHelper.loadLogs(fileName, this, this, this);
+		assertEquals(logs.size(),numOfLogsRead);
 	}
 }
