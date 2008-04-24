@@ -188,6 +188,10 @@ public class IOHelper {
 						logRecordsRead++;
 					}
 				}
+				progressListener.bytesRead(bytesRead);
+				if (logRecordsRead%25==0) {
+					progressListener.logsRead(logRecordsRead);
+				}
 			}
 			System.out.println("XML log record import finished with " + logRecordsRead + " records in " + 
 						stopWatch.getLapTimeMillis()/1000 + " seconds.");
