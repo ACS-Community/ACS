@@ -1,4 +1,4 @@
-# @(#) $Id: Container.py,v 1.35 2008/04/23 18:26:01 agrimstrup Exp $
+# @(#) $Id: Container.py,v 1.36 2008/04/24 21:41:21 agrimstrup Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -21,7 +21,7 @@
 # ALMA should be addressed as follows:
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: Container.py,v 1.35 2008/04/23 18:26:01 agrimstrup Exp $"
+# "@(#) $Id: Container.py,v 1.36 2008/04/24 21:41:21 agrimstrup Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -38,7 +38,7 @@ TODO LIST:
 - a ComponentLifecycleException has been defined in IDL now...
 '''
 
-__revision__ = "$Id: Container.py,v 1.35 2008/04/23 18:26:01 agrimstrup Exp $"
+__revision__ = "$Id: Container.py,v 1.36 2008/04/24 21:41:21 agrimstrup Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 from time      import sleep
@@ -46,6 +46,7 @@ from signal    import signal, SIGINT
 from new       import instance
 from traceback import print_exc
 import sys
+from os        import environ
 #--CORBA STUBS-----------------------------------------------------------------
 import PortableServer
 import maci
@@ -68,6 +69,7 @@ from Acspy.Servants.ACSComponent            import ACSComponent
 from Acspy.Servants.CharacteristicComponent import CharacteristicComponent
 from Acspy.Util                             import ACSCorba
 from AcsutilPy.FindFile                     import findFile
+from Acspy.Util                             import LoggingConfig_xsd
 #--GLOBALS---------------------------------------------------------------------
 #Manager commands to this container
 ACTIVATOR_RELOAD = 0
@@ -121,7 +123,6 @@ class Container(maci__POA.Container, maci__POA.LoggingConfigurable, BaseClient):
         self.offShootPolicies = []  #Policy[] for offshoots
         self.corbaRef = None  #reference to this object's CORBA reference
         self.logger = Log.getLogger(name) # Container's logger
-        self.configureComponentLogger(name)
         self.client_type = maci.CONTAINER_TYPE
 
         #Configure CORBA
@@ -145,6 +146,7 @@ class Container(maci__POA.Container, maci__POA.LoggingConfigurable, BaseClient):
         #get info from the CDB
         self.getCDBInfo()
         self.refresh_logging_config()
+        self.configureComponentLogger(name)
         
         #Run everything
         self.logger.logInfo('Container ' + self.name + ' waiting for requests')
@@ -478,95 +480,180 @@ class Container(maci__POA.Container, maci__POA.LoggingConfigurable, BaseClient):
         return
     #--LOGGINGCONFIGURABLE IDL-----------------------------------------------------------
     def configureComponentLogger(self, name):
+        '''
+        Configure the logger for the given component name from the values in the CDB.
+
+        Parameters:
+        name is the name of the component
+        '''
+
+        # Each component has an associated logger instance
         clogger = Log.getLogger(name)
+
+        # Default levels are used for missing values
         defaultlevels = Log.getDefaultLevels()
         try:
+
+            # Process all the named logger configurations
             logconfig = self.cdbAccess.getElement("MACI/Containers/"  + self.name, "Container/LoggingConfig/log:_")
             for cfg in logconfig:
                 if cfg["Name"] == name:
                     try:
-                        centrallevel = int(cfg['minLogLevel'])
+                        # Environment variable takes precedence over CDB configuration
+                        if 'ACS_LOG_CENTRAL' in environ:
+                            centrallevel = int(environ['ACS_LOG_CENTRAL'])
+                        else:
+                            centrallevel = int(cfg['minLogLevel'])
                     except KeyError:
+                        # No value was supplied so default is used
                         centrallevel = defaultlevels.minLogLevel
                     try:
-                        locallevel = int(cfg['minLogLevelLocal'])
+                        # Environment variable takes precedence over CDB configuration 
+                        if 'ACS_LOG_STDOUT' in environ:
+                            locallevel = int(environ['ACS_LOG_STDOUT'])
+                        else:
+                            locallevel = int(cfg['minLogLevelLocal'])
                     except KeyError:
+                        # No value was supplied so default is used
                         locallevel = defaultlevels.minLogLevelLocal
+                        
                     clogger.setLevels(maci.LoggingConfigurable.LogLevels(False, centrallevel, locallevel))
+                    # There should only be one entry per logger so we are done
                     break
             else:
+                # No matching named logger was found so the default values are used
                 clogger.setLevels(maci.LoggingConfigurable.LogLevels(True, 0, 0))
         except:
+            # No named loggers were defined so the default values are used
             clogger.setLevels(maci.LoggingConfigurable.LogLevels(True, 0, 0))
 
     def get_default_logLevels(self):
+        '''
+        Retrieve the default log levels used in this container.
+
+        Returns: maci.LoggingConfigurable.LogLevels instance containing default log level values
+
+        Raises: Nothing
+        '''
         return Log.getDefaultLevels()
 
     def set_default_logLevels(self, levels):
+        '''
+        Set the default log level for this container.
+
+        Parameter:
+        levels - maci.LoggingConfigurable.LogLevels instance containing default log level values
+
+        Raises: Nothing
+        '''
         Log.setDefaultLevels(levels)
 
     def get_logger_names(self):
+        '''
+        Retrieve the names of the currently active loggers
+
+        Returns: list of logger name strings
+        '''
         return Log.getLoggerNames()
 
     def get_logLevels(self, logger_name):
+        """
+        Retrieve the log levels for a given component.
+
+        Parameter:
+        logger_name - name of the component's logger
+
+        Returns: maci.LoggingConfigurable.LogLevels instance containing the logger's log level values
+
+        Raises: LoggerDoesNotExistExImpl if the logger is not active.
+        """
         if Log.doesLoggerExist(logger_name):
-            levels = Log.getLogger(logger_name).getLevels()
-            if levels.minLogLevelLocal or levels.minLogLevel:
-                return levels
-            else:
-                return self.defaultlogger.getLevels()
+            return Log.getLogger(logger_name).getLevels()
         else:
             raise LoggerDoesNotExistExImpl()
     
     def set_logLevels(self, logger_name, levels):
+        """
+        Set the default log level for this component.
+
+        Parameter:
+        logger_name - name of the component's logger
+        levels - maci.LoggingConfigurable.LogLevels instance containing default log level values
+
+        Raises: LoggerDoesNotExistExImpl if the logger is not active.
+        """
         if Log.doesLoggerExist(logger_name):
             Log.getLogger(logger_name).setLevels(levels)
         else:
             raise LoggerDoesNotExistExImpl()
 
     def refresh_logging_config(self):
-        cap = 1000
-        batch = 10
-        displevel = 10
-        locallevel = 2
-        centrallevel = 2
-        flush = 10
+        '''
+        Reset the logging configuration to the original CDB settings.
+
+        Returns:  Nothing
+
+        Raises:  Nothing
+        '''
+
+        # Default values from the XML Schema
+        lcfg = LoggingConfig_xsd.LoggingConfig()
+
+        # Retrieve the CDB information
         try:
             logconfig = self.cdbAccess.getElement("MACI/Containers/"  + self.name, "Container/LoggingConfig")
-            try: 
-                centrallevel = int(logconfig[0]['minLogLevel'])
-            except:
-                pass
             try:
-                locallevel = int(logconfig[0]['minLogLevelLocal'])
+                # Environment variable takes precedence over the CDB value
+                if 'ACS_LOG_CENTRAL' in environ:
+                    centrallevel = int(environ['ACS_LOG_CENTRAL'])
+                else:
+                    centrallevel = int(logconfig[0]['minLogLevel'])
             except:
-                pass
+                # Default value used because CDB has no setting for this attribute
+                centrallevel = lcfg.minLogLevel
+            try:
+                # Environment variable takes precedence over the CDB value
+                if 'ACS_LOG_STDOUT' in environ:
+                    locallevel = int(environ['ACS_LOG_STDOUT'])
+                else:
+                    locallevel = int(logconfig[0]['minLogLevelLocal'])
+            except:
+                # Default value used because CDB has no setting for this attribute
+                locallevel = lcfg.minLogLevelLocal
             try: 
                 cap = int(logconfig[0]['maxLogQueueSize'])
             except:
-                pass
+                # Default value used because CDB has no setting for this attribute
+                cap = lcfg.maxLogQueueSize
             try: 
                 batch = int(logconfig[0]['dispatchPacketSize'])
             except:
-                pass
+                # Default value used because CDB has no setting for this attribute
+                batch = lcfg.dispatchPacketSize
             try: 
                 displevel = int(logconfig[0]['immediateDispatchLevel'])
             except:
-                pass
+                # Default value used because CDB has no setting for this attribute
+                displevel = lcfg.immediateDispatchLevel
             try: 
                 flush = int(logconfig[0]['flushPeriodSeconds'])
             except:
-                pass
+                # Default value used because CDB has no setting for this attribute
+                flush = lcfg.flushPeriodSeconds
 
+            # Refresh all named loggers from the CDB as well.
             for log in self.get_logger_names():
                 self.configureComponentLogger(log)
         except:
+            # No logging configuration given in the CDB so defaults are used.
             pass
         
         Log.setDefaultLevels(maci.LoggingConfigurable.LogLevels(False, centrallevel, locallevel))
         Log.setCapacity(cap)
         Log.setBatchSize(batch)
         Log.setImmediateDispatchLevel(displevel)
+
+        # No need to create another flush thread when one already exists.
         if Log.isFlushRunning():
             Log.setFlushInterval(flush)
         else:
