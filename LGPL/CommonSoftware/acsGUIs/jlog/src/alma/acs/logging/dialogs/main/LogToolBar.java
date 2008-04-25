@@ -138,6 +138,7 @@ public class LogToolBar extends JToolBar {
     	clearLogsBtn.addActionListener(listener);
     	searchBtn.addActionListener(listener);
     	logLevelCB.addActionListener(listener);
+    	discardLevelCB.addActionListener(listener);
     	pauseBtn.addActionListener(listener);
     	filtersBtn.addActionListener(listener);
     }
