@@ -116,6 +116,11 @@ public class LoadSaveTest extends TestCase implements IOPorgressListener, ACSRem
 	private int numOfLogsRead;
 	
 	/**
+	 * The number of logs read since the beginning of a load
+	 */
+	private int numOfLogsWritten;
+	
+	/**
 	 * The number of logs in <code>logs</code> to load/save
 	 */
 	private static final int NUMBER_OF_LOGS=1500;
@@ -209,6 +214,7 @@ public class LoadSaveTest extends TestCase implements IOPorgressListener, ACSRem
 		// Save the logs on file
 		ioHelper.saveLogs(fileName, logs, this, false);
 		assertEquals(assumedLen, bytesWritten);
+		assertEquals(logs.size(), numOfLogsWritten);
 		
 		// Read the logs
 		ioHelper.loadLogs(fileName, this, this, this);
@@ -248,6 +254,14 @@ public class LoadSaveTest extends TestCase implements IOPorgressListener, ACSRem
 	@Override
 	public void logsRead(int numOfLogs) {
 		numOfLogsRead=numOfLogs;
+	}
+	
+	/**
+	 * @see alma.acs.logging.engine.io.IOPorgressListener#logsWritten(int)
+	 */
+	@Override
+	public void logsWritten(int numOfLogs) {
+		numOfLogsWritten=numOfLogs;
 	}
 	
 	/**
@@ -318,6 +332,7 @@ public class LoadSaveTest extends TestCase implements IOPorgressListener, ACSRem
 		// Save the logs on file
 		ioHelper.saveLogs(fileName, iterator, this, false);
 		assertEquals(assumedLen, bytesWritten);
+		assertEquals(logs.size(), numOfLogsWritten);
 		
 		// Read the logs
 		ioHelper.loadLogs(fileName, this, this, this);
