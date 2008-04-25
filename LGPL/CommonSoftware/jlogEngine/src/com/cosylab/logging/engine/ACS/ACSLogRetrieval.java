@@ -19,7 +19,7 @@
 
 /** 
  * @author  acaproni   
- * @version $Id: ACSLogRetrieval.java,v 1.30 2008/04/22 13:38:05 acaproni Exp $
+ * @version $Id: ACSLogRetrieval.java,v 1.31 2008/04/25 12:46:43 acaproni Exp $
  * @since    
  */
 
@@ -28,6 +28,7 @@ package com.cosylab.logging.engine.ACS;
 import javax.xml.parsers.ParserConfigurationException;
 
 import com.cosylab.logging.engine.FiltersVector;
+import com.cosylab.logging.engine.LogMatcher;
 import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.engine.log.LogTypeHelper;
 import com.cosylab.logging.engine.log.ILogEntry.Field;
@@ -52,10 +53,10 @@ import com.cosylab.logging.engine.log.ILogEntry.Field;
  * @see ACSRemoteRawLogListener
  * @see ACSLogConnectionListener
  */
-public class ACSLogRetrieval extends Thread {
+public class ACSLogRetrieval extends LogMatcher implements Runnable {
 	
 	// If the number of logs in endingPositions queue if greater 
-	// then this number, we ssume that there is a delay between the logs
+	// then this number, we assume that there is a delay between the logs
 	// received and those shown in the GUI
 	// The thread will publish this situation to the listeners
 	private static final int DELAY_NUMBER=1000;
@@ -73,29 +74,17 @@ public class ACSLogRetrieval extends Thread {
 	// Remember if the object is closed to avoid adding new logs
 	private volatile boolean closed=false;
 	
-	/**
-	 * Set the audience.
-	 * 
-	 * Only the logs for the defined audience will be forwarded to the listeners.
-	 * 
-	 * @see <code>LCEngine.setFilters()</code>
-	 */
-	private EngineAudienceHelper audience=EngineAudienceHelper.NO_AUDIENCE; 
-	
-	/**
-	 * The filters to apply before publishing logs to the listeners.
-	 * The filters are not applied to XML listeners.
-	 * These filters are applied after the audience.
-	 */
-	private FiltersVector filters=null;
-	
 	// The parser
 	private ACSLogParser parser=null;
 	
 	// true if the binary format is in use, false otherwise
 	private boolean binaryFormat;
 	
+	// The cache
 	private EngineCache cache = new EngineCache();
+	
+	// The thread sending logs to the listeners
+	private Thread thread;
 		
 	/**
 	 * Constructor
@@ -108,13 +97,11 @@ public class ACSLogRetrieval extends Thread {
 	public ACSLogRetrieval(
 			ACSListenersDispatcher listenersDispatcher,
 			boolean binFormat) {
-		super("ACSLogRetrieval");
 		if (listenersDispatcher==null) {
 			throw new IllegalArgumentException("The ACSListenersDispatcher can't be null");
 		}
 		this.listenersDispatcher=listenersDispatcher;
 		this.binaryFormat=binFormat;
-		setDaemon(true);
 		initialize();
 	}
 	
@@ -133,7 +120,7 @@ public class ACSLogRetrieval extends Thread {
 			boolean binFormat,
 			FiltersVector filters) {
 		this(listenersDispatcher,binFormat);
-		this.filters=filters;
+		setFilters(filters);
 	}
 	
 	/**
@@ -148,8 +135,9 @@ public class ACSLogRetrieval extends Thread {
 				parser=null;
 			}
 		}
-		this.setName("ACSLogRetrieval");
-		this.start();
+		thread = new Thread(this,"ACSLogRetrieval");
+		thread.setDaemon(true);
+		thread.start();
 	}
 	
 	/**
@@ -258,43 +246,12 @@ public class ACSLogRetrieval extends Thread {
 		if (xmlLog!=null) {
 			listenersDispatcher.publishRawLog(xmlLog);
 		}
-		if (log==null) {
-			return;
-		}
-		// Check the log against the audience
-		if (!checkAudience(log)) {
-			return;
-		}
-		// Check the log against custom filters
-		if (filters==null || filters.applyFilters(log)) {
+		if (log!=null && match(log)) {
 			listenersDispatcher.publishLog(log);
 		} 
 	}
 	
-	/**
-	 * Check if a log matches with the audience
-	 * 
-	 * @param log The not <code>null</code> log to check
-	 * @return <code>true</code> if the log matches with the defined 
-	 *                           audience
-	 */
-	private boolean checkAudience(ILogEntry log) {
-		if (log==null) {
-			throw new IllegalArgumentException("The log can't be null");
-		}
-		switch (audience) {
-		case OPERATOR: {
-			if (log.getType().ordinal()>=LogTypeHelper.WARNING.ordinal()) {
-				return true;
-			}
-			String logAudience = (String)log.getField(Field.AUDIENCE);
-			return EngineAudienceHelper.OPERATOR.val.equalsIgnoreCase(logAudience);
-		}
-		default: {
-			return true;
-		}
-		}
-	}
+	
 	
 	/**
 	 * Pause/unpause the thread that publishes logs
@@ -307,19 +264,16 @@ public class ACSLogRetrieval extends Thread {
 	
 	/**
 	 * Close the threads and free all the resources
+	 * 
 	 * @param sync If it is true wait the termination of the threads before returning
 	 */
 	public void close(boolean sync) {
 		closed=true;
 		terminateThread=true;
 		if (sync) {
-			while (isAlive()) {
-				try {
-					Thread.sleep(250);
-				} catch (InterruptedException ie) {
-					continue;
-				}
-			}
+			try {
+				thread.join();
+			} catch (InterruptedException ie) {}
 		}
 		cache.close();
 	}
@@ -331,37 +285,6 @@ public class ACSLogRetrieval extends Thread {
 	 */
 	public boolean hasPendingEntries() {
 		return cache.size()!=0;
-	}
-	
-	/**
-	 * Set the filters to apply to incoming logs before sending to
-	 * the listeners
-	 * 
-	 * @param filters The filters to apply
-	 *                If <code>null</code> or empty the filtering is disabled
-	 */
-	public void setFilters(FiltersVector filters) {
-		this.filters=filters;
-	}
-	
-	/**
-	 * Set the audience
-	 * 
-	 * @param newAudience The new audience as defined in log_audience IDL module
-	 * @see <code>LCEngine.setFilters()</code>
-	 */
-	public void setAudience(EngineAudienceHelper newAudience) {
-		if (newAudience==null) {
-			throw new IllegalArgumentException("The audience can't be null");
-		}
-		audience=newAudience;
-	}
-
-	/**
-	 * @return the audience
-	 */
-	public EngineAudienceHelper getAudience() {
-		return audience;
 	}
 	
 	/**
