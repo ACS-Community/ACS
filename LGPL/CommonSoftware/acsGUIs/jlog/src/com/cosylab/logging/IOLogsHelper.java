@@ -77,7 +77,7 @@ import com.cosylab.logging.stats.ResourceChecker;
 public class IOLogsHelper extends Thread  implements IOPorgressListener {
 	
 	// Monitor if an async IO operation is in progress
-	private boolean IOOperationInProgress =false;
+	private volatile boolean IOOperationInProgress =false;
 	
 	/**
 	 * The dialog to show the progress of time consuming 
