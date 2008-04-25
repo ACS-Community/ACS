@@ -26,6 +26,7 @@ import java.awt.FlowLayout;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.BufferedReader;
@@ -41,7 +42,11 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
+import javax.swing.SwingUtilities;
 
+import alma.acs.logging.engine.io.IOHelper;
+import alma.acs.logging.engine.io.IOPorgressListener;
+import alma.acs.logging.engine.io.LogStringBuffer;
 import alma.acs.util.StopWatch;
 
 import com.cosylab.logging.client.cache.LogCache;
@@ -69,31 +74,33 @@ import com.cosylab.logging.stats.ResourceChecker;
  * @author acaproni
  *
  */
-public class IOLogsHelper extends Thread  {
+public class IOLogsHelper extends Thread  implements IOPorgressListener {
 	
 	// Monitor if an async IO operation is in progress
 	private boolean IOOperationInProgress =false;
-	private ACSLogParser parser;
 	
 	/**
 	 * The dialog to show the progress of time consuming 
 	 * operations (load and save for example)
 	 * 
 	 * Throw this dialog is also possible to abort the operation
-	 * by pressing a button. The dialog does not comunicate the abort
+	 * by pressing a button. The dialog does not communicate the abort
 	 * request but just store it into a variable that the long operation
 	 * should poll from time to time 
 	 * 
 	 * @author acaproni
 	 */
-	private class ProgressDialog extends JDialog implements ActionListener, WindowListener {
+	private class ProgressDialog extends JDialog implements ActionListener {
+		
+		/**
+		 * The minimum interval of time between 2 updates of the panel 
+		 */
+		private static final int UPDATE_INTERVAL = 1000; 
+
 		// The label with the status
 		private JLabel statusLbl = new JLabel();
 		// The progress bar
 		private JProgressBar progressBar=new JProgressBar(JProgressBar.HORIZONTAL);
-		
-		// True if the user requested to abort the IO
-		private boolean abortRequested=false;
 		
 		// The checkbox to perform a fast IO
 		// It is done by hiding the table of logs
@@ -101,6 +108,28 @@ public class IOLogsHelper extends Thread  {
 		
 		// The button to stop IO
 		private JButton abortBtn;
+		
+		/**
+		 * The last time the label has been updated
+		 */
+		private long lastUpdateTime=0;
+		
+		/**
+		 * The label shown in the GUI reporting a textual description
+		 * of the progress of the I/O
+		 */
+		private String label="";
+		
+		/**
+		 * The thread to update the label and the progress bar into
+		 * the swing thread
+		 */
+		private Thread updaterThread=null;
+		
+		/**
+		 * The actual position of the progress bar
+		 */
+		private int progressBarPosition;
 		
 		/**
 		 * Build a progress dialog with a progress bar
@@ -116,6 +145,7 @@ public class IOLogsHelper extends Thread  {
 			progressBar.setMaximum(max);
 			progressBar.setValue(min);
 			progressBar.setIndeterminate(false);
+			progressBarPosition=min;
 			initGUI();
 			setVisible(true);
 		}
@@ -136,7 +166,21 @@ public class IOLogsHelper extends Thread  {
 		 * Init the GUI
 		 */
 		private void initGUI() {
-			addWindowListener(this);
+			addWindowListener(new WindowAdapter() {
+				/**
+				 * @see java.awt.event.WindowListener
+				 */
+				public void windowClosed(WindowEvent e) {
+					ioHelper.stopIO();
+				}
+				
+				/**
+				 * @see java.awt.event.WindowListener
+				 */
+				public void windowClosing(WindowEvent e) {
+					ioHelper.stopIO();
+				}
+			});
 			
 			BorderLayout borderLayout =new BorderLayout();
 			borderLayout.setVgap(5);
@@ -174,41 +218,59 @@ public class IOLogsHelper extends Thread  {
 		}
 		
 		/**
-		 * Replace the status lable with the new one
+		 * Replace the status label with the new one
 		 * It packs the window to ensure that the string is visible
 		 * 
 		 * @param status The new status string
 		 */
 		public void updateStatus(String status) {
-			int oldLength = statusLbl.getText().length();
-			statusLbl.setText(status);
-			if (status.length()>oldLength) {
-				pack();
+			label=status;
+			updateGUI();
+		}
+		
+		/**
+		 * Update the status bar and the label.
+		 * <P>
+		 * The updated id done only if the <code>UPDATE_INTERVAL</code> time has elapsed
+		 * since the previous update.
+		 */
+		private void updateGUI() {
+			if (System.currentTimeMillis()-lastUpdateTime<UPDATE_INTERVAL) {
+				return;
 			}
+			lastUpdateTime=System.currentTimeMillis();
+			if (updaterThread==null) {
+				updaterThread = new Thread(new Runnable() {
+					public void run() {
+						// Update the status bar
+						if (!progressBar.isIndeterminate()) {
+							int percent = (progressBar.getMaximum()-progressBar.getMinimum())/100;
+							if (percent!=0) {
+								progressBar.setString(""+progressBarPosition/percent+"%");
+							}
+							progressBar.setStringPainted(true);
+							progressBar.setValue(progressBarPosition);
+						}
+						// Update the label
+						int oldLength = statusLbl.getText().length();
+						statusLbl.setText(label);
+						if (label.length()>oldLength) {
+							pack();
+						}
+					}
+				});
+			}
+			SwingUtilities.invokeLater(updaterThread);
 		}
 		
 		/**
 		 * Update the position of the status bar
 		 * 
-		 * @param current The newposition of the status bar
+		 * @param current The new position of the status bar
 		 */
 		public void updateProgressBar(int current) {
-			if (!progressBar.isIndeterminate()) {
-				int percent = (progressBar.getMaximum()-progressBar.getMinimum())/100;
-				if (percent!=0) {
-					progressBar.setString(""+current/percent+"%");
-				}
-				progressBar.setStringPainted(true);
-				progressBar.setValue(current);
-			}
-		}
-		
-		/**
-		 * 
-		 * @return true if the user request to abort
-		 */
-		public boolean wantsToAbort() {
-			return abortRequested;
+			progressBarPosition=current;
+			updateGUI();
 		}
 		
 		/**
@@ -219,48 +281,9 @@ public class IOLogsHelper extends Thread  {
 				loggingClient.getLogEntryTable().setVisible(
 						!fastCB.isSelected());
 			} else if (evt.getSource()==abortBtn) {
-				abortRequested=true;
+				ioHelper.stopIO();
 			}
 		}
-		
-		/**
-		 * @see java.awt.event.WindowListener
-		 */
-		public void windowClosed(WindowEvent e) {
-			abortRequested=true;
-		}
-		
-		/**
-		 * @see java.awt.event.WindowListener
-		 */
-		public void windowClosing(WindowEvent e) {
-			abortRequested=true;
-		}
-		
-		/**
-		 * @see java.awt.event.WindowListener
-		 */
-		public void windowActivated(WindowEvent e) {}
-		
-		/**
-		 * @see java.awt.event.WindowListener
-		 */
-		public void windowDeactivated(WindowEvent e) {}
-		
-		/**
-		 * @see java.awt.event.WindowListener
-		 */
-		public void windowDeiconified(WindowEvent e) {}
-		
-		/**
-		 * @see java.awt.event.WindowListener
-		 */
-		public void windowIconified(WindowEvent e) {}
-		
-		/**
-		 * @see java.awt.event.WindowListener
-		 */
-		public void windowOpened(WindowEvent e) {}
 		
 		/**
 		 * Override <code>setVisible()</code> to move the statistic window
@@ -281,9 +304,9 @@ public class IOLogsHelper extends Thread  {
 	}
 	
 	/**
-	 * An action for operations to be perfomed asynchronously
+	 * An action for operations to be performed asynchronously
 	 * 
-	 * There is one specific conbstructor for each possible type
+	 * There is one specific constructor for each possible type
 	 * of action
 	 * 
 	 * @author acaproni
@@ -306,6 +329,9 @@ public class IOLogsHelper extends Thread  {
 		
 		// The cache with all the logs
 		public final LogCache logsCache; 
+		
+		// The range for the progress bar
+		public final int progressRange;
 		
 		/**
 		 * The listener i.e. the callback to push the loaded logs in 
@@ -330,6 +356,7 @@ public class IOLogsHelper extends Thread  {
 		 * @param listener The listener for each read log
 		 * @param errorListener The listener for errors reading logs
 		 * @param theCache The cache
+		 * @param range The range of the progress bar (<0 means undtereminate)
 		 */
 		private IOAction(
 				int type,
@@ -337,13 +364,15 @@ public class IOLogsHelper extends Thread  {
 				BufferedWriter outF,
 				ACSRemoteLogListener listener, 
 				ACSRemoteErrorListener errorListener, 
-				LogCache theCache) {
+				LogCache theCache,
+				int range) {
 			this.type=type;
 			this.logsCache=theCache;
 			this.inFile=inFile;
 			this.logListener=listener;
 			this.errorListener=errorListener;
 			this.outFile=outF;
+			this.progressRange=range;
 		}
 		
 		/**
@@ -353,9 +382,10 @@ public class IOLogsHelper extends Thread  {
 		 * @param theEngine The logging client engine
 		 * @param theCache The cache of logs (used to shown values in the 
 		 *                 progress dialog)
+		 * @param range The range of the progress bar (<0 means undtereminate)
 		 */
-		public IOAction(BufferedReader inFile, ACSRemoteLogListener listener, ACSRemoteErrorListener errorListener, LogCache theCache) {
-			this(IOAction.LOAD_ACTION,inFile,(BufferedWriter)null,listener,errorListener,theCache);
+		public IOAction(BufferedReader inFile, ACSRemoteLogListener listener, ACSRemoteErrorListener errorListener, LogCache theCache, int range) {
+			this(IOAction.LOAD_ACTION,inFile,(BufferedWriter)null,listener,errorListener,theCache, range);
 		}
 		
 		/**
@@ -364,31 +394,52 @@ public class IOLogsHelper extends Thread  {
 		 * @param outF The buffered file to save the logs into
 		 */
 		public IOAction(BufferedWriter outF, LogCache theCache) {
-			this(IOAction.SAVE_ACTION,(BufferedReader)null,outF,(ACSRemoteLogListener)null,(ACSRemoteErrorListener)null,theCache);
+			this(IOAction.SAVE_ACTION,(BufferedReader)null,outF,(ACSRemoteLogListener)null,(ACSRemoteErrorListener)null,theCache,theCache.getSize());
 		}
 		
 		/** 
-		 * This constructor builds an action to terminate the thred
+		 * This constructor builds an action to terminate the thread
 		 * The class will not be able to perform further requests
 		 * and it will throw an IllegalStateException
 		 *
 		 */
 		public IOAction() {
-			this(IOAction.TERMINATE_THREAD_ACTION,(BufferedReader)null,(BufferedWriter)null,(ACSRemoteLogListener)null,(ACSRemoteErrorListener)null,(LogCache)null);
+			this(IOAction.TERMINATE_THREAD_ACTION,(BufferedReader)null,(BufferedWriter)null,(ACSRemoteLogListener)null,(ACSRemoteErrorListener)null,(LogCache)null,0);
 		}
 	}
 	
 	// A queue of actions to perform in a separate thread
 	private LinkedList<IOAction> actions = new LinkedList<IOAction>();
 	
+	// The dialog
 	private ProgressDialog progressDialog;
+	
+	// The IOHelper performing load and save
+	private IOHelper ioHelper = new IOHelper();
 	
 	// The logging client
 	private LoggingClient loggingClient=null;
 	
-	// Signal that the object has been closed
-	private volatile boolean closed=false;
-
+	/**
+	 * The bytes read during a load
+	 */
+	private long bytesRead;
+	
+	/**
+	 * The bytes read during a save
+	 */
+	private long bytesWritten;
+	
+	/**
+	 * The number of logs read while loading
+	 */
+	private int logsRead;
+	
+	/**
+	 * The number of logs read while saving
+	 */
+	private int logsWritten;
+	
 	/**
 	 * Build an IOCacheHelper object
 	 *
@@ -421,93 +472,14 @@ public class IOLogsHelper extends Thread  {
 		if (br==null || logListener==null|| errorListener==null) {
 			throw new IllegalArgumentException("Null parameter received!");
 		}
-		
-		// The last tag found
-		String tag=null;
-		
-		// The "clever" buffer
-		LogStringBuffer buffer = new LogStringBuffer();
-		
-		// Read one char per iteration
-		int chRead;
-		
-		// Count the bytes read for updating the progressbar
-		int bytesRead=0;
-		
-		int logRecordsRead = 0;
-		
-		/**
-		 * The size of the buffer
-		 */
-		final int size=16384;
-		
-		/** 
-		 * The buffer of data read from the file
-		 */
-		char[] buf =new char[size];
-		
-		/**
-		 * The cursor to scan the buffer (circular)
-		 */
-		int actualPos=-1;
-		
-		/**
-		 * When it is 0, then we have to read another block from the file
-		 */
-		int bytesInBuffer=0;
-		
+		logsRead=0;
+		bytesRead=0;
 		try {
-			StopWatch stopWatch = new StopWatch();
-		
-			while (true && !closed) {
-				// Read a block from the file if the buffer is empty
-				if (bytesInBuffer==0) {
-					bytesInBuffer = br.read(buf,0,size);
-				}
-				if (bytesInBuffer<=0) { // EOF
-					break;
-				}
-				bytesInBuffer--;
-				actualPos=(actualPos+1)%size;
-				chRead=buf[actualPos];
-				
-				bytesRead++;
-				buffer.append((char)chRead);
-				if (chRead == '>') {
-					tag = buffer.getOpeningTag();
-					if (tag.length()>0) {
-						//System.out.println("TAG: "+tag+" (buffer ["+buffer.toString()+")");
-						buffer.trim(tag);
-					}
-					if (buffer.hasClosingTag(tag)) {
-						//System.out.println("\tClosing tag found (buffer ["+buffer.toString()+")");
-						injectLog(buffer.toString(),logListener,errorListener);
-						buffer.clear();
-						logRecordsRead++;
-//							if (logRecordsRead % 100 == 0) {
-//								System.out.println("Number of log records read: " + logRecordsRead);
-//							}
-						if (progressDialog!=null) {
-							if (cache!=null) {
-								progressDialog.updateStatus(""+cache.getSize()+" logs loaded");
-							} 
-							progressDialog.updateProgressBar(bytesRead);
-							// Check if the user pressed the abort button
-							if (progressDialog.wantsToAbort()) {
-								break;
-							}
-						}
-					}
-				}
-			}
-			System.out.println("XML log record import finished with " + logRecordsRead + " records in " + 
-						stopWatch.getLapTimeMillis()/1000 + " seconds.");
-			System.out.println(ResourceChecker.getMemoryStatusMessage());
+			ioHelper.loadLogs(br, logListener, errorListener, this);
 		} catch (IOException ioe) {
 			System.err.println("Exception loading the logs: "+ioe.getMessage());
 			ioe.printStackTrace(System.err);
 			JOptionPane.showMessageDialog(null, "Exception loading "+ioe.getMessage(),"Error loading",JOptionPane.ERROR_MESSAGE);
-			return ;
 		}
 		if (progressDialog!=null) {
 			// Close the dialog
@@ -536,7 +508,6 @@ public class IOLogsHelper extends Thread  {
 			ACSRemoteLogListener listener,
 			ACSRemoteErrorListener errorListener,
 			LogCache cache,
-			boolean showProgress,
 			int progressRange) {
 		// Check if the thread is alive
 		if (!this.isAlive()) {
@@ -554,19 +525,15 @@ public class IOLogsHelper extends Thread  {
 		// speeding up the loading
 		loggingClient.getLogEntryTable().setVisible(false);
 		
-		// No progress bar because we don't know the length of this kind of file
-		if (showProgress) {
-			if (progressRange<=0) {
-				progressDialog = new ProgressDialog("Loading logs...");
-			} else {
-				progressDialog = new ProgressDialog("Loading logs...",0,progressRange);
-			}
+		// Set the progress range
+		if (progressRange<=0) {
+			progressDialog = new ProgressDialog("Loading logs...");
 		} else {
-			progressDialog=null;
+			progressDialog = new ProgressDialog("Loading logs...",0,progressRange);
 		}
 		
 		// Add an action in the queue
-		IOAction action = new IOAction(reader,listener,errorListener,cache);
+		IOAction action = new IOAction(reader,listener,errorListener,cache,progressRange);
 		synchronized(actions) {
 			actions.add(action);
 		}
@@ -575,31 +542,6 @@ public class IOLogsHelper extends Thread  {
 			// Wake up the thread
 				notifyAll();
 		}
-	}
-	
-	/**
-	 * Inject the log into the engine 
-	 * 
-	 * @param logStr The string representation of the log
-	 * @param logListener The listener i.e. the callback for each new log to add
-	 */
-	private void injectLog(String logStr, ACSRemoteLogListener logListener, ACSRemoteErrorListener errorListener) {
-		if (errorListener==null || logListener==null) {
-			throw new IllegalArgumentException("Listeners can't be null");
-		}
-		ILogEntry log=null;
-		try {
-			if (parser == null) {
-				parser = new ACSLogParserDOM();
-			}
-			log = parser.parse(logStr.trim());
-		} catch (Exception e) {
-			errorListener.errorReceived(logStr.trim());
-			System.err.println("Exception parsing a log: "+e.getMessage());
-			e.printStackTrace(System.err);
-			return;
-		}
-		logListener.logEntryReceived(log);
 	}
 	
 	/**
@@ -676,7 +618,7 @@ public class IOLogsHelper extends Thread  {
 	 */
 	public void done() {
 		// Stop every load/save operation
-		closed=true;
+		ioHelper.stopIO();
 		// Check if the thread is alive
 		IOAction terminateAction = new IOAction();
 		synchronized(actions) {
@@ -689,7 +631,7 @@ public class IOLogsHelper extends Thread  {
 	}
 	
 	/**
-	 * The thread for asynchrnous operation.
+	 * The thread for asynchronous operation.
 	 * It takes an action out of the actions queue and perform the requested
 	 * task until there no more actions in the list
 	 */
@@ -728,62 +670,24 @@ public class IOLogsHelper extends Thread  {
 	 * Save all the logs in the cache in the file
 	 * 
 	 * @param outBW The buffered writer where the logs have to be stored
-	 * @param logs The cahce with all the logs
+	 * @param logs The cache with all the logs
 	 */
 	private void saveLogs(BufferedWriter outBW, LogCache cache) {
 		if (outBW==null || cache==null) {
 			throw new IllegalArgumentException("BufferedWriter and LogCache can't be null");
 		}
+		logsWritten=0;
+		bytesWritten=0;
 		try {
-			outBW.write("<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n<Log>\n<Header Name=\"NameForXmlDocument\" Type=\"LOGFILE\" />\n");
-		} catch (Exception e) {
-			// I ignore this exception because it is not very important
-			// to have the header in the file (however another exception 
-			// of the same type will most likely happen in the for loop below!)
-			System.err.println("Warning exception ignored "+e.getMessage());
+			ioHelper.writeHeader(outBW);
+			ioHelper.saveLogs(outBW, cache.iterator(), this);
+			ioHelper.terminateSave(outBW, true);
+		} catch (IOException e) {
+			System.err.println("Exception while saving logs: "+e.getMessage());
 			e.printStackTrace(System.err);
+			JOptionPane.showMessageDialog(null, "Exception saving "+e.getMessage(),"Error saving",JOptionPane.ERROR_MESSAGE);
 		}
-		System.out.println("First key: "+cache.getFirstLog()+", last "+cache.getLastLog());
-		int key=cache.getFirstLog();
-		while (key <= cache.getLastLog() && !closed) {
-			try {
-				ILogEntry log = cache.getLog(key);
-				outBW.write((log.toXMLString()+"\n").toCharArray());
-			} catch (IOException ioe) {
-				System.err.println("Exception while saving logs: "+ioe.getMessage());
-				ioe.printStackTrace(System.err);
-				JOptionPane.showMessageDialog(null, "Exception saving "+ioe.getMessage(),"Error saving",JOptionPane.ERROR_MESSAGE);
-				break;
-			} catch (LogCacheException lce) {
-				// This can happen if the log has been removed by a separate
-				// thread
-				// It is not an error and the exception can be ignored
-				System.out.println(lce.getMessage());
-				lce.printStackTrace();
-				continue;
-			}
 			
-			
-			
-			if (progressDialog!=null) {
-				progressDialog.updateStatus(""+key+" logs saved");
-				progressDialog.updateProgressBar(key);
-				// Check if the user pressed the abort button
-				if (progressDialog.wantsToAbort()) {
-					break;
-				}
-			}
-			key++;
-		}
-		try {
-			outBW.write("</Log>");
-			outBW.flush();
-			outBW.close();
-		} catch (Exception e) { 
-			// Again.. not important to have this in the file}
-			System.err.println("Warning exception ignored "+e.getMessage());
-			e.printStackTrace(System.err);
-		}
 		if (progressDialog!=null) {
 			// Close the dialog
 			progressDialog.setVisible(false);
@@ -808,6 +712,48 @@ public class IOLogsHelper extends Thread  {
 	public void IOOperationTerminated() {
 		loggingClient.getLogEntryTable().setVisible(true);
 		IOOperationInProgress=false;
+	}
+
+	/**
+	 * @see alma.acs.logging.engine.io.IOPorgressListener#bytesRead(long)
+	 */
+	@Override
+	public void bytesRead(long bytes) {
+		bytesRead=bytes;
+		if (progressDialog!=null) {
+			progressDialog.updateProgressBar((int)bytesRead);
+		}
+	}
+
+	/**
+	 * @see alma.acs.logging.engine.io.IOPorgressListener#bytesWritten(long)
+	 */
+	@Override
+	public void bytesWritten(long bytes) {
+		bytesWritten=bytes;
+	}
+
+	/**
+	 * @see alma.acs.logging.engine.io.IOPorgressListener#logsRead(int)
+	 */
+	@Override
+	public void logsRead(int numOfLogs) {
+		logsRead=numOfLogs;
+		if (progressDialog!=null) {
+			progressDialog.updateStatus("bytes "+bytesRead+", logs: "+logsRead);
+		}
+	}
+
+	/**
+	 * @see alma.acs.logging.engine.io.IOPorgressListener#logsWritten(int)
+	 */
+	@Override
+	public void logsWritten(int numOfLogs) {
+		logsWritten=numOfLogs;
+		if (progressDialog!=null) {
+			progressDialog.updateProgressBar(logsWritten);
+			progressDialog.updateStatus("bytes "+bytesWritten+", logs "+logsWritten);
+		}
 	}
 	
 }
