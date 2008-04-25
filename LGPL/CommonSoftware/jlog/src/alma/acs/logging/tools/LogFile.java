@@ -29,9 +29,9 @@ import java.io.FileWriter;
 import java.util.Collection;
 import java.util.concurrent.ArrayBlockingQueue;
 
+import alma.acs.logging.engine.io.LogStringBuffer;
 import alma.acs.util.StopWatch;
 
-import com.cosylab.logging.LogStringBuffer;
 import com.cosylab.logging.engine.ACS.ACSRemoteRawLogListener;
 import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.stats.ResourceChecker;
