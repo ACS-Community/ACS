@@ -22,6 +22,7 @@
 package com.cosylab.logging;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
@@ -573,9 +574,11 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				if (tableModel.getFilters().hasActiveFilters()) {
+					tableFiltersLbl.setForeground(Color.RED);
 					tableFiltersLbl.setText("Table filtered");
 					tableFiltersLbl.setToolTipText(tableModel.getFiltersString());
 				} else {
+					tableFiltersLbl.setForeground(Color.BLACK);
 					tableFiltersLbl.setText("Table not filtered");
 					tableFiltersLbl.setToolTipText(null);
 				}
@@ -590,9 +593,11 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				if (engine==null || engine.getFilters()==null || !engine.getFilters().hasActiveFilters()) {
+					engineFiltersLbl.setForeground(Color.BLACK);
 					engineFiltersLbl.setText("Engine not filtered");
 					engineFiltersLbl.setToolTipText(null);
 				} else {
+					engineFiltersLbl.setForeground(Color.RED);
 					engineFiltersLbl.setText("Engine filtered");
 					engineFiltersLbl.setToolTipText(engine.getFiltersString());
 				} 
