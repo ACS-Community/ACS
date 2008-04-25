@@ -467,11 +467,27 @@ public class IOLogsHelper extends Thread  implements IOPorgressListener {
 	 * @param br The the file to read
 	 * @param logListener The callback for each new log read from the IO
 	 * @param cache The cache of logs
+	 * @param progressRange The range of the progress bar (if <=0 the progress bar is undeterminated)
 	 */
-	private void loadLogs(BufferedReader br,ACSRemoteLogListener logListener, ACSRemoteErrorListener errorListener, LogCache cache) {
+	private void loadLogsFromThread(BufferedReader br,ACSRemoteLogListener logListener, ACSRemoteErrorListener errorListener, LogCache cache, int progressRange) {
 		if (br==null || logListener==null|| errorListener==null) {
 			throw new IllegalArgumentException("Null parameter received!");
 		}
+		
+		IOOperationInProgress=true;
+		
+		// Hide the table with the logs
+		// It reduces the access to the cache to redraw the logs 
+		// speeding up the loading
+		loggingClient.getLogEntryTable().setVisible(false);
+		
+		// Set the progress range
+		if (progressRange<=0) {
+			progressDialog = new ProgressDialog("Loading logs...");
+		} else {
+			progressDialog = new ProgressDialog("Loading logs...",0,progressRange);
+		}
+		
 		logsRead=0;
 		bytesRead=0;
 		try {
@@ -518,19 +534,7 @@ public class IOLogsHelper extends Thread  implements IOPorgressListener {
 			throw new IllegalArgumentException("Listseners and Reader can't be null");
 		}
 		
-		IOOperationInProgress=true;
 		
-		// Hide the table with the logs
-		// It reduces the access to the cache to redraw the logs 
-		// speeding up the loading
-		loggingClient.getLogEntryTable().setVisible(false);
-		
-		// Set the progress range
-		if (progressRange<=0) {
-			progressDialog = new ProgressDialog("Loading logs...");
-		} else {
-			progressDialog = new ProgressDialog("Loading logs...",0,progressRange);
-		}
 		
 		// Add an action in the queue
 		IOAction action = new IOAction(reader,listener,errorListener,cache,progressRange);
@@ -592,12 +596,6 @@ public class IOLogsHelper extends Thread  implements IOPorgressListener {
 		
 		IOAction action = new IOAction(outBW,cache);
 		
-		if (showProgress) {
-			progressDialog = new ProgressDialog("Saving logs...",0,cache.getSize());
-		} else {
-			progressDialog=null;
-		}
-		
 		synchronized(actions) {
 			actions.add(action);
 		}
@@ -644,7 +642,7 @@ public class IOLogsHelper extends Thread  implements IOPorgressListener {
 				}
 				switch (action.type) {
 					case IOAction.LOAD_ACTION: {
-						loadLogs(action.inFile,action.logListener,action.errorListener,action.logsCache);
+						loadLogsFromThread(action.inFile,action.logListener,action.errorListener,action.logsCache,action.progressRange);
 						break;
 					}
 					case IOAction.TERMINATE_THREAD_ACTION: {
@@ -652,7 +650,7 @@ public class IOLogsHelper extends Thread  implements IOPorgressListener {
 						return;
 					}
 					case IOAction.SAVE_ACTION: {
-						saveLogs(action.outFile,action.logsCache);
+						saveLogsFromThread(action.outFile,action.logsCache);
 						break;
 					}
 				}
@@ -672,10 +670,13 @@ public class IOLogsHelper extends Thread  implements IOPorgressListener {
 	 * @param outBW The buffered writer where the logs have to be stored
 	 * @param logs The cache with all the logs
 	 */
-	private void saveLogs(BufferedWriter outBW, LogCache cache) {
+	private void saveLogsFromThread(BufferedWriter outBW, LogCache cache) {
 		if (outBW==null || cache==null) {
 			throw new IllegalArgumentException("BufferedWriter and LogCache can't be null");
 		}
+		
+		progressDialog = new ProgressDialog("Saving logs...",0,cache.getSize());
+		
 		logsWritten=0;
 		bytesWritten=0;
 		try {
