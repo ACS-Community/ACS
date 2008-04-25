@@ -28,7 +28,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -46,18 +45,10 @@ import javax.swing.SwingUtilities;
 
 import alma.acs.logging.engine.io.IOHelper;
 import alma.acs.logging.engine.io.IOPorgressListener;
-import alma.acs.logging.engine.io.LogStringBuffer;
-import alma.acs.util.StopWatch;
 
 import com.cosylab.logging.client.cache.LogCache;
-import com.cosylab.logging.client.cache.LogCacheException;
-import com.cosylab.logging.engine.ACS.ACSLogParser;
-import com.cosylab.logging.engine.ACS.ACSLogParserDOM;
 import com.cosylab.logging.engine.ACS.ACSRemoteErrorListener;
 import com.cosylab.logging.engine.ACS.ACSRemoteLogListener;
-import com.cosylab.logging.engine.log.ILogEntry;
-import com.cosylab.logging.stats.ResourceChecker;
-
 
 /**
  * This class is intended to support the commons IO
