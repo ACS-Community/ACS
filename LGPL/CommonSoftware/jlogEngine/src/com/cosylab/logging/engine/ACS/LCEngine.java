@@ -606,6 +606,22 @@ public class LCEngine implements Filterable {
 	public FiltersVector getFilters() {
 		return filters;
 	}
+	
+	/**
+	 * 
+	 * @return The discard level (can be <code>null</code>)
+	 */
+	public LogTypeHelper getDiscardLevel() {
+		return logRetrieval.getDiscardLevel();
+	}
+	
+	/**
+	 * 
+	 * @return The discard level (can be <code>null</code>)
+	 */
+	public EngineAudienceHelper getAudience() {
+		return logRetrieval.getAudience();
+	}
 
 	/**
 	 * Return <code>true</code> if the engine is applying filters.
