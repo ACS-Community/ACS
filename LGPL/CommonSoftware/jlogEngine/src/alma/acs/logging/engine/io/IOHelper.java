@@ -34,6 +34,7 @@ import javax.swing.JOptionPane;
 
 import alma.acs.util.StopWatch;
 
+import com.cosylab.logging.engine.LogMatcher;
 import com.cosylab.logging.engine.ACS.ACSLogParser;
 import com.cosylab.logging.engine.ACS.ACSLogParserDOM;
 import com.cosylab.logging.engine.ACS.ACSRemoteErrorListener;
@@ -57,6 +58,8 @@ import com.cosylab.logging.engine.log.ILogEntry;
  * The loading is performed through one of the overloaded <code>loadLogs</code> methods.
  * The bytes read and the number of the logs successfully read are sent to the listeners 
  * implementing the <code>IOProgressListener</code> interface.
+ * If there are filters, an audience or a discard level defined, then each log is checked
+ * before being sent to the listener.
  * 
  *  <P><B>Saving</B><BR>
  *  The saving of logs can be done by passing a <code>Collection </code> of logs or an <code>Iterator</code>to one of the 
@@ -79,7 +82,7 @@ import com.cosylab.logging.engine.log.ILogEntry;
  * @author acaproni
  *
  */
-public class IOHelper {
+public class IOHelper extends LogMatcher {
 	
 	/** 
 	 * Signal that a load or a save must be stopped
@@ -113,7 +116,9 @@ public class IOHelper {
 			e.printStackTrace(System.err);
 			return;
 		}
-		logListener.logEntryReceived(log);
+		if (match(log)) {
+			logListener.logEntryReceived(log);
+		}
 	}
 	
 	/**
