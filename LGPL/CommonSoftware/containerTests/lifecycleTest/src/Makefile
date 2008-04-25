@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.1 2008/03/24 07:43:35 cparedes Exp $"
+# "@(#) $Id: Makefile,v 1.2 2008/04/25 05:31:57 cparedes Exp $"
 #
 # Makefile of ........
 #
@@ -109,7 +109,7 @@ PY_SCRIPTS_L       =
 PY_MODULES         =
 PY_MODULES_L       =
 
-PY_PACKAGES        =
+PY_PACKAGES        = lifecycleTestImpl 
 PY_PACKAGES_L      =
 pppppp_MODULES	   =
 
@@ -143,8 +143,9 @@ USER_IDL =
 #
 # Jarfiles and their directories
 #
-JARFILES = TestLifeCycleComp
+JARFILES = TestLifeCycleComp # TestLifeCycleCharComp
 TestLifeCycleComp_DIRS = alma/lifecycleTest/TestLifeCycleCompImpl
+#TestLifeCycleCharComp_DIRS = alma/lifecycleTest/TestLifeCycleCharCompImpl
 
 jjj_DIRS=
 jjj_EXTRAS= 
@@ -158,7 +159,7 @@ XML_IDL=
 #
 # Java Component Helper Classes generation on/off
 #
-COMPONENT_HELPERS=
+COMPONENT_HELPERS=on
 #
 # Java Entity Classes generation on/off
 #
