@@ -31,6 +31,7 @@ import com.cosylab.logging.engine.Filter;
 import com.cosylab.logging.engine.Filterable;
 import com.cosylab.logging.engine.FiltersVector;
 import com.cosylab.logging.engine.RemoteAccess;
+import com.cosylab.logging.engine.log.LogTypeHelper;
 
 /**
  * LCEngine connects to the logging NC and sends messages to the listeners.
@@ -538,6 +539,17 @@ public class LCEngine implements Filterable {
 			filters.addFilter(newFilters.get(t), newFilters.isActive(t));
 		}
 		logRetrieval.setFilters(filters);
+	}
+	
+	/**
+	 * Set the discard level for filtering.
+	 * 
+	 * @param newDiscardlevel The discard level
+	 *                        Not applied if <code>null</code>.
+	 * @param newDiscardLevel
+	 */
+	public void setDiscardLevel(LogTypeHelper newDiscardLevel) {
+		logRetrieval.setDiscardLevel(newDiscardLevel);
 	}
 	
 	/**
