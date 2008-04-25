@@ -49,6 +49,7 @@ import alma.acs.logging.engine.io.IOPorgressListener;
 import com.cosylab.logging.client.cache.LogCache;
 import com.cosylab.logging.engine.ACS.ACSRemoteErrorListener;
 import com.cosylab.logging.engine.ACS.ACSRemoteLogListener;
+import com.cosylab.logging.engine.ACS.LCEngine;
 
 /**
  * This class is intended to support the commons IO
@@ -450,10 +451,15 @@ public class IOLogsHelper extends Thread  implements IOPorgressListener {
 	
 	/**
 	 * Load the logs from the given file in the Cache appending their
-	 * starting position in the index vector.
+	 * starting positions in the index vector.
+	 * <P>
 	 * The logs are appended at the end of the cache as well as the new
 	 * positions are appended at the end of the index vector.
 	 * The load is performed in a thread as it might be very slow
+	 * <P>
+	 * The filter, discard level and audience of the engine are applied while loading.
+	 * This is done by applying to <code>ioHelper</code> the same constraints
+	 * defined in the <code>LCEngine</code>.
 	 * 
 	 * @param br The the file to read
 	 * @param logListener The callback for each new log read from the IO
@@ -479,6 +485,13 @@ public class IOLogsHelper extends Thread  implements IOPorgressListener {
 			progressDialog = new ProgressDialog("Loading logs...",0,progressRange);
 		}
 		
+		// Apply discard level, filters and audience to the IOHelper
+		LCEngine engine = loggingClient.getEngine();
+		ioHelper.setDiscardLevel(engine.getDiscardLevel());
+		ioHelper.setAudience(engine.getAudience());
+		ioHelper.setFilters(engine.getFilters());
+		
+		// Load the logs
 		logsRead=0;
 		bytesRead=0;
 		try {
@@ -498,7 +511,9 @@ public class IOLogsHelper extends Thread  implements IOPorgressListener {
 	}
 	
 	/**
-	 * Load the logs from a buffered reader
+	 * Load the logs from a buffered reader.
+	 * <P>
+	 * The filter, discard level and audience of the engine are applied while loading
 	 * 
 	 * @param reader The buffered reader containing the logs
 	 * @param listener The listener to add logs in
@@ -508,7 +523,7 @@ public class IOLogsHelper extends Thread  implements IOPorgressListener {
 	 *                      state of the operation (determinate)
 	 *                      If it is <=0 then the progress bar is indeterminate
 	 * 
-	 * @see loadLogs
+	 * @see loadLogsFromThread
 	 */
 	public void loadLogs (
 			BufferedReader reader,
@@ -571,6 +586,8 @@ public class IOLogsHelper extends Thread  implements IOPorgressListener {
 	 * @param cache The cache that contains the logs
 	 * @param showProgress If true a progress bar is shown
 	 * @throws IOException
+	 * 
+	 * @see saveLogsFromThread
 	 */
 	public void saveLogs(
 			String fileName, 
