@@ -1427,9 +1427,7 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
      * @see com.cosylab.logging.engine.ACS.ACSRemoteLogListener
      */
     public void logEntryReceived(ILogEntry logEntry) {
-    	if (logEntry.getType().ordinal()>=toolBar.getDiscardLevelCB().getSelectedIndex()) {
-			getLogEntryTable().getLCModel().appendLog(logEntry);
-		} 
+		getLogEntryTable().getLCModel().appendLog(logEntry);
     }
     
     /**
