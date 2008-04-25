@@ -1,8 +1,18 @@
 2 - starting acspyexmplClientErrorComponent
+1 -  --endorsed -D ACS.manager=corbaloc::xxxx:xxxx/Manager -- alma.acs.container.AcsContainerRunner -OAIAddr xxx.xxx.xxx.xxx -OAport xxx -m corbaloc::xxxx:xxxx/Manager -containerName javaContainer
 2 - Creating ClientErrorComponent
+1 - INFO - Starting Java/abeans application: alma.acs.container.AcsContainerRunner -OAIAddr xxx.xxx.xxx.xxx -OAport xxx -m corbaloc::xxxx:xxxx/Manager -containerName javaContainer
+1 - INFO - Using endorsed jar files in: -Djava.endorsed.dirs=/somepath
+1 - FINER: Logging configuration has been initialized, but not from CDB settings.
 1 - ----------T--:--:--.--- INFO [AcsContainerRunner] AcsContainerRunner#run with arguments -OAIAddr xxx.xxx.xxx.xxx -OAport xxx -m corbaloc::xxxx:xxxx/Manager -containerName javaContainer 
 1 - ----------T--:--:--.--- INFO [javaContainer] Info message from the manager: Startup statistics: 0 components queued to be activated.
 1 - ----------T--:--:--.--- INFO [javaContainer] Info message from the manager: Startup statistics: 0 of 0 components activated.
+2 - ----------T--:--:--.--- Common.Err.ErrorTraceHelper Error Trace
+2 - ----------T--:--:--.--- Common.Err.ErrorTraceHelper Error Trace
+2 - ----------T--:--:--.--- Common.Err.ErrorTraceHelper Error Trace
+2 - ----------T--:--:--.--- Common.Err.ErrorTraceHelper Error Trace
+2 - ----------T--:--:--.--- Common.Err.ErrorTraceHelper Error Trace
+2 - ----------T--:--:--.--- Common.Err.ErrorTraceHelper Error Trace
 2 - ----------T--:--:--.--- Python Client disconnect - Shutdown called for client
 2 - ----------T--:--:--.--- Python Client testCompletionFromCompletion - Completion Ok, without error trace
 2 - ----------T--:--:--.--- Python Client testCompletionFromCompletion - Example 6a: completionFromCompletion with depth 0
@@ -186,12 +196,12 @@
 2 -         ErrorTrace (TimeStamp=xxxx,
 2 -         ErrorTrace (TimeStamp=xxxx,
 2 -     self.foo.corbaSystemException()
-2 -                     File=xxx
-2 -                     File=xxx
-2 -                     File=xxx
-2 -                     File=xxx
-2 -                     File=xxx
 2 -   File "/somepath/acsexmplErrorComponent_idl.py, line 80, in corbaSystemException
+2 -                     File=xxx
+2 -                     File=xxx
+2 -                     File=xxx
+2 -                     File=xxx
+2 -                     File=xxx
 2 -                     Line=xxx
 2 -                     Line=xxx
 2 -                     Line=xxx
@@ -284,7 +294,3 @@
 1 - 	at org.jacorb.poa.RequestProcessor.run(RequestProcessor.java:734)
 1 - ----------T--:--:--.--- INFO [javaContainer] received call to 'shutdown', action=2 (encryptedAction=512), gracefully=true.
 1 - ----------T--:--:--.--- INFO [javaContainer] about to exit the JVM...thanks for using our container, come back soon...
-1 - ----------T--:--:--.--- INFO [acsStartJava] Starting Java/abeans application: alma.acs.container.AcsContainerRunner -OAIAddr xxx.xxx.xxx.xxx -OAport xxx -m corbaloc::xxxx:xxxx/Manager -containerName javaContainer
-1 - ----------T--:--:--.--- INFO [acsStartJava] Using endorsed jar files in: -Djava.endorsed.dirs=/somepath
-1 -  --endorsed -D ACS.manager=corbaloc::xxxx:xxxx/Manager -- alma.acs.container.AcsContainerRunner -OAIAddr xxx.xxx.xxx.xxx -OAport xxx -m corbaloc::xxxx:xxxx/Manager -containerName javaContainer
-1 - FINER: Logging configuration has been initialized, but not from CDB settings.
