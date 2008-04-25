@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: TestList,v 1.2 2008/04/25 05:31:57 cparedes Exp $"
+# "@(#) $Id: TestList,v 1.3 2008/04/25 05:49:45 cparedes Exp $"
 #
 # TestList
 #
@@ -88,7 +88,8 @@ PROLOGUE acsutilTATPrologue -l
 
 36 cppMultipleCharComponents50 "runMultipleComponents.sh cppTestContainer TESTCPPCHAR 50 CHAR cpp"
 
-37 cppMultipleAutoCharComponents50 "runMultipleComponents.sh autostartCppTestContainer TESTAUTOCPPCHAR 50 CHAR cpp"
+37 cppMultipleAutoCharComponents50 "runMultipleComponents.sh autostartCppCharTestContainer TESTAUTOCPPCHAR 50 CHAR cpp"
+38 cppMultipleAutoComponents50 "runMultipleComponents.sh autostartCppTestContainer TESTAUTOCPP 50 SIMPLE cpp"
 
 
 ########################################################
