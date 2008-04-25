@@ -60,4 +60,14 @@ public interface IOPorgressListener {
 	 * @param numOfLogs
 	 */
 	public void logsRead(int numOfLogs);
+	
+	/**
+	 * This method notifies about the total number of logs written during a save.
+	 * <P>
+	 * The value passed as parameter is the number of logs written since the
+	 * beginning of the save.
+	 * 
+	 * @param numOfLogs
+	 */
+	public void logsWritten(int numOfLogs);
 }

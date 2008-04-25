@@ -403,10 +403,12 @@ public class IOHelper {
 		}
 		stopped=false;
 		long len=0; 
+		int logsWritten=0;
 		while (iterator.hasNext() && !stopped) {
 			ILogEntry log = iterator.next();
 			len+=saveLog(outBW, log);
 			progressListener.bytesWritten(len);
+			progressListener.logsWritten(++logsWritten);
 		}
 	}
 	
