@@ -275,6 +275,8 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 				engine.setPaused(toolBar.isPaused());
 			} else if (e.getSource()==toolBar.getLogLevelCB()) {
 				getLCModel1().setLogLevel((LogTypeHelper)toolBar.getLogLevelCB().getSelectedItem());
+            } else if (e.getSource()==toolBar.getDiscardLevelCB()){
+            	getEngine().setDiscardLevel(LogTypeHelper.fromLogTypeDescription((String)toolBar.getDiscardLevelCB().getSelectedItem()));
             } else if (e.getSource()==toolBar.getSearchBtn() ||
                     e.getSource()==menuBar.getSearchMenuItem()) {
                 if (searchDialog==null) {
@@ -1221,12 +1223,12 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 	{
 		if (engine == null)
 		{
-			try
-			{
+			try {
 				engine = new LCEngine();
 				engine.addLogConnectionListener(this);
 				engine.addLogListener(this);
 				engine.addLogErrorListener(this);
+				engine.setDiscardLevel(LogTypeHelper.fromLogTypeDescription((String)toolBar.getDiscardLevelCB().getSelectedItem()));
 
 			}
 			catch (java.lang.Throwable ivjExc)
