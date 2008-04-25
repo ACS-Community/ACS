@@ -73,15 +73,18 @@ import com.cosylab.logging.engine.log.ILogEntry;
  *  	<LI>execute <code>Save</code> to add the closing XML tags, flush and close the buffer
  *  </OL> 
  * <P>
+ * Load and save can be very long operations. To stop an I/O, the <code>stopIO()</code>
+ * must be executed.
+ * 
  * @author acaproni
  *
  */
 public class IOHelper {
 	
 	/** 
-	 * Signal that the object has been closed
+	 * Signal that a load or a save must be stopped
 	 */
-	protected volatile boolean closed=false;
+	protected volatile boolean stopped=false;
 	
 	/**
 	 * The parser
@@ -156,7 +159,7 @@ public class IOHelper {
 		if (progressListener==null) {
 			throw new IllegalArgumentException("The progress listener can't be null");
 		}
-		
+		stopped=false;
 		// The last tag found
 		String tag=null;
 		
@@ -194,7 +197,7 @@ public class IOHelper {
 		try {
 			StopWatch stopWatch = new StopWatch();
 		
-			while (true && !closed) {
+			while (true && !stopped) {
 				// Read a block from the file if the buffer is empty
 				if (bytesInBuffer==0) {
 					bytesInBuffer = br.read(buf,0,size);
@@ -285,7 +288,7 @@ public class IOHelper {
 	 * @param close If <code>true</code> the <code>BufferedWriter</code> is closed
 	 * @throws IOException In case of an IO error
 	 */
-	public void terminateSave(BufferedWriter outBW, boolean close) throws IOException {
+	public synchronized void terminateSave(BufferedWriter outBW, boolean close) throws IOException {
 		outBW.write("</Log>");
 		outBW.flush();
 		if (close) {
@@ -398,11 +401,24 @@ public class IOHelper {
 		if (progressListener==null) {
 			throw new IllegalArgumentException("The progress listener can't be null");
 		}
+		stopped=false;
 		long len=0; 
-		while (iterator.hasNext()) {
+		while (iterator.hasNext() && !stopped) {
 			ILogEntry log = iterator.next();
 			len+=saveLog(outBW, log);
 			progressListener.bytesWritten(len);
 		}
+	}
+	
+	/**
+	 * Call this method if you wish to interrupt a load or a save.
+	 * <P>
+	 * Load and save are executed synchronously so this method has to be called by a separate 
+	 * thread.
+	 * A typical example is the "Abort" button of a dialog: when the user presses such a button, this method
+	 * is invoked by the swing thread.
+	 */
+	public void stopIO() {
+		stopped=true;
 	}
 }
