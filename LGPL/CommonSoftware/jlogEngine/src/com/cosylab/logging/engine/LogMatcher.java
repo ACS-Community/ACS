@@ -157,7 +157,7 @@ public class LogMatcher {
 		if (log==null) {
 			throw new IllegalArgumentException("The log can't be null");
 		}
-		if (discardLevel!=null && log.getType().ordinal()<discardLevel.ordinal()) {
+		if (discardLevel!=null && log.getType().ordinal()<=discardLevel.ordinal()) {
 				return false;
 		}
 		// Check the log against the audience
