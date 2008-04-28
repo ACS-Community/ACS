@@ -19,7 +19,7 @@
 
 /** 
  * @author  acaproni   
- * @version $Id: AlarmTableModel.java,v 1.13 2008/03/27 14:16:28 acaproni Exp $
+ * @version $Id: AlarmTableModel.java,v 1.14 2008/04/28 08:29:58 acaproni Exp $
  * @since    
  */
 
@@ -71,7 +71,8 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 		CONTACT("Contact",false),
 		EMAIL("email",false),
 		GSM("GSM",false),
-		TRIPLET("Triplet",false);
+		TRIPLET("Triplet",false),
+		FAMILY("Family",false);
 		
 		// The title of the header
 		public final String title;
@@ -394,6 +395,9 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 		}
 		case TRIPLET: {
 			return "["+alarm.getTriplet().getFaultFamily()+", "+alarm.getTriplet().getFaultMember()+", "+alarm.getTriplet().getFaultCode()+"]";
+		}
+		case FAMILY: {
+			return alarm.getTriplet().getFaultFamily();
 		}
 		default: {
 				return "N/A";
