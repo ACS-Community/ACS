@@ -17,7 +17,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: acspyTestUnitLog.py,v 1.2 2008/04/23 18:28:27 agrimstrup Exp $"
+# "@(#) $Id: acspyTestUnitLog.py,v 1.3 2008/04/29 15:32:34 agrimstrup Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -25,7 +25,7 @@
 #
 
 #------------------------------------------------------------------------------
-__revision__ = "$Id: acspyTestUnitLog.py,v 1.2 2008/04/23 18:28:27 agrimstrup Exp $"
+__revision__ = "$Id: acspyTestUnitLog.py,v 1.3 2008/04/29 15:32:34 agrimstrup Exp $"
 #--REGULAR IMPORTS-------------------------------------------------------------
 import unittest
 import mock
@@ -626,6 +626,14 @@ class SeveralLoggerCheck(unittest.TestCase):
         """SeveralLoggerCheck search with the nested child's name as key"""
         self.assertEqual(True, Log.doesLoggerExist(self.cname))
 
+    def testNestedOutput(self):
+        """SeveralLoggerCheck messages are logged only once for nested loggers"""
+        nlogger = Log.getLogger("MyLogger1.child")
+        before = len(Log.CENTRALHANDLER.buffer)
+        nlogger.logInfo("Nested Message")
+        after =  len(Log.CENTRALHANDLER.buffer)
+        self.assertEqual(1, after - before)
+        Log.CENTRALHANDLER.buffer = []
 
 class DispatchPacketCheck(unittest.TestCase):
     """Check the operation of the logger under differing dispatchPacket values"""

@@ -1,4 +1,4 @@
-# @(#) $Id: Log.py,v 1.40 2008/04/23 18:26:01 agrimstrup Exp $
+# @(#) $Id: Log.py,v 1.41 2008/04/29 15:32:34 agrimstrup Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA,  2001
@@ -39,7 +39,7 @@ of creating new instances of the Logger class which can take a very long
 time depending on managers load.
 '''
 
-__revision__ = "$Id: Log.py,v 1.40 2008/04/23 18:26:01 agrimstrup Exp $"
+__revision__ = "$Id: Log.py,v 1.41 2008/04/29 15:32:34 agrimstrup Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 from os        import environ
@@ -444,6 +444,9 @@ class Logger(logging.Logger):
 
         #flag to indicate if this logger is using default values
         self.usingDefault = True
+
+        #Nested loggers should not repeat messages
+        self.propagate = 0
 
         #add handlers
         self.addHandler(self.stdouthandler)
