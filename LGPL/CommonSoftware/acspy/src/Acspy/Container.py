@@ -1,4 +1,4 @@
-# @(#) $Id: Container.py,v 1.37 2008/04/24 22:00:22 agrimstrup Exp $
+# @(#) $Id: Container.py,v 1.38 2008/04/30 18:02:33 agrimstrup Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -21,7 +21,7 @@
 # ALMA should be addressed as follows:
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: Container.py,v 1.37 2008/04/24 22:00:22 agrimstrup Exp $"
+# "@(#) $Id: Container.py,v 1.38 2008/04/30 18:02:33 agrimstrup Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -38,7 +38,7 @@ TODO LIST:
 - a ComponentLifecycleException has been defined in IDL now...
 '''
 
-__revision__ = "$Id: Container.py,v 1.37 2008/04/24 22:00:22 agrimstrup Exp $"
+__revision__ = "$Id: Container.py,v 1.38 2008/04/30 18:02:33 agrimstrup Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 from time      import sleep
@@ -609,20 +609,12 @@ class Container(maci__POA.Container, maci__POA.LoggingConfigurable, BaseClient):
         try:
             logconfig = self.cdbAccess.getElement("MACI/Containers/"  + self.name, "Container/LoggingConfig")
             try:
-                # Environment variable takes precedence over the CDB value
-                if 'ACS_LOG_CENTRAL' in environ:
-                    centrallevel = int(environ['ACS_LOG_CENTRAL'])
-                else:
-                    centrallevel = int(logconfig[0]['minLogLevel'])
+                centrallevel = int(logconfig[0]['minLogLevel'])
             except:
                 # Default value used because CDB has no setting for this attribute
                 pass
             try:
-                # Environment variable takes precedence over the CDB value
-                if 'ACS_LOG_STDOUT' in environ:
-                    locallevel = int(environ['ACS_LOG_STDOUT'])
-                else:
-                    locallevel = int(logconfig[0]['minLogLevelLocal'])
+                locallevel = int(logconfig[0]['minLogLevelLocal'])
             except:
                 # Default value used because CDB has no setting for this attribute
                 pass
@@ -653,6 +645,13 @@ class Container(maci__POA.Container, maci__POA.LoggingConfigurable, BaseClient):
         except:
             # No logging configuration given in the CDB so defaults are used.
             pass
+
+        # Environment variable takes precedence over the CDB value
+        if 'ACS_LOG_CENTRAL' in environ:
+            centrallevel = int(environ['ACS_LOG_CENTRAL'])
+
+        if 'ACS_LOG_STDOUT' in environ:
+            locallevel = int(environ['ACS_LOG_STDOUT'])
         
         Log.setDefaultLevels(maci.LoggingConfigurable.LogLevels(False, centrallevel, locallevel))
         Log.setCapacity(cap)
