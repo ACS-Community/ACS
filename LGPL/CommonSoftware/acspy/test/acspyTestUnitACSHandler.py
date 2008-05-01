@@ -17,7 +17,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: acspyTestUnitACSHandler.py,v 1.2 2008/04/23 18:28:27 agrimstrup Exp $"
+# "@(#) $Id: acspyTestUnitACSHandler.py,v 1.3 2008/05/01 20:53:49 agrimstrup Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -25,7 +25,7 @@
 #
 
 #------------------------------------------------------------------------------
-__revision__ = "$Id: acspyTestUnitACSHandler.py,v 1.2 2008/04/23 18:28:27 agrimstrup Exp $"
+__revision__ = "$Id: acspyTestUnitACSHandler.py,v 1.3 2008/05/01 20:53:49 agrimstrup Exp $"
 #--REGULAR IMPORTS-------------------------------------------------------------
 import unittest
 import mock
@@ -61,12 +61,38 @@ def mockACSLogSvc():
 class ACSFormatterCheck(unittest.TestCase):
     """Test of the ACSFormatter class."""
 
+    def setUp(self):
+        self.f = ACSHandler.ACSFormatter()
+
     def testConstructor(self):
         """ACSFormatter initialized"""
-        f = ACSHandler.ACSFormatter()
-        self.assertEqual("%(asctime)s.000 %(name)s %(message)s", f._fmt)
-        self.assertEqual("%Y-%m-%dT%H:%M:%S", f.datefmt)
-        self.assertEqual(gmtime, f.converter)
+        self.assertEqual("%(asctime)s.000 %(name)s %(message)s", self.f._fmt)
+        self.assertEqual("%Y-%m-%dT%H:%M:%S", self.f.datefmt)
+        self.assertEqual(gmtime, self.f.converter)
+
+    def testFormatNoData(self):
+        """ACSFormatter formats a log record that has no data attribute correctly"""
+        lr = ACSHandler.ACSLogRecord("Simple", "TRACE", "/path/to/file.py", 100, "Test text", [], None)
+        lr.created = 0
+        s = self.f.format(lr)
+        self.assertEqual("1970-01-01T00:00:00.000 Simple Test text",s)
+
+    def testFormatEmptyData(self):
+        """ACSFormatter formats a log record with an empty data attribute correctly"""
+        lr = ACSHandler.ACSLogRecord("Simple", "TRACE", "/path/to/file.py", 100, "Test text", [], None)
+        lr.created = 0
+        lr.data = {}
+        s = self.f.format(lr)
+        self.assertEqual("1970-01-01T00:00:00.000 Simple Test text [ ]",s)
+
+    def testFormatData(self):
+        """ACSFormatter formats a log record with a data attribute correctly"""
+        lr = ACSHandler.ACSLogRecord("Simple", "TRACE", "/path/to/file.py", 100, "Test text", [], None)
+        lr.created = 0
+        lr.data = { 'a' : 'A', 5 : '5', 'B' : 9 }
+        s = self.f.format(lr)
+        self.assertEqual("1970-01-01T00:00:00.000 Simple Test text [ a=A B=9 5=5 ]",s)
+
                             
 class ACSLogRecordCheck(unittest.TestCase):
     """Test of the ACSLogRecord class."""

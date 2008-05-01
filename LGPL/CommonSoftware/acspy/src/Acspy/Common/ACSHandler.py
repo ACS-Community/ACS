@@ -1,4 +1,4 @@
-# @(#) $Id: ACSHandler.py,v 1.12 2008/04/23 18:26:01 agrimstrup Exp $
+# @(#) $Id: ACSHandler.py,v 1.13 2008/05/01 20:53:49 agrimstrup Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA,  2001
@@ -29,7 +29,7 @@ TODO:
 - Everything
 '''
 
-__revision__ = "$Id: ACSHandler.py,v 1.12 2008/04/23 18:26:01 agrimstrup Exp $"
+__revision__ = "$Id: ACSHandler.py,v 1.13 2008/05/01 20:53:49 agrimstrup Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 from socket    import gethostname
@@ -43,6 +43,7 @@ import sys
 from atexit    import register
 import sched
 import threading
+import string
 #--ACS Imports-----------------------------------------------------------------
 from Acspy.Util.ACSCorba     import acsLogSvc
 from Acspy.Common.TimeHelper import TimeUtil
@@ -108,6 +109,36 @@ class ACSFormatter(logging.Formatter):
         logging.Formatter.__init__(self, formatString, dateFormat)
         #work with gmtime only
         self.converter = gmtime
+    #--------------------------------------------------------------------------
+    def format(self, record):
+        """
+        Overload.
+
+        
+        """
+        record.message = record.getMessage()
+        if string.find(self._fmt,"%(asctime)") >= 0:
+            record.asctime = self.formatTime(record, self.datefmt)
+        s = self._fmt % record.__dict__
+        if record.exc_info:
+            # Cache the traceback text to avoid converting it multiple times
+            # (it's constant anyway)
+            if not record.exc_text:
+                record.exc_text = self.formatException(record.exc_info)
+        if record.exc_text:
+            if s[-1] != "\n":
+                s = s + "\n"
+            s = s + record.exc_text
+        if 'data' in record.__dict__:
+            s += " ["
+            try:
+                for d in record.data:
+                    ds = " %s=%s" % (d, record.data[d])
+                    s += ds
+            except TypeError:
+                pass
+            s += " ]"
+        return s
 #------------------------------------------------------------------------------
 class ACSHandler(logging.handlers.BufferingHandler):
     '''
