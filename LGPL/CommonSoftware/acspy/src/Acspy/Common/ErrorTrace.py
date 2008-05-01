@@ -471,7 +471,8 @@ class ErrorTrace(ACSErr.ErrorTrace, ErrorTraceHelper):
                  description = "None", 
                  nvSeq = None,
                  level = 3,
-                 severity = None):
+                 severity = None,
+                 sourceobject = ""):
         '''
         Parameters:
         - error_type is the error type (a long)
@@ -520,7 +521,11 @@ class ErrorTrace(ACSErr.ErrorTrace, ErrorTraceHelper):
         time = getTimeStamp().value
             
         # Source Object is for time being empty
-        sourceObject = ""
+        frame = call_frame[0]
+        try:
+            sourceObject = frame.f_locals['self'].name
+        except:
+            sourceObject = sourceobject
         
         #Set the severity
         if severity == None:
@@ -559,7 +564,7 @@ class ErrorTrace(ACSErr.ErrorTrace, ErrorTraceHelper):
                 new_et = ErrorTrace(new_except.getErrorType(),
                                     new_except.getErrorCode(),
                                     description = new_except.getDescription(),
-                                    level = 2)
+                                    level = 2, sourceobject=sourceObject)
 		#Now modify some fields
 		new_et.file=tuple_tb[0][0]
 		new_et.lineNum=tuple_tb[0][1]
