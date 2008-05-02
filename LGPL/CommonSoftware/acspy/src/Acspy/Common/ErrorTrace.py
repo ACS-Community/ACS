@@ -520,11 +520,11 @@ class ErrorTrace(ACSErr.ErrorTrace, ErrorTraceHelper):
         #Get the ACS time
         time = getTimeStamp().value
             
-        # Source Object is for time being empty
+        # Client, components and containers have 
         frame = call_frame[0]
-        try:
+        if 'self' in frame.f_locals and 'name' in frame.f_locals['self'].__dict__:
             sourceObject = frame.f_locals['self'].name
-        except:
+        else:
             sourceObject = sourceobject
         
         #Set the severity
