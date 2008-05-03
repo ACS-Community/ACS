@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.14 2008/02/20 14:21:24 hsommer Exp $"
+# "@(#) $Id: Makefile,v 1.15 2008/05/03 15:09:04 nbarriga Exp $"
 #
 # Makefile of ........
 #
@@ -72,7 +72,7 @@ acsdaemonStatusAcs_LIBS      =	acscomponentStubs acsdaemonErrType acsdaemonStubs
 #
 # Includes (.h) files (public only)
 # ---------------------------------
-INCLUDES        =
+INCLUDES        = acsDaemonImpl.h
 
 #
 # Libraries (public and local)
