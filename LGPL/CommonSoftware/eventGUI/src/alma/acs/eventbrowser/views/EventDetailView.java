@@ -1,6 +1,7 @@
 package alma.acs.eventbrowser.views;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
@@ -24,14 +25,16 @@ import alma.acs.eventbrowser.Application;
 import alma.acs.eventbrowser.model.AdminConsumer;
 import alma.acs.eventbrowser.model.EventModel;
 import alma.acs.exceptions.AcsJException;
+import alma.acs.nc.Consumer;
 
 public class EventDetailView extends ViewPart {
 	private static final int QUEUE_DRAIN_LIMIT = 1000;
 	private TableViewer viewer;
-	private AdminConsumer consumer;
+	private ArrayList<AdminConsumer> consumers;
 
 	private EventModel em;
 	private Action clearEvents;
+	private Action printEventDetails;
 
 	public static final String ID = "alma.acs.eventbrowser.views.eventdetail";
 
@@ -44,7 +47,6 @@ public class EventDetailView extends ViewPart {
 		final int TABLE_CAPACITY = 10000;
 		try {
 			em = EventModel.getInstance();
-			consumer = em.getAdminConsumer();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -113,9 +115,9 @@ public class EventDetailView extends ViewPart {
 						ArrayList<EventData> c = new ArrayList<EventData>(QUEUE_DRAIN_LIMIT);
 						int numberDrained = Application.equeue.drainTo(c, QUEUE_DRAIN_LIMIT);
 						viewer.add(c.toArray());
-						System.out.println("Table item count: "
-								+ viewer.getTable().getItemCount()
-								+ "; number of events drained from queue: "+numberDrained);
+//						System.out.println("Table item count: "
+//								+ viewer.getTable().getItemCount()
+//								+ "; number of events drained from queue: "+numberDrained);
 					}
 				}
 			};
@@ -129,10 +131,10 @@ public class EventDetailView extends ViewPart {
 					display.asyncExec(r);
 					try {
 						Thread.sleep(1000);
-						System.out.println("Event detail iteration " + ++i);
-						System.out.println("Queue has "
-								+ Application.equeue.remainingCapacity()
-								+ " slots left.");
+//						System.out.println("Event detail iteration " + ++i);
+//						System.out.println("Queue has "
+//								+ Application.equeue.remainingCapacity()
+//								+ " slots left.");
 					} catch (InterruptedException e) {
 						System.out.println("Monitoring was interrupted!");
 						break;
@@ -146,11 +148,17 @@ public class EventDetailView extends ViewPart {
 		};
 		final Thread th = new Thread(t);
 		th.start();
-		try {
-			consumer.consumerReady();
-		} catch (AcsJException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		consumers = em.getAllConsumers();
+		
+		if (consumers != null) {
+			for (AdminConsumer consumer : consumers) {
+				try {
+					consumer.consumerReady();
+				} catch (AcsJException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
 		}
 	}
 
@@ -169,6 +177,7 @@ public class EventDetailView extends ViewPart {
 
 	private void fillContextMenu(IMenuManager manager) {
 		manager.add(clearEvents);
+		manager.add(printEventDetails);
 		// Other plug-ins can contribute there actions here
 		manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
 	}
@@ -191,6 +200,13 @@ public class EventDetailView extends ViewPart {
 		clearEvents.setImageDescriptor(PlatformUI.getWorkbench()
 				.getSharedImages().getImageDescriptor(
 						ISharedImages.IMG_TOOL_DELETE));
+		printEventDetails = new Action() {
+			public void run() {
+				AdminConsumer.setPrintDetails(!AdminConsumer.getPrintDetails());
+			};
+		};
+		printEventDetails.setText("Toggle event details");
+		printEventDetails.setToolTipText("Toggle display of event details to STDOUT");
 
 	}
 
@@ -203,7 +219,9 @@ public class EventDetailView extends ViewPart {
 	@Override
 	public void dispose() {
 		super.dispose();
-		consumer.disconnect();
+		for (AdminConsumer consumer : consumers) {
+			consumer.disconnect();
+		}
 	}
 
 }

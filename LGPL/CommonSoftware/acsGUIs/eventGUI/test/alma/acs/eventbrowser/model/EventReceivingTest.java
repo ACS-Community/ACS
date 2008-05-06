@@ -10,9 +10,9 @@ import junit.framework.TestCase;
 
 public class EventReceivingTest extends TestCase {
 
-	private static final int EVENTS_TO_SEND = 100;
+	private static final int EVENTS_TO_SEND = 1000;
 	private EventModel em;
-	private AdminConsumer consumer;
+	private AdminConsumer consumer = null;
 	private EventSupplierImpl supplier;
 	private ContainerServices cs;
 	private AcsLogger logger;
@@ -21,19 +21,23 @@ public class EventReceivingTest extends TestCase {
 		super(name);
 		try {
 			em = EventModel.getInstance();
+			cs = em.getContainerServices();
+			logger = cs.getLogger();
 		} catch (Exception e) {
 			e.printStackTrace();
 			fail();
 		}
+	}
+
+	protected void setUp() throws Exception {
+		super.setUp();
 		try {
-			consumer = em.getAdminConsumer();
+			consumer = em.getAdminConsumer("blar");
 			consumer.consumerReady();
 		} catch (AcsJException e) {
 			e.printStackTrace();
 			fail();
 		}
-		cs = em.getContainerServices();
-		logger = cs.getLogger();
 		try {
 			supplier = new EventSupplierImpl(logger, cs, "EventReceivingTest");
 		} catch (Exception e) {
@@ -49,19 +53,23 @@ public class EventReceivingTest extends TestCase {
 		}
 	}
 
-	protected void setUp() throws Exception {
-		super.setUp();
-	}
-
 	protected void tearDown() throws Exception {
-		consumer.disconnect();
+		if (consumer != null) {
+			consumer.disconnect();
+			consumer = null;
+		}
+		if (supplier != null) {
+			supplier.cleanUp();
+			supplier = null;
+		}
 		Application.equeue.clear();
 		super.tearDown();
 	}
 	
-	public void testReceiveEvents() {
+	public void testReceiveEvents() throws InterruptedException {
 		long startTime = System.currentTimeMillis();
 		supplier.sendEvents((short) EVENTS_TO_SEND);
+		Thread.sleep(2*EVENTS_TO_SEND);
 		assertEquals(50000-EVENTS_TO_SEND, Application.equeue.remainingCapacity());
 		long endTime = System.currentTimeMillis();
 		long diff = endTime - startTime;

@@ -16,12 +16,12 @@
 <stringAttribute key="location" value="${workspace_loc}/../runtime-eventGUI.application"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-os ${target.os} -ws ${target.ws} -arch ${target.arch} -nl ${target.nl}"/>
 <stringAttribute key="org.eclipse.jdt.launching.SOURCE_PATH_PROVIDER" value="org.eclipse.pde.ui.workbenchClasspathProvider"/>
-<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-DORBInitRef.NameService=corbaloc::baez:3001/NameService -DACS.Manager=corbaloc::baez:3000/Manager"/>
+<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-DORBInitRef.NameService=corbaloc::pc013018:3001/NameService -DACS.Manager=corbaloc::pc013018:3000/Manager -Dacs.system.classpath.jardirs=../lib/:/diska/data/jschwarz/introot/lib:/alma/ACS-7.0/ACSSW/lib -Dacs.system.classloader.verbose=false"/>
 <booleanAttribute key="pde.generated.config" value="false"/>
 <stringAttribute key="pde.version" value="3.3"/>
 <stringAttribute key="product" value=""/>
-<stringAttribute key="selected_target_plugins" value="org.eclipse.swt*3.4.0.v3436a,org.eclipse.core.commands*3.4.0.I20080324-1800,org.eclipse.core.expressions*3.4.0.v20080327-1300,org.eclipse.core.runtime.compatibility.auth*3.2.100.v20070502,org.eclipse.equinox.preferences*3.2.200.v20080201,com.ibm.icu*3.8.1.v20080304,org.eclipse.equinox.registry*3.4.0.v20080316,org.eclipse.core.databinding*1.1.0.I20080325-0100,org.eclipse.equinox.common*3.4.0.v20080320,org.eclipse.core.contenttype*3.3.0.v20080201,org.eclipse.help*3.3.100.v20080320,org.eclipse.swt.gtk.linux.x86*3.4.0.v3436,org.eclipse.core.runtime*3.4.0.v20080324-1725,org.eclipse.core.jobs*3.4.0.v20080310,org.eclipse.ui*3.4.0.I20080328-1206,org.eclipse.jface.databinding*1.2.0.I20080325-0100,org.eclipse.equinox.app*1.0.100.v20080316,org.eclipse.osgi*3.4.0.v20080326,org.eclipse.jface*3.4.0.I20080328-1206,org.eclipse.ui.workbench*3.4.0.I20080328-1206"/>
-<stringAttribute key="selected_workspace_plugins" value="eventGUI*1.0.0,ACS_Utility_Jars*1.0.0"/>
+<stringAttribute key="selected_target_plugins" value="org.eclipse.jface,org.eclipse.equinox.registry,org.eclipse.ui,org.eclipse.ui.workbench,org.eclipse.core.runtime.compatibility.auth,org.eclipse.help,org.eclipse.core.contenttype,org.eclipse.osgi,org.eclipse.core.jobs,org.eclipse.core.databinding,org.eclipse.core.commands,org.eclipse.swt,org.eclipse.equinox.app,com.ibm.icu,org.eclipse.equinox.common,org.eclipse.equinox.preferences,org.eclipse.jface.databinding,org.eclipse.swt.gtk.linux.x86,org.eclipse.core.expressions,org.eclipse.core.runtime"/>
+<stringAttribute key="selected_workspace_plugins" value="eventGUI,ACS_Utility_Jars"/>
 <booleanAttribute key="show_selected_only" value="false"/>
 <booleanAttribute key="tracing" value="false"/>
 <booleanAttribute key="useDefaultConfig" value="true"/>

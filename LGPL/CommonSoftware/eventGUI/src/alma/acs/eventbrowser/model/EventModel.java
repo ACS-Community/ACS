@@ -1,6 +1,7 @@
 package alma.acs.eventbrowser.model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.logging.Logger;
 
 import org.eclipse.core.runtime.IStatus;
@@ -15,7 +16,6 @@ import org.omg.CosNaming.BindingListHolder;
 import org.omg.CosNaming.NameComponent;
 import org.omg.CosNaming.NamingContext;
 import org.omg.CosNotification.Property;
-import org.omg.CosNotification.EventType;
 import org.omg.CosNotifyChannelAdmin.AdminNotFound;
 import org.omg.CosNotifyChannelAdmin.ChannelNotFound;
 import org.omg.CosNotifyChannelAdmin.ConsumerAdmin;
@@ -23,7 +23,6 @@ import org.omg.CosNotifyChannelAdmin.EventChannel;
 import org.omg.CosNotifyChannelAdmin.EventChannelFactory;
 import org.omg.CosNotifyChannelAdmin.EventChannelFactoryHelper;
 import org.omg.CosNotifyChannelAdmin.EventChannelHelper;
-import org.omg.CosNotifyComm.InvalidEventType;
 
 import alma.ACSErrTypeCommon.wrappers.AcsJUnexpectedExceptionEx;
 import alma.acs.component.client.AdvancedComponentClient;
@@ -46,8 +45,11 @@ public class EventModel {
 	private final static String eventGuiId = "eventGUI";
 	private final EventChannelFactory alsvc;
 	private final EventChannelFactory arsvc;
+	private HashMap<String, EventChannel> channelMap; // maps each event channel name to the event channel
 	private static EventModel modelInstance;
-	private static AdminConsumer consumerInstance;
+	private ArrayList<AdminConsumer> consumers;
+	private HashMap<String, AdminConsumer> consumerMap;
+	public static final int MAX_NUMBER_OF_CHANNELS = 100;
 
 	private EventModel() throws Exception {
 		String connectionString;
@@ -84,6 +86,9 @@ public class EventModel {
 			}
 			throw(e);
 		}
+		channelMap = new HashMap<String, EventChannel>(MAX_NUMBER_OF_CHANNELS);
+		consumerMap = new HashMap<String, AdminConsumer>(MAX_NUMBER_OF_CHANNELS);
+		consumers = new ArrayList<AdminConsumer>(MAX_NUMBER_OF_CHANNELS*5); // a guess at the possible limit to the number of consumers
 		compClient = acc;
 		mproxy = compClient.getAcsManagerProxy();
 
@@ -99,7 +104,7 @@ public class EventModel {
 	}
 	
 	private String getConnectionString(String managerHost, int acsInstance) {
-		String port = Integer.toString(3000+acsInstance);
+		String port = Integer.toString(3000+acsInstance*100);
 		return "corbaloc::"+managerHost+":"+port+"/Manager";
 	}
 	
@@ -123,7 +128,7 @@ public class EventModel {
 			nsuppliers = 0;
 			for (int j = 0; j < chans.length; j++) {
 				try {
-					nconsumers += efacts[i].get_event_channel(chans[j])
+					nconsumers += efacts[i].get_event_channel(chans[j]) // TODO: These calculations depend on assumption that 1 consumer admin ==> 1 consumer
 							.get_all_consumeradmins().length;
 					nsuppliers += efacts[i].get_event_channel(chans[j])
 							.get_all_supplieradmins().length;
@@ -133,16 +138,16 @@ public class EventModel {
 				}
 
 			}
-			System.out.printf("%s consumers: %d\n", efactNames[i], nconsumers);
-			System.out.printf("%s suppliers: %d\n", efactNames[i], nsuppliers);
-			System.out.printf("Number of channels for: %s %d \n", efactNames[i],
-					chans.length);
+//			System.out.printf("%s consumers: %d\n", efactNames[i], nconsumers);
+//			System.out.printf("%s suppliers: %d\n", efactNames[i], nsuppliers);
+//			System.out.printf("Number of channels for: %s %d \n", efactNames[i],
+//					chans.length);
 			clist.add(new ChannelData(efactNames[i], nconsumers, nsuppliers));
 		}
 
 		return clist;
 	}
-
+	
 	public ArrayList<ChannelData> getChannelStatistics() {
 		ArrayList<ChannelData> clist = new ArrayList<ChannelData>();
 		BindingListHolder bl = new BindingListHolder();
@@ -160,23 +165,29 @@ public class EventModel {
 					int numSuppliers = ec.get_all_supplieradmins().length;
 					System.out.println("... has "+numConsumers+" consumers and "+numSuppliers+" suppliers.");
 					int[] admins = ec.get_all_consumeradmins();
-					ConsumerAdmin adm = null;
-					try {
-						if (numConsumers > 0)
-							adm = ec.get_consumeradmin(admins[0]);
-						// TODO This would be an opportunity to create the AdminConsumer, but let's not do it here...
-					} catch (AdminNotFound e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} //					int[] pulls = adm.pull_suppliers();
+					AdminConsumer consumer = null;
+					if (!channelMap.containsKey(channelName)) {
+						channelMap.put(channelName, ec);
+						consumer = getAdminConsumer(channelName);
+						consumers.add(consumer);
+					}
+//					try {
+//						ConsumerAdmin adm;
+//						if (numConsumers > 0)
+//							adm = ec.get_consumeradmin(admins[0]);
+//						// TODO This would be an opportunity to create the AdminConsumer, but let's not do it here...
+//					} catch (AdminNotFound e) {
+//						// TODO Auto-generated catch block
+//						e.printStackTrace();
+//					} //					int[] pulls = adm.pull_suppliers();
 //					ClientType arg0 = ClientType.ANY_EVENT;
 //					IntHolder ih = new IntHolder();
 //					ProxySupplier ps = adm.obtain_notification_pull_supplier(arg0, ih);
 //					System.out.println(ps);
-					Property[] props = ec.get_admin();
-					for (int j = 0; j < props.length; j++) {
-						System.out.println(props[j].name+ props[j].value);
-					}
+//					Property[] props = ec.get_admin();
+//					for (int j = 0; j < props.length; j++) {
+//						System.out.println(props[j].name+ props[j].value);
+//					}
 					clist.add(new ChannelData(channelName, numConsumers, numSuppliers));
 				} catch (AcsJException e) {
 					m_logger.severe("Can't find channel "+channelName);
@@ -248,10 +259,18 @@ public class EventModel {
 		return cs;
 	}
 
-	public AdminConsumer getAdminConsumer() throws AcsJException {
-		if (consumerInstance == null)
-			consumerInstance = new AdminConsumer("blar",cs);
-		return consumerInstance;
+	public AdminConsumer getAdminConsumer(String channelName) throws AcsJException {
+		if (!consumerMap.containsKey(channelName)) {
+			AdminConsumer adm = new AdminConsumer(channelName,cs);
+			consumerMap.put(channelName, adm);
+			return adm;
+		}
+		return consumerMap.get(channelName);
+	}
+
+	public ArrayList<AdminConsumer> getAllConsumers() {
+		getChannelStatistics();
+		return consumers;
 	}
 
 	
