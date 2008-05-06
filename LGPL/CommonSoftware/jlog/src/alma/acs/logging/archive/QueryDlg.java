@@ -151,10 +151,11 @@ public class QueryDlg extends JDialog implements ActionListener {
 	 */
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource()==submitBtn) {
-			submitBtn.setEnabled(false);
 			Thread t = new Thread() {
 				public void run() {
+					submitBtn.setEnabled(false);
 					submitQuery();
+					submitBtn.setEnabled(true);
 				}
 			};
 			t.setDaemon(false);
@@ -347,7 +348,6 @@ public class QueryDlg extends JDialog implements ActionListener {
 	private void submitQuery() {
 		if (!checkFields()) {
 			JOptionPane.showMessageDialog(this,"Error getting values from the form","Input error!",JOptionPane.ERROR_MESSAGE);
-			submitBtn.setEnabled(true);
 			return;
 		}
 		loggingClient.reportStatus("Submitting a query");
@@ -431,7 +431,6 @@ public class QueryDlg extends JDialog implements ActionListener {
 			System.err.println("Error executing the query: "+t.getMessage());
 			t.printStackTrace(System.err);
 			JOptionPane.showMessageDialog(this,formatErrorMsg("Error executing the query:\n"+t.getMessage()),"Database error!",JOptionPane.ERROR_MESSAGE);
-			submitBtn.setEnabled(true);
 			loggingClient.reportStatus("Query terminated with error");
 		}
 		if (logs!=null) {
