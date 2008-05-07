@@ -100,7 +100,7 @@ public class IOHelper extends LogMatcher {
 	 * @param logStr The string representation of the log
 	 * @param logListener The listener i.e. the callback for each new log to add
 	 */
-	private void injectLog(String logStr, ACSRemoteLogListener logListener, ACSRemoteErrorListener errorListener) {
+	private void injectLog(StringBuilder logStr, ACSRemoteLogListener logListener, ACSRemoteErrorListener errorListener) {
 		if (errorListener==null || logListener==null) {
 			throw new IllegalArgumentException("Listeners can't be null");
 		}
@@ -109,9 +109,9 @@ public class IOHelper extends LogMatcher {
 			if (parser == null) {
 				parser = new ACSLogParserDOM();
 			}
-			log = parser.parse(logStr.trim());
+			log = parser.parse(logStr.toString().trim());
 		} catch (Exception e) {
-			errorListener.errorReceived(logStr.trim());
+			errorListener.errorReceived(logStr.toString().trim());
 			System.err.println("Exception parsing a log: "+e.getMessage());
 			e.printStackTrace(System.err);
 			return;
@@ -165,8 +165,6 @@ public class IOHelper extends LogMatcher {
 			throw new IllegalArgumentException("The progress listener can't be null");
 		}
 		stopped=false;
-		// The last tag found
-		String tag=null;
 		
 		// The "clever" buffer
 		LogStringBuffer buffer = new LogStringBuffer();
@@ -178,6 +176,9 @@ public class IOHelper extends LogMatcher {
 		int bytesRead=0;
 		
 		int logRecordsRead = 0;
+		
+		// Here the buffer writes the XML of each log
+		StringBuilder xmlStr = new StringBuilder();
 		
 		/**
 		 * The size of the buffer
@@ -215,17 +216,12 @@ public class IOHelper extends LogMatcher {
 				chRead=buf[actualPos];
 				
 				bytesRead++;
-				buffer.append((char)chRead);
-				if (chRead == '>') {
-					tag = buffer.getOpeningTag();
-					if (tag.length()>0) {
-						buffer.trim(tag);
-					}
-					if (buffer.hasClosingTag(tag)) {
-						injectLog(buffer.toString(),logListener,errorListener);
-						buffer.clear();
-						logRecordsRead++;
-					}
+				buffer.append((char)chRead,xmlStr);
+				if (xmlStr.length()>0) {
+					// A new log has been found
+					injectLog(xmlStr,logListener,errorListener);
+					logRecordsRead++;
+					xmlStr.delete(0, xmlStr.length());
 				}
 				progressListener.bytesRead(bytesRead);
 				if (logRecordsRead%25==0) {
