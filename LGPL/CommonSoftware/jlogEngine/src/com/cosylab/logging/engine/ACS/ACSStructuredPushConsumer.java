@@ -111,25 +111,16 @@ public final class ACSStructuredPushConsumer extends StructuredPushConsumerPOA
 	
 	public void destroy()
 	{
-		class DestroyClass extends Thread {
-			public void run() {
-				
-				try {
-				    teardownEvents();
-					structuredProxyPushSupplier.disconnect_structured_push_supplier();
-					acsra.getConsumerAdmin().destroy();
-					
-				} catch (Throwable t) {
-				    System.out.println("Exception in ACSStructuredPushConsumer::destroy(): " + t);
-				}
-			}			
+		try {
+		    teardownEvents();
+			structuredProxyPushSupplier.disconnect_structured_push_supplier();
+			acsra.getConsumerAdmin().destroy();
+			
+		} catch (Throwable t) {
+		    System.out.println("Exception in ACSStructuredPushConsumer::destroy(): " + t);
+		    t.printStackTrace();
 		}
-		// @TODO check why disconnect_structured_push_supplier takes too long sometimes, since ACS 7.0.
-		// It should not be necessary to run this in a separate thread.
-		Thread t = new DestroyClass();
-		t.setName("DestroyClass");
-		t.start();
-	}
+	}			
 
 	public void disconnect_structured_push_consumer()
 	{

@@ -330,7 +330,7 @@ public class LCEngine implements Filterable {
 	 * 
 	 * @param sync If <code>true</code> the closing is made in a synchronized way.
 	 */
-	public void close(boolean sync) {
+	public synchronized void close(boolean sync) {
 		logRetrieval.close(sync);
 		disconnect();
 	}
@@ -341,8 +341,8 @@ public class LCEngine implements Filterable {
 	 * 
 	 * @see LCEngine$AccessSetter
 	 */
-	public void disconnect() {
-		disconnectRA();
+	public synchronized void disconnect() {
+		
 		// Stop the thread to check the status of the connection
 		if (connCheckerThread != null) {
 			terminateThread = true;
@@ -355,6 +355,7 @@ public class LCEngine implements Filterable {
 			}
 			connCheckerThread = null;
 		}
+		disconnectRA();
 	}
 
 	/**
@@ -366,7 +367,7 @@ public class LCEngine implements Filterable {
 			try {
 				listenersDispatcher.publishReport(
 						"Disconnecting from "+accessType+" remote access...");
-				remoteAccess.destroy();
+				remoteAccess.close(true);
 			} catch (Exception e) {
 				listenersDispatcher.publishReport(
 						"Exception occurred when destroying "+ accessType + " remote access.");
@@ -376,7 +377,7 @@ public class LCEngine implements Filterable {
 			listenersDispatcher.publishReport("Disconnected from " + accessType	+ " remote access.");
 		}
 		if (remoteAccess != null) {
-			remoteAccess.close(false);
+			remoteAccess.destroy();
 		}
 		remoteAccess = null;
 		listenersDispatcher.publishConnected(false);

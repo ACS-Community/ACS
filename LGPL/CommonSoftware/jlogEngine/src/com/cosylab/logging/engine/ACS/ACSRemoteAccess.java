@@ -398,7 +398,6 @@ public final class ACSRemoteAccess implements RemoteAccess {
 		if (acsSPS!=null) {
 			acsSPS.close(sync);
 		}
-		destroy();
 	}
 
 }
