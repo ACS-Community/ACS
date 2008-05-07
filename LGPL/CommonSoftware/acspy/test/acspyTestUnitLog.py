@@ -17,7 +17,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: acspyTestUnitLog.py,v 1.3 2008/04/29 15:32:34 agrimstrup Exp $"
+# "@(#) $Id: acspyTestUnitLog.py,v 1.4 2008/05/07 22:23:25 agrimstrup Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -25,7 +25,7 @@
 #
 
 #------------------------------------------------------------------------------
-__revision__ = "$Id: acspyTestUnitLog.py,v 1.3 2008/04/29 15:32:34 agrimstrup Exp $"
+__revision__ = "$Id: acspyTestUnitLog.py,v 1.4 2008/05/07 22:23:25 agrimstrup Exp $"
 #--REGULAR IMPORTS-------------------------------------------------------------
 import unittest
 import mock
@@ -229,11 +229,31 @@ class LoggerClassCheck(unittest.TestCase):
     def testLogTypeSafe(self):
         """Logger class Type-safe logging"""
         msg = "LogTypeSafe Message"
+        ctxt = ACSLog.RTContext('a','b','c','d','e')
+        src = ACSLog.SourceInfo('a','b','c')
+        self.mylogger.logTypeSafe(ACSLog.ACS_LOG_ERROR, None, msg, ctxt, src, None)
+        logcall = mockLogSvc.mockGetAllCalls()[-1]
+        self.assertEquals("logWithPriority", logcall.getName())
+        self.assertEquals(ACSLog.ACS_LOG_ERROR, logcall.getParam(0))
+        self.assertEquals(msg, logcall.getParam(2))
+        self.assertEquals(True, isinstance(logcall.getParam(3), ACSLog.RTContext))
+        self.assertEquals(ctxt, logcall.getParam(3))
+        self.assertEquals(True, isinstance(logcall.getParam(4), ACSLog.SourceInfo))
+        self.assertEquals(src, logcall.getParam(4))
+        self.assertEquals("", logcall.getParam(6))
+        self.assertEquals("", logcall.getParam(7))
+        self.assertEquals("", logcall.getParam(8))
+
+    def testLogTypeSafeNoContextorSource(self):
+        """Logger class Type-safe logging"""
+        msg = "LogTypeSafe Message"
         self.mylogger.logTypeSafe(ACSLog.ACS_LOG_ERROR, None, msg, None, None, None)
         logcall = mockLogSvc.mockGetAllCalls()[-1]
         self.assertEquals("logWithPriority", logcall.getName())
         self.assertEquals(ACSLog.ACS_LOG_ERROR, logcall.getParam(0))
         self.assertEquals(msg, logcall.getParam(2))
+        self.assertEquals(True, isinstance(logcall.getParam(3), ACSLog.RTContext))
+        self.assertEquals(True, isinstance(logcall.getParam(4), ACSLog.SourceInfo))
         self.assertEquals("", logcall.getParam(6))
         self.assertEquals("", logcall.getParam(7))
         self.assertEquals("", logcall.getParam(8))

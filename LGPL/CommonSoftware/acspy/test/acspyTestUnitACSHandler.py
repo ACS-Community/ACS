@@ -17,7 +17,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: acspyTestUnitACSHandler.py,v 1.3 2008/05/01 20:53:49 agrimstrup Exp $"
+# "@(#) $Id: acspyTestUnitACSHandler.py,v 1.4 2008/05/07 22:23:25 agrimstrup Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -25,7 +25,7 @@
 #
 
 #------------------------------------------------------------------------------
-__revision__ = "$Id: acspyTestUnitACSHandler.py,v 1.3 2008/05/01 20:53:49 agrimstrup Exp $"
+__revision__ = "$Id: acspyTestUnitACSHandler.py,v 1.4 2008/05/07 22:23:25 agrimstrup Exp $"
 #--REGULAR IMPORTS-------------------------------------------------------------
 import unittest
 import mock
@@ -77,21 +77,45 @@ class ACSFormatterCheck(unittest.TestCase):
         s = self.f.format(lr)
         self.assertEqual("1970-01-01T00:00:00.000 Simple Test text",s)
 
-    def testFormatEmptyData(self):
-        """ACSFormatter formats a log record with an empty data attribute correctly"""
+    def testFormatNoneData(self):
+        """ACSFormatter formats a log record that has no data attribute correctly"""
+        lr = ACSHandler.ACSLogRecord("Simple", "TRACE", "/path/to/file.py", 100, "Test text", [], None)
+        lr.created = 0
+        lr.data = None
+        s = self.f.format(lr)
+        self.assertEqual("1970-01-01T00:00:00.000 Simple Test text [ ]",s)
+
+    def testFormatEmptyDataDict(self):
+        """ACSFormatter formats a log record with an empty data dictionary attribute correctly"""
         lr = ACSHandler.ACSLogRecord("Simple", "TRACE", "/path/to/file.py", 100, "Test text", [], None)
         lr.created = 0
         lr.data = {}
         s = self.f.format(lr)
         self.assertEqual("1970-01-01T00:00:00.000 Simple Test text [ ]",s)
 
-    def testFormatData(self):
-        """ACSFormatter formats a log record with a data attribute correctly"""
+    def testFormatEmptyDataList(self):
+        """ACSFormatter formats a log record with an empty data list attribute correctly"""
+        lr = ACSHandler.ACSLogRecord("Simple", "TRACE", "/path/to/file.py", 100, "Test text", [], None)
+        lr.created = 0
+        lr.data = []
+        s = self.f.format(lr)
+        self.assertEqual("1970-01-01T00:00:00.000 Simple Test text [ ]",s)
+
+    def testFormatDataDict(self):
+        """ACSFormatter formats a log record with a data dictionary attribute correctly"""
         lr = ACSHandler.ACSLogRecord("Simple", "TRACE", "/path/to/file.py", 100, "Test text", [], None)
         lr.created = 0
         lr.data = { 'a' : 'A', 5 : '5', 'B' : 9 }
         s = self.f.format(lr)
         self.assertEqual("1970-01-01T00:00:00.000 Simple Test text [ a=A B=9 5=5 ]",s)
+
+    def testFormatDataList(self):
+        """ACSFormatter formats a log record with a data list attribute correctly"""
+        lr = ACSHandler.ACSLogRecord("Simple", "TRACE", "/path/to/file.py", 100, "Test text", [], None)
+        lr.created = 0
+        lr.data = [ ACSLog.NVPair('a', 'A'), ACSLog.NVPair('5', '5'), ACSLog.NVPair('B', '9') ]
+        s = self.f.format(lr)
+        self.assertEqual("1970-01-01T00:00:00.000 Simple Test text [ a=A 5=5 B=9 ]",s)
 
                             
 class ACSLogRecordCheck(unittest.TestCase):
@@ -219,6 +243,25 @@ class ACSHandlerCheck(unittest.TestCase):
         import Acspy.Common.Log
         l = Acspy.Common.Log.Logger('test')
         h = ACSHandler.ACSHandler()
+        ctxt = ACSLog.RTContext('a', 'b', 'c', 'd', 'e')
+        srcinf = ACSLog.SourceInfo('a', 'b', 'c')
+        extras = { 'priority' : ACSLog.ACS_LOG_ERROR, 'data': [], 'rtCont' : ctxt, 'srcInfo' : srcinf, 'audience' : "", 'array' : "", 'antenna' : "" }
+        lr = l.makeRecord("Sample", Acspy.Common.Log.LEVELS[8], "/path/to/file.py",
+                                     100, 'ErrorTrace', (), None, 'dummy', extras)
+        h.sendLog(lr)
+        logcall = mockLogSvc.mockGetAllCalls()[-1]
+        self.assertEquals("logWithPriority", logcall.getName())
+        self.assertEquals(ACSLog.ACS_LOG_ERROR, logcall.getParam(0))
+        self.assertEquals(True, isinstance(logcall.getParam(3), ACSLog.RTContext))
+        self.assertEquals(ctxt, logcall.getParam(3))
+        self.assertEquals(True, isinstance(logcall.getParam(4), ACSLog.SourceInfo))
+        self.assertEquals(srcinf, logcall.getParam(4))
+
+    def testSendLogWithPriorityNoContextorSource(self):
+        """ACSHandler sends logWithPriority messages at the appropriate levels without provided context or source"""
+        import Acspy.Common.Log
+        l = Acspy.Common.Log.Logger('test')
+        h = ACSHandler.ACSHandler()
         extras = { 'priority' : ACSLog.ACS_LOG_ERROR, 'data': [], 'audience' : "", 'array' : "", 'antenna' : "" }
         lr = l.makeRecord("Sample", Acspy.Common.Log.LEVELS[8], "/path/to/file.py",
                                      100, 'ErrorTrace', (), None, 'dummy', extras)
@@ -226,6 +269,25 @@ class ACSHandlerCheck(unittest.TestCase):
         logcall = mockLogSvc.mockGetAllCalls()[-1]
         self.assertEquals("logWithPriority", logcall.getName())
         self.assertEquals(ACSLog.ACS_LOG_ERROR, logcall.getParam(0))
+        self.assertEquals(True, isinstance(logcall.getParam(3), ACSLog.RTContext))
+        self.assertEquals(True, isinstance(logcall.getParam(4), ACSLog.SourceInfo))
+
+    def testSendLogWithPriorityBadContextandSource(self):
+        """ACSHandler sends logWithPriority messages at the appropriate levels"""
+        import Acspy.Common.Log
+        l = Acspy.Common.Log.Logger('test')
+        h = ACSHandler.ACSHandler()
+        extras = { 'priority' : ACSLog.ACS_LOG_ERROR, 'data': [], 'rtCont': None, 'srcInfo' : None, 'audience' : "", 'array' : "", 'antenna' : "" }
+        lr = l.makeRecord("Sample", Acspy.Common.Log.LEVELS[8], "/path/to/file.py",
+                                     100, 'ErrorTrace', (), None, 'dummy', extras)
+        h.sendLog(lr)
+        logcall = mockLogSvc.mockGetAllCalls()[-1]
+        self.assertEquals("logWithPriority", logcall.getName())
+        self.assertEquals(ACSLog.ACS_LOG_ERROR, logcall.getParam(0))
+        self.assertEquals(True, isinstance(logcall.getParam(3), ACSLog.RTContext))
+        self.assertEquals(False, logcall.getParam(3) is None)
+        self.assertEquals(True, isinstance(logcall.getParam(4), ACSLog.SourceInfo))
+        self.assertEquals(False, logcall.getParam(4) is None)
 
     def testShouldFlushCapacity(self):
         """ACSHandler flushes when capacity is reached"""

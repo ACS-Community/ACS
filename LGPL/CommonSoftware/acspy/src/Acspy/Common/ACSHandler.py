@@ -1,4 +1,4 @@
-# @(#) $Id: ACSHandler.py,v 1.13 2008/05/01 20:53:49 agrimstrup Exp $
+# @(#) $Id: ACSHandler.py,v 1.14 2008/05/07 22:23:25 agrimstrup Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA,  2001
@@ -29,7 +29,7 @@ TODO:
 - Everything
 '''
 
-__revision__ = "$Id: ACSHandler.py,v 1.13 2008/05/01 20:53:49 agrimstrup Exp $"
+__revision__ = "$Id: ACSHandler.py,v 1.14 2008/05/07 22:23:25 agrimstrup Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 from socket    import gethostname
@@ -131,12 +131,17 @@ class ACSFormatter(logging.Formatter):
             s = s + record.exc_text
         if 'data' in record.__dict__:
             s += " ["
-            try:
-                for d in record.data:
-                    ds = " %s=%s" % (d, record.data[d])
+            if isinstance(record.data, dict):
+                try:
+                    for d in record.data:
+                        ds = " %s=%s" % (d, record.data[d])
+                        s += ds
+                except TypeError:
+                    pass
+            elif isinstance(record.data, list):
+                for p in record.data:
+                    ds = " %s=%s" % p._tuple()
                     s += ds
-            except TypeError:
-                pass
             s += " ]"
         return s
 #------------------------------------------------------------------------------
@@ -287,8 +292,8 @@ class ACSHandler(logging.handlers.BufferingHandler):
                 self.logSvc.logWithPriority(record.priority,
                                             acs_timestamp,
                                             record.getMessage(),
-                                            rt_context,
-                                            src_info,
+                                            record.rtCont if 'rtCont' in record.__dict__ and record.rtCont is not None else rt_context,
+                                            record.srcInfo if 'srcInfo' in record.__dict__ and record.srcInfo is not None else src_info,
                                             record.data,
                                             record.audience,
                                             record.array,

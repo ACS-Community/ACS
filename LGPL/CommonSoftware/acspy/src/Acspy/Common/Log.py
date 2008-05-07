@@ -1,4 +1,4 @@
-# @(#) $Id: Log.py,v 1.41 2008/04/29 15:32:34 agrimstrup Exp $
+# @(#) $Id: Log.py,v 1.42 2008/05/07 22:23:25 agrimstrup Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA,  2001
@@ -39,7 +39,7 @@ of creating new instances of the Logger class which can take a very long
 time depending on managers load.
 '''
 
-__revision__ = "$Id: Log.py,v 1.41 2008/04/29 15:32:34 agrimstrup Exp $"
+__revision__ = "$Id: Log.py,v 1.42 2008/05/07 22:23:25 agrimstrup Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 from os        import environ
@@ -179,6 +179,7 @@ try:
     CENTRALHANDLER
 except NameError:
     CENTRALHANDLER = ACSHandler()
+    register(CENTRALHANDLER.flush)
 
 #------------------------------------------------------------------------
 def setCapacity(capacity):
@@ -689,8 +690,9 @@ class Logger(logging.Logger):
                 array = ""
         if antenna is None:
                 antenna = ""
-        self.log(LEVELS[priority], msg, extra={ 'priority' : priority, 'data' : data, 'audience' : audience,
-                                                'array' : array, 'antenna' : antenna})
+        self.log(LEVELS[priority], msg, extra={ 'priority' : priority, 'rtCont' : rtCont, 'srcInfo' : srcInfo,
+                                                'data' : data, 'audience' : audience, 'array' : array,
+                                                'antenna' : antenna})
     #------------------------------------------------------------------------
     def logNotSoTypeSafe(self, priority, msg, audience=None, array=None, antenna=None):
         '''
