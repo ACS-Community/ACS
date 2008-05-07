@@ -28,6 +28,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.Set;
 import java.util.concurrent.ArrayBlockingQueue;
 
@@ -36,14 +37,12 @@ import com.cosylab.logging.engine.log.LogTypeHelper;
 import com.cosylab.logging.engine.log.ILogEntry.Field;
 
 /**
- * The class extends the cache on file implemented in LogBufferedFileCache
- * keeping a cache of logs in memory to avoid to access the file
- * for the most frequently accessed logs
- * 
- * The cache stores the logs into an HashMap using their index as key
- * 
- * The cache stores an array of the times and level of the logs
- * to speed up the sorting done by the table.
+ * The class extends the cache on file keeping a set of logs in memory to avoid to access 
+ * the file for the most frequently accessed logs
+ * <P>
+ * The cache stores the logs into an HashMap using their indexes as keys.
+ * It also stores an array of times and level of logs to speed up the sorting 
+ * done by the table.
  * 
  * @author acaproni
  *
@@ -78,23 +77,26 @@ public class LogCache extends LogMultiFileCache implements ILogMap {
 	private HashMap<Integer,ILogEntry> cache;
 	
 	/**
-	 * The following list used to keep ordered the indexes
+	 * The following list is used to keep ordered the indexes
 	 * in such a way it is fast to insert/remove logs in the cache.
+	 * <P>
 	 * The indexes contained in this object are the indexes in the cache TreeMap
 	 * and the size of the TreeMap and the ArrayBlockingQueue is always the same.
-	 * 
+	 * <BR>
 	 * The functioning is the following:
-	 *  - new elements are added in the tail
-	 *  - old elemnts are removed from the head
-	 *  - whenever an elements is accessed it is moved of one position
+	 * <UL>
+	 *  <LI> new elements are added in the tail
+	 *  <LI> old elements are removed from the head
+	 *  <LI> whenever an elements is accessed it is moved of one position
 	 *    toward the tail reducing the chance to be removed
 	 *    The moving operation is performed swapping the accessed elements
 	 *    with its neighborhood
+	 * </UL>
 	 */
-	private ArrayBlockingQueue<Integer> manager = null;
+	private LinkedList<Integer> manager = null;
 	
 	/** 
-	 * The aray with the level of each log in the cache
+	 * The array with the level of each log in the cache
 	 * (useful for setting the log level)
 	 */
 	private HashMap<Integer,LogTypeHelper> logTypes = new HashMap<Integer,LogTypeHelper>();
@@ -129,7 +131,7 @@ public class LogCache extends LogMultiFileCache implements ILogMap {
 		actualCacheSize = size;
 		System.out.println("Jlog will use cache for " + actualCacheSize + " log records.");		
 		cache = new HashMap<Integer,ILogEntry>();
-		manager = new ArrayBlockingQueue<Integer>(actualCacheSize, true);
+		manager = new LinkedList<Integer>();
 		clear();
 	}
 	
@@ -236,20 +238,15 @@ public class LogCache extends LogMultiFileCache implements ILogMap {
 		synchronized (cache) {
 			if (cache.size()==actualCacheSize) {
 				// We need to create a room for the new element
-				try {
-					Integer itemToRemove = manager.take();
-					cache.remove(itemToRemove);
-				}
-				catch(InterruptedException ex) {
-					throw new LogCacheException ("Interrupted while waiting to take from the Queue!");
-				}
+				Integer itemToRemove = manager.removeFirst();
+				cache.remove(itemToRemove);
 			}
 			// Add the log in the cache
 			cache.put(idx,log);
 		}
 		
 		// Append the index in the manager list
-		manager.add(idx);
+		manager.addLast(idx);
 		
 		return log; 
 	}
