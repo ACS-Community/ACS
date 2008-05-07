@@ -952,9 +952,10 @@ public class VisibleLogsVector extends Thread {
 	 *
 	 */
 	public synchronized void clear() {
+		int sz=visibleLogs.size();
 		visibleLogs.clear();
 		buffer.clear();
-		tableModel.fireTableDataChanged(); 
+		tableModel.fireTableRowsDeleted(0, sz); 
 	}
 	
 	/**
