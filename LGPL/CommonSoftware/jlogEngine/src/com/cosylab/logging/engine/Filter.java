@@ -547,7 +547,11 @@ public static Filter buildFilter(
 	boolean notPolicy = (temp==1);
 	// If wildChar is defined then min, max and exact should not
 	if (wildChar!=null && (min!=null || max!=null || exact!=null)) {
-		throw new IllegalArgumentException("Ambiguous parameters: wildChar, min, max");
+		throw new IllegalArgumentException("Ambiguous parameters: wildChar, min, max, exact");
+	}
+	// If wild char is not defined then at least one between min, max and exat must be not null
+	if (wildChar==null && min==null && max==null && exact==null) {
+		throw new IllegalArgumentException("Ambiguous null params: wildChar, min, max, exact");
 	}
 	// If exact is defined then min and max should not
 	if (exact!=null && (min!=null || max!=null)) {
@@ -605,10 +609,11 @@ public static Filter buildFilter(
 		return f;
 	}
 	// MINMAX (it implements MINIMUM and MAXIMUM)
-	// We use minType
 	if (minType==null) {
 		minType=maxType;
-	} 
+	} else {
+		maxType=minType;
+	}
 	if (minType.compareTo("java.lang.String")==0) {
 		f = new Filter(fieldInt,isLethal,min,max,notPolicy);
 	} else if (minType.compareTo("java.util.Date")==0) {
@@ -632,17 +637,15 @@ public static Filter buildFilter(
 	} else if (minType.compareTo("java.lang.Integer")==0) {
 		Integer minInt=null;
 		Integer maxInt=null;
-		if (min==null) {
-			throw new IllegalArgumentException("Invalid min "+min);
-		}
-		if (max==null) {
-			throw new IllegalArgumentException("Invalid max "+min);
-		}
 		try {
-			minInt=new Integer(min);
-			maxInt=new Integer(max);
+			if (min!=null) {
+				minInt=new Integer(min);
+			}
+			if (max!=null){
+				maxInt=new Integer(max);
+			}
 		} catch (NumberFormatException e) {
-			throw new IllegalArgumentException("invalid min/max "+min+"/"+max);
+			throw new IllegalArgumentException("Invalid min/max "+min+"/"+max);
 		}
 		f=new Filter(fieldInt,isLethal,minInt,maxInt,notPolicy);
 	} else {
