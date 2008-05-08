@@ -31,14 +31,17 @@ import java.util.Collection;
 import java.util.Iterator;
 
 import javax.swing.JOptionPane;
+import javax.xml.parsers.ParserConfigurationException;
 
 import alma.acs.util.StopWatch;
 
 import com.cosylab.logging.engine.LogMatcher;
 import com.cosylab.logging.engine.ACS.ACSLogParser;
 import com.cosylab.logging.engine.ACS.ACSLogParserDOM;
+import com.cosylab.logging.engine.ACS.ACSRemoteAccess;
 import com.cosylab.logging.engine.ACS.ACSRemoteErrorListener;
 import com.cosylab.logging.engine.ACS.ACSRemoteLogListener;
+import com.cosylab.logging.engine.ACS.ACSRemoteRawLogListener;
 import com.cosylab.logging.engine.log.ILogEntry;
 
 /**
@@ -100,40 +103,54 @@ public class IOHelper extends LogMatcher {
 	 * @param logStr The string representation of the log
 	 * @param logListener The listener i.e. the callback for each new log to add
 	 */
-	private void injectLog(StringBuilder logStr, ACSRemoteLogListener logListener, ACSRemoteErrorListener errorListener) {
-		if (errorListener==null || logListener==null) {
+	private void injectLog(
+			StringBuilder logStr, 
+			ACSRemoteLogListener logListener, 
+			ACSRemoteRawLogListener rawLogListener,
+			ACSRemoteErrorListener errorListener) {
+		if (errorListener==null || (logListener==null && rawLogListener==null)) {
 			throw new IllegalArgumentException("Listeners can't be null");
 		}
-		ILogEntry log=null;
-		try {
-			if (parser == null) {
-				parser = new ACSLogParserDOM();
+		if (logListener!=null) {
+			ILogEntry log=null;
+			try {
+				log = parser.parse(logStr.toString().trim());
+			} catch (Exception e) {
+				errorListener.errorReceived(logStr.toString().trim());
+				System.err.println("Exception parsing a log: "+e.getMessage());
+				e.printStackTrace(System.err);
+				return;
 			}
-			log = parser.parse(logStr.toString().trim());
-		} catch (Exception e) {
-			errorListener.errorReceived(logStr.toString().trim());
-			System.err.println("Exception parsing a log: "+e.getMessage());
-			e.printStackTrace(System.err);
-			return;
+			if (match(log)) {
+				logListener.logEntryReceived(log);
+			}
 		}
-		if (match(log)) {
-			logListener.logEntryReceived(log);
+		if (rawLogListener!=null) {
+			rawLogListener.xmlEntryReceived(logStr.toString().trim());
 		}
 	}
 	
 	/**
 	 * Load the logs from the file with the given name.
 	 * <P>
-	 * The logs are sent to the <code>ACSRemoteLogListener</code>
+	 * The logs are sent to the <code>ACSRemoteLogListener</code> and /or
+	 * to the <code>ACSRemoteRawLogListener</code>.
 	 *  
 	 * @param fileName The name of the file to read logs from
 	 * @param logListener The callback for each new log read from the IO
+	 * @param rawLogListener The callback for each new XML log read from the IO
 	 * @param errorListener The listener for errors
 	 * @param progressListener The listener to be notified about the bytes read
 	 * @return The legth of the file to read
 	 * @throws IOException In case of an IO error while reading the file
+	 * @throws ParserConfigurationException In case of error building the parser
 	 */
-	public synchronized long loadLogs(String fileName ,ACSRemoteLogListener logListener, ACSRemoteErrorListener errorListener, IOPorgressListener progressListener) throws IOException {
+	public synchronized long loadLogs(
+			String fileName,
+			ACSRemoteLogListener logListener,
+			ACSRemoteRawLogListener rawLogListener,
+			ACSRemoteErrorListener errorListener, 
+			IOPorgressListener progressListener) throws IOException, ParserConfigurationException {
 		if (fileName==null || fileName.isEmpty()) {
 			throw new IllegalArgumentException("Invalid file name: "+fileName);
 		}
@@ -142,28 +159,45 @@ public class IOHelper extends LogMatcher {
 		}
 		File f = new File(fileName);
 		BufferedReader buffer=new BufferedReader(new FileReader(f),32768);
-		loadLogs(buffer, logListener, errorListener,progressListener);
+		loadLogs(buffer, logListener, rawLogListener, errorListener,progressListener);
 		return f.length();
 	}
 	
 	/**
 	 * Load the logs from the given <code>BufferedReader</code>.
 	 * <P>
-	 * The logs are sent to the <code>ACSRemoteLogListener</code>
+	 * The logs are sent to the <code>ACSRemoteLogListener</code> and /or
+	 * to the <code>ACSRemoteRawLogListener</code>.
 	 *  
 	 * @param br The BufferedReader to read logs from
 	 * @param logListener The callback for each new log read from the IO
+	 * @param rawLogListener The callback for each new XML log read from the IO
 	 * @param errorListener The listener for errors
 	 * @param progressListener The listener to be notified about the bytes read
 	 * @throws IOException In case of an IO error while reading the file
+	 * @throws ParserConfigurationException In case of error building the parser
 	 */
-	public synchronized void loadLogs(BufferedReader br,ACSRemoteLogListener logListener, ACSRemoteErrorListener errorListener, IOPorgressListener progressListener) throws IOException {
-		if (br==null || logListener==null|| errorListener==null) {
+	public synchronized void loadLogs(
+			BufferedReader br,
+			ACSRemoteLogListener logListener,
+			ACSRemoteRawLogListener rawLogListener,
+			ACSRemoteErrorListener errorListener, 
+			IOPorgressListener progressListener) throws IOException, ParserConfigurationException {
+		if (br==null || errorListener==null) {
 			throw new IllegalArgumentException("Parameters can't be null");
+		}
+		if (logListener==null && rawLogListener==null) {
+			throw new IllegalArgumentException("No log listeners defined");
 		}
 		if (progressListener==null) {
 			throw new IllegalArgumentException("The progress listener can't be null");
 		}
+		
+		// Build the parser
+		if (parser == null && logListener!=null) {
+			parser = new ACSLogParserDOM();
+		}
+		
 		stopped=false;
 		
 		// The "clever" buffer
@@ -219,7 +253,7 @@ public class IOHelper extends LogMatcher {
 				buffer.append((char)chRead,xmlStr);
 				if (xmlStr.length()>0) {
 					// A new log has been found
-					injectLog(xmlStr,logListener,errorListener);
+					injectLog(xmlStr,logListener, rawLogListener, errorListener);
 					logRecordsRead++;
 					xmlStr.delete(0, xmlStr.length());
 				}
