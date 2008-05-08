@@ -30,10 +30,13 @@ import java.util.Date;
 
 import com.cosylab.logging.engine.ACS.ACSLogParser;
 import com.cosylab.logging.engine.ACS.ACSLogParserDOM;
+import com.cosylab.logging.engine.ACS.ACSRemoteErrorListener;
 import com.cosylab.logging.engine.ACS.ACSRemoteRawLogListener;
 import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.engine.log.ILogEntry.Field;
 
+import alma.acs.logging.engine.io.IOHelper;
+import alma.acs.logging.engine.io.IOPorgressListener;
 import alma.acs.util.IsoDateFormat;
 
 /**
@@ -48,7 +51,7 @@ import alma.acs.util.IsoDateFormat;
  * @author acaproni
  *
  */
-public class LogFileSplitter implements ACSRemoteRawLogListener, AsynchronousOperationListener {
+public class LogFileSplitter implements ACSRemoteRawLogListener, ACSRemoteErrorListener, IOPorgressListener {
 
 	// The name of the input file
 	private String inFileName;
@@ -72,13 +75,10 @@ public class LogFileSplitter implements ACSRemoteRawLogListener, AsynchronousOpe
 	// The date of the first log in the current output file (needed for time criteria)
 	private long firstLogDate=-1;
 	
-	// The reader for the file of logs
-	private LogFile logReader;
-	
 	// The parser to translate XML logs into ILogEntry
 	private ACSLogParser parser = null;
 	
-	// The writer to write the dstination files
+	// The writer to write the destination files
 	private final int OUTPUT_BUFFER_SIZE=8192;
 	private BufferedWriter outF=null;
 	
@@ -151,7 +151,6 @@ public class LogFileSplitter implements ACSRemoteRawLogListener, AsynchronousOpe
 			csv = new CSVConverter(this.cols);
 		}
 		
-		logReader = new LogFile(this,this);
 	}
 	
 	
@@ -160,13 +159,11 @@ public class LogFileSplitter implements ACSRemoteRawLogListener, AsynchronousOpe
 	 * @throws Exception in case of errors while splitting
 	 */
 	public void split() throws Exception {
-		LogFile.IOAction action = logReader.getLoadAction(inFileName);
-		logReader.submitAsyncAction(action);
-		synchronized(this) {
-			wait();
+		IOHelper ioHelper = new IOHelper();
+		ioHelper.loadLogs(inFileName, null, this, this, this);
+		if (outF!=null) {
+			closeOutputFile(outF);
 		}
-		action = logReader.getTerminationAction();
-		logReader.submitAsyncAction(action);
 	}
 	
 	/**
@@ -174,6 +171,7 @@ public class LogFileSplitter implements ACSRemoteRawLogListener, AsynchronousOpe
 	 * 
 	 * @param xmlLogString The XML log read
 	 */
+	@Override
 	public void xmlEntryReceived(String xmlLogString) {
 		ILogEntry log = null;
 		if (number!=null ) {
@@ -224,23 +222,6 @@ public class LogFileSplitter implements ACSRemoteRawLogListener, AsynchronousOpe
 			}
 		}
 		
-	}
-	
-	public void operationTerminated(int id) {
-		synchronized(this) {
-			notifyAll();
-		}
-	}
-	
-	public void operationStarted(int ID) {
-	}
-	
-	public void errorDetected(Exception e, int ID) {
-		e.printStackTrace();
-	}
-	
-	public void operationProgress(long start, long end, long current, int ID) {
-		System.out.println("Bytes read: "+current+"\t"+(end-current)+" to go");
 	}
 	
 	/**
@@ -298,5 +279,55 @@ public class LogFileSplitter implements ACSRemoteRawLogListener, AsynchronousOpe
 				System.exit(-1);
 			}
 		}
+	}
+
+
+	/* (non-Javadoc)
+	 * @see alma.acs.logging.engine.io.IOPorgressListener#bytesRead(long)
+	 */
+	@Override
+	public void bytesRead(long bytes) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	/* (non-Javadoc)
+	 * @see alma.acs.logging.engine.io.IOPorgressListener#bytesWritten(long)
+	 */
+	@Override
+	public void bytesWritten(long bytes) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	/* (non-Javadoc)
+	 * @see alma.acs.logging.engine.io.IOPorgressListener#logsRead(int)
+	 */
+	@Override
+	public void logsRead(int numOfLogs) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	/* (non-Javadoc)
+	 * @see alma.acs.logging.engine.io.IOPorgressListener#logsWritten(int)
+	 */
+	@Override
+	public void logsWritten(int numOfLogs) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	/* (non-Javadoc)
+	 * @see com.cosylab.logging.engine.ACS.ACSRemoteErrorListener#errorReceived(java.lang.String)
+	 */
+	@Override
+	public void errorReceived(String xml) {
+		System.err.println("Error with the following: "+xml);
+		
 	}
 }

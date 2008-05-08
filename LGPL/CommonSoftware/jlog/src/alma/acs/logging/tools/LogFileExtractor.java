@@ -27,9 +27,13 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Date;
 
+import alma.acs.logging.engine.io.IOHelper;
+import alma.acs.logging.engine.io.IOPorgressListener;
+
 import com.cosylab.logging.engine.FiltersVector;
 import com.cosylab.logging.engine.ACS.ACSLogParser;
 import com.cosylab.logging.engine.ACS.ACSLogParserDOM;
+import com.cosylab.logging.engine.ACS.ACSRemoteErrorListener;
 import com.cosylab.logging.engine.ACS.ACSRemoteRawLogListener;
 import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.engine.log.ILogEntry.Field;
@@ -45,7 +49,7 @@ import com.cosylab.logging.engine.log.ILogEntry.Field;
  * @author acaproni
  *
  */
-public class LogFileExtractor implements ACSRemoteRawLogListener, AsynchronousOperationListener {
+public class LogFileExtractor implements ACSRemoteRawLogListener, ACSRemoteErrorListener, IOPorgressListener {
 	
 	// The start and end date of the logs in millisec.
 	// If one of them is -1, the test is assumed passed
@@ -65,13 +69,10 @@ public class LogFileExtractor implements ACSRemoteRawLogListener, AsynchronousOp
 	// The name of the output file
 	private String destFileName;
 	
-	// The reader for the file of logs
-	private LogFile logReader;
-	
 	// The parser to translate XML logs into ILogEntry
 	private ACSLogParser parser = null;
 	
-	// The writer to write the dstination files
+	// The writer to write the destination files
 	private final int OUTPUT_BUFFER_SIZE=8192;
 	private BufferedWriter outF=null;
 	
@@ -79,10 +80,12 @@ public class LogFileExtractor implements ACSRemoteRawLogListener, AsynchronousOp
 	private boolean writeAsCSV = false;
 	
 	// The converter from ILogEntry to CSV
-	CSVConverter csv;
+	private CSVConverter csv;
 	
-	// The fields and thier positions in the CSV
-	private String cols=null;
+	/**
+	 * The helper to write log into
+	 */
+	private IOHelper outHelper;
 	
 	/**
 	 * Constructor
@@ -137,7 +140,6 @@ public class LogFileExtractor implements ACSRemoteRawLogListener, AsynchronousOp
 		}
 		writeAsCSV=csvFormat;
 		if (writeAsCSV) {
-			this.cols=cols;
 			csv = new CSVConverter(cols);
 		}
 		
@@ -148,7 +150,6 @@ public class LogFileExtractor implements ACSRemoteRawLogListener, AsynchronousOp
 			System.err.println("Error creating the parser: "+e.getMessage());
 			System.exit(-1);
 		}
-		logReader = new LogFile(this,this);
 	}
 	
 	/**
@@ -156,6 +157,7 @@ public class LogFileExtractor implements ACSRemoteRawLogListener, AsynchronousOp
 	 * 
 	 * @param xmlLogString The XML log read
 	 */
+	@Override
 	public void xmlEntryReceived(String xmlLogString) {
 		boolean matches=true;
 		ILogEntry log=null;
@@ -183,7 +185,7 @@ public class LogFileExtractor implements ACSRemoteRawLogListener, AsynchronousOp
 				}
 			} else {
 				try {
-					outF.write(xmlLogString);
+					outHelper.saveLog(outF, log);
 				} catch (IOException e) {
 					System.err.println("Error writing a log: "+e.getMessage());
 					System.exit(-1);
@@ -191,29 +193,20 @@ public class LogFileExtractor implements ACSRemoteRawLogListener, AsynchronousOp
 			}
 		}
 	}
-	
-	public void operationTerminated(int id) {
-		synchronized(this) {
-			notifyAll();
-		}
-	}
-	
-	public void operationStarted(int ID) {
-	}
-	
-	public void errorDetected(Exception e, int ID) {
-		e.printStackTrace();
-	}
-	
-	public void operationProgress(long start, long end, long current, int ID) {
-	}
 
 	/**
-	 * / Open the destination file
-	 * 
-	 * @return The file for output
+	 * Create the <code>BufferedWriter</code> and the <code>IOHelper</code>
+	 * for writing logs.
+	 * <P>
+	 * This method uses a new <code>IOHelper</code> to open a new file 
+	 * where the logs are saved into.
+	 * It sets up:
+	 * <UL>
+	 * 	<LI>the <code>outHelper</code>
+	 *  <LI>the <code>outF</code>
+	 * </UL>
 	 */
-	private BufferedWriter openDestFile() {
+	private void openDestFile() {
 		if (destFileName.length()==0) {
 			throw new IllegalArgumentException("Wrong dest file name");
 		}
@@ -221,40 +214,46 @@ public class LogFileExtractor implements ACSRemoteRawLogListener, AsynchronousOp
 		if (!temp.endsWith(".xml") && !writeAsCSV) {
 			destFileName=destFileName.concat(".xml");
 		}
-		FileWriter outFile=null;
-		try {
-			outFile = new FileWriter(destFileName,false);
-		} catch (IOException e) {
-			System.err.print("Error creating output file "+destFileName+": ");
-			System.err.print(e.getMessage());
-			System.exit(-1);
+		if (!writeAsCSV) {
+			outHelper = new IOHelper();
+			try {
+				outF = outHelper.prepareSaveFile(destFileName, false);
+			} catch (Exception e) {
+				System.err.println("Error creating a file for saving named "+destFileName);
+				e.printStackTrace(System.err);
+				System.exit(-1);
+			}
+		} else {
+			outHelper=null;
+			try {
+				outF = new BufferedWriter(new FileWriter(destFileName));
+			} catch (Exception e) {
+				System.err.println("Error creating a file for saving named "+destFileName);
+				e.printStackTrace(System.err);
+				System.exit(-1);
+			}
 		}
-		return new BufferedWriter(outFile,OUTPUT_BUFFER_SIZE);
 	}
 	
 	/**
-	 * Extract the logs from the isource to the destination
+	 * Extract the logs from the source to the destination
 	 * applying the selection criteria given in the
 	 * constructor
 	 */
 	public void extract() throws Exception {
-		outF=openDestFile();
-		// Sttart the loading
-		LogFile.IOAction action = logReader.getLoadAction(inFileName);
-		logReader.submitAsyncAction(action);
-		synchronized(this) {
-			wait();
-		}
-		// Terminate the thread
-		action = logReader.getTerminationAction();
-		logReader.submitAsyncAction(action);
+		IOHelper inputHelper = new IOHelper();
+		openDestFile();
+		// Start the loading
+		inputHelper.loadLogs(inFileName, null, this, this, this);
 		// Flush and close the output
-		try {
+		if (!writeAsCSV) {
+			outHelper.terminateSave(outF, true);
+		} else {
 			outF.flush();
 			outF.close();
-		} catch (IOException e) {
-			System.err.println("Error closing the destination: "+e.getMessage());
 		}
+		outF=null;
+		outHelper=null;
 	}
 	
 	/**
@@ -274,5 +273,49 @@ public class LogFileExtractor implements ACSRemoteRawLogListener, AsynchronousOp
 			matches = date<=end;
 		}
 		return matches;
+	}
+
+	/* (non-Javadoc)
+	 * @see alma.acs.logging.engine.io.IOPorgressListener#bytesRead(long)
+	 */
+	@Override
+	public void bytesRead(long bytes) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	/* (non-Javadoc)
+	 * @see alma.acs.logging.engine.io.IOPorgressListener#bytesWritten(long)
+	 */
+	@Override
+	public void bytesWritten(long bytes) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	/* (non-Javadoc)
+	 * @see alma.acs.logging.engine.io.IOPorgressListener#logsRead(int)
+	 */
+	@Override
+	public void logsRead(int numOfLogs) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	/* (non-Javadoc)
+	 * @see alma.acs.logging.engine.io.IOPorgressListener#logsWritten(int)
+	 */
+	@Override
+	public void logsWritten(int numOfLogs) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	/* (non-Javadoc)
+	 * @see com.cosylab.logging.engine.ACS.ACSRemoteErrorListener#errorReceived(java.lang.String)
+	 */
+	@Override
+	public void errorReceived(String xml) {
+		System.err.println("Error with the following: "+xml);
 	}
 }
