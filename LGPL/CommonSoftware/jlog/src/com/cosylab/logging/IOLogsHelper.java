@@ -495,8 +495,8 @@ public class IOLogsHelper extends Thread  implements IOPorgressListener {
 		logsRead=0;
 		bytesRead=0;
 		try {
-			ioHelper.loadLogs(br, logListener, errorListener, this);
-		} catch (IOException ioe) {
+			ioHelper.loadLogs(br, logListener, null, errorListener, this);
+		} catch (Exception ioe) {
 			System.err.println("Exception loading the logs: "+ioe.getMessage());
 			ioe.printStackTrace(System.err);
 			JOptionPane.showMessageDialog(null, "Exception loading "+ioe.getMessage(),"Error loading",JOptionPane.ERROR_MESSAGE);

@@ -217,7 +217,7 @@ public class LoadSaveTest extends TestCase implements IOPorgressListener, ACSRem
 		assertEquals(logs.size(), numOfLogsWritten);
 		
 		// Read the logs
-		ioHelper.loadLogs(fileName, this, this, this);
+		ioHelper.loadLogs(fileName, this, null, this, this);
 		assertEquals(logs.size(),numOfLogsRead);
 		assertTrue(bytesRead>assumedLen); // bytes read includes the XML header
 	
@@ -287,7 +287,7 @@ public class LoadSaveTest extends TestCase implements IOPorgressListener, ACSRem
 		IOHelper ioHelper = new IOHelper();
 		assertNotNull(ioHelper);
 		
-		ioHelper.loadLogs(fileName, this, this, this);
+		ioHelper.loadLogs(fileName, this, null, this, this);
 		assertEquals(specialLogs.length, logsRead.size());
 	}
 	
@@ -307,7 +307,7 @@ public class LoadSaveTest extends TestCase implements IOPorgressListener, ACSRem
 		ioHelper.saveLogs(fileName, logs, this, true);
 		
 		// Load the logs
-		ioHelper.loadLogs(fileName, this, this, this);
+		ioHelper.loadLogs(fileName, this, null, this, this);
 		assertEquals(2*logs.size(), logsRead.size());
 		assertEquals(2*logs.size(), numOfLogsRead);
 	}
@@ -335,7 +335,7 @@ public class LoadSaveTest extends TestCase implements IOPorgressListener, ACSRem
 		assertEquals(logs.size(), numOfLogsWritten);
 		
 		// Read the logs
-		ioHelper.loadLogs(fileName, this, this, this);
+		ioHelper.loadLogs(fileName, this, null, this, this);
 		assertEquals(logs.size(),numOfLogsRead);
 	}
 }
