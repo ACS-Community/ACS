@@ -38,6 +38,10 @@
  * The constant values and strings defined here should be used to define enum classes in the 
  * various languages. That way we have one central definition, but convenient classes 
  * to work with that are guaranteed to use the correct numbers.
+ *
+ * Note that these values are redundantly defined in an XML schema (LoggingConfig.xsd in module maciidl)
+ * because we cannot reuse the IDL definition in the xsd. 
+ * ANY CHANGES TO THE LOG LEVELS HERE MUST BE SYNC'D WITH THE XSD! 
  */
 module AcsLogLevels {
 
