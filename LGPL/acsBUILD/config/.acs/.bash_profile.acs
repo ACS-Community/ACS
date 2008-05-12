@@ -20,7 +20,7 @@
 # MA 02111-1307  USA
 #
 #
-# "@(#) $Id: .bash_profile.acs,v 1.74 2007/12/13 14:53:27 bjeram Exp $"
+# "@(#) $Id: .bash_profile.acs,v 1.75 2008/05/12 18:55:08 agrimstrup Exp $"
 #
 #
 #
@@ -964,7 +964,7 @@ fi
 
 if [ X"$CASA_ROOT" != X ]
 then
-   PYTHONPATH=$CASA_ROOT/lib/python/site-packages:$PYTHONPATH
+   PYTHONPATH=$CASA_ROOT/lib/python:$PYTHONPATH
 fi
    
 
