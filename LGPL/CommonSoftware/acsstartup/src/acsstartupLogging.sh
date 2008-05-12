@@ -59,8 +59,7 @@ function getTimeStamp
 {
 local TS
 #TS=`date --iso-8601=seconds`
-TS=`date +%Y-%m-%dT%H:%M:%S`
-
+TS=`date --utc +%Y-%m-%dT%H:%M:%S`
 echo "$TS.000"
 }
 
