@@ -14,6 +14,8 @@ public class BACIRemoteNode extends BACITreeDataNode implements BACIRemote, Intr
 	private FullInterfaceDescription desc = null;
 	BACIRemoteAccess ra = null;
 	private String name = null;
+	/** state when objexp does not activate a component and it is not its owner */
+	private boolean isNonSticky = false;
 /**
  * BACIRemoteNode constructor comment.
  * @param newType int
@@ -130,6 +132,18 @@ public synchronized void setIFDesc(org.omg.CORBA.InterfaceDefPackage.FullInterfa
 public boolean isDevice()
 {
 	return getNodeType() == BACIRemoteAccess.DEVICE;
+}
+/**
+ * @return the isNonSticky
+ */
+public boolean isNonSticky() {
+	return isNonSticky;
+}
+/**
+ * @param isNonSticky the isNonSticky to set
+ */
+public void setNonSticky(boolean isNonSticky) {
+	this.isNonSticky = isNonSticky;
 }
 
 }

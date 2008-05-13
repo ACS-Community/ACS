@@ -67,7 +67,8 @@ public Component getTreeCellRendererComponent(
 	}
 	if ((((OETreeNode)value).isIntrospectable()) && (((Introspectable) value).isConnected())) {
 		setForeground(getConnectedColor());
-		setFont(new java.awt.Font("dialog", java.awt.Font.BOLD, 12));
+		// indicate non-sticky usuing italic style
+		setFont(new java.awt.Font("dialog", (((Introspectable) value).isNonSticky()) ? java.awt.Font.ITALIC : java.awt.Font.BOLD, 12));
 		setBackgroundSelectionColor(getConnectedBackColor());
 	} else if (sel) {
 		setForeground(getTextSelectionColor());

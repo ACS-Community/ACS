@@ -10,6 +10,8 @@
 # The most important is 
 #    -Dobjexp.pool_timeout=<time in ms>
 # to set DSI pool timeout.
+# To run objexp in non-intrusive way you can set non-sticky mode at startup using
+#    -Dobjexp.connect_non_sticky=true
 export HOST=`getIP`
 
 acsStartJava $* -DOAIAddr=$HOST si.ijs.acs.objectexplorer.ObjectExplorer BACI 

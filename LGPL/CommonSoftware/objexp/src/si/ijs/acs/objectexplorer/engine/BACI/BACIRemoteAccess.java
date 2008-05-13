@@ -45,6 +45,7 @@ import si.ijs.acs.objectexplorer.engine.Attribute;
 import si.ijs.acs.objectexplorer.engine.Introspectable;
 import si.ijs.acs.objectexplorer.engine.IntrospectionInconsistentException;
 import si.ijs.acs.objectexplorer.engine.Invocation;
+import si.ijs.acs.objectexplorer.engine.NonStickyConnectFailedRemoteException;
 import si.ijs.acs.objectexplorer.engine.Operation;
 import si.ijs.acs.objectexplorer.engine.RemoteAccess;
 import si.ijs.acs.objectexplorer.engine.RemoteException;
@@ -505,6 +506,7 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 	public static final String MANAGER_CORBALOC = "ACS.manager";
 	public static final String IR_CORBALOC = "ACS.repository";
 	public static final String PROPERTY_POOL_TIMEOUT = "objexp.pool_timeout";
+	public static final String CONNECT_NON_STICKY_FLAG = "objexp.connect_non_sticky";
 	public static final String strict = "false";
 	/* for CallbackImpl, bookkeeping of static members outside nonstatic inner class */
 	private static HashMap descriptions = new HashMap();
@@ -515,6 +517,7 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 	private boolean bufferDescs = true;
 	private Hashtable devices = null;
 	private boolean destroyed = false;
+	private boolean connectNonSticky = false;
 	/**
 	 * ESORemoteAccess constructor comment.
 	 */
@@ -556,7 +559,8 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 			if (!(baciNode.getParent() instanceof Introspectable)) {
 				internalManagerConnect(baciNode);
 				synchronized (connected) {
-					if (baciNode.getUserObject() instanceof String)
+					// connected is being use to have a list of all nodes to be released at logout
+					if (!baciNode.isNonSticky() && baciNode.getUserObject() instanceof String)
 						connected.add((String)baciNode.getUserObject());
 				}
 			} else {
@@ -565,9 +569,17 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 			if (baciNode.getCORBARef() == null)
 				throw new AcsJNullPointerEx();
 		} catch (AcsJObjectExplorerConnectEx e) {
-		    logACSException(e);
-			throw new RemoteException(
-					"Failed to connect to '" + baciNode + "'");
+			// do not make panic if non-sticky mode
+			if (!connectNonSticky)
+			{
+			    logACSException(e);
+				throw new RemoteException(
+						"Failed to connect to '" + baciNode + "'");
+			}
+			else
+			{
+				throw new NonStickyConnectFailedRemoteException(e.getMessage());
+			}
 		} catch (AcsJNullPointerEx e) {
 		    logACSException(e);
 		    /**
@@ -717,7 +729,7 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 		//       we have to find out a clean way to rule out things that are not DOs and
 		//       also not Components.
 	    //if (baciIntrospector.isDevice(baciNode.getCORBARef())) {
-		if (baciNode.isDevice()) {
+		if (baciNode.isDevice() && !baciNode.isNonSticky()) {
 			if (manager == null)
 				resolveManager();
 			notifier.reportDebug(
@@ -2230,7 +2242,10 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 		org.omg.CORBA.Object obj = null;
 		try
 		    {
-		    obj = manager.get_component(handle, curl, true);
+			if (connectNonSticky)
+			    obj = manager.get_component_non_sticky(handle, curl);
+			else
+				obj = manager.get_component(handle, curl, true);
 		    notifier.reportDebug("BACIRemoteAccess::internalManagerConnect",
 					 "Manager returns OK");
 		    }
@@ -2239,7 +2254,10 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
          */
 		catch(Throwable e)
 		{
-		    notifier.reportError("Connection to component '" + curl + "' failed.");
+			if (connectNonSticky)
+				notifier.reportError("Connection to component '" + curl + "' failed. 'Connect as non-sticky' mode is enabled: in this mode component will not be activated by ObjectExplorer, only already activated components can be accessed.");
+			else
+				notifier.reportError("Connection to component '" + curl + "' failed.");
 		    AcsJObjectExplorerConnectEx acsjex = new AcsJObjectExplorerConnectEx(e);
 		    acsjex.setCurl(curl);
 		    throw acsjex;
@@ -2276,6 +2294,7 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 		    throw acsjex;
 		}
 		
+		baciNode.setNonSticky(connectNonSticky);
 		baciNode.setCORBARef(obj);
 		try {
 			baciNode.setIFDesc(getIFDesc(irfid));
@@ -2299,7 +2318,7 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 				"Failed to retrieve interface description from IR, releasing component on Manager, if needed.",
 				e);
 			try {
-				if (manager != null && obj != null)
+				if (manager != null && obj != null && !baciNode.isNonSticky())
 					manager.release_component(handle, curl);
 			} catch (NoPermissionEx npe) {
 				notifier.reportError("No permission to release component", npe);
@@ -2641,4 +2660,12 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 	public void setCaching(boolean value) {
 		bufferDescs = value;
 	}
+
+	/**
+	 * @param connectNonSticky the connectNonSticky to set
+	 */
+	public void setConnectNonSticky(boolean connectNonSticky) {
+		this.connectNonSticky = connectNonSticky;
+	}
+	
 }

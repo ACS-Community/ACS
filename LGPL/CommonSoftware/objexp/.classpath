@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="var" path="ACSROOT/lib/maci.jar" sourcepath="ACSROOT/lib/maci.jar"/>
+	<classpathentry kind="var" path="JRE_LIB" sourcepath="/JAVA_SRC"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/jacsutil"/>
+	<classpathentry kind="var" path="ACSROOT/lib/maci.jar" sourcepath="INTROOT/lib/maci.jar"/>
 	<classpathentry kind="var" path="JACORB_HOME/lib/jacorb.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/baci.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acscomponent.jar"/>
@@ -13,6 +15,10 @@
 	<classpathentry kind="var" path="ACSROOT/lib/maciErrType.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/objexpErrType.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/ACSErrTypeCommon.jar"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="var" path="ACSROOT/lib/maciSchemaBindings.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/cdbErrType.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/castor.jar"/>
+	<classpathentry kind="var" path="JACORB_HOME/lib/avalon-framework.jar"/>
+	<classpathentry kind="var" path="JACORB_HOME/lib/logkit.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -12,10 +12,13 @@ import java.awt.event.*;
 public class BACIMenu extends javax.swing.JMenu {
 	private JMenuItem corbalocItem = null;
 	private JCheckBoxMenuItem cacheItem = null;
+	private JCheckBoxMenuItem nonStickyItem = null;
 	private BACIRemoteAccess ra = null;
 	private Properties props = null;
 	private String managerLoc = null;
 	private String IRloc = null;
+	private boolean connectNonSticky;
+	
 /**
  * BACIMenu constructor comment.
  */
@@ -27,16 +30,21 @@ public BACIMenu(BACIRemoteAccess ra) {
 	
 	corbalocItem = new JMenuItem("Manager & IR corbaloc");
 	cacheItem = new JCheckBoxMenuItem("Cache IR descriptions");
-
+	nonStickyItem = new JCheckBoxMenuItem("Connect as non-sticky");
+	
 	add(corbalocItem);
 	add(cacheItem);
+	add(nonStickyItem);
 	
 	props = System.getProperties();
 	
 	managerLoc = props.getProperty(BACIRemoteAccess.MANAGER_CORBALOC);
 	IRloc = props.getProperty(BACIRemoteAccess.IR_CORBALOC);
-	
+	connectNonSticky = Boolean.getBoolean(BACIRemoteAccess.CONNECT_NON_STICKY_FLAG);
+	this.ra.setConnectNonSticky(connectNonSticky);
+
 	cacheItem.setSelected(this.ra.getCaching());
+	nonStickyItem.setSelected(connectNonSticky);
 	
 	corbalocItem.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent evt)
@@ -69,5 +77,13 @@ public BACIMenu(BACIRemoteAccess ra) {
 			}
 		}
 	});
+
+	nonStickyItem.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent evt)
+		{
+			BACIMenu.this.ra.setConnectNonSticky(nonStickyItem.isSelected());
+		}
+	});
+
 }
 }

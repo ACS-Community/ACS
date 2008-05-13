@@ -53,4 +53,11 @@ void disconnect();
  * @return boolean connection state flag
  */
 boolean isConnected();
+/**
+ * This method is needed by the OE GUI to render tree cells according to
+ * the connection state of the node, and to show an appropriate popup menu
+ *
+ * @return boolean non-sticky (objexp is not an owner) state flag
+ */
+boolean isNonSticky();
 }

@@ -19,6 +19,7 @@ import javax.swing.tree.TreePath;
 
 import si.ijs.acs.objectexplorer.engine.Introspectable;
 import si.ijs.acs.objectexplorer.engine.Invocation;
+import si.ijs.acs.objectexplorer.engine.NonStickyConnectFailedRemoteException;
 import si.ijs.acs.objectexplorer.engine.RemoteAccess;
 import si.ijs.acs.objectexplorer.engine.SimpleIntrospectable;
 import si.ijs.acs.objectexplorer.engine.BACI.BACIInvocation;
@@ -387,8 +388,13 @@ public class TreeHandlerBean implements NodeRequestListener {
 	 * @author rbertoncelj
 	 */
 	public void connect() {
-		System.out.println("Connecting to "+clicked);
-		clicked.connect();
+		//System.out.println("Connecting to "+clicked);
+		try {
+			clicked.connect();
+		} catch (NonStickyConnectFailedRemoteException nscfre) {
+			// return from method gracefully
+			return;
+		}
 		((DefaultTreeModel) tree.getModel()).reload((TreeNode) clicked);
 		if ((tree.getSelectionPath() != null)
 				&& (tree.getSelectionPath().getLastPathComponent() == clicked)) {
@@ -727,7 +733,14 @@ public class TreeHandlerBean implements NodeRequestListener {
 			selectedNode = (TreeNode) sourceTree.getSelectionPath()
 					.getLastPathComponent();
 			if (selectedNode instanceof Introspectable)
-				((Introspectable) selectedNode).connect();
+			{
+				try {
+					((Introspectable) selectedNode).connect();
+				} catch (NonStickyConnectFailedRemoteException nscfre) {
+					// return from method gracefully
+					return;
+				}
+			}
 			if ((selectedNode instanceof SimpleIntrospectable)
 					&& !((selectedNode instanceof Invocation) && !((Invocation) selectedNode)
 							.isControllable())) {
