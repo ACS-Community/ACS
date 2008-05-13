@@ -144,7 +144,7 @@ public class ClientLogManager implements LogConfigSubscriber
 	/**
 	 * If true then the Corba (ORB) logger will not send logs to the Log service.
 	 */
-	private boolean suppressCorbaRemoteLogging = false;
+	private volatile boolean suppressCorbaRemoteLogging = false;
 	
 	
 	/**
@@ -632,7 +632,7 @@ public class ClientLogManager implements LogConfigSubscriber
 	    		if (loggerInfo.loggerOwnerType == LoggerOwnerType.OrbLogger) {
 	    			sharedLogConfig.setAndLockMinLogLevel(AcsLogLevelDefinition.OFF, loggerInfo.logger.getLoggerName());
 	    		}
-			}    		
+			}
     	}
     }
 

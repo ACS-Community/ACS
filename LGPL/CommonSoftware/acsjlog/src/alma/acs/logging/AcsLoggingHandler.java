@@ -77,7 +77,7 @@ public class AcsLoggingHandler extends Handler implements LogConfigSubscriber
         // In case the threshold for local logging is lower than for remote logging,
         // this handler still needs to filter out log records whose levels are in between the thresholds.
         try {
-        	AcsLogLevelDefinition minLogLevelACS = AcsLogLevelDefinition.fromInteger(
+        	AcsLogLevelDefinition minLogLevelACS = AcsLogLevelDefinition.fromXsdLogLevel(
         			logConfig.getNamedLoggerConfig(loggerName).getMinLogLevel() );
             AcsLogLevel minLogLevelJDK = AcsLogLevel.fromAcsCoreLevel(minLogLevelACS); // JDK Level style
             if (minLogLevelJDK != null) {

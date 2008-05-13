@@ -67,6 +67,7 @@ import alma.cdbErrType.CDBXMLErrorEx;
 import alma.maci.loggingconfig.LoggingConfig;
 import alma.maci.loggingconfig.NamedLogger;
 import alma.maci.loggingconfig.UnnamedLogger;
+import alma.maci.loggingconfig.types.LogLevel;
 
 /**
  * Class that encapsulates all configuration sources (defaults, properties, CDB) for Java logging,
@@ -180,11 +181,19 @@ public class LogConfig {
 		// env vars / properties can override the schema defaults
 		Integer minLevelLocalValue = Integer.getInteger(PROPERTYNAME_MIN_LOG_LEVEL_LOCAL);
 		if (minLevelLocalValue != null) {
-			loggingConfig.setMinLogLevelLocal(minLevelLocalValue.intValue());
+			try {
+				loggingConfig.setMinLogLevelLocal(LogLevel.valueOf(minLevelLocalValue.toString()));
+			} catch (IllegalArgumentException ex) {
+				log(Level.INFO, "failed to pick up default stdout log level from property " + PROPERTYNAME_MIN_LOG_LEVEL_LOCAL, ex);
+			}
 		}
 		Integer minLevelValue = Integer.getInteger(PROPERTYNAME_MIN_LOG_LEVEL);
 		if (minLevelValue != null) {
-			loggingConfig.setMinLogLevel(minLevelValue.intValue());
+			try {
+				loggingConfig.setMinLogLevel(LogLevel.valueOf(minLevelValue.toString()));
+			} catch (IllegalArgumentException ex) {
+				log(Level.INFO, "failed to pick up default remote log level from property " + PROPERTYNAME_MIN_LOG_LEVEL, ex);
+			}
 		}
 	}
 
@@ -406,7 +415,15 @@ public class LogConfig {
 		XPath xpath = XPathFactory.newInstance().newXPath();
 		Object xpathResult = xpath.evaluate(xpathLogConfigNode, rootElement, XPathConstants.NODE);
 		
-		log(Level.FINER, "XML for logging config parent node " + cdbPathParent + " and xpath result:\n" + parentConfigXML + "\n" + xpathResult, null);
+// debug output, remove later
+//		try {
+//			log(Level.FINER, "XML for logging config parent node " + cdbPathParent + " and xpath result:\n" + 
+//					parentConfigXML + "\n" + 
+//					xpathResult, 
+//				null);
+//		} catch (Throwable thr) {
+//		}
+// end debug output
 		if (xpathResult == null || !(xpathResult instanceof Node)) {
 			return null;
 		}
@@ -458,11 +475,11 @@ public class LogConfig {
 	 * (and we wouldn't be bothered about exceptions here if we had stored the converted enum literal instead of the castor class).
 	 * Therefore a lame log and runtime ex are thrown just in case, but no AcsJIllegalArgumentEx gets thrown on.
 	 */
-	private AcsLogLevelDefinition convertLegalLogLevel(int legalLogLevel) {
+	private AcsLogLevelDefinition convertLegalLogLevel(LogLevel legalLogLevel) {
 		try {
-			return AcsLogLevelDefinition.fromInteger(legalLogLevel);
+			return AcsLogLevelDefinition.fromXsdLogLevel(legalLogLevel);
 		} catch (AcsJIllegalArgumentEx ex) {
-			logger.log(Level.WARNING, "Failed to convert to AcsLogLevelDefinition the level integer " + legalLogLevel, ex);
+			log(Level.WARNING, "Failed to convert to AcsLogLevelDefinition the level integer " + legalLogLevel, ex);
 			throw new RuntimeException(ex);
 		}
 	}
@@ -484,7 +501,7 @@ public class LogConfig {
 	 */
 	public void setDefaultMinLogLevelLocal(AcsLogLevelDefinition newLevel) {
 		if (newLevel.value >= 0) {
-			loggingConfig.setMinLogLevelLocal(newLevel.value);
+			loggingConfig.setMinLogLevelLocal(newLevel.toXsdLevel());
 			notifySubscribers();
 		}
 	}
@@ -506,7 +523,7 @@ public class LogConfig {
 	 */
 	public void setDefaultMinLogLevel(AcsLogLevelDefinition newLevel) {
 		if (newLevel.value >= 0) {
-			loggingConfig.setMinLogLevel(newLevel.value);
+			loggingConfig.setMinLogLevel(newLevel.toXsdLevel());
 			notifySubscribers();
 		}
 	}
@@ -599,9 +616,8 @@ public class LogConfig {
 	 */
 	public void setNamedLoggerConfig(String loggerName, LockableUnnamedLogger config) throws AcsJIllegalArgumentEx {
 		if (loggerName != null && config != null) {
-			// validate level integers. @TODO: use some other struct with level enums instead of these integers 
-			AcsLogLevelDefinition.fromInteger(config.getMinLogLevel());
-			AcsLogLevelDefinition.fromInteger(config.getMinLogLevelLocal());
+			AcsLogLevelDefinition.fromXsdLogLevel(config.getMinLogLevel());
+			AcsLogLevelDefinition.fromXsdLogLevel(config.getMinLogLevelLocal());
 			LockableUnnamedLogger config2 = new LockableUnnamedLogger(config);
 			storeNamedLoggerConfig(loggerName, config2);
 			notifySubscribers();
@@ -639,7 +655,7 @@ public class LogConfig {
 
 	public void setMinLogLevelLocal(AcsLogLevelDefinition newLevel, String loggerName) {
 		LockableUnnamedLogger config = getNamedLoggerConfig(loggerName);  // new object, with cached or default values
-		config.setMinLogLevelLocal(newLevel.value);
+		config.setMinLogLevelLocal(newLevel.toXsdLevel());
 		try {
 			setNamedLoggerConfig(loggerName, config);
 		} catch (AcsJIllegalArgumentEx ex) {
@@ -649,7 +665,7 @@ public class LogConfig {
 
 	public void setMinLogLevel(AcsLogLevelDefinition newLevel, String loggerName) {
 		LockableUnnamedLogger config = getNamedLoggerConfig(loggerName); // new object, with cached or default values
-		config.setMinLogLevel(newLevel.value);
+		config.setMinLogLevel(newLevel.toXsdLevel());
 		try {
 			setNamedLoggerConfig(loggerName, config);
 		} catch (AcsJIllegalArgumentEx ex) {
@@ -665,7 +681,7 @@ public class LogConfig {
 	 * The more abstract concept of locking log levels was chosen to keep the special scenario described above 
 	 * out of the logging config code.
 	 * 
-	 * @param newLevel  small integer from {@link ACSCoreLevel}
+	 * @param newLevel  small integer log level (IDL value wrapped by a Java enum)
 	 * @param loggerName
 	 */
 	public void setAndLockMinLogLevel(AcsLogLevelDefinition newLevel, String loggerName) {
@@ -673,12 +689,12 @@ public class LogConfig {
 			LockableUnnamedLogger config = getNamedLoggerConfig(loggerName); // new object, with cached or default values
 			if (config.isLockedRemote()) {
 				// only if the level is different we log the warning. This removes the need to check the lock status and level before calling this method.
-				if (config.getMinLogLevel() != newLevel.value) {
+				if (!newLevel.isEqualXsdLevel(config.getMinLogLevel())) {
 					log(Level.WARNING, "Ignoring attempt to lock logger " + loggerName + " to level " + newLevel + " because it is already locked to remote level " + config.getMinLogLevel(), null);
 				}
 			}
-			else if (newLevel.value != config.getMinLogLevel()) {
-				config.setMinLogLevel(newLevel.value);
+			else if (!newLevel.isEqualXsdLevel(config.getMinLogLevel())) {
+				config.setMinLogLevel(newLevel.toXsdLevel());
 				config.lockRemote();
 				try {
 					setNamedLoggerConfig(loggerName, config);

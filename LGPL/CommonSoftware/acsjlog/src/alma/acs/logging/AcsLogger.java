@@ -227,7 +227,7 @@ public class AcsLogger extends Logger implements LogConfigSubscriber {
         // Level could be null and must be inherited from the ancestor loggers, 
     	// e.g. during JDK shutdown when the log level is nulled by the JDK LogManager 
     	Logger loggerWithLevel = this;
-    	while (loggerWithLevel != null && loggerWithLevel.getLevel() == null) {
+    	while (loggerWithLevel != null && loggerWithLevel.getLevel() == null && loggerWithLevel.getParent() != null) {
     		loggerWithLevel = loggerWithLevel.getParent();
     	}
     	int levelValue = -1;
@@ -326,27 +326,29 @@ public class AcsLogger extends Logger implements LogConfigSubscriber {
 		if (logFilter != null && logFilter instanceof JacORBFilter) {
 			((JacORBFilter) logFilter).setLogLevel(getLevel());
 		}
-    }
-    
-    /**
-     * Service method for configuring even a non-ACS Logger. 
-     * Shares code with {@link #configureLogging(LogConfig)}.
-     * @param jdkLogger 
-     * @param logConfigData
-     */
-    static void configureJDKLogger(Logger jdkLogger, UnnamedLogger loggerConfig) {
-        try {
-        	// the logger must let through the lowest log level required for either local or remote logging.
-        	AcsLogLevelDefinition minLogLevelACS = AcsLogLevelDefinition.fromInteger(
-        			Math.min(loggerConfig.getMinLogLevel(), loggerConfig.getMinLogLevelLocal())
-        		);
-            AcsLogLevel minLogLevelJDK = AcsLogLevel.fromAcsCoreLevel(minLogLevelACS); // JDK Level style 
-            jdkLogger.setLevel(minLogLevelJDK);
-        } catch (Exception ex) {
-        	jdkLogger.log(Level.INFO, "Failed to configure logger.", ex);
-        }
-    	
-    }
+	}
+
+	/**
+	 * Service method for configuring even a non-ACS Logger. Shares code with {@link #configureLogging(LogConfig)}.
+	 * 
+	 * @param jdkLogger
+	 * @param logConfigData
+	 */
+	static void configureJDKLogger(Logger jdkLogger, UnnamedLogger loggerConfig) {
+		try {
+			// the logger must let through the lowest log level required for either local or remote logging.
+			AcsLogLevelDefinition minLogLevelACS = AcsLogLevelDefinition.fromXsdLogLevel(
+					loggerConfig.getMinLogLevel().getType() < loggerConfig.getMinLogLevelLocal().getType() 
+					? loggerConfig.getMinLogLevel()
+					: loggerConfig.getMinLogLevelLocal());
+
+			AcsLogLevel minLogLevelJDK = AcsLogLevel.fromAcsCoreLevel(minLogLevelACS); // JDK Level style
+			jdkLogger.setLevel(minLogLevelJDK);
+		} catch (Exception ex) {
+			jdkLogger.log(Level.INFO, "Failed to configure logger.", ex);
+		}
+
+	}
 
 	/**
 	 * Adds a logger class, which will be used to skip entries in the stack trace until the original logging method is found.
