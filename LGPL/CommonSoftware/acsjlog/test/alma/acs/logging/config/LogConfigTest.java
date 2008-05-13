@@ -15,6 +15,7 @@ import alma.acs.testsupport.TestLogger;
 import alma.acs.util.ReaderExtractor;
 import alma.maci.loggingconfig.LoggingConfig;
 import alma.maci.loggingconfig.UnnamedLogger;
+import alma.maci.loggingconfig.types.LogLevel;
 
 /**
  * Test for {@linkplain LogConfig}. 
@@ -116,13 +117,13 @@ public class LogConfigTest extends TestCase {
 		assertEquals(0, schemaDefaults.getCount()); // 0 named loggers
 		assertEquals(10, schemaDefaults.getDispatchPacketSize());
 		assertEquals(10, schemaDefaults.getFlushPeriodSeconds());
-		assertEquals(10, schemaDefaults.getImmediateDispatchLevel());
+		assertEquals(LogLevel.VALUE_10, schemaDefaults.getImmediateDispatchLevel());
 		assertEquals(1000, schemaDefaults.getMaxLogQueueSize());
-		assertEquals(AcsLogLevelDefinition.TRACE.value, schemaDefaults.getMinLogLevelLocal());
-		assertEquals(AcsLogLevelDefinition.TRACE.value, schemaDefaults.getMinLogLevel());
+		assertEquals(LogLevel.VALUE_2, schemaDefaults.getMinLogLevelLocal());
+		assertEquals(LogLevel.VALUE_2, schemaDefaults.getMinLogLevel());
 		assertEquals("Log", schemaDefaults.getCentralizedLogger());
 
-		int defaultMinLogLevelLocal = schemaDefaults.getMinLogLevelLocal();
+		int defaultMinLogLevelLocal = Integer.parseInt(schemaDefaults.getMinLogLevelLocal().toString());
 		// but if env vars are set, we may have different default levels
 		Integer PROP_ACS_LOG_STDOUT = Integer.getInteger(LogConfig.PROPERTYNAME_MIN_LOG_LEVEL_LOCAL);
     	if (PROP_ACS_LOG_STDOUT != null) {
@@ -132,7 +133,7 @@ public class LogConfigTest extends TestCase {
     	else {
     		logger.info("No env var setting found for " + LogConfig.PROPERTYNAME_MIN_LOG_LEVEL_LOCAL);
     	}
-		int defaultMinLogLevel = schemaDefaults.getMinLogLevel();
+		int defaultMinLogLevel = Integer.parseInt(schemaDefaults.getMinLogLevel().toString());
 		Integer PROP_ACS_LOG_REMOTE = Integer.getInteger(LogConfig.PROPERTYNAME_MIN_LOG_LEVEL);
     	if (PROP_ACS_LOG_REMOTE != null) {
     		defaultMinLogLevel = PROP_ACS_LOG_REMOTE.intValue();
@@ -148,19 +149,19 @@ public class LogConfigTest extends TestCase {
 		
 		// Check default data other than log levels
 		assertEquals(schemaDefaults.getCentralizedLogger(), logConfig.getCentralizedLogger());
-		assertEquals(schemaDefaults.getImmediateDispatchLevel(), logConfig.getImmediateDispatchLevel().value);
+		assertEquals(schemaDefaults.getImmediateDispatchLevel(), logConfig.getImmediateDispatchLevel().toXsdLevel());
 		assertEquals(schemaDefaults.getDispatchPacketSize(), logConfig.getDispatchPacketSize());
 		assertEquals(schemaDefaults.getFlushPeriodSeconds(), logConfig.getFlushPeriodSeconds());
 
 		// Get log levels for not existing named loggers, which should result in the default log levels being used
 		UnnamedLogger namedLogConfig1 = logConfig.getNamedLoggerConfig(null); 
-		assertEquals(defaultMinLogLevel, namedLogConfig1.getMinLogLevel());
-		assertEquals(defaultMinLogLevelLocal, namedLogConfig1.getMinLogLevelLocal());
+		assertEquals(defaultMinLogLevel, Integer.parseInt(namedLogConfig1.getMinLogLevel().toString()));
+		assertEquals(defaultMinLogLevelLocal, Integer.parseInt(namedLogConfig1.getMinLogLevelLocal().toString()));
 		
 		UnnamedLogger namedLogConfig2 = logConfig.getNamedLoggerConfig("nonExistingLogger");
 		assertNotSame(namedLogConfig1, namedLogConfig2); 
-		assertEquals(defaultMinLogLevel, namedLogConfig2.getMinLogLevel());
-		assertEquals(defaultMinLogLevelLocal, namedLogConfig2.getMinLogLevelLocal());
+		assertEquals(defaultMinLogLevel, Integer.parseInt(namedLogConfig2.getMinLogLevel().toString()));
+		assertEquals(defaultMinLogLevelLocal, Integer.parseInt(namedLogConfig2.getMinLogLevelLocal().toString()));
 	}
 	
 		
@@ -235,8 +236,8 @@ public class LogConfigTest extends TestCase {
 		
 		// the schema defaults as reference
 		LoggingConfig schemaDefaults = new LoggingConfig(); 
-		int defaultMinLogLevel = schemaDefaults.getMinLogLevel();
-		int defaultMinLogLevelLocal = schemaDefaults.getMinLogLevelLocal();
+		int defaultMinLogLevel = Integer.parseInt(schemaDefaults.getMinLogLevel().toString());
+		int defaultMinLogLevelLocal = Integer.parseInt(schemaDefaults.getMinLogLevelLocal().toString());
 
 		// before we read the CDB, let's verify that the env var and default log levels are correct
 		logConfig.initialize(false);
@@ -432,7 +433,7 @@ public class LogConfigTest extends TestCase {
 		assertNotSame(knownLoggerConfig, knownLoggerConfig2);
 		newDefaultLevel = newDefaultLevel.getNextHigherLevel();
 		assertNotNull(newDefaultLevel);
-		knownLoggerConfig.setMinLogLevel(newDefaultLevel.value);
+		knownLoggerConfig.setMinLogLevel(newDefaultLevel.toXsdLevel());
 		assertSame(defaultMinLogLevel, logConfig.getDefaultMinLogLevel());
 		newDefaultLevel = newDefaultLevel.getNextHigherLevel();
 		assertNotNull(newDefaultLevel);
@@ -450,13 +451,13 @@ public class LogConfigTest extends TestCase {
 		logConfig.setAndLockMinLogLevel(AcsLogLevelDefinition.OFF, loggerName);
 		
 		// once a level is locked, it must not be changed any more:
-		assertSame(AcsLogLevelDefinition.OFF.value, logConfig.getNamedLoggerConfig(loggerName).getMinLogLevel());
+		assertSame(AcsLogLevelDefinition.OFF, AcsLogLevelDefinition.fromXsdLogLevel(logConfig.getNamedLoggerConfig(loggerName).getMinLogLevel()));
 		logConfig.setMinLogLevel(AcsLogLevelDefinition.TRACE, loggerName); 
-		assertSame(AcsLogLevelDefinition.OFF.value, logConfig.getNamedLoggerConfig(loggerName).getMinLogLevel());
+		assertSame(AcsLogLevelDefinition.OFF, AcsLogLevelDefinition.fromXsdLogLevel(logConfig.getNamedLoggerConfig(loggerName).getMinLogLevel()));
 		logConfig.setAndLockMinLogLevel(AcsLogLevelDefinition.TRACE, loggerName);
-		assertSame(AcsLogLevelDefinition.OFF.value, logConfig.getNamedLoggerConfig(loggerName).getMinLogLevel());
+		assertSame(AcsLogLevelDefinition.OFF, AcsLogLevelDefinition.fromXsdLogLevel(logConfig.getNamedLoggerConfig(loggerName).getMinLogLevel()));
 		logConfig.clearNamedLoggerConfig(loggerName);
-		assertSame(AcsLogLevelDefinition.OFF.value, logConfig.getNamedLoggerConfig(loggerName).getMinLogLevel());
+		assertSame(AcsLogLevelDefinition.OFF, AcsLogLevelDefinition.fromXsdLogLevel(logConfig.getNamedLoggerConfig(loggerName).getMinLogLevel()));
 		
 		logConfig.initialize(false);
 		logConfig.initialize(true);
