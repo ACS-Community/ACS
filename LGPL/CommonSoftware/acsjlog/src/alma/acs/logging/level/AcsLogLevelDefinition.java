@@ -42,6 +42,7 @@ import alma.AcsLogLevels.TRACE_NAME;
 import alma.AcsLogLevels.TRACE_VAL;
 import alma.AcsLogLevels.WARNING_NAME;
 import alma.AcsLogLevels.WARNING_VAL;
+import alma.maci.loggingconfig.types.LogLevel;
 
 /**
  * An enum with the log levels, defined in the IDL. It is a convenience
@@ -88,6 +89,14 @@ public enum AcsLogLevelDefinition {
 		this.name=name;
 	}
 	
+	
+	/**
+	 * Helper method that converts an xsd defined log level to the matching enum literal.
+	 */
+	public static AcsLogLevelDefinition fromXsdLogLevel(LogLevel legalLogLevel) throws AcsJIllegalArgumentEx {
+		return fromInteger(Integer.parseInt(legalLogLevel.toString()));
+	}
+
 	/**
 	 * Return a log level given its integer value.
 	 * <p>
@@ -98,6 +107,7 @@ public enum AcsLogLevelDefinition {
 	 * 
 	 * @param val The value of the log level
 	 * @return The log level having val as its value
+	 * @deprecated use {@link #fromXsdLogLevel(LogLevel)}
 	 */
 	public static AcsLogLevelDefinition fromInteger(int val) throws AcsJIllegalArgumentEx {
 		// @TODO remove value fix with next major acs release
@@ -153,4 +163,27 @@ public enum AcsLogLevelDefinition {
 		}
 		return null;
 	}
+	
+	
+	/**
+	 * Checks if an xsd-defined log level is equal to this IDL-defined level by comparing the underlying integer values.
+	 * @throws IllegalArgumentException  if <code>schemaLevel</code> is null.
+	 */
+	public boolean isEqualXsdLevel(LogLevel schemaLevel) {
+		if (schemaLevel == null) {
+			throw new IllegalArgumentException("'schemaLevel' must not be null");
+		}
+		return ( this.value == Integer.parseInt(schemaLevel.toString()) ); 
+	}
+	
+	/**
+	 * Returns the <code>LogLevel</code> defined in maciidl/ws/config/CDB/schemas/LoggingConfig.xsd 
+	 * whose integer value matches this enum's value.
+	 * @throws IllegalArgumentException if no matching Xsd-defined level can be found 
+	 *            (should never happen as long as IDL and XSD files are aligned)
+	 */
+	public LogLevel toXsdLevel() {
+		return LogLevel.valueOf(Integer.toString(this.value));
+	}
+	
 }
