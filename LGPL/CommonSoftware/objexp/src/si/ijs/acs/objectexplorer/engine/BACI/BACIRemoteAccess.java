@@ -20,6 +20,7 @@ import org.omg.CORBA.Contained;
 import org.omg.CORBA.InterfaceDef;
 import org.omg.CORBA.InterfaceDefHelper;
 import org.omg.CORBA.NVList;
+import org.omg.CORBA.OBJECT_NOT_EXIST;
 import org.omg.CORBA.ORB;
 import org.omg.CORBA.OperationDef;
 import org.omg.CORBA.OperationDefHelper;
@@ -46,6 +47,7 @@ import si.ijs.acs.objectexplorer.engine.Introspectable;
 import si.ijs.acs.objectexplorer.engine.IntrospectionInconsistentException;
 import si.ijs.acs.objectexplorer.engine.Invocation;
 import si.ijs.acs.objectexplorer.engine.NonStickyConnectFailedRemoteException;
+import si.ijs.acs.objectexplorer.engine.NonStickyComponentReleased;
 import si.ijs.acs.objectexplorer.engine.Operation;
 import si.ijs.acs.objectexplorer.engine.RemoteAccess;
 import si.ijs.acs.objectexplorer.engine.RemoteException;
@@ -1768,6 +1770,28 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 			"Remote call ended, constructed Invocation. Returning...");
 		return invoc;
 	}
+	
+	private static BACIRemoteNode getDeviceFromTarget(Object target)
+	{
+		if (target instanceof BACIRemoteNode)
+		{
+			BACIRemoteNode remoteNode = (BACIRemoteNode)target;
+			if (remoteNode.isDevice())
+				return remoteNode;
+			else
+				return getDeviceFromTarget(remoteNode.getParent());
+			
+		}
+		else if (target instanceof BACIInvocation)
+		{
+			BACIInvocation invocation = (BACIInvocation)target;
+			return getDeviceFromTarget(invocation.getParent());
+		}
+		else
+			return null;
+	}
+	
+	
 	/**
 	 * Insert the method's description here.
 	 * Creation date: (2.11.2000 18:08:01)
@@ -1785,7 +1809,7 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 					+ op.getName()
 					+ "' on object '"
 					+ target.getName()
-					+ "' because it is not connected (null remote reference).");
+					+ "' because it is not connected.");
 		notifier.reportDebug(
 			"BACIRemoteAccess::internalInvokeTrivial",
 			"Preparing DII parameters for '"
@@ -2038,7 +2062,7 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 				}
 
 				// check exception
-				checkException(req);
+				checkException(target, req);
 
 				notifier.reportDebug(
 					"BACIRemoteAccess::internalInvokeTrivial",
@@ -2080,7 +2104,6 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 					outs);
 				remoteCall.setErrorResponse(errorResponse);
 				return remoteCall;
-
 			} catch (Exception e) {
 				notifier.reportError(
 					"Exception during deferred remote invocation.",
@@ -2460,7 +2483,7 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 					+ att
 					+ "' on object '"
 					+ target.getName()
-					+ "' because it is not connected (null remote reference).");
+					+ "' because it is not connected.");
 
 		org.omg.CORBA.Object remote = target.getCORBARef();
 		AttributeDescription desc = att.getAttributeDesc();
@@ -2510,7 +2533,7 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 			}
 			
 			// check exception
-			checkException(req);
+			checkException(target, req);
 			
 			notifier.reportDebug(
 				"BACIRemoteAccess::invokeAccessor",
@@ -2546,11 +2569,20 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 	 * @param req
 	 * @throws Exception
 	 */
-	private void checkException(Request req) throws Exception {
+	private void checkException(Object target, Request req) throws Exception {
 		Exception exceptionThrown = req.env().exception();
 		if (exceptionThrown != null)
 		{
-			if (exceptionThrown instanceof org.omg.CORBA.UnknownUserException)
+			BACIRemoteNode device = getDeviceFromTarget(target);
+			if (device != null && device.isNonSticky() && exceptionThrown instanceof OBJECT_NOT_EXIST)
+			{
+				// disconnect and provice nice error message
+				try {
+					device.disconnect();
+				} catch (Throwable th) { /* noop, still report */ th.printStackTrace(); }
+				throw new NonStickyComponentReleased("Non-sticky component released, disconnecting it automatically.");
+			}
+			else if (exceptionThrown instanceof org.omg.CORBA.UnknownUserException)
 			{
 
 				// without ID int the CDROutputStream (value field)

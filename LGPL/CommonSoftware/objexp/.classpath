@@ -20,5 +20,6 @@
 	<classpathentry kind="var" path="ACSROOT/lib/castor.jar"/>
 	<classpathentry kind="var" path="JACORB_HOME/lib/avalon-framework.jar"/>
 	<classpathentry kind="var" path="JACORB_HOME/lib/logkit.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acscommon.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

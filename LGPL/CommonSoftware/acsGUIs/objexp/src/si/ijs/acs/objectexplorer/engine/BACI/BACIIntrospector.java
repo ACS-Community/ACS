@@ -293,7 +293,7 @@ public java.lang.Object extractTypedef(TypeCode argumentType, Any argument) {
 		return c.getMethod("extract", paramTypes).invoke(null, params);
 	} catch (Exception e1)
 	{
-		throw new JavaIDLIntrospectionException("Dynamic invocation of 'extractAny()' failed on a typedef argument. Class instance: " + c.getName() + ". Exception:" + e1);
+		throw new JavaIDLIntrospectionException("Dynamic invocation of 'extractAny()' failed on a typedef argument. Class instance: " + c.getName() + ". Exception:" + e1, e1);
 	}	
 }
 /**
@@ -606,7 +606,7 @@ public void insertTypedef(ParameterDescription desc, java.lang.Object o, Any any
 		c.getMethod("insert", paramTypes).invoke(null, params);
 	} catch (Exception e)
 	{
-		throw new JavaIDLIntrospectionException("Error while dynamically inserting a typedef value into 'Any' by loading helper class '" + className + "' (inserting class '"+o.getClass().getName()+"'). Exception: " + e);
+		throw new JavaIDLIntrospectionException("Error while dynamically inserting a typedef value into 'Any' by loading helper class '" + className + "' (inserting class '"+o.getClass().getName()+"'). Exception: " + e, e);
 	}
 	
 }

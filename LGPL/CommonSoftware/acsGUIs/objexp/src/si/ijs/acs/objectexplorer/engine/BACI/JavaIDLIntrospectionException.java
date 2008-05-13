@@ -19,4 +19,10 @@ public JavaIDLIntrospectionException() {
 public JavaIDLIntrospectionException(String s) {
 	super(s);
 }
+public JavaIDLIntrospectionException(String message, Throwable cause) {
+	super(message, cause);
+}
+public JavaIDLIntrospectionException(Throwable cause) {
+	super(cause);
+}
 }

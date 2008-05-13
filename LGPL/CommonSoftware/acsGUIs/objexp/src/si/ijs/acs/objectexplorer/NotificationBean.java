@@ -6,6 +6,7 @@ import java.util.logging.Logger;
 import javax.swing.JFrame;
 
 import si.ijs.acs.objectexplorer.engine.Introspectable;
+import si.ijs.acs.objectexplorer.engine.NonStickyComponentReleased;
 
 import alma.acs.logging.ClientLogManager;
 
@@ -104,10 +105,13 @@ public void reportError(String message, Throwable t, boolean dialog, boolean sta
    textArea.append("\n");
 
    if (t != null) {
-   		if (stackTrace)
-   			consoleLogger.log(Level.WARNING, message, t);
-   		else
-   			consoleLogger.warning(message);
+	   if (!(t instanceof NonStickyComponentReleased))
+	   {
+	   		if (stackTrace)
+	   			consoleLogger.log(Level.WARNING, message, t);
+	   		else
+	   			consoleLogger.warning(message);
+	   }
 	   message=message+"\n"+t;
    }
    else
