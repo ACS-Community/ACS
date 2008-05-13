@@ -64,4 +64,12 @@ public class DelegateRemoteNode extends BACIRemoteNode {
 		return remoteNode.isConnected();
 	}
 
+	public boolean isNonSticky() {
+		return remoteNode.isNonSticky();
+	}
+
+	public void setNonSticky(boolean isNonSticky) {
+		remoteNode.setNonSticky(isNonSticky);
+	}
+
 }
