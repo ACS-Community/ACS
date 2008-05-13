@@ -2037,24 +2037,8 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 					}
 				}
 
-				Exception exceptionThrown = req.env().exception();
-				if (exceptionThrown != null)
-				{
-					if (exceptionThrown instanceof org.omg.CORBA.UnknownUserException)
-					{
-
-						// without ID int the CDROutputStream (value field)
-						Any exceptionValue = ((org.omg.CORBA.UnknownUserException)exceptionThrown).except;
-						java.lang.Object userException = baciIntrospector.extractAny(exceptionValue);
-
-						exceptionThrown = (org.omg.CORBA.UserException) userException;
-					}
-
-					// log ACS exception
-					logACSException(exceptionThrown);
-
-					throw exceptionThrown;
-				}
+				// check exception
+				checkException(req);
 
 				notifier.reportDebug(
 					"BACIRemoteAccess::internalInvokeTrivial",
@@ -2524,6 +2508,10 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 						null);
 				}
 			}
+			
+			// check exception
+			checkException(req);
+			
 			notifier.reportDebug(
 				"BACIRemoteAccess::invokeAccessor",
 				"Received response for '"
@@ -2552,6 +2540,31 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 		}
 
 		/* end DII stanza */
+	}
+
+	/**
+	 * @param req
+	 * @throws Exception
+	 */
+	private void checkException(Request req) throws Exception {
+		Exception exceptionThrown = req.env().exception();
+		if (exceptionThrown != null)
+		{
+			if (exceptionThrown instanceof org.omg.CORBA.UnknownUserException)
+			{
+
+				// without ID int the CDROutputStream (value field)
+				Any exceptionValue = ((org.omg.CORBA.UnknownUserException)exceptionThrown).except;
+				java.lang.Object userException = baciIntrospector.extractAny(exceptionValue);
+
+				exceptionThrown = (org.omg.CORBA.UserException) userException;
+			}
+
+			// log ACS exception
+			logACSException(exceptionThrown);
+
+			throw exceptionThrown;
+		}
 	}
 	/**
 	 * Insert the method's description here.
