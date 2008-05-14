@@ -1865,7 +1865,7 @@ public class ManagerProxyImpl extends ManagerPOA
 		
 		UnnamedLogger levels = logConfig.getNamedLoggerConfig(logger_name);
 		boolean useDefault = !logConfig.hasCustomConfig(logger_name); 
-		LogLevels ret = new LogLevels(useDefault, AcsLogLevelDefinition.xsdLevelToShort(levels.getMinLogLevel()), AcsLogLevelDefinition.xsdLevelToShort(levels.getMinLogLevelLocal()));
+		LogLevels ret = AcsLogLevelDefinition.createIdlLogLevelsFromXsd(useDefault, levels);
 		return ret;
 	}
 
@@ -1881,10 +1881,8 @@ public class ManagerProxyImpl extends ManagerPOA
 			logConfig.clearNamedLoggerConfig(logger_name);
 		}
 		else {
-			UnnamedLogger config = new UnnamedLogger();
 			try {
-				config.setMinLogLevel(AcsLogLevelDefinition.xsdLevelFromInteger(levels.minLogLevel));
-				config.setMinLogLevelLocal(AcsLogLevelDefinition.xsdLevelFromInteger(levels.minLogLevelLocal));
+				UnnamedLogger config = AcsLogLevelDefinition.createXsdLogLevelsFromIdl(levels);
 				logConfig.setNamedLoggerConfig(logger_name, config);
 			} catch (AcsJIllegalArgumentEx ex) {
 				throw ex.toIllegalArgumentEx();
