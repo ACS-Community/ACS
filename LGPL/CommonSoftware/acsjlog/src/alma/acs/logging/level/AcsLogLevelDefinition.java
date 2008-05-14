@@ -42,21 +42,30 @@ import alma.AcsLogLevels.TRACE_NAME;
 import alma.AcsLogLevels.TRACE_VAL;
 import alma.AcsLogLevels.WARNING_NAME;
 import alma.AcsLogLevels.WARNING_VAL;
+import alma.maci.loggingconfig.UnnamedLogger;
 import alma.maci.loggingconfig.types.LogLevel;
 
 /**
  * An enum with the log levels, defined in the IDL. It is a convenience
  * class encapsulating the IDL constants of the log levels.
- * 
+ * <p>
  * Each item of the enumerated is composed of a name and a value, 
- * both read directly from the IDL definition LogLevels:
- *   -name  comes from <type>_NAME 
+ * both read directly from the IDL definition LogLevels: <br>
+ *   -name  comes from <type>_NAME <br>
  *   -value comes from <type>_VAL.
+ * <p>
+ * There are also a number of methods to convert to/from/between the log level definitions
+ * in IDL, XSD, and this enum.
  * 
  * @author acaproni
  *
  */
 public enum AcsLogLevelDefinition {
+	
+////////////////////////////////////////////////////////////////////////
+//            Enum related code	
+////////////////////////////////////////////////////////////////////////
+	
 	TRACE(TRACE_VAL.value,TRACE_NAME.value),
 	DEBUG(DEBUG_VAL.value,DEBUG_NAME.value),
 	INFO(INFO_VAL.value,INFO_NAME.value),
@@ -88,52 +97,6 @@ public enum AcsLogLevelDefinition {
 		value=val;
 		this.name=name;
 	}
-	
-	
-	/**
-	 * Helper method that converts an xsd defined log level to the matching enum literal.
-	 */
-	public static AcsLogLevelDefinition fromXsdLogLevel(LogLevel legalLogLevel) throws AcsJIllegalArgumentEx {
-		return fromInteger(Integer.parseInt(legalLogLevel.toString()));
-	}
-
-	/**
-	 * Return a log level given its integer value.
-	 * <p>
-	 * For backward compatibility with CDB entries where often immediateDispatchLevel=31 
-	 * and other nonsense is used, we convert values > 11 to OFF instead of throwing the 
-	 * exception.
-	 * @TODO: Change this with next major release (ACS 8.0) 
-	 * 
-	 * @param val The value of the log level
-	 * @return The log level having val as its value
-	 * @deprecated use {@link #fromXsdLogLevel(LogLevel)}
-	 */
-	public static AcsLogLevelDefinition fromInteger(int val) throws AcsJIllegalArgumentEx {
-		// @TODO remove value fix with next major acs release
-		if (val > EMERGENCY.value) {
-			val = OFF.value;
-		}
-		
-		for (AcsLogLevelDefinition def : AcsLogLevelDefinition.values()) {
-			if (def.value==val) {
-				return def;
-			}
-		}
-		AcsJIllegalArgumentEx ex = new AcsJIllegalArgumentEx();
-		ex.setVariable("val");
-		ex.setValue(Integer.toString(val));
-		throw ex;
-	}
-	
-	public static LogLevel xsdLevelFromInteger(int level) throws AcsJIllegalArgumentEx {
-		return fromInteger(level).toXsdLevel();
-	}
-	
-	public static short xsdLevelToShort(LogLevel xsdLevel) {
-		return Short.parseShort(xsdLevel.toString());
-	}
-	
 	
 	/**
 	 * Return a log level, given its name.
@@ -173,7 +136,60 @@ public enum AcsLogLevelDefinition {
 		return null;
 	}
 	
+	/**
+	 * Return a log level given its integer value.
+	 * <p>
+	 * For backward compatibility with CDB entries where often immediateDispatchLevel=31 
+	 * and other nonsense is used, we convert values > 11 to OFF instead of throwing the 
+	 * exception.
+	 * @TODO: Change this with next major release (ACS 8.0) 
+	 * 
+	 * @param val The value of the log level
+	 * @return The log level having val as its value
+	 */
+	public static AcsLogLevelDefinition fromInteger(int val) throws AcsJIllegalArgumentEx {
+		// @TODO remove value fix with next major acs release
+		if (val > EMERGENCY.value) {
+			val = OFF.value;
+		}
+		
+		for (AcsLogLevelDefinition def : AcsLogLevelDefinition.values()) {
+			if (def.value==val) {
+				return def;
+			}
+		}
+		AcsJIllegalArgumentEx ex = new AcsJIllegalArgumentEx();
+		ex.setVariable("val");
+		ex.setValue(Integer.toString(val));
+		throw ex;
+	}
+		
+	////////////////////////////////////////////////////////////////////////
+	//              XSD types	
+	////////////////////////////////////////////////////////////////////////
 	
+	/**
+	 * Helper method that converts an xsd defined log level to the matching enum literal.
+	 */
+	public static AcsLogLevelDefinition fromXsdLogLevel(LogLevel legalLogLevel) throws AcsJIllegalArgumentEx {
+		return fromInteger(Integer.parseInt(legalLogLevel.toString()));
+	}
+
+	/**
+	 * Returns the <code>LogLevel</code> defined in maciidl/ws/config/CDB/schemas/LoggingConfig.xsd 
+	 * whose integer value matches this enum's value.
+	 * @throws IllegalArgumentException if no matching Xsd-defined level can be found 
+	 *            (should never happen as long as IDL and XSD files are aligned)
+	 */
+	public LogLevel toXsdLevel() {
+		return LogLevel.valueOf(Integer.toString(this.value));
+	}
+
+	
+	public static LogLevel xsdLevelFromInteger(int level) throws AcsJIllegalArgumentEx {
+		return fromInteger(level).toXsdLevel();
+	}
+
 	/**
 	 * Checks if an xsd-defined log level is equal to this IDL-defined level by comparing the underlying integer values.
 	 * @throws IllegalArgumentException  if <code>schemaLevel</code> is null.
@@ -185,14 +201,26 @@ public enum AcsLogLevelDefinition {
 		return ( this.value == Integer.parseInt(schemaLevel.toString()) ); 
 	}
 	
-	/**
-	 * Returns the <code>LogLevel</code> defined in maciidl/ws/config/CDB/schemas/LoggingConfig.xsd 
-	 * whose integer value matches this enum's value.
-	 * @throws IllegalArgumentException if no matching Xsd-defined level can be found 
-	 *            (should never happen as long as IDL and XSD files are aligned)
-	 */
-	public LogLevel toXsdLevel() {
-		return LogLevel.valueOf(Integer.toString(this.value));
-	}
 	
+	////////////////////////////////////////////////////////////////////////
+	//  IDL type
+	////////////////////////////////////////////////////////////////////////
+
+	/**
+	 * Convenience method that creates the IDL-defined log level struct from 
+	 * the XSD-defined levels and the default flag.
+	 */
+	public static si.ijs.maci.LoggingConfigurablePackage.LogLevels createIdlLogLevelsFromXsd(boolean useDefault, UnnamedLogger xsdLevels) {
+		return new si.ijs.maci.LoggingConfigurablePackage.LogLevels(
+				useDefault,
+				Short.parseShort(xsdLevels.getMinLogLevel().toString()),
+				Short.parseShort(xsdLevels.getMinLogLevelLocal().toString()));
+	}
+
+	public static UnnamedLogger createXsdLogLevelsFromIdl(si.ijs.maci.LoggingConfigurablePackage.LogLevels idlLevels) throws AcsJIllegalArgumentEx {
+		UnnamedLogger xsdLevels = new UnnamedLogger();
+		xsdLevels.setMinLogLevel(AcsLogLevelDefinition.xsdLevelFromInteger(idlLevels.minLogLevel));
+		xsdLevels.setMinLogLevelLocal(AcsLogLevelDefinition.xsdLevelFromInteger(idlLevels.minLogLevelLocal));
+		return xsdLevels;
+	}
 }
