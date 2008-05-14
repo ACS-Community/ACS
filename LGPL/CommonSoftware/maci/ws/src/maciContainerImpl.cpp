@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciContainerImpl.cpp,v 1.105 2008/02/24 17:06:33 msekoran Exp $"
+* "@(#) $Id: maciContainerImpl.cpp,v 1.106 2008/05/14 09:19:36 cparedes Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -79,7 +79,7 @@
 #include <ACSAlarmSystemInterfaceFactory.h>
 #endif
 
-ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.105 2008/02/24 17:06:33 msekoran Exp $")
+ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.106 2008/05/14 09:19:36 cparedes Exp $")
 
  using namespace maci;
  using namespace cdb;
@@ -1266,6 +1266,8 @@ ContainerImpl::run()
       // wait for done signal
       if (!m_shutdownDoneSignaled)
 	  m_shutdownDone.wait();
+
+	DALaccess::exitFunction();
     }
   
   ACS_DEBUG("ContainerImpl::run", "Leaving ContainerImpl::run() method.");
