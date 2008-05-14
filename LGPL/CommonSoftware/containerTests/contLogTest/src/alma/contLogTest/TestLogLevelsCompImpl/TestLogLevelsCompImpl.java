@@ -100,8 +100,8 @@ public class TestLogLevelsCompImpl implements ComponentLifecycle, TestLogLevelsC
     	 */
 		levels = new int[5]; 
 		LoggingConfig logConfig = new LoggingConfig();
-		int hcMinLogLevel = logConfig.getMinLogLevel();
-		int hcMinLogLevelLocal = logConfig.getMinLogLevelLocal();
+		int hcMinLogLevel = Integer.parseInt(logConfig.getMinLogLevel().toString());
+		int hcMinLogLevelLocal = Integer.parseInt(logConfig.getMinLogLevelLocal().toString());
 		AcsLogLevel acsLevel = AcsLogLevel.getNativeLevel(m_logger.getLevel());
 		int acsCoreLevel = acsLevel.getAcsLevel().value;
 		
