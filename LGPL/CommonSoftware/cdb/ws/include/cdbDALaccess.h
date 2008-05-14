@@ -1,7 +1,7 @@
 /*******************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: cdbDALaccess.h,v 1.31 2006/09/01 02:20:54 cparedes Exp $"
+* "@(#) $Id: cdbDALaccess.h,v 1.32 2008/05/14 09:18:36 cparedes Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -69,6 +69,7 @@ public:
 	void	UseLocalDAOs( int localDAOs = 1 ) { m_useLocalDAO = localDAOs; }
 
 	static void forceDAL(CDB::DAL_ptr dal) { m_forcedDAL = CDB::DAL::_duplicate(dal); }
+        static void exitFunction() { exitStarts = 1; }
 protected:
 // Operations
 	char*				resolveDALserverIOR( int argc, char *argv[] );
@@ -91,7 +92,6 @@ protected:
   friend class DALChangeListenerImpl;
 // avoid deregistration of change listener when stub objects are destroyed
   static int exitStarts;
-  static void exitFunction() { exitStarts = 1; }
 
   static CDB::DAL_var m_forcedDAL;
 
