@@ -126,6 +126,15 @@ public enum AcsLogLevelDefinition {
 		throw ex;
 	}
 	
+	public static LogLevel xsdLevelFromInteger(int level) throws AcsJIllegalArgumentEx {
+		return fromInteger(level).toXsdLevel();
+	}
+	
+	public static short xsdLevelToShort(LogLevel xsdLevel) {
+		return Short.parseShort(xsdLevel.toString());
+	}
+	
+	
 	/**
 	 * Return a log level, given its name.
 	 * <p>
