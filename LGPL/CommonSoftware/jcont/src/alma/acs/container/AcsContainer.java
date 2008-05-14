@@ -75,6 +75,7 @@ import alma.maci.loggingconfig.UnnamedLogger;
 import alma.maciErrType.CannotActivateComponentEx;
 import alma.maciErrType.CannotDeactivateComponentEx;
 import alma.maciErrType.CannotRestartComponentEx;
+import alma.maciErrType.LoggerDoesNotExistEx;
 import alma.maciErrType.wrappers.AcsJCannotActivateComponentEx;
 import alma.maciErrType.wrappers.AcsJCannotDeactivateComponentEx;
 import alma.maciErrType.wrappers.AcsJCannotRestartComponentEx;
@@ -1180,37 +1181,45 @@ public class AcsContainer extends ContainerPOA
     }
 
 
-    /**
-     * Replies with <code>true</code> so that Manager sees that this container is alive.
-     * <p>
-     * Prints a message to System.out, so that it's visible on the local console that the container is doing ok.
-     * Does not log anything, because a failure to reply would show up remotely anyway.
-     * <p>
-     * No message is printed if the container log level is above INFO, see http://jira.alma.cl/browse/COMP-1736.
-     * 
-     * @see si.ijs.maci.ClientOperations#ping()
-     */
-    public boolean ping() {
-    	// we cannot use m_logger.isLoggable because only the stdout log level should be considered,
-    	// and it would be even worse a hack to go from the logger to its stdout handler to ask for the level there.
-    	if (logConfig.getNamedLoggerConfig(m_containerName).getMinLogLevelLocal() <= AcsLogLevelDefinition.INFO.value) {
-	        Runtime rt = Runtime.getRuntime();
-	        long totalMemKB = rt.totalMemory()/1024;
-	        long usedMemKB = totalMemKB - rt.freeMemory()/1024;
-	        String memStatus = "Memory usage " + usedMemKB + " of " + totalMemKB + " kB ";
-	        long maxMem = rt.maxMemory();
-	        if (maxMem < Long.MAX_VALUE) {
-	            long maxMemKB = maxMem/1024;
-	            memStatus += "(= " + (usedMemKB*1000/maxMemKB)/10.0 + "% of JVM growth limit " + maxMemKB + " kB) ";
-	        }
-	        String timestamp = IsoDateFormat.formatCurrentDate();
-	        System.out.println(timestamp + " [" + m_containerName + "] ping received, container alive. " + memStatus);        
-    	}
-//      ThreadMXBean threadMX = ManagementFactory.getThreadMXBean();
-//      threadMX.
-        
-        return true;
-    }
+	/**
+	 * Replies with <code>true</code> so that Manager sees that this container is alive.
+	 * <p>
+	 * Prints a message to System.out, so that it's visible on the local console that the container is doing ok. Does
+	 * not log anything, because a failure to reply would show up remotely anyway.
+	 * <p>
+	 * No message is printed if the container log level is above INFO, see http://jira.alma.cl/browse/COMP-1736.
+	 * 
+	 * @see si.ijs.maci.ClientOperations#ping()
+	 */
+	public boolean ping() {
+		// we cannot use m_logger.isLoggable because only the stdout log level should be considered,
+		// and it would be even worse a hack to go from the logger to its stdout handler to ask for the level there.
+		AcsLogLevelDefinition stdoutLevel;
+		try {
+			stdoutLevel = AcsLogLevelDefinition.fromXsdLogLevel(logConfig.getNamedLoggerConfig(m_containerName).getMinLogLevelLocal());
+		} catch (AcsJIllegalArgumentEx ex) {
+			stdoutLevel = AcsLogLevelDefinition.INFO;
+			ex.printStackTrace();
+		}
+		if (stdoutLevel.compareTo(AcsLogLevelDefinition.INFO) <= 0) {
+			Runtime rt = Runtime.getRuntime();
+			long totalMemKB = rt.totalMemory() / 1024;
+			long usedMemKB = totalMemKB - rt.freeMemory() / 1024;
+			String memStatus = "Memory usage " + usedMemKB + " of " + totalMemKB + " kB ";
+			long maxMem = rt.maxMemory();
+			if (maxMem < Long.MAX_VALUE) {
+				long maxMemKB = maxMem / 1024;
+				memStatus += "(= " + (usedMemKB * 1000 / maxMemKB) / 10.0 + "% of JVM growth limit " + maxMemKB
+						+ " kB) ";
+			}
+			String timestamp = IsoDateFormat.formatCurrentDate();
+			System.out.println(timestamp + " [" + m_containerName + "] ping received, container alive. " + memStatus);
+		}
+		// ThreadMXBean threadMX = ManagementFactory.getThreadMXBean();
+		// threadMX.
+
+		return true;
+	}
 
 
     /**
@@ -1375,10 +1384,10 @@ public class AcsContainer extends ContainerPOA
 	 * For possible convenience, the default levels are returned in addition to 
 	 * setting {@link LogLevels#useDefault} to <code>true</code>.
 	 */
-	public LogLevels get_logLevels(String logger_name) {
-		UnnamedLogger levels = logConfig.getNamedLoggerConfig(logger_name);
+	public LogLevels get_logLevels(String logger_name) throws LoggerDoesNotExistEx {
+		UnnamedLogger xsdLevels = logConfig.getNamedLoggerConfig(logger_name);
 		boolean useDefault = !logConfig.hasCustomConfig(logger_name); 
-		LogLevels ret = new LogLevels(useDefault, (short) levels.getMinLogLevel(), (short) levels.getMinLogLevelLocal());
+		LogLevels ret = AcsLogLevelDefinition.createIdlLogLevelsFromXsd(useDefault, xsdLevels);
 		return ret;
 	}
 
@@ -1387,15 +1396,13 @@ public class AcsContainer extends ContainerPOA
 	 * true, then the logger will be reset to using default levels; otherwise it
 	 * will use the supplied local and remote levels.
 	 */
-	public void set_logLevels(String logger_name, LogLevels levels) throws IllegalArgumentEx {
+	public void set_logLevels(String logger_name, LogLevels levels) throws LoggerDoesNotExistEx, IllegalArgumentEx {
 		if (levels.useDefault) {
 			logConfig.clearNamedLoggerConfig(logger_name);
 		}
 		else {
-			UnnamedLogger config = new UnnamedLogger();
-			config.setMinLogLevel(levels.minLogLevel);
-			config.setMinLogLevelLocal(levels.minLogLevelLocal);
 			try {
+				UnnamedLogger config = AcsLogLevelDefinition.createXsdLogLevelsFromIdl(levels);
 				logConfig.setNamedLoggerConfig(logger_name, config);
 			} catch (AcsJIllegalArgumentEx ex) {
 				throw ex.toIllegalArgumentEx();
