@@ -13,9 +13,9 @@
   </Autoload>
   <LoggingConfig 
              centralizedLogger="Log" 
-             minLogLevel="0" 
+             minLogLevel="2" 
              dispatchPacketSize="10" 
-             immediateDispatchLevel="31">
+             immediateDispatchLevel="11">
 
     <!-- Some new additional attributes can be used to tweak logging, although as of ACS 6.0 some are only effective for Java logging:
          minLogLevelLocal, maxLogQueueSize, flushPeriodSeconds.
