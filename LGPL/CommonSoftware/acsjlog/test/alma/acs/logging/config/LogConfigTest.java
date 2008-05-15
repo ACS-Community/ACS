@@ -123,20 +123,20 @@ public class LogConfigTest extends TestCase {
 		assertEquals(LogLevel.VALUE_2, schemaDefaults.getMinLogLevel());
 		assertEquals("Log", schemaDefaults.getCentralizedLogger());
 
-		int defaultMinLogLevelLocal = Integer.parseInt(schemaDefaults.getMinLogLevelLocal().toString());
+		AcsLogLevelDefinition defaultMinLogLevelLocal = AcsLogLevelDefinition.fromXsdLogLevel(schemaDefaults.getMinLogLevelLocal());
 		// but if env vars are set, we may have different default levels
 		Integer PROP_ACS_LOG_STDOUT = Integer.getInteger(LogConfig.PROPERTYNAME_MIN_LOG_LEVEL_LOCAL);
     	if (PROP_ACS_LOG_STDOUT != null) {
-    		defaultMinLogLevelLocal = PROP_ACS_LOG_STDOUT.intValue();
+    		defaultMinLogLevelLocal = AcsLogLevelDefinition.fromInteger(PROP_ACS_LOG_STDOUT.intValue());
     		logger.info("Using default stdout level from env var: " + defaultMinLogLevelLocal);
     	}
     	else {
     		logger.info("No env var setting found for " + LogConfig.PROPERTYNAME_MIN_LOG_LEVEL_LOCAL);
     	}
-		int defaultMinLogLevel = Integer.parseInt(schemaDefaults.getMinLogLevel().toString());
+    	AcsLogLevelDefinition defaultMinLogLevel = AcsLogLevelDefinition.fromXsdLogLevel(schemaDefaults.getMinLogLevel());
 		Integer PROP_ACS_LOG_REMOTE = Integer.getInteger(LogConfig.PROPERTYNAME_MIN_LOG_LEVEL);
     	if (PROP_ACS_LOG_REMOTE != null) {
-    		defaultMinLogLevel = PROP_ACS_LOG_REMOTE.intValue();
+    		defaultMinLogLevel = AcsLogLevelDefinition.fromInteger(PROP_ACS_LOG_REMOTE.intValue());
     		logger.info("Using default remote level from env var: " + defaultMinLogLevelLocal);
     	}
     	else {
@@ -144,8 +144,8 @@ public class LogConfigTest extends TestCase {
     	}
     	
     	// our logConfig should give the correct default values, coming from schema or env var
-		assertEquals(defaultMinLogLevelLocal, logConfig.getDefaultMinLogLevelLocal().value);
-		assertEquals(defaultMinLogLevel, logConfig.getDefaultMinLogLevel().value);
+		assertEquals(defaultMinLogLevelLocal, logConfig.getDefaultMinLogLevelLocal());
+		assertEquals(defaultMinLogLevel, logConfig.getDefaultMinLogLevel());
 		
 		// Check default data other than log levels
 		assertEquals(schemaDefaults.getCentralizedLogger(), logConfig.getCentralizedLogger());
@@ -155,13 +155,13 @@ public class LogConfigTest extends TestCase {
 
 		// Get log levels for not existing named loggers, which should result in the default log levels being used
 		UnnamedLogger namedLogConfig1 = logConfig.getNamedLoggerConfig(null); 
-		assertEquals(defaultMinLogLevel, Integer.parseInt(namedLogConfig1.getMinLogLevel().toString()));
-		assertEquals(defaultMinLogLevelLocal, Integer.parseInt(namedLogConfig1.getMinLogLevelLocal().toString()));
+		assertEquals(defaultMinLogLevel, AcsLogLevelDefinition.fromXsdLogLevel(namedLogConfig1.getMinLogLevel()));
+		assertEquals(defaultMinLogLevelLocal, AcsLogLevelDefinition.fromXsdLogLevel(namedLogConfig1.getMinLogLevelLocal()));
 		
 		UnnamedLogger namedLogConfig2 = logConfig.getNamedLoggerConfig("nonExistingLogger");
 		assertNotSame(namedLogConfig1, namedLogConfig2); 
-		assertEquals(defaultMinLogLevel, Integer.parseInt(namedLogConfig2.getMinLogLevel().toString()));
-		assertEquals(defaultMinLogLevelLocal, Integer.parseInt(namedLogConfig2.getMinLogLevelLocal().toString()));
+		assertEquals(defaultMinLogLevel, AcsLogLevelDefinition.fromXsdLogLevel(namedLogConfig2.getMinLogLevel()));
+		assertEquals(defaultMinLogLevelLocal, AcsLogLevelDefinition.fromXsdLogLevel(namedLogConfig2.getMinLogLevelLocal()));
 	}
 	
 		
@@ -170,6 +170,7 @@ public class LogConfigTest extends TestCase {
 	 * that we get from the CDB.
 	 */
 	public void testGetLogConfigXml() throws Exception {
+		logger.info("============ Running testGetLogConfigXml ============");
 
 		File containerConfigFile = new File("frodoContainer.xml");
 		assertTrue("Cannot find file frodoContainer.xml. Check that file exists and test is run with working dir acsjlog/test.", containerConfigFile.exists());
@@ -195,8 +196,8 @@ public class LogConfigTest extends TestCase {
 		String componentsXml =
 			"<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?> " +
 			"<Components xmlns=\"urn:schemas-cosylab-com:Components:1.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"> " +
-			createComponentsCdbXml(separateConfigComponent1, "IDL_TYPE_1", "some.class1", "zampaione", true, 0, 8) +
-			createComponentsCdbXml(separateConfigComponent2, "IDL_TYPE_2", "some.class2", "zampaione", true, 5, 7) +
+			createComponentsCdbXml(separateConfigComponent1, "IDL_TYPE_1", "some.class1", "zampaione", true, 2, 8) +
+			createComponentsCdbXml(separateConfigComponent2, "IDL_TYPE_2", "some.class2", "zampaione", true, 5, 6) +
 			"</Components>";
 		logger.info("componentsXml = " + componentsXml);
 		String cdbComponentsPath = "MACI/Components";
@@ -236,12 +237,12 @@ public class LogConfigTest extends TestCase {
 		
 		// the schema defaults as reference
 		LoggingConfig schemaDefaults = new LoggingConfig(); 
-		int defaultMinLogLevel = Integer.parseInt(schemaDefaults.getMinLogLevel().toString());
-		int defaultMinLogLevelLocal = Integer.parseInt(schemaDefaults.getMinLogLevelLocal().toString());
+		AcsLogLevelDefinition defaultMinLogLevel = AcsLogLevelDefinition.fromXsdLogLevel(schemaDefaults.getMinLogLevel());
+		AcsLogLevelDefinition defaultMinLogLevelLocal = AcsLogLevelDefinition.fromXsdLogLevel(schemaDefaults.getMinLogLevelLocal());
 
 		// before we read the CDB, let's verify that the env var and default log levels are correct
 		logConfig.initialize(false);
-		assertEquals(defaultMinLogLevel, logConfig.getDefaultMinLogLevel().value);
+		assertEquals(defaultMinLogLevel, logConfig.getDefaultMinLogLevel());
 		assertEquals(AcsLogLevelDefinition.EMERGENCY, logConfig.getDefaultMinLogLevelLocal());
 		
 		// the simulated test CDB to configure our loggers from
@@ -293,8 +294,8 @@ public class LogConfigTest extends TestCase {
 		assertEquals(schemaDefaults.getFlushPeriodSeconds(), logConfig.getFlushPeriodSeconds()); // was not in CDB, thus default should be used
 				
 		UnnamedLogger myMuteloggerConfig = logConfig.getNamedLoggerConfig("MyMuteComponent");
-		assertEquals(5, myMuteloggerConfig.getMinLogLevel());
-		assertEquals(6, myMuteloggerConfig.getMinLogLevelLocal());
+		assertEquals(LogLevel.VALUE_5, myMuteloggerConfig.getMinLogLevel());
+		assertEquals(LogLevel.VALUE_6, myMuteloggerConfig.getMinLogLevelLocal());
 
 		// Test logger configuration given in the CDB separately for a component in the Components.xml file, not with the rest of LoggingConfig in the Container xml.
 		String separateConfigComponent1 = "testComp1";
@@ -302,8 +303,8 @@ public class LogConfigTest extends TestCase {
 		String componentsXml =
 			"<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?> " +
 			"<Components xmlns=\"urn:schemas-cosylab-com:Components:1.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"> " +
-			createComponentsCdbXml(separateConfigComponent1, "IDL_TYPE_1", "some.class1", "zampaione", true, 0, 8) +
-			createComponentsCdbXml(separateConfigComponent2, "IDL_TYPE_2", "some.class2", "zampaione", true, 5, 7) +
+			createComponentsCdbXml(separateConfigComponent1, "IDL_TYPE_1", "some.class1", "zampaione", true, 2, 8) +
+			createComponentsCdbXml(separateConfigComponent2, "IDL_TYPE_2", "some.class2", "zampaione", true, 5, 6) +
 			"</Components>";
 		logger.info("componentsXml = " + componentsXml);
 		String cdbComponentsPath = "MACI/Components";
@@ -317,11 +318,11 @@ public class LogConfigTest extends TestCase {
 //		assertTrue(loggerNames.contains(separateConfigComponent1));
 //		assertTrue(loggerNames.contains(separateConfigComponent2));
 		UnnamedLogger separateConfig1 = logConfig.getNamedLoggerConfig(separateConfigComponent1);
-		assertEquals(0, separateConfig1.getMinLogLevel());
-		assertEquals(8, separateConfig1.getMinLogLevelLocal());
+		assertEquals(LogLevel.VALUE_2, separateConfig1.getMinLogLevel());
+		assertEquals(LogLevel.VALUE_8, separateConfig1.getMinLogLevelLocal());
 		UnnamedLogger separateConfig2 = logConfig.getNamedLoggerConfig(separateConfigComponent2);
-		assertEquals(5, separateConfig2.getMinLogLevel());
-		assertEquals(7, separateConfig2.getMinLogLevelLocal());
+		assertEquals(LogLevel.VALUE_5, separateConfig2.getMinLogLevel());
+		assertEquals(LogLevel.VALUE_6, separateConfig2.getMinLogLevelLocal());
 		
 		// restore env vars (probably not necessary)
 		if (ACS_LOG_STDOUT_ORIGINAL != null) {
@@ -369,10 +370,11 @@ public class LogConfigTest extends TestCase {
 			fail("LogConfigException was expected.");
 		}
 		catch (LogConfigException ex) {
-			assertEquals("Log config initialization at least partially failed. Failed to parse XML for CDB node MACI/Containers/frodoContainer into binding classes " + 
-					"(ex=org.exolab.castor.xml.MarshalException, msg='The following error occured while trying to unmarshal field _minLogLevel of class alma.maci.loggingconfig.LoggingConfig\n" +
-					"For input string: \"NotANumber\"'). ", ex.getMessage());
-		}		
+			assertEquals("Log config initialization at least partially failed. Failed to parse XML for CDB node MACI/Containers/frodoContainer into binding classes " +
+					"(ex=org.exolab.castor.xml.MarshalException, msg='unable to add attribute \"minLogLevel\" to 'alma.maci.loggingconfig.LoggingConfig' due to the following error: " +
+					"java.lang.IllegalStateException: java.lang.IllegalArgumentException: 'NotANumber' is not a valid LogLevel'). ", 
+					ex.getMessage());
+		}
 		
 		testCDB.setThrowException(true);
 		try {
@@ -414,8 +416,8 @@ public class LogConfigTest extends TestCase {
 		// named logger levels 
 		String knownLoggerName = "knownLogger";
 		UnnamedLogger knownLoggerConfig = logConfig.getNamedLoggerConfig(knownLoggerName); // now the logger is known, even though it has default values 
-		assertEquals(defaultMinLogLevel.value, knownLoggerConfig.getMinLogLevel());
-		assertEquals(defaultMinLogLevelLocal.value, knownLoggerConfig.getMinLogLevelLocal());
+		assertEquals(defaultMinLogLevel, AcsLogLevelDefinition.fromXsdLogLevel(knownLoggerConfig.getMinLogLevel()));
+		assertEquals(defaultMinLogLevelLocal, AcsLogLevelDefinition.fromXsdLogLevel(knownLoggerConfig.getMinLogLevelLocal()));
 		Set<String> loggerNames = logConfig.getLoggerNames();
 		assertEquals(1, loggerNames.size());
 		assertTrue(loggerNames.contains(knownLoggerName));
@@ -438,7 +440,7 @@ public class LogConfigTest extends TestCase {
 		newDefaultLevel = newDefaultLevel.getNextHigherLevel();
 		assertNotNull(newDefaultLevel);
 		logConfig.setDefaultMinLogLevel(newDefaultLevel);
-		assertEquals(defaultMinLogLevel.value, knownLoggerConfig2.getMinLogLevel());		
+		assertEquals(defaultMinLogLevel, AcsLogLevelDefinition.fromXsdLogLevel(knownLoggerConfig2.getMinLogLevel()));
 	}
 	
 	
@@ -476,8 +478,8 @@ public class LogConfigTest extends TestCase {
 		logConfig.setCDBLoggingConfigPath(cdbContainerPath);
 		logConfig.setCDB(testCDB);
 		logConfig.initialize(true);
-		assertEquals(6, logConfig.getNamedLoggerConfig("unlockedLogger").getMinLogLevel()); // to make sure the CDB entry was considered
-		assertSame(AcsLogLevelDefinition.OFF.value, logConfig.getNamedLoggerConfig(loggerName).getMinLogLevel());
+		assertEquals(LogLevel.VALUE_6, logConfig.getNamedLoggerConfig("unlockedLogger").getMinLogLevel()); // to make sure the CDB entry was considered
+		assertSame(LogLevel.VALUE_99, logConfig.getNamedLoggerConfig(loggerName).getMinLogLevel());
 		assertTrue(logConfig.getNamedLoggerConfig(loggerName).isLockedRemote());
 	}
 	
