@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: TestList,v 1.16 2008/04/15 11:15:06 eallaert Exp $"
+# "@(#) $Id: TestList,v 1.17 2008/05/16 12:44:10 eallaert Exp $"
 #
 # TestList
 #
@@ -36,6 +36,12 @@
 # "export ACS_CDB=`pwd`" from this directory, and then start up ACS "by hand". 
 SOURCE setupTatEnvironment.tcl
 PROLOGUE acsutilTATPrologue --noloadifr -l
+
+########################################################
+# CDB CHECK
+########################################################
+0 PROLOGUE "tclsh generateSed.tcl cdbCheck" \
+    cdbCheck cdbChecker
 
 ########################################################
 # JAVA-CONTAINER WITHOUT CDB FILE
@@ -333,7 +339,6 @@ PROLOGUE acsutilTATPrologue --noloadifr -l
 # PYTHON-CONTAINER WITHOUT CDB FILE
 ########################################################
 #
-# 61 and 65 fail because the default levels are set to 0/0
 61 SOURCE prepareHardcodedLevelsNoCdb.tcl \
 	PROLOGUE "acsutilAwaitContainerStart -py myDefaultPyTestContainer" \
     pyHardcodedLevelsNoCdb2 "maciContainerLogLevel myDefaultPyTestContainer get default"
