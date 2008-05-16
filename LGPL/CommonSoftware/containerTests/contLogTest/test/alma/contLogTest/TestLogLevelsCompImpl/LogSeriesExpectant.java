@@ -76,6 +76,17 @@ public class LogSeriesExpectant
                 	// printing this could be useful for debugging the test
                 	//System.out.println(logRecord.getMessage());
                 	
+                	if (logRecord.getMessage() == null) {
+                		System.out.println("BUG: got a null log-message from " + sourceObjectName);
+                		continue;
+                	}
+                	// Filter out python trace-logs (which could make it or not, depending on timing)
+                	if (logRecord.getMessage().startsWith("initialize -") ||
+                		logRecord.getMessage().startsWith("getLevels -") ||
+                		logRecord.getMessage().startsWith("cleanUp -")) {
+                    	//System.out.println("Dropping this log: "+ logRecord.getMessage());
+                		continue;
+                	}
                 	// Filter out messages which are a work-around for a python issue 
                 	if (!logRecord.getMessage().endsWith("===packet fill-up message===")) {
                 		logRecords.add(logRecord);
