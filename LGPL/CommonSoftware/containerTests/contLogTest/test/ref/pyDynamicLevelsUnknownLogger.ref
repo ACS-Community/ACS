@@ -10,7 +10,7 @@
 1 - 
 1 - <timestamp> [GlobalLogger - ] Done all.
 2 -  -D TEST_COMP_NAMES=TESTLOG6 -- alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest
-2 - INFO - Starting Java/abeans application: alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest
+2 - <timestamp> INFO [acsStartJava] Starting Java/abeans application: alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest
 2 - .FINER: Logging configuration has been initialized, but not from CDB settings.
 2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels] -------------------------------
 2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels] ComponentClientTestCase#setUp()
@@ -26,7 +26,7 @@
 2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Set default log level for container aragornContainer to 2 to be used by component TESTLOG6
 2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will call 'logDummyMessages' on component TESTLOG6
 2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will wait <N> seconds to receive (some of) these log messages.
-2 - Got 10 records from logger TESTLOG6
+2 - Got 10 records from logger TESTLOG5
 2 - (level=2) logDummyMessages - dummy log message for core level 2/TRACE
 2 - (level=3) logDummyMessages - dummy log message for core level 3/DEBUG
 2 - (level=4) logDummyMessages - dummy log message for core level 4/INFO

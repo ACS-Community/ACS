@@ -10,7 +10,7 @@
 1 - 
 1 - <timestamp> [GlobalLogger - ] Done all.
 2 -  -D TEST_COMP_NAMES=TESTLOG4 -- alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest
-2 - INFO - Starting Java/abeans application: alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest
+2 - <timestamp> INFO [acsStartJava] Starting Java/abeans application: alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest
 2 - .FINER: Logging configuration has been initialized, but not from CDB settings.
 2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels] -------------------------------
 2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels] ComponentClientTestCase#setUp()
