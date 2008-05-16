@@ -91,10 +91,14 @@ public class TestLogLevelsCompTest extends ComponentClientTestCase
 	 */
 	protected void tearDown() throws Exception {
 		for (String compName : componentNames) {
+			//System.out.println("tearDown - about to release "+ compName);
 			getContainerServices().releaseComponent(compName);
 		}
+		//System.out.println("tearDown - about to log-out from Manager");
 		containerTestUtil.logoutFromManager();
+		//System.out.println("tearDown - about to tearDown() superClass");
 		super.tearDown();
+		//System.out.println("tearDown - done with tearDown() of superClass");
 	}
 	
 	
@@ -146,7 +150,7 @@ public class TestLogLevelsCompTest extends ComponentClientTestCase
 		}
 		// Sleep is to work-around a race condition, whereby the tearDown() can get called "too early"
 		// (logging not properly initialised when it is already  stopped after running this short method).
-		Thread.sleep(2000);
+		Thread.sleep(3000);
 	}
 	
 	
@@ -185,7 +189,7 @@ public class TestLogLevelsCompTest extends ComponentClientTestCase
 			}
 			centralLogLevels[i++] = lld.value;
 		}
-		int waitTimeSeconds = 5;
+		int waitTimeSeconds = 12;
 		
 		for (TestLogLevelsComp testComp : components) {
 			String componentName = testComp.name();
@@ -246,8 +250,12 @@ public class TestLogLevelsCompTest extends ComponentClientTestCase
 				// logging a msg at level OFF should lead to an error, independent from central level 
 				//testComp.logDummyMessages(offLogLevels);
 				
+				//System.out.println("Finished testing level " + level);
 			}
+			//System.out.println("Finished testing component " + componentName);
 		}
+		//System.out.println("Finished testing all components - done with testLoggingConfigurableCentralLogLevels()");
+
 	}
 
 	
@@ -255,6 +263,8 @@ public class TestLogLevelsCompTest extends ComponentClientTestCase
 	public static void main(String[] args)
 	{
 		junit.textui.TestRunner.run(TestLogLevelsCompTest.class);
+		//System.out.println("Finished running TestLogLevelsCompTest main");
+		//System.exit(0);
 	}
 
 }
