@@ -17,7 +17,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: TestLogLevelsComp.py,v 1.7 2008/03/18 17:24:36 agrimstrup Exp $"
+# "@(#) $Id: TestLogLevelsComp.py,v 1.8 2008/05/16 12:39:24 eallaert Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -26,6 +26,7 @@
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 
+from time import sleep
 #--CORBA STUBS-----------------------------------------------------------------
 import contLogTest__POA
 import contLogTest
@@ -65,7 +66,7 @@ class TestLogLevelsComp(contLogTest__POA.TestLogLevelsComp,  #CORBA stubs for ID
         '''
         Override this method inherited from ComponentLifecycle
         '''
-        self.getLogger().logInfo("Destroying " + self.name + "...") 
+        self.getLogger().logTrace("destroying " + self.name + " ...") 
     #------------------------------------------------------------------------------
     #--Implementation of IDL methods-----------------------------------------------
     #------------------------------------------------------------------------------
@@ -75,7 +76,7 @@ class TestLogLevelsComp(contLogTest__POA.TestLogLevelsComp,  #CORBA stubs for ID
         LongSeq getLevels();
         '''
         mylogger = self.getLogger()
-        mylogger.logInfo("called...")
+        mylogger.logTrace("called ...")
         levels = mylogger.getLevels()
         
         return [2, 2, min(levels.minLogLevel, levels.minLogLevelLocal), levels.minLogLevel, levels.minLogLevelLocal]
@@ -87,6 +88,8 @@ class TestLogLevelsComp(contLogTest__POA.TestLogLevelsComp,  #CORBA stubs for ID
         void logDummyMessages(in LongSeq levels);
         '''
         mylogger = self.getLogger()
+        # give client time to get ready for logs
+        sleep(1.500)
         for l in levels:
             try:
                 if l != 99:
@@ -96,8 +99,8 @@ class TestLogLevelsComp(contLogTest__POA.TestLogLevelsComp,  #CORBA stubs for ID
         mylogger.logAtLevel(levels[-2], "===last log message===")
         # Python seems to sends logs in packets of 10 logs, so add 9 messages to
         # ensure all the above logs get sent across right now.
-        for i in range(1,10):
-            mylogger.logAtLevel(levels[-2], "===packet fill-up message===")
+        ##for i in range(1,10):
+        ##    mylogger.logAtLevel(levels[-2], "===packet fill-up message===")
            
         
 #------------------------------------------------------------------------------
