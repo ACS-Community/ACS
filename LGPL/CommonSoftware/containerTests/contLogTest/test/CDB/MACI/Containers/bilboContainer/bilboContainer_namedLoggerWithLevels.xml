@@ -14,9 +14,10 @@
   <LoggingConfig 
         minLogLevel="2"
         minLogLevelLocal="3"
-        centralizedLogger="Log" 
-        dispatchPacketSize="0" 
-	immediateDispatchLevel="11"
+        centralizedLogger="Log"
+        dispatchPacketSize="0"
+        immediateDispatchLevel="11"
+        flushPeriodSeconds="10"
        >
        <log:_ Name="bilboContainer" minLogLevel="4" minLogLevelLocal="2" />
        <log:_ Name="TESTLOG4" minLogLevel="3" minLogLevelLocal="4" />

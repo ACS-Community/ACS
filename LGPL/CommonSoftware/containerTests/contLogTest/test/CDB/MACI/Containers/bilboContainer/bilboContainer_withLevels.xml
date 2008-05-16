@@ -14,9 +14,11 @@
   <LoggingConfig 
         minLogLevel="3"
         minLogLevelLocal="4"
-	centralizedLogger="Log" 
-        dispatchPacketSize="0" 
-	immediateDispatchLevel="11">
+        centralizedLogger="Log"
+        dispatchPacketSize="0"
+        immediateDispatchLevel="11"
+        flushPeriodSeconds="10"
+        >
   </LoggingConfig>
 </Container>
 
