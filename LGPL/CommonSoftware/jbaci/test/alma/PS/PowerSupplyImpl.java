@@ -22,7 +22,6 @@
 package alma.PS;
 
 import java.util.Random;
-import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import alma.ACS.CBDescIn;
@@ -80,7 +79,6 @@ public class PowerSupplyImpl extends CharacteristicComponentImpl
 		throws ComponentLifecycleException {
 
 		super.initialize(containerServices);
-		ThreadFactory tf = containerServices.getThreadFactory();
 		
 		try
 		{
@@ -89,17 +87,17 @@ public class PowerSupplyImpl extends CharacteristicComponentImpl
 			DataAccess readbackDataAccess = new ReadbackDataAccess(currentDataAccess, 10.0);
 			
 			// current
-			RWdoubleImpl currentImpl = new RWdoubleImpl("current", this, currentDataAccess, tf);
+			RWdoubleImpl currentImpl = new RWdoubleImpl("current", this, currentDataAccess);
 			RWdoublePOATie currentTie = new RWdoublePOATie(currentImpl);
 			current = RWdoubleHelper.narrow(this.registerProperty(currentImpl, currentTie));
 
 			// readback
-			ROdoubleImpl readbackImpl = new ROdoubleImpl("readback", this, readbackDataAccess, tf);
+			ROdoubleImpl readbackImpl = new ROdoubleImpl("readback", this, readbackDataAccess);
 			ROdoublePOATie readbackTie = new ROdoublePOATie(readbackImpl);
 			readback = ROdoubleHelper.narrow(this.registerProperty(readbackImpl, readbackTie));
 
 			// status
-			ROpatternImpl statusImpl = new ROpatternImpl("status", this, new StatusDataAccess(), tf);
+			ROpatternImpl statusImpl = new ROpatternImpl("status", this, new StatusDataAccess());
 			ROpatternPOATie statusTie = new ROpatternPOATie(statusImpl);
 			status = ROpatternHelper.narrow(this.registerProperty(statusImpl, statusTie));
 			
@@ -137,21 +135,21 @@ public class PowerSupplyImpl extends CharacteristicComponentImpl
 	 * @see alma.PS.PowerSupplyOperations#on(alma.ACS.CBvoid, alma.ACS.CBDescIn)
 	 */
 	public void on(CBvoid callback, CBDescIn desc) {
-		new ReflectionBACIAction(this, getClass(), "onImpl", callback, desc, m_containerServices.getThreadFactory()).submit();
+		new ReflectionBACIAction(this, this, getClass(), "onImpl", callback, desc).submit();
 	}
 
 	/**
 	 * @see alma.PS.PowerSupplyOperations#off(alma.ACS.CBvoid, alma.ACS.CBDescIn)
 	 */
 	public void off(CBvoid callback, CBDescIn desc) {
-		new ReflectionBACIAction(this, getClass(), "offImpl", callback, desc, m_containerServices.getThreadFactory()).submit();
+		new ReflectionBACIAction(this, this, getClass(), "offImpl", callback, desc).submit();
 	}
 
 	/**
 	 * @see alma.PS.PowerSupplyOperations#reset(alma.ACS.CBvoid, alma.ACS.CBDescIn)
 	 */
 	public void reset(CBvoid callback, CBDescIn desc) {
-		new ReflectionBACIAction(this, getClass(), "resetImpl", callback, desc, m_containerServices.getThreadFactory()).submit();
+		new ReflectionBACIAction(this, this, getClass(), "resetImpl", callback, desc).submit();
 	}
 
 	/******************* [ Implementations of actions ] *******************/

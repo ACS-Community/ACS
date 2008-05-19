@@ -34,11 +34,6 @@ import java.util.concurrent.TimeUnit;
 public class BACIDispatcher {
 
 	/**
-	 * Singleton instance.
-	 */
-	private static BACIDispatcher instance = null;
-
-	/**
 	 * Thread pool.
 	 */
 	private ThreadPoolExecutor threadPool;
@@ -53,30 +48,25 @@ public class BACIDispatcher {
 	 */
 	private static final int POOL_THREADS = 10;
 
-	
 	/**
-	 * Protected constructor (singleton pattern). 
+	 * Constructor. 
+	 * @param threadFactory thread factory to be used to create thread, if <code>null</code> no factory is being used
 	 */
-	protected BACIDispatcher(ThreadFactory threadFactory)
+	public BACIDispatcher(ThreadFactory threadFactory)
 	{
         // TODO make PriorityBlockingQueue bounded!!! (to MAX_REQUESTS)
 		// TODO use PooledExecutorWithWaitInNewThreadWhenBlocked...
-		threadPool = new ThreadPoolExecutor(POOL_THREADS, POOL_THREADS,
-        								  Long.MAX_VALUE, TimeUnit.NANOSECONDS,
-        								  new PriorityBlockingQueue(MAX_REQUESTS, new PrioritizedRunnableComparator()), threadFactory);
+		if (threadFactory != null)
+			threadPool = new ThreadPoolExecutor(POOL_THREADS, POOL_THREADS,
+					  Long.MAX_VALUE, TimeUnit.NANOSECONDS,
+					  new PriorityBlockingQueue(MAX_REQUESTS, new PrioritizedRunnableComparator()), threadFactory);
+		else
+			threadPool = new ThreadPoolExecutor(POOL_THREADS, POOL_THREADS,
+	        								  Long.MAX_VALUE, TimeUnit.NANOSECONDS,
+	        								  new PriorityBlockingQueue(MAX_REQUESTS, new PrioritizedRunnableComparator()));
 		threadPool.prestartAllCoreThreads();
 	}
 	
-	/**
-	 * Singleton pattern.
-	 */
-	public static synchronized BACIDispatcher getInstance(ThreadFactory threadFactory)
-	{
-		if (instance == null)
-			instance = new BACIDispatcher(threadFactory);
-		return instance;
-	}
-
 	/**
 	 * Execute action. 
 	 * If the maximum pool size or queue size is bounded,
@@ -97,6 +87,25 @@ public class BACIDispatcher {
 		{
 			return false;
 		}
+	}
+	
+	/**
+	 * Shutdown dispatcher.
+	 */
+	public void shutdown()
+	{
+		// initiate shutdown
+		threadPool.shutdown();
+		
+		// first be kind and wait up to 3 seconds to terminate
+		try {
+			threadPool.awaitTermination(3, TimeUnit.SECONDS);
+		} catch (InterruptedException e) {
+			// noop
+		}
+		
+		// no more "mister-nice-guy", terminate all
+		threadPool.shutdownNow();
 	}
 
 }

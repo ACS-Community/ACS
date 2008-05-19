@@ -21,8 +21,6 @@
 
 package alma.ACS.impl;
 
-import java.util.concurrent.ThreadFactory;
-
 import alma.ACS.TypelessPropertyOperations;
 import alma.ACS.jbaci.PropertyInitializationFailed;
 
@@ -62,10 +60,9 @@ public class TypelessPropertyImpl
 	 * @throws PropertyInitializationFailed exception is thrown on failure
 	 */
 	public TypelessPropertyImpl(String name,
-								CharacteristicComponentImpl parentComponent,
-								ThreadFactory threadFactory)
+								CharacteristicComponentImpl parentComponent)
 		throws PropertyInitializationFailed {
-		super(name, parentComponent, threadFactory);
+		super(name, parentComponent);
 	}
 
 	/**

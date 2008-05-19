@@ -21,8 +21,6 @@
 
 package alma.ACS.impl;
 
-import java.util.concurrent.ThreadFactory;
-
 import alma.ACS.CBDescIn;
 import alma.ACS.CBvoid;
 import alma.ACS.Callback;
@@ -64,10 +62,9 @@ public abstract class RWCommonComparablePropertyImpl extends CommonComparablePro
 	public RWCommonComparablePropertyImpl(
 		Class propertyType,
 		String name,
-		CharacteristicComponentImpl parentComponent, 
-		ThreadFactory threadFactory)
+		CharacteristicComponentImpl parentComponent)
 		throws PropertyInitializationFailed {
-		this(propertyType, name, parentComponent, new MemoryDataAccess(), threadFactory);
+		this(propertyType, name, parentComponent, new MemoryDataAccess());
 	}
 
 	/**
@@ -82,10 +79,9 @@ public abstract class RWCommonComparablePropertyImpl extends CommonComparablePro
 		Class propertyType,
 		String name,
 		CharacteristicComponentImpl parentComponent,
-		DataAccess dataAccess,
-		ThreadFactory threadFactory)
+		DataAccess dataAccess)
 		throws PropertyInitializationFailed {
-		super(propertyType, name, parentComponent, dataAccess, threadFactory);
+		super(propertyType, name, parentComponent, dataAccess);
 	}
 
 	/**
@@ -109,7 +105,7 @@ public abstract class RWCommonComparablePropertyImpl extends CommonComparablePro
 
 	/**
 	 * Increment action implementation.
-	 * @throws AcsJException	thrown on any failure.
+	 * @throws AcsJException	thown on any failure.
 	 */
 	protected Completion incrementImpl() throws AcsJException
 	{
@@ -123,7 +119,7 @@ public abstract class RWCommonComparablePropertyImpl extends CommonComparablePro
 	
 	/**
 	 * Decrement action implementation.
-	 * @throws AcsJException	thrown on any failure.
+	 * @throws AcsJException	thown on any failure.
 	 */
 	protected Completion decrementImpl() throws AcsJException
 	{
@@ -145,8 +141,8 @@ public abstract class RWCommonComparablePropertyImpl extends CommonComparablePro
 		/**
 		 * @see alma.ACS.jbaci.BACIAction
 		 */
-		public IncrementAction(Callback callback, CBDescIn descIn, ThreadFactory threadFactory) {
-			super(callback, descIn, RWCommonComparablePropertyImpl.this, threadFactory);
+		public IncrementAction(Callback callback, CBDescIn descIn) {
+			super(getParentComponent(), callback, descIn, RWCommonComparablePropertyImpl.this);
 		}
 
 		/**
@@ -156,9 +152,8 @@ public abstract class RWCommonComparablePropertyImpl extends CommonComparablePro
 			Object value, 
 			Callback callback,
 			CBDescIn descIn,
-			BACIPriority priority,
-			ThreadFactory threadFactory) {
-			super(callback, descIn, RWCommonComparablePropertyImpl.this, priority, threadFactory);
+			BACIPriority priority) {
+			super(getParentComponent(), callback, descIn, RWCommonComparablePropertyImpl.this, priority);
 		}
 
 		/**
@@ -183,7 +178,7 @@ public abstract class RWCommonComparablePropertyImpl extends CommonComparablePro
 	 * @see alma.ACS.RW<type>Operations#increment(alma.ACS.CBvoid, alma.ACS.CBDescIn)
 	 */
 	public void increment(CBvoid callback, CBDescIn desc) {
-		new IncrementAction(callback, desc, threadFactory).submit();
+		new IncrementAction(callback, desc).submit();
 	}
 
 	/**
@@ -194,8 +189,8 @@ public abstract class RWCommonComparablePropertyImpl extends CommonComparablePro
 		/**
 		 * @see alma.ACS.jbaci.BACIAction
 		 */
-		public DecrementAction(Callback callback, CBDescIn descIn, ThreadFactory threadFactory) {
-			super(callback, descIn, RWCommonComparablePropertyImpl.this, threadFactory);
+		public DecrementAction(Callback callback, CBDescIn descIn) {
+			super(getParentComponent(), callback, descIn, RWCommonComparablePropertyImpl.this);
 		}
 
 		/**
@@ -205,9 +200,8 @@ public abstract class RWCommonComparablePropertyImpl extends CommonComparablePro
 			Object value, 
 			Callback callback,
 			CBDescIn descIn,
-			BACIPriority priority,
-			ThreadFactory threadFactory) {
-			super(callback, descIn, RWCommonComparablePropertyImpl.this, priority, threadFactory);
+			BACIPriority priority) {
+			super(getParentComponent(), callback, descIn, RWCommonComparablePropertyImpl.this, priority);
 		}
 
 		/**
@@ -232,7 +226,7 @@ public abstract class RWCommonComparablePropertyImpl extends CommonComparablePro
 	 * @see alma.ACS.RW<type>Operations#decrement(alma.ACS.CBvoid, alma.ACS.CBDescIn)
 	 */
 	public void decrement(CBvoid callback, CBDescIn desc) {
-		new IncrementAction(callback, desc, threadFactory).submit();
+		new IncrementAction(callback, desc).submit();
 	}
 
 }

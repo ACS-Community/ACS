@@ -21,14 +21,13 @@
 
 package alma.ACS.impl;
 
-import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.omg.CORBA.BooleanHolder;
 
 import alma.ACS.CBDescIn;
 import alma.ACS.Callback;
-import alma.ACS.jbaci.BACIExecutor;
+import alma.ACS.jbaci.BACIFramework;
 import alma.ACS.jbaci.BACIPriority;
 import alma.ACS.jbaci.BACITimer;
 import alma.ACS.jbaci.CompletionUtil;
@@ -63,7 +62,7 @@ public class CommonComparableMonitorImpl
 			// if none is queued, initiate executor otherwise override old value 
 			if (queuedKeyPoolTime.getAndSet(timeToRun) == 0)
 			{
-				BACIExecutor.getInstance(threadFactory).execute(this);
+				property.getParentComponent().execute(this);
 			}
 		}
 		/**
@@ -135,8 +134,8 @@ public class CommonComparableMonitorImpl
 	 * @param callback	callback, non-<code>null</code>.
 	 * @param descIn	callback in-descriptor.
 	 */
-	public CommonComparableMonitorImpl(CommonPropertyImpl property, Callback callback, CBDescIn descIn, ThreadFactory threadFactory) {
-		this(property, callback, descIn, 0, threadFactory);
+	public CommonComparableMonitorImpl(CommonPropertyImpl property, Callback callback, CBDescIn descIn) {
+		this(property, callback, descIn, 0);
 	}
 
 	/**
@@ -151,9 +150,8 @@ public class CommonComparableMonitorImpl
 		CommonPropertyImpl property,
 		Callback callback,
 		CBDescIn descIn,
-		long startTime,
-		ThreadFactory threadFactory) {
-		super(property, callback, descIn, startTime, threadFactory);
+		long startTime) {
+		super(property, callback, descIn, startTime);
 		enabled = false;
 		
 		if (property instanceof CommonComparablePropertyImpl)
@@ -193,7 +191,7 @@ public class CommonComparableMonitorImpl
 			// determine start time to align with sync monitors - might improve performance
 			long startTime = (System.currentTimeMillis()/poolTime + 1) * poolTime;
 			// pool
-			poolTimerTask = BACITimer.getInstance(threadFactory).executePeriodically(poolTime, new PoolTimer(), startTime);
+			poolTimerTask = BACIFramework.getTimer().executePeriodically(poolTime, new PoolTimer(), startTime);
 		}
 		
 		enabled = true;

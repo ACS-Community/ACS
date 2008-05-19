@@ -21,8 +21,6 @@
 
 package alma.ACS.impl;
 
-import java.util.concurrent.ThreadFactory;
-
 import org.omg.CORBA.Any;
 import org.omg.CosPropertyService.PropertySet;
 
@@ -61,15 +59,13 @@ public class PropertyImpl implements PropertyOperations {
 	 */
 	private PropertyDesc propertyDesc;
 
-	protected final ThreadFactory threadFactory;
-
 	/**
 	 * Constructor.
 	 * @param name				property name, non-<code>null</code>.
 	 * @param parentComponent	parent component, non-<code>null</code>.
 	 * @throws PropertyInitializationFailed exception is thrown on failure
 	 */
-	public PropertyImpl(String name, CharacteristicComponentImpl parentComponent, ThreadFactory threadFactory) 
+	public PropertyImpl(String name, CharacteristicComponentImpl parentComponent) 
 		throws PropertyInitializationFailed {
 
 		if (name == null)
@@ -80,8 +76,7 @@ public class PropertyImpl implements PropertyOperations {
 
 		this.name = name;
 		this.parentComponent = parentComponent;
-		this.threadFactory = threadFactory;
-		
+	
 		// TODO it would be nice to have componentCharacteristicsModel.createChildModel(name)
 		try
 		{

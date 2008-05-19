@@ -21,8 +21,6 @@
 
 package alma.ACS.impl;
 
-import java.util.concurrent.ThreadFactory;
-
 import org.omg.CORBA.NO_IMPLEMENT;
 import org.omg.CORBA.NO_RESOURCES;
 
@@ -66,10 +64,9 @@ public class ROpatternImpl
 	 */
 	public ROpatternImpl(
 		String name,
-		CharacteristicComponentImpl parentComponent,
-		ThreadFactory threadFactory)
+		CharacteristicComponentImpl parentComponent)
 		throws PropertyInitializationFailed {
-		super(int.class, name, parentComponent, threadFactory);
+		super(int.class, name, parentComponent);
 	}
 
 	/**
@@ -82,10 +79,9 @@ public class ROpatternImpl
 	public ROpatternImpl(
 		String name,
 		CharacteristicComponentImpl parentComponent,
-		DataAccess dataAccess,
-		ThreadFactory threadFactory)
+		DataAccess dataAccess)
 		throws PropertyInitializationFailed {
-		super(int.class, name, parentComponent, dataAccess, threadFactory);
+		super(int.class, name, parentComponent, dataAccess);
 	}
 
 	/**
@@ -163,6 +159,28 @@ public class ROpatternImpl
 		}
 	}
 
+	public int alarm_mask() {
+		try
+		{
+			return characteristicModelImpl.getInteger("alarm_mask");
+		}
+		catch (NoSuchCharacteristic ncs)
+		{
+			throw new NO_RESOURCES();
+		}
+	}
+
+	public int alarm_trigger() {
+		try
+		{
+			return characteristicModelImpl.getInteger("alarm_trigger");
+		}
+		catch (NoSuchCharacteristic ncs)
+		{
+			throw new NO_RESOURCES();
+		}
+	}
+
 	/**
 	 * @see alma.ACS.PpatternOperations#get_sync(alma.ACSErr.CompletionHolder)
 	 */
@@ -215,36 +233,12 @@ public class ROpatternImpl
 		CBDescIn descIn) {
 			
 		// create monitor and its servant
-		MonitorpatternImpl monitorImpl = new MonitorpatternImpl(this, callback, descIn, startTime, threadFactory);
+		MonitorpatternImpl monitorImpl = new MonitorpatternImpl(this, callback, descIn, startTime);
 		MonitorpatternPOATie monitorTie = new MonitorpatternPOATie(monitorImpl);
 
 		// register and activate		
 		return MonitorpatternHelper.narrow(this.registerMonitor(monitorImpl, monitorTie));
 	
-	}
-	
-	
-
-	public int alarm_mask() {
-		try
-		{
-			return characteristicModelImpl.getInteger("alarm_mask");
-		}
-		catch (NoSuchCharacteristic ncs)
-		{
-			throw new NO_RESOURCES();
-		}
-	}
-
-	public int alarm_trigger() {
-		try
-		{
-			return characteristicModelImpl.getInteger("alarm_trigger");
-		}
-		catch (NoSuchCharacteristic ncs)
-		{
-			throw new NO_RESOURCES();
-		}
 	}
 
 	/**

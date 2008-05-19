@@ -23,7 +23,6 @@ package alma.ACS.jbaci;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.concurrent.ThreadFactory;
 
 import alma.ACS.CBDescIn;
 import alma.ACS.CBvoid;
@@ -53,21 +52,23 @@ public class ReflectionBACIAction extends BACIAction {
 
 	/**
 	 * Constructor of NORMAL priority action (CBvoid callback).
+	 * @param executor	executor to be used to execute action.
 	 * @param invokee	object on which to invoke the method
 	 * @param method	method to be invoked.
 	 * @param callback	action callback.
 	 * @param descIn	action callback in descriptor.
 	 */
 	public ReflectionBACIAction(
+							PrioritizedExecutor executor,
 							Object invokee, Method method,
-							CBvoid callback, CBDescIn descIn, 
-							ThreadFactory threadFactory)
+							CBvoid callback, CBDescIn descIn)
 	{
-		this(invokee, method, callback, descIn, (CallbackDispatcher)null, threadFactory);
+		this(executor, invokee, method, callback, descIn, (CallbackDispatcher)null);
 	}
 	
 	/**
 	 * Constructor of NORMAL priority action.
+	 * @param executor	executor to be used to execute action.
 	 * @param invokee	object on which to invoke the method
 	 * @param method	method to be invoked.
 	 * @param callback	action callback.
@@ -75,16 +76,17 @@ public class ReflectionBACIAction extends BACIAction {
 	 * @param callbackDispatcher	callback dispatcher (value dependend).
 	 */
 	public ReflectionBACIAction(
+					  PrioritizedExecutor executor,
 					  Object invokee, Method method,
 					  Callback callback, CBDescIn descIn,
-					  CallbackDispatcher callbackDispatcher,
-					  ThreadFactory threadFactory)
+					  CallbackDispatcher callbackDispatcher)
 	{
-		this(invokee, method, callback, descIn, callbackDispatcher, BACIPriority.NORMAL, threadFactory);
+		this(executor, invokee, method, callback, descIn, callbackDispatcher, BACIPriority.NORMAL);
 	}
 
 	/**
 	 * Constructor.
+	 * @param executor	executor to be used to execute action.
 	 * @param invokee	object on which to invoke the method
 	 * @param method	method to be invoked.
 	 * @param callback	action callback.
@@ -92,15 +94,16 @@ public class ReflectionBACIAction extends BACIAction {
 	 * @param priority	action priority.
 	 */
 	public ReflectionBACIAction(
+							PrioritizedExecutor executor,
 							Object invokee, Method method,
-							CBvoid callback, CBDescIn descIn, BACIPriority priority, 
-							ThreadFactory threadFactory)
+							CBvoid callback, CBDescIn descIn, BACIPriority priority)
 	{
-		this(invokee, method, callback, descIn, null, priority, threadFactory);
+		this(executor, invokee, method, callback, descIn, null, priority);
 	}
 
 	/**
 	 * Constructor.
+	 * @param executor	executor to be used to execute action.
 	 * @param invokee	object on which to invoke the method
 	 * @param method	method to be invoked.
 	 * @param callback	action callback.
@@ -109,18 +112,19 @@ public class ReflectionBACIAction extends BACIAction {
 	 * @param priority	action priority.
 	 */
 	public ReflectionBACIAction(
+					  PrioritizedExecutor executor,
 					  Object invokee, Method method,
 					  Callback callback, CBDescIn descIn, 
-					  CallbackDispatcher callbackDispatcher, BACIPriority priority, 
-					  ThreadFactory threadFactory)
+					  CallbackDispatcher callbackDispatcher, BACIPriority priority)
 	{
-		super(callback, descIn, callbackDispatcher, priority, threadFactory);
+		super(executor, callback, descIn, callbackDispatcher, priority);
 		this.invokee = invokee;
 		this.method = method;
 	}
 
 	/**
 	 * Constructor of NORMAL priority action (CBvoid callback).
+	 * @param executor	executor to be used to execute action.
 	 * @param invokee	object on which to invoke the method
 	 * @param invokeeClass <code>Class</code> of the invokeee instance.
 	 * @param methodName name of the method.
@@ -128,16 +132,17 @@ public class ReflectionBACIAction extends BACIAction {
 	 * @param descIn	action callback in descriptor.
 	 */
 	public ReflectionBACIAction(
-							Object invokee, Class invokeeClass, String methodName,
-							CBvoid callback, CBDescIn descIn,
-							ThreadFactory threadFactory)
+							PrioritizedExecutor executor,
+			  				Object invokee, Class invokeeClass, String methodName,
+							CBvoid callback, CBDescIn descIn)
 	{
-		this(invokee, invokeeClass, methodName,
-			 callback, descIn, null, BACIPriority.NORMAL, threadFactory);
+		this(executor, invokee, invokeeClass, methodName,
+			 callback, descIn, null, BACIPriority.NORMAL);
 	}
 
 	/**
 	 * Constructor of NORMAL priority action.
+	 * @param executor	executor to be used to execute action.
 	 * @param invokee	object on which to invoke the method
 	 * @param invokeeClass <code>Class</code> of the invokeee instance.
 	 * @param methodName name of the method.
@@ -146,17 +151,18 @@ public class ReflectionBACIAction extends BACIAction {
 	 * @param callbackDispatcher	callback dispatcher (value dependend).
 	 */
 	public ReflectionBACIAction(
+							PrioritizedExecutor executor,
 							Object invokee, Class invokeeClass, String methodName,
 							Callback callback, CBDescIn descIn,
-							CallbackDispatcher callbackDispatcher,
-							ThreadFactory threadFactory)
+							CallbackDispatcher callbackDispatcher)
 	{
-		this(invokee, invokeeClass, methodName,
-			 callback, descIn, callbackDispatcher, BACIPriority.NORMAL, threadFactory);
+		this(executor, invokee, invokeeClass, methodName,
+			 callback, descIn, callbackDispatcher, BACIPriority.NORMAL);
 	}
 
 	/**
 	 * Constructor of priority action.
+	 * @param executor	executor to be used to execute action.
 	 * @param invokee	object on which to invoke the method
 	 * @param invokeeClass <code>Class</code> of the invokeee instance.
 	 * @param methodName name of the method.
@@ -166,11 +172,12 @@ public class ReflectionBACIAction extends BACIAction {
 	 * @param priority	action priority.
 	 */
 	public ReflectionBACIAction(
+							PrioritizedExecutor executor,
 							Object invokee, Class invokeeClass, String methodName,
 							Callback callback, CBDescIn descIn,
-							CallbackDispatcher callbackDispatcher, BACIPriority priority, ThreadFactory threadFactory)
+							CallbackDispatcher callbackDispatcher, BACIPriority priority)
 	{
-		super(callback, descIn, callbackDispatcher, priority, threadFactory);
+		super(executor, callback, descIn, callbackDispatcher, priority);
 		try
 		{
 			method = invokeeClass.getMethod(methodName, null);

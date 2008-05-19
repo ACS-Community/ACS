@@ -21,22 +21,17 @@
 
 package alma.ACS.jbaci;
 
-import java.util.Comparator;
-
 /**
- * Implementation of <code>PrioritizedRunnable</code> comparator.
+ * Interface defining <code>PrioritizedRunnable</code> executor.
  * @author <a href="mailto:matej.sekoranjaATcosylab.com">Matej Sekoranja</a>
  * @version $id$
  */
-public class PrioritizedRunnableComparator implements Comparator
-{
-	/**
-	 * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
-	 */
-	public int compare(Object o1, Object o2) {
-		PrioritizedRunnable pr1 = (PrioritizedRunnable)o1;
-		PrioritizedRunnable pr2 = (PrioritizedRunnable)o2;
-		return pr1.getPriority().compareTo(pr2.getPriority());
-	}
-}
+public interface PrioritizedExecutor {
 
+	/**
+	 * Return <code>runnable</code> task.
+	 * @param runnable task to run.
+	 */
+	public boolean execute(PrioritizedRunnable runnable);
+	
+}

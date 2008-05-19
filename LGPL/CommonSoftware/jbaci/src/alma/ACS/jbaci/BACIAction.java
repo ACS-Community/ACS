@@ -21,8 +21,6 @@
 
 package alma.ACS.jbaci;
 
-import java.util.concurrent.ThreadFactory;
-
 import alma.ACS.CBDescIn;
 import alma.ACS.CBDescOut;
 import alma.ACS.CBvoid;
@@ -42,6 +40,11 @@ public abstract class BACIAction implements PrioritizedRunnable {
 	 * Action priority.
 	 */
 	protected BACIPriority priority;
+
+	/**
+	 * Executor.
+	 */
+	protected PrioritizedExecutor executor;
 
 	/**
 	 * Callback out descriptor.
@@ -68,56 +71,59 @@ public abstract class BACIAction implements PrioritizedRunnable {
 	 */
 	protected Object returnValue;
 
-	protected final ThreadFactory threadFactory;
-
 	/**
 	 * Constructor of NORMAL priority action (CBvoid callback).
+	 * @param executor	executor to be used to execute action.
 	 * @param callback	action callback.
 	 * @param descIn	action callback in descriptor.
 	 */
-	public BACIAction(CBvoid callback, CBDescIn descIn, ThreadFactory threadFactory)
+	public BACIAction(PrioritizedExecutor executor, CBvoid callback, CBDescIn descIn)
 	{
-		this(callback, descIn, (CallbackDispatcher)null, threadFactory);
+		this(executor, callback, descIn, (CallbackDispatcher)null);
 	}
 	
 	/**
 	 * Constructor of NORMAL priority action.
+	 * @param executor	executor to be used to execute action.
 	 * @param callback	action callback.
 	 * @param descIn	action callback in descriptor.
 	 * @param callbackDispatcher	callback dispatcher (value dependend).
 	 */
-	public BACIAction(Callback callback, CBDescIn descIn,
-					  CallbackDispatcher callbackDispatcher, 
-					  ThreadFactory threadFactory)
+	public BACIAction(PrioritizedExecutor executor,
+					  Callback callback, CBDescIn descIn,
+					  CallbackDispatcher callbackDispatcher)
 	{
-		this(callback, descIn, callbackDispatcher, BACIPriority.NORMAL, threadFactory);
+		this(executor, callback, descIn, callbackDispatcher, BACIPriority.NORMAL);
 	}
 
 	/**
 	 * Constructor.
+	 * @param executor	executor to be used to execute action.
 	 * @param callback	action callback.
 	 * @param descIn	action in descriptor.
 	 * @param priority	action priority.
 	 */
-	public BACIAction(CBvoid callback, CBDescIn descIn, BACIPriority priority, ThreadFactory threadFactory)
+	public BACIAction(PrioritizedExecutor executor, CBvoid callback, CBDescIn descIn, BACIPriority priority)
 	{
-		this(callback, descIn, null, priority, threadFactory);
+		this(executor, callback, descIn, null, priority);
 	}
 
 	/**
 	 * Constructor.
+	 * @param executor	executor to be used to execute action.
 	 * @param callback	action callback.
 	 * @param descIn	action in descriptor.
 	 * @param callbackDispatcher	callback dispatcher (value dependend).
 	 * @param priority	action priority.
 	 */
-	public BACIAction(Callback callback, CBDescIn descIn, 
-					  CallbackDispatcher callbackDispatcher, BACIPriority priority, ThreadFactory threadFactory)
+	public BACIAction(PrioritizedExecutor executor,
+					  Callback callback, CBDescIn descIn, 
+					  CallbackDispatcher callbackDispatcher, BACIPriority priority)
 	{
+		this.executor = executor;
 		this.callback = callback;
 		this.callbackDispatcher = callbackDispatcher;
 		this.priority = priority;
-		this.threadFactory = threadFactory;
 		descOut = generateCBDescOut(descIn);
 	}
 
@@ -214,7 +220,7 @@ public abstract class BACIAction implements PrioritizedRunnable {
 	 */
 	public void submit()
 	{
-		BACIExecutor.getInstance(threadFactory).execute(this);
+		executor.execute(this);
 	}
 
 }

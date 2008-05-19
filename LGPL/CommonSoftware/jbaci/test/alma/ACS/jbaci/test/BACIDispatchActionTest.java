@@ -41,6 +41,7 @@ import alma.ACS.CBDescIn;
 import alma.ACS.CBDescOut;
 import alma.ACS.Callback;
 import alma.ACS.jbaci.BACIDispatchAction;
+import alma.ACS.jbaci.BACIFramework;
 import alma.ACS.jbaci.CallbackDispatcher;
 import alma.ACS.jbaci.CompletionUtil;
 import alma.ACSErr.Completion;
@@ -64,6 +65,9 @@ public class BACIDispatchActionTest extends TestCase {
 	 */
 	private static final int DUMMY_WAIT_TIME = 2000;
 
+	/**
+	 * Thread factory for BACI FW.
+	 */
 	private CleaningDaemonThreadFactory threadFactory;
 
 	private Logger logger;
@@ -467,9 +471,13 @@ public class BACIDispatchActionTest extends TestCase {
 		logger = ClientLogManager.getAcsLogManager().getLoggerForApplication(name, false);
 		logger.info("START----------------------------" + getName() + "-------------");
 		threadFactory = new CleaningDaemonThreadFactory(name, logger);
+		BACIFramework.initialize(threadFactory);
 	}
 
 	protected void tearDown() throws Exception {
+		// this should clean all the threads
+		BACIFramework.shutdown();
+		
 		threadFactory.cleanUp();
 		logger.info("END------------------------------" + getName() + "-------------\n\n");
 	}
@@ -523,7 +531,7 @@ public class BACIDispatchActionTest extends TestCase {
 		Callback callback = new TestCallback();
 		TestCallbackDispatcher dispatcher = new PerfectCallbackDispatcher();
 		
-		BACIDispatchAction action = new BACIDispatchAction(callback, descIn, dispatcher, threadFactory);
+		BACIDispatchAction action = new BACIDispatchAction(callback, descIn, dispatcher);
 		
 		synchronized (dispatcher)
 		{
@@ -559,7 +567,7 @@ public class BACIDispatchActionTest extends TestCase {
 		Callback callback = new TestCallback();
 		TestCallbackDispatcher dispatcher = new FirstFailedCallbackDispatcher();
 		
-		BACIDispatchAction action = new BACIDispatchAction(callback, descIn, dispatcher, threadFactory);
+		BACIDispatchAction action = new BACIDispatchAction(callback, descIn, dispatcher);
 		
 		synchronized (dispatcher)
 		{
@@ -600,7 +608,7 @@ public class BACIDispatchActionTest extends TestCase {
 		Callback callback = new TestCallback();
 		TestCallbackDispatcher dispatcher = new DisasterCallbackDispatcher();
 		
-		BACIDispatchAction action = new BACIDispatchAction(callback, descIn, dispatcher, threadFactory);
+		BACIDispatchAction action = new BACIDispatchAction(callback, descIn, dispatcher);
 		
 		synchronized (dispatcher)
 		{
@@ -640,7 +648,7 @@ public class BACIDispatchActionTest extends TestCase {
 		Callback callback = new TestCallback();
 		TestCallbackDispatcher dispatcher = new ExceptionCallbackDispatcher();
 		
-		BACIDispatchAction action = new BACIDispatchAction(callback, descIn, dispatcher, threadFactory);
+		BACIDispatchAction action = new BACIDispatchAction(callback, descIn, dispatcher);
 		
 		synchronized (dispatcher)
 		{
@@ -681,7 +689,7 @@ public class BACIDispatchActionTest extends TestCase {
 		Callback callback = new TestCallback();
 		TestCallbackDispatcher dispatcher = new OverrideTestCallbackDispatcher(blockingFails);
 		
-		BACIDispatchAction action = new BACIDispatchAction(callback, descIn, dispatcher, threadFactory);
+		BACIDispatchAction action = new BACIDispatchAction(callback, descIn, dispatcher);
 		action.setOverridePolicy(true);
 		
 
@@ -759,7 +767,7 @@ public class BACIDispatchActionTest extends TestCase {
 		Callback callback = new TestCallback();
 		TestCallbackDispatcher dispatcher = new OverrideTestCallbackDispatcher(true);
 		
-		BACIDispatchAction action = new BACIDispatchAction(callback, descIn, dispatcher, threadFactory);
+		BACIDispatchAction action = new BACIDispatchAction(callback, descIn, dispatcher);
 		action.setOverridePolicy(true);
 		
 

@@ -21,8 +21,6 @@
 
 package alma.ACS.impl;
 
-import java.util.concurrent.ThreadFactory;
-
 import org.omg.CORBA.BooleanHolder;
 import org.omg.CORBA.StringHolder;
 
@@ -49,9 +47,8 @@ public class MonitorstringImpl
 		CommonPropertyImpl property,
 		Callback callback,
 		CBDescIn descIn,
-		long startTime,
-		ThreadFactory threadFactory) {
-		super(property, callback, descIn, startTime, threadFactory);
+		long startTime) {
+		super(property, callback, descIn, startTime);
 	}
 
 	/**

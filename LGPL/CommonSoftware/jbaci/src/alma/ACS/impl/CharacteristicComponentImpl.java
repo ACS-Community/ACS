@@ -24,13 +24,14 @@ package alma.ACS.impl;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.concurrent.PriorityBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import org.omg.CORBA.Any;
 import org.omg.CORBA.NO_RESOURCES;
 import org.omg.CosPropertyService.PropertySet;
 import org.omg.PortableServer.Servant;
-
-import com.cosylab.CDB.DAL;
 
 import alma.ACS.CharacteristicComponentDesc;
 import alma.ACS.CharacteristicComponentOperations;
@@ -38,10 +39,15 @@ import alma.ACS.NoSuchCharacteristic;
 import alma.ACS.Property;
 import alma.ACS.PropertyDesc;
 import alma.ACS.PropertyHelper;
+import alma.ACS.jbaci.PrioritizedExecutor;
+import alma.ACS.jbaci.PrioritizedRunnable;
+import alma.ACS.jbaci.PrioritizedRunnableComparator;
 import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
 import alma.acs.component.ComponentImplBase;
 import alma.acs.component.ComponentLifecycleException;
 import alma.acs.container.ContainerServices;
+
+import com.cosylab.CDB.DAL;
 
 /**
  * Implementation of <code>alma.ACS.CharacteristicComponentImpl</code>.
@@ -49,7 +55,7 @@ import alma.acs.container.ContainerServices;
  * @version $id$
  */
 public class CharacteristicComponentImpl extends ComponentImplBase
-	implements CharacteristicComponentOperations {
+	implements CharacteristicComponentOperations, PrioritizedExecutor {
 
 	/**
 	 * CharacteristicModel implementation (delegate).
@@ -65,6 +71,21 @@ public class CharacteristicComponentImpl extends ComponentImplBase
 	 * List of all component properties (needed on component destruction).
 	 */
 	protected Map properties;
+
+	/**
+	 * Component thread pool.
+	 */
+	private ThreadPoolExecutor threadPool;
+
+	/**
+	 * Number of requests in thread pool (guarantees order of execution).
+	 */
+	private static final int MAX_REQUESTS = 100;
+
+	/**
+	 * Number of threads in thread pool.
+	 */
+	private static final int MAX_POOL_THREADS = 10;
 
 	/**
 	 * @see alma.acs.component.ComponentLifecycle#initialize(alma.acs.container.ContainerServices)
@@ -94,6 +115,23 @@ public class CharacteristicComponentImpl extends ComponentImplBase
 	 */
 	public void cleanUp() {
 		super.cleanUp();
+		
+		// shutdown thread-pool
+		if (threadPool != null)
+		{
+			// initiate shutdown
+			threadPool.shutdown();
+			
+			// first be kind and wait up to 3 seconds to terminate
+			try {
+				threadPool.awaitTermination(3, TimeUnit.SECONDS);
+			} catch (InterruptedException e) {
+				// noop
+			}
+			
+			// no more "mister-nice-guy", terminate all
+			threadPool.shutdownNow();
+		}
 
 		// destroy all properties
 		if (properties.size() != 0)
@@ -126,6 +164,37 @@ public class CharacteristicComponentImpl extends ComponentImplBase
 	public ContainerServices getComponentContainerServices()
 	{
 		return m_containerServices;
+	}
+	
+	/**
+	 * Execute action. 
+	 * If the maximum pool size or queue size is bounded,
+	 * then it is possible for incoming execute requests to block. 
+	 * <code>BACIExecutor</code> uses default 'Run' blocking policy: 
+	 * The thread making the execute request runs the task itself. This policy helps guard against lockup. 
+	 * @param action	action to execute.
+	 * @return <code>true</code> on success.
+	 */
+	public boolean execute(PrioritizedRunnable action)
+	{
+		try
+		{
+			if (threadPool == null)
+			{
+				// TODO make PriorityBlockingQueue bounded!!! (to MAX_REQUESTS)
+				// TODO should I use PooledExecutorWithWaitInNewThreadWhenBlocked...?
+				threadPool = new ThreadPoolExecutor(1, MAX_POOL_THREADS, 1, TimeUnit.MINUTES,
+		        								    new PriorityBlockingQueue(MAX_REQUESTS, new PrioritizedRunnableComparator()),
+		        								    m_containerServices.getThreadFactory());
+			}
+			
+			threadPool.execute(action);
+			return true;	
+		}
+		catch (Throwable th)
+		{
+			return false;
+		}
 	}
 
 	/**

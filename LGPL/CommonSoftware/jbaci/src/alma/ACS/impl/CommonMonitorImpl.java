@@ -21,7 +21,6 @@
 
 package alma.ACS.impl;
 
-import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.omg.CORBA.LongHolder;
@@ -30,7 +29,7 @@ import alma.ACS.CBDescIn;
 import alma.ACS.Callback;
 import alma.ACS.MonitorOperations;
 import alma.ACS.jbaci.BACIDispatchAction;
-import alma.ACS.jbaci.BACIExecutor;
+import alma.ACS.jbaci.BACIFramework;
 import alma.ACS.jbaci.BACIPriority;
 import alma.ACS.jbaci.BACITimer;
 import alma.ACS.jbaci.CompletionUtil;
@@ -94,13 +93,10 @@ public class CommonMonitorImpl implements MonitorOperations,
 	 */
 	protected AtomicLong queuedKeyTime = new AtomicLong(0);
 
-	protected final ThreadFactory threadFactory;
-
 	/**
 	 * Default constructor.
 	 */
-	protected CommonMonitorImpl(ThreadFactory threadFactory) {
-		this.threadFactory = threadFactory;
+	protected CommonMonitorImpl() {
 	}
 
 	/**
@@ -109,8 +105,8 @@ public class CommonMonitorImpl implements MonitorOperations,
 	 * @param callback	callback, non-<code>null</code>.
 	 * @param descIn	callback in-descriptor.
 	 */
-	public CommonMonitorImpl(CommonPropertyImpl property, Callback callback, CBDescIn descIn, ThreadFactory threadFactory) {
-		this(property, callback, descIn, 0, threadFactory);
+	public CommonMonitorImpl(CommonPropertyImpl property, Callback callback, CBDescIn descIn) {
+		this(property, callback, descIn, 0);
 	}
 
 	/**
@@ -121,7 +117,7 @@ public class CommonMonitorImpl implements MonitorOperations,
 	 * @param startTime startTime (OMG time), values less or equal to current time mean immediately,
 	 * 					value 0 means that start time should be controlled automatically (synchronized monitors).  
 	 */
-	public CommonMonitorImpl(CommonPropertyImpl property, Callback callback, CBDescIn descIn, long startTime, ThreadFactory threadFactory) {
+	public CommonMonitorImpl(CommonPropertyImpl property, Callback callback, CBDescIn descIn, long startTime) {
 		
 		if (property == null)
 			throw new NullPointerException("property == null");
@@ -131,10 +127,9 @@ public class CommonMonitorImpl implements MonitorOperations,
 
 		this.property = property;
 		this.startTime = startTime;
-		this.threadFactory = threadFactory;
 		
 		// create dispatch action
-		dispatchAction = new BACIDispatchAction(callback, descIn, property, getPriority(), threadFactory);
+		dispatchAction = new BACIDispatchAction(callback, descIn, property, getPriority());
 		
 		// TODO 
 		// make override policy configurable per instance, perhaps using a finite queue...
@@ -199,7 +194,7 @@ public class CommonMonitorImpl implements MonitorOperations,
 			return;
 
 		// schedule
-		monitorTimerTask = BACITimer.getInstance(threadFactory).executePeriodically(timeTrigger, this, startTime);
+		monitorTimerTask = BACIFramework.getTimer().executePeriodically(timeTrigger, this, startTime);
 	}
 	
 	/**
@@ -267,7 +262,7 @@ public class CommonMonitorImpl implements MonitorOperations,
 		// if none is queued, initiate executor otherwise override old value 
 		if (queuedKeyTime.getAndSet(timeToRun) == 0)
 		{
-			BACIExecutor.getInstance(threadFactory).execute(CommonMonitorImpl.this);
+			property.getParentComponent().execute(CommonMonitorImpl.this);
 		}
 	}
 

@@ -38,32 +38,22 @@ import java.util.concurrent.ThreadFactory;
 public class BACITimer  {
 
 	/**
-	 * Singleton instance.
-	 */
-	private static BACITimer instance = null;
-	private final ThreadFactory threadFactory;
-
-	
-	/**
-	 * Protected constructor (singleton pattern). 
+	 * Constructor. 
+	 * @param threadFactory thread factory to be used to create thread, if <code>null</code> no factory is being used
 	 */
 	public BACITimer(ThreadFactory threadFactory) {
-		this.threadFactory = threadFactory;
+		threadFactory_ = threadFactory;
 		runLoop_ = new RunLoop();
-	}
-
-	/**
-	 * Singleton pattern.
-	 */
-	public static synchronized BACITimer getInstance(ThreadFactory threadFactory)
-	{
-		if (instance == null)
-			instance = new BACITimer(threadFactory);
-		return instance;
 	}
 
   /** tasks are maintained in a standard priority queue **/
   protected final Heap heap_ = new Heap(64);
+
+  /** thread factory, can be null **/
+  protected final ThreadFactory threadFactory_;
+
+  /** shutdown status flag **/
+  protected volatile boolean shutdown_ = false;
 
   /**
    * Timer runnable interface.
@@ -213,16 +203,19 @@ public class BACITimer  {
    * due to an unrecoverable exception in an executed command.
    **/
 
-	public synchronized void restart() {
-		if (thread_ == null) {
-			thread_ = threadFactory.newThread(runLoop_);
-			thread_.setName(this.getClass().getName());
-			thread_.start();
-		} 
-		else {
-			notify();
-		}
+  protected synchronized void restart() {
+	if (shutdown_) return;
+	if (thread_ == null) {
+	  if (threadFactory_ != null)
+		  thread_ = threadFactory_.newThread(runLoop_);
+	  else
+		  thread_ = new Thread(runLoop_);
+	  thread_.setName(this.getClass().getName());
+	  thread_.start();
 	}
+	else
+	  notify();
+  }
 
 
   /**
@@ -230,10 +223,11 @@ public class BACITimer  {
    * the current task, if any.
    * A new background thread will be started if new execution
    * requests are encountered. If the currently executing task
-   * does not respond to interrupts, the current thread may persist, even
+   * does not repsond to interrupts, the current thread may persist, even
    * if a new thread is started via restart().
    **/
   public synchronized void shutDown() {
+	shutdown_ = true;
 	heap_.clear();
 	if (thread_ != null) 
 	  thread_.interrupt();
@@ -280,8 +274,7 @@ public class BACITimer  {
 		}
 	  }
 	}
-	catch (InterruptedException ex) { 
-	} // fall through
+	catch (InterruptedException ex) {  } // fall through
 
 	return null; // on interrupt
   }

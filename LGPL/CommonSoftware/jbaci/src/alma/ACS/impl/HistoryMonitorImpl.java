@@ -21,8 +21,6 @@
 
 package alma.ACS.impl;
 
-import java.util.concurrent.ThreadFactory;
-
 import alma.ACS.jbaci.BACIPriority;
 import alma.ACS.jbaci.CompletionUtil;
 import alma.ACSErr.CompletionHolder;
@@ -40,8 +38,7 @@ public class HistoryMonitorImpl extends CommonMonitorImpl {
 	 * Constructor.
 	 * @param property	property to be monitored, non-<code>null</code>.
 	 */
-	public HistoryMonitorImpl(CommonPropertyImpl property, ThreadFactory threadFactory) {
-		super(threadFactory);
+	public HistoryMonitorImpl(CommonPropertyImpl property) {
 		
 		if (property == null)
 			throw new NullPointerException("property == null");
