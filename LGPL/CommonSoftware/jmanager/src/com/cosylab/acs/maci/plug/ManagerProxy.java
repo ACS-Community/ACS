@@ -30,6 +30,7 @@ import com.cosylab.acs.maci.Manager;
 import com.cosylab.acs.maci.NoDefaultComponentException;
 import com.cosylab.acs.maci.StatusHolder;
 import com.cosylab.acs.maci.StatusSeqHolder;
+import com.cosylab.acs.maci.HandleHelper;
 
 /**
  * CORBA Manager Proxy.
@@ -115,6 +116,8 @@ public class ManagerProxy extends CORBAReferenceSerializator implements Manager,
 		{
 		    AcsJNoPermissionEx npe = new AcsJNoPermissionEx();
 			npe.setReason("Remote manager has thrown no permission exception.");
+			npe.setID(HandleHelper.toString(id));
+			npe.setProtectedResource(curl.toString());
 			throw npe;
 		}
 		catch (Exception ex)
@@ -162,6 +165,7 @@ public class ManagerProxy extends CORBAReferenceSerializator implements Manager,
 		{
 		    AcsJNoPermissionEx npe = new AcsJNoPermissionEx();
 			npe.setReason("Remote manager has thrown no permission exception.");
+			npe.setID(HandleHelper.toString(id));
 			throw npe;
 		}
 		catch (Exception ex)

@@ -28,6 +28,7 @@ import com.cosylab.acs.maci.NoDefaultComponentException;
 import com.cosylab.acs.maci.NoResourcesException;
 import com.cosylab.acs.maci.StatusHolder;
 import com.cosylab.acs.maci.manager.CURLHelper;
+import com.cosylab.acs.maci.HandleHelper;
 
 import si.ijs.maci.AdministratorHelper;
 import si.ijs.maci.Client;
@@ -782,6 +783,7 @@ public class ManagerProxyImpl extends ManagerPOA
 			// rethrow adding context
 			AcsJNoPermissionEx ex = new AcsJNoPermissionEx(npe);
 			ex.setReason(npe.getReason());
+			ex.setID(HandleHelper.toString(id));
 			throw ex.toNoPermissionEx();
 		}
 		catch (BadParametersException bpe)

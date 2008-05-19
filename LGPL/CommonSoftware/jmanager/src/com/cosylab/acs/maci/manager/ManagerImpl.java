@@ -1800,10 +1800,9 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			}
 			else if (reply.getImplLang() == null)
 			{
-				// NO_PERMISSION
-				AcsJNoPermissionEx npe = new AcsJNoPermissionEx();
-				npe.setReason("Invalid response to 'Client::authenticate()' method - no-null implementation language expected.");
-				throw npe;
+				// BAD_PARAM
+				BadParametersException af = new BadParametersException("Invalid response to 'Client::authenticate()' method - no-null implementation language expected.");
+				throw af;
 			}
 
 			// get client's name
@@ -1836,6 +1835,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 						// NO_PERMISSION
 						AcsJNoPermissionEx npe = new AcsJNoPermissionEx();
 						npe.setReason("Given reply to 'Client::authenticate()' method indicated container login, but given reference does not implement 'maci::Container' interface.");
+						npe.setID(name);
 						throw npe;
 					}
 					break;
@@ -1856,6 +1856,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 						// NO_PERMISSION
 						AcsJNoPermissionEx npe = new AcsJNoPermissionEx();
 						npe.setReason("Given reply to 'Client::authenticate()' method indicated administrator login, but given reference does not implement 'maci::Administrator' interface.");
+						npe.setID(name);
 						throw npe;
 					}
 					break;
@@ -2001,6 +2002,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 					{
 						AcsJNoPermissionEx npe = new AcsJNoPermissionEx();
 						npe.setReason("Component with name '"+name+"' but different type already registered.");
+						npe.setID(HandleHelper.toString(id));
+						npe.setProtectedResource(name);
 						throw npe;
 					}
 
@@ -2393,6 +2396,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			// already shutdown
 			AcsJNoPermissionEx npe = new AcsJNoPermissionEx();
 			npe.setReason("Manager already in shutdown state.");
+			npe.setID(HandleHelper.toString(id));
 			throw npe;
 		}
 
@@ -3056,6 +3060,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 							// NO_PERMISSION
 						   	AcsJNoPermissionEx npe = new AcsJNoPermissionEx();
 						   	npe.setReason("Inconsistent container state - component information is not valid, rejecting container.");
+							npe.setID(containerInfo.getName());
+							npe.setProtectedResource(infos[i].getName());
 						   	throw npe;
 						 }
 
@@ -3075,6 +3081,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 								// NO_PERMISSION
 						   		AcsJNoPermissionEx npe = new AcsJNoPermissionEx();
 						   		npe.setReason("Inconsistent container state - components information do not match, rejecting container.");
+								npe.setID(containerInfo.getName());
+								npe.setProtectedResource(componentInfo.getName());
 						   		throw npe;
 							}
 
@@ -3094,6 +3102,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 							   	AcsJNoPermissionEx npe = new AcsJNoPermissionEx();
 							   	npe.setReason("Inconsistent container state - component with name '" +
 										componentInfo.getName() + "' already registered with different handle, rejecting container.");
+								npe.setID(containerInfo.getName());
+								npe.setProtectedResource(componentInfo.getName());
 							   	throw npe;
 							}
 							h = components.next(h);
@@ -4799,6 +4809,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		{
 			// already shutdown
 			AcsJNoPermissionEx npe = new AcsJNoPermissionEx();
+			npe.setID(HandleHelper.toString(id));
 			npe.setReason("Manager in shutdown state.");
 			throw npe;
 		}
@@ -4875,6 +4886,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		{
 			// NO_PERMISSION
 			AcsJNoPermissionEx npe = new AcsJNoPermissionEx();
+			npe.setID(HandleHelper.toString(id));
 			npe.setReason("Invalid handle.");
 			throw npe;
 		}
@@ -4883,6 +4895,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		{
 			// NO_PERMISSION
 			AcsJNoPermissionEx npe = new AcsJNoPermissionEx();
+			npe.setID(HandleHelper.toString(id));
 			npe.setReason("Insufficient rights.");
 			throw npe;
 		}
@@ -6203,6 +6216,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 					// not an owner
 					AcsJNoPermissionEx npe = new AcsJNoPermissionEx();
 					npe.setReason("Unregistering component that client does not own.");
+					npe.setID(HandleHelper.toString(owner));
+					npe.setProtectedResource(componentInfo.getName());
 					throw npe;
 				}
 			}
@@ -6734,6 +6749,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 				// not an owner
 				AcsJNoPermissionEx npe = new AcsJNoPermissionEx();
 				npe.setReason("Restarting component that client does not own.");
+				npe.setID(HandleHelper.toString(owner));
+				npe.setProtectedResource(componentInfo.getName());
 				throw npe;
 			}
 
