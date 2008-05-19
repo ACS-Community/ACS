@@ -209,6 +209,14 @@ This file has to be moved into the TICS subsystem
         <ErrorCode name="NoPermission"
             shortDescription="No permission"
             description="No permission for attempted operation">
+                <Member name="ID"
+                        type="string"
+                        description="Identification (handle) of a caller."
+                />
+                <Member name="ProtectedResource"
+                        type="string"
+                        description="Name of a protected resource."
+                />
                 <Member name="Reason"
                         type="string"
                         description="Description of a reason causing no permission exception."
