@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: RepeatGuard.h,v 1.5 2007/07/23 10:26:49 nbarriga Exp $"
+* "@(#) $Id: RepeatGuard.h,v 1.6 2008/05/21 20:25:08 nbarriga Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -37,10 +37,12 @@
 #include <acsutilTimeStamp.h>
 #include "acsThread.h"
 
-#define AND 0
-#define OR 1
-#define TIMER 2
-#define COUNTER 3
+namespace repeatguard{
+	const unsigned int AND = 0;
+	const unsigned int OR = 1;
+	const unsigned int TIMER = 2;
+	const unsigned int COUNTER =3;
+};
 
 /** @class RepeatGuard 
 *   @brief Guard class against code repetitions.
