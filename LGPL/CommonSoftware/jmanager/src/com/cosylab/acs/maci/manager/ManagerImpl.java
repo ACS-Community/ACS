@@ -58,6 +58,8 @@ import alma.maciErrType.wrappers.AcsJIncompleteComponentSpecEx;
 import alma.maciErrType.wrappers.AcsJInvalidComponentSpecEx;
 import alma.maciErrType.wrappers.AcsJNoPermissionEx;
 
+import si.ijs.maci.ClientOperations;
+
 import com.cosylab.acs.maci.AccessRights;
 import com.cosylab.acs.maci.Administrator;
 import com.cosylab.acs.maci.AuthenticationData;
@@ -2926,7 +2928,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 		// send message to the container
 		sendMessage(containerInfo.getContainer(), "Startup statistics: " + activationRequestsList.size() +
-					" components queued to be activated.", MessageType.MSG_INFORMATION);
+					" components queued to be activated.", MessageType.MSG_INFORMATION, ClientOperations.MSGID_AUTOLOAD_START);
 
 		// activate startup components
 		int activated = 0;
@@ -2960,7 +2962,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 		// send message to the container
 		sendMessage(containerInfo.getContainer(), "Startup statistics: " + activated + " of " +
-					activationRequestsList.size() + " components activated.", MessageType.MSG_INFORMATION);
+					activationRequestsList.size() + " components activated.", MessageType.MSG_INFORMATION, ClientOperations.MSGID_AUTOLOAD_END);
 
 		// notify about new container login
 		synchronized (containerLoggedInMonitor)
@@ -4738,6 +4740,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 	}
 
+
 	/**
 	 * Sends an message to the client.
 	 * @param	client		client to receive the message, non-<code>null</code>
@@ -4745,6 +4748,18 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	 * @param	messageType	type of the message, non-<code>null</code>
 	 */
 	private void sendMessage(Client client, String message, MessageType messageType)
+	{
+	    sendMessage(client, message, messageType, (short)0);
+	}
+
+	/**
+	 * Sends an message to the client.
+	 * @param	client		client to receive the message, non-<code>null</code>
+	 * @param	message		message to be sent, non-<code>null</code>
+	 * @param	messageType	type of the message, non-<code>null</code>
+	 * @param       messageID       identifier for this message
+	 */
+	private void sendMessage(Client client, String message, MessageType messageType, short messageID)
 	{
 		assert (client != null);
 		assert (message != null);
@@ -4758,12 +4773,14 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			private Client client;
 			private String message;
 			private MessageType messageType;
+		        private short messageID;
 
-			public ClientMessageTask(Client client, String message, MessageType messageType)
+			public ClientMessageTask(Client client, String message, MessageType messageType, short messageID)
 			{
 				this.client = client;
 				this.message = message;
 				this.messageType = messageType;
+				this.messageID = messageID;
 			}
 
 			public void run()
@@ -4774,7 +4791,12 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 				{
 					try
 					{
-						client.message(messageType, message);
+					        if (messageID > 0)
+					        {
+						        client.taggedmessage(messageType, messageID, message);
+						} else {
+						        client.message(messageType, message);
+						}
 						break;
 					}
 					catch (RemoteException re)
@@ -4787,7 +4809,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 
 		// spawn new task which surely does not block
-		threadPool.execute(new ClientMessageTask(client, message, messageType));
+		threadPool.execute(new ClientMessageTask(client, message, messageType, messageID));
 
 	}
 

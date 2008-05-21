@@ -77,6 +77,14 @@ public class ClientImpl implements Client
 	}
 
 	/**
+	 * @see com.cosylab.acs.maci.Client#message(MessageType, int, String)
+	 */
+	public void taggedmessage(MessageType type, short id, String message)
+		throws RemoteException
+	{
+	}
+
+	/**
 	 * @see com.cosylab.acs.maci.Client#name()
 	 */
 	public String name() throws RemoteException

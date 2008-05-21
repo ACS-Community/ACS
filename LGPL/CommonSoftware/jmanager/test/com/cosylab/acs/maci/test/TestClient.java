@@ -141,6 +141,17 @@ public class TestClient implements Client
 	}
 
 	/**
+	 * @see com.cosylab.acs.maci.Client#taggedmessage(MessageType, short, String)
+	 */
+	public void taggedmessage(MessageType type, short id, String message)
+		throws RemoteException
+	{
+		/*
+		System.out.println("Message received: " + message + " " + type);
+		*/
+	}
+
+	/**
 	 * @see com.cosylab.acs.maci.Client#name()
 	 */
 	public String name() throws RemoteException

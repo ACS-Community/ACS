@@ -226,6 +226,30 @@ public class ClientProxy extends CORBAReferenceSerializator implements Client, S
 	}
 
 	/**
+	 * @see com.cosylab.acs.maci.Client#message(MessageType, String)
+	 */
+	public void taggedmessage(MessageType type, short id, String message)
+		throws RemoteException
+	{
+		try
+		{
+			
+			short msgType;
+			if (type == MessageType.MSG_ERROR)
+				msgType = si.ijs.maci.Client.MSG_ERROR;
+			else
+				msgType = si.ijs.maci.Client.MSG_INFORMATION;
+			
+			client.taggedmessage(msgType, id, message);
+		}
+		catch (Exception ex)
+		{
+			RemoteException re = new RemoteException("Failed to invoke 'message()' method.", ex);
+			throw re;
+		}
+	}
+
+	/**
 	 * @see com.cosylab.acs.maci.Client#name()
 	 */
 	public String name() throws RemoteException

@@ -65,6 +65,15 @@ public class DumpManagerState implements Runnable
 		}
 
 		/**
+		 * @see si.ijs.maci.ClientOperations#taggedmessage(short, java.lang.String)
+		 */
+		public void taggedmessage(short type, short tag, String message) {
+		        System.out.print("Tagged message from manager: Tag(");
+		        System.out.print(tag);
+			System.out.println(") Message: " + message);
+		}
+
+		/**
 		 * @see si.ijs.maci.ClientOperations#name()
 		 */
 		public String name() {

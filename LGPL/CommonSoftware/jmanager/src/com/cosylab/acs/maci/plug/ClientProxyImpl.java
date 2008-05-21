@@ -167,6 +167,27 @@ public class ClientProxyImpl extends ClientPOA
 	}
 
 	/**
+	 * @see si.ijs.maci.ClientOperations#taggedmessage(short, String)
+	 */
+	public void taggedmessage(short type, short id, String message)
+	{
+		try
+		{
+			MessageType msgType;
+			if (type == Client.MSG_ERROR)
+				msgType = MessageType.MSG_ERROR;
+			else
+				msgType = MessageType.MSG_INFORMATION;
+				
+			client.taggedmessage(msgType, id, message);
+		}
+		catch (RemoteException re)
+		{
+			// noop.
+		}
+	}
+
+	/**
 	 * @see si.ijs.maci.ClientOperations#ping()
 	 */
 	public boolean ping()

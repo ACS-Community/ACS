@@ -85,6 +85,12 @@ public class ContainerProxyImpl extends ContainerPOA {
 	}
 
 	/* (non-Javadoc)
+	 * @see si.ijs.maci.ClientOperations#taggedmessage(short, java.lang.String)
+	 */
+	public void taggedmessage(short arg0, short arg1, String arg2) {
+	}
+
+	/* (non-Javadoc)
 	 * @see si.ijs.maci.ClientOperations#ping()
 	 */
 	public boolean ping() {

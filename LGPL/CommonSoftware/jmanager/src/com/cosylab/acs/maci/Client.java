@@ -63,6 +63,15 @@ public interface Client
 	public void message(MessageType type, String message) throws RemoteException;
 
 	/**
+	 * The Manager and administrators use this method for sending tagged textual messages to the client.
+	 * 
+	 * @param	type	Type of the message, instance of <code>MessageType</code>.
+	 * @param       id      Tag of the message, integer
+	 * @param	message	Contents of the message. The contents are human readable.
+	 */
+	public void taggedmessage(MessageType type, short id, String message) throws RemoteException;
+
+	/**
 	 * Client name.
 	 * @return	name
 	 */
