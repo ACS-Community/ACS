@@ -322,6 +322,16 @@ module maci {
 	   */
 	   const short MSG_INFORMATION = 20;
 		
+	   /**
+	      Type constant identifying component autoload start message
+	    */
+	   const short MSGID_AUTOLOAD_START = 1;
+
+	   /**
+	      Type constant identifying component autoload end message
+	    */
+	   const short MSGID_AUTOLOAD_END = 2;
+
            /** 
             Client name 
 	   */ 
@@ -373,6 +383,21 @@ module maci {
 	   */
 	   oneway void message (
 	       in short type,	   ///< Can be either MSG_ERROR or MSG_INFORMATION.
+	       in string message   ///< Contents of the message. The contents are human readable.
+	       );
+
+	   /** 
+	       The Manager and administrators use this method for sending textual
+	       messages and status indicators to the client.
+	     
+	       Notice that this is a oneway method and therefore 
+	       there cannot be return values or user exceptions.
+	       Only CORBA runtime exceptions due to communication
+	       issues can be thrown
+	   */
+	   oneway void taggedmessage (
+	       in short type,	   ///< Can be either MSG_ERROR or MSG_INFORMATION.
+	       in short messageID, ///< Type of message being sent.
 	       in string message   ///< Contents of the message. The contents are human readable.
 	       );
 
@@ -663,6 +688,16 @@ module maci {
 	    void set_component_shutdown_order(
 		in HandleSeq h	///< Ordered sequence of component handles.
 		);
+
+	    const string ContainerStatusStartupBeginMsg = "ContainerStatusMsg: Startup begins";
+	    const string ContainerStatusStartupEndMsg = "ContainerStatusMsg: Startup ends";
+	    const string ContainerStatusORBInitBeginMsg = "ContainerStatusMsg: ORB initialization begins";
+	    const string ContainerStatusORBInitEndMsg = "ContainerStatusMsg: ORB initialization ends";
+	    const string ContainerStatusMgrInitBeginMsg = "ContainerStatusMsg: Manager access initialization begins";
+	    const string ContainerStatusMgrInitEndMsg = "ContainerStatusMsg: Manager access initialization ends";
+	    const string ContainerStatusCompAutoloadBeginMsg = "ContainerStatusMsg: Automatic component loading begins";
+	    const string ContainerStatusCompAutoloadEndMsg = "ContainerStatusMsg: Automatic component loading ends";
+	    const string ContainerStatusReadyMsg = "ContainerStatusMsg: Ready";
 
 	}; /* end interface Container */
 

@@ -43,7 +43,6 @@ Comparison of logging configuration for the container and for components:
                 </xs:annotation>
             </xs:element>
         </xs:sequence>
-        <xs:attributeGroup ref="xml:specialAttrs"/>
         <xs:attribute name="Name" type="xs:string" use="required"/>
         <xs:attribute name="Code" type="xs:string" use="required"/>
         <xs:attribute name="Type" type="xs:string" use="required"/>
@@ -72,7 +71,6 @@ Comparison of logging configuration for the container and for components:
             <xs:sequence>
                 <xs:element name="_" type="ComponentInfo" maxOccurs="unbounded"/>
             </xs:sequence>
-            <xs:attributeGroup ref="xml:specialAttrs"/>
         </xs:complexType>
     </xs:element>
 </xs:schema>
