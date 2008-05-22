@@ -42,8 +42,8 @@ public class CleaningThreadFactoryTest extends TestCase {
     private LogRecordCollectingLogger logger;
     
     protected void setUp() throws Exception {
-        Logger delegate = ClientLogManager.getAcsLogManager().getLoggerForApplication("ContainerTest", true);
-        logger = LogRecordCollectingLogger.getCollectingLogger("CleaningThreadFactoryTest-CollectingLogger");
+        Logger delegate = ClientLogManager.getAcsLogManager().getLoggerForApplication(getName(), false);
+        logger = LogRecordCollectingLogger.getCollectingLogger("CleaningThreadFactoryTest-CollectingLogger-" + getName());
         logger.setDelegateLogger(delegate);
         logger.info("------------ setUp " + getName() + " --------------");
     }

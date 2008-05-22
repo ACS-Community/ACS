@@ -127,6 +127,14 @@ class ManagerClient extends ClientPOA
 	}
 	
 	/**
+	 * @see si.ijs.maci.ClientOperations#taggedmessage(short, short, java.lang.String)
+	 */
+	public void taggedmessage(short type, short tag, String message)
+	{
+		m_logger.info("message: " + message);
+	}
+	
+	/**
 	 * @see si.ijs.maci.ClientOperations#name()
 	 */
 	public String name()

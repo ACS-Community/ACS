@@ -23,6 +23,8 @@ package alma.acs.container;
 
 import java.util.logging.Logger;
 
+import si.ijs.maci.ContainerOperations;
+
 import alma.JavaContainerError.wrappers.AcsJContainerEx;
 import alma.acs.container.corba.AcsCorba;
 import alma.acs.logging.ClientLogManager;
@@ -106,9 +108,11 @@ public class AcsEmbeddedContainerRunner {
         
         // not calling AcsCorba.initCorba here is the main reason we have a separate embedded-container runner        
     
-        initManagerProxy();        
+	System.out.println(ContainerOperations.ContainerStatusStartupBeginMsg);
+	initManagerProxy();        
         createContainer();
-        m_container.initialize();        
+        m_container.initialize();
+        System.out.println(ContainerOperations.ContainerStatusStartupEndMsg);        
     }
     
     /**

@@ -7,17 +7,25 @@
 1 - ----------T--:--:--.--- FINER [testContainer] ORB initialized.
 1 - ----------T--:--:--.--- FINE [testContainer] calling orb.resolve_initial_references
 1 - ----------T--:--:--.--- FINE [testContainer] POA activated
-1 - ----------T--:--:--.--- FINEST [testContainer] ContainerPOA created.
 1 - ----------T--:--:--.--- FINEST [testContainer] ComponentPOA created.
+1 - ----------T--:--:--.--- FINEST [testContainer] ContainerPOA created.
+1 - ContainerStatusMsg: Startup begins
 1 - ----------T--:--:--.--- FINE [testContainer] Manager reference not available. Trying to resolve...
 1 - ----------T--:--:--.--- FINEST [testContainer] manager narrow successful.
 1 - ----------T--:--:--.--- FINE [testContainer] creating the AcsContainer testContainer
+1 - ContainerStatusMsg: ORB initialization begins
 1 - ----------T--:--:--.--- FINER [testContainer] entering activateContainer name=testContainer
 1 - ----------T--:--:--.--- FINER [testContainer] AcsContainer successfully registered with the ORB as a Container
 1 - ----------T--:--:--.--- FINE [testContainer] AcsContainer 'testContainer' created.
+1 - ContainerStatusMsg: Manager access initialization begins
+1 - ContainerStatusMsg: ORB initialization ends
 1 - ----------T--:--:--.--- FINE [testContainer] call to name() answered with 'testContainer'.
-1 - ----------T--:--:--.--- INFO [testContainer] Info message from the manager: Startup statistics: 0 components queued to be activated.
 1 - ----------T--:--:--.--- INFO [testContainer] Info message from the manager: Startup statistics: 0 of 0 components activated.
+1 - ContainerStatusMsg: Automatic component loading ends
+1 - ContainerStatusMsg: Ready
+1 - ContainerStatusMsg: Manager access initialization ends
+1 - ContainerStatusMsg: Automatic component loading begins
+1 - ----------T--:--:--.--- INFO [testContainer] Info message from the manager: Startup statistics: 0 components queued to be activated.
 1 - ----------T--:--:--.--- FINER [alma.acs.logging] Updated logging configuration based on CDB entry <?xml version="1.0" encoding="UTF-8"?>
 1 - <LoggingConfig xmlns="urn:schemas-cosylab-com:LoggingConfig:1.0"
 1 -     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -27,6 +35,7 @@
 1 -     <_ minLogLevel="6" minLogLevelLocal="6" Name="jacorb@testContainer"/>
 1 - </LoggingConfig> with env vars having precedence over CDB
 1 - ----------T--:--:--.--- DEBUG [testContainer] Alarm system type: ACS
+1 - ContainerStatusMsg: Startup ends
 1 - ----------T--:--:--.--- FINE [testContainer] entering orb loop
 1 - ----------T--:--:--.--- FINER [testContainer] asynchronously calling ClientLogManager#initRemoteLogging()...
 1 - ----------T--:--:--.--- FINER [testContainer] done ClientLogManager#initRemoteLogging

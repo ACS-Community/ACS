@@ -46,6 +46,7 @@ import si.ijs.maci.ClientOperations;
 import si.ijs.maci.ClientType;
 import si.ijs.maci.ComponentInfo;
 import si.ijs.maci.Container;
+import si.ijs.maci.ContainerOperations;
 import si.ijs.maci.ContainerHelper;
 import si.ijs.maci.ContainerPOA;
 import si.ijs.maci.ImplLangType;
@@ -171,7 +172,9 @@ public class AcsContainer extends ContainerPOA
             m_activeComponentMap = new ComponentMap(m_logger);
             m_acsCorba = acsCorba;
 
-            registerWithCorba();       
+	    System.out.println(ContainerOperations.ContainerStatusORBInitBeginMsg);
+	    registerWithCorba();       
+            System.out.println(ContainerOperations.ContainerStatusORBInitEndMsg);
 
             s_instance = this;            
         }
@@ -190,7 +193,9 @@ public class AcsContainer extends ContainerPOA
 	 */
 	void initialize() throws AcsJContainerEx {
 
+		System.out.println(ContainerOperations.ContainerStatusMgrInitBeginMsg);
 		loginToManager();
+		System.out.println(ContainerOperations.ContainerStatusMgrInitEndMsg);
 		
 		// init logging 
 		logConfig = ClientLogManager.getAcsLogManager().getLogConfig();
@@ -1178,6 +1183,35 @@ public class AcsContainer extends ContainerPOA
         {
             m_logger.info("Message of unknown type from the manager: " + message);
         }
+    }
+
+
+    /**
+     * @see si.ijs.maci.ClientOperations#taggedmessage(short, short, String)
+     */
+    public void taggedmessage(short type, short messageID, String message)
+    {
+	if (messageID == ClientOperations.MSGID_AUTOLOAD_START)
+	{
+	    System.out.println(ContainerOperations.ContainerStatusCompAutoloadBeginMsg);
+	}
+        if (type == ClientOperations.MSG_ERROR)
+        {
+            m_logger.warning("Error message from the manager: " + message);
+        }
+        else if (type == ClientOperations.MSG_INFORMATION)
+        {
+            m_logger.info("Info message from the manager: " + message);
+        }
+        else
+        {
+            m_logger.info("Message of unknown type from the manager: " + message);
+        }
+	if (messageID == ClientOperations.MSGID_AUTOLOAD_END)
+	{
+	    System.out.println(ContainerOperations.ContainerStatusCompAutoloadEndMsg);
+	    System.out.println(ContainerOperations.ContainerStatusReadyMsg);
+	}
     }
 
 
