@@ -19,4 +19,4 @@ then
 fi
 
 #Just delgate to helper script
-acsutilBlock -f $ACS_TMP/$FILE -b "components activated." $EXTRA_PARAMS acsStartContainer $@
+acsutilBlock -f $ACS_TMP/$FILE -b "ContainerStatusMsg: Ready" $EXTRA_PARAMS acsStartContainer $@
