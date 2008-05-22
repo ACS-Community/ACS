@@ -1,4 +1,4 @@
-# @(#) $Id: Container.py,v 1.38 2008/04/30 18:02:33 agrimstrup Exp $
+# @(#) $Id: Container.py,v 1.39 2008/05/22 17:43:17 agrimstrup Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -21,7 +21,7 @@
 # ALMA should be addressed as follows:
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: Container.py,v 1.38 2008/04/30 18:02:33 agrimstrup Exp $"
+# "@(#) $Id: Container.py,v 1.39 2008/05/22 17:43:17 agrimstrup Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -38,7 +38,7 @@ TODO LIST:
 - a ComponentLifecycleException has been defined in IDL now...
 '''
 
-__revision__ = "$Id: Container.py,v 1.38 2008/04/30 18:02:33 agrimstrup Exp $"
+__revision__ = "$Id: Container.py,v 1.39 2008/05/22 17:43:17 agrimstrup Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 from time      import sleep
@@ -110,6 +110,7 @@ class Container(maci__POA.Container, maci__POA.LoggingConfigurable, BaseClient):
         Raises: ???
         '''
         
+        print maci.Container.ContainerStatusStartupBeginMsg
         #Member variables
         self.running = 1  #As long as this is true, container is not shutdown
         self.name = name  #Container Name
@@ -126,10 +127,14 @@ class Container(maci__POA.Container, maci__POA.LoggingConfigurable, BaseClient):
         self.client_type = maci.CONTAINER_TYPE
 
         #Configure CORBA
+        print maci.Container.ContainerStatusORBInitBeginMsg
         self.configCORBA()
+        print maci.Container.ContainerStatusORBInitEndMsg
 
         #call superclass constructor
+        print maci.Container.ContainerStatusMgrInitBeginMsg
         BaseClient.__init__(self, self.name)
+        print maci.Container.ContainerStatusMgrInitEndMsg
         
         self.logger.logTrace('CORBA configured for Container: ' + self.name)
 
@@ -150,6 +155,7 @@ class Container(maci__POA.Container, maci__POA.LoggingConfigurable, BaseClient):
         
         #Run everything
         self.logger.logInfo('Container ' + self.name + ' waiting for requests')
+        print maci.Container.ContainerStatusStartupEndMsg
         
     #--CLIENT IDL--------------------------------------------------------------
     def disconnect(self):
@@ -161,6 +167,40 @@ class Container(maci__POA.Container, maci__POA.LoggingConfigurable, BaseClient):
         self.logger.logTrace('Shutdown called for Container: ' + self.name)
         self.shutdown(ACTIVATOR_EXIT<<8)
         return
+    #--CLIENT IDL--------------------------------------------------------------
+    def taggedmessage (self, message_type, message_id, message):
+        '''
+        The Manager and administrators use this method for sending textual messages
+        to the client.
+
+        This implementation first attempts to use the ACS logging mechanism to
+        display the message and if that fails for any reason, it is only sent
+        to standard out.
+
+        Parameters:
+        - message_type is an integer defined as a constant in the Client interface
+        - message is a string
+
+        Returns: Nothing
+
+        Raises: Nothing
+        
+        oneway void message (in short message_type, in string message) 
+        '''
+        if message_id == maci.Client.MSGID_AUTOLOAD_START:
+            print maci.Container.ContainerStatusCompAutoloadBeginMsg
+        if message_type == maci.Client.MSG_ERROR:
+            self.logger.logWarning("Error message from the manager: " + message)
+
+        elif message_type == maci.Client.MSG_INFORMATION:
+            self.logger.logInfo("Info message from the manager: " + message)
+            
+        else:
+            self.logger.logInfo("Message of unknown type from the manager: " + message)
+        if message_id == maci.Client.MSGID_AUTOLOAD_END:
+            print maci.Container.ContainerStatusCompAutoloadEndMsg
+            print maci.Container.ContainerStatusReadyMsg
+            
     #--ACTIVATOR IDL-----------------------------------------------------------
     def activate_component(self, h, exeid, name, exe, idl_type):
         '''
@@ -527,6 +567,7 @@ class Container(maci__POA.Container, maci__POA.LoggingConfigurable, BaseClient):
             # No named loggers were defined so the default values are used
             clogger.setLevels(maci.LoggingConfigurable.LogLevels(True, 0, 0))
 
+    #--LOGGINGCONFIGURABLE IDL-----------------------------------------------------------
     def get_default_logLevels(self):
         '''
         Retrieve the default log levels used in this container.
@@ -537,6 +578,7 @@ class Container(maci__POA.Container, maci__POA.LoggingConfigurable, BaseClient):
         '''
         return Log.getDefaultLevels()
 
+    #--LOGGINGCONFIGURABLE IDL-----------------------------------------------------------
     def set_default_logLevels(self, levels):
         '''
         Set the default log level for this container.
@@ -548,6 +590,7 @@ class Container(maci__POA.Container, maci__POA.LoggingConfigurable, BaseClient):
         '''
         Log.setDefaultLevels(levels)
 
+    #--LOGGINGCONFIGURABLE IDL-----------------------------------------------------------
     def get_logger_names(self):
         '''
         Retrieve the names of the currently active loggers
@@ -556,6 +599,7 @@ class Container(maci__POA.Container, maci__POA.LoggingConfigurable, BaseClient):
         '''
         return Log.getLoggerNames()
 
+    #--LOGGINGCONFIGURABLE IDL-----------------------------------------------------------
     def get_logLevels(self, logger_name):
         """
         Retrieve the log levels for a given component.
@@ -572,6 +616,7 @@ class Container(maci__POA.Container, maci__POA.LoggingConfigurable, BaseClient):
         else:
             raise LoggerDoesNotExistExImpl()
     
+    #--LOGGINGCONFIGURABLE IDL-----------------------------------------------------------
     def set_logLevels(self, logger_name, levels):
         """
         Set the default log level for this component.
@@ -587,6 +632,7 @@ class Container(maci__POA.Container, maci__POA.LoggingConfigurable, BaseClient):
         else:
             raise LoggerDoesNotExistExImpl()
 
+    #--LOGGINGCONFIGURABLE IDL-----------------------------------------------------------
     def refresh_logging_config(self):
         '''
         Reset the logging configuration to the original CDB settings.
