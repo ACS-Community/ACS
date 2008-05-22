@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciSimpleClient.cpp,v 1.104 2008/03/18 15:52:28 bjeram Exp $"
+* "@(#) $Id: maciSimpleClient.cpp,v 1.105 2008/05/22 17:31:55 agrimstrup Exp $"
 *
 * who       when        what
 * --------  --------    ----------------------------------------------
@@ -634,6 +634,16 @@ SimpleClient::message (CORBA::Short type,
   throw (CORBA::SystemException)
 {
   ACS_SHORT_LOG((LM_DEBUG, "Got message from the Manager: '%s'.", message));
+}
+
+void
+SimpleClient::taggedmessage (CORBA::Short type,
+		       CORBA::Short tag,
+		       const char * message
+		       )
+  throw (CORBA::SystemException)
+{
+  ACS_SHORT_LOG((LM_DEBUG, "Got tagged message from the Manager: (%d) '%s'.", tag, message));
 }
 
 void

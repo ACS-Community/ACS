@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciContainerImpl.cpp,v 1.106 2008/05/14 09:19:36 cparedes Exp $"
+* "@(#) $Id: maciContainerImpl.cpp,v 1.107 2008/05/22 17:31:55 agrimstrup Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -79,7 +79,7 @@
 #include <ACSAlarmSystemInterfaceFactory.h>
 #endif
 
-ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.106 2008/05/14 09:19:36 cparedes Exp $")
+ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.107 2008/05/22 17:31:55 agrimstrup Exp $")
 
  using namespace maci;
  using namespace cdb;
@@ -524,6 +524,8 @@ ContainerImpl::init(int argc, char *argv[])
   try 
     {
 
+      ACE_OS::printf("%s\n", ::maci::Container::ContainerStatusStartupBeginMsg);
+
       // At least one command-line argument is expected: the name of the
       // Container. It must be the first argument in the command-line.
       if (argc<2 || argv[1][0]=='-')
@@ -706,6 +708,8 @@ ContainerImpl::init(int argc, char *argv[])
 //
 //      strCmdLn += strCmdLnDB;
 
+      ACE_OS::printf("%s\n", ::maci::Container::ContainerStatusORBInitBeginMsg);
+
       //get the default C++ Container port
       std::ostringstream containerOutput;
       containerOutput << std::setw(4) << std::setfill('0') << (ACSPorts::getBasePort()*100 + 3000 + 50) << std::ends;
@@ -807,6 +811,8 @@ ContainerImpl::init(int argc, char *argv[])
 		  (LM_INFO, "Failed to initialize the ORB."));
 	  return false;
 	}
+
+      ACE_OS::printf("%s\n", ::maci::Container::ContainerStatusORBInitEndMsg);
 
       //
       // Initialize and configure database access.
@@ -1072,6 +1078,7 @@ ContainerImpl::connect()
 	  ACS_LOG(LM_RUNTIME_CONTEXT, "maci::ContainerImpl::init", (LM_INFO, "Usage of an InterfaceRepository disabled."));
 	}
       
+      ACE_OS::printf("%s\n", ::maci::Container::ContainerStatusMgrInitBeginMsg);
 
 
       ACS_LOG(LM_RUNTIME_CONTEXT, "maci::ContainerImpl::init", (LM_INFO, "Connecting to the Manager..."));
@@ -1217,6 +1224,10 @@ ContainerImpl::connect()
       m_containerServices = instantiateContainerServices(m_handle,ctrName,poaContainer.in());      
 
       ACS_LOG(LM_RUNTIME_CONTEXT, "maci::ContainerImpl::init", (LM_INFO, "Logged into the Manager."));
+
+
+      ACE_OS::printf("%s\n", ::maci::Container::ContainerStatusMgrInitEndMsg);
+      ACE_OS::printf("%s\n", ::maci::Container::ContainerStatusStartupEndMsg);
 
 
       return true;
@@ -2405,6 +2416,34 @@ ContainerImpl::message (
   
   ACS_LOG(LM_RUNTIME_CONTEXT, "maci::ContainerImpl::message",
 	  (LM_INFO, "Message from manager received. Type: %d. Message: %s", type, message));
+}
+
+// ************************************************************************
+	
+void
+ContainerImpl::taggedmessage (
+			CORBA::Short type,
+			CORBA::Short tag,
+			const char * message
+			
+			)
+  throw (CORBA::SystemException) 
+{
+
+  if (tag == ::maci::Client::MSGID_AUTOLOAD_START)
+    {
+      ACE_OS::printf("%s\n", ::maci::Container::ContainerStatusCompAutoloadBeginMsg);
+    }
+  
+  ACS_LOG(LM_RUNTIME_CONTEXT, "maci::ContainerImpl::message",
+	  (LM_INFO, "Message from manager received. Type: %d. Message: %s", type, message));
+
+  if (tag == ::maci::Client::MSGID_AUTOLOAD_END)
+    {
+      ACE_OS::printf("%s\n", ::maci::Container::ContainerStatusCompAutoloadEndMsg);
+      ACE_OS::printf("%s\n", ::maci::Container::ContainerStatusReadyMsg);
+    }
+  
 }
 
 // ************************************************************************

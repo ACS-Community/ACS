@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciReleaseComponent.cpp,v 1.4 2007/10/11 15:43:39 msekoran Exp $"
+* "@(#) $Id: maciReleaseComponent.cpp,v 1.5 2008/05/22 17:31:55 agrimstrup Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -85,6 +85,17 @@ class  AdministratorImpl :
 
     virtual void message (
 	CORBA::Short type,
+	const char * message
+	)
+	throw (CORBA::SystemException)
+    {
+	// noop
+    }
+
+
+    virtual void taggedmessage (
+	CORBA::Short type,
+	CORBA::Short tag,
 	const char * message
 	)
 	throw (CORBA::SystemException)

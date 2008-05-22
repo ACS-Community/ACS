@@ -4,7 +4,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciContainerImpl.h,v 1.52 2008/01/16 10:07:34 cparedes Exp $"
+* "@(#) $Id: maciContainerImpl.h,v 1.53 2008/05/22 17:31:55 agrimstrup Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -98,7 +98,7 @@ class LibraryManager;
  *
  * @author <a href=mailto:matej.sekoranja@ijs.si>Matej Sekoranja</a>,
  * Jozef Stefan Institute, Slovenia<br>
- * @version "@(#) $Id: maciContainerImpl.h,v 1.52 2008/01/16 10:07:34 cparedes Exp $"
+ * @version "@(#) $Id: maciContainerImpl.h,v 1.53 2008/05/22 17:31:55 agrimstrup Exp $"
  */
 
 class maci_EXPORT ContainerImpl :
@@ -322,6 +322,18 @@ public:
    * @param message Contents of the message. The contents are human readable.
    */
   virtual void message (CORBA::Short type,
+			const char * message
+			)
+    throw (CORBA::SystemException);
+
+  /**
+   * The Manager and administrators use this method for sending tagged textual messages to the client.
+   * @param type Can be either MSG_ERROR or MSG_INFORMATION.
+   * @param tag  Additional information tage
+   * @param message Contents of the message. The contents are human readable.
+   */
+  virtual void taggedmessage (CORBA::Short type,
+			CORBA::Short tag,
 			const char * message
 			)
     throw (CORBA::SystemException);

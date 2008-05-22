@@ -4,7 +4,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciTestClientImpl.h,v 1.84 2007/10/11 15:43:39 msekoran Exp $"
+* "@(#) $Id: maciTestClientImpl.h,v 1.85 2008/05/22 17:31:55 agrimstrup Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -62,6 +62,16 @@ virtual maci::AuthenticationData * authenticate (
 
 virtual void message (
     CORBA::Short type,
+    const char * message
+    
+  )
+  throw (
+    CORBA::SystemException
+  );
+
+virtual void taggedmessage (
+    CORBA::Short type,
+    CORBA::Short tag,
     const char * message
     
   )
@@ -315,6 +325,16 @@ virtual maci::AuthenticationData * authenticate (
 
 virtual void message (
     CORBA::Short type,
+    const char * message
+    
+  )
+  throw (
+    CORBA::SystemException
+  );
+
+virtual void taggedmessage (
+    CORBA::Short type,
+    CORBA::Short tag,
     const char * message
     
   )

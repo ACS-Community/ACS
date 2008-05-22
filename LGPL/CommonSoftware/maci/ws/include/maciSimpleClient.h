@@ -4,7 +4,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciSimpleClient.h,v 1.102 2008/03/27 13:48:38 bjeram Exp $"
+* "@(#) $Id: maciSimpleClient.h,v 1.103 2008/05/22 17:31:55 agrimstrup Exp $"
 *
 * who       when        what
 * --------  --------    ----------------------------------------------
@@ -319,6 +319,18 @@ public:
    * @param message Contents of the message. The contents are human readable.
    */
   virtual void message (CORBA::Short type,
+			const char * message
+			)
+    throw (CORBA::SystemException);
+
+  /**
+   * The Manager and administrators use this method for sending tagged textual messages to the client.
+   * @param type Can be either MSG_ERROR or MSG_INFORMATION.
+   * @param tag Additional information about the message
+   * @param message Contents of the message. The contents are human readable.
+   */
+  virtual void taggedmessage (CORBA::Short type,
+			      CORBA::Short tag,
 			const char * message
 			)
     throw (CORBA::SystemException);
