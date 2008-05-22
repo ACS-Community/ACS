@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsComponentSmartPtr.h,v 1.3 2008/01/09 21:12:37 agrimstrup Exp $"
+* "@(#) $Id: acsComponentSmartPtr.h,v 1.4 2008/05/22 19:39:16 agrimstrup Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -42,6 +42,7 @@ functions in C++-code.
 #include <logging.h>
 #include <lokiThreads.h>
 #include <lokiSmartPtr.h>
+#include <maciErrType.h>
 
 namespace maci {
 
@@ -163,7 +164,7 @@ class ComponentStorage
 		    handle->releaseComponent(pointee_->name());
 	            }
 	        }
-	    catch(maciErrType::CannotReleaseComponentExImpl ex)
+	    catch(maciErrType::CannotReleaseComponentExImpl& ex)
 		{
 		ACS_LOG(LM_RUNTIME_CONTEXT, "maci::ComponentStorage::Destroy",
 			(LM_ERROR, "Unable to release component"));
