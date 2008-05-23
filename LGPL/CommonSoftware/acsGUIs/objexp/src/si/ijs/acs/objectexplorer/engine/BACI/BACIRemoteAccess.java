@@ -174,6 +174,10 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 					false))
 				.start();
 		}
+		public void taggedmessage(short arg0, short arg1, String arg2) {
+			// TODO Auto-generated method stub
+			
+		}
 		public void components_unavailable(String[] cob_names) {
 		}
 		public void components_available(ComponentInfo[] cobs) {
