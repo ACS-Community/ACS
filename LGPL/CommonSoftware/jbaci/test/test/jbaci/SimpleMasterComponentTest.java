@@ -87,6 +87,10 @@ public class SimpleMasterComponentTest implements Runnable
 			System.out.println("Message from manager: " + message);
 		}
 
+		public void taggedmessage(short arg0, short arg1, String arg2) {
+			// TODO Auto-generated method stub
+		}
+		
 		/**
 		 * @see si.ijs.maci.ClientOperations#name()
 		 */
