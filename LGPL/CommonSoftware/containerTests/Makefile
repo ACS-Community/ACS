@@ -16,7 +16,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.2 2007/12/14 13:13:46 eallaert Exp $"
+# "@(#) $Id: Makefile,v 1.3 2008/05/23 13:06:24 eallaert Exp $"
 #
 # Makefile of containerTests (the package dealing with container tests)
 #
@@ -35,7 +35,7 @@
 #
 # Modules in the various containerTest sub-packages.
 #
-MODULES =  contLogTest 
+MODULES =  contLogTest contNcTest
 SUBSYSTEM = "containerTest"
 
 ifeq ($(os) $(VXWORKS_RTOS),Linux NO)
