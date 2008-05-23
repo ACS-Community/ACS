@@ -2,7 +2,6 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="var" path="JRE_LIB" sourcepath="/JAVA_SRC"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/jacsutil"/>
 	<classpathentry kind="var" path="ACSROOT/lib/maci.jar" sourcepath="INTROOT/lib/maci.jar"/>
 	<classpathentry kind="var" path="JACORB_HOME/lib/jacorb.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/baci.jar"/>
@@ -18,8 +17,9 @@
 	<classpathentry kind="var" path="ACSROOT/lib/maciSchemaBindings.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/cdbErrType.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/castor.jar"/>
-	<classpathentry kind="var" path="JACORB_HOME/lib/avalon-framework.jar"/>
-	<classpathentry kind="var" path="JACORB_HOME/lib/logkit.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acscommon.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/abeansgen.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/avalon-framework.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/logkit.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
