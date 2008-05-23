@@ -310,7 +310,7 @@ public class SubsysResourceMonitor {
          * To be called from run()
          */
         private void notifyRecovery() {
-			// @TODO remove this check with ACS 7.0 when the interface have been merged
+			// @TODO remove this check with ACS 8.0 when the interfaces have been merged
 			if (err instanceof RecoverableResourceErrorHandler) {
 				RecoverableResourceErrorHandler<T> recoverableErr = (RecoverableResourceErrorHandler<T>) err;
 				recoverableErr.resourceRecovered(resourceChecker.getResource());
@@ -587,7 +587,7 @@ public class SubsysResourceMonitor {
     }
     
     /**
-     * @TODO: with next major ACS release (7.0) this interface must be merged back to ResourceErrorHandler.
+     * @TODO: with next major ACS release (8.0) this interface must be merged back to ResourceErrorHandler.
      * We only use a separate interface to be able to add the method resourceRecovered in ACS 6.0.3 in a backward compatible way.
      */
     public interface RecoverableResourceErrorHandler<T> extends ResourceErrorHandler<T> {
