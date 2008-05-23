@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" path="src"/>
+	<classpathentry excluding="abeansvep/" kind="src" path="src"/>
 	<classpathentry kind="src" path="test"/>
 	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry exported="true" kind="var" path="ACSROOT/lib/acscomponent.jar"/>
@@ -13,5 +13,6 @@
 	<classpathentry exported="true" kind="var" path="ACSROOT/lib/cosyframework-core.jar"/>
 	<classpathentry exported="true" kind="var" path="ACSROOT/lib/cosyframework-gui.jar"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
+	<classpathentry kind="var" path="ACSROOT/lib/maciErrType.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
