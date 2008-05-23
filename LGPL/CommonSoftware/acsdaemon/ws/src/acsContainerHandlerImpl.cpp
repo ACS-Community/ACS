@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@$Id: acsContainerHandlerImpl.cpp,v 1.5 2008/02/12 22:53:13 agrimstrup Exp $"
+* "@$Id: acsContainerHandlerImpl.cpp,v 1.6 2008/05/23 19:00:38 agrimstrup Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -114,7 +114,18 @@ ACSContainerHandlerImpl::start_container (
     // This nasty hack was put so that the ARCHIVE could modify the CLASSPATH to add
     // some additional jar files.  The container_type is being used as the driver
     // but this will be changed to something cleaner.
-    if (!strcmp(container_type,"java-archive"))
+    // TODO: remove the container_type check.  type_modifiers will now be used to pass the flag value.
+    int isArchiveContainer = 0;
+
+    //Search the modifier sequence for any indication that we are starting an archive container
+    for (unsigned int i = 0; i < type_modifiers.length(); ++i) {
+        if (!strcmp(type_modifiers[i], "archiveContainer")) {
+	    if (!strcmp(container_type,"java"))
+                isArchiveContainer = 1;
+            break;
+        }
+    }
+    if (!strcmp(container_type,"java-archive") || isArchiveContainer)
 	snprintf(command, 1000, "acsStartContainerOracleClasspath -%s -b %d %s %s &> %sacsStartContainer_%s_%s&", "java", instance_number, container_name, cmdln, logDirectory.c_str(), containerName.c_str(), timeStamp.c_str());
     else
 	snprintf(command, 1000, "acsStartContainer -%s -b %d %s %s &> %sacsStartContainer_%s_%s&", container_type, instance_number, container_name, cmdln, logDirectory.c_str(), containerName.c_str(), timeStamp.c_str());

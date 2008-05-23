@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: acsdaemonStartContainer.cpp,v 1.11 2008/02/12 22:53:13 agrimstrup Exp $"
+* "@(#) $Id: acsdaemonStartContainer.cpp,v 1.12 2008/05/23 19:00:38 agrimstrup Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -31,12 +31,13 @@ static struct option long_options[] = {
         {"host",        required_argument, 0, 'H'},
         {"daemon",      required_argument, 0, 'd'},
         {"additional",   required_argument, 0, 'a'},
+        {"modifier",   optional_argument, 0, 'm'},
         {0, 0, 0, '\0'}};
 
 void 
 usage(const char *argv)
 {
-    ACE_OS::printf ("\n\tusage: %s {-h} -i INSTANCE -t TYPE -c CONTAINER [-d DAEMONREF] [-H HOST] [-a more options]", argv);
+    ACE_OS::printf ("\n\tusage: %s {-h} -i INSTANCE -t TYPE -c CONTAINER [-d DAEMONREF] [-H HOST] [-m TYPE-MODIFIER] [-a more options]", argv);
     ACE_OS::printf ("\t   -h, --help         show this help message\n");
     ACE_OS::printf ("\t   -t, --type         container type: cpp, java, java-archive, py\n");
     ACE_OS::printf ("\t   -c, --container     container name\n");
@@ -44,6 +45,7 @@ usage(const char *argv)
     ACE_OS::printf ("\t   -H, --host         Host where to start the container\n");
     ACE_OS::printf ("\t   -d, --daemon       Daemon reference\n");
     ACE_OS::printf ("\t   -a, --additional    passthrough options for startContaner. Put option between \"\"\n");
+    ACE_OS::printf ("\t   -m, --modifier    type modifier for the container.  More than one can be specified.\n");
 }
 
 int
@@ -55,10 +57,17 @@ main (int argc, char *argv[])
     ACE_CString containerType;
     ACE_CString containerName;
     ACE_CString additional;
+    ACE_CString modstring;
+    ACS::stringSeq tmp_type_modifiers(100);
+    int modcount = 0;
+
+    //The modstring is used to collect all the provided modifiers so they can be logged.
+    modstring = "[ ";
+
     for(;;)
         {
         int option_index = 0;
-        c = getopt_long (argc, argv, "ht:c:i:d:H:a:",
+        c = getopt_long (argc, argv, "ht:c:i:d:H:a:m:",
                          long_options, &option_index); 
         if (c==-1) break;
         switch(c)
@@ -84,8 +93,24 @@ main (int argc, char *argv[])
                 case 'a':
                     additional = optarg;
                     break;
+                case 'm':
+                    tmp_type_modifiers[modcount] = CORBA::string_dup(optarg);
+		    ++modcount;
+		    modstring = modstring + optarg + " ";
+                    break;
             }
         }
+    modstring += "]";
+
+    //In order to get the length of the sequence correct, we have to transfer
+    //the values from the temporary sequence to the sequence we will send
+    //to the daemon.
+    ACS::stringSeq type_modifiers(modcount);
+    type_modifiers.length(modcount);
+    for (int i = 0; i < modcount; ++i) {
+	type_modifiers[i] = tmp_type_modifiers[i];
+    }
+
     if (instance == -1)
         {
         ACE_OS::printf("Error: instance is a mandatory option try %s -h\n", argv[0]);
@@ -157,10 +182,9 @@ main (int argc, char *argv[])
 	  }
 
 // @TODO: implement support for 
-      ACS::stringSeq dummy_type_modifiers;
-      ACS_SHORT_LOG((LM_INFO, "Calling start_container(%s, %s, %d, dummy_type_modifiers, %s).", containerType.c_str(), containerName.c_str(), instance, additional.c_str()));
+      ACS_SHORT_LOG((LM_INFO, "Calling start_container(%s, %s, %d, %s, %s).", containerType.c_str(), containerName.c_str(), instance, modstring.c_str(), additional.c_str()));
 
-      daemon->start_container(containerType.c_str(), containerName.c_str(), instance, dummy_type_modifiers, additional.c_str());
+      daemon->start_container(containerType.c_str(), containerName.c_str(), instance, type_modifiers, additional.c_str());
       
       ACS_SHORT_LOG((LM_INFO, "Container start message issued."));
       
