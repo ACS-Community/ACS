@@ -14,17 +14,16 @@ import java.util.logging.Level;
 
 import javax.naming.NamingException;
 
-import com.cosylab.util.NameValueList;
-
-import org.omg.CORBA.IntHolder;
 import org.omg.CORBA.ORB;
 import org.omg.CosNaming.NamingContextHelper;
 
+import com.cosylab.util.NameValueList;
+
 import si.ijs.maci.AuthenticationData;
-import si.ijs.maci.ClientType;
-import si.ijs.maci.ComponentInfo;
 import si.ijs.maci.ClientInfo;
 import si.ijs.maci.ClientPOA;
+import si.ijs.maci.ClientType;
+import si.ijs.maci.ComponentInfo;
 import si.ijs.maci.ImplLangType;
 import si.ijs.maci.Manager;
 import si.ijs.maci.ManagerHelper;
@@ -56,10 +55,9 @@ import abeans.pluggable.acs.DefaultCORBAService;
 import abeans.pluggable.acs.logging.RemoteLoggingService;
 
 import alma.acs.util.ACSPorts;
-
 import alma.maciErrType.CannotGetComponentEx;
-import alma.maciErrType.ComponentNotAlreadyActivatedEx;
 import alma.maciErrType.ComponentConfigurationNotFoundEx;
+import alma.maciErrType.ComponentNotAlreadyActivatedEx;
 import alma.maciErrType.NoPermissionEx;
 
 /**
@@ -234,6 +232,11 @@ public class ACSPlug extends Plug implements Configurable
 			new MessageLogEntry(ACSPlug.this, "message", "Message from the Manager '" + managerReference + "': " + typeOfMessage + " " + message, level).dispatch();
 		}
 
+		public void taggedmessage(short type, short messageID, String message) {
+			// @TODO check if taggedmessage is sent redundantly to message, or if forwarding is OK
+			message(type, message);
+		}
+
 		/**
 		 * @see si.ijs.maci.ClientOperations#name()
 		 */
@@ -247,6 +250,7 @@ public class ACSPlug extends Plug implements Configurable
 		public boolean ping() {
 			return true;
 		}
+
 
 	}
 
