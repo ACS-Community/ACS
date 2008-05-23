@@ -60,7 +60,7 @@ public class SpecialTestMasterComponentImpl extends MasterComponentImplBase
 		
 		try
 		{
-			RWdoubleImpl someOtherPropertyImpl = new RWdoubleImpl("someOtherProperty", this, containerServices.getThreadFactory());
+			RWdoubleImpl someOtherPropertyImpl = new RWdoubleImpl("someOtherProperty", this);
 			m_someOtherPropertyDataAccess = someOtherPropertyImpl.getDataAccess();
 			
 			RWdoublePOATie someOtherPropertyTie = new RWdoublePOATie(someOtherPropertyImpl);
