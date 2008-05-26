@@ -848,6 +848,11 @@ public class MaciSupervisor implements IMaciSupervisor {
 			log.info("Incoming Maci Network Message: '" + arg1 + "'");
 		}
 
+		public void taggedmessage(short type, short messageID, String message) {
+			// TODO Auto-generated method stub
+			
+		}
+
 		public boolean ping () {
 			log.finest("ping() received");
 			return true;
