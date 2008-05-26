@@ -6,7 +6,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: acsStartJava,v 1.50 2008/04/10 05:24:41 cparedes Exp $"
+# "@(#) $Id: acsStartJava,v 1.51 2008/05/26 08:29:25 cparedes Exp $"
 #
 # who      when       what
 # -------- ---------- ----------------------------------------------
@@ -129,7 +129,7 @@ export POSIXLY_CORRECT=1
 # The "-u" is kept in this first getopt simply to avoid that too many tat ref-files
 # would need to be regenerated (as this command prints to stdout, and removing
 # -u leads to additional quotes around options and args).
-getopt -n `basename $0` -u -a -l $LONGOPTS $SHORTOPTS "$@" || {
+getopt -n `basename $0` -Q -u -a -l $LONGOPTS $SHORTOPTS "$@" || {
    printUsage
 	exit $EC_BADARGS;
 }
