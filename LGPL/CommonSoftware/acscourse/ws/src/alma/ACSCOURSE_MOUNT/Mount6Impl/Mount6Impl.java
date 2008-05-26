@@ -56,22 +56,20 @@ public class Mount6Impl extends CharacteristicComponentImpl implements Mount6J
 		
 		try
 		{ 
-			ThreadFactory tf = containerServices.getThreadFactory();
-			
-			ROdoubleImpl actAzImpl = new ROdoubleImpl("actAz", this, tf);
+			ROdoubleImpl actAzImpl = new ROdoubleImpl("actAz", this);
 //			m_actAzDataAccess = actAzImpl.getDataAccess();
 			ROdoublePOATie actAzTie = new ROdoublePOATie(actAzImpl);
 			m_actAz = ROdoubleHelper.narrow(this.registerProperty(actAzImpl, actAzTie));
 
-			ROdoubleImpl actElImpl = new ROdoubleImpl("actEl", this, tf);
+			ROdoubleImpl actElImpl = new ROdoubleImpl("actEl", this);
 			ROdoublePOATie actElTie = new ROdoublePOATie(actElImpl);
 			m_actEl = ROdoubleHelper.narrow(this.registerProperty(actElImpl, actElTie));
 
-			ROdoubleImpl cmdAzImpl = new ROdoubleImpl("cmdAz", this, tf);
+			ROdoubleImpl cmdAzImpl = new ROdoubleImpl("cmdAz", this);
 			ROdoublePOATie cmdAzTie = new ROdoublePOATie(cmdAzImpl);
 			m_cmdAz = ROdoubleHelper.narrow(this.registerProperty(cmdAzImpl, cmdAzTie));
 
-			ROdoubleImpl cmdElImpl = new ROdoubleImpl("cmdEl", this, tf);
+			ROdoubleImpl cmdElImpl = new ROdoubleImpl("cmdEl", this);
 			ROdoublePOATie cmdElTie = new ROdoublePOATie(cmdElImpl);
 			m_cmdEl = ROdoubleHelper.narrow(this.registerProperty(cmdElImpl, cmdElTie));
 		}
