@@ -222,6 +222,11 @@ public class AdministratorClient extends AdministratorPOA {
 
 	}
 
+	public void taggedmessage(short type, short messageID, String message) {
+		System.out.println("Message received "+message);
+
+	}
+
 	public String name() {
 		System.out.println("Returning name");
 		return "LogLevelPanel.Administrator";
