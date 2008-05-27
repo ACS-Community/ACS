@@ -104,6 +104,12 @@ public class ManagerAdminClient implements AdministratorOperations
 
 	}
 
+	@Override
+	public void taggedmessage(short type, short messageID, String message) {
+		// @todo Auto-generated method stub
+		
+	}
+	
 	public void message(short type, String message) {
 		logger.info(message);
 	}
