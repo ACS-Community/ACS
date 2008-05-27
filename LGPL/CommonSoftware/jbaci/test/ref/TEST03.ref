@@ -1,5 +1,4 @@
 1 - === Starting BuildingTest JUnit test
-1 -  --endorsed -- alma.acsexmplBuilding.BuildingTest
 1 - INFO - Starting Java/abeans application: alma.acsexmplBuilding.BuildingTest
 1 - INFO - Using endorsed jar files in: -Djava.endorsed.dirs=/home/almadev/introot/lib/endorsed:/alma/ACS-6.0/ACSSW/lib/endorsed:
 1 - Initializing CORBA...
