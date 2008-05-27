@@ -1,5 +1,4 @@
 1 -  Starting ORB Services
-1 -  -- alma.acs.testsupport.tat.NoDotJUnitRunner com.cosylab.acs.maci.test.ManagerImplTest
 1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ ID='Handle (xxxxxxx) = { type = unknown (xxxxxxx), key = (xxxxxxx), id = (xxxxxxx) }' Reason='Invalid handle.' ]
 1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ ID='Handle (xxxxxxx) = { type = CLIENT, key = (xxxxxxx), id = (xxxxxxx) }' Reason='Insufficient rights.' ]
 1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ ID='Handle (xxxxxxx) = { type = ADMINISTRATOR, key = (xxxxxxx), id = (xxxxxxx) }' Reason='Manager in shutdown state.' ]
@@ -112,18 +111,15 @@
 1 - OK (38 tests)
 1 - 
 1 -  Stopping the services
-1 -  -- alma.acs.testsupport.tat.NoDotJUnitRunner com.cosylab.acs.maci.test.HandleDataStoreTest
 1 - 
 1 - 
 1 - OK (2 tests)
 1 - 
-1 -  -- alma.acs.testsupport.tat.NoDotJUnitRunner com.cosylab.acs.maci.test.IntArrayTest
 1 - {0, 2, 4, 6, 8, 10, 12}
 1 - 
 1 - 
 1 - OK (5 tests)
 1 - 
-1 -  -- alma.acs.testsupport.tat.NoDotJUnitRunner com.cosylab.acs.maci.test.MACIModelTest
 1 - ComponentStatus = { name = 'COMPONENT_ACTIVATED', description = 'Component is activated.' }
 1 - ComponentStatus = { name = 'COMPONENT_NOT_ACTIVATED', description = 'Component is not activated.' }
 1 - ComponentStatus = { name = 'COMPONENT_DOES_NO_EXIST', description = 'Component does not exists.' }
@@ -133,12 +129,10 @@
 1 - 
 1 - OK (2 tests)
 1 - 
-1 -  -- alma.acs.testsupport.tat.NoDotJUnitRunner com.cosylab.acs.maci.test.WildcharMatcherTest
 1 - 
 1 - 
 1 - OK (1 test)
 1 - 
-1 -  -- alma.acs.testsupport.tat.NoDotJUnitRunner com.cosylab.acs.maci.test.CURLHelperTest
 1 - curl://nrao
 1 - curl:///MOUNT1
 1 - curl:///MOUNT1
