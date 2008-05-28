@@ -1,42 +1,34 @@
 1 - Starting Container...
-2 - Starting Container...
 1 - Retrieving CDB reference from Manager using bootstrap ORB
-2 - Retrieving CDB reference from Manager using bootstrap ORB
 1 - 
-2 - 
 1 - 
-2 - 
 1 - Resolving reference: 'corbaloc::---:----/Manager'
-2 - Resolving reference: 'corbaloc::---:----/Manager'
 1 - Manager reference narrowed.
-2 - Manager reference narrowed.
 1 - DAO:'MACI' Unable to return field: 'Containers/bilboContainer/LoggingConfig/dispatchPacketSize'
-2 - DAO:'MACI' Unable to return field: 'Containers/archiveContainer/LoggingConfig/dispatchPacketSize'
 1 - Configuration information for container 'bilboContainer' not available.
-2 - Configuration information for container 'archiveContainer' not available.
 1 - Starting as dynamic container.
-2 - Starting as dynamic container.
 1 - 
-2 - 
 1 - 
-2 - 
 1 - 
-2 - 
+1 - ContainerStatusMsg: Startup begins
+1 - ContainerStatusMsg: ORB initialization begins
 1 - ----------T--:--:--.--- [bilboContainer - maci::ContainerImpl::init] Generated CommandLine: maciContainer bilboContainer -ORBEndpoint iiop://xxx:---- -m corbaloc::---:----/Manager  -ORBDottedDecimalAddresses 1 -ORBInitRef InterfaceRepository=corbaloc::---:----/InterfaceRepository
 1 - ----------T--:--:--.--- [bilboContainer - maci::ContainerImpl::init] Destroy bootstrap ORB
 1 - ----------T--:--:--.--- [bilboContainer - maci::ContainerImpl::initializeCORBA] 
+1 - ContainerStatusMsg: ORB initialization ends
 1 - ----------T--:--:--.--- [bilboContainer - maci::ContainerImpl::getManager] 
 1 - ----------T--:--:--.--- [bilboContainer - maci::ContainerImpl::getManager] Resolving manager...
 1 - ----------T--:--:--.--- [bilboContainer - maci::ContainerImpl::resolveManager] 
-1 - ----------T--:--:--.--- [bilboContainer - maci::Container::init] Recovery enabled.
 1 - ----------T--:--:--.--- [bilboContainer - maci::ContainerImpl::activateCORBAObject] 
+1 - ----------T--:--:--.--- [bilboContainer - maci::ContainerImpl::init] Autoloading 'baci'
 1 - ----------T--:--:--.--- [bilboContainer - maci::ContainerImpl::init] Container 'bilboContainer' activated.
 1 - ----------T--:--:--.--- [bilboContainer - maci::ContainerImpl::init] Using DLL path: .....
-1 - ----------T--:--:--.--- [bilboContainer - maci::ContainerImpl::init] Autoloading 'baci'
 1 - ----------T--:--:--.--- [bilboContainer - maci::ContainerImpl::loadDLL] 
+1 - ----------T--:--:--.--- [bilboContainer - maci::Container::init] Recovery enabled.
 1 - ----------T--:--:--.--- [bilboContainer - maci::ContainerImpl::init] Container 'bilboContainer' initialized successfuly
-1 - ----------T--:--:--.--- [bilboContainer - maci::ContainerImpl::init] Usage of an InterfaceRepository disabled.
 1 - ----------T--:--:--.--- [bilboContainer - maci::ContainerImpl::init] Connecting to the Manager...
+1 - ----------T--:--:--.--- [bilboContainer - maci::ContainerImpl::init] Usage of an InterfaceRepository disabled.
+1 - ContainerStatusMsg: Manager access initialization begins
 1 - ----------T--:--:--.--- [bilboContainer - maci::ContainerImpl::resolveManager] 
 1 - ----------T--:--:--.--- [bilboContainer - maci::ContainerImpl::init] Connected to the Manager.
 1 - ----------T--:--:--.--- [bilboContainer - maci::ContainerImpl::init] Connecting to the Archiving Channel.
@@ -45,22 +37,43 @@
 1 - ----------T--:--:--.--- [bilboContainer - maci::ContainerImpl::init] Logging into the Manager...
 1 - ----------T--:--:--.--- [bilboContainer - maci::ContainerImpl::init] Set Naming Context to Logger.
 1 - ----------T--:--:--.--- [bilboContainer - maci::ContainerImpl:::authenticate] 
+1 - ContainerStatusMsg: Manager access initialization ends
+1 - ContainerStatusMsg: Startup ends
+1 - ContainerStatusMsg: Automatic component loading begins
+1 - ContainerStatusMsg: Automatic component loading ends
+1 - ContainerStatusMsg: Ready
+2 - Starting Container...
+2 - Retrieving CDB reference from Manager using bootstrap ORB
+2 - 
+2 - 
+2 - Resolving reference: 'corbaloc::---:----/Manager'
+2 - Manager reference narrowed.
+2 - DAO:'MACI' Unable to return field: 'Containers/archiveContainer/LoggingConfig/dispatchPacketSize'
+2 - Configuration information for container 'archiveContainer' not available.
+2 - Starting as dynamic container.
+2 - 
+2 - 
+2 - 
+2 - ContainerStatusMsg: Startup begins
+2 - ContainerStatusMsg: ORB initialization begins
 2 - ----------T--:--:--.--- [archiveContainer - maci::ContainerImpl::init] Generated CommandLine: maciContainer archiveContainer -ORBEndpoint iiop://xxx:---- -m corbaloc::---:----/Manager  -ORBDottedDecimalAddresses 1 -ORBInitRef InterfaceRepository=corbaloc::---:----/InterfaceRepository
 2 - ----------T--:--:--.--- [archiveContainer - maci::ContainerImpl::init] Destroy bootstrap ORB
 2 - ----------T--:--:--.--- [archiveContainer - maci::ContainerImpl::initializeCORBA] 
+2 - ContainerStatusMsg: ORB initialization ends
 2 - ----------T--:--:--.--- [archiveContainer - maci::ContainerImpl::getManager] 
 2 - ----------T--:--:--.--- [archiveContainer - maci::ContainerImpl::getManager] Resolving manager...
 2 - ----------T--:--:--.--- [archiveContainer - maci::ContainerImpl::resolveManager] 
 2 - ----------T--:--:--.--- [archiveContainer - maci::Container::init] Recovery enabled.
-2 - ----------T--:--:--.--- [archiveContainer - maci::ContainerImpl::activateCORBAObject] 
-2 - ----------T--:--:--.--- [archiveContainer - maci::ContainerImpl::init] Container 'archiveContainer' activated.
 2 - ----------T--:--:--.--- [archiveContainer - maci::ContainerImpl::init] Using DLL path: .....
+2 - ----------T--:--:--.--- [archiveContainer - maci::ContainerImpl::activateCORBAObject] 
 2 - ----------T--:--:--.--- [archiveContainer - maci::ContainerImpl::init] Autoloading 'baci'
+2 - ----------T--:--:--.--- [archiveContainer - maci::ContainerImpl::init] Container 'archiveContainer' activated.
 2 - ----------T--:--:--.--- [archiveContainer - maci::ContainerImpl::loadDLL] 
 2 - ----------T--:--:--.--- [archiveContainer - maci::ContainerImpl::init] Container 'archiveContainer' initialized successfuly
-2 - ----------T--:--:--.--- [archiveContainer - maci::ContainerImpl::init] Usage of an InterfaceRepository disabled.
 2 - ----------T--:--:--.--- [archiveContainer - maci::ContainerImpl::init] Connecting to the Manager...
+2 - ----------T--:--:--.--- [archiveContainer - maci::ContainerImpl::init] Usage of an InterfaceRepository disabled.
 2 - ----------T--:--:--.--- [archiveContainer - maci::ContainerImpl::resolveManager] 
+2 - ContainerStatusMsg: Manager access initialization begins
 2 - ----------T--:--:--.--- [archiveContainer - maci::ContainerImpl::init] Connected to the Manager.
 2 - ----------T--:--:--.--- [archiveContainer - maci::ContainerImpl::init] Connecting to the Archiving Channel.
 2 - ----------T--:--:--.--- [archiveContainer - maci::ContainerImpl::init] Connecting to the Centralized Logger...
@@ -68,6 +81,11 @@
 2 - ----------T--:--:--.--- [archiveContainer - maci::ContainerImpl::init] Logging into the Manager...
 2 - ----------T--:--:--.--- [archiveContainer - maci::ContainerImpl::init] Set Naming Context to Logger.
 2 - ----------T--:--:--.--- [archiveContainer - maci::ContainerImpl:::authenticate] 
+2 - ContainerStatusMsg: Manager access initialization ends
+2 - ContainerStatusMsg: Startup ends
+2 - ContainerStatusMsg: Automatic component loading begins
+2 - ContainerStatusMsg: Automatic component loading ends
+2 - ContainerStatusMsg: Ready
 1 - ----------T--:--:--.--- [ARCHIVECON1 - ] myHandlerFunction()...device is:TEST_PS_1
 1 - ----------T--:--:--.--- [ARCHIVECON1 - ] myHandlerFunction()...device is:TEST_PS_1
 1 - ----------T--:--:--.--- [ARCHIVECON1 - ] myHandlerFunction()...device is:TEST_PS_1
