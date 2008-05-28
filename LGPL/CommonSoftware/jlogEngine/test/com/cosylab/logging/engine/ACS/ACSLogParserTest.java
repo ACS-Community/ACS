@@ -4,12 +4,12 @@ import java.util.Vector;
 
 import junit.framework.TestCase;
 
-import com.cosylab.logging.engine.log.LogEntryXML;
+import alma.acs.logging.engine.parser.ACSLogParser;
+import alma.acs.logging.engine.parser.ACSLogParserFactory;
+
 import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.engine.log.LogTypeHelper;
 import com.cosylab.logging.engine.log.ILogEntry.Field;
-
-import com.cosylab.logging.engine.ACS.ACSLogParserDOM;
 
 public class ACSLogParserTest extends TestCase {
 
@@ -55,7 +55,7 @@ public class ACSLogParserTest extends TestCase {
 	
 	protected void setUp() throws Exception {
 		super.setUp();
-		parser = new ACSLogParserDOM();
+		parser = ACSLogParserFactory.getParser();
 	}
 
 	protected void tearDown() throws Exception {

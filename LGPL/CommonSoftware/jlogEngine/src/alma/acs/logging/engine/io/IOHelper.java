@@ -31,14 +31,12 @@ import java.util.Collection;
 import java.util.Iterator;
 
 import javax.swing.JOptionPane;
-import javax.xml.parsers.ParserConfigurationException;
 
+import alma.acs.logging.engine.parser.ACSLogParser;
+import alma.acs.logging.engine.parser.ACSLogParserFactory;
 import alma.acs.util.StopWatch;
 
 import com.cosylab.logging.engine.LogMatcher;
-import com.cosylab.logging.engine.ACS.ACSLogParser;
-import com.cosylab.logging.engine.ACS.ACSLogParserDOM;
-import com.cosylab.logging.engine.ACS.ACSRemoteAccess;
 import com.cosylab.logging.engine.ACS.ACSRemoteErrorListener;
 import com.cosylab.logging.engine.ACS.ACSRemoteLogListener;
 import com.cosylab.logging.engine.ACS.ACSRemoteRawLogListener;
@@ -143,14 +141,14 @@ public class IOHelper extends LogMatcher {
 	 * @param progressListener The listener to be notified about the bytes read
 	 * @return The legth of the file to read
 	 * @throws IOException In case of an IO error while reading the file
-	 * @throws ParserConfigurationException In case of error building the parser
+	 * @throws Exception In case of error building the parser
 	 */
 	public synchronized long loadLogs(
 			String fileName,
 			ACSRemoteLogListener logListener,
 			ACSRemoteRawLogListener rawLogListener,
 			ACSRemoteErrorListener errorListener, 
-			IOPorgressListener progressListener) throws IOException, ParserConfigurationException {
+			IOPorgressListener progressListener) throws IOException, Exception {
 		if (fileName==null || fileName.isEmpty()) {
 			throw new IllegalArgumentException("Invalid file name: "+fileName);
 		}
@@ -175,14 +173,14 @@ public class IOHelper extends LogMatcher {
 	 * @param errorListener The listener for errors
 	 * @param progressListener The listener to be notified about the bytes read
 	 * @throws IOException In case of an IO error while reading the file
-	 * @throws ParserConfigurationException In case of error building the parser
+	 * @throws Exception In case of error building the parser
 	 */
 	public synchronized void loadLogs(
 			BufferedReader br,
 			ACSRemoteLogListener logListener,
 			ACSRemoteRawLogListener rawLogListener,
 			ACSRemoteErrorListener errorListener, 
-			IOPorgressListener progressListener) throws IOException, ParserConfigurationException {
+			IOPorgressListener progressListener) throws IOException, Exception {
 		if (br==null || errorListener==null) {
 			throw new IllegalArgumentException("Parameters can't be null");
 		}
@@ -195,7 +193,7 @@ public class IOHelper extends LogMatcher {
 		
 		// Build the parser
 		if (parser == null && logListener!=null) {
-			parser = new ACSLogParserDOM();
+			parser = ACSLogParserFactory.getParser();
 		}
 		
 		stopped=false;

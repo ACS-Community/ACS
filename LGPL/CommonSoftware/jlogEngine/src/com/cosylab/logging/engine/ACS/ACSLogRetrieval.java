@@ -19,19 +19,19 @@
 
 /** 
  * @author  acaproni   
- * @version $Id: ACSLogRetrieval.java,v 1.31 2008/04/25 12:46:43 acaproni Exp $
+ * @version $Id: ACSLogRetrieval.java,v 1.32 2008/05/28 16:21:43 acaproni Exp $
  * @since    
  */
 
 package com.cosylab.logging.engine.ACS;
 
-import javax.xml.parsers.ParserConfigurationException;
+
+import alma.acs.logging.engine.parser.ACSLogParser;
+import alma.acs.logging.engine.parser.ACSLogParserFactory;
 
 import com.cosylab.logging.engine.FiltersVector;
 import com.cosylab.logging.engine.LogMatcher;
 import com.cosylab.logging.engine.log.ILogEntry;
-import com.cosylab.logging.engine.log.LogTypeHelper;
-import com.cosylab.logging.engine.log.ILogEntry.Field;
 
 /**
  * ACSLogRetireval stores the XML string (or a String in case of binary logs) 
@@ -130,8 +130,10 @@ public class ACSLogRetrieval extends LogMatcher implements Runnable {
 	private void initialize() {
 		if (!binaryFormat) {
 			try {
-				parser = new ACSLogParserDOM();
-			} catch (ParserConfigurationException pce) {
+				parser = ACSLogParserFactory.getParser();
+			} catch (Exception pce) {
+				System.err.println("Error getting the parser: "+pce.getMessage());
+				
 				parser=null;
 			}
 		}

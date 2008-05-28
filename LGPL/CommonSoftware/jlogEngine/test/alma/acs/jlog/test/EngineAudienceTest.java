@@ -27,11 +27,11 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Vector;
 
+import alma.acs.logging.engine.parser.ACSLogParser;
+import alma.acs.logging.engine.parser.ACSLogParserFactory;
 import alma.acs.util.IsoDateFormat;
 
 import com.cosylab.logging.engine.ACS.ACSListenersDispatcher;
-import com.cosylab.logging.engine.ACS.ACSLogParser;
-import com.cosylab.logging.engine.ACS.ACSLogParserDOM;
 import com.cosylab.logging.engine.ACS.ACSLogRetrieval;
 import com.cosylab.logging.engine.ACS.ACSRemoteLogListener;
 import com.cosylab.logging.engine.ACS.ACSRemoteRawLogListener;
@@ -180,7 +180,7 @@ public class EngineAudienceTest extends TestCase implements  ACSRemoteLogListene
 		// 
 		// Step 2: test a collection of logs with the audience
 		//
-		ACSLogParser parser = new ACSLogParserDOM();
+		ACSLogParser parser = ACSLogParserFactory.getParser();
 		assertNotNull(parser);
 		SimpleDateFormat df = new IsoDateFormat();
 		assertNotNull(df);
