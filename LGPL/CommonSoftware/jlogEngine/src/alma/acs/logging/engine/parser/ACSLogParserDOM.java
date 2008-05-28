@@ -19,7 +19,7 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
  *    MA 02111-1307  USA
  */
-package com.cosylab.logging.engine.ACS;
+package alma.acs.logging.engine.parser;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -34,6 +34,7 @@ import org.xml.sax.SAXException;
 
 import alma.acs.util.XmlNormalizer;
 
+import com.cosylab.logging.engine.ACS.LogParseException;
 import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.engine.log.LogEntry;
 import com.cosylab.logging.engine.log.LogEntryXML;
@@ -53,7 +54,7 @@ public class ACSLogParserDOM implements ACSLogParser {
 	/**
 	 * ACSLogParserDOM constructor comment.
 	 */
-	public ACSLogParserDOM() throws ParserConfigurationException {
+	ACSLogParserDOM() throws ParserConfigurationException {
 		initialize();
 	}
 	
