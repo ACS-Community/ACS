@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciContainerImpl.cpp,v 1.107 2008/05/22 17:31:55 agrimstrup Exp $"
+* "@(#) $Id: maciContainerImpl.cpp,v 1.108 2008/05/28 20:48:49 agrimstrup Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -79,7 +79,7 @@
 #include <ACSAlarmSystemInterfaceFactory.h>
 #endif
 
-ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.107 2008/05/22 17:31:55 agrimstrup Exp $")
+ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.108 2008/05/28 20:48:49 agrimstrup Exp $")
 
  using namespace maci;
  using namespace cdb;
@@ -2435,13 +2435,14 @@ ContainerImpl::taggedmessage (
       ACE_OS::printf("%s\n", ::maci::Container::ContainerStatusCompAutoloadBeginMsg);
     }
   
-  ACS_LOG(LM_RUNTIME_CONTEXT, "maci::ContainerImpl::message",
-	  (LM_INFO, "Message from manager received. Type: %d. Message: %s", type, message));
+  ACS_LOG(LM_RUNTIME_CONTEXT, "maci::ContainerImpl::taggedmessage",
+	  (LM_INFO, "Message from manager received. Type: %d. Tag: %d. Message: %s", type, tag, message));
 
   if (tag == ::maci::Client::MSGID_AUTOLOAD_END)
     {
       ACE_OS::printf("%s\n", ::maci::Container::ContainerStatusCompAutoloadEndMsg);
       ACE_OS::printf("%s\n", ::maci::Container::ContainerStatusReadyMsg);
+      ACE_OS::fflush(stdout);
     }
   
 }
