@@ -32,6 +32,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.Calendar;
+import java.util.TimeZone;
+import java.text.SimpleDateFormat;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -863,7 +866,12 @@ public class LogConfig {
 		} 
 		else {
 			if (level.intValue() >= getDefaultMinLogLevelLocal().value) {
-				System.out.println(level.toString() + ": " + msg + (thr != null ? thr.toString() : ""));
+				Calendar cal = Calendar.getInstance();
+    				SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd");
+    				SimpleDateFormat sdf2 = new SimpleDateFormat("HH:mm:ss.SSS");
+				sdf1.setTimeZone(TimeZone.getTimeZone("UTC"));
+				sdf2.setTimeZone(TimeZone.getTimeZone("UTC"));
+				System.out.println(sdf1.format(cal.getTime())+ "T"+ sdf2.format(cal.getTime())+ " "+ level.toString() + ": " + msg + (thr != null ? thr.toString() : ""));
 			}
 		}
 	}
