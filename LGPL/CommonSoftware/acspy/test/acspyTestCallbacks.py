@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# @(#) $Id: acspyTestCallbacks.py,v 1.3 2004/04/21 22:36:36 dfugate Exp $
+# @(#) $Id: acspyTestCallbacks.py,v 1.4 2008/05/28 23:10:21 agrimstrup Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA, 2001
@@ -45,20 +45,34 @@ if __name__ == "__main__":
     print
 
     print "Testing all callbacks with archiving"
+    testCallback(Callbacks.CBbool(archive=1))
+    testCallback(Callbacks.CBonOffSwitch(archive=1))
     testCallback(Callbacks.CBlong(archive=1))
     testCallback(Callbacks.CBlongSeq(archive=1))
+    testCallback(Callbacks.CBlongLong(archive=1))
+    testCallback(Callbacks.CBuLongLong(archive=1))
     testCallback(Callbacks.CBdouble(archive=1))
     testCallback(Callbacks.CBdoubleSeq(archive=1))
+    testCallback(Callbacks.CBfloat(archive=1))
+    testCallback(Callbacks.CBfloatSeq(archive=1))
     testCallback(Callbacks.CBstring(archive=1))
+    testCallback(Callbacks.CBstringSeq(archive=1))
     testCallback(Callbacks.CBpattern(archive=1))
     print
 
     print "Testing all callbacks with NO archiving"
+    testCallback(Callbacks.CBbool())
+    testCallback(Callbacks.CBonOffSwitch())
     testCallback(Callbacks.CBlong())
     testCallback(Callbacks.CBlongSeq())
+    testCallback(Callbacks.CBlongLong())
+    testCallback(Callbacks.CBuLongLong())
     testCallback(Callbacks.CBdouble())
     testCallback(Callbacks.CBdoubleSeq())
+    testCallback(Callbacks.CBfloat())
+    testCallback(Callbacks.CBfloatSeq())
     testCallback(Callbacks.CBstring())
+    testCallback(Callbacks.CBstringSeq())
     testCallback(Callbacks.CBpattern())
     print
     print "Done..."

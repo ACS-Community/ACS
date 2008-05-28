@@ -22,7 +22,7 @@
 #
 # Internet email: dmuders@mpifr-bonn.mpg.de
 #
-# "@(#) $Id: Callbacks.py,v 1.7 2008/03/31 21:21:40 agrimstrup Exp $"
+# "@(#) $Id: Callbacks.py,v 1.8 2008/05/28 23:10:21 agrimstrup Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -42,7 +42,7 @@ Todo:
 - 
 '''
 
-__revision__ = "$Id: Callbacks.py,v 1.7 2008/03/31 21:21:40 agrimstrup Exp $"
+__revision__ = "$Id: Callbacks.py,v 1.8 2008/05/28 23:10:21 agrimstrup Exp $"
 
 #------------------------------------------------------------------------------
 import ACS__POA                   # Import the Python CORBA stubs for BACI
@@ -400,6 +400,54 @@ class CBpattern(BaseValueCB, ACS__POA.CBpattern):
         BaseValueCB.__init__(self, name, archive)
 #------------------------------------------------------------------------------
 class CBfloat(BaseValueCB, ACS__POA.CBfloat):
+    '''
+    This class defines the method(s) that will be invoked asynchronously by the
+    device for any monitors we may create.
+    '''
+    #--------------------------------------------------------------------------
+    def __init__ (self, name=None, archive=0): 
+        '''
+        Constructor.
+
+        Parameters: name of this callback instance
+
+        Raises: Nothing
+        '''
+        BaseValueCB.__init__(self, name, archive)
+#------------------------------------------------------------------------------
+class CBfloatSeq(BaseValueCB, ACS__POA.CBfloatSeq):
+    '''
+    This class defines the method(s) that will be invoked asynchronously by the
+    device for any monitors we may create.
+    '''
+    #--------------------------------------------------------------------------
+    def __init__ (self, name=None, archive=0): 
+        '''
+        Constructor.
+
+        Parameters: name of this callback instance
+
+        Raises: Nothing
+        '''
+        BaseValueCB.__init__(self, name, archive)
+#------------------------------------------------------------------------------
+class CBbool(BaseValueCB, ACS__POA.CBBool):
+    '''
+    This class defines the method(s) that will be invoked asynchronously by the
+    device for any monitors we may create.
+    '''
+    #--------------------------------------------------------------------------
+    def __init__ (self, name=None, archive=0): 
+        '''
+        Constructor.
+
+        Parameters: name of this callback instance
+
+        Raises: Nothing
+        '''
+        BaseValueCB.__init__(self, name, archive)
+#------------------------------------------------------------------------------
+class CBonOffSwitch(BaseValueCB, ACS__POA.CBOnOffSwitch):
     '''
     This class defines the method(s) that will be invoked asynchronously by the
     device for any monitors we may create.
