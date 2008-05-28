@@ -6,7 +6,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: acsStartJava,v 1.51 2008/05/26 08:29:25 cparedes Exp $"
+# "@(#) $Id: acsStartJava,v 1.52 2008/05/28 01:56:15 cparedes Exp $"
 #
 # who      when       what
 # -------- ---------- ----------------------------------------------
@@ -126,10 +126,17 @@ function printUsage {
 # Second run is the real deal which replaces the command line args with getopt's output.
 export POSIXLY_CORRECT=1
 
+QUIET_OPTION=""
+
+if [ "X$ACS_LOG_STDOUT" == "X99" ]
+then
+  QUIET_OPTION="-Q"
+fi
+
 # The "-u" is kept in this first getopt simply to avoid that too many tat ref-files
 # would need to be regenerated (as this command prints to stdout, and removing
 # -u leads to additional quotes around options and args).
-getopt -n `basename $0` -Q -u -a -l $LONGOPTS $SHORTOPTS "$@" || {
+getopt -n `basename $0` $QUIET_OPTION -u -a -l $LONGOPTS $SHORTOPTS "$@" || {
    printUsage
 	exit $EC_BADARGS;
 }
