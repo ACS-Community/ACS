@@ -26,13 +26,13 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import org.xml.sax.InputSource;
 import org.w3c.dom.*;
 
+import alma.acs.logging.engine.parser.ACSLogParser;
+import alma.acs.logging.engine.parser.ACSLogParserFactory;
+
 import com.cosylab.logging.engine.log.LogEntryXML;
-import com.cosylab.logging.engine.log.LogEntry;
 import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.engine.log.LogTypeHelper;
 import com.cosylab.logging.engine.log.ILogEntry.Field;
-import com.cosylab.logging.engine.ACS.ACSLogParser;
-import com.cosylab.logging.engine.ACS.ACSLogParserDOM;
 
 import java.util.Vector;
 
@@ -54,7 +54,7 @@ public class LogEntryTest extends junit.framework.TestCase
 
 	java.util.Vector<TestEntry> testEntries = new java.util.Vector<TestEntry>();
 
-	ACSLogParserDOM logparser = null;
+	ACSLogParser logparser = null;
 
 	class TestEntry
 	{
@@ -80,7 +80,7 @@ public class LogEntryTest extends junit.framework.TestCase
 	protected void setUp() throws Exception
 	{
 
-		logparser = new ACSLogParserDOM();
+		logparser = ACSLogParserFactory.getParser();
 		log =
 			logparser.parse(
 				"<Trace TimeStamp=\"2002-11-07T15:13:00.012\" File=\"maciHeartbeatController.cpp\" Line=\"64\"><Data Name=\"DataName\">first data</Data></Trace>");
