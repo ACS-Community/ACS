@@ -1,8 +1,17 @@
 2 - starting acspyexmplClientErrorComponent
 2 - Creating ClientErrorComponent
 1 - ----------T--:--:--.--- pyErrContainer __init__ - Container pyErrContainer waiting for requests
-1 - ----------T--:--:--.--- pyErrContainer message - Info message from the manager: Startup statistics: 0 components queued to be activated.
-1 - ----------T--:--:--.--- pyErrContainer message - Info message from the manager: Startup statistics: 0 of 0 components activated.
+1 - ContainerStatusMsg: Startup begins
+1 - ContainerStatusMsg: Startup ends
+1 - ContainerStatusMsg: Automatic component loading begins
+1 - ContainerStatusMsg: ORB initialization begins
+1 - ContainerStatusMsg: ORB initialization ends
+1 - ContainerStatusMsg: Manager access initialization begins
+1 - ContainerStatusMsg: Manager access initialization ends
+1 - ----------T--:--:--.--- pyErrContainer taggedmessage - Info message from the manager: Startup statistics: 0 components queued to be activated.
+1 - ----------T--:--:--.--- pyErrContainer taggedmessage - Info message from the manager: Startup statistics: 0 of 0 components activated.
+1 - ContainerStatusMsg: Automatic component loading ends
+1 - ContainerStatusMsg: Ready
 1 - ----------T--:--:--.--- pyErrContainer activate_component - Activated component: ERRORCOMP_PY
 1 - ----------T--:--:--.--- pyErrContainer deactivate_components - Deactivating component: ERRORCOMP_PY
 2 - ----------T--:--:--.--- Common.Err.ErrorTraceHelper Error Trace
