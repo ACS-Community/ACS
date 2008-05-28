@@ -61,7 +61,7 @@ local t_item
 TCP_PORT=$1
 
 #compressed AI contains a list where each element contains some TCP info
-compressedAI=`netstat -l -t --numeric-ports | grep ":$TCP_PORT " | awk '{print $4}'| sed 's/:/ /g' | awk '{print $2}' 2> /dev/null`
+compressedAI=`netstat -l -t -n | grep ":$TCP_PORT " | awk '{print $4}'| sed 's/:/ /g' | awk '{print $2}' 2> /dev/null`
 
 if [ "$compressedAI" = "" ] 
 then
@@ -70,7 +70,7 @@ then
 elif [ "$compressedAI" = "$TCP_PORT" ] 
 then
   ACS_LOG_ERROR "acsstartupAcsInstance" "The TCP_PORT to use, '$TCP_PORT', is taken already - $compressedAI !"
-  ACS_LOG_ERROR "acsstartupAcsInstance" "`netstat -t -p -e -e -l 2> /dev/null | grep $TCP_PORT | awk '{printf("%s %s %s", $4, $7, $9)}'`"
+  ACS_LOG_ERROR "acsstartupAcsInstance" "`netstat -n -t -p -e -e -l 2> /dev/null | grep $TCP_PORT | awk '{printf("%s %s %s", $4, $7, $9)}'`"
   return $EC_BADARGS
 fi
 
