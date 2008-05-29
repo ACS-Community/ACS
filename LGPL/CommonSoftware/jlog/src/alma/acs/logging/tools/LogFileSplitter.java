@@ -28,8 +28,6 @@ import java.text.FieldPosition;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import com.cosylab.logging.engine.ACS.ACSLogParser;
-import com.cosylab.logging.engine.ACS.ACSLogParserDOM;
 import com.cosylab.logging.engine.ACS.ACSRemoteErrorListener;
 import com.cosylab.logging.engine.ACS.ACSRemoteRawLogListener;
 import com.cosylab.logging.engine.log.ILogEntry;
@@ -37,6 +35,8 @@ import com.cosylab.logging.engine.log.ILogEntry.Field;
 
 import alma.acs.logging.engine.io.IOHelper;
 import alma.acs.logging.engine.io.IOPorgressListener;
+import alma.acs.logging.engine.parser.ACSLogParser;
+import alma.acs.logging.engine.parser.ACSLogParserFactory;
 import alma.acs.util.IsoDateFormat;
 
 /**
@@ -132,7 +132,7 @@ public class LogFileSplitter implements ACSRemoteRawLogListener, ACSRemoteErrorL
 		if (mins!=null) {
 			// Create the parser
 			try {
-				parser = new ACSLogParserDOM();
+				parser = ACSLogParserFactory.getParser();
 			} catch (Exception e) {
 				System.err.println("Error creating the parser: "+e.getMessage());
 				System.exit(-1);
