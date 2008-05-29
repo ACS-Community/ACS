@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.27 2007/10/26 15:51:48 agrimstrup Exp $"
+# "@(#) $Id: Makefile,v 1.28 2008/05/29 17:13:16 agrimstrup Exp $"
 #
 # Makefile of ........
 #
@@ -20,7 +20,7 @@
 PY_SCRIPTS         = pythfilter
 PY_SCRIPTS_L       =
 
-PY_MODULES         = acs_python sitecustomize
+PY_MODULES         = acs_python 
 PY_MODULES_L       =
 
 PY_PACKAGES        = Pmw
@@ -121,8 +121,8 @@ PY_DOC :
 	$(foreach file, $(PY_EXT_DOC_L), - $(AT) cd ../doc; if [ -e $(file).tgz ]; then echo "== Extracting external documentation: $(file).tgz"; gtar -zxvf $(file).tgz; fi )
 
 
-#PY_DISUTIL_BUILD : PEXPECT PYXML PYCHECKER NUMERIC NUMARRAY NUMPY MATPLOTLIB LDAP GNUPLOT SNMP
-PY_DISUTIL_BUILD : PYXML
+#PY_DISUTIL_BUILD : PEXPECT PYXML PYCHECKER NUMERIC NUMARRAY NUMPY MATPLOTLIB LDAP GNUPLOT SNMP PYXML
+PY_DISUTIL_BUILD :
 	echo "== Building/Installing external Python modules now..."
 
 #
