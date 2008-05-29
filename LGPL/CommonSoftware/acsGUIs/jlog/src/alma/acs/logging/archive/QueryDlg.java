@@ -47,10 +47,10 @@ import javax.swing.JRootPane;
 import javax.swing.JTextField;
 
 import alma.acs.logging.dialogs.LoadSwitchesPanel;
+import alma.acs.logging.engine.parser.ACSLogParser;
+import alma.acs.logging.engine.parser.ACSLogParserFactory;
 
 import com.cosylab.logging.LoggingClient;
-import com.cosylab.logging.engine.ACS.ACSLogParser;
-import com.cosylab.logging.engine.ACS.ACSLogParserDOM;
 import com.cosylab.logging.engine.ACS.ACSRemoteErrorListener;
 import com.cosylab.logging.engine.ACS.ACSRemoteLogListener;
 import com.cosylab.logging.engine.log.ILogEntry;
@@ -126,9 +126,9 @@ public class QueryDlg extends JDialog implements ActionListener {
 		loggingClient=client;
 		try
 		{
-			parser = new ACSLogParserDOM();
+			parser = ACSLogParserFactory.getParser();
 		}
-		catch (javax.xml.parsers.ParserConfigurationException pce)
+		catch (Exception pce)
 		{
 			System.out.println("Exception in QueryDlg constructor: " + pce);
 			pce.printStackTrace();
