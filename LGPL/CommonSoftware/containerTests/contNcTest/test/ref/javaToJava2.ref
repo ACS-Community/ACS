@@ -1,6 +1,6 @@
 1 -  -D COUNTER_SUPPLIER=SUPPLIER_JAVA -D COUNTER_CONSUMERS=CONSUMER1_JAVA CONSUMER2_JAVA CONSUMER3_JAVA CONSUMER4_JAVA CONSUMER5_JAVA CONSUMER6_JAVA -D COUNTER_INIT_VALUE=1 -D COUNTER_LAST_VALUE=15 -D COUNTER_PERIOD=0.25 -- alma.COUNTER.CounterTestImpl.CounterTest
-1 - INFO - Starting Java/abeans application: alma.COUNTER.CounterTestImpl.CounterTest
-1 - .FINER: Logging configuration has been initialized, but not from CDB settings.
+1 - <timestamp> INFO [acsStartJava] Starting Java/abeans application: alma.COUNTER.CounterTestImpl.CounterTest
+1 - .<timestamp> FINER: Logging configuration has been initialized, but not from CDB settings.
 1 - <timestamp> INFO [alma.COUNTER.CounterTestImpl.CounterTest#testNC] -------------------------------
 1 - <timestamp> INFO [alma.COUNTER.CounterTestImpl.CounterTest#testNC] ComponentClientTestCase#setUp()
 1 - Bringing up consumer CONSUMER1_JAVA
