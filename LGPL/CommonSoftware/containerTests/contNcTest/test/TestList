@@ -20,7 +20,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: TestList,v 1.1 2008/05/23 12:53:45 eallaert Exp $"
+# "@(#) $Id: TestList,v 1.2 2008/05/29 12:59:33 eallaert Exp $"
 #
 # TestList
 #
@@ -266,7 +266,8 @@ PROLOGUE contNcTestTATPrologue
 ###################################################################
 # LOGS and AUXILIARY FILES
 ###################################################################
-# Running the following  tests makes only sense after running ALL of the above tests.
+# Running the following  tests makes only sense after running ALL of the above tests,
+# from a *CLEAN* ACS system, i.e. do a "tat cleanEnv; tat makeEnv" before launching this suite.
 51 pythonContainerStdout "/bin/cat tmp/pythonContainer.out"
 52 javaContainerStdout "/bin/cat tmp/javaContainer.out"
 53 cppContainerStdout "/bin/cat tmp/cppContainer.out"
