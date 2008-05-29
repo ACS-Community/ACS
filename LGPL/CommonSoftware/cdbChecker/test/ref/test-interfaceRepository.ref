@@ -4,7 +4,7 @@
 1 - 
 1 - 
 1 - 
-1 - FINER: Logging configuration has been initialized, but not from CDB settings.
+1 - ----------T--:--:--.--- FINER: Logging configuration has been initialized, but not from CDB settings.
 1 - [Error] IDL: BadIdlType2:1.0 not found in Interface Repository.
 1 - [Error] IDL: BadIdlType:1.0 not found in Interface Repository.
 1 - 
@@ -17,7 +17,7 @@
 1 - 
 1 - 
 1 - 
-1 - FINER: Logging configuration has been initialized, but not from CDB settings.
+1 - ----------T--:--:--.--- FINER: Logging configuration has been initialized, but not from CDB settings.
 1 - 
 1 - CDBChecker exiting. No errors found
 1 - 
