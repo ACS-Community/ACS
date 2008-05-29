@@ -29,10 +29,10 @@ import java.util.Date;
 
 import alma.acs.logging.engine.io.IOHelper;
 import alma.acs.logging.engine.io.IOPorgressListener;
+import alma.acs.logging.engine.parser.ACSLogParser;
+import alma.acs.logging.engine.parser.ACSLogParserFactory;
 
 import com.cosylab.logging.engine.FiltersVector;
-import com.cosylab.logging.engine.ACS.ACSLogParser;
-import com.cosylab.logging.engine.ACS.ACSLogParserDOM;
 import com.cosylab.logging.engine.ACS.ACSRemoteErrorListener;
 import com.cosylab.logging.engine.ACS.ACSRemoteRawLogListener;
 import com.cosylab.logging.engine.log.ILogEntry;
@@ -145,7 +145,7 @@ public class LogFileExtractor implements ACSRemoteRawLogListener, ACSRemoteError
 		
 		// Create the parser
 		try {
-			parser = new ACSLogParserDOM();
+			parser = ACSLogParserFactory.getParser();
 		} catch (Exception e) {
 			System.err.println("Error creating the parser: "+e.getMessage());
 			System.exit(-1);
