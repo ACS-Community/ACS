@@ -33,11 +33,11 @@ import com.cosylab.logging.client.cache.ILogMap;
 import com.cosylab.logging.client.cache.LogBufferedFileCache;
 import com.cosylab.logging.client.cache.LogCache;
 import com.cosylab.logging.client.cache.LogFileCache;
-import com.cosylab.logging.engine.ACS.ACSLogParser;
-import com.cosylab.logging.engine.ACS.ACSLogParserDOM;
 import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.engine.log.LogTypeHelper;
 
+import alma.acs.logging.engine.parser.ACSLogParser;
+import alma.acs.logging.engine.parser.ACSLogParserFactory;
 import alma.acs.util.IsoDateFormat;
 
 /**
@@ -185,7 +185,7 @@ public class CacheUtils {
 			logStr.append(type.logEntryType);
 			logStr.append('>');
 			if (parser==null) {
-				parser = new ACSLogParserDOM();
+				parser = ACSLogParserFactory.getParser();
 			}
 			ILogEntry log = parser.parse(logStr.toString());
 			v.add(log);
@@ -231,7 +231,7 @@ public class CacheUtils {
 			logStr.append(logType.logEntryType);
 			logStr.append('>');
 			if (parser==null) {
-				parser = new ACSLogParserDOM();
+				parser = ACSLogParserFactory.getParser();
 			}
 			ILogEntry log = parser.parse(logStr.toString());
 			v.add(log);

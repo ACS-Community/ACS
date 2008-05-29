@@ -9,11 +9,11 @@ import java.util.Date;
 import java.util.Set;
 
 import com.cosylab.logging.client.cache.LogCache;
-import com.cosylab.logging.engine.ACS.ACSLogParser;
-import com.cosylab.logging.engine.ACS.ACSLogParserDOM;
 import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.engine.log.ILogEntry.Field;
 
+import alma.acs.logging.engine.parser.ACSLogParser;
+import alma.acs.logging.engine.parser.ACSLogParserFactory;
 import alma.acs.util.IsoDateFormat;
 
 /**
@@ -80,7 +80,7 @@ public class CacheTest extends junit.framework.TestCase {
 	 * @throws Exception
 	 */
 	private long fillCache() throws Exception {
-		ACSLogParser parser = new ACSLogParserDOM();
+		ACSLogParser parser = ACSLogParserFactory.getParser();
 		String logMsg = "Test log nr. ";
 		
 		long now = Calendar.getInstance().getTimeInMillis()-1000*60*60*24; // Yesterday
@@ -133,7 +133,7 @@ public class CacheTest extends junit.framework.TestCase {
 	 *
 	 */
 	public void testAddLog() throws Exception {
-		ACSLogParser parser = new ACSLogParserDOM();
+		ACSLogParser parser = ACSLogParserFactory.getParser();
 		int oldSize = cache.getSize();
 		String logMsg = "Test log";
 		String logStr = "<Info TimeStamp=\"2005-11-29T15:33:10.592\" Routine=\"CacheTest::testGet\" Host=\"this\" Process=\"test\" Thread=\"main\" Context=\"\"><![CDATA["+logMsg+"]]></Info>";
@@ -150,7 +150,7 @@ public class CacheTest extends junit.framework.TestCase {
 	 *
 	 */
 	public void testReplace() throws Exception {
-		ACSLogParser parser = new ACSLogParserDOM();
+		ACSLogParser parser = ACSLogParserFactory.getParser();
 		String logMsg = "Replaced test log";
 		String logStr = "<Info TimeStamp=\"2005-11-29T16:00:00.000\" Routine=\"CacheTest::testReplace\" Host=\"this\" Process=\"test\" Thread=\"main\" Context=\"\"><![CDATA["+logMsg+"]]></Info>";
 		ILogEntry newLog = parser.parse(logStr);
@@ -211,7 +211,7 @@ public class CacheTest extends junit.framework.TestCase {
 	 * @throws Exception
 	 */
 	public void testTimeFrameCalc() throws Exception {
-		ACSLogParser parser = new ACSLogParserDOM();
+		ACSLogParser parser = ACSLogParserFactory.getParser();
 		// Create some logs with a time frame of 10sec
 		String logStr1 = "<Info TimeStamp=\"2005-11-29T15:33:10.000\" Routine=\"CacheTest::testGet\" Host=\"this\" Process=\"test\" Thread=\"main\" Context=\"\"><![CDATA[Test1]]></Info>";
 		String logStr2 = "<Info TimeStamp=\"2005-11-29T15:33:20.000\" Routine=\"CacheTest::testGet\" Host=\"this\" Process=\"test\" Thread=\"main\" Context=\"\"><![CDATA[Test2]]></Info>";
@@ -233,10 +233,10 @@ public class CacheTest extends junit.framework.TestCase {
 	 * @throws Exception
 	 */
 	public void testLogExceedingTimeFrame() throws Exception {
-		ACSLogParser parser = new ACSLogParserDOM();
+		ACSLogParser parser = ACSLogParserFactory.getParser();
 		// Create some logs 
 		// The important fields here are the times (we'll test against a time frame of 30 secs)
-		// It is also important the message that is used to check wich messages
+		// It is also important the message that is used to check which messages
 		// are added in the collection and which not
 		String logStr1 = "<Info TimeStamp=\"2005-11-29T15:33:55.000\" Routine=\"CacheTest::testGet\" Host=\"this\" Process=\"test\" Thread=\"main\" Context=\"\"><![CDATA[Test1]]></Info>";
 		String logStr2 = "<Info TimeStamp=\"2005-11-29T15:33:20.000\" Routine=\"CacheTest::testGet\" Host=\"this\" Process=\"test\" Thread=\"main\" Context=\"\"><![CDATA[Test2]]></Info>";
