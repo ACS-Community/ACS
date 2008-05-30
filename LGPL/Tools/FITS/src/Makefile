@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.8 2005/09/19 16:28:49 hsommer Exp $"
+# "@(#) $Id: Makefile,v 1.9 2008/05/30 20:25:21 agrimstrup Exp $"
 #
 # Makefile of ........
 #
@@ -84,7 +84,7 @@ PY_SCRIPTS_L       =
 PY_MODULES         =
 PY_MODULES_L       =
 
-PY_PACKAGES        = pyfits
+PY_PACKAGES        = 
 PY_PACKAGES_L      =
 pppppp_MODULES	   =
 
@@ -186,7 +186,9 @@ endif
 Prepare:
 	@gtar xvzf jfits-0.93.tgz >/dev/null
 	@chmod u+w org/eso/fits/*.java
-	@gtar xvzf pyfits.tgz
+	@gtar xvzf pyfits-1.3.tar.gz
+	@cd pyfits-1.3; python setup.py install --prefix="$(INTROOT)/lib/python/site-packages"
+
 #	@cp -pR pyfits ../lib/python/site-packages
 #
 # TARGETS
@@ -197,7 +199,7 @@ all:	Prepare do_all
 clean : clean_all 
 	@rm -f *~
 #	@rm -rf ../bin/*
-	@rm -rf pyfits
+	@rm -rf pyfits-1.3
 	@rm -rf org
 #	@rm -rf ../lib/jfits*
 	echo " . . . clean done"

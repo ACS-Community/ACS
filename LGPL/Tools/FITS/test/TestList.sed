@@ -13,3 +13,4 @@ s/corbaloc::[a-z,A-Z,0-9,-,_,.]*:[0-9]*/corbaloc::xxxxxxx:yyyy/g
 s/java -classpath .*/java.../g
 s/MANAGER_COMPUTER_NAME\=[a-z,A-Z,0-9,-,_,.]*/MANAGER_COMPUTER_NAME=xxxxxxx/g
 s/@(#) $Revision: [0-9,.]*/CVS Revision: x.x/g
+s/0x[0-9,a-f,A-F]*/xxxxxxxxxx/g

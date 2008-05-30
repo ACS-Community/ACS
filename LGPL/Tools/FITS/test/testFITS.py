@@ -21,17 +21,18 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# @(#) $Id: testFITS.py,v 1.2 2004/05/05 11:51:39 gchiozzi Exp $
+# @(#) $Id: testFITS.py,v 1.3 2008/05/30 20:25:21 agrimstrup Exp $
 ###############################################################################
 '''
 Tests the Python FITS libraries.
 '''
 #A. Caproni 15/01/2004
 import string
+import sys
 
 #Imports for FITS
-from numarray import *
-from pyfits import pyfits
+from numpy import *
+import pyfits
 
 """This program is intended to check the installation and function of PyFITS"""
 
