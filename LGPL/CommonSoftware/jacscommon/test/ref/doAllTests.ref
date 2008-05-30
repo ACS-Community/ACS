@@ -1,4 +1,4 @@
-.FINER: Logging configuration has been initialized, but not from CDB settings.
+.----------T--:--:--.--- FINER: Logging configuration has been initialized, but not from CDB settings.
 .This is OK: Failed to do constructor connect.
 .
 
