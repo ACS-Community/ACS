@@ -1,4 +1,4 @@
-1 - FINER: Logging configuration has been initialized, but not from CDB settings.
+1 - ----------T--:--:----- FINER: Logging configuration has been initialized, but not from CDB settings.
 1 - ContainerStatusMsg: Startup begins
 1 - ContainerStatusMsg: ORB initialization begins
 1 - ContainerStatusMsg: ORB initialization ends
