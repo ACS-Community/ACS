@@ -1,3 +1,5 @@
+1 -  -- com.cosylab.cdb.jdal.ClearCache -d corbaloc::xxxx:xxxx/CDB
+1 -  -- com.cosylab.cdb.jdal.ClearCache -d corbaloc::xxxx:xxxx/CDB
 1 - ----------T--:--:--.--- INFO [ClearCache] clear_cache is invoked for all curls
 1 - ----------T--:--:--.--- INFO [Manager] 'Python Client' requested component 'curl:///COMP99'.
 1 - ----------T--:--:--.--- INFO [Manager] Activating component 'COMP99' on container 'Container'.
