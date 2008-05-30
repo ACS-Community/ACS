@@ -1,3 +1,9 @@
+1 -  -- alma.acs.testsupport.tat.NoDotJUnitRunner com.cosylab.acs.maci.test.CURLHelperTest
+1 -  -- alma.acs.testsupport.tat.NoDotJUnitRunner com.cosylab.acs.maci.test.HandleDataStoreTest
+1 -  -- alma.acs.testsupport.tat.NoDotJUnitRunner com.cosylab.acs.maci.test.IntArrayTest
+1 -  -- alma.acs.testsupport.tat.NoDotJUnitRunner com.cosylab.acs.maci.test.MACIModelTest
+1 -  -- alma.acs.testsupport.tat.NoDotJUnitRunner com.cosylab.acs.maci.test.ManagerImplTest
+1 -  -- alma.acs.testsupport.tat.NoDotJUnitRunner com.cosylab.acs.maci.test.WildcharMatcherTest
 1 -  Starting ORB Services
 1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ ID='Handle (xxxxxxx) = { type = unknown (xxxxxxx), key = (xxxxxxx), id = (xxxxxxx) }' Reason='Invalid handle.' ]
 1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ ID='Handle (xxxxxxx) = { type = CLIENT, key = (xxxxxxx), id = (xxxxxxx) }' Reason='Insufficient rights.' ]
