@@ -1,3 +1,4 @@
+1 -  --endorsed -- alma.acs.testsupport.tat.NoDotJUnitRunner alma.acs.logging.AcsLoggerTest
 1 - 
 1 - ------------ testSimpleLog --------------
 1 - <Debug TimeStamp="xxx" File="alma.acs.logging.AcsLoggerTest"  Line="xxx" Routine="testSimpleLog" Host="xxx" Process="alma.acs.logging.AcsLoggerTest" SourceObject="alma.acs.logging.AcsLoggerTest" Thread="main" LogId="0"><![CDATA[a really simple log]]></Debug>
