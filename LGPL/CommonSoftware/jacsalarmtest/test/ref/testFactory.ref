@@ -1,4 +1,4 @@
-1 - FINER: Logging configuration has been initialized, but not from CDB settings
+1 - ----------T--:--:----- FINER: Logging configuration has been initialized, but not from CDB settings
 1 - ----------T--:--:----- INFO [testNoALarmBranch#testNoALarmBranch] -------------------------------
 1 - ----------T--:--:----- INFO [testNoALarmBranch#testNoALarmBranch] ComponentClientTestCase#setUp()
 1 - ----------T--:--:----- FINE [testNoALarmBranch#testNoALarmBranch] calling orbresolve_initial_references
@@ -12,7 +12,7 @@
 1 - ----------T--:--:----- FINE [testNoALarmBranch#testNoALarmBranch] logged out from manager
 1 - ----------T--:--:----- FINE [testNoALarmBranch#testNoALarmBranch] about to destroy all POAs and the ORB
 1 - ----------T--:--:----- FINE [testNoALarmBranch#testNoALarmBranch] POAs and ORB destroyed successfully
-1 - FINER: Logging configuration has been initialized, but not from CDB settings
+1 - ----------T--:--:----- FINER: Logging configuration has been initialized, but not from CDB settings
 1 - ----------T--:--:----- INFO [testACSAS#testACSAS] -------------------------------
 1 - ----------T--:--:----- INFO [testACSAS#testACSAS] ComponentClientTestCase#setUp()
 1 - ----------T--:--:----- FINE [testACSAS#testACSAS] calling orbresolve_initial_references
@@ -26,7 +26,7 @@
 1 - ----------T--:--:----- FINE [testACSAS#testACSAS] logged out from manager
 1 - ----------T--:--:----- FINE [testACSAS#testACSAS] about to destroy all POAs and the ORB
 1 - ----------T--:--:----- FINE [testACSAS#testACSAS] POAs and ORB destroyed successfully
-1 - FINER: Logging configuration has been initialized, but not from CDB settings
+1 - ----------T--:--:----- FINER: Logging configuration has been initialized, but not from CDB settings
 1 - ----------T--:--:----- INFO [testCERNAS#testCERNAS] -------------------------------
 1 - ----------T--:--:----- INFO [testCERNAS#testCERNAS] ComponentClientTestCase#setUp()
 1 - ----------T--:--:----- FINE [testCERNAS#testCERNAS] calling orbresolve_initial_references
@@ -41,7 +41,7 @@
 1 - ----------T--:--:----- FINE [testCERNAS#testCERNAS] logged out from manager
 1 - ----------T--:--:----- FINE [testCERNAS#testCERNAS] about to destroy all POAs and the ORB
 1 - ----------T--:--:----- FINE [testCERNAS#testCERNAS] POAs and ORB destroyed successfully
-1 - FINER: Logging configuration has been initialized, but not from CDB settings
+1 - ----------T--:--:----- FINER: Logging configuration has been initialized, but not from CDB settings
 1 - ----------T--:--:----- INFO [testWrongImplementationProp#testWrongImplementationProp] -------------------------------
 1 - ----------T--:--:----- INFO [testWrongImplementationProp#testWrongImplementationProp] ComponentClientTestCase#setUp()
 1 - ----------T--:--:----- FINE [testWrongImplementationProp#testWrongImplementationProp] calling orbresolve_initial_references
@@ -55,7 +55,7 @@
 1 - ----------T--:--:----- FINE [testWrongImplementationProp#testWrongImplementationProp] logged out from manager
 1 - ----------T--:--:----- FINE [testWrongImplementationProp#testWrongImplementationProp] about to destroy all POAs and the ORB
 1 - ----------T--:--:----- FINE [testWrongImplementationProp#testWrongImplementationProp] POAs and ORB destroyed successfully
-1 - FINER: Logging configuration has been initialized, but not from CDB settings
+1 - ----------T--:--:----- FINER: Logging configuration has been initialized, but not from CDB settings
 1 - ----------T--:--:----- INFO [testFaultStateCreation#testFaultStateCreation] -------------------------------
 1 - ----------T--:--:----- INFO [testFaultStateCreation#testFaultStateCreation] ComponentClientTestCase#setUp()
 1 - ----------T--:--:----- FINE [testFaultStateCreation#testFaultStateCreation] calling orbresolve_initial_references
@@ -69,7 +69,7 @@
 1 - ----------T--:--:----- FINE [testFaultStateCreation#testFaultStateCreation] logged out from manager
 1 - ----------T--:--:----- FINE [testFaultStateCreation#testFaultStateCreation] about to destroy all POAs and the ORB
 1 - ----------T--:--:----- FINE [testFaultStateCreation#testFaultStateCreation] POAs and ORB destroyed successfully
-1 - FINER: Logging configuration has been initialized, but not from CDB settings
+1 - ----------T--:--:----- FINER: Logging configuration has been initialized, but not from CDB settings
 1 - ----------T--:--:----- INFO [testAlarmSourceCreation#testAlarmSourceCreation] -------------------------------
 1 - ----------T--:--:----- INFO [testAlarmSourceCreation#testAlarmSourceCreation] ComponentClientTestCase#setUp()
 1 - ----------T--:--:----- FINE [testAlarmSourceCreation#testAlarmSourceCreation] calling orbresolve_initial_references
