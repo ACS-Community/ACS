@@ -2,7 +2,8 @@
 5 - Getting the Supplier
 6 - Making sure there is a fridge available...
 5 - Sending events
-2 - FINER: Logging configuration has been initialized, but not from CDB settings.
+2 -  -- alma.nctest.clients.FridgeConsumer
+2 - ----------T--:--:----- FINER: Logging configuration has been initialized, but not from CDB settings.
 5 - Finished sending events
 1 - ----------T--:--:--.--- fridge-Consumer addSubscription - temperatureDataBlockEvent
 1 - ----------T--:--:--.--- FridgeNCConsumer Main - Creating FridgeConsumer

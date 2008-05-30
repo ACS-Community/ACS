@@ -1,5 +1,6 @@
 3 - Welcome to acsexmplClientFridgeNC!
-2 - FINER: Logging configuration has been initialized, but not from CDB settings.
+2 -  -- alma.nctest.clients.FridgeConsumer
+2 - ----------T--:--:----- FINER: Logging configuration has been initialized, but not from CDB settings.
 1 - ----------T--:--:--.--- fridge-Consumer addSubscription - temperatureDataBlockEvent
 1 - ----------T--:--:--.--- FridgeNCConsumer Main - Creating FridgeConsumer
 1 - ----------T--:--:--.--- FridgeNCConsumer Main - Waiting for events . . .

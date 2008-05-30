@@ -1,7 +1,8 @@
 1 - 
 1 - Connection disconnected
 1 - Connecting
-1 - FINER: Logging configuration has been initialized, but not from CDB settings.
+1 - ----------T--:--:----- FINER: Logging configuration has been initialized, but not from CDB settings.
+1 -  --noDirectory -- alma.acs.logclient.LogListener
 1 - Connection established
 1 - RAW log: <Info TimeStamp="xxx" File="alma.acs.loggingtstest.testLTSClient"  Line="58" Routine="main" Host="xxx" Process="testLTSClient" SourceObject="testLTSClient" Thread="main" LogId="xxx" Audience="Curious people"><![CDATA[Simple Log]]><Data Name="logName"><![CDATA[simpleLog]]></Data></Info>
 1 - Log received: --- LogEntry ---
