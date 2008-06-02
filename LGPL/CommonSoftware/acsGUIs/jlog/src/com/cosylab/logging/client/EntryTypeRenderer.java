@@ -21,6 +21,11 @@
  */
 package com.cosylab.logging.client;
 
+import java.awt.Color;
+
+import javax.swing.JLabel;
+import javax.swing.table.TableCellRenderer;
+
 import com.cosylab.logging.engine.log.LogTypeHelper;
 
 /**
@@ -29,13 +34,20 @@ import com.cosylab.logging.engine.log.LogTypeHelper;
  * 
  * @author: Ales Pucelj (ales.pucelj@kgb.ijs.si)
  */
-public class EntryTypeRenderer extends MultiIconRenderer {
+public class EntryTypeRenderer extends JLabel implements TableCellRenderer {
+	
+	/**
+	 * Background color
+	 */
+	private Color bColor;
+	
+	/**
+	 * Foreground color
+	 */
+	private Color fColor;
 	
 	public EntryTypeRenderer() {
 		super();
-		for (LogTypeHelper logType: LogTypeHelper.values()) {
-			addIcon(EntryTypeIcon.getIcon(logType));
-		}
 	}
 
 	/**
@@ -64,11 +76,18 @@ public class EntryTypeRenderer extends MultiIconRenderer {
 			javax.swing.JTable table, Object value, boolean isSelected,
 			boolean hasFocus, int row, int column) {
 
-		super.getTableCellRendererComponent(table, value, isSelected, hasFocus,
-				row, column);
-
+		if (isSelected) {
+		    fColor = table.getSelectionForeground();
+		    bColor = table.getSelectionBackground();
+		} else {
+		    fColor = table.getForeground();
+		    bColor = table.getBackground();
+		}
+		setForeground(fColor);
+		setBackground(bColor);
+		
+		setFont(table.getFont());
 		if (value == null) {
-			// System.out.println("value == null");
 			return this;
 		}
 
