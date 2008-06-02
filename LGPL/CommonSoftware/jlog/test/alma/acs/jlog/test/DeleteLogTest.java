@@ -235,7 +235,7 @@ public class DeleteLogTest extends TestCase {
 						cache.getLog(key).getField(Field.ENTRYTYPE),
 						cache.getLogType(key));
 				assertEquals("The times differ",
-						((Date)cache.getLog(key).getField(Field.TIMESTAMP)).getTime(),
+						((Long)cache.getLog(key).getField(Field.TIMESTAMP)),
 						cache.getLogTimestamp(key));
 			}
 		}

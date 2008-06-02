@@ -30,7 +30,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Set;
-import java.util.concurrent.ArrayBlockingQueue;
 
 import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.engine.log.LogTypeHelper;
@@ -150,7 +149,7 @@ public class LogCache extends LogMultiFileCache implements ILogMap {
 			logTypes.put(key,(log.getType()));
 		}
 		synchronized (logTimes) {
-			logTimes.put(key,new Long(((Date)log.getField(Field.TIMESTAMP)).getTime()));
+			logTimes.put(key,(Long)log.getField(Field.TIMESTAMP));
 		}
 		return key;
 	}
@@ -172,7 +171,7 @@ public class LogCache extends LogMultiFileCache implements ILogMap {
 	 * @param pos The key of the log
 	 * @return The timestamp of the log with the given key
 	 */
-	public long getLogTimestamp(Integer key) throws LogCacheException {
+	public Long getLogTimestamp(Integer key) throws LogCacheException {
 		if (!logTimes.containsKey(key)) {
 			throw new LogCacheException("Error: getting the time of a deleted log "+key);
 		}

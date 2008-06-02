@@ -117,7 +117,7 @@ public class DetailedLogTable extends JTable
 						nameValue[i][1]=obj.toString();
 					} else if (field==Field.TIMESTAMP) {
 						SimpleDateFormat df = new IsoDateFormat();
-						Date dt = (Date)obj;
+						Date dt = new Date((Long)obj);
 						StringBuffer dateSB = new StringBuffer();
 						java.text.FieldPosition pos = new java.text.FieldPosition(0);
 						df.format(dt,dateSB,pos);
