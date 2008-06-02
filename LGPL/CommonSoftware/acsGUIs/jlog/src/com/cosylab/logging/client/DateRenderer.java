@@ -26,8 +26,11 @@ import java.awt.Graphics;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import javax.swing.JLabel;
 import javax.swing.UIManager;
+import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
+import javax.swing.table.TableCellRenderer;
 
 import alma.acs.util.IsoDateFormat;
 
@@ -36,11 +39,9 @@ import alma.acs.util.IsoDateFormat;
  * Creation date: (1/22/02 4:15:49 PM)
  * @author: 
  */
-public class DateRenderer extends javax.swing.JLabel implements javax.swing.table.TableCellRenderer {
+public class DateRenderer extends JLabel implements TableCellRenderer {
 
-	protected static javax.swing.border.Border noFocusBorder;
-	private boolean isSelected;
-	private boolean hasFocus;
+	protected static Border noFocusBorder=null;
 	private Color bColor;
 	private Color fColor;
 	
@@ -60,7 +61,9 @@ public class DateRenderer extends javax.swing.JLabel implements javax.swing.tabl
 		shortDate=dateFormat;
 		setPreferredSize(new java.awt.Dimension(18, 18));
 		setOpaque(true);
-		noFocusBorder = new EmptyBorder(1, 2, 1, 2);
+		if (noFocusBorder==null) {
+			noFocusBorder = new EmptyBorder(1, 2, 1, 2);
+		}
 		setBorder(noFocusBorder);
 	}
 	
@@ -84,8 +87,6 @@ public class DateRenderer extends javax.swing.JLabel implements javax.swing.tabl
 		 * @param	column	        the column index of the cell being drawn
 		 */
 	public java.awt.Component getTableCellRendererComponent(javax.swing.JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-		this.isSelected = isSelected;
-		this.hasFocus = hasFocus;
 	
 		if (isSelected) {
 		    fColor = table.getSelectionForeground();
