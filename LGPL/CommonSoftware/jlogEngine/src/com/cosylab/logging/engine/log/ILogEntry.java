@@ -86,8 +86,8 @@ public interface ILogEntry extends Serializable {
 	 *
 	 */
 	public enum Field {
-		TIMESTAMP("TimeStamp",Date.class,"TimeStamp"),
-		ENTRYTYPE("Entry Type",Integer.class,null),
+		TIMESTAMP("TimeStamp",Long.class,"TimeStamp"),
+		ENTRYTYPE("Entry Type",LogTypeHelper.class,null),
 	    SOURCEOBJECT("Source Object",String.class,"SourceObject"),
 		FILE("File",String.class,"File"),
 		LINE("Line",Integer.class,"Line"),
@@ -151,7 +151,7 @@ public interface ILogEntry extends Serializable {
 		 * @return The class of the field
 		 * 
 		 */
-		public Class getType() {
+		public Class<?> getType() {
 			return fieldClass;
 		}
 		
