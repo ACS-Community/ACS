@@ -73,58 +73,6 @@ public final class LogEntryXML implements ILogEntry
 	// The simple date format used to write and read dates from a string
 	private SimpleDateFormat dateFormat = new IsoDateFormat();
 
-	// Should be set through FIELD_LOGMESSAGE
-	// public String simpleLogEntryMessage = null;
-
-	/**
-	 * This costructor is used only for testing purposes.
-	 * It is called by com.cosylab.logging.test.LogEntryTest
-	 * @args 
-	 */
-	public LogEntryXML(
-		String d,
-		int entrytype,
-		String file,
-		int line,
-		String routine,
-		String host,
-		String process,
-		String context,
-		String thread,
-		String logid,
-		int priority,
-		String uri,
-		String stackid,
-		int stacklevel,
-		String logmessage,
-        String srcObject,
-        String audience,
-        String array,
-        String antenna)
-	{
-		// set whatever you want here (depending of the test you are performing);
-
-		setField(Field.TIMESTAMP, d);
-		setField(Field.ENTRYTYPE, Integer.valueOf(entrytype));
-		setField(Field.FILE, file);
-		setField(Field.LINE, Integer.valueOf(line));
-		setField(Field.ROUTINE, routine);
-		setField(Field.HOST, host);
-		setField(Field.PROCESS, process);
-		setField(Field.CONTEXT, context);
-		setField(Field.THREAD, thread);
-		setField(Field.LOGID, logid);
-		setField(Field.PRIORITY,Integer.valueOf(priority));
-		setField(Field.URI, uri);
-		setField(Field.STACKID, stackid);
-		setField(Field.STACKLEVEL, Integer.valueOf(stacklevel));
-		setField(Field.LOGMESSAGE, logmessage);
-        setField(Field.SOURCEOBJECT,srcObject);
-        setField(Field.AUDIENCE,audience);
-        setField(Field.ARRAY,array);
-        setField(Field.ANTENNA,antenna);
-	}
-
 	public LogEntryXML(String stackId, int stackLevel) throws DOMException
 	{
 		setField(Field.STACKID, stackId);
@@ -141,7 +89,7 @@ public final class LogEntryXML implements ILogEntry
 	{
 		// set whatever you want here (depending of the test you are performing);
 
-		setField(Field.TIMESTAMP, new Date());
+		setField(Field.TIMESTAMP, System.currentTimeMillis());
 		setField(Field.ENTRYTYPE, LogTypeHelper.values()[((short) random.nextInt(LogTypeHelper.values().length))]);
 		if (random.nextInt(10) < 3)
 		{
@@ -235,7 +183,7 @@ public final class LogEntryXML implements ILogEntry
         // The time stamp is required!
 		try
 		{
-			setField(Field.TIMESTAMP, dateFormat.parse(attr.getNodeValue()));
+			setField(Field.TIMESTAMP, dateFormat.parse(attr.getNodeValue()).getTime());
 		}
 		catch (ParseException pe)
 		{
@@ -475,8 +423,8 @@ public final class LogEntryXML implements ILogEntry
 			}
 			Object attrValue = getField(f);
 			if (attrValue!=null) {
-				if (Date.class.isInstance(attrValue)) {
-					Date dt = (Date)attrValue;
+				if (f==Field.TIMESTAMP) {
+					Date dt = new Date((Long)attrValue);
 					StringBuffer dateSB = new StringBuffer();
 					java.text.FieldPosition pos = new java.text.FieldPosition(0);
 					dateFormat.format(dt,dateSB,pos);

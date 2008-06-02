@@ -37,7 +37,7 @@ import alma.acs.util.IsoDateFormat;
  */
 public class LogEntry implements ILogEntry {
 	
-	private Date date;
+	private Long date;
 	private LogTypeHelper type;
 	private String file;
 	private Integer line;
@@ -112,7 +112,7 @@ public class LogEntry implements ILogEntry {
 	        String antenna,
 	        Vector<AdditionalData> addDatas) {
 		if(null != milliseconds) {
-			this.date=new Date(milliseconds);
+			this.date=milliseconds;
 		}
 		else {
 			this.date = null;
@@ -175,9 +175,9 @@ public class LogEntry implements ILogEntry {
 			}
 			Object attrValue = getField(t);
 			if (attrValue!=null) {
-				if (Date.class.isInstance(attrValue)) {
+				if (t==Field.TIMESTAMP) {
 					SimpleDateFormat df = new IsoDateFormat();
-					Date dt = (Date)attrValue;
+					Date dt = new Date((Long)attrValue);
 					StringBuffer dateSB = new StringBuffer();
 					java.text.FieldPosition pos = new java.text.FieldPosition(0);
 					df.format(dt,dateSB,pos);
@@ -318,7 +318,7 @@ public class LogEntry implements ILogEntry {
 	{
 		switch (field) {
 			case TIMESTAMP: {
-				date=(Date)value;
+				date=(Long)value;
 				return;
 			}
 			case ENTRYTYPE: {

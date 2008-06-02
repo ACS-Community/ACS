@@ -363,7 +363,7 @@ public class LogReceiver {
 			logRecordIndex = logRecordCounter.incrementAndGet();
 			this.logEntry = logEntry;
             this.delayTimeMillis = delayTimeMillis;
-			Date logDate = (Date) logEntry.getField(Field.TIMESTAMP);
+			Date logDate = new Date((Long)logEntry.getField(Field.TIMESTAMP));
 			// if log record has a time stamp in the future (according to local machine time), then we clip it to the current time
 			long adjustedLogTimestamp = Math.min(System.currentTimeMillis(), logDate.getTime());
 			triggerTimeMillis = adjustedLogTimestamp + delayTimeMillis;
@@ -481,7 +481,7 @@ public class LogReceiver {
 		}
 		
 		public Date getTimestamp() {
-			return (Date)jlogRecord.getField(ILogEntry.Field.TIMESTAMP);
+			return new Date((Long)jlogRecord.getField(ILogEntry.Field.TIMESTAMP));
 		}
 		
 		public LogTypeHelper getLevel() {
