@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: acsMakefile,v 1.166 2008/04/14 09:49:46 mpasquat Exp $" 
+# "@(#) $Id: acsMakefile,v 1.167 2008/06/03 11:30:53 mzampare Exp $" 
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -597,6 +597,22 @@ ifndef MAKE_VXWORKS
         XLIB_DEFAULT  = -L/usr/X11R6/lib     
         CCS_LIBLIST          :=                -lCCS                 -lm 
         CCS_LIBLIST_NOSHARED := $(NOSHARED_ON) -lCCS $(NOSHARED_OFF) -lm 
+	CXX_FOR_VERSION_TEST := gcc
+
+	ACS_CXX_VERSION := $(shell $(CXX_FOR_VERSION_TEST) -dumpversion) 
+ifeq (cmd,$(findstring cmd,$(SHELL))) 
+	ACS_CXX_MAJOR_VERSION := $(shell $(CXX_FOR_VERSION_TEST) -dumpversion | sed -e "s/[^0-9\.]//g" | sed -e "s/\..*$$//") 
+else 
+	ACS_CXX_MAJOR_VERSION := $(shell $(CXX_FOR_VERSION_TEST) -dumpversion | sed -e 's/[^0-9\.]//g' | sed -e 's/\..*$$//') 
+endif 
+ifeq ($(findstring $(CXX_MAJOR_VERSION),1 2 3),$(CXX_MAJOR_VERSION)) 
+	ACS_GXX_4_OR_BETTER := 0 
+else 
+	ACS_GXX_4_OR_BETTER := 1 
+endif 
+
+
+
     endif
 
 
