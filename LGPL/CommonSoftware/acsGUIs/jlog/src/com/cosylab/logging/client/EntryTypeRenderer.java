@@ -50,6 +50,11 @@ public class EntryTypeRenderer extends JLabel implements TableCellRenderer {
 	public EntryTypeRenderer() {
 		super();
 	}
+	
+	/**
+	 * If <code>true</code> the renderer shows only the icon i.e. no text
+	 */
+	private boolean showIconOnly=false;
 
 	/**
 	 * This method is sent to the renderer by the drawing table to configure the
@@ -95,7 +100,11 @@ public class EntryTypeRenderer extends JLabel implements TableCellRenderer {
 		if (value instanceof LogTypeHelper) {
 			setIcon(EntryTypeIcon.getIcon((LogTypeHelper)value));
 			setFont(table.getFont());
-			setText(((LogTypeHelper)value).logEntryType);
+			if (showIconOnly) {
+				setText("");
+			} else {
+				setText(((LogTypeHelper)value).logEntryType);
+			}
 		} 
 		return this;
 
@@ -107,5 +116,15 @@ public class EntryTypeRenderer extends JLabel implements TableCellRenderer {
 		g.fillRect(0,0,getWidth() - 1,getHeight() - 1 );
 
 		super.paint(g);
+	}
+	
+	/**
+	 * Set the way the renderer shows a log type i.e. icon only or icon and
+	 * the description.
+	 * 
+	 * @param b If <code>true</code> the renderer shows only the icon
+	 */
+	public void viewIconOnly(boolean b) {
+		showIconOnly=b;
 	}
 }
