@@ -22,11 +22,12 @@
 package com.cosylab.logging;
 
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
+import java.util.Vector;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import java.io.BufferedReader;
@@ -40,7 +41,6 @@ import javax.swing.JOptionPane;
 
 import alma.acs.logging.dialogs.LoadURLDlg;
 
-import com.cosylab.logging.client.VisibleLogsVector;
 import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.engine.Filter;
 import com.cosylab.logging.engine.Filterable;
@@ -64,8 +64,7 @@ import com.cosylab.logging.client.CustomFileChooser;
  * Creation date: (11/11/2001 13:46:06)
  * @author: Ales Pucelj (ales.pucelj@kgb.ijs.si)
  */
-public class LogTableDataModel extends AbstractTableModel implements Runnable, Filterable
-{
+public class LogTableDataModel extends AbstractTableModel implements Filterable {
 	/**
 	 * The class contains a thread to delete asynchronously
 	 * the logs running at low priority.
@@ -77,7 +76,7 @@ public class LogTableDataModel extends AbstractTableModel implements Runnable, F
 	 */
 	public class LogDeleter extends Thread {
 		// The time interval between two iteration of the thread
-		private final int TIME_INTERVAL=20;
+		private final int TIME_INTERVAL=30;
 		
 		// The queue with the keys of the logs to delete
 		private LinkedBlockingQueue<Integer> logsToDelete = new LinkedBlockingQueue<Integer>();
@@ -94,32 +93,17 @@ public class LogTableDataModel extends AbstractTableModel implements Runnable, F
 		}
 		
 		/**
-		 * Add the key of a log to delete
-		 * 
-		 * @param key The key of the log to delete
-		 */
-		private void addLogToDelete(Integer key) {
-			if (logsToDelete.contains(key)) {
-				System.out.println("Rejected "+key);
-				return; 
-			}
-			try {
-				logsToDelete.put(key);
-			} catch (InterruptedException ie) {}
-			System.out.println("Added "+key);
-		}
-		
-		/**
 		 * Terminate the thread
 		 * 
 		 * @param sync If it is true wait the termination of the thread before returning
 		 */
 		public void close(boolean sync) {
 			terminateThread=true;
+			interrupt();
 			if (sync) {
 				while (this.isAlive()) {
 					try {
-						Thread.sleep(250);
+						Thread.sleep(125);
 					} catch (InterruptedException ie) {
 						continue;
 					}
@@ -131,14 +115,13 @@ public class LogTableDataModel extends AbstractTableModel implements Runnable, F
 		 * The thread to delete logs
 		 */
 		public void run() {
-			ArrayList<Integer> keysToDelete = new ArrayList<Integer>();
 			int sz;
 			while (!terminateThread) {
 				for (int t=0; t<TIME_INTERVAL && !terminateThread; t ++) {
 					try {
 						Thread.sleep(1000);
 					} catch (InterruptedException e) {
-						continue;
+						break;
 					}
 				}
 				if (terminateThread) {
@@ -148,47 +131,33 @@ public class LogTableDataModel extends AbstractTableModel implements Runnable, F
 				if (loggingClient.isPaused()) {
 					continue;
 				}
-				sz =allLogs.getSize();
+				sz =rows.size();
 				if (maxLog>0 && sz>maxLog) {
-					keysToDelete.clear();
-					int nKeys=allLogs.getFirstLogs(sz-maxLog,keysToDelete);
-					deleteLogs(keysToDelete);
+					deleteLogs();
 				}
 			}
 		}
 		
 		/**
-		 * Delete a log with the given key.
-		 *  
-		 * @param key The key of the log to delete
-		 */
-		private synchronized void deleteLog(Integer key) {
-			int posInTable=visibleLogs.deleteLog(key);
-			fireTableRowsDeleted(posInTable,posInTable);
-			try {
-				allLogs.deleteLog(key);
-			} catch (LogCacheException e) {
-				System.out.println("Error deleting a log from thread: "+e.getMessage());
-				e.printStackTrace();
-			}
-		}
-		
-		/**
-		 * Delete all the logs whoise keys are in the Collection
+		 * Delete all the logs exceeding the max number of logs
 		 * 
-		 * @param keys The collection of logs to delete
 		 */
-		private void deleteLogs(Collection<Integer> keys) {
-			if (keys==null) {
-				throw new IllegalArgumentException("The collection can't be null");
-			}
-			visibleLogs.deleteLogs(keys);
-			fireTableDataChanged();
-			try {
-				allLogs.deleteLogs(keys);
-			} catch (LogCacheException e) {
-				System.out.println("Error deleting a collection of logs from thread: "+e.getMessage());
-				e.printStackTrace();
+		private void deleteLogs() {
+			synchronized (LogTableDataModel.this) {
+				int numOfLogsToRemove = rows.size()-maxLog;
+				try {
+					Vector<Integer> removed = new Vector<Integer>(numOfLogsToRemove);
+					for (int t=0; t<numOfLogsToRemove; t++) {
+						removed.add(rows.remove(0));
+					}
+					System.out.println("removing "+removed.size()+" logs");
+					fireTableRowsDeleted(0, numOfLogsToRemove);
+					allLogs.deleteLogs(removed);
+					removed.removeAllElements();
+				} catch (Exception e) {
+					System.out.println("Error deleting a collection of logs from thread: "+e.getMessage());
+					e.printStackTrace();
+				}
 			}
 		}
 		
@@ -196,25 +165,11 @@ public class LogTableDataModel extends AbstractTableModel implements Runnable, F
 	
 	private static final String BLANK_STRING = "";
 
-	//private final LogEntryComparator sortComparator = new LogEntryComparator(LogEntryXML.FIELD_STACKID, true);
-		
 	// Stores all the logs received.
 	private LogCache allLogs = null ;
 	
-	// Stores the references to visible logs after the filters are applied
-	// If no filters are defined or the filters do not hide any items,
-	// allLogs provides the items and filteredLogs is not valid.
-	private final VisibleLogsVector visibleLogs;
-	
 	// The list of all the available filters
 	private final FiltersVector filters = new FiltersVector();
-    
-	/**
-	 * The level of the log to show in the table.
-	 * The logs shown in the table are those having a log level equal or greater
-	 * to this property.
-	 */
-    private LogTypeHelper logLevel;
     
     // The LoggingClient that owns this table model
     private LoggingClient loggingClient=null;
@@ -234,12 +189,6 @@ public class LogTableDataModel extends AbstractTableModel implements Runnable, F
 	private IOLogsHelper ioHelper=null;
 	
 	/**
-	 * The thread to invalidate the list of logs
-	 * i.e. to regenerate the list of visible logs 
-	 */
-	private Thread invalidateThread = new Thread(this);
-	
-	/**
 	 * The max number of logs in cache 
 	 * This limit is not for the buffer but for the size of the whole cache
 	 * A value of 0 means unlimited 
@@ -254,15 +203,38 @@ public class LogTableDataModel extends AbstractTableModel implements Runnable, F
 	private long timeFrame=0;
 	
 	/**
+	 * To avoid refreshing the table too often, <code>lastFireEventTime</code> records
+	 * the last time such an operation has been performed.
+	 * <P>
+	 * The next refresh will be done only after <code>TABLE_UPDATE_TIME</code> msecs
+	 * have been elapsed
+	 * 
+	 * @see <code>TABLE_UPDATE_TIME</code>
+	 */
+	private long lastFireEventTime=0;
+	
+	/**
+	 * The time interval (in msec) between 2 refreshes of the table
+	 */
+	private static final long TABLE_UPDATE_TIME=1000;
+	
+	/**
 	 * The thread to delete the logs asynchronously
 	 */
 	private LogDeleter logDeleter;
 	
 	/**
+	 * Each row shows a log identified by a key returned by the cache.
+	 * <P>
+	 * This vector stores the key of each log shown in the table.
+	 */
+	private Vector<Integer> rows = new Vector<Integer>(10000,2048);
+	
+	/**
 	 * Return number of columns in table
 	 */
 	public final int getColumnCount() {
-		return Field.values().length+2;
+		return Field.values().length+1;
 	}
 	
 	/**
@@ -292,52 +264,39 @@ public class LogTableDataModel extends AbstractTableModel implements Runnable, F
 	}
 	
 	/**
-	 * Returns number of rows in the table. This value returns number of visible rows
-	 * after filtering.
-	 * @return int
-	 */
-	public final int getRowCount() {
-		return visibleLogs.size();
-	}
-	
-	/**
 	 * Returns an item according to the row and the column of its position.
 	 * @return java.lang.Object
 	 * @param row int
 	 * @param column int
 	 */
 	public synchronized Object getValueAt(int row, int column) {
-		ILogEntry log = getVisibleLogEntry(row);
-		if (log==null) {
-			return null;
-		} 
-		if (column == 0) {
-			return new Integer(0);
-		} else if (column == 1) {
-			return new Boolean(log.hasDatas());
-		} else {
-			column = column - 2;
-			return log.getField(Field.values()[column]);
+		switch (column) {
+		case 1: {// TIMESTAMP
+				try {
+				return new Date(allLogs.getLogTimestamp(row));
+				} catch (Exception e) {
+					return null;
+				}
 		}
-	}
-	
-	/**
-	 * Returns the LogEntryXML at specified row. The value is based on current visibility
-	 * of entries as implied by filtering. This method is used for GUI entry presentation.
-	 * To access the logs use the <code>getStoredLogEntry</code> method.
-	 * Creation date: (11/11/2001 14:20:44)
-	 * @return com.cosylab.logging.engine.LogEntryXML
-	 * @param row int
-	 */
-	public synchronized final ILogEntry getVisibleLogEntry(int row) {
-		ILogEntry ret= null;
-		try {
-			ret=visibleLogs.get(row);
-		} catch (Exception e) {
-			System.out.println("Exception caught "+e.getMessage());
-			e.printStackTrace();
+		case 2: { // ENTRYTYPE
+			try {
+				return allLogs.getLogType(row);
+			} catch (Exception e) {
+				return null;
+			}
 		}
-		return ret;
+		default: {
+			ILogEntry log=getVisibleLogEntry(row); 
+			if (log==null) {
+				return null;
+			} 
+			if (column == 0) {
+				return new Boolean(log.hasDatas());
+			} else {
+				return log.getField(Field.values()[column-1]);
+			}
+		}
+		}
 	}
 	
 	/**
@@ -354,10 +313,8 @@ public class LogTableDataModel extends AbstractTableModel implements Runnable, F
 		} catch (LogCacheException lce) {
 			System.err.println("Exception instantiating the cache: "+lce.getMessage());
 			lce.printStackTrace(System.err);
-			String msg="Unrecoverable error instantiating the cache:\n<I>"+lce.getMessage()+"</I>";
 			throw new Exception("Exception instantiating the cache: ",lce);
 		} 
-		visibleLogs = new VisibleLogsVector(allLogs,this,loggingClient);
 		logDeleter=new LogDeleter();
 		logDeleter.setPriority(Thread.MIN_PRIORITY);
 		logDeleter.start();
@@ -404,7 +361,13 @@ public class LogTableDataModel extends AbstractTableModel implements Runnable, F
 		try {
 			//checkLogNumber();
 			int key=allLogs.add(log);
-			visibleLogInsert(log,key);
+			synchronized (rows) {
+				rows.add(key);
+			}
+			if (System.currentTimeMillis()-lastFireEventTime>TABLE_UPDATE_TIME) {
+				fireTableDataChanged();
+				lastFireEventTime=System.currentTimeMillis();
+			}
 		} catch (LogCacheException lce) {
 			System.err.println("Exception caught while inserting a new log entry in cache:");
 			System.err.println(lce.getLocalizedMessage());
@@ -413,39 +376,19 @@ public class LogTableDataModel extends AbstractTableModel implements Runnable, F
 	}
 	
 	/**
-	 * Decreases the list of visible logs.
-	 * Creation date: (12/1/2001 14:33:50)
-	 * @param index int
-	 */
-	public final void collapse(int index) {
-		//visibleLogs.collapse(index);
-	}
-	
-	/**
-	 * Increases the list of visible logs.
-	 * Creation date: (11/30/2001 22:48:56)
-	 * @param index int
-	 */
-	public final void expand(int index) {
-		//visibleLogs.expand(index);
-	}
-	
-	/**
 	 * Returns default class for column.
 	 * Creation date: (12/1/2001 14:18:53)
 	 * @return java.lang.Class
 	 * @param column int
 	 */
-	public final Class getColumnClass(int column) {
+	public final Class<?> getColumnClass(int column) {
 		if (column == 0) {
-			return Integer.class;
-		} else if (column==1) {
 			return Boolean.class;
 		} else {
-			column=column-2;
+			int col=column-1;
 		
-			if (column>=0 && column<Field.values().length) {
-				return Field.values()[column].getType();
+			if (col>=0 && col<Field.values().length) {
+				return Field.values()[col].getType();
 			}
 			return String.class;
 		}
@@ -460,30 +403,17 @@ public class LogTableDataModel extends AbstractTableModel implements Runnable, F
 	 */
 	public final String getColumnName(int columnIndex) {
 	
-		if (columnIndex == 0 || columnIndex==1) {
+		if (columnIndex == 0 ) {
 			return BLANK_STRING;
 		}
 	
-		columnIndex=columnIndex-2;
+		columnIndex=columnIndex-1;
 		
 		return (columnIndex>=0 && columnIndex<Field.values().length) ? 
 			Field.values()[columnIndex].getName() :
 			BLANK_STRING;
 	}
 	
-	/** 
-	 * 
-	 * @return The number of the field of the logs used to order the table
-	 *         -1 means no ordering for field
-	 */
-	public int getFieldSortNumber() {
-		return visibleLogs.getFieldNumForOrdering();
-	}
-	
-	public boolean sortedAscending() {
-		return visibleLogs.isSortAscending();
-	}
-
 	public void loadFromURL() {
 		LoadURLDlg urlDlg = new LoadURLDlg("http://websqa.hq.eso.org/alma/snapshotRHE/ACS-Reports/TestCoverage-Linux/ACS/LGPL/CommonSoftware/jcont/test/tmp/all_logs.xml",loggingClient);
 		urlDlg.setVisible(true);
@@ -612,95 +542,20 @@ public class LogTableDataModel extends AbstractTableModel implements Runnable, F
 	}
 	
 	// clears all	
-	public void clearAll() {
+	public synchronized void clearAll() {
 			    if (allLogs != null) {
 			    	try {
+			    		synchronized(rows) {
+			    			rows.removeAllElements();
+			    		}
 			    		allLogs.clear();
+			    		fireTableDataChanged();
 			    	} catch (LogCacheException e) {
 			    		System.err.println("Error clearing the cache: "+e.getMessage());
 			    		e.printStackTrace(System.err);
 			    		JOptionPane.showMessageDialog(null, "Exception clearing the cache: "+e.getMessage(),"Error clearing the cache",JOptionPane.ERROR_MESSAGE);
 			    	}
 			    }
-			    if (visibleLogs != null) {
-					visibleLogs.clear();
-			    }
-	}
-	
-	/**
-	 * Erases and rebuilds visible logs considering filters.
-	 */
-	public void run() {
-		// Store the status of the application (paused/unpaused) before this rebuilding
-		boolean logClientWasPaused=loggingClient.isPaused();
-		loggingClient.setEnabledGUIControls(false);
-		try {
-			loggingClient.pause();
-		} catch (Exception e) {}
-		int key=allLogs.getFirstLog();
-		visibleLogs.clear();
-		visibleLogs.setRefreshInterval(3000);
-		loggingClient.animateProgressBar("Regenerating",key,allLogs.getLastLog());
-		
-		try {
-			while (key <= allLogs.getLastLog()) {
-				try {
-					visibleLogInsert(allLogs.getLog(key), key);
-				} catch (LogCacheException e) {
-					// This can happen if the log has been removed by a separate
-					// thread
-					// It is not an error and the exception can be ignored
-				}
-				if (key % 50 == 0) {
-					loggingClient.moveProgressBar(key);
-				}
-				key++;
-			}
-		} catch (Throwable t) {
-			System.err.println("Got a throwble " + t.getMessage());
-			t.printStackTrace(System.err);
-			System.out.println("Exiting");
-			JOptionPane.showMessageDialog(null,t.getMessage(),"Error rebuilding logs",JOptionPane.ERROR_MESSAGE);
-		}
-		loggingClient.freezeProgressBar();
-		visibleLogs.setRefreshInterval(null);
-		loggingClient.setEnabledGUIControls(true);
-		visibleLogs.setRefreshInterval(null);
-		// Upause the application if it was unpaused before this rebuilding
-		if (!logClientWasPaused) {
-			try {
-				loggingClient.resume();
-			} catch (Exception e) {}
-		}
-	}
-	
-	/**
-	*	Invalidate the visible logs launching a worker thread 
-	* 
-	*/
-	public final void invalidateVisibleLogs() {
-		if (invalidateThread.isAlive()) {
-			throw new IllegalStateException("Trying to start an already running thread");
-		}
-		if (allLogs.getSize()>0) {
-			invalidateThread=new Thread(this);
-			invalidateThread.setName("LogTableDataModel");
-			invalidateThread.start();
-		}
-	}
-	
-	/**
-	 * If the log is not filtered then it is inserted
-	 * in the list of the visible logs (i.e. the logs that
-	 * appear in the window)
-	 * 
-	 * @param log The log to show or hide
-	 * @param pos The position of this log in the cache
-	 */
-	private void visibleLogInsert(ILogEntry log, int pos) {
-		if (log.getType().ordinal()>=logLevel.ordinal() && filters.applyFilters(log)) {
-			visibleLogs.add(pos,log);
-		}
 	}
 	
 	/** 
@@ -721,15 +576,6 @@ public class LogTableDataModel extends AbstractTableModel implements Runnable, F
 			return false;
 		}
 		return ioHelper.isPerformingIO();
-	}
-	
-	/**
-	 * Insert the method's description here.
-	 * Creation date: (1/24/02 10:48:29 AM)
-	 * @param comparator com.cosylab.logging.client.LogEntryComparator
-	 */
-	public void setSortComparator(int logField, boolean ascending) {
-		visibleLogs.setLogsOrder(logField,ascending);
 	}
 	
 	/**
@@ -758,11 +604,7 @@ public class LogTableDataModel extends AbstractTableModel implements Runnable, F
 	 * @param newLevel
 	 */
 	public void setLogLevel(LogTypeHelper newLevel) {
-		if (newLevel==null) {
-			throw new IllegalArgumentException("The log level can't be null");
-		}
-		logLevel=newLevel;
-		invalidateVisibleLogs();
+		
 	}
 	
 	/**
@@ -793,73 +635,6 @@ public class LogTableDataModel extends AbstractTableModel implements Runnable, F
 	}
 	
 	/**
-	 * Check if each logs in the table has the same date of the related log in the cache
-	 * 
-	 * It is used for debugging.
-	 *
-	 */
-	private void checkConsistency() {
-		for (int t=0; t<allLogs.getSize(); t++) {
-			int posInTable =visibleLogs.getRowOfEntry(t);
-			if (posInTable==-1) { 
-				continue;
-			}
-			// Get the date from the tale (visibleLogs)
-			ILogEntry logInTable;
-			try {
-				logInTable=visibleLogs.get(posInTable);
-			} catch (Exception e) {
-				System.out.println("Exception trying to get log in cache pos "+t);
-				System.out.println(e.getMessage());
-				e.printStackTrace();
-				continue;
-			}
-			long dateInTable = ((java.util.Date)logInTable.getField(Field.TIMESTAMP)).getTime();
-			
-			// Get the date from the cache (allLogs)
-			ILogEntry cacheLog=null;
-			try {
-				cacheLog = allLogs.getLog(t);
-			} catch (LogCacheException le) {
-				System.out.println("checkConsistency: Error geting log "+t);
-			}
-			long cacheDate=((java.util.Date)cacheLog.getField(Field.TIMESTAMP)).getTime();
-			
-			if (cacheDate!=dateInTable) {
-				System.out.println("The date in cache (allLogs.get..) and that in the table (visibleLogs) differ:");
-				System.out.println("\tdate in cache: "+cacheDate+", date in table: "+dateInTable);
-			}
-			try {
-				if (dateInTable!=allLogs.getLogTimestamp(t)) {
-					System.out.println("Values differ in "+t);
-					return;
-				}
-			} catch (LogCacheException e) {
-				System.err.println("Error getting tyhe time stamp of "+t);
-				e.printStackTrace();
-			}
-		}
-		checkOrder();
-	}
-	
-	private void checkOrder() {
-		for (int t=0; t<visibleLogs.size()-1; t++) {
-			ILogEntry log1=visibleLogs.get(t);
-			ILogEntry log2=visibleLogs.get(t+1);
-			long date1 = ((java.util.Date)log1.getField(Field.TIMESTAMP)).getTime();
-			long date2 = ((java.util.Date)log2.getField(Field.TIMESTAMP)).getTime();
-			if (date1<date2) {
-				int start = (t-5<0)?0:t-5;
-				int end=(t+5<visibleLogs.size())?t+5:visibleLogs.size();
-				for (int j=start; j<end; j++) {
-					ILogEntry l =visibleLogs.get(j);
-					long d =((java.util.Date)l.getField(Field.TIMESTAMP)).getTime();
-				}
-			}
-		}
-	}
-	
-	/**
 	 * Closes all the threads and frees the resources
 	 * This is the last method to call before closing the application
 	 * @param sync If it is true wait the termination of the threads before returning
@@ -868,9 +643,6 @@ public class LogTableDataModel extends AbstractTableModel implements Runnable, F
 		if (logDeleter!=null) {
 			logDeleter.close(sync);
 			logDeleter=null;
-		}
-		if (visibleLogs!=null) {
-			visibleLogs.close(sync);
 		}
 		if (ioHelper!=null) {
 			ioHelper.done();
@@ -895,7 +667,6 @@ public class LogTableDataModel extends AbstractTableModel implements Runnable, F
 				filters.setFilters(newFilters);
 			}
 		}
-		invalidateVisibleLogs();
 	}
 	
 	/**
@@ -911,4 +682,37 @@ public class LogTableDataModel extends AbstractTableModel implements Runnable, F
 		}
 	}
 
+	/**
+	 * @see javax.swing.table.TableModel#getRowCount()
+	 */
+	@Override
+	public int getRowCount() {
+		return allLogs.getSize();
+	}
+	
+	 public ILogEntry getVisibleLogEntry(int row) {
+		 assert row>=0 && row<rows.size();
+		 try {
+			 ILogEntry ret;
+			 synchronized (rows) {
+				 ret=allLogs.getLog(rows.get(row));
+			 }
+			 return ret;
+		 } catch (Exception e) {
+			 e.printStackTrace(System.err);
+			 return null;
+		 }
+	 }
+	 
+	 public int getFieldSortNumber() {
+		 return 0;
+	 }
+
+	 public boolean sortedAscending() {
+		 return true;
+	 }
+	 
+	 public void setSortComparator(int index, boolean ascending) {
+	 }
+	 
 }
