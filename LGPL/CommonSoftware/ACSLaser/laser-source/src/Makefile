@@ -194,16 +194,16 @@ endif
 # -------
 generated:
 	@echo "\n\nCode generation in progress...."
-	@for item in $(foreach name, $(CASTOR_GENERATED), "-i $(name).xsd -package $($(name)_PACKAGE)") ;\
-	do\
-	acsStartJava -noDirectory -endorsed org.exolab.castor.builder.SourceGenerator -line-separator unix -f  $${item};\
+	@for item in $(foreach name, $(CASTOR_GENERATED), "-i $(name).xsd -package $($(name)_PACKAGE)") ; \
+	do \
+	acsStartJava -noDirectory -endorsed org.exolab.castor.builder.SourceGenerator -line-separator unix -f  $${item}; \
 	done
 	@echo "Code generation done!\n\n"
 
 clean_generated:
-	@for item in $(foreach name, $(CASTOR_GENERATED), "$(subst .,/,$($(name)_PACKAGE))") ;\
-	do\
-	rm -rf $${item};\
+	@for item in $(foreach name, $(CASTOR_GENERATED), "$(subst .,/,$($(name)_PACKAGE))") ; \
+	do \
+	rm -rf $${item}; \
 	done
 
 all:	generated do_all
