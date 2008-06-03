@@ -19,7 +19,7 @@
 
 // ************************************************************************
 //
-// $Id: baciRegistrar.i,v 1.92 2005/01/27 23:57:55 dfugate Exp $
+// $Id: baciRegistrar.i,v 1.93 2008/06/03 09:15:41 bjeram Exp $
 //
 // Copyright (c) 2000 by Klemen Zagar
 //
@@ -31,7 +31,7 @@
 // ----------------[ Registrar: constructor/destructor ]-------------------
 
 template<class Handle, class T>
-Registrar<Handle,T>::Registrar<Handle,T>(Handle hOffset, int nCapacity) :
+Registrar<Handle,T>::Registrar(Handle hOffset, int nCapacity) :
   nCapacity_m(0), nSize_m(0), pData_mp(0),
   hfirst_m(0), hlast_m(0), hOffset_m(hOffset)
 {
