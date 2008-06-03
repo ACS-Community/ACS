@@ -19,7 +19,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciBACIAction.h,v 1.6 2006/09/01 02:20:54 cparedes Exp $"
+* "@(#) $Id: baciBACIAction.h,v 1.7 2008/06/03 09:14:47 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -50,7 +50,7 @@ class BACIComponent;
 /**
  * Expected BACI Action Function return value
  */
-baci_EXPORT enum ActionRequest { reqNone=0, 
+enum ActionRequest { reqNone=0, 
 				 reqInvokeWorking=1, 
 				 reqInvokeDone=2, 
 				 reqDestroy=3 };
