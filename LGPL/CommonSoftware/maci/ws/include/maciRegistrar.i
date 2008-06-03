@@ -1,6 +1,6 @@
 // ************************************************************************
 //
-// $Id: maciRegistrar.i,v 1.79 2003/09/19 08:35:02 almamgr Exp $
+// $Id: maciRegistrar.i,v 1.80 2008/06/03 09:16:44 bjeram Exp $
 //
 // Copyright (c) 2000 by Klemen Zagar
 //
@@ -12,7 +12,7 @@
 // ----------------[ Registrar: constructor/destructor ]-------------------
 
 template<class Handle, class T>
-Registrar<Handle,T>::Registrar<Handle,T>(Handle hOffset, int nCapacity) :
+Registrar<Handle,T>::Registrar(Handle hOffset, int nCapacity) :
   m_nCapacity(0), m_nSize(0), m_pData(0),
   m_hFirst(0), m_hLast(0), m_hOffset(hOffset)
 {
