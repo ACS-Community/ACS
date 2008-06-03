@@ -190,11 +190,11 @@ public class LogFileSplitter implements ACSRemoteRawLogListener, ACSRemoteErrorL
 				System.err.println("The log that caused the exception: "+xmlLogString);
 				System.exit(-1);
 			}
-			long logDate = ((Date)log.getField(Field.TIMESTAMP)).getTime();
+			long logDate = ((Long)log.getField(Field.TIMESTAMP));
 			if (firstLogDate==-1 || logDate-firstLogDate>time) {
 				firstLogDate=logDate;
 				closeOutputFile(outF);
-				outF=getOutputFile(destFileName,index++,(Date)log.getField(Field.TIMESTAMP));
+				outF=getOutputFile(destFileName,index++,new Date(logDate));
 			}
 		}
 		if (writeAsCSV) {

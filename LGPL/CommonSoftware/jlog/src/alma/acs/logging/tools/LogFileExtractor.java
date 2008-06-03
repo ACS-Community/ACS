@@ -265,8 +265,7 @@ public class LogFileExtractor implements ACSRemoteRawLogListener, ACSRemoteError
 	 *              end date (inclusive)
 	 */
 	private boolean checkDate(ILogEntry log) {
-		Date logDate = (Date)log.getField(Field.TIMESTAMP);
-		long date = logDate.getTime();
+		Long date = (Long)log.getField(Field.TIMESTAMP);
 		boolean matches = true;
 		matches = date>=start;
 		if (matches && end!=-1) {
