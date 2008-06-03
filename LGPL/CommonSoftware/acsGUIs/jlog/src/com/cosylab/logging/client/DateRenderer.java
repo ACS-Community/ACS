@@ -109,15 +109,6 @@ public class DateRenderer extends JLabel implements TableCellRenderer {
 			setText(longDateFormat.format((Date)value));
 		}
 		
-		if (hasFocus) {
-			setBorder(UIManager.getBorder("Table.focusCellHighlightBorder"));
-			if (table.isCellEditable(row, column)) {
-				setForeground(UIManager.getColor("Table.focusCellForeground"));
-				setBackground(UIManager.getColor("Table.focusCellBackground"));
-			}
-		} else {
-			setBorder(noFocusBorder);
-		}
 		return this;
 	}
 	
