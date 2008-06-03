@@ -134,7 +134,7 @@ public class SearchEngine {
         while (cursor>=startingRow && cursor<=endRow && foundRow==-1) {
         	// cols contains one entry for each field of a log entry
         	// plus one entry for the additional data
-        	ILogEntry log = logTableDataModel.getVisibleLogEntry(cursor);
+        	ILogEntry log = logTableDataModel.getVisibleLogEntry(logEntryTable.convertRowIndexToModel(cursor));
         	String string=null; // The value of the field
         	for (int t=0; t<cols.length-1; t++) {
         		Object obj = log.getField(Field.values()[t]);
@@ -145,7 +145,7 @@ public class SearchEngine {
         			switch (Field.values()[t]) {
         				case TIMESTAMP: {
         					SimpleDateFormat df = new IsoDateFormat();
-        					Date dt = (Date)obj;
+        					Date dt = new Date((Long)obj);
         					tempSB.delete(0,tempSB.length());
         					df.format(dt,tempSB,pos);
         					string=tempSB.toString();
