@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: AlarmSystemInterfaceFactory.h,v 1.3 2008/02/06 21:09:18 sharring Exp $"
+* "@(#) $Id: AlarmSystemInterfaceFactory.h,v 1.4 2008/06/03 09:18:20 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -44,6 +44,8 @@
 class AlarmSystemInterfaceFactory 
 {
 	public:
+
+    virtual ~AlarmSystemInterfaceFactory(){}
 
 	/**
 	 * Init the object of the class: must be called before using the other
