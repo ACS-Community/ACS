@@ -21,7 +21,7 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
  *
- * "@(#) $Id: acsComponentStateManager.h,v 1.2 2005/04/18 17:08:17 acaproni Exp $"
+ * "@(#) $Id: acsComponentStateManager.h,v 1.3 2008/06/03 09:12:08 bjeram Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -45,6 +45,8 @@ namespace maci {
     
     
     public:
+
+      virtual ~ComponentStateManager(){}
     
         /**
          * Returns the current state of the component
