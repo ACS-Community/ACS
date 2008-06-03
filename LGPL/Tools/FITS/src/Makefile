@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.9 2008/05/30 20:25:21 agrimstrup Exp $"
+# "@(#) $Id: Makefile,v 1.10 2008/06/03 18:06:08 agrimstrup Exp $"
 #
 # Makefile of ........
 #
@@ -183,11 +183,18 @@ ifneq ($(MAKEDIRTMP),\#error\#)
    include $(MAKEDIR)/acsMakefile
 endif
 
+# Install pyfits to INTROOT if available
+ifneq ("X$(INTROOT)","X")
+	INSTALLPATH := $(INTROOT)
+else
+	INSTALLPATH := $(ACSROOT)
+endif
+
 Prepare:
 	@gtar xvzf jfits-0.93.tgz >/dev/null
 	@chmod u+w org/eso/fits/*.java
 	@gtar xvzf pyfits-1.3.tar.gz
-	@cd pyfits-1.3; python setup.py install --prefix="$(INTROOT)/lib/python/site-packages"
+	@cd pyfits-1.3; python setup.py install --home="$(INSTALLPATH)" --install-purelib="$(INSTALLPATH)/lib/python/site-packages"
 
 #	@cp -pR pyfits ../lib/python/site-packages
 #
