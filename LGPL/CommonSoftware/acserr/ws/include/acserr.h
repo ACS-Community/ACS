@@ -20,7 +20,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acserr.h,v 1.79 2007/06/25 15:36:49 bjeram Exp $"
+* "@(#) $Id: acserr.h,v 1.80 2008/06/03 09:08:12 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -49,6 +49,9 @@
 #include "acserrLegacy.h"
 #include <sstream>
 
+// forward declaration
+class ACSLogImpl;
+
 namespace ACSErr
 {
 
@@ -61,8 +64,8 @@ class ErrorTraceHelper
 {
   protected:
     friend class CompletionImpl;
-    friend class ACSLogImpl;
-    friend class ACSError;
+    friend class ::ACSLogImpl;
+    friend class ::ACSError;
 
     ErrorTraceHelper(ACSErr::ErrorTrace &et);
 
