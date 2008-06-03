@@ -21,91 +21,87 @@
  */
 package com.cosylab.logging.client;
 
-import javax.swing.*;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Graphics;
+
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
+import javax.swing.JTable;
+import javax.swing.table.TableCellRenderer;
 
 /**
  * Renders a button used to expand/collapse groups.
  * Creation date: (12/4/2001 12:12:52)
  * @author: Ales Pucelj (ales.pucelj@kgb.ijs.si)
  */
-public class InfoRenderer extends MultiIconRenderer implements javax.swing.table.TableCellRenderer {
-/**
- * ExpandButtonRenderer constructor comment.
- */
-public InfoRenderer() {
-	super();
-}
-/**
- * ExpandButtonRenderer constructor comment.
- * @param resourceNames java.lang.String[]
- */
-public InfoRenderer(java.lang.String[] resourceNames) {
-	super(resourceNames);
-}
-/**
- * ExpandButtonRenderer constructor comment.
- * @param resourceNames java.lang.String[]
- * @param horizontalAlignement int
- */
-public InfoRenderer(java.lang.String[] resourceNames, int horizontalAlignement) {
-	super(resourceNames, horizontalAlignement);
-}
-/**
- * ExpandButtonRenderer constructor comment.
- * @param icons javax.swing.Icon[]
- */
-public InfoRenderer(javax.swing.Icon[] icons) {
-	super(icons);
-}
-/**
- * ExpandButtonRenderer constructor comment.
- * @param icons javax.swing.Icon[]
- * @param horizontalAlignment int
- */
-public InfoRenderer(javax.swing.Icon[] icons, int horizontalAlignment) {
-	super(icons, horizontalAlignment);
-}
-/**
- *  This method is sent to the renderer by the drawing table to
- *  configure the renderer appropriately before drawing.  Return
- *  the Component used for drawing.
- *
- * @param	table		the JTable that is asking the renderer to draw.
- *				This parameter can be null.
- * @param	value		the value of the cell to be rendered.  It is
- *				up to the specific renderer to interpret
- *				and draw the value.  eg. if value is the
- *				String "true", it could be rendered as a
- *				string or it could be rendered as a check
- *				box that is checked.  null is a valid value.
- * @param	isSelected	true is the cell is to be renderer with
- *				selection highlighting
- * @param	row	        the row index of the cell being drawn.  When
- *				drawing the header the rowIndex is -1.
- * @param	column	        the column index of the cell being drawn
- */
-public java.awt.Component getTableCellRendererComponent(
-	JTable table,
-	Object value,
-	boolean isSelected,
-	boolean hasFocus,
-	int row,
-	int column) {
+public class InfoRenderer implements TableCellRenderer {
+	
+	/**
+	 * The icon showed when the log has additional data
+	 */
+	private static ImageIcon infoIcon=null;
+	
+	/**
+	 * The label with the info icon
+	 */
+	private static final JLabel infoLabel=new JLabel();
+	
+	/**
+	 * The label with no icon
+	 */
+	private static final JLabel emptyLabel = new JLabel();
+		
+	/**
+	 * ExpandButtonRenderer constructor comment.
+	 */
+	public InfoRenderer() {
+		super();
+		if (infoIcon==null) {
+			infoIcon=new ImageIcon(this.getClass().getResource("/info.gif"));
+			infoLabel.setIcon(infoIcon);
+		}
+	}
 
-	super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+	/**
+	 * This method is sent to the renderer by the drawing table to configure the
+	 * renderer appropriately before drawing. Return the Component used for
+	 * drawing.
+	 * 
+	 * @param table
+	 *            the JTable that is asking the renderer to draw. This parameter
+	 *            can be null.
+	 * @param value
+	 *            the value of the cell to be rendered. It is up to the specific
+	 *            renderer to interpret and draw the value. eg. if value is the
+	 *            String "true", it could be rendered as a string or it could be
+	 *            rendered as a check box that is checked. null is a valid
+	 *            value.
+	 * @param isSelected
+	 *            true is the cell is to be renderer with selection highlighting
+	 * @param row
+	 *            the row index of the cell being drawn. When drawing the header
+	 *            the rowIndex is -1.
+	 * @param column
+	 *            the column index of the cell being drawn
+	 */
+	public Component getTableCellRendererComponent(
+			JTable table, Object value, boolean isSelected,
+			boolean hasFocus, int row, int column) {
+		
+		if (value == null) {
+			return emptyLabel;
+		}
 
-	if (value == null) {
-	    System.out.println("value == null");
-		return this;
+		if (value instanceof Boolean && (Boolean)value) {
+			Boolean b = (Boolean)value;
+			if (b.booleanValue()) {
+				return infoLabel;
+			} else {
+				return emptyLabel;
+			}
+		} 
+		return emptyLabel;
 	}
 	
-	int iconIndex = 0;
-	if (((Boolean)value).booleanValue()) {
-		iconIndex=1;
-	}
-	
-	setIcon(getIconByIndex(iconIndex));
-
-	return this;
-}
 }
