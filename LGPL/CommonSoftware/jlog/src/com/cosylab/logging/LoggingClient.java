@@ -851,13 +851,20 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 	 * Set the content of the detailed info table from the given log
 	 * 
 	 * @param log The log entry which fields have to be shown in the table
-	 *            It can be null
-	 * @return The component that displays the datas
+	 *            It can be <code>null</code>
 	 */
 	public void setLogDetailContent(ILogEntry log)
 	{
 		// Try to build a DetailedLogTable
-		detailedLogTable.setupContent(log);
+		class DetailedLogFiller implements Runnable {
+			public ILogEntry logToWrite;
+			public void run() {
+				detailedLogTable.setupContent(logToWrite);		
+			}
+		}
+		DetailedLogFiller filler = new DetailedLogFiller();
+		filler.logToWrite=log;
+		SwingUtilities.invokeLater(filler);
 	}
 
 	/**
