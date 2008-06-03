@@ -22,6 +22,7 @@
 package com.cosylab.logging.client;
 
 import java.awt.Color;
+import java.awt.Graphics;
 
 import javax.swing.JLabel;
 import javax.swing.table.TableCellRenderer;
@@ -98,5 +99,13 @@ public class EntryTypeRenderer extends JLabel implements TableCellRenderer {
 		} 
 		return this;
 
+	}
+	
+	public void paint( Graphics g ) {
+		g.setColor(bColor);
+
+		g.fillRect(0,0,getWidth() - 1,getHeight() - 1 );
+
+		super.paint(g);
 	}
 }
