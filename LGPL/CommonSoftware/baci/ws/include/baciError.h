@@ -19,7 +19,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciError.h,v 1.96 2005/01/27 23:57:55 dfugate Exp $"
+* "@(#) $Id: baciError.h,v 1.97 2008/06/03 09:14:11 bjeram Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -72,7 +72,7 @@ class ACSErrHelper
     static const unsigned int COMPLETION_FLAG_M;
 
     /// Update ACSErr::Completion with ACSError
-    static void ACSErrHelper::ACSErrStack(const ACE_TCHAR * file, int line, /* there just that the same macro can be used*/
+    static void ACSErrStack(const ACE_TCHAR * file, int line, /* there just that the same macro can be used*/
 					  ACSErr::Completion &completion, ACSError& error);
 
     /// Updates ACSErr::Completion with stack if necessary.

@@ -90,13 +90,13 @@ namespace acsalarm
 			  * Fault family accessor method.
 			  * @param faultFamily the fault family.
 			  */
-			void  FaultState::setFamily(const std::string & faultFamily);
+			void  setFamily(const std::string & faultFamily);
 
 			/** 
 			  * Fault member accessor method.
 			  * @param member the fault member.
 			*/
-			void  FaultState::setMember(const std::string & newFaultMember);
+			void  setMember(const std::string & newFaultMember);
 
 			/**
  			 * Returns an XML representation of the fault state. NOTE: this 
