@@ -9,7 +9,6 @@ import java.util.Date;
 
 import com.cosylab.logging.LogTableDataModel;
 
-import com.cosylab.logging.LogTableDataModel.LogDeleter;
 import com.cosylab.logging.client.cache.LogCache;
 import com.cosylab.logging.client.cache.LogCacheException;
 
@@ -76,6 +75,7 @@ public class VisibleLogsVector extends Thread {
 		public void close(boolean sync) {
 			// Terminate the VisibleLogsVector thread
 			terminateRefresherThread=true;
+			interrupt();
 			if (sync) {
 				while (isAlive()) {
 					try {
@@ -132,9 +132,8 @@ public class VisibleLogsVector extends Thread {
 			while (!terminateRefresherThread) {
 				try {
 					Thread.sleep(refreshInterv);
-				} catch (InterruptedException ie) {}
-				if (terminateRefresherThread) {
-					return;
+				} catch (InterruptedException ie) {
+					continue;
 				}
 				if (min>=0 && max>=0) {
 					tableModel.fireTableRowsInserted(min,max);
@@ -647,7 +646,7 @@ public class VisibleLogsVector extends Thread {
 			return 0;
 		}
 		if (comparator.getSortField()==Field.TIMESTAMP.ordinal()) {
-			return findPosLogarthmicDate(((Date)log.getField(Field.TIMESTAMP)).getTime());
+			return findPosLogarthmicDate((Long)log.getField(Field.TIMESTAMP));
 		}
 		if (comparator.getSortField()==Field.ENTRYTYPE.ordinal()) {
 			return findPosLogarthmicType(((LogTypeHelper)log.getField(Field.ENTRYTYPE)).ordinal());
