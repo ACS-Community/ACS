@@ -715,4 +715,41 @@ public class LogTableDataModel extends AbstractTableModel implements Filterable 
 	 public void setSortComparator(int index, boolean ascending) {
 	 }
 	 
+	 /**
+	  * Return the key of the log in the given position of the
+	  * vector of keys.
+	  * <P>
+	  * There are several cases that forbids to retrieve the key in the given position,
+	  * in such a situations the method return <code>null</code>.
+	  * One typical situation is when the entry has been deleted by the <code>LogDeleter</code>.
+	  *   
+	  * @param index The position in the model of the key
+	  * @return The key in the passed position or
+	  *         <code>null</code> if it is not possible to return the key
+	  *         
+	  *         @see findKeyPos(Integer key)
+	  */
+	 public synchronized Integer getLogKey(int index) {
+		try {
+			return rows.get(index);
+		} catch (Throwable t) {
+			return null;
+		}
+	 }
+	 
+	 /**
+	  * Return the position of the key in the vector.
+	  * <P>
+	  * There are cases when the key is not anymore in the vector and in such situations 
+	  * this method return <code>null</code>.
+	  * <BR>For example it could happen if the log has been deleted by the <code>LogDeleter</code>. 
+	  * 
+	  * @param key The key whose position in the vector has to be found
+	  * @return The position of the key in the vector of logs or 
+	  * 	    <code>-1</code> if the key is not in the vector
+	  */
+	 public synchronized int findKeyPos(Integer key) {
+		 return rows.indexOf(key);
+	 }
+	 
 }
