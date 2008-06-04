@@ -34,6 +34,7 @@ import java.awt.event.ComponentListener;
 import java.awt.event.WindowEvent;
 
 import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -51,6 +52,7 @@ import alma.acs.logging.archive.ArchiveConnectionManager;
 import alma.acs.logging.archive.QueryDlg;
 import alma.acs.logging.dialogs.main.LogFrame;
 import alma.acs.logging.dialogs.main.LogMenuBar;
+import alma.acs.logging.dialogs.main.LogNavigationBar;
 import alma.acs.logging.dialogs.main.LogToolBar;
 import alma.acs.logging.preferences.UserPreferences;
 import alma.acs.logging.table.LogEntryTable;
@@ -215,6 +217,9 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 	
     // The toolbar
     private LogToolBar toolBar = new LogToolBar();
+    
+    // The toolbar to navigate logs
+    private LogNavigationBar navigationToolbar = new LogNavigationBar();
     
     // The menu bar
     private LogMenuBar menuBar = new LogMenuBar();
@@ -780,8 +785,13 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
             //  Add the GUI in the center position
 			getContentPane().add(getJFrameContentPane(),BorderLayout.CENTER);
             
-            // Add the tool bar
-			getContentPane().add(toolBar,BorderLayout.NORTH);
+            // Add the toolbars to the toolbarsPanel
+			JPanel toolbarsPanel = new JPanel();
+			BoxLayout toolbarLayout = new BoxLayout(toolbarsPanel,BoxLayout.Y_AXIS);
+			toolbarsPanel.setLayout(toolbarLayout);
+			toolbarsPanel.add(toolBar);
+			toolbarsPanel.add(navigationToolbar);
+			getContentPane().add(toolbarsPanel,BorderLayout.NORTH);
             
     		initConnections();
     		validate();
