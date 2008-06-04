@@ -39,7 +39,6 @@ import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JTable;
 import javax.swing.RowSorter;
 import javax.swing.SortOrder;
-import javax.swing.event.ListSelectionEvent;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
@@ -49,6 +48,7 @@ import javax.swing. DefaultListSelectionModel;
 
 import com.cosylab.logging.LoggingClient;
 import com.cosylab.logging.SortableHeaderRenderer;
+import com.cosylab.logging.client.EntryTypeIcon;
 import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.engine.log.LogTypeHelper;
 import com.cosylab.logging.engine.log.ILogEntry.Field;
@@ -103,6 +103,11 @@ public class LogEntryTable extends JTable {
 	 * The renderer to show the date (short or complete format)
 	 */
 	private DateRenderer dateRenderer;
+	
+	/**
+	 * The renderer to show the type of log (icon and description or icon only)
+	 */
+	private EntryTypeRenderer logTypeRenderer;
 
 	protected class JMyMenuItem extends JRadioButtonMenuItem
 	{
@@ -539,8 +544,10 @@ public class LogEntryTable extends JTable {
 	 * 
 	 * @param logClient The LoggingClient that owns this table
 	 * @param initialDateFormat The format to show the date (true means short)
+	 * @param initalLogTypeFormat If <code>true</code> shows the written close 
+	 *                            to the icon of the log type  
 	 */
-	public LogEntryTable(LoggingClient client,boolean initialDateFormat) throws Exception
+	public LogEntryTable(LoggingClient client,boolean initialDateFormat, boolean initalLogTypeFormat) throws Exception
 	{
 		super();
 		if (client==null) {
@@ -561,7 +568,7 @@ public class LogEntryTable extends JTable {
 		
 		super.setRowSorter(rowSorter);
 		
-		initialize(initialDateFormat);
+		initialize(initialDateFormat,initalLogTypeFormat);
 		
 		// Create the object for the clipboard
 		textTransfer = new TextTransfer();
@@ -768,9 +775,10 @@ public class LogEntryTable extends JTable {
 	/**
 	 * Setup the table
 	 * 
-	 * @param The format to show the date (if true is short, otherwise complete)
+	 * @param shortDateFormat The format to show the date (if <code>true</code> is short, otherwise complete)
+	 * @param logTypeformat The way to show the log type (if <code>true</code> the description is shown)
 	 */
-	private void initialize(boolean shortDateFormat)
+	private void initialize(boolean shortDateFormat, boolean logTypeformat)
 	{
 		createDefaultColumnsFromModel();
 		setShowHorizontalLines(false);
@@ -787,7 +795,8 @@ public class LogEntryTable extends JTable {
 		tc.setResizable(false);
 		
 		tc = tcm.getColumn(Field.ENTRYTYPE.ordinal() + 1);
-		tc.setCellRenderer(new EntryTypeRenderer());
+		logTypeRenderer = new EntryTypeRenderer(logTypeformat);
+		tc.setCellRenderer(logTypeRenderer);
 
 		tc = tcm.getColumn(Field.TIMESTAMP.ordinal() + 1);
 		dateRenderer = new DateRenderer(shortDateFormat);
@@ -997,6 +1006,26 @@ public class LogEntryTable extends JTable {
 	 */
 	public void setShortDateFormat(boolean shortFormat) {
 		dateRenderer.setShortDateFormat(shortFormat);
+		this.repaint();
+	}
+	
+	/**
+	 * Show/Hide the description of the log type at the right side of the icon.
+	 * <P>
+	 * When the description is disabled, the icon appear without the written.
+	 * The column is also resized to use less space as possible.
+	 * 
+	 * @param showDescription If <code>true</code> a string with the description 
+	 * 						  of the log appear at the right side of the icon (default)
+	 */
+	public void setLogTypeDescriptionView(boolean showDescription) {
+		logTypeRenderer.viewDescription(showDescription);
+		TableColumn logTypeCol = columnsList[Field.ENTRYTYPE.ordinal()+1];
+		if (!showDescription) {
+			logTypeCol.setPreferredWidth(EntryTypeIcon.INFO_ICON.icon.getIconWidth());
+		} else {
+			logTypeCol.setPreferredWidth(4*EntryTypeIcon.INFO_ICON.icon.getIconWidth());
+		}
 		this.repaint();
 	}
 	
