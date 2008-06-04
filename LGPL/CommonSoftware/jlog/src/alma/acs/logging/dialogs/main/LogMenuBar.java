@@ -120,6 +120,12 @@ public class LogMenuBar extends JMenuBar {
      * shortDateViewMI defaults to true
      */
     private JCheckBoxMenuItem shortDateViewMI;
+    
+    /**
+     * The menu item to select to show only the icon in the renderer of the type
+     * of log i.e. the description is hidden
+     */
+    private JCheckBoxMenuItem logTypeDescritptionViewMI;
 	
 	/**
 	 * Constructor
@@ -164,6 +170,7 @@ public class LogMenuBar extends JMenuBar {
         viewMenu.addSeparator();
         viewMenu.add(getFieldsMenuItem());
         viewMenu.add(getShortDateViewMenuItem());
+        viewMenu.add(getLogTypeDescriptionViewMenuItem());
         viewMenu.addSeparator();
         viewMenu.add(getFiltersMenuItem());
         viewMenu.addSeparator();
@@ -365,6 +372,7 @@ public class LogMenuBar extends JMenuBar {
 		viewToolbarMI.addActionListener(actionListener);
 		viewDetailedInfoMI.addActionListener(actionListener);
 		shortDateViewMI.addActionListener(actionListener);
+		logTypeDescritptionViewMI.addActionListener(actionListener);
 		viewStatusAreaMI.addActionListener(actionListener);
 		statisticsMenuItem.addActionListener(actionListener);
 		viewErrorLogMI.addActionListener(actionListener);
@@ -412,6 +420,13 @@ public class LogMenuBar extends JMenuBar {
 			shortDateViewMI = new JCheckBoxMenuItem("Short date format",true);
 		}
 		return shortDateViewMI;
+	}
+	
+	public JCheckBoxMenuItem getLogTypeDescriptionViewMenuItem() {
+		if (logTypeDescritptionViewMI==null) {
+			logTypeDescritptionViewMI = new JCheckBoxMenuItem("Show log type description",true);
+		}
+		return logTypeDescritptionViewMI;
 	}
 	
 	public JCheckBoxMenuItem getAutoReconnectMenuItem() {
