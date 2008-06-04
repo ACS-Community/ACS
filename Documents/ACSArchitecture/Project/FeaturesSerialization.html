@@ -6,8 +6,10 @@
 	<META NAME="GENERATOR" CONTENT="OpenOffice.org 2.4  (Linux)">
 	<META NAME="CREATED" CONTENT="0;0">
 	<META NAME="CHANGEDBY" CONTENT="Joseph Schwarz">
-	<META NAME="CHANGED" CONTENT="20080603;17040800">
+	<META NAME="CHANGED" CONTENT="20080604;12093400">
 	<META NAME="Template" CONTENT="C:\Program Files\MSOffice\Office\html.dot">
+	<META NAME="CHANGEDBY" CONTENT="Joseph Schwarz">
+	<META NAME="CHANGEDBY" CONTENT="Joseph Schwarz">
 	<STYLE TYPE="text/css">
 	<!--
 		A:link { color: #0000ff }
@@ -68,12 +70,14 @@ optimal support for Java.</H4>
 Technically they are defined by means of XML Schemas which are
 derived automatically from UML.</H3>
 <H3>Programming language classes (for example Java, C++ and Python)
-to wrap and facilitate access to entity structures can be generated
+to wrap and facilitate access to entity structures could be generated
 automatically from the XML Schema (XML binding to language-specific
 classes). The Castor<A HREF="ReferenceDocuments.html#RD36">[RD36]</A>
 open source framework is currently used for Java binding. Castor XML
 binding provides also validation code for the accessors, based on the
-XML Schema.</H3>
+XML Schema. A similar, but not as complete, open-source binding
+framework for Python, generateDS, will be delivered with ACS 8.0. No
+such facility is currently foreseen (or required) for C++.</H3>
 <H3>For data structures defined in UML, code generators are based on
 the <B>Open ArchitectureWare</B> Project <A HREF="ReferenceDocuments.html#RD39">[RD39]</A>
 generator framework. We generate from the XMI UML representation:</H3>
@@ -142,8 +146,8 @@ serialization</I>
 	<LI><P STYLE="margin-bottom: 0in">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 	Shortcut local calls (i.e. calls inside the same Container), so that
 	no XML serialization is needed and the binding class is passed
-	directly. 
-	</P>
+	directly (<I>not implemented yet</I><SPAN STYLE="font-style: normal">)</SPAN>.
+		</P>
 	<LI><P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Intercept calls to
 	Components, allowing the implementation of the Tight Container
 	pattern (see ACS Container section). 

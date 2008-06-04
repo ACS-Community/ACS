@@ -6,7 +6,8 @@
 	<META NAME="GENERATOR" CONTENT="OpenOffice.org 2.4  (Linux)">
 	<META NAME="CREATED" CONTENT="0;0">
 	<META NAME="CHANGEDBY" CONTENT="Joseph Schwarz">
-	<META NAME="CHANGED" CONTENT="20080603;17014200">
+	<META NAME="CHANGED" CONTENT="20080604;11444300">
+	<META NAME="CHANGEDBY" CONTENT="Joseph Schwarz">
 	<STYLE TYPE="text/css">
 	<!--
 		A:link { color: #0000ff }
@@ -129,7 +130,9 @@ in Java. Needless to say, this avenue is now closed.</SPAN></H3>
 log entries with low priority do not get logged. The filter can for
 example be set to log or not log debug messages. The filter level is
 determined at run time and can be set through a command or through
-external configuration files.</H3>
+external configuration files. This filtering is done at the level of
+the container, so that only log messages that pass the filter are
+sent out over the network.</H3>
 <H3>The API includes support classes (logging guards) to prevent
 message flooding. It allows the application developers to control the
 logging of repeated error messages. We have decided NOT to implement

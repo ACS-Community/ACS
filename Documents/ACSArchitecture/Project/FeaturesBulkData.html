@@ -6,8 +6,9 @@
 	<META NAME="GENERATOR" CONTENT="OpenOffice.org 2.4  (Linux)">
 	<META NAME="CREATED" CONTENT="0;0">
 	<META NAME="CHANGEDBY" CONTENT="Joseph Schwarz">
-	<META NAME="CHANGED" CONTENT="20080603;17111600">
+	<META NAME="CHANGED" CONTENT="20080604;12222500">
 	<META NAME="Template" CONTENT="C:\Program Files\MSOffice\Office\html.dot">
+	<META NAME="CHANGEDBY" CONTENT="Joseph Schwarz">
 	<STYLE TYPE="text/css">
 	<!--
 		A:link { color: #0000ff }
@@ -76,14 +77,16 @@ be able to identify separate bulks of data, like a single image.
 <P>It shall be possible to handle the actual transfer of data with
 communication protocols more efficient than CORBA IIOP, in particular
 for high volume streams.</P>
-<P>When there are multiple clients for the data published we should
-implement a service architecture where the data supplier sends the
-data to just one Distributor which, in turn, sends them to a number
-of connecting clients. This decouples the load due to the increasing
-number of clients from the supplier.</P>
+<P>When there are multiple clients for the data published we have
+implemented a service architecture in which the data supplier sends
+the data to just one Distributor which, in turn, sends them to a
+number of connecting clients. This decouples the load due to the
+increasing number of clients from the supplier.</P>
 <P>Precise performance requirements have been collected and verified
 with the ACS Bulk Data system implementation based on the CORBA Audio
-Video streaming service.</P>
+Video streaming service. Tests have demonstrated that the ACS
+implementation can deliver 700 – 800 Mbit/s to three consumers
+simultaneously.</P>
 <H3>Architecture and design</H3>
 <H4>Bulk data transfer can be implemented in CORBA using three
 techniques:</H4>
@@ -161,9 +164,9 @@ implementations of the bulk data senders and receivers as ACS
 components. Java and Python applications can access these components
 via the normal ACS/CORBA interfaces. There is therefore no
 requirement for implementation of CORBA A/V in languages other than
-C++.   For example, image data processing typically takes place
-between C++ Components without requiring high performance image
-transfer to Java or Python Components. 
+C++. For example, image data processing typically takes place between
+C++ Components without requiring high performance image transfer to
+Java or Python Components. 
 </P>
 <P>&nbsp; 
 </P>
