@@ -13,11 +13,11 @@ import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.cosylab.logging.LogTableDataModel;
 import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.engine.log.ILogEntry.Field;
 
-import alma.acs.logging.dialogs.main.LogEntryTable;
+import alma.acs.logging.table.LogEntryTable;
+import alma.acs.logging.table.LogTableDataModel;
 import alma.acs.util.IsoDateFormat;
 
 /**

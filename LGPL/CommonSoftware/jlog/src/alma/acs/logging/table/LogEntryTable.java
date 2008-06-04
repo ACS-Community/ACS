@@ -19,7 +19,7 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
  *    MA 02111-1307  USA
  */
-package alma.acs.logging.dialogs.main;
+package alma.acs.logging.table;
 
 import java.awt.Component;
 import java.awt.event.ActionEvent;
@@ -47,11 +47,8 @@ import javax.swing.table.TableRowSorter;
 import javax.swing.ListSelectionModel;
 import javax.swing. DefaultListSelectionModel;
 
-import com.cosylab.logging.LogTableDataModel;
 import com.cosylab.logging.LoggingClient;
 import com.cosylab.logging.SortableHeaderRenderer;
-import com.cosylab.logging.client.EntryTypeRenderer;
-import com.cosylab.logging.client.InfoRenderer;
 import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.engine.log.LogTypeHelper;
 import com.cosylab.logging.engine.log.ILogEntry.Field;
@@ -72,8 +69,10 @@ import java.io.IOException;
 
 import com.cosylab.logging.settings.UserInfoDlg;
 
-import com.cosylab.logging.client.DateRenderer;
 
+import alma.acs.logging.table.renderer.DateRenderer;
+import alma.acs.logging.table.renderer.EntryTypeRenderer;
+import alma.acs.logging.table.renderer.InfoRenderer;
 import alma.acs.util.IsoDateFormat;
 
 /**

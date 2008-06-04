@@ -19,49 +19,43 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
  *    MA 02111-1307  USA
  */
-package com.cosylab.logging.client;
+package alma.acs.logging.table.renderer;
 
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Graphics;
 
-import javax.swing.ImageIcon;
 import javax.swing.JLabel;
-import javax.swing.JTable;
 import javax.swing.table.TableCellRenderer;
 
+import com.cosylab.logging.client.EntryTypeIcon;
+import com.cosylab.logging.engine.log.LogTypeHelper;
+
 /**
- * Renders a button used to expand/collapse groups.
- * Creation date: (12/4/2001 12:12:52)
+ * A specialized renderer to display both icon and text for each type of the
+ * log. Creation date: (12/4/2001 12:18:00)
+ * 
  * @author: Ales Pucelj (ales.pucelj@kgb.ijs.si)
  */
-public class InfoRenderer implements TableCellRenderer {
+public class EntryTypeRenderer extends JLabel implements TableCellRenderer {
 	
 	/**
-	 * The icon showed when the log has additional data
+	 * Background color
 	 */
-	private static ImageIcon infoIcon=null;
+	private Color bColor;
 	
 	/**
-	 * The label with the info icon
+	 * Foreground color
 	 */
-	private static final JLabel infoLabel=new JLabel();
+	private Color fColor;
 	
-	/**
-	 * The label with no icon
-	 */
-	private static final JLabel emptyLabel = new JLabel();
-		
-	/**
-	 * ExpandButtonRenderer constructor comment.
-	 */
-	public InfoRenderer() {
+	public EntryTypeRenderer() {
 		super();
-		if (infoIcon==null) {
-			infoIcon=new ImageIcon(this.getClass().getResource("/info.gif"));
-			infoLabel.setIcon(infoIcon);
-		}
 	}
+	
+	/**
+	 * If <code>true</code> the renderer shows only the icon i.e. no text
+	 */
+	private boolean showIconOnly=false;
 
 	/**
 	 * This method is sent to the renderer by the drawing table to configure the
@@ -85,23 +79,53 @@ public class InfoRenderer implements TableCellRenderer {
 	 * @param column
 	 *            the column index of the cell being drawn
 	 */
-	public Component getTableCellRendererComponent(
-			JTable table, Object value, boolean isSelected,
+	public java.awt.Component getTableCellRendererComponent(
+			javax.swing.JTable table, Object value, boolean isSelected,
 			boolean hasFocus, int row, int column) {
+
+		if (isSelected) {
+		    fColor = table.getSelectionForeground();
+		    bColor = table.getSelectionBackground();
+		} else {
+		    fColor = table.getForeground();
+		    bColor = table.getBackground();
+		}
+		setForeground(fColor);
+		setBackground(bColor);
 		
+		setFont(table.getFont());
 		if (value == null) {
-			return emptyLabel;
+			return this;
 		}
 
-		if (value instanceof Boolean && (Boolean)value) {
-			Boolean b = (Boolean)value;
-			if (b.booleanValue()) {
-				return infoLabel;
+		if (value instanceof LogTypeHelper) {
+			setIcon(EntryTypeIcon.getIcon((LogTypeHelper)value));
+			setFont(table.getFont());
+			if (showIconOnly) {
+				setText("");
 			} else {
-				return emptyLabel;
+				setText(((LogTypeHelper)value).logEntryType);
 			}
 		} 
-		return emptyLabel;
+		return this;
+
 	}
 	
+	public void paint( Graphics g ) {
+		g.setColor(bColor);
+
+		g.fillRect(0,0,getWidth() - 1,getHeight() - 1 );
+
+		super.paint(g);
+	}
+	
+	/**
+	 * Set the way the renderer shows a log type i.e. icon only or icon and
+	 * the description.
+	 * 
+	 * @param b If <code>true</code> the renderer shows only the icon
+	 */
+	public void viewIconOnly(boolean b) {
+		showIconOnly=b;
+	}
 }

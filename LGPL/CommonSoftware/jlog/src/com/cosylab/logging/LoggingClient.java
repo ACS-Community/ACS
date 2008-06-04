@@ -49,11 +49,12 @@ import javax.swing.event.MenuEvent;
 
 import alma.acs.logging.archive.ArchiveConnectionManager;
 import alma.acs.logging.archive.QueryDlg;
-import alma.acs.logging.dialogs.main.LogEntryTable;
 import alma.acs.logging.dialogs.main.LogFrame;
 import alma.acs.logging.dialogs.main.LogMenuBar;
 import alma.acs.logging.dialogs.main.LogToolBar;
 import alma.acs.logging.preferences.UserPreferences;
+import alma.acs.logging.table.LogEntryTable;
+import alma.acs.logging.table.LogTableDataModel;
 
 import com.cosylab.gui.components.r2.SmartTextArea;
 import com.cosylab.logging.client.DetailedLogTable;

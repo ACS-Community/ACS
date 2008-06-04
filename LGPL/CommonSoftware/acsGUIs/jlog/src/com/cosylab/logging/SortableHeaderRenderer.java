@@ -23,7 +23,8 @@ package com.cosylab.logging;
 
 import javax.swing.border.*;
 
-import alma.acs.logging.dialogs.main.LogEntryTable;
+import alma.acs.logging.table.LogEntryTable;
+import alma.acs.logging.table.LogTableDataModel;
 /**
  * This class implements the method required by any object 
  * that would like to be a renderer for cells in a JTable.
