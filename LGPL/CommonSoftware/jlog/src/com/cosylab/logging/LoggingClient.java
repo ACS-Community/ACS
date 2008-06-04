@@ -284,7 +284,7 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 				getLCModel1().setLogLevel((LogTypeHelper)toolBar.getLogLevelCB().getSelectedItem());
             } else if (e.getSource()==toolBar.getDiscardLevelCB()){
             	getEngine().setDiscardLevel(LogTypeHelper.fromLogTypeDescription((String)toolBar.getDiscardLevelCB().getSelectedItem()));
-            } else if (e.getSource()==toolBar.getSearchBtn() ||
+            } else if (e.getSource()==navigationToolbar.getSearchBtn() ||
                     e.getSource()==menuBar.getSearchMenuItem()) {
                 if (searchDialog==null) {
                     searchDialog = new SearchDialog(LoggingClient.this);
@@ -758,6 +758,7 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 	{
 		menuBar.setEventHandler(eventHandler, eventHandler);
 		toolBar.setEventHandler(eventHandler);
+		navigationToolbar.setEventHandler(eventHandler);
 		getLogEntryTable().addPropertyChangeListener(eventHandler); // ScrollPaneTable		
 
 		connLCMod();
@@ -1534,6 +1535,7 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 	 */
 	public void setEnabledGUIControls(boolean enabled) {
 		toolBar.setEnabledGUIControls(enabled);
+		navigationToolbar.setEnabledGUIControls(enabled);
 		menuBar.setEnabledGUIControls(enabled);
 	}
 	
