@@ -327,7 +327,9 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
             		LoggingClient.this.engine.enableAutoReconnection(menuBar.getAutoReconnectMenuItem().getState());
             	}
             } else if (e.getSource()==menuBar.getShortDateViewMenuItem()) {
-            	logEntryTable.setShortDateFormat(menuBar.getShortDateViewMenuItem().getState());
+            	logEntryTable.setShortDateFormat(menuBar.getShortDateViewMenuItem().isSelected());
+            } else if (e.getSource()==menuBar.getLogTypeDescriptionViewMenuItem()) {
+            	logEntryTable.setLogTypeDescriptionView(menuBar.getLogTypeDescriptionViewMenuItem().isSelected());
             } else if (e.getSource()==toolBar.getPauseBtn()) {
             	toolBar.clickPauseBtn();
             } else if (e.getSource()==menuBar.getSuspendMenuItem()) {
@@ -716,7 +718,10 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 		{
 			try
 			{
-				logEntryTable = new LogEntryTable(this,menuBar.getShortDateViewMenuItem().isSelected());
+				logEntryTable = new LogEntryTable(
+						this,
+						menuBar.getShortDateViewMenuItem().isSelected(),
+						menuBar.getLogTypeDescriptionViewMenuItem().isSelected());
 				logEntryTable.setName("ScrollPaneTable");
 				logEntryTable.setBounds(0, 0, 200, 200);
 			}
