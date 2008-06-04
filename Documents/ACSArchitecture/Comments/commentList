@@ -1,288 +1,346 @@
-Thu May 11 17:24:58 CEST 2006
----001--------------------------------------------------------------------------
-(BrianGlendenning)
-p.x I don't think the operations requirements are accounted for in here?
-
-REPLY
-May be I do not understand your remark.
-Operations requirements are tracked trough the table in the ACS SW
-Development Plan, where you find the reference to the corresponding 
-sections in the Architecture.
-What is missing?
-
----002--------------------------------------------------------------------------
+Fri May 18 12:01:57 CEST 2007
+--------------------------------------------------------------------------------
 (JoeSchwarz)
-p. 11, RD39: Reference should be to www.openarchitectureware.org
+General
 
-REPLY
-OK. I will change this
+Now that you're passing the torch for ACS to Heiko and myself, it would be
+worthwhile to evaluate where we are. In particular:
 
----003--------------------------------------------------------------------------
+What use is made in ALMA of the following ACS features:
+
+1. Parameters sets (psets)
+
+REPLY: This was requested by offline, but, as far as I know, it is not
+used.
+
+2. Tasks
+
+REPLY: This was requested by offline, but, as far as I know, it is not
+used.
+
+3. Archiving monitor data (does Control's implementation supersede ACS's?)
+
+REPLY: No. Control's implementation uses the ACS mechanism, but builds
+       on top of that a collection strategy different from what
+       originally foreseen by ACS.
+    
+4. Sampling system
+
+REPLY: As far as I know, this is not used.
+
+5. Command system
+
+REPLY: The command system as described here is implemented 
+       and used all over the place.
+       Notice that this is rather different from what
+       was initially (several years ago) foreseen.
+
+There are several features that have been marked as "not foreseen
+for ALMA," even though they're part of the ACS architecture. Is there a general
+explanation for this?
+
+REPLY: This formulation result form the CDR-4 discussions.
+       There are a number of features that we think should be part of
+       ACS and that were introduced in the architecture document.
+       For various reasons (no resources, not requested by
+       subsystems....) they have not bee implemented until now and
+       their implementation is not foreseen for ALMA.
+       But we agreed at CDR-4 that it would have been bad to remove
+       them completely from the architecture and therefore we deided
+       to mark them in this way.
+  
+
+
+--------------------------------------------------------------------------------
 (JoeSchwarz)
-p. 27, 3.4.10.2.2, complex, scalarTypeSeq and structures are listed as "Not 
-implemented yet." At this late stage in ACS development, is it realistic to
-believe that they ever will be? If they were needed, presumably developers
-have found some workaround; if they're not, why should they ever be 
-implemented at all?
+p. 5, Change AIPS++ to CASA (everywhere in document).
 
-REPLY
-This comment triggers a wider discussion.
+REPLY: ACCEPTED
 
-The features mentioned (and other in following sections) where discussed 
-when designing the ACS architecture and agreed as extensions or things to be
-implemented in the future.
-
-I agree with you that probably by now many would not be used in ALMA, 
-for the reasons you mention.
-
-A part from the specific cases, I think we should discuss what should be
-the general policy for ACS and the ACS Architecture document with respect 
-to features that have been discussed, agreed as potentially important
-but not (yet) implemented.
-
-I think it would be in general not advisable to completely remove these 
-features from the document. This because they contribute to give a global 
-and coherent picture of what ACS would be if we would implement all 
-features we have discussed and filled in all "holes".
-
-Most of the "holes" we have are not relevant for the implementation of ALMA
-or we can live with them, balancing cost and benefits.
-
-But if somebody will ask about these issues later on, we should be able to see
-"we have thought about that, they fit here, we did not need them in practice
-in our project, we can implement them if needed".
-
-At CDR-3 I added a generic "not implemented yet" remark to allow quickly 
-identifying what parts of the architecture were not implemented, without
-distinguishing between the possible reasons. I find this useful, 
-keeping it low profile and low detail so that we do not have high costs,
-for example, in keeping the document aligned with the traceability matrix
-
-Maybe it would be better to replace such remarks with finer details.
-I would suggest for example:
-- not/partially implemented: potential extension
-- not/partially implemented: development foreseen for release X.Y
-
-The specific point mentiond here would fit in the "potential extension"
-cathegory.
-
-I would like to get your opinions and discuss this issue at the 
-review phone meeting.
-
----004--------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 (JoeSchwarz)
-p. 39, 3.5.11, the "Visual Configuration Tool (CT)" was to be "rediscussed
-after R3" -- is this being folded into the CDB redesign and/or the
-configuration work to be done with HLA? Comment should be updated, at any
-rate. It's too bad that we don't have this tool now.
+p. 19, Putting all three languages in Figure 2.2, makes a diagram that is
+unnecessarily confusing. One language would be enough, along with the note
+that the other two are (at the level of this diagram) identical.
 
-REPLY
-I agree it is bad not to have the tool available.
+REPLY: To de biscussed.
+       I think it is important to show in the diagram 
+       that we support miltiple languages in a symmetric way.
+       Therefore I would prefer not to change this diagram.
 
-As you say, the idea is that the outcome of the CDB redesign and HLA 
-configuration work will effectively replace the tool.
-
-My plan was to re-write this section once we will be more advanced
-with the work of CDB and configuration redesign. I have in mind
-what described here and I always bring these ideas as a contribution
-to the corresponding discussions.
-
-On the other hand, as ACS team I never managed to get resources to work on the
-configuration tool (remember that the plan of ACS is discussed at the release 
-planning meeting, the tool was put in the list of possibilities more than once,
-but the priority always ended up below the threshold of affordability).
-
----005--------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 (JoeSchwarz)
-p. 52, 3.9.4, Shouldn't there be a discussion of the change to 1 nsec units
-that (I thought) was planned for ACS?
+p. 20, Third paragraph: satisfying the RTOS requirement should not refer to
+VxWorks but to Real Time Linux.
 
-REPLY:
-You are right.
-This slipped through.
-I will update this section for the release after the review meeting.
+REPLY: Yes and no.
+       This paragraph refers to the low level ACS layers and they are
+       not implemented for RTAI, but only for Linux (non real time)
+       and VxWorks.
+       Therefore I cannot assign this specific requirement to RTAI.
+  
 
-
----006--------------------------------------------------------------------------
-(BrianGlendenning)
-p.54 3.10.5.x: I hear some discussion about dynamic components (and their relation to 
-the CDB). Is there remaining design work to be described somewhere?
-
-REPLY
-There are two issues that did not make it into this version of the document;
-- Colocated components.
-  This is discussed in:
-      http://almasw.hq.eso.org/almasw/bin/view/ACS/DeploymentOfComponentsOnNodesAndStartupOfContainers
-  I thought I had put it in the architecture together with the Container
-  startup from the same page, but I must have forgot.
-- Component CDB retrieved by type and not by instance
-  Also Joe mentioned these issue commenting on the Pipeline documents.
-  This was discussed in Socorro during my mission in February but I
-  frogot about it.
-  I have now created a wiki page:
-
-     http://almasw.hq.eso.org/almasw/bin/view/ACS/CdbAccessWithSchemaSpecification
-
-  and I hope to get soon comments and straight the design.
-
-In both cases I will add a proper description, based on what you can read
-in the twiki, for the official release of the document.
-
-Thanks for noticing :-)
-
----007--------------------------------------------------------------------------
-(BrianGlendenning)
-p.70 3.14 Archiving: Presumably it should be noted that this is all subject to revision? Or 
-is this part unchanged, and it's only the clients that have to change?
-
-REPLY
-This part is not affected by the discussions.
-Only control and archive are affected.
-
----008--------------------------------------------------------------------------
-(BrianGlendenning)
-p.75 3.14.11 I don't think this exact synchronization is actually intended any more?
-
-REPLY
-Well, this synchronization is not used/needed any more, as far as I know.
-But it is implemented and whenever you specify these time periods it is used.
-
-Should I submit and SPR and ask it to be removed?
-This would bring a marginal semplification in the code and remove these very
-special cases.
-
-To be discussed at the meeting.
-
----009--------------------------------------------------------------------------
-(BrianGlendenning)
-p.83 3.18.2 It seems like this statement could be made more definite now (i.e., are we 
-using IIOP or not?). (In fact, it seems like the whole bulk data section could be rewritten 
-since we have a more definite implementation now).
-
-This section is ment just as a short introduction to the issues discussed below.
-We are using the CORBA AV streaming service and we are indeed NOT using IIOP.
-This is clarified in the architecture and design section 3.18.3.
-
-The AV sections were written earlier in the implementation and therefore
-leave more options open. Although all what is written there is still valid
-I would agree with you that it would be better to re-write the section
-with more firm statemements and more details for the actual 
-design and implementation.
-
-Notice that there are issues about the usage of the distributor that we are
-now analyzing and that we will want to discuss in the short term with the
-users (i.e. Archive and Correlator). We plan to have the AOT people
-in Garching in parallel to the leads-meeting in June to finalyse
-these discussions.
-
----010--------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 (JoeSchwarz)
-p. 85, 3.18.3.3, the discussion about porting A/V to Java & Python seems out
-of date.
+p. 20, Sixth paragraph, Eclipse is neither required nor more convenient to
+run on Windows. On Linux, it is satisfyingly fast and well supported. Find 
+another example if you need one...
 
-REPLY
-Yes and no.
-The way the text is written might be updated to better reflect the 
-current status of the CPP implementation.
-But the issues are still there and nothing has been really done to allow us 
-to take a final decision.
-Will we need Python and Java implementation? I do not know.
-If we will, the section describes how we can get to it and what 
-are the potential pitfalls.
+REPLY: Accepted. I will remove the example.
 
-I would leave the section here and eventually partially re-write it, but nothing
-would change in the substance of what is beeing said.
-
----011--------------------------------------------------------------------------
-(BrianGlendenning)
-p.86 3.19.2.2 It seems to me that we currently have no firm plan for engineering GUIs, 
-e.g. people seem to be using JFreechart rather than Abeans, role of LabView, etc. I think 
-we need to rethink our strategy here (should perhaps get some R4 time to plan a strategy).
-
-REPLY
-I think this is an important issue to be discussed at the leads meeting 
-and therefore it did not made much sense to drastically edit the section before 
-that discussion.
-What is written in the section is up to date and correctly describes the current
-status, but the discussions at the leads meeting might change the picture. 
-For this revision I had just added a paragraph about LabView (and about help) 
-but not much more.
-
-Notice that JFreechart and Abeans are not mutually exclusive.
-JFreechart is a plotting library and doe snot provide other GUI wirdgets.
-The plotting widgets in ABeans (that you can see in the object 
-explorer and mount gui) are actually using JFreeChart.
-
-LabView instead could have a real alternative role, to be discussed.
-
----012--------------------------------------------------------------------------
-(BrianGlendenning)
-p.86 3.19.6 online help: Even if we use Java help, I imagine there need to be some 
-conventions about directory structure, how to link to external documents, etc. Who is 
-responsible for defining this?
-
-REPLY
-ACS in the flesh and soul of Marcus.
-We will allocate time for this and based on the OT experience he will define
-the standard setup and provide guidelines.
-Discussions with SE and I&T will be probably necessary, in particular when
-we go to installing things on web servers and so on.
-
-
----013--------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 (JoeSchwarz)
-p. 89, 3.22, It's awfully late for a new "application framework," at least as
-far as ALMA is concerned. Do you really plan to do this?
+p. 22, I would eliminate the VxWorks boxes from the figure and the discussion.
 
-REPLY
-I guess you are talking of section 3.20 and not 3.22.
-Actually parts of the framework are already there, like the master component.
-Soon we will also distribute with ACS the code generator developed by HPT.
-This will be another important step, although I would have preferred a UML based
-generator.
+REPLY: To be discussed.
+       ACS is still supporting this configuration, although we are not
+       putting an effort in maintaining it. 
+       For example APEX uses it and it might be an important point for
+       other projects interested in using ACS, like the ELT.
+       Since it is said clearly in a number of places that ALMA is not
+       using VxWorks but that this document is describing the ACS
+       Architecture also for aspects that are not used by ALMA,
+       I would not remove these boxes.
 
-Unfortunately other important parts are not there, like a complete 
-state machine generator.
-
-But these thing fall in the cathegories of comment 003 above.
-I will re-write the section making clear what is available and is not.
-
----014--------------------------------------------------------------------------
-(BrianGlendenning)
-p.92 3.25/3.26
-I think we need to be more proactive in finding which third party libraries are used by the subsyste
-ms and ensuring that we have only one copy in the system. Perhaps ACS should do a survey in the R4 c
-ycle?
-
-REPLY
-The subsystems should look into what is available in ACS and ask to integrate
-into ACS adidtional libraries that are not available and that have 
-no equivalent.
-
-Many do it, some do not do it.
-
-I think it is not practical for ACS to go into the application code and look
-for libraries that have been introduced without following the procedures.
-
-May be this could be a task for SE.
-
-
----015--------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 (JoeSchwarz)
-p. 94, 4.4, Performance: the web page referred to here seems pretty dated.
-It talks about ACS 4, and there is a long list of proposals/requests that
-may or may not be planned for implementation. I'd like to see something in
-this document that's more recent than a reference to the Kitt Peak test. We
-have learned quite a bit about logging, bulk data, threading and how they
-affect performance, and this would be a good place (and time) to summarize
-them.
+p. 22, "In many cases Java development tools are more reliable and stable
+under Windows than under Linux..." -- this might have been true at one time,
+but not anymore. Eclipse, MagicDraw, Oxygen (XML editor implemented in Java)
+have state-of-the-art implementations in Linux.
 
-REPLY
-Yes, I agree and you have a good point.
-I have since long in the back of my mind to restructure the information that we have
-collected about performance and this has been often an item in the ACS 
-planning discussions.
-But we always had to sacrify it for other things that got higher priority.
-I will try to work on that later this year.
+REPLY: You might be right and I might be biased, but still I have the
+       feeling that Java applications run faster under windows.
+       Somebody also recently mentioned to me crashes of Eclipse under Linux.
+       I can anyway remove this point.
+  
+
+--------------------------------------------------------------------------------
+(JoeSchwarz)
+p. 23, I would eliminate the discussion of VxWorks RT computers and cross-
+development workstation, or else put them in a "Version-Not-For-ALMA"
+appendix.
+
+REPLY: To be discussed.
+       See above discussion.
+       An appendix might be an acceptable solution.
+
+--------------------------------------------------------------------------------
+(JoeSchwarz)
+p. 25, 3.4.3, The explanation of "exceptional cases" is not clear. Is it to
+minimize "the impact of CORBA on component implementation classes" that one
+can create OffShoots? But these are CORBA objects, too.
+
+REPLY: Accepted.
+       This should actually be a separate paragraph and is not
+       related to the "minimize the impact of CORBA".
+       I will re-qrite this, abbing some more details about Offsoots.
+
+--------------------------------------------------------------------------------
+(JoeSchwarz)
+p. 28, For which types has scalarTypeSeq been implemented?
+
+REPLY: See baci.idl.
+       ROstring, ROdouble, RWdouble, ROfloat, RWfloat, 
+       ROlong, RWlong
+
+--------------------------------------------------------------------------------
+(JoeSchwarz)
+p. 29, Figure 3.1, It's confusing to show the ACS::CharacteristicModel with
+the UML Stereotype (Circle) for interfaces, since all the operations get
+spread out over the diagram. I suggest that you use a normal class rectangle,
+and add a text <<interface>> stereotype if that is what you mean.
+
+REPLY: Accepted
+
+--------------------------------------------------------------------------------
+(JoeSchwarz)
+p. 39, The TMCDB implementation works with HSQLDB as well as Oracle; we are
+working hard to keep it free of Oracle dependencies.
+
+REPLY: I can add reference to HSQLDB.
+       Probably it would be better to wait for the final
+       implementation of TMCDB and then revise this section.
+ 
+
+--------------------------------------------------------------------------------
+(JoeSchwarz)
+p. 40, Figure 3.5, same comment as for Figure 3.1 (replace i/f stereotype with
+class rectangle).
+
+REPLY: Accepted
+
+--------------------------------------------------------------------------------
+(JoeSchwarz)
+p. 43, 1.4.9, The "templated" adjective doesn't apply to the Java implementation
+of SimpleConsumer. Maybe you could reword this to describe it as type-safe.
+
+REPLY: Accepted.
+       Temples are used in the CPP implementation but not in Java.
+       I will rewrite this part to better capture the differences and
+       to explain that the concept is the same, but the implementation
+       based on different language features.
+
+--------------------------------------------------------------------------------
+(JoeSchwarz)
+p. 49, 1.15.21, The explanation of why exceptions must be specified, even in
+C++, is so important that it ought to be given here. The consequences of *not*
+calling the appropriate method to serialize an exception to a CORBA struct at
+the interface level of a component should be spelled out in this document.
+
+REPLY: Accepted
+       I will add here a detailed explanation.
+
+--------------------------------------------------------------------------------
+(BrianGlendenning)
+P.52 Do you have a ratio between binary and XML logs? Given that the payload
+of a log message is intrinsically text is it really so large?
+
+REPLY: I have looked at some log files and the ratio is
+       between 1/2 and 1/3.
+       It clearly depends on the length of the message text, but this
+       is normally not much.
+
+--------------------------------------------------------------------------------
+(JoeSchwarz)
+pp. 52-53, It's not clear to me where the "filtering" occurs: at the component,
+the container, or the logging client level.
+
+REPLY: Accepted. 
+       I will clarify in the text.
+       The filtering is done at the logger level.
+       The loggers are in a hierarchy, with the logger for the
+       container being at the root.
+       Then each component can have its own logger with a different
+       configuration.
+       In any case, what is important is that the filtering is done
+       inside the container, BEFORE the logs are ever sent over the network.
+
+--------------------------------------------------------------------------------
+(JoeSchwarz)
+p. 53, 1.17.1 "ALMA will has..." --> "ALMA has..."
+
+REPLY: Accepted
+
+
+--------------------------------------------------------------------------------
+(JoeSchwarz)
+p. 53, 1.17.7, "...API...provides higher time resolution ...on platforms that
+have specific HW support (48 ms event...)" -- This isn't clear to me; if the
+internal representation is in units of 100 ns, what difference does it make
+if the HW supports 48 ms? 
+
+REPLY: Accepted.
+       I will just remove this reference to the 48ms.
+       I think it is simply coming from old times when we had in mind
+       to provide specific synchronisation features based on the 48ms 
+       HW tick.
+       In practice we neve had to do it.
+
+--------------------------------------------------------------------------------
+(JoeSchwarz)
+p. 54, 1.18.4, What is the "added security" that the Manager provides?
+Later on, you refer to an "authorization protocol," that a client must pass,
+but since no usernames or passwords are passed around, I don't understand
+what you mean.
+
+REPLY: The CORBA Naming Service is completely open and anybody
+       can read and write into it.
+       The Manager hides the CORBA NS and takes care of reading
+       and writing into it under stricter control.
+       A non-administrative client cannot get access to all
+       information in the NS, but only to what the Manager provides.
+       If we would fully implement the "authorization control" (that
+       is foreseen but not implemented) we could put there also
+       passwords and really close the access to the Manager.
+      
+
+--------------------------------------------------------------------------------
+(JoeSchwarz)
+p. 62, 1.18.11, bullet 4: Why is the tie-in to the (ALMA) Archive User
+Repository "not foreseen for ALMA"?
+
+REPLY: The whole implementation of the authorization is not foreseen.
+       If it was, we would probably do it using the Archive User Repository.
+
+--------------------------------------------------------------------------------
+(JoeSchwarz)
+p. 72, 1.21.5, Where are C++ and Python classes being generated? Not for
+the APDM, of that I'm sure.
+
+REPLY: From the IDL interfacs.
+
+--------------------------------------------------------------------------------
+(JoeSchwarz)
+p. 74, 1.21.8, Has the shortcutting of local calls been implemented?
+
+REPLY: I do not think so. I have to check with Heiko.
+
+--------------------------------------------------------------------------------
+(JoeSchwarz)
+p. 75, 1.22, Has any of this Archiving infrastructure been included in the
+Monitor DB that is being developed as part of the TMCDB by Control?
+
+Have any performance tests been done to determine the capacity of this
+system to transmit and archive monitor data?
+
+REPLY: The Monitor DB uses to some extent this mechanism to collect
+       data.
+       Then it uses its own mechanisms to send data to the archive.
+       I do not know the details.
+       The performance should be measured for the whole system, including
+       the Monitor DB.
+       I do not think this was done and I agree that it should be done.
+
+--------------------------------------------------------------------------------
+(JoeSchwarz)
+p. 79, second line: AMI is supported by JacORB 2.3 (I don't know about
+earlier versions)
+
+REPLY: ACCEPTED: I will check.
+       Earlier versions did not support it.
+       
+--------------------------------------------------------------------------------
+(JoeSchwarz)
+p. 85, 1.26.2, The Bulk Data distributor has been implemented, as you know, so
+this section should be brought up to date.
+
+REPLY: Accepted.
+
+--------------------------------------------------------------------------------
+(JoeSchwarz)
+p. 87, I don't believe that Java and Python implementations of the CORBA
+A/V service are needed or planned for ALMA.
+
+REPLY: I agree, but the issue was put up a couple of times in the
+       past.
+       What is important to do here is to make clear that a path
+       exist, if we really need it.
+       I will rephrase.
+
+--------------------------------------------------------------------------------
+(JoeSchwarz)
+p. 89, 1.27.8.3,4, & 5, Why not describe the system used in ACS to generate,
+for example, this Architecture document?
+
+REPLY: Accepted.
+
+--------------------------------------------------------------------------------
+(JoeSchwarz)
+p. 98, 3.1, second paragraph, Allowing a client and a server to use different
+versions of an IDL interface seems very dangerous to me; we ought to forbid it
+in ALMA.
+
+REPLY: To be discussed.
+       At this stage of development I fully agree with you.
+       Later on, when the system will be operational it will be
+       different.
+       The requirement of having to reinstall the whole system on all
+       machines at the same time is a very storng requirement.
+       It will be much better to foresee upgrading to a new version of
+       the software one machine at the time or gourps of machines.
+       If we impose strict rules on how the IDL interfaces can change
+       to ensure backward compatibility, this will make selective
+       upgrades much much easier.
 
                               _____oOo_____
