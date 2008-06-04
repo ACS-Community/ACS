@@ -22,14 +22,15 @@
 package alma.acs.logging.dialogs.main;
 
 import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JSeparator;
 import javax.swing.JToolBar;
+
+import alma.acs.logging.table.LogEntryTable;
 
 import com.cosylab.logging.engine.log.LogTypeHelper;
 
@@ -39,7 +40,7 @@ import com.cosylab.logging.engine.log.LogTypeHelper;
  * @author acaproni
  *
  */
-public class LogNavigationBar extends JToolBar {
+public class LogNavigationBar extends JToolBar implements ActionListener {
 	
 	/**
 	 * The button to jump at the beginning of the document
@@ -70,13 +71,22 @@ public class LogNavigationBar extends JToolBar {
 	 * The search button in the toolbar
 	 */ 
     private JButton searchBtn;
+    
+    /**
+     * The table of logs
+     */
+    private LogEntryTable table;
 	
 	/**
 	 * Constructor
 	 */
-	public LogNavigationBar() {
+	public LogNavigationBar(LogEntryTable table) {
 		super();
+		if (table==null) {
+			throw new IllegalArgumentException("The table can't be null");
+		}
 		initialize();
+		this.table=table;
 	}
 	
 	/**
@@ -105,7 +115,7 @@ public class LogNavigationBar extends JToolBar {
 		endBtn.setToolTipText("To end");
 		toolBarPanel.add(endBtn);
 		
-		toolBarPanel.add(new JSeparator());
+		toolBarPanel.add(new JToolBar.Separator());
 		
 		selectedBtn= new JButton(new ImageIcon(this.getClass().getResource("/selected.png")));
 		selectedBtn.setToolTipText("To selected");
@@ -117,21 +127,22 @@ public class LogNavigationBar extends JToolBar {
    		toolBarPanel.add(searchBtn);
    		
 		add(toolBarPanel);
+		// Set the event handler for the widgets in the toolbar
+		beginBtn.addActionListener(this);
+		prevBtn.addActionListener(this);
+		nextBtn.addActionListener(this);
+		endBtn.addActionListener(this);
+		selectedBtn.addActionListener(this);
 	}
 	
 	/**
-    * Set the event handler for the widgets in the toolbar
-    * 
-    * @param listener The action listener
-    */
-   public void setEventHandler(ActionListener listener) {
-	   beginBtn.addActionListener(listener);
-	   prevBtn.addActionListener(listener);
-	   nextBtn.addActionListener(listener);
-	   endBtn.addActionListener(listener);
-	   searchBtn.addActionListener(listener);
-	   searchBtn.addActionListener(listener);
-   }
+     * Set the event handler for the search button
+     * 
+     * @param listener The action listener
+     */
+    public void setEventHandler(ActionListener listener) {
+    	searchBtn.addActionListener(listener);
+    }
    
    /**
 	 * Enable/Disable all the control in the GUI than can cause
@@ -190,4 +201,22 @@ public class LogNavigationBar extends JToolBar {
 	public JButton getSelectedBtn() {
 		return selectedBtn;
 }
+
+	/* (non-Javadoc)
+	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+	 */
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		if (e.getSource()==prevBtn) {
+			table.scrollToPrevSelectedRow();
+		} else if (e.getSource()==nextBtn) {
+			table.scrollToNextSelectedRow();
+		} else if (e.getSource()==beginBtn) {
+			table.scrollToFirstRow();
+		} else if (e.getSource()==endBtn) {
+			table.scrollToLastRow();
+		} else if (e.getSource()==selectedBtn) {
+			table.scrollToSelectedRow();
+		}
+	}
 }
