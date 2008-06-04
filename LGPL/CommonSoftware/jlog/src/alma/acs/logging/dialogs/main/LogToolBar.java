@@ -86,7 +86,7 @@ public class LogToolBar extends JToolBar {
      * Builds the toolbar
      */
     private void setupToolBar() {
-        setFloatable(false);
+        setFloatable(true);
         
         // The panel for the toolbar
         JPanel toolBarPanel = new JPanel();
