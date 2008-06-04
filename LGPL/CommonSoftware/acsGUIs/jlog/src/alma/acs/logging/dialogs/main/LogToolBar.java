@@ -66,9 +66,6 @@ public class LogToolBar extends JToolBar {
     // The button to delete the logs
     private JButton clearLogsBtn;
     
-    // The search button in the toolbar
-    private JButton searchBtn;
-    
     // The button to manage filters
     private JButton filtersBtn;
     
@@ -110,7 +107,6 @@ public class LogToolBar extends JToolBar {
         tbLevelPanel.add(discardLevelLbl);
         tbLevelPanel.add(getDiscardLevelCB());
         tbLevelPanel.add(getPauseBtn());
-        tbLevelPanel.add(getSearchBtn());
         tbLevelPanel.add(getClearLogsBtn());
         tbLevelPanel.add(getFiltersBtn());
         userPanel.add(tbLevelPanel);
@@ -119,10 +115,10 @@ public class LogToolBar extends JToolBar {
         
         // Rationalize the sizes ...
         Dimension d = discardLevelCB.getPreferredSize();
-        d.height=searchBtn.getPreferredSize().height;
+        d.height=pauseBtn.getPreferredSize().height;
         discardLevelCB.setPreferredSize(d);
         d= logLevelCB.getPreferredSize();
-        d.height=searchBtn.getPreferredSize().height;
+        d.height=pauseBtn.getPreferredSize().height;
         logLevelCB.setPreferredSize(d);
         
         // Add the toolbar
@@ -136,7 +132,6 @@ public class LogToolBar extends JToolBar {
      */
     public void setEventHandler(ActionListener listener) {
     	clearLogsBtn.addActionListener(listener);
-    	searchBtn.addActionListener(listener);
     	logLevelCB.addActionListener(listener);
     	discardLevelCB.addActionListener(listener);
     	pauseBtn.addActionListener(listener);
@@ -189,19 +184,6 @@ public class LogToolBar extends JToolBar {
 	        logLevelCB.setRenderer(rendererCB);
     	}
     	return logLevelCB;
-    }
-    
-    /**
-     * 
-     * @return The search button
-     */
-    public JButton getSearchBtn() {
-    	if (searchBtn==null) {
-    		//  Add the  search button
-    		ImageIcon searchIcon=new ImageIcon(LogTypeHelper.class.getResource("/search.png"));
-    		searchBtn = new JButton("<HTML><FONT size=-2>Search...</FONT>",searchIcon);
-    	}
-    	return searchBtn;
     }
     
     /**
@@ -291,14 +273,13 @@ public class LogToolBar extends JToolBar {
 	}
 	
 	/**
-	 * Enable/Disbale all the control in tha GUI than can cause
+	 * Enable/Disable all the control in the GUI than can cause
 	 * the invalidation of the logs
 	 * 
 	 * @param enabled If true the controls are enabled
 	 */
 	public void setEnabledGUIControls(boolean enabled) {
 		getLogLevelCB().setEnabled(enabled);
-		getSearchBtn().setEnabled(enabled);
 		pauseBtn.setEnabled(enabled);
 		clearLogsBtn.setEnabled(enabled);
 		filtersBtn.setEnabled(enabled);
