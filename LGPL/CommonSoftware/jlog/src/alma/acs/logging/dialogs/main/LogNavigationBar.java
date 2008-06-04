@@ -22,6 +22,7 @@
 package alma.acs.logging.dialogs.main;
 
 import java.awt.FlowLayout;
+import java.awt.event.ActionListener;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -29,6 +30,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
 import javax.swing.JToolBar;
+
+import com.cosylab.logging.engine.log.LogTypeHelper;
 
 /**
  * The toolbar with the controls to navigate through the logs in the table.
@@ -62,6 +65,11 @@ public class LogNavigationBar extends JToolBar {
 	 * The button to jump to the selected row
 	 */
 	private JButton selectedBtn;
+	
+	/**
+	 * The search button in the toolbar
+	 */ 
+    private JButton searchBtn;
 	
 	/**
 	 * Constructor
@@ -103,6 +111,83 @@ public class LogNavigationBar extends JToolBar {
 		selectedBtn.setToolTipText("To selected");
 		toolBarPanel.add(selectedBtn);
 		
+		ImageIcon searchIcon=new ImageIcon(LogTypeHelper.class.getResource("/search.png"));
+   		searchBtn = new JButton("<HTML><FONT size=-2>Search...</FONT>",searchIcon);
+   		searchBtn.setToolTipText("Search logs");
+   		toolBarPanel.add(searchBtn);
+   		
 		add(toolBarPanel);
 	}
+	
+	/**
+    * Set the event handler for the widgets in the toolbar
+    * 
+    * @param listener The action listener
+    */
+   public void setEventHandler(ActionListener listener) {
+	   beginBtn.addActionListener(listener);
+	   prevBtn.addActionListener(listener);
+	   nextBtn.addActionListener(listener);
+	   endBtn.addActionListener(listener);
+	   searchBtn.addActionListener(listener);
+	   searchBtn.addActionListener(listener);
+   }
+   
+   /**
+	 * Enable/Disable all the control in the GUI than can cause
+	 * the invalidation of the logs
+	 * 
+	 * @param enabled If true the controls are enabled
+	 */
+	public void setEnabledGUIControls(boolean enabled) {
+		beginBtn.setEnabled(enabled);
+		prevBtn.setEnabled(enabled);
+		nextBtn.setEnabled(enabled);
+		endBtn.setEnabled(enabled);
+		selectedBtn.setEnabled(enabled);
+		searchBtn.setEnabled(enabled);
+	}
+   
+   /**
+    * 
+    * @return The search button
+    */
+   public JButton getSearchBtn() {
+   	return searchBtn;
+   }
+
+	/**
+	 * @return the beginBtn
+	 */
+	public JButton getBeginBtn() {
+		return beginBtn;
+	}
+
+	/**
+	 * @return the endBtn
+	 */
+	public JButton getEndBtn() {
+		return endBtn;
+	}
+
+	/**
+	 * @return the prevBtn
+	 */
+	public JButton getPrevBtn() {
+		return prevBtn;
+	}
+
+	/**
+	 * @return the nextBtn
+	 */
+	public JButton getNextBtn() {
+		return nextBtn;
+	}
+
+	/**
+	 * @return the selectedBtn
+	 */
+	public JButton getSelectedBtn() {
+		return selectedBtn;
+}
 }
