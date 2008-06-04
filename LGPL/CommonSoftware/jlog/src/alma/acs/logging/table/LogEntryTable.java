@@ -46,6 +46,8 @@ import javax.swing.table.TableRowSorter;
 import javax.swing.ListSelectionModel;
 import javax.swing. DefaultListSelectionModel;
 
+import org.jacorb.transaction.Sleeper;
+
 import com.cosylab.logging.LoggingClient;
 import com.cosylab.logging.SortableHeaderRenderer;
 import com.cosylab.logging.client.EntryTypeIcon;
@@ -85,7 +87,6 @@ public class LogEntryTable extends JTable {
 	private TableColumn[] columnsList;
 	private boolean[] visibleColumns;
 	private FieldChooserDialog fieldChooser = null;
-	private ColumnMenu popupMenu = new ColumnMenu();
 	
 	private LoggingClient loggingClient;
 	
@@ -94,10 +95,18 @@ public class LogEntryTable extends JTable {
 	private DefaultListSelectionModel selectionModel;
 	
 	/**
-	 * The row selected in the previous iteration
-	 * -1 means no row selected. 
+	 * The index (in the view!!!) of the row selected by the user.
+	 * <P>
+	 * <code>-1</code> means no row selected.
 	 */
-	private int oldSelectedRow =- 1;
+	private int selecteViewdRow =- 1;
+	
+	/**
+	 * The index (in the model!!!) of the row selected by the user.
+	 * <P>
+	 * <code>-1</code> means no row selected.
+	 */
+	private int selecteModelRow =- 1;
 	
 	/**
 	 * The renderer to show the date (short or complete format)
@@ -109,15 +118,6 @@ public class LogEntryTable extends JTable {
 	 */
 	private EntryTypeRenderer logTypeRenderer;
 
-	protected class JMyMenuItem extends JRadioButtonMenuItem
-	{
-		public int columnIndex = 0;
-		public JMyMenuItem()
-		{
-			super();
-		}
-	}
-	
 	/**
 	 * The class to set the clipboard content 
 	 *  
@@ -516,7 +516,7 @@ public class LogEntryTable extends JTable {
 		public void mouseEntered(MouseEvent e) {}
 		public void mouseExited(MouseEvent e) {}
 		
-		public void mouseClicked(MouseEvent e) { }
+		public void mouseClicked(MouseEvent e) {}
 		
 		public void mousePressed(MouseEvent e)
 		{
@@ -534,7 +534,7 @@ public class LogEntryTable extends JTable {
 					ColumnPopupMenu popMenu = new ColumnPopupMenu(row, col, textUnderMouse);
 					popMenu.show(LogEntryTable.this,e.getX(),e.getY());
 				}
-			}
+			} 
 		}
 
 	}
@@ -1054,7 +1054,60 @@ public class LogEntryTable extends JTable {
 			LogTableDataModel model =(LogTableDataModel)getModel();
 			ILogEntry log = model.getVisibleLogEntry(convertRowIndexToModel(rowIndex));
 			loggingClient.setLogDetailContent(log);
+			selecteViewdRow=rowIndex;
+			selecteModelRow=convertRowIndexToModel(rowIndex);
 		}
 	}
 	
+	/**
+	 * Scroll the table to the next selected row and select it.
+	 * <P> 
+	 * If there is no row selected or the selected line is the last row of the table,
+	 * the method return without scrolling the table.
+	 */
+	public void scrollToNextSelectedRow() {
+		if (selecteViewdRow==-1 || selecteViewdRow==getRowCount()-1) {
+			return;
+		}
+		changeSelection(selecteViewdRow+1,1,false,false);
+	}
+	
+	/**
+	 * Scroll the table to the next selected row and select it.
+	 * <P> 
+	 * If there is no row selected or the selected row is the first row of the table,
+	 * the method return without scrolling the table
+	 */
+	public void scrollToPrevSelectedRow() {
+		if (selecteViewdRow<=0) {
+			return;
+		}
+		changeSelection(selecteViewdRow-1,1,false,false);
+	}
+	
+	/**
+	 * Scroll the table to the first row
+	 */
+	public void scrollToFirstRow() {
+		changeSelection(0,1,false,false);
+	}
+	
+	/**
+	 * Scroll the table to the last row
+	 */
+	public void scrollToLastRow() {
+		changeSelection(getRowCount()-1,1,false,false);
+	}
+	
+	/**
+	 * Scroll the table to the selected row.
+	 * <P>
+	 * If there is no selected row, the method return without scrolling
+	 */
+	public void scrollToSelectedRow() {
+		if (selecteViewdRow==-1) {
+			return;
+		}
+		changeSelection(convertRowIndexToView(selecteModelRow),1,false,false);
+	}
 }
