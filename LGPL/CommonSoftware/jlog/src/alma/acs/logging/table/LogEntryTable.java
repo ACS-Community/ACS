@@ -109,6 +109,13 @@ public class LogEntryTable extends JTable {
 	private int selecteModelRow =- 1;
 	
 	/**
+	 * The key of the last log selected by the user.
+	 * <P>
+	 * <code>-1</code> means no log selected.
+	 */
+	private int selecteLogKey =- 1;
+	
+	/**
 	 * The renderer to show the date (short or complete format)
 	 */
 	private DateRenderer dateRenderer;
@@ -1056,6 +1063,7 @@ public class LogEntryTable extends JTable {
 			loggingClient.setLogDetailContent(log);
 			selecteViewdRow=rowIndex;
 			selecteModelRow=convertRowIndexToModel(rowIndex);
+			selecteLogKey=((LogTableDataModel)getModel()).getLogKey(selecteModelRow);
 		}
 	}
 	
@@ -1100,14 +1108,20 @@ public class LogEntryTable extends JTable {
 	}
 	
 	/**
-	 * Scroll the table to the selected row.
+	 * Scroll the table to the selected row
 	 * <P>
-	 * If there is no selected row, the method return without scrolling
+	 * If there is no selected row, the method return without scrolling.
+	 * <P>
+	 * The selected row could not be anymore present in the table for example because it has
+	 * been deleted by the <code>LogDeleter</code> or the table has been cleared by the user.
 	 */
 	public void scrollToSelectedRow() {
 		if (selecteViewdRow==-1) {
 			return;
 		}
-		changeSelection(convertRowIndexToView(selecteModelRow),1,false,false);
+		int modelRow=((LogTableDataModel)getModel()).findKeyPos(selecteLogKey);
+		if (modelRow!=-1) {
+			changeSelection(convertRowIndexToView(modelRow),1,false,false);
+		}
 	}
 }
