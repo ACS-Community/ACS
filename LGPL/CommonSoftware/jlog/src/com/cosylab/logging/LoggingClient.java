@@ -219,7 +219,7 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
     private LogToolBar toolBar = new LogToolBar();
     
     // The toolbar to navigate logs
-    private LogNavigationBar navigationToolbar = new LogNavigationBar();
+    private LogNavigationBar navigationToolbar;
     
     // The menu bar
     private LogMenuBar menuBar = new LogMenuBar();
@@ -791,6 +791,7 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 			BoxLayout toolbarLayout = new BoxLayout(toolbarsPanel,BoxLayout.Y_AXIS);
 			toolbarsPanel.setLayout(toolbarLayout);
 			toolbarsPanel.add(toolBar);
+			navigationToolbar = new LogNavigationBar(getLogEntryTable());
 			toolbarsPanel.add(navigationToolbar);
 			getContentPane().add(toolbarsPanel,BorderLayout.NORTH);
             
