@@ -48,14 +48,20 @@ public class EntryTypeRenderer extends JLabel implements TableCellRenderer {
 	 */
 	private Color fColor;
 	
-	public EntryTypeRenderer() {
+	/**
+	 * Constructor
+	 * 
+	 * @param showDescription If <code>true</code> the description is shown together with the icon
+	 */
+	public EntryTypeRenderer(boolean showDescription) {
 		super();
+		this.showDescription=showDescription;
 	}
 	
 	/**
 	 * If <code>true</code> the renderer shows only the icon i.e. no text
 	 */
-	private boolean showIconOnly=false;
+	private boolean showDescription;
 
 	/**
 	 * This method is sent to the renderer by the drawing table to configure the
@@ -101,10 +107,10 @@ public class EntryTypeRenderer extends JLabel implements TableCellRenderer {
 		if (value instanceof LogTypeHelper) {
 			setIcon(EntryTypeIcon.getIcon((LogTypeHelper)value));
 			setFont(table.getFont());
-			if (showIconOnly) {
-				setText("");
-			} else {
+			if (showDescription) {
 				setText(((LogTypeHelper)value).logEntryType);
+			} else {
+				setText("");
 			}
 		} 
 		return this;
@@ -123,9 +129,10 @@ public class EntryTypeRenderer extends JLabel implements TableCellRenderer {
 	 * Set the way the renderer shows a log type i.e. icon only or icon and
 	 * the description.
 	 * 
-	 * @param b If <code>true</code> the renderer shows only the icon
+	 * @param b If <code>true</code> the renderer shows the icon and the description
+	 *          If <code>false</code> the renderer shows only the icon
 	 */
-	public void viewIconOnly(boolean b) {
-		showIconOnly=b;
+	public void viewDescription(boolean b) {
+		showDescription=b;
 	}
 }
