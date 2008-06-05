@@ -276,7 +276,7 @@ public class Filter {
 	}
 
 	/**
-	 * The most impporant method of this class. Returns true if LogEntryXML
+	 * The most imporant method of this class. Returns true if LogEntryXML
 	 * passes through the filter and false otherwise.
 	 * 
 	 * If this instance is a non-lethal filter and is called in lethal
@@ -287,19 +287,30 @@ public class Filter {
 	 */
 	public boolean applyTo(ILogEntry logEntry, boolean lethalCircumstances) {
 
-		if (lethalCircumstances != isLethal)
+		if (lethalCircumstances != isLethal) {
 			return true;
-
+		}
+		boolean ret=applyTo(logEntry.getField(field)); 
+		return ret;
+	}
+	
+	/**
+	 * Apply the filter to the passed object.
+	 * 
+	 * @param obj The object to apply the filter to
+	 * @return <code>true</code> if the object matches the filter
+	 */
+	public boolean applyTo(Object obj) {
+		if (obj == null) {
+			return false;
+		}
+		
 		boolean minimumCondition = true;
 		boolean maximumCondition = true;
-		boolean exactCondition = true;
-
-		Object filterableField = logEntry.getField(field);
-		if (filterableField == null)
-			return false;
+		
+		// The log type is converted to Integer
 		if (field == ILogEntry.Field.ENTRYTYPE) {
-			filterableField = new Integer(((LogTypeHelper) filterableField)
-					.ordinal());
+			obj = Integer.valueOf(((LogTypeHelper) obj).ordinal());
 		}
 
 		// Temporary: Used to remember if the test passes
@@ -307,22 +318,18 @@ public class Filter {
 		boolean res = false;
 
 		if (constraint == Constraint.STRING_WILDCHAR) {
-			// Here the regular expression should be well formatted
+			// Here the regular expression should be well formed
 			try {
 				res = Pattern.matches(regularExpression,
-						(String) filterableField);
+						(String) obj);
 			} catch (PatternSyntaxException exception) {
-				// This is a problem! I ignore the filter returning true
+				// This is a problem! Ignore the filter returning true
 				return true;
 			}
 		} else if (constraint == Constraint.EXACT) {
-			if (field == ILogEntry.Field.ENTRYTYPE) {
-				res = (Integer) exact == logEntry.getType().ordinal();
-			} else {
-				res = exact.equals(logEntry.getField(field));
-			}
+				res = exact.equals(obj);
 		} else {
-			Comparable logField = (Comparable) (filterableField);
+			Comparable logField = (Comparable) (obj);
 			if ((constraint == Constraint.MINIMUM) || (constraint == Constraint.MINMAX)) {
 				minimumCondition = minimum.compareTo(logField) <= 0;
 			}
