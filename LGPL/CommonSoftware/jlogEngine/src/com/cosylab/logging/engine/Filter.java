@@ -46,19 +46,25 @@ import com.cosylab.logging.engine.log.ILogEntry.Field;
  */
 public class Filter {
 	
-	// Comparison option
-	public static final int MINIMUM = 1;	
-	public static final int MAXIMUM = 2;
-	public static final int MINMAX = 3;
-	public static final int EXACT = 0;   
-	public static final int STRING_WILDCHAR = 4; 
+	/**
+	 * The possible comparison types
+	 * 
+	 * @author acaproni
+	 *
+	 */
+	public enum Constraint {
+		MINIMUM,	
+		MAXIMUM,
+		MINMAX,
+		EXACT,   
+		STRING_WILDCHAR
+	}
 	
-	public static final int UNDECLARED = -1;
-
 	// Filterable field
 	public Field field = null;
 	// Constraint type
-	public int constraint = UNDECLARED;
+	public Constraint constraint = null;
+	
 	// Lethalicity
 	private boolean isLethal = false;
 	
@@ -81,7 +87,7 @@ public class Filter {
 	 * @param isLethal The activation state of the filter 
 	 * @param notFilter Usage of the filter (normal or not)
 	 */
-	private Filter(Field field, int constraint, boolean isLethal,
+	private Filter(Field field, Constraint constraint, boolean isLethal,
 			boolean notFilter) {
 		this.field = field;
 		this.constraint = constraint;
@@ -95,7 +101,7 @@ public class Filter {
 	public Filter(Field field, boolean isLethal, Comparable minimum,
 			Comparable maximum, boolean notFilter)
 			throws InvalidFilterConstraintException {
-		this(field, MINMAX, isLethal, notFilter);
+		this(field, Constraint.MINMAX, isLethal, notFilter);
 
 		if ((minimum == null) && (maximum == null))
 			throw new InvalidFilterConstraintException(
@@ -107,7 +113,7 @@ public class Filter {
 			}
 			this.minimum = minimum;
 		} else {
-			constraint = MAXIMUM;
+			constraint = Constraint.MAXIMUM;
 		}
 
 		if (maximum != null) {
@@ -115,7 +121,7 @@ public class Filter {
 				throw new InvalidFilterConstraintException("Invalid maximum");
 			this.maximum = maximum;
 		} else {
-			constraint = MINIMUM;
+			constraint = Constraint.MINIMUM;
 		}
 	}
 
@@ -124,7 +130,7 @@ public class Filter {
 	 */
 	public Filter(Field field, boolean isLethal, Integer exact,
 			boolean notFilter) throws InvalidFilterConstraintException {
-		this(field, EXACT, isLethal, notFilter);
+		this(field, Constraint.EXACT, isLethal, notFilter);
 
 		this.exact = exact;
 	}
@@ -144,7 +150,7 @@ public class Filter {
 	public Filter(Field field, boolean isLethal, Integer minimum,
 			Integer maximum, boolean notFilter)
 			throws InvalidFilterConstraintException {
-		this(field, MINMAX, isLethal, notFilter);
+		this(field, Constraint.MINMAX, isLethal, notFilter);
 
 		if ((minimum == null) && (maximum == null)) {
 			throw new InvalidFilterConstraintException(
@@ -154,13 +160,13 @@ public class Filter {
 		if (minimum != null) {
 			this.minimum = minimum;
 		} else {
-			constraint = MAXIMUM;
+			constraint = Constraint.MAXIMUM;
 		}
 
 		if (maximum != null) {
 			this.maximum = maximum;
 		} else {
-			constraint = MINIMUM;
+			constraint = Constraint.MINIMUM;
 		}
 	}
 
@@ -169,7 +175,7 @@ public class Filter {
 	 */
 	public Filter(Field field, boolean isLethal, Object exact, boolean notFilter)
 			throws InvalidFilterConstraintException {
-		this(field, EXACT, isLethal, notFilter);
+		this(field, Constraint.EXACT, isLethal, notFilter);
 
 		if (field.getType() != exact.getClass())
 			throw new InvalidFilterConstraintException("Invalid exact value: "
@@ -185,7 +191,7 @@ public class Filter {
 	public Filter(Field field, boolean isLethal, String regularExpression,
 			boolean notFilter) throws InvalidFilterConstraintException,
 			PatternSyntaxException {
-		this(field, STRING_WILDCHAR, isLethal, notFilter);
+		this(field, Constraint.STRING_WILDCHAR, isLethal, notFilter);
 		// System.out.println("short, boolean, String");
 		// System.out.println(field+" "+isLethal+" "+regularExpression);
 
@@ -215,7 +221,7 @@ public class Filter {
 	public Filter(Field field, boolean isLethal, String minimum,
 			String maximum, boolean notFilter)
 			throws InvalidFilterConstraintException {
-		this(field, MINMAX, isLethal, notFilter);
+		this(field, Constraint.MINMAX, isLethal, notFilter);
 		// System.out.println("short, boolean, Comparable, Comparable");
 
 		if ((minimum == null) && (maximum == null))
@@ -225,13 +231,13 @@ public class Filter {
 		if (minimum != null) {
 			this.minimum = minimum;
 		} else {
-			constraint = MAXIMUM;
+			constraint = Constraint.MAXIMUM;
 		}
 
 		if (maximum != null) {
 			this.maximum = maximum;
 		} else {
-			constraint = MINIMUM;
+			constraint = Constraint.MINIMUM;
 		}
 	}
 
@@ -249,7 +255,7 @@ public class Filter {
 	 */
 	public Filter(Field field, boolean isLethal, Date minimum, Date maximum,
 			boolean notFilter) throws InvalidFilterConstraintException {
-		this(field, MINMAX, isLethal, notFilter);
+		this(field, Constraint.MINMAX, isLethal, notFilter);
 		// System.out.println("short, boolean, Comparable, Comparable");
 
 		if ((minimum == null) && (maximum == null))
@@ -259,13 +265,13 @@ public class Filter {
 		if (minimum != null) {
 			this.minimum = minimum;
 		} else {
-			constraint = MAXIMUM;
+			constraint = Constraint.MAXIMUM;
 		}
 
 		if (maximum != null) {
 			this.maximum = maximum;
 		} else {
-			constraint = MINIMUM;
+			constraint = Constraint.MINIMUM;
 		}
 	}
 
@@ -300,7 +306,7 @@ public class Filter {
 		// and apply the not policy (if requested)
 		boolean res = false;
 
-		if (constraint == STRING_WILDCHAR) {
+		if (constraint == Constraint.STRING_WILDCHAR) {
 			// Here the regular expression should be well formatted
 			try {
 				res = Pattern.matches(regularExpression,
@@ -309,7 +315,7 @@ public class Filter {
 				// This is a problem! I ignore the filter returning true
 				return true;
 			}
-		} else if (constraint == EXACT) {
+		} else if (constraint == Constraint.EXACT) {
 			if (field == ILogEntry.Field.ENTRYTYPE) {
 				res = (Integer) exact == logEntry.getType().ordinal();
 			} else {
@@ -317,11 +323,11 @@ public class Filter {
 			}
 		} else {
 			Comparable logField = (Comparable) (filterableField);
-			if ((constraint == MINIMUM) || (constraint == MINMAX)) {
+			if ((constraint == Constraint.MINIMUM) || (constraint == Constraint.MINMAX)) {
 				minimumCondition = minimum.compareTo(logField) <= 0;
 			}
 
-			if ((constraint == MAXIMUM) || (constraint == MINMAX)) {
+			if ((constraint == Constraint.MAXIMUM) || (constraint == Constraint.MINMAX)) {
 				maximumCondition = maximum.compareTo(logField) >= 0;
 			}
 
@@ -347,9 +353,6 @@ public class Filter {
 		// If the filter is defined on the entry type 1 (i.e. debug, trace...)
 		// then the number is replaced by the string describing the type itself
 		switch (constraint) {
-		case UNDECLARED:
-			type.append("Undeclared");
-			break;
 		case MINMAX:
 			type.append("Mininum = ");
 			if (field == Field.ENTRYTYPE)
@@ -391,6 +394,9 @@ public class Filter {
 			else
 				type.append(exact.toString());
 			break;
+		default:
+			type.append("Undeclared");
+			break;
 		}
 
 		type.insert(0, field.getName() + ", ");
@@ -406,32 +412,12 @@ public class Filter {
 	 */
 	public String toXMLString() {
 		StringBuffer buffer = new StringBuffer("\t<FILTER type=\"");
-		switch (constraint) {
-		case 1: {
-			buffer.append("MINIMUM");
-			break;
-		}
-		case 2: {
-			buffer.append("MAXIMUM");
-			break;
-		}
-		case 3: {
-			buffer.append("MINMAX");
-			break;
-		}
-		case 4: {
-			buffer.append("STRINGWCHAR");
-			break;
-		}
-		case 0: {
-			buffer.append("EXACT");
-			break;
-		}
-		default: {
+		if (constraint!=null) {
+			buffer.append(constraint.name());
+		} else {
 			buffer.append("UNDEFINED");
-			break;
 		}
-		}
+		
 		buffer.append("\">\n");
 		// Field
 		buffer.append("\t\t<FIELD>" + field.getName() + "</FIELD>\n");
