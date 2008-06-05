@@ -42,9 +42,6 @@ import javax.swing.JOptionPane;
 import alma.acs.logging.dialogs.LoadURLDlg;
 
 import com.cosylab.logging.engine.log.ILogEntry;
-import com.cosylab.logging.engine.Filter;
-import com.cosylab.logging.engine.Filterable;
-import com.cosylab.logging.engine.FiltersVector;
 import com.cosylab.logging.LoggingClient;
 import com.cosylab.logging.IOLogsHelper;
 
@@ -64,7 +61,7 @@ import com.cosylab.logging.client.CustomFileChooser;
  * Creation date: (11/11/2001 13:46:06)
  * @author: Ales Pucelj (ales.pucelj@kgb.ijs.si)
  */
-public class LogTableDataModel extends AbstractTableModel implements Filterable {
+public class LogTableDataModel extends AbstractTableModel {
 	/**
 	 * The class contains a thread to delete asynchronously
 	 * the logs running at low priority.
@@ -167,9 +164,6 @@ public class LogTableDataModel extends AbstractTableModel implements Filterable 
 
 	// Stores all the logs received.
 	private LogCache allLogs = null ;
-	
-	// The list of all the available filters
-	private final FiltersVector filters = new FiltersVector();
     
     // The LoggingClient that owns this table model
     private LoggingClient loggingClient=null;
@@ -558,15 +552,6 @@ public class LogTableDataModel extends AbstractTableModel implements Filterable 
 			    }
 	}
 	
-	/** 
-	 * Return the filters defined by the user
-	 * 
-	 * @return The user defined filters
-	 */
-	public FiltersVector getFilters() {
-		return filters;
-	}
-	
 	/**
 	 * Return true if an async load/save is in progress
 	 * @return
@@ -647,38 +632,6 @@ public class LogTableDataModel extends AbstractTableModel implements Filterable 
 		if (ioHelper!=null) {
 			ioHelper.done();
 			ioHelper=null;
-		}
-	}
-
-	/* (non-Javadoc)
-	 * @see com.cosylab.logging.engine.Filterable#setFilters(com.cosylab.logging.engine.FiltersVector, boolean)
-	 */
-	@Override
-	public void setFilters(FiltersVector newFilters, boolean append) {
-		if (append) {
-			for (int t=0; t<newFilters.size(); t++) {
-				Filter f = newFilters.get(t);
-				filters.addFilter(f, newFilters.isActive(t));
-			}
-		} else {
-			if (newFilters==null) {
-				filters.clear();
-			} else {
-				filters.setFilters(newFilters);
-			}
-		}
-	}
-	
-	/**
-	 * 
-	 * @return A description of the active filters
-	 * @see FiltersVector.getFilterString()
-	 */
-	public String getFiltersString() {
-		if (filters==null) {
-			return "Not filtered";
-		} else {
-			return filters.getFilterString();
 		}
 	}
 

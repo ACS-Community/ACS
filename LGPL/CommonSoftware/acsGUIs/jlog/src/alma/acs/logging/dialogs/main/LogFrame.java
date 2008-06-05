@@ -85,7 +85,7 @@ public class LogFrame extends JFrame implements WindowListener {
 		//	Load the filters (if any)
 		if (filterFile!=null) {
 			try {
-				loggingClient.getLCModel1().getFilters().loadFilters(filterFile,true,null);
+				loggingClient.getLogEntryTable().getFilters().loadFilters(filterFile,true,null);
 			} catch (Throwable t) {
 				JOptionPane.showMessageDialog(null, "Error: "+t.getMessage(), "Error loading filters", JOptionPane.ERROR_MESSAGE);
 			}

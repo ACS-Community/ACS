@@ -550,7 +550,7 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 			 */
 			@Override
 			public FiltersVector getFilters() {
-				return tableModel.getFilters();
+				return logEntryTable.getFilters();
 			}
 
 			/* (non-Javadoc)
@@ -558,7 +558,7 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 			 */
 			@Override
 			public void setFilters(FiltersVector newFilters, boolean append) {
-				tableModel.setFilters(newFilters, append);
+				logEntryTable.setFilters(newFilters, append);
 				setTableFilterLbl();
 			}
 			
@@ -566,7 +566,7 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 		if (filterChooserDialog==null) {
 			filterChooserDialog=new FilterChooserDialog("Filter chooser",this,new TableFilterable());
 		}
-		filterChooserDialog.setFilters(tableModel.getFilters());
+		filterChooserDialog.setFilters(logEntryTable.getFilters());
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				enableFiltersWidgets(false);
@@ -581,10 +581,10 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 	private void setTableFilterLbl() {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				if (tableModel.getFilters().hasActiveFilters()) {
+				if (logEntryTable.getFilters().hasActiveFilters()) {
 					tableFiltersLbl.setForeground(Color.RED);
 					tableFiltersLbl.setText("Table filtered");
-					tableFiltersLbl.setToolTipText(tableModel.getFiltersString());
+					tableFiltersLbl.setToolTipText(logEntryTable.getFiltersString());
 				} else {
 					tableFiltersLbl.setForeground(Color.BLACK);
 					tableFiltersLbl.setText("Table not filtered");
@@ -833,7 +833,7 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 	{
 		try
 		{
-			getFilterStatus().setText(String.valueOf(getLogEntryTable().getFilterString()));
+			getFilterStatus().setText(String.valueOf(getLogEntryTable().getFiltersString()));
 
 		}
 		catch (java.lang.Throwable ivjExc)

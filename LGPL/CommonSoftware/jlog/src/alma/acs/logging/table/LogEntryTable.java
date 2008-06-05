@@ -51,6 +51,9 @@ import org.jacorb.transaction.Sleeper;
 import com.cosylab.logging.LoggingClient;
 import com.cosylab.logging.SortableHeaderRenderer;
 import com.cosylab.logging.client.EntryTypeIcon;
+import com.cosylab.logging.engine.Filter;
+import com.cosylab.logging.engine.Filterable;
+import com.cosylab.logging.engine.FiltersVector;
 import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.engine.log.LogTypeHelper;
 import com.cosylab.logging.engine.log.ILogEntry.Field;
@@ -83,7 +86,7 @@ import alma.acs.util.IsoDateFormat;
  * @author: 
  */
 
-public class LogEntryTable extends JTable {
+public class LogEntryTable extends JTable implements Filterable {
 	private TableColumn[] columnsList;
 	private boolean[] visibleColumns;
 	private FieldChooserDialog fieldChooser = null;
@@ -93,6 +96,16 @@ public class LogEntryTable extends JTable {
 	public TextTransfer textTransfer;
 	
 	private DefaultListSelectionModel selectionModel;
+	
+	/**
+	 * The object to sort, order and filter the logs shown by the table
+	 */
+	private TableRowSorter<LogTableDataModel> rowSorter;	
+	
+	/** 
+	 * The filters
+	 */
+	private final FiltersVector filters = new FiltersVector();
 	
 	/**
 	 * The index (in the view!!!) of the row selected by the user.
@@ -565,12 +578,11 @@ public class LogEntryTable extends JTable {
 		LogTableDataModel model= new LogTableDataModel(client);
 		setModel(model);
 		
-		TableRowSorter<LogTableDataModel> rowSorter = new TableRowSorter<LogTableDataModel>();
+		// Initialize the sorter (unsorted/unfiltered
+		rowSorter = new TableRowSorter<LogTableDataModel>();
 		rowSorter.setModel(model);
 		
-		List<RowSorter.SortKey> sortKeys = new ArrayList<RowSorter.SortKey>();
-		sortKeys.add(new RowSorter.SortKey(1,SortOrder.DESCENDING));
-		rowSorter.setSortKeys(sortKeys);
+		rowSorter.setSortKeys(null);
 		rowSorter.setRowFilter(null);
 		
 		super.setRowSorter(rowSorter);
@@ -616,17 +628,6 @@ public class LogEntryTable extends JTable {
 		}
 
 		return null; //additionalInfo.getDatas().item(0);
-	}
-	
-	/**
-	 * Insert the method's description here.
-	 * <p>
-	 * Creation date: (2/13/2002 21:30:23)
-	 * @return java.lang.String
-	 */
-	public String getFilterString()
-	{
-		return getLCModel().getFilters().getFilterString();
 	}
 
 	/**
@@ -1037,17 +1038,6 @@ public class LogEntryTable extends JTable {
 	}
 	
 	/**
-	 * Fire a property change event that triggers a refresh
-	 * in the string displayed at the bottom of the main 
-	 * GUI (LoggingClient)
-	 * 
-	 *
-	 */
-	public void updateFilteredString() {
-		firePropertyChange("filterString", "", getFilterString());
-	}
-	
-	/**
 	 * Override the method in <code>JTable</code> to catch the change of selection operated 
 	 * by the user and update the detailed log info accordingly.
 	 * 
@@ -1123,5 +1113,57 @@ public class LogEntryTable extends JTable {
 		if (modelRow!=-1) {
 			changeSelection(convertRowIndexToView(modelRow),1,false,false);
 		}
+	}
+	
+	/** 
+	 * Return the filters defined by the user
+	 * 
+	 * @return The user defined filters
+	 */
+	public FiltersVector getFilters() {
+		return filters;
+	}
+	
+	/* (non-Javadoc)
+	 * @see com.cosylab.logging.engine.Filterable#setFilters(com.cosylab.logging.engine.FiltersVector, boolean)
+	 */
+	@Override
+	public void setFilters(FiltersVector newFilters, boolean append) {
+		if (append) {
+			for (int t=0; t<newFilters.size(); t++) {
+				Filter f = newFilters.get(t);
+				filters.addFilter(f, newFilters.isActive(t));
+			}
+		} else {
+			if (newFilters==null) {
+				filters.clear();
+			} else {
+				filters.setFilters(newFilters);
+			}
+		}
+	}
+	
+	/**
+	 * 
+	 * @return A description of the active filters
+	 * @see FiltersVector.getFilterString()
+	 */
+	public String getFiltersString() {
+		if (filters==null) {
+			return "Not filtered";
+		} else {
+			return filters.getFilterString();
+		}
+	}
+	
+	/**
+	 * Fire a property change event that triggers a refresh
+	 * in the string displayed at the bottom of the main 
+	 * GUI (LoggingClient)
+	 * 
+	 *
+	 */
+	public void updateFilteredString() {
+		firePropertyChange("filterString", "", getFiltersString());
 	}
 }
