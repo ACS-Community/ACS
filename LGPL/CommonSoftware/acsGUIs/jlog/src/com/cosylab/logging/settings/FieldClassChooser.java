@@ -192,10 +192,10 @@ public void setEditor(Class c) {
 		} else { 
 			replaceEditor(intEditor);
 		}
-	} else if (c == java.util.Date.class) {
+	} else if (c == Long.class) {
 		replaceEditor(dateEditor);
 	} else {
-		JOptionPane.showMessageDialog(null, "Unknow class: "+c.getName(), "Error", JOptionPane.ERROR_MESSAGE);
+		JOptionPane.showMessageDialog(null, "Unknown class: "+c.getName(), "Error", JOptionPane.ERROR_MESSAGE);
 		System.err.println("Unknow class: "+c.getName());
 	}
 }
