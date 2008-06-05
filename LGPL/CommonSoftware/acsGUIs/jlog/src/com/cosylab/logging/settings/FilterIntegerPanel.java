@@ -181,17 +181,17 @@ public void setFilter(Filter f) {
 		return;
 
 	switch (f.constraint) {
-		case Filter.EXACT :
+		case EXACT:
 			exactCheck.setSelected(true);
 			exact.setIntegerValue(((Number) f.exact).intValue());
 			break;
-		case Filter.MINIMUM :
+		case MINIMUM :
 			setMinimum(f);
 			break;
-		case Filter.MAXIMUM :
+		case MAXIMUM :
 			setMaximum(f);
 			break;
-		case Filter.MINMAX :
+		case MINMAX :
 			setMinimum(f);
 			setMaximum(f);
 			break;

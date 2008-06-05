@@ -115,13 +115,13 @@ public void setFilter(com.cosylab.logging.engine.Filter f) {
 	if (f == null)
 		return;
 		
-	if ((f.constraint == Filter.MINMAX) || (f.constraint == Filter.MINIMUM)) {
+	if ((f.constraint == Filter.Constraint.MINMAX) || (f.constraint == Filter.Constraint.MINIMUM)) {
 		minimum.setDate((Date)f.minimum);
 		minimumCheck.setSelected(true);
 	} else {
 		minimumCheck.setSelected(false);
 	}
-	if ((f.constraint == Filter.MINMAX) || (f.constraint == Filter.MAXIMUM)) {
+	if ((f.constraint == Filter.Constraint.MINMAX) || (f.constraint == Filter.Constraint.MAXIMUM)) {
 		maximum.setDate((Date)f.maximum);
 		maximumCheck.setSelected(true);
 	} else {

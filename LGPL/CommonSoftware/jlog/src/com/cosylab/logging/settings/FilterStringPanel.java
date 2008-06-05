@@ -130,11 +130,11 @@ public void setFilter(com.cosylab.logging.engine.Filter f) {
 		return;
 		
 	switch (f.constraint) {
-		case Filter.EXACT :
+		case EXACT :
 			exactCheck.setSelected(true);
 			exact.setText((String)f.exact);
 			break;
-		case Filter.STRING_WILDCHAR :
+		case STRING_WILDCHAR :
 			regexpCheck.setSelected(true);
 			regexp.setText((String)f.regularExpression);
 			break;

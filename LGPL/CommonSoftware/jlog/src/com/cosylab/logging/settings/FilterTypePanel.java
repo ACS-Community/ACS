@@ -164,19 +164,19 @@ public class FilterTypePanel extends FilterParameterPanel implements ItemListene
 			return;
 
 		switch (f.constraint) {
-			case Filter.EXACT :
+			case EXACT :
 				exactCheck.setSelected(true);
 				exact.setSelectedIndex(((Number)f.exact).intValue());
 				break;
-			case Filter.MINIMUM :
+			case MINIMUM :
 				minimumCheck.setSelected(true);
 				minimum.setSelectedIndex(((Number)f.minimum).intValue());
 				break;
-			case Filter.MAXIMUM :
+			case MAXIMUM :
 				maximumCheck.setSelected(true);
 				maximum.setSelectedIndex(((Number)f.maximum).intValue());
 				break;
-			case Filter.MINMAX :
+			case MINMAX :
 				minimumCheck.setSelected(true);
 				minimum.setSelectedIndex(((Number)f.minimum).intValue());
 				maximumCheck.setSelected(true);
