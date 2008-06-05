@@ -26,33 +26,23 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseEvent;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
-import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JTable;
-import javax.swing.RowSorter;
-import javax.swing.SortOrder;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
-import javax.swing.table.TableRowSorter;
 import javax.swing.ListSelectionModel;
 import javax.swing. DefaultListSelectionModel;
-
-import org.jacorb.transaction.Sleeper;
 
 import com.cosylab.logging.LoggingClient;
 import com.cosylab.logging.SortableHeaderRenderer;
 import com.cosylab.logging.client.EntryTypeIcon;
-import com.cosylab.logging.engine.Filter;
-import com.cosylab.logging.engine.Filterable;
 import com.cosylab.logging.engine.FiltersVector;
 import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.engine.log.LogTypeHelper;
@@ -86,7 +76,7 @@ import alma.acs.util.IsoDateFormat;
  * @author: 
  */
 
-public class LogEntryTable extends JTable implements Filterable {
+public class LogEntryTable extends JTable {
 	private TableColumn[] columnsList;
 	private boolean[] visibleColumns;
 	private FieldChooserDialog fieldChooser = null;
@@ -100,12 +90,7 @@ public class LogEntryTable extends JTable implements Filterable {
 	/**
 	 * The object to sort, order and filter the logs shown by the table
 	 */
-	private TableRowSorter<LogTableDataModel> rowSorter;	
-	
-	/** 
-	 * The filters
-	 */
-	private final FiltersVector filters = new FiltersVector();
+	private LogTableRowSorter rowSorter;	
 	
 	/**
 	 * The index (in the view!!!) of the row selected by the user.
@@ -579,13 +564,8 @@ public class LogEntryTable extends JTable implements Filterable {
 		setModel(model);
 		
 		// Initialize the sorter (unsorted/unfiltered
-		rowSorter = new TableRowSorter<LogTableDataModel>();
-		rowSorter.setModel(model);
-		
-		rowSorter.setSortKeys(null);
-		rowSorter.setRowFilter(null);
-		
-		super.setRowSorter(rowSorter);
+		rowSorter = new LogTableRowSorter(model);
+		setRowSorter(rowSorter);
 		
 		initialize(initialDateFormat,initalLogTypeFormat);
 		
@@ -1116,45 +1096,15 @@ public class LogEntryTable extends JTable implements Filterable {
 	}
 	
 	/** 
-	 * Return the filters defined by the user
+	 * Return the filters defined by the user.
 	 * 
 	 * @return The user defined filters
 	 */
 	public FiltersVector getFilters() {
-		return filters;
+		return rowSorter.getFilters();
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.cosylab.logging.engine.Filterable#setFilters(com.cosylab.logging.engine.FiltersVector, boolean)
-	 */
-	@Override
-	public void setFilters(FiltersVector newFilters, boolean append) {
-		if (append) {
-			for (int t=0; t<newFilters.size(); t++) {
-				Filter f = newFilters.get(t);
-				filters.addFilter(f, newFilters.isActive(t));
-			}
-		} else {
-			if (newFilters==null) {
-				filters.clear();
-			} else {
-				filters.setFilters(newFilters);
-			}
-		}
-	}
 	
-	/**
-	 * 
-	 * @return A description of the active filters
-	 * @see FiltersVector.getFilterString()
-	 */
-	public String getFiltersString() {
-		if (filters==null) {
-			return "Not filtered";
-		} else {
-			return filters.getFilterString();
-		}
-	}
 	
 	/**
 	 * Fire a property change event that triggers a refresh
@@ -1164,6 +1114,24 @@ public class LogEntryTable extends JTable implements Filterable {
 	 *
 	 */
 	public void updateFilteredString() {
-		firePropertyChange("filterString", "", getFiltersString());
+		firePropertyChange("filterString", "", rowSorter.getFiltersString());
+	}
+	
+	/**
+	 * 
+	 * @param newFilters
+	 * @param append
+	 */
+	public void setFilters(FiltersVector newFilters, boolean append) {
+		rowSorter.setFilters(newFilters, append);
+	}
+	
+	/**
+	 * 
+	 * @return A description of the active filters
+	 * @see FiltersVector.getFilterString()
+	 */
+	public String getFiltersString() {
+		return rowSorter.getFiltersString();
 	}
 }
