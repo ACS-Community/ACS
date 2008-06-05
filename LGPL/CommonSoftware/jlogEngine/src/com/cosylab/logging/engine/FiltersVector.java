@@ -177,7 +177,7 @@ public class FiltersVector extends Vector<Filter> {
 		for (int t = 0; t<activeFilters.size(); t++) {
 			int pos = activeFilters.get(t).intValue();
 			if (t>0) returnValue.append(", ");
-			returnValue.append(Field.values()[((Filter)elementAt(pos)).field].getName());
+			returnValue.append(((Filter)elementAt(pos)).field.getName());
 		}
 		return "Filtered by: "+returnValue.toString();
 	}
@@ -296,6 +296,17 @@ public class FiltersVector extends Vector<Filter> {
         	if (fieldElement!=null) {
         		fieldStr=fieldElement.getText();
         	}
+        	// Build the Field.
+        	Field field = Field.fromName(fieldStr);
+        	if (field==null) {
+        		// Ooops the field has not been found
+        		// Check if this String contains an Integer representing the
+        		// position of this field in the enum Field (it was in the old format)
+        		Integer i = Integer.parseInt(fieldStr);
+        		field = Field.values()[i];
+        	}
+        	
+        	
         	Element enabledElement = element.getChild("ENABLED");
         	if (enabledElement!=null) {
        			enabled= new Boolean(enabledElement.getText());
@@ -306,7 +317,7 @@ public class FiltersVector extends Vector<Filter> {
         	
         	// Build the filter
         	Filter filter = Filter.buildFilter(
-        			fieldStr,
+        			field,
         			lethalStr,
 					notStr,
 					minStr,
