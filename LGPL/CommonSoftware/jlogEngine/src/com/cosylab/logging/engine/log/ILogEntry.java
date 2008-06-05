@@ -164,6 +164,21 @@ public interface ILogEntry extends Serializable {
 		public String getTagAttribute() {
 			return tagAttribute;
 		}
+		
+		/**
+		 * Return a <code>Field</code> from its name
+		 * 
+		 * @return The field with the given name
+		 *         or <code>null</code> if a field with that name does not exist
+		 */
+		public static Field fromName(String fieldName) {
+			for (Field f: Field.values()) {
+				if (f.getName().equals(fieldName)) {
+					return f;
+				}
+			}
+			return null;
+		}
 	}
 	
 	public static final String DATA_ELEMENT_TAG_NAME = "Data";
