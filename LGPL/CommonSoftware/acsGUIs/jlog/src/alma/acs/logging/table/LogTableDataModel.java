@@ -130,6 +130,7 @@ public class LogTableDataModel extends AbstractTableModel {
 				}
 				sz =rows.size();
 				if (maxLog>0 && sz>maxLog) {
+					tableUpdater.changed=true;
 					deleteLogs();
 				}
 			}
@@ -147,8 +148,6 @@ public class LogTableDataModel extends AbstractTableModel {
 					for (int t=0; t<numOfLogsToRemove; t++) {
 						removed.add(rows.remove(0));
 					}
-					System.out.println("removing "+removed.size()+" logs");
-					fireTableRowsDeleted(0, numOfLogsToRemove);
 					allLogs.deleteLogs(removed);
 					removed.removeAllElements();
 				} catch (Exception e) {
@@ -160,6 +159,57 @@ public class LogTableDataModel extends AbstractTableModel {
 		
 	}
 	
+	/**
+	 * To reduce the overload refreshing the content of the table when a lot of logs
+	 * have been added or removed, the refresh is triggered only after a certain amount
+	 * of time.
+	 * <P>
+	 * Objects from this class check if there have been changes and fire the event
+	 * 
+	 * @author acaproni
+	 *
+	 */
+	public class TableUpdater extends Thread {
+		/**
+		 * <code>true</code> if some logs have been added/removed from the model 
+		 */
+		public volatile boolean changed=false;
+		
+		/**
+		 * Signal the thread to terminate
+		 */
+		private volatile boolean terminateThread=false;
+		
+		/**
+		 * The interval (msec) between two refreshes of the content
+		 * of the table
+		 */
+		private static final int UPDATE_INTERVAL=2000; 
+		
+		public void close() {
+			terminateThread=true;
+			interrupt();
+		}
+		
+		/**
+		 * The thread updating the content of the table
+		 */
+		public void run() {
+			while (!terminateThread) {
+				try {
+					Thread.sleep(UPDATE_INTERVAL);
+				} catch (InterruptedException ie) {
+					continue;
+				}
+				System.out.println("Thread iteration changed "+changed+", visible "+loggingClient.getLogEntryTable().isVisible());
+				if (changed && loggingClient.getLogEntryTable().isVisible()) {
+					changed=false;
+					fireTableDataChanged();
+					System.out.println("\tContent updated");
+				}
+			}
+		}
+	}
 	private static final String BLANK_STRING = "";
 
 	// Stores all the logs received.
@@ -197,25 +247,14 @@ public class LogTableDataModel extends AbstractTableModel {
 	private long timeFrame=0;
 	
 	/**
-	 * To avoid refreshing the table too often, <code>lastFireEventTime</code> records
-	 * the last time such an operation has been performed.
-	 * <P>
-	 * The next refresh will be done only after <code>TABLE_UPDATE_TIME</code> msecs
-	 * have been elapsed
-	 * 
-	 * @see <code>TABLE_UPDATE_TIME</code>
-	 */
-	private long lastFireEventTime=0;
-	
-	/**
-	 * The time interval (in msec) between 2 refreshes of the table
-	 */
-	private static final long TABLE_UPDATE_TIME=1000;
-	
-	/**
 	 * The thread to delete the logs asynchronously
 	 */
 	private LogDeleter logDeleter;
+	
+	/**
+	 * The thread to refresh the content of the table
+	 */
+	private TableUpdater tableUpdater;
 	
 	/**
 	 * Each row shows a log identified by a key returned by the cache.
@@ -312,6 +351,9 @@ public class LogTableDataModel extends AbstractTableModel {
 		logDeleter=new LogDeleter();
 		logDeleter.setPriority(Thread.MIN_PRIORITY);
 		logDeleter.start();
+		
+		tableUpdater = new TableUpdater();
+		tableUpdater.start();
 	}
 	
 	/**
@@ -358,15 +400,12 @@ public class LogTableDataModel extends AbstractTableModel {
 			synchronized (rows) {
 				rows.add(key);
 			}
-			if (System.currentTimeMillis()-lastFireEventTime>TABLE_UPDATE_TIME) {
-				fireTableDataChanged();
-				lastFireEventTime=System.currentTimeMillis();
-			}
 		} catch (LogCacheException lce) {
 			System.err.println("Exception caught while inserting a new log entry in cache:");
 			System.err.println(lce.getLocalizedMessage());
 			lce.printStackTrace(System.err);
 		}
+		tableUpdater.changed=true;
 	}
 	
 	/**
@@ -619,6 +658,10 @@ public class LogTableDataModel extends AbstractTableModel {
 		if (logDeleter!=null) {
 			logDeleter.close(sync);
 			logDeleter=null;
+		}
+		if (tableUpdater!=null) {
+			tableUpdater.close();
+			tableUpdater=null;
 		}
 		if (ioHelper!=null) {
 			ioHelper.done();
