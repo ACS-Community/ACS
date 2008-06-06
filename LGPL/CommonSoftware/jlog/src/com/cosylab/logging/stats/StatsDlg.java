@@ -135,7 +135,6 @@ public class StatsDlg extends JDialog
 	 *
 	 */
 	private void refreshGUI() {
-		int pippo;
 		/**
 		 * A class to refresh the labels of the dialog
 		 * The thread is executed inside the swing thread
@@ -172,7 +171,7 @@ public class StatsDlg extends JDialog
 			public void run() {
 				GuiRefresher refresher = new GuiRefresher();
 				refresher.totLogs = logging.getLogEntryTable().getLCModel().totalLogNumber();
-				refresher.visLogs = logging.getLCModel1().getRowCount();
+				refresher.visLogs = logging.getLogEntryTable().getViewRowCount();
 				refresher.hidLogs = refresher.totLogs-refresher.visLogs;
 				Runtime rt = Runtime.getRuntime();
 				refresher.availMem = rt.freeMemory();
