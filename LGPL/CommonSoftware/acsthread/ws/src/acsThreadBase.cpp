@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsThreadBase.cpp,v 1.31 2008/03/28 12:33:41 bjeram Exp $"
+* "@(#) $Id: acsThreadBase.cpp,v 1.32 2008/06/06 08:09:32 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -907,7 +907,7 @@ int ThreadManagerBase::join(const ACE_thread_t& tid) {
 
   ACS_TRACE("ACS::ThreadManagerBase::join");
 #ifndef MAKE_VXWORKS
-  return ACE_Thread::join(tid);
+  return threadManager_mp->join(tid);
 #else
   ACE_UNUSED_ARG(tid);
 #warning VxWorks does not support join!!
