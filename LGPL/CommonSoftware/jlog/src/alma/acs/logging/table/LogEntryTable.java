@@ -1134,4 +1134,13 @@ public class LogEntryTable extends JTable {
 	public String getFiltersString() {
 		return rowSorter.getFiltersString();
 	}
+	
+	/**
+	 * Set the new log level i.e. the level of the logs shown in the table.
+	 * 
+	 * @param newLevel
+	 */
+	public void setLogLevel(LogTypeHelper newLevel) {
+		rowSorter.setLogLevel(newLevel);
+	}
 }

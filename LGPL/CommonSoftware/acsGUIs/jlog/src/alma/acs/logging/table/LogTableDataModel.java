@@ -584,15 +584,6 @@ public class LogTableDataModel extends AbstractTableModel {
 	}
 	
 	/**
-	 * Set the new log level i.e. the level of the logs shown in the table.
-	 * 
-	 * @param newLevel
-	 */
-	public void setLogLevel(LogTypeHelper newLevel) {
-		
-	}
-	
-	/**
 	 * @return The time frame of the log in cache
 	 * @see com.cosylab.logging.client.cache.LogCache
 	 */
