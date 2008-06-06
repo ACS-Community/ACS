@@ -201,11 +201,9 @@ public class LogTableDataModel extends AbstractTableModel {
 				} catch (InterruptedException ie) {
 					continue;
 				}
-				System.out.println("Thread iteration changed "+changed+", visible "+loggingClient.getLogEntryTable().isVisible());
 				if (changed && loggingClient.getLogEntryTable().isVisible()) {
 					changed=false;
 					fireTableDataChanged();
-					System.out.println("\tContent updated");
 				}
 			}
 		}
