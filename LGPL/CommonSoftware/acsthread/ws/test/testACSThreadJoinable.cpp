@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: testACSThreadJoinable.cpp,v 1.7 2006/07/06 09:13:38 vwang Exp $"
+* "@(#) $Id: testACSThreadJoinable.cpp,v 1.8 2008/06/06 08:48:24 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -31,7 +31,7 @@
 
 #include "acsThreadTest.h"
 
-static char *rcsId="@(#) $Id: testACSThreadJoinable.cpp,v 1.7 2006/07/06 09:13:38 vwang Exp $"; 
+static char *rcsId="@(#) $Id: testACSThreadJoinable.cpp,v 1.8 2008/06/06 08:48:24 bjeram Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 /**
@@ -56,7 +56,7 @@ class FastACSThread :public ACS::Thread
 		  const ACS::TimeInterval& sleepTime=ThreadBase::defaultSleepTime,
 		  bool del=false
 	) :
-	ACS::Thread(name, responseTime, sleepTime, del)
+	ACS::Thread(name, responseTime, sleepTime, del           )
 	{
 	    ACS_TRACE("FastACSThread::FastACSThread");
 	}

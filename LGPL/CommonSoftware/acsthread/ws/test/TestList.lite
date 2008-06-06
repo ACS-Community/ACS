@@ -1,7 +1,7 @@
 #*******************************************************************************
 # ALMA - Atacama Large Millimiter Array
 #
-# "@(#) $Id: TestList.lite,v 1.10 2008/03/20 09:06:18 bjeram Exp $"
+# "@(#) $Id: TestList.lite,v 1.11 2008/06/06 08:48:24 bjeram Exp $"
 #
 # TestList
 #
@@ -22,3 +22,4 @@ SOURCE acsthreadTATEnv
 10 ThreadRestart "testACSThreadRestart"
 11 ThreadGuard "testACSThreadGuard"
 12 PosixThreads "testPosixThreads 2000 1024"
+13 JoinableStress "testACSThreadJoinableStress 150"
