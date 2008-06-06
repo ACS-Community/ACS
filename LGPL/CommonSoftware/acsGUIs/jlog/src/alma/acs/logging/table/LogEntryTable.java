@@ -41,7 +41,6 @@ import javax.swing.ListSelectionModel;
 import javax.swing. DefaultListSelectionModel;
 
 import com.cosylab.logging.LoggingClient;
-import com.cosylab.logging.SortableHeaderRenderer;
 import com.cosylab.logging.client.EntryTypeIcon;
 import com.cosylab.logging.engine.FiltersVector;
 import com.cosylab.logging.engine.log.ILogEntry;
@@ -790,8 +789,6 @@ public class LogEntryTable extends JTable {
 		dateRenderer = new DateRenderer(shortDateFormat);
 		tc.setCellRenderer(dateRenderer);
 
-		SortableHeaderRenderer shr = new SortableHeaderRenderer();
-
 		int n = tcm.getColumnCount();
 
 		columnsList = new TableColumn[n];
@@ -804,7 +801,6 @@ public class LogEntryTable extends JTable {
 			{
 				columnsList[i].setPreferredWidth(250);
 			}
-			columnsList[i].setHeaderRenderer(shr);
 		}
 
 		addMouseListener(new ColumnMouseAdapter());
