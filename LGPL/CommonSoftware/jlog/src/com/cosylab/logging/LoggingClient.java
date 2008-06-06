@@ -136,6 +136,11 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 	 */
 	private JLabel tableFiltersLbl = new JLabel();
 	
+	/**
+	 * The label showing if the number of logs in memory is limited
+	 */
+	private JLabel maxNumOfLogsLbl = new JLabel();
+	
 	private ArchiveConnectionManager archive;
 	
 	// Create an instance of the preferences with default values
@@ -346,6 +351,7 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
             		userPreferences.setTimeFrame(dlg.getTimeFrame());
             		getLCModel1().setMaxLog(userPreferences.getMaxNumOfLogs());
             		getLCModel1().setTimeFrame(userPreferences.getMillisecondsTimeFrame());
+            		setNumberOfLogsLbl();
             	}
             } else if (e.getSource()==menuBar.getOperatorMode()) {
             	getEngine().setAudience(EngineAudienceHelper.OPERATOR);
@@ -595,6 +601,30 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 	}
 	
 	/**
+	 * Update the label with the number of logs in memory
+	 */
+	private void setNumberOfLogsLbl() {
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				int nLogs=userPreferences.getMaxNumOfLogs();
+				if (nLogs>0) {
+					String str=Integer.toString(nLogs);
+					if (str.length()>3) {
+						str = str.substring(0, str.length()-3)+"K";
+					}
+					maxNumOfLogsLbl.setForeground(Color.RED);
+					maxNumOfLogsLbl.setText(str);
+					maxNumOfLogsLbl.setToolTipText("The number of logs to keep in memory is limited to "+str);
+				} else {
+					maxNumOfLogsLbl.setForeground(Color.BLACK);
+					maxNumOfLogsLbl.setText("Unlimited");
+					maxNumOfLogsLbl.setToolTipText("The number of logs to keep in memory is unlimited");
+				}
+			}
+		});
+	}
+	
+	/**
 	 * Update the label of the filtering of the table
 	 */
 	private void setEngineFilterLbl() {
@@ -807,6 +837,7 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 			
 			setTableFilterLbl();
 			setEngineFilterLbl();
+			setNumberOfLogsLbl();
 		}
 		catch (java.lang.Throwable ivjExc)
 		{
@@ -1086,8 +1117,19 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 		        progressBar.setVisible(false);
 		        statusLinePnl.add(progressBar,constraintsProgressBar);
 		        
+		        GridBagConstraints constraintsNumFlt = new GridBagConstraints();
+		        constraintsNumFlt.gridx=2;
+		        constraintsNumFlt.gridy=0;
+		        constraintsNumFlt.insets = new Insets(1,1,1,1);
+		        maxNumOfLogsLbl.setVisible(true);
+		        maxNumOfLogsLbl.setBorder(BorderFactory.createLoweredBevelBorder());
+		        Font fntNumFlt = maxNumOfLogsLbl.getFont();
+		        Font newFontNumFlt = fntNumFlt.deriveFont(fntNumFlt.getSize()-2);
+		        maxNumOfLogsLbl.setFont(newFontNumFlt);
+		        statusLinePnl.add(maxNumOfLogsLbl,constraintsNumFlt);
+		        
 		        GridBagConstraints constraintsEngineFlt = new GridBagConstraints();
-		        constraintsEngineFlt.gridx=2;
+		        constraintsEngineFlt.gridx=3;
 		        constraintsEngineFlt.gridy=0;
 		        constraintsEngineFlt.insets = new Insets(1,1,1,1);
 		        engineFiltersLbl.setVisible(true);
@@ -1098,7 +1140,7 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 		        statusLinePnl.add(engineFiltersLbl,constraintsEngineFlt);
 		        
 		        GridBagConstraints constraintsTableFlt= new GridBagConstraints();
-		        constraintsTableFlt.gridx=3;
+		        constraintsTableFlt.gridx=4;
 		        constraintsTableFlt.gridy=0;
 		        constraintsTableFlt.insets = new Insets(1,1,1,1);
 		        tableFiltersLbl.setVisible(true);
@@ -1109,7 +1151,7 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 		        statusLinePnl.add(tableFiltersLbl,constraintsTableFlt);
 		        
 		        GridBagConstraints constraintsAudience = new GridBagConstraints();
-		        constraintsAudience.gridx=4;
+		        constraintsAudience.gridx=5;
 		        constraintsAudience.gridy=0;
 		        constraintsAudience.insets = new Insets(1,1,1,1);
 		        audienceLbl.setVisible(true);
@@ -1120,13 +1162,13 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 		        statusLinePnl.add(audienceLbl,constraintsAudience);
 				
 		        GridBagConstraints constraintsConnectionDBStatus = new GridBagConstraints();
-				constraintsConnectionDBStatus.gridx = 5;
+				constraintsConnectionDBStatus.gridx = 6;
 				constraintsConnectionDBStatus.gridy = 0;
 				constraintsConnectionDBStatus.insets = new Insets(1, 2, 1, 2);
 				statusLinePnl.add(connectionDBLbl,constraintsConnectionDBStatus);
 		        
 				GridBagConstraints constraintsConnectionStatus = new GridBagConstraints();
-				constraintsConnectionStatus.gridx = 6;
+				constraintsConnectionStatus.gridx = 7;
 				constraintsConnectionStatus.gridy = 0;
 				constraintsConnectionStatus.insets = new Insets(1, 2, 1, 2);
 				statusLinePnl.add(connectionStatusLbl,constraintsConnectionStatus);
