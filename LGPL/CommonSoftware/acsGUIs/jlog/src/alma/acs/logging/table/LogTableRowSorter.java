@@ -57,6 +57,8 @@ public class LogTableRowSorter extends TableRowSorter<LogTableDataModel> impleme
 	public LogTableRowSorter(LogTableDataModel model) {
 		super(model);
 		
+		setMaxSortKeys(2);
+		
 		// Unsorted / unfiltered
 		setSortKeys(null);
 		applyChanges();
