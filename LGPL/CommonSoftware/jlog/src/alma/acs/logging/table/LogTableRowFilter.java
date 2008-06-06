@@ -25,6 +25,9 @@ import javax.swing.RowFilter;
 
 import com.cosylab.logging.engine.Filter;
 import com.cosylab.logging.engine.FiltersVector;
+import com.cosylab.logging.engine.log.LogTypeHelper;
+import com.cosylab.logging.engine.log.ILogEntry.Field;
+import com.cosylab.logging.settings.LogTypeRenderer;
 
 /**
  * The filters used to hide/show logs in the table.
@@ -50,15 +53,21 @@ public class LogTableRowFilter extends RowFilter<LogTableDataModel, Integer> {
 	private Filter[] filters = null;
 	
 	/**
+	 * The log level.
+	 * <P>
+	 * All the entries whose level is less then <code>logLevel</code> are filtered out of the table.
+	 */
+	private LogTypeHelper logLevel=LogTypeHelper.TRACE;
+	
+	/**
 	 * Constructor
 	 * 
-	 * @param filtersVector The not <code>null</code> and not empty vector of engine filters
+	 * @param filtersVector The vector of engine filters (can be <code>null</code> or empty)
+	 * @param logLevel The log level of the logs to filter out
 	 */
-	public LogTableRowFilter(FiltersVector filtersVector) {
-		if (filtersVector==null || filtersVector.isEmpty()) {
-			throw new IllegalArgumentException("The filter cant be null or empty");
-		}
+	public LogTableRowFilter(FiltersVector filtersVector, LogTypeHelper logLevel) {
 		buildTableFilters(filtersVector);
+		this.logLevel=logLevel;
 	}
 	
 	/**
@@ -75,6 +84,10 @@ public class LogTableRowFilter extends RowFilter<LogTableDataModel, Integer> {
 	 * @return The <code>RowSorter</code> with all the filters in the passed parameter
 	 */
 	private void buildTableFilters(FiltersVector userFilters) {
+		if (userFilters==null || userFilters.isEmpty()) {
+			filters=null;
+			return;
+		}
 		int[] activesIndexes = userFilters.getAppliedFiltersIndexes();
 		if (activesIndexes!=null && activesIndexes.length>0) {
 			filters = new Filter[activesIndexes.length];
@@ -111,6 +124,11 @@ public class LogTableRowFilter extends RowFilter<LogTableDataModel, Integer> {
 	 */
 	@Override
 	public boolean include(Entry<? extends LogTableDataModel, ? extends Integer> entry) {
+		// Check the log level
+		if (!checkLogLevel((LogTypeHelper)entry.getValue(Field.ENTRYTYPE.ordinal()+1))) {
+			return false;
+		}
+		// If there are no filters defined, the entry is accepted
 		if (filters==null) {
 			return true;
 		}
@@ -123,6 +141,17 @@ public class LogTableRowFilter extends RowFilter<LogTableDataModel, Integer> {
 			ret = ret && filters[t].applyTo(entry.getValue(filters[t].field.ordinal()+1));
 		}
 		return ret;
+	}
+	
+	/**
+	 * Check if the level of the log passed as parameter matches
+	 * with the log level
+	 * 
+	 * @param logLevel The level to check
+	 * @return <code>true</code> if the parameter is greater the 
+	 */
+	private boolean checkLogLevel(LogTypeHelper logLevel) {
+		return logLevel!=null && logLevel.ordinal()>=this.logLevel.ordinal();
 	}
 
 }
