@@ -21,11 +21,13 @@
  */
 package alma.acs.logging.table;
 
+import javax.swing.SwingUtilities;
 import javax.swing.table.TableRowSorter;
 
 import com.cosylab.logging.engine.Filter;
 import com.cosylab.logging.engine.Filterable;
 import com.cosylab.logging.engine.FiltersVector;
+import com.cosylab.logging.engine.log.LogTypeHelper;
 
 /**
  * <code>LogTableRowSorter</code> extends <code>TableRowSorter</code> to customize
@@ -46,12 +48,18 @@ public class LogTableRowSorter extends TableRowSorter<LogTableDataModel> impleme
 	 */
 	private final FiltersVector filters = new FiltersVector();
 	
+	/**
+	 * The log level
+	 * @param model
+	 */
+	private LogTypeHelper logLevel=LogTypeHelper.TRACE;
+	
 	public LogTableRowSorter(LogTableDataModel model) {
 		super(model);
 		
 		// Unsorted / unfiltered
 		setSortKeys(null);
-		setRowFilter(null);
+		applyChanges();
 	}
 	
 	/* (non-Javadoc)
@@ -71,12 +79,8 @@ public class LogTableRowSorter extends TableRowSorter<LogTableDataModel> impleme
 				filters.setFilters(newFilters);
 			}
 		}
-		if (filters==null || filters.isEmpty()) {
-			setRowFilter(null);
-		} else {
-			// apply the filters
-			setRowFilter(new LogTableRowFilter(filters));
-		}
+		// apply the filters
+		applyChanges();
 	}
 	
 	/**
@@ -101,5 +105,24 @@ public class LogTableRowSorter extends TableRowSorter<LogTableDataModel> impleme
 		return filters;
 	}
 	
+	/**
+	 * Set the new log level i.e. the level of the logs shown in the table.
+	 * 
+	 * @param newLevel
+	 */
+	public void setLogLevel(LogTypeHelper newLevel) {
+		logLevel=newLevel;
+		applyChanges();
+	}
 	
+	/**
+	 * Set a new filter forcing a reordering of the table
+	 */
+	private void applyChanges() {
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				setRowFilter(new LogTableRowFilter(filters,logLevel));
+			}
+		});
+	}
 }
