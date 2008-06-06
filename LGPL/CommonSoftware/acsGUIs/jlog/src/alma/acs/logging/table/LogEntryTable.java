@@ -1139,4 +1139,13 @@ public class LogEntryTable extends JTable {
 	public void setLogLevel(LogTypeHelper newLevel) {
 		rowSorter.setLogLevel(newLevel);
 	}
+	
+	/**
+	 * Shows the number of rows shown by the table.
+	 * 
+	 * @return the number of rows shown by the table.
+	 */
+	public int getViewRowCount() {
+		return rowSorter.getViewRowCount();
+	}
 }
