@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: acsMakefile,v 1.167 2008/06/03 11:30:53 mzampare Exp $" 
+# "@(#) $Id: acsMakefile,v 1.168 2008/06/09 06:48:27 bjeram Exp $" 
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -1183,8 +1183,15 @@ endif
 #
 # -I. is added to allow includes from current directory (this is the case of
 #                lcc software)
+# With gcc 4 -I- is depricated
 
-I_PATH := -I- -I. $(I_PATH)
+ifeq ($(GXX_4_OR_BETTER), 1)
+	I_PATH := -I. $(I_PATH)
+else
+	I_PATH := -I- -I. $(I_PATH)
+endif # GXX_4_OR_BETTER == 1
+
+
 
 #
 # REMARK about L_PATH
