@@ -139,8 +139,8 @@ public synchronized void reportRemoteCall(RemoteCall call) {
 public synchronized void reportRemoteResponse(RemoteResponse response) {
 	Integer windowSerial = new Integer(response.getInvocation().getInvocationRequest().getSN());
 	Object tempWindow = responseWindows.get(windowSerial);
-	
-	if ((window) && (response.getSequenceNumber() > 0) && !(tempWindow instanceof String)) {
+	// msekoran: an not-so-nice patch to show all CB (i.e. monitors) immediately, check if name equals "working" (by BACI specs)
+	if ((window) && (response.getSequenceNumber() > 0 || response.getName().equals("working")) && !(tempWindow instanceof String)) {
 		RemoteResponseWindow rWindow = null;
 		if (tempWindow instanceof RemoteResponseWindow) {
 			rWindow = (RemoteResponseWindow)tempWindow;
