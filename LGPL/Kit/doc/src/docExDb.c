@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - VLT project
 *
-* "@(#) $Id: docExDb.c,v 1.31 2002/06/08 17:20:41 vltsccm Exp $" 
+* "@(#) $Id: docExDb.c,v 1.32 2008/06/09 06:52:09 bjeram Exp $" 
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -57,8 +57,8 @@
 #include "vltPort.h"
 
 
-static char *rcsId="@(#) $Id: docExDb.c,v 1.31 2002/06/08 17:20:41 vltsccm Exp $";
-static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
+static char *rcsId="@(#) $Id: docExDb.c,v 1.32 2008/06/09 06:52:09 bjeram Exp $";
+/* static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId); */
 
 
 #include <stdio.h>

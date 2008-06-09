@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - VLT project
 *
-*  "@(#) $Id: docDoManPages.c,v 1.31 2002/06/08 17:20:43 vltsccm Exp $"
+*  "@(#) $Id: docDoManPages.c,v 1.32 2008/06/09 06:52:09 bjeram Exp $"
 * 
 * who        when      what
 * ---------  --------  ----------------------------------------------
@@ -433,8 +433,8 @@
 #define _POSIX_SOURCE 1
 #include <vltPort.h>
 
-static char *rcsId="@(#) $Id: docDoManPages.c,v 1.31 2002/06/08 17:20:43 vltsccm Exp $";
-static void *use_rcsId = ((void)&use_rcsId, (void *) &rcsId);
+static char *rcsId="@(#) $Id: docDoManPages.c,v 1.32 2008/06/09 06:52:09 bjeram Exp $";
+/* static void *use_rcsId = ((void)&use_rcsId, (void *) &rcsId); */
 
 /* 
  * System Headers 

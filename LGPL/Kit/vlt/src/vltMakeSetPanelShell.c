@@ -62,8 +62,7 @@
 #define _POSIX_SOURCE 1
 #include "vltPort.h"
 
-static char *rcsId="@(#) $Id: vltMakeSetPanelShell.c,v 1.1.1.1 2003/02/20 10:44:07 mzampare Exp $"; 
-static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
+static char *rcsId="@(#) $Id: vltMakeSetPanelShell.c,v 1.2 2008/06/09 06:51:09 bjeram Exp $"; 
 
 /* 
  * System Headers 
@@ -198,7 +197,7 @@ else
     } 
     
 fprintf(panelOut, "#!/bin/sh\n");
-fprintf(panelOut, "# Panel Executable file produced by $RCSfile: vltMakeSetPanelShell.c,v $ $Revision: 1.1.1.1 $\n");
+fprintf(panelOut, "# Panel Executable file produced by $RCSfile: vltMakeSetPanelShell.c,v $ $Revision: 1.2 $\n");
 fprintf(panelOut, "# Define which version of the sequencer to use \\\n");
 fprintf(panelOut, "  exec seqWish \"$0\" ${1+\"$@\"}\n");
 fprintf(panelOut, "#\n");
