@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: vltMakefile,v 1.3 2006/03/29 15:22:43 gchiozzi Exp $" 
+# "@(#) $Id: vltMakefile,v 1.4 2008/06/09 06:50:44 bjeram Exp $" 
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -527,9 +527,10 @@ ifeq ($(os),SunOS)
 endif
 
 # Added by E. Allaert: Linux case; remark Linux uses Gnu-echo
+# echo -e does not work under ksh after moved to RHEL 5
 ifeq ($(os),Linux)
    platform = Linux
-   ECHO = echo -e
+   ECHO = echo
 else
    ECHO = echo
 endif
