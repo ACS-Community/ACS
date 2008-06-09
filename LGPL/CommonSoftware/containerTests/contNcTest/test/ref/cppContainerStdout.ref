@@ -42,8 +42,8 @@
 1 - ContainerStatusMsg: Startup ends
 1 - <timestamp> [cppContainer - ContainerImpl::run] Container running...
 1 - ContainerStatusMsg: Automatic component loading begins
-1 - <timestamp> [cppContainer - maci::ContainerImpl::message] Message from manager received. Type: 20. Message: Startup statistics: 0 components queued to be activated.
-1 - <timestamp> [cppContainer - maci::ContainerImpl::message] Message from manager received. Type: 20. Message: Startup statistics: 0 of 0 components activated.
+1 - <timestamp> [cppContainer - maci::ContainerImpl::taggedmessage] Message from manager received. Type: 20. Tag: 1. Message: Startup statistics: 0 components queued to be activated.
+1 - <timestamp> [cppContainer - maci::ContainerImpl::taggedmessage] Message from manager received. Type: 20. Tag: 2. Message: Startup statistics: 0 of 0 components activated.
 1 - ContainerStatusMsg: Automatic component loading ends
 1 - ContainerStatusMsg: Ready
 1 - <timestamp> [maci::LibraryManager - maci::LibraryManager::load] Request to load 'CounterConsumerImpl'.
