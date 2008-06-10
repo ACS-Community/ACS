@@ -41,7 +41,7 @@ import com.cosylab.logging.engine.log.LogTypeHelper;
  * @author acaproni
  *
  */
-public class LogTableRowSorter extends TableRowSorter<LogTableDataModel> implements Filterable {
+public class LogTableRowSorter extends TableRowSorter<LogTableDataModel> implements Filterable, Runnable {
 	
 	/** 
 	 * The filters
@@ -53,6 +53,14 @@ public class LogTableRowSorter extends TableRowSorter<LogTableDataModel> impleme
 	 * @param model
 	 */
 	private LogTypeHelper logLevel=LogTypeHelper.TRACE;
+	
+	/**
+	 * The column for the <code>toggleSortOrder</code> that must be executed 
+	 * in a separate thread <code>toggleSortOrder</code>
+	 * 
+	 * @see 
+	 */
+	private int col;
 	
 	public LogTableRowSorter(LogTableDataModel model) {
 		super(model);
@@ -121,10 +129,32 @@ public class LogTableRowSorter extends TableRowSorter<LogTableDataModel> impleme
 	 * Set a new filter forcing a reordering of the table
 	 */
 	private void applyChanges() {
-		SwingUtilities.invokeLater(new Runnable() {
+		Thread t = new Thread(new Runnable() {
 			public void run() {
 				setRowFilter(new LogTableRowFilter(filters,logLevel));
 			}
 		});
+		SwingUtilities.invokeLater(t);
+	}
+	
+	/**
+	 * Change the ordering when the user presses over a column header.
+	 * We need to execute this method on a separate thread otherwise the 
+	 * GUI freezes until the ordering completes.
+	 * 
+	 * 
+	 */
+	public void toggleSortOrder(int column) {
+		Thread t = new Thread(this);
+		col=column;
+		t.start();
+	}
+	
+	/**
+	 * The thread to execute the <code>super.toggleSortOrder</code> without
+	 * freezing the GUI.
+	 */
+	public void run() {
+		super.toggleSortOrder(col);
 	}
 }
