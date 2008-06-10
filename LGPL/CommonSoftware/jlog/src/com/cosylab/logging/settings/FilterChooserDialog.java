@@ -580,7 +580,6 @@ public class FilterChooserDialog extends JDialog {
 			newFilters.addFilter(theFilters[t], actives[t]);
 		}
 		filterable.setFilters(newFilters,false);
-		loggingClient.getLogEntryTable().updateFilteredString();
 	}
 	
 	/**
