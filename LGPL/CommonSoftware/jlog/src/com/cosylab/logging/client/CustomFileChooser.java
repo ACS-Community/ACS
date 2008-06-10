@@ -80,6 +80,9 @@ public class CustomFileChooser extends JDialog implements ActionListener {
 		pnl.add(viewHiddenFiles,BorderLayout.SOUTH);
 		rootPane.add(pnl,BorderLayout.NORTH);
 		
+		if (curDir==null) {
+			curDir = new File(".");
+		}
 		fc = new JFileChooser(curDir);
 		fc.setFileHidingEnabled(!viewHiddenFiles.isSelected());
 		fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
