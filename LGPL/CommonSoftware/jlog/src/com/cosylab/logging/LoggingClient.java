@@ -29,6 +29,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
+import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.WindowEvent;
@@ -47,6 +48,7 @@ import javax.swing.JViewport;
 import javax.swing.SwingUtilities;
 import javax.swing.ToolTipManager;
 import javax.swing.event.MenuEvent;
+import javax.swing.event.MenuListener;
 
 import alma.acs.logging.archive.ArchiveConnectionManager;
 import alma.acs.logging.archive.QueryDlg;
@@ -146,8 +148,6 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 	// Create an instance of the preferences with default values
 	private UserPreferences userPreferences = new UserPreferences();
 
-	private JLabel ivjFilterStatus = null; // Not filtered
-
 	private JPanel ivjJPanel1 = null;
 	private JPanel ivjJPanel2 = null;
 	private JPanel detailedInfoPanel = null;
@@ -244,11 +244,7 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
     // It is not null only if the application is executed in stand alone mode
     private LogFrame logFrame=null;
 	
-	class EventHandler
-		implements
-			java.awt.event.ActionListener,
-			java.beans.PropertyChangeListener,
-			javax.swing.event.MenuListener
+	class EventHandler implements ActionListener, MenuListener
 	{
 		public void actionPerformed(java.awt.event.ActionEvent e)
 		{
@@ -366,22 +362,6 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
             }
 		};
 
-		public void propertyChange(java.beans.PropertyChangeEvent evt)
-		{
-
-			if (evt.getSource() == LoggingClient.this.getLogEntryTable() 
-					&& (evt.getPropertyName().equals("filterString"))) {
-				connFilter(evt);
-			} else if (evt.getSource() == LoggingClient.this.getLogEntryTable() 
-					&& (evt.getPropertyName().equals("extraInfo"))) {
-				showDetailedLogInfo();
-			} else if (evt.getSource() == LoggingClient.this.getLogEntryTable() 
-					&& (evt.getPropertyName().equals("LCModel"))) {
-				connLCMod();
-			}
-				
-		}
-		
 		public void menuCanceled(MenuEvent menuE) {}
 		public void menuDeselected(MenuEvent menuE) {}
 		
@@ -789,11 +769,10 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 		menuBar.setEventHandler(eventHandler, eventHandler);
 		toolBar.setEventHandler(eventHandler);
 		navigationToolbar.setEventHandler(eventHandler);
-		getLogEntryTable().addPropertyChangeListener(eventHandler); // ScrollPaneTable		
 
 		connLCMod();
 	}
-
+	
 	/**
 	 * Initializes the object.
 	 */
@@ -849,29 +828,6 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 		getJSplitPane1().setDividerLocation(350); //getHeight() - 150);
 		// user code end
 
-	}
-
-	/**
-	 * The method is executed when the filter property ("filterString") changes.
-	 * 
-	 * This property has to be changed in the LogEntryTable but the listener is 
-	 * in LoggingClient to update the GUI .
-	 * 
-	 * @param arg1 java.beans.PropertyChangeEvent
-	 */
-
-	private void connFilter(java.beans.PropertyChangeEvent arg1)
-	{
-		try
-		{
-			getFilterStatus().setText(String.valueOf(getLogEntryTable().getFiltersString()));
-
-		}
-		catch (java.lang.Throwable ivjExc)
-		{
-
-			handleException(ivjExc);
-		}
 	}
 
 	/**
@@ -961,35 +917,6 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 			handleException(ivjExc);
 		}
 	}
-	
-	/**
-	 * Returns the FilterStatus property value.
-	 * @return javax.swing.JLabel
-	 */
-	/* WARNING: THIS METHOD WILL BE REGENERATED. */
-	private javax.swing.JLabel getFilterStatus()
-	{
-		if (ivjFilterStatus == null)
-		{
-			try
-			{
-				ivjFilterStatus = new javax.swing.JLabel();
-				ivjFilterStatus.setName("FilterStatus");
-				ivjFilterStatus.setText("Not filtered");
-
-			}
-			catch (java.lang.Throwable ivjExc)
-			{
-
-				handleException(ivjExc);
-			}
-		}
-		return ivjFilterStatus;
-	}
-	/**
-	 * Returns the groupMenu1 property value.
-	 * @return javax.swing.JMenu
-	 */
 
 	/**
 	 * Returns the JPanel1 property value.
@@ -1076,8 +1003,9 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 		return detailedInfoPanel;
 	}
 	/**
-	 * Returns the JPanel4 property value.
-	 * @return javax.swing.JPanel
+	 * Returns the panel for the status line
+	 * 
+	 * @return the panel for the status line
 	 */
 	private JPanel getStatusLinePnl()
 	{
@@ -1101,24 +1029,17 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 				statusLinePnl.setName("Status_line");
 				statusLinePnl.setLayout(new java.awt.GridBagLayout());
 				
-				GridBagConstraints constraintsFilterStatus = new GridBagConstraints();
-				constraintsFilterStatus.gridx = 0;
-				constraintsFilterStatus.gridy = 0;
-				constraintsFilterStatus.fill = GridBagConstraints.BOTH;
-				constraintsFilterStatus.anchor = GridBagConstraints.WEST;
-				constraintsFilterStatus.weightx = 1.0;
-				constraintsFilterStatus.insets = new Insets(1, 2, 1, 1);
-				statusLinePnl.add(getFilterStatus(), constraintsFilterStatus);
-
 				GridBagConstraints constraintsProgressBar = new GridBagConstraints();
-		        constraintsProgressBar.gridx=1;
+		        constraintsProgressBar.gridx=0;
 		        constraintsProgressBar.gridy=0;
-		        constraintsProgressBar.insets = new Insets(1,1,1,1);
-		        progressBar.setVisible(false);
+		        constraintsProgressBar.fill = GridBagConstraints.BOTH;
+		        constraintsProgressBar.anchor = GridBagConstraints.WEST;
+		        constraintsProgressBar.weightx = 1.0;
+		        constraintsProgressBar.insets = new Insets(1, 2, 1, 1);
 		        statusLinePnl.add(progressBar,constraintsProgressBar);
 		        
 		        GridBagConstraints constraintsNumFlt = new GridBagConstraints();
-		        constraintsNumFlt.gridx=2;
+		        constraintsNumFlt.gridx=1;
 		        constraintsNumFlt.gridy=0;
 		        constraintsNumFlt.insets = new Insets(1,1,1,1);
 		        maxNumOfLogsLbl.setVisible(true);
@@ -1129,7 +1050,7 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 		        statusLinePnl.add(maxNumOfLogsLbl,constraintsNumFlt);
 		        
 		        GridBagConstraints constraintsEngineFlt = new GridBagConstraints();
-		        constraintsEngineFlt.gridx=3;
+		        constraintsEngineFlt.gridx=2;
 		        constraintsEngineFlt.gridy=0;
 		        constraintsEngineFlt.insets = new Insets(1,1,1,1);
 		        engineFiltersLbl.setVisible(true);
@@ -1140,7 +1061,7 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 		        statusLinePnl.add(engineFiltersLbl,constraintsEngineFlt);
 		        
 		        GridBagConstraints constraintsTableFlt= new GridBagConstraints();
-		        constraintsTableFlt.gridx=4;
+		        constraintsTableFlt.gridx=3;
 		        constraintsTableFlt.gridy=0;
 		        constraintsTableFlt.insets = new Insets(1,1,1,1);
 		        tableFiltersLbl.setVisible(true);
@@ -1151,7 +1072,7 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 		        statusLinePnl.add(tableFiltersLbl,constraintsTableFlt);
 		        
 		        GridBagConstraints constraintsAudience = new GridBagConstraints();
-		        constraintsAudience.gridx=5;
+		        constraintsAudience.gridx=4;
 		        constraintsAudience.gridy=0;
 		        constraintsAudience.insets = new Insets(1,1,1,1);
 		        audienceLbl.setVisible(true);
@@ -1162,13 +1083,13 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 		        statusLinePnl.add(audienceLbl,constraintsAudience);
 				
 		        GridBagConstraints constraintsConnectionDBStatus = new GridBagConstraints();
-				constraintsConnectionDBStatus.gridx = 6;
+				constraintsConnectionDBStatus.gridx = 5;
 				constraintsConnectionDBStatus.gridy = 0;
 				constraintsConnectionDBStatus.insets = new Insets(1, 2, 1, 2);
 				statusLinePnl.add(connectionDBLbl,constraintsConnectionDBStatus);
 		        
 				GridBagConstraints constraintsConnectionStatus = new GridBagConstraints();
-				constraintsConnectionStatus.gridx = 7;
+				constraintsConnectionStatus.gridx = 6;
 				constraintsConnectionStatus.gridy = 0;
 				constraintsConnectionStatus.insets = new Insets(1, 2, 1, 2);
 				statusLinePnl.add(connectionStatusLbl,constraintsConnectionStatus);
@@ -1408,9 +1329,6 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
      * @param max The final position
      */
     public void animateProgressBar(String text, int min, int max) {
-    	if (progressBar.isVisible()) {
-    		throw new IllegalStateException("Exception trying to set the Progress Bar");
-    	}
     	if (min>=max) {
     		throw new IllegalArgumentException("Invalid range: ["+min+","+max+"]");
     	}
@@ -1445,9 +1363,6 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
      *            If it is null or empty then no text will be displayed
      */
     public void animateProgressBar(String text) {
-    	if (progressBar.isVisible()) {
-    		throw new IllegalStateException("Exception trying to set the Progress Bar");
-    	}
     	Cursor hourglassCursor = new Cursor(Cursor.WAIT_CURSOR);
     	setCursor(hourglassCursor);
     	if (text!=null && text.length()>0) {
@@ -1459,7 +1374,6 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
     		progressBar.setToolTipText("Wait please");
     	}
     	progressBar.setIndeterminate(true);
-    	progressBar.setVisible(true);
     }
     
     /**
@@ -1473,7 +1387,6 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
     	progressBar.setValue(0);
     	progressBar.setStringPainted(false);
     	progressBar.setToolTipText(null);
-    	progressBar.setVisible(false);
     	Cursor normalCursor = new Cursor(Cursor.DEFAULT_CURSOR);
     	setCursor(normalCursor);
     }
