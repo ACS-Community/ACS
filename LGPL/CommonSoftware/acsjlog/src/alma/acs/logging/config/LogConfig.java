@@ -65,6 +65,7 @@ import si.ijs.maci.LoggingConfigurable;
 
 import alma.ACSErrTypeCommon.wrappers.AcsJIllegalArgumentEx;
 import alma.acs.logging.level.AcsLogLevelDefinition;
+import alma.acs.logging.AcsLogLevel;
 import alma.cdbErrType.CDBRecordDoesNotExistEx;
 import alma.cdbErrType.CDBXMLErrorEx;
 import alma.maci.loggingconfig.LoggingConfig;
@@ -865,13 +866,13 @@ public class LogConfig {
 			logger.log(level, msg, thr);
 		} 
 		else {
-			if (level.intValue() >= getDefaultMinLogLevelLocal().value) {
+			if (AcsLogLevel.getNativeLevel(level).getAcsLevel().value  >= getDefaultMinLogLevelLocal().value) {
 				Calendar cal = Calendar.getInstance();
     				SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd");
     				SimpleDateFormat sdf2 = new SimpleDateFormat("HH:mm:ss.SSS");
 				sdf1.setTimeZone(TimeZone.getTimeZone("UTC"));
 				sdf2.setTimeZone(TimeZone.getTimeZone("UTC"));
-				System.out.println(sdf1.format(cal.getTime())+ "T"+ sdf2.format(cal.getTime())+ " "+ level.toString() + ": " + msg + (thr != null ? thr.toString() : ""));
+				System.out.println(sdf1.format(cal.getTime())+ "T"+ sdf2.format(cal.getTime())+ " "+ AcsLogLevel.getNativeLevel(level).getAcsLevel().toString() + ": " + msg + (thr != null ? thr.toString() : ""));
 			}
 		}
 	}
