@@ -34,6 +34,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
+import javax.swing.event.RowSorterEvent;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
@@ -830,8 +831,6 @@ public class LogEntryTable extends JTable {
 		selectionModel.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 		setSelectionModel(selectionModel);
 
-		//	firePropertyChange("filterString", "", getFilterString());
-
 	}
 
 	/**
@@ -1100,19 +1099,6 @@ public class LogEntryTable extends JTable {
 		return rowSorter.getFilters();
 	}
 	
-	
-	
-	/**
-	 * Fire a property change event that triggers a refresh
-	 * in the string displayed at the bottom of the main 
-	 * GUI (LoggingClient)
-	 * 
-	 *
-	 */
-	public void updateFilteredString() {
-		firePropertyChange("filterString", "", rowSorter.getFiltersString());
-	}
-	
 	/**
 	 * 
 	 * @param newFilters
@@ -1148,4 +1134,26 @@ public class LogEntryTable extends JTable {
 	public int getViewRowCount() {
 		return rowSorter.getViewRowCount();
 	}
+
+	/* (non-Javadoc)
+	 * @see javax.swing.JTable#sorterChanged(javax.swing.event.RowSorterEvent)
+	 */
+	@Override
+	public void sorterChanged(RowSorterEvent e) {
+		if (e.getType()==RowSorterEvent.Type.SORT_ORDER_CHANGED) {
+			setVisible(false);
+			loggingClient.setEnabled(false);
+			super.sorterChanged(e);
+			loggingClient.animateProgressBar("Sorting");
+		} else {
+			if (e.getType()==RowSorterEvent.Type.SORTED) {
+				loggingClient.freezeProgressBar();
+				super.sorterChanged(e);
+				loggingClient.setEnabled(true);
+				setVisible(true);
+			}
+		}
+	}
+	
+	
 }
