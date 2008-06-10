@@ -1483,19 +1483,7 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 		connectionStatusLbl.setToolTipText("Delay");
 	}
 	
-	/**
-	 * Enable/Disbale all the control in tha GUI than can cause
-	 * the invalidation of the logs
-	 * 
-	 * @param enabled If true the controls are enabled
-	 */
-	public void setEnabledGUIControls(boolean enabled) {
-		toolBar.setEnabledGUIControls(enabled);
-		navigationToolbar.setEnabledGUIControls(enabled);
-		menuBar.setEnabledGUIControls(enabled);
-	}
-	
-	/**
+/**
 	 * Update the GUI with the status of the DB connection
 	 * 
 	 * @param icon The icon 
@@ -1650,5 +1638,18 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 		engineFiltersDlg.setFilters(engineFilters);
 		engineFiltersDlg.setVisible(true);
 	}
+
+	/* (non-Javadoc)
+	 * @see javax.swing.JComponent#setEnabled(boolean)
+	 */
+	@Override
+	public void setEnabled(boolean enabled) {
+		toolBar.setEnabled(enabled);
+		navigationToolbar.setEnabled(enabled);
+		menuBar.setEnabled(enabled);
+		super.setEnabled(enabled);
+	}
+	
+	
 }
 

@@ -150,13 +150,15 @@ public class LogNavigationBar extends JToolBar implements ActionListener {
 	 * 
 	 * @param enabled If true the controls are enabled
 	 */
-	public void setEnabledGUIControls(boolean enabled) {
+    @Override
+	public void setEnabled(boolean enabled) {
 		beginBtn.setEnabled(enabled);
 		prevBtn.setEnabled(enabled);
 		nextBtn.setEnabled(enabled);
 		endBtn.setEnabled(enabled);
 		selectedBtn.setEnabled(enabled);
 		searchBtn.setEnabled(enabled);
+		super.setEnabled(enabled);
 	}
    
    /**
@@ -219,4 +221,5 @@ public class LogNavigationBar extends JToolBar implements ActionListener {
 			table.scrollToSelectedRow();
 		}
 	}
+	
 }

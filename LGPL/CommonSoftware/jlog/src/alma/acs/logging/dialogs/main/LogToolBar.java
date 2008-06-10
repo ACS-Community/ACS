@@ -278,11 +278,14 @@ public class LogToolBar extends JToolBar {
 	 * 
 	 * @param enabled If true the controls are enabled
 	 */
-	public void setEnabledGUIControls(boolean enabled) {
+	@Override
+	public void setEnabled(boolean enabled) {
 		getLogLevelCB().setEnabled(enabled);
 		pauseBtn.setEnabled(enabled);
 		clearLogsBtn.setEnabled(enabled);
 		filtersBtn.setEnabled(enabled);
+		getDiscardLevelCB().setEnabled(enabled);
+		super.setEnabled(enabled);
 	}
 	
 	/**

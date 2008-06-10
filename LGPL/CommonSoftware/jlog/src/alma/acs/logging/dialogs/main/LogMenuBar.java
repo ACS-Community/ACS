@@ -472,15 +472,13 @@ public class LogMenuBar extends JMenuBar {
 	 * 
 	 * @param enabled If true the controls are enabled
 	 */
-	public void setEnabledGUIControls(boolean enabled) {
-		getSearchMenu().setEnabled(enabled);
-		getFieldsMenuItem().setEnabled(enabled);
-		getLoadMenuItem().setEnabled(enabled);
-		getLoadURLMenuItem().setEnabled(enabled);
-		getClearLogsMenuItem().setEnabled(enabled);
-		getSaveFileMenuItem().setEnabled(enabled);
-		getConnectMenuItem().setEnabled(enabled);
-		getAutoReconnectMenuItem().setEnabled(enabled);
+	@Override
+	public void setEnabled(boolean enabled) {
+		viewMenu.setEnabled(enabled);
+		searchMenu.setEnabled(enabled);
+		expertMenu.setEnabled(enabled);
+		fileMenu.setEnabled(enabled);
+		super.setEnabled(enabled);
 	}
 	
 	/**
