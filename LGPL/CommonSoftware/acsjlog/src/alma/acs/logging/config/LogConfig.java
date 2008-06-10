@@ -872,7 +872,7 @@ public class LogConfig {
     				SimpleDateFormat sdf2 = new SimpleDateFormat("HH:mm:ss.SSS");
 				sdf1.setTimeZone(TimeZone.getTimeZone("UTC"));
 				sdf2.setTimeZone(TimeZone.getTimeZone("UTC"));
-				System.out.println(sdf1.format(cal.getTime())+ "T"+ sdf2.format(cal.getTime())+ " "+ AcsLogLevel.getNativeLevel(level).getAcsLevel().toString() + ": " + msg + (thr != null ? thr.toString() : ""));
+				System.out.println(sdf1.format(cal.getTime())+ "T"+ sdf2.format(cal.getTime())+ " "+ AcsLogLevel.getNativeLevel(level).getAcsLevel().toString() + " [alma.acs.logging.config.LogConfig] " + msg + (thr != null ? thr.toString() : ""));
 			}
 		}
 	}
