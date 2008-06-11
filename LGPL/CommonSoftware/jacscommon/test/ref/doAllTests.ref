@@ -1,4 +1,4 @@
-.----------T--:--:--.--- FINER: Logging configuration has been initialized, but not from CDB settings.
+.----------T--:--:--.--- DEBUG [alma.acs.logging.config.LogConfig] Logging configuration has been initialized, but not from CDB settings.
 .This is OK: Failed to do constructor connect.
 .
 
