@@ -1,5 +1,5 @@
 # -*- Makefile -*-
-# $Id: platform_macros.GNU,v 1.8 2007/10/18 06:57:34 bjeram Exp $
+# $Id: platform_macros.GNU,v 1.9 2008/06/11 08:08:34 bjeram Exp $
 
 # According to Bryon G. Rigg <bgrigg@opus.bcbnet.com>, this file
 # should allow ACE to be built on Linux.
@@ -7,6 +7,8 @@
 include $(ACE_ROOT)/include/makeinclude/platform_linux_common.GNU
 
 NUM_CPU=$(shell grep -c processor  /proc/cpuinfo)
+
+no_hidden_visibility ?= 1
 
 ifeq ($(insure),0)
   CC  ?= gcc
