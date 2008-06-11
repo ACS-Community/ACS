@@ -304,15 +304,23 @@ public class LogTableDataModel extends AbstractTableModel {
 		switch (column) {
 		case 1: {// TIMESTAMP
 				try {
-				return new Date(allLogs.getLogTimestamp(row));
+				return new Date(allLogs.getLogTimestamp(rows.get(row)));
 				} catch (Exception e) {
+					System.err.println("Got a null timestamp: ");
+					e.printStackTrace(System.err);
 					return null;
 				}
 		}
 		case 2: { // ENTRYTYPE
 			try {
-				return allLogs.getLogType(row);
+				LogTypeHelper temp = allLogs.getLogType(rows.get(row));
+				if (temp==null) {
+					System.out.println("Got a null logtype row "+row+", col "+column);
+				}
+				return temp;
 			} catch (Exception e) {
+				System.err.println("Got a null log type: ");
+				e.printStackTrace(System.err);
 				return null;
 			}
 		}
