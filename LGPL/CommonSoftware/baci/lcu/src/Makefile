@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.104 2005/08/23 15:27:06 vwang Exp $" 
+# "@(#) $Id: Makefile,v 1.105 2008/06/11 07:54:50 bjeram Exp $" 
 #
 # Makefile of baci
 #
@@ -86,7 +86,7 @@ baci_COMMON =  	baciBACIAction baciBACICallback baciBACIMonitor baciUtil baciBAC
 		baciROlongLong baciRWlongLong \
 		baciROuLongLong baciRWuLongLong \
                 baciROlong baciRWlong \
-                baciPpatternImpl baciROpattern baciRWpattern \
+                baciPpatternImpl baciROpattern baciRWpattern baciAlarmPattern baciAlarmSystemMonitorPattern\
                 baciROstring baciRWstring \
 		baciROdoubleSeq baciROfloatSeq baciROlongSeq \
                 baciRWdoubleSeq baciRWfloatSeq baciRWlongSeq 
