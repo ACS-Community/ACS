@@ -1,0 +1,50 @@
+#!/usr/bin/env perl
+
+# $Id: mdExtractImages,v 1.1 2008/06/11 13:46:20 gchiozzi Exp $
+$instDir = "$ENV{MAGIC_DRAW_HOME}";
+$debug = 0;
+
+if ($#ARGV < 1) { 
+    die "Usage: $0 <model> <destination>\n";
+}
+
+$model = $ARGV[0];
+$destination = $ARGV[1];
+
+if ( ! -f $model) { 
+    die "Model $model does not exist\n";
+}
+
+if ( ! -d $destination || ! -w $destination) { 
+    die "Destination $destination does not exist or is not writable\n";
+}
+
+if ( $ENV{MAGIC_DRAW_HOME} eq "") { 
+    die "Environment variable MAGIC_DRAW_HOME is not defined\n";
+}
+
+@jarfiles = `find $instDir/lib -follow -name \\*.jar`;
+
+foreach $jar (@jarfiles) { 
+    $jar =~ s/\n$//;
+    next if ($jar =~ /md_commontw/);
+    next if ($jar =~ /md_commontw_api/);
+    $ENV{CLASSPATH} = $ENV{CLASSPATH}.":$jar";
+}
+
+print "$ENV{CLASSPATH}\n" if ($debug) ;
+
+#$model = "/home/sqa-ops/Mike/MagicDraw/Model/ACS-1_0.xml.zip";
+#$model = "/sqa0/NRI/ALMA/ICD/HLA/APDM/idl/ASDM_Profile.mdzip";
+#
+#
+$executeClass = "com.nomagic.magicdraw.examples.imagegenerator.ExportDiagramImages";
+
+
+$command =  "java   -XX:PermSize=40M -XX:MaxPermSize=150M -Dinstall.root=$instDir -Xmx500M -Xss26M  -cp $ENV{CLASSPATH}:. $executeClass project_file=$model destination_dir=$destination ";
+print $command if ($debug);
+system $command;
+
+
+
+
