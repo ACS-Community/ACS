@@ -91,8 +91,8 @@ public class LogTableRowFilter extends RowFilter<LogTableDataModel, Integer> {
 		int[] activesIndexes = userFilters.getAppliedFiltersIndexes();
 		if (activesIndexes!=null && activesIndexes.length>0) {
 			filters = new Filter[activesIndexes.length];
-			for (int t=0; t<filters.length; t++) {
-				filters[t]=userFilters.get(t);
+			for (int t=0; t<activesIndexes.length; t++) {
+				filters[t]=userFilters.get(activesIndexes[t]);
 			}
 		}
 	}
