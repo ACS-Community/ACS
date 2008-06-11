@@ -7,11 +7,10 @@
 	<classpathentry kind="var" path="ACSROOT/lib/abeansR2Components.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/junit.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/jACSCommon.jar"/>
-	<classpathentry kind="var" path="ACSROOT/lib/jACSUtil.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/jdom.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/maci.jar" sourcepath="/ACSROOT/lib/maci.jar"/>
-	<classpathentry kind="var" path="ACSROOT/lib/icons.jar"/>
 	<classpathentry kind="lib" path="src/lc.jar.extras"/>
+	<classpathentry kind="var" path="ACSROOT/lib/icons.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/cosyframework-gui.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/endorsed/xercesImpl.jar" sourcepath="/ACSROOT/lib/endorsed/xercesImpl.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/maciErrType.jar"/>
@@ -21,6 +20,12 @@
 	<classpathentry kind="var" path="ACSROOT/lib/acserrj.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acserr.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/jcont.jar"/>
-	<classpathentry kind="var" path="INTROOT/lib/acsjlog.jar"/>
+	<classpathentry kind="var" path="INTROOT/lib/lcEngine.jar"/>
+	<classpathentry kind="var" path="INTROOT/lib/jACSUtil.jar"/>
+	<classpathentry kind="lib" path="/jlogEngine/lib/lcEngine.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acsjlog.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/maciSchemaBindings.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/cdbErrType.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/castor.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
