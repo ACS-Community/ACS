@@ -7,15 +7,14 @@
 1 - JUnit test run succeeded
 1 - TEST_RUNNER_REPORT success/total: 1/1
 1 - JUnit test run succeeded
-1 - ----------T--:--:--.--- FINER: Logging configuration has been initialized, but not from CDB settings.
 1 - ----------T--:--:--.--- INFO [testStress#testStress] -------------------------------
 1 - ----------T--:--:--.--- INFO [testStress#testStress] ComponentClientTestCase#setUp()
 1 - ----------T--:--:--.--- INFO [testStress#testStress] Got silentContainer's PID: xxxx
 1 - ----------T--:--:--.--- INFO [testStress#testStress] Max/Min for JacORB's thread pool: xx/xx
 1 - ----------T--:--:--.--- INFO [testStress#testStress] Total number of JacORB threads: xx
 1 - ----------T--:--:--.--- INFO [testStress#testStress] Total number of ACS threads: xx
-1 - ----------T--:--:--.--- INFO [testStress#testStress] Class name                                        State          #    
 1 - ----------T--:--:--.--- INFO [testStress#testStress] ==========                                        =====          =
+1 - ----------T--:--:--.--- INFO [testStress#testStress] Class name                                        State          #    
 1 - ----------T--:--:--.--- INFO [testStress#testStress] org.jacorb.poa.RequestProcessor                   WAITING        xx
 1 - ----------T--:--:--.--- INFO [testStress#testStress] client 'alma.acs.container.corba.ContainerMonitorTest' has successfully released  a component with curl=DefaultDummyComp
 1 - ----------T--:--:--.--- INFO [testStress#testStress] ACS Container threads average (idle/stress): xx.xx/xx.xx
