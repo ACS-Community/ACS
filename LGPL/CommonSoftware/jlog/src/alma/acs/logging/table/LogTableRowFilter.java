@@ -147,11 +147,11 @@ public class LogTableRowFilter extends RowFilter<LogTableDataModel, Integer> {
 	 * Check if the level of the log passed as parameter matches
 	 * with the log level
 	 * 
-	 * @param logLevel The level to check
-	 * @return <code>true</code> if the parameter is greater the 
+	 * @param level The level to check
+	 * @return <code>true</code> if the parameter is greater then the log level
 	 */
-	private boolean checkLogLevel(LogTypeHelper logLevel) {
-		return logLevel!=null && logLevel.ordinal()>=this.logLevel.ordinal();
+	private boolean checkLogLevel(LogTypeHelper level) {
+		return level!=null && level.ordinal()>=this.logLevel.ordinal();
 	}
 
 }
