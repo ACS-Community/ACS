@@ -22,6 +22,7 @@ import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.engine.log.LogTypeHelper;
 import com.cosylab.logging.engine.log.ILogEntry.Field;
 
+import alma.acs.logging.table.LogTooltipHelper;
 import alma.acs.logging.table.renderer.EntryTypeRenderer;
 import alma.acs.util.IsoDateFormat;
 
@@ -264,60 +265,9 @@ public class DetailedLogTable extends JTable
 		Component c = super.prepareRenderer(renderer, rowIndex, vColIndex);
 
 		if (vColIndex==1) {
-			setToolTip((JComponent)c,nameValue[rowIndex][vColIndex].toString(),96);
+			LogTooltipHelper.setToolTip((JComponent)c,nameValue[rowIndex][vColIndex].toString(),96);
 		}
 		return c;
-	}
-	
-	/**
-	 * Format the string before setting the tooltip for the given component
-	 * The tooltip is shown only if the text is not visible (i.e. the num.
-	 * of displayed chars for the column containing the text is less then
-	 * the given text).
-	 * <P>
-	 * To show the string as multi-line it is transformed in HTML and
-	 * <code>\n</code> are replaced by <code>&lt;BR&gt;</code>. 
-	 * To show strings containing HTML and/or XML the <code>&lt;PRE&gt;</code> tag is used 
-	 * (for this reason existing &lt; and &gt; in the original string are replaced by &lt; and &gt;)
-	 * 
-	 * @param c The component to set the tooltip 
-	 * @param text The string to display in the tooltip
-	 * @param colWidth The max number of chars for each line of the tooltip
-	 */
-	private void setToolTip(JComponent  c, String text, int colWidth) {
-		if (text==null || text.length()==0)	{
-			c.setToolTipText(null);
-			return;
-		}
-		// Insert the 'new line' if text is longer then colWidth
-		StringBuilder str = new StringBuilder();
-		String toolTip;
-		if (text.length()>colWidth) {
-			int count=0;
-			
-			for (int t=0; t<text.length(); t++) {
-				if (++count>=colWidth) {
-					count=0;
-					str.append('\n');
-				}
-				char ch = text.charAt(t);
-				str.append(ch);
-				if (ch=='\n') {
-					count=0;
-				} else {
-					count++;
-				}
-			}
-			toolTip=str.toString();
-		} else {
-			toolTip=text;
-		}
-		// Format the string as HTML
-		toolTip=toolTip.replaceAll("<","&lt;");
-		toolTip=toolTip.replaceAll(">","&gt;");
-		toolTip=toolTip.replaceAll("\n", "<BR>");
-		// Eventually, set the tooltip
-		c.setToolTipText("<HTML><PRE>"+toolTip+"</PRE></HTML>");
 	}
 
 	/* (non-Javadoc)
