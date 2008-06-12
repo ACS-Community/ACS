@@ -312,7 +312,6 @@ public class DetailedLogTable extends JTable
 		} else {
 			toolTip=text;
 		}
-		System.out.println("TEXT: "+text+"\n>>>"+toolTip);
 		// Format the string as HTML
 		toolTip=toolTip.replaceAll("<","&lt;");
 		toolTip=toolTip.replaceAll(">","&gt;");
