@@ -656,8 +656,7 @@ public class LogEntryTable extends JTable {
 	{
 		String tooltipTxt = getCellStringContent(rowIndex, vColIndex);
 		Component c = super.prepareRenderer(renderer, rowIndex, vColIndex);
-		int columnWidth = getColumnModel().getColumn(vColIndex).getWidth();
-		setToolTip((JComponent)c,tooltipTxt,columnWidth);
+		setToolTip((JComponent)c,tooltipTxt,96);
 		return c;
 	}
 	
@@ -697,34 +696,50 @@ public class LogEntryTable extends JTable {
 	 * The tooltip is shown only if the text is not visible (i.e. the num.
 	 * of displayed chars for the column containing the text is less then
 	 * the given text).
-	 * 
-	 * To show the string as multine it is transformed in HTML so
-	 * \n are replaced by <BR>/ To show strings containing HTML and/or
-	 * XML the <PRE> tag is used (for this reason existing < and > in
-	 * the original string are replaced by &lt; and &lgt;)
+	 * <P>
+	 * To show the string as multi-line it is transformed in HTML and
+	 * <code>\n</code> are replaced by <code>&lt;BR&gt;</code>. 
+	 * To show strings containing HTML and/or XML the <code>&lt;PRE&gt;</code> tag is used 
+	 * (for this reason existing &lt; and &gt; in the original string are replaced by &lt; and &gt;)
 	 * 
 	 * @param c The component to set the tooltip 
 	 * @param text The string to display in the tooltip
-	 * @param colWidth The width of the column
-	 * 
-	 * @return
+	 * @param colWidth The max number of chars for each line of the tooltip
 	 */
 	private void setToolTip(JComponent  c, String text, int colWidth) {
 		if (text==null || text.length()==0)	{
-			((JComponent) c).setToolTipText(null);
+			c.setToolTipText(null);
 			return;
 		}
-		Font font = this.getFont();
-		FontMetrics fm = getFontMetrics(font);
-		if (fm.stringWidth(text)<colWidth) {
-			((JComponent) c).setToolTipText(null);
+		// Insert the 'new line' if text is longer then colWidth
+		StringBuilder str = new StringBuilder();
+		String toolTip;
+		if (text.length()>colWidth) {
+			int count=0;
+			
+			for (int t=0; t<text.length(); t++) {
+				if (++count>=colWidth) {
+					count=0;
+					str.append('\n');
+				}
+				char ch = text.charAt(t);
+				str.append(ch);
+				if (ch=='\n') {
+					count=0;
+				} else {
+					count++;
+				}
+			}
+			toolTip=str.toString();
 		} else {
-			// I am going to print the string in HTML format: new lines become <BR>
-			text=text.replaceAll("<","&lt;");
-			text=text.replaceAll(">","&gt;");
-			// Eventually, set the tooltip
-			((JComponent) c).setToolTipText("<HTML><FONT size=\"-2\">"+text+"</FONT></HTML>");
+			toolTip=text;
 		}
+		// Format the string as HTML
+		toolTip=toolTip.replaceAll("<","&lt;");
+		toolTip=toolTip.replaceAll(">","&gt;");
+		toolTip=toolTip.replaceAll("\n", "<BR>");
+		// Eventually, set the tooltip
+		c.setToolTipText("<HTML><PRE>"+toolTip+"</PRE></HTML>");
 	}
 
 	/**
