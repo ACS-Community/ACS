@@ -2,23 +2,27 @@
 1 -  --endorsed -- com.cosylab.cdb.CDBDefault IDL:alma/PS/PowerSupply:1.0 TEST_PS_2 -d corbaloc::xxxxxxx:yyyy/CDB
 1 - ----------T--:--:--.--- INFO [acsStartJava] Starting Java/abeans application: com.cosylab.cdb.CDBDefault IDL:alma/PS/PowerSupply:1.0 TEST_PS_2 -d corbaloc::xxxxxxx:yyyy/CDB
 1 - 
+1 - ----------T--:--:--.--- DEBUG [alma.acs.logging.config.LogConfig] Logging configuration has been initialized, but not from CDB settings.
 1 - 25,26c25,26
 1 - ---
 1 - 2 - NEW Fashion Components
 1 -  --endorsed -- com.cosylab.cdb.CDBDefault IDL:alma/Control/CRD:1.0 CONTROL/CRD/Node0x20/Generic -d corbaloc::xxxxxxx:yyyy/CDB
 1 - ----------T--:--:--.--- INFO [acsStartJava] Starting Java/abeans application: com.cosylab.cdb.CDBDefault IDL:alma/Control/CRD:1.0 CONTROL/CRD/Node0x20/Generic -d corbaloc::xxxxxxx:yyyy/CDB
 1 - 
+1 - ----------T--:--:--.--- DEBUG [alma.acs.logging.config.LogConfig] Logging configuration has been initialized, but not from CDB settings.
 1 - 29c29
 1 - ---
 1 - 3 - MIX Components
 1 -  --endorsed -- com.cosylab.cdb.CDBDefault IDL:alma/Control/CRD:1.0 CONTROL/CRD/Node0x20/Generic -d corbaloc::xxxxxxx:yyyy/CDB
 1 - ----------T--:--:--.--- INFO [acsStartJava] Starting Java/abeans application: com.cosylab.cdb.CDBDefault IDL:alma/Control/CRD:1.0 CONTROL/CRD/Node0x20/Generic -d corbaloc::xxxxxxx:yyyy/CDB
 1 - 
+1 - ----------T--:--:--.--- DEBUG [alma.acs.logging.config.LogConfig] Logging configuration has been initialized, but not from CDB settings.
 1 - 29c29
 1 - ---
 1 - 4 - MIX Components second example
 1 -  --endorsed -- com.cosylab.cdb.CDBDefault IDL:alma/PS/PowerSupply:1.0 TEST_PS_2 -d corbaloc::xxxxxxx:yyyy/CDB
 1 - ----------T--:--:--.--- INFO [acsStartJava] Starting Java/abeans application: com.cosylab.cdb.CDBDefault IDL:alma/PS/PowerSupply:1.0 TEST_PS_2 -d corbaloc::xxxxxxx:yyyy/CDB
 1 - 
+1 - ----------T--:--:--.--- DEBUG [alma.acs.logging.config.LogConfig] Logging configuration has been initialized, but not from CDB settings.
 1 - 25,26c25,26
 1 - ---
