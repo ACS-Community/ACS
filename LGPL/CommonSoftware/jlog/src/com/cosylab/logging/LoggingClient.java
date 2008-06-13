@@ -115,6 +115,16 @@ import com.cosylab.logging.stats.StatsDlg;
 public class LoggingClient extends JRootPane implements ACSRemoteLogListener, ACSLogConnectionListener, ACSRemoteErrorListener
 {
 	/**
+	 * The default log level
+	 */
+	public static final LogTypeHelper DEFAULT_LOGLEVEL = LogTypeHelper.INFO;
+	
+	/**
+	 * The default discard level
+	 */
+	public static final LogTypeHelper DEFAULT_DISCARDLEVEL = LogTypeHelper.DEBUG;
+	
+	/**
 	 * The name of the property to set for enabling the operator mode at startup.
 	 * 
 	 * If the property is not found, NO_AUDIENCE is set in the engine
@@ -221,7 +231,7 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 	private JLabel connectionDBLbl;
 	
     // The toolbar
-    private LogToolBar toolBar = new LogToolBar();
+    private LogToolBar toolBar;
     
     // The toolbar to navigate logs
     private LogNavigationBar navigationToolbar;
@@ -396,21 +406,34 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 	
 	
 	/**
-	 * Build the object in online/offline mode 
+	 * Constructor
+	 * <P>
+	 * The empty constructor is called by the OMC GUI. 
 	 * 
-	 * @param initialConnectionStatus If true jlog connects to the ACS logging system
 	 */
 	public LoggingClient()
 	{
 		super();
-		initialize();
+		initialize(DEFAULT_LOGLEVEL,DEFAULT_DISCARDLEVEL);
 		initAudience();
 	}
 	
-	public LoggingClient(LogFrame frame)
+	/**
+	 * The constructor
+	 * <P>
+	 * This constructor is called when this object runs in stand-alone mode
+	 * i.e outside of the OMC GUI.
+	 * 
+	 * @param frame The shows this object
+	 * @param logLevel The initial log lwvel
+	 * @param discardLevel The initial discard level
+	 */
+	public LoggingClient(LogFrame frame, LogTypeHelper logLevel, LogTypeHelper discardLevel)
 	{
-		this();
+		super();
 		logFrame=frame;
+		initialize(logLevel, discardLevel);
+		initAudience();
 	}
 	
 	
@@ -775,8 +798,11 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 	
 	/**
 	 * Initializes the object.
+	 * 
+	 * @param logLevel The initial log level to set in the toolbar and in the table
+	 * @param discardLevel The initial discard level to set in the toolbar and in the engine
 	 */
-	private void initialize()
+	private void initialize(LogTypeHelper logLevel, LogTypeHelper discardLevel)
 	{
 		try
 		{
@@ -799,6 +825,7 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 			JPanel toolbarsPanel = new JPanel();
 			BoxLayout toolbarLayout = new BoxLayout(toolbarsPanel,BoxLayout.Y_AXIS);
 			toolbarsPanel.setLayout(toolbarLayout);
+			toolBar = new LogToolBar(logLevel,discardLevel);
 			toolbarsPanel.add(toolBar);
 			navigationToolbar = new LogNavigationBar(getLogEntryTable());
 			toolbarsPanel.add(navigationToolbar);
@@ -807,7 +834,7 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
     		initConnections();
     		validate();
             
-			getLogEntryTable().setLogLevel(toolBar.DEFAULT_LOGLEVEL);
+			getLogEntryTable().setLogLevel((LogTypeHelper)toolBar.getLogLevelCB().getSelectedItem());
 			
 			getLCModel1().setTimeFrame(userPreferences.getMillisecondsTimeFrame());
 			getLCModel1().setMaxLog(userPreferences.getMaxNumOfLogs());
