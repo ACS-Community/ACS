@@ -12,6 +12,12 @@ template<class T, class TPROP>
 AlarmSystemMonitorSeqCont<T, TPROP>::~AlarmSystemMonitorSeqCont()
 {
     ACS_TRACE("baci::AlarmSystemMonitorSeqCont&lt;&gt;::~AlarmSystemMonitorSeqCont");
+    if (alarmsRaised_mp !=0)
+    { 
+    	delete[] alarmsRaised_mp; 
+    	alarmsRaised_mp = 0; 
+    	alarmsRaisedLength_m = 0;
+    }//if
 }//~AlarmSystemMonitorSeqCont
 
 
