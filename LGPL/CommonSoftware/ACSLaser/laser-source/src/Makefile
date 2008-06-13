@@ -196,7 +196,7 @@ generated:
 	@echo "\n\nCode generation in progress...."
 	@for item in $(foreach name, $(CASTOR_GENERATED), "-i $(name).xsd -package $($(name)_PACKAGE)") ; \
 	do \
-	acsStartJava -noDirectory -endorsed org.exolab.castor.builder.SourceGenerator -line-separator unix -f  $${item}; \
+		acsStartJava -noDirectory -endorsed org.exolab.castor.builder.SourceGenerator -line-separator unix -f  $${item};  \
 	done
 	@echo "Code generation done!\n\n"
 
@@ -206,7 +206,7 @@ clean_generated:
 	rm -rf $${item}; \
 	done
 
-all:	generated do_all
+all:	directory_structure generated do_all
 	@echo " . . . 'all' done" 
 
 clean : clean_generated clean_all 
