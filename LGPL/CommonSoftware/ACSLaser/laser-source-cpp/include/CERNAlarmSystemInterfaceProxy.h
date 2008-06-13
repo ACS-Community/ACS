@@ -15,7 +15,7 @@ namespace laserSource
 			virtual void close();
 
 		protected:
-			bool CERNAlarmSystemInterfaceProxy::publishMessage(acsalarm::ASIMessage msg);
+			bool publishMessage(acsalarm::ASIMessage msg);
 	
 		private:
 			// initialization logic used by the constructors
