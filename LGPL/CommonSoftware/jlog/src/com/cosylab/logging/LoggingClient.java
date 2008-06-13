@@ -414,7 +414,7 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 	public LoggingClient()
 	{
 		super();
-		initialize(DEFAULT_LOGLEVEL,DEFAULT_DISCARDLEVEL);
+		initialize(DEFAULT_LOGLEVEL,DEFAULT_DISCARDLEVEL,false);
 		initAudience();
 	}
 	
@@ -427,12 +427,14 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 	 * @param frame The shows this object
 	 * @param logLevel The initial log lwvel
 	 * @param discardLevel The initial discard level
+	 * @param unlimited If <code>true</code> the number of logs in memory is unlimited, 
+	 *                  otherwise the default is used
 	 */
-	public LoggingClient(LogFrame frame, LogTypeHelper logLevel, LogTypeHelper discardLevel)
+	public LoggingClient(LogFrame frame, LogTypeHelper logLevel, LogTypeHelper discardLevel, boolean unlimited)
 	{
 		super();
 		logFrame=frame;
-		initialize(logLevel, discardLevel);
+		initialize(logLevel, discardLevel, unlimited);
 		initAudience();
 	}
 	
@@ -801,8 +803,10 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 	 * 
 	 * @param logLevel The initial log level to set in the toolbar and in the table
 	 * @param discardLevel The initial discard level to set in the toolbar and in the engine
+	 * @param unlimited If <code>true</code> the number of logs in memory is unlimited, 
+	 *                  otherwise the default is used
 	 */
-	private void initialize(LogTypeHelper logLevel, LogTypeHelper discardLevel)
+	private void initialize(LogTypeHelper logLevel, LogTypeHelper discardLevel, boolean unlimited)
 	{
 		try
 		{
@@ -836,6 +840,9 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
             
 			getLogEntryTable().setLogLevel((LogTypeHelper)toolBar.getLogLevelCB().getSelectedItem());
 			
+			if (unlimited) {
+				userPreferences.setMaxLogs(0);
+			}
 			getLCModel1().setTimeFrame(userPreferences.getMillisecondsTimeFrame());
 			getLCModel1().setMaxLog(userPreferences.getMaxNumOfLogs());
 			
