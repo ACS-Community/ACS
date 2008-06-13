@@ -44,16 +44,20 @@ import com.cosylab.logging.settings.LogTypeRenderer;
  */
 public class LogToolBar extends JToolBar {
 	
-    //	The ComboBox in the toolbar and its default value (i.e. the log level
-    // at startup
+    /**	
+     * The ComboBox in the toolbar and its default value (i.e. the log level
+     * at startup
+     */
     private JComboBox logLevelCB;
-    public final LogTypeHelper DEFAULT_LOGLEVEL = LogTypeHelper.INFO;
     
-    // The ComboBox with the discard level in the toolbar
-    // (the logs with a level lower then what is shown in this ComboBox
-    // are discarded when read from the NC)
+    
+    /** 
+     * The ComboBox with the discard level in the toolbar
+     * (the logs with a level lower then what is shown in this ComboBox
+     * are discarded when read from the NC)
+     */
     private JComboBox discardLevelCB;
-    public final LogTypeHelper DEFAULT_DISCARDLEVEL = LogTypeHelper.DEBUG;
+    
     
 //  The button to enable/disable (play/pause) the scroll lock
     private JButton pauseBtn;
@@ -69,13 +73,30 @@ public class LogToolBar extends JToolBar {
     // The button to manage filters
     private JButton filtersBtn;
     
+    /**
+     * The initial discard level
+     */
+    private LogTypeHelper initialDiscardLevel;
+    
+    /**
+     * The initial log level
+     */
+    private LogTypeHelper initialLogLevel;
+    
 	/**
-	 * Empty constructor
+	 * Constructor
 	 *
+	 * @param initialLogLvl The initial log level to set in the CB
+	 * @param intialDiscardLvl The initial discard level to set in the COB 
 	 */
-	public LogToolBar() {
+	public LogToolBar(LogTypeHelper initialLogLvl, LogTypeHelper intialDiscardLvl) {
 		super();
+		if (initialLogLvl==null) {
+			throw new IllegalArgumentException("The initial log level can't be null");
+		}
 		setName("LogToolBar");
+		initialLogLevel=initialLogLvl;
+		initialDiscardLevel=intialDiscardLvl;
 		setupToolBar();
 	}
 
@@ -154,7 +175,11 @@ public class LogToolBar extends JToolBar {
             }
     		discardLevelCB = new JComboBox(discardLevelStr);
     		discardLevelCB.setMaximumRowCount(discardLevelStr.length);
-    		discardLevelCB.setSelectedIndex(DEFAULT_DISCARDLEVEL.ordinal()+1);
+    		if (initialDiscardLevel==null) {
+    			discardLevelCB.setSelectedIndex(0);
+    		} else {
+    			discardLevelCB.setSelectedIndex(initialDiscardLevel.ordinal()+1);
+    		}
     		discardLevelCB.setEditable(false);
     		discardLevelCB.setRenderer(discardRendererCB);
     	}
@@ -178,7 +203,7 @@ public class LogToolBar extends JToolBar {
 	        // Build the renderer for the combo boxes
 	        LogTypeRenderer rendererCB = new LogTypeRenderer();
 	        
-	        logLevelCB.setSelectedItem(DEFAULT_LOGLEVEL);
+	        logLevelCB.setSelectedItem(initialLogLevel);
 	        logLevelCB.setEditable(false);
 	        logLevelCB.setMaximumRowCount(LogTypeHelper.values().length);
 	        logLevelCB.setRenderer(rendererCB);
