@@ -53,6 +53,33 @@ public class ClientPendingReplyTimeoutTest extends ComponentClientTestCase {
 		super.tearDown();
 	}
 
+	public void testClientPendingReplyTimeoutContainer() throws Exception {
+        String compName = "DefaultDummyComp2";
+		org.omg.CORBA.Object compObj = getContainerServices().getComponent(compName);
+		assertNotNull(compObj);
+		dummyComponent = DummyComponentHelper.narrow(compObj);
+	
+		// doesn't have the getConfiguration() method
+        int timeout = 50;
+
+		boolean timeoutException = false;
+
+        try {
+            dummyComponent.callThatTakesSomeTime((int)(timeout + 10)*1000);
+        } catch (org.omg.CORBA.TIMEOUT e) {
+            timeoutException = true;
+        }
+        assertTrue(timeoutException);
+		
+		// This call should take no time, so no exception should be trhown
+		timeoutException = false;
+        try {
+            dummyComponent.callThatTakesSomeTime(0);
+        } catch (org.omg.CORBA.TIMEOUT e) {
+            timeoutException = true;
+        }
+        assertTrue(!timeoutException);
+	}
 	
 	public void testClientPendingReplyTimeout() throws Exception {
 		org.omg.CORBA.Object compObj = getContainerServices().getDefaultComponent(DUMMYCOMP_TYPENAME);

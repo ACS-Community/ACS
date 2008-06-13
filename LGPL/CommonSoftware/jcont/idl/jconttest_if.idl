@@ -60,11 +60,13 @@ module jconttest
 	{
 		void dummyComponentsCanDoCloseToNothing();
 		void callThatTakesSomeTime(in long timeInMillisec);
+		void callThatTakesSomeTimeWithName(in long timeInMillisec);
 	};
 
 	interface DummyComponentWrapper : ACS::ACSComponent
 	{
 		boolean callDummyComponentWithTime(in long timeInMillisec);
+		boolean callDummyCompWithTimeAndName(in long timeInMillisec, in string cont);
 	};
 
 	interface DataReceiver : ACS::ACSComponent

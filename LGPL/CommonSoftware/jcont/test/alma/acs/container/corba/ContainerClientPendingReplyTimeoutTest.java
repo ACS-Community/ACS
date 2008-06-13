@@ -23,11 +23,14 @@ import alma.acs.component.client.ComponentClientTestCase;
 import alma.jconttest.DummyComponentWrapper;
 import alma.jconttest.DummyComponentWrapperHelper;
 
+import java.util.Calendar;
+
 /**
  * Tests the <code>jacorb.connection.client.pending_reply_timeout</code> property setting for a
  * container as client.
  * Requires ACS runtime with a remote container.
  * 
+ * Also tests the dynamic Timeout defined in the cdb: MACI/Container/containerName/Timeout
  * @author rtobar
  */
 public class ContainerClientPendingReplyTimeoutTest extends ComponentClientTestCase {
@@ -53,7 +56,33 @@ public class ContainerClientPendingReplyTimeoutTest extends ComponentClientTestC
 		m_logger.info("done, tearDown");
 		super.tearDown();
 	}
+    /**/
+	public void testClientPendingReplyTimeoutContainer() throws Exception {
+        String compWrapperName = "DefaultDummyCompWrapper2";
+        String compName = "DefaultDummyComp2";
+		org.omg.CORBA.Object compObj = getContainerServices().getComponent(compWrapperName);
+		assertNotNull(compObj);
+		dummyComponentWrapper = DummyComponentWrapperHelper.narrow(compObj);
+        //seconds defined in CDB
+        int timeout = 50;
+		// If timeout is > 0, then the property is set and can be tested
+		// else, nothing can be proben
+        assertTrue(!dummyComponentWrapper.callDummyCompWithTimeAndName((int)(timeout/3), compName));
+        assertTrue(!dummyComponentWrapper.callDummyCompWithTimeAndName((int)(timeout/2), compName));
 
+		// This will make dummyComponentWrapper to call the DummyComponent#callThatTakesSomeTime
+		boolean timeoutException = false;
+        //Here we will check that the timeout is similar to seconds defined in CDB
+        Calendar before = Calendar.getInstance();
+        
+	    timeoutException = dummyComponentWrapper.callDummyCompWithTimeAndName(-1, compName);
+		assertTrue(timeoutException);
+        
+        Calendar after = Calendar.getInstance();
+        int sec = (int)(after.getTimeInMillis() - before.getTimeInMillis())/1000;
+        
+        assert(Math.abs(sec - timeout) < 5);
+	}
 	
 	public void testClientPendingReplyTimeout() throws Exception {
 		org.omg.CORBA.Object compObj = getContainerServices().getDefaultComponent(DUMMYWRAPPERCOMP_TYPENAME);

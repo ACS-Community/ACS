@@ -35,6 +35,40 @@ public class DummyComponentWrapperImpl extends ComponentImplBase implements Dumm
 	private static final String DUMMYCOMP_TYPENAME = "IDL:alma/jconttest/DummyComponent:1.0";
 	private static final String PROPERTY_NAME = "jacorb.connection.client.pending_reply_timeout";
 	
+	public boolean callDummyCompWithTimeAndName(int timeInMillisec, String name) {
+		
+		DummyComponent dummyComponent = null;
+		try {
+			org.omg.CORBA.Object compObj = m_containerServices.getComponent(name);
+			dummyComponent = DummyComponentHelper.narrow(compObj);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		// We get the property value from the ORB configuration for the component
+		// Need to cast the ORB object since it declared as org.omg.orb.ORB, and it
+		// doesn't have the getConfiguration() method
+		int timeout = 0;
+		if( m_containerServices.getAdvancedContainerServices().getORB() instanceof org.jacorb.orb.ORB ) {
+			try {
+				timeout = ((org.jacorb.orb.ORB)m_containerServices.getAdvancedContainerServices().getORB()).getConfiguration().getAttributeAsInteger(PROPERTY_NAME);
+			} catch (org.apache.avalon.framework.configuration.ConfigurationException e){
+				e.printStackTrace();
+			}
+		}
+		
+		// If the given time is less than 0, then let's call the method with the timeout that is
+		// configured in the ORB. Otherwise, use the time given as parameter.
+		if( timeInMillisec < 0 )
+			timeInMillisec = timeout + 1000;
+
+        try {
+            dummyComponent.callThatTakesSomeTime((int)(timeInMillisec));
+        } catch (org.omg.CORBA.TIMEOUT e) {
+            return true;
+        }
+        return false;
+	}
 	/**
 	 * This method is a wrapper for the {@link alma.jconttest.DummyComponent#callThatTakesSomeTime} method.
 	 * It returns if a <code>org.omg.CORBA.TIMEOUT</code> exception is thrown as result of this call. The timeout
