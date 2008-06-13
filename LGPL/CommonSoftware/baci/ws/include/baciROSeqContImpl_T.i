@@ -29,17 +29,15 @@ ROSeqContImpl<ACS_RO_TL>::ROSeqContImpl(const ACE_CString& name, BACIComponent *
 
     if ( this->devIO_mp->initializeValue()==true) 
 	{
-	//ACS::Time timeStamp;
 	//devIO_mp->write(defaultValue_m, timeStamp);
 	ACS_DEBUG("baci::ROSeqContImpl&lt;&gt;::ROSeqContImpl", "DevIO initial value set not implemented yet.");
 	}
 
-/*TBD: fix BACI type in MonitorEventDisp
     if (this->monitorEventDispatcher_mp!=0 && this->alarmTimerTrig_m!=0)
-	{
-	alarmSystemMonitor_mp = new AlarmSystemMonitorSeqCont<TM, PropType>(this, this->monitorEventDispatcher_mp);
-	}//if
-*/
+    {
+    	alarmSystemMonitor_mp = new AlarmSystemMonitorSeqCont<TM, PropType>(this, this->monitorEventDispatcher_mp);
+    }//if
+
   this->initialization_m = 0;   // property successfuly initialized
   ACS_DEBUG("baci::ROSeqContImpl&lt;&gt;::ROSeqContImpl", "Successfully created.");  
 }
