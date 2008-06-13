@@ -35,6 +35,7 @@ import alma.acs.logging.AcsLogLevel;
 import alma.acs.logging.ClientLogManager;
 
 import com.cosylab.logging.LoggingClient;
+import com.cosylab.logging.engine.log.LogTypeHelper;
 
 /**
  * The window with all the  controls of the main GUI:
@@ -64,15 +65,18 @@ public class LogFrame extends JFrame implements WindowListener {
 	 *                   It can be null if there are no filters to load
 	 * @param logFile A file of logs to load
 	 *                It can be null if there are no logs to load
+	 * @param discardLevel The discard level to set in the engine; 
+	 *                     If <code>null</code> the level in the engine is not set and the default is used
+	 * @param doNotConnect If <code>true</code> do not try to connect to ACS (i.e. start offline)
 	 */
-	public LogFrame(File filterFile, String logFileName) {
+	public LogFrame(File filterFile, String logFileName, LogTypeHelper discardLevel, boolean doNotConnect) {
 		super();
 		setName("LogFrame");
 		
 		logger = ClientLogManager.getAcsLogManager().getLoggerForApplication("Logging client GUI",true);
 		initShutdownHook(); 
 		
-		initialize();
+		initialize(discardLevel);
 		// Move the window to the center of the screen 
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         Dimension windowSize = getSize();
@@ -90,10 +94,13 @@ public class LogFrame extends JFrame implements WindowListener {
 				JOptionPane.showMessageDialog(null, "Error: "+t.getMessage(), "Error loading filters", JOptionPane.ERROR_MESSAGE);
 			}
 		}
+		
 		// If there is no file name in the command line then connect
 		// the client to the CORBA notification channel
 		if (logFileName==null) {
-			loggingClient.connect();
+			if (!doNotConnect) {
+				loggingClient.connect();
+			}
 		} else {
 			loggingClient.getLCModel1().loadFromFile(logFileName);
 		}
@@ -106,12 +113,13 @@ public class LogFrame extends JFrame implements WindowListener {
 	/**
 	 * Initialize the content of the frame
 	 *
+	 * @param discardLevel The discard level
 	 */
-	private void initialize() {
+	private void initialize(LogTypeHelper discardLevel) {
 		setTitle("LoggingClient");
 		addWindowListener(this);
         
-        loggingClient = new LoggingClient(this); // build the LoggingClient
+        loggingClient = new LoggingClient(this, LoggingClient.DEFAULT_LOGLEVEL, discardLevel); // build the LoggingClient
         if (loggingClient==null) {
         	throw new NullPointerException("The logging client is null");
         }
@@ -128,14 +136,33 @@ public class LogFrame extends JFrame implements WindowListener {
 	{
 		// First check if there are parameter in the command line
 		
-		// If it is null then the user specified a file name in the
-		// command line
+		/** 
+		 * If it is null then the user specified a file name in the
+		 * command line
+		 */
 		String initLogFileName = null;
-		// If it is null then the user specified a filter file name in the
-		// command line
+		
+		/** 
+		 * If it is null then the user specified a filter file name in the
+		 * command line
+		 */
 		String initFilterFileName = null;
 		
-		if (args.length>3) {
+		/**
+		 *  True if the user do not want the logging client tries to connect to ACS 
+		 *  at startup
+		 */
+		boolean doNotConnect=false;
+		
+		/**
+		 * The initial discard level.
+		 * If it not set in the command line, the logging client starts
+		 * with the default discard level
+		 */
+		LogTypeHelper initialDiscardLevel=LoggingClient.DEFAULT_DISCARDLEVEL;
+		
+		// First check if there are parameter in the command line
+		if (args.length>6) {
 			// Wrong number of params
 			printUsage("cmd line too long");
 			System.exit(-1);
@@ -146,6 +173,7 @@ public class LogFrame extends JFrame implements WindowListener {
 					t++;
 					if (t<args.length) {
 						initFilterFileName=args[t];
+						System.out.println("Using filter file "+initFilterFileName);
 					} else if (initFilterFileName!=null) {
 						// A filter file was already defined
 						printUsage("Two filter file names in cmd line");
@@ -155,6 +183,27 @@ public class LogFrame extends JFrame implements WindowListener {
 						printUsage("No filter file name after "+args[t-1]);
 						System.exit(-1);
 					}
+				} else if (args[t].compareTo("-d")==0 || args[t].compareTo("--discard")==0) {
+					t++;
+					if (t<args.length) {
+						initialDiscardLevel= LogTypeHelper.fromLogTypeDescription(args[t]);
+						if (initialDiscardLevel==null && !(args[t].compareToIgnoreCase("None")==0)) {
+							System.out.println("Invalid discard level "+args[t]);
+							System.out.println("Valid discard levels are:");
+							System.out.println("\tNone");
+							for (LogTypeHelper logType: LogTypeHelper.values()) {
+								System.out.println("\t"+logType);
+							}
+						} else {
+							System.out.println("Using initial discard level: "+initialDiscardLevel);
+						}
+					} else {
+						System.out.println("No discard level found in command line");
+						System.exit(-1);
+					}
+				} else if (args[t].compareTo("-dnc")==0 || args[t].compareTo("--DoNotConnect")==0) {
+					doNotConnect=true;
+					System.out.println("Connection to ACS inhibited");
 				} else {
 					if (initLogFileName==null) {
 						initLogFileName=args[t];
@@ -172,8 +221,8 @@ public class LogFrame extends JFrame implements WindowListener {
 			// Check if the file in the cmd line is readable
 			logFile = new File(initLogFileName);
 			if (!logFile.canRead()) {
+				System.err.println("log file "+initLogFileName+" is unreadable!");
 				initLogFileName=null;
-				System.err.println(initLogFileName+" is unreadable!");
 				System.exit(-1);
 			}
 		}
@@ -182,7 +231,7 @@ public class LogFrame extends JFrame implements WindowListener {
 		if (initFilterFileName!=null) {
 			filterFile = new File(initFilterFileName);
 			if (!filterFile.canRead()) {
-				System.err.println(initFilterFileName+" is unreadable!");
+				System.err.println("Filter file "+initFilterFileName+" is unreadable!");
 				System.exit(-1);
 			}
 		}
@@ -193,15 +242,19 @@ public class LogFrame extends JFrame implements WindowListener {
 			class FrameLauncher extends Thread {
 				File f;
 				String name;
-				public FrameLauncher(File fltFile, String initFileName) {
+				boolean offline;
+				LogTypeHelper discard;
+				public FrameLauncher(File fltFile, String initFileName, LogTypeHelper initDiscard, boolean noACS) {
 					f=fltFile;
 					name=initFileName;
+					discard=initDiscard;
+					offline=noACS;
 				}
 				public void run() {
-					new LogFrame(f,name);
+					new LogFrame(f,name,discard,offline);
 				}
 			}
-			SwingUtilities.invokeLater(new FrameLauncher(filterFile,initLogFileName));
+			SwingUtilities.invokeLater(new FrameLauncher(filterFile,initLogFileName,initialDiscardLevel,doNotConnect));
 		}
 		catch (Throwable exception)
 		{
@@ -221,7 +274,7 @@ public class LogFrame extends JFrame implements WindowListener {
 			System.out.println("Wrong parameters: "+errorMsg);
 		}
 		System.out.println("USAGE:");
-		System.out.println("jlog [logFileName] [(-f|--filter) filterFileName]\n");
+		System.out.println("jlog [logFileName] [(-f|--filter) filterFileName] [(-d|--discard) (NONE|discard level)] [-dnc||--DoNotConnect]\n");
 	}
 	
 	/**
