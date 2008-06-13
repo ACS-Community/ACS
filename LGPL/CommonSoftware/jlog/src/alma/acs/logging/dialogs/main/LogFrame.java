@@ -68,15 +68,22 @@ public class LogFrame extends JFrame implements WindowListener {
 	 * @param discardLevel The discard level to set in the engine; 
 	 *                     If <code>null</code> the level in the engine is not set and the default is used
 	 * @param doNotConnect If <code>true</code> do not try to connect to ACS (i.e. start offline)
+	 * @param unlimited If <code>true</code> the number of logs in memory is unlimited, 
+	 *                  otherwise the default is used
 	 */
-	public LogFrame(File filterFile, String logFileName, LogTypeHelper discardLevel, boolean doNotConnect) {
+	public LogFrame(
+			File filterFile, 
+			String logFileName, 
+			LogTypeHelper discardLevel, 
+			boolean doNotConnect, 
+			boolean unlimited) {
 		super();
 		setName("LogFrame");
 		
 		logger = ClientLogManager.getAcsLogManager().getLoggerForApplication("Logging client GUI",true);
 		initShutdownHook(); 
 		
-		initialize(discardLevel);
+		initialize(discardLevel,unlimited);
 		// Move the window to the center of the screen 
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         Dimension windowSize = getSize();
@@ -114,12 +121,15 @@ public class LogFrame extends JFrame implements WindowListener {
 	 * Initialize the content of the frame
 	 *
 	 * @param discardLevel The discard level
+	 * @param unlimited If <code>true</code> the number of logs in memory is unlimited, 
+	 *                  otherwise the default is used
 	 */
-	private void initialize(LogTypeHelper discardLevel) {
+	private void initialize(LogTypeHelper discardLevel, boolean unlimited) {
 		setTitle("LoggingClient");
 		addWindowListener(this);
         
-        loggingClient = new LoggingClient(this, LoggingClient.DEFAULT_LOGLEVEL, discardLevel); // build the LoggingClient
+		// build the LoggingClient
+        loggingClient = new LoggingClient(this, LoggingClient.DEFAULT_LOGLEVEL, discardLevel, unlimited); 
         if (loggingClient==null) {
         	throw new NullPointerException("The logging client is null");
         }
@@ -149,10 +159,15 @@ public class LogFrame extends JFrame implements WindowListener {
 		String initFilterFileName = null;
 		
 		/**
-		 *  True if the user do not want the logging client tries to connect to ACS 
+		 *  <code>true</code> if the user do not want the logging client tries to connect to ACS 
 		 *  at startup
 		 */
 		boolean doNotConnect=false;
+		
+		/**
+		 * <code>true</code> if the user does not want to limit the number of logs to  keep in memory
+		 */
+		boolean unlimited=false;
 		
 		/**
 		 * The initial discard level.
@@ -162,7 +177,7 @@ public class LogFrame extends JFrame implements WindowListener {
 		LogTypeHelper initialDiscardLevel=LoggingClient.DEFAULT_DISCARDLEVEL;
 		
 		// First check if there are parameter in the command line
-		if (args.length>6) {
+		if (args.length>7) {
 			// Wrong number of params
 			printUsage("cmd line too long");
 			System.exit(-1);
@@ -204,6 +219,9 @@ public class LogFrame extends JFrame implements WindowListener {
 				} else if (args[t].compareTo("-dnc")==0 || args[t].compareTo("--DoNotConnect")==0) {
 					doNotConnect=true;
 					System.out.println("Connection to ACS inhibited");
+				} else if (args[t].compareTo("-u")==0 || args[t].compareTo("--unlimited")==0) {
+					System.out.println("Number of logs in memory is unlimited");
+					unlimited=true;
 				} else {
 					if (initLogFileName==null) {
 						initLogFileName=args[t];
@@ -244,17 +262,19 @@ public class LogFrame extends JFrame implements WindowListener {
 				String name;
 				boolean offline;
 				LogTypeHelper discard;
-				public FrameLauncher(File fltFile, String initFileName, LogTypeHelper initDiscard, boolean noACS) {
+				boolean noLimit;
+				public FrameLauncher(File fltFile, String initFileName, LogTypeHelper initDiscard, boolean noACS, boolean unlimit) {
 					f=fltFile;
 					name=initFileName;
 					discard=initDiscard;
 					offline=noACS;
+					noLimit=unlimit;
 				}
 				public void run() {
-					new LogFrame(f,name,discard,offline);
+					new LogFrame(f,name,discard,offline,noLimit);
 				}
 			}
-			SwingUtilities.invokeLater(new FrameLauncher(filterFile,initLogFileName,initialDiscardLevel,doNotConnect));
+			SwingUtilities.invokeLater(new FrameLauncher(filterFile,initLogFileName,initialDiscardLevel,doNotConnect,unlimited));
 		}
 		catch (Throwable exception)
 		{
@@ -274,7 +294,7 @@ public class LogFrame extends JFrame implements WindowListener {
 			System.out.println("Wrong parameters: "+errorMsg);
 		}
 		System.out.println("USAGE:");
-		System.out.println("jlog [logFileName] [(-f|--filter) filterFileName] [(-d|--discard) (NONE|discard level)] [-dnc||--DoNotConnect]\n");
+		System.out.println("jlog [logFileName] [(-f|--filter) filterFileName] [(-d|--discard) (NONE|discard level)] [-dnc|--DoNotConnect] [-u||--unlimited]\n");
 	}
 	
 	/**
