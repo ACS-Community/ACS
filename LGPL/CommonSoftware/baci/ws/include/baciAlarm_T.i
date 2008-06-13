@@ -44,10 +44,10 @@ MonitorEventDispatcher<T, TCB, POA_CB>::MonitorEventDispatcher(const CBDescIn& d
 	callbackServant_mp->_remove_ref();
 	}
                                                                                                                        
-    //monitorCallback_mp = callbackServant_mp->_this();
-    callbackID_m = property->getComponent()->registerCallback(property->getType(),
-							      monitorCallback_mp/*.in()*/, 
-							      descIn);
+    BACIValue bv(static_cast<T>(0)); // in this way we get type of BACIValue	
+    callbackID_m = property->getComponent()->registerCallback(bv.getType(),
+							      	monitorCallback_mp, 
+							      	descIn);
     
     // generate appropriate name
     ACS_NEW_RETURN(monitor_mp, 
@@ -616,14 +616,15 @@ void AlarmEventStrategyContSeq<T, TPROP, TALARM>::check(BACIValue &val,
 	  alarmsRaised_mp[i] = 0;
     }
 
-/*
-  ACS_DEBUG_PARAM("AlarmdoubleSeqEventStrategy::check", "Checking for alarms, value: %d.", value);
-  ACS_DEBUG_PARAM("AlarmdoubleSeqEventStrategy::check", "Low Off: %d.", property_mp->alarm_low_off());
-  ACS_DEBUG_PARAM("AlarmdoubleSeqEventStrategy::check", "High Off: %d.", property_mp->alarm_high_off());
-*/
+
+// ACS_DEBUG_PARAM("AlarmdoubleSeqEventStrategy::check", "Low Off: %f.", this->property_mp->alarm_low_off());
+//  ACS_DEBUG_PARAM("AlarmdoubleSeqEventStrategy::check", "High Off: %f.", this->property_mp->alarm_high_off());
+
 
   for (CORBA::ULong n = 0UL; n < valueSeq.length(); n++)
     {
+//	  ACS_DEBUG_PARAM("AlarmdoubleSeqEventStrategy::check", "Checking for alarms, value: %f.", valueSeq[n]);
+
       if ((alarmsRaised_mp[n]!=0) &&							// we have an alarm (0 indicates no alarm)
 	  (valueSeq[n]>=this->property_mp->alarm_low_off()) && 
 	  (valueSeq[n]<=this->property_mp->alarm_high_off()))
