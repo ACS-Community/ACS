@@ -2,7 +2,6 @@
 3 - Welcome to acsexmplClientFridgeNC!
 4 - Getting the Supplier
 4 - Sending events
-2 - ----------T--:--:----- FINER: Logging configuration has been initialized, but not from CDB settings.
 4 - Finished sending events
 1 - ----------T--:--:--.--- fridge-Consumer addSubscription - temperatureDataBlockEvent
 1 - ----------T--:--:--.--- FridgeNCConsumer Main - Creating FridgeConsumer
