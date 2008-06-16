@@ -3,6 +3,7 @@ ACS Interface Repository:
 java -classpath
 ^. - [jJ]ava
 Time:
+has not defined the Timeout for the component
 export
 Starting Java/abeans application
 endorsed
