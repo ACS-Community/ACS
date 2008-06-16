@@ -1,4 +1,4 @@
-1 - ----------T--:--:----- FINER: Logging configuration has been initialized, but not from CDB settings
+1 - ----------T--:--:----- DEBUG [almaacsloggingconfigLogConfig] Logging configuration has been initialized, but not from CDB settings
 1 - ----------T--:--:----- INFO [testPushAlarm#testPushAlarm] -------------------------------
 1 - ----------T--:--:----- INFO [testPushAlarm#testPushAlarm] ComponentClientTestCase#setUp()
 1 - ----------T--:--:----- FINE [testPushAlarm#testPushAlarm] calling orbresolve_initial_references
@@ -14,13 +14,13 @@
 1 - ----------T--:--:----- FINE [testPushAlarm#testPushAlarm] logged out from manager
 1 - ----------T--:--:----- FINE [testPushAlarm#testPushAlarm] about to destroy all POAs and the ORB
 1 - ----------T--:--:----- FINE [testPushAlarm#testPushAlarm] POAs and ORB destroyed successfully
-1 - ----------T--:--:----- FINER: Logging configuration has been initialized, but not from CDB settings
+1 - ----------T--:--:----- DEBUG [almaacsloggingconfigLogConfig] Logging configuration has been initialized, but not from CDB settings
 1 - ----------T--:--:----- INFO [testAlarmsCollection#testAlarmsCollection] -------------------------------
 1 - ----------T--:--:----- INFO [testAlarmsCollection#testAlarmsCollection] ComponentClientTestCase#setUp()
 1 - ----------T--:--:----- FINE [testAlarmsCollection#testAlarmsCollection] calling orbresolve_initial_references
 1 - ----------T--:--:----- FINE [testAlarmsCollection#testAlarmsCollection] POA activated
-1 - ----------T--:--:----- FINE [testAlarmsCollection#testAlarmsCollection] manager reference not yet available in method loginToManager; will try to find the manager first
 1 - ----------T--:--:----- FINEST [testAlarmsCollection#testAlarmsCollection] manager corbaloc 'corbaloc::xxxxxxx:yyyy/Manager' resolved
+1 - ----------T--:--:----- FINE [testAlarmsCollection#testAlarmsCollection] manager reference not yet available in method loginToManager; will try to find the manager first
 1 - ----------T--:--:----- FINEST [testAlarmsCollection#testAlarmsCollection] manager narrow successful
 1 - ----------T--:--:----- FINE [testAlarmsCollection#testAlarmsCollection] Manager login done ...
 1 - ----------T--:--:----- DEBUG [almaalarmsystemsourcetestProxyTest] Alarm system type: ACS
