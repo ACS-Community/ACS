@@ -1,4 +1,3 @@
-1 - ----------T--:--:----- FINER: Logging configuration has been initialized, but not from CDB settings.
 1 - ContainerStatusMsg: Startup begins
 1 - ContainerStatusMsg: ORB initialization begins
 1 - ContainerStatusMsg: ORB initialization ends
@@ -12,5 +11,5 @@
 1 - ----------T--:--:--.--- INFO [SUPPLIER_CDB_CHANNEL_COMP1] Attempting to create the cdb_channel channel.
 1 - ----------T--:--:--.--- INFO [SUPPLIER_CDB_CHANNEL_COMP1] Successfully created a notification channel [ logName='LOG_NC_ChannelCreated_OK' ChannelName='cdb_channel' Service='NotifyEventChannelFactory' ]
 1 - Now sending simplesupplier events...
-1 - ----------T--:--:--.--- INFO [SUPPLIER_CDB_CHANNEL_COMP1] A Consumer has disconnected from the 'cdb_channel' channel
 1 - ----------T--:--:--.--- INFO [SUPPLIER_CDB_CHANNEL_COMP1] cleanUp() called...
+1 - ----------T--:--:--.--- INFO [SUPPLIER_CDB_CHANNEL_COMP1] A Consumer has disconnected from the 'cdb_channel' channel

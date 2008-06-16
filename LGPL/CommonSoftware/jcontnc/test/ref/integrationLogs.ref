@@ -1,4 +1,3 @@
-1 - ----------T--:--:----- FINER: Logging configuration has been initialized, but not from CDB settings.
 1 - ContainerStatusMsg: Startup begins
 1 - ContainerStatusMsg: ORB initialization begins
 1 - ContainerStatusMsg: ORB initialization ends
@@ -19,10 +18,10 @@
 1 - ----------T--:--:--.--- INFO [IL_SUPPLIERCOMP1] initialize() called...
 1 - Now sending simplesupplier events...
 1 - ----------T--:--:--.--- INFO [IL_SUPPLIERCOMP1] Channel:blarIL, Event Type:EventDescription
+1 - ----------T--:--:--.--- INFO [IL_SUPPLIERCOMP1] Channel:blarIL, Event Type:EventDescription
+1 - ----------T--:--:--.--- INFO [IL_SUPPLIERCOMP1] Channel:blarIL, Event Type:EventDescription
 1 - ----------T--:--:--.--- INFO [IL_CONSUMERCOMP1] Channel:blarIL, Publisher:IL_SUPPLIERCOMP1, Event Type:EventDescription
 1 - The component responsible for the supplier is:no name
-1 - ----------T--:--:--.--- INFO [IL_SUPPLIERCOMP1] Channel:blarIL, Event Type:EventDescription
-1 - ----------T--:--:--.--- INFO [IL_SUPPLIERCOMP1] Channel:blarIL, Event Type:EventDescription
 1 - ----------T--:--:--.--- INFO [IL_SUPPLIERCOMP1] Channel:blarIL, Event Type:EventDescription
 1 - ----------T--:--:--.--- INFO [IL_SUPPLIERCOMP1] Channel:blarIL, Event Type:EventDescription
 1 - ----------T--:--:--.--- INFO [IL_SUPPLIERCOMP1] Channel:blarIL, Event Type:EventDescription
@@ -49,5 +48,5 @@
 1 - ----------T--:--:--.--- INFO [IL_CONSUMERCOMP1] Channel:blarIL, Publisher:IL_SUPPLIERCOMP1, Event Type:EventDescription
 1 - ----------T--:--:--.--- INFO [IL_CONSUMERCOMP1] Channel:blarIL, Publisher:IL_SUPPLIERCOMP1, Event Type:EventDescription
 1 - ----------T--:--:--.--- INFO [IL_CONSUMERCOMP1] cleanUp() called...
-1 - ----------T--:--:--.--- INFO [IL_SUPPLIERCOMP1] cleanUp() called...
 1 - ----------T--:--:--.--- INFO [IL_SUPPLIERCOMP1] A Consumer has disconnected from the 'blarIL' channel
+1 - ----------T--:--:--.--- INFO [IL_SUPPLIERCOMP1] cleanUp() called...

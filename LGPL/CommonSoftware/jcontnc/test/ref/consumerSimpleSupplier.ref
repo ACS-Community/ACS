@@ -1,4 +1,3 @@
-1 - ----------T--:--:----- FINER: Logging configuration has been initialized, but not from CDB settings.
 1 - ContainerStatusMsg: Startup begins
 1 - ContainerStatusMsg: ORB initialization begins
 1 - ContainerStatusMsg: ORB initialization ends
@@ -19,12 +18,12 @@
 1 - Waiting for events...consumer
 1 - ----------T--:--:--.--- INFO [SUPPLIERCOMP1] SimpleSupplier for 'blar' channel created.
 1 - Now sending simplesupplier events...
+1 - The component responsible for the supplier is:no name
+1 - The component responsible for the supplier is:no name
+1 - The component responsible for the supplier is:no name
+1 - The component responsible for the supplier is:no name
+1 - The component responsible for the supplier is:no name
 1 - ----------T--:--:--.--- INFO [SUPPLIERCOMP1] Now sending 5 NestedFridgeEvent events...
-1 - The component responsible for the supplier is:no name
-1 - The component responsible for the supplier is:no name
-1 - The component responsible for the supplier is:no name
-1 - The component responsible for the supplier is:no name
-1 - The component responsible for the supplier is:no name
 1 - ----------T--:--:--.--- INFO [SUPPLIERCOMP1] A Consumer has disconnected from the 'blar' channel
 1 - ----------T--:--:--.--- INFO [SUPPLIERCOMP1] cleanUp() called...
 1 - ----------T--:--:--.--- INFO [CONSUMERCOMP1] cleanUp() called...
