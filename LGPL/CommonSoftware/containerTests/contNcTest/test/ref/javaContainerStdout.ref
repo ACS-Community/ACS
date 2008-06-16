@@ -1,7 +1,6 @@
 1 - <timestamp> INFO [acsStartContainer] Running the container with these arguments: 'acsStartJavaContainer javaContainer alma.acs.container.AcsContainerRunner -OAIAddr <IP address> -OAport <port> -m corbaloc::<IP address>:<port>/Manager'
 1 -  --endorsed -D ACS.manager=corbaloc::<IP address>:<port>/Manager -- alma.acs.container.AcsContainerRunner -OAIAddr <IP address> -OAport <port> -m corbaloc::<IP address>:<port>/Manager -containerName javaContainer
 1 - <timestamp> INFO [acsStartJava] Starting Java/abeans application: alma.acs.container.AcsContainerRunner -OAIAddr <IP address> -OAport <port> -m corbaloc::<IP address>:<port>/Manager -containerName javaContainer
-1 - <timestamp> FINER: Logging configuration has been initialized, but not from CDB settings.
 1 - <timestamp> INFO [AcsContainerRunner] AcsContainerRunner#run with arguments -OAIAddr <IP address> -OAport <port> -m corbaloc::<IP address>:<port>/Manager -containerName javaContainer 
 1 - ContainerStatusMsg: Startup begins
 1 - ContainerStatusMsg: ORB initialization begins
