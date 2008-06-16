@@ -484,7 +484,7 @@ public class ContainerServicesImpl implements ContainerServices
 			policies[0] = new org.jacorb.orb.policies.RelativeRoundtripTimeoutPolicy(10000 * 1000 * timeoutsec);
 			stub._set_policy_override(policies, SetOverrideType.ADD_OVERRIDE);
        }catch(Exception e){
-            m_logger.fine("Container "+contName+" has not defined the Timeout for the component "+curl);
+            m_logger.finest("Container "+contName+" has not defined the Timeout for the component "+curl);
        }
 
 		return stub;
