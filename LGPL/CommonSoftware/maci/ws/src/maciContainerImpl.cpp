@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciContainerImpl.cpp,v 1.108 2008/05/28 20:48:49 agrimstrup Exp $"
+* "@(#) $Id: maciContainerImpl.cpp,v 1.109 2008/06/16 09:51:44 bjeram Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -79,7 +79,7 @@
 #include <ACSAlarmSystemInterfaceFactory.h>
 #endif
 
-ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.108 2008/05/28 20:48:49 agrimstrup Exp $")
+ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.109 2008/06/16 09:51:44 bjeram Exp $")
 
  using namespace maci;
  using namespace cdb;
@@ -2170,10 +2170,6 @@ ContainerImpl::shutdown (
 			 )
   throw (CORBA::SystemException)
 {
-#ifndef MAKE_VXWORKS
-  ACSAlarmSystemInterfaceFactory::done();
-#endif
-
   ACS_TRACE("maci::ContainerImpl::shutdown");
   
   if (m_shutdown) 
@@ -2305,6 +2301,10 @@ ContainerImpl::shutdown (
     }
 */
 
+#ifndef MAKE_VXWORKS
+  ACSAlarmSystemInterfaceFactory::done();
+#endif
+  
   // flush until we still have ORB
   // and disable remote logging
   if (m_loggerProxy)
