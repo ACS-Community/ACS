@@ -32,9 +32,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.Calendar;
-import java.util.TimeZone;
-import java.text.SimpleDateFormat;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -72,6 +69,7 @@ import alma.maci.loggingconfig.LoggingConfig;
 import alma.maci.loggingconfig.NamedLogger;
 import alma.maci.loggingconfig.UnnamedLogger;
 import alma.maci.loggingconfig.types.LogLevel;
+import alma.acs.util.IsoDateFormat;
 
 /**
  * Class that encapsulates all configuration sources (defaults, properties, CDB) for Java logging,
@@ -867,12 +865,7 @@ public class LogConfig {
 		} 
 		else {
 			if (AcsLogLevel.getNativeLevel(level).getAcsLevel().value  >= getDefaultMinLogLevelLocal().value) {
-				Calendar cal = Calendar.getInstance();
-    				SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd");
-    				SimpleDateFormat sdf2 = new SimpleDateFormat("HH:mm:ss.SSS");
-				sdf1.setTimeZone(TimeZone.getTimeZone("UTC"));
-				sdf2.setTimeZone(TimeZone.getTimeZone("UTC"));
-				System.out.println(sdf1.format(cal.getTime())+ "T"+ sdf2.format(cal.getTime())+ " "+ AcsLogLevel.getNativeLevel(level).getAcsLevel().toString() + " [alma.acs.logging.config.LogConfig] " + msg + (thr != null ? thr.toString() : ""));
+				System.out.println(IsoDateFormat.formatCurrentDate()+ " "+ AcsLogLevel.getNativeLevel(level).getAcsLevel().toString() + " [alma.acs.logging.config.LogConfig] " + msg + (thr != null ? thr.toString() : ""));
 			}
 		}
 	}
