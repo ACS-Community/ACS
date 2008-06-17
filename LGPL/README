@@ -1,4 +1,4 @@
-# "@(#) $Id: README,v 1.4 2008/06/17 10:27:44 acaproni Exp $"
+# "@(#) $Id: README,v 1.5 2008/06/17 10:29:36 acaproni Exp $"
 
 
 			 ACS 2.1
@@ -77,8 +77,8 @@ team and are distributed and built here for convenience.
    - tat      is a test tool developed for the VLT and ALMA projects
               Is distributed as LGPL and it is Copyrighted by ESO
 
-   -vtd-xml   An XML parser (http://vtd-xml.sourceforge.net/)
-
+   -vtd-xml   A XML parser (http://vtd-xml.sourceforge.net/)
+              Licensed as GPL.
 
 3 - ACS
 ---------
