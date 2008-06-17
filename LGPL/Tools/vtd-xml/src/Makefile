@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.1.1.1 2008/06/17 09:19:45 acaproni Exp $"
+# "@(#) $Id: Makefile,v 1.2 2008/06/17 09:44:41 acaproni Exp $"
 #
 # Makefile of ........
 #
@@ -162,7 +162,7 @@ ASCII_TO_MIF =
 #
 # other files to be installed
 #----------------------------
-INSTALL_FILES =
+INSTALL_FILES = ../lib/vtd-xml.jar
 
 #
 # list of all possible C-sources (used to create automatic dependencies)
@@ -185,13 +185,18 @@ ifneq ($(MAKEDIRTMP),\#error\#)
    include $(MAKEDIR)/acsMakefile
 endif
 
+Prepare:
+	unzip ximpleware_2.4_java.zip >/dev/null
+	cp  ximpleware_2.4_java/vtd-xml.jar ../lib
 #
 # TARGETS
 # -------
-all:	do_all
+all:	Prepare do_all
 	@echo " . . . 'all' done" 
 
-clean : clean_all 
+clean : clean_all
+	rm -rf ximpleware_2.4_java
+	rm -rf ../lib/vtd-xml.jar
 	@echo " . . . clean done"
 
 clean_dist : clean_all clean_dist_all 
