@@ -11,6 +11,7 @@ import com.cosylab.acs.maci.Transport;
 
 import alma.acs.util.ACSPorts;
 import alma.acsdaemon.ContainerDaemonHelper;
+import alma.acsdaemon.containerDaemonServiceName;
 
 /**
  * CORBA implementation of transport.
@@ -37,13 +38,16 @@ public class CORBATransport implements Transport {
 	 */
 	public Daemon getDaemon(String host) {
 		
-		String daemonCORBALOC = "corbaloc::" + host + ":" + ACSPorts.getContainerDaemonPort() + "/ACSDaemon";
-
-		org.omg.CORBA.Object obj = orb.string_to_object(daemonCORBALOC);
-		alma.acsdaemon.ContainerDaemon daemon = ContainerDaemonHelper.narrow(obj);
-		if (daemon == null)
-		{
-			throw new RuntimeException("Failed to resolve daemon reference.");
+		String daemonCORBALOC = "corbaloc::" + host + ":" + ACSPorts.getContainerDaemonPort() + "/" + containerDaemonServiceName.value;
+		alma.acsdaemon.ContainerDaemon daemon = null;
+		try {
+			org.omg.CORBA.Object obj = orb.string_to_object(daemonCORBALOC);
+			daemon = ContainerDaemonHelper.narrow(obj);
+			if (daemon == null) {
+				throw new NullPointerException("Daemon object was null");
+			}
+		} catch (Throwable thr) {
+			throw new RuntimeException("Failed to resolve daemon reference for " + daemonCORBALOC, thr);
 		}
 		
 		// return proxy
