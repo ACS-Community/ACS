@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: acsMakefile,v 1.169 2008/06/17 06:44:04 bjeram Exp $" 
+# "@(#) $Id: acsMakefile,v 1.170 2008/06/17 13:29:01 bjeram Exp $" 
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -642,7 +642,7 @@ endif
     endif
     ifeq ($(CPU),PPC604)
         VX_CPU_FAMILY = ppc
-        CPU_CFLAGS = -DCPU=$(CPU) -mlongcall -mcpu=604 -mno-implicit-fp -mcpu=604 -DTOOL=gnu
+        CPU_CFLAGS = -DCPU=$(CPU) -mlongcall -mcpu=604 -mcpu=604 -DTOOL=gnu
     endif
 
     ifndef VX_CPU_FAMILY
@@ -702,7 +702,19 @@ $(error "UNSUPPORTED CPU type")
     endif
 
     C_PLUS_PLUS_FLAGS = -r
-    
+    CXX_FOR_VERSION_TEST := cc$(VX_CPU_FAMILY)
+
+    ACS_CXX_VERSION := $(shell $(CXX_FOR_VERSION_TEST) -dumpversion) 
+ifeq (cmd,$(findstring cmd,$(SHELL))) 
+        ACS_CXX_MAJOR_VERSION := $(shell $(CXX_FOR_VERSION_TEST) -dumpversion | sed -e "s/[^0-9\.]//g" | sed -e "s/\..*$$//") 
+else 
+        ACS_CXX_MAJOR_VERSION := $(shell $(CXX_FOR_VERSION_TEST) -dumpversion | sed -e 's/[^0-9\.]//g' | sed -e 's/\..*$$//') 
+endif 
+ifeq ($(findstring $(ACS_CXX_MAJOR_VERSION),1 2 3),$(ACS_CXX_MAJOR_VERSION)) 
+       ACS_GXX_4_OR_BETTER := 0
+else 
+       ACS_GXX_4_OR_BETTER := 1
+endif  
 endif
 
 
@@ -919,7 +931,7 @@ ifndef MAKE_VXWORKS
   CPPFLAGS = -fcheck-new
 #endif
 else
-  CFLAGS :=   -ansi -pipe -D_REENTRANT -fno-builtin -fno-defer-pop -fvolatile -nostdlib -DACE_VXWORKS=0x620 -Wno-uninitialized -DACE_LACKS_RTTI  -fcheck-new $(CFLAGS)
+  CFLAGS :=   -ansi -pipe -D_REENTRANT -fno-builtin -fno-defer-pop -fvolatile -nostdlib -DACE_VXWORKS=0x660 -Wno-uninitialized -DACE_LACKS_RTTI  -fcheck-new $(CFLAGS)
   LD = perl $(ACE_ROOT)/bin/ace_ld -C ccppc $(CFLAGS) -- -m munch -n nm$(VX_CPU_FAMILY) ld$(VX_CPU_FAMILY) -X -r 
 
 endif
