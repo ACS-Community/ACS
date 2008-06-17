@@ -6549,7 +6549,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		if (flags == null)
 			flags = "";
 
-        String impLang = readStringCharacteristics(dao, containerName + "/ImplLang", true);
+		String impLang = readStringCharacteristics(dao, containerName + "/ImplLang", true);
 		if (impLang == null)
 			impLang = "";
 
@@ -6597,10 +6597,10 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 				// check if container has logged in
 				ContainerInfo info = getContainerInfo(containerName);
-				info.setImplLang(impLang);
-                if (info != null)
+				if (info != null) {
+					info.setImplLang(impLang);
 					return info;
-
+				}
 				waitTime = waitTime - (int)(System.currentTimeMillis() - start);
 			}
 
