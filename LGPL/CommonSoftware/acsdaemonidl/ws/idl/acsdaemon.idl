@@ -22,7 +22,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsdaemon.idl,v 1.6 2008/06/17 14:21:26 hsommer Exp $"
+* "@(#) $Id: acsdaemon.idl,v 1.7 2008/06/17 17:05:10 hsommer Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -63,6 +63,13 @@ module acsdaemon
 		 */
 		void working(in ACSErr::Completion comp);
 	};
+
+
+	/** 
+	 * This service name is used by acsdaemon clients (scripts, manager etc) to resolve the daemon reference.
+	 */
+	const string containerDaemonServiceName = "ACSContainerDaemon";
+
 
 	/** @interface ContainerDaemon
 	 * Interface ContainerDaemon is used to (remotely) control the lifecycle of ACS containers.
