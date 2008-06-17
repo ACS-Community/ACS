@@ -2,7 +2,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: buildMico,v 1.8 2005/12/30 11:54:07 gchiozzi Exp $"
+# "@(#) $Id: buildMico,v 1.9 2008/06/17 08:15:25 bjeram Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -80,13 +80,13 @@ fi
 
 echo ==== Extracting package
 cd $ALMASW_INSTDIR
-tar xfzp $MICO_SOURCES/mico-2.3.11.tar.gz
+tar xfzp $MICO_SOURCES/mico-2.3.12.tar.gz
 cd $MICO_HOME
 
 
-echo ==== Patching mico
-patch -p2 < $CUR_DIR/../PRODUCTS/mico-gcc341fix.patch
-echo "done"
+#echo ==== Patching mico
+#patch -p2 < $CUR_DIR/../PRODUCTS/mico-gcc341fix.patch
+@echo "done"
 echo ""
 
 echo ==== Building mico
