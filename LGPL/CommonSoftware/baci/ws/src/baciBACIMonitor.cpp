@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciBACIMonitor.cpp,v 1.7 2007/06/12 08:02:23 nbarriga Exp $"
+* "@(#) $Id: baciBACIMonitor.cpp,v 1.8 2008/06/17 07:15:42 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -30,7 +30,7 @@
 #include "baci.h"
 #include "baciUtil.h"
 
-ACE_RCSID(baci, baci, "$Id: baciBACIMonitor.cpp,v 1.7 2007/06/12 08:02:23 nbarriga Exp $");
+ACE_RCSID(baci, baci, "$Id: baciBACIMonitor.cpp,v 1.8 2008/06/17 07:15:42 bjeram Exp $");
 
 
 namespace baci {
@@ -262,7 +262,6 @@ void BACIMonitor::setMinTriggerTime(const ACS::TimeInterval& _minTriggerTime)
 
 void BACIMonitor::setLastTime(const ACS::TimeInterval& _lastTime) 
 { 
-  ACS_TRACE("baci::BACIMonitor::setLastTime");
   lastTime_m=_lastTime; 
 
   // set transmit time
