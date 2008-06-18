@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@$Id: acsContainerHandlerImpl.cpp,v 1.6 2008/05/23 19:00:38 agrimstrup Exp $"
+* "@$Id: acsContainerHandlerImpl.cpp,v 1.7 2008/06/18 11:06:12 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -31,7 +31,7 @@
 
 /*****************************************************************/
 
-ACSContainerHandlerImpl::ACSContainerHandlerImpl () : h_name("ACS Container Daemon"), h_type("ACSContainerDaemon")
+ACSContainerHandlerImpl::ACSContainerHandlerImpl () : h_name("ACS Container Daemon"), h_type(::acsdaemon::containerDaemonServiceName)
 {
 }
 
