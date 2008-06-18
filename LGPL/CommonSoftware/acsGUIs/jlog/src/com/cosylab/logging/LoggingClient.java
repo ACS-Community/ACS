@@ -188,11 +188,19 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
     // The progress bar for long time operations
     private JProgressBar progressBar = new JProgressBar(JProgressBar.HORIZONTAL);
     
-    // Remember if the engine is connected
-    //
-    // The check is done by LCEngine and a callback is called depending
-    // on the status of the connection
+    /** 
+     * <code>true</code> if the engine is connected.
+     */
     private boolean isConnected=false;
+    
+    /**
+     * <code>true</code> if the application is stopped
+     * <P>
+     * This property is set by the <code>start()</code> and <code>stop()</code>.
+     * It is also set in the constructor for the stand alone version because in that 
+     * case the start is not executed. 
+     */
+    private volatile boolean isStopped=true;
     
     /**
      * The search dialog 
@@ -425,7 +433,7 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 	 * i.e outside of the OMC GUI.
 	 * 
 	 * @param frame The shows this object
-	 * @param logLevel The initial log lwvel
+	 * @param logLevel The initial log level
 	 * @param discardLevel The initial discard level
 	 * @param unlimited If <code>true</code> the number of logs in memory is unlimited, 
 	 *                  otherwise the default is used
@@ -433,6 +441,7 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 	public LoggingClient(LogFrame frame, LogTypeHelper logLevel, LogTypeHelper discardLevel, boolean unlimited)
 	{
 		super();
+		isStopped=false;
 		logFrame=frame;
 		initialize(logLevel, discardLevel, unlimited);
 		initAudience();
@@ -443,12 +452,14 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 	/**
 	 * Method used by the plugin interface in EXEC:
 	 * it connects the application to the NC
+	 * 
 	 * @see alma.exec.extension.subsystemplugin.SubsystemPlugin
 	 * 
 	 * @throws Exception
 	 */
 	public void start() throws Exception {
-			connect();
+		isStopped=false;
+		connect();
 	}
 	
 	/**
@@ -459,6 +470,7 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 	 * @throws Exception
 	 */
 	public void stop() throws Exception {
+		isStopped=true;
 		close(false);
 	}
 	
@@ -1484,9 +1496,17 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 	 */
 	public void acsLogConnLost() {
 		isConnected=false;
-		JOptionPane.showMessageDialog(null,"Connection lost!","LoggingClient error",JOptionPane.ERROR_MESSAGE);
-		connectionStatusLbl.setIcon(connectionStatusIcons[DISCONNECTED_ICON]);
-		connectionStatusLbl.setToolTipText("Disconnected");
+		// Does not show the dialog if the application is stopped
+		if (isStopped) {
+			return;
+		}
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				JOptionPane.showMessageDialog(null,"Connection lost!","LoggingClient error",JOptionPane.ERROR_MESSAGE);
+				connectionStatusLbl.setIcon(connectionStatusIcons[DISCONNECTED_ICON]);
+				connectionStatusLbl.setToolTipText("Disconnected");
+			}
+		});
 	}
 	
 	/**
