@@ -345,7 +345,12 @@ public class LogFrame extends JFrame implements WindowListener {
 	public void closeApplication() {
 		setVisible(false);
 		closing=true;
-		loggingClient.close(true);
+		try {
+			loggingClient.stop();
+		} catch (Throwable t) {
+			System.err.println("Exception caught while closing the logging client: "+t.getMessage());
+			t.printStackTrace(System.err);
+		}
 		
 		dispose();
 	}
