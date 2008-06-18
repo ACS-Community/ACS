@@ -1,8 +1,12 @@
 #!/usr/bin/env perl
 
-# $Id: mdExtractImages,v 1.1 2008/06/11 13:46:20 gchiozzi Exp $
+if (system "uname -a" == "CYGWIN_NT-5.1") {
+	$pathsep = ";"
+}
+
+# $Id: mdExtractImages,v 1.2 2008/06/18 11:35:45 jschwarz Exp $
 $instDir = "$ENV{MAGIC_DRAW_HOME}";
-$debug = 0;
+$debug = 1;
 
 if ($#ARGV < 1) { 
     die "Usage: $0 <model> <destination>\n";
@@ -41,7 +45,7 @@ print "$ENV{CLASSPATH}\n" if ($debug) ;
 $executeClass = "com.nomagic.magicdraw.examples.imagegenerator.ExportDiagramImages";
 
 
-$command =  "java   -XX:PermSize=40M -XX:MaxPermSize=150M -Dinstall.root=$instDir -Xmx500M -Xss26M  -cp $ENV{CLASSPATH}:. $executeClass project_file=$model destination_dir=$destination ";
+$command =  "java   -XX:PermSize=40M -XX:MaxPermSize=150M -Dinstall.root=$instDir -Xmx500M -Xss26M  -cp `cygpath -wp $ENV{CLASSPATH}:.` $executeClass project_file=$model destination_dir=$destination ";
 print $command if ($debug);
 system $command;
 
