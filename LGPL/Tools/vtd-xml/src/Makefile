@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.2 2008/06/17 09:44:41 acaproni Exp $"
+# "@(#) $Id: Makefile,v 1.3 2008/06/19 08:38:16 acaproni Exp $"
 #
 # Makefile of ........
 #
@@ -186,8 +186,9 @@ ifneq ($(MAKEDIRTMP),\#error\#)
 endif
 
 Prepare:
-	unzip ximpleware_2.4_java.zip >/dev/null
-	cp  ximpleware_2.4_java/vtd-xml.jar ../lib
+	mkdir -p ../lib
+	unzip -o ximpleware_2.4_java.zip >/dev/null
+	cp  ximpleware_2.4_java/vtd-xml.jar ../lib/
 #
 # TARGETS
 # -------
