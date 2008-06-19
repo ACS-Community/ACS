@@ -1,11 +1,14 @@
 package com.cosylab.logging.engine.ACS;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Vector;
 
 import junit.framework.TestCase;
 
 import alma.acs.logging.engine.parser.ACSLogParser;
 import alma.acs.logging.engine.parser.ACSLogParserFactory;
+import alma.acs.util.IsoDateFormat;
 
 import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.engine.log.LogTypeHelper;
@@ -18,8 +21,9 @@ public class ACSLogParserTest extends TestCase {
 	private final String xmlLogInfo1 = 
 		"<Info TimeStamp=\"2006-03-28T00:26:29.238\" File=\"maciContainerImpl.cpp\" Line=\"1454\" " + 
 		"Routine=\"maci::ContainerImpl::initThread\" Host=\"gas\" Process=\"maciContainer\" Thread=\"ARCHIVE_BULKSENDER::actionThread\" " + 
-		"Context=\"\" SourceObject=\"ARCHIVE_BULKSENDER::actionThread\">" + 
-		"<![CDATA[Thread name: 'ARCHIVE_BULKSENDER::actionThread']]>" + 
+		"Context=\"CTXT\" SourceObject=\"ARCHIVE_BULKSENDER::source\" Audience=\"Operator\" Array=\"AnArray\" Antenna=\"ThisIsTheAntenna\""+
+		" StackLevel=\"10\" StackId=\"TheStackID\" Priority=\"3\">" + 
+		"<![CDATA[Thread name: 'ARCHIVE_BULKSENDER::actionThread']]>" +
 		"</Info>";
 	
 	private final String xmlLogInfo2 = 
@@ -49,13 +53,14 @@ public class ACSLogParserTest extends TestCase {
 		"	at org.jacorb.poa.RequestProcessor.invokeOperation(Unknown Source)" + "\n" +
 		"	at org.jacorb.poa.RequestProcessor.process(Unknown Source)" + "\n" +	
 		"	at org.jacorb.poa.RequestProcessor.run(Unknown Source)" + "\n" +
-		"]]></Data></Warning>";
+		"]]></Data><Data Name=\"Pippo\"><![CDATA[Pluto]]></Data></Warning>";
 
 
 	
 	protected void setUp() throws Exception {
 		super.setUp();
 		parser = ACSLogParserFactory.getParser();
+		assertNotNull(parser);
 	}
 
 	protected void tearDown() throws Exception {
@@ -74,14 +79,96 @@ public class ACSLogParserTest extends TestCase {
 		
 		// verify some fields
 		assertEquals("wrong typename string", "Warning", ((LogTypeHelper)log.getField(Field.ENTRYTYPE)).logEntryType);
-		assertEquals("wrong type code", LogTypeHelper.WARNING.ordinal(), ((LogTypeHelper)log.getField(Field.ENTRYTYPE)).ordinal());
+		assertEquals("wrong type code", LogTypeHelper.WARNING, ((LogTypeHelper)log.getField(Field.ENTRYTYPE)));
 		
 		Vector<ILogEntry.AdditionalData> datas = log.getAdditionalData();
-		assertFalse("There should have been 1 piece of attached data!", datas == null || datas.size() != 1);
+		assertFalse("There should have been 2 pieces of attached data!", datas == null || datas.size() != 2);
 		Vector<ILogEntry.AdditionalData> additionalData = log.getAdditionalData();
-		assertFalse("There should have been 1 piece of additional data!", additionalData == null || additionalData.size() != 1);
+		assertFalse("There should have been 2 pieces of additional data!", additionalData == null || additionalData.size() != 2);
 		ILogEntry.AdditionalData myData = additionalData.get(0);
 		assertEquals("LoggedException", myData.getName());
 		assertTrue(myData.getValue().startsWith("alma.xmlstore.OperationalPackage.NotFound: uid://X00000000000028aa/X00000002"));
+	}
+	
+	/**
+	 * Check if the fields are read as expected
+	 * 
+	 * @throws Exception
+	 */
+	public void testFields() throws Exception {
+		ILogEntry log = parser.parse(xmlLogInfo1);
+		assertNotNull(log);
+		
+		// Check the date
+		Long logDate = (Long)log.getField(Field.TIMESTAMP);
+		assertNotNull(logDate);
+		Long xmlDate=null;
+		SimpleDateFormat dateFormat = new IsoDateFormat();
+		Date date = dateFormat.parse("2006-03-28T00:26:29.238");
+		xmlDate = Long.valueOf(date.getTime());
+		assertEquals("The dates differ", xmlDate,logDate);
+		
+		// Check the log type
+		assertEquals(LogTypeHelper.INFO,(LogTypeHelper)log.getField(Field.ENTRYTYPE));
+		
+		// Check the file
+		assertEquals("maciContainerImpl.cpp", log.getField(Field.FILE));
+		
+		// Check the line
+		assertEquals(Integer.valueOf(1454), log.getField(Field.LINE));
+		
+		// Check the routine
+		assertEquals("maci::ContainerImpl::initThread",log.getField(Field.ROUTINE));
+		
+		// Check the host
+		assertEquals("gas",log.getField(Field.HOST));
+		
+		// Check the process
+		assertEquals("maciContainer",log.getField(Field.PROCESS));
+		
+		// Check the thread
+		assertEquals("ARCHIVE_BULKSENDER::actionThread",log.getField(Field.THREAD));
+		
+		// Check the Antenna
+		assertEquals("CTXT", log.getField(Field.CONTEXT));
+		
+		// Check the source object
+		assertEquals("ARCHIVE_BULKSENDER::source",log.getField(Field.SOURCEOBJECT));
+		
+		// Check the stack level
+		assertEquals(10,log.getField(Field.STACKLEVEL));
+		
+		// Check the stack level
+		assertEquals(3,log.getField(Field.PRIORITY));
+		
+		// Check the stack level
+		assertEquals("TheStackID",log.getField(Field.STACKID));
+		
+		// Check the Audience
+		assertEquals("Operator",log.getField(Field.AUDIENCE));
+		
+		// Check the Array
+		assertEquals("AnArray", log.getField(Field.ARRAY));
+		
+		// Check the Antenna
+		assertEquals("ThisIsTheAntenna", log.getField(Field.ANTENNA));
+	}
+	
+	/**
+	 * Call the parser several times
+	 * 
+	 * @throws Exception
+	 */
+	public void testMultipleParse() throws Exception {
+		String[] logs = new String[3*1000];
+		for (int t=0; t<logs.length; t+=3) {
+			logs[t]=xmlLogInfo1;
+			logs[t+1]=xmlLogInfo2;
+			logs[t+2]=xmlLogWarningWithException;
+		}
+		for (String xmlLog: logs) {
+			ILogEntry log = parser.parse(xmlLog);
+			assertNotNull(log);
+		}
 	}
 }
