@@ -182,6 +182,11 @@ public class AdministratorClient extends AdministratorPOA {
 
 	}
 
+	public void taggedmessage(short type, short tag, String message) {
+		System.out.println("Tagged Message received "+message);
+
+	}
+
 	public String name() {
 		return "AdministratorClient";
 	}

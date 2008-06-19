@@ -1,7 +1,8 @@
+#! /bin/bash
 #*******************************************************************************
 # ALMA - Atacama Large Millimiter Array
 # (c) European Southern Observatory, 2002
-# Copyright by ESO (in the framework of the ALMA collaboration)
+# Copyright by ESO (in the framework of the ALMA collaboration),
 # and Cosylab 2002, All rights reserved
 #
 # This library is free software; you can redistribute it and/or
@@ -19,15 +20,5 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: TestList.lite,v 1.2 2008/06/19 19:15:45 agrimstrup Exp $"
-#
-# TestList
-#
-SOURCE testTATEnvironment
-PROLOGUE acsutilTATPrologue
 
-#1  testComponents "acsStartJava -endorsed alma.test.corbareftest.TestComponents &" "testComponents"
-
-1  testComponent "testComponent"
-
-EPILOGUE acsutilTATEpilogue
+acsStartJava -endorsed alma.test.corbareftest.JavaClient

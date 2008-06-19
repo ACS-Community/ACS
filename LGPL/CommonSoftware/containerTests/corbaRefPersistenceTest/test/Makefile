@@ -16,7 +16,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.5 2008/04/10 13:48:26 acaproni Exp $"
+# "@(#) $Id: Makefile,v 1.6 2008/06/19 19:15:44 agrimstrup Exp $"
 #
 # Makefile of ........
 #
@@ -73,13 +73,12 @@ USER_LIB =      -lACE \
 # C programs (public and local)
 # -----------------------------
 EXECUTABLES     =
-EXECUTABLES_L   = 
+EXECUTABLES_L   = cppClient
 
 #
 # <brief description of xxxxx program>
-xxxxx_OBJECTS   =	
-xxxxx_LDFLAGS   =
-xxxxx_LIBS      =
+cppClient_OBJECTS   =	cppClient
+cppClient_LIBS      =   HelloWorldStubs ACSErrTypeCommon
 
 #
 # special compilation flags for single c sources
@@ -105,7 +104,7 @@ corbaRefTest_LIBS     = HelloWorldStubs
 # Scripts (public and local)
 # ----------------------------
 SCRIPTS         =
-SCRIPTS_L       = testComponents
+SCRIPTS_L       = testComponents javaClient
 
 #
 # TCL scripts (public and local)
@@ -117,7 +116,7 @@ TCL_SCRIPTS_L   =
 # Python stuff (public and local)
 # ----------------------------
 PY_SCRIPTS         =
-PY_SCRIPTS_L       =
+PY_SCRIPTS_L       = testComponent pyClient
 
 PY_MODULES         =
 PY_MODULES_L       =
@@ -227,6 +226,7 @@ endif
 # TARGETS
 # -------
 all:	do_all
+	@mkdir -p tmp
 	@echo " . . . 'all' done" 
 
 clean : clean_all 
