@@ -28,11 +28,14 @@ package alma.acs.logging.engine.parser;
  * <P>
  * The object could instantiate a new parser or use only one instance, a singleton.
  * <P>
- * At the present there is one parser available, <code>ACSLogParserDOM</code> but we are
- * trying to adopt VTD XML parser.
+ * There are 2 parsers available: DOM and VTD.
+ * VTD is ACS/LGPL/Tools and installed by ACS. It is licensed under GPL and available
+ * at http://vtd-xml.sourceforge.net/
+ * VTD claims to be very fast (and effectively it performs better then DOM) so the factory
+ * tries to instantiate a VTD parser if it is present.
  * <BR>
  * Having this factory allows to transparently use a different implementation at run-time
- * depending on the real availability of the parser.
+ * depending on the real availability of the parsers.
  *   
  * @author acaproni
  *
@@ -46,6 +49,15 @@ public class ACSLogParserFactory {
 	private static ACSLogParser parser=null;
 	
 	/**
+	 * This property is used to check if VTD is installed to avoid trying to instantiate
+	 * if the library is missing
+	 * <P> 
+	 * It is initially set to <code>true</code> to try to instantiate VTD the first time
+	 * <code>getParser()</code> is called
+	 */
+	private static boolean usingVTD=true;
+	
+	/**
 	 * Get a parser.
 	 * <P>
 	 * The <code>ACSLogParser</code> returned by this method can be a new instance
@@ -55,9 +67,19 @@ public class ACSLogParserFactory {
 	 * @throws <code>Exception</code> in case of error building the parser
 	 */
 	public static ACSLogParser getParser() throws Exception {
-		if (parser==null) {
-			parser =  new ACSLogParserDOM();
+		if (parser!=null) {
+			return parser;
 		}
+		if (usingVTD) {
+			try {
+				// Initially try to in instantiate VTD-XML parser
+				parser = new ACSLogParserVTD();
+				return parser;
+			} catch (Throwable t) {
+				usingVTD=false;
+			}
+		} 
+		parser =  new ACSLogParserDOM();
 		return parser;
 	}
 }
