@@ -224,7 +224,7 @@ class OtherComponentClient extends AdvancedComponentClient {
 		// and now the forceful release that will unload the component regardless of other clients' references to it
 		int numClients = getAcsManagerProxy().force_release_component(getAcsManagerProxy().getManagerHandle(), name);
 		
-		m_logger.info("Forcefully released component " + name + " which had " + numClients + " other clients.");
+		m_logger.info("Forcibly released component " + name + " which had " + numClients + " other clients.");
 	}
 	
 }
