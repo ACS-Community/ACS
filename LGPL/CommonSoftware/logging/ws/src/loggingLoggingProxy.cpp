@@ -19,7 +19,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: loggingLoggingProxy.cpp,v 1.57 2008/04/24 09:07:38 cparedes Exp $"
+* "@(#) $Id: loggingLoggingProxy.cpp,v 1.58 2008/06/19 13:51:56 bjeram Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -58,7 +58,7 @@
 #define LOG_NAME "Log"
 #define DEFAULT_LOG_FILE_NAME "acs_local_log"
 
-ACE_RCSID(logging, logging, "$Id: loggingLoggingProxy.cpp,v 1.57 2008/04/24 09:07:38 cparedes Exp $");
+ACE_RCSID(logging, logging, "$Id: loggingLoggingProxy.cpp,v 1.58 2008/06/19 13:51:56 bjeram Exp $");
 unsigned int LoggingProxy::setClrCount_m = 0;
 bool LoggingProxy::initialized = false;
 int LoggingProxy::instances = 0;
@@ -1176,24 +1176,26 @@ LoggingProxy::worker(void* arg)
 int
 LoggingProxy::svc()
 {
-	// start barrier
-	//m_threadStart.wait();
+    // start barrier
+    //m_threadStart.wait();
+    
+    // started on demand, so flush immediately
+    sendCacheInternal();
 
-	// started on demand, so flush immediately
-	sendCacheInternal();
-	
-	while (!m_shutdown)
+    while (!m_shutdown)
 	{
-		ACE_Time_Value timeout = ACE_OS::gettimeofday() + ACE_Time_Value(m_autoFlushTimeoutSec, 0);
-		m_doWorkCond.wait(&timeout);
-		if (!m_shutdown)
-			sendCacheInternal();
+	ACE_Time_Value timeout = ACE_OS::gettimeofday() + ACE_Time_Value(m_autoFlushTimeoutSec, 0);
+	m_doWorkMutex.acquire(); //we have to acqure mutex bfore we are going to wait !!!
+	m_doWorkCond.wait(&timeout);
+	m_doWorkMutex.release();  // and after we have to release the mutex !!!
+	if (!m_shutdown)
+	    sendCacheInternal();
 	}
 
-	// shutdown barrier
-	m_threadShutdown.wait();
+    // shutdown barrier
+    m_threadShutdown.wait();
 
-	return 0;
+    return 0;
 }
 
 void
