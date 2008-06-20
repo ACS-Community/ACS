@@ -114,7 +114,8 @@ public class LogLevelTable extends JTable {
 	 * Return the renderer for a given cell
 	 */
 	public TableCellRenderer getCellRenderer(int row, int column) {
-		if (column==2 || column==3) {
+		int modelColIdx = convertColumnIndexToModel(column);
+		if (modelColIdx==LogLevelModel.Column.GLOBAL.ordinal() || modelColIdx==LogLevelModel.Column.LOCAL.ordinal()) {
 			return renderer;
 		}
 		return super.getCellRenderer(row, column);
