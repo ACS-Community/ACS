@@ -1,7 +1,7 @@
 #*******************************************************************************
 # ALMA - Atacama Large Millimiter Array
 #
-# "@(#) $Id: generateSed.tcl,v 1.2 2008/05/19 11:15:07 eallaert Exp $"
+# "@(#) $Id: generateSed.tcl,v 1.3 2008/06/20 08:47:15 eallaert Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -19,8 +19,12 @@ set fp [open ${baseName}.sed w]
 set fqhostname [info hostname];			# fully qualified hostname
 set hostname [lindex [split $fqhostname .] 0];	# basename only
 
-puts $fp "s|$env(ACSROOT)|<ACSROOT>|g"
-puts $fp "s|$env(INTROOT)|<INTROOT>|g"
+# Under NRI there is INTROOT and ACSROOT point to the same dir, i.e. replace both env vars by generic name
+puts $fp "s|$env(ACSROOT)|<ACS-/INT-ROOT>|g"
+puts $fp "s|$env(INTROOT)|<ACS-/INT-ROOT>|g"
+# When both INTROOT and ACSROOT exist and are the same (e.g. NRI), this directory appears twice for the
+# "endorsed jar files"
+puts $fp "s|-Djava.endorsed.dirs=<ACS-/INT-ROOT>/lib/endorsed:<ACS-/INT-ROOT>/lib/endorsed:|-Djava.endorsed.dirs=<ACS-/INT-ROOT>/lib/endorsed:|g"
 puts $fp "s|$env(ACSDATA)|<ACSDATA>|g"
 puts $fp "s|[pwd]|<pwd>|g"
 puts $fp "s|$env(HOME)|<HOME>|g"
