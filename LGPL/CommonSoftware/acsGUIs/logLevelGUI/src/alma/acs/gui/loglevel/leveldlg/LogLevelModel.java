@@ -36,20 +36,33 @@ import com.cosylab.logging.engine.log.LogTypeHelper;
  */
 public class LogLevelModel extends DefaultTableModel {
 	
-	// The name of the columns (in the header)
-	private String[] colNames = new String[] {
-		"<HTML><B>Logger name</B></HTML>",
-		"<HTML><B>Use default</B></HTML>",
-		"<HTML><B>Local</B></HTML>",
-		"<HTML><B>Global</B></HTML>"
-	};
-	
-	private Class[] colClasses = new Class[] {
-		String.class,
-		Boolean.class,
-		Integer.class,
-		Integer.class
-	};
+	public enum Column {
+		NAME("<HTML><B>Logger name</B></HTML>",String.class),
+		DEFAULT("<HTML><B>Use default</B></HTML>",Boolean.class),
+		LOCAL("<HTML><B>Local</B></HTML>",Integer.class),
+		GLOBAL("<HTML><B>Global</B></HTML>",Integer.class);
+		
+		/**
+		 * The string to show in the header
+		 */
+		public final String name;
+		
+		/**
+		 * The class of the items in the column
+		 */
+		public final Class colClass;
+		
+		/**
+		 * Constructor
+		 * 
+		 * @param name The string to show in the  table header
+		 * @param cl The class of the items in the column
+		 */
+		private Column(String name, Class cl) {
+			this.name=name;
+			this.colClass=cl;
+		}
+	}
 	
 	// The log levels.
 	// Each log level is an entry in the table
@@ -73,8 +86,8 @@ public class LogLevelModel extends DefaultTableModel {
 	 *
 	 */
 	private void initialize() {
-		for (String col: colNames) {
-			addColumn(col);
+		for (Column col: Column.values()) {
+			addColumn(col.name);
 		}
 	}
 	
@@ -82,7 +95,7 @@ public class LogLevelModel extends DefaultTableModel {
 	 * @see DefaultTableModel
 	 */
 	public Class getColumnClass(int column) {
-		return colClasses[column];
+		return Column.values()[column].colClass;
 	}
 	
 	/**
