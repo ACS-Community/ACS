@@ -60,14 +60,15 @@ public class ClientPendingReplyTimeoutTest extends ComponentClientTestCase {
 		dummyComponent = DummyComponentHelper.narrow(compObj);
 	
 		// doesn't have the getConfiguration() method
-        int timeout = 50;
+        int timeout = 70;
 
-		boolean timeoutException = false;
+		boolean timeoutException = true;
 
         try {
             dummyComponent.callThatTakesSomeTime((int)(timeout + 10)*1000);
         } catch (org.omg.CORBA.TIMEOUT e) {
-            timeoutException = true;
+            //as we are calling using a client, no timeout should be thrown
+            timeoutException = false;
         }
         assertTrue(timeoutException);
 		

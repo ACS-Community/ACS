@@ -37,6 +37,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.omg.PortableServer.Servant;
+import org.omg.CORBA.SetOverrideType;
+import org.omg.CORBA.Policy;
+import org.omg.CORBA.PolicyManager;
+import org.omg.CORBA.PolicyManagerHelper;
 
 import com.cosylab.CDB.DAL;
 import com.cosylab.CDB.DALHelper;
@@ -215,6 +219,17 @@ public class AcsContainer extends ContainerPOA
 			// in order to allow CERN alarm libs to get their static field for ContainerServices set.
 			String name = m_containerName; // alarm system acts under container name
 			ThreadFactory threadFactory = new CleaningDaemonThreadFactory(name, m_logger);
+                //set of timeout
+                //we applied the timeout in the client-side for the component
+              try{ 
+                    int timeoutsec = getCDB().get_DAO_Servant("MACI/Containers/"+m_containerName).get_long("Timeout"); 
+                    Policy[] policies = new Policy[1];
+                    policies[0] = new org.jacorb.orb.policies.RelativeRoundtripTimeoutPolicy(10000 * 1000 * timeoutsec);
+                    PolicyManager pm = PolicyManagerHelper.narrow(m_acsCorba.getORB().resolve_initial_references("ORBPolicyManager"));
+                    pm.set_policy_overrides(policies, SetOverrideType.ADD_OVERRIDE);
+               }catch(Exception e){
+                    m_logger.finest("No CDB timeout applied to the container.");
+               }
 
 			ContainerServicesImpl cs = new ContainerServicesImpl(m_managerProxy, m_acsCorba.createPOAForComponent("alarmSystem"), 
 	        		m_acsCorba, m_logger, m_managerProxy.getManagerHandle(), 

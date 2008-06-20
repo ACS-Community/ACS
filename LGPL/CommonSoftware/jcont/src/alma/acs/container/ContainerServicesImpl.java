@@ -35,8 +35,6 @@ import java.util.logging.Logger;
 
 import org.omg.PortableServer.POA;
 import org.omg.PortableServer.Servant;
-import org.omg.CORBA.Policy;
-import org.omg.CORBA.SetOverrideType;
 
 import com.cosylab.CDB.DAL;
 import com.cosylab.CDB.DALHelper;
@@ -164,7 +162,7 @@ public class ContainerServicesImpl implements ContainerServices
 		m_usedNonStickyComponentsMap = Collections.synchronizedMap(new HashMap<String, org.omg.CORBA.Object>());
 		
 		m_componentDescriptorMap = Collections.synchronizedMap(new HashMap<String, ComponentDescriptor>());
-        
+
         m_threadFactory = threadFactory;        
         if (fakeUIDsForTesting) {
         	m_logger.warning("Running in test mode where UIDs will be constructed randomly instead of being retrieved from the archive!");
@@ -474,18 +472,6 @@ public class ContainerServicesImpl implements ContainerServices
 				throw ex;
 			}			
 		}
-        //we applied the timeout in the client-side for the component
-         String contName="";
-      try{ 
-            contName =getCDB().get_DAO_Servant("MACI/Components/"+curl).get_string("Container");
-         
-            int timeoutsec = getCDB().get_DAO_Servant("MACI/Containers/"+contName).get_long("Timeout"); 
-			Policy[] policies = new Policy[1];
-			policies[0] = new org.jacorb.orb.policies.RelativeRoundtripTimeoutPolicy(10000 * 1000 * timeoutsec);
-			stub._set_policy_override(policies, SetOverrideType.ADD_OVERRIDE);
-       }catch(Exception e){
-            m_logger.finest("Container "+contName+" has not defined the Timeout for the component "+curl);
-       }
 
 		return stub;
 	}
@@ -517,18 +503,6 @@ public class ContainerServicesImpl implements ContainerServices
 			ex.setContextInfo(msg);
 			throw ex;
 		}	
-        //we applied the timeout in the client-side for the component
-         String contName="";
-      try{ 
-            contName =getCDB().get_DAO_Servant("MACI/Components/"+curl).get_string("Container");
-         
-            int timeoutsec = getCDB().get_DAO_Servant("MACI/Containers/"+contName).get_long("Timeout"); 
-			Policy[] policies = new Policy[1];
-			policies[0] = new org.jacorb.orb.policies.RelativeRoundtripTimeoutPolicy(10000 * 1000 * timeoutsec);
-			stub._set_policy_override(policies, SetOverrideType.ADD_OVERRIDE);
-       }catch(Exception e){
-            m_logger.fine("Container "+contName+" has not defined the Timeout for the component "+curl);
-       }
 		return stub;
 	}
 
@@ -577,19 +551,6 @@ public class ContainerServicesImpl implements ContainerServices
 		m_usedComponentsMap.put(cInfo.name, cInfo.reference);
 		m_componentDescriptorMap.put(cInfo.name, new ComponentDescriptor(cInfo));
 
-        //we applied the timeout in the client-side for the component
-         String contName="";
-         String curl = cInfo.name;
-      try{ 
-            contName =getCDB().get_DAO_Servant("MACI/Components/"+curl).get_string("Container");
-         
-            int timeoutsec = getCDB().get_DAO_Servant("MACI/Containers/"+contName).get_long("Timeout"); 
-			Policy[] policies = new Policy[1];
-			policies[0] = new org.jacorb.orb.policies.RelativeRoundtripTimeoutPolicy(10000 * 1000 * timeoutsec);
-			cInfo.reference._set_policy_override(policies, SetOverrideType.ADD_OVERRIDE);
-       }catch(Exception e){
-            m_logger.fine("Container "+contName+" has not defined the Timeout for the component "+curl);
-       }
 		return cInfo.reference;
 	}
 	
@@ -705,17 +666,6 @@ public class ContainerServicesImpl implements ContainerServices
 			throw ex;
 		}
 		
-        //we applied the timeout in the client-side for the component
-         String contName=compSpec.container_name;
-      try{ 
-         
-            int timeoutsec = getCDB().get_DAO_Servant("MACI/Containers/"+contName).get_long("Timeout"); 
-			Policy[] policies = new Policy[1];
-			policies[0] = new org.jacorb.orb.policies.RelativeRoundtripTimeoutPolicy(10000 * 1000 * timeoutsec);
-			cInfo.reference._set_policy_override(policies, SetOverrideType.ADD_OVERRIDE);
-       }catch(Exception e){
-            m_logger.fine("Container "+contName+" has not defined the Timeout for the dynamic component.");
-       }
 		return cInfo.reference;
 	}
 
