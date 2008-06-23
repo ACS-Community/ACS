@@ -11,6 +11,8 @@ AcsBulkdata::BulkDataFlowConsumer<TReceiverCallback>::BulkDataFlowConsumer(const
   protocols[1] = CORBA::string_dup("UDP");
   protocols[2] = CORBA::string_dup("RTP/UDP");
     
+  cb_p = 0;
+
   try    
     {
       set_protocol_restriction(protocols);
@@ -30,8 +32,6 @@ AcsBulkdata::BulkDataFlowConsumer<TReceiverCallback>::~BulkDataFlowConsumer()
 
 //  TAO_AV_CORE::instance ()->remove_acceptor(m_flowName.c_str());
 //  TAO_AV_CORE::instance ()->remove_connector(m_flowName.c_str());
-
-  //cout << "RRRRRRRRRRRRRRRRR BulkDataFlowConsumer<>::~BulkDataFlowConsumer" << endl;
 }
 
 

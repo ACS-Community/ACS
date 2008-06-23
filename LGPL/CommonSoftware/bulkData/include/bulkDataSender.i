@@ -77,27 +77,33 @@ void AcsBulkdata::BulkDataSender<TSenderCallback>::createSingleFlow()
 
     try
 	{
-	streamctrl_p = createStreamCtrl();
+	if(streamctrl_p == 0)
+	    {
+	    streamctrl_p = createStreamCtrl();
+	    }
 
-	sepA_p = createSepA();
+	if (CORBA::is_nil(sepA_p.in()))
+	    {
+	    sepA_p = createSepA();
 
-	ACE_CString flowname = "Flow1";
+	    ACE_CString flowname = "Flow1";
 
-	AVStreams::protocolSpec defProt(1);
-	defProt.length(1);
-	defProt[0] = CORBA::string_dup("TCP");
+	    AVStreams::protocolSpec defProt(1);
+	    defProt.length(1);
+	    defProt[0] = CORBA::string_dup("TCP");
 
-	ACE_CString format = "UNS1:ftp";
+	    ACE_CString format = "UNS1:ftp";
 
-	AVStreams::FlowProducer_var fepObj_p = createFepProducerA(flowname, defProt, format, streamctrl_p); 
+	    AVStreams::FlowProducer_var fepObj_p = createFepProducerA(flowname, defProt, format, streamctrl_p); 
 
-	addFepToSep(sepA_p.in(), fepObj_p.in());
+	    addFepToSep(sepA_p.in(), fepObj_p.in());
 
-	senderFeps_m.length(1);
+	    senderFeps_m.length(1);
 
-	ACE_CString address = CORBA::string_dup("TCP");
-	const char *locEntry = createFlowSpec(flowname, address);
-	senderFeps_m[0] = CORBA::string_dup(locEntry);
+	    ACE_CString address = CORBA::string_dup("TCP");
+	    const char *locEntry = createFlowSpec(flowname, address);
+	    senderFeps_m[0] = CORBA::string_dup(locEntry);
+	    }
 	}
     catch(AVStreamEndpointErrorExImpl &ex)
 	{
@@ -133,61 +139,68 @@ void AcsBulkdata::BulkDataSender<TSenderCallback>::createMultipleFlows(const cha
 	    return;
 	    }
 
-	streamctrl_p = createStreamCtrl();
-
-	sepA_p = createSepA();
-
-	FepsCfgA localStruct;
-
-	AVStreams::FlowProducer_var fepObj_p;
-
-	AVStreams::protocolSpec defProt(1);
-	defProt.length(1);
-
-	TAO_Tokenizer addressToken(fepsConfig, '/');
-	int numOtherFeps = addressToken.num_tokens();
-	if(numOtherFeps > 19)
+	if(streamctrl_p == 0)
 	    {
-	    ACS_SHORT_LOG((LM_ERROR,"BulkDataSender<>::createMultipleFlows too many flows specified - maximum 19"));
-	    AVInvalidFlowNumberExImpl err = AVInvalidFlowNumberExImpl(__FILE__,__LINE__,"BulkDataSender::createMultipleFlows");
-	    throw err;	
+	    streamctrl_p = createStreamCtrl();
 	    }
 
-	senderFeps_m.length(numOtherFeps);
-
-	char hostName[255];
-	string strAddressToken;
-	for(int j = 0; j < numOtherFeps; j++)
+	if (CORBA::is_nil(sepA_p.in()))
 	    {
-	    strAddressToken = addressToken[j];
-	    if(strAddressToken.find("${HOST}",0) != string::npos)
+	    sepA_p = createSepA();
+
+	    FepsCfgA localStruct;
+
+	    AVStreams::FlowProducer_var fepObj_p;
+
+	    AVStreams::protocolSpec defProt(1);
+	    defProt.length(1);
+
+	    TAO_Tokenizer addressToken(fepsConfig, '/');
+	    int numOtherFeps = addressToken.num_tokens();
+	    if(numOtherFeps > 19)
 		{
-		if(strAddressToken.find(":",0) != string::npos)
-		    {		  
-		    ACE_OS::hostname(hostName, sizeof(hostName));
-		    strAddressToken.replace(4,7,hostName);
-		    }
-		else
-		    {
-		    strAddressToken.replace(3,8,"");
-		    }
+		ACS_SHORT_LOG((LM_ERROR,"BulkDataSender<>::createMultipleFlows too many flows specified - maximum 19"));
+		AVInvalidFlowNumberExImpl err = AVInvalidFlowNumberExImpl(__FILE__,__LINE__,"BulkDataSender::createMultipleFlows");
+		throw err;	
 		}
 
-	    char tmp[255];
-	    ACE_OS::sprintf(tmp, "Flow%d", j+1);
-	    localStruct.fepsFlowname = tmp;
-	    ACE_OS::sprintf(tmp, "UNS%d:ftp", j+1);
-	    localStruct.fepsFormat = tmp;
-	    defProt[0] = CORBA::string_dup(strAddressToken.c_str());
-	    localStruct.fepsProtocol = CORBA::string_dup(strAddressToken.c_str()); 
+	    senderFeps_m.length(numOtherFeps);
 
-	    fepObj_p = createFepProducerA(localStruct.fepsFlowname, defProt, localStruct.fepsFormat, streamctrl_p); 
+	    char hostName[255];
+	    string strAddressToken;
+	    for(int j = 0; j < numOtherFeps; j++)
+		{
+		strAddressToken = addressToken[j];
+		if(strAddressToken.find("${HOST}",0) != string::npos)
+		    {
+		    if(strAddressToken.find(":",0) != string::npos)
+			{		  
+			ACE_OS::hostname(hostName, sizeof(hostName));
+			strAddressToken.replace(4,7,hostName);
+			}
+		    else
+			{
+			strAddressToken.replace(3,8,"");
+			}
+		    }
 
-	    addFepToSep(sepA_p.in(), fepObj_p.in());
+		char tmp[255];
+		ACE_OS::sprintf(tmp, "Flow%d", j+1);
+		localStruct.fepsFlowname = tmp;
+		ACE_OS::sprintf(tmp, "UNS%d:ftp", j+1);
+		localStruct.fepsFormat = tmp;
+		defProt[0] = CORBA::string_dup(strAddressToken.c_str());
+		localStruct.fepsProtocol = CORBA::string_dup(strAddressToken.c_str()); 
 
-	    const char *locEntry = createFlowSpec(localStruct.fepsFlowname, localStruct.fepsProtocol);
+		fepObj_p = createFepProducerA(localStruct.fepsFlowname, defProt, localStruct.fepsFormat, streamctrl_p); 
 
-	    senderFeps_m[j] = CORBA::string_dup(locEntry);
+		addFepToSep(sepA_p.in(), fepObj_p.in());
+
+		const char *locEntry = createFlowSpec(localStruct.fepsFlowname, localStruct.fepsProtocol);
+
+		senderFeps_m[j] = CORBA::string_dup(locEntry);
+		}
+
 	    }
 	}
     catch(AVStreamEndpointErrorExImpl &ex)
@@ -1155,6 +1168,8 @@ void AcsBulkdata::BulkDataSender<TSenderCallback>::deleteSepA()
 	if (sepRefCount_p != 0) sepRefCount_p->_remove_ref();
 	sepRefCount_p=0;
 	}
+
+    sepA_p = AVStreams::StreamEndPoint_A::_nil();
    
 /* 
    PortableServer::ServantBase_var sep_a_servant =

@@ -10,6 +10,14 @@ AcsBulkdata::BulkDataReceiver<TReceiverCallback>::BulkDataReceiver() : closeRece
     locNotifCb_p = 0;
 //    recvConfig_p->streamendpoint_B = 0;
 //    recvConfig_p->fepsInfo = 0;
+
+    recvConfig_p = new bulkdata::BulkDataReceiverConfig();
+    if(recvConfig_p == 0)
+	{
+	ACS_SHORT_LOG((LM_ERROR,"BulkDataReceiver<>::BulkDataReceiver error creating BulkDataReceiverConfig"));
+	AVReceiverConfigErrorExImpl err = AVReceiverConfigErrorExImpl(__FILE__,__LINE__,"BulkDataReceiver::BulkDataReceiver");
+	throw err;
+	}
 }
 
 
@@ -117,6 +125,13 @@ void AcsBulkdata::BulkDataReceiver<TReceiverCallback>::createMultipleFlows(const
 {
     ACE_TRACE("BulkDataReceiver<>::createMultipleFlows");
 
+    bulkdata::Connection conn = checkFlowCallbacks();
+    recvConfig_p->connectionState = conn;
+    if(conn == bulkdata::CONNECTED) // state CONNECTED, nothing is created on the receiver side
+	{
+	return;
+	}
+
     try
 	{
 	if(ACE_OS::strcmp(fepsConfig, "") == 0)
@@ -208,10 +223,11 @@ bulkdata::BulkDataReceiverConfig * AcsBulkdata::BulkDataReceiver<TReceiverCallba
 {
     ACS_TRACE("BulkDataReceiver<>::getReceiverConfig");
 
+    bulkdata::BulkDataReceiverConfig *recvConfigLoc_p = 0;
     try
 	{
-	recvConfig_p = new bulkdata::BulkDataReceiverConfig;
-	if(recvConfig_p == 0)
+	recvConfigLoc_p = new bulkdata::BulkDataReceiverConfig;
+	if(recvConfigLoc_p == 0)
 	    {
 	    ACS_SHORT_LOG((LM_ERROR,"BulkDataReceiver<>::getReceiverConfig error creating BulkDataReceiverConfig"));
 	    AVReceiverConfigErrorExImpl err = AVReceiverConfigErrorExImpl(__FILE__,__LINE__,"BulkDataReceiver::getReceiverConfig");
@@ -225,10 +241,15 @@ bulkdata::BulkDataReceiverConfig * AcsBulkdata::BulkDataReceiver<TReceiverCallba
 	    AVReceiverConfigErrorExImpl err = AVReceiverConfigErrorExImpl(__FILE__,__LINE__,"BulkDataReceiver::getReceiverConfig");
 	    throw err;
 	    }
+	else
+	    {
+	    recvConfigLoc_p->streamendpoint_B = recvConfig_p->streamendpoint_B;
+	    }
 
 	if((getFepsConfig())->length() > 0)
 	    {
 	    recvConfig_p->fepsInfo = *(getFepsConfig());
+	    recvConfigLoc_p->fepsInfo = recvConfig_p->fepsInfo;
 	    }
 	else
 	    {
@@ -236,6 +257,8 @@ bulkdata::BulkDataReceiverConfig * AcsBulkdata::BulkDataReceiver<TReceiverCallba
 	    AVReceiverConfigErrorExImpl err = AVReceiverConfigErrorExImpl(__FILE__,__LINE__,"BulkDataReceiver::getReceiverConfig");
 	    throw err;
 	    }
+
+	recvConfigLoc_p->connectionState = recvConfig_p->connectionState;
 	}
     catch(AVReceiverConfigErrorExImpl &ex)
 	{
@@ -249,7 +272,7 @@ bulkdata::BulkDataReceiverConfig * AcsBulkdata::BulkDataReceiver<TReceiverCallba
 	throw err;
 	}
     
-    return recvConfig_p._retn();
+    return recvConfigLoc_p;
 }
 
 
@@ -523,7 +546,10 @@ AVStreams::StreamEndPoint_B_ptr AcsBulkdata::BulkDataReceiver<TReceiverCallback>
 	return AVStreams::StreamEndPoint_B::_nil();
 	}
 
-    return sepB_p._retn();
+    AVStreams::StreamEndPoint_B_var locSepB = sepB_p;
+
+    return locSepB._retn();
+    //return sepB_p._retn();
 }
 
 
@@ -771,4 +797,49 @@ void AcsBulkdata::BulkDataReceiver<TReceiverCallback>::notifySender(const ACSErr
 	AVNotificationMechanismErrorExImpl err = AVNotificationMechanismErrorExImpl(ex,__FILE__,__LINE__,"BulkDataReceiver::notifySender");
 	throw err;
 	}
+}
+
+
+template<class TReceiverCallback>
+bulkdata::Connection AcsBulkdata::BulkDataReceiver<TReceiverCallback>::checkFlowCallbacks()
+    throw (AVFlowEndpointErrorExImpl)
+{
+    bulkdata::Connection connState = bulkdata::READY;
+
+    if(fepMap_m.current_size() == 0) // no connection yet, state READY
+	{
+	connState = bulkdata::READY;
+	}
+    else
+	{
+	for(CORBA::ULong i = 0; i < fepsData.length(); i++)
+	    {
+	    ACE_CString flowName = TAO_AV_Core::get_flowname(fepsData[i]);
+	    
+	    BulkDataFlowConsumer<TReceiverCallback> *fep = 0;
+	    
+	    fepMap_m.find(flowName, fep);
+	    if(fep == 0)
+		{
+		ACS_SHORT_LOG((LM_ERROR,"BulkDataReceiver::checkFlowCallbacks Flow End Point null"));
+		AVFlowEndpointErrorExImpl err = AVFlowEndpointErrorExImpl(__FILE__,__LINE__,"BulkDataReceiver::checkFlowCallbacks");
+		throw err;
+		} 
+	    else
+		{
+		TReceiverCallback *cb_p = fep->getBulkDataCallback();
+		if(cb_p == 0)
+		    {
+		    connState = bulkdata::OPENED; // to be implemented
+		    }
+		else
+		    {
+		    connState = bulkdata::CONNECTED;
+		    break;
+		    }
+		}
+	    }
+	}
+
+    return connState;    
 }

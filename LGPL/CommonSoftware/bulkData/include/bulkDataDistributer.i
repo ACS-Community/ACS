@@ -43,9 +43,16 @@ void AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::multi
 	{
 	if(isRecvConnected(receiverName))
 	    {
-	    ACS_SHORT_LOG((LM_WARNING,"BulkDataDistributer<>::multiConnect receiver %s already connected",receiverName.c_str()));
-	    AVConnectErrorExImpl err = AVConnectErrorExImpl(__FILE__,__LINE__,"BulkDataDistributer<>::multiConnect");
-	    throw err;
+	    if(getSenderConnectionState() == bulkdata::CONNECTED) // the sender is already connected, simply return
+		{
+		return;
+		}
+	    else
+		{
+		ACS_SHORT_LOG((LM_WARNING,"BulkDataDistributer<>::multiConnect receiver %s already connected",receiverName.c_str()));
+		AVConnectErrorExImpl err = AVConnectErrorExImpl(__FILE__,__LINE__,"BulkDataDistributer<>::multiConnect");
+		throw err;
+		}
 	    }
 
 	sender_p = new BulkDataSender<TSenderCallback>;

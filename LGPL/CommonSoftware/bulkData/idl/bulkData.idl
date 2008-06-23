@@ -42,12 +42,15 @@
 
 module bulkdata
 {
+  enum Connection {READY, OPENED, CONNECTED};
   
   struct BulkDataReceiverConfig
   {
     AVStreams::StreamEndPoint_B streamendpoint_B;
     
     AVStreams::flowSpec fepsInfo;
+
+    Connection connectionState;
   };
 
 

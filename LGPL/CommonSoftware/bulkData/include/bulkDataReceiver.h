@@ -273,6 +273,16 @@ namespace AcsBulkdata
 				    ACE_CString &fepProtocol);
 
 
+      public:
+	bulkdata::Connection checkFlowCallbacks()
+	    throw (AVFlowEndpointErrorExImpl);
+
+	bulkdata::Connection getSenderConnectionState()
+	    {
+		return recvConfig_p->connectionState;
+	    }
+
+      private:
 	FepObjects fepMap_m;
 
 	/**
@@ -291,7 +301,8 @@ namespace AcsBulkdata
 
 	AVStreams::flowSpec fepsData;
 
-	bulkdata::BulkDataReceiverConfig_var recvConfig_p; 
+	//bulkdata::BulkDataReceiverConfig_var recvConfig_p; 
+	bulkdata::BulkDataReceiverConfig * recvConfig_p; 
 
 	TAO_StreamEndPoint_B *sepRefCount_p;
 

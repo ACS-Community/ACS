@@ -149,6 +149,10 @@ namespace AcsBulkdata
 	void notifySender(const ACSErr::Completion& comp)
 	    throw (AVNotificationMechanismErrorExImpl);
 
+	bulkdata::Connection getSenderConnectionState()
+	    {
+		return getReceiver()->getSenderConnectionState();
+	    }
 
       private:
 
