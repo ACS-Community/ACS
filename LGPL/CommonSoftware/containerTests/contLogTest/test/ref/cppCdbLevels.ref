@@ -1,6 +1,6 @@
 1 -  -D TEST_COMP_NAMES=TESTLOG4 -- alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest
 1 - <timestamp> INFO [acsStartJava] Starting Java/abeans application: alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest
-1 - .FINER: Logging configuration has been initialized, but not from CDB settings.
+1 - .<timestamp> DEBUG [alma.acs.logging.config.LogConfig] Logging configuration has been initialized, but not from CDB settings.
 1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels] -------------------------------
 1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels] ComponentClientTestCase#setUp()
 1 - <timestamp> FINE [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels] calling orb.resolve_initial_references
@@ -26,7 +26,7 @@
 1 - <timestamp> FINE [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels] logged out from manager.
 1 - <timestamp> FINE [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels] about to destroy all POAs and the ORB
 1 - <timestamp> FINE [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels] POAs and ORB destroyed successfully.
-1 - .FINER: Logging configuration has been initialized, but not from CDB settings.
+1 - .<timestamp> DEBUG [alma.acs.logging.config.LogConfig] Logging configuration has been initialized, but not from CDB settings.
 1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] -------------------------------
 1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] ComponentClientTestCase#setUp()
 1 - <timestamp> FINE [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] calling orb.resolve_initial_references

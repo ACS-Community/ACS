@@ -1,55 +1,19 @@
 1 -  -D TEST_COMP_NAMES=TESTLOG6 -- alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest
 1 - <timestamp> INFO [acsStartJava] Starting Java/abeans application: alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest
-1 - .FINER: Logging configuration has been initialized, but not from CDB settings.
-1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels] -------------------------------
+1 - .<timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels] -------------------------------
 1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels] ComponentClientTestCase#setUp()
-1 - <timestamp> FINE [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels] calling orb.resolve_initial_references
-1 - <timestamp> FINE [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels] POA activated
-1 - <timestamp> FINE [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels] manager reference not yet available in method loginToManager; will try to find the manager first...
-1 - <timestamp> FINEST [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels] manager corbaloc 'corbaloc::<IP address>:<port>/Manager' resolved.
-1 - <timestamp> FINEST [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels] manager narrow successful.
-1 - <timestamp> FINE [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels] Manager login done, handle <ID> obtained.
-1 - <timestamp> FINE [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels] will retrieve remote component 'TESTLOG6' using ACS Manager#get_component with client handle <ID>
-1 - <timestamp> FINE [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels] component TESTLOG6 retrieved successfully.
 1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels] component 'alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest' requested AdvancedContainerServices
-1 - <timestamp> FINE [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels] manager reference not yet available in method loginToManager; will try to find the manager first...
-1 - <timestamp> FINEST [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels] manager corbaloc 'corbaloc::<IP address>:<port>/Manager' resolved.
-1 - <timestamp> FINEST [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels] manager narrow successful.
 1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest] authenticate called: id=XXX; question=Identify yourself
-1 - <timestamp> FINE [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels] Manager login done, handle <ID> obtained.
-1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels] levels from component's getLevels method and LoggingConfigurable: 2, 2, 2, 2, 2
-1 - <timestamp> FINE [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels] about to release component TESTLOG6
+1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels] levels from component's getLevels method (hardcoded remote, local, effective): 2, 2, 2, 99, 2
 1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels] client 'alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest' has successfully released  a component with curl=TESTLOG6
-1 - <timestamp> FINE [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels] about to log out from manager...
-1 - <timestamp> FINE [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels] logged out from manager.
-1 - <timestamp> FINE [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels] about to log out from manager...
-1 - <timestamp> FINE [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels] logged out from manager.
-1 - <timestamp> FINE [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels] about to destroy all POAs and the ORB
-1 - <timestamp> FINE [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels] POAs and ORB destroyed successfully.
-1 - .FINER: Logging configuration has been initialized, but not from CDB settings.
-1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] -------------------------------
+1 - .<timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] -------------------------------
 1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] ComponentClientTestCase#setUp()
-1 - <timestamp> FINE [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] calling orb.resolve_initial_references
-1 - <timestamp> FINE [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] POA activated
-1 - <timestamp> FINE [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] manager reference not yet available in method loginToManager; will try to find the manager first...
-1 - <timestamp> FINEST [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] manager corbaloc 'corbaloc::<IP address>:<port>/Manager' resolved.
-1 - <timestamp> FINEST [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] manager narrow successful.
-1 - <timestamp> FINE [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Manager login done, handle <ID> obtained.
-1 - <timestamp> FINE [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] will retrieve remote component 'TESTLOG6' using ACS Manager#get_component with client handle <ID>
-1 - <timestamp> FINE [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] component TESTLOG6 retrieved successfully.
 1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] component 'alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest' requested AdvancedContainerServices
-1 - <timestamp> FINE [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] manager reference not yet available in method loginToManager; will try to find the manager first...
-1 - <timestamp> FINEST [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] manager corbaloc 'corbaloc::<IP address>:<port>/Manager' resolved.
-1 - <timestamp> FINEST [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] manager narrow successful.
 1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest] authenticate called: id=XXX; question=Identify yourself
-1 - <timestamp> FINE [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Manager login done, handle <ID> obtained.
-1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Set individual log level for component TESTLOG6 (running in container aragornContainer) to 2
+1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Set default log level for container aragornContainer to 2 to be used by component TESTLOG6
 1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will call 'logDummyMessages' on component TESTLOG6
 1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will wait <N> seconds to receive (some of) these log messages.
-1 - Got 13 records from logger TESTLOG6
-1 - (level=4) getLevels - called...
-1 - (level=4) cleanUp - Destroying TESTLOG6...
-1 - (level=2) initialize - TestLogLevelsComp.TestLogLevelsComp
+1 - Got 10 records from logger TESTLOG6
 1 - (level=2) logDummyMessages - dummy log message for core level 2/TRACE
 1 - (level=3) logDummyMessages - dummy log message for core level 3/DEBUG
 1 - (level=4) logDummyMessages - dummy log message for core level 4/INFO
@@ -60,7 +24,7 @@
 1 - (level=10) logDummyMessages - dummy log message for core level 10/ALERT
 1 - (level=11) logDummyMessages - dummy log message for core level 11/EMERGENCY
 1 - (level=11) logDummyMessages - ===last log message===
-1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Set individual log level for component TESTLOG6 (running in container aragornContainer) to 3
+1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Set default log level for container aragornContainer to 3 to be used by component TESTLOG6
 1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will call 'logDummyMessages' on component TESTLOG6
 1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will wait <N> seconds to receive (some of) these log messages.
 1 - Got 9 records from logger TESTLOG6
@@ -73,7 +37,7 @@
 1 - (level=10) logDummyMessages - dummy log message for core level 10/ALERT
 1 - (level=11) logDummyMessages - dummy log message for core level 11/EMERGENCY
 1 - (level=11) logDummyMessages - ===last log message===
-1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Set individual log level for component TESTLOG6 (running in container aragornContainer) to 4
+1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Set default log level for container aragornContainer to 4 to be used by component TESTLOG6
 1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will call 'logDummyMessages' on component TESTLOG6
 1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will wait <N> seconds to receive (some of) these log messages.
 1 - Got 8 records from logger TESTLOG6
@@ -85,7 +49,7 @@
 1 - (level=10) logDummyMessages - dummy log message for core level 10/ALERT
 1 - (level=11) logDummyMessages - dummy log message for core level 11/EMERGENCY
 1 - (level=11) logDummyMessages - ===last log message===
-1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Set individual log level for component TESTLOG6 (running in container aragornContainer) to 5
+1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Set default log level for container aragornContainer to 5 to be used by component TESTLOG6
 1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will call 'logDummyMessages' on component TESTLOG6
 1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will wait <N> seconds to receive (some of) these log messages.
 1 - Got 7 records from logger TESTLOG6
@@ -96,7 +60,7 @@
 1 - (level=10) logDummyMessages - dummy log message for core level 10/ALERT
 1 - (level=11) logDummyMessages - dummy log message for core level 11/EMERGENCY
 1 - (level=11) logDummyMessages - ===last log message===
-1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Set individual log level for component TESTLOG6 (running in container aragornContainer) to 6
+1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Set default log level for container aragornContainer to 6 to be used by component TESTLOG6
 1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will call 'logDummyMessages' on component TESTLOG6
 1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will wait <N> seconds to receive (some of) these log messages.
 1 - Got 6 records from logger TESTLOG6
@@ -106,7 +70,7 @@
 1 - (level=10) logDummyMessages - dummy log message for core level 10/ALERT
 1 - (level=11) logDummyMessages - dummy log message for core level 11/EMERGENCY
 1 - (level=11) logDummyMessages - ===last log message===
-1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Set individual log level for component TESTLOG6 (running in container aragornContainer) to 8
+1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Set default log level for container aragornContainer to 8 to be used by component TESTLOG6
 1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will call 'logDummyMessages' on component TESTLOG6
 1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will wait <N> seconds to receive (some of) these log messages.
 1 - Got 5 records from logger TESTLOG6
@@ -115,7 +79,7 @@
 1 - (level=10) logDummyMessages - dummy log message for core level 10/ALERT
 1 - (level=11) logDummyMessages - dummy log message for core level 11/EMERGENCY
 1 - (level=11) logDummyMessages - ===last log message===
-1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Set individual log level for component TESTLOG6 (running in container aragornContainer) to 9
+1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Set default log level for container aragornContainer to 9 to be used by component TESTLOG6
 1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will call 'logDummyMessages' on component TESTLOG6
 1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will wait <N> seconds to receive (some of) these log messages.
 1 - Got 4 records from logger TESTLOG6
@@ -123,31 +87,24 @@
 1 - (level=10) logDummyMessages - dummy log message for core level 10/ALERT
 1 - (level=11) logDummyMessages - dummy log message for core level 11/EMERGENCY
 1 - (level=11) logDummyMessages - ===last log message===
-1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Set individual log level for component TESTLOG6 (running in container aragornContainer) to 10
+1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Set default log level for container aragornContainer to 10 to be used by component TESTLOG6
 1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will call 'logDummyMessages' on component TESTLOG6
 1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will wait <N> seconds to receive (some of) these log messages.
 1 - Got 3 records from logger TESTLOG6
 1 - (level=10) logDummyMessages - dummy log message for core level 10/ALERT
 1 - (level=11) logDummyMessages - dummy log message for core level 11/EMERGENCY
 1 - (level=11) logDummyMessages - ===last log message===
-1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Set individual log level for component TESTLOG6 (running in container aragornContainer) to 11
+1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Set default log level for container aragornContainer to 11 to be used by component TESTLOG6
 1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will call 'logDummyMessages' on component TESTLOG6
 1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will wait <N> seconds to receive (some of) these log messages.
 1 - Got 2 records from logger TESTLOG6
 1 - (level=11) logDummyMessages - dummy log message for core level 11/EMERGENCY
 1 - (level=11) logDummyMessages - ===last log message===
-1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Set individual log level for component TESTLOG6 (running in container aragornContainer) to 99
+1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Set default log level for container aragornContainer to 99 to be used by component TESTLOG6
 1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will call 'logDummyMessages' on component TESTLOG6
 1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will wait <N> seconds to receive (some of) these log messages.
 1 - Got 0 records from logger TESTLOG6
-1 - <timestamp> FINE [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] about to release component TESTLOG6
 1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] client 'alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest' has successfully released  a component with curl=TESTLOG6
-1 - <timestamp> FINE [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] about to log out from manager...
-1 - <timestamp> FINE [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] logged out from manager.
-1 - <timestamp> FINE [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] about to log out from manager...
-1 - <timestamp> FINE [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] logged out from manager.
-1 - <timestamp> FINE [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] about to destroy all POAs and the ORB
-1 - <timestamp> FINE [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] POAs and ORB destroyed successfully.
 1 - 
 1 - Time: <seconds>
 1 - 
