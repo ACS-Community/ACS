@@ -3,11 +3,10 @@ package alma.contLogTest.TestLogLevelsCompImpl;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
 
-import com.cosylab.logging.engine.log.ILogEntry;
+import com.cosylab.logging.engine.log.ILogEntry; 
 
 import alma.acs.logging.level.AcsLogLevelDefinition;
 import alma.acs.logging.engine.LogReceiver;
