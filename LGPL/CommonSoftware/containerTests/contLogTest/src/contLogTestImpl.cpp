@@ -21,7 +21,7 @@
 *
 *
 *
-* "@(#) $Id: contLogTestImpl.cpp,v 1.12 2008/01/30 11:08:07 eallaert Exp $"
+* "@(#) $Id: contLogTestImpl.cpp,v 1.13 2008/06/24 13:45:46 eallaert Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -36,7 +36,7 @@
 #include "loggingGetLogger.h"
 #include <iostream>
 
-ACE_RCSID(contLogTest, contLogTestImpl, "$Id: contLogTestImpl.cpp,v 1.12 2008/01/30 11:08:07 eallaert Exp $")
+ACE_RCSID(contLogTest, contLogTestImpl, "$Id: contLogTestImpl.cpp,v 1.13 2008/06/24 13:45:46 eallaert Exp $")
 
 /* ----------------------------------------------------------------*/
 TestLogLevelsComp::TestLogLevelsComp( 
@@ -82,6 +82,8 @@ TestLogLevelsComp::logDummyMessages (const ::contLogTest::LongSeq & levels)
 {
 	ACE_Log_Priority p;
 	CORBA::ULong t=0;
+	// Give client time to start waiting for logs
+	usleep(250000);
 	for (t=0; t<levels.length(); t++){
 		p = LogLevelDefinition::getACELogPriority(levels[t]);
 		LogLevelDefinition lld = LogLevelDefinition::fromInteger(levels[t]);
