@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.5 2007/11/30 23:41:05 agrimstrup Exp $"
+# "@(#) $Id: Makefile,v 1.6 2008/06/24 13:45:01 eallaert Exp $"
 #
 # Makefile of ........
 #
@@ -88,6 +88,10 @@ PROG =
 # ------------------------
 # As a general rule:  public file are "cleaned" and "installed"  
 #                     local (_L) are not "installed".
+
+#
+# Type-safe log code generation
+ACSLOGTSDEF = typeSafeLogs
 
 #
 # C programs (public and local)
