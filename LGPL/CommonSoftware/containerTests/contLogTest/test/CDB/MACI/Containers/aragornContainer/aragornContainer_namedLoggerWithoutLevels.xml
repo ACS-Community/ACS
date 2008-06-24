@@ -16,7 +16,7 @@
     	dispatchPacketSize="20"
     	flushPeriodSeconds="10"
     	>
-       <log:_ Name="aragornContainerN" />
+       <log:_ Name="aragornContainer" />
        <log:_ Name="TESTLOG6" />
      </LoggingConfig>
     
