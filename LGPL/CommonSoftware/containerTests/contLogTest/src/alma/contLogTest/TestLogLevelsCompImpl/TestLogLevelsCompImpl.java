@@ -34,7 +34,7 @@ import alma.acs.logging.StdOutConsoleHandler;
 import alma.acs.logging.level.AcsLogLevelDefinition;
 import alma.contLogTest.TestLogLevelsCompOperations;
 import alma.maci.loggingconfig.LoggingConfig;
-
+import alma.typeSafeLogs.LOG_TEST_DummyMessage;
 /**
  * A very simple component that does not make use of 
  * {@link alma.acs.component.ComponentImplBase}.
@@ -166,6 +166,7 @@ public class TestLogLevelsCompImpl implements ComponentLifecycle, TestLogLevelsC
 		}
 		acsLogLevel = AcsLogLevel.fromAcsCoreLevel(AcsLogLevelDefinition.EMERGENCY);
 		m_logger.log(acsLogLevel, "===last log message===");
+		LOG_TEST_DummyMessage.log(m_logger, "A beautiful name with a cherry on top", "Dr. F. Amous");
 	}
 }
 
