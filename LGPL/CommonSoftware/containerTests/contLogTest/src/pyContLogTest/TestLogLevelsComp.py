@@ -17,7 +17,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: TestLogLevelsComp.py,v 1.8 2008/05/16 12:39:24 eallaert Exp $"
+# "@(#) $Id: TestLogLevelsComp.py,v 1.9 2008/06/24 13:46:25 eallaert Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -89,7 +89,7 @@ class TestLogLevelsComp(contLogTest__POA.TestLogLevelsComp,  #CORBA stubs for ID
         '''
         mylogger = self.getLogger()
         # give client time to get ready for logs
-        sleep(1.500)
+        sleep(0.500)
         for l in levels:
             try:
                 if l != 99:
