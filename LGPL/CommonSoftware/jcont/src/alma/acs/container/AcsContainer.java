@@ -37,10 +37,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.omg.PortableServer.Servant;
-import org.omg.CORBA.SetOverrideType;
-import org.omg.CORBA.Policy;
-import org.omg.CORBA.PolicyManager;
-import org.omg.CORBA.PolicyManagerHelper;
 
 import com.cosylab.CDB.DAL;
 import com.cosylab.CDB.DALHelper;
@@ -50,8 +46,8 @@ import si.ijs.maci.ClientOperations;
 import si.ijs.maci.ClientType;
 import si.ijs.maci.ComponentInfo;
 import si.ijs.maci.Container;
-import si.ijs.maci.ContainerOperations;
 import si.ijs.maci.ContainerHelper;
+import si.ijs.maci.ContainerOperations;
 import si.ijs.maci.ContainerPOA;
 import si.ijs.maci.ImplLangType;
 import si.ijs.maci.LoggingConfigurablePackage.LogLevels;
@@ -213,24 +209,19 @@ public class AcsContainer extends ContainerPOA
 			m_logger.log(Level.FINE, "Failed to configure logging (default values will be used).", ex);
 		}
 
+		try {
+			double timeoutSeconds = getCDB().get_DAO_Servant("MACI/Containers/"+m_containerName).get_double("Timeout");
+			m_acsCorba.setORBLevelRoundtripTimeout(timeoutSeconds);
+		} catch (Exception ex) {
+			m_logger.log(Level.FINEST, "No CDB timeout applied to the container.", ex);
+		}
+		
 		// init the alarm system
 		try {
 			// TODO: clean up the construction of CS which is ad-hoc implemented right before ACS 7.0
 			// in order to allow CERN alarm libs to get their static field for ContainerServices set.
 			String name = m_containerName; // alarm system acts under container name
 			ThreadFactory threadFactory = new CleaningDaemonThreadFactory(name, m_logger);
-                //set of timeout
-                //we applied the timeout in the client-side for the component
-              try{ 
-                    int timeoutsec = (int)getCDB().get_DAO_Servant("MACI/Containers/"+m_containerName).get_double("Timeout"); 
-                    Policy[] policies = new Policy[1];
-                    policies[0] = new org.jacorb.orb.policies.RelativeRoundtripTimeoutPolicy(10000 * 1000 * timeoutsec);
-                    PolicyManager pm = PolicyManagerHelper.narrow(m_acsCorba.getORB().resolve_initial_references("ORBPolicyManager"));
-                    //Commenting this because the test for deactivating POA is broken when this is enabled
-                    pm.set_policy_overrides(policies, SetOverrideType.ADD_OVERRIDE);
-               }catch(Exception e){
-                    m_logger.finest("No CDB timeout applied to the container.");
-               }
 
 			ContainerServicesImpl cs = new ContainerServicesImpl(m_managerProxy, m_acsCorba.createPOAForComponent("alarmSystem"), 
 	        		m_acsCorba, m_logger, m_managerProxy.getManagerHandle(), 
