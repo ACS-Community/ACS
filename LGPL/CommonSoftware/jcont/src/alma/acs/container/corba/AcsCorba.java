@@ -30,10 +30,15 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.omg.CORBA.Any;
 import org.omg.CORBA.ORB;
 import org.omg.CORBA.Object;
 import org.omg.CORBA.Policy;
+import org.omg.CORBA.PolicyError;
+import org.omg.CORBA.PolicyManager;
+import org.omg.CORBA.PolicyManagerHelper;
 import org.omg.CORBA.SetOverrideType;
+import org.omg.Messaging.RELATIVE_RT_TIMEOUT_POLICY_TYPE;
 import org.omg.PortableServer.IdAssignmentPolicyValue;
 import org.omg.PortableServer.LifespanPolicyValue;
 import org.omg.PortableServer.POA;
@@ -55,6 +60,7 @@ import alma.acs.concurrent.DaemonThreadFactory;
 import alma.acs.container.AcsContainer;
 import alma.acs.container.ComponentServantManager;
 import alma.acs.util.StopWatch;
+import alma.acs.util.UTCUtility;
 
 
 /**
@@ -225,8 +231,6 @@ public class AcsCorba
 			initPOAForContainer();			
 			initPOAForComponents();
 			
-		//	setTimeout(1500); // TODO: make timeout configurable
-
 			setInitialized(true);
 		} catch (Throwable thr) {
 			if (thr instanceof AcsJContainerEx) {
@@ -384,10 +388,6 @@ public class AcsCorba
 			contPolicies[3] =
 				m_rootPOA.create_servant_retention_policy(ServantRetentionPolicyValue.RETAIN);
 			
-           // contPolicies[4] = 
-           //      new org.jacorb.orb.policies.RelativeRoundtripTimeoutPolicy(1000 * 1000);
-			// Container POA (corresponds to "poaContainer" in C++)
-			
 			m_containerPOA = m_rootPOA.create_POA("ContainerPOA", sharedPoaManager, contPolicies);
 			
 			if (m_containerPOA == null) {
@@ -439,8 +439,6 @@ public class AcsCorba
 			
 			m_compPolicies[3] =
 				m_rootPOA.create_request_processing_policy(RequestProcessingPolicyValue.USE_SERVANT_MANAGER); 
-        //    m_compPolicies[4] = 
-        //         new org.jacorb.orb.policies.RelativeRoundtripTimeoutPolicy(1000 * 1000);
 
 			m_componentPOA = m_rootPOA.create_POA("ComponentPOA", sharedPoaManager, m_compPolicies);
 
@@ -454,38 +452,6 @@ public class AcsCorba
 			ex.setContextInfo("ComponentPOA creation failed");
 			throw ex;
 		}
-	}
-
-	/**
-	 * Sets a timout for the invocation roundtrip using the <code>RelativeRoundtripTimeoutPolicy</code>.
-	 * 
-	 * TODO: get this to work... throws exceptions at least with Orbacus...
-	 * 
-	 * @param timeoutMillisec 
-	 */
-	private void setTimeout(int timeoutMillisec)
-		throws AcsJContainerEx
-	{
-		if (timeoutMillisec <= 0)
-		{
-			return;
-		}
-		
-		try
-		{
-			org.omg.CORBA.PolicyManager pm =
-				org.omg.CORBA.PolicyManagerHelper.narrow(
-					m_orb.resolve_initial_references("ORBPolicyManager"));
-	
-			Policy[] policies = new Policy[1];
-			policies[0] = new org.jacorb.orb.policies.RelativeRoundtripTimeoutPolicy(10000 * timeoutMillisec);
-			pm.set_policy_overrides(policies, SetOverrideType.ADD_OVERRIDE);
-			policies[0].destroy();
-		}
-		catch (Exception ex)
-		{
-			throw new AcsJContainerEx("failed to set RelativeRoundtripTimeoutPolicy: ", ex);
-        }
 	}
 	
 
@@ -1042,7 +1008,67 @@ public class AcsCorba
 		}
 	}
 
+
+	public void setORBLevelRoundtripTimeout(double timeoutSeconds) throws AcsJContainerServicesEx {
+		
+		if (!isInitialized()) {
+			throw new IllegalStateException("Only call when this object has been initialized!");
+		}
+		
+		org.omg.CORBA.Object ret = null;
+		try
+		{
+			Any rrtPolicyAny = m_orb.create_any();
+			rrtPolicyAny.insert_ulonglong(UTCUtility.durationJavaMillisToOmg((long)timeoutSeconds*1000));
+			Policy p = m_orb.create_policy(RELATIVE_RT_TIMEOUT_POLICY_TYPE.value, rrtPolicyAny);
+			// about PolicyManager, see Corba spec (2.4) section 4.9.1
+			PolicyManager pm = PolicyManagerHelper.narrow(m_orb.resolve_initial_references("ORBPolicyManager"));
+			pm.set_policy_overrides(new Policy[]{ p }, SetOverrideType.SET_OVERRIDE);
+			pm._release();
+			p.destroy();
+		}
+		catch (Throwable thr) {
+			AcsJContainerServicesEx ex2 = new AcsJContainerServicesEx(thr);
+			ex2.setContextInfo("Failed to set the ORB-level client-side corba roundtrip timeout to " + timeoutSeconds);
+			throw ex2;
+		}
+		m_logger.info("Set ORB level roundtrip timeout to " + timeoutSeconds);
+	}
+
 	
+	/**
+	 * <p>
+	 * Impl note: The corba spec (v 2.4, 4.3.8.1) describes the difference between 
+	 * SetOverrideType.SET_OVERRIDE and SetOverrideType.ADD_OVERRIDE. It is not clear to me (HSO) 
+	 * which one should be used, or if there is no practical difference.
+	 * @param corbaRef
+	 * @param timeoutSeconds
+	 * @return
+	 * @throws AcsJContainerServicesEx
+	 */
+	public org.omg.CORBA.Object wrapForRoundtripTimeout(org.omg.CORBA.Object corbaRef, double timeoutSeconds) throws AcsJContainerServicesEx {
+		
+		if (!isInitialized()) {
+			throw new IllegalStateException("Only call when this object has been initialized!");
+		}
+		
+		org.omg.CORBA.Object ret = null;
+		try
+		{
+			Any rrtPolicyAny = m_orb.create_any();
+			rrtPolicyAny.insert_ulonglong(UTCUtility.durationJavaMillisToOmg((long)timeoutSeconds*1000));
+			Policy p = m_orb.create_policy(RELATIVE_RT_TIMEOUT_POLICY_TYPE.value, rrtPolicyAny);
+			ret = corbaRef._set_policy_override (new Policy[]{ p }, SetOverrideType.SET_OVERRIDE);
+			p.destroy();
+		}
+		catch (Throwable thr) {
+			AcsJContainerServicesEx ex2 = new AcsJContainerServicesEx(thr);
+			ex2.setContextInfo("Failed to set the object-level client-side corba roundtrip timeout to " + timeoutSeconds);
+			throw ex2;
+		}
+		return ret;
+	}
+
 	
 	
 	/////////////////////////////////////////////////////////////////////////////////////////////
