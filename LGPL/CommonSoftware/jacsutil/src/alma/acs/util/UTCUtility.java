@@ -32,6 +32,16 @@ import java.util.TimeZone;
  */
 public class UTCUtility
 {
+	/**
+	 * Converts a time duration (not time stamp!) given in milliseconds
+	 * to 100ns by multiplying it with 10000.
+	 * @param javaMillisDuration
+	 * @return The duration in Corba-style 100-ns units.
+	 */
+	public static long durationJavaMillisToOmg(long javaMillisDuration) {
+		return javaMillisDuration * 10000L;
+	}
+	
     /**
      * Converts from OMG time ("long-epoch UTC", 100-ns since Oct 15, 1582) 
      * to Java time ("short-epoch UTC", ms since Jan 01, 1970).
