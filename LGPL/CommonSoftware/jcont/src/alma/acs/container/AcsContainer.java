@@ -222,10 +222,11 @@ public class AcsContainer extends ContainerPOA
                 //set of timeout
                 //we applied the timeout in the client-side for the component
               try{ 
-                    int timeoutsec = getCDB().get_DAO_Servant("MACI/Containers/"+m_containerName).get_long("Timeout"); 
+                    int timeoutsec = (int)getCDB().get_DAO_Servant("MACI/Containers/"+m_containerName).get_double("Timeout"); 
                     Policy[] policies = new Policy[1];
                     policies[0] = new org.jacorb.orb.policies.RelativeRoundtripTimeoutPolicy(10000 * 1000 * timeoutsec);
                     PolicyManager pm = PolicyManagerHelper.narrow(m_acsCorba.getORB().resolve_initial_references("ORBPolicyManager"));
+                    //Commenting this because the test for deactivating POA is broken when this is enabled
                     pm.set_policy_overrides(policies, SetOverrideType.ADD_OVERRIDE);
                }catch(Exception e){
                     m_logger.finest("No CDB timeout applied to the container.");
