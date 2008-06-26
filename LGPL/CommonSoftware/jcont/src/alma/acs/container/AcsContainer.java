@@ -213,7 +213,9 @@ public class AcsContainer extends ContainerPOA
 			double timeoutSeconds = getCDB().get_DAO_Servant("MACI/Containers/"+m_containerName).get_double("Timeout");
 			m_acsCorba.setORBLevelRoundtripTimeout(timeoutSeconds);
 		} catch (Exception ex) {
-			m_logger.log(Level.FINEST, "No CDB timeout applied to the container.", ex);
+			// We log this as a warning because even in the absence of the optional Container.Timeout setting in the CDB
+			// the (schema) default value should be applied. Thus getting an exception here really means something is wrong.
+			m_logger.log(Level.WARNING, "No CDB timeout applied to the container.", ex);
 		}
 		
 		// init the alarm system
