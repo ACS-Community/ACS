@@ -1009,6 +1009,13 @@ public class AcsCorba
 	}
 
 
+	/**
+	 * Sets the roundtrip timeout for all calls going out through the ORB that is encapsulated by this class.
+	 * For example, this applies to all corba calls made by a container and any of its components.
+	 * @param timeoutSeconds
+	 * @throws AcsJContainerServicesEx
+	 * @see {@link #wrapForRoundtripTimeout(Object, double)}
+	 */
 	public void setORBLevelRoundtripTimeout(double timeoutSeconds) throws AcsJContainerServicesEx {
 		
 		if (!isInitialized()) {
@@ -1024,7 +1031,6 @@ public class AcsCorba
 			// about PolicyManager, see Corba spec (2.4) section 4.9.1
 			PolicyManager pm = PolicyManagerHelper.narrow(m_orb.resolve_initial_references("ORBPolicyManager"));
 			pm.set_policy_overrides(new Policy[]{ p }, SetOverrideType.SET_OVERRIDE);
-			pm._release();
 			p.destroy();
 		}
 		catch (Throwable thr) {
@@ -1032,7 +1038,7 @@ public class AcsCorba
 			ex2.setContextInfo("Failed to set the ORB-level client-side corba roundtrip timeout to " + timeoutSeconds);
 			throw ex2;
 		}
-		m_logger.info("Set ORB level roundtrip timeout to " + timeoutSeconds);
+		m_logger.fine("Set ORB level roundtrip timeout to " + timeoutSeconds + " seconds.");
 	}
 
 	
@@ -1045,6 +1051,7 @@ public class AcsCorba
 	 * @param timeoutSeconds
 	 * @return
 	 * @throws AcsJContainerServicesEx
+	 * @see {@link #setORBLevelRoundtripTimeout(double)}
 	 */
 	public org.omg.CORBA.Object wrapForRoundtripTimeout(org.omg.CORBA.Object corbaRef, double timeoutSeconds) throws AcsJContainerServicesEx {
 		
