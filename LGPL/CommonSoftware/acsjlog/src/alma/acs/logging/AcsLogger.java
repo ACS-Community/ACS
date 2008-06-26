@@ -59,8 +59,14 @@ public class AcsLogger extends Logger implements LogConfigSubscriber {
 	/** the logger class, which must be known to unwind the stack trace. Will be this class unless we use delegation. 
 	 * TODO: looks like we can share this set among Logger instances
 	 */
-    private final Set<String> loggerClassNames = new HashSet<String>();
-      
+	private final Set<String> loggerClassNames = new HashSet<String>();
+
+	/**
+	 * Concatenation of class and method names, with a "#" in between. 
+	 * Used for fast comparison of log stack frames, see {@link #addIgnoreLogs(String, String)}.
+	 */
+	private final Set<String> callStacksToBeIgnored = new HashSet<String>();
+
     private final LogConfig logConfig;
     
     private String loggerName;
@@ -283,16 +289,26 @@ public class AcsLogger extends Logger implements LogConfigSubscriber {
             StackTraceElement stack[] = (new Throwable()).getStackTrace();
             // search for the first frame before the "Logger" class.
             int ix = 0;
+            boolean foundNonLogFrame = false;
             while (ix < stack.length) {
                 StackTraceElement frame = stack[ix];
                 String cname = frame.getClassName();
-                if (!loggerClassNames.contains(cname))  {
+                if (!foundNonLogFrame && !loggerClassNames.contains(cname)) {
                     // We've found the relevant frame.
                     record.setSourceClassName(cname);
                     record.setSourceMethodName(frame.getMethodName());
                     int lineNumber = frame.getLineNumber();
                     specialProperties.put(LogParameterUtil.PARAM_LINE, new Long(lineNumber));
-                    break;
+                    foundNonLogFrame = true;
+                    if (this.callStacksToBeIgnored.isEmpty()) {
+                    	break; // performance optimization: avoid checking all "higher" stack frames
+                    }
+                }
+                if (foundNonLogFrame) {
+                	if (callStacksToBeIgnored.contains(concatenateIgnoreLogData(cname, frame.getMethodName()))) {
+                		System.out.println("Won't log record with message " + record.getMessage());
+                		return;
+                	}
                 }
                 ix++;
             }
@@ -300,14 +316,14 @@ public class AcsLogger extends Logger implements LogConfigSubscriber {
             // OK as we are only committed to making a "best effort" here.
         }
         
-        super.log(record);        
+        super.log(record);
     }
 
     /**
      * Callback method, configures this logger from the data in logConfig.
      * @see alma.acs.logging.config.LogConfigSubscriber#configureLogging(alma.acs.logging.config.LogConfig)
      */
-    public void configureLogging(LogConfig logConfig) {    	
+    public void configureLogging(LogConfig logConfig) {
 		try {			
 			UnnamedLogger config = logConfig.getNamedLoggerConfig(getLoggerName());
 			if (DEBUG) {
@@ -358,5 +374,37 @@ public class AcsLogger extends Logger implements LogConfigSubscriber {
 	 */
 	public void addLoggerClass(Class<?> loggerClass) {
 		loggerClassNames.add(loggerClass.getName());
-	}			
+	}
+	
+	/**
+	 * The AcsLogger can be configured to ignore certain logs. 
+	 * Note that this feature should not be used as a substitute for properly adjusting log levels 
+	 * and using repeat guards etc throughout the code.
+	 * A valid use case would be to avoid "positive feedback" when the sending of a log produces 
+	 * one or more log messages, some of which may only be produced under special conditions,
+	 * e.g. those coming from jacorb.
+	 * @param className  class name where the log comes from. Must not be null.
+	 * @param methodName  method name where the log comes from. Must not be null.
+	 */
+	public void addIgnoreLogs(String className, String methodName) {
+		if (className == null) {
+			throw new IllegalArgumentException("className must not be null");
+		}
+		if (methodName == null) {
+			throw new IllegalArgumentException("methodName must not be null");
+		}
+		callStacksToBeIgnored.add(concatenateIgnoreLogData(className, methodName));
+	}
+
+	/**
+	 * Ensures that the same format of concatenated String is used in {@link #addIgnoreLogs(String, String)}
+	 * and {@link #log(LogRecord)}.
+	 * Being private final, the compiler will hopefully inline calls to this method.
+	 * @param fileName
+	 * @param methodName
+	 * @return
+	 */
+	private final String concatenateIgnoreLogData(String className, String methodName) {
+		return className + '#' + methodName;
+	}
 }
