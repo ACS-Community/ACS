@@ -658,6 +658,8 @@ public class ClientLogManager implements LogConfigSubscriber
 	        }
 	        
 	        corbaLogger = getAcsLogger(loggerName, LoggerOwnerType.OrbLogger);
+	        // Suppress logs inside the call to the Log service, which could happen e.g. when policies are set and jacorb-debug is enabled.
+	        corbaLogger.addIgnoreLogs("org.omg.DsLogAdmin._LogStub", "write_records");
 	        
 	        if (autoConfigureContextName && processName == null) {
 	        	// mark this logger for process name update
