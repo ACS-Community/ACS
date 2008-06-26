@@ -21,6 +21,8 @@
  */
 package alma.acs.util;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -33,6 +35,12 @@ public class StopWatch
 {
 	// todo: set through Java property etc.
 	private static boolean s_shutup = false; 
+	
+	
+	/**
+	 * When printing elapsed time in millisec, we only want to show two fractional digits.
+	 */
+	private static final NumberFormat millisecFormatter = new DecimalFormat("#.##");
 	
 	private Logger m_logger;
 	
@@ -103,7 +111,7 @@ public class StopWatch
 	 */
 	public long getLapTimeNanos()
 	{
-                long now = System.nanoTime();
+		long now = System.nanoTime();
 		return (now - m_startTimeNanos);
 	}
 	
@@ -113,6 +121,8 @@ public class StopWatch
 	 * "<code>elapsed time in ms to </code><i>taskDescription</i><code>: </code><i>elapsed-time</i>".
 	 * <p>
 	 * If no logger has been supplied, it will get one using {@link Logger#getLogger(java.lang.String)}.
+	 * This ad-hoc logger will likely not work in an ACS environment where log handlers are configured
+	 * for the needs of containers and remote logging.
 	 * <p>
 	 * todo: provide nicer text mask for message
 	 * 
@@ -122,20 +132,18 @@ public class StopWatch
 	 */
 	public void logLapTime(String taskDesc)
 	{
-		if (!s_shutup)
-		{
-			try
-			{
-				if (m_logger == null)
-				{
+		if (!s_shutup) {
+			try {
+				if (m_logger == null) {
 					m_logger = Logger.getLogger("StopWatchLogger");
 				}
-						
-				double elapsed = getLapTimeNanos() * 1E-6;
+				String elapsed = null;
+				synchronized (millisecFormatter) {
+					elapsed = millisecFormatter.format(getLapTimeNanos() * 1E-6);
+				}
 				m_logger.log(Level.FINE, "elapsed time in ms to " + taskDesc + ": " + elapsed);
 			}
-			catch (Throwable thr)
-			{
+			catch (Throwable thr) {
 				// just to be safe -- really don't want to mess with the running application...
 			} 
 		}
