@@ -211,7 +211,7 @@ public class ComponentClient
      * (the normal case), then this method is called automatically. <br>
      * Otherwise (with an external <code>AcsCorba</code> object provided) it is assumed that also 
      * remote logging is controlled from outside of this class. If nonetheless you want to 
-     * initialize remote logging, you may exlicitly call this method for convenience.
+     * initialize remote logging, you may explicitly call this method for convenience.
      * <p>
      * Override this method to prevent remote logging (useful only if AcsCorba is is not provided externally).
 	 */
@@ -285,6 +285,7 @@ public class ComponentClient
 			if (ownAcsCorba) {
 	            ClientLogManager.getAcsLogManager().shutdown(false);
 				acsCorba.shutdownORB(true);
+//				acsCorba.doneCorba(); HSO should this not be called as well?
 			}
             
             m_threadFactory.cleanUp();
