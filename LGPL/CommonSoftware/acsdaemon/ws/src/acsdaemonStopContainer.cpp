@@ -1,7 +1,7 @@
 /*******************************************************************************
  * E.S.O. - ACS project
  *
- * "@(#) $Id: acsdaemonStopContainer.cpp,v 1.8 2008/02/12 22:53:13 agrimstrup Exp $"
+ * "@(#) $Id: acsdaemonStopContainer.cpp,v 1.9 2008/06/27 11:41:07 msekoran Exp $"
  *
  * who       when        what
  * --------  ----------  ----------------------------------------------
@@ -115,7 +115,7 @@ main (int argc, char *argv[])
 	      hostName = ACSPorts::getIP();
           } 
 	  daemonRef = "corbaloc::";
-	  daemonRef = daemonRef + hostName + ":" + ACSPorts::getContainerDaemonPort().c_str() + "/ACSContainerDaemon";	
+	  daemonRef = daemonRef + hostName + ":" + ACSPorts::getContainerDaemonPort().c_str() + "/" + ::acsdaemon::containerDaemonServiceName;	
 	  ACS_SHORT_LOG((LM_INFO, "Using local Container Daemon reference: '%s'", daemonRef.c_str()));
 	  
 	  }
@@ -162,7 +162,6 @@ main (int argc, char *argv[])
 	}
 	catch( CORBA::Exception &ex )
 	{
-
 		ACS_SHORT_LOG((LM_INFO, "Failed."));
 		ACE_PRINT_EXCEPTION (ex, ACE_TEXT ("Caught unexpected exception:"));
 		return -1;

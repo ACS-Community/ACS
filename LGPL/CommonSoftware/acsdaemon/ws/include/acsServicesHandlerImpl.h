@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsServicesHandlerImpl.h,v 1.3 2008/02/12 22:53:13 agrimstrup Exp $"
+* "@(#) $Id: acsServicesHandlerImpl.h,v 1.4 2008/06/27 11:41:07 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -37,6 +37,7 @@
 
 #include "acsdaemonS.h"
 #include "logging.h"
+#include "acsDaemonImpl.h"
 #include <acserr.h>
 #include <ACSErrTypeOK.h>
 #include <acsdaemonErrType.h>
@@ -108,6 +109,14 @@ class ACSServicesHandlerImpl : public POA_acsdaemon::ServicesDaemon {
     virtual ~ACSServicesHandlerImpl();
 
     /**
+     * Sets ACS Daemon service
+     */
+    void setService(ACSDaemonServiceImpl<ACSServicesHandlerImpl> *service)
+    {
+	h_service = service;
+    }
+
+    /**
      * Get the name of this container handler
      */
     const char* getName();
@@ -156,9 +165,16 @@ class ACSServicesHandlerImpl : public POA_acsdaemon::ServicesDaemon {
         ::acsdaemonErrType::FailedToGetAcsStatusEx
       ));
 
+    virtual void shutdown ()
+      ACE_THROW_SPEC ((
+        CORBA::SystemException,
+        ::maciErrType::NoPermissionEx
+      ));
+
   private:
     std::string h_name; // Name of services handler (used for logging purposes
     std::string h_type; // CORBA-type for this services handler
+    ACSDaemonServiceImpl<ACSServicesHandlerImpl> *h_service; // ACS daemon service
     CommandProcessorThread *cmdproc;
     ACS::ThreadManager tm;
 };

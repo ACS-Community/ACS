@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.15 2008/05/03 15:09:04 nbarriga Exp $"
+# "@(#) $Id: Makefile,v 1.16 2008/06/27 11:41:07 msekoran Exp $"
 #
 # Makefile of ........
 #
@@ -24,7 +24,7 @@
 #
 # additional include and library search paths
 #USER_INC = 
-USER_LIB = -lTAO -lACE -lTAO_PortableServer -lacserr -lTAO_DsLogAdmin -lTAO_CosNaming -lTAO_CosProperty_Serv -lTAO_IORTable -llogging -lTAO_DynamicAny -lacsutil -lACSErrTypeCommon -lTAO_Messaging
+USER_LIB = -lTAO -lACE -lTAO_PortableServer -lacserr -lmaciErrType -lTAO_DsLogAdmin -lTAO_CosNaming -lTAO_CosProperty_Serv -lTAO_IORTable -llogging -lTAO_DynamicAny -lacsutil -lACSErrTypeCommon -lTAO_Messaging
 
 #
 # MODULE CODE DESCRIPTION:
@@ -37,7 +37,9 @@ USER_LIB = -lTAO -lACE -lTAO_PortableServer -lacserr -lTAO_DsLogAdmin -lTAO_CosN
 # -----------------------------
 EXECUTABLES     = acscontainerdaemon acsdaemonStartContainer \
                   acsdaemonStopContainer acsservicesdaemon acsdaemonStartAcs \
-                  acsdaemonStopAcs acsdaemonStatusAcs
+                  acsdaemonStopAcs acsdaemonStatusAcs \
+                  acscontainerdaemonSmartStart acscontainerdaemonStop \
+                  acsservicesdaemonStop
 EXECUTABLES_L   = 
 
 #
@@ -64,6 +66,15 @@ acsdaemonStopAcs_LIBS      =	acscomponentStubs acsdaemonErrType acsdaemonStubs
 
 acsdaemonStatusAcs_OBJECTS   =	acsdaemonStatusAcs
 acsdaemonStatusAcs_LIBS      =	acscomponentStubs acsdaemonErrType acsdaemonStubs
+
+acscontainerdaemonStop_OBJECTS   =	acscontainerdaemonStop
+acscontainerdaemonStop_LIBS      =	acscomponentStubs acsdaemonErrType acsdaemonStubs
+
+acscontainerdaemonSmartStart_OBJECTS   =	acscontainerdaemonSmartStart
+acscontainerdaemonSmartStart_LIBS      =	acscomponentStubs acsdaemonErrType acsdaemonStubs
+
+acsservicesdaemonStop_OBJECTS   =	acsservicesdaemonStop
+acsservicesdaemonStop_LIBS      =	acscomponentStubs acsdaemonErrType acsdaemonStubs
 
 #
 # special compilation flags for single c sources

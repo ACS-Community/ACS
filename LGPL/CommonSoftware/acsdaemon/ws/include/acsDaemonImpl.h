@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsDaemonImpl.h,v 1.3 2008/02/12 22:53:13 agrimstrup Exp $"
+* "@(#) $Id: acsDaemonImpl.h,v 1.4 2008/06/27 11:41:07 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -58,7 +58,7 @@ class ACSDaemonServiceImpl {
    /**
     * Constructor
     */
-    ACSDaemonServiceImpl(LoggingProxy &logProxy);
+    ACSDaemonServiceImpl(LoggingProxy &logProxy, bool isProtected);
   
     /**
      * Destructor
@@ -70,6 +70,12 @@ class ACSDaemonServiceImpl {
      */
     bool 
     isInitialized() { return m_isInitialized; }
+    
+    /**
+     * Tells if daemon was started in protected mode
+     */
+    bool 
+    isProtected() { return m_isProtected; }
     
 
     /**
@@ -101,7 +107,7 @@ class ACSDaemonServiceImpl {
      * Shutdown the service.
      */
     void
-    shutdown (); 
+    shutdown (bool wait_for_completition); 
 
     /**
      * Get CORBA IOR.
@@ -121,6 +127,12 @@ class ACSDaemonServiceImpl {
     /** Initialization status */
     bool m_isInitialized;
 
+    /** Protected mode */
+    bool m_isProtected;
+
+    /** Daemon shutdown in progress flag **/
+    bool m_blockTermination;
+
     /** The ORB that we use. */
     CORBA::ORB_var m_orb;
 
@@ -135,12 +147,18 @@ class ACSDaemonServiceImpl {
 };
 
 template <typename T>
-ACSDaemonServiceImpl<T>::ACSDaemonServiceImpl (LoggingProxy &logProxy) :
+ACSDaemonServiceImpl<T>::ACSDaemonServiceImpl (LoggingProxy &logProxy, bool isProtected) :
     m_isInitialized(false), m_logProxy(logProxy)
 {
     // noop here
 
     m_isInitialized = true;
+
+    m_isProtected = isProtected;
+
+    m_blockTermination = false;
+
+    handler.setService(this);
 }
 
 template <typename T>
@@ -191,18 +209,21 @@ int ACSDaemonServiceImpl<T>::run (void)
 }
 
 template <typename T>
-void ACSDaemonServiceImpl<T>::shutdown ()
+void ACSDaemonServiceImpl<T>::shutdown (bool wait_for_completition)
 {
-
-    // shutdown the ORB.
-    if (!CORBA::is_nil (m_orb.in ()))
+    if (!m_blockTermination)
+    {
+	ACS_SHORT_LOG ((LM_INFO, "Stopping the %s...", this->getName()));
+	m_blockTermination=true;
+	// shutdown the ORB.
+	if (!CORBA::is_nil (m_orb.in ()))
 	{
-	this->m_orb->shutdown (true);
-	handler.stopCmdProcessor();
+	    this->m_orb->shutdown (wait_for_completition);
+	    handler.stopCmdProcessor();
 	}
-
-    // shutdown AES
-    ACSError::done();
+	// shutdown AES
+	ACSError::done();
+    }
 }
 
 template <typename T>
@@ -313,9 +334,6 @@ class acsDaemonImpl
 
   private:
 
-    /** Daemon shutdown in progress flag **/
-    bool blockTermination;
-
     /** Manager for the service provided by this daemon **/
     ACSDaemonServiceImpl<T> *service;
 
@@ -339,6 +357,7 @@ static struct option long_options[] = {
     {"help",        no_argument,       0, 'h'},
     {"outfile",     required_argument, 0, 'o'},
     {"ORBEndpoint", required_argument, 0, 'O'},
+    {"unprotected", no_argument,       0, 'u'},
     {0, 0, 0, '\0'}};
 
 template <typename T>
@@ -348,15 +367,17 @@ void acsDaemonImpl<T>::usage(const char *argv)
     ACE_OS::printf ("\t   -h, --help         show this help message\n");
     ACE_OS::printf ("\t   -O, --ORBEndpoint  ORB end point\n");
     ACE_OS::printf ("\t   -o, --outfile      IOR output file\n");
+    ACE_OS::printf ("\t   -u, --unprotected  start in unprotected mode\n");
 }
 
 template <typename T>
 acsDaemonImpl<T>::acsDaemonImpl(int argc, char *argv[])
 {
-    blockTermination = false;
     nargc = 0;
     nargv = 0;
     service = 0;
+    m_logger = 0;
+    bool unprotected = false;
 
 
     // Extract and validate command line arguments
@@ -364,7 +385,7 @@ acsDaemonImpl<T>::acsDaemonImpl(int argc, char *argv[])
     for(;;)
         {
         int option_index = 0;
-        c = getopt_long (argc, argv, "ho:O:",
+        c = getopt_long (argc, argv, "ho:O:u",
                          long_options, &option_index); 
         if (c==-1) break;
         switch(c)
@@ -377,6 +398,9 @@ acsDaemonImpl<T>::acsDaemonImpl(int argc, char *argv[])
                     break;
                 case 'O':
                     ORBEndpoint = optarg;
+                    break;
+                case 'u':
+                    unprotected = true;
                     break;
                 default:
                     ACE_OS::printf("Ignoring unrecognized option %s", 
@@ -397,7 +421,7 @@ acsDaemonImpl<T>::acsDaemonImpl(int argc, char *argv[])
     LoggingProxy::init (m_logger);  
 
     // Ready the service manager
-    service = new ACSDaemonServiceImpl<T>(*m_logger);
+    service = new ACSDaemonServiceImpl<T>(*m_logger, !unprotected);
 
     // Generate the CORBA configuration for the service
     ACE_CString argStr;
@@ -419,9 +443,12 @@ acsDaemonImpl<T>::acsDaemonImpl(int argc, char *argv[])
 template <typename T>
 acsDaemonImpl<T>::~acsDaemonImpl()
 {
-    delete service;
-    LoggingProxy::done();
-    delete m_logger;
+    if (service != 0) delete service;
+    if (m_logger != 0)
+    {
+	LoggingProxy::done();
+	delete m_logger;
+    }
 }
 
 
@@ -464,7 +491,7 @@ int acsDaemonImpl<T>::run()
 	// run, run, run...
 	if (service->run () == -1)
 	    {
-	    service->shutdown ();
+	    this->shutdown ();
 	    ACS_SHORT_LOG ((LM_ERROR, "Failed to run the %s.", service->getName()));
 	    return  1;
 	    }
@@ -486,12 +513,7 @@ int acsDaemonImpl<T>::run()
 template <typename T>
 void acsDaemonImpl<T>::shutdown()
 {
-    if (!blockTermination)
-	{
-	ACS_SHORT_LOG ((LM_INFO, "Stopping the %s...", service->getName()));
-	blockTermination=true;
-	service->shutdown ();
-	}
+    service->shutdown(true);
 }
 
 #endif

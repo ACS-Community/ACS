@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@$Id: acsContainerHandlerImpl.cpp,v 1.7 2008/06/18 11:06:12 msekoran Exp $"
+* "@$Id: acsContainerHandlerImpl.cpp,v 1.8 2008/06/27 11:41:07 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -28,6 +28,7 @@
 */
 
 #include "acsContainerHandlerImpl.h"
+#include <unistd.h>
 
 /*****************************************************************/
 
@@ -203,5 +204,19 @@ ACSContainerHandlerImpl::stop_container (
 
 
 
+void
+ACSContainerHandlerImpl::shutdown ()
+    ACE_THROW_SPEC ((
+			CORBA::SystemException,
+			::maciErrType::NoPermissionEx
+    ))
+{
+	if (h_service->isProtected())
+	{
+	throw ::maciErrType::NoPermissionEx();
+	}
+	ACS_SHORT_LOG ((LM_INFO, "Shutting down the ACS Container Daemon on remote request..."));
+	h_service->shutdown(false);
+}
 
 

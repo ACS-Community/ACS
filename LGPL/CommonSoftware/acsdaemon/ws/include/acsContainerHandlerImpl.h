@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsContainerHandlerImpl.h,v 1.3 2008/02/12 22:53:13 agrimstrup Exp $"
+* "@(#) $Id: acsContainerHandlerImpl.h,v 1.4 2008/06/27 11:41:07 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -37,6 +37,7 @@
 
 #include "acsdaemonS.h"
 #include "logging.h"
+#include "acsDaemonImpl.h"
 #include <acserr.h>
 #include <acsdaemonErrType.h>
 #include <ACSErrTypeCommon.h>
@@ -57,6 +58,14 @@ class ACSContainerHandlerImpl : public POA_acsdaemon::ContainerDaemon {
     virtual ~ACSContainerHandlerImpl();
 
     /**
+     * Sets ACS Daemon service
+     */
+    void setService(ACSDaemonServiceImpl<ACSContainerHandlerImpl> *service)
+    {
+	h_service = service;
+    }
+
+    /**
      * Get the name of this container handler
      */
     const char* getName();
@@ -70,7 +79,7 @@ class ACSContainerHandlerImpl : public POA_acsdaemon::ContainerDaemon {
      * Return the port where this container handler listens for connections
      */
     const char* getPort();
-
+    
     void startCmdProcessor() {}
     void stopCmdProcessor() {}
 
@@ -98,10 +107,16 @@ class ACSContainerHandlerImpl : public POA_acsdaemon::ContainerDaemon {
         ::acsdaemonErrType::FailedToStopContainerEx,
 	::ACSErrTypeCommon::BadParameterEx
       ));
+    virtual void shutdown ()
+      ACE_THROW_SPEC ((
+        CORBA::SystemException,
+        ::maciErrType::NoPermissionEx
+      ));
 
   private:
     std::string h_name; // Name of container handler (used for logging purposes
     std::string h_type; // CORBA-type for this container handler
+    ACSDaemonServiceImpl<ACSContainerHandlerImpl> *h_service; // ACS daemon service
 
 };
 

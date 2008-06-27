@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@$Id: acsServicesHandlerImpl.cpp,v 1.4 2008/02/20 13:46:30 hsommer Exp $"
+* "@$Id: acsServicesHandlerImpl.cpp,v 1.5 2008/06/27 11:41:07 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -108,7 +108,7 @@ void CommandProcessorThread::addRequest(Request* r)
 }
 
 
-ACSServicesHandlerImpl::ACSServicesHandlerImpl () : h_name("ACS Services Daemon"), h_type("ACSServicesDaemon")
+ACSServicesHandlerImpl::ACSServicesHandlerImpl () : h_name("ACS Services Daemon"), h_type(::acsdaemon::servicesDaemonServiceName)
 {
     cmdproc = tm.create<CommandProcessorThread>(h_name.c_str());
 }
@@ -275,3 +275,17 @@ char * ACSServicesHandlerImpl::status_acs (
     //acsStatus is deleted by CORBA
     return acsStatus;
 }//ACSServicesHandlerImpl::status_acs
+
+void ACSServicesHandlerImpl::shutdown ()
+      ACE_THROW_SPEC ((
+        CORBA::SystemException,
+        ::maciErrType::NoPermissionEx
+      ))
+{
+    if (h_service->isProtected())
+	{
+	throw ::maciErrType::NoPermissionEx();
+	}
+    ACS_SHORT_LOG ((LM_INFO, "Shutting down the ACS Services Daemon on remote request..."));
+    h_service->shutdown(false);
+}

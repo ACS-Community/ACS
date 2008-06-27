@@ -91,7 +91,7 @@ main (int argc, char *argv[])
           hostName = ACSPorts::getIP();
           } 
           daemonRef = "corbaloc::";
-          daemonRef = daemonRef + hostName + ":" + ACSPorts::getServicesDaemonPort().c_str() + "/ACSServicesDaemon";    
+          daemonRef = daemonRef + hostName + ":" + ACSPorts::getServicesDaemonPort().c_str() + "/" + ::acsdaemon::servicesDaemonServiceName;
           ACS_SHORT_LOG((LM_INFO, "Using local ACS Services Daemon reference: '%s'", daemonRef.c_str()));
       }
       else

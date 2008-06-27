@@ -196,7 +196,7 @@ int main(int argc, char *argv[])
 	    daemonRef =
 		daemonRef + hostName + ":" +
 		ACSPorts::getServicesDaemonPort().c_str() +
-		"/ACSServicesDaemon";
+		"/" + ::acsdaemon::servicesDaemonServiceName;
 	    ACS_SHORT_LOG((LM_INFO,
 			   "Using local ACS Services Daemon reference: '%s'",
 			   daemonRef.c_str()));
