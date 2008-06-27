@@ -21,10 +21,17 @@
  */
 package alma.jconttest.DummyComponentWrapperImpl;
 
+import java.util.logging.Level;
+
+import org.omg.CORBA.ORB;
+
+import alma.ACSErrTypeCommon.CouldntPerformActionEx;
+import alma.ACSErrTypeCommon.wrappers.AcsJCouldntPerformActionEx;
 import alma.acs.component.ComponentImplBase;
-import alma.jconttest.DummyComponentWrapperOperations;
 import alma.jconttest.DummyComponent;
 import alma.jconttest.DummyComponentHelper;
+import alma.jconttest.DummyComponentWrapperOperations;
+import alma.jconttest.util.JconttestUtil;
 
 /**
  * @author rtobar
@@ -33,87 +40,69 @@ import alma.jconttest.DummyComponentHelper;
 public class DummyComponentWrapperImpl extends ComponentImplBase implements DummyComponentWrapperOperations {
 
 	private static final String DUMMYCOMP_TYPENAME = "IDL:alma/jconttest/DummyComponent:1.0";
-	private static final String PROPERTY_NAME = "jacorb.connection.client.pending_reply_timeout";
 	
-	public boolean callDummyCompWithTimeAndName(int timeInMillisec, String name) {
-		
-		DummyComponent dummyComponent = null;
+	
+	public boolean callDummyCompWithTimeAndName(int timeInMillisec, String targetComponentName) throws CouldntPerformActionEx {
 		try {
-			org.omg.CORBA.Object compObj = m_containerServices.getComponent(name);
-			dummyComponent = DummyComponentHelper.narrow(compObj);
-		} catch (Exception e) {
-			e.printStackTrace();
+			return _callDummyComponentWithTime(timeInMillisec, targetComponentName);
+		} catch (AcsJCouldntPerformActionEx ex) {
+			throw ex.toCouldntPerformActionEx();
 		}
-
-		// We get the property value from the ORB configuration for the component
-		// Need to cast the ORB object since it declared as org.omg.orb.ORB, and it
-		// doesn't have the getConfiguration() method
-		int timeout = 0;
-		if( m_containerServices.getAdvancedContainerServices().getORB() instanceof org.jacorb.orb.ORB ) {
-			try {
-				timeout = ((org.jacorb.orb.ORB)m_containerServices.getAdvancedContainerServices().getORB()).getConfiguration().getAttributeAsInteger(PROPERTY_NAME);
-			} catch (org.apache.avalon.framework.configuration.ConfigurationException e){
-				e.printStackTrace();
-			}
-		}
-		
-		// If the given time is less than 0, then let's call the method with the timeout that is
-		// configured in the ORB. Otherwise, use the time given as parameter.
-		if( timeInMillisec < 0 )
-			timeInMillisec = timeout + 1000;
-
-        try {
-            dummyComponent.callThatTakesSomeTime((int)(timeInMillisec));
-        } catch (org.omg.CORBA.TIMEOUT e) {
-            return true;
-        }
-        return false;
 	}
+
 	/**
 	 * This method is a wrapper for the {@link alma.jconttest.DummyComponent#callThatTakesSomeTime} method.
-	 * It returns if a <code>org.omg.CORBA.TIMEOUT</code> exception is thrown as result of this call. The timeout
+	 * It returns true if a <code>org.omg.CORBA.TIMEOUT</code> exception is thrown as result of this call. The timeout
 	 * should be provoked by the <code>jacorb.connection.client.pending_reply_timeout</code> property value.
 	 * 
-	 * @param timeInMillisec The time which is used in the <code>DummyComponent</code> method call.
+	 * @param timeInMillisec The time which is used in the <code>DummyComponent#callThatTakesSomeTime</code> method call.
 	 * @return If a <code>org.omg.CORBA.TIMEOUT</code> exception is thrown as result of this call. If there is no value for the <code>jacorb.connection.client.pending_reply_timeout</code> property, then true is returned.
 	 */
-	public boolean callDummyComponentWithTime(int timeInMillisec) {
+	public boolean callDummyComponentWithTime(int timeInMillisec) throws CouldntPerformActionEx {
+		try {
+			return _callDummyComponentWithTime(timeInMillisec, null);
+		} catch (AcsJCouldntPerformActionEx ex) {
+			throw ex.toCouldntPerformActionEx();
+		}
+	}
+
+	
+	public boolean _callDummyComponentWithTime(int timeInMillisec, String targetComponentName) 
+		throws AcsJCouldntPerformActionEx {
 		
 		DummyComponent dummyComponent = null;
 		try {
-			org.omg.CORBA.Object compObj = m_containerServices.getDefaultComponent(DUMMYCOMP_TYPENAME);
+			org.omg.CORBA.Object compObj = null;
+			if (targetComponentName != null) {
+				compObj = m_containerServices.getComponent(targetComponentName);
+			}
+			else {
+				compObj = m_containerServices.getDefaultComponent(DUMMYCOMP_TYPENAME);
+			}
 			dummyComponent = DummyComponentHelper.narrow(compObj);
 		} catch (Exception e) {
-			e.printStackTrace();
+			m_logger.log(Level.SEVERE, "Failed to access target component.", e);
+			throw new AcsJCouldntPerformActionEx();
 		}
-
-		// We get the property value from the ORB configuration for the component
-		// Need to cast the ORB object since it declared as org.omg.orb.ORB, and it
-		// doesn't have the getConfiguration() method
-		int timeout = -1;
-		if( m_containerServices.getAdvancedContainerServices().getORB() instanceof org.jacorb.orb.ORB ) {
-			try {
-				timeout = ((org.jacorb.orb.ORB)m_containerServices.getAdvancedContainerServices().getORB()).getConfiguration().getAttributeAsInteger(PROPERTY_NAME);
-			} catch (org.apache.avalon.framework.configuration.ConfigurationException e){
-				e.printStackTrace();
-			}
-		}
+		targetComponentName = dummyComponent.name();
 		
-		// If the given time is less than 0, then let's call the method with the timeout that is
-		// configured in the ORB. Otherwise, use the time given as parameter.
-		if( timeInMillisec < 0 )
-			timeInMillisec = timeout;
-
-		if( timeout > 0 ) {
-			try {
-				dummyComponent.callThatTakesSomeTime((int)(timeInMillisec));
-			} catch (org.omg.CORBA.TIMEOUT e) {
-				return true;
-			}
-			return false;
+		// If the given time is less than 0, then we call "callThatTakesSomeTime" with a time larger than the ORB-level timeout.
+		if( timeInMillisec < 0 ) {
+			JconttestUtil util = new JconttestUtil(m_containerServices);
+			int orbLevelTimeoutMillis = util.getSystemLevelOrbTimeoutMillis();
+			timeInMillisec = orbLevelTimeoutMillis + 1000;
 		}
 
-		return true;
+		try {
+			dummyComponent.callThatTakesSomeTime(timeInMillisec);
+			m_logger.info("Did NOT get org.omg.CORBA.TIMEOUT in call " + 
+					targetComponentName + "#callThatTakesSomeTime(" + timeInMillisec + ")");
+			return false;
+		} catch (org.omg.CORBA.TIMEOUT e) {
+			m_logger.info("Got org.omg.CORBA.TIMEOUT in call " + 
+					targetComponentName + "#callThatTakesSomeTime(" + timeInMillisec + ")");
+			return true;
+		}
 	}
-
+	
 }
