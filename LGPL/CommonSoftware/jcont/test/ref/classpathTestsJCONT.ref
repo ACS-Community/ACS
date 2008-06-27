@@ -34,6 +34,7 @@
 1 -     flushPeriodSeconds="10" maxLogQueueSize="1000" xsi:type="LoggingConfig">
 1 -     <_ minLogLevel="6" minLogLevelLocal="6" Name="jacorb@testContainer"/>
 1 - </LoggingConfig> with env vars having precedence over CDB
+1 - ----------T--:--:--.--- FINE [testContainer] Set ORB level roundtrip timeout to 30.0 seconds.
 1 - ----------T--:--:--.--- DEBUG [testContainer] Alarm system type: ACS
 1 - ContainerStatusMsg: Startup ends
 1 - ----------T--:--:--.--- FINE [testContainer] entering orb loop
