@@ -13,12 +13,26 @@
 		Container="frodoContainer"
 		Default="true"
 		/>
-        
-	<_ Name="DefaultDummyCompWrapper2"
+
+
+	<_ Name="DummyCompWrapper_ContainerTimeout1"
 		Code="alma.jconttest.DummyComponentWrapperImpl.DummyComponentWrapperHelper"
 		Type="IDL:alma/jconttest/DummyComponentWrapper:1.0" 
-		Container="frodoContainerWithTimeout"
+		Container="frodoContainerWithTimeout1"
 		/>
+
+	<_ Name="DummyCompWrapper_ContainerTimeout2"
+		Code="alma.jconttest.DummyComponentWrapperImpl.DummyComponentWrapperHelper"
+		Type="IDL:alma/jconttest/DummyComponentWrapper:1.0" 
+		Container="frodoContainerWithTimeout2"
+		/>
+
+	<_ Name="DummyCompWrapper_ContainerTimeout3"
+		Code="alma.jconttest.DummyComponentWrapperImpl.DummyComponentWrapperHelper"
+		Type="IDL:alma/jconttest/DummyComponentWrapper:1.0" 
+		Container="frodoContainerWithTimeout3"
+		/>
+
 
 	<_ Name="DefaultDummyComp"
 		Code="alma.jconttest.DummyComponentImpl.DummyComponentHelper" 
@@ -27,12 +41,6 @@
 		Default="true"
 		/>
 
-	<_ Name="DefaultDummyComp2"
-		Code="alma.jconttest.DummyComponentImpl.DummyComponentHelper" 
-		Type="IDL:alma/jconttest/DummyComponent:1.0" 
-		Container="silentContainerWithTimeout"
-		/>
-        
 	<_ Name="DefaultDataReceiver"
 		Code="alma.jconttest.DataReceiverImpl.DataReceiverHelper"
 		Type="IDL:alma/jconttest/DataReceiver:1.0"
