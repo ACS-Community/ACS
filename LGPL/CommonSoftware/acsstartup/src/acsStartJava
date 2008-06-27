@@ -6,7 +6,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: acsStartJava,v 1.52 2008/05/28 01:56:15 cparedes Exp $"
+# "@(#) $Id: acsStartJava,v 1.53 2008/06/27 06:25:59 cparedes Exp $"
 #
 # who      when       what
 # -------- ---------- ----------------------------------------------
@@ -548,7 +548,7 @@ fi
 # -D option above while parsing this script's options/arguments). To get rid of these
 # eventual quote characters, we need an "eval" of this JAVA_COMMAND_LINE instead of
 # a mere execution.
-JAVA_COMMAND_LINE="java $JAVA_PUREFLAGS -classpath $CLASSPATH $JAVA_ENDORSED $XERCES_CONFIG $JAVA_ORB -Duser.timezone=UTC -Dabeans.home=$ACS_ABEANS_CONFIG -DACS.manager=$MANAGER_REFERENCE -DORBInitRef.NameService=$ACS_NAME_SERVICE  -DACS.repository=$ACS_INTERFACE_REPOSITORY -DACS.tmp=$ACS_TMP -DACS.baseport=$ACS_INSTANCE -DACS.data=$ACSDATA -DACS.logstdout=$ACS_LOG_STDOUT -DACS.log.minlevel.remote=$ACS_LOG_CENTRAL -DACS.loggingBin=$ACS_LOG_BIN $JAVA_OPTIONS $LAUNCHER $@"
+JAVA_COMMAND_LINE="java $JAVA_PUREFLAGS -classpath $CLASSPATH $JAVA_ENDORSED $XERCES_CONFIG $JAVA_ORB -Duser.timezone=UTC -Dabeans.home=$ACS_ABEANS_CONFIG -DACS.manager=$MANAGER_REFERENCE -DORBInitRef.NameService=$ACS_NAME_SERVICE  -DACS.repository=$ACS_INTERFACE_REPOSITORY -DACS.tmp=$ACS_TMP -DACS.baseport=$ACS_INSTANCE -DACS.data=$ACSDATA -DACS.logstdout=$ACS_LOG_STDOUT -DACS.log.minlevel.remote=$ACS_LOG_CENTRAL -DACS.loggingBin=$ACS_LOG_BIN -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=$ACS_TMP $JAVA_OPTIONS $LAUNCHER $@"
 
 ACS_LOG_DEBUG "acsStartJava" "$JAVA_COMMAND_LINE"
 

@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.14 2008/02/20 00:44:18 agrimstrup Exp $"
+# "@(#) $Id: Makefile,v 1.15 2008/06/27 06:25:59 cparedes Exp $"
 #
 # Makefile of ........
 #
@@ -73,7 +73,7 @@ SCRIPTS_L       = acsstartupTATPrologue acsstartupTATEpilogue \
 	acsstartupGenericProcess.sh \
 	maciManagerJ cdbjDAL loggingService acsLogSvc ACSStartContainerPy maciContainer  \
 	maciManagerShutdown maciContainerShutdown acsStartJavaContainer \
-	testContainerPort.sh acsstartupTestLoadIFR.sh
+	testContainerPort.sh acsstartupTestLoadIFR.sh jvmPropertiesTest
 #
 # TCL scripts (public and local)
 # ------------------------------
@@ -124,7 +124,9 @@ USER_IDL =
 #
 # Jarfiles and their directories
 #
-JARFILES= 
+JARFILES = jAcsStartupTest
+jAcsStartupTest_DIRS = alma
+
 jjj_DIRS=
 jjj_EXTRAS= 
 #

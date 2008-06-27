@@ -20,7 +20,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: TestList.lite,v 1.14 2008/03/17 05:01:08 cparedes Exp $"
+# "@(#) $Id: TestList.lite,v 1.15 2008/06/27 06:25:59 cparedes Exp $"
 #
 # TestList
 #
@@ -67,4 +67,5 @@ PROLOGUE acsstartupTATPrologue
 
 10 testContainerPort "testContainerPort.sh"
 
+11 jvmPropertiesTest "jvmPropertiesTest" 
 EPILOGUE acsstartupTATEpilogue

@@ -1,0 +1,43 @@
+#! /bin/bash
+#*******************************************************************************
+# ALMA - Atacama Large Millimiter Array
+# (c) European Southern Observatory, 2002
+# Copyright by ESO (in the framework of the ALMA collaboration),
+# All rights reserved
+#
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License as published by the Free Software Foundation; either
+# version 2.1 of the License, or (at your option) any later version.
+#
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public
+# License along with this library; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
+# MA 02111-1307  USA
+
+#
+# classloader tests need a special minimal classpath.
+# we do not know if jAcsStartupTest.jar and the other needed
+# jar files are here in lib or somewhere else and
+# therefore we write a little function to search for them.
+# Notice that the acsstartup module provides standard and better
+# functions to search for this, but we cannot use them here because
+# that module comes after in the build sequence.
+#
+acsStartJava  -noDirectory -noexport -endorsed -D ACS.root=$ACSROOT -D ACS.cdbroot=$ACS_CDB alma.acs.JVMSettingsTest.JVMSettingsTest > heapTest.out 2>&1 
+
+DUMP_FILENAME=`sed -n 's/Dumping heap to \(java_pid[0-9]*.hprof\) .../\1/p' heapTest.out`
+
+if [ -e $DUMP_FILENAME ]; then
+    echo "Heap dump test created successfully."
+    echo "Removing dump file $DUMP_FILENAME"
+    rm $DUMP_FILENAME
+else
+    echo "ERROR: Heap dump $DUMP_FILENAME test was not created."
+fi
+
