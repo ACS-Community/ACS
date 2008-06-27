@@ -55,6 +55,7 @@ module jconttest
 		 */
 		void testGetComponentNonSticky(in string curl, in boolean release) raises (ACSErrTypeCommon::CouldntPerformActionEx);
 	};
+
 	
 	interface DummyComponent : ACS::ACSComponent
 	{
@@ -62,11 +63,27 @@ module jconttest
 		void callThatTakesSomeTime(in long timeInMillisec);
 	};
 
+
+	/**
+	 * A component that calls DummyComponent, to allow testing of timeouts where the client is a container and not a JUnit test.
+	 */
 	interface DummyComponentWrapper : ACS::ACSComponent
 	{
-		boolean callDummyComponentWithTime(in long timeInMillisec);
-		boolean callDummyCompWithTimeAndName(in long timeInMillisec, in string cont);
+		/**
+		 * Gets the default "DummyComponent" and calls "callThatTakesSomeTime" with the given positive "timeInMillisec".
+		 * If the parameter "timeInMillisec" is negative, then a time value greater than the ORB-level timeout will be used.
+		 * Returns true if a timeout occurred, otherwise false.
+		 */
+		boolean callDummyComponentWithTime(in long timeInMillisec) 
+			raises (ACSErrTypeCommon::CouldntPerformActionEx);
+		
+		/**
+		 * Same as "callDummyComponentWithTime", but an instance of DummyComponent can be specified, instead of using the default instance.
+		 */
+		boolean callDummyCompWithTimeAndName(in long timeInMillisec, in string targetCompName) 
+			raises (ACSErrTypeCommon::CouldntPerformActionEx);
 	};
+
 
 	interface DataReceiver : ACS::ACSComponent
 	{
