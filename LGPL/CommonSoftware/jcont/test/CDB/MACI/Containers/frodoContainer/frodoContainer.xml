@@ -6,18 +6,13 @@
 	xmlns:log="urn:schemas-cosylab-com:LoggingConfig:1.0" 
 	ImplLang="java"
 	>
-    
+
     <Autoload>
     </Autoload>
     
     <LoggingConfig
     	minLogLevel="2"
     	minLogLevelLocal="2"
-    	centralizedLogger="Log"
-    	maxLogQueueSize="1000"
-    	immediateDispatchLevel="4"
-    	dispatchPacketSize="5"
-    	flushPeriodSeconds="10"
     	>
     	<log:_ Name="jacorb@frodoContainer" minLogLevel="5" minLogLevelLocal="5" />
         <log:_ Name="MyMuteComponent" minLogLevel="5" minLogLevelLocal="5" />
