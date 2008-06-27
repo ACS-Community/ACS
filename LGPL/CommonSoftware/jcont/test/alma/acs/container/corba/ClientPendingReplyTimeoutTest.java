@@ -20,11 +20,14 @@
 package alma.acs.container.corba;
 
 import alma.acs.component.client.ComponentClientTestCase;
+import alma.acs.util.StopWatch;
 import alma.jconttest.DummyComponent;
 import alma.jconttest.DummyComponentHelper;
+import alma.jconttest.util.JconttestUtil;
 
 /**
- * Tests the <code>jacorb.connection.client.pending_reply_timeout</code> property setting.
+ * Tests the effect of the <code>jacorb.connection.client.pending_reply_timeout</code> property setting
+ * on clients which, unlike containers, don't apply additional timeout settings from CDB or elsewhere.
  * Requires ACS runtime with a remote container.
  * 
  * @author rtobar
@@ -32,20 +35,18 @@ import alma.jconttest.DummyComponentHelper;
 public class ClientPendingReplyTimeoutTest extends ComponentClientTestCase {
 
 	private static final String DUMMYCOMP_TYPENAME = "IDL:alma/jconttest/DummyComponent:1.0";
-	private static final String PROPERTY_NAME = "jacorb.connection.client.pending_reply_timeout";
-	private DummyComponent dummyComponent;
 
-	// simple otherthread-to-mainthread exception passing
-	//private volatile Throwable exceptionInThread;
+	private DummyComponent dummyComponent;
+	private JconttestUtil jconttestUtil;
 
 	public ClientPendingReplyTimeoutTest() throws Exception {
 		super("ClientPendingReplyTimeoutTest");
 	}
-
 	
 	protected void setUp() throws Exception {
 		Thread.sleep(2000); // to make sure that logging client is up and captures all logs
 		super.setUp();
+		jconttestUtil = new JconttestUtil(getContainerServices());
 	}
 
 	protected void tearDown() throws Exception {
@@ -53,73 +54,37 @@ public class ClientPendingReplyTimeoutTest extends ComponentClientTestCase {
 		super.tearDown();
 	}
 
-	public void testClientPendingReplyTimeoutContainer() throws Exception {
-        String compName = "DefaultDummyComp2";
-		org.omg.CORBA.Object compObj = getContainerServices().getComponent(compName);
-		assertNotNull(compObj);
-		dummyComponent = DummyComponentHelper.narrow(compObj);
 	
-		// doesn't have the getConfiguration() method
-        int timeout = 70;
-
-		boolean timeoutException = true;
-
-        try {
-            dummyComponent.callThatTakesSomeTime((int)(timeout + 10)*1000);
-        } catch (org.omg.CORBA.TIMEOUT e) {
-            //as we are calling using a client, no timeout should be thrown
-            timeoutException = false;
-        }
-        assertTrue(timeoutException);
-		
-		// This call should take no time, so no exception should be trhown
-		timeoutException = false;
-        try {
-            dummyComponent.callThatTakesSomeTime(0);
-        } catch (org.omg.CORBA.TIMEOUT e) {
-            timeoutException = true;
-        }
-        assertTrue(!timeoutException);
-	}
-	
+	/**
+	 * Tests the client-side Corba timeout. Since this client is a JUnit test, the system-level ORB timeout should
+	 * apply, regardless of any timeout setting for the container whose component we call.
+	 */
 	public void testClientPendingReplyTimeout() throws Exception {
 		org.omg.CORBA.Object compObj = getContainerServices().getDefaultComponent(DUMMYCOMP_TYPENAME);
 		assertNotNull(compObj);
 		dummyComponent = DummyComponentHelper.narrow(compObj);
-		String compName = dummyComponent.name();
-		assertNotNull(compName);
-	
-		// We get the property value from the ORB configuration for the component
-		// Need to cast the ORB object since it declared as org.omg.orb.ORB, and it
-		// doesn't have the getConfiguration() method
-		int timeout = -1;
-		if( acsCorba.getORB() instanceof org.jacorb.orb.ORB )
-			timeout = ((org.jacorb.orb.ORB)acsCorba.getORB()).getConfiguration().getAttributeAsInteger(PROPERTY_NAME);
 
-		m_logger.info("Timeout for receiving replies is: " + timeout);
-		boolean timeoutException = false;
+		int syslevelOrbTimeoutMillis = jconttestUtil.getSystemLevelOrbTimeoutMillis();
+		assertEquals("system-level jacorb timeout has changed (orb.properties or cmd line), please verify that this test still works as intended!", 180000, syslevelOrbTimeoutMillis);
 
-		// If timeout is > 0, then the property is set and can be tested
-		// else, nothing can be proben
-		if( timeout > 0 ) {
-			try {
-				dummyComponent.callThatTakesSomeTime((int)(timeout));
-			} catch (org.omg.CORBA.TIMEOUT e) {
-				timeoutException = true;
-			}
-			assertTrue(timeoutException);
+		StopWatch sw = new StopWatch();
+		try {
+			// call must last longer than the expected timeout
+			dummyComponent.callThatTakesSomeTime(syslevelOrbTimeoutMillis + 10000);
+			fail("Client side timeout was expected after " + syslevelOrbTimeoutMillis/1000 + " seconds!");
+		} catch (org.omg.CORBA.TIMEOUT e) {			
+			// good, but check the time
+			long elapsedMillis = sw.getLapTimeMillis();
+			int deviationSec = (int) Math.abs(elapsedMillis - syslevelOrbTimeoutMillis)/1000;
+			assertTrue("Expected timeout exception was thrown, but after unexpected " + elapsedMillis + " ms.", deviationSec < 2);
 		}
-		
-		// This call should take no time, so no exception should be trhown
-		timeoutException = false;
-		if( timeout > 0 ) {
-			try {
-				dummyComponent.callThatTakesSomeTime(0);
-			} catch (org.omg.CORBA.TIMEOUT e) {
-				timeoutException = true;
-			}
-			assertTrue(!timeoutException);
+
+		// This call should take no time, so no exception should be thrown
+		try {
+			dummyComponent.callThatTakesSomeTime(0);
+		} catch (org.omg.CORBA.TIMEOUT e) {
+			fail("No TIMOUT exception expected for a fast call!");
 		}
 	}
-	
+
 }
