@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  US
 #
-# "@(#) $Id: Makefile,v 1.17 2008/01/14 19:59:27 rtobar Exp $"
+# "@(#) $Id: Makefile,v 1.18 2008/06/27 16:34:40 hsommer Exp $"
 #
 # Makefile of ........
 #
@@ -52,10 +52,12 @@ COMPONENTS_JARFILES = jcontTestComp
 jcontTestComp_DIRS = \
 	alma/jconttest/ContainerServicesTesterImpl \
 	alma/jconttest/DummyComponentImpl \
-	alma/jconttest/DummyComponentWrapperImpl
-	
+	alma/jconttest/DummyComponentWrapperImpl \
+	alma/jconttest/DataReceiverImpl
+
 JARFILES = jcontTest
-jcontTest_DIRS = alma/acs
+jcontTest_DIRS = alma/acs \
+	alma/jconttest/util
 
 
 
