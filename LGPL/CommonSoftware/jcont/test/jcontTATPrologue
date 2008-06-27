@@ -32,7 +32,8 @@ acsutilTATPrologue -l
 
 echo " Starting Test Java Container"
 acsutilAwaitContainerStart -java frodoContainer
-acsutilAwaitContainerStart -java frodoContainerWithTimeout
+acsutilAwaitContainerStart -java frodoContainerWithTimeout1
+acsutilAwaitContainerStart -java frodoContainerWithTimeout2
+acsutilAwaitContainerStart -java frodoContainerWithTimeout3
 acsutilAwaitContainerStart -java silentContainer
-acsutilAwaitContainerStart -java silentContainerWithTimeout
 acsutilAwaitContainerStart -java dynamicTestContainer
