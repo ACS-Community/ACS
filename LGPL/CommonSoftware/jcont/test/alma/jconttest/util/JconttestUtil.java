@@ -8,10 +8,6 @@ import alma.ACSErrTypeCommon.wrappers.AcsJCouldntPerformActionEx;
 import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
 import alma.acs.container.ContainerServices;
 import alma.acs.logging.AcsLogger;
-import alma.cdbErrType.CDBFieldDoesNotExistEx;
-import alma.cdbErrType.CDBRecordDoesNotExistEx;
-import alma.cdbErrType.CDBXMLErrorEx;
-import alma.cdbErrType.WrongCDBDataTypeEx;
 
 public class JconttestUtil
 {
