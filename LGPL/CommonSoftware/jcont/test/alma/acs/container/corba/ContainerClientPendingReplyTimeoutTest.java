@@ -19,107 +19,77 @@
  */
 package alma.acs.container.corba;
 
+import alma.ACSErrTypeCommon.CouldntPerformActionEx;
+import alma.ACSErrTypeCommon.wrappers.AcsJCouldntPerformActionEx;
 import alma.acs.component.client.ComponentClientTestCase;
+import alma.acs.util.StopWatch;
 import alma.jconttest.DummyComponentWrapper;
 import alma.jconttest.DummyComponentWrapperHelper;
-
-import java.util.Calendar;
+import alma.jconttest.util.JconttestUtil;
+import alma.maci.containerconfig.Container;
 
 /**
- * Tests the <code>jacorb.connection.client.pending_reply_timeout</code> property setting for a
- * container as client.
- * Requires ACS runtime with a remote container.
- * 
- * Also tests the dynamic Timeout defined in the cdb: MACI/Container/containerName/Timeout
- * @author rtobar
+ * Tests the container timeout which should be given by the CDB attribute Container.Timeout.
+ * The system-level corba timeout set through <code>jacorb.connection.client.pending_reply_timeout</code>
+ * should not have any effect, since there should always be a (default) timeout even if this container's CDB would not define
+ * a timeout explicitly.
  */
 public class ContainerClientPendingReplyTimeoutTest extends ComponentClientTestCase {
 
-	private static final String DUMMYWRAPPERCOMP_TYPENAME = "IDL:alma/jconttest/DummyComponentWrapper:1.0";
-	private static final String PROPERTY_NAME = "jacorb.connection.client.pending_reply_timeout";
-	private DummyComponentWrapper dummyComponentWrapper;
-
-	// simple otherthread-to-mainthread exception passing
-	//private volatile Throwable exceptionInThread;
+	private JconttestUtil jconttestUtil;
+	private int syslevelOrbTimeoutSec;
+	private int syslevelOrbTimeoutSecDefault; // not sure yet what to use it for...
 
 	public ContainerClientPendingReplyTimeoutTest() throws Exception {
 		super("ContainerClientPendingReplyTimeoutTest");
 	}
 
-	
 	protected void setUp() throws Exception {
-		Thread.sleep(2000); // to make sure that logging client is up and captures all logs
 		super.setUp();
+		jconttestUtil = new JconttestUtil(getContainerServices());
+		syslevelOrbTimeoutSec = jconttestUtil.getSystemLevelOrbTimeoutMillis() / 1000;		
+		assertEquals("system-level jacorb timeout has changed (in orb.properties or cmd line). Please verify that this test still works as intended!", 180, syslevelOrbTimeoutSec);
+		syslevelOrbTimeoutSecDefault = (int) new Container().getTimeout();
 	}
 
 	protected void tearDown() throws Exception {
 		m_logger.info("done, tearDown");
 		super.tearDown();
 	}
-    /**/
-	public void testClientPendingReplyTimeoutContainer() throws Exception {
-        String compWrapperName = "DefaultDummyCompWrapper2";
-        String compName = "DefaultDummyComp2";
-		org.omg.CORBA.Object compObj = getContainerServices().getComponent(compWrapperName);
-		assertNotNull(compObj);
-		dummyComponentWrapper = DummyComponentWrapperHelper.narrow(compObj);
-        //seconds defined in CDB
-        int timeout = 50;
-		// If timeout is > 0, then the property is set and can be tested
-		// else, nothing can be proben
-        assertTrue(!dummyComponentWrapper.callDummyCompWithTimeAndName((int)(timeout/3), compName));
-        assertTrue(!dummyComponentWrapper.callDummyCompWithTimeAndName((int)(timeout/2), compName));
-
-		// This will make dummyComponentWrapper to call the DummyComponent#callThatTakesSomeTime
-		boolean timeoutException = false;
-        //Here we will check that the timeout is similar to seconds defined in CDB
-        Calendar before = Calendar.getInstance();
-        
-	    timeoutException = dummyComponentWrapper.callDummyCompWithTimeAndName(-1, compName);
-		assertTrue(timeoutException);
-        
-        Calendar after = Calendar.getInstance();
-        int sec = (int)(after.getTimeInMillis() - before.getTimeInMillis())/1000;
-        
-        assert(Math.abs(sec - timeout) < 5);
-	}
 	
-	public void testClientPendingReplyTimeout() throws Exception {
-		org.omg.CORBA.Object compObj = getContainerServices().getDefaultComponent(DUMMYWRAPPERCOMP_TYPENAME);
-		assertNotNull(compObj);
-		dummyComponentWrapper = DummyComponentWrapperHelper.narrow(compObj);
-		String compName = dummyComponentWrapper.name();
-		assertNotNull(compName);
 	
-		// We get the property value from the ORB configuration for the component
-		// Need to cast the ORB object since it declared as org.omg.orb.ORB, and it
-		// doesn't have the getConfiguration() method present in org.jacorb.orb.ORB
-		int timeout = -1;
-		if( acsCorba.getORB() instanceof org.jacorb.orb.ORB )
-			timeout = ((org.jacorb.orb.ORB)acsCorba.getORB()).getConfiguration().getAttributeAsInteger(PROPERTY_NAME);
-		else
-			assertTrue("The ORB corresponds to the org.jacorb.orb.ORB implementation",false);
-
-		m_logger.info("Timeout for receiving replies is: " + timeout);
-
-		// If timeout is > 0, then the property is set and can be tested
-		// else, nothing can be proben
-		if( timeout > 0 ) {
-			assertTrue(!dummyComponentWrapper.callDummyComponentWithTime((int)(timeout/3)));
-			assertTrue(!dummyComponentWrapper.callDummyComponentWithTime((int)(timeout/2)));
-		}
-
-		// This will make dummyComponentWrapper to call the DummyComponent#callThatTakesSomeTime
-		// with the value of PROPERTY_NAME on the Container's ORB configuration. This should cause
-		// a CORBA.TIMEOUT on the DummyComponent call, so here too.
-		boolean timeoutException = false;
+	/**
+	 * Tests the client-side relative roundtrip ORB timeout for Java containers "frodoContainerWithTimeoutX".
+	 * Here the values in the CDB are supposed to override the general ORB timeout setting from orb.properties.
+	 */
+	public void testOrbLevelTimeout() throws Exception {
+		DummyComponentWrapper wrapper1 = DummyComponentWrapperHelper.narrow(
+				getContainerServices().getComponent("DummyCompWrapper_ContainerTimeout1"));
+		
+		//seconds defined in CDB
+		String container1 = "frodoContainerWithTimeout1";
+		int timeout1Sec = (int) jconttestUtil.getContainerLevelOrbTimeout(container1);
+		assertEquals("Unexpected CDB timeout for container " + container1, 50, timeout1Sec);
+		assertTrue(container1 + "'s timeout should be shorter than the system-level timeout", syslevelOrbTimeoutSec-timeout1Sec >= 5);
 		try {
-			dummyComponentWrapper.callDummyComponentWithTime(-1);
-		} catch (org.omg.CORBA.TIMEOUT e) {
-			timeoutException = true;
+			assertFalse(wrapper1.callDummyComponentWithTime((timeout1Sec-5)*1000));
+			//Here we will check that the timeout is similar (+- 5 s) to the timeout defined in CDB
+			StopWatch sw = new StopWatch(m_logger);
+			boolean gotTimeoutException = wrapper1.callDummyComponentWithTime((timeout1Sec+5)*1000);
+			int actualTimeout1Sec = (int) sw.getLapTimeMillis()/1000;
+			assertTrue("timeout exception expected", gotTimeoutException);
+			int deviationSec = Math.abs(actualTimeout1Sec - timeout1Sec);
+			assertTrue("Expected timeout exception was thrown, but after unexpected " + actualTimeout1Sec + " ms.", deviationSec < 2);
+		} catch (CouldntPerformActionEx ex) {
+			// so that junit can display the exception trace
+			throw AcsJCouldntPerformActionEx.fromCouldntPerformActionEx(ex);
 		}
-		assertTrue(timeoutException);
-
+		
+		// @TODO: use also DummyCompWrapper_ContainerTimeout2 and DummyCompWrapper_ContainerTimeout3
+		// to check different container timeout settings.
+		// This should also check the effect of variations of the system-level timeout, as described in COMP-1063/19/Jun/08 10:03 AM
+		// (The magic 3 minutes even if system level is at 7 minutes. To be verified usign command line override of
+		// property jacorb.connection.client.pending_reply_timeout)
 	}
-	
+
 }
