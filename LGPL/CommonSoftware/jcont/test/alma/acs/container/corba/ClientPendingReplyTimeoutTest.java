@@ -44,7 +44,6 @@ public class ClientPendingReplyTimeoutTest extends ComponentClientTestCase {
 	}
 	
 	protected void setUp() throws Exception {
-		Thread.sleep(2000); // to make sure that logging client is up and captures all logs
 		super.setUp();
 		jconttestUtil = new JconttestUtil(getContainerServices());
 	}
@@ -72,7 +71,7 @@ public class ClientPendingReplyTimeoutTest extends ComponentClientTestCase {
 			// call must last longer than the expected timeout
 			dummyComponent.callThatTakesSomeTime(syslevelOrbTimeoutMillis + 10000);
 			fail("Client side timeout was expected after " + syslevelOrbTimeoutMillis/1000 + " seconds!");
-		} catch (org.omg.CORBA.TIMEOUT e) {			
+		} catch (org.omg.CORBA.TIMEOUT e) {
 			// good, but check the time
 			long elapsedMillis = sw.getLapTimeMillis();
 			int deviationSec = (int) Math.abs(elapsedMillis - syslevelOrbTimeoutMillis)/1000;
