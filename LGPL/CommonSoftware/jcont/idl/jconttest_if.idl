@@ -71,16 +71,10 @@ module jconttest
 	{
 		/**
 		 * Gets the default "DummyComponent" and calls "callThatTakesSomeTime" with the given positive "timeInMillisec".
-		 * If the parameter "timeInMillisec" is negative, then a time value greater than the ORB-level timeout will be used.
+		 * If the parameter "timeInMillisec" is negative, then a time value greater than the effective corba system-level timeout will be used.
 		 * Returns true if a timeout occurred, otherwise false.
 		 */
 		boolean callDummyComponentWithTime(in long timeInMillisec) 
-			raises (ACSErrTypeCommon::CouldntPerformActionEx);
-		
-		/**
-		 * Same as "callDummyComponentWithTime", but an instance of DummyComponent can be specified, instead of using the default instance.
-		 */
-		boolean callDummyCompWithTimeAndName(in long timeInMillisec, in string targetCompName) 
 			raises (ACSErrTypeCommon::CouldntPerformActionEx);
 	};
 
