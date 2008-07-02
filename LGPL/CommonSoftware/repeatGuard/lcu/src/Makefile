@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.1 2007/02/26 13:19:41 nbarriga Exp $"
+# "@(#) $Id: Makefile,v 1.2 2008/07/02 07:32:33 bjeram Exp $"
 #
 # Makefile of ........
 #
@@ -17,7 +17,7 @@
 #    None
 #------------------------------------------------------------------------
 # List of files to be linked
-LINK_FILES =
+LINK_FILES = RepeatGuard.cpp RepeatGuardLogger.cpp
 #
 
 #
@@ -38,11 +38,13 @@ LINK_FILES =
 #
 # C programs (public and local)
 # -----------------------------
-EXECUTABLES     =
+EXECUTABLES     =  RepeatGuard
 EXECUTABLES_L   = 
 
 #
 # <brief description of xxxxx program>
+RepeatGuard_OBJECTS   = RepeatGuard RepeatGuardLogger
+
 xxxxx_OBJECTS   =	
 xxxxx_LDFLAGS   =
 xxxxx_LIBS      =
