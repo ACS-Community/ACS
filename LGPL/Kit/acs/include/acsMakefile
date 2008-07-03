@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: acsMakefile,v 1.170 2008/06/17 13:29:01 bjeram Exp $" 
+# "@(#) $Id: acsMakefile,v 1.171 2008/07/03 07:28:10 bjeram Exp $" 
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -1328,7 +1328,7 @@ endif
 # RTAI Part, both clean, install and all are augmented here
 #
 ifdef RTAI_HOME
-I_PATH := $(I_PATH) -I$(RTAI_HOME)/include -I$(LINUX_HOME)/include 
+I_PATH := $(I_PATH) -I$(RTAI_HOME)/include -I$(LINUX_HOME)
 CFLAGS := $(CFLAGS) -DRTAI_HOME
 
 ifneq ($(strip $(RTAI_MODULES) $(RTAI_MODULES_L)),)
