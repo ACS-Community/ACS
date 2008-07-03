@@ -48,22 +48,17 @@ public class JacORBFilter implements Filter {
 	public boolean isLoggable(LogRecord record) {
 		String message = record.getMessage();
 		boolean isLoggable = true;
-		if (record.getLevel().intValue() == Level.CONFIG.intValue()) {
+		if (record.getLevel().intValue() == Level.FINE.intValue()) {
 			// map from FINE to FINEST
-			if (message.indexOf("(C) The JacORB project") > 0 || 
-				message.startsWith("Received CloseConnection on ClientGIOPConnection") ||
-				message.startsWith("prepare ORB for shutdown") ||
-				message.startsWith("Client-side TCP transport to") ||
-				message.startsWith("ORB going down...") ||
-				message.startsWith("POA ") && (
+			if (message.startsWith("POA ") && (
 						message.endsWith("shutdown is in progress") ||
 						message.endsWith("destruction is apparent") ||
 						message.endsWith("clear up the queue...") ||
 						message.endsWith("... done") ||
 						message.endsWith("stop the request controller") ||
 						message.endsWith("etherialize all servants ...")
-				) ||
-				message.startsWith("Opened new server-side TCP/IP" )) {
+				) 
+                ) {
 				record.setLevel(Level.FINEST);
 			}
 			// from FINE to discard
@@ -101,6 +96,11 @@ public class JacORBFilter implements Filter {
 			// from INFO to FINEST
 			else if (message.startsWith("Connected to ") ||
 					message.startsWith("Closed server-side transport to") ||
+			        ( message.startsWith("POA ") && 
+                       ( message.endsWith("up the queue ...") ||
+						 message.endsWith("... done")
+                       ) 
+                     ) ||
 					message.startsWith("Retrying to connect to") ||
 					message.startsWith("ClientConnectionManager: created new ClientGIOPConnection") ||
 					message.startsWith("ClientConnectionManager: found ClientGIOPConnection") ||
@@ -145,7 +145,6 @@ public class JacORBFilter implements Filter {
 //		if (!isLoggable) {
 //			System.out.println("dropping JacORB message " + message + " with Level " + record.getLevel().getName());
 //		}
-		
 		return isLoggable;
 	}
 
