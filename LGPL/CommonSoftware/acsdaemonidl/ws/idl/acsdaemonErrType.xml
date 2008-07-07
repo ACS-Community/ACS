@@ -25,6 +25,17 @@
 		description="Failed to stop ACS services"
 	/>
 
+	<ErrorCode name="ServiceAlreadyRunning"
+		shortDescription="The requested service is running already."
+		description="The requested service is running already and therefore cannot be started.">
+			<Member name="Service" type="string" description="service name"/>
+	</ErrorCode>
+
+	<ErrorCode name="ServiceNotRunning"
+		shortDescription="The requested service is not running."
+		description="The requested service is not running and therefore cannot be stopped."
+	/>
+
 
 	<ErrorCode name="FailedToGetAcsStatus"
 		shortDescription="Failed to get ACS status"
