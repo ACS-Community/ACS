@@ -48,7 +48,7 @@ public class ContainerClientPendingReplyTimeoutTest extends ComponentClientTestC
 		super.setUp();
 		jconttestUtil = new JconttestUtil(getContainerServices());
 		syslevelOrbTimeoutSec = jconttestUtil.getSystemLevelOrbTimeoutMillis() / 1000;		
-		assertEquals("system-level jacorb timeout has changed (in orb.properties or cmd line). Please verify that this test still works as intended!", 180, syslevelOrbTimeoutSec);
+		//assertEquals("system-level jacorb timeout has changed (in orb.properties or cmd line). Please verify that this test still works as intended!", 180, syslevelOrbTimeoutSec);
 		syslevelOrbTimeoutSecDefault = (int) new Container().getTimeout();
 	}
 
@@ -63,33 +63,47 @@ public class ContainerClientPendingReplyTimeoutTest extends ComponentClientTestC
 	 * Here the values in the CDB are supposed to override the general ORB timeout setting from orb.properties.
 	 */
 	public void testOrbLevelTimeout() throws Exception {
-		DummyComponentWrapper wrapper1 = DummyComponentWrapperHelper.narrow(
-				getContainerServices().getComponent("DummyCompWrapper_ContainerTimeout1"));
 		
 		//seconds defined in CDB
-		String container1 = "frodoContainerWithTimeout1";
-		int timeout1Sec = (int) jconttestUtil.getContainerLevelOrbTimeout(container1);
-		assertEquals("Unexpected CDB timeout for container " + container1, 50, timeout1Sec);
-		assertTrue(container1 + "'s timeout should be shorter than the system-level timeout", syslevelOrbTimeoutSec-timeout1Sec >= 5);
-		try {
-			assertFalse(wrapper1.callDummyComponentWithTime((timeout1Sec-5)*1000));
-			//Here we will check that the timeout is similar (+- 5 s) to the timeout defined in CDB
-			StopWatch sw = new StopWatch(m_logger);
-			boolean gotTimeoutException = wrapper1.callDummyComponentWithTime((timeout1Sec+5)*1000);
-			int actualTimeout1Sec = (int) sw.getLapTimeMillis()/1000;
-			assertTrue("timeout exception expected", gotTimeoutException);
-			int deviationSec = Math.abs(actualTimeout1Sec - timeout1Sec);
-			assertTrue("Expected timeout exception was thrown, but after unexpected " + actualTimeout1Sec + " ms.", deviationSec < 2);
-		} catch (CouldntPerformActionEx ex) {
-			// so that junit can display the exception trace
-			throw AcsJCouldntPerformActionEx.fromCouldntPerformActionEx(ex);
+		String container = "frodoContainerWithTimeout";
+        String component = "DummyCompWrapper_ContainerTimeout";
+        String container1, component1;
+        int [] timeout = {50,200};
+        for (int i = 0; i < 2;i++){
+            container1 = container+(i+1);
+            component1 = component+(i+1);
+           
+		DummyComponentWrapper wrapper1 = DummyComponentWrapperHelper.narrow(
+				getContainerServices().getComponent(component1));
+            int timeout1Sec = (int) jconttestUtil.getContainerLevelOrbTimeout(container1);
+	        	
+            assertEquals("Unexpected CDB timeout for container " + container1, timeout[i], timeout1Sec);
+            //This is to prevent run components that have 
+            //because this test is run several times with different values of syslevelOrbTimeoutSec
+		    if(syslevelOrbTimeoutSec < timeout1Sec ) break;
+            assertTrue(container1 + "'s timeout should be shorter than the system-level timeout", syslevelOrbTimeoutSec-timeout1Sec >= 5);
+		    try {
+			    assertFalse(wrapper1.callDummyComponentWithTime((timeout1Sec-5)*1000));
+			    //Here we will check that the timeout is similar (+- 5 s) to the timeout defined in CDB
+                StopWatch sw = new StopWatch(m_logger);
+			    boolean gotTimeoutException = wrapper1.callDummyComponentWithTime((timeout1Sec+5)*1000);
+			    int actualTimeout1Sec = (int) sw.getLapTimeMillis()/1000;
+			    assertTrue("timeout exception expected", gotTimeoutException);
+			    int deviationSec = Math.abs(actualTimeout1Sec - timeout1Sec);
+			    assertTrue("Expected timeout exception was thrown, but after unexpected " + actualTimeout1Sec + " ms.", deviationSec < 2);
+		    } catch (CouldntPerformActionEx ex) {
+			    // so that junit can display the exception trace
+			    throw AcsJCouldntPerformActionEx.fromCouldntPerformActionEx(ex);
+		    }
 		}
-		
 		// @TODO: use also DummyCompWrapper_ContainerTimeout2 and DummyCompWrapper_ContainerTimeout3
 		// to check different container timeout settings.
 		// This should also check the effect of variations of the system-level timeout, as described in COMP-1063/19/Jun/08 10:03 AM
 		// (The magic 3 minutes even if system level is at 7 minutes. To be verified usign command line override of
 		// property jacorb.connection.client.pending_reply_timeout)
+
+       //This test will be run 2 times with different values of the system level timeout timeout using the prologue of TAT
+       
 	}
 
 }
