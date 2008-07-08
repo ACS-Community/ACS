@@ -124,12 +124,12 @@ public class LogLevelTable extends JTable {
 	}
 	
 	/**
-	 * Return the editor for a given cell
+	 * Return the combo box editor for a given cell if the default is not selected
+	 * 
 	 */
 	public TableCellEditor getCellEditor(int row, int column) {
 		if (column==2 || column==3) {
 			Object val=getModel().getValueAt(row, column);
-			System.out.println("Value="+val.toString());
 			DefaultCellEditor edt = (DefaultCellEditor)super.getCellEditor(row, column);
 			JComboBox edtCB = (JComboBox)edt.getComponent();
 			try {
@@ -139,7 +139,13 @@ public class LogLevelTable extends JTable {
 			} catch (Exception e) {
 				System.err.println("Invalid ACS log level: "+val.toString());
 			}
-			return edt;
+			LogLevelModel model = (LogLevelModel)getModel();
+			Boolean useDefault=(Boolean)model.getValueAt(convertRowIndexToModel(row), convertColumnIndexToModel(1));
+			if (useDefault) {
+				return null;
+			} else {
+				return edt;
+			}
 		}
 		return super.getCellEditor(row, column);
 	}
