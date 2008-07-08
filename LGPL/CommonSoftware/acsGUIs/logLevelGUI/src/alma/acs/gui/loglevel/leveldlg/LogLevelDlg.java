@@ -128,7 +128,7 @@ public class LogLevelDlg extends JDialog implements ActionListener {
 	}
 	
 	/**
-	 * set the lable for the logger names 
+	 * set the label of the logger names 
 	 * 
 	 * @return
 	 */
@@ -179,7 +179,7 @@ public class LogLevelDlg extends JDialog implements ActionListener {
 		LogLevelHelper[] newLevels = model.getLevels();
 		for (LogLevelHelper logLvl: newLevels) {
 			if (logLvl.modified()) {
-				System.out.println("Applying new log levels to "+logLvl.getName());
+				System.out.println("Applying new log levels to "+logLvl.getName()+": <"+logLvl.isUsingDefault()+", "+logLvl.getGlobalLevel()+", "+logLvl.getLocalLevel()+">");
 				try {
 					logConf.set_logLevels(logLvl.getName(), logLvl.getLogLevels());
 				} catch (Throwable t) {

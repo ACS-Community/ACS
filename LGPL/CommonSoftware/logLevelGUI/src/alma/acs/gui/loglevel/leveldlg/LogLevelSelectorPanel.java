@@ -42,7 +42,6 @@ import com.cosylab.logging.settings.LogTypeRenderer;
 
 import alma.acs.gui.loglevel.LogLvlSelNotSupportedException;
 
-import si.ijs.maci.LoggingConfigurable;
 import si.ijs.maci.LoggingConfigurableOperations;
 
 /**
@@ -150,7 +149,7 @@ public class LogLevelSelectorPanel extends JPanel implements ActionListener {
 	}
 	
 	/**
-	 * set the lable for the logger names 
+	 * set the labels of the logger names 
 	 * 
 	 * @return
 	 */
@@ -175,7 +174,7 @@ public class LogLevelSelectorPanel extends JPanel implements ActionListener {
 		LogLevelHelper[] newLevels = model.getLevels();
 		for (LogLevelHelper logLvl: newLevels) {
 			if (logLvl.modified()) {
-				System.out.println("Applying new log levels to "+logLvl.getName());
+				System.out.println("Applying new log levels to "+logLvl.getName()+": <"+logLvl.isUsingDefault()+", "+logLvl.getGlobalLevel()+", "+logLvl.getLocalLevel()+">");
 				try {
 					logConf.set_logLevels(logLvl.getName(), logLvl.getLogLevels());
 				} catch (Throwable t) {

@@ -53,14 +53,15 @@ public class LogLevelHelper {
 		if (levels==null) {
 			throw new IllegalArgumentException("Invalid null LogLevels in constructor");
 		}
+		System.out.println("Building s LogLevelHelper for "+name+": <"+levels.useDefault+", "+levels.minLogLevel+", "+levels.minLogLevelLocal+">");
 		this.levels=levels;
 		resetChanges();
 		this.name=name;
 	}
 	
 	/**
-	 * Copy level in originalLevel in such a way the modified() will return false.
-	 * This is needed after applying changes otherwise itseems that there are
+	 * Copy level in <code>originalLevel</code> in such a way the modified() will return false.
+	 * This is needed after applying changes otherwise it seems that there are
 	 * still changes to be applied.
 	 *
 	 */
