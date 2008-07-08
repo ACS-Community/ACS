@@ -21,7 +21,6 @@
  */
 package alma.acs.gui.loglevel;
 
-import java.awt.Component;
 import java.awt.Dimension;
 
 import javax.swing.JFrame;
@@ -38,7 +37,7 @@ import alma.acs.gui.util.panel.IPanel;
 
 /**
  * The panel of the application containing the tabs:
- * - one tab with the ACS tree showing cleints, containers and components
+ * - one tab with the ACS tree showing clients, containers and components
  * - one tab per each container whose logs levels the user wants to change
  * 
  * @author acaproni

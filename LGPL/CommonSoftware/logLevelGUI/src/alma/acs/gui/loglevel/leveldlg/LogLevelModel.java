@@ -94,7 +94,7 @@ public class LogLevelModel extends DefaultTableModel {
 	/**
 	 * @see DefaultTableModel
 	 */
-	public Class getColumnClass(int column) {
+	public Class<?> getColumnClass(int column) {
 		return Column.values()[column].colClass;
 	}
 	
@@ -115,6 +115,13 @@ public class LogLevelModel extends DefaultTableModel {
 		return col!=0; 
 	}
 	
+	/**
+	 * Set the value of the cell in the given row and col.
+	 * 
+	 * @param aValue The new value to set
+	 * @param row The row of the cell
+	 * @param column The column of the cell
+	 */
 	public void setValueAt(Object aValue, int row, int column) {
 		if (row>levels.length) {
 			throw new IllegalStateException("Trying to set value for ["+row+", "+column+"] but the table has "+levels.length+" rows");
