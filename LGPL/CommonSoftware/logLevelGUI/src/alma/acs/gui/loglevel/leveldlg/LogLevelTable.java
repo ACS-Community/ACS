@@ -34,6 +34,8 @@ import javax.swing.SortOrder;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 
+import alma.acs.logging.level.AcsLogLevelDefinition;
+
 import com.cosylab.logging.engine.log.LogTypeHelper;
 import com.cosylab.logging.settings.LogTypeRenderer;
 import com.cosylab.logging.client.EntryTypeIcon;
@@ -130,7 +132,13 @@ public class LogLevelTable extends JTable {
 			System.out.println("Value="+val.toString());
 			DefaultCellEditor edt = (DefaultCellEditor)super.getCellEditor(row, column);
 			JComboBox edtCB = (JComboBox)edt.getComponent();
-			edtCB.setSelectedIndex(Integer.parseInt(val.toString()));
+			try {
+				AcsLogLevelDefinition loglevelDef = AcsLogLevelDefinition.fromInteger(Integer.parseInt(val.toString()));
+				LogTypeHelper logType = LogTypeHelper.fromAcsCoreLevel(loglevelDef);
+				edtCB.setSelectedIndex(logType.ordinal());
+			} catch (Exception e) {
+				System.err.println("Invalid ACS log level: "+val.toString());
+			}
 			return edt;
 		}
 		return super.getCellEditor(row, column);
