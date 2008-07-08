@@ -238,10 +238,18 @@ public class LogLevelModel extends DefaultTableModel {
 			return levels[row].isUsingDefault();
 		}
 		case 2: {
-			return levels[row].getLocalLevel();
+			if (levels[row].isUsingDefault()) {
+				return levels[row].getDefaultLevels().minLogLevelLocal;
+			} else {
+				return levels[row].getLocalLevel();
+			}
 		}
 		case 3: {
-			return levels[row].getGlobalLevel();
+			if (levels[row].isUsingDefault()) {
+				return levels[row].getDefaultLevels().minLogLevel;
+			} else {
+				return levels[row].getGlobalLevel();
+			}
 		}
 		default: {
 			return "N/A";
