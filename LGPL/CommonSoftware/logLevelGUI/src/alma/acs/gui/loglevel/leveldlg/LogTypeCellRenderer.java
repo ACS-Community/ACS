@@ -27,6 +27,8 @@ import javax.swing.JComboBox;
 import javax.swing.JTable;
 import javax.swing.table.TableCellRenderer;
 
+import alma.acs.logging.level.AcsLogLevelDefinition;
+
 import com.cosylab.logging.engine.log.LogTypeHelper;
 import com.cosylab.logging.settings.LogTypeRenderer;
 
@@ -66,9 +68,10 @@ public class LogTypeCellRenderer implements TableCellRenderer {
 		levelCB.setFont(table.getFont());
         
         // If the type of log is known, set the icon
-		Integer logType;
+		LogTypeHelper logType;
 		try {
-			logType=Integer.parseInt(value.toString());
+			AcsLogLevelDefinition levelDef = AcsLogLevelDefinition.fromInteger(Integer.parseInt(value.toString()));
+			logType=LogTypeHelper.fromAcsCoreLevel(levelDef);
 		} catch (Exception e) {
 			System.err.println("Error parsing a log type: "+value.toString());
 			e.printStackTrace(System.err);
@@ -76,7 +79,7 @@ public class LogTypeCellRenderer implements TableCellRenderer {
 		}
         
         if (logType!=null) {
-	            levelCB.setSelectedIndex(logType);
+	            levelCB.setSelectedIndex(logType.ordinal());
         } 
 		return levelCB;
 	}
