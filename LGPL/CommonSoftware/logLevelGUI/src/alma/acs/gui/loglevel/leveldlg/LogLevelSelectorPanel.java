@@ -160,7 +160,7 @@ public class LogLevelSelectorPanel extends JPanel implements ActionListener {
 		}
 		LogLevelHelper[] ret = new LogLevelHelper[logNames.length];
 		for (int t=0; t<logNames.length; t++) {
-			ret[t]= new LogLevelHelper(logNames[t],logConf.get_logLevels(logNames[t]));
+			ret[t]= new LogLevelHelper(logNames[t],logConf.get_logLevels(logNames[t]),logConf.get_default_logLevels());
 		}
 		return ret;
 	}
