@@ -43,20 +43,38 @@ public class LogLevelHelper {
 	// if something has been changed before applying
 	private LogLevels originalLevel;
 	
-	// The name of the logger
-	private String name;
+	/**
+	 * The default levels
+	 */
+	private final LogLevels defaultLevels;
 	
-	public LogLevelHelper(String name, LogLevels levels) {
+	/**
+	 * The name of the logger
+	 */
+	private final String name;
+	
+	/**
+	 * Constructor 
+	 * 
+	 * @param name The name of the logger
+	 * @param levels The log levels
+	 * @param defaults The default log levels
+	 */
+	public LogLevelHelper(String name, LogLevels levels, LogLevels defaults) {
 		if (name==null) {
 			throw new IllegalArgumentException("Invalid null logger name in constructor");
 		}
 		if (levels==null) {
 			throw new IllegalArgumentException("Invalid null LogLevels in constructor");
 		}
-		System.out.println("Building s LogLevelHelper for "+name+": <"+levels.useDefault+", "+levels.minLogLevel+", "+levels.minLogLevelLocal+">");
+		if (defaults==null) {
+			throw new IllegalArgumentException("Invalid null default LogLevels in constructor");
+		}
+		System.out.println("Building s LogLevelHelper for "+name+": <"+levels.useDefault+", "+levels.minLogLevel+", "+levels.minLogLevelLocal+"> abd CDB defaults <"+defaults.minLogLevel+", "+defaults.minLogLevelLocal+">");
 		this.levels=levels;
 		resetChanges();
 		this.name=name;
+		this.defaultLevels=defaults;
 	}
 	
 	/**
@@ -95,13 +113,6 @@ public class LogLevelHelper {
 		return name;
 	}
 
-	public void setName(String name) {
-		if (name==null) {
-			throw new IllegalArgumentException("Invalid null logger name in constructor");
-		}
-		this.name = name;
-	}
-
 	public boolean isUsingDefault() {
 		return levels.useDefault;
 	}
@@ -125,5 +136,9 @@ public class LogLevelHelper {
 		equal = equal && originalLevel.minLogLevel==levels.minLogLevel;
 		equal = equal && originalLevel.minLogLevelLocal==levels.minLogLevelLocal;
 		return !equal;
+	}
+
+	public LogLevels getDefaultLevels() {
+		return defaultLevels;
 	}
 }
