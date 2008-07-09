@@ -34,7 +34,6 @@ import org.omg.CORBA.Any;
 import org.omg.CORBA.ORB;
 import org.omg.CORBA.Object;
 import org.omg.CORBA.Policy;
-import org.omg.CORBA.PolicyError;
 import org.omg.CORBA.PolicyManager;
 import org.omg.CORBA.PolicyManagerHelper;
 import org.omg.CORBA.SetOverrideType;
