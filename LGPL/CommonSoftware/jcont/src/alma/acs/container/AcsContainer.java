@@ -209,12 +209,17 @@ public class AcsContainer extends ContainerPOA
 			m_logger.log(Level.FINE, "Failed to configure logging (default values will be used).", ex);
 		}
 
+		double timeoutSeconds;
 		try {
-			double timeoutSeconds = getCDB().get_DAO_Servant("MACI/Containers/"+m_containerName).get_double("Timeout");
+			// should give the configured timeout, or the schema default if the container config exists but no timeout is configured there.
+			timeoutSeconds = getCDB().get_DAO_Servant("MACI/Containers/"+m_containerName).get_double("Timeout");
+		} catch (Exception ex) {
+			// container config does not exist at all. Use schema-defined default value. 
+			timeoutSeconds = new alma.maci.containerconfig.Container().getTimeout();
+		}
+		try {
 			m_acsCorba.setORBLevelRoundtripTimeout(timeoutSeconds);
 		} catch (Exception ex) {
-			// We log this as a warning because even in the absence of the optional Container.Timeout setting in the CDB
-			// the (schema) default value should be applied. Thus getting an exception here really means something is wrong.
 			m_logger.log(Level.WARNING, "No CDB timeout applied to the container.", ex);
 		}
 		
@@ -235,7 +240,7 @@ public class AcsContainer extends ContainerPOA
 	                	alarmLogger = ClientLogManager.getAcsLogManager().getLoggerForContainer(getName());
 	                }
 	                return alarmLogger;
-	        	}	        	
+	        	}
 	        };
 			
 			ACSAlarmSystemInterfaceFactory.init(cs);
