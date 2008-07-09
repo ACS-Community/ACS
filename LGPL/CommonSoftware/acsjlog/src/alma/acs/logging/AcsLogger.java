@@ -306,7 +306,7 @@ public class AcsLogger extends Logger implements LogConfigSubscriber {
                 }
                 if (foundNonLogFrame) {
                 	if (callStacksToBeIgnored.contains(concatenateIgnoreLogData(cname, frame.getMethodName()))) {
-                		System.out.println("Won't log record with message " + record.getMessage());
+                		//System.out.println("Won't log record with message " + record.getMessage());
                 		return;
                 	}
                 }
