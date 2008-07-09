@@ -671,7 +671,13 @@ public class ContainerServicesImpl implements ContainerServices
 
 
 
+	public org.omg.CORBA.Object getReferenceWithCustomClientSideTimeout(org.omg.CORBA.Object originalCorbaRef, double timeoutSeconds) 
+		throws AcsJContainerServicesEx {
+		return acsCorba.wrapForRoundtripTimeout(originalCorbaRef, timeoutSeconds);
+	}
 
+	
+	
 	/**
 	 * @see alma.acs.container.ContainerServices#getCDB()
 	 */
@@ -715,7 +721,7 @@ public class ContainerServicesImpl implements ContainerServices
 	 * 
 	 * @see alma.acs.container.ContainerServices#releaseComponent(java.lang.String)
 	 */
-	public void releaseComponent(String curl) {	
+	public void releaseComponent(String curl) {
 		// we keep the "forceful" release option as a switch in the code. 
 		// It was taken out for ACS 7.0, but may come back in the future. 
 		final boolean forcefully = false;

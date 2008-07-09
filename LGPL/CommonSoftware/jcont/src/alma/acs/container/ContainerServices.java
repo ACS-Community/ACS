@@ -294,6 +294,30 @@ public interface ContainerServices extends ContainerServicesBase
 	public void registerComponentListener(ComponentListener listener);
 	
 
+	/**
+	 * Wraps a component reference (or offshoot reference etc) such that the given timeout is applied on
+	 * the client side of calls to this (possibly remote) object. 
+	 * If the total call, including de-/serialization and network travel, takes longer than the given timeout,
+	 * an <code>org.omg.CORBA.TIMEOUT</code> exception will be thrown.
+	 * <p>
+	 * This allows us to override the general timeout given at the system level (e.g. orb.properties file in case of jacorb)
+	 * and the container-level timeout given in the CDB container configuration.
+	 * It is possible to set the timeout to values that are shorter or longer than the default timeout. 
+	 * You should chose a timeout value that matches the expected response time, with a large safety margin of
+	 *  
+	 * <p>
+	 * <b>Note that calls to which the specified timeout should apply must be made on the object reference returned from this method, 
+	 *    and not on the original object that gets passed to this method! 
+	 *    Some corba implementations may apply the timeout to both objects though, or return the original object.</b>
+	 * <p>
+	 * 
+	 * @param corbaRef  Reference to a component or an offshoot as obtained from some of the other container services methods.
+	 * @param timeoutSeconds  the custom client side timeout in seconds, to be used for all calls to the given object reference.
+	 * @return A new object reference which should be used to make calls with the specified timeout applied.
+	 */
+	public org.omg.CORBA.Object getReferenceWithCustomClientSideTimeout(org.omg.CORBA.Object originalCorbaRef, double timeoutSeconds)
+		throws AcsJContainerServicesEx;
+	
 	/////////////////////////////////////////////////////////////
 	// support for XML entities and binding classes
 	/////////////////////////////////////////////////////////////
