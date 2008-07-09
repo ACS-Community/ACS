@@ -21,7 +21,6 @@
  */
 package alma.acs.jlog.test;
 
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.util.Collection;
@@ -32,10 +31,15 @@ import java.util.Vector;
 import com.cosylab.logging.engine.ACS.ACSRemoteErrorListener;
 import com.cosylab.logging.engine.ACS.ACSRemoteLogListener;
 import com.cosylab.logging.engine.log.ILogEntry;
+import com.cosylab.logging.engine.log.LogEntryXML;
+import com.cosylab.logging.engine.log.ILogEntry.AdditionalData;
+import com.cosylab.logging.engine.log.ILogEntry.Field;
 
 import junit.framework.TestCase;
 import alma.acs.logging.engine.io.IOHelper;
 import alma.acs.logging.engine.io.IOPorgressListener;
+import alma.acs.logging.engine.parser.ACSLogParser;
+import alma.acs.logging.engine.parser.ACSLogParserFactory;
 
 /**
  * A class testing the load and save facilities
@@ -288,6 +292,7 @@ public class LoadSaveTest extends TestCase implements IOPorgressListener, ACSRem
 		assertNotNull(ioHelper);
 		
 		ioHelper.loadLogs(fileName, this, null, this, this);
+		// Check if the number of records is the same
 		assertEquals(specialLogs.length, logsRead.size());
 	}
 	
@@ -303,7 +308,7 @@ public class LoadSaveTest extends TestCase implements IOPorgressListener, ACSRem
 		
 		// First save with no append
 		ioHelper.saveLogs(fileName, logs, this, false);
-		// Second save with no append
+		// Second save with append
 		ioHelper.saveLogs(fileName, logs, this, true);
 		
 		// Load the logs
@@ -337,5 +342,77 @@ public class LoadSaveTest extends TestCase implements IOPorgressListener, ACSRem
 		// Read the logs
 		ioHelper.loadLogs(fileName, this, null, this, this);
 		assertEquals(logs.size(),numOfLogsRead);
+	}
+	
+	/**
+	 * Save and Load the special logs then check their fields.
+	 * <P>
+	 * This test is performed comparing the fields of the special logs one by one
+	 * instead of comparing the XMLs.
+	 * The test does the following steps:
+	 * <OL>
+	 * 	<LI>build vector of logs to save from the XMLs in <code>specialLogs</code>
+	 *  <LI>save the vector of logs with an <code>IOHelper</code> object
+	 *  <LI>load the logs from file
+	 *  <LI>compare each field of the logs read from the file with those in <code>specialLogs</code>
+	 *  <LI>compare the additional data names and values
+	 * </OL>
+	 * <P>
+	 * The test implicitly checks the conversion between XML and ILogEntry too. 
+	 */
+	public void testSaveLoadFields() throws Exception {
+		ACSLogParser parser = ACSLogParserFactory.getParser();
+		assertNotNull(parser);
+		//Build the logs from the XML
+		Vector<ILogEntry> logsToCheck = new Vector<ILogEntry>();
+		for (int t=0; t<specialLogs.length; t++) {
+			ILogEntry log =parser.parse(specialLogs[t]);
+			assertNotNull(log);
+			logsToCheck.add(log);
+		}
+		
+		// Save the logs on disk
+		IOHelper ioHelper = new IOHelper();
+		assertNotNull(ioHelper);
+		ioHelper.saveLogs(fileName, logsToCheck, this, false);
+		assertEquals(logsToCheck.size(), numOfLogsWritten);
+		
+		// Load the logs from disk
+		ioHelper.loadLogs(fileName, this, null, this, this);
+		assertEquals(logsRead.size(),logsToCheck.size());
+		
+		// Iterate over the logs comparing each field
+		for (int t=0; t<logsToCheck.size(); t++) {
+			ILogEntry originalLog = logsToCheck.elementAt(t);
+			assertNotNull(originalLog);
+			ILogEntry savedLog = logsRead.elementAt(t);
+			assertNotNull(savedLog);
+			
+			// Check the fields
+			for (Field f: Field.values()) {
+				Object original= originalLog.getField(f);
+				Object saved=savedLog.getField(f);
+				assertEquals("Fields "+f+" differ",original, saved);
+			}
+			// Check additional data
+			assertEquals(originalLog.hasDatas(), savedLog.hasDatas());
+			if (originalLog.hasDatas()) {
+				Vector<AdditionalData> originalData = originalLog.getAdditionalData();
+				assertNotNull(originalData);
+				Vector<AdditionalData> savedData = savedLog.getAdditionalData();
+				assertNotNull(savedData);
+				assertEquals(originalData.size(), savedData.size());
+				for (int count=0; count<originalData.size(); count++) {
+					AdditionalData originalDataItem = originalData.elementAt(count);
+					assertNotNull(originalDataItem);
+					AdditionalData savedDataItem = savedData.elementAt(count);
+					assertNotNull(savedDataItem);
+					
+					assertEquals("Data names differ", originalDataItem.getName(), savedDataItem.getName());
+					assertEquals("Data values differ", originalDataItem.getValue(), savedDataItem.getValue());
+					
+				}
+			}
+		}
 	}
 }
