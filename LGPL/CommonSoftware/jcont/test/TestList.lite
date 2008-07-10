@@ -31,7 +31,4 @@ PROLOGUE jcontTATPrologue
 2 componentUnitTestsJCONT "acsutilTATTestRunner componentUnitTestsJCONT"
 3 classpathTestsJCONT "acsutilTATTestRunner classpathTestsJCONT"
 4 dynamicConfJCONT "./DynamicContainerConfigurationTest.sh"
-5 PROLOGUE jcontTATPrologueRestart \
-    extraCompUnitTest "acsStartJava -endorsed alma.acs.testsupport.tat.TATJUnitRunner   alma.acs.container.corba.ContainerClientPendingReplyTimeoutTest" \
-    EPILOGUE jcontTATEpilogueRestart
 EPILOGUE acsutilTATEpilogue

@@ -30,4 +30,5 @@ echo "=== Running all JUnit tests of module jcont which require a container infr
     acsStartJava -endorsed alma.acs.testsupport.tat.TATJUnitRunner   alma.acs.container.corba.ContainerClientPendingReplyTimeoutTest
     acsStartJava -endorsed alma.acs.testsupport.tat.NoDotJUnitRunner alma.acs.container.corba.ContainerMonitorTest
     acsStartJava -endorsed alma.acs.testsupport.tat.TATJUnitRunner   alma.acs.component.client.ClientWithLogReceiverTest
+   acsStartJava -Djacorb.connection.client.pending_reply_timeout=500000 -endorsed alma.acs.testsupport.tat.TATJUnitRunner alma.acs.container.corba.ContainerClientPendingReplyTimeoutTest
 echo "=== Done running jcont JUnit tests which require a container infrastructure"

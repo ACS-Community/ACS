@@ -39,16 +39,18 @@ public class ContainerClientPendingReplyTimeoutTest extends ComponentClientTestC
 	private JconttestUtil jconttestUtil;
 	private int syslevelOrbTimeoutSec;
 	private int syslevelOrbTimeoutSecDefault; // not sure yet what to use it for...
+    private int syslevelOrbTimeoutSecDefined;
 
 	public ContainerClientPendingReplyTimeoutTest() throws Exception {
 		super("ContainerClientPendingReplyTimeoutTest");
+        syslevelOrbTimeoutSecDefined = Integer.parseInt(System.getProperty("jacorb.connection.client.pending_reply_timeout","180000"))/1000;
 	}
 
 	protected void setUp() throws Exception {
 		super.setUp();
 		jconttestUtil = new JconttestUtil(getContainerServices());
 		syslevelOrbTimeoutSec = jconttestUtil.getSystemLevelOrbTimeoutMillis() / 1000;		
-		//assertEquals("system-level jacorb timeout has changed (in orb.properties or cmd line). Please verify that this test still works as intended!", 180, syslevelOrbTimeoutSec);
+		assertEquals("system-level jacorb timeout has changed (in orb.properties or cmd line). Please verify that this test still works as intended!", syslevelOrbTimeoutSecDefined, syslevelOrbTimeoutSec);
 		syslevelOrbTimeoutSecDefault = (int) new Container().getTimeout();
 	}
 
@@ -64,12 +66,13 @@ public class ContainerClientPendingReplyTimeoutTest extends ComponentClientTestC
 	 */
 	public void testOrbLevelTimeout() throws Exception {
 		
-		//seconds defined in CDB
+		assertEquals(syslevelOrbTimeoutSecDefined, syslevelOrbTimeoutSec);
+        //seconds defined in CDB
 		String container = "frodoContainerWithTimeout";
         String component = "DummyCompWrapper_ContainerTimeout";
         String container1, component1;
-        int [] timeout = {50,200};
-        for (int i = 0; i < 2;i++){
+        int [] timeout = {50,70, 200};
+        for (int i = 0; i < 3;i++){
             container1 = container+(i+1);
             component1 = component+(i+1);
            
