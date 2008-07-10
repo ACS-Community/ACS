@@ -1,6 +1,6 @@
 /*******************************************************************************
 *    ALMA - Atacama Large Millimiter Array
-*    (c) Associated Universities Inc., 2002 
+*    (c) Associated Universities Inc., 2002
 *    (c) European Southern Observatory, 2002
 *    Copyright by ESO (in the framework of the ALMA collaboration)
 *    and Cosylab 2002, All rights reserved
@@ -19,11 +19,11 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsncHelperImpl.cpp,v 1.75 2008/02/06 15:26:44 msekoran Exp $"
+* "@(#) $Id: acsncHelperImpl.cpp,v 1.76 2008/07/10 11:10:41 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
-* david  20/09/02  created 
+* david  20/09/02  created
 */
 //-----------------------------------------------------------------------------
 #include "acsncHelper.h"
@@ -86,11 +86,11 @@ Helper::~Helper()
     //the ORB helper if it exists
     if (orbHelper_mp != 0)
 	{
-	delete orbHelper_mp; 
+	delete orbHelper_mp;
 	orbHelper_mp=0;
 	}
 
-	// set them free...	
+	// set them free...
 	if (channelName_mp != 0)
 		CORBA::string_free(channelName_mp);
 	if (notifyServiceDomainName_mp != 0)
@@ -99,7 +99,7 @@ Helper::~Helper()
 		CORBA::string_free(notificationServiceName_mp);
 }
 //-----------------------------------------------------------------------------
-void 
+void
 Helper::resolveNamingService(CORBA::ORB_ptr orb_mp)
     throw (CORBAProblemEx, CouldntCreateThreadEx)
 {
@@ -110,20 +110,20 @@ Helper::resolveNamingService(CORBA::ORB_ptr orb_mp)
 	if(orb_mp == 0)    //We've been passed a fake ORB.
 	    {
 	    //Try to get at the Naming Service using the activator singleton first.
-	    if ((ContainerImpl::getContainer() != 0) && 
+	    if ((ContainerImpl::getContainer() != 0) &&
 		(ContainerImpl::getContainer()->getContainerCORBAProxy() != maci::Container::_nil()))
 		{
 		namingContext_m = ContainerImpl::getContainer()->getService<CosNaming::NamingContext>(acscommon::NAMING_SERVICE_NAME, 0, true);
 		}
 	    //DWF - Ideally there would be a SimpleClient singleton that we would try next (this would
-	    // be especially useful in Consumers), but instead we will just create our own ORB 
+	    // be especially useful in Consumers), but instead we will just create our own ORB
 	    // and hope this is running on the same host as the Naming Service =(
 	    else    //This is basically just a fail-safe mechanism.
 		{
 		ACS_SHORT_LOG((LM_INFO,
 			       "Helper::resolveNameService wrong constructor - attempting recovery for the '%s' channel!",
 			       channelName_mp));
-		
+
 		if (orbHelper_mp == 0)
 		    {
 		    //should never be the case but if it does happen...
@@ -134,8 +134,8 @@ Helper::resolveNamingService(CORBA::ORB_ptr orb_mp)
 		namingContext_m=MACIHelper::resolveNameService(orbHelper_mp->getORB());
 		}
 	    }
-	
-	//Passed a valid orb so we try to resolve the naming service using 
+
+	//Passed a valid orb so we try to resolve the naming service using
 	//the "normal" method
 	else
 	    {
@@ -151,7 +151,7 @@ Helper::resolveNamingService(CORBA::ORB_ptr orb_mp)
 	}
 
 	//one last check to make sure we have the correct reference to the name service
-	if(namingContext_m.ptr() == CosNaming::NamingContext::_nil())
+	if(CORBA::is_nil(namingContext_m))
 	    {
 	    ACS_SHORT_LOG((LM_ERROR,"Helper::resolveNameService unable to resolve name service for the '%s' channel!",
 			   channelName_mp));
@@ -160,16 +160,16 @@ Helper::resolveNamingService(CORBA::ORB_ptr orb_mp)
 	    }
 }
 //-----------------------------------------------------------------------------
-void 
+void
 Helper::resolveNotificationFactory()
     throw (CORBAProblemEx)
 {
     ACS_TRACE("Helper::resolveNotificationFactory");
-    
+
     CosNaming::Name name(1);
     name.length(1);
     name[0].id = getNotificationFactoryName();
-    
+
     //first a simple sanity check to ensure the naming service is up and running
     if(CORBA::is_nil(namingContext_m.in()) == true)
 	{
@@ -178,7 +178,7 @@ Helper::resolveNotificationFactory()
 	CORBAProblemExImpl err = CORBAProblemExImpl(__FILE__,__LINE__,"nc::Helper::resolveNotificationFactory");
 	throw err.getCORBAProblemEx();
 	}
-    
+
     try
 	{
 	//try to resolve the object with the naming service.  a few exceptions can be
@@ -221,7 +221,7 @@ Helper::resolveNotificationFactory()
 	}
 }
 //-----------------------------------------------------------------------------
-void 
+void
 Helper::createNotificationChannel()
     throw (CORBAProblemEx)
 {
@@ -235,12 +235,12 @@ Helper::createNotificationChannel()
 	CORBAProblemExImpl err = CORBAProblemExImpl(__FILE__,__LINE__,"nc::Helper::createNotificationChannel");
 	throw err.getCORBAProblemEx();
 	}
-    
+
     try
 	{
 	//here is where the channel is actually created
-	notifyChannel_m = notifyFactory_m->create_channel(getQoSProps(), 
-							  getAdminProps(), 
+	notifyChannel_m = notifyFactory_m->create_channel(getQoSProps(),
+							  getAdminProps(),
 							  channelID_m);
 	//ensure it's a valid reference
 	if(CORBA::is_nil(notifyChannel_m.in()) == true)
@@ -250,7 +250,7 @@ Helper::createNotificationChannel()
 	    CORBAProblemExImpl err = CORBAProblemExImpl(__FILE__,__LINE__,"nc::Helper::createNotificationChannel");
 	    throw err.getCORBAProblemEx();
 	    }
-    
+
 	   // Bind notification channel to Naming service
 	   CosNaming::Name name(1);
 	   name.length(1);
@@ -284,18 +284,18 @@ Helper::createNotificationChannel()
 	}
 }
 //-----------------------------------------------------------------------------
-const char* 
+const char*
 Helper::getChannelKind()
 {
-    //return a constant defined in acscommon.idl to be portable in the other 
+    //return a constant defined in acscommon.idl to be portable in the other
     //programming languages supported by ACS.
     return acscommon::NC_KIND;
 }
 //-----------------------------------------------------------------------------
-const char* 
+const char*
 Helper::getChannelDomain()
 {
-    //return a constant defined in acscommon.idl to be portable in the other 
+    //return a constant defined in acscommon.idl to be portable in the other
     //programming languages supported by ACS.
     return acscommon::ALMADOMAIN;
 }
@@ -307,14 +307,14 @@ Helper::getQoSProps()
     return nc::CDBProperties::getCDBQoSProps(channelName_mp);
 }
 //-----------------------------------------------------------------------------
-const CosNotification::AdminProperties 
+const CosNotification::AdminProperties
 Helper::getAdminProps()
 {
     ACS_TRACE("Helper::getAdminProps");
     return nc::CDBProperties::getCDBAdminProps(channelName_mp);
 }
 //-----------------------------------------------------------------------------
-bool 
+bool
 Helper::resolveNotifyChannel()
     throw (CORBAProblemEx)
 {
@@ -329,7 +329,7 @@ Helper::resolveNotifyChannel()
 
     try
 	{
-	if(namingContext_m.in()==CosNaming::NamingContext::_nil())
+	if(CORBA::is_nil(namingContext_m))
 	    {
 	    ACS_SHORT_LOG((LM_ERROR,"Helper::resolveNotifyChannel Naming Context bad for the '%s' channel!",
 			   channelName_mp));
@@ -349,10 +349,10 @@ Helper::resolveNotifyChannel()
 	    throw err.getCORBAProblemEx();
 	    return false;
 	    }
-	notifyChannel_m = CosNotifyChannelAdmin::EventChannel::_narrow(obj.in());	
+	notifyChannel_m = CosNotifyChannelAdmin::EventChannel::_narrow(obj.in());
 	}
     catch(CosNaming::NamingContext::NotFound ex)
-	{ 
+	{
 	ACS_SHORT_LOG((LM_TRACE,"Helper::resolveNotifyChannel - this is expected when a channel is being created."));
 	//This is actually expected when creating a new channel, but still return false.
 	return false;
@@ -365,8 +365,8 @@ Helper::resolveNotifyChannel()
 	throw err.getCORBAProblemEx();
 	return false;
 	}
-    
-    if (notifyChannel_m.in() == CosNotifyChannelAdmin::EventChannel::_nil())
+
+    if (CORBA::is_nil(notifyChannel_m))
 	{
 	ACS_SHORT_LOG((LM_ERROR,"Helper::resolveNotifyChannel Notify channel bad for the '%s' channel!",
 		       channelName_mp));
@@ -392,7 +392,7 @@ Helper::extractStructName(const char* idlStruct)
 	{
 	return static_cast<char *>(0);
 	}
-    
+
     //find the position just past the final "::" if it exists
     for (unsigned int i=1U; i<strlen(idlStruct); i++)
 	{
@@ -420,5 +420,5 @@ Helper::integrationLog(const std::string& log)
 }
 //-----------------------------------------------------------------------------
 
- }; 
+ };
 /*___oOo___*/
