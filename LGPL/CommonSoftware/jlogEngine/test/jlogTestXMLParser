@@ -20,5 +20,5 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-export ACS_TMP=../test
-acsStartJava junit.textui.TestRunner com.cosylab.logging.engine.ACS.ACSLogParserTest
+export ACS_TMP=../test/tmp
+acsutilTATTestRunner  acsStartJava junit.textui.TestRunner com.cosylab.logging.engine.ACS.ACSLogParserTest
