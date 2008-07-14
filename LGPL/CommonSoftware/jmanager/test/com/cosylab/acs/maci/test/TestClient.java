@@ -221,4 +221,11 @@ public class TestClient implements Client
 		return components;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.cosylab.acs.maci.Client#getRemoteLocation()
+	 */
+	public String getRemoteLocation() throws RemoteException {
+		return "local";
+	}
+
 }

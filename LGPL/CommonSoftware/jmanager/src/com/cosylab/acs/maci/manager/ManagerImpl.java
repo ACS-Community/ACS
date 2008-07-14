@@ -2511,10 +2511,36 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 					Container loggedContainer = loggedContainerInfo.getContainer();
 					if (loggedContainer != null)
 					{
-						 if (!loggedContainer.equals(container))
-						 	sendMessage(loggedContainer,
-						 				"Other container instance was logged in with the same name and taking over this instance. Resolve this problem to avoid potential problems.",
-						 				MessageType.MSG_ERROR);
+						// if same instance simply recover, if not...
+						if (!loggedContainer.equals(container))
+						{
+							// check if logged container is alive, if it is reject him
+							boolean alive = false;
+							try
+							{
+								alive = loggedContainer.ping();
+							}
+							catch (Throwable th) {
+								// noop
+							}
+							
+							if (alive)
+							{
+								AcsJNoPermissionEx npe = new AcsJNoPermissionEx();
+								
+								String address = "";
+								try
+								{
+									address = " " + loggedContainer.getRemoteLocation();
+								} catch (Throwable th) { /* noop */ }
+								npe.setReason("Rejecting container login, container with name '" + name + "'" + address + " already logged in.");
+								npe.setID(HandleHelper.toString(loggedContainerInfo.getHandle()));
+								npe.setProtectedResource(name);
+								throw npe;
+							}
+							else
+								logger.log(Level.FINER, "Container '" + name + "' is no longer functional, new container is taking over.");
+						 }
 					}
 
 					// !!! ACID 2

@@ -11,6 +11,7 @@ import java.io.Serializable;
 
 import org.omg.CORBA.Object;
 
+import alma.acs.util.IorParser;
 import alma.acs.util.UTCUtility;
 
 import com.cosylab.acs.maci.AuthenticationData;
@@ -293,8 +294,23 @@ public class ClientProxy extends CORBAReferenceSerializator implements Client, S
 	{
 		return client;
 	}
+	
 
     /**
+     * Get CORBA host/port string.
+	 * @see com.cosylab.acs.maci.Client#getRemoteLocation()
+	 */
+	public String getRemoteLocation() throws RemoteException {
+		try
+		{
+			String[] data = IorParser.parse(ior);
+			return data[0]+ ":" + data[1];
+		} catch (Throwable th) {
+			throw new RemoteException("Failed to extract remote location.", th);
+		}
+	}
+
+	/**
      * Save the state of the <tt>ClientProxy</tt> instance to a stream (that
      * is, serialize it).
      */

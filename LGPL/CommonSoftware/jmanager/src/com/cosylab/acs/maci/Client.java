@@ -88,5 +88,9 @@ public interface Client
 	 * Once the client is found to be malfunctioning, the Manager makes an implicit logout of the client.
 	 */
 	public boolean ping() throws RemoteException;
-
+	
+	/**
+	 * Get location string (host@port).
+	 */
+	public String getRemoteLocation() throws RemoteException;
 }
