@@ -987,6 +987,7 @@ public class ManagerImplTest extends TestCase
 			assertNotNull(infos);
 			assertEquals(infos.length,1);
 			assertEquals(infos[0].getHandle(),info.getHandle());
+			manager.logout(info.getHandle());
 
 			//test inaccessible
 			info = manager.login(new TestContainer(containerName));
@@ -1791,6 +1792,7 @@ public class ManagerImplTest extends TestCase
 		// activation of subcomponents is requested in construct() method 
 		testGetCyclicHierachicalComponent(false);
 	}
+
 	*/
 	
 	private void testGetCyclicHierachicalComponent(boolean constructCase)
@@ -4034,7 +4036,7 @@ public class ManagerImplTest extends TestCase
 
 		try {
 			// container login
-			/*ClientInfo containerInfo =*/ manager.login(container);
+			ClientInfo containerInfo = manager.login(container);
 			
 			TestAdministrator client = new TestAdministrator(administratorName);
 			ClientInfo info = manager.login(client);
@@ -4063,6 +4065,7 @@ public class ManagerImplTest extends TestCase
 			}
 
 			try { Thread.sleep(STARTUP_COBS_SLEEP_TIME_MS); } catch (InterruptedException ie) {}
+			manager.logout(containerInfo.getHandle());
 
 			// now do the trick, make container2 to login
 			// this will assime container is down
@@ -4134,7 +4137,7 @@ public class ManagerImplTest extends TestCase
 			{
 				fail();
 			}
-
+			manager.logout(dummyContainerInfo.getHandle());
 
 			// try to confuse with recovery mode
 			TestContainer container  = new TestContainer("Container", ClientType.CONTAINER, true);
