@@ -3,7 +3,7 @@
 
 /*******************************************************************
 * ALMA - Atacama Large Millimiter Array
-* (c) European Southern Observatory, 2003 
+* (c) European Southern Observatory, 2003
 *
 *This library is free software; you can redistribute it and/or
 *modify it under the terms of the GNU Lesser General Public
@@ -19,7 +19,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciCORBA.h,v 1.94 2005/01/27 23:57:55 dfugate Exp $"
+* "@(#) $Id: baciCORBA.h,v 1.95 2008/07/14 12:50:19 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -28,8 +28,8 @@
 * msekoran  2001/08/26 added InitCORBA, DoneCORBA for BACI modular tests
 */
 
-/** 
- * @file 
+/**
+ * @file
  * Header file BACI CORBA access.
  */
 
@@ -51,7 +51,7 @@
 
 class baci_EXPORT BACI_CORBA
 {
-  
+
 protected:
 
   /**
@@ -103,7 +103,7 @@ public:
    * @return reference to ORB
    */
   static CORBA::ORB_ptr getORB();
-  
+
   /**
    * Get POA Manager
    * @return reference to POA manager
@@ -135,8 +135,8 @@ public:
    */
     template<class T> static T* ActivateTransientCORBAObject(PortableServer::Servant servant)
 	{
-	    if ((instance_mp==0) || 
-		instance_mp->poaTransient_m.ptr() == PortableServer::POA::_nil())
+	    if ((instance_mp==0) ||
+	    		CORBA::is_nil(instance_mp->poaTransient_m.ptr()))
 		{
 		return T::_nil();
 		}
@@ -195,7 +195,7 @@ public:
   static bool DoneCORBA();
 
 private:
-  
+
   static BACI_CORBA * instance_mp;
 
   PortableServer::POAManager_var poaManager_m;
@@ -216,7 +216,7 @@ private:
 
 };
 
-#endif  /* baciCORBA_h */ 
+#endif  /* baciCORBA_h */
 
 
 
