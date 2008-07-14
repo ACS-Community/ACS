@@ -18,12 +18,12 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciCORBA.cpp,v 1.96 2005/08/23 15:35:26 vwang Exp $"
+* "@(#) $Id: baciCORBA.cpp,v 1.97 2008/07/14 12:01:37 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
 * gchiozzi 2001-12-20 Added getPOAManager() and getPOARoot() methods.
-* msekoran  2001/02/17  created 
+* msekoran  2001/02/17  created
 * msekoran  2001/05/21  fixed destroy bug
 * msekoran  2001/08/26  added InitCORBA, DoneCORBA for BACI modular tests
 */
@@ -32,7 +32,7 @@
 #include "logging.h"
 #include "baciCORBA.h"
 
-BACI_CORBA * BACI_CORBA::instance_mp = 0;  
+BACI_CORBA * BACI_CORBA::instance_mp = 0;
 
 BACI_CORBA::BACI_CORBA(CORBA::ORB_ptr orb_m,
 		       PortableServer::POAManager_ptr poaManager_m,
@@ -58,7 +58,7 @@ BACI_CORBA::getInstance()
   return instance_mp;
 }
 
-BACI_CORBA * 
+BACI_CORBA *
 BACI_CORBA::createInstance(CORBA::ORB_ptr orb_m,
 			   PortableServer::POAManager_ptr poaManager_m,
 			   PortableServer::POA_ptr poaRoot_m,
@@ -94,7 +94,7 @@ BACI_CORBA::getORB()
 	return CORBA::ORB::_nil();
 	}
 }
- 
+
 PortableServer::POAManager_ptr
 BACI_CORBA::getPOAManager()
 {
@@ -138,12 +138,12 @@ CORBA::Object_ptr
 BACI_CORBA::ActivateCORBAObject(PortableServer::Servant srvnt, const char * name)
 {
 
-  if (instance_mp==0 || 
-      instance_mp->poaPersistent_m.ptr() == PortableServer::POA::_nil()) 
+  if (instance_mp==0 ||
+      CORBA::is_nil(instance_mp->poaPersistent_m.ptr()) )
       {
       return CORBA::Object::_nil();
       }
-  
+
   try
     {
       PortableServer::ObjectId_var id =
@@ -157,7 +157,7 @@ BACI_CORBA::ActivateCORBAObject(PortableServer::Servant srvnt, const char * name
     ACS_LOG(LM_RUNTIME_CONTEXT, "BACI_CORBA::ActivateCORBAObject",
 	    (LM_ERROR, "Failed to activate CORBA object"));
     }
-  
+
   return CORBA::Object::_nil();
 }
 
@@ -190,7 +190,7 @@ BACI_CORBA::DestroyCORBAObject(CORBA::Object_ptr obj)
 bool
 BACI_CORBA::DestroyCORBAObject(PortableServer::Servant srvnt)
 {
-    if (instance_mp==0 || 
+    if (instance_mp==0 ||
 	instance_mp->poaPersistent_m.ptr() == PortableServer::POA::_nil())
 	{
 	return false;
@@ -220,7 +220,7 @@ BACI_CORBA::DestroyTransientCORBAObject(CORBA::Object_ptr obj)
 	{
 	return false;
 	}
-  
+
     try
 	{
 	PortableServer::ObjectId_var id =
@@ -232,24 +232,24 @@ BACI_CORBA::DestroyTransientCORBAObject(CORBA::Object_ptr obj)
 	{
 	ACS_LOG(LM_RUNTIME_CONTEXT, "BACI_CORBA::DestroyTransientCORBAObject",
 		(LM_ERROR, "Failed to deactivate CORBA object"));
-	}   
+	}
   return false;
 }
 
 bool
 BACI_CORBA::DestroyTransientCORBAObject(PortableServer::Servant srvnt)
 {
-    if (instance_mp==0 || 
+    if (instance_mp==0 ||
 	instance_mp->poaTransient_m.ptr() == PortableServer::POA::_nil())
 	{
 	return false;
 	}
-    
+
     try
 	{
 	PortableServer::ObjectId_var id =
 	    instance_mp->poaTransient_m->servant_to_id(srvnt);
-	
+
 	instance_mp->poaTransient_m->deactivate_object(id.in());
 	return true;
 	}
@@ -258,41 +258,41 @@ BACI_CORBA::DestroyTransientCORBAObject(PortableServer::Servant srvnt)
 	ACS_LOG(LM_RUNTIME_CONTEXT, "BACI_CORBA::DestroyTransientCORBAObject (servant)",
 		(LM_ERROR, "Failed to deactivate CORBA object"));
 	}
-    
+
     return false;
 }
 
 bool BACI_CORBA::InitCORBA(int argc, char* argv[])
-{  
+{
   try
       {
       // Initialize the ORB.
       CORBA::ORB_var orb_m = CORBA::ORB_init(argc, argv, "TAO");
-      
+
       if(orb_m.ptr() == CORBA::ORB::_nil())
 	{
 	return false;
 	}
-      
+
       //
       // Initialize POAs.
       //
-      
+
       // Get the Root POA.
       CORBA::Object_var objRootPOA =
 	  orb_m->resolve_initial_references("RootPOA");
-      
+
       PortableServer::POA_var poaRoot_m = PortableServer::POA::_narrow(objRootPOA.in());
-     
+
       if(poaRoot_m.ptr() == PortableServer::POA::_nil())
 	  {
 	  return false;
 	  }
-      
+
       // Get the manager of the root POA to apply to the child POAs.
       PortableServer::POAManager_var poaManager =
 	  poaRoot_m->the_POAManager();
-            
+
       //
       // Prepare policies our POAs will be using.
       //
@@ -313,20 +313,20 @@ bool BACI_CORBA::InitCORBA(int argc, char* argv[])
 								      policies);
 
       policies.length(2);
-      
+
       policies[0] = PortableServer::LifespanPolicy::_duplicate(persistentPolicy.in());
       policies[1] = PortableServer::IdAssignmentPolicy::_duplicate(userIdPolicy.in());
-      
-      PortableServer::POA_var poaPersistent_m = poaRoot_m->create_POA("PersistentPOA", 
-								      poaManager.in(), 
+
+      PortableServer::POA_var poaPersistent_m = poaRoot_m->create_POA("PersistentPOA",
+								      poaManager.in(),
 								      policies);
-      
+
       // We're done using the policies.
       userIdPolicy->destroy();
       persistentPolicy->destroy();
 
       // POA Manager can start processing incoming requests.
-      poaManager->activate(); 
+      poaManager->activate();
 
       // create BACI_CORBA
       BACI_CORBA::createInstance(orb_m.ptr(), poaManager.ptr(),
@@ -336,9 +336,9 @@ bool BACI_CORBA::InitCORBA(int argc, char* argv[])
   catch(...)
       {
       ACS_LOG(0, "baci::BACI_CORBA::InitCORBA", (LM_ERROR, "Unexpected CORBA exception"));
-      return false;  
+      return false;
       }
-  
+
   ACS_DEBUG("baci::BACI_CORBA::InitCORBA", "CORBA initialized successfully");
   return true;
 }
@@ -350,7 +350,7 @@ bool BACI_CORBA::DoneCORBA()
       {
       return false;
       }
-  
+
   try
       {
       // copy of ptrs
@@ -362,19 +362,19 @@ bool BACI_CORBA::DoneCORBA()
 	{
 	  poaManager->deactivate(1, 1);
 	}
-  
+
       ACS_DEBUG("baci::BACI_CORBA::InitCORBA", "POA deactivated (with ehterealization).");
 */
       if(poaRoot.ptr()!=PortableServer::POA::_nil())
 	  {
 	  poaRoot->destroy(1, 1);
 	  }
-      
+
       if(orb.ptr()!=CORBA::ORB::_nil())
 	  {
 	  orb->destroy();
 	  }
-      
+
       // delete instance
       BACI_CORBA::destroyInstance();
       }
@@ -383,7 +383,7 @@ bool BACI_CORBA::DoneCORBA()
       ACS_LOG(0, "baci:BACI_CORBA::DoneCORBA", (LM_ERROR, "Unexpected exception occured"));
       return false;
     }
-  
+
   return true;
 }
 
