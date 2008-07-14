@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.8 2005/07/21 11:42:42 gchiozzi Exp $"
+# "@(#) $Id: Makefile,v 1.9 2008/07/14 16:15:22 hsommer Exp $"
 #
 # Makefile of ........
 #
@@ -120,11 +120,12 @@ CDB_SCHEMAS =
 IDL_FILES = 
 IDL_TAO_FLAGS =
 USER_IDL =
+
 #
 # Jarfiles and their directories
 #
-JARFILES= acsQoS
-acsQoS_DIRS= alma/acs/acsQoS 
+JARFILES= 
+jjj_DIRS=  
 jjj_EXTRAS= 
 #
 # java sources in Jarfile on/off
