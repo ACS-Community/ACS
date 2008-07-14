@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciCallbackDispatcher.cpp,v 1.103 2006/06/14 10:00:12 bjeram Exp $"
+* "@(#) $Id: baciCallbackDispatcher.cpp,v 1.104 2008/07/14 12:33:47 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -34,7 +34,7 @@
           {                                                                            \
 	    ACS::CB##ty##_var ccb = ACS::CB##ty::_unchecked_narrow(cb_p);             \
                                                                          \
-	    if (ccb.ptr() == ACS::CB##ty::_nil())                                         \
+	    if (CORBA::is_nil(ccb.ptr()))                                         \
 		{ callback_p->failed(); return false; }                                  \
 	    ccb->working(value.ty##Value(), completion, descOut);       \
                                                                          \
@@ -72,7 +72,7 @@ bool baci::BACIComponent::dispatchCallback(int callbackID,
 		  }
 		  else
 		  {
-		  baciErrTypeProperty::ArchiveMonitorProblemCompletion c(completion, 
+		  baciErrTypeProperty::ArchiveMonitorProblemCompletion c(completion,
 									 __FILE__,
 									 __LINE__,
 									 "baci::BACIComponent::dispatchCallback");
@@ -101,7 +101,7 @@ bool baci::BACIComponent::dispatchCallback(int callbackID,
 	  {
 	    CBvoid_var ccb = CBvoid::_unchecked_narrow(cb_p);
 
-	    if (ccb.ptr() == CBvoid::_nil())
+	    if (CORBA::is_nil(ccb.ptr()))
 		{ callback_p->failed(); return false; }
 	    ccb->working(completion, descOut);
 
@@ -151,7 +151,7 @@ WORKING_CALLBACK(stringSeq)
           {                                                                            \
 	    CB##ty##_var ccb = CB##ty::_unchecked_narrow(cb_p);             \
                                                                          \
-	    if (ccb.ptr() == CB##ty::_nil())                                         \
+	    if (CORBA::is_nil(ccb.ptr()))                                         \
 		{ callback_p->failed(); return false; }                                  \
 	    ccb->done(value.ty##Value(), completion, descOut);          \
                                                                          \
@@ -196,7 +196,7 @@ bool baci::BACIComponent::finishCallback(int callbackID,
 	  {
 	    CBvoid_var ccb = CBvoid::_unchecked_narrow(cb_p);
 
-	    if (ccb.ptr() == CBvoid::_nil())
+	    if (CORBA::is_nil(ccb.ptr()))
 		{ callback_p->failed(); return false; }
 	    ccb->done(completion, descOut);
 

@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciCORBA.cpp,v 1.97 2008/07/14 12:01:37 bjeram Exp $"
+* "@(#) $Id: baciCORBA.cpp,v 1.98 2008/07/14 12:33:47 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -166,7 +166,7 @@ BACI_CORBA::DestroyCORBAObject(CORBA::Object_ptr obj)
 {
 
   if (instance_mp==0 ||
-      instance_mp->poaPersistent_m.ptr() == PortableServer::POA::_nil())
+		  CORBA::is_nil(instance_mp->poaPersistent_m.ptr()))
       {
       return false;
       }
@@ -191,7 +191,7 @@ bool
 BACI_CORBA::DestroyCORBAObject(PortableServer::Servant srvnt)
 {
     if (instance_mp==0 ||
-	instance_mp->poaPersistent_m.ptr() == PortableServer::POA::_nil())
+    		CORBA::is_nil(instance_mp->poaPersistent_m.ptr()))
 	{
 	return false;
 	}
@@ -216,7 +216,7 @@ bool
 BACI_CORBA::DestroyTransientCORBAObject(CORBA::Object_ptr obj)
 {
     if (instance_mp==0 ||
-	instance_mp->poaTransient_m.ptr() == PortableServer::POA::_nil())
+    		CORBA::is_nil(instance_mp->poaTransient_m.ptr()))
 	{
 	return false;
 	}
@@ -240,7 +240,7 @@ bool
 BACI_CORBA::DestroyTransientCORBAObject(PortableServer::Servant srvnt)
 {
     if (instance_mp==0 ||
-	instance_mp->poaTransient_m.ptr() == PortableServer::POA::_nil())
+    		CORBA::is_nil(instance_mp->poaTransient_m.ptr()))
 	{
 	return false;
 	}
@@ -269,7 +269,7 @@ bool BACI_CORBA::InitCORBA(int argc, char* argv[])
       // Initialize the ORB.
       CORBA::ORB_var orb_m = CORBA::ORB_init(argc, argv, "TAO");
 
-      if(orb_m.ptr() == CORBA::ORB::_nil())
+      if(CORBA::is_nil(orb_m.ptr()))
 	{
 	return false;
 	}
@@ -284,7 +284,7 @@ bool BACI_CORBA::InitCORBA(int argc, char* argv[])
 
       PortableServer::POA_var poaRoot_m = PortableServer::POA::_narrow(objRootPOA.in());
 
-      if(poaRoot_m.ptr() == PortableServer::POA::_nil())
+      if(CORBA::is_nil(poaRoot_m.ptr()))
 	  {
 	  return false;
 	  }
