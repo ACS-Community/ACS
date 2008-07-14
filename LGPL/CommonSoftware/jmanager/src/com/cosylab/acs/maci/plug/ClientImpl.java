@@ -136,6 +136,13 @@ public class ClientImpl implements Client
 		this.name = name;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.cosylab.acs.maci.Client#getRemoteLocation()
+	 */
+	public String getRemoteLocation() throws RemoteException {
+		return "local";
+	}
+
 	/**
 	 * Returns a single-line rendition of this instance into text.
 	 * 
