@@ -19,7 +19,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: loggingLoggingProxy.cpp,v 1.58 2008/06/19 13:51:56 bjeram Exp $"
+* "@(#) $Id: loggingLoggingProxy.cpp,v 1.59 2008/07/14 06:37:45 cparedes Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -58,7 +58,7 @@
 #define LOG_NAME "Log"
 #define DEFAULT_LOG_FILE_NAME "acs_local_log"
 
-ACE_RCSID(logging, logging, "$Id: loggingLoggingProxy.cpp,v 1.58 2008/06/19 13:51:56 bjeram Exp $");
+ACE_RCSID(logging, logging, "$Id: loggingLoggingProxy.cpp,v 1.59 2008/07/14 06:37:45 cparedes Exp $");
 unsigned int LoggingProxy::setClrCount_m = 0;
 bool LoggingProxy::initialized = false;
 int LoggingProxy::instances = 0;
@@ -569,6 +569,13 @@ LoggingProxy::log(ACE_Log_Record &log_record)
 	}
     
     xml += ">";
+
+    if (ACE_OS::strlen(log_record.msg_data()))
+	{
+	xml += "<![CDATA[";
+	xml+=log_record.msg_data();
+	xml+="]]>";
+	}
     
     for (hash_iter = (*tss)->getData();
 	 (hash_iter.next (entry) != 0);
@@ -589,12 +596,6 @@ LoggingProxy::log(ACE_Log_Record &log_record)
 	    }
 	}
     
-    if (ACE_OS::strlen(log_record.msg_data()))
-	{
-	xml += "<![CDATA[";
-	xml+=log_record.msg_data();
-	xml+="]]>";
-	}
     
     // end tag
     ACE_OS::sprintf(line, "</%s>", entryType); 
