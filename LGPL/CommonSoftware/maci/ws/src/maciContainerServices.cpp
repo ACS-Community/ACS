@@ -19,11 +19,11 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
  *
- * "@(#) $Id: maciContainerServices.cpp,v 1.30 2008/04/14 09:04:43 bjeram Exp $"
+ * "@(#) $Id: maciContainerServices.cpp,v 1.31 2008/07/14 13:41:20 bjeram Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
- * rcirami   27/11/03  created 
+ * rcirami   27/11/03  created
  */
 
 #include <maciContainerServices.h>
@@ -38,7 +38,7 @@ using namespace maciErrType;
 // ContainerServices Constructor
 //
 MACIContainerServices::MACIContainerServices(
-    const maci::Handle componentHandle, 
+    const maci::Handle componentHandle,
     ACE_CString& name,
     PortableServer::POA_ptr poa) :
   ContainerServices(name,poa), m_manager(0), m_componentHandle(componentHandle)
@@ -69,18 +69,18 @@ MACIContainerServices::findComponents(const char *nameWildcard, const char *type
     {
       nameWildcard = "*";
     }
-  
+
   if(typeWildcard == NULL)
     {
       typeWildcard = "*";
     }
-  
+
   maci::HandleSeq seq;
   maci::ComponentInfoSeq_var devs = m_manager->get_component_info(m_componentHandle,seq,nameWildcard,typeWildcard,false);
 
-  CORBA::ULong len = devs->length (); 
+  CORBA::ULong len = devs->length ();
 
-  for (CORBA::ULong i=0; i < len; i++) 
+  for (CORBA::ULong i=0; i < len; i++)
     {
       names.push_back(devs[i].name.in());
     }
@@ -90,15 +90,15 @@ MACIContainerServices::findComponents(const char *nameWildcard, const char *type
 
 CORBA::Object*  MACIContainerServices::getCORBAComponent(const char* name)
     throw (maciErrType::CannotGetComponentExImpl)
-{   
+{
     // code is reused, so I tried not make another version of it
     const char * domain = 0;
-    
+
     ACE_TRACE("MACIContainerServices::getCORBAComponent");
-    
+
     if(!name)          // Check if <name> is null
 	{
-	ACSErrTypeCommon::NullPointerExImpl nullEx(__FILE__, __LINE__, 
+	ACSErrTypeCommon::NullPointerExImpl nullEx(__FILE__, __LINE__,
 						   "MACIContainerServices::getCORBAComponent");
 	nullEx.setVariable("(parameter) name");
 	maciErrType::CannotGetComponentExImpl lex(__FILE__, __LINE__,
@@ -106,7 +106,7 @@ CORBA::Object*  MACIContainerServices::getCORBAComponent(const char* name)
 	lex.setCURL("NULL");
 	throw lex;
     }//if
-    
+
     /**
      * First creates the CURL and query the Manager for the component
      */
@@ -121,57 +121,57 @@ CORBA::Object*  MACIContainerServices::getCORBAComponent(const char* name)
     curl += name;
 
     ACS_SHORT_LOG((LM_DEBUG, "Getting component: '%s'.",  curl.c_str()));
-    
+
     try
 	{
-	CORBA::Object_var obj = 
+	CORBA::Object_var obj =
 	    m_manager->get_component(m_componentHandle, curl.c_str(), true);
-	
+
 	m_usedComponents.bind(name, m_componentHandle);
 	return CORBA::Object::_narrow(obj.in());
 	}
-    catch (maciErrType::NoPermissionEx &ex) 
+    catch (maciErrType::NoPermissionEx &ex)
 	{
 	CannotGetComponentExImpl lex(ex, __FILE__, __LINE__,
 				     "MACIContainerServices::getCORBAComponent");
 	lex.setCURL(curl);
 	throw lex;
 	}
-    catch (maciErrType::ComponentNotAlreadyActivatedEx &ex) 
+    catch (maciErrType::ComponentNotAlreadyActivatedEx &ex)
 	{
 	CannotGetComponentExImpl lex(ex, __FILE__, __LINE__,
 				     "MACIContainerServices::getCORBAComponent");
 	lex.setCURL(curl);
 	throw lex;
 	}
-    catch (maciErrType::CannotGetComponentEx &ex) 
+    catch (maciErrType::CannotGetComponentEx &ex)
 	{
 	CannotGetComponentExImpl lex(ex, __FILE__, __LINE__,
 						  "MACIContainerServices::getCORBAComponent");
 	lex.setCURL(curl);
 	throw lex;
 	}
-    catch( maciErrType::ComponentConfigurationNotFoundEx &ex) 
+    catch( maciErrType::ComponentConfigurationNotFoundEx &ex)
 	{
 	CannotGetComponentExImpl lex(ex, __FILE__, __LINE__,
 						  "MACIContainerServices::getCORBAComponent");
 	lex.setCURL(curl);
 	throw lex;
-	}  
-    catch( CORBA::SystemException &ex ) 
+	}
+    catch( CORBA::SystemException &ex )
 	{
 	ACSErrTypeCommon::CORBAProblemExImpl corbaProblemEx(__FILE__, __LINE__,
 							    "MACIContainerServices::getCORBAComponent");
 	corbaProblemEx.setMinor(ex.minor());
 	corbaProblemEx.setCompletionStatus(ex.completed());
 	corbaProblemEx.setInfo(ex._info().c_str());
-	
+
 	CannotGetComponentExImpl lex(corbaProblemEx, __FILE__, __LINE__,
 				     "MACIContainerServices::getCORBAComponent");
 	lex.setCURL(curl);
 	throw lex;
 	}
-    catch (...) 
+    catch (...)
 	{
 	ACSErrTypeCommon::UnexpectedExceptionExImpl uex(__FILE__, __LINE__,
 							"MACIContainerServices::getCORBAComponent");
@@ -184,12 +184,12 @@ CORBA::Object*  MACIContainerServices::getCORBAComponent(const char* name)
 
 CORBA::Object*  MACIContainerServices::getCORBAComponentNonSticky(const char* name)
     throw (maciErrType::CannotGetComponentExImpl)
-{   
+{
     ACE_TRACE("MACIContainerServices::getCORBAComponentNonSticky");
-    
+
     if(!name)          // Check if <name> is null
 	{
-	ACSErrTypeCommon::NullPointerExImpl nullEx(__FILE__, __LINE__, 
+	ACSErrTypeCommon::NullPointerExImpl nullEx(__FILE__, __LINE__,
 						   "MACIContainerServices::getCORBAComponentNonSticky");
 	nullEx.setVariable("(parameter) name");
 	maciErrType::CannotGetComponentExImpl lex(__FILE__, __LINE__,
@@ -197,52 +197,52 @@ CORBA::Object*  MACIContainerServices::getCORBAComponentNonSticky(const char* na
 	lex.setCURL("NULL");
 	throw lex;
     }//if
-    
+
     ACS_SHORT_LOG((LM_DEBUG, "Getting component non sticky: '%s'.",  name));
-    
+
     try
 	{
-	CORBA::Object_var obj = 
+	CORBA::Object_var obj =
 	    m_manager->get_component_non_sticky(m_componentHandle, name);
-    // @todo not really sure if we have to add non sticky component 
+    // @todo not really sure if we have to add non sticky component
 //	m_usedComponents.bind(name, m_componentHandle);
 	return CORBA::Object::_narrow(obj.in());
 	}
-    catch (maciErrType::CannotGetComponentEx &ex) 
+    catch (maciErrType::CannotGetComponentEx &ex)
 	{
 	CannotGetComponentExImpl lex(ex, __FILE__, __LINE__,
 						  "MACIContainerServices::getCORBAComponentNonSticky");
 	lex.setCURL(name);
 	throw lex;
 	}
-    catch (maciErrType::ComponentNotAlreadyActivatedEx &ex) 
+    catch (maciErrType::ComponentNotAlreadyActivatedEx &ex)
 	{
 	CannotGetComponentExImpl lex(ex, __FILE__, __LINE__,
 				     "MACIContainerServices::getCORBAComponentNonSticky");
 	lex.setCURL(name);
 	throw lex;
 	}
-    catch( maciErrType::NoPermissionEx &ex) 
+    catch( maciErrType::NoPermissionEx &ex)
 	{
 	CannotGetComponentExImpl lex(ex, __FILE__, __LINE__,
 				     "MACIContainerServices::getCORBAComponentNonSticky");
 	lex.setCURL(name);
 	throw lex;
-	}  
-    catch( CORBA::SystemException &ex ) 
+	}
+    catch( CORBA::SystemException &ex )
 	{
 	ACSErrTypeCommon::CORBAProblemExImpl corbaProblemEx(__FILE__, __LINE__,
 							    "MACIContainerServices::getCORBAComponentNonSticky");
 	corbaProblemEx.setMinor(ex.minor());
 	corbaProblemEx.setCompletionStatus(ex.completed());
 	corbaProblemEx.setInfo(ex._info().c_str());
-	
+
 	CannotGetComponentExImpl lex(corbaProblemEx, __FILE__, __LINE__,
 				     "MACIContainerServices::getCORBAComponentNonSticky");
 	lex.setCURL(name);
 	throw lex;
 	}
-    catch (...) 
+    catch (...)
 	{
 	ACSErrTypeCommon::UnexpectedExceptionExImpl uex(__FILE__, __LINE__,
 							"MACIContainerServices::getCORBAComponentNonSticky");
@@ -253,64 +253,64 @@ CORBA::Object*  MACIContainerServices::getCORBAComponentNonSticky(const char* na
 	}//try-catch
 }//getCORBAComponentNonSticky
 
-CORBA::Object* 
+CORBA::Object*
 MACIContainerServices::getCORBADynamicComponent(maci::ComponentSpec compSpec, bool markAsDefault)
     throw(maciErrType::NoPermissionExImpl,
-	  maciErrType::IncompleteComponentSpecExImpl, 
-	  maciErrType::InvalidComponentSpecExImpl, 
-	  maciErrType::ComponentSpecIncompatibleWithActiveComponentExImpl, 
+	  maciErrType::IncompleteComponentSpecExImpl,
+	  maciErrType::InvalidComponentSpecExImpl,
+	  maciErrType::ComponentSpecIncompatibleWithActiveComponentExImpl,
 	  maciErrType::CannotGetComponentExImpl)
 {
    //The IDL ComponentInfo structure returned by the get_dynamic_component method
    //contains tons of information about the newly created component and the most important
    //field is "reference" (i.e., the unnarrowed dynamic component).
-   
+
    // Activate the dynamic component
    ComponentInfo_var cInfo;
    ACS_TRACE("MACIContainerServices::getCORBADynamicComponent");
-   try 
+   try
        {
        cInfo  = m_manager->get_dynamic_component(m_componentHandle,//Must pass the client's handle
 						 compSpec, //Pass the component specifications
-						 markAsDefault); 
+						 markAsDefault);
        CORBA::Object_var obj = cInfo->reference;
-       if (CORBA::is_nil(obj.in())) 
+       if (CORBA::is_nil(obj.in()))
 	   {
-	   ACSErrTypeCORBA::CORBAReferenceNilExImpl ex(__FILE__, __LINE__, 
+	   ACSErrTypeCORBA::CORBAReferenceNilExImpl ex(__FILE__, __LINE__,
 						       "MACIContainerServices::getCORBADynamicComponent");
 	   ex.setVariable("cInfo->reference");
 	   throw ex; // it will be caught down
 	   }//if
        m_usedComponents.bind(cInfo->name.in(), m_componentHandle);
        return CORBA::Object::_narrow(obj.in());
-       } 
-   catch (maciErrType::NoPermissionEx &ex) 
+       }
+   catch (maciErrType::NoPermissionEx &ex)
        {
        NoPermissionExImpl lex(ex, __FILE__, __LINE__,
 			      "MACIContainerServices::getCORBADynamicComponent");
        throw lex;
        }
-   catch (maciErrType::IncompleteComponentSpecEx &ex) 
+   catch (maciErrType::IncompleteComponentSpecEx &ex)
        {
        IncompleteComponentSpecExImpl lex(ex, __FILE__, __LINE__,
 					 "MACIContainerServices::getCORBADynamicComponent");
        lex.setCURL(compSpec.component_name.in());
        throw lex;
        }
-   catch (maciErrType::InvalidComponentSpecEx &ex) 
+   catch (maciErrType::InvalidComponentSpecEx &ex)
        {
        InvalidComponentSpecExImpl lex(ex, __FILE__, __LINE__,
 				      "MACIContainerServices::getCORBADynamicComponent");
        throw lex;
        }
-   catch (maciErrType::ComponentSpecIncompatibleWithActiveComponentEx &ex) 
+   catch (maciErrType::ComponentSpecIncompatibleWithActiveComponentEx &ex)
        {
        ComponentSpecIncompatibleWithActiveComponentExImpl lex(ex, __FILE__, __LINE__,
 							       "MACIContainerServices::getCORBADynamicComponent");
        lex.setCURL(compSpec.component_name.in());
        throw lex;
        }
-   catch (maciErrType::CannotGetComponentEx &ex) 
+   catch (maciErrType::CannotGetComponentEx &ex)
        {
        CannotGetComponentExImpl lex(ex, __FILE__, __LINE__,
 				    "MACIContainerServices::getCORBADynamicComponent");
@@ -324,20 +324,20 @@ MACIContainerServices::getCORBADynamicComponent(maci::ComponentSpec compSpec, bo
        lex.setCURL(compSpec.component_name.in());
        throw lex;
        }
-   catch( CORBA::SystemException &ex ) 
+   catch( CORBA::SystemException &ex )
        {
        ACSErrTypeCommon::CORBAProblemExImpl corbaProblemEx(__FILE__, __LINE__,
 							    "MACIContainerServices::getCORBADynamicComponent");
        corbaProblemEx.setMinor(ex.minor());
        corbaProblemEx.setCompletionStatus(ex.completed());
        corbaProblemEx.setInfo(ex._info().c_str());
-	
+
        CannotGetComponentExImpl lex(corbaProblemEx, __FILE__, __LINE__,
 				     "MACIContainerServices::getCORBADynamicComponent");
        lex.setCURL(compSpec.component_name.in());
        throw lex;
        }
-   catch (...) 
+   catch (...)
        {
        ACSErrTypeCommon::UnexpectedExceptionExImpl uex(__FILE__, __LINE__,
 							"MACIContainerServices::getCORBADynamicComponent");
@@ -348,67 +348,67 @@ MACIContainerServices::getCORBADynamicComponent(maci::ComponentSpec compSpec, bo
        }//try-catch
 }//getCORBADynamicComponent
 
-CORBA::Object* 
+CORBA::Object*
 MACIContainerServices::getCORBACollocatedComponent(maci::ComponentSpec compSpec, bool markAsDefault, const char* targetComponent)
     throw(maciErrType::NoPermissionExImpl,
-	  maciErrType::IncompleteComponentSpecExImpl, 
-	  maciErrType::InvalidComponentSpecExImpl, 
-	  maciErrType::ComponentSpecIncompatibleWithActiveComponentExImpl, 
+	  maciErrType::IncompleteComponentSpecExImpl,
+	  maciErrType::InvalidComponentSpecExImpl,
+	  maciErrType::ComponentSpecIncompatibleWithActiveComponentExImpl,
 	  maciErrType::CannotGetComponentExImpl)
 {
    //The IDL ComponentInfo structure returned by the get_collocated_component method
    //contains tons of information about the newly created component and the most important
    //field is "reference" (i.e., the unnarrowed collocated component).
-   
+
    // Activate the dynamic component
    ComponentInfo_var cInfo;
    ACS_TRACE("MACIContainerServices::getCORBACollocatedComponent");
 
-   try 
+   try
        {
        cInfo = m_manager->get_collocated_component(m_componentHandle, //Must pass the client's handle
 						   compSpec,//Pass the component specifications
 						   markAsDefault,
-						   targetComponent); 
+						   targetComponent);
        CORBA::Object_var obj = cInfo->reference;
-       if (CORBA::is_nil(obj.in())) 
+       if (CORBA::is_nil(obj.in()))
 	   {
 	   ACSErrTypeCORBA::CORBAReferenceNilExImpl ex(
-	       __FILE__, __LINE__, 
+	       __FILE__, __LINE__,
 	       "MACIContainerServices::getCORBACollocatedComponent");
 	   ex.setVariable("cInfo->reference");
 	   throw ex;
 	   }//if
        m_usedComponents.bind(cInfo->name.in(), m_componentHandle);
        return CORBA::Object::_narrow(obj.in());
-       } 
+       }
    catch (maciErrType::NoPermissionEx &_ex)
        {
        maciErrType::NoPermissionExImpl ex(__FILE__, __LINE__,
 		 "MACIContainerServices::getCORBACollocatedComponent");
        throw ex;
        }
-   catch (maciErrType::IncompleteComponentSpecEx &ex) 
+   catch (maciErrType::IncompleteComponentSpecEx &ex)
        {
        IncompleteComponentSpecExImpl lex(ex, __FILE__, __LINE__,
 					 "MACIContainerServices::getCORBACollocatedComponent");
        lex.setCURL(compSpec.component_name.in());
        throw lex;
        }
-   catch (maciErrType::InvalidComponentSpecEx &ex) 
+   catch (maciErrType::InvalidComponentSpecEx &ex)
        {
        InvalidComponentSpecExImpl lex(ex, __FILE__, __LINE__,
 				      "MACIContainerServices::getCORBACollocatedComponent");
        throw lex;
        }
-   catch (maciErrType::ComponentSpecIncompatibleWithActiveComponentEx &ex) 
+   catch (maciErrType::ComponentSpecIncompatibleWithActiveComponentEx &ex)
        {
        ComponentSpecIncompatibleWithActiveComponentExImpl lex(ex, __FILE__, __LINE__,
 							      "MACIContainerServices::getCORBACollocatedComponent");
        lex.setCURL(compSpec.component_name.in());
        throw lex;
        }
-   catch (maciErrType::CannotGetComponentEx &ex) 
+   catch (maciErrType::CannotGetComponentEx &ex)
        {
        CannotGetComponentExImpl lex(ex, __FILE__, __LINE__,
 				    "MACIContainerServices::getCORBACollocatedComponent");
@@ -422,20 +422,20 @@ MACIContainerServices::getCORBACollocatedComponent(maci::ComponentSpec compSpec,
        lex.setCURL(compSpec.component_name.in());
        throw lex;
        }
-   catch( CORBA::SystemException &ex ) 
+   catch( CORBA::SystemException &ex )
        {
        ACSErrTypeCommon::CORBAProblemExImpl corbaProblemEx(__FILE__, __LINE__,
 							    "MACIContainerServices::getCORBACollocatedComponent");
        corbaProblemEx.setMinor(ex.minor());
        corbaProblemEx.setCompletionStatus(ex.completed());
        corbaProblemEx.setInfo(ex._info().c_str());
-	
+
        CannotGetComponentExImpl lex(corbaProblemEx, __FILE__, __LINE__,
 				     "MACIContainerServices::getCORBACollocatedComponent");
        lex.setCURL(compSpec.component_name.in());
        throw lex;
        }
-   catch (...) 
+   catch (...)
        {
        ACSErrTypeCommon::UnexpectedExceptionExImpl uex(__FILE__, __LINE__,
 						       "MACIContainerServices::getCORBACollocatedComponent");
@@ -446,10 +446,10 @@ MACIContainerServices::getCORBACollocatedComponent(maci::ComponentSpec compSpec,
        }//try-catch
 }//getCORBACollocatedComponent
 
-CORBA::Object* 
+CORBA::Object*
 MACIContainerServices::getCORBADefaultComponent(const char* idlType)
     throw (maciErrType::NoPermissionExImpl,
-	   maciErrType::NoDefaultComponentExImpl, 
+	   maciErrType::NoDefaultComponentExImpl,
 	   maciErrType::CannotGetComponentExImpl)
 {
    ComponentInfo_var cInfo;
@@ -458,10 +458,10 @@ MACIContainerServices::getCORBADefaultComponent(const char* idlType)
     {
     cInfo  = m_manager->get_default_component(m_componentHandle, idlType);
     CORBA::Object_var obj = cInfo->reference;
-    if (CORBA::is_nil(obj.in())) 
+    if (CORBA::is_nil(obj.in()))
 	{
 	ACSErrTypeCORBA::CORBAReferenceNilExImpl ex(
-	    __FILE__, __LINE__, 
+	    __FILE__, __LINE__,
 	    "MACIContainerServices::getCORBADefaultComponent");
 	ex.setVariable("cInfo->reference");
 	throw ex;
@@ -469,17 +469,17 @@ MACIContainerServices::getCORBADefaultComponent(const char* idlType)
     m_usedComponents.bind(cInfo->name.in(), m_componentHandle);
     return CORBA::Object::_narrow(obj.in());
     }
-   catch (maciErrType::NoPermissionEx &ex) 
+   catch (maciErrType::NoPermissionEx &ex)
        {
        throw NoPermissionExImpl (ex, __FILE__, __LINE__,
 				 "MACIContainerServices::getCORBADefaultComponent");
        }
-   catch (maciErrType::NoDefaultComponentEx &ex) 
+   catch (maciErrType::NoDefaultComponentEx &ex)
        {
        throw NoDefaultComponentExImpl (ex, __FILE__, __LINE__,
 				       "MACIContainerServices::getCORBADefaultComponent");
        }
-   catch (maciErrType::CannotGetComponentEx &ex) 
+   catch (maciErrType::CannotGetComponentEx &ex)
        {
        CannotGetComponentExImpl lex(ex, __FILE__, __LINE__,
 				    "MACIContainerServices::getCORBADefaultComponent");
@@ -493,20 +493,20 @@ MACIContainerServices::getCORBADefaultComponent(const char* idlType)
        lex.setCURL("IDL type:"+ACE_CString(idlType));
        throw lex;
        }
-   catch( CORBA::SystemException &ex ) 
+   catch( CORBA::SystemException &ex )
        {
        ACSErrTypeCommon::CORBAProblemExImpl corbaProblemEx(__FILE__, __LINE__,
 							    "MACIContainerServices::getCORBADefaultComponent");
        corbaProblemEx.setMinor(ex.minor());
        corbaProblemEx.setCompletionStatus(ex.completed());
        corbaProblemEx.setInfo(ex._info().c_str());
-	
+
        CannotGetComponentExImpl lex(corbaProblemEx, __FILE__, __LINE__,
 				     "MACIContainerServices::getCORBADefaultComponent");
        lex.setCURL("IDL type:"+ACE_CString(idlType));
        throw lex;
        }
-   catch (...) 
+   catch (...)
        {
        ACSErrTypeCommon::UnexpectedExceptionExImpl uex(__FILE__, __LINE__,
 						       "MACIContainerServices::getCORBADefaultComponent");
@@ -522,16 +522,16 @@ ComponentInfo MACIContainerServices::getComponentDescriptor(const char* componen
 throw (acsErrTypeContainerServices::GettingCompInfoExImpl)
 {
 	maci::HandleSeq seq;
-	ComponentInfoSeq_var compInfoSeq = 
+	ComponentInfoSeq_var compInfoSeq =
         m_manager->get_component_info(m_componentHandle,seq,componentName,"*",false);
-	
-	if (compInfoSeq!=NULL && compInfoSeq->length()==1) 
+
+	if (compInfoSeq!=NULL && compInfoSeq->length()==1)
 	{
 		return (*compInfoSeq)[0];
 	}
 	else
 	{
-		acsErrTypeContainerServices::GettingCompInfoExImpl 
+		acsErrTypeContainerServices::GettingCompInfoExImpl
 		    ex(__FILE__,__LINE__,"MACIContainerServices::getComponentDescriptor");
 		ex.setCURL(componentName);
 		throw ex;
@@ -540,17 +540,17 @@ throw (acsErrTypeContainerServices::GettingCompInfoExImpl)
 
 	//m_manager->force_release_component(m_componentHandle, name);
 
-void 
+void
 MACIContainerServices::releaseComponent(const char *name)
     throw (maciErrType::CannotReleaseComponentExImpl)
 {
-	int found = m_usedComponents.unbind(name); 
+	int found = m_usedComponents.unbind(name);
     try
 	{
-		
+
     // Check if the component is used and unbind
-    	if (found == -1) 
-    	{	
+    	if (found == -1)
+    	{
     		maciErrType::ComponentNotInUseExImpl ex1(__FILE__, __LINE__,
     				"MACIContainerServices::releaseComponent");
     		ex1.setCURL(name);
@@ -561,18 +561,18 @@ MACIContainerServices::releaseComponent(const char *name)
 
     		throw ex;
     	}//if
-    
-   
+
+
 	m_manager->release_component(m_componentHandle, name);
 	}
-    catch (maciErrType::NoPermissionEx &_ex) 
+    catch (maciErrType::NoPermissionEx &_ex)
 	{
 	maciErrType::CannotReleaseComponentExImpl ex(_ex, __FILE__, __LINE__,
 						     "MACIContainerServices::releaseComponent");
 	ex.setCURL(name);
 	throw ex;
 	}
-    catch (ACSErr::ACSbaseExImpl &_ex) 
+    catch (ACSErr::ACSbaseExImpl &_ex)
 	{
 	// failed to release, bind back
 	if (found != -1) m_usedComponents.bind(name, m_componentHandle);
@@ -581,7 +581,7 @@ MACIContainerServices::releaseComponent(const char *name)
 	ex.setCURL(name);
 	throw ex;
 	}
-    catch( CORBA::SystemException &ex ) 
+    catch( CORBA::SystemException &ex )
 	{
 	// failed to release, bind back
 	m_usedComponents.bind(name, m_componentHandle);
@@ -595,7 +595,7 @@ MACIContainerServices::releaseComponent(const char *name)
 	ex.setCURL(name);
 	throw ex;
 	}
-    catch (...) 
+    catch (...)
 	{
 	// failed to release, bind back
 	if (found != -1) m_usedComponents.bind(name, m_componentHandle);
@@ -613,14 +613,14 @@ void MACIContainerServices::releaseAllComponents()
 	ACE_CString_Vector componentsToRelease;
 	{
 	  ACE_Guard<ACE_Recursive_Thread_Mutex> guard(m_usedComponents.mutex());
-  
+
 	  // get reverse deactivation order of components
 	  for (COMPONENT_HASH_MAP::CONST_ITERATOR iter(m_usedComponents); !iter.done(); iter.advance())
 	    componentsToRelease.push_back(iter->key());
 	}
-	
+
 	unsigned int len = componentsToRelease.size();
-	for (unsigned int i = 0; i < len; i++) 
+	for (unsigned int i = 0; i < len; i++)
 		this->releaseComponent(componentsToRelease[i].c_str());
 }
 
@@ -674,42 +674,42 @@ MACIContainerServices::getCDB() throw (acsErrTypeContainerServices::CanNotGetCDB
   CDB::DAL_var dalObj = CDB::DAL::_nil();
   ACS_TRACE("MACIContainerServices::getCDB");
 
-  try 
+  try
       {
-      //bje: for some reason this should be done using get_component .... 
+      //bje: for some reason this should be done using get_component ....
       // ... and not get_service/getService
       CORBA::Object_var obj = m_manager->get_component(m_componentHandle, "CDB", false);
       dalObj = CDB::DAL::_narrow(obj.in());
       return dalObj._retn();   //bje: I do not know if this is OK, ...
       // ... since getCDB is local and not CORBA call so differen MM
       }
-  catch (maciErrType::NoPermissionEx &ex) 
+  catch (maciErrType::NoPermissionEx &ex)
       {
       throw CanNotGetCDBExImpl (ex, __FILE__, __LINE__,
 				"MACIContainerServices::getCDB");
       }
-  catch (maciErrType::CannotGetComponentEx &ex) 
+  catch (maciErrType::CannotGetComponentEx &ex)
       {
       throw CanNotGetCDBExImpl (ex, __FILE__, __LINE__,
 				"MACIContainerServices::getCDB");
       }
-  catch( maciErrType::ComponentConfigurationNotFoundEx &ex) 
+  catch( maciErrType::ComponentConfigurationNotFoundEx &ex)
       {
       throw CanNotGetCDBExImpl (ex, __FILE__, __LINE__,
 				"MACIContainerServices::getCDB");
-      }  
-  catch( CORBA::SystemException &ex ) 
+      }
+  catch( CORBA::SystemException &ex )
       {
       ACSErrTypeCommon::CORBAProblemExImpl corbaProblemEx(__FILE__, __LINE__,
 							  "MACIContainerServices::getCDB");
       corbaProblemEx.setMinor(ex.minor());
       corbaProblemEx.setCompletionStatus(ex.completed());
       corbaProblemEx.setInfo(ex._info().c_str());
-      
+
       throw CanNotGetCDBExImpl (corbaProblemEx, __FILE__, __LINE__,
 				"MACIContainerServices::getCDB");
       }
-  catch (...) 
+  catch (...)
       {
       ACSErrTypeCommon::UnexpectedExceptionExImpl uex(__FILE__, __LINE__,
 						      "MACIContainerServices::getCDB");
@@ -726,26 +726,26 @@ MACIContainerServices::activateOffShoot(PortableServer::Servant cbServant)
       return ACS::OffShoot ::_nil();
     }
 
-  if (m_offShootPOA.ptr() == PortableServer::POA::_nil())
-    { 
+  if (CORBA::is_nil(m_offShootPOA.ptr()))
+    {
     	// It is normal the first time we execute this method
     	m_offShootPOA=createOffShootPOA();
-    	if (m_offShootPOA.ptr() == PortableServer::POA::_nil())
+    	if (CORBA::is_nil(m_offShootPOA.ptr()))
     	{
     		// Something went wrong creating the POA
       		return ACS::OffShoot ::_nil();
     	}
     }
-  
+
   // activate the CORBA object (SYSTEM_ID -> activate_object)
   PortableServer::ObjectId_var oid;
   oid = m_offShootPOA->activate_object(cbServant);
-  
+
   // create an object reference
   CORBA::Object_var obj;
   obj = m_offShootPOA->id_to_reference(oid.in());
   ACS::OffShoot_var shoot = ACS::OffShoot::_narrow(obj.in());
-  
+
   return shoot._retn();
 }
 
@@ -756,7 +756,7 @@ PortableServer::POA_var MACIContainerServices::createOffShootPOA()
 	if (m_offShootPOA.ptr() != PortableServer::POA::_nil()) {
 		return m_offShootPOA;
 	}
-	
+
   // get the container POA
   PortableServer::POA_var containerPOA = m_containerImpl->getContainerPOA();
 
@@ -768,28 +768,28 @@ PortableServer::POA_var MACIContainerServices::createOffShootPOA()
   //
   PortableServer::IdAssignmentPolicy_var offshoot_system_id_policy =
     containerPOA->create_id_assignment_policy(PortableServer::SYSTEM_ID);
-  
-  
+
+
   PortableServer::LifespanPolicy_var offshoot_transient_policy =
     containerPOA->create_lifespan_policy(PortableServer::TRANSIENT);
-  
-  
+
+
   PortableServer::RequestProcessingPolicy_var offshoot_use_active_object_map_only_policy =
     containerPOA->create_request_processing_policy (PortableServer::USE_ACTIVE_OBJECT_MAP_ONLY);
-  
-  
+
+
   PortableServer::ServantRetentionPolicy_var offshoot_servant_retention_policy  =
     containerPOA->create_servant_retention_policy (PortableServer::RETAIN);
-  
+
   CORBA::PolicyList policiesOffShoot;
   policiesOffShoot.length(4);
-  
+
   policiesOffShoot[0] = PortableServer::LifespanPolicy::_duplicate(offshoot_transient_policy.in());
   policiesOffShoot[1] = PortableServer::IdAssignmentPolicy::_duplicate(offshoot_system_id_policy.in());
   policiesOffShoot[2] = PortableServer::ServantRetentionPolicy::_duplicate(offshoot_servant_retention_policy.in());
   policiesOffShoot[3] = PortableServer::RequestProcessingPolicy::_duplicate(offshoot_use_active_object_map_only_policy.in());
-  
-  
+
+
   m_offShootPOA = containerPOA->create_POA("OffShootPOA",poaManager.in(),policiesOffShoot);
   return m_offShootPOA;
 }
@@ -806,19 +806,19 @@ throw (
 		throw ex;
     }
 
-	if (m_offShootPOA.ptr() == PortableServer::POA::_nil())
+	if (CORBA::is_nil(m_offShootPOA.ptr()))
 	{
 		acsErrTypeContainerServices::OffShootPOAExImpl ex(__FILE__,__LINE__,"MACIContainerServices::deactivateOffShoot");
 		throw ex;
 	}
-	
+
 	// Deactivate the servant
 	PortableServer::ObjectId* id = m_offShootPOA->servant_to_id(cbServant);
-	
+
 	m_offShootPOA->deactivate_object(*id);
 }
 
-ComponentStateManager* 
+ComponentStateManager*
 MACIContainerServices::getComponentStateManager()
 {
   return componentStateManager_mp;

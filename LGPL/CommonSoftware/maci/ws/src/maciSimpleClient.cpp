@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciSimpleClient.cpp,v 1.105 2008/05/22 17:31:55 agrimstrup Exp $"
+* "@(#) $Id: maciSimpleClient.cpp,v 1.106 2008/07/14 13:41:20 bjeram Exp $"
 *
 * who       when        what
 * --------  --------    ----------------------------------------------
@@ -11,7 +11,7 @@
 * msekoran  2001/12/24  cleaned
 * bjeram    2001-11-20  Improved initialization and initialysed checks.
 * msekoran  2001/06/22  redesigned to new maci
-* msekoran  2001/03/14  created 
+* msekoran  2001/03/14  created
 */
 
 
@@ -28,18 +28,18 @@
  *  <br><hr>
  *  @endhtmlonly
 
- *  @param "-ORBInitRef NameService=corbaloc::yyy:xxxx/NameService" Use this optional parameter to specify which 
+ *  @param "-ORBInitRef NameService=corbaloc::yyy:xxxx/NameService" Use this optional parameter to specify which
  *  host/port SimpleClient should get a reference to the naming service from.
  *  @htmlonly
  *  <br><hr>
  *  @endhtmlonly
 
- *  @param "-ORBInitRef NotifyEventChannelFactory=corbaloc::yyy:xxxx/NotifyEventChannelFactory" Use this optional 
+ *  @param "-ORBInitRef NotifyEventChannelFactory=corbaloc::yyy:xxxx/NotifyEventChannelFactory" Use this optional
  *  parameter to specify which host/port SimpleClient should get a reference to the notification service from.
  *  @htmlonly
  *  <br><hr>
  *  @endhtmlonly
- */  
+ */
 
 #include <vltPort.h>
 
@@ -69,7 +69,7 @@ using namespace baci;
 LoggingProxy* SimpleClient::m_logger=0;
 ACE_CString SimpleClient::m_processName("");
 
-SimpleClient::SimpleClient (): 
+SimpleClient::SimpleClient ():
     m_handle(0),
     m_initialized(false),
     m_executionId(0),
@@ -89,7 +89,7 @@ SimpleClient::SimpleClient ():
 SimpleClient::~SimpleClient ()
 {
   destroy();
-  
+
 }
 
 int
@@ -103,7 +103,7 @@ SimpleClient::destroy ()
      * Gets done with CORBA
      */
     ACS_SHORT_LOG ((LM_DEBUG, "Destroying CORBA..."));
-	
+
     result = doneCORBA();
   }
 
@@ -124,27 +124,27 @@ SimpleClient::destroy ()
 int
 SimpleClient::doneCORBA()
 {
-  
+
   try
     {
-      
+
       if(m_poaRoot.ptr() != PortableServer::POA::_nil())
 	{
 	  // this also destroys other POAs
 	  m_poaRoot->destroy(1, 1);
-	  
+
 	  m_poaRoot = PortableServer::POA::_nil();
 	}
-      
+
       if(m_orb.ptr() != CORBA::ORB::_nil())
 	{
 	  m_orb->destroy();
-	  
+
 	  m_orb = CORBA::ORB::_nil();
 	}
 
       return 1;
-      
+
     }
   catch( CORBA::Exception &ex )
     {
@@ -160,7 +160,7 @@ SimpleClient::doneCORBA()
 }
 
 int
-SimpleClient::initCORBA(int argc, char * argv[]) 
+SimpleClient::initCORBA(int argc, char * argv[])
 {
     if(m_poaRoot.ptr() != PortableServer::POA::_nil() &&
        m_orb.ptr() != CORBA::ORB::_nil())
@@ -168,86 +168,86 @@ SimpleClient::initCORBA(int argc, char * argv[])
 	return 0;
     }
 
-    
+
     try
 	{
-      
+
 	// Initialize the ORB.
 	m_orb = CORBA::ORB_init(argc, argv, "TAO");
-	
+
 	//set the global ORB in simpleclient
 	ORBHelper::setORB(m_orb);
-      
-	if(m_orb.ptr() == CORBA::ORB::_nil())
+
+	if(CORBA::is_nil(m_orb.ptr()))
 	    return false;
-      
+
 	//
 	// Initialize POAs.
 	//
-      
+
 	// Get the Root POA.
 	CORBA::Object_var objRootPOA =
 	    m_orb->resolve_initial_references("RootPOA");
-	
-      
+
+
 	m_poaRoot = PortableServer::POA::_narrow(objRootPOA.in());
-	
-      
-	if(m_poaRoot.ptr() == PortableServer::POA::_nil())
+
+
+	if(CORBA::is_nil(m_poaRoot.ptr()))
 	    return false;
-      
+
 	// Get the manager of the root POA to apply to the child POAs.
 	PortableServer::POAManager_var poaManager =
 	    m_poaRoot->the_POAManager();
-	
-      
+
+
 	//
 	// Prepare policies our POAs will be using.
 	//
 	PortableServer::IdAssignmentPolicy_var user_id_policy =
 	    m_poaRoot->create_id_assignment_policy(PortableServer::USER_ID);
-	
-      
+
+
 	PortableServer::LifespanPolicy_var persistent_policy =
 	    m_poaRoot->create_lifespan_policy(PortableServer::PERSISTENT);
-	
-      
+
+
 	PortableServer::ServantRetentionPolicy_var servant_retention_policy  =
 	    m_poaRoot->create_servant_retention_policy (PortableServer::RETAIN);
-	
-      
-     
+
+
+
 	CORBA::PolicyList policies;
-	m_poaTransient = m_poaRoot->create_POA("TransientPOA", 
+	m_poaTransient = m_poaRoot->create_POA("TransientPOA",
 					       poaManager.in(),
 					       policies);
 
 
 
 	policies.length(3);
-      
+
 	policies[0] = PortableServer::LifespanPolicy::_duplicate(persistent_policy.in());
 	policies[1] = PortableServer::IdAssignmentPolicy::_duplicate(user_id_policy.in());
 	policies[2] = PortableServer::ServantRetentionPolicy::_duplicate(servant_retention_policy.in());
-      
+
 	//
 	// Persistent POA
 	//
-      
-	m_poaPersistent = m_poaRoot->create_POA("PersistentPOA", 
+
+	m_poaPersistent = m_poaRoot->create_POA("PersistentPOA",
 						poaManager.in(),
 						policies);
-	
-      
-	if (m_poaPersistent.ptr() == PortableServer::POA::_nil())
+
+
+	if (CORBA::is_nil(m_poaPersistent.ptr()))
 	    return 0;
-      
-      
+
+
 	// We're done using the policies.
 	user_id_policy->destroy();
 	persistent_policy->destroy();
 	servant_retention_policy->destroy();
-      
+
 	// Initialize BACI if needed
 	if(BACI_CORBA::getInstance()==0)
 	    {
@@ -257,7 +257,7 @@ SimpleClient::initCORBA(int argc, char * argv[])
 
 	// POA Manager can start processing incoming requests.
 	poaManager->activate();
-	
+
 
 	return 1;
 
@@ -273,7 +273,7 @@ SimpleClient::initCORBA(int argc, char * argv[])
 			(LM_ERROR, "Unexpected exception occure while destroying CORBA"));
 	*/
 	}
-  
+
     return 0;
 }
 
@@ -285,30 +285,30 @@ SimpleClient::getORB()
 
 
 int
-SimpleClient::login() 
+SimpleClient::login()
 {
 
   if (!m_initialized)
     return 0;
 
-  
-  
+
+
   try
     {
       /**
        * Login
        */
       maci::Client_var c = _this();
-      
 
-      if (CORBA::is_nil(c.in())) 
+
+      if (CORBA::is_nil(c.in()))
 	{
 	  ACS_SHORT_LOG((LM_DEBUG, "Failed to get client"));
 	  return 0;
 	}
-      
+
       maci::ClientInfo_var clientInfo = m_manager->login(c.in());
-      
+
 
       if (clientInfo.ptr() == 0)
 	{
@@ -325,19 +325,19 @@ SimpleClient::login()
     {
       ACE_PRINT_EXCEPTION(ex, "A CORBA Exception occurred.");
     }
-  
+
   return 0;
 }
-  
+
 
 int
-SimpleClient::logout() 
+SimpleClient::logout()
 {
   if (!m_initialized || !m_handle)
     return 0;
-  
-  
-  
+
+
+
   try
     {
       /**
@@ -346,15 +346,15 @@ SimpleClient::logout()
       ACS_SHORT_LOG ((LM_DEBUG, "Logging out..."));
 
       m_manager->logout(m_handle);
-      
+
 
       return 1;
-    }    
+    }
   catch( CORBA::Exception &ex )
     {
       ACE_PRINT_EXCEPTION(ex, "A CORBA Exception occurred.");
     }
-  
+
   return 0;
 }
 
@@ -362,7 +362,7 @@ SimpleClient::logout()
 int
 SimpleClient::init(int argc, char *argv[])
 {
-    
+
   // initialize ACE logger instance
   m_processName=argv[0];
   ACE_TCHAR hostname[33];
@@ -374,39 +374,39 @@ SimpleClient::init(int argc, char *argv[])
       LoggingProxy::ProcessName(argv[0]);
   LoggingProxy::ThreadName("main");
 
-  LoggingProxy::init (m_logger); 
+  LoggingProxy::init (m_logger);
   ACS_SHORT_LOG((LM_INFO, "Logging proxy successfully created."));
 
   /**
    * Start the TRY block
    */
   //
-  
+
   //ACE_TRY
     {
       /**
        * Copies the command line arguments in an ACE_ARGV
        * object to manipilate them
        */
-      
+
       ACE_ARGV editArgv(1);
-      
+
       for(int i=0; i<argc; i++)
 	editArgv.add(argv[i]);
-      
+
       /**
-       * The "-ORBDottedDecimalAddresses 1" argument 
+       * The "-ORBDottedDecimalAddresses 1" argument
        * must always be there, so we just add it
        */
       editArgv.add("-ORBDottedDecimalAddresses");
       editArgv.add("1");
-      
+
       /**
        * Now get back again a standard (argc,argv)
        */
       argc = editArgv.argc();
       argv = editArgv.argv();
-      
+
       /**
        * Initialyze CORBA with the new command line
        */
@@ -436,7 +436,7 @@ SimpleClient::init(int argc, char *argv[])
 
 
       m_manager = MACIHelper::resolveManager(getORB(), argc, argv, 0, 0);
-      if (m_manager.ptr() == maci::Manager::_nil())
+    if (CORBA::is_nil(m_manager.ptr()))
 	{
 	  ACS_SHORT_LOG((LM_DEBUG, "Failed to resolve Manager reference!"));
 	  return 0;
@@ -445,19 +445,19 @@ SimpleClient::init(int argc, char *argv[])
       /**
        * Make connection to the Centralized Logger
        */
-      
+
 
       try
 	  {
-	  ACE_CString centralizedLogger("Log");	
+	  ACE_CString centralizedLogger("Log");
 	  CORBA::Object_var log_obj = m_manager->get_service(m_handle, centralizedLogger.c_str(), true);
-	  
+
 
 	  if (log_obj.ptr() != CORBA::Object::_nil())
 	      {
 	      DsLogAdmin::Log_var logger = DsLogAdmin::Log::_narrow(log_obj.in());
-	      
-	  
+
+
 	      if (logger.ptr() != DsLogAdmin::Log::_nil())
 		  {
 		  m_logger->setCentralizedLogger(logger.in());
@@ -476,11 +476,11 @@ SimpleClient::init(int argc, char *argv[])
 	  {
 	  ACS_SHORT_LOG((LM_DEBUG, "Simple client are not going to use Centralized Logger (exception occured)."));
 	  ACE_PRINT_EXCEPTION(ex, "maciSimpleClient::init");
-	  } 
+	  }
 
       m_initialized = true;
       return 1;
-      
+
     }
     /*
   catch( CORBA::Exception &_ex )
@@ -508,32 +508,32 @@ SimpleClient::run()
 }
 
 maci::Manager_ptr
-SimpleClient::manager() 
-{ 
+SimpleClient::manager()
+{
   if(!m_initialized)
     {
       ACS_SHORT_LOG((LM_DEBUG, "Client not initialized."));
       return maci::Manager::_nil();
     }
-  
-  return m_manager.ptr(); 
+
+  return m_manager.ptr();
 }
 
 maci::Handle
-SimpleClient::handle() 
+SimpleClient::handle()
 {
   if(!m_initialized)
     {
       ACS_SHORT_LOG((LM_DEBUG, "Client not initialized."));
       return 0;
     }
-    
-  return m_handle; 
+
+  return m_handle;
 }
 
 CORBA::Object_ptr
 SimpleClient::getComponent(const char *name,
-			   const char *domain, 
+			   const char *domain,
 			   bool activate)
     throw (maciErrType::CannotGetComponentExImpl)
 {
@@ -576,7 +576,7 @@ long  SimpleClient::releaseComponent(const char* name)
 	}
     catch(...)
 	{
-	ACSErrTypeCommon::UnexpectedExceptionExImpl uex(__FILE__, __LINE__, 
+	ACSErrTypeCommon::UnexpectedExceptionExImpl uex(__FILE__, __LINE__,
 							"maci::SimpleCleint::releaseComponent");
 	maciErrType::CannotReleaseComponentExImpl ex(uex, __FILE__, __LINE__,
 						 "maci::SimpleCleint::releaseComponent");
@@ -589,17 +589,17 @@ long  SimpleClient::releaseComponent(const char* name)
 /* ------------------ [ CORBA Client interface ] ------------------*/
 /* ----------------------------------------------------------------*/
 
-char * 
+char *
 SimpleClient::name ()
   throw (CORBA::SystemException)
-{ 
-  return CORBA::string_dup("Simple MACI Client"); 
+{
+  return CORBA::string_dup("Simple MACI Client");
 }
 
 void
 SimpleClient::disconnect ()
   throw (CORBA::SystemException)
-{ 
+{
   // override this implementation in case of special handling
   ACS_SHORT_LOG((LM_DEBUG, "Manager requested that I should log off or I will be disconneced from the Manager."));
 }
@@ -653,8 +653,8 @@ SimpleClient::components_available (const maci::ComponentInfoSeq & cobs
 {
 
   // this is the default implementation
-  CORBA::ULong len = cobs.length (); 
-  
+  CORBA::ULong len = cobs.length ();
+
   for (unsigned int i=0; i < len; i++) {
     ACS_SHORT_LOG((LM_DEBUG, "Available component: '%s'.", cobs[i].name.in()));
   }
@@ -666,7 +666,7 @@ SimpleClient::components_unavailable (const maci::stringSeq & cob_names
   throw (CORBA::SystemException)
 {
   // this is the default implementation
-  CORBA::ULong len = cob_names.length (); 
+  CORBA::ULong len = cob_names.length ();
 
   for (unsigned int i=0; i < len; i++) {
   ACS_SHORT_LOG((LM_DEBUG, "Unavailable component: '%s'.", cob_names[i].in()));
@@ -703,7 +703,7 @@ SimpleClient::ping ()
     return true;
 }
 
- }; 
+ };
 
 
 /*___oOo___*/

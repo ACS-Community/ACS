@@ -4,7 +4,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciSimpleClient.h,v 1.103 2008/05/22 17:31:55 agrimstrup Exp $"
+* "@(#) $Id: maciSimpleClient.h,v 1.104 2008/07/14 13:41:20 bjeram Exp $"
 *
 * who       when        what
 * --------  --------    ----------------------------------------------
@@ -38,17 +38,17 @@ namespace maci {
     class SimpleClient;
 
 
-    template<typename T, class H = SimpleClient> 
+    template<typename T, class H = SimpleClient>
     class ComponentSmartPtr : public SmartPtr<T, H, Loki::RefCountedMTAdj<Loki::ObjectLevelLockable>::RefCountedMT,
 			  Loki::DisallowConversion, Loki::NoCheck, ComponentStorage, Loki::LOKI_DEFAULT_CONSTNESS> {
       public:
-	
+
 	/**
 	 * Default Constructor
 	 */
 	ComponentSmartPtr()
 	    {}
-	
+
 	/**
 	 * Constructor.
 	 * Create a smart pointer for the component described.
@@ -69,12 +69,12 @@ namespace maci {
 
 /**
  * The class SimpleClient is the base class for a ACS C++ client.
- * It hides most of the CORBA interface to the implementation 
+ * It hides most of the CORBA interface to the implementation
  * of the real client.
  */
 
 
-class maci_EXPORT SimpleClient : 
+class maci_EXPORT SimpleClient :
     public virtual POA_maci::Client,
     public virtual PortableServer::RefCountServantBase
 {
@@ -96,7 +96,7 @@ public:
    * @return 0 on failure
    */
   int destroy();
-  
+
   /**
    * Initializes CORBA.
    * @return 0 on failure
@@ -135,7 +135,7 @@ public:
    *
    * example:
    * -m corbaloc::te1.hq.eso.org:xxxx/Manager
-   *     
+   *
    * @return 0 on failure
    */
   int init(int argc, char *argv[]);
@@ -145,7 +145,7 @@ public:
    * @param tv time to run
    * @return 0 on failure
    */
-  int run (ACE_Time_Value &tv 
+  int run (ACE_Time_Value &tv
 	   );
 
   /**
@@ -156,7 +156,7 @@ public:
 
     static void initThread(const char * threadName);
     static void doneThread();
-  
+
   /**
    * Get manager CORBA reference.
    * @return manager CORBA reference
@@ -168,14 +168,14 @@ public:
    * @return handle
    */
   maci::Handle handle();
-  
-  /** 
+
+  /**
    * Get a component, activating it if necessary.
-   * The client must have adequate access rights to access the component. This is untrue of components: NameService, Log, LogFactory, 
+   * The client must have adequate access rights to access the component. This is untrue of components: NameService, Log, LogFactory,
    * NotifyEventChannelFactory, ArchivingChannel, LoggingChannel, InterfaceRepository, CDB and PDB.
    * @param name name of the component (e.g. MOUTN1)
    * @param domain domain name, 0 for default domain
-   * @param activate true to activate component, false to leave it in the current state 
+   * @param activate true to activate component, false to leave it in the current state
    * @return reference to the component. If the component could not be activated, a #maciErrType::CannotGetComponentExImpl exception is thrown.
    * @see template<class T> T* getComponent
    */
@@ -192,15 +192,15 @@ public:
 	    return getComponent(name, domain, activate);
 	}
 
-   
-  /** 
+
+  /**
    * Get a component, activating it if necessary and directly narrows it to the type
    * declared in the template definition.
-   * The client must have adequate access rights to access the component. This is untrue of components: NameService, Log, LogFactory, 
+   * The client must have adequate access rights to access the component. This is untrue of components: NameService, Log, LogFactory,
    * NotifyEventChannelFactory, ArchivingChannel, LoggingChannel, InterfaceRepository, CDB and PDB.
    * @param name name of the component (e.g. MOUNT1)
    * @param domain domain name, 0 for default domain
-   * @param activate true to activate component, false to leave it in the current state 
+   * @param activate true to activate component, false to leave it in the current state
    * @return reference to the component. If the component could not be activated, a #maciErrType::CannotGetComponentExImpl exception is thrown.
    * For example:
    * @code
@@ -212,14 +212,14 @@ public:
     T* getComponent(const char *name, const char *domain, bool activate)
 	throw (maciErrType::CannotGetComponentExImpl);
 
-  /** 
+  /**
    * Get a SmartPointer to a component, activating it if necessary and directly narrows it to the type
    * declared in the template definition.
-   * The client must have adequate access rights to access the component. This is untrue of components: NameService, Log, LogFactory, 
+   * The client must have adequate access rights to access the component. This is untrue of components: NameService, Log, LogFactory,
    * NotifyEventChannelFactory, ArchivingChannel, LoggingChannel, InterfaceRepository, CDB and PDB.
    * @param name name of the component (e.g. MOUNT1)
    * @param domain domain name, 0 for default domain
-   * @param activate true to activate component, false to leave it in the current state 
+   * @param activate true to activate component, false to leave it in the current state
    * @return Smart Pointer to the component. If the component could not be activated, a #maciErrType::CannotGetComponentExImpl exception is thrown.
    * For example:
    * @code
@@ -239,12 +239,12 @@ public:
   T* get_object(const char *name, const char *domain, bool activate)
       throw (maciErrType::CannotGetComponentExImpl)
 	{
-	    return getComponent<T>(name, domain, activate);   
+	    return getComponent<T>(name, domain, activate);
 	}
-    
+
     /**
      * Returns a non-sticky reference to a component
-     * @param name name (CURL) of the component 
+     * @param name name (CURL) of the component
      * @return reference to the component
      * for details see #get_component_non_sticky
      */
@@ -254,7 +254,7 @@ public:
      /**
       * template version of #getComponentNonSticky
      * Returns a non-sticky reference to a component
-     * @param name name (CURL) of the component 
+     * @param name name (CURL) of the component
      * @return reference to the component
      * for details see #get_component_non_sticky
      */
@@ -265,7 +265,7 @@ public:
      /**
       * template version of #getComponentNonSticky
      * Returns a SmartPointer to a component
-     * @param name name (CURL) of the component 
+     * @param name name (CURL) of the component
      * @return reference to the component
      * for details see #get_component_non_sticky
      */
@@ -277,7 +277,7 @@ public:
      * Releases the componet.
      * @param name component name
      *  @return Number of clients that are still using the
-     * component after the operation completed. 
+     * component after the operation completed.
      * @throw maciErrType::CannotReleaseComponentExImpl when there is a problem
      */
     long releaseComponent(const char* name)
@@ -295,16 +295,16 @@ public:
 
   /**
    * Disconnect notification.
-   * The disconnect method is called by the Manager to notify the client that it will be unavailable and that the client should log off. 
+   * The disconnect method is called by the Manager to notify the client that it will be unavailable and that the client should log off.
    */
   virtual void disconnect ()
     throw (CORBA::SystemException);
-	
+
   /**
    * Authentication method.
-   * Method authenticate is the challenge issued to the client after it tries to login. The login will be successful if the client's authenticate() produces the expected result. Only in this case will the Manager's login method return a valid handle, which the client will later use as the id parameter with all calls to the Manager. 
+   * Method authenticate is the challenge issued to the client after it tries to login. The login will be successful if the client's authenticate() produces the expected result. Only in this case will the Manager's login method return a valid handle, which the client will later use as the id parameter with all calls to the Manager.
    * @param The question posed by the Manager.
-   * @return Answer to the question. The first character of the answer identifies the type of the client: 
+   * @return Answer to the question. The first character of the answer identifies the type of the client:
    * <TT>A</TT> An container (implements the Container interface)
    * <TT>C</TT> A client (implements the Client interface)
    * <TT>S</TT> A supervisor (implements the Administrator interface)
@@ -312,7 +312,7 @@ public:
    virtual ::maci::AuthenticationData * authenticate (
 	::maci::ExecutionId execution_id, const char * question)
        throw (CORBA::SystemException);
-	
+
   /**
    * The Manager and administrators use this method for sending textual messages to the client.
    * @param type Can be either MSG_ERROR or MSG_INFORMATION.
@@ -345,13 +345,13 @@ public:
 
   /**
    * Notify client that some of the components currently in use by client have become unavailable.
-   * @param cob_names CURLs of the unavailable components  
+   * @param cob_names CURLs of the unavailable components
    */
   virtual void components_unavailable (const maci::stringSeq & cob_names
 				 )
     throw (CORBA::SystemException);
-  
-			
+
+
   /**
    * Manager pings its clients (both GUI clients, as well as Containers) repeatedly to verify that they still exist.
    * The return value can be either <code>true</code>, indicating that everything is OK with the client, of <code>false</code>, indicating that client is malfunctioning.
@@ -378,13 +378,13 @@ public:
 	}
 
 private:
-  
+
   /// Reference to the Manager.
   maci::Manager_var m_manager;
 
   /// Handle.
   maci::Handle m_handle;
-  
+
   /// Initialization status.
   bool m_initialized;
 
@@ -406,7 +406,7 @@ private:
   /// The name of the process
   static ACE_CString m_processName;
 
-  /// threads' standard start-up hook 
+  /// threads' standard start-up hook
   maci::SimpleClientThreadHook m_simpleClientThreadHook;
 
   /// execution id
@@ -420,7 +420,7 @@ private:
  * INLINE METHODS
  */
 
-/* 
+/*
  * Implementation for getComponent template method
  */
 template<class T>
@@ -472,8 +472,8 @@ throw (maciErrType::CannotGetComponentExImpl)
 	{
 		/// @todo why here is using get_service and not get_component ?
 		CORBA::Object_var obj = manager()->get_service(m_handle, curl.c_str(), activate);
-		T* tmpRef = T::_narrow(obj);  
-		if (tmpRef==T::_nil())
+		T* tmpRef = T::_narrow(obj);
+		if (CORBA::is_nil(tmpRef))
 		{
 			releaseComponent(name); // first we have to release the component!
 			ACSErrTypeCORBA::NarrowFailedExImpl ex(__FILE__, __LINE__, "maci::SimpleCleint<>::getComponent");
@@ -498,19 +498,19 @@ throw (maciErrType::CannotGetComponentExImpl)
 	}
 	catch(maciErrType::ComponentNotAlreadyActivatedEx &_ex)
 	{
-		maciErrType::CannotGetComponentExImpl ex(_ex, __FILE__, __LINE__, 
+		maciErrType::CannotGetComponentExImpl ex(_ex, __FILE__, __LINE__,
 				"maci::SimpleCleint::getComponent&lt;&gt;");
 		ex.setCURL(name);
 		throw ex;
 	}
 	catch(maciErrType::ComponentConfigurationNotFoundEx &_ex)
 	{
-		maciErrType::CannotGetComponentExImpl ex(_ex, __FILE__, __LINE__, 
+		maciErrType::CannotGetComponentExImpl ex(_ex, __FILE__, __LINE__,
 				"maci::SimpleCleint::getComponent&lt;&gt;");
 		ex.setCURL(name);
 		throw ex;
 	}
-	catch (ACSErr::ACSbaseExImpl &ex) 
+	catch (ACSErr::ACSbaseExImpl &ex)
 	{
 		maciErrType::CannotGetComponentExImpl lex(ex, __FILE__, __LINE__,
 				"maci::SimpleCleint<T>::getComponent");
@@ -531,7 +531,7 @@ throw (maciErrType::CannotGetComponentExImpl)
 	}
 	catch(...)
 	{
-		ACSErrTypeCommon::UnexpectedExceptionExImpl uex(__FILE__, __LINE__, 
+		ACSErrTypeCommon::UnexpectedExceptionExImpl uex(__FILE__, __LINE__,
 				"maci::SimpleCleint::getComponent&lt;&gt;");
 		maciErrType::CannotGetComponentExImpl ex(uex, __FILE__, __LINE__,
 				"maci::SimpleCleint::getComponent&lt;&gt;");
@@ -548,11 +548,11 @@ ComponentSmartPtr<T> SimpleClient::getComponentSmartPtr(const char *name, const 
     throw (maciErrType::CannotGetComponentExImpl)
 {
     return ComponentSmartPtr<T>(this, true, this->getComponent<T>(name, domain, activate));
-}    
+}
 
 
 
-/* 
+/*
  * Implementation for getComponentNonSticky template method
  */
 template<class T>
@@ -586,15 +586,15 @@ throw (maciErrType::CannotGetComponentExImpl)
 	try
 	{
 		CORBA::Object_var obj = manager()->get_component_non_sticky(m_handle, name);
-		T* tmpRef = T::_narrow(obj);  
-		if (tmpRef==T::_nil())
+		T* tmpRef = T::_narrow(obj);
+		if (CORBA::is_nil(tmpRef))
 		{
 			// here we do not have to release the component because it is non sticky!
 			ACSErrTypeCORBA::NarrowFailedExImpl ex(__FILE__, __LINE__, "maci::SimpleCleint<>::getComponentNonSticky");
 			ex.setNarrowType(typeid(T).name());
 			throw ex;
 		}//if
-		return tmpRef;  
+		return tmpRef;
 	}
 	catch(maciErrType::NoPermissionEx &_ex)
 	{
@@ -612,12 +612,12 @@ throw (maciErrType::CannotGetComponentExImpl)
 	}
 	catch(maciErrType::ComponentNotAlreadyActivatedEx &_ex)
 	{
-		maciErrType::CannotGetComponentExImpl ex(_ex, __FILE__, __LINE__, 
+		maciErrType::CannotGetComponentExImpl ex(_ex, __FILE__, __LINE__,
 				"maci::SimpleCleint::getComponentNonSticky&lt;&gt;");
 		ex.setCURL(name);
 		throw ex;
 	}
-	catch (ACSErr::ACSbaseExImpl &ex) 
+	catch (ACSErr::ACSbaseExImpl &ex)
 	{
 		maciErrType::CannotGetComponentExImpl lex(ex, __FILE__, __LINE__,
 				"maci::SimpleCleint<>::getComponentNonSticky");
@@ -638,7 +638,7 @@ throw (maciErrType::CannotGetComponentExImpl)
 	}
 	catch(...)
 	{
-		ACSErrTypeCommon::UnexpectedExceptionExImpl uex(__FILE__, __LINE__, 
+		ACSErrTypeCommon::UnexpectedExceptionExImpl uex(__FILE__, __LINE__,
 				"maci::SimpleCleint::getComponentNonSticky&lt;&gt;");
 		maciErrType::CannotGetComponentExImpl ex(uex, __FILE__, __LINE__,
 				"maci::SimpleCleint::getComponentNonSticky&lt;&gt;");
@@ -655,8 +655,8 @@ ComponentSmartPtr<T> SimpleClient::getComponentNonStickySmartPtr(const char *nam
     throw (maciErrType::CannotGetComponentExImpl)
 {
     return ComponentSmartPtr<T>(this, false, this->getComponentNonSticky<T>(name));
-}    
+}
 
-}; 
+};
 
 #endif  /* maciSimpleClient_H */

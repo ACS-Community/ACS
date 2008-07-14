@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciContainerShutdown.cpp,v 1.8 2006/09/01 02:20:54 cparedes Exp $"
+* "@(#) $Id: maciContainerShutdown.cpp,v 1.9 2008/07/14 13:41:20 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -22,12 +22,12 @@
  *  <br><hr>
  *  @endhtmlonly
 
- *  @param "-ORBInitRef NameService=corbaloc::yyy:xxxx/NameService" Use this optional parameter to specify an  
+ *  @param "-ORBInitRef NameService=corbaloc::yyy:xxxx/NameService" Use this optional parameter to specify an
  *  instance of the NameService that "knows about" the container we want to stop.
  *  @htmlonly
  *  <br><hr>
  *  @endhtmlonly
- */   
+ */
 
 
 
@@ -60,7 +60,7 @@ main (int argc, char *argv[])
     else
 	ACS_SHORT_LOG((LM_INFO, "Failed to initialize logging."));
 
-    
+
     try
     {
 	// Initialize the ORB.
@@ -68,10 +68,10 @@ main (int argc, char *argv[])
 					      argv,
 					      "TAO"
 					      );
-	
+
 
 	maci::Manager_var mgr = MACIHelper::resolveManager(orb.ptr(), argc, argv, 0, 0);
-        if (mgr.ptr() == maci::Manager::_nil())
+    if (CORBA::is_nil(mgr.ptr()))
 	{
 	    ACS_SHORT_LOG((LM_ERROR, "Failed to resolve Manager reference."));
 	    return -1;
@@ -83,7 +83,7 @@ main (int argc, char *argv[])
 	// a little hack to manager (this clas should implement administrator interface, etc..)
 	maci::Handle h = 0x05000000;
 	maci::ContainerInfoSeq_var containers = mgr->get_container_info(h, handles, argv[1]);
-	
+
 
 	if (!containers.ptr() || containers->length()==0)
 	{
@@ -112,19 +112,19 @@ main (int argc, char *argv[])
 	    }
 
 	}
-      
+
 	ACS_SHORT_LOG((LM_INFO, "Done all."));
-      
+
     }
   catch( CORBA::Exception &ex )
   {
       ACS_SHORT_LOG((LM_INFO, "Failed."));
       ACE_PRINT_EXCEPTION (ex,
                            ACE_TEXT ("Caught unexpected exception:"));
-      
+
       return -1;
   }
-  
+
   return 0;
 }
 

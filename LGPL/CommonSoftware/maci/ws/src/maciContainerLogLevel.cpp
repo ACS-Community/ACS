@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciContainerLogLevel.cpp,v 1.6 2008/01/22 17:09:55 hsommer Exp $"
+* "@(#) $Id: maciContainerLogLevel.cpp,v 1.7 2008/07/14 13:41:20 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -21,7 +21,7 @@
  *  <br><hr>
  *  @endhtmlonly
 
- */   
+ */
 
 
 
@@ -43,8 +43,8 @@ printUsageAndExit(int argc, char *argv[])
 
 // Only integer values for certain levels are defined, e.g. DEBUG = 3.
 // No illegal levels should be sent to the LoggingConfigurable processes (containers, manager, ...)
-int 
-isLogLevelValid(int logLevel) 
+int
+isLogLevelValid(int logLevel)
 {
 	return ( (logLevel >= 2 && logLevel <= 11 && logLevel != 7) || logLevel==99 );
 }
@@ -76,7 +76,7 @@ main (int argc, char *argv[])
 		ACE_OS::printf("Invalid command, must be one of {set,get,list,refresh}.\n");
 	    printUsageAndExit(argc, argv);
 	}
-	
+
 	if (cmd == SET && argc < 4)
 	{
 		// if only 4 then default is set
@@ -89,7 +89,7 @@ main (int argc, char *argv[])
 		ACE_OS::printf("Not enough parameters.\n");
 		printUsageAndExit(argc, argv);
 	}
-	
+
 
     LoggingProxy * logger = new LoggingProxy(0, 0, 31);
     if (logger)
@@ -101,7 +101,7 @@ main (int argc, char *argv[])
     else
     	ACS_SHORT_LOG((LM_INFO, "Failed to initialize logging."));
 
-    
+
     try
     {
 	// Initialize the ORB.
@@ -109,10 +109,10 @@ main (int argc, char *argv[])
 					      argv,
 					      "TAO"
 					      );
-	
+
 
 	maci::Manager_var mgr = MACIHelper::resolveManager(orb.ptr(), argc, argv, 0, 0);
-        if (mgr.ptr() == maci::Manager::_nil())
+    if (CORBA::is_nil(mgr.ptr()))
 	{
 	    ACS_SHORT_LOG((LM_ERROR, "Failed to resolve Manager reference."));
 	    return -1;
@@ -124,7 +124,7 @@ main (int argc, char *argv[])
 	// a little hack to manager (this clas should implement administrator interface, etc..)
 	maci::Handle h = 0x05000000;
 	maci::ContainerInfoSeq_var containers = mgr->get_container_info(h, handles, argv[1]);
-	
+
 
 	if (!containers.ptr() || containers->length()==0)
 	{
@@ -137,9 +137,9 @@ main (int argc, char *argv[])
 	    try
 	    {
 	    	ACS_SHORT_LOG((LM_INFO, "Container: %s", containers[i].name.in()));
-	    	
+
 	    	if (cmd == LIST)
-	    	{	
+	    	{
 	    		ACS_SHORT_LOG((LM_INFO, "\tLogger names:"));
 	    		maci::stringSeq_var loggerNames = containers[i].reference->get_logger_names();
 	    		for (CORBA::ULong j = 0; j < loggerNames->length(); j++)
@@ -159,7 +159,7 @@ main (int argc, char *argv[])
 			     	logLevels = containers[i].reference->get_default_logLevels();
 			    else
 			    	logLevels = containers[i].reference->get_logLevels(loggerName);
-			    	
+
 			    ACS_SHORT_LOG((LM_INFO, "\tLog levels for logger '%s':", loggerName));
 			    ACS_SHORT_LOG((LM_INFO, "\t\tuseDefault      : %s", logLevels.useDefault ? "true" : "false"));
 			    ACS_SHORT_LOG((LM_INFO, "\t\tminLogLevel     : %d", logLevels.minLogLevel));
@@ -176,7 +176,7 @@ main (int argc, char *argv[])
 			    {
 	    			logLevels.minLogLevel = atoi(argv[4]);
 	    			logLevels.minLogLevelLocal = atoi(argv[5]);
-			    	if (!isLogLevelValid(logLevels.minLogLevel) || !isLogLevelValid(logLevels.minLogLevelLocal)) 
+			    	if (!isLogLevelValid(logLevels.minLogLevel) || !isLogLevelValid(logLevels.minLogLevelLocal))
 			    	{
 			    		printUsageAndExit(argc, argv);
 			    	}
@@ -186,7 +186,7 @@ main (int argc, char *argv[])
 	    			logLevels.minLogLevel = 0;
 	    			logLevels.minLogLevelLocal = 0;
 			    }
-			    
+
 			    ACS_SHORT_LOG((LM_INFO, "\tSetting levels for logger '%s':", loggerName));
 			    ACS_SHORT_LOG((LM_INFO, "\t\tuseDefault      : %s", logLevels.useDefault ? "true" : "false"));
 			    //if (!logLevels.useDefault)
@@ -194,13 +194,13 @@ main (int argc, char *argv[])
 			    	ACS_SHORT_LOG((LM_INFO, "\t\tminLogLevel     : %d", logLevels.minLogLevel));
 			    	ACS_SHORT_LOG((LM_INFO, "\t\tminLogLevelLocal: %d", logLevels.minLogLevelLocal));
 			    }
-			    
+
 			    if (ACE_OS::strcmp(loggerName, "default") == 0)
 	    			containers[i].reference->set_default_logLevels(logLevels);
 				else
 	    			containers[i].reference->set_logLevels(loggerName, logLevels);
 	    	}
-	    	
+
 			ACS_SHORT_LOG((LM_INFO, "\t... done."));
 	    }
 	    catch( CORBA::Exception &ex )
@@ -210,19 +210,19 @@ main (int argc, char *argv[])
 	    }
 
 	}
-      
+
 	ACS_SHORT_LOG((LM_INFO, "Done all."));
-      
+
     }
   catch( CORBA::Exception &ex )
   {
       ACS_SHORT_LOG((LM_INFO, "Failed."));
       ACE_PRINT_EXCEPTION (ex,
                            ACE_TEXT ("Caught unexpected exception:"));
-      
+
       return -1;
   }
-  
+
   return 0;
 }
 

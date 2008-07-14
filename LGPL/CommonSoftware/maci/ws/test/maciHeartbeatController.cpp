@@ -1,12 +1,12 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciHeartbeatController.cpp,v 1.3 2006/09/01 02:20:54 cparedes Exp $"
+* "@(#) $Id: maciHeartbeatController.cpp,v 1.4 2008/07/14 13:41:20 bjeram Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
 * msekoran  2002/02/09  made ping timeout in mutable
-* msekoran  2001/12/25  created 
+* msekoran  2001/12/25  created
 */
 
 #include <vltPort.h>
@@ -66,16 +66,16 @@ HeartbeatHandler::handle_timeout (const ACE_Time_Value &currentTime,
     ACS_TRACE("maci::HeartbeatHandler::handle_timeout");
     ACS_DEBUG_PARAM("maci::HeartbeatHandler::handle_timeout", "Heartbeat check requested for: %d.", (CORBA::ULong)m_handle);
 
-    
+
     try
     {
 	bool response = m_client->ping();
-	
+
 
 	if (response)
 	    // all is OK
-	    m_failureCount = 0; 
-	else 
+	    m_failureCount = 0;
+	else
 	    // something is wrong with the client
 	    m_failureCount = m_failureLimit;
     }
@@ -91,14 +91,14 @@ HeartbeatHandler::handle_timeout (const ACE_Time_Value &currentTime,
     }
     catch( CORBA::Exception &ex )
     {
-	m_failureCount = m_failureLimit; 
+	m_failureCount = m_failureLimit;
 	ACS_DEBUG_PARAM("maci::HeartbeatHandler::handle_timeout", "Failed to connect to the client: %d.", (CORBA::ULong)m_handle);
 	ACE_PRINT_EXCEPTION(ex, "Exception occured while connecting to the client:");
     }
 
     if (m_failureCount >= m_failureLimit)
     {
-	
+
         ACS_DEBUG_PARAM("maci::HeartbeatHandler::handle_timeout", "Releasing 'dead' client with handle: %d.", (CORBA::ULong)m_handle);
 	if (m_controller->removeClient(m_handle))
 	    return -1;
@@ -110,7 +110,7 @@ HeartbeatHandler::handle_timeout (const ACE_Time_Value &currentTime,
 	catch( CORBA::Exception &ex )
 	{
 	}
-	
+
 	return -1;
     }
 
@@ -155,34 +155,34 @@ HeartbeatInitializationHandler::handle_timeout (const ACE_Time_Value &currentTim
 	ACS_LOG(LM_RUNTIME_CONTEXT, "maci::HeartbeatInitializationHandler::handle_timeout",
 		(LM_DEBUG, "Heartbeat ping() invocation timeout set to %dms", m_invocationTimeout));
 
-	
+
 	try
 	  {
 
 	    CORBA::Object_var current_object =
 		m_orb->resolve_initial_references ("PolicyCurrent");         // current thread policy
-	    
-	    
+
+
 	    CORBA::PolicyCurrent_var policy_current =
 		CORBA::PolicyCurrent::_narrow (current_object.in ());
-	    
-	    
-	    TimeBase::TimeT timeout = m_invocationTimeout*10000;	// 2s - convert 2000 millisec to ns 
+
+
+	    TimeBase::TimeT timeout = m_invocationTimeout*10000;	// 2s - convert 2000 millisec to ns
 	    CORBA::Any any_object;
 	    any_object <<= timeout;
-	    
+
 	    CORBA::PolicyList policies (1);
 	    policies.length (1);
 	    policies[0] =
 		m_orb->create_policy (Messaging::RELATIVE_RT_TIMEOUT_POLICY_TYPE, any_object);
-	    
-	    
+
+
 	    policy_current->set_policy_overrides (policies, CORBA::SET_OVERRIDE);
-	    
-	    
+
+
 	    policies[0]->destroy ();
-	    
-	    
+
+
 	  }
 	catch( CORBA::Exception &ex )
 	  {
@@ -238,7 +238,7 @@ HeartbeatController::~HeartbeatController()
     delete[] timerIDs;
 
 }
-    
+
 int
 HeartbeatController::start(CORBA::ORB_ptr orb, CORBA::ULong invocationTimeout)
 {
@@ -269,14 +269,14 @@ HeartbeatController::stop()
 
     return 0;
 }
- 
+
 int
 HeartbeatController::registerClient(maci::Handle handle, maci::Client_ptr client)
 {
     ACS_TRACE("maci::HeartbeatController::registerClient");
 
     // invalid parameters
-    if (handle == 0 || client == maci::Client::_nil())
+    if (handle == 0 || CORBA::is_nil(client))
 	return 1;
 
     ACS_DEBUG_PARAM("maci::HeartbeatHandler::registerClient", "Registering client with handle: %d.", handle);
@@ -297,7 +297,7 @@ HeartbeatController::registerClient(maci::Handle handle, maci::Client_ptr client
     if ((handle & ManagerImpl::TYPE_MASK) == ManagerImpl::CONTAINER_MASK)
 	interval.sec(CONTAINER_PING_INTERVAL);
 
-    ACE_Time_Value startTime = ACE_OS::gettimeofday (); 
+    ACE_Time_Value startTime = ACE_OS::gettimeofday ();
     startTime += interval;
 
     id = m_timerThread.schedule(handler, 0, interval, interval);

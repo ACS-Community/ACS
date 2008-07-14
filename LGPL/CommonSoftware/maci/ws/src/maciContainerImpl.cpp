@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciContainerImpl.cpp,v 1.109 2008/06/16 09:51:44 bjeram Exp $"
+* "@(#) $Id: maciContainerImpl.cpp,v 1.110 2008/07/14 13:41:20 bjeram Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -79,12 +79,12 @@
 #include <ACSAlarmSystemInterfaceFactory.h>
 #endif
 
-ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.109 2008/06/16 09:51:44 bjeram Exp $")
+ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.110 2008/07/14 13:41:20 bjeram Exp $")
 
  using namespace maci;
  using namespace cdb;
 
-// static public vars 
+// static public vars
 ContainerImpl * ContainerImpl::m_container = 0;
 LoggingProxy * ContainerImpl::m_loggerProxy = 0;
 LibraryManager * ContainerImpl::m_dllmgr = 0;
@@ -133,9 +133,9 @@ ContainerImpl::ContainerImpl() :
   m_defaultLogLevels.minLogLevel = 2;
   m_defaultLogLevels.minLogLevelLocal = 2;
   m_defaultLogLevels.useDefault = true;
- 
+
   // singleton check
-  
+
     if (m_container)
     {
       // since ContainerImpl is a singleton, refuse to create another instance
@@ -181,7 +181,7 @@ ContainerImpl::~ContainerImpl()
       m_argv = 0;
     }
 
-  
+
 }
 
 // ************************************************************************
@@ -190,13 +190,13 @@ maci::Manager_ptr
 ContainerImpl::getManager()
 {
   ACS_TRACE("maci::ContainerImpl::getManager");
-  if (m_manager.ptr() == maci::Manager::_nil())
+  if (CORBA::is_nil(m_manager.ptr()))
     {
       ACS_LOG(LM_RUNTIME_CONTEXT, "maci::ContainerImpl::getManager",
 	      (LM_INFO, "Resolving manager..."));
 
       m_manager = resolveManager(-1);					// 4 ever
-      if (m_manager.ptr() == maci::Manager::_nil())
+      if (CORBA::is_nil(m_manager.ptr()))
 	{
 	  ACS_LOG(LM_RUNTIME_CONTEXT, "maci::ContainerImpl::getManager", (LM_ERROR, "Failed to connect to the Manager."));
 	}
@@ -212,115 +212,115 @@ ContainerImpl::initializeCORBA(int &argc, char *argv[])
 {
 
   ACS_TRACE("maci::ContainerImpl::initializeCORBA");
-	
+
   orb = CORBA::ORB::_nil();
   poaRoot = poaContainer = poaPersistent = poaTransient = PortableServer::POA::_nil();
 
-  
+
   try
     {
-      
+
       // Initialize the ORB.
       orb = CORBA::ORB_init(argc, argv, "TAO");
-      
+
       //set the global ORB in simpleclient
       ORBHelper::setORB(orb.in());
-      
-      if(orb.ptr() == CORBA::ORB::_nil())
+
+      if(CORBA::is_nil(orb.ptr()))
 	return false;
-      
+
       //
       // Initialize POAs.
       //
-      
+
       // Get the Root POA.
       CORBA::Object_var objRootPOA =
 	orb->resolve_initial_references("RootPOA");
-      
-      
+
+
       poaRoot = PortableServer::POA::_narrow(objRootPOA.in());
-      
-      
-      if (poaRoot.ptr() == PortableServer::POA::_nil())
+
+
+      if (CORBA::is_nil(poaRoot.ptr()))
 	return false;
-      
+
       // Get the manager of the root POA to apply to the child POAs.
       /*PortableServer::POAManager_var*/ poaManager =
 					   poaRoot->the_POAManager();
-      
-      
+
+
       //
       // Prepare policies our POAs will be using.
       //
       PortableServer::IdAssignmentPolicy_var user_id_policy =
 	poaRoot->create_id_assignment_policy(PortableServer::USER_ID);
-      
-      
+
+
       PortableServer::LifespanPolicy_var persistent_policy =
 	poaRoot->create_lifespan_policy(PortableServer::PERSISTENT);
-      
-      
+
+
       PortableServer::RequestProcessingPolicy_var user_servant_manager_policy =
 	poaRoot->create_request_processing_policy (PortableServer::USE_SERVANT_MANAGER);
-      
-      
+
+
       PortableServer::ServantRetentionPolicy_var servant_retention_policy  =
 	poaRoot->create_servant_retention_policy (PortableServer::RETAIN);
-      
-      
-      
+
+
+
       //
       // Container (using persistent servant-manager) POA
       //
-      
+
       CORBA::PolicyList policies;
-      
-      poaTransient = poaRoot->create_POA("TransientPOA", 
-					 poaManager.in(), 
+
+      poaTransient = poaRoot->create_POA("TransientPOA",
+					 poaManager.in(),
 					 policies);
-      
-      if (poaTransient.ptr() == PortableServer::POA::_nil())
+
+      if (CORBA::is_nil(poaTransient.ptr()))
 	  {
 	  return false;
 	  }
 
 
       policies.length(4);
-      
+
       policies[0] = PortableServer::LifespanPolicy::_duplicate(persistent_policy.in());
       policies[1] = PortableServer::IdAssignmentPolicy::_duplicate(user_id_policy.in());
       policies[2] = PortableServer::ServantRetentionPolicy::_duplicate(servant_retention_policy.in());
       policies[3] = PortableServer::RequestProcessingPolicy::_duplicate(user_servant_manager_policy.in());
-      
-      poaContainer = poaRoot->create_POA("ServantManagerPOA", 
-					 poaManager.in(), 
+
+      poaContainer = poaRoot->create_POA("ServantManagerPOA",
+					 poaManager.in(),
 					 policies);
-      
-      
-      if (poaContainer.ptr() == PortableServer::POA::_nil())
-	return false;
-      
+
+
+      if (CORBA::is_nil(poaContainer.ptr()))
+    	  return false;
+
       ACS_NEW_RETURN(m_servant_mgr, MACIServantManager(), false);
-      
+
       PortableServer::ServantActivator_var servant_activator = m_servant_mgr;
-      
-      
+
+
       poaContainer->set_servant_manager(servant_activator.in());
-      
- 
+
+
       //
       // Persistent POA
       //
-      
+
       policies.length(3);
-      
-      poaPersistent = poaRoot->create_POA("PersistentPOA", 
-					  poaManager.in(), 
+
+      poaPersistent = poaRoot->create_POA("PersistentPOA",
+					  poaManager.in(),
 					  policies);
-      
-      
-      if (poaPersistent.ptr() == PortableServer::POA::_nil())
-	return false;
+
+
+      if (CORBA::is_nil(poaPersistent.ptr()))
+    	  return false;
 
       // We're done using the policies.
       user_id_policy->destroy();
@@ -337,13 +337,13 @@ ContainerImpl::initializeCORBA(int &argc, char *argv[])
 	  CORBA::Object_var current_object =
 	    orb->resolve_initial_references ("ORBPolicyManager");      // ORB policy
 //	    orb->resolve_initial_references ("PolicyCurrent");         // Current thread policy
-	  
+
 
 	  CORBA::PolicyManager_var policy_current =
 	    CORBA::PolicyManager::_narrow (current_object.in ());
 //	  CORBA::PolicyCurrent_var policy_current =
 //	    CORBA::PolicyCurrent::_narrow (current_object.in ());
-	  
+
 
 	  TimeBase::TimeT timeout = ContainerImpl::m_invocationTimeout;
 	  timeout *= 10000;	// convert to ns
@@ -353,24 +353,24 @@ ContainerImpl::initializeCORBA(int &argc, char *argv[])
 	  policies.length (1);
 	  policies[0] =
 	    orb->create_policy (Messaging::RELATIVE_RT_TIMEOUT_POLICY_TYPE, any_object	);
-	  
+
 
 	  policy_current->set_policy_overrides (policies, CORBA::SET_OVERRIDE);
-	  
+
 
 	  policies[0]->destroy ();
-	  
+
 	}
 
-          
+
       // POA Manager can start processing incoming requests.
       poaManager->activate();
-      
-      
+
+
     }
   catch (CORBA::BAD_PARAM &badex)
     {
-      
+
       if (badex.minor() == CORBA::SystemException::_tao_minor_code (TAO_ACCEPTOR_REGISTRY_OPEN_LOCATION_CODE,
 								    EINVAL))
 	{
@@ -393,9 +393,9 @@ ContainerImpl::initializeCORBA(int &argc, char *argv[])
     {
       ACS_LOG(LM_RUNTIME_CONTEXT, "maci::Container::initializeCORBA",
 	      (LM_ERROR, "Unexpected exception caught while initializing CORBA"));
-      return false;  
+      return false;
     }
-  
+
   return true;
 }
 
@@ -406,22 +406,22 @@ ContainerImpl::doneCORBA()
 {
   ACS_TRACE("maci::ContainerImpl::doneCORBA");
 
-  
+
   try
     {
-      
+
       if(poaRoot.ptr() != PortableServer::POA::_nil())
 	{
 	  // destroy(etherealize_objects, wait_for_completion)
 	  // this also destroys other POAs
 	  poaRoot->destroy(1, 1);
-	  
+
 	}
-      
+
       if(orb.ptr() != CORBA::ORB::_nil())
 	{
 	  orb->destroy();
-	  
+
 	}
       delete m_servant_mgr;
     }
@@ -434,7 +434,7 @@ ContainerImpl::doneCORBA()
       ACS_LOG(LM_RUNTIME_CONTEXT, "maci::Container::doneCORBA",
 	      (LM_ERROR, "Unexpected exception caught while destroying CORBA"));
     }
-  
+
   return true;
 }
 
@@ -520,8 +520,8 @@ ContainerImpl::init(int argc, char *argv[])
 
   //ACS_TRACE("maci::ContainerImpl::init");
   Logging::Logger::setConfigureLoggerFunction(ContainerImpl::configureLogger);
-  
-  try 
+
+  try
     {
 
       ACE_OS::printf("%s\n", ::maci::Container::ContainerStatusStartupBeginMsg);
@@ -556,7 +556,7 @@ ContainerImpl::init(int argc, char *argv[])
         {
           try
 	    {
-	    ACS_DEBUG("maci::ContainerImpl::init", 
+	    ACS_DEBUG("maci::ContainerImpl::init",
 		      "Retrieving CDB reference from Manager using bootstrap ORB");
 
 	    // Creates local copy of command line arguments, making sure
@@ -575,11 +575,11 @@ ContainerImpl::init(int argc, char *argv[])
 			     cdbBootstrapArgv.buf());
 	    int cdb_argc = cdbBootstrapArgv.argc();
 	    cdbORB = CORBA::ORB_init (cdb_argc, cdbBootstrapArgv.argv());
-                                                                                                                         
+
 	    manager = MACIHelper::resolveManager(cdbORB.in(), cdbBootstrapArgv.argc(), cdbBootstrapArgv.argv(), -1 ,0/*2, 5*/);
 	      if (!CORBA::is_nil(manager.in()))
 		{
-		  CORBA::Object_var cdb = manager->get_service(0, "CDB", true); 
+		  CORBA::Object_var cdb = manager->get_service(0, "CDB", true);
 
 		  if (!CORBA::is_nil(cdb.in()))
 		    {
@@ -592,7 +592,7 @@ ContainerImpl::init(int argc, char *argv[])
 	  catch( CORBA::Exception &ex )
 	    {
 	      ACS_LOG(LM_RUNTIME_CONTEXT, "maci::ContainerImpl::init", (LM_DEBUG, "Failed to retrieve CDB referece."));
-	    } 
+	    }
 
         }
 
@@ -603,7 +603,7 @@ ContainerImpl::init(int argc, char *argv[])
 
       m_dbPrefix = ACE_CString(":Appl_data:MACI:Containers:")+m_container_name;
       m_dbRootPrefix = ":Appl_data:MACI";
-    
+
       m_database = getDatabase(argc, argv, cdbORB.in());
       if (!m_database || !m_database->isInitialized())
 	{
@@ -613,7 +613,7 @@ ContainerImpl::init(int argc, char *argv[])
 	  return false;
 	}
 
-	
+
       //
       // create and initialize logger
       //
@@ -633,21 +633,21 @@ ContainerImpl::init(int argc, char *argv[])
 	  ACS_SHORT_LOG((LM_INFO, "Configuration information for container '%s' not available.", m_container_name));
 	  m_dynamicContainer = true;
 	}
-	
+
       unsigned long minCachePriority = 0;
       if (!m_dynamicContainer && m_database->GetField(m_dbPrefix, "LoggingConfig/minLogLevel", fld))
 	{
 	  if (fld.GetULong(ul))
 	      minCachePriority = ul;
 	}
-    
+
       unsigned long maxCachePriority = LM_MAX_PRIORITY;
       if (!m_dynamicContainer && m_database->GetField(m_dbPrefix, "LoggingConfig/immediateDispatchLevel", fld))
 	{
 	  if (fld.GetULong(ul))
 	      maxCachePriority = ul;
 	}
-    
+
       unsigned int flushPeriodSeconds = 10;
       if (!m_dynamicContainer && m_database->GetField(m_dbPrefix, "LoggingConfig/flushPeriodSeconds", fld))
 	{
@@ -667,9 +667,9 @@ ContainerImpl::init(int argc, char *argv[])
         {
             envStdioPriority = atoi(acsSTDIO);
         }
-    if (envStdioPriority >= 0 && envStdioPriority <=11 ) 
+    if (envStdioPriority >= 0 && envStdioPriority <=11 )
         m_defaultLogLevels.minLogLevelLocal = envStdioPriority;
-    
+
     char *acsCentralizeLogger = getenv("ACS_LOG_CENTRAL");
     if (acsCentralizeLogger && *acsCentralizeLogger)
         {
@@ -677,7 +677,7 @@ ContainerImpl::init(int argc, char *argv[])
         }
     if(envCentralizePriority >= 0 && envCentralizePriority <=11 )
         m_defaultLogLevels.minLogLevel = envCentralizePriority;
-	
+
       if (m_dynamicContainer)
 	{
 	  ACS_LOG(LM_RUNTIME_CONTEXT, "maci::Container::init", (LM_INFO, "Starting as dynamic container."));
@@ -688,7 +688,7 @@ ContainerImpl::init(int argc, char *argv[])
 		refresh_logging_config();
 	}
 	m_logLevelRefresh = CDB_REFRESH_LOG_LEVEL;
-	
+
       //
       // setup DLL manager
       //
@@ -696,7 +696,7 @@ ContainerImpl::init(int argc, char *argv[])
       ACS_NEW_RETURN(m_dllmgr, LibraryManager, false);
 
 
-      // 
+      //
       // "fix" command line
       //
 
@@ -726,7 +726,7 @@ ContainerImpl::init(int argc, char *argv[])
 
 	  strCmdLn += " -ORBEndpoint iiop://";
 	  strCmdLn += hostname;
-	  strCmdLn += ":"; 
+	  strCmdLn += ":";
 	  strCmdLn += containerOutput.str().c_str();
 	}
 
@@ -750,8 +750,8 @@ ContainerImpl::init(int argc, char *argv[])
 			     targc,
 			     m_argv);
       m_fullargc = m_argc = targc;
-      
-    
+
+
       // initialize here (now m_argv is initialized)
       initThread("main");
 
@@ -788,7 +788,7 @@ ContainerImpl::init(int argc, char *argv[])
 	      m_recovery = (ACE_OS::strcmp(bVal.c_str(), "true") == 0 ? true : false);
 	      }
 	}
- 
+
       // read DALtype
       ACE_CString dbType = "DAL";
       if (!m_dynamicContainer && m_database->GetField(m_dbPrefix, "DALtype", fld))
@@ -851,10 +851,10 @@ ContainerImpl::init(int argc, char *argv[])
 /// @todo AlarmSystem is not supported for VxWorks
 #ifndef MAKE_VXWORKS
 	// Initialize the alarm system factory
-	try 
+	try
 	    {
 	    ACSAlarmSystemInterfaceFactory::init(getManager());
-	    } 
+	    }
 	catch(ACSErr::ACSbaseExImpl &ex)
 	    {
 	    ACS_LOG(LM_RUNTIME_CONTEXT, "maci::ContainerImpl::init",
@@ -882,7 +882,7 @@ ContainerImpl::init(int argc, char *argv[])
 	{
 	  ACS_LOG(LM_RUNTIME_CONTEXT, "maci::Container::init", (LM_INFO, "Recovery disabled."));
         }
- 
+
 
       //
       // Get the path in which to look for DLLs from environment
@@ -895,9 +895,9 @@ ContainerImpl::init(int argc, char *argv[])
       ACE_CString strDLLPath(ACE_OS::getenv ("LD_LIBRARY_PATH"));
 #endif
 
-      m_dllmgr->setSearchPath(strDLLPath.c_str());  
-    
-      ACS_DEBUG_PARAM("maci::ContainerImpl::init", "Using DLL path: %s", strDLLPath.c_str()); 
+      m_dllmgr->setSearchPath(strDLLPath.c_str());
+
+      ACS_DEBUG_PARAM("maci::ContainerImpl::init", "Using DLL path: %s", strDLLPath.c_str());
 
 
 
@@ -909,18 +909,18 @@ ContainerImpl::init(int argc, char *argv[])
 /*
       PortableServer::ObjectId_var id =
 	PortableServer::string_to_ObjectId(m_container_name);
-      
+
       poaPersistent->activate_object_with_id(id.in(), this);
-      
+
       CORBA::Object_var obj = poaPersistent->servant_to_reference(this);
 */
       if (CORBA::is_nil(obj.in()))
-	return false;
-    
+    	  return false;
+
       m_container_ref = maci::Container::_narrow(obj.in());
-      
-    
-      if (m_container_ref.ptr()==maci::Container::_nil())
+
+
+      if (CORBA::is_nil(m_container_ref.ptr()))
 	{
 	  ACS_LOG(LM_RUNTIME_CONTEXT, "maci::ContainerImpl::init",
 		  (LM_INFO, "Failed to narrow Container."));
@@ -949,7 +949,7 @@ ContainerImpl::init(int argc, char *argv[])
 	  deleteArray = true;
 	  ary->push_back("baci");
 	}
-    
+
 	  for(StringArray::const_iterator iter = ary->begin();
 	      (iter != ary->end()) && (iter->length() > 0); ++iter)
 	    {
@@ -962,8 +962,8 @@ ContainerImpl::init(int argc, char *argv[])
 		}
 	      else
 		{
-		  m_dllmgr->setupCORBAinDLL(dll_handle, orb.in(), poaManager.in(), poaRoot.in(), poaPersistent.in(), poaTransient.in()); 
-		  m_dllmgr->initThreadsInDLL(dll_handle, initThread, doneThread); 
+		  m_dllmgr->setupCORBAinDLL(dll_handle, orb.in(), poaManager.in(), poaRoot.in(), poaPersistent.in(), poaTransient.in());
+		  m_dllmgr->initThreadsInDLL(dll_handle, initThread, doneThread);
 		}
 	    }
 
@@ -980,7 +980,7 @@ ContainerImpl::init(int argc, char *argv[])
       //
 
 #ifndef ACS_HAS_WIN32
-      // write pid to the file 
+      // write pid to the file
       if (m_pid_file_name)
 	{
 	  FILE * pidf = ACE_OS::fopen (m_pid_file_name, "w");
@@ -1004,7 +1004,7 @@ ContainerImpl::init(int argc, char *argv[])
       ACS_LOG(0, "maci::ContainerImpl::init",
 	      (LM_INFO, "CORBA exception caught"));
     }
-  
+
   return false;
 }
 
@@ -1017,7 +1017,7 @@ ContainerImpl::connect()
     if (m_shutdown)
 	return false;
 
-    
+
 
 
       ///
@@ -1037,12 +1037,12 @@ ContainerImpl::connect()
                       (ACE_OS::strcmp(bVal.c_str(), "1") == 0) ? 1 : 0);
           }
 	}
-      
+
 
       if (useIFR)
 	{
 	  /// Get && provide IFR connection status.
-	  /// Only this method should be used, because CORBA::Object::_get_interface() uses it. 
+	  /// Only this method should be used, because CORBA::Object::_get_interface() uses it.
 	  try
 	    {
 
@@ -1071,20 +1071,20 @@ ContainerImpl::connect()
 	    {
 	      ACS_LOG(LM_RUNTIME_CONTEXT, "maci::ContainerImpl::init", (LM_INFO, "Failed to connect to the InterfaceRepository."));
 	      ACE_PRINT_EXCEPTION(ex, "maci::ContainerImpl::init");
-	    } 
+	    }
 	  }
       else
         {
 	  ACS_LOG(LM_RUNTIME_CONTEXT, "maci::ContainerImpl::init", (LM_INFO, "Usage of an InterfaceRepository disabled."));
 	}
-      
+
       ACE_OS::printf("%s\n", ::maci::Container::ContainerStatusMgrInitBeginMsg);
 
 
       ACS_LOG(LM_RUNTIME_CONTEXT, "maci::ContainerImpl::init", (LM_INFO, "Connecting to the Manager..."));
-    
+
       m_manager = resolveManager(-1);					// 4 ever
-      if (m_manager.ptr() == maci::Manager::_nil())
+      if (CORBA::is_nil(m_manager.ptr()))
 	{
 	  ACS_LOG(0, "maci::ContainerImpl::init", (LM_INFO, "Failed to connect to the Manager."));
 	  ACS_LOG(LM_RUNTIME_CONTEXT, "maci::ContainerImpl::init", (LM_ERROR, "Failed to connect to the Manager."));
@@ -1143,8 +1143,8 @@ ContainerImpl::connect()
 	      ACS_LOG(0, "maci::ContainerImpl::init", (LM_INFO, "Failed to connect to the Centralized Logger."));
 	      ACS_LOG(LM_RUNTIME_CONTEXT, "maci::ContainerImpl::init", (LM_ERROR, "Failed to connect to the Centralized Logger."));
 	      ACE_PRINT_EXCEPTION(ex, "maci::ContainerImpl::init");
-	    } 
-			
+	    }
+
 
 	  // set namingContext to the logger (to enable CL reconnections).
 	  try
@@ -1175,13 +1175,13 @@ ContainerImpl::connect()
 	    {
 	      ACS_LOG(LM_RUNTIME_CONTEXT, "maci::ContainerImpl::init", (LM_ERROR, "Unable to set Naming Context to Logger."));
 	      ACE_PRINT_EXCEPTION(ex, "maci::ContainerImpl::init");
-	    } 
+	    }
 
 	}
 
 
       ACS_LOG(LM_RUNTIME_CONTEXT, "maci::ContainerImpl::init", (LM_INFO, "Logging into the Manager..."));
- 
+
       int loginAttempts = -1;  // inf
       maci::ClientInfo_var info = 0;
       while (loginAttempts!=0 && !m_shutdown)
@@ -1200,17 +1200,17 @@ ContainerImpl::connect()
 	      ACE_PRINT_EXCEPTION(ex, "maci::ContainerImpl::init");
 	      //return false;
 	      if (loginAttempts!=0 && !m_shutdown)
-		{	
+		{
 		  if (loginAttempts!=-1) loginAttempts--;
 		  if (loginAttempts>0)
 		      ACE_OS::sleep(10-loginAttempts);     // sleep
-		  else 
+		  else
 		      ACE_OS::sleep(10);
 		}
-	    } 
-	  
+	    }
+
 	}
-	
+
       if (info.ptr()==0)
 	{
 	  ACS_LOG(LM_RUNTIME_CONTEXT, "maci::ContainerImpl::init", (LM_ERROR, "Failed to login to the Manager."));
@@ -1221,7 +1221,7 @@ ContainerImpl::connect()
 
       //Creating container services (container handle)
       ACE_CString ctrName(m_container_name);
-      m_containerServices = instantiateContainerServices(m_handle,ctrName,poaContainer.in());      
+      m_containerServices = instantiateContainerServices(m_handle,ctrName,poaContainer.in());
 
       ACS_LOG(LM_RUNTIME_CONTEXT, "maci::ContainerImpl::init", (LM_INFO, "Logged into the Manager."));
 
@@ -1280,7 +1280,7 @@ ContainerImpl::run()
 
 	DALaccess::exitFunction();
     }
-  
+
   ACS_DEBUG("ContainerImpl::run", "Leaving ContainerImpl::run() method.");
 
   return true;
@@ -1307,7 +1307,7 @@ ContainerImpl::done()
 
   if (m_database)
       {
-      destroyDatabase(m_database); 
+      destroyDatabase(m_database);
       m_database = 0;
       }
 
@@ -1315,13 +1315,13 @@ ContainerImpl::done()
 }
 
 // ************************************************************************
-  
+
 maci::Manager_ptr
 ContainerImpl::resolveManager(int nSecTimeout)
 {
 
   ACS_TRACE("maci::ContainerImpl::resolveManager");
- 
+
   Field fld;
   ULong retries = 16;
   if (!m_dynamicContainer && m_database->GetField(m_dbPrefix, "ManagerRetry", fld))
@@ -1337,9 +1337,9 @@ ContainerImpl::resolveManager(int nSecTimeout)
 void
 ContainerImpl::logout ()
 {
-  
+
   ACS_TRACE("maci::ContainerImpl::logout");
-  
+
   if (!CORBA::is_nil(m_manager.ptr()) && m_handle!=0)
     {
       try
@@ -1348,8 +1348,8 @@ ContainerImpl::logout ()
 	  ACS_LOG(LM_RUNTIME_CONTEXT, "maci::ContainerImpl::logout",
 		  (LM_INFO, "Logging out from the Manager."));
 
-	  m_manager->logout(m_handle); 
-	  
+	  m_manager->logout(m_handle);
+
 
 	  m_handle = 0;
 	  m_manager = maci::Manager::_nil();
@@ -1362,7 +1362,7 @@ ContainerImpl::logout ()
 	  ACS_LOG(LM_RUNTIME_CONTEXT, "maci::ContainerImpl::logout",
 		  (LM_INFO, "Failed to log out from the Manager."));
 	  ACE_PRINT_EXCEPTION(ex, "(maci::ContainerImpl::logout) CORBA Exception occured.");
-	} 
+	}
     }
 
 }
@@ -1373,7 +1373,7 @@ int
 ContainerImpl::loadDLL(const char * name)
 {
   ACS_TRACE("maci::ContainerImpl::loadDLL");
-  
+
   if (!m_dllmgr)
     return 0;
 
@@ -1393,22 +1393,22 @@ ContainerImpl::activateCORBAObject(PortableServer::Servant srvnt,
 
   if (!name)
     return CORBA::Object::_nil();
-  
-  
+
+
   try
     {
-      
+
       PortableServer::ObjectId_var id =
 	PortableServer::string_to_ObjectId(name);
-      
+
       poaContainer->activate_object_with_id(id.in(), srvnt);
-      
-      
+
+
       CORBA::Object_var obj = poaContainer->servant_to_reference(srvnt);
-      
-      
+
+
       return obj._retn();
-      
+
     }
   catch( CORBA::Exception &ex )
     {
@@ -1430,7 +1430,7 @@ ContainerImpl::etherealizeComponent(const char * id, PortableServer::Servant ser
 
   ACS_TRACE("maci::ContainerImpl::etherealizeComponent");
   ACS_DEBUG_PARAM("maci::ContainerImpl::etherealizeComponent", "Etherealizing '%s'", id);
-  
+
   // remove reference (POA will now destroy servant)
   servant->_remove_ref();
 
@@ -1461,25 +1461,25 @@ bool
 ContainerImpl::deactivateCORBAObject(CORBA::Object_ptr obj)
 {
   ACS_TRACE("maci::ContainerImpl::deactivateCORBAObject");
-  
-  
-  
+
+
+
   try
     {
       PortableServer::ObjectId_var id =
 	poaContainer->reference_to_id(obj);
-      
-      
+
+
       poaContainer->deactivate_object(id.in());
-      
-      
+
+
       return true;
     }
   catch( CORBA::Exception &ex )
     {
       ACE_PRINT_EXCEPTION(ex, "ContainerImpl::deactivateCORBAObject");
     }
-  
+
   return false;
 }
 
@@ -1490,17 +1490,17 @@ ContainerImpl::deactivateCORBAObject(PortableServer::Servant srvnt)
 {
   ACS_TRACE("maci::ContainerImpl::deactivateCORBAObject (maci::Handle, PortableServer::Servant)");
 
-  
+
 
   try
     {
       PortableServer::ObjectId_var id =
 	poaContainer->servant_to_id(srvnt);
-      
-      
+
+
       poaContainer->deactivate_object(id.in());
-      
-      
+
+
       return true;
     }
   catch( CORBA::Exception &ex )
@@ -1523,13 +1523,13 @@ ContainerImpl::initThread(const char * threadName)
 				    __FILE__,
 				    __LINE__,
 				    "maci::ContainerImpl::initThread");
-    
+
     if (m_loggerProxy)
 	LoggingProxy::init(m_loggerProxy);
     LoggingProxy::ProcessName(contName);
     LoggingProxy::ThreadName(threadName);
     LoggingProxy::Flags(LM_SOURCE_INFO | LM_RUNTIME_CONTEXT);
-    
+
     if (threadName && ACE_OS::strlen(threadName))
 	{
 	getNamedLogger(threadName)->log(Logging::BaseLog::LM_INFO,
@@ -1568,7 +1568,7 @@ ContainerImpl::activate_component (
 			     const char * name,
 			     const char * exe,
 			     const char * type
-			     
+
 			     )
   throw (CORBA::SystemException,
 	 maciErrType::CannotActivateComponentEx)
@@ -1622,7 +1622,7 @@ ContainerImpl::activate_component (
 	{
 	ACS_LOG(LM_RUNTIME_CONTEXT, "maci::ContainerImpl::activate_component",
 		(LM_WARNING, "component with handle %u (%s) already activated", h, name));
-	
+
 	if (ACE_OS::strcmp(currentInfo.info.name, name) == 0 &&
 	    ACE_OS::strcmp(currentInfo.info.type, type) == 0)
 	    {
@@ -1639,7 +1639,7 @@ ContainerImpl::activate_component (
 	    {
 	      ACS_LOG(LM_RUNTIME_CONTEXT, "maci::ContainerImpl::activate_component",
 		      (LM_WARNING, "Activated component with handle %u (%s) has different name or type that existant! Releasing that component and replacing it with the new one...", h, name));
-	      
+
 	      maci::HandleSeq_var handles = new maci::HandleSeq(1);
 	      handles->length(1);
 	      handles[0] = h;
@@ -1669,7 +1669,7 @@ ContainerImpl::activate_component (
 	      {
 	      	char re[100];
 		sprintf(re, "Component with handle %u is marked to be deactivated, but is still waiting for POA to etherealizate it...", h);
-		
+
 		maciErrType::CannotActivateComponentExImpl ex(__FILE__, __LINE__,
 						  "maci::ContainerImpl::activate_component");
 		ex.setCURL(name);
@@ -1680,7 +1680,7 @@ ContainerImpl::activate_component (
 		throw ex.getCannotActivateComponentEx();
 	      }
 
-/* 
+/*
 	    // fix handle
 	    m_activeComponents.unbind(entry->int_id_.info.h, info);
 	    info.info.h = h;
@@ -1696,11 +1696,11 @@ ContainerImpl::activate_component (
     }//if-else
 
   int libHandle = 0;
-  
+
   // load the executable
   if((libHandle = loadDLL(exe)) == 0)
     {
-    ACSErrTypeCommon::CannotLoadExImpl lex(__FILE__, __LINE__, 
+    ACSErrTypeCommon::CannotLoadExImpl lex(__FILE__, __LINE__,
 					   "maci::ContainerImpl::activate_component");
     lex.setObjectName(exe);
     maciErrType::CannotActivateComponentExImpl ex(lex, __FILE__, __LINE__,
@@ -1712,7 +1712,7 @@ ContainerImpl::activate_component (
     throw ex.getCannotActivateComponentEx();
     }//if
 
-	
+
   // get entry point of the component DLL.
   ConstructComponentFunc ConstructComponent =
       (ConstructComponentFunc)m_dllmgr->getSymbol(libHandle, "ConstructComponent");
@@ -1720,7 +1720,7 @@ ContainerImpl::activate_component (
     {
     char re[100];
     sprintf (re, "ConstructComponent in library %s", exe);
-    ACSErrTypeCommon::NotImplementedExImpl nex(__FILE__, __LINE__, 
+    ACSErrTypeCommon::NotImplementedExImpl nex(__FILE__, __LINE__,
 					   "maci::ContainerImpl::activate_component");
     nex.setFeature(re);
     maciErrType::CannotActivateComponentExImpl ex(nex, __FILE__, __LINE__,
@@ -1732,7 +1732,7 @@ ContainerImpl::activate_component (
     m_dllmgr->unlock(libHandle);
     throw ex.getCannotActivateComponentEx();
     }//if
-  
+
   // Build the ContainerServices that has to be passed to the constructor of the
   // component
   // The component stores the ContainerServices using a loki smart pointer
@@ -1740,7 +1740,7 @@ ContainerImpl::activate_component (
   // pointer is destroyed
   ACE_CString cmpName(name);
   ContainerServices* acsCS = instantiateContainerServices(h,cmpName,poaContainer.in());
-  if (acsCS==NULL) 
+  if (acsCS==NULL)
       {
       ACSErrTypeCommon::NullPointerExImpl nullEx(__FILE__, __LINE__,
 						 "maci::ContainerImpl::activate_component");
@@ -1754,10 +1754,10 @@ ContainerImpl::activate_component (
       m_dllmgr->unlock(libHandle);
       throw ex.getCannotActivateComponentEx();
       }//if
-  
+
   // construct the component
   PortableServer::Servant servant=0;
-  
+
   try
       {
       servant = ConstructComponent(h, name, type, acsCS);
@@ -1776,7 +1776,7 @@ ContainerImpl::activate_component (
       }
   catch (...)
       {
-      ACSErrTypeCommon::UnexpectedExceptionExImpl uex(__FILE__, __LINE__, 
+      ACSErrTypeCommon::UnexpectedExceptionExImpl uex(__FILE__, __LINE__,
 						      "maci::ContainerImpl::activate_component");
       maciErrType::CannotActivateComponentExImpl ex(uex, __FILE__, __LINE__,
 						    "maci::ContainerImpl::activate_component");
@@ -1792,8 +1792,8 @@ ContainerImpl::activate_component (
   // @todo this can be removed since there should not happend in case of an error
   if(servant == 0)
     {
-    ACS_LOG(LM_RUNTIME_CONTEXT, "maci::ContainerImpl::activate_component", 
-	    (LM_WARNING, "The constructor of a component should not return 0, but an exception in case of an error ! Please change the code!")); 
+    ACS_LOG(LM_RUNTIME_CONTEXT, "maci::ContainerImpl::activate_component",
+	    (LM_WARNING, "The constructor of a component should not return 0, but an exception in case of an error ! Please change the code!"));
     ACSErrTypeCommon::NullPointerExImpl nullEx(__FILE__, __LINE__,
 					       "maci::ContainerImpl::activate_component");
     nullEx.setVariable("servant");
@@ -1823,35 +1823,35 @@ ContainerImpl::activate_component (
           // destroy
     delete servant;
     m_dllmgr->unlock(libHandle);
-    
+
     throw ex.getCannotActivateComponentEx();
     }
 
 
-  // even though the component is now an activated Corba object already, 
-  // it won't be called yet since the maciManager will only pass around  
+  // even though the component is now an activated Corba object already,
+  // it won't be called yet since the maciManager will only pass around
   // access information after we've returned from this activate_component method.
-  // Therefore it's not too late to call initialize and execute, which are 
+  // Therefore it's not too late to call initialize and execute, which are
   // guaranteed to be called before incoming functional calls must be expected.
   // At the moment we have to call these two methods one after the other;
   // if the Manager supports new calling semantics, we could separate the two
   // as described in ComponentLifecycle
-  if (acscomponent::ACSComponentImpl *tempComp = 
-      dynamic_cast<acscomponent::ACSComponentImpl*>(servant)) 
+  if (acscomponent::ACSComponentImpl *tempComp =
+      dynamic_cast<acscomponent::ACSComponentImpl*>(servant))
       {
       try
 	  {
 	  // first we have to check if we are in the right state
-	  if (tempComp->componentState() != ACS::COMPSTATE_NEW) 
+	  if (tempComp->componentState() != ACS::COMPSTATE_NEW)
 	      {
 	      acsErrTypeLifeCycle::WrongInitialStateExImpl ex(__FILE__, __LINE__,
 							      "maci::ContainerImpl::activate_component");
 	      ex.setComponentName(name);
 	      throw ex; // this exception will be caught few lines lower
 	      }//if
-	  
+
 	  ComponentStateManager *csm = tempComp->getContainerServices()->getComponentStateManager();
-	  csm->setState(ACS::COMPSTATE_INITIALIZING); 
+	  csm->setState(ACS::COMPSTATE_INITIALIZING);
 	  tempComp->__initialize();
 	  csm->setState(ACS::COMPSTATE_INITIALIZED);
 	  csm->setState(ACS::COMPSTATE_OPERATIONAL);
@@ -1872,7 +1872,7 @@ ContainerImpl::activate_component (
 	  }
       catch (...)
 	  {
-	  ACSErrTypeCommon::UnexpectedExceptionExImpl uex(__FILE__, __LINE__, 
+	  ACSErrTypeCommon::UnexpectedExceptionExImpl uex(__FILE__, __LINE__,
 							  "maci::ContainerImpl::activate_component");
 	  maciErrType::CannotActivateComponentExImpl ex(uex, __FILE__, __LINE__,
 							"maci::ContainerImpl::activate_component");
@@ -1887,15 +1887,15 @@ ContainerImpl::activate_component (
 	  }//try-catch
       }
   // We allow also compoennts not implementing the acscomponent::ACSComponentImpl
-  // interface. 
+  // interface.
   // In this case there is no life cycle handling
   // Warning: This might change in the future!
   else
       {
-      ACS_LOG(LM_RUNTIME_CONTEXT, 
+      ACS_LOG(LM_RUNTIME_CONTEXT,
 	      "maci::ContainerImpl::activate_component",
 	      (LM_INFO, "Component '%s' does not implement acscomponent::ACSComponentImpl", name));
-      }		
+      }
 
   /// try to query IFR, if it is not available then
   /// return "IDL:omg.org/CORBA/Object:1.0"
@@ -1906,7 +1906,7 @@ ContainerImpl::activate_component (
 	{
 	  ifdef = servant->_get_interface ();
 	}//if
-	
+
       if (m_hasIFR && !CORBA::is_nil(ifdef.in()) )
 	{
 	  CORBA::InterfaceDef::FullInterfaceDescription_var desc = ifdef->describe_interface();
@@ -1916,7 +1916,7 @@ ContainerImpl::activate_component (
 	      info.info.interfaces[i] = CORBA::string_dup(desc->base_interfaces[i].in());
 	  info.info.interfaces[i] = CORBA::string_dup(desc->id.in());
 	}
-      else 
+      else
 	{
 	  info.info.interfaces.length(1);
 	  info.info.interfaces[0] = CORBA::string_dup("IDL:omg.org/CORBA/Object:1.0");
@@ -1930,22 +1930,22 @@ ContainerImpl::activate_component (
     corbaProblemEx.setCompletionStatus(_ex.completed());
     corbaProblemEx.setInfo(_ex._info().c_str());
     corbaProblemEx.log(LM_WARNING);
-    
+
 // @todo: I do not know if here we have to throw an exception ?
     info.info.interfaces.length(1);
     info.info.interfaces[0] = CORBA::string_dup("IDL:omg.org/CORBA/Object:1.0");
-    } 
+    }
 
   if (m_activeComponents.bind(h, info)==-1)
     {
       // failed to bind
     char re[64];
     sprintf(re, "Failed to bind the component with handle %d to HashMap!", h);
-    
+
     // deactivate & destroy
     info.info.reference = CORBA::Object::_nil();
-   
-    
+
+
     maciErrType::CannotActivateComponentExImpl ex(__FILE__, __LINE__,
 						  "maci::ContainerImpl::activate_component");
     ex.setCURL(name);
@@ -1958,7 +1958,7 @@ ContainerImpl::activate_component (
     // @todo unlock library ?
     // @todo: Warning: memory leak here?! No lifecycle methods called here (and container services cleanup)
     // also servant->_remove_ref(); should be called here?!
-    
+
     throw ex.getCannotActivateComponentEx();
     }
   m_activeComponentList.insert(h);
@@ -1967,8 +1967,8 @@ ContainerImpl::activate_component (
   servant->_remove_ref();
 
   ACS_LOG(LM_RUNTIME_CONTEXT, "maci::ContainerImpl::activate_component",
-	  (LM_INFO, "Component '%s' activated.", name));                 
-  
+	  (LM_INFO, "Component '%s' activated.", name));
+
   maci::ComponentInfo_var infoCpy = new maci::ComponentInfo();
   *(infoCpy.ptr()) = info.info;
   return infoCpy._retn();
@@ -1980,11 +1980,11 @@ ContainerImpl::activate_component (
 void
 ContainerImpl::deactivate_components (
 				const maci::HandleSeq & h
-				
+
 				)
   throw (CORBA::SystemException)
 {
-  
+
 
   ACS_TRACE("maci::ContainerImpl::deactivate_component");
 
@@ -1999,12 +1999,12 @@ ContainerImpl::deactivate_components (
     if (m_activeComponents.find(h[i], info)!=-1 &&
 	!CORBA::is_nil(info.info.reference.in()))
       {
-		
+
 	ACS_LOG(LM_RUNTIME_CONTEXT, "maci::ContainerImpl::deactivate_component",
-		(LM_DEBUG, 
-		 "Deactivating component with handle %d (%s of type %s)", 
+		(LM_DEBUG,
+		 "Deactivating component with handle %d (%s of type %s)",
 		 h[i], info.info.name.in(), info.info.type.in()));
-	  
+
 	CORBA::Object_ptr ref = CORBA::Object::_duplicate(info.info.reference.in());
 
 	info.info.reference = CORBA::Object::_nil();
@@ -2018,13 +2018,13 @@ ContainerImpl::deactivate_components (
         // is called by the POA after having "disconnected" the Component
 	// from CORBA.
 	PortableServer::Servant servant = poaContainer->reference_to_servant(ref);
-	if (acscomponent::ACSComponentImpl *tempComp = 
-	    dynamic_cast<acscomponent::ACSComponentImpl*>(servant)) 
-	    { 
+	if (acscomponent::ACSComponentImpl *tempComp =
+	    dynamic_cast<acscomponent::ACSComponentImpl*>(servant))
+	    {
 	    ACS_LOG(LM_RUNTIME_CONTEXT, "maci::ContainerImpl::deactivate_component",
 		    (LM_DEBUG, "Component '%s': calling cleanUp Lifecycle .", info.info.name.in()));
         tempComp->getContainerServices()->getComponentStateManager()->setState(ACS::COMPSTATE_DESTROYING);
-        
+
         try
         {
 	       tempComp->__cleanUp();
@@ -2032,7 +2032,7 @@ ContainerImpl::deactivate_components (
         catch (ACSErr::ACSbaseExImpl ex)
         {
             ACS_SHORT_LOG((
-                LM_ERROR, 
+                LM_ERROR,
                 "maci::ContainerImpl::deactivate_component: got an exception executing %s",
                 info.info.name.in()));
             ex.log();
@@ -2040,24 +2040,24 @@ ContainerImpl::deactivate_components (
         catch (...)
         {
             ACS_SHORT_LOG((
-                LM_ERROR, 
+                LM_ERROR,
                 "maci::ContainerImpl::deactivate_component: got an exception executing %s",
                 info.info.name.in()));
         }
-        
+
         if (tempComp->getContainerServices())
         {
             tempComp->getContainerServices()->getComponentStateManager()->setState(ACS::COMPSTATE_DEFUNCT);
         }
-        
+
         // The containerServices is deleted by the component (it stores the
         // ContainerServices into a smart pointer
-        
+
 	  }
 	servant->_remove_ref(); // Do not forget to signal we are not using the servant any more
 
 	ACS_LOG(LM_RUNTIME_CONTEXT, "maci::ContainerImpl::deactivate_component",
-		(LM_DEBUG, "Component '%s' reference set to nil.", info.info.name.in()));                 
+		(LM_DEBUG, "Component '%s' reference set to nil.", info.info.name.in()));
 
 	// Real deactivation.
     // This will also cause the call of the destructor
@@ -2065,19 +2065,19 @@ ContainerImpl::deactivate_components (
 	if (!deactivateCORBAObject(ref))
 	  {
 	    ACS_LOG(LM_RUNTIME_CONTEXT, "maci::ContainerImpl::deactivate_component",
-		    (LM_ERROR, "Failed to deactivate component with handle %d (%s of type %s)", 
+		    (LM_ERROR, "Failed to deactivate component with handle %d (%s of type %s)",
 		     h[i], info.info.name.in(), info.info.type.in()));
 	  }
 
 	CORBA::release(ref);
 
 	ACS_LOG(LM_RUNTIME_CONTEXT, "maci::ContainerImpl::deactivate_component",
-		(LM_INFO, "Component '%s' deactivated.", info.info.name.in()));                 
-     
+		(LM_INFO, "Component '%s' deactivated.", info.info.name.in()));
+
      //compNames[idxCompNames++] = info.info.name;
       }
      //compNames.length(idxCompNames);
-	//components_unavailable(compNames);  
+	//components_unavailable(compNames);
 }
 
 // ************************************************************************
@@ -2101,16 +2101,16 @@ ContainerImpl::restart_component (maci::Handle h
 maci::ComponentInfoSeq *
 ContainerImpl::get_component_info (
 			     const maci::HandleSeq & h
-			     
+
 			     )
   throw (CORBA::SystemException)
-{ 
-  
+{
+
 
   ACS_TRACE("maci::ContainerImpl:::get_component_info");
 
   if (m_shutdown) {
-    throw CORBA::NO_RESOURCES (); 
+    throw CORBA::NO_RESOURCES ();
     return 0;
   }
 
@@ -2121,8 +2121,8 @@ ContainerImpl::get_component_info (
 	CORBA::ULong listLen = h.length();
 	if( listLen == 0 ) {
 		listLen = m_activeComponents.current_size();
-                 
-                seq = new  maci::ComponentInfoSeq(listLen); 
+
+                seq = new  maci::ComponentInfoSeq(listLen);
                 if(seq==0){
                    errno = ENOMEM;
                    throw CORBA::NO_RESOURCES();
@@ -2137,7 +2137,7 @@ ContainerImpl::get_component_info (
 		return seq._retn();
 	}
 
-  seq = new  maci::ComponentInfoSeq(listLen); 
+  seq = new  maci::ComponentInfoSeq(listLen);
   if( seq==0 ) {
     errno = ENOMEM;
     throw CORBA::NO_RESOURCES();
@@ -2166,17 +2166,17 @@ ContainerImpl::get_component_info (
 void
 ContainerImpl::shutdown (
 			 CORBA::ULong action
-			 
+
 			 )
   throw (CORBA::SystemException)
 {
   ACS_TRACE("maci::ContainerImpl::shutdown");
-  
-  if (m_shutdown) 
+
+  if (m_shutdown)
     return;
   else
     m_shutdown=true;
-  
+
   setStatus(action & 0xFF);
   setShutdownAction((action & 0xFF00) >> 8);
 
@@ -2200,15 +2200,15 @@ ContainerImpl::shutdown (
   // cleanup the rest
 
   ACE_Guard<ACE_Recursive_Thread_Mutex> guard(m_activeComponents.mutex());
-  
+
   maci::HandleSeq_var handles = new maci::HandleSeq(m_activeComponents.current_size());
   handles->length(m_activeComponents.current_size());
 
-  /*  
+  /*
   CORBA::ULong pos = 0;
   COMPONENT_HASH_MAP_ENTRY *entry;
   for (COMPONENT_HASH_MAP_ITER iter(m_activeComponents);
-       iter.next(entry) != 0; 
+       iter.next(entry) != 0;
        iter.advance())
       handles[pos++] = entry->int_id_.info.h;
 
@@ -2232,16 +2232,16 @@ ContainerImpl::shutdown (
 
 
 // This was the orginal code trying to deactivate.
-/* 
+/*
   ACE_Guard<ACE_Recursive_Thread_Mutex> guard(m_mutex);
 
   maci::HandleSeq_var handles = new maci::HandleSeq(m_activeComponents.current_size());
   handles->length(m_activeComponents.current_size());
-  
+
   CORBA::ULong pos = 0;
   COMPONENT_HASH_MAP_ENTRY *entry;
   for (COMPONENT_HASH_MAP_ITER iter(m_activeComponents);
-       iter.next(entry) != 0; 
+       iter.next(entry) != 0;
        iter.advance())
       handles[pos++] = entry->int_id_.info.h;
 
@@ -2267,7 +2267,7 @@ ContainerImpl::shutdown (
 
   try
     {
-      
+
       if (poaContainer.ptr() != PortableServer::POA::_nil())
 	{
 
@@ -2277,7 +2277,7 @@ ContainerImpl::shutdown (
 	  // operation will return only after all requests in process have
 	  // completed and all invocations of etherealize have
 	  // completed. Otherwise, the destroy operation returns after
-	  // destroying the POAs.	
+	  // destroying the POAs.
 
           // If wait_for_completion is TRUE and the current thread is
           // in an invocation context dispatched from some POA
@@ -2287,13 +2287,13 @@ ContainerImpl::shutdown (
 
 	  // system exception, ID 'IDL:omg.org/CORBA/BAD_INV_ORDER:1.0'
 	  // OMG minor code (3), described as 'Operation would deadlock.', completed = NO
-  
+
 	  // this also destroys other POAs
 	  poaContainer->destroy(1, 1/);
 
 	  poaContainer = PortableServer::POA::_nil();
 	}
-      
+
     }
   catch( CORBA::Exception &ex )
     {
@@ -2304,7 +2304,7 @@ ContainerImpl::shutdown (
 #ifndef MAKE_VXWORKS
   ACSAlarmSystemInterfaceFactory::done();
 #endif
-  
+
   // flush until we still have ORB
   // and disable remote logging
   if (m_loggerProxy)
@@ -2319,19 +2319,19 @@ ContainerImpl::shutdown (
     {
       // false - avoid deadlock; true would try to wait for all requests
       // to complete before returning, but because we are calling it from within
-      // a request, we would be blocking it from 
+      // a request, we would be blocking it from
       orb->shutdown(false);
     }
   catch( CORBA::Exception &ex )
     {
       ACE_PRINT_EXCEPTION(ex, "maci::ContainerImpl::shutdown");
-    } 
+    }
 
   m_shutdownDoneSignaled = true;
   m_shutdownDone.signal();
-  
+
   ACS_DEBUG("maci::ContainerImpl::shutdown", "Done");
-  
+
 }
 
 // ************************************************************************
@@ -2376,7 +2376,7 @@ ContainerImpl::authenticate (
   throw (CORBA::SystemException)
 {
   ACE_UNUSED_ARG(question);
-  
+
 
   ACS_TRACE("maci::ContainerImpl:::authenticate");
 
@@ -2390,8 +2390,8 @@ ContainerImpl::authenticate (
   if (m_executionId == 0)
     m_executionId = execution_id;
   data->execution_id = m_executionId;
-  
-  return data._retn(); 
+
+  return data._retn();
 }
 
 // ************************************************************************
@@ -2399,42 +2399,42 @@ ContainerImpl::authenticate (
 char *
 ContainerImpl::name ()
   throw (CORBA::SystemException)
-{ 
+{
   return CORBA::string_dup(m_container_name);
 }
 
 // ************************************************************************
-	
+
 void
 ContainerImpl::message (
 			CORBA::Short type,
 			const char * message
-			
+
 			)
-  throw (CORBA::SystemException) 
+  throw (CORBA::SystemException)
 {
-  
+
   ACS_LOG(LM_RUNTIME_CONTEXT, "maci::ContainerImpl::message",
 	  (LM_INFO, "Message from manager received. Type: %d. Message: %s", type, message));
 }
 
 // ************************************************************************
-	
+
 void
 ContainerImpl::taggedmessage (
 			CORBA::Short type,
 			CORBA::Short tag,
 			const char * message
-			
+
 			)
-  throw (CORBA::SystemException) 
+  throw (CORBA::SystemException)
 {
 
   if (tag == ::maci::Client::MSGID_AUTOLOAD_START)
     {
       ACE_OS::printf("%s\n", ::maci::Container::ContainerStatusCompAutoloadBeginMsg);
     }
-  
+
   ACS_LOG(LM_RUNTIME_CONTEXT, "maci::ContainerImpl::taggedmessage",
 	  (LM_INFO, "Message from manager received. Type: %d. Tag: %d. Message: %s", type, tag, message));
 
@@ -2444,7 +2444,7 @@ ContainerImpl::taggedmessage (
       ACE_OS::printf("%s\n", ::maci::Container::ContainerStatusReadyMsg);
       ACE_OS::fflush(stdout);
     }
-  
+
 }
 
 // ************************************************************************
@@ -2452,7 +2452,7 @@ ContainerImpl::taggedmessage (
 void
 ContainerImpl::components_available (
 			       const maci::ComponentInfoSeq & cobs
-			       
+
 			       )
   throw (CORBA::SystemException)
 {
@@ -2465,11 +2465,11 @@ ContainerImpl::components_available (
         ContainerComponentInfo info;
         for (COMPONENT_LIST::CONST_ITERATOR iter(m_activeComponentList); !iter.done(); iter.advance()){
             if (m_activeComponents.find(*iter, info)!=-1 && !CORBA::is_nil(info.info.reference.in())){
-                
+
                 CORBA::Object_ptr ref = info.info.reference.in();
                 PortableServer::Servant servant = poaContainer->reference_to_servant(ref);
-                if (acscomponent::ACSComponentImpl *tempComp = 
-                    dynamic_cast<acscomponent::ACSComponentImpl*>(servant)){ 
+                if (acscomponent::ACSComponentImpl *tempComp =
+                    dynamic_cast<acscomponent::ACSComponentImpl*>(servant)){
                     tempComp->getContainerServices()->fireComponentsAvailable(compNames);
                 }
             }
@@ -2481,11 +2481,11 @@ ContainerImpl::components_available (
 void
 ContainerImpl::set_component_shutdown_order (
 				const maci::HandleSeq & h
-				
+
 				)
   throw (CORBA::SystemException)
 {
-  
+
   ACS_TRACE("maci::ContainerImpl::set_component_shutdown_order");
 
   if (m_shutdown)
@@ -2501,9 +2501,9 @@ ContainerImpl::set_component_shutdown_order (
 void
 ContainerImpl::components_unavailable (
 				 const maci::stringSeq & cob_names
-				 
+
 				 )
-  throw (CORBA::SystemException) 
+  throw (CORBA::SystemException)
 {
     ACS_SHORT_LOG((LM_DEBUG, "Informing Components Unavailable"));
     ACE_CString_Vector compNames;
@@ -2513,11 +2513,11 @@ ContainerImpl::components_unavailable (
     ContainerComponentInfo info;
     for (COMPONENT_LIST::CONST_ITERATOR iter(m_activeComponentList); !iter.done(); iter.advance()){
         if (m_activeComponents.find(*iter, info)!=-1 && !CORBA::is_nil(info.info.reference.in())){
-	        
+
             CORBA::Object_ptr ref = info.info.reference.in();
 	        PortableServer::Servant servant = poaContainer->reference_to_servant(ref);
-	        if (acscomponent::ACSComponentImpl *tempComp = 
-	            dynamic_cast<acscomponent::ACSComponentImpl*>(servant)){ 
+	        if (acscomponent::ACSComponentImpl *tempComp =
+	            dynamic_cast<acscomponent::ACSComponentImpl*>(servant)){
                 tempComp->getContainerServices()->fireComponentsUnavailable(compNames);
             }
         }
@@ -2534,12 +2534,12 @@ ContainerImpl::releaseComponent(const char *name)
 
 // ************************************************************************
 CORBA::Object_ptr
-ContainerImpl::get_object(const char *name, 
-			 const char *domain, 
+ContainerImpl::get_object(const char *name,
+			 const char *domain,
 			 bool activate
 			 )
 {
-	
+
   /**
    * Check if <name> is null
    */
@@ -2548,28 +2548,28 @@ ContainerImpl::get_object(const char *name,
       ACS_SHORT_LOG((LM_DEBUG, "Name parameter is null."));
       return CORBA::Object::_nil();
     }
-  
+
   /**
    * Get reference of component object
    */
-  
+
   /**
    * First creates the CURL, if not already a CURL,
    * and query the Manager for the component
    */
   char *curl_str = "curl://";
-  
+
   ACE_CString curl = "";
   if(strncmp(name, curl_str, strlen(curl_str)) != 0 )
       {
       curl += curl_str;
       if (domain)
 	  curl += domain;
-      
+
       curl += ACE_CString("/");
       }
   curl += name;
-    
+
   ACS_SHORT_LOG((LM_DEBUG, "Getting component: '%s'. Creating it...",  curl.c_str()));
 
   // wait that m_handle become !=0
@@ -2582,14 +2582,14 @@ ContainerImpl::get_object(const char *name,
   try
     {
       CORBA::Object_var obj = m_manager->get_service(m_handle, curl.c_str(), activate);
-      
+
 
       if (CORBA::is_nil(obj.in()))
 	{
 	  ACS_SHORT_LOG((LM_DEBUG, "Failed to create '%s'",  curl.c_str()));
 	  return 0;
 	}
-  
+
       return obj._retn();
 
     }
@@ -2612,7 +2612,7 @@ ContainerImpl::get_object(const char *name,
 
 CORBA::Boolean
 ContainerImpl::ping (
-    
+
     )
   throw (CORBA::SystemException)
 {
@@ -2621,10 +2621,10 @@ ContainerImpl::ping (
 
 // ************************************************************************
 
-ContainerServices* 
+ContainerServices*
 ContainerImpl::instantiateContainerServices(
-        maci::Handle h, 
-        ACE_CString& name, 
+        maci::Handle h,
+        ACE_CString& name,
         PortableServer::POA_ptr poa)
 {
   return new MACIContainerServices(h,name,poa);
@@ -2651,11 +2651,11 @@ void ContainerImpl::set_default_logLevels(const maci::LoggingConfigurable::LogLe
 
 	Logging::Logger::getGlobalLogger()->setLevels(
 	    static_cast<Logging::BaseLog::Priority>(LogLevelDefinition::getACELogPriority(logLevels.minLogLevel)),
-	    static_cast<Logging::BaseLog::Priority>(LogLevelDefinition::getACELogPriority(logLevels.minLogLevelLocal)), 
+	    static_cast<Logging::BaseLog::Priority>(LogLevelDefinition::getACELogPriority(logLevels.minLogLevelLocal)),
 	    DYNAMIC_LOG_LEVEL);
 	m_defaultLogLevels = logLevels;
 	m_defaultLogLevels.useDefault = true;
-    
+
 }//ContainerImpl::set_default_logLevels
 
 
@@ -2665,24 +2665,24 @@ maci::stringSeq* ContainerImpl::get_logger_names()
 	ACS_TRACE("maci::ContainerImpl::get_logger_names");
 
 	std::list<std::string> names = Logging::Logger::getGlobalLogger()->getLoggerNames();
-	
+
 	maci::stringSeq_var namesSeq = new maci::stringSeq();
 	namesSeq->length(names.size() + m_logLevels.size());
-	
+
 	CORBA::ULong i = 0;
 
 	// add live logs
 	std::list<std::string>::iterator pos;
 	for (pos = names.begin(); pos != names.end(); pos++)
 		namesSeq[i++] = CORBA::string_dup(pos->c_str());
-	
+
 	// add logs from configuration, but hide non-existant
 	std::map<std::string, maci::LoggingConfigurable::LogLevels>::iterator iter;
 	for (iter = m_logLevels.begin(); iter != m_logLevels.end(); iter++)
 		if (find(names.begin(), names.end(), iter->first) == names.end())
 			if (Logging::Logger::getGlobalLogger()->exists(iter->first))
 				namesSeq[i++] = CORBA::string_dup(iter->first.c_str());
-	
+
 	namesSeq->length(i);
 	return namesSeq._retn();
 }
@@ -2699,7 +2699,7 @@ maci::LoggingConfigurable::LogLevels ContainerImpl::get_logLevels(const char* lo
 		ex.setLoggerName(loggerName);
 		ex.log(LM_DEBUG);
 		throw ex.getLoggerDoesNotExistEx();
-        
+
         }
 
 	if (m_logLevels.find(loggerName) != m_logLevels.end())
@@ -2726,12 +2726,12 @@ void ContainerImpl::set_logLevels(const char* loggerName, const maci::LoggingCon
 
 	m_logLevels[loggerName] = logLevels;
 	if (logLevels.useDefault){
-		Logging::Logger::getGlobalLogger()->setLevels(loggerName, 
+		Logging::Logger::getGlobalLogger()->setLevels(loggerName,
 			static_cast<Logging::BaseLog::Priority>(LogLevelDefinition::getACELogPriority(m_defaultLogLevels.minLogLevel)),
 			static_cast<Logging::BaseLog::Priority>(LogLevelDefinition::getACELogPriority(m_defaultLogLevels.minLogLevelLocal)),
 			DYNAMIC_LOG_LEVEL);
 	}else{
-		Logging::Logger::getGlobalLogger()->setLevels(loggerName, 
+		Logging::Logger::getGlobalLogger()->setLevels(loggerName,
 			static_cast<Logging::BaseLog::Priority>(LogLevelDefinition::getACELogPriority(logLevels.minLogLevel)),
 			static_cast<Logging::BaseLog::Priority>(LogLevelDefinition::getACELogPriority(logLevels.minLogLevelLocal)),
 			DYNAMIC_LOG_LEVEL);
@@ -2742,7 +2742,7 @@ void ContainerImpl::refresh_logging_config()
 	throw (CORBA::SystemException)
 {
 	ACS_TRACE("maci::ContainerImpl::refresh_logging_config");
-	
+
 	if (m_dynamicContainer)
 		return;
 
@@ -2769,7 +2769,7 @@ void ContainerImpl::refresh_logging_config()
 		if (fld.GetULong(ul))
 			m_defaultLogLevels.minLogLevel = ul;
 	}
-	
+
 	// m_defaultLogLevels.minLogLevelLocal
     if (m_logLevelRefresh == CDB_LOG_LEVEL && envStdioPriority >= 0 && envStdioPriority <=11)
         m_defaultLogLevels.minLogLevelLocal = envStdioPriority;
@@ -2780,7 +2780,7 @@ void ContainerImpl::refresh_logging_config()
 	}
 
 
-	// set default logger levels 
+	// set default logger levels
 	Logging::Logger::getGlobalLogger()->setLevels(
 		static_cast<Logging::BaseLog::Priority>(LogLevelDefinition::getACELogPriority(m_defaultLogLevels.minLogLevel)),
 		static_cast<Logging::BaseLog::Priority>(LogLevelDefinition::getACELogPriority(m_defaultLogLevels.minLogLevelLocal)),
@@ -2802,13 +2802,13 @@ void ContainerImpl::refresh_logging_config()
 					*iter == "maxLogQueueSize" ||
 					*iter == "minLogLevel" ||
 					*iter == "minLogLevelLocal")
-					continue; 
-				
+					continue;
+
 				// load
 				loadLoggerConfiguration(iter->c_str());
-					
+
 				// ... and configure
-				configureLogger(iter->c_str());				
+				configureLogger(iter->c_str());
 			}
 		}
 	}
@@ -2823,12 +2823,12 @@ void ContainerImpl::configureLogger(const std::string& loggerName)
 		logLevels = getContainer()->m_defaultLogLevels;
 
 	if (logLevels.useDefault){
-		Logging::Logger::getGlobalLogger()->setLevels(loggerName, 
+		Logging::Logger::getGlobalLogger()->setLevels(loggerName,
 			static_cast<Logging::BaseLog::Priority>(LogLevelDefinition::getACELogPriority(getContainer()->m_defaultLogLevels.minLogLevel)),
 			static_cast<Logging::BaseLog::Priority>(LogLevelDefinition::getACELogPriority(getContainer()->m_defaultLogLevels.minLogLevelLocal)),
 		DYNAMIC_LOG_LEVEL);
 	}else{
-		Logging::Logger::getGlobalLogger()->setLevels(loggerName, 
+		Logging::Logger::getGlobalLogger()->setLevels(loggerName,
 			static_cast<Logging::BaseLog::Priority>(LogLevelDefinition::getACELogPriority(logLevels.minLogLevel)),
 			static_cast<Logging::BaseLog::Priority>(LogLevelDefinition::getACELogPriority(logLevels.minLogLevelLocal)),
 		DYNAMIC_LOG_LEVEL);
@@ -2840,10 +2840,10 @@ void ContainerImpl::configureLogger(const std::string& loggerName)
 void ContainerImpl::loadLoggerConfiguration(const std::string& loggerName)
 {
 	bool failed = false;
-		
+
 	maci::LoggingConfigurable::LogLevels logLevels;
 	logLevels.useDefault = false;
-	
+
 	Field fld;
 
 	// minLogLevel
@@ -2857,7 +2857,7 @@ void ContainerImpl::loadLoggerConfiguration(const std::string& loggerName)
 	}
 	else
 		failed = true;
-	
+
 	// minLogLevelLocal
 	if (!failed && m_database->GetField(m_dbPrefix, ACE_CString("LoggingConfig/") + loggerName.c_str() + "/minLogLevelLocal", fld))
 	{
