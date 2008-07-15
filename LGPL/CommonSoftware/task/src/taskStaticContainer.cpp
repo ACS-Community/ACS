@@ -1,6 +1,6 @@
 /*******************************************************************************
 * ALMA - Atacama Large Millimiter Array
-* (c) European Southern Observatory, 2004 
+* (c) European Southern Observatory, 2004
 *
 *This library is free software; you can redistribute it and/or
 *modify it under the terms of the GNU Lesser General Public
@@ -16,11 +16,11 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: taskStaticContainer.cpp,v 1.14 2006/10/09 09:08:03 bjeram Exp $"
+* "@(#) $Id: taskStaticContainer.cpp,v 1.15 2008/07/15 06:44:51 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
-* bjeram  2004-09-27  created 
+* bjeram  2004-09-27  created
 */
 
 #include <acsContainerServices.h>
@@ -44,21 +44,21 @@ StaticContainer::StaticContainer():
 {
 }
 
-void StaticContainer::initCORBA(int &argc, char **argv) 
+void StaticContainer::initCORBA(int &argc, char **argv)
 {
     ACE_TRACE("StaticContainer::initCORBA");
 
     try
 	{
 	orb_m = CORBA::ORB_init(argc, argv);
-	if(orb_m.ptr() == CORBA::ORB::_nil())
+	if(CORBA::is_nil(orb_m.ptr()))
 	    return; //TBD: EH
-	
+
 
 	CORBA::Object_var objRootPOA =
 	    orb_m->resolve_initial_references("RootPOA");
 	poaRoot_m = PortableServer::POA::_narrow(objRootPOA.in());
-	if (poaRoot_m.ptr() == PortableServer::POA::_nil())
+	if (CORBA::is_nil(poaRoot_m.ptr()))
 	    return; //TBD: EH
 	poaManager_m = poaRoot_m->the_POAManager();
 
@@ -69,10 +69,10 @@ void StaticContainer::initCORBA(int &argc, char **argv)
 	policies.length(1);
 	policies[0] = PortableServer::IdAssignmentPolicy::_duplicate(user_id_policy.in());
 
-	componentPOA_m = poaRoot_m->create_POA("ContainerPOA", 
-					 poaManager_m.in(), 
+	componentPOA_m = poaRoot_m->create_POA("ContainerPOA",
+					 poaManager_m.in(),
 					 policies);
-	if (componentPOA_m.ptr() == PortableServer::POA::_nil())
+	if (CORBA::is_nil(componentPOA_m.ptr()))
 	    return;  //TBD: EH
 
 	user_id_policy->destroy();
@@ -92,12 +92,12 @@ void StaticContainer::doneCORBA()
     ACE_TRACE("StaticContainer::doneCORBA");
     try
 	{
-	
+
 	if(poaRoot_m.ptr() != PortableServer::POA::_nil())
 	    {
 	    poaRoot_m->destroy(1, 1);
 	    }
-      
+
 	if(orb_m.ptr() != CORBA::ORB::_nil())
 	    {
 	    orb_m->destroy();
@@ -116,7 +116,7 @@ void StaticContainer::doneCORBA()
 
 /*******************************************************************************************/
 
-void StaticContainer::init(int argc, char **argv, const char *containerName) 
+void StaticContainer::init(int argc, char **argv, const char *containerName)
 {
     if ( containerName!=0 && ACE_OS::strlen(containerName)!=0 )
 	{
@@ -127,11 +127,11 @@ void StaticContainer::init(int argc, char **argv, const char *containerName)
 	ACE_Time_Value tv = ACE_OS::gettimeofday();
 	char timeBuf[25];
 	sprintf(timeBuf, "%ld", tv.sec());
-	
+
 	containerName_m += "Container-";
 	containerName_m += timeBuf;
 	}//if-else
-//TBD: container name from cmd line    
+//TBD: container name from cmd line
 
    containerArgv.add(argv[0]);
    containerArgv.add(containerName_m.c_str()); //first comes container name
@@ -147,20 +147,20 @@ void StaticContainer::init(int argc, char **argv, const char *containerName)
 	    containerArgv.add(argv[i]);
 	    ACE_OS::printf("argv[%d]=%s\n", i, argv[i]);
 	    }///if
-	
+
 	}//for
 
     try
 	{
 	if ((services_m == true) && container_m.init(containerArgv.argc(), containerArgv.argv())==true )
-	    {	
+	    {
 		container_m.connect(); //error handling
 		services_m = true;
 		componentPOA_m = container_m.getContainerPOA();
 	        orb_m = container_m.getContainerORB();
 	    }
 	else
-	    { 
+	    {
 	    services_m = false;
 	    m_logger = new LoggingProxy(0, 0, 31);
 	    LoggingProxy::init (m_logger);
@@ -217,7 +217,7 @@ CORBA::Object_ptr StaticContainer::createComponentWithName(const char *name)
 	char timeBuf[25];
 	sprintf(timeBuf, "%ld", tv.sec());
 	compName+=timeBuf;
-	
+
 	libname = 0; // here libray name can be  NULL since the library is linked by linker and nota loaded on demand
 
 	return createComponent(compName.c_str(), libname);
@@ -239,7 +239,7 @@ CORBA::Object_ptr StaticContainer::createComponent(const char *libname)
     char timeBuf[25];
     sprintf(timeBuf, "%ld", tv.sec());
     compName+=timeBuf;
-    
+
     return createComponent(compName.c_str(), libname);
 }
 
@@ -258,7 +258,7 @@ CORBA::Object_ptr StaticContainer::createComponent(const char* compName, const c
 	     {
 	     if (services_m == true )
 		 {
-		 // try to read libname  from CDB	 
+		 // try to read libname  from CDB
 		 }
 	     else
 		 {
@@ -284,45 +284,45 @@ CORBA::Object_ptr StaticContainer::createComponent(const char* compName, const c
 	 char timeBuf[25];
 	 sprintf(timeBuf, "%ld", tv.sec());
 	 cn+=timeBuf;
-	 compName = cn.c_str();    
+	 compName = cn.c_str();
 	 }
-	
+
 #ifndef _TASK_LIB
     if (services_m==true) // if we have services (i.e. also the manager) we can create and activate the component by using concept of dynamic component
      {
      ACS_DEBUG("StaticContainer::createComponent", "Activating component");
-     
-     ComponentSpec_var compSpec = new ComponentSpec();  
+
+     ComponentSpec_var compSpec = new ComponentSpec();
      compSpec->component_name = CORBA::string_dup(compName);
      compSpec->component_type = CORBA::string_dup("IDL:alma/ACS/Task:1.0"); //TBD:: IFR ?
      compSpec->component_code = CORBA::string_dup(libname);
-     compSpec->container_name = CORBA::string_dup(containerName_m.c_str()); 
+     compSpec->container_name = CORBA::string_dup(containerName_m.c_str());
 /// @todo  get_dynamic_component can throw an exception which should be caught!
-     ComponentInfo_var compInfo  = 
+     ComponentInfo_var compInfo  =
 	 container_m.getManager()->get_dynamic_component(container_m.getHandle(),
 							 compSpec.in(),
-							 false);  
+							 false);
      // at this point we have done everything so we can return
      return compInfo->reference._retn();
      }//if
-    
+
     // otherwise we have to load the library and find ConstructComponent function in the library
     ACS_DEBUG_PARAM("StaticContainer::createComponent", "loading library: %s", libname);
     ACE_CString strDLLPath(ACE_OS::getenv ("LD_LIBRARY_PATH"));
     dllmgr_m.setSearchPath(strDLLPath.c_str());
-    
+
     int libHandle = 0;
-    
+
     libHandle = dllmgr_m.load(libname);
-    
+
     if (libHandle == 0)
 	{
 	printf("error loading the library\n");
 	return 0; // -1;
 	}
-         
+
     ACS_DEBUG_PARAM("StaticContainer::createComponent", "Library: %s has been loaded", libname);
-    
+
     ConstructComponentFunc ConstructComponent =
 	(ConstructComponentFunc)(dllmgr_m.getSymbol(libHandle, "ConstructComponent"));
     if (ConstructComponent == 0)
@@ -339,9 +339,9 @@ CORBA::Object_ptr StaticContainer::createComponent(const char* compName, const c
     if (services_m == true)
 	{
 	acsCS =   new MACIContainerServices(0/*handel*/, cmpName, container_m.getContainerPOA().in());
-	if (acsCS==0) 
+	if (acsCS==0)
 	    {
-	    ACS_LOG(LM_RUNTIME_CONTEXT, "StaticContainer::createComponent", 
+	    ACS_LOG(LM_RUNTIME_CONTEXT, "StaticContainer::createComponent",
 		    (LM_ERROR,  "Error creating the ContainerServices"));
 	    return 0;
 	    }
@@ -350,9 +350,9 @@ CORBA::Object_ptr StaticContainer::createComponent(const char* compName, const c
 	{
 
 	acsCS =   new StaticContainerServices(0/*handel*/, cmpName, container_m.getContainerPOA().in(), orb_m.in());
-	if (acsCS==0) 
+	if (acsCS==0)
 	    {
-	    ACS_LOG(LM_RUNTIME_CONTEXT, "StaticContainer::createComponent", 
+	    ACS_LOG(LM_RUNTIME_CONTEXT, "StaticContainer::createComponent",
 		    (LM_ERROR,  "Error creating the ContainerServices"));
 	    return 0;
 	    }
@@ -367,17 +367,17 @@ CORBA::Object_ptr StaticContainer::createComponent(const char* compName, const c
 
        // life cycle
     ACS_DEBUG("StaticContainer::createComponent", "Component Life Cycle");
-    acscomponent::ACSComponentImpl *acsComponent = 
+    acscomponent::ACSComponentImpl *acsComponent =
 	dynamic_cast<acscomponent::ACSComponentImpl*>(servant);
-    
-    acsComponent->getContainerServices()->getComponentStateManager()->setState(ACS::COMPSTATE_INITIALIZING); 
+
+    acsComponent->getContainerServices()->getComponentStateManager()->setState(ACS::COMPSTATE_INITIALIZING);
     acsComponent->__initialize();
     acsComponent->getContainerServices()->getComponentStateManager()->setState(ACS::COMPSTATE_INITIALIZED);
     acsComponent->getContainerServices()->getComponentStateManager()->setState(ACS::COMPSTATE_OPERATIONAL);
     acsComponent->__execute();
-       
+
     ACS_DEBUG("StaticContainer::createComponent", "Activating the component");
-   
+
     try
 	{
 	if (services_m==true )
@@ -386,12 +386,12 @@ CORBA::Object_ptr StaticContainer::createComponent(const char* compName, const c
 	    }
 	else
 	    {
-	    
+
 	    PortableServer::ObjectId_var id =
 		PortableServer::string_to_ObjectId(componentName_m.c_str());
-      
+
 	    componentPOA_m->activate_object_with_id(id.in(), servant);
-      
+
 	    obj = componentPOA_m->servant_to_reference(servant);
 
 	    servant->_remove_ref();
@@ -413,8 +413,10 @@ void StaticContainer::destroyComponent(CORBA::Object_ptr obj)
     try
 	{
 	acscomp = ACS::ACSComponent::_narrow(obj);
-	if ( acscomp.ptr() == ACS::ACSComponent::_nil() )
+	if ( CORBA::is_nil(acscomp.ptr()) )
 	    {
+	    ACS_LOG(LM_RUNTIME_CONTEXT, "StaticContainer::destroyComponent",
+			    (LM_ERROR,  "component narrowed to nil!!"));
 	    }
 	}
     catch(...)
@@ -435,7 +437,7 @@ void StaticContainer::destroyComponent(CORBA::Object_ptr obj)
 
  // life cycle
     ACS_DEBUG("StaticContainer::destroyComponent", "Component Life Cycle");
-    acscomponent::ACSComponentImpl *acsComponent = 
+    acscomponent::ACSComponentImpl *acsComponent =
 	dynamic_cast<acscomponent::ACSComponentImpl*>(servant);
     acsComponent->getContainerServices()->getComponentStateManager()->setState(ACS::COMPSTATE_DESTROYING);
     acsComponent->__cleanUp();
