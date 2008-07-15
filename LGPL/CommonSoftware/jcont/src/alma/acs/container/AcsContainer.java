@@ -61,7 +61,6 @@ import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
 import alma.acs.classloading.AcsComponentClassLoader;
 import alma.acs.component.ComponentDescriptor;
 import alma.acs.component.ComponentLifecycle;
-import alma.acs.concurrent.DaemonThreadFactory;
 import alma.acs.container.corba.AcsCorba;
 import alma.acs.logging.AcsLogger;
 import alma.acs.logging.ClientLogManager;
@@ -118,6 +117,8 @@ public class AcsContainer extends ContainerPOA
 
     private final Logger m_logger;
 
+    private final ThreadFactory containerThreadFactory;
+    
     private final ComponentMap m_activeComponentMap;
 
     /**
@@ -130,11 +131,7 @@ public class AcsContainer extends ContainerPOA
      */
     private DAL cdb;
 
-    /**
-     * Use {@link #isShuttingDown()}, {@link #setShuttingDown(boolean)}
-     * instead of directly accessing this member (thread-safety)
-     */
-    private boolean m_shuttingDown = false;
+    private volatile boolean m_shuttingDown = false;
 
     /** see comments in {@link #authenticate(String)} */
     private boolean useRecoveryMode = true;
@@ -149,41 +146,42 @@ public class AcsContainer extends ContainerPOA
     // creation, initialization of container
     /////////////////////////////////////////////////////////////
 
-    /**
-     * Constructor which creates a container that is registered as a CORBA object,
-     * but not yet logged in to the manager (for that, call {@link #initialize()}.
-     * 
-     * @param containerName
-     * @param acsCorba
-     * @param managerProxy
-     * @param isEmbedded  true if this container runs within an application. Affects shutdown behavior.
-     * @throws AcsJContainerEx  if anything goes wrong, or if another instance of this class
-     *                              has already been created.
-     */
-    AcsContainer(String containerName, AcsCorba acsCorba, AcsManagerProxy managerProxy, boolean isEmbedded)
-        throws AcsJContainerEx
-    {
-        if (s_instance == null) {
-        	startTimeUTClong = UTCUtility.utcJavaToOmg(System.currentTimeMillis());
-            m_containerName = containerName;
-            m_managerProxy = managerProxy;
-            this.isEmbedded = isEmbedded;
-            m_logger = ClientLogManager.getAcsLogManager().getLoggerForContainer(containerName);
-            m_activeComponentMap = new ComponentMap(m_logger);
-            m_acsCorba = acsCorba;
+	/**
+	 * Constructor which creates a container that is registered as a CORBA object, but not yet logged in to the manager
+	 * (for that, call {@link #initialize()}.
+	 * 
+	 * @param containerName
+	 * @param acsCorba
+	 * @param managerProxy
+	 * @param isEmbedded
+	 *            true if this container runs within an application. Affects shutdown behavior.
+	 * @throws AcsJContainerEx
+	 *             if anything goes wrong, or if another instance of this class has already been created.
+	 */
+	AcsContainer(String containerName, AcsCorba acsCorba, AcsManagerProxy managerProxy, boolean isEmbedded)
+			throws AcsJContainerEx {
+		if (s_instance == null) {
+			startTimeUTClong = UTCUtility.utcJavaToOmg(System.currentTimeMillis());
+			m_containerName = containerName;
+			m_managerProxy = managerProxy;
+			this.isEmbedded = isEmbedded;
+			m_logger = ClientLogManager.getAcsLogManager().getLoggerForContainer(containerName);
+			containerThreadFactory = new CleaningDaemonThreadFactory(m_containerName, m_logger); // drawback or reusing this class here: it logs exceptions as "user thread"
+			m_activeComponentMap = new ComponentMap(m_logger);
+			m_acsCorba = acsCorba;
 
-	    System.out.println(ContainerOperations.ContainerStatusORBInitBeginMsg);
-	    registerWithCorba();       
-            System.out.println(ContainerOperations.ContainerStatusORBInitEndMsg);
+			System.out.println(ContainerOperations.ContainerStatusORBInitBeginMsg);
+			registerWithCorba();
+			System.out.println(ContainerOperations.ContainerStatusORBInitEndMsg);
 
-            s_instance = this;            
-        }
-        else {
-        	AcsJContainerEx ex = new AcsJContainerEx();
-        	ex.setContextInfo("illegal attempt to create more than one instance of " + AcsContainer.class.getName() + " inside one JVM.");
-        	throw ex;
-        }
-    }
+			s_instance = this;
+		} else {
+			AcsJContainerEx ex = new AcsJContainerEx();
+			ex.setContextInfo("illegal attempt to create more than one instance of " + AcsContainer.class.getName()
+					+ " inside one JVM.");
+			throw ex;
+		}
+	}
 
     /**
 	 * Container initialization such as logging in to the manager, configuring logging, initializing the alarm system.
@@ -227,8 +225,9 @@ public class AcsContainer extends ContainerPOA
 		try {
 			// TODO: clean up the construction of CS which is ad-hoc implemented right before ACS 7.0
 			// in order to allow CERN alarm libs to get their static field for ContainerServices set.
-			String name = m_containerName; // alarm system acts under container name
-			ThreadFactory threadFactory = new CleaningDaemonThreadFactory(name, m_logger);
+			// Currently the alarm system acts under the container name.
+			String name = m_containerName; 
+			ThreadFactory threadFactory = containerThreadFactory; 
 
 			ContainerServicesImpl cs = new ContainerServicesImpl(m_managerProxy, m_acsCorba.createPOAForComponent("alarmSystem"), 
 	        		m_acsCorba, m_logger, m_managerProxy.getManagerHandle(), 
@@ -289,34 +288,34 @@ public class AcsContainer extends ContainerPOA
 
 
     /**
-     * To be called only once from the ctor.
-     * @throws AcsJContainerEx
-     */
-    private void registerWithCorba() throws AcsJContainerEx
-    {
-        // activate the Container as a CORBA object.
-        org.omg.CORBA.Object obj = m_acsCorba.activateContainer(this, m_containerName);
+	 * To be called only once from the ctor.
+	 * 
+	 * @throws AcsJContainerEx
+	 */
+	private void registerWithCorba() throws AcsJContainerEx {
+		// activate the Container as a CORBA object.
+		org.omg.CORBA.Object obj = m_acsCorba.activateContainer(this, m_containerName);
 
-        if (obj == null) { 
-        	AcsJContainerEx ex = new AcsJContainerEx();
-        	ex.setContextInfo("failed to register this AcsContainer with the ORB.");
-        	throw ex;
-        }
+		if (obj == null) {
+			AcsJContainerEx ex = new AcsJContainerEx();
+			ex.setContextInfo("failed to register this AcsContainer with the ORB.");
+			throw ex;
+		}
 
-        Container container;
+		Container container;
 		try {
 			container = ContainerHelper.narrow(obj);
 			if (container == null) {
 				throw new NullPointerException("Container CORBA-narrow returned a null.");
 			}
 		} catch (Throwable thr) {
-        	AcsJContainerEx ex = new AcsJContainerEx();
-        	ex.setContextInfo("failed to narrow the AcsContainer to CORBA type Container.");
-        	throw ex;
+			AcsJContainerEx ex = new AcsJContainerEx();
+			ex.setContextInfo("failed to narrow the AcsContainer to CORBA type Container.");
+			throw ex;
 		}
 
 		m_logger.finer("AcsContainer successfully registered with the ORB as a Container");
-    }
+	}
 
 
     
@@ -349,7 +348,7 @@ public class AcsContainer extends ContainerPOA
      * In the process of activation, component's code-base is loaded into memory if it is not there already.
      * The code-base resides in an executable file (usually a dynamic-link library or a shared library -- DLL).
      * On platforms that do not automatically load dependent executables (e.g., VxWorks),
-     * the container identifies the dependancies by querying the executable and loads them automatically.
+     * the container identifies the dependencies by querying the executable and loads them automatically.
      * Once the code is loaded, it is asked to construct a servant of a given type.
      * The servant is then initialized with the Configuration Database (CDB) and Persistance Database (PDB) data.
      * The servant is attached to the component, and a reference to it is returned.
@@ -397,7 +396,7 @@ public class AcsContainer extends ContainerPOA
             }
 
             ClassLoader compCL = null;
-            // the property 'acs.components.classpath.jardirs' is currently set by the script acsStartContainer
+            // the property 'acs.components.classpath.jardirs' is set by the script acsStartContainer
             // to a list of all relevant 'lib/ACScomponents/' directories
             String compJarDirs = System.getProperty(AcsComponentClassLoader.PROPERTY_JARDIRS);
             if (compJarDirs != null) {
@@ -910,12 +909,11 @@ public class AcsContainer extends ContainerPOA
                         " (encryptedAction=" + encryptedAction +
                         "), gracefully=" + gracefully + ".");
 
-        if (isShuttingDown())
-        {
+        if (m_shuttingDown) {
             m_logger.fine("call to shutdown() while shutting down will be ignored...");
             return;
         }
-        setShuttingDown(true);
+        m_shuttingDown = true;
         m_managerProxy.shutdownNotify();
 
         // shut down all active components
@@ -994,7 +992,7 @@ public class AcsContainer extends ContainerPOA
         ExecutorService executor = new ThreadPoolExecutor(corePoolSize, maxThreadNumber,
                 60L, TimeUnit.SECONDS,
                 execQueue,
-                new DaemonThreadFactory() );
+                containerThreadFactory );
 
         for (int i = 0; i < compAdapters.length; i++) {
             ComponentAdapter compAdapter = compAdapters[i];
@@ -1085,52 +1083,59 @@ public class AcsContainer extends ContainerPOA
 
 
 
-    /////////////////////////////////////////////////////////////
-    // Implementation of ClientOperations methods
-    /////////////////////////////////////////////////////////////
+    // ///////////////////////////////////////////////////////////
+	// Implementation of ClientOperations methods
+	// ///////////////////////////////////////////////////////////
 
+	/**
+	 * @see si.ijs.maci.ClientOperations#name()
+	 */
+	public String name() {
+		m_logger.fine("call to name() answered with '" + m_containerName + "'.");
+		return m_containerName;
+	}
+
+    
+	
     /**
-     * @see si.ijs.maci.ClientOperations#name()
-     */
-    public String name()
-    {
-        m_logger.fine("call to name() answered with '" + m_containerName + "'.");
-        return m_containerName;
-    }
+	 * Disconnect notification. The disconnect method is called by the Manager to notify the client that it will be
+	 * unavailable and that the client should log off.
+	 * <p>
+	 * Since ACS 7.0.2, this method returns quickly and uses a different thread to log back in with the manager. This is
+	 * cleaner than taking a thread from the ORB's pool for a possibly long time, although the manager does not care 
+	 * because this method is defined as oneway in IDL.
+	 * 
+	 * @see si.ijs.maci.ClientOperations#disconnect()
+	 */
+	public void disconnect() {
+		m_logger.warning("Manager requests logout...");
+		m_managerProxy.logoutFromManager();
+		try {
+			// to give the manager 10 sec time to go down or whatever
+			Thread.sleep(10000);
+		} catch (InterruptedException e1) {
+			// ignore
+		}
 
+		// m_recoveryStart = true; // check discussion at http://almasw.hq.eso.org/almasw/bin/preview/ACS/NewMaciIdl
 
-    /**
-     * Disconnect notification.
-     * The disconnect method is called by the Manager to notify the client
-     * that it will be unavailable and that the client should log off.
-     * @see si.ijs.maci.ClientOperations#disconnect()
-     */
-    public void disconnect()
-    {
-        m_logger.warning("Manager requests logout...");
-        m_managerProxy.logoutFromManager();
-        try
-        {
-            // to give the manager 10 sec time to go down or whatever
-            Thread.sleep(10000);
-        }
-        catch (InterruptedException e1)
-        {// ignore
-        }
-
-//      m_recoveryStart = true; // check discussion at http://almasw.hq.eso.org/almasw/bin/preview/ACS/NewMaciIdl
-
-        try
-        {
-            // will loop until manager ref becomes available
-            loginToManager();
-        }
-        catch (Exception e)
-        {
-            m_logger.log(Level.WARNING, "Failed to re-login to the manager. Will shut down.", e);
-            shutdown(AcsContainer.CONTAINER_EXIT << 8, true);
-        }
-    }
+		Runnable reloginRunnable = new Runnable() {
+			public void run() {
+				try {
+					// will loop until manager ref becomes available
+					loginToManager();
+				} catch (Exception e) {
+					m_logger.log(Level.WARNING, "Failed to re-login to the manager. Will shut down.", e);
+					// it could be that the connection failed exactly because we are shutting down, 
+					// and we want to avoid the warning from another shutdown call...
+					if (!m_shuttingDown) {
+						shutdown(AcsContainer.CONTAINER_EXIT << 8, true);
+					}
+				}
+			}
+		};
+		containerThreadFactory.newThread(reloginRunnable).start();		
+	}
 
 
     /**
@@ -1361,24 +1366,6 @@ public class AcsContainer extends ContainerPOA
         }
     }
 
-
-    /**
-     * Getter method required for thread-safe use of m_shuttingDown
-     * @return
-     */
-    private synchronized boolean isShuttingDown()
-    {
-        return m_shuttingDown;
-    }
-
-    /**
-     * Setter method required for thread-safe use of m_shuttingDown
-     * @param shuttingDown
-     */
-    private synchronized void setShuttingDown(boolean shuttingDown)
-    {
-        m_shuttingDown = shuttingDown;
-    }
 
 
     // ///////////////////////////////////////////////////////////
