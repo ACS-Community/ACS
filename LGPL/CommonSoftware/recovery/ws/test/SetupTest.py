@@ -11,18 +11,13 @@
    (the separator and a new line)"""
 import os,sys,string
 
-if len(sys.argv)!=2:
-	# Syntax error (too few args)
-	sys.exit(-1)
-
-args=string.split(sys.argv[1],' ')
-if len(args)!=2:
+if len(sys.argv)!=3:
 	print 'Sysntax error: wrong args number'
 	sys.exit(-1)
 
 #Read the params in the command line 
-Opt=args[0]
-FileName=args[1]
+Opt=sys.argv[1]
+FileName=sys.argv[2]
 
 if Opt=='-c':
 	# Open and write the file
