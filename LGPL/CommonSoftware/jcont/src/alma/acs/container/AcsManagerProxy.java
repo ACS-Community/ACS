@@ -86,7 +86,7 @@ public class AcsManagerProxy
 
 	private Logger m_logger;
 	
-	private boolean m_shuttingDown;
+	private volatile boolean m_shuttingDown;
 	
 	/** msc(2005-07) client:managerproxy is always 1:1 */
 	private Client m_managerClient;
@@ -169,14 +169,14 @@ public class AcsManagerProxy
 	 * 
 	 * msc(2005-07)
 	 */
-	protected Thread connectorThread = new Thread("AcsManagerProxy.ConnectorThread") {
+	protected final Thread connectorThread = new Thread("AcsManagerProxy.ConnectorThread") {
 
 		public void run () {
 			ALIVE: while (true) {
 
 				synchronized (connectorLock) {
 					try {
-						connectorLock.wait();
+						connectorLock.wait(); // until connectorLock.notify or interrupt 
 					} catch (InterruptedException exc) {
 						break ALIVE; // quit
 					}
@@ -208,6 +208,15 @@ public class AcsManagerProxy
 		}
 	};
 	
+
+	protected void activateReloginToManagerIfDisconnected() {
+		if (!connectorThread.isAlive()) {
+			// start check&relogin loop 
+			connectorThread.setDaemon(true);
+			connectorThread.start();
+		}
+	}
+
 	/**
 	 * Invoked by the manager methods on failure 
 	 */
@@ -253,6 +262,13 @@ public class AcsManagerProxy
 	{
 		do
 		{
+			if (m_shuttingDown) {
+				// 
+				AcsJContainerEx ex = new AcsJContainerEx();
+				ex.setContextInfo("Abandoned because we are shutting down.");
+				throw ex;
+			}
+			
 			try
 			{
 				org.omg.CORBA.Object object = m_orb.string_to_object(m_managerLoc);
@@ -285,30 +301,32 @@ public class AcsManagerProxy
 				}
 			}
 		}
-		while (keepTrying);		
+		while (keepTrying);
 	}
 
 	/**
 	 * Logs in to the manager, using the provided manager client CORBA object.
+	 * This method only returns when the login succeeded. Otherwise an exception is thrown.
 	 *  
 	 * @param managerClient  the IDL-defined client of the manager (see maci.idl), 
 	 * 						 of which the container is a subclass.
-	 * @param keepTrying  refers to multiple attempts for both finding the manager and logging in to the manager.  
+	 * @param keepTrying  refers to multiple attempts for both finding the manager and logging in to the manager. 
+	 * 				If true, a background thread is started to re-login if the connection breaks.
 	 * @throws AcsJContainerServicesEx 
 	 */
 	public synchronized void loginToManager(Client managerClient, boolean keepTrying) throws AcsJContainerEx {
-		this.m_managerClient = managerClient; 
-		try {
-			loginToManager(keepTrying);
-		}
-		finally {
-			if (keepTrying && !connectorThread.isAlive()) {
-				// start check&relogin loop 
-				connectorThread.setDaemon(true);
-				connectorThread.start();
-			}
+		this.m_managerClient = managerClient;
+		
+		loginToManager(keepTrying);
+		
+		// if login has succeeded and keepTrying==true, then also activate the re-login thread
+		// which sleeps unless handleRuntimeException reports a problem.
+		if (keepTrying) {
+			activateReloginToManagerIfDisconnected();
 		}
 	}
+
+
 
 	/**
 	 * Logs in to the Manager.
@@ -451,6 +469,10 @@ public class AcsManagerProxy
 		}
 	}
 	
+	/**
+	 * Logs out from the manager. 
+	 * If this fails, a warning is logged, but no exception will be thrown by this method.
+	 */
 	public synchronized void logoutFromManager()
 	{
 		try
@@ -830,8 +852,11 @@ public class AcsManagerProxy
 
 	/**
 	 * Notification that the container is in the process of shutting down.
+	 * <p>
+	 * With ACS 7.0.2 this method is no longer synchronized because it deadlocked 
+	 * the shutdown hook thread when the manager proxy was in a login loop. See COMP-2602.
 	 */
-	public synchronized void shutdownNotify()
+	public void shutdownNotify()
 	{
 		m_shuttingDown = true;
 		connectorThread.interrupt(); // make thread quit
