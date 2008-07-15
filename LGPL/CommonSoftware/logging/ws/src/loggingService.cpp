@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingService.cpp,v 1.58 2008/02/21 09:20:45 cparedes Exp $"
+* "@(#) $Id: loggingService.cpp,v 1.59 2008/07/15 06:55:52 bjeram Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -55,8 +55,8 @@ LoggingService::LoggingService (void)
   char *acsLogType = getenv("ACS_LOG_BIN");
   if (acsLogType && *acsLogType){
     if(strcmp("true", acsLogType) == 0)
-        m_logBin = true; 
-  } 
+        m_logBin = true;
+  }
 }
 
 LoggingService::~LoggingService (void)
@@ -74,12 +74,12 @@ LoggingService::init_ORB  (int& argc, char *argv []
 				 argv,
 				 "TAO"
 				 );
-  
+
 
   CORBA::Object_var m_poaobject  =
     this->m_orb->resolve_initial_references("RootPOA"
                                            );
-  
+
   /*
     PortableServer::POA_var poaRoot =
     PortableServer::POA::_narrow (m_poaobject.in (),
@@ -90,50 +90,50 @@ LoggingService::init_ORB  (int& argc, char *argv []
   this->m_poa =
     PortableServer::POA::_narrow (m_poaobject.in ()
                                   );
-  
+
 
   PortableServer::POAManager_var m_poamanager =
     m_poa->the_POAManager ();
-  
+
   /*
     //
     // Prepare policies our POAs will be using.
     //
     PortableServer::IdAssignmentPolicy_var user_id_policy =
     poaRoot->create_id_assignment_policy(PortableServer::USER_ID);
-      
+
     PortableServer::LifespanPolicy_var persistent_policy =
     poaRoot->create_lifespan_policy(PortableServer::PERSISTENT);
-      
+
     PortableServer::ServantRetentionPolicy_var servant_retention_policy  =
     poaRoot->create_servant_retention_policy (PortableServer::RETAIN);
-      
-     
+
+
     CORBA::PolicyList policies;
     policies.length(3);
-      
+
     policies[0] = PortableServer::LifespanPolicy::_duplicate(persistent_policy.in());
     policies[1] = PortableServer::IdAssignmentPolicy::_duplicate(user_id_policy.in());
     policies[2] = PortableServer::ServantRetentionPolicy::_duplicate(servant_retention_policy.in());
 
-    this->m_poa = poaRoot->create_POA("PersistentPOA", 
-    m_poamanager.in(), 
+    this->m_poa = poaRoot->create_POA("PersistentPOA",
+    m_poamanager.in(),
     policies);
-     
-      
+
+
     // We're done using the policies.
     user_id_policy->destroy();
     persistent_policy->destroy();
     servant_retention_policy->destroy();
 
   */
-  if (m_poa.ptr() == PortableServer::POA::_nil())
+  if (CORBA::is_nil(m_poa.ptr()))
       {
       throw CORBA::NO_RESOURCES();
       }
 
   m_poamanager->activate ();
-  
+
 }
 
 void
@@ -145,56 +145,56 @@ LoggingService::startup (int argc, char *argv[]
 
   // Tnitalize the ORB.
   init_ORB (argc, argv);
-  
+
 
   ACS_SHORT_LOG ((LM_INFO,
               "Resolving Naming Service..."));
 
   // Resolve the naming service.
   resolve_naming_service ();
-  
+
 
   ACS_SHORT_LOG ((LM_INFO,
               "Resolving Notify Service..."));
 
   // Resolve the notify factory
   resolve_notify_factory ();
-  
+
 
   ACS_SHORT_LOG ((LM_INFO,
               "Creating Event Channels..."));
 
   // Create Event channels (LoggingChannel)
   create_EC ();
-  
+
 
   ACS_SHORT_LOG ((LM_INFO,
               "Creating Supplier Admins..."));
 
   // Create Supplier Admin
   create_supplieradmin ();
-  
+
 
   ACS_SHORT_LOG ((LM_INFO,
               "Creating Suppliers..."));
 
   // Create Suppliers
   create_suppliers ();
-  
+
 
   ACS_SHORT_LOG ((LM_INFO,
               "Creating Log Factory..."));
 
   // Create the Basic Log Factory
   create_basic_log_factory();
-  
+
 
   ACS_SHORT_LOG ((LM_INFO,
               "Creating Log..."));
 
   // Create the Basic Log
   create_basic_log();
-  
+
 
   ACS_SHORT_LOG ((LM_INFO, "ACS Centralized Logger is initialized."));
 
@@ -216,11 +216,11 @@ LoggingService::resolve_naming_service ()
     CosNaming::NamingContext::_narrow (naming_obj.in (),
                                        );
 */
-    
+
     this->m_naming_context = LoggingHelper::resolveNameService(this->m_orb.in());
-    if (m_naming_context.ptr() == CosNaming::NamingContext::_nil())
+    if (CORBA::is_nil(m_naming_context.ptr()))
 	{
-	throw CORBA::UNKNOWN ();
+    	throw CORBA::UNKNOWN ();
 	}
 }
 
@@ -232,12 +232,12 @@ LoggingService::resolve_notify_factory ()
     {
       CORBA::Object_var obj =
 	this->m_orb->resolve_initial_references (acscommon::LOGGING_NOTIFICATION_FACTORY_NAME);
-      
-	
+
+
       this->m_notify_factory =
 	CosNotifyChannelAdmin::EventChannelFactory::_narrow (obj.in ()
 							     );
-      
+
 
      if (!CORBA::is_nil(this->m_notify_factory.in()))
 	  return;
@@ -253,16 +253,16 @@ LoggingService::resolve_notify_factory ()
   CosNaming::Name name (1);
   name.length (1);
   name[0].id = CORBA::string_dup (acscommon::LOGGING_NOTIFICATION_FACTORY_NAME);
-  
+
   CORBA::Object_var obj =
     this->m_naming_context->resolve (name
 				     );
-  
+
 
     this->m_notify_factory =
       CosNotifyChannelAdmin::EventChannelFactory::_narrow (obj.in ()
 							   );
-    
+
 
   if (CORBA::is_nil(this->m_notify_factory.in()))
     {
@@ -277,7 +277,7 @@ LoggingService::run (void)
 {
     //CP: This message is important/expected from acs scripts in order to start ACS
   //ACS_SHORT_LOG ((LM_INFO, "ACS Centralized Logger is running..."));
-  ACE_OS::printf("ACS Centralized Logger is running..."); 
+  ACE_OS::printf("ACS Centralized Logger is running...");
   ACE_OS::fflush (stdout);
   try
     {
@@ -329,18 +329,18 @@ LoggingService::shutdown ()
 	  PortableServer::ObjectId_var oid =
 	      this->m_poa->servant_to_id (&this->m_basic_log_factory
 					  );
-	  	  
+
 	  // Deactivate from the POA.
 	  this->m_poa->deactivate_object (oid.in ()
 					  );
-	  
+
 	}
   catch(...)
 	{
 	ACS_SHORT_LOG((LM_ERROR, "Failed to destroy DsLogAdmin::BasicLogFactory instance."));
 	}
   }
- 
+
   if (!CORBA::is_nil(this->m_naming_context.in()))
     {
       // Unbind from the naming service.
@@ -366,14 +366,14 @@ LoggingService::shutdown ()
 	{
 	ACS_SHORT_LOG((LM_ERROR, "Failed to unbind DsLogAdmin::BasicLog."));
 	}
-      
+
       try
 	{
         if(!m_logBin)
 	        name[0].id = CORBA::string_dup (acscommon::LOGGING_CHANNEL_XML_NAME);
 	    else
 	        name[0].id = CORBA::string_dup (acscommon::LOGGING_CHANNEL_NAME);
-            
+
 
       name[0].kind = CORBA::string_dup (acscommon::LOGGING_CHANNEL_KIND);
 	  this->m_naming_context->unbind (name);
@@ -388,7 +388,7 @@ LoggingService::shutdown ()
   if (!CORBA::is_nil (this->m_orb.in ()))
     {
       this->m_orb->shutdown (true);
-      
+
     }
 }
 
@@ -405,7 +405,7 @@ LoggingService::create_basic_log_factory()
       this->m_basic_log_factory.activate (this->m_orb.in(),
 					  this->m_poa.in ()
 	  );
-  
+
 
   ACE_ASSERT (!CORBA::is_nil (obj.in ()));
 
@@ -419,7 +419,7 @@ LoggingService::create_basic_log_factory()
   this->m_naming_context->rebind (name,
 				  obj.in ()
 				  );
-  
+
 
   ACS_SHORT_LOG ((LM_DEBUG,
               "Log Factory registered with the naming service as: %s",
@@ -439,8 +439,8 @@ LoggingService::create_basic_log()
 				      max_size,
 				      logid
 				      );
-  
- 
+
+
   ACE_ASSERT ((m_basic_log.ptr()!=DsLogAdmin::BasicLog::_nil()));
 
   // Register the Basic Log
@@ -453,8 +453,8 @@ LoggingService::create_basic_log()
   this->m_naming_context->rebind (name,
 				  m_basic_log.in ()
 				  );
-  
-  
+
+
   ACS_SHORT_LOG ((LM_DEBUG,
               "Log registered with the naming service as: %s",
               this->m_basic_log_name));
@@ -469,15 +469,15 @@ LoggingService::create_EC ()
         name[0].id = CORBA::string_dup (acscommon::LOGGING_CHANNEL_XML_NAME);
     else
         name[0].id = CORBA::string_dup (acscommon::LOGGING_CHANNEL_NAME);
-    
+
     name[0].kind = CORBA::string_dup (acscommon::LOGGING_CHANNEL_KIND);
-    
-    try 
+
+    try
 	{
 	//use the naming service to get our object
 	CORBA::Object_var ec_obj =  this->m_naming_context->resolve(name);
 	ACE_ASSERT(!CORBA::is_nil(ec_obj.in()));
-	
+
 	//narrow it
 	m_logging_ec = CosNotifyChannelAdmin::EventChannel::_narrow(ec_obj.in());
 	ACE_ASSERT(!CORBA::is_nil(m_logging_ec.in()));
@@ -487,21 +487,21 @@ LoggingService::create_EC ()
 	{
 	// Logging Channel
 	CosNotifyChannelAdmin::ChannelID id;
-    
+
 	m_logging_ec = m_notify_factory->create_channel (m_initial_qos,
 							 m_initial_admin,
 							 id);
-	
+
 	ACE_ASSERT (!CORBA::is_nil (m_logging_ec.in ()));
 	ACE_ASSERT(!CORBA::is_nil (this->m_naming_context.in ()));
 
 
 	this->m_naming_context->rebind (name,
 					m_logging_ec.in());
-  
-  
+
+
     if(m_logBin){
-	    
+
         ACS_SHORT_LOG ((LM_DEBUG,
 			"Logging EC registered with the naming service as: %s",
 			acscommon::LOGGING_CHANNEL_XML_NAME));
@@ -511,7 +511,7 @@ LoggingService::create_EC ()
 			acscommon::LOGGING_CHANNEL_NAME));
 	}
 	//ACE_ASSERT(!CORBA::is_nil (this->m_naming_context.in ()));
-	
+
 	//CosNaming::Name name (1);
 	//name.length (1);
 	}
@@ -523,8 +523,8 @@ LoggingService::create_supplieradmin ()
 
   m_logging_supplier_admin =
     m_logging_ec->new_for_suppliers (this->m_ifgop, adminid);
-  
-  
+
+
   ACE_ASSERT (!CORBA::is_nil (m_logging_supplier_admin.in ()));
 }
 
@@ -578,11 +578,11 @@ main (int argc, char *argv[])
   ACE_OS::signal(SIGINT, TerminationSignalHandler);  // Ctrl+C
   ACE_OS::signal(SIGTERM, TerminationSignalHandler); // termination request
   ACS_SHORT_LOG ((LM_INFO, "ACS Centralized Logger starting."));
-  
+
   try
       {
       service.startup (argc,argv);
-      
+
       if (service.run () == -1)
 	  {
           service.shutdown ();
@@ -595,17 +595,17 @@ main (int argc, char *argv[])
       ACS_SHORT_LOG((LM_ERROR, "Failed to start the ACS Centralized Logger"));
       return 1;
       }
-  
-  
+
+
   if (!g_blockTermination)
       {
       g_blockTermination=true;
       service.shutdown ();
       }
-  
-  
+
+
   ACS_SHORT_LOG ((LM_INFO, "ACS Centralized Logger stopped."));
-  
+
   return 0;
 }
 
@@ -614,6 +614,9 @@ main (int argc, char *argv[])
 // REVISION HISTORY:
 //
 // $Log: loggingService.cpp,v $
+// Revision 1.59  2008/07/15 06:55:52  bjeram
+// Replaced non portable comparing with _nil() with CORBA::is_nil(x). COMP-
+//
 // Revision 1.58  2008/02/21 09:20:45  cparedes
 // Changing the message to printf
 //

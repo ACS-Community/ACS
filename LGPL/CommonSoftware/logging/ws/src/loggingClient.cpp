@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingClient.cpp,v 1.52 2008/04/03 21:10:56 bjeram Exp $"
+* "@(#) $Id: loggingClient.cpp,v 1.53 2008/07/15 06:55:52 bjeram Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -60,32 +60,32 @@ void
 Subscribe::init (int argc, char *argv [], std::string channel)
 {
   init_ORB (argc, argv);
-  
+
   /*
    * Here we use directly ACS_DEBUG macros.
    * We do not want to use ACS logging macros, because
    * our purpose in life is to show the messages coming from
-   * the ACS logging system, and not to add output in that 
+   * the ACS logging system, and not to add output in that
    * very same place
    */
   ACE_DEBUG((LM_DEBUG, "Resolving Naming Service...\n"));
   resolve_naming_service ();
-  
+
 
   ACE_DEBUG((LM_DEBUG, "Resolving Notify Channel... %d %s\n",argc, channel.c_str()));
-  
+
   	resolve_notify_channel (channel.c_str());
-  
-  
+
+
 
   create_consumeradmin ();
-  
+
 
   create_consumers ();
-  
+
 
   setup_events();
-  
+
 }
 
 void
@@ -96,7 +96,7 @@ Subscribe::run ()
   try
     {
       this->orb_->run ();
-      
+
     }
   catch(...)
     {
@@ -112,12 +112,12 @@ Subscribe::init_ORB (int argc,
                                 argv,
                                 ""
                                 );
-  
+
 
   CORBA::Object_ptr poa_object  =
     this->orb_->resolve_initial_references("RootPOA"
                                            );
-  
+
 
   if (CORBA::is_nil (poa_object))
     {
@@ -126,14 +126,14 @@ Subscribe::init_ORB (int argc,
     }
   this->root_poa_ =
     PortableServer::POA::_narrow (poa_object);
-  
+
 
   PortableServer::POAManager_var poa_manager =
     root_poa_->the_POAManager ();
-  
+
 
   poa_manager->activate ();
-  
+
 }
 
 void
@@ -149,12 +149,12 @@ Subscribe::shutdown ()
       {
       ACE_ERROR((LM_ERROR, "Failed to disconnect CosNotifyComm::StructuredPushConsumer from the Notify Service."));
       }
-    
+
   // shutdown the ORB.
   if (!CORBA::is_nil (this->orb_.in ()))
     {
       this->orb_->shutdown (true);
-      
+
     }
 }
 
@@ -162,9 +162,8 @@ void
 Subscribe::resolve_naming_service ()
 {
     this->naming_context_ = LoggingHelper::resolveNameService(this->orb_.in());
-    if (naming_context_.ptr() == CosNaming::NamingContext::_nil())
-	throw CORBA::UNKNOWN();
-
+    if (CORBA::is_nil(naming_context_.ptr()))
+    	throw CORBA::UNKNOWN();
 }
 
 void
@@ -175,7 +174,7 @@ Subscribe::resolve_notify_channel (const char * channel_name)
   CosNaming::Name name (1);
   name.length (1);
   name[0].id = CORBA::string_dup (channel_name);
-  
+
   if(ACE_OS::strcmp(channel_name, acscommon::LOGGING_CHANNEL_NAME)==0 ||
         ACE_OS::strcmp(channel_name, acscommon::LOGGING_CHANNEL_XML_NAME)==0 )
       {
@@ -194,12 +193,12 @@ Subscribe::resolve_notify_channel (const char * channel_name)
   CORBA::Object_var obj =
     this->naming_context_->resolve (name
                                    );
-  
+
 
   this->ec_ =
     CosNotifyChannelAdmin::EventChannel::_narrow (obj.in ()
 						  );
-  
+
 }
 
 void
@@ -209,7 +208,7 @@ Subscribe::create_consumeradmin ()
 
   consumer_admin_ =
     ec_->new_for_consumers (this->ifgop_, adminid);
-  
+
 
   ACE_ASSERT (!CORBA::is_nil (consumer_admin_.in ()));
 }
@@ -220,7 +219,7 @@ Subscribe::create_consumers ()
   consumer_ = new ACSStructuredPushConsumer (this);
   consumer_->connect (this->consumer_admin_.in ()
                         );
-  
+
 }
 
 void
@@ -237,7 +236,7 @@ Subscribe::setup_events ()
   added[0].type_name = CORBA::string_dup ("*");
 
   this->consumer_admin_->subscription_change (added, removed);
-  
+
 
   // Setup the Consumer to receive event_type
   //  this->consumer_->get_proxy_supplier ()->subscription_change (added, removed,
@@ -248,7 +247,7 @@ Subscribe::setup_events ()
 void
 Subscribe::teardown_events ()
 {
-  // Remove subscription from the 
+  // Remove subscription from the
   CosNotification::EventTypeSeq added(0);
   CosNotification::EventTypeSeq removed (1);
   added.length (0);
@@ -281,11 +280,11 @@ ACSStructuredPushConsumer::connect (CosNotifyChannelAdmin::ConsumerAdmin_ptr con
   // Activate the consumer with the default_POA_
   CosNotifyComm::StructuredPushConsumer_var objref =
     this->_this ();
-  
+
 
   CosNotifyChannelAdmin::ProxySupplier_var proxysupplier =
     consumer_admin->obtain_notification_push_supplier (CosNotifyChannelAdmin::STRUCTURED_EVENT, proxy_supplier_id_);
-  
+
 
   ACE_ASSERT (!CORBA::is_nil (proxysupplier.in ()));
 
@@ -293,7 +292,7 @@ ACSStructuredPushConsumer::connect (CosNotifyChannelAdmin::ConsumerAdmin_ptr con
   this->proxy_supplier_ =
     CosNotifyChannelAdmin::StructuredProxyPushSupplier::
     _narrow (proxysupplier.in ());
-  
+
 
   ACE_ASSERT (!CORBA::is_nil (proxy_supplier_.in ()));
 
@@ -303,9 +302,9 @@ ACSStructuredPushConsumer::connect (CosNotifyChannelAdmin::ConsumerAdmin_ptr con
   char *acsLogType = getenv("ACS_LOG_BIN");
   if (acsLogType && *acsLogType){
     if(strcmp("true", acsLogType) == 0)
-        m_logBin = true; 
+        m_logBin = true;
   }
-  
+
 }
 
 void
@@ -313,13 +312,13 @@ ACSStructuredPushConsumer::disconnect ()
 {
   this->proxy_supplier_->
     disconnect_structured_push_supplier();
-  
+
 }
 
 void
 ACSStructuredPushConsumer::offer_change (const CosNotification::EventTypeSeq & /*added*/,
 					 const CosNotification::EventTypeSeq & /*removed*/
-					 
+
 )
       throw (
         CORBA::SystemException,
@@ -353,7 +352,7 @@ ACSStructuredPushConsumer::push_structured_event (const CosNotification::Structu
                    CosEventComm::Disconnected
                    )
 {
-	
+
  // "Logging" or "Archiving"
   const char * domain_name =
     notification.header.fixed_header.event_type.domain_name;
@@ -373,11 +372,11 @@ ACSStructuredPushConsumer::push_structured_event (const CosNotification::Structu
         notification.remainder_of_body >>= xmlLog;
         if (xmlLog)
         {
-            if (toSyslog) 
+            if (toSyslog)
             {
                 writeSyslogMsg(xmlLog);
-            } 
-            else 
+            }
+            else
             {
                 if(toFile){
                     ACE_OS::fprintf(outputFile,"%s\n", xmlLog);
@@ -418,7 +417,7 @@ ACSStructuredPushConsumer::push_structured_event (const CosNotification::Structu
       std::string containerName = "";
       std::string deviceName    = "";
       std::string parameterName = "";
-      
+
       //if the first element of eventName is not ':'
       if(eventName.at(0) != ':')
 	  {
@@ -427,15 +426,15 @@ ACSStructuredPushConsumer::push_structured_event (const CosNotification::Structu
 	  }
       //remove container name and the ':'
       eventName = eventName.substr(eventName.find(':')+1);
-      
+
       //get the device name
       deviceName = eventName.substr(0, eventName.find(':'));
       //remove device name and the ':'
       eventName = eventName.substr(eventName.find(':')+1);
-      
+
       //whatever is left must be the property name
       parameterName = eventName;
-      
+
       ACS::Time timeStamp = 0ULL;
       if((notification.filterable_data[0].value >>= timeStamp) == false)
 	  {
@@ -443,9 +442,9 @@ ACSStructuredPushConsumer::push_structured_event (const CosNotification::Structu
 	  }
       std::string stringifiedTimeStamp = getStringifiedUTC(timeStamp).c_str();
 
-      
+
       std::string typeName = AnyAide::getId(notification.filterable_data[1].value);
-      
+
       std::string stringifiedValue = "";
       try
 	  {
@@ -455,20 +454,20 @@ ACSStructuredPushConsumer::push_structured_event (const CosNotification::Structu
 	  {
 	  stringifiedValue = "?";
 	  }
-      
-      
-      ACE_OS::printf("%s %s.%s (%s) = %s\n", stringifiedTimeStamp.c_str(), 
-		     deviceName.c_str(), 
-		     parameterName.c_str(), 
+
+
+      ACE_OS::printf("%s %s.%s (%s) = %s\n", stringifiedTimeStamp.c_str(),
+		     deviceName.c_str(),
+		     parameterName.c_str(),
 		     typeName.c_str(),
 		     stringifiedValue.c_str());
-      
+
       ACE_OS::fflush (stdout);
-      
+
       }
   else
       {
-      ACE_OS::printf("Structured Subscribe Consumer %d received unknown event, domain = %s, type = %s\n", 
+      ACE_OS::printf("Structured Subscribe Consumer %d received unknown event, domain = %s, type = %s\n",
 		     this->proxy_supplier_id_, domain_name, type_name);
       }
 }
@@ -520,7 +519,7 @@ int
 main (int argc, char *argv [])
 {
   getParams(argc,argv);
-  
+
   if ( (ACE_OS::strcmp(argv[argc-1], "Logging")!=0 &&
        ACE_OS::strcmp(argv[argc-1], "Archiving")!=0))
     {
@@ -528,24 +527,24 @@ main (int argc, char *argv [])
       return 1;
     }
 
-	
+
     if (toSyslog) {
     	syslogFacility=getSyslogFacility();
     }
-  
+
   Subscribe client;
   try
     {
       client.init (argc, argv,channelName); // Init the Client
 
       g_client = &client;
-      
+
       ACE_OS::signal(SIGINT, TerminationSignalHandler);  // Ctrl+C
       ACE_OS::signal(SIGTERM, TerminationSignalHandler); // termination request
       if(toFile){
         outputFile = ACE_OS::fopen (fileName.c_str(),"w");
-        
-        if(outputFile == NULL) toFile=false; 
+
+        if(outputFile == NULL) toFile=false;
         else
             ACE_OS::fprintf(outputFile, "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?> \n<Log> \n<Header Name=\"NameForXmlDocument\" Type=\"LOGFILE\" />\n");
       }
@@ -556,7 +555,7 @@ main (int argc, char *argv [])
 	{
 	  g_blockTermination=true;
 	  client.shutdown ();
-	  
+
 	}
 
     }
@@ -571,7 +570,7 @@ main (int argc, char *argv [])
     ACE_ERROR((LM_ERROR, "Filter system error: "));
     return 1;
     }
-  
+
   ACE_ERROR ((LM_DEBUG, "ACS Notify Push Subscriber Client stopped.\n"));
 
   return 0;
@@ -622,14 +621,14 @@ void getParams(int argc, char *argv []) {
 		}
 	}
 	// There is only one non-option argument: the name of the channel
-	if (argc==optind) 
+	if (argc==optind)
 	{
 		// The name of the channel is not in the coomand line
 		printUsage(argv[0]);
 		exit(-1);
-	} 
-	else 
-	{   
+	}
+	else
+	{
         if(strcmp("Archiving",argv[argc-1]) == 0)
             channelName = acscommon::ARCHIVING_CHANNEL_NAME;
         else if(strcmp("Logging",argv[argc-1]) == 0){
@@ -638,7 +637,7 @@ void getParams(int argc, char *argv []) {
             if (acsLogType && *acsLogType){
               if(strcmp("true", acsLogType) == 0)
                 channelName = acscommon::LOGGING_CHANNEL_NAME;
-             } 
+             }
         }else{
             printUsage(argv[0]);
             exit(-1);

@@ -19,7 +19,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: loggingLoggingProxy.cpp,v 1.59 2008/07/14 06:37:45 cparedes Exp $"
+* "@(#) $Id: loggingLoggingProxy.cpp,v 1.60 2008/07/15 06:55:52 bjeram Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -38,7 +38,7 @@
 * msekoran  2001-06-08  Implementation according new specifications
 * almamgr   2000-12-03  Removed and changed to char* from filename and oldfilename
 * almamgr   2000-10-19  Looging of INFO on stdout more compact than XML output
-* almamgr   2000-10-19  created 
+* almamgr   2000-10-19  created
 */
 #include <string>
 #include <loggingLoggingProxy.h>
@@ -58,7 +58,7 @@
 #define LOG_NAME "Log"
 #define DEFAULT_LOG_FILE_NAME "acs_local_log"
 
-ACE_RCSID(logging, logging, "$Id: loggingLoggingProxy.cpp,v 1.59 2008/07/14 06:37:45 cparedes Exp $");
+ACE_RCSID(logging, logging, "$Id: loggingLoggingProxy.cpp,v 1.60 2008/07/15 06:55:52 bjeram Exp $");
 unsigned int LoggingProxy::setClrCount_m = 0;
 bool LoggingProxy::initialized = false;
 int LoggingProxy::instances = 0;
@@ -74,14 +74,14 @@ void
 LoggingProxy::log(ACE_Log_Record &log_record)
 {
     unsigned long priority = getPriority(log_record);
-    
+
     int privateFlags = (*tss)->privateFlags();
     // 1 - default/priority local prohibit
     // 2 - default/dynamic priority Remote prohibit
     bool prohibitLocal  = privateFlags & 1;
     bool prohibitRemote = privateFlags & 2;
-    int localLogLevelPrecedence = (*tss)->logLevelLocalType(); 
-    int remoteLogLevelPrecedence = (*tss)->logLevelRemoteType(); 
+    int localLogLevelPrecedence = (*tss)->logLevelLocalType();
+    int remoteLogLevelPrecedence = (*tss)->logLevelRemoteType();
     ACE_TCHAR timestamp[24];
     formatISO8601inUTC(log_record.time_stamp(), timestamp);
 
@@ -100,26 +100,26 @@ LoggingProxy::log(ACE_Log_Record &log_record)
     if(localLogLevelPrecedence >= CDB_LOG_LEVEL){
 	if(m_envStdioPriority >= 0) {
 	    localLogLevelPrecedence=ENV_LOG_LEVEL;
-	    prohibitLocal = priority>=(unsigned int)m_envStdioPriority? false:true; 
+	    prohibitLocal = priority>=(unsigned int)m_envStdioPriority? false:true;
     	}else{
 	    prohibitLocal = priority >= m_minCachePriority? false:true;
 	}
     }else if(localLogLevelPrecedence == ENV_LOG_LEVEL)
-	prohibitLocal = priority>=(unsigned int)m_envStdioPriority? false:true; 
+	prohibitLocal = priority>=(unsigned int)m_envStdioPriority? false:true;
 
     LoggingTSSStorage::HASH_MAP_ENTRY *entry;
     LoggingTSSStorage::HASH_MAP_ITER hash_iter = (*tss)->getData();
 
     if (!prohibitLocal && ACE_OS::strcmp(entryType, "Archive")!=0)      // do not print archive logs
 	{
-        bool printed = false; 
+        bool printed = false;
 	// to make print outs nice
 	ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_printMutex);
-	
+
 	 if (localLogLevelPrecedence == DEFAULT_LOG_LEVEL)
 	    {
 	    // log only LM_INFO and higher
-	    if (log_record.priority()>=ACE::log2(LM_INFO)) 
+	    if (log_record.priority()>=ACE::log2(LM_INFO))
 		{
 		if ((*tss)->sourceObject()==0)
 		    {
@@ -136,21 +136,21 @@ LoggingProxy::log(ACE_Log_Record &log_record)
       else{
 
 	    ACE_OS::printf ("%s ", timestamp);
-	    
+
 	    //print out the source object
 	    const ACE_TCHAR *so = (*tss)->sourceObject();
-	    
+
 	    if(so!=0)
 		{
 		ACE_OS::printf ("[%s - ", so);
 		}
-	    
-	    // print out routine if set 
+
+	    // print out routine if set
 	    const ACE_TCHAR * r = (*tss)->routine();
-	    //if routine and source object both exist 
+	    //if routine and source object both exist
 	    if (r!=0 && so!=0)
 		{
-		ACE_OS::printf ("%s] ", r);    
+		ACE_OS::printf ("%s] ", r);
 		}
 	    //if source object exists but routine does not
 	    else if(r==0 && so!=0)
@@ -161,21 +161,21 @@ LoggingProxy::log(ACE_Log_Record &log_record)
 		{
 		ACE_OS::printf ("[%s] ", r);
 		}
-	    
+
 	    ACE_OS::printf ("%s", log_record.msg_data());
         printed = true;
 	}
 
     //Here we will print the log parameters (attributes) and Data ALWAYS
     if(printed){
-        
+
         for (hash_iter = (*tss)->getAttributes();
          (hash_iter.next (entry) != 0);
          hash_iter.advance ())
         {
             ACE_OS::printf(" %s=\"%s\"",entry->ext_id_.c_str(),entry->int_id_.c_str());
 	    }
-        
+
         for (hash_iter = (*tss)->getData();
          (hash_iter.next (entry) != 0);
          hash_iter.advance ())
@@ -185,40 +185,40 @@ LoggingProxy::log(ACE_Log_Record &log_record)
             ACE_OS::printf(" %s=\"%s\"",entry->ext_id_.c_str(),entry->int_id_.c_str());
             }
         }
-    
+
         ACE_OS::printf ("\n");
 	    ACE_OS::fflush (stdout); //(2004-01-05)msc: added
 	}
-    
+
     }//else//if
-	
+
 
     // this is the case of the proxy created not by maci
     if(remoteLogLevelPrecedence >= CDB_LOG_LEVEL){
 	if(m_envCentralizePriority >= 0) {
 	    remoteLogLevelPrecedence=ENV_LOG_LEVEL;
-	    prohibitRemote = priority>=(unsigned int)m_envCentralizePriority? false:true; 
-    	}else{ 
+	    prohibitRemote = priority>=(unsigned int)m_envCentralizePriority? false:true;
+    	}else{
 	    prohibitRemote = priority>=m_minCachePriority? false:true;
     	}
     }else if(remoteLogLevelPrecedence == ENV_LOG_LEVEL)
-	prohibitRemote = priority>=(unsigned int)m_envCentralizePriority? false:true; 
+	prohibitRemote = priority>=(unsigned int)m_envCentralizePriority? false:true;
 
     if (prohibitRemote)
 	{
-	// anyway we have to clear TSS data 
-	(*tss)->clear(); 
+	// anyway we have to clear TSS data
+	(*tss)->clear();
 	return;
 	}
-   
+
     if(!m_logBin){
 	    sendXmlLogs(log_record, timestamp, s_entryType.c_str());
     }else{
         sendBinLogs(log_record, timestamp, s_entryType.c_str());
     }
-    
+
     // clear TSS data
-   // (*tss)->clear();    
+   // (*tss)->clear();
   }
 
   void LoggingProxy::sendBinLogs(ACE_Log_Record &log_record, const ACE_TCHAR * timestamp, const ACE_TCHAR * entryType){
@@ -242,7 +242,7 @@ LoggingProxy::log(ACE_Log_Record &log_record)
 	}
     // routine (REQUIRED for LM_TRACE and LM_DEBUG)
     const ACE_TCHAR * r = (*tss)->routine();
-    if (r || 
+    if (r ||
 	(log_record.priority()==ACE::log2(LM_TRACE)) ||		// LM_TRACE
 	(log_record.priority()==ACE::log2(LM_DEBUG)))		// LM_DEBUG
 	{
@@ -264,7 +264,7 @@ LoggingProxy::log(ACE_Log_Record &log_record)
             if (m_process){
                 s_log->Process =CORBA::string_dup( m_process);
             }
-            
+
             const ACE_TCHAR * threadName = (*tss)->threadName();
             if (threadName){
                 s_log->Thread = threadName;
@@ -289,7 +289,7 @@ LoggingProxy::log(ACE_Log_Record &log_record)
 	{
 	s_log->SourceObject = (*tss)->sourceObject();
 	}
-    
+
     s_log->StackLevel=-1;
   //  s_log->StackId = "";
     if (log_record.priority()>=ACE::log2(LM_WARNING))		// LM_WARNING+
@@ -303,26 +303,26 @@ LoggingProxy::log(ACE_Log_Record &log_record)
 		        s_log->StackId = "-";
 		    }
         }
-	
+
         // stackLevel
         int sl = (*tss)->stackLevel();
         if ((sl > 0) || (flags & LM_RUNTIME_CONTEXT)){
             s_log->StackLevel = (*tss)->stackLevel();
         }
 	}
-    
+
     // logId
     if ((*tss)->logId())
 	{
 	s_log->LogId = (*tss)->logId();
 	}
-    
+
     // uri
     if ((*tss)->uri())
 	{
 	    s_log->Uri = (*tss)->uri();
 	}
-    
+
 	s_log->Priority = priority;
     if((*tss)->audience()!=0)
         s_log->Audience = (*tss)->audience();
@@ -346,7 +346,7 @@ LoggingProxy::log(ACE_Log_Record &log_record)
     }
     s_log->attributes = ACSLoggingLog::NameValueSeq(i);
     for (j=0;j<i;j++){
-        length = s_log->attributes.length(); 
+        length = s_log->attributes.length();
         s_log->attributes.length(length+1);
         s_log->attributes[length] = aux[j];
     }
@@ -364,7 +364,7 @@ LoggingProxy::log(ACE_Log_Record &log_record)
 	}
     s_log->log_data = ACSLoggingLog::NameValueSeq(i);
     for (j=0;j<i;j++){
-        length = s_log->log_data.length(); 
+        length = s_log->log_data.length();
         s_log->log_data.length(length+1);
         s_log->log_data[length] = aux2[j];
     }
@@ -372,8 +372,8 @@ LoggingProxy::log(ACE_Log_Record &log_record)
     if (ACE_OS::strlen(log_record.msg_data())){
 	    s_log->MsgData = log_record.msg_data();
 	}
-  
-    (*tss)->clear();    
+
+    (*tss)->clear();
     ACE_GUARD_REACTION (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, printf("problem acquring mutex in loggingProxy::log () errno: %d\n", errno);return);
     if (!m_noLogger && (m_cacheDisabled || (priority > m_maxCachePriority))){
 	    CORBA::Any record;
@@ -386,7 +386,7 @@ LoggingProxy::log(ACE_Log_Record &log_record)
 	    // cache it to local cache file
 	    m_bin_cache.push_back(s_log);
     }
-    
+
     // transfer cache to centralized logger if necessary
     if (m_bin_cache.size() >= m_cacheSize){
 		// avoid excessive signaling
@@ -396,22 +396,22 @@ LoggingProxy::log(ACE_Log_Record &log_record)
 
   }
 
-  void LoggingProxy::sendXmlLogs(ACE_Log_Record &log_record,  const ACE_TCHAR * timestamp, const ACE_TCHAR * entryType){ 
+  void LoggingProxy::sendXmlLogs(ACE_Log_Record &log_record,  const ACE_TCHAR * timestamp, const ACE_TCHAR * entryType){
     //
     // format XML
     //
-    
+
     unsigned int flags = (*tss)->flags();
     unsigned long priority = getPriority(log_record);
     ACE_TCHAR line[64];
-    ACE_OS::sprintf(line, "<%s TimeStamp=\"%s\"", 
-    //ACE_OS::sprintf(line, "<LogEntry Type=\"%d\" TimeStamp=\"%s\"", 
+    ACE_OS::sprintf(line, "<%s TimeStamp=\"%s\"",
+    //ACE_OS::sprintf(line, "<LogEntry Type=\"%d\" TimeStamp=\"%s\"",
 		    entryType,
-		    timestamp); 
-    
+		    timestamp);
+
     ACE_CString xml((size_t)512);    // create buffer of 512 chars to improove performace (avoid reallocating)
     xml = line;
-    
+
     // source info
     if (flags & LM_SOURCE_INFO ||
 	(log_record.priority()==ACE::log2(LM_DEBUG)))		// LM_DEBUG
@@ -425,10 +425,10 @@ LoggingProxy::log(ACE_Log_Record &log_record)
 	    xml += line;
 	    }
 	}
-    
+
     // routine (REQUIRED for LM_TRACE and LM_DEBUG)
     const ACE_TCHAR * r = (*tss)->routine();
-    if (r || 
+    if (r ||
 	(log_record.priority()==ACE::log2(LM_TRACE)) ||		// LM_TRACE
 	(log_record.priority()==ACE::log2(LM_DEBUG)))		// LM_DEBUG
 	{
@@ -440,7 +440,7 @@ LoggingProxy::log(ACE_Log_Record &log_record)
 	    for (unsigned int t=before; t<xml.length(); t++)
 		{
 		/*
-		 * We do not want to manipulate the strings (too slow) so we try to fix 
+		 * We do not want to manipulate the strings (too slow) so we try to fix
 		 * some of the problems that can cause a parse error while reading the logs
 		 */
 		if (xml[t]=='<') xml[t]='{';
@@ -453,7 +453,7 @@ LoggingProxy::log(ACE_Log_Record &log_record)
 	    xml += " Routine=\"\"";
 	    }
 	}
-    
+
     // runtime info
     if (flags & LM_RUNTIME_CONTEXT)
 	{
@@ -476,7 +476,7 @@ LoggingProxy::log(ACE_Log_Record &log_record)
 	    xml += "\"";
 	    }
 	}
-    
+
     // context
     r = (*tss)->context();
     if (r || (flags & LM_RUNTIME_CONTEXT))
@@ -496,23 +496,23 @@ LoggingProxy::log(ACE_Log_Record &log_record)
 	{
 	xml += " SourceObject=\"" + ACE_CString((*tss)->sourceObject()) + "\"";
 	}
-    
-    //audience 
+
+    //audience
     if ((*tss)->audience()!=0)
     {
-    xml += " Audience=\"" + ACE_CString((*tss)->audience()) + "\""; 
-    }   
-    //array 
+    xml += " Audience=\"" + ACE_CString((*tss)->audience()) + "\"";
+    }
+    //array
     if ((*tss)->array()!=0)
     {
-    xml += " Array=\"" + ACE_CString((*tss)->array()) + "\""; 
-    }   
-    //antenna 
+    xml += " Array=\"" + ACE_CString((*tss)->array()) + "\"";
+    }
+    //antenna
     if ((*tss)->antenna()!=0)
     {
-    xml += " Antenna=\"" + ACE_CString((*tss)->antenna()) + "\""; 
-    }   
-    
+    xml += " Antenna=\"" + ACE_CString((*tss)->antenna()) + "\"";
+    }
+
     if (log_record.priority()>=ACE::log2(LM_WARNING))		// LM_WARNING+
 	{
 	// stackId
@@ -528,7 +528,7 @@ LoggingProxy::log(ACE_Log_Record &log_record)
 		xml += " StackId=\"\"";
 		}
 	    }
-	
+
 	// stackLevel
 	int sl = (*tss)->stackLevel();
 	if ((sl > 0) || (flags & LM_RUNTIME_CONTEXT))
@@ -537,19 +537,19 @@ LoggingProxy::log(ACE_Log_Record &log_record)
 	    xml += line;
 	    }
 	}
-    
+
     // logId
     if ((*tss)->logId())
 	{
 	xml += " LogId=\"" + ACE_CString((*tss)->logId()) + "\"";
 	}
-    
+
     // uri
     if ((*tss)->uri())
 	{
 	xml += " Uri=\"" + ACE_CString((*tss)->uri()) + "\"";
 	}
-    
+
     // priority
     if (priority != log_record.priority()+1)
 	{
@@ -557,7 +557,7 @@ LoggingProxy::log(ACE_Log_Record &log_record)
 	xml += line;
 	}
 
- 
+
     LoggingTSSStorage::HASH_MAP_ITER hash_iter = (*tss)->getData();
     LoggingTSSStorage::HASH_MAP_ENTRY *entry;
     // add attributes
@@ -567,7 +567,7 @@ LoggingProxy::log(ACE_Log_Record &log_record)
 	{
 	xml += " " + entry->ext_id_ + "=\"" + entry->int_id_ + "\"";
 	}
-    
+
     xml += ">";
 
     if (ACE_OS::strlen(log_record.msg_data()))
@@ -576,7 +576,7 @@ LoggingProxy::log(ACE_Log_Record &log_record)
 	xml+=log_record.msg_data();
 	xml+="]]>";
 	}
-    
+
     for (hash_iter = (*tss)->getData();
 	 (hash_iter.next (entry) != 0);
 	 hash_iter.advance ())
@@ -595,16 +595,16 @@ LoggingProxy::log(ACE_Log_Record &log_record)
 	    xml += "<Data Name=\"" + entry->ext_id_ + "\"><![CDATA["  + entry->int_id_ + "]]></Data>";
 	    }
 	}
-    
-    
+
+
     // end tag
-    ACE_OS::sprintf(line, "</%s>", entryType); 
+    ACE_OS::sprintf(line, "</%s>", entryType);
     xml += line;
-    
+
     //
     // XML created, now cache or send
     //
-    
+
     //ACE_OS::printf ("%s", xml.c_str());
     /*
       const ACE_TCHAR * threadName = (*tss)->threadName();
@@ -612,13 +612,13 @@ LoggingProxy::log(ACE_Log_Record &log_record)
       ACE_OS::printf ("Locking %s\n", threadName);
       else
       ACE_OS::printf ("Locking <unnamed>\n");
-    */    
-        
+    */
+
     // we can clear TSS data here, because we do not need them anymore
-    (*tss)->clear();    
+    (*tss)->clear();
     ACE_GUARD_REACTION (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, printf("problem acquring mutex in loggingProxy::log () errno: %d\n", errno);return);
     //ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex);
-    
+
     // sent record directly to centralized logger
     if (!m_noLogger && (m_cacheDisabled || (priority > m_maxCachePriority)))
 	{
@@ -634,7 +634,7 @@ LoggingProxy::log(ACE_Log_Record &log_record)
 	// cache it to local cache file
 	m_cache.push_back(xml);
 	}
-    
+
     // transfer cache to centralized logger if necessary
     if (m_cache.size() >= m_cacheSize)
 	{
@@ -755,7 +755,7 @@ LoggingProxy::LogLevelLocalType()
   else
     return 0;
 }
- 
+
 void LoggingProxy::logXML(const ACE_TCHAR *xml, bool cache)
 {
    ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex);
@@ -780,10 +780,10 @@ void LoggingProxy::logXML(const ACE_TCHAR *xml, bool cache)
           sendCache();
     }else{
         //TODO: transform to bin??
-    } 
+    }
 }
-											
-void 
+
+void
 LoggingProxy::LogEntryType(const ACE_TCHAR *szType)
 {
   if (tss)
@@ -853,7 +853,7 @@ void
 LoggingProxy::ProcessName(const ACE_TCHAR *szName)
 {
   if (tss)
-    strncpy(m_process, szName, 255); 
+    strncpy(m_process, szName, 255);
 }
 
 const ACE_TCHAR *
@@ -866,7 +866,7 @@ LoggingProxy::ProcessName()
 }
 
 
-void 
+void
 LoggingProxy::ResetAttributes()
 {
   if (tss)
@@ -927,7 +927,7 @@ LoggingProxy::StackLevel()
     return 0;
 }
 
-	
+
 void
 LoggingProxy::Context(const ACE_TCHAR *szName)
 {
@@ -940,7 +940,7 @@ LoggingProxy::Context()
 {
   if (tss)
     return (*tss)->context();
-  else 
+  else
     return 0;
 }
 
@@ -972,7 +972,7 @@ LoggingProxy::LoggingProxy(const unsigned long cacheSize,
 			   CosNaming::NamingContext_ptr namingContext,
 			   const unsigned int autoFlushTimeoutSec) :
   m_cacheSize(cacheSize),
-  m_minCachePriority(minCachePriority), 
+  m_minCachePriority(minCachePriority),
   m_maxCachePriority(maxCachePriority),
   m_autoFlushTimeoutSec(autoFlushTimeoutSec),
   m_logger(DsLogAdmin::Log::_duplicate(centralizedLogger)),
@@ -991,8 +991,8 @@ LoggingProxy::LoggingProxy(const unsigned long cacheSize,
   m_threadShutdown(2),
   m_shutdown(false)
 {
-  if (m_logger.ptr() == DsLogAdmin::Log::_nil())
-    m_noLogger = true;
+  if (CORBA::is_nil(m_logger.ptr()))
+	  m_noLogger = true;
 
   if (!tss)
       tss = new ACE_TSS<LoggingTSSStorage>;
@@ -1016,8 +1016,8 @@ LoggingProxy::LoggingProxy(const unsigned long cacheSize,
   char *acsLogType = getenv("ACS_LOG_BIN");
   if (acsLogType && *acsLogType){
     if(strcmp("true", acsLogType) == 0)
-        m_logBin = true; 
-  } 
+        m_logBin = true;
+  }
   char *acsCentralizeLogger = getenv("ACS_LOG_CENTRAL");
   if (acsCentralizeLogger && *acsCentralizeLogger)
     {
@@ -1059,7 +1059,7 @@ LoggingProxy::formatISO8601inUTC(const ACE_Time_Value &timestamp, ACE_TCHAR str[
   time_t ut(timestamp.sec());
   struct tm *utc = ACE_OS::gmtime(&ut);
   ACE_OS::strftime(ctp, sizeof(ctp), "%Y-%m-%dT%H:%M:%S", utc);
-  
+
   ACE_OS::sprintf (str, ACE_TEXT ("%s.%03ld"),
 		   ctp, timestamp.usec () / 1000);
 }
@@ -1100,7 +1100,7 @@ LoggingProxy::successfullySent()
     {
 	ACE_TCHAR timestamp[24];
 	formatISO8601inUTC(ACE_OS::gettimeofday(), timestamp);
-	
+
 	ACE_OS::printf ("%s LoggingProxy: Connection to the Centralized Logger reestablished.\n", timestamp);
     }
 
@@ -1117,27 +1117,27 @@ LoggingProxy::reconnectToLogger()
 	dt-=m_disconnectionTime;
 	if (dt.sec() >= m_minReconnectionTime)
 	{
-	    
+
 	    // update reference
 	    if (m_namingContext.ptr()!=CosNaming::NamingContext::_nil())
 	    {
-		
+
 	    try
 		{
 
 		    CosNaming::Name name;
 		    name.length(1);
 		    name[0].id = CORBA::string_dup(LOG_NAME);
-		    //name[0].kind = ; 
-  
+		    //name[0].kind = ;
+
 		    CORBA::Object_var obj = m_namingContext->resolve(name);
-		    
+
 
 		    if (!CORBA::is_nil(obj.in()))
 		    {
 			DsLogAdmin::Log_var logger = DsLogAdmin::Log::_narrow(obj.in());
-			
-			
+
+
 			if (logger.ptr() != DsLogAdmin::Log::_nil())
 			{
 			    m_logger = logger;
@@ -1146,7 +1146,7 @@ LoggingProxy::reconnectToLogger()
 
 			}
 		    }
-		    
+
 		}
 	    catch(...)
 		{
@@ -1179,7 +1179,7 @@ LoggingProxy::svc()
 {
     // start barrier
     //m_threadStart.wait();
-    
+
     // started on demand, so flush immediately
     sendCacheInternal();
 
@@ -1222,7 +1222,7 @@ LoggingProxy::sendCache()
 	    return;
 	  }
 	}
-	
+
 	// signal work thread to get working...
 	m_doWorkCond.signal();
 }
@@ -1233,7 +1233,7 @@ LoggingProxy::sendCacheInternal()
 {
 	if (m_sendingPending)
 		return;
-		
+
     ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex);
 
  	// nothing to send check
@@ -1241,25 +1241,25 @@ LoggingProxy::sendCacheInternal()
 		return;
     if(!m_logBin && m_cache.size() == 0) return;
     if(m_logBin && m_bin_cache.size() == 0) return;
-         
+
     // no centralized logger => output to other logging end-point
     if (m_noLogger && (reconnectToLogger()==false))
 	{
 	ACE_TCHAR timestamp[24];
 	formatISO8601inUTC(ACE_OS::gettimeofday(), timestamp);
-	
+
 	CacheLogger * logger = 0;
 	ACE_CString key;
-	
+
 	// use syslog
 	if (m_syslog.length()>0)
 	    {
 	    int facility = -1;
 	    ACE_CString host;
-	    
+
 	    // parse m_syslog variable
 	    // format: [<facility>@]<host>
-	    
+
 	    int pos = m_syslog.find("@");
 	    // no facility specified, take default
 	    if (pos==(int)ACE_CString::npos)
@@ -1267,9 +1267,9 @@ LoggingProxy::sendCacheInternal()
 	    else
 		{
 		host = m_syslog.substr(pos+1);
-		
+
 		ACE_CString fac = m_syslog.substr(0, pos);
-		
+
 		if (fac.length()>0)
 		    if (isdigit(fac[0]))
 			{
@@ -1282,15 +1282,15 @@ LoggingProxy::sendCacheInternal()
 			int n = 1;
 			for (; RemoteSyslogLogger::m_facilityNames[n].value != -1; n++)
 			    if (ACE_OS::strcmp(RemoteSyslogLogger::m_facilityNames[n].name, fac.c_str())==0)
-				{ facility = RemoteSyslogLogger::m_facilityNames[n].value; break; } 
-			
+				{ facility = RemoteSyslogLogger::m_facilityNames[n].value; break; }
+
 			if (facility==-1)
 			    ACE_OS::printf ("%s LoggingProxy: Invalid syslog facility name '%s'. Using defaults.\n",
 					    timestamp, fac.c_str());
 			}
 		}
-	    
-	    
+
+
 #ifdef ACS_HAS_LOCAL_SYSLOG_CALLS
 	    if (ACE_OS::strcmp(host.c_str(), "localhost")==0)
 		{
@@ -1298,18 +1298,18 @@ LoggingProxy::sendCacheInternal()
 		    logger = new LocalSyslogLogger(facility);  // set facility
 		else
 		    logger = new LocalSyslogLogger();          // default facility
-		
+
 		// add pid to syslog ident (process name)
 		// watch if LoggingProxy::ProcessName() is unitialized and is 0
 		const char * processName = "unknown";
 		if (LoggingProxy::ProcessName())
 		    processName = LoggingProxy::ProcessName();
-		
+
 		ACE_TCHAR buf[200];
 		ACE_OS::sprintf(buf, "%s(%lu)", processName, (unsigned long)ACE_OS::getpid());
 		key = buf;
 		}
-	    
+
 #endif
         if (!logger)
 		{
@@ -1319,7 +1319,7 @@ LoggingProxy::sendCacheInternal()
 		    logger = new RemoteSyslogLogger();          // default facility
 		key = host;
 		}
-	    
+
 	    }
 	// use local file
 	else
@@ -1327,15 +1327,15 @@ LoggingProxy::sendCacheInternal()
 	    logger = new LocalFileLogger();
 	    key = m_filename.c_str();
 	    }
-	
+
 	//
 	// log cache here
 	//
 
-    if (logger && (m_logger.ptr() == DsLogAdmin::Log::_nil())){
+    if (logger && (CORBA::is_nil(m_logger.ptr()))){
         if (logger->open(key.c_str())==0){
             if(!m_logBin)
-            { 	
+            {
                 XMLElement * xmlElement = 0;
                 ACE_CString str(size_t(32));
                 int prio;
@@ -1354,62 +1354,62 @@ LoggingProxy::sendCacheInternal()
                             /*const int len = sizeof(m_LogEntryTypeName) / sizeof(m_LogEntryTypeName[0]);
                             for (int i = 1; i < len; i++)
                             if (ACE_OS::strcmp(m_LogEntryTypeName[i], type)==0)
-                                { prio = i; break; } 
+                                { prio = i; break; }
                             */
-                             prio = LogLevelDefinition::fromName(type).getValue(); 
+                             prio = LogLevelDefinition::fromName(type).getValue();
                         }
                         delete xmlElement;
                     }
                     logger->log(prio, iter->c_str());        // what if error occurs!!!
                 }
-            }else 
+            }else
             {
-	            if (logger && (m_logger.ptr() == DsLogAdmin::Log::_nil())){
+	            if (logger && (CORBA::is_nil(m_logger.ptr()))){
                     if (logger->open(key.c_str())==0){
-            
+
                         ACE_CString str(size_t(32));
                         int prio;
-                    
+
                         for (LogBinDeque::iterator iter = m_bin_cache.begin(); iter != m_bin_cache.end(); iter++)
                         {
                             prio = ACE::log2 (LM_ERROR);         // default (LM_ERROR)
                             // parse "Priority" out
-                            int tprio = (*iter)->Priority; 
+                            int tprio = (*iter)->Priority;
                             if (tprio)                        // valid value
                                 prio = tprio;
                             else{                                     // extract from entry type
                                 AcsLogLevels::logLevelValue type = (*iter)->type;
                                 std::string name = LogLevelDefinition::fromInteger(type).getName();
                                 if(name != AcsLogLevels::OFF_NAME) prio = type;
-                                    
+
                             }
-                            logger->log(prio,BinToXml(*iter).c_str());   
-                            delete *iter; 
+                            logger->log(prio,BinToXml(*iter).c_str());
+                            delete *iter;
                         }
                      }
-                } 
+                }
             }
             if (!m_alreadyInformed){
                 ACE_OS::printf ("%s %s logger: Cache saved to '%s'.\n", timestamp, logger->getIdentification(), logger->getDestination());
 		ACE_OS::fflush (stdout); //(2004-01-05)msc: added
                 m_alreadyInformed=true;
             }
-            
+
             logger->close();
-            if (!m_logBin){ 
+            if (!m_logBin){
                 m_cache.clear();
             }else{
                  m_bin_cache.clear();
             }
             delete logger;
-            
+
             return;
-        
+
         }else{
             ACE_OS::printf ("%s %s logger: Failed to save logging cache. Cache is lost!\n", timestamp, logger->getIdentification());
             if (!m_logBin) m_cache.clear();
             else m_bin_cache.clear();
-        
+
             delete logger;
         return;
         }
@@ -1419,11 +1419,11 @@ LoggingProxy::sendCacheInternal()
     if (!m_logBin) m_cache.clear();
     else m_bin_cache.clear();
     return;
-   } 
+   }
     //
     // centralized logger is present, log cache to CL
     //
-    
+
 	// TAO uses leader/follower concurrency pattern that might cause
 	// that this thread will do other things and this can case deadlock
 	// this is avoided by using this flag
@@ -1431,43 +1431,43 @@ LoggingProxy::sendCacheInternal()
 
     try
 	{
-	
-    if(!m_logBin ){ 	
+
+    if(!m_logBin ){
 	    // fill anys
         DsLogAdmin::Anys anys(m_cache.size());
         anys.length(m_cache.size());
         int i = 0;
         for (LogDeque::iterator iter = m_cache.begin();
-             iter != m_cache.end(); 
+             iter != m_cache.end();
              iter++)
             anys[i++] <<= iter->c_str();
 
         m_logger->write_records(anys);
-        
-        
+
+
         // successfully sent
         successfullySent();
-        
+
         // successfully sent, clear cache
         m_cache.clear();
-	}else{ 
+	}else{
 	    // fill anys
         DsLogAdmin::Anys anys(m_bin_cache.size());
         anys.length(m_bin_cache.size());
         int i = 0;
         for (LogBinDeque::iterator iter = m_bin_cache.begin();
-             iter != m_bin_cache.end(); 
+             iter != m_bin_cache.end();
              iter++){
             CORBA::Any record;
             record <<= *(*iter);
             anys[i++] = record;
             delete *iter;
         }
-        
+
         m_logger->write_records(anys);
         // successfully sent
         successfullySent();
-        
+
         // successfully sent, clear cache
         m_bin_cache.clear();
     }
@@ -1499,7 +1499,7 @@ LoggingProxy::sendRecord(CORBA::Any &record)
       anys[0] = record;
 
       m_logger->write_records(anys);
-      
+
       // successfully sent
       successfullySent();
 
@@ -1520,12 +1520,12 @@ void
 LoggingProxy::init(LoggingProxy *loggingProxy) {
 
  //check if callback has been already set for this thread
- // for some reson  it's problem (at thread shutdown) if we set the callback two times 
-    if (ACE_LOG_MSG->msg_callback () == 0) 
+ // for some reson  it's problem (at thread shutdown) if we set the callback two times
+    if (ACE_LOG_MSG->msg_callback () == 0)
 	{
 	ACE_LOG_MSG->clr_flags (ACE_Log_Msg::STDERR);
 	ACE_LOG_MSG->set_flags (ACE_Log_Msg::MSG_CALLBACK);
-	ACE_LOG_MSG->msg_callback (loggingProxy); 
+	ACE_LOG_MSG->msg_callback (loggingProxy);
 	setClrCount_m ++;
 	}
     initialized = true;
@@ -1536,7 +1536,7 @@ LoggingProxy::isInitThread() {
 
   return (ACE_LOG_MSG->msg_callback () == 0);
 }
-    
+
 void
 LoggingProxy::done() {
     setClrCount_m --;
@@ -1555,7 +1555,7 @@ LoggingProxy::getPriority(ACE_Log_Record &log_record)
 {
     // ACE default
 // here we have to add 1 to align ACE and ACS priorities. In past it was OK due to a bug in ACE
-    unsigned long priority = log_record.priority()+1; 
+    unsigned long priority = log_record.priority()+1;
     unsigned long flag_prio = (*tss)->flags() & 0x0F;
     if (flag_prio)
  	priority = flag_prio;
@@ -1567,10 +1567,10 @@ std::string LoggingProxy::BinToXml(ACSLoggingLog::LogBinaryRecord* record){
     ACE_TCHAR line[64];
     ACE_CString xml((size_t)512);    // create buffer of 512 chars to improove performace (avoid reallocating)
 
-    ACE_OS::sprintf(line, "<%s TimeStamp=\"%s\"", 
-        //    m_LogEntryTypeName[record->type], 
-            LogLevelDefinition::fromInteger(record->type).getName().c_str(), 
-            record->TimeStamp.in()); 
+    ACE_OS::sprintf(line, "<%s TimeStamp=\"%s\"",
+        //    m_LogEntryTypeName[record->type],
+            LogLevelDefinition::fromInteger(record->type).getName().c_str(),
+            record->TimeStamp.in());
 
     xml = line;
 
@@ -1624,20 +1624,20 @@ std::string LoggingProxy::BinToXml(ACSLoggingLog::LogBinaryRecord* record){
     }
     /*xml += " Audience=\"";
     xml += record->Audience.in();
-    xml += "\""; 
+    xml += "\"";
 */
-    for (unsigned int i = 0; i< record->attributes.length() ; i++) 
+    for (unsigned int i = 0; i< record->attributes.length() ; i++)
     {
         xml += " ";
         xml += record->attributes[i].name.in();
-        xml += "=\""; 
+        xml += "=\"";
         xml += record->attributes[i].value.in();
         xml += "\"";
     }
-    
+
     xml += ">";
-    
-    for (unsigned int i = 0; i< record->log_data.length() ; i++) 
+
+    for (unsigned int i = 0; i< record->log_data.length() ; i++)
 	{
         xml += "<Data Name=\"";
         xml += record->log_data[i].name.in();
@@ -1649,14 +1649,14 @@ std::string LoggingProxy::BinToXml(ACSLoggingLog::LogBinaryRecord* record){
         }else   xml += "N/A";
         xml += "</Data>";
 	}
-   
+
 	xml += "<![CDATA[";
 	xml+=record->MsgData.in();
 	xml+="]]>";
-    
+
     // end tag
-//    ACE_OS::sprintf(line, "</%s>", m_LogEntryTypeName[record->type]); 
-    ACE_OS::sprintf(line, "</%s>", LogLevelDefinition::fromInteger(record->type).getName().c_str()); 
+//    ACE_OS::sprintf(line, "</%s>", m_LogEntryTypeName[record->type]);
+    ACE_OS::sprintf(line, "</%s>", LogLevelDefinition::fromInteger(record->type).getName().c_str());
     xml += line;
     return xml.c_str();
 }
