@@ -33,6 +33,7 @@ import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JPopupMenu;
 import javax.swing.JTable;
 import javax.swing.event.RowSorterEvent;
 import javax.swing.table.TableCellRenderer;
@@ -55,15 +56,12 @@ import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.Toolkit;
-import java.awt.Font;
-import java.awt.FontMetrics;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
 import com.cosylab.logging.settings.UserInfoDlg;
-
 
 import alma.acs.logging.table.renderer.DateRenderer;
 import alma.acs.logging.table.renderer.EntryTypeRenderer;
@@ -203,19 +201,53 @@ public class LogEntryTable extends JTable {
 	 */
 	private class ColumnPopupMenu extends javax.swing.JPopupMenu implements ActionListener
 	{
-		// The menu item to copy the text to the clipboard
+		/**
+		 * The menu item to show the error stack.
+		 * <P>
+		 * It is enabled only if the stack ID is not null
+		 */
+		private JMenuItem showErrorStack = new JMenuItem("Show error stack");
+		
+		/** 
+		 * The menu item to copy the text to the clipboard
+		 */
 		private JMenuItem copyClipboard = new JMenuItem("to clipboard");
-		// The menu item to copy the text to the additional info field
+		
+		/** 
+		 * The menu item to copy the text to the additional info field
+		 */
 		private JMenuItem copyAddInfo = new JMenuItem("to additionalInfo");
-		// The menu item to allow the user to add his information
+		
+		/** 
+		 * The menu item to allow the user to add his information
+		 */
 		private JMenuItem addUserInfo = new JMenuItem("add Info");
-		// The menu item to save selected logs
+		
+		/** 
+		 * The menu item to save selected logs
+		 */
 		private ImageIcon icon =new ImageIcon(LogTypeHelper.class.getResource("/disk.png"));
+		
+		/**
+		 * The menu item to save the selected logs
+		 */
 		private JMenuItem saveSelected = new JMenuItem("Save selected logs...",icon);
-		// The text to copy
+		
+		/** 
+		 * The text to copy
+		 */
 		private String textToCopy;
-		// The row and column under the mouse pointer
+		
+		/** 
+		 * The row and column under the mouse pointer
+		 */
 		private int row;
+		
+		/**
+		 * This property is used to select the logs for the error browser.
+		 * Its value is initialized in the constructor by reading the <code>STACKID</code> of the selected log.
+		 */
+		private String stackId;
 		
 		/**
 		 * The constructor builds the menu
@@ -231,6 +263,8 @@ public class LogEntryTable extends JTable {
 			setLabel("Paste");
 			
 			// Add the menu items
+			add(showErrorStack);
+			addSeparator();
 			add(saveSelected);
 			addSeparator();
 			add(copyClipboard);
@@ -240,13 +274,27 @@ public class LogEntryTable extends JTable {
 			
 			// Hide the unneeded buttons
 			boolean singleLineSelected =
-				selectionModel.getMinSelectionIndex() == selectionModel.getMaxSelectionIndex(); 
+				selectionModel.getMinSelectionIndex() == selectionModel.getMaxSelectionIndex();
+			
+			// The error stack menu item is enabled only if the stack ID is not empty and not null
+			
+			if (singleLineSelected) {
+				LogTableDataModel model = (LogTableDataModel)getModel();
+				ILogEntry selectedLog = model.getVisibleLogEntry(convertRowIndexToModel(row));
+				stackId = (String)selectedLog.getField(Field.STACKID);
+				showErrorStack.setEnabled(stackId!=null && !stackId.isEmpty());
+			} else {
+				stackId=null;
+				showErrorStack.setEnabled(false);
+			}
+			
 			copyAddInfo.setEnabled(singleLineSelected);
 			addUserInfo.setEnabled(singleLineSelected);
 			copyClipboard.setEnabled(true);
 			saveSelected.setEnabled(true);
 			
 			// Add the listeners
+			showErrorStack.addActionListener(this);
 			copyClipboard.addActionListener(this);
 			copyAddInfo.addActionListener(this);
 			addUserInfo.addActionListener(this);
@@ -349,6 +397,10 @@ public class LogEntryTable extends JTable {
 				}
 			} else if (e.getSource()==saveSelected) {
 				saveSelectedLogs();
+			} else if (e.getSource()==showErrorStack) {
+				if (stackId!=null && !stackId.isEmpty()) {
+					loggingClient.addErrorTab(stackId);
+				}
 			} else {
 				System.err.println("Unhandled event "+e);
 			}
@@ -407,7 +459,7 @@ public class LogEntryTable extends JTable {
 	 * Creation date: (1/25/02 11:16:28 AM)
 	 * @author: acaproni
 	 */
-	public class ColumnMenu extends javax.swing.JPopupMenu
+	public class ColumnMenu extends JPopupMenu
 	{
 
 		private String[] menuNames =
@@ -427,10 +479,10 @@ public class LogEntryTable extends JTable {
 
 		private JMenuItem[] items = new JMenuItem[itemCount];
 
-		private class MenuClicked implements java.awt.event.ActionListener
+		private class MenuClicked implements ActionListener
 		{
 
-			public void actionPerformed(java.awt.event.ActionEvent e)
+			public void actionPerformed(ActionEvent e)
 			{
 
 				LogEntryTable let = LogEntryTable.this;
@@ -773,7 +825,7 @@ public class LogEntryTable extends JTable {
 		setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		sizeColumnsToFit(JTable.AUTO_RESIZE_OFF);
 
-        // Hide some columns (default at startuup)
+        // Hide some columns (default at startup)
 		hideColumn(Field.LINE.ordinal()+1);
 		hideColumn(Field.ROUTINE.ordinal()+1);
 		hideColumn(Field.HOST.ordinal()+1);
