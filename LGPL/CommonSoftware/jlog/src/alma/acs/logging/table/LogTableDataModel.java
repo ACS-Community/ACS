@@ -53,15 +53,12 @@ import com.cosylab.logging.client.cache.LogCacheException;
 import com.cosylab.logging.client.CustomFileChooser;
 
 /**
- * Defines a table model that extends the AbstractTableModel class interface and implements 
- * getRowCount, getColumnCount, getValueAt. Additionally, it implements 
- * methods for appending log entries to a list, manipulating log entries, 
- * applying filters to log entries as well as loading from files and saving into files.
+ * Extends the <code>LogEntryTableModelBase</code> adding I/O, deletion of logs
+ * and so on.
  * 
- * Creation date: (11/11/2001 13:46:06)
  * @author: Ales Pucelj (ales.pucelj@kgb.ijs.si)
  */
-public class LogTableDataModel extends AbstractTableModel {
+public class LogTableDataModel extends LogEntryTableModelBase {
 	/**
 	 * The class contains a thread to delete asynchronously
 	 * the logs running at low priority.
@@ -72,13 +69,19 @@ public class LogTableDataModel extends AbstractTableModel {
 	 *
 	 */
 	public class LogDeleter extends Thread {
-		// The time interval between two iteration of the thread
+		/** 
+		 * The time interval between two iteration of the thread
+		 */
 		private final int TIME_INTERVAL=30;
 		
-		// The queue with the keys of the logs to delete
+		/** 
+		 * The queue with the keys of the logs to delete
+		 */
 		private LinkedBlockingQueue<Integer> logsToDelete = new LinkedBlockingQueue<Integer>();
 		
-		// Signal the thread to terminate
+		/** 
+		 * Signal the thread to terminate
+		 */
 		private volatile boolean terminateThread=false;
 		
 		/**
@@ -158,69 +161,19 @@ public class LogTableDataModel extends AbstractTableModel {
 		}
 		
 	}
-	
-	/**
-	 * To reduce the overload refreshing the content of the table when a lot of logs
-	 * have been added or removed, the refresh is triggered only after a certain amount
-	 * of time.
-	 * <P>
-	 * Objects from this class check if there have been changes and fire the event
-	 * 
-	 * @author acaproni
-	 *
-	 */
-	public class TableUpdater extends Thread {
-		/**
-		 * <code>true</code> if some logs have been added/removed from the model 
-		 */
-		public volatile boolean changed=false;
-		
-		/**
-		 * Signal the thread to terminate
-		 */
-		private volatile boolean terminateThread=false;
-		
-		/**
-		 * The interval (msec) between two refreshes of the content
-		 * of the table
-		 */
-		private static final int UPDATE_INTERVAL=2000; 
-		
-		public void close() {
-			terminateThread=true;
-			interrupt();
-		}
-		
-		/**
-		 * The thread updating the content of the table
-		 */
-		public void run() {
-			while (!terminateThread) {
-				try {
-					Thread.sleep(UPDATE_INTERVAL);
-				} catch (InterruptedException ie) {
-					continue;
-				}
-				if (changed && loggingClient.getLogEntryTable().isVisible()) {
-					changed=false;
-					fireTableDataChanged();
-				}
-			}
-		}
-	}
-	private static final String BLANK_STRING = "";
-
-	// Stores all the logs received.
-	private LogCache allLogs = null ;
     
-    // The LoggingClient that owns this table model
+    /** 
+     * The LoggingClient that owns this table model
+     */
     private LoggingClient loggingClient=null;
     
-	// Contains references to the filters that are currently applied to logs.
-	// Actual filters are stored in filters.
-	//private final Vector appliedFilters = new Vector();
-	
-	// Stores the current directory which is being accessed.	
+	/**
+	 * Contains references to the filters that are currently applied to logs.
+	 * Actual filters are stored in filters.
+	 * private final Vector appliedFilters = new Vector();
+	 *
+	 * Stores the current directory which is being accessed.	
+	 */
 	public File currentDir = null;
 	
 	private boolean isSuspended = true;
@@ -250,92 +203,12 @@ public class LogTableDataModel extends AbstractTableModel {
 	private LogDeleter logDeleter;
 	
 	/**
-	 * The thread to refresh the content of the table
-	 */
-	private TableUpdater tableUpdater;
-	
-	/**
-	 * Each row shows a log identified by a key returned by the cache.
-	 * <P>
-	 * This vector stores the key of each log shown in the table.
-	 */
-	private Vector<Integer> rows = new Vector<Integer>(10000,2048);
-	
-	/**
-	 * Return number of columns in table
-	 */
-	public final int getColumnCount() {
-		return Field.values().length+1;
-	}
-	
-	/**
-	 * Replace a log entry with another
-	 * 
-	 * @param pos The position in the cache of the log to replace 
-	 * @param newEntry The new LogEntryXML
-	 */
-	public synchronized void replaceLog(int pos, ILogEntry newEntry) {
-		// Replace the entry in the list of all the logs (allLogs)
-		try {
-			allLogs.replaceLog(pos,newEntry);
-		} catch (LogCacheException e) {
-			System.err.println("Error replacing log "+pos);
-			e.printStackTrace();
-		}
-		return;
-	}
-	
-	/**
 	 * Returns whether the saving/loading of the file has been cancelled or not that reflects on the
 	 * status of the JToggleButton of the GUI. If canceled, then the button should be released. 
 	 */
 	public final boolean getSuspended() {
 	
 		return isSuspended;	
-	}
-	
-	/**
-	 * Returns an item according to the row and the column of its position.
-	 * @return java.lang.Object
-	 * @param row int
-	 * @param column int
-	 */
-	public synchronized Object getValueAt(int row, int column) {
-		switch (column) {
-		case 1: {// TIMESTAMP
-				try {
-				return new Date(allLogs.getLogTimestamp(rows.get(row)));
-				} catch (Exception e) {
-					System.err.println("Got a null timestamp: ");
-					e.printStackTrace(System.err);
-					return null;
-				}
-		}
-		case 2: { // ENTRYTYPE
-			try {
-				LogTypeHelper temp = allLogs.getLogType(rows.get(row));
-				if (temp==null) {
-					System.out.println("Got a null logtype row "+row+", col "+column);
-				}
-				return temp;
-			} catch (Exception e) {
-				System.err.println("Got a null log type: ");
-				e.printStackTrace(System.err);
-				return null;
-			}
-		}
-		default: {
-			ILogEntry log=getVisibleLogEntry(row); 
-			if (log==null) {
-				return null;
-			} 
-			if (column == 0) {
-				return new Boolean(log.hasDatas());
-			} else {
-				return log.getField(Field.values()[column-1]);
-			}
-		}
-		}
 	}
 	
 	/**
@@ -347,19 +220,10 @@ public class LogTableDataModel extends AbstractTableModel {
 			throw new IllegalArgumentException("Invalid null LoggingClient");
 		}
 		this.loggingClient=client;
-		try {
-			allLogs = new LogCache();
-		} catch (LogCacheException lce) {
-			System.err.println("Exception instantiating the cache: "+lce.getMessage());
-			lce.printStackTrace(System.err);
-			throw new Exception("Exception instantiating the cache: ",lce);
-		} 
+		
 		logDeleter=new LogDeleter();
 		logDeleter.setPriority(Thread.MIN_PRIORITY);
 		logDeleter.start();
-		
-		tableUpdater = new TableUpdater();
-		tableUpdater.start();
 	}
 	
 	/**
@@ -392,65 +256,6 @@ public class LogTableDataModel extends AbstractTableModel {
 		}
 		timeFrame=timeframe;
 		checkTimeFrame();
-	}
-	
-	/**
-	 * Adds the log to the list. Logs are always appended at the end of the list.
-	 * 
-	 * @param log The log to add
-	 */
-	public synchronized void appendLog(ILogEntry log) {
-		try {
-			//checkLogNumber();
-			int key=allLogs.add(log);
-			synchronized (rows) {
-				rows.add(key);
-			}
-		} catch (LogCacheException lce) {
-			System.err.println("Exception caught while inserting a new log entry in cache:");
-			System.err.println(lce.getLocalizedMessage());
-			lce.printStackTrace(System.err);
-		}
-		tableUpdater.changed=true;
-	}
-	
-	/**
-	 * Returns default class for column.
-	 * Creation date: (12/1/2001 14:18:53)
-	 * @return java.lang.Class
-	 * @param column int
-	 */
-	public final Class<?> getColumnClass(int column) {
-		if (column == 0) {
-			return Boolean.class;
-		} else {
-			int col=column-1;
-		
-			if (col>=0 && col<Field.values().length) {
-				return Field.values()[col].getType();
-			}
-			return String.class;
-		}
-	}
-	
-	/**
-	 * Returns name of the column based LogEntryXML fields.
-	 * If the specified index does not return a valid column, blank string is returned.
-	 * Creation date: (11/11/2001 13:50:16)
-	 * @return java.lang.String
-	 * @param columnIndex int
-	 */
-	public final String getColumnName(int columnIndex) {
-	
-		if (columnIndex == 0 ) {
-			return BLANK_STRING;
-		}
-	
-		columnIndex=columnIndex-1;
-		
-		return (columnIndex>=0 && columnIndex<Field.values().length) ? 
-			Field.values()[columnIndex].getName() :
-			BLANK_STRING;
 	}
 	
 	public void loadFromURL() {
@@ -572,6 +377,11 @@ public class LogTableDataModel extends AbstractTableModel {
 		}
 	}
 	
+	/**
+	 * Save the logs in a file
+	 * 
+	 * @param fileName The name of the file to save logs into
+	 */
 	public void saveFile(String fileName) {
 		try {
 			getIOHelper().saveLogs(fileName,allLogs,true);
@@ -580,22 +390,7 @@ public class LogTableDataModel extends AbstractTableModel {
 	 	};
 	}
 	
-	// clears all	
-	public synchronized void clearAll() {
-			    if (allLogs != null) {
-			    	try {
-			    		synchronized(rows) {
-			    			rows.removeAllElements();
-			    		}
-			    		allLogs.clear();
-			    		fireTableDataChanged();
-			    	} catch (LogCacheException e) {
-			    		System.err.println("Error clearing the cache: "+e.getMessage());
-			    		e.printStackTrace(System.err);
-			    		JOptionPane.showMessageDialog(null, "Exception clearing the cache: "+e.getMessage(),"Error clearing the cache",JOptionPane.ERROR_MESSAGE);
-			    	}
-			    }
-	}
+	
 	
 	/**
 	 * Return true if an async load/save is in progress
@@ -618,22 +413,6 @@ public class LogTableDataModel extends AbstractTableModel {
 			ioHelper = new IOLogsHelper(loggingClient);
 		}
 		return ioHelper;
-	}
-	
-	/**
-	 * 
-	 * @return The number of logs in cache
-	 */
-	public long totalLogNumber() {
-		return allLogs.getSize();
-	}
-	
-	/**
-	 * @return The time frame of the log in cache
-	 * @see com.cosylab.logging.client.cache.LogCache
-	 */
-	public Calendar getTimeFrame() {
-		return allLogs.getTimeFrame();
 	}
 	
 	/**
@@ -665,37 +444,14 @@ public class LogTableDataModel extends AbstractTableModel {
 			logDeleter.close(sync);
 			logDeleter=null;
 		}
-		if (tableUpdater!=null) {
-			tableUpdater.close();
-			tableUpdater=null;
-		}
+		
 		if (ioHelper!=null) {
 			ioHelper.done();
 			ioHelper=null;
 		}
+		super.close(sync);
 	}
 
-	/**
-	 * @see javax.swing.table.TableModel#getRowCount()
-	 */
-	@Override
-	public int getRowCount() {
-		return allLogs.getSize();
-	}
-	
-	 public ILogEntry getVisibleLogEntry(int row) {
-		 assert row>=0 && row<rows.size();
-		 try {
-			 ILogEntry ret;
-			 synchronized (rows) {
-				 ret=allLogs.getLog(rows.get(row));
-			 }
-			 return ret;
-		 } catch (Exception e) {
-			 e.printStackTrace(System.err);
-			 return null;
-		 }
-	 }
 	 
 	 public int getFieldSortNumber() {
 		 return 0;
@@ -707,42 +463,4 @@ public class LogTableDataModel extends AbstractTableModel {
 	 
 	 public void setSortComparator(int index, boolean ascending) {
 	 }
-	 
-	 /**
-	  * Return the key of the log in the given position of the
-	  * vector of keys.
-	  * <P>
-	  * There are several cases that forbids to retrieve the key in the given position,
-	  * in such a situations the method return <code>null</code>.
-	  * One typical situation is when the entry has been deleted by the <code>LogDeleter</code>.
-	  *   
-	  * @param index The position in the model of the key
-	  * @return The key in the passed position or
-	  *         <code>null</code> if it is not possible to return the key
-	  *         
-	  *         @see findKeyPos(Integer key)
-	  */
-	 public synchronized Integer getLogKey(int index) {
-		try {
-			return rows.get(index);
-		} catch (Throwable t) {
-			return null;
-		}
-	 }
-	 
-	 /**
-	  * Return the position of the key in the vector.
-	  * <P>
-	  * There are cases when the key is not anymore in the vector and in such situations 
-	  * this method return <code>null</code>.
-	  * <BR>For example it could happen if the log has been deleted by the <code>LogDeleter</code>. 
-	  * 
-	  * @param key The key whose position in the vector has to be found
-	  * @return The position of the key in the vector of logs or 
-	  * 	    <code>-1</code> if the key is not in the vector
-	  */
-	 public synchronized int findKeyPos(Integer key) {
-		 return rows.indexOf(key);
-	 }
-	 
 }
