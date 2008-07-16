@@ -5,7 +5,7 @@ class testJoinableThread : public ACS::Thread {
 public:
     testJoinableThread(const ACE_CString& name, const ACS::TimeInterval& responseTime=ThreadBase::defaultResponseTime,
 		       const ACS::TimeInterval& sleepTime=ThreadBase::defaultSleepTime, bool del=false) :
-	ACS::Thread(name, responseTime*10, sleepTime*10, del, THR_NEW_LWP| THR_JOINABLE) 
+	ACS::Thread(name, responseTime*10, sleepTime*50, del, THR_NEW_LWP| THR_JOINABLE) 
 	{
 	    ACS_TRACE("testJoinableThread::testJoinableThread");
 	}
@@ -17,7 +17,8 @@ public:
 
     virtual void run() 
 	{
-	    std::cout << " run()" << std::endl; 
+	    std::cout << " run()" << std::endl;
+	    sleep();
 	}
 };
 
@@ -59,6 +60,8 @@ int main(int argc, char *argv[])
     delete[] threadId;
 
     LoggingProxy::done();
+
+    sleep(1);
     return 0;
 }
 
