@@ -149,7 +149,13 @@ fi
 #everything checked out so manager can really be shutdown
 #if this command does not finish in 15 seconds, it will be
 #killed
-acsutilBlock -t 15 -k maciManagerShutdown
+
+# The code to send to shutdown methods of all containers. 
+# If 0, the containers' shutdown methods are not called, and the manager simply calls disconnect()
+# TODO Think about if we want containers to actually shut down, and what value to send in that case.
+# See COMP-2602 for more.
+export container_shutdown_code=0
+acsutilBlock -t 15 -k "maciManagerShutdown $container_shutdown_code"
 
 #---------------------------------------------------------------------------------
 #assume the worst has happened...manager is hung
