@@ -68,6 +68,11 @@ public class LogMenuBar extends JMenuBar {
      */
     private JMenuItem viewErrorLogMI;
     
+    /**
+     * The menu item to show the error browser
+     */
+    private JMenuItem viewErrorBrowserMI;
+    
 	/**
 	 * The menu item to show the filters control panel
 	 */
@@ -173,6 +178,7 @@ public class LogMenuBar extends JMenuBar {
         viewMenu.add(getLogTypeDescriptionViewMenuItem());
         viewMenu.addSeparator();
         viewMenu.add(getFiltersMenuItem());
+        viewMenu.add(getViewErrorBrowserMenuItem());
         viewMenu.addSeparator();
         viewMenu.add(getStatisticsMenuItem());
         viewMenu.add(getViewErrorLogMenuItem());
@@ -376,6 +382,7 @@ public class LogMenuBar extends JMenuBar {
 		viewStatusAreaMI.addActionListener(actionListener);
 		statisticsMenuItem.addActionListener(actionListener);
 		viewErrorLogMI.addActionListener(actionListener);
+		viewErrorBrowserMI.addActionListener(actionListener);
 		searchMenuItem.addActionListener(actionListener);
 		searchNextMenuItem.addActionListener(actionListener);
 		suspendMI.addActionListener(actionListener);
@@ -394,6 +401,11 @@ public class LogMenuBar extends JMenuBar {
 		engineFiltersMI.addActionListener(actionListener); // Engine filters
 	}
 	
+	/**
+	 * Getter 
+	 * 
+	 * @return The menu item
+	 */
 	public JCheckBoxMenuItem getViewToolbarMenuItem() {
 		if (viewToolbarMI==null) {
 			viewToolbarMI = new JCheckBoxMenuItem("Toolbar",true);
@@ -401,6 +413,11 @@ public class LogMenuBar extends JMenuBar {
 		return viewToolbarMI;
 	}
 	
+	/**
+	 * Getter 
+	 * 
+	 * @return The menu item
+	 */
 	public JCheckBoxMenuItem getViewDetailedInfoMenuItem() {
 		if (viewDetailedInfoMI==null) {
 			viewDetailedInfoMI = new JCheckBoxMenuItem("Detailed log info",true);
@@ -408,6 +425,11 @@ public class LogMenuBar extends JMenuBar {
 		return viewDetailedInfoMI;
 	}
 	
+	/**
+	 * Getter 
+	 * 
+	 * @return The menu item
+	 */
 	public JCheckBoxMenuItem getViewStatusAreaMenuItem() {
 		if (viewStatusAreaMI==null) {
 			viewStatusAreaMI = new JCheckBoxMenuItem("Status area",false);
@@ -415,6 +437,11 @@ public class LogMenuBar extends JMenuBar {
 		return viewStatusAreaMI;
 	}
 	
+	/**
+	 * Getter 
+	 * 
+	 * @return The menu item
+	 */
 	public JCheckBoxMenuItem getShortDateViewMenuItem() {
 		if (shortDateViewMI==null) {
 			shortDateViewMI = new JCheckBoxMenuItem("Short date format",true);
@@ -422,6 +449,11 @@ public class LogMenuBar extends JMenuBar {
 		return shortDateViewMI;
 	}
 	
+	/**
+	 * Getter 
+	 * 
+	 * @return The menu item
+	 */
 	public JCheckBoxMenuItem getLogTypeDescriptionViewMenuItem() {
 		if (logTypeDescritptionViewMI==null) {
 			logTypeDescritptionViewMI = new JCheckBoxMenuItem("Show log type description",true);
@@ -429,6 +461,11 @@ public class LogMenuBar extends JMenuBar {
 		return logTypeDescritptionViewMI;
 	}
 	
+	/**
+	 * Getter 
+	 * 
+	 * @return The menu item
+	 */
 	public JCheckBoxMenuItem getAutoReconnectMenuItem() {
 		if (autoReconnectMI==null) {
 			ImageIcon icon =new ImageIcon(LogTypeHelper.class.getResource("/autoreconnect.png"));
@@ -437,6 +474,11 @@ public class LogMenuBar extends JMenuBar {
 		return autoReconnectMI;
 	}
 	
+	/**
+	 * Getter 
+	 * 
+	 * @return The menu item
+	 */
 	public JMenuItem getSuspendMenuItem() {
 		if (suspendMI==null) {
 			suspendMI = new JCheckBoxMenuItem("Suspend",false);
@@ -444,6 +486,11 @@ public class LogMenuBar extends JMenuBar {
 		return suspendMI;
 	}
 	
+	/**
+	 * Getter 
+	 * 
+	 * @return The menu item
+	 */
 	public JMenuItem getPrefsMenuItem() {
 		if (prefsMI==null) {
 			prefsMI = new JMenuItem("Preferences");
@@ -451,6 +498,11 @@ public class LogMenuBar extends JMenuBar {
 		return prefsMI;
 	}
 	
+	/**
+	 * Getter 
+	 * 
+	 * @return The menu item
+	 */
 	public JMenuItem getStatisticsMenuItem() {
 		if (statisticsMenuItem==null) {
 			ImageIcon statIcon =new ImageIcon(LogTypeHelper.class.getResource("/statistics.png"));
@@ -459,15 +511,34 @@ public class LogMenuBar extends JMenuBar {
 		return statisticsMenuItem;
 	}
 	
+	/**
+	 * Getter 
+	 * 
+	 * @return The menu item
+	 */
 	public JMenuItem getViewErrorLogMenuItem() {
 		if (viewErrorLogMI==null) {
-			viewErrorLogMI = new JMenuItem("Error log");
+			ImageIcon errorLogIcon =new ImageIcon(LogTypeHelper.class.getResource("/errorLogIcon.png"));
+			viewErrorLogMI = new JMenuItem("jlog error log",errorLogIcon);
 		}
 		return viewErrorLogMI;
 	}
 	
 	/**
-	 * Enable/Disbale all the controls in the GUI that could trigger
+	 * Getter 
+	 * 
+	 * @return The menu item
+	 */
+	public JMenuItem getViewErrorBrowserMenuItem() {
+		if (viewErrorBrowserMI==null) {
+			ImageIcon browserIcon =new ImageIcon(LogTypeHelper.class.getResource("/errorBrowserIcon.png"));
+			viewErrorBrowserMI = new JMenuItem("Error browser",browserIcon);
+		}
+		return viewErrorBrowserMI;
+	}
+	
+	/**
+	 * Enable/Disable all the controls in the GUI that could trigger
 	 * the invalidation of the logs
 	 * 
 	 * @param enabled If true the controls are enabled
