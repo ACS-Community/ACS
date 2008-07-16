@@ -338,6 +338,8 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
             	SwingUtilities.invokeLater(showStat);
             } else if (e.getSource()==menuBar.getViewErrorLogMenuItem()) { 
             		errorDialog.setVisible(true);
+            } else if (e.getSource()==menuBar.getViewErrorBrowserMenuItem()) { 
+            		getErrorDialog().setVisible(true);
             } else if (e.getSource()==menuBar.getViewStatusAreaMenuItem()) {
             	getStatusAreaPanel().setVisible(menuBar.getViewStatusAreaMenuItem().getState());
             	if (menuBar.getViewStatusAreaMenuItem().getState()) {
@@ -1646,15 +1648,22 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 	}
 	
 	/**
+	 * @return The error browser dialog
+	 */
+	public ErrorBrowserDlg getErrorDialog() {
+		if (errorBrowserDialog==null) {
+			errorBrowserDialog=new ErrorBrowserDlg();
+		}
+		return errorBrowserDialog;
+	}
+	
+	/**
 	 * Add a new error stack to the error browser dialog
 	 * 
 	 * @param stackID The <code>STACKID</code> of the error trace in the tab
 	 */
 	public void addErrorTab(String stackID) {
-		if (errorBrowserDialog==null) {
-			errorBrowserDialog=new ErrorBrowserDlg();
-		}
-		errorBrowserDialog.addErrorTab(getLCModel1(),stackID);
+		getErrorDialog().addErrorTab(getLCModel1(),stackID);
 	}
 }
 
