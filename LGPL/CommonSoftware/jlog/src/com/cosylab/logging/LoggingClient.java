@@ -28,6 +28,7 @@ import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
@@ -56,6 +57,8 @@ import alma.acs.logging.dialogs.main.LogFrame;
 import alma.acs.logging.dialogs.main.LogMenuBar;
 import alma.acs.logging.dialogs.main.LogNavigationBar;
 import alma.acs.logging.dialogs.main.LogToolBar;
+import alma.acs.logging.errorbrowser.Engine;
+import alma.acs.logging.errorbrowser.ErrorBrowserDlg;
 import alma.acs.logging.preferences.UserPreferences;
 import alma.acs.logging.table.LogEntryTable;
 import alma.acs.logging.table.LogTableDataModel;
@@ -158,7 +161,6 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 	// Create an instance of the preferences with default values
 	private UserPreferences userPreferences = new UserPreferences();
 
-	private JPanel ivjJPanel1 = null;
 	private JPanel ivjJPanel2 = null;
 	private JPanel detailedInfoPanel = null;
 	
@@ -174,7 +176,7 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 	private JScrollPane detailedInfoScrollPane = null;
 
 	private JSplitPane ivjJSplitPane1 = null;
-	private JSplitPane ivjJSplitPane2 = null;
+	private JSplitPane tableDetailsSplitPane = null;
 
 	private JScrollPane scrollLogTable = null;
 	private LogEntryTable logEntryTable = null;
@@ -249,6 +251,11 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
     
     // The dialog to choose filters to apply to the engine
     private FilterChooserDialog engineFiltersDlg=null;
+    
+    /**
+     * The error broser dialog
+     */
+    private ErrorBrowserDlg errorBrowserDialog=null;
     
 	/**
 	 *  The dialog to manage table filters
@@ -341,10 +348,10 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
             } else if (e.getSource()==menuBar.getViewDetailedInfoMenuItem()) {
             	getDeatailedInfoPanel().setVisible(menuBar.getViewDetailedInfoMenuItem().getState());
             	if (menuBar.getViewDetailedInfoMenuItem().getState()) {
-            		int w = getLogTable().getWidth();
-            		getJSplitPane2().setDividerLocation(getJSplitPane2().getWidth() - w/3);
+            		int w = getLogEntryTable().getWidth();
+            		getTableDetailsSplitPane().setDividerLocation(getTableDetailsSplitPane().getWidth() - w/3);
             	} else {
-            		getJSplitPane2().setDividerLocation(getJSplitPane2().getWidth());
+            		getTableDetailsSplitPane().setDividerLocation(getTableDetailsSplitPane().getWidth());
             	}
             } else if (e.getSource()==menuBar.getAutoReconnectMenuItem()) {
             	if (LoggingClient.this.engine!=null) {
@@ -664,18 +671,18 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 	 * Returns the JFrameContentPane property value.
 	 * @return javax.swing.JPanel
 	 */
-	private javax.swing.JPanel getJFrameContentPane()
+	private JPanel getJFrameContentPane()
 	{
 		if (ivjJFrameContentPane == null)
 		{
 			try
 			{
-				ivjJFrameContentPane = new javax.swing.JPanel();
+				ivjJFrameContentPane = new JPanel();
 				ivjJFrameContentPane.setName("JFrameContentPane");
-				ivjJFrameContentPane.setLayout(new java.awt.BorderLayout());
+				ivjJFrameContentPane.setLayout(new BorderLayout());
 				ivjJFrameContentPane.add(getJSplitPane1(), "Center");
 			}
-			catch (java.lang.Throwable ivjExc)
+			catch (Throwable ivjExc)
 			{
 				handleException(ivjExc);
 			}
@@ -727,30 +734,21 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 	}
 
 	/**
-	 * Returns the LogTable property value.
-	 * @return javax.swing.JScrollPane
+	 * Returns the scroll panel with the table of logs
+	 * @return the scroll panel with the table of logs
 	 */
 
-	public javax.swing.JScrollPane getLogTable()
-	{
-		if (scrollLogTable == null)
-		{
-			try
-			{
-				scrollLogTable = new javax.swing.JScrollPane();
-				scrollLogTable.setName("LogTable");
-				scrollLogTable.setVerticalScrollBarPolicy(javax.swing.JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-				scrollLogTable.setHorizontalScrollBarPolicy(javax.swing.JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-				scrollLogTable.setBackground(new java.awt.Color(204, 204, 204));
-				scrollLogTable.setFont(new java.awt.Font("Arial", 1, 12));
-				scrollLogTable.setMinimumSize(new java.awt.Dimension(100, 50));
+	public JScrollPane getLogTableScroolP() {
+		if (scrollLogTable == null) {
+			try {
+				scrollLogTable = new JScrollPane(getLogEntryTable(),JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+				scrollLogTable.setName("scrollLogTable");
+				scrollLogTable.setBackground(new Color(204, 204, 204));
+				scrollLogTable.setFont(new Font("Arial", 1, 12));
+				scrollLogTable.setMinimumSize(new Dimension(100, 50));
 				scrollLogTable.addComponentListener(new CustomColumnListener());
-				scrollLogTable.setColumnHeaderView(getLogEntryTable().getTableHeader());
-				scrollLogTable.setViewportView(getLogEntryTable());
 				scrollLogTable.getViewport().setScrollMode(JViewport.BLIT_SCROLL_MODE);
-			}
-			catch (java.lang.Throwable ivjExc)
-			{
+			} catch (Throwable ivjExc) {
 				handleException(ivjExc);
 			}
 		}
@@ -760,25 +758,20 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 	
 	
 	/**
-	 * Returns the ScrollPaneTable property value.
-	 * @return com.cosylab.logging.client.LogEntryTable
+	 * Returns the table of logs
+	 * @return the table of logs
 	 */
 
-	public LogEntryTable getLogEntryTable()
-	{
-		if (logEntryTable == null)
-		{
-			try
-			{
+	public LogEntryTable getLogEntryTable() {
+		if (logEntryTable == null) {
+			try {
 				logEntryTable = new LogEntryTable(
 						this,
 						menuBar.getShortDateViewMenuItem().isSelected(),
 						menuBar.getLogTypeDescriptionViewMenuItem().isSelected());
-				logEntryTable.setName("ScrollPaneTable");
+				logEntryTable.setName("logEntryTable");
 				logEntryTable.setBounds(0, 0, 200, 200);
-			}
-			catch (java.lang.Throwable ivjExc)
-			{
+			} catch (Throwable ivjExc) {
 				handleException(ivjExc);
 			}
 		}
@@ -870,7 +863,7 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 		}
 
 		// java 1.2.2. bugfix
-		getJSplitPane2().setDividerLocation(getJSplitPane2().getLastDividerLocation());
+		getTableDetailsSplitPane().setDividerLocation(getTableDetailsSplitPane().getLastDividerLocation());
 		getJSplitPane1().setDividerLocation(350); //getHeight() - 150);
 		// user code end
 
@@ -965,57 +958,18 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 	}
 
 	/**
-	 * Returns the JPanel1 property value.
-	 * @return javax.swing.JPanel
-	 */
-	private javax.swing.JPanel getJPanel1()
-	{
-		if (ivjJPanel1 == null)
-		{
-			try
-			{
-				ivjJPanel1 = new javax.swing.JPanel();
-				ivjJPanel1.setName("JPanel1");
-				ivjJPanel1.setLayout(new java.awt.GridBagLayout());
-
-				java.awt.GridBagConstraints constraintsLogTable = new java.awt.GridBagConstraints();
-				constraintsLogTable.gridx = 0;
-				constraintsLogTable.gridy = 0;
-				constraintsLogTable.fill = java.awt.GridBagConstraints.BOTH;
-				constraintsLogTable.weightx = 1.0;
-				constraintsLogTable.weighty = 1.0;
-				ivjJPanel1.add(getLogTable(), constraintsLogTable);
-
-			}
-			catch (java.lang.Throwable ivjExc)
-			{
-
-				handleException(ivjExc);
-			}
-		}
-		return ivjJPanel1;
-	}
-
-	/**
 	 * Returns the JPanel2 property value.
 	 * @return javax.swing.JPanel
 	 */
-	private javax.swing.JPanel getJPanel2()
-	{
-		if (ivjJPanel2 == null)
-		{
-			try
-			{
-				ivjJPanel2 = new javax.swing.JPanel();
+	private JPanel getJPanel2() {
+		if (ivjJPanel2 == null) {
+			try {
+				ivjJPanel2 = new JPanel();
 				ivjJPanel2.setName("JPanel2");
-				ivjJPanel2.setLayout(new java.awt.BorderLayout());
+				ivjJPanel2.setLayout(new BorderLayout());
 				ivjJPanel2.add(getStatusLinePnl(), "South");
-				ivjJPanel2.add(getJSplitPane2(), "Center");
-
-			}
-			catch (java.lang.Throwable ivjExc)
-			{
-
+				ivjJPanel2.add(getTableDetailsSplitPane(), "Center");
+			} catch (Throwable ivjExc) {
 				handleException(ivjExc);
 			}
 		}
@@ -1202,13 +1156,13 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 	 * Returns the JSplitPane1 property value.
 	 * @return javax.swing.JSplitPane
 	 */
-	private javax.swing.JSplitPane getJSplitPane1()
+	private JSplitPane getJSplitPane1()
 	{
 		if (ivjJSplitPane1 == null)
 		{
 			try
 			{
-				ivjJSplitPane1 = new javax.swing.JSplitPane(javax.swing.JSplitPane.VERTICAL_SPLIT);
+				ivjJSplitPane1 = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
 				ivjJSplitPane1.setName("JSplitPane1");
 				ivjJSplitPane1.setLastDividerLocation(350);
 				ivjJSplitPane1.setDividerLocation(350);
@@ -1216,7 +1170,7 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 				ivjJSplitPane1.add(getJPanel2(), "top");
 
 			}
-			catch (java.lang.Throwable ivjExc)
+			catch (Throwable ivjExc)
 			{
 
 				handleException(ivjExc);
@@ -1225,33 +1179,25 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 		return ivjJSplitPane1;
 	}
 	/**
-	 * Returns the JSplitPane2 property value.
-	 * @return javax.swing.JSplitPane
+	 * @return the split pane with the table of logs and the table with the details of a log
 	 */
 
-	private javax.swing.JSplitPane getJSplitPane2()
-	{
-		if (ivjJSplitPane2 == null)
-		{
-			try
-			{
-				ivjJSplitPane2 = new javax.swing.JSplitPane(javax.swing.JSplitPane.HORIZONTAL_SPLIT);
-				ivjJSplitPane2.setName("JSplitPane2");
-				ivjJSplitPane2.setLastDividerLocation(570);
-				ivjJSplitPane2.setAlignmentX(java.awt.Component.LEFT_ALIGNMENT);
-				ivjJSplitPane2.setContinuousLayout(true);
+	private JSplitPane getTableDetailsSplitPane() {
+		if (tableDetailsSplitPane == null) {
+			try {
+				tableDetailsSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
+				tableDetailsSplitPane.setName("TableDetailsSplitPane");
+				tableDetailsSplitPane.setLastDividerLocation(570);
+				tableDetailsSplitPane.setAlignmentX(Component.LEFT_ALIGNMENT);
+				tableDetailsSplitPane.setContinuousLayout(true);
 				//ivjJSplitPane2.setDividerLocation(501);
-				ivjJSplitPane2.add(getJPanel1(), "left");
-				ivjJSplitPane2.add(getDeatailedInfoPanel(), "right");
-
-			}
-			catch (java.lang.Throwable ivjExc)
-			{
-
+				tableDetailsSplitPane.add(getLogTableScroolP(),"left");
+				tableDetailsSplitPane.add(getDeatailedInfoPanel(), "right");
+			} catch (Throwable ivjExc) {
 				handleException(ivjExc);
 			}
 		}
-		return ivjJSplitPane2;
+		return tableDetailsSplitPane;
 	}
 	
 	/**
@@ -1315,17 +1261,15 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 	/**
 	 * Sets the height and width generated by user's actions.
 	 */
-	public void loggingClient_ComponentResized(java.awt.event.ComponentEvent e)
-	{
-		if (e.getComponent() == this)
-		{
-			int w = getLogTable().getWidth();
-			int h = getLogTable().getHeight();
+	public void loggingClient_ComponentResized(ComponentEvent e) {
+		if (e.getComponent() == this) {
+			int w = getLogEntryTable().getWidth();
+			int h = getLogEntryTable().getHeight();
 			System.out.println(w + ", " + h);
-			System.out.println(getJSplitPane2().getWidth());
+			System.out.println(getTableDetailsSplitPane().getWidth());
 			System.out.println(getJSplitPane1().getHeight());
 
-			getJSplitPane2().setDividerLocation(getJSplitPane2().getWidth() - w);
+			getTableDetailsSplitPane().setDividerLocation(getTableDetailsSplitPane().getWidth() - w);
 			getJSplitPane1().setDividerLocation(getJSplitPane1().getHeight() - h);
 		}
 	}
@@ -1334,18 +1278,11 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 	 * Sets the LCModel1 to a new value.
 	 * @param newValue com.cosylab.logging.LogTableDataModel
 	 */
-	private void setLCModel1(LogTableDataModel newValue)
-	{
-		if (tableModel != newValue)
-		{
-			try
-			{
+	private void setLCModel1(LogTableDataModel newValue) {
+		if (tableModel != newValue) {
+			try {
 				tableModel = newValue;
-
-			}
-			catch (java.lang.Throwable ivjExc)
-			{
-
+			} catch (java.lang.Throwable ivjExc) {
 				handleException(ivjExc);
 			}
 		};
@@ -1611,6 +1548,10 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
     		filterChooserDialog.dispose();
     		filterChooserDialog=null;
     	}
+    	if (errorBrowserDialog!=null) {
+    		errorBrowserDialog.close();
+    		errorBrowserDialog=null;
+    	}
 	}
 	
 	/**
@@ -1704,6 +1645,16 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 		super.setEnabled(enabled);
 	}
 	
-	
+	/**
+	 * Add a new error stack to the error browser dialog
+	 * 
+	 * @param stackID The <code>STACKID</code> of the error trace in the tab
+	 */
+	public void addErrorTab(String stackID) {
+		if (errorBrowserDialog==null) {
+			errorBrowserDialog=new ErrorBrowserDlg();
+		}
+		errorBrowserDialog.addErrorTab(getLCModel1(),stackID);
+	}
 }
 
