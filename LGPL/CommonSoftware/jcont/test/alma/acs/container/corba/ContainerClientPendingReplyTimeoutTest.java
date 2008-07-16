@@ -71,8 +71,9 @@ public class ContainerClientPendingReplyTimeoutTest extends ComponentClientTestC
 		String container = "frodoContainerWithTimeout";
         String component = "DummyCompWrapper_ContainerTimeout";
         String container1, component1;
-        int [] timeout = {50,70, 200};
-        for (int i = 0; i < 3;i++){
+        int [] timeout = {30,10};
+        //int [] timeout = {30,10, 20};
+        for (int i = 0; i < timeout.length;i++){
             container1 = container+(i+1);
             component1 = component+(i+1);
            
@@ -83,7 +84,7 @@ public class ContainerClientPendingReplyTimeoutTest extends ComponentClientTestC
             assertEquals("Unexpected CDB timeout for container " + container1, timeout[i], timeout1Sec);
             //This is to prevent run components that have 
             //because this test is run several times with different values of syslevelOrbTimeoutSec
-		    if(syslevelOrbTimeoutSec < timeout1Sec ) break;
+		    if(syslevelOrbTimeoutSec <= timeout1Sec ) break;
             assertTrue(container1 + "'s timeout should be shorter than the system-level timeout", syslevelOrbTimeoutSec-timeout1Sec >= 5);
 		    try {
 			    assertFalse(wrapper1.callDummyComponentWithTime((timeout1Sec-5)*1000));
