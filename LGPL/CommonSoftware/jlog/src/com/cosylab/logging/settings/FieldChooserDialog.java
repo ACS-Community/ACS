@@ -25,8 +25,8 @@ import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.Point;
-import java.awt.Window;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -59,8 +59,8 @@ public class FieldChooserDialog extends JDialog {
 	// (or at the center of the screen if it is null)
 	private Component displayHelperComponent=null;
 
-	private class ButtonListener implements java.awt.event.ActionListener {
-		public void actionPerformed(java.awt.event.ActionEvent e) {
+	private class ButtonListener implements ActionListener {
+		public void actionPerformed(ActionEvent e) {
 			if (e.getSource() == buttonOK) {
 				modalResult = 1;
 			} else {
