@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.15 2008/06/27 06:25:59 cparedes Exp $"
+# "@(#) $Id: Makefile,v 1.16 2008/07/17 14:06:25 hsommer Exp $"
 #
 # Makefile of ........
 #
@@ -73,7 +73,7 @@ SCRIPTS_L       = acsstartupTATPrologue acsstartupTATEpilogue \
 	acsstartupGenericProcess.sh \
 	maciManagerJ cdbjDAL loggingService acsLogSvc ACSStartContainerPy maciContainer  \
 	maciManagerShutdown maciContainerShutdown acsStartJavaContainer \
-	testContainerPort.sh acsstartupTestLoadIFR.sh jvmPropertiesTest
+	testContainerPort.sh acsstartupTestLoadIFR.sh heapDumpOnOutOfMemoryErrorTest
 #
 # TCL scripts (public and local)
 # ------------------------------
@@ -206,7 +206,7 @@ all:	do_all
 
 clean : clean_all 
 	$(RM) *~ ref/*~
-	$(RM) tatlogs sed.scan
+	$(RM) tatlogs sed.scan heapDumpOnOutOfMemoryErrorTest.out tmp_dump
 	@echo " . . . clean done"
 
 clean_dist : clean_all clean_dist_all 
