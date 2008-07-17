@@ -2,7 +2,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: buildMico,v 1.9 2008/06/17 08:15:25 bjeram Exp $"
+# "@(#) $Id: buildMico,v 1.10 2008/07/17 11:52:23 hsommer Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -86,7 +86,7 @@ cd $MICO_HOME
 
 #echo ==== Patching mico
 #patch -p2 < $CUR_DIR/../PRODUCTS/mico-gcc341fix.patch
-@echo "done"
+echo "done"
 echo ""
 
 echo ==== Building mico
