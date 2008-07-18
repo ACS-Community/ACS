@@ -38,6 +38,7 @@ import java.io.FileNotFoundException;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 
 import alma.acs.logging.dialogs.LoadURLDlg;
 
@@ -133,8 +134,13 @@ public class LogTableDataModel extends LogEntryTableModelBase {
 				}
 				sz =rows.size();
 				if (maxLog>0 && sz>maxLog) {
-					tableUpdater.changed=true;
-					deleteLogs();
+					Thread t=new Thread() {
+						public void run() {
+							deleteLogs();
+						}
+					};
+					t.setDaemon(true);
+					t.start();
 				}
 			}
 		}
@@ -152,6 +158,7 @@ public class LogTableDataModel extends LogEntryTableModelBase {
 						removed.add(rows.remove(0));
 					}
 					allLogs.deleteLogs(removed);
+					fireTableDataChanged();
 					removed.removeAllElements();
 				} catch (Exception e) {
 					System.out.println("Error deleting a collection of logs from thread: "+e.getMessage());
