@@ -256,7 +256,9 @@ public class LogDispatcherTest extends TestCase {
 		}
 		logBin.Thread=(String)log.getField(Field.THREAD);
 		Date date = new Date((Long)log.getField(Field.TIMESTAMP));
-		logBin.TimeStamp=com.cosylab.logging.engine.ACS.CacheUtils.dateFormat.format(date);
+		synchronized(com.cosylab.logging.engine.ACS.CacheUtils.dateFormat) {
+			logBin.TimeStamp=com.cosylab.logging.engine.ACS.CacheUtils.dateFormat.format(date);
+		}
 		logBin.type=(short)log.getType().ordinal();
 		logBin.Uri=(String)log.getField(Field.URI);
 		if (log.hasDatas()) {

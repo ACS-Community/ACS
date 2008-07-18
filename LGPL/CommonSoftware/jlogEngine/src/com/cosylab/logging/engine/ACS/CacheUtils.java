@@ -61,8 +61,10 @@ public class CacheUtils {
 	public synchronized static ILogEntry fromCacheString(String str) throws LogEngineException {
 		String[] strs = str.split(SEPARATOR);
 		long millis = 0;
-		try { 
-			millis=dateFormat.parse(strs[0]).getTime();
+		try {
+			synchronized (dateFormat) {
+				millis=dateFormat.parse(strs[0]).getTime();
+			}
 		} catch (ParseException e) {
 			System.err.println("Error parsing the date: "+strs[0]);
 			throw new LogEngineException(e);
