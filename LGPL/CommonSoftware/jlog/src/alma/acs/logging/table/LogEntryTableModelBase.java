@@ -78,7 +78,11 @@ public class LogEntryTableModelBase extends AbstractTableModel {
 				}
 				if (changed) {
 					changed=false;
-					fireTableDataChanged();
+					try {
+						fireTableDataChanged();
+					} catch (Throwable t) {
+						// This exception could happen while deleting asynchronously
+					}
 				}
 			}
 		}
