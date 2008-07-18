@@ -1,0 +1,28 @@
+# use with 
+# egrep -i "error|fail" *.log | grep -v -f knownerr | less
+#
+error.h
+errors.h
+error.c
+Error.c
+errors.c
+error.o
+errors.o
+error.py
+errors.py
+Errors.py
+errorbar_demo.py
+failure.py
+Gnuplot/Errors
+Error.html
+error.f
+inflating
+checking for strerror
+all-fail
+jmx.fail-jboss
+jmx.fail-mx4j
+warnings.warn(AtlasNotFoundError
+ifail,info
+error,value,inform
+some build might fail!
+Please check the output for possible errors
