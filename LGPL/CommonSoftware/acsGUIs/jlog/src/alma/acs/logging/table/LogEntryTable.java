@@ -707,7 +707,12 @@ public class LogEntryTable extends JTable {
 	public Component prepareRenderer(TableCellRenderer renderer, int rowIndex, int vColIndex)
 	{
 		String tooltipTxt = getCellStringContent(rowIndex, vColIndex);
-		Component c = super.prepareRenderer(renderer, rowIndex, vColIndex);
+		Component c; 
+		try {
+			c = super.prepareRenderer(renderer, rowIndex, vColIndex);
+		} catch (ArrayIndexOutOfBoundsException e) {
+			return null;
+		}
 		LogTooltipHelper.setToolTip((JComponent)c,tooltipTxt,96);
 		return c;
 	}
@@ -1170,6 +1175,5 @@ public class LogEntryTable extends JTable {
 			}
 		}
 	}
-	
 	
 }
