@@ -20,10 +20,6 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 
-# we want the heap dump in this unusual directory to make sure the "-XX:HeapDumpPath" works correctly.
-export ACS_TMP=$PWD/tmp_dump
-mkdir -p $ACS_TMP
-
 acsStartJava  -noDirectory alma.acs.JVMSettingsTest.ConsumeHeap return > heapDumpOnOutOfMemoryErrorTest.out 2>&1 
 
 DUMP_FILENAME=`sed -n 's/Dumping heap to .*\(java_pid[0-9]*.hprof\) .../\1/p' heapDumpOnOutOfMemoryErrorTest.out`
@@ -50,3 +46,4 @@ fi
 
 
 # TODO use jhat to analyze the heap dump.
+

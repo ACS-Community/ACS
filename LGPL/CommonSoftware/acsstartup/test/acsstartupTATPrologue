@@ -21,7 +21,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: acsstartupTATPrologue,v 1.1 2003/10/24 15:37:03 dfugate Exp $"
+# "@(#) $Id: acsstartupTATPrologue,v 1.2 2008/07/18 05:31:42 cparedes Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -33,3 +33,10 @@ export ACS_LOG_STDOUT=4
 
 # To be sure, deletes the recovery file before starting
 acsdataClean
+
+#creates the tmp directory if it doesn't exist
+#the ACS_TMP variable is defined in acsstartupTATEnvironment
+if [ ! -d $ACS_TMP ]; then
+        mkdir $ACS_TMP
+fi
+    
