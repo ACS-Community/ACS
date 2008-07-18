@@ -25,10 +25,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
-import java.util.Date;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.Map;
 import java.util.Set;
 
 import com.cosylab.logging.engine.log.ILogEntry;
@@ -62,7 +63,7 @@ public class LogCache extends LogMultiFileCache implements ILogMap {
 	/**
 	 * The size of the buffer of logs
 	 */
-	private int actualCacheSize;
+	private final int actualCacheSize;
 	
 	/**
 	 * The logs are stored into an HashMap.
@@ -73,7 +74,7 @@ public class LogCache extends LogMultiFileCache implements ILogMap {
 	 * possible to change the key of an entry in the HashMap.
 	 * 
 	 */
-	private HashMap<Integer,ILogEntry> cache;
+	private Map<Integer,ILogEntry> cache;
 	
 	/**
 	 * The following list is used to keep ordered the indexes
@@ -98,13 +99,13 @@ public class LogCache extends LogMultiFileCache implements ILogMap {
 	 * The array with the level of each log in the cache
 	 * (useful for setting the log level)
 	 */
-	private HashMap<Integer,LogTypeHelper> logTypes = new HashMap<Integer,LogTypeHelper>();
+	private Map<Integer,LogTypeHelper> logTypes;
 	
 	/**
 	 * The times of the logs
 	 * Integer is the key of the log, Long is its timestamp
 	 */
-	private HashMap<Integer,Long> logTimes = new HashMap<Integer,Long>();
+	private Map<Integer,Long> logTimes;
 	
 	/**
 	 * Build a LogCache object
@@ -129,9 +130,7 @@ public class LogCache extends LogMultiFileCache implements ILogMap {
 		}
 		actualCacheSize = size;
 		System.out.println("Jlog will use cache for " + actualCacheSize + " log records.");		
-		cache = new HashMap<Integer,ILogEntry>();
-		manager = new LinkedList<Integer>();
-		clear();
+		initCache();
 	}
 	
 	/** 
@@ -145,12 +144,8 @@ public class LogCache extends LogMultiFileCache implements ILogMap {
 	 */
 	public synchronized int add(ILogEntry log) throws LogCacheException {
 		Integer key = super.add(log);
-		synchronized (logTypes) {
-			logTypes.put(key,(log.getType()));
-		}
-		synchronized (logTimes) {
-			logTimes.put(key,(Long)log.getField(Field.TIMESTAMP));
-		}
+		logTypes.put(key,(log.getType()));
+		logTimes.put(key,(Long)log.getField(Field.TIMESTAMP));
 		return key;
 	}
 
@@ -210,9 +205,7 @@ public class LogCache extends LogMultiFileCache implements ILogMap {
 	 */
 	public synchronized ILogEntry getLog(Integer key) throws LogCacheException {
 		ILogEntry log;
-		synchronized (cache) {
-			log = cache.get(key);
-		}
+		log = cache.get(key);
 		if (log!=null) {
 			// Hit! The log is in the cache
 			return log;
@@ -234,20 +227,28 @@ public class LogCache extends LogMultiFileCache implements ILogMap {
 		ILogEntry log = super.getLog(idx);
 		
 		// There is enough room in the lists?
-		synchronized (cache) {
-			if (cache.size()==actualCacheSize) {
-				// We need to create a room for the new element
-				Integer itemToRemove = manager.removeFirst();
-				cache.remove(itemToRemove);
-			}
-			// Add the log in the cache
-			cache.put(idx,log);
+		if (cache.size()==actualCacheSize) {
+			// We need to create a room for the new element
+			Integer itemToRemove = manager.removeFirst();
+			cache.remove(itemToRemove);
 		}
+		// Add the log in the cache
+		cache.put(idx,log);
 		
 		// Append the index in the manager list
 		manager.addLast(idx);
 		
 		return log; 
+	}
+	
+	/**
+	 * Build the <code>HashMap</code>s and the <code>LinkedList</code> used by the cache;
+	 */
+	private void initCache() {
+		cache = Collections.synchronizedMap(new HashMap<Integer,ILogEntry>());
+		logTypes = Collections.synchronizedMap(new HashMap<Integer,LogTypeHelper>());
+		logTimes = Collections.synchronizedMap(new HashMap<Integer,Long>());
+		manager = new LinkedList<Integer>();
 	}
 	
 	
@@ -256,16 +257,13 @@ public class LogCache extends LogMultiFileCache implements ILogMap {
 	 * 
 	 */
 	public synchronized void clear() throws LogCacheException {
-		synchronized (cache) {
-			cache.clear();
-		}
+		cache.clear();
 		manager.clear();
-		synchronized (logTypes) {
-			logTypes.clear();
-		}
-		synchronized (logTimes) {
-			logTimes.clear();
-		}
+		logTypes.clear();
+		logTimes.clear();
+		// It is better to recreate the HashMaps because their clear method
+		// does not free all the allocated resources
+		initCache();
 		super.clear();
 	}
 	
@@ -292,20 +290,18 @@ public class LogCache extends LogMultiFileCache implements ILogMap {
 		Calendar cal = Calendar.getInstance();
 		long min=Long.MAX_VALUE;
 		long max=-1;
-		synchronized (logTimes) {
-			int len =logTimes.size();
-			if (len<=1) {
-				cal.setTimeInMillis(0);
-				return cal;
+		int len =logTimes.size();
+		if (len<=1) {
+			cal.setTimeInMillis(0);
+			return cal;
+		}
+		Collection<Long> times = logTimes.values();
+		for (Long time : times) {
+			if (time>max) {
+				max=time;
 			}
-			Collection<Long> times = logTimes.values();
-			for (Long time : times) {
-				if (time>max) {
-					max=time;
-				}
-				if (time<min) {
-					min=time;
-				}
+			if (time<min) {
+				min=time;
 			}
 		}
 		cal.setTimeInMillis(max-min);
@@ -318,18 +314,12 @@ public class LogCache extends LogMultiFileCache implements ILogMap {
 	 * @param pos The key of the log to delete
 	 */
 	public synchronized void deleteLog(Integer key) throws LogCacheException {
-		synchronized (cache) {
-			if (cache.containsKey(key)) {
-				cache.remove(key);
-				manager.remove(key);
-			}
+		if (cache.containsKey(key)) {
+			cache.remove(key);
+			manager.remove(key);
 		}
-		synchronized (logTimes) {
-			logTimes.remove(key);
-		}
-		synchronized (logTypes) {
-			logTypes.remove(key);
-		}
+		logTimes.remove(key);
+		logTypes.remove(key);
 		super.deleteLog(key);
 	}
 	
@@ -359,22 +349,18 @@ public class LogCache extends LogMultiFileCache implements ILogMap {
 		// is allowed to load logs from different sources at any time. 
 		long newestTime=-1;
 		Collection<Long> times;
-		synchronized (logTimes) {
-			times = logTimes.values();
-			for (Long time: times) {
-				if (time>newestTime) {
-					newestTime=time;
-				}
+		times = logTimes.values();
+		for (Long time: times) {
+			if (time>newestTime) {
+				newestTime=time;
 			}
 		}
 		long limit = newestTime-timeframe;
 		ArrayList<Integer>ret = new ArrayList<Integer>();
-		synchronized (logTimes) {
-			Set<Integer> keys = logTimes.keySet();
-			for (Integer key: keys) {
-				if (logTimes.get(key)>limit) {
-					ret.add(key);
-				}
+		Set<Integer> keys = logTimes.keySet();
+		for (Integer key: keys) {
+			if (logTimes.get(key)>limit) {
+				ret.add(key);
 			}
 		}
 		return ret;
