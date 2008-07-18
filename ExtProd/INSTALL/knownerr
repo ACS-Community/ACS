@@ -1,21 +1,29 @@
 # use with 
-# egrep -i "error|fail" *.log | grep -v -f knownerr | less
+# egrep -i "error|fail|undefined reference" build*.log | grep -v -f knownerr
 #
-error.h
-errors.h
-error.c
-Error.c
-errors.c
-error.o
-errors.o
-error.py
-errors.py
-Errors.py
-errorbar_demo.py
-failure.py
+# TODO: check why the following line is erroneously hit by these patterns, which mus come from the hash sign.
+# _configtest.c:7:2: #error No _WIN32
+error\.h
+errors\.h
+error\.c
+Error\.c
+errors\.c
+error\.o
+errors\.o
+Error\.o
+error\.py
+errors\.py
+Errors\.py
+errorbar_demo\.py
+failure\.py
+no-importError
+no-syntaxErrors
+checking for gai_strerror
+checking for hstrerror
 Gnuplot/Errors
 Error.html
-error.f
+ErrorHandler
+error\.f
 inflating
 checking for strerror
 all-fail
@@ -26,3 +34,10 @@ ifail,info
 error,value,inform
 some build might fail!
 Please check the output for possible errors
+Please, ignore failures related to ldconfig
+Error 127 (ignored)
+don't be alarmed if a few compile errors are printed
+warning: 'lapack_liteError' defined but not used
+errors tclsh tcltest lib.exp Tcl
+errors wish tktest
+
