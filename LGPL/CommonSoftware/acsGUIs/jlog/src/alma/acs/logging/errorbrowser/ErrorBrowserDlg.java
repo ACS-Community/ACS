@@ -63,8 +63,8 @@ public class ErrorBrowserDlg extends JDialog {
 	 */
 	private void initialize() {
 		add(tabbedPane);
-		setMinimumSize(new Dimension(400,100));
-		setPreferredSize(new Dimension(400,100));
+		setMinimumSize(new Dimension(400,200));
+		setPreferredSize(new Dimension(500,300));
 		pack();
 		setVisible(true);
 	}
