@@ -178,6 +178,7 @@ public class LogStringBuffer {
 		}
 		buffer[bufferPos++]=ch;
 		if (ch!='<' && ch!='>' && ch!='[') {
+			// The buffer is processed only if a special char is found: <, >, or [
 			return;
 		}
 		
@@ -187,7 +188,9 @@ public class LogStringBuffer {
 		}
 		if (startTagPos>-1 && startTag==null && bufferPos-startTagPos>=minStartXMLTagSize) {
 			startTag=lookForStartTag(buffer, startTagPos);
-			return;
+			if (ch!='>') {
+				return;
+			}
 		}
 		if (ch=='[' && cdataStartPos==-1) {
 			if (compareFromLastChar(buffer, bufferPos-1, cdataStart)) {
