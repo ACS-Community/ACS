@@ -220,9 +220,9 @@ public class LogEntry implements ILogEntry {
 				// Cleanup
 				name=name.replaceAll("<","&lt;").replaceAll(">","&gt;").trim();
 				value=value.replaceAll("<","&lt;").replaceAll(">","&gt;").trim();
-				tempStr.append("<Data Name=\""+name+"\">");
+				tempStr.append("<Data Name=\""+name+"\"><![CDATA[");
 				tempStr.append(value);
-				tempStr.append("</Data>");
+				tempStr.append("]]></Data>");
 			}
 		}
 		return tempStr;
