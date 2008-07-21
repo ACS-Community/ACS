@@ -400,7 +400,6 @@ public class ACSLogParserVTD implements ACSLogParser {
 				VTDGen_parse.invoke(vtdGen, false); // set namespace awareness to false for now
 			}
 			catch (Exception e) {
-				e.printStackTrace();
 				/* There was an exception parsing the log, but before giving up 
 				 * we try to fix markup issues inside the text that is contained in the XML */
 				VTDGen_clear.invoke(vtdGen, nullObj);
@@ -412,7 +411,6 @@ public class ACSLogParserVTD implements ACSLogParser {
 			retVal = makeLogEntryFromParsedXML(bytesArray, xmlString);
 		}
 		catch(Exception ex) {
-			ex.printStackTrace();
 			throw new LogParseException("Error parsing with VTD!", ex);
 		}
 			
