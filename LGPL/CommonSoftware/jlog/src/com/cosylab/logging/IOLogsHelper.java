@@ -87,16 +87,12 @@ public class IOLogsHelper extends Thread  implements IOPorgressListener {
 		/**
 		 * The minimum interval of time between 2 updates of the panel 
 		 */
-		private static final int UPDATE_INTERVAL = 1000; 
+		private static final int UPDATE_INTERVAL = 1500; 
 
 		// The label with the status
 		private JLabel statusLbl = new JLabel();
 		// The progress bar
 		private JProgressBar progressBar=new JProgressBar(JProgressBar.HORIZONTAL);
-		
-		// The checkbox to perform a fast IO
-		// It is done by hiding the table of logs
-		private JCheckBox fastCB = null;
 		
 		// The button to stop IO
 		private JButton abortBtn;
@@ -189,15 +185,8 @@ public class IOLogsHelper extends Thread  implements IOPorgressListener {
 			add(new JLabel("Status:"),BorderLayout.WEST);
 			add(statusLbl,BorderLayout.CENTER);
 			
-			// Bottom panel contains the checkbox to hide/show the logs
-			// and the abort button
-			JPanel bottomPanel = new JPanel(new BorderLayout());
-			boolean checked=!loggingClient.getLogEntryTable().isVisible();
-			fastCB = new JCheckBox("Fast IO (hide logs)",checked);
-			fastCB.addActionListener(this);
-			bottomPanel.add(fastCB,BorderLayout.NORTH);
-			
 			// Add the abort button
+			JPanel bottomPanel = new JPanel(new BorderLayout());
 			JPanel buttonPanel = new JPanel(new FlowLayout());
 			abortBtn = new JButton("Abort");
 			abortBtn.addActionListener(this);
@@ -269,10 +258,7 @@ public class IOLogsHelper extends Thread  implements IOPorgressListener {
 		 * @see java.awt.event.ActionListener
 		 */
 		public void actionPerformed(ActionEvent evt) {
-			if (evt.getSource()==fastCB) {
-				loggingClient.getLogEntryTable().setVisible(
-						!fastCB.isSelected());
-			} else if (evt.getSource()==abortBtn) {
+			if (evt.getSource()==abortBtn) {
 				ioHelper.stopIO();
 			}
 		}
