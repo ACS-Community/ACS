@@ -286,7 +286,7 @@ public class LogCache extends LogMultiFileCache implements ILogMap {
 	 * 
 	 * @return The time frame
 	 */
-	public Calendar getTimeFrame() {
+	public synchronized Calendar getTimeFrame() {
 		Calendar cal = Calendar.getInstance();
 		long min=Long.MAX_VALUE;
 		long max=-1;
