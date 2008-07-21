@@ -101,7 +101,7 @@ public class IOHelper extends LogMatcher {
 	 * @param logStr The string representation of the log
 	 * @param logListener The listener i.e. the callback for each new log to add
 	 */
-	private void injectLog(
+	private void injectLog (
 			StringBuilder logStr, 
 			ACSRemoteLogListener logListener, 
 			ACSRemoteRawLogListener rawLogListener,
@@ -115,7 +115,7 @@ public class IOHelper extends LogMatcher {
 				log = parser.parse(logStr.toString().trim());
 			} catch (Exception e) {
 				errorListener.errorReceived(logStr.toString().trim());
-				System.err.println("Exception parsing a log: "+e.getMessage());
+				System.err.println("Exception parsing a log: "+e.getMessage()+" ["+logStr+"]");
 				e.printStackTrace(System.err);
 				return;
 			}
