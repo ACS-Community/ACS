@@ -476,7 +476,7 @@ public class LogFileCache implements ILogMap {
 		}
 		Integer stacklevel = null;
 		if (strs.length>14 && strs[14].length()>0) {
-			Integer.parseInt(strs[14]);
+			stacklevel =Integer.parseInt(strs[14]);
 		}
 		String logmessage = null;
 		if (strs.length>15) {
