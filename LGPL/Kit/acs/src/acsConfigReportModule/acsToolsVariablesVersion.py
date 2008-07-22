@@ -52,7 +52,7 @@ basic_tools = [('gcc','gcc --version','3.4.6'),\
               ('emacs','emacs -version','21.3.1'),\
               ('sed','sed --version','4.1.2'),\
               ('rcs','rcs -V','5.7'),\
-              ('unzip','unzip -v','UnZip 5.51'),\
+              ('unzip','unzip -v','UnZip 5.52'),\
               ('tar','tar  --version','1.14'),\
               ('expect','expect -version','expect version 5.43.0'),\
               ('rman','rman -version | awk "{ print \$1, \$2 }"','PolyglotMan v3.1'),\
@@ -114,7 +114,7 @@ other_tools = [('ACE','more $ACE_ROOT/VERSION','5.6.1'),\
               ('Ant','$ANT_HOME/bin/ant -version','1.7.0'),\
               ('doxygen','doxygen --version','1.3.8'),\
               ('python','python -V','2.5.1'),\
-              ('mico','more $ALMASW_ROOTDIR/$ALMASW_RELEASE/mico/VERSION','2.3.11'),\
+              ('mico','more $ALMASW_ROOTDIR/$ALMASW_RELEASE/mico/VERSION','2.3.12'),\
               ('omniorb','cd $ALMASW_ROOTDIR/$ALMASW_RELEASE/Python/omni/; ls THIS_IS_OMNIORB_4_1_0','THIS_IS_OMNIORB_4_1_0')\
                ]
 
