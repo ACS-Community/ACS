@@ -100,25 +100,31 @@ public class AcsSystemClassLoader extends URLClassLoader
 		appClassLoader = (URLClassLoader) parent;
 		verbose = Boolean.getBoolean(PROPERTY_CLASSLOADERVERBOSE);
 				
-		String jarDirPath = System.getProperty(PROPERTY_JARDIRS);
-		File[] jarDirs = parseJarDirs(jarDirPath);
-
-		// extract jar files from directories
-		AcsJarFileFinder jarFinder = new AcsJarFileFinder(jarDirs, null);
-		List<File> jarFileList = new ArrayList<File>(); 
-		jarFileList.addAll(Arrays.asList(jarFinder.getAllFiles()));
-
+		List<File> jarFileList = new ArrayList<File>();
 		optimizer = new JarOrderOptimizer(verbose);
-
-		// test mode 
-		if (Boolean.getBoolean(PROPERTY_TOPJARSONLY)) {
-			System.out.println("AcsSystemClassLoader running in test mode: will only use jar files from priority list.");
-			jarFileList = optimizer.getTopJarsOnly(jarFileList);
+		
+		String jarDirPath = System.getProperty(PROPERTY_JARDIRS);
+		if (jarDirPath != null) {
+			File[] jarDirs = parseJarDirs(jarDirPath);
+	
+			// extract jar files from directories
+			AcsJarFileFinder jarFinder = new AcsJarFileFinder(jarDirs, null);
+			jarFileList.addAll(Arrays.asList(jarFinder.getAllFiles()));
+		
+			// test mode 
+			if (Boolean.getBoolean(PROPERTY_TOPJARSONLY)) {
+				System.out.println("AcsSystemClassLoader running in test mode: will only use jar files from priority list.");
+				jarFileList = optimizer.getTopJarsOnly(jarFileList);
+			}
+			
+			// sort the jar files
+			optimizer.sortJars(jarFileList); 
+		}
+		else {
+			System.err.println("No jar path given in property " + PROPERTY_JARDIRS + "! If that is intended, you should not use AcsSystemClassLoader at all!");
+			// Still we go on, acting just like the normal system class loader.
 		}
 		
-		// sort the jar files
-		optimizer.sortJars(jarFileList); 
-
 		// we prepend the CLASSPATH entries so that this CL can replace the normal JVM application CL 
 		prependCLASSPATHJars(jarFileList);
 
