@@ -406,8 +406,8 @@ public class QueryDlg extends JDialog implements ActionListener {
 		}
 		to.append(toSec.getText());
 		
-		short minType = (short)minLogLevelCB.getSelectedIndex();
-		short maxType = (short)maxLogLevelCB.getSelectedIndex();
+		short minType = (short)LogTypeHelper.values()[minLogLevelCB.getSelectedIndex()].acsCoreLevel.value;
+		short maxType = (short)LogTypeHelper.values()[maxLogLevelCB.getSelectedIndex()].acsCoreLevel.value;
 		
 		String routine = routineName.getText();
 		if (routine.length()==0) {
