@@ -215,6 +215,11 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
      * The object is built the first time the user selects the menu item
      */
     private StatsDlg statsDlg;
+    
+    /**
+     * The dialog to query the database
+     */
+    private QueryDlg databaseDlg=null;
 
 	private EventHandler eventHandler = new EventHandler();
 
@@ -283,8 +288,10 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
             	getLCModel1().saveFile();
             } else if (e.getSource() == menuBar.getLoadDBMenuItem()) {
             	if (archive.getDBStatus()==ArchiveConnectionManager.DATABASE_OK) {
-            		QueryDlg dlg = new QueryDlg(archive,LoggingClient.this,LoggingClient.this,LoggingClient.this);
-            		dlg.setVisible(true);
+            		if (databaseDlg==null) {
+            			databaseDlg = new QueryDlg(archive,LoggingClient.this,LoggingClient.this,LoggingClient.this);
+            		}
+            		databaseDlg.setVisible(true);
             	}
             } else if (e.getSource() == menuBar.getClearLogsMenuItem() || e.getSource()==toolBar.getClearLogsBtn()) {
 				SwingUtilities.invokeLater(new Thread("ClearAll") {
@@ -1557,6 +1564,10 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
     	if (errorBrowserDialog!=null) {
     		errorBrowserDialog.close();
     		errorBrowserDialog=null;
+    	}
+    	if (databaseDlg!=null) {
+    		databaseDlg.close();
+    		databaseDlg=null;
     	}
 	}
 	
