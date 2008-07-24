@@ -24,9 +24,11 @@ package alma.acs.logging.archive;
 import java.awt.BorderLayout;
 import java.awt.ComponentOrientation;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Calendar;
@@ -45,6 +47,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRootPane;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 
 import alma.acs.logging.dialogs.LoadSwitchesPanel;
 import alma.acs.logging.engine.parser.ACSLogParser;
@@ -56,6 +59,7 @@ import com.cosylab.logging.engine.ACS.ACSRemoteLogListener;
 import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.engine.log.LogTypeHelper;
 import com.cosylab.logging.settings.LogTypeRenderer;
+import com.sun.java.swing.plaf.motif.MotifBorders.BevelBorder;
 
 /**
  * A class to setup a query to submit to the DB
@@ -104,6 +108,17 @@ public class QueryDlg extends JDialog implements ActionListener {
 	// The switches to clear the table and disconnect from the NC 
 	// before submitting a query
 	private LoadSwitchesPanel guiSwitches;
+	
+	/**
+	 * The label showing the status of a query to
+	 * give feedback to users
+	 */
+	private JLabel statusLbl = new JLabel();
+	
+	/**
+	 * Signal the thread that get logs from the DB that the user pressed cancel to abort
+	 */
+	private volatile boolean terminateThread;
 
 	/**
 	 * Constructor
@@ -154,6 +169,7 @@ public class QueryDlg extends JDialog implements ActionListener {
 			Thread t = new Thread() {
 				public void run() {
 					submitBtn.setEnabled(false);
+					terminateThread=false;
 					submitQuery();
 					submitBtn.setEnabled(true);
 				}
@@ -162,6 +178,7 @@ public class QueryDlg extends JDialog implements ActionListener {
 			t.setName("DatabaseQuery");
 			t.start();
 		} else if (e.getSource()==doneBtn) {
+			terminateThread=true;
 			setVisible(false);
 			dispose();
 		} else {
@@ -305,6 +322,7 @@ public class QueryDlg extends JDialog implements ActionListener {
 		optionsPnl.add(maxLogLevelCB,c);
 		
 		// Add the OK, CANCEL buttons
+		JPanel bottomPanel = new JPanel(new BorderLayout());
 		JPanel btnPnl = new JPanel();
 		btnPnl.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
 		BoxLayout boxLayout = new BoxLayout(btnPnl,BoxLayout.LINE_AXIS);
@@ -318,10 +336,19 @@ public class QueryDlg extends JDialog implements ActionListener {
 		btnPnl.add(submitBtn,BorderLayout.WEST);
 		btnPnl.add(Box.createRigidArea(new Dimension(10, 0)));
 		btnPnl.add(doneBtn,BorderLayout.EAST);
+		btnPnl.add(Box.createRigidArea(new Dimension(10, 0)));
+		
+		// Set the border and a smaller font for the label
+		statusLbl.setBorder(BorderFactory.createLoweredBevelBorder());
+		Font fnt = statusLbl.getFont();
+		Font newFont = fnt.deriveFont(fnt.getSize()*2/3);
+		statusLbl.setFont(newFont);
+		bottomPanel.add(btnPnl,BorderLayout.EAST);
+		bottomPanel.add(statusLbl,BorderLayout.CENTER);
 		// Add the subpanels
 		mainPnl.add(guiSwitches,BorderLayout.NORTH);
 		mainPnl.add(optionsPnl,BorderLayout.CENTER);
-		mainPnl.add(btnPnl,BorderLayout.SOUTH);
+		mainPnl.add(bottomPanel,BorderLayout.SOUTH);
 	}
 	
 	private JComboBox setupTypeCB(JComboBox box) {
@@ -425,6 +452,7 @@ public class QueryDlg extends JDialog implements ActionListener {
 		
 		// The collection where the logs read from the DB are stored
 		Collection logs = null;
+		updateStatusLbl("Submitting query");
 		try {
 			logs = archive.getLogs(from.toString()+".000",to.toString()+".000",minType,maxType,routine,source,process,maxRows);
 		} catch (Throwable t) {
@@ -437,7 +465,11 @@ public class QueryDlg extends JDialog implements ActionListener {
 			loggingClient.reportStatus("Num. of logs read from DB: "+logs.size());
 			
 			Iterator iter = logs.iterator();
-			while (iter.hasNext()) {
+			int count=0;
+			while (iter.hasNext() && !terminateThread) {
+				if ((++count)%1000==0) {
+					updateStatusLbl("Flushing logs "+count+"/"+logs.size());
+				}
 				String str = (String)iter.next();
 				ILogEntry logEntry=null;
 				try {
@@ -452,6 +484,7 @@ public class QueryDlg extends JDialog implements ActionListener {
 			logs.clear();
 			logs=null;
 		}
+		updateStatusLbl("");
 		// Update the state of the switches
 		guiSwitches.checkControlsState();
 	}
@@ -534,6 +567,45 @@ public class QueryDlg extends JDialog implements ActionListener {
 			}
 		}
 		return sb.toString();
+	}
+	
+	/**
+	 * Set a new message in the status label.
+	 * 
+	 * @param msg The message to show in the label
+	 */
+	private void updateStatusLbl(final String msg) {
+		class NewMessage implements Runnable {
+			public void run() {
+				statusLbl.setText(msg);
+			}
+		}
+		SwingUtilities.invokeLater(new NewMessage());
+	}
+	
+	/**
+	 * Override <code>setVisible()</code> to move the statistic window
+	 * over the logging client and in front of other windows
+	 */
+	@Override
+	public void setVisible(boolean visible) {
+		super.setVisible(visible);
+		// Move the statistic win on top of jlog
+		if (visible && isShowing()) {
+			Point loggingPos = loggingClient.getLocationOnScreen();
+			setLocation(loggingPos);
+			toFront();
+		}
+	}
+	
+	/**
+	 * Close the dialog, terminate the thread a free all the resources.
+	 * 
+	 */
+	public void close() {
+		terminateThread=true;
+		setVisible(false);
+		dispose();
 	}
 	
 }
