@@ -241,6 +241,11 @@ public class ComponentClientTestCase extends TestCase
 		}
 		finally {
 			if (acsCorba != null) {
+				// @todo investigate COMP-2632
+				// Check if this is called in "main" thread, and if the wait_for_completion is buggy and returns too early.
+				// Then the overlapping call to doneCorba() ( -> orb.destroy()) would block this thread,
+				// and with bad timing luck it could block after the first shutdown called "shutdown_synch.notifyAll()" in ORB#shutdown,
+				// which could explain that the main thread hangs there forever.
 				acsCorba.shutdownORB(true);
 				acsCorba.doneCorba();
 			}
