@@ -97,7 +97,7 @@ std::string ConfigPropertyGetter::getDAO(maci::Manager_ptr manager) {
     
     cdbDAL = CDB::DAL::_narrow(cdb.in());
     
-    DALaccess::forceDAL(cdbDAL.in());
+    cdb::DALaccess::forceDAL(cdbDAL.in());
     
     // Get the DAO
     try {

@@ -11,11 +11,7 @@
 
 #include <acscomponentTestS.h>
 
-
- using namespace acscomponent;
-
-
-class ACSComponentTestClassImpl: public virtual ACSComponentImpl,
+class ACSComponentTestClassImpl: public virtual acscomponent::ACSComponentImpl,
 				 public virtual POA_ACSCOMPONENT_TEST::ACSComponentTestClass
 {
     

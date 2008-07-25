@@ -19,7 +19,7 @@
  *License along with this library; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: acsThreadBase.h,v 1.28 2008/03/28 12:33:41 bjeram Exp $"
+ * "@(#) $Id: acsThreadBase.h,v 1.29 2008/07/25 07:22:29 cparedes Exp $"
  *
  * who       when        what
  * --------  ----------  ----------------------------------------------
@@ -47,8 +47,6 @@
 #include <loggingLoggable.h>
 
 #include "acsthreadErrType.h"
-
-using namespace acscommon;
 
 namespace ACS {
 

@@ -18,7 +18,7 @@
  *    License along with this library; if not, write to the Free Software
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: cdbDAOProxy.cpp,v 1.4 2006/09/25 08:36:59 cparedes Exp $"
+ * "@(#) $Id: cdbDAOProxy.cpp,v 1.5 2008/07/25 07:24:24 cparedes Exp $"
  *
  * who       when        what
  * --------  ----------  ----------------------------------------------
@@ -38,6 +38,7 @@
 #include <ACSErrTypeCORBA.h>
 
 using namespace cdb;
+using namespace std;
 
 // string table
 #define MSG_NO_MEMORY   "No memory to create parser object!"

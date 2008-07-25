@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: cdbDAOImpl.h,v 1.29 2006/09/25 08:36:59 cparedes Exp $"
+* "@(#) $Id: cdbDAOImpl.h,v 1.30 2008/07/25 07:24:23 cparedes Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -12,7 +12,6 @@
 #define cdbDAOImpl_H_
 
 #include <cdb.h>
- using namespace cdb;
 
 /////////////////////////////////////////////////////////////////////////////
 // internal class for XML tree handling
@@ -22,14 +21,14 @@ class CXMLTreeNode
   public:
     CXMLTreeNode( CXMLTreeNode *pParent );
     ~CXMLTreeNode();
-    void getAttributeNames( String &names );
+    void getAttributeNames( cdb::String &names );
 
     CXMLTreeNode* m_parent; // parent in access tree
-    typedef std::map<String, CXMLTreeNode*> MapStringToNode;
+    typedef std::map<cdb::String, CXMLTreeNode*> MapStringToNode;
     //
     MapStringToNode				m_subNodesMap;
-    MapStringToField m_fieldMap;
-    String								m_name;
+    cdb::MapStringToField m_fieldMap;
+    cdb::String								m_name;
 };
 
 /////////////////////////////////////////////////////////////////////////////
@@ -49,7 +48,7 @@ class  DAOImpl
     
     //Destructor 
     virtual ~DAOImpl (void);
-    virtual Boolean isInitialized() { return m_initialized; }
+    virtual cdb::Boolean isInitialized() { return m_initialized; }
     
     ///////////////////////////////////////////
     // scalars
@@ -87,7 +86,7 @@ class  DAOImpl
 	       cdbErrType::WrongCDBDataTypeEx,
 	       cdbErrType::CDBFieldDoesNotExistEx);
 
-    Boolean get_field( const String &strFieldName, Field &fld );
+    cdb::Boolean get_field( const cdb::String &strFieldName, cdb::Field &fld );
 
   public:
     ACE_CString	m_name; 
@@ -104,13 +103,14 @@ class  DAOImpl
   // implementation
   protected:
     ACE_CString m_xml;
-    Boolean			m_initialized;
+    cdb::Boolean			m_initialized;
 
     // temporary variables for array handling 
     int				m_inArray;
-    String		m_arrayName;
-    String		m_arrayType;
-    String		m_arrayContent;
+    cdb::String		m_arrayName;
+    
+    cdb::String		m_arrayType;
+    cdb::String		m_arrayContent;
 
     // XTML tree handling
     CXMLTreeNode* m_rootNode;

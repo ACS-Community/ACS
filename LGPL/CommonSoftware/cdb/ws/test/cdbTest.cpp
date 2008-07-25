@@ -27,6 +27,7 @@
 //*    License along with this library; if not, write to the Free Software
 //*    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 //*
+
 int startCdbTest (char *szCmdLn)
 {
     int  argc;
@@ -42,8 +43,8 @@ int main(int argc, char* argv[])
   
 try{
     CORBA::ULong ul;
-    Field dbFld;
-    Table* dataBase;
+    cdb::Field dbFld;
+    cdb::Table* dataBase;
     ACE_CString curl, field;
     ACE_CString strCmdLine;
     ACE_CString strField;
@@ -57,7 +58,7 @@ try{
     
     ACS_SHORT_LOG ((LM_INFO, "cdbTestClient starts"));
     
-    dataBase = getDatabase( argc, argv );
+    dataBase = cdb::getDatabase( argc, argv );
 
     curl = "MACI/Managers/Manager";
     
@@ -122,7 +123,7 @@ try{
     myArgs.add("-DAOremote");
     
     destroyDatabase(dataBase);
-    dataBase = getDatabase( myArgs.argc(), myArgs.argv(), CORBA::ORB::_nil(), NULL, 1 );
+    dataBase = cdb::getDatabase( myArgs.argc(), myArgs.argv(), CORBA::ORB::_nil(), NULL, 1 );
     //dataBase = getDatabase( myArgs.argc(), myArgs.argv() );    
 
     // PS
@@ -164,8 +165,8 @@ try{
     else 
 	{
 	int nElements = 0;
-	StringArray * strarray = dbFld.GetStringArray();
-	StringArray::const_iterator iter = strarray->begin();
+	cdb::StringArray * strarray = dbFld.GetStringArray();
+	cdb::StringArray::const_iterator iter = strarray->begin();
 	for (; iter != strarray->end(); iter++)
 	    {
 	    ACS_SHORT_LOG((LM_ERROR, "Curl %s in %s field values: %s", curl.c_str(), field.c_str(), iter->c_str() ));

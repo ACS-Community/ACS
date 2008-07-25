@@ -40,12 +40,10 @@
 ///Include the smart pointer for properties
 #include <baciSmartPropertyPointer.h>
 
-using namespace baci;
-
 /** @file cdbTestCDBCompImpl.h
  */
 
-class cdb_EXPORT TestCDBComp: public CharacteristicComponentImpl,     //Standard component superclass
+class cdb_EXPORT TestCDBComp: public baci::CharacteristicComponentImpl,     //Standard component superclass
 			     public virtual POA_TESTCDBCOMP_ACS::TestCDBComp   //CORBA servant stub
 {
   public:

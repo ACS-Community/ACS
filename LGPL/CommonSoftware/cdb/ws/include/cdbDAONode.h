@@ -22,7 +22,7 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
  *
- * "@(#) $Id: cdbDAONode.h,v 1.4 2006/09/25 08:36:59 cparedes Exp $"
+ * "@(#) $Id: cdbDAONode.h,v 1.5 2008/07/25 07:24:24 cparedes Exp $"
  *
  * who       when        what
  * --------  ----------  ----------------------------------------------
@@ -98,8 +98,8 @@ namespace cdb {
 	/// Change listener ID.
 	long m_changeListenerID;
 
-	typedef vector<DAONode*> VectorDAONode;
-	typedef map<string, VectorDAONode> MapVectorDAONode;
+	typedef std::vector<DAONode*> VectorDAONode;
+	typedef std::map<std::string, VectorDAONode> MapVectorDAONode;
 	
 	/// DAONode map.
 	MapVectorDAONode nodeMap;
@@ -219,7 +219,7 @@ namespace cdb {
 	void connect(bool silent = true);
 
   	/// DAO CURL (name).
-	string m_name;
+	std::string m_name;
 
 	/// CDB DAL.
 	CDB::DAL_var m_dal;
@@ -336,10 +336,10 @@ namespace cdb {
 	DAONode* m_parent;
 
 	/// Child name (prefix).
-        string m_childName;
+        std::string m_childName;
 
 	/// Prefix with hierarchy delimiter.
-        string m_childNamePrefix;
+        std::string m_childNamePrefix;
     };
 
 } /* namespace cdb */

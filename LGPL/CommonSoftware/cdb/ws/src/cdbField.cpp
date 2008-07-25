@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: cdbField.cpp,v 1.31 2006/09/01 02:20:54 cparedes Exp $"
+* "@(#) $Id: cdbField.cpp,v 1.32 2008/07/25 07:24:24 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -42,7 +42,7 @@
 #include <sstream>
 #include <string>
 
- using namespace cdb;
+using namespace cdb;
 namespace cdb {
 
 // -----------------[ Set type, assignment operator ]----------------------
@@ -2574,6 +2574,9 @@ Boolean Field::SetDoubleArray(const DoubleArray &val)
 // REVISION HISTORY:
 //
 //   $Log: cdbField.cpp,v $
+//   Revision 1.32  2008/07/25 07:24:24  cparedes
+//   Removing use namespace from included files
+//
 //   Revision 1.31  2006/09/01 02:20:54  cparedes
 //   small change, NAMESPACE_BEGIN / NAMESPACE_END / NAMESPACE_USE macross to clean up a little the cpp code
 //

@@ -18,7 +18,7 @@
  *    License along with this library; if not, write to the Free Software
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: cdbDAONode.cpp,v 1.6 2006/10/04 14:11:43 gchiozzi Exp $"
+ * "@(#) $Id: cdbDAONode.cpp,v 1.7 2008/07/25 07:24:24 cparedes Exp $"
  *
  * who       when        what
  * --------  ----------  ----------------------------------------------
@@ -33,6 +33,7 @@
 #include <ACSErrTypeCommon.h>
 
 using namespace cdb;
+using namespace std;
 
 //----------------------------------------------------
 // DALChangeListenerImplementation

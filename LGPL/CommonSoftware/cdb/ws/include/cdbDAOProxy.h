@@ -22,7 +22,7 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
  *
- * "@(#) $Id: cdbDAOProxy.h,v 1.2 2006/09/25 08:36:59 cparedes Exp $"
+ * "@(#) $Id: cdbDAOProxy.h,v 1.3 2008/07/25 07:24:24 cparedes Exp $"
  *
  * who       when        what
  * --------  ----------  ----------------------------------------------
@@ -39,8 +39,6 @@
 
 #include <cdbDALS.h>
 #include <cdbErrType.h>
-
-using namespace std;
 
 namespace cdb {
 
@@ -66,20 +64,20 @@ namespace cdb {
 	 * Get node attributes names (also subnodes names are added).
 	 * @param names out parameter.
 	 */
-	void getAttributeNames(string &names);
+	void getAttributeNames(std::string &names);
 
 	/// XML node name.
-	string m_name;
+	std::string m_name;
 
 	/// Node parent in the tree.
 	CXMLTreeNode* m_parent;
 
-	typedef map<string, CXMLTreeNode*> MapStringToNode;
-	/// Children nodes map.
+	typedef std::map<std::string, CXMLTreeNode*> MapStringToNode;
+	/// Children nodes std::map.
 	MapStringToNode	m_subNodesMap;
 
-	typedef map<string, string> MapStringToString;
-	/// Node XML fields (attributes) map.
+	typedef std::map<std::string, std::string> MapStringToString;
+	/// Node XML fields (attributes) std::map.
 	MapStringToString m_fieldMap;
 
     };
@@ -113,20 +111,20 @@ namespace cdb {
 	 * @param name attribute name.
 	 * @param value out parameter.
 	 */
-	void get_field(const char* name, string &value)
+	void get_field(const char* name, std::string &value)
 	    throw (
 		cdbErrType::CDBFieldDoesNotExistExImpl
 		);
       
-	typedef vector<string> VectorString;
+	typedef std::vector<std::string> VectorString;
 
 	/**
-	 * Split string str into several substrings, which are separated with
+	 * Split std::string str into several substrings, which are separated with
 	 * commas. If quotes are used, then substrings are considered to be 
 	 * enclosed in them. Quotes can be escaped so that they can be treated
 	 * verbatim.
 	 */
-	static bool split(const string& str, VectorString& array);
+	static bool split(const std::string& str, VectorString& array);
 
 	//----------------------------------------------------
 	// CORBA interface
@@ -190,10 +188,10 @@ namespace cdb {
       public:
 
 	/// Node name.
-	string m_nodeName;
+	std::string m_nodeName;
 
 	/// Error message.
-	string m_errorMessage;
+	std::string m_errorMessage;
 
       // expat (XML parser) internal operations
       protected:
@@ -212,8 +210,8 @@ namespace cdb {
 
 	// temporary variables for array handling
 	bool m_inArray;
-	string m_arrayName;
-	string m_arrayContent;
+	std::string m_arrayName;
+	std::string m_arrayContent;
 
 	// XML tree handling
 	CXMLTreeNode* m_rootNode;
