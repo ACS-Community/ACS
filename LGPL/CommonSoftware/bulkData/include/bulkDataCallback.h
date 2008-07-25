@@ -21,10 +21,6 @@
 
 #include <iostream>
 
-using namespace std;
-using namespace ACSBulkDataError;
-using namespace ACSBulkDataStatus;
-
 class BulkDataCallback : public TAO_AV_Callback
 {
 
@@ -121,7 +117,7 @@ class BulkDataCallback : public TAO_AV_Callback
     CORBA::Boolean working_m;
     CORBA::Boolean error_m;
 
-    AVCbErrorCompletion *errComp_p;
+    ACSBulkDataStatus::AVCbErrorCompletion *errComp_p;
 
     CORBA::ULong flowTimeout_m;
 

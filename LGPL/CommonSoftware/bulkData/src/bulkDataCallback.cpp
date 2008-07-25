@@ -1,5 +1,8 @@
 #include "bulkDataCallback.h"
 
+using namespace ACSBulkDataError;
+using namespace ACSBulkDataStatus;
+
 BulkDataCallback::BulkDataCallback()
 {
     ACS_TRACE("BulkDataCallback::BulkDataCallback");
@@ -288,9 +291,9 @@ int BulkDataCallback::receive_frame (ACE_Message_Block *frame, TAO_AV_frame_info
 	    char tmp[255];
 	    ACE_OS::strcpy(tmp, frame->rd_ptr());
 
-	    string strDataInfo(tmp);
+	    std::string strDataInfo(tmp);
 	
-	    istringstream iss(strDataInfo);
+	    std::istringstream iss(strDataInfo);
 
 	    iss >> val1 >> val2;
 
@@ -390,8 +393,8 @@ void BulkDataCallback::setFlowname (const char * flowname_p)
     //ACS_SHORT_LOG((LM_INFO,"RRRRRRRRRRRRRRRRR BulkDataCallback::flowname for flow %s", flow_name));
     flowname_m = flowname_p;
 
-    string flwName(flowname_p);
-    string flwNumber(flwName, 4, 1);
+    std::string flwName(flowname_p);
+    std::string flwNumber(flwName, 4, 1);
 
     flowNumber_m = atol(flwNumber.c_str());
 }

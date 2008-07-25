@@ -1,6 +1,6 @@
 #ifndef RT_SUPPLIER_H
 #define RT_SUPPLIER_H
-/*    @(#) $Id: acsncRTSupplier.h,v 1.17 2006/10/18 11:06:40 sharring Exp $
+/*    @(#) $Id: acsncRTSupplier.h,v 1.18 2008/07/25 07:35:19 cparedes Exp $
  *    ALMA - Atacama Large Millimiter Array
  *    (c) Associated Universities Inc., 2002 
  *    (c) European Southern Observatory, 2002
@@ -91,7 +91,7 @@ class RTSupplier : public Supplier
      */
     template <class T> void
     publishData(T data)
-	throw (CORBAProblemEx);
+	throw (ACSErrTypeCommon::CORBAProblemEx);
     ///////////////////////////////////////////////////////////////
   protected:
     /**
@@ -117,7 +117,7 @@ class RTSupplier : public Supplier
     /**
      *  BACI thread manager used to control the worker thread.
      */
-    BACIThreadManager *threadManager_mp;
+    baci::BACIThreadManager *threadManager_mp;
 
     /**
      *  A queque of structured events.

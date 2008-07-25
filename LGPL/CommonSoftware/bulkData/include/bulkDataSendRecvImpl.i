@@ -12,7 +12,7 @@ BulkDataSendRecvImpl<TReceiverCallback, TSenderCallback>::BulkDataSendRecvImpl(c
     if (CORBA::is_nil (dal_p))
 	{
 	ACS_SHORT_LOG((LM_INFO,"BulkDataSendRecvImpl::connect dal_p nil"));
-	AVStreamEndpointErrorExImpl err = AVStreamEndpointErrorExImpl(__FILE__,__LINE__,"BulkDataSendRecvImpl::connect");
+	ACSBulkDataError::AVStreamEndpointErrorExImpl err = ACSBulkDataError::AVStreamEndpointErrorExImpl(__FILE__,__LINE__,"BulkDataSendRecvImpl::connect");
 	throw err.getAVStreamEndpointErrorEx();
 	}
   
@@ -36,7 +36,7 @@ void BulkDataSendRecvImpl<TReceiverCallback, TSenderCallback>::cleanUp()
 
 template<class TReceiverCallback, class TSenderCallback>
 void BulkDataSendRecvImpl<TReceiverCallback, TSenderCallback>::connect(bulkdata::BulkDataReceiver_ptr receiverObj_p)
-    throw (CORBA::SystemException, AVConnectErrorEx)
+    throw (CORBA::SystemException, ACSBulkDataError::AVConnectErrorEx)
 {
     ACS_TRACE("BulkDataSendRecvImpl::connect");
 
@@ -52,7 +52,7 @@ void BulkDataSendRecvImpl<TReceiverCallback, TSenderCallback>::connect(bulkdata:
 	if (CORBA::is_nil (dao_p))
 	    {
 	    ACS_SHORT_LOG((LM_INFO,"BulkDataSendRecvImpl::connect dao_p nil"));
-	    AVStreamEndpointErrorExImpl err = AVStreamEndpointErrorExImpl(__FILE__,__LINE__,"BulkDataSendRecvImpl::connect");
+	    ACSBulkDataError::AVStreamEndpointErrorExImpl err = ACSBulkDataError::AVStreamEndpointErrorExImpl(__FILE__,__LINE__,"BulkDataSendRecvImpl::connect");
 	    throw err.getAVStreamEndpointErrorEx();
 	    }
 		
@@ -61,7 +61,7 @@ void BulkDataSendRecvImpl<TReceiverCallback, TSenderCallback>::connect(bulkdata:
     catch(...)
 	{
 	ACS_SHORT_LOG((LM_WARNING,"BulkDataSendRecvImpl::connect CDB failure."));
-	AVConnectErrorExImpl err = AVConnectErrorExImpl(__FILE__,__LINE__,"BulkDataSendRecvImpl::connect");
+	ACSBulkDataError::AVConnectErrorExImpl err = ACSBulkDataError::AVConnectErrorExImpl(__FILE__,__LINE__,"BulkDataSendRecvImpl::connect");
 	throw err.getAVConnectErrorEx();
 	}
 
@@ -76,59 +76,59 @@ void BulkDataSendRecvImpl<TReceiverCallback, TSenderCallback>::connect(bulkdata:
 	bulkdata::BulkDataReceiverConfig *receiverConfig = receiverObj_p->getReceiverConfig();
 	if(receiverConfig == 0)
 	    {
-	    ACS_SHORT_LOG((LM_INFO, "BulkDataSendRecvImpl::connect AVReceiverConfigErrorExImpl - receiverConfig NULL"));
-	    throw AVReceiverConfigErrorExImpl(__FILE__,__LINE__,"BulkDataSendRecvImpl::connect");
+	    ACS_SHORT_LOG((LM_INFO, "BulkDataSendRecvImpl::connect ACSBulkDataError::AVReceiverConfigErrorExImpl - receiverConfig NULL"));
+	    throw ACSBulkDataError::AVReceiverConfigErrorExImpl(__FILE__,__LINE__,"BulkDataSendRecvImpl::connect");
 	    }
 	
 	sender.connectToPeer(receiverConfig);
 	}
 
-    catch (AVInitErrorExImpl & ex)
+    catch (ACSBulkDataError::AVInitErrorExImpl & ex)
 	{   
-	ACS_SHORT_LOG((LM_INFO, "BulkDataSendRecvImpl::connect AVInitErrorExImpl exception catched !"));
-	AVConnectErrorExImpl err = AVConnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataSendRecvImpl::connect");
+	ACS_SHORT_LOG((LM_INFO, "BulkDataSendRecvImpl::connect ACSBulkDataError::AVInitErrorExImpl exception catched !"));
+	ACSBulkDataError::AVConnectErrorExImpl err = ACSBulkDataError::AVConnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataSendRecvImpl::connect");
 	throw err.getAVConnectErrorEx();
 	}
-    catch (AVStreamEndpointErrorExImpl & ex)
+    catch (ACSBulkDataError::AVStreamEndpointErrorExImpl & ex)
 	{   
-	ACS_SHORT_LOG((LM_INFO, "BulkDataSendRecvImpl::connect AVStreamEndpointErrorExImpl exception catched !"));
-	AVConnectErrorExImpl err = AVConnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataSendRecvImpl::connect");
+	ACS_SHORT_LOG((LM_INFO, "BulkDataSendRecvImpl::connect ACSBulkDataError::AVStreamEndpointErrorExImpl exception catched !"));
+	ACSBulkDataError::AVConnectErrorExImpl err = ACSBulkDataError::AVConnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataSendRecvImpl::connect");
 	throw err.getAVConnectErrorEx();
 	}
-    catch (AVFlowEndpointErrorExImpl & ex)
+    catch (ACSBulkDataError::AVFlowEndpointErrorExImpl & ex)
 	{   
-	ACS_SHORT_LOG((LM_INFO,"BulkDataSendRecvImpl::connect AVFlowEndpointErrorExImpl exception catched !"));
-	AVConnectErrorExImpl err = AVConnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataSendRecvImpl::connect");
+	ACS_SHORT_LOG((LM_INFO,"BulkDataSendRecvImpl::connect ACSBulkDataError::AVFlowEndpointErrorExImpl exception catched !"));
+	ACSBulkDataError::AVConnectErrorExImpl err = ACSBulkDataError::AVConnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataSendRecvImpl::connect");
 	throw err.getAVConnectErrorEx();
 	}
-    catch (AVOpenReceiverErrorEx & ex)
+    catch (ACSBulkDataError::AVOpenReceiverErrorEx & ex)
 	{   
-	ACS_SHORT_LOG((LM_INFO,"BulkDataSendRecvImpl::connect AVOpenReceiverErrorEx exception catched !"));
-	AVConnectErrorExImpl err = AVConnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataSendRecvImpl::connect");
+	ACS_SHORT_LOG((LM_INFO,"BulkDataSendRecvImpl::connect ACSBulkDataError::AVOpenReceiverErrorEx exception catched !"));
+	ACSBulkDataError::AVConnectErrorExImpl err = ACSBulkDataError::AVConnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataSendRecvImpl::connect");
 	throw err.getAVConnectErrorEx();
 	}
-    catch (AVReceiverConfigErrorEx & ex)
+    catch (ACSBulkDataError::AVReceiverConfigErrorEx & ex)
 	{   
-	ACS_SHORT_LOG((LM_INFO,"BulkDataSendRecvImpl::init AVReceiverConfigErrorEx exception catched !"));
-	AVConnectErrorExImpl err = AVConnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataSendRecvImpl::connect");
+	ACS_SHORT_LOG((LM_INFO,"BulkDataSendRecvImpl::init ACSBulkDataError::AVReceiverConfigErrorEx exception catched !"));
+	ACSBulkDataError::AVConnectErrorExImpl err = ACSBulkDataError::AVConnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataSendRecvImpl::connect");
 	throw err.getAVConnectErrorEx();
 	}
-    catch (AVReceiverConfigErrorExImpl & ex)
+    catch (ACSBulkDataError::AVReceiverConfigErrorExImpl & ex)
 	{   
-	ACS_SHORT_LOG((LM_INFO,"BulkDataSendRecvImpl::init AVReceiverConfigErrorExImpl exception catched !"));
-	AVConnectErrorExImpl err = AVConnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataSendRecvImpl::connect");
+	ACS_SHORT_LOG((LM_INFO,"BulkDataSendRecvImpl::init ACSBulkDataError::AVReceiverConfigErrorExImpl exception catched !"));
+	ACSBulkDataError::AVConnectErrorExImpl err = ACSBulkDataError::AVConnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataSendRecvImpl::connect");
 	throw err.getAVConnectErrorEx();
 	}
-    catch (AVStreamBindErrorExImpl & ex)
+    catch (ACSBulkDataError::AVStreamBindErrorExImpl & ex)
 	{   
-	ACS_SHORT_LOG((LM_INFO,"BulkDataSendRecvImpl::init AVStreamBindErrorExImpl exception catched !"));
-	AVConnectErrorExImpl err = AVConnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataSendRecvImpl::connect");
+	ACS_SHORT_LOG((LM_INFO,"BulkDataSendRecvImpl::init ACSBulkDataError::AVStreamBindErrorExImpl exception catched !"));
+	ACSBulkDataError::AVConnectErrorExImpl err = ACSBulkDataError::AVConnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataSendRecvImpl::connect");
 	throw err.getAVConnectErrorEx();
 	}
     catch(...)
 	{
 	ACS_SHORT_LOG((LM_INFO,"BulkDataSendRecvImpl::connect UNKNOWN exception"));
-	AVConnectErrorExImpl err = AVConnectErrorExImpl(__FILE__,__LINE__,"BulkDataSendRecvImpl::connect");
+	ACSBulkDataError::AVConnectErrorExImpl err = ACSBulkDataError::AVConnectErrorExImpl(__FILE__,__LINE__,"BulkDataSendRecvImpl::connect");
 	throw err.getAVConnectErrorEx();
 	}
 }
@@ -136,7 +136,7 @@ void BulkDataSendRecvImpl<TReceiverCallback, TSenderCallback>::connect(bulkdata:
 
 template<class TReceiverCallback, class TSenderCallback>
 void BulkDataSendRecvImpl<TReceiverCallback, TSenderCallback>::disconnect()
-    throw (CORBA::SystemException, AVDisconnectErrorEx)
+    throw (CORBA::SystemException, ACSBulkDataError::AVDisconnectErrorEx)
 {
     ACS_TRACE("BulkDataSendRecvImpl::disconnect");
 
@@ -146,7 +146,7 @@ void BulkDataSendRecvImpl<TReceiverCallback, TSenderCallback>::disconnect()
 	}
     catch(...)
 	{
-	AVDisconnectErrorExImpl err = AVDisconnectErrorExImpl(__FILE__,__LINE__,"BulkDataSendRecvImpl::disconnect");
+	ACSBulkDataError::AVDisconnectErrorExImpl err = ACSBulkDataError::AVDisconnectErrorExImpl(__FILE__,__LINE__,"BulkDataSendRecvImpl::disconnect");
 	throw err.getAVDisconnectErrorEx();
 	}
 }
@@ -154,7 +154,7 @@ void BulkDataSendRecvImpl<TReceiverCallback, TSenderCallback>::disconnect()
 
 template<class TReceiverCallback, class TSenderCallback>
 void BulkDataSendRecvImpl<TReceiverCallback, TSenderCallback>::startSend()
-    throw (CORBA::SystemException, AVStartSendErrorEx)
+    throw (CORBA::SystemException, ACSBulkDataError::AVStartSendErrorEx)
 {
     ACS_TRACE("BulkDataSendRecvImpl::startSend");
 
@@ -182,34 +182,34 @@ void BulkDataSendRecvImpl<TReceiverCallback, TSenderCallback>::startSend()
 	mb1->release();
 	}
 
-    catch (AVInvalidFlowNumberExImpl & ex)
+    catch (ACSBulkDataError::AVInvalidFlowNumberExImpl & ex)
 	{   
-	ACS_SHORT_LOG((LM_INFO,"BulkDataSendRecvImpl::startSend AVInvalidFlowNumberExImpl exception catched !"));
-	AVStartSendErrorExImpl err = AVStartSendErrorExImpl(ex,__FILE__,__LINE__,"BulkDataSendRecvImpl::startSend");
+	ACS_SHORT_LOG((LM_INFO,"BulkDataSendRecvImpl::startSend ACSBulkDataError::AVInvalidFlowNumberExImpl exception catched !"));
+	ACSBulkDataError::AVStartSendErrorExImpl err = ACSBulkDataError::AVStartSendErrorExImpl(ex,__FILE__,__LINE__,"BulkDataSendRecvImpl::startSend");
 	throw err.getAVStartSendErrorEx();
 	}
-    catch (AVSendFrameErrorExImpl & ex)
+    catch (ACSBulkDataError::AVSendFrameErrorExImpl & ex)
 	{   
-	ACS_SHORT_LOG((LM_INFO,"BulkDataSendRecvImpl::startSend AVSendFrameErrorExImpl exception catched !"));
-	AVStartSendErrorExImpl err = AVStartSendErrorExImpl(ex,__FILE__,__LINE__,"BulkDataSendRecvImpl::startSend");
+	ACS_SHORT_LOG((LM_INFO,"BulkDataSendRecvImpl::startSend ACSBulkDataError::AVSendFrameErrorExImpl exception catched !"));
+	ACSBulkDataError::AVStartSendErrorExImpl err = ACSBulkDataError::AVStartSendErrorExImpl(ex,__FILE__,__LINE__,"BulkDataSendRecvImpl::startSend");
 	throw err.getAVStartSendErrorEx();
 	}
-    catch (AVFlowEndpointErrorExImpl & ex)
+    catch (ACSBulkDataError::AVFlowEndpointErrorExImpl & ex)
 	{   
-	ACS_SHORT_LOG((LM_INFO,"BulkDataSendRecvImpl::startSend  AVFlowEndpointErrorExImplexception catched !"));
-	AVStartSendErrorExImpl err = AVStartSendErrorExImpl(ex,__FILE__,__LINE__,"BulkDataSendRecvImpl::startSend");
+	ACS_SHORT_LOG((LM_INFO,"BulkDataSendRecvImpl::startSend  ACSBulkDataError::AVFlowEndpointErrorExImplexception catched !"));
+	ACSBulkDataError::AVStartSendErrorExImpl err = ACSBulkDataError::AVStartSendErrorExImpl(ex,__FILE__,__LINE__,"BulkDataSendRecvImpl::startSend");
 	throw err.getAVStartSendErrorEx();
 	}
-    catch (AVProtocolErrorExImpl & ex)
+    catch (ACSBulkDataError::AVProtocolErrorExImpl & ex)
 	{   
 	ACS_SHORT_LOG((LM_INFO,"BulkDataSendRecvImpl::startSend  AVProtocolErrorExImplexception catched !"));
-	AVStartSendErrorExImpl err = AVStartSendErrorExImpl(ex,__FILE__,__LINE__,"BulkDataSendRecvImpl::startSend");
+	ACSBulkDataError::AVStartSendErrorExImpl err = ACSBulkDataError::AVStartSendErrorExImpl(ex,__FILE__,__LINE__,"BulkDataSendRecvImpl::startSend");
 	throw err.getAVStartSendErrorEx();
 	}
     catch (...)
 	{
 	ACS_SHORT_LOG((LM_INFO,"BulkDataSendRecvImpl::startSend UNKNOWN exception"));
-	AVStartSendErrorExImpl err = AVStartSendErrorExImpl(__FILE__,__LINE__,"BulkDataSendRecvImpl::startSend");
+	ACSBulkDataError::AVStartSendErrorExImpl err = ACSBulkDataError::AVStartSendErrorExImpl(__FILE__,__LINE__,"BulkDataSendRecvImpl::startSend");
 	throw err.getAVStartSendErrorEx();
 	}
 
@@ -218,7 +218,7 @@ void BulkDataSendRecvImpl<TReceiverCallback, TSenderCallback>::startSend()
 
 template<class TReceiverCallback, class TSenderCallback>
 void BulkDataSendRecvImpl<TReceiverCallback, TSenderCallback>::paceData()
-    throw (CORBA::SystemException, AVPaceDataErrorEx)
+    throw (CORBA::SystemException, ACSBulkDataError::AVPaceDataErrorEx)
 {
     ACS_TRACE("BulkDataSendRecvImpl::paceData");
 
@@ -245,22 +245,22 @@ void BulkDataSendRecvImpl<TReceiverCallback, TSenderCallback>::paceData()
 	mb->release(); 
 	}
 
-    catch (AVInvalidFlowNumberExImpl & ex)
+    catch (ACSBulkDataError::AVInvalidFlowNumberExImpl & ex)
 	{   
-	ACS_SHORT_LOG((LM_INFO,"BulkDataSendRecvImpl::paceData AVInvalidFlowNumberExImpl exception catched !"));
-	AVPaceDataErrorExImpl err = AVPaceDataErrorExImpl(ex,__FILE__,__LINE__,"BulkDataSendRecvImpl::paceData");
+	ACS_SHORT_LOG((LM_INFO,"BulkDataSendRecvImpl::paceData ACSBulkDataError::AVInvalidFlowNumberExImpl exception catched !"));
+	ACSBulkDataError::AVPaceDataErrorExImpl err = ACSBulkDataError::AVPaceDataErrorExImpl(ex,__FILE__,__LINE__,"BulkDataSendRecvImpl::paceData");
 	throw err.getAVPaceDataErrorEx();
 	}
-    catch (AVSendFrameErrorExImpl & ex)
+    catch (ACSBulkDataError::AVSendFrameErrorExImpl & ex)
 	{
-	ACS_SHORT_LOG((LM_INFO,"BulkDataSendRecvImpl::paceData AVSendFrameErrorExImpl exception catched !"));
-	AVPaceDataErrorExImpl err = AVPaceDataErrorExImpl(ex,__FILE__,__LINE__,"BulkDataSendRecvImpl::paceData");
+	ACS_SHORT_LOG((LM_INFO,"BulkDataSendRecvImpl::paceData ACSBulkDataError::AVSendFrameErrorExImpl exception catched !"));
+	ACSBulkDataError::AVPaceDataErrorExImpl err = ACSBulkDataError::AVPaceDataErrorExImpl(ex,__FILE__,__LINE__,"BulkDataSendRecvImpl::paceData");
 	throw err.getAVPaceDataErrorEx();
 	}
     catch (...)
 	{
 	ACS_SHORT_LOG((LM_INFO,"BulkDataSendRecvImpl::paceData UNKNOWN exception"));
-	AVPaceDataErrorExImpl err = AVPaceDataErrorExImpl(__FILE__,__LINE__,"BulkDataSendRecvImpl::paceData");
+	ACSBulkDataError::AVPaceDataErrorExImpl err = ACSBulkDataError::AVPaceDataErrorExImpl(__FILE__,__LINE__,"BulkDataSendRecvImpl::paceData");
 	throw err.getAVPaceDataErrorEx();
 	}
 }
@@ -268,7 +268,7 @@ void BulkDataSendRecvImpl<TReceiverCallback, TSenderCallback>::paceData()
 
 template<class TReceiverCallback, class TSenderCallback>
 void BulkDataSendRecvImpl<TReceiverCallback, TSenderCallback>::stopSend()
-    throw (CORBA::SystemException, AVStopSendErrorEx)
+    throw (CORBA::SystemException, ACSBulkDataError::AVStopSendErrorEx)
 {
     ACS_TRACE("BulkDataSendRecvImpl::stopSend");
 
@@ -279,16 +279,16 @@ void BulkDataSendRecvImpl<TReceiverCallback, TSenderCallback>::stopSend()
 	sender.stopSend(flowNumber);
 	}
  
-    catch (AVInvalidFlowNumberExImpl & ex)
+    catch (ACSBulkDataError::AVInvalidFlowNumberExImpl & ex)
 	{   
-	ACS_SHORT_LOG((LM_INFO,"BulkDataSendRecvImpl::stopSend AVInvalidFlowNumberExImpl exception catched !"));
-	AVStopSendErrorExImpl err = AVStopSendErrorExImpl(ex,__FILE__,__LINE__,"BulkDataSendRecvImpl::stopSend");
+	ACS_SHORT_LOG((LM_INFO,"BulkDataSendRecvImpl::stopSend ACSBulkDataError::AVInvalidFlowNumberExImpl exception catched !"));
+	ACSBulkDataError::AVStopSendErrorExImpl err = ACSBulkDataError::AVStopSendErrorExImpl(ex,__FILE__,__LINE__,"BulkDataSendRecvImpl::stopSend");
 	throw err.getAVStopSendErrorEx();
 	}
     catch (...)
 	{
 	ACS_SHORT_LOG((LM_INFO,"BulkDataSendRecvImpl::stopSend UNKNOWN exception"));
-	AVStopSendErrorExImpl err = AVStopSendErrorExImpl(__FILE__,__LINE__,"BulkDataSendRecvImpl::stopSend");
+	ACSBulkDataError::AVStopSendErrorExImpl err = ACSBulkDataError::AVStopSendErrorExImpl(__FILE__,__LINE__,"BulkDataSendRecvImpl::stopSend");
 	throw err.getAVStopSendErrorEx();
 	}
 }
@@ -298,7 +298,7 @@ void BulkDataSendRecvImpl<TReceiverCallback, TSenderCallback>::stopSend()
 
 template<class TReceiverCallback, class TSenderCallback>
 void BulkDataSendRecvImpl<TReceiverCallback, TSenderCallback>::openReceiver() 
-    throw (CORBA::SystemException, AVOpenReceiverErrorEx)
+    throw (CORBA::SystemException, ACSBulkDataError::AVOpenReceiverErrorEx)
 {
     ACS_TRACE("BulkDataSendRecvImpl::openReceiver");   
  
@@ -314,7 +314,7 @@ void BulkDataSendRecvImpl<TReceiverCallback, TSenderCallback>::openReceiver()
 	if (CORBA::is_nil (dao_p))
 	    {
 	    ACS_SHORT_LOG((LM_INFO,"BulkDataSendRecvImpl::connect dao_p nil"));
-	    AVStreamEndpointErrorExImpl err = AVStreamEndpointErrorExImpl(__FILE__,__LINE__,"BulkDataSendRecvImpl::connect");
+	    ACSBulkDataError::AVStreamEndpointErrorExImpl err = ACSBulkDataError::AVStreamEndpointErrorExImpl(__FILE__,__LINE__,"BulkDataSendRecvImpl::connect");
 	    throw err.getAVStreamEndpointErrorEx();
 	    }
 	
@@ -323,7 +323,7 @@ void BulkDataSendRecvImpl<TReceiverCallback, TSenderCallback>::openReceiver()
     catch(...)
 	{
 	ACS_SHORT_LOG((LM_WARNING,"BulkDataSendRecvImpl::connect CDB failure."));
-	AVOpenReceiverErrorExImpl err = AVOpenReceiverErrorExImpl(__FILE__,__LINE__,"BulkDataSendRecvImpl::openReceiver");
+	ACSBulkDataError::AVOpenReceiverErrorExImpl err = ACSBulkDataError::AVOpenReceiverErrorExImpl(__FILE__,__LINE__,"BulkDataSendRecvImpl::openReceiver");
 	throw err.getAVOpenReceiverErrorEx();	
 	}
     
@@ -334,28 +334,28 @@ void BulkDataSendRecvImpl<TReceiverCallback, TSenderCallback>::openReceiver()
 	receiver.createMultipleFlows(buf);
 	}
 
-    catch (AVInitErrorExImpl & ex)
+    catch (ACSBulkDataError::AVInitErrorExImpl & ex)
 	{   
-	ACS_SHORT_LOG((LM_INFO,"BulkDataSendRecvImpl<>::openReceiver AVInitErrorEx exception catched !"));
-	AVOpenReceiverErrorExImpl err = AVOpenReceiverErrorExImpl(ex,__FILE__,__LINE__,"BulkDataSendRecvImpl::openReceiver");
+	ACS_SHORT_LOG((LM_INFO,"BulkDataSendRecvImpl<>::openReceiver ACSBulkDataError::AVInitErrorEx exception catched !"));
+	ACSBulkDataError::AVOpenReceiverErrorExImpl err = ACSBulkDataError::AVOpenReceiverErrorExImpl(ex,__FILE__,__LINE__,"BulkDataSendRecvImpl::openReceiver");
 	throw err.getAVOpenReceiverErrorEx();
 	}
-    catch (AVStreamEndpointErrorExImpl & ex)
+    catch (ACSBulkDataError::AVStreamEndpointErrorExImpl & ex)
 	{   
-	ACS_SHORT_LOG((LM_INFO,"BulkDataSendRecvImpl<>::openReceiver AVStreamEndpointErrorEx exception catched !"));
-	AVOpenReceiverErrorExImpl err = AVOpenReceiverErrorExImpl(ex,__FILE__,__LINE__,"BulkDataSendRecvImpl::openReceiver");
+	ACS_SHORT_LOG((LM_INFO,"BulkDataSendRecvImpl<>::openReceiver ACSBulkDataError::AVStreamEndpointErrorEx exception catched !"));
+	ACSBulkDataError::AVOpenReceiverErrorExImpl err = ACSBulkDataError::AVOpenReceiverErrorExImpl(ex,__FILE__,__LINE__,"BulkDataSendRecvImpl::openReceiver");
 	throw err.getAVOpenReceiverErrorEx();
 	}
-    catch (AVFlowEndpointErrorExImpl & ex)
+    catch (ACSBulkDataError::AVFlowEndpointErrorExImpl & ex)
 	{   
-	ACS_SHORT_LOG((LM_INFO,"BulkDataSendRecvImpl<>::openReceiver AVFlowEndpointErrorEx exception catched !"));
-	AVOpenReceiverErrorExImpl err = AVOpenReceiverErrorExImpl(ex,__FILE__,__LINE__,"BulkDataSendRecvImpl::openReceiver");
+	ACS_SHORT_LOG((LM_INFO,"BulkDataSendRecvImpl<>::openReceiver ACSBulkDataError::AVFlowEndpointErrorEx exception catched !"));
+	ACSBulkDataError::AVOpenReceiverErrorExImpl err = ACSBulkDataError::AVOpenReceiverErrorExImpl(ex,__FILE__,__LINE__,"BulkDataSendRecvImpl::openReceiver");
 	throw err.getAVOpenReceiverErrorEx();
 	}
     catch(...)
 	{
 	ACS_SHORT_LOG((LM_INFO,"BulkDataSendRecvImpl<>::openReceiver UNKNOWN exception"));
-	AVOpenReceiverErrorExImpl err = AVOpenReceiverErrorExImpl(__FILE__,__LINE__,"BulkDataSendRecvImpl::openReceiver");
+	ACSBulkDataError::AVOpenReceiverErrorExImpl err = ACSBulkDataError::AVOpenReceiverErrorExImpl(__FILE__,__LINE__,"BulkDataSendRecvImpl::openReceiver");
 	throw err.getAVOpenReceiverErrorEx();
 	}
 }
@@ -364,7 +364,7 @@ void BulkDataSendRecvImpl<TReceiverCallback, TSenderCallback>::openReceiver()
 
 template<class TReceiverCallback, class TSenderCallback>
 bulkdata::BulkDataReceiverConfig * BulkDataSendRecvImpl<TReceiverCallback, TSenderCallback>::getReceiverConfig()
-    throw (CORBA::SystemException, AVReceiverConfigErrorEx)
+    throw (CORBA::SystemException, ACSBulkDataError::AVReceiverConfigErrorEx)
 {
     ACS_TRACE("BulkDataSendRecvImpl::getReceiverConfig");
 
@@ -373,7 +373,7 @@ bulkdata::BulkDataReceiverConfig * BulkDataSendRecvImpl<TReceiverCallback, TSend
 	{
 	receiverConfig = receiver.getReceiverConfig();
 	}
-    catch(AVReceiverConfigErrorExImpl & ex)
+    catch(ACSBulkDataError::AVReceiverConfigErrorExImpl & ex)
 	{
 	throw ex.getAVReceiverConfigErrorEx();
 	}
@@ -386,7 +386,7 @@ bulkdata::BulkDataReceiverConfig * BulkDataSendRecvImpl<TReceiverCallback, TSend
 
 template<class TReceiverCallback, class TSenderCallback>
 void BulkDataSendRecvImpl<TReceiverCallback, TSenderCallback>::closeReceiver() 
-    throw (CORBA::SystemException, AVCloseReceiverErrorEx)
+    throw (CORBA::SystemException, ACSBulkDataError::AVCloseReceiverErrorEx)
 {
     ACS_TRACE("BulkDataSendRecvImpl::close");
     /*
@@ -407,7 +407,7 @@ void BulkDataSendRecvImpl<TReceiverCallback, TSenderCallback>::closeReceiver()
 	}
     catch(...)
 	{
-	AVCloseReceiverErrorExImpl err = AVCloseReceiverErrorExImpl(__FILE__,__LINE__,"BulkDataSendRecvImpl::closeReceiver");
+	ACSBulkDataError::AVCloseReceiverErrorExImpl err = ACSBulkDataError::AVCloseReceiverErrorExImpl(__FILE__,__LINE__,"BulkDataSendRecvImpl::closeReceiver");
 	throw err.getAVCloseReceiverErrorEx();
 	}
 }

@@ -1,4 +1,4 @@
-/* @(#) $Id: acsncSupplierImpl.cpp,v 1.75 2008/03/14 07:32:25 cparedes Exp $
+/* @(#) $Id: acsncSupplierImpl.cpp,v 1.76 2008/07/25 07:35:19 cparedes Exp $
  *
  *    Structured event push supplier implementation.
  *    ALMA - Atacama Large Millimiter Array
@@ -25,6 +25,8 @@
 #include "acsncSupplier.h"
 #include <baciCORBA.h>
 #include <acscommonC.h>
+
+using namespace ACSErrTypeCommon;
 
 namespace nc {
 //-----------------------------------------------------------------------------

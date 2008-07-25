@@ -21,7 +21,7 @@
 *
 *
 *
-* "@(#) $Id: acscourseMount2Impl.cpp,v 1.7 2006/06/22 16:26:30 gchiozzi Exp $"
+* "@(#) $Id: acscourseMount2Impl.cpp,v 1.8 2008/07/25 07:46:46 cparedes Exp $"
 *
 */
  
@@ -30,10 +30,10 @@
 /* ----------------------------------------------------------------*/
 Mount2Impl::Mount2Impl(const ACE_CString &_name, maci::ContainerServices *containerServices) :
     CharacteristicComponentImpl(_name, containerServices),
-    m_cmdAz_sp(new RWdouble(_name+":cmdAz", getComponent()),this),
-    m_cmdEl_sp(new RWdouble(_name+":cmdEl", getComponent()),this),
-    m_actAz_sp(new ROdouble(_name+":actAz", getComponent()),this),
-    m_actEl_sp(new ROdouble(_name+":actEl", getComponent()),this)
+    m_cmdAz_sp(new baci::RWdouble(_name+":cmdAz", getComponent()),this),
+    m_cmdEl_sp(new baci::RWdouble(_name+":cmdEl", getComponent()),this),
+    m_actAz_sp(new baci::ROdouble(_name+":actAz", getComponent()),this),
+    m_actEl_sp(new baci::ROdouble(_name+":actEl", getComponent()),this)
 {
     // ACS_TRACE is used for debugging purposes
     ACS_TRACE("::Mount2Impl::Mount2Impl");

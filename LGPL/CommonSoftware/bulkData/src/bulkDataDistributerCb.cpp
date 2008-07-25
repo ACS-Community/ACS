@@ -146,9 +146,9 @@ int BulkDataDistributerCb::receive_frame (ACE_Message_Block *frame, TAO_AV_frame
 	char tmp[255];
 	ACE_OS::strcpy(tmp, frame->rd_ptr());
 
-	string strDataInfo(tmp);
+	std::string strDataInfo(tmp);
 	
-	istringstream iss(strDataInfo);
+	std::istringstream iss(strDataInfo);
 
 	iss >> val1 >> val2;
 
@@ -223,8 +223,8 @@ void BulkDataDistributerCb::setFlowname (const char * flowname_p)
 
     flowname_m = flowname_p;
 
-    string flwName(flowname_p);
-    string flwNumber(flwName, 4, 1);
+    std::string flwName(flowname_p);
+    std::string flwNumber(flwName, 4, 1);
 
     flowNumber_m = atol(flwNumber.c_str());
 }

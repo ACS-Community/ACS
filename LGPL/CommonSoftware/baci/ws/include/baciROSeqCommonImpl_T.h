@@ -38,7 +38,7 @@
 /**
  * Helper macro for use with template parameters.
  */
-#define ACS_RO_SEQ_T(T, CT) ACS::T##Seq*, ACS::CB##T##Seq, ACS::T##SeqSeq, ACS::T##Seq##Seq_out, ACS::Monitor##T, Monitor##T##Seq,  ACS::T##Seq, CT, CT, POA_ACS::RO##T##Seq, ACS::Alarm##T, POA_ACS::CB##T##Seq, const ACS::T##Seq&
+#define ACS_RO_SEQ_T(T, CT) ACS::T##Seq*, ACS::CB##T##Seq, ACS::T##SeqSeq, ACS::T##Seq##Seq_out, ACS::Monitor##T, baci::Monitor##T##Seq,  ACS::T##Seq, CT, CT, POA_ACS::RO##T##Seq, ACS::Alarm##T, POA_ACS::CB##T##Seq, const ACS::T##Seq&
 
 #endif
 

@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciROfloat.cpp,v 1.3 2006/09/24 18:43:39 bjeram Exp $"
+* "@(#) $Id: baciROfloat.cpp,v 1.4 2008/07/25 07:29:52 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -34,6 +34,6 @@
 #include "baciROcontImpl_T.i"
 #include "baciMonitor_T.i"
 
-template class Monitor<ACS_MONITOR(float, CORBA::Float)>;
-template class ROcontImpl<ACS_RO_T(float, CORBA::Float)>;
+template class baci::Monitor<ACS_MONITOR(float, CORBA::Float)>;
+template class baci::ROcontImpl<ACS_RO_T(float, CORBA::Float)>;
 /*___oOo___*/

@@ -49,10 +49,6 @@
 #include "bulkDataReceiver.h"
 
 
-using namespace baci;
-using namespace maci;
-using namespace ACSBulkDataStatus;
-
 /** @file bulkDataReceiverImpl.h  
  */
 
@@ -76,7 +72,7 @@ bulkDataImpl.h implements the BulkDataReceiver interface
 
 
 template<class TCallback>
-class BulkDataReceiverImpl : public CharacteristicComponentImpl,
+class BulkDataReceiverImpl : public baci::CharacteristicComponentImpl,
 		             public virtual POA_bulkdata::BulkDataReceiver
 {
   public:
@@ -111,25 +107,25 @@ class BulkDataReceiverImpl : public CharacteristicComponentImpl,
      @endhtmlonly
     */
     virtual void openReceiver() 
-	throw (CORBA::SystemException, AVOpenReceiverErrorEx);
+	throw (CORBA::SystemException, ACSBulkDataError::AVOpenReceiverErrorEx);
 
     bulkdata::BulkDataReceiverConfig * getReceiverConfig()
-	throw (CORBA::SystemException, AVReceiverConfigErrorEx);
+	throw (CORBA::SystemException, ACSBulkDataError::AVReceiverConfigErrorEx);
     
     virtual void closeReceiver() 
-	throw (CORBA::SystemException, AVCloseReceiverErrorEx);
+	throw (CORBA::SystemException, ACSBulkDataError::AVCloseReceiverErrorEx);
 
     virtual ACSErr::Completion *getCbStatus(CORBA::ULong flowNumber) 
-	throw (CORBA::SystemException, AVInvalidFlowNumberEx, AVFlowEndpointErrorEx);
+	throw (CORBA::SystemException, ACSBulkDataError::AVInvalidFlowNumberEx, ACSBulkDataError::AVFlowEndpointErrorEx);
 
     virtual void setTimeout(CORBA::ULong flowNumber, CORBA::ULong timeout) 
-	throw (CORBA::SystemException, AVInvalidFlowNumberEx, AVFlowEndpointErrorEx);
+	throw (CORBA::SystemException, ACSBulkDataError::AVInvalidFlowNumberEx, ACSBulkDataError::AVFlowEndpointErrorEx);
 
     virtual void setRecvName(const char *recvName) 
-	throw (CORBA::SystemException, AVSetReceiverNameErrorEx);
+	throw (CORBA::SystemException, ACSBulkDataError::AVSetReceiverNameErrorEx);
 
     virtual void subscribeNotification(ACS::CBvoid_ptr notifCb)
-	throw (CORBA::SystemException, AVNotificationMechanismErrorEx);
+	throw (CORBA::SystemException, ACSBulkDataError::AVNotificationMechanismErrorEx);
 
   protected: 
 

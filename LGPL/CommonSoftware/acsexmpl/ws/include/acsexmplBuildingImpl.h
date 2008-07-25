@@ -21,7 +21,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: acsexmplBuildingImpl.h,v 1.105 2007/02/01 05:14:26 cparedes Exp $"
+* "@(#) $Id: acsexmplBuildingImpl.h,v 1.106 2008/07/25 07:37:04 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -49,8 +49,6 @@
 
 ///Include the smart pointer for the property
 #include <baciSmartPropertyPointer.h>
-
-using namespace baci;
 
 /** @file acsexmplBuildingImpl.h
  */
@@ -116,9 +114,9 @@ version of the C++ Building implementation currently used.
  *  Since this device has only synchronous methods, we do not inherit 
  *  from the ActionImplementator class and we do not implement the 
  *  invokeAction method.
- *  @version "@(#) $Id: acsexmplBuildingImpl.h,v 1.105 2007/02/01 05:14:26 cparedes Exp $"
+ *  @version "@(#) $Id: acsexmplBuildingImpl.h,v 1.106 2008/07/25 07:37:04 cparedes Exp $"
  */
-class Building: public CharacteristicComponentImpl,     //Standard component superclass
+class Building: public baci::CharacteristicComponentImpl,     //Standard component superclass
 	        public virtual POA_acsexmplBuilding::Building    //CORBA servant stub
 {
   public:   
@@ -222,7 +220,7 @@ class Building: public CharacteristicComponentImpl,     //Standard component sup
     /**
      *  m_version_sp is a string which shows the version of class Building being used.
      */
-     SmartPropertyPointer<ROstring>m_version_sp;
+     baci::SmartPropertyPointer<baci::ROstring>m_version_sp;
   
     /**
      *  The door that belongs to this building.

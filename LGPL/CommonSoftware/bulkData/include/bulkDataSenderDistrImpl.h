@@ -81,13 +81,13 @@ class BulkDataSenderDistrImpl : public virtual BulkDataSenderImpl<TSenderCallbac
     void cleanUp();
 
     virtual void startSend()
-	throw (CORBA::SystemException, AVStartSendErrorEx);
+	throw (CORBA::SystemException, ACSBulkDataError::AVStartSendErrorEx);
 
     virtual void paceData()
-	throw (CORBA::SystemException, AVPaceDataErrorEx);
+	throw (CORBA::SystemException, ACSBulkDataError::AVPaceDataErrorEx);
 
     virtual void stopSend()
-	throw (CORBA::SystemException, AVStopSendErrorEx);
+	throw (CORBA::SystemException, ACSBulkDataError::AVStopSendErrorEx);
 };
 
 #include "bulkDataSenderDistrImpl.i"

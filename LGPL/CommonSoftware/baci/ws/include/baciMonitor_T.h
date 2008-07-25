@@ -19,7 +19,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciMonitor_T.h,v 1.102 2007/06/12 08:02:23 nbarriga Exp $"
+* "@(#) $Id: baciMonitor_T.h,v 1.103 2008/07/25 07:29:52 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -154,7 +154,7 @@ char *printLLUasString(unsigned long long);
 /**
  * Helper macro used to define the templates passed to the Monitor class.
  */
-#define ACS_MONITOR_C class TCORBA, class TCORBA_out, class TCB, class TPOA, BACIValue::Type TBACIValuetype
+#define ACS_MONITOR_C class TCORBA, class TCORBA_out, class TCB, class TPOA, baci::BACIValue::Type TBACIValuetype
 /**
  * Helper macro  used to define the templates passed to the Monitor class.
  */
@@ -163,11 +163,11 @@ char *printLLUasString(unsigned long long);
 /**
  * Helper macro  used to define the templates passed to the Monitor class for sequence properties.
  */
-#define ACS_MONITOR_SEQ(T,TCORBA)  TCORBA, TCORBA##_out, ACS::CB##T##Seq, POA_ACS::Monitor##T, BACIValue::type_##T##Seq
+#define ACS_MONITOR_SEQ(T,TCORBA)  TCORBA, TCORBA##_out, ACS::CB##T##Seq, POA_ACS::Monitor##T, baci::BACIValue::type_##T##Seq
 /**
  * Helper macro  used to define the templates passed to the Monitor class for non-sequence properties.
  */
-#define ACS_MONITOR(T,TCORBA)  TCORBA, TCORBA##_out, ACS::CB##T, POA_ACS::Monitor##T, BACIValue::type_##T
+#define ACS_MONITOR(T,TCORBA)  TCORBA, TCORBA##_out, ACS::CB##T, POA_ACS::Monitor##T, baci::BACIValue::type_##T
 
 template <ACS_MONITOR_C>
 class baci_EXPORT Monitor: public virtual PortableServer::RefCountServantBase,
@@ -179,15 +179,15 @@ public:
 
   Monitor(ACE_CString name,
 	  const ACS::TimeInterval& minTriggerTime,
-	  const BACIValue& minTriggerValue,
+	  const baci::BACIValue& minTriggerValue,
 	  BACIProperty* property);
 
   Monitor(ACE_CString name,
 	  Callback_ptr callback_p, const CBDescIn& inDesc,
 	  const ACS::TimeInterval& triggerTime,
-	  const BACIValue& triggerValue,
+	  const baci::BACIValue& triggerValue,
 	  const ACS::TimeInterval& minTriggerTime,
-	  const BACIValue& minTriggerValue,
+	  const baci::BACIValue& minTriggerValue,
 	  BACIProperty* property,
 	  const ACS::TimeInterval& transmitTime = 0,
 	  const BACIMonitor::UpdateMode& updateMode=BACIMonitor::mumLast);
@@ -216,7 +216,7 @@ public:
 
   virtual void setObjectState(const char * state,
 		      const ACS::TimeInterval& minTriggerTime,
-		      const BACIValue& minTriggerValue,
+		      const baci::BACIValue& minTriggerValue,
 		      BACIProperty * property);
 
 
@@ -272,7 +272,7 @@ private:
 /**
  * Helper macro  used to define the templates passed to the Monitor class for properties.
  */
-#define ACS_MONITOR_BASIC_C class TCORBA, class TCORBA_out, class TCB, class TPOA, BACIValue::Type TBACIValuetype
+#define ACS_MONITOR_BASIC_C class TCORBA, class TCORBA_out, class TCB, class TPOA, baci::BACIValue::Type TBACIValuetype
 /**
  * Helper macro  used to define the templates passed to the Monitor class for properties.
  */
@@ -289,15 +289,15 @@ public:
 
   MonitorBasic(ACE_CString name,
 	  const ACS::TimeInterval& minTriggerTime,
-	  const BACIValue& minTriggerValue,
+	  const baci::BACIValue& minTriggerValue,
 	  BACIProperty* property);
 
   MonitorBasic(ACE_CString name,
 	  Callback_ptr callback_p, const CBDescIn& inDesc,
 	  const ACS::TimeInterval& triggerTime,
-	  const BACIValue& triggerValue,
+	  const baci::BACIValue& triggerValue,
 	  const ACS::TimeInterval& minTriggerTime,
-	  const BACIValue& minTriggerValue,
+	  const baci::BACIValue& minTriggerValue,
 	  BACIProperty* property,
 	  const ACS::TimeInterval& transmitTime = 0,
 	  const BACIMonitor::UpdateMode& updateMode=BACIMonitor::mumLast);

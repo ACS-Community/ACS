@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciBACIProperty.cpp,v 1.9 2007/06/12 08:02:23 nbarriga Exp $"
+* "@(#) $Id: baciBACIProperty.cpp,v 1.10 2008/07/25 07:29:52 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -33,7 +33,7 @@
 #include "baciDB.h"
 
 
-ACE_RCSID(baci, baci, "$Id: baciBACIProperty.cpp,v 1.9 2007/06/12 08:02:23 nbarriga Exp $");
+ACE_RCSID(baci, baci, "$Id: baciBACIProperty.cpp,v 1.10 2008/07/25 07:29:52 cparedes Exp $");
 
 namespace baci {
 
@@ -81,7 +81,7 @@ BACIProperty::BACIProperty(const ACE_CString& _name,
   BACIValue archiveDelta;
 
 
-  DAONode* dao = characteristicModel_mp->getDAONode();
+  cdb::DAONode* dao = characteristicModel_mp->getDAONode();
   if (!dao)
       return;
   

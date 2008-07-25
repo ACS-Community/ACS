@@ -23,7 +23,7 @@
 
 
 template<class T, class TCB, class POA_CB>
-MonitorEventDispatcher<T, TCB, POA_CB>::MonitorEventDispatcher(const CBDescIn& descIn,
+baci::MonitorEventDispatcher<T, TCB, POA_CB>::MonitorEventDispatcher(const CBDescIn& descIn,
 							       const ACS::TimeInterval& interval,
 							       BACIProperty * property) : 
     EventDispatcher(), monitorCallback_mp(0), callbackServant_mp(0)
@@ -61,7 +61,7 @@ MonitorEventDispatcher<T, TCB, POA_CB>::MonitorEventDispatcher(const CBDescIn& d
 }
 
 template<class T, class TCB, class POA_CB>
-MonitorEventDispatcher<T, TCB, POA_CB>::~MonitorEventDispatcher()
+baci::MonitorEventDispatcher<T, TCB, POA_CB>::~MonitorEventDispatcher()
 {
     ACS_TRACE("baci::MonitorEventDispatcher&lt;&gt;::~MonitorEventDispatcher&lt;&gt;");
     if (monitorCallback_mp!=0) 
@@ -80,7 +80,7 @@ MonitorEventDispatcher<T, TCB, POA_CB>::~MonitorEventDispatcher()
 }
 
 template<class T, class TCB, class POA_CB>
-int MonitorEventDispatcher<T, TCB, POA_CB>::subscribe(EventStrategy * event)
+int baci::MonitorEventDispatcher<T, TCB, POA_CB>::subscribe(EventStrategy * event)
 {
     int res = EventDispatcher::subscribe(event);
     if (event->isSuspended()==false) 
@@ -91,7 +91,7 @@ int MonitorEventDispatcher<T, TCB, POA_CB>::subscribe(EventStrategy * event)
 }
 
 template<class T, class TCB, class POA_CB>
-int MonitorEventDispatcher<T, TCB, POA_CB>::unsubscribe(EventStrategy * event)
+int baci::MonitorEventDispatcher<T, TCB, POA_CB>::unsubscribe(EventStrategy * event)
 {
     int res = EventDispatcher::unsubscribe(event);
     if (event->isSuspended()==false) 
@@ -102,7 +102,7 @@ int MonitorEventDispatcher<T, TCB, POA_CB>::unsubscribe(EventStrategy * event)
 }
 
 template<class T, class TCB, class POA_CB>
-void MonitorEventDispatcher<T, TCB, POA_CB>::dispatch(T value,
+void baci::MonitorEventDispatcher<T, TCB, POA_CB>::dispatch(T value,
 						      const ACSErr::Completion & c,
 						      const ACS::CBDescOut & desc)
 {
@@ -120,7 +120,7 @@ void MonitorEventDispatcher<T, TCB, POA_CB>::dispatch(T value,
 }
 
 template<class T, class TCB, class POA_CB>
-void MonitorEventDispatcher<T, TCB, POA_CB>::suspend()
+void baci::MonitorEventDispatcher<T, TCB, POA_CB>::suspend()
 {
     if (active_m==1 && (monitor_mp!=0))
 	{
@@ -130,7 +130,7 @@ void MonitorEventDispatcher<T, TCB, POA_CB>::suspend()
 }
 
 template<class T, class TCB, class POA_CB>
-void MonitorEventDispatcher<T, TCB, POA_CB>::resume()
+void baci::MonitorEventDispatcher<T, TCB, POA_CB>::resume()
 {
     if (active_m==0 && (monitor_mp!=0))
 	{
@@ -140,7 +140,7 @@ void MonitorEventDispatcher<T, TCB, POA_CB>::resume()
 }
 
 template<class T, class TCB, class POA_CB>
-void MonitorEventDispatcher<T, TCB, POA_CB>::monitorDestroyed()
+void baci::MonitorEventDispatcher<T, TCB, POA_CB>::monitorDestroyed()
 {
     if (monitor_mp != 0) 
 	{ 
@@ -150,32 +150,32 @@ void MonitorEventDispatcher<T, TCB, POA_CB>::monitorDestroyed()
 }
 
 template<class T, class TCB, class POA_CB>
-void MonitorEventDispatcher<T, TCB, POA_CB>::monitorStateChanged()
+void baci::MonitorEventDispatcher<T, TCB, POA_CB>::monitorStateChanged()
 {
 }
 
 /*********************************** IMPLEMENTATION EventCB *************************************/
 
 template<class T, class TCB, class POA_CB>
-EventCB<T, TCB, POA_CB>::EventCB(MonitorEventDispatcher<T, TCB, POA_CB>* dispatcher)
+baci::EventCB<T, TCB, POA_CB>::EventCB(baci::MonitorEventDispatcher<T, TCB, POA_CB>* dispatcher)
 {
     dispatcher_mp = dispatcher;
 }
 
 template<class T, class TCB, class POA_CB>
-EventCB<T, TCB, POA_CB>::~EventCB()
+baci::EventCB<T, TCB, POA_CB>::~EventCB()
 {
     ACS_TRACE("baci::EventCB&lt;&gt;::~EventCB&lt;&gt;");
 }
 
 template<class T, class TCB, class POA_CB>
-void EventCB<T, TCB, POA_CB>::disposeDispatcher()
+void baci::EventCB<T, TCB, POA_CB>::disposeDispatcher()
 {
     dispatcher_mp = 0;
 }
 
 template<class T, class TCB, class POA_CB>
-void EventCB<T, TCB, POA_CB>::working (T value,
+void baci::EventCB<T, TCB, POA_CB>::working (T value,
 				       const ACSErr::Completion & c,
 				       const ACS::CBDescOut & desc)
     throw (CORBA::SystemException)
@@ -187,7 +187,7 @@ void EventCB<T, TCB, POA_CB>::working (T value,
 }
 
 template<class T, class TCB, class POA_CB>
-void EventCB<T, TCB, POA_CB>::done (T value,
+void baci::EventCB<T, TCB, POA_CB>::done (T value,
 				    const ACSErr::Completion & c,
 				    const ACS::CBDescOut & desc)
     throw (CORBA::SystemException)
@@ -199,7 +199,7 @@ void EventCB<T, TCB, POA_CB>::done (T value,
 }
 
 template<class T, class TCB, class POA_CB>
-CORBA::Boolean EventCB<T, TCB, POA_CB>:: negotiate (ACS::TimeInterval time_to_transmit,
+CORBA::Boolean baci::EventCB<T, TCB, POA_CB>:: negotiate (ACS::TimeInterval time_to_transmit,
 						    const ACS::CBDescOut & desc)
     throw (CORBA::SystemException)
 {
@@ -211,10 +211,10 @@ CORBA::Boolean EventCB<T, TCB, POA_CB>:: negotiate (ACS::TimeInterval time_to_tr
 /*********************************** IMPLEMENTATION AlarmEventStrategy **********************/
 
 template<class T, class TPROP, class TALARM>
-const int AlarmEventStrategy<T, TPROP, TALARM>::maxFailureCount = 3;
+const int baci::AlarmEventStrategy<T, TPROP, TALARM>::maxFailureCount = 3;
 
 template<class T, class TPROP, class TALARM>
-AlarmEventStrategy<T, TPROP, TALARM>::AlarmEventStrategy(TPROP * property,
+baci::AlarmEventStrategy<T, TPROP, TALARM>::AlarmEventStrategy(TPROP * property,
 						     EventDispatcher * eventDispatcher) :
   failureCount_m(0),eventDispatcher_mp(eventDispatcher),  property_mp(property), alarmRaised_m(0)
      
@@ -223,7 +223,7 @@ AlarmEventStrategy<T, TPROP, TALARM>::AlarmEventStrategy(TPROP * property,
 }
 
 template<class T, class TPROP, class TALARM>
-AlarmEventStrategy<T, TPROP, TALARM>::AlarmEventStrategy(Callback_ptr callback_p,
+baci::AlarmEventStrategy<T, TPROP, TALARM>::AlarmEventStrategy(Callback_ptr callback_p,
 						     const CBDescIn& descIn,
 						     const ACS::TimeInterval& interval,
 						     TPROP * property,
@@ -266,7 +266,7 @@ AlarmEventStrategy<T, TPROP, TALARM>::AlarmEventStrategy(Callback_ptr callback_p
 }
 
 template<class T, class TPROP, class TALARM>
-AlarmEventStrategy<T, TPROP, TALARM>::~AlarmEventStrategy()
+baci::AlarmEventStrategy<T, TPROP, TALARM>::~AlarmEventStrategy()
 {
   ACS_TRACE("baci::AlarmEventStrategy&lt;&gt;::~AlarmEventStrategy&lt;&gt;");
   // unsubscribe to event dispatcher
@@ -274,31 +274,31 @@ AlarmEventStrategy<T, TPROP, TALARM>::~AlarmEventStrategy()
 }
 
 template<class T, class TPROP, class TALARM>
-bool AlarmEventStrategy<T, TPROP, TALARM>::failed()
+bool baci::AlarmEventStrategy<T, TPROP, TALARM>::failed()
 {
   return (++failureCount_m>=maxFailureCount);
 }
 
 template<class T, class TPROP, class TALARM>
-void AlarmEventStrategy<T, TPROP, TALARM>::succeeded()
+void baci::AlarmEventStrategy<T, TPROP, TALARM>::succeeded()
 {
   failureCount_m = 0;
 }
 
 template<class T, class TPROP, class TALARM>
-int AlarmEventStrategy<T, TPROP, TALARM>::getId(void)
+int baci::AlarmEventStrategy<T, TPROP, TALARM>::getId(void)
 {
   return -1;
 }
 
 template<class T, class TPROP, class TALARM>
-const char* AlarmEventStrategy<T, TPROP, TALARM>::getName(void)
+const char* baci::AlarmEventStrategy<T, TPROP, TALARM>::getName(void)
 {
   return name_m.c_str();
 }
 
 template<class T, class TPROP, class TALARM>
-char* AlarmEventStrategy<T, TPROP, TALARM>::getObjectState(void)
+char* baci::AlarmEventStrategy<T, TPROP, TALARM>::getObjectState(void)
 {
   ACE_TCHAR *buffer_p = 0;
   ACE_NEW_RETURN (buffer_p, ACE_TCHAR[MAX_RECORD_SIZE], 0);
@@ -340,7 +340,7 @@ char* AlarmEventStrategy<T, TPROP, TALARM>::getObjectState(void)
 }
 
 template<class T, class TPROP, class TALARM>
-void AlarmEventStrategy<T, TPROP, TALARM>::setObjectState(const char * state)
+void baci::AlarmEventStrategy<T, TPROP, TALARM>::setObjectState(const char * state)
 {
   ACE_TCHAR cname[MAX_NAME_LENGTH];
   ACE_TCHAR ior[MAX_IOR_LENGTH];
@@ -414,7 +414,7 @@ void AlarmEventStrategy<T, TPROP, TALARM>::setObjectState(const char * state)
   }
 
 template<class T, class TPROP, class TALARM>
-void AlarmEventStrategy<T, TPROP, TALARM>::suspend ()
+void baci::AlarmEventStrategy<T, TPROP, TALARM>::suspend ()
      throw (CORBA::SystemException)
 {
   if (suspended_m==false)
@@ -425,7 +425,7 @@ void AlarmEventStrategy<T, TPROP, TALARM>::suspend ()
 }
 
 template<class T, class TPROP, class TALARM>
-void AlarmEventStrategy<T, TPROP, TALARM>::resume ()
+void baci::AlarmEventStrategy<T, TPROP, TALARM>::resume ()
      throw (CORBA::SystemException)
 {
   if (suspended_m==true)
@@ -436,7 +436,7 @@ void AlarmEventStrategy<T, TPROP, TALARM>::resume ()
 }
 
 template<class T, class TPROP, class TALARM>
-void AlarmEventStrategy<T, TPROP, TALARM>::destroy ()
+void baci::AlarmEventStrategy<T, TPROP, TALARM>::destroy ()
      throw (CORBA::SystemException)
 {
   ACS_TRACE("baci::AlarmEventStrategy&lt;&gt;::destroy");
@@ -456,7 +456,7 @@ void AlarmEventStrategy<T, TPROP, TALARM>::destroy ()
 /*********************************** IMPLEMENTATION AlarmEventStrategyDisc **********************/
 
 template<class T, class TPROP, class TALARM>
-void AlarmEventStrategyDisc<T, TPROP, TALARM>::check(BACIValue &val,
+void baci::AlarmEventStrategyDisc<T, TPROP, TALARM>::check(BACIValue &val,
 					     const ACSErr::Completion & c,
 					     const ACS::CBDescOut & desc
 					     )
@@ -515,7 +515,7 @@ void AlarmEventStrategyDisc<T, TPROP, TALARM>::check(BACIValue &val,
 /*********************************** IMPLEMENTATION AlarmEventStrategyCont **********************/
 
 template<class T, class TPROP, class TALARM>
-void AlarmEventStrategyCont<T, TPROP, TALARM>::check(BACIValue &val,
+void baci::AlarmEventStrategyCont<T, TPROP, TALARM>::check(BACIValue &val,
 					     const ACSErr::Completion & c,
 					     const ACS::CBDescOut & desc
 					     )
@@ -592,7 +592,7 @@ void AlarmEventStrategyCont<T, TPROP, TALARM>::check(BACIValue &val,
 /*********************************** IMPLEMENTATION AlarmEventStrategyContSeq **********************/
 
 template<class T, class TPROP, class TALARM>
-void AlarmEventStrategyContSeq<T, TPROP, TALARM>::check(BACIValue &val,
+void baci::AlarmEventStrategyContSeq<T, TPROP, TALARM>::check(BACIValue &val,
 					     const ACSErr::Completion & c,
 					     const ACS::CBDescOut & desc)
 {
@@ -693,7 +693,7 @@ void AlarmEventStrategyContSeq<T, TPROP, TALARM>::check(BACIValue &val,
 // I do not know if this code works or not. It is here that DiscreteSeq can build. Anywat alarm system will be replaced soon.
 
 template<class T, class TPROP, class TALARM>
-void AlarmEventStrategyDiscSeq<T, TPROP, TALARM>::check(BACIValue &val,
+void baci::AlarmEventStrategyDiscSeq<T, TPROP, TALARM>::check(BACIValue &val,
 					     const ACSErr::Completion & c,
 					     const ACS::CBDescOut & desc)
 {

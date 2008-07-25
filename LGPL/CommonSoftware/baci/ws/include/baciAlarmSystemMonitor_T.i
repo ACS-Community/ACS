@@ -10,9 +10,10 @@
 #include "acsErrTypeAlarmSourceFactory.h"
 #endif
 
+
 /*********************************** IMPLEMENTATION of AlarmSystemMonitor */
 template<class TPROP>
-AlarmSystemMonitor<TPROP>::AlarmSystemMonitor(TPROP * property, EventDispatcher * eventDispatcher) :
+baci::AlarmSystemMonitor<TPROP>::AlarmSystemMonitor(TPROP * property, EventDispatcher * eventDispatcher) :
     eventDispatcher_mp(eventDispatcher),  property_mp(property), alarmRaised_m(0)
 {
     ACS_TRACE("baci::AlarmSystemMonitor&lt;&gt;::AlarmSystemMonitor");
@@ -43,7 +44,7 @@ AlarmSystemMonitor<TPROP>::AlarmSystemMonitor(TPROP * property, EventDispatcher 
 }//AlarmSystemMonitor
 
 template<class TPROP>
-AlarmSystemMonitor<TPROP>::~AlarmSystemMonitor()
+baci::AlarmSystemMonitor<TPROP>::~AlarmSystemMonitor()
 {
     ACS_TRACE("baci::AlarmSystemMonitor&lt;&gt;::~AlarmSystemMonitor");
 //    unsubscribe to event dispatcher
@@ -51,7 +52,7 @@ AlarmSystemMonitor<TPROP>::~AlarmSystemMonitor()
 }//~AlarmSystemMonitor
 
 template<class TPROP>
-void AlarmSystemMonitor<TPROP>::sendAlarm(std::string family, std::string member, int code, bool active) {
+void baci::AlarmSystemMonitor<TPROP>::sendAlarm(std::string family, std::string member, int code, bool active) {
 /**
  * %todo GCH: Alarm System is not yet supportedin VxWorks
  *            Therefore I cut the calls out for the time being.

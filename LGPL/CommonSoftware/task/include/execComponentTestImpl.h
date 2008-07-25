@@ -18,7 +18,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: execComponentTestImpl.h,v 1.12 2005/07/29 22:04:27 sharring Exp $"
+* "@(#) $Id: execComponentTestImpl.h,v 1.13 2008/07/25 07:33:13 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -36,9 +36,7 @@
 
 #include "taskComponent.h"
  
-using namespace acscomponent;
-
-class execComponentTestImpl:  public virtual ACSComponentImpl,
+class execComponentTestImpl:  public virtual acscomponent::ACSComponentImpl,
 			      public virtual POA_ACS::TaskComponent
 			    
 {    

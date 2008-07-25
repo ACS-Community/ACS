@@ -19,7 +19,7 @@
  *License along with this library; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: baciTestAlarmClassImpl.h,v 1.1 2008/03/03 14:54:23 rcirami Exp $"
+ * "@(#) $Id: baciTestAlarmClassImpl.h,v 1.2 2008/07/25 07:29:52 cparedes Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -47,10 +47,8 @@
 
 #include <baciSmartPropertyPointer.h>
 
-using namespace baci;
 
-
-class MyROPatternProperty : public RWpattern
+class MyROPatternProperty : public baci::RWpattern
 {
   public:   
     /**
@@ -62,8 +60,8 @@ class MyROPatternProperty : public RWpattern
      * @param roPatternProperty_p reference to the associated pattern property
      */
     MyROPatternProperty(const ACE_CString &name, 
-			BACIComponent *component_p, 
-			ROpattern *roPatternProperty_p);
+			baci::BACIComponent *component_p, 
+			baci::ROpattern *roPatternProperty_p);
     
     /**
      * Set value method (value mutator)
@@ -78,8 +76,8 @@ class MyROPatternProperty : public RWpattern
      @endhtmlonly
     */
     virtual void 
-    setValue (BACIProperty *property_p,
-	      BACIValue *value_p, 
+    setValue (baci::BACIProperty *property_p,
+	      baci::BACIValue *value_p, 
 	      Completion &completion,
 	      CBDescOut &descOut);
     
@@ -89,7 +87,7 @@ class MyROPatternProperty : public RWpattern
      * It just points to the ROpattern passed to this class's constructor.  This is done so 
      * that we can synchronize this class and the ROpattern's value. 
      */
-    ROpattern *m_roPatternProperty_p;
+    baci::ROpattern *m_roPatternProperty_p;
 
     void operator=(const MyROPatternProperty&);
 };
@@ -147,8 +145,8 @@ class BaciTestAlarmClassImpl: public baci::CharacteristicComponentImpl,
     bool m_shutdown;
 
     /// The smart pointers for the properties
-    SmartPropertyPointer<ROpattern> m_roPatternProperty_sp;    
-    SmartPropertyPointer<MyROPatternProperty> m_rwPatternProperty_sp;
+    baci::SmartPropertyPointer<baci::ROpattern> m_roPatternProperty_sp;    
+    baci::SmartPropertyPointer<MyROPatternProperty> m_rwPatternProperty_sp;
     
     /**
      * ALMA C++ coding standards state copy operators should be disabled.

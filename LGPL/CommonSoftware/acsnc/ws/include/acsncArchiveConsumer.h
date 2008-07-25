@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsncArchiveConsumer.h,v 1.6 2006/01/27 19:07:07 dfugate Exp $"
+* "@(#) $Id: acsncArchiveConsumer.h,v 1.7 2008/07/25 07:35:19 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -173,7 +173,7 @@ namespace nc {
 	 @endhtmlonly
 	 */
 	void 
-	subscribeAllEvents() throw (CORBAProblemEx);
+	subscribeAllEvents() throw (ACSErrTypeCommon::CORBAProblemEx);
 
 	/**
 	 * This function does something with archive events.

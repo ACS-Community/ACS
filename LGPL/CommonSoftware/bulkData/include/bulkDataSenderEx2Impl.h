@@ -42,9 +42,6 @@
 //#include "bulkDataReceiverEx2C.h"
 
 
-//using namespace baci;
-//using namespace maci;
-
 /** @file bulkDataSenderEx2Impl.h 
  */
 
@@ -84,16 +81,16 @@ class BulkDataSenderEx2Impl : public virtual BulkDataSenderDefaultImpl,
     virtual ~BulkDataSenderEx2Impl();
   
     virtual void startSend()
-	throw (CORBA::SystemException, AVStartSendErrorEx);
+	throw (CORBA::SystemException, ACSBulkDataError::AVStartSendErrorEx);
     
     virtual void paceData ()
-        throw (CORBA::SystemException, AVPaceDataErrorEx)
+        throw (CORBA::SystemException, ACSBulkDataError::AVPaceDataErrorEx)
 	{
 	    // empty
 	}
 
     virtual void stopSend()
-	throw (CORBA::SystemException, AVStopSendErrorEx);
+	throw (CORBA::SystemException, ACSBulkDataError::AVStopSendErrorEx);
 
 
   /**
@@ -107,7 +104,7 @@ class BulkDataSenderEx2Impl : public virtual BulkDataSenderDefaultImpl,
   */
     
     virtual void paceDataNew (CORBA::Long size)
-	throw (CORBA::SystemException, AVPaceDataErrorEx);
+	throw (CORBA::SystemException, ACSBulkDataError::AVPaceDataErrorEx);
 
 };
 

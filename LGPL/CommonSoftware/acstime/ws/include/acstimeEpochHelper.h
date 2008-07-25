@@ -1,4 +1,4 @@
-/* @(#) $Id: acstimeEpochHelper.h,v 1.16 2005/08/29 08:35:57 vwang Exp $
+/* @(#) $Id: acstimeEpochHelper.h,v 1.17 2008/07/25 07:34:03 cparedes Exp $
  *
  * Copyright (C) 2001
  * Associated Universities, Inc. Washington DC, USA.
@@ -32,7 +32,6 @@
 /* ----------------------------------------------------------------*/
 #include "acstimeTimeUtil.h"
 #include "acstimeDurationHelper.h"
-using namespace ACSTimeError;
 /* ----------------------------------------------------------------*/
 /** @file acstimeEpochHelper.h
  *  Header file for EpochHelper 
@@ -357,7 +356,7 @@ class EpochHelper : TimeUtil
        @endhtmlonly
      */
     void add(const acstime::Duration&)
-	throw(OverflowOrUnderflowExImpl);
+	throw(ACSTimeError::OverflowOrUnderflowExImpl);
     
     /**
      * Adds the given <a href="../../idl/html/structacstime_1_1Duration.html">Duration</a> 
@@ -378,7 +377,7 @@ class EpochHelper : TimeUtil
        @endhtmlonly
      */
     void subtract(const acstime::Duration&)
-	throw(OverflowOrUnderflowExImpl);
+	throw(ACSTimeError::OverflowOrUnderflowExImpl);
     
     /**
      * Subtracts the given <a href="../../idl/html/structacstime_1_1Duration.html">Duration</a> 
@@ -485,7 +484,7 @@ class EpochHelper : TimeUtil
        @endhtmlonly
      */
     std::string toString(acstime::TimeSystem, const char*, const CORBA::Long array2TAI, const CORBA::Long TAI2UTC)
-	throw(ArgErrorExImpl);
+	throw(ACSTimeError::ArgErrorExImpl);
 
     /**
      * Sets this <a href="../../idl/html/structacstime_1_1Epoch.html">Epoch</a>'s 
@@ -497,7 +496,7 @@ class EpochHelper : TimeUtil
        @endhtmlonly
      */
     void fromString(acstime::TimeSystem, const char*)
-	throw(ArgErrorExImpl);
+	throw(ACSTimeError::ArgErrorExImpl);
 
     friend DurationHelper* operator% (const EpochHelper&, const ACS::TimeInterval &);
     friend DurationHelper* operator% (const ACS::TimeInterval &, const EpochHelper&);
@@ -505,7 +504,7 @@ class EpochHelper : TimeUtil
   private:
     /* ----------------------------------------------------------------*/
     void m_toValue(CORBA::Boolean booVal)
-	throw(OverflowOrUnderflowExImpl);
+	throw(ACSTimeError::OverflowOrUnderflowExImpl);
     
     void m_toAttributes();
     

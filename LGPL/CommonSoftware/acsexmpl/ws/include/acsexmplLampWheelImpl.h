@@ -20,7 +20,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsexmplLampWheelImpl.h,v 1.13 2007/02/01 05:14:26 cparedes Exp $"
+* "@(#) $Id: acsexmplLampWheelImpl.h,v 1.14 2008/07/25 07:37:04 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -44,8 +44,6 @@
 
 #include <expat.h>
 #include <list>
-
-using namespace baci;
 
 /// The description of each slot (read from CDB)
 typedef struct {
@@ -118,11 +116,11 @@ It also has three read-only properties: position, desc, slots.
  * A log message inform the user about the selected lamp.
  * 
  * @author <a href=mailto:acaproni@eso.org>Alessandro Caproni</a>,
- * @version "@(#) $Id: acsexmplLampWheelImpl.h,v 1.13 2007/02/01 05:14:26 cparedes Exp $"
+ * @version "@(#) $Id: acsexmplLampWheelImpl.h,v 1.14 2008/07/25 07:37:04 cparedes Exp $"
  */
-class acsexmpl_EXPORT LampWheel: public CharacteristicComponentImpl,//Standard component superclass
+class acsexmpl_EXPORT LampWheel: public baci::CharacteristicComponentImpl,//Standard component superclass
 	    public virtual POA_acsexmplLampWheel::LampWheel,//CORBA servant stub
-	    public ActionImplementator //Asynchronous method helper class
+	    public baci::ActionImplementator //Asynchronous method helper class
 {
   public:
     /**
@@ -270,12 +268,12 @@ class acsexmpl_EXPORT LampWheel: public CharacteristicComponentImpl,//Standard c
        <br><hr>
        @endhtmlonly
      */
-    virtual ActionRequest
+    virtual baci::ActionRequest
     invokeAction (int function,
-                  BACIComponent *cob_p, 
+                  baci::BACIComponent *cob_p, 
                   const int &callbackID,
                   const CBDescIn &descIn,
-                  BACIValue *value_p,
+                  baci::BACIValue *value_p,
                   Completion &completion,
                   CBDescOut &descOut);
 
@@ -301,11 +299,11 @@ class acsexmpl_EXPORT LampWheel: public CharacteristicComponentImpl,//Standard c
        <br><hr>
        @endhtmlonly
      */
-    virtual ActionRequest 
-    moveAction (BACIComponent *cob_p, 
+    virtual baci::ActionRequest 
+    moveAction (baci::BACIComponent *cob_p, 
 	       const int &callbackID,
 	       const CBDescIn &descIn, 
-	       BACIValue *value_p,
+	       baci::BACIValue *value_p,
 	       Completion &completion, 
 	       CBDescOut &descOut);    
     /* --------------------- [ CORBA interface ] ----------------------*/
@@ -367,18 +365,18 @@ class acsexmpl_EXPORT LampWheel: public CharacteristicComponentImpl,//Standard c
     /**
      *  m_position_sp is the position of the wheel.
      */
-     SmartPropertyPointer<ROdouble> m_position_sp;
+     baci::SmartPropertyPointer<baci::ROdouble> m_position_sp;
 
     /**
      *  m_desc_sp is the description of the wheel.
      */
-     SmartPropertyPointer<ROstring> m_desc_sp;
+     baci::SmartPropertyPointer<baci::ROstring> m_desc_sp;
 
     /**
      * m_slots_sp is the number of available slots
      * in the wheel
      */
-    SmartPropertyPointer<ROlong>m_slots_sp;
+    baci::SmartPropertyPointer<baci::ROlong>m_slots_sp;
 
     /**
      * The list of descriptions of each slot of the wheel:

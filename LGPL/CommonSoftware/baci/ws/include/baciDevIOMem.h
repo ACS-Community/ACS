@@ -18,7 +18,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciDevIOMem.h,v 1.99 2006/10/18 08:14:16 bjeram Exp $"
+* "@(#) $Id: baciDevIOMem.h,v 1.100 2008/07/25 07:29:51 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -42,8 +42,6 @@
 #endif
 
 #include <baciDevIO.h>
-
- using namespace baci;
 
 template <class T> class DevIOMem : public DevIO<T>
 {

@@ -20,7 +20,7 @@
 *
 * E.S.O. - ACS project
 *
-* "@(#) $Id: baciRWfloat.cpp,v 1.2 2005/09/12 19:55:38 dfugate Exp $"
+* "@(#) $Id: baciRWfloat.cpp,v 1.3 2008/07/25 07:29:52 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -39,7 +39,7 @@ template class PcommonImpl<ACS_P_T(float, CORBA::Float), POA_ACS::RWfloat>;
 template class PcontImpl<ACS_P_T(float, CORBA::Float), POA_ACS::RWfloat>;
 template class RWcommonImpl<ACS_RW_T(float, CORBA::Float)>;
 #endif
-template class RWcontImpl<ACS_RW_T(float, CORBA::Float)>;
+template class baci::RWcontImpl<ACS_RW_T(float, CORBA::Float)>;
 
 
 /*___oOo___*/

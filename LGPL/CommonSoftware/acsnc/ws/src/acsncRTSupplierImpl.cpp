@@ -19,7 +19,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsncRTSupplierImpl.cpp,v 1.14 2007/03/01 14:01:14 bjeram Exp $"
+* "@(#) $Id: acsncRTSupplierImpl.cpp,v 1.15 2008/07/25 07:35:19 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -27,6 +27,7 @@
 */
 //-----------------------------------------------------------------------------
 #include "acsncRTSupplier.h"
+using namespace baci;
 namespace nc {
 //-----------------------------------------------------------------------------
 RTSupplier::RTSupplier(const char* channelName, 
@@ -124,11 +125,11 @@ RTSupplier::worker(void* param_p)
 		    supplier_p->unpublishedEvents_m.pop();
 //		    supplier_p->eventQueueMutex_m.release();
 		    }
-		catch(CORBAProblemEx &_ex)
+		catch(ACSErrTypeCommon::CORBAProblemEx &_ex)
 		    {
 		    ACS_SHORT_LOG((LM_ERROR,"RTSupplier::worker() %s channel - problem publishing a saved event!",
 				   supplier_p->channelName_mp));
-		    CORBAProblemExImpl ex(_ex);
+		    ACSErrTypeCommon::CORBAProblemExImpl ex(_ex);
 		    ex.log();
 		    }
 		catch(CORBA::SystemException &ex)

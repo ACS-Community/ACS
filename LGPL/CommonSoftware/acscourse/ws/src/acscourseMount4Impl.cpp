@@ -21,7 +21,7 @@
 *
 *
 *
-* "@(#) $Id: acscourseMount4Impl.cpp,v 1.9 2007/01/08 16:01:19 gchiozzi Exp $"
+* "@(#) $Id: acscourseMount4Impl.cpp,v 1.10 2008/07/25 07:46:46 cparedes Exp $"
 *
 */
  
@@ -80,10 +80,10 @@ const static int OBJFIX_ACTION  = 1;
 /* ----------------------------------------------------------------*/
 Mount4Impl::Mount4Impl(const ACE_CString &_name, maci::ContainerServices *containerServices) :
     CharacteristicComponentImpl(_name, containerServices),
-    m_cmdAz_sp(new ROdouble(_name+":cmdAz", getComponent()),this),
-    m_cmdEl_sp(new ROdouble(_name+":cmdEl", getComponent()),this),
-    m_actAz_sp(new ROdouble(_name+":actAz", getComponent()),this),
-    m_actEl_sp(new ROdouble(_name+":actEl", getComponent()),this)
+    m_cmdAz_sp(new baci::ROdouble(_name+":cmdAz", getComponent()),this),
+    m_cmdEl_sp(new baci::ROdouble(_name+":cmdEl", getComponent()),this),
+    m_actAz_sp(new baci::ROdouble(_name+":actAz", getComponent()),this),
+    m_actEl_sp(new baci::ROdouble(_name+":actEl", getComponent()),this)
 {
     // ACS_TRACE is used for debugging purposes
     ACS_TRACE("::Mount4Impl::Mount4Impl");
@@ -106,12 +106,12 @@ Mount4Impl::~Mount4Impl()
 
 /* --------------- [ Action implementator interface ] -------------- */
 
-ActionRequest 
+baci::ActionRequest 
 Mount4Impl::invokeAction (int function,
-		    BACIComponent *cob_p, 
+		    baci::BACIComponent *cob_p, 
 		    const int &callbackID, 
 		    const CBDescIn &descIn, 
-		    BACIValue *value_p, 
+		    baci::BACIValue *value_p, 
 		    Completion &completion, 
 		    CBDescOut &descOut) 
 {
@@ -125,17 +125,17 @@ Mount4Impl::invokeAction (int function,
 	  }
 	default:
 	  {
-	  return reqDestroy;
+	  return baci::reqDestroy;
 	  }
 	}
 }
 
 /// implementation of async. on() method
-ActionRequest 
-Mount4Impl::objfixAction (BACIComponent *cob_p, 
+baci::ActionRequest 
+Mount4Impl::objfixAction (baci::BACIComponent *cob_p, 
 		const int &callbackID,
 		const CBDescIn &descIn, 
-		BACIValue *value_p,
+		baci::BACIValue *value_p,
 		Completion &completion, 
 		CBDescOut &descOut)
 {
@@ -172,7 +172,7 @@ Mount4Impl::objfixAction (BACIComponent *cob_p,
     
      // complete action requesting done invocation, 
     // otherwise return reqInvokeWorking and set descOut.estimated_timeout
-    return reqInvokeDone;
+    return baci::reqInvokeDone;
 }
 
 
@@ -214,7 +214,7 @@ Mount4Impl::objfix_async (CORBA::Double az,
     param_p->elev=elev;
     
     // register the action in a queue so that control is returned immediately
-    getComponent()->registerAction(BACIValue::type_null, callBack, desc, this, OBJFIX_ACTION, BACIValue(param_p)); // ID = 1
+    getComponent()->registerAction(baci::BACIValue::type_null, callBack, desc, this, OBJFIX_ACTION, baci::BACIValue(param_p)); // ID = 1
 }
 
 ACS::ROdouble_ptr

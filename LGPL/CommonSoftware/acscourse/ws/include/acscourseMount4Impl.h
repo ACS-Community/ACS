@@ -21,7 +21,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: acscourseMount4Impl.h,v 1.4 2006/03/24 12:54:38 vwang Exp $"
+* "@(#) $Id: acscourseMount4Impl.h,v 1.5 2008/07/25 07:46:46 cparedes Exp $"
 *
 */
 
@@ -43,8 +43,6 @@
  */
 #include <acscourseMountS.h>
 #include "acsThreadManager.h"
-
-using namespace baci;
 
 
 /** @file acscourseMount4Impl.h
@@ -99,11 +97,11 @@ class PositionControlThread :public ACS::Thread
  * The class Mount4 is a basic example of a component and simulates the behaviour of an antenna interface.
  * It provides one asynchronous methods: objfix.  The methods only writes the data into 
  * virtual properties.
- * @version "@(#) $Id: acscourseMount4Impl.h,v 1.4 2006/03/24 12:54:38 vwang Exp $"
+ * @version "@(#) $Id: acscourseMount4Impl.h,v 1.5 2008/07/25 07:46:46 cparedes Exp $"
  */
-class Mount4Impl: public virtual CharacteristicComponentImpl,
+class Mount4Impl: public virtual baci::CharacteristicComponentImpl,
 		  public virtual POA_ACSCOURSE_MOUNT::Mount4,
-                  public ActionImplementator
+                  public baci::ActionImplementator
 {
   public:
      /**
@@ -142,12 +140,12 @@ class Mount4Impl: public virtual CharacteristicComponentImpl,
      * <br><hr>
      * @endhtmlonly
      */
-    virtual ActionRequest 
+    virtual baci::ActionRequest 
     invokeAction (int function,
-		  BACIComponent *cob_p, 
+		  baci::BACIComponent *cob_p, 
 		  const int &callbackID, 
 		  const CBDescIn &descIn, 
-		  BACIValue *value_p, 
+		  baci::BACIValue *value_p, 
 		  Completion &completion, 
 		  CBDescOut &descOut);
     
@@ -173,11 +171,11 @@ class Mount4Impl: public virtual CharacteristicComponentImpl,
      * <br><hr>
      * @endhtmlonly
      */
-    virtual ActionRequest 
-    objfixAction (BACIComponent *cob_p, 
+    virtual baci::ActionRequest 
+    objfixAction (baci::BACIComponent *cob_p, 
 	      const int &callbackID,
 	      const CBDescIn &descIn, 
-	      BACIValue *value_p,
+	      baci::BACIValue *value_p,
 	      Completion &completion, 
 	      CBDescOut &descOut);
     
@@ -266,22 +264,22 @@ class Mount4Impl: public virtual CharacteristicComponentImpl,
     /**
      *  m_cmdAz_p is the antenna's commanded azimuth
      */
-    SmartPropertyPointer<ROdouble> m_cmdAz_sp;
+    baci::SmartPropertyPointer<baci::ROdouble> m_cmdAz_sp;
 
     /**
      *  m_cmdEl_p is the antenna's commanded elevation
      */
-    SmartPropertyPointer<ROdouble> m_cmdEl_sp;
+    baci::SmartPropertyPointer<baci::ROdouble> m_cmdEl_sp;
 
     /**
      *  m_actAz_p is the antenna's actual azimuth
      */
-    SmartPropertyPointer<ROdouble> m_actAz_sp;
+    baci::SmartPropertyPointer<baci::ROdouble> m_actAz_sp;
 
     /**
      *  m_actEl_p is the antenna's actual elevation
      */
-    SmartPropertyPointer<ROdouble> m_actEl_sp;
+    baci::SmartPropertyPointer<baci::ROdouble> m_actEl_sp;
 
     /**
      * ALMA C++ coding standards state copy operators should be disabled.

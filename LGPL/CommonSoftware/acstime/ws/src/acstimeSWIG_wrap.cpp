@@ -1772,7 +1772,7 @@ static PyObject *_wrap_DurationHelper_add(PyObject *self, PyObject *args) {
         (arg1)->add((acstime::Duration const &)*arg2);
         
     }
-    catch(OverflowOrUnderflowExImpl &_e) {
+    catch(ACSTimeError::OverflowOrUnderflowExImpl &_e) {
         {
             PyErr_SetString(PyExc_RuntimeError,"OverflowOrUnderflowExImpl");
             SWIG_fail;
@@ -1831,7 +1831,7 @@ static PyObject *_wrap_DurationHelper_subtract(PyObject *self, PyObject *args) {
         (arg1)->subtract((acstime::Duration const &)*arg2);
         
     }
-    catch(OverflowOrUnderflowExImpl &_e) {
+    catch(ACSTimeError::OverflowOrUnderflowExImpl &_e) {
         {
             PyErr_SetString(PyExc_RuntimeError,"OverflowOrUnderflowExImpl");
             SWIG_fail;
@@ -1938,7 +1938,7 @@ static PyObject *_wrap_DurationHelper_multiply(PyObject *self, PyObject *args) {
         (arg1)->multiply((unsigned long long const &)*arg2);
         
     }
-    catch(OverflowOrUnderflowExImpl &_e) {
+    catch(ACSTimeError::OverflowOrUnderflowExImpl &_e) {
         {
             PyErr_SetString(PyExc_RuntimeError,"OverflowOrUnderflowExImpl");
             SWIG_fail;
@@ -2041,7 +2041,7 @@ static PyObject *_wrap_DurationHelper_toString(PyObject *self, PyObject *args) {
         result = (char *)(arg1->toString((char const *)arg2)).c_str();
         
     }
-    catch(ArgErrorExImpl &_e) {
+    catch(ACSTimeError::ArgErrorExImpl &_e) {
         {
             PyErr_SetString(PyExc_RuntimeError,"ArgErrorExImpl");
             SWIG_fail;
@@ -2069,7 +2069,7 @@ static PyObject *_wrap_DurationHelper_fromString(PyObject *self, PyObject *args)
         (arg1)->fromString((char const *)arg2);
         
     }
-    catch(ArgErrorExImpl &_e) {
+    catch(ACSTimeError::ArgErrorExImpl &_e) {
         {
             PyErr_SetString(PyExc_RuntimeError,"ArgErrorExImpl");
             SWIG_fail;
@@ -3148,7 +3148,7 @@ static PyObject *_wrap_EpochHelper_add(PyObject *self, PyObject *args) {
         (arg1)->add((acstime::Duration const &)*arg2);
         
     }
-    catch(OverflowOrUnderflowExImpl &_e) {
+    catch(ACSTimeError::OverflowOrUnderflowExImpl &_e) {
         {
             PyErr_SetString(PyExc_RuntimeError,"OverflowOrUnderflowExImpl");
             SWIG_fail;
@@ -3181,7 +3181,7 @@ static PyObject *_wrap_EpochHelper_subtract(PyObject *self, PyObject *args) {
         (arg1)->subtract((acstime::Duration const &)*arg2);
         
     }
-    catch(OverflowOrUnderflowExImpl &_e) {
+    catch(ACSTimeError::OverflowOrUnderflowExImpl &_e) {
         {
             PyErr_SetString(PyExc_RuntimeError,"OverflowOrUnderflowExImpl");
             SWIG_fail;
@@ -3278,7 +3278,7 @@ static PyObject *_wrap_EpochHelper_toString(PyObject *self, PyObject *args) {
         result = (char *)(arg1->toString((acstime::TimeSystem )arg2,(char const *)arg3,arg4,arg5).c_str());
         
     }
-    catch(ArgErrorExImpl &_e) {
+    catch(ACSTimeError::ArgErrorExImpl &_e) {
         {
             PyErr_SetString(PyExc_RuntimeError,"ArgErrorExImpl");
             SWIG_fail;
@@ -3307,7 +3307,7 @@ static PyObject *_wrap_EpochHelper_fromString(PyObject *self, PyObject *args) {
         (arg1)->fromString((acstime::TimeSystem )arg2,(char const *)arg3);
         
     }
-    catch(ArgErrorExImpl &_e) {
+    catch(ACSTimeError::ArgErrorExImpl &_e) {
         {
             PyErr_SetString(PyExc_RuntimeError,"ArgErrorExImpl");
             SWIG_fail;

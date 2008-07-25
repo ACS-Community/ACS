@@ -21,7 +21,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: baciTestImpl.h,v 1.6 2008/03/26 14:18:29 acaproni Exp $"
+* "@(#) $Id: baciTestImpl.h,v 1.7 2008/07/25 07:49:27 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -46,14 +46,12 @@
 ///Include the smart pointer for properties
 #include <baciSmartPropertyPointer.h>
 
-using namespace baci;
-
 
 /**
  * A component for testing if baci sends alarms when a property goes out of range.
  * 
  */
-class BaciPropTest: public CharacteristicComponentImpl,     //Standard component superclass
+class BaciPropTest: public baci::CharacteristicComponentImpl,     //Standard component superclass
 			     public virtual POA_alarmsystemPropTest::BaciPropTest   //CORBA servant stub
 {
   public:

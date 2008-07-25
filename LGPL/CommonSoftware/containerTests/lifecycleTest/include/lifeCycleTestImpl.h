@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: lifeCycleTestImpl.h,v 1.1 2008/03/24 07:43:35 cparedes Exp $"
+* "@(#) $Id: lifeCycleTestImpl.h,v 1.2 2008/07/25 07:45:52 cparedes Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -47,9 +47,7 @@
  */
 #include <lifecycleTest_IFS.h>
  
-using namespace acscomponent;
-
-class TestLifeCycleComp: public virtual ACSComponentImpl,     //Component superclass
+class TestLifeCycleComp: public virtual acscomponent::ACSComponentImpl,     //Component superclass
 		  public POA_lifecycleTest::TestLifeCycleComp    //CORBA servant stub
 {    
   public:

@@ -22,8 +22,8 @@
 #include "baciROcommonImpl_T.i"
 
 template <ACS_RO_C> 
-ROdiscImpl<ACS_RO_TL>::ROdiscImpl(const ACE_CString& name, BACIComponent *component_p, DevIO<TM> *devIO, bool flagdeldevIO, int initalize) :
-    ROcommonImpl<ACS_RO_TL>(name, component_p, devIO, flagdeldevIO)
+baci::ROdiscImpl<ACS_RO_TL>::ROdiscImpl(const ACE_CString& name, BACIComponent *component_p, DevIO<TM> *devIO, bool flagdeldevIO, int initalize) :
+    baci::ROcommonImpl<ACS_RO_TL>(name, component_p, devIO, flagdeldevIO)
 /*,
     alarmSystemMonitor_mp(0)
 */
@@ -40,7 +40,7 @@ ROdiscImpl<ACS_RO_TL>::ROdiscImpl(const ACE_CString& name, BACIComponent *compon
 }
 
 template <ACS_RO_C> 
-ROdiscImpl<ACS_RO_TL>::ROdiscImpl(bool init, const ACE_CString& name, BACIComponent *component_p, DevIO<TM> *devIO, bool flagdeldevIO,  int initalize) :
+baci::ROdiscImpl<ACS_RO_TL>::ROdiscImpl(bool init, const ACE_CString& name, BACIComponent *component_p, DevIO<TM> *devIO, bool flagdeldevIO,  int initalize) :
     ROcommonImpl<ACS_RO_TL>(init, name, component_p, devIO, flagdeldevIO)/*,
 									   alarmSystemMonitor_mp(0)*/
 {
@@ -58,7 +58,7 @@ ROdiscImpl<ACS_RO_TL>::ROdiscImpl(bool init, const ACE_CString& name, BACICompon
 }//ROdiscImpl
 
 template <ACS_RO_C> 
-ROdiscImpl<ACS_RO_TL>::~ROdiscImpl()
+baci::ROdiscImpl<ACS_RO_TL>::~ROdiscImpl()
 {
 //TBD:    ACS_TRACE("baci::ROdiscImpl&lt;&gt;::~ROdiscImpl");
 /*
@@ -73,7 +73,7 @@ ROdiscImpl<ACS_RO_TL>::~ROdiscImpl()
 /* ---------------------- [ CORBA interface ] ---------------------- */
 
 template<ACS_RO_C>
-ACS::Subscription_ptr ROdiscImpl<ACS_RO_TL>::new_subscription_Alarm (TAlarm *cb,
+ACS::Subscription_ptr baci::ROdiscImpl<ACS_RO_TL>::new_subscription_Alarm (TAlarm *cb,
 					const ACS::CBDescIn & desc
 					)
   throw (CORBA::SystemException)

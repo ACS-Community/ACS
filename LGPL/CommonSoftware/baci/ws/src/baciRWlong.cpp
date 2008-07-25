@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciRWlong.cpp,v 1.93 2004/06/11 10:29:07 bjeram Exp $"
+* "@(#) $Id: baciRWlong.cpp,v 1.94 2008/07/25 07:29:52 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -30,7 +30,7 @@
 #include "baciRWlong.h"
 #include "baciRWcontImpl_T.i"
 
-template class RWcontImpl<ACS_RW_T(long, CORBA::Long)>;
+template class baci::RWcontImpl<ACS_RW_T(long, CORBA::Long)>;
 
 /*___oOo___*/
 

@@ -1,4 +1,4 @@
-/* @(#) $Id: acstimeDurationHelper.h,v 1.14 2005/08/29 08:35:50 vwang Exp $
+/* @(#) $Id: acstimeDurationHelper.h,v 1.15 2008/07/25 07:34:03 cparedes Exp $
  *
  * Copyright (C) 2001
  * Associated Universities, Inc. Washington DC, USA.
@@ -31,7 +31,6 @@
 #endif
 /* ----------------------------------------------------------------*/
 #include "acstimeTimeUtil.h"
-using namespace ACSTimeError;
 /* ----------------------------------------------------------------*/
 /** @file acstimeDurationHelper.h
  *  Header file for DurationHelper 
@@ -296,7 +295,7 @@ class DurationHelper : TimeUtil
        @endhtmlonly
      */
     void add(const acstime::Duration &duration) 
-	throw(OverflowOrUnderflowExImpl);
+	throw(ACSTimeError::OverflowOrUnderflowExImpl);
     
     /**
      * Adds the given <a href="../../idl/html/structacstime_1_1Duration.html">Duration</a> 
@@ -317,7 +316,7 @@ class DurationHelper : TimeUtil
        @endhtmlonly
      */
     void subtract(const acstime::Duration &duration) 
-	throw(OverflowOrUnderflowExImpl);
+	throw(ACSTimeError::OverflowOrUnderflowExImpl);
     
     /**
      * Subtracts the given <a href="../../idl/html/structacstime_1_1Duration.html">Duration</a>
@@ -358,7 +357,7 @@ class DurationHelper : TimeUtil
        @endhtmlonly
      */
     void multiply(const CORBA::ULong &multiplier) 
-	throw(OverflowOrUnderflowExImpl);
+	throw(ACSTimeError::OverflowOrUnderflowExImpl);
 
     /**
      * Multiplies this <a href="../../idl/html/structacstime_1_1Duration.html">Duration</a>
@@ -400,7 +399,7 @@ class DurationHelper : TimeUtil
        @endhtmlonly
      */
     std::string toString(const char *format)
-	throw(ArgErrorExImpl);
+	throw(ACSTimeError::ArgErrorExImpl);
     
     /**
      * Sets this <a href="../../idl/html/structacstime_1_1Duration.html">Duration</a>'s 
@@ -411,7 +410,7 @@ class DurationHelper : TimeUtil
        @endhtmlonly
      */
     void fromString(const char *duration)
-	throw(ArgErrorExImpl);
+	throw(ACSTimeError::ArgErrorExImpl);
 
     /**
      * Returns this <a href="../../idl/html/structacstime_1_1Duration.html">Duration</a>'s 
@@ -431,7 +430,7 @@ class DurationHelper : TimeUtil
   private:
     /* ----------------------------------------------------------------*/
     void m_toValue()
-	throw(OverflowOrUnderflowExImpl);
+	throw(ACSTimeError::OverflowOrUnderflowExImpl);
     
     void m_toAttributes();
       

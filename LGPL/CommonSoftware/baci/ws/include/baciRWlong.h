@@ -19,7 +19,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciRWlong.h,v 1.94 2006/09/01 02:20:54 cparedes Exp $"
+* "@(#) $Id: baciRWlong.h,v 1.95 2008/07/25 07:29:52 cparedes Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -47,7 +47,7 @@ namespace baci {
  *  @{
  * The Monitorlong class is an implementation of the ACS::Monitorlong IDL interface.
  */
-typedef  Monitor<ACS_MONITOR(long, CORBA::Long)> Monitorlong;
+typedef  baci::Monitor<ACS_MONITOR(long, CORBA::Long)> Monitorlong;
 /** @} */
 
 /** @defgroup RWlongTemplate RWlong Class
@@ -55,7 +55,7 @@ typedef  Monitor<ACS_MONITOR(long, CORBA::Long)> Monitorlong;
  *  @{
  * The RWlong class is an implementation of the ACS::RWlong IDL interface.
  */
-typedef  RWcontImpl<ACS_RW_T(long, CORBA::Long)> RWlong;
+typedef  baci::RWcontImpl<ACS_RW_T(long, CORBA::Long)> RWlong;
 /** @} */
 
  }; 

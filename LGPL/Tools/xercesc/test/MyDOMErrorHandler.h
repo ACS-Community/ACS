@@ -22,7 +22,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: MyDOMErrorHandler.h,v 1.1 2004/12/16 13:36:44 sharring Exp $"
+* "@(#) $Id: MyDOMErrorHandler.h,v 1.2 2008/07/25 07:52:19 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -40,7 +40,6 @@
 /** @file MyDOMErrorHandler.h */
 
 XERCES_CPP_NAMESPACE_USE
-using namespace std;
 
 /**
  * MyDOMErrorHandler class - class to handle DOM parsing errors

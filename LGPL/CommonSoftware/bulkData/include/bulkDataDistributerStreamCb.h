@@ -20,9 +20,6 @@
 
 #include "bulkDataDistributerImpl.h"
 
-using namespace std;
-using namespace ACSBulkDataError;
-
 class BulkDataDistributerStreamCb : public TAO_AV_Callback
 {
 

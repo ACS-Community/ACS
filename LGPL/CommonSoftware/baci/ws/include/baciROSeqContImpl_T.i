@@ -21,7 +21,7 @@
 #include "baciROcontImpl_T.i"
 
 template <ACS_RO_C> 
-ROSeqContImpl<ACS_RO_TL>::ROSeqContImpl(const ACE_CString& name, BACIComponent *component_p, DevIO<TM> *devIO, bool flagdeldevIO) :
+baci::ROSeqContImpl<ACS_RO_TL>::ROSeqContImpl(const ACE_CString& name, BACIComponent *component_p, DevIO<TM> *devIO, bool flagdeldevIO) :
     ROcontImpl<ACS_RO_TL>(false, name, component_p, devIO, flagdeldevIO),
     alarmSystemMonitor_mp(0)
 {
@@ -43,7 +43,7 @@ ROSeqContImpl<ACS_RO_TL>::ROSeqContImpl(const ACE_CString& name, BACIComponent *
 }
 
 template <ACS_RO_C> 
-ROSeqContImpl<ACS_RO_TL>::~ROSeqContImpl()
+baci::ROSeqContImpl<ACS_RO_TL>::~ROSeqContImpl()
 {
     ACS_TRACE("baci::ROSeqContImpl&lt;&gt;::~ROSeqContImpl");
     if (alarmSystemMonitor_mp) 
@@ -54,7 +54,7 @@ ROSeqContImpl<ACS_RO_TL>::~ROSeqContImpl()
 }
 
 template<ACS_RO_C>
-ACS::Subscription_ptr ROSeqContImpl<ACS_RO_TL>::new_subscription_Alarm (TAlarm *cb,
+ACS::Subscription_ptr baci::ROSeqContImpl<ACS_RO_TL>::new_subscription_Alarm (TAlarm *cb,
 					const ACS::CBDescIn & desc
 					)
     throw (CORBA::SystemException)

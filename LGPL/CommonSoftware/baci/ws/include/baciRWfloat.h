@@ -19,7 +19,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciRWfloat.h,v 1.3 2006/09/01 02:20:54 cparedes Exp $"
+* "@(#) $Id: baciRWfloat.h,v 1.4 2008/07/25 07:29:52 cparedes Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -48,7 +48,7 @@ namespace baci {
  *  @{
  * The Monitorfloat class is an implementation of the ACS::Monitorfloat IDL interface.
  */
-typedef  Monitor<ACS_MONITOR(float, CORBA::Float)> Monitorfloat;
+typedef  baci::Monitor<ACS_MONITOR(float, CORBA::Float)> Monitorfloat;
 /** @} */
 
 /** @defgroup RWfloatTemplate RWfloat Class
@@ -56,7 +56,7 @@ typedef  Monitor<ACS_MONITOR(float, CORBA::Float)> Monitorfloat;
  *  @{
  * The RWfloat class is an implementation of the ACS::RWfloat IDL interface.
  */
-typedef  RWcontImpl<ACS_RW_T(float, CORBA::Float)> RWfloat;
+typedef  baci::RWcontImpl<ACS_RW_T(float, CORBA::Float)> RWfloat;
 /** @} */
 
  }; 

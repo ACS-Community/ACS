@@ -14,7 +14,7 @@ using laserSource::AcsAlarmPublisher;
  * @param topicName the name of the topic for the notification channel which will 
  *        be used for communication with the laser alarm server.
  */
-AcsAlarmPublisher::AcsAlarmPublisher(string topicName)
+AcsAlarmPublisher::AcsAlarmPublisher(std::string topicName)
 { 
 	myLoggerSmartPtr = getLogger();
 	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "AcsAlarmPublisher::AcsAlarmPublisher(): entering.");

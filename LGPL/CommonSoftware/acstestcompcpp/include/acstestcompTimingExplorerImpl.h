@@ -2,9 +2,13 @@
 #define acstestcompImpl_h
 
 /*
- * "@(#) $Id: acstestcompTimingExplorerImpl.h,v 1.1 2006/09/28 16:02:57 gchiozzi Exp $"
+ * "@(#) $Id: acstestcompTimingExplorerImpl.h,v 1.2 2008/07/25 07:36:17 cparedes Exp $"
  *
  * $Log: acstestcompTimingExplorerImpl.h,v $
+ * Revision 1.2  2008/07/25 07:36:17  cparedes
+ * Removing use namespace from included files and updating
+ * the files where the use namespace was assumed
+ *
  * Revision 1.1  2006/09/28 16:02:57  gchiozzi
  * Added second test component.
  * Some cleanup and refactoring.
@@ -23,8 +27,6 @@
 
 #include <acstestcompS.h>
 #include <maciContainerServices.h>
-
-using namespace acscomponent;
 
 /**
  * Implementation class in CPP for the TimingExplorer

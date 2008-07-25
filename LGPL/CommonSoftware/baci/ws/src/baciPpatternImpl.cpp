@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciPpatternImpl.cpp,v 1.16 2006/09/01 02:20:54 cparedes Exp $"
+* "@(#) $Id: baciPpatternImpl.cpp,v 1.17 2008/07/25 07:29:52 cparedes Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -64,7 +64,7 @@ PpatternImpl::~PpatternImpl()
 bool PpatternImpl::readCharacteristics(CharacteristicModelImpl *model)
 {
     
-  DAONode* dao = model->getDAONode();
+  cdb::DAONode* dao = model->getDAONode();
   if (!dao)
       return false;
   

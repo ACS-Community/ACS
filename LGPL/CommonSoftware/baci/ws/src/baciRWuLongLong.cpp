@@ -27,7 +27,7 @@
 #include "baciRWuLongLong.h"
 #include "baciRWcontImpl_T.i"
 
-template class RWcontImpl<ACS_RW_T(uLongLong, ACS::uLongLong)>;
+template class baci::RWcontImpl<ACS_RW_T(uLongLong, ACS::uLongLong)>;
 
 /*___oOo___*/
 

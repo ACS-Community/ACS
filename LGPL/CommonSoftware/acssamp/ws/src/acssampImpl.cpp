@@ -17,7 +17,7 @@
  *License along with this library; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: acssampImpl.cpp,v 1.32 2008/03/13 18:07:28 blopez Exp $"
+ * "@(#) $Id: acssampImpl.cpp,v 1.33 2008/07/25 07:39:52 cparedes Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -30,7 +30,7 @@
 
 #include <vltPort.h>
 
-static char *rcsId="@(#) $Id: acssampImpl.cpp,v 1.32 2008/03/13 18:07:28 blopez Exp $";
+static char *rcsId="@(#) $Id: acssampImpl.cpp,v 1.33 2008/07/25 07:39:52 cparedes Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <Request.h>
@@ -73,7 +73,7 @@ ACSSampImpl::~ACSSampImpl()
 	for (unsigned int jj=0;jj<max_size;jj++)
 	    {
 
-	    list<CORBA::Object_ptr>::iterator i = component_list.begin();
+	    std::list<CORBA::Object_ptr>::iterator i = component_list.begin();
 	    
 	    acssamp::SampObj_var mySamp = acssamp::SampObj::_narrow(*i);
 	    if (!CORBA::is_nil(mySamp.in()))

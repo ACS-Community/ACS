@@ -20,7 +20,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsexmplFilterWheelImpl.h,v 1.5 2007/02/01 05:14:26 cparedes Exp $"
+* "@(#) $Id: acsexmplFilterWheelImpl.h,v 1.6 2008/07/25 07:37:04 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -41,8 +41,6 @@
 
 ///Import the smart pointer for the property
 #include <baciSmartPropertyPointer.h>
-
-using namespace baci;
 
 /** 
  * The description of each slots in the actual configuration
@@ -136,11 +134,11 @@ It also has three read-only properties: position, desc, slots.
  * as well as the CDB values are updated. 
  * 
  * @author <a href=mailto:acaproni@eso.org>Alessandro Caproni</a>,
- * @version "@(#) $Id: acsexmplFilterWheelImpl.h,v 1.5 2007/02/01 05:14:26 cparedes Exp $"
+ * @version "@(#) $Id: acsexmplFilterWheelImpl.h,v 1.6 2008/07/25 07:37:04 cparedes Exp $"
  */
-class acsexmpl_EXPORT FilterWheel: public CharacteristicComponentImpl,//Standard component superclass
+class acsexmpl_EXPORT FilterWheel: public baci::CharacteristicComponentImpl,//Standard component superclass
 	    public virtual POA_acsexmplFilterWheel::FilterWheel,//CORBA servant stub
-	    public ActionImplementator //Asynchronous method helper class
+	    public baci::ActionImplementator //Asynchronous method helper class
 {
   public:
     /**
@@ -288,12 +286,12 @@ class acsexmpl_EXPORT FilterWheel: public CharacteristicComponentImpl,//Standard
        <br><hr>
        @endhtmlonly
      */
-    virtual ActionRequest
+    virtual baci::ActionRequest
     invokeAction (int function,
-                  BACIComponent *cob_p, 
+                  baci::BACIComponent *cob_p, 
                   const int &callbackID,
                   const CBDescIn &descIn,
-                  BACIValue *value_p,
+                  baci::BACIValue *value_p,
                   Completion &completion,
                   CBDescOut &descOut);
 
@@ -321,11 +319,11 @@ class acsexmpl_EXPORT FilterWheel: public CharacteristicComponentImpl,//Standard
        <br><hr>
        @endhtmlonly
      */
-    virtual ActionRequest 
-    moveFilterAction (BACIComponent *cob_p, 
+    virtual baci::ActionRequest 
+    moveFilterAction (baci::BACIComponent *cob_p, 
 	       const int &callbackID,
 	       const CBDescIn &descIn, 
-	       BACIValue *value_p,
+	       baci::BACIValue *value_p,
 	       Completion &completion, 
 	       CBDescOut &descOut);
           
@@ -351,11 +349,11 @@ class acsexmpl_EXPORT FilterWheel: public CharacteristicComponentImpl,//Standard
        <br><hr>
        @endhtmlonly
      */
-    virtual ActionRequest 
-    moveSlotAction (BACIComponent *cob_p, 
+    virtual baci::ActionRequest 
+    moveSlotAction (baci::BACIComponent *cob_p, 
          const int &callbackID,
          const CBDescIn &descIn, 
-           BACIValue *value_p,
+           baci::BACIValue *value_p,
         Completion &completion, 
            CBDescOut &descOut);
     
@@ -381,11 +379,11 @@ class acsexmpl_EXPORT FilterWheel: public CharacteristicComponentImpl,//Standard
        <br><hr>
        @endhtmlonly
      */
-    virtual ActionRequest 
-    adjustAction (BACIComponent *cob_p, 
+    virtual baci::ActionRequest 
+    adjustAction (baci::BACIComponent *cob_p, 
 	       const int &callbackID,
 	       const CBDescIn &descIn, 
-	       BACIValue *value_p,
+	       baci::BACIValue *value_p,
 	       Completion &completion, 
 	       CBDescOut &descOut);
     /* --------------------- [ CORBA interface ] ----------------------*/
@@ -478,18 +476,18 @@ class acsexmpl_EXPORT FilterWheel: public CharacteristicComponentImpl,//Standard
     /**
      *  m_position_sp is the position of the wheel.
      */
-     SmartPropertyPointer<ROdouble> m_position_sp;
+     baci::SmartPropertyPointer<baci::ROdouble> m_position_sp;
 
     /**
      *  m_desc_sp is the description of the wheel.
      */
-     SmartPropertyPointer<ROstring> m_desc_sp;
+     baci::SmartPropertyPointer<baci::ROstring> m_desc_sp;
 
     /**
      * m_slots_sp is the number of available slots
      * in the wheel
      */
-    SmartPropertyPointer<ROlong>m_slots_sp;
+    baci::SmartPropertyPointer<baci::ROlong>m_slots_sp;
 
     /**
      * The array describing the actual configuration of the wheel:

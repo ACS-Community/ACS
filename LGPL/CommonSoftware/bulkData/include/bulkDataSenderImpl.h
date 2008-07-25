@@ -43,9 +43,6 @@
 
 #include "bulkDataSender.h"
 
-using namespace baci;
-using namespace maci;
-
 
 /** @file bulkDataSenderImpl.h 
  */
@@ -69,7 +66,7 @@ using namespace maci;
  */
 
 template<class TSenderCallback=BulkDataSenderDefaultCallback>
-class BulkDataSenderImpl : public CharacteristicComponentImpl,
+class BulkDataSenderImpl : public baci::CharacteristicComponentImpl,
 			   public virtual POA_bulkdata::BulkDataSender
 {    
   public:
@@ -97,10 +94,10 @@ class BulkDataSenderImpl : public CharacteristicComponentImpl,
      @endhtmlonly
     */
     virtual void connect(bulkdata::BulkDataReceiver_ptr receiverObj_p)
-	throw (CORBA::SystemException, AVConnectErrorEx);
+	throw (CORBA::SystemException, ACSBulkDataError::AVConnectErrorEx);
 
     virtual void disconnect()
-	throw (CORBA::SystemException, AVDisconnectErrorEx);
+	throw (CORBA::SystemException, ACSBulkDataError::AVDisconnectErrorEx);
 
 
     virtual AcsBulkdata::BulkDataSender<TSenderCallback> *getSender() 
@@ -117,7 +114,7 @@ class BulkDataSenderImpl : public CharacteristicComponentImpl,
      @endhtmlonly
     */
     virtual void startSend()
-	throw (CORBA::SystemException, AVStartSendErrorEx) =0;
+	throw (CORBA::SystemException, ACSBulkDataError::AVStartSendErrorEx) =0;
 
     /**
      *  Sends data to the Receiver calling the receive_frame() method on the Receiver side.
@@ -129,7 +126,7 @@ class BulkDataSenderImpl : public CharacteristicComponentImpl,
      @endhtmlonly
     */
     virtual void paceData()
-	throw (CORBA::SystemException, AVPaceDataErrorEx) =0;
+	throw (CORBA::SystemException, ACSBulkDataError::AVPaceDataErrorEx) =0;
 
     /** 
      *  Calls the Receiver handle_stop() method.
@@ -139,7 +136,7 @@ class BulkDataSenderImpl : public CharacteristicComponentImpl,
      @endhtmlonly
     */
     virtual void stopSend()
-	throw (CORBA::SystemException, AVStopSendErrorEx) =0;
+	throw (CORBA::SystemException, ACSBulkDataError::AVStopSendErrorEx) =0;
 
 
 

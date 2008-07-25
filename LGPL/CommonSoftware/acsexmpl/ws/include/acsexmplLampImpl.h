@@ -20,7 +20,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsexmplLampImpl.h,v 1.97 2007/02/01 05:14:26 cparedes Exp $"
+* "@(#) $Id: acsexmplLampImpl.h,v 1.98 2008/07/25 07:37:04 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -46,8 +46,6 @@
 
 ///Import the smart pointer for the property
 #include <baciSmartPropertyPointer.h>
-
-using namespace baci;
 
 /** @file acsexmplLampImpl.h
  */
@@ -108,11 +106,11 @@ has one read-write double property: brightness.
  * 
  * @author <a href=mailto:matej.sekoranja@ijs.si>Matej Sekoranja</a>,
  * Jozef Stefan Institute, Slovenia<br>
- * @version "@(#) $Id: acsexmplLampImpl.h,v 1.97 2007/02/01 05:14:26 cparedes Exp $"
+ * @version "@(#) $Id: acsexmplLampImpl.h,v 1.98 2008/07/25 07:37:04 cparedes Exp $"
  */
-class Lamp: public CharacteristicComponentImpl,
+class Lamp: public baci::CharacteristicComponentImpl,
 	    public virtual POA_acsexmplLamp::Lamp,
-	    public ActionImplementator
+	    public baci::ActionImplementator
 {
   public:
     /**
@@ -155,12 +153,12 @@ class Lamp: public CharacteristicComponentImpl,
        <br><hr>
        @endhtmlonly
      */
-    virtual ActionRequest 
+    virtual baci::ActionRequest 
     invokeAction (int function,
-		  BACIComponent *cob_p, 
+		  baci::BACIComponent *cob_p, 
 		  const int &callbackID, 
 		  const CBDescIn &descIn, 
-		  BACIValue *value_p, 
+		  baci::BACIValue *value_p, 
 		  Completion &completion, 
 		  CBDescOut &descOut);
     
@@ -186,11 +184,11 @@ class Lamp: public CharacteristicComponentImpl,
        <br><hr>
        @endhtmlonly
      */
-    virtual ActionRequest 
-    onAction (BACIComponent *cob_p, 
+    virtual baci::ActionRequest 
+    onAction (baci::BACIComponent *cob_p, 
 	      const int &callbackID,
 	      const CBDescIn &descIn, 
-	      BACIValue *value_p,
+	      baci::BACIValue *value_p,
 	      Completion &completion, 
 	      CBDescOut &descOut);
     
@@ -216,11 +214,11 @@ class Lamp: public CharacteristicComponentImpl,
        <br><hr>
        @endhtmlonly
      */
-    virtual ActionRequest 
-    offAction (BACIComponent *cob_p, 
+    virtual baci::ActionRequest 
+    offAction (baci::BACIComponent *cob_p, 
 	       const int &callbackID,
 	       const CBDescIn &descIn, 
-	       BACIValue *value_p,
+	       baci::BACIValue *value_p,
 	       Completion &completion, 
 	       CBDescOut &descOut);
     
@@ -279,7 +277,7 @@ class Lamp: public CharacteristicComponentImpl,
     /**
      *  m_brightness_sp is the lamp's setable brightness.
      */
-     SmartPropertyPointer<RWdouble> m_brightness_sp;
+     baci::SmartPropertyPointer<baci::RWdouble> m_brightness_sp;
 
     /**
      * ALMA C++ coding standards state copy operators should be disabled.

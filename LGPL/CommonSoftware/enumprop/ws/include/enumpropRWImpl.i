@@ -1,12 +1,12 @@
 /*******************************************************************************
 * E.S.O. - VLT project
 *
-* "@(#) $Id: enumpropRWImpl.i,v 1.55 2006/10/16 07:55:16 cparedes Exp $"
+* "@(#) $Id: enumpropRWImpl.i,v 1.56 2008/07/25 07:31:03 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
 * bjeram 2003-05-30 added intalization to default value for external DevIO
-* bjeram 2003-03-14 added BACIValue::NullValue as a parameter to constructor of Monitorpattern
+* bjeram 2003-03-14 added baci::BACIValue::NullValue as a parameter to constructor of baci::Monitorpattern
 * bjeram 2002-11-18 chnged to onchange monitor
 * bjeram 2002-07-08 fixed set_async and set_nonblocking
 * bjeram 2001-11-05 created 
@@ -18,11 +18,11 @@
 /*
 TODO
 CBpattern -> CBT
-Monitorpattern -> Monitor(T)
+baci::Monitorpattern -> Monitor(T)
 */
 
 template <ACS_ENUM_C>
-RWEnumImpl<ACS_ENUM_T(T), SK>::RWEnumImpl(const ACE_CString& name, BACIComponent* cob, DevIO<T> *devIO, bool flagdeldevIO) : 
+RWEnumImpl<ACS_ENUM_T(T), SK>::RWEnumImpl(const ACE_CString& name, baci::BACIComponent* cob, DevIO<T> *devIO, bool flagdeldevIO) : 
     CharacteristicModelImpl(name, cob->getCharacteristicModel()), 
     initialization_m(1), destroyed_m(false), reference_mp(CORBA::Object::_nil()), property_mp(0),
     historyStart_m(-1), historyTurnaround_m(false), m_enumLength(0)
@@ -49,8 +49,8 @@ RWEnumImpl<ACS_ENUM_T(T), SK>::RWEnumImpl(const ACE_CString& name, BACIComponent
     // create BACI property instance
     CORBA::Any tAny;
     tAny <<= default_value();
-    property_mp = new BACIProperty(name.c_str(), this, this,
-				  BACIValue(default_value(), tAny), cob);
+    property_mp = new baci::BACIProperty(name.c_str(), this, this,
+				  baci::BACIValue(default_value(), tAny), cob);
     if (!property_mp){
 	std::string procName="RWEnumImpl::RWEnumImpl(";
         procName+=name.c_str();
@@ -76,12 +76,12 @@ RWEnumImpl<ACS_ENUM_T(T), SK>::RWEnumImpl(const ACE_CString& name, BACIComponent
 	}
 
     ACE_CString_Vector recoveryMonitorsNames = 
-	BACIRecoveryManager::getInstance()->getObjectsStartingWith(name.c_str());
+	baci::BACIRecoveryManager::getInstance()->getObjectsStartingWith(name.c_str());
     if (recoveryMonitorsNames.size()>0)
 	{
 	for (ACE_CString_Vector::iterator i = recoveryMonitorsNames.begin();
 	     i != recoveryMonitorsNames.end(); i++) {
-	new Monitorpattern(i->c_str(), min_timer_trigger(), BACIValue::NullValue, property_mp);
+	new baci::Monitorpattern(i->c_str(), min_timer_trigger(), baci::BACIValue::NullValue, property_mp);
 	}
 	}
     state = (T)defaultValue_m;
@@ -176,13 +176,13 @@ void RWEnumImpl<ACS_ENUM_T(T), SK>::destroy()
 /* --------------- [ Action implementator interface ] -------------- */
 
 template <ACS_ENUM_C>
-ActionRequest  RWEnumImpl<ACS_ENUM_T(T), SK>::invokeAction(int function,
-		       BACIComponent* cob, const int& callbackID, 
-		       const CBDescIn& descIn, BACIValue* value, 
+baci::ActionRequest  RWEnumImpl<ACS_ENUM_T(T), SK>::invokeAction(int function,
+		       baci::BACIComponent* cob, const int& callbackID, 
+		       const CBDescIn& descIn, baci::BACIValue* value, 
 		       Completion& completion, CBDescOut& descOut)
 {
     CompletionImpl c;
-    ActionRequest req;
+    baci::ActionRequest req;
   // only one action
   // better implementation with array is possible
 
@@ -201,7 +201,7 @@ ActionRequest  RWEnumImpl<ACS_ENUM_T(T), SK>::invokeAction(int function,
       req = decrementAction(cob, callbackID, descIn, value, c, descOut);
 */
       default:
-      return reqDestroy;
+      return baci::reqDestroy;
     }
 
   if (c.isErrorFree())
@@ -210,7 +210,7 @@ ActionRequest  RWEnumImpl<ACS_ENUM_T(T), SK>::invokeAction(int function,
       }
   else
       {
-      completion = InvokeActionErrorCompletion(c,
+      completion = baciErrTypeProperty::InvokeActionErrorCompletion(c,
 					       __FILE__,
 					       __LINE__,
 					       "RWEnumImpl<>::invokeAction");
@@ -222,8 +222,8 @@ ActionRequest  RWEnumImpl<ACS_ENUM_T(T), SK>::invokeAction(int function,
 /* -------------- [ Property implementator interface ] -------------- */
 
 template <ACS_ENUM_C>
-void RWEnumImpl<ACS_ENUM_T(T), SK>::getValue(BACIProperty* property,
-		   BACIValue* value, 
+void RWEnumImpl<ACS_ENUM_T(T), SK>::getValue(baci::BACIProperty* property,
+		   baci::BACIValue* value, 
 		   Completion &completion,
 		   CBDescOut& descOut)
 {
@@ -273,8 +273,8 @@ void RWEnumImpl<ACS_ENUM_T(T), SK>::addValueToHistory(ACS::Time time, ACS::patte
 
 /// async. get value action implementation
 template <ACS_ENUM_C>
-ActionRequest RWEnumImpl<ACS_ENUM_T(T), SK>::getValueAction(BACIComponent* cob, const int& callbackID,
-				       const CBDescIn& descIn, BACIValue* value,
+baci::ActionRequest RWEnumImpl<ACS_ENUM_T(T), SK>::getValueAction(baci::BACIComponent* cob, const int& callbackID,
+				       const CBDescIn& descIn, baci::BACIValue* value,
 				       Completion& completion, CBDescOut& descOut)
 {
   ACE_UNUSED_ARG(cob);
@@ -290,20 +290,20 @@ ActionRequest RWEnumImpl<ACS_ENUM_T(T), SK>::getValueAction(BACIComponent* cob, 
       }
   else
       {
-      completion = CanNotGetValueCompletion(co, 
+      completion = baciErrTypeProperty::CanNotGetValueCompletion(co, 
 					    __FILE__, 
 					    __LINE__, 
 					    "RWEnumImpl<>::getValue");
       }//if-else
   // complete action requesting done invokation, 
   // otherwise return reqInvokeWorking and set descOut.estimated_timeout
-  return reqInvokeDone;
+  return baci::reqInvokeDone;
 }
 
 /// async. set value action implementation
 template <ACS_ENUM_C>
-ActionRequest RWEnumImpl<ACS_ENUM_T(T), SK>::setValueAction(BACIComponent* cob, const int& callbackID,
-			 const CBDescIn& descIn, BACIValue* value,
+baci::ActionRequest RWEnumImpl<ACS_ENUM_T(T), SK>::setValueAction(baci::BACIComponent* cob, const int& callbackID,
+			 const CBDescIn& descIn, baci::BACIValue* value,
 			 Completion& completion, CBDescOut& descOut)
 {
   ACE_UNUSED_ARG(cob);
@@ -319,20 +319,20 @@ ActionRequest RWEnumImpl<ACS_ENUM_T(T), SK>::setValueAction(BACIComponent* cob, 
       }
   else
       {
-      completion = CanNotSetValueCompletion(co, 
+      completion = baciErrTypeProperty::CanNotSetValueCompletion(co, 
 					    __FILE__, 
 					    __LINE__, 
 					    "RWEnumImpl<>::setValueAction");
       }
   // complete action requesting done invokation, 
   // otherwise return reqInvokeWorking and set descOut.estimated_timeout
-  return reqInvokeDone;
+  return baci::reqInvokeDone;
 }
 
 /// async. set value action implementation
 template <ACS_ENUM_C>
-void RWEnumImpl<ACS_ENUM_T(T), SK>::setValue(BACIProperty* property,
-		   BACIValue* value, 
+void RWEnumImpl<ACS_ENUM_T(T), SK>::setValue(baci::BACIProperty* property,
+		   baci::BACIValue* value, 
 		   Completion &completion,
 		   CBDescOut& descOut)
 {
@@ -362,7 +362,7 @@ template <ACS_ENUM_C>
 bool RWEnumImpl<ACS_ENUM_T(T), SK>::readCharacteristics()
 {
 
-  DAONode* dao = this->getDAONode();
+  cdb::DAONode* dao = this->getDAONode();
   if (!dao)
       return false;
   
@@ -495,7 +495,7 @@ T RWEnumImpl<ACS_ENUM_T(T), SK>::get_sync (ACSErr::Completion_out c
     CompletionImpl co;
 
     ACS::CBDescOut descOut;
-    BACIValue value(0.0);
+    baci::BACIValue value(0.0);
 
     getValue(property_mp, &value, co, descOut);
 
@@ -505,7 +505,7 @@ T RWEnumImpl<ACS_ENUM_T(T), SK>::get_sync (ACSErr::Completion_out c
 	}
     else
 	{
-	c = CanNotGetValueCompletion(co, 
+	c = baciErrTypeProperty::CanNotGetValueCompletion(co, 
 				     __FILE__, 
 				     __LINE__, 
 				     "RWEnumImpl&lt;&gt;::get_sync").returnCompletion(false);
@@ -520,7 +520,7 @@ void RWEnumImpl<ACS_ENUM_T(T), SK>::get_async (CBpattern* cb,
 		     )
   throw (CORBA::SystemException) 
 {
-  property_mp->getComponent()->registerAction(BACIValue::type_pattern, cb, 
+  property_mp->getComponent()->registerAction(baci::BACIValue::type_pattern, cb, 
 				       desc, this, 0);
 }
 
@@ -569,12 +569,12 @@ ACS::Monitorpattern_ptr RWEnumImpl<ACS_ENUM_T(T), SK>::create_monitor (CBpattern
   throw (CORBA::SystemException)
 {
 
-  Monitorpattern* monitor = new Monitorpattern(ACE_CString(property_mp->getName())+"_monitor",
+  baci::Monitorpattern* monitor = new baci::Monitorpattern(ACE_CString(property_mp->getName())+"_monitor",
 					     cb, desc, 
 					     default_timer_trigger(),
-					     BACIValue::NullValue,
+					     baci::BACIValue::NullValue,
 					     min_timer_trigger(),
-					     BACIValue::NullValue,
+					     baci::BACIValue::NullValue,
 					     property_mp);
 
   if (!monitor)
@@ -600,12 +600,12 @@ ACS::Monitor_ptr RWEnumImpl<ACS_ENUM_T(T), SK>::create_postponed_monitor (ACS::T
   throw (CORBA::SystemException)
 {
 
-  Monitorpattern* monitor = new Monitorpattern(ACE_CString(property_mp->getName())+"_monitor",
+  baci::Monitorpattern* monitor = new baci::Monitorpattern(ACE_CString(property_mp->getName())+"_monitor",
 					     cb, desc, 
 					     default_timer_trigger(),
-					       BACIValue::NullValue, 
+					       baci::BACIValue::NullValue, 
 					     min_timer_trigger(), 
-					       BACIValue::NullValue, 
+					       baci::BACIValue::NullValue, 
 					     property_mp,
 					     start_time);
   
@@ -689,7 +689,7 @@ ACSErr::Completion *  RWEnumImpl<ACS_ENUM_T(T), SK>::set_sync ( T val )  throw (
     CORBA::Any tAny;
     tAny <<= val;
 
-  BACIValue value((ACS::pattern)val, tAny);
+  baci::BACIValue value((ACS::pattern)val, tAny);
   ACS::CBDescOut descOut;
 
   setValue(property_mp, &value, co, descOut);
@@ -700,7 +700,7 @@ ACSErr::Completion *  RWEnumImpl<ACS_ENUM_T(T), SK>::set_sync ( T val )  throw (
       }
   else
       {
-      CanNotSetValueCompletion completion(co, 
+      baciErrTypeProperty::CanNotSetValueCompletion completion(co, 
 					  __FILE__, 
 					  __LINE__, 
 					  "RWEnumImpl&lt;&gt;::set_sync");
@@ -714,8 +714,8 @@ void RWEnumImpl<ACS_ENUM_T(T), SK>::set_async ( T val, ACS::CBvoid_ptr cb, const
 {
     CORBA::Any tAny;
     tAny <<= val;
-  BACIValue value((ACS::pattern)val, tAny);
-  property_mp->getComponent()->registerAction(BACIValue::type_null, cb, 
+  baci::BACIValue value((ACS::pattern)val, tAny);
+  property_mp->getComponent()->registerAction(baci::BACIValue::type_null, cb, 
 				       desc, this, SET_ACTION, value);
 }
 	
@@ -725,13 +725,13 @@ void RWEnumImpl<ACS_ENUM_T(T), SK>::set_nonblocking ( T val)  throw (CORBA::Syst
     ACSErr::CompletionImpl c;
     CORBA::Any tAny;
     tAny <<= val;
-    BACIValue value((ACS::pattern)val, tAny);
+    baci::BACIValue value((ACS::pattern)val, tAny);
     ACS::CBDescOut descOut;
 
     this->setValue(property_mp, &value, c, descOut);
     if (!c.isErrorFree())
 	{
-	CanNotSetValueCompletion completion(c, 
+	baciErrTypeProperty::CanNotSetValueCompletion completion(c, 
 					    __FILE__, 
 					    __LINE__, 
 					    "RWEnumImpl&lt;&gt;::set_nonblocking");

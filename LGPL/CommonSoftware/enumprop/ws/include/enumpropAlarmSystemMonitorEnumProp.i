@@ -3,21 +3,21 @@
 
 /*********************************** IMPLEMENTATION of AlarmSystemMonitorEnumProp */
 template<class T, class TPROP>
-AlarmSystemMonitorEnumProp<T, TPROP>::AlarmSystemMonitorEnumProp(TPROP * property, EventDispatcher * eventDispatcher) :
+baci::AlarmSystemMonitorEnumProp<T, TPROP>::AlarmSystemMonitorEnumProp(TPROP * property, EventDispatcher * eventDispatcher) :
     AlarmSystemMonitor<TPROP>(property, eventDispatcher)
 {
     ACS_TRACE("baci::AlarmSystemMonitorEnumProp&lt;&gt;::AlarmSystemMonitorEnumProp");
 }//AlarmSystemMonitorEnumProp
 
 template<class T, class TPROP>
-AlarmSystemMonitorEnumProp<T, TPROP>::~AlarmSystemMonitorEnumProp()
+baci::AlarmSystemMonitorEnumProp<T, TPROP>::~AlarmSystemMonitorEnumProp()
 {
     ACS_TRACE("baci::AlarmSystemMonitorEnumProp&lt;&gt;::~AlarmSystemMonitorEnumProp");
 }//~AlarmSystemMonitorEnumProp
 
 
 template<class T, class TPROP>
-void AlarmSystemMonitorEnumProp<T, TPROP>::check(BACIValue &val,
+void baci::AlarmSystemMonitorEnumProp<T, TPROP>::check(BACIValue &val,
 						 const ACSErr::Completion & c,
 						 const ACS::CBDescOut & desc )
 {

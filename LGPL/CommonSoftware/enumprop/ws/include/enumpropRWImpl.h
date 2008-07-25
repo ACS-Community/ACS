@@ -3,7 +3,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: enumpropRWImpl.h,v 1.44 2007/06/14 08:54:06 nbarriga Exp $"
+* "@(#) $Id: enumpropRWImpl.h,v 1.45 2008/07/25 07:31:03 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -26,10 +26,6 @@
 #include <baciErrTypeProperty.h>
 #include <baciCharacteristicModelImpl.h>
 
-
-using namespace baci;
-using namespace baciErrTypeProperty;
-
 #define HISTORY_SIZE 32
 
 
@@ -41,9 +37,9 @@ using namespace baciErrTypeProperty;
 template <ACS_ENUM_C>
 class RWEnumImpl: public virtual PortableServer::RefCountServantBase,
 		  public SK, 
-		  public CharacteristicModelImpl,
-		  public PropertyImplementator,
-		  public ActionImplementator 
+		  public baci::CharacteristicModelImpl,
+		  public baci::PropertyImplementator,
+		  public baci::ActionImplementator 
 {
 
 public:
@@ -54,7 +50,7 @@ public:
    * @param name property name (e.q. AMSMount:decliantion)
    * @param cob parent of the property
    */
-  RWEnumImpl(const ACE_CString& name, BACIComponent *cob, DevIO<T> *devIO=0, bool flagdeldevIO=false);
+  RWEnumImpl(const ACE_CString& name, baci::BACIComponent *cob, DevIO<T> *devIO=0, bool flagdeldevIO=false);
    
   /**
    * Destructor
@@ -81,7 +77,7 @@ public:
   /**
    * BACI Monitor instance accessor
    */
-  BACIProperty* getProperty() const 
+  baci::BACIProperty* getProperty() const 
   { 
     return property_mp;
   }
@@ -105,15 +101,15 @@ public:
   /***
    * Implementation of async. get_value method
    */
-  virtual ActionRequest getValueAction(BACIComponent* cob, const int& callbackID,
-							const CBDescIn& descIn, BACIValue* value,
+  virtual baci::ActionRequest getValueAction(baci::BACIComponent* cob, const int& callbackID,
+							const CBDescIn& descIn, baci::BACIValue* value,
 							Completion& completion, CBDescOut& descOut);
 
   /***
    * Implementation of async. set_value method
    */
-  virtual ActionRequest setValueAction(BACIComponent* cob, const int& callbackID,
-			       const CBDescIn& descIn, BACIValue* value,
+  virtual baci::ActionRequest setValueAction(baci::BACIComponent* cob, const int& callbackID,
+			       const CBDescIn& descIn, baci::BACIValue* value,
 			       Completion& completion, CBDescOut& descOut);
 
  /* --------------- [ Action implementator interface ] -------------- */
@@ -135,9 +131,9 @@ public:
    *  <li><b><i>reqDestroy</b></i> - destroy callback (callback should has been called already by function)
    * </ul>
    */
-  virtual ActionRequest invokeAction(int function,
-				     BACIComponent* cob, const int& callbackID, 
-				     const CBDescIn& descIn, BACIValue* value, 
+  virtual baci::ActionRequest invokeAction(int function,
+				     baci::BACIComponent* cob, const int& callbackID, 
+				     const CBDescIn& descIn, baci::BACIValue* value, 
 				     Completion& completion, CBDescOut& descOut);
 
   /* -------------- [ Property implementator interface ] -------------- */
@@ -149,8 +145,8 @@ public:
    * @param completion error handling structure
    * @param descOut callback descriptor
    */
-  virtual void getValue(BACIProperty* property,
-			BACIValue* value, 
+  virtual void getValue(baci::BACIProperty* property,
+			baci::BACIValue* value, 
 			Completion &completion,
 			CBDescOut& descOut);
 
@@ -164,8 +160,8 @@ public:
    * @param completion error handling structure
    * @param descOut callback descriptor
    */
-  virtual void setValue(BACIProperty* property,
-			BACIValue* value, 
+  virtual void setValue(baci::BACIProperty* property,
+			baci::BACIValue* value, 
 			Completion &completion,
 			CBDescOut& descOut);
 
@@ -373,8 +369,8 @@ private:
   /**
    * Definition of ActionFunction (member function of RW)
    */
-  /*  typedef ActionRequest (RWdouble::*ActionFunction)(BACIComponent* cob, const int& callbackID,
-						    const CBDescIn& descIn, BACIValue* value,
+  /*  typedef baci::ActionRequest (RWdouble::*ActionFunction)(baci::BACIComponent* cob, const int& callbackID,
+						    const CBDescIn& descIn, baci::BACIValue* value,
 						    Completion& completion, CBDescOut& descOut);
   */
   /// Initialization status
@@ -387,7 +383,7 @@ private:
   CORBA::Object_ptr reference_mp;
 
   /// BACI property
-  BACIProperty* property_mp;
+  baci::BACIProperty* property_mp;
 
   /// history value buffer
   T historyValue_m[HISTORY_SIZE];

@@ -1,5 +1,6 @@
 #include "bulkDataReceiver1CbNotif.h"
 
+using namespace ACSBulkDataError;
 BulkDataReceiver1CbNotif::BulkDataReceiver1CbNotif() : count1_m(0),count2_m(0)
 {
     ACS_TRACE("BulkDataReceiver1CbNotif::BulkDataReceiver1CbNotif");

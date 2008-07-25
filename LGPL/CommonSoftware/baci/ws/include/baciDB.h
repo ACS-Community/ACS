@@ -19,7 +19,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciDB.h,v 1.97 2006/09/01 02:20:54 cparedes Exp $"
+* "@(#) $Id: baciDB.h,v 1.98 2008/07/25 07:29:51 cparedes Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -47,7 +47,6 @@
 
 #include <cdb.h>
 
- using namespace cdb;
 namespace baci {
 
 class baci_EXPORT DBConnector
@@ -59,7 +58,7 @@ public:
   static bool initDB(const ACE_CString& dbPrefix, int argc = 0, char** argv = NULL, CORBA::ORB_ptr orb = CORBA::ORB::_nil())
   {
     dbPrefix_m = dbPrefix;
-    dbTable_mp = getDatabase(argc, argv, orb);
+    dbTable_mp = cdb::getDatabase(argc, argv, orb);
 
     return (dbTable_mp!=0);
   }
@@ -82,7 +81,7 @@ public:
   };
 
   /// Get CDB Table instance
-  static Table * getDBTable()
+  static cdb::Table * getDBTable()
   { 
     return dbTable_mp;
   }
@@ -164,7 +163,7 @@ private:
   static ACE_CString dbPrefix_m;
 
   /// CDB instance
-  static Table * dbTable_mp;
+  static cdb::Table * dbTable_mp;
   
     /**
      * ALMA C++ coding standards state assignment operators should be disabled.

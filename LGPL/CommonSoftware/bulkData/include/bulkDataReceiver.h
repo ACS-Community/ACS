@@ -45,9 +45,6 @@
 /** @file bulkDataReceiver.h  
  */
 
-using namespace std;
-using namespace ACSBulkDataError;
-
 namespace AcsBulkdata
 {  
     /** @defgroup BULKDATARECEIVERDOC Bulk Data Receiver
@@ -90,7 +87,7 @@ namespace AcsBulkdata
 	 @endhtmlonly
 	*/
 	void initialize()
-	    throw (AVInitErrorExImpl);
+	    throw (ACSBulkDataError::AVInitErrorExImpl);
 
 	/** Create single flow (TCP, A/V default port)
 	 *  @return void
@@ -99,7 +96,7 @@ namespace AcsBulkdata
 	 @endhtmlonly
 	*/
 	void createSingleFlow()
-	    throw (AVStreamEndpointErrorExImpl, AVFlowEndpointErrorExImpl);
+	    throw (ACSBulkDataError::AVStreamEndpointErrorExImpl, ACSBulkDataError::AVFlowEndpointErrorExImpl);
 
 	/** Create multiple flows (user defined)
 	 * @param fepsConfig
@@ -109,7 +106,7 @@ namespace AcsBulkdata
 	 @endhtmlonly
 	*/
 	void createMultipleFlows(const char *fepsConfig)
-	    throw (AVStreamEndpointErrorExImpl, AVInvalidFlowNumberExImpl, AVFlowEndpointErrorExImpl);
+	    throw (ACSBulkDataError::AVStreamEndpointErrorExImpl, ACSBulkDataError::AVInvalidFlowNumberExImpl, ACSBulkDataError::AVFlowEndpointErrorExImpl);
 
 	/** Get the receiver flow and sep configuration
 	 *  @return bulkdata::BulkDataReceiverConfig * 
@@ -118,7 +115,7 @@ namespace AcsBulkdata
 	 @endhtmlonly
 	*/
 	bulkdata::BulkDataReceiverConfig * getReceiverConfig()
-	    throw (AVReceiverConfigErrorExImpl);
+	    throw (ACSBulkDataError::AVReceiverConfigErrorExImpl);
 
 	/** Accessor to allocated receiver callback
 	 * @param ACE_CString 
@@ -129,7 +126,7 @@ namespace AcsBulkdata
 	 @endhtmlonly
 	*/
 	void getFlowCallback(ACE_CString &flowName, TReceiverCallback *&cb_p)
-	    throw (AVFlowEndpointErrorExImpl);
+	    throw (ACSBulkDataError::AVFlowEndpointErrorExImpl);
 
 	/** Accessor to allocated receiver callback
 	 * @param CORBA::ULong
@@ -140,7 +137,7 @@ namespace AcsBulkdata
 	 @endhtmlonly
 	*/
 	void getFlowCallback(CORBA::ULong flowNumber, TReceiverCallback *&cb_p)
-	    throw (AVInvalidFlowNumberExImpl, AVFlowEndpointErrorExImpl);
+	    throw (ACSBulkDataError::AVInvalidFlowNumberExImpl, ACSBulkDataError::AVFlowEndpointErrorExImpl);
 
 	/** Close the Receiver
 	 *  @return void
@@ -149,7 +146,7 @@ namespace AcsBulkdata
 	 @endhtmlonly
 	*/
 	void closeReceiver()
-	    throw (AVCloseReceiverErrorExImpl);
+	    throw (ACSBulkDataError::AVCloseReceiverErrorExImpl);
 
 	/** Get the names of the connected flows
 	 *  @return vector<string>
@@ -157,7 +154,7 @@ namespace AcsBulkdata
 	 <br><hr>
 	 @endhtmlonly
 	*/
-	vector<string> getFlowNames();
+	std::vector<std::string> getFlowNames();
 
 	/** Set receiver name in receiver callback
 	 *  @param ACE_CString
@@ -176,10 +173,10 @@ namespace AcsBulkdata
 	 @endhtmlonly
 	*/
 	void subscribeNotification(ACS::CBvoid_ptr notifCb)
-	    throw (AVNotificationMechanismErrorExImpl);
+	    throw (ACSBulkDataError::AVNotificationMechanismErrorExImpl);
 
 	void notifySender(const ACSErr::Completion& comp)
-	    throw (AVNotificationMechanismErrorExImpl);
+	    throw (ACSBulkDataError::AVNotificationMechanismErrorExImpl);
 
       private:
 
@@ -275,7 +272,7 @@ namespace AcsBulkdata
 
       public:
 	bulkdata::Connection checkFlowCallbacks()
-	    throw (AVFlowEndpointErrorExImpl);
+	    throw (ACSBulkDataError::AVFlowEndpointErrorExImpl);
 
 	bulkdata::Connection getSenderConnectionState()
 	    {

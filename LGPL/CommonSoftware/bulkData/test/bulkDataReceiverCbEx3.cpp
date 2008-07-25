@@ -1,5 +1,7 @@
 #include "bulkDataReceiverCbEx3.h"
 
+using namespace ACSBulkDataError;
+
 BulkDataReceiverCbEx3::BulkDataReceiverCbEx3() : count1_m(0), timeout_m(false)
 {
     ACS_TRACE("BulkDataReceiverCbEx3::BulkDataReceiverCbEx3"); 

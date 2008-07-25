@@ -16,7 +16,7 @@
 #ifndef LOKI_SINGLETON_INC_
 #define LOKI_SINGLETON_INC_
 
-// $Header: /diskb/tmp/stefano/project2/CVS/ACS/LGPL/Tools/loki/ws/include/lokiSingleton.h,v 1.3 2007/02/01 17:29:00 sharring Exp $
+// $Header: /diskb/tmp/stefano/project2/CVS/ACS/LGPL/Tools/loki/ws/include/lokiSingleton.h,v 1.4 2008/07/25 07:50:57 cparedes Exp $
 
 #include "lokiExport.h"
 #include "lokiThreads.h"
@@ -148,25 +148,23 @@ namespace Loki
     void SetLongevity(T* pDynObject, unsigned int longevity,
         Destroyer d)
     {
-        using namespace Private;
-
         // manage lifetime of stack manually
-        if(pTrackerArray==0)
-            pTrackerArray = new TrackerArray;
+        if(Private::pTrackerArray==0)
+            Private::pTrackerArray = new Private::TrackerArray;
 
         // automatically delete the ConcreteLifetimeTracker object when a exception is thrown
-        std::auto_ptr<LifetimeTracker> 
-            p( new ConcreteLifetimeTracker<T, Destroyer>(pDynObject, longevity, d) );
+        std::auto_ptr<Private::LifetimeTracker> 
+            p( new Private::ConcreteLifetimeTracker<T, Destroyer>(pDynObject, longevity, d) );
 
         // Find correct position
-        TrackerArray::iterator pos = std::upper_bound(
-            pTrackerArray->begin(), 
-            pTrackerArray->end(), 
+        Private::TrackerArray::iterator pos = std::upper_bound(
+            Private::pTrackerArray->begin(), 
+            Private::pTrackerArray->end(), 
             p.get(), 
-            LifetimeTracker::Compare);
+            Private::LifetimeTracker::Compare);
         
         // Insert the pointer to the ConcreteLifetimeTracker object into the queue
-        pTrackerArray->insert(pos, p.get());
+        Private::pTrackerArray->insert(pos, p.get());
         
         // nothing has thrown: don't delete the ConcreteLifetimeTracker object
         p.release();
@@ -181,8 +179,6 @@ namespace Loki
     void SetLongevity(T* pDynObject, unsigned int longevity,
         Destroyer d)
     {
-        using namespace Private;
-        
         TrackerArray pNewArray = static_cast<TrackerArray>(
                 std::realloc(pTrackerArray, 
                     sizeof(*pTrackerArray) * (elements + 1)));
@@ -897,7 +893,12 @@ namespace Loki                                                          \
 #endif // SINGLETON_INC_
 
 // $Log: lokiSingleton.h,v $
+// Revision 1.4  2008/07/25 07:50:57  cparedes
+// Removing use namespace from included files and updating
+// the files where the use namespace was assumed
+//
 // Revision 1.3  2007/02/01 17:29:00  sharring
+//
 // updating to newer version of loki library, with support for multi-threading enabled. manually renamed files to avoid name conflicts, by
 // prepending "loki" to the names of header files. also manually edited lokiThreads.h to #define LOKI_OBJECT_LEVEL_THREADING; this could
 // also be done with a compile FLAG, perhaps would be better.

@@ -21,7 +21,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: acscourseMount3Impl.h,v 1.2 2006/05/27 23:08:32 gchiozzi Exp $"
+* "@(#) $Id: acscourseMount3Impl.h,v 1.3 2008/07/25 07:46:46 cparedes Exp $"
 *
 */
 
@@ -42,8 +42,6 @@
  *  (i.e., acsexmplHelloWorld.idl) by CORBA.
  */
 #include <acscourseMountS.h>
-
-using namespace baci;
 
 
 /** @file acscourseMount3Impl.h
@@ -82,9 +80,9 @@ objfix(...). &nbsp;
  * The class Mount3 is a basic example of a component and simulates the behaviour of an antenna interface.
  * It provides one asynchronous methods: objfix.  The methods only writes the data into 
  * virtual properties.
- * @version "@(#) $Id: acscourseMount3Impl.h,v 1.2 2006/05/27 23:08:32 gchiozzi Exp $"
+ * @version "@(#) $Id: acscourseMount3Impl.h,v 1.3 2008/07/25 07:46:46 cparedes Exp $"
  */
-class Mount3Impl: public virtual CharacteristicComponentImpl,
+class Mount3Impl: public virtual baci::CharacteristicComponentImpl,
 		  public virtual POA_ACSCOURSE_MOUNT::Mount3
 {
   public:
@@ -172,22 +170,22 @@ class Mount3Impl: public virtual CharacteristicComponentImpl,
     /**
      *  m_cmdAz_p is the antenna's commanded azimuth
      */
-    SmartPropertyPointer<ROdouble> m_cmdAz_sp;
+    baci::SmartPropertyPointer<baci::ROdouble> m_cmdAz_sp;
 
     /**
      *  m_cmdEl_p is the antenna's commanded elevation
      */
-    SmartPropertyPointer<ROdouble> m_cmdEl_sp;
+    baci::SmartPropertyPointer<baci::ROdouble> m_cmdEl_sp;
 
     /**
      *  m_actAz_p is the antenna's actual azimuth
      */
-    SmartPropertyPointer<ROdouble> m_actAz_sp;
+    baci::SmartPropertyPointer<baci::ROdouble> m_actAz_sp;
 
     /**
      *  m_actEl_p is the antenna's actual elevation
      */
-    SmartPropertyPointer<ROdouble> m_actEl_sp;
+    baci::SmartPropertyPointer<baci::ROdouble> m_actEl_sp;
 
     /**
      * ALMA C++ coding standards state copy operators should be disabled.

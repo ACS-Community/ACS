@@ -4,7 +4,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciContainerImpl.h,v 1.53 2008/05/22 17:31:55 agrimstrup Exp $"
+* "@(#) $Id: maciContainerImpl.h,v 1.54 2008/07/25 07:32:36 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -48,7 +48,6 @@
 
 namespace maci {
 
- using namespace cdb;
 
 /**
  * Each DLL is expected to export a function with public name "ConstructComponentFunc",
@@ -98,7 +97,7 @@ class LibraryManager;
  *
  * @author <a href=mailto:matej.sekoranja@ijs.si>Matej Sekoranja</a>,
  * Jozef Stefan Institute, Slovenia<br>
- * @version "@(#) $Id: maciContainerImpl.h,v 1.53 2008/05/22 17:31:55 agrimstrup Exp $"
+ * @version "@(#) $Id: maciContainerImpl.h,v 1.54 2008/07/25 07:32:36 cparedes Exp $"
  */
 
 class maci_EXPORT ContainerImpl :
@@ -524,7 +523,7 @@ public:
   MACIServantManager * m_servant_mgr; 
 
   /// Database access
-  Table * m_database;
+  cdb::Table * m_database;
 
   // CORBA reference to the Container.
   maci::Container_var m_container_ref;

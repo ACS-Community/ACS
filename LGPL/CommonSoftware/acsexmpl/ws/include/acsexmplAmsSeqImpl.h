@@ -21,7 +21,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: acsexmplAmsSeqImpl.h,v 1.100 2007/02/01 05:14:26 cparedes Exp $"
+* "@(#) $Id: acsexmplAmsSeqImpl.h,v 1.101 2008/07/25 07:37:04 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -47,7 +47,6 @@
 #include <baciRWdoubleSeq.h>
 #include <baciROdoubleSeq.h>
 
-using namespace baci;
 
 /** @file acsexmplAmsSeqImpl.h
  */
@@ -117,9 +116,9 @@ using namespace baci;
  *  pointing model term.  An important thing to note is this example shows usage of property
  *  sequence types (i.e., ROdoubleSeq and RWdoubleSeq).
  *
- *  @version "@(#) $Id: acsexmplAmsSeqImpl.h,v 1.100 2007/02/01 05:14:26 cparedes Exp $"
+ *  @version "@(#) $Id: acsexmplAmsSeqImpl.h,v 1.101 2008/07/25 07:37:04 cparedes Exp $"
  */
-class AmsTestSeq: public CharacteristicComponentImpl,     //Standard component superclass
+class AmsTestSeq: public baci::CharacteristicComponentImpl,     //Standard component superclass
 		  public virtual POA_AMSSEQ::AmsTestSeq    //CORBA servant stub
 {
     
@@ -192,12 +191,12 @@ class AmsTestSeq: public CharacteristicComponentImpl,     //Standard component s
     /**
      * m_ROdoubleSeqPM_p is all the coefficients currently set.
      */
-    RWdoubleSeq *m_RWdoubleSeqPM_p;
+    baci::RWdoubleSeq *m_RWdoubleSeqPM_p;
 
     /**
      * m_RWdoubleSeq_p is all the coefficients that the client can set.
      */
-    ROdoubleSeq *m_ROdoubleSeqPM_p;
+    baci::ROdoubleSeq *m_ROdoubleSeqPM_p;
 
     /**
      * ALMA C++ coding standards state copy operators should be disabled.

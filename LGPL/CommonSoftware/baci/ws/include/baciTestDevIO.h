@@ -21,7 +21,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: baciTestDevIO.h,v 1.2 2006/10/18 08:14:16 bjeram Exp $"
+* "@(#) $Id: baciTestDevIO.h,v 1.3 2008/07/25 07:29:52 cparedes Exp $"
 */
 
 #ifndef __cplusplus
@@ -31,8 +31,6 @@
 ///Need the defition of the class to inherit from
 #include <baciDevIO.h>
 #include <iostream>
-
-using namespace baci;
 
 class TestDevIO : public DevIO<CORBA::Double>
 {

@@ -19,7 +19,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciCDBPropertySet.h,v 1.98 2007/10/04 11:23:50 bjeram Exp $"
+* "@(#) $Id: baciCDBPropertySet.h,v 1.99 2008/07/25 07:29:51 cparedes Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -284,7 +284,7 @@ class CDBPropertySet : public virtual POA_CosPropertyService::PropertySet
     /// POA Current
     PortableServer::Current_var poaCurrent_m;
 
-    typedef map<string, CharacteristicModelImpl*> CharacteristicModelImplMap;
+    typedef std::map<std::string, CharacteristicModelImpl*> CharacteristicModelImplMap;
     /// Map of characteristic models.
     CharacteristicModelImplMap modelMap;
 

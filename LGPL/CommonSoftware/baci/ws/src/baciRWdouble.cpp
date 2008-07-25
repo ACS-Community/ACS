@@ -20,7 +20,7 @@
 *
 * E.S.O. - ACS project
 *
-* "@(#) $Id: baciRWdouble.cpp,v 1.92 2005/03/14 13:11:03 bjeram Exp $"
+* "@(#) $Id: baciRWdouble.cpp,v 1.93 2008/07/25 07:29:52 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -39,7 +39,7 @@ template class PcommonImpl<ACS_P_T(double, CORBA::Double), POA_ACS::RWdouble>;
 template class PcontImpl<ACS_P_T(double, CORBA::Double), POA_ACS::RWdouble>;
 template class RWcommonImpl<ACS_RW_T(double, CORBA::Double)>;
 #endif
-template class RWcontImpl<ACS_RW_T(double, CORBA::Double)>;
+template class baci::RWcontImpl<ACS_RW_T(double, CORBA::Double)>;
 
 
 /*___oOo___*/

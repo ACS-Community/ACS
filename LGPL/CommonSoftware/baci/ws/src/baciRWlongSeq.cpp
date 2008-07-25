@@ -20,7 +20,7 @@
 *
 * E.S.O. - ACS project
 *
-* "@(#) $Id: baciRWlongSeq.cpp,v 1.92 2004/06/11 10:29:07 bjeram Exp $"
+* "@(#) $Id: baciRWlongSeq.cpp,v 1.93 2008/07/25 07:29:52 cparedes Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -30,7 +30,7 @@
 #include "baciRWlongSeq.h"
 #include "baciRWSeqContImpl_T.i"
 
-template class RWSeqContImpl<ACS_RW_SEQ_T(long, CORBA::Long)>;
+template class baci::RWSeqContImpl<ACS_RW_SEQ_T(long, CORBA::Long)>;
 
 /*___oOo___*/
 

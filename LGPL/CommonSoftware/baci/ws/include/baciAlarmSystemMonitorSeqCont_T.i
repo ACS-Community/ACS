@@ -1,15 +1,15 @@
 
 /*********************************** IMPLEMENTATION of AlarmSystemMonitorSeqCont */
 template<class T, class TPROP>
-AlarmSystemMonitorSeqCont<T, TPROP>::AlarmSystemMonitorSeqCont(TPROP * property, EventDispatcher * eventDispatcher) :
-    AlarmSystemMonitor<TPROP>(property, eventDispatcher)
+baci::AlarmSystemMonitorSeqCont<T, TPROP>::AlarmSystemMonitorSeqCont(TPROP * property, EventDispatcher * eventDispatcher) :
+    baci::AlarmSystemMonitor<TPROP>(property, eventDispatcher)
 {
     ACS_TRACE("baci::AlarmSystemMonitorSeqCont&lt;&gt;::AlarmSystemMonitorSeqCont");
     alarmsRaised_mp = 0;
 }//AlarmSystemMonitorSeqCont
 
 template<class T, class TPROP>
-AlarmSystemMonitorSeqCont<T, TPROP>::~AlarmSystemMonitorSeqCont()
+baci::AlarmSystemMonitorSeqCont<T, TPROP>::~AlarmSystemMonitorSeqCont()
 {
     ACS_TRACE("baci::AlarmSystemMonitorSeqCont&lt;&gt;::~AlarmSystemMonitorSeqCont");
     if (alarmsRaised_mp !=0)
@@ -22,7 +22,7 @@ AlarmSystemMonitorSeqCont<T, TPROP>::~AlarmSystemMonitorSeqCont()
 
 
 template<class T, class TPROP>
-void AlarmSystemMonitorSeqCont<T, TPROP>::check(BACIValue &val,
+void baci::AlarmSystemMonitorSeqCont<T, TPROP>::check(BACIValue &val,
 		const ACSErr::Completion & c,
 		const ACS::CBDescOut & desc)
 {

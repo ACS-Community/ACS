@@ -21,8 +21,8 @@
 #include "baciRWcontImpl_T.i"
 
 template <ACS_RW_C> 
-RWSeqContImpl<ACS_RW_TL>::RWSeqContImpl(const ACE_CString& name, BACIComponent *component_p, DevIO<TM> *devIO, bool flagdeldevIO) :
-    RWcontImpl<ACS_RW_TL>(false/* =not set intialize value*/, name, component_p, devIO, flagdeldevIO) 
+baci::RWSeqContImpl<ACS_RW_TL>::RWSeqContImpl(const ACE_CString& name, BACIComponent *component_p, DevIO<TM> *devIO, bool flagdeldevIO) :
+    baci::RWcontImpl<ACS_RW_TL>(false/* =not set intialize value*/, name, component_p, devIO, flagdeldevIO) 
 {
     ACS_TRACE("baci::RWSeqContImpl&lt;&gt;::RWSeqContImpl"); 
 
@@ -39,7 +39,7 @@ RWSeqContImpl<ACS_RW_TL>::RWSeqContImpl(const ACE_CString& name, BACIComponent *
 }
 
 template <ACS_RW_C> 
-void RWSeqContImpl<ACS_RW_TL>::setValue(BACIProperty* property,
+void baci::RWSeqContImpl<ACS_RW_TL>::setValue(BACIProperty* property,
 				   BACIValue* value, 
 				   Completion &completion,
 				   CBDescOut& descOut)
@@ -93,7 +93,7 @@ void RWSeqContImpl<ACS_RW_TL>::setValue(BACIProperty* property,
 }//setValue
 
 template <ACS_RW_C> 
-ActionRequest RWSeqContImpl<ACS_RW_TL>::incrementAction(BACIComponent* component_p, int callbackID,
+baci::ActionRequest baci::RWSeqContImpl<ACS_RW_TL>::incrementAction(BACIComponent* component_p, int callbackID,
 			  const CBDescIn& descIn, BACIValue* val,
 			  Completion& completion, CBDescOut& descOut)
 {
@@ -123,7 +123,7 @@ ActionRequest RWSeqContImpl<ACS_RW_TL>::incrementAction(BACIComponent* component
       }//if
 
   // otherwise something went wrong
-  completion = IncrementErrorCompletion(c,
+  completion = baciErrTypeProperty::IncrementErrorCompletion(c,
 					__FILE__,
 					__LINE__,
 					"baci::RWSeqContImpl&lt;&gt;::incrementAction");
@@ -137,7 +137,7 @@ ActionRequest RWSeqContImpl<ACS_RW_TL>::incrementAction(BACIComponent* component
 
 /// async. decrement value action implementation
 template <ACS_RW_C> 
-ActionRequest RWSeqContImpl<ACS_RW_TL>::decrementAction(BACIComponent* component_p, int callbackID,
+baci::ActionRequest baci::RWSeqContImpl<ACS_RW_TL>::decrementAction(BACIComponent* component_p, int callbackID,
 			  const CBDescIn& descIn, BACIValue* val,
 			  Completion& completion, CBDescOut& descOut)
 {
@@ -166,7 +166,7 @@ ActionRequest RWSeqContImpl<ACS_RW_TL>::decrementAction(BACIComponent* component
 	  }//if
       }//if
    // otherwise something went wrong
-   completion = DecrementErrorCompletion(c,
+   completion = baciErrTypeProperty::DecrementErrorCompletion(c,
 					 __FILE__,
 					 __LINE__,
 					 "baci::RWSeqContImpl&lt;&gt;::decrementAction");

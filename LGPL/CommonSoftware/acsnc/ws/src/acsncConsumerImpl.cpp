@@ -1,4 +1,4 @@
-/* @(#) $Id: acsncConsumerImpl.cpp,v 1.68 2006/09/01 02:20:54 cparedes Exp $
+/* @(#) $Id: acsncConsumerImpl.cpp,v 1.69 2008/07/25 07:35:19 cparedes Exp $
  *
  *    Implementation of abstract base class Consumer.
  *    ALMA - Atacama Large Millimiter Array
@@ -26,6 +26,7 @@
 #include <baciThread.h>
 #include <baciCORBA.h>
 #include <acscommonC.h>
+using namespace ACSErrTypeCommon;
 //-----------------------------------------------------------------------------
 namespace nc {
 //-----------------------------------------------------------------------------

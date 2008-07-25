@@ -21,7 +21,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: acsexmplDoorImpl.h,v 1.105 2007/02/01 05:14:26 cparedes Exp $"
+* "@(#) $Id: acsexmplDoorImpl.h,v 1.106 2008/07/25 07:37:04 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -55,8 +55,6 @@
 
 ///Include the acs thread header 
 #include <acsThread.h>
-
-using namespace baci;
 
 /** @file acsexmplDoorImpl.h
  */
@@ -154,11 +152,11 @@ respectively. &nbsp;This example has four properties and uses an ACS thread.
  *   - xxxAction() performs (asyncronously) the action and invokes the callback when finished.
  *  The Door::invokeAction method is called by the asynchronous dispatcher whenever there is a
  *  xxx pending action and it calls the corresponding xxxAction method.
- * @version "@(#) $Id: acsexmplDoorImpl.h,v 1.105 2007/02/01 05:14:26 cparedes Exp $"
+ * @version "@(#) $Id: acsexmplDoorImpl.h,v 1.106 2008/07/25 07:37:04 cparedes Exp $"
  */
-class Door: public CharacteristicComponentImpl,     //Standard component superclass
+class Door: public baci::CharacteristicComponentImpl,     //Standard component superclass
             public virtual POA_acsexmplBuilding::Door,    //CORBA servant stub
-            public ActionImplementator    //ACS class used for asynchronous methods
+            public baci::ActionImplementator    //ACS class used for asynchronous methods
 {
   friend void DoorThread::runLoop();
 
@@ -201,12 +199,12 @@ class Door: public CharacteristicComponentImpl,     //Standard component supercl
        <br><hr>
        @endhtmlonly
      */
-    virtual ActionRequest 
+    virtual baci::ActionRequest 
     invokeAction (int function,
-		  BACIComponent *component_p, 
+		  baci::BACIComponent *component_p, 
 		  const int &callbackID, 
 		  const CBDescIn &descIn, 
-		  BACIValue *value_p, 
+		  baci::BACIValue *value_p, 
 		  Completion &completion, 
 		  CBDescOut &descOut);
     
@@ -232,11 +230,11 @@ class Door: public CharacteristicComponentImpl,     //Standard component supercl
        <br><hr>
        @endhtmlonly
      */
-    virtual ActionRequest 
-    openAction (BACIComponent *component_p, 
+    virtual baci::ActionRequest 
+    openAction (baci::BACIComponent *component_p, 
 		const int &callbackID,
 		const CBDescIn &descIn, 
-		BACIValue *value_p,
+		baci::BACIValue *value_p,
 		Completion &completion, 
 		CBDescOut &descOut);
 
@@ -262,11 +260,11 @@ class Door: public CharacteristicComponentImpl,     //Standard component supercl
        <br><hr>
        @endhtmlonly
      */
-    virtual ActionRequest 
-    closeAction (BACIComponent *component_p, 
+    virtual baci::ActionRequest 
+    closeAction (baci::BACIComponent *component_p, 
 		 const int &callbackID,
 		 const CBDescIn &descIn, 
-		 BACIValue *value_p,
+		 baci::BACIValue *value_p,
 		 Completion &completion, 
 		 CBDescOut &descOut);
     
@@ -407,23 +405,23 @@ class Door: public CharacteristicComponentImpl,     //Standard component supercl
     /**
      *  m_ref_position_sp is the position the Door should be in 
      */
-     SmartPropertyPointer<RWdouble> m_ref_position_sp;
+     baci::SmartPropertyPointer<baci::RWdouble> m_ref_position_sp;
 
     /**
      *  m_position_sp is the Door's actual position
      */
-     SmartPropertyPointer<ROdouble> m_position_sp;
+     baci::SmartPropertyPointer<baci::ROdouble> m_position_sp;
 
     /**
      *  m_substate_sp is the state the door is currently in
      *  @see acsexmplDoorImpl.cpp
      */
-     SmartPropertyPointer<ROlong> m_substate_sp;
+     baci::SmartPropertyPointer<baci::ROlong> m_substate_sp;
 
     /**
      *  m_version_sp is the Door's current version 
      */
-     SmartPropertyPointer<ROstring> m_version_sp;
+     baci::SmartPropertyPointer<baci::ROstring> m_version_sp;
 
     /*
      * m_door_thread_p is the pointer to the DoorThread

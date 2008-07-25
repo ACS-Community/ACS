@@ -1,5 +1,7 @@
 #include "bulkDataSenderEx2Impl.h"
 
+using namespace ACSBulkDataError;
+
 BulkDataSenderEx2Impl::BulkDataSenderEx2Impl(const ACE_CString& name,ContainerServices* containerServices) :
     BulkDataSenderDefaultImpl(name,containerServices)
 {

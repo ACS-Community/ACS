@@ -1,7 +1,7 @@
 ////#include <baciTestAlarmClassImpl.h>
 #include <vltPort.h>
 
-static char *rcsId="@(#) $Id: baciTestAlarmClassImpl.cpp,v 1.1 2008/03/03 14:54:30 rcirami Exp $"; 
+static char *rcsId="@(#) $Id: baciTestAlarmClassImpl.cpp,v 1.2 2008/07/25 07:29:52 cparedes Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 
@@ -16,7 +16,7 @@ static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 #include <ACSErrTypeOK.h>
 #include <ACSErrTypeCommon.h>
 
-
+using namespace baci;
 
 /////////////////////////////////////////////////
 // MyROPatternProperty

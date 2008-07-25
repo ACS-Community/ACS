@@ -20,7 +20,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciCharacteristicComponentImpl.h,v 1.35 2007/02/13 11:59:29 bjeram Exp $"
+* "@(#) $Id: baciCharacteristicComponentImpl.h,v 1.36 2008/07/25 07:29:51 cparedes Exp $"
 *
 */
 
@@ -46,7 +46,6 @@
  * but allows namespace support for compilers that do not have it
  * natively (i.e., GCC 2.95 for VxWorks).
  */
- using namespace baci;
 
 /** @file baciCharacteristicComponentImpl.h
  *  This is the include file for CharacteristicComponent which is the 

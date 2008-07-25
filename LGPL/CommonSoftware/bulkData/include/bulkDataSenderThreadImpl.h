@@ -68,8 +68,6 @@
 //forward declaration
 class BulkDataSenderThreadImpl;
 
-using namespace ACS;
-
 class SenderThread : public ACS::Thread
 { 
   public:
@@ -104,18 +102,18 @@ class BulkDataSenderThreadImpl : public virtual BulkDataSenderDefaultImpl,
     virtual ~BulkDataSenderThreadImpl();
 
     virtual void startSend()
-	throw (CORBA::SystemException, AVStartSendErrorEx);
+	throw (CORBA::SystemException, ACSBulkDataError::AVStartSendErrorEx);
 
     virtual void paceData()
-	throw (CORBA::SystemException, AVPaceDataErrorEx);
+	throw (CORBA::SystemException, ACSBulkDataError::AVPaceDataErrorEx);
 
     virtual void stopSend()
-	throw (CORBA::SystemException, AVStopSendErrorEx);
+	throw (CORBA::SystemException, ACSBulkDataError::AVStopSendErrorEx);
 
   private:
 
     CORBA::ULong numberOfFlows;
-    vector<SenderThread*> thread_p;
+    std::vector<SenderThread*> thread_p;
 };
 
 #endif /*  _BULKDATA_SENDER_THREAD_IMPL_H_ */

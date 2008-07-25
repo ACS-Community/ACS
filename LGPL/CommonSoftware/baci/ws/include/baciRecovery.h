@@ -19,7 +19,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciRecovery.h,v 1.99 2008/06/03 09:13:56 bjeram Exp $"
+* "@(#) $Id: baciRecovery.h,v 1.100 2008/07/25 07:29:52 cparedes Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -45,7 +45,6 @@
 #include <vector>
 
 namespace baci {
- using namespace recovery;
 
 /**
  * Default file name of BACI recovery file
@@ -155,7 +154,7 @@ private:
    * Class which takes care of recovery data
    * @see RecoveryStore
    */
-  RecoveryStore* store_mp;
+  recovery::RecoveryStore* store_mp;
 
   /**
    * Static instance of BACIRecoveryManager

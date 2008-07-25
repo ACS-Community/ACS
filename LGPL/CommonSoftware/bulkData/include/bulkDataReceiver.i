@@ -15,7 +15,7 @@ AcsBulkdata::BulkDataReceiver<TReceiverCallback>::BulkDataReceiver() : closeRece
     if(recvConfig_p == 0)
 	{
 	ACS_SHORT_LOG((LM_ERROR,"BulkDataReceiver<>::BulkDataReceiver error creating BulkDataReceiverConfig"));
-	AVReceiverConfigErrorExImpl err = AVReceiverConfigErrorExImpl(__FILE__,__LINE__,"BulkDataReceiver::BulkDataReceiver");
+	ACSBulkDataError::AVReceiverConfigErrorExImpl err = ACSBulkDataError::AVReceiverConfigErrorExImpl(__FILE__,__LINE__,"BulkDataReceiver::BulkDataReceiver");
 	throw err;
 	}
 }
@@ -35,9 +35,9 @@ AcsBulkdata::BulkDataReceiver<TReceiverCallback>::~BulkDataReceiver()
 
 	CORBA::release(locNotifCb_p);
 	}
-    catch(AVCloseReceiverErrorExImpl &ex)
+    catch(ACSBulkDataError::AVCloseReceiverErrorExImpl &ex)
 	{
-	AVCloseReceiverErrorExImpl err = AVCloseReceiverErrorExImpl(ex,__FILE__,__LINE__,"BulkDataReceiver::~BulkDataReceiver");
+	ACSBulkDataError::AVCloseReceiverErrorExImpl err = ACSBulkDataError::AVCloseReceiverErrorExImpl(ex,__FILE__,__LINE__,"BulkDataReceiver::~BulkDataReceiver");
 	err.log(LM_ERROR);
 	}
     catch(...)
@@ -50,7 +50,7 @@ AcsBulkdata::BulkDataReceiver<TReceiverCallback>::~BulkDataReceiver()
 
 template<class TReceiverCallback>
 void AcsBulkdata::BulkDataReceiver<TReceiverCallback>::initialize()
-    throw (AVInitErrorExImpl)
+    throw (ACSBulkDataError::AVInitErrorExImpl)
 {
     ACE_TRACE("BulkDataReceiver<>::initialize");
 
@@ -60,13 +60,13 @@ void AcsBulkdata::BulkDataReceiver<TReceiverCallback>::initialize()
 	}
     catch(ACSErr::ACSbaseExImpl &ex)
 	{
-	AVInitErrorExImpl err = AVInitErrorExImpl(ex,__FILE__,__LINE__,"BulkDataReceiver::initialize");
+	ACSBulkDataError::AVInitErrorExImpl err = ACSBulkDataError::AVInitErrorExImpl(ex,__FILE__,__LINE__,"BulkDataReceiver::initialize");
 	throw err;
 	}
     catch(...)
 	{
 	ACSErrTypeCommon::UnknownExImpl ex = ACSErrTypeCommon::UnknownExImpl(__FILE__,__LINE__,"BulkDataReceiver::initialize");
-	AVInitErrorExImpl err = AVInitErrorExImpl(ex,__FILE__,__LINE__,"BulkDataReceiver::initialize");
+	ACSBulkDataError::AVInitErrorExImpl err = ACSBulkDataError::AVInitErrorExImpl(ex,__FILE__,__LINE__,"BulkDataReceiver::initialize");
 	throw err;
 	}
 }
@@ -74,7 +74,7 @@ void AcsBulkdata::BulkDataReceiver<TReceiverCallback>::initialize()
 
 template<class TReceiverCallback>
 void AcsBulkdata::BulkDataReceiver<TReceiverCallback>::createSingleFlow()
-    throw (AVStreamEndpointErrorExImpl, AVFlowEndpointErrorExImpl)
+    throw (ACSBulkDataError::AVStreamEndpointErrorExImpl, ACSBulkDataError::AVFlowEndpointErrorExImpl)
 {
     ACE_TRACE("BulkDataReceiver<>::createSingleFlow");
 
@@ -100,20 +100,20 @@ void AcsBulkdata::BulkDataReceiver<TReceiverCallback>::createSingleFlow()
 	const char  * locEntry = createFlowSpec(flowName,address);
 	fepsData[0] = CORBA::string_dup(locEntry);
 	}
-    catch(AVStreamEndpointErrorExImpl &ex)
+    catch(ACSBulkDataError::AVStreamEndpointErrorExImpl &ex)
 	{
-	AVStreamEndpointErrorExImpl err = AVStreamEndpointErrorExImpl(ex,__FILE__,__LINE__,"BulkDataReceiver::createSingleFlow");
+	ACSBulkDataError::AVStreamEndpointErrorExImpl err = ACSBulkDataError::AVStreamEndpointErrorExImpl(ex,__FILE__,__LINE__,"BulkDataReceiver::createSingleFlow");
 	throw err;
 	}
-    catch(AVFlowEndpointErrorExImpl &ex)
+    catch(ACSBulkDataError::AVFlowEndpointErrorExImpl &ex)
 	{
-	AVFlowEndpointErrorExImpl err = AVFlowEndpointErrorExImpl(ex,__FILE__,__LINE__,"BulkDataReceiver::createSingleFlow");
+	ACSBulkDataError::AVFlowEndpointErrorExImpl err = ACSBulkDataError::AVFlowEndpointErrorExImpl(ex,__FILE__,__LINE__,"BulkDataReceiver::createSingleFlow");
 	throw err;
 	}
     catch(...)
 	{
 	ACSErrTypeCommon::UnknownExImpl ex = ACSErrTypeCommon::UnknownExImpl(__FILE__,__LINE__,"BulkDataReceiver::createSingleFlow");
-	AVStreamEndpointErrorExImpl err = AVStreamEndpointErrorExImpl(ex,__FILE__,__LINE__,"BulkDataReceiver::createSingleFlow");
+	ACSBulkDataError::AVStreamEndpointErrorExImpl err = ACSBulkDataError::AVStreamEndpointErrorExImpl(ex,__FILE__,__LINE__,"BulkDataReceiver::createSingleFlow");
 	throw err;
 	}
 }
@@ -121,7 +121,7 @@ void AcsBulkdata::BulkDataReceiver<TReceiverCallback>::createSingleFlow()
 
 template<class TReceiverCallback>
 void AcsBulkdata::BulkDataReceiver<TReceiverCallback>::createMultipleFlows(const char *fepsConfig)
-    throw (AVStreamEndpointErrorExImpl, AVInvalidFlowNumberExImpl, AVFlowEndpointErrorExImpl)
+    throw (ACSBulkDataError::AVStreamEndpointErrorExImpl, ACSBulkDataError::AVInvalidFlowNumberExImpl, ACSBulkDataError::AVFlowEndpointErrorExImpl)
 {
     ACE_TRACE("BulkDataReceiver<>::createMultipleFlows");
 
@@ -154,20 +154,20 @@ void AcsBulkdata::BulkDataReceiver<TReceiverCallback>::createMultipleFlows(const
 	if(numOtherFeps > 19)
 	    {
 	    ACS_SHORT_LOG((LM_ERROR,"BulkDataReceiver<>::createMultipleFlows too many flows specified - maximum 19"));
-	    AVInvalidFlowNumberExImpl err = AVInvalidFlowNumberExImpl(__FILE__,__LINE__,"BulkDataReceiver::createMultipleFlows");
+	    ACSBulkDataError::AVInvalidFlowNumberExImpl err = ACSBulkDataError::AVInvalidFlowNumberExImpl(__FILE__,__LINE__,"BulkDataReceiver::createMultipleFlows");
 	    throw err;	
 	    }
 
 	fepsData.length(numOtherFeps);
 
 	char hostName[255];
-	string strAddressToken;
+	std::string strAddressToken;
 	for(int j = 0; j < numOtherFeps; j++)
 	    {
 	    strAddressToken = addressToken[j];
-	    if(strAddressToken.find("${HOST}",0) != string::npos)
+	    if(strAddressToken.find("${HOST}",0) != std::string::npos)
 		{
-		if(strAddressToken.find(":",0) != string::npos)		  
+		if(strAddressToken.find(":",0) != std::string::npos)		  
 		    {
 		    ACE_OS::hostname(hostName, sizeof(hostName));
 		    strAddressToken.replace(4,7,hostName);
@@ -193,25 +193,25 @@ void AcsBulkdata::BulkDataReceiver<TReceiverCallback>::createMultipleFlows(const
 	    fepsData[j] = CORBA::string_dup(locEntry);
 	    }
 	}
-    catch(AVStreamEndpointErrorExImpl &ex)
+    catch(ACSBulkDataError::AVStreamEndpointErrorExImpl &ex)
 	{
-	AVStreamEndpointErrorExImpl err = AVStreamEndpointErrorExImpl(ex,__FILE__,__LINE__,"BulkDataReceiver::createMultipleFlows");
+	ACSBulkDataError::AVStreamEndpointErrorExImpl err = ACSBulkDataError::AVStreamEndpointErrorExImpl(ex,__FILE__,__LINE__,"BulkDataReceiver::createMultipleFlows");
 	throw err;
 	}
-    catch(AVInvalidFlowNumberExImpl &ex)
+    catch(ACSBulkDataError::AVInvalidFlowNumberExImpl &ex)
 	{
-	AVInvalidFlowNumberExImpl err = AVInvalidFlowNumberExImpl(ex,__FILE__,__LINE__,"BulkDataReceiver::createMultipleFlows");
+	ACSBulkDataError::AVInvalidFlowNumberExImpl err = ACSBulkDataError::AVInvalidFlowNumberExImpl(ex,__FILE__,__LINE__,"BulkDataReceiver::createMultipleFlows");
 	throw err;
 	}
-    catch(AVFlowEndpointErrorExImpl &ex)
+    catch(ACSBulkDataError::AVFlowEndpointErrorExImpl &ex)
 	{
-	AVFlowEndpointErrorExImpl err = AVFlowEndpointErrorExImpl(ex,__FILE__,__LINE__,"BulkDataReceiver::createMultipleFlows");
+	ACSBulkDataError::AVFlowEndpointErrorExImpl err = ACSBulkDataError::AVFlowEndpointErrorExImpl(ex,__FILE__,__LINE__,"BulkDataReceiver::createMultipleFlows");
 	throw err;
 	}
     catch(...)
 	{
 	ACSErrTypeCommon::UnknownExImpl ex = ACSErrTypeCommon::UnknownExImpl(__FILE__,__LINE__,"BulkDataReceiver::createMultipleFlows");
-	AVStreamEndpointErrorExImpl err = AVStreamEndpointErrorExImpl(ex,__FILE__,__LINE__,"BulkDataReceiver::createMultipleFlows");
+	ACSBulkDataError::AVStreamEndpointErrorExImpl err = ACSBulkDataError::AVStreamEndpointErrorExImpl(ex,__FILE__,__LINE__,"BulkDataReceiver::createMultipleFlows");
 	throw err;
 	}
 }
@@ -219,7 +219,7 @@ void AcsBulkdata::BulkDataReceiver<TReceiverCallback>::createMultipleFlows(const
 
 template<class TReceiverCallback>
 bulkdata::BulkDataReceiverConfig * AcsBulkdata::BulkDataReceiver<TReceiverCallback>::getReceiverConfig()
-    throw (AVReceiverConfigErrorExImpl)
+    throw (ACSBulkDataError::AVReceiverConfigErrorExImpl)
 {
     ACS_TRACE("BulkDataReceiver<>::getReceiverConfig");
 
@@ -230,7 +230,7 @@ bulkdata::BulkDataReceiverConfig * AcsBulkdata::BulkDataReceiver<TReceiverCallba
 	if(recvConfigLoc_p == 0)
 	    {
 	    ACS_SHORT_LOG((LM_ERROR,"BulkDataReceiver<>::getReceiverConfig error creating BulkDataReceiverConfig"));
-	    AVReceiverConfigErrorExImpl err = AVReceiverConfigErrorExImpl(__FILE__,__LINE__,"BulkDataReceiver::getReceiverConfig");
+	    ACSBulkDataError::AVReceiverConfigErrorExImpl err = ACSBulkDataError::AVReceiverConfigErrorExImpl(__FILE__,__LINE__,"BulkDataReceiver::getReceiverConfig");
 	    throw err;
 	    }
       
@@ -238,7 +238,7 @@ bulkdata::BulkDataReceiverConfig * AcsBulkdata::BulkDataReceiver<TReceiverCallba
 	if (CORBA::is_nil((recvConfig_p->streamendpoint_B).in()))
 	    {
 	    ACS_SHORT_LOG((LM_ERROR,"BulkDataReceiver<>::getReceiverConfig Stream Endpoint not initilaized"));
-	    AVReceiverConfigErrorExImpl err = AVReceiverConfigErrorExImpl(__FILE__,__LINE__,"BulkDataReceiver::getReceiverConfig");
+	    ACSBulkDataError::AVReceiverConfigErrorExImpl err = ACSBulkDataError::AVReceiverConfigErrorExImpl(__FILE__,__LINE__,"BulkDataReceiver::getReceiverConfig");
 	    throw err;
 	    }
 	else
@@ -254,21 +254,21 @@ bulkdata::BulkDataReceiverConfig * AcsBulkdata::BulkDataReceiver<TReceiverCallba
 	else
 	    {
 	    ACS_SHORT_LOG((LM_ERROR,"BulkDataReceiver<>::getReceiverConfig Flow Specifications empty"));
-	    AVReceiverConfigErrorExImpl err = AVReceiverConfigErrorExImpl(__FILE__,__LINE__,"BulkDataReceiver::getReceiverConfig");
+	    ACSBulkDataError::AVReceiverConfigErrorExImpl err = ACSBulkDataError::AVReceiverConfigErrorExImpl(__FILE__,__LINE__,"BulkDataReceiver::getReceiverConfig");
 	    throw err;
 	    }
 
 	recvConfigLoc_p->connectionState = recvConfig_p->connectionState;
 	}
-    catch(AVReceiverConfigErrorExImpl &ex)
+    catch(ACSBulkDataError::AVReceiverConfigErrorExImpl &ex)
 	{
-	AVReceiverConfigErrorExImpl err = AVReceiverConfigErrorExImpl(ex,__FILE__,__LINE__,"BulkDataReceiver::getReceiverConfig");
+	ACSBulkDataError::AVReceiverConfigErrorExImpl err = ACSBulkDataError::AVReceiverConfigErrorExImpl(ex,__FILE__,__LINE__,"BulkDataReceiver::getReceiverConfig");
 	throw err;
 	}
     catch(...)
 	{
 	ACSErrTypeCommon::UnknownExImpl ex = ACSErrTypeCommon::UnknownExImpl(__FILE__,__LINE__,"BulkDataReceiver::getReceiverConfig");
-	AVReceiverConfigErrorExImpl err = AVReceiverConfigErrorExImpl(ex,__FILE__,__LINE__,"BulkDataReceiver::getReceiverConfig");
+	ACSBulkDataError::AVReceiverConfigErrorExImpl err = ACSBulkDataError::AVReceiverConfigErrorExImpl(ex,__FILE__,__LINE__,"BulkDataReceiver::getReceiverConfig");
 	throw err;
 	}
     
@@ -278,7 +278,7 @@ bulkdata::BulkDataReceiverConfig * AcsBulkdata::BulkDataReceiver<TReceiverCallba
 
 template<class TReceiverCallback>
 void AcsBulkdata::BulkDataReceiver<TReceiverCallback>::getFlowCallback(ACE_CString &flowName, TReceiverCallback *&cb_p)
-    throw (AVFlowEndpointErrorExImpl)
+    throw (ACSBulkDataError::AVFlowEndpointErrorExImpl)
 {
     ACS_TRACE("BulkDataReceiver<>::getFlowCallback");   
 
@@ -289,7 +289,7 @@ void AcsBulkdata::BulkDataReceiver<TReceiverCallback>::getFlowCallback(ACE_CStri
 	if(fep == 0)
 	    {
 	    ACS_SHORT_LOG((LM_ERROR,"BulkDataReceiver<>::getFlowCallback Flow End Point null"));
-	    AVFlowEndpointErrorExImpl err = AVFlowEndpointErrorExImpl(__FILE__,__LINE__,"BulkDataReceiver::getFlowCallback");
+	    ACSBulkDataError::AVFlowEndpointErrorExImpl err = ACSBulkDataError::AVFlowEndpointErrorExImpl(__FILE__,__LINE__,"BulkDataReceiver::getFlowCallback");
 	    throw err;
 	    }
 	else
@@ -301,27 +301,27 @@ void AcsBulkdata::BulkDataReceiver<TReceiverCallback>::getFlowCallback(ACE_CStri
 		//cb_p = 0;
 		// To be verified what do to here
 		ACS_SHORT_LOG((LM_ERROR,"BulkDataReceiver<>::getFlowCallback Flow End Point null"));
-		AVFlowEndpointErrorExImpl err = AVFlowEndpointErrorExImpl(__FILE__,__LINE__,"BulkDataReceiver::getFlowCallback");
+		ACSBulkDataError::AVFlowEndpointErrorExImpl err = ACSBulkDataError::AVFlowEndpointErrorExImpl(__FILE__,__LINE__,"BulkDataReceiver::getFlowCallback");
 		throw err;
 		} 
 	    else
 		cb_p = fep->getBulkDataCallback();
 	    /*if(cb_p == 0)
 	      {
-	      AVCallbackErrorExImpl err = AVCallbackErrorExImpl(__FILE__,__LINE__,"BulkDataReceiver::getFlowCallback");
+	      ACSBulkDataError::AVCallbackErrorExImpl err = ACSBulkDataError::AVCallbackErrorExImpl(__FILE__,__LINE__,"BulkDataReceiver::getFlowCallback");
 	      throw err;
 	      }*/
 	    }
 	}
-    catch(AVFlowEndpointErrorExImpl &ex)
+    catch(ACSBulkDataError::AVFlowEndpointErrorExImpl &ex)
 	{
-	AVFlowEndpointErrorExImpl err = AVFlowEndpointErrorExImpl(ex,__FILE__,__LINE__,"BulkDataReceiver::getFlowCallback");
+	ACSBulkDataError::AVFlowEndpointErrorExImpl err = ACSBulkDataError::AVFlowEndpointErrorExImpl(ex,__FILE__,__LINE__,"BulkDataReceiver::getFlowCallback");
 	throw err;
 	}
     catch(...)
 	{
 	ACSErrTypeCommon::UnknownExImpl ex = ACSErrTypeCommon::UnknownExImpl(__FILE__,__LINE__,"BulkDataReceiver::getFlowCallback");
-	AVFlowEndpointErrorExImpl err = AVFlowEndpointErrorExImpl(ex,__FILE__,__LINE__,"BulkDataReceiver::getFlowCallback");
+	ACSBulkDataError::AVFlowEndpointErrorExImpl err = ACSBulkDataError::AVFlowEndpointErrorExImpl(ex,__FILE__,__LINE__,"BulkDataReceiver::getFlowCallback");
 	throw err;
 	}
 }
@@ -329,7 +329,7 @@ void AcsBulkdata::BulkDataReceiver<TReceiverCallback>::getFlowCallback(ACE_CStri
 
 template<class TReceiverCallback>
 void AcsBulkdata::BulkDataReceiver<TReceiverCallback>::getFlowCallback(CORBA::ULong flowNumber, TReceiverCallback *&cb_p)
-    throw (AVInvalidFlowNumberExImpl, AVFlowEndpointErrorExImpl)
+    throw (ACSBulkDataError::AVInvalidFlowNumberExImpl, ACSBulkDataError::AVFlowEndpointErrorExImpl)
 {
     ACS_TRACE("BulkDataReceiver<>::getFlowCallback");   
 
@@ -341,19 +341,19 @@ void AcsBulkdata::BulkDataReceiver<TReceiverCallback>::getFlowCallback(CORBA::UL
 	CORBA::ULong dim = fepsData.length();
 	if(flowNumber < 1 || flowNumber > dim)
 	    {
-	    AVInvalidFlowNumberExImpl err = AVInvalidFlowNumberExImpl(__FILE__,__LINE__,"BulkDataReceiver::getFlowCallback");
+	    ACSBulkDataError::AVInvalidFlowNumberExImpl err = ACSBulkDataError::AVInvalidFlowNumberExImpl(__FILE__,__LINE__,"BulkDataReceiver::getFlowCallback");
 	    throw err;
 	    }
 	flowNumber--;
 
-	vector<string> vec = getFlowNames();
+	std::vector<std::string> vec = getFlowNames();
 	flowName = vec[flowNumber].c_str();
 
 	fepMap_m.find(flowName, fep);
 	if(fep == 0)
 	    {
 	    ACS_SHORT_LOG((LM_ERROR,"BulkDataReceiver<>::getFlowCallback Flow End Point null"));
-	    AVFlowEndpointErrorExImpl err = AVFlowEndpointErrorExImpl(__FILE__,__LINE__,"BulkDataReceiver::getFlowCallback");
+	    ACSBulkDataError::AVFlowEndpointErrorExImpl err = ACSBulkDataError::AVFlowEndpointErrorExImpl(__FILE__,__LINE__,"BulkDataReceiver::getFlowCallback");
 	    throw err;
 	    }
 	else
@@ -365,32 +365,32 @@ void AcsBulkdata::BulkDataReceiver<TReceiverCallback>::getFlowCallback(CORBA::UL
 		//cb_p = 0;
 		// To be verified what do to here
 		ACS_SHORT_LOG((LM_ERROR,"BulkDataReceiver<>::getFlowCallback Flow End Point null"));
-		AVFlowEndpointErrorExImpl err = AVFlowEndpointErrorExImpl(__FILE__,__LINE__,"BulkDataReceiver::getFlowCallback");
+		ACSBulkDataError::AVFlowEndpointErrorExImpl err = ACSBulkDataError::AVFlowEndpointErrorExImpl(__FILE__,__LINE__,"BulkDataReceiver::getFlowCallback");
 		throw err;
 		} 
 	    else
 		cb_p = fep->getBulkDataCallback();
 	    /*if(cb_p == 0)
 	      {
-	      AVCallbackErrorExImpl err = AVCallbackErrorExImpl(__FILE__,__LINE__,"BulkDataReceiver::getFlowCallback");
+	      ACSBulkDataError::AVCallbackErrorExImpl err = ACSBulkDataError::AVCallbackErrorExImpl(__FILE__,__LINE__,"BulkDataReceiver::getFlowCallback");
 	      throw err;
 	      }*/
 	    }
 	}	
-    catch(AVInvalidFlowNumberExImpl &ex)
+    catch(ACSBulkDataError::AVInvalidFlowNumberExImpl &ex)
 	{
-	AVInvalidFlowNumberExImpl err = AVInvalidFlowNumberExImpl(ex,__FILE__,__LINE__,"BulkDataReceiver::getFlowCallback");
+	ACSBulkDataError::AVInvalidFlowNumberExImpl err = ACSBulkDataError::AVInvalidFlowNumberExImpl(ex,__FILE__,__LINE__,"BulkDataReceiver::getFlowCallback");
 	throw err;
 	}
-    catch(AVFlowEndpointErrorExImpl &ex)
+    catch(ACSBulkDataError::AVFlowEndpointErrorExImpl &ex)
 	{
-	AVFlowEndpointErrorExImpl err = AVFlowEndpointErrorExImpl(ex,__FILE__,__LINE__,"BulkDataReceiver::getFlowCallback");
+	ACSBulkDataError::AVFlowEndpointErrorExImpl err = ACSBulkDataError::AVFlowEndpointErrorExImpl(ex,__FILE__,__LINE__,"BulkDataReceiver::getFlowCallback");
 	throw err;
 	}
     catch(...)
 	{
 	ACSErrTypeCommon::UnknownExImpl ex = ACSErrTypeCommon::UnknownExImpl(__FILE__,__LINE__,"BulkDataReceiver::getFlowCallback");
-	AVFlowEndpointErrorExImpl err = AVFlowEndpointErrorExImpl(ex,__FILE__,__LINE__,"BulkDataReceiver::getFlowCallback");
+	ACSBulkDataError::AVFlowEndpointErrorExImpl err = ACSBulkDataError::AVFlowEndpointErrorExImpl(ex,__FILE__,__LINE__,"BulkDataReceiver::getFlowCallback");
 	throw err;
 	}
 }
@@ -398,7 +398,7 @@ void AcsBulkdata::BulkDataReceiver<TReceiverCallback>::getFlowCallback(CORBA::UL
 
 template<class TReceiverCallback>
 void AcsBulkdata::BulkDataReceiver<TReceiverCallback>::closeReceiver()
-    throw (AVCloseReceiverErrorExImpl)
+    throw (ACSBulkDataError::AVCloseReceiverErrorExImpl)
 {
     ACE_TRACE("BulkDataReceiver<>::closeReceiver");
 
@@ -410,13 +410,13 @@ void AcsBulkdata::BulkDataReceiver<TReceiverCallback>::closeReceiver()
 	}
     catch(ACSErr::ACSbaseExImpl &ex)
 	{
-	AVCloseReceiverErrorExImpl err = AVCloseReceiverErrorExImpl(ex,__FILE__,__LINE__,"BulkDataReceiver::closeReceiver");
+	ACSBulkDataError::AVCloseReceiverErrorExImpl err = ACSBulkDataError::AVCloseReceiverErrorExImpl(ex,__FILE__,__LINE__,"BulkDataReceiver::closeReceiver");
 	throw err;
 	}
     catch(...)
 	{
 	ACSErrTypeCommon::UnknownExImpl ex = ACSErrTypeCommon::UnknownExImpl(__FILE__,__LINE__,"BulkDataReceiver::closeReceiver");
-	AVCloseReceiverErrorExImpl err = AVCloseReceiverErrorExImpl(ex,__FILE__,__LINE__,"BulkDataReceiver::closeReceiver");
+	ACSBulkDataError::AVCloseReceiverErrorExImpl err = ACSBulkDataError::AVCloseReceiverErrorExImpl(ex,__FILE__,__LINE__,"BulkDataReceiver::closeReceiver");
 	throw err;
 	}
 
@@ -425,11 +425,11 @@ void AcsBulkdata::BulkDataReceiver<TReceiverCallback>::closeReceiver()
 
 
 template<class TReceiverCallback>
-vector<string> AcsBulkdata::BulkDataReceiver<TReceiverCallback>::getFlowNames()
+std::vector<std::string> AcsBulkdata::BulkDataReceiver<TReceiverCallback>::getFlowNames()
 {
     ACE_TRACE("BulkDataReceiver<>::getFlowNames");
 
-    vector<string> flwNames;
+    std::vector<std::string> flwNames;
     ACE_CString flowname;
 
     for(CORBA::ULong i = 0; i < fepsData.length(); i++)
@@ -459,7 +459,7 @@ void AcsBulkdata::BulkDataReceiver<TReceiverCallback>::initPartB()
     if (result != 0)
 	{
 	ACS_SHORT_LOG((LM_ERROR,"BulkDataReceiver<>::initPartB reactiveStrategy failed"));
-	AVInitErrorExImpl err = AVInitErrorExImpl(__FILE__,__LINE__,"BulkDataReceiver::initPartB");
+	ACSBulkDataError::AVInitErrorExImpl err = ACSBulkDataError::AVInitErrorExImpl(__FILE__,__LINE__,"BulkDataReceiver::initPartB");
 	throw err;
 	}
 }
@@ -474,7 +474,7 @@ AVStreams::StreamEndPoint_B_ptr AcsBulkdata::BulkDataReceiver<TReceiverCallback>
     if(localSepB_p == 0)
 	{
 	ACS_SHORT_LOG((LM_ERROR,"BulkDataReceiver<>::createSepB Stream Endpoint null"));
-	AVStreamEndpointErrorExImpl err = AVStreamEndpointErrorExImpl(__FILE__,__LINE__,"BulkDataReceiver::createSepB");
+	ACSBulkDataError::AVStreamEndpointErrorExImpl err = ACSBulkDataError::AVStreamEndpointErrorExImpl(__FILE__,__LINE__,"BulkDataReceiver::createSepB");
 	throw err;
 	}
 
@@ -484,7 +484,7 @@ AVStreams::StreamEndPoint_B_ptr AcsBulkdata::BulkDataReceiver<TReceiverCallback>
     if (CORBA::is_nil(localSepObj_p.in()))
 	{
 	ACS_SHORT_LOG((LM_ERROR,"BulkDataReceiver<>::createSepB unable to activate Stream Endpoint"));
-	AVStreamEndpointErrorExImpl err = AVStreamEndpointErrorExImpl(__FILE__,__LINE__,"BulkDataReceiver::createSepB");
+	ACSBulkDataError::AVStreamEndpointErrorExImpl err = ACSBulkDataError::AVStreamEndpointErrorExImpl(__FILE__,__LINE__,"BulkDataReceiver::createSepB");
 	throw err;
 	}
 
@@ -501,7 +501,7 @@ AVStreams::FlowConsumer_ptr AcsBulkdata::BulkDataReceiver<TReceiverCallback>::cr
     if(localFepB_p == 0)
 	{
 	ACS_SHORT_LOG((LM_ERROR,"BulkDataReceiver<>::createFepConsumerB Flow Consumer null"));
-	AVFlowEndpointErrorExImpl err = AVFlowEndpointErrorExImpl(__FILE__,__LINE__,"BulkDataReceiver::createFepConsumerB");
+	ACSBulkDataError::AVFlowEndpointErrorExImpl err = ACSBulkDataError::AVFlowEndpointErrorExImpl(__FILE__,__LINE__,"BulkDataReceiver::createFepConsumerB");
 	throw err;
 	}
 
@@ -509,7 +509,7 @@ AVStreams::FlowConsumer_ptr AcsBulkdata::BulkDataReceiver<TReceiverCallback>::cr
     if (CORBA::is_nil(localFepObj_p.in()))
 	{
 	ACS_SHORT_LOG((LM_ERROR,"BulkDataReceiver<>::createFepConsumerB unable to activate Flow Consumer"));
-	AVFlowEndpointErrorExImpl err = AVFlowEndpointErrorExImpl(__FILE__,__LINE__,"BulkDataReceiver::createFepConsumerB");
+	ACSBulkDataError::AVFlowEndpointErrorExImpl err = ACSBulkDataError::AVFlowEndpointErrorExImpl(__FILE__,__LINE__,"BulkDataReceiver::createFepConsumerB");
 	throw err;
 	}
 
@@ -528,7 +528,7 @@ void AcsBulkdata::BulkDataReceiver<TReceiverCallback>::addFepToSep(AVStreams::St
     if(s1 == 0)
 	{
 	ACS_SHORT_LOG((LM_ERROR,"BulkDataReceiver<>::addFepToSep Flow Endpoint cannot be created"));
-	AVFlowEndpointErrorExImpl err = AVFlowEndpointErrorExImpl(__FILE__,__LINE__,"BulkDataReceiver::addFepToSep");
+	ACSBulkDataError::AVFlowEndpointErrorExImpl err = ACSBulkDataError::AVFlowEndpointErrorExImpl(__FILE__,__LINE__,"BulkDataReceiver::addFepToSep");
 	throw err;
 	}
 
@@ -581,7 +581,7 @@ void AcsBulkdata::BulkDataReceiver<TReceiverCallback>::deleteFepsB()
 	if(fep == 0)
 	    {
 	    closeReceiverFlag = true; //necessary to avoid container crash
-	    AVFlowEndpointErrorExImpl err = AVFlowEndpointErrorExImpl(__FILE__,__LINE__,"BulkDataReceiver<>::deleteFepsB");
+	    ACSBulkDataError::AVFlowEndpointErrorExImpl err = ACSBulkDataError::AVFlowEndpointErrorExImpl(__FILE__,__LINE__,"BulkDataReceiver<>::deleteFepsB");
 	    throw err;
 	    }
 	else
@@ -648,7 +648,7 @@ void AcsBulkdata::BulkDataReceiver<TReceiverCallback>::closeSocket()
 	if(fep == 0)
 	    {
 	    ACS_SHORT_LOG((LM_ERROR,"BulkDataReceiver::closeSocket Flow End Point null"));
-	    AVFlowEndpointErrorExImpl err = AVFlowEndpointErrorExImpl(__FILE__,__LINE__,"BulkDataReceiver::closeSocket");
+	    ACSBulkDataError::AVFlowEndpointErrorExImpl err = ACSBulkDataError::AVFlowEndpointErrorExImpl(__FILE__,__LINE__,"BulkDataReceiver::closeSocket");
 	    throw err;
 	    } 
 	else
@@ -657,7 +657,7 @@ void AcsBulkdata::BulkDataReceiver<TReceiverCallback>::closeSocket()
 	    if(cb_p == 0)
 		{
 		ACS_SHORT_LOG((LM_ERROR,"BulkDataReceiver::closeSocket callback null"));
-		AVCallbackErrorExImpl err = AVCallbackErrorExImpl(__FILE__,__LINE__,"BulkDataReceiver::closeSocket");
+		ACSBulkDataError::AVCallbackErrorExImpl err = ACSBulkDataError::AVCallbackErrorExImpl(__FILE__,__LINE__,"BulkDataReceiver::closeSocket");
 		throw err;
 		}
 	    else
@@ -715,7 +715,7 @@ void AcsBulkdata::BulkDataReceiver<TReceiverCallback>::setReceiverName(ACE_CStri
 	if(fep == 0)
 	    {
 	    ACS_SHORT_LOG((LM_ERROR,"BulkDataReceiver::setReceiverName Flow Endpoint %s not found",flowName.c_str()));
-	    AVFlowEndpointErrorExImpl err = AVFlowEndpointErrorExImpl(__FILE__,__LINE__,"BulkDataReceiver::setReceiverName");
+	    ACSBulkDataError::AVFlowEndpointErrorExImpl err = ACSBulkDataError::AVFlowEndpointErrorExImpl(__FILE__,__LINE__,"BulkDataReceiver::setReceiverName");
 	    throw err;
 	    } 
 	else
@@ -724,7 +724,7 @@ void AcsBulkdata::BulkDataReceiver<TReceiverCallback>::setReceiverName(ACE_CStri
 	    if(cb_p == 0)
 		{
 		ACS_SHORT_LOG((LM_ERROR,"BulkDataReceiver::setReceiverName callback null"));
-		AVCallbackErrorExImpl err = AVCallbackErrorExImpl(__FILE__,__LINE__,"BulkDataReceiver::setReceiverName");
+		ACSBulkDataError::AVCallbackErrorExImpl err = ACSBulkDataError::AVCallbackErrorExImpl(__FILE__,__LINE__,"BulkDataReceiver::setReceiverName");
 		throw err;
 		}
 	    else
@@ -736,7 +736,7 @@ void AcsBulkdata::BulkDataReceiver<TReceiverCallback>::setReceiverName(ACE_CStri
 
 template<class TReceiverCallback>
 void AcsBulkdata::BulkDataReceiver<TReceiverCallback>::subscribeNotification(ACS::CBvoid_ptr notifCb)
-    throw (AVNotificationMechanismErrorExImpl)
+    throw (ACSBulkDataError::AVNotificationMechanismErrorExImpl)
 {
     try
 	{
@@ -746,7 +746,7 @@ void AcsBulkdata::BulkDataReceiver<TReceiverCallback>::subscribeNotification(ACS
 	
 	ACE_CString flowName = "";
 	
-	vector<string> vecNames = getFlowNames();
+	std::vector<std::string> vecNames = getFlowNames();
 	for(CORBA::ULong i = 0; i < vecNames.size(); i++)
 	    {
 	    flowName = vecNames[i].c_str();
@@ -755,7 +755,7 @@ void AcsBulkdata::BulkDataReceiver<TReceiverCallback>::subscribeNotification(ACS
 	    if(cb == 0)
 		{
 		ACS_SHORT_LOG((LM_ERROR,"BulkDataReceiver<>::subscribeNotification callback null"));
-		AVCallbackErrorExImpl err = AVCallbackErrorExImpl(__FILE__,__LINE__,"BulkDataReceiver::subscribeNotification");
+		ACSBulkDataError::AVCallbackErrorExImpl err = ACSBulkDataError::AVCallbackErrorExImpl(__FILE__,__LINE__,"BulkDataReceiver::subscribeNotification");
 		throw err;
 		} 
 	    else
@@ -766,13 +766,13 @@ void AcsBulkdata::BulkDataReceiver<TReceiverCallback>::subscribeNotification(ACS
 	}
     catch(ACSErr::ACSbaseExImpl &ex)
 	{
-	AVNotificationMechanismErrorExImpl err = AVNotificationMechanismErrorExImpl(ex,__FILE__,__LINE__,"BulkDataReceiver::subscribeNotification");
+	ACSBulkDataError::AVNotificationMechanismErrorExImpl err = ACSBulkDataError::AVNotificationMechanismErrorExImpl(ex,__FILE__,__LINE__,"BulkDataReceiver::subscribeNotification");
 	throw err;	
 	}
     catch(...)
 	{
 	ACSErrTypeCommon::UnknownExImpl ex = ACSErrTypeCommon::UnknownExImpl(__FILE__,__LINE__,"BulkDataReceiver::subscribeNotification");
-	AVNotificationMechanismErrorExImpl err = AVNotificationMechanismErrorExImpl(ex,__FILE__,__LINE__,"BulkDataReceiver::subscribeNotification");
+	ACSBulkDataError::AVNotificationMechanismErrorExImpl err = ACSBulkDataError::AVNotificationMechanismErrorExImpl(ex,__FILE__,__LINE__,"BulkDataReceiver::subscribeNotification");
 	throw err;	
 	}
 }
@@ -780,7 +780,7 @@ void AcsBulkdata::BulkDataReceiver<TReceiverCallback>::subscribeNotification(ACS
 
 template<class TReceiverCallback>
 void AcsBulkdata::BulkDataReceiver<TReceiverCallback>::notifySender(const ACSErr::Completion& comp)
-    throw (AVNotificationMechanismErrorExImpl)
+    throw (ACSBulkDataError::AVNotificationMechanismErrorExImpl)
 {
     CompletionImpl complImp = comp;
     complImp.log(LM_DEBUG);
@@ -793,8 +793,8 @@ void AcsBulkdata::BulkDataReceiver<TReceiverCallback>::notifySender(const ACSErr
     else
 	{
 	ACS_SHORT_LOG((LM_ERROR,"BulkDataReceiver<>::notifySender callback reference null"));
-	AVCallbackErrorExImpl ex = AVCallbackErrorExImpl(__FILE__,__LINE__,"BulkDataReceiver::notifySender");
-	AVNotificationMechanismErrorExImpl err = AVNotificationMechanismErrorExImpl(ex,__FILE__,__LINE__,"BulkDataReceiver::notifySender");
+	ACSBulkDataError::AVCallbackErrorExImpl ex = ACSBulkDataError::AVCallbackErrorExImpl(__FILE__,__LINE__,"BulkDataReceiver::notifySender");
+	ACSBulkDataError::AVNotificationMechanismErrorExImpl err = ACSBulkDataError::AVNotificationMechanismErrorExImpl(ex,__FILE__,__LINE__,"BulkDataReceiver::notifySender");
 	throw err;
 	}
 }
@@ -802,7 +802,7 @@ void AcsBulkdata::BulkDataReceiver<TReceiverCallback>::notifySender(const ACSErr
 
 template<class TReceiverCallback>
 bulkdata::Connection AcsBulkdata::BulkDataReceiver<TReceiverCallback>::checkFlowCallbacks()
-    throw (AVFlowEndpointErrorExImpl)
+    throw (ACSBulkDataError::AVFlowEndpointErrorExImpl)
 {
     bulkdata::Connection connState = bulkdata::READY;
 
@@ -822,7 +822,7 @@ bulkdata::Connection AcsBulkdata::BulkDataReceiver<TReceiverCallback>::checkFlow
 	    if(fep == 0)
 		{
 		ACS_SHORT_LOG((LM_ERROR,"BulkDataReceiver::checkFlowCallbacks Flow End Point null"));
-		AVFlowEndpointErrorExImpl err = AVFlowEndpointErrorExImpl(__FILE__,__LINE__,"BulkDataReceiver::checkFlowCallbacks");
+		ACSBulkDataError::AVFlowEndpointErrorExImpl err = ACSBulkDataError::AVFlowEndpointErrorExImpl(__FILE__,__LINE__,"BulkDataReceiver::checkFlowCallbacks");
 		throw err;
 		} 
 	    else

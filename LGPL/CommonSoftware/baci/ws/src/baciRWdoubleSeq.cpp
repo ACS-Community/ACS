@@ -20,7 +20,7 @@
 *
 * E.S.O. - ACS project
 *
-* "@(#) $Id: baciRWdoubleSeq.cpp,v 1.92 2004/06/11 10:29:07 bjeram Exp $"
+* "@(#) $Id: baciRWdoubleSeq.cpp,v 1.93 2008/07/25 07:29:52 cparedes Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -32,7 +32,7 @@
 #include "baciRWdoubleSeq.h"
 #include "baciRWSeqContImpl_T.i"
 
-template class RWSeqContImpl<ACS_RW_SEQ_T(double, CORBA::Double)>;
+template class baci::RWSeqContImpl<ACS_RW_SEQ_T(double, CORBA::Double)>;
 
 /*___oOo___*/
 

@@ -2,20 +2,20 @@
 /*********************************** IMPLEMENTATION of AlarmSystemMonitorDisc */
 
 template<class T, class TPROP>
-AlarmSystemMonitorDisc<T, TPROP>::AlarmSystemMonitorDisc(TPROP * property, EventDispatcher * eventDispatcher) :
-    AlarmSystemMonitor<TPROP>(property, eventDispatcher)
+baci::AlarmSystemMonitorDisc<T, TPROP>::AlarmSystemMonitorDisc(TPROP * property, EventDispatcher * eventDispatcher) :
+    baci::AlarmSystemMonitor<TPROP>(property, eventDispatcher)
 {
     ACS_TRACE("baci::AlarmSystemMonitorDisc&lt;&gt;::AlarmSystemMonitorDisc");
 }//AlarmSystemMonitorDisc
 
 template<class T, class TPROP>
-AlarmSystemMonitorDisc<T, TPROP>::~AlarmSystemMonitorDisc()
+baci::AlarmSystemMonitorDisc<T, TPROP>::~AlarmSystemMonitorDisc()
 {
     ACS_TRACE("baci::AlarmSystemMonitorDisc&lt;&gt;::~AlarmSystemMonitorDisc");
 }//~AlarmSystemMonitorDisc
 
 template<class T, class TPROP>
-void AlarmSystemMonitorDisc<T, TPROP>::check(BACIValue &val,
+void baci::AlarmSystemMonitorDisc<T, TPROP>::check(BACIValue &val,
 					  const ACSErr::Completion & c,
 					  const ACS::CBDescOut & desc
     )

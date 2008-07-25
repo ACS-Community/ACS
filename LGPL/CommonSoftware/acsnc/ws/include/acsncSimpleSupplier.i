@@ -1,6 +1,6 @@
 #ifndef SIMPLE_SUPPLIER_I
 #define SIMPLE_SUPPLIER_I
-/*    @(#) $Id: acsncSimpleSupplier.i,v 1.23 2006/09/01 02:20:54 cparedes Exp $
+/*    @(#) $Id: acsncSimpleSupplier.i,v 1.24 2008/07/25 07:35:19 cparedes Exp $
  *    ALMA - Atacama Large Millimiter Array
  *    (c) Associated Universities Inc., 2002 
  *    (c) European Southern Observatory, 2002
@@ -31,14 +31,14 @@ namespace nc {
 //----------------------------------------------------------------------
 template <class T> void 
 SimpleSupplier::publishData(T data)
-    throw (CORBAProblemEx)
+    throw (ACSErrTypeCommon::CORBAProblemEx)
 {
     try
 	{
 	any_m <<= data;
 	Supplier::publishEvent(any_m);
 	}
-    catch(CORBAProblemEx)
+    catch(ACSErrTypeCommon::CORBAProblemEx)
 	{
 	//an exception from subclasses...OK to rethrow
 	throw;
@@ -48,7 +48,7 @@ SimpleSupplier::publishData(T data)
 	ACS_SHORT_LOG((LM_ERROR,
 		       "SimpleSupplier::publishData(...) %s channel - unknown error!",
 		       channelName_mp));
-	CORBAProblemExImpl err = CORBAProblemExImpl(__FILE__,
+	ACSErrTypeCommon::CORBAProblemExImpl err = ACSErrTypeCommon::CORBAProblemExImpl(__FILE__,
 						    __LINE__,
 						    "nc::SimpleSupplier::publishData");
 	throw err;

@@ -1,13 +1,13 @@
 /*******************************************************************************
 * E.S.O. - VLT project
 *
-* "@(#) $Id: enumpropROImpl.i,v 1.53 2006/10/16 07:55:16 cparedes Exp $"
+* "@(#) $Id: enumpropROImpl.i,v 1.54 2008/07/25 07:31:03 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
 * bjeram 2003-05-30 removed setting intial value fro DevIO
 * bjeram 2003-03-14 changed defaultValue_m from ACS::pattern type to type T
-* bjeram 2003-03-14 added BACIvalue(0.0) as a parameter to constructor of Monitorpattern (recovery)
+* bjeram 2003-03-14 added BACIvalue(0.0) as a parameter to constructor of baci::Monitorpattern (recovery)
 * bjeram 2003-03-14 changed DevIO to its template versio DevIOT
 * bjeram 2002-11-18 changed to onchange monitor
 * bjeram 2002-07-08 added implementation of allSTates
@@ -18,13 +18,12 @@
 /*
 TODO
 CBpattern -> CBT
-Monitorpattern -> Monitor(T)
+baci::Monitorpattern -> Monitor(T)
 Alarmpattern
 */
-using namespace baciErrTypeProperty;
 
 template <ACS_ENUM_C>
-ROEnumImpl<ACS_ENUM_T(T), SK>::ROEnumImpl(const ACE_CString& name, BACIComponent* cob, DevIO<T> *devIO, bool flagdeldevIO) : 
+ROEnumImpl<ACS_ENUM_T(T), SK>::ROEnumImpl(const ACE_CString& name, baci::BACIComponent* cob, DevIO<T> *devIO, bool flagdeldevIO) : 
     CharacteristicModelImpl(name, cob->getCharacteristicModel()), 
     initialization_m(1), destroyed_m(false), reference_mp(CORBA::Object::_nil()), property_mp(0),
     monitorEventDispatcher_mp(0), alarmSystemMonitorEnumProp_mp(0), historyStart_m(-1), historyTurnaround_m(false), m_enumLength(0)
@@ -53,8 +52,8 @@ ROEnumImpl<ACS_ENUM_T(T), SK>::ROEnumImpl(const ACE_CString& name, BACIComponent
     // create BACI property instance
     CORBA::Any tAny;
     tAny <<= default_value();
-    property_mp = new BACIProperty(name.c_str(), this, this,
-				  BACIValue(default_value(), tAny), cob);
+    property_mp = new baci::BACIProperty(name.c_str(), this, this,
+				  baci::BACIValue(default_value(), tAny), cob);
     if (!property_mp) {
 	std::string procName="ROEnumImpl::ROEnumImpl(";
         procName+=name.c_str();
@@ -80,12 +79,12 @@ ROEnumImpl<ACS_ENUM_T(T), SK>::ROEnumImpl(const ACE_CString& name, BACIComponent
 	}
 
     ACE_CString_Vector recoveryMonitorsNames = 
-	BACIRecoveryManager::getInstance()->getObjectsStartingWith(name.c_str());
+	baci::BACIRecoveryManager::getInstance()->getObjectsStartingWith(name.c_str());
     if (recoveryMonitorsNames.size()>0)
 	{
 	for (ACE_CString_Vector::iterator i = recoveryMonitorsNames.begin();
 	     i != recoveryMonitorsNames.end(); i++) {
-	new Monitorpattern(i->c_str(), min_timer_trigger(), BACIValue(0.0), property_mp);
+	new baci::Monitorpattern(i->c_str(), min_timer_trigger(), baci::BACIValue(0.0), property_mp);
 	}
 	}
     state = (T)defaultValue_m;
@@ -109,11 +108,11 @@ ROEnumImpl<ACS_ENUM_T(T), SK>::ROEnumImpl(const ACE_CString& name, BACIComponent
 	{
 	CBDescIn descIn;
 	descIn.id_tag = 0;
-	monitorEventDispatcher_mp = new MonitorenumpropEventDispatcher(descIn, m_alarm_timer_trig, property_mp);
+	monitorEventDispatcher_mp = new baci::MonitorenumpropEventDispatcher(descIn, m_alarm_timer_trig, property_mp);
 
 	if (this->monitorEventDispatcher_mp!=0 && this->m_alarm_timer_trig!=0)
 	    {
-	     alarmSystemMonitorEnumProp_mp = new AlarmSystemMonitorEnumProp<T, ROEnumImpl<ACS_ENUM_T(T), SK> >(this, this->monitorEventDispatcher_mp);
+	     alarmSystemMonitorEnumProp_mp = new baci::AlarmSystemMonitorEnumProp<T, ROEnumImpl<ACS_ENUM_T(T), SK> >(this, this->monitorEventDispatcher_mp);
 	    }//if
 	}  
 
@@ -177,15 +176,15 @@ void ROEnumImpl<ACS_ENUM_T(T), SK>::destroy()
 /* --------------- [ Action implementator interface ] -------------- */
 
 template <ACS_ENUM_C>
-ActionRequest ROEnumImpl<ACS_ENUM_T(T), SK>::invokeAction(int function,
-		       BACIComponent* cob, const int& callbackID, 
-		       const CBDescIn& descIn, BACIValue* value, 
+baci::ActionRequest ROEnumImpl<ACS_ENUM_T(T), SK>::invokeAction(int function,
+		       baci::BACIComponent* cob, const int& callbackID, 
+		       const CBDescIn& descIn, baci::BACIValue* value, 
 		       Completion& completion, CBDescOut& descOut)
 {
   ACE_UNUSED_ARG(function);
   CompletionImpl c;
   // only one action
-  ActionRequest req = getValueAction(cob, callbackID, descIn, value, c, descOut);
+  baci::ActionRequest req = getValueAction(cob, callbackID, descIn, value, c, descOut);
 
   if (c.isErrorFree())
       {
@@ -193,7 +192,7 @@ ActionRequest ROEnumImpl<ACS_ENUM_T(T), SK>::invokeAction(int function,
       }
   else
       {
-      completion = InvokeActionErrorCompletion(c,
+      completion = baciErrTypeProperty::InvokeActionErrorCompletion(c,
 					       __FILE__,
 					       __LINE__,
 					       "ROEnumImpl&lt;&gt;::getValue");
@@ -205,8 +204,8 @@ ActionRequest ROEnumImpl<ACS_ENUM_T(T), SK>::invokeAction(int function,
 /* -------------- [ Property implementator interface ] -------------- */
 
 template <ACS_ENUM_C>
-void ROEnumImpl<ACS_ENUM_T(T), SK>::getValue(BACIProperty* property,
-		   BACIValue* value, 
+void ROEnumImpl<ACS_ENUM_T(T), SK>::getValue(baci::BACIProperty* property,
+		   baci::BACIValue* value, 
 		   Completion &completion,
 		   CBDescOut& descOut)
 {
@@ -257,8 +256,8 @@ void ROEnumImpl<ACS_ENUM_T(T), SK>::addValueToHistory(ACS::Time time, ACS::patte
 
 /// async. get value action implementation
 template <ACS_ENUM_C>
-ActionRequest ROEnumImpl<ACS_ENUM_T(T), SK>::getValueAction(BACIComponent* cob, const int& callbackID,
-				       const CBDescIn& descIn, BACIValue* value,
+baci::ActionRequest ROEnumImpl<ACS_ENUM_T(T), SK>::getValueAction(baci::BACIComponent* cob, const int& callbackID,
+				       const CBDescIn& descIn, baci::BACIValue* value,
 				       Completion& completion, CBDescOut& descOut)
 {
   ACE_UNUSED_ARG(cob);
@@ -274,7 +273,7 @@ ActionRequest ROEnumImpl<ACS_ENUM_T(T), SK>::getValueAction(BACIComponent* cob, 
       }
   else
       {
-      completion = CanNotGetValueCompletion(co, 
+      completion = baciErrTypeProperty::CanNotGetValueCompletion(co, 
 					    __FILE__, 
 					    __LINE__, 
 					    "ROEnumImpl<>::getValue");
@@ -282,7 +281,7 @@ ActionRequest ROEnumImpl<ACS_ENUM_T(T), SK>::getValueAction(BACIComponent* cob, 
 
   // complete action requesting done invokation, 
   // otherwise return reqInvokeWorking and set descOut.estimated_timeout
-  return reqInvokeDone;
+  return baci::reqInvokeDone;
 }
 
 
@@ -292,7 +291,7 @@ template <ACS_ENUM_C>
 bool ROEnumImpl<ACS_ENUM_T(T), SK>::readCharacteristics()
 {
 
-  DAONode* dao = this->getDAONode();
+  cdb::DAONode* dao = this->getDAONode();
   if (!dao)
       return false;
   
@@ -438,7 +437,7 @@ T ROEnumImpl<ACS_ENUM_T(T), SK>::get_sync (ACSErr::Completion_out c
     CompletionImpl co;
 
     ACS::CBDescOut descOut;
-    BACIValue value(0.0);
+    baci::BACIValue value(0.0);
 
     this->getValue(property_mp, &value, co, descOut);
 
@@ -448,7 +447,7 @@ T ROEnumImpl<ACS_ENUM_T(T), SK>::get_sync (ACSErr::Completion_out c
 	}
     else
 	{
-	c = CanNotGetValueCompletion(co, 
+	c = baciErrTypeProperty::CanNotGetValueCompletion(co, 
 				     __FILE__, 
 				     __LINE__, 
 				     "ROEnumImpl&lt;&gt;::get_sync").returnCompletion(false);
@@ -463,7 +462,7 @@ void ROEnumImpl<ACS_ENUM_T(T), SK>::get_async (CBpattern* cb,
 		     )
   throw (CORBA::SystemException) 
 {
-  property_mp->getComponent()->registerAction(BACIValue::type_pattern, cb, 
+  property_mp->getComponent()->registerAction(baci::BACIValue::type_pattern, cb, 
 				       desc, this, 0);
 }
 
@@ -512,12 +511,12 @@ ACS::Monitorpattern_ptr ROEnumImpl<ACS_ENUM_T(T), SK>::create_monitor (CBpattern
   throw (CORBA::SystemException)
 {
 
-    Monitorpattern* monitor = new Monitorpattern(ACE_CString(property_mp->getName())+"_monitor",
+    baci::Monitorpattern* monitor = new baci::Monitorpattern(ACE_CString(property_mp->getName())+"_monitor",
 					     cb, desc, 
 					     default_timer_trigger(),
-					      BACIValue::NullValue,  
+					      baci::BACIValue::NullValue,  
 					     min_timer_trigger(),
-					   BACIValue::NullValue,  
+					   baci::BACIValue::NullValue,  
 					     property_mp);
 
   if (!monitor)
@@ -543,12 +542,12 @@ ACS::Monitor_ptr ROEnumImpl<ACS_ENUM_T(T), SK>::create_postponed_monitor (ACS::T
   throw (CORBA::SystemException)
 {
 
-  Monitorpattern* monitor = new Monitorpattern(ACE_CString(property_mp->getName())+"_monitor",
+  baci::Monitorpattern* monitor = new baci::Monitorpattern(ACE_CString(property_mp->getName())+"_monitor",
 					     cb, desc, 
 					     default_timer_trigger(),
-					       BACIValue::NullValue, 
+					       baci::BACIValue::NullValue, 
 					     min_timer_trigger(), 
-					       BACIValue::NullValue, 
+					       baci::BACIValue::NullValue, 
 					     property_mp,
 					     start_time);
   
@@ -599,7 +598,7 @@ ACS::Subscription_ptr ROEnumImpl<ACS_ENUM_T(T), SK>::new_subscription_Alarmpatte
   {
     CBDescIn descIn;
     descIn.id_tag = 0;
-    monitorEventDispatcher_mp = new MonitorpatternEventDispatcher(descIn, m_alarm_timer_trig, property_mp);
+    monitorEventDispatcher_mp = new baci::MonitorpatternEventDispatcher(descIn, m_alarm_timer_trig, property_mp);
 	if (!monitorEventDispatcher_mp)
 	  ACE_THROW_RETURN(CORBA::NO_RESOURCES(), ACS::Subscription::_nil());
   }  
@@ -696,13 +695,13 @@ ACS::Subscription_ptr ROEnumImpl<ACS_ENUM_T(T), SK>::new_subscription_AlarmEnum 
   {
     CBDescIn descIn;
     descIn.id_tag = 0;
-    monitorEventDispatcher_mp = new MonitorenumpropEventDispatcher(descIn, m_alarm_timer_trig, property_mp);
+    monitorEventDispatcher_mp = new baci::MonitorenumpropEventDispatcher(descIn, m_alarm_timer_trig, property_mp);
 	if (!monitorEventDispatcher_mp)
 	  ACE_THROW_RETURN(CORBA::NO_RESOURCES(), ACS::Subscription::_nil());
   }  
 
-  AlarmenumpropEventStrategy<T, ROEnumImpl<ACS_ENUM_T(T), SK>, ACS::Alarmpattern> * eventStrategy = 
-      new AlarmenumpropEventStrategy<T, ROEnumImpl<ACS_ENUM_T(T), SK>, ACS::Alarmpattern>
+  baci::AlarmenumpropEventStrategy<T, ROEnumImpl<ACS_ENUM_T(T), SK>, ACS::Alarmpattern> * eventStrategy = 
+      new baci::AlarmenumpropEventStrategy<T, ROEnumImpl<ACS_ENUM_T(T), SK>, ACS::Alarmpattern>
       (cb,
        desc,
        m_alarm_timer_trig,

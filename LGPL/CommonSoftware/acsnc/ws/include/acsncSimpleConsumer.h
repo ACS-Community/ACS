@@ -1,6 +1,6 @@
 #ifndef SIMPLE_CONSUMER_H
 #define SIMPLE_CONSUMER_H
-/*    @(#) $Id: acsncSimpleConsumer.h,v 1.9 2007/10/22 08:20:06 bjeram Exp $
+/*    @(#) $Id: acsncSimpleConsumer.h,v 1.10 2008/07/25 07:35:19 cparedes Exp $
  *    ALMA - Atacama Large Millimiter Array
  *    (c) Associated Universities Inc., 2002 
  *    (c) European Southern Observatory, 2002
@@ -87,7 +87,7 @@ template <class T> class SimpleConsumer : public Consumer
      */
     template <class J> void
     addSubscription(eventHandlerFunction templateFunction, void *handlerParam=0)
-	throw (CORBA::SystemException, CouldntPerformActionEx)
+	throw (CORBA::SystemException, ACSErrTypeCommon::CouldntPerformActionEx)
 	{
 	    ACS_TRACE("SimpleConsumer::addSubscription");
 	    
@@ -97,7 +97,7 @@ template <class T> class SimpleConsumer : public Consumer
 		{
 		ACS_SHORT_LOG((LM_ERROR,
 			       "SimpleConsumer::addSubscription unable to subscribe to multiple event types from this class!"));
-		CouldntPerformActionExImpl err = CouldntPerformActionExImpl(__FILE__,
+		ACSErrTypeCommon::CouldntPerformActionExImpl err = ACSErrTypeCommon::CouldntPerformActionExImpl(__FILE__,
 									    __LINE__,
 									    "nc::SimpleConsumer::addSubscription");
 		throw err.getCouldntPerformActionEx();

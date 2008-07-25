@@ -21,7 +21,7 @@
 *
 *
 *
-* "@(#) $Id: acscourseMount3Impl.cpp,v 1.5 2006/06/22 16:26:30 gchiozzi Exp $"
+* "@(#) $Id: acscourseMount3Impl.cpp,v 1.6 2008/07/25 07:46:46 cparedes Exp $"
 *
 */
  
@@ -32,10 +32,10 @@ using namespace std;
 /* ----------------------------------------------------------------*/
 Mount3Impl::Mount3Impl(const ACE_CString &_name, maci::ContainerServices *containerServices) :
     CharacteristicComponentImpl(_name, containerServices),
-    m_cmdAz_sp(new ROdouble(_name+":cmdAz", getComponent()),this),
-    m_cmdEl_sp(new ROdouble(_name+":cmdEl", getComponent()),this),
-    m_actAz_sp(new ROdouble(_name+":actAz", getComponent()),this),
-    m_actEl_sp(new ROdouble(_name+":actEl", getComponent()),this)
+    m_cmdAz_sp(new baci::ROdouble(_name+":cmdAz", getComponent()),this),
+    m_cmdEl_sp(new baci::ROdouble(_name+":cmdEl", getComponent()),this),
+    m_actAz_sp(new baci::ROdouble(_name+":actAz", getComponent()),this),
+    m_actEl_sp(new baci::ROdouble(_name+":actEl", getComponent()),this)
 {
     // ACS_TRACE is used for debugging purposes
     ACS_TRACE("::Mount3Impl::Mount3Impl");

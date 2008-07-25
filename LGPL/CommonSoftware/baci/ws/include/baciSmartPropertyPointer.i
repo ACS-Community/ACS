@@ -16,7 +16,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciSmartPropertyPointer.i,v 1.5 2005/01/15 00:20:38 dfugate Exp $"
+* "@(#) $Id: baciSmartPropertyPointer.i,v 1.6 2008/07/25 07:29:52 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -28,23 +28,21 @@
 #include <baciCharacteristicComponentImpl.h>
 #include <baciPropertyImpl.h>
 
-using namespace baci;
-
 template<class T>
-SmartPropertyPointer<T>::SmartPropertyPointer(CharacteristicComponentImpl* component_p):
-    SmartServantPointer<T>(),
+baci::SmartPropertyPointer<T>::SmartPropertyPointer(CharacteristicComponentImpl* component_p):
+    baci::SmartServantPointer<T>(),
     component_mp(component_p)
 {
 }
 
 template<class T>
-SmartPropertyPointer<T>::SmartPropertyPointer():
-	SmartServantPointer<T>()
+baci::SmartPropertyPointer<T>::SmartPropertyPointer():
+	baci::SmartServantPointer<T>()
 {
 }
 
 template<class T>
-SmartPropertyPointer<T>::SmartPropertyPointer(T* prop,CharacteristicComponentImpl* component_p):
+baci::SmartPropertyPointer<T>::SmartPropertyPointer(T* prop,CharacteristicComponentImpl* component_p):
     SmartServantPointer<T>(prop),
     component_mp(component_p)
 {
@@ -52,12 +50,12 @@ SmartPropertyPointer<T>::SmartPropertyPointer(T* prop,CharacteristicComponentImp
 }
 
 template<class T>  
-SmartPropertyPointer<T>::~SmartPropertyPointer()
+baci::SmartPropertyPointer<T>::~SmartPropertyPointer()
 {
 }
 
 template<class T>
-void SmartPropertyPointer<T>::init() 
+void baci::SmartPropertyPointer<T>::init() 
 {
     if (GetImpl(*this)==NULL || component_mp==NULL) {
 	return;
@@ -67,7 +65,7 @@ void SmartPropertyPointer<T>::init()
 }
 
 template<class T>
-SmartPropertyPointer<T>* SmartPropertyPointer<T>::operator=(const T* prop) {
+baci::SmartPropertyPointer<T>* baci::SmartPropertyPointer<T>::operator=(const T* prop) {
     Reset(*this,(T*)prop);
     init();
     return this;

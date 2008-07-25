@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsncArchiveConsumer.cpp,v 1.7 2005/09/12 23:09:30 dfugate Exp $"
+* "@(#) $Id: acsncArchiveConsumer.cpp,v 1.8 2008/07/25 07:35:19 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -30,7 +30,7 @@
 
 #define ALL_EVENT_TYPE "*"
 
-static char *rcsId="@(#) $Id: acsncArchiveConsumer.cpp,v 1.7 2005/09/12 23:09:30 dfugate Exp $"; 
+static char *rcsId="@(#) $Id: acsncArchiveConsumer.cpp,v 1.8 2008/07/25 07:35:19 cparedes Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 namespace nc {
@@ -119,7 +119,7 @@ namespace nc {
     //---------------------------------------------------------- 
     void
     ArchiveConsumer::subscribeAllEvents()
-	throw (CORBAProblemEx)
+	throw (ACSErrTypeCommon::CORBAProblemEx)
     {
 	ACS_TRACE("ArchiveConsumer::subscribeAllEvents");
 	init();
@@ -139,7 +139,7 @@ namespace nc {
 	catch(...)
 	    {
 	    ACS_SHORT_LOG((LM_ERROR,"ArchiveConsumer::subscribeAllEvents failed!"));
-	    CORBAProblemExImpl err = CORBAProblemExImpl(__FILE__,__LINE__,"nc::ArchiveConsumer::subscribeAllEvents");
+	    ACSErrTypeCommon::CORBAProblemExImpl err = ACSErrTypeCommon::CORBAProblemExImpl(__FILE__,__LINE__,"nc::ArchiveConsumer::subscribeAllEvents");
 	    throw err.getCORBAProblemEx();
 	    }	
     }

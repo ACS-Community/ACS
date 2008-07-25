@@ -16,7 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: acsncServiceChecker.cpp,v 1.2 2007/10/12 20:10:45 nbarriga Exp $"
+ * "@(#) $Id: acsncServiceChecker.cpp,v 1.3 2008/07/25 07:35:19 cparedes Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -54,6 +54,9 @@
 #include <maciSimpleClient.h>
 
 #include <acsncServiceChecker.h>
+using namespace ACSErrTypeCommon;
+using namespace std;
+
 namespace nc{
 	ServiceChecker::ServiceChecker(CORBA::ORB_ptr orb):
 		Helper("DummyChannelName"){

@@ -23,5 +23,5 @@ int main(int argc, char *argv[])
 
 void printUsage() 
 {
-	cout << "To run, please type: testDOM -file <xmlFileToUseForInput> \n";
+	std::cout << "To run, please type: testDOM -file <xmlFileToUseForInput> \n";
 }

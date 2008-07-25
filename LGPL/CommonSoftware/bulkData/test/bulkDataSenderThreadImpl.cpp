@@ -1,5 +1,6 @@
 #include "bulkDataSenderThreadImpl.h"
 
+using namespace ACSBulkDataError;
 
 BulkDataSenderThreadImpl::BulkDataSenderThreadImpl(const ACE_CString& name,ContainerServices* containerServices) :
     BulkDataSenderDefaultImpl(name,containerServices)
@@ -12,13 +13,13 @@ BulkDataSenderThreadImpl::BulkDataSenderThreadImpl(const ACE_CString& name,Conta
 
     for(CORBA::ULong i = 0; i < numberOfFlows; i++)
 	{
-	string str = "Flow";
+	std::string str = "Flow";
 	flow = i + 1;
-	stringstream out;
+	std::stringstream out;
 	out << flow;
 	str = str + out.str();
 	ACE_CString str1 = str.c_str();
-	SenderThread *thread = new SenderThread(str1, this, flow, ThreadBase::defaultResponseTime, ThreadBase::defaultSleepTime*10 /*=1s*/);
+	SenderThread *thread = new SenderThread(str1, this, flow, ACS::ThreadBase::defaultResponseTime, ACS::ThreadBase::defaultSleepTime*10 /*=1s*/);
 	thread_p.push_back(thread);
 	}
 

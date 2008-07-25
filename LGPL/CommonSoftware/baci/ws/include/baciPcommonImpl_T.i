@@ -21,10 +21,8 @@
 #include <string.h>
 #include <sstream>
 
-using namespace baciErrTypeProperty;
-
 template<ACS_P_C> 
-PcommonImpl<ACS_P_TL>::PcommonImpl(const ACE_CString& name, BACIComponent* component_p, DevIO<TM>* devIO, bool flagdeldevIO) : 
+baci::PcommonImpl<ACS_P_TL>::PcommonImpl(const ACE_CString& name, BACIComponent* component_p, DevIO<TM>* devIO, bool flagdeldevIO) : 
         CharacteristicModelImpl(name, component_p->getCharacteristicModel()), 
 	property_mp(0), devIO_mp(0), initialization_m(1), destroyed_m(false), 
 	reference_mp(CORBA::Object::_nil()),
@@ -104,7 +102,7 @@ PcommonImpl<ACS_P_TL>::PcommonImpl(const ACE_CString& name, BACIComponent* compo
   ACS_DEBUG("baci::PcommonImpl&lt;&gt;::PcommonImpl", "Successfully created.");
 }
 
-template<ACS_P_C> PcommonImpl<ACS_P_TL>::~PcommonImpl()
+template<ACS_P_C> baci::PcommonImpl<ACS_P_TL>::~PcommonImpl()
 {
   ACS_TRACE("baci::PcommonImpl&lt;&gt;::~PcommonImpl");
   
@@ -120,7 +118,7 @@ template<ACS_P_C> PcommonImpl<ACS_P_TL>::~PcommonImpl()
 }
 
 template<ACS_P_C> 
-void PcommonImpl<ACS_P_TL>::destroy()
+void baci::PcommonImpl<ACS_P_TL>::destroy()
 {
   ACS_TRACE("baci::PcommonImpl&lt;&gt;::destroy");
   if (destroyed_m==true)
@@ -144,7 +142,7 @@ void PcommonImpl<ACS_P_TL>::destroy()
 /* --------------- [ Action implementator interface ] -------------- */
 
 template<ACS_P_C> 
-ActionRequest PcommonImpl<ACS_P_TL>::invokeAction(int function,
+baci::ActionRequest baci::PcommonImpl<ACS_P_TL>::invokeAction(int function,
 						  BACIComponent* component_p, 
 						  const int &callbackID, 
 						  const CBDescIn& descIn, 
@@ -163,7 +161,7 @@ ActionRequest PcommonImpl<ACS_P_TL>::invokeAction(int function,
       }
   else
       {
-      completion = InvokeActionErrorCompletion(c,
+      completion = baciErrTypeProperty::InvokeActionErrorCompletion(c,
 					       __FILE__,
 					       __LINE__,
 					       "baci::PcommonImpl&lt;&gt;::invokeAction");
@@ -175,7 +173,7 @@ ActionRequest PcommonImpl<ACS_P_TL>::invokeAction(int function,
 /* -------------- [ Property implementator interface ] -------------- */
 
 template<ACS_P_C> 
-void PcommonImpl<ACS_P_TL>::getValue(BACIProperty* property,
+void baci::PcommonImpl<ACS_P_TL>::getValue(BACIProperty* property,
 		   BACIValue* value, 
 		   Completion &completion,
 		   CBDescOut& descOut)
@@ -205,7 +203,7 @@ void PcommonImpl<ACS_P_TL>::getValue(BACIProperty* property,
 /* --------------- [ History support ] --------------- */
 
 template<ACS_P_C> 
-void PcommonImpl<ACS_P_TL>::addValueToHistory(ACS::Time time, TM &value)
+void baci::PcommonImpl<ACS_P_TL>::addValueToHistory(ACS::Time time, TM &value)
 {
   if ((historyTurnaround_m == false)&& (historyStart_m==(HISTORY_SIZE-1))) 
 	  historyTurnaround_m = true;
@@ -218,7 +216,7 @@ void PcommonImpl<ACS_P_TL>::addValueToHistory(ACS::Time time, TM &value)
 
 /// async. get value action implementation
 template<ACS_P_C> 
-ActionRequest PcommonImpl<ACS_P_TL>::getValueAction(BACIComponent* component_p, 
+baci::ActionRequest baci::PcommonImpl<ACS_P_TL>::getValueAction(BACIComponent* component_p, 
 						    int callbackID,
 						    const CBDescIn& descIn, 
 						    BACIValue* value,
@@ -238,7 +236,7 @@ ActionRequest PcommonImpl<ACS_P_TL>::getValueAction(BACIComponent* component_p,
       }
   else
       {
-      CanNotGetValueCompletion errComp (co, 
+      baciErrTypeProperty::CanNotGetValueCompletion errComp (co, 
 					__FILE__, 
 					__LINE__, 
 					"baci::PcommonImpl&lt;&gt;::getValueAction");
@@ -255,10 +253,10 @@ ActionRequest PcommonImpl<ACS_P_TL>::getValueAction(BACIComponent* component_p,
 /* ---------------------- [ CORBA interface ] ---------------------- */
 
 template<ACS_P_C> 
-bool PcommonImpl<ACS_P_TL>::readCharacteristics()
+bool baci::PcommonImpl<ACS_P_TL>::readCharacteristics()
 {
     
-  DAONode* dao = this->getDAONode();
+  cdb::DAONode* dao = this->getDAONode();
   if (!dao)
       return false;
   
@@ -311,7 +309,7 @@ bool PcommonImpl<ACS_P_TL>::readCharacteristics()
 
 /* ---------------------- [ CORBA interface ] ---------------------- */
 template<ACS_P_C> 
-char* PcommonImpl<ACS_P_TL>::characteristic_component_name ()
+char* baci::PcommonImpl<ACS_P_TL>::characteristic_component_name ()
   throw (CORBA::SystemException)
 {
 
@@ -319,7 +317,7 @@ char* PcommonImpl<ACS_P_TL>::characteristic_component_name ()
 }
 
 template<ACS_P_C> 
-char* PcommonImpl<ACS_P_TL>::name ()
+char* baci::PcommonImpl<ACS_P_TL>::name ()
   throw (CORBA::SystemException)
 {
 
@@ -327,28 +325,28 @@ char* PcommonImpl<ACS_P_TL>::name ()
 }
 
  template<ACS_P_C>
- CORBA::Boolean PcommonImpl<ACS_P_TL>::initialize_devio ()
+ CORBA::Boolean baci::PcommonImpl<ACS_P_TL>::initialize_devio ()
    throw (CORBA::SystemException)
  {
   return  CORBA::Boolean(initializeDevIO_m);
 }
 
 template<ACS_P_C> 
-char* PcommonImpl<ACS_P_TL>::description ()
+char* baci::PcommonImpl<ACS_P_TL>::description ()
   throw (CORBA::SystemException)
 {
   return CORBA::string_dup (description_m.c_str());
 }
 
 template<ACS_P_C> 
-char* PcommonImpl<ACS_P_TL>::format ()
+char* baci::PcommonImpl<ACS_P_TL>::format ()
   throw (CORBA::SystemException)
 {
   return CORBA::string_dup (format_m.c_str());
 }
 
 template<ACS_P_C> 
-char* PcommonImpl<ACS_P_TL>::units ()
+char* baci::PcommonImpl<ACS_P_TL>::units ()
   throw (CORBA::SystemException)
 {
 
@@ -356,14 +354,14 @@ char* PcommonImpl<ACS_P_TL>::units ()
 }
  
 template<ACS_P_C> 
-ACS::pattern PcommonImpl<ACS_P_TL>::resolution ()
+ACS::pattern baci::PcommonImpl<ACS_P_TL>::resolution ()
   throw (CORBA::SystemException)
 {
   return resolution_m;
 }
 
 template<ACS_P_C> 
-T PcommonImpl<ACS_P_TL>::get_sync (ACSErr::Completion_out c
+T baci::PcommonImpl<ACS_P_TL>::get_sync (ACSErr::Completion_out c
 		    )
   throw (CORBA::SystemException)
 {
@@ -379,7 +377,7 @@ T PcommonImpl<ACS_P_TL>::get_sync (ACSErr::Completion_out c
      }
  else
      {
-     CanNotGetValueCompletion completion(co, 
+     baciErrTypeProperty::CanNotGetValueCompletion completion(co, 
 					 __FILE__, 
 					 __LINE__, 
 					 "baci::PcommonImpl&lt;&gt;::get_sync");
@@ -395,7 +393,7 @@ T PcommonImpl<ACS_P_TL>::get_sync (ACSErr::Completion_out c
 
 
 template<ACS_P_C> 
-void PcommonImpl<ACS_P_TL>::get_async (TCB *cb,
+void baci::PcommonImpl<ACS_P_TL>::get_async (TCB *cb,
 		     const ACS::CBDescIn & desc
 		     )
   throw (CORBA::SystemException) 
@@ -406,7 +404,7 @@ void PcommonImpl<ACS_P_TL>::get_async (TCB *cb,
 }
 
 template<ACS_P_C> 
-CORBA::Long PcommonImpl<ACS_P_TL>::get_history (CORBA::Long n_last_values,
+CORBA::Long baci::PcommonImpl<ACS_P_TL>::get_history (CORBA::Long n_last_values,
 		       TSeq_out vs,
 		       ACS::TimeSeq_out ts)
   throw (CORBA::SystemException)
@@ -448,7 +446,7 @@ CORBA::Long PcommonImpl<ACS_P_TL>::get_history (CORBA::Long n_last_values,
 
 
 template<ACS_P_C> 
-TMonitor *PcommonImpl<ACS_P_TL>::create_monitor (TCB *cb,
+TMonitor *baci::PcommonImpl<ACS_P_TL>::create_monitor (TCB *cb,
 			  const ACS::CBDescIn & desc)
   throw (CORBA::SystemException)
 {
@@ -476,7 +474,7 @@ TMonitor *PcommonImpl<ACS_P_TL>::create_monitor (TCB *cb,
 }
 
 template<ACS_P_C> 
-TMonitor* PcommonImpl<ACS_P_TL>::create_postponed_monitor (ACS::Time start_time,
+TMonitor* baci::PcommonImpl<ACS_P_TL>::create_postponed_monitor (ACS::Time start_time,
 			  TCB *cb,
 			  const ACS::CBDescIn & desc)
   throw (CORBA::SystemException)
@@ -506,7 +504,7 @@ TMonitor* PcommonImpl<ACS_P_TL>::create_postponed_monitor (ACS::Time start_time,
 }
 
 template<ACS_P_C> 
-ACS::TimeInterval PcommonImpl<ACS_P_TL>::default_timer_trigger ()
+ACS::TimeInterval baci::PcommonImpl<ACS_P_TL>::default_timer_trigger ()
   throw (CORBA::SystemException)
 {
 
@@ -514,7 +512,7 @@ ACS::TimeInterval PcommonImpl<ACS_P_TL>::default_timer_trigger ()
 }
 
 template<ACS_P_C> 
-ACS::TimeInterval PcommonImpl<ACS_P_TL>::min_timer_trigger ()
+ACS::TimeInterval baci::PcommonImpl<ACS_P_TL>::min_timer_trigger ()
   throw (CORBA::SystemException)
 {
 
@@ -522,7 +520,7 @@ ACS::TimeInterval PcommonImpl<ACS_P_TL>::min_timer_trigger ()
 }
 
 template<ACS_P_C> 
-TS PcommonImpl<ACS_P_TL>::default_value ()
+TS baci::PcommonImpl<ACS_P_TL>::default_value ()
   throw (CORBA::SystemException)
 {
   return CORBAMem<TS, TSM>::retn(defaultValue_m);

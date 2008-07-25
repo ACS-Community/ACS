@@ -21,7 +21,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: acsexmplMountImpl.h,v 1.98 2007/02/01 05:14:26 cparedes Exp $"
+* "@(#) $Id: acsexmplMountImpl.h,v 1.99 2008/07/25 07:37:04 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -55,8 +55,6 @@
 ///Include the smart pointer for properties
 #include <baciSmartPropertyPointer.h>
 
-using namespace baci;
-
 /** @file acsexmplMountImpl.h
  */
 
@@ -85,7 +83,7 @@ read-only double properties: actAz, actEl, cmdAz, and cmdEl.
 <h2>What can I gain from this example?</h2>
 <ul>
   <li>an example derived from the ACS::CharacteristicComponent IDL interface.</li>
-  <li>understanding of asynchronous method implementation accomplished by inheriting methods from the ActionImplementator class.</li>
+  <li>understanding of asynchronous method implementation accomplished by inheriting methods from the baci::ActionImplementator class.</li>
   <li>asynchronous methods which take in (multiple) parameters.</li>
   <li>clean implementation of the invokeAction method using an array of function pointers.</li>
   <li>a "real-world" example dealing with radio astronomy.</li>
@@ -118,11 +116,11 @@ read-only double properties: actAz, actEl, cmdAz, and cmdEl.
  * The Mount::invokeAction method is called by the asynchronous dispatcher whenever there is an
  * xxx pending action and it calls the xxxAction corresponding method.  Also, invokeAction calls 
  * these methods by simply using a function pointer (ActionFunction) instead of specifying each method.
- * @version "@(#) $Id: acsexmplMountImpl.h,v 1.98 2007/02/01 05:14:26 cparedes Exp $"
+ * @version "@(#) $Id: acsexmplMountImpl.h,v 1.99 2008/07/25 07:37:04 cparedes Exp $"
  */
-class acsexmpl_EXPORT Mount: public CharacteristicComponentImpl,     //Standard component superclass
+class acsexmpl_EXPORT Mount: public baci::CharacteristicComponentImpl,     //Standard component superclass
 			     public virtual POA_MOUNT_ACS::Mount,   //CORBA servant stub
-			     public ActionImplementator    //Asynchronous method helper class
+			     public baci::ActionImplementator    //Asynchronous method helper class
 {
   public:
      /**
@@ -165,12 +163,12 @@ class acsexmpl_EXPORT Mount: public CharacteristicComponentImpl,     //Standard 
        <br><hr>
        @endhtmlonly
      */
-    virtual ActionRequest 
+    virtual baci::ActionRequest 
     invokeAction (int function,
-		  BACIComponent *component_p, 
+		  baci::BACIComponent *component_p, 
 		  const int &callbackID, 
 		  const CBDescIn &descIn, 
-		  BACIValue *value_p, 
+		  baci::BACIValue *value_p, 
 		  Completion &completion, 
 		  CBDescOut &descOut);
     
@@ -196,11 +194,11 @@ class acsexmpl_EXPORT Mount: public CharacteristicComponentImpl,     //Standard 
        <br><hr>
        @endhtmlonly
      */
-    virtual ActionRequest 
-    obstarAction (BACIComponent *component_p, 
+    virtual baci::ActionRequest 
+    obstarAction (baci::BACIComponent *component_p, 
 		  const int &callbackID,
 		  const CBDescIn &descIn, 
-		  BACIValue *value_p,
+		  baci::BACIValue *value_p,
 		  Completion &completion, 
 		  CBDescOut &descOut);
         
@@ -226,11 +224,11 @@ class acsexmpl_EXPORT Mount: public CharacteristicComponentImpl,     //Standard 
        <br><hr>
        @endhtmlonly
      */
-    virtual ActionRequest 
-    objfixAction (BACIComponent *component_p, 
+    virtual baci::ActionRequest 
+    objfixAction (baci::BACIComponent *component_p, 
 		  const int &callbackID,
 		  const CBDescIn &descIn, 
-		  BACIValue *value_p,
+		  baci::BACIValue *value_p,
 		  Completion &completion, 
 		  CBDescOut &descOut);
     
@@ -351,7 +349,7 @@ class acsexmpl_EXPORT Mount: public CharacteristicComponentImpl,     //Standard 
      * ActionFunction is used to run the asynchronous methods from within 
      * invokeAction(...) without actually having to specify 
      * calls to each ...Action(...) method.  This is easily accomplished since 
-     * all ...Action(...) methods return an ActionRequest.
+     * all ...Action(...) methods return an baci::ActionRequest.
      * @param component_p Owner of the action.
      * @param callbackID ID of the callback to be notified.
      * @param descIn Callback descriptor (passed by client).
@@ -369,10 +367,10 @@ class acsexmpl_EXPORT Mount: public CharacteristicComponentImpl,     //Standard 
        <br><hr>
        @endhtmlonly
      */
-    typedef ActionRequest (Mount::*ActionFunction)(BACIComponent *component_p, 
+    typedef baci::ActionRequest (Mount::*ActionFunction)(baci::BACIComponent *component_p, 
 						   const int &callbackID,
 						   const CBDescIn &descIn, 
-						   BACIValue *value_p,
+						   baci::BACIValue *value_p,
 						   Completion &completion, 
 						   CBDescOut &descOut);
     
@@ -386,22 +384,22 @@ class acsexmpl_EXPORT Mount: public CharacteristicComponentImpl,     //Standard 
     /**
      *  m_cmdAz_sp is the antenna's commanded azimuth
      */
-    SmartPropertyPointer<ROdouble> m_cmdAz_sp;
+    baci::SmartPropertyPointer<baci::ROdouble> m_cmdAz_sp;
 
     /**
      *  m_cmdEl_sp is the antenna's commanded elevation
      */
-    SmartPropertyPointer<ROdouble> m_cmdEl_sp;
+    baci::SmartPropertyPointer<baci::ROdouble> m_cmdEl_sp;
 
     /**
      *  m_actAz_sp is the antenna's actual azimuth
      */
-    SmartPropertyPointer<ROdouble> m_actAz_sp;
+    baci::SmartPropertyPointer<baci::ROdouble> m_actAz_sp;
 
     /**
      *  m_actEl_sp is the antenna's actual elevation
      */
-    SmartPropertyPointer<ROdouble> m_actEl_sp;
+    baci::SmartPropertyPointer<baci::ROdouble> m_actEl_sp;
 
     /**
      * ALMA C++ coding standards state copy operators should be disabled.

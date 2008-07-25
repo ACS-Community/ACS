@@ -39,13 +39,13 @@
 /**
  * Helper macro defines template parameters.
  */
-#define ACS_RW_SEQ_T(T, TC) ACS::T##Seq*, ACS::CB##T##Seq, ACS::T##Seq##Seq, ACS::T##Seq##Seq_out, ACS::Monitor##T, Monitor##T##Seq, ACS::T##Seq, TC, TC, POA_ACS::RW##T##Seq, const ACS::T##Seq&
+#define ACS_RW_SEQ_T(T, TC) ACS::T##Seq*, ACS::CB##T##Seq, ACS::T##Seq##Seq, ACS::T##Seq##Seq_out, ACS::Monitor##T, baci::Monitor##T##Seq, ACS::T##Seq, TC, TC, POA_ACS::RW##T##Seq, const ACS::T##Seq&
 
 namespace baci {
 
 template <ACS_RW_C> 
 class RWSeqContImpl : public virtual POA_SK,
-		      public RWcontImpl<ACS_RW_TL> 
+		      public baci::RWcontImpl<ACS_RW_TL> 
 {
   public:
     RWSeqContImpl(const ACE_CString& name, BACIComponent *component_p, DevIO<TM> *devIO=0, bool flagdeldevIO=false);

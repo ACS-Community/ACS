@@ -27,7 +27,7 @@ class BulkDataReceiver1PerfCb : public BulkDataCallback
     double sum_frame();
     
     ACE_Time_Value start_time;
-    vector<double> dstats;
+    std::vector<double> dstats;
     int start;
     long count;
     long size;

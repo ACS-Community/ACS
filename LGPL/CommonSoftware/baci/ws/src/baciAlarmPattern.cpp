@@ -4,6 +4,7 @@
 #include <PatternAlarmTriggered.h>
 #include <PatternAlarmCleared.h>
 
+using namespace baci;
 
 AlarmEventStrategyPattern::AlarmEventStrategyPattern(ROpatternImpl * property, EventDispatcher * eventDispatcher):
 	AlarmEventStrategyDisc<ACS::pattern, ROpatternImpl, ACS::Alarmpattern>(property, eventDispatcher),

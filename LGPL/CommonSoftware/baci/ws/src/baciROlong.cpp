@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciROlong.cpp,v 1.98 2006/09/24 18:43:39 bjeram Exp $"
+* "@(#) $Id: baciROlong.cpp,v 1.99 2008/07/25 07:29:52 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -34,7 +34,7 @@
 #include "baciROcontImpl_T.i"
 #include "baciMonitor_T.i"
 
-template class Monitor<ACS_MONITOR(long, CORBA::Long)>;
-template class ROcontImpl<ACS_RO_T(long, CORBA::Long)>;
+template class baci::Monitor<ACS_MONITOR(long, CORBA::Long)>;
+template class baci::ROcontImpl<ACS_RO_T(long, CORBA::Long)>;
 /*___oOo___*/
 

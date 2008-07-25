@@ -21,7 +21,7 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
  *
- * "@(#) $Id: maciContainerServices.h,v 1.28 2008/02/24 17:07:39 msekoran Exp $"
+ * "@(#) $Id: maciContainerServices.h,v 1.29 2008/07/25 07:32:36 cparedes Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -47,8 +47,6 @@
 
 namespace maci {
 	
-using namespace acsErrTypeContainerServices;
-
 class ContainerImpl;
 
 /**

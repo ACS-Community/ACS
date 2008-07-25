@@ -3,7 +3,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: enumpropROImpl.h,v 1.45 2007/06/14 08:54:06 nbarriga Exp $"
+* "@(#) $Id: enumpropROImpl.h,v 1.46 2008/07/25 07:31:03 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -27,9 +27,6 @@
 #include <baciCharacteristicModelImpl.h>
 #include "enumpropAlarmSystemMonitorEnumProp.h"
 
-using namespace baci;
-using namespace baciErrTypeProperty;
-
 #define HISTORY_SIZE 32
 
 
@@ -41,9 +38,9 @@ using namespace baciErrTypeProperty;
 template <ACS_ENUM_C>
 class ROEnumImpl: public virtual PortableServer::RefCountServantBase,
 		  public SK, 
-		  public CharacteristicModelImpl,
-		  public PropertyImplementator,
-		  public ActionImplementator 
+		  public baci::CharacteristicModelImpl,
+		  public baci::PropertyImplementator,
+		  public baci::ActionImplementator 
 {
 
 public:
@@ -54,7 +51,7 @@ public:
    * @param name property name (e.q. AMSMount:decliantion)
    * @param cob parent of the property
    */
-  ROEnumImpl(const ACE_CString& name, BACIComponent *cob, DevIO<T> *devIO=0, bool flagdeldevIO=false);
+  ROEnumImpl(const ACE_CString& name, baci::BACIComponent *cob, DevIO<T> *devIO=0, bool flagdeldevIO=false);
    
   /**
    * Destructor
@@ -81,7 +78,7 @@ public:
   /**
    * BACI Monitor instance accessor
    */
-  BACIProperty* getProperty() const 
+  baci::BACIProperty* getProperty() const 
   { 
     return property_mp;
   }
@@ -104,8 +101,8 @@ public:
   /***
    * Implementation of async. get_value method
    */
-  virtual ActionRequest getValueAction(BACIComponent* cob, const int& callbackID,
-							const CBDescIn& descIn, BACIValue* value,
+  virtual baci::ActionRequest getValueAction(baci::BACIComponent* cob, const int& callbackID,
+							const CBDescIn& descIn, baci::BACIValue* value,
 							Completion& completion, CBDescOut& descOut);
 
   /* --------------- [ Action implementator interface ] -------------- */
@@ -127,9 +124,9 @@ public:
    *  <li><b><i>reqDestroy</b></i> - destroy callback (callback should has been called already by function)
    * </ul>
    */
-  virtual ActionRequest invokeAction(int function,
-				     BACIComponent* cob, const int& callbackID, 
-				     const CBDescIn& descIn, BACIValue* value, 
+  virtual baci::ActionRequest invokeAction(int function,
+				     baci::BACIComponent* cob, const int& callbackID, 
+				     const CBDescIn& descIn, baci::BACIValue* value, 
 				     Completion& completion, CBDescOut& descOut);
 
   /* -------------- [ Property implementator interface ] -------------- */
@@ -141,8 +138,8 @@ public:
    * @param completion error handling structure
    * @param descOut callback descriptor
    */
-  virtual void getValue(BACIProperty* property,
-			BACIValue* value, 
+  virtual void getValue(baci::BACIProperty* property,
+			baci::BACIValue* value, 
 			Completion &completion,
 			CBDescOut& descOut);
 
@@ -384,13 +381,13 @@ public:
     CORBA::Object_ptr reference_mp;
     
     /// BACI property
-    BACIProperty* property_mp;
+    baci::BACIProperty* property_mp;
     
     /// Event dispatcher;
-    MonitorenumpropEventDispatcher *monitorEventDispatcher_mp;
+    baci::MonitorenumpropEventDispatcher *monitorEventDispatcher_mp;
     
     /// alarm system monitor
-    AlarmSystemMonitorEnumProp<T, ROEnumImpl<ACS_ENUM_T(T), SK> > *alarmSystemMonitorEnumProp_mp;
+    baci::AlarmSystemMonitorEnumProp<T, ROEnumImpl<ACS_ENUM_T(T), SK> > *alarmSystemMonitorEnumProp_mp;
 
     /// history value buffer
     T historyValue_m[HISTORY_SIZE];

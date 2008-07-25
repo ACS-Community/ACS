@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciRWstring.cpp,v 1.91 2004/06/11 10:29:07 bjeram Exp $"
+* "@(#) $Id: baciRWstring.cpp,v 1.92 2008/07/25 07:29:52 cparedes Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -28,5 +28,5 @@
 #include "baciRWstring.h"
 #include "baciRWdiscImpl_T.i"
 
-template class RWdiscImpl<char*, ACS::CBstring, ACS::stringSeq, ACS::stringSeq_out, ACS::Monitor, MonitorstringImpl, ACE_CString, char*, ACE_CString, POA_ACS::RWstring, const char*>;
+template class baci::RWdiscImpl<char*, ACS::CBstring, ACS::stringSeq, ACS::stringSeq_out, ACS::Monitor, baci::MonitorstringImpl, ACE_CString, char*, ACE_CString, POA_ACS::RWstring, const char*>;
 

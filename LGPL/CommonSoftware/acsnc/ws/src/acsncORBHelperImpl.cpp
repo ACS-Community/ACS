@@ -19,7 +19,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsncORBHelperImpl.cpp,v 1.58 2007/09/09 08:01:42 hsommer Exp $"
+* "@(#) $Id: acsncORBHelperImpl.cpp,v 1.59 2008/07/25 07:35:19 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -32,6 +32,7 @@
 #include <acscommonC.h>
 //-----------------------------------------------------------------------------
  using namespace baci;
+ using namespace ACSErrTypeCommon;
 //-----------------------------------------------------------------------------
 namespace nc {
 //-----------------------------------------------------------------------------

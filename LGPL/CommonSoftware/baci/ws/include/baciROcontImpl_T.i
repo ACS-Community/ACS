@@ -23,7 +23,7 @@
 #include <cdbErrType.h>
 
 template<ACS_RO_C> 
-ROcontImpl<ACS_RO_TL>::ROcontImpl(const ACE_CString& name, BACIComponent* component_p, DevIO<TM>* devIO, bool flagdeldevIO) : 
+baci::ROcontImpl<ACS_RO_TL>::ROcontImpl(const ACE_CString& name, BACIComponent* component_p, DevIO<TM>* devIO, bool flagdeldevIO) : 
     ROcommonImpl<ACS_RO_TL>(name, component_p, devIO, flagdeldevIO),
     PcontImpl<ACS_P_TL>(name, this->getProperty(), component_p, devIO, flagdeldevIO),
     alarmSystemMonitor_mp(0)
@@ -52,7 +52,7 @@ ROcontImpl<ACS_RO_TL>::ROcontImpl(const ACE_CString& name, BACIComponent* compon
 
 
 template<ACS_RO_C> 
-ROcontImpl<ACS_RO_TL>::ROcontImpl(bool init, const ACE_CString& name, BACIComponent* component_p, DevIO<TM>* devIO, bool flagdeldevIO) : 
+baci::ROcontImpl<ACS_RO_TL>::ROcontImpl(bool init, const ACE_CString& name, BACIComponent* component_p, DevIO<TM>* devIO, bool flagdeldevIO) : 
     ROcommonImpl<ACS_RO_TL>(init, name, component_p, devIO, flagdeldevIO),
     PcontImpl<ACS_P_TL>(name, this->getProperty(), component_p, devIO, flagdeldevIO),
     alarmSystemMonitor_mp(0)
@@ -77,7 +77,7 @@ ROcontImpl<ACS_RO_TL>::ROcontImpl(bool init, const ACE_CString& name, BACICompon
   this->initialization_m = 0;
 }
 
-template<ACS_RO_C> ROcontImpl<ACS_RO_TL>::~ROcontImpl()
+template<ACS_RO_C> baci::ROcontImpl<ACS_RO_TL>::~ROcontImpl()
 {
   ACS_TRACE("baci::ROcontImpl&lt;&gt;::~ROcontImpl");
   if (alarmSystemMonitor_mp) 
@@ -88,10 +88,10 @@ template<ACS_RO_C> ROcontImpl<ACS_RO_TL>::~ROcontImpl()
 }
 
 template<ACS_RO_C> 
-bool ROcontImpl<ACS_RO_TL>::readCharacteristics()
+bool baci::ROcontImpl<ACS_RO_TL>::readCharacteristics()
 {
 
-  DAONode* dao = this->getDAONode();
+  cdb::DAONode* dao = this->getDAONode();
   if (!dao)
       return false;
   
@@ -133,7 +133,7 @@ bool ROcontImpl<ACS_RO_TL>::readCharacteristics()
 
 
 template<ACS_RO_C> 
-TS ROcontImpl<ACS_RO_TL>::alarm_low_on ()
+TS baci::ROcontImpl<ACS_RO_TL>::alarm_low_on ()
   throw (CORBA::SystemException)
 {
 
@@ -142,7 +142,7 @@ TS ROcontImpl<ACS_RO_TL>::alarm_low_on ()
 
 
 template<ACS_RO_C> 
-TS ROcontImpl<ACS_RO_TL>::alarm_low_off ()
+TS baci::ROcontImpl<ACS_RO_TL>::alarm_low_off ()
   throw (CORBA::SystemException)
 {
 
@@ -150,7 +150,7 @@ TS ROcontImpl<ACS_RO_TL>::alarm_low_off ()
 }
 
 template<ACS_RO_C> 
-TS ROcontImpl<ACS_RO_TL>::alarm_high_on ()
+TS baci::ROcontImpl<ACS_RO_TL>::alarm_high_on ()
   throw (CORBA::SystemException) 
 {
 
@@ -158,7 +158,7 @@ TS ROcontImpl<ACS_RO_TL>::alarm_high_on ()
 }
 
 template<ACS_RO_C> 
-TS ROcontImpl<ACS_RO_TL>::alarm_high_off ()
+TS baci::ROcontImpl<ACS_RO_TL>::alarm_high_off ()
   throw (CORBA::SystemException)
 {
 
@@ -168,7 +168,7 @@ TS ROcontImpl<ACS_RO_TL>::alarm_high_off ()
 /* ---------------------- [ CORBA interface ] ---------------------- */
 
 template<ACS_RO_C>
-ACS::Subscription_ptr ROcontImpl<ACS_RO_TL>::new_subscription_Alarm (TAlarm *cb,
+ACS::Subscription_ptr baci::ROcontImpl<ACS_RO_TL>::new_subscription_Alarm (TAlarm *cb,
 					const ACS::CBDescIn & desc
 					)
   throw (CORBA::SystemException)

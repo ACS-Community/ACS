@@ -68,13 +68,13 @@ class BulkDataSenderNotifImpl : public virtual BulkDataSenderDefaultImpl
     virtual ~BulkDataSenderNotifImpl();
       
     virtual void startSend()
-	throw (CORBA::SystemException, AVStartSendErrorEx);
+	throw (CORBA::SystemException, ACSBulkDataError::AVStartSendErrorEx);
     
     virtual void paceData ()
-        throw (CORBA::SystemException, AVPaceDataErrorEx);
+        throw (CORBA::SystemException, ACSBulkDataError::AVPaceDataErrorEx);
 	
     virtual void stopSend()
-	throw (CORBA::SystemException, AVStopSendErrorEx);
+	throw (CORBA::SystemException, ACSBulkDataError::AVStopSendErrorEx);
 };
 
 #endif /* _BULKDATA_SENDER_NOTIF_IMPL_H */

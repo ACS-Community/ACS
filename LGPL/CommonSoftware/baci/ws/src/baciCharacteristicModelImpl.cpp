@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciCharacteristicModelImpl.cpp,v 1.13 2006/10/04 14:26:40 gchiozzi Exp $"
+* "@(#) $Id: baciCharacteristicModelImpl.cpp,v 1.14 2008/07/25 07:29:52 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -29,6 +29,8 @@
 #include "baciCharacteristicModelImpl.h"
 #include "baciCDBPropertySet.h"
 #include <cdbErrType.h>
+
+using namespace std;
 
 namespace baci {
 
@@ -53,7 +55,7 @@ CharacteristicModelImpl::CharacteristicModelImpl(const ACE_CString& model_name, 
 	    PortableServer::POA_var op = containerServices->createOffShootPOA();
 	    offShootPOA = op._retn();
 	    }
-	m_daoNode_p = new DAONode(prefixedName.c_str(), dal.in(), offShootPOA/*.in()*/);
+	m_daoNode_p = new cdb::DAONode(prefixedName.c_str(), dal.in(), offShootPOA/*.in()*/);
 	}
 
     /**

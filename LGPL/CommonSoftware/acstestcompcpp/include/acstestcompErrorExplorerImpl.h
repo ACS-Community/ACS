@@ -22,7 +22,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: acstestcompErrorExplorerImpl.h,v 1.1 2006/09/28 16:02:57 gchiozzi Exp $"
+* "@(#) $Id: acstestcompErrorExplorerImpl.h,v 1.2 2008/07/25 07:36:17 cparedes Exp $"
 *
 */
 
@@ -42,8 +42,6 @@
 ///Import the template for the smart pointer
 #include <baciSmartPropertyPointer.h>
 
-using namespace baci; 
-
 /** @file acstestcompErrorExplorerImpl.h
  */
 
@@ -60,10 +58,10 @@ using namespace baci;
  * 
  * @author <a href=mailto:matej.sekoranja@ijs.si>Matej Sekoranja</a>,
  * Jozef Stefan Institute, Slovenia<br>
- * @version "@(#) $Id: acstestcompErrorExplorerImpl.h,v 1.1 2006/09/28 16:02:57 gchiozzi Exp $"
+ * @version "@(#) $Id: acstestcompErrorExplorerImpl.h,v 1.2 2008/07/25 07:36:17 cparedes Exp $"
  */
 
-class ErrorExplorerImpl: public CharacteristicComponentImpl,     //Standard component superclass
+class ErrorExplorerImpl: public baci::CharacteristicComponentImpl,     //Standard component superclass
 			 public virtual POA_acstestcomp::ErrorExplorer    //CORBA servant stub
 {
   public:
@@ -101,7 +99,7 @@ class ErrorExplorerImpl: public CharacteristicComponentImpl,     //Standard comp
     /**
      *  m_readback_sp is the actual value of ErrorExplorer's current.
      */
-    SmartPropertyPointer<RWdouble> m_explorerDoubleProperty_sp;
+    baci::SmartPropertyPointer<baci::RWdouble> m_explorerDoubleProperty_sp;
     
     /**
      * ALMA C++ coding standards state copy operators should be disabled.

@@ -18,7 +18,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: taskStaticContainer.h,v 1.6 2005/04/20 15:42:47 bjeram Exp $"
+* "@(#) $Id: taskStaticContainer.h,v 1.7 2008/07/25 07:33:13 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -38,8 +38,6 @@
 #include <maciLibraryManager.h>
 #include <acserr.h>
 #include <ARGV.h>
-
-using namespace maci;
 
 class StaticContainer
 {

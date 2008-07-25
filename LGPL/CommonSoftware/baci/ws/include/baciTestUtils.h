@@ -19,7 +19,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciTestUtils.h,v 1.101 2006/12/13 11:34:00 bjeram Exp $"
+* "@(#) $Id: baciTestUtils.h,v 1.102 2008/07/25 07:29:52 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -47,8 +47,6 @@
 
 #include <string>
 #include <baci.h>
-
- using namespace baci;
 
 class baciTestCBvoid: public virtual POA_ACS::CBvoid
 {

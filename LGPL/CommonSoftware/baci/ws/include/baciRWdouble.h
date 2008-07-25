@@ -19,7 +19,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciRWdouble.h,v 1.94 2006/09/01 02:20:54 cparedes Exp $"
+* "@(#) $Id: baciRWdouble.h,v 1.95 2008/07/25 07:29:52 cparedes Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -48,7 +48,7 @@ namespace baci {
  *  @{
  * The Monitordouble class is an implementation of the ACS::Monitordouble IDL interface.
  */
-typedef  Monitor<ACS_MONITOR(double, CORBA::Double)> Monitordouble;
+typedef  baci::Monitor<ACS_MONITOR(double, CORBA::Double)> Monitordouble;
 /** @} */
 
 /** @defgroup RWdoubleTemplate RWdouble Class
@@ -56,7 +56,7 @@ typedef  Monitor<ACS_MONITOR(double, CORBA::Double)> Monitordouble;
  *  @{
  * The RWdouble class is an implementation of the ACS::RWdouble IDL interface.
  */
-typedef  RWcontImpl<ACS_RW_T(double, CORBA::Double)> RWdouble;
+typedef  baci::RWcontImpl<ACS_RW_T(double, CORBA::Double)> RWdouble;
 /** @} */
 
  }; 

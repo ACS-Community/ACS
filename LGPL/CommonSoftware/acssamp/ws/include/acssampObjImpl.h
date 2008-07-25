@@ -21,7 +21,7 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
  *
- * "@(#) $Id: acssampObjImpl.h,v 1.28 2008/02/29 09:48:48 bjeram Exp $"
+ * "@(#) $Id: acssampObjImpl.h,v 1.29 2008/07/25 07:39:52 cparedes Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -48,10 +48,6 @@
 #define ACS_SAMP_C class T, class T_var, class Tval
 #define ACS_SAMP_TL T, T_var, Tval
 
-
-using namespace baci;
-using namespace std;
-using namespace ACSErrTypeCommon;
 
 /** @file acssampObjImpl.h
  *  Header file for the sampling object. It contains all method dealing 
@@ -170,7 +166,7 @@ class ACSSampObjImpl: public virtual POA_acssamp::SampObj,
 
 
     ACSSampObjImpl(const ACE_CString& _cobName, const ACE_CString& _propertyName, 
-		   ACS::TimeInterval _sampFrequency, ACS::TimeInterval _sampReportRate, BACIComponent *_m_cob, ACS::Property_var _genProperty, ACSSampImpl * _sampPtr);
+		   ACS::TimeInterval _sampFrequency, ACS::TimeInterval _sampReportRate, baci::BACIComponent *_m_cob, ACS::Property_var _genProperty, ACSSampImpl * _sampPtr);
 
     /**
      * Destructor
@@ -321,8 +317,8 @@ class ACSSampObjImpl: public virtual POA_acssamp::SampObj,
      * @endhtmlonly
      */
     virtual void initialize( )
-	throw (CORBA::SystemException, OutOfBoundsExImpl,MemoryFaultExImpl,
-	       CORBAProblemExImpl,CouldntCreateObjectExImpl);
+	throw (CORBA::SystemException, ACSErrTypeCommon::OutOfBoundsExImpl,ACSErrTypeCommon::MemoryFaultExImpl,
+	       ACSErrTypeCommon::CORBAProblemExImpl,ACSErrTypeCommon::CouldntCreateObjectExImpl);
 
     /**
      * Do the sampling. Retrieves data from the property using
@@ -458,7 +454,7 @@ class ACSSampObjImpl: public virtual POA_acssamp::SampObj,
     /** BACI Component instance
      *  This is a reference to the factory CORBA object
      */
-    BACIComponent *cob_p;
+    baci::BACIComponent *cob_p;
 
     /**
      *  controlLoop_p is only started once the sampling object is initialized,

@@ -21,7 +21,7 @@
 #include "baciPcommonImpl_T.i"
 
 template<ACS_P_C> 
-PcontImpl<ACS_P_TL>::PcontImpl(const ACE_CString& name, BACIProperty *property_p, BACIComponent* component_p, DevIO<TM>* devIO, bool flagdeldevIO) 
+baci::PcontImpl<ACS_P_TL>::PcontImpl(const ACE_CString& name, BACIProperty *property_p, BACIComponent* component_p, DevIO<TM>* devIO, bool flagdeldevIO) 
 {
   ACS_TRACE("baci::PcontImpl&lt;&gt;::PcontImpl");
   ACE_UNUSED_ARG(component_p);
@@ -38,16 +38,16 @@ PcontImpl<ACS_P_TL>::PcontImpl(const ACE_CString& name, BACIProperty *property_p
   ACS_DEBUG("baci::PcontImpl&lt;&gt;::PcontImpl", "Successfully created.");
 }
  
-template<ACS_P_C> PcontImpl<ACS_P_TL>::~PcontImpl()
+template<ACS_P_C> baci::PcontImpl<ACS_P_TL>::~PcontImpl()
 {
   ACS_TRACE("baci::PcontImpl&lt;&gt;::~PcontImpl");
 }
 
 template<ACS_P_C> 
-bool PcontImpl<ACS_P_TL>::readCharacteristics(CharacteristicModelImpl *model)
+bool baci::PcontImpl<ACS_P_TL>::readCharacteristics(CharacteristicModelImpl *model)
 {
 
-  DAONode* dao = model->getDAONode();
+  cdb::DAONode* dao = model->getDAONode();
   if (!dao)
       return false;
   
@@ -89,7 +89,7 @@ bool PcontImpl<ACS_P_TL>::readCharacteristics(CharacteristicModelImpl *model)
 
 
 template<ACS_P_C>
-TS PcontImpl<ACS_P_TL>::min_delta_trigger ()
+TS baci::PcontImpl<ACS_P_TL>::min_delta_trigger ()
   throw (CORBA::SystemException)
 {
 
@@ -97,7 +97,7 @@ TS PcontImpl<ACS_P_TL>::min_delta_trigger ()
 }
 
 template<ACS_P_C> 
-TS PcontImpl<ACS_P_TL>::graph_min ()
+TS baci::PcontImpl<ACS_P_TL>::graph_min ()
   throw (CORBA::SystemException)
 {
 
@@ -105,7 +105,7 @@ TS PcontImpl<ACS_P_TL>::graph_min ()
 }
 
 template<ACS_P_C> 
-TS PcontImpl<ACS_P_TL>::graph_max ()
+TS baci::PcontImpl<ACS_P_TL>::graph_max ()
   throw (CORBA::SystemException)
 {
 
@@ -113,7 +113,7 @@ TS PcontImpl<ACS_P_TL>::graph_max ()
 }
 
 template<ACS_P_C> 
-TS PcontImpl<ACS_P_TL>::min_step ()
+TS baci::PcontImpl<ACS_P_TL>::min_step ()
   throw (CORBA::SystemException)
 {
 

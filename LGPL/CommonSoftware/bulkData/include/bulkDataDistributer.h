@@ -39,10 +39,6 @@
 /** @file bulkDataDistributer.h  
  */
 
-using namespace std;
-using namespace ACSBulkDataError;
-
-
 namespace AcsBulkdata
 {  
     /** @defgroup BULKDATADISTRIBUTERDOC Bulk Data Distributer
@@ -110,10 +106,10 @@ namespace AcsBulkdata
 	virtual ~BulkDataDistributer();
 
 	virtual void multiConnect(bulkdata::BulkDataReceiverConfig *recvConfig_p, const char *fepsConfig, const ACE_CString& receiverName)
-	    throw (AVConnectErrorExImpl);
+	    throw (ACSBulkDataError::AVConnectErrorExImpl);
 	
 	virtual void multiDisconnect(const ACE_CString& receiverName)
-	    throw (AVDisconnectErrorExImpl);
+	    throw (ACSBulkDataError::AVDisconnectErrorExImpl);
 
 	virtual BulkDataReceiver<TReceiverCallback> *getReceiver() 
 	    {
@@ -144,10 +140,10 @@ namespace AcsBulkdata
 	    {  contSvc_p = services_p; }  
 
 	void subscribeNotification(ACS::CBvoid_ptr notifCb)
-	    throw (AVNotificationMechanismErrorExImpl);
+	    throw (ACSBulkDataError::AVNotificationMechanismErrorExImpl);
 
 	void notifySender(const ACSErr::Completion& comp)
-	    throw (AVNotificationMechanismErrorExImpl);
+	    throw (ACSBulkDataError::AVNotificationMechanismErrorExImpl);
 
 	bulkdata::Connection getSenderConnectionState()
 	    {

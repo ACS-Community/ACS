@@ -51,12 +51,6 @@
 
 #include "ACSBulkDataStatus.h"
 
-using namespace baci;
-using namespace maci;
-using namespace ACSBulkDataStatus;
-using namespace ACSBulkDataStatus;
-using namespace ACSErrTypeCommon;
-
 //forward declaration
 template<class TReceiverCallback, class TSenderCallback>
 class BulkDataDistributerNotifCb;
@@ -84,7 +78,7 @@ bulkDataImpl.h implements the BulkDataDistributer interface
 
 
 template<class TReceiverCallback, class TSenderCallback = BulkDataSenderDefaultCallback>
-class BulkDataDistributerImpl : public CharacteristicComponentImpl,
+class BulkDataDistributerImpl : public baci::CharacteristicComponentImpl,
 				public virtual POA_bulkdata::BulkDataDistributer
 {
     typedef ACE_Pair< bulkdata::BulkDataReceiver_ptr, AcsBulkdata::BulkDataSender<TSenderCallback> *> Sender_Map_Pair;
@@ -124,7 +118,7 @@ class BulkDataDistributerImpl : public CharacteristicComponentImpl,
      @endhtmlonly
     */
     virtual void connect(bulkdata::BulkDataReceiver_ptr receiverObj_p)
-	throw (CORBA::SystemException, AVConnectErrorEx);
+	throw (CORBA::SystemException, ACSBulkDataError::AVConnectErrorEx);
 
 
     /**
@@ -136,7 +130,7 @@ class BulkDataDistributerImpl : public CharacteristicComponentImpl,
      @endhtmlonly
     */
     virtual void multiConnect(bulkdata::BulkDataReceiver_ptr receiverObj_p)
-	throw (CORBA::SystemException, AVConnectErrorEx);
+	throw (CORBA::SystemException, ACSBulkDataError::AVConnectErrorEx);
 
     /**
      *  Negotiate and initialize connection with the Sender object.
@@ -147,16 +141,16 @@ class BulkDataDistributerImpl : public CharacteristicComponentImpl,
      @endhtmlonly
     */
     virtual void connectByName(const char *receiverName_p)
-	throw (CORBA::SystemException, AVConnectErrorEx);
+	throw (CORBA::SystemException, ACSBulkDataError::AVConnectErrorEx);
 
     virtual void disconnect()
-	throw (CORBA::SystemException, AVDisconnectErrorEx);
+	throw (CORBA::SystemException, ACSBulkDataError::AVDisconnectErrorEx);
 
     virtual void multiDisconnect(bulkdata::BulkDataReceiver_ptr receiverObj_p)
-	throw (CORBA::SystemException, AVDisconnectErrorEx);
+	throw (CORBA::SystemException, ACSBulkDataError::AVDisconnectErrorEx);
 
     virtual void disconnectByName(const char *receiverName_p)
-	throw (CORBA::SystemException, AVDisconnectErrorEx);
+	throw (CORBA::SystemException, ACSBulkDataError::AVDisconnectErrorEx);
 
 
     /** 
@@ -167,7 +161,7 @@ class BulkDataDistributerImpl : public CharacteristicComponentImpl,
      @endhtmlonly
     */
     virtual void startSend()
-	throw (CORBA::SystemException, AVStartSendErrorEx);
+	throw (CORBA::SystemException, ACSBulkDataError::AVStartSendErrorEx);
 
     /**
      *  Sends data to the Receiver calling the receive_frame() method on the Receiver side.
@@ -179,7 +173,7 @@ class BulkDataDistributerImpl : public CharacteristicComponentImpl,
      @endhtmlonly
     */
     virtual void paceData()
-	throw (CORBA::SystemException, AVPaceDataErrorEx);
+	throw (CORBA::SystemException, ACSBulkDataError::AVPaceDataErrorEx);
 
     /** 
      *  Calls the Receiver handle_stop() method.
@@ -189,7 +183,7 @@ class BulkDataDistributerImpl : public CharacteristicComponentImpl,
      @endhtmlonly
     */
     virtual void stopSend()
-	throw (CORBA::SystemException, AVStopSendErrorEx);
+	throw (CORBA::SystemException, ACSBulkDataError::AVStopSendErrorEx);
 
 /************************ Receiver part ********************/
 
@@ -204,16 +198,16 @@ class BulkDataDistributerImpl : public CharacteristicComponentImpl,
      @endhtmlonly
     */
     virtual void openReceiver() 
-	throw (CORBA::SystemException, AVOpenReceiverErrorEx);
+	throw (CORBA::SystemException, ACSBulkDataError::AVOpenReceiverErrorEx);
 
     bulkdata::BulkDataReceiverConfig * getReceiverConfig()
-	throw (CORBA::SystemException, AVReceiverConfigErrorEx);
+	throw (CORBA::SystemException, ACSBulkDataError::AVReceiverConfigErrorEx);
     
     virtual void closeReceiver() 
-	throw (CORBA::SystemException, AVCloseReceiverErrorEx);
+	throw (CORBA::SystemException, ACSBulkDataError::AVCloseReceiverErrorEx);
 
     virtual void setReceiver(const bulkdata::BulkDataReceiverConfig &receiverConfig) 
-	throw (CORBA::SystemException, AVSetReceiverErrorEx);
+	throw (CORBA::SystemException, ACSBulkDataError::AVSetReceiverErrorEx);
 
     //protected:
 
@@ -223,25 +217,25 @@ class BulkDataDistributerImpl : public CharacteristicComponentImpl,
 	}
 
     virtual ACSErr::Completion *getCbStatus(CORBA::ULong flowNumber) 
-	throw (CORBA::SystemException, AVInvalidFlowNumberEx, AVFlowEndpointErrorEx);
+	throw (CORBA::SystemException, ACSBulkDataError::AVInvalidFlowNumberEx, ACSBulkDataError::AVFlowEndpointErrorEx);
 
     virtual ACSErr::Completion *getReceiverCbStatus(const char *recvName, CORBA::ULong flowNumber) 
 	throw (CORBA::SystemException);
 
     virtual void setTimeout(CORBA::ULong flowNumber, CORBA::ULong timeout) 
-	throw (CORBA::SystemException, AVInvalidFlowNumberEx)
+	throw (CORBA::SystemException, ACSBulkDataError::AVInvalidFlowNumberEx)
 	{
 	    //empty
 	}
 
     virtual void setRecvName(const char *recvName) 
-	throw (CORBA::SystemException, AVSetReceiverNameErrorEx)
+	throw (CORBA::SystemException, ACSBulkDataError::AVSetReceiverNameErrorEx)
 	{
 	    //empty
 	}
 
     virtual void subscribeNotification(ACS::CBvoid_ptr notifCb)
-	throw (CORBA::SystemException, AVNotificationMechanismErrorEx);
+	throw (CORBA::SystemException, ACSBulkDataError::AVNotificationMechanismErrorEx);
 
 
   private:

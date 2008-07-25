@@ -1,5 +1,7 @@
 #include "bulkDataSenderNotifImpl.h"
 
+using namespace ACSBulkDataError;
+
 BulkDataSenderNotifImpl::BulkDataSenderNotifImpl(const ACE_CString& name,ContainerServices* containerServices) :
     BulkDataSenderDefaultImpl(name,containerServices)
 {

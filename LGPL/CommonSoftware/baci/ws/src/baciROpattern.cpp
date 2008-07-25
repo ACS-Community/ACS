@@ -18,7 +18,7 @@
  *    License along with this library; if not, write to the Free Software
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: baciROpattern.cpp,v 1.111 2008/02/27 08:54:19 bjeram Exp $"
+ * "@(#) $Id: baciROpattern.cpp,v 1.112 2008/07/25 07:29:52 cparedes Exp $"
  *
  * who       when        what
  * --------  ----------  ----------------------------------------------
@@ -78,7 +78,7 @@ namespace baci {
 
     bool ROpatternImpl::readCharacteristics()
     {
-	DAONode* dao = this->getDAONode();
+	cdb::DAONode* dao = this->getDAONode();
 	if (!dao)
 	    return false;
   

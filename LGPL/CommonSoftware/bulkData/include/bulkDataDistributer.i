@@ -35,7 +35,7 @@ AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::~BulkDataD
 
 template<class TReceiverCallback, class TSenderCallback>
 void AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::multiConnect(bulkdata::BulkDataReceiverConfig *recvConfig_p, const char *fepsConfig, const ACE_CString& receiverName)
-    throw (AVConnectErrorExImpl)
+    throw (ACSBulkDataError::AVConnectErrorExImpl)
 {
     ACS_TRACE("BulkDataDistributer<>::multiConnect");
 
@@ -50,7 +50,7 @@ void AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::multi
 	    else
 		{
 		ACS_SHORT_LOG((LM_WARNING,"BulkDataDistributer<>::multiConnect receiver %s already connected",receiverName.c_str()));
-		AVConnectErrorExImpl err = AVConnectErrorExImpl(__FILE__,__LINE__,"BulkDataDistributer<>::multiConnect");
+		ACSBulkDataError::AVConnectErrorExImpl err = ACSBulkDataError::AVConnectErrorExImpl(__FILE__,__LINE__,"BulkDataDistributer<>::multiConnect");
 		throw err;
 		}
 	    }
@@ -59,7 +59,7 @@ void AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::multi
 	if(sender_p == 0)
 	    {
 	    ACS_SHORT_LOG((LM_ERROR, "BulkDataDistributer<>::multiConnect error creating sender"));
-	    AVConnectErrorExImpl err = AVConnectErrorExImpl(__FILE__,__LINE__,"BulkDataDistributer<>::multiConnect");
+	    ACSBulkDataError::AVConnectErrorExImpl err = ACSBulkDataError::AVConnectErrorExImpl(__FILE__,__LINE__,"BulkDataDistributer<>::multiConnect");
 	    throw err;
 	    }
 
@@ -73,7 +73,7 @@ void AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::multi
 	if(CORBA::is_nil(receiver_p.in()))
 	    {
 	    ACS_SHORT_LOG((LM_ERROR,"BulkDataDistributer<>::multiConnect could not get receiver reference"));	
-	    AVConnectErrorExImpl err = AVConnectErrorExImpl(__FILE__,__LINE__,"BulkDataDistributer<>::multiConnect");
+	    ACSBulkDataError::AVConnectErrorExImpl err = ACSBulkDataError::AVConnectErrorExImpl(__FILE__,__LINE__,"BulkDataDistributer<>::multiConnect");
 	    throw err;
 	    }
 
@@ -87,11 +87,11 @@ void AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::multi
 
 	recvStatusMap_m.bind(receiverName,offset);
 
-	vector<string> flowNames = sender_p->getFlowNames();
+	std::vector<std::string> flowNames = sender_p->getFlowNames();
 	
 	numberOfFlows = flowNames.size();
 
-	vector<string>::size_type flwIdx;
+	std::vector<std::string>::size_type flwIdx;
 	for (flwIdx = 0; flwIdx < numberOfFlows; ++flwIdx)
 	    {
 	    CORBA::ULong currVal = (CORBA::ULong)flwIdx + offset + 1;	    
@@ -100,13 +100,13 @@ void AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::multi
 	}
     catch(ACSErr::ACSbaseExImpl &ex)
 	{
-	AVConnectErrorExImpl err = AVConnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataDistributer<>::multiConnect");
+	ACSBulkDataError::AVConnectErrorExImpl err = ACSBulkDataError::AVConnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataDistributer<>::multiConnect");
 	throw err;
 	}
     catch(...)
 	{
 	ACSErrTypeCommon::UnknownExImpl ex = ACSErrTypeCommon::UnknownExImpl(__FILE__,__LINE__,"BulkDataDistributer::multiConnect");
-	AVConnectErrorExImpl err = AVConnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataDistributer<>::multiConnect");
+	ACSBulkDataError::AVConnectErrorExImpl err = ACSBulkDataError::AVConnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataDistributer<>::multiConnect");
 	throw err;
 	}
 
@@ -116,7 +116,7 @@ void AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::multi
 
 template<class TReceiverCallback, class TSenderCallback>
 void AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::multiDisconnect(const ACE_CString& receiverName)
-    throw (AVDisconnectErrorExImpl)
+    throw (ACSBulkDataError::AVDisconnectErrorExImpl)
 {
     ACS_TRACE("BulkDataDistributer<>::multiDisconnect");
 
@@ -130,7 +130,7 @@ void AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::multi
 	if (senderMap_m.find(receiverName,pair) != 0)
 	    {
 	    ACS_SHORT_LOG((LM_ERROR,"BulkDataDistributer<>::multiDisconnect connected sender not found"));	
-	    AVDisconnectErrorExImpl err = AVDisconnectErrorExImpl(__FILE__,__LINE__,"BulkDataDistributer<>::multiDisconnect");
+	    ACSBulkDataError::AVDisconnectErrorExImpl err = ACSBulkDataError::AVDisconnectErrorExImpl(__FILE__,__LINE__,"BulkDataDistributer<>::multiDisconnect");
 	    throw err;
 	    }
 	else
@@ -140,12 +140,12 @@ void AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::multi
 	    if(CORBA::is_nil(receiver.in()))
 		{
 		ACS_SHORT_LOG((LM_ERROR,"BulkDataDistributer<>::multiDisconnect could not get receiver reference"));	
-		AVDisconnectErrorExImpl err = AVDisconnectErrorExImpl(__FILE__,__LINE__,"BulkDataDistributer<>::multiDisconnect");
+		ACSBulkDataError::AVDisconnectErrorExImpl err = ACSBulkDataError::AVDisconnectErrorExImpl(__FILE__,__LINE__,"BulkDataDistributer<>::multiDisconnect");
 		throw err;
 		}
 	    else
 		{
-		vector<string> vec = locSender_p->getFlowNames();
+		std::vector<std::string> vec = locSender_p->getFlowNames();
 		for(CORBA::ULong i = 0; i < vec.size(); i++)
 		    {
 		    CORBA::Boolean loop = true;
@@ -179,20 +179,20 @@ void AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::multi
 			    ACE_OS::sleep(1);
 			    }
 			}
-		    catch(AVInvalidFlowNumberEx &ex)
+		    catch(ACSBulkDataError::AVInvalidFlowNumberEx &ex)
 			{
-			AVDisconnectErrorExImpl err = AVDisconnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataDistributer::multiDisconnect");
+			ACSBulkDataError::AVDisconnectErrorExImpl err = ACSBulkDataError::AVDisconnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataDistributer::multiDisconnect");
 			throw err;
 			}
-		    catch(AVFlowEndpointErrorEx &ex)
+		    catch(ACSBulkDataError::AVFlowEndpointErrorEx &ex)
 			{
-			AVDisconnectErrorExImpl err = AVDisconnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataDistributer::multiDisconnect");
+			ACSBulkDataError::AVDisconnectErrorExImpl err = ACSBulkDataError::AVDisconnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataDistributer::multiDisconnect");
 			throw err;
 			}
 		    catch(...)
 			{
 			ACSErrTypeCommon::UnknownExImpl ex = ACSErrTypeCommon::UnknownExImpl(__FILE__,__LINE__,"BulkDataDistributer::multiDisconnect");
-			AVDisconnectErrorExImpl err = AVDisconnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataDistributer::multiDisconnect");
+			ACSBulkDataError::AVDisconnectErrorExImpl err = ACSBulkDataError::AVDisconnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataDistributer::multiDisconnect");
 			throw err;
 			}
 		    }
@@ -212,32 +212,32 @@ void AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::multi
 		}
 	    catch(ACSErr::ACSbaseExImpl &ex)
 		{
-		AVDisconnectErrorExImpl err = AVDisconnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataDistributer::multiDisconnect");
+		ACSBulkDataError::AVDisconnectErrorExImpl err = ACSBulkDataError::AVDisconnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataDistributer::multiDisconnect");
 		throw err;
 		}
-	    catch(AVCloseReceiverErrorEx &ex)
+	    catch(ACSBulkDataError::AVCloseReceiverErrorEx &ex)
 		{
-		AVDisconnectErrorExImpl err = AVDisconnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataDistributer::multiDisconnect");
+		ACSBulkDataError::AVDisconnectErrorExImpl err = ACSBulkDataError::AVDisconnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataDistributer::multiDisconnect");
 		throw err;
 		}
 	    catch(...)
 		{
 		ACSErrTypeCommon::UnknownExImpl ex = ACSErrTypeCommon::UnknownExImpl(__FILE__,__LINE__,"BulkDataDistributer::multiDisconnect");
-		AVDisconnectErrorExImpl err = AVDisconnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataDistributer::multiDisconnect");
+		ACSBulkDataError::AVDisconnectErrorExImpl err = ACSBulkDataError::AVDisconnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataDistributer::multiDisconnect");
 		throw err;
 		}
 
 	    }
 	}
-    catch(AVDisconnectErrorExImpl &ex)
+    catch(ACSBulkDataError::AVDisconnectErrorExImpl &ex)
 	{
-	AVDisconnectErrorExImpl err = AVDisconnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataDistributer::multiDisconnect");
+	ACSBulkDataError::AVDisconnectErrorExImpl err = ACSBulkDataError::AVDisconnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataDistributer::multiDisconnect");
 	throw err;
 	}
     catch(...)
 	{
 	ACSErrTypeCommon::UnknownExImpl ex = ACSErrTypeCommon::UnknownExImpl(__FILE__,__LINE__,"BulkDataDistributer::multiDisconnect");
-	AVDisconnectErrorExImpl err = AVDisconnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataDistributer::multiDisconnect");
+	ACSBulkDataError::AVDisconnectErrorExImpl err = ACSBulkDataError::AVDisconnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataDistributer::multiDisconnect");
 	throw err;
 	}
 
@@ -520,13 +520,13 @@ CORBA::Boolean AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallba
 
 template<class TReceiverCallback, class TSenderCallback>
 void AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::subscribeNotification(ACS::CBvoid_ptr notifCb)
-    throw (AVNotificationMechanismErrorExImpl)
+    throw (ACSBulkDataError::AVNotificationMechanismErrorExImpl)
 {
     distributerNotifCb_p = new BulkDataDistributerNotifCb<TReceiverCallback, TSenderCallback>(this);
     if(distributerNotifCb_p == 0)
 	{
 	ACSErrTypeCommon::CouldntCreateObjectExImpl ex = ACSErrTypeCommon::CouldntCreateObjectExImpl(__FILE__,__LINE__,"BulkDataDistributer::multiConnect");
-	AVNotificationMechanismErrorExImpl err = AVNotificationMechanismErrorExImpl(ex,__FILE__,__LINE__,"BulkDataDistributer<>::subscribeNotification");
+	ACSBulkDataError::AVNotificationMechanismErrorExImpl err = ACSBulkDataError::AVNotificationMechanismErrorExImpl(ex,__FILE__,__LINE__,"BulkDataDistributer<>::subscribeNotification");
 	throw err;
 	}
 
@@ -547,18 +547,18 @@ void AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::subsc
 	}
     catch(ACSErr::ACSbaseExImpl &ex)
 	{
-	AVNotificationMechanismErrorExImpl err = AVNotificationMechanismErrorExImpl(ex,__FILE__,__LINE__,"BulkDataDistributer<>::subscribeNotification");
+	ACSBulkDataError::AVNotificationMechanismErrorExImpl err = ACSBulkDataError::AVNotificationMechanismErrorExImpl(ex,__FILE__,__LINE__,"BulkDataDistributer<>::subscribeNotification");
 	throw err;
 	}
-    catch(AVNotificationMechanismErrorEx &ex)
+    catch(ACSBulkDataError::AVNotificationMechanismErrorEx &ex)
 	{
-	AVNotificationMechanismErrorExImpl err = AVNotificationMechanismErrorExImpl(ex,__FILE__,__LINE__,"BulkDataDistributer<>::subscribeNotification");
+	ACSBulkDataError::AVNotificationMechanismErrorExImpl err = ACSBulkDataError::AVNotificationMechanismErrorExImpl(ex,__FILE__,__LINE__,"BulkDataDistributer<>::subscribeNotification");
 	throw err;
 	}
     catch(...)
 	{
 	ACSErrTypeCommon::UnknownExImpl ex = ACSErrTypeCommon::UnknownExImpl(__FILE__,__LINE__,"BulkDataDistributer::subscribeNotification");
-	AVNotificationMechanismErrorExImpl err = AVNotificationMechanismErrorExImpl(ex,__FILE__,__LINE__,"BulkDataDistributer::subscribeNotification");
+	ACSBulkDataError::AVNotificationMechanismErrorExImpl err = ACSBulkDataError::AVNotificationMechanismErrorExImpl(ex,__FILE__,__LINE__,"BulkDataDistributer::subscribeNotification");
 	throw err;	
 	}
 }
@@ -566,7 +566,7 @@ void AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::subsc
 
 template<class TReceiverCallback, class TSenderCallback>
 void AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::notifySender(const ACSErr::Completion& comp)
-    throw (AVNotificationMechanismErrorExImpl)
+    throw (ACSBulkDataError::AVNotificationMechanismErrorExImpl)
 {
     CompletionImpl complImp = comp;
     complImp.log(LM_DEBUG);
@@ -579,8 +579,8 @@ void AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::notif
     else
 	{
 	ACS_SHORT_LOG((LM_ERROR,"BulkDataDistributer<>::notifySender callback reference null"));
-	AVCallbackErrorExImpl ex = AVCallbackErrorExImpl(__FILE__,__LINE__,"BulkDataDistributer::notifySender");
-	AVNotificationMechanismErrorExImpl err = AVNotificationMechanismErrorExImpl(ex,__FILE__,__LINE__,"BulkDataDistributer::notifySender");
+	ACSBulkDataError::AVCallbackErrorExImpl ex = ACSBulkDataError::AVCallbackErrorExImpl(__FILE__,__LINE__,"BulkDataDistributer::notifySender");
+	ACSBulkDataError::AVNotificationMechanismErrorExImpl err = ACSBulkDataError::AVNotificationMechanismErrorExImpl(ex,__FILE__,__LINE__,"BulkDataDistributer::notifySender");
 	throw err;
 	}
 }

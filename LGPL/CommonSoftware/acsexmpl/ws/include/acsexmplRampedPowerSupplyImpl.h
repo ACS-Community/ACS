@@ -21,7 +21,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: acsexmplRampedPowerSupplyImpl.h,v 1.99 2007/02/01 05:14:26 cparedes Exp $"
+* "@(#) $Id: acsexmplRampedPowerSupplyImpl.h,v 1.100 2008/07/25 07:37:04 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -54,8 +54,6 @@
 
 ///Include the smart pointer for the properties
 #include <baciSmartPropertyPointer.h>
-
-using namespace baci;
 
 /** @file acsexmplRampedPowerSupplyImpl.h
  */
@@ -126,7 +124,7 @@ defined in two separate IDLs.
  *  
  *  @author <a href=mailto:matej.sekoranja@ijs.si>Matej Sekoranja</a>,
  *  Jozef Stefan Institute, Slovenia<br>
- *  @version "@(#) $Id: acsexmplRampedPowerSupplyImpl.h,v 1.99 2007/02/01 05:14:26 cparedes Exp $"
+ *  @version "@(#) $Id: acsexmplRampedPowerSupplyImpl.h,v 1.100 2008/07/25 07:37:04 cparedes Exp $"
  */
 class acsexmpl_EXPORT RampedPowerSupply: public PowerSupply,     //PowerSupply's superclass is CharacteristicComponent
 					 public virtual POA_RampedPS::RampedPowerSupply    //CORBA servant stub
@@ -173,12 +171,12 @@ class acsexmpl_EXPORT RampedPowerSupply: public PowerSupply,     //PowerSupply's
      *  <li><b><i>reqDestroy</b></i> - destroy callback (callback should has been called already by function)
      * </ul>
      */
-    virtual ActionRequest 
+    virtual baci::ActionRequest 
     invokeAction (int function,
-		  BACIComponent *component_p, 
+		  baci::BACIComponent *component_p, 
 		  const int &callbackID, 
 		  const CBDescIn &descIn, 
-		  BACIValue *value_p, 
+		  baci::BACIValue *value_p, 
 		  Completion &completion, 
 		  CBDescOut &descOut);
     
@@ -204,11 +202,11 @@ class acsexmpl_EXPORT RampedPowerSupply: public PowerSupply,     //PowerSupply's
        <br><hr>
        @endhtmlonly
      */
-    virtual ActionRequest 
-    startRampingAction (BACIComponent *component_p, 
+    virtual baci::ActionRequest 
+    startRampingAction (baci::BACIComponent *component_p, 
 			const int &callbackID,
 			const CBDescIn &descIn, 
-			BACIValue *value_p,
+			baci::BACIValue *value_p,
 			Completion &completion, 
 			CBDescOut &descOut);
     /**
@@ -233,11 +231,11 @@ class acsexmpl_EXPORT RampedPowerSupply: public PowerSupply,     //PowerSupply's
        <br><hr>
        @endhtmlonly
      */
-    virtual ActionRequest 
-    stopRampingAction (BACIComponent *component_p,
+    virtual baci::ActionRequest 
+    stopRampingAction (baci::BACIComponent *component_p,
 		       const int &callbackID,
 		       const CBDescIn &descIn,
-		       BACIValue *value_p,
+		       baci::BACIValue *value_p,
 		       Completion &completion,
 		       CBDescOut &descOut);
     
@@ -307,7 +305,7 @@ class acsexmpl_EXPORT RampedPowerSupply: public PowerSupply,     //PowerSupply's
     /**
      *  m_rampingStep_p is the RampedPowerSupply's present step in the ramping process.
      */
-     SmartPropertyPointer<ROlong> m_rampingStep_sp;
+     baci::SmartPropertyPointer<baci::ROlong> m_rampingStep_sp;
 
     /**
      * m_rampingStep_devio_p is the DevIO subclass passed to the RampingStep property when
@@ -320,7 +318,7 @@ class acsexmpl_EXPORT RampedPowerSupply: public PowerSupply,     //PowerSupply's
     /**
      *  m_rampingStatus_p is the RampedPowerSupply's status in the ramping process.
      */
-     SmartPropertyPointer<RWstring> m_rampingStatus_sp;
+     baci::SmartPropertyPointer<baci::RWstring> m_rampingStatus_sp;
 
     /**
      * ALMA C++ coding standards state copy operators should be disabled.

@@ -16,7 +16,7 @@
  *License along with this library; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: acssampObjImpl.i,v 1.7 2008/02/29 09:48:48 bjeram Exp $"
+ * "@(#) $Id: acssampObjImpl.i,v 1.8 2008/07/25 07:39:52 cparedes Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -32,11 +32,6 @@
  *  Source file for sampling object implementatation (it is a template class).  
  */
 
-using namespace baci;
-using namespace maci;
-using namespace std;
-using namespace ACSErrTypeCommon;
-
 
 //
 // ACSSampObjImpl Constructor
@@ -45,7 +40,7 @@ template <ACS_SAMP_C>
 ACSSampObjImpl<ACS_SAMP_TL>::ACSSampObjImpl(const ACE_CString& _cobName,
 					    const ACE_CString& _propertyName, 
 					    ACS::TimeInterval _sampFrequency, ACS::TimeInterval _sampReportRate,
-					    BACIComponent *_m_cob, ACS::Property_var _genProperty, 
+					    baci::BACIComponent *_m_cob, ACS::Property_var _genProperty, 
 					    ACSSampImpl * _sampPtr) :
     cobName(_cobName),propertyName(_propertyName),sampFrequency(_sampFrequency),
     sampReportRate(_sampReportRate),cob_p(_m_cob), genProperty_p(_genProperty),samp_p(_sampPtr)
@@ -55,7 +50,7 @@ ACSSampObjImpl<ACS_SAMP_TL>::ACSSampObjImpl(const ACE_CString& _cobName,
     
     inDestructState = false;
     
-    ostringstream os;
+    std::ostringstream os;
     os << sampFrequency << "_" << sampReportRate;
     
     // this will be the name of the sampling object
@@ -118,8 +113,8 @@ ACSSampObjImpl<ACS_SAMP_TL>::~ACSSampObjImpl()
 //
 template <ACS_SAMP_C> 
 void ACSSampObjImpl<ACS_SAMP_TL>::initialize()
-    throw (CORBA::SystemException, OutOfBoundsExImpl,MemoryFaultExImpl,
-	   CORBAProblemExImpl,CouldntCreateObjectExImpl)
+    throw (CORBA::SystemException, ACSErrTypeCommon::OutOfBoundsExImpl,ACSErrTypeCommon::MemoryFaultExImpl,
+	   ACSErrTypeCommon::CORBAProblemExImpl,ACSErrTypeCommon::CouldntCreateObjectExImpl)
 {
     ACS_TRACE("acssamp::ACSSampObjImpl::initialize");
 
@@ -128,8 +123,8 @@ void ACSSampObjImpl<ACS_SAMP_TL>::initialize()
 	if (sampFrequency < 1 || sampReportRate < 1)
 	    {
 	    ACS_SHORT_LOG((LM_INFO,"frequency or polling interval must be greater then 1"));
-	    OutOfBoundsExImpl err = 
-		OutOfBoundsExImpl(__FILE__,__LINE__,"ACSSampObjImpl::initialize");
+	    ACSErrTypeCommon::OutOfBoundsExImpl err = 
+		ACSErrTypeCommon::OutOfBoundsExImpl(__FILE__,__LINE__,"ACSSampObjImpl::initialize");
 	    err.addData("Frequency low limit 1",sampFrequency);
 	    err.addData("Report rate low limit 1",sampReportRate);
 	    throw err;
@@ -140,7 +135,7 @@ void ACSSampObjImpl<ACS_SAMP_TL>::initialize()
 	if (!sampSupplier_p) 
 	    {
 	    ACS_SHORT_LOG((LM_INFO,"Failed to activate notification channel"));
-	    MemoryFaultExImpl err = MemoryFaultExImpl(__FILE__,__LINE__,"ACSSampObjImpl::initialize");
+	    ACSErrTypeCommon::MemoryFaultExImpl err = ACSErrTypeCommon::MemoryFaultExImpl(__FILE__,__LINE__,"ACSSampObjImpl::initialize");
 	    err.addData("Notification channel","not created");
 	    throw err;
 	    }
@@ -158,8 +153,8 @@ void ACSSampObjImpl<ACS_SAMP_TL>::initialize()
 	if( !(mq_p = new ACE_Message_Queue<ACE_SYNCH>(100000,1000) ))
 	    {
 	    ACS_SHORT_LOG((LM_INFO,"Failed to activate message queue"));
-	    MemoryFaultExImpl err = 
-		MemoryFaultExImpl(__FILE__,__LINE__,"ACSSampObjImpl::initialize");
+	    ACSErrTypeCommon::MemoryFaultExImpl err = 
+		ACSErrTypeCommon::MemoryFaultExImpl(__FILE__,__LINE__,"ACSSampObjImpl::initialize");
 	    err.addData("Message queue","not created");
 	    throw err;
 	    }
@@ -168,8 +163,8 @@ void ACSSampObjImpl<ACS_SAMP_TL>::initialize()
 	if (CORBA::is_nil(propToSamp_p.in()))
 	    {
 	    ACS_SHORT_LOG((LM_INFO,"Failed to obtain property reference"));
-	    CORBAProblemExImpl err = 
-		CORBAProblemExImpl(__FILE__,__LINE__,"ACSSampObjImpl::initialize");
+	    ACSErrTypeCommon::CORBAProblemExImpl err = 
+		ACSErrTypeCommon::CORBAProblemExImpl(__FILE__,__LINE__,"ACSSampObjImpl::initialize");
 	    throw err;
 	    }
 
@@ -181,8 +176,8 @@ void ACSSampObjImpl<ACS_SAMP_TL>::initialize()
 	if (CORBA::is_nil(reference_p))
 	    {
 	    ACS_SHORT_LOG((LM_INFO,"XXXX Failed to activate CORBA object"));
-	    CouldntCreateObjectExImpl err =
-		CouldntCreateObjectExImpl(__FILE__,__LINE__,"ACSSampObjImpl::initialize");
+	    ACSErrTypeCommon::CouldntCreateObjectExImpl err =
+		ACSErrTypeCommon::CouldntCreateObjectExImpl(__FILE__,__LINE__,"ACSSampObjImpl::initialize");
 	    err.addData("Not created",sampObjName.c_str());
 	    throw err;
 	    }
@@ -232,7 +227,7 @@ void ACSSampObjImpl<ACS_SAMP_TL>::start ()
 
     //  ACS_SHORT_LOG((LM_INFO,"::SampObjImpl::start %s", cob_p->getName()));
     
-    DBConnector::writeCommand(cob_p->getName(), "start", getStringifiedTimeStamp());
+    baci::DBConnector::writeCommand(cob_p->getName(), "start", getStringifiedTimeStamp());
     
     const ACS::TimeInterval responseTime=1*1000*1000*1;    // 0.1s
 
@@ -283,7 +278,7 @@ void ACSSampObjImpl<ACS_SAMP_TL>::stop ()
 
     ACS_TRACE("acssamp::ACSSampObjImpl::stop");
     
-    DBConnector::writeCommand(cob_p->getName(), "stop", getStringifiedTimeStamp());
+    baci::DBConnector::writeCommand(cob_p->getName(), "stop", getStringifiedTimeStamp());
     
     if( controlLoop_p )
 	{

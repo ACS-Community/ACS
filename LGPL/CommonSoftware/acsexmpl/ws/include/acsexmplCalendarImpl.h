@@ -22,7 +22,7 @@
 *
 *
 *
-* "@(#) $Id: acsexmplCalendarImpl.h,v 1.96 2007/02/01 05:14:26 cparedes Exp $"
+* "@(#) $Id: acsexmplCalendarImpl.h,v 1.97 2008/07/25 07:37:04 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -47,8 +47,6 @@
 
 ///Include the smart pointer for the properties
 #include <baciSmartPropertyPointer.h>
-
-using namespace baci;
 
 /** @file acsexmplCalendarImpl.h
  */
@@ -101,9 +99,9 @@ specifically for manipulating components).
  *
  *  @author <a href=mailto:matej.sekoranja@ijs.si>Matej Sekoranja</a>,
  *  Jozef Stefan Institute, Slovenia<br>
- *  @version "@(#) $Id: acsexmplCalendarImpl.h,v 1.96 2007/02/01 05:14:26 cparedes Exp $"
+ *  @version "@(#) $Id: acsexmplCalendarImpl.h,v 1.97 2008/07/25 07:37:04 cparedes Exp $"
  */
-class Calendar: public CharacteristicComponentImpl,     //Standard component superclass
+class Calendar: public baci::CharacteristicComponentImpl,     //Standard component superclass
 		public virtual POA_acsexmplCalendar::Calendar    //CORBA servant stub
 {  
   public:
@@ -170,26 +168,26 @@ class Calendar: public CharacteristicComponentImpl,     //Standard component sup
     /**
      *  m_yearAttributes_sp is the calendar's year "attribute"
      */
-    SmartPropertyPointer<RWpattern> m_yearAttributes_sp;
+    baci::SmartPropertyPointer<baci::RWpattern> m_yearAttributes_sp;
     
     /**
      *  m_day_sp represents the day of the year.
      */
-    SmartPropertyPointer<
+    baci::SmartPropertyPointer<
     	RWEnumImpl<ACS_ENUM_T(acsexmplCalendar::DaysEnum),  POA_acsexmplCalendar::RWDaysEnum>
     > m_day_sp;
 
     /**
      *  m_month_sp represents the month of the year.
      */
-    SmartPropertyPointer<
+    baci::SmartPropertyPointer<
     	RWEnumImpl<ACS_ENUM_T(acsexmplCalendar::MonthEnum), POA_acsexmplCalendar::RWMonthEnum>
     > m_month_sp;
     
     /**
      *  m_state_sp represents how good are we with the plan this year...
      */
-    SmartPropertyPointer<
+    baci::SmartPropertyPointer<
     	ROEnumImpl<ACS_ENUM_T(acsexmplCalendar::StateEnum), POA_acsexmplCalendar::ROStateEnum>
     > m_state_sp;
 

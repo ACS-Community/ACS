@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsncORBHelper.h,v 1.47 2006/09/01 02:20:54 cparedes Exp $"
+* "@(#) $Id: acsncORBHelper.h,v 1.48 2008/07/25 07:35:19 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -43,10 +43,10 @@
 #include <maciHelper.h>
 #include <ACSErrTypeCommon.h>
 
- using namespace baci;
- using namespace maci;
+// using namespace baci;
+// using namespace maci;
 
- using namespace ACSErrTypeCommon;
+// using namespace ACSErrTypeCommon;
 
 
 /** @file acsncORBHelper.h
@@ -118,7 +118,7 @@ class ORBHelper
      */
     void 
     runOrb()
-	throw (CouldntCreateThreadEx);
+	throw (ACSErrTypeCommon::CouldntCreateThreadEx);
     
     /////////////////////////////////////////////////////////////////////////////
   private:
@@ -132,7 +132,7 @@ class ORBHelper
      */
     void 
     init_ORB()
-	throw (CORBAProblemEx);
+	throw (ACSErrTypeCommon::CORBAProblemEx);
 
     /**
      * Called by ORBHelper(int argc, char *argv[])
@@ -147,7 +147,7 @@ class ORBHelper
     void 
     init_ORB(int argc, 
 	     char *argv[])
-	throw (CORBAProblemEx);
+	throw (ACSErrTypeCommon::CORBAProblemEx);
 
     /** 
      * Run the orb in a BACI thread because orb_mp->run() is a blocking call.
@@ -168,7 +168,7 @@ class ORBHelper
     /**
      * Used to spawn a thread for running orb_mp.
      */
-    BACIThreadManager *threadManager_mp;
+    baci::BACIThreadManager *threadManager_mp;
 
     /**
      * ALMA C++ coding standards state assignment operators should be disabled.

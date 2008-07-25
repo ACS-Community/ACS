@@ -22,7 +22,7 @@
 #include "baciRWcommonImpl_T.i"
 
 template<ACS_RW_C> 
-RWcontImpl<ACS_RW_TL>::RWcontImpl(const ACE_CString& name, BACIComponent* component_p, DevIO<TM>* devIO, bool flagdeldevIO) : 
+baci::RWcontImpl<ACS_RW_TL>::RWcontImpl(const ACE_CString& name, BACIComponent* component_p, DevIO<TM>* devIO, bool flagdeldevIO) : 
     RWcommonImpl<ACS_RW_TL>(name, component_p, devIO, flagdeldevIO),
     PcontImpl<ACS_P_TL>(name, this->getProperty(), component_p, devIO, flagdeldevIO)
 {
@@ -46,7 +46,7 @@ RWcontImpl<ACS_RW_TL>::RWcontImpl(const ACE_CString& name, BACIComponent* compon
 }
 
 template<ACS_RW_C> 
-RWcontImpl<ACS_RW_TL>::RWcontImpl(bool init, const ACE_CString& name, BACIComponent* component_p, DevIO<TM>* devIO, bool flagdeldevIO):
+baci::RWcontImpl<ACS_RW_TL>::RWcontImpl(bool init, const ACE_CString& name, BACIComponent* component_p, DevIO<TM>* devIO, bool flagdeldevIO):
     RWcommonImpl<ACS_RW_TL>(init, name, component_p, devIO, flagdeldevIO),
     PcontImpl<ACS_P_TL>(name, this->getProperty(), component_p, devIO, flagdeldevIO)
 {
@@ -70,7 +70,7 @@ RWcontImpl<ACS_RW_TL>::RWcontImpl(bool init, const ACE_CString& name, BACICompon
 }
 
 
-template<ACS_RW_C> RWcontImpl<ACS_RW_TL>::~RWcontImpl()
+template<ACS_RW_C> baci::RWcontImpl<ACS_RW_TL>::~RWcontImpl()
 {
   ACS_TRACE("baci::RWcontImpl&lt;&gt;::~RWcontImpl");
 }
@@ -78,7 +78,7 @@ template<ACS_RW_C> RWcontImpl<ACS_RW_TL>::~RWcontImpl()
 /* --------------- [ Action implementator interface ] -------------- */
 
 template<ACS_RW_C>
-ActionRequest RWcontImpl<ACS_RW_TL>::invokeAction(int function,
+baci::ActionRequest baci::RWcontImpl<ACS_RW_TL>::invokeAction(int function,
 						  BACIComponent* component_p, 
 						  const int &callbackID, 
 						  const CBDescIn& descIn, 
@@ -114,7 +114,7 @@ ActionRequest RWcontImpl<ACS_RW_TL>::invokeAction(int function,
       }
   else
       {
-      completion = InvokeActionErrorCompletion(c,
+      completion = baciErrTypeProperty::InvokeActionErrorCompletion(c,
 					       __FILE__,
 					       __LINE__,
 					       "baci::RWcontImpl&lt;&gt;::invokeAction");
@@ -125,7 +125,7 @@ ActionRequest RWcontImpl<ACS_RW_TL>::invokeAction(int function,
 
 // async. set value action implementation
 template<ACS_RW_C>
-void RWcontImpl<ACS_RW_TL>::setValue(BACIProperty* property,
+void baci::RWcontImpl<ACS_RW_TL>::setValue(BACIProperty* property,
 		   BACIValue* value, 
 		   Completion &completion,
 		   CBDescOut& descOut)
@@ -179,7 +179,7 @@ void RWcontImpl<ACS_RW_TL>::setValue(BACIProperty* property,
 
 /// async. increment value action implementation
 template<ACS_RW_C>
-ActionRequest RWcontImpl<ACS_RW_TL>::incrementAction(BACIComponent* component_p, int callbackID,
+baci::ActionRequest baci::RWcontImpl<ACS_RW_TL>::incrementAction(BACIComponent* component_p, int callbackID,
 			  const CBDescIn& descIn, BACIValue* val,
 			  Completion& completion, CBDescOut& descOut)
 {
@@ -206,7 +206,7 @@ ActionRequest RWcontImpl<ACS_RW_TL>::incrementAction(BACIComponent* component_p,
 	 }//if
      }//if
  // otherwise something went wrong
-  completion = IncrementErrorCompletion(c,
+  completion = baciErrTypeProperty::IncrementErrorCompletion(c,
 					__FILE__,
 					__LINE__,
 					"baci::RWcontImpl&lt;&gt;::incrementAction");
@@ -219,7 +219,7 @@ ActionRequest RWcontImpl<ACS_RW_TL>::incrementAction(BACIComponent* component_p,
 
 /// async. decrement value action implementation
 template<ACS_RW_C>
-ActionRequest RWcontImpl<ACS_RW_TL>::decrementAction(BACIComponent* component_p, int callbackID,
+baci::ActionRequest baci::RWcontImpl<ACS_RW_TL>::decrementAction(BACIComponent* component_p, int callbackID,
 						     const CBDescIn& descIn, BACIValue* val,
 						     Completion& completion, CBDescOut& descOut)
 {
@@ -247,7 +247,7 @@ ActionRequest RWcontImpl<ACS_RW_TL>::decrementAction(BACIComponent* component_p,
 	  }//if
       }//if
   // otherwise something went wrong
-  completion = DecrementErrorCompletion(c,
+  completion = baciErrTypeProperty::DecrementErrorCompletion(c,
 					__FILE__,
 					__LINE__,
 					"baci::RWcontImpl&lt;&gt;::decrementAction");
@@ -258,10 +258,10 @@ ActionRequest RWcontImpl<ACS_RW_TL>::decrementAction(BACIComponent* component_p,
 }
 
 template<ACS_RW_C>
-bool RWcontImpl<ACS_RW_TL>::readCharacteristics()
+bool baci::RWcontImpl<ACS_RW_TL>::readCharacteristics()
 {
 
-  DAONode* dao = this->getDAONode();
+  cdb::DAONode* dao = this->getDAONode();
   if (!dao)
       return false;
   
@@ -300,7 +300,7 @@ bool RWcontImpl<ACS_RW_TL>::readCharacteristics()
 /* ---------------------- [ CORBA interface ] ---------------------- */
 
 template<ACS_RW_C>
-void RWcontImpl<ACS_RW_TL>::increment (ACS::CBvoid_ptr cb,
+void baci::RWcontImpl<ACS_RW_TL>::increment (ACS::CBvoid_ptr cb,
 		     const ACS::CBDescIn & desc)
   throw (CORBA::SystemException)
 {
@@ -309,7 +309,7 @@ void RWcontImpl<ACS_RW_TL>::increment (ACS::CBvoid_ptr cb,
 }
 
 template<ACS_RW_C>
-void RWcontImpl<ACS_RW_TL>::decrement (ACS::CBvoid_ptr cb,
+void baci::RWcontImpl<ACS_RW_TL>::decrement (ACS::CBvoid_ptr cb,
 		     const ACS::CBDescIn & desc)
   throw (CORBA::SystemException)
 {
@@ -318,14 +318,14 @@ void RWcontImpl<ACS_RW_TL>::decrement (ACS::CBvoid_ptr cb,
 }
 
 template<ACS_RW_C>
-TS RWcontImpl<ACS_RW_TL>::min_value ()
+TS baci::RWcontImpl<ACS_RW_TL>::min_value ()
   throw (CORBA::SystemException)
 {
   return min_value_m;
 }
 
 template<ACS_RW_C>
-TS RWcontImpl<ACS_RW_TL>::max_value ()
+TS baci::RWcontImpl<ACS_RW_TL>::max_value ()
   throw (CORBA::SystemException) 
 {
   return max_value_m;

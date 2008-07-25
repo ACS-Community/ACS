@@ -21,7 +21,7 @@
 *
 *
 *
-* "@(#) $Id: MyDOMErrorHandler.cpp,v 1.1 2004/12/16 13:36:44 sharring Exp $"
+* "@(#) $Id: MyDOMErrorHandler.cpp,v 1.2 2008/07/25 07:52:19 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -54,24 +54,24 @@ MyDOMErrorHandler::~MyDOMErrorHandler()
 
 bool MyDOMErrorHandler::handleError(const DOMError& domError)
 {
-        cerr << "--------------------------------------------------" << endl;
+        std::cerr << "--------------------------------------------------" << std::endl;
 
 	if (domError.getSeverity() == DOMError::DOM_SEVERITY_WARNING)
-		cerr << "\nWarning at file ";
+		std::cerr << "\nWarning at file ";
 	else if (domError.getSeverity() == DOMError::DOM_SEVERITY_ERROR)
-		cerr << "\nError at file ";
+		std::cerr << "\nError at file ";
 	else
-		cerr << "\nFatal Error at file ";
+		std::cerr << "\nFatal Error at file ";
 
         DOMLocator * myLocator = domError.getLocation();
-        string location = XMLString::transcode( myLocator->getURI() );
-        string errorMsg = XMLString::transcode(domError.getMessage());
+        std::string location = XMLString::transcode( myLocator->getURI() );
+        std::string errorMsg = XMLString::transcode(domError.getMessage());
 
-	cerr << location << ", line " << domError.getLocation()->getLineNumber()
+	std::cerr << location << ", line " << domError.getLocation()->getLineNumber()
 		<< ", char " << domError.getLocation()->getColumnNumber()
-		<< "\n  Message: " << errorMsg << endl;
+		<< "\n  Message: " << errorMsg << std::endl;
 
-        cerr << "--------------------------------------------------" << endl;
+        std::cerr << "--------------------------------------------------" << std::endl;
 	return true;
 }
 

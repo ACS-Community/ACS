@@ -46,7 +46,7 @@ namespace baci {
  *  @{
  * The MonitoruLongLong class is an implementation of the ACS::MonitoruLongLong IDL interface.
  */
-typedef  Monitor<ACS_MONITOR(uLongLong, ACS::uLongLong)> MonitoruLongLong;
+typedef  baci::Monitor<ACS_MONITOR(uLongLong, ACS::uLongLong)> MonitoruLongLong;
 /** @} */
 
 /** @defgroup RWuLongLongTemplate RWuLongLong Class
@@ -54,7 +54,7 @@ typedef  Monitor<ACS_MONITOR(uLongLong, ACS::uLongLong)> MonitoruLongLong;
  *  @{
  * The RWuLongLong class is an implementation of the ACS::RWuLongLong IDL interface.
  */
-typedef  RWcontImpl<ACS_RW_T(uLongLong, ACS::uLongLong)> RWuLongLong;
+typedef  baci::RWcontImpl<ACS_RW_T(uLongLong, ACS::uLongLong)> RWuLongLong;
 /** @} */
 
  }; 

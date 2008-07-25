@@ -1,6 +1,6 @@
 #ifndef RT_SUPPLIER_I
 #define RT_SUPPLIER_I
-/*    @(#) $Id: acsncRTSupplier.i,v 1.21 2007/02/12 09:39:58 bjeram Exp $
+/*    @(#) $Id: acsncRTSupplier.i,v 1.22 2008/07/25 07:35:19 cparedes Exp $
  *    ALMA - Atacama Large Millimiter Array
  *    (c) Associated Universities Inc., 2002 
  *    (c) European Southern Observatory, 2002
@@ -30,7 +30,7 @@ namespace nc {
 //----------------------------------------------------------------------    
 template <class T> void
 RTSupplier::publishData(T data)
-    throw (CORBAProblemEx)
+    throw (ACSErrTypeCommon::CORBAProblemEx)
 {
     try
 	{
@@ -41,7 +41,7 @@ RTSupplier::publishData(T data)
 	    {
 	    // here different exception should be thrown
 	    char buf[100];
-	    CORBAProblemExImpl ex(__FILE__, __LINE__, "RTSupplier<>::publishData");
+	    ACSErrTypeCommon::CORBAProblemExImpl ex(__FILE__, __LINE__, "RTSupplier<>::publishData");
             sprintf(buf, "RTSupplier sueue size exceed 10000 (%d)", unpublishedEvents_m.size());
 	    ex.setInfo(buf);
 	    throw ex.getCORBAProblemEx();
@@ -57,7 +57,7 @@ RTSupplier::publishData(T data)
 	//done...release it
 //	eventQueueMutex_m.release();
 	}
-    catch(CORBAProblemEx)
+    catch(ACSErrTypeCommon::CORBAProblemEx)
 	{
 	//an exception from subclasses...OK to rethrow
 	throw;
@@ -66,7 +66,7 @@ RTSupplier::publishData(T data)
 	{
 	ACS_SHORT_LOG((LM_ERROR,"RTSupplier::publishData() %s channel - unknown error!",
 		       channelName_mp));
-	CORBAProblemExImpl err = CORBAProblemExImpl(__FILE__,__LINE__,"nc::RTSupplier::publishData");
+	ACSErrTypeCommon::CORBAProblemExImpl err = ACSErrTypeCommon::CORBAProblemExImpl(__FILE__,__LINE__,"nc::RTSupplier::publishData");
 	throw err;
 	}
 }

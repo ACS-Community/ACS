@@ -19,7 +19,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciROcommonImpl_T.h,v 1.26 2007/06/12 08:02:23 nbarriga Exp $"
+* "@(#) $Id: baciROcommonImpl_T.h,v 1.27 2008/07/25 07:29:52 cparedes Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -45,7 +45,7 @@
 /**
  * Helper macro for use with template parameters.
  */
-#define ACS_RO_T(T, TC) TC, ACS::CB##T, ACS::T##Seq, ACS::T##Seq_out, ACS::Monitor##T, Monitor##T, TC, TC, TC, POA_ACS::RO##T, ACS::Alarm##T, POA_ACS::CB##T, TC
+#define ACS_RO_T(T, TC) TC, ACS::CB##T, ACS::T##Seq, ACS::T##Seq_out, ACS::Monitor##T, baci::Monitor##T, TC, TC, TC, POA_ACS::RO##T, ACS::Alarm##T, POA_ACS::CB##T, TC
 
 /**
  * Helper macro for use with template parameters.

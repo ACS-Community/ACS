@@ -1,7 +1,7 @@
 #ifndef CONSUMER_H
 #define CONSUMER_H
 
-/* @(#) $Id: acsncConsumer.h,v 1.67 2007/09/18 08:05:06 bjeram Exp $
+/* @(#) $Id: acsncConsumer.h,v 1.68 2008/07/25 07:35:19 cparedes Exp $
 *
 *    Consumer Abstract base class for notification channel push structured event
 *    consumers.
@@ -171,7 +171,7 @@ class Consumer :
      */
     void
     consumerReady()
-	throw (CORBAProblemEx);
+	throw (ACSErrTypeCommon::CORBAProblemEx);
 
     /** 
      *  A suspended (see suspend()) connection can be resumed.
@@ -183,7 +183,7 @@ class Consumer :
      */
     void
     resume()
-	throw (CORBAProblemEx);
+	throw (ACSErrTypeCommon::CORBAProblemEx);
     
     /** 
      *  After this method is invoked, the connection is suspended. All events
@@ -197,7 +197,7 @@ class Consumer :
      */
     void
     suspend()
-	throw (CORBAProblemEx);
+	throw (ACSErrTypeCommon::CORBAProblemEx);
 
     /** 
      *  Subscribe to more events.
@@ -211,7 +211,7 @@ class Consumer :
      */
     template <class T> void
     addSubscription()
-	throw (CORBAProblemEx)
+	throw (ACSErrTypeCommon::CORBAProblemEx)
 	{
 	    //Create a tempory any
 	    CORBA::Any any;
@@ -251,7 +251,7 @@ class Consumer :
      */
     template <class T> void
     removeSubscription()
-	throw (CORBAProblemEx)
+	throw (ACSErrTypeCommon::CORBAProblemEx)
 	{
 	    //Create a tempory any
 	    CORBA::Any any;
@@ -297,7 +297,7 @@ class Consumer :
     int
     addFilter(const char* type_name,
 	      const char* filter)
-	throw (CORBAProblemEx);
+	throw (ACSErrTypeCommon::CORBAProblemEx);
     
     /** 
      *  Remove a filter. See comments on the addFilter() method.
@@ -310,7 +310,7 @@ class Consumer :
      */
     bool
     removeFilter(int filter_id)
-	throw (CORBAProblemEx);
+	throw (ACSErrTypeCommon::CORBAProblemEx);
     
   protected:
     /**
@@ -325,7 +325,7 @@ class Consumer :
      */
     void
     init()
-	throw (CORBAProblemEx);
+	throw (ACSErrTypeCommon::CORBAProblemEx);
 
     /**
      *  Destructor is protected.
@@ -343,7 +343,7 @@ class Consumer :
      */
     void 
     createConsumer()
-	throw (CORBAProblemEx);
+	throw (ACSErrTypeCommon::CORBAProblemEx);
 
     ///////////////////////////////////////////////////////////////////////////////////////
     /** 
@@ -410,7 +410,7 @@ class Consumer :
     */
     void
     init(CORBA::ORB_ptr orb)
-	throw (CORBAProblemEx);
+	throw (ACSErrTypeCommon::CORBAProblemEx);
 
     /**
      * ORB used by this consumer.
@@ -439,7 +439,7 @@ class Consumer :
     */
     void
     addSubscription(const char* type_name)
-	throw (CORBAProblemEx);
+	throw (ACSErrTypeCommon::CORBAProblemEx);
 
     /** 
      *  Unsubscribe from events.
@@ -452,7 +452,7 @@ class Consumer :
      */
     void
     removeSubscription(const char* type_name)
-	throw (CORBAProblemEx);
+	throw (ACSErrTypeCommon::CORBAProblemEx);
     ///////////////////////////////////////////////////////////////////////////////////////
 };
  }; 

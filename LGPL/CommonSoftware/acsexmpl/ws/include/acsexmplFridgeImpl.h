@@ -22,7 +22,7 @@
 *
 *
 *
-* "@(#) $Id: acsexmplFridgeImpl.h,v 1.113 2007/02/01 05:14:26 cparedes Exp $"
+* "@(#) $Id: acsexmplFridgeImpl.h,v 1.114 2008/07/25 07:37:04 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------\
@@ -58,7 +58,6 @@
 ///Include the acs thread header 
 #include <acsThread.h>
  
-using namespace baci;
 using ACS::ThreadBase;
 
 /** @file acsexmplFridgeImpl.h
@@ -148,9 +147,9 @@ class FridgeThread : public ACS::Thread
  * for the "fridge" notification channel.
  * @author <a href=mailto:matej.sekoranja@ijs.si>Matej Sekoranja</a>,
  * Jozef Stefan Institute, Slovenia<br>
- * @version "@(#) $Id: acsexmplFridgeImpl.h,v 1.113 2007/02/01 05:14:26 cparedes Exp $"
+ * @version "@(#) $Id: acsexmplFridgeImpl.h,v 1.114 2008/07/25 07:37:04 cparedes Exp $"
  */
-class FridgeControl: public CharacteristicComponentImpl,    //Standard component superclass
+class FridgeControl: public baci::CharacteristicComponentImpl,    //Standard component superclass
 		     public virtual POA_FRIDGE::FridgeControl    //CORBA servant stub
 {
   public:   
@@ -316,26 +315,26 @@ class FridgeControl: public CharacteristicComponentImpl,    //Standard component
     /**
      *  m_refTemperature_sp is the temperature we want the fridge to be.
      */
-     SmartPropertyPointer<RWdouble> m_refTemperature_sp;
+     baci::SmartPropertyPointer<baci::RWdouble> m_refTemperature_sp;
 
     /**
      *  The fridge can be either turned on or off.
      */
-     SmartPropertyPointer<ROEnumImpl<
+     baci::SmartPropertyPointer<ROEnumImpl<
      	ACS_ENUM_T(FRIDGE::OnOffStates), POA_FRIDGE::ROOnOffStates>
      > m_powerStatus_sp;
 
     /**
      *  The fridge's door can be either opened or closed.
      */
-     SmartPropertyPointer<
+     baci::SmartPropertyPointer<
     	ROEnumImpl<ACS_ENUM_T(FRIDGE::OpClStates), POA_FRIDGE::ROOpClStates>
     > m_doorStatus_sp;
 
     /**
      *  m_currTemperature_p is the temperature the fridge actually is.
      */
-     SmartPropertyPointer<ROdouble> m_currTemperature_sp;
+     baci::SmartPropertyPointer<baci::ROdouble> m_currTemperature_sp;
     
     /**
      *  m_controlLoop_p is only started once the fridge has been turned on().  This thread 

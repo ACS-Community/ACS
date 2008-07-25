@@ -1,7 +1,7 @@
 #ifndef SUPPLIER_H
 #define SUPPLIER_H
 
-/* @(#) $Id: acsncSupplier.h,v 1.60 2008/03/17 01:29:13 cparedes Exp $
+/* @(#) $Id: acsncSupplier.h,v 1.61 2008/07/25 07:35:19 cparedes Exp $
  *
  *    Supplier Abstract base class for notification channel push structured event
  *    supplier.
@@ -126,7 +126,7 @@ class Supplier :
      */
     void 
     publishEvent(const CosNotification::StructuredEvent &event)
-	throw (CORBAProblemEx);
+	throw (ACSErrTypeCommon::CORBAProblemEx);
 
     /**
      * Call this to publish a CORBA Any and implicitly have the structured event
@@ -138,7 +138,7 @@ class Supplier :
      */
     virtual void 
     publishEvent(const CORBA::Any &eventData)
-	throw (CORBAProblemEx);
+	throw (ACSErrTypeCommon::CORBAProblemEx);
 
     /**
      * <b>Do not under any circumstances invoke this method from your code!</b>
@@ -185,7 +185,7 @@ class Supplier :
      */
     void
     populateHeader(CosNotification::StructuredEvent &event)
-	throw (CORBAProblemEx);
+	throw (ACSErrTypeCommon::CORBAProblemEx);
 
     /** 
      * Extracts the event type name from the any parameter and encodes that
@@ -198,7 +198,7 @@ class Supplier :
      */
     virtual void
     populateHeader(const CORBA::Any &any)
-	throw (CORBAProblemEx);
+	throw (ACSErrTypeCommon::CORBAProblemEx);
 
     /**
      * Sets the type_name field in the structured event. Method should 
@@ -224,7 +224,7 @@ class Supplier :
      */
     void
     createSupplier()
-	throw (CORBAProblemEx);
+	throw (ACSErrTypeCommon::CORBAProblemEx);
     
     /**
      * Utility method.
@@ -238,7 +238,7 @@ class Supplier :
      */
     void 
     destroyNotificationChannel()
-	throw (CORBAProblemEx);
+	throw (ACSErrTypeCommon::CORBAProblemEx);
 
     /**
      * Utility method.
@@ -250,7 +250,7 @@ class Supplier :
      */
     void
     init(CORBA::ORB_ptr orb)
-	throw(CORBAProblemEx);
+	throw(ACSErrTypeCommon::CORBAProblemEx);
 
 
     

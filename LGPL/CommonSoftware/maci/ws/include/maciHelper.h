@@ -4,7 +4,7 @@
 /*******************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciHelper.h,v 1.88 2007/09/07 13:34:49 hsommer Exp $"
+* "@(#) $Id: maciHelper.h,v 1.89 2008/07/25 07:32:36 cparedes Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -30,13 +30,12 @@
 #include <tao/IFR_Client/IFR_BasicC.h>
 
 namespace maci {
- using namespace cdb;
 
 /**
  * MACIHelper class is a class helping to handle commonly used operations.
  * @author <a href=mailto:matej.sekoranja@ijs.si>Matej Sekoranja</a>,
  * Jozef Stefan Institute, Slovenia<br>
- * @version "@(#) $Id: maciHelper.h,v 1.88 2007/09/07 13:34:49 hsommer Exp $"
+ * @version "@(#) $Id: maciHelper.h,v 1.89 2008/07/25 07:32:36 cparedes Exp $"
  */
 
 class maci_EXPORT MACIHelper

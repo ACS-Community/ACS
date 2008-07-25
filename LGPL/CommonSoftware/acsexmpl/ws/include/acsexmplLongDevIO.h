@@ -21,7 +21,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: acsexmplLongDevIO.h,v 1.9 2007/02/01 05:14:26 cparedes Exp $"
+* "@(#) $Id: acsexmplLongDevIO.h,v 1.10 2008/07/25 07:37:04 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -35,8 +35,6 @@
 ///Need the defition of the class to inherit from
 #include <baciDevIO.h>
 #include <iostream>
-
-using namespace baci;
 
 /** @file acsexmplLongDevIO.h
  */
@@ -92,7 +90,7 @@ using namespace baci;
  * but do not want the property to be read-write where anyone can change it. Please see the
  * Ramped Power Supply example to see how this class is used in conjunction with BACI long
  * properties.
- * @version "@(#) $Id: acsexmplLongDevIO.h,v 1.9 2007/02/01 05:14:26 cparedes Exp $"
+ * @version "@(#) $Id: acsexmplLongDevIO.h,v 1.10 2008/07/25 07:37:04 cparedes Exp $"
  */
 class acsexmpl_EXPORT LongDevIO : public DevIO<CORBA::Long>
 {

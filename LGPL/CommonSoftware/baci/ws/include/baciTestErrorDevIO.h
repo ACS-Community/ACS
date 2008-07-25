@@ -21,7 +21,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: baciTestErrorDevIO.h,v 1.1 2006/12/13 11:34:22 bjeram Exp $"
+* "@(#) $Id: baciTestErrorDevIO.h,v 1.2 2008/07/25 07:29:52 cparedes Exp $"
 */
 
 #ifndef __cplusplus
@@ -32,7 +32,6 @@
 #include <baciDevIO.h>
 #include <ACSErrTypeCommon.h>
 
-using namespace baci;
 /**
  * The purpose of this DevIO is to test error handling of DevIO
  */

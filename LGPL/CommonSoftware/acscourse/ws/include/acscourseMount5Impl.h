@@ -21,7 +21,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: acscourseMount5Impl.h,v 1.4 2006/05/27 23:08:47 gchiozzi Exp $"
+* "@(#) $Id: acscourseMount5Impl.h,v 1.5 2008/07/25 07:46:46 cparedes Exp $"
 *
 */
 
@@ -40,8 +40,6 @@
 #include <acsncSimpleSupplier.h>
 ///In this example, events are also consumed implying we need this header
 #include <acsncSimpleConsumer.h>
-
-using namespace acscomponent;
 
 
 /** @file acscourseMount5Impl.h
@@ -82,9 +80,9 @@ The class Mount5 is identical to Mount1 in nearly all aspects except:
 /** @class Mount5
  * The class Mount5 is identical to Mount1 except that in this case, it supplies/consumes
  * events from an event channel.
- * @version "@(#) $Id: acscourseMount5Impl.h,v 1.4 2006/05/27 23:08:47 gchiozzi Exp $"
+ * @version "@(#) $Id: acscourseMount5Impl.h,v 1.5 2008/07/25 07:46:46 cparedes Exp $"
  */
-class Mount5Impl: public virtual CharacteristicComponentImpl,
+class Mount5Impl: public virtual baci::CharacteristicComponentImpl,
 		  public virtual POA_ACSCOURSE_MOUNT::Mount5
 {
   public:
@@ -176,22 +174,22 @@ class Mount5Impl: public virtual CharacteristicComponentImpl,
     /**
      *  m_cmdAz_p is the antenna's commanded azimuth
      */
-    SmartPropertyPointer<ROdouble> m_cmdAz_sp;
+    baci::SmartPropertyPointer<baci::ROdouble> m_cmdAz_sp;
 
     /**
      *  m_cmdEl_p is the antenna's commanded elevation
      */
-    SmartPropertyPointer<ROdouble> m_cmdEl_sp;
+    baci::SmartPropertyPointer<baci::ROdouble> m_cmdEl_sp;
 
     /**
      *  m_actAz_p is the antenna's actual azimuth
      */
-    SmartPropertyPointer<ROdouble> m_actAz_sp;
+    baci::SmartPropertyPointer<baci::ROdouble> m_actAz_sp;
 
     /**
      *  m_actEl_p is the antenna's actual elevation
      */
-    SmartPropertyPointer<ROdouble> m_actEl_sp;
+    baci::SmartPropertyPointer<baci::ROdouble> m_actEl_sp;
 
 
   private:

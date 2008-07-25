@@ -21,7 +21,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: acsexmplPowerSupplyImpl.h,v 1.103 2007/02/01 05:14:26 cparedes Exp $"
+* "@(#) $Id: acsexmplPowerSupplyImpl.h,v 1.104 2008/07/25 07:37:04 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -33,7 +33,7 @@
 * almamgr 2002-01-22 Replaced old include files with new axsexmpl... files
 * gchiozzi 2001-02-15 Added declaration of get_interface() method for Object Explorer
 * gchiozzi 2001-02-15 created created standard header
-* msekoran 2001-03-10 integrated with new BACI; ALMA coding convention used; doc.
+* msekoran 2001-03-10 integrated with new baci::BACI; ALMA coding convention used; doc.
 */
 
 #ifndef __cplusplus
@@ -47,7 +47,7 @@
 ///CORBA generated servant stub
 #include <acsexmplPowerSupplyS.h>
 
-///Includes for each BACI property used in this example
+///Includes for each baci::BACI property used in this example
 #include <baciROdouble.h>
 #include <baciRWdouble.h>
 #include <baciROpattern.h>
@@ -56,8 +56,6 @@
 #include <baciSmartPropertyPointer.h>
 
 #include "acsexmplPowerSupplyCurrentImpl.h"
-
-using namespace baci; 
 
 /** @file acsexmplPowerSupplyImpl.h
  */
@@ -101,11 +99,11 @@ power supply's actual current) at the same time.
   <li>overriding component lifecycle methods (see execute).</li>
   <li>an understanding of simple asynchronous method implementation accomplished by inheriting methods from the ActionImplementator class.</li>
   <li>read-only and read-write property usage.</li>
-  <li>writing values to read-only BACI properties by using the property's underlying DevIO instance.</li>
+  <li>writing values to read-only baci::BACI properties by using the property's underlying DevIO instance.</li>
   <li>standard ACS logging macros.</li>
   <li>limited CORBA error handling.</li>
   <li>asynchronous error handling.</li>
-  <li>classes derived from BACI properties and overriding of BACI property methods.</li>
+  <li>classes derived from baci::BACI properties and overriding of baci::BACI property methods.</li>
   <li>use of smart pointers for properties</li>
 </ul>
 <br>
@@ -135,11 +133,11 @@ power supply's actual current) at the same time.
  * 
  * @author <a href=mailto:matej.sekoranja@ijs.si>Matej Sekoranja</a>,
  * Jozef Stefan Institute, Slovenia<br>
- * @version "@(#) $Id: acsexmplPowerSupplyImpl.h,v 1.103 2007/02/01 05:14:26 cparedes Exp $"
+ * @version "@(#) $Id: acsexmplPowerSupplyImpl.h,v 1.104 2008/07/25 07:37:04 cparedes Exp $"
  */
-class acsexmpl_EXPORT PowerSupply: public CharacteristicComponentImpl,     //Standard component superclass
+class acsexmpl_EXPORT PowerSupply: public baci::CharacteristicComponentImpl,     //Standard component superclass
 				   public virtual POA_PS::PowerSupply,    //CORBA servant stub
-				   public ActionImplementator    //Asynchronous method helper class
+				   public baci::ActionImplementator    //Asynchronous method helper class
 {
   public:
     /**
@@ -170,7 +168,7 @@ class acsexmpl_EXPORT PowerSupply: public CharacteristicComponentImpl,     //Sta
      * @param value_p action data (e.g. value to be set)
      * @param completion error handing structure
      * @param descOut callback descriptor which will be passed to client
-     * @return request to be performed by BACI
+     * @return request to be performed by baci::BACI
      * <ul>
      *  <li><b><i>reqNone</b></i> - do nothing (action will be kept in queue)
      *  <li><b><i>reqInvokeWorking</b></i> - invoke <type>Callback::<i>working</i>
@@ -178,12 +176,12 @@ class acsexmpl_EXPORT PowerSupply: public CharacteristicComponentImpl,     //Sta
      *  <li><b><i>reqDestroy</b></i> - destroy callback (callback should has been called already by function)
      * </ul>
      */
-    virtual ActionRequest 
+    virtual baci::ActionRequest 
     invokeAction (int function,
-		  BACIComponent *component_p, 
+		  baci::BACIComponent *component_p, 
 		  const int &callbackID, 
 		  const CBDescIn &descIn, 
-		  BACIValue *value_p, 
+		  baci::BACIValue *value_p, 
 		  Completion &completion, 
 		  CBDescOut &descOut);
     
@@ -198,7 +196,7 @@ class acsexmpl_EXPORT PowerSupply: public CharacteristicComponentImpl,     //Sta
      * @param value_p Action data (e.g. value to be set).
      * @param completion Error handing structure.
      * @param descOut Callback descriptor which will be passed to client.
-     * @return Request to be performed by BACI.
+     * @return Request to be performed by baci::BACI.
      * <ul>
      *  <li><b><i>reqNone</b></i> - Do nothing (action will be kept in queue).
      *  <li><b><i>reqInvokeWorking</b></i> - Invoke <type>Callback::<i>working</i>.
@@ -209,11 +207,11 @@ class acsexmpl_EXPORT PowerSupply: public CharacteristicComponentImpl,     //Sta
        <br><hr>
        @endhtmlonly
      */
-    virtual ActionRequest 
-    onAction (BACIComponent *component_p, 
+    virtual baci::ActionRequest 
+    onAction (baci::BACIComponent *component_p, 
 	      const int &callbackID,
 	      const CBDescIn &descIn, 
-	      BACIValue *value_p,
+	      baci::BACIValue *value_p,
 	      Completion &completion, 
 	      CBDescOut &descOut);
     
@@ -228,7 +226,7 @@ class acsexmpl_EXPORT PowerSupply: public CharacteristicComponentImpl,     //Sta
      * @param value_p Action data (e.g. value to be set).
      * @param completion Error handing structure.
      * @param descOut Callback descriptor which will be passed to client.
-     * @return Request to be performed by BACI.
+     * @return Request to be performed by baci::BACI.
      * <ul>
      *  <li><b><i>reqNone</b></i> - Do nothing (action will be kept in queue).
      *  <li><b><i>reqInvokeWorking</b></i> - Invoke <type>Callback::<i>working</i>.
@@ -239,11 +237,11 @@ class acsexmpl_EXPORT PowerSupply: public CharacteristicComponentImpl,     //Sta
        <br><hr>
        @endhtmlonly
      */
-    virtual ActionRequest 
-    offAction (BACIComponent *component_p,
+    virtual baci::ActionRequest 
+    offAction (baci::BACIComponent *component_p,
 	       const int &callbackID,
 	       const CBDescIn &descIn, 
-	       BACIValue *value_p,
+	       baci::BACIValue *value_p,
 	       Completion &completion, 
 	       CBDescOut &descOut);
     
@@ -269,11 +267,11 @@ class acsexmpl_EXPORT PowerSupply: public CharacteristicComponentImpl,     //Sta
        <br><hr>
        @endhtmlonly
      */
-    virtual ActionRequest 
-    resetAction (BACIComponent *component_p, 
+    virtual baci::ActionRequest 
+    resetAction (baci::BACIComponent *component_p, 
 		 const int &callbackID,
 		 const CBDescIn &descIn,
-		 BACIValue *value_p,
+		 baci::BACIValue *value_p,
 		 Completion &completion, 
 		 CBDescOut &descOut);
     
@@ -388,19 +386,19 @@ class acsexmpl_EXPORT PowerSupply: public CharacteristicComponentImpl,     //Sta
     /**
      *  m_status_sp is the PowerSupply's state (values are in CDB).
      */
-     SmartPropertyPointer<ROpattern> m_status_sp;
+     baci::SmartPropertyPointer<baci::ROpattern> m_status_sp;
   
     
   private:
     /**
      *  m_readback_sp is the actual value of PowerSupply's current.
      */
-    SmartPropertyPointer<ROdouble> m_readback_sp;
+    baci::SmartPropertyPointer<baci::ROdouble> m_readback_sp;
     
     /**
      *  m_current_sp is the commanded current.
      */
-     SmartPropertyPointer<PowerSupplyCurrent> m_current_sp;
+     baci::SmartPropertyPointer<PowerSupplyCurrent> m_current_sp;
 
     /**
      * ALMA C++ coding standards state copy operators should be disabled.

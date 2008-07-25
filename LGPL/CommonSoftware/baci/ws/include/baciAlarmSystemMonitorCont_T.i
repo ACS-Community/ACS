@@ -1,21 +1,21 @@
 
 /*********************************** IMPLEMENTATION of AlarmSystemMonitorCont */
 template<class T, class TPROP>
-AlarmSystemMonitorCont<T, TPROP>::AlarmSystemMonitorCont(TPROP * property, EventDispatcher * eventDispatcher) :
-    AlarmSystemMonitor<TPROP>(property, eventDispatcher)
+baci::AlarmSystemMonitorCont<T, TPROP>::AlarmSystemMonitorCont(TPROP * property, EventDispatcher * eventDispatcher) :
+    baci::AlarmSystemMonitor<TPROP>(property, eventDispatcher)
 {
     ACS_TRACE("baci::AlarmSystemMonitorCont&lt;&gt;::AlarmSystemMonitorCont");
 }//AlarmSystemMonitorCont
 
 template<class T, class TPROP>
-AlarmSystemMonitorCont<T, TPROP>::~AlarmSystemMonitorCont()
+baci::AlarmSystemMonitorCont<T, TPROP>::~AlarmSystemMonitorCont()
 {
     ACS_TRACE("baci::AlarmSystemMonitorCont&lt;&gt;::~AlarmSystemMonitorCont");
 }//~AlarmSystemMonitorCont
 
 
 template<class T, class TPROP>
-void AlarmSystemMonitorCont<T, TPROP>::check(BACIValue &val,
+void baci::AlarmSystemMonitorCont<T, TPROP>::check(BACIValue &val,
 					  const ACSErr::Completion & c,
 					  const ACS::CBDescOut & desc
     )

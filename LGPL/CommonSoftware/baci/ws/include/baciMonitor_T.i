@@ -18,9 +18,9 @@
 */
 
 template<ACS_MONITOR_C>
-Monitor<ACS_MONITOR_T>::Monitor(ACE_CString name,
+baci::Monitor<ACS_MONITOR_T>::Monitor(ACE_CString name,
 					    const ACS::TimeInterval& minTriggerTime,
-					    const BACIValue& minTriggerValue,
+					    const baci::BACIValue& minTriggerValue,
 					    BACIProperty* property) :
   initialization_m(1), monitor_mp(0), reference_mp(CORBA::Object::_nil())
 {
@@ -32,13 +32,13 @@ Monitor<ACS_MONITOR_T>::Monitor(ACE_CString name,
 }
 
 template<ACS_MONITOR_C>
-Monitor<ACS_MONITOR_T>::Monitor(ACE_CString name_,
+baci::Monitor<ACS_MONITOR_T>::Monitor(ACE_CString name_,
 					    Callback_ptr callback_p,
 					    const CBDescIn& inDesc,
 					    const ACS::TimeInterval& triggerTime,
-					    const BACIValue& triggerValue,
+					    const baci::BACIValue& triggerValue,
 					    const ACS::TimeInterval& minTriggerTime,
-					    const BACIValue& minTriggerValue,
+					    const baci::BACIValue& minTriggerValue,
 					    BACIProperty* property,
 					    const ACS::TimeInterval& transmitTime,
 					    const BACIMonitor::UpdateMode& updateMode) :
@@ -83,27 +83,27 @@ Monitor<ACS_MONITOR_T>::Monitor(ACE_CString name_,
 }
 
 template<ACS_MONITOR_C>
-Monitor<ACS_MONITOR_T>::~Monitor()
+baci::Monitor<ACS_MONITOR_T>::~Monitor()
 {
   ACS_TRACE("BACI::Monitor&lt;&gt;::~Monitor");
 }
 
 template<ACS_MONITOR_C>
-int Monitor<ACS_MONITOR_T>::getId(void)
+int baci::Monitor<ACS_MONITOR_T>::getId(void)
 {
     ACS_TRACE("baci::Monitor&lt;&gt;::getId");
     return -1;
 }
 
 template<ACS_MONITOR_C> const char*
-Monitor<ACS_MONITOR_T>::getName(void)
+baci::Monitor<ACS_MONITOR_T>::getName(void)
 {
     ACS_TRACE("baci::Monitor&lt;&gt;::getName");
     return monitor_mp->getName();
 }
 
 template<ACS_MONITOR_C>
-char* Monitor<ACS_MONITOR_T>::getObjectState(void) {
+char* baci::Monitor<ACS_MONITOR_T>::getObjectState(void) {
     ACS_TRACE("baci::Monitor&lt;&gt;::getObjectState");
   ACE_TCHAR *buffer_p;
   ACE_NEW_RETURN (buffer_p, ACE_TCHAR[MAX_RECORD_SIZE], 0);
@@ -141,16 +141,16 @@ char* Monitor<ACS_MONITOR_T>::getObjectState(void) {
 }
 
 template<ACS_MONITOR_C>
-void Monitor<ACS_MONITOR_T>::setObjectState(const char* state)
+void baci::Monitor<ACS_MONITOR_T>::setObjectState(const char* state)
 {
     ACS_TRACE("baci::Monitor&lt;&gt;::setObjectState");
   ACE_UNUSED_ARG(state);
 }
 
 template<ACS_MONITOR_C>
-void Monitor<ACS_MONITOR_T>::setObjectState(const char* state,
+void baci::Monitor<ACS_MONITOR_T>::setObjectState(const char* state,
 							const ACS::TimeInterval& minTriggerTime,
-							const BACIValue& minTriggerValue,
+							const baci::BACIValue& minTriggerValue,
 							BACIProperty *property)
 {
     ACS_TRACE("baci::Monitor&lt;&gt;::setObjectState");
@@ -201,7 +201,7 @@ void Monitor<ACS_MONITOR_T>::setObjectState(const char* state,
       
       ACS_DEBUG_PARAM("baci::Monitor&lt;&gt;::setObjectState", "Recovering: '%s'", name.c_str());
       
-      BACIValue value(minTriggerValue);
+      baci::BACIValue value(minTriggerValue);
       if (value.fromString(valueTrigger)==false)
 	{
 	  triggerOnValue = false;
@@ -237,21 +237,21 @@ void Monitor<ACS_MONITOR_T>::setObjectState(const char* state,
 }
 
 template<ACS_MONITOR_C>
-void Monitor<ACS_MONITOR_T>::monitorDestroyed()
+void baci::Monitor<ACS_MONITOR_T>::monitorDestroyed()
 {
     ACS_TRACE("baci::Monitor&lt;&gt;::monitorDestroyed");
   destroy();
 }
 
 template<ACS_MONITOR_C> 
-void Monitor<ACS_MONITOR_T>::monitorStateChanged()
+void baci::Monitor<ACS_MONITOR_T>::monitorStateChanged()
 {
     ACS_TRACE("baci::Monitor&lt;&gt;::monitorStateChanged");
   BACIRecoveryManager::getInstance()->updateRecoverableObject(this);
 }
 
 template<ACS_MONITOR_C>
-void Monitor<ACS_MONITOR_T>::suspend ()
+void baci::Monitor<ACS_MONITOR_T>::suspend ()
      throw (CORBA::SystemException)
 {
     ACS_TRACE("baci::Monitor&lt;&gt;::suspend");
@@ -259,7 +259,7 @@ void Monitor<ACS_MONITOR_T>::suspend ()
 }
 
 template<ACS_MONITOR_C>
-void Monitor<ACS_MONITOR_T>::resume ()
+void baci::Monitor<ACS_MONITOR_T>::resume ()
      throw (CORBA::SystemException)
 {
     ACS_TRACE("baci::Monitor&lt;&gt;::resume");
@@ -267,7 +267,7 @@ void Monitor<ACS_MONITOR_T>::resume ()
 }
 
 template<ACS_MONITOR_C>
-void Monitor<ACS_MONITOR_T>::destroy ()
+void baci::Monitor<ACS_MONITOR_T>::destroy ()
      throw (CORBA::SystemException)
 {
   ACS_TRACE("BACI::Monitor&lt;&gt;::destroy");
@@ -290,7 +290,7 @@ void Monitor<ACS_MONITOR_T>::destroy ()
 }
 
 template<ACS_MONITOR_C>
-void Monitor<ACS_MONITOR_T>::set_timer_trigger (ACS::TimeInterval timer)
+void baci::Monitor<ACS_MONITOR_T>::set_timer_trigger (ACS::TimeInterval timer)
      throw (CORBA::SystemException)
 {
     ACS_TRACE("baci::Monitor&lt;&gt;::set_timer_trigger");
@@ -298,7 +298,7 @@ void Monitor<ACS_MONITOR_T>::set_timer_trigger (ACS::TimeInterval timer)
 }
 
 template<ACS_MONITOR_C>
-void Monitor<ACS_MONITOR_T>::get_timer_trigger (ACS::TimeInterval_out timer)
+void baci::Monitor<ACS_MONITOR_T>::get_timer_trigger (ACS::TimeInterval_out timer)
      throw (CORBA::SystemException)
 {
     ACS_TRACE("baci::Monitor&lt;&gt;::get_timer_trigger");
@@ -306,20 +306,20 @@ void Monitor<ACS_MONITOR_T>::get_timer_trigger (ACS::TimeInterval_out timer)
 }
 
 template<ACS_MONITOR_C>
-void Monitor<ACS_MONITOR_T>::set_value_trigger (TCORBA delta, CORBA::Boolean enable
+void baci::Monitor<ACS_MONITOR_T>::set_value_trigger (TCORBA delta, CORBA::Boolean enable
 							    )
      throw (CORBA::SystemException)
 {
     ACS_TRACE("baci::Monitor&lt;&gt;::set_value_trigger");
   if (enable==false) monitor_mp->setTriggerOnValue(false);
   else {
-    monitor_mp->setTriggerValue(BACIValue(delta));
+    monitor_mp->setTriggerValue(baci::BACIValue(delta));
     monitor_mp->setTriggerOnValue(true);
   }
 }
 
 template<ACS_MONITOR_C>
-void Monitor<ACS_MONITOR_T>::get_value_trigger (TCORBA_out delta, CORBA::Boolean_out enable
+void baci::Monitor<ACS_MONITOR_T>::get_value_trigger (TCORBA_out delta, CORBA::Boolean_out enable
 							    )
      throw (CORBA::SystemException)
 {
@@ -329,7 +329,7 @@ void Monitor<ACS_MONITOR_T>::get_value_trigger (TCORBA_out delta, CORBA::Boolean
 }
 
 template<ACS_MONITOR_C>
-ACS::Time Monitor<ACS_MONITOR_T>::start_time ()
+ACS::Time baci::Monitor<ACS_MONITOR_T>::start_time ()
      throw (CORBA::SystemException)
 {
 ACS_TRACE("baci::Monitor&lt;&gt;::start_time");
@@ -338,9 +338,9 @@ ACS_TRACE("baci::Monitor&lt;&gt;::start_time");
 
 
 template<ACS_MONITOR_BASIC_C> 
-MonitorBasic<ACS_MONITOR_BASIC_T>::MonitorBasic(ACE_CString name,
+baci::MonitorBasic<ACS_MONITOR_BASIC_T>::MonitorBasic(ACE_CString name,
 						     const ACS::TimeInterval& minTriggerTime,
-						     const BACIValue& minTriggerValue,
+						     const baci::BACIValue& minTriggerValue,
 						     BACIProperty* property) :
   initialization_m(1), monitor_mp(0), reference_mp(CORBA::Object::_nil())
 {
@@ -353,13 +353,13 @@ MonitorBasic<ACS_MONITOR_BASIC_T>::MonitorBasic(ACE_CString name,
 }
 
 template<ACS_MONITOR_BASIC_C> 
-MonitorBasic<ACS_MONITOR_BASIC_T>::MonitorBasic(ACE_CString name_,
+baci::MonitorBasic<ACS_MONITOR_BASIC_T>::MonitorBasic(ACE_CString name_,
 						Callback_ptr callback_p,
 						const CBDescIn& inDesc,
 						const ACS::TimeInterval& triggerTime,
-						const BACIValue& triggerValue,
+						const baci::BACIValue& triggerValue,
 						const ACS::TimeInterval& minTriggerTime,
-						const BACIValue& minTriggerValue,
+						const baci::BACIValue& minTriggerValue,
 						BACIProperty* property,
 						const ACS::TimeInterval& transmitTime,
 						const BACIMonitor::UpdateMode& updateMode) :
@@ -384,8 +384,8 @@ MonitorBasic<ACS_MONITOR_BASIC_T>::MonitorBasic(ACE_CString name_,
       }
 
   monitor_mp = new BACIMonitor(name, callbackID, this,
-			     triggerTime, BACIValue::NullValue,
-			     minTriggerTime, BACIValue::NullValue,
+			     triggerTime, baci::BACIValue::NullValue,
+			     minTriggerTime, baci::BACIValue::NullValue,
 			     property, transmitTime, updateMode);
 
   if (monitor_mp==0) 
@@ -411,27 +411,27 @@ MonitorBasic<ACS_MONITOR_BASIC_T>::MonitorBasic(ACE_CString name_,
 
 
 template<ACS_MONITOR_BASIC_C>
-MonitorBasic<ACS_MONITOR_BASIC_T>::~MonitorBasic()
+baci::MonitorBasic<ACS_MONITOR_BASIC_T>::~MonitorBasic()
 {
   ACS_TRACE("BACI::MonitorBasic&lt;&gt;::~MonitorBasic&lt;&gt;");
 }
 
 template<ACS_MONITOR_BASIC_C>
-int MonitorBasic<ACS_MONITOR_BASIC_T>::getId(void)
+int baci::MonitorBasic<ACS_MONITOR_BASIC_T>::getId(void)
 {
 ACS_TRACE("baci::MonitorBasic&lt;&gt;::getId");
   return -1;
 }
 
 template<ACS_MONITOR_BASIC_C>
-const char* MonitorBasic<ACS_MONITOR_BASIC_T>::getName(void)
+const char* baci::MonitorBasic<ACS_MONITOR_BASIC_T>::getName(void)
 {
 ACS_TRACE("baci::MonitorBasic&lt;&gt;::getName");
   return monitor_mp->getName();
 }
 
 template<ACS_MONITOR_BASIC_C>
-char* MonitorBasic<ACS_MONITOR_BASIC_T>::getObjectState(void) {
+char* baci::MonitorBasic<ACS_MONITOR_BASIC_T>::getObjectState(void) {
 ACS_TRACE("baci::MonitorBasic&lt;&gt;::getObjectState");
   ACE_TCHAR *buffer_p = 0;
   ACE_NEW_RETURN (buffer_p, ACE_TCHAR[MAX_RECORD_SIZE], 0);
@@ -464,14 +464,14 @@ ACS_TRACE("baci::MonitorBasic&lt;&gt;::getObjectState");
 }
 
 template<ACS_MONITOR_BASIC_C>
-void MonitorBasic<ACS_MONITOR_BASIC_T>::setObjectState(const char* state)
+void baci::MonitorBasic<ACS_MONITOR_BASIC_T>::setObjectState(const char* state)
 {
 ACS_TRACE("baci::MonitorBasic&lt;&gt;::setObjectState");
   ACE_UNUSED_ARG(state);
 }
 
 template<ACS_MONITOR_BASIC_C>
-void MonitorBasic<ACS_MONITOR_BASIC_T>::setObjectState(const char* state,
+void baci::MonitorBasic<ACS_MONITOR_BASIC_T>::setObjectState(const char* state,
 			      const ACS::TimeInterval& minTriggerTime,
 			      BACIProperty *property)
 {
@@ -521,8 +521,8 @@ ACS_TRACE("baci::MonitorBasic&lt;&gt;::setObjectState");
       
       ACS_NEW_RETURN(monitor_mp,
 		     BACIMonitor(name.c_str(), callbackID, this,
-				 timeTrigger, BACIValue::NullValue,
-				 minTriggerTime, BACIValue::NullValue,
+				 timeTrigger, baci::BACIValue::NullValue,
+				 minTriggerTime, baci::BACIValue::NullValue,
 				 property, transmitTime, BACIMonitor::UpdateMode(mode),
 				 isSuspended),
 		     );
@@ -547,21 +547,21 @@ ACS_TRACE("baci::MonitorBasic&lt;&gt;::setObjectState");
 }
 
 template<ACS_MONITOR_BASIC_C>
-void MonitorBasic<ACS_MONITOR_BASIC_T>::monitorDestroyed()
+void baci::MonitorBasic<ACS_MONITOR_BASIC_T>::monitorDestroyed()
 {
 ACS_TRACE("baci::MonitorBasic&lt;&gt;::monitorDestroyed");
   destroy();
 }
 
 template<ACS_MONITOR_BASIC_C>
-void MonitorBasic<ACS_MONITOR_BASIC_T>::monitorStateChanged()
+void baci::MonitorBasic<ACS_MONITOR_BASIC_T>::monitorStateChanged()
 {
 ACS_TRACE("baci::MonitorBasic&lt;&gt;::monitorStateChanged");
   BACIRecoveryManager::getInstance()->updateRecoverableObject(this);
 }
 
 template<ACS_MONITOR_BASIC_C>
-void MonitorBasic<ACS_MONITOR_BASIC_T>::suspend ()
+void baci::MonitorBasic<ACS_MONITOR_BASIC_T>::suspend ()
   throw (CORBA::SystemException)
 {
 ACS_TRACE("baci::MonitorBasic&lt;&gt;::suspend");
@@ -569,7 +569,7 @@ ACS_TRACE("baci::MonitorBasic&lt;&gt;::suspend");
 }
 
 template<ACS_MONITOR_BASIC_C>
-void MonitorBasic<ACS_MONITOR_BASIC_T>::resume ()
+void baci::MonitorBasic<ACS_MONITOR_BASIC_T>::resume ()
   throw (CORBA::SystemException)
 {
 ACS_TRACE("baci::MonitorBasic&lt;&gt;::resume");
@@ -577,7 +577,7 @@ ACS_TRACE("baci::MonitorBasic&lt;&gt;::resume");
 }
 
 template<ACS_MONITOR_BASIC_C>
-void MonitorBasic<ACS_MONITOR_BASIC_T>::destroy ()
+void baci::MonitorBasic<ACS_MONITOR_BASIC_T>::destroy ()
   throw (CORBA::SystemException)
 {
   ACS_TRACE("BACI::MonitorBasic&lt;&gt;::destroy");
@@ -597,7 +597,7 @@ void MonitorBasic<ACS_MONITOR_BASIC_T>::destroy ()
 }
 
 template<ACS_MONITOR_BASIC_C>
-void MonitorBasic<ACS_MONITOR_BASIC_T>::set_timer_trigger (ACS::TimeInterval timer)
+void baci::MonitorBasic<ACS_MONITOR_BASIC_T>::set_timer_trigger (ACS::TimeInterval timer)
   throw (CORBA::SystemException)
 {
 ACS_TRACE("baci::MonitorBasic&lt;&gt;::set_timer_trigger");
@@ -605,7 +605,7 @@ ACS_TRACE("baci::MonitorBasic&lt;&gt;::set_timer_trigger");
 }
 
 template<ACS_MONITOR_BASIC_C>
-void MonitorBasic<ACS_MONITOR_BASIC_T>::get_timer_trigger (ACS::TimeInterval_out timer)
+void baci::MonitorBasic<ACS_MONITOR_BASIC_T>::get_timer_trigger (ACS::TimeInterval_out timer)
   throw (CORBA::SystemException)
 {
 ACS_TRACE("baci::MonitorBasic&lt;&gt;::get_timer_trigger");
@@ -613,7 +613,7 @@ ACS_TRACE("baci::MonitorBasic&lt;&gt;::get_timer_trigger");
 }
 
 template<ACS_MONITOR_BASIC_C>
-ACS::Time MonitorBasic<ACS_MONITOR_BASIC_T>::start_time ()
+ACS::Time baci::MonitorBasic<ACS_MONITOR_BASIC_T>::start_time ()
   throw (CORBA::SystemException)
 {
 ACS_TRACE("baci::MonitorBasic&lt;&gt;::start_time");

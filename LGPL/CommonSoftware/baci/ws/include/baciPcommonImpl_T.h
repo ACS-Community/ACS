@@ -65,7 +65,7 @@
 /**
  * Helper macro for use with templated parameters.
  */
-#define ACS_P_T(T, TC) TC, ACS::CB##T, ACS::T##Seq, ACS::T##Seq_out, ACS::Monitor##T, Monitor##T,TC, TC, TC
+#define ACS_P_T(T, TC) TC, ACS::CB##T, ACS::T##Seq, ACS::T##Seq_out, ACS::Monitor##T, baci::Monitor##T,TC, TC, TC
 //, POA_ACS::RW##T 
 
 //#define ACS_P_TL(X) X T, X TCB, X TSeq, X TSeq_out, X TMonitor, X TMonitorImpl, X POA_SK, X TBACIValue 

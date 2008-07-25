@@ -59,13 +59,13 @@ class BulkDataSenderPerfImpl : public virtual BulkDataSenderDefaultImpl,
     virtual ~BulkDataSenderPerfImpl();
   
     virtual void startSend()
-	throw (CORBA::SystemException, AVStartSendErrorEx);
+	throw (CORBA::SystemException, ACSBulkDataError::AVStartSendErrorEx);
 
     virtual void paceData()
-	throw (CORBA::SystemException, AVPaceDataErrorEx);
+	throw (CORBA::SystemException, ACSBulkDataError::AVPaceDataErrorEx);
 
     virtual void stopSend()
-	throw (CORBA::SystemException, AVStopSendErrorEx);
+	throw (CORBA::SystemException, ACSBulkDataError::AVStopSendErrorEx);
 };
 
 #endif

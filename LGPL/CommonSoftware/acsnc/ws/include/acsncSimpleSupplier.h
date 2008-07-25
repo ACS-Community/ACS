@@ -1,6 +1,6 @@
 #ifndef SIMPLE_SUPPLIER_H
 #define SIMPLE_SUPPLIER_H
-/*    @(#) $Id: acsncSimpleSupplier.h,v 1.16 2006/09/01 02:20:54 cparedes Exp $
+/*    @(#) $Id: acsncSimpleSupplier.h,v 1.17 2008/07/25 07:35:19 cparedes Exp $
  *    ALMA - Atacama Large Millimiter Array
  *    (c) Associated Universities Inc., 2002 
  *    (c) European Southern Observatory, 2002
@@ -64,7 +64,7 @@ class SimpleSupplier : public Supplier
      */
     template <class T> void 
     publishData(T data)
-	throw (CORBAProblemEx);
+	throw (ACSErrTypeCommon::CORBAProblemEx);
     
     ///////////////////////////////////////////////////////////////
   protected:

@@ -20,7 +20,7 @@
 #include "baciROcommonImpl_T.h"
 
 template<ACS_RO_C> 
-ROcommonImpl<ACS_RO_TL>::ROcommonImpl(const ACE_CString& name, BACIComponent* component_p, DevIO<TM>* devIO, bool flagdeldevIO) : 
+baci::ROcommonImpl<ACS_RO_TL>::ROcommonImpl(const ACE_CString& name, BACIComponent* component_p, DevIO<TM>* devIO, bool flagdeldevIO) : 
     PcommonImpl<ACS_P_TL>(name, component_p, devIO, flagdeldevIO),
     monitorEventDispatcher_mp(0)
 {
@@ -76,7 +76,7 @@ ROcommonImpl<ACS_RO_TL>::ROcommonImpl(const ACE_CString& name, BACIComponent* co
 }
 
 template<ACS_RO_C> 
-ROcommonImpl<ACS_RO_TL>::ROcommonImpl(bool init, const ACE_CString& name, BACIComponent *component_p, DevIO<TM> *devIO, bool flagdeldevIO ) : 
+baci::ROcommonImpl<ACS_RO_TL>::ROcommonImpl(bool init, const ACE_CString& name, BACIComponent *component_p, DevIO<TM> *devIO, bool flagdeldevIO ) : 
     PcommonImpl<ACS_P_TL>(name, component_p, devIO, flagdeldevIO),
     monitorEventDispatcher_mp(0)
 {
@@ -105,7 +105,7 @@ ROcommonImpl<ACS_RO_TL>::ROcommonImpl(bool init, const ACE_CString& name, BACICo
 //initialization_m = 0;
 }
 
-template<ACS_RO_C> ROcommonImpl<ACS_RO_TL>::~ROcommonImpl()
+template<ACS_RO_C> baci::ROcommonImpl<ACS_RO_TL>::~ROcommonImpl()
 {
   ACS_TRACE("baci::ROcommonImpl&lt;&gt;::~ROcommonImpl");
   
@@ -121,9 +121,9 @@ template<ACS_RO_C> ROcommonImpl<ACS_RO_TL>::~ROcommonImpl()
 
 
 template<ACS_RO_C> 
-bool ROcommonImpl<ACS_RO_TL>::readCharacteristics()
+bool baci::ROcommonImpl<ACS_RO_TL>::readCharacteristics()
 {
-  DAONode* dao = this->getDAONode();
+  cdb::DAONode* dao = this->getDAONode();
   if (!dao)
       return false;
   

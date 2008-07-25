@@ -21,7 +21,7 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
  *
- * "@(#) $Id: acssampImpl.h,v 1.21 2006/10/19 15:19:34 rcirami Exp $"
+ * "@(#) $Id: acssampImpl.h,v 1.22 2008/07/25 07:39:52 cparedes Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -50,10 +50,6 @@
  * but allows namespace support for compilers that do not have it 
  * natively (i.e., GCC 2.95 for VxWorks).
  */ 
-using namespace baci;
-using namespace std;
-
-using namespace ACSErrTypeCommon;
 
 /** @file acssampImpl.h
  *  Header file for the factory object, which allows to create 
@@ -74,7 +70,7 @@ using namespace ACSErrTypeCommon;
  */
 
 
-class ACSSampImpl: public virtual CharacteristicComponentImpl,
+class ACSSampImpl: public virtual baci::CharacteristicComponentImpl,
 		   public virtual POA_acssamp::Samp
 {    
   public:
@@ -121,10 +117,10 @@ class ACSSampImpl: public virtual CharacteristicComponentImpl,
 					     ACS::TimeInterval frequency,
 					     ACS::TimeInterval reportRate
 	)
-	throw (CORBA::SystemException,OutOfBoundsEx,
-	       MemoryFaultEx,CORBAProblemEx,TypeNotSupportedEx,
-	       CouldntAccessPropertyEx,CouldntAccessComponentEx,
-	       CouldntCreateObjectEx);
+	throw (CORBA::SystemException,ACSErrTypeCommon::OutOfBoundsEx,
+	       ACSErrTypeCommon::MemoryFaultEx,ACSErrTypeCommon::CORBAProblemEx,ACSErrTypeCommon::TypeNotSupportedEx,
+	       ACSErrTypeCommon::CouldntAccessPropertyEx,ACSErrTypeCommon::CouldntAccessComponentEx,
+	       ACSErrTypeCommon::CouldntCreateObjectEx);
 
 
     /**
@@ -163,7 +159,7 @@ class ACSSampImpl: public virtual CharacteristicComponentImpl,
     /**
      * component_list  is an internal list of the active sampling objects.
      */
-    list<CORBA::Object_ptr> component_list;
+    std::list<CORBA::Object_ptr> component_list;
 
     ACE_Recursive_Thread_Mutex m_samplingListMutex;
 };

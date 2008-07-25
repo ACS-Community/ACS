@@ -80,12 +80,12 @@ class DurationHelper : TimeUtil
     acstime::TimeComparison compare(const acstime::Duration &duration);
 
     void add(const acstime::Duration &duration) 
-	throw(OverflowOrUnderflowExImpl);
+	throw(ACSTimeError::OverflowOrUnderflowExImpl);
     
     DurationHelper& operator+=(const acstime::Duration &duration);
 
     void subtract(const acstime::Duration &duration) 
-	throw(OverflowOrUnderflowExImpl);
+	throw(ACSTimeError::OverflowOrUnderflowExImpl);
     
     DurationHelper& operator-=(const acstime::Duration &duration);
 
@@ -94,7 +94,7 @@ class DurationHelper : TimeUtil
     DurationHelper& operator%=(const acstime::Duration &duration);
 
     void multiply(const unsigned long long &multiplier) 
-	throw(OverflowOrUnderflowExImpl);
+	throw(ACSTimeError::OverflowOrUnderflowExImpl);
 
     DurationHelper& operator*=(const unsigned long long &multiplier);
     
@@ -103,10 +103,10 @@ class DurationHelper : TimeUtil
     DurationHelper& operator/=(const unsigned long long &divider);
     
     char* toString(const char *format)
-	throw(ArgErrorExImpl);
+	throw(ACSTimeError::ArgErrorExImpl);
     
     void fromString(const char *duration)
-	throw(ArgErrorExImpl);
+	throw(ACSTimeError::ArgErrorExImpl);
 
   private:
     
@@ -147,19 +147,19 @@ class EpochHelper : TimeUtil
     acstime::TimeComparison compare(const acstime::Epoch &epoch);
     
     void add(const acstime::Duration&)
-	throw(OverflowOrUnderflowExImpl);
+	throw(ACSTimeError::OverflowOrUnderflowExImpl);
     
     void subtract(const acstime::Duration&)
-	throw(OverflowOrUnderflowExImpl);    
+	throw(ACSTimeError::OverflowOrUnderflowExImpl);    
     
     acstime::Duration difference(const acstime::Epoch &subtrahend);
     double toUTCdate(long int array2TAI, long int TAI2UTC);
     double toJulianYear(long int array2TAI, long int TAI2UTC);
 
     char* toString(acstime::TimeSystem, const char*, const long int array2TAI, const long int TAI2UTC)
-	throw(ArgErrorExImpl);
+	throw(ACSTimeError::ArgErrorExImpl);
     void fromString(acstime::TimeSystem, const char*)
-	throw(ArgErrorExImpl);
+	throw(ACSTimeError::ArgErrorExImpl);
 
   private:
     EpochHelper(const EpochHelper&);  

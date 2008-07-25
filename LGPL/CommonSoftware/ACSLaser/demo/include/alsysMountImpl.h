@@ -32,11 +32,7 @@
 ///CORBA generated servant stub
 #include <demoComponentsS.h>
 
-
-using namespace acscomponent;
-
-
-class Mount: public ACSComponentImpl,     
+class Mount: public acscomponent::ACSComponentImpl,     
 			     public virtual POA_alarmsystemdemo::Mount
 {
   public:

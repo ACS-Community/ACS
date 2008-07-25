@@ -25,7 +25,7 @@ void BulkDataReceiverImpl<TCallback>::cleanUp()
 
 template<class TCallback>
 void BulkDataReceiverImpl<TCallback>::openReceiver() 
-    throw (CORBA::SystemException, AVOpenReceiverErrorEx)
+    throw (CORBA::SystemException, ACSBulkDataError::AVOpenReceiverErrorEx)
 {
     ACS_TRACE("BulkDataReceiverImpl<>::openReceiver");   
  
@@ -35,7 +35,7 @@ void BulkDataReceiverImpl<TCallback>::openReceiver()
     if(CORBA::is_nil(dal_p))
 	{
 	ACS_SHORT_LOG((LM_ERROR,"BulkDataReceiverImpl<>::openReceiver error getting DAL reference"));
-	AVOpenReceiverErrorExImpl err = AVOpenReceiverErrorExImpl(__FILE__,__LINE__,"BulkDataReceiverImpl::openReceiver");
+	ACSBulkDataError::AVOpenReceiverErrorExImpl err = ACSBulkDataError::AVOpenReceiverErrorExImpl(__FILE__,__LINE__,"BulkDataReceiverImpl::openReceiver");
 	throw err.getAVOpenReceiverErrorEx();
 	}
 
@@ -46,7 +46,7 @@ void BulkDataReceiverImpl<TCallback>::openReceiver()
     if(CORBA::is_nil(dao_p))
 	{
 	ACS_SHORT_LOG((LM_ERROR,"BulkDataReceiverImpl<>::openReceiver error getting DAO reference"));
-	AVOpenReceiverErrorExImpl err = AVOpenReceiverErrorExImpl(__FILE__,__LINE__,"BulkDataReceiverImpl::openReceiver");
+	ACSBulkDataError::AVOpenReceiverErrorExImpl err = ACSBulkDataError::AVOpenReceiverErrorExImpl(__FILE__,__LINE__,"BulkDataReceiverImpl::openReceiver");
 	throw err.getAVOpenReceiverErrorEx();
 	}
     
@@ -60,14 +60,14 @@ void BulkDataReceiverImpl<TCallback>::openReceiver()
 	}
     catch(ACSErr::ACSbaseExImpl &ex)
 	{
-	AVOpenReceiverErrorExImpl err = AVOpenReceiverErrorExImpl(ex,__FILE__,__LINE__,"BulkDataReceiverImpl::openReceiver");
+	ACSBulkDataError::AVOpenReceiverErrorExImpl err = ACSBulkDataError::AVOpenReceiverErrorExImpl(ex,__FILE__,__LINE__,"BulkDataReceiverImpl::openReceiver");
 	err.log(LM_DEBUG);
 	throw err.getAVOpenReceiverErrorEx();
 	}
     catch(...)
 	{
 	ACSErrTypeCommon::UnknownExImpl ex = ACSErrTypeCommon::UnknownExImpl(__FILE__,__LINE__,"BulkDataReceiverImpl::openReceiver");
-	AVOpenReceiverErrorExImpl err = AVOpenReceiverErrorExImpl(ex,__FILE__,__LINE__,"BulkDataReceiverImpl::openReceiver");
+	ACSBulkDataError::AVOpenReceiverErrorExImpl err = ACSBulkDataError::AVOpenReceiverErrorExImpl(ex,__FILE__,__LINE__,"BulkDataReceiverImpl::openReceiver");
 	throw err.getAVOpenReceiverErrorEx();
 	}
 }
@@ -76,7 +76,7 @@ void BulkDataReceiverImpl<TCallback>::openReceiver()
 
 template<class TCallback>
 bulkdata::BulkDataReceiverConfig * BulkDataReceiverImpl<TCallback>::getReceiverConfig()
-    throw (CORBA::SystemException, AVReceiverConfigErrorEx)
+    throw (CORBA::SystemException, ACSBulkDataError::AVReceiverConfigErrorEx)
 {
     ACS_TRACE("BulkDataReceiverImpl::getReceiverConfig");
 
@@ -85,16 +85,16 @@ bulkdata::BulkDataReceiverConfig * BulkDataReceiverImpl<TCallback>::getReceiverC
 	{
 	receiverConfig = getReceiver()->getReceiverConfig();
 	}
-    catch(AVReceiverConfigErrorExImpl &ex)
+    catch(ACSBulkDataError::AVReceiverConfigErrorExImpl &ex)
 	{
-	AVReceiverConfigErrorExImpl err = AVReceiverConfigErrorExImpl(ex,__FILE__,__LINE__,"BulkDataReceiverImpl::getReceiverConfig");
+	ACSBulkDataError::AVReceiverConfigErrorExImpl err = ACSBulkDataError::AVReceiverConfigErrorExImpl(ex,__FILE__,__LINE__,"BulkDataReceiverImpl::getReceiverConfig");
 	err.log(LM_DEBUG);
 	throw err.getAVReceiverConfigErrorEx();
 	}
     catch(...)
 	{
 	ACSErrTypeCommon::UnknownExImpl ex = ACSErrTypeCommon::UnknownExImpl(__FILE__,__LINE__,"BulkDataReceiverImpl::getReceiverConfig");
-	AVReceiverConfigErrorExImpl err = AVReceiverConfigErrorExImpl(ex,__FILE__,__LINE__,"BulkDataReceiverImpl::getReceiverConfig");
+	ACSBulkDataError::AVReceiverConfigErrorExImpl err = ACSBulkDataError::AVReceiverConfigErrorExImpl(ex,__FILE__,__LINE__,"BulkDataReceiverImpl::getReceiverConfig");
 	throw err.getAVReceiverConfigErrorEx();
 	}
 
@@ -104,7 +104,7 @@ bulkdata::BulkDataReceiverConfig * BulkDataReceiverImpl<TCallback>::getReceiverC
 
 template<class TCallback>
 void BulkDataReceiverImpl<TCallback>::closeReceiver() 
-    throw (CORBA::SystemException, AVCloseReceiverErrorEx)
+    throw (CORBA::SystemException, ACSBulkDataError::AVCloseReceiverErrorEx)
 {
     ACS_TRACE("BulkDataReceiverImpl::close");
 
@@ -114,14 +114,14 @@ void BulkDataReceiverImpl<TCallback>::closeReceiver()
 	}
     catch(ACSErr::ACSbaseExImpl &ex)
 	{
-	AVCloseReceiverErrorExImpl err = AVCloseReceiverErrorExImpl(ex,__FILE__,__LINE__,"BulkDataReceiverImpl::closeReceiver");
+	ACSBulkDataError::AVCloseReceiverErrorExImpl err = ACSBulkDataError::AVCloseReceiverErrorExImpl(ex,__FILE__,__LINE__,"BulkDataReceiverImpl::closeReceiver");
 	err.log(LM_DEBUG);
 	throw err.getAVCloseReceiverErrorEx();
 	}
     catch(...)
 	{
 	ACSErrTypeCommon::UnknownExImpl ex = ACSErrTypeCommon::UnknownExImpl(__FILE__,__LINE__,"BulkDataReceiverImpl::closeReceiver");
-	AVCloseReceiverErrorExImpl err = AVCloseReceiverErrorExImpl(ex,__FILE__,__LINE__,"BulkDataReceiverImpl::closeReceiver");
+	ACSBulkDataError::AVCloseReceiverErrorExImpl err = ACSBulkDataError::AVCloseReceiverErrorExImpl(ex,__FILE__,__LINE__,"BulkDataReceiverImpl::closeReceiver");
 	throw err.getAVCloseReceiverErrorEx();
 	}
 }
@@ -129,7 +129,7 @@ void BulkDataReceiverImpl<TCallback>::closeReceiver()
 
 template<class TCallback>
 ACSErr::Completion *BulkDataReceiverImpl<TCallback>::getCbStatus(CORBA::ULong flowNumber) 
-    throw (CORBA::SystemException, AVInvalidFlowNumberEx, AVFlowEndpointErrorEx)
+    throw (CORBA::SystemException, ACSBulkDataError::AVInvalidFlowNumberEx, ACSBulkDataError::AVFlowEndpointErrorEx)
 {
     ACS_TRACE("BulkDataReceiverImpl::getCbStatus");
 	
@@ -139,15 +139,15 @@ ACSErr::Completion *BulkDataReceiverImpl<TCallback>::getCbStatus(CORBA::ULong fl
 	{
 	getReceiver()->getFlowCallback(flowNumber,cb);
 	}
-    catch(AVInvalidFlowNumberExImpl &ex)
+    catch(ACSBulkDataError::AVInvalidFlowNumberExImpl &ex)
 	{
-	AVInvalidFlowNumberExImpl err = AVInvalidFlowNumberExImpl(ex,__FILE__,__LINE__,"BulkDataReceiverImpl::getCbStatus");
+	ACSBulkDataError::AVInvalidFlowNumberExImpl err = ACSBulkDataError::AVInvalidFlowNumberExImpl(ex,__FILE__,__LINE__,"BulkDataReceiverImpl::getCbStatus");
 	err.log(LM_DEBUG);
 	throw err.getAVInvalidFlowNumberEx();
 	}
-    catch(AVFlowEndpointErrorExImpl &ex)
+    catch(ACSBulkDataError::AVFlowEndpointErrorExImpl &ex)
 	{
-	AVFlowEndpointErrorExImpl err = AVFlowEndpointErrorExImpl(ex,__FILE__,__LINE__,"BulkDataReceiverImpl::getCbStatus");
+	ACSBulkDataError::AVFlowEndpointErrorExImpl err = ACSBulkDataError::AVFlowEndpointErrorExImpl(ex,__FILE__,__LINE__,"BulkDataReceiverImpl::getCbStatus");
 	err.log(LM_DEBUG);
 	throw err.getAVFlowEndpointErrorEx();
 	}
@@ -160,24 +160,24 @@ ACSErr::Completion *BulkDataReceiverImpl<TCallback>::getCbStatus(CORBA::ULong fl
 	}	
     if(cb->isTimeout() && cb->isWorking())
 	{
-	AVCbWorkingTimeoutCompletion *comp = new AVCbWorkingTimeoutCompletion();
+	ACSBulkDataStatus::AVCbWorkingTimeoutCompletion *comp = new ACSBulkDataStatus::AVCbWorkingTimeoutCompletion();
 	//comp->log();
 	return comp->returnCompletion();
 	}
     if(cb->isTimeout())
 	{
-	AVCbTimeoutCompletion *comp = new AVCbTimeoutCompletion();
+	ACSBulkDataStatus::AVCbTimeoutCompletion *comp = new ACSBulkDataStatus::AVCbTimeoutCompletion();
 	//comp->log();
 	return comp->returnCompletion();
 	}
     if(cb->isWorking())
 	{
-	AVCbWorkingCompletion *comp = new AVCbWorkingCompletion();
+	ACSBulkDataStatus::AVCbWorkingCompletion *comp = new ACSBulkDataStatus::AVCbWorkingCompletion();
 	//comp->log();
 	return comp->returnCompletion();
 	}	
     
-    AVCbReadyCompletion *comp = new AVCbReadyCompletion();
+    ACSBulkDataStatus::AVCbReadyCompletion *comp = new ACSBulkDataStatus::AVCbReadyCompletion();
     //comp->log();
 
     return comp->returnCompletion();
@@ -186,7 +186,7 @@ ACSErr::Completion *BulkDataReceiverImpl<TCallback>::getCbStatus(CORBA::ULong fl
 
 template<class TCallback>
 void BulkDataReceiverImpl<TCallback>::setTimeout(CORBA::ULong flowNumber, CORBA::ULong timeout) 
-    throw (CORBA::SystemException, AVInvalidFlowNumberEx, AVFlowEndpointErrorEx)
+    throw (CORBA::SystemException, ACSBulkDataError::AVInvalidFlowNumberEx, ACSBulkDataError::AVFlowEndpointErrorEx)
 {
     TCallback *cb = 0;
 
@@ -194,15 +194,15 @@ void BulkDataReceiverImpl<TCallback>::setTimeout(CORBA::ULong flowNumber, CORBA:
 	{
 	getReceiver()->getFlowCallback(flowNumber,cb);
 	}
-    catch(AVInvalidFlowNumberExImpl &ex)
+    catch(ACSBulkDataError::AVInvalidFlowNumberExImpl &ex)
 	{
-	AVInvalidFlowNumberExImpl err = AVInvalidFlowNumberExImpl(ex,__FILE__,__LINE__,"BulkDataReceiverImpl::setTimeout");
+	ACSBulkDataError::AVInvalidFlowNumberExImpl err = ACSBulkDataError::AVInvalidFlowNumberExImpl(ex,__FILE__,__LINE__,"BulkDataReceiverImpl::setTimeout");
 	err.log(LM_DEBUG);
 	throw err.getAVInvalidFlowNumberEx();
 	}
-    catch(AVFlowEndpointErrorExImpl &ex)
+    catch(ACSBulkDataError::AVFlowEndpointErrorExImpl &ex)
 	{
-	AVFlowEndpointErrorExImpl err = AVFlowEndpointErrorExImpl(ex,__FILE__,__LINE__,"BulkDataReceiverImpl::setTimeout");
+	ACSBulkDataError::AVFlowEndpointErrorExImpl err = ACSBulkDataError::AVFlowEndpointErrorExImpl(ex,__FILE__,__LINE__,"BulkDataReceiverImpl::setTimeout");
 	err.log(LM_DEBUG);
 	throw err.getAVFlowEndpointErrorEx();
 	}
@@ -220,7 +220,7 @@ void BulkDataReceiverImpl<TCallback>::setTimeout(CORBA::ULong flowNumber, CORBA:
 
 template<class TCallback>
 void BulkDataReceiverImpl<TCallback>::setRecvName(const char *recvName) 
-    throw (CORBA::SystemException, AVSetReceiverNameErrorEx)
+    throw (CORBA::SystemException, ACSBulkDataError::AVSetReceiverNameErrorEx)
 {
     try
 	{
@@ -228,14 +228,14 @@ void BulkDataReceiverImpl<TCallback>::setRecvName(const char *recvName)
 	}
     catch(ACSErr::ACSbaseExImpl &ex)
 	{
-	AVSetReceiverNameErrorExImpl err = AVSetReceiverNameErrorExImpl(ex,__FILE__,__LINE__,"BulkDataSenderImpl::setRecvName");
+	ACSBulkDataError::AVSetReceiverNameErrorExImpl err = ACSBulkDataError::AVSetReceiverNameErrorExImpl(ex,__FILE__,__LINE__,"BulkDataSenderImpl::setRecvName");
 	err.log(LM_DEBUG);
 	throw err.getAVSetReceiverNameErrorEx();
 	}
     catch(...)
 	{
 	ACSErrTypeCommon::UnknownExImpl ex = ACSErrTypeCommon::UnknownExImpl(__FILE__,__LINE__,"BulkDataReceiverImpl::setRecvName");
-	AVSetReceiverNameErrorExImpl err = AVSetReceiverNameErrorExImpl(ex,__FILE__,__LINE__,"BulkDataSenderImpl::setRecvName");
+	ACSBulkDataError::AVSetReceiverNameErrorExImpl err = ACSBulkDataError::AVSetReceiverNameErrorExImpl(ex,__FILE__,__LINE__,"BulkDataSenderImpl::setRecvName");
 	throw err.getAVSetReceiverNameErrorEx();
 	}    
 }
@@ -243,7 +243,7 @@ void BulkDataReceiverImpl<TCallback>::setRecvName(const char *recvName)
 
 template<class TCallback>
 void BulkDataReceiverImpl<TCallback>::subscribeNotification(ACS::CBvoid_ptr notifCb)
-    throw (CORBA::SystemException, AVNotificationMechanismErrorEx)
+    throw (CORBA::SystemException, ACSBulkDataError::AVNotificationMechanismErrorEx)
 {
     try
 	{
@@ -251,14 +251,14 @@ void BulkDataReceiverImpl<TCallback>::subscribeNotification(ACS::CBvoid_ptr noti
 	}
     catch(ACSErr::ACSbaseExImpl &ex)
 	{
-	AVNotificationMechanismErrorExImpl err = AVNotificationMechanismErrorExImpl(ex,__FILE__,__LINE__,"BulkDataReceiverImpl::subscribeNotification");
+	ACSBulkDataError::AVNotificationMechanismErrorExImpl err = ACSBulkDataError::AVNotificationMechanismErrorExImpl(ex,__FILE__,__LINE__,"BulkDataReceiverImpl::subscribeNotification");
 	err.log(LM_DEBUG);
 	throw err.getAVNotificationMechanismErrorEx();
 	}
    catch(...)
 	{
 	ACSErrTypeCommon::UnknownExImpl ex = ACSErrTypeCommon::UnknownExImpl(__FILE__,__LINE__,"BulkDataReceiverImpl::subscribeNotification");
-	AVNotificationMechanismErrorExImpl err = AVNotificationMechanismErrorExImpl(ex,__FILE__,__LINE__,"BulkDataReceiverImpl::subscribeNotification");
+	ACSBulkDataError::AVNotificationMechanismErrorExImpl err = ACSBulkDataError::AVNotificationMechanismErrorExImpl(ex,__FILE__,__LINE__,"BulkDataReceiverImpl::subscribeNotification");
 	err.log(LM_DEBUG);
 	throw err.getAVNotificationMechanismErrorEx();
 	}

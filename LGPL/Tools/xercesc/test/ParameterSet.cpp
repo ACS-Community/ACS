@@ -21,7 +21,7 @@
 *
 *
 *
-* "@(#) $Id: ParameterSet.cpp,v 1.1 2004/12/16 13:36:44 sharring Exp $"
+* "@(#) $Id: ParameterSet.cpp,v 1.2 2008/07/25 07:52:19 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -63,7 +63,7 @@ ParameterSet::ParameterSet(const char* xmlFile)
 	try
 	{
 		XMLPlatformUtils::Initialize();
-		cout << "initialized XML platform\n";
+		std::cout << "initialized XML platform\n";
 
 		PARAMETER_TAG_NAME = XMLString::transcode("parameter");
 		NAME_TAG_NAME = XMLString::transcode("name");
@@ -153,7 +153,7 @@ int ParameterSet::parseDOM(const char* xmlFile)
 	
 	try {
 		doc = parser->parseURI(xmlFile);
-		cout << "parsed file: " << xmlFile <<"\n";
+		std::cout << "parsed file: " << xmlFile <<"\n";
 
 		// Get all parameters
 		DOMNodeList * paramNodes = doc->getElementsByTagName(PARAMETER_TAG_NAME);
@@ -163,18 +163,18 @@ int ParameterSet::parseDOM(const char* xmlFile)
 	}
 	catch (const XMLException& toCatch) {
 		char* message = XMLString::transcode(toCatch.getMessage());
-		cout << "Exception message is: \n" << message << "\n";
+		std::cout << "Exception message is: \n" << message << "\n";
 		XMLString::release(&message);
 		return -1;
 	}
 	catch (const DOMException& toCatch) {
 		char* message = XMLString::transcode(toCatch.msg);
-		cout << "Exception message is: \n" << message << "\n";
+		std::cout << "Exception message is: \n" << message << "\n";
 		XMLString::release(&message);
 		return -1;
 	}
 	catch (...) {
-		cout << "Unexpected Exception in ParameterSet\n" ;
+		std::cout << "Unexpected Exception in ParameterSet\n" ;
 		return -1;
 	}
 
@@ -198,31 +198,31 @@ void ParameterSet::processParamNodes(DOMNodeList *paramNodes)
 			// check the type of parameter and instantiate the proper class 
 			if(XMLString::equals(typeName, INT_PARAM_TYPE))
 			{
-				cout << "int param encountered" << std::endl;
+				std::cout << "int param encountered" << std::endl;
 			}
 			if(XMLString::equals(typeName, DOUBLE_PARAM_TYPE))
 			{
-				cout << "double param encountered" << std::endl;
+				std::cout << "double param encountered" << std::endl;
 			}
 			if(XMLString::equals(typeName, STRING_PARAM_TYPE))
 			{
-				cout << "string param encountered" << std::endl;
+				std::cout << "string param encountered" << std::endl;
 			}
 			if(XMLString::equals(typeName, BOOL_PARAM_TYPE))
 			{
-				cout << "bool param encountered" << std::endl;
+				std::cout << "bool param encountered" << std::endl;
 			}
 			if(XMLString::equals(typeName, INT_ARRAY_PARAM_TYPE))
 			{
-				cout << "int array param encountered" << std::endl;
+				std::cout << "int array param encountered" << std::endl;
 			}
 			if(XMLString::equals(typeName, DOUBLE_ARRAY_PARAM_TYPE))
 			{
-				cout << "double array param encountered" << std::endl;
+				std::cout << "double array param encountered" << std::endl;
 			}
 			if(XMLString::equals(typeName, STRING_ARRAY_PARAM_TYPE))
 			{
-				cout << "string array param encountered" << std::endl;
+				std::cout << "string array param encountered" << std::endl;
 			}
 		}
 	}

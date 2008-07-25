@@ -19,7 +19,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciTestClassImpl.h,v 1.111 2006/12/13 11:34:00 bjeram Exp $"
+* "@(#) $Id: baciTestClassImpl.h,v 1.112 2008/07/25 07:29:52 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -69,8 +69,6 @@
 
 #include <baciSmartPropertyPointer.h>
 
- using namespace baci;
-
 /**
  * This test class provides 4 methods: shutdown, on, off and reset.
  * It also provides one property per each type supported
@@ -78,7 +76,7 @@
 
 class BaciTestClassImpl: public baci::CharacteristicComponentImpl,
 			 public POA_BACI_TEST::BaciTestClass,
-			 public ActionImplementator
+			 public baci::ActionImplementator
 {
   
 public:
@@ -112,30 +110,30 @@ public:
    *  <li><b><i>reqDestroy</b></i> - destroy callback (callback should has been called already by function)
    * </ul>
    */
-  virtual ActionRequest invokeAction(int function,
-				     BACIComponent* component_p, const int &callbackID, 
-				     const CBDescIn& descIn, BACIValue* value, 
+  virtual baci::ActionRequest invokeAction(int function,
+				     baci::BACIComponent* component_p, const int &callbackID, 
+				     const CBDescIn& descIn, baci::BACIValue* value, 
 				     Completion& completion, CBDescOut& descOut);
 
   /***
    * Implementation of async. on() method
    */
-  virtual ActionRequest onAction(BACIComponent* component_p, int callbackID,
-			 const CBDescIn& descIn, BACIValue* value,
+  virtual baci::ActionRequest onAction(baci::BACIComponent* component_p, int callbackID,
+			 const CBDescIn& descIn, baci::BACIValue* value,
 			 Completion& completion, CBDescOut& descOut);
 
   /***
    * Implementation of async. off() method
    */
-  virtual ActionRequest offAction(BACIComponent* component_p, int callbackID,
-			  const CBDescIn& descIn, BACIValue* value,
+  virtual baci::ActionRequest offAction(baci::BACIComponent* component_p, int callbackID,
+			  const CBDescIn& descIn, baci::BACIValue* value,
 			  Completion& completion, CBDescOut& descOut);
 
   /***
    * Implementation of async. reset() method
    */
-  virtual ActionRequest resetAction(BACIComponent* component_p, int callbackID,
-			    const CBDescIn& descIn, BACIValue* value,
+  virtual baci::ActionRequest resetAction(baci::BACIComponent* component_p, int callbackID,
+			    const CBDescIn& descIn, baci::BACIValue* value,
 			    Completion& completion, CBDescOut& descOut);
 
   /* ----------------------------------------------------------------*/
@@ -372,8 +370,8 @@ private:
   /**
    * Definition of ActionFunction (member function of PowerSupply class)
    */
-  typedef ActionRequest (BaciTestClassImpl::*ActionFunction)(BACIComponent* component_p, int callbackID,
-						       const CBDescIn& descIn, BACIValue* value,
+  typedef baci::ActionRequest (BaciTestClassImpl::*ActionFunction)(baci::BACIComponent* component_p, int callbackID,
+						       const CBDescIn& descIn, baci::BACIValue* value,
 						       Completion& completion, CBDescOut& descOut);
 
   /// Is manager shutting down?
@@ -383,25 +381,25 @@ private:
   ActionFunction m_actions[3];
 
   /// The smart pointers for (other) properties
-  SmartPropertyPointer<RWdouble>  m_RWdoubleWithErrorDevIOProp_sp;
-  SmartPropertyPointer<RWdouble>  m_RWdoubleWithDevIOProp_sp;
-  SmartPropertyPointer<ROdouble>  m_ROdoubleProp_sp;
-  SmartPropertyPointer<RWdouble>  m_RWdoubleProp_sp;
-  SmartPropertyPointer<ROfloat>   m_ROfloatProp_sp;
-  SmartPropertyPointer<RWfloat>   m_RWfloatProp_sp;
-  SmartPropertyPointer<ROlong>    m_ROlongProp_sp;
-  SmartPropertyPointer<RWlong>    m_RWlongProp_sp;
-  SmartPropertyPointer<ROpattern> m_ROpatternProp_sp;
-  SmartPropertyPointer<RWpattern> m_RWpatternProp_sp;
-  SmartPropertyPointer<ROstring>  m_ROstringProp_sp;
-  SmartPropertyPointer<RWstring>  m_RWstringProp_sp;
+  baci::SmartPropertyPointer<baci::RWdouble>  m_RWdoubleWithErrorDevIOProp_sp;
+  baci::SmartPropertyPointer<baci::RWdouble>  m_RWdoubleWithDevIOProp_sp;
+  baci::SmartPropertyPointer<baci::ROdouble>  m_ROdoubleProp_sp;
+  baci::SmartPropertyPointer<baci::RWdouble>  m_RWdoubleProp_sp;
+  baci::SmartPropertyPointer<baci::ROfloat>   m_ROfloatProp_sp;
+  baci::SmartPropertyPointer<baci::RWfloat>   m_RWfloatProp_sp;
+  baci::SmartPropertyPointer<baci::ROlong>    m_ROlongProp_sp;
+  baci::SmartPropertyPointer<baci::RWlong>    m_RWlongProp_sp;
+  baci::SmartPropertyPointer<baci::ROpattern> m_ROpatternProp_sp;
+  baci::SmartPropertyPointer<baci::RWpattern> m_RWpatternProp_sp;
+  baci::SmartPropertyPointer<baci::ROstring>  m_ROstringProp_sp;
+  baci::SmartPropertyPointer<baci::RWstring>  m_RWstringProp_sp;
 
-  SmartPropertyPointer<ROdoubleSeq>  m_ROdoubleSeqProp_sp;
-  SmartPropertyPointer<RWdoubleSeq>  m_RWdoubleSeqProp_sp;
-  SmartPropertyPointer<ROfloatSeq>  m_ROfloatSeqProp_sp;
-  SmartPropertyPointer<RWfloatSeq>  m_RWfloatSeqProp_sp;
-  SmartPropertyPointer<ROlongSeq>    m_ROlongSeqProp_sp;
-  SmartPropertyPointer<RWlongSeq>    m_RWlongSeqProp_sp;
+  baci::SmartPropertyPointer<baci::ROdoubleSeq>  m_ROdoubleSeqProp_sp;
+  baci::SmartPropertyPointer<baci::RWdoubleSeq>  m_RWdoubleSeqProp_sp;
+  baci::SmartPropertyPointer<baci::ROfloatSeq>  m_ROfloatSeqProp_sp;
+  baci::SmartPropertyPointer<baci::RWfloatSeq>  m_RWfloatSeqProp_sp;
+  baci::SmartPropertyPointer<baci::ROlongSeq>    m_ROlongSeqProp_sp;
+  baci::SmartPropertyPointer<baci::RWlongSeq>    m_RWlongSeqProp_sp;
 
 };
 

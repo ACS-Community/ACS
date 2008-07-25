@@ -19,10 +19,8 @@
 
 #include "baciRWcommonImpl_T.h"
 
-using namespace baciErrTypeProperty;
-
 template<ACS_RW_C> 
-RWcommonImpl<ACS_RW_TL>::RWcommonImpl(const ACE_CString& name, BACIComponent* component_p, DevIO<TM>* devIO, bool flagdeldevIO) : 
+baci::RWcommonImpl<ACS_RW_TL>::RWcommonImpl(const ACE_CString& name, BACIComponent* component_p, DevIO<TM>* devIO, bool flagdeldevIO) : 
     PcommonImpl<ACS_P_TL>(name, component_p, devIO, flagdeldevIO) 
 {
   ACS_TRACE("baci::RWcommonImpl&lt;&gt;::RWcommonImpl");
@@ -60,7 +58,7 @@ RWcommonImpl<ACS_RW_TL>::RWcommonImpl(const ACE_CString& name, BACIComponent* co
 }
 
 template<ACS_RW_C> 
-RWcommonImpl<ACS_RW_TL>::RWcommonImpl(bool init, const ACE_CString& name, BACIComponent* component_p, DevIO<TM>* devIO, bool flagdeldevIO) : 
+baci::RWcommonImpl<ACS_RW_TL>::RWcommonImpl(bool init, const ACE_CString& name, BACIComponent* component_p, DevIO<TM>* devIO, bool flagdeldevIO) : 
     PcommonImpl<ACS_P_TL>(name, component_p, devIO, flagdeldevIO) 
 {
   ACS_TRACE("baci::RWcommonImpl&lt;&gt;::RWcommonImpl");
@@ -68,7 +66,7 @@ RWcommonImpl<ACS_RW_TL>::RWcommonImpl(bool init, const ACE_CString& name, BACICo
   ACS_DEBUG("baci::RWcommonImpl&lt;&gt;::RWcommonImpl", "Successfully created.");
 }
 
-template<ACS_RW_C> RWcommonImpl<ACS_RW_TL>::~RWcommonImpl()
+template<ACS_RW_C> baci::RWcommonImpl<ACS_RW_TL>::~RWcommonImpl()
 {
     ACS_TRACE("baci::RWcommonImpl&lt;&gt;::~RWcommonImpl");
 }
@@ -76,7 +74,7 @@ template<ACS_RW_C> RWcommonImpl<ACS_RW_TL>::~RWcommonImpl()
 /* --------------- [ Action implementator interface ] -------------- */
 
 template<ACS_RW_C>
-ActionRequest RWcommonImpl<ACS_RW_TL>::invokeAction(int function,
+baci::ActionRequest baci::RWcommonImpl<ACS_RW_TL>::invokeAction(int function,
 						    BACIComponent* component_p, 
 						    const int &callbackID, 
 						    const CBDescIn& descIn, 
@@ -106,7 +104,7 @@ ActionRequest RWcommonImpl<ACS_RW_TL>::invokeAction(int function,
       }
   else
       {
-      completion = InvokeActionErrorCompletion(c,
+      completion = baciErrTypeProperty::InvokeActionErrorCompletion(c,
 					       __FILE__,
 					       __LINE__,
 					       "baci::RWcommonImpl&lt;&gt;::invokeAction");
@@ -119,7 +117,7 @@ ActionRequest RWcommonImpl<ACS_RW_TL>::invokeAction(int function,
 
 /// async. set value action implementation
 template<ACS_RW_C>
-ActionRequest RWcommonImpl<ACS_RW_TL>::setValueAction(BACIComponent* component_p, 
+baci::ActionRequest baci::RWcommonImpl<ACS_RW_TL>::setValueAction(BACIComponent* component_p, 
 						      int callbackID,
 						      const CBDescIn& descIn, 
 						      BACIValue* value,
@@ -140,7 +138,7 @@ ActionRequest RWcommonImpl<ACS_RW_TL>::setValueAction(BACIComponent* component_p
       }
   else
       {
-      CanNotSetValueCompletion  errComp(co, 
+      baciErrTypeProperty::CanNotSetValueCompletion  errComp(co, 
 					__FILE__, 
 					__LINE__, 
 					"baci::RWcommonImpl&lt;&gt;::setValueAction");
@@ -155,7 +153,7 @@ ActionRequest RWcommonImpl<ACS_RW_TL>::setValueAction(BACIComponent* component_p
 
 // async. set value action implementation
 template<ACS_RW_C>
-void RWcommonImpl<ACS_RW_TL>::setValue(BACIProperty* property,
+void baci::RWcommonImpl<ACS_RW_TL>::setValue(BACIProperty* property,
 		   BACIValue* value, 
 		   Completion &completion,
 		   CBDescOut& descOut)
@@ -182,7 +180,7 @@ void RWcommonImpl<ACS_RW_TL>::setValue(BACIProperty* property,
 /* ---------------------- [ CORBA interface ] ---------------------- */
 
 template<ACS_RW_C>
-ACSErr::Completion * RWcommonImpl<ACS_RW_TL>::set_sync (TIN val
+ACSErr::Completion * baci::RWcommonImpl<ACS_RW_TL>::set_sync (TIN val
 		    )
   throw (CORBA::SystemException)
 {
@@ -197,7 +195,7 @@ ACSErr::Completion * RWcommonImpl<ACS_RW_TL>::set_sync (TIN val
       }
   else
       {
-      CanNotSetValueCompletion completion(co, 
+      baciErrTypeProperty::CanNotSetValueCompletion completion(co, 
 					  __FILE__, 
 					  __LINE__, 
 					  "baci::RWcommonImpl&lt;&gt;::set_sync");
@@ -207,7 +205,7 @@ ACSErr::Completion * RWcommonImpl<ACS_RW_TL>::set_sync (TIN val
 }//set_sync
 
 template<ACS_RW_C>
-void RWcommonImpl<ACS_RW_TL>::set_async (TIN value,
+void baci::RWcommonImpl<ACS_RW_TL>::set_async (TIN value,
 		     ACS::CBvoid_ptr cb,
 		     const ACS::CBDescIn & desc
 		     )
@@ -218,7 +216,7 @@ void RWcommonImpl<ACS_RW_TL>::set_async (TIN value,
 }//set_async
 
 template<ACS_RW_C>
-void RWcommonImpl<ACS_RW_TL>::set_nonblocking (TIN val
+void baci::RWcommonImpl<ACS_RW_TL>::set_nonblocking (TIN val
 			   )
   throw (CORBA::SystemException)
 {
@@ -230,7 +228,7 @@ void RWcommonImpl<ACS_RW_TL>::set_nonblocking (TIN val
   
   if (!c.isErrorFree())
       {
-      CanNotSetValueCompletion completion(c, 
+      baciErrTypeProperty::CanNotSetValueCompletion completion(c, 
 				 __FILE__, 
 				 __LINE__, 
 				 "baci::RWcommonImpl&lt;&gt;::set_nonblocking");

@@ -1,4 +1,4 @@
-/* @(#) $Id: acstimeClockImpl.h,v 1.15 2006/09/01 02:20:54 cparedes Exp $
+/* @(#) $Id: acstimeClockImpl.h,v 1.16 2008/07/25 07:34:03 cparedes Exp $
  *
  * Copyright (C) 2001
  * Associated Universities, Inc. Washington DC, USA.
@@ -42,7 +42,6 @@
 #include "acstimeTimeUtil.h"
 #include "acstimeDevIOTime.h"
 ////////////////////////////////////////////////////////////////////////
- using namespace baci;
 
 /** @file acstimeClockImpl.h
  *  Header file for implementation of ACS Clock.
@@ -157,17 +156,17 @@ class ClockImpl : public virtual baci::CharacteristicComponentImpl,
     /**
      *  Implementation of the array2TAI IDL property.
      */
-    RWlong *m_array2TAI;
+    baci::RWlong *m_array2TAI;
     
     /**
      *  Implementation of the TAI2UTC IDL property.
      */
-    RWlong *m_TAI2UTC;
+    baci::RWlong *m_TAI2UTC;
     
     /**
      *  Implementation of the now IDL property (current time).
      */
-    ROuLongLong *m_now;
+    baci::ROuLongLong *m_now;
     
     /**
      *  devIO used to get the current time used by the now property.

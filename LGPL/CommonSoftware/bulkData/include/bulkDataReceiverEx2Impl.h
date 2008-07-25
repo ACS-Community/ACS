@@ -41,10 +41,6 @@
 
 #include "bulkDataReceiverImpl.h"
 
-
-//using namespace baci;
-//using namespace maci;
-
 /** @file bulkDataReceiverEx2Impl.h  
  */
 

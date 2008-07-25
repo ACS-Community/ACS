@@ -22,12 +22,12 @@
 #include "baciRWcommonImpl_T.i"
 
 template <ACS_RW_C> 
-RWdiscImpl<ACS_RW_TL>:: RWdiscImpl(const ACE_CString& name, 
+baci::RWdiscImpl<ACS_RW_TL>:: RWdiscImpl(const ACE_CString& name, 
 				   BACIComponent *component_p, 
 				   DevIO<TM> *devIO_p, 
 				   bool flagdeldevIO, 
 				   bool initValue) :
-	RWcommonImpl<ACS_RW_TL>(name, component_p, devIO_p, flagdeldevIO) 
+	baci::RWcommonImpl<ACS_RW_TL>(name, component_p, devIO_p, flagdeldevIO) 
 {
     ACS_TRACE("baci::RWdiscImpl&lt;&gt;::RWdiscImpl"); 
     this->initialization_m = (initValue==true) ? 0 : 1; // should be removed

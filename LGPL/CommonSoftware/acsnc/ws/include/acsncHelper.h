@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsncHelper.h,v 1.68 2008/02/12 01:10:33 msekoran Exp $"
+* "@(#) $Id: acsncHelper.h,v 1.69 2008/07/25 07:35:19 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -51,8 +51,6 @@
 #include <basencHelper.h>
 
 #include <ACSErrTypeCommon.h>
-
- using namespace ACSErrTypeCommon;
 
 
 /** @file acsncHelper.h
@@ -104,7 +102,7 @@ class Helper
      */ 
     void 
     resolveNamingService(CORBA::ORB_ptr orb_mp)
-	throw (CORBAProblemEx, CouldntCreateThreadEx);
+	throw (ACSErrTypeCommon::CORBAProblemEx, ACSErrTypeCommon::CouldntCreateThreadEx);
     
     /**  
      *  This is used to determine if the notification channel we want to use has been registered
@@ -116,7 +114,7 @@ class Helper
      */
     bool 
     resolveNotifyChannel()
-	throw (CORBAProblemEx);
+	throw (ACSErrTypeCommon::CORBAProblemEx);
 
     /**  
      *  Helper method designed to eliminate "xxx::" from a passed string where "xxx" is some
@@ -187,7 +185,7 @@ class Helper
      */
     virtual void 
     resolveNotificationFactory()
-	throw (CORBAProblemEx);
+	throw (ACSErrTypeCommon::CORBAProblemEx);
     
     /** 
      * Utility method.
@@ -199,7 +197,7 @@ class Helper
     */
     virtual void 
     createNotificationChannel()
-	throw (CORBAProblemEx);
+	throw (ACSErrTypeCommon::CORBAProblemEx);
 
     /**
      * Utility method.

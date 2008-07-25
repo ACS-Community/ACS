@@ -16,7 +16,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciSmartServantPointer.i,v 1.3 2005/01/07 17:45:43 dfugate Exp $"
+* "@(#) $Id: baciSmartServantPointer.i,v 1.4 2008/07/25 07:29:52 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -25,10 +25,8 @@
 
 #include "vltPort.h"
 
-using namespace baci;
-
 template<class T>
-SmartServantPointer<T>::SmartServantPointer():
+baci::SmartServantPointer<T>::SmartServantPointer():
     Loki::SmartPtr<
 	T,
     	Loki::RefCounted,
@@ -39,7 +37,7 @@ SmartServantPointer<T>::SmartServantPointer():
 }
 
 template<class T>
-SmartServantPointer<T>::SmartServantPointer(T* prop):
+baci::SmartServantPointer<T>::SmartServantPointer(T* prop):
     Loki::SmartPtr<
 	T, 
 	Loki::RefCounted, 
