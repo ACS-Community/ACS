@@ -21,7 +21,7 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
  *
- * "@(#) $Id: acsContainerServices.i,v 1.15 2008/03/27 12:04:16 bjeram Exp $"
+ * "@(#) $Id: acsContainerServices.i,v 1.16 2008/07/25 09:40:12 cparedes Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -35,15 +35,13 @@
 #include <ACSErrTypeCommon.h>
 #include <ACSErrTypeCORBA.h>
 
-using namespace maci;
-
 template<class T>
-T* ContainerServices::getComponent(const char *name)
+T* maci::ContainerServices::getComponent(const char *name)
     throw (maciErrType::CannotGetComponentExImpl)
 { 
     CORBA::Object* obj =T::_nil();
     
-    ACS_SHORT_LOG((LM_INFO,"ContainerServices::getComponent(%s)",name));
+    ACS_SHORT_LOG((LM_INFO,"maci::ContainerServices::getComponent(%s)",name));
   
     try 
 	{
@@ -53,7 +51,7 @@ T* ContainerServices::getComponent(const char *name)
 	if (tmpRef==T::_nil())
 		{
 		releaseComponent(name); // first we have to release the component!
-		ACSErrTypeCORBA::NarrowFailedExImpl ex(__FILE__, __LINE__, "ContainerServices<>::getComponent");
+		ACSErrTypeCORBA::NarrowFailedExImpl ex(__FILE__, __LINE__, "maci::ContainerServices<>::getComponent");
 		ex.setNarrowType(typeid(T).name());
 		throw ex;
 		}//if
@@ -62,16 +60,16 @@ T* ContainerServices::getComponent(const char *name)
     catch (ACSErr::ACSbaseExImpl &ex) 
 	{
 	maciErrType::CannotGetComponentExImpl lex(ex, __FILE__, __LINE__,
-				     "ContainerServices::getComponent");
+				     "maci::ContainerServices::getComponent");
 	lex.setCURL(name);
 	throw lex;
 	}
     catch (...) 
 	{
 	ACSErrTypeCommon::UnexpectedExceptionExImpl uex(__FILE__, __LINE__,
-							"ContainerServices::getComponent");
+							"maci::ContainerServices::getComponent");
 	maciErrType::CannotGetComponentExImpl lex(uex, __FILE__, __LINE__,
-				     "ContainerServices::getComponent");
+				     "maci::ContainerServices::getComponent");
 	lex.setCURL(name);
 	throw lex;
 	}
@@ -80,12 +78,12 @@ T* ContainerServices::getComponent(const char *name)
 
 
 template<class T>
-T* ContainerServices::getComponentNonSticky(const char *name)
+T* maci::ContainerServices::getComponentNonSticky(const char *name)
     throw (maciErrType::CannotGetComponentExImpl)
 { 
     CORBA::Object* obj =T::_nil();
     
-    ACS_SHORT_LOG((LM_INFO,"ContainerServices::getComponentNonSticky(%s)",name));
+    ACS_SHORT_LOG((LM_INFO,"maci::ContainerServices::getComponentNonSticky(%s)",name));
   
     try 
 	{
@@ -95,7 +93,7 @@ T* ContainerServices::getComponentNonSticky(const char *name)
 	if (tmpRef==T::_nil())
 		{
 		// here we do not have to release the component because it is non sticky!
-		ACSErrTypeCORBA::NarrowFailedExImpl ex(__FILE__, __LINE__, "ContainerServices<>::getComponentNonSticky");
+		ACSErrTypeCORBA::NarrowFailedExImpl ex(__FILE__, __LINE__, "maci::ContainerServices<>::getComponentNonSticky");
 		ex.setNarrowType(typeid(T).name());
 		throw ex;
 		}//if
@@ -104,30 +102,30 @@ T* ContainerServices::getComponentNonSticky(const char *name)
     catch (maciErrType::CannotGetComponentExImpl &ex) 
 	{
 	maciErrType::CannotGetComponentExImpl lex(ex, __FILE__, __LINE__,
-				     "ContainerServices::getComponentNonSticky");
+				     "maci::ContainerServices::getComponentNonSticky");
 	lex.setCURL(name);
 	throw lex;
 	}
 	catch (ACSErr::ACSbaseExImpl &ex) 
 	{
 	maciErrType::CannotGetComponentExImpl lex(ex, __FILE__, __LINE__,
-				     "ContainerServices::getComponentNonSticky");
+				     "maci::ContainerServices::getComponentNonSticky");
 	lex.setCURL(name);
 	throw lex;
 	}
     catch (...) 
 	{
 	ACSErrTypeCommon::UnexpectedExceptionExImpl uex(__FILE__, __LINE__,
-							"ContainerServices::getComponentNonSticky");
+							"maci::ContainerServices::getComponentNonSticky");
 	maciErrType::CannotGetComponentExImpl lex(uex, __FILE__, __LINE__,
-				     "ContainerServices::getComponentNonSticky");
+				     "maci::ContainerServices::getComponentNonSticky");
 	lex.setCURL(name);
 	throw lex;
 	}
 }//getComponentNonSticky
 
 template<class T> T* 
-ContainerServices::getDynamicComponent(maci::ComponentSpec compSpec, bool markAsDefault)
+maci::ContainerServices::getDynamicComponent(maci::ComponentSpec compSpec, bool markAsDefault)
     throw (maciErrType::NoPermissionExImpl,
 	   maciErrType::IncompleteComponentSpecExImpl, 
 	   maciErrType::InvalidComponentSpecExImpl, 
@@ -136,7 +134,7 @@ ContainerServices::getDynamicComponent(maci::ComponentSpec compSpec, bool markAs
 {
     CORBA::Object* obj =T::_nil();
 
-    ACS_TRACE("ContainerServices::getDynamicComponent");
+    ACS_TRACE("maci::ContainerServices::getDynamicComponent");
 
     try 
     {
@@ -157,7 +155,7 @@ ContainerServices::getDynamicComponent(maci::ComponentSpec compSpec, bool markAs
     		{
     			releaseComponent(compSpec.component_name.in()); // first we have to release the component!
     		}//if-else
-    		ACSErrTypeCORBA::NarrowFailedExImpl ex(__FILE__, __LINE__, "ContainerServices<>::getDynamicComponent");
+    		ACSErrTypeCORBA::NarrowFailedExImpl ex(__FILE__, __LINE__, "maci::ContainerServices<>::getDynamicComponent");
     		ex.setNarrowType(typeid(T).name());
     		throw ex;
     	}//if
@@ -166,56 +164,56 @@ ContainerServices::getDynamicComponent(maci::ComponentSpec compSpec, bool markAs
     catch (maciErrType::NoPermissionExImpl &ex) 
     {
     	maciErrType::NoPermissionExImpl	 lex(ex, __FILE__, __LINE__,
-    			"ContainerServices::getDynamicComponent");
+    			"maci::ContainerServices::getDynamicComponent");
     	throw lex;
     }
     catch (maciErrType::IncompleteComponentSpecExImpl &ex) 
     {
     	maciErrType::IncompleteComponentSpecExImpl lex(ex, __FILE__, __LINE__,
-    			"ContainerServices::getDynamicComponent");
+    			"maci::ContainerServices::getDynamicComponent");
     	lex.setCURL(compSpec.component_name.in());
     	throw lex;
     }
     catch (maciErrType::InvalidComponentSpecExImpl &ex) 
     {
     	maciErrType::InvalidComponentSpecExImpl lex(ex, __FILE__, __LINE__,
-    			"ContainerServices::getDynamicComponent");
+    			"maci::ContainerServices::getDynamicComponent");
     	throw lex;
     }
     catch (maciErrType::ComponentSpecIncompatibleWithActiveComponentExImpl &ex) 
     {
     	maciErrType::ComponentSpecIncompatibleWithActiveComponentExImpl lex(ex, __FILE__, __LINE__,
-    			"ContainerServices::getDynamicComponent");
+    			"maci::ContainerServices::getDynamicComponent");
     	lex.setCURL(compSpec.component_name.in());
     	throw lex;
     }
     catch (maciErrType::CannotGetComponentExImpl &ex) 
     {
     	maciErrType::CannotGetComponentExImpl lex(ex, __FILE__, __LINE__,
-    			"ContainerServices::getDynamicComponent");
+    			"maci::ContainerServices::getDynamicComponent");
     	lex.setCURL(compSpec.component_name.in());
     	throw lex;
     }
     catch (ACSErr::ACSbaseExImpl &ex) 
     {
     	maciErrType::CannotGetComponentExImpl lex(ex, __FILE__, __LINE__,
-    			"ContainerServices::getDynamicComponent");
+    			"maci::ContainerServices::getDynamicComponent");
     	lex.setCURL(compSpec.component_name.in());
     	throw lex;
     }
     catch (...) 
     {
     	ACSErrTypeCommon::UnexpectedExceptionExImpl uex(__FILE__, __LINE__,
-    			"ContainerServices::getDynamicComponent");
+    			"maci::ContainerServices::getDynamicComponent");
     	maciErrType::CannotGetComponentExImpl lex(uex, __FILE__, __LINE__,
-    			"ContainerServices::getDynamicComponent");
+    			"maci::ContainerServices::getDynamicComponent");
     	lex.setCURL(compSpec.component_name.in());
     	throw lex;
     }//try-catch
 }//getDynamicComponent
 
 template<class T> T* 
-ContainerServices::getCollocatedComponent(maci::ComponentSpec compSpec, bool markAsDefault, const char* targetComponent)
+maci::ContainerServices::getCollocatedComponent(maci::ComponentSpec compSpec, bool markAsDefault, const char* targetComponent)
     throw(maciErrType::NoPermissionExImpl,
 	  maciErrType::IncompleteComponentSpecExImpl, 
 	  maciErrType::InvalidComponentSpecExImpl, 
@@ -224,7 +222,7 @@ ContainerServices::getCollocatedComponent(maci::ComponentSpec compSpec, bool mar
 {
     CORBA::Object* obj =T::_nil();
 
-    ACS_TRACE("ContainerServices::getCollocatedComponent");  
+    ACS_TRACE("maci::ContainerServices::getCollocatedComponent");  
 
     try 
 	{
@@ -245,7 +243,7 @@ ContainerServices::getCollocatedComponent(maci::ComponentSpec compSpec, bool mar
     			{
     				releaseComponent(compSpec.component_name.in()); // first we have to release the component!
     			}//if-else
-		ACSErrTypeCORBA::NarrowFailedExImpl ex(__FILE__, __LINE__, "ContainerServices<>::getCollocatedComponent");
+		ACSErrTypeCORBA::NarrowFailedExImpl ex(__FILE__, __LINE__, "maci::ContainerServices<>::getCollocatedComponent");
 		ex.setNarrowType(typeid(T).name());
 		throw ex;
 		}//if
@@ -254,63 +252,63 @@ ContainerServices::getCollocatedComponent(maci::ComponentSpec compSpec, bool mar
     catch (maciErrType::NoPermissionExImpl &ex) 
 	{
 	maciErrType::NoPermissionExImpl lex(ex, __FILE__, __LINE__,
-					    "ContainerServices::getCollocatedComponent");
+					    "maci::ContainerServices::getCollocatedComponent");
 	throw lex;
 	}
     catch (maciErrType::IncompleteComponentSpecExImpl &ex) 
 	{
 	maciErrType::IncompleteComponentSpecExImpl lex(ex, __FILE__, __LINE__,
-					  "ContainerServices::getCollocatedComponent");
+					  "maci::ContainerServices::getCollocatedComponent");
 	lex.setCURL(compSpec.component_name.in());
 	throw lex;
 	}
     catch (maciErrType::InvalidComponentSpecExImpl &ex) 
 	{
 	maciErrType::InvalidComponentSpecExImpl lex(ex, __FILE__, __LINE__,
-				       "ContainerServices::getCollocatedComponent");
+				       "maci::ContainerServices::getCollocatedComponent");
 	throw lex;
 	}
     catch (maciErrType::ComponentSpecIncompatibleWithActiveComponentExImpl &ex) 
 	{
 	maciErrType::ComponentSpecIncompatibleWithActiveComponentExImpl lex(ex, __FILE__, __LINE__,
-							       "ContainerServices::getCollocatedComponent");
+							       "maci::ContainerServices::getCollocatedComponent");
 	lex.setCURL(compSpec.component_name.in());
 	throw lex;
 	}
     catch (maciErrType::CannotGetComponentExImpl &ex) 
 	{
 	maciErrType::CannotGetComponentExImpl lex(ex, __FILE__, __LINE__,
-				     "ContainerServices::getCollocatedComponent");
+				     "maci::ContainerServices::getCollocatedComponent");
 	lex.setCURL(compSpec.component_name.in());
 	throw lex;
 	}
 	 catch (ACSErr::ACSbaseExImpl &ex) 
 	{
 	maciErrType::CannotGetComponentExImpl lex(ex, __FILE__, __LINE__,
-				     "ContainerServices::getCollocatedComponent");
+				     "maci::ContainerServices::getCollocatedComponent");
 	lex.setCURL(compSpec.component_name.in());
 	throw lex;
 	}
     catch (...) 
 	{
 	ACSErrTypeCommon::UnexpectedExceptionExImpl uex(__FILE__, __LINE__,
-							"ContainerServices::getCollocatedComponent");
+							"maci::ContainerServices::getCollocatedComponent");
 	maciErrType::CannotGetComponentExImpl lex(uex, __FILE__, __LINE__,
-				     "ContainerServices::getCollocatedComponent");
+				     "maci::ContainerServices::getCollocatedComponent");
 	lex.setCURL(compSpec.component_name.in());
 	throw lex;
 	}
 }//getCollocatedComponent
 
 template<class T> T* 
-ContainerServices::getDefaultComponent(const char* idlType)
+maci::ContainerServices::getDefaultComponent(const char* idlType)
     throw (maciErrType::NoPermissionExImpl,
 	   maciErrType::NoDefaultComponentExImpl, 
 	   maciErrType::CannotGetComponentExImpl)
 {
     CORBA::Object* obj =T::_nil();
 
-    ACS_TRACE("ContainerServices::getDefaultComponent"); 
+    ACS_TRACE("maci::ContainerServices::getDefaultComponent"); 
 
     try 
 	{
@@ -327,7 +325,7 @@ ContainerServices::getDefaultComponent(const char* idlType)
 			releaseComponent(cName);
 			CORBA::string_free(cName);
 		}//if
-		ACSErrTypeCORBA::NarrowFailedExImpl ex(__FILE__, __LINE__, "ContainerServices<>::getDefaultComponent");
+		ACSErrTypeCORBA::NarrowFailedExImpl ex(__FILE__, __LINE__, "maci::ContainerServices<>::getDefaultComponent");
 		ex.setNarrowType(typeid(T).name());
 		throw ex;
 		}//if
@@ -336,80 +334,80 @@ ContainerServices::getDefaultComponent(const char* idlType)
     catch(maciErrType::NoPermissionEx &_ex)
 	{
 	throw maciErrType::NoPermissionExImpl(__FILE__, __LINE__,
-				"ContainerServices::getDefaultComponent");	      
+				"maci::ContainerServices::getDefaultComponent");	      
 	}
     catch (maciErrType::NoDefaultComponentExImpl &ex) 
 	{
 	maciErrType::NoDefaultComponentExImpl lex(ex,
 				     __FILE__, __LINE__,
-				     "ContainerServices::getDefaultComponent");
+				     "maci::ContainerServices::getDefaultComponent");
 	throw lex;
 	}
     catch (maciErrType::CannotGetComponentExImpl &ex) 
 	{
 	maciErrType::CannotGetComponentExImpl lex(ex, __FILE__, __LINE__,
-				     "ContainerServices::getDefaultComponent");
+				     "maci::ContainerServices::getDefaultComponent");
 	throw lex;
 	}
 	catch (ACSErr::ACSbaseExImpl &ex) 
 	{
 	maciErrType::CannotGetComponentExImpl lex(ex, __FILE__, __LINE__,
-				     "ContainerServices::getDefaultComponent");
+				     "maci::ContainerServices::getDefaultComponent");
 	throw lex;
 	}
     catch (...) 
 	{
 	ACSErrTypeCommon::UnexpectedExceptionExImpl uex(__FILE__, __LINE__,
-							"ContainerServices::getDefaultComponent");
+							"maci::ContainerServices::getDefaultComponent");
 	maciErrType::CannotGetComponentExImpl lex(uex, __FILE__, __LINE__,
-				     "ContainerServices::getDefaultComponent");
+				     "maci::ContainerServices::getDefaultComponent");
 	throw lex;
 	}
 }//getDefaultComponent
 
 template <typename T>
-SmartPtr<T> ContainerServices::getComponentSmartPtr(const char *name)
+maci::SmartPtr<T> maci::ContainerServices::getComponentSmartPtr(const char *name)
     throw (maciErrType::CannotGetComponentExImpl)
 {
-    return SmartPtr<T>(this, true, this->getComponent<T>(name));
+    return maci::SmartPtr<T>(this, true, this->getComponent<T>(name));
 }//getComponentSmartPtr
 
 template <typename T>
-SmartPtr<T> ContainerServices::getComponentNonStickySmartPtr(const char *name)
+maci::SmartPtr<T> maci::ContainerServices::getComponentNonStickySmartPtr(const char *name)
     throw (maciErrType::CannotGetComponentExImpl)
 { 
-    return SmartPtr<T>(this, false, this->getComponentNonSticky<T>(name));
+    return maci::SmartPtr<T>(this, false, this->getComponentNonSticky<T>(name));
 }//getComponentNonStickySmartPtr
 
 template <typename T>
-SmartPtr<T> ContainerServices::getDynamicComponentSmartPtr(maci::ComponentSpec compSpec, bool markAsDefault)
+maci::SmartPtr<T> maci::ContainerServices::getDynamicComponentSmartPtr(maci::ComponentSpec compSpec, bool markAsDefault)
     throw (maciErrType::NoPermissionExImpl,
 	   maciErrType::IncompleteComponentSpecExImpl, 
 	   maciErrType::InvalidComponentSpecExImpl, 
 	   maciErrType::ComponentSpecIncompatibleWithActiveComponentExImpl, 
 	   maciErrType::CannotGetComponentExImpl)
 {
-    return SmartPtr<T>(this, true, this->getDynamicComponent<T>(compSpec, markAsDefault));
+    return maci::SmartPtr<T>(this, true, this->getDynamicComponent<T>(compSpec, markAsDefault));
 }//getDynamicComponentSmartPtr
 
 
 template <typename T>
-SmartPtr<T> ContainerServices::getCollocatedComponentSmartPtr(maci::ComponentSpec compSpec, bool markAsDefault, const char* targetComponent)
+maci::SmartPtr<T> maci::ContainerServices::getCollocatedComponentSmartPtr(maci::ComponentSpec compSpec, bool markAsDefault, const char* targetComponent)
     throw(maciErrType::NoPermissionExImpl,
 	  maciErrType::IncompleteComponentSpecExImpl, 
 	  maciErrType::InvalidComponentSpecExImpl, 
 	  maciErrType::ComponentSpecIncompatibleWithActiveComponentExImpl, 
 	  maciErrType::CannotGetComponentExImpl)
 {
-    return SmartPtr<T>(this, true, this->getCollocatedComponent<T>(compSpec, markAsDefault, targetComponent));
+    return maci::SmartPtr<T>(this, true, this->getCollocatedComponent<T>(compSpec, markAsDefault, targetComponent));
 }//getCollocatedComponentSmartPtr
 
 template <typename T>
-SmartPtr<T> ContainerServices::getDefaultComponentSmartPtr(const char* idlType)
+maci::SmartPtr<T> maci::ContainerServices::getDefaultComponentSmartPtr(const char* idlType)
     throw (maciErrType::NoPermissionExImpl,
 	   maciErrType::NoDefaultComponentExImpl, 
 	   maciErrType::CannotGetComponentExImpl)
 {
-    return SmartPtr<T>(this, true, this->getDefaultComponent<T>(idlType));
+    return maci::SmartPtr<T>(this, true, this->getDefaultComponent<T>(idlType));
 }//getDefaultComponentSmartPtr
 #endif

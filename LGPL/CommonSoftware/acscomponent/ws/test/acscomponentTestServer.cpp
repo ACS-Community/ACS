@@ -18,14 +18,14 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acscomponentTestServer.cpp,v 1.18 2006/10/24 15:21:47 bjeram Exp $"
+* "@(#) $Id: acscomponentTestServer.cpp,v 1.19 2008/07/25 09:40:47 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
 * rcirami 2002-09-24  created
 */
  
-static char *rcsId="@(#) $Id: acscomponentTestServer.cpp,v 1.18 2006/10/24 15:21:47 bjeram Exp $";
+static char *rcsId="@(#) $Id: acscomponentTestServer.cpp,v 1.19 2008/07/25 09:40:47 cparedes Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <vltPort.h>
@@ -108,7 +108,7 @@ class TestContainerServices : public maci::ContainerServices {
         maci::ComponentInfo getComponentDescriptor(const char* componentName)
           throw (acsErrTypeContainerServices::GettingCompInfoExImpl)
           {
-            ComponentInfo temp;
+            maci::ComponentInfo temp;
             return temp;
           }
         
@@ -149,7 +149,7 @@ class TestContainerServices : public maci::ContainerServices {
           return NULL;
         }
         
-        ComponentStateManager* getComponentStateManager()
+        maci::ComponentStateManager* getComponentStateManager()
         {
           return NULL;
         }

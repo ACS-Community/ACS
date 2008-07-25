@@ -19,7 +19,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciCharacteristicModelImpl.h,v 1.10 2006/09/01 02:20:54 cparedes Exp $"
+* "@(#) $Id: baciCharacteristicModelImpl.h,v 1.11 2008/07/25 09:41:47 cparedes Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -68,7 +68,7 @@ class baci_EXPORT CharacteristicModelImpl : public virtual PortableServer::RefCo
      *      CharacteristicComponents without CDB are deprecated 
      *      ans will be not allowed any more on a later release
      */
-    CharacteristicModelImpl(const ACE_CString& model_name, ContainerServices* containerServices);
+    CharacteristicModelImpl(const ACE_CString& model_name, maci::ContainerServices* containerServices);
 
     /**
      * Constructor creating a child model (for properties).

@@ -19,7 +19,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 *    MA 02111-1307  USA
 *
-* "@(#) $Id: enumpropTestServer.cpp,v 1.53 2006/10/24 15:23:14 bjeram Exp $"
+* "@(#) $Id: enumpropTestServer.cpp,v 1.54 2008/07/25 09:42:30 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -30,7 +30,7 @@
 
 #include "vltPort.h"
 
-static char *rcsId="@(#) $Id: enumpropTestServer.cpp,v 1.53 2006/10/24 15:23:14 bjeram Exp $"; 
+static char *rcsId="@(#) $Id: enumpropTestServer.cpp,v 1.54 2008/07/25 09:42:30 cparedes Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <iostream>
@@ -117,7 +117,7 @@ class TestContainerServices : public maci::ContainerServices {
         maci::ComponentInfo getComponentDescriptor(const char* componentName)
           throw (acsErrTypeContainerServices::GettingCompInfoExImpl)
           {
-            ComponentInfo temp;
+            maci::ComponentInfo temp;
             return temp;
           }
         
@@ -195,7 +195,7 @@ class TestContainerServices : public maci::ContainerServices {
           return NULL;
         }
         
-        ComponentStateManager* getComponentStateManager()
+        maci::ComponentStateManager* getComponentStateManager()
         {
           return NULL;
         }

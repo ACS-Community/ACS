@@ -136,7 +136,7 @@ namespace AcsBulkdata
 	void setTimeout (CORBA::ULong user_timeout) 
 	    { timeout_m = user_timeout; }
 
-	void setContSvc (ContainerServices * services_p)
+	void setContSvc (maci::ContainerServices * services_p)
 	    {  contSvc_p = services_p; }  
 
 	void subscribeNotification(ACS::CBvoid_ptr notifCb)
@@ -169,7 +169,7 @@ namespace AcsBulkdata
 	CORBA::ULong numberOfFlows;
 	CORBA::ULong offset;
 
-	ContainerServices *contSvc_p;
+	maci::ContainerServices *contSvc_p;
 
 	BulkDataDistributerNotifCb<TReceiverCallback, TSenderCallback> *distributerNotifCb_p;
 

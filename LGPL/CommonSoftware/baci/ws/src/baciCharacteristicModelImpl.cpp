@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciCharacteristicModelImpl.cpp,v 1.14 2008/07/25 07:29:52 cparedes Exp $"
+* "@(#) $Id: baciCharacteristicModelImpl.cpp,v 1.15 2008/07/25 09:41:47 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -36,7 +36,7 @@ namespace baci {
 
 PortableServer::POA_ptr CharacteristicModelImpl::offShootPOA = 0;
 
-CharacteristicModelImpl::CharacteristicModelImpl(const ACE_CString& model_name, ContainerServices* containerServices) :
+CharacteristicModelImpl::CharacteristicModelImpl(const ACE_CString& model_name, maci::ContainerServices* containerServices) :
     model_name_m(model_name), m_daoNode_p(0)
 {
 

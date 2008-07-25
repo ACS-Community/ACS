@@ -1,7 +1,7 @@
 ////#include <baciTestAlarmClassImpl.h>
 #include <vltPort.h>
 
-static char *rcsId="@(#) $Id: baciTestAlarmClassImpl.cpp,v 1.2 2008/07/25 07:29:52 cparedes Exp $"; 
+static char *rcsId="@(#) $Id: baciTestAlarmClassImpl.cpp,v 1.3 2008/07/25 09:41:47 cparedes Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 
@@ -58,7 +58,7 @@ MyROPatternProperty::setValue(BACIProperty *property_p,
 
 
 BaciTestAlarmClassImpl::BaciTestAlarmClassImpl(const ACE_CString& name,
-					       ContainerServices* containerServices,
+					       maci::ContainerServices* containerServices,
 					       bool monitoring) :
     CharacteristicComponentImpl(name,containerServices, monitoring),
     m_shutdown(0),

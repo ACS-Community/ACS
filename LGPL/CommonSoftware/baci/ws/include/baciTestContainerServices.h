@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciTestContainerServices.h,v 1.5 2006/10/24 15:22:03 bjeram Exp $"
+* "@(#) $Id: baciTestContainerServices.h,v 1.6 2008/07/25 09:41:47 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -166,8 +166,8 @@ class TestContainerServices : public virtual maci::ContainerServices
 	    return (ACS::OffShoot *)0;
 	}
  
-    virtual ComponentStateManager* getComponentStateManager()
+    virtual maci::ComponentStateManager* getComponentStateManager()
     {
-      return (ComponentStateManager*)NULL;
+      return (maci::ComponentStateManager*)NULL;
     }
 };
