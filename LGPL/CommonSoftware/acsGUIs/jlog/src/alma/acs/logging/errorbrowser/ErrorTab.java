@@ -179,7 +179,7 @@ public class ErrorTab extends JSplitPane implements ActionListener {
 					// the mouse pointer
 					int row = ErrorTab.this.table.rowAtPoint(e.getPoint());
 					
-					ILogEntry log=model.getVisibleLogEntry(row);
+					ILogEntry log=model.getVisibleLogEntry(table.convertRowIndexToModel(row));
 					ErrorTab.this.detailedLogTable.setupContent(log);
 				}
 			}
