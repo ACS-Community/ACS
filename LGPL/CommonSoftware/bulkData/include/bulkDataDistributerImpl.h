@@ -94,7 +94,7 @@ class BulkDataDistributerImpl : public baci::CharacteristicComponentImpl,
      * @param poa Poa which will activate this and also all other Components. 
      * @param name component name.
      */
-    BulkDataDistributerImpl(const ACE_CString& name,ContainerServices* containerServices);
+    BulkDataDistributerImpl(const ACE_CString& name,maci::ContainerServices* containerServices);
   
     /**
      * Destructor
@@ -240,7 +240,7 @@ class BulkDataDistributerImpl : public baci::CharacteristicComponentImpl,
 
   private:
 
-    ContainerServices *containerServices_p;
+    maci::ContainerServices *containerServices_p;
     CDB::DAL_ptr dal_p;
 
     AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback> distributer;

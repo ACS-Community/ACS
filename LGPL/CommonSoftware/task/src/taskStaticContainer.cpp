@@ -16,7 +16,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: taskStaticContainer.cpp,v 1.15 2008/07/15 06:44:51 bjeram Exp $"
+* "@(#) $Id: taskStaticContainer.cpp,v 1.16 2008/07/27 15:08:42 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -292,13 +292,13 @@ CORBA::Object_ptr StaticContainer::createComponent(const char* compName, const c
      {
      ACS_DEBUG("StaticContainer::createComponent", "Activating component");
 
-     ComponentSpec_var compSpec = new ComponentSpec();
+     maci::ComponentSpec_var compSpec = new maci::ComponentSpec();
      compSpec->component_name = CORBA::string_dup(compName);
      compSpec->component_type = CORBA::string_dup("IDL:alma/ACS/Task:1.0"); //TBD:: IFR ?
      compSpec->component_code = CORBA::string_dup(libname);
      compSpec->container_name = CORBA::string_dup(containerName_m.c_str());
 /// @todo  get_dynamic_component can throw an exception which should be caught!
-     ComponentInfo_var compInfo  =
+     maci::ComponentInfo_var compInfo  =
 	 container_m.getManager()->get_dynamic_component(container_m.getHandle(),
 							 compSpec.in(),
 							 false);
@@ -323,8 +323,8 @@ CORBA::Object_ptr StaticContainer::createComponent(const char* compName, const c
 
     ACS_DEBUG_PARAM("StaticContainer::createComponent", "Library: %s has been loaded", libname);
 
-    ConstructComponentFunc ConstructComponent =
-	(ConstructComponentFunc)(dllmgr_m.getSymbol(libHandle, "ConstructComponent"));
+    maci::ConstructComponentFunc ConstructComponent =
+	(maci::ConstructComponentFunc)(dllmgr_m.getSymbol(libHandle, "ConstructComponent"));
     if (ConstructComponent == 0)
 	{
 	printf("error finding the constructor for the component\n");
@@ -333,12 +333,12 @@ CORBA::Object_ptr StaticContainer::createComponent(const char* compName, const c
 #endif //!_TASK_LIB
 
     ACS_DEBUG_PARAM("StaticContainer::createComponent", "Creating component: %s", compName);
-    ContainerServices* acsCS = 0;
+    maci::ContainerServices* acsCS = 0;
     ACE_CString cmpName(compName);
 
     if (services_m == true)
 	{
-	acsCS =   new MACIContainerServices(0/*handel*/, cmpName, container_m.getContainerPOA().in());
+	acsCS =   new maci::MACIContainerServices(0/*handel*/, cmpName, container_m.getContainerPOA().in());
 	if (acsCS==0)
 	    {
 	    ACS_LOG(LM_RUNTIME_CONTEXT, "StaticContainer::createComponent",

@@ -16,7 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: acsncServiceCheckerExec.cpp,v 1.1 2007/10/12 20:10:45 nbarriga Exp $"
+ * "@(#) $Id: acsncServiceCheckerExec.cpp,v 1.2 2008/07/27 15:09:30 cparedes Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -56,7 +56,7 @@
 #include <acsncServiceChecker.h>
 int main(int argc, char *argv[])
 {
-	SimpleClient client;
+	maci::SimpleClient client;
 
 	// Creates and initializes the SimpleClient object
 

@@ -18,7 +18,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: taskStaticContainer.h,v 1.7 2008/07/25 07:33:13 cparedes Exp $"
+* "@(#) $Id: taskStaticContainer.h,v 1.8 2008/07/27 15:08:42 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -61,8 +61,8 @@ class StaticContainer
     void initCORBA(int &argc, char **argv);
     void doneCORBA();
 
-    ContainerImpl container_m;
-    LibraryManager dllmgr_m;
+    maci::ContainerImpl container_m;
+    maci::LibraryManager dllmgr_m;
 
     LoggingProxy *m_logger;
     bool services_m;

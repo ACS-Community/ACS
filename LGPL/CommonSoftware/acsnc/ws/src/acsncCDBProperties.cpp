@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsncCDBProperties.cpp,v 1.11 2008/02/12 01:10:38 msekoran Exp $"
+* "@(#) $Id: acsncCDBProperties.cpp,v 1.12 2008/07/27 15:09:30 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -26,7 +26,7 @@
 #include "acsncCDBProperties.h"
 #include <maciContainerImpl.h>
 
-static char *rcsId="@(#) $Id: acsncCDBProperties.cpp,v 1.11 2008/02/12 01:10:38 msekoran Exp $"; 
+static char *rcsId="@(#) $Id: acsncCDBProperties.cpp,v 1.12 2008/07/27 15:09:30 cparedes Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 namespace nc {
@@ -38,10 +38,10 @@ namespace nc {
 	CDB::DAL_var retVal = 0;
 	
 	//use a nice little trick to get at the CDB reference
-	if ((ContainerImpl::getContainer() != 0) && 
-	    (ContainerImpl::getContainer()->getContainerCORBAProxy() != maci::Container::_nil()))
+	if ((maci::ContainerImpl::getContainer() != 0) && 
+	    (maci::ContainerImpl::getContainer()->getContainerCORBAProxy() != maci::Container::_nil()))
 	    {
-	    retVal = ContainerImpl::getContainer()->getService<CDB::DAL>("CDB", 
+	    retVal = maci::ContainerImpl::getContainer()->getService<CDB::DAL>("CDB", 
 									 0, 
 									 true);
 	    }

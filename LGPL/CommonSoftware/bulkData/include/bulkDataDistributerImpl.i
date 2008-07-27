@@ -1,5 +1,5 @@
 template<class TReceiverCallback, class TSenderCallback>
-BulkDataDistributerImpl<TReceiverCallback, TSenderCallback>::BulkDataDistributerImpl(const ACE_CString& name,ContainerServices* containerServices) : 
+BulkDataDistributerImpl<TReceiverCallback, TSenderCallback>::BulkDataDistributerImpl(const ACE_CString& name,maci::ContainerServices* containerServices) : 
     CharacteristicComponentImpl(name,containerServices)
 {
     ACS_TRACE("BulkDataDistributerImpl<>::BulkDataDistributerImpl");

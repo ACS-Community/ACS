@@ -19,7 +19,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: acsexmplClientFridgeNC.cpp,v 1.11 2007/02/01 05:14:26 cparedes Exp $"
+* "@(#) $Id: acsexmplClientFridgeNC.cpp,v 1.12 2008/07/27 15:10:49 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -89,7 +89,7 @@ from the channel.
 #include <acsncSimpleConsumer.h>
 #include "acsexmplFridgeC.h"
 /////////////////////////////////////////////////////////////////////////  
-ACE_RCSID(acsexmpl, acsexmplFridgeNCClient, "$Id: acsexmplClientFridgeNC.cpp,v 1.11 2007/02/01 05:14:26 cparedes Exp $")
+ACE_RCSID(acsexmpl, acsexmplFridgeNCClient, "$Id: acsexmplClientFridgeNC.cpp,v 1.12 2008/07/27 15:10:49 cparedes Exp $")
 //-----------------------------------------------------------------------------
 
 /** Function designed to do something useful with temperatureDataBlockEvents
@@ -120,7 +120,7 @@ int main(int argc, char *argv[])
     ACS_SHORT_LOG((LM_INFO, "Welcome to %s!", argv[0]));
         
     //Creates and initializes the SimpleClient object
-    SimpleClient client;    
+    maci::SimpleClient client;    
     
     int eventCount = 0;
 
