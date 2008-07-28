@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsutil.h,v 1.19 2005/08/26 22:22:54 dfugate Exp $"
+* "@(#) $Id: acsutil.h,v 1.20 2008/07/28 07:01:40 cparedes Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -74,10 +74,6 @@
 // automatically set WIN32 platform
 #if defined (_MSC_VER)
 #define ACS_HAS_WIN32
-#endif
-
-#if defined (ACS_HAS_WIN32)
-using namespace std;
 #endif
 
 #ifdef MAKE_VXWORKS
@@ -170,6 +166,9 @@ typedef std::vector<ACE_CString> ACE_CString_Vector;
 // REVISION HISTORY:
 //
 // $Log: acsutil.h,v $
+// Revision 1.20  2008/07/28 07:01:40  cparedes
+// removing the using namespace
+//
 // Revision 1.19  2005/08/26 22:22:54  dfugate
 // Improved inline documentation a great deal.
 //
