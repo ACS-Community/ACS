@@ -97,7 +97,7 @@ class BulkDataSenderThreadImpl : public virtual BulkDataSenderDefaultImpl,
 {    
   public:
 
-    BulkDataSenderThreadImpl(const ACE_CString& name,ContainerServices* containerServices);
+    BulkDataSenderThreadImpl(const ACE_CString& name,maci::ContainerServices* containerServices);
   
     virtual ~BulkDataSenderThreadImpl();
 

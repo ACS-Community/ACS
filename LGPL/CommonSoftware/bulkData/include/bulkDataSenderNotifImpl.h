@@ -63,7 +63,7 @@ class BulkDataSenderNotifImpl : public virtual BulkDataSenderDefaultImpl
 {    
  public:
 
-    BulkDataSenderNotifImpl(const ACE_CString& name,ContainerServices* containerServices);
+    BulkDataSenderNotifImpl(const ACE_CString& name,maci::ContainerServices* containerServices);
     
     virtual ~BulkDataSenderNotifImpl();
       

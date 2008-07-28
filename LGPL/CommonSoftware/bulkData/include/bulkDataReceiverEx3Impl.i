@@ -1,5 +1,5 @@
 template<class TCallback>
-BulkDataReceiverEx3Impl<TCallback>::BulkDataReceiverEx3Impl(const ACE_CString& name,ContainerServices* containerServices) :
+BulkDataReceiverEx3Impl<TCallback>::BulkDataReceiverEx3Impl(const ACE_CString& name,maci::ContainerServices* containerServices) :
     BulkDataReceiverImpl<TCallback>(name,containerServices)
 {
     ACS_TRACE("BulkDataReceiverEx3Impl<>::BulkDataReceiverEx3Impl");

@@ -82,7 +82,7 @@ class BulkDataReceiverImpl : public baci::CharacteristicComponentImpl,
      * @param poa Poa which will activate this and also all other Components. 
      * @param name component name.
      */
-    BulkDataReceiverImpl(const ACE_CString& name,ContainerServices* containerServices);
+    BulkDataReceiverImpl(const ACE_CString& name,maci::ContainerServices* containerServices);
   
     /**
      * Destructor
@@ -134,7 +134,7 @@ class BulkDataReceiverImpl : public baci::CharacteristicComponentImpl,
 
     AcsBulkdata::BulkDataReceiver<TCallback> receiver;
 
-    ContainerServices *containerServices_p;
+    maci::ContainerServices *containerServices_p;
 };
 
 #include "bulkDataReceiverImpl.i"

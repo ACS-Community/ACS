@@ -73,7 +73,7 @@ class BulkDataSenderEx2Impl : public virtual BulkDataSenderDefaultImpl,
    * @param poa poa which will activate this and also all other components 
    * @param name component name
    */
-    BulkDataSenderEx2Impl(const ACE_CString& name,ContainerServices* containerServices);
+    BulkDataSenderEx2Impl(const ACE_CString& name,maci::ContainerServices* containerServices);
   
   /**
    * Destructor

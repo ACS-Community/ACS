@@ -75,7 +75,7 @@ class BulkDataReceiverDistr1Impl : public virtual BulkDataReceiverImpl<TCallback
      * @param poa Poa which will activate this and also all other Components. 
      * @param name component name.
      */
-    BulkDataReceiverDistr1Impl(const ACE_CString& name,ContainerServices* containerServices);
+    BulkDataReceiverDistr1Impl(const ACE_CString& name,maci::ContainerServices* containerServices);
   
     /**
      * Destructor

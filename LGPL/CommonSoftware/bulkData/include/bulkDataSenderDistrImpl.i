@@ -1,5 +1,5 @@
 template<class TSenderCallback>
-BulkDataSenderDistrImpl<TSenderCallback>::BulkDataSenderDistrImpl(const ACE_CString& name,ContainerServices* containerServices) :
+BulkDataSenderDistrImpl<TSenderCallback>::BulkDataSenderDistrImpl(const ACE_CString& name,maci::ContainerServices* containerServices) :
     BulkDataSenderImpl<TSenderCallback>(name,containerServices)
 {
     ACS_TRACE("BulkDataSenderDistrImpl::BulkDataSenderDistrImpl");

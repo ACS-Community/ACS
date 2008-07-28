@@ -54,7 +54,7 @@ class BulkDataSenderPerfImpl : public virtual BulkDataSenderDefaultImpl,
 			       public virtual POA_bulkdata::BulkDataSenderPerf
 {    
   public:
-    BulkDataSenderPerfImpl(const ACE_CString& name,ContainerServices* containerServices);
+    BulkDataSenderPerfImpl(const ACE_CString& name,maci::ContainerServices* containerServices);
   
     virtual ~BulkDataSenderPerfImpl();
   

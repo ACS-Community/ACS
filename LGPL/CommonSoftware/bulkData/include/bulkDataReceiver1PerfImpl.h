@@ -45,7 +45,7 @@ class BulkDataReceiver1PerfImpl : public virtual BulkDataReceiverImpl<TCallback>
 {
   public:
     
-    BulkDataReceiver1PerfImpl(const ACE_CString& name,ContainerServices* containerServices);
+    BulkDataReceiver1PerfImpl(const ACE_CString& name,maci::ContainerServices* containerServices);
   
     virtual ~BulkDataReceiver1PerfImpl();
 

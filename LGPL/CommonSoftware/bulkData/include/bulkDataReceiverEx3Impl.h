@@ -67,7 +67,7 @@ class BulkDataReceiverEx3Impl : public virtual BulkDataReceiverImpl<TCallback>,
 {
   public:
     
-    BulkDataReceiverEx3Impl(const ACE_CString& name,ContainerServices* containerServices);
+    BulkDataReceiverEx3Impl(const ACE_CString& name,maci::ContainerServices* containerServices);
   
     virtual ~BulkDataReceiverEx3Impl();
 

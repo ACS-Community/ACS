@@ -75,7 +75,7 @@ class BulkDataSenderImpl : public baci::CharacteristicComponentImpl,
      * @param poa poa which will activate this and also all other components 
      * @param name component name
      */
-    BulkDataSenderImpl(const ACE_CString& name,ContainerServices* containerServices);
+    BulkDataSenderImpl(const ACE_CString& name,maci::ContainerServices* containerServices);
   
     /**
      * Destructor
@@ -150,7 +150,7 @@ class BulkDataSenderImpl : public baci::CharacteristicComponentImpl,
  
   private:
 
-    ContainerServices *containerServices_p;
+    maci::ContainerServices *containerServices_p;
 
     AcsBulkdata::BulkDataSender<TSenderCallback> sender;
 

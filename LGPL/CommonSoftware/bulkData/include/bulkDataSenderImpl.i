@@ -1,5 +1,5 @@
 template<class TSenderCallback>
-BulkDataSenderImpl<TSenderCallback>::BulkDataSenderImpl(const ACE_CString& name,ContainerServices* containerServices) :
+BulkDataSenderImpl<TSenderCallback>::BulkDataSenderImpl(const ACE_CString& name,maci::ContainerServices* containerServices) :
     CharacteristicComponentImpl(name,containerServices)
 {
     ACS_TRACE("BulkDataSenderImpl::BulkDataSenderImpl");

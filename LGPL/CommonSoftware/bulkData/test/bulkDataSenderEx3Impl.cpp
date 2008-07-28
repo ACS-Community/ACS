@@ -2,7 +2,7 @@
 
 using namespace ACSBulkDataError;
 
-BulkDataSenderEx3Impl::BulkDataSenderEx3Impl(const ACE_CString& name,ContainerServices* containerServices) :
+BulkDataSenderEx3Impl::BulkDataSenderEx3Impl(const ACE_CString& name,maci::ContainerServices* containerServices) :
     BulkDataSenderDefaultImpl(name,containerServices)
 {
     ACS_TRACE("BulkDataSenderEx3Impl::BulkDataSenderEx3Impl");

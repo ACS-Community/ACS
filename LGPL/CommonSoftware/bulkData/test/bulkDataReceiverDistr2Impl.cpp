@@ -1,6 +1,6 @@
 #include "bulkDataReceiverDistr2Impl.h"
 
-BulkDataReceiverDistr2Impl::BulkDataReceiverDistr2Impl(const ACE_CString& name,ContainerServices* containerServices) :
+BulkDataReceiverDistr2Impl::BulkDataReceiverDistr2Impl(const ACE_CString& name,maci::ContainerServices* containerServices) :
     BulkDataReceiverImpl<BulkDataReceiverCbDistr2>(name,containerServices)
 {
     ACS_TRACE("BulkDataReceiverDistr2Impl::BulkDataReceiverDistr2Impl");
