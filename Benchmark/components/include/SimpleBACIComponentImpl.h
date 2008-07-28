@@ -15,7 +15,7 @@
 
 class SimpleBACIComponent: public virtual BasePerfCompImpl,     
 			   public virtual POA_perftest::SimpleBACIComponent,
-			   public ActionImplementator
+			   public baci::ActionImplementator
 {
   public:
     
@@ -23,12 +23,12 @@ class SimpleBACIComponent: public virtual BasePerfCompImpl,
     maci::ContainerServices *containerServices);
     virtual ~SimpleBACIComponent();  
     
-    virtual ActionRequest 
+    virtual baci::ActionRequest 
     invokeAction(int function,
-		 BACIComponent *component_p, 
+		 baci::BACIComponent *component_p, 
 		 const int &callbackID, 
 		 const CBDescIn &descIn, 
-		 BACIValue *value_p, 
+		 baci::BACIValue *value_p, 
 		 Completion &completion, 
 		 CBDescOut &descOut);
     
@@ -41,7 +41,7 @@ class SimpleBACIComponent: public virtual BasePerfCompImpl,
 
   private:
 
-    SmartPropertyPointer<RWlong>m_property_sp;
+    baci::SmartPropertyPointer<baci::RWlong>m_property_sp;
 
     void operator=(const SimpleBACIComponent&);
 };

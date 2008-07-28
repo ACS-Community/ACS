@@ -1,6 +1,6 @@
 #include <SimpleBACIComponentImpl.h>
 
-ACE_RCSID(acstests, SimpleBACIComponentImpl, "$Id: SimpleBACIComponentImpl.cpp,v 1.4 2005/04/29 21:45:13 dfugate Exp $")
+ACE_RCSID(acstests, SimpleBACIComponentImpl, "$Id: SimpleBACIComponentImpl.cpp,v 1.5 2008/07/28 09:57:02 cparedes Exp $")
 
 /////////////////////////////////////////////////
 // SimpleBACIComponent
@@ -9,7 +9,7 @@ ACE_RCSID(acstests, SimpleBACIComponentImpl, "$Id: SimpleBACIComponentImpl.cpp,v
 SimpleBACIComponent::SimpleBACIComponent(const ACE_CString& name,
     maci::ContainerServices *containerServices) :
     BasePerfCompImpl(name, containerServices),
-    m_property_sp(new RWlong(name+":property", getComponent()), this)
+    m_property_sp(new baci::RWlong(name+":property", getComponent()), this)
 {
     ACS_TRACE("::SimpleBACIComponent::SimpleBACIComponent");
 }
@@ -21,12 +21,12 @@ SimpleBACIComponent::~SimpleBACIComponent()
 
 /* --------------- [ Action implementator interface ] -------------- */
 
-ActionRequest 
+baci::ActionRequest 
 SimpleBACIComponent::invokeAction(int function,
-				  BACIComponent *cob_p, 
+				  baci::BACIComponent *cob_p, 
 				  const int &callbackID, 
 				  const CBDescIn &descIn, 
-				  BACIValue *value_p, 
+				  baci::BACIValue *value_p, 
 				  Completion &completion, 
 				  CBDescOut &descOut) 
 {
@@ -40,17 +40,17 @@ SimpleBACIComponent::invokeAction(int function,
 	    completion.type=ACSErr::ACSErrTypeOK;
 	    completion.code = ACSErrTypeOK::ACSErrOK;
 
-	    return reqInvokeDone;
+	    return baci::reqInvokeDone;
 	}
 	default:
-	    return reqDestroy;
+	    return baci::reqDestroy;
 	}
 }
 
 /* --------------------- [ CORBA interface ] ----------------------*/
 void SimpleBACIComponent::action(ACS::CBvoid_ptr cb, const ACS::CBDescIn &desc) throw (CORBA::SystemException)
 {
-    getComponent()->registerAction(BACIValue::type_null, cb, desc, this, ACTION);
+    getComponent()->registerAction(baci::BACIValue::type_null, cb, desc, this, ACTION);
 }
 
 ACS::RWlong_ptr SimpleBACIComponent::property() throw (CORBA::SystemException)

@@ -30,9 +30,6 @@
 #include <acscomponentImpl.h>
 #include <perftestS.h>
  
-using namespace acscomponent;
-using std::string;
-
 class LogStress ; // forward declaration
 
 /*

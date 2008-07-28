@@ -10,8 +10,6 @@
 #include <acserr.h>
 #include <BenchmarkErrType.h>
 
-using namespace acscomponent;
-
 class ErrTestComponentImpl: public virtual BasePerfCompImpl,
 			    public POA_perftest::ErrTestComponent
 {

@@ -4,7 +4,7 @@
 using namespace std;
 
 
-BulkDataSenderEx1Impl::BulkDataSenderEx1Impl(const ACE_CString& name,ContainerServices* containerServices) :
+BulkDataSenderEx1Impl::BulkDataSenderEx1Impl(const ACE_CString& name,maci::ContainerServices* containerServices) :
     BulkDataSenderDefaultImpl(name,containerServices)
 {
     ACS_TRACE("BulkDataSenderEx1Impl::BulkDataSenderEx1Impl");
@@ -22,7 +22,7 @@ BulkDataSenderEx1Impl::~BulkDataSenderEx1Impl()
 }
 
 void BulkDataSenderEx1Impl::startSend()
-    throw (CORBA::SystemException, AVStartSendErrorEx)
+    throw (CORBA::SystemException, ACSBulkDataError::AVStartSendErrorEx)
 {
     unsigned long long realSize = size_m * 1000ULL;
     
@@ -45,12 +45,12 @@ void BulkDataSenderEx1Impl::startSend()
 }
 
 void BulkDataSenderEx1Impl::paceData()
-    throw (CORBA::SystemException, AVPaceDataErrorEx)
+    throw (CORBA::SystemException, ACSBulkDataError::AVPaceDataErrorEx)
 {
 }
 
 void BulkDataSenderEx1Impl::stopSend()
-    throw (CORBA::SystemException, AVStopSendErrorEx)
+    throw (CORBA::SystemException, ACSBulkDataError::AVStopSendErrorEx)
 {
     ACS_TRACE("BulkDataSenderImpl::stopSend");
     getSender()->stopSend(1UL);

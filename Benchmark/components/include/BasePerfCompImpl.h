@@ -10,7 +10,7 @@
 
 #include <acstimeProfiler.h>
 
-class BasePerfCompImpl: public CharacteristicComponentImpl,
+class BasePerfCompImpl: public baci::CharacteristicComponentImpl,
 			public virtual POA_perftest::BasePerfComp
 {
   public:

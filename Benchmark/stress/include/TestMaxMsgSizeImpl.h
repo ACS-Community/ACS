@@ -21,7 +21,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: TestMaxMsgSizeImpl.h,v 1.1 2004/12/02 00:06:44 dfugate Exp $"
+* "@(#) $Id: TestMaxMsgSizeImpl.h,v 1.2 2008/07/28 09:57:02 cparedes Exp $"
 *
 */
 
@@ -32,11 +32,8 @@
 #include <acscomponentImpl.h>
 #include "stresstestS.h"
 
-using namespace acscomponent;
-
-
 class TestMaxMsgSizeImpl: 
-    public virtual ACSComponentImpl, 
+    public virtual acscomponent::ACSComponentImpl, 
     public virtual POA_TEST_MAX_MSG_SIZE::TestMaxMsgSize
 {
   public:
