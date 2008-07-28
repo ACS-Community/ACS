@@ -21,7 +21,7 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
  *
- * "@(#) $Id: acsContainerServices.i,v 1.16 2008/07/25 09:40:12 cparedes Exp $"
+ * "@(#) $Id: acsContainerServices.i,v 1.17 2008/07/28 06:59:49 cparedes Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -41,7 +41,7 @@ T* maci::ContainerServices::getComponent(const char *name)
 { 
     CORBA::Object* obj =T::_nil();
     
-    ACS_SHORT_LOG((LM_INFO,"maci::ContainerServices::getComponent(%s)",name));
+    ACS_SHORT_LOG((LM_INFO,"ContainerServices::getComponent(%s)",name));
   
     try 
 	{
@@ -60,16 +60,16 @@ T* maci::ContainerServices::getComponent(const char *name)
     catch (ACSErr::ACSbaseExImpl &ex) 
 	{
 	maciErrType::CannotGetComponentExImpl lex(ex, __FILE__, __LINE__,
-				     "maci::ContainerServices::getComponent");
+				     "ContainerServices::getComponent");
 	lex.setCURL(name);
 	throw lex;
 	}
     catch (...) 
 	{
 	ACSErrTypeCommon::UnexpectedExceptionExImpl uex(__FILE__, __LINE__,
-							"maci::ContainerServices::getComponent");
+							"ContainerServices::getComponent");
 	maciErrType::CannotGetComponentExImpl lex(uex, __FILE__, __LINE__,
-				     "maci::ContainerServices::getComponent");
+				     "ContainerServices::getComponent");
 	lex.setCURL(name);
 	throw lex;
 	}
@@ -83,7 +83,7 @@ T* maci::ContainerServices::getComponentNonSticky(const char *name)
 { 
     CORBA::Object* obj =T::_nil();
     
-    ACS_SHORT_LOG((LM_INFO,"maci::ContainerServices::getComponentNonSticky(%s)",name));
+    ACS_SHORT_LOG((LM_INFO,"ContainerServices::getComponentNonSticky(%s)",name));
   
     try 
 	{
@@ -102,23 +102,23 @@ T* maci::ContainerServices::getComponentNonSticky(const char *name)
     catch (maciErrType::CannotGetComponentExImpl &ex) 
 	{
 	maciErrType::CannotGetComponentExImpl lex(ex, __FILE__, __LINE__,
-				     "maci::ContainerServices::getComponentNonSticky");
+				     "ContainerServices::getComponentNonSticky");
 	lex.setCURL(name);
 	throw lex;
 	}
 	catch (ACSErr::ACSbaseExImpl &ex) 
 	{
 	maciErrType::CannotGetComponentExImpl lex(ex, __FILE__, __LINE__,
-				     "maci::ContainerServices::getComponentNonSticky");
+				     "ContainerServices::getComponentNonSticky");
 	lex.setCURL(name);
 	throw lex;
 	}
     catch (...) 
 	{
 	ACSErrTypeCommon::UnexpectedExceptionExImpl uex(__FILE__, __LINE__,
-							"maci::ContainerServices::getComponentNonSticky");
+							"ContainerServices::getComponentNonSticky");
 	maciErrType::CannotGetComponentExImpl lex(uex, __FILE__, __LINE__,
-				     "maci::ContainerServices::getComponentNonSticky");
+				     "ContainerServices::getComponentNonSticky");
 	lex.setCURL(name);
 	throw lex;
 	}
