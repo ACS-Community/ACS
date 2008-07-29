@@ -17,7 +17,7 @@
 
 class ComplexBACIComponent: public BasePerfCompImpl,     //Standard component superclass
 			    public virtual POA_perftest::ComplexBACIComponent,    //CORBA servant stub
-			    public ActionImplementator    //Asynchronous method helper class
+			    public baci::ActionImplementator    //Asynchronous method helper class
 {
   public:
 
@@ -28,11 +28,11 @@ class ComplexBACIComponent: public BasePerfCompImpl,     //Standard component su
     virtual ~ComplexBACIComponent();  
     
 
-    virtual ActionRequest invokeAction(int function,
-		  BACIComponent *component_p, 
+    virtual baci::ActionRequest invokeAction(int function,
+		  baci::BACIComponent *component_p, 
 		  const int &callbackID, 
 		  const CBDescIn &descIn, 
-		  BACIValue *value_p, 
+		  baci::BACIValue *value_p, 
 		  Completion &completion, 
 		  CBDescOut &descOut);
     
@@ -73,22 +73,22 @@ class ComplexBACIComponent: public BasePerfCompImpl,     //Standard component su
     virtual ACS::RWlong_ptr property16() throw (CORBA::SystemException);
 
   private:
-    SmartPropertyPointer<RWlong>m_property01;
-    SmartPropertyPointer<RWlong>m_property02;
-    SmartPropertyPointer<RWlong>m_property03;
-    SmartPropertyPointer<RWlong>m_property04;
-    SmartPropertyPointer<RWlong>m_property05;
-    SmartPropertyPointer<RWlong>m_property06;
-    SmartPropertyPointer<RWlong>m_property07;
-    SmartPropertyPointer<RWlong>m_property08;
-    SmartPropertyPointer<RWlong>m_property09;
-    SmartPropertyPointer<RWlong>m_property10;
-    SmartPropertyPointer<RWlong>m_property11;
-    SmartPropertyPointer<RWlong>m_property12;
-    SmartPropertyPointer<RWlong>m_property13;
-    SmartPropertyPointer<RWlong>m_property14;
-    SmartPropertyPointer<RWlong>m_property15;
-    SmartPropertyPointer<RWlong>m_property16;
+    baci::SmartPropertyPointer<baci::RWlong>m_property01;
+    baci::SmartPropertyPointer<baci::RWlong>m_property02;
+    baci::SmartPropertyPointer<baci::RWlong>m_property03;
+    baci::SmartPropertyPointer<baci::RWlong>m_property04;
+    baci::SmartPropertyPointer<baci::RWlong>m_property05;
+    baci::SmartPropertyPointer<baci::RWlong>m_property06;
+    baci::SmartPropertyPointer<baci::RWlong>m_property07;
+    baci::SmartPropertyPointer<baci::RWlong>m_property08;
+    baci::SmartPropertyPointer<baci::RWlong>m_property09;
+    baci::SmartPropertyPointer<baci::RWlong>m_property10;
+    baci::SmartPropertyPointer<baci::RWlong>m_property11;
+    baci::SmartPropertyPointer<baci::RWlong>m_property12;
+    baci::SmartPropertyPointer<baci::RWlong>m_property13;
+    baci::SmartPropertyPointer<baci::RWlong>m_property14;
+    baci::SmartPropertyPointer<baci::RWlong>m_property15;
+    baci::SmartPropertyPointer<baci::RWlong>m_property16;
 
     /**
      * ALMA C++ coding standards state copy operators should be disabled.

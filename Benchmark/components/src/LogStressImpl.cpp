@@ -42,7 +42,7 @@ int SendingThread::svc()
 		strcpy(hostName, "unknown host");
 	}
 	
-	string componentName(logStress2_p->name());
+	std::string componentName(logStress2_p->name());
 	std::ostringstream stressMessage;
 	int sleepAmount = logStress2_p->getDelay();
 	for(int i = 0; i < logStress2_p->getNumTimesToLog(); i++)
@@ -51,7 +51,7 @@ int SendingThread::svc()
 		stressMessage << "Stress test - host: " << hostName << " component: " << componentName << " msg: " << i;
 		if(NULL != stressMessage.str().c_str()) 
 		{
-			string message(stressMessage.str());
+			std::string message(stressMessage.str());
 			getLogger()->log(Logging::Logger::LM_INFO, 
 				message.c_str(), __FILE__, __LINE__, "SendingThread::run");
 		}
@@ -72,10 +72,10 @@ int SendingThread::svc()
  * @param name: the name of the component.
  * @param containerServices: a ContainerServices pointer to use for things like logging, getting components, etc.
  */
-LogStress::LogStress(const ACE_CString &name, maci::ContainerServices * containerServices): ACSComponentImpl(name, containerServices)
+LogStress::LogStress(const ACE_CString &name, maci::ContainerServices * containerServices): acscomponent::ACSComponentImpl(name, containerServices)
 {
 	setThreadDone(false);
-	string compName(name.c_str());
+	std::string compName(name.c_str());
 	LogStress * selfPtr = this;
 	m_SendingThread_p = new SendingThread(selfPtr);
    // ACS_TRACE is used for debugging purposes

@@ -1,6 +1,8 @@
 #include <ComplexBACIComponentImpl.h>
 
-ACE_RCSID(acstests, ComplexBACIComponentImpl, "$Id: ComplexBACIComponentImpl.cpp,v 1.4 2005/04/29 21:45:13 dfugate Exp $")
+using namespace baci;
+
+ACE_RCSID(acstests, ComplexBACIComponentImpl, "$Id: ComplexBACIComponentImpl.cpp,v 1.5 2008/07/29 06:43:28 cparedes Exp $")
 
 /////////////////////////////////////////////////
 // ComplexBACIComponent

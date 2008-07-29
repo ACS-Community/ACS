@@ -70,7 +70,7 @@ class SendingThread : public ACE_Task_Base
  * LogStress class - implements the LogStress IDL interface.
  * Used to send logs to the logging channel.
  */
-class LogStress: public virtual ACSComponentImpl, public POA_perftest::LogStressWithDelay
+class LogStress: public virtual acscomponent::ACSComponentImpl, public POA_perftest::LogStressWithDelay
 {    
 	/**
 	 * Make SendingThread a 'friend' so that it can call our private methods, such as
