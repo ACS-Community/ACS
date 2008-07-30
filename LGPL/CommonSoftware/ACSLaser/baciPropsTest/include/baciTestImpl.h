@@ -21,7 +21,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: baciTestImpl.h,v 1.7 2008/07/25 07:49:27 cparedes Exp $"
+* "@(#) $Id: baciTestImpl.h,v 1.8 2008/07/30 05:36:59 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -100,13 +100,13 @@ class BaciPropTest: public baci::CharacteristicComponentImpl,     //Standard com
     /**
      *  The test properties
      */
-    SmartPropertyPointer<ROdouble>  m_testDoubleVar_sp;
+    baci::SmartPropertyPointer<baci::ROdouble>  m_testDoubleVar_sp;
     
     
-    SmartPropertyPointer<ROEnumImpl<ACS_ENUM_T(alarmsystemPropTest::AlarmEnum),  POA_alarmsystemPropTest::ROAlarmEnum>
+    baci::SmartPropertyPointer<ROEnumImpl<ACS_ENUM_T(alarmsystemPropTest::AlarmEnum),  POA_alarmsystemPropTest::ROAlarmEnum>
         > m_testEnumVar_sp;
     
-    SmartPropertyPointer<ROpattern>  m_testPatternVar_sp;
+    baci::SmartPropertyPointer<baci::ROpattern>  m_testPatternVar_sp;
     
 };
 /*\@}*/
