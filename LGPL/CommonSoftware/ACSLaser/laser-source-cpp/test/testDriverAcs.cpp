@@ -20,7 +20,7 @@
 *
 *
 *
-* "@(#) $Id: testDriverAcs.cpp,v 1.10 2007/11/01 13:07:35 acaproni Exp $"
+* "@(#) $Id: testDriverAcs.cpp,v 1.11 2008/07/30 02:47:40 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -66,7 +66,7 @@ class LoggingConsumer : public nc::Consumer
      char remainderOfBodyStorage[4096];
      const char* remainderOfBody = (const char*) remainderOfBodyStorage;
      publishedEvent.remainder_of_body >>= remainderOfBody; 
-     string remainderOfBodyString(remainderOfBody);
+     std::string remainderOfBodyString(remainderOfBody);
 
      // check for the messages of interest
      if(remainderOfBodyString.find("<Alert") == 0 && remainderOfBodyString.find("Alarm sent:") != std::string::npos) 
@@ -111,12 +111,12 @@ class LoggingConsumer : public nc::Consumer
     /**
      * Method used to subscribe to all types of events on the channel.
     */
-    void subscribeAllEvents() throw (CORBAProblemEx);
+    void subscribeAllEvents() throw (ACSErrTypeCommon::CORBAProblemEx);
 
 };
 
 void LoggingConsumer::subscribeAllEvents()
-    throw (CORBAProblemEx)
+    throw (ACSErrTypeCommon::CORBAProblemEx)
 {
     ACS_TRACE("LoggingConsumer::subscribeAllEvents");
     init();
@@ -138,7 +138,7 @@ void LoggingConsumer::subscribeAllEvents()
     catch(...)
 	{
 	ACS_SHORT_LOG((LM_ERROR,"LoggingConsumer::subscribeAllEvents failed!"));
-	CORBAProblemExImpl err = CORBAProblemExImpl(__FILE__,__LINE__,"nc::LoggingConsumer::subscribeAllEvents");
+	ACSErrTypeCommon::CORBAProblemExImpl err = ACSErrTypeCommon::CORBAProblemExImpl(__FILE__,__LINE__,"nc::LoggingConsumer::subscribeAllEvents");
 	throw err.getCORBAProblemEx();
 	}	
 }
