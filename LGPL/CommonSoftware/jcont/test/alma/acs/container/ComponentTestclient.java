@@ -90,6 +90,12 @@ public class ComponentTestclient extends ComponentClientTestCase
             // m_logger.log(Level.INFO, "org.omg.CORBA.TIMEOUT catched!",t);
         }
     }
+	public void testGetReferenceWithCustomClientSideTimeout() {
+        String compName = "DefaultDummyComp";
+		boolean ret = m_contSrvTesterComp.testGetReferenceWithCustomClientSideTimeout(compName);
+		assertTrue("test execution successful on the server component", ret);
+	}
+
 	public void testGetDynamicDummyComponent() {
 		StringHolder compNameHolder = new StringHolder();
 		boolean ret = m_contSrvTesterComp.testGetDynamicDummyComponent(compNameHolder);

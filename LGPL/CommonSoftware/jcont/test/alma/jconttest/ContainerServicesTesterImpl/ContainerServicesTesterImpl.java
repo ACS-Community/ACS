@@ -30,6 +30,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
+import alma.acs.util.StopWatch;
 
 import alma.ACSErrTypeCommon.CouldntPerformActionEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJCouldntPerformActionEx;
@@ -114,6 +115,51 @@ public class ContainerServicesTesterImpl extends ComponentImplBase implements Co
 		return ret;
 	}
 
+	public boolean testGetReferenceWithCustomClientSideTimeout(String compName)
+	{
+        boolean ret = true;
+		try
+		{
+            org.omg.CORBA.Object compObj = m_containerServices.getComponent(compName);
+		    DummyComponent comp = alma.jconttest.DummyComponentHelper.narrow(compObj);
+		    int waitTime = 20 ; //secs.
+		    int timeout = 10 ; //secs.
+            //first let's try to call the IF without a timeout
+            try{
+                comp.callThatTakesSomeTime(waitTime * 1000);	
+            }catch(org.omg.CORBA.TIMEOUT e){
+                m_logger.log(Level.WARNING, "It is not supposed to get a timeout before waitTime");
+                ret = false;
+            }
+        
+            //then we call the object to assing a timeout of 10 seconds
+            compObj = m_containerServices.getReferenceWithCustomClientSideTimeout(compObj,timeout);
+		    comp = alma.jconttest.DummyComponentHelper.narrow(compObj);
+            
+            //we call again the IF
+            StopWatch sw = new StopWatch(m_logger);
+            try{
+                comp.callThatTakesSomeTime(waitTime *1000);	
+                m_logger.log(Level.WARNING, "It is supposed to get a timeout before waitTime");
+                ret = false;
+            }catch(org.omg.CORBA.TIMEOUT e){
+                //Expected exception catch
+            }
+       
+			int elapsedTime = (int) sw.getLapTimeMillis()/1000;
+            if(Math.abs(elapsedTime-timeout) > 2){
+                ret = false;
+                m_logger.log(Level.WARNING, "The timeout was much greater/lesser than the ammount assigned to elapsed="+elapsedTime);
+            }
+			m_containerServices.releaseComponent(compName);
+		}
+		catch (Exception e)
+		{
+			m_logger.warning(e.toString());
+            ret = false;
+		}
+        return ret;
+	}
 
 	/**
 	 * @see alma.jconttest.ContainerServicesTesterOperations#testGetDefaultIdentifierArchive(org.omg.CORBA.StringHolder)
