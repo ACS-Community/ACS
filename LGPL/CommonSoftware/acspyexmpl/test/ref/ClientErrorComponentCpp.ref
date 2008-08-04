@@ -1,8 +1,6 @@
 2 - starting acspyexmplClientErrorComponent
 2 - Creating ClientErrorComponent
 1 - Starting Container...
-1 - Retrieving CDB reference from Manager using bootstrap ORB
-1 - Bootstrap ORB parms: maciContainer cppContainer -m corbaloc::xxxx:xxxx/Manager
 1 - ManagerReference obtained via command line: 'corbaloc::xxxx:xxxx/Manager'
 1 - DAO:'MACI/Containers' Unable to return field: 'cppContainer/LoggingConfig/dispatchPacketSize'
 1 - Configuration information for container 'cppContainer' not available.
@@ -10,37 +8,26 @@
 1 - Manager hostname obtained via command line: 'xxx.xxx.xxx.xxx'
 1 - ContainerStatusMsg: Startup begins
 1 - ContainerStatusMsg: ORB initialization begins
-1 - ----------T--:--:--.--- [cppContainer - maci::ContainerImpl::init] Generated CommandLine: maciContainer cppContainer -ORBEndpoint iiop://xxx.xxx.xxx.xxx:xxxx -m corbaloc::xxxx:xxxx/Manager  -ORBDottedDecimalAddresses 1 -ORBInitRef InterfaceRepository=corbaloc::xxxx:xxxx/InterfaceRepository
 1 - ----------T--:--:--.--- [main - maci::ContainerImpl::initThread] Thread name: 'main'
-1 - ----------T--:--:--.--- [cppContainer - maci::ContainerImpl::init] Destroy bootstrap ORB
-1 - ----------T--:--:--.--- [cppContainer - maci::ContainerImpl::initializeCORBA] 
 1 - ContainerStatusMsg: ORB initialization ends
-1 - ----------T--:--:--.--- [cppContainer - maci::ContainerImpl::getManager] 
+1 - ----------T--:--:--.--- [cppContainer-GL - maci::MACIHelper::resolveManager] ManagerReference obtained via command line: 'corbaloc::xxxx:xxxx/Manager'
 1 - ----------T--:--:--.--- [cppContainer - maci::ContainerImpl::getManager] Resolving manager...
-1 - ----------T--:--:--.--- [cppContainer - maci::ContainerImpl::resolveManager] 
-1 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] ManagerReference obtained via command line: 'corbaloc::xxxx:xxxx/Manager'
-1 - ----------T--:--:--.--- [cppContainer - maci::ContainerImpl::activateCORBAObject] 
-1 - ----------T--:--:--.--- [cppContainer - maci::ContainerImpl::init] Using DLL path: xxxx
-1 - ----------T--:--:--.--- [cppContainer - maci::Container::init] Recovery enabled.
-1 - ----------T--:--:--.--- [cppContainer - maci::ContainerImpl::init] Autoloading 'baci'
 1 - ----------T--:--:--.--- [cppContainer - maci::ContainerImpl::init] Container 'cppContainer' activated.
-1 - ----------T--:--:--.--- [cppContainer - maci::ContainerImpl::loadDLL] 
+1 - ----------T--:--:--.--- [cppContainer - maci::Container::init] Recovery enabled.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Full path '/somepath/libbaci.so'
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'baci'.
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loaded '/somepath/libbaci.so'.
 1 - ----------T--:--:--.--- [cppContainer - maci::ContainerImpl::init] Container 'cppContainer' initialized successfuly
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loaded '/somepath/libbaci.so'.
+1 - ----------T--:--:--.--- [cppContainer-GL - maci::MACIHelper::resolveManager] ManagerReference obtained via command line: 'corbaloc::xxxx:xxxx/Manager'
+1 - ----------T--:--:--.--- [cppContainer - maci::ContainerImpl::init] Connected to the Manager.
 1 - ----------T--:--:--.--- [cppContainer - maci::ContainerImpl::init] Connecting to the Manager...
 1 - ----------T--:--:--.--- [cppContainer - maci::ContainerImpl::init] Usage of an InterfaceRepository disabled.
-1 - ----------T--:--:--.--- [cppContainer - maci::ContainerImpl::resolveManager] 
-1 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] ManagerReference obtained via command line: 'corbaloc::xxxx:xxxx/Manager'
-1 - ContainerStatusMsg: Manager access initialization begins
-1 - ----------T--:--:--.--- [cppContainer - maci::ContainerImpl::init] Connected to the Manager.
 1 - ----------T--:--:--.--- [cppContainer - maci::ContainerImpl::init] Connecting to the Archiving Channel.
+1 - ContainerStatusMsg: Manager access initialization begins
 1 - ----------T--:--:--.--- [cppContainer - maci::ContainerImpl::init] Connecting to the Centralized Logger...
 1 - ----------T--:--:--.--- [cppContainer - maci::ContainerImpl::init] Connected to the Centralized Logger.
 1 - ----------T--:--:--.--- [cppContainer - maci::ContainerImpl::init] Logging into the Manager...
 1 - ----------T--:--:--.--- [cppContainer - maci::ContainerImpl::init] Set Naming Context to Logger.
-1 - ----------T--:--:--.--- [cppContainer - maci::ContainerImpl:::authenticate] 
 1 - ----------T--:--:--.--- [cppContainer - ContainerImpl::run] Container running...
 1 - ----------T--:--:--.--- [cppContainer - maci::ContainerImpl::init] Logged into the Manager.
 1 - ContainerStatusMsg: Automatic component loading begins
@@ -316,16 +303,16 @@
 2 -                         Severity=Error,
 2 -                         Data: Name=ErrorDesc, Value=Bottom of error trace; )
 2 - 
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'acsexmplErrorComponentImpl'.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Full path '/somepath/libacsexmplErrorComponentImpl.so'
-1 - ----------T--:--:--.--- [GlobalLogger - ] Switched state of component ERRORCOMP_CPP: INITIALIZED -> OPERATIONAL
-1 - ----------T--:--:--.--- [GlobalLogger - ] Switched state of component ERRORCOMP_CPP: INITIALIZING -> INITIALIZED
-1 - ----------T--:--:--.--- [GlobalLogger - ] Switched state of component ERRORCOMP_CPP: NEW -> INITIALIZING
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'acsexmplErrorComponentImpl'.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loaded '/somepath/libacsexmplErrorComponentImpl.so'.
+1 - ----------T--:--:--.--- [cppContainer-GL - ] Switched state of component ERRORCOMP_CPP: INITIALIZED -> OPERATIONAL
+1 - ----------T--:--:--.--- [cppContainer-GL - ] Switched state of component ERRORCOMP_CPP: INITIALIZING -> INITIALIZED
+1 - ----------T--:--:--.--- [cppContainer-GL - ] Switched state of component ERRORCOMP_CPP: NEW -> INITIALIZING
 1 - ----------T--:--:--.--- [cppContainer - maci::ContainerImpl::activate_component] Component 'ERRORCOMP_CPP' activated.
 1 - ----------T--:--:--.--- [ERRORCOMP_CPP - ErrorComponent::displayMessage] Hello World
-1 - ----------T--:--:--.--- [GlobalLogger - ] Switched state of component ERRORCOMP_CPP: DESTROYING -> DEFUNCT
-1 - ----------T--:--:--.--- [GlobalLogger - ] Switched state of component ERRORCOMP_CPP: OPERATIONAL -> DESTROYING
+1 - ----------T--:--:--.--- [cppContainer-GL - ] Switched state of component ERRORCOMP_CPP: DESTROYING -> DEFUNCT
+1 - ----------T--:--:--.--- [cppContainer-GL - ] Switched state of component ERRORCOMP_CPP: OPERATIONAL -> DESTROYING
 2 - ----------T--:--:--.--- Python Client disconnect - Shutdown called for client
 1 - ----------T--:--:--.--- [cppContainer - maci::ContainerImpl::deactivate_component] Component 'ERRORCOMP_CPP' deactivated.
 1 - ----------T--:--:--.--- [cppContainer - maci::ContainerImpl::etherealizeComponent] Component 'ERRORCOMP_CPP' etherealized.
@@ -333,8 +320,8 @@
 1 - ----------T--:--:--.--- [cppContainer - maci::ContainerImpl::logout] Logging out from the Manager.
 1 - ----------T--:--:--.--- [cppContainer - maci::ContainerImpl::logout] Logged out from the Manager.
 1 - ----------T--:--:--.--- [cppContainer - ContainerImpl::run] Container stopping...
-1 - ----------T--:--:--.--- [GlobalLogger - ] Stopping container... 
+1 - ----------T--:--:--.--- [cppContainer-GL - ] Container stopped.
+1 - ----------T--:--:--.--- [cppContainer-GL - ] Stopping container... 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Request to unload 'libbaci.so'.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Unloaded '/somepath/libbaci.so'.
-1 - ----------T--:--:--.--- [GlobalLogger - ] Container stopped.
 1 - /somepath/libbaci.so
