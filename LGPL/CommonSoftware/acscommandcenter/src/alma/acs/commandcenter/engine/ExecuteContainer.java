@@ -222,26 +222,34 @@ public class ExecuteContainer {
 
        boolean startStop = true;
 
-       // (2007-11-12): TODO remove this dirty hack for oracle archive
-       if ("archive".equals(contType))
-      	 contType = "java-archive";
+		// @TODO: get typeModifiers from the CDB,
+		String[] typeModifiers = new String[0];
 
-   	 Executor.remoteDaemonForContainers(contHost, instance, startStop, contName, contType, cmdFlags, listener);
-    }
-    
-    public void stopRemoteDemonic (RunModel runModel, NativeCommand.Listener listener) {
+		// (2008-08-04): TODO remove this dirty hack and force the OMC xml config to use the proper type modifier instead of the hacked container type, see COMP-1316 and COMP-1996
+		if ("archive".equals(contType)) {
+			contType = "java";
+			typeModifiers = new String[]{"archiveContainer"};
+		}
+
+		Executor.remoteDaemonForContainers(contHost, instance, startStop, contName, contType, typeModifiers, cmdFlags, listener);
+	}
+
+	public void stopRemoteDemonic (RunModel runModel, NativeCommand.Listener listener) {
 
    	 String contHost = runModel.getContainerRemoteHost();
    	 String contName = runModel.getContainerName();
    	 String contType = runModel.getContainerType();
        int instance = MiscUtils.parseInt(runModel.getContainerScriptBase());
 		
-       boolean startStop = false;
-       String cmdFlags = "";
+		boolean startStop = false;
+		String cmdFlags = "";
 
-   	 Executor.remoteDaemonForContainers(contHost, instance, startStop, contName, contType, cmdFlags, listener);
-    }
-    
-    
+		// for stopping containers the typeModifiers are not used. We should refactor this code to use separate start-stop methods.
+		String[] typeModifiers = new String[0];
+
+		Executor.remoteDaemonForContainers(contHost, instance, startStop, contName, contType, typeModifiers, cmdFlags, listener);
+	}
+
+
 }
 
