@@ -4,7 +4,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciContainerImpl.h,v 1.54 2008/07/25 07:32:36 cparedes Exp $"
+* "@(#) $Id: maciContainerImpl.h,v 1.55 2008/08/04 08:45:26 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -97,7 +97,7 @@ class LibraryManager;
  *
  * @author <a href=mailto:matej.sekoranja@ijs.si>Matej Sekoranja</a>,
  * Jozef Stefan Institute, Slovenia<br>
- * @version "@(#) $Id: maciContainerImpl.h,v 1.54 2008/07/25 07:32:36 cparedes Exp $"
+ * @version "@(#) $Id: maciContainerImpl.h,v 1.55 2008/08/04 08:45:26 bjeram Exp $"
  */
 
 class maci_EXPORT ContainerImpl :
@@ -518,6 +518,7 @@ public:
   static LoggingProxy * m_loggerProxy;
 
   static int m_logLevelRefresh;
+  static int m_logLevelConfigure;
 
   /// servant manager
   MACIServantManager * m_servant_mgr; 
