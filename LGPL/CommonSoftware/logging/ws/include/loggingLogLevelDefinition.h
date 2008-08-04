@@ -38,15 +38,15 @@ class LogLevelDefinition {
   public:
     LogLevelDefinition(int val, std::string name);
     ~LogLevelDefinition(){}
-    static LogLevelDefinition fromInteger(int val); 
-    static LogLevelDefinition fromName(std::string name); 
+    static LogLevelDefinition fromInteger(int val);
+    static LogLevelDefinition fromName(std::string name);
     static ACE_Log_Priority getACELogPriority(int p);
     static int fromACEPriority(ACE_Log_Priority p);
     int getValue();
     std::string getName();
   private:
-    
-    static ACE_Log_Priority LogLevelDefinition::m_LogEntryCast[];    
+
+    static ACE_Log_Priority m_LogEntryCast[];
     int m_value;
     std::string m_name;
 };
