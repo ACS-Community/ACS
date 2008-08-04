@@ -2,7 +2,7 @@
 #*******************************************************************************
 # E.S.O. - ALMA project
 #
-# "@(#) $Id: acsMakeJavaDependencies,v 1.81 2007/03/05 11:46:21 mzampare Exp $"
+# "@(#) $Id: acsMakeJavaDependencies,v 1.82 2008/08/04 16:17:18 mzampare Exp $"
 #
 # who       when       what
 # --------  --------   ----------------------------------------------
@@ -70,6 +70,7 @@ endorsed=$7
 debug=$8
 
 tmpDestDir=../object/${jarName}/
+fileListFile="/tmp/acsMakeJavac_${jarName}_${UNIQUE_NUMBER}_${USER_NAME}"
 
 echo "# Dependency file for program: ${jarName}"
 echo "# Created automatically by acsMakeJavaDependencies -  `date '+%d.%m.%y %T'`"
@@ -141,8 +142,10 @@ then
     echo "	@echo \"== Making ${jarName}.jar\""
     echo "	\$(AT)mkdir -p ${tmpDestDir}"
     echo "	\$(AT)mkdir -p ../${tgtDir}"
-    echo "	\$(AT)${PURIFY_ADDITION} CLASSPATH=\`${CLASSMAKER}\`:.; export CLASSPATH ; ${JAVAC} ${CompilerFlags} -d ${tmpDestDir} \$?"
+    echo "	\$(AT)echo \$? > ${fileListFile}"
+    echo "	\$(AT)${PURIFY_ADDITION} CLASSPATH=\`${CLASSMAKER}\`:.; export CLASSPATH ; ${JAVAC} ${CompilerFlags} -d ${tmpDestDir} @${fileListFile}"
     echo "	\$(AT)(cd ${tmpDestDir}; jar cf ../../${tgtDir}/${jarName}.jar ${cList} )"
+    echo "	\$(AT)rm ${fileListFile}"
 
 if [  "${MAKE_PURE}" != "" -o "${MAKE_PURIFY}" != "" ]
 then 
