@@ -42,5 +42,35 @@
                    type="string"
                    description="Name of the thread that could not be resumed."/>
 </ErrorCode>
+<ErrorCode name="ExceptionInOnStart"
+           shortDescription="Exception in OnStart method"
+           description="An exception was thrown and not caught in ACS::Thread::onStart">
+           <Member name="ThreadName"
+                   type="string"
+                   description="Name of the thread."/>
+</ErrorCode>
+<ErrorCode name="ExceptionInOnStop"
+           shortDescription="Exception in OnStop method"
+           description="An exception was thrown and not caught in ACS::Thread::onStop">
+           <Member name="ThreadName"
+                   type="string"
+                   description="Name of the thread."/>
+</ErrorCode>
+
+<ErrorCode name="ExceptionInRunLoop"
+           shortDescription="Exception in runLoop method"
+           description="An exception was thrown and not caught in ACS::Thread::runLoop">
+           <Member name="ThreadName"
+                   type="string"
+                   description="Name of the thread."/>
+</ErrorCode>
+
+<ErrorCode name="ThreadExecutionProblem"
+           shortDescription="Problem in Thread Execution"
+           description="There was problem in execution of the thread - including commonStart/commonStop">
+           <Member name="ThreadName"
+                   type="string"
+                   description="Name of the thread."/>
+</ErrorCode>
 </Type>
 
