@@ -21,7 +21,7 @@
  *    License along with this library; if not, write to the Free Software
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: loggingLoggingProxy.h,v 1.33 2008/07/15 06:56:19 bjeram Exp $"
+ * "@(#) $Id: loggingLoggingProxy.h,v 1.34 2008/08/04 08:05:26 bjeram Exp $"
  *
  * who       when        what
  * --------  ----------  ----------------------------------------------
@@ -113,7 +113,7 @@
  * </OL>
  * @author <a href=mailto:matej.sekoranja@ijs.si>Matej Sekoranja</a>,
  * Jozef Stefan Institute, Slovenia<br>
- * @version "@(#) $Id: loggingLoggingProxy.h,v 1.33 2008/07/15 06:56:19 bjeram Exp $"
+ * @version "@(#) $Id: loggingLoggingProxy.h,v 1.34 2008/08/04 08:05:26 bjeram Exp $"
  */
 class logging_EXPORT LoggingProxy : public ACE_Log_Msg_Callback
 {
@@ -272,14 +272,7 @@ class logging_EXPORT LoggingProxy : public ACE_Log_Msg_Callback
     ~LoggingProxy();
 
     /// Set Centralized Logger.
-    void setCentralizedLogger(DsLogAdmin::Log_ptr centralizedLogger)
-	{
-	    m_logger = DsLogAdmin::Log::_duplicate(centralizedLogger);
-	    if (CORBA::is_nil(m_logger.ptr()))
-	    	m_noLogger = true;
-	    else
-	    	m_noLogger = false;
-	}
+    void setCentralizedLogger(DsLogAdmin::Log_ptr centralizedLogger);
 
     /// Set Naming Context.
     void setNamingContext(CosNaming::NamingContext_ptr namingContext)

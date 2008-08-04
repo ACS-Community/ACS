@@ -19,7 +19,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: loggingLoggingProxy.cpp,v 1.60 2008/07/15 06:55:52 bjeram Exp $"
+* "@(#) $Id: loggingLoggingProxy.cpp,v 1.61 2008/08/04 08:05:26 bjeram Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -58,7 +58,7 @@
 #define LOG_NAME "Log"
 #define DEFAULT_LOG_FILE_NAME "acs_local_log"
 
-ACE_RCSID(logging, logging, "$Id: loggingLoggingProxy.cpp,v 1.60 2008/07/15 06:55:52 bjeram Exp $");
+ACE_RCSID(logging, logging, "$Id: loggingLoggingProxy.cpp,v 1.61 2008/08/04 08:05:26 bjeram Exp $");
 unsigned int LoggingProxy::setClrCount_m = 0;
 bool LoggingProxy::initialized = false;
 int LoggingProxy::instances = 0;
@@ -1660,3 +1660,13 @@ std::string LoggingProxy::BinToXml(ACSLoggingLog::LogBinaryRecord* record){
     xml += line;
     return xml.c_str();
 }
+
+void LoggingProxy::setCentralizedLogger(DsLogAdmin::Log_ptr centralizedLogger)
+{
+    ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex);
+    m_logger = DsLogAdmin::Log::_duplicate(centralizedLogger);
+    if (CORBA::is_nil(m_logger.ptr()))
+	m_noLogger = true;
+    else
+	m_noLogger = false;
+}//LoggingProxy::setCentralizedLogger
