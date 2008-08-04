@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingService.cpp,v 1.59 2008/07/15 06:55:52 bjeram Exp $"
+* "@(#) $Id: loggingService.cpp,v 1.60 2008/08/04 11:24:39 bjeram Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -296,7 +296,7 @@ LoggingService::shutdown ()
 {
 
   // Destroy Basic Log.
-  if (m_basic_log.ptr() != DsLogAdmin::BasicLog::_nil())
+  if (!CORBA::is_nil(m_basic_log.ptr()))
     {
     try
 	{
@@ -441,7 +441,7 @@ LoggingService::create_basic_log()
 				      );
 
 
-  ACE_ASSERT ((m_basic_log.ptr()!=DsLogAdmin::BasicLog::_nil()));
+  ACE_ASSERT ((!CORBA::is_nil(m_basic_log.ptr())));
 
   // Register the Basic Log
   ACE_ASSERT(!CORBA::is_nil (this->m_naming_context.in ()));
@@ -614,6 +614,10 @@ main (int argc, char *argv[])
 // REVISION HISTORY:
 //
 // $Log: loggingService.cpp,v $
+// Revision 1.60  2008/08/04 11:24:39  bjeram
+// Replaced non portable comparing with _nil() with CORBA::is_nil(x).
+// COMP-2596
+//
 // Revision 1.59  2008/07/15 06:55:52  bjeram
 // Replaced non portable comparing with _nil() with CORBA::is_nil(x). COMP-
 //

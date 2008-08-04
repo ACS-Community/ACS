@@ -18,12 +18,12 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingHelper.cpp,v 1.44 2007/05/23 08:59:11 bjeram Exp $"
+* "@(#) $Id: loggingHelper.cpp,v 1.45 2008/08/04 11:24:39 bjeram Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
 * msekoran  2003-05-23  removed exponential backoff
-* msekoran  2001/12/23  created 
+* msekoran  2001/12/23  created
 */
 
 #include <vltPort.h>
@@ -40,7 +40,7 @@
 
 bool LoggingHelper::m_terminate = false;
 
-void 
+void
 LoggingHelper::terminateResolving(bool terminate)
 {
   m_terminate = terminate;
@@ -56,13 +56,13 @@ LoggingHelper::resolveNameService(CORBA::ORB_ptr orb,
     return CosNaming::NamingContext::_nil();
 
   // use CORBA::ORB::resolve_intial_references
-  
+
   try
     {
     // first we check if we have if we have initalize reference for NameService
-    CORBA::ORB::ObjectIdList_ptr svcsList = 
+    CORBA::ORB::ObjectIdList_ptr svcsList =
 	orb->list_initial_services();
-    // ... we can start with 12th if exsist, because from 0 to 11 are "hardcoded" SVCS 
+    // ... we can start with 12th if exsist, because from 0 to 11 are "hardcoded" SVCS
     for(unsigned int i=12; i<svcsList->length(); i++)
 	{
 	ACE_CString o ((*svcsList)[i]);
@@ -72,21 +72,21 @@ LoggingHelper::resolveNameService(CORBA::ORB_ptr orb,
 	    // we find NameService so we can use resolve_initial_references w/o using multicast for discovering NameService
 	    CORBA::Object_var naming_obj =
 		orb->resolve_initial_references ("NameService");
-      
+
 
 	    if (!CORBA::is_nil (naming_obj.in ()))
 		{
 		CosNaming::NamingContext_var naming_context =
 		    CosNaming::NamingContext::_narrow (naming_obj.in ()
 			);
-	  
 
-		if (naming_context.ptr() != CosNaming::NamingContext::_nil())
+
+		if (!CORBA::is_nil(naming_context.ptr()))
 		    return naming_context._retn();
 		}
 	    }//if
 	}//for
-    
+
     }
   catch(CORBA::SystemException &ex)
       {
@@ -107,7 +107,7 @@ LoggingHelper::resolveNameService(CORBA::ORB_ptr orb,
     {
     //ACS_LOG(0, "logging::LoggingHelper::resolveNameService",
     //      (LM_INFO, "NameService reference obtained via environment: '%s'", envRef));
-      
+
       // return reference
       return resolveNameService(orb, envRef, retries, secTimeout);
     }
@@ -129,61 +129,61 @@ LoggingHelper::resolveNameService(CORBA::ORB_ptr orb,
 
   //ACS_LOG(0, "logging::LoggingHelper::resolveNameService",
   //  (LM_INFO, "NameService reference generated using localhost address: '%s'", corbalocRef));
-  
+
   // return reference
   return resolveNameService(orb, corbalocRef, retries, secTimeout);
- 
+
 }
 
 CosNaming::NamingContext_ptr
-LoggingHelper::resolveNameService(CORBA::ORB_ptr orb, 
-			       const ACE_TCHAR * reference, 
+LoggingHelper::resolveNameService(CORBA::ORB_ptr orb,
+			       const ACE_TCHAR * reference,
 			       int retries, unsigned int secTimeout)
 {
     //ACS_TRACE("logging::LoggingHelper::resolveNameService");
-  
+
   if (!reference || CORBA::is_nil(orb))
     return CosNaming::NamingContext::_nil();
- 
+
   //ACS_DEBUG_PARAM("logging::LoggingHelper::resolveNameService", "Resolving reference: '%s'", reference);
 
   unsigned int secsToWait = 3, secsWaited = 0;
   int retried = 0;
   CosNaming::NamingContext_var ref = CosNaming::NamingContext::_nil();
-      
+
   while (!m_terminate)
     {
     try
     	{
-	  
+
 	  CORBA::Object_var obj = orb->string_to_object(reference);
-	  
-	      
+
+
 	  ref = CosNaming::NamingContext::_narrow(obj.in());
-	  
+
 
 	  //ACS_DEBUG("logging::LoggingHelper::resolveNameService", "NameService reference narrowed.");
 
-	  return ref._retn(); 
+	  return ref._retn();
 	}
     catch(...)
 	{
 	//ACE_PRINT_EXCEPTION(ACE_ANY_EXCEPTION, "logging::LoggingHelper::resolveNameService");
 	  ref = CosNaming::NamingContext::_nil();
 	}
-         
+
       if (
-	  ((secTimeout != 0) && (secsWaited >= secTimeout)) || 
+	  ((secTimeout != 0) && (secsWaited >= secTimeout)) ||
 	  ((retries > 0) && (retried >= retries))
 	  )
 	break;
       else
 	ACE_OS::sleep(secsToWait);
-      
+
       secsWaited += secsToWait;
 
       retried++;
-      
+
     }
 
   return CosNaming::NamingContext::_nil();
@@ -196,6 +196,10 @@ LoggingHelper::resolveNameService(CORBA::ORB_ptr orb,
 // REVISION HISTORY:
 //
 // $Log: loggingHelper.cpp,v $
+// Revision 1.45  2008/08/04 11:24:39  bjeram
+// Replaced non portable comparing with _nil() with CORBA::is_nil(x).
+// COMP-2596
+//
 // Revision 1.44  2007/05/23 08:59:11  bjeram
 // solved resolveNameService that it does not use multicast for finding NameService + improved error hansling a bit
 //

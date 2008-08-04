@@ -19,7 +19,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: loggingLoggingProxy.cpp,v 1.61 2008/08/04 08:05:26 bjeram Exp $"
+* "@(#) $Id: loggingLoggingProxy.cpp,v 1.62 2008/08/04 11:24:39 bjeram Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -58,7 +58,7 @@
 #define LOG_NAME "Log"
 #define DEFAULT_LOG_FILE_NAME "acs_local_log"
 
-ACE_RCSID(logging, logging, "$Id: loggingLoggingProxy.cpp,v 1.61 2008/08/04 08:05:26 bjeram Exp $");
+ACE_RCSID(logging, logging, "$Id: loggingLoggingProxy.cpp,v 1.62 2008/08/04 11:24:39 bjeram Exp $");
 unsigned int LoggingProxy::setClrCount_m = 0;
 bool LoggingProxy::initialized = false;
 int LoggingProxy::instances = 0;
@@ -1111,7 +1111,7 @@ bool
 LoggingProxy::reconnectToLogger()
 {
     // reconnect only if m_logger once had reference
-    if (m_logger.ptr() != DsLogAdmin::Log::_nil())
+    if (!CORBA::is_nil(m_logger.ptr()))
     {
 	ACE_Time_Value dt = ACE_OS::gettimeofday();
 	dt-=m_disconnectionTime;
@@ -1138,7 +1138,7 @@ LoggingProxy::reconnectToLogger()
 			DsLogAdmin::Log_var logger = DsLogAdmin::Log::_narrow(obj.in());
 
 
-			if (logger.ptr() != DsLogAdmin::Log::_nil())
+			if (!CORBA::is_nil(logger.ptr()))
 			{
 			    m_logger = logger;
 			    // retry
