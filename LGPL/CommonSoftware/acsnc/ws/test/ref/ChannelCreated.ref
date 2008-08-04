@@ -12,47 +12,24 @@
 1 - 
 1 - ContainerStatusMsg: Startup begins
 1 - ContainerStatusMsg: ORB initialization begins
-1 - ----------T--:--:--.--- [bilboContainer - maci::ContainerImpl::init] Generated CommandLine: maciContainer bilboContainer -ORBEndpoint iiop://xxx:---- -m corbaloc::---:----/Manager  -ORBDottedDecimalAddresses 1 -ORBInitRef InterfaceRepository=corbaloc::---:----/InterfaceRepository
-1 - ----------T--:--:--.--- [bilboContainer - maci::ContainerImpl::init] Destroy bootstrap ORB
-1 - ----------T--:--:--.--- [bilboContainer - maci::ContainerImpl::initializeCORBA] 
 1 - ContainerStatusMsg: ORB initialization ends
-1 - ----------T--:--:--.--- [bilboContainer - maci::ContainerImpl::getManager] 
-1 - ----------T--:--:--.--- [bilboContainer - maci::ContainerImpl::getManager] Resolving manager...
-1 - ----------T--:--:--.--- [bilboContainer - maci::ContainerImpl::resolveManager] 
-1 - ----------T--:--:--.--- [bilboContainer - maci::Container::init] Recovery enabled.
-1 - ----------T--:--:--.--- [bilboContainer - maci::ContainerImpl::activateCORBAObject] 
-1 - ----------T--:--:--.--- [bilboContainer - maci::ContainerImpl::init] Autoloading 'baci'
-1 - ----------T--:--:--.--- [bilboContainer - maci::ContainerImpl::init] Container 'bilboContainer' activated.
-1 - ----------T--:--:--.--- [bilboContainer - maci::ContainerImpl::init] Using DLL path: .....
-1 - ----------T--:--:--.--- [bilboContainer - maci::ContainerImpl::loadDLL] 
-1 - ----------T--:--:--.--- [bilboContainer - maci::ContainerImpl::init] Container 'bilboContainer' initialized successfuly
-1 - ----------T--:--:--.--- [bilboContainer - maci::ContainerImpl::init] Connecting to the Manager...
-1 - ----------T--:--:--.--- [bilboContainer - maci::ContainerImpl::init] Usage of an InterfaceRepository disabled.
-1 - ----------T--:--:--.--- [bilboContainer - maci::ContainerImpl::resolveManager] 
 1 - ContainerStatusMsg: Manager access initialization begins
-1 - ----------T--:--:--.--- [bilboContainer - maci::ContainerImpl::init] Connected to the Manager.
-1 - ----------T--:--:--.--- [bilboContainer - maci::ContainerImpl::init] Connecting to the Archiving Channel.
-1 - ----------T--:--:--.--- [bilboContainer - maci::ContainerImpl::init] Connecting to the Centralized Logger...
-1 - ----------T--:--:--.--- [bilboContainer - maci::ContainerImpl::init] Connected to the Centralized Logger.
-1 - ----------T--:--:--.--- [bilboContainer - maci::ContainerImpl::init] Set Naming Context to Logger.
-1 - ----------T--:--:--.--- [bilboContainer - maci::ContainerImpl::init] Logging into the Manager...
-1 - ----------T--:--:--.--- [bilboContainer - maci::ContainerImpl:::authenticate] 
 1 - ContainerStatusMsg: Manager access initialization ends
 1 - ContainerStatusMsg: Startup ends
 1 - ContainerStatusMsg: Automatic component loading begins
 1 - ContainerStatusMsg: Automatic component loading ends
 1 - ContainerStatusMsg: Ready
+1 - ----------T--:--:--.--- [bilboContainer-GL - ] SimpleConsumer::addSubscription unable to subscribe to multiple event types from this class!
 1 - ----------T--:--:--.--- [CON1 - ] An exception on addSubscription...OK.
-1 - ----------T--:--:--.--- [GlobalLogger - ] SimpleConsumer::addSubscription unable to subscribe to multiple event types from this class!
+1 - ----------T--:--:--.--- [bilboContainer-Static - ] myHandlerFunction()...value is:41
 1 - ----------T--:--:--.--- [SUP1 - ] Sent an event via SimpleSupplier.
-1 - ----------T--:--:--.--- [StaticMethodLogger - ] myHandlerFunction()...value is:41
+1 - ----------T--:--:--.--- [bilboContainer-Static - ] myHandlerFunction()...value is:41
 1 - ----------T--:--:--.--- [SUP1 - ] Sent an event via SimpleSupplier.
-1 - ----------T--:--:--.--- [StaticMethodLogger - ] myHandlerFunction()...value is:41
+1 - ----------T--:--:--.--- [bilboContainer-Static - ] myHandlerFunction()...value is:41
 1 - ----------T--:--:--.--- [SUP1 - ] Sent an event via SimpleSupplier.
-1 - ----------T--:--:--.--- [StaticMethodLogger - ] myHandlerFunction()...value is:41
-1 - ----------T--:--:--.--- [StaticMethodLogger - ] myHandlerFunction()...value is:41
+1 - ----------T--:--:--.--- [bilboContainer-Static - ] myHandlerFunction()...value is:41
 1 - ----------T--:--:--.--- [SUP1 - ] Sent an event via SimpleSupplier.
-1 - ----------T--:--:--.--- [StaticMethodLogger - ] myHandlerFunction()...value is:41
+1 - ----------T--:--:--.--- [bilboContainer-Static - ] myHandlerFunction()...value is:41
 1 - ----------T--:--:--.--- [SUP1 - ] Sent an event via SimpleSupplier.
 1 - ----------T--:--:--.--- [SUP1 - ] Sent an event via SimpleSupplier.
 1 - ----------T--:--:--.--- [SUP1 - ] Sent an event via SimpleSupplier.
@@ -61,6 +38,6 @@
 1 - ----------T--:--:--.--- [SUP1 - ] Sent an event via SimpleSupplier.
 1 - ----------T--:--:--.--- [CON1 - ] No exception on suspend...OK.
 1 - ----------T--:--:--.--- [CON1 - ] No exception on resume...OK.
+1 - ----------T--:--:--.--- [bilboContainer-GL - ] Consumer::addFilter failed for the 'blar' channel, 'EventDescription' event type, and 'hope to god this filter doesn't work' filter!
 1 - ----------T--:--:--.--- [CON1 - ] An exception on addFilter...OK.
-1 - ----------T--:--:--.--- [GlobalLogger - ] Consumer::addFilter failed for the 'blar' channel, 'EventDescription' event type, and 'hope to god this filter doesn't work' filter!
 1 - /----/libbaci.so
