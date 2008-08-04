@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciContainerImpl.cpp,v 1.110 2008/07/14 13:41:20 bjeram Exp $"
+* "@(#) $Id: maciContainerImpl.cpp,v 1.111 2008/08/04 07:58:13 bjeram Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -79,7 +79,7 @@
 #include <ACSAlarmSystemInterfaceFactory.h>
 #endif
 
-ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.110 2008/07/14 13:41:20 bjeram Exp $")
+ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.111 2008/08/04 07:58:13 bjeram Exp $")
 
  using namespace maci;
  using namespace cdb;
@@ -89,6 +89,7 @@ ContainerImpl * ContainerImpl::m_container = 0;
 LoggingProxy * ContainerImpl::m_loggerProxy = 0;
 LibraryManager * ContainerImpl::m_dllmgr = 0;
 int ContainerImpl::m_logLevelRefresh = CDB_LOG_LEVEL;
+int ContainerImpl::m_logLevelConfigure = CDB_LOG_LEVEL;
 CORBA::ULong ContainerImpl::m_invocationTimeout = 15000;		// in milliseconds; 15s
 
 // ************************************************************************
@@ -541,6 +542,18 @@ ContainerImpl::init(int argc, char *argv[])
       ACS_CHECK_LOGGER;
       m_logger = getNamedLogger(m_container_name);
 
+      // here we set container global logger
+      std::string containerGlobalLoggerName=m_container_name;
+      containerGlobalLoggerName+="-GL";
+      Logging::Logger::setGlobalLogger(getNamedLogger(containerGlobalLoggerName));
+      
+      // here we set container static logger
+      std::string containerStaticLoggerName=m_container_name;
+      containerStaticLoggerName+="-Static";
+      Logging::Logger::setStaticLogger(getNamedLogger(containerStaticLoggerName));
+            
+      
+
       // store command line options
       // preallocate 512 chars
       ACE_CString strCmdLn(size_t(512));
@@ -754,6 +767,11 @@ ContainerImpl::init(int argc, char *argv[])
 
       // initialize here (now m_argv is initialized)
       initThread("main");
+    m_logLevelConfigure = CDB_LOG_LEVEL;
+    configureLogger(m_container_name);
+    configureLogger(containerGlobalLoggerName);
+    configureLogger(containerStaticLoggerName);
+    m_logLevelConfigure = DYNAMIC_LOG_LEVEL;
 
       ACS_DEBUG_PARAM("maci::ContainerImpl::init", "Generated CommandLine: %s", strCmdLn.c_str());
 
@@ -2806,9 +2824,10 @@ void ContainerImpl::refresh_logging_config()
 
 				// load
 				loadLoggerConfiguration(iter->c_str());
-
+                int oldLogLevelConfigure = m_logLevelConfigure;
 				// ... and configure
 				configureLogger(iter->c_str());
+                m_logLevelConfigure = oldLogLevelConfigure;
 			}
 		}
 	}
@@ -2826,12 +2845,12 @@ void ContainerImpl::configureLogger(const std::string& loggerName)
 		Logging::Logger::getGlobalLogger()->setLevels(loggerName,
 			static_cast<Logging::BaseLog::Priority>(LogLevelDefinition::getACELogPriority(getContainer()->m_defaultLogLevels.minLogLevel)),
 			static_cast<Logging::BaseLog::Priority>(LogLevelDefinition::getACELogPriority(getContainer()->m_defaultLogLevels.minLogLevelLocal)),
-		DYNAMIC_LOG_LEVEL);
+		m_logLevelConfigure);
 	}else{
 		Logging::Logger::getGlobalLogger()->setLevels(loggerName,
 			static_cast<Logging::BaseLog::Priority>(LogLevelDefinition::getACELogPriority(logLevels.minLogLevel)),
 			static_cast<Logging::BaseLog::Priority>(LogLevelDefinition::getACELogPriority(logLevels.minLogLevelLocal)),
-		DYNAMIC_LOG_LEVEL);
+		m_logLevelConfigure);
 	}
 
 }
