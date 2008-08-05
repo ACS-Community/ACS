@@ -115,6 +115,9 @@ public class ContainerServicesTesterImpl extends ComponentImplBase implements Co
 		return ret;
 	}
 
+	/**
+	 * @see alma.jconttest.ContainerServicesTesterOperations.testGetReferenceWithCustomClientSideTimeout#(String)
+	 */
 	public boolean testGetReferenceWithCustomClientSideTimeout(String compName)
 	{
         boolean ret = true;

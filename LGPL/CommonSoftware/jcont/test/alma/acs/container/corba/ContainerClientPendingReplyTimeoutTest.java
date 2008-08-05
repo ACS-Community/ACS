@@ -71,13 +71,14 @@ public class ContainerClientPendingReplyTimeoutTest extends ComponentClientTestC
 		String container = "frodoContainerWithTimeout";
         String component = "DummyCompWrapper_ContainerTimeout";
         String container1, component1;
-        int [] timeout = {30,10};
-        //int [] timeout = {30,10, 20};
-        for (int i = 0; i < timeout.length;i++){
+        int [] timeout = {30,10, 20};
+        int n = 1; //Change this value from 1 to 2 or 3 if you want to test other configurations by hand. This is set to 1 to avoid a timeout from NRI tests.
+        
+        for (int i = 0; i < n;i++){
             container1 = container+(i+1);
             component1 = component+(i+1);
            
-		DummyComponentWrapper wrapper1 = DummyComponentWrapperHelper.narrow(
+		    DummyComponentWrapper wrapper1 = DummyComponentWrapperHelper.narrow(
 				getContainerServices().getComponent(component1));
             int timeout1Sec = (int) jconttestUtil.getContainerLevelOrbTimeout(container1);
 	        	

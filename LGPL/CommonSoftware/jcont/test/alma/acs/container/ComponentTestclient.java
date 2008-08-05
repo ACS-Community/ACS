@@ -37,6 +37,7 @@ import alma.jconttest.ContainerServicesTesterHelper;
 import alma.jconttest.DummyComponent;
 import alma.jconttest.DummyComponentHelper;
 import alma.maciErrType.wrappers.AcsJNoPermissionEx;
+import alma.acs.util.StopWatch;
 
 
 /**
@@ -78,17 +79,39 @@ public class ComponentTestclient extends ComponentClientTestCase
 		assertEquals("OPERATIONAL", stateNameHolder.value);
 	}
 	
-    public void NotWorkingtestTimeout() throws Exception {
-		DummyComponent dummyComponent = DummyComponentHelper.narrow(getContainerServices().getComponent(DEFAULT_DUMMYCOMP_INSTANCE));
-  
-	    System.out.println("About to call the callThatTakesSomeTime with 30 sec[2].");
-		try{
-        dummyComponent.callThatTakesSomeTime(30000);
-		fail("Timeout exception didn't thrown");
-        }catch(org.omg.CORBA.TIMEOUT t){
-           System.out.println("org.omg.CORBA.TIMEOUT catched!");
-            // m_logger.log(Level.INFO, "org.omg.CORBA.TIMEOUT catched!",t);
+    /**
+    * This test will use custom client side timeout, ignoring Container Timeout 
+    **/
+    public void testTimeout() throws Exception {
+        org.omg.CORBA.Object compObj = getContainerServices().getComponent(DEFAULT_DUMMYCOMP_INSTANCE);
+        DummyComponent comp = DummyComponentHelper.narrow(compObj);
+        int waitTime = 20 ; //secs.
+        int timeout = 10 ; //secs.
+        //first let's try to call the IF without a timeout
+        try{
+            comp.callThatTakesSomeTime(waitTime * 1000);	
+        }catch(org.omg.CORBA.TIMEOUT e){
+            fail("It is not supposed to get a timeout before waitTime");
         }
+    
+        //then we call the object to assing a timeout of 10 seconds
+        compObj = getContainerServices().getReferenceWithCustomClientSideTimeout(compObj,timeout);
+        comp = DummyComponentHelper.narrow(compObj);
+        
+        //we call again the IF
+        StopWatch sw = new StopWatch(m_logger);
+        try{
+            comp.callThatTakesSomeTime(waitTime *1000);	
+            fail("It is supposed to get a timeout before waitTime");
+        }catch(org.omg.CORBA.TIMEOUT e){
+            //Expected exception catch
+        }
+   
+        int elapsedTime = (int) sw.getLapTimeMillis()/1000;
+        if(Math.abs(elapsedTime-timeout) > 2){
+            fail("The timeout was much greater/lesser than the ammount assigned to elapsed="+elapsedTime);
+        }
+        getContainerServices().releaseComponent(DEFAULT_DUMMYCOMP_INSTANCE);
     }
 	public void testGetReferenceWithCustomClientSideTimeout() {
         String compName = "DefaultDummyComp";
