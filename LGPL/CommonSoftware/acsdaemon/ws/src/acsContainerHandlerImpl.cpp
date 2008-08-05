@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@$Id: acsContainerHandlerImpl.cpp,v 1.8 2008/06/27 11:41:07 msekoran Exp $"
+* "@$Id: acsContainerHandlerImpl.cpp,v 1.9 2008/08/05 09:09:47 hsommer Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -92,6 +92,16 @@ ACSContainerHandlerImpl::start_container (
 
     const char * cmdln = (additional_command_line ? additional_command_line : "");
 
+	// About type modifier "archiveContainer", see COMP-1316 and COMP-1996
+	int isArchiveContainer = 0;
+	for (unsigned int i = 0; i < type_modifiers.length(); ++i) {
+		if (!strcmp(type_modifiers[i], "archiveContainer")) {
+			if (!strcmp(container_type,"java"))
+				isArchiveContainer = 1;
+			break;
+		}
+	}
+
     // execute: "acsStartContainer -<type> -b <instance> <name> <args>"
     // TODO checks for ';', '&', '|' chars, they can run any other command!
     
@@ -110,28 +120,15 @@ ACSContainerHandlerImpl::start_container (
 
     std::string timeStamp(getStringifiedTimeStamp().c_str());
 
-    char command[1000];
 
-    // This nasty hack was put so that the ARCHIVE could modify the CLASSPATH to add
-    // some additional jar files.  The container_type is being used as the driver
-    // but this will be changed to something cleaner.
-    // TODO: remove the container_type check.  type_modifiers will now be used to pass the flag value.
-    int isArchiveContainer = 0;
+	char command[1000];
 
-    //Search the modifier sequence for any indication that we are starting an archive container
-    for (unsigned int i = 0; i < type_modifiers.length(); ++i) {
-        if (!strcmp(type_modifiers[i], "archiveContainer")) {
-	    if (!strcmp(container_type,"java"))
-                isArchiveContainer = 1;
-            break;
-        }
-    }
-    if (!strcmp(container_type,"java-archive") || isArchiveContainer)
-	snprintf(command, 1000, "acsStartContainerOracleClasspath -%s -b %d %s %s &> %sacsStartContainer_%s_%s&", "java", instance_number, container_name, cmdln, logDirectory.c_str(), containerName.c_str(), timeStamp.c_str());
-    else
-	snprintf(command, 1000, "acsStartContainer -%s -b %d %s %s &> %sacsStartContainer_%s_%s&", container_type, instance_number, container_name, cmdln, logDirectory.c_str(), containerName.c_str(), timeStamp.c_str());
-    
-    ACS_SHORT_LOG ((LM_INFO, "Executing: '%s'.", command));
+	if (isArchiveContainer)
+		snprintf(command, 1000, "acsStartContainerOracleClasspath -%s -b %d %s %s &> %sacsStartContainer_%s_%s&", "java", instance_number, container_name, cmdln, logDirectory.c_str(), containerName.c_str(), timeStamp.c_str());
+	else
+		snprintf(command, 1000, "acsStartContainer -%s -b %d %s %s &> %sacsStartContainer_%s_%s&", container_type, instance_number, container_name, cmdln, logDirectory.c_str(), containerName.c_str(), timeStamp.c_str());
+
+	ACS_SHORT_LOG ((LM_INFO, "Executing: '%s'.", command));
 
     int result = ACE_OS::system(command);
 
