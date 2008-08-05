@@ -19,7 +19,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: loggingLoggingProxy.cpp,v 1.62 2008/08/04 11:24:39 bjeram Exp $"
+* "@(#) $Id: loggingLoggingProxy.cpp,v 1.63 2008/08/05 15:46:07 bjeram Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -58,7 +58,7 @@
 #define LOG_NAME "Log"
 #define DEFAULT_LOG_FILE_NAME "acs_local_log"
 
-ACE_RCSID(logging, logging, "$Id: loggingLoggingProxy.cpp,v 1.62 2008/08/04 11:24:39 bjeram Exp $");
+ACE_RCSID(logging, logging, "$Id: loggingLoggingProxy.cpp,v 1.63 2008/08/05 15:46:07 bjeram Exp $");
 unsigned int LoggingProxy::setClrCount_m = 0;
 bool LoggingProxy::initialized = false;
 int LoggingProxy::instances = 0;
@@ -112,9 +112,11 @@ LoggingProxy::log(ACE_Log_Record &log_record)
 
     if (!prohibitLocal && ACE_OS::strcmp(entryType, "Archive")!=0)      // do not print archive logs
 	{
+    	// that we do not have to allocate string each time we get it from TSS
+    	ACE_CString &tmpStr=(*tss)->getTmpStr();
         bool printed = false;
 	// to make print outs nice
-	ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_printMutex);
+//	ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_printMutex);
 
 	 if (localLogLevelPrecedence == DEFAULT_LOG_LEVEL)
 	    {
@@ -123,26 +125,37 @@ LoggingProxy::log(ACE_Log_Record &log_record)
 		{
 		if ((*tss)->sourceObject()==0)
 		    {
-		    ACE_OS::printf ("%s %s", timestamp, log_record.msg_data());
+			tmpStr = timestamp;
+			tmpStr += " ";
+			tmpStr += log_record.msg_data();
+		    //ACE_OS::printf ("%s %s", timestamp, log_record.msg_data());
 		    }
 		else
 		    {
-		    ACE_OS::printf ("%s [%s] %s", timestamp, (*tss)->sourceObject(), log_record.msg_data());
+			tmpStr = timestamp;
+			tmpStr += " [";
+			tmpStr += (*tss)->sourceObject();
+			tmpStr += "] ";
+			tmpStr += log_record.msg_data();
+		    //ACE_OS::printf ("%s [%s] %s", timestamp, (*tss)->sourceObject(), log_record.msg_data());
 		    }
-
             printed = true;
 		}
 	    }
       else{
-
-	    ACE_OS::printf ("%s ", timestamp);
+    	  tmpStr = timestamp;
+    	  tmpStr += " ";
+	    //ACE_OS::printf ("%s ", timestamp);
 
 	    //print out the source object
 	    const ACE_TCHAR *so = (*tss)->sourceObject();
 
 	    if(so!=0)
 		{
-		ACE_OS::printf ("[%s - ", so);
+		//ACE_OS::printf ("[%s - ", so);
+	    	tmpStr += "[";
+	    	tmpStr += so;
+	    	tmpStr += " - ";
 		}
 
 	    // print out routine if set
@@ -150,19 +163,26 @@ LoggingProxy::log(ACE_Log_Record &log_record)
 	    //if routine and source object both exist
 	    if (r!=0 && so!=0)
 		{
-		ACE_OS::printf ("%s] ", r);
+	    	tmpStr+=r;
+	    	tmpStr+="] ";
+		//ACE_OS::printf ("%s] ", r);
 		}
 	    //if source object exists but routine does not
 	    else if(r==0 && so!=0)
 		{
-		ACE_OS::printf ("] ");
+	    	tmpStr+="] ";
+		//ACE_OS::printf ("] ");
 		}
 	    else if(r!=0 && so==0)
 		{
-		ACE_OS::printf ("[%s] ", r);
+	    	tmpStr+="[";
+	    	tmpStr+=r;
+	    	tmpStr+="] ";
+		//ACE_OS::printf ("[%s] ", r);
 		}
 
-	    ACE_OS::printf ("%s", log_record.msg_data());
+	    tmpStr+=log_record.msg_data();
+	    //ACE_OS::printf ("%s", log_record.msg_data());
         printed = true;
 	}
 
@@ -173,7 +193,12 @@ LoggingProxy::log(ACE_Log_Record &log_record)
          (hash_iter.next (entry) != 0);
          hash_iter.advance ())
         {
-            ACE_OS::printf(" %s=\"%s\"",entry->ext_id_.c_str(),entry->int_id_.c_str());
+				tmpStr+=" ";
+				tmpStr+=entry->ext_id_.c_str();
+				tmpStr+="=\"";
+				tmpStr+=entry->int_id_.c_str();
+				tmpStr+="\"";
+         //   ACE_OS::printf(" %s=\"%s\"",entry->ext_id_.c_str(),entry->int_id_.c_str());
 	    }
 
         for (hash_iter = (*tss)->getData();
@@ -182,13 +207,18 @@ LoggingProxy::log(ACE_Log_Record &log_record)
         {
         if(entry->int_id_.length() != 0)
             {
-            ACE_OS::printf(" %s=\"%s\"",entry->ext_id_.c_str(),entry->int_id_.c_str());
+        	tmpStr+=" ";
+        	tmpStr+=entry->ext_id_.c_str();
+        	tmpStr+="=\"";
+			tmpStr+=entry->int_id_.c_str();
+        	tmpStr+="\"";
+            //ACE_OS::printf(" %s=\"%s\"",entry->ext_id_.c_str(),entry->int_id_.c_str());
             }
         }
 
-        ACE_OS::printf ("\n");
+        ACE_OS::printf ("%s\n", tmpStr.c_str());
 	    ACE_OS::fflush (stdout); //(2004-01-05)msc: added
-	}
+    }//if printed
 
     }//else//if
 
@@ -219,7 +249,7 @@ LoggingProxy::log(ACE_Log_Record &log_record)
 
     // clear TSS data
    // (*tss)->clear();
-  }
+  }//log
 
   void LoggingProxy::sendBinLogs(ACE_Log_Record &log_record, const ACE_TCHAR * timestamp, const ACE_TCHAR * entryType){
 	ACSLoggingLog::LogBinaryRecord *s_log = new ACSLoggingLog::LogBinaryRecord();
@@ -409,7 +439,9 @@ LoggingProxy::log(ACE_Log_Record &log_record)
 		    entryType,
 		    timestamp);
 
-    ACE_CString xml((size_t)512);    // create buffer of 512 chars to improove performace (avoid reallocating)
+    // that we do not have to allocate string each time we get it from TSS
+    ACE_CString &xml=(*tss)->getTmpStr();
+    //ACE_CString xml((size_t)512);    // create buffer of 512 chars to improove performace (avoid reallocating)
     xml = line;
 
     // source info

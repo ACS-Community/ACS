@@ -21,7 +21,7 @@
  *    License along with this library; if not, write to the Free Software
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: loggingLoggingProxy.h,v 1.34 2008/08/04 08:05:26 bjeram Exp $"
+ * "@(#) $Id: loggingLoggingProxy.h,v 1.35 2008/08/05 15:46:07 bjeram Exp $"
  *
  * who       when        what
  * --------  ----------  ----------------------------------------------
@@ -113,7 +113,7 @@
  * </OL>
  * @author <a href=mailto:matej.sekoranja@ijs.si>Matej Sekoranja</a>,
  * Jozef Stefan Institute, Slovenia<br>
- * @version "@(#) $Id: loggingLoggingProxy.h,v 1.34 2008/08/04 08:05:26 bjeram Exp $"
+ * @version "@(#) $Id: loggingLoggingProxy.h,v 1.35 2008/08/05 15:46:07 bjeram Exp $"
  */
 class logging_EXPORT LoggingProxy : public ACE_Log_Msg_Callback
 {
@@ -424,7 +424,6 @@ class logging_EXPORT LoggingProxy : public ACE_Log_Msg_Callback
     /// Thread mutex to make log() method thread-safe
     ///
     ACE_Recursive_Thread_Mutex m_mutex;
-    ACE_Recursive_Thread_Mutex m_printMutex;
 
     bool m_logBin;
 
