@@ -5,8 +5,6 @@
 1 - JUnit test run succeeded
 1 - TEST_RUNNER_REPORT success/total: 1/1
 1 - JUnit test run succeeded
-1 - TEST_RUNNER_REPORT success/total: 1/1
-1 - JUnit test run succeeded
 1 - ----------T--:--:--.--- INFO [testStress#testStress] -------------------------------
 1 - ----------T--:--:--.--- INFO [testStress#testStress] ComponentClientTestCase#setUp()
 1 - ----------T--:--:--.--- INFO [testStress#testStress] Got silentContainer's PID: xxxx
