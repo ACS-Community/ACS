@@ -33,6 +33,7 @@
 #include "logging_idlC.h"
 #include <string>
 #include <ace/Log_Msg_Callback.h>
+#include <ace/Log_Priority.h>
 
 class LogLevelDefinition {
   public:

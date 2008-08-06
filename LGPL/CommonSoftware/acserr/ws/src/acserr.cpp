@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acserr.cpp,v 1.87 2008/01/15 14:40:36 bjeram Exp $"
+* "@(#) $Id: acserr.cpp,v 1.88 2008/08/06 10:36:46 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -34,7 +34,7 @@
 #include <iomanip>
 #include "ace/UUID.h"
 
-static char *rcsId="@(#) $Id: acserr.cpp,v 1.87 2008/01/15 14:40:36 bjeram Exp $"; 
+static char *rcsId="@(#) $Id: acserr.cpp,v 1.88 2008/08/06 10:36:46 bjeram Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 
@@ -298,7 +298,7 @@ void ErrorTraceHelper::log(ACE_Log_Priority priorty)
   unsigned int i=0;
   ACSErr::ErrorTrace *c = m_errorTracePtr;
   char uuidBuf[40];
-  ACE_Utils::UUID* uuid = ACE_Utils::UUID_GENERATOR::instance ()->generateUUID ();
+  ACE_Utils::UUID* uuid = ACE_Utils::UUID_GENERATOR::instance ()->generate_UUID ();
  
   snprintf(uuidBuf, 40, "%s", uuid->to_string()->c_str());
   delete uuid;
