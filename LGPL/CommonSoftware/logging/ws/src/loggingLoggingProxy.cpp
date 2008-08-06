@@ -19,7 +19,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: loggingLoggingProxy.cpp,v 1.63 2008/08/05 15:46:07 bjeram Exp $"
+* "@(#) $Id: loggingLoggingProxy.cpp,v 1.64 2008/08/06 10:44:27 bjeram Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -58,7 +58,7 @@
 #define LOG_NAME "Log"
 #define DEFAULT_LOG_FILE_NAME "acs_local_log"
 
-ACE_RCSID(logging, logging, "$Id: loggingLoggingProxy.cpp,v 1.63 2008/08/05 15:46:07 bjeram Exp $");
+ACE_RCSID(logging, logging, "$Id: loggingLoggingProxy.cpp,v 1.64 2008/08/06 10:44:27 bjeram Exp $");
 unsigned int LoggingProxy::setClrCount_m = 0;
 bool LoggingProxy::initialized = false;
 int LoggingProxy::instances = 0;
@@ -115,8 +115,6 @@ LoggingProxy::log(ACE_Log_Record &log_record)
     	// that we do not have to allocate string each time we get it from TSS
     	ACE_CString &tmpStr=(*tss)->getTmpStr();
         bool printed = false;
-	// to make print outs nice
-//	ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_printMutex);
 
 	 if (localLogLevelPrecedence == DEFAULT_LOG_LEVEL)
 	    {
@@ -441,7 +439,6 @@ LoggingProxy::log(ACE_Log_Record &log_record)
 
     // that we do not have to allocate string each time we get it from TSS
     ACE_CString &xml=(*tss)->getTmpStr();
-    //ACE_CString xml((size_t)512);    // create buffer of 512 chars to improove performace (avoid reallocating)
     xml = line;
 
     // source info
