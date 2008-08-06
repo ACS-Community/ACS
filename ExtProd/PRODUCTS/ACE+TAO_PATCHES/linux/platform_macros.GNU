@@ -1,55 +1,84 @@
 # -*- Makefile -*-
-# $Id: platform_macros.GNU,v 1.9 2008/06/11 08:08:34 bjeram Exp $
+# $Id: platform_macros.GNU,v 1.10 2008/08/06 07:56:17 bjeram Exp $
 
 # According to Bryon G. Rigg <bgrigg@opus.bcbnet.com>, this file
 # should allow ACE to be built on Linux.
 
 include $(ACE_ROOT)/include/makeinclude/platform_linux_common.GNU
 
-NUM_CPU=$(shell grep -c processor  /proc/cpuinfo)
-
-no_hidden_visibility ?= 1
+ACS_NUM_CPU=$(shell grep -c processor  /proc/cpuinfo)
 
 ifeq ($(insure),0)
   CC  ?= gcc
   CXX ?= g++
+  CXX_FOR_VERSION_TEST ?= $(CXX)
+else
+  CXX_FOR_VERSION_TEST ?= g++
 endif
 
 # fix this
 pipes ?= 1
 
-CFLAGS  += -W -Wall -Wpointer-arith
+CXX_FULL_VERSION := $(shell $(CXX_FOR_VERSION_TEST) --version)
+
+ifeq (Ubuntu, $(findstring Ubuntu,$(LSB_RELEASE_ID)))
+  ifeq (7.10, $(findstring 7.10,$(LSB_RELEASE_RELEASE)))
+    no_hidden_visibility ?= 1
+  endif
+  ifeq (7.04, $(findstring 7.04,$(LSB_RELEASE_RELEASE)))
+    no_hidden_visibility ?= 1
+  endif
+endif
+ifeq (Fedora, $(findstring Fedora,$(LSB_RELEASE_ID)))
+  ifeq (6, $(findstring 6,$(LSB_RELEASE_RELEASE)))
+    gcc_template_instantiation_visibility ?= 1
+  endif
+  ifeq (7, $(findstring 7,$(LSB_RELEASE_RELEASE)))
+    gcc_template_instantiation_visibility ?= 1
+  endif
+  ifeq (8, $(findstring 8,$(LSB_RELEASE_RELEASE)))
+    gcc_template_instantiation_visibility ?= 1
+  endif
+endif
+ifeq (RedHatEnterpriseServer, $(findstring RedHatEnterpriseServer,$(LSB_RELEASE_ID)))
+  ifeq (5, $(findstring 5,$(LSB_RELEASE_RELEASE)))
+    gcc_template_instantiation_visibility ?= 1
+  endif
+endif
+
+FLAGS_C_CC += -W -Wall -Wpointer-arith
 ifeq ($(threads),1)
     CPPFLAGS  += -D_REENTRANT $(PLATFORM_AIO_SUPPORT)
 endif # threads
 
 ifeq ($(buildbits),32)
-  CFLAGS   += -m32
-  LDFLAGS  += -m32
+  FLAGS_C_CC += -m32
+  LDFLAGS    += -m32
 endif
 ifeq ($(buildbits),64)
-  CFLAGS   += -m64
+  FLAGS_C_CC += -m64
 endif
 
 #
 # Rely on _GNU_SOURCE to set these defaults defined in /usr/include/features.h
 # instead of setting them directly here (older versions of gcc don't set it
-# for you): _SVID_SOURCE _BSD_SOURCE _POSIX_SOURCE _POSIX_C_SOURCE=199506L, etc...
+# for you): _SVID_SOURCE _BSD_SOURCE _POSIX_SOURCE _POSIX_C_SOURCE=199506L, ...
 CPPFLAGS += -D_GNU_SOURCE
 
-DCFLAGS += -g
-DLD     = $(CXX)
-LD      = $(CXX)
-LIBS    += -ldl
+DCFLAGS  += -g
+DCCFLAGS += -g
+DLD      = $(CXX)
+LD       = $(CXX)
+LIBS     += -ldl
 
 ifeq ($(threads),1)
   LIBS += -lpthread
   # look for the rt library in the usual places
-  LIBS += $(shell test "`ls -L /usr/lib/librt.so* /lib/librt.so*`" && echo -lrt)
+  LIBS += $(shell test "`ls -L /usr/lib*/librt.so* /lib*/librt.so*`" && echo -lrt)
 endif
 
 ifeq ($(optimize),1)
-
+  SOFLAGS += -Wl,-O3
 endif
 
 SOFLAGS += $(CPPFLAGS) -shared
@@ -66,20 +95,24 @@ include $(ACE_ROOT)/include/makeinclude/platform_g++_common.GNU
 # the ForwardRequest PI test will fail. For GCC 4.0.2 we default to -O2
 ifeq ($(CXX_VERSION),4.0.2)
   OCFLAGS ?= -O2
+  OCCFLAGS ?=-O2
 else
-  ifeq ($(NUM_CPU),1)
-    OCFLAGS ?= -O3	
+  ifeq ($(CXX_VERSION),3.4.6)
+     ifeq ($(ACS_NUM_CPU),1)
+       OCFLAGS ?= -O3
+       OCCFLAGS ?= -O3
+     else
+       OCFLAGS ?= -O1
+       OCCFLAGS ?= -O1
+     endif
   else
-    OCFLAGS ?= -O1 #with gcc 3.4.3 -O2 blocks build
-  endif #NUM_CPU
+     OCFLAGS ?= -O3
+     OCCFLAGS ?= -O3
+  endif
 endif
 
-# there is also problem with gcc 3.4.6!
-ifeq ($(CXX_VERSION),3.4.6)
-  OCFLAGS = -O1
-endif
-
-CCFLAGS += $(CFLAGS) $(TEMPLATES_FLAG)
+CFLAGS  += $(FLAGS_C_CC)
+CCFLAGS += $(FLAGS_C_CC) $(TEMPLATES_FLAG)
 
 # Added line below to support "Executable Shared Object" files (as
 # needed by the service configurator).

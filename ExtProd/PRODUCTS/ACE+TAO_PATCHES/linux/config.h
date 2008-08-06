@@ -1,6 +1,6 @@
 // -*- C++ -*-
 //
-// $Id: config.h,v 1.4 2007/08/14 15:31:48 bjeram Exp $
+// $Id: config.h,v 1.5 2008/08/06 07:56:17 bjeram Exp $
 
 // The following configuration file is designed to work for Linux
 // platforms using GNU C++.
@@ -13,7 +13,8 @@
 
 #include "ace/config-linux-common.h"
 
-#define ACE_USE_RCSID 1
+#define ACE_USE_RCSID 1 //added for ACS
+
 #define ACE_HAS_SVR4_DYNAMIC_LINKING
 #define ACE_HAS_AUTOMATIC_INIT_FINI
 #define ACE_HAS_DLSYM_SEGFAULT_ON_INVALID_HANDLE
@@ -27,8 +28,6 @@
 #define ACE_HAS_THREADS
 // And they're even POSIX pthreads (LinuxThreads implementation)
 #define ACE_HAS_PTHREADS
-// ... and the final standard even!
-#define ACE_HAS_PTHREADS_STD
 
 // On linux this is part of pthreads
 #  if (defined _POSIX_C_SOURCE && (_POSIX_C_SOURCE - 0) >= 199309L)
@@ -60,7 +59,7 @@
 #  define ACE_LACKS_NETDB_REENTRANT_FUNCTIONS
 
    // glibc < 2.1 lacks pthread_attr_setstacksize()
-#  define ACE_LACKS_THREAD_STACK_SIZE
+#  define ACE_LACKS_PTHREAD_ATTR_SETSTACKSIZE
 #endif /* (__GLIBC__ < 2) || (__GLIBC__ == 2 && __GLIBC_MINOR__ < 1) */
 
 // uses ctime_r & asctime_r with only two parameters vs. three
