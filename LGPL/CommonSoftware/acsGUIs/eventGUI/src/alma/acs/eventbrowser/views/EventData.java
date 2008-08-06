@@ -1,5 +1,7 @@
 package alma.acs.eventbrowser.views;
 
+import org.omg.CORBA.Any;
+
 public class EventData {
 	/*
 	 * "Time "+timeStamp+" "+m_channelName+" "+component+" "+count+" "+channelEventCount+" "
@@ -11,14 +13,16 @@ public class EventData {
 	private final String eventTypeName;
 	private final long eventTypeCount;
 	private final String channelName;
+	private final Any eventAny;
 	
-	public EventData(long time, String srcObj, long count, String type, Integer typeCount, String chanName) {
+	public EventData(long time, String srcObj, long count, String type, Integer typeCount, String chanName, Any any) {
 		timestamp = time;
 		sourceObject = srcObj;
 		channelEventCount = count;
 		eventTypeName = type;
 		eventTypeCount = typeCount;
 		channelName = chanName;
+		eventAny = any;
 	}
 
 	public long getTimestamp() {
@@ -43,6 +47,10 @@ public class EventData {
 	
 	public String getChannelName() {
 		return channelName;
+	}
+	
+	public Any getEventAny() {
+		return eventAny;
 	}
 	
 }

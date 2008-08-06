@@ -7,6 +7,7 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.IStartup;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
 
@@ -16,7 +17,7 @@ import alma.acs.eventbrowser.views.EventData;
 /**
  * This class controls all aspects of the application's execution
  */
-public class Application implements IApplication {
+public class Application implements IApplication, IStartup {
 	
 	public static final String PLUGIN_ID = "alma.acs.eventbrowser";
 	
@@ -71,5 +72,11 @@ public class Application implements IApplication {
         return service.getBoolean(Application.PLUGIN_ID,
                         MonitoringPreferencePage.AUTO_MONITOR, false, null);
 
+	}
+
+	@Override
+	public void earlyStartup() {
+		// TODO Auto-generated method stub
+		
 	}
 }

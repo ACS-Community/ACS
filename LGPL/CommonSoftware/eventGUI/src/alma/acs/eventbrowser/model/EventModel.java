@@ -23,6 +23,8 @@ import org.omg.CosNotifyChannelAdmin.EventChannel;
 import org.omg.CosNotifyChannelAdmin.EventChannelFactory;
 import org.omg.CosNotifyChannelAdmin.EventChannelFactoryHelper;
 import org.omg.CosNotifyChannelAdmin.EventChannelHelper;
+import org.omg.DynamicAny.DynAnyFactory;
+import org.omg.DynamicAny.DynAnyFactoryHelper;
 
 import alma.ACSErrTypeCommon.wrappers.AcsJUnexpectedExceptionEx;
 import alma.acs.component.client.AdvancedComponentClient;
@@ -49,6 +51,7 @@ public class EventModel {
 	private static EventModel modelInstance;
 	private ArrayList<AdminConsumer> consumers;
 	private HashMap<String, AdminConsumer> consumerMap;
+	private static DynAnyFactory dynAnyFactory = null;
 	public static final int MAX_NUMBER_OF_CHANNELS = 100;
 
 	private EventModel() throws Exception {
@@ -81,7 +84,7 @@ public class EventModel {
 			Platform.getLog(Platform.getBundle(eventGuiId)).log(status);
 			}
 			else {
-				System.out.println("Can't create advanced componenet client.");
+				System.out.println("Can't create advanced component client.");
 				e.printStackTrace();
 			}
 			throw(e);
@@ -98,6 +101,9 @@ public class EventModel {
 		arsvc = EventChannelFactoryHelper.narrow(mproxy.get_service(alma.acscommon.ARCHIVE_NOTIFICATION_FACTORY_NAME.value, true));
 		cs = compClient.getContainerServices();
 		orb = compClient.getAcsCorba().getORB();
+		
+		dynAnyFactory = DynAnyFactoryHelper.narrow(orb.resolve_initial_references("DynAnyFactory"));
+		
 		h = new Helper(cs);
 		nctx = h.getNamingService();
 		getServiceTotals(); // temporarily, for testing
@@ -271,6 +277,10 @@ public class EventModel {
 	public ArrayList<AdminConsumer> getAllConsumers() {
 		getChannelStatistics();
 		return consumers;
+	}
+	
+	public static DynAnyFactory getDynAnyFactory() {
+		return dynAnyFactory;
 	}
 
 	

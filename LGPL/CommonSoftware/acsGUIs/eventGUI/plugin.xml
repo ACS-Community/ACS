@@ -77,5 +77,19 @@
             class="alma.acs.eventbrowser.preferences.PreferenceInitializer">
       </initializer>
    </extension>
+      <extension
+         point="org.eclipse.core.runtime.adapters">
+      <factory
+            adaptableType="alma.acs.eventbrowser.views.EventData"
+            class="alma.acs.eventbrowser.views.EventPropertiesSourceAdapterFactory">
+         <adapter
+               type="org.eclipse.ui.views.properties.IPropertySource">
+         </adapter>
+      </factory>
+   </extension>
+      <extension
+            point="org.eclipse.ui.startup">
+         <startup></startup>
+      </extension>
 
 </plugin>

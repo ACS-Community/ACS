@@ -101,6 +101,7 @@ public class EventDetailView extends ViewPart {
 
 		viewer.setContentProvider(new EventDetailViewContentProvider());
 		// viewer.setComparator(new ServiceViewerComparator());
+		getSite().setSelectionProvider(viewer); // In order to be able to display event detail
 		viewer.setInput(getViewSite());
 
 		makeActions();
@@ -147,7 +148,7 @@ public class EventDetailView extends ViewPart {
 			}
 		};
 		final Thread th = new Thread(t);
-		th.start();
+//		th.start();
 		consumers = em.getAllConsumers();
 		
 		if (consumers != null) {
@@ -160,6 +161,7 @@ public class EventDetailView extends ViewPart {
 				}
 			}
 		}
+		th.start();
 	}
 
 	private void hookContextMenu() {

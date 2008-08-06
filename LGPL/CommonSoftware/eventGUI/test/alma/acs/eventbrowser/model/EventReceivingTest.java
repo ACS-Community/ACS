@@ -10,7 +10,7 @@ import junit.framework.TestCase;
 
 public class EventReceivingTest extends TestCase {
 
-	private static final int EVENTS_TO_SEND = 1000;
+	private static final int EVENTS_TO_SEND = 10000;
 	private EventModel em;
 	private AdminConsumer consumer = null;
 	private EventSupplierImpl supplier;
