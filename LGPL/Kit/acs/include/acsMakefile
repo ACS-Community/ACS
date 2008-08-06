@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: acsMakefile,v 1.171 2008/07/03 07:28:10 bjeram Exp $" 
+# "@(#) $Id: acsMakefile,v 1.172 2008/08/06 09:52:58 mzampare Exp $" 
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -1357,7 +1357,7 @@ default : all
 # *********************************************
 
 # Removal of dbl dir in hte next line due to spr ALMASW2004040
-CREATE_DIRS = include object doc rtai bin lib lib/ACScomponents lib/python/site-packages idl config 
+CREATE_DIRS = include object doc rtai/$(osrev) bin lib lib/ACScomponents lib/python/site-packages idl config 
 
 ifneq ($(strip $(MAKE_VXWORKS)),)
 CREATE_DIRS += src/.obj
@@ -2114,20 +2114,25 @@ endif
 ##
 install_rtai:
 ifneq ($(strip $(RTAI_MODULES)),)
-	-@$(ECHO) "install_rtai: rtai_begin $(foreach member, $(RTAI_MODULES), $(VLTTOP)/rtai/$(member).ko  )" >>$(FILE)
+	-@$(ECHO) "install_rtai: rtai_begin $(foreach member, $(RTAI_MODULES), $(VLTTOP)/rtai/$(osrev)/$(member).ko  )" >>$(FILE)
 	-@$(ECHO) "rtai_begin:" >>$(FILE)
 	-@$(ECHO) "	-@echo \"\"; $(ECHO) \"......RTAI modules:\"" >>$(FILE)
 	-$(AT) for member in $(foreach name, $(RTAI_MODULES), $(name) ); \
 		do \
-		    $(ECHO) "$(VLTTOP)/rtai/$${member}.ko: ../rtai/$${member}.ko" >>$(FILE);\
+		    $(ECHO) "$(VLTTOP)/rtai/$(osrev)/$${member}.ko: ../rtai/$(osrev)/$${member}.ko" >>$(FILE);\
 		    $(ECHO) "	-\$$(AT)echo \"\t$${member}.ko\"" >>$(FILE);\
-		    $(ECHO) "	\$$(AT)cp ../rtai/$${member}.ko $(VLTTOP)/rtai" >>$(FILE);\
-		    $(ECHO) "	\$$(AT)chmod $(P644) $(VLTTOP)/rtai/$${member}.ko" >>$(FILE);\
+		    $(ECHO) "	-\$$(AT)if [ ! -d $(VLTTOP)/rtai/$(osrev) ]; then mkdir $(VLTTOP)/rtai/$(osrev) ; fi"  >>$(FILE);\
+		    $(ECHO) "	\$$(AT)cp ../rtai/$(osrev)/$${member}.ko $(VLTTOP)/rtai/$(osrev)" >>$(FILE);\
+		    $(ECHO) "	\$$(AT)chmod $(P644) $(VLTTOP)/rtai/$(osrev)/$${member}.ko" >>$(FILE);\
+		    if [ -f load$${member}.cpp ]; then \
 		    if [ "$(MAKE_RTAI_IGNORE_INSTALL_FAILURE)" != "" ]; then  \
 		     $(ECHO) "	\$$(AT)if ssh -q -oPasswordAuthentication=no  root@${HOST} ${PWD}/../bin/installLKM-$${member}; then echo \"Kernel module \\\"$${member}\\\" installed.\";  else echo \"WARNING: Kernel module \\\"$${member}\\\" not installed.\"; fi" >> $(FILE); \
 		     else  \
 		       $(ECHO) "	\$$(AT)if ssh -q -oPasswordAuthentication=no  root@${HOST} ${PWD}/../bin/installLKM-$${member}; then echo \"Kernel module \\\"$${member}\\\" installed.\";  else echo \"FAILURE: Kernel module \\\"$${member}\\\" not installed. Check your SSH configuration\"; /bin/false;  fi" >> $(FILE);  \
 		     fi; \
+                     else \
+		       $(ECHO) "	\$$(AT)${PWD}/../bin/installLKM-$${member}" >> $(FILE);  \
+		     fi \
 		done
 endif
 

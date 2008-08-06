@@ -2,7 +2,7 @@
 #*******************************************************************************
 # E.S.O. - ALMA project
 #
-# "@(#) $Id: acsMakeRTAIDependencies,v 1.26 2007/05/30 12:15:25 mzampare Exp $"
+# "@(#) $Id: acsMakeRTAIDependencies,v 1.27 2008/08/06 09:52:58 mzampare Exp $"
 #
 #************************************************************************
 #   NAME
@@ -112,7 +112,7 @@ then
     done
     echo ""
     
-    echo "../rtai/${modName}.ko: \$(xyz_${modName}_SRC) ${INSTLKM}"
+    echo "../rtai/\$(osrev)/${modName}.ko: \$(xyz_${modName}_SRC) ${INSTLKM}"
     echo "	@echo \"== Making RTAI Module: ${modName}\" "
     echo "# here we have to generate the hineous Kbuild file"
     echo "	\$(AT)echo \"obj-m += ${modName}.o\" > Kbuild"
@@ -123,14 +123,14 @@ then
     echo "	\$(AT)echo \"EXTRA_CFLAGS := \$(shell \$(RTAI_CONFIG) --module-cflags) -Werror-implicit-function-declaration \$(USR_INC) \$(USER_RTAI_CFLAGS) -DRTAI_HOME\" >> Kbuild"
     echo "	\$(AT)make -C \$(KDIR) CC=\$(CC) ARCH=i386 RTAI_CONFIG=\$(RTAI_CONFIG) M=\$(PWD) V=1 modules"
     echo "	\$(AT)rm Kbuild"
-    echo "	\$(AT)mv ${modName}.ko ../rtai"
+    echo "	\$(AT)mv ${modName}.ko ../rtai/\$(osrev)"
     echo ""
     echo "# LKM Support binaries"
     echo ""
 # clean target
     echo "clean${modName}:"
     echo "	\$(AT)make -C \$(KDIR) CC=\$(CC) ARCH=i386 RTAI_CONFIG=\$(RTAI_CONFIG) M=\$(PWD) V=1 clean"
-    echo "	\$(AT)rm ../rtai/${modName}.ko"
+    echo "	\$(AT)rm ../rtai/\$(osrev)/${modName}.ko"
     echo ""
     
 
@@ -147,7 +147,7 @@ then
 	then
 	OWNER=${USER}
 	GROUP=`groups | awk '{print $1}'`
-	DEST=${VLTTOP}/rtai
+	DEST=${VLTTOP}/rtai/${osrev}
     else
 	echo "	@echo \"echo 'WARNING: missing ACSROOT/INTROOT installation dir'\" > ${INSTLKM}"
 	DEST=/lib/modules/${VER}/alma
@@ -160,11 +160,13 @@ then
 	echo "	@echo \"cp `pwd`/../bin/unload${modName} ${VLTTOP}/bin \" >> ${INSTLKM}"
 	echo "	@echo \"chmod ${P755} ${VLTTOP}/bin/load${modName} ${VLTTOP}/bin/unload${modName}\" >> ${INSTLKM}"
     fi
+# create the RTAI directory in the destination area if it doesn' exist yet
+#
+    echo "	@echo \"if [ ! -d ${DEST} ]; then mkdir ${DEST}; fi\" >> ${INSTLKM}" 
     echo "	@echo \"install -d ${DEST}\" >> ${INSTLKM}" 
-    echo "	@echo \"install -c `pwd`/../rtai/${modName}.ko ${DEST}\" >> ${INSTLKM}"
-    echo "	@echo \"echo 'running depmod..'\" >> ${INSTLKM}"
-    echo "	@echo \"/sbin/depmod\" >> ${INSTLKM}"
-    echo "	@echo \"chown $OWNER:$GROUP ${DEST}/${modName}.ko \" >> ${INSTLKM}"
+    echo "	@echo \"install -c `pwd`/../rtai/\$(osrev)/${modName}.ko ${DEST}\" >> ${INSTLKM}"
+#    echo "	@echo \"echo 'running depmod..'\" >> ${INSTLKM}"
+#    echo "	@echo \"/sbin/depmod\" >> ${INSTLKM}"
     if [ $AUXPROG = "1" ] 
 	then
 	echo "	@echo \"echo 'setting uid permissions and ownership..'\" >> ${INSTLKM}"
@@ -189,7 +191,7 @@ then
     echo "	@vltMakeExecutableDependencies unload${modName} \"unload${modName}\" \"\" \"LKM C++\" \"\" > ../object/unload${modName}.dx" 
     echo "-include ../object/unload${modName}.dx" 
 else
-    echo "../rtai/${modName}.ko: "
+    echo "../rtai/\$(osrev)/${modName}.ko: "
     echo "	@echo \"== Making RTAI Module: ${modName}\" "
     echo "	@echo \" ERROR: ${modName}_OBJECTS is not defined. Nothing to do here.\""
     echo "	@echo \" Makefile should define the action for target  '${modName}'\""
