@@ -3,7 +3,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: irbrowser,v 1.1 2004/07/26 21:38:45 dfugate Exp $"
+# "@(#) $Id: irbrowser,v 1.2 2008/08/06 02:42:32 cparedes Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -40,7 +40,11 @@ export HOST=`getIP`
 #Find the port number of the IR
 export ACS_IR_PORT=`getIRPort`
 
-export IRcorbaloc="corbaloc::$HOST:$ACS_IR_PORT/InterfaceRepository"
+if [ X"$ACS_INTERFACE_REPOSITORY" = X ]; then
+  export IRcorbaloc="corbaloc::$HOST:$ACS_IR_PORT/InterfaceRepository"
+else
+  export IRcorbaloc=$ACS_INTERFACE_REPOSITORY
+fi
 
 acsStartJava -DORBInitRef.InterfaceRepository=$IRcorbaloc org.jacorb.ir.gui.IRBrowser &
 
