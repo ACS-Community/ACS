@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: acsMakefile,v 1.172 2008/08/06 09:52:58 mzampare Exp $" 
+# "@(#) $Id: acsMakefile,v 1.173 2008/08/07 13:44:52 mzampare Exp $" 
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -2122,8 +2122,6 @@ ifneq ($(strip $(RTAI_MODULES)),)
 		    $(ECHO) "$(VLTTOP)/rtai/$(osrev)/$${member}.ko: ../rtai/$(osrev)/$${member}.ko" >>$(FILE);\
 		    $(ECHO) "	-\$$(AT)echo \"\t$${member}.ko\"" >>$(FILE);\
 		    $(ECHO) "	-\$$(AT)if [ ! -d $(VLTTOP)/rtai/$(osrev) ]; then mkdir $(VLTTOP)/rtai/$(osrev) ; fi"  >>$(FILE);\
-		    $(ECHO) "	\$$(AT)cp ../rtai/$(osrev)/$${member}.ko $(VLTTOP)/rtai/$(osrev)" >>$(FILE);\
-		    $(ECHO) "	\$$(AT)chmod $(P644) $(VLTTOP)/rtai/$(osrev)/$${member}.ko" >>$(FILE);\
 		    if [ -f load$${member}.cpp ]; then \
 		    if [ "$(MAKE_RTAI_IGNORE_INSTALL_FAILURE)" != "" ]; then  \
 		     $(ECHO) "	\$$(AT)if ssh -q -oPasswordAuthentication=no  root@${HOST} ${PWD}/../bin/installLKM-$${member}; then echo \"Kernel module \\\"$${member}\\\" installed.\";  else echo \"WARNING: Kernel module \\\"$${member}\\\" not installed.\"; fi" >> $(FILE); \

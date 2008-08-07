@@ -2,7 +2,7 @@
 #*******************************************************************************
 # E.S.O. - ALMA project
 #
-# "@(#) $Id: acsMakeRTAIDependencies,v 1.27 2008/08/06 09:52:58 mzampare Exp $"
+# "@(#) $Id: acsMakeRTAIDependencies,v 1.28 2008/08/07 13:44:52 mzampare Exp $"
 #
 #************************************************************************
 #   NAME
@@ -164,7 +164,7 @@ then
 #
     echo "	@echo \"if [ ! -d ${DEST} ]; then mkdir ${DEST}; fi\" >> ${INSTLKM}" 
     echo "	@echo \"install -d ${DEST}\" >> ${INSTLKM}" 
-    echo "	@echo \"install -c `pwd`/../rtai/\$(osrev)/${modName}.ko ${DEST}\" >> ${INSTLKM}"
+    echo "	@echo \"install -m ${P644} -c `pwd`/../rtai/\$(osrev)/${modName}.ko ${DEST}\" >> ${INSTLKM}"
 #    echo "	@echo \"echo 'running depmod..'\" >> ${INSTLKM}"
 #    echo "	@echo \"/sbin/depmod\" >> ${INSTLKM}"
     if [ $AUXPROG = "1" ] 
