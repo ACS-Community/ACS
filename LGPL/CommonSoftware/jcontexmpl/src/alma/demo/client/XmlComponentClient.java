@@ -51,33 +51,28 @@ public class XmlComponentClient extends ComponentClientTestCase
 	// transparent-XML interface
 	private XmlComponentJ m_xmlCompJ;
 
-	/**
-	 * Creates a component with a name.
-	 * 
-	 * @see java.lang.Object#Object()
-	 */
+
 	public XmlComponentClient() throws Exception {
 		super("XmlComponentClient");
 	}
 
-    
-    protected void setUp() throws Exception {
+
+	protected void setUp() throws Exception {
 		super.setUp();
 
-		org.omg.CORBA.Object compObj = getContainerServices().getComponent(
-				"XMLCOMP1");
+		org.omg.CORBA.Object compObj = getContainerServices().getComponent("XMLCOMP1");
 		assertNotNull(compObj);
+
 		m_xmlComp = alma.demo.XmlComponentHelper.narrow(compObj);
+		assertNotNull(m_xmlComp);
 
-		m_xmlCompJ = (XmlComponentJ) getContainerServices()
-				.getTransparentXmlComponent(XmlComponentJ.class, m_xmlComp,
-						XmlComponentOperations.class);
-
+		m_xmlCompJ = getContainerServices().getTransparentXmlComponent(
+				XmlComponentJ.class, m_xmlComp, XmlComponentOperations.class);
 		assertNotNull(m_xmlCompJ);
 	}
 
-    
-    /**
+
+	/**
 	 * Makes sure the method sayHello() on the xmlcomponent returns a reply.
 	 */
 	public void testSayHelloUsingHelloDemoComponent() {
