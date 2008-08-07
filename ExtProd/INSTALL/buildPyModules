@@ -83,22 +83,22 @@ then
 fi
 
 #
-# Python - Python-2.4.1
+# Python - Python-2.5.2
 #
 # Notes: See README for help
 #
 cd ../PRODUCTS
 
-if [ ! -e ../PRODUCTS/setuptools-0.6c6.tar.gz ]
-then
-  echo Error: setuptools sources are missing
-else
-  echo "== Building setuptools"
-  tar -zxvf setuptools-0.6c6.tar.gz
-  pushd setuptools-0.6c6
-  python setup.py install
-  popd
-fi
+#if [ ! -e ../PRODUCTS/setuptools-0.6c6.tar.gz ]
+#then
+#  echo Error: setuptools sources are missing
+#else
+#  echo "== Building setuptools"
+#  tar -zxvf setuptools-0.6c6.tar.gz
+#  pushd setuptools-0.6c6
+#  python setup.py install
+#  popd
+#fi
 
 
 if [ ! -e ../PRODUCTS/pysnmp-2.0.9.tar.gz ]
@@ -113,13 +113,13 @@ else
 fi
 
 
-if [ ! -e ../PRODUCTS/python-ldap-2.0.1.tar.gz ]
+if [ ! -e ../PRODUCTS/python-ldap-2.3.5.tar.gz ]
 then
   echo Error: Python LDAP sources are missing
 else
   echo "== Building Python LDAP"
-  tar -zxvf python-ldap-2.0.1.tar.gz
-  pushd python-ldap-2.0.1
+  tar -zxvf python-ldap-2.3.5.tar.gz
+  pushd python-ldap-2.3.5
   cat setup.cfg | sed 's/local\/openldap-REL_ENG_2_1\///' >> setup.cfg.tmp
   mv setup.cfg.tmp setup.cfg 
   python setup.py install
@@ -137,48 +137,37 @@ else
   popd
 fi
 
-if [ ! -e ../PRODUCTS/numarray-1.5.2.tar.gz ]
-then
-  echo Error: numarray sources are missing
-else
-  echo "== Building numarray"
-  tar -zxvf numarray-1.5.2.tar.gz
-  pushd numarray-1.5.2
-  python setup.py install --gencode 
-  popd
-fi
-
-if [ ! -e ../PRODUCTS/numpy-1.0.3.1.tar.gz ]
+if [ ! -e ../PRODUCTS/numpy-1.1.1.tar.gz ]
 then
   echo Error: numpy sources are missing
 else
   echo "== Building numpy"
   export BLAS=/usr/lib/libblas.so
   export LAPACK=/usr/lib/liblapack.so
-  tar -zxvf numpy-1.0.3.1.tar.gz
-  pushd numpy-1.0.3.1
+  tar -zxvf numpy-1.1.1.tar.gz
+  pushd numpy-1.1.1
   python setup.py install 
   popd
 fi
 
-if [ ! -e ../PRODUCTS/gnuplot-py-1.7.tar.gz ]
+if [ ! -e ../PRODUCTS/gnuplot-py-1.8.tar.gz ]
 then
   echo Error: GnuPlot Py sources are missing
 else
   echo "== Building GnuPlot Py"
-  tar -zxvf gnuplot-py-1.7.tar.gz
-  pushd gnuplot-py-1.7
+  tar -zxvf gnuplot-py-1.8.tar.gz
+  pushd gnuplot-py-1.8
   python setup.py install
   popd
 fi
 
-if [ ! -e ../PRODUCTS/matplotlib-0.90.1.tar.gz ]
+if [ ! -e ../PRODUCTS/matplotlib-0.91.4.tar.gz ]
 then
   echo Error: matplotlib sources are missing
 else
   echo "== Building matplotlib"
-  tar -zxvf matplotlib-0.90.1.tar.gz;
-  pushd matplotlib-0.90.1
+  tar -zxvf matplotlib-0.91.4.tar.gz;
+  pushd matplotlib-0.91.4
 
   cat setupext.py | sed s/\'linux2\'\ :\ \\[/\'linux2\'\ :\ \\[os.environ\\[\'PYTHON_ROOT\'\\],/g >> setupext.py.tmp
   mv setupext.py.tmp setupext.py
@@ -218,55 +207,55 @@ else
   popd
 fi
 
-if [ ! -e ../PRODUCTS/scipy-0.5.2.1.tar.gz ]
+if [ ! -e ../PRODUCTS/scipy-0.6.0.tar.gz ]
 then
   echo Error: numpy sources are missing
 else
   echo "== Building scipy"
-  tar -zxvf scipy-0.5.2.1.tar.gz
-  pushd scipy-0.5.2.1
+  tar -zxvf scipy-0.6.0.tar.gz
+  pushd scipy-0.6.0
   python setup.py install 
   popd
 fi
 
-if [ ! -e ../PRODUCTS/ipython-0.8.1.tar.gz ]
-then
-  echo Error: ipython sources are missing
-else
-  echo "== Building IPython"
-  tar -zxvf ipython-0.8.1.tar.gz
-  pushd ipython-0.8.1
-  python setup.py install 
-  popd
-fi
+#if [ ! -e ../PRODUCTS/ipython-0.8.1.tar.gz ]
+#then
+#  echo Error: ipython sources are missing
+#else
+#  echo "== Building IPython"
+#  tar -zxvf ipython-0.8.1.tar.gz
+#  pushd ipython-0.8.1
+#  python setup.py install 
+#  popd
+#fi
 
-if [ ! -e ../PRODUCTS/ipython1-saw.tar.gz \
-     -o ! -e ../PRODUCTS/Twisted-2.5.0.tar.bz2 \
-   ]
-then
-  echo Error: ipython1 sources are missing
-else
-  echo "== Building ipython1"
-  tar -jxvf Twisted-2.5.0.tar.bz2
-  pushd Twisted-2.5.0
-  pushd zope.interface-3.3.0
-  python setup.py install
-  popd
-  python setup.py install
-  popd
-  tar -zxvf ipython1-saw.tar.gz
-  pushd ipython1-saw
-  python setup.py install 
-  popd
-fi
+#if [ ! -e ../PRODUCTS/ipython1-saw.tar.gz \
+#     -o ! -e ../PRODUCTS/Twisted-2.5.0.tar.bz2 \
+#   ]
+#then
+#  echo Error: ipython1 sources are missing
+#else
+#  echo "== Building ipython1"
+#  tar -jxvf Twisted-2.5.0.tar.bz2
+#  pushd Twisted-2.5.0
+#  pushd zope.interface-3.3.0
+#  python setup.py install
+#  popd
+#  python setup.py install
+#  popd
+#  tar -zxvf ipython1-saw.tar.gz
+#  pushd ipython1-saw
+#  python setup.py install 
+#  popd
+#fi
 
-if [ ! -e ../PRODUCTS/pexpect-2.1.tar.gz ]
+if [ ! -e ../PRODUCTS/pexpect-2.3.tar.gz ]
 then
   echo Error: pexpect sources are missing
 else
   echo "== Building pexpect"
-  tar -zxvf pexpect-2.1.tar.gz
-  pushd pexpect-2.1
+  tar -zxvf pexpect-2.3.tar.gz
+  pushd pexpect-2.3
   python setup.py install 
   popd
 fi
@@ -282,23 +271,23 @@ else
   popd
 fi
 
-if [ ! -e ../PRODUCTS/coverage-2.77.tar.gz ]
+if [ ! -e ../PRODUCTS/coverage-2.80.tar.gz ]
 then
   echo Error: coverage sources are missing
 else
   echo "== Building coverage"
-  tar -zxvf coverage-2.77.tar.gz
-  pushd coverage-2.77
+  tar -zxvf coverage-2.80.tar.gz
+  pushd coverage-2.80
   python setup.py install 
   popd
 fi
 
-if [ ! -e ../PRODUCTS/pythonmock-0.1.0.zip ]
+if [ ! -e ../PRODUCTS/mock-0.3.1.zip ]
 then
   echo Error: Python Mock sources are missing
 else
   echo "== Installing Python Mock Objects"
-  unzip -o pythonmock-0.1.0.zip *.py -d $PYTHON_ROOT/lib/python2.5/site-packages/
+  unzip -o mock-0.3.1.zip *.py -d $PYTHON_ROOT/lib/python2.5/site-packages/
 fi
 
 cd $CWD
