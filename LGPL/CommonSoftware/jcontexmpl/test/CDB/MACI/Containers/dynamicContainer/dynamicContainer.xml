@@ -6,16 +6,14 @@
 	xmlns:log="urn:schemas-cosylab-com:LoggingConfig:1.0" 
 	ImplLang="java"
 	>
-	<DeployInfo Host="%HOST" Instance="%ACS_INSTANCE" />
-	
+
 	<Autoload>
 	</Autoload>
+
+	<DeployInfo Host="%HOST" Instance="%ACS_INSTANCE" />
 
 	<LoggingConfig>
 		<log:_ Name="jacorb@dynamicContainer" minLogLevel="5" minLogLevelLocal="5" />
 	</LoggingConfig>
 
 </Container>
-
-
-
