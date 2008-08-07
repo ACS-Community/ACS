@@ -30,14 +30,24 @@
 
 
 echo " ****************** jcontexmplTATPrologue ************* "
-ACS_CDB=$PWD
+export ACS_CDB=$PWD
+export ACS_TMP=$PWD/tmp
 
 # Starting ORB Services, Manager, CDB, loggingClient etc
+# todo add --noloadifr 
 acsutilTATPrologue -l
 
-echo " Starting C++ Container"
-acsutilAwaitContainerStart -cpp Container01
+# Tweak dynamicContainer's DeployInfo. See http://jira.alma.cl/browse/COMP-2560?focusedCommentId=26674#action_26674 about making this unnecessary.
+# To get the instance right, we can do this only now, to be able to read out tmp/acs_instance
+acsReplace "%HOST" $HOST $ACS_CDB/CDB/MACI/Containers/dynamicContainer/dynamicContainer.xml
+acsReplace "%ACS_INSTANCE" `cat $ACS_TMP/acs_instance` $ACS_CDB/CDB/MACI/Containers/dynamicContainer/dynamicContainer.xml
+cdbjDALClearCache
+
+echo " Starting container daemon (if it is not running already) which will run java container 'dynamicContainer'"
+acscontainerdaemonSmartStart >& $ACS_TMP/acscontainerdaemonSmartStart.out
 
 echo " Starting Java Container"
 export JAVA_OPTIONS="-Dacs.container.fakeUIDsForTesting=true"
 acsutilAwaitContainerStart -java frodoContainer
+
+echo " The second Java container ('dynamicContainer') will be started automatically."
