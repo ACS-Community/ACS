@@ -55,7 +55,7 @@ DEBUG = on
 # Scripts (public and local)
 # ----------------------------
 SCRIPTS         = 
-SCRIPTS_L       = dynwrapperTest helloLampTest xmlCompTest errorComponentTest jcontexmplTATPrologue
+SCRIPTS_L       = dynwrapperTest helloLampTest xmlCompTest errorComponentTest jcontexmplTATPrologue jcontexmplTATEpilogue
 
 PY_SCRIPTS_L    = 
 

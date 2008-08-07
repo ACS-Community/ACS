@@ -1,8 +1,9 @@
+#! /bin/bash
 #*******************************************************************************
 # ALMA - Atacama Large Millimiter Array
 # (c) European Southern Observatory, 2002
-# Copyright by ESO (in the framework of the ALMA collaboration)
-# and Cosylab 2002, All rights reserved
+# Copyright by ESO (in the framework of the ALMA collaboration),
+# All rights reserved
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -19,16 +20,12 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: TestList_WS.lite,v 1.78 2003/01/16 12:14:28 vltsccm Exp $"
-#
-# TestList
+# "@(#) $Id$"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
-#
-SOURCE jcontexmplTATEnvironment
-PROLOGUE jcontexmplTATPrologue
-1 xmlCompTest "acsutilTATTestRunner xmlCompTest"
-2 dynwrapperTest "acsutilTATTestRunner dynwrapperTest"
-3 errorCompTest "acsutilTATTestRunner errorComponentTest"
-EPILOGUE jcontexmplTATEpilogue
+
+
+echo " ****************** jcontexmplTATEpilogue ************* "
+acsutilTATEpilogue
+acscontainerdaemonStop
