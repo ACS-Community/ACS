@@ -6,10 +6,7 @@
 	xmlns:log="urn:schemas-cosylab-com:LoggingConfig:1.0" 
 	ImplLang="java"
 	>
-	<DeployInfo>
-		Host = "%HOST"
-		Instance = "%ACS_INSTANCE"
-	</DeployInfo>
+	<DeployInfo Host="%HOST" Instance="%ACS_INSTANCE" />
 	
 	<Autoload>
 	</Autoload>
@@ -19,4 +16,6 @@
 	</LoggingConfig>
 
 </Container>
+
+
 
