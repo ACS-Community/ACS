@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciContainerImpl.cpp,v 1.111 2008/08/04 07:58:13 bjeram Exp $"
+* "@(#) $Id: maciContainerImpl.cpp,v 1.112 2008/08/07 09:51:54 bjeram Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -79,7 +79,7 @@
 #include <ACSAlarmSystemInterfaceFactory.h>
 #endif
 
-ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.111 2008/08/04 07:58:13 bjeram Exp $")
+ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.112 2008/08/07 09:51:54 bjeram Exp $")
 
  using namespace maci;
  using namespace cdb;
@@ -424,7 +424,6 @@ ContainerImpl::doneCORBA()
 	  orb->destroy();
 
 	}
-      delete m_servant_mgr;
     }
   catch( CORBA::Exception &ex )
     {
