@@ -89,16 +89,16 @@ fi
 #
 cd ../PRODUCTS
 
-#if [ ! -e ../PRODUCTS/setuptools-0.6c6.tar.gz ]
-#then
-#  echo Error: setuptools sources are missing
-#else
-#  echo "== Building setuptools"
-#  tar -zxvf setuptools-0.6c6.tar.gz
-#  pushd setuptools-0.6c6
-#  python setup.py install
-#  popd
-#fi
+if [ ! -e ../PRODUCTS/setuptools-0.6c8.tar.gz ]
+then
+  echo Error: setuptools sources are missing
+else
+  echo "== Building setuptools"
+  tar -zxvf setuptools-0.6c8.tar.gz
+  pushd setuptools-0.6c8
+  python setup.py install
+  popd
+fi
 
 
 if [ ! -e ../PRODUCTS/pysnmp-2.0.9.tar.gz ]

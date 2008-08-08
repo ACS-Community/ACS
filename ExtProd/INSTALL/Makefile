@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ALMA project
 #
-# "@(#) $Id: Makefile,v 1.13 2008/08/07 21:13:17 agrimstrup Exp $"
+# "@(#) $Id: Makefile,v 1.14 2008/08/08 22:57:56 agrimstrup Exp $"
 #
 # Makefile of ........
 #
@@ -35,7 +35,7 @@ clean :
 	rm -rf ../PRODUCTS/matplotlib-0.91.4
 	rm -rf ../PRODUCTS/pexpect-2.3
 	rm -rf ../PRODUCTS/pychecker-0.8.17
-#	rm -rf ../PRODUCTS/setuptools-0.6c6
+	rm -rf ../PRODUCTS/setuptools-0.6c8
 #	rm -rf ../PRODUCTS/ipython-0.8.1
 #	rm -rf ../PRODUCTS/ipython1-saw
 #	rm -rf ../PRODUCTS/Twisted-2.5.0
