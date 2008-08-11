@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsstartupIrFeed.cpp,v 1.6 2008/02/20 18:10:33 agrimstrup Exp $"
+* "@(#) $Id: acsstartupIrFeed.cpp,v 1.7 2008/08/11 02:17:30 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -59,7 +59,7 @@
 #include <stdio.h>
 #include <string.h>
 
-static char *rcsId="@(#) $Id: acsstartupIrFeed.cpp,v 1.6 2008/02/20 18:10:33 agrimstrup Exp $"; 
+static char *rcsId="@(#) $Id: acsstartupIrFeed.cpp,v 1.7 2008/08/11 02:17:30 cparedes Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <iostream>
@@ -96,11 +96,15 @@ void addIdlFiles(std::string dirName,
 	string t_file = file->d_name;
 
 	//good, found a match
-	if(t_file.rfind(".idl") != string::npos)
-	    {
-	    if (t_file != "ACSIRSentinel.idl")
-		files.push_back(t_file);
-	    }
+    int pos = t_file.rfind(".idl");
+    if(pos != (signed int)string::npos )
+	{
+        int endPos = t_file.size() - 4;
+	    if( pos == endPos){
+            if (t_file != "ACSIRSentinel.idl")
+		        files.push_back(t_file);
+        } 
+    }
 	
 	file = readdir(dir);
 	}
