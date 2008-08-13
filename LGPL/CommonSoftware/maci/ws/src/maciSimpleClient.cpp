@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciSimpleClient.cpp,v 1.106 2008/07/14 13:41:20 bjeram Exp $"
+* "@(#) $Id: maciSimpleClient.cpp,v 1.107 2008/08/13 05:54:10 cparedes Exp $"
 *
 * who       when        what
 * --------  --------    ----------------------------------------------
@@ -529,6 +529,17 @@ SimpleClient::handle()
     }
 
   return m_handle;
+}
+
+CORBA::Object_ptr 
+SimpleClient::getDynamicComponent(maci::ComponentSpec compSpec, bool markAsDefault)
+throw(maciErrType::NoPermissionExImpl,
+  maciErrType::IncompleteComponentSpecExImpl,
+  maciErrType::InvalidComponentSpecExImpl,
+  maciErrType::ComponentSpecIncompatibleWithActiveComponentExImpl,
+  maciErrType::CannotGetComponentExImpl)
+{
+    return getDynamicComponent<CORBA::Object>(compSpec, markAsDefault);
 }
 
 CORBA::Object_ptr

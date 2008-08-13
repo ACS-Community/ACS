@@ -111,7 +111,7 @@
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Unloaded '/----/libmaciDynComp.so'.
 2 - ----------T--:--:--.--- [GlobalLogger - getComponent] Error retrieving component (type=25, code=1) CURL="MACI_EXCEPTION_COSTR" javaex.class="alma.maciErrType.wrappers.AcsJCannotGetComponentEx"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Error getting MACI_EXCEPTION_COSTR (right behaviour)
-2 - ----------T--:--:--.--- [GlobalLogger - maci::SimpleCleint::getComponent&lt;&gt;] Error retrieving component (type=25, code=1) CURL="MACI_EXCEPTION_COSTR"
+2 - ----------T--:--:--.--- [GlobalLogger - maci::SimpleClient::getComponent&lt;&gt;] Error retrieving component (type=25, code=1) CURL="MACI_EXCEPTION_COSTR"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Getting component: 'curl:///MACI_EXCEPTION_INIT'. Creating it...
 2 - ----------T--:--:--.--- [GlobalLogger - ] Getting MACI_EXCEPTION_INIT
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activate_component] 
@@ -150,7 +150,7 @@
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Unloaded '/----/libmaciDynComp.so'.
 2 - ----------T--:--:--.--- [GlobalLogger - getComponent] Error retrieving component (type=25, code=1) CURL="MACI_EXCEPTION_INIT" javaex.class="alma.maciErrType.wrappers.AcsJCannotGetComponentEx"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Error getting MACI_EXCEPTION_INIT (right behaviour)
-2 - ----------T--:--:--.--- [GlobalLogger - maci::SimpleCleint::getComponent&lt;&gt;] Error retrieving component (type=25, code=1) CURL="MACI_EXCEPTION_INIT"
+2 - ----------T--:--:--.--- [GlobalLogger - maci::SimpleClient::getComponent&lt;&gt;] Error retrieving component (type=25, code=1) CURL="MACI_EXCEPTION_INIT"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Getting component: 'curl:///MACI_EXCEPTION_EXE'. Creating it...
 2 - ----------T--:--:--.--- [GlobalLogger - ] Getting MACI_EXCEPTION_EXE
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activate_component] 
@@ -191,7 +191,7 @@
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Executing DLLClose
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Unloaded '/----/libmaciDynComp.so'.
 2 - ----------T--:--:--.--- [GlobalLogger - getComponent] Error retrieving component (type=25, code=1) CURL="MACI_EXCEPTION_EXE" javaex.class="alma.maciErrType.wrappers.AcsJCannotGetComponentEx"
-2 - ----------T--:--:--.--- [GlobalLogger - maci::SimpleCleint::getComponent&lt;&gt;] Error retrieving component (type=25, code=1) CURL="MACI_EXCEPTION_EXE"
+2 - ----------T--:--:--.--- [GlobalLogger - maci::SimpleClient::getComponent&lt;&gt;] Error retrieving component (type=25, code=1) CURL="MACI_EXCEPTION_EXE"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Error getting MACI_EXCEPTION_EXE (right behaviour)
 2 - ----------T--:--:--.--- [GlobalLogger - ] Getting component: 'curl:///MACI_EXCEPTION_CLEAN'. Creating it...
 2 - ----------T--:--:--.--- [GlobalLogger - ] Getting MACI_EXCEPTION_CLEAN

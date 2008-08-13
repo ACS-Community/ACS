@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - VLT project
 *
-* "@(#) $Id: maciTestSimpleClient.cpp,v 1.4 2008/03/27 13:49:31 bjeram Exp $"
+* "@(#) $Id: maciTestSimpleClient.cpp,v 1.5 2008/08/13 05:54:10 cparedes Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -11,7 +11,7 @@
 #define _POSIX_SOURCE 1
 #include "vltPort.h"
 
-static char *rcsId="@(#) $Id: maciTestSimpleClient.cpp,v 1.4 2008/03/27 13:49:31 bjeram Exp $"; 
+static char *rcsId="@(#) $Id: maciTestSimpleClient.cpp,v 1.5 2008/08/13 05:54:10 cparedes Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <maciTestC.h>
@@ -78,6 +78,43 @@ int main (int argc, char **argv)
 	    corbaProblemEx.log();
 	}//try-catch
 
+    // test dynamic component
+	ACS_SHORT_LOG((LM_INFO,"Testing dynamic component"));
+    try{
+
+	 // Prepare the ComponentSpec struct
+	 ComponentSpec cSpec;
+	 cSpec.component_name="*";		
+	 cSpec.component_code="*";	
+	 cSpec.container_name="*";
+	 cSpec.component_type="IDL:alma/MACI_TEST/DynamicTestClass:1.0";
+	 
+	 // Get the default component for the given IDL interface
+	 MACI_TEST::DynamicTestClass_var comp = 
+	 	client.getDynamicComponent<MACI_TEST::DynamicTestClass>(cSpec,false);
+	 if (CORBA::is_nil(comp.in())) {
+	 	ACS_SHORT_LOG((LM_ERROR,"getDynamicComponent: Error getting type %s",cSpec.component_type.in()));
+	 }
+	 // Execute a method on the remote component
+	 comp->whoami();
+	 // Release the component
+	 client.releaseComponent(comp->name());
+	 
+	 // here we test some error handling
+	 try
+	 {
+		 // we try to narrow to the wrong type (MaciTestClass)!
+	 MACI_TEST::MaciTestClass_var comp = 
+	 	 	client.getDynamicComponent<MACI_TEST::MaciTestClass>(cSpec,false);
+	 }
+	 catch(ACSErr::ACSbaseExImpl &ex)
+	 {
+		 ex.log();
+	 }//try-catch
+
+    }catch(...){
+        ACS_SHORT_LOG((LM_ERROR,"Testing dynamic component Exception"));
+    }
 	// test error situation
 	ACS_SHORT_LOG((LM_INFO,"Testing error handling"));
 	try
