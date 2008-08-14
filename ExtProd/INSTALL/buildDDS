@@ -2,7 +2,7 @@
 #*******************************************************************************
 # E.S.O. - ALMA project
 #
-# "@(#) $Id: buildDDS,v 1.3 2008/08/14 08:38:18 bjeram Exp $"
+# "@(#) $Id: buildDDS,v 1.4 2008/08/14 11:07:07 bjeram Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -55,6 +55,8 @@ echo ""
 
 
 cd DDS
+$ACE_ROOT/MPC/clone_build_tree.pl -f linux
+cd build/linux
 make
 
 cd $CURR_DIR
