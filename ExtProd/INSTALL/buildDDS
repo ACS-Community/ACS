@@ -2,7 +2,7 @@
 #*******************************************************************************
 # E.S.O. - ALMA project
 #
-# "@(#) $Id: buildDDS,v 1.1 2008/08/14 08:31:45 bjeram Exp $"
+# "@(#) $Id: buildDDS,v 1.2 2008/08/14 08:36:13 bjeram Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -15,7 +15,7 @@
 #
 os_discovery
 
-LOG=buildTAO.log
+LOG=buildDDS.log
 exec > $LOG 2>&1
 
 date
