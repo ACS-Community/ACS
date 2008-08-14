@@ -103,7 +103,7 @@ def usage():
     print "Options:"
     print "   -p PATH	the path to search for CDBs to change, default is the current directory"
     print "   -v	prints information"
-    print "   -n	it doesn't execute the change, just print the info"
+    print "   -n	it doesn't execute the changes, it is used along with -v to just print"
     print "   -b	it creates backup for the files"
     print "   -h	it creates backup for the files"
 
