@@ -6,11 +6,11 @@
        
 <_ Name="MASTERCOMP1"    Code="alma.ACS.MasterComponentImpl.TestMasterComponentHelper" 
                          Type="IDL:alma/ACS/MasterComponent:1.0" 
-                         Container="frodoContainer" />
+                         Container="frodoContainer"  ImplLang="java" />
 
 <_ Name="MASTERCOMP2"    Code="alma.ACS.SpecialTestMasterComponentImpl.SpecialTestMasterComponentHelper" 
                          Type="IDL:alma/ACS/SpecialTestMasterComponent:1.0" 
-                         Container="frodoContainer" />
+                         Container="frodoContainer"  ImplLang="java" />
        
 </Components>
 
