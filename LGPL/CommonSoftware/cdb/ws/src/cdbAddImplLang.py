@@ -39,11 +39,18 @@ class Xml2Component(object):
                 lang = "cpp"
 	    self.lang = None
 	    self.isModified = True
-    	    lastidx = self.filestr.find("/>",self.Parser.ErrorByteIndex+self.offset) 
-	    if lastidx == -1:
-		lastidx = self.filestr.find(">",self.Parser.ErrorByteIndex+self.offset) 
-        	if lastidx == -1:
-		    sys.stderr.write("ERROR: '>' and /> not found?? \n")
+    	    lastidx1 = self.filestr.find(">",self.Parser.ErrorByteIndex+self.offset) 
+	    lastidx2 = self.filestr.find("/>",self.Parser.ErrorByteIndex+self.offset) 
+	    if lastidx1 == -1 and lastidx2 == -1:
+                sys.stderr.write("ERROR: '>' and /> not found?? \n")
+	    elif lastidx1 == -1:
+        	lastidx = lastidx2
+	    elif lastidx2 == -1:
+                lastidx = lastidx1
+	    elif lastidx1 < lastidx2:
+		lastidx = lastidx1
+	    else:
+		 lastidx = lastidx2
 
     	    self.filestr = self.filestr[:lastidx] + " ImplLang=\""+lang+"\" " +self.filestr[lastidx:]
 	    self.offset += len(" ImplLang=\""+lang+"\" ")
@@ -54,6 +61,7 @@ class Xml2Component(object):
 	self.Parser.StartElementHandler = self.StartElement
 	self.offset = 0
 	self.isModified = False
+	print filename
 	self.filestr = open(filename).read()
 	ParserStatus = self.Parser.Parse(open(filename).read(),1)
 	return  self.filestr
@@ -222,6 +230,7 @@ if __name__ == "__main__":
 	    	print "[Main] a CDB/MACI/Containers found!:",root
 	    	print "###################################"
 	    #we found a potential CDB Containers xmls
+	    isCDBModified = False
     	    for rootCont, dirsCont, filesCont in os.walk(root):
 	        for filename in filesCont:
 		    
@@ -229,6 +238,7 @@ if __name__ == "__main__":
 	    		#print "[Main] a Container xml found!:",rootCont+"/"+filename
 			#I assume xml files under MACI/Containers are Container configuration
 			if not haveImplLang(rootCont, filename):
+	    		    isCDBModified = True
 			    idx = rootCont.find(maciContPath)
 			    contName = rootCont[idx+len(maciContPath)+1:]
 			    rootComp = root[:len(root)-10]+"Components"
@@ -242,5 +252,5 @@ if __name__ == "__main__":
 			    else:
 	    		    	if verbose:
 				    print "[Main] ERROR: CDB container file wasn't updated="+rootCont+"/"+filename
-			#else:
-			#    print "[Main] It have already ImplLang"
+	    if not isCDBModified and verbose:
+	        print "[Main] Nothing to do here."	
