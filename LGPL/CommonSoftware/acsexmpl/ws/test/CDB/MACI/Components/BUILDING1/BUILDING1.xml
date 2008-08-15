@@ -6,7 +6,7 @@
        Name="BUILDING1"
        Code="acsexmplBuildingImpl"
        Type="IDL:alma/acsexmplBuilding/Building:1.0"
-       Container="Container" >
-      <_ Name="FRONTDOOR"    Code="acsexmplDoorImpl"       Type="IDL:alma/acsexmplBuilding/Door:1.0"             Container="Container"/>
+       Container="Container"  ImplLang="cpp" >
+      <_ Name="FRONTDOOR"    Code="acsexmplDoorImpl"       Type="IDL:alma/acsexmplBuilding/Door:1.0"             Container="Container" ImplLang="cpp" />
 </HierarchicalComponent>
 

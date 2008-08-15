@@ -8,5 +8,5 @@
       Code="acsexmplPowerSupplyImpl"	  
       Type="IDL:alma/PS/PowerSupply:1.0"
       Container="Container"
-/>
+ ImplLang="cpp" />
 

@@ -8,5 +8,5 @@
       Code="acsexmplDoorImpl"
       Type="IDL:alma/acsexmplBuilding/Door:1.0"
       Container="Container"
-/>
+ ImplLang="cpp" />
 

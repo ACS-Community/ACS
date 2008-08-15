@@ -7,40 +7,40 @@
 
       
   <_ Name="MOUNT1"	Code="acsexmplMount"	Type="IDL:alma/MOUNT_ACS/Mount:1.0"	Container="Container"
-  			Default="false"		Autostart="false" />
+  			Default="false"		Autostart="false"  ImplLang="cpp" />
  
   <_ Name="MOUNT2"	Code="acsexmplMount"	Type="IDL:alma/MOUNT_ACS/Mount:1.0"	Container="Container"
-  			Default="false"		Autostart="false" />
+  			Default="false"		Autostart="false"  ImplLang="cpp" />
  
   <_ Name="MOUNT3"	Code="acsexmplMount"	Type="IDL:alma/MOUNT_ACS/Mount:1.0"	Container="Container"
-  			Default="true"		Autostart="false" />
+  			Default="true"		Autostart="false"  ImplLang="cpp" />
  
   <_ Name="MOUNT4"	Code="acsexmplMount"	Type="IDL:alma/MOUNT_ACS/Mount:1.0"	Container="Container"
-  			Default="false"		Autostart="false" />
+  			Default="false"		Autostart="false"  ImplLang="cpp" />
  
   <_ Name="MOUNT5"	Code="acsexmplMount"	Type="IDL:alma/MOUNT_ACS/Mount:1.0"	Container="Container2"
-  			Default="false"		Autostart="false" />
+  			Default="false"		Autostart="false"  ImplLang="cpp" />
   
   <_ Name="Default"	Code="acsexmplMount"	Type="IDL:alma/MOUNT_ACS/Mount:1.0"	Container="Container"
-  			Default="false"		Autostart="false" />
+  			Default="false"		Autostart="false"  ImplLang="cpp" />
  
   <_ Name="PBEND_B_01"	Code="acsexmplPS"	Type="IDL:alma/PS/PowerSupply:1.0"	Container="Container"
-  			Default="false"		Autostart="false" />
+  			Default="false"		Autostart="false"  ImplLang="cpp" />
  
   <_ Name="PBEND_B_02"	Code="acsexmplPS"	Type="IDL:alma/PS/PowerSupply:1.0"	Container="Container"
-  			Default="false"		Autostart="false" />
+  			Default="false"		Autostart="false"  ImplLang="cpp" />
  
   <_ Name="*"		Code="acsexmplPS"	Type="IDL:alma/PS/PowerSupply:1.0"	Container="Container"
-  			Default="false"		Autostart="false" />
+  			Default="false"		Autostart="false"  ImplLang="cpp" />
 
   <_ Name="IMMORTAL"	Code="acsexmplPS"	Type="IDL:alma/PS/PowerSupply:1.0"	Container="Container"
-  			Default="false"		Autostart="false"	KeepAliveTime="-1" />
+  			Default="false"		Autostart="false"	KeepAliveTime="-1"  ImplLang="cpp" />
 
   <_ Name="PERSISTENT"	Code="acsexmplPS"	Type="IDL:alma/PS/PowerSupply:1.0"	Container="Container"
-  			Default="false"		Autostart="false"	KeepAliveTime="5" />
+  			Default="false"		Autostart="false"	KeepAliveTime="5"  ImplLang="cpp" />
 
   <_ Name="DEMANDER"	Code="acsexmplPS"	Type="IDL:alma/PS/PowerSupply:1.0"	Container="OnDemandContainer"
-  			Default="false"		Autostart="false" />
+  			Default="false"		Autostart="false"  ImplLang="cpp" />
 
 </Components>
 

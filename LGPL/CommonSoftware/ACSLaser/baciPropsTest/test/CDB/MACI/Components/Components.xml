@@ -15,10 +15,10 @@
 	<_ Name="AlarmService"
 	   Code="alma.alarmsystem.AlarmServiceImpl.AlarmServiceHelper"
 	   Type="IDL:alma/alarmsystem/AlarmService:1.0"
-	   Container="frodoContainer" />
+	   Container="frodoContainer"  ImplLang="java" />
         <_ Name="TEST_COMPONENT"
 	   Type="IDL:alma/alarmsystemPropTest/BaciPropTest:1.0"
 	   Code="baciTest" 
-	   Container="bilboContainer" />
+	   Container="bilboContainer"  ImplLang="cpp" />
 </Components>
 

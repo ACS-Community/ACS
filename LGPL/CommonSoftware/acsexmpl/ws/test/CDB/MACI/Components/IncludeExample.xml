@@ -6,14 +6,14 @@
      <_ Name="TestInclude_01"	    
         Code="acsexmplPowerSupplyImpl"	  
         Type="IDL:alma/PS/PowerSupply:1.0"			
-        Container="Container"/>
+        Container="Container" ImplLang="cpp" />
      <_ Name="TestInclude_02"      
         Code="acsexmplPowerSupplyImpl"        
         Type="IDL:alma/PS/PowerSupply:1.0"  
-        Container="bilboContainer" />
+        Container="bilboContainer"  ImplLang="cpp" />
      <_ Name="TestInclude_03"      
         Code="acsexmplPowerSupplyImpl"        
         Type="IDL:alma/PS/PowerSupply:1.0"  
-        Container="bilboContainer" />
+        Container="bilboContainer"  ImplLang="cpp" />
 </Components>
 

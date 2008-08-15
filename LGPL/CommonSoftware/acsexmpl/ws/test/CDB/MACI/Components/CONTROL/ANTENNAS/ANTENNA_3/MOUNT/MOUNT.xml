@@ -8,5 +8,5 @@
       Code="acsexmplMountImpl"	  
       Type="IDL:alma/MOUNT_ACS/Mount:1.0"	
       Container="Container"
-/>
+ ImplLang="cpp" />
 

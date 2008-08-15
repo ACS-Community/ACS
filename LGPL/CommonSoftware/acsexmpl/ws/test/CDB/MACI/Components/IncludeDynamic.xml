@@ -6,10 +6,10 @@
      <_ Name="*"	    
         Code="acsexmplPsDynamic_1"	  
         Type="IDL:alma/PsDynamic_1:1.0"			
-        Container="Container"/>
+        Container="Container" ImplLang="cpp" />
      <_ Name="*"      
         Code="acsexmplPsDynamic_2"        
         Type="IDL:alma/PsDynamic_2:1.0"  
-        Container="bilboContainer" />
+        Container="bilboContainer"  ImplLang="cpp" />
 </Components>
 

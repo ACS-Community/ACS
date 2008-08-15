@@ -8,5 +8,5 @@
       Code="acsexmplLampImpl"
       Type="IDL:alma/acsexmplLamp/Lamp:1.0"
       Container="Container"
-/>
+ ImplLang="cpp" />
 

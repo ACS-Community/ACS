@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <!--
-$Id: COMP99.xml,v 1.1 2007/01/09 08:38:37 cparedes Exp $
+$Id: COMP99.xml,v 1.2 2008/08/15 09:28:48 cparedes Exp $
 Copyright (C) 2005
 Associated Universities, Inc. Washington DC, USA.
 
@@ -29,5 +29,5 @@ Correspondence concerning ALMA should be addressed as follows:
            Code="acstestcompcppTestCDBCompImpl" 
            Type="IDL:alma/TESTCDBCOMP_ACS/TestCDBComp:1.0" 
            Container="Container"
-	   Default="true"/>
+	   Default="true" ImplLang="cpp" />
 

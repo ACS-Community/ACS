@@ -6,6 +6,6 @@
       <_ Name="TEST_TASK"
       Code="characteristicTaskTestImpl"
       Type="IDL:alma/ACS/CharacteristicTask:1.0"
-      Container="Container"/>
+      Container="Container" ImplLang="cpp" />
 </Components>
 

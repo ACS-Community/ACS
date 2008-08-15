@@ -15,30 +15,30 @@
 	<_ Name="AlarmService"
 	   Code="alma.alarmsystem.AlarmServiceImpl.AlarmServiceHelper"
 	   Type="IDL:alma/alarmsystem/AlarmService:1.0"
-	   Container="frodoContainer" />
+	   Container="frodoContainer"  ImplLang="java" />
 	<_ Name="ALARM_SOURCE_A"
 	   Type="IDL:alma/alarmsystem/TestAlarmSource:1.0"
 	   Code="alma.alarmsystem.TestAlarmSourceImpl.TestAlarmSourceHelper"
-	   Container="frodoContainer" />
+	   Container="frodoContainer"  ImplLang="java" />
 	<_ Name="ALARM_SOURCE_B"
 	   Type="IDL:alma/alarmsystem/TestAlarmSource:1.0"
 	   Code="alma.alarmsystem.TestAlarmSourceImpl.TestAlarmSourceHelper"
-	   Container="frodoContainer" />
+	   Container="frodoContainer"  ImplLang="java" />
 	<_ Name="ALARM_SOURCE_PS"
 	   Type="IDL:alma/alarmsystemdemo/PS:1.0"
 	   Code="alma.alarmsystemdemo.PSImpl.PSHelper" 
-	   Container="frodoContainer" />
+	   Container="frodoContainer"  ImplLang="java" />
 	<_ Name="ALARM_SOURCE_MOUNT"
 	   Type="IDL:alma/alarmsystemdemo/Mount:1.0"
 	   Code="alma.alarmsystemdemo.MountImpl.MountHelper" 
-	   Container="frodoContainer" />
+	   Container="frodoContainer"  ImplLang="java" />
   <_ Name="ALARM_SOURCE_ANTENNA"
 	   Type="IDL:alma/alarmsystemdemo/Antenna:1.0"
 	   Code="alma.alarmsystemdemo.AntennaImpl.AntennaHelper" 
-	   Container="frodoContainer" />
+	   Container="frodoContainer"  ImplLang="java" />
   <_ Name="ALARM_SOURCE_MOUNTCPP"
 	   Type="IDL:alma/alarmsystemdemo/Mount:1.0"
 	   Code="alsysMountImpl" 
-	   Container="bilboContainer" />
+	   Container="bilboContainer"  ImplLang="cpp" />
 </Components>
 

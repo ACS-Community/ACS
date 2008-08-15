@@ -7,10 +7,10 @@
       <_ Name="MOUNT/LAMP"
          Code="acsexmplMountImpl"	
          Type="IDL:alma/MOUNT_ACS/Mount:1.0"
-         Container="Container"/>
+         Container="Container" ImplLang="cpp" />
       <_ Name="POWER_SUPPLY"	    
          Code="acsexmplPowerSupplyImpl"	  
          Type="IDL:alma/PS/PowerSupply:1.0"
-         Container="Container" />
+         Container="Container"  ImplLang="cpp" />
 </Components>
 

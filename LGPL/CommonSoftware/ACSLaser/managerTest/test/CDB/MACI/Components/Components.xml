@@ -15,6 +15,6 @@
 	<_ Name="AlarmService"
 	   Code="alma.alarmsystem.AlarmServiceImpl.AlarmServiceHelper"
 	   Type="IDL:alma/alarmsystem/AlarmService:1.0"
-	   Container="frodoContainer" />
+	   Container="frodoContainer"  ImplLang="java" />
 </Components>
 
