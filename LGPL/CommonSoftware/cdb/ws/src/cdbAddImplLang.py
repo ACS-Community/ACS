@@ -26,9 +26,43 @@ class Xml2Container(object):
 	ParserStatus = Parser.Parse(open(filename).read(),1)
 	return self.lang
 
+class Xml2Component(object):
+
+    def StartElement(self, name, attributes):
+	if attributes.has_key('Container') and not attributes.has_key('ImplLang'):
+	    code = attributes['Code']
+	    if code.find("alma.")==0:
+            	lang = "java"
+            elif code.find('.') > 0 :
+                lang = "py"
+            else:
+                lang = "cpp"
+	    self.lang = None
+	    self.isModified = True
+    	    lastidx = self.filestr.find("/>",self.Parser.ErrorByteIndex+self.offset) 
+	    if lastidx == -1:
+		lastidx = self.filestr.find(">",self.Parser.ErrorByteIndex+self.offset) 
+        	if lastidx == -1:
+		    sys.stderr.write("ERROR: '>' and /> not found?? \n")
+
+    	    self.filestr = self.filestr[:lastidx] + " ImplLang=\""+lang+"\" " +self.filestr[lastidx:]
+	    self.offset += len(" ImplLang=\""+lang+"\" ")
+	    #print "Component", attributes['Name']," ", self.filestr[self.Parser.ErrorByteIndex:self.Parser.ErrorByteIndex+20]
+	 
+    def Parse(self, filename):
+	self.Parser = expat.ParserCreate()
+	self.Parser.StartElementHandler = self.StartElement
+	self.offset = 0
+	self.isModified = False
+	self.filestr = open(filename).read()
+	ParserStatus = self.Parser.Parse(open(filename).read(),1)
+	return  self.filestr
+
 verbose = False
 execute = True
 backup = False
+containers = False
+components = False
 
 def haveImplLang(rootContainers, filename):
 
@@ -74,12 +108,12 @@ def addImplLang(lang, rootContainers, filename):
         sys.stderr.write("ERROR: '>' not found in "+rootContainers+"/"+filename+"\n")
         return
 
-    filestr = filestr[idx:lastidx] + "\n ImplLang=\""+lang+"\" " +filestr[lastidx:]
+    filestr = filestr[:lastidx] + "\n ImplLang=\""+lang+"\" " +filestr[lastidx:]
 
     #write filestr to file
     if verbose:
     	print "---------------------------------------------------"
-	print "Writing the file:"
+	print "Modified file:"+rootContainers+"/"+filename
     	print "---------------------------------------------------"
     	print filestr
     	print "---------------------------------------------------"
@@ -106,11 +140,14 @@ def usage():
     print "   -n	it doesn't execute the changes, it is used along with -v to just print"
     print "   -b	it creates backup for the files"
     print "   -h	it creates backup for the files"
+    print "   --containers	it modified only containers"
+    print "   --components	it modified only components"
+    print "   -a	it modified component and containers"
 
 if __name__ == "__main__":
 
     try:
-        opts, args = getopt.getopt(sys.argv[1:], "vnbp:h", [])
+        opts, args = getopt.getopt(sys.argv[1:], "vnbp:ha", ["containers","components"])
     except getopt.GetoptError, err:
 	# print help information and exit:
 	print str(err) # will print something like "option -a not recognized"
@@ -127,19 +164,62 @@ if __name__ == "__main__":
             path = a
         elif o == "-n":
             execute = False
+        elif o == "-a":
+            containers = True
+	    components = True
+        elif o == "--containers":
+            containers = True
+        elif o == "--components":
+	    components = True
         elif o == "-b":
             backup = True
         else:
             assert False, "unhandled option"
 
-    maciPath = "/MACI/Containers"
+    maciContPath = "/MACI/Containers"
+    maciCompPath = "/MACI/Components"
 
     for root, dirs, files in os.walk(path):
-	
-	if root.endswith(maciPath):
+	if root.endswith(maciCompPath) and components:
+	    isCDBModified = False
 	    if verbose:
 	    	print "###################################"
-	    	print "[Main] a CDB found!:",root
+	    	print "[Main] a CDB/MACI/Components found!:",root
+	    	print "###################################"
+	    #we found a potential CDB Components xmls
+    	    for rootComp, dirsComp, filesComp in os.walk(root):
+	        for filename in filesComp:
+		    
+		    if filename.lower().endswith(".xml"):
+	    		#print "[Main] a Components xml found!:",rootComp+"/"+filename
+			#I assume xml files under MACI/Components components configuration
+    			parser = Xml2Component()
+			filestr = parser.Parse(rootComp+"/"+filename)
+			if parser.isModified:
+	    		    isCDBModified = True
+			    if verbose:
+			        print "---------------------------------------------------"
+			        print "Modified file:"+rootComp+"/"+filename
+			        print "---------------------------------------------------"
+			        print filestr
+			        print "---------------------------------------------------"
+			    if backup:
+			        shutil.copyfile(os.path.join(rootComp, filename),os.path.join(rootComp, filename+".bkp"))    
+			        if verbose:
+				    print "[addImplLang] Saving a backup copy in "+rootComp+"/"+filename+".bkp"
+
+			    if execute:
+			        os.remove(os.path.join(rootComp, filename))
+			        newfile = open(rootComp+"/"+filename, "w")
+			        newfile.write(filestr)
+			        newfile.close()
+	    if not isCDBModified and verbose:
+	        print "[Main] Nothing to do here."	
+	
+	if root.endswith(maciContPath) and containers:
+	    if verbose:
+	    	print "###################################"
+	    	print "[Main] a CDB/MACI/Containers found!:",root
 	    	print "###################################"
 	    #we found a potential CDB Containers xmls
     	    for rootCont, dirsCont, filesCont in os.walk(root):
@@ -149,8 +229,8 @@ if __name__ == "__main__":
 	    		#print "[Main] a Container xml found!:",rootCont+"/"+filename
 			#I assume xml files under MACI/Containers are Container configuration
 			if not haveImplLang(rootCont, filename):
-			    idx = rootCont.find(maciPath)
-			    contName = rootCont[idx+len(maciPath)+1:]
+			    idx = rootCont.find(maciContPath)
+			    contName = rootCont[idx+len(maciContPath)+1:]
 			    rootComp = root[:len(root)-10]+"Components"
 	    		    if verbose:
 			    	print "[Main] Container doesn't have ImplLang, searching for container="+contName+" in "+rootComp
