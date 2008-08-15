@@ -6,7 +6,7 @@
        Name="ARCHIVE_MONITORSTORE"
                              Code="alma.archive.monitorstream.MonitorStreamHelper"
                              Type="IDL:alma/monitorstream/MonitorStreamListener:1.0"
-                             Container="javaContainer"/>                   
+                             Container="javaContainer" ImplLang="java" />                   
  
 
 

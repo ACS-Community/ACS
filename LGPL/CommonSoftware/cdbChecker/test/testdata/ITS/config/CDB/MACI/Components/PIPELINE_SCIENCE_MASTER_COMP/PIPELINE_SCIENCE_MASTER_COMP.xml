@@ -6,7 +6,7 @@
        Name="PIPELINE_SCIENCE_MASTER_COMP"
           Code="alma.pipelinescience.components.SciPipeMasterHelper"
           Type="IDL:alma/pipelinescience/SciPipeMaster:1.0"
-          Container="javaContainer"/>
+          Container="javaContainer" ImplLang="java" />
  
 
 

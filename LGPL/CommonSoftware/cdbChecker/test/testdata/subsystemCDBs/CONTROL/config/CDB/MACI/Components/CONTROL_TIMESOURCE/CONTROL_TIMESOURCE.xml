@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <!--
-$Id: CONTROL_TIMESOURCE.xml,v 1.2 2006/11/20 05:40:15 cparedes Exp $
+$Id: CONTROL_TIMESOURCE.xml,v 1.3 2008/08/15 08:58:19 cparedes Exp $
 Copyright (C) 2005
 Associated Universities, Inc. Washington DC, USA.
 
@@ -28,5 +28,5 @@ Correspondence concerning ALMA should be addressed as follows:
            Name="CONTROL_TIMESOURCE"
            Code="MasterClockImpl"
            Type="IDL:alma/Control/TimeSource:1.0"
-           Container="CONTROL/Test/cppContainer"/>
+           Container="CONTROL/Test/cppContainer" ImplLang="cpp" />
 

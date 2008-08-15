@@ -7,7 +7,7 @@
       		Code="alma.archive.manager.ArchiveSubsystemMasterHelper" 
       		Type="IDL:alma/archive/ArchiveSubsystemMasterIF:1.0" 
       		Container="javaContainer"                             
-      		Default="true"/>
+      		Default="true" ImplLang="java" />
  
 
 

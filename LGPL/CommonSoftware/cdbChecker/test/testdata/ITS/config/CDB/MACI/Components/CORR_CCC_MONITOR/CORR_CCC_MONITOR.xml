@@ -8,5 +8,5 @@
        Code="CCC_Monitor"
        Type="IDL:alma/Correlator/CCC_Monitor:1.0"
        Container="CCC"
-/>
+ ImplLang="cpp" />
 

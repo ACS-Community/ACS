@@ -8,5 +8,5 @@
        Code="ReceivingDataManager"
        Type="IDL:alma/TelCalReceivedNC/ReceivingDataManager:1.0"
        Container="cppContainer"
-/>
+ ImplLang="cpp" />
 

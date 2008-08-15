@@ -3,4 +3,4 @@
        		Name="FRIDGE1"	     
 		Code="acsexmplFridgeImpl"	  
                 Type="IDL:alma/FRIDGE/FridgeControl:1.0"
- 		Container="bilboContainer"/>
+ 		Container="bilboContainer" ImplLang="cpp" />

@@ -8,5 +8,5 @@
        Code="ArrayTime"         
        Type="IDL:alma/Correlator/ArrayTime:1.0"         
        Container="CDPNode"
-/>
+ ImplLang="cpp" />
 

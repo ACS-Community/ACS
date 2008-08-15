@@ -8,4 +8,4 @@
        Code="CorrCanMngr"
        Type="IDL:alma/Correlator/Maintenance/CorrCanMngr:1.0"
        Container="CCC"
-/>
+ ImplLang="cpp" />

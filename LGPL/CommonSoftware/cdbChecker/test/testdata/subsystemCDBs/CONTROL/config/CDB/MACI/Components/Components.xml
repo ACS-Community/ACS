@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <!--
-$Id: Components.xml,v 1.2 2006/11/20 05:40:15 cparedes Exp $
+$Id: Components.xml,v 1.3 2008/08/15 08:58:19 cparedes Exp $
 Copyright (C) 2004, 2005
 Associated Universities, Inc. Washington DC, USA.
 
@@ -31,30 +31,30 @@ Correspondence concerning ALMA should be addressed as follows:
   <_ Name="*"   
      Code="alma.Control.arrayInterfaces.ArrayControllerHelper"
      Type="IDL:alma/Control/ArrayController:1.0"
-     Container="CONTROL/ACC/javaContainer"/>
+     Container="CONTROL/ACC/javaContainer" ImplLang="java" />
 <!-- The ArrayMonitor interface is a dynamic component. It is put -->
 <!-- in here as there is, at the moment, no other way to specify it -->
 <!-- using the CDB naming conventions -->
   <_ Name="*"   
      Code="alma.Control.arrayInterfaces.ArrayMonitorHelper"
      Type="IDL:alma/Control/ArrayMonitor:1.0"
-     Container="CONTROL/ACC/javaContainer"/>
+     Container="CONTROL/ACC/javaContainer" ImplLang="java" />
 <!-- Used to get unique identifiers from the archive -->
   <_ Name="ARCHIVE_IDENTIFIER"
      Code="alma.archive.helpers.IdentifierHelper"
      Type="IDL:alma/xmlstore/Identifier:1.0"
      Container="CONTROL/ACC/javaContainer"
-     Default="true"/>
+     Default="true" ImplLang="java" />
 <!-- Used to get a reference to the operational archive (to retrieve SB's)  -->
   <_ Name="ARCHIVE_CONNECTION"
      Code="alma.archive.helpers.ArchiveConnectionHelper"
      Type="IDL:alma/xmlstore/ArchiveConnection:1.0"
-     Container="CONTROL/ACC/javaContainer"/>
+     Container="CONTROL/ACC/javaContainer" ImplLang="java" />
 <!-- All the monitor points use this interface to get into the archive -->
   <_ Name="ARCHIVE_MONITORSTORE"
      Code="alma.archive.monitorstream.MonitorStreamHelper"
      Type="IDL:alma/monitorstream/MonitorStreamListener:1.0"
-     Container="CONTROL/ACC/javaContainer"/>
+     Container="CONTROL/ACC/javaContainer" ImplLang="java" />
 <!-- This component is created by the observe function in the  -->
 <!-- ArrayController interface. Its unclear if we will run this -->
 <!-- component on the ACC but, as we are currently running this in -->
@@ -64,19 +64,19 @@ Correspondence concerning ALMA should be addressed as follows:
   <_ Name="*"   
      Code="alma.offline.DataCapturerImpl.DataCapturerHelper" 
      Type="IDL:alma/offline/DataCapturer:1.0" 
-     Container="CONTROL/ACC/javaContainer"/>
+     Container="CONTROL/ACC/javaContainer" ImplLang="java" />
 <!-- This component is used by the TimeSource interface -->
   <_ Name="ACS_CLOCK1"   
      Code="acsclock" 
      Type="IDL:alma/acstime/Clock:1.0" 
-     Container="CONTROL/Test/cppContainer"/>
+     Container="CONTROL/Test/cppContainer" ImplLang="cpp" />
 <!-- Correlator simulator. There is no need to start this if you have -->
 <!-- the real Correlator. To use it just start a python container called -->
 <!-- idlSimPyContainer -->
   <_ Name="CORR_OBSERVATION_CONTROL"
      Code="Acssim.Servants.Simulator"
      Type="IDL:alma/Correlator/ObservationControl:1.0"
-     Container="idlSimPyContainer"/>
+     Container="idlSimPyContainer" ImplLang="py" />
 <!-- Simulator for the TelCal Publisher. There is no need to start -->
 <!-- this if you have built and installed TelCal. To use it just start -->
 <!-- a python container called idlSimPyContainer. This interface is -->
@@ -84,7 +84,7 @@ Correspondence concerning ALMA should be addressed as follows:
   <_ Name="TELCAL_PUBLISHER"
      Code="Acssim.Servants.Simulator"
      Type="IDL:alma/TelCalPublisher/GetTelCalResults:1.0"
-     Container="idlSimPyContainer"/>
+     Container="idlSimPyContainer" ImplLang="py" />
 <!-- This component is used by the acseventBrowser. This browser is -->
 <!-- used to generate a simulated TelCalPublisherEventNC notification -->
 <!-- channel (which is used when testing DataCapture) -->
@@ -92,6 +92,6 @@ Correspondence concerning ALMA should be addressed as follows:
      Code="acsncImpl.ACSEventAdmin"
      Type="IDL:alma/acsnc/ACSEventAdmin:1.0"
      Container="idlSimPyContainer"
-     Default="true"/>
+     Default="true" ImplLang="py" />
 </Components>
 

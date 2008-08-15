@@ -8,4 +8,4 @@
 		Code="alma.exec.OperatorServerImpl.OperatorServerHelper"
 		Type="IDL:alma/exec/OperatorServer:1.0"
 		Container="frodoContainer"         
-/>
+ ImplLang="java" />

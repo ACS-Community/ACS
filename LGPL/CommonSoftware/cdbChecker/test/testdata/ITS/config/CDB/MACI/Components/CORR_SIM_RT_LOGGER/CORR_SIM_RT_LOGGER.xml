@@ -8,5 +8,5 @@
        Code="rtlog"
        Type="IDL:alma/ACS_RT/rtlog:1.0"
        Container="CorrSimRTLog"
-/>
+ ImplLang="cpp" />
 

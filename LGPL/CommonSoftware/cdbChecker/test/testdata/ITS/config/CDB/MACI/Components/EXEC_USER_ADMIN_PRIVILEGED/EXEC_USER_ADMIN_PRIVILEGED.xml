@@ -8,5 +8,5 @@
 		Code="alma.exec.UserAdminPrivilegedImpl.UserAdminPrivilegedHelper"
 		Type="IDL:alma/exec/UserAdminPrivileged:1.0"
 		Container="javaContainer"     
-/>
+ ImplLang="java" />
 

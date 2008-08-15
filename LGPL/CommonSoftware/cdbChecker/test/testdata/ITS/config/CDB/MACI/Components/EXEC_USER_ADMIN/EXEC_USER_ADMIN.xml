@@ -8,5 +8,5 @@
 		Code="alma.exec.UserAdminImpl.UserAdminHelper"
 		Type="IDL:alma/exec/UserAdmin:1.0"
 		Container="javaContainer"         
-/>
+ ImplLang="java" />
 

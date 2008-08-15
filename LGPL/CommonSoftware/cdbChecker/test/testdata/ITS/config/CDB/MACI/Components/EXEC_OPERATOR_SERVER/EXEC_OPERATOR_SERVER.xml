@@ -8,5 +8,5 @@
 		Code="alma.exec.OperatorServerImpl.OperatorServerHelper"
 		Type="IDL:alma/exec/OperatorServer:1.0"
 		Container="javaContainer"         
-/>
+ ImplLang="java" />
 

@@ -8,5 +8,5 @@
             Code="alma.scheduling.AlmaScheduling.SchedulingMasterComponentHelper"
             Type="IDL:alma/ACS/MasterComponent:1.0"
             Container="java"
-/>       
+ ImplLang="java" />       
 

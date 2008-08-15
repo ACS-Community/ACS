@@ -8,5 +8,5 @@
        Code="Node"         
        Type="IDL:alma/Correlator/Node:1.0"         
        Container="CDPNode"
-/>
+ ImplLang="cpp" />
 

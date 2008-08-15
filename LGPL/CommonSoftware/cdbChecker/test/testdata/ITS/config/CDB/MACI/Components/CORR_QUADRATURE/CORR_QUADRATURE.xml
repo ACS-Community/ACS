@@ -8,5 +8,5 @@
        Code="Quadrature"         
        Type="IDL:alma/Correlator/Maintenance/Quadrature:1.0"         
        Container="CCC"
-/>
+ ImplLang="cpp" />
 

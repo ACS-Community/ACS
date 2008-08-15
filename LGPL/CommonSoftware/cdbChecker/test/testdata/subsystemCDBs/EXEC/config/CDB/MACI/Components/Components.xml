@@ -9,12 +9,12 @@
 	<_ Name="ARCHIVE_CONNECTION"
 		Code="alma.archive.helpers.ArchiveConnectionHelper"
 		Type="IDL:alma/xmlstore/ArchiveConnection:1.0"
-		Container="frodoContainer"/>
+		Container="frodoContainer" ImplLang="java" />
 		
    <_ Name="SCHEDULING_MASTERSCHEDULER"
       Code="alma.scheduling.AlmaScheduling.MasterSchedulerIFHelper"
       Type="IDL:alma/scheduling/MasterSchedulerIF:1.0"
-      Container="frodoContainer"/>
+      Container="frodoContainer" ImplLang="java" />
 
 
                              

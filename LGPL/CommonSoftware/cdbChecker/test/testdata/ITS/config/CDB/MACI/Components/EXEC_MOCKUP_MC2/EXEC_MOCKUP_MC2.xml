@@ -9,5 +9,5 @@
       Type="IDL:alma/exec/ExecMasterComponent:1.0" 
       Container="javaContainer"       
 
-/>
+ ImplLang="java" />
 

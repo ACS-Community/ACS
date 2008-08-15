@@ -6,6 +6,6 @@
        Name="ARCHIVE_BULKSTORE"
                              Code="alma.archive.bulkstream.BulkStreamHelper"
                              Type="IDL:alma/bulkstream/BulkStreamListener:1.0"
-                             Container="javaContainer"/>      
+                             Container="javaContainer" ImplLang="java" />      
 
 

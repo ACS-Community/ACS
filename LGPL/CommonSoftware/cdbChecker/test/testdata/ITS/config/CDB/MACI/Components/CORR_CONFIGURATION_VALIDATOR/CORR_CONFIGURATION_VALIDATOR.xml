@@ -8,6 +8,6 @@
        Code="alma.Correlator.ConfigurationValidatorImpl.ConfigurationValidatorHelper"
        Type="IDL:alma/Correlator/ConfigurationValidator:1.0"
        Container="javaContainer"
-/>
+ ImplLang="java" />
 
 

@@ -8,5 +8,5 @@
        Code="alma.ACS.MasterComponentImpl.CorrelatorMasterComponentHelper"
        Type="IDL:alma/ACS/MasterComponent:1.0"
        Container="javaContainer"
-/>
+ ImplLang="java" />
 

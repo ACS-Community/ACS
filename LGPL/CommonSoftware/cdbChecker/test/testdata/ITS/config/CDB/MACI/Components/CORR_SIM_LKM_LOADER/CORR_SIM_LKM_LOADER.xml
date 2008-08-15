@@ -8,5 +8,5 @@
        Code="lkmLoaderImpl"	 
        Type="IDL:alma/CORRCommon/lkmLoader:1.0"         
        Container="CorrSimLKM"
-/>
+ ImplLang="cpp" />
 

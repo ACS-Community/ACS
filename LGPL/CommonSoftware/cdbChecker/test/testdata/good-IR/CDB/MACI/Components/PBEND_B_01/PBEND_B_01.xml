@@ -4,4 +4,4 @@
 		Code="acsexmplPowerSupplyImpl"
                 Type="IDL:alma/PS/PowerSupply:1.0"
                 Container="bilboContainer"
-/>
+ ImplLang="cpp" />

@@ -8,4 +8,4 @@
       Code="alma.ProjectRepositoryIF.LightweightProjectRepositoryImpl.LightweightProjectRepositoryHelper"
       Type="IDL:alma/ProjectRepositoryIF/LightweightProjectRepository:1.0"
       Container="frodoContainer"
-/>
+ ImplLang="java" />

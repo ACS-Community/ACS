@@ -4,4 +4,4 @@
 		Code="acsexmplPowerSupplyImpl"
                 Type="BadIdlType:1.0"
                 Container="bilboContainer"
-/>
+ ImplLang="cpp" />

@@ -8,5 +8,5 @@
        Code="Master"         
        Type="IDL:alma/Correlator/Master:1.0"         
        Container="CDPMaster"
-/>
+ ImplLang="cpp" />
 

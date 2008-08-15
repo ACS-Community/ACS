@@ -15,13 +15,16 @@
   <RWdoubleSeqPM default_timer_trig="1.0"
 		 description="readwritePM"
 		 units="deg"
-		 graph_min="0" graph_max="360" min_value="0" max_value="360" 
-		 value="0.0, 1.1, 2.2, 3.3, 4.4, 5.5, 6.6, 7.7, 8.8, 9.9, 10.10, 11.11" />
+		 graph_min="0" graph_max="360" min_value="0"
+		 max_value="360" 
+               archive_min_int="5.0"
+               archive_max_int="10.0" />
 
   <ROdoubleSeqPM default_timer_trig="1.0"
 		 description="readonlyPM"
 		 units="deg" 
-                 graph_min="0" graph_max="360"
-		 value="0.0, 1.1, 2.2, 3.3, 4.4, 5.5, 6.6, 7.7, 8.8, 9.9, 10.10, 11.11" />
+                 graph_min="0" graph_max="360" 
+               archive_min_int="5.0"
+               archive_max_int="10.0" />
 </AmsSeq>
 

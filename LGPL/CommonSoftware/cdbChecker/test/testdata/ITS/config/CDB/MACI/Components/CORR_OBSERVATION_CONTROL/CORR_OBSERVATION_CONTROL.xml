@@ -8,5 +8,5 @@
        Code="ObservationControl"
        Type="IDL:alma/Correlator/ObservationControl:1.0"
        Container="CCC"
-/>
+ ImplLang="cpp" />
 

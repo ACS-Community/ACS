@@ -8,5 +8,5 @@
             Code="alma.exec.ScheduleImpl.ScheduleHelper"
             Type="IDL:alma/exec/Schedule:1.0"
             Container="javaContainer"
-/>
+ ImplLang="java" />
 
