@@ -5,6 +5,6 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        Name="OFFLINE_DATACAP1" Code="alma.offline.DataCapturerImpl.DataCapturerHelper"
                              Type="IDL:alma/offline/DataCapturer:1.0"
-                             Container="javaContainer"/>
+                             Container="javaContainer" ImplLang="java" />
 
 

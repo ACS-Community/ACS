@@ -1,7 +1,5 @@
 1 -  --endorsed -- com.cosylab.cdb.DALRead MACI/Components/CONTROL/MASTER -d corbaloc::xxxxxxx:yyyy/CDB
 1 - ----------T--:--:--.--- INFO [acsStartJava] Starting Java/abeans application: com.cosylab.cdb.DALRead MACI/Components/CONTROL/MASTER -d corbaloc::xxxxxxx:yyyy/CDB
-1 - 
-1 - ----------T--:--:--.--- DEBUG [alma.acs.logging.config.LogConfig] Logging configuration has been initialized, but not from CDB settings.
 1 - ----------T--:--:--.--- ERROR [] CDB record does not exist (type=51, code=9) [ Curl='MACI/Components' ]
 1 - ----------T--:--:--.--- NOTICE [DALRead] Record does not exist 	CURL='MACI/Components'
 1 - alma.cdbErrType.wrappers.AcsJCDBRecordDoesNotExistEx [ Curl='MACI/Components' ]
@@ -9,13 +7,9 @@
 1 - 	at com.cosylab.cdb.DALRead.main(DALRead.java:xx)
 1 -  -- com.cosylab.cdb.jdal.ClearCache -d corbaloc::xxxxxxx:yyyy/CDB
 1 - ----------T--:--:--.--- INFO [acsStartJava] Starting Java/abeans application: com.cosylab.cdb.jdal.ClearCache -d corbaloc::xxxxxxx:yyyy/CDB
-1 - 
-1 - ----------T--:--:--.--- DEBUG [alma.acs.logging.config.LogConfig] Logging configuration has been initialized, but not from CDB settings.
 1 - ----------T--:--:--.--- INFO [ClearCache] clear_cache is invoked for all curls
 1 -  --endorsed -- com.cosylab.cdb.DALRead MACI/Components/CONTROL/MASTER -d corbaloc::xxxxxxx:yyyy/CDB
 1 - ----------T--:--:--.--- INFO [acsStartJava] Starting Java/abeans application: com.cosylab.cdb.DALRead MACI/Components/CONTROL/MASTER -d corbaloc::xxxxxxx:yyyy/CDB
-1 - 
-1 - ----------T--:--:--.--- DEBUG [alma.acs.logging.config.LogConfig] Logging configuration has been initialized, but not from CDB settings.
 1 - Env null
 1 - ________________________________________________________
 1 - Node Component
@@ -27,6 +21,7 @@
 1 -     Code="alma.Control.Master.MasterImplCreator"
 1 -     Type="IDL:alma/ControlCommon/Master:1.0"
 1 -     Container="CONTROL/ACC/javaContainer"
+1 -     ImplLang="java"
 1 -     Default="false"
 1 -     Autostart="false"
 1 -     KeepAliveTime="0"

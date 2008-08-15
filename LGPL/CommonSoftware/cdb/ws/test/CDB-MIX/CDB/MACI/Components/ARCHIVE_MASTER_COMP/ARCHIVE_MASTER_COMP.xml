@@ -9,5 +9,5 @@
        Type="IDL:alma/archive/ArchiveSubsystemMasterIF:1.0" 
        Container="javaContainer"                             
        Default="true"
-/>
+ ImplLang="java" />
 

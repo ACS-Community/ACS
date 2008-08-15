@@ -8,4 +8,4 @@
             Code="alma.exec.UserInfoImpl.UserInfoHelper"
             Type="IDL:alma/exec/UserInfo:1.0"
             Container="javaContainer"
-/>
+ ImplLang="java" />

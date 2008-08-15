@@ -8,5 +8,5 @@
        Code="alma.archive.helpers.ArchiveConnectionHelper"
        Type="IDL:alma/xmlstore/ArchiveConnection:1.0"
        Container="ARCHIVE/javaContainer"
-/>     
+ ImplLang="java" />     
 

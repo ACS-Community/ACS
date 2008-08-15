@@ -9,5 +9,5 @@
        Code="alma.Control.WeatherStationMCImpl.WeatherStationMCHelper"
        Type="IDL:alma/Control/WeatherStationMC:1.0"
        Container="CONTROL/ACC/javaContainer"
-/>
+ ImplLang="java" />
 

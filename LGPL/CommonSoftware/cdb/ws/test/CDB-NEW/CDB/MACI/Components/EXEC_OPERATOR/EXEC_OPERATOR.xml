@@ -8,4 +8,4 @@
             Code="alma.exec.OperatorImpl.OperatorHelper"
             Type="IDL:alma/exec/Operator:1.0"
             Container="javaContainer"
-/>
+ ImplLang="java" />

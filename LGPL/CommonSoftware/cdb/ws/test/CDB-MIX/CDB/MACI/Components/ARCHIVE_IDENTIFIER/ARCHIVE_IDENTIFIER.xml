@@ -9,5 +9,5 @@
        Type="IDL:alma/xmlstore/Identifier:1.0"
        Container="ARCHIVE/javaContainer"
        Default="true"
-/> 
+ ImplLang="java" /> 
 

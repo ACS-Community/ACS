@@ -7,6 +7,6 @@
        Code="bulkDataDistributerLib"
        Type="IDL:alma/bulkdata/BulkDataDistributer:1.0"
        Container="cppDebugContainer"
-/>
+ ImplLang="cpp" />
 
 

@@ -8,4 +8,4 @@
             Code="alma.exec.MailerImpl.MailerHelper"
             Type="IDL:alma/exec/Mailer:1.0"
             Container="javaContainer"
-/>
+ ImplLang="java" />

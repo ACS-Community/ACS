@@ -9,5 +9,6 @@
        Code="alma.Control.Master.MasterImplCreator"
        Type="IDL:alma/ControlCommon/Master:1.0"
        Container="CONTROL/ACC/javaContainer"
+       ImplLang="java"
 />
 

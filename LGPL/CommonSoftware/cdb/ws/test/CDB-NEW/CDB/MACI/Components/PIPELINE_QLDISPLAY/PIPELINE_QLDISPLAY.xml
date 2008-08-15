@@ -6,5 +6,5 @@
        Name="PIPELINE_QLDISPLAY"
                 Code="alma.pipelineql.components.QlDisplayHelper"
                 Type="IDL:alma/pipelineql/QlDisplay:1.0"
-                Container="javaContainer"/>
+                Container="javaContainer" ImplLang="java" />
 

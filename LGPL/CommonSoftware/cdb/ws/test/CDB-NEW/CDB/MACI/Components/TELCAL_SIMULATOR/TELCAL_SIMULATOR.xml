@@ -8,5 +8,5 @@
        Code="SharedSimulatorImpl"
        Type="IDL:alma/SHARED_SIMULATOR/SharedSimulator:1.0"
        Container="TELCAL/simulatorContainer"
-/>                   
+ ImplLang="cpp" />                   
 

@@ -8,4 +8,4 @@
             Code="execImpl.Calendar"
             Type="IDL:alma/_exec/Calendar:1.0"
             Container="javaContainer"
-/>
+ ImplLang="py" />

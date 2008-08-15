@@ -8,5 +8,5 @@
        Code="OffLineOperation"
        Type="IDL:alma/TelCalOffLine/OffLineOperation:1.0"
        Container="cppContainer"
-/>
+ ImplLang="cpp" />
 

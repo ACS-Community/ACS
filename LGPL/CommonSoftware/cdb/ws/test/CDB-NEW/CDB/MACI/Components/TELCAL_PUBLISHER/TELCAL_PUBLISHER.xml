@@ -8,5 +8,5 @@
        Code="alma.TelCalPublisher.GetTelCalResultsImpl.GetTelCalResultsHelper" 
        Type="IDL:alma/TelCalPublisher/GetTelCalResults:1.0" 
        Container="javaContainer"
-/>
+ ImplLang="java" />
 

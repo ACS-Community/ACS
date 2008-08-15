@@ -6,5 +6,5 @@
        Name="PIPELINE_QUICKLOOK_MASTER_COMP"
                 Code="alma.pipelineql.components.QlDisplayMasterHelper"
                 Type="IDL:alma/pipelineql/QlDisplayMaster:1.0"
-                Container="javaContainer"/>
+                Container="javaContainer" ImplLang="java" />
 

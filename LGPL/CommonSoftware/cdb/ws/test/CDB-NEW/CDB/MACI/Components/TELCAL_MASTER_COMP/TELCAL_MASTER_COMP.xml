@@ -8,5 +8,5 @@
        Code="alma.TelCalMaster.TelCalMasterImpl.TelCalMasterHelper" 
        Type="IDL:alma/ACS/MasterComponent:1.0" 
        Container="javaTelCalContainer" 
-/>
+ ImplLang="java" />
 

@@ -7,6 +7,6 @@
        Code="archiveBulkSender"
        Type="IDL:alma/bulkdata/BulkDataSender:1.0"
        Container="cppContainer"
-/>
+ ImplLang="cpp" />
 
 

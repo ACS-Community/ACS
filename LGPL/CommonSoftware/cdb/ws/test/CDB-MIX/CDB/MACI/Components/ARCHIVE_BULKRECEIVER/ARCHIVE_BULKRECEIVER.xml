@@ -7,5 +7,5 @@
        Code="bulkReceiverLib"	
        Type="IDL:alma/bulkdata/BulkDataReceiver:1.0"
        Container="cppBulkContainer"
-/> 
+ ImplLang="cpp" /> 
 

@@ -8,4 +8,4 @@
             Code="alma.exec.AccessAuthImpl.AccessAuthHelper"
             Type="IDL:alma/exec/AccessAuth:1.0"
             Container="javaContainer"
-/>
+ ImplLang="java" />

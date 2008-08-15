@@ -7,5 +7,5 @@
        Code="monitorReceiverLib"	
        Type="IDL:alma/bulkdata/BulkDataReceiver:1.0"
        Container="cppContainer"
-/> 
+ ImplLang="cpp" /> 
 
