@@ -31,9 +31,9 @@ FAQ FAQHierarchicalComponentsAndCDBStructure in the ACS Wiki.</xs:documentation>
         <xs:attribute name="Code" type="xs:string" use="required"/>
         <xs:attribute name="Type" type="xs:string" use="required"/>
         <xs:attribute name="Container" type="xs:string" use="required"/>
-        <xs:attribute name="ImplLang" use="optional">
+        <xs:attribute name="ImplLang" use="required">
             <xs:annotation>
-                <xs:documentation>The programming language the component is implemented in. Introduced with ACS 6.0.3 and declared optional only in order to be backward compatible. @Todo: make required with ACS 7.0. </xs:documentation>
+                <xs:documentation>The programming language the component is implemented in.</xs:documentation>
             </xs:annotation>
             <xs:simpleType>
                 <xs:restriction base="xs:string">
@@ -60,9 +60,9 @@ FAQ FAQHierarchicalComponentsAndCDBStructure in the ACS Wiki.</xs:documentation>
             <xs:attribute name="Code" type="xs:string" use="required"/>
             <xs:attribute name="Type" type="xs:string" use="required"/>
             <xs:attribute name="Container" type="xs:string" use="required"/>
-            <xs:attribute name="ImplLang" use="optional">
+            <xs:attribute name="ImplLang" use="required">
                 <xs:annotation>
-                    <xs:documentation>The programming language the component is implemented in. Introduced with ACS 6.0.3 and declared optional only in order to be backward compatible. @Todo: make required with ACS 7.0. </xs:documentation>
+                    <xs:documentation>The programming language the component is implemented in.</xs:documentation>
                 </xs:annotation>
                 <xs:simpleType>
                     <xs:restriction base="xs:string">

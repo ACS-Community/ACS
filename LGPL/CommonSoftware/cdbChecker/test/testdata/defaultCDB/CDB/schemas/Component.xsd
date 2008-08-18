@@ -39,12 +39,12 @@ FAQHierarchicalComponentsAndCDBStructure in the ACS Wiki.</xs:documentation>
         </xs:attribute>
         <xs:attribute name="Container" type="xs:string" use="required">
             <xs:annotation>
-                <xs:documentation>This is the name of the Container where the component will be instantiated uo request.</xs:documentation>
+                <xs:documentation>This is the name of the Container where the component will be instantiated on request.</xs:documentation>
             </xs:annotation>
         </xs:attribute>
-        <xs:attribute name="ImplLang" use="optional">
+        <xs:attribute name="ImplLang" use="required">
             <xs:annotation>
-                <xs:documentation>The programming language the component is implemented in. Introduced with ACS 6.0.3 and declared optional only in order to be backward compatible. @Todo: make required with ACS 7.0. </xs:documentation>
+                <xs:documentation>The programming language the component is implemented in.</xs:documentation>
             </xs:annotation>
             <xs:simpleType>
                 <xs:restriction base="xs:string">
