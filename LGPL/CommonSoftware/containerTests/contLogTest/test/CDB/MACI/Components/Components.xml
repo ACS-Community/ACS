@@ -5,21 +5,21 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
       <_ Name="TESTLOG1"    Code="alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompHelper"
 		             		Type="IDL:alma/contLogTest/TestLogLevelsComp:1.0"
-                            Container="myDefaultJavaTestContainer"/>
+                            Container="myDefaultJavaTestContainer" ImplLang="java" />
       <_ Name="TESTLOG2"    Code="alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompHelper"
 		             		Type="IDL:alma/contLogTest/TestLogLevelsComp:1.0"
-                            Container="frodoContainer"/>
+                            Container="frodoContainer" ImplLang="java" />
       <_ Name="TESTLOG3"    Code="contLogTestImpl"
 		             		Type="IDL:alma/contLogTest/TestLogLevelsComp:1.0"
-                            Container="myDefaultCppTestContainer"/>
+                            Container="myDefaultCppTestContainer" ImplLang="cpp" />
       <_ Name="TESTLOG4"    Code="contLogTestImpl"
 		             		Type="IDL:alma/contLogTest/TestLogLevelsComp:1.0"
                             Container="bilboContainer"
-                            />
+                             ImplLang="cpp" />
       <_ Name="TESTLOG5" Code="pyContLogTest.TestLogLevelsComp" 
                                         Type="IDL:alma/contLogTest/TestLogLevelsComp:1.0"
-                            Container="myDefaultPyTestContainer" />
+                            Container="myDefaultPyTestContainer"  ImplLang="py" />
       <_ Name="TESTLOG6" Code="pyContLogTest.TestLogLevelsComp"
                                         Type="IDL:alma/contLogTest/TestLogLevelsComp:1.0"
-                            Container="aragornContainer" />
+                            Container="aragornContainer"  ImplLang="py" />
 </Components>
