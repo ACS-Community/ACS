@@ -51,7 +51,7 @@ public class TypelessPropertyImpl
 	/**
 	 * Property resolution (bitmask).
 	 */
-	protected int resolution;
+	protected long resolution;
 
 	/**
 	 * Constructor.
@@ -83,7 +83,7 @@ public class TypelessPropertyImpl
 			characteristic = "units";
 			units = characteristicModelImpl.getString(characteristic);
 			characteristic = "resolution";
-			resolution = characteristicModelImpl.getInteger(characteristic);
+			resolution = characteristicModelImpl.getLong(characteristic);
 		}
 		catch (Throwable t)
 		{
@@ -118,7 +118,7 @@ public class TypelessPropertyImpl
 	/**
 	 * @see alma.ACS.TypelessPropertyOperations#resolution()
 	 */
-	public int resolution() {
+	public long resolution() {
 		return resolution;
 	}
 
