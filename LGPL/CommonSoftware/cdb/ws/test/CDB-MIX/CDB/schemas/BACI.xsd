@@ -86,7 +86,7 @@ The default it is false/0.</xs:documentation>
 						<xs:documentation>A string representing the units (normally base SI units or combinations of SI units) of the quantity represented by the property. </xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
-				<xs:attribute name="resolution" type="xs:int" use="optional" default="65535">
+				<xs:attribute name="resolution" type="xs:unsignedLong" use="optional" default="65535">
 					<xs:annotation>
 						<xs:documentation>Bit pattern representing the significant bits in the property's value.
 For example a long is represented by 32 bits, but a physical device 

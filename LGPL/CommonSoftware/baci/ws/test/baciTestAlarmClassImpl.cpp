@@ -1,7 +1,7 @@
 ////#include <baciTestAlarmClassImpl.h>
 #include <vltPort.h>
 
-static char *rcsId="@(#) $Id: baciTestAlarmClassImpl.cpp,v 1.3 2008/07/25 09:41:47 cparedes Exp $"; 
+static char *rcsId="@(#) $Id: baciTestAlarmClassImpl.cpp,v 1.4 2008/08/21 15:30:12 bjeram Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 
@@ -47,7 +47,7 @@ MyROPatternProperty::setValue(BACIProperty *property_p,
     baci::RWpattern::setValue(property_p, value_p, completion, descOut);
     
     /* Calls getDevIO()->writePattern() for associated roPatternProperty property */
-    int value = value_p->patternValue();
+    ACS::pattern value = value_p->patternValue();
     m_roPatternProperty_p->getDevIO()->write(value, timestamp);
 }
 

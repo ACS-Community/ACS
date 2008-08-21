@@ -86,10 +86,10 @@ The default it is false/0.</xs:documentation>
 						<xs:documentation>A string representing the units (normally base SI units or combinations of SI units) of the quantity represented by the property. </xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
-				<xs:attribute name="resolution" type="xs:int" use="optional" default="65535">
+				<xs:attribute name="resolution" type="xs:unsignedLong" use="optional" default="65535">
 					<xs:annotation>
 						<xs:documentation>Bit pattern representing the significant bits in the property's value.
-For example a long is represented by 32 bits, but a physical device 
+For example a long is represented by 64 bits, but a physical device 
 might deliver a value consisting only of 24 bits.
 In that case the resolution attribute has only the first 24 bits up.
 The remaining 8 bits shall be ignored by the application. 
@@ -336,23 +336,23 @@ of a pattern.</xs:documentation>
 	</xs:complexType>
 	<xs:complexType name="Ppattern">
 		<xs:annotation>
-			<xs:documentation>pattern stands for an unsigned long. The typedef pattern is used because this type will mostly be used to encode a pattern of status bits. The type pattern can be used also for raw binary data. </xs:documentation>
+			<xs:documentation>pattern stands for an unsigned long long. The typedef pattern is used because this type will mostly be used to encode a pattern of status bits. The type pattern can be used also for raw binary data. </xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="Ppattern_">
-				<xs:attribute name="default_value" type="xs:int" use="optional" default="0">
+				<xs:attribute name="default_value" type="xs:unsignedLong" use="optional" default="0">
 					<xs:annotation>
 						<xs:documentation>For a description of this characteristic, see documentation 
 of the Plong propery.</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
-				<xs:attribute name="min_step" type="xs:int" use="optional" default="0">
+				<xs:attribute name="min_step" type="xs:unsignedLong" use="optional" default="0">
 					<xs:annotation>
 						<xs:documentation>For a description of this characteristic, see documentation 
 of the Plong propery.</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
-				<xs:attribute name="archive_delta" type="xs:int" use="optional" default="0">
+				<xs:attribute name="archive_delta" type="xs:unsignedLong" use="optional" default="0">
 					<xs:annotation>
 						<xs:documentation>For a description of this characteristic, see documentation 
 of the Plong propery.
@@ -383,12 +383,12 @@ NOTE: This is normally not used, since the concept or "delta" does not really ma
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="Ppattern">
-				<xs:attribute name="alarm_mask" type="xs:int" use="optional" default="0">
+				<xs:attribute name="alarm_mask" type="xs:unsignedLong" use="optional" default="0">
 					<xs:annotation>
 						<xs:documentation>Bit mask: alarm can be sent just for bits that are set.</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
-				<xs:attribute name="alarm_trigger" type="xs:int" use="optional" default="0">
+				<xs:attribute name="alarm_trigger" type="xs:unsignedLong" use="optional" default="0">
 					<xs:annotation>
 						<xs:documentation>Conditions for alarm triggering: if value is 0 or 1.</xs:documentation>
 					</xs:annotation>

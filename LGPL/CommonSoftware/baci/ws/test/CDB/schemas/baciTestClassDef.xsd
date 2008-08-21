@@ -55,13 +55,13 @@
 								<xs:restriction base="baci:RWpattern">
 									<xs:attribute name="default_timer_trig" type="xs:double" default="5.0"/>
 									<xs:attribute name="min_timer_trig" type="xs:double" default="0.001"/>
-									<xs:attribute name="default_value" type="xs:int" default="5"/>
+									<xs:attribute name="default_value" type="xs:unsignedLong" default="5"/>
 									<xs:attribute name="bitDescription" type="xs:string" default="On, Remote, Sum Failure, External Interlock, DC Overcurrent, Phase Failure, Not Ready, State Inconsistent, Ramping"/>
 									<xs:attribute name="whenSet" type="xs:string" default="3, 2,  0,  0,  0,  0,  1,  1,  1"/>
 									<xs:attribute name="whenCleared" type="xs:string" default="2, 3, 3, 3, 3, 3, 3, 3, 3 "/>
 									<xs:attribute name="description" type="xs:string" default="Status"/>
 									<xs:attribute name="format" type="xs:string" default="%d"/>
-									<xs:attribute name="resolution" type="xs:int" default="3263"/>
+									<xs:attribute name="resolution" type="xs:unsignedLong" default="3263"/>
 									<xs:attribute name="units" type="xs:string" default="w/o"/>
 								</xs:restriction>
 							</xs:complexContent>
@@ -73,13 +73,13 @@
 								<xs:restriction base="baci:ROpattern">
 									<xs:attribute name="default_timer_trig" type="xs:double" default="5.0"/>
 									<xs:attribute name="min_timer_trig" type="xs:double" default="0.001"/>
-									<xs:attribute name="default_value" type="xs:int" default="5"/>
+									<xs:attribute name="default_value" type="xs:unsignedLong" default="5"/>
 									<xs:attribute name="bitDescription" type="xs:string" default="On, Remote, Sum Failure, External Interlock, DC Overcurrent, Phase Failure, Not Ready, State Inconsistent, Ramping"/>
 									<xs:attribute name="whenSet" type="xs:string" default="3, 2,  0,  0,  0,  0,  1,  1,  1"/>
 									<xs:attribute name="whenCleared" type="xs:string" default="2, 3, 3, 3, 3, 3, 3, 3, 3 "/>
 									<xs:attribute name="description" type="xs:string" default="Status"/>
 									<xs:attribute name="format" type="xs:string" default="%d"/>
-									<xs:attribute name="resolution" type="xs:int" default="3263"/>
+									<xs:attribute name="resolution" type="xs:unsignedLong" default="3263"/>
 									<xs:attribute name="units" type="xs:string" default="w/o"/>
 								</xs:restriction>
 							</xs:complexContent>

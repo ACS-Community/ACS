@@ -22,7 +22,7 @@
 									<xs:attribute name="description" type="xs:string" use="optional" default="-"/>
 									<xs:attribute name="format" type="xs:string" use="optional" default="%9.4f"/>
 									<xs:attribute name="units" type="xs:string" use="optional" default="A"/>
-									<xs:attribute name="resolution" type="xs:int" use="optional" default="65535"/>
+									<xs:attribute name="resolution" type="xs:unsignedLong" use="optional" default="65535"/>
 									<xs:attribute name="default_timer_trig" type="xs:double" use="optional" default="1.0"/>
 									<xs:attribute name="min_timer_trig" type="xs:double" use="optional" default="0.001"/>
 									<xs:attribute name="min_delta_trig" type="xs:double" use="optional" default="0.01526"/>
@@ -43,7 +43,7 @@
 									<xs:attribute name="description" type="xs:string" use="optional" default="-"/>
 									<xs:attribute name="format" type="xs:string" use="optional" default="%9.4f"/>
 									<xs:attribute name="units" type="xs:string" use="optional" default="A"/>
-									<xs:attribute name="resolution" type="xs:int" use="optional" default="65535"/>
+									<xs:attribute name="resolution" type="xs:unsignedLong" use="optional" default="65535"/>
 									<xs:attribute name="default_timer_trig" type="xs:double" use="optional" default="1.0"/>
 									<xs:attribute name="min_timer_trig" type="xs:double" use="optional" default="0.001"/>
 									<xs:attribute name="min_delta_trig" type="xs:double" use="optional" default="0.01526"/>
@@ -66,7 +66,7 @@
 									<xs:attribute name="description" type="xs:string" use="optional" default="Status"/>
 									<xs:attribute name="format" type="xs:string" use="optional" default="%d"/>
 									<xs:attribute name="units" type="xs:string" use="optional" default="w/o"/>
-									<xs:attribute name="resolution" type="xs:int" use="optional" default="3263"/>
+									<xs:attribute name="resolution" type="xs:unsignedLong" use="optional" default="3263"/>
 									<xs:attribute name="default_timer_trig" type="xs:double" use="optional" default="1.0"/>
 									<xs:attribute name="min_timer_trig" type="xs:double" use="optional" default="0.0001"/>
 									<xs:attribute name="default_value" type="xs:int" use="optional" default="0"/>

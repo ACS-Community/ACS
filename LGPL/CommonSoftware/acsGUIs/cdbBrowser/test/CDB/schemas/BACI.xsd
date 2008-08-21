@@ -39,7 +39,7 @@
             <xs:attribute name="description" type="xs:string" use="optional" default="-" />
             <xs:attribute name="format" type="xs:string" use="optional" default="-" />
             <xs:attribute name="units" type="xs:string" use="optional" default="-" />
-            <xs:attribute name="resolution" type="xs:int" use="optional" default="65535" />
+            <xs:attribute name="resolution" type="xs:unsignedLong" use="optional" default="65535" />
             <xs:attribute name="archive_priority" type="xs:int" use="optional" default="3" />
             <xs:attribute name="archive_min_int" type="xs:double" use="optional" default="0.0" />
             <xs:attribute name="archive_max_int" type="xs:double" use="optional" default="0.0" />

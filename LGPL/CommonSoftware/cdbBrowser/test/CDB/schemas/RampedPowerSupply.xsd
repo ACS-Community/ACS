@@ -25,7 +25,7 @@
         <xs:complexType>
           <xs:complexContent>
             <xs:restriction base="baci:ROpattern">
-              <xs:attribute name="resolution" type="xs:int" use="optional" default="511"/>
+              <xs:attribute name="resolution" type="xs:unsignedLong" use="optional" default="511"/>
               <xs:attribute name="bitDescription" type="xs:string" use="optional" default=
 				"On,Remote,Sum Failure,External Interlock,DC Overcurrent,Phase Failure,Not Ready,State Inconsistent,Ramping"/>
               <xs:attribute name="whenSet" type="xs:string" use="optional" default=
