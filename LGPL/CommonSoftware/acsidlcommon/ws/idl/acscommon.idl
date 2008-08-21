@@ -38,8 +38,8 @@ module ACS {
     /** TimeInterval - difference between two absolute time points. */	
     typedef long long TimeInterval;
 
-        /** A 32-bit long used as a pattern of 32 bits. */
-    typedef unsigned long pattern;
+        /** A 64-bit long used as a pattern of 64 bits. */
+    typedef unsigned long long pattern;
     
     /** A 64-bit signed integer */
     typedef long long longLong;
