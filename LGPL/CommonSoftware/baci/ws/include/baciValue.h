@@ -18,7 +18,7 @@
  *License along with this library; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: baciValue.h,v 1.109 2006/09/01 02:20:54 cparedes Exp $"
+ * "@(#) $Id: baciValue.h,v 1.110 2008/08/21 15:30:52 bjeram Exp $"
  *
  * who       when        what
  * --------  ----------  ----------------------------------------------
@@ -89,7 +89,7 @@ class baci_EXPORT BACIValue
 	/// 32-bit signed integer.
 	type_long=4,
 	/// A bit pattern.
-	type_pattern=5,
+	type_pattern=9, //5,
 	/// Sequence of double-s.
 	type_doubleSeq=6,
 	/// Sequencs of long-s.
@@ -186,7 +186,7 @@ class baci_EXPORT BACIValue
      * object's underlying value.
      * <br><hr>
      */
-    BACIValue(const BACIpattern &value);
+//TOBE deleted    BACIValue(const BACIpattern &value);
     /** Constructor BACIlongLong
      * @param value A constant reference to a value which will be this #BACIValue
      * object's underlying value.
@@ -251,6 +251,7 @@ class baci_EXPORT BACIValue
     /**
      * Constructor CORBA::Any.
      * Deprecated. Used to support CORBA enums.
+     * It is used by test in baci module. 
      */
     BACIValue(const BACIpattern &value, const CORBA::Any& any);
 
@@ -387,7 +388,7 @@ class baci_EXPORT BACIValue
      * @return BACIValue::type_pattern
      * <br><hr>
      */
-    static Type mapType(BACIpattern *v=0){  ACE_UNUSED_ARG(v); return type_pattern; }
+//TOBE deleted    static Type mapType(BACIpattern *v=0){  ACE_UNUSED_ARG(v); return type_pattern; }
     /**
      * Given a pointer to a char*, this static method returns a the #Type enumeration value.
      * @param v Pointer to a BACI data type
@@ -560,7 +561,7 @@ class baci_EXPORT BACIValue
      * @return pattern value of this object or 0 if it's not a pattern.
      * <br><hr>
      */
-    BACIpattern patternValue() const;
+    BACIpattern patternValue() const { return uLongLongValue(); }
 
     /**
      * Deprecated.
@@ -575,7 +576,7 @@ class baci_EXPORT BACIValue
      * @return pattern value of this object or 0 if it's not a pattern.
      * <br><hr>
      */
-    BACIpattern getValue(BACIpattern *v=0) const;
+//TOBE deleted    BACIpattern getValue(BACIpattern *v=0) const;
 
     /**
      * Deprecated.
@@ -738,7 +739,7 @@ class baci_EXPORT BACIValue
      * stored, the operation has no effect and false is returned.
      * <br><hr>
      */
-    bool patternValue(const BACIpattern &value);
+    bool patternValue(const BACIpattern &value){ return setValue(value); }
 
     /**
      * Mutator
@@ -747,6 +748,7 @@ class baci_EXPORT BACIValue
      * stored, the operation has no effect and false is returned.
      * <br><hr>
      */
+//??    bool enumValue(const int &value, const CORBA::Any &anyVal);
     bool enumValue(const BACIpattern &value, const CORBA::Any &anyVal);
 
     /**
@@ -756,7 +758,7 @@ class baci_EXPORT BACIValue
      * stored, the operation has no effect and false is returned.
      * <br><hr>
      */
-    bool setValue(const BACIpattern &value);
+//TOBE deleted    bool setValue(const BACIpattern &value);
 
     /**
      * Deprecated mutator.
@@ -765,7 +767,7 @@ class baci_EXPORT BACIValue
      * stored, the operation has no effect and false is returned.
      * <br><hr>
      */
-    bool setValue(const BACIpattern &value, const CORBA::Any &anyVal);
+//TOBE deleted    bool setValue(const BACIpattern &value, const CORBA::Any &anyVal);
 
     /**
      * Mutator

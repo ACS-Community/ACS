@@ -18,7 +18,7 @@
  *    License along with this library; if not, write to the Free Software
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: baciROpattern.cpp,v 1.112 2008/07/25 07:29:52 cparedes Exp $"
+ * "@(#) $Id: baciROpattern.cpp,v 1.113 2008/08/21 15:30:52 bjeram Exp $"
  *
  * who       when        what
  * --------  ----------  ----------------------------------------------
@@ -38,7 +38,7 @@
 namespace baci {
 
 // we need it in enumprop
-    template class MonitorEventDispatcher<unsigned int, ACS::CBpattern, POA_ACS::CBpattern>; 
+    template class MonitorEventDispatcher<ACS::pattern, ACS::CBpattern, POA_ACS::CBpattern>; 
 
     template class Monitor<ACS_MONITOR(pattern, ACS::pattern)>;
     template class ROdiscImpl<ACS_RO_T(pattern, ACS::pattern)>;
@@ -151,7 +151,7 @@ namespace baci {
 	    {
 	    CBDescIn descIn;
 	    descIn.id_tag = 0;
-	    this->monitorEventDispatcher_mp = new MonitorEventDispatcher<unsigned int, ACS::CBpattern, POA_ACS::CBpattern>(descIn, this->alarmTimerTrig_m, this->property_mp);
+	    this->monitorEventDispatcher_mp = new MonitorEventDispatcher<ACS::pattern, ACS::CBpattern, POA_ACS::CBpattern>(descIn, this->alarmTimerTrig_m, this->property_mp);
 	
 	    if (this->monitorEventDispatcher_mp==0)
 		ACE_THROW_RETURN(CORBA::NO_RESOURCES(), ACS::Subscription::_nil());

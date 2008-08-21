@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciValue.cpp,v 1.109 2006/09/01 02:20:54 cparedes Exp $"
+* "@(#) $Id: baciValue.cpp,v 1.110 2008/08/21 15:30:52 bjeram Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -36,7 +36,7 @@
 
 #include "logging.h"
 
-ACE_RCSID(baci, baciValue, "$Id: baciValue.cpp,v 1.109 2006/09/01 02:20:54 cparedes Exp $")
+ACE_RCSID(baci, baciValue, "$Id: baciValue.cpp,v 1.110 2008/08/21 15:30:52 bjeram Exp $")
 
  using namespace baci;
 
@@ -82,7 +82,7 @@ ACCESSOR_INLINE_TYPE(float, BACIfloat)
 ACCESSOR_INLINE_TYPE(long, BACIlong)
 ACCESSOR_INLINE_TYPE(longLong, BACIlongLong)
 ACCESSOR_INLINE_TYPE(uLongLong, BACIuLongLong)
-ACCESSOR_INLINE_TYPE(pattern, BACIpattern)
+//TOBE deleted ACCESSOR_INLINE_TYPE(pattern, BACIpattern)
 
 //ACCESSOR_PTR_TYPE(string, ACE_CString)
 ACCESSOR_PTR_TYPE(doubleSeq, BACIdoubleSeq)
@@ -135,7 +135,7 @@ MUTATOR_INLINE_TYPE(float, BACIfloat)
 MUTATOR_INLINE_TYPE(long, BACIlong)
 MUTATOR_INLINE_TYPE(longLong, BACIlongLong)
 MUTATOR_INLINE_TYPE(uLongLong, BACIuLongLong)
-MUTATOR_INLINE_TYPE(pattern, BACIpattern)
+//TOBE deleted MUTATOR_INLINE_TYPE(pattern, BACIpattern)
 
 //MUTATOR_PTR_TYPE(string, ACE_CString)
 MUTATOR_PTR_TYPE(doubleSeq, BACIdoubleSeq)
@@ -244,6 +244,7 @@ BACIValue::getValue(CORBA::Any *v) const
     return any_m;
 }
 
+//replaced BACIpatter with int
 bool 
 BACIValue::enumValue(const BACIpattern &value, const CORBA::Any &anyVal)
 {
@@ -258,7 +259,8 @@ BACIValue::enumValue(const BACIpattern &value, const CORBA::Any &anyVal)
 	return false;
 	}
 }
-
+//tobe deleted
+/*
 bool 
 BACIValue::setValue(const BACIpattern &value, const CORBA::Any &anyVal)
 {
@@ -273,6 +275,7 @@ BACIValue::setValue(const BACIpattern &value, const CORBA::Any &anyVal)
 	return false;
 	}
 }
+*/
 //------------------------------------------------------------------
 
 bool BACIValue::toString(ACE_CString &value, bool specifyType) const 
@@ -290,7 +293,7 @@ bool BACIValue::toString(ACE_CString &value, bool specifyType) const
       OUTPUT_INLINE_TYPE(long, BACIlong)
       OUTPUT_INLINE_TYPE(longLong, BACIlongLong)
       OUTPUT_INLINE_TYPE(uLongLong, BACIuLongLong)
-      OUTPUT_INLINE_TYPE(pattern, BACIpattern)
+//TBDeleted      OUTPUT_INLINE_TYPE(pattern, BACIpattern)
       OUTPUT_PTR_TYPE_WITH_BOUND(string, BACIstring)
       OUTPUT_PTR_SEQ_TYPE_WITH_BOUND(doubleSeq, BACIdoubleSeq)
       OUTPUT_PTR_SEQ_TYPE_WITH_BOUND(floatSeq, BACIfloatSeq)
@@ -370,7 +373,7 @@ bool BACIValue::fromString(const ACE_CString value, bool specifyType)
    PROCESS_INLINE_TYPE(long, BACIlong)
    PROCESS_INLINE_TYPE(longLong, BACIlongLong)
    PROCESS_INLINE_TYPE(uLongLong, BACIuLongLong)
-   PROCESS_INLINE_TYPE(pattern, BACIpattern)
+//TBDeleted   PROCESS_INLINE_TYPE(pattern, BACIpattern)
 
   return false;
 
@@ -411,9 +414,9 @@ BACIValue::getAny(CORBA::Any &any) const
 	case type_long:
 	    any <<= this->longValue();
 	    break;      
-	    
-	    // A bit pattern.
-	case type_pattern:
+
+	    // A bit former pattern.
+	case type_uLongLong /*type_pattern*/:
 	    //special case because this holds enums as well
 	    if (isEnum_m==true)
 		{
@@ -424,6 +427,7 @@ BACIValue::getAny(CORBA::Any &any) const
 		{
 		any <<= this->patternValue();
 		}
+
 	    break;   
 	    
 	    // Sequence of double-s.
@@ -441,11 +445,11 @@ BACIValue::getAny(CORBA::Any &any) const
 	    any <<= this->longLongValue();
 	    break; 
 	    
-	    // 64-bit unsigned integer.
+/*TBdeleted	    // 64-bit unsigned integer.
 	case type_uLongLong:
 	    any <<= this->uLongLongValue();
 	    break; 
-	    
+*/    
 	    // Sequence of string-s.
 	case type_stringSeq:
 	    any <<= this->stringSeqValue();
@@ -520,6 +524,9 @@ std::istream& operator>>(std::istream &is, ACE_CString &data)
 // REVISION HISTORY:
 //
 // $Log: baciValue.cpp,v $
+// Revision 1.110  2008/08/21 15:30:52  bjeram
+// after increasing size of pattern from 32 to 64 bits (COMP-2146) there is not anymore difference between unsingle long long and patter
+//
 // Revision 1.109  2006/09/01 02:20:54  cparedes
 // small change, NAMESPACE_BEGIN / NAMESPACE_END / NAMESPACE_USE macross to clean up a little the cpp code
 //

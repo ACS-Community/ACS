@@ -19,7 +19,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciTestUtils.h,v 1.102 2008/07/25 07:29:52 cparedes Exp $"
+* "@(#) $Id: baciTestUtils.h,v 1.103 2008/08/21 15:30:52 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -226,7 +226,7 @@ class baciTestCBpattern: public virtual POA_ACS::CBpattern
 	{
 	    if (count>0)
 		{
-	    ACS_SHORT_LOG((LM_INFO, "(%s::CBpattern::working) desc.id_tag: %u Value: %d TimeStamp: %s", 
+	    ACS_SHORT_LOG((LM_INFO, "(%s::CBpattern::working) desc.id_tag: %u Value: %llu TimeStamp: %s", 
 			   prop.c_str(), (unsigned)desc.id_tag, value, getStringifiedUTC(c.timeStamp).c_str()));
 		}
 	    count--;
@@ -243,7 +243,7 @@ class baciTestCBpattern: public virtual POA_ACS::CBpattern
 	{	    
 	    if (done_c > 0 )
 		{
-	    ACS_SHORT_LOG((LM_INFO, "(%s::CBpattern::done) desc.id_tag: %u Value: %d TimeStamp: %s", 
+	    ACS_SHORT_LOG((LM_INFO, "(%s::CBpattern::done) desc.id_tag: %u Value: %llu TimeStamp: %s", 
 			   prop.c_str(), (unsigned)desc.id_tag, value, getStringifiedUTC(c.timeStamp).c_str()));
 		}//if
 	    done_c--;

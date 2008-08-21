@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciCallbackDispatcher.cpp,v 1.104 2008/07/14 12:33:47 bjeram Exp $"
+* "@(#) $Id: baciCallbackDispatcher.cpp,v 1.105 2008/08/21 15:30:52 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -115,7 +115,7 @@ WORKING_CALLBACK(float)
 WORKING_CALLBACK(long)
 WORKING_CALLBACK(longLong)
 WORKING_CALLBACK(uLongLong)
-WORKING_CALLBACK(pattern)
+//tbdeleted WORKING_CALLBACK(pattern)
 WORKING_CALLBACK(string)
 WORKING_CALLBACK(doubleSeq)
 WORKING_CALLBACK(floatSeq)
@@ -208,7 +208,7 @@ bool baci::BACIComponent::finishCallback(int callbackID,
 DONE_CALLBACK(double)
 DONE_CALLBACK(float)
 DONE_CALLBACK(long)
-DONE_CALLBACK(pattern)
+//TBDeleted DONE_CALLBACK(pattern)
 DONE_CALLBACK(longLong)
 DONE_CALLBACK(uLongLong)
 DONE_CALLBACK(string)

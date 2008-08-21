@@ -16,7 +16,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciValue.i,v 1.106 2007/02/21 15:51:16 bjeram Exp $"
+* "@(#) $Id: baciValue.i,v 1.107 2008/08/21 15:30:52 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -106,7 +106,6 @@ BACIValue::BACIValue(const ACE_CString &value) :
   stringValue(value.c_str());
 }
 
-
 inline BACIValue::BACIValue(const BACIpattern &value, const CORBA::Any& any) :
     type_m(type_pattern),
     isEnum_m(true)
@@ -118,13 +117,12 @@ inline BACIValue::BACIValue(const BACIpattern &value, const CORBA::Any& any) :
 
   any_m = any;
 }
-
 CONSTRUCTOR(double, BACIdouble)
 CONSTRUCTOR(float, BACIfloat)
 CONSTRUCTOR(long, BACIlong)
 CONSTRUCTOR(longLong, BACIlongLong)
 CONSTRUCTOR(uLongLong, BACIuLongLong)
-CONSTRUCTOR(pattern, BACIpattern)
+//TOBE deleted CONSTRUCTOR(pattern, BACIpattern)
 //CONSTRUCTOR(string, BACIstring)
 
 inline BACIValue::BACIValue(void * value) :
@@ -224,7 +222,7 @@ CREATE_INLINE_TYPE(float, BACIfloat)
 CREATE_INLINE_TYPE(long, BACIlong)
 CREATE_INLINE_TYPE(longLong, BACIlongLong)
 CREATE_INLINE_TYPE(uLongLong, BACIuLongLong)
-CREATE_INLINE_TYPE(pattern, BACIpattern)
+//TOBE deleted CREATE_INLINE_TYPE(pattern, BACIpattern)
 
 CREATE_PTR_TYPE(doubleSeq, BACIdoubleSeq)
 CREATE_PTR_TYPE(floatSeq, BACIfloatSeq)
@@ -291,7 +289,7 @@ ASSIGN_INLINE_TYPE(float, BACIfloat)
 ASSIGN_INLINE_TYPE(long, BACIlong)
 ASSIGN_INLINE_TYPE(longLong, BACIlongLong)
 ASSIGN_INLINE_TYPE(uLongLong, BACIuLongLong)
-ASSIGN_INLINE_TYPE(pattern, BACIpattern)
+//TOBE deleted ASSIGN_INLINE_TYPE(pattern, BACIpattern)
 
 ASSIGN_PTR_TYPE(doubleSeq, BACIdoubleSeq)
 ASSIGN_PTR_TYPE(floatSeq, BACIfloatSeq)
@@ -359,7 +357,7 @@ COMPARE_EQUALS_INLINE_TYPE(float, BACIfloat)
 COMPARE_EQUALS_INLINE_TYPE(long, BACIlong)
 COMPARE_EQUALS_INLINE_TYPE(longLong, BACIlongLong)
 COMPARE_EQUALS_INLINE_TYPE(uLongLong, BACIuLongLong)
-COMPARE_EQUALS_INLINE_TYPE(pattern, BACIpattern)
+//TOBE deleted COMPARE_EQUALS_INLINE_TYPE(pattern, BACIpattern)
 
 COMPARE_EQUALS_SEQ_PTR_TYPE(floatSeq, BACIfloatSeq)
 COMPARE_EQUALS_SEQ_PTR_TYPE(longSeq, BACIlongSeq)
@@ -413,7 +411,7 @@ COMPARE_LESS_OR_EQUAL_INLINE_TYPE(float, BACIfloat)
 COMPARE_LESS_OR_EQUAL_INLINE_TYPE(long, BACIlong)
 COMPARE_LESS_OR_EQUAL_INLINE_TYPE(longLong, BACIlongLong)
 COMPARE_LESS_OR_EQUAL_INLINE_TYPE(uLongLong, BACIuLongLong)
-COMPARE_LESS_OR_EQUAL_INLINE_TYPE(pattern, BACIpattern)
+//TOBE deleted COMPARE_LESS_OR_EQUAL_INLINE_TYPE(pattern, BACIpattern)
 
     default:
       return false;
@@ -465,7 +463,7 @@ COMPARE_LESS_INLINE_TYPE(float, BACIfloat)
 COMPARE_LESS_INLINE_TYPE(long, BACIlong)
 COMPARE_LESS_INLINE_TYPE(longLong, BACIlongLong)
 COMPARE_LESS_INLINE_TYPE(uLongLong, BACIuLongLong)
-COMPARE_LESS_INLINE_TYPE(pattern, BACIpattern)
+//COMPARE_LESS_INLINE_TYPE(pattern, BACIpattern)
 
     default:
       return false;
@@ -522,11 +520,13 @@ inline bool BACIValue::lessThanDelta(const BACIValue &value, const BACIValue &de
 
   switch(type_m)
     {  
+/*TBdeleted
     case (type_pattern) : {
 
     return (*(BACIpattern*)inlineData_m == *(BACIpattern*)value.inlineData_m);
     break; 
     }
+*/
 /// User defined
 
 LESS_THAN_DELTA_NUM_INLINE_TYPE(double, BACIdouble)
@@ -563,7 +563,7 @@ inline bool BACIValue::noDelta() const
     {
 
 /// User defined
-NO_DELTA(pattern, 0)
+//TOBE deleted NO_DELTA(pattern, 0)
 NO_DELTA(double, 0.0)
 NO_DELTA(float, 0.0)
 NO_DELTA(long, 0)
@@ -627,7 +627,7 @@ ACCESSOR_INLINE_TYPE(float, BACIfloat)
 ACCESSOR_INLINE_TYPE(long, BACIlong)
 ACCESSOR_INLINE_TYPE(longLong, BACIlongLong)
 ACCESSOR_INLINE_TYPE(uLongLong, BACIuLongLong)
-ACCESSOR_INLINE_TYPE(pattern, BACIpattern)
+//ACCESSOR_INLINE_TYPE(pattern, BACIpattern)
 
 
 ACCESSOR_PTR_TYPE(doubleSeq, BACIdoubleSeq)
@@ -705,7 +705,7 @@ MUTATOR_INLINE_TYPE(float, BACIfloat)
 MUTATOR_INLINE_TYPE(long, BACIlong)
 MUTATOR_INLINE_TYPE(longLong, BACIlongLong)
 MUTATOR_INLINE_TYPE(uLongLong, BACIuLongLong)
-MUTATOR_INLINE_TYPE(pattern, BACIpattern)
+//TOBE deleted MUTATOR_INLINE_TYPE(pattern, BACIpattern)
 
 MUTATOR_PTR_TYPE(doubleSeq, BACIdoubleSeq)
 MUTATOR_PTR_TYPE(floatSeq, BACIfloatSeq)
