@@ -105,8 +105,8 @@ public class ROpatternImpl
 	/**
 	 * @see alma.ACS.PpatternOperations#default_value()
 	 */
-	public int default_value() {
-		return ((Integer)defaultValue).intValue();
+	public long default_value() {
+		return ((Long)defaultValue).longValue();
 	}
 
 	/**
@@ -159,10 +159,10 @@ public class ROpatternImpl
 		}
 	}
 
-	public int alarm_mask() {
+	public long alarm_mask() {
 		try
 		{
-			return characteristicModelImpl.getInteger("alarm_mask");
+			return characteristicModelImpl.getLong("alarm_mask");
 		}
 		catch (NoSuchCharacteristic ncs)
 		{
@@ -170,10 +170,10 @@ public class ROpatternImpl
 		}
 	}
 
-	public int alarm_trigger() {
+	public long alarm_trigger() {
 		try
 		{
-			return characteristicModelImpl.getInteger("alarm_trigger");
+			return characteristicModelImpl.getLong("alarm_trigger");
 		}
 		catch (NoSuchCharacteristic ncs)
 		{
@@ -184,10 +184,10 @@ public class ROpatternImpl
 	/**
 	 * @see alma.ACS.PpatternOperations#get_sync(alma.ACSErr.CompletionHolder)
 	 */
-	public int get_sync(CompletionHolder completionHolder) {
+	public long get_sync(CompletionHolder completionHolder) {
 		try
 		{
-			return ((Integer)getSync(completionHolder)).intValue();
+			return ((Long)getSync(completionHolder)).longValue();
 		}
 		catch (AcsJException acsex)
 		{
@@ -213,7 +213,7 @@ public class ROpatternImpl
 		int arg0,
 		patternSeqHolder arg1,
 		TimeSeqHolder arg2) {
-		arg1.value = (int[])getHistory(arg0, arg2);
+		arg1.value = (long[])getHistory(arg0, arg2);
 		return arg1.value.length;
 	}
 

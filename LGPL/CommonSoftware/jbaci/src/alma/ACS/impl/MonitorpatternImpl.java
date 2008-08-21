@@ -22,7 +22,7 @@
 package alma.ACS.impl;
 
 import org.omg.CORBA.BooleanHolder;
-import org.omg.CORBA.IntHolder;
+import org.omg.CORBA.LongHolder;
 
 import alma.ACS.CBDescIn;
 import alma.ACS.Callback;
@@ -52,16 +52,16 @@ public class MonitorpatternImpl
 	}
 
 	/**
-	 * @see alma.ACS.MonitorpatternOperations#get_value_trigger(org.omg.CORBA.IntHolder, org.omg.CORBA.BooleanHolder)
+	 * @see alma.ACS.MonitorpatternOperations#get_value_trigger(org.omg.CORBA.LongHolder, org.omg.CORBA.BooleanHolder)
 	 */
-	public void get_value_trigger(IntHolder deltaHolder, BooleanHolder enableHolder) {
+	public void get_value_trigger(LongHolder deltaHolder, BooleanHolder enableHolder) {
 		getValueTrigger(enableHolder);
 	}
 
 	/**
-	 * @see alma.ACS.MonitorpatternOperations#set_value_trigger(int, boolean)
+	 * @see alma.ACS.MonitorpatternOperations#set_value_trigger(long, boolean)
 	 */
-	public void set_value_trigger(int delta, boolean enable) {
+	public void set_value_trigger(long delta, boolean enable) {
 		// there is no delta for pattern property (every change is notified) 
 		setValueTrigger(null /*new Integer(delta)*/, enable);
 	}
