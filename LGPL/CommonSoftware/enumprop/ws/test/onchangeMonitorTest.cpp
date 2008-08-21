@@ -19,14 +19,14 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 *    MA 02111-1307  USA
 *
-* "@(#) $Id: onchangeMonitorTest.cpp,v 1.38 2005/09/21 14:04:49 vwang Exp $"
+* "@(#) $Id: onchangeMonitorTest.cpp,v 1.39 2008/08/21 15:44:48 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
 * bjeram    2002/11/14 created
 */
 
-static char *rcsId="@(#) $Id: onchangeMonitorTest.cpp,v 1.38 2005/09/21 14:04:49 vwang Exp $"; 
+static char *rcsId="@(#) $Id: onchangeMonitorTest.cpp,v 1.39 2008/08/21 15:44:48 bjeram Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <baciS.h>
@@ -54,7 +54,7 @@ public:
     throw (CORBA::SystemException)
   {
       if (c.code!=0)
-	  ACS_SHORT_LOG ((LM_DEBUG, "(%s::CBStates::working) Value: %s (%d) Completion type: %d code: %d", prop.c_str(), description[value].in(), value, c.type, c.code));
+	  ACS_SHORT_LOG ((LM_DEBUG, "(%s::CBStates::working) Value: %s (%llu) Completion type: %d code: %d", prop.c_str(), description[value].in(), value, c.type, c.code));
   }
 
   void done (	ACS::pattern value,
@@ -63,7 +63,7 @@ public:
 		 )
     throw (CORBA::SystemException)
   {
-    ACS_SHORT_LOG ((LM_DEBUG, "(%s::CBStates::done) Value: %s (%d)", prop.c_str(),description[value].in(), value));
+    ACS_SHORT_LOG ((LM_DEBUG, "(%s::CBStates::done) Value: %s (%llu)", prop.c_str(),description[value].in(), value));
   }
     
   CORBA::Boolean negotiate ( ACS::TimeInterval time_to_transmit,
@@ -143,7 +143,7 @@ int main(int argc, char* argv[])
 	desc.id_tag = 1;
 	ACS::Monitorpattern_var monitor = currentState->create_monitor(cbStatesObj.in(), desc);
 	monitor->set_timer_trigger(50000000); //=disable
-	monitor->set_value_trigger(10, true); //=set on change
+	monitor->set_value_trigger(1, true); //=set on change
 
 	/**
 	 * Enter main loop and stays there for a 

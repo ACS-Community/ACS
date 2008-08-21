@@ -19,7 +19,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 *    MA 02111-1307  USA
 *
-* "@(#) $Id: testRWClient.cpp,v 1.41 2006/09/26 12:10:49 bjeram Exp $"
+* "@(#) $Id: testRWClient.cpp,v 1.42 2008/08/21 15:44:48 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -30,7 +30,7 @@
 */
 
 
-static char *rcsId="@(#) $Id: testRWClient.cpp,v 1.41 2006/09/26 12:10:49 bjeram Exp $"; 
+static char *rcsId="@(#) $Id: testRWClient.cpp,v 1.42 2008/08/21 15:44:48 bjeram Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <baciCORBA.h>
@@ -67,7 +67,7 @@ public:
 		 )
     throw (CORBA::SystemException)
   {
-    ACS_SHORT_LOG ((LM_DEBUG, "(%s::CBStates::working) Value: %s (%d)", prop.c_str(), description[value].in(), value));
+    ACS_SHORT_LOG ((LM_DEBUG, "(%s::CBStates::working) Value: %s (%llu)", prop.c_str(), description[value].in(), value));
   }
 
   void done (	ACS::pattern value,
@@ -76,7 +76,7 @@ public:
 		 )
     throw (CORBA::SystemException)
   {
-    ACS_SHORT_LOG ((LM_DEBUG, "(%s::CBStates::done) Value: %s (%d)", prop.c_str(),description[value].in(), value));
+    ACS_SHORT_LOG ((LM_DEBUG, "(%s::CBStates::done) Value: %s (%llu)", prop.c_str(),description[value].in(), value));
   }
     
   CORBA::Boolean negotiate ( ACS::TimeInterval time_to_transmit,

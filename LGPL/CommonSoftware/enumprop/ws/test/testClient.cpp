@@ -19,7 +19,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 *    MA 02111-1307  USA
 *
-* "@(#) $Id: testClient.cpp,v 1.44 2006/09/26 12:10:49 bjeram Exp $"
+* "@(#) $Id: testClient.cpp,v 1.45 2008/08/21 15:44:48 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -30,7 +30,7 @@
 */
 
 
-static char *rcsId="@(#) $Id: testClient.cpp,v 1.44 2006/09/26 12:10:49 bjeram Exp $"; 
+static char *rcsId="@(#) $Id: testClient.cpp,v 1.45 2008/08/21 15:44:48 bjeram Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <baciCORBA.h>
@@ -247,9 +247,9 @@ int main(int argc, char* argv[])
 	
 	currentState->get_async(cbStatesObj.in(), descin);
 	
-	ACE_OS::sleep (1);  // Make sure the callback comes before doing other things
+	ACE_OS::sleep (2);  // Make sure the callback comes before doing other things
 	
-	ACE_Time_Value tv(30);
+	ACE_Time_Value tv(40);
 	BACI_CORBA::getORB()->run(tv);
 
 #ifndef MAKE_VXWORKS

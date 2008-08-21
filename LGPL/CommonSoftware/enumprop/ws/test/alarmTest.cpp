@@ -19,7 +19,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 *    MA 02111-1307  USA
 *
-* "@(#) $Id: alarmTest.cpp,v 1.39 2006/09/26 12:10:49 bjeram Exp $"
+* "@(#) $Id: alarmTest.cpp,v 1.40 2008/08/21 15:44:48 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -27,7 +27,7 @@
 * bjeram
 */
 
-static char *rcsId="@(#) $Id: alarmTest.cpp,v 1.39 2006/09/26 12:10:49 bjeram Exp $"; 
+static char *rcsId="@(#) $Id: alarmTest.cpp,v 1.40 2008/08/21 15:44:48 bjeram Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <baciCORBA.h>
@@ -56,7 +56,7 @@ public:
 		 ) 
     throw (CORBA::SystemException)
   {
-    ACS_SHORT_LOG ((LM_DEBUG, "(%s::AlarmCBStates::raised) Value: %s (%d). Completion (type=%d, code=%d)", prop.c_str(), description[value].in(), value, c.type, c.code));
+    ACS_SHORT_LOG ((LM_DEBUG, "(%s::AlarmCBStates::raised) Value: %s (%llu). Completion (type=%d, code=%d)", prop.c_str(), description[value].in(), value, c.type, c.code));
   }
 
   void alarm_cleared (	ACS::pattern value,
@@ -65,7 +65,7 @@ public:
 		 ) 
     throw (CORBA::SystemException)
   {
-    ACE_DEBUG ((LM_DEBUG, "(%s::AlarmCBStates::cleared) Value: %s (%d). Completion (type=%d, code=%d)", prop.c_str(),description[value].in(), value, c.type, c.code));
+    ACE_DEBUG ((LM_DEBUG, "(%s::AlarmCBStates::cleared) Value: %s (%llu). Completion (type=%d, code=%d)", prop.c_str(),description[value].in(), value, c.type, c.code));
   }
     
   CORBA::Boolean negotiate ( ACS::TimeInterval time_to_transmit,

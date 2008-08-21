@@ -19,14 +19,14 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 *    MA 02111-1307  USA
 *
-* "@(#) $Id: monitorTest.cpp,v 1.37 2005/09/21 14:04:24 vwang Exp $"
+* "@(#) $Id: monitorTest.cpp,v 1.38 2008/08/21 15:44:48 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
 * bgustafs 2001-04-19 created
 */
 
-static char *rcsId="@(#) $Id: monitorTest.cpp,v 1.37 2005/09/21 14:04:24 vwang Exp $"; 
+static char *rcsId="@(#) $Id: monitorTest.cpp,v 1.38 2008/08/21 15:44:48 bjeram Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <baciS.h>
@@ -55,7 +55,7 @@ public:
 		 ) 
     throw (CORBA::SystemException)
   {
-    ACE_DEBUG ((LM_DEBUG, "(%s::CBStates::working) Value: %s (%d)", prop.c_str(), description[value].in(), value));
+    ACE_DEBUG ((LM_DEBUG, "(%s::CBStates::working) Value: %s (%llu)", prop.c_str(), description[value].in(), value));
   }
 
   void done (	ACS::pattern value,
@@ -64,7 +64,7 @@ public:
 		 )
     throw (CORBA::SystemException)
   {
-    ACE_DEBUG ((LM_DEBUG, "(%s::CBStates::done) Value: %s (%d)", prop.c_str(),description[value].in(), value));
+    ACE_DEBUG ((LM_DEBUG, "(%s::CBStates::done) Value: %s (%llu)", prop.c_str(),description[value].in(), value));
   }
     
   CORBA::Boolean negotiate ( ACS::TimeInterval time_to_transmit,
