@@ -18,7 +18,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsutilAnyAide.h,v 1.9 2006/08/08 11:10:24 bjeram Exp $"
+* "@(#) $Id: acsutilAnyAide.h,v 1.10 2008/08/21 15:35:49 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -205,6 +205,12 @@ class AnyAide
      * Returns true if the any contains a pattern value.
      */
     static bool
+    isULong(const CORBA::Any&);
+
+    /**
+     * Returns true if the any contains a pattern value.
+     */
+    static bool
     isPattern(const CORBA::Any&);
 
     /**
@@ -271,8 +277,11 @@ class AnyAide
     
     /** ACS(CORBA) ulonglong IFR ID */
     static const std::string uLongLongType_m;
-    
-    /** ACS(CORBA) ACS::Pattern (aka unsigned long) IFR ID */
+
+    /** ACS(CORBA) ulong  IFR ID */
+    static const std::string uLongType_m;
+
+    /** ACS(CORBA) ACS::Pattern (aka unsigned long long) IFR ID */
     static const std::string patternType_m;
     
     /** ACS(CORBA) doubleSeq IFR ID */

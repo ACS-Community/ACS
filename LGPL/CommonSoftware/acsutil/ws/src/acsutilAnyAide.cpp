@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsutilAnyAide.cpp,v 1.8 2006/08/08 11:10:24 bjeram Exp $"
+* "@(#) $Id: acsutilAnyAide.cpp,v 1.9 2008/08/21 15:35:49 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -59,7 +59,7 @@
 #include "acsutilAnyAide.h"
 #include "acsutilORBHelper.h"
 
-static char *rcsId="@(#) $Id: acsutilAnyAide.cpp,v 1.8 2006/08/08 11:10:24 bjeram Exp $"; 
+static char *rcsId="@(#) $Id: acsutilAnyAide.cpp,v 1.9 2008/08/21 15:35:49 bjeram Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 const std::string AnyAide::nullType_m      = "null";
@@ -67,8 +67,9 @@ const std::string AnyAide::stringType_m    = "string";
 const std::string AnyAide::doubleType_m    = "double";
 const std::string AnyAide::floatType_m     = "float";
 const std::string AnyAide::longType_m      = "long";
+const std::string AnyAide::uLongType_m      = "long";
 const std::string AnyAide::longLongType_m  = "longlong";
-const std::string AnyAide::uLongLongType_m = "ulonglong";
+const std::string AnyAide::uLongLongType_m = "ulonglong-pattern";
 const std::string AnyAide::patternType_m   = "pattern";
 const std::string AnyAide::doubleSeqType_m = "IDL:alma/ACS/doubleSeq:1.0";
 const std::string AnyAide::longSeqType_m   = "IDL:alma/ACS/longSeq:1.0";
@@ -133,11 +134,19 @@ AnyAide::isULongLong(const CORBA::Any& any)
 }
 //----------------------------------------------------------------------
 bool
-AnyAide::isPattern(const CORBA::Any& any)
+AnyAide::isULong(const CORBA::Any& any)
 {
     //basically just delegate the call to another helper function
     //and include a check against the type.
     return (getRealType(any)==CORBA::tk_ulong);
+}
+//----------------------------------------------------------------------
+bool
+AnyAide::isPattern(const CORBA::Any& any)
+{
+    //basically just delegate the call to another helper function
+    //and include a check against the type.
+    return (getRealType(any)==CORBA::tk_ulonglong);
 }
 //----------------------------------------------------------------------
 bool
@@ -238,7 +247,7 @@ AnyAide::getId(const CORBA::Any& any)
 	}
     else if(kind==CORBA::tk_ulong)
 	{
-	return patternType_m;
+	return uLongType_m;
 	}
     else if(kind==CORBA::tk_longlong)
 	{

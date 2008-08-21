@@ -28,12 +28,12 @@
 1 - Extracted 'longlong' any value is: 2.
 1 - 
 1 - 'isULongLong' test passed!
-1 - The 'ulonglong' any has an ID of 'ulonglong'
+1 - The 'ulonglong' any has an ID of 'ulonglong-pattern'
 1 - Stringified any value is: 3
 1 - Extracted 'ulonglong' any value is: 3.
 1 - 
 1 - 'isPattern' test passed!
-1 - The 'pattern' any has an ID of 'pattern'
+1 - The 'pattern' any has an ID of 'ulonglong-pattern'
 1 - Stringified any value is: 4
 1 - Extracted 'pattern' any value is: 4.
 1 - 

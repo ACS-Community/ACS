@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: testAnyAide.cpp,v 1.7 2006/08/08 11:10:24 bjeram Exp $"
+* "@(#) $Id: testAnyAide.cpp,v 1.8 2008/08/21 15:35:49 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -58,7 +58,7 @@
 #include "acsutilAnyAide.h"
 #include <baciC.h>
 
-static char *rcsId="@(#) $Id: testAnyAide.cpp,v 1.7 2006/08/08 11:10:24 bjeram Exp $"; 
+static char *rcsId="@(#) $Id: testAnyAide.cpp,v 1.8 2008/08/21 15:35:49 bjeram Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 void 
@@ -212,7 +212,7 @@ int main(int argc, char *argv[])
     printf("%d.\n\n", tULongLong);
 
     IS_XYZ_TEST(patternAny, isPattern);
-    CORBA::ULong tULong = testAny<CORBA::ULong>("pattern", patternAny);
+    CORBA::ULongLong tULong = testAny<CORBA::ULongLong>("pattern", patternAny);
     printf("%d.\n\n", tULong);
 
     IS_XYZ_TEST(enumAny, isEnum);
