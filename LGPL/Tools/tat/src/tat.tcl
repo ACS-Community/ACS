@@ -1,7 +1,7 @@
 #************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: tat.tcl,v 1.108 2008/08/22 10:15:38 psivera Exp $"
+# "@(#) $Id: tat.tcl,v 1.109 2008/08/22 11:25:08 psivera Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -1528,6 +1528,11 @@ proc runTest { testList generate rep } {
 
 	if { $FLAG_TESTDRIVER == 0 } {
 
+	# ticket COMP-1835: first check that the test to be executed is availble in the ../bin directory
+	if {[file exists ../bin/$testid] != 1} {
+	    error "file $testid not present under ../bin; check that your module Makefile is correctly building the executable $testid"
+	}
+
 	# if VxWorks script, command is different from test script
 	set vxcmd 0
 	if { [regexp ".*.vw$" $testid] } {
@@ -1555,27 +1560,6 @@ proc runTest { testList generate rep } {
 	    set startTime [getclock]
 	    set waitTime 0
 
-# The following commented lines should be removed once the merge 
-# tat (VLT) tat(ALMA) is finished.
-#
-#	    while { [ expr {$waitTime < $time_out} ] } {
-#		if { [ catch { exec ps -p $testPid } ] } {
-#		    # ps -p <pid> returns 1 
-#		    # if the process <pid> does not exist
-#		    set testHasEnded 1
-#		    break
-#		} else {
-#		    # $testid still in the process list
-#		    set currentTime [getclock]
-#		    set waitTime [expr {$currentTime - $startTime}]
-#		}
-#	    }
-#	    if { $testHasEnded == 0 } {
-#		# test is still running after $time_out minutes:
-#		# kill it
-#		kill SIGKILL $testPid
-#		puts "TEST $testcmd KILLED."
-#	    }
 
             # Test if the "wait" command is available under this opsys.
             # On HP-UX 11.00, Solaris 2.8 and Linux it should be.
@@ -1710,6 +1694,12 @@ proc runTest { testList generate rep } {
 
                 set outFile $fileArray($actualProc)
 
+### IMPORTANT REMARK: the modification below for COMP-1835 makes tat non backward compatible; the case of the eccstestDriver was more relaxed and 
+### tests to be executed could be anywhere in the local test dir or ../bin or ACSROOT/INTROOT
+                # ticket COMP-1835: first check that the test to be executed is availble in the ../bin directory
+                if {[file exists ../bin/$cmdLine] != 1} {
+                        error "file $cmdLine not present under ../bin; check that your module Makefile is correctly building the executable $cmdLine"
+                }
                 if { $i != [expr {$nProc -1}] } {
                     printLogVerbose "Executing bg: $cmdLine (out in $outFile)"
                     set bpid($actualProc) [eval exec tatTestSpawner [runProg $cmdLine] >&$outFile &]
