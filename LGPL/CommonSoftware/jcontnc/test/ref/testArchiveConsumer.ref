@@ -2,7 +2,7 @@
 1 - ----------T--:--:--.--- INFO [ArchiveConsumerTest] receive method: b=no_device, c=no_param, d(type)=class java.lang.Double
 1 - ----------T--:--:--.--- INFO [ArchiveConsumerTest] receive method: b=no_device, c=no_param, d(type)=class java.lang.Float
 1 - ----------T--:--:--.--- INFO [ArchiveConsumerTest] receive method: b=no_device, c=no_param, d(type)=class java.lang.Integer
-1 - ----------T--:--:--.--- INFO [ArchiveConsumerTest] receive method: b=no_device, c=no_param, d(type)=class java.lang.Integer
+1 - ----------T--:--:--.--- INFO [ArchiveConsumerTest] receive method: b=no_device, c=no_param, d(type)=class java.lang.Long
 1 - ----------T--:--:--.--- INFO [ArchiveConsumerTest] receive method: b=no_device, c=no_param, d(type)=class java.lang.Long
 1 - ----------T--:--:--.--- INFO [ArchiveConsumerTest] receive method: b=no_device, c=no_param, d(type)=class java.lang.Long
 1 - ----------T--:--:--.--- INFO [ArchiveConsumerTest] receive method: b=no_device, c=no_param, d(type)=class java.lang.String
