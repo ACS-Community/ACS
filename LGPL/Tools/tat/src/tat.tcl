@@ -1,7 +1,7 @@
 #************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: tat.tcl,v 1.109 2008/08/22 11:25:08 psivera Exp $"
+# "@(#) $Id: tat.tcl,v 1.110 2008/08/22 11:27:01 psivera Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -1528,11 +1528,6 @@ proc runTest { testList generate rep } {
 
 	if { $FLAG_TESTDRIVER == 0 } {
 
-	# ticket COMP-1835: first check that the test to be executed is availble in the ../bin directory
-	if {[file exists ../bin/$testid] != 1} {
-	    error "file $testid not present under ../bin; check that your module Makefile is correctly building the executable $testid"
-	}
-
 	# if VxWorks script, command is different from test script
 	set vxcmd 0
 	if { [regexp ".*.vw$" $testid] } {
@@ -1694,12 +1689,6 @@ proc runTest { testList generate rep } {
 
                 set outFile $fileArray($actualProc)
 
-### IMPORTANT REMARK: the modification below for COMP-1835 makes tat non backward compatible; the case of the eccstestDriver was more relaxed and 
-### tests to be executed could be anywhere in the local test dir or ../bin or ACSROOT/INTROOT
-                # ticket COMP-1835: first check that the test to be executed is availble in the ../bin directory
-                if {[file exists ../bin/$cmdLine] != 1} {
-                        error "file $cmdLine not present under ../bin; check that your module Makefile is correctly building the executable $cmdLine"
-                }
                 if { $i != [expr {$nProc -1}] } {
                     printLogVerbose "Executing bg: $cmdLine (out in $outFile)"
                     set bpid($actualProc) [eval exec tatTestSpawner [runProg $cmdLine] >&$outFile &]
