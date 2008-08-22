@@ -1,7 +1,7 @@
 #************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: tat.tcl,v 1.107 2008/04/15 09:36:04 eallaert Exp $"
+# "@(#) $Id: tat.tcl,v 1.108 2008/08/22 10:15:38 psivera Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -41,6 +41,7 @@
 #                     splitted across multiple lines
 # psivera  2006-02-17 SPR ALMASW2003069: removed the "child process" message from the diff file
 # psivera  2006-04-07 SPR ALMASW2006015: implemented option -f NewTestList
+# psivera  2008-08-22 egrep exits only if return code is 2
 #
 #
 #************************************************************************
@@ -1884,7 +1885,9 @@ proc egrepFilter {fileName testName refName generate} {
 	if { [file size $refName] == 0 && $generate == 0 } {
             printLogVerbose "No grep filter applied: $refName is empty"
         } else {
-	    if { [catch {exec egrep -v -f $gv(grepFileBis) $fileName > $fileName.tmp}] } {
+	    set res  [catch {exec egrep -v -f $gv(grepFileBis) $fileName > $fileName.tmp}]
+	    if { $res == 2 } {
+		# changing the algorithm to check for rc = 2, the following check should not be needed any longer
 		# we want that tat exits with an error only if there is a syntax error in the grep file (if this is ever possible)
 		# we do not want an error while processing the output file with egrep, if the output file is empty because of a test failure
 		if { [file size $fileName] != 0 } {
@@ -1924,7 +1927,9 @@ proc egrepFilter {fileName testName refName generate} {
 	  if { [file size $refName] == 0 } {
               printLogVerbose "No grep filter applied: $refName is empty"
           } else {
-	      if { [catch {exec egrep -v -f  $tmpGrep$gv(grepFile).tmp $fileName > $fileName.tmp}] } {
+	      set res  [catch {exec egrep -v -f $tmpGrep$gv(grepFile).tmp $fileName > $fileName.tmp}]
+	      if { $res == 2 } {	
+		  # changing the algorithm to check for rc = 2, the following check should not be needed any longer
 		  # we want that tat exits with an error only if there is a syntax error in the grep file (if this is ever possible)
 		  # we do not want an error while processing the output file with egrep, if the output file is empty because of a test failure
 		  if { [file size $fileName] != 0 } {
@@ -1936,7 +1941,9 @@ proc egrepFilter {fileName testName refName generate} {
 	  }
 	# the ref file does not exist because I'm generating it for the first time
         } else {
-	  if { [catch {exec egrep -v -f  $tmpGrep$gv(grepFile).tmp $fileName > $fileName.tmp}] } {
+	  set res  [catch {exec egrep -v -f $tmpGrep$gv(grepFile).tmp $fileName > $fileName.tmp}]
+	  if { $res == 2 } {
+	      # changing the algorithm to check for rc = 2, the following check should not be needed any longer
 	      # we want that tat exits with an error only if there is a syntax error in the grep file (if this is ever possible)
 	      # we do not want an error while processing the output file with egrep, if the output file is empty because of a test failure
 	      if { [file size $fileName] != 0 } {
@@ -1954,7 +1961,9 @@ proc egrepFilter {fileName testName refName generate} {
 	  if { [file size $refName] == 0 } {
               printLogVerbose "No grep filter applied: $refName is empty"
           } else {
-	      if { [catch {exec egrep -v -f  $tmpGrep$gv(grepFile).tmp $fileName > $fileName.tmp}] } {
+	      set res  [catch {exec egrep -v -f $tmpGrep$gv(grepFile).tmp $fileName > $fileName.tmp}]
+	      if { $res == 2 } {
+	          # changing the algorithm to check for rc = 2, the following check should not be needed any longer
 		  # we want that tat exits with an error only if there is a syntax error in the grep file (if this is ever possible)
 		  # we do not want an error while processing the output file with egrep, if the output file is empty because of a test failure
 		  if { [file size $fileName] != 0 } {
@@ -2016,7 +2025,9 @@ proc egrepFilterx {fileName testName refName generate} {
 	  if { [file size $refName] == 0 } {
 	      printLogVerbose "No grep filter applied: $refName is empty"
 	  } else {
-              if { [catch {exec egrep -v -f $tmpGrep$gv(grepFile).tmp $fileName > $fileName.tmp}] } {
+	      set res  [catch {exec egrep -v -f $tmpGrep$gv(grepFile).tmp $fileName > $fileName.tmp}]
+	      if { $res == 2 } {
+	          # changing the algorithm to check for rc = 2, the following check should not be needed any longer
 	  	  # we want that tat exits with an error only if there is a syntax error in the grep file (if this is ever possible)
 		  # we do not want an error while processing the output file with egrep, if the output file is empty because of a test failure
 		  if { [file size $fileName] != 0 } {
@@ -2028,7 +2039,9 @@ proc egrepFilterx {fileName testName refName generate} {
 	  }
         # the ref file does not exist because I'm generating it for the first time
         } else {
-	  if { [catch {exec egrep -v -f  $tmpGrep$gv(grepFile).tmp $fileName > $fileName.tmp}] } {
+	  set res  [catch {exec egrep -v -f $tmpGrep$gv(grepFile).tmp $fileName > $fileName.tmp}]
+	  if { $res == 2 } {
+	      # changing the algorithm to check for rc = 2, the following check should not be needed any longer
               # we want that tat exits with an error only if there is a syntax error in the grep file (if this is ever possible)
               # we do not want an error while processing the output file with egrep, if the output file is empty because of a test failure
               if { [file size $fileName] != 0 } {
@@ -2048,7 +2061,9 @@ proc egrepFilterx {fileName testName refName generate} {
           if { [file size $refName] == 0 } {
               printLogVerbose "No grep filter applied: $refName is empty"
           } else {
-	    if { [catch {exec egrep -v -f  $tmpGrep$gv(grepFile).tmp $fileName > $fileName.tmp}] } {
+	    set res  [catch {exec egrep -v -f $tmpGrep$gv(grepFile).tmp $fileName > $fileName.tmp}]
+	    if { $res == 2 } {
+	      # changing the algorithm to check for rc = 2, the following check should not be needed any longer
 	      # we want that tat exits with an error only if there is a syntax error in the grep file (if this is ever possible)
    	      # we do not want an error while processing the output file with egrep, if the output file is empty because of a test failure
    	      if { [file size $fileName] != 0 } {
