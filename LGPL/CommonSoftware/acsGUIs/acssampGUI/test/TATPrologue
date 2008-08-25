@@ -1,0 +1,12 @@
+#!/bin/bash
+
+if [ ! -d $ACS_TMP ]
+then
+	mkdir $ACS_TMP
+fi
+
+export ACS_CDB=$PWD
+
+acsutilTATPrologue
+
+acsutilAwaitContainerStart -cpp Container

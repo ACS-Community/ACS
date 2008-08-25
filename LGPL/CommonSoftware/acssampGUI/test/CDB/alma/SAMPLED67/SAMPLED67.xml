@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<SampledComponent xmlns="urn:schemas-cosylab-com:SampledComponent:1.0"
+       xmlns:baci="urn:schemas-cosylab-com:BACI:1.0"
+	   xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+	<my_RWdouble description="my_RWdouble" />
+	<my_ROdouble description="my_ROdouble"/>
+	<my_RWstring description="my_RWstring"/>
+	<my_ROstring description="my_ROstring"/>
+	<my_RWfloat description="my_RWfloat"/>
+	<my_ROfloat description="my_ROfloat"/>
+	<my_RWlong description="my_RWlong"/>
+	<my_ROlong description="my_ROlong"/>
+	<my_RWlongLong description="my_RWlongLong"/>
+	<my_ROlongLong description="my_ROlongLong"/>
+
+</SampledComponent>

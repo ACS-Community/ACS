@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.5 2005/01/31 21:45:24 dfugate Exp $"
+# "@(#) $Id: Makefile,v 1.6 2008/08/25 14:32:24 rtobar Exp $"
 #
 # Makefile of ........
 #
@@ -66,7 +66,7 @@ lllll_OBJECTS   =
 #
 # Scripts (public and local)
 # ----------------------------
-SCRIPTS         =
+SCRIPTS         = sampTool
 SCRIPTS_L       =
 
 #
@@ -119,9 +119,9 @@ USER_IDL =
 #
 # Jarfiles and their directories
 #
-JARFILES = acssampGUI 
+JARFILES = acssampGUI samplingSystemUI
 acssampGUI_DIRS= alma
-acssampGUI_EXTRAS= 
+samplingSystemUI_DIRS=cl
 #
 # java sources in Jarfile on/off
 DEBUG= 

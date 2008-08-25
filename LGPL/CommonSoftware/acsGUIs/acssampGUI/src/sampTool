@@ -1,0 +1,3 @@
+#!/bin/bash
+acsStartJava cl.utfsm.samplingSystemUI.SampTool
+

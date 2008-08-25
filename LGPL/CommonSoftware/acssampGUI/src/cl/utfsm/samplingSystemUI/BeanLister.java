@@ -1,0 +1,87 @@
+package cl.utfsm.samplingSystemUI;
+
+import javax.swing.JLabel;
+
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+
+public class BeanLister extends SamplingWidget{
+
+	private static final long serialVersionUID = 1L;
+	private JLabel jLabel1 = null;
+	private JLabel jLabel2 = null;
+	private JLabel timeLabel = null;
+	private JLabel jLabel4 = null;
+	/**
+	 * This is the default constructor
+	 */
+	public BeanLister() {
+		super();
+		initialize();
+	}
+
+	/**
+	 * This method initializes this
+	 * 
+	 * @return void
+	 */
+	private void initialize() {
+		jLabel4 = new JLabel();
+		jLabel4.setText("JLabel");
+		jLabel4.setFont(new Font("Dialog", Font.PLAIN, 10));
+		jLabel4.setPreferredSize(new Dimension(75, 20));
+		timeLabel = new JLabel();
+		timeLabel.setText("JLabel");
+		timeLabel.setFont(new Font("Dialog", Font.PLAIN, 10));
+		timeLabel.setPreferredSize(new Dimension(125, 20));
+		jLabel2 = new JLabel();
+		jLabel2.setFont(new Font("Dialog", Font.PLAIN, 10));
+		jLabel2.setText("JLabel");
+		jLabel2.setPreferredSize(new Dimension(75, 20));
+		jLabel1 = new JLabel();
+		jLabel1.setFont(new Font("Dialog", Font.PLAIN, 10));
+		jLabel1.setText("JLabel");
+		jLabel1.setPreferredSize(new Dimension(50, 20));
+		this.setLayout(new GridBagLayout());
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.anchor = GridBagConstraints.WEST;
+		gbc.ipadx = 20;
+		gbc.weightx = 1;
+		this.add(jLabel1,gbc);
+		this.add(jLabel2,gbc);
+		this.add(timeLabel,gbc);
+		this.add(jLabel4,gbc);
+	}
+
+	public void updateValues(long time, double value) {
+		timeLabel.setText(Long.toString(time));
+		jLabel4.setText(Double.toString(value));
+	}
+	
+	public void setValues(String component, String property){
+		jLabel1.setText(component);
+		jLabel2.setText(property);
+		timeLabel.setText("0"); 
+		jLabel4.setText("0");
+	}
+
+	public void setComponentAvailable(boolean tmp, String reason) {
+		if( tmp == false ) {
+			jLabel1.setForeground(Color.RED);
+			jLabel2.setForeground(Color.RED);
+			timeLabel.setForeground(Color.RED);
+			timeLabel.setText("(" + reason + ")");
+			jLabel4.setForeground(Color.RED);
+			jLabel4.setText("");
+		}
+		else {
+			jLabel1.setForeground(Color.BLACK);
+			jLabel2.setForeground(Color.BLACK);
+			jLabel4.setForeground(Color.BLACK);
+			timeLabel.setForeground(Color.BLACK);
+		}	
+	}
+}

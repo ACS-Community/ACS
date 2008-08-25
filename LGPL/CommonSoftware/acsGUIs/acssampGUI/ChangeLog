@@ -1,1 +1,1067 @@
-"@(#) $Id: ChangeLog,v 1.1.1.1 2004/02/25 14:10:52 rcirami Exp $"
+2008-08-19 21:27  rtobar
+
+	* /src/cl/utfsm/samplingSystemUI/SampTool.java: Sampling Managers
+	  out of the component list...
+
+2008-08-19 19:14  javarias
+
+	* /src/cl/utfsm/samplingSystemUI/SamplingSystemGUI.java: Fixed a
+	  bug: Open a status file
+
+2008-08-19 19:08  javarias
+
+	* /test/CDB/MACI/Components/Components.xml, /test/CDB/alma/SAMP2,
+	  /test/CDB/alma/SAMP2/SAMP2.xml: Added a new Sampling Mmanager to
+	  CDB
+
+2008-08-19 19:00  javarias
+
+	* /src/cl/utfsm/samplingSystemUI/SampTool.java,
+	  /src/cl/utfsm/samplingSystemUI/SamplingSystemGUI.java: Replaced
+	  the manager selection dialog
+
+2008-08-19 17:42  rtobar
+
+	* /src/cl/utfsm/samplingSystemUI/SamplingSystemGUI.java,
+	  /src/cl/utfsm/samplingSystemUI/core/PropertySamp.java,
+	  /src/cl/utfsm/samplingSystemUI/core/SamplingManagerException.java,
+	  /src/cl/utfsm/samplingSystemUI/core/SamplingManagerUITool.java,
+	  /test/cl/utfsm/samplingSystemUITestCase/AcsInformationTest.java,
+	  /test/cl/utfsm/samplingSystemUITestCase/SamplingManagerTest.java,
+	  /test/cl/utfsm/samplingSystemUITestCase/ThreadCommunicatorTest.java:
+	  Deleting warnings! :D
+
+2008-08-19 17:35  rtobar
+
+	* /src/cl/utfsm/samplingSystemUI/SampTool.java,
+	  /src/cl/utfsm/samplingSystemUI/SamplingSystemGUI.java,
+	  /src/cl/utfsm/samplingSystemUI/core/SamplingManager.java: If
+	  selected manager is null or "", then use default
+
+2008-08-19 03:49  rtobar
+
+	* /test/cl/utfsm/samplingSystemUITestCase/ComponentsManagerTest.java,
+	  /test/cl/utfsm/samplingSystemUITestCase/SamplingManagerTest.java,
+	  /test/ref/samplingSystemUI.ref: Added new test for exception
+	  testing purposes.
+	  Updated reference
+
+2008-08-19 00:22  rtobar
+
+	* /src/cl/utfsm/samplingSystemUI/BeanMemoryWidget.java,
+	  /src/cl/utfsm/samplingSystemUI/core/NotificationChannelSuscription.java,
+	  /src/cl/utfsm/samplingSystemUI/core/PropertySamp.java,
+	  /src/cl/utfsm/samplingSystemUI/core/SamplingManagerUITool.java: A
+	  property can be sampled, suspended, and resumed :D
+
+2008-08-18 22:17  javarias
+
+	* /src/cl/utfsm/example/SampTool.java,
+	  /src/cl/utfsm/samplingSystemUI/DataPrinter.java: Fixed a bug
+
+2008-08-18 21:31  rtobar
+
+	* /src/cl/utfsm/samplingSystemUI/BeanGrouper.java: Improving
+	  BeanGrouper behaviour
+
+2008-08-18 21:01  rtobar
+
+	* /src/cl/utfsm/samplingSystemUI/BeanLister.java,
+	  /src/cl/utfsm/samplingSystemUI/DataPrinter.java,
+	  /src/cl/utfsm/samplingSystemUI/WidgetPrinter.java: To compile
+	  cleanly :D
+
+2008-08-18 15:16  rtobar
+
+	* /src/cl/utfsm/samplingSystemUI/BeanGrouper.java,
+	  /src/cl/utfsm/samplingSystemUI/BeanMemoryWidget.java,
+	  /src/cl/utfsm/samplingSystemUI/DataPrinter.java,
+	  /src/cl/utfsm/samplingSystemUI/IGraphicalUpdater.java,
+	  /src/cl/utfsm/samplingSystemUI/MemoryPrinter.java: Notifying on
+	  the BeanMemoryWidget why the property can't be sampled
+
+2008-08-18 14:59  rtobar
+
+	* /src/cl/utfsm/samplingSystemUI/BeanGrouper.java,
+	  /src/cl/utfsm/samplingSystemUI/BeanMemoryWidget.java,
+	  /src/cl/utfsm/samplingSystemUI/DataPrinter.java,
+	  /src/cl/utfsm/samplingSystemUI/SampTool.java,
+	  /src/cl/utfsm/samplingSystemUI/SamplingSystemGUI.java,
+	  /src/cl/utfsm/samplingSystemUI/core/NotificationChannelSuscription.java,
+	  /src/cl/utfsm/samplingSystemUI/core/PropertySamp.java,
+	  /src/cl/utfsm/samplingSystemUI/core/SamplingManager.java,
+	  /src/cl/utfsm/samplingSystemUI/core/SamplingManagerUITool.java:
+	  Throwing up TypeNotSupportedException
+
+2008-08-18 13:06  rtobar
+
+	* /src/cl/utfsm/samplingSystemUI/SamplingSystemGUI.java: Better
+	  layout for left panel
+
+2008-08-18 12:54  rtobar
+
+	* /src/cl/utfsm/samplingSystemUI/DataPrinter.java,
+	  /src/cl/utfsm/samplingSystemUI/IGraphicalUpdater.java,
+	  /src/cl/utfsm/samplingSystemUI/SampTool.java,
+	  /src/cl/utfsm/samplingSystemUI/SamplingSystemGUI.java,
+	  /src/cl/utfsm/samplingSystemUI/core/ComponentsManager.java:
+	  Properties asked only when needed, not at startup
+	  Better layout for the left panel (have to improve)
+	  Have a list of Sampling Managers to use it
+
+2008-08-18 12:54  rtobar
+
+	* /test/CDB/alma/SAMPLED10, /test/CDB/alma/SAMPLED10/SAMPLED10.xml,
+	  /test/CDB/alma/SAMPLED100,
+	  /test/CDB/alma/SAMPLED100/SAMPLED100.xml,
+	  /test/CDB/alma/SAMPLED101,
+	  /test/CDB/alma/SAMPLED101/SAMPLED101.xml,
+	  /test/CDB/alma/SAMPLED102,
+	  /test/CDB/alma/SAMPLED102/SAMPLED102.xml,
+	  /test/CDB/alma/SAMPLED103,
+	  /test/CDB/alma/SAMPLED103/SAMPLED103.xml,
+	  /test/CDB/alma/SAMPLED104,
+	  /test/CDB/alma/SAMPLED104/SAMPLED104.xml,
+	  /test/CDB/alma/SAMPLED105,
+	  /test/CDB/alma/SAMPLED105/SAMPLED105.xml,
+	  /test/CDB/alma/SAMPLED106,
+	  /test/CDB/alma/SAMPLED106/SAMPLED106.xml,
+	  /test/CDB/alma/SAMPLED107,
+	  /test/CDB/alma/SAMPLED107/SAMPLED107.xml,
+	  /test/CDB/alma/SAMPLED108,
+	  /test/CDB/alma/SAMPLED108/SAMPLED108.xml,
+	  /test/CDB/alma/SAMPLED109,
+	  /test/CDB/alma/SAMPLED109/SAMPLED109.xml,
+	  /test/CDB/alma/SAMPLED11, /test/CDB/alma/SAMPLED11/SAMPLED11.xml,
+	  /test/CDB/alma/SAMPLED110,
+	  /test/CDB/alma/SAMPLED110/SAMPLED110.xml,
+	  /test/CDB/alma/SAMPLED111,
+	  /test/CDB/alma/SAMPLED111/SAMPLED111.xml,
+	  /test/CDB/alma/SAMPLED112,
+	  /test/CDB/alma/SAMPLED112/SAMPLED112.xml,
+	  /test/CDB/alma/SAMPLED113,
+	  /test/CDB/alma/SAMPLED113/SAMPLED113.xml,
+	  /test/CDB/alma/SAMPLED114,
+	  /test/CDB/alma/SAMPLED114/SAMPLED114.xml,
+	  /test/CDB/alma/SAMPLED115,
+	  /test/CDB/alma/SAMPLED115/SAMPLED115.xml,
+	  /test/CDB/alma/SAMPLED116,
+	  /test/CDB/alma/SAMPLED116/SAMPLED116.xml,
+	  /test/CDB/alma/SAMPLED117,
+	  /test/CDB/alma/SAMPLED117/SAMPLED117.xml,
+	  /test/CDB/alma/SAMPLED118,
+	  /test/CDB/alma/SAMPLED118/SAMPLED118.xml,
+	  /test/CDB/alma/SAMPLED119,
+	  /test/CDB/alma/SAMPLED119/SAMPLED119.xml,
+	  /test/CDB/alma/SAMPLED12, /test/CDB/alma/SAMPLED12/SAMPLED12.xml,
+	  /test/CDB/alma/SAMPLED120,
+	  /test/CDB/alma/SAMPLED120/SAMPLED120.xml,
+	  /test/CDB/alma/SAMPLED121,
+	  /test/CDB/alma/SAMPLED121/SAMPLED121.xml,
+	  /test/CDB/alma/SAMPLED122,
+	  /test/CDB/alma/SAMPLED122/SAMPLED122.xml,
+	  /test/CDB/alma/SAMPLED123,
+	  /test/CDB/alma/SAMPLED123/SAMPLED123.xml,
+	  /test/CDB/alma/SAMPLED124,
+	  /test/CDB/alma/SAMPLED124/SAMPLED124.xml,
+	  /test/CDB/alma/SAMPLED125,
+	  /test/CDB/alma/SAMPLED125/SAMPLED125.xml,
+	  /test/CDB/alma/SAMPLED126,
+	  /test/CDB/alma/SAMPLED126/SAMPLED126.xml,
+	  /test/CDB/alma/SAMPLED127,
+	  /test/CDB/alma/SAMPLED127/SAMPLED127.xml,
+	  /test/CDB/alma/SAMPLED128,
+	  /test/CDB/alma/SAMPLED128/SAMPLED128.xml,
+	  /test/CDB/alma/SAMPLED129,
+	  /test/CDB/alma/SAMPLED129/SAMPLED129.xml,
+	  /test/CDB/alma/SAMPLED13, /test/CDB/alma/SAMPLED13/SAMPLED13.xml,
+	  /test/CDB/alma/SAMPLED130,
+	  /test/CDB/alma/SAMPLED130/SAMPLED130.xml,
+	  /test/CDB/alma/SAMPLED14, /test/CDB/alma/SAMPLED14/SAMPLED14.xml,
+	  /test/CDB/alma/SAMPLED15, /test/CDB/alma/SAMPLED15/SAMPLED15.xml,
+	  /test/CDB/alma/SAMPLED16, /test/CDB/alma/SAMPLED16/SAMPLED16.xml,
+	  /test/CDB/alma/SAMPLED17, /test/CDB/alma/SAMPLED17/SAMPLED17.xml,
+	  /test/CDB/alma/SAMPLED18, /test/CDB/alma/SAMPLED18/SAMPLED18.xml,
+	  /test/CDB/alma/SAMPLED19, /test/CDB/alma/SAMPLED19/SAMPLED19.xml,
+	  /test/CDB/alma/SAMPLED20, /test/CDB/alma/SAMPLED20/SAMPLED20.xml,
+	  /test/CDB/alma/SAMPLED21, /test/CDB/alma/SAMPLED21/SAMPLED21.xml,
+	  /test/CDB/alma/SAMPLED22, /test/CDB/alma/SAMPLED22/SAMPLED22.xml,
+	  /test/CDB/alma/SAMPLED23, /test/CDB/alma/SAMPLED23/SAMPLED23.xml,
+	  /test/CDB/alma/SAMPLED24, /test/CDB/alma/SAMPLED24/SAMPLED24.xml,
+	  /test/CDB/alma/SAMPLED25, /test/CDB/alma/SAMPLED25/SAMPLED25.xml,
+	  /test/CDB/alma/SAMPLED26, /test/CDB/alma/SAMPLED26/SAMPLED26.xml,
+	  /test/CDB/alma/SAMPLED27, /test/CDB/alma/SAMPLED27/SAMPLED27.xml,
+	  /test/CDB/alma/SAMPLED28, /test/CDB/alma/SAMPLED28/SAMPLED28.xml,
+	  /test/CDB/alma/SAMPLED29, /test/CDB/alma/SAMPLED29/SAMPLED29.xml,
+	  /test/CDB/alma/SAMPLED30, /test/CDB/alma/SAMPLED30/SAMPLED30.xml,
+	  /test/CDB/alma/SAMPLED31, /test/CDB/alma/SAMPLED31/SAMPLED31.xml,
+	  /test/CDB/alma/SAMPLED32, /test/CDB/alma/SAMPLED32/SAMPLED32.xml,
+	  /test/CDB/alma/SAMPLED33, /test/CDB/alma/SAMPLED33/SAMPLED33.xml,
+	  /test/CDB/alma/SAMPLED34, /test/CDB/alma/SAMPLED34/SAMPLED34.xml,
+	  /test/CDB/alma/SAMPLED35, /test/CDB/alma/SAMPLED35/SAMPLED35.xml,
+	  /test/CDB/alma/SAMPLED36, /test/CDB/alma/SAMPLED36/SAMPLED36.xml,
+	  /test/CDB/alma/SAMPLED37, /test/CDB/alma/SAMPLED37/SAMPLED37.xml,
+	  /test/CDB/alma/SAMPLED38, /test/CDB/alma/SAMPLED38/SAMPLED38.xml,
+	  /test/CDB/alma/SAMPLED39, /test/CDB/alma/SAMPLED39/SAMPLED39.xml,
+	  /test/CDB/alma/SAMPLED4, /test/CDB/alma/SAMPLED4/SAMPLED4.xml,
+	  /test/CDB/alma/SAMPLED40, /test/CDB/alma/SAMPLED40/SAMPLED40.xml,
+	  /test/CDB/alma/SAMPLED41, /test/CDB/alma/SAMPLED41/SAMPLED41.xml,
+	  /test/CDB/alma/SAMPLED42, /test/CDB/alma/SAMPLED42/SAMPLED42.xml,
+	  /test/CDB/alma/SAMPLED43, /test/CDB/alma/SAMPLED43/SAMPLED43.xml,
+	  /test/CDB/alma/SAMPLED44, /test/CDB/alma/SAMPLED44/SAMPLED44.xml,
+	  /test/CDB/alma/SAMPLED45, /test/CDB/alma/SAMPLED45/SAMPLED45.xml,
+	  /test/CDB/alma/SAMPLED46, /test/CDB/alma/SAMPLED46/SAMPLED46.xml,
+	  /test/CDB/alma/SAMPLED47, /test/CDB/alma/SAMPLED47/SAMPLED47.xml,
+	  /test/CDB/alma/SAMPLED48, /test/CDB/alma/SAMPLED48/SAMPLED48.xml,
+	  /test/CDB/alma/SAMPLED49, /test/CDB/alma/SAMPLED49/SAMPLED49.xml,
+	  /test/CDB/alma/SAMPLED5, /test/CDB/alma/SAMPLED5/SAMPLED5.xml,
+	  /test/CDB/alma/SAMPLED50, /test/CDB/alma/SAMPLED50/SAMPLED50.xml,
+	  /test/CDB/alma/SAMPLED51, /test/CDB/alma/SAMPLED51/SAMPLED51.xml,
+	  /test/CDB/alma/SAMPLED52, /test/CDB/alma/SAMPLED52/SAMPLED52.xml,
+	  /test/CDB/alma/SAMPLED53, /test/CDB/alma/SAMPLED53/SAMPLED53.xml,
+	  /test/CDB/alma/SAMPLED54, /test/CDB/alma/SAMPLED54/SAMPLED54.xml,
+	  /test/CDB/alma/SAMPLED55, /test/CDB/alma/SAMPLED55/SAMPLED55.xml,
+	  /test/CDB/alma/SAMPLED56, /test/CDB/alma/SAMPLED56/SAMPLED56.xml,
+	  /test/CDB/alma/SAMPLED57, /test/CDB/alma/SAMPLED57/SAMPLED57.xml,
+	  /test/CDB/alma/SAMPLED58, /test/CDB/alma/SAMPLED58/SAMPLED58.xml,
+	  /test/CDB/alma/SAMPLED59, /test/CDB/alma/SAMPLED59/SAMPLED59.xml,
+	  /test/CDB/alma/SAMPLED6, /test/CDB/alma/SAMPLED6/SAMPLED6.xml,
+	  /test/CDB/alma/SAMPLED60, /test/CDB/alma/SAMPLED60/SAMPLED60.xml,
+	  /test/CDB/alma/SAMPLED61, /test/CDB/alma/SAMPLED61/SAMPLED61.xml,
+	  /test/CDB/alma/SAMPLED62, /test/CDB/alma/SAMPLED62/SAMPLED62.xml,
+	  /test/CDB/alma/SAMPLED63, /test/CDB/alma/SAMPLED63/SAMPLED63.xml,
+	  /test/CDB/alma/SAMPLED64, /test/CDB/alma/SAMPLED64/SAMPLED64.xml,
+	  /test/CDB/alma/SAMPLED65, /test/CDB/alma/SAMPLED65/SAMPLED65.xml,
+	  /test/CDB/alma/SAMPLED66, /test/CDB/alma/SAMPLED66/SAMPLED66.xml,
+	  /test/CDB/alma/SAMPLED67, /test/CDB/alma/SAMPLED67/SAMPLED67.xml,
+	  /test/CDB/alma/SAMPLED68, /test/CDB/alma/SAMPLED68/SAMPLED68.xml,
+	  /test/CDB/alma/SAMPLED69, /test/CDB/alma/SAMPLED69/SAMPLED69.xml,
+	  /test/CDB/alma/SAMPLED7, /test/CDB/alma/SAMPLED7/SAMPLED7.xml,
+	  /test/CDB/alma/SAMPLED70, /test/CDB/alma/SAMPLED70/SAMPLED70.xml,
+	  /test/CDB/alma/SAMPLED71, /test/CDB/alma/SAMPLED71/SAMPLED71.xml,
+	  /test/CDB/alma/SAMPLED72, /test/CDB/alma/SAMPLED72/SAMPLED72.xml,
+	  /test/CDB/alma/SAMPLED73, /test/CDB/alma/SAMPLED73/SAMPLED73.xml,
+	  /test/CDB/alma/SAMPLED74, /test/CDB/alma/SAMPLED74/SAMPLED74.xml,
+	  /test/CDB/alma/SAMPLED75, /test/CDB/alma/SAMPLED75/SAMPLED75.xml,
+	  /test/CDB/alma/SAMPLED76, /test/CDB/alma/SAMPLED76/SAMPLED76.xml,
+	  /test/CDB/alma/SAMPLED77, /test/CDB/alma/SAMPLED77/SAMPLED77.xml,
+	  /test/CDB/alma/SAMPLED78, /test/CDB/alma/SAMPLED78/SAMPLED78.xml,
+	  /test/CDB/alma/SAMPLED79, /test/CDB/alma/SAMPLED79/SAMPLED79.xml,
+	  /test/CDB/alma/SAMPLED8, /test/CDB/alma/SAMPLED8/SAMPLED8.xml,
+	  /test/CDB/alma/SAMPLED80, /test/CDB/alma/SAMPLED80/SAMPLED80.xml,
+	  /test/CDB/alma/SAMPLED81, /test/CDB/alma/SAMPLED81/SAMPLED81.xml,
+	  /test/CDB/alma/SAMPLED82, /test/CDB/alma/SAMPLED82/SAMPLED82.xml,
+	  /test/CDB/alma/SAMPLED83, /test/CDB/alma/SAMPLED83/SAMPLED83.xml,
+	  /test/CDB/alma/SAMPLED84, /test/CDB/alma/SAMPLED84/SAMPLED84.xml,
+	  /test/CDB/alma/SAMPLED85, /test/CDB/alma/SAMPLED85/SAMPLED85.xml,
+	  /test/CDB/alma/SAMPLED86, /test/CDB/alma/SAMPLED86/SAMPLED86.xml,
+	  /test/CDB/alma/SAMPLED87, /test/CDB/alma/SAMPLED87/SAMPLED87.xml,
+	  /test/CDB/alma/SAMPLED88, /test/CDB/alma/SAMPLED88/SAMPLED88.xml,
+	  /test/CDB/alma/SAMPLED89, /test/CDB/alma/SAMPLED89/SAMPLED89.xml,
+	  /test/CDB/alma/SAMPLED9, /test/CDB/alma/SAMPLED9/SAMPLED9.xml,
+	  /test/CDB/alma/SAMPLED90, /test/CDB/alma/SAMPLED90/SAMPLED90.xml,
+	  /test/CDB/alma/SAMPLED91, /test/CDB/alma/SAMPLED91/SAMPLED91.xml,
+	  /test/CDB/alma/SAMPLED92, /test/CDB/alma/SAMPLED92/SAMPLED92.xml,
+	  /test/CDB/alma/SAMPLED93, /test/CDB/alma/SAMPLED93/SAMPLED93.xml,
+	  /test/CDB/alma/SAMPLED94, /test/CDB/alma/SAMPLED94/SAMPLED94.xml,
+	  /test/CDB/alma/SAMPLED95, /test/CDB/alma/SAMPLED95/SAMPLED95.xml,
+	  /test/CDB/alma/SAMPLED96, /test/CDB/alma/SAMPLED96/SAMPLED96.xml,
+	  /test/CDB/alma/SAMPLED97, /test/CDB/alma/SAMPLED97/SAMPLED97.xml,
+	  /test/CDB/alma/SAMPLED98, /test/CDB/alma/SAMPLED98/SAMPLED98.xml,
+	  /test/CDB/alma/SAMPLED99, /test/CDB/alma/SAMPLED99/SAMPLED99.xml:
+	  Added alma/SAMPLED* files
+
+2008-08-17 23:03  rtobar
+
+	* /test/CDB/MACI/Components/Components.xml: CDB with 130
+	  Components, to really test the performance of the SSG
+
+2008-08-17 22:57  rtobar
+
+	* /src/cl/utfsm/samplingSystemUI/BeanGrouper.java,
+	  /src/cl/utfsm/samplingSystemUI/DataPrinter.java,
+	  /src/cl/utfsm/samplingSystemUI/MemoryPrinter.java,
+	  /src/cl/utfsm/samplingSystemUI/SampTool.java,
+	  /src/cl/utfsm/samplingSystemUI/SamplingSystemGUI.java: Now it
+	  really uses the dynamic manager name on a nicer way
+
+2008-08-17 22:33  rtobar
+
+	* /src/cl/utfsm/samplingSystemUI/SampTool.java: Deleting unneeded
+	  code
+
+2008-08-17 22:19  rtobar
+
+	* /src/cl/utfsm/samplingSystemUI/BeanGrouper.java,
+	  /src/cl/utfsm/samplingSystemUI/SamplingSystemGUI.java: If a
+	  BeanGroup is deleted, its contents are not saved on the Status
+	  File
+
+2008-08-17 21:43  rtobar
+
+	* /src/cl/utfsm/samplingSystemUI/BeanGrouper.java,
+	  /src/cl/utfsm/samplingSystemUI/SamplingSystemGUI.java: Not adding
+	  properties to status file when duplicated component/property is
+	  added
+
+2008-08-17 19:18  rtobar
+
+	* /src/cl/utfsm/samplingSystemUI/BeanGrouper.java,
+	  /src/cl/utfsm/samplingSystemUI/SampTool.java,
+	  /src/cl/utfsm/samplingSystemUI/SamplingSystemGUI.java: Checking
+	  if component/property is already added for a certain group
+
+2008-08-16 21:50  rtobar
+
+	* /src/cl/utfsm/samplingSystemUI/BeanGrouper.java: Disabling Close
+	  button when a sampling is going on...
+
+2008-08-15 00:14  rtobar
+
+	* /src/cl/utfsm/samplingSystemUI/BeanGrouper.java,
+	  /src/cl/utfsm/samplingSystemUI/DataPrinter.java: Not dumping
+	  samples for components that are not available!
+
+2008-08-14 23:28  rtobar
+
+	* /src/cl/utfsm/samplingSystemUI/BeanGrouper.java,
+	  /src/cl/utfsm/samplingSystemUI/BeanLister.java,
+	  /src/cl/utfsm/samplingSystemUI/BeanMemoryWidget.java,
+	  /src/cl/utfsm/samplingSystemUI/DataPrinter.java,
+	  /src/cl/utfsm/samplingSystemUI/IGraphicalUpdater.java,
+	  /src/cl/utfsm/samplingSystemUI/MemoryPrinter.java,
+	  /src/cl/utfsm/samplingSystemUI/core/PropertySamp.java,
+	  /src/cl/utfsm/samplingSystemUI/core/SamplingManager.java,
+	  /src/cl/utfsm/samplingSystemUI/core/SamplingManagerUITool.java:
+	  Catching CouldntAccessComponent Exception when the sampling
+	  manager
+	  can get a component. This exeption can be used in several ways,
+	  like
+	  the one depicted here (the component name turns red)
+
+2008-08-14 21:49  abaltra
+
+	* /src/cl/utfsm/samplingSystemUI/DataPrinter.java,
+	  /src/cl/utfsm/samplingSystemUI/SamplingSystemGUI.java,
+	  /src/cl/utfsm/samplingSystemUI/core/ComponentsManager.java:
+
+2008-08-14 21:37  javarias
+
+	* /src/cl/utfsm/samplingSystemUI/BeanGrouper.java: Now it works :)
+
+2008-08-14 21:37  abaltra
+
+	* /src/cl/utfsm/samplingSystemUI/SamplingSystemGUI.java:
+
+2008-08-14 21:23  javarias
+
+	* /src/cl/utfsm/samplingSystemUI/BeanGrouper.java,
+	  /src/cl/utfsm/samplingSystemUI/SampTool.java: Added remove button
+	  to sampGroup
+
+2008-08-14 20:57  abaltra
+
+	* /src/cl/utfsm/samplingSystemUI/BeanGrouper.java,
+	  /src/cl/utfsm/samplingSystemUI/FileHelper.java:
+
+2008-08-14 20:13  abaltra
+
+	* /src/cl/utfsm/samplingSystemUI/BeanGrouper.java,
+	  /src/cl/utfsm/samplingSystemUI/FileHelper.java,
+	  /src/cl/utfsm/samplingSystemUI/SamplingSystemGUI.java: some
+	  features added. Loading and saving of the status trhough the menu
+
+2008-08-13 20:43  abaltra
+
+	* /src/cl/utfsm/samplingSystemUI/SampTool.java,
+	  /src/cl/utfsm/samplingSystemUI/SamplingSystemGUI.java: some more
+	  GUI changes
+
+2008-08-13 19:38  abaltra
+
+	* /src/cl/utfsm/samplingSystemUI/BeanGrouper.java,
+	  /src/cl/utfsm/samplingSystemUI/SamplingSystemGUI.java: sampling
+	  manager no longer hardcoded, some minor changes to the GUI
+
+2008-08-11 23:00  javarias
+
+	* /src/cl/utfsm/samplingSystemUI/SampTool.java,
+	  /src/cl/utfsm/samplingSystemUI/SamplingSystemGUI.java,
+	  /src/cl/utfsm/samplingSystemUI/core/AcsInformation.java,
+	  /src/cl/utfsm/samplingSystemUI/core/ComponentsManager.java: Using
+	  ComponentsManager methods to get components and properties names
+
+2008-08-11 22:44  javarias
+
+	* /src/cl/utfsm/samplingSystemUI/SerializableProperty.java: Added
+	  missed file
+
+2008-08-11 22:43  javarias
+
+	* /src/cl/utfsm/samplingSystemUI/BeanGrouper.java,
+	  /src/cl/utfsm/samplingSystemUI/SampTool.java,
+	  /src/cl/utfsm/samplingSystemUI/SamplingSystemGUI.java: Added
+	  initial support for saveing stateswq
+
+2008-07-13 23:52  javarias
+
+	* /src/cl/utfsm/samplingSystemUI/BeanGrouper.java: Added auto stop
+	  watchdog
+
+2008-07-13 23:05  javarias
+
+	* /test/cl/utfsm/samplingSystemUITestCase/AcsInformationTest.java,
+	  /test/cl/utfsm/samplingSystemUITestCase/ComponentsManagerTest.java,
+	  /test/cl/utfsm/samplingSystemUITestCase/DataItemTest.java,
+	  /test/cl/utfsm/samplingSystemUITestCase/SampDetailTest.java,
+	  /test/cl/utfsm/samplingSystemUITestCase/SamplingManagerTest.java,
+	  /test/cl/utfsm/samplingSystemUITestCase/ThreadCommunicatorTest.java:
+	  Fixed test after refactoring
+
+2008-07-13 22:59  javarias
+
+	* /src/cl/utfsm/samplingSystemUI/BeanGrouper.java,
+	  /src/cl/utfsm/samplingSystemUI/FileHelper.java,
+	  /src/cl/utfsm/samplingSystemUI/SampTool.java: SSG dump to file
+	  correctly
+
+2008-07-13 03:23  javarias
+
+	* /src/cl/utfsm/samplingSystemUI/BeanGrouper.java,
+	  /src/cl/utfsm/samplingSystemUI/DataPrinter.java,
+	  /src/cl/utfsm/samplingSystemUI/SampTool.java: Added frequency
+	  widgets, needs beautification :(
+
+2008-07-13 02:02  javarias
+
+	* /src/cl/utfsm/samplingSystemUI/BeanMemoryWidget.java,
+	  /src/cl/utfsm/samplingSystemUI/DataPrinter.java,
+	  /src/cl/utfsm/samplingSystemUI/FileHelper.java,
+	  /src/cl/utfsm/samplingSystemUI/FilePrinter.java: Fixed a bug with
+	  retrieving sampling data
+
+2008-07-11 00:26  javarias
+
+	* /src/cl/utfsm/samplingSystemUI/BeanGrouper.java,
+	  /src/cl/utfsm/samplingSystemUI/BeanLister.java,
+	  /src/cl/utfsm/samplingSystemUI/BeanMemoryWidget.java,
+	  /src/cl/utfsm/samplingSystemUI/DataPrinter.java,
+	  /src/cl/utfsm/samplingSystemUI/FileHelper.java,
+	  /src/cl/utfsm/samplingSystemUI/IGraphicalUpdater.java,
+	  /src/cl/utfsm/samplingSystemUI/MemoryPrinter.java,
+	  /src/cl/utfsm/samplingSystemUI/WidgetPrinter.java: Testing Dump
+	  to file only timestamp, reamins the synchronizing
+
+2008-07-11 00:21  rtobar
+
+	* /config: Last unnecesary directory
+
+2008-07-11 00:20  rtobar
+
+	* /bin, /doc, /man, /object, /rtai: Deleting unnecesary directories
+
+2008-07-10 23:42  rtobar
+
+	* /idl/sampledComp.idl, /include/sampledCompImpl.h,
+	  /test/CDB/MACI/Components/Components.xml,
+	  /test/CDB/alma/SAMPLED1, /test/CDB/alma/SAMPLED1/SAMPLED1.xml,
+	  /test/CDB/alma/SAMPLED2, /test/CDB/alma/SAMPLED2/SAMPLED2.xml,
+	  /test/CDB/alma/SAMPLED3, /test/CDB/alma/SAMPLED3/SAMPLED3.xml,
+	  /test/CDB/schemas, /test/CDB/schemas/SampledComponent.xsd,
+	  /test/Makefile, /test/sampledCompImpl.cpp: Added dummy component
+	  with 10 different property types
+
+2008-07-10 22:42  javarias
+
+	* /src/cl/utfsm/samplingSystemUI/BeanGrouper.java,
+	  /src/cl/utfsm/samplingSystemUI/BeanLister.java,
+	  /src/cl/utfsm/samplingSystemUI/DataPrinter.java,
+	  /src/cl/utfsm/samplingSystemUI/IGraphicalUpdater.java,
+	  /src/cl/utfsm/samplingSystemUI/SamplingSystemGUI.java,
+	  /src/cl/utfsm/samplingSystemUI/SamplingWidget.java,
+	  /src/cl/utfsm/samplingSystemUI/WidgetPrinter.java: Added generic
+	  inheritance on widgets
+
+2008-07-10 20:44  rtobar
+
+	* /lib/miglayout-3.5.5.jar, /src/Makefile,
+	  /src/miglayout-3.5.5.jar: Now it does compile :D
+
+2008-07-10 20:43  rtobar
+
+	* /lib/miglayout-3.5.5.jar, /src/Makefile,
+	  /src/miglayout-3.5.5.jar: Layout well included
+
+2008-07-10 20:38  rtobar
+
+	* /lib/miglayout-3.5.5.jar,
+	  /src/cl/utfsm/samplingSystemUI/SamplingSystemGUI.java: Final
+	  layout (a new jar is being imported... that should be checked
+	  out)
+
+2008-07-10 17:28  rtobar
+
+	* /src/cl/utfsm/samplingSystemUI/BeanGrouper.java,
+	  /src/cl/utfsm/samplingSystemUI/BeanLister.java,
+	  /src/cl/utfsm/samplingSystemUI/SamplingSystemGUI.java: Enhancing
+	  GridBagLayouts
+
+2008-07-10 05:35  javarias
+
+	* /src/cl/utfsm/GUI, /src/cl/utfsm/example/SampTool.java,
+	  /src/cl/utfsm/samplingSystemUI/AcsInformation.java,
+	  /src/cl/utfsm/samplingSystemUI/AcsInformationException.java,
+	  /src/cl/utfsm/samplingSystemUI/BeanGrouper.java,
+	  /src/cl/utfsm/samplingSystemUI/BeanLister.java,
+	  /src/cl/utfsm/samplingSystemUI/ComponentsManager.java,
+	  /src/cl/utfsm/samplingSystemUI/DataItem.java,
+	  /src/cl/utfsm/samplingSystemUI/DataPrinter.java,
+	  /src/cl/utfsm/samplingSystemUI/FilePrinter.java,
+	  /src/cl/utfsm/samplingSystemUI/MemoryPrinter.java,
+	  /src/cl/utfsm/samplingSystemUI/NotificationChannelSuscription.java,
+	  /src/cl/utfsm/samplingSystemUI/PropertySamp.java,
+	  /src/cl/utfsm/samplingSystemUI/SampDetail.java,
+	  /src/cl/utfsm/samplingSystemUI/SampTool.java,
+	  /src/cl/utfsm/samplingSystemUI/SamplingManager.java,
+	  /src/cl/utfsm/samplingSystemUI/SamplingManagerException.java,
+	  /src/cl/utfsm/samplingSystemUI/SamplingManagerUITool.java,
+	  /src/cl/utfsm/samplingSystemUI/SamplingSystemGUI.java,
+	  /src/cl/utfsm/samplingSystemUI/ThreadCommunicator.java,
+	  /src/cl/utfsm/samplingSystemUI/WidgetPrinter.java,
+	  /src/cl/utfsm/samplingSystemUI/core,
+	  /src/cl/utfsm/samplingSystemUI/core/AcsInformation.java,
+	  /src/cl/utfsm/samplingSystemUI/core/AcsInformationException.java,
+	  /src/cl/utfsm/samplingSystemUI/core/ComponentsManager.java,
+	  /src/cl/utfsm/samplingSystemUI/core/DataItem.java,
+	  /src/cl/utfsm/samplingSystemUI/core/NotificationChannelSuscription.java,
+	  /src/cl/utfsm/samplingSystemUI/core/PropertySamp.java,
+	  /src/cl/utfsm/samplingSystemUI/core/SampDetail.java,
+	  /src/cl/utfsm/samplingSystemUI/core/SamplingManager.java,
+	  /src/cl/utfsm/samplingSystemUI/core/SamplingManagerException.java,
+	  /src/cl/utfsm/samplingSystemUI/core/SamplingManagerUITool.java,
+	  /src/cl/utfsm/samplingSystemUI/core/ThreadCommunicator.java,
+	  /src/sampTool: Fixed Bugs and a little refactoring
+
+2008-07-10 03:17  javarias
+
+	* /src/cl/utfsm/GUI/DataPrinter.java,
+	  /src/cl/utfsm/GUI/SamplingSystemGUI.java: Fixed a concurrency
+	  problem
+
+2008-07-10 00:32  javarias
+
+	* /src/cl/utfsm/GUI/DataPrinter.java,
+	  /src/cl/utfsm/GUI/FilePrinter.java,
+	  /src/cl/utfsm/GUI/MemoryPrinter.java: Added FilePrinter, needs
+	  syncronize the sampling outputs :(
+
+2008-07-10 00:27  rtobar
+
+	* /src/cl/utfsm/GUI/BeanGrouper.java,
+	  /src/cl/utfsm/GUI/BeanLister.java,
+	  /src/cl/utfsm/GUI/SamplingSystemGUI.java: Changes mostly on the
+	  GUI
+
+2008-07-09 23:06  javarias
+
+	* /src/cl/utfsm/GUI/DataPrinter.java,
+	  /src/cl/utfsm/GUI/FilePrinter.java,
+	  /src/cl/utfsm/GUI/MemoryPrinter.java,
+	  /src/cl/utfsm/GUI/SamplingSystemGUI.java,
+	  /src/cl/utfsm/GUI/WidgetPrinter.java: Added initial FilePrinter
+	  implentation
+
+2008-07-09 22:42  rtobar
+
+	* /src/cl/utfsm/GUI/SamplingSystemGUI.java,
+	  /src/cl/utfsm/example/SampTool.java,
+	  /src/cl/utfsm/samplingSystemUI/AcsInformationException.java,
+	  /src/cl/utfsm/samplingSystemUI/ComponentsManager.java,
+	  /src/cl/utfsm/samplingSystemUI/NotificationChannelSuscription.java,
+	  /src/cl/utfsm/samplingSystemUI/SamplingManager.java: Type
+	  specification on generics
+	  Deleted some unused packages and variables
+	  UID for Serializable classes
+	  Trying to make up the GUI
+
+2008-07-09 21:09  abaltra
+
+	* /src/cl/utfsm/GUI/BeanGrouper.java,
+	  /src/cl/utfsm/GUI/SamplingSystemGUI.java: GUI working good
+
+2008-07-09 19:34  abaltra
+
+	* /src/cl/utfsm/GUI/BeanGrouper.java:
+
+2008-07-09 19:24  abaltra
+
+	* /src/cl/utfsm/GUI/BeanGrouper.java: BeanGrouper modified
+
+2008-07-09 01:44  javarias
+
+	* /src/cl/utfsm/GUI/DataPrinter.java,
+	  /src/cl/utfsm/GUI/MemoryPrinter.java,
+	  /src/cl/utfsm/GUI/SamplingSystemGUI.java: Tested Memory printer,
+	  now works. There are an example in
+	  cl/utfsm/GUI/SamplingSystemGUI.java
+
+2008-07-09 00:21  javarias
+
+	* /src/cl/utfsm/GUI/DataPrinter.java,
+	  /src/cl/utfsm/GUI/MemoryPrinter.java,
+	  /src/cl/utfsm/GUI/SampTool.java,
+	  /src/cl/utfsm/GUI/WidgetPrinter.java: Added MemoryPrinter class
+
+2008-07-08 23:14  abaltra
+
+	* /src/cl/utfsm/GUI/BeanGrouper.java,
+	  /src/cl/utfsm/GUI/SamplingSystemGUI.java,
+	  /src/cl/utfsm/GUI/WidgetPrinter.java: Added a new class to
+	  display the results of sampling (it still uses WidgetPrinter),
+	  the new class allows for a better ordering of the sampling to be
+	  done and enables grouping. It hasn't been tested yet, so it's not
+	  safe to run the application right now.
+
+2008-07-08 22:49  javarias
+
+	* /src/cl/utfsm/GUI/BeanLister.java,
+	  /src/cl/utfsm/GUI/DataPrinter.java,
+	  /test/CDB/MACI/Components/Components.xml, /test/CDB/alma/CLOCK1,
+	  /test/CDB/alma/CLOCK1/CLOCK1.xml, /test/CDB/alma/FRIDGE1,
+	  /test/CDB/alma/FRIDGE1/FRIDGE1.xml, /test/CDB/alma/LAMP2,
+	  /test/CDB/alma/LAMP2/LAMP2.xml: Added a new CDB and support for
+	  multilples samplings
+
+2008-07-01 23:58  abaltra
+
+	* /test/CDB/MACI/Components/Components.xml: modified CDB
+
+2008-07-01 23:56  abaltra
+
+	* /src/cl/utfsm/GUI/BeanLister.java,
+	  /src/cl/utfsm/GUI/SamplingSystemGUI.java,
+	  /src/cl/utfsm/GUI/WidgetPrinter.java: multi-sampling supported
+
+2008-06-18 04:14  javarias
+
+	* /src/cl/utfsm/GUI/BeanLister.java,
+	  /src/cl/utfsm/GUI/DataPrinter.java,
+	  /src/cl/utfsm/GUI/SamplingSystemGUI.java,
+	  /src/cl/utfsm/GUI/WidgetPrinter.java: Fix some widgets
+
+2008-06-18 03:16  javarias
+
+	* /src/cl/utfsm/GUI/BeanLister.java: Some Bean Listener GUI fixes
+
+2008-06-18 02:29  javarias
+
+	* /src/cl/utfsm/GUI/FileWriter.java: Now must work
+
+2008-06-18 02:27  javarias
+
+	* /src/cl/utfsm/example/SampTool.java: third try to fix repo
+
+2008-06-18 02:26  javarias
+
+	* /src/cl/utfsm/GUI/DataPrinter.java: Second Try to fis repo
+
+2008-06-18 02:24  javarias
+
+	* /src/cl/utfsm/GUI/DataPrinter.java: Fixed repository
+
+2008-06-18 01:39  rtobar
+
+	* /test/ref, /test/ref/samplingSystemUI.ref: Oops! Added
+	  samplingSystemUI.ref
+
+2008-06-18 01:37  rtobar
+
+	* /test/Makefile, /test/TATEpilogue, /test/TestList.grep,
+	  /test/TestList.lite, /test/samplingSystemUI.sh: tat working!
+
+2008-06-18 01:17  rtobar
+
+	* /test/CDB/MACI/Containers/Container/Container.xml,
+	  /test/Makefile, /test/TATEnvironment, /test/TATEpilogue,
+	  /test/TATPrologue, /test/TestList.lite,
+	  /test/samplingSystemUI.sh: Adding tat support (still can't run
+	  tat)
+
+2008-06-18 00:52  abaltra
+
+	* /src/cl/utfsm/GUI/BeanLister.java,
+	  /src/cl/utfsm/GUI/DataPrinter.java,
+	  /src/cl/utfsm/GUI/SampTool.java,
+	  /src/cl/utfsm/GUI/SamplingSystemGUI.java,
+	  /src/cl/utfsm/GUI/WidgetPrinter.java,
+	  /src/cl/utfsm/example/SampTool.java,
+	  /src/cl/utfsm/samplingSystemUI/SampDetail.java,
+	  /src/cl/utfsm/samplingSystemUI/SamplingManagerUITool.java,
+	  /src/sampTool: First prototype for revision
+
+2008-06-13 23:22  abaltra
+
+	* /src/cl/utfsm/GUI/FileWriter.java,
+	  /src/cl/utfsm/example/LogWriter.java: FileWriter class almost
+	  ready
+
+2008-06-13 23:21  abaltra
+
+	* /src/cl/utfsm/GUI/DataPrinter.java,
+	  /src/cl/utfsm/example/LogWriter.java,
+	  /src/cl/utfsm/example/SampTool.java: Began work on an acceptable
+	  FileWriter
+
+2008-06-12 20:53  abaltra
+
+	* /src/cl/utfsm/GUI/DataPrinter.java,
+	  /src/cl/utfsm/example/SampTool.java: Re-ordered the code
+
+2008-06-12 20:24  abaltra
+
+	* /src/cl/utfsm/GUI/DataPrinter.java,
+	  /src/cl/utfsm/samplingSystemUI/AcsInformation.java: Adding
+	  support to checkout the properties for a given component
+
+2008-05-30 22:14  abaltra
+
+	* /src/cl/utfsm/GUI/DataPrinter.java,
+	  /src/cl/utfsm/example/SampTool.java,
+	  /src/cl/utfsm/samplingSystemUI/ComponentsManager.java,
+	  /src/cl/utfsm/samplingSystemUI/SamplingManagerUITool.java:
+	  DataPrinter is getting components and interfaces flawlessly,
+	  still needs to get properties based on the interfaces
+
+2008-05-30 20:09  abaltra
+
+	* /src/cl/utfsm/GUI/DataPrinter.java: Data printer updated, still
+	  working on propertie listing
+
+2008-05-28 12:30  abaltra
+
+	* /src/cl/utfsm/GUI, /src/cl/utfsm/GUI/DataPrinter.java,
+	  /src/cl/utfsm/example/SampTool.java,
+	  /src/cl/utfsm/samplingSystemUI/ComponentsManager.java: First GUI
+	  class added, but still needs work
+
+2008-05-15 18:59  fgutierr
+
+	* /src/cl/utfsm/example/LogWriter.java: Now it's really added :P
+
+2008-05-15 18:54  fgutierr
+
+	* /src/cl/utfsm/example/SampTool.java,
+	  /src/cl/utfsm/samplingSystemUI/ComponentsManager.java: LogWriter
+	  class added
+
+2008-04-25 18:49  fgutierr
+
+	* /src/cl/utfsm/samplingSystemUI/AcsInformation.java,
+	  /src/cl/utfsm/samplingSystemUI/AcsInformationException.java,
+	  /src/cl/utfsm/samplingSystemUI/DataItem.java,
+	  /src/cl/utfsm/samplingSystemUI/PropertySamp.java,
+	  /src/cl/utfsm/samplingSystemUI/SampDetail.java,
+	  /src/cl/utfsm/samplingSystemUI/SamplingManager.java,
+	  /src/cl/utfsm/samplingSystemUI/SamplingManagerException.java,
+	  /src/cl/utfsm/samplingSystemUI/SamplingManagerUITool.java,
+	  /src/cl/utfsm/samplingSystemUI/ThreadCommunicator.java: Commented
+	  all methods and most classes
+
+2008-04-25 18:31  fgutierr
+
+	* /src/cl/utfsm/samplingSystemUI/NotificationChannelSuscription.java:
+	  Commented all methods and most classes
+
+2008-04-25 18:30  abaltra
+
+	* /src/cl/utfsm/samplingSystemUI/NotificationChannelSuscription.java:
+	  Commented most of the methods and classes
+
+2008-04-24 20:11  abaltra
+
+	* /src/Makefile,
+	  /src/cl/utfsm/samplingSystemUI/AcsInformation.java,
+	  /src/cl/utfsm/samplingSystemUI/AcsInformationException.java,
+	  /src/cl/utfsm/samplingSystemUI/ComponentsManager.java,
+	  /src/cl/utfsm/samplingSystemUI/DataItem.java,
+	  /src/cl/utfsm/samplingSystemUI/PropertySamp.java,
+	  /src/cl/utfsm/samplingSystemUI/SamplingManager.java,
+	  /src/cl/utfsm/samplingSystemUI/SamplingManagerException.java,
+	  /src/cl/utfsm/samplingSystemUI/SamplingManagerUITool.java,
+	  /src/cl/utfsm/samplingSystemUI/ThreadCommunicator.java,
+	  /test/CDB/MACI/Components/Components.xml: Commented most of the
+	  methods and classes
+
+2008-04-21 22:01  javarias
+
+	* /test/CDB/MACI/Managers/Manager/Manager.xml: Now CDB is fixed :)
+
+2008-04-21 21:54  javarias
+
+	* /test/CDB/MACI/Managers/Manager/Manager.xml: Updated CDB
+
+2007-08-19 20:32  ntroncos
+
+	* /README, /src/cl/utfsm/example/SampTool.java,
+	  /src/cl/utfsm/samplingSystemUI/AcsInformation.java,
+	  /src/cl/utfsm/samplingSystemUI/DataItem.java,
+	  /src/cl/utfsm/samplingSystemUI/NotificationChannelSuscription.java,
+	  /src/cl/utfsm/samplingSystemUI/SampDetail.java,
+	  /src/cl/utfsm/samplingSystemUI/SamplingManager.java: FIXED code
+	  acording to findbugs recomendations
+
+2007-03-21 17:09  ntroncos
+
+	* /src/Makefile, /src/cl/utfsm/example/SampTool.java,
+	  /src/cl/utfsm/example/SampTool2.java, /src/sampToolNew: Got rid
+	  of the obsolete examples
+
+2007-03-21 17:05  ntroncos
+
+	* /src/cl/utfsm/example/SampTool.java: Deleting obsolete example
+
+2007-03-21 15:41  ntroncos
+
+	* /src/cl/utfsm/samplingSystemUI/ThreadCommunicator.java: Comments
+
+2007-03-21 15:25  ntroncos
+
+	* /test/cl/utfsm/samplingSystemUITestCase/ThreadCommunicatorTest.java:
+	  Fixed an issue with the imports
+
+2007-03-21 15:10  ntroncos
+
+	* /test/cl/SamplingSystemUIJUnitTest.java,
+	  /test/cl/utfsm/samplingSystemUITestCase/DataItemTest.java,
+	  /test/cl/utfsm/samplingSystemUITestCase/ThreadCommunicatorTest.java:
+	  Added new tests.
+
+2007-03-21 15:09  ntroncos
+
+	* /src/cl/utfsm/example/SampTool2.java,
+	  /src/cl/utfsm/samplingSystemUI/AcsInformation.java,
+	  /src/cl/utfsm/samplingSystemUI/NotificationChannelSuscription.java,
+	  /src/cl/utfsm/samplingSystemUI/PropertySamp.java: Integrated
+	  support for the new thread comunicator.
+	  Fix BUG that would hang the tool upon exit.
+
+2007-03-21 15:08  ntroncos
+
+	* /src/cl/utfsm/samplingSystemUI/DataItem.java,
+	  /src/cl/utfsm/samplingSystemUI/ThreadCommunicator.java: Added
+	  support classes to comunicate the subscription channel with any
+	  other
+	  thread. This is intended for the Display thread specificaly.
+
+2007-03-20 13:08  ntroncos
+
+	* /src/cl/utfsm/samplingSystemUI/SamplingManager.java: Release
+	  component when done
+
+2007-03-19 21:18  ntroncos
+
+	* /src/cl/utfsm/samplingSystemUI/NotificationChannelSuscription.java:
+	  NotificationChannelSuscription
+	  * was no disconnecting from the subscription, this produced a
+	  memory leak in the container. To fix this i did an overide of the
+	  finalize() member this was we gurantee that the conection is
+	  properly ended.
+
+2007-03-19 18:16  ntroncos
+
+	* /test/cl/SamplingSystemUIJUnitTest.java,
+	  /test/cl/utfsm/samplingSystemUITestCase/ComponentsManagerTest.java,
+	  /test/cl/utfsm/samplingSystemUITestCase/SampDetailTest.java,
+	  /test/cl/utfsm/samplingSystemUITestCase/SamplingManagerTest.java:
+	  Adding more tests
+
+2007-03-19 15:57  ntroncos
+
+	* /src/cl/utfsm/samplingSystemUI/SampDetail.java: Junit testing
+	  showed a bug concerning the comparison of sampDetail object.
+	  * The tool asume that two sampDetails objects are equal if all
+	  their
+	  * attributes are equal. Junit showd that calls to
+	  sampDetail.equals() of two
+	  * diferent objects with all the menbers equall returned false.
+	  For this
+	  * reason equals and hashcode had to be overloaded.
+
+2007-03-19 13:36  ntroncos
+
+	* /README, /src/cl/utfsm/samplingSystemUI/PropertySamp.java,
+	  /src/cl/utfsm/samplingSystemUI/SamplingManagerUITool.java:
+	  Documenting members and classes
+
+2007-03-16 21:16  ntroncos
+
+	* /src/cl/utfsm/samplingSystemUI/AcsInformation.java,
+	  /src/cl/utfsm/samplingSystemUI/NotificationChannelSuscription.java,
+	  /src/cl/utfsm/samplingSystemUI/SamplingManager.java: Got rid of
+	  System.exit and out.println in the helper clases.
+	  exist are now throw new exceptions
+	  prinln are now done through the logging system
+
+2007-03-16 20:24  ntroncos
+
+	* /test/Makefile, /test/cl,
+	  /test/cl/SamplingSystemUIJUnitTest.java, /test/cl/utfsm,
+	  /test/cl/utfsm/samplingSystemUITestCase,
+	  /test/cl/utfsm/samplingSystemUITestCase/AcsInformationTest.java:
+	  Added testcases suite.
+	  * the only testcase ready is for the AcsInformation class
+
+2007-03-16 20:23  ntroncos
+
+	* /src/Makefile, /src/cl/utfsm/example/SampTool2.java,
+	  /src/cl/utfsm/samplingSystemUI/SamplingManagerUITool.java,
+	  /src/sampToolNew: Added a new helper class for the tool usage.
+	  SamplingManagerUITool:
+	  every tool should be extended from this class.
+
+2007-03-14 20:24  ntroncos
+
+	* /README: Added readme, fixed bug that doesn't work.
+
+2007-03-14 19:42  ntroncos
+
+	* /test/CDB, /test/CDB/MACI, /test/CDB/MACI/Activators,
+	  /test/CDB/MACI/Activators/Activator, /test/CDB/MACI/COBs,
+	  /test/CDB/MACI/Components,
+	  /test/CDB/MACI/Components/Components.xml,
+	  /test/CDB/MACI/Containers, /test/CDB/MACI/Containers/Container,
+	  /test/CDB/MACI/Managers, /test/CDB/MACI/Managers/Manager,
+	  /test/CDB/MACI/Managers/Manager/Manager.xml, /test/CDB/alma,
+	  /test/CDB/alma/LAMP1, /test/CDB/alma/LAMP1/LAMP1.xml,
+	  /test/CDB/alma/MOUNT1, /test/CDB/alma/MOUNT1/MOUNT1.xml,
+	  /test/CDB/alma/SAMP1, /test/CDB/alma/SAMP1/SAMP1.xml: Added the
+	  new CDB
+
+2007-03-14 19:41  ntroncos
+
+	* /test/CDB: Deleted the obsolete CDB
+
+2007-03-14 14:44  ntroncos
+
+	* /src/cl/utfsm/example/SampTool.java,
+	  /src/cl/utfsm/samplingSystemUI/SamplingManager.java: Some
+	  cosmetic changes for Samptool
+	  
+	  Sampling manager
+	  - Now it correctly detects if the manager exists.
+	  
+	  BUG:
+	  It dows not work. For some reason it stopped working.
+
+2007-03-13 19:28  ntroncos
+
+	* /src/cl/utfsm/example/SampTool.java: Some comments
+
+2007-03-13 19:18  ntroncos
+
+	* /src/cl/utfsm/example, /src/cl/utfsm/example/SampTool.java,
+	  /src/cl/utfsm/samplingSystemUI/SampTool.java, /src/sampTool:
+	  Modified package structure so it properly shows how it should be
+	  used.
+
+2007-03-13 19:06  ntroncos
+
+	* /src/cl/utfsm/samplingSystemUI/AcsInformation.java,
+	  /src/cl/utfsm/samplingSystemUI/AcsInformationException.java,
+	  /src/cl/utfsm/samplingSystemUI/SampTool.java,
+	  /src/cl/utfsm/samplingSystemUI/SamplingManager.java,
+	  /src/cl/utfsm/samplingSystemUI/SamplingManagerException.java:
+	  Created new exception scheme.
+	  The exception classes a mearly wrapers of the exception base
+	  class, they are jut to provide a compresensible was of indicating
+	  who trigered the exception.
+	  
+	  Now the tools wont crash if they cannot contact the manager. An
+	  exception is trown so the tool can take proper action.
+
+2007-03-05 15:31  ntroncos
+
+	* /src/cl/utfsm/samplingSystemUI/AcsInformation.java,
+	  /src/cl/utfsm/samplingSystemUI/SampTool.java:
+	  src/cl/utfsm/samplingSystemUI/AcsInformation.java
+	  Added missing package for proper compilation
+	  src/cl/utfsm/samplingSystemUI/SampTool.java
+	  added some notes about implementation.
+
+2007-03-01 15:46  ntroncos
+
+	* /ChangeLog, /LOGS, /bin, /config, /config/CDB,
+	  /config/CDB/schemas, /doc, /idl, /include, /lib,
+	  /lib/ACScomponents, /lib/endorsed, /lib/python,
+	  /lib/python/site-packages, /man, /man/man1, /man/man2, /man/man3,
+	  /man/man4, /man/man5, /man/man6, /man/man7, /man/man8, /man/manl,
+	  /man/mann, /object, /rtai, /src, /src/Makefile, /src/cl,
+	  /src/cl/utfsm, /src/cl/utfsm/samplingSystemUI,
+	  /src/cl/utfsm/samplingSystemUI/AcsInformation.java,
+	  /src/cl/utfsm/samplingSystemUI/ComponentsManager.java,
+	  /src/cl/utfsm/samplingSystemUI/NotificationChannelSuscription.java,
+	  /src/cl/utfsm/samplingSystemUI/PropertySamp.java,
+	  /src/cl/utfsm/samplingSystemUI/SampDetail.java,
+	  /src/cl/utfsm/samplingSystemUI/SampTool.java,
+	  /src/cl/utfsm/samplingSystemUI/SamplingManager.java,
+	  /src/sampTool, /test, /test/CDB, /test/CDB/MACI,
+	  /test/CDB/MACI/Components,
+	  /test/CDB/MACI/Components/Components.xml,
+	  /test/CDB/MACI/Containers,
+	  /test/CDB/MACI/Containers/bilboContainer,
+	  /test/CDB/MACI/Containers/bilboContainer/Container.xml,
+	  /test/CDB/MACI/Containers/bilboContainer/bilboContainer.xml,
+	  /test/CDB/MACI/Managers, /test/CDB/MACI/Managers/Manager,
+	  /test/CDB/MACI/Managers/Manager/Manager.xml, /test/CDB/alma,
+	  /test/CDB/alma/CLOCK1, /test/CDB/alma/CLOCK1/CLOCK1.xml,
+	  /test/CDB/alma/FILTERWHEEL1,
+	  /test/CDB/alma/FILTERWHEEL1/FILTERWHEEL1.xml,
+	  /test/CDB/alma/FRIDGE1, /test/CDB/alma/FRIDGE1/FRIDGE1.xml,
+	  /test/CDB/alma/LAMP1, /test/CDB/alma/LAMP1/LAMP1.xml,
+	  /test/CDB/alma/LAMPWHEEL1,
+	  /test/CDB/alma/LAMPWHEEL1/LAMPWHEEL1.xml, /test/CDB/alma/MOUNT1,
+	  /test/CDB/alma/MOUNT1/MOUNT1.xml, /test/CDB/alma/MOUNT2,
+	  /test/CDB/alma/MOUNT2/MOUNT2.xml, /test/CDB/alma/MOUNT3,
+	  /test/CDB/alma/MOUNT3/MOUNT3.xml, /test/CDB/alma/MOUNT4,
+	  /test/CDB/alma/MOUNT4/MOUNT4.xml, /test/CDB/alma/MOUNT5,
+	  /test/CDB/alma/MOUNT5/MOUNT5.xml, /test/CDB/alma/MOUNT6,
+	  /test/CDB/alma/MOUNT6/MOUNT6.xml, /test/CDB/alma/PBEND_B_01,
+	  /test/CDB/alma/PBEND_B_01/PBEND_B_01.xml,
+	  /test/CDB/alma/PBUMP_B_01,
+	  /test/CDB/alma/PBUMP_B_01/PBUMP_B_01.xml,
+	  /test/CDB/alma/PBUMP_B_02,
+	  /test/CDB/alma/PBUMP_B_02/PBUMP_B_02.xml, /test/CDB/alma/SAMP1,
+	  /test/CDB/alma/SAMP1/SAMP1.xml, /test/CDB/alma/TEST_PS_1,
+	  /test/CDB/alma/TEST_PS_1/TEST_PS_1.xml,
+	  /test/CDB/alma/TEST_PS_10,
+	  /test/CDB/alma/TEST_PS_10/TEST_PS_10.xml,
+	  /test/CDB/alma/TEST_PS_11,
+	  /test/CDB/alma/TEST_PS_11/TEST_PS_11.xml,
+	  /test/CDB/alma/TEST_PS_12,
+	  /test/CDB/alma/TEST_PS_12/TEST_PS_12.xml,
+	  /test/CDB/alma/TEST_PS_13,
+	  /test/CDB/alma/TEST_PS_13/TEST_PS_13.xml,
+	  /test/CDB/alma/TEST_PS_14,
+	  /test/CDB/alma/TEST_PS_14/TEST_PS_14.xml,
+	  /test/CDB/alma/TEST_PS_15,
+	  /test/CDB/alma/TEST_PS_15/TEST_PS_15.xml,
+	  /test/CDB/alma/TEST_PS_16,
+	  /test/CDB/alma/TEST_PS_16/TEST_PS_16.xml,
+	  /test/CDB/alma/TEST_PS_17,
+	  /test/CDB/alma/TEST_PS_17/TEST_PS_17.xml,
+	  /test/CDB/alma/TEST_PS_18,
+	  /test/CDB/alma/TEST_PS_18/TEST_PS_18.xml,
+	  /test/CDB/alma/TEST_PS_2, /test/CDB/alma/TEST_PS_2/TEST_PS_2.xml,
+	  /test/CDB/alma/TEST_PS_3, /test/CDB/alma/TEST_PS_3/TEST_PS_3.xml,
+	  /test/CDB/alma/TEST_PS_4, /test/CDB/alma/TEST_PS_4/TEST_PS_4.xml,
+	  /test/CDB/alma/TEST_PS_5, /test/CDB/alma/TEST_PS_5/TEST_PS_5.xml,
+	  /test/CDB/alma/TEST_PS_6, /test/CDB/alma/TEST_PS_6/TEST_PS_6.xml,
+	  /test/CDB/alma/TEST_PS_7, /test/CDB/alma/TEST_PS_7/TEST_PS_7.xml,
+	  /test/CDB/alma/TEST_PS_8, /test/CDB/alma/TEST_PS_8/TEST_PS_8.xml,
+	  /test/CDB/alma/TEST_PS_9, /test/CDB/alma/TEST_PS_9/TEST_PS_9.xml,
+	  /test/CDB/schemas, /test/CDB/schemas/TestPowerSupplyACS.xsd:
+	  Re-spin of the ssg repository. all legacy work may be found in
+	  the ssg-legacy
+	  repo.
+
+"@(#) $Id: ChangeLog,v 1.2 2008/08/25 14:32:24 rtobar Exp $"
