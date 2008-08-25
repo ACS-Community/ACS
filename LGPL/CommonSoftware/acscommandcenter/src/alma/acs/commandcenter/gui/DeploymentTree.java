@@ -14,6 +14,9 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Vector;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
 
 import javax.swing.AbstractAction;
 import javax.swing.JOptionPane;
@@ -805,8 +808,17 @@ public class DeploymentTree extends JTree {
 		protected abstract void actionPerformed ();
 	}
 
+	private Executor pool = Executors.newCachedThreadPool(new ThreadFactory(){
+		ThreadFactory def = Executors.defaultThreadFactory();
+		public Thread newThread (Runnable r) {
+			Thread ret = def.newThread(r);
+			ret.setDaemon(true);
+			return ret;
+		}
+	});
+	
 	/**
-	 * Performs the work to be done delayed but also within the event-dispatcher thread.
+	 * Performs the work to be done delayed, and NOT within the event-dispatcher thread.
 	 * Used for most actions in the context menus.
 	 */
 	protected abstract class DelayedAction extends AbstractAction {
@@ -816,19 +828,17 @@ public class DeploymentTree extends JTree {
 		}
 
 		final public void actionPerformed (ActionEvent e) {
-			SwingUtilities.invokeLater(new Runnable() {
-
+			pool.execute(new Runnable() {
 				public void run () {
+					
 					setBusy(true);
 
 					try {
 						actionPerformed();
 
 					} catch (Exception exc) {
-						/*
-						 * This catch-clause will rarely be executed: the menu-item actions
-						 * mostly use the shielded API which catches exceptions way before
-						 */
+						/* This catch-clause will rarely be executed: the menu-item actions
+						 * mostly use the shielded API which catches exceptions way before */
 						ErrorBox.showErrorDialog(DeploymentTree.this, "\"" + getValue(NAME) + "\" failed", exc);
 
 					} finally {
