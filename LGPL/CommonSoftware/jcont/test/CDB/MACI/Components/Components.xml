@@ -55,12 +55,13 @@
 		Container="frodoContainer"
 		 ImplLang="java" />
 
-	<!-- to be used for retrieving as a collocated component. The container will be assigned to the instances based on the call parameters -->	
+	<!-- to be used for retrieving as a collocated component. The container will be determined based on the call parameters -->	
 	<_ Name="MyCollocatedDummy1"
 		Code="alma.jconttest.DummyComponentImpl.DummyComponentHelper" 
 		Type="IDL:alma/jconttest/DummyComponent:1.0" 
 		Container="*"
-		 ImplLang="java" />
+		KeepAliveTime="-1"
+		ImplLang="java" />
 	<_ Name="MyCollocationTargetDummy"
 		Code="alma.jconttest.DummyComponentImpl.DummyComponentHelper" 
 		Type="IDL:alma/jconttest/DummyComponent:1.0" 
