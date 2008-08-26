@@ -4,7 +4,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciSimpleClient.h,v 1.105 2008/08/13 05:54:10 cparedes Exp $"
+* "@(#) $Id: maciSimpleClient.h,v 1.106 2008/08/26 03:18:59 cparedes Exp $"
 *
 * who       when        what
 * --------  --------    ----------------------------------------------
@@ -245,6 +245,13 @@ public:
     ComponentSmartPtr<T> getComponentSmartPtr(const char *name, const char *domain, bool activate)
 	throw (maciErrType::CannotGetComponentExImpl);
 
+    template<class T>
+    ComponentSmartPtr<T> getDynamicComponentSmartPtr(maci::ComponentSpec compSpec, bool markAsDefault)
+    throw(maciErrType::NoPermissionExImpl,
+	  maciErrType::IncompleteComponentSpecExImpl,
+	  maciErrType::InvalidComponentSpecExImpl,
+	  maciErrType::ComponentSpecIncompatibleWithActiveComponentExImpl,
+	  maciErrType::CannotGetComponentExImpl);
     /**
      * It just redirected call to #getComponent (template version)
      * @deprecated the method is deprecated and will be removed in future version of ACS
@@ -563,6 +570,19 @@ ComponentSmartPtr<T> SimpleClient::getComponentSmartPtr(const char *name, const 
 {
     return ComponentSmartPtr<T>(this, true, this->getComponent<T>(name, domain, activate));
 }
+/*
+ * Implementation for getDynamicComponentSmartPtr template method
+ */
+template<class T>
+ComponentSmartPtr<T> SimpleClient::getDynamicComponentSmartPtr(maci::ComponentSpec compSpec, bool markAsDefault)
+    throw(maciErrType::NoPermissionExImpl,
+	  maciErrType::IncompleteComponentSpecExImpl,
+	  maciErrType::InvalidComponentSpecExImpl,
+	  maciErrType::ComponentSpecIncompatibleWithActiveComponentExImpl,
+	  maciErrType::CannotGetComponentExImpl)
+{
+    return ComponentSmartPtr<T>(this, true, this->getDynamicComponent<T>(compSpec,markAsDefault));
+}
 
 /*
  * Implementation for getDynamicComponent
@@ -672,6 +692,7 @@ T* SimpleClient::getDynamicComponent(maci::ComponentSpec compSpec, bool markAsDe
        throw lex;
        }//try-catch
 }//getDynamicComponent
+
 
 /*
  * Implementation for getComponentNonSticky template method

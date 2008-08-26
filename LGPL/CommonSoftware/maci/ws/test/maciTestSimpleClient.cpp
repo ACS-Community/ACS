@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - VLT project
 *
-* "@(#) $Id: maciTestSimpleClient.cpp,v 1.5 2008/08/13 05:54:10 cparedes Exp $"
+* "@(#) $Id: maciTestSimpleClient.cpp,v 1.6 2008/08/26 03:18:59 cparedes Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -11,7 +11,7 @@
 #define _POSIX_SOURCE 1
 #include "vltPort.h"
 
-static char *rcsId="@(#) $Id: maciTestSimpleClient.cpp,v 1.5 2008/08/13 05:54:10 cparedes Exp $"; 
+static char *rcsId="@(#) $Id: maciTestSimpleClient.cpp,v 1.6 2008/08/26 03:18:59 cparedes Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <maciTestC.h>
@@ -99,7 +99,18 @@ int main (int argc, char **argv)
 	 comp->whoami();
 	 // Release the component
 	 client.releaseComponent(comp->name());
-	 
+	
+     //Testing getDynamicComponentSmartPtr 
+	 ComponentSmartPtr<MACI_TEST::DynamicTestClass> compSmrt = 
+	 	client.getDynamicComponentSmartPtr<MACI_TEST::DynamicTestClass>(cSpec,false);
+	// if (CORBA::is_nil(compSmrt)) {
+	// 	ACS_SHORT_LOG((LM_ERROR,"getDynamicComponent: Error getting type %s",cSpec.component_type.in()));
+	 //}
+	 // Execute a method on the remote component
+	 compSmrt->whoami();
+	 // Release the component
+	 client.releaseComponent(compSmrt->name());
+    
 	 // here we test some error handling
 	 try
 	 {
