@@ -43,8 +43,26 @@ package alma.acs.logging.engine.parser;
 public class ACSLogParserFactory {
 	
 	/**
+	 * The supported parsers.
+	 * <P>
+	 * This has been introduced to allow the usage of a specific parser
+	 * especially useful for testing where we need to test parsing against
+	 * each possible parser.
+	 * 
+	 * @author acaproni
+	 *
+	 */
+	public enum ParserTypes {
+		DOM,
+		VTD
+	}
+	
+	/**
 	 * The parser is a singleton built at the first invocation
 	 * of <code>getParser()</code>.
+	 * <P>
+	 * Calls to <code>getParser(ParserType...)</code> do not change the value of this
+	 * property.
 	 */
 	private static ACSLogParser parser=null;
 	
@@ -73,13 +91,57 @@ public class ACSLogParserFactory {
 		if (usingVTD) {
 			try {
 				// Initially try to in instantiate VTD-XML parser
-				parser = new ACSLogParserVTD();
+				parser = getParser(ParserTypes.VTD);
 				return parser;
 			} catch (Throwable t) {
 				usingVTD=false;
 			}
 		} 
-		parser =  new ACSLogParserDOM();
+		parser =  getParser(ParserTypes.DOM);
 		return parser;
+	}
+	
+	/**
+	 * Get a parser of the given type.
+	 * <P>
+	 * This method allows to get a parser of a specific type and is thought for 
+	 * testing purposes. 
+	 * <P>
+	 * If the type of the requested parser is not the type of the parser in use then 
+	 * a new parser is instantiated and returned but the parser in use remains untouched.
+	 * 
+	 * @param parserType The type of the parser to instantiate. It can't be <code>null</code>.
+	 * @return The parser of the given type
+	 * @throws <{@link Exception} in case of error instantiating the parser.
+	 */
+	public static ACSLogParser getParser(ParserTypes parserType) throws Exception {
+		if (parserType==null) {
+			throw new IllegalArgumentException("Tye type can't be null");
+		}
+		if (parserType==ParserTypes.VTD) {
+			parser = new ACSLogParserVTD();
+		} else { 
+			parser =  new ACSLogParserDOM();
+		}
+		return parser;
+	}
+	
+	/**
+	 * Return the type of the parser in use.
+	 * 
+	 * @return The type of the parser in use or <code>null</code> if no parser is still in use 
+	 *         i.e. <code>getParser()</code> has not been executed yet. 
+	 */
+	public static ParserTypes getParserType() {
+		if (parser==null) {
+			return null;
+		}
+		if (parser instanceof ACSLogParserDOM) {
+			return ParserTypes.DOM;
+		}
+		if (parser instanceof ACSLogParserVTD) {
+			return ParserTypes.VTD;
+		}
+		throw new IllegalStateException("Unknown parser type: "+parser.getClass().getName());
 	}
 }
