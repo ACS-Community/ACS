@@ -114,14 +114,11 @@ public class CacheUtils {
 		Random rnd = new Random(System.currentTimeMillis());
 		if (!exact) {
 			// size is an upper limit (inclusive)
-			while (desiredLength==0) {
+			while (desiredLength==0 || (maxValue-minValue+1<desiredLength)) {
 				desiredLength=rnd.nextInt(size+1);
 			}
 		} else {
 			desiredLength=size;
-		}
-		if (maxValue-minValue+1<desiredLength) {
-			throw new IllegalArgumentException("Conflict between params: impossible to generate the keys with the given min/max");
 		}
 		Vector<Integer> v = new Vector<Integer>(desiredLength);
 		if (desiredLength==common.size()) {
