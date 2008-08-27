@@ -127,21 +127,36 @@ public class ACSLogParserFactory {
 	}
 	
 	/**
+	 * Return the type of the passed parser.
+	 * 
+	 * @param parser The parser whose type has to be checked. It can't be <code>null</code>.
+	 * @return The type of the parser.
+	 * @throw <code>Exception</code> if the type of the parser is not recognized/supported.
+	 */
+	public static ParserTypes getParserType(ACSLogParser parserToCheck) throws Exception {
+		if (parserToCheck==null) {
+			throw new IllegalArgumentException("The parser can't be null");
+		}
+		if (parserToCheck instanceof ACSLogParserDOM) {
+			return ParserTypes.DOM;
+		}
+		if (parserToCheck instanceof ACSLogParserVTD) {
+			return ParserTypes.VTD;
+		}
+		throw new Exception("Unknown parser type: "+parserToCheck.getClass().getName());
+	}
+	
+	/**
 	 * Return the type of the parser in use.
 	 * 
 	 * @return The type of the parser in use or <code>null</code> if no parser is still in use 
-	 *         i.e. <code>getParser()</code> has not been executed yet. 
+	 *         i.e. <code>getParser()</code> has not been executed yet.
+	 *  @throw <code>Exception</code> if the type of the parser is not recognized/supported.
 	 */
-	public static ParserTypes getParserType() {
+	public static ParserTypes getParserType() throws Exception {
 		if (parser==null) {
 			return null;
 		}
-		if (parser instanceof ACSLogParserDOM) {
-			return ParserTypes.DOM;
-		}
-		if (parser instanceof ACSLogParserVTD) {
-			return ParserTypes.VTD;
-		}
-		throw new IllegalStateException("Unknown parser type: "+parser.getClass().getName());
+		return getParserType(parser);
 	}
 }
