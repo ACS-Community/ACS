@@ -29,7 +29,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Vector;
 
-
 import alma.acs.util.IsoDateFormat;
 import alma.acs.util.XmlNormalizer;
 
@@ -139,6 +138,11 @@ public class ACSLogParserVTD implements ACSLogParser {
 	 * VTDNav.getTokenOffset(int);
 	 */
 	private Method VTDNav_getTokenOffset=null;
+	
+	/**
+	 * VTDNav.getTokenCount();
+	 */
+	private Method VTDNav_getTokenCount=null;
 	
 	/**
 	 * VTDNav.getTokenLength(int);
@@ -252,6 +256,9 @@ public class ACSLogParserVTD implements ACSLogParser {
 				int.class
 		};
 		VTDNav_getTokenLength=vtdNavClass.getMethod("getTokenLength", getTokenLengthParamsClasses);
+		
+		// Get VTDNav.getTokenCount();
+		VTDNav_getTokenCount=vtdNavClass.getMethod("getTokenCount", new Class[0]);
 		
 		// Get VTDNav.toNormalizedString(int)
 		Class[] toNormalizedStringParamsClasses = new Class[] {
@@ -599,6 +606,18 @@ public class ACSLogParserVTD implements ACSLogParser {
 				// get the additional data, if present
 				Vector<AdditionalData> extraDataList = getAdditionalData(vtdNav, os, bytesArray);
 				
+				// If the logMessage is null then it could be that the data section has
+				// been written before the body of the log so in this case we try to
+				// get again the body of the message.
+				if (logMessage==null) {
+					try {
+						logMessage=getLogMessage(vtdNav);
+					} catch (Exception e) {
+						logMessage=null;
+					}
+						
+				}
+				
 				retVal = new LogEntry(milliseconds,	entryType.ordinal(), fileName,
 						line, routineName, hostName, processName,
 						contextName, threadName, logId, priority,
@@ -615,5 +634,42 @@ public class ACSLogParserVTD implements ACSLogParser {
 			throw new LogParseException("Error navigating parsed XML with VTD navigator!", navEx);
 		}
 		return retVal;
+	}
+	
+	/**
+	 * Get the body of a log.
+	 * <P>
+	 * The log message must be read with this method because of the mixed content
+	 * 
+	 * @param vn The VTDNav
+	 * @return The message of the log
+	 * @throws Exception
+	 */
+	private String getLogMessage(Object vn) throws Exception {
+		Class textIterClass = Class.forName("com.ximpleware.TextIter");
+
+		Constructor textIterCtor = textIterClass.getConstructor(new Class[0]);
+		Object textIter = textIterCtor.newInstance(new Object[0]);
+		
+		Method ti_getNext = textIterClass.getMethod("getNext", new Class[0]);
+		
+		Class[] paramsClasses = new Class[1];
+		paramsClasses[0]=Class.forName("com.ximpleware.VTDNav");
+		Method ti_touch = textIterClass.getMethod("touch", paramsClasses);
+		
+		VTDNav_toElement.invoke(vn, 0);
+		ti_touch.invoke(textIter, vn);
+		int idx;
+		
+		do {
+			idx = (Integer)ti_getNext.invoke(textIter, nullObj);
+			if (idx!=-1) {
+				Object[] pars = new Object[1];
+				pars[0]=idx;
+				String str = (String)VTDNav_toString.invoke(vn,pars);
+				return str;
+			} 
+		} while (idx!=-1);
+		return null;
 	}
 }
