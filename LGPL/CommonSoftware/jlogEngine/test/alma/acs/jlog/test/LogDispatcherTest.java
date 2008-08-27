@@ -37,6 +37,7 @@ import com.cosylab.logging.engine.log.ILogEntry.Field;
 
 import alma.ACSLoggingLog.LogBinaryRecord;
 import alma.ACSLoggingLog.NameValue;
+import alma.acs.util.IsoDateFormat;
 import alma.acs.util.StopWatch;
 
 /**
@@ -255,10 +256,8 @@ public class LogDispatcherTest extends TestCase {
 			logBin.StackLevel=0;
 		}
 		logBin.Thread=(String)log.getField(Field.THREAD);
-		Date date = new Date((Long)log.getField(Field.TIMESTAMP));
-		synchronized(com.cosylab.logging.engine.ACS.CacheUtils.dateFormat) {
-			logBin.TimeStamp=com.cosylab.logging.engine.ACS.CacheUtils.dateFormat.format(date);
-		}
+		final Date date = new Date((Long)log.getField(Field.TIMESTAMP));
+		logBin.TimeStamp=IsoDateFormat.formatDate(date);
 		logBin.type=(short)log.getType().ordinal();
 		logBin.Uri=(String)log.getField(Field.URI);
 		if (log.hasDatas()) {
