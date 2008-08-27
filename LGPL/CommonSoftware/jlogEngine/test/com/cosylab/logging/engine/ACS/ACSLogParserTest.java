@@ -15,10 +15,13 @@ import alma.acs.util.IsoDateFormat;
 
 import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.engine.log.LogTypeHelper;
+import com.cosylab.logging.engine.log.ILogEntry.AdditionalData;
 import com.cosylab.logging.engine.log.ILogEntry.Field;
 
 /**
- * The class to test all available parsers.
+ * The class to test parsing.
+ * <P>
+ * The tests iterate over all possible parsers.
  * 
  * @author acaproni
  *
@@ -63,6 +66,18 @@ public class ACSLogParserTest extends TestCase {
 		"	at org.jacorb.poa.RequestProcessor.process(Unknown Source)" + "\n" +	
 		"	at org.jacorb.poa.RequestProcessor.run(Unknown Source)" + "\n" +
 		"]]></Data><Data Name=\"Pippo\"><![CDATA[Pluto]]></Data></Warning>";
+	
+	/**
+	 * An array of special ogs i.e. logs that for one reason or another presented some problem while parsing.
+	 */
+	private final String[] specialLogs = {
+		// There was an error while parsing logs where the <DATA> appears before the body of the message
+		"<Info TimeStamp=\"2006-03-28T00:26:29.239\">" + 
+		"<Data Name=\"Pippo\"><![CDATA[Pluto]]></Data>" +
+		"<Data Name=\"2ndName\"><![CDATA[2ndVal]]></Data>" +
+		"<![CDATA[Thread name: 'ARCHIVE_BULKSENDER::monitorThread']]>" + 
+		"</Info>"
+	};
 
 	/**
 	 * Parses one log record from XML and verifies a few fields, 
@@ -76,6 +91,7 @@ public class ACSLogParserTest extends TestCase {
 			System.out.println("testParseLogRecord: Testing parser "+type);
 			parser = ACSLogParserFactory.getParser(type);
 			assertNotNull(parser);
+			assertEquals(type, ACSLogParserFactory.getParserType(parser));
 			
 			ILogEntry log = parser.parse(xmlLogWarningWithException);
 			
@@ -83,13 +99,17 @@ public class ACSLogParserTest extends TestCase {
 			assertEquals("wrong typename string", "Warning", ((LogTypeHelper)log.getField(Field.ENTRYTYPE)).logEntryType);
 			assertEquals("wrong type code", LogTypeHelper.WARNING, ((LogTypeHelper)log.getField(Field.ENTRYTYPE)));
 			
-			Vector<ILogEntry.AdditionalData> datas = log.getAdditionalData();
-			assertFalse("There should have been 2 pieces of attached data!", datas == null || datas.size() != 2);
 			Vector<ILogEntry.AdditionalData> additionalData = log.getAdditionalData();
 			assertFalse("There should have been 2 pieces of additional data!", additionalData == null || additionalData.size() != 2);
+			
+			// Check the first data
 			ILogEntry.AdditionalData myData = additionalData.get(0);
 			assertEquals("LoggedException", myData.getName());
 			assertTrue(myData.getValue().startsWith("alma.xmlstore.OperationalPackage.NotFound: uid://X00000000000028aa/X00000002"));
+			// Check the second data
+			ILogEntry.AdditionalData d = additionalData.get(1);
+			assertEquals("Pippo", d.getName());
+			assertEquals("Pluto", d.getValue());
 		}
 	}
 	
@@ -104,6 +124,7 @@ public class ACSLogParserTest extends TestCase {
 			System.out.println("testFields: Testing parser "+type);
 			parser = ACSLogParserFactory.getParser(type);
 			assertNotNull(parser);
+			assertEquals(type, ACSLogParserFactory.getParserType(parser));
 			
 			ILogEntry log = parser.parse(xmlLogInfo1);
 			assertNotNull(log);
@@ -175,6 +196,7 @@ public class ACSLogParserTest extends TestCase {
 			System.out.println("testMultipleParse: Testing parser "+type);
 			parser = ACSLogParserFactory.getParser(type);
 			assertNotNull(parser);
+			assertEquals(type, ACSLogParserFactory.getParserType(parser));
 			
 			String[] logs = new String[3*1000];
 			for (int t=0; t<logs.length; t+=3) {
@@ -185,6 +207,36 @@ public class ACSLogParserTest extends TestCase {
 			for (String xmlLog: logs) {
 				ILogEntry log = parser.parse(xmlLog);
 				assertNotNull(log);
+			}
+		}
+	}
+	
+	/**
+	 * Test special logs i.e. logs that sometime have returned errors while parsing.
+	 * 
+	 * @see <code>specialLogs</code>
+	 * @throws Exception
+	 */
+	public void testSpecialLogs() throws Exception {
+		// Cycle through all available parsers
+		for (ParserTypes type: ParserTypes.values()) {
+			System.out.println("testSpecialLogs: Testing parser "+type);
+			parser = ACSLogParserFactory.getParser(type);
+			assertNotNull(parser);
+			assertEquals(type, ACSLogParserFactory.getParserType(parser));
+			
+			for (String xmlLog: specialLogs) {
+				ILogEntry log = parser.parse(xmlLog);
+				Vector <AdditionalData> data = log.getAdditionalData();
+				if (data!=null) {
+					for (int t=0; t<data.size(); t++) {
+						AdditionalData d = data.get(t);
+						System.out.println("Data:  name="+d.getName()+", value="+d.getValue());
+					}
+				} else {
+					System.out.println("The log has no additional data entries");
+				}
+				System.out.println("Body: "+log.getField(Field.LOGMESSAGE));
 			}
 		}
 	}
