@@ -1,3 +1,8 @@
+1008-08-27 13:04  rtobar
+	* /include/sampledCompImpl.h: Explicitly added <string> to
+	sampledCompImpl.h (it didn't compiled on the standard test environment
+	of ACS)
+
 2008-08-19 21:27  rtobar
 
 	* /src/cl/utfsm/samplingSystemUI/SampTool.java: Sampling Managers
@@ -1064,4 +1069,4 @@
 	  the ssg-legacy
 	  repo.
 
-"@(#) $Id: ChangeLog,v 1.2 2008/08/25 14:32:24 rtobar Exp $"
+"@(#) $Id: ChangeLog,v 1.3 2008/08/27 14:02:42 rtobar Exp $"

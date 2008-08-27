@@ -21,13 +21,15 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: sampledCompImpl.h,v 1.1 2008/08/25 14:32:24 rtobar Exp $"
+* "@(#) $Id: sampledCompImpl.h,v 1.2 2008/08/27 14:02:42 rtobar Exp $"
 *
 */
 
 #ifndef __cplusplus
 #error This is a C++ include file and cannot be used from plain C
 #endif
+
+#include <string>
 
 #include <acscomponentImpl.h>
 #include <baciCharacteristicComponentImpl.h>
