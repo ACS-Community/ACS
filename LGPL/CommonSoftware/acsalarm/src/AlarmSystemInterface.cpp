@@ -1,8 +1,9 @@
-#include "AlarmSystemInterface.h" 
+#include "AlarmSystemInterface.h"
 #include "logging.h"
 
 using std::vector;
 using std::string;
+using std::iterator;
 using std::auto_ptr;
 using acsalarm::FaultState;
 using acsalarm::AlarmSystemInterface;
@@ -32,7 +33,7 @@ void AlarmSystemInterface::push(FaultState & state)
 	Logging::Logger::LoggerSmartPtr myLoggerSmartPtr = getLogger();
 	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "AlarmSystemInterface::push(FaultState): entering.");
 
-	// create a vector and populate with the (single) fault state, 
+	// create a vector and populate with the (single) fault state,
 	// to be passed to the buildMessageXML method
 	vector<FaultState> states;
 	FaultState* st=(FaultState*)&state;
@@ -60,6 +61,9 @@ void AlarmSystemInterface::pushActiveList(vector<FaultState> & activeFaults)
  * Private method to push a collection of fault states, containing the
  * logic which is common to both the push() and pushActiveList() methods.
  *
+ * NOTE: This method is executed only when the CERN alarm system is in use
+ *       because ACSAlarmSystemInterfaceProxy redefines the push...()
+ *
  * @param states
  * @param backup whether we are sending 'backup' alarms or not. backup alarms
  *        are alarms in the active list that are sent on startup, when the source
@@ -73,7 +77,7 @@ void AlarmSystemInterface::commonPush(vector<FaultState> & states, bool backup)
 	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "AlarmSystemInterface::commonPush(): entering.");
 
 	// create the ASIMessage, supplying the faults which are to be published to the alarm server
-	auto_ptr<vector<FaultState> > statesAutoPtr(new vector<FaultState>(states)); 
+	auto_ptr<vector<FaultState> > statesAutoPtr(new vector<FaultState>(states));
 	ASIMessage asiMessage(statesAutoPtr);
 
 	// populate the ASIMessage's source timestamp (with the current time)
@@ -91,9 +95,25 @@ void AlarmSystemInterface::commonPush(vector<FaultState> & states, bool backup)
 
 	// set the ASIMessage's version
 	asiMessage.setVersion(configuration.getASIVersion());
-	
+
 	// publish the ASIMessage to the alarm server
 	publishMessage(asiMessage);
+
+	// Log an LM_ALARM message for each fault state in the vector
+	for (vector<FaultState>::iterator it = states.begin(); it!=states.end(); ++it/* increment operand is used to move to next element*/) {
+	    char msgA[16];
+	    sprintf(msgA,"%d",(*it).getCode());
+	    string msg="Alarm sent: <";
+		msg+=(*it).getFamily();
+		msg+=",";
+		msg+=(*it).getMember();
+		msg+=",";
+		msg+=msgA;
+		msg+="> ";
+		msg+=(*it).getDescriptor();
+		ACS_SHORT_LOG((LM_ALERT, msg.c_str()));
+	}
+
 
 	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "AlarmSystemInterface::commonPush(): exiting.");
 }
