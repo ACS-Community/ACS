@@ -21,7 +21,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: sampledCompImpl.h,v 1.2 2008/08/27 14:02:42 rtobar Exp $"
+* "@(#) $Id: sampledCompImpl.h,v 1.3 2008/08/28 18:54:22 rtobar Exp $"
 *
 */
 
@@ -85,7 +85,7 @@ class sampledCompImpl: public virtual CharacteristicComponentImpl,
 		SmartPropertyPointer<ROlong>     m_ROlong_sp;
 		SmartPropertyPointer<RWlongLong> m_RWlongLong_sp;
 		SmartPropertyPointer<ROlongLong> m_ROlongLong_sp;
-		string component_name;
+		::std::string component_name;
 	/**
 	 * ALMA C++ coding standards state copy operators should be disabled.
 	 */
