@@ -7,6 +7,7 @@ import cern.laser.source.alarmsysteminterface.impl.AlarmSystemInterfaceProxy;
 import cern.laser.source.alarmsysteminterface.FaultState;
 import cern.laser.source.alarmsysteminterface.ASIException;
 
+import alma.acs.logging.AcsLogLevel;
 import alma.acs.util.XmlNormalizer;
 import alma.alarmsystem.source.ACSAlarmSystemInterface;
 import alma.alarmsystem.source.ACSFaultState;
@@ -34,7 +35,7 @@ public class ACSLaserSource extends AlarmSystemInterfaceProxy implements ACSAlar
 			StringBuilder logStr = new StringBuilder("Exception "+t.getMessage()+" throwing alarm <");
 			logStr.append(state.getFamily()+','+state.getMember()+','+state.getCode()+">");
 			logStr.append(" "+state.getDescriptor());
-			logger.severe(logStr.toString());
+			logger.log(AcsLogLevel.ALERT,logStr.toString());
 		}
 	}
 	
@@ -58,6 +59,6 @@ public class ACSLaserSource extends AlarmSystemInterfaceProxy implements ACSAlar
 		StringBuilder sb = new StringBuilder("Alarm sent: <");
 		sb.append(fs.getFamily()+','+fs.getMember()+','+fs.getCode()+">");
 		sb.append(" "+fs.getDescriptor());
-		logger.severe(XmlNormalizer.normalize(sb.toString()));
+		logger.log(AcsLogLevel.ALERT,XmlNormalizer.normalize(sb.toString()));
 	}
 }
