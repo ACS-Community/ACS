@@ -6,7 +6,6 @@ import xml
 import Tkinter  #not strictly necessary but nice to check for any ways.
 import Pmw
 import pychecker
-import numarray
 import matplotlib
 import numpy
 import pysnmp
