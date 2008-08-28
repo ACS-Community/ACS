@@ -238,6 +238,11 @@ public class LogFrame extends JFrame implements WindowListener {
 		if (initLogFileName!=null) {
 			// Check if the file in the cmd line is readable
 			logFile = new File(initLogFileName);
+			if (!logFile.exists()) {
+				System.err.println("log file "+initLogFileName+" does not exist!");
+				initLogFileName=null;
+				System.exit(-1);
+			}
 			if (!logFile.canRead()) {
 				System.err.println("log file "+initLogFileName+" is unreadable!");
 				initLogFileName=null;
@@ -248,6 +253,10 @@ public class LogFrame extends JFrame implements WindowListener {
 		File filterFile = null;
 		if (initFilterFileName!=null) {
 			filterFile = new File(initFilterFileName);
+			if (!filterFile.exists()) {
+				System.err.println("Filter file "+initFilterFileName+" does not exist!");
+				System.exit(-1);
+			}
 			if (!filterFile.canRead()) {
 				System.err.println("Filter file "+initFilterFileName+" is unreadable!");
 				System.exit(-1);

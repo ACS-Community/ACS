@@ -253,6 +253,10 @@ public class LogAssistant {
 					return false;
 				}
 				File filterFile = new File(filterFileName);
+				if (!filterFile.exists()) {
+					System.err.println(filterFileName+" does not exist!");
+					return false;
+				}
 				if (!filterFile.canRead()) {
 					System.out.println(filterFileName+" is unreadable");
 					return false;
@@ -280,6 +284,10 @@ public class LogAssistant {
 			System.out.println("Invalid source file name: "+sourceFileName);
 		}
 		File inF = new File(sourceFileName);
+		if (!inF.exists()) {
+			System.err.println(sourceFileName+" does not exist!");
+			return false;
+		}
 		if (!inF.canRead()) {
 			System.out.println(sourceFileName+" is unreadable");
 			return false;
