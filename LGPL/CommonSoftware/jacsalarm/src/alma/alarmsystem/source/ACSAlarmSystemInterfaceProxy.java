@@ -6,6 +6,7 @@ import java.util.logging.Logger;
 
 import java.util.Iterator;
 
+import alma.acs.logging.AcsLogLevel;
 import alma.acs.util.XmlNormalizer;
 
 /**
@@ -114,7 +115,7 @@ public class ACSAlarmSystemInterfaceProxy implements ACSAlarmSystemInterface {
 		StringBuilder sb = new StringBuilder("Alarm sent: <");
 		sb.append(fs.getFamily()+','+fs.getMember()+','+fs.getCode()+'>');
 		sb.append(" "+fs.getDescriptor());
-		m_logger.severe(XmlNormalizer.normalize(sb.toString()));
+		m_logger.log(AcsLogLevel.ALERT,XmlNormalizer.normalize(sb.toString()));
 	}
 }
 
