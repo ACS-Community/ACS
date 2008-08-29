@@ -847,7 +847,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		try
 		{
 		        ACSAlarmSystemInterfaceFactory.init(managerContainerServices);
-		        alarmSource = ACSAlarmSystemInterfaceFactory.createSource("Manager");
+		        alarmSource = ACSAlarmSystemInterfaceFactory.createSource("ALARM_SYSTEM_SOURCES");
 		}
 		catch (Throwable ex)
 		{
