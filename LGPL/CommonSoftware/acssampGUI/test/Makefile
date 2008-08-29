@@ -16,7 +16,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.1 2008/08/25 14:32:24 rtobar Exp $"
+# "@(#) $Id: Makefile,v 1.2 2008/08/29 21:25:20 rtobar Exp $"
 #
 # Makefile of ssgTestSuite
 #
@@ -36,7 +36,7 @@ LIBRARIES       = sampledCompImpl
 
 ## <brief description of lllll library>
 sampledCompImpl_OBJECTS  = sampledCompImpl
-sampledCompImpl_LIBS     = sampledCompStubs
+sampledCompImpl_LIBS     = sampledCompStubs baci acsutil acserr
 
 #
 # Scripts (public and local)
