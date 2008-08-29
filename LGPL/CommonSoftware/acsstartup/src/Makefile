@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.46 2008/02/20 18:10:33 agrimstrup Exp $"
+# "@(#) $Id: Makefile,v 1.47 2008/08/29 10:20:47 msekoran Exp $"
 #
 # Makefile of ........
 #
@@ -44,7 +44,16 @@ SCRIPTS         = acsStartContainer acsStopContainer \
 		  acsstartupLogging.sh \
 		  acsstartupReport \
 		  acsStatus acsstartupLoadIFR \
-		  acsstartupProcesses
+		  acsstartupProcesses \
+		  acsACSLogService \
+		  acsConfigurationDatabase \
+		  acsInterfaceRepository \
+		  acsLoggingService \
+		  acsManager \
+		  acsNamingService \
+		  acsNotifyService
+
+
 
 SCRIPTS_L       =
 

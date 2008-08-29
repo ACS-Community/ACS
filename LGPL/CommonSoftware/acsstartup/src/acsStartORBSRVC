@@ -6,10 +6,11 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: acsStartORBSRVC,v 1.73 2008/04/15 16:39:52 bjeram Exp $"
+# "@(#) $Id: acsStartORBSRVC,v 1.74 2008/08/29 10:20:47 msekoran Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
+# azagar   2008-08-08 split on seperate service startup scripts
 # msekoran 2007-11-27 Added alarm notification service
 # jschwarz 2007-11-09 Added option to use TMCDB instead of (default) XML CDB
 # sharring 2004-06-23 restructured for performance
@@ -53,6 +54,8 @@
 #
 
 ACS_LOG_COMMAND $@
+COMMAND=`basename $0`
+PARAMS=$*
 
 PID=$$
 export HOST=`getIP`
@@ -147,482 +150,62 @@ fi
 #Check command-line args for baseport option
 if [ "$CL_BASEPORT" ]
 then
-    export ACS_INSTANCE="$CL_BASEPORT"
+  export ACS_INSTANCE=$CL_BASEPORT
 fi
-
-#Makes shure there is an initial value
-if [ X"$ACS_STARTUP_TIMEOUT_MULTIPLIER" = X ]
- then
-   ACS_STARTUP_TIMEOUT_MULTIPLIER=5
-fi
-
-#maximum timeout for any given process to complete
-MAX_TIMEOUT=$(( 10 * $ACS_STARTUP_TIMEOUT_MULTIPLIER ))
-
-export STD_SLEEP=3
-
-export INSTANCE_DIR=`getInstanceDirName $ACS_INSTANCE`
-
-#use the instance directory to get the complete names of the 
-#files where process IDs are stored in.
-IR_PIDFILE=$INSTANCE_DIR/$ACS_IR_PIDFILE
-NAMING_SERVICE_PIDFILE=$INSTANCE_DIR/$ACS_NAMING_SERVICE_PIDFILE
-NOTIFY_SERVICE_PIDFILE=$INSTANCE_DIR/$ACS_NOTIFY_SERVICE_PIDFILE
-LOGGING_NOTIFY_SERVICE_PIDFILE=$INSTANCE_DIR/$ACS_LOGGING_NOTIFY_SERVICE_PIDFILE
-ARCHIVE_NOTIFY_SERVICE_PIDFILE=$INSTANCE_DIR/$ACS_ARCHIVE_NOTIFY_SERVICE_PIDFILE
-ALARM_NOTIFY_SERVICE_PIDFILE=$INSTANCE_DIR/$ACS_ALARM_NOTIFY_SERVICE_PIDFILE
-LOGGING_SERVICE_PIDFILE=$INSTANCE_DIR/$ACS_LOGGING_SERVICE_PIDFILE
-LOG_SERVICE_PIDFILE=$INSTANCE_DIR/$ACS_LOG_SERVICE_PIDFILE
-IRFEED_PIDFILE=$INSTANCE_DIR/$ACS_IRFEED_PIDFILE
-
-#set the filenames where binaries' output will be sent
-NOTIFY_OUT=$INSTANCE_DIR/$ACS_NOTIFY_OUT
-LOG_NOTIFY_OUT=$INSTANCE_DIR/$ACS_LOG_NOTIFY_OUT
-ARCHIVE_NOTIFY_OUT=$INSTANCE_DIR/$ACS_ARCHIVE_NOTIFY_OUT
-ALARM_NOTIFY_OUT=$INSTANCE_DIR/$ACS_ALARM_NOTIFY_OUT
-LOG_SERVICE_OUT=$INSTANCE_DIR/$ACS_LOG_SERVICE_OUT
-CDB_OUT=$INSTANCE_DIR/$ACS_CDB_OUT
-LOGGING_OUT=$INSTANCE_DIR/$ACS_LOGGING_OUT
-
-#IOR locations
-NAME_IOR=$INSTANCE_DIR/$ACS_NAMING_SERVICE_IORFILE
-NOTIFY_IOR=$INSTANCE_DIR/$ACS_NOTIFY_SERVICE_IORFILE
-LOGGING_NOTIFY_IOR=$INSTANCE_DIR/$ACS_LOGGING_NOTIFY_SERVICE_IORFILE
-ARCHIVE_NOTIFY_IOR=$INSTANCE_DIR/$ACS_ARCHIVE_NOTIFY_SERVICE_IORFILE
-ALARM_NOTIFY_IOR=$INSTANCE_DIR/$ACS_ALARM_NOTIFY_SERVICE_IORFILE
-IR_IOR=$INSTANCE_DIR/$ACS_IR_IORFILE
-
-#determine the TCP ports to be used
-NAMING_SERVICE_PORT=`getNamingServicePort`
-NOTIFY_SERVICE_PORT=`getNotifyServicePort`
-LOGGING_NOTIFY_SERVICE_PORT=`getLoggingNotifyServicePort`
-ARCHIVE_NOTIFY_SERVICE_PORT=`getArchiveNotifyServicePort`
-ALARM_NOTIFY_SERVICE_PORT=`getAlarmNotifyServicePort`
-LOGGING_SERVICE_PORT=`getLoggingServicePort`
-IR_PORT=`getIRPort`
-LOG_SERVICE_PORT=`getLogPort`
-CDB_PORT=`getCDBPort`
 
 # Always use -ORBDottedDecimalAddresses=1
 ORBOPTS="-ORBDottedDecimalAddresses 1"
 
-#-------------------------------------------------------------------------
-#a sanity check to ensure user does not run acsStartORBSRVC twice in a row
-#using the same baseport
-if [ -e $NAMING_SERVICE_PIDFILE ]
-then
-    ACS_LOG_ERROR "acsStartORBSRVC" "It appears as if you're trying to run the `basename $0` command twice"
-    ACS_LOG_ERROR "acsStartORBSRVC" "    in a row using the same ACS_INSTANCE ($ACS_INSTANCE). This is not possible."
-    exit $EC_FAILURE
-else
-    mkdir -p $INSTANCE_DIR/$ACS_PID_DIR
-    mkdir -p $INSTANCE_DIR/$ACS_OUT_DIR
-    mkdir -p $INSTANCE_DIR/$ACS_IOR_DIR
-    mkdir -p $INSTANCE_DIR/$ACS_CNF_DIR
-fi
 
-#
-# Makes sure that the directory for temporary 
-# ACS_INSTANCE files exists.
-#
-if ! createInstanceDirectory $ACS_INSTANCE
-then
-     ACS_LOG_ERROR "acsStartORBSRVC" "Cannot create $INSTANCE_DIR"
-     exit $EC_CANNOTCREATE
-fi
-
-#ensure the port numbers are actually free
-if ! checkTCPPort $NAMING_SERVICE_PORT
-then
-    ACS_LOG_ERROR "acsStartORBSRVC" "Naming service port is being used by another process. Cannot continue!"
-    exit $EC_NOPORT
-
-elif ! checkTCPPort $NOTIFY_SERVICE_PORT
-then
-    ACS_LOG_ERROR "acsStartORBSRVC" "Notify service port is being used by another process. Cannot continue!"
-    exit $EC_NOPORT
-
-elif ! checkTCPPort $LOGGING_NOTIFY_SERVICE_PORT
-then
-    ACS_LOG_ERROR "acsStartORBSRVC" "Logging notify service port is being used by another process. Cannot continue!"
-    exit $EC_NOPORT
-
-elif ! checkTCPPort $ARCHIVE_NOTIFY_SERVICE_PORT
-then
-    ACS_LOG_ERROR "acsStartORBSRVC" "Archive notify service port is being used by another process. Cannot continue!"
-    exit $EC_NOPORT
-
-elif ! checkTCPPort $ALARM_NOTIFY_SERVICE_PORT
-then
-    ACS_LOG_ERROR "acsStartORBSRVC" "Alarm notify service port is being used by another process. Cannot continue!"
-    exit $EC_NOPORT
-
-elif ! checkTCPPort $LOGGING_SERVICE_PORT
-then
-    ACS_LOG_ERROR "acsStartORBSRVC" "Logging service port is being used by another process. Cannot continue!"
-    exit $EC_NOPORT
-
-elif ! checkTCPPort $IR_PORT
-then
-    ACS_LOG_ERROR "acsStartORBSRVC" "Interface repository port is being used by another process. Cannot continue!"
-    exit $EC_NOPORT
-
-elif ! checkTCPPort $LOG_SERVICE_PORT
-then
-    ACS_LOG_ERROR "acsStartORBSRVC" "Log service port is being used by another process. Cannot continue!"
-    exit $EC_NOPORT
-
-elif ! checkTCPPort $CDB_PORT
-then
-    ACS_LOG_ERROR "acsStartORBSRVC" "CDB port is being used by another process. Cannot continue!"
-    exit $EC_NOPORT
-fi
 
 
 ################################
-#Abnormal termination function
+# ORB Services Startup
 ################################
+
 function timeoutExit
 {
-    if [ "X" != "X$NAMING_SERVICE_PID" ]
-    then
-	acsKillProc $NAMING_SERVICE_PID 2> /dev/null || ACS_LOG_ERROR "acsStartORBSRVC" "Cannot kill the naming service"
-    fi 
-
-    if [ "X" != "X$NOTIFY_SERVICE_PID" ]
-    then
-	acsKillProc $NOTIFY_SERVICE_PID 2> /dev/null || ACS_LOG_ERROR "acsStartORBSRVC" "Cannot kill the notification service"
-    fi 
-
-    if [ "X" != "X$LOGGING_NOTIFY_SERVICE_PID" ]
-    then
-	acsKillProc $LOGGING_NOTIFY_SERVICE_PID 2> /dev/null || ACS_LOG_ERROR "acsStartORBSRVC" "Cannot kill the logging notification service"
-    fi 
-
-    if [ "X" != "X$ARCHIVE_NOTIFY_SERVICE_PID" ]
-    then
-	acsKillProc $ARCHIVE_NOTIFY_SERVICE_PID 2> /dev/null || ACS_LOG_ERROR "acsStartORBSRVC" "Cannot kill the archive notification service"
-    fi 
-
-    if [ "X" != "X$ALARM_NOTIFY_SERVICE_PID" ]
-    then
-	acsKillProc $ALARM_NOTIFY_SERVICE_PID 2> /dev/null || ACS_LOG_ERROR "acsStartORBSRVC" "Cannot kill the alarm notification service"
-    fi 
-
-    if [ "X" != "X$LOGGING_SERVICE_PID" ]
-    then
-	acsKillProc $LOGGING_SERVICE_PID 2> /dev/null || ACS_LOG_ERROR "acsStartORBSRVC" "Cannot kill the ACS logging service"
-    fi 
-
-    if [ "X" != "X$IRFEED_PID" ]
-    then
-	acsKillProc $IRFEED_PID 2> /dev/null || ACS_LOG_ERROR "acsStartORBSRVC" "Cannot kill the interface repository"
-    fi 
-
-    if [ "X" != "X$IR_PID" ]
-    then
-	acsKillProc $IR_PID 2> /dev/null || ACS_LOG_ERROR "acsStartORBSRVC" "Cannot kill the interface repository"
-    fi 
-
-    if [ "X" != "X$LOG_SERVICE_PID" ]
-    then
-	acsKillProc $LOG_SERVICE_PID 2> /dev/null || ACS_LOG_ERROR "acsStartORBSRVC" "Cannot kill the ACS log service"
-    fi 
-
-    if [ "X" != "X$CDB_PORT" ]
-    then
-	cdbjDALShutdown -d corbaloc::$HOST:$CDB_PORT/CDB &> /dev/null || ACS_LOG_ERROR "acsStartORBSRVC" "Cannot kill the CDB"
-    fi
-
-    rm -rf $INSTANCE_DIR || ACS_LOG_ERROR "acsStartORBSRVC" "Cannot delete $INSTANCE_DIR"
-    exit $EC_TIMEOUT
+  if [ $1 -ge 1 ]; then acsNamingService -k ; fi
+  if [ $1 -ge 4 ]; then acsNotifyService -k ; fi
+  if [ $1 -ge 5 ]; then acsNotifyService -k -n Logging ; fi
+  if [ $1 -ge 6 ]; then acsNotifyService -k -n Archive ; fi
+  if [ $1 -ge 7 ]; then acsNotifyService -k -n Alarm ; fi
+  if [ $1 -ge 8 ]; then acsLoggingService -k ; fi
+  if [ $1 -ge 2 ]; then acsInterfaceRepository -k ; fi
+  if [ $1 -ge 9 ]; then acsACSLogService -k ; fi
+  if [ $1 -ge 3 ]; then acsConfigurationDatabase -k ; fi
+  rm -rf $INSTANCE_DIR &> /dev/null || (ACS_LOG_ERROR "$COMMAND" "Cannot remove $INSTANCE_DIR")
+  exit $EC_TIMEOUT
 }
 
-ACS_LOG_INFO "acsStartORBSRVC" "Starting CORBA Services"
-ACS_LOG_INFO "acsStartORBSRVC" "    Orb options:  $ORBOPTS"
+ACS_LOG_INFO "$COMMAND" "Starting CORBA Services"
+ACS_LOG_INFO "$COMMAND" "    Orb options:  $ORBOPTS"
 
-################################
-# Interface Repository
-################################
-# The IOR is saved in $IR_IOR
-#
-# Note: this is started first, so that we can do the IFR loading (which depends on IR being started)
-#       immediately afterwards. IFR loading is a long-running process, so we want to start it ASAP.
-#
-ACS_LOG_INFO "acsStartORBSRVC" "Starting Interface Repository"
-
-# This is TAO Interface Repository
-# $ACE_ROOT/TAO/orbsvcs/IFR_Service/IFR_Service -ORBEndpoint iiop://$HOST:$IR_PORT  -o $IR_IOR $ORBOPTS &
-
-#This is MICO Interface Repository
-LD_LIBRARY_PATH=$MICO_HOME/lib:$LD_LIBRARY_PATH
-$MICO_HOME/bin/ird -ORBNoResolve -ORBIIOPAddr inet:$HOST:$IR_PORT --ior $IR_IOR &
-
-IR_PID=$!
-echo $IR_PID > $IR_PIDFILE
-
-
-#block until the IOR shows up in the the correct file
-if ! acsutilBlock -t $MAX_TIMEOUT -f $IR_IOR -b "IOR:"
-then
-    ACS_LOG_ERROR "acsStartORBSRVC" "Unable to start the Interface Repository!"
-    ACS_LOG_ERROR "acsStartORBSRVC" "Try increasing the value of \$ACS_STARTUP_TIMEOUT_MULTIPLIER"
-    timeoutExit
-fi
-
-# Now that the Interface Repository is running, 
-# it is safe to load the Interface Repository.
-#
-# Loading ACS IDL Interfaces in Interface Repository, as a background job, so processing can continue in parallel.
-
-if [ "$CL_LOADIFR" = "true" ]
-then
-
-    acsstartupLoadIFR & #this C++ based script is a couple of seconds faster than acsIrFeed.
-#acsIrfeed  -IRcorbaloc corbaloc::$HOST:$ACS_IR_PORT/InterfaceRepository &
-    IRFEED_PID=$!
-    echo $IRFEED_PID > $IRFEED_PIDFILE
-fi
-
-################################
-# Naming Service
-################################
-ACS_LOG_INFO "acsStartORBSRVC" "Starting Naming Service"
-$ACE_ROOT/TAO/orbsvcs/Naming_Service/Naming_Service -ORBEndpoint iiop://$HOST:$NAMING_SERVICE_PORT -o $NAME_IOR $ORBOPTS &
-
-NAMING_SERVICE_PID=$!
-echo $NAMING_SERVICE_PID  > $NAMING_SERVICE_PIDFILE
-
-#block until the IOR shows up in the the correct file
-if ! acsutilBlock -t $MAX_TIMEOUT -f $NAME_IOR -b "IOR:"
-then
-    ACS_LOG_ERROR "acsStartORBSRVC" "Unable to start the Naming Service!"
-    ACS_LOG_ERROR "acsStartORBSRVC" "Try increasing the value of \$ACS_STARTUP_TIMEOUT_MULTIPLIER"
-    timeoutExit
-fi
-
-######################################
-#   ACS Configuration Database
-#
-#   Note: this is started immediately after the naming service 
-#         (which is its only dependency) in the background, 
-#         for performance reasons. The code which
-#         checks to make sure cdbjDAL has started properly
-#         has been moved to the end of this file to improve
-#         performance.
-#######################################
-
-CDB_RECOVER_OPT=-n
-if [ "$CL_RECOVER" ] ; then
-	CDB_RECOVER_OPT=
-fi
-
-ENABLE_TMCDB=`echo ${ENABLE_TMCDB:-"false"} | tr "[:upper:]" "[:lower:]"`
-if [ $ENABLE_TMCDB = "true" ] || [ $ENABLE_TMCDB = "y" ] || [ $ENABLE_TMCDB = "1" ]
-then
-	ACS_LOG_INFO "acsStartORBSRVC" "Starting ALMA Telescope and Monitor Configuration Database"
-	if [ `searchFile lib/TMCDB.jar` = "#error#" ] # sanity check
-	then
-		ACS_LOG_ERROR "acsStartORBSRVC" "The TMCDB implementation cannot be found. Did you build ICD/CONTROL/TMCDB?"
-		exit $EC_FAILURE;
-	fi
-	ACS_LOG_INFO "acsStartORBSRVC" "Using configuration $TMCDB_CONFIGURATION_NAME"
-	LOAD_FROM_XML=`echo ${LOAD_FROM_XML:-"false"} | tr "[:upper:]" "[:lower:]"`
-	if [ $LOAD_FROM_XML = "true" ] || [ $LOAD_FROM_XML = "y" ] || [ $LOAD_FROM_XML = "1" ]
-	then
-		loadfrom="-loadXMLCDB"
-		ACS_LOG_INFO "acsStartORBSRVC" "Will load TMCDB from existing XML CDB at $ACS_CDB"
-	else
-		loadfrom=""
-	fi
-	hibernateCdbJDal -OAIAddr $HOST -OAport $CDB_PORT $CDB_RECOVER_OPT $loadfrom 2>&1 | tee $CDB_OUT &
-else
-	ACS_LOG_INFO "acsStartORBSRVC" "Starting ACS Configuration Database"
-	ACS_LOG_INFO "acsStartORBSRVC" "    CDB data is in:  $ACS_CDB"
-	cdbjDAL -OAIAddr $HOST -OAport $CDB_PORT $CDB_RECOVER_OPT 2>&1 | tee $CDB_OUT &
-fi
-#copy tee's PID
-echo $! >> $INSTANCE_DIR/$ACS_PIDSFILE
-
-# Now that the Naming Service and Interface Repository are both running, 
-# the Interface Repository is added to the Name Service
-# using the temporary file, that is afterwards deleted.
-$ACE_ROOT/TAO/utils/nslist/nsadd --name InterfaceRepository --ior `cat $IR_IOR` -ORBInitRef NameService=corbaloc::$HOST:$NAMING_SERVICE_PORT/NameService $ORBOPTS &
-
-#------------------------------------------------------------------------------------------
-################################
-# Notify Service
-################################
-# Note - this must be started after the naming service is running.
-
-ACS_LOG_INFO "acsStartORBSRVC" "Starting Notify Service"
-
-# I need to cd to $ACE_ROOT/TAO/orbsvcs/Notify_Service
-# in order to get the correct svc.conf service configuration file.
-STARTUP_DIR=$PWD
-cd $ACE_ROOT/TAO/orbsvcs/Notify_Service
-$ACE_ROOT/TAO/orbsvcs/Notify_Service/Notify_Service -ORBEndpoint iiop://$HOST:$NOTIFY_SERVICE_PORT -ORBInitRef NameService=corbaloc::$HOST:$NAMING_SERVICE_PORT/NameService -IORoutput $NOTIFY_IOR -ORBDebug -ORBDebugLevel 1 $ORBOPTS -Boot &> $NOTIFY_OUT &
-cd $STARTUP_DIR
-
-NOTIFY_SERVICE_PID=$!
-echo $NOTIFY_SERVICE_PID  > $NOTIFY_SERVICE_PIDFILE
-
-#block until the IOR shows up in the the correct file
-if ! acsutilBlock -t $MAX_TIMEOUT -f $NOTIFY_IOR -b "IOR:"
-then
-    ACS_LOG_ERROR "acsStartORBSRVC" "The IOR of the notify service was never emitted!"
-    ACS_LOG_ERROR "acsStartORBSRVC" "Try increasing the value of \$ACS_STARTUP_TIMEOUT_MULTIPLIER"
-    timeoutExit
-fi
-
-#------------------------------------------------------------------------------------------
-################################
-# Logging Notify Service
-################################
-# Note - this must be started after the naming service is running.
-
-ACS_LOG_INFO "acsStartORBSRVC" "Starting Logging Notify Service"
-
-# Let's create configuration file
-# we replace slashes(/) with \/ which can be used in sed
-LOGGING_NOTIFY_MC_IOR=`echo $INSTANCE_DIR | sed 's/\//\\\\\//g'`"\/iors\/LoggingNotifyMCIOR"
-sed -e "s/NS_HOST/$HOST/" -e "s/NS_PORT/$NAMING_SERVICE_PORT/" -e "s/MC_IOR/$LOGGING_NOTIFY_MC_IOR/"  $ACSROOT/config/svc.conf/LoggingNotify.svc.conf > $INSTANCE_DIR/$ACS_CNF_DIR/LoggingNotify.svc.conf
-
-# I need to cd to $ACE_ROOT/TAO/orbsvcs/Notify_Service
-# in order to get the correct svc.conf service configuration file.
-# STARTUP_DIR=$PWD
-# cd $ACE_ROOT/TAO/orbsvcs/Notify_Service
-$ACE_ROOT/TAO/orbsvcs/Notify_Service/Notify_Service -ORBSvcConf $INSTANCE_DIR/$ACS_CNF_DIR/LoggingNotify.svc.conf  -ORBEndpoint iiop://$HOST:$LOGGING_NOTIFY_SERVICE_PORT -ORBInitRef NameService=corbaloc::$HOST:$NAMING_SERVICE_PORT/NameService -IORoutput $LOGGING_NOTIFY_IOR $ORBOPTS -Factory LoggingNotifyEventChannelFactory -Boot &> $LOG_NOTIFY_OUT &
-# cd $STARTUP_DIR
-
-LOGGING_NOTIFY_SERVICE_PID=$!
-echo $LOGGING_NOTIFY_SERVICE_PID  > $LOGGING_NOTIFY_SERVICE_PIDFILE
-
-#block until the IOR shows up in the the correct file
-if ! acsutilBlock -t $MAX_TIMEOUT -f $LOGGING_NOTIFY_IOR -b "IOR:"
-then
-    ACS_LOG_ERROR "acsStartORBSRVC" "The IOR of the logging notify service was never emitted!"
-    ACS_LOG_ERROR "acsStartORBSRVC" "Try increasing the value of \$ACS_STARTUP_TIMEOUT_MULTIPLIER"
-    timeoutExit
-fi
-
-export LOGGING_CHANNEL=LoggingChannel
-if [ "$ACS_LOG_BIN" = "true" ]
-then 
-    export LOGGING_CHANNEL=LoggingChannelBin
-fi
-# Create the logging channel now.
-acsstartupCreateChannel --name_service corbaloc::$HOST:$NAMING_SERVICE_PORT/NameService --notify_service_id LoggingNotifyEventChannelFactory --channel_id $LOGGING_CHANNEL #--max_queue_length 10 --reject_new_events true #--discard_policy FifoOrder #
-
-#------------------------------------------------------------------------------------------
-################################
-# Archive Notify Service
-################################
-# Note - this must be started after the naming service is running.
-
-ACS_LOG_INFO "acsStartORBSRVC" "Starting Archive Notify Service"
-
-# I need to cd to $ACE_ROOT/TAO/orbsvcs/Notify_Service
-# in order to get the correct svc.conf service configuration file.
-STARTUP_DIR=$PWD
-cd $ACE_ROOT/TAO/orbsvcs/Notify_Service
-$ACE_ROOT/TAO/orbsvcs/Notify_Service/Notify_Service -ORBEndpoint iiop://$HOST:$ARCHIVE_NOTIFY_SERVICE_PORT -ORBInitRef NameService=corbaloc::$HOST:$NAMING_SERVICE_PORT/NameService -IORoutput $ARCHIVE_NOTIFY_IOR $ORBOPTS -Factory ArchiveNotifyEventChannelFactory -Boot &> $ARCHIVE_NOTIFY_OUT &
-cd $STARTUP_DIR
-
-ARCHIVE_NOTIFY_SERVICE_PID=$!
-echo $ARCHIVE_NOTIFY_SERVICE_PID  > $ARCHIVE_NOTIFY_SERVICE_PIDFILE
-
-#block until the IOR shows up in the the correct file
-if ! acsutilBlock -t $MAX_TIMEOUT -f $ARCHIVE_NOTIFY_IOR -b "IOR:"
-then
-    ACS_LOG_ERROR "acsStartORBSRVC" "The IOR of the archive notify service was never emitted!"
-    ACS_LOG_ERROR "acsStartORBSRVC" "Try increasing the value of \$ACS_STARTUP_TIMEOUT_MULTIPLIER"
-    timeoutExit
-fi
-
-# Create the archiving channel now.
-acsstartupCreateChannel --name_service corbaloc::$HOST:$NAMING_SERVICE_PORT/NameService --notify_service_id ArchiveNotifyEventChannelFactory --channel_id ArchivingChannel #--max_queue_length 10 --reject_new_events true #--discard_policy FifoOrder #
-
-#------------------------------------------------------------------------------------------
-################################
-# Alarm Notify Service
-################################
-# Note - this must be started after the naming service is running.
-
-ACS_LOG_INFO "acsStartORBSRVC" "Starting Alarm Notify Service"
-
-# I need to cd to $ACE_ROOT/TAO/orbsvcs/Notify_Service
-# in order to get the correct svc.conf service configuration file.
-STARTUP_DIR=$PWD
-cd $ACE_ROOT/TAO/orbsvcs/Notify_Service
-$ACE_ROOT/TAO/orbsvcs/Notify_Service/Notify_Service -ORBEndpoint iiop://$HOST:$ALARM_NOTIFY_SERVICE_PORT -ORBInitRef NameService=corbaloc::$HOST:$NAMING_SERVICE_PORT/NameService -IORoutput $ALARM_NOTIFY_IOR $ORBOPTS -Factory AlarmNotifyEventChannelFactory -Boot &> $ALARM_NOTIFY_OUT &
-cd $STARTUP_DIR
-
-ALARM_NOTIFY_SERVICE_PID=$!
-echo $ALARM_NOTIFY_SERVICE_PID  > $ALARM_NOTIFY_SERVICE_PIDFILE
-
-#block until the IOR shows up in the the correct file
-if ! acsutilBlock -t $MAX_TIMEOUT -f $ALARM_NOTIFY_IOR -b "IOR:"
-then
-    ACS_LOG_ERROR "acsStartORBSRVC" "The IOR of the alarm notify service was never emitted!"
-    ACS_LOG_ERROR "acsStartORBSRVC" "Try increasing the value of \$ACS_STARTUP_TIMEOUT_MULTIPLIER"
-    timeoutExit
-fi
-
-# Create the alarm channel now.
-#acsstartupCreateChannel --name_service corbaloc::$HOST:$NAMING_SERVICE_PORT/NameService --notify_service_id AlarmNotifyEventChannelFactory --channel_id AlarmChannel #--max_queue_length 10 --reject_new_events true #--discard_policy FifoOrder #
-
-
-################################
-# Logging Service
-################################
-# NOTE - this must be started after the Notify Service (and Naming Service) are running.
-
-ACS_LOG_INFO "acsStartORBSRVC" "Starting Logging Service"
-
-loggingService  -ORBEndpoint iiop://$HOST:$LOGGING_SERVICE_PORT -ORBInitRef NameService=corbaloc::$HOST:$NAMING_SERVICE_PORT/NameService -ORBInitRef LoggingNotifyEventChannelFactory=corbaloc::$HOST:$LOGGING_NOTIFY_SERVICE_PORT/LoggingNotifyEventChannelFactory $ORBOPTS &> $LOGGING_OUT &
-
-LOGGING_SERVICE_PID=$!
-echo $LOGGING_SERVICE_PID > $LOGGING_SERVICE_PIDFILE
-
-#block until the expected output shows up in the the correct file
-if ! acsutilBlock -t $MAX_TIMEOUT -f $LOGGING_OUT -b "ACS Centralized Logger is running"
-then
-    ACS_LOG_ERROR "acsStartORBSRVC" "Unable to start the Logging Service!"
-    ACS_LOG_ERROR "acsStartORBSRVC" "Try increasing the value of \$ACS_STARTUP_TIMEOUT_MULTIPLIER"
-    timeoutExit
-fi
-
-######################################
-#   ACS Log  service
-#######################################
-# NOTE - this must be started after the Loggging Service is running.
-
-ACS_LOG_INFO "acsStartORBSRVC" "Starting ACS Log service"
-acsLogSvc -silent -ORBEndpoint iiop://$HOST:$LOG_SERVICE_PORT -ORBInitRef NameService=corbaloc::$HOST:$NAMING_SERVICE_PORT/NameService $ORBOPTS &> $LOG_SERVICE_OUT &
-
-LOG_SERVICE_PID=$!
-echo $LOG_SERVICE_PID > $LOG_SERVICE_PIDFILE
-
-########################################
-# Make sure the CDB, which was started at the beginning of 
-# this script, was successfully started.
-########################################
-#
+acsNamingService -s -w $PARAMS
+if [ $? -eq $EC_TIMEOUT ]; then timeoutExit 1; fi
+acsInterfaceRepository -s $PARAMS
+if [ $? -eq $EC_TIMEOUT ]; then timeoutExit 2; fi
+acsConfigurationDatabase -s $PARAMS
+if [ $? -eq $EC_TIMEOUT ]; then timeoutExit 3; fi
+acsNotifyService -s -w $PARAMS
+if [ $? -eq $EC_TIMEOUT ]; then timeoutExit 4; fi
+acsNotifyService -s -w -n Logging $PARAMS
+if [ $? -eq $EC_TIMEOUT ]; then timeoutExit 5; fi
+acsNotifyService -s -w -n Archive $PARAMS
+if [ $? -eq $EC_TIMEOUT ]; then timeoutExit 6; fi
+acsNotifyService -s -w -n Alarm $PARAMS
+if [ $? -eq $EC_TIMEOUT ]; then timeoutExit 7; fi
+acsLoggingService -s -w $PARAMS
+if [ $? -eq $EC_TIMEOUT ]; then timeoutExit 8; fi
+acsACSLogService -s $PARAMS
+if [ $? -eq $EC_TIMEOUT ]; then timeoutExit 9; fi
 # Check to see that the DAL actually got started (w/in the timeout). 
 # if not, clean up and exit.
+acsConfigurationDatabase -w $PARAMS
+if [ $? -eq $EC_TIMEOUT ]; then timeoutExit 9; fi
 
-
-#block until the expected output shows up in the the correct file
-if ! acsutilBlock -t $MAX_TIMEOUT -f $CDB_OUT -b "JDAL is ready and waiting"
-then
-    ACS_LOG_ERROR "acsStartORBSRVC" "Unable to start the ACS CDB!"
-    ACS_LOG_ERROR "acsStartORBSRVC" "Try increasing the value of \$ACS_STARTUP_TIMEOUT_MULTIPLIER"
-    timeoutExit
-fi
-
-ACS_LOG_FORCED "acsStartORBSRVC" "INFO" "For this ACS session, please do an 'export ACS_INSTANCE=$ACS_INSTANCE' on all terminals running ACS clients."
-ACS_LOG_FORCED "acsStartORBSRVC" "INFO" "The acsStartORBSRVC script has now completed!"
+ACS_LOG_FORCED "$COMMAND" "INFO" "For this ACS session, please do an 'export ACS_INSTANCE=$ACS_INSTANCE' on all terminals running ACS clients."
+ACS_LOG_FORCED "$COMMAND" "INFO" "The $COMMAND script has now completed!"
 
 #
 # ___oOo___

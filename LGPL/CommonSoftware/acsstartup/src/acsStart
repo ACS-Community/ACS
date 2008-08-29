@@ -26,7 +26,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: acsStart,v 1.43 2008/07/17 13:52:03 hsommer Exp $"
+# "@(#) $Id: acsStart,v 1.44 2008/08/29 10:20:47 msekoran Exp $"
 #
 # who       when      what
 # -------- ---------- ----------------------------------------------
@@ -267,31 +267,29 @@ if [ "$CL_RECOVER" ] ; then
 fi
 
 #start the Manager
-acsStartManager $MANAGER_RECOVER_OPT 2>&1 | tee -a $ACSSTARTLOG &
-MANAGER_PID=$!
+acsManager -s -w $MANAGER_RECOVER_OPT 2>&1 | tee -a $ACSSTARTLOG &
+TEE_PID=$!
 
-if ! acsutilBlock -t $MAX_TIMEOUT -f $ACSSTARTLOG -b "Manager Application initialized" -p $MANAGER_PID
+# Block until the expected output shows up
+if ! acsutilBlock -t $MAX_TIMEOUT -f $ACSSTARTLOG -b "Manager Application initialized" -p $TEE_PID
 then
-    ACS_LOG_ERROR "acsStart" "Detected the acsStartManager process has exited with an error!"
-    exit $EC_FAILURE
+  exit $EC_TIMEOUT
 fi
+
 #------------------------------------------------------
 #block until the interface repository has fully loaded
 if [ "$CL_LOADIFR" = "true" ] && [ "$CL_WAITIFR" = "true" ]
 then
-    export IRFEED_PIDFILE=$INSTANCE_DIR/$ACS_IRFEED_PIDFILE
-    export IRFEED_PID=`cat $IRFEED_PIDFILE`
-
-    ACS_LOG_DEBUG "acsStart" "Waiting for the interface repository to finish loading."
-    if ! acsutilBlock -t $MAX_IRFEED_TIMEOUT -p $IRFEED_PID
-    then
-	ACS_LOG_ERROR "acsStart" "The acsstartupLoadIFR script is still loading IDLs into the interface repository after $MAX_IFREED_TIMEOUT seconds."
-	ACS_LOG_INFO "acsStart" "There could be something genuinely wrong here or maybe your machine is just slow."
-	ACS_LOG_INFO "acsStart" "Try increasing \$ACS_STARTUP_TIMEOUT_MULTIPLIER next time (was $ACS_STARTUP_TIMEOUT_MULTIPLIER)."
-	kill -9 $IRFEED_PID
-    else
-	ACS_LOG_DEBUG "acsStart" "The interface repository has finished loading."
-    fi
+  acsInterfaceRepository -w
+  if [ $? -ne 0 ]
+  then
+    ACS_LOG_ERROR "acsStart" "The acsstartupLoadIFR script is still loading IDLs into the interface repository after $MAX_IFREED_TIMEOUT seconds."
+    ACS_LOG_INFO "acsStart" "There could be something genuinely wrong here or maybe your machine is just slow."
+    ACS_LOG_INFO "acsStart" "Try increasing \$ACS_STARTUP_TIMEOUT_MULTIPLIER next time (was $ACS_STARTUP_TIMEOUT_MULTIPLIER)."
+    kill -9 $IRFEED_PID
+  else
+    ACS_LOG_DEBUG "acsStart" "The interface repository has finished loading."
+  fi
 fi
 
 rm -f $IRFEED_PIDFILE

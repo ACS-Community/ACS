@@ -1,16 +1,15 @@
 #! /bin/bash
-. acsstartupAcsPorts
 . acsstartupLogging.sh
 . acsstartupConstants
 . acsstartupAcsInstance
-. acsstartupPids
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: acsStopORBSRVC,v 1.39 2008/04/10 05:24:41 cparedes Exp $"
+# "@(#) $Id: acsStopORBSRVC,v 1.40 2008/08/29 10:20:47 msekoran Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
+# azagar   2008-08-08 split on seperate service shutdown scripts
 # mschilli 2004-04-16 added proper command line parsing
 # david 2003-05-14 changed to bash for tat tests
 # gchiozzi 2002-12-12 acsLogSvc was missing for SunOS
@@ -46,6 +45,8 @@
 #
 
 ACS_LOG_COMMAND $@
+COMMAND=`basename $0`
+PARAMS=$*
 
 ###
 ### ----------- Command Line Parsing ---------------------
@@ -68,9 +69,9 @@ SHORTOPTS=hb:
 function printUsage {
    echo "Stops the Orb services for Acs; note that acsStop is an alternative for this"
    echo ""
-	echo "Usage: `basename $0` [OPTIONS]  "
-	echo "Options: "
-	echo "   -b | -baseport INSTANCE        the acs instance (0-9) you want to use"
+   echo "Usage: `basename $0` [OPTIONS]  "
+   echo "Options: "
+   echo "   -b | -baseport INSTANCE        the acs instance (0-9) you want to use"
    echo "   -h | -help                     prints this help and exits"
 }
 
@@ -117,99 +118,44 @@ fi
 #
 ### ---------- End of Command Line Parsing -------------
 
-
-export HOST=`getIP`
-
-
 #Check command-line args for baseport option
 if [ "$CL_BASEPORT" ]
 then
-    export ACS_INSTANCE="$CL_BASEPORT"
+  ACS_INSTANCE="$CL_BASEPORT"
 fi
 
-export INSTANCE_DIR=`getInstanceDirName $ACS_INSTANCE`
+INSTANCE_DIR=`getInstanceDirName $ACS_INSTANCE`
+
+
+
 
 ########################################################################
 #SANITY CHECKS-------------------------------------------------------
 
 if [ ! -d $INSTANCE_DIR ]
 then
-    ACS_LOG_DEBUG "acsStopORBSRVC" "Lock directory '$INSTANCE_DIR' does not exist!"
+    ACS_LOG_DEBUG "$COMMAND" "Lock directory '$INSTANCE_DIR' does not exist!"
 
 elif [ ! -w $INSTANCE_DIR ]
 then
-    ACS_LOG_ERROR "acsStopORBSRVC" "Lock directory '$INSTANCE_DIR' is not owned by '$USER'!"
+    ACS_LOG_ERROR "$COMMAND" "Lock directory '$INSTANCE_DIR' is not owned by '$USER'!"
     exit $EC_CANNOTUSE
 fi
 
-ACS_LOG_INFO "acsStopORBSRVC" "Stopping the ORB Services and CDB using 'ACS_INSTANCE=$ACS_INSTANCE'"
-
-
 ########################################################################
-#SHUTDOWN CDB-----------------------------------------------------------
-#Since the CDB is just a Java process, it must be treated a little differently
-ACS_LOG_INFO "acsStopORBSRVC" "Stopping the CDB"
-ACS_CDB_PORT=`getCDBPort`
+#SHUTDOWN SERVICES------------------------------------------------------
 
-#Try the "correct" way of shutting down the CDB
-if ! acsutilBlock -t 15 -k cdbjDALShutdown -d corbaloc::$HOST:$ACS_CDB_PORT/CDB &> /dev/null
-then
-    PID=`getCDBPid`
-    acsKillProc $PID 2> /dev/null || (ACS_LOG_ERROR "acsStopORBSRVC" "Cannot kill the CDB")
-fi
+ACS_LOG_INFO "$COMMAND" "Stopping the ORB Services and CDB using 'ACS_INSTANCE=$ACS_INSTANCE'"
 
-########################################################################
-#SHUTDOWN ORB SERVICES--------------------------------------------------
-
-#kill the processes one at a time
-
-ACS_LOG_INFO "acsStopORBSRVC" "Stopping the CORBA Naming Service"
-if PID=`getNamingServicePid`
-then
-    acsKillProc $PID 2> /dev/null || (ACS_LOG_ERROR "acsStopORBSRVC" "Cannot kill the naming service")
-fi
-
-ACS_LOG_INFO "acsStopORBSRVC" "Stopping the CORBA Notification Service"
-if PID=`getNotifyServicePid`
-then
-    acsKillProc $PID 2> /dev/null || (ACS_LOG_ERROR "acsStopORBSRVC" "Cannot kill the notification service")
-fi
-
-ACS_LOG_INFO "acsStopORBSRVC" "Stopping the CORBA Logging Notification Service"
-if PID=`getLoggingNotifyServicePid`
-then
-    acsKillProc $PID 2> /dev/null || (ACS_LOG_ERROR "acsStopORBSRVC" "Cannot kill the logging notification service")
-fi
-
-ACS_LOG_INFO "acsStopORBSRVC" "Stopping the CORBA Archive Notification Service"
-if PID=`getArchiveNotifyServicePid`
-then
-    acsKillProc $PID 2> /dev/null || (ACS_LOG_ERROR "acsStopORBSRVC" "Cannot kill the archive notification service")
-fi
-
-ACS_LOG_INFO "acsStopORBSRVC" "Stopping the CORBA Alarm Notification Service"
-if PID=`getAlarmNotifyServicePid`
-then
-    acsKillProc $PID 2> /dev/null || (ACS_LOG_ERROR "acsStopORBSRVC" "Cannot kill the alarm notification service")
-fi
-
-ACS_LOG_INFO "acsStopORBSRVC" "Stopping the CORBA Logging Service"
-if PID=`getLoggingServicePid`
-then
-    acsKillProc $PID 2> /dev/null || (ACS_LOG_ERROR "acsStopORBSRVC" "Cannot kill the logging service")
-fi
-
-ACS_LOG_INFO "acsStopORBSRVC" "Stopping the CORBA Interface Repository"
-if PID=`getIRPid`
-then
-    acsKillProc $PID 2> /dev/null || (ACS_LOG_ERROR "acsStopORBSRVC" "Cannot kill the interface repository")
-fi
-
-ACS_LOG_INFO "acsStopORBSRVC" "Stopping the ACS Logging Service"
-if PID=`getLogPid`
-then
-    acsKillProc $PID 2> /dev/null || (ACS_LOG_ERROR "acsStopORBSRVC" "Cannot kill the ACS logging service")
-fi
+acsConfigurationDatabase -k $PARAMS
+acsNamingService -k $PARAMS
+acsNotifyService -k $PARAMS
+acsNotifyService -k -n Logging $PARAMS
+acsNotifyService -k -n Archive $PARAMS
+acsNotifyService -k -n Alarm $PARAMS
+acsLoggingService -k $PARAMS
+acsInterfaceRepository -k $PARAMS
+acsACSLogService -k $PARAMS
 
 ########################################################################
 #FINAL CLEANUP----------------------------------------------------------
@@ -218,15 +164,15 @@ if [ -e $PIDSFILE ]
 then
     file=`cat $PIDSFILE`
     
-    ACS_LOG_INFO "acsStopORBSRVC" "Killing any rogue ACS processes..."
+    ACS_LOG_INFO "$COMMAND" "Killing any rogue ACS processes..."
     for line in $file
     do
       acsKillProc $line &> /dev/null
     done
 fi
 
-ACS_LOG_INFO "acsStopORBSRVC" "Freeing $INSTANCE_DIR"
-rm -rf $INSTANCE_DIR &> /dev/null || (ACS_LOG_ERROR "acsStopORBSRVC" "Cannot remove $INSTANCE_DIR")
+ACS_LOG_INFO "$COMMAND" "Freeing $INSTANCE_DIR"
+rm -rf $INSTANCE_DIR &> /dev/null || (ACS_LOG_ERROR "$COMMAND" "Cannot remove $INSTANCE_DIR")
 
 
 #
