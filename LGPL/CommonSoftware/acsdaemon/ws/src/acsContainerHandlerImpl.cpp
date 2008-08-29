@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@$Id: acsContainerHandlerImpl.cpp,v 1.9 2008/08/05 09:09:47 hsommer Exp $"
+* "@$Id: acsContainerHandlerImpl.cpp,v 1.10 2008/08/29 07:49:57 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -120,6 +120,10 @@ ACSContainerHandlerImpl::start_container (
 
     std::string timeStamp(getStringifiedTimeStamp().c_str());
 
+    timeStamp.replace(timeStamp.find(":"),1,".");
+    timeStamp.replace(timeStamp.find(":"),1,".");
+    timeStamp.replace(timeStamp.find("T"),1,"_");
+            
 
 	char command[1000];
 
@@ -180,6 +184,10 @@ ACSContainerHandlerImpl::stop_container (
     ACE_OS::system(mkdir.c_str());
 
     std::string timeStamp(getStringifiedTimeStamp().c_str());
+
+    timeStamp.replace(timeStamp.find(":"),1,".");
+    timeStamp.replace(timeStamp.find(":"),1,".");
+    timeStamp.replace(timeStamp.find("T"),1,"_");
 
     // execute: "acsStopContainer -b <instance> <name> <args>"
     // TODO checks for ';', '&', '|' chars, they can run any other command!

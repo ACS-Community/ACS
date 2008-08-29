@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@$Id: acsServicesHandlerImpl.cpp,v 1.5 2008/06/27 11:41:07 msekoran Exp $"
+* "@$Id: acsServicesHandlerImpl.cpp,v 1.6 2008/08/29 07:49:57 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -167,6 +167,9 @@ ACSServicesHandlerImpl::start_acs (
     
     std::string timeStamp(getStringifiedTimeStamp().c_str());
     
+    timeStamp.replace(timeStamp.find(":"),1,".");
+    timeStamp.replace(timeStamp.find(":"),1,".");
+    timeStamp.replace(timeStamp.find("T"),1,"_");
     
     char commandline[1000];
     snprintf(commandline, 1000, "acsStart -b %d %s &> %sacsStart_%s", instance_number, cmdln, logDirectory.c_str(), timeStamp.c_str());
@@ -204,6 +207,9 @@ ACSServicesHandlerImpl::stop_acs (
 
     std::string timeStamp(getStringifiedTimeStamp().c_str());
 
+    timeStamp.replace(timeStamp.find(":"),1,".");
+    timeStamp.replace(timeStamp.find(":"),1,".");
+    timeStamp.replace(timeStamp.find("T"),1,"_");
 
     char command[1000];
     // execute: "acsStop -b <instance> <args>"
