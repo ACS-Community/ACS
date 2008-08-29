@@ -36,10 +36,44 @@
 		description="The requested service is not running and therefore cannot be stopped."
 	/>
 
-
 	<ErrorCode name="FailedToGetAcsStatus"
 		shortDescription="Failed to get ACS status"
 		description="Failed to get ACS status"
+	/>
+
+	<ErrorCode name="ProcessingAborted"
+		shortDescription="Processing was stopped."
+		description="Command processor thread has been stopped before the request was processed."
+	/>
+
+	<ErrorCode name="CannotCreateInstance"
+		shortDescription="Cannot create requested instance."
+		description="Failed to create requested instance."
+	/>
+
+	<ErrorCode name="CannotUseInstance"
+		shortDescription="Instance is in use and cannot be used."
+		description="Failed to use requested instance because it is in use."
+	/>
+
+	<ErrorCode name="FailedToProcessRequest"
+		shortDescription="Failed to process request."
+		description="Failed to process request."
+	/>
+
+	<ErrorCode name="BadArguments"
+		shortDescription="Command line arguments wrong or missing."
+		description="Command line arguments wrong or missing."
+	/>
+
+	<ErrorCode name="PortInUse"
+		shortDescription="Service port is in use."
+		description="Failed to process request because service port is in use."
+	/>
+
+	<ErrorCode name="RequestProcessingTimedOut"
+		shortDescription="Request processing has timed out."
+		description="Request processing has timed out."
 	/>
 	
 </Type>
