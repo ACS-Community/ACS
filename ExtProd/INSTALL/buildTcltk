@@ -2,11 +2,12 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: buildTcltk,v 1.18 2008/05/23 14:51:23 eallaert Exp $"
+# "@(#) $Id: buildTcltk,v 1.19 2008/08/29 15:01:47 eallaert Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
 # eallaert  2007-09-03  first version for ACS 7.0, derived from VLTSW
+# eallaert  2008-08-28  modified for ACS 8.0 (product updates)
 #
 #************************************************************************
 #   NAME
@@ -18,10 +19,10 @@
 #   DESCRIPTION
 #   Compiles and install the Tcl/Tk packages needed for ALMA Common Software 
 #
-#    - tcl/tk     8.4.15
-#    - [incr Tcl] 3.4 2007-08-07
-#    - iwidgets   4.0.2 2007-06-10
-#    - tclX       8.4 2007-02-27
+#    - tcl/tk     8.4.19
+#    - [incr Tcl] 3.4 2008-08-06
+#    - iwidgets   4.0.2 2008-08-20
+#    - tclX       8.4 2008-06-29
 #    - BLT        2.4z
 #    - msqltcl    1.99
 #    - tkimg      1.3
@@ -30,9 +31,10 @@
 #    - tkman      2.2
 #    - rman       3.1
 #    - tcllib     1.10
-#    - tklib      0.4.1 2007-05-23
+#    - tklib      0.4.1 2008-08-19
 #    - expect     5.43 2006-03-01  
-#    - tclCheck 1.1.10
+#    - tclCheck   1.1.10
+#    - tkcon      2.4
 #
 #   Target installation directory is specified by the enviroment
 #   variable $TCLTK_ROOT (usually $ALMASW_INSTDIR/tcltk).  If undefined,
@@ -219,8 +221,7 @@ fi
 echo $SEPARATOR
 echo " Installing on $build_OS version $build_OSV"
 
-if [     ${build_OS}-${build_OSV} != "SunOS-5.8"                  \
-     -a  ${build_OS}-${build_OSV} != "Linux-RedHatEnterprise4"    \
+if [     ${build_OS}-${build_OSV} != "Linux-RedHatEnterprise4"    \
      -a  ${build_OS}-${build_OSV} != "Linux-RedHatEnterprise5.2"  \
      -a  ${build_OS}-${build_OSV} != "Linux-FedoraCore6"          \
    ]
@@ -290,7 +291,8 @@ fi
 #
 FILE_LIST="
 	 tclCheck-1.1.13.tar.gz    \
-	 tcltk-ACS7.0.tar.gz 
+	 tcltk-ACS8.0.tar.gz       \
+	 tkcon-2.4.tar.gz
 	 "
 if [ "$MSQL" ]
     then 
@@ -427,10 +429,10 @@ fi
 #  2.
 #      product    current version
 #      ======     ===============
-#    - tcl/tk     8.4.15
-#    - [incr Tcl] 3.4 2007-08-07
-#    - iwidgets   4.0.2 2007-06-10
-#    - tclX       8.4 2007-02-27
+#    - tcl/tk     8.4.19
+#    - [incr Tcl] 3.4 2008-08-06
+#    - iwidgets   4.0.2 2008-08-20
+#    - tclX       8.4 2008-06-29
 #    - BLT        2.4z
 #    - msqltcl    1.99
 #    - tkimg      1.3
@@ -439,21 +441,21 @@ fi
 #    - tkman      2.2
 #    - rman       3.1
 #    - tcllib     1.10
-#    - tklib      0.4.1 2007-05-23
+#    - tklib      0.4.1 2008-08-19
 #    - expect     5.43 2006-03-01  
 #
 
 echo $SEPARATOR
 echo "tcltk: untarring . . . "
 cd $SRC
-gunzip -c $TCLTK/tcltk-ACS7.0.tar.gz | tar xf -
+gunzip -c $TCLTK/tcltk-ACS8.0.tar.gz | tar xf -
 
 # Make first the static libraries for Tcl/Tk and [incr Tcl]
 # then the shared version; this should come second, so tclConfig.sh 
 # refers to the shared version, and the executables are the shared ones.
 # Remark that configuring itcl fails if srcdir is not given explicitly with
 # an absolute path; otherwise it uses ".", which messes up things.
-for dir in tcl8.4.15/unix tk8.4.15/unix tclx-2007-02-27 itcl-2007-08-07 ; do \
+for dir in tcl8.4.19/unix tk8.4.19/unix tclx-2008-06-29 itcl-2008-08-06 ; do \
     (cd ${dir} ; \
     ./configure --prefix=$PREFIX --disable-shared --enable-gcc --srcdir=`pwd`; \
     make ; make -k install; \
@@ -483,8 +485,8 @@ cp tcl $PREFIX/bin
 cp wishx $PREFIX/bin
 chmod +x $PREFIX/bin/tcl $PREFIX/bin/wishx
 
-cd $SRC/iwidgets-2007-06-10
-./configure --prefix=$PREFIX --enable-shared --with-itcl=$SRC/itcl-2007-08-07/
+cd $SRC/iwidgets-2008-08-20
+./configure --prefix=$PREFIX --enable-shared --with-itcl=$SRC/itcl-2008-08-06/
 make -k install
 cd $PREFIX/lib
 rm -f iwidgets
@@ -523,7 +525,7 @@ make -k install
 
 cd $SRC/snack2.2.10/unix
 # include --libdir, as configure does not do a proper job, it seems.
-./configure --prefix=$PREFIX --enable-shared --with-tcl=$SRC/tcl8.4.15/unix --with-tk=$SRC/tk8.4.15/unix --disable-stubs --libdir=$PREFIX/lib
+./configure --prefix=$PREFIX --enable-shared --with-tcl=$SRC/tcl8.4.19/unix --with-tk=$SRC/tk8.4.19/unix --disable-stubs --libdir=$PREFIX/lib
 make
 make -k install
 
@@ -539,8 +541,8 @@ cd $SRC/tcllib-1.10
 ./configure --prefix=$PREFIX
 make -k install
 
-# tklib 2007-05-23 contains tablelist 4.6
-cd $SRC/tklib-2007-05-23
+# tklib 2008-08-19 contains tablelist 4.8
+cd $SRC/tklib-2008-08-19
 ./configure --prefix=$PREFIX
 make -k install
 
@@ -549,7 +551,7 @@ make -k install
 # in expect's configure script)
 cd $SRC/expect-2006-03-01
 # With the option "--enable-shared" only the shared lib gets built!
-./configure --prefix=$PREFIX --enable-shared --with-tcl=$SRC/tcl8.4.15/unix --with-tk=$SRC/tk8.4.15/unix --with-tclinclude=$SRC/tcl8.4.15/generic --disable-threads
+./configure --prefix=$PREFIX --enable-shared --with-tcl=$SRC/tcl8.4.19/unix --with-tk=$SRC/tk8.4.19/unix --with-tclinclude=$SRC/tcl8.4.19/generic --disable-threads
 make 
 make -k install
 
@@ -607,17 +609,6 @@ then
 	msql.conf > msql.conf.acs
     mv msql.conf.acs msql.conf
 fi
-
-###############################################################
-# 6. Tat uses (for the time being) seqSh, which is a symlink to /usr/bin/tcl, i.e.
-# the "old" version of Tcl/Tk. That has been linked with tclx8.3 - while
-# we have just built the newer tclx8.4. So we'll make symlinks to deal with that.
-cd $PREFIX/lib 
-rm -f tclX8.3
-ln -s tclx8.4 tclX8.3
-cd tclx8.4
-ln -s libtclx8.4.a  libtclx8.3.a
-ln -s libtclx8.4.so libtclx8.3.so
 
 ###############################################################
 # 7. VERIFICATION
