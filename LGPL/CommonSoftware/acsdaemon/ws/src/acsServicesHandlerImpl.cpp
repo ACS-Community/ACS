@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@$Id: acsServicesHandlerImpl.cpp,v 1.8 2008/08/29 08:15:45 cparedes Exp $"
+* "@$Id: acsServicesHandlerImpl.cpp,v 1.9 2008/08/29 13:58:28 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -93,7 +93,7 @@ void CommandProcessorThread::runLoop()
  	}
 
 	comp = ok.returnCompletion(false);
-	free(nowreq->cmd);
+	free((void*)nowreq->cmd);
 	nowreq->cb->done(comp.in());
 	free(nowreq);
     }
@@ -118,27 +118,27 @@ ACSServicesHandlerImpl::~ACSServicesHandlerImpl (void)
     tm.destroy(cmdproc);
 }
 
-const char* ACSServicesHandlerImpl::getName ()
+std::string ACSServicesHandlerImpl::getName ()
 {
-    return h_name.c_str();
+    return h_name;
 }
 
-const char* ACSServicesHandlerImpl::getType(void)
+std::string ACSServicesHandlerImpl::getType(void)
 {
-    return h_type.c_str();
+    return h_type;
 }
 
-const char* ACSServicesHandlerImpl::getPort(void)
+std::string ACSServicesHandlerImpl::getPort(void)
 {
-    return ACSPorts::getServicesDaemonPort().c_str();
+    return ACSPorts::getServicesDaemonPort();
 }
 
-void ACSServicesHandlerImpl::startCmdProcessor(void)
+void ACSServicesHandlerImpl::initialize(CORBA::ORB_ptr orb)
 {
     cmdproc->resume();
 }
 
-void ACSServicesHandlerImpl::stopCmdProcessor(void)
+void ACSServicesHandlerImpl::dispose(CORBA::ORB_ptr orb)
 {
     cmdproc->exit();
 }
@@ -212,7 +212,7 @@ ACSServicesHandlerImpl::stop_acs (
 
     if( timeStamp.find(":") != std::string::npos)
         timeStamp.replace(timeStamp.find(":"),1,".");
-    if( timeStamp.find(":") != std::string::npos)
+    if( timeStamp.find(":") != std::string::npos )
         timeStamp.replace(timeStamp.find(":"),1,".");
     if( timeStamp.find("T") != std::string::npos)
         timeStamp.replace(timeStamp.find("T"),1,"_");

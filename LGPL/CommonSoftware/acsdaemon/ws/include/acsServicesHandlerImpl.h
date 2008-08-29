@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsServicesHandlerImpl.h,v 1.4 2008/06/27 11:41:07 msekoran Exp $"
+* "@(#) $Id: acsServicesHandlerImpl.h,v 1.5 2008/08/29 13:58:28 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -117,24 +117,30 @@ class ACSServicesHandlerImpl : public POA_acsdaemon::ServicesDaemon {
     }
 
     /**
+     * Initialize handler
+     */
+    void initialize(CORBA::ORB_ptr orb);
+
+    /**
+     * Dispose handler
+     */
+    void dispose(CORBA::ORB_ptr orb);
+
+    /**
      * Get the name of this container handler
      */
-    const char* getName();
+    std::string getName();
 
     /**
      * Get the type string of this container handler
      */
-    const char* getType();
+    std::string getType();
     
     /**
      * Return the port where this services handler listens for connections
      */
-    const char* getPort();
+    std::string getPort();
     
-
-    void startCmdProcessor();
-
-    void stopCmdProcessor();
     /*************************** CORBA interface *****************************/
 
     void start_acs (

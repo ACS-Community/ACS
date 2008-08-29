@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@$Id: acsContainerHandlerImpl.cpp,v 1.12 2008/08/29 08:15:45 cparedes Exp $"
+* "@$Id: acsContainerHandlerImpl.cpp,v 1.13 2008/08/29 13:58:28 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -40,20 +40,20 @@ ACSContainerHandlerImpl::~ACSContainerHandlerImpl (void)
 {
 }
 
-const char* ACSContainerHandlerImpl::getName(void)
+std::string ACSContainerHandlerImpl::getName(void)
 {
-    return h_name.c_str();
+    return h_name;
 }
 
-const char* ACSContainerHandlerImpl::getType(void)
+std::string ACSContainerHandlerImpl::getType(void)
 {
-    return h_type.c_str();
+    return h_type;
 }
 
 
-const char* ACSContainerHandlerImpl::getPort(void)
+std::string ACSContainerHandlerImpl::getPort(void)
 {
-    return ACSPorts::getContainerDaemonPort().c_str();
+    return ACSPorts::getContainerDaemonPort();
 }
 
 /************************** CORBA interface ****************************/
@@ -122,11 +122,10 @@ ACSContainerHandlerImpl::start_container (
 
     if( timeStamp.find(":") != std::string::npos)
         timeStamp.replace(timeStamp.find(":"),1,".");
-    if( timeStamp.find(":") != std::string::npos)
+    if( timeStamp.find(":") != std::string::npos )
         timeStamp.replace(timeStamp.find(":"),1,".");
     if( timeStamp.find("T") != std::string::npos)
         timeStamp.replace(timeStamp.find("T"),1,"_");
-            
 
 	char command[1000];
 
@@ -190,7 +189,7 @@ ACSContainerHandlerImpl::stop_container (
 
     if( timeStamp.find(":") != std::string::npos)
         timeStamp.replace(timeStamp.find(":"),1,".");
-    if( timeStamp.find(":") != std::string::npos)
+    if( timeStamp.find(":") != std::string::npos )
         timeStamp.replace(timeStamp.find(":"),1,".");
     if( timeStamp.find("T") != std::string::npos)
         timeStamp.replace(timeStamp.find("T"),1,"_");

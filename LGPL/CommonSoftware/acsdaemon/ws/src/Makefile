@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.16 2008/06/27 11:41:07 msekoran Exp $"
+# "@(#) $Id: Makefile,v 1.17 2008/08/29 13:58:28 msekoran Exp $"
 #
 # Makefile of ........
 #
@@ -24,7 +24,7 @@
 #
 # additional include and library search paths
 #USER_INC = 
-USER_LIB = -lTAO -lACE -lTAO_PortableServer -lacserr -lmaciErrType -lTAO_DsLogAdmin -lTAO_CosNaming -lTAO_CosProperty_Serv -lTAO_IORTable -llogging -lTAO_DynamicAny -lacsutil -lACSErrTypeCommon -lTAO_Messaging
+USER_LIB = -lTAO -lACE -lTAO_PortableServer -lacserr -lmaciErrType -lTAO_DsLogAdmin -lTAO_CosNaming -lTAO_CosProperty_Serv -lTAO_IORTable -llogging -lTAO_DynamicAny -lacsutil -lACSErrTypeCommon -lTAO_Messaging -lacsQoS
 
 #
 # MODULE CODE DESCRIPTION:
@@ -39,7 +39,7 @@ EXECUTABLES     = acscontainerdaemon acsdaemonStartContainer \
                   acsdaemonStopContainer acsservicesdaemon acsdaemonStartAcs \
                   acsdaemonStopAcs acsdaemonStatusAcs \
                   acscontainerdaemonSmartStart acscontainerdaemonStop \
-                  acsservicesdaemonStop
+                  acsservicesdaemonStop acsservicesdaemon80 acsservicesdaemonStop80
 EXECUTABLES_L   = 
 
 #
@@ -56,6 +56,9 @@ acsdaemonStopContainer_LIBS      =	acscomponentStubs acsdaemonErrType acsdaemonS
 
 acsservicesdaemon_OBJECTS   =	acsservicesdaemon acsServicesHandlerImpl
 acsservicesdaemon_LIBS      =	acscomponentStubs acsdaemonErrType acsdaemonStubs acsThread
+
+acsservicesdaemon80_OBJECTS   =	acsservicesdaemon80 acsServicesHandlerACS80Impl acsCommandRequest
+acsservicesdaemon80_LIBS      =	acscomponentStubs acsdaemonErrType acsdaemonStubs acsThread expat acsQoS
 
 acsdaemonStartAcs_OBJECTS   =	acsdaemonStartAcs
 acsdaemonStartAcs_LIBS      =	acscomponentStubs acsdaemonErrType acsdaemonStubs
@@ -75,6 +78,9 @@ acscontainerdaemonSmartStart_LIBS      =	acscomponentStubs acsdaemonErrType acsd
 
 acsservicesdaemonStop_OBJECTS   =	acsservicesdaemonStop
 acsservicesdaemonStop_LIBS      =	acscomponentStubs acsdaemonErrType acsdaemonStubs
+
+acsservicesdaemonStop80_OBJECTS   =	acsservicesdaemonStop80
+acsservicesdaemonStop80_LIBS      =	acscomponentStubs acsdaemonErrType acsdaemonStubs
 
 #
 # special compilation flags for single c sources

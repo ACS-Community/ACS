@@ -16,7 +16,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.3 2007/10/31 14:13:29 ntroncos Exp $"
+# "@(#) $Id: Makefile,v 1.4 2008/08/29 13:58:28 msekoran Exp $"
 #
 # Makefile of ........
 #
@@ -52,8 +52,11 @@
 #
 # C programs (public and local)
 # -----------------------------
-EXECUTABLES     = 
+EXECUTABLES     = acsServices80Test
 EXECUTABLES_L   = 
+
+acsServices80Test_OBJECTS   =   acsServices80Test
+acsServices80Test_LIBS      =   acscomponentStubs acsdaemonErrType acsdaemonStubs acserr maciErrType ACSErrTypeCommon
 
 #
 # <brief description of xxxxx program>
@@ -84,7 +87,7 @@ lllll_OBJECTS   =
 # Scripts (public and local)
 # ----------------------------
 SCRIPTS         =
-SCRIPTS_L       = acsdaemonTATPrologue acsdaemonTATEpilogue test.sh
+SCRIPTS_L       = acsdaemonTATPrologue acsdaemonTATEpilogue test.sh loglevel.sh
 
 #
 # TCL scripts (public and local)

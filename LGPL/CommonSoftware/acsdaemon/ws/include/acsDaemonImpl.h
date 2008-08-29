@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsDaemonImpl.h,v 1.4 2008/06/27 11:41:07 msekoran Exp $"
+* "@(#) $Id: acsDaemonImpl.h,v 1.5 2008/08/29 13:58:28 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -81,13 +81,13 @@ class ACSDaemonServiceImpl {
     /**
      * Retrieve the port for this service
      */
-    const char*
+    std::string
     getPort() { return handler.getPort(); }
 
     /**
      * Retrieve the name for this service
      */
-    const char*
+    std::string
     getName() { return handler.getName(); }
 
     /**
@@ -169,7 +169,7 @@ ACSDaemonServiceImpl<T>::~ACSDaemonServiceImpl (void)
 template <typename T>
 int ACSDaemonServiceImpl<T>::startup (int argc, char *argv[])
 {
-    ACS_SHORT_LOG ((LM_INFO, "Starting up the %s...", handler.getName()));
+    ACS_SHORT_LOG ((LM_INFO, "Starting up the %s...", handler.getName().c_str()));
 
     // Initalize the ORB.
     if (init_ORB (argc, argv) != 0)
@@ -184,7 +184,7 @@ int ACSDaemonServiceImpl<T>::startup (int argc, char *argv[])
 	return -1;
 	}
 
-    ACS_SHORT_LOG ((LM_INFO, "%s is initialized.", handler.getName()));
+    ACS_SHORT_LOG ((LM_INFO, "%s is initialized.", handler.getName().c_str()));
 
     return 0;
 }
@@ -192,12 +192,12 @@ int ACSDaemonServiceImpl<T>::startup (int argc, char *argv[])
 template <typename T>
 int ACSDaemonServiceImpl<T>::run (void)
 {
-    ACS_SHORT_LOG ((LM_INFO, "%s is up and running...", handler.getName()));
+    ACS_SHORT_LOG ((LM_INFO, "%s is up and running...", handler.getName().c_str()));
 
   
     try
 	{
-	handler.startCmdProcessor();
+	handler.initialize(m_orb.in());
 	this->m_orb->run ();
 	}
     catch(...)
@@ -213,13 +213,13 @@ void ACSDaemonServiceImpl<T>::shutdown (bool wait_for_completition)
 {
     if (!m_blockTermination)
     {
-	ACS_SHORT_LOG ((LM_INFO, "Stopping the %s...", this->getName()));
+	ACS_SHORT_LOG ((LM_INFO, "Stopping the %s...", this->getName().c_str()));
 	m_blockTermination=true;
 	// shutdown the ORB.
 	if (!CORBA::is_nil (m_orb.in ()))
 	{
+	    handler.dispose(m_orb.in());
 	    this->m_orb->shutdown (wait_for_completition);
-	    handler.stopCmdProcessor();
 	}
 	// shutdown AES
 	ACSError::done();
@@ -248,7 +248,7 @@ int ACSDaemonServiceImpl<T>::init_ORB  (int& argc, char *argv [])
 	policy_list[4] =  root_poa->create_lifespan_policy(PortableServer::PERSISTENT);
       
 	// create a ACSDaemon POA with policies 
-	PortableServer::POA_var poa = root_poa->create_POA(handler.getType(), poa_manager.in(), policy_list);
+	PortableServer::POA_var poa = root_poa->create_POA(handler.getType().c_str(), poa_manager.in(), policy_list);
 
 	// destroy policies
 	for (CORBA::ULong i = 0; i < policy_list.length(); ++i)
@@ -261,7 +261,7 @@ int ACSDaemonServiceImpl<T>::init_ORB  (int& argc, char *argv [])
 	poa->set_servant(&handler);
 
 	// create reference
-	PortableServer::ObjectId_var oid = PortableServer::string_to_ObjectId(handler.getType());
+	PortableServer::ObjectId_var oid = PortableServer::string_to_ObjectId(handler.getType().c_str());
 	obj = poa->create_reference_with_id (oid.in(), handler._interface_repository_id());
 	m_ior = m_orb->object_to_string(obj.in());
 
@@ -276,13 +276,13 @@ int ACSDaemonServiceImpl<T>::init_ORB  (int& argc, char *argv [])
 	    }
 	else
 	    {
-	    adapter->bind(handler.getType(), m_ior.in());
+	    adapter->bind(handler.getType().c_str(), m_ior.in());
 	    }
 
 	// activate POA
 	poa_manager->activate();
 
-	ACS_SHORT_LOG((LM_INFO, "%s is waiting for incoming requests.", handler.getName()));
+	ACS_SHORT_LOG((LM_INFO, "%s is waiting for incoming requests.", handler.getName().c_str()));
       
 	}
     catch( CORBA::Exception &ex )
@@ -429,7 +429,7 @@ acsDaemonImpl<T>::acsDaemonImpl(int argc, char *argv[])
     if(ORBEndpoint.length()<=0)
         {
         argStr = ACE_CString("-ORBEndpoint iiop://") + hostName + ":";
-        argStr = argStr + service->getPort();
+        argStr = argStr + service->getPort().c_str();
         }
     else
         {
@@ -485,27 +485,27 @@ int acsDaemonImpl<T>::run()
 		}
 
 	    ACE_OS::fclose (output_file);
-	    ACS_SHORT_LOG((LM_INFO, "%s IOR has been written into file '%s'.", service->getName(), iorFile.c_str()));
+	    ACS_SHORT_LOG((LM_INFO, "%s IOR has been written into file '%s'.", service->getName().c_str(), iorFile.c_str()));
 	    }
 
 	// run, run, run...
 	if (service->run () == -1)
 	    {
 	    this->shutdown ();
-	    ACS_SHORT_LOG ((LM_ERROR, "Failed to run the %s.", service->getName()));
+	    ACS_SHORT_LOG ((LM_ERROR, "Failed to run the %s.", service->getName().c_str()));
 	    return  1;
 	    }
 	}
     catch(...)
 	{
-	ACS_SHORT_LOG((LM_ERROR, "Failed to start the %s.", service->getName()));
+	ACS_SHORT_LOG((LM_ERROR, "Failed to start the %s.", service->getName().c_str()));
 	return 1;
 	}
   
 
     this->shutdown();
   
-    ACS_SHORT_LOG ((LM_INFO, "%s stopped.", service->getName()));
+    ACS_SHORT_LOG ((LM_INFO, "%s stopped.", service->getName().c_str()));
 
     return 0;
 }

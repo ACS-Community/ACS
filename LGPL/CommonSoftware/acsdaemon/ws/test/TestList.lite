@@ -1,7 +1,7 @@
 #*******************************************************************************
 # ALMA - Atacama Large Millimiter Array
 #
-# " $Id: TestList.lite,v 1.2 2007/10/31 14:13:29 ntroncos Exp $"
+# " $Id: TestList.lite,v 1.3 2008/08/29 13:58:28 msekoran Exp $"
 #
 # TestList
 #
@@ -9,4 +9,5 @@
 # --------  --------  ----------------------------------------------
 PROLOGUE acsdaemonTATPrologue
 1 daemontest            "test.sh"
+2 daemontest80          "loglevel.sh 0 acsservicesdaemon80 -u" "@SLEEP 3" "loglevel.sh 0 acsServices80Test" "@SLEEP 60" "loglevel.sh 0 acsservicesdaemonStop80"
 EPILOGUE acsdaemonTATEpilogue

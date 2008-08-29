@@ -1,0 +1,124 @@
+1 - ----------T--:--:--.--- [ACS 8.0 Services Daemon - ACS::ThreadBase::ThreadBase] 
+1 - ----------T--:--:--.--- [ACS 8.0 Services Daemon - ACS::ThreadBase::create] 
+1 - ----------T--:--:--.--- [ACS 8.0 Services Daemon - ACS::ThreadBase::suspend] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::add] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::Thread::Thread] 
+1 - ----------T--:--:--.--- [GlobalLogger - CommandProcessorThread::CommandProcessorThread] 
+1 - ----------T--:--:--.--- [GlobalLogger - acsDaemonImpl<T>::run] 
+1 - ----------T--:--:--.--- [GlobalLogger - ] Command line is: -ORBEndpoint iiop://a.b.c.d:3014
+1 - ----------T--:--:--.--- [GlobalLogger - ] Starting up the ACS 8.0 Services Daemon...
+1 - ----------T--:--:--.--- [ACS 8.0 Services Daemon - ACS::ThreadBase::resume] 
+1 - ----------T--:--:--.--- [GlobalLogger - ] ACS 8.0 Services Daemon is initialized.
+1 - ----------T--:--:--.--- [GlobalLogger - ] ACS 8.0 Services Daemon is up and running...
+1 - ----------T--:--:--.--- [GlobalLogger - ] ACS 8.0 Services Daemon is waiting for incoming requests.
+1 - ----------T--:--:--.--- [GlobalLogger - ] Initializing ACSServicesHandlerACS80Impl!
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::Thread::commonStart] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::Thread::run] 
+1 - ----------T--:--:--.--- INFO [acsNamingService] Starting Naming Service
+2 - ----------T--:--:--.--- [GlobalLogger - ] DaemonSeqeuenceCallback is waiting for incoming requests.
+2 - ----------T--:--:--.--- [GlobalLogger - ] Using local Services Daemon reference: 'something'
+2 - ----------T--:--:--.--- [GlobalLogger - ] BUILDING SERVICE DEFINITION.
+1 - ----------T--:--:--.--- [GlobalLogger - ] CREATING ServiceDefinitionBuilderImpl. New count: 'something'!
+2 - SERVICE DEFINITION XML:
+2 - <acs_services_definition instance="1">
+2 - <naming_service host="a.b.c.d" />
+2 - ----------T--:--:--.--- [GlobalLogger - ] STARTING UP THE SERVICES.
+2 - <interface_repository host="a.b.c.d" load="false" wait_load="false" />
+1 - ----------T--:--:--.--- [GlobalLogger - ] Using local Services Daemon reference: 'something'
+2 - <notification_service host="a.b.c.d" />
+1 - ----------T--:--:--.--- [GlobalLogger - ] Requesting a remote startup of 'something'.
+1 - ----------T--:--:--.--- [GlobalLogger - ] Starting Naming Service (instance 1).
+2 - <notification_service name="Logging" host="a.b.c.d" />
+1 - ----------T--:--:--.--- [GlobalLogger - ] DESTROYING RemoteRequest 'something'!
+1 - ----------T--:--:--.--- [GlobalLogger - ] Executing: 'something'.
+2 - </acs_services_definition>
+2 - 
+1 - ----------T--:--:--.--- [GlobalLogger - ] DESTROYING ServiceDefinitionBuilderImpl. New count: 'something'!
+1 - ----------T--:--:--.--- INFO [acsInterfaceRepository] Starting Interface Repository
+1 - Bound ID: InterfaceRepository
+2 - ----------T--:--:--.--- [GlobalLogger - ] Successfully started service 'something' on host 'something' (instance: 1).
+1 - ----------T--:--:--.--- [GlobalLogger - ] DESTROYING LocalRequest 'something'!
+1 - ----------T--:--:--.--- [GlobalLogger - ] DESTROYING RemoteRequestDaemonCallback 'something'!
+1 - ----------T--:--:--.--- [GlobalLogger - ] Using local Services Daemon reference: 'something'
+1 - ----------T--:--:--.--- [GlobalLogger - ] Requesting a remote startup of 'something'.
+1 - ----------T--:--:--.--- [GlobalLogger - ] Starting Interface Repository (instance 1).
+1 - ----------T--:--:--.--- [GlobalLogger - ] DESTROYING RemoteRequest 'something'!
+1 - ----------T--:--:--.--- [GlobalLogger - ] Executing: 'something'.
+1 - ----------T--:--:--.--- INFO [acsNotifyService] Starting Notify Service
+1 - ----------T--:--:--.--- [GlobalLogger - ] DESTROYING RemoteRequestDaemonCallback 'something'!
+2 - ----------T--:--:--.--- [GlobalLogger - ] Successfully started service 'something' on host 'something' (instance: 1).
+1 - ----------T--:--:--.--- [GlobalLogger - ] DESTROYING LocalRequest 'something'!
+1 - ----------T--:--:--.--- [GlobalLogger - ] Requesting a remote startup of 'something'.
+1 - ----------T--:--:--.--- [GlobalLogger - ] Using local Services Daemon reference: 'something'
+1 - ----------T--:--:--.--- [GlobalLogger - ] DESTROYING RemoteRequest 'something'!
+1 - ----------T--:--:--.--- [GlobalLogger - ] Starting 'something' Notification Service (instance 1).
+1 - ----------T--:--:--.--- [GlobalLogger - ] Executing: 'something'.
+1 - ----------T--:--:--.--- INFO [acsNotifyService] Starting Logging Notify Service
+2 - ----------T--:--:--.--- [GlobalLogger - ] Successfully started service 'something' on host 'something' (instance: 1).
+1 - ----------T--:--:--.--- [GlobalLogger - ] DESTROYING LocalRequest 'something'!
+1 - ----------T--:--:--.--- [GlobalLogger - ] DESTROYING RemoteRequestDaemonCallback 'something'!
+1 - ----------T--:--:--.--- [GlobalLogger - ] Using local Services Daemon reference: 'something'
+1 - ----------T--:--:--.--- [GlobalLogger - ] Requesting a remote startup of 'something'.
+1 - ----------T--:--:--.--- [GlobalLogger - ] Starting 'something' Notification Service (instance 1).
+1 - ----------T--:--:--.--- [GlobalLogger - ] DESTROYING RemoteRequest 'something'!
+1 - ----------T--:--:--.--- [GlobalLogger - ] Executing: 'something'.
+2 - ----------T--:--:--.--- [GlobalLogger - ] Successfully started service 'something' on host 'something' (instance: 1).
+1 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA Logging Notification Service
+2 - ----------T--:--:--.--- [GlobalLogger - ] DONE STARTING UP SERVICES.
+2 - ----------T--:--:--.--- [GlobalLogger - ] SHUTTING DOWN THE SERVICES.
+1 - ----------T--:--:--.--- [GlobalLogger - ] DESTROYING LocalRequest 'something'!
+1 - ----------T--:--:--.--- [GlobalLogger - ] DESTROYING RemoteRequestDaemonCallback 'something'!
+1 - ----------T--:--:--.--- [GlobalLogger - ] DESTROYING RequestChainBuilder!
+1 - ----------T--:--:--.--- [GlobalLogger - ] Ended processing command requests!
+1 - ----------T--:--:--.--- [GlobalLogger - ] Using local Services Daemon reference: 'something'
+1 - ----------T--:--:--.--- [GlobalLogger - ] Requesting a remote startup of 'something'.
+1 - ----------T--:--:--.--- [GlobalLogger - ] Stopping 'something' Notification Service (instance 1).
+1 - ----------T--:--:--.--- [GlobalLogger - ] DESTROYING RemoteRequest 'something'!
+1 - ----------T--:--:--.--- [GlobalLogger - ] Executing: 'something'.
+1 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA Notification Service
+2 - ----------T--:--:--.--- [GlobalLogger - ] Successfully stoped service 'something' on host 'something' (instance: 1).
+1 - ----------T--:--:--.--- [GlobalLogger - ] DESTROYING LocalRequest 'something'!
+1 - ----------T--:--:--.--- [GlobalLogger - ] DESTROYING RemoteRequestDaemonCallback 'something'!
+1 - ----------T--:--:--.--- [GlobalLogger - ] Using local Services Daemon reference: 'something'
+1 - ----------T--:--:--.--- [GlobalLogger - ] DESTROYING RemoteRequest 'something'!
+1 - ----------T--:--:--.--- [GlobalLogger - ] Executing: 'something'.
+1 - ----------T--:--:--.--- [GlobalLogger - ] Requesting a remote startup of 'something'.
+1 - ----------T--:--:--.--- [GlobalLogger - ] Stopping 'something' Notification Service (instance 1).
+1 - ----------T--:--:--.--- INFO [acsInterfaceRepository] Stopping the CORBA Interface Repository
+2 - ----------T--:--:--.--- [GlobalLogger - ] Successfully stoped service 'something' on host 'something' (instance: 1).
+1 - ----------T--:--:--.--- [GlobalLogger - ] DESTROYING LocalRequest 'something'!
+1 - ----------T--:--:--.--- [GlobalLogger - ] DESTROYING RemoteRequestDaemonCallback 'something'!
+1 - ----------T--:--:--.--- [GlobalLogger - ] Using local Services Daemon reference: 'something'
+1 - ----------T--:--:--.--- [GlobalLogger - ] DESTROYING RemoteRequest 'something'!
+1 - ----------T--:--:--.--- [GlobalLogger - ] Executing: 'something'.
+1 - ----------T--:--:--.--- [GlobalLogger - ] Requesting a remote startup of 'something'.
+1 - ----------T--:--:--.--- [GlobalLogger - ] Stopping Interface Repository (instance 1).
+1 - ----------T--:--:--.--- INFO [acsNamingService] Stopping the CORBA Naming Service
+2 - ----------T--:--:--.--- [GlobalLogger - ] Successfully stoped service 'something' on host 'something' (instance: 1).
+1 - ----------T--:--:--.--- [GlobalLogger - ] DESTROYING LocalRequest 'something'!
+1 - ----------T--:--:--.--- [GlobalLogger - ] DESTROYING RemoteRequestDaemonCallback 'something'!
+1 - ----------T--:--:--.--- [GlobalLogger - ] Using local Services Daemon reference: 'something'
+1 - ----------T--:--:--.--- [GlobalLogger - ] DESTROYING RemoteRequest 'something'!
+1 - ----------T--:--:--.--- [GlobalLogger - ] Executing: 'something'.
+1 - ----------T--:--:--.--- [GlobalLogger - ] Requesting a remote startup of 'something'.
+1 - ----------T--:--:--.--- [GlobalLogger - ] Stopping Naming Service (instance 1).
+2 - ----------T--:--:--.--- [GlobalLogger - ] Successfully stoped service 'something' on host 'something' (instance: 1).
+2 - ----------T--:--:--.--- [GlobalLogger - ] DONE SHUTTING DOWN SERVICES.
+2 - ----------T--:--:--.--- [GlobalLogger - ] DESTROYING TestDaemonSequenceCallback!
+2 - ----------T--:--:--.--- [GlobalLogger - ] TEST COMPLETE.
+1 - ----------T--:--:--.--- [GlobalLogger - ] DESTROYING RequestChainBuilder!
+1 - ----------T--:--:--.--- [GlobalLogger - ] DESTROYING LocalRequest 'something'!
+1 - ----------T--:--:--.--- [GlobalLogger - ] DESTROYING RemoteRequestDaemonCallback 'something'!
+1 - ----------T--:--:--.--- [GlobalLogger - ] Ended processing command requests!
+3 - ----------T--:--:--.--- [GlobalLogger - ] Using local Services Daemon reference: 'something'
+1 - ----------T--:--:--.--- [GlobalLogger - ] Disposing ACSServicesHandlerACS80Impl!
+1 - ----------T--:--:--.--- [GlobalLogger - ] Shutting down the ACS Services Daemon on remote request...
+1 - ----------T--:--:--.--- [GlobalLogger - ] Stopping the ACS 8.0 Services Daemon...
+3 - ----------T--:--:--.--- [GlobalLogger - ] Calling shutdown().
+1 - ----------T--:--:--.--- [ACS 8.0 Services Daemon - ACS::ThreadBase::terminate] 
+1 - ----------T--:--:--.--- [ACS 8.0 Services Daemon - ThreadBase::stop] Thread ACS 8.0 Services Daemon
+1 - ----------T--:--:--.--- [GlobalLogger - ] ACS 8.0 Services Daemon stopped.
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::Thread::~Thread] 
+1 - ----------T--:--:--.--- [GlobalLogger - CommandProcessorThread::~CommandProcessorThread] 
+1 - ----------T--:--:--.--- [GlobalLogger - ] DESTROYING ACSServicesHandlerACS80Impl!
+3 - ----------T--:--:--.--- [GlobalLogger - ] Daemon shutdown message issued.

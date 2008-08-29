@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsContainerHandlerImpl.h,v 1.4 2008/06/27 11:41:07 msekoran Exp $"
+* "@(#) $Id: acsContainerHandlerImpl.h,v 1.5 2008/08/29 13:58:28 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -66,22 +66,29 @@ class ACSContainerHandlerImpl : public POA_acsdaemon::ContainerDaemon {
     }
 
     /**
+     * Initialize handler
+     */
+    void initialize(CORBA::ORB_ptr orb) {}
+
+    /**
+     * Dispose handler
+     */
+    void dispose(CORBA::ORB_ptr orb) {}
+
+    /**
      * Get the name of this container handler
      */
-    const char* getName();
+    std::string getName();
 
     /**
      * Get the type string of this container handler
      */
-    const char* getType();
+    std::string getType();
     
     /**
      * Return the port where this container handler listens for connections
      */
-    const char* getPort();
-    
-    void startCmdProcessor() {}
-    void stopCmdProcessor() {}
+    std::string getPort();
 
     /*************************** CORBA interface *****************************/
 
