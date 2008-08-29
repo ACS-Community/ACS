@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@$Id: acsContainerHandlerImpl.cpp,v 1.10 2008/08/29 07:49:57 cparedes Exp $"
+* "@$Id: acsContainerHandlerImpl.cpp,v 1.11 2008/08/29 08:08:42 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -120,9 +120,12 @@ ACSContainerHandlerImpl::start_container (
 
     std::string timeStamp(getStringifiedTimeStamp().c_str());
 
-    timeStamp.replace(timeStamp.find(":"),1,".");
-    timeStamp.replace(timeStamp.find(":"),1,".");
-    timeStamp.replace(timeStamp.find("T"),1,"_");
+    if( timeStamp.find(":") >= 0)
+        timeStamp.replace(timeStamp.find(":"),1,".");
+    if( timeStamp.find(":") >= 0)
+        timeStamp.replace(timeStamp.find(":"),1,".");
+    if( timeStamp.find("T") >= 0)
+        timeStamp.replace(timeStamp.find("T"),1,"_");
             
 
 	char command[1000];
@@ -185,9 +188,12 @@ ACSContainerHandlerImpl::stop_container (
 
     std::string timeStamp(getStringifiedTimeStamp().c_str());
 
-    timeStamp.replace(timeStamp.find(":"),1,".");
-    timeStamp.replace(timeStamp.find(":"),1,".");
-    timeStamp.replace(timeStamp.find("T"),1,"_");
+    if( timeStamp.find(":") >= 0)
+        timeStamp.replace(timeStamp.find(":"),1,".");
+    if( timeStamp.find(":") >= 0)
+        timeStamp.replace(timeStamp.find(":"),1,".");
+    if( timeStamp.find("T") >= 0)
+        timeStamp.replace(timeStamp.find("T"),1,"_");
 
     // execute: "acsStopContainer -b <instance> <name> <args>"
     // TODO checks for ';', '&', '|' chars, they can run any other command!
