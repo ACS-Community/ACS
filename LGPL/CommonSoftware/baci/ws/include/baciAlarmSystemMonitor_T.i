@@ -26,7 +26,7 @@ baci::AlarmSystemMonitor<TPROP>::AlarmSystemMonitor(TPROP * property, EventDispa
 #ifndef MAKE_VXWORKS
     try
 	{
-	this->alarmSource_map = ACSAlarmSystemInterfaceFactory::createSource(property_mp->name());
+	this->alarmSource_map = ACSAlarmSystemInterfaceFactory::createSource("ALARM_SYSTEM_SOURCES");
 	} catch (acsErrTypeAlarmSourceFactory::ACSASFactoryNotInitedExImpl &ex) {
 /* %todo: throw new exception
 		 std::string procName="ROcommonImpl::ROcommonImpl(";
