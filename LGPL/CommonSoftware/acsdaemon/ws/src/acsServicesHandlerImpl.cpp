@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@$Id: acsServicesHandlerImpl.cpp,v 1.7 2008/08/29 08:08:42 cparedes Exp $"
+* "@$Id: acsServicesHandlerImpl.cpp,v 1.8 2008/08/29 08:15:45 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -167,11 +167,11 @@ ACSServicesHandlerImpl::start_acs (
     
     std::string timeStamp(getStringifiedTimeStamp().c_str());
     
-    if( timeStamp.find(":") >= 0)
+    if( timeStamp.find(":") != std::string::npos)
         timeStamp.replace(timeStamp.find(":"),1,".");
-    if( timeStamp.find(":") >= 0)
+    if( timeStamp.find(":") != std::string::npos )
         timeStamp.replace(timeStamp.find(":"),1,".");
-    if( timeStamp.find("T") >= 0)
+    if( timeStamp.find("T") != std::string::npos)
         timeStamp.replace(timeStamp.find("T"),1,"_");
     
     char commandline[1000];
@@ -210,11 +210,11 @@ ACSServicesHandlerImpl::stop_acs (
 
     std::string timeStamp(getStringifiedTimeStamp().c_str());
 
-    if( timeStamp.find(":") >= 0)
+    if( timeStamp.find(":") != std::string::npos)
         timeStamp.replace(timeStamp.find(":"),1,".");
-    if( timeStamp.find(":") >= 0)
+    if( timeStamp.find(":") != std::string::npos)
         timeStamp.replace(timeStamp.find(":"),1,".");
-    if( timeStamp.find("T") >= 0)
+    if( timeStamp.find("T") != std::string::npos)
         timeStamp.replace(timeStamp.find("T"),1,"_");
 
     char command[1000];
