@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: Makefile,v 1.16 2006/10/19 12:56:58 gchiozzi Exp $"
+# "@(#) $Id: Makefile,v 1.17 2008/09/01 03:01:42 cparedes Exp $"
 #
 # Makefile of Object Explorer
 #
@@ -35,7 +35,7 @@ ACSERRDEF = objexpErrType
 #
 # Scripts (public and local)
 # ----------------------------
-SCRIPTS         = objexp
+SCRIPTS         = objexp objexpNonSticky
 SCRIPTS_L       =
 
 #
