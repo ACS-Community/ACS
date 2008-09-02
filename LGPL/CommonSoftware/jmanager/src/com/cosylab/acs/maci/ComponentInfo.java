@@ -133,7 +133,7 @@ public class ComponentInfo implements Serializable, Comparable<ComponentInfo>
 		this.clients = new IntArray();
 		this.components = new IntArray();
 		this.isDynamic = false;
-		this.keepAliveTime = Integer.MIN_VALUE + 2; // @todo TODO this is not nice, define constant only once!!!
+		this.keepAliveTime = ManagerConstants.RELEASE_TIME_UNDEFINED;
 	}
 
 	/**

@@ -645,21 +645,6 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	private static final int	CONTAINER_RIGHTS = AccessRights.NONE;
 
 	/**
-	 * Release immediately keep-alive time.
-	 */
-	private static final int	RELEASE_IMMEDIATELY = 0;		// 0 secs
-
-	/**
-	 * Never release (immortal) immediately keep-alive time.
-	 */
-	private static final int	RELEASE_NEVER = -1;		// < 0 secs
-
-	/**
-	 * (Internal) undefined keep-alive time.
-	 */
-	private static final int	RELEASE_TIME_UNDEFINED = Integer.MIN_VALUE + 2;
-
-	/**
 	 * Shutdown implementation.
 	 */
 	private transient ManagerShutdown shutdownImplementation = null;

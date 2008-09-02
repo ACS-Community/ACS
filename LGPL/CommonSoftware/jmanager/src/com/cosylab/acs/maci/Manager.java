@@ -36,7 +36,7 @@ import alma.maciErrType.wrappers.AcsJCannotGetComponentEx;
  * @author		Matej Sekoranja (matej.sekoranja@cosylab.com)
  * @version	@@VERSION@@
  */
-public interface Manager
+public interface Manager extends ManagerConstants
 {
 	/**
 	 * Return the fully qualified name of the domain, e.g., "antenna1.alma.nrao".
