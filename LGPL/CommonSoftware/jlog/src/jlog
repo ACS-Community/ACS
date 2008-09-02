@@ -20,7 +20,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: jlog,v 1.30 2007/02/13 15:36:55 acaproni Exp $"
+# "@(#) $Id: jlog,v 1.31 2008/09/02 09:42:32 acaproni Exp $"
 #
 #acsStartJava com.cosylab.logging.LoggingClient
 
@@ -32,9 +32,10 @@
 #
 OracleXmlParser="lib/oracle/xmlparserv2.jar"
 OracleXmlParserPath=`searchFile lib/oracle/xmlparserv2.jar`
+ADD_TO_CLASSPATH=""
 if [ "$OracleXmlParserPath" != "#error#" ] 
 then
     echo "Adding ORACLE XML parser jar to classpath: $OracleXmlParserPath/$OracleXmlParser"
-    CLASSPATH=$CLASSPATH:$OracleXmlParserPath/$OracleXmlParser
+    ADD_TO_CLASSPATH=--addToClasspath $OracleXmlParserPath/$OracleXmlParser
 fi
-acsStartJava -v -Xms32m -v -Xmx512m --noDirectory alma.acs.logging.dialogs.main.LogFrame $*
+acsStartJava -v -Xms32m -v -Xmx512m --noDirectory $ADD_TO_CLASSPATH alma.acs.logging.dialogs.main.LogFrame $*
