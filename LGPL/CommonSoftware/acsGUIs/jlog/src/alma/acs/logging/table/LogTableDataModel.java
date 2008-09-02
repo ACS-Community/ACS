@@ -22,10 +22,8 @@
 package alma.acs.logging.table;
 
 import java.net.URL;
-import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 import java.util.Vector;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -35,22 +33,14 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileNotFoundException;
 
-import javax.swing.table.AbstractTableModel;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
 
 import alma.acs.logging.dialogs.LoadURLDlg;
 
-import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.LoggingClient;
 import com.cosylab.logging.IOLogsHelper;
 
-import com.cosylab.logging.engine.log.LogTypeHelper;
-import com.cosylab.logging.engine.log.ILogEntry.Field;
-
-import com.cosylab.logging.client.cache.LogCache;
-import com.cosylab.logging.client.cache.LogCacheException;
 import com.cosylab.logging.client.CustomFileChooser;
 
 /**
@@ -74,6 +64,12 @@ public class LogTableDataModel extends LogEntryTableModelBase {
 		 * The time interval between two iteration of the thread
 		 */
 		private final int TIME_INTERVAL=30;
+		
+		/**
+		 * The thread to delete logs
+		 * The deletion must be done asynchronously to avoid blocking the GUI
+		 */
+		private Thread deleterThread=null;
 		
 		/** 
 		 * The queue with the keys of the logs to delete
@@ -128,19 +124,19 @@ public class LogTableDataModel extends LogEntryTableModelBase {
 				if (terminateThread) {
 					return;
 				}
-				// Do not do anything if the application is paused
+				// Do not do anything if the application is paused 
 				if (loggingClient.isPaused()) {
 					continue;
 				}
 				sz =rows.size();
-				if (maxLog>0 && sz>maxLog) {
-					Thread t=new Thread() {
+				if (maxLog>0 && sz>maxLog && (deleterThread==null || (deleterThread!=null && !deleterThread.isAlive()))) {
+					 deleterThread = new Thread("LogTableDataModel.LogDeleter") {
 						public void run() {
-							deleteLogs();
+							deleteLogs();		
 						}
 					};
-					t.setDaemon(true);
-					t.start();
+					deleterThread.setDaemon(true);
+					deleterThread.start();
 				}
 			}
 		}
@@ -153,20 +149,18 @@ public class LogTableDataModel extends LogEntryTableModelBase {
 			synchronized (LogTableDataModel.this) {
 				int numOfLogsToRemove = rows.size()-maxLog;
 				try {
-					Vector<Integer> removed = new Vector<Integer>(numOfLogsToRemove);
+					Integer[] removed = new Integer[numOfLogsToRemove];
 					for (int t=0; t<numOfLogsToRemove; t++) {
-						removed.add(rows.remove(0));
+						removed[t]=rows.remove(0);
 					}
 					allLogs.deleteLogs(removed);
-					fireTableDataChanged();
-					removed.removeAllElements();
+					fireTableRowsDeleted(0, numOfLogsToRemove-1);
 				} catch (Exception e) {
 					System.out.println("Error deleting a collection of logs from thread: "+e.getMessage());
 					e.printStackTrace();
 				}
 			}
 		}
-		
 	}
     
     /** 
