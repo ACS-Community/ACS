@@ -137,7 +137,7 @@ public class LogEntryTableModelBase extends AbstractTableModel {
 	 */
 	@Override
 	public int getRowCount() {
-		return allLogs.getSize();
+		return rows.size();
 	}
 
 	/**
@@ -151,23 +151,17 @@ public class LogEntryTableModelBase extends AbstractTableModel {
 		switch (column) {
 		case 1: {// TIMESTAMP
 				try {
-				return new Date(allLogs.getLogTimestamp(rows.get(row)));
+					return new Date(allLogs.getLogTimestamp(rows.get(row)));
 				} catch (Exception e) {
-					System.err.println("Got a null timestamp: ");
-					e.printStackTrace(System.err);
+					// This can happen because deletion of logs is done asynchronously
 					return null;
 				}
 		}
 		case 2: { // ENTRYTYPE
 			try {
-				LogTypeHelper temp = allLogs.getLogType(rows.get(row));
-				if (temp==null) {
-					System.out.println("Got a null logtype row "+row+", col "+column);
-				}
-				return temp;
+				return allLogs.getLogType(rows.get(row));
 			} catch (Exception e) {
-				System.err.println("Got a null log type: ");
-				e.printStackTrace(System.err);
+				// This can happen because deletion of logs is done asynchronously
 				return null;
 			}
 		}
@@ -200,6 +194,7 @@ public class LogEntryTableModelBase extends AbstractTableModel {
 			 }
 			 return ret;
 		 } catch (Exception e) {
+			// This can happen because deletion of logs is done asynchronously
 			 return null;
 		 }
 	 }
