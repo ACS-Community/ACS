@@ -133,7 +133,7 @@ public class LogTableRowSorter extends TableRowSorter<LogTableDataModel> impleme
 			public void run() {
 				setRowFilter(new LogTableRowFilter(filters,logLevel));
 			}
-		});
+		},"LogTableRowSorter.applyChanges");
 		SwingUtilities.invokeLater(t);
 	}
 	
@@ -145,8 +145,9 @@ public class LogTableRowSorter extends TableRowSorter<LogTableDataModel> impleme
 	 * 
 	 */
 	public void toggleSortOrder(int column) {
-		Thread t = new Thread(this);
+		Thread t = new Thread(this,"LogTableRowSorter.toggleSortOrder");
 		col=column;
+		t.setDaemon(true);
 		t.start();
 	}
 	
@@ -155,6 +156,10 @@ public class LogTableRowSorter extends TableRowSorter<LogTableDataModel> impleme
 	 * freezing the GUI.
 	 */
 	public void run() {
-		super.toggleSortOrder(col);
+		try {
+			super.toggleSortOrder(col);
+		} catch (Throwable t) {
+			System.out.println("Recovered error while setting sort order: "+t.getMessage());
+		}
 	}
 }
