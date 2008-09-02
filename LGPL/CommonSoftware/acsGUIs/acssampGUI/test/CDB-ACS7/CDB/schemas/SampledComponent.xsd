@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<xs:schema 
+  targetNamespace="urn:schemas-cosylab-com:SampledComponent:1.0"
+  xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  xmlns="urn:schemas-cosylab-com:SampledComponent:1.0"
+  xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0" 
+  xmlns:baci="urn:schemas-cosylab-com:BACI:1.0" elementFormDefault="qualified" attributeFormDefault="unqualified">
+  <xs:import namespace="urn:schemas-cosylab-com:CDB:1.0" schemaLocation="CDB.xsd"/>
+  <xs:import namespace="urn:schemas-cosylab-com:BACI:1.0" schemaLocation="BACI.xsd"/>
+
+  <xs:complexType name="samplComp">
+    <xs:sequence>
+      <xs:element name="my_RWdouble" type="baci:RWdouble"/>
+      <xs:element name="my_ROdouble" type="baci:ROdouble"/>
+      <xs:element name="my_RWstring" type="baci:RWstring"/>
+      <xs:element name="my_ROstring" type="baci:ROstring"/>
+      <xs:element name="my_RWfloat" type="baci:RWfloat"/>
+      <xs:element name="my_ROfloat" type="baci:ROfloat"/>
+      <xs:element name="my_RWlong" type="baci:RWlong"/>
+      <xs:element name="my_ROlong" type="baci:ROlong"/>
+      <xs:element name="my_RWlongLong" type="baci:RWlongLong"/>
+      <xs:element name="my_ROlongLong" type="baci:ROlongLong"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:element name="SampledComponent" type="samplComp"/>
+</xs:schema>
+

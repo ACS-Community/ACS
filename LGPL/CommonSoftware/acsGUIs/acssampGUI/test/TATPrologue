@@ -5,8 +5,21 @@ then
 	mkdir $ACS_TMP
 fi
 
-export ACS_CDB=$PWD
+if test -f $ACSROOT/ACS_VERSION
+then
+	VERSION=$(cat $ACSROOT/ACS_VERSION)
+	if test $VERSION = "8.0"
+	then
+		export ACS_CDB=$PWD/CDB-ACS8
+	elif test $VERSION = "7.0"
+	then
+		export ACS_CDB=$PWD/CDB-ACS7
+	fi
+	echo $VERSION
+fi
 
 acsutilTATPrologue
+
+acsIrfeed
 
 acsutilAwaitContainerStart -cpp Container

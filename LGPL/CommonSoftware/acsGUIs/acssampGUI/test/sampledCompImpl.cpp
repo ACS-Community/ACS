@@ -1,5 +1,5 @@
 #include <vltPort.h>
-static char *rcsId=(char *)"@(#) $Id: sampledCompImpl.cpp,v 1.2 2008/08/29 21:25:20 rtobar Exp $";
+static char *rcsId=(char *)"@(#) $Id: sampledCompImpl.cpp,v 1.3 2008/09/02 04:43:47 rtobar Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include "sampledCompImpl.h"
@@ -22,20 +22,20 @@ sampledCompImpl::sampledCompImpl(const ACE_CString& name, maci::ContainerService
 {
 	const char * _METHOD_ = (char *)"sampledCompImpl::sampledCompImpl";
 	ACS_TRACE(_METHOD_);
-	component_name = name.c_str();
+	component_name = name;
 }
 
 void sampledCompImpl::initialize() throw (acsErrTypeLifeCycle::LifeCycleExImpl){
-	m_RWdouble_sp   = new RWdouble  ( (component_name + std::string(":my_RWdouble")).c_str(), getComponent());
-	m_RWfloat_sp    = new RWfloat   ( (component_name + std::string(":my_RWfloat")).c_str(), getComponent());
-	m_RWstring_sp   = new RWstring  ( (component_name + std::string(":my_RWstring")).c_str(), getComponent());
-	m_RWlong_sp     = new RWlong    ( (component_name + std::string(":my_RWlong")).c_str(), getComponent());
-	m_RWlongLong_sp = new RWlongLong( (component_name + std::string(":my_RWlongLong")).c_str(), getComponent());
-	m_ROdouble_sp   = new ROdouble  ( (component_name + std::string(":my_ROdouble")).c_str(), getComponent());
-	m_ROfloat_sp    = new ROfloat   ( (component_name + std::string(":my_ROfloat")).c_str(), getComponent());
-	m_ROstring_sp   = new ROstring  ( (component_name + std::string(":my_ROstring")).c_str(), getComponent());
-	m_ROlong_sp     = new ROlong    ( (component_name + std::string(":my_ROlong")).c_str(), getComponent());
-	m_ROlongLong_sp = new ROlongLong( (component_name + std::string(":my_ROlongLong")).c_str(), getComponent());
+	m_RWdouble_sp   = new RWdouble  ( (component_name + ":my_RWdouble").c_str(), getComponent());
+	m_RWfloat_sp    = new RWfloat   ( (component_name + ":my_RWfloat").c_str(), getComponent());
+	m_RWstring_sp   = new RWstring  ( (component_name + ":my_RWstring").c_str(), getComponent());
+	m_RWlong_sp     = new RWlong    ( (component_name + ":my_RWlong").c_str(), getComponent());
+	m_RWlongLong_sp = new RWlongLong( (component_name + ":my_RWlongLong").c_str(), getComponent());
+	m_ROdouble_sp   = new ROdouble  ( (component_name + ":my_ROdouble").c_str(), getComponent());
+	m_ROfloat_sp    = new ROfloat   ( (component_name + ":my_ROfloat").c_str(), getComponent());
+	m_ROstring_sp   = new ROstring  ( (component_name + ":my_ROstring").c_str(), getComponent());
+	m_ROlong_sp     = new ROlong    ( (component_name + ":my_ROlong").c_str(), getComponent());
+	m_ROlongLong_sp = new ROlongLong( (component_name + ":my_ROlongLong").c_str(), getComponent());
 }
 
 /* Destructor */

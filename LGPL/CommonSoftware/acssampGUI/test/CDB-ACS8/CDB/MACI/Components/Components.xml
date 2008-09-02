@@ -1,0 +1,551 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Components  xmlns="urn:schemas-cosylab-com:Components:1.0"
+       xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0" 
+       xmlns:baci="urn:schemas-cosylab-com:BACI:1.0" 
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+      <_ Name="LAMP1"        Code="acsexmplLampImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/acsexmplLamp/Lamp:1.0"
+                             Container="Container"/>
+      <_ Name="SAMP1"        Code="acssamp"
+                             ImplLang="cpp"
+                             Type="IDL:alma/acssamp/Samp:1.0"
+                             Container="Container"/>
+      <_ Name="SAMP2"        Code="acssamp"
+                             ImplLang="cpp"
+                             Type="IDL:alma/acssamp/Samp:1.0"
+                             Container="Container"/>
+      <_ Name="LAMP2"        Code="acsexmplLampImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/acsexmplLamp/Lamp:1.0"
+                             Container="Container"/>
+      <_ Name="CLOCK1"       Code="acsclock"
+                             ImplLang="cpp"
+                             Type="IDL:alma/acstime/Clock:1.0" 
+                             Container="Container"/>
+      <_ Name="FRIDGE1"      Code="acsexmplFridgeImpl"     
+                             ImplLang="cpp"
+                             Type="IDL:alma/FRIDGE/FridgeControl:1.0"
+                             Container="Container"/>
+      <_ Name="SAMPLED1"     Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container"/>
+      <_ Name="SAMPLED2"     Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container"/>
+      <_ Name="SAMPLED3"     Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container"/>
+      <_ Name="SAMPLED4"     Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container1"/>
+      <_ Name="SAMPLED5"     Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container"/>
+      <_ Name="SAMPLED6"     Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container"/>
+      <_ Name="SAMPLED7"     Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container"/>
+      <_ Name="SAMPLED8"     Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container1"/>
+      <_ Name="SAMPLED9"     Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container"/>
+      <_ Name="SAMPLED10"    Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container1"/>
+      <_ Name="SAMPLED11"    Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container"/>
+      <_ Name="SAMPLED12"    Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container"/>
+      <_ Name="SAMPLED13"    Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container"/>
+      <_ Name="SAMPLED14"    Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container1"/>
+      <_ Name="SAMPLED15"    Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container"/>
+      <_ Name="SAMPLED16"    Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container"/>
+      <_ Name="SAMPLED17"    Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container"/>
+      <_ Name="SAMPLED18"    Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container1"/>
+      <_ Name="SAMPLED19"    Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container"/>
+      <_ Name="SAMPLED20"    Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container1"/>
+      <_ Name="SAMPLED21"    Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container"/>
+      <_ Name="SAMPLED22"    Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container"/>
+      <_ Name="SAMPLED23"    Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container"/>
+      <_ Name="SAMPLED24"    Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container1"/>
+      <_ Name="SAMPLED25"    Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container"/>
+      <_ Name="SAMPLED26"    Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container"/>
+      <_ Name="SAMPLED27"    Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container"/>
+      <_ Name="SAMPLED28"    Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container1"/>
+      <_ Name="SAMPLED29"    Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container"/>
+      <_ Name="SAMPLED30"    Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container1"/>
+      <_ Name="SAMPLED31"    Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container"/>
+      <_ Name="SAMPLED32"    Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container"/>
+      <_ Name="SAMPLED33"    Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container"/>
+      <_ Name="SAMPLED34"    Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container1"/>
+      <_ Name="SAMPLED35"    Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container"/>
+      <_ Name="SAMPLED36"    Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container"/>
+      <_ Name="SAMPLED37"    Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container"/>
+      <_ Name="SAMPLED38"    Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container1"/>
+      <_ Name="SAMPLED39"    Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container"/>
+      <_ Name="SAMPLED40"    Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container1"/>
+      <_ Name="SAMPLED41"    Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container"/>
+      <_ Name="SAMPLED42"    Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container"/>
+      <_ Name="SAMPLED43"    Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container"/>
+      <_ Name="SAMPLED44"    Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container1"/>
+      <_ Name="SAMPLED45"    Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container"/>
+      <_ Name="SAMPLED46"    Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container"/>
+      <_ Name="SAMPLED47"    Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container"/>
+      <_ Name="SAMPLED48"    Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container1"/>
+      <_ Name="SAMPLED49"    Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container"/>
+      <_ Name="SAMPLED50"    Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container1"/>
+      <_ Name="SAMPLED51"    Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container"/>
+      <_ Name="SAMPLED52"    Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container"/>
+      <_ Name="SAMPLED53"    Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container"/>
+      <_ Name="SAMPLED54"    Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container1"/>
+      <_ Name="SAMPLED55"    Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container"/>
+      <_ Name="SAMPLED56"    Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container"/>
+      <_ Name="SAMPLED57"    Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container"/>
+      <_ Name="SAMPLED58"    Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container1"/>
+      <_ Name="SAMPLED59"    Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container"/>
+      <_ Name="SAMPLED60"    Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container1"/>
+      <_ Name="SAMPLED61"    Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container"/>
+      <_ Name="SAMPLED62"    Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container"/>
+      <_ Name="SAMPLED63"    Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container"/>
+      <_ Name="SAMPLED64"    Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container1"/>
+      <_ Name="SAMPLED65"    Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container"/>
+      <_ Name="SAMPLED66"    Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container"/>
+      <_ Name="SAMPLED67"    Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container"/>
+      <_ Name="SAMPLED68"    Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container1"/>
+      <_ Name="SAMPLED69"    Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container"/>
+      <_ Name="SAMPLED70"    Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container1"/>
+      <_ Name="SAMPLED71"    Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container"/>
+      <_ Name="SAMPLED72"    Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container"/>
+      <_ Name="SAMPLED73"    Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container"/>
+      <_ Name="SAMPLED74"    Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container1"/>
+      <_ Name="SAMPLED75"    Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container"/>
+      <_ Name="SAMPLED76"    Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container"/>
+      <_ Name="SAMPLED77"    Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container"/>
+      <_ Name="SAMPLED78"    Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container1"/>
+      <_ Name="SAMPLED79"    Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container"/>
+      <_ Name="SAMPLED80"    Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container1"/>
+      <_ Name="SAMPLED81"    Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container"/>
+      <_ Name="SAMPLED82"    Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container"/>
+      <_ Name="SAMPLED83"    Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container"/>
+      <_ Name="SAMPLED84"    Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container1"/>
+      <_ Name="SAMPLED85"    Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container"/>
+      <_ Name="SAMPLED86"    Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container"/>
+      <_ Name="SAMPLED87"    Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container"/>
+      <_ Name="SAMPLED88"    Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container1"/>
+      <_ Name="SAMPLED89"    Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container"/>
+      <_ Name="SAMPLED90"    Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container1"/>
+      <_ Name="SAMPLED91"    Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container"/>
+      <_ Name="SAMPLED92"    Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container"/>
+      <_ Name="SAMPLED93"    Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container"/>
+      <_ Name="SAMPLED94"    Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container1"/>
+      <_ Name="SAMPLED95"    Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container"/>
+      <_ Name="SAMPLED96"    Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container"/>
+      <_ Name="SAMPLED97"    Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container"/>
+      <_ Name="SAMPLED98"    Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container1"/>
+      <_ Name="SAMPLED99"    Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container"/>
+      <_ Name="SAMPLED100"   Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container1"/>
+      <_ Name="SAMPLED101"   Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container"/>
+      <_ Name="SAMPLED102"   Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container"/>
+      <_ Name="SAMPLED103"   Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container"/>
+      <_ Name="SAMPLED104"   Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container1"/>
+      <_ Name="SAMPLED105"   Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container"/>
+      <_ Name="SAMPLED106"   Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container"/>
+      <_ Name="SAMPLED107"   Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container"/>
+      <_ Name="SAMPLED108"   Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container1"/>
+      <_ Name="SAMPLED109"   Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container"/>
+      <_ Name="SAMPLED110"   Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container1"/>
+      <_ Name="SAMPLED111"   Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container"/>
+      <_ Name="SAMPLED112"   Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container"/>
+      <_ Name="SAMPLED113"   Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container"/>
+      <_ Name="SAMPLED114"   Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container1"/>
+      <_ Name="SAMPLED115"   Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container"/>
+      <_ Name="SAMPLED116"   Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container"/>
+      <_ Name="SAMPLED117"   Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container"/>
+      <_ Name="SAMPLED118"   Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container1"/>
+      <_ Name="SAMPLED119"   Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container"/>
+      <_ Name="SAMPLED120"   Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container1"/>
+      <_ Name="SAMPLED121"   Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container"/>
+      <_ Name="SAMPLED122"   Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container"/>
+      <_ Name="SAMPLED123"   Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container"/>
+      <_ Name="SAMPLED124"   Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container1"/>
+      <_ Name="SAMPLED125"   Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container"/>
+      <_ Name="SAMPLED126"   Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container"/>
+      <_ Name="SAMPLED127"   Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container"/>
+      <_ Name="SAMPLED128"   Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container1"/>
+      <_ Name="SAMPLED129"   Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container"/>
+      <_ Name="SAMPLED130"   Code="sampledCompImpl"
+                             ImplLang="cpp"
+                             Type="IDL:alma/SAMP/SampledComponent:1.0"
+                             Container="Container1"/>
+</Components>
+
