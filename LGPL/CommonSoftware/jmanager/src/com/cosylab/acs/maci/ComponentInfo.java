@@ -105,6 +105,12 @@ public class ComponentInfo implements Serializable, Comparable<ComponentInfo>
 	private String dynamicContainerName;
 
 	/**
+	 * Keep alive time of a component (needed for dynamic components).
+	 * NOTE: this attribute is internal.
+	 */
+	private int keepAliveTime;
+
+	/**
 	 * Creates an instance of ComponentInfo with all necesarry data.
 	 * @param handle	handle of the component.
 	 * @param name		name of the component.
@@ -127,6 +133,7 @@ public class ComponentInfo implements Serializable, Comparable<ComponentInfo>
 		this.clients = new IntArray();
 		this.components = new IntArray();
 		this.isDynamic = false;
+		this.keepAliveTime = Integer.MIN_VALUE + 2; // @todo TODO this is not nice, define constant only once!!!
 	}
 
 	/**
@@ -382,6 +389,22 @@ public class ComponentInfo implements Serializable, Comparable<ComponentInfo>
 	 */
 	public void setDynamicContainerName(String string) {
 		dynamicContainerName = string;
+	}
+
+	/**
+	 * Get component keep alive time.
+	 * @return component keep alive time.
+	 */
+	public int getKeepAliveTime() {
+		return keepAliveTime;
+	}
+
+	/**
+	 * Set component keep alive time.
+	 * @param keepAliveTime the keepAliveTime to set.
+	 */
+	public void setKeepAliveTime(int keepAliveTime) {
+		this.keepAliveTime = keepAliveTime;
 	}
 
 	/* (non-Javadoc)

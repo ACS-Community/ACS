@@ -151,7 +151,7 @@ public class ManagerImplTest extends TestCase
 			TestAdministrator client = new TestAdministrator(administratorName);
 			ClientInfo info = manager.login(client);
 			ComponentInfo[] infos = manager.getComponentInfo(info.getHandle(), new int[0], "*", "*", false);
-			assertEquals(11, infos.length);
+			assertEquals(12, infos.length);
 			
 			boolean thereisDefault = false;
 			for (int i=0 ; i< infos.length; i++)
@@ -1314,6 +1314,7 @@ public class ManagerImplTest extends TestCase
 
 			manager.logout(info.getHandle());
 		} catch (AcsJNoPermissionEx e) {
+			e.printStackTrace();
 			fail("No permission");
 		}		
 		
@@ -2577,6 +2578,7 @@ public class ManagerImplTest extends TestCase
 			}
 			catch (Exception ex)
 			{
+				ex.printStackTrace();
 				fail();
 			}
 			
@@ -3043,6 +3045,7 @@ public class ManagerImplTest extends TestCase
 			}
 			catch (Exception ex)
 			{
+				ex.printStackTrace();
 				fail();
 			}
 			
@@ -3477,6 +3480,45 @@ public class ManagerImplTest extends TestCase
 		} catch (AcsJNoPermissionEx e) {
 			fail("No permission");
 		}
+		
+			// keep alive time of dynamic component
+		try
+		{
+			TestContainer dynContainer = new TestDynamicContainer("DynContainer");
+		
+			ClientInfo dynContainerInfo = manager.login(dynContainer);
+		
+			// wait container to startup
+			try { Thread.sleep(STARTUP_COBS_SLEEP_TIME_MS); } catch (InterruptedException ie) {}
+		
+			ComponentInfo componentInfo = manager.getDynamicComponent(info.getHandle(),
+					new ComponentSpec("DELAYED*", "IDL:alma/PS/PowerSupply:1.0", ComponentSpec.COMPSPEC_ANY, "DynContainer"), true);
+			assertTrue(componentInfo != null);
+			assertTrue(componentInfo.getName().startsWith("DELAYED"));
+			assertEquals(dynContainerInfo.getHandle(), componentInfo.getContainer());
+			
+			// now we release the component
+			manager.releaseComponent(info.getHandle(), CURLHelper.createURI(componentInfo.getName()));
+
+			// both alive
+			ComponentInfo[] infos = manager.getComponentInfo(info.getHandle(), new int[0], "*", "*", true);
+			assertEquals(2, infos.length);
+			
+			// sleep
+			final int KEEP_ALIVE_TIME = 5000 + 2000;
+			try { Thread.sleep(KEEP_ALIVE_TIME); } catch (InterruptedException ie) {}
+
+			// only IMMORTAL should be alive
+			infos = manager.getComponentInfo(info.getHandle(), new int[0], "*", "*", true);
+			assertEquals(1, infos.length);
+			assertEquals(immortal, infos[0].getComponent());
+		}
+		catch (Exception ex)
+		{
+			ex.printStackTrace();
+			fail();
+		}
+		
 	}
 
 	public void testForceReleaseComponent()

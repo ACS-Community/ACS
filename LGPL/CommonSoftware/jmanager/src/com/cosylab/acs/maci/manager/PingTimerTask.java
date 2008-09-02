@@ -5,7 +5,6 @@
 package com.cosylab.acs.maci.manager;
 
 import java.sql.Timestamp;
-import java.util.Set;
 import java.util.TimerTask;
 import java.util.logging.Logger;
 

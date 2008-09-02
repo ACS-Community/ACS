@@ -41,6 +41,7 @@ import javax.naming.NameNotFoundException;
 import javax.naming.NameParser;
 import javax.naming.NamingException;
 
+import org.omg.CORBA.IntHolder;
 import org.prevayler.Command;
 import org.prevayler.Prevayler;
 import org.prevayler.implementation.AbstractPrevalentSystem;
@@ -5492,11 +5493,12 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 				type = componentInfo.getType();
 				code = componentInfo.getCode();
 				containerName = componentInfo.getDynamicContainerName();
+				keepAliveTime = componentInfo.getKeepAliveTime();
 			}
 		}
 		// is CDB lookup needed
 		else if (!isOtherDomainComponent &&
-				(type == null || code == null || containerName == null || keepAliveTime == RELEASE_TIME_UNDEFINED))
+				(type == null || code == null || containerName == null))
 		{
 
 			//
@@ -5570,7 +5572,22 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 		}
 
-
+		// we have keepAlive missing, try to get it
+		if (keepAliveTime == RELEASE_TIME_UNDEFINED)
+		{
+			DAOProxy dao = getComponentsDAOProxy();
+			if (dao != null)
+			{
+				// defaults to 0 == RELEASE_IMMEDIATELY
+				keepAliveTime = readLongCharacteristics(dao, name+"/KeepAliveTime", RELEASE_IMMEDIATELY, true);
+			}
+			else
+			{
+				// this is a case where all data for dynamic component is specified and there is not entry in CDB
+				keepAliveTime = RELEASE_IMMEDIATELY;
+			}
+		}
+		 
 		// if requestor did not request activation we are finished
 		if (!activate)
 		{
@@ -5658,6 +5675,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			if (!reactivate)
 			{
 				ComponentInfo data = new ComponentInfo(h | COMPONENT_MASK, name, type, code, null);
+				data.setKeepAliveTime(keepAliveTime);
 				// !!! ACID
 				executeCommand(new ComponentCommandSet(h, data));
 
@@ -5895,6 +5913,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 				if (!data.getClients().contains(this.getHandle()))		// make component immortal
 					data.getClients().add(this.getHandle());
 
+			data.setKeepAliveTime(keepAliveTime);	// remember keep alive time
 
 			if (isOtherDomainComponent)
 			{
@@ -6324,12 +6343,16 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			boolean isOtherDomainComponent = name.startsWith(CURL_URI_SCHEMA);
 			if (!isOtherDomainComponent)
 			{
-				// @todo or not: what about dynamic components - it is not possible
-				// to specify it using ComponentSpec, also not fully recoverable
-				// when info is passed from the container
-				DAOProxy dao = getComponentsDAOProxy();
-				if (dao != null)
-					keepAliveTime = readLongCharacteristics(dao, name+"/KeepAliveTime", keepAliveTime, true);
+				keepAliveTime = componentInfo.getKeepAliveTime();
+				if (keepAliveTime == RELEASE_TIME_UNDEFINED)
+				{
+					// when info is passed from the container
+					DAOProxy dao = getComponentsDAOProxy();
+					if (dao != null)
+						keepAliveTime = readLongCharacteristics(dao, name+"/KeepAliveTime", RELEASE_IMMEDIATELY, true);
+					else
+						keepAliveTime = RELEASE_IMMEDIATELY;
+				}
 			}
 
 			if (keepAliveTime == 0)
@@ -7411,7 +7434,9 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	 * 							used to determine best match.
 	 * @return					best match found in the CDB, <code>null</code> on failure or if not found.
 	 */
-	private String[] searchDynamicComponent(String[] fieldNames, String[] requiredValues, boolean[] equalityRequired, int[] equalityPoints)
+	private String[] searchDynamicComponent(String[] fieldNames, String[] requiredValues,
+											boolean[] equalityRequired, int[] equalityPoints,
+											IntHolder keepAliveTimeHolder)
 	{
 		assert(fieldNames != null);
 		assert(equalityRequired != null);
@@ -7441,6 +7466,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		int maxPoints = Integer.MIN_VALUE;
 		String[] bestMatch = null;
 		String[] currentMatch = new String[len];
+		int bestMatchKeepAliveTime = RELEASE_TIME_UNDEFINED;
 
 		// for each entry
 		for (int fi = 0; fi < fieldIDs.length; fi++)
@@ -7511,9 +7537,11 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 				if (bestMatch == null)
 					bestMatch = new String[len];
 				System.arraycopy(currentMatch, 0, bestMatch, 0, len);
+				bestMatchKeepAliveTime = readLongCharacteristics(componentsDAO, fieldIDs[fi]+"/KeepAliveTime", RELEASE_TIME_UNDEFINED, true);
 			}
 		}
 
+		keepAliveTimeHolder.value = bestMatchKeepAliveTime;
 		return bestMatch;
 	}
 
@@ -7570,11 +7598,11 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			!componentSpec.getContainer().equals(ComponentSpec.COMPSPEC_ANY))
 		{
 			StatusHolder statusHolder = new StatusHolder();
-			
+
 			// We let exceptions occurring here fly up
 			return internalRequestComponent(requestor, componentSpec.getName(),
 							 			    componentSpec.getType(), componentSpec.getCode(),
-											componentSpec.getContainer(), RELEASE_IMMEDIATELY, statusHolder, true);
+											componentSpec.getContainer(), RELEASE_TIME_UNDEFINED, statusHolder, true);
 		}
 
 
@@ -7619,7 +7647,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		}
 
 		// search
-		String[] result = prohibitSearch ? null : searchDynamicComponent(fieldNames, requiredValues, equalityRequired, equalityPoints);
+		IntHolder keepAliveTimeHolder = new IntHolder(RELEASE_TIME_UNDEFINED);
+		String[] result = prohibitSearch ? null : searchDynamicComponent(fieldNames, requiredValues, equalityRequired, equalityPoints, keepAliveTimeHolder);
 
 		// none found
 		if (result == null)
@@ -7710,7 +7739,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		
 		// Same exceptions are let flying up
 		return internalRequestComponent(requestor, result[0], result[1],
-									    result[2], result[3], RELEASE_IMMEDIATELY, statusHolder, true);
+									    result[2], result[3], keepAliveTimeHolder.value, statusHolder, true);
 	}
 
 	/*****************************************************************************/
