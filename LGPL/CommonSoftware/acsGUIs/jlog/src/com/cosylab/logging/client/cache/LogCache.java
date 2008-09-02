@@ -328,10 +328,20 @@ public class LogCache extends LogMultiFileCache implements ILogMap {
 	 * 
 	 * @param keys The keys of the logs to delete
 	 */
-	public synchronized void deleteLogs(Collection<Integer> keys) throws LogCacheException {
-		for (Integer key: keys) {
-			deleteLog(key);
-		}
+	public void deleteLogs(final Integer[] keys) throws LogCacheException {
+		Thread t = new Thread("LogCache.deleteLogs") {
+			public void run() {
+				for (Integer key: keys) {
+					try {
+						deleteLog(key);
+					} catch (Throwable t) {
+						System.err.println("Error removing log["+key+"] from LogCache: "+t.getMessage());
+					}
+				}
+			}
+		};
+		t.setDaemon(true);
+		t.start();
 	}
 	
 	/**
