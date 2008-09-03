@@ -19,12 +19,14 @@
 
 /** 
  * @author  acaproni   
- * @version $Id: ACSLogRetrieval.java,v 1.32 2008/05/28 16:21:43 acaproni Exp $
+ * @version $Id: ACSLogRetrieval.java,v 1.33 2008/09/03 15:58:22 acaproni Exp $
  * @since    
  */
 
 package com.cosylab.logging.engine.ACS;
 
+import java.util.Timer;
+import java.util.TimerTask;
 
 import alma.acs.logging.engine.parser.ACSLogParser;
 import alma.acs.logging.engine.parser.ACSLogParserFactory;
@@ -34,7 +36,7 @@ import com.cosylab.logging.engine.LogMatcher;
 import com.cosylab.logging.engine.log.ILogEntry;
 
 /**
- * ACSLogRetireval stores the XML string (or a String in case of binary logs) 
+ * <code>ACSLogRetrieval</code> stores the XML string (or a String in case of binary logs) 
  * representing logs on a file when the engine is not able to follow the flow 
  * of the incoming logs 
  * The strings are stored on disk and the logs published to
@@ -49,11 +51,27 @@ import com.cosylab.logging.engine.log.ILogEntry;
  * The filters apply only to regular log listeners (i.e. not for XML listeners).
  * Custom filters are applied after audience filters.
  * 
+ * <code>ACSLogRetrieval</code> allows to set the rate (i.e. number of logs per second) for the logs 
+ * to receive and push in cache and for those read from the cache and published to listener.
+ * This feature must be used very carefully because all the logs managed after reaching the max rate
+ * are discarded and lost forever.
+ * 
+ * 
  * @see ACSRemoteLogListener
  * @see ACSRemoteRawLogListener
  * @see ACSLogConnectionListener
  */
 public class ACSLogRetrieval extends LogMatcher implements Runnable {
+	
+	public class RateUpdater extends TimerTask {
+
+		public void run() {
+			inputRate=receivedCounter;
+			receivedCounter=0;
+			outputRate=readCounter;
+			readCounter=0;
+		}
+	}
 	
 	// If the number of logs in endingPositions queue if greater 
 	// then this number, we assume that there is a delay between the logs
@@ -79,12 +97,68 @@ public class ACSLogRetrieval extends LogMatcher implements Runnable {
 	
 	// true if the binary format is in use, false otherwise
 	private boolean binaryFormat;
-	
+
 	// The cache
 	private EngineCache cache = new EngineCache();
 	
 	// The thread sending logs to the listeners
 	private Thread thread;
+	
+	/**
+	 * The timer to update the input and output rates
+	 */
+	private Timer timerThread;
+	
+	/**
+	 * The max input rate (i.e. the max number of strings to push
+	 * in the cache per second.
+	 * <P>
+	 * If the number of logs received in the current second is greater then this number, 
+	 * then the strings are discarded.
+	 * <P>
+	 * <B>Note</B>: <code>maxinputRate</code> should be used carefully because
+	 * 		it causes the loss of information
+	 */
+	private int maxInputRate=Integer.MAX_VALUE;
+	
+	/**
+	 * The number of logs per second pushed in the cache.
+	 * <P>
+	 * This is changed by the thread every second to be
+	 * equal to <code>receivedCounter</code> 
+	 */
+	private volatile int inputRate=0;
+	
+	/**
+	 * Counts the number of logs received every second
+	 */
+	private volatile int receivedCounter; 
+	
+	/**
+	 * The max output rate (i.e. the max number of strings to read from
+	 * in the cache per second).
+	 * <P>
+	 * If the number of logs received in the current second is greater then this number, 
+	 * then the strings are removed from the cache but discarded without beeing sent to
+	 * the listener
+	 * <P>
+	 * <B>Note</B>: <code>maxOutputRate</code> should be used carefully because
+	 * 		it causes the loss of information
+	 */
+	private int maxOutputRate=Integer.MAX_VALUE;
+	
+	/**
+	 * The number of logs per second popped from the cache
+	 * <P>
+	 * This is changed by the thread every second to be
+	 * equal to <code>readCounter</code> 
+	 */
+	private volatile int outputRate=0;
+	
+	/**
+	 * Counts the number of logs popped every second
+	 */
+	private volatile int readCounter; 
 		
 	/**
 	 * Constructor
@@ -140,6 +214,9 @@ public class ACSLogRetrieval extends LogMatcher implements Runnable {
 		thread = new Thread(this,"ACSLogRetrieval");
 		thread.setDaemon(true);
 		thread.start();
+		
+		timerThread = new Timer("ACSLogretrieval.RateUpdater",true);
+		timerThread.schedule(new RateUpdater(), 1000, 1000);
 	}
 	
 	/**
@@ -149,6 +226,11 @@ public class ACSLogRetrieval extends LogMatcher implements Runnable {
 	 */
 	public void addLog(String XMLLogStr) {
 		if (closed) {
+			return;
+		}
+		if (++receivedCounter>maxInputRate) {
+			// The number of logs to push in the cache exceeded the max 
+			// allowable rate ==> this entry is discarded!
 			return;
 		}
 		try {
@@ -203,6 +285,11 @@ public class ACSLogRetrieval extends LogMatcher implements Runnable {
 				continue;
 			}
 			if (tempStr.length()>0) {
+				if (++readCounter>maxOutputRate) {
+					// The number of logs read from the cache exceeded the max 
+					// allowable rate ==> this entry is not published!
+					continue;
+				}
 				ILogEntry log;
 				if (!binaryFormat) {
 					try {
@@ -272,6 +359,9 @@ public class ACSLogRetrieval extends LogMatcher implements Runnable {
 	public void close(boolean sync) {
 		closed=true;
 		terminateThread=true;
+		if (timerThread!=null) {
+			timerThread.cancel();
+		}
 		if (sync) {
 			try {
 				thread.join();
@@ -296,6 +386,70 @@ public class ACSLogRetrieval extends LogMatcher implements Runnable {
 	 */
 	public int size() {
 		return cache.size();
+	}
+	
+	/**
+	 * 
+	 * @return The number of strings pushed in the cache in 
+	 * 			the last second
+	 */
+	public int getInputRate() {
+		return inputRate;
+	}
+
+	/**
+	 * 
+	 * @return The number of strings read from the cache in 
+	 * 			the last second
+	 */
+	public int getOutputRate() {
+		return outputRate;
+	}
+
+	/**
+	 * 
+	 * @return The max number of strings pushed in the cache per second
+	 */
+	public int getMaxInputRate() {
+		return maxInputRate;
+	}
+
+	/**
+	 * Set the max number of logs to process per second.
+	 * <P>
+	 * All the logs in a second read after this number has been 
+	 * reached are discarded i.e. never pushed in the cache.
+	 * 
+	 * @param maxInRate The max number of logs per second to push in cache
+	 */
+	public void setMaxInputRate(int maxInRate) {
+		if (maxInRate<=0) {
+			throw new IllegalArgumentException("The input rate must be greater then 0");
+		}
+		this.maxInputRate = maxInRate;
+	}
+
+	/**
+	 * 
+	 * @return The maximum number of logs published per second
+	 */
+	public int getMaxOutputRate() {
+		return maxOutputRate;
+	}
+
+	/**
+	 * Set the max number of logs to read from the cache per second.
+	 * <P>
+	 * All the logs in a second read after this number has been 
+	 * reached are discarded i.e. never published to listeners.
+	 * 
+	 * @param maxOutRate The max number of logs per second to read from cache
+	 */
+	public void setMaxOutputRate(int maxOutRate) {
+		if (maxOutRate<=0) {
+			throw new IllegalArgumentException("The input rate must be greater then 0");
+		}
+		this.maxOutputRate = maxOutRate;
 	}
 	
 }
