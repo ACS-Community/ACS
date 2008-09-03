@@ -28,6 +28,7 @@ import com.cosylab.logging.engine.log.ILogEntry.Field;
  * @author acaproni
  *
  * The dialog to look for strings in the logs
+ * <P>
  * The dialog delegates the search to a search engine object
  */
 public class SearchDialog extends JDialog {
@@ -168,6 +169,15 @@ public class SearchDialog extends JDialog {
 		if (findTF == null) {
 			findTF = new JTextField();
 			findTF.setToolTipText("Insert here the string to find");
+			// Set the command string to be the string of the textfield
+			findTF.setActionCommand(null);
+			findTF.addActionListener(new java.awt.event.ActionListener() { 
+				public void actionPerformed(java.awt.event.ActionEvent e) {    
+					if (e.getActionCommand()!=null && e.getActionCommand().length()>0) {
+						search();
+					}
+				}
+			});
 		}
 		return findTF;
 	}
