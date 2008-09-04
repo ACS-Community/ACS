@@ -32,6 +32,8 @@ public class StatsDlg extends JDialog
 	private JLabel availMemLbl = new JLabel("N/A");
 	private JLabel usedMemLbl = new JLabel("N/A");
 	private JLabel timeFrameLbl = new JLabel("N/A");
+	private JLabel inRateLbl = new JLabel("N/A");
+	private JLabel outRateLbl = new JLabel("N/A");
 	
 	private JButton closeBtn = new JButton("Close");
 	private JButton refreshBtn = new JButton("Refresh");
@@ -64,7 +66,7 @@ public class StatsDlg extends JDialog
 		this.setBounds(50, 35, 100, 100);
 		JPanel mainPnl = new JPanel(new BorderLayout());
 		
-		JPanel valuesPnl = new JPanel(new GridLayout(6,1));
+		JPanel valuesPnl = new JPanel(new GridLayout(8,1));
 		
 		// Add the num of logs
 		JPanel numOfLogsPnl = new JPanel(new FlowLayout(FlowLayout.LEFT));
@@ -101,6 +103,18 @@ public class StatsDlg extends JDialog
 		timeFramePnl.add(new JLabel("Time frame: "));
 		timeFramePnl.add(timeFrameLbl);
 		valuesPnl.add(timeFramePnl);
+		
+		// Add the rate from the NC
+		JPanel inRatePnl = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		inRatePnl.add(new JLabel("Rate of logs from NC: "));
+		inRatePnl.add(inRateLbl);
+		valuesPnl.add(inRatePnl);
+		
+		// Add the rate to the listeners
+		JPanel outRatePnl = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		outRatePnl.add(new JLabel("Rate of logs sent to table: "));
+		outRatePnl.add(outRateLbl);
+		valuesPnl.add(outRatePnl);
 		
 		mainPnl.add(valuesPnl,BorderLayout.CENTER);
 		
@@ -149,6 +163,8 @@ public class StatsDlg extends JDialog
 			long availMem;
 			long totMem;
 			String timeFrameStr;
+			String inputRateStr;
+			String outputRateStr;
 			public void run() {
 				totNumOfLogsLbl.setText(Long.valueOf(totLogs).toString());
 				visibleLogsLbl.setText(Long.valueOf(visLogs).toString());
@@ -156,6 +172,8 @@ public class StatsDlg extends JDialog
 				availMemLbl.setText(""+(availMem/1024)+"Kb");
 		        usedMemLbl.setText(""+((totMem-availMem)/1024)+"Kb");
 		        timeFrameLbl.setText(timeFrameStr);
+		        inRateLbl.setText(inputRateStr);
+		        outRateLbl.setText(outputRateStr);
 		        pack();
 			}
 		}
@@ -188,6 +206,30 @@ public class StatsDlg extends JDialog
 		        str.append(".");
 		        str.append(timeFrame.get(Calendar.MILLISECOND));
 		        refresher.timeFrameStr=str.toString();
+		        
+		        StringBuilder in = new StringBuilder();
+		        in.append(logging.getEngine().getActualInputRate());
+		        in.append(" (");
+		        if (logging.getEngine().getMaxInputRate()==Integer.MAX_VALUE) {
+		        	in.append("unlimited)");
+		        } else {
+		        	in.append("limted to ");
+		        	in.append(logging.getEngine().getMaxInputRate());
+		        	in.append(')');
+		        }
+		        refresher.inputRateStr=in.toString();
+		        
+		        StringBuilder out = new StringBuilder();
+		        out.append(logging.getEngine().getActualOutputRate());
+		        out.append(" (");
+		        if (logging.getEngine().getMaxOutputRate()==Integer.MAX_VALUE) {
+		        	out.append("unlimited)");
+		        } else {
+		        	out.append("limted to ");
+		        	out.append(logging.getEngine().getMaxOutputRate());
+		        	out.append(')');
+		        }
+		        refresher.outputRateStr=out.toString();
 		        
 		        // Start the swing thread
 		        SwingUtilities.invokeLater(refresher);
