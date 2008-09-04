@@ -19,7 +19,7 @@
 
 /** 
  * @author  acaproni   
- * @version $Id: ACSLogRetrieval.java,v 1.33 2008/09/03 15:58:22 acaproni Exp $
+ * @version $Id: ACSLogRetrieval.java,v 1.34 2008/09/04 09:05:06 acaproni Exp $
  * @since    
  */
 
@@ -41,20 +41,18 @@ import com.cosylab.logging.engine.log.ILogEntry;
  * of the incoming logs 
  * The strings are stored on disk and the logs published to
  * the listeners when there is enough CPU available.
- * 
- * It is possible to define the audience for objects of this class.
- * A special set of filters is applied for each audience.
- * The audience filtering applies only to regular log listeners (i.e. not for XML listeners).
- * 
- * In addition, <code>ACSLogretrieval</code> applies a custom set of  filters
- * before sending logs to the listeners.
- * The filters apply only to regular log listeners (i.e. not for XML listeners).
- * Custom filters are applied after audience filters.
- * 
+ * <P> 
  * <code>ACSLogRetrieval</code> allows to set the rate (i.e. number of logs per second) for the logs 
- * to receive and push in cache and for those read from the cache and published to listener.
- * This feature must be used very carefully because all the logs managed after reaching the max rate
- * are discarded and lost forever.
+ * to receive and push in cache. 
+ * All the logs received after this limit has been reached are discarded regardless of their content.
+ * This option <i>must be used very carefully</i> because can cause loss of logs.
+ * <P>
+ * It also allows to set the rate i.e. number of logs per second) for the logs read from the cache and published to listener.
+ * When the limit has been reached, no logs are pushed anymore out of the cache until the current second has elapsed.
+ * This limitation <I>must be used very carefully</I> because it can cause a uncontrolled grows of the cache that could lead
+ * to an out of memory.
+ * <P>
+ * By default, the input and output rates are unlimited (<code>Integer..MAX_VALUE</code>)
  * 
  * 
  * @see ACSRemoteLogListener
@@ -270,6 +268,15 @@ public class ACSLogRetrieval extends LogMatcher implements Runnable {
 				} catch(InterruptedException e) {}
 				continue;
 			}
+			if (readCounter>maxOutputRate) {
+				// The number of logs read from the cache exceeded the max 
+				// allowable rate ==> wait for some time until
+				// readConter is cleared
+				try {
+					Thread.sleep(50);
+				} catch(InterruptedException e) {}
+				continue;
+			}
 			String tempStr = null;
 			try {
 				tempStr=cache.pop(250);
@@ -285,11 +292,6 @@ public class ACSLogRetrieval extends LogMatcher implements Runnable {
 				continue;
 			}
 			if (tempStr.length()>0) {
-				if (++readCounter>maxOutputRate) {
-					// The number of logs read from the cache exceeded the max 
-					// allowable rate ==> this entry is not published!
-					continue;
-				}
 				ILogEntry log;
 				if (!binaryFormat) {
 					try {
@@ -314,6 +316,7 @@ public class ACSLogRetrieval extends LogMatcher implements Runnable {
 						e.printStackTrace(System.err);
 						continue;
 					}
+					readCounter++;
 					publishLog(xmlStr, log);
 				}
 			}
@@ -389,15 +392,20 @@ public class ACSLogRetrieval extends LogMatcher implements Runnable {
 	}
 	
 	/**
+	 * Return the number of strings received in the last second.
+	 * Note that the number of received strings can be greater then the max number of
+	 * input strings.
 	 * 
-	 * @return The number of strings pushed in the cache in 
-	 * 			the last second
+	 * @return The number of strings received in the last second
 	 */
 	public int getInputRate() {
 		return inputRate;
 	}
 
 	/**
+	 * 
+	 * Return the number of strings read from the cache in the last second limited.
+	 * It can never be greater then the max rate.
 	 * 
 	 * @return The number of strings read from the cache in 
 	 * 			the last second
