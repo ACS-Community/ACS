@@ -2,7 +2,7 @@
 #                                                           #
 # Instructions for building the basic tools used by ACS     #
 #                                                           #
-# "@(#) $Id: README,v 1.5 2005/09/13 08:58:58 gchiozzi Exp $"
+# "@(#) $Id: README,v 1.6 2008/09/04 02:40:05 cparedes Exp $"
 #                                                           #
 #############################################################
 
@@ -31,7 +31,7 @@
 # environemnt configuration scripts (see forward) are normally :
 
 ALMASW_ROOTDIR=/alma
-ALMASW_RELEASE=ACS-5.0
+ALMASW_RELEASE=ACS-8.0
 
 # If the directory already exist, the installation will continue
 # there.

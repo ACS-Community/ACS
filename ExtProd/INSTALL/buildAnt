@@ -39,6 +39,7 @@ Install_Ant()
 
     VERSION=1.7.1
     ARCHIVE=`pwd`/../PRODUCTS/apache-ant-$VERSION-src.tar.gz 
+    JAR_ARCHIVE=`pwd`/../PRODUCTS/apache-ant-jars 
 
     BIN_DIR=apache-ant-$VERSION
 
@@ -60,7 +61,7 @@ Install_Ant()
     tar cf - . | (cd ..; tar xf -)
     cd ..
     rm -rf $BIN_DIR
-    export CLASSPATH=$CLASSPATH:$ACSROOT/lib/junit.jar
+    export CLASSPATH=$CLASSPATH:$JAR_ARCHIVE/junit.jar
     sh build.sh install-lite
 # HSO 2007-07-08: The patch to suppress the system-wide ant config is no longer needed
 #                 with ANT 1.7, because it respects the ANT_HOME installation.
