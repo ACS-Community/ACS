@@ -651,5 +651,83 @@ public class LCEngine implements Filterable {
 			return filters.getFilterString();
 		}
 	}
+	
+	/**
+	 * Set the max number of logs per second to accept from the 
+	 * <code>RemoteAccess</code>, typically the logging NC.
+	 * <P>
+	 * All the logs arriving after the max number has been reached will be discarded,
+	 * regardless of their level.
+	 * <P>
+	 * See {@link ACSLogRetrieval} for further details.
+	 * 
+	 * @param rate The max number of logs per second to accept
+	 */
+	public void setMaxInputRate(int rate) {
+		logRetrieval.setMaxInputRate(rate);
+	}
+	
+	/**
+	 * @return The actual max input rate
+	 * 
+	 * See {@link ACSLogRetrieval} for further details.
+	 */
+	public int getMaxInputRate() {
+		return logRetrieval.getMaxInputRate();
+	}
+	
+	
+	/**
+	 * 
+	 * @return The actual input rate 
+	 * 
+	 * See {@link ACSLogRetrieval} for further details.
+	 */
+	public int getActualInputRate() {
+		return logRetrieval.getInputRate();
+	}
+	
+	/**
+	 * Set the max number of logs to publish to listeners.
+	 * <P>
+	 * When this number has been reached, no more logs are sent to the
+	 * listeners.
+	 * <P>
+	 * See {@link ACSLogRetrieval} for further details.
+	 * 
+	 * @param rate The max number of logs per second to accept
+	 */
+	public void setMaxOutputRate(int rate) {
+		logRetrieval.setMaxOutputRate(rate);
+	}
+	
+	/**
+	 * @return The actual max input rate
+	 * 
+	 * See {@link ACSLogRetrieval} for further details.
+	 */
+	public int getMaxOutputRate() {
+		return logRetrieval.getMaxOutputRate();
+	}
+	
+	/**
+	 * 
+	 * @return The actual input rate 
+	 * 
+	 * See {@link ACSLogRetrieval} for further details.
+	 */
+	public int getActualOutputRate() {
+		return logRetrieval.getOutputRate();
+	}
+	
+	/**
+	 * Return the number of logs waiting in the cache i.e. the logs
+	 * received from the <code>RemoteAcess</code> and not yet sent to
+	 * the listeners.
+	 * @return the number of logs waiting in the cache
+	 */
+	public int waitingLogsNumber() {
+		return logRetrieval.size();
+	}
 
 }
