@@ -1,12 +1,12 @@
-^make
-^Making
-^if
-^g\+\+
-^creating
-^then
-^else
-^fi
-^/bin/sh
-^c++
-^mkdir
-^  \-c \-o
+^\s*make
+^\s*Making
+^\s*if
+^\s*g\+\+
+^\s*creating
+^\s*then
+^\s*else
+^\s*fi
+^\s*/bin/sh
+^\s*c++
+^\s*mkdir
+^\s*\-c \-o
