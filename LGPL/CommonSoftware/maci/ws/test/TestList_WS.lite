@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: TestList_WS.lite,v 1.94 2008/03/28 13:03:57 hsommer Exp $"
+# "@(#) $Id: TestList_WS.lite,v 1.95 2008/09/04 07:50:40 cparedes Exp $"
 #
 # TestList
 #
@@ -14,11 +14,11 @@ SOURCE maciTATEnvironment
 PROLOGUE acsutilTATPrologue -l
 1 maciTestClient "startContainerWS.sh Container01 3060" "@SLEEP 20" "startMaciTest.sh Container02 3061" "@SLEEP 50" "startContainerWS.sh Container03 3062" "@SLEEP 20" "startMaciTestClient.sh @maciTest.mts"
 2 maciTestRegistrar maciTestRegistrar
-3 maciContainerServicesClient "startContainerWS.sh Container01 3060" "@SLEEP 20" "acsutilTATTestRunner maciContainerServicesClient MACI_CS_TEST"
-4 maciLifeCycleClient "startContainerWS.sh Container01 3061" "@SLEEP 20" "acsutilTATTestRunner maciLifeCycleClient"
+3 maciContainerServicesClient "@SLEEP 5" "startContainerWS.sh Container01 3067" "@SLEEP 20" "acsutilTATTestRunner maciContainerServicesClient MACI_CS_TEST"
+4 maciLifeCycleClient "startContainerWS.sh Container01 3063" "@SLEEP 20" "acsutilTATTestRunner maciLifeCycleClient"
 5 maciTestCheckException "maciStartStopWrongCDB.sh"
-6 maciTestLogConfig "startContainerWS.sh ContainerTestLog 3063" "@SLEEP 20" "acsutilTATTestRunner maciTestLogConfig.sh"
-EPILOGUE acsutilTATEpilogue
-7 maciTestSimpleClient "startContainerWS.sh Container01 3061" "@SLEEP 20" "acsutilTATTestRunner maciTestSimpleClient"
-8 maciTestComponentSmartPtr "startContainerWS.sh Container01 3062" "@SLEEP 20" "acsutilTATTestRunner maciTestComponentSmartPtr"
+6 maciTestLogConfig "startContainerWS.sh ContainerTestLog 3064" "@SLEEP 20" "acsutilTATTestRunner maciTestLogConfig.sh"
+7 maciTestSimpleClient "startContainerWS.sh Container01 3065" "@SLEEP 20" "acsutilTATTestRunner maciTestSimpleClient"
+8 maciTestComponentSmartPtr "@SLEEP 5" "startContainerWS.sh Container01 3066" "@SLEEP 20" "acsutilTATTestRunner maciTestComponentSmartPtr"
 9 maciTestSimpleClientMulti "acsutilTATTestRunner maciTestSimpleClientMulti"
+EPILOGUE acsutilTATEpilogue
