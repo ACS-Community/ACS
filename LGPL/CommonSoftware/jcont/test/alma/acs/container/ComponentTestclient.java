@@ -29,6 +29,7 @@ import org.omg.CORBA.StringHolder;
 import alma.ACSErrTypeCommon.CouldntPerformActionEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJCouldntPerformActionEx;
 import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
+import alma.acs.component.ComponentQueryDescriptor;
 import alma.acs.component.client.AdvancedComponentClient;
 import alma.acs.component.client.ComponentClientTestCase;
 import alma.acs.container.corba.AcsCorba;
@@ -48,7 +49,8 @@ public class ComponentTestclient extends ComponentClientTestCase
 {
 	private static final String CONTSRVCOMP_INSTANCE = "CONT_SERVICES_TESTER";
 	private static final String DEFAULT_DUMMYCOMP_INSTANCE = "DefaultDummyComp";
-	
+	private static final String DUMMYCOMP2_TYPENAME = "IDL:alma/jconttest/DummyComponent2:1.0";
+
 	private ContainerServicesTester m_contSrvTesterComp;
 	
 	public ComponentTestclient() throws Exception
@@ -127,23 +129,24 @@ public class ComponentTestclient extends ComponentClientTestCase
 //		assertEquals("OPERATIONAL", compNameHolder.value);
 	}
 
-    public void testGetThreadFactory() {
-        boolean ret = m_contSrvTesterComp.testGetThreadFactory(40, 100000, true);
-        assertTrue("test execution successful on the server component", ret);
-    }
-    
-    public void testGetCollocatedComponent() throws Exception {
-    	try {
+	public void testGetThreadFactory() {
+		boolean ret = m_contSrvTesterComp.testGetThreadFactory(40, 100000, true);
+		assertTrue("test execution successful on the server component", ret);
+	}
+
+	public void testGetCollocatedComponent() throws Exception {
+		try {
 			// a new component in the same container as our main test component
-			m_contSrvTesterComp.testGetCollocatedComponent("MyCollocatedDummy1", CONTSRVCOMP_INSTANCE);
-			
+			m_contSrvTesterComp.testGetCollocatedComponent(ComponentQueryDescriptor.ANY, DUMMYCOMP2_TYPENAME, CONTSRVCOMP_INSTANCE);
+			Thread.sleep(1500);
 			// now we check whether a non-activated target component also works
-			m_contSrvTesterComp.testGetCollocatedComponent("MyCollocatedDummy2", "MyCollocationTargetDummy");
-			
-    	} catch (CouldntPerformActionEx ex) {
-    		throw AcsJCouldntPerformActionEx.fromCouldntPerformActionEx(ex);
-    	}
-    }
+			m_contSrvTesterComp.testGetCollocatedComponent("MyCollocatedDummy2", ComponentQueryDescriptor.ANY, "MyCollocationTargetDummy");
+
+			Thread.sleep(1500);			
+		} catch (CouldntPerformActionEx ex) {
+			throw AcsJCouldntPerformActionEx.fromCouldntPerformActionEx(ex);
+		}
+	}
 
     public void testGetComponentNonSticky() throws Exception {
 		// without previous activation, the call should fail
