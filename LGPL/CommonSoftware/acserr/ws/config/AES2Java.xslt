@@ -66,7 +66,7 @@
 <xsl:variable name="NumCodes">
 			<xsl:number value="count(//acserr:Code)"/>
 </xsl:variable>
-<!-- we generate type exception just in case if ther is some error code -->
+<!-- we generate type exception just in case if there is some error code -->
 <xsl:if test="count(//acserr:ErrorCode[not(@_suppressExceptionGeneration)]) > 0">
 <xsl:variable name="ClassName">
 		<xsl:text>AcsJ</xsl:text><xsl:value-of select="@name"/><xsl:text>Ex</xsl:text>
@@ -250,12 +250,12 @@ public abstract class </xsl:text>
 
 <xsl:for-each select="acserr:ErrorCode[not(@_suppressExceptionGeneration)]">
 
-<xsl:variable name="ClassName">
+<xsl:variable name="ClassNameEx">
 	<xsl:text>AcsJ</xsl:text><xsl:value-of select="@name"/><xsl:text>Ex</xsl:text>
 </xsl:variable>
 
 <xsl:variable name="FileName">
-	<xsl:value-of select="/acserr:Type/@_prefix"/><xsl:text>/</xsl:text><xsl:value-of select="/acserr:Type/@name"/><xsl:text>/wrappers/</xsl:text><xsl:value-of select="$ClassName"/><xsl:text>.java</xsl:text>
+	<xsl:value-of select="/acserr:Type/@_prefix"/><xsl:text>/</xsl:text><xsl:value-of select="/acserr:Type/@name"/><xsl:text>/wrappers/</xsl:text><xsl:value-of select="$ClassNameEx"/><xsl:text>.java</xsl:text>
 </xsl:variable>
 <redirect:write select="$FileName">
 
@@ -327,14 +327,14 @@ import </xsl:text>
  * created Sep 25, 2003 4:18:09 PM
  */
 public class </xsl:text>
-<xsl:value-of select="$ClassName"/>
+<xsl:value-of select="$ClassNameEx"/>
 <xsl:text> extends AcsJ</xsl:text>
 <xsl:value-of select="/acserr:Type/@name"/>
 <xsl:text>Ex
 {
 
 	public </xsl:text> 
-<xsl:value-of select="$ClassName"/>
+<xsl:value-of select="$ClassNameEx"/>
 <xsl:text>()
 	{
 		super();
@@ -344,7 +344,7 @@ public class </xsl:text>
          * @deprecated The data in &lt;code&gt;message&lt;/code&gt; should be given as parameters instead!
          */
 	public </xsl:text>
-<xsl:value-of select="$ClassName"/>
+<xsl:value-of select="$ClassNameEx"/>
 <xsl:text>(String message)
 	{
 		super(message);
@@ -354,21 +354,21 @@ public class </xsl:text>
          * @deprecated The data in &lt;code&gt;message&lt;/code&gt; should be given as parameters instead!
          */
 	public </xsl:text>
-<xsl:value-of select="$ClassName"/>
+<xsl:value-of select="$ClassNameEx"/>
 <xsl:text>(String message, Throwable cause)
 	{
 		super(message, cause);
 	}
 
 	public </xsl:text>
-<xsl:value-of select="$ClassName"/>
+<xsl:value-of select="$ClassNameEx"/>
 <xsl:text>(Throwable cause)
 	{
 		super(null, cause);
 	}
 
 	public </xsl:text>
-<xsl:value-of select="$ClassName"/>
+<xsl:value-of select="$ClassNameEx"/>
 <xsl:text>(ErrorTrace etCause)
 	{
 		super(etCause);
@@ -378,7 +378,7 @@ public class </xsl:text>
          * @deprecated The data in &lt;code&gt;message&lt;/code&gt; should be given as parameters instead!
          */
 	public </xsl:text>
-<xsl:value-of select="$ClassName"/>
+<xsl:value-of select="$ClassNameEx"/>
 <xsl:text>(String message, ErrorTrace etCause)
 	{
 		super(message, etCause);
@@ -470,14 +470,14 @@ public class </xsl:text>
 		<xsl:value-of select="@name"/>	
 	<xsl:text>&lt;/code&gt; and can 
 	 * always be converted to &lt;code&gt;</xsl:text>
-		<xsl:value-of select="$ClassName"/>	
+		<xsl:value-of select="$ClassNameEx"/>	
 	<xsl:text>&lt;/code&gt;.
 	 * &lt;p&gt;
 	 * Here's an example of how to use this method in a Java program that 
 	 * makes a call so some other component etc.:
 	 * &lt;pre&gt;
 	 * private void methodThatMakesARemoteCall() throws </xsl:text>
-		<xsl:value-of select="$ClassName"/>	
+		<xsl:value-of select="$ClassNameEx"/>	
 	<xsl:text>
 	* {
 	 *   try
@@ -495,7 +495,7 @@ public class </xsl:text>
 	<xsl:text>Ex corbaEx)
 	 *   {
 	 *     throw </xsl:text>
-		<xsl:value-of select="$ClassName"/>	
+		<xsl:value-of select="$ClassNameEx"/>	
 	<xsl:text>.from</xsl:text>
 		<xsl:value-of select="@name"/>	
 	<xsl:text>Ex(corbaEx);
@@ -507,7 +507,7 @@ public class </xsl:text>
 	 * 			converted from &lt;code&gt;corbaEx&lt;/code&gt;. 
 	 */
 	public static </xsl:text>
-<xsl:value-of select="$ClassName"/>
+<xsl:value-of select="$ClassNameEx"/>
 	<xsl:text> from</xsl:text>
 	<xsl:value-of select="@name"/>	
 	<xsl:text>Ex(</xsl:text>
@@ -519,9 +519,9 @@ public class </xsl:text>
 		String message = ErrorTraceManipulator.getProperty(
 			et, CorbaExceptionConverter.PROPERTY_JAVAEXCEPTION_MESSAGE);
 		</xsl:text>
-<xsl:value-of select="$ClassName"/>
+<xsl:value-of select="$ClassNameEx"/>
 <xsl:text> jEx = new </xsl:text>
-<xsl:value-of select="$ClassName"/>
+<xsl:value-of select="$ClassNameEx"/>
 <xsl:text>(message);
 		
 		CorbaExceptionConverter.convertErrorTraceToJavaException(et, jEx);
@@ -542,17 +542,12 @@ public class </xsl:text>
 </redirect:write>
 <!-- *********************************************************Generated Completion code for  Codes  -->
 
-<xsl:variable name="ExClassName">
-	<xsl:text>AcsJ</xsl:text><xsl:value-of select="@name"/><xsl:text>Ex</xsl:text>
-</xsl:variable>
-
-
-<xsl:variable name="ClassName">
+<xsl:variable name="ClassNameCompl">
 	<xsl:value-of select="@name"/><xsl:text>AcsJCompletion</xsl:text>
 </xsl:variable>
 
 <xsl:variable name="FileName">
-	<xsl:value-of select="/acserr:Type/@_prefix"/><xsl:text>/</xsl:text><xsl:value-of select="/acserr:Type/@name"/><xsl:text>/wrappers/</xsl:text><xsl:value-of select="$ClassName"/><xsl:text>.java</xsl:text>
+	<xsl:value-of select="/acserr:Type/@_prefix"/><xsl:text>/</xsl:text><xsl:value-of select="/acserr:Type/@name"/><xsl:text>/wrappers/</xsl:text><xsl:value-of select="$ClassNameCompl"/><xsl:text>.java</xsl:text>
 </xsl:variable>
 <redirect:write select="$FileName">
 
@@ -600,77 +595,77 @@ import </xsl:text>
 <xsl:text>Ex;
 
 public class </xsl:text>
-<xsl:value-of select="$ClassName"/>
+<xsl:value-of select="$ClassNameCompl"/>
 <xsl:text> extends AcsJCompletion
 {
 	/**
 	 * Creates a new &lt;code&gt;</xsl:text>
-<xsl:value-of select="$ClassName"/>
+<xsl:value-of select="$ClassNameCompl"/>
 <xsl:text>&lt;/code&gt;
 	 * with a corresponding exception (</xsl:text>
-<xsl:value-of select="$ExClassName"/>
+<xsl:value-of select="$ClassNameEx"/>
 <xsl:text>) attached.
 	 */
 	public </xsl:text>
-<xsl:value-of select="$ClassName"/>	
+<xsl:value-of select="$ClassNameCompl"/>	
 <xsl:text> () {
 		super(new </xsl:text>
-<xsl:value-of select="$ExClassName"/>	
+<xsl:value-of select="$ClassNameEx"/>	
 <xsl:text>()); 
 	}
 
 	/**
 	 * Creates a new &lt;code&gt;</xsl:text>
-<xsl:value-of select="$ClassName"/>
+<xsl:value-of select="$ClassNameCompl"/>
 <xsl:text>&lt;/code&gt;
 	 * with a corresponding exception (</xsl:text>
-<xsl:value-of select="$ExClassName"/>
+<xsl:value-of select="$ClassNameEx"/>
  <xsl:text>) attached 
 	 * that wraps an existing exception (&lt;code&gt;acsJEx&lt;/code&gt;.)
 	 */
 	public </xsl:text>
-<xsl:value-of select="$ClassName"/>
+<xsl:value-of select="$ClassNameCompl"/>
 <xsl:text> (AcsJException acsJEx) {
 		super(new </xsl:text>
-<xsl:value-of select="$ExClassName"/>		
+<xsl:value-of select="$ClassNameEx"/>		
 <xsl:text>(acsJEx));  
 	}
 	
 	/**
 	 * Creates a new &lt;code&gt;</xsl:text>
-<xsl:value-of select="$ClassName"/>
+<xsl:value-of select="$ClassNameCompl"/>
  <xsl:text>&lt;/code&gt;
 	 * from another &lt;code&gt;AcsJCompletion&lt;/code&gt; (&lt;code&gt;acsJComp&lt;/code&gt;).
 	 * &lt;p&gt;
 	 * If present, the existing error trace is converted to Java exceptions
 	 * and wrapped with an &lt;code&gt;</xsl:text>
-<xsl:value-of select="$ExClassName"/>
+<xsl:value-of select="$ClassNameEx"/>
 <xsl:text>&lt;/code&gt;.
 	 */
 	public </xsl:text>
-<xsl:value-of select="$ClassName"/>
+<xsl:value-of select="$ClassNameCompl"/>
 <xsl:text>(AcsJCompletion acsJComp) {		
 			init(new </xsl:text>
-<xsl:value-of select="$ExClassName"/>
+<xsl:value-of select="$ClassNameEx"/>
 <xsl:text>(acsJComp.getAcsJException()));
 	}
 	
 	/**
 	 * Converts a Corba completion to an &lt;code&gt;</xsl:text>
-<xsl:value-of select="$ClassName"/>
+<xsl:value-of select="$ClassNameCompl"/>
 <xsl:text>&lt;/code&gt;
 	 * such that a new &lt;code&gt;</xsl:text>
-<xsl:value-of select="$ExClassName"/>
+<xsl:value-of select="$ClassNameEx"/>
 <xsl:text>&lt;/code&gt; is created as the attached error.
 	 * If &lt;code&gt;corbaComp&lt;/code&gt; carries error information, these &lt;code&gt;ErrorTrace&lt;/code&gt;
 	 * objects are converted to Java exceptions, which are attached as the course of
 	 * the new &lt;code&gt;</xsl:text>
-<xsl:value-of select="$ExClassName"/>
+<xsl:value-of select="$ClassNameEx"/>
 <xsl:text>&lt;/code&gt;.
 	 * @param corbaComp
 	 */
 	public </xsl:text>
-<xsl:value-of select="$ClassName"/>
+<xsl:value-of select="$ClassNameCompl"/>
 <xsl:text>(Completion corbaComp) {
 		
 		 this(AcsJCompletion.fromCorbaCompletion(corbaComp));
