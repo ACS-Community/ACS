@@ -22,22 +22,22 @@
 package alma.jconttest.ContainerServicesTesterImpl;
 
 import java.util.Random;
-import java.util.logging.Level;
-
-import org.omg.CORBA.StringHolder;
-
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
-import alma.acs.util.StopWatch;
+import java.util.logging.Level;
 
+import org.omg.CORBA.StringHolder;
+
+import alma.ACS.ACSComponentHelper;
 import alma.ACSErrTypeCommon.CouldntPerformActionEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJCouldntPerformActionEx;
 import alma.acs.component.ComponentDescriptor;
 import alma.acs.component.ComponentImplBase;
 import alma.acs.component.ComponentQueryDescriptor;
 import alma.acs.component.ComponentStateManager;
+import alma.acs.util.StopWatch;
 import alma.jconttest.ContainerServicesTesterOperations;
 import alma.jconttest.DummyComponent;
 import alma.jconttest.DummyComponentImpl.DummyComponentHelper;
@@ -215,18 +215,20 @@ public class ContainerServicesTesterImpl extends ComponentImplBase implements Co
     }
     
 
-	public void testGetCollocatedComponent(String curl, String targetCurl) throws CouldntPerformActionEx {
-		String msg = "component '" + curl + "' collocated with '" + targetCurl + "'";
+	public void testGetCollocatedComponent(String curl, String compType, String targetCurl) throws CouldntPerformActionEx {
+		String msg = "component '" + curl + "' of type '" + compType +"' collocated with '" + targetCurl + "'";
 		m_logger.info("Received call to testGetCollocatedComponent for " + msg);
 		try {
-			org.omg.CORBA.Object compObj = m_containerServices.getCollocatedComponent(curl, targetCurl);
+			ComponentQueryDescriptor cqd = new ComponentQueryDescriptor(curl, compType);			
+			org.omg.CORBA.Object compObj = m_containerServices.getCollocatedComponent(cqd, false, targetCurl);
 			if (compObj == null) {
 				throw new NullPointerException("Got null reference for " + msg);
 			}
-			m_containerServices.releaseComponent(curl);
+			// curl could be given as "*" or null for dynamic name assignment, therefore we ask the name() from the component
+			m_containerServices.releaseComponent(ACSComponentHelper.narrow(compObj).name());
 		} catch (Throwable thr) {
 			throw (new AcsJCouldntPerformActionEx("testGetCollocatedComponent failed for " + msg, thr)).toCouldntPerformActionEx();
-		}		
+		}
 	}
 
 	
