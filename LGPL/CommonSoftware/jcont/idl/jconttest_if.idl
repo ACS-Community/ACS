@@ -40,13 +40,18 @@ module jconttest
 
 		boolean testGetDynamicDummyComponent(out string compName); 
 		
-        boolean testGetReferenceWithCustomClientSideTimeout(in string compName); 
+		boolean testGetReferenceWithCustomClientSideTimeout(in string compName); 
 		
 		boolean testGetDefaultIdentifierArchive(out string compName);
 
 		boolean testGetThreadFactory(in long numThreads, in long busyLoopCount, in boolean randomize);
 		
-		void testGetCollocatedComponent(in string curl, in string targetCurl) raises (ACSErrTypeCommon::CouldntPerformActionEx);
+		/**
+		 * Will obtain a reference to a component given by curl and/or compType, 
+		 * which will run in the same container in which the component identified by targetCurl runs
+		 * or is defined to run in.
+		 */
+		void testGetCollocatedComponent(in string curl, in string compType, in string targetCurl) raises (ACSErrTypeCommon::CouldntPerformActionEx);
 		
 		/**
 		 * Will obtain a non-sticky reference to the given component using the ContainerServices.
@@ -63,6 +68,13 @@ module jconttest
 	{
 		void dummyComponentsCanDoCloseToNothing();
 		void callThatTakesSomeTime(in long timeInMillisec);
+	};
+
+	/**
+	 * To be used for tests that require a different component type (e.g. to avoid conflicts in the CDB).
+	 */
+	interface DummyComponent2 : DummyComponent
+	{
 	};
 
 
