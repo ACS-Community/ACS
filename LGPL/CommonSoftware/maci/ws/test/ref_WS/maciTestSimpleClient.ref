@@ -18,7 +18,6 @@
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::init] Destroy bootstrap ORB
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::initializeCORBA] 
 1 - ContainerStatusMsg: ORB initialization ends
-1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::getManager] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::getManager] Resolving manager...
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::resolveManager] 
@@ -35,16 +34,17 @@
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::init] Container 'Container01' activated.
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::init] Container 'Container01' initialized successfuly
 1 - ----------T--:--:--.--- [Container01-GL - maci::MACIHelper::resolveManager] 
+1 - ----------T--:--:--.--- [Container01-GL - maci::MACIHelper::resolveManager] ManagerReference generated using localhost address: 'corbaloc::---:----/Manager'
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::init] Connected to the InterfaceRepository.
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::init] Connecting to the Manager...
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::resolveManager] 
 1 - ----------T--:--:--.--- [Container01-GL - maci::MACIHelper::resolveManager] 
-1 - ----------T--:--:--.--- [Container01-GL - maci::MACIHelper::resolveManager] ManagerReference generated using localhost address: 'corbaloc::---:----/Manager'
 1 - ----------T--:--:--.--- [Container01-GL - maci::MACIHelper::resolveManager] Resolving reference: 'corbaloc::---:----/Manager'
 1 - ContainerStatusMsg: Manager access initialization begins
 1 - ----------T--:--:--.--- [Container01-GL - maci::MACIHelper::resolveManager] Manager reference narrowed.
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::init] Connected to the Manager.
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::init] Connecting to the Archiving Channel.
+1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::init] Connecting to the Centralized Logger...
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::init] Connected to the Centralized Logger.
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::init] Set Naming Context to Logger.
@@ -89,8 +89,8 @@
 1 - ----------T--:--:--.--- [Container01-GL - ] maciTestClassImpl::DLLOpen
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] DLLOpen executed.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loaded '/----/libmaciTestClass.so'.
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::getSymbol] 
 1 - ----------T--:--:--.--- [MACI01 - maci::ContainerServices::ContainerServices] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::getSymbol] 
 1 - ----------T--:--:--.--- [MACI01 - maci::MACIContainerServices::MACIContainerServices] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::getManager] 
 1 - ----------T--:--:--.--- [Container01-GL - ] ConstructComponent(XXXXXXX MACI01, IDL:alma/MACI_TEST/MaciTestClass:1.0)
@@ -111,8 +111,8 @@
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'MACI01': calling cleanUp Lifecycle .
 1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI01: OPERATIONAL -> DESTROYING
 1 - ----------T--:--:--.--- [MACI01 - acscomponent::ACSComponentImpl::__cleanUp] 
-1 - ----------T--:--:--.--- [Container01-GL - ACS::ThreadManagerBase::stopAll] 
 1 - ----------T--:--:--.--- [MACI01 - acscomponent::ACSComponentImpl::cleanUp] 
+1 - ----------T--:--:--.--- [Container01-GL - ACS::ThreadManagerBase::stopAll] 
 1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI01: DESTROYING -> DEFUNCT
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'MACI01' reference set to nil.
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivateCORBAObject] 
@@ -183,8 +183,8 @@
 1 - ----------T--:--:--.--- [MACI04 - acscomponent::ACSComponentImpl::~ACSComponentImpl] 
 1 - ----------T--:--:--.--- [MACI04 - maci::MACIContainerServices::~MACIContainerServices] 
 1 - ----------T--:--:--.--- [MACI04 - maci::ContainerServices::~ContainerServices] 
-1 - ----------T--:--:--.--- [Container01-GL - ACS::ThreadManagerBase::~ThreadManagerBase] 
 1 - ----------T--:--:--.--- [Container01-GL - ACS::ThreadManagerBase::terminateAll] 
+1 - ----------T--:--:--.--- [Container01-GL - ACS::ThreadManagerBase::~ThreadManagerBase] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::etherealizeComponent] Component 'MACI04' etherealized.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unlock] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] 
@@ -329,8 +329,8 @@
 2 - ----------T--:--:--.--- [GlobalLogger - maci::SimpleClient<>::getDynamicComponent] Error retrieving component (type=25, code=1) CURL="*"
 2 - ----------T--:--:--.--- [GlobalLogger - maci::ComponentStorage::Destroy] Unexpected exception caught when releasing component.
 2 - ----------T--:--:--.--- [GlobalLogger - ] Testing error handling
-2 - ----------T--:--:--.--- [GlobalLogger - ] Getting MACI07
 2 - ----------T--:--:--.--- [GlobalLogger - ] Getting component non sticky: 'MACI04'. Creating it...
+2 - ----------T--:--:--.--- [GlobalLogger - ] Getting MACI07
 2 - ----------T--:--:--.--- [GlobalLogger - get_component_non_sticky] The requested Component had not been already activated at request time (type=25, code=2) javaex.class="alma.maciErrType.wrappers.AcsJComponentNotAlreadyActivatedEx"
 2 - ----------T--:--:--.--- [GlobalLogger - maci::SimpleClient::getComponentNonSticky&lt;&gt;] Error retrieving component (type=25, code=1) CURL="MACI04"
 2 - ----------T--:--:--.--- [GlobalLogger - ] Right behaviour: Got exception!
@@ -348,8 +348,8 @@
 1 - ----------T--:--:--.--- [Container01-GL - ] maciTestClassImpl::DLLOpen
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] DLLOpen executed.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loaded '/----/libmaciTestClass.so'.
-1 - ----------T--:--:--.--- [MACI04 - maci::ContainerServices::ContainerServices] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::getSymbol] 
+1 - ----------T--:--:--.--- [MACI04 - maci::ContainerServices::ContainerServices] 
 1 - ----------T--:--:--.--- [MACI04 - maci::MACIContainerServices::MACIContainerServices] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::getManager] 
 1 - ----------T--:--:--.--- [Container01-GL - ] ConstructComponent(XXXXXXX MACI04, IDL:alma/MACI_TEST/MaciTestClass:1.0)
@@ -367,8 +367,8 @@
 2 - ----------T--:--:--.--- [GlobalLogger - ] Releasing component: 'MACI04'.
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Deactivating component with handle XXXXXX (MACI04 of type IDL:alma/MACI_TEST/MaciTestClass:1.0)
-1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI04: OPERATIONAL -> DESTROYING
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'MACI04': calling cleanUp Lifecycle .
+1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI04: OPERATIONAL -> DESTROYING
 1 - ----------T--:--:--.--- [MACI04 - acscomponent::ACSComponentImpl::__cleanUp] 
 1 - ----------T--:--:--.--- [MACI04 - acscomponent::ACSComponentImpl::cleanUp] 
 1 - ----------T--:--:--.--- [Container01-GL - ACS::ThreadManagerBase::stopAll] 
@@ -442,10 +442,10 @@
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::etherealizeComponent] Etherealizing 'MACI04'
 1 - ----------T--:--:--.--- [MACI04 - ] ::MaciTestClass::~MaciTestClass(MACI04)
 1 - ----------T--:--:--.--- [MACI04 - acscomponent::ACSComponentImpl::~ACSComponentImpl] 
-1 - ----------T--:--:--.--- [MACI04 - maci::MACIContainerServices::~MACIContainerServices] 
 1 - ----------T--:--:--.--- [MACI04 - maci::ContainerServices::~ContainerServices] 
-1 - ----------T--:--:--.--- [Container01-GL - ACS::ThreadManagerBase::~ThreadManagerBase] 
+1 - ----------T--:--:--.--- [MACI04 - maci::MACIContainerServices::~MACIContainerServices] 
 1 - ----------T--:--:--.--- [Container01-GL - ACS::ThreadManagerBase::terminateAll] 
+1 - ----------T--:--:--.--- [Container01-GL - ACS::ThreadManagerBase::~ThreadManagerBase] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::etherealizeComponent] Component 'MACI04' etherealized.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unlock] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] 
@@ -474,3 +474,11 @@
 1 - ----------T--:--:--.--- [IDL<Dynamic Component> - maci::ContainerServices::~ContainerServices] 
 1 - ----------T--:--:--.--- [Container01-GL - ACS::ThreadManagerBase::~ThreadManagerBase] 
 1 - ----------T--:--:--.--- [Container01-GL - ACS::ThreadManagerBase::terminateAll] 
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::etherealizeComponent] Component 'IDL<Dynamic Component>' etherealized.
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unlock] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Unloading '/----/libmaciDynComp.so'
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Executing DLLClose
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] DLLClose executed
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Unloaded '/----/libmaciDynComp.so'.
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'IDL<Dynamic Component>' deactivated.
