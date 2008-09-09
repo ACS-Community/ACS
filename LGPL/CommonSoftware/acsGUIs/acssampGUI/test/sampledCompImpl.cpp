@@ -1,5 +1,5 @@
 #include <vltPort.h>
-static char *rcsId=(char *)"@(#) $Id: sampledCompImpl.cpp,v 1.3 2008/09/02 04:43:47 rtobar Exp $";
+static char *rcsId=(char *)"@(#) $Id: sampledCompImpl.cpp,v 1.4 2008/09/09 20:15:48 rtobar Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include "sampledCompImpl.h"
@@ -8,7 +8,7 @@ using namespace baci;
 
 /* Constructor */
 sampledCompImpl::sampledCompImpl(const ACE_CString& name, maci::ContainerServices *containerServices) :
-       CharacteristicComponentImpl(name,containerServices)
+      CharacteristicComponentImpl(name,containerServices)
       ,m_RWdouble_sp(this)
       ,m_ROdouble_sp(this)
       ,m_RWfloat_sp(this)

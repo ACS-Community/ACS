@@ -1,14 +1,14 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.6 2008/08/25 14:32:24 rtobar Exp $"
+# "@(#) $Id: Makefile,v 1.7 2008/09/09 20:15:48 rtobar Exp $"
 #
 # Makefile of ........
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
-# oat  25/02/04  created
-#
+# oat       25/02/04  created
+# rtobar    09/09/08  Added sampTool creation
 
 #*******************************************************************************
 # This Makefile follows VLT Standards (see Makefile(5) for more).
@@ -169,7 +169,7 @@ INS_ROOT_DIR   =
 #
 # other files to be installed
 #----------------------------
-INSTALL_FILES =
+INSTALL_FILES = ../lib/miglayout-3.5.5.jar
 
 #
 # list of all possible C-sources (used to create automatic dependencies)

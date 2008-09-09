@@ -139,7 +139,7 @@ public class BeanGrouper extends JPanel {
 	private JLabel getTimeSampLabel() {
 		if(timeSampLabel==null){
 			timeSampLabel=new JLabel();
-			timeSampLabel.setText("Sampling time (mins):");
+			timeSampLabel.setText("Sampling time (min):");
 		}
 		return timeSampLabel;
 	}
