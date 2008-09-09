@@ -7,7 +7,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: acsNotifyService,v 1.1 2008/08/29 10:20:47 msekoran Exp $"
+# "@(#) $Id: acsNotifyService,v 1.2 2008/09/09 14:10:20 msekoran Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -182,6 +182,7 @@ case $CL_NS_TYPE in
     NOTIFY_SERVICE_PIDFILE=$INSTANCE_DIR/$ACS_LOGGING_NOTIFY_SERVICE_PIDFILE
     NOTIFY_OUT=$INSTANCE_DIR/$ACS_LOG_NOTIFY_OUT
     NOTIFY_IOR=$INSTANCE_DIR/$ACS_LOGGING_NOTIFY_SERVICE_IORFILE
+    NOTIFY_SERVICE_PORT=`getLoggingNotifyServicePort`
     if [ "$ACS_LOG_BIN" = "true" ]
     then 
       export LOGGING_CHANNEL=LoggingChannelBin
