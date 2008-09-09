@@ -32,5 +32,5 @@
 # "export ACS_CDB=`pwd`" from this directory, and then start up ACS "by hand". 
 #SOURCE setupTatEnvironment.tcl
 
-1 encryptionTest checkEncryption.sh
+1 encodingTest checkEncoding.sh
 
