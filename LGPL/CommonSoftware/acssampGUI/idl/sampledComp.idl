@@ -1,3 +1,6 @@
+#ifndef SAMPLEDCOMPONENT_IDL_
+#define SAMPLEDCOMPONENT_IDL_
+
 #include <baci.idl>
 
 #pragma prefix "alma"
@@ -23,3 +26,5 @@ module SAMP {
 	};
 
 };
+
+#endif
