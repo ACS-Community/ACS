@@ -16,7 +16,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.1 2008/08/18 05:27:19 cparedes Exp $"
+# "@(#) $Id: Makefile,v 1.2 2008/09/09 09:33:52 cparedes Exp $"
 #
 # Makefile of ........
 #
@@ -82,7 +82,7 @@ lllll_OBJECTS   =
 # Scripts (public and local)
 # ----------------------------
 SCRIPTS         =
-SCRIPTS_L       = checkEncryption.sh
+SCRIPTS_L       = checkEncoding.sh
 
 #
 # TCL scripts (public and local)
