@@ -33,8 +33,7 @@ import com.cosylab.logging.engine.cache.CacheFile.CacheFileType;
  * Objects from this class implement a FIFO cache of String objects. 
  * The strings are written on disk by using several files: a new file is created whenever
  * the dimension of the current file becomes greater then a fixed size.
- * For each entry in the cache, an apposite record is created and kept in a
- * in-memory list. 
+ * For each entry in cache, a record is created and kept in a in-memory list. 
  * 
  * The cache is used by <code>{@link com.cosylab.logging.engine.ACS.ACSLogRetrieval}</code>,
  * but can be used wherever a set of strings needs to be stored because there is no assumption
@@ -42,24 +41,25 @@ import com.cosylab.logging.engine.cache.CacheFile.CacheFileType;
  * <P>
  * The logs are stored in a set of files and their ending position saved.
  * When all the logs in a file have been red, the file is deleted optimizing 
- * the usage disk space.  
+ * the usage disk space.
+ * The deletion of unused files is done by a thread. 
  * <P>
  * The length of each file of cache can be specified by a parameter in the constructor
  * or by a java property. If both those values are not given, a default length is used.
  * <P> 
- * The vector <code>files</code> contains all the files used by the cache.
- * New items are added at the end of the file in the last record of <code>files</code>.
- * New items are read from the first item of <code>files</code>.
- * <P>
- * Each file that does not contain unread entries is deleted.
+ * <code>files</code> contains all the files used by the cache, identified by a key.
+ * When a file does not contain unread entries then its key is pushed into <code>filesToDelete</code> 
+ * and deleted. 
+ * The thread that deletes the files from disk, removes the {@link CacheFile} object from
+ * <code>files</code> too.
  * 
  * <P>
- * <code>entries</code> contains all the entries of in cache. 
- * 
+ * <code>entries</code> contains all the entries of in cache.
+ *  
  * @author acaproni
  *
  */
-public class EngineCache {
+public class EngineCache extends Thread {
 	
 	/**
 	 * An entry of the cache.
@@ -156,6 +156,11 @@ public class EngineCache {
 	private LinkedBlockingQueue<CacheEntry> entries = new LinkedBlockingQueue<CacheEntry>();
 	
 	/**
+	 * A list of keys of unused files to delete.
+	 */
+	private LinkedBlockingQueue<CacheFile> filesToDelete = new LinkedBlockingQueue<CacheFile>();
+	
+	/**
 	 * The files used by the cache.
 	 * 
 	 * The entries in this vector have the same order of the creation of the files:
@@ -168,7 +173,10 @@ public class EngineCache {
 	 */
 	private LinkedHashMap<Integer,CacheFile> files = new LinkedHashMap<Integer,CacheFile>();
 	
-	// true if the cache is closed
+	/** 
+	 * <code>true</code> if the cache is closed.
+	 * It signals the thread to terminate.
+	 */
 	private volatile boolean closed=false;
 	
 	/**
@@ -179,7 +187,7 @@ public class EngineCache {
 	 * 2. the default size is used
 	 */
 	public EngineCache() {
-		maxSize=getDefaultMaxFileSize();
+		this(getDefaultMaxFileSize());
 	}
 	
 	/**
@@ -188,10 +196,14 @@ public class EngineCache {
 	 * @param size The max size of each file of the cache
 	 */
 	public EngineCache(long size) {
+		super("EngineCache");
 		if (size<=1024) {
 			throw new IllegalArgumentException("The size can't be less then 1024");
 		}
 		maxSize=size;
+		setDaemon(true);
+		setPriority(MIN_PRIORITY);
+		start();
 	}
 	
 	/**
@@ -231,29 +243,42 @@ public class EngineCache {
 	/**
 	 * Close and delete a file.
 	 * 
-	 * @param key The key of the file to close and delete
+	 * @param itemToDel The item to delete
 	 * @return true if the file is deleted
 	 */
-	private boolean releaseFile(Integer key) {
-		if (key==null) {
-			throw new IllegalArgumentException("Invalid key");
+	private boolean releaseFile(CacheFile itemToDel) {
+		if (itemToDel==null) {
+			throw new IllegalArgumentException("The item to delete can't be null");
 		}
-		CacheFile item = files.remove(key);
-		if (item==null) {
-			throw new IllegalStateException("Got a null cache file for key "+key);
-		}
-		if (!item.key.equals(key)) {
-			throw new IllegalStateException("Keys differ: key of the file to release="+key+", key from cache="+item.key);
-		}
+		itemToDel.close();
 		File f=null;
 		try {
-			f = item.getFile();
+			f = itemToDel.getFile();
 		} catch (FileNotFoundException fnfe) {
-			System.err.println("Error deleting "+item.fileName+" (key "+item.key+")");
+			System.err.println("Error deleting "+itemToDel.fileName+" (key "+itemToDel.key+")");
 			fnfe.printStackTrace(System.err);
 			return false;
 		}
 		return f.delete();
+	}
+	
+	/**
+	 * The method to get and delete unused files
+	 */
+	public void run() {
+		while (!closed) {
+			CacheFile cacheFile;
+			try {
+				cacheFile = filesToDelete.poll(1, TimeUnit.HOURS);
+			} catch (InterruptedException ie) {
+				continue;
+			}
+			if (cacheFile==null) {
+				// timeout elapsed
+				continue;
+			}
+			releaseFile(cacheFile);
+		}
 	}
 	
 	/**
@@ -281,8 +306,10 @@ public class EngineCache {
 		}
 		Integer ret = Integer.valueOf(fileKey);
 		// Check if the key is already used
-		if (files.containsKey(fileKey)) {
-			throw new IllegalStateException("No more room in cache");
+		synchronized (files) {
+			if (files.containsKey(fileKey)) {
+				throw new IllegalStateException("No more room in cache");
+			}
 		}
 		return ret;
 	}
@@ -292,7 +319,10 @@ public class EngineCache {
 	 * @return The number of files used by the cache
 	 */
 	public int getActiveFilesSize() {
-		return files.size();
+		synchronized (files) {
+			return files.size();
+		}
+		
 	}
 	
 	/**
@@ -322,7 +352,9 @@ public class EngineCache {
 			String name = f.getAbsolutePath();
 			RandomAccessFile raF = new RandomAccessFile(f,"rw");
 			outCacheFile = new CacheFile(name,getNextFileKey(), raF,f);
-			files.put(outCacheFile.key,outCacheFile);
+			synchronized (files) {
+				files.put(outCacheFile.key,outCacheFile);
+			}
 		}
 		// Write the string in the file
 		long startPos;
@@ -367,12 +399,21 @@ public class EngineCache {
 		}
 		byte buffer[] = new byte[(int)(entry.end-entry.start)];
 		if (inCacheFile==null) {
-			inCacheFile=files.get(entry.key);
+			synchronized (files) {
+				inCacheFile=files.get(entry.key);
+			}
 		} else if (inCacheFile.key!=entry.key) {
 			inCacheFile.releaseRaFile(CacheFileType.INPUT);
-			inCacheFile.close();
-			releaseFile(inCacheFile.key);
-			inCacheFile=files.get(entry.key);
+			synchronized (files) {
+				files.remove(inCacheFile.key);
+			}
+			if (!filesToDelete.offer(inCacheFile)) {
+				// Most unlikely to happen: the queue is full!
+				releaseFile(inCacheFile);
+			}
+			synchronized (files) {
+				inCacheFile=files.get(entry.key);
+			}
 		}
 		synchronized (inCacheFile) {
 			inCacheFile.getRaFile(CacheFileType.INPUT).seek(entry.start);
@@ -390,13 +431,21 @@ public class EngineCache {
 	 */
 	public void close(boolean sync) {
 		closed=true;
+		interrupt();
 		entries.clear();
-		files.clear();
+		synchronized (files) {
+			files.clear();
+		}
 		if (inCacheFile!=null) {
 			inCacheFile.close();
 		}
 		if (outCacheFile!=null) {
 			outCacheFile.close();
+		}
+		while (sync && isAlive()) {
+			try {
+				Thread.sleep(250);
+			} catch (InterruptedException ie) {}
 		}
 	}
 
