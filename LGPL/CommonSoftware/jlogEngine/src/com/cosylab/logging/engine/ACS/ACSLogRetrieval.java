@@ -19,7 +19,7 @@
 
 /** 
  * @author  acaproni   
- * @version $Id: ACSLogRetrieval.java,v 1.34 2008/09/04 09:05:06 acaproni Exp $
+ * @version $Id: ACSLogRetrieval.java,v 1.35 2008/09/10 14:47:45 acaproni Exp $
  * @since    
  */
 
@@ -33,6 +33,7 @@ import alma.acs.logging.engine.parser.ACSLogParserFactory;
 
 import com.cosylab.logging.engine.FiltersVector;
 import com.cosylab.logging.engine.LogMatcher;
+import com.cosylab.logging.engine.cache.EngineCache;
 import com.cosylab.logging.engine.log.ILogEntry;
 
 /**
@@ -62,12 +63,52 @@ import com.cosylab.logging.engine.log.ILogEntry;
 public class ACSLogRetrieval extends LogMatcher implements Runnable {
 	
 	public class RateUpdater extends TimerTask {
-
+		
+		/**
+		 * The <code>RunTime</code> used to monitor the memory usage
+		 */
+		private final Runtime rt = Runtime.getRuntime();
+		
+		/**
+		 * The maximum amount of memory that your Java application can use
+		 * 
+		 * @see {@link Runtime} 
+		 */
+		private volatile long maxMemory;
+		
+		/**
+		 * The memory allocated by the application
+		 * 
+		 * @see {@link Runtime} 
+		 */
+		private volatile long allocatedMemory;
+		
+		/**
+		 * The amount of free memory from the allocated memory
+		 * 
+		 * @see {@link Runtime} 
+		 */
+		private volatile long freeMemory;
+		
+		/**
+		 * The memory allocated that can be used by the application
+		 * taking into account the memory not yet allocated by the JVM
+		 * 
+		 * @see {@link Runtime} 
+		 */
+		private volatile long totalFreeMemory;
+		
 		public void run() {
 			inputRate=receivedCounter;
 			receivedCounter=0;
 			outputRate=readCounter;
 			readCounter=0;
+			
+			// Monitor memory usage for dynamic filtering
+			allocatedMemory=rt.totalMemory();
+			maxMemory=rt.maxMemory();
+			freeMemory=rt.freeMemory();
+			totalFreeMemory=(freeMemory+(maxMemory-allocatedMemory));
 		}
 	}
 	
@@ -370,7 +411,7 @@ public class ACSLogRetrieval extends LogMatcher implements Runnable {
 				thread.join();
 			} catch (InterruptedException ie) {}
 		}
-		cache.close();
+		cache.close(sync);
 	}
 	
 	/**
