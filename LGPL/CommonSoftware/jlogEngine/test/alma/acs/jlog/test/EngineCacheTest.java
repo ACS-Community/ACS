@@ -23,7 +23,7 @@ package alma.acs.jlog.test;
 
 import java.util.Vector;
 
-import com.cosylab.logging.engine.ACS.EngineCache;
+import com.cosylab.logging.engine.cache.EngineCache;
 
 import junit.framework.TestCase;
 
@@ -63,7 +63,7 @@ public class EngineCacheTest extends TestCase {
 	 */
 	@Override
 	protected void tearDown() throws Exception {
-		cache.close();
+		cache.close(true);
 		super.tearDown();
 	}
 	
