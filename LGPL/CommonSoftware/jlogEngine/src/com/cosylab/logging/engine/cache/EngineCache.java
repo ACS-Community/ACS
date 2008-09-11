@@ -27,8 +27,6 @@ import java.util.Random;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
-import com.cosylab.logging.engine.cache.CacheFile.CacheFileType;
-
 /**
  * Objects from this class implement a FIFO cache of String objects. 
  * The strings are written on disk by using several files: a new file is created whenever
@@ -60,55 +58,6 @@ import com.cosylab.logging.engine.cache.CacheFile.CacheFileType;
  *
  */
 public class EngineCache extends Thread {
-	
-	/**
-	 * An entry of the cache.
-	 * It contains the name of the file where the entry is stored together with the
-	 * position of the entry.
-	 * 
-	 * Having the name of the file allows to open and close the file when needed.
-	 * In a previous version there was a <code>RandomAccessFile</code> instead of the name
-	 * but it ended up with an error because the number of open file was exceeding
-	 * the maximum allowed.
-	 * 
-	 * 
-	 * @author acaproni
-	 *
-	 */
-	private class CacheEntry {
-		/**
-		 * The key of the file where the entry is stored
-		 */
-		public final Integer key;
-		/**
-		 * The starting position of the entry in the file
-		 */
-		public final long start;
-		/**
-		 * The ending position of the entry in the file
-		 */
-		public final long end;
-		
-		/**
-		 * Constructor
-		 * 
-		 * @param key The key of the file where the entry is stored
-		 * @param startPos The starting position of the entry in the file
-		 * @param endPos The ending position of the entry in the file
-		 */
-		public CacheEntry(Integer key, long startPos, long endPos) {
-			if (key==null) {
-				throw new IllegalArgumentException("The file name can't be null nor empty");
-			}
-			if (startPos<0 || endPos<=0 || startPos>=endPos) {
-				throw new IllegalArgumentException("Invalid start/end positions: "+startPos+", "+endPos);
-			}
-			this.key=key;
-			start=startPos;
-			end=endPos;
-		}
-	}
-	
 	/**
 	 * The default max size for each file of the cache.
 	 * The default value is used when the java property is not found and the 
@@ -347,25 +296,18 @@ public class EngineCache extends Thread {
 				throw new IOException("Error creating a cache file");
 			}
 			if (outCacheFile!=null) {
-				outCacheFile.releaseRaFile(CacheFileType.OUTPUT);
+				outCacheFile.setWritingMode(false);
 			}
 			String name = f.getAbsolutePath();
 			RandomAccessFile raF = new RandomAccessFile(f,"rw");
 			outCacheFile = new CacheFile(name,getNextFileKey(), raF,f);
+			outCacheFile.setWritingMode(true);
 			synchronized (files) {
 				files.put(outCacheFile.key,outCacheFile);
 			}
 		}
 		// Write the string in the file
-		long startPos;
-		long endPos;
-		synchronized (outCacheFile) {
-			startPos = outCacheFile.getFileLength();
-			outCacheFile.getRaFile(CacheFileType.OUTPUT).seek(startPos);
-			outCacheFile.getRaFile(CacheFileType.OUTPUT).writeBytes(string);
-			endPos = outCacheFile.getFileLength();	
-		}
-		CacheEntry entry = new CacheEntry(outCacheFile.key,startPos,endPos);
+		CacheEntry entry = outCacheFile.writeOnFile(string, outCacheFile.key);
 		boolean inserted = false;
 		while (!inserted) {
 			try {
@@ -397,13 +339,13 @@ public class EngineCache extends Thread {
 			// Timeout
 			return null;
 		}
-		byte buffer[] = new byte[(int)(entry.end-entry.start)];
 		if (inCacheFile==null) {
 			synchronized (files) {
 				inCacheFile=files.get(entry.key);
+				inCacheFile.setReadingMode(true);
 			}
 		} else if (inCacheFile.key!=entry.key) {
-			inCacheFile.releaseRaFile(CacheFileType.INPUT);
+			inCacheFile.setReadingMode(false);
 			synchronized (files) {
 				files.remove(inCacheFile.key);
 			}
@@ -413,13 +355,10 @@ public class EngineCache extends Thread {
 			}
 			synchronized (files) {
 				inCacheFile=files.get(entry.key);
+				inCacheFile.setReadingMode(true);
 			}
 		}
-		synchronized (inCacheFile) {
-			inCacheFile.getRaFile(CacheFileType.INPUT).seek(entry.start);
-			inCacheFile.getRaFile(CacheFileType.INPUT).read(buffer);
-		}
-		return new String(buffer).trim();
+		return inCacheFile.readFromFile(entry);
 	}
 	
 	/**
