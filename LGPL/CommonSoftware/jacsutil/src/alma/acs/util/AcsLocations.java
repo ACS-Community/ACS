@@ -262,9 +262,13 @@ public class AcsLocations {
 	
 	/**
 	 * The suffix for a ServicesDaemon location.
-	 * Note: Not a constant, to allow for changes at runtime in case this might be needed.
+	 * <p>
+	 * Note that this string constant is also defined in acsdaemon.idl 
+	 * and would be accessible as "alma.acsdaemon.servicesDaemonServiceName.value"
+	 * if module acsdaemonidl would not come after jacsutil.
+	 * @TODO clean up the module dependencies.
 	 */
-	static public String SERVICESDAEMON_SYMBOL = "ACSServicesDaemon";
+	static public final String SERVICESDAEMON_SYMBOL = "ACSServicesDaemon";
 
 
 	/**
@@ -285,9 +289,13 @@ public class AcsLocations {
 
 	/**
 	 * The suffix for a ContainerDaemon location.
-	 * Note: Not a constant, to allow for changes at runtime in case this might be needed.
+	 * <p>
+	 * Note that this string constant is also defined in acsdaemon.idl 
+	 * and would be accessible as "alma.acsdaemon.containerDaemonServiceName.value"
+	 * if module acsdaemonidl would not come after jacsutil.
+	 * @TODO clean up the module dependencies.
 	 */
-	static public String CONTAINERDAEMON_SYMBOL = "ACSContainerDaemon";
+	static public final String CONTAINERDAEMON_SYMBOL = "ACSContainerDaemon";
 
 
 	/**
