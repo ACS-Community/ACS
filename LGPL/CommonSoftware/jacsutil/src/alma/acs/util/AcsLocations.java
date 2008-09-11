@@ -270,9 +270,16 @@ public class AcsLocations {
 	 */
 	static public final String SERVICESDAEMON_SYMBOL = "ACSServicesDaemon";
 
+	/**
+	 * Composes a ServicesDaemon corbaloc for the specified host.
+	 */
+	static public String convertToServicesDaemonLocation (String host) {
+		return "corbaloc::" + host.trim() + ":" + ACSPorts.getServicesDaemonPort() + "/" + SERVICESDAEMON_SYMBOL;
+	}
 
 	/**
 	 * Composes a ServicesDaemon corbaloc for the specified host and port.
+	 * @deprecated  because the daemon port is fixed.
 	 */
 	static public String convertToServicesDaemonLocation (String host, String port) {
 		return convertToServicesDaemonLocation(host, port, "");
@@ -280,11 +287,13 @@ public class AcsLocations {
 
 	/**
 	 * Composes a ServicesDaemon corbaloc for the specified host, port, and protocol.
+	 * @deprecated  because the daemon port is fixed.
 	 */
 	static public String convertToServicesDaemonLocation (String host, String port, String protocol) {
 		return "corbaloc:" + protocol + ":" + host.trim() + ":" + port.trim() + "/" + SERVICESDAEMON_SYMBOL;
 	}
 
+	
 // ACSContainerDaemon
 
 	/**
@@ -297,9 +306,16 @@ public class AcsLocations {
 	 */
 	static public final String CONTAINERDAEMON_SYMBOL = "ACSContainerDaemon";
 
+	/**
+	 * Composes a ContainerDaemon corbaloc for the specified host.
+	 */
+	static public String convertToContainerDaemonLocation (String host) {
+		return "corbaloc::" + host.trim() + ":" + ACSPorts.getContainerDaemonPort() + "/" + CONTAINERDAEMON_SYMBOL;
+	}
 
 	/**
 	 * Composes a ContainerDaemon corbaloc for the specified host and port.
+	 * @deprecated  because the daemon port is fixed.
 	 */
 	static public String convertToContainerDaemonLocation (String host, String port) {
 		return convertToContainerDaemonLocation(host, port, "");
@@ -307,6 +323,7 @@ public class AcsLocations {
 
 	/**
 	 * Composes a ContainerDaemon corbaloc for the specified host, port, and protocol.
+	 * @deprecated  because the daemon port is fixed.
 	 */
 	static public String convertToContainerDaemonLocation (String host, String port, String protocol) {
 		return "corbaloc:" + protocol + ":" + host.trim() + ":" + port.trim() + "/" + CONTAINERDAEMON_SYMBOL;
