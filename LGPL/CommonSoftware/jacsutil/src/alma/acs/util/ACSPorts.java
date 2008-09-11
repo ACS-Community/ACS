@@ -130,14 +130,14 @@ public class ACSPorts {
    }
 
    /**
-    * @return the port the ACS Container deamon is running on.
+    * @return the constant port (3013) the ACS Container daemon is running on.
     */
    public static String getContainerDaemonPort() {
       return globalInstanceForSystemProperty().giveContainerDaemonPort();
    }
 
    /**
-    * @return the port the ACS Services deamon is running on.
+    * @return the constant port (3014) the ACS Services daemon is running on.
     */
    public static String getServicesDaemonPort() {
       return globalInstanceForSystemProperty().giveServicesDaemonPort();
@@ -277,14 +277,14 @@ public class ACSPorts {
    }
 
    /**
-    * @return the port the ACS Container daemon is running on.
+    * @return the constant port (3013) the ACS Container daemon is running on.
     */
    public String giveContainerDaemonPort() {
       return String.valueOf(3000 + 13);
    }
 
    /**
-    * @return the port the ACS Services daemon is running on.
+    * @return the constant port (3014) the ACS Services daemon is running on.
     */
    public String giveServicesDaemonPort() {
       return String.valueOf(3000 + 14);
