@@ -41,16 +41,6 @@ import java.io.RandomAccessFile;
 public class CacheFile {
 	
 	/**
-	 * The type of file managed by the cache for I/O
-	 *  
-	 * @author acaproni
-	 *
-	 */
-	public enum CacheFileType {
-		INPUT,
-		OUTPUT
-	}
-	/**
 	 * The name of the file
 	 */
 	public final String fileName;
@@ -84,25 +74,21 @@ public class CacheFile {
 	private RandomAccessFile inRAFile = null;
 	
 	/**
+	 * Signal if the file is used for reading
+	 */
+	private boolean reading=false;
+	
+	/**
+	 * Signal if the file is used for writing
+	 */
+	private boolean writing=false;
+	
+	/**
 	 * Random file used for outPut.
 	 * <P>
 	 * It can be <code>null</code> or equal to <code>raFile</code>.
 	 */
 	private RandomAccessFile outRAFile = null;
-	
-	/**
-	 * Constructor
-	 * 
-	 * @param fName The name of the file
-	 * @param key The key of this entry
-	 */
-	public CacheFile(String fName, Integer key) {
-		if (fName==null || fName.isEmpty()) {
-			throw new IllegalArgumentException("The file name can't be null not empty");
-		}
-		fileName=fName;
-		this.key=key;
-	}
 	
 	/**
 	 * Constructor 
@@ -115,10 +101,17 @@ public class CacheFile {
 	 * @see {@link CacheFile(String fName, Integer key)}
 	 */
 	public CacheFile(String fName, Integer key, RandomAccessFile rf, File f) {
-		this(fName,key);
+		if (fName==null || fName.isEmpty()) {
+			throw new IllegalArgumentException("The file name can't be null not empty");
+		}
+		if (key==null) {
+			throw new IllegalArgumentException("Invalid null key");
+		}
 		if (rf==null) {
 			throw new IllegalArgumentException("Invalid null random file");
 		}
+		fileName=fName;
+		this.key=key;
 		raFile=rf;
 		file=f;
 	}
@@ -180,44 +173,19 @@ public class CacheFile {
 	}
 	
 	/**
-	 * Return the random file for reading or writing.
-	 * <P>
-	 * @param type The type of the file
-	 * @return The random access file to get data from. 
+	 * Check if the file is used for reading or writing and 
+	 * if not used, close the random file.
 	 */
-	public RandomAccessFile getRaFile(CacheFileType type) throws FileNotFoundException {
-		if (raFile==null) {
-			openFile();
-		}
-		switch (type) {
-		case INPUT: 
-			inRAFile=raFile;
-			break;
-		case OUTPUT:
-			outRAFile=raFile;
-			break;
-		}
-		return raFile;
-	}
-	
-	/**
-	 * Release the file of the given type.
-	 * 
-	 * @param type The type of the file to release
-	 */
-	public void releaseRaFile(CacheFileType type) throws IOException {
-		switch (type) {
-		case INPUT:
-			inRAFile=null;
-			break;
-		case OUTPUT:
-			outRAFile=null;
-			break;
-		}
+	private void checkRaFileUsage() {
 		// Release raFile and file if both the file for input
 		// and output are null (unused)
-		if (inRAFile==null && outRAFile==null) {
-			raFile.close();
+		if (!reading && !writing) {
+			try {
+				raFile.close();
+			} catch (Throwable t) {
+				// An error closing the file: do not stop the computation but cross the fingers!
+				System.err.println("Error closing "+fileName+": "+t.getMessage());
+			}
 			raFile=null;
 			file=null;
 		}
@@ -235,13 +203,75 @@ public class CacheFile {
 		return file.length();
 	}
 	
-	public void writeOnFile(String str) {
-		if (raFile==null) {
-			throw new IllegalStateException("RandomAccessFile not initialized");
-		}
+	/**
+	 * Write the passed string in the file.
+	 * 
+	 * @param str The string to write in the file
+	 * @return The ending position of the string in the file
+	 */
+	public synchronized CacheEntry writeOnFile(String str, Integer key) throws IOException {
 		if (str==null || str.isEmpty()) {
 			throw new IllegalArgumentException("Invalid string to write on file");
 		}
-		
+		if (key==null || this.key!=key) {
+			throw new IllegalArgumentException("Wrong key while writing");
+		}
+		if (raFile==null) {
+			openFile();
+		}
+		writing=true;
+		long startPos;
+		long endPos;
+		synchronized (raFile) {
+			startPos = file.length();
+			raFile.seek(startPos);
+			raFile.writeBytes(str);
+			endPos = file.length();	
+		}
+		return new CacheEntry(key,startPos,endPos);
+	}
+	
+	/**
+	 * Read a string from the file
+	 * 
+	 * @param entry The cache entry to saying how to read the entry
+	 * 
+	 * @return The string read from the file
+	 */
+	public synchronized String readFromFile(CacheEntry entry) throws IOException {
+		if (entry==null) {
+			throw new IllegalArgumentException("The CacheEntry can't be null");
+		}
+		if (entry.key!=key) {
+			throw new IllegalArgumentException("Wrong key while reading");
+		}
+		if (raFile==null) {
+			openFile();
+		}
+		reading=true;
+		byte buffer[] = new byte[(int)(entry.end-entry.start)];
+		raFile.seek(entry.start);
+		raFile.read(buffer);
+		return new String(buffer);
+	}
+	
+	/**
+	 * Set the reading mode of the file.
+	 * 
+	 * @param reading <code>true</code> if the file is used for reading
+	 */
+	public synchronized void setReadingMode(boolean reading) {
+		this.reading=reading;
+		checkRaFileUsage();
+	}
+	
+	/**
+	 * Set the writing mode of the file.
+	 * 
+	 * @param reading <code>true</code> if the file is used for writing
+	 */
+	public synchronized void setWritingMode(boolean writing) {
+		this.writing=writing;
+		checkRaFileUsage();
 	}
 }
