@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@$Id: acsServicesHandlerImpl.cpp,v 1.9 2008/08/29 13:58:28 msekoran Exp $"
+* "@$Id: acsServicesHandlerImpl.cpp,v 1.10 2008/09/11 09:29:56 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -36,7 +36,7 @@ void CommandProcessorThread::onStart()
     running = true;
 }
 
-void CommandProcessorThread::onStop()
+void CommandProcessorThread::stop()
 {
     Request *nowreq;
     ACSErr::Completion_var comp;

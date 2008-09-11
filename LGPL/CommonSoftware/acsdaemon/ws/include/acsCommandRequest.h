@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsCommandRequest.h,v 1.1 2008/08/29 13:58:28 msekoran Exp $"
+* "@(#) $Id: acsCommandRequest.h,v 1.2 2008/09/11 09:29:56 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -96,7 +96,9 @@ class CommandProcessorThread : public ACS::Thread
     
     void onStart();
 
-    void onStop();
+    void stop();
+
+    void exit() { ACS::Thread::exit(); stop(); }
 
     void runLoop()
       ACE_THROW_SPEC ((
@@ -110,7 +112,7 @@ class CommandProcessorThread : public ACS::Thread
     ACE_Thread_Mutex *m_mutex;
     ACE_Condition<ACE_Thread_Mutex> *m_wait;
     std::queue<Request*> pending;
-    bool running;
+    volatile bool running;
 };
 
 class RequestChainBuilder;
