@@ -20,7 +20,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: LTS2Cpp.xslt,v 1.5 2007/12/19 14:19:31 bjeram Exp $"
+* "@(#) $Id: LTS2Cpp.xslt,v 1.6 2008/09/11 09:09:16 hsommer Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -58,7 +58,6 @@ using namespace </xsl:text><xsl:value-of select="$typeName"/><xsl:text>;
 }
 
 </xsl:text>
-        	<xsl:variable name="logName"><xsl:value-of select="@logName"/></xsl:variable>
 		<xsl:value-of select="$logName"/><xsl:text>::</xsl:text><xsl:value-of select="$logName"/><xsl:text>(string file, unsigned long line, string routine, string array, string antenna){
         init(file, line, routine);
         this->array=array;
