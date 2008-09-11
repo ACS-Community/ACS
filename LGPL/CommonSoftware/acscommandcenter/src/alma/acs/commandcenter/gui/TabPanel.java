@@ -1708,7 +1708,7 @@ public class TabPanel extends JPanel {
 	protected class ActionUseDaemons extends CommandCenterGui.ActionBaseClass {
 
 		protected ActionUseDaemons() {
-			master.super("Use Acs 7.0 Daemons", null);
+			master.super("Use Acs Daemons", null);
 		}
 
 		@Override
