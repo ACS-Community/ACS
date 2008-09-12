@@ -21,8 +21,10 @@
  */
 package alma.acs.jlog.test;
 
+import java.util.Random;
 import java.util.Vector;
 
+import com.cosylab.logging.engine.cache.CacheEntry;
 import com.cosylab.logging.engine.cache.EngineCache;
 
 import junit.framework.TestCase;
@@ -144,6 +146,49 @@ public class EngineCacheTest extends TestCase {
 		// No more items and files in cache
 		assertEquals(0, cache.size());
 		assertEquals(1, cache.getActiveFilesSize());
+	}
+	
+	/**
+	 * Check the conversion in CacheEntry between the key, start and end position
+	 * and their representations as an hexadecimal string.
+	 */
+	public void testCacheEntryTranslation() throws Exception {
+		// Check for 0, 0, 1 (end must be greater then 0)
+		CacheEntry zeroCE = new CacheEntry(0,0,1);
+		
+		String zeroStr = zeroCE.toHexadecimal();
+		assertEquals(CacheEntry.ENTRY_LENGTH,zeroStr.length());
+		CacheEntry check = new CacheEntry(zeroStr);
+		assertEquals(zeroCE.key, check.key);
+		assertEquals(zeroCE.start, check.start);
+		assertEquals(zeroCE.end, check.end);
+		
+		// Check for to values
+		CacheEntry topCE = new CacheEntry(Integer.MAX_VALUE,Long.MAX_VALUE-1,Long.MAX_VALUE);
+		String topStr = topCE.toHexadecimal();
+		assertEquals(CacheEntry.ENTRY_LENGTH,topStr.length());
+		check= new CacheEntry(topStr);
+		assertEquals(topCE.key, check.key);
+		assertEquals(topCE.start, check.start);
+		assertEquals(topCE.end, check.end);
+		
+		// Check for some random values
+		Random rnd = new Random(System.currentTimeMillis());
+		for (int t=0; t<1000; t++) {
+			long start=0;
+			long end=0;
+			while (start>=end) {
+				start = Math.abs(rnd.nextLong());
+				end = Math.abs(rnd.nextLong());
+			}
+			CacheEntry test = new CacheEntry(Math.abs(rnd.nextInt()),start,end);
+			String testStr = test.toHexadecimal();
+			assertEquals(CacheEntry.ENTRY_LENGTH,testStr.length());
+			check= new CacheEntry(testStr);
+			assertEquals(test.key, check.key);
+			assertEquals(test.start, check.start);
+			assertEquals(test.end, check.end);
+		}
 	}
 
 }
