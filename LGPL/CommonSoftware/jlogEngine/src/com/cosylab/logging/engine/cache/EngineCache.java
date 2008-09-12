@@ -77,8 +77,10 @@ public class EngineCache extends Thread {
 	
 	/**
 	 * Each file of the cache is identified by a key.
+	 * <P>
+	 * The key is always positive.
 	 */
-	private int fileKey = Integer.MIN_VALUE;
+	private int fileKey = 0;
 	
 	/**
 	 * The file used to write the strings into.
@@ -251,7 +253,7 @@ public class EngineCache extends Thread {
 			fileKey++;
 		} else {
 			// Ops we need to reset the key...
-			fileKey=Integer.MIN_VALUE;
+			fileKey=0;
 		}
 		Integer ret = Integer.valueOf(fileKey);
 		// Check if the key is already used
