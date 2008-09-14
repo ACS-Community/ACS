@@ -2,6 +2,7 @@ package alma.acs.eventbrowser.views;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.logging.Logger;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
@@ -26,17 +27,28 @@ import alma.acs.eventbrowser.model.AdminConsumer;
 import alma.acs.eventbrowser.model.EventModel;
 import alma.acs.exceptions.AcsJException;
 import alma.acs.nc.Consumer;
+import alma.acs.util.StopWatch;
 
 public class EventDetailView extends ViewPart {
+	private static final long MEMORY_MARGIN_IN_BYTES = 850000000; // Remove first rows when free memory < this
+	private static final int CHECK_MEMORY_FREQUENCY = 10;	// Run the memory checker this often
 	private static final int QUEUE_DRAIN_LIMIT = 1000;
+	private static final int NUMBER_TO_DELETE = 1000;	// When memory is low, delete this many rows from start of table
+	
 	private TableViewer viewer;
 	private ArrayList<AdminConsumer> consumers;
 
 	private EventModel em;
 	private Action clearEvents;
 	private Action printEventDetails;
+	
+	private long cycles = 0;
+	private Runtime runtime;
+	private long max_memory;
+	private Logger logger;
 
 	public static final String ID = "alma.acs.eventbrowser.views.eventdetail";
+
 
 	public EventDetailView() {
 		// TODO Auto-generated constructor stub
@@ -51,13 +63,16 @@ public class EventDetailView extends ViewPart {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		runtime = Runtime.getRuntime();
+		max_memory = runtime.maxMemory();
+		logger = em.getLogger();
 		viewer = new TableViewer(parent, SWT.MULTI | SWT.H_SCROLL
 				| SWT.V_SCROLL | SWT.VIRTUAL);
 
 		Table table = viewer.getTable();
 		table.setHeaderVisible(true);
 		table.setLinesVisible(true);
-		table.setItemCount(TABLE_CAPACITY);
+//		table.setItemCount(TABLE_CAPACITY);
 		/*
 		 * "Time "+timeStamp+" "+m_channelName+" "+component+" "+count+"
 		 * "+channelEventCount+" " +" "+evtTypeName+"
@@ -108,17 +123,28 @@ public class EventDetailView extends ViewPart {
 		hookContextMenu();
 
 		Runnable t = new Runnable() {
-			int i = 0;
 			public Runnable r = new Runnable() {
+
+				private long totalNumberDrained;
+
 				public void run() {
 					final Display display = viewer.getControl().getDisplay();
 					if (!display.isDisposed()) {
 						ArrayList<EventData> c = new ArrayList<EventData>(QUEUE_DRAIN_LIMIT);
 						int numberDrained = Application.equeue.drainTo(c, QUEUE_DRAIN_LIMIT);
-						viewer.add(c.toArray());
-//						System.out.println("Table item count: "
+					    if (numberDrained == 0)
+					    	return;
+					    totalNumberDrained += numberDrained;
+					    viewer.add(c.toArray()); 
+//						logger.fine("Table item count: "
 //								+ viewer.getTable().getItemCount()
 //								+ "; number of events drained from queue: "+numberDrained);
+						if (cycles++%CHECK_MEMORY_FREQUENCY == 0) {
+							StopWatch sw = new StopWatch(logger);
+							checkFreeMemory();
+							sw.logLapTime("Check free memory");
+							logger.fine("Total rows processed so far: "+totalNumberDrained);
+						}
 					}
 				}
 			};
@@ -129,7 +155,8 @@ public class EventDetailView extends ViewPart {
 				while (true) {
 					if (display.isDisposed())
 						return;
-					display.asyncExec(r);
+					display.syncExec(r);
+					//display.asyncExec(r);
 					try {
 						Thread.sleep(1000);
 //						System.out.println("Event detail iteration " + ++i);
@@ -147,7 +174,7 @@ public class EventDetailView extends ViewPart {
 				// startMonitoringAction.setEnabled(true);
 			}
 		};
-		final Thread th = new Thread(t);
+		final Thread th = new Thread(t, "Event monitoring");
 //		th.start();
 		consumers = em.getAllConsumers();
 		
@@ -223,6 +250,37 @@ public class EventDetailView extends ViewPart {
 		super.dispose();
 		for (AdminConsumer consumer : consumers) {
 			consumer.disconnect();
+		}
+	}
+
+	private void checkFreeMemory() {
+		long ultimateFreeMemory = max_memory - (runtime.totalMemory()-runtime.freeMemory());
+		if (ultimateFreeMemory < MEMORY_MARGIN_IN_BYTES) {
+			int itemCount = viewer.getTable().getItemCount();
+			if (itemCount < NUMBER_TO_DELETE) {
+				logger.fine("We're almost out of memory, but there are only: "+itemCount+" rows left!");
+				return; // It's hopeless!
+			}
+			logger.fine("Now have "+itemCount+" rows in event table.");
+			Object[] els = new Object[NUMBER_TO_DELETE];
+
+			boolean hasNull = false;
+			for( int i = 0; i < NUMBER_TO_DELETE; i++ ) {
+			   els[i] = viewer.getElementAt(i);
+			   if (els[i] == null && hasNull == false) {
+				   logger.fine("Element # "+i+" is null."); // Log first null element found
+				   hasNull = true;
+			   }
+			}
+			
+			if (hasNull) {
+				return; // bailing out...
+			}
+
+			logger.fine("...removing "+NUMBER_TO_DELETE+" rows to avoid running out of memory, thread=" + Thread.currentThread().getName());
+			viewer.remove(els);
+			logger.fine("Remove done!");
+			logger.fine("...item count reduced by: "+(itemCount-viewer.getTable().getItemCount()));
 		}
 	}
 
