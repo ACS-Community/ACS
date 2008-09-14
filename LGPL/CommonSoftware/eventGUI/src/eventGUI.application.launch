@@ -16,11 +16,11 @@
 <stringAttribute key="location" value="${workspace_loc}/../runtime-eventGUI.application"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-os ${target.os} -ws ${target.ws} -arch ${target.arch} -nl ${target.nl}"/>
 <stringAttribute key="org.eclipse.jdt.launching.SOURCE_PATH_PROVIDER" value="org.eclipse.pde.ui.workbenchClasspathProvider"/>
-<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-DORBInitRef.NameService=corbaloc::pc013018:3001/NameService -DACS.Manager=corbaloc::pc013018:3000/Manager -Dacs.system.classpath.jardirs=../lib/:/diska/data/jschwarz/introot/lib:/alma/ACS-7.0/ACSSW/lib -Dacs.system.classloader.verbose=false"/>
+<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-DORBInitRef.NameService=corbaloc::pc013018:3001/NameService -DACS.Manager=corbaloc::pc013018:3000/Manager -Dacs.system.classpath.jardirs=../lib/:/diska/data/jschwarz/introot/lib:/alma/ACS-7.0/ACSSW/lib -Dacs.system.classloader.verbose=false -Dorg.omg.CORBA.ORBClass=org.jacorb.orb.ORB -Dorg.omg.CORBA.ORBSingletonClass=org.jacorb.orb.ORBSingleton -XX:+HeapDumpOnOutOfMemoryError"/>
 <booleanAttribute key="pde.generated.config" value="false"/>
 <stringAttribute key="pde.version" value="3.3"/>
-<stringAttribute key="product" value=""/>
-<stringAttribute key="selected_target_plugins" value="org.eclipse.jface,org.eclipse.equinox.registry,org.eclipse.ui,org.eclipse.ui.workbench,org.eclipse.core.runtime.compatibility.auth,org.eclipse.help,org.eclipse.core.contenttype,org.eclipse.osgi,org.eclipse.core.jobs,org.eclipse.core.databinding,org.eclipse.core.commands,org.eclipse.swt,org.eclipse.equinox.app,com.ibm.icu,org.eclipse.equinox.common,org.eclipse.equinox.preferences,org.eclipse.jface.databinding,org.eclipse.swt.gtk.linux.x86,org.eclipse.core.expressions,org.eclipse.core.runtime"/>
+<stringAttribute key="product" value="eventGUI.product"/>
+<stringAttribute key="selected_target_plugins" value="org.eclipse.ui.views,org.eclipse.equinox.common,org.eclipse.osgi,org.eclipse.core.databinding,com.ibm.icu,org.eclipse.equinox.preferences,org.eclipse.core.commands,org.eclipse.ui.workbench,org.eclipse.swt.gtk.linux.x86,org.eclipse.ui,org.eclipse.equinox.app,org.eclipse.core.jobs,org.eclipse.core.contenttype,org.eclipse.core.expressions,org.eclipse.help,org.eclipse.swt,org.eclipse.jface.databinding,org.eclipse.core.runtime.compatibility.auth,org.eclipse.core.runtime,org.eclipse.equinox.registry,org.eclipse.jface"/>
 <stringAttribute key="selected_workspace_plugins" value="eventGUI,ACS_Utility_Jars"/>
 <booleanAttribute key="show_selected_only" value="false"/>
 <booleanAttribute key="tracing" value="false"/>
