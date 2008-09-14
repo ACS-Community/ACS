@@ -7,11 +7,11 @@ import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertySource;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
 import org.eclipse.ui.views.properties.TextPropertyDescriptor;
-import org.omg.CORBA.Any;
 import org.omg.CORBA.TCKind;
 import org.omg.CORBA.TypeCodePackage.BadKind;
 import org.omg.DynamicAny.DynAny;
 import org.omg.DynamicAny.DynAnyFactory;
+import org.omg.DynamicAny.DynEnum;
 import org.omg.DynamicAny.DynStruct;
 import org.omg.DynamicAny.NameValuePair;
 import org.omg.DynamicAny.DynAnyFactoryPackage.InconsistentTypeCode;
@@ -35,6 +35,8 @@ public class EventPropertySource implements IPropertySource {
 			dynAny = daFactory.create_dyn_any(eventData.getEventAny());
 		} catch (InconsistentTypeCode e) {
 			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ClassCastException e) {
 			e.printStackTrace();
 		}
 	}
@@ -88,6 +90,9 @@ public class EventPropertySource implements IPropertySource {
 			case TCKind._tk_long:
 				propertyValues.put(path, new Integer(da.get_long()));
 				break;
+			case TCKind._tk_longlong:
+				propertyValues.put(path, new Long(da.get_longlong()));
+				break;
 			case TCKind._tk_ulonglong:
 				propertyValues.put(path, new Long(da.get_ulonglong()));
 				break;
@@ -95,13 +100,38 @@ public class EventPropertySource implements IPropertySource {
 				propertyValues.put(path, da.get_string());
 				break;
 			case TCKind._tk_boolean:
-				
+				propertyValues.put(path, new Boolean(da.get_boolean()));
 				break;
 			case TCKind._tk_float:
-				
+				propertyValues.put(path, new Float(da.get_float()));
 				break;
 			case TCKind._tk_double:
-				
+				propertyValues.put(path, new Double(da.get_double()));
+				break;
+			case TCKind._tk_enum:
+				propertyValues.put(path, ((DynEnum)da).get_as_string());
+				break;
+			case TCKind._tk_array:
+				System.out.println("Array found at: "+path);
+				System.out.println("   with size: "+da.component_count());
+				int numDisplayElements = Math.min(da.component_count(),5);
+				int elementType = da.type().content_type().kind().value();
+				switch (elementType) {
+				case TCKind._tk_double:
+					for (int j = 0; j < numDisplayElements; j++) {
+						String dname = path+j;
+						double value = da.current_component().get_double();
+						pdlist.add(new TextPropertyDescriptor(dname, dname));
+						propertyValues.put(dname, new Double(value));
+						System.out.println("dname = "+dname+" value = "+value);
+						da.next();
+					}
+					break;
+					default:
+						propertyValues.put(path, "Unimplemented type for array: "+elementType);
+				}
+				System.out.println("   content type: "+elementType);
+				if (elementType == TCKind._tk_double) System.out.println("...and it's a double!");
 				break;
 			case TCKind._tk_struct:
 			case TCKind._tk_except:
@@ -123,6 +153,7 @@ public class EventPropertySource implements IPropertySource {
 				break;
 
 			default:
+				propertyValues.put(path, "Unimplemented type: " + da.type().kind().toString());
 				break;
 			}
 		} catch (TypeMismatch e) {
