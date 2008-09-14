@@ -1,5 +1,9 @@
 package alma.acs.eventbrowser.model;
 
+import gov.sandia.CosNotification.NotificationServiceMonitorControl;
+import gov.sandia.CosNotification.NotificationServiceMonitorControlHelper;
+import gov.sandia.CosNotification.NotificationServiceMonitorControlPackage.InvalidName;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.logging.Logger;
@@ -37,6 +41,8 @@ import alma.acs.nc.Helper;
 public class EventModel {
 	private final ORB orb;
 	private final Logger m_logger;
+
+
 	private final AdvancedComponentClient compClient;
 	private final ContainerServices cs;
 	private final Helper h;
@@ -53,6 +59,7 @@ public class EventModel {
 	private HashMap<String, AdminConsumer> consumerMap;
 	private static DynAnyFactory dynAnyFactory = null;
 	public static final int MAX_NUMBER_OF_CHANNELS = 100;
+	private NotificationServiceMonitorControl nsmc;
 
 	private EventModel() throws Exception {
 		String connectionString;
@@ -71,6 +78,7 @@ public class EventModel {
 			acsInstance = (Integer.parseInt(temp.substring(endIndex+1, temp.indexOf("/"))) - 3000)/100;
 		}
 		m_logger = ClientLogManager.getAcsLogManager().getLoggerForApplication(eventGuiId, false);
+		ClientLogManager.getAcsLogManager().suppressRemoteLogging();
 		AdvancedComponentClient acc = null;
 		try {
 			acc = new AdvancedComponentClient(m_logger, connectionString, eventGuiId);
@@ -106,6 +114,7 @@ public class EventModel {
 		
 		h = new Helper(cs);
 		nctx = h.getNamingService();
+		nsmc = NotificationServiceMonitorControlHelper.narrow(nctx.resolve(new NameComponent[]{new NameComponent("TAO_MonitorAndControl","")}));
 		getServiceTotals(); // temporarily, for testing
 	}
 	
@@ -114,10 +123,14 @@ public class EventModel {
 		return "corbaloc::"+managerHost+":"+port+"/Manager";
 	}
 	
-	public static EventModel getInstance() throws Exception {
+	public synchronized static EventModel getInstance() throws Exception {
 		if (modelInstance == null) 
 			modelInstance = new EventModel();
 		return modelInstance;
+	}
+	
+	public Logger getLogger() {
+		return m_logger;
 	}
 	
 	public ArrayList<ChannelData> getServiceTotals() {
@@ -207,6 +220,7 @@ public class EventModel {
 				}
 
 			}
+			printMonitoringResults(nsmc);
 		}
 		return clist;	
 	}
@@ -281,6 +295,18 @@ public class EventModel {
 	
 	public static DynAnyFactory getDynAnyFactory() {
 		return dynAnyFactory;
+	}
+	
+	private void printMonitoringResults(NotificationServiceMonitorControl mc) {
+		if (true) return; // TODO -- Fix this method, which throws InvalidName exception
+		try {
+			m_logger.info("EventChannelFactoryNames: "+mc.get_statistic("NotifyMonitoringExt::EventChannelFactoryNames").toString());
+			m_logger.info(mc.get_statistic("ActiveEventChannelCount: "+"NotifyMonitoringExt::ActiveEventChannelCount").toString());
+			m_logger.info(mc.get_statistic("ActiveEventChannelNames: "+"NotifyMonitoringExt::ActiveEventChannelNames").toString());
+		} catch (InvalidName e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	
