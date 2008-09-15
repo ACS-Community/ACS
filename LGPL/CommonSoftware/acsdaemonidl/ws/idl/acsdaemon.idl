@@ -22,7 +22,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsdaemon.idl,v 1.11 2008/08/29 10:26:07 msekoran Exp $"
+* "@(#) $Id: acsdaemon.idl,v 1.12 2008/09/15 13:03:06 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -194,11 +194,6 @@ module acsdaemon
 	///////////////////////// Services Daemon proposed extensions for ACS 8.0 //////////////////////
 	///////////////////////////////////////////////////////////////////////////////////////////////
 
-
-	/** 
-	 * This service name is used by acsdaemon clients (scripts, manager etc) to resolve the services daemon reference.
-	 */
-	const string servicesDaemonServiceACS80Name = "ACSServicesDaemon_ACS80";
 
 	/**
 	 *  String constant for use in {@link ServicesDaemon_ACS80#start_notification_service} 
