@@ -8,6 +8,5 @@ fi
 export ACS_CDB=$PWD
 
 acsutilTATPrologue
-acsIrfeed
 
 acsutilAwaitContainerStart -cpp Container
