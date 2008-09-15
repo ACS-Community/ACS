@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@$Id: acsCommandRequest.cpp,v 1.2 2008/09/11 09:29:56 msekoran Exp $"
+* "@$Id: acsCommandRequest.cpp,v 1.3 2008/09/15 13:04:44 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -204,7 +204,7 @@ void RemoteRequest::abort() {
 void RemoteRequest::execute() {
     RemoteRequestDaemonCallback *callback = NULL;
     ACE_CString daemonRef = "corbaloc::";
-    daemonRef = daemonRef + host + ":" + ACSPorts::getServicesDaemonPort().c_str() + "/" + ::acsdaemon::servicesDaemonServiceACS80Name;
+    daemonRef = daemonRef + host + ":" + ACSPorts::getServicesDaemonPort().c_str() + "/" + ::acsdaemon::servicesDaemonServiceName;
     ACS_SHORT_LOG((LM_INFO, "Using local Services Daemon reference: '%s'", daemonRef.c_str()));
     try
     {

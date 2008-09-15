@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@$Id: acsServicesHandlerACS80Impl.cpp,v 1.1 2008/08/29 13:58:28 msekoran Exp $"
+* "@$Id: acsServicesHandlerACS80Impl.cpp,v 1.2 2008/09/15 13:04:44 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -147,7 +147,7 @@ void ServiceDefinitionBuilderImpl::close (
 
 /************************** ACSServicesHandlerACS80Impl ****************************/
 
-ACSServicesHandlerACS80Impl::ACSServicesHandlerACS80Impl () : h_name("ACS 8.0 Services Daemon"), h_type(::acsdaemon::servicesDaemonServiceACS80Name)
+ACSServicesHandlerACS80Impl::ACSServicesHandlerACS80Impl () : h_name("ACS 8.0 Services Daemon"), h_type(::acsdaemon::servicesDaemonServiceName)
 {
     cmdproc = tm.create<CommandProcessorThread>(h_name.c_str());
 }

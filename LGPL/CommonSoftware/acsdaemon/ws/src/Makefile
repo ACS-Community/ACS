@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.17 2008/08/29 13:58:28 msekoran Exp $"
+# "@(#) $Id: Makefile,v 1.18 2008/09/15 13:04:44 msekoran Exp $"
 #
 # Makefile of ........
 #
@@ -39,7 +39,7 @@ EXECUTABLES     = acscontainerdaemon acsdaemonStartContainer \
                   acsdaemonStopContainer acsservicesdaemon acsdaemonStartAcs \
                   acsdaemonStopAcs acsdaemonStatusAcs \
                   acscontainerdaemonSmartStart acscontainerdaemonStop \
-                  acsservicesdaemonStop acsservicesdaemon80 acsservicesdaemonStop80
+                  acsservicesdaemonStop acsservicesdaemon80
 EXECUTABLES_L   = 
 
 #
@@ -78,9 +78,6 @@ acscontainerdaemonSmartStart_LIBS      =	acscomponentStubs acsdaemonErrType acsd
 
 acsservicesdaemonStop_OBJECTS   =	acsservicesdaemonStop
 acsservicesdaemonStop_LIBS      =	acscomponentStubs acsdaemonErrType acsdaemonStubs
-
-acsservicesdaemonStop80_OBJECTS   =	acsservicesdaemonStop80
-acsservicesdaemonStop80_LIBS      =	acscomponentStubs acsdaemonErrType acsdaemonStubs
 
 #
 # special compilation flags for single c sources

@@ -1,7 +1,7 @@
 /*******************************************************************************
  * E.S.O. - ACS project
  *
- * "@(#) $Id: acsServices80Test.cpp,v 1.1 2008/08/29 13:58:28 msekoran Exp $"
+ * "@(#) $Id: acsServices80Test.cpp,v 1.2 2008/09/15 13:04:44 msekoran Exp $"
  *
  * who       when        what
  * --------  ----------  ----------------------------------------------
@@ -228,7 +228,7 @@ main (int argc, char *argv[])
 	      hostName = ACSPorts::getIP();
           } 
 	  daemonRef = "corbaloc::";
-	  daemonRef = daemonRef + hostName + ":" + ACSPorts::getServicesDaemonPort().c_str() + "/" + ::acsdaemon::servicesDaemonServiceACS80Name;
+	  daemonRef = daemonRef + hostName + ":" + ACSPorts::getServicesDaemonPort().c_str() + "/" + ::acsdaemon::servicesDaemonServiceName;
 	  ACS_SHORT_LOG((LM_INFO, "Using local Services Daemon reference: '%s'", daemonRef.c_str()));
 	  
 	  }
