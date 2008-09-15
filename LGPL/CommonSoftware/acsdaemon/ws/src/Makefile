@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.18 2008/09/15 13:04:44 msekoran Exp $"
+# "@(#) $Id: Makefile,v 1.19 2008/09/15 13:40:20 msekoran Exp $"
 #
 # Makefile of ........
 #
@@ -36,10 +36,10 @@ USER_LIB = -lTAO -lACE -lTAO_PortableServer -lacserr -lmaciErrType -lTAO_DsLogAd
 # C programs (public and local)
 # -----------------------------
 EXECUTABLES     = acscontainerdaemon acsdaemonStartContainer \
-                  acsdaemonStopContainer acsservicesdaemon acsdaemonStartAcs \
+                  acsdaemonStopContainer acsservicesdaemon70 acsdaemonStartAcs \
                   acsdaemonStopAcs acsdaemonStatusAcs \
                   acscontainerdaemonSmartStart acscontainerdaemonStop \
-                  acsservicesdaemonStop acsservicesdaemon80
+                  acsservicesdaemonStop acsservicesdaemon
 EXECUTABLES_L   = 
 
 #
@@ -54,11 +54,11 @@ acsdaemonStartContainer_LIBS      =	acscomponentStubs acsdaemonErrType acsdaemon
 acsdaemonStopContainer_OBJECTS   =	acsdaemonStopContainer
 acsdaemonStopContainer_LIBS      =	acscomponentStubs acsdaemonErrType acsdaemonStubs
 
-acsservicesdaemon_OBJECTS   =	acsservicesdaemon acsServicesHandlerImpl
-acsservicesdaemon_LIBS      =	acscomponentStubs acsdaemonErrType acsdaemonStubs acsThread
+acsservicesdaemon70_OBJECTS   =	acsservicesdaemon acsServicesHandlerImpl
+acsservicesdaemon70_LIBS      =	acscomponentStubs acsdaemonErrType acsdaemonStubs acsThread
 
-acsservicesdaemon80_OBJECTS   =	acsservicesdaemon80 acsServicesHandlerACS80Impl acsCommandRequest
-acsservicesdaemon80_LIBS      =	acscomponentStubs acsdaemonErrType acsdaemonStubs acsThread expat acsQoS
+acsservicesdaemon_OBJECTS   =	acsservicesdaemon80 acsServicesHandlerACS80Impl acsCommandRequest
+acsservicesdaemon_LIBS      =	acscomponentStubs acsdaemonErrType acsdaemonStubs acsThread expat acsQoS
 
 acsdaemonStartAcs_OBJECTS   =	acsdaemonStartAcs
 acsdaemonStartAcs_LIBS      =	acscomponentStubs acsdaemonErrType acsdaemonStubs

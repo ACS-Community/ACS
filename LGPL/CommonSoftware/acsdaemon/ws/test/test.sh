@@ -1,6 +1,6 @@
 #!/bin/bash
 FLAG=0
-acsservicesdaemon &> services.log &
+acsservicesdaemon70 &> services.log &
 sleep 1
 if [ $? -ne 0 ]; then
     echo "FAILED - starting services daemon"
