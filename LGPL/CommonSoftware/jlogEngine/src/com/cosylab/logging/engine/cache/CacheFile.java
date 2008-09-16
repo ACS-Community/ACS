@@ -31,9 +31,8 @@ import java.io.RandomAccessFile;
  *  <LI>a {@link File} to know the length of the file on disc.
  *  <LI>a {@link RandomAccessFile} for reading and writing
  * </UL>
- * There are two more references to the same random file, used for reading and writing.
- * Having these 2 references allows us to know when the reads and writes are terminated 
- * in order to close the file.
+ * There are two booleans signaling if  the file is used for reading and writing.
+ * In this way we know when the reads and writes are terminated close the file.
  *  
  * @author acaproni
  *
@@ -67,13 +66,6 @@ public class CacheFile {
 	private File file=null;
 	
 	/**
-	 * Random file used for input.
-	 * <P>
-	 * It can be <code>null</code> or equal to <code>raFile</code>.
-	 */
-	private RandomAccessFile inRAFile = null;
-	
-	/**
 	 * Signal if the file is used for reading
 	 */
 	private boolean reading=false;
@@ -82,13 +74,6 @@ public class CacheFile {
 	 * Signal if the file is used for writing
 	 */
 	private boolean writing=false;
-	
-	/**
-	 * Random file used for outPut.
-	 * <P>
-	 * It can be <code>null</code> or equal to <code>raFile</code>.
-	 */
-	private RandomAccessFile outRAFile = null;
 	
 	/**
 	 * Constructor 
