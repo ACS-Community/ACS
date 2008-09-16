@@ -97,14 +97,14 @@ public class EngineCache extends Thread {
 	
 	/**
 	 * The entries in the cache.
-	 * 
-	 * The items of the list are managed with a FIFO policy.
+	 * <P>
+	 * The items of the list are organized  in a FIFO policy.
 	 * This is particularly important because this order is used to know when a file
 	 * is not used anymore and can be deleted.
 	 * 
 	 * @see {@link EngineCache.files}
 	 */
-	private LinkedBlockingQueue<CacheEntry> entries = new LinkedBlockingQueue<CacheEntry>();
+	private CacheEntriesQueue entries = new CacheEntriesQueue();
 	
 	/**
 	 * A list of keys of unused files to delete.
@@ -373,7 +373,6 @@ public class EngineCache extends Thread {
 	public void close(boolean sync) {
 		closed=true;
 		interrupt();
-		entries.clear();
 		synchronized (files) {
 			files.clear();
 		}
