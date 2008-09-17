@@ -16,7 +16,7 @@
  *License along with this library; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: acssampObjImpl.i,v 1.8 2008/07/25 07:39:52 cparedes Exp $"
+ * "@(#) $Id: acssampObjImpl.i,v 1.9 2008/09/17 09:47:06 rcirami Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -474,7 +474,9 @@ void ACSSampObjImpl<ACS_SAMP_TL>::doSamp()
 	 */
 	ACSErr::Completion_var completion;
 	currentVal.val = propToSamp_p->get_sync(completion.out());
-	currentVal.timeStamp = getTimeStamp();
+	//currentVal.timeStamp = getTimeStamp();
+	CompletionImpl co = completion;
+	currentVal.timeStamp = co.getTimeStamp();
 
 	// ACS_SHORT_LOG((LM_INFO,"Time: %u",currentVal.timeStamp));
 	// ACS_SHORT_LOG((LM_INFO,"Value: %f",currentVal.val));
