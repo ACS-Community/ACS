@@ -32,11 +32,13 @@ import com.cosylab.logging.engine.ACS.ACSLogRetrieval;
 import com.cosylab.logging.engine.ACS.ACSRemoteLogListener;
 import com.cosylab.logging.engine.ACS.ACSRemoteRawLogListener;
 import com.cosylab.logging.engine.log.ILogEntry;
+import com.cosylab.logging.engine.log.LogTypeHelper;
 import com.cosylab.logging.engine.log.ILogEntry.AdditionalData;
 import com.cosylab.logging.engine.log.ILogEntry.Field;
 
 import alma.ACSLoggingLog.LogBinaryRecord;
 import alma.ACSLoggingLog.NameValue;
+import alma.acs.logging.engine.utils.IResourceChecker;
 import alma.acs.util.IsoDateFormat;
 import alma.acs.util.StopWatch;
 
@@ -49,7 +51,34 @@ import alma.acs.util.StopWatch;
  *
  */
 public class LogDispatcherTest extends TestCase {
+
+	/**
+	 * This class is used to check the dynamic change of the discard 
+	 * level depending on the amount of free memory
+	 * 
+	 * @author acaproni
+	 *
+	 */
+	public class Checker implements IResourceChecker {
+		
+		public volatile long freemMem=Long.MAX_VALUE;
+
+		@Override
+		public long getTotalFreeMemory() {
+			return freemMem;
+		}
+		
+	}
 	
+	/**
+	 * The listener for logs.
+	 * <P>
+	 * Whenever a log is received a number is increased to know how much logs
+	 * have been received.
+	 * 
+	 * @author acaproni
+	 *
+	 */
 	public class LogsRecv implements ACSRemoteLogListener, ACSRemoteRawLogListener {
 		/**
 		 * The method receiving logs
@@ -153,6 +182,7 @@ public class LogDispatcherTest extends TestCase {
 		//System.out.print(str);
 		assertEquals("XML case: logs sent and logs received differ", LOGS_NUMBER, logsReceived);
 		assertEquals("XML case: logs sent and raw logs received differ", LOGS_NUMBER, rawLogsReceived);
+		logDispatcher.close(true);
 	}
 	
 	/**
@@ -181,6 +211,7 @@ public class LogDispatcherTest extends TestCase {
 		//System.out.print(str);
 		assertEquals("Binary case: logs sent and logs received differ", LOGS_NUMBER, logsReceived);
 		assertEquals("Binary case: logs sent and raw logs received differ", LOGS_NUMBER, rawLogsReceived);
+		logDispatcher.close(true);
 	}
 		
 	/**
@@ -269,5 +300,115 @@ public class LogDispatcherTest extends TestCase {
 			}
 		}
 		return logBin;
+	}
+	
+	/**
+	 * Test setting and getting of the discard level.
+	 * 
+	 * @throws Exception
+	 */
+	public void testGetSetDiscardLevel() throws Exception {
+		ACSListenersDispatcher listenerDispatcher = new ACSListenersDispatcher();
+		assertNotNull("Null listener dispatcher!",listenerDispatcher);
+		ACSLogRetrieval logDispatcher = new ACSLogRetrieval(listenerDispatcher,false);
+		assertNotNull("Null log dispatcher!",logDispatcher);
+		
+		logDispatcher.setDiscardLevel(null);
+		assertNull(logDispatcher.getDiscardLevel());
+		
+		for (LogTypeHelper logType: LogTypeHelper.values()) {
+			logDispatcher.setDiscardLevel(logType);
+			assertEquals(logType, logDispatcher.getDiscardLevel());
+		}
+		logDispatcher.close(true);
+	}
+	
+	/**
+	 * Test the changing of the discard level by simulating
+	 * a low memory situation 
+	 * @throws Exception
+	 */
+	public void testDynamicDiscardLevel() throws Exception {
+		Checker checker = new Checker();
+		assertNotNull(checker);
+		ACSListenersDispatcher listenerDispatcher = new ACSListenersDispatcher();
+		assertNotNull("Null listener dispatcher!",listenerDispatcher);
+		ACSLogRetrieval logDispatcher = new ACSLogRetrieval(listenerDispatcher,false,null,checker);
+		assertNotNull("Null log dispatcher!",logDispatcher);
+		
+		// Check increasing of the discard level
+		logDispatcher.setDiscardLevel(null);
+		checker.freemMem=Long.MAX_VALUE;
+		// Changes of the discard level should happens every 2 seconds
+		logDispatcher.enableDynamicDiscarding(8192, 1024, 2);
+		// When the available memory is greater then the threshold,
+		// the discard level does not change
+		try {
+			Thread.sleep(5);
+		} catch (InterruptedException ie) {}
+		assertNull(logDispatcher.getActualDiscardLevel());
+		assertNull(logDispatcher.getDiscardLevel());
+		
+		// The index of the next log type
+		int type=0;
+		
+		// Time to wait for the next change before giving up
+		int timeout=10;
+		
+		// start dynamic changes of discard level
+		checker.freemMem=4096; 
+		while (logDispatcher.getActualDiscardLevel()!=LogTypeHelper.values()[LogTypeHelper.values().length-1]) {
+			long to = System.currentTimeMillis()+1000*timeout;
+			boolean found=false;
+			while (!found && System.currentTimeMillis()<to) {
+				found=logDispatcher.getActualDiscardLevel()==LogTypeHelper.values()[type];
+				Thread.yield();
+			}
+			assertTrue("timeout waiting for level "+LogTypeHelper.values()[type],found);
+			// Original discard level does not change
+			assertNull(logDispatcher.getDiscardLevel());
+			type++;
+		}
+		// Now the level is the topmost and it should not change...
+		try {
+			Thread.sleep(10000);
+		} catch (InterruptedException ie) {}
+		assertEquals(LogTypeHelper.values()[LogTypeHelper.values().length-1], logDispatcher.getActualDiscardLevel());
+		assertNull(logDispatcher.getDiscardLevel());
+		
+		// Now check the decreasing
+		
+		// First set the free memory to a value between the threshold and the damping
+		checker.freemMem=8192+512;
+		// The level does not change
+		try {
+			Thread.sleep(10000);
+		} catch (InterruptedException ie) {}
+		assertEquals(LogTypeHelper.values()[LogTypeHelper.values().length-1], logDispatcher.getActualDiscardLevel());
+		assertNull(logDispatcher.getDiscardLevel());
+		
+		// Increase the free memory ===> the level start decreasing
+		type=LogTypeHelper.values()[LogTypeHelper.values().length-1].ordinal();
+		checker.freemMem=2*8192;
+		while (logDispatcher.getActualDiscardLevel()!=null) {
+			long to = System.currentTimeMillis()+1000*timeout;
+			boolean found=false;
+			while (!found && System.currentTimeMillis()<to) {
+				if (type>=0) {
+					found=logDispatcher.getActualDiscardLevel()==LogTypeHelper.values()[type];
+				} else {
+					found=logDispatcher.getActualDiscardLevel()==null;
+				}
+				Thread.yield();
+			}
+			if (type>=0) {
+				assertTrue("timeout waiting for level "+LogTypeHelper.values()[type],found);
+			}
+			// Original discard level does not change
+			assertNull(logDispatcher.getDiscardLevel());
+			type--;
+		}
+		assertNull(logDispatcher.getActualDiscardLevel());
+		logDispatcher.close(true);
 	}
 }
