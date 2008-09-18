@@ -19,7 +19,7 @@
 
 /** 
  * @author  acaproni   
- * @version $Id: ACSLogRetrieval.java,v 1.35 2008/09/10 14:47:45 acaproni Exp $
+ * @version $Id: ACSLogRetrieval.java,v 1.36 2008/09/18 08:49:29 acaproni Exp $
  * @since    
  */
 
@@ -30,11 +30,14 @@ import java.util.TimerTask;
 
 import alma.acs.logging.engine.parser.ACSLogParser;
 import alma.acs.logging.engine.parser.ACSLogParserFactory;
+import alma.acs.logging.engine.utils.IResourceChecker;
+import alma.acs.logging.engine.utils.ResourceChecker;
 
 import com.cosylab.logging.engine.FiltersVector;
 import com.cosylab.logging.engine.LogMatcher;
 import com.cosylab.logging.engine.cache.EngineCache;
 import com.cosylab.logging.engine.log.ILogEntry;
+import com.cosylab.logging.engine.log.LogTypeHelper;
 
 /**
  * <code>ACSLogRetrieval</code> stores the XML string (or a String in case of binary logs) 
@@ -50,10 +53,16 @@ import com.cosylab.logging.engine.log.ILogEntry;
  * <P>
  * It also allows to set the rate i.e. number of logs per second) for the logs read from the cache and published to listener.
  * When the limit has been reached, no logs are pushed anymore out of the cache until the current second has elapsed.
- * This limitation <I>must be used very carefully</I> because it can cause a uncontrolled grows of the cache that could lead
+ * This limitation <I>must be used very carefully</I> because it can cause a uncontrolled growth of the cache that could lead
  * to an out of memory.
+ * <BR>
+ * By default, the input and output rates are unlimited (<code>Integer.MAX_VALUE</code>)
  * <P>
- * By default, the input and output rates are unlimited (<code>Integer..MAX_VALUE</code>)
+ * The available memory is checked every second. 
+ * To avoid out of memory the user can enable the dynamic discarding by giving a threshold (in bytes).
+ * If a threshold is defined, the thread that checks the amount of available memory increases the discard level.
+ * To avoid oscillations, the user can define a a damping factor: the discard level is decreased when the
+ * amount of available memory is greater the the threshold plus the damping.
  * 
  * 
  * @see ACSRemoteLogListener
@@ -65,39 +74,9 @@ public class ACSLogRetrieval extends LogMatcher implements Runnable {
 	public class RateUpdater extends TimerTask {
 		
 		/**
-		 * The <code>RunTime</code> used to monitor the memory usage
-		 */
-		private final Runtime rt = Runtime.getRuntime();
-		
-		/**
-		 * The maximum amount of memory that your Java application can use
+		 * The thread
 		 * 
-		 * @see {@link Runtime} 
 		 */
-		private volatile long maxMemory;
-		
-		/**
-		 * The memory allocated by the application
-		 * 
-		 * @see {@link Runtime} 
-		 */
-		private volatile long allocatedMemory;
-		
-		/**
-		 * The amount of free memory from the allocated memory
-		 * 
-		 * @see {@link Runtime} 
-		 */
-		private volatile long freeMemory;
-		
-		/**
-		 * The memory allocated that can be used by the application
-		 * taking into account the memory not yet allocated by the JVM
-		 * 
-		 * @see {@link Runtime} 
-		 */
-		private volatile long totalFreeMemory;
-		
 		public void run() {
 			inputRate=receivedCounter;
 			receivedCounter=0;
@@ -105,10 +84,12 @@ public class ACSLogRetrieval extends LogMatcher implements Runnable {
 			readCounter=0;
 			
 			// Monitor memory usage for dynamic filtering
-			allocatedMemory=rt.totalMemory();
-			maxMemory=rt.maxMemory();
-			freeMemory=rt.freeMemory();
-			totalFreeMemory=(freeMemory+(maxMemory-allocatedMemory));
+			
+			
+			// Check the amount of free memory if the dynamic discard level is enabled
+			if (threshold<Integer.MAX_VALUE) {
+				checkMemory(resourceChecker.getTotalFreeMemory());
+			}
 		}
 	}
 	
@@ -178,7 +159,7 @@ public class ACSLogRetrieval extends LogMatcher implements Runnable {
 	 * in the cache per second).
 	 * <P>
 	 * If the number of logs received in the current second is greater then this number, 
-	 * then the strings are removed from the cache but discarded without beeing sent to
+	 * then the strings are removed from the cache but discarded without being sent to
 	 * the listener
 	 * <P>
 	 * <B>Note</B>: <code>maxOutputRate</code> should be used carefully because
@@ -198,7 +179,50 @@ public class ACSLogRetrieval extends LogMatcher implements Runnable {
 	 * Counts the number of logs popped every second
 	 */
 	private volatile int readCounter; 
-		
+	
+	
+	/**
+	 * The threshold, in bytes, to dynamically increase the discard level.
+	 * <P>
+	 * The discard level is increased of one step whenever the available 
+	 * memory for the application is greater then this number.
+	 */
+	private int threshold;
+	
+	/**
+	 * <code>damping</code> is used to avoid oscillations in the discard level.
+	 * <P>
+	 * When the available memory is below the <code>threshold</code>, the
+	 * discard level is immediately increased.
+	 * To decrease the discard level instead the free memory must be
+	 * greater then <code>threshold+damping</code>.
+	 * <P>
+	 * <code>damping</code> must be greater or equal to <code>0</code>.
+	 */
+	private int damping;
+	
+	/**
+	 * The time (in seconds) between two adjustments of the dynamic discard level.
+	 * 
+	 */
+	private int dynamicDiscardingTime=10;
+	
+	/**
+	 * The time when the dynamic discard level has been updated the last time
+	 * (msec)
+	 */
+	private long lastDiscardingUpdateTime;
+	
+	/**
+	 * The discard level set by the user
+	 */
+	private LogTypeHelper userDiscardLevel=null;
+	
+	/**
+	 * <code>resourceChecker</code> gets the details of the memory allocation
+	 */
+	private IResourceChecker resourceChecker = new ResourceChecker();
+	
 	/**
 	 * Constructor
 	 * 
@@ -234,6 +258,35 @@ public class ACSLogRetrieval extends LogMatcher implements Runnable {
 			FiltersVector filters) {
 		this(listenersDispatcher,binFormat);
 		setFilters(filters);
+	}
+	
+	/**
+	 * A construct that allow passing a {@link ResourceChecker}.
+	 * <P>
+	 * This is mostly intended for testing purposes to simulate
+	 * overloading or memory consumption.
+	 * 
+	 * @param listenersDispatcher The object to send messages to the listeners
+	 *                            Can't be null
+	 * @param binFormat true if the lags are binary, 
+	 *                  false if XML format is used
+	 * @param filters The filters to apply to incoming logs
+	 *                If <code>null</code> or empty no filters are applied
+	 * @param roCecher
+	 */
+	public ACSLogRetrieval(
+			ACSListenersDispatcher listenersDispatcher,
+			boolean binFormat,
+			FiltersVector filters,
+			IResourceChecker resCecker) {
+		if (resCecker==null) {
+			throw new IllegalArgumentException("resChecker can't be null");
+		}
+		this.listenersDispatcher=listenersDispatcher;
+		this.binaryFormat=binFormat;
+		setFilters(filters);
+		resourceChecker=resCecker;
+		initialize();
 	}
 	
 	/**
@@ -469,7 +522,8 @@ public class ACSLogRetrieval extends LogMatcher implements Runnable {
 	 * All the logs in a second read after this number has been 
 	 * reached are discarded i.e. never pushed in the cache.
 	 * 
-	 * @param maxInRate The max number of logs per second to push in cache
+	 * @param maxInRate The max number of logs per second to push in cache.
+	 * 					<code>Integer.MAX_VALUE</code> means unlimited
 	 */
 	public void setMaxInputRate(int maxInRate) {
 		if (maxInRate<=0) {
@@ -492,7 +546,8 @@ public class ACSLogRetrieval extends LogMatcher implements Runnable {
 	 * All the logs in a second read after this number has been 
 	 * reached are discarded i.e. never published to listeners.
 	 * 
-	 * @param maxOutRate The max number of logs per second to read from cache
+	 * @param maxOutRate The max number of logs per second to read from cache.
+	 * 					<code>Integer.MAX_VALUE</code> means unlimited
 	 */
 	public void setMaxOutputRate(int maxOutRate) {
 		if (maxOutRate<=0) {
@@ -501,4 +556,106 @@ public class ACSLogRetrieval extends LogMatcher implements Runnable {
 		this.maxOutputRate = maxOutRate;
 	}
 	
+	/**
+	 * Enable dynamic discarding of incoming logs.
+     *
+	 * @param threashold The discard level is increased when the available
+	 * 					memory for the application is less then the <code>threshold</code>
+	 * 					(in bytes).
+	 * 					<code>Integer.MAX_VALUE</code> disables this feature.
+	 * @param damping The damping factor is used to avoid oscillations
+	 * 					The discard level is decreased when the free memory is
+	 * 					is greater then the <code>threshold</code> plus the <code>dumping</code>.
+	 * @param interval The time (in seconds) between two adjustments of the 
+	 * 					dynamic discard level.  
+	 * 					<code>interval</code> defaults to <code>10</code>.
+	 * 
+	 * @see setDiscardLevel(LogTypeHelper newLevel)
+	 */
+	public void enableDynamicDiscarding(int threshold, int damping, int interval) {
+		if (threshold<=1024) {
+			throw new IllegalArgumentException("Threshold must be greater the 1024");
+		}
+		if (damping<0) {
+			throw new IllegalArgumentException("Damping factor can't be negative");
+		}
+		if (interval<1) {
+			throw new IllegalArgumentException("Damping factor must begreater then 1");
+		}
+		this.threshold=threshold;
+		this.damping=damping;
+		dynamicDiscardingTime=interval;
+	}
+	
+	/**
+	 * Set the discard level
+	 * <P>
+	 * <B>Note</B>: if dynamic filtering by memory is enabled then the discard
+	 * 			level effectively used can be greater then this value.
+	 * 
+	 * @param newLevel The new discard level (<code>null</code> means 
+	 * 					no discard level).
+	 *  
+	 * @see enableDynamicDiscarding(int threashold)
+	 * @see getDiscardLevel()
+	 */
+	public void setDiscardLevel(LogTypeHelper newLevel) {
+		userDiscardLevel=newLevel;
+		actualDiscardLevel=newLevel;
+	}
+	
+	/**
+	 * Return the discard level set by the user
+	 * 
+	 * @return the discardLevel
+	 * 
+	 * @see etDiscardLevel(LogTypeHelper newLevel)
+	 */
+	public LogTypeHelper getDiscardLevel() {
+		return userDiscardLevel;
+	}
+	
+	/**
+	 * Check the available memory against the threshold and the damping factor
+	 * to increase/decrease the discard level.
+	 * 
+	 * @param freeMem The amount of available memory to the application
+	 * 					in bytes.
+	 */
+	private void checkMemory(long freeMem) {
+		if (
+				threshold==Integer.MAX_VALUE || 
+				System.currentTimeMillis()<lastDiscardingUpdateTime+1000*dynamicDiscardingTime) {
+			// Dynamic adjustment disabled or delayed
+			return;
+		}
+		// First check if the discard level must be increased
+		if (freeMem<threshold) {
+			if (actualDiscardLevel==LogTypeHelper.values()[LogTypeHelper.values().length-1]) {
+				lastDiscardingUpdateTime=System.currentTimeMillis();
+				return;
+			}
+			if (actualDiscardLevel==null) {
+				actualDiscardLevel=LogTypeHelper.TRACE;
+			} else {
+				actualDiscardLevel=LogTypeHelper.values()[actualDiscardLevel.ordinal()+1];
+			}
+			lastDiscardingUpdateTime=System.currentTimeMillis();
+			return;
+		}
+		// Then check if the discard level can be decreased
+		if (freeMem>threshold+damping) {
+			if (actualDiscardLevel==userDiscardLevel) {
+				// The discard level never goes below the user selected value
+				lastDiscardingUpdateTime=System.currentTimeMillis();
+				return;
+			}
+			if (actualDiscardLevel==LogTypeHelper.values()[0]) {
+				actualDiscardLevel=null;
+			} else {
+				actualDiscardLevel=LogTypeHelper.values()[actualDiscardLevel.ordinal()-1];
+			}
+			lastDiscardingUpdateTime=System.currentTimeMillis();
+		}
+	}	
 }
