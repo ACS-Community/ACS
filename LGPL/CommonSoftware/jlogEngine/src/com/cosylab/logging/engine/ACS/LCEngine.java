@@ -544,10 +544,17 @@ public class LCEngine implements Filterable {
 	
 	/**
 	 * Set the discard level for filtering.
+	 * <P>
+	 * <I>Note</I>: if the dynamic change of the discard
+	 * 				level depending on the memory usage has been
+	 * 				activated, then the discard level effectively
+	 * 				used by the engine might be greater then
+	 * 				<code>newDiscardlevel</code>.
 	 * 
 	 * @param newDiscardlevel The discard level
 	 *                        Not applied if <code>null</code>.
-	 * @param newDiscardLevel
+	 * @see {@link ACSLogRetrieval}
+	 * 
 	 */
 	public void setDiscardLevel(LogTypeHelper newDiscardLevel) {
 		logRetrieval.setDiscardLevel(newDiscardLevel);
@@ -609,12 +616,39 @@ public class LCEngine implements Filterable {
 	}
 	
 	/**
+	 * Return the discard level in use by the engine.
+	 * <P>
+	 * <I>Note</I>: the actual discard level may or may not be the same
+	 * 				discard level set by the user. 
+	 * 				They differ if the user enabled the dynamic change of 
+	 * 				the discard level depending on the available memory .
+	 * 
+	 * @return The actual discard level (can be <code>null</code>)
+	 * 
+	 * @see {@link ACSLogRetrieval.getDiscardlevel()}, {@link LogMatcher.getActualDiscardLevel()}
+	 * @see <code>getDiscardLevel()</code>
+	 */
+	public LogTypeHelper getActualDiscardLevel() {
+		return logRetrieval.getActualDiscardLevel();
+	}
+	
+	/**
+	 * Return the discard level set by the user.
+	 * <P>
+	 * <I>Note</I>: the discard level in use can be different if the
+	 * 				dynamic change of the discard level depending
+	 * 				on the available memory in the engine has been
+	 * 				activated.
 	 * 
 	 * @return The discard level (can be <code>null</code>)
+	 * 
+	 * @see {@link ACSLogRetrieval.getDiscardlevel()}, {@link LogMatcher.getActualDiscardLevel()}
+	 * @see <code>getActualDiscardLevel()</code>
 	 */
 	public LogTypeHelper getDiscardLevel() {
 		return logRetrieval.getDiscardLevel();
 	}
+	
 	
 	/**
 	 * 
@@ -730,4 +764,25 @@ public class LCEngine implements Filterable {
 		return logRetrieval.size();
 	}
 
+	/**
+	 * Enable or disable the dynamic change of the discard level
+	 * depending on the amount of available memory.
+	 *  
+	 * @param threashold The discard level is increased when the available
+	 * 					memory for the application is less then the <code>threshold</code>
+	 * 					(in bytes).
+	 * 					<code>Integer.MAX_VALUE</code> disables this feature.
+	 * @param damping The damping factor is used to avoid oscillations
+	 * 					The discard level is decreased when the free memory is
+	 * 					is greater then the <code>threshold</code> plus the <code>dumping</code>.
+	 * @param interval The time (in seconds) between two adjustments of the 
+	 * 					dynamic discard level.  
+	 * 					<code>interval</code> defaults to <code>10</code>.
+	 * 
+	 * @see {@link ACSLogRetrieval}
+	 */
+	public void enableDynamicDiscarding(int threshold, int damping, int interval) {
+		logRetrieval.enableDynamicDiscarding(threshold, damping, interval);
+	}
+	
 }
