@@ -45,7 +45,7 @@ public class LogMatcher {
 	/**
 	 * The discard level
 	 */
-	private LogTypeHelper discardLevel=null;
+	protected volatile LogTypeHelper actualDiscardLevel=null;
 	
 	/**
 	 * The audience.
@@ -120,17 +120,10 @@ public class LogMatcher {
 	}
 
 	/**
-	 * @return the discardLevel
-	 */
-	public LogTypeHelper getDiscardLevel() {
-		return discardLevel;
-	}
-
-	/**
 	 * @param discardLevel the discardLevel to set
 	 */
 	public void setDiscardLevel(LogTypeHelper discardLevel) {
-		this.discardLevel = discardLevel;
+		actualDiscardLevel = discardLevel;
 	}
 
 	/**
@@ -157,7 +150,7 @@ public class LogMatcher {
 		if (log==null) {
 			throw new IllegalArgumentException("The log can't be null");
 		}
-		if (discardLevel!=null && log.getType().ordinal()<=discardLevel.ordinal()) {
+		if (actualDiscardLevel!=null && log.getType().ordinal()<=actualDiscardLevel.ordinal()) {
 				return false;
 		}
 		// Check the log against the audience
@@ -169,6 +162,15 @@ public class LogMatcher {
 		} else {
 			return filters.applyFilters(log);
 		}
+	}
+	
+	/**
+	 * Return the discard level used to filter out logs.
+	 * 
+	 * @return The discard level in use
+	 */
+	public LogTypeHelper getActualDiscardLevel() {
+		return actualDiscardLevel;
 	}
 
 }
