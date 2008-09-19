@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@$Id: acsCommandRequest.cpp,v 1.3 2008/09/15 13:04:44 msekoran Exp $"
+* "@$Id: acsCommandRequest.cpp,v 1.4 2008/09/19 13:06:44 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -243,9 +243,9 @@ void RemoteRequest::execute() {
             else if (strcasecmp(service, "notification_service") == 0)
                 daemon->start_notification_service(name, callback->ptr(), builder->instance_number);
             else if (strcasecmp(service, "cdb") == 0)
-                daemon->start_cdb(callback->ptr(), builder->instance_number);
+                daemon->start_xml_cdb(callback->ptr(), builder->instance_number, false, 0);	// !!! TODO @todo
             else if (strcasecmp(service, "manager") == 0)
-                daemon->start_manager(domain, callback->ptr(), builder->instance_number);
+                daemon->start_manager(domain, callback->ptr(), builder->instance_number, false); /// !!! TODO @todo
             else if (strcasecmp(service, "acs_log") == 0)
                 daemon->start_acs_log(callback->ptr(), builder->instance_number);
             else if (strcasecmp(service, "logging_service") == 0)

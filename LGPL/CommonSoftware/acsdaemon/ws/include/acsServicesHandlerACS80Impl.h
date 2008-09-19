@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsServicesHandlerACS80Impl.h,v 1.1 2008/08/29 13:58:28 msekoran Exp $"
+* "@(#) $Id: acsServicesHandlerACS80Impl.h,v 1.2 2008/09/19 13:06:44 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -88,12 +88,15 @@ class ServiceDefinitionBuilderImpl : public POA_acsdaemon::ServiceDefinitionBuil
         const char * name,
         const char * host);
     
-    void add_cdb (
-        const char * host);
+    void add_xml_cdb (
+        const char * host,
+	::CORBA::Boolean recovery,
+	const char * cdb_xml_dir);
     
     void add_manager (
         const char * host,
-        const char * domain);
+        const char * domain,
+	::CORBA::Boolean recovery);
     
     void add_acs_log (
         const char * host);
@@ -191,14 +194,17 @@ class ACSServicesHandlerACS80Impl : public POA_acsdaemon::ServicesDaemon_ACS80 {
         ::acsdaemon::DaemonCallback_ptr callback,
         ::CORBA::Short instance_number);
     
-    void start_cdb (
+    void start_xml_cdb (
         ::acsdaemon::DaemonCallback_ptr callback,
-        ::CORBA::Short instance_number);
+        ::CORBA::Short instance_number,
+	::CORBA::Boolean recovery,
+	const char * cdb_xml_dir);
     
     void start_manager (
         const char * domain,
         ::acsdaemon::DaemonCallback_ptr callback,
-        ::CORBA::Short instance_number);
+        ::CORBA::Short instance_number,
+	::CORBA::Boolean recovery);
     
     void start_acs_log (
         ::acsdaemon::DaemonCallback_ptr callback,

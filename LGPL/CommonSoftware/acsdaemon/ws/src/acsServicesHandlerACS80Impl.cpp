@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@$Id: acsServicesHandlerACS80Impl.cpp,v 1.2 2008/09/15 13:04:44 msekoran Exp $"
+* "@$Id: acsServicesHandlerACS80Impl.cpp,v 1.3 2008/09/19 13:06:44 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -66,8 +66,10 @@ void ServiceDefinitionBuilderImpl::add_notification_service (
     services_definition_xml = services_definition_xml + "/>\n";
 }
     
-void ServiceDefinitionBuilderImpl::add_cdb (
-    const char * host)
+void ServiceDefinitionBuilderImpl::add_xml_cdb (
+    const char * host,
+    ::CORBA::Boolean recovery,
+    const char * cdb_xml_dir)     // !!! TODO @todo implement recovery and cdb_xml_dir
 {
     services_definition_xml = services_definition_xml + "<cdb ";
     if (host != NULL) services_definition_xml = services_definition_xml + "host=\"" + host + "\" ";
@@ -76,7 +78,8 @@ void ServiceDefinitionBuilderImpl::add_cdb (
     
 void ServiceDefinitionBuilderImpl::add_manager (
     const char * host,
-    const char * domain)
+    const char * domain,
+    ::CORBA::Boolean recovery)    // !!! TODO @todo implement recovery
 {
     services_definition_xml = services_definition_xml + "<manager ";
     if (host != NULL && host[0] != '\0') services_definition_xml = services_definition_xml + "host=\"" + host + "\" ";
@@ -291,9 +294,11 @@ void ACSServicesHandlerACS80Impl::start_notification_service (
     execCommand(commandline, callback, cmdproc);
 }
     
-void ACSServicesHandlerACS80Impl::start_cdb (
+void ACSServicesHandlerACS80Impl::start_xml_cdb (
     ::acsdaemon::DaemonCallback_ptr callback,
-    ::CORBA::Short instance_number)
+    ::CORBA::Short instance_number,
+    ::CORBA::Boolean recovery,
+    const char* cdb_xml_dir) 	// !!! TODO @todo implement recovery and cdb_xml_dir
 {
     ACS_SHORT_LOG ((LM_INFO, "Starting Configuration Database (instance %d).", instance_number));
     char *commandline = prepareCommand("acsConfigurationDatabase", instance_number, true, NULL, "-s", false);
@@ -303,7 +308,8 @@ void ACSServicesHandlerACS80Impl::start_cdb (
 void ACSServicesHandlerACS80Impl::start_manager (
     const char * domain,
     ::acsdaemon::DaemonCallback_ptr callback,
-    ::CORBA::Short instance_number)
+    ::CORBA::Short instance_number,
+    ::CORBA::Boolean recovery)	// !!! TODO @todo implement recovery
 {
     ACS_SHORT_LOG ((LM_INFO, "Starting Manager (instance %d).", instance_number));
     if (domain != NULL) {
