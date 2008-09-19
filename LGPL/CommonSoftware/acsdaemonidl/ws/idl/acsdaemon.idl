@@ -22,7 +22,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsdaemon.idl,v 1.12 2008/09/15 13:03:06 msekoran Exp $"
+* "@(#) $Id: acsdaemon.idl,v 1.13 2008/09/19 12:01:13 hsommer Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -122,7 +122,7 @@ module acsdaemon
 
 
 	///////////////////////////////////////////////////////////////////////////////////////////////
-	////////////////////////////////// ServicesDaemon /////////////////////////////////////////////
+	////////////////////////////////// Services Daemon /////////////////////////////////////////////
 	///////////////////////////////////////////////////////////////////////////////////////////////
 
 	/** 
@@ -255,9 +255,11 @@ module acsdaemon
 
 	/** @interface ServiceDefinitionBuilder
 	 *  Allows a client of a services daemon to first define the setup of ACS services and later to start all these services.
-	 *  The various start_ methods can be invoked in arbitrary order because the correct parallel/serial startup of the selected services
+	 *  The various add_ methods can be invoked in arbitrary order because the correct parallel/serial startup of the selected services
 	 *  is the responsibility of {@link ServicesDaemon#start_services}.
 	 *  For the different options to start ACS services, see the description of {@link ServicesDaemon}.
+	 *  <p>
+	 *  Note that clients must call {@link #close} when done with an object of this type.
 	 */
 	interface ServiceDefinitionBuilder : ACS::OffShoot
 	{
@@ -285,20 +287,23 @@ module acsdaemon
 
 		/** 
 		 *  Starts a CDB service.
-		 * 
+		 *  About the TMCDB, see ServicesDaemon_ACS80#start_xml_cdb 
 		 *  @param host Hostname
+		 *  @param recovery if true then use recovery information from previous run. 
+		 *  @param xml_cdb_dir the directory which contains the CDB directory, see env var ACS_CDB.
 		 *  @return void
 		 */
-		void add_cdb(in string host) raises (ACSErrTypeCommon::BadParameterEx);
+		void add_xml_cdb(in string host, in boolean recovery, in string xml_cdb_dir) raises (ACSErrTypeCommon::BadParameterEx);
 
 		/** 
 		 *  Starts a manager.
 		 * 
 		 *  @param host Hostname
 		 *  @param domain The manager's domain. Should be empty or null if manager federation is not enabled.
+		 *  @param recovery if true then use recovery information from previous run. 
 		 *  @return void
 		 */
-		void add_manager(in string host, in string domain) raises (ACSErrTypeCommon::BadParameterEx);
+		void add_manager(in string host, in string domain, in boolean recovery) raises (ACSErrTypeCommon::BadParameterEx);
 
 		/** 
 		 *  Starts an ACSLog service (used by Python components and any corba-aware scripts to contribute log records to central logging).
@@ -442,7 +447,7 @@ module acsdaemon
 		 *  according to the services definition.
 		 *  <p>
 		 *  Exceptions are forwarded to the callback handler.
-		 *  If a services cannot be started, the starting of services will be abandoned, but the services that have been started already will be left running.
+		 *  If a service cannot be started, the starting sequence will be abandoned, but the services that have been started already will be left running.
 		 *  This allows the client to either fix the problem and call this method again (with reuse_services=true) to complete the startup,
 		 *  or to stop the services.
 		 *  If a defined service is running already, it will be reused if "reuse_services" is true. Otherwise it will be considered a failure (see above).
@@ -452,6 +457,7 @@ module acsdaemon
 		 *        and throw a BadParameterEx if the service description is invalid because of missing or too many services?
 		 *
 		 *  @param definition see {@link ServiceDefinitionBuilder#get_services_definition}.
+		 *  @param reuse_services if true then ServiceAlreadyRunning exceptions from the start_xyz methods will be ignored, otherwise they are considered failures.
 		 *  @param callback DaemonSequenceCallback instance to receive notifications on startup sequence progress.
 		 *  @see ServicesDaemon#stop_services();
 		 */
@@ -503,14 +509,20 @@ module acsdaemon
 			raises (ACSErrTypeCommon::BadParameterEx, acsdaemonErrType::ServiceAlreadyRunningEx);
 
 		/** 
-		 *  Asynchronously starts a CDB service on the current host.
+		 *  Asynchronously starts an XML-based CDB service on the current host.
 		 *  Notification about service start problems or successful completion is passed to the client via the callback, on which the client may block.
-		 * 
+		 *  <p>
+		 *  Note about the TMCDB: as of 2008-09 it is not clear if parts of the TMCDB (e.g. hibernate dal corba service) 
+		 *  will ever be started via this daemon. We therefore do not yet include any TMCDB support in the daemon API.
+		 *  We call this method "start_xml_cdb" instead of generic "start_cdb" because xml-CDB and TMCDB require different start parameters,
+		 *  and thus one method with a flag for which implementation of the DAL interface to start will not work even when we support the TMCDB. 
 		 *  @param callback DaemonCallback instance to receive notification about completion or problems with the service start.
 		 *  @param instance_number ACS instance number
+		 *  @param recovery if true then use recovery information from previous run. 
+		 *  @param xml_cdb_dir the directory which contains the CDB directory, see env var ACS_CDB.
 		 *  @return void
 		 */
-		void start_cdb(in DaemonCallback callback, in short instance_number) 
+		void start_xml_cdb(in DaemonCallback callback, in short instance_number, in boolean recovery, in string xml_cdb_dir) 
 			raises (ACSErrTypeCommon::BadParameterEx, acsdaemonErrType::ServiceAlreadyRunningEx);
 
 		/** 
@@ -521,9 +533,10 @@ module acsdaemon
 		 *                (Note that the structure of domains and managers would reside in the naming service and does not need to be given here). 
 		 *  @param callback DaemonCallback instance to receive notification about completion or problems with the service start.
 		 *  @param instance_number ACS instance number
+		 *  @param recovery if true then use recovery information from previous run. 
 		 *  @return void
 		 */
-		void start_manager(in string domain, in DaemonCallback callback, in short instance_number) 
+		void start_manager(in string domain, in DaemonCallback callback, in short instance_number, in boolean recovery)
 			raises (ACSErrTypeCommon::BadParameterEx, acsdaemonErrType::ServiceAlreadyRunningEx);
 
 		/** 
