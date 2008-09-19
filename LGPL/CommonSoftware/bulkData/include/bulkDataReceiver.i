@@ -129,7 +129,8 @@ void AcsBulkdata::BulkDataReceiver<TReceiverCallback>::createMultipleFlows(const
     recvConfig_p->connectionState = conn;
     if(conn == bulkdata::CONNECTED) // state CONNECTED, nothing is created on the receiver side
 	{
-	return;
+	//return; // in case of CONNECTED state new sep and fep(s) are created on receiver side
+	          // uncomment the return to use the old ones
 	}
 
     try
