@@ -297,7 +297,8 @@ public class EventModel {
 		return dynAnyFactory;
 	}
 	
-	private void printMonitoringResults(NotificationServiceMonitorControl mc) {
+	private void printMonitoringResults(NotificationServiceMonitorControl mc) { //alma/ACS-8.0/TAO/ACE_wrappers/build/linux/TAO/orbsvcs/orbsvcs/Notify/MonitorControlExt/NotifyMonitoringExt.idl
+		// 
 		if (true) return; // TODO -- Fix this method, which throws InvalidName exception
 		try {
 			m_logger.info("EventChannelFactoryNames: "+mc.get_statistic("NotifyMonitoringExt::EventChannelFactoryNames").toString());
