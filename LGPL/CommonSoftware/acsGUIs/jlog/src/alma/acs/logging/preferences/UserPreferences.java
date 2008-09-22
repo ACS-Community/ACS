@@ -54,6 +54,21 @@ public class UserPreferences implements Cloneable {
 	private int maxOutputRate=Integer.MAX_VALUE;
 	
 	/**
+	 * The threshold to activate dynamic discard level
+	 */
+	private int dynThreshold=Integer.MAX_VALUE;
+	
+	/**
+	 * The damping factor for dynamic discard level
+	 */
+	private int dynDamping=0;
+	
+	/**
+	 * The time (seconds) for dynamic discard level
+	 */
+	private int dynTime=1;
+	
+	/**
 	 * Builds an object with the given values
 	 * 
 	 * @param time The time frame (in minutes)
@@ -129,5 +144,37 @@ public class UserPreferences implements Cloneable {
 	 */
 	public UserPreferences clone() throws CloneNotSupportedException {
 		return (UserPreferences)super.clone();
+	}
+
+	public int getDynThreshold() {
+		return dynThreshold;
+	}
+
+	public void setDynThreshold(int dynThreshold) {
+		this.dynThreshold = dynThreshold;
+	}
+
+	public int getDynDamping() {
+		return dynDamping;
+	}
+
+	public void setDynDamping(int dynDamping) {
+		this.dynDamping = dynDamping;
+	}
+
+	public int getDynTime() {
+		return dynTime;
+	}
+
+	public void setDynTime(int dynTime) {
+		this.dynTime = dynTime;
+	}
+
+	public int getTimeFrame() {
+		return timeFrame;
+	}
+
+	public void setMaxNumOfLogs(int maxNumOfLogs) {
+		this.maxNumOfLogs = maxNumOfLogs;
 	}	
 }
