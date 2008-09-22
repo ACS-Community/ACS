@@ -8,10 +8,10 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.text.NumberFormat;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -22,12 +22,10 @@ import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
-import javax.swing.JTextField;
 import javax.swing.JLabel;
+import javax.swing.JTextField;
 import javax.swing.JPanel;
 import javax.swing.JRootPane;
-import javax.swing.JTextField;
-
 
 /**
  * A dialog to setup (expert) preferences.
@@ -149,143 +147,77 @@ public class ExpertPrefsDlg extends JDialog implements ActionListener {
 	}
 	
 	/**
-	 * Each row of this dialog is composed of a
-	 * <UL>
-	 * 	<LI>a CheckBox to activate/deactivate the option
-	 * 	<LI>a label explaining the option
-	 * 	<LI>a component with the value of the option
-	 * </UL>
-	 * <P>
-	 * The rows will be displayed following the order of their definitions
-	 * in <code>PrefsWidget</code>.
+	 * The verifier of the value written in a text field
 	 * 
 	 * @author acaproni
 	 *
 	 */
-	public enum PrefsWidget {
-		MAX_NUM_OF_LOGS(
-				"Max num. of logs:",
-				null,
-				new JComboBox(NumberOption.values()),
-				0),
-		TIME_FRAME(
-				"Time frame:",
-				null,
-				new JComboBox(TimeOption.values()),
-				0),
+	class PassVerifier extends InputVerifier {
+		/**
+		 * Low limit (inclusive)
+		 */
+		private final int limit;
+		
+		public PassVerifier(int lowLimit) {
+			limit=lowLimit;
+		}
+		
+        public boolean verify(JComponent input) {
+              JTextField tf = (JTextField) input;
+              Integer val;
+              try { 
+            	  val=Integer.parseInt(tf.getText());
+            	  boolean ret= val>=limit;
+            	  if (ret) {
+  	        		input.setForeground(Color.black);
+  	        	} else {
+  	        		input.setForeground(Color.red);
+  	        	}
+            	return ret;
+              } catch (Exception e) {
+            	  input.setForeground(Color.red);
+            	  return false;
+              }
+        }
+    }
+	
+	
+	/**
+	 * <code>OptionWidgets</code> is essentially used to access the check boxes with a 
+	 * meaningful name.
+	 * 
+	 * @author acaproni
+	 *
+	 */
+	public enum OptionWidgets {
+		MAX_NUM_OF_LOGS("Max num. of logs:",null),
+		TIME_FRAME("Time frame:",null),
 		MAX_INPUT_RATE(
 				"Max rate of logs from NC: ",
-				"<HTML><FONT color=red>!</FONT> Use with care: can cause loss of logs",
-				new JTextField(),
-				1),
+				"<HTML><FONT color=red>!</FONT> Use with care: can cause loss of logs"),
 		MAX_OUTPUT_RATE(
 				"Max rate of logs in table: ",
-				"<HTML><FONT color=red>!</FONT> Use with care: can cause out of memory",
-				new JTextField(),
-				1);
-		
-		class PassVerifier extends InputVerifier {
-			/**
-			 * Low limit (inclusive)
-			 */
-			private final int limit;
-			
-			public PassVerifier(int lowLimit) {
-				limit=lowLimit;
-			}
-			
-	        public boolean verify(JComponent input) {
-	              JTextField tf = (JTextField) input;
-	              Integer val;
-	              try { 
-	            	  val=Integer.parseInt(tf.getText());
-	            	  boolean ret= val>=limit;
-	            	  if (ret) {
-	  	        		input.setForeground(Color.black);
-	  	        	} else {
-	  	        		input.setForeground(Color.red);
-	  	        	}
-	            	return ret;
-	              } catch (Exception e) {
-	            	  input.setForeground(Color.red);
-	            	  return false;
-	              }
-	        }
-	    }
+				"<HTML><FONT color=red>!</FONT> Use with care: can cause out of memory"),
+		DYNAMIC_DISCARD_LEVEL(
+				"Dynamic discard level: ",
+				"<HTML><FONT color=red>!</FONT> Use with care: can cause out of memory");
 		
 		/**
-		 *  The checkbox to activate/de-activate the feature
-		 */
-		public JCheckBox enableCB = new JCheckBox();
-		
-		/**
-		 * The label shown 
-		 */
-		public JLabel label = new JLabel();
-		
-		/**
-		 * The (editable) component with the actual value
-		 * of the option
-		 */
-		public JComponent component;
-		
-		/**
-		 * Constructor 
-		 * 
-		 * @param lbl The text to show in the label
-		 * @param tootltip The tooltip set in the label and in the component
-		 * @param comp The component to set options
-		 * @param lowLimit The low limit (inclusive) for the input in text fields
-		 */
-		private PrefsWidget(String lbl, String tootltip, JComponent comp, int lowLimit) {
-			label.setText(lbl);
-			label.setToolTipText(tootltip);
-			component=comp;
-			comp.setToolTipText(tootltip);
-			
-			if (component instanceof JTextField) {
-				((JTextField)component).setColumns(8);
-				((JTextField)component).setText("0");
-				component.setInputVerifier(new PassVerifier(lowLimit));
-			}
-			
-			enableCB.addActionListener(new ActionListener(){
-
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					// TODO Auto-generated method stub
-					component.setEnabled(!enableCB.isSelected());
-					enableCB.setToolTipText("Enable/disable this feature");
-				}
-				
-			});
-		}
-		
-		/**
-		 * Enable/disable the widget
-		 * 
-		 * @param enable If <code>true</code> enable the widget
-		 */
-		public void enableWidget(boolean enable) {
-			enableCB.setEnabled(enable);
-			label.setEnabled(enable);
-			component.setEnabled(enable);
-		}
-		
-		/**
-		 * Enable/disable the option.
+		 * The check box for this option
 		 * <P>
-		 * If the option is disabled the combobox is selected and 
-		 * the component disabled.
-		 * <B>
-		 * If the option is enabled then the checkbox is unselected
-		 * and the component enabled.
-		 * 
-		 * @param enable
+		 * The check box is used to enable, disable an option
 		 */
-		public void enableOption(boolean enable) {
-			enableCB.setSelected(enable);
-			component.setEnabled(!enable);
+		public final JCheckBox enableCB=new JCheckBox();
+		
+		/**
+		 * Constructor
+		 * 
+		 * @param label The text of the check box
+		 * @param tooltip The tooltip
+		 */
+		private OptionWidgets(String label, String tooltip) {
+			enableCB.setText(label);
+			enableCB.setToolTipText(tooltip);
 		}
 		
 		/**
@@ -293,8 +225,31 @@ public class ExpertPrefsDlg extends JDialog implements ActionListener {
 		 * @return <code>true</code> if this option is enabled
 		 */
 		public boolean isOptionEnabled() {
-			return !enableCB.isSelected();
+			return enableCB.isSelected();
 		}
+		
+		/**
+		 * Return the <code>OptionWidgets</code> whose <code>JCheckBox</code>
+		 * is equal to the passed parameter.
+		 * Otherwise throws an <code>IllegalArgumentException</code>
+		 * 
+		 * @param cb The <code>JCheckBox</code> to get the option from
+		 * @return the <code>OptionWidgets</code> whose <code>JCheckBox</code>
+		 * 			is equal to the passed parameter. 
+		 * 			Otherwise throws an <code>IllegalArgumentException</code>
+		 */
+		public static OptionWidgets fromCheckBox(JCheckBox cb) {
+			if (cb==null) {
+				throw new IllegalArgumentException("cb can't be null");
+			}
+			for (OptionWidgets opt: OptionWidgets.values()) {
+				if (opt.enableCB==cb) {
+					return opt;
+				}
+			}
+			throw new IllegalArgumentException("The passed is not part of TimeOptions.enableCB");
+		}
+		
 	}
 	
 	/**
@@ -330,6 +285,41 @@ public class ExpertPrefsDlg extends JDialog implements ActionListener {
 	private Component owner;
 	
 	/**
+	 * The max number of logs in table
+	 */
+	private JComboBox maxLogsInTableCB = new JComboBox(NumberOption.values());
+	
+	/**
+	 * The max time frame to keep in the table
+	 */
+	private JComboBox timeFrameCB = new JComboBox(TimeOption.values());
+	
+	/**
+	 * The rate of logs from the NC
+	 */
+	private JTextField inputRateTF = new JTextField("0",8);
+	
+	/**
+	 * The rate of logs into the table
+	 */
+	private JTextField outputRateTF = new JTextField("0",8);
+	
+	/**
+	 * The threshold for the dynamic discarding of logs
+	 */
+	private JTextField dynThresholdTF = new JTextField("0",6);
+	
+	/**
+	 * The damping factor for the dynamic discarding of logs
+	 */
+	private JTextField dynDampingTF = new JTextField("0",6);
+	
+	/**
+	 * The time interval for the dynamic discarding of logs
+	 */
+	private JTextField dynIntervalTF = new JTextField("0",6);
+	
+	/**
 	 * Constructor
 	 * 
 	 * @param owner The owner of the dialog
@@ -357,6 +347,7 @@ public class ExpertPrefsDlg extends JDialog implements ActionListener {
 		}
 		setModal(true);
 		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+		buildWidgets();
 		initGUI();
 		ratioWidgets();
 		setVisible(true);
@@ -367,7 +358,9 @@ public class ExpertPrefsDlg extends JDialog implements ActionListener {
 	 * @see java.awt.event.ActionEvent
 	 */
 	public void actionPerformed(ActionEvent e) {
-		if (e.getSource()==okBtn) {
+		if (e.getSource() instanceof JCheckBox) {
+			enableOption((JCheckBox)e.getSource());
+		} else if (e.getSource()==okBtn) {
 			okBtnPressed=true;
 			setVisible(false);
 			dispose();
@@ -394,26 +387,73 @@ public class ExpertPrefsDlg extends JDialog implements ActionListener {
 		JRootPane mainPnl = this.getRootPane();
 		mainPnl.setLayout(new BorderLayout());
 		
-		// The panel with the options
-		JPanel optionsPanel = new JPanel();
-		GridBagLayout prefsLayout = new GridBagLayout();
-		GridBagConstraints c = new GridBagConstraints();
-		optionsPanel.setLayout(prefsLayout);
-		int row=0;
-		for (PrefsWidget widget: PrefsWidget.values()) {
-			c.gridx=0; c.gridy=row; c.anchor=GridBagConstraints.LAST_LINE_START; c.insets = new Insets(5,5,5,5);
-			optionsPanel.add(widget.enableCB,c);
-			c.gridx=1; c.gridy=row; c.anchor=GridBagConstraints.LAST_LINE_START; c.insets = new Insets(5,5,5,5);
-			optionsPanel.add(widget.label,c);
-			c.gridx=2; c.gridy=row; c.anchor=GridBagConstraints.LAST_LINE_START; c.insets = new Insets(5,5,5,5);
-			optionsPanel.add(widget.component,c);
-			row++;
-		}
+		/////////////////////////////////////////////////////////////
+		// Add the table constraints (max num of logs and time frame)
+		///////////////////////////////////////////////////////////
+		JPanel tablePnl = new JPanel();
+		tablePnl.setBorder(BorderFactory.createTitledBorder("Table constraints"));
+		tablePnl.setLayout(new GridBagLayout());
+		GridBagConstraints constr = new GridBagConstraints();
+		// Num of logs
+		constr.gridx=0; constr.gridy=0; constr.fill=GridBagConstraints.HORIZONTAL;
+		constr.anchor=GridBagConstraints.WEST; constr.insets = new Insets(5,5,5,5);
+		tablePnl.add(OptionWidgets.MAX_NUM_OF_LOGS.enableCB,constr);
+		constr.gridx=1; constr.gridy=0; 
+		constr.anchor=GridBagConstraints.LINE_START; constr.insets = new Insets(5,5,5,5);
+		constr.fill=GridBagConstraints.HORIZONTAL;
+		tablePnl.add(maxLogsInTableCB,constr);
+		// Time frame
+		constr.gridx=0; constr.gridy=1; 
+		constr.anchor=GridBagConstraints.WEST; constr.insets = new Insets(5,5,5,5);
+		tablePnl.add(OptionWidgets.TIME_FRAME.enableCB,constr);
+		constr.gridx=1; constr.gridy=1; 
+		constr.anchor=GridBagConstraints.LINE_START; constr.insets = new Insets(5,5,5,5);
+		tablePnl.add(timeFrameCB,constr);
+		timeFrameCB.setEnabled(false); /// DISABLED
+		OptionWidgets.TIME_FRAME.enableCB.setEnabled(false); // DISABLED
 		
-		PrefsWidget.TIME_FRAME.enableWidget(false);
+		///////////////////////////////////////////////////////////
+		// Add engine constraints
+		///////////////////////////////////////////////////////////
+		JPanel enginePnl = new JPanel();
+		enginePnl.setBorder(BorderFactory.createTitledBorder("Engine constraints"));
+		enginePnl.setLayout(new GridBagLayout());
 		
-		// Add the label and prefs panel
-		mainPnl.add(optionsPanel,BorderLayout.CENTER);
+		// INPUT RATE
+		constr.gridx=0; constr.gridy=0; 
+		constr.anchor=GridBagConstraints.LAST_LINE_START; constr.insets = new Insets(5,5,5,5);
+		enginePnl.add(OptionWidgets.MAX_INPUT_RATE.enableCB,constr);
+		constr.gridx=1; constr.gridy=0; 
+		constr.anchor=GridBagConstraints.LAST_LINE_START; constr.insets = new Insets(5,5,5,5);
+		enginePnl.add(inputRateTF,constr);
+		// Output RATE
+		constr.gridx=0; constr.gridy=1; 
+		constr.anchor=GridBagConstraints.LAST_LINE_START; constr.insets = new Insets(5,5,5,5);
+		enginePnl.add(OptionWidgets.MAX_OUTPUT_RATE.enableCB,constr);
+		constr.gridx=1; constr.gridy=1; 
+		constr.anchor=GridBagConstraints.LAST_LINE_START; constr.insets = new Insets(5,5,5,5);
+		enginePnl.add(outputRateTF,constr);
+		// DYNAMIC DISCARD LEVEL
+		JPanel pnl = new JPanel();
+		pnl.setLayout(new GridLayout(3,2));
+		pnl.add(new JLabel("Threshold: "),"1");
+		pnl.add(dynThresholdTF,"2");
+		pnl.add(new JLabel("Damping: "),"3");
+		pnl.add(dynDampingTF,"4");
+		pnl.add(new JLabel("Time: "),"5");
+		pnl.add(dynIntervalTF,"6");
+		
+		constr.gridx=0; constr.gridy=2; constr.fill=GridBagConstraints.VERTICAL;
+		constr.anchor=GridBagConstraints.LAST_LINE_START; constr.insets = new Insets(5,5,5,5);
+		enginePnl.add(OptionWidgets.DYNAMIC_DISCARD_LEVEL.enableCB,constr);
+		constr.gridx=1; constr.gridy=2; 
+		constr.anchor=GridBagConstraints.LAST_LINE_START; constr.insets = new Insets(5,5,5,5);
+		enginePnl.add(pnl,constr);
+		
+		
+		// Add the table and engine panels to the main panel
+		mainPnl.add(tablePnl,BorderLayout.CENTER);
+		mainPnl.add(enginePnl,BorderLayout.NORTH);
 		
 		// Add the OK, CANCEL buttons
 		JPanel buttonsPnl = new JPanel(new BorderLayout());
@@ -443,6 +483,35 @@ public class ExpertPrefsDlg extends JDialog implements ActionListener {
 	}
 	
 	/**
+	 * Build the widgets shown in the dialog
+	 */
+	private void buildWidgets() {
+		// NUM OF LOGS
+		maxLogsInTableCB.setEditable(false);
+		maxLogsInTableCB.setMaximumRowCount(NumberOption.values().length);
+
+		// TIME FRAME
+		timeFrameCB.setEditable(false);
+		timeFrameCB.setMaximumRowCount(TimeOption.values().length);
+		
+		// INPUT RATE
+		inputRateTF.setInputVerifier(new PassVerifier(1));
+		
+		// OUTPUT RATE
+		outputRateTF.setInputVerifier(new PassVerifier(1));
+		
+		// THRESHOLD
+		dynThresholdTF.setInputVerifier(new PassVerifier(1024));
+		dynDampingTF.setInputVerifier(new PassVerifier(0));
+		dynIntervalTF.setInputVerifier(new PassVerifier(1));
+		
+		// Add the listener to the check boxes
+		for (OptionWidgets widget: OptionWidgets.values()) {
+			widget.enableCB.addActionListener(this);
+		}
+	}
+	
+	/**
 	 * Ratio the content of the widgets getting their values from
 	 * <code>preferences</code>.
 	 * 
@@ -456,34 +525,77 @@ public class ExpertPrefsDlg extends JDialog implements ActionListener {
 		// Set the max num of logs 
 		NumberOption nOpt = NumberOption.fromInt(preferences.getMaxNumOfLogs());
 		if (nOpt==null) {
-			((JComboBox)(PrefsWidget.MAX_NUM_OF_LOGS.component)).setSelectedIndex(2);
+			maxLogsInTableCB.setSelectedIndex(2);
 		} else {
-			((JComboBox)(PrefsWidget.MAX_NUM_OF_LOGS.component)).setSelectedIndex(nOpt.ordinal());
+			maxLogsInTableCB.setSelectedIndex(nOpt.ordinal());
 		}
-		PrefsWidget.MAX_NUM_OF_LOGS.enableOption(((JComboBox)(PrefsWidget.MAX_NUM_OF_LOGS.component)).getSelectedIndex()==0);
+		OptionWidgets.MAX_NUM_OF_LOGS.enableCB.setSelected(maxLogsInTableCB.getSelectedIndex()!=0);
 		
 		// Set the time frame
 		TimeOption tOpt = TimeOption.fromInt(preferences.getMinuteTimeFrame());
 		if (tOpt==null) {
-			((JComboBox)(PrefsWidget.TIME_FRAME.component)).setSelectedIndex(0);
+			timeFrameCB.setSelectedIndex(0);
 		} else {
-			((JComboBox)(PrefsWidget.TIME_FRAME.component)).setSelectedIndex(tOpt.ordinal());
+			timeFrameCB.setSelectedIndex(tOpt.ordinal());
 		}
-		PrefsWidget.TIME_FRAME.enableOption(((JComboBox)(PrefsWidget.TIME_FRAME.component)).getSelectedIndex()==0);
+		OptionWidgets.TIME_FRAME.enableCB.setSelected(timeFrameCB.getSelectedIndex()!=0);
+		
 		
 		if (preferences.getMaxInputRate()==Integer.MAX_VALUE) {
-			((JTextField)PrefsWidget.MAX_INPUT_RATE.component).setText("0");
+			inputRateTF.setText("0");
 		} else {
-			((JTextField)PrefsWidget.MAX_INPUT_RATE.component).setText(""+preferences.getMaxInputRate());
+			inputRateTF.setText(""+preferences.getMaxInputRate());
 		}
-		PrefsWidget.MAX_INPUT_RATE.enableOption(preferences.getMaxInputRate()==Integer.MAX_VALUE);
+		OptionWidgets.MAX_INPUT_RATE.enableCB.setSelected(preferences.getMaxInputRate()!=Integer.MAX_VALUE);
 		
 		if (preferences.getMaxOutputRate()==Integer.MAX_VALUE) {
-			((JTextField)PrefsWidget.MAX_OUTPUT_RATE.component).setText("0");
+			outputRateTF.setText("0");
 		} else {
-			((JTextField)PrefsWidget.MAX_OUTPUT_RATE.component).setText(""+preferences.getMaxOutputRate());
+			outputRateTF.setText(""+preferences.getMaxOutputRate());
 		}
-		PrefsWidget.MAX_OUTPUT_RATE.enableOption(preferences.getMaxOutputRate()==Integer.MAX_VALUE);
+		OptionWidgets.MAX_OUTPUT_RATE.enableCB.setSelected(preferences.getMaxOutputRate()!=Integer.MAX_VALUE);
+		
+		if (preferences.getDynThreshold()==Integer.MAX_VALUE) {
+			dynThresholdTF.setText("8192");
+			dynDampingTF.setText("2048");
+			dynIntervalTF.setText("30");
+		}
+		OptionWidgets.DYNAMIC_DISCARD_LEVEL.enableCB.setSelected(preferences.getDynThreshold()!=Integer.MAX_VALUE);
+		
+		for (OptionWidgets opt: OptionWidgets.values()) {
+			enableOption(opt.enableCB);
+		}
+	}
+	
+	/**
+	 * Enable or disable the option of the given check box.
+	 * 
+	 * @param cB The chackbox the enable/disable the option
+	 */
+	private void enableOption(JCheckBox cB) {
+		if (cB==null) {
+			throw new IllegalArgumentException("The JCheckBox can't be null");
+		}
+		OptionWidgets opt = OptionWidgets.fromCheckBox(cB);
+		switch (opt) {
+		case MAX_NUM_OF_LOGS:
+			maxLogsInTableCB.setEnabled(cB.isSelected());
+			break;
+		case TIME_FRAME:
+			timeFrameCB.setEnabled(cB.isSelected());
+			break;
+		case MAX_INPUT_RATE:
+			inputRateTF.setEnabled(cB.isSelected());
+			break;
+		case MAX_OUTPUT_RATE:
+			outputRateTF.setEnabled(cB.isSelected());
+			break;
+		case DYNAMIC_DISCARD_LEVEL:
+			dynThresholdTF.setEnabled(cB.isSelected());
+			dynDampingTF.setEnabled(cB.isSelected());
+			dynIntervalTF.setEnabled(cB.isSelected());
+			break;
+		}
 	}
 	
 	/**
@@ -503,32 +615,45 @@ public class ExpertPrefsDlg extends JDialog implements ActionListener {
 	 */
 	public UserPreferences getPreferences() {
 		// Put the values in the GUI into preferences
-		if (PrefsWidget.MAX_NUM_OF_LOGS.isOptionEnabled()) {
-			NumberOption opt = (NumberOption)((JComboBox)(PrefsWidget.MAX_NUM_OF_LOGS.component)).getSelectedItem();
+		if (OptionWidgets.MAX_NUM_OF_LOGS.isOptionEnabled()) {
+			System.out.println("A");
+			NumberOption opt = (NumberOption)maxLogsInTableCB.getSelectedItem();
 			preferences.setMaxLogs(opt.value);
 		} else {
+			System.out.println("B");
 			preferences.setMaxLogs(0);
 		}
-		if (PrefsWidget.TIME_FRAME.isOptionEnabled()) {
-			TimeOption opt = (TimeOption)((JComboBox)(PrefsWidget.TIME_FRAME.component)).getSelectedItem();
+		if (OptionWidgets.TIME_FRAME.isOptionEnabled()) {
+			TimeOption opt = (TimeOption)timeFrameCB.getSelectedItem();
 			preferences.setTimeFrame(opt.value);
 		} else {
 			preferences.setTimeFrame(0);
 		}
-		if (PrefsWidget.MAX_INPUT_RATE.isOptionEnabled()) {
-			String val = (String)((JTextField)PrefsWidget.MAX_INPUT_RATE.component).getText();
+		if (OptionWidgets.MAX_INPUT_RATE.isOptionEnabled()) {
+			String val = inputRateTF.getText();
 			preferences.setMaxInputRate(Integer.parseInt(val));
-			System.out.println("===>"+val);
 		} else {
 			preferences.setMaxInputRate(Integer.MAX_VALUE);
 		}
-		if (PrefsWidget.MAX_OUTPUT_RATE.isOptionEnabled()) {
-			String val = (String)((JTextField)PrefsWidget.MAX_OUTPUT_RATE.component).getText();
+		if (OptionWidgets.MAX_OUTPUT_RATE.isOptionEnabled()) {
+			String val = outputRateTF.getText();
 			preferences.setMaxOutputRate(Integer.parseInt(val));
 		} else {
 			preferences.setMaxOutputRate(Integer.MAX_VALUE);
 		}
-		System.out.println("Returning: "+preferences.getMaxNumOfLogs()+", "+preferences.getMinuteTimeFrame()+", "+preferences.getMaxInputRate()+", "+preferences.getMaxOutputRate());
+		
+		if (OptionWidgets.DYNAMIC_DISCARD_LEVEL.isOptionEnabled()) {
+			preferences.setDynThreshold(Integer.parseInt(dynThresholdTF.getText()));
+			preferences.setDynDamping(Integer.parseInt(dynDampingTF.getText()));
+			preferences.setDynTime(Integer.parseInt(dynIntervalTF.getText()));
+		} else {
+			preferences.setDynThreshold(Integer.MAX_VALUE);
+			preferences.setDynDamping(0);
+			preferences.setDynTime(30);
+		}
+		System.out.println("Returning: Num of logs: "+preferences.getMaxNumOfLogs()+", time frame "+preferences.getMinuteTimeFrame());
+		System.out.println("\t inputRate "+preferences.getMaxInputRate()+", outputRate "+preferences.getMaxOutputRate());
+		System.out.println("\tDYN: threshold "+preferences.getDynThreshold()+", damping "+preferences.getDynDamping()+", time "+preferences.getDynTime());
 		return preferences;
 	}
 	
