@@ -651,9 +651,6 @@ public class ExpertPrefsDlg extends JDialog implements ActionListener {
 			preferences.setDynDamping(0);
 			preferences.setDynTime(30);
 		}
-		System.out.println("Returning: Num of logs: "+preferences.getMaxNumOfLogs()+", time frame "+preferences.getMinuteTimeFrame());
-		System.out.println("\t inputRate "+preferences.getMaxInputRate()+", outputRate "+preferences.getMaxOutputRate());
-		System.out.println("\tDYN: threshold "+preferences.getDynThreshold()+", damping "+preferences.getDynDamping()+", time "+preferences.getDynTime());
 		return preferences;
 	}
 	
