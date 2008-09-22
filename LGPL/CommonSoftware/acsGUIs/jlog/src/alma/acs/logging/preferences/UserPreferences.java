@@ -27,119 +27,31 @@ package alma.acs.logging.preferences;
  * @author acaproni
  *
  */
-public class UserPreferences {
+public class UserPreferences implements Cloneable {
 	
-	/**
-	 * A class containing the options for the time
-	 * Each option is a couple <label, value> where
-	 *   - value is the value of the option
-	 *   - label is a label to show to the user for that option
-	 */ 
-	public static class TimeOption {
-		private String label;
-		private int value;
-		
-		/**
-		 * Constructor
-		 * 
-		 * @param lbl The label to show in the combo box
-		 * @param val The number of minutes
-		 */
-		public TimeOption(String lbl, int val) {
-			label=lbl;
-			value=val;
-		}
-		
-		public String toString() {
-			return label;
-		}
-		
-		/**
-		 * @return The number of minutes of the timeframe
-		 *
-		 */
-		public int getTimeFrame() {
-			return value;
-		}
-		
-		public boolean equals(int min) {
-			return value==min;
-		}
-	}
-	
-	/**
-	 * A class containing the options for the number of logs
-	 * Each option is a couple <label, value> where
-	 *   - value is the value of the option
-	 *   - label is a label to show to the user for that option
-	 */ 
-	public static class NumberOption {
-		private String label;
-		private int value;
-		
-		/**
-		 * Constructor 
-		 * 
-		 * @param lbl The label to show
-		 * @param val The number of logs
-		 */
-		public NumberOption(String lbl, int val) {
-			label=lbl;
-			value=val;
-		}
-		
-		public String toString() {
-			return label;
-		}
-		
-		public int getNumOfLogs() {
-			return value;
-		}
-		
-		public boolean equals(int val) {
-			return value==val;
-		}
-	}
-	
-	/**
-	 * The possible option for the time frame
+	/** 
+	 * The time frame (in minutes)
 	 */
-	public final static TimeOption[] timeOptions = new TimeOption[] {
-		new TimeOption("Unlimited",0),
-		new TimeOption("1h",60),
-		new TimeOption("3h",180), // Default
-		new TimeOption("5h",300),
-		new TimeOption("12h",720),
-		new TimeOption("1d",1440)
-	};
+	private int timeFrame=0;
 	
-	/**
-	 * The possible option for the max number of logs
+	/** 
+	 * The max number of logs
 	 */
-	public final static NumberOption[] maxLogNumOptions = new NumberOption[] {
-		new NumberOption("Unlimited",0),
-		new NumberOption("100K",100000), // Default
-		new NumberOption("200K",200000), 
-		new NumberOption("300K",300000),
-		new NumberOption("400K",400000)
-	};
-	
-	// The time frame (in minutes)
-	private int timeFrame;
-	
-	// The max number of logs
-	private int maxNumOfLogs;
+	private int maxNumOfLogs=0;
 	
 	/**
-	 * Empty constructor
+	 * Max number of logs per second read from the NC.
 	 * 
-	 * All the values are set to the default value
-	 *
+	 * @see ACSLogRetrieval}
 	 */
-	public UserPreferences() {
-		timeFrame = timeOptions[0].getTimeFrame();
-		maxNumOfLogs = maxLogNumOptions[1].getNumOfLogs();
-	}
+	private int maxInputRate=Integer.MAX_VALUE;
+	
+	/**
+	 * Max number of logs per second that the engine sends to the table.
+	 * 
+	 * @see ACSLogRetrieval}
+	 */
+	private int maxOutputRate=Integer.MAX_VALUE;
 	
 	/**
 	 * Builds an object with the given values
@@ -147,43 +59,29 @@ public class UserPreferences {
 	 * @param time The time frame (in minutes)
 	 * @param maxLogs The max number of logs
 	 */
-	public UserPreferences(int time, int maxLogs) {
+	public UserPreferences(int time, int maxLogs, int inRate, int outRate) {
 		setTimeFrame(time);
 		setMaxLogs(maxLogs);
+		setMaxInputRate(inRate);
+		setMaxOutputRate(outRate);
 	}
 	
 	/**
 	 * Set the time frame to the given value
-	 * (it checks if the value is valid i.e. it is in the timeOptions)
 	 * 
 	 * @param time The new time frame (in minutes)
-	 * @throws IllegalArgumentException If the time frame is invalid
 	 */
-	public void setTimeFrame(int time) throws IllegalArgumentException {
-		for (int t=0; t<timeOptions.length; t++) {
-			if (timeOptions[t].equals(time)) {
-				timeFrame=time;
-				return;
-			}
-		}
-		throw new IllegalArgumentException("Invalid time frame: "+time);
+	public void setTimeFrame(int time) {
+		timeFrame=time;
 	}
 	
 	/**
 	 * Set the max number of logs
-	 * (it checks if the value is valid i.e. it is in the numberOptions)
 	 * 
 	 * @param maxLogs The max number of logs 
-	 * @throws IllegalArgumentException If the number of logs is illegal
 	 */
 	public void setMaxLogs(int maxLogs) throws IllegalArgumentException {
-		for (int t=0; t<maxLogNumOptions.length; t++) {
-			if (maxLogNumOptions[t].equals(maxLogs)) {
-				maxNumOfLogs=maxLogs;
-				return;
-			}
-		}
-		throw new IllegalArgumentException("Invalid number of logs: "+maxLogs);
+		maxNumOfLogs=maxLogs;
 	}
 	
 	/**
@@ -209,5 +107,27 @@ public class UserPreferences {
 	public long getMillisecondsTimeFrame() {
 		return timeFrame*60*1000; 
 	}
-		
+
+	public int getMaxInputRate() {
+		return maxInputRate;
+	}
+
+	public void setMaxInputRate(int maxInputRate) {
+		this.maxInputRate = maxInputRate;
+	}
+
+	public int getMaxOutputRate() {
+		return maxOutputRate;
+	}
+
+	public void setMaxOutputRate(int maxOutputRate) {
+		this.maxOutputRate = maxOutputRate;
+	}
+	
+	/**
+	 * Return a copy of this object
+	 */
+	public UserPreferences clone() throws CloneNotSupportedException {
+		return (UserPreferences)super.clone();
+	}	
 }
