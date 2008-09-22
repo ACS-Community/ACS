@@ -399,6 +399,15 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
             			userPreferences.setMaxOutputRate(newPrefs.getMaxOutputRate());
             			getEngine().setMaxOutputRate(userPreferences.getMaxOutputRate());
             		}
+            		if (newPrefs.getDynThreshold()!=userPreferences.getDynThreshold()) {
+            			userPreferences.setDynThreshold(newPrefs.getDynThreshold());
+            			userPreferences.setDynDamping(newPrefs.getDynDamping());
+            			userPreferences.setDynTime(newPrefs.getDynTime());
+            			getEngine().enableDynamicDiscarding(
+            					userPreferences.getDynThreshold(), 
+            					userPreferences.getDynDamping(), 
+            					userPreferences.getDynTime());
+            		}
             	}
             } else if (e.getSource()==menuBar.getOperatorMode()) {
             	getEngine().setAudience(EngineAudienceHelper.OPERATOR);
