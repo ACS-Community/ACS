@@ -159,7 +159,7 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 	private ArchiveConnectionManager archive;
 	
 	// Create an instance of the preferences with default values
-	private UserPreferences userPreferences = new UserPreferences();
+	private UserPreferences userPreferences = new UserPreferences(0,100000,Integer.MAX_VALUE,Integer.MAX_VALUE);
 
 	private JPanel ivjJPanel2 = null;
 	private JPanel detailedInfoPanel = null;
@@ -379,13 +379,26 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
             } else if (e.getSource()==menuBar.getSuspendMenuItem()) {
             	getEngine().setSupended(menuBar.getSuspendMenuItem().isSelected());
             } else if (e.getSource()==menuBar.getPrefsMenuItem()) {
-            	ExpertPrefsDlg dlg = new ExpertPrefsDlg(LoggingClient.this,userPreferences.getMaxNumOfLogs(),userPreferences.getMinuteTimeFrame());
+            	ExpertPrefsDlg dlg = new ExpertPrefsDlg(LoggingClient.this,userPreferences);
             	if (dlg.okPressed()) {
-            		userPreferences.setMaxLogs(dlg.getMaxNumOfLogs());
-            		userPreferences.setTimeFrame(dlg.getTimeFrame());
-            		getLCModel1().setMaxLog(userPreferences.getMaxNumOfLogs());
-            		getLCModel1().setTimeFrame(userPreferences.getMillisecondsTimeFrame());
-            		setNumberOfLogsLbl();
+            		UserPreferences newPrefs = dlg.getPreferences();
+            		if (newPrefs.getMaxNumOfLogs()!=userPreferences.getMaxNumOfLogs()) {
+            			userPreferences.setMaxLogs(newPrefs.getMaxNumOfLogs());
+            			getLCModel1().setMaxLog(userPreferences.getMaxNumOfLogs());
+            			setNumberOfLogsLbl();
+            		}
+            		if (newPrefs.getMinuteTimeFrame()!=userPreferences.getMinuteTimeFrame()) {
+            			userPreferences.setTimeFrame(userPreferences.getMinuteTimeFrame());
+            			getLCModel1().setTimeFrame(userPreferences.getMillisecondsTimeFrame());
+            		}
+            		if (newPrefs.getMaxInputRate()!=userPreferences.getMaxInputRate()) {
+            			userPreferences.setMaxInputRate(newPrefs.getMaxInputRate());
+            			getEngine().setMaxInputRate(userPreferences.getMaxInputRate());
+            		}
+            		if (newPrefs.getMaxOutputRate()!=userPreferences.getMaxOutputRate()) {
+            			userPreferences.setMaxOutputRate(newPrefs.getMaxOutputRate());
+            			getEngine().setMaxOutputRate(userPreferences.getMaxOutputRate());
+            		}
             	}
             } else if (e.getSource()==menuBar.getOperatorMode()) {
             	getEngine().setAudience(EngineAudienceHelper.OPERATOR);
