@@ -1,4 +1,4 @@
-package com.cosylab.logging.settings;
+package alma.acs.logging.preferences;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -28,7 +28,6 @@ import javax.swing.JPanel;
 import javax.swing.JRootPane;
 import javax.swing.JTextField;
 
-import alma.acs.logging.preferences.UserPreferences;
 
 /**
  * A dialog to setup (expert) preferences.

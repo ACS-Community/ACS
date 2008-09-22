@@ -59,6 +59,7 @@ import alma.acs.logging.dialogs.main.LogNavigationBar;
 import alma.acs.logging.dialogs.main.LogToolBar;
 import alma.acs.logging.errorbrowser.Engine;
 import alma.acs.logging.errorbrowser.ErrorBrowserDlg;
+import alma.acs.logging.preferences.ExpertPrefsDlg;
 import alma.acs.logging.preferences.UserPreferences;
 import alma.acs.logging.table.LogEntryTable;
 import alma.acs.logging.table.LogTableDataModel;
@@ -76,7 +77,6 @@ import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.engine.log.LogTypeHelper;
 import com.cosylab.logging.search.SearchDialog;
 import com.cosylab.logging.settings.ErrorLogDialog;
-import com.cosylab.logging.settings.ExpertPrefsDlg;
 import com.cosylab.logging.settings.FilterChooserDialog;
 import com.cosylab.logging.stats.StatsDlg;
 
