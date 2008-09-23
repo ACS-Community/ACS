@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.36 2008/09/23 15:23:32 acaproni Exp $" 
+# "@(#) $Id: Makefile,v 1.37 2008/09/23 15:35:27 acaproni Exp $" 
 #
 # Makefile of lcTest for jlog.
 #
@@ -104,10 +104,12 @@ endif
 # -------
 all:	do_all
 	@mkdir -p tmp
+	@tar xvzf zoomXML_Files.tgz
 	@echo " . . . 'all' done" 
 
 clean : clean_all 
 	$(RM) *~ ../*~ *.diff *.rep core
+	$(RM) -rf zoom
 	$(RM) tatlogs
 	$(RM) tmp
 	@echo " . . . clean done"
