@@ -129,7 +129,7 @@ public class FileHelperTest extends TestCase implements ACSRemoteLogListener, AC
 				LogTypeHelper.values()[LogTypeHelper.values().length-1]);
 		
 		numOfLogsRead=0;
-		assertFalse(fileHelper.loadLogs(this, this, this));
+		assertTrue(fileHelper.loadLogs(this, this, this));
 		assertEquals(totalLogsInFile, numOfLogsRead);
 	}
 	
@@ -145,7 +145,7 @@ public class FileHelperTest extends TestCase implements ACSRemoteLogListener, AC
 				LogTypeHelper.INFO);
 		
 		numOfLogsRead=0;
-		assertFalse(fileHelper.loadLogs(this, this, this));
+		assertTrue(fileHelper.loadLogs(this, this, this));
 		assertEquals(68, numOfLogsRead);
 	}
 	
@@ -164,7 +164,7 @@ public class FileHelperTest extends TestCase implements ACSRemoteLogListener, AC
 				LogTypeHelper.values()[LogTypeHelper.values().length-1]);
 		
 		numOfLogsRead=0;
-		assertFalse(fileHelper.loadLogs(this, this, this));
+		assertTrue(fileHelper.loadLogs(this, this, this));
 		assertEquals(45, numOfLogsRead);
 	}
 	
@@ -184,7 +184,7 @@ public class FileHelperTest extends TestCase implements ACSRemoteLogListener, AC
 				LogTypeHelper.NOTICE);
 		
 		numOfLogsRead=0;
-		assertFalse(fileHelper.loadLogs(this, this, this));
+		assertTrue(fileHelper.loadLogs(this, this, this));
 		assertEquals(15, numOfLogsRead);
 	}
 }
