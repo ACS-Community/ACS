@@ -53,12 +53,6 @@ public class ACSPorts {
     */
    public static final String ACS_BASE_PORT_DEFAULT = "0";
 
-   /**
-    * Default base port (integer ranging from 0-9).
-    * 
-    * @deprecated since v1.5
-    */
-   public static final int ACS_DEFAULT_BASE_PORT = Integer.parseInt(ACS_BASE_PORT_DEFAULT);
 
    //
    // ======================== STATIC ============================
