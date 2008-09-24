@@ -25,7 +25,7 @@ import java.util.Date;
 
 import alma.acs.util.IsoDateFormat;
 
-import com.cosylab.logging.engine.ACS.ACSRemoteErrorListener;
+import com.cosylab.logging.engine.ACS.ACSRemoteLogListener;
 import com.cosylab.logging.engine.log.LogTypeHelper;
 
 /**
@@ -178,7 +178,7 @@ public class FilesManager {
 	 * 
 	 * @throws Exception If the folder containing XML files is not found/readable
 	 */
-	public FilesManager() throws Exception {
+	public FilesManager() throws ZoomException {
 		filesFolder=getFolderOfFiles();
 	}
 	
@@ -190,7 +190,7 @@ public class FilesManager {
 	 * @return The name of the folder of files; 
 	 * 			<code>null</code> if the folder is not found or is not readable.
 	 */
-	private String getFolderOfFiles() throws Exception {
+	private String getFolderOfFiles() throws ZoomException {
 		String ret = System.getProperty(FILES_LOCATION_PROPRTY_NAME);
 		if (ret!=null && !ret.isEmpty()) {
 			// Check if the folder is readable
@@ -202,7 +202,7 @@ public class FilesManager {
 			}
 		}
 		if (ret==null) {
-			throw new Exception("Invalid folder of XML files");
+			throw new ZoomException("Invalid folder of XML files");
 		}
 		return ret;
 	}
@@ -224,7 +224,7 @@ public class FilesManager {
 	public void getLogs(
 			String startDate, 
 			String endDate, 
-			ACSRemoteErrorListener listener,
+			ACSRemoteLogListener listener,
 			LogTypeHelper minLevel,
 			LogTypeHelper maxLevel) {
 		long start;
@@ -258,7 +258,7 @@ public class FilesManager {
 		}
 		
 		if (listener==null) {
-			throw new IllegalArgumentException("The listener can;'t be null");
+			throw new IllegalArgumentException("The listener can't be null");
 		}
 		
 		if (minLevel==null) {
@@ -271,7 +271,12 @@ public class FilesManager {
 			throw new IllegalArgumentException("Invalid level range ["+minLevel+", "+maxLevel+"]");
 		}
 		
+		// Get the files containing logs in the selected range
 		File[] files = getFileList(start, end);
+		// Read the files
+		for (File inFile: files) {
+			
+		}
 	}
 	
 	/**
