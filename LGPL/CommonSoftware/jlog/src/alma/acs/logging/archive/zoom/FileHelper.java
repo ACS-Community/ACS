@@ -23,7 +23,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.Date;
 
 import com.cosylab.logging.engine.Filter;
 import com.cosylab.logging.engine.FiltersVector;
@@ -169,7 +168,7 @@ public class FileHelper implements ACSRemoteErrorListener {
 			throw new ZoomException("Error loading logs from file",t);
 		}
 		
-		return errorParsingLogs;
+		return !errorParsingLogs;
 	}
 	
 	/**
