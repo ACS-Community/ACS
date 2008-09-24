@@ -22,3 +22,4 @@
 #
 export ACS_TMP=../test/tmp
 acsutilTATTestRunner acsStartJava -Duser.dir=$PWD -Djlog.archive.filesFolder=$PWD/zoom junit.textui.TestRunner alma.acs.jlog.test.zoom.FilesManagerTest
+acsutilTATTestRunner acsStartJava -Duser.dir=$PWD -Djlog.archive.filesFolder=$PWD/zoom junit.textui.TestRunner alma.acs.jlog.test.zoom.FileHelperTest
