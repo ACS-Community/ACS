@@ -19,12 +19,15 @@
 package alma.acs.logging.archive.zoom;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
 import java.text.ParseException;
 import java.util.Date;
 
+import alma.acs.logging.engine.io.IOPorgressListener;
 import alma.acs.util.IsoDateFormat;
 
+import com.cosylab.logging.engine.ACS.ACSRemoteErrorListener;
 import com.cosylab.logging.engine.ACS.ACSRemoteLogListener;
 import com.cosylab.logging.engine.log.LogTypeHelper;
 
@@ -64,6 +67,42 @@ import com.cosylab.logging.engine.log.LogTypeHelper;
  *
  */
 public class FilesManager {
+	
+	/**
+	 * A class to get events while loading logs from the files.
+	 * <P>
+	 * In this version, <code>ProgressListener</code> does nothing. 
+	 * 
+	 * @author acaproni
+	 *
+	 */
+	public class ProgressListener implements IOPorgressListener {
+
+		/**
+		 * @see alma.acs.logging.engine.io.IOPorgressListener#bytesRead(long)
+		 */
+		@Override
+		public void bytesRead(long bytes) {}
+
+		/**
+		 * @see alma.acs.logging.engine.io.IOPorgressListener#bytesWritten(long)
+		 */
+		@Override
+		public void bytesWritten(long bytes) {}
+
+		/**
+		 * @see alma.acs.logging.engine.io.IOPorgressListener#logsRead(int)
+		 */
+		@Override
+		public void logsRead(int numOfLogs) {}
+
+		/**
+		 * @see alma.acs.logging.engine.io.IOPorgressListener#logsWritten(int)
+		 */
+		@Override
+		public void logsWritten(int numOfLogs) {}
+		
+	}
 	
 	/**
 	 * The filter for the file names.
@@ -215,18 +254,27 @@ public class FilesManager {
 	 * 					the start date will be that of the first available log in the files)
 	 * @param endDate The end date of the loading (ISO format); 
 	 * 					if <code>null</code> the current time is used
-	 * @param listener The listener to send logs to
+	 * @param logListener The listener to send logs to
 	 * @param minLevel The min log level of logs to read from files (inclusive);
 	 * 					if <code>null</code>, the lowest level (<code>TRACE</code>) is used
 	 * @param maxLevel The max log level of logs to read from files (inclusive);
 	 * 					if <code>null</code>, the highest log level (<code>EMERGENCY</code>) is used
+	 * @param zoomListener The listener for monitoring the activity of the zoom engine.
+	 * 					It can be <code>null</code>.
+	 * @param errorListener The listener to be notified about logs that was not possible to parse
+	 * @return <code>false</code> in case of errors, <code>false</code> otherwise.
+	 * 
+	 * @see {@link ACSRemoteLogListener}
+	 * @see {@link ZoomProgressListener}
 	 */
-	public void getLogs(
+	public boolean getLogs(
 			String startDate, 
 			String endDate, 
-			ACSRemoteLogListener listener,
+			ACSRemoteLogListener logListener,
 			LogTypeHelper minLevel,
-			LogTypeHelper maxLevel) {
+			LogTypeHelper maxLevel,
+			ZoomProgressListener zoomListener,
+			ACSRemoteErrorListener errorListener) throws FileNotFoundException, ZoomException {
 		long start;
 		long end;
 		
@@ -257,7 +305,7 @@ public class FilesManager {
 			end=date.getTime();
 		}
 		
-		if (listener==null) {
+		if (logListener==null) {
 			throw new IllegalArgumentException("The listener can't be null");
 		}
 		
@@ -270,13 +318,25 @@ public class FilesManager {
 		if (maxLevel.ordinal()<minLevel.ordinal()) {
 			throw new IllegalArgumentException("Invalid level range ["+minLevel+", "+maxLevel+"]");
 		}
-		
+		if (zoomListener!=null) {
+			zoomListener.zoomReadingFile(0);
+		}
+		boolean ret=true;
 		// Get the files containing logs in the selected range
 		File[] files = getFileList(start, end);
-		// Read the files
-		for (File inFile: files) {
-			
+		if (zoomListener!=null) {
+			zoomListener.zoomTotalFileToRead(files.length);
 		}
+		// Read the files
+		int index=0;
+		for (File inFile: files) {
+			if (zoomListener!=null) {
+				zoomListener.zoomReadingFile(++index);
+			}
+			FileHelper file = new FileHelper(inFile, start, end, minLevel, maxLevel);
+			ret = ret && file.loadLogs(logListener, new ProgressListener(), errorListener);
+		}
+		return ret;
 	}
 	
 	/**
@@ -309,6 +369,32 @@ public class FilesManager {
 			throw new IllegalStateException(filesFolder+" unreadable/does not exist!");
 		}
 		return f.listFiles(filter);
+	}
+	
+	/**
+	 * Return <code>true</code> if the file manager is operative i.e. if:
+	 * <UL>
+	 * 	<LI>the folder of files exists and is readable
+	 * 	<LI>the folder of files contains files of log suitable for zooming
+	 * </UL>
+	 * <P>
+	 * The folder of files is checked when the object is created too.
+	 * However someone from outside could have deleted, renamed 
+	 * or changed the accessing properties of the folder. 
+	 * <P>
+	 * <I>Note</I>: this method could be slow if the folder contains
+	 * 		a big number of files.
+	 * @return <code>true</code> if the file manager is operative
+	 */
+	public boolean isOperational() {
+		if (filesFolder==null) {
+			return false;
+		}
+		File f = new File(filesFolder);
+		if (!f.isDirectory() || !f.canRead()) {
+			return false;
+		}
+		return getFileList(0, System.currentTimeMillis()).length>0;
 	}
 
 }
