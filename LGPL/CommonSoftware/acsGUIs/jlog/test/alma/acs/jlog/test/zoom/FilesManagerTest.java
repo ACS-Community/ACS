@@ -21,12 +21,29 @@ package alma.acs.jlog.test.zoom;
 import java.io.File;
 import java.util.Date;
 
+import com.cosylab.logging.engine.ACS.ACSRemoteErrorListener;
+import com.cosylab.logging.engine.ACS.ACSRemoteLogListener;
+import com.cosylab.logging.engine.log.ILogEntry;
+import com.cosylab.logging.engine.log.LogTypeHelper;
+
 import alma.acs.logging.archive.zoom.FilesManager;
+import alma.acs.logging.archive.zoom.ZoomProgressListener;
 import alma.acs.util.IsoDateFormat;
 import junit.framework.TestCase;
 
-public class FilesManagerTest extends TestCase {
+public class FilesManagerTest extends TestCase 
+implements ACSRemoteLogListener, 
+ACSRemoteErrorListener,
+ZoomProgressListener {
 	
+	/**
+	 * @see com.cosylab.logging.engine.ACS.ACSRemoteLogListener#logEntryReceived(com.cosylab.logging.engine.log.ILogEntry)
+	 */
+	@Override
+	public void logEntryReceived(ILogEntry logEntry) {
+		logsRead++;
+	}
+
 	/** 
 	 * The date format
 	 */
@@ -36,6 +53,16 @@ public class FilesManagerTest extends TestCase {
 	 * The object to test
 	 */
 	private FilesManager manager;
+	
+	/**
+	 * The number of logs received
+	 */
+	private int logsRead=0;
+	
+	/**
+	 * The number of files that the zoom engine will read
+	 */
+	private int filesToRead;
 	
 	public FilesManagerTest() {
 		super(FilesManagerTest.class.getName());
@@ -50,6 +77,8 @@ public class FilesManagerTest extends TestCase {
 		manager = new FilesManager();
 		assertNotNull(manager);
 		assertNotNull(dateFormat);
+		filesToRead=0;
+		logsRead=0;
 	}
 
 	/**
@@ -115,5 +144,62 @@ public class FilesManagerTest extends TestCase {
 		files = manager.getFileList(0, System.currentTimeMillis());
 		assertNotNull(files);
 		assertEquals(4, files.length);
+	}
+	
+	/**
+	 * Test isOperational()
+	 * 
+	 * @throws Exception
+	 */
+	public void testIsOperational() throws Exception {
+		assertTrue(manager.isOperational());
+	}
+
+	/**
+	 * @see com.cosylab.logging.engine.ACS.ACSRemoteErrorListener#errorReceived(java.lang.String)
+	 */
+	@Override
+	public void errorReceived(String xml) {
+		System.out.println("Error parsing: "+xml);		
+	}
+	
+	/**
+	 * Test the getting of logs with no constraints so the engine should return
+	 * all the logs of all the files in the folder
+	 * <P>
+	 * We do not need to test other cases because the generation of the list
+	 * of the files to read is tested in testGetFiles for all possible cases.
+	 * <BR>
+	 * This method checks if all the logs read from all the files are sent to
+	 * the listener. 
+	 */
+	public void testGetAllLogs() throws Exception {
+		
+		boolean ret=manager.getLogs(
+				"2008-09-01T11:21:50.000", 
+				"2008-09-25T11:21:50.000", 
+				this, 
+				LogTypeHelper.values()[0], 
+				LogTypeHelper.values()[LogTypeHelper.values().length-1], 
+				this, 
+				this);
+		assertTrue(ret);
+		assertEquals(202+221+185+44,logsRead);
+		assertEquals(4,filesToRead);
+	}
+
+	/**
+	 * @see alma.acs.logging.archive.zoom.ZoomProgressListener#zoomReadingFile(int)
+	 */
+	@Override
+	public void zoomReadingFile(int num) {}
+
+	/**
+	 * @see alma.acs.logging.archive.zoom.ZoomProgressListener#zoomTotalFileToRead(int)
+	 */
+	@Override
+	public void zoomTotalFileToRead(int num) {
+		filesToRead=num;
+		
 	}
 }
