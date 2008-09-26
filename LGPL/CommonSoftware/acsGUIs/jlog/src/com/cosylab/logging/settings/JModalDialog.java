@@ -109,7 +109,7 @@ public JModalDialog(java.awt.Frame owner, boolean modal) {
  */
 public void returnModalCancel() {
 	modalResult = MODAL_CANCEL;
-	hide();	
+	setVisible(false);
 }
 /**
  * Insert the method's description here.
@@ -117,7 +117,7 @@ public void returnModalCancel() {
  */
 public void returnModalOK() {
 	modalResult = MODAL_OK;
-	hide();	
+	setVisible(false);	
 }
 /**
  * Insert the method's description here.
@@ -126,7 +126,7 @@ public void returnModalOK() {
  */
 public int showModal() {
 	setModal(true);
-	show();
+	setVisible(true);
 	return modalResult;
 }
 }
