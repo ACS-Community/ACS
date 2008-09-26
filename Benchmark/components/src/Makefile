@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.25 2007/08/28 15:20:07 eallaert Exp $"
+# "@(#) $Id: Makefile,v 1.26 2008/09/26 14:02:09 eallaert Exp $"
 #
 # Makefile of ........
 #
@@ -257,14 +257,12 @@ endif
 #
 # TARGETS
 # -------
-all:	fix_idl do_all
+all:	do_all
 	@echo " . . . 'all' done" 
 
 clean : clean_all
 	$(RM) perftestImpl/*~  perftestImpl/*.pyc
 	$(RM) *~ ../idl/*~ ../doc/*~
-	@# Do next only as long as the "fix_idl" target exists!!
-	$(RM) ../idl/BenchmarkErrType.xml
 	@echo " . . . clean done"
 
 clean_dist : clean_all clean_dist_all 
@@ -277,8 +275,5 @@ install : install_all
 	@echo " . . . installation done"
 
 
-# Temporary target, to deal with changes for IDL introduced with ACS 7.0
-fix_idl :
-	$(AT)cp -f ../idl/BenchmarkErrType.xml.$(ACS_VERSION) ../idl/BenchmarkErrType.xml
 
 #___oOo___
