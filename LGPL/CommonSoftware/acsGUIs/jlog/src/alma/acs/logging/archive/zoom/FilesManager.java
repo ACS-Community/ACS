@@ -218,19 +218,41 @@ public class FilesManager {
 	 * @throws Exception If the folder containing XML files is not found/readable
 	 */
 	public FilesManager() throws ZoomException {
-		filesFolder=getFolderOfFiles();
+		filesFolder=getFolderOfFiles(null);
 	}
 	
 	/**
-	 * Get the name of the folder where ARCHIVE writes files into.
-	 * <P>
-	 * In this version the name of the folder is read from a system property.
+	 * Constructor
 	 * 
-	 * @return The name of the folder of files; 
-	 * 			<code>null</code> if the folder is not found or is not readable.
+	 * @param folder The folder containing files of logs
+	 * @throws ZoomException
 	 */
-	private String getFolderOfFiles() throws ZoomException {
-		String ret = System.getProperty(FILES_LOCATION_PROPRTY_NAME);
+	public FilesManager(String folder) throws ZoomException {
+		filesFolder=getFolderOfFiles(folder);
+	}
+	
+	/**
+	 * Get the name of the folder where ARCHIVE writes files into and checks
+	 * if the name is valid and points to a readable directory.
+	 * <P>
+	 * The name of the folder can be passed in the parameter and in this case this
+	 * method makes only sanity checks.
+	 * If the parameter is <code>null</code> the the path of the folder is 
+	 * taken from a property.
+	 * 
+	 * @param folder The path of folder of log files; if <code>null</code>,
+	 * 				the path is read from a java property 
+	 * @return The name of the folder of files; 
+	 * 
+	 * @throws ZoomException In case the folder is not found or not readable
+	 */
+	private String getFolderOfFiles(String folder) throws ZoomException {
+		String ret;
+		if (folder==null) {
+			ret= System.getProperty(FILES_LOCATION_PROPRTY_NAME);
+		} else {
+			ret=folder;
+		}
 		if (ret!=null && !ret.isEmpty()) {
 			// Check if the folder is readable
 			File f = new File(ret);
