@@ -133,10 +133,10 @@ public class FilterChooserDialog extends JDialog {
 		private FilterChooserDialog fcd = FilterChooserDialog.this;
 
 		private Filter editFilter(Filter f) {
-			FilterParameterDialog fpd = new FilterParameterDialog();
+			FilterParameterDialog fpd = new FilterParameterDialog(FilterChooserDialog.this);
 			fpd.setFilter(f);
-			if (fpd.showModal() == FilterParameterDialog.MODAL_OK) {
-				fpd.dispose();
+			fpd.setVisible(true);
+			if (fpd.okPressed()) {
 				return fpd.getFilter();
 			}
 			return null;
