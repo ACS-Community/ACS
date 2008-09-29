@@ -22,8 +22,7 @@ class ACSComponentTestClassImpl: public virtual acscomponent::ACSComponentImpl,
     
     virtual ~ACSComponentTestClassImpl();
             
-    void shutdown( ) 
-      throw (CORBA::SystemException );
+    void shutdown(); 
     
 };
 

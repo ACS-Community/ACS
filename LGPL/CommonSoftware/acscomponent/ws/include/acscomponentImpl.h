@@ -4,7 +4,7 @@
 /************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: acscomponentImpl.h,v 1.30 2006/10/03 21:51:44 gchiozzi Exp $"
+* "@(#) $Id: acscomponentImpl.h,v 1.31 2008/09/29 09:58:37 cparedes Exp $"
 *
 * who       when        what
 * --------  ----------  -------------------------------------------------
@@ -84,8 +84,7 @@ class ACSComponentImpl : public virtual PortableServer::RefCountServantBase,
    * <br><hr>
    * @endhtmlonly
    */
-  virtual char * name ()
-      throw (CORBA::SystemException);
+  virtual char * name ();
  
   /**
    * Property for the state of the ACSComponent
@@ -95,8 +94,7 @@ class ACSComponentImpl : public virtual PortableServer::RefCountServantBase,
    * <br><hr>
    * @endhtmlonly
    */
-  virtual ::ACS::ComponentStates componentState ()
-    throw (CORBA::SystemException);
+  virtual ::ACS::ComponentStates componentState ();
 
     /*************** Life Cycle methods ***************/
 

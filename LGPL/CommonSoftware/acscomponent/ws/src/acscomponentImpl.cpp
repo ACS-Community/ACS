@@ -1,7 +1,7 @@
 /*************************************************************************
 * E.S.O. - VLT project
 *
-* "@(#) $Id: acscomponentImpl.cpp,v 1.36 2006/10/03 21:51:44 gchiozzi Exp $"
+* "@(#) $Id: acscomponentImpl.cpp,v 1.37 2008/09/29 09:58:37 cparedes Exp $"
 *
 * who       when        what
 * --------  --------    --------------------------------------------------
@@ -50,14 +50,12 @@ ACSComponentImpl::~ACSComponentImpl()
 
 char *
 ACSComponentImpl::name ()
-  throw (CORBA::SystemException)
 {
   return CORBA::string_dup(m_name.c_str());
 }
 
 ACS::ComponentStates
 ACSComponentImpl::componentState ()
-  throw (CORBA::SystemException)
 {
   if (m_containerServices_p==NULL)
   {
