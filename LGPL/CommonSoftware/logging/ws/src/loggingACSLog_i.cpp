@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingACSLog_i.cpp,v 1.4 2007/05/28 06:23:39 cparedes Exp $"
+* "@(#) $Id: loggingACSLog_i.cpp,v 1.5 2008/09/29 08:36:42 cparedes Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -61,9 +61,6 @@ ACSLog_i::~ACSLog_i ()
 
 void
 ACSLog_i::write_recordlist (const DsLogAdmin::RecordList &reclist)
-    throw (CORBA::SystemException,
-	   DsLogAdmin::LogFull,
-	   DsLogAdmin::LogLocked)
 {
     
     if (reclist.length() <= 0)

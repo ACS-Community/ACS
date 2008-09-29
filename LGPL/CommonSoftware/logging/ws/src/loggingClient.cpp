@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingClient.cpp,v 1.53 2008/07/15 06:55:52 bjeram Exp $"
+* "@(#) $Id: loggingClient.cpp,v 1.54 2008/09/29 08:36:42 cparedes Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -320,10 +320,6 @@ ACSStructuredPushConsumer::offer_change (const CosNotification::EventTypeSeq & /
 					 const CosNotification::EventTypeSeq & /*removed*/
 
 )
-      throw (
-        CORBA::SystemException,
-        CosNotifyComm::InvalidEventType
-      )
 {
   // No-Op.
 }
@@ -347,10 +343,6 @@ ACE_TCHAR* ACSStructuredPushConsumer::m_LogEntryTypeName[] =
 void
 ACSStructuredPushConsumer::push_structured_event (const CosNotification::StructuredEvent & notification
 						  )
-  throw (
-                   CORBA::SystemException,
-                   CosEventComm::Disconnected
-                   )
 {
 
  // "Logging" or "Archiving"
@@ -474,9 +466,6 @@ ACSStructuredPushConsumer::push_structured_event (const CosNotification::Structu
 
 void
 ACSStructuredPushConsumer::disconnect_structured_push_consumer ()
-  throw (
-                   CORBA::SystemException
-                   )
 {
   // No-Op.
 }

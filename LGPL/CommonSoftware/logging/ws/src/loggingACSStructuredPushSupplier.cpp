@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingACSStructuredPushSupplier.cpp,v 1.5 2006/07/19 16:57:28 dfugate Exp $"
+* "@(#) $Id: loggingACSStructuredPushSupplier.cpp,v 1.6 2008/09/29 08:36:42 cparedes Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -75,8 +75,6 @@ ACSStructuredPushSupplier::disconnect ()
 void
 ACSStructuredPushSupplier::subscription_change (const CosNotification::EventTypeSeq & /*added*/,
 						const CosNotification::EventTypeSeq & /*removed */)
-  throw (CORBA::SystemException,
-         CosNotifyComm::InvalidEventType)
 {
   //No-Op.
 }
@@ -125,7 +123,6 @@ ACSStructuredPushSupplier::send_event (const CosNotification::StructuredEvent& e
 
 void
 ACSStructuredPushSupplier::disconnect_structured_push_supplier ()
-  throw (CORBA::SystemException)
 {
   // No-Op.
 }

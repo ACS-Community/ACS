@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingClient.h,v 1.43 2008/04/03 21:10:56 bjeram Exp $"
+* "@(#) $Id: loggingClient.h,v 1.44 2008/09/29 08:36:42 cparedes Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -193,19 +193,20 @@ class ACSStructuredPushConsumer : public POA_CosNotifyComm::StructuredPushConsum
     virtual ~ACSStructuredPushConsumer (void);
     // Destructor
     
-    // = NotifyPublish method
+    /*
+    * = NotifyPublish method
+    * \throw CosNotifyComm::InvalidEventType
+    */
     virtual void offer_change(const CosNotification::EventTypeSeq & added,
-			      const CosNotification::EventTypeSeq & removed)
-	throw (CORBA::SystemException,
-	       CosNotifyComm::InvalidEventType);
+			      const CosNotification::EventTypeSeq & removed);
     
-    // = StructuredPushSupplier methods
-    virtual void push_structured_event (const CosNotification::StructuredEvent & notification)
-	throw (CORBA::SystemException,
-	       CosEventComm::Disconnected);
+    /*
+    * = StructuredPushSupplier methods
+    * \throw CosEventComm::Disconnected
+    */
+    virtual void push_structured_event (const CosNotification::StructuredEvent & notification);
     
-    virtual void disconnect_structured_push_consumer ()
-	throw (CORBA::SystemException);
+    virtual void disconnect_structured_push_consumer ();
 
     bool m_logBin;
 	static ACE_TCHAR* m_LogEntryTypeName[];	

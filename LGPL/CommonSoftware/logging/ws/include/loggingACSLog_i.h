@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingACSLog_i.h,v 1.4 2007/05/28 06:23:39 cparedes Exp $"
+* "@(#) $Id: loggingACSLog_i.h,v 1.5 2008/09/29 08:36:42 cparedes Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -74,12 +74,11 @@ class ACSLog_i : public TAO_BasicLog_i
      * Write a list of record ids to storage. Raises DsLogAdmin::LogFull
      * and DsLogAdmin::LogLocked
      * Same as BasicLogFactory implementation, except it writes to file (no memory store is used)
+     * \throw DsLogAdmin::LogFull 
+     * \throw DsLogAdmin::LogLocked
      */
     void
-    write_recordlist (const DsLogAdmin::RecordList & list)
-	throw (CORBA::SystemException,
-	       DsLogAdmin::LogFull,
-	       DsLogAdmin::LogLocked); 
+    write_recordlist (const DsLogAdmin::RecordList & list);
     
   protected:
    

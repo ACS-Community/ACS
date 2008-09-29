@@ -20,7 +20,7 @@
  *    License along with this library; if not, write to the Free Software
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: loggingACSStructuredPushSupplier.h,v 1.5 2006/10/18 11:27:45 sharring Exp $"
+ * "@(#) $Id: loggingACSStructuredPushSupplier.h,v 1.6 2008/09/29 08:36:42 cparedes Exp $"
  *
  * who       when        what
  * --------  ----------  ----------------------------------------------
@@ -66,14 +66,15 @@ class ACSStructuredPushSupplier : public POA_CosNotifyComm::StructuredPushSuppli
     
     
     // = NotifySubscribe
+    /*
+    * = NotifySubscribe
+    * \throw CosNotifyComm::InvalidEventType
+    */
     virtual void subscription_change (const CosNotification::EventTypeSeq & added,
-				      const CosNotification::EventTypeSeq & removed)
-	throw (CORBA::SystemException,
-	       CosNotifyComm::InvalidEventType);
+				      const CosNotification::EventTypeSeq & removed);
     
     // = StructuredPushSupplier method
-    virtual void disconnect_structured_push_supplier ()
-	throw (CORBA::SystemException);
+    virtual void disconnect_structured_push_supplier ();
 
   protected:
     // = Data members
