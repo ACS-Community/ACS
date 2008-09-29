@@ -1,7 +1,7 @@
 /*******************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: cdbDALaccess.h,v 1.32 2008/05/14 09:18:36 cparedes Exp $"
+* "@(#) $Id: cdbDALaccess.h,v 1.33 2008/09/29 09:51:19 cparedes Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -103,9 +103,6 @@ public:
     virtual void object_changed (
         const char * curl
          
-      )
-      throw (
-        CORBA::SystemException
       );
 
       DALaccess::MapStrRec* pMap;

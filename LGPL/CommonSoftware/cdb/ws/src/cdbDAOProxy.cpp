@@ -18,7 +18,7 @@
  *    License along with this library; if not, write to the Free Software
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: cdbDAOProxy.cpp,v 1.5 2008/07/25 07:24:24 cparedes Exp $"
+ * "@(#) $Id: cdbDAOProxy.cpp,v 1.6 2008/09/29 09:51:19 cparedes Exp $"
  *
  * who       when        what
  * --------  ----------  ----------------------------------------------
@@ -430,11 +430,6 @@ bool DAOProxy::split(const string& str, VectorString& array)
 
 
 CORBA::Long DAOProxy::get_long (const char * propertyName)
-    throw (
-	CORBA::SystemException,
-	cdbErrType::WrongCDBDataTypeEx,
-	cdbErrType::CDBFieldDoesNotExistEx
-	)
 {
     //ACS_TRACE("cdb::DAOProxy::get_long");
 
@@ -460,11 +455,6 @@ CORBA::Long DAOProxy::get_long (const char * propertyName)
 }
 
 CORBA::Double DAOProxy::get_double (const char * propertyName)
-    throw (
-	CORBA::SystemException,
-	cdbErrType::WrongCDBDataTypeEx,
-	cdbErrType::CDBFieldDoesNotExistEx
-	)
 {
     //ACS_TRACE("cdb::DAOProxy::get_double");
 
@@ -490,11 +480,6 @@ CORBA::Double DAOProxy::get_double (const char * propertyName)
 }
 
 char * DAOProxy::get_string (const char * propertyName)
-    throw (
-	CORBA::SystemException,
-	cdbErrType::WrongCDBDataTypeEx,
-	cdbErrType::CDBFieldDoesNotExistEx
-	)
 {
     //ACS_TRACE("cdb::DAOProxy::get_string");
 
@@ -506,11 +491,6 @@ char * DAOProxy::get_string (const char * propertyName)
 }
 
 char * DAOProxy::get_field_data (const char * propertyName)
-    throw (
-	CORBA::SystemException,
-	cdbErrType::WrongCDBDataTypeEx,
-	cdbErrType::CDBFieldDoesNotExistEx
-	)
 {
     //ACS_TRACE("cdb::DAOProxy::get_field_data");
 
@@ -528,11 +508,6 @@ char * DAOProxy::get_field_data (const char * propertyName)
 }
 
 CDB::stringSeq* DAOProxy::get_string_seq (const char * propertyName)
-    throw (
-	CORBA::SystemException,
-	cdbErrType::WrongCDBDataTypeEx,
-	cdbErrType::CDBFieldDoesNotExistEx
-	)
 {
     //ACS_TRACE("cdb::DAOProxy::get_string_seq");
 
@@ -564,11 +539,6 @@ CDB::stringSeq* DAOProxy::get_string_seq (const char * propertyName)
 }
 
 CDB::longSeq * DAOProxy::get_long_seq (const char * propertyName)
-    throw (
-	CORBA::SystemException,
-	cdbErrType::WrongCDBDataTypeEx,
-	cdbErrType::CDBFieldDoesNotExistEx
-	)
 {
     //ACS_TRACE("cdb::DAOProxy::get_long_seq");
 
@@ -609,11 +579,6 @@ CDB::longSeq * DAOProxy::get_long_seq (const char * propertyName)
 
 
 CDB::doubleSeq * DAOProxy::get_double_seq (const char * propertyName)
-    throw (
-	CORBA::SystemException,
-	cdbErrType::WrongCDBDataTypeEx,
-	cdbErrType::CDBFieldDoesNotExistEx
-	)
 {
     //ACS_TRACE("cdb::DAOProxy::get_double_seq");
 
@@ -652,9 +617,6 @@ CDB::doubleSeq * DAOProxy::get_double_seq (const char * propertyName)
 }
 
 void DAOProxy::destroy ()
-    throw (
-	CORBA::SystemException
-	)
 {
     //ACS_TRACE("cdb::DAOProxy::destroy");
 

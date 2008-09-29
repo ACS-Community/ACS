@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: cdbDAOImpl.cpp,v 1.40 2007/08/14 08:47:43 bjeram Exp $"
+* "@(#) $Id: cdbDAOImpl.cpp,v 1.41 2008/09/29 09:51:19 cparedes Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -302,10 +302,6 @@ CORBA::Long DAOImpl::get_long (
     const char * propertyName
     
   )
-  throw (
-    CORBA::SystemException,
-    cdbErrType::WrongCDBDataTypeEx
-  )
 {
 	if( m_remote )
 	{
@@ -332,10 +328,6 @@ CORBA::Long DAOImpl::get_long (
 CORBA::Double DAOImpl::get_double (
     const char * propertyName
     
-  )
-  throw (
-    CORBA::SystemException,
-    cdbErrType::WrongCDBDataTypeEx    
   )
 {
 	if( m_remote )
@@ -364,11 +356,6 @@ char * DAOImpl::get_string (
     const char * propertyName
     
   )
-  throw (
-    CORBA::SystemException,
-    cdbErrType::WrongCDBDataTypeEx 
- )
-
   {
   	if( m_remote )
 	{
@@ -398,13 +385,6 @@ char * DAOImpl::get_field_data (
     const char * propertyName
     
   )
-  throw (
-    CORBA::SystemException,
-    cdbErrType::WrongCDBDataTypeEx,
-    cdbErrType::CDBFieldDoesNotExistEx
-    //CDB::WrongDataType,
-    //CDB::FieldDoesNotExist
-  )
 {
 	Field fld;
 	if( !get_field(propertyName, fld) )
@@ -421,13 +401,6 @@ char * DAOImpl::get_field_data (
 CDB::stringSeq* DAOImpl::get_string_seq (
     const char * propertyName
     
-  )
-  throw (
-    CORBA::SystemException,
-    cdbErrType::WrongCDBDataTypeEx,
-    cdbErrType::CDBFieldDoesNotExistEx
-//CDB::WrongDataType,
-    //CDB::FieldDoesNotExist
   )
 {
 	Field fld;
@@ -465,11 +438,6 @@ CDB::stringSeq* DAOImpl::get_string_seq (
 ::CDB::longSeq * DAOImpl::get_long_seq (
 	const char * propertyName
 	
-	)
-	throw (
-		CORBA::SystemException,
-    cdbErrType::WrongCDBDataTypeEx,
-    cdbErrType::CDBFieldDoesNotExistEx
 	)
 {
 	Field fld;
@@ -522,11 +490,6 @@ CDB::stringSeq* DAOImpl::get_string_seq (
 ::CDB::doubleSeq * DAOImpl::get_double_seq (
 	const char * propertyName
 	
-	)
-	throw (
-		CORBA::SystemException,
-    		cdbErrType::WrongCDBDataTypeEx,
-    		cdbErrType::CDBFieldDoesNotExistEx
 	)
 {
 	Field fld;

@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: cdbDALfsImpl.h,v 1.25 2003/10/23 07:57:09 acaproni Exp $"
+* "@(#) $Id: cdbDALfsImpl.h,v 1.26 2008/09/29 09:51:19 cparedes Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -32,27 +32,21 @@ public:
 virtual char * get_DAO (
     const char * curl,
     
-  )
-  throw (
-    CORBA::SystemException
   );
-
+/*
+* @throw CDB::RecordDoesNotExist
+* @throw CDB::XMLerror
+*/
 virtual ::CDB::DAO_ptr get_DAO_Servant (
     const char * curl
     
-  )
-  throw (
-    CORBA::SystemException,
-    CDB::RecordDoesNotExist,
-		CDB::XMLerror
   );
 
 protected:
-	char*		LoadRecord( const char * curl )
-										throw (
-										CORBA::SystemException,
-										CDB::RecordDoesNotExist
-									);
+/*
+* @throw CDB::RecordDoesNotExist
+*/
+	char*		LoadRecord( const char * curl );
 
 	bool		GetRecordPath( const char * curl, ACE_CString& path );
 

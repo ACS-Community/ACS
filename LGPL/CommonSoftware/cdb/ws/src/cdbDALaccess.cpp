@@ -19,7 +19,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: cdbDALaccess.cpp,v 1.44 2007/10/10 14:41:07 bjeram Exp $"
+* "@(#) $Id: cdbDALaccess.cpp,v 1.45 2008/09/29 09:51:19 cparedes Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -47,9 +47,7 @@ CDB::DAL_var DALaccess::m_forcedDAL = CDB::DAL::_nil();
 
 int DALaccess::exitStarts = 0;
 
-void DALChangeListenerImpl::object_changed( const char * curl) throw (
-        CORBA::SystemException
-      )
+void DALChangeListenerImpl::object_changed( const char * curl) 
 {
 	DALaccess::MapStrRec::iterator iter = pMap->find(curl);
 	if(iter != pMap->end()) {

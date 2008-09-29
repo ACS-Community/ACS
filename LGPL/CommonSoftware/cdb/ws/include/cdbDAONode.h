@@ -22,7 +22,7 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
  *
- * "@(#) $Id: cdbDAONode.h,v 1.5 2008/07/25 07:24:24 cparedes Exp $"
+ * "@(#) $Id: cdbDAONode.h,v 1.6 2008/09/29 09:51:19 cparedes Exp $"
  *
  * who       when        what
  * --------  ----------  ----------------------------------------------
@@ -85,10 +85,7 @@ namespace cdb {
 	// CORBA DALChangeListenerImplementation interface
 	//----------------------------------------------------
 
-	virtual void object_changed (const char * curl)
-	    throw (
-		CORBA::SystemException
-		);
+	virtual void object_changed (const char * curl);
 
       protected:
 
@@ -149,60 +146,49 @@ namespace cdb {
 	//----------------------------------------------------
 	// CORBA DAO interface
 	//----------------------------------------------------
+    /*
+    * @throw cdbErrType::WrongCDBDataTypeEx
+    * @throw cdbErrType::CDBFieldDoesNotExistEx
+    */
+	virtual CORBA::Long get_long (const char * propertyName);
 
-	virtual CORBA::Long get_long (const char * propertyName)
-	    throw (
-		CORBA::SystemException,
-		cdbErrType::WrongCDBDataTypeEx,
-		cdbErrType::CDBFieldDoesNotExistEx
-		);
+    /*
+    * @throw cdbErrType::WrongCDBDataTypeEx
+    * @throw cdbErrType::CDBFieldDoesNotExistEx
+    */
+	virtual CORBA::Double get_double (const char * propertyName);
 
-	virtual CORBA::Double get_double (const char * propertyName)
-	    throw (
-		CORBA::SystemException,
-		cdbErrType::WrongCDBDataTypeEx,
-		cdbErrType::CDBFieldDoesNotExistEx
-		);
+    /*
+    * @throw cdbErrType::WrongCDBDataTypeEx
+    * @throw cdbErrType::CDBFieldDoesNotExistEx
+    */
+	virtual char * get_string (const char * propertyName);
 
-	virtual char * get_string (const char * propertyName)
-	    throw (
-		CORBA::SystemException,
-		cdbErrType::WrongCDBDataTypeEx,
-		cdbErrType::CDBFieldDoesNotExistEx
-		);
+    /*
+    * @throw cdbErrType::WrongCDBDataTypeEx
+    * @throw cdbErrType::CDBFieldDoesNotExistEx
+    */
+	virtual char * get_field_data (const char * propertyName);
 
-	virtual char * get_field_data (const char * propertyName)
-	    throw (
-		CORBA::SystemException,
-		cdbErrType::WrongCDBDataTypeEx,
-		cdbErrType::CDBFieldDoesNotExistEx
-		);
+    /*
+    * @throw cdbErrType::WrongCDBDataTypeEx
+    * @throw cdbErrType::CDBFieldDoesNotExistEx
+    */
+	virtual ::CDB::stringSeq * get_string_seq (const char * propertyName);
 
-	virtual ::CDB::stringSeq * get_string_seq (const char * propertyName)
-	    throw (
-		CORBA::SystemException,
-		cdbErrType::WrongCDBDataTypeEx,
-		cdbErrType::CDBFieldDoesNotExistEx
-		);
+    /*
+    * @throw cdbErrType::WrongCDBDataTypeEx
+    * @throw cdbErrType::CDBFieldDoesNotExistEx
+    */
+	virtual ::CDB::longSeq * get_long_seq (const char * propertyName);
+    
+    /*
+    * @throw cdbErrType::WrongCDBDataTypeEx
+    * @throw cdbErrType::CDBFieldDoesNotExistEx
+    */
+	virtual ::CDB::doubleSeq * get_double_seq (const char * propertyName);
 
-	virtual ::CDB::longSeq * get_long_seq (const char * propertyName)
-	    throw (
-		CORBA::SystemException,
-		cdbErrType::WrongCDBDataTypeEx,
-		cdbErrType::CDBFieldDoesNotExistEx
-		);
-
-	virtual ::CDB::doubleSeq * get_double_seq (const char * propertyName)
-	    throw (
-		CORBA::SystemException,
-		cdbErrType::WrongCDBDataTypeEx,
-		cdbErrType::CDBFieldDoesNotExistEx
-		);
-
-	virtual void destroy ()
-	    throw (
-		CORBA::SystemException
-		);
+	virtual void destroy ();
 
       protected:
 
@@ -276,59 +262,49 @@ namespace cdb {
 	// CORBA DAO interface
 	//----------------------------------------------------
 
-	virtual CORBA::Long get_long (const char * propertyName)
-	    throw (
-		CORBA::SystemException,
-		cdbErrType::WrongCDBDataTypeEx,
-		cdbErrType::CDBFieldDoesNotExistEx
-		);
+    /*
+    * @throw cdbErrType::WrongCDBDataTypeEx
+    * @throw cdbErrType::CDBFieldDoesNotExistEx
+    */
+	virtual CORBA::Long get_long (const char * propertyName);
 
-	virtual CORBA::Double get_double (const char * propertyName)
-	    throw (
-		CORBA::SystemException,
-		cdbErrType::WrongCDBDataTypeEx,
-		cdbErrType::CDBFieldDoesNotExistEx
-		);
+    /*
+    * @throw cdbErrType::WrongCDBDataTypeEx
+    * @throw cdbErrType::CDBFieldDoesNotExistEx
+    */
+	virtual CORBA::Double get_double (const char * propertyName);
 
-	virtual char * get_string (const char * propertyName)
-	    throw (
-		CORBA::SystemException,
-		cdbErrType::WrongCDBDataTypeEx,
-		cdbErrType::CDBFieldDoesNotExistEx
-		);
+    /*
+    * @throw cdbErrType::WrongCDBDataTypeEx
+    * @throw cdbErrType::CDBFieldDoesNotExistEx
+    */
+	virtual char * get_string (const char * propertyName);
 
-	virtual char * get_field_data (const char * propertyName)
-	    throw (
-		CORBA::SystemException,
-		cdbErrType::WrongCDBDataTypeEx,
-		cdbErrType::CDBFieldDoesNotExistEx
-		);
+    /*
+    * @throw cdbErrType::WrongCDBDataTypeEx
+    * @throw cdbErrType::CDBFieldDoesNotExistEx
+    */
+	virtual char * get_field_data (const char * propertyName);
 
-	virtual ::CDB::stringSeq * get_string_seq (const char * propertyName)
-	    throw (
-		CORBA::SystemException,
-		cdbErrType::WrongCDBDataTypeEx,
-		cdbErrType::CDBFieldDoesNotExistEx
-		);
+    /*
+    * @throw cdbErrType::WrongCDBDataTypeEx
+    * @throw cdbErrType::CDBFieldDoesNotExistEx
+    */
+	virtual ::CDB::stringSeq * get_string_seq (const char * propertyName);
 
-	virtual ::CDB::longSeq * get_long_seq (const char * propertyName)
-	    throw (
-		CORBA::SystemException,
-		cdbErrType::WrongCDBDataTypeEx,
-		cdbErrType::CDBFieldDoesNotExistEx
-		);
+    /*
+    * @throw cdbErrType::WrongCDBDataTypeEx
+    * @throw cdbErrType::CDBFieldDoesNotExistEx
+    */
+	virtual ::CDB::longSeq * get_long_seq (const char * propertyName);
 
-	virtual ::CDB::doubleSeq * get_double_seq (const char * propertyName)
-	    throw (
-		CORBA::SystemException,
-		cdbErrType::WrongCDBDataTypeEx,
-		cdbErrType::CDBFieldDoesNotExistEx
-		);
+    /*
+    * @throw cdbErrType::WrongCDBDataTypeEx
+    * @throw cdbErrType::CDBFieldDoesNotExistEx
+    */
+	virtual ::CDB::doubleSeq * get_double_seq (const char * propertyName);
 
-	virtual void destroy ()
-	    throw (
-		CORBA::SystemException
-		);
+	virtual void destroy ();
 
       protected:
 	

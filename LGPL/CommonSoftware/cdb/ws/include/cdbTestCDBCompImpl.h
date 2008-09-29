@@ -55,9 +55,7 @@ class cdb_EXPORT TestCDBComp: public baci::CharacteristicComponentImpl,     //St
      * Destructor
      */
     virtual ~TestCDBComp();
-    virtual ACS::ROdouble_ptr 
-    testatt ()
-	throw (CORBA::SystemException);
+    virtual ACS::ROdouble_ptr testatt ();
     SmartPropertyPointer<ROdouble> m_testatt_sp;
 };
 
