@@ -18,7 +18,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: timeoutTestImpl.h,v 1.4 2006/02/28 19:25:11 sharring Exp $"
+* "@(#) $Id: timeoutTestImpl.h,v 1.5 2008/09/29 09:42:48 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -56,13 +56,13 @@ class TimeOutTestImpl : public POA_TimeOutTest
 		 *        of the timeout in relation to this value.
 		 * @return the value passed in as the input parameter, x, "echoed" back as output.
 		 */
-		CORBA::Long echo (CORBA::Long x, CORBA::Long msecs) throw (CORBA::SystemException);
+		CORBA::Long echo (CORBA::Long x, CORBA::Long msecs) ;
 
 		/**
 		 * Used to gracefully exit the test after the client is finished. The client must call this method when 
 		 * finished testing the servant, in order to prevent the servant process from hanging around indefinitely.
 		 */
-		void shutdownOrb() throw (CORBA::SystemException);
+		void shutdownOrb();
 
 	private:
 
