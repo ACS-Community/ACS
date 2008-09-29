@@ -35,7 +35,7 @@ public class MemoryPrinter extends DataPrinter {
 	 * they will be destroyed in object destruction.
 	 */
 	public void postProcessing() {
-		
+		widget.resetSampleCount();
 	}
 
 	public void setComponent(String component) {

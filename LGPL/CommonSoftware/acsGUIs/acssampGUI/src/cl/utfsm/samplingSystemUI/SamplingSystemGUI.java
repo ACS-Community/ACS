@@ -4,6 +4,8 @@ import java.awt.ComponentOrientation;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -38,7 +40,7 @@ public class SamplingSystemGUI extends JFrame {
 	private static final long serialVersionUID = 1L;
 	
 	public String MAN_NAME = "SAMP1";
-	private final static String DEFAULT_STATUS_FILENAME = "default.status";  //  @jve:decl-index=0:
+	private final static String DEFAULT_STATUS_FILENAME = "default.ssgst";
 	
 	private JPanel jContentPane = null;
 
@@ -254,10 +256,11 @@ public class SamplingSystemGUI extends JFrame {
 			addSampleButton.setText("Add Sample");
 			addSampleButton.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
-					if(jTextField.getText().equalsIgnoreCase("")) return;
+					if(jTextField.getText().trim().equalsIgnoreCase("")) return;
 					String component = ComponentBox1.getSelectedItem().toString();
 					String property = PropertyBox1.getSelectedItem().toString();
 					String group = jTextField.getText();
+					
 					SerializableProperty p = new SerializableProperty();
 					p.setComponent(component);
 					p.setProperty(property);
@@ -282,7 +285,7 @@ public class SamplingSystemGUI extends JFrame {
 
 		/* If there is no group with this name, we create it */
 		if (bg == null){
-			bg = new BeanGrouper(this);
+			bg = new BeanGrouper(this,group);
 			bg.setCheckName(group);
 			bg.addSamp(component, property);
 			jPanel21.add(bg,"growx, dock north");
@@ -305,6 +308,7 @@ public class SamplingSystemGUI extends JFrame {
 		}
 		
 		jPanel21.validate();
+		jScrollPane.validate();
 		return added;
 	}
 
@@ -347,11 +351,29 @@ public class SamplingSystemGUI extends JFrame {
 		if (jTextField == null) {
 			jTextField = new JTextField();
 			jTextField.setPreferredSize(new Dimension(100, 19));
-			jTextField.setToolTipText("Samp Group where to add the new Sample");
+			jTextField.setToolTipText("Sampling Group where to add the new Sample. Only alphanumeric and underscore characters.");
 			jTextField.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
-			jTextField.setHorizontalAlignment(JTextField.CENTER);
+			jTextField.setHorizontalAlignment(JTextField.LEFT);
 			jTextField.setText("SampGroup");
-		}
+			jTextField.addFocusListener(new FocusListener() {
+
+				public void focusGained(FocusEvent e) {
+					// Do nothing special :)
+				}
+
+				public void focusLost(FocusEvent e) {
+					if( !jTextField.getText().matches("^([a-z]|[A-Z]|[0-9]|_)+$") ) {
+						JOptionPane.showConfirmDialog(SamplingSystemGUI.this,
+								"Group name '" + jTextField.getText() + "' is invalid.\nPlease use only alphanumeric characters and/or underscores.",
+								"Invalid group name",
+								JOptionPane.PLAIN_MESSAGE,JOptionPane.WARNING_MESSAGE);
+						jTextField.setText("");
+						jTextField.grabFocus();
+					}
+				}
+			}
+			);
+			}
 		return jTextField;
 	}
 
@@ -369,7 +391,7 @@ public class SamplingSystemGUI extends JFrame {
 				    JFileChooser chooser = new JFileChooser();
 				    int returnVal = chooser.showSaveDialog(cl.utfsm.samplingSystemUI.SamplingSystemGUI.this);
 				    if(returnVal == JFileChooser.APPROVE_OPTION) {
-				    	writeStatusFile(chooser.getSelectedFile().getAbsolutePath());
+				    	writeStatusFile(chooser.getSelectedFile().getAbsolutePath() + ".ssgst");
 				    }
 				}
 			});
@@ -652,7 +674,7 @@ class Filter extends FileFilter {
 
 	@Override
 	public String getDescription() {
-		return "Sample System GUI status File (*.ssgts)";
+		return "Sample System GUI status File (*.ssgst)";
 	}
 	
 }

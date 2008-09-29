@@ -78,4 +78,9 @@ public class BeanMemoryWidget extends SamplingWidget {
 		
 		componentLabel.repaint();
 	}
+	
+	public void resetSampleCount() {
+		samples = 0;
+		SamplingSizeLabel.setText("Sampling size: "+ samples);
+	}
 }

@@ -7,4 +7,6 @@ public interface IGraphicalUpdater {
 	public void setValues(String component, String property);
 	
 	public void setComponentAvailable(boolean tmp, String reason);
+	
+	public void resetSampleCount();
 }

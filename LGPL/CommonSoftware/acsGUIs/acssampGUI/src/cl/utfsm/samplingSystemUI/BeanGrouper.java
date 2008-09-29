@@ -57,6 +57,17 @@ public class BeanGrouper extends JPanel {
 	}
 
 	/**
+	 * This is the overloaded constructor that allows to save the Sampling Group name
+	 */
+	public BeanGrouper(SamplingSystemGUI ssg, String group) {
+		super();
+		this.ssg = ssg;
+		toFile=new FileHelper();
+		toFile.setFilePrefix( group );
+		initialize();
+	}
+
+	/**
 	 * This method initializes this
 	 * 
 	 * @return void
@@ -121,6 +132,7 @@ public class BeanGrouper extends JPanel {
 					dad.remove(BeanGrouper.this);
 					dad.repaint();
 					dad.validate();
+					dad.getParent().validate();
 				}
 			});
 		}
@@ -200,7 +212,13 @@ public class BeanGrouper extends JPanel {
 			jStopButton.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
 					jCloseButton.setEnabled(true);
+					
+					// Stop the samples
 					stopSample();
+					
+					// Enable/disable buttons
+					timeSampTextField.setEnabled(true);
+					freqTextField.setEnabled(true);
 					jStopButton.setEnabled(false);
 				}
 			});
@@ -357,11 +375,13 @@ public class BeanGrouper extends JPanel {
 		jStopButton.setEnabled(false);
 		startSampleButton.setEnabled(true);
 		String header ="Time";
+		toFile.removeSamplingSets();
 		for(DataPrinter i : samplers) {
 			i.stopSampling();
-			if( i.isComponentAvailable() == true )
+			if( i.isComponentAvailable() == true ) {
 				toFile.addSamplingSet(i.getSamples());
-			header+=";"+i.getComponent()+"."+i.getProperty();
+				header+=";"+i.getComponent()+"."+i.getProperty();
+			}
 		}
 		toFile.setHeaderFile(header);
 		toFile.dumpToFile(Integer.parseInt(getFreqTextField().getText()));

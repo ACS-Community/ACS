@@ -11,6 +11,7 @@ import cl.utfsm.samplingSystemUI.core.DataItem;
 public class FileHelper {
 	
 	private String filename="";
+	private String group="";
 	private FileWriter file;
 	private BufferedWriter writer;
 	private String header;
@@ -20,9 +21,18 @@ public class FileHelper {
 	public FileHelper(){
 		data = new ArrayList<ArrayList<DataItem>>();
 	}
+
+	public FileHelper( String group ){
+		data = new ArrayList<ArrayList<DataItem>>();
+		this.group = group;
+	}
 	
 	public void addSamplingSet(ArrayList<DataItem> samp){
 		data.add(samp);
+	}
+	
+	public void removeSamplingSets(){
+		data = new ArrayList<ArrayList<DataItem>>();
 	}
 	
 	public void setHeaderFile(String header){
@@ -36,9 +46,16 @@ public class FileHelper {
 	public String getFileName(){
 		return filename;
 	}
+
+	public void setFilePrefix( String prefix ){
+		this.group = prefix;
+	}
 	
 	public void initialize(int freq){
-		filename = "samp_"+10000000L/freq+"_"+Calendar.getInstance().getTimeInMillis();
+		if( group == "" )
+			filename = "samp_"+10000000L/freq+"_"+Calendar.getInstance().getTimeInMillis();
+		else
+			filename = group+"_"+10000000L/freq+"_"+Calendar.getInstance().getTimeInMillis();
 	}
 	
 	public void dumpToFile(long frequency, double prec){
@@ -58,7 +75,9 @@ public class FileHelper {
 		}
 		while(!done){
 			String line = "" + timestamp;
+			boolean dataPresent = true;
 			for(int i=0;i<data.size();i++){
+				dataPresent = false;
 				if(c[i]==data.get(i).size()){
 					line+=";";
 					continue;
@@ -67,6 +86,7 @@ public class FileHelper {
 				if((item.getTime()>=(timestamp-w)) && (item.getTime()<=(timestamp+w))){
 					line+=";"+item.getValue();
 					c[i]++;
+					dataPresent = true;
 				}
 				else if((item.getTime()>=(timestamp+w)) &&  
 						(item.getTime()<=(timestamp+frequency-w))){
@@ -77,7 +97,9 @@ public class FileHelper {
 					line+=";";
 			}
 			try {
-				writer.write(line+"\n");
+				if( dataPresent ){
+					writer.write(line+"\n");
+				}
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

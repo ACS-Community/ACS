@@ -84,4 +84,8 @@ public class BeanLister extends SamplingWidget{
 			timeLabel.setForeground(Color.BLACK);
 		}	
 	}
+
+	public void resetSampleCount() {
+		
+	}
 }
