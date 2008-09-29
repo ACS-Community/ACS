@@ -20,7 +20,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acserrOldTestImpl.h,v 1.3 2003/10/23 07:41:14 acaproni Exp $"
+* "@(#) $Id: acserrOldTestImpl.h,v 1.4 2008/09/29 08:38:53 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -40,29 +40,27 @@ public:
   acserrOldTestImpl(acserrOldTest* dest, const char *sn);
 
   ACSErr::ErrorTrace * testNoError ( 
-				   ) throw ( CORBA::SystemException); 
+				   ); 
   
   ACSErr::ErrorTrace * test (  CORBA::Long depth,
 				    CORBA::Boolean err
 				    
-				   ) throw ( CORBA::SystemException);
+				   );
   
-    
+  /*
+  * \throw ACSErr::ACSException
+  */
   void testExceptions ( CORBA::Long depth,
 			CORBA::Boolean err
 			
-			) throw ( CORBA::SystemException,
-					    ACSErr::ACSException  );
+			);
 
   ACSError* f1 (int depth, bool iserr);
   
   void f2(int depth, bool isErr);
 
 
-    void shutdown( ) 
-	throw (
-	 CORBA::SystemException
-	) ;
+    void shutdown( );
 protected:
   acserrOldTest_var dest;
   int depth;

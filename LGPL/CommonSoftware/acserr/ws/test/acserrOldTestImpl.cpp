@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acserrOldTestImpl.cpp,v 1.6 2007/12/20 08:00:47 bjeram Exp $"
+* "@(#) $Id: acserrOldTestImpl.cpp,v 1.7 2008/09/29 08:38:53 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -27,7 +27,7 @@
 * rlemke   30/08/01  integrated into tat
 */
 
-static char *rcsId="@(#) $Id: acserrOldTestImpl.cpp,v 1.6 2007/12/20 08:00:47 bjeram Exp $"; 
+static char *rcsId="@(#) $Id: acserrOldTestImpl.cpp,v 1.7 2008/09/29 08:38:53 cparedes Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include "acserrOldTestImpl.h"
@@ -43,7 +43,6 @@ acserrOldTestImpl::acserrOldTestImpl(acserrOldTest* dest, const char* sn)
 } 
 
 ACSErr::ErrorTrace* acserrOldTestImpl::testNoError ()
-    throw (CORBA::SystemException)
 {
 #ifndef MAKE_VXWORKS
     ACSError *er = new ACS_ERROR();
@@ -57,7 +56,6 @@ ACSErr::ErrorTrace* acserrOldTestImpl::testNoError ()
 }  
 
 ACSErr::ErrorTrace * acserrOldTestImpl::test ( CORBA::Long depth, CORBA::Boolean err )
-    throw ( CORBA::SystemException)
 {
   this->depth = depth;
   ACSError *e = f1 (depth-1, err);
@@ -104,8 +102,6 @@ ACSError* acserrOldTestImpl::f1 (int depth, bool iserr){
 }
     
 void acserrOldTestImpl::testExceptions ( CORBA::Long depth, CORBA::Boolean err)
-    throw ( CORBA::SystemException,
-		  ACSErr::ACSException  )
 {
 
   this->depth = depth;
@@ -171,7 +167,6 @@ void acserrOldTestImpl::f2(int depth, bool isErr){
 }
 
 void acserrOldTestImpl::shutdown ()
-    throw ( CORBA::SystemException )
 {
     ACS_SHORT_LOG((LM_INFO, "acserr TestImpl Shutdown")); 
     ACSError::done();

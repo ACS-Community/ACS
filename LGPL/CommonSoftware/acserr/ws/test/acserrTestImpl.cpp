@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acserrTestImpl.cpp,v 1.54 2007/04/27 14:38:40 bjeram Exp $"
+* "@(#) $Id: acserrTestImpl.cpp,v 1.55 2008/09/29 08:38:53 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -27,7 +27,7 @@
 * rlemke   30/08/01  integrated into tat
 */
 
-static char *rcsId="@(#) $Id: acserrTestImpl.cpp,v 1.54 2007/04/27 14:38:40 bjeram Exp $"; 
+static char *rcsId="@(#) $Id: acserrTestImpl.cpp,v 1.55 2008/09/29 08:38:53 cparedes Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include "acserrTestImpl.h"
@@ -44,7 +44,6 @@ acserrTestImpl::acserrTestImpl(acserrTest* dest, const char* sn){
 }
 
 ACSErr::Completion * acserrTestImpl::testNoError (  )
-    throw ( CORBA::SystemException)
 {
     AUTO_TRACE("acserrTestImpl::testNoError");
 
@@ -53,7 +52,6 @@ ACSErr::Completion * acserrTestImpl::testNoError (  )
 }//acserrTestImpl::testNoError 
 
 ACSErr::Completion* acserrTestImpl::testDefaultError (  )
-    throw ( CORBA::SystemException)
 {
     AUTO_TRACE("acserrTestImpl::testDefaultError");
 
@@ -65,7 +63,6 @@ ACSErr::Completion* acserrTestImpl::testDefaultError (  )
 }//acserrTestImpl::testDefaultError 
 
 ACSErr::Completion * acserrTestImpl::test ( CORBA::Long depth, CORBA::Boolean err )
-    throw ( CORBA::SystemException)
 {
     AUTO_TRACE("acserrTestImpl::test");
   this->depth = depth;
@@ -81,7 +78,6 @@ ACSErr::Completion * acserrTestImpl::test ( CORBA::Long depth, CORBA::Boolean er
 
 // Here we return CORBA completion as output parameter
 void acserrTestImpl::testCompletionOut ( CORBA::Long depth, CORBA::Boolean err, ACSErr::Completion_out c ) 
-     throw( CORBA::SystemException )
 {
     AUTO_TRACE("acserrTestImpl::testCompletionOut");
     CompletionImpl *e = f1 (depth-1, err);
@@ -94,8 +90,8 @@ void acserrTestImpl::testCompletionOut ( CORBA::Long depth, CORBA::Boolean err, 
 
 
 // error is reported as CORBA exception
+// throw ACSErrTypeTest::ACSErrTest0Ex, ACSErr::ACSException
 void acserrTestImpl::testExceptions ( CORBA::Long depth, CORBA::Boolean err)
-    throw ( CORBA::SystemException, ACSErrTypeTest::ACSErrTest0Ex, ACSErr::ACSException)
 {
   this->depth = depth;
   try
@@ -236,7 +232,6 @@ void acserrTestImpl::f2(int depth, bool isErr){
 
 
 void acserrTestImpl::shutdown ()
-    throw (CORBA::SystemException )
 {
     ACS_TRACE("acserr TestImpl Shutdown"); 
     ACSError::done();
