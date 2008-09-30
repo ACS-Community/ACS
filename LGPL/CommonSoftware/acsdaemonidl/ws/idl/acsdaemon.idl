@@ -22,7 +22,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsdaemon.idl,v 1.14 2008/09/29 13:30:15 msekoran Exp $"
+* "@(#) $Id: acsdaemon.idl,v 1.15 2008/09/30 09:57:55 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -386,11 +386,42 @@ module acsdaemon
 		
 	};
 
+	
+	/** 
+	 *  Enumeration presenting service state.
+	 */
+	enum ServiceState { NOT_EXISTING, DEFUNCT, DEGRADED, RUNNING };
+	
+	/** 
+	 *  Base Spell interface.
+	 */
+	interface SpellBase
+	{
+		/** 
+		 * Heartbeat ping check.
+		 * @return boolean true if OK, false in case of malfunction
+		 * @htmlonly
+		 * <br><hr>
+		 * @endhtmlonly
+		 */
+		boolean ping();
+
+		/** 
+		 * Shuts down the Spell.
+		 * @return void
+		 * @htmlonly
+		 * <br><hr>
+		 * @endhtmlonly
+		 */
+		void shutdown();
+	};
+
+
 
 	/** 
-	 *  Naming Service Imp base interface.
+	 *  Naming Service Spell base interface.
 	 */
-	interface NamingServiceImpBase
+	interface NamingServiceSpellBase
 	{
 		/** 
 		 *  Asynchronously starts a naming service.
@@ -415,11 +446,25 @@ module acsdaemon
 				raises (ACSErrTypeCommon::BadParameterEx, acsdaemonErrType::ServiceNotRunningEx);
 	};
 
+	/** 
+	 *  Naming Service Spell.
+	 */
+	interface NamingServiceSpell : SpellBase, NamingServiceSpellBase
+	{
+		/** 
+		 *  Get service state.
+		 *  @param instance_number ACS instance number
+		 *  @return ServiceState
+		 */
+		ServiceState get_service_status(in short instance_number) 
+			raises (ACSErrTypeCommon::BadParameterEx);
+	};
+
 
 	/** 
-	 *  Notification Service Imp base interface.
+	 *  Notification Service Spell base interface.
 	 */
-	interface NotificationServiceImpBase
+	interface NotificationServiceSpellBase
 	{
 		/** 
 		 *  Asynchronously starts a notification service on the current host.
@@ -452,9 +497,24 @@ module acsdaemon
 
 
 	/** 
-	 *  CDB Imp base interface.
+	 *  Notification Service Spell.
 	 */
-	interface CDBImpBase
+	interface NotificationServiceSpell : SpellBase, NotificationServiceSpellBase
+	{
+		/** 
+		 *  Get service state.
+		 *  @param name Notification service name
+		 *  @param instance_number ACS instance number
+		 *  @return ServiceState
+		 */
+		ServiceState get_service_status(in string name, in short instance_number) 
+			raises (ACSErrTypeCommon::BadParameterEx);
+	};
+
+	/** 
+	 *  CDB Spell base interface.
+	 */
+	interface CDBSpellBase
 	{
 
 		/** 
@@ -487,11 +547,24 @@ module acsdaemon
 
 	};
 
+	/** 
+	 *  CDB Spell.
+	 */
+	interface CDBSpell : SpellBase, CDBSpellBase
+	{
+		/** 
+		 *  Get service state.
+		 *  @param instance_number ACS instance number
+		 *  @return ServiceState
+		 */
+		ServiceState get_service_status(in short instance_number) 
+			raises (ACSErrTypeCommon::BadParameterEx);
+	};
 
 	/** 
-	 *  Manager Imp base interface.
+	 *  Manager Spell base interface.
 	 */
-	interface ManagerImpBase
+	interface ManagerSpellBase
 	{
 		/** 
 		 *  Asynchronously starts an ACS manager on the current host.
@@ -520,11 +593,25 @@ module acsdaemon
 
 	};
 
+	/** 
+	 *  Manager Spell.
+	 */
+	interface ManagerSpell : SpellBase, ManagerSpellBase
+	{
+		/** 
+		 *  Get service state.
+		 *  @param instance_number ACS instance number
+		 *  @return ServiceState
+		 */
+		ServiceState get_service_status(in short instance_number) 
+			raises (ACSErrTypeCommon::BadParameterEx);
+	};
+
 
 	/** 
-	 *  ACS Log Imp base interface.
+	 *  ACS Log Spell base interface.
 	 */
-	interface ACSLogImpBase
+	interface ACSLogSpellBase
 	{
 		/** 
 		 *  Asynchronously starts an ACSLog service on the current host.
@@ -551,11 +638,25 @@ module acsdaemon
 
 	};
 
+	/** 
+	 *  ACSLog Spell.
+	 */
+	interface ACSLogSpell : SpellBase, ACSLogSpellBase
+	{
+		/** 
+		 *  Get service state.
+		 *  @param instance_number ACS instance number
+		 *  @return ServiceState
+		 */
+		ServiceState get_service_status(in short instance_number) 
+			raises (ACSErrTypeCommon::BadParameterEx);
+	};
+
 
 	/** 
-	 *  Logging Service Imp base interface.
+	 *  Logging Service Spell base interface.
 	 */
-	interface LoggingServiceImpBase
+	interface LoggingServiceSpellBase
 	{
 		/** 
 		 *  Asynchronously starts a logging service on the current host.
@@ -583,11 +684,25 @@ module acsdaemon
 
 	};
 
+	/** 
+	 *  LoggingService Spell.
+	 */
+	interface LoggingServiceSpell : SpellBase, LoggingServiceSpellBase
+	{
+		/** 
+		 *  Get service state.
+		 *  @param name name of the log service. If name is null, then "Log" will be used.
+		 *  @param instance_number ACS instance number
+		 *  @return ServiceState
+		 */
+		ServiceState get_service_status(in string name, in short instance_number) 
+			raises (ACSErrTypeCommon::BadParameterEx);
+	};
 
 	/** 
-	 *  Interface Repository Imp base interface.
+	 *  Interface Repository Spell base interface.
 	 */
-	interface InterfaceRepositoryImpBase
+	interface InterfaceRepositorySpellBase
 	{
 		/** 
 		 *  Asynchronously starts an interface repository on the current host.
@@ -617,6 +732,19 @@ module acsdaemon
 
 	};
 
+	/** 
+	 *  Interface Repository Spell.
+	 */
+	interface InterfaceRepositorySpell : SpellBase, InterfaceRepositorySpellBase
+	{
+		/** 
+		 *  Get service state.
+		 *  @param instance_number ACS instance number
+		 *  @return ServiceState
+		 */
+		ServiceState get_service_status(in short instance_number) 
+			raises (ACSErrTypeCommon::BadParameterEx);
+	};
 
 	/** 
 	 * @todo Once the ACS 8.0 design is final and these new methods are implemented, this interface must be merged into ServicesDaemon!!
@@ -656,8 +784,8 @@ module acsdaemon
 	 *  The daemon can be found using "corbaloc::host:3014/ACSServicesDaemon".
 	 */
 	interface ServicesDaemon_ACS80 : ServicesDaemon,
-		NamingServiceImpBase, NotificationServiceImpBase, CDBImpBase,
-		ManagerImpBase, ACSLogImpBase, LoggingServiceImpBase, InterfaceRepositoryImpBase
+		NamingServiceSpellBase, NotificationServiceSpellBase, CDBSpellBase,
+		ManagerSpellBase, ACSLogSpellBase, LoggingServiceSpellBase, InterfaceRepositorySpellBase
 	{
 		/**
 		 *  Creates and retrieves a reference to a ServiceDescriptionBuilder instance.
