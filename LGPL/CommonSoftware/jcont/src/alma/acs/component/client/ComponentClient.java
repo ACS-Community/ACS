@@ -283,14 +283,13 @@ public class ComponentClient
 			m_acsManagerProxy.logoutFromManager();            
 			
 			if (ownAcsCorba) {
-	            ClientLogManager.getAcsLogManager().shutdown(false);
-				acsCorba.shutdownORB(true);
-//				acsCorba.doneCorba(); HSO should this not be called as well?
+				ClientLogManager.getAcsLogManager().shutdown(false);
+				acsCorba.shutdownORB(true, false);
+				acsCorba.doneCorba();
 			}
-            
-            m_threadFactory.cleanUp();
-            
-            ACSAlarmSystemInterfaceFactory.done();
+
+			m_threadFactory.cleanUp();
+			ACSAlarmSystemInterfaceFactory.done();
 		}
 		catch (org.omg.CORBA.OBJECT_NOT_EXIST ex)
 		{
@@ -306,5 +305,4 @@ public class ComponentClient
 		}
 	}
 
-	
 }

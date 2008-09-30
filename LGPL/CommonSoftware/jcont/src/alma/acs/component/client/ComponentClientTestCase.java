@@ -138,22 +138,23 @@ public class ComponentClientTestCase extends TestCase
 			managerClientImpl.setContainerServices(m_containerServices);
 			initRemoteLogging();
 		}
-		catch (Exception ex)
+		catch (Exception ex1)
 		{
 			m_logger.log(Level.SEVERE, "failed to initialize the ORB, or connect to the ACS Manager, " + 
-										"or to set up the container services.", ex);
+										"or to set up the container services.", ex1);
             if (acsCorba != null) {
             	try {
-	            	acsCorba.shutdownORB(true);
+	            	acsCorba.shutdownORB(true, false);
 	            	acsCorba.doneCorba();
             	} catch (Exception ex2) {
-            		// to JUnit we want to forward the original exception, 
-            		// not any other exception from cleaning up the orb, 
+            		// to JUnit we want to forward the original exception ex1, 
+            		// not any other exception from cleaning up the orb 
             		// which we would not have done without the first exception.
+            		// Thus we simply print ex2 but let ex1 fly
             		ex2.printStackTrace();
             	}
             }
-			throw ex;
+			throw ex1;
 		}
 	}
 
@@ -213,40 +214,36 @@ public class ComponentClientTestCase extends TestCase
 	}
 
 	/**
-	 * Releases all previously obtained components (using manager),
-	 * logs out from the manager, and terminates the CORBA ORB.
-     * <p>
-     * <b>Subclasses that override this method must call <code>super.tearDown()</code>,
-	 * likely after any other code they contribute.</b>
-     * 
+	 * Releases all previously obtained components (using manager), logs out from the manager, 
+	 * and terminates the CORBA ORB.
+	 * <p>
+	 * <b>Subclasses that override this method must call <code>super.tearDown()</code>, likely after any other code in that method.</b>
+	 * 
 	 * @see junit.framework.TestCase#tearDown()
 	 */
-	protected void tearDown() throws Exception
-	{
+	protected void tearDown() throws Exception {
 		try {
 			m_acsManagerProxy.shutdownNotify();
 			m_containerServices.releaseAllComponents();
 			if (logReceiver != null && logReceiver.isInitialized()) {
-                logReceiver.stop();
-            }
+				logReceiver.stop();
+			}
 			m_acsManagerProxy.logoutFromManager();
-            m_threadFactory.cleanUp();
-			
-            ClientLogManager.getAcsLogManager().shutdown(true);
-		}
-		catch (Exception e) {
+			m_threadFactory.cleanUp();
+
+			ClientLogManager.getAcsLogManager().shutdown(true);
+		} catch (Exception e) {
 			System.err.println("Exception in tearDown: ");
 			e.printStackTrace(System.err);
 			throw e;
-		}
-		finally {
+		} finally {
 			if (acsCorba != null) {
-				// @todo investigate COMP-2632
-				// Check if this is called in "main" thread, and if the wait_for_completion is buggy and returns too early.
+				// @todo investigate COMP-2632 which happened here.
+				// Check if the wait_for_completion is buggy and returns too early.
 				// Then the overlapping call to doneCorba() ( -> orb.destroy()) would block this thread,
-				// and with bad timing luck it could block after the first shutdown called "shutdown_synch.notifyAll()" in ORB#shutdown,
-				// which could explain that the main thread hangs there forever.
-				acsCorba.shutdownORB(true);
+				// and with bad timing luck it could block *after* the first shutdown called "shutdown_synch.notifyAll()"
+				// in ORB#shutdown, which could explain that the main thread hangs there forever.
+				acsCorba.shutdownORB(true, false);
 				acsCorba.doneCorba();
 			}
 			// just in case... should give the OS time to reclaim ORB ports and so on

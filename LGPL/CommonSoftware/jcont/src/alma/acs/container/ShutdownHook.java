@@ -62,9 +62,9 @@ public class ShutdownHook extends ShutdownHookBase
 		{
 			// since the OS won't wait long, use gracefully==false
 			// so that the abort methods are called
-             m_acsContainer.shutdown(AcsContainer.CONTAINER_EXIT << 8, false);
+			m_acsContainer.shutdown(AcsContainer.CONTAINER_EXIT << 8, false, false);
 		}
-		// currently the ORB gets shut off as well in container.shutdown,
+		// The ORB gets shut off as well in container.shutdown,
 		// so the logger is no longer available
 		System.err.println("*** emergency shutdown complete, will exit... ***");
 	}
