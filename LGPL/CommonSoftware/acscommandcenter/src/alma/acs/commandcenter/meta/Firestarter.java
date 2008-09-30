@@ -144,13 +144,11 @@ public class Firestarter {
 		try {
 			if (acsCorba != null) {
 				new Thread() {
-
-					@Override
 					public void run () {
-						acsCorba.shutdownORB(false);
+						acsCorba.shutdownORB(true, false);
 					}
 				}.start();
-				acsCorba.blockOnORB();
+				// acsCorba.blockOnORB(); HSO 2008-09 commented out because of the above change to wait_for_completion==true
 				acsCorba = null;
 			}
 		} catch (Throwable t) {
