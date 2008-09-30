@@ -40,12 +40,12 @@ namespace maci
 		   (For containers, the components sequence contains 
 		   handles of all components previously hosted by the container.)
 		*/
- 		virtual maci::ClientInfo * login (maci::Client_ptr reference) throw (CORBA::SystemException) { return NULL; }
+ 		virtual maci::ClientInfo * login (maci::Client_ptr reference)  { return NULL; }
 
 		/** 
 	    Logout from MACI.
 	 	*/
-		virtual void logout (maci::Handle id) throw (CORBA::SystemException) {}
+		virtual void logout (maci::Handle id) {}
 
 		/** 
 	    Register a CORBA object as a component, 
@@ -53,15 +53,17 @@ namespace maci
 	    through the Manager. 
 	    The component is treated as an immortal component.
 
+        @throw maciErrType::CannotRegisterComponentEx
 	    @return Returns the handle of the newly created component.
 	 	*/
 		virtual ::maci::Handle register_component (maci::Handle id, const char * component_url, const char * type, CORBA::Object_ptr c)
-           throw (CORBA::SystemException, maciErrType::CannotRegisterComponentEx) { return 0; }
+         { return 0; }
 
 		/** 
 	    Unregister a component from the Manager.
+        @throw maciErrType::CannotUnregisterComponentEx
 		 */
-		virtual void unregister_component (maci::Handle id, maci::Handle h) throw (CORBA::SystemException, maciErrType::CannotUnregisterComponentEx) {}
+		virtual void unregister_component (maci::Handle id, maci::Handle h) {}
 
 		/** 
 	    Get a service, activating it if necessary (components). 
@@ -75,10 +77,11 @@ namespace maci
 	    reference is returned, and the status contains 
 	    an error code detailing the cause of failure 
 	    (one of the COMPONENT_* constants).
+        @throw maciErrType::CannotGetComponentEx
+        @throw maciErrType::ComponentNotAlreadyActivatedEx
+        @throw maciErrType::ComponentConfigurationNotFoundEx
 	 	*/
-		virtual CORBA::Object_ptr get_service (maci::Handle id, const char * service_url, CORBA::Boolean activate)
-         throw (CORBA::SystemException, maciErrType::CannotGetComponentEx, maciErrType::ComponentNotAlreadyActivatedEx, 
-                maciErrType::ComponentConfigurationNotFoundEx);
+		virtual CORBA::Object_ptr get_service (maci::Handle id, const char * service_url, CORBA::Boolean activate);
 
 		/** 
 	    Get a component, activating it if necessary. 
@@ -90,10 +93,12 @@ namespace maci
 	    a nil reference is returned, and the status 
 	    contains an error code detailing the cause of 
 	    failure (one of the COMPONENT_* constants).
+        @throw maciErrType::CannotGetComponentEx
+        @throw maciErrType::ComponentNotAlreadyActivatedEx
+        @throw maciErrType::ComponentConfigurationNotFoundEx
 		*/
 		virtual ::CORBA::Object_ptr get_component (maci::Handle id, const char * service_url, CORBA::Boolean activate)
-			throw (CORBA::SystemException, maciErrType::CannotGetComponentEx, maciErrType::ComponentNotAlreadyActivatedEx, 
-			maciErrType::ComponentConfigurationNotFoundEx) { return CORBA::Object::_nil(); }
+	    { return CORBA::Object::_nil(); }
 
 		/** 
 		    Get a non-sticky reference to a component.
@@ -119,10 +124,12 @@ namespace maci
 		    The client represented by id (the handle) must 
 		    have adequate access rights to access the component.
 		    
+            @throw maciErrType::CannotGetComponentEx
+            @throw maciErrType::ComponentNotAlreadyActivatedEx
 		    @return Reference to the component. 
 		*/
 		virtual ::CORBA::Object_ptr get_component_non_sticky (maci::Handle id, const char * component_url)
-      	throw (CORBA::SystemException, maciErrType::CannotGetComponentEx, maciErrType::ComponentNotAlreadyActivatedEx) { return CORBA::Object::_nil(); }
+      	{ return CORBA::Object::_nil(); }
 
 		/** 
 		    Used for retrieving several services with one call. 
@@ -130,12 +137,12 @@ namespace maci
 
 		    @deprecated This method is deprecated and will be
 		    removed.
-
+            @throw maciErrType::CannotGetServiceEx
 		    @return A sequence of requested services.
 		 */
 		virtual ::maci::ObjectSeq * get_services (maci::Handle id, const ::maci::CURLSeq & service_urls, CORBA::Boolean activate, 
 			maci::ulongSeq_out status)
-      	throw (CORBA::SystemException, maciErrType::CannotGetServiceEx) { return NULL; }
+      	{ return NULL; }
 
 		/** 
 		    Used for retrieving several components with one call. 
@@ -144,11 +151,12 @@ namespace maci
 		    @deprecated This method is deprecated and will be
 		    removed.
 
+            @throw maciErrType::CannotGetComponentEx
 		    @return A sequence of requested components.
 		 */
 		virtual ::maci::ObjectSeq * get_components (maci::Handle id, const maci::CURLSeq & component_urls, CORBA::Boolean activate, 
 			maci::ulongSeq_out status)
-      	throw (CORBA::SystemException, maciErrType::CannotGetComponentEx) { return NULL; }
+      	{ return NULL; }
 
 		/** Change mortality state of an component. 
 		    Component must be already active, otherwise 
@@ -158,7 +166,7 @@ namespace maci
 		    exception will be thrown. 
 		*/
 		virtual void make_component_immortal (maci::Handle id, const char * component_url, CORBA::Boolean immortal_state)
-      	throw (CORBA::SystemException) {}
+      	{}
     
 		/** 
 		    Release a component. 
@@ -176,7 +184,7 @@ namespace maci
 		    This is a useful debugging tool.
 		 */
 		virtual ::CORBA::Long release_component (maci::Handle id, const char * component_url)
-      	throw (CORBA::SystemException) { return 0; }
+      	{ return 0; }
 
 		/** 
 		    Releases a component also if still referenced by other components/clients.
@@ -184,12 +192,12 @@ namespace maci
 		    after the operation completed. This is a useful debugging tool.
 		 */
 		virtual ::CORBA::Long force_release_component (maci::Handle id, const char * component_url)
-      	throw (CORBA::SystemException) {  return 0; }
+      	{  return 0; }
     
 		/** Release components.
 		 */
 		virtual void release_components (maci::Handle id, const ::maci::CURLSeq & component_urls)
-      	throw (CORBA::SystemException) {}
+      	{}
 
 		/** 
 		    Shutdown the Manager.
@@ -199,7 +207,7 @@ namespace maci
 		    and immortal components. 
 		 */
 		virtual void shutdown (maci::Handle id, CORBA::ULong containers)
-      	throw (CORBA::SystemException) {}
+      	{}
 
 		/** 
 		    Get all the information that the Manager has about its known
@@ -215,7 +223,7 @@ namespace maci
 		    objects, the handles to those objects are set to 0. 
 		*/
 		virtual ::maci::ContainerInfoSeq * get_container_info (maci::Handle id, const maci::HandleSeq & h, const char * name_wc)
-      	throw (CORBA::SystemException) { return NULL; }
+      	{ return NULL; }
 
 		/** 
 		    Get all the information that the Manager has about its current
@@ -231,7 +239,7 @@ namespace maci
 		    the handles to those objects are set to 0. 
 		*/
 		virtual maci::ClientInfoSeq * get_client_info (maci::Handle id, const maci::HandleSeq & h, const char * name_wc)
-      	throw (CORBA::SystemException) { return NULL; }
+      	{ return NULL; }
     
 		/** 
 		    Get all the information that the Manager has about components. To
@@ -257,59 +265,71 @@ namespace maci
 		 */
 		virtual maci::ComponentInfoSeq * get_component_info (maci::Handle id, const maci::HandleSeq & h, const char * name_wc,
 			const char * type_wc, CORBA::Boolean active_only)
-      	throw (CORBA::SystemException) { return NULL; }
+      	{ return NULL; }
 
 		/** 
 		    Restarts a component. 
+            @throw maciErrType::CannotGetComponentEx
 		*/
 		virtual ::CORBA::Object_ptr restart_component (maci::Handle client, const char * component_url)
-      	throw (CORBA::SystemException, maciErrType::CannotGetComponentEx) { return CORBA::Object::_nil(); }
+      	{ return CORBA::Object::_nil(); }
 
 		/** 
 		    Activation of dynamic component. 
+            @throw maciErrType::IncompleteComponentSpecEx
+            @throw maciErrType::InvalidComponentSpecEx
+            @throw maciErrType::ComponentSpecIncompatibleWithActiveComponentEx
+            @throw maciErrType::CannotGetComponentEx
 		*/
 		virtual maci::ComponentInfo * get_dynamic_component (maci::Handle client, const maci::ComponentSpec & c, CORBA::Boolean mark_as_default)
-      	throw (CORBA::SystemException, maciErrType::IncompleteComponentSpecEx, maciErrType::InvalidComponentSpecEx, 
-				maciErrType::ComponentSpecIncompatibleWithActiveComponentEx, maciErrType::CannotGetComponentEx) { return NULL; }
+		{ return NULL; }
 
 		/** 
 		    Group request of dynamic components. 
+            @throw maciErrType::IncompleteComponentSpecEx
+            @throw maciErrType::InvalidComponentSpecEx
+            @throw maciErrType::ComponentSpecIncompatibleWithActiveComponentEx
+            @throw maciErrType::CannotGetComponentEx
 		*/
 		virtual maci::ComponentInfoSeq * get_dynamic_components (maci::Handle client, const maci::ComponentSpecSeq & components)
-      	throw (CORBA::SystemException, maciErrType::IncompleteComponentSpecEx, maciErrType::InvalidComponentSpecEx, 
-				maciErrType::ComponentSpecIncompatibleWithActiveComponentEx, maciErrType::CannotGetComponentEx) { return NULL; }
+		{ return NULL; }
 
 		/** 
 		    Activation of a component so that it runs in the same process as
 		    another given component. 
+            @throw maciErrType::IncompleteComponentSpecEx
+            @throw maciErrType::InvalidComponentSpecEx
+            @throw maciErrType::ComponentSpecIncompatibleWithActiveComponentEx
+            @throw maciErrType::CannotGetComponentEx
 		*/
 		virtual maci::ComponentInfo * get_collocated_component (maci::Handle client, const maci::ComponentSpec & c, CORBA::Boolean mark_as_default,
 			const char * target_component)
-      	throw (CORBA::SystemException, maciErrType::IncompleteComponentSpecEx, maciErrType::InvalidComponentSpecEx, 
-				maciErrType::ComponentSpecIncompatibleWithActiveComponentEx, maciErrType::CannotGetComponentEx) { return NULL; }
+		{ return NULL; }
 
 		/** 
 	    Returns the default component of specific type. 
+        @throw maciErrType::NoDefaultComponentEx
+        @throw maciErrType::CannotGetComponentEx
 		*/
 		virtual maci::ComponentInfo * get_default_component (maci::Handle client, const char * component_type)
-      	throw (CORBA::SystemException, maciErrType::NoDefaultComponentEx, maciErrType::CannotGetComponentEx) { return NULL; }
+      	{ return NULL; }
 
 		/** 
 	    Shutdown a container.
 		*/
 		virtual void shutdown_container (maci::Handle id, const char * container_name, CORBA::ULong action)
-      	throw (CORBA::SystemException) {}
+      	{}
 
 
-		virtual maci::LoggingConfigurable::LogLevels get_default_logLevels() throw (CORBA::SystemException) { maci::LoggingConfigurable::LogLevels ll; return ll; }
-		virtual maci::LoggingConfigurable::LogLevels get_logLevels(const char*) throw (CORBA::SystemException) { maci::LoggingConfigurable::LogLevels ll; return ll; }
-		virtual void set_logLevels(const char*, const maci::LoggingConfigurable::LogLevels&) throw (CORBA::SystemException) {}
-		virtual void set_default_logLevels(const maci::LoggingConfigurable::LogLevels&) throw (CORBA::SystemException) {}
-		virtual void refresh_logging_config() throw (CORBA::SystemException) {}
+		virtual maci::LoggingConfigurable::LogLevels get_default_logLevels() { maci::LoggingConfigurable::LogLevels ll; return ll; }
+		virtual maci::LoggingConfigurable::LogLevels get_logLevels(const char*) { maci::LoggingConfigurable::LogLevels ll; return ll; }
+		virtual void set_logLevels(const char*, const maci::LoggingConfigurable::LogLevels&) {}
+		virtual void set_default_logLevels(const maci::LoggingConfigurable::LogLevels&) {}
+		virtual void refresh_logging_config() {}
 
-		virtual maci::stringSeq* get_logger_names() throw (CORBA::SystemException) { return NULL; }
-		virtual char* domain_name() throw (CORBA::SystemException) { return NULL; }
-  	        virtual CORBA::Boolean ping() throw (CORBA::SystemException) { return false; }
+		virtual maci::stringSeq* get_logger_names() { return NULL; }
+		virtual char* domain_name() { return NULL; }
+  	        virtual CORBA::Boolean ping() { return false; }
 
 	};
 }

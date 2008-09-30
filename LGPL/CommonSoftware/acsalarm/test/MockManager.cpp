@@ -16,11 +16,11 @@ namespace maci
     reference is returned, and the status contains 
     an error code detailing the cause of failure 
     (one of the COMPONENT_* constants).
+    @throw maciErrType::CannotGetComponentEx
+    @throw maciErrType::ComponentNotAlreadyActivatedE
+    @throw maciErrType::ComponentConfigurationNotFoundEx
  	*/
 	CORBA::Object_ptr MockManager::get_service (maci::Handle id, const char * curl, CORBA::Boolean activate)
-        throw (CORBA::SystemException, maciErrType::CannotGetComponentEx, maciErrType::ComponentNotAlreadyActivatedEx, 
-               maciErrType::ComponentConfigurationNotFoundEx) 
-
 	{
 		// corbaloc::<hostname>:<port>/CDB
 		const char* hostname = 0;
