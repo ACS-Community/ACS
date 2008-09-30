@@ -471,6 +471,10 @@ public class AcsCorba
 		}
 	}
 
+	/**
+	 * Calls {@link ORB#run()} which from the point of view of the caller blocks the thread until the ORB has shut down,
+	 * optionally performing tasks for the ORB in the meantime (see Corba spec 2.4 , chap. 4.2.3.3)
+	 */
 	public void blockOnORB()
 	{
 		getORB().run();
@@ -479,12 +483,12 @@ public class AcsCorba
 	/**
 	 * Calls <code>m_orb.shutdown(wait_for_completion)</code>.
      * <p>
-     * If this method is invoked from an ORB thread (as it happens in the Java container), it returns immediately, 
-     * independently of the <code>wait_for_completion</code> parameter.
-     * This happens because shutting down the ORB from within an ORB thread will result in a deadlock 
-     * if <code>wait_for_completion</code> is true, thus in this case, a new thread is created.
-     * The Java container will nonetheless wait for the ORB shutdown, because its main thread blocks on ORB#run
-     * and only continues when the ORB is shut down.
+     * If this method is invoked from an ORB thread (as it happens in the Java container in case of shutdown being commanded by the manager), 
+     * it returns immediately, independently of the <code>wait_for_completion</code> parameter. 
+     * The <code>Orb#shutdown</code> call will then run asynchronously.
+     * Note that shutting down the ORB from within an ORB thread would result in a deadlock (or BAD_INV_ORDER exception) 
+     * if <code>wait_for_completion</code> is true. The Java container will nonetheless wait for the ORB shutdown, 
+     * because its main thread blocks on ORB#run and only continues when the ORB is shut down.
      * <p>
      * Note that currently the identification of an ORB thread is not very refined: any thread that is not called "main"
      * is considered an ORB thread. JacORB has the proprietary method <code>isInInvocationContext</code>,
@@ -493,95 +497,78 @@ public class AcsCorba
      * in which case the ORB shutdown will happen in a separate thread and this method will return immediately;
      * since the client does not block on the ORB, the risk is that the JVM terminates before the ORB has released system resources.
      * 
-     * @Todo: investigate better discrimination of ORB threads, or perhaps add a parameter to explicitly determine the threading behavior.
      * <p>
      * @Todo: As a workaround for a JacORB bug (http://www.jacorb.org/cgi-bin/bugzilla/show_bug.cgi?id=537), 
      *        we currently skim off the <code>ConcurrentModificationException</code> that the unsynchronized
      *        HashMap of <code>ClientConnectionManager.shutdown</code> may throw. 
      *        This should be removed when we upgrade JacORB.
+     * @param wait_for_completion blocks this call until ORB has shut down. 
+     *        Will be effectively <code>false</code> if <code>isOrbThread == true</code>.
+     * @param isOrbThread  must be <code>true</code> if the calling thread services a Corba invocation, e.g. to {@link AcsContainer#shutdown}.
 	 */
-	public void shutdownORB(final boolean wait_for_completion)
+	public void shutdownORB(final boolean wait_for_completion, boolean isOrbThread)
 	{
 		if (m_orb != null) {
-			boolean isORBThread = !Thread.currentThread().getName().equals("main");
-            if (wait_for_completion && isORBThread) {
+            if (isOrbThread) {
                 Runnable cmd = new Runnable() {
                     public void run() {
                     	try {
-                    		m_orb.shutdown(true);
+                    		// since m_orb.shutdown runs asynchronously anyway, there is no advantage to pass wait_for_completion even if that flag ist set.
+                    		m_orb.shutdown(false);
                     	} catch (ConcurrentModificationException ex) {
                     		// ignore, see javadoc
                     	}
-                    }            
+                    }
                 };
-                ExecutorService executor = Executors.newSingleThreadExecutor(new DaemonThreadFactory("ShutdownORB"));
-                executor.execute(cmd);
+                (new DaemonThreadFactory("ShutdownORB")).newThread(cmd).start();
             }
             else {
+            	// not an ORB thread, thus we can call shutdown directly
             	try {
             		m_orb.shutdown(wait_for_completion);
             	} catch (ConcurrentModificationException ex) {
             		// ignore, see javadoc
             	}
             }
-		}		
+		}
 	}
 
-
+	
 	/**
-	 * Cleans up ORB and POAs. 
+	 * Calls <code>m_orb.destroy()</code>. 
+	 * This method must not be invoked from an ORB invocation thread!
 	 * <p>
-	 * TODO: the current implementation is similar to C++ ContainerImpl. Resolve issues: 
-	 * <code>doneCorba</code> is called after the ORB thread returns from the blocking
-	 * <code>ORB.run</code> method, which it does after receiving the call to 
-	 * <code>ORB.shutdown</code>. Since <code>ORB.shutdown</code> already destroys 
-	 * the POAs, the current implementation must be discussed with the authors of the 
-	 * C++ container and then likely be changed.    
+	 * The Corba spec v. 2.4 says in section 4.2.3:
+	 * <ul>
+	 * <li> {@link ORB#shutdown(boolean)} causes all object adapters to be destroyed, since they cannot exist 
+	 * in the absence of an ORB. Shut down is complete when all ORB processing 
+	 * (including request processing and object deactivation or other operations associated with object adapters) 
+	 * has completed and the object adapters have been destroyed. 
+	 * In the case of the POA, this means that all object etherealizations have finished and root POA has been destroyed 
+	 * (implying that all descendent POAs have also been destroyed).
+	 * <li> {@link ORB#destroy()} destroys the ORB so that its resources can be reclaimed by the application.
+	 * <li> For maximum portability and to avoid resource leaks, an application should always call shutdown and destroy 
+	 *      on all ORB instances before exiting.
+	 * <li> Once an ORB has been destroyed, another call to ORB_init with the same ORBid will return a reference to a newly constructed ORB.
+	 * <li> If destroy is called on an ORB that has not been shut down, it will start the shut down
+     *      process and block until the ORB has shut down before it destroys the ORB.
+	 * </ul>
+	 * <p>
+	 * With ACS 8.0, this method no longer attempts to destroy policy objects, trusting that either an explicit call
+	 * to {@linkplain AcsCorba#shutdownORB(boolean, boolean)} or the abovementioned implicit call to {@linkplain ORB#shutdown(boolean)}
+	 * takes care of this.
+	 * <p> 
+	 * See also problems reported in COMP-2632.
 	 */
-	public void doneCorba()
-	{
-		m_logger.fine("about to destroy all POAs and the ORB");
-		// from the Javadoc:
-		// This operation destroys the POA and all descendant POAs. All descendant POAs are destroyed (recursively) 
-		// before the destruction of the containing POA. The POA so destroyed (that is, the POA with its name) 
-		// may be re-created later in the same process.
-		// @param etherealize_objects flag to indicate whether etherealize operation on servant manager needs 
-		// to be called.
-		// @param wait_for_completion flag to indicate whether POA and its children need to wait for active 
-		// requests and the etherealization to complete.
-		try
-		{
-			if (m_compPolicies != null)
-			{
-				for (int polInd = 0; polInd < m_compPolicies.length; polInd++)
-				{
-					m_compPolicies[polInd].destroy();
-				}	
-			}
-
-			if (m_offshootPolicies != null)
-			{
-				for (int polInd = 0; polInd < m_offshootPolicies.length; polInd++)
-				{
-					m_offshootPolicies[polInd].destroy();
-				}	
-			}
-			
-			if (m_rootPOA != null)
-			{
-				m_rootPOA.destroy(true, true);
-			}
-			
-			if (m_orb != null)
-			{
+	public void doneCorba() {
+		m_logger.fine("about to destroy the ORB");
+		try {
+			if (m_orb != null) {
 				m_orb.destroy();
 			}
-			m_logger.fine("POAs and ORB destroyed successfully.");
-		}
-		catch (Exception ex)
-		{
-			m_logger.log(Level.WARNING,
-				"Exception occured during destruction of POAs, ORB.", ex);
+			m_logger.fine("ORB destroyed successfully.");
+		} catch (Exception ex) {
+			m_logger.log(Level.WARNING, "Exception occured during destruction of the ORB.", ex);
 		}
 	}
 
