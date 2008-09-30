@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: basencSupplier.cpp,v 1.9 2008/04/06 03:41:22 sharring Exp $"
+* "@(#) $Id: basencSupplier.cpp,v 1.10 2008/09/30 09:34:43 cparedes Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -103,8 +103,6 @@ BaseSupplier::disconnect()
 void
 BaseSupplier::subscription_change(const CosNotification::EventTypeSeq &a,
 				  const CosNotification::EventTypeSeq &b)
-    throw(CORBA::SystemException,
-	  CosNotifyComm::InvalidEventType)
 {
     //No-Op.
 }
@@ -146,7 +144,6 @@ BaseSupplier::publishEvent(const CosNotification::StructuredEvent& event)
 //-----------------------------------------------------------------------------
 void
 BaseSupplier::disconnect_structured_push_supplier()
-    throw(CORBA::SystemException)
 {
     // No-Op.
 }

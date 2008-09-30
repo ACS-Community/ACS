@@ -20,7 +20,7 @@
  *    License along with this library; if not, write to the Free Software
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: basencSupplier.h,v 1.5 2008/02/07 10:51:11 msekoran Exp $"
+ * "@(#) $Id: basencSupplier.h,v 1.6 2008/09/30 09:34:43 cparedes Exp $"
  *
  * who       when        what
  * --------  ----------  ----------------------------------------------
@@ -74,20 +74,18 @@ class BaseSupplier : public POA_acsnc::OSPushSupplier,
     /**
      * CORBA method we do not really care about from this class
      * other than the fact that it must be overridden.
+     * @throw CosNotifyComm::InvalidEventType
      */
     virtual void 
     subscription_change(const CosNotification::EventTypeSeq &added,
-			const CosNotification::EventTypeSeq &removed)
-	throw (CORBA::SystemException,
-	       CosNotifyComm::InvalidEventType);
+			const CosNotification::EventTypeSeq &removed);
     
     /**
      * CORBA method we do not really care about from this class
      * other than the fact that it must be overridden.
      */
     virtual void 
-    disconnect_structured_push_supplier()
-	throw (CORBA::SystemException);
+    disconnect_structured_push_supplier();
     //----------------------------------------------------------------------
   protected:
     /**
