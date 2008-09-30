@@ -26,6 +26,7 @@ import java.util.Properties;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -525,7 +526,39 @@ public class AcsCorba
             else {
             	// not an ORB thread, thus we can call shutdown directly
             	try {
-            		m_orb.shutdown(wait_for_completion);
+            		if (wait_for_completion) {
+            			// there appears to be a bug in JacORB that makes this method return too early (before shutdown completed),
+            			// which then depending on timing can make a subsequent call to Orb#destroy hang.
+            			// Here we try out some additional synch'ing through Orb#run, and use a timeout to avoid blocking forever.
+            			final CountDownLatch synch = new CountDownLatch(2);
+            			Runnable cmd = new Runnable() {
+							public void run() {
+								synch.countDown(); // first, to make sure this thread is running 
+								m_orb.run();
+								synch.countDown(); // second, to notify that ORB has shut down.
+							}
+            			};
+            			(new DaemonThreadFactory("WorkaroundBlockOnOrbTillShutdownCompletes")).newThread(cmd).start();
+            			
+            			// this call should only return when the ORB has shut down, but it may return too early
+            			m_orb.shutdown(true);
+            			
+            			// second line of defense
+            			try {
+							boolean ok = synch.await(30, TimeUnit.SECONDS);
+							if (!ok) {
+								// Loggers cannot be expected to work at this point, thus printing to stdout
+								System.out.println("Failed to return within 30 s from orb.run() after ORB shutdown.");
+							}
+						} catch (InterruptedException ex) {
+							// Loggers cannot be expected to work at this point, thus printing to stdout
+							System.out.println("InterruptedException waiting for orb.run() to return after ORB shutdown");
+							ex.printStackTrace(System.out);
+						}
+            		}
+            		else {
+            			m_orb.shutdown(false);
+            		}
             	} catch (ConcurrentModificationException ex) {
             		// ignore, see javadoc
             	}
@@ -543,7 +576,7 @@ public class AcsCorba
 	 * <li> {@link ORB#shutdown(boolean)} causes all object adapters to be destroyed, since they cannot exist 
 	 * in the absence of an ORB. Shut down is complete when all ORB processing 
 	 * (including request processing and object deactivation or other operations associated with object adapters) 
-	 * has completed and the object adapters have been destroyed. 
+	 * has completed and the object adapters have been destroyed.
 	 * In the case of the POA, this means that all object etherealizations have finished and root POA has been destroyed 
 	 * (implying that all descendent POAs have also been destroyed).
 	 * <li> {@link ORB#destroy()} destroys the ORB so that its resources can be reclaimed by the application.
@@ -561,20 +594,21 @@ public class AcsCorba
 	 * See also problems reported in COMP-2632.
 	 */
 	public void doneCorba() {
-		m_logger.fine("about to destroy the ORB");
-		try {
-			if (m_orb != null) {
+		if (m_orb != null) {
+			// Loggers cannot be expected to work at this point, thus printing to stdout
+			System.out.println("about to destroy the ORB");
+			try {
 				m_orb.destroy();
+				System.out.println("ORB destroyed successfully.");
+			} catch (Exception ex) {
+				m_logger.log(Level.WARNING, "Exception occured during destruction of the ORB.", ex);
 			}
-			m_logger.fine("ORB destroyed successfully.");
-		} catch (Exception ex) {
-			m_logger.log(Level.WARNING, "Exception occured during destruction of the ORB.", ex);
 		}
 	}
 
 	private void setORB(ORB orb) throws IllegalArgumentException {
 		if (orb == null) {
-			throw new IllegalStateException("ORB reference does not exist.");
+			throw new IllegalStateException("ORB reference must not be null.");
 		}
 		this.m_orb = orb;
 	}
