@@ -45,7 +45,7 @@ public class AcsCorbaTest extends TestCase {
 
 	protected void tearDown() throws Exception {
 		if (acsCorba != null) {
-			acsCorba.shutdownORB(true);
+			acsCorba.shutdownORB(true, false);
 		}
 	}
 
