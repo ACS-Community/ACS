@@ -33,6 +33,7 @@ import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -131,7 +132,7 @@ public class AcsContainer extends ContainerPOA
      */
     private DAL cdb;
 
-    private volatile boolean m_shuttingDown = false;
+	private final AtomicBoolean shuttingDown = new AtomicBoolean(false);
 
     /** see comments in {@link #authenticate(String)} */
     private boolean useRecoveryMode = true;
@@ -858,93 +859,81 @@ public class AcsContainer extends ContainerPOA
     // Implementation of ContainerOperations#shutdown
     /////////////////////////////////////////////////////////////
 
-    /**
-     * Action to take after shutting down (ignored for the time being).
-     * Bits 8 thru 15 of this parameter denote the action, which can be one of:
-     * <UL>
-     * <LI>0 -- reload the container</LI>
-     * <LI>1 -- reboot the computer</LI>
-     * <LI>2 -- exit the container</LI>
-     * </UL>
-     *
-     * The bits 0 thru 7 (values 0 to 255) are the return value that the Container
-     * will pass to the operating system.
-     * TODO: get rid of this silly bit-multiplexing
-     *
-     * @see si.ijs.maci.ContainerOperations#shutdown(int)
-     */
-    public void shutdown(int encryptedAction)
-    {
-        shutdown(encryptedAction, true);
-    }
+	/**
+	 * Action to take after shutting down (ignored for the time being). Bits 8 thru 15 of this parameter denote the
+	 * action, which can be one of:
+	 * <UL>
+	 * <LI>0 -- reload the container</LI>
+	 * <LI>1 -- reboot the computer</LI>
+	 * <LI>2 -- exit the container</LI>
+	 * </UL>
+	 * 
+	 * The bits 0 thru 7 (values 0 to 255) are the return value that the Container should pass to the operating system.
+	 * TODO: get rid of this silly bit-multiplexing
+	 * 
+	 * @see si.ijs.maci.ContainerOperations#shutdown(int)
+	 */
+	public void shutdown(int encryptedAction) {
+		shutdown(encryptedAction, true, true);
+	}
 
 
-    /**
-     * Shuts down the container.
-     * Can be called either remotely through the CORBA {@link #shutdown(int)} method,
-     * or from elsewhere in the container JVM.
-     * <p>
-     * Depending on the <code>gracefully</code> parameter,
-     * either {@link #deactivate_components(int[])} or {@link #abortAllComponents(long)}
-     * is called.
-     * <p>
-     * This method can be called from different threads
-     * <ul>
-     * <li>one of the ORB threads (shutdown initiated by the manager)
-     * <li>shutdown thread (Ctrl-C VM hook)
-     * </ul>
-     *
-     * @param encryptedAction  ignored for the time being (always EXIT)
-     * @param gracefully    if true, this method only returns after <code>cleanUp</code>
-     *                      has been called on all components.
-     *                      if false, it returns faster, running the components' abort methods
-     *                      in separate threads for at most 3 seconds.
-     * @see #shutdown(int)
-     * @see ShutdownHook
-     */
-    void shutdown(int encryptedAction, boolean gracefully)
-    {
-        int action = (encryptedAction >> 8) & 0xFF;
-        m_logger.info("received call to 'shutdown', action=" + action +
-                        " (encryptedAction=" + encryptedAction +
-                        "), gracefully=" + gracefully + ".");
+	/**
+	 * Shuts down the container.
+	 * <p>
+	 * Depending on the <code>gracefully</code> parameter, either {@link #deactivate_components(int[])} or
+	 * {@link #abortAllComponents(long)} is called.
+	 * <p>
+	 * This method may be called from the following threads:
+	 * <ul>
+	 * <li>one of the ORB invocation threads (shutdown initiated by the manager)
+	 * <li>shutdown thread (Ctrl-C VM hook)
+	 * </ul>
+	 * @param encryptedAction
+	 *            ignored for the time being (always EXIT)
+	 * @param gracefully
+	 *            if true, this method only returns after <code>cleanUp</code> has been called on all components. 
+	 *            if false, it returns faster, running the components' abort methods in separate threads for at most 3 seconds.
+	 * @see #shutdown(int)
+	 * @see ShutdownHook
+	 */
+	void shutdown(int encryptedAction, boolean gracefully, boolean isOrbThread) {
+		int action = (encryptedAction >> 8) & 0xFF;
+		m_logger.info("received call to 'shutdown', action=" + action + " (encryptedAction=" + encryptedAction
+				+ "), gracefully=" + gracefully + ".");
 
-        if (m_shuttingDown) {
-            m_logger.fine("call to shutdown() while shutting down will be ignored...");
-            return;
-        }
-        m_shuttingDown = true;
-        m_managerProxy.shutdownNotify();
+		if (shuttingDown.getAndSet(true)) {
+			m_logger.fine("call to shutdown() while shutting down will be ignored...");
+			return;
+		}
+		
+		m_managerProxy.shutdownNotify();
 
-        // shut down all active components
-        if (gracefully)
-        {
-            try {
+		// shut down all active components
+		if (gracefully) {
+			try {
 				deactivate_components(null);
 			} catch (CannotDeactivateComponentEx e) {
 				m_logger.log(Level.WARNING, "Failed to deactivate components for graceful shutdown");
 			}
-        }
-        else {
-            abortAllComponents(3000);
-        }
-        
-    	ACSAlarmSystemInterfaceFactory.done();
+		} else {
+			abortAllComponents(3000);
+		}
 
-        m_managerProxy.logoutFromManager();
+		ACSAlarmSystemInterfaceFactory.done();
 
-        if (!isEmbedded) {
-            ClientLogManager.getAcsLogManager().shutdown(gracefully);
-            // in regular shutdown situations, we wait for the ORB to be destroyed.
-            // Otherwise starting another container soon after will fail with RootPOA init problems.
-            // in any case, the following call will return immediately, so that the container#shutdown() method can return.
-            // Once the ORB is down, the main thread will unblock, and bring the container to an end.
-            m_acsCorba.shutdownORB(gracefully);
-        }
+		m_managerProxy.logoutFromManager();
 
-        // to allow creation of a new container in the same VM
-        s_instance = null;
-    }
+		if (!isEmbedded) {
+			ClientLogManager.getAcsLogManager().shutdown(gracefully);
+			// here the flag "wait_for_completion" is taken from "gracefully"
+			// Note that it is not considered anyway if isOrbThread == true
+			m_acsCorba.shutdownORB(gracefully, isOrbThread);
+		}
+
+		// to allow creation of a new container in the same VM
+		s_instance = null;
+	}
 
 
     /**
@@ -1128,13 +1117,13 @@ public class AcsContainer extends ContainerPOA
 					m_logger.log(Level.WARNING, "Failed to re-login to the manager. Will shut down.", e);
 					// it could be that the connection failed exactly because we are shutting down, 
 					// and we want to avoid the warning from another shutdown call...
-					if (!m_shuttingDown) {
-						shutdown(AcsContainer.CONTAINER_EXIT << 8, true);
+					if (!shuttingDown.get()) {
+						shutdown(AcsContainer.CONTAINER_EXIT << 8, true, false);
 					}
 				}
 			}
 		};
-		containerThreadFactory.newThread(reloginRunnable).start();		
+		containerThreadFactory.newThread(reloginRunnable).start();
 	}
 
 
