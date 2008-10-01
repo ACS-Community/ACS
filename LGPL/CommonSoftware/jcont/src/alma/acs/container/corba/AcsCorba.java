@@ -527,8 +527,8 @@ public class AcsCorba
             	// not an ORB thread, thus we can call shutdown directly
             	try {
             		if (wait_for_completion) {
-            			// there appears to be a bug in JacORB that makes this method return too early (before shutdown completed),
-            			// which then depending on timing can make a subsequent call to Orb#destroy hang.
+            			// there appears to be a bug in JacORB that makes "orb.shutdown(true)" return too early (before shutdown completed),
+            			// which then depending on timing can make a subsequent call to orb#destroy hang.
             			// Here we try out some additional synch'ing through Orb#run, and use a timeout to avoid blocking forever.
             			final CountDownLatch synch = new CountDownLatch(2);
             			Runnable cmd = new Runnable() {
@@ -595,13 +595,14 @@ public class AcsCorba
 	 */
 	public void doneCorba() {
 		if (m_orb != null) {
-			// Loggers cannot be expected to work at this point, thus printing to stdout
-			System.out.println("about to destroy the ORB");
+			// Loggers cannot be expected to work at this point, thus any printing would have to go to stdout.
+			// For backward compatibility we don't print these messages though, which before ACS 8.0 were dysfunctional logs.
+			//System.out.println("about to destroy the ORB");
 			try {
 				m_orb.destroy();
-				System.out.println("ORB destroyed successfully.");
+				//System.out.println("ORB destroyed successfully.");
 			} catch (Exception ex) {
-				m_logger.log(Level.WARNING, "Exception occured during destruction of the ORB.", ex);
+				System.out.println("Exception occured during destruction of the ORB.\n" + ex.toString());
 			}
 		}
 	}
