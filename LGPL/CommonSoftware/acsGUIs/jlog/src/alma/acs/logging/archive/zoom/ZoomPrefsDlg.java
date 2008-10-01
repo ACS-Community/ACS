@@ -126,7 +126,7 @@ public class ZoomPrefsDlg extends JDialog implements ActionListener {
 		setTitle("Drill down preferences");
 		ImageIcon zoomIcon = new ImageIcon(LogTypeHelper.class.getResource("/zoom.png"));
 		setIconImage(zoomIcon.getImage());	
-		setModal(false);
+		setModal(true);
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		
 		// Window content setup
