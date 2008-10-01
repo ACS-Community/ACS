@@ -18,14 +18,14 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acslogSvcImpl.cpp,v 1.21 2008/01/17 22:56:19 agrimstrup Exp $"
+* "@(#) $Id: acslogSvcImpl.cpp,v 1.22 2008/10/01 04:41:17 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
 * bjeram  11/09/01  created 
 */
 
-static char *rcsId="@(#) $Id: acslogSvcImpl.cpp,v 1.21 2008/01/17 22:56:19 agrimstrup Exp $"; 
+static char *rcsId="@(#) $Id: acslogSvcImpl.cpp,v 1.22 2008/10/01 04:41:17 cparedes Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include "acslogSvcImpl.h"
@@ -93,8 +93,7 @@ void ACSLogImpl::logTrace (acscommon::TimeStamp time,
 			   const ACSLog::RTContext & rtCont,
 			   const ACSLog::SourceInfo & srcInfo,
 			   const ACSLog::NVPairSeq & data
-			   
-			   ) throw ( CORBA::SystemException, ACSErr::ACSException )
+            )			   
 {  
   PriorityFlag  flag = write (rtCont, srcInfo, data);
   ACS_CHECK_LOGGER;
@@ -107,8 +106,7 @@ void ACSLogImpl::logDebug (acscommon::TimeStamp time,
 			   const ACSLog::RTContext & rtCont,
 			   const ACSLog::SourceInfo & srcInfo,
 			   const ACSLog::NVPairSeq & data
-			   
-			   ) throw ( CORBA::SystemException, ACSErr::ACSException )
+            )			   
 {  
   PriorityFlag  flag = write (rtCont, srcInfo, data);
   ACS_CHECK_LOGGER;
@@ -121,8 +119,7 @@ void ACSLogImpl::logInfo (acscommon::TimeStamp time,
 			   const ACSLog::RTContext & rtCont,
 			   const ACSLog::SourceInfo & srcInfo,
 			   const ACSLog::NVPairSeq & data
-			   
-			   ) throw ( CORBA::SystemException, ACSErr::ACSException )
+			  ) 
 {  
   PriorityFlag  flag = write (rtCont, srcInfo, data);
   ACS_CHECK_LOGGER;
@@ -135,8 +132,7 @@ void ACSLogImpl::logNotice (acscommon::TimeStamp time,
 			   const ACSLog::RTContext & rtCont,
 			   const ACSLog::SourceInfo & srcInfo,
 			   const ACSLog::NVPairSeq & data
-			   
-			   ) throw ( CORBA::SystemException, ACSErr::ACSException )
+			  ) 
 {  
   PriorityFlag  flag = write (rtCont, srcInfo, data);
   ACS_CHECK_LOGGER;
@@ -149,8 +145,7 @@ void ACSLogImpl::logWarning (acscommon::TimeStamp time,
 			   const ACSLog::RTContext & rtCont,
 			   const ACSLog::SourceInfo & srcInfo,
 			   const ACSLog::NVPairSeq & data
-			   
-			   ) throw ( CORBA::SystemException, ACSErr::ACSException )
+			  ) 
 {  
   PriorityFlag  flag = write (rtCont, srcInfo, data);
   ACS_CHECK_LOGGER;
@@ -159,14 +154,12 @@ void ACSLogImpl::logWarning (acscommon::TimeStamp time,
 }
 
 void ACSLogImpl::logError (const ACSErr::ErrorTrace & et) 
-    throw ( CORBA::SystemException, ACSErr::ACSException )
 {
   ErrorTraceHelper err(const_cast<ACSErr::ErrorTrace &>(et));
   err.log();
 }
 
 void ACSLogImpl::logErrorWithPriority(const ACSErr::ErrorTrace &et, ACSLog::Priorities p) 
-    throw ( CORBA::SystemException, ACSErr::ACSException )
 {
   ErrorTraceHelper err(const_cast<ACSErr::ErrorTrace &>(et));
   err.log(ACE_Log_Priority(1 << (p+1)));   // here we assume that enums in IDL starts from 0 
@@ -181,7 +174,6 @@ void ACSLogImpl::logWithPriority (ACSLog::Priorities p,
 			      const char * audience,
                               const char * array,
                               const char * antenna) 
-    throw ( CORBA::SystemException, ACSErr::ACSException )
 {  
   PriorityFlag  flag = write (rtCont, srcInfo, data);
   ACS_CHECK_LOGGER;
@@ -199,7 +191,6 @@ void ACSLogImpl::logWithAudience (ACSLog::Priorities p,
 			      const char * audience,
                               const char * array,
                               const char * antenna) 
-    throw ( CORBA::SystemException, ACSErr::ACSException )
 {  
   PriorityFlag  flag = writeRTContext(rtCont)|writeSourceInfo(srcInfo);
   ACS_CHECK_LOGGER;
@@ -215,7 +206,6 @@ void ACSLogImpl::logCritical (acscommon::TimeStamp time,
 			      const ACSLog::RTContext & rtCont,
 			      const ACSLog::SourceInfo & srcInfo,
 			      const ACSLog::NVPairSeq & data) 
-    throw ( CORBA::SystemException, ACSErr::ACSException )
 {  
   PriorityFlag  flag = write (rtCont, srcInfo, data);
   ACS_CHECK_LOGGER;
@@ -228,8 +218,7 @@ void ACSLogImpl::logAlert (acscommon::TimeStamp time,
 			   const ACSLog::RTContext & rtCont,
 			   const ACSLog::SourceInfo & srcInfo,
 			   const ACSLog::NVPairSeq & data
-			   
-			   ) throw ( CORBA::SystemException, ACSErr::ACSException )
+)
 {  
   PriorityFlag  flag = write (rtCont, srcInfo, data);
   ACS_CHECK_LOGGER;
@@ -242,8 +231,7 @@ void ACSLogImpl::logEmergency (acscommon::TimeStamp time,
 			   const ACSLog::RTContext & rtCont,
 			   const ACSLog::SourceInfo & srcInfo,
 			   const ACSLog::NVPairSeq & data
-			   
-			   ) throw ( CORBA::SystemException, ACSErr::ACSException )
+			  ) 
 {  
   PriorityFlag  flag = write (rtCont, srcInfo, data);
   ACS_CHECK_LOGGER;
@@ -251,9 +239,7 @@ void ACSLogImpl::logEmergency (acscommon::TimeStamp time,
   LOG_RECORD(Logging::BaseLog::LM_EMERGENCY, msg, srcInfo.file.in(), srcInfo.line, srcInfo.routine.in(), time, rtCont.sourceObject.in());
 }
 
-void ACSLogImpl::logXML (const char * xml
-			 
-			 ) throw (CORBA::SystemException, ACSErr::ACSException )
+void ACSLogImpl::logXML (const char * xml)			 
 {
   // first check if xml is XML string and if is DTD  (will be done in logXML !!!!!)
   m_logProxy.logXML (xml);

@@ -20,7 +20,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acslogSvcImpl.h,v 1.17 2008/06/03 09:11:01 bjeram Exp $"
+* "@(#) $Id: acslogSvcImpl.h,v 1.18 2008/10/01 04:41:17 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -43,55 +43,76 @@ typedef unsigned long PriorityFlag;
 class ACSLogImpl : public POA_ACSLog::LogSvc {
 public:
   ACSLogImpl(LoggingProxy &logProxy) : m_logProxy(logProxy){}
-  
+ 
+  /*
+  * @throw ACSErr::ACSException
+  */
   void logTrace (acscommon::TimeStamp time,
 		 const char * msg,
 		 const ACSLog::RTContext & rtCont,
 		 const ACSLog::SourceInfo & srcInfo,
 		 const ACSLog::NVPairSeq & data
-		 
-		 ) throw ( CORBA::SystemException, ACSErr::ACSException );
+		 );
 
+  /*
+  * @throw ACSErr::ACSException
+  */
   void logDebug (acscommon::TimeStamp time,
 		 const char * msg,
 		 const ACSLog::RTContext & rtCont,
 		 const ACSLog::SourceInfo & srcInfo,
 		 const ACSLog::NVPairSeq & data
 		 
-		 ) throw ( CORBA::SystemException, ACSErr::ACSException );
+		 );
 
+  /*
+  * @throw ACSErr::ACSException
+  */
   void logInfo (acscommon::TimeStamp time,
 		 const char * msg,
 		 const ACSLog::RTContext & rtCont,
 		 const ACSLog::SourceInfo & srcInfo,
 		 const ACSLog::NVPairSeq & data
 		 
-		 ) throw ( CORBA::SystemException, ACSErr::ACSException );
+		 );
 
+  /*
+  * @throw ACSErr::ACSException
+  */
   void logNotice (acscommon::TimeStamp time,
 		 const char * msg,
 		 const ACSLog::RTContext & rtCont,
 		 const ACSLog::SourceInfo & srcInfo,
 		 const ACSLog::NVPairSeq & data
 		 
-		 ) throw ( CORBA::SystemException, ACSErr::ACSException );
+		 );
 
+  /*
+  * @throw ACSErr::ACSException
+  */
   void logWarning (acscommon::TimeStamp time,
 		 const char * msg,
 		 const ACSLog::RTContext & rtCont,
 		 const ACSLog::SourceInfo & srcInfo,
 		 const ACSLog::NVPairSeq & data
-		 
-		 ) throw ( CORBA::SystemException, ACSErr::ACSException );
+		 );
 
+  /*
+  * @throw ACSErr::ACSException
+  */
   void logError (const ACSErr::ErrorTrace &c
-		 
-		 ) throw ( CORBA::SystemException, ACSErr::ACSException );
+		 );
 
+  /*
+  * @throw ACSErr::ACSException
+  */
   void logErrorWithPriority (const ACSErr::ErrorTrace &c,
 			    ACSLog::Priorities p
-      ) throw ( CORBA::SystemException, ACSErr::ACSException );
+		 );
 
+  /*
+  * @throw ACSErr::ACSException
+  */
   void logWithPriority (ACSLog::Priorities p,
        			      acscommon::TimeStamp time,
                               const char * msg,
@@ -101,8 +122,11 @@ public:
                               const char * audience=NULL,
                               const char * array=NULL,
                               const char * antenna=NULL
-			      ) throw ( CORBA::SystemException, ACSErr::ACSException );
+		 );
  
+  /*
+  * @throw ACSErr::ACSException
+  */
   void logWithAudience (ACSLog::Priorities p,
        			      acscommon::TimeStamp time,
                               const char * msg,
@@ -111,41 +135,51 @@ public:
                               const char * audience=NULL,
                               const char * array=NULL,
                               const char * antenna=NULL
-			      ) throw ( CORBA::SystemException, ACSErr::ACSException );
+		 );
  
+  /*
+  * @throw ACSErr::ACSException
+  */
   void logCritical (acscommon::TimeStamp time,
 		 const char * msg,
 		 const ACSLog::RTContext & rtCont,
 		 const ACSLog::SourceInfo & srcInfo,
 		 const ACSLog::NVPairSeq & data
-		 
-		 ) throw ( CORBA::SystemException, ACSErr::ACSException );
+		 );
 
+  /*
+  * @throw ACSErr::ACSException
+  */
   void logAlert (acscommon::TimeStamp time,
 		 const char * msg,
 		 const ACSLog::RTContext & rtCont,
 		 const ACSLog::SourceInfo & srcInfo,
 		 const ACSLog::NVPairSeq & data
-		 
-		 ) throw ( CORBA::SystemException, ACSErr::ACSException );
+		 );
 
+  /*
+  * @throw ACSErr::ACSException
+  */
   void logEmergency (acscommon::TimeStamp time,
 		 const char * msg,
 		 const ACSLog::RTContext & rtCont,
 		 const ACSLog::SourceInfo & srcInfo,
 		 const ACSLog::NVPairSeq & data
-		 
-		 ) throw ( CORBA::SystemException, ACSErr::ACSException );
+		 );
 
 
+  /*
+  * @throw ACSErr::ACSException
+  */
   void logXML (const char * xml
-	       
-	       ) throw (CORBA::SystemException, ACSErr::ACSException );
+		 );
     
+  /*
+  * @throw ACSErr::ACSException
+  */
   void logXMLTimed (acscommon::TimeStamp time,
 		    const char * xml
-		    
-		    ) throw (CORBA::SystemException, ACSErr::ACSException );
+		 );
 private:
   bool checkRTContext (const ACSLog::RTContext & rtCont);
   bool checkSourceInfo (const ACSLog::SourceInfo & srcInfo);

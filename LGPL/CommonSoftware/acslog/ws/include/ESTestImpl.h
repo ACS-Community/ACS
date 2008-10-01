@@ -20,7 +20,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: ESTestImpl.h,v 1.11 2006/12/14 08:35:29 bjeram Exp $"
+* "@(#) $Id: ESTestImpl.h,v 1.12 2008/10/01 04:41:17 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -44,14 +44,14 @@ public:
   ESTestImpl(ESTest* dest, const char *sn);
   ACSErr::Completion * test (  CORBA::Long depth,
 			       CORBA::Boolean err
-      ) throw ( CORBA::SystemException);
+      ) ;
   
-    
+  /*
+  * @throw ACSErrTypeTest::ACSErrTest0Ex
+  * @throw ACSErr::ACSException
+  */
   void testExceptions ( CORBA::Long depth,
-			CORBA::Boolean err)
-      throw ( CORBA::SystemException,
-	      ACSErrTypeTest::ACSErrTest0Ex,
-	      ACSErr::ACSException  );
+			CORBA::Boolean err);
     
     CompletionImpl* f1 (int depth, bool iserr);
   

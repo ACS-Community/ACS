@@ -18,14 +18,14 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: ESTestImpl.cpp,v 1.16 2006/12/14 14:29:08 bjeram Exp $"
+* "@(#) $Id: ESTestImpl.cpp,v 1.17 2008/10/01 04:41:17 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
 * almamgr  20/06/01  created 
 */
 
-static char *rcsId="@(#) $Id: ESTestImpl.cpp,v 1.16 2006/12/14 14:29:08 bjeram Exp $"; 
+static char *rcsId="@(#) $Id: ESTestImpl.cpp,v 1.17 2008/10/01 04:41:17 cparedes Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include "ESTestImpl.h"
@@ -40,7 +40,6 @@ ESTestImpl::ESTestImpl(ESTest* dest, const char* sn){
 }
 
 ACSErr::Completion * ESTestImpl::test ( CORBA::Long depth, CORBA::Boolean err )
-    throw ( CORBA::SystemException)
 {
   this->depth = depth;
 
@@ -88,9 +87,6 @@ CompletionImpl* ESTestImpl::f1 (int depth, bool iserr)
 }//f1
     
 void ESTestImpl::testExceptions ( CORBA::Long depth, CORBA::Boolean err)
-    throw ( CORBA::SystemException,
-	    ACSErrTypeTest::ACSErrTest0Ex,
-	    ACSErr::ACSException  )
 {
     this->depth = depth;
     try
