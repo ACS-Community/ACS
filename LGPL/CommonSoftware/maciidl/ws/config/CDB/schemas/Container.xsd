@@ -32,11 +32,6 @@ The ACS daemon that starts the container must understand the modifiers in order 
 				<xs:documentation>The computer on which the container will be started.</xs:documentation>
 			</xs:annotation>
 		</xs:attribute>
-		<xs:attribute name="Instance" type="xs:int" use="optional" default="0">
-			<xs:annotation>
-				<xs:documentation>The ACS instance. Note that the instance should only be used when sharing developer machines, but not for the integrated system.</xs:documentation>
-			</xs:annotation>
-		</xs:attribute>
 		<xs:attribute name="Flags" type="xs:string" use="optional" default="">
 			<xs:annotation>
 				<xs:documentation>Optional command line flags for starting the container. For example, an alternative container implementation can be used with --executable=myContainerImpl</xs:documentation>
