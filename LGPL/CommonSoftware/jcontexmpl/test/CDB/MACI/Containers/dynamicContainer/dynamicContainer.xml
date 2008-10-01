@@ -10,7 +10,7 @@
 	<Autoload>
 	</Autoload>
 
-	<DeployInfo Host="%HOST" Instance="%ACS_INSTANCE" />
+	<DeployInfo Host="%HOST" />
 
 	<LoggingConfig>
 		<log:_ Name="jacorb@dynamicContainer" minLogLevel="5" minLogLevelLocal="5" />
