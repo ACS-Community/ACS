@@ -59,7 +59,7 @@ public class LogToolBar extends JToolBar {
     private JComboBox discardLevelCB;
     
     
-//  The button to enable/disable (play/pause) the scroll lock
+    //  The button to enable/disable (play/pause) the scroll lock
     private JButton pauseBtn;
     private boolean pauseBtnPaused; // The status of the button
     private ImageIcon pauseIcon;
@@ -67,11 +67,20 @@ public class LogToolBar extends JToolBar {
     public static final String pauseStr = "<HTML><FONT size=-2>Pause</FONT>";
     public static final String playStr =  "<HTML><FONT size=-2>Play</FONT>";
     
-    // The button to delete the logs
+    /** 
+     * The button to delete the logs
+     */
     private JButton clearLogsBtn;
     
-    // The button to manage filters
+    /**
+     * The button to manage filters
+     */
     private JButton filtersBtn;
+    
+    /**
+     * The button for zooming
+     */
+    private JButton zoomBtn;
     
     /**
      * The initial discard level
@@ -130,6 +139,7 @@ public class LogToolBar extends JToolBar {
         tbLevelPanel.add(getPauseBtn());
         tbLevelPanel.add(getClearLogsBtn());
         tbLevelPanel.add(getFiltersBtn());
+        tbLevelPanel.add(getZoomBtn());
         userPanel.add(tbLevelPanel);
         
         toolBarPanel.add(userPanel,BorderLayout.WEST);
@@ -157,6 +167,7 @@ public class LogToolBar extends JToolBar {
     	discardLevelCB.addActionListener(listener);
     	pauseBtn.addActionListener(listener);
     	filtersBtn.addActionListener(listener);
+    	zoomBtn.addActionListener(listener);
     }
     
     /**
@@ -252,6 +263,18 @@ public class LogToolBar extends JToolBar {
     }
     
     /**
+     * 
+     * @return The zoom button
+     */
+    public JButton getZoomBtn() {
+    	if (zoomBtn==null) {
+    		ImageIcon zoomIcon = new ImageIcon(LogTypeHelper.class.getResource("/zoom.png"));
+    		zoomBtn=new JButton("<HTML><FONT size=-2>Drill down</HTML>",zoomIcon);
+    	}
+    	return zoomBtn;
+    }
+    
+    /**
 	 * The pause has been pressed
 	 * Change the test and icon in the button.
 	 * 
@@ -319,6 +342,15 @@ public class LogToolBar extends JToolBar {
 	 */
 	public boolean isPaused() {
 		return pauseBtnPaused;
+	}
+	
+	/**
+	 * Set the state of the zoom button
+	 * 
+	 * @param zoomable If <code>true</code> the zoom button is enabled.
+	 */
+	public void setZoomable(boolean zoomable) {
+		zoomBtn.setEnabled(zoomable);
 	}
 	
 }
