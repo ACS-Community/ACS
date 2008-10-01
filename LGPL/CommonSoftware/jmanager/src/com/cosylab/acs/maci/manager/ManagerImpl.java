@@ -49,6 +49,7 @@ import org.prevayler.implementation.SnapshotPrevayler;
 
 import alma.ACSErrTypeCommon.wrappers.AcsJBadParameterEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJNullPointerEx;
+import alma.acs.util.ACSPorts;
 import alma.alarmsystem.source.ACSAlarmSystemInterface;
 import alma.alarmsystem.source.ACSAlarmSystemInterfaceFactory;
 import alma.jmanagerErrType.wrappers.AcsJCyclicDependencyDetectedEx;
@@ -6591,13 +6592,13 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		// add itself as manager reference
 		flags += " -m " + transport.getManagerReference();
 
-		long instance = readLongCharacteristics(dao, containerName + "/DeployInfo/Instance", 0, true);
+		short instance = (short)ACSPorts.getBasePort();
 
 		try
 		{
 			Daemon daemon = transport.getDaemon(host);
 			if (daemon != null)
-				daemon.startContainer(impLang, containerName, (short)instance, flags);
+				daemon.startContainer(impLang, containerName, instance, flags);
 			else
 				throw new RuntimeException("Failed to get daemon.");
 
