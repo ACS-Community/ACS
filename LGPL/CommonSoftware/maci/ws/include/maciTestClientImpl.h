@@ -4,7 +4,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciTestClientImpl.h,v 1.85 2008/05/22 17:31:55 agrimstrup Exp $"
+* "@(#) $Id: maciTestClientImpl.h,v 1.86 2008/10/01 02:40:28 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -37,70 +37,32 @@ public:
 
   void setHandle(maci::Handle h) { m_handle = h; };
 
-virtual char * name (
-    
-  )
-  throw (
-    CORBA::SystemException
-  );
+virtual char * name ();
 
-virtual void disconnect (
-    
-  )
-  throw (
-    CORBA::SystemException
-  );
+virtual void disconnect ();
 
 virtual maci::AuthenticationData * authenticate (
     maci::ExecutionId execution_id,
-    const char * question
-    
-  )
-  throw (
-    CORBA::SystemException
-  );
+    const char * question);
 
 virtual void message (
     CORBA::Short type,
     const char * message
-    
-  )
-  throw (
-    CORBA::SystemException
   );
 
 virtual void taggedmessage (
     CORBA::Short type,
     CORBA::Short tag,
     const char * message
-    
-  )
-  throw (
-    CORBA::SystemException
   );
 
-virtual CORBA::Boolean ping (
-    
-  )
-  throw (
-    CORBA::SystemException
-  );
+virtual CORBA::Boolean ping ();
 
 virtual void components_available (
-    const maci::ComponentInfoSeq & cobs
-    
-  )
-  throw (
-    CORBA::SystemException
-  );
+    const maci::ComponentInfoSeq & cobs);
 
 virtual void components_unavailable (
-    const maci::stringSeq & cob_names
-    
-  )
-  throw (
-    CORBA::SystemException
-  );
+    const maci::stringSeq & cob_names);
 protected:
   ACE_CString m_name;
   maci::Manager_ptr m_manager;
@@ -128,89 +90,43 @@ virtual maci::ComponentInfo * activate_component (
     const char * name,
     const char * exe,
     const char * type
-    
-  )
-  throw (
-    CORBA::SystemException
   );
 
 virtual void deactivate_components (
     const maci::HandleSeq & h
-    
-  )
-  throw (
-    CORBA::SystemException
   );
 
 virtual void shutdown (
     CORBA::ULong action
-    
-  )
-  throw (
-    CORBA::SystemException
   );
 
 virtual maci::ComponentInfoSeq * get_component_info (
     const maci::HandleSeq & h
-    
-  )
-  throw (
-    CORBA::SystemException
   );
 
-virtual char * name (
-    
-  )
-  throw (
-    CORBA::SystemException
-  );
+virtual char * name ();
 
-virtual void disconnect (
-    
-  )
-  throw (
-    CORBA::SystemException
-  );
+virtual void disconnect ();
 
 virtual maci::AuthenticationData * authenticate (
     maci::ExecutionId execution_id,
     const char * question
-    
-  )
-  throw (
-    CORBA::SystemException
   );
 
 virtual void message (
     CORBA::Short type,
     const char * message
-    
-  )
-  throw (
-    CORBA::SystemException
   );
 
 virtual CORBA::Boolean ping (
-    
-  )
-  throw (
-    CORBA::SystemException
   );
 
 virtual void components_available (
     const maci::ComponentInfoSeq & cobs
-    
-  )
-  throw (
-    CORBA::SystemException
   );
 
 virtual void components_unavailable (
     const maci::stringSeq & cob_names
-    
-  )
-  throw (
-    CORBA::SystemException
   );
 
 protected:
@@ -235,134 +151,76 @@ virtual void client_logged_in (
     const maci::ClientInfo & info,
     ACS::Time timestamp,
     maci::ExecutionId execution_id
-  )
-  throw (
-    CORBA::SystemException
   );
 
 virtual void client_logged_out (
     maci::Handle h,
     ACS::Time timestamp
-  )
-  throw (
-    CORBA::SystemException
   );
 
 virtual void container_logged_in (
     const maci::ContainerInfo & info,
     ACS::Time timestamp,
     maci::ExecutionId execution_id
-  )
-  throw (
-    CORBA::SystemException
   );
 
 virtual void container_logged_out (
     maci::Handle h,
     ACS::Time timestamp
-  )
-  throw (
-    CORBA::SystemException
   );
 
 virtual void components_requested (
     const maci::HandleSeq & clients,
     const maci::HandleSeq & COBs,
     ACS::Time timestamp
-  )
-  throw (
-    CORBA::SystemException
   );
 
 virtual void components_released (
     const maci::HandleSeq & clients,
     const maci::HandleSeq & COBs,
     ACS::Time timestamp
-  )
-  throw (
-    CORBA::SystemException
   );
 
 virtual void component_activated (
     const maci::ComponentInfo & info,
     ACS::Time timestamp,
     maci::ExecutionId execution_id
-  )
-  throw (
-    CORBA::SystemException
   );
 
 virtual void component_deactivated (
     maci::Handle h,
     ACS::Time timestamp
-  )
-  throw (
-    CORBA::SystemException
   );
 
-virtual char * name (
-    
-  )
-  throw (
-    CORBA::SystemException
-  );
+virtual char * name ();
 
-virtual void disconnect (
-    
-  )
-  throw (
-    CORBA::SystemException
-  );
+virtual void disconnect ();
 
 virtual maci::AuthenticationData * authenticate (
     maci::ExecutionId execution_id,
     const char * question
-    
-  )
-  throw (
-    CORBA::SystemException
   );
 
 virtual void message (
     CORBA::Short type,
     const char * message
-    
-  )
-  throw (
-    CORBA::SystemException
   );
 
 virtual void taggedmessage (
     CORBA::Short type,
     CORBA::Short tag,
     const char * message
-    
-  )
-  throw (
-    CORBA::SystemException
   );
 
 virtual CORBA::Boolean ping (
-    
-  )
-  throw (
-    CORBA::SystemException
   );
 
 virtual void components_available (
     const maci::ComponentInfoSeq & cobs
-    
-  )
-  throw (
-    CORBA::SystemException
   );
 
 virtual void components_unavailable (
     const maci::stringSeq & cob_names
-    
-  )
-  throw (
-    CORBA::SystemException
   );
 
 };

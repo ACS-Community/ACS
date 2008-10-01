@@ -4,7 +4,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciContainerImpl.h,v 1.55 2008/08/04 08:45:26 bjeram Exp $"
+* "@(#) $Id: maciContainerImpl.h,v 1.56 2008/10/01 02:40:28 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -97,7 +97,7 @@ class LibraryManager;
  *
  * @author <a href=mailto:matej.sekoranja@ijs.si>Matej Sekoranja</a>,
  * Jozef Stefan Institute, Slovenia<br>
- * @version "@(#) $Id: maciContainerImpl.h,v 1.55 2008/08/04 08:45:26 bjeram Exp $"
+ * @version "@(#) $Id: maciContainerImpl.h,v 1.56 2008/10/01 02:40:28 cparedes Exp $"
  */
 
 class maci_EXPORT ContainerImpl :
@@ -236,6 +236,7 @@ public:
    * @param name Name of the component to instantiate.
    * @param exe Path to the executable file (a DLL or a shared library) in which the component's code resides. The path is relative to the root directory in which all executable code is stored. The path must not contain dots, and uses slashes (not backslashes) to separate components of the path. The path must not include the extension, or any prefixes, so that it is platform independent.
    * @param type The type of the component to instantiate. The interpretation of this field depends on the executable. Type should uniquely identify the code-base which the component will be executing. <B>Note:</B> Type name is NOT CORBA repository id.
+   * @throw maciErrType::CannotActivateComponentEx
    * @return Returns the reference to the object that has just been activated.
    *		  If the component could not the activated, a nil reference is returned. 
    */
@@ -244,9 +245,7 @@ public:
 					const char * name,
 					const char * exe,
 					const char * type
-					)
-    throw (CORBA::SystemException,
-	   maciErrType::CannotActivateComponentEx);
+					);
 
   /**
    * Deactivate all components whose handles are given.
@@ -258,8 +257,7 @@ public:
    * @param h A sequence of handles identifying components that are to be released.
    */
   virtual void deactivate_components (const maci::HandleSeq & h
-				      )
-    throw (CORBA::SystemException);
+				      );
 
   /**
    * Restarts an component.
@@ -267,16 +265,14 @@ public:
    * @return a new reference of the restarted component.
    */
   virtual CORBA::Object_ptr restart_component (maci::Handle h
-					       )
-      throw (CORBA::SystemException);
+					       );
 
   /**
    * Shutdown the Container. 
    * @param Action to take after shutting down. Bits 8 thru 15 of this parameter denote the action, which can be one of: <UL><LI>0 -- reload the container</LI><LI>1 -- reboot the computer</LI><LI>2 -- exit the container</LI></UL> The bits 0 thru 7 (values 0 to 255) are the return value that the Container will pass to the operating system.
    */
   virtual void shutdown (CORBA::ULong action
-			 )
-    throw (CORBA::SystemException);
+			 );
 	
   /**
    * Returns information about a subset of components that are currently hosted by the Container. 
@@ -286,23 +282,20 @@ public:
    * @return Information about the selected components.
    */
   virtual maci::ComponentInfoSeq * get_component_info (const maci::HandleSeq & h
-					   )
-    throw (CORBA::SystemException);
+					   );
 
   /**
    * Container name
    * @return name of the container. The caller has to take care for the releaseing of the memory!
    * The memory is allocated with CORBA::string_dup.
    */
-  virtual char * name ()
-    throw (CORBA::SystemException);
+  virtual char * name ();
 
   /**
    * Disconnect notification.
    * The disconnect method is called by the Manager to notify the client that it will be unavailable and that the client should log off. 
    */
-  virtual void disconnect ()
-    throw (CORBA::SystemException);
+  virtual void disconnect ();
 	
   /**
    * Authentication method.
@@ -312,8 +305,7 @@ public:
    * <TT>A</TT> An container (implements the Container interface)
    */
   virtual maci::AuthenticationData * authenticate (maci::ExecutionId execution_id, const char * question
-			       )
-    throw (CORBA::SystemException);
+			       );
 	
   /**
    * The Manager and administrators use this method for sending textual messages to the client.
@@ -322,8 +314,7 @@ public:
    */
   virtual void message (CORBA::Short type,
 			const char * message
-			)
-    throw (CORBA::SystemException);
+			);
 
   /**
    * The Manager and administrators use this method for sending tagged textual messages to the client.
@@ -334,32 +325,28 @@ public:
   virtual void taggedmessage (CORBA::Short type,
 			CORBA::Short tag,
 			const char * message
-			)
-    throw (CORBA::SystemException);
+			);
 
   /**
    * Notify client about the change (availability) of the components currently in use by this client. For administrative clients, notification is issued for the change of availability of any component in the domain.
    * @param components A sequence of ComponentInfo structures identifying the affected components. Regular clients receive the name, the type, the handle and the reference of the newly activated component. Administrative clients also receive the handle of the Container where the component was activated.
    */
   virtual void components_available (const maci::ComponentInfoSeq & components
-			       )
-    throw (CORBA::SystemException);
+			       );
 
   /** 
    * Notify client that some of the components currently in use by client have become unavailable.
    * @param component_names CURLs of the unavailable components  
    */
   virtual void components_unavailable (const maci::stringSeq & component_names
-				 )
-    throw (CORBA::SystemException);
+				 );
 
   /**
    * Notify container about component shutdown order.
    * @param h ordered list of components' handles.
    */
   virtual void set_component_shutdown_order(const maci::HandleSeq & h
-					   )
-    throw (CORBA::SystemException);
+					   );
 
   /** 
    * Get a component, activating it if necessary.
@@ -433,30 +420,29 @@ public:
    * Once the client is found to be malfunctioning, the Manager makes an implicit logout of the client.
    * @return <code>true</code>, indicating that everything is OK with the client, of <code>false</code>, indicating that client is malfunctioning.
    */
-  virtual CORBA::Boolean ping ()
-      throw (CORBA::SystemException);
+  virtual CORBA::Boolean ping ();
 
     /**
      * Logging configurable methods
      */
 
-    virtual maci::LoggingConfigurable::LogLevels get_default_logLevels()
-	throw (CORBA::SystemException);
+    virtual maci::LoggingConfigurable::LogLevels get_default_logLevels();
 
-    virtual void set_default_logLevels(const maci::LoggingConfigurable::LogLevels&)
-	throw (CORBA::SystemException);
+    virtual void set_default_logLevels(const maci::LoggingConfigurable::LogLevels&);
 
-    virtual maci::stringSeq* get_logger_names()
-	throw (CORBA::SystemException);
+    virtual maci::stringSeq* get_logger_names();
 
-    virtual maci::LoggingConfigurable::LogLevels get_logLevels(const char*)
-      throw (CORBA::SystemException, maciErrType::LoggerDoesNotExistEx);
+    /*
+    * @throw maciErrType::LoggerDoesNotExistEx
+    */
+    virtual maci::LoggingConfigurable::LogLevels get_logLevels(const char*);
 
-    virtual void set_logLevels(const char*, const maci::LoggingConfigurable::LogLevels&)
-	throw (CORBA::SystemException, maciErrType::LoggerDoesNotExistEx);
+    /* 
+    * @throw maciErrType::LoggerDoesNotExistEx
+    */
+    virtual void set_logLevels(const char*, const maci::LoggingConfigurable::LogLevels&);
 
-    virtual void refresh_logging_config()
-	throw (CORBA::SystemException);
+    virtual void refresh_logging_config();
 
     static void configureLogger(const std::string& loggerName);
 

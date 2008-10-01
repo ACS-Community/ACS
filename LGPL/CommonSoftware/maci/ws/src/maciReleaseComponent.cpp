@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciReleaseComponent.cpp,v 1.5 2008/05/22 17:31:55 agrimstrup Exp $"
+* "@(#) $Id: maciReleaseComponent.cpp,v 1.6 2008/10/01 02:40:28 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -53,13 +53,11 @@ class  AdministratorImpl :
     virtual ~AdministratorImpl (void) {}
 
     virtual char * name ()
-	throw (CORBA::SystemException)
     {
 	return CORBA::string_dup(m_name.c_str());
     }
 
     virtual void disconnect ()
-	throw (CORBA::SystemException)
     {
 	// noop
     }
@@ -68,7 +66,6 @@ class  AdministratorImpl :
 	maci::ExecutionId execution_id,
 	const char * question
 	)
-	throw (CORBA::SystemException)
     {
 	ACE_UNUSED_ARG(question);
 
@@ -87,7 +84,6 @@ class  AdministratorImpl :
 	CORBA::Short type,
 	const char * message
 	)
-	throw (CORBA::SystemException)
     {
 	// noop
     }
@@ -98,14 +94,12 @@ class  AdministratorImpl :
 	CORBA::Short tag,
 	const char * message
 	)
-	throw (CORBA::SystemException)
     {
 	// noop
     }
 
 
     virtual CORBA::Boolean ping ()
-	throw (CORBA::SystemException)
     {
 	return true;
     }
@@ -113,17 +107,11 @@ class  AdministratorImpl :
     virtual void components_available (
 	const maci::ComponentInfoSeq & cobs
     
-	)
-	throw (
-	    CORBA::SystemException
 	    ) {}
 
     virtual void components_unavailable (
 	const maci::stringSeq & cob_names
     
-	)
-	throw (
-	    CORBA::SystemException
 	    ) {}
 
     virtual void client_logged_in (

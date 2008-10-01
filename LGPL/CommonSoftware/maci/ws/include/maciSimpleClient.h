@@ -4,7 +4,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciSimpleClient.h,v 1.106 2008/08/26 03:18:59 cparedes Exp $"
+* "@(#) $Id: maciSimpleClient.h,v 1.107 2008/10/01 02:40:28 cparedes Exp $"
 *
 * who       when        what
 * --------  --------    ----------------------------------------------
@@ -311,15 +311,13 @@ public:
   /**
    * Client name
    */
-  virtual char * name ()
-      throw (CORBA::SystemException);
+  virtual char * name ();
 
   /**
    * Disconnect notification.
    * The disconnect method is called by the Manager to notify the client that it will be unavailable and that the client should log off.
    */
-  virtual void disconnect ()
-    throw (CORBA::SystemException);
+  virtual void disconnect ();
 
   /**
    * Authentication method.
@@ -331,8 +329,7 @@ public:
    * <TT>S</TT> A supervisor (implements the Administrator interface)
    */
    virtual ::maci::AuthenticationData * authenticate (
-	::maci::ExecutionId execution_id, const char * question)
-       throw (CORBA::SystemException);
+	::maci::ExecutionId execution_id, const char * question);
 
   /**
    * The Manager and administrators use this method for sending textual messages to the client.
@@ -341,8 +338,7 @@ public:
    */
   virtual void message (CORBA::Short type,
 			const char * message
-			)
-    throw (CORBA::SystemException);
+			);
 
   /**
    * The Manager and administrators use this method for sending tagged textual messages to the client.
@@ -353,24 +349,21 @@ public:
   virtual void taggedmessage (CORBA::Short type,
 			      CORBA::Short tag,
 			const char * message
-			)
-    throw (CORBA::SystemException);
+			);
 
   /**
    * Notify client about the change (availability) of the components currently in use by this client. For administrative clients, notification is issued for the change of availability of any component in the domain.
    * @param cobs A sequence of ComponentInfo structures identifying the affected components. Regular clients receive the name, the type, the handle and the reference of the newly activated component. Administrative clients also receive the handle of the Container where the component was activated.
    */
   virtual void components_available (const maci::ComponentInfoSeq & cobs
-			       )
-    throw (CORBA::SystemException);
+			       );
 
   /**
    * Notify client that some of the components currently in use by client have become unavailable.
    * @param cob_names CURLs of the unavailable components
    */
   virtual void components_unavailable (const maci::stringSeq & cob_names
-				 )
-    throw (CORBA::SystemException);
+				 );
 
 
   /**
@@ -381,8 +374,7 @@ public:
    * Once the client is found to be malfunctioning, the Manager makes an implicit logout of the client.
    * @return <code>true</code>, indicating that everything is OK with the client, of <code>false</code>, indicating that client is malfunctioning.
    */
-  virtual CORBA::Boolean ping ()
-      throw (CORBA::SystemException);
+  virtual CORBA::Boolean ping ();
 
     /// Get logging proxy instance
     /// @return logging proxy instance

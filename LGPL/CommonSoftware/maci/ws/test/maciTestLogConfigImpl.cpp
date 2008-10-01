@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciTestLogConfigImpl.cpp,v 1.1 2007/10/03 20:08:20 cparedes Exp $"
+* "@(#) $Id: maciTestLogConfigImpl.cpp,v 1.2 2008/10/01 02:40:28 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -9,7 +9,7 @@
 
 #include <vltPort.h>
 
-static char *rcsId="@(#) $Id: maciTestLogConfigImpl.cpp,v 1.1 2007/10/03 20:08:20 cparedes Exp $";
+static char *rcsId="@(#) $Id: maciTestLogConfigImpl.cpp,v 1.2 2008/10/01 02:40:28 cparedes Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 //#include <logging.h>
@@ -50,7 +50,6 @@ LogConfigTestClass::~LogConfigTestClass()
 
 void
 LogConfigTestClass::log_all ()
-  throw (CORBA::SystemException)
 {
 
   ACS_SHORT_LOG((LM_EMERGENCY, "LogConfigTestClass::test *********starting the test***********"));

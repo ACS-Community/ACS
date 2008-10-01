@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - VLT project
 *
-* "@(#) $Id: maciDynCompImpl.cpp,v 1.11 2005/04/25 17:47:05 acaproni Exp $"
+* "@(#) $Id: maciDynCompImpl.cpp,v 1.12 2008/10/01 02:40:28 cparedes Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -14,7 +14,7 @@
 #define _POSIX_SOURCE 1
 #include "vltPort.h"
 
-static char *rcsId="@(#) $Id: maciDynCompImpl.cpp,v 1.11 2005/04/25 17:47:05 acaproni Exp $"; 
+static char *rcsId="@(#) $Id: maciDynCompImpl.cpp,v 1.12 2008/10/01 02:40:28 cparedes Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include "maciDynCompImpl.h"
@@ -106,7 +106,7 @@ void DynamicTestClassImpl::aboutToAbort()
   /* --------------------- [ CORBA interface ] ----------------------*/
   /* ----------------------------------------------------------------*/
 
-void DynamicTestClassImpl::whoami() throw (CORBA::SystemException)
+void DynamicTestClassImpl::whoami()
 {
 	ACS_SHORT_LOG((LM_INFO,"I am %s",getContainerServices()->getName().c_str()));
 }

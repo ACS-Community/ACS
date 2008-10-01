@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciContainerImpl.cpp,v 1.112 2008/08/07 09:51:54 bjeram Exp $"
+* "@(#) $Id: maciContainerImpl.cpp,v 1.113 2008/10/01 02:40:28 cparedes Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -79,7 +79,7 @@
 #include <ACSAlarmSystemInterfaceFactory.h>
 #endif
 
-ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.112 2008/08/07 09:51:54 bjeram Exp $")
+ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.113 2008/10/01 02:40:28 cparedes Exp $")
 
  using namespace maci;
  using namespace cdb;
@@ -1587,8 +1587,6 @@ ContainerImpl::activate_component (
 			     const char * type
 
 			     )
-  throw (CORBA::SystemException,
-	 maciErrType::CannotActivateComponentEx)
 {
   ACE_UNUSED_ARG(execution_id);
 
@@ -1999,7 +1997,6 @@ ContainerImpl::deactivate_components (
 				const maci::HandleSeq & h
 
 				)
-  throw (CORBA::SystemException)
 {
 
 
@@ -2102,7 +2099,6 @@ ContainerImpl::deactivate_components (
 CORBA::Object_ptr
 ContainerImpl::restart_component (maci::Handle h
 				  )
-      throw (CORBA::SystemException)
 {
     if (m_shutdown) {
       throw CORBA::NO_RESOURCES ();
@@ -2120,7 +2116,6 @@ ContainerImpl::get_component_info (
 			     const maci::HandleSeq & h
 
 			     )
-  throw (CORBA::SystemException)
 {
 
 
@@ -2185,7 +2180,6 @@ ContainerImpl::shutdown (
 			 CORBA::ULong action
 
 			 )
-  throw (CORBA::SystemException)
 {
   ACS_TRACE("maci::ContainerImpl::shutdown");
 
@@ -2355,7 +2349,6 @@ ContainerImpl::shutdown (
 
 void
 ContainerImpl::disconnect ()
-  throw (CORBA::SystemException)
 {
   ACS_TRACE("maci::ContainerImpl::disconnect");
 
@@ -2390,7 +2383,6 @@ ContainerImpl::authenticate (
 	maci::ExecutionId execution_id,
 	const char * question
 			     )
-  throw (CORBA::SystemException)
 {
   ACE_UNUSED_ARG(question);
 
@@ -2415,7 +2407,6 @@ ContainerImpl::authenticate (
 
 char *
 ContainerImpl::name ()
-  throw (CORBA::SystemException)
 {
   return CORBA::string_dup(m_container_name);
 }
@@ -2428,7 +2419,6 @@ ContainerImpl::message (
 			const char * message
 
 			)
-  throw (CORBA::SystemException)
 {
 
   ACS_LOG(LM_RUNTIME_CONTEXT, "maci::ContainerImpl::message",
@@ -2444,7 +2434,6 @@ ContainerImpl::taggedmessage (
 			const char * message
 
 			)
-  throw (CORBA::SystemException)
 {
 
   if (tag == ::maci::Client::MSGID_AUTOLOAD_START)
@@ -2471,7 +2460,6 @@ ContainerImpl::components_available (
 			       const maci::ComponentInfoSeq & cobs
 
 			       )
-  throw (CORBA::SystemException)
 {
       ACS_SHORT_LOG((LM_DEBUG, "Informing Components Available"));
 
@@ -2500,7 +2488,6 @@ ContainerImpl::set_component_shutdown_order (
 				const maci::HandleSeq & h
 
 				)
-  throw (CORBA::SystemException)
 {
 
   ACS_TRACE("maci::ContainerImpl::set_component_shutdown_order");
@@ -2520,7 +2507,6 @@ ContainerImpl::components_unavailable (
 				 const maci::stringSeq & cob_names
 
 				 )
-  throw (CORBA::SystemException)
 {
     ACS_SHORT_LOG((LM_DEBUG, "Informing Components Unavailable"));
     ACE_CString_Vector compNames;
@@ -2631,7 +2617,6 @@ CORBA::Boolean
 ContainerImpl::ping (
 
     )
-  throw (CORBA::SystemException)
 {
     return true;
 }
@@ -2654,7 +2639,6 @@ ContainerImpl::instantiateContainerServices(
  */
 
 maci::LoggingConfigurable::LogLevels ContainerImpl::get_default_logLevels()
-	throw (CORBA::SystemException)
 {
 	ACS_TRACE("maci::ContainerImpl::get_default_logLevels");
 
@@ -2662,7 +2646,6 @@ maci::LoggingConfigurable::LogLevels ContainerImpl::get_default_logLevels()
 }
 
 void ContainerImpl::set_default_logLevels(const maci::LoggingConfigurable::LogLevels& logLevels)
-	throw (CORBA::SystemException)
 {
 	ACS_TRACE("maci::ContainerImpl::set_default_logLevels");
 
@@ -2677,7 +2660,6 @@ void ContainerImpl::set_default_logLevels(const maci::LoggingConfigurable::LogLe
 
 
 maci::stringSeq* ContainerImpl::get_logger_names()
-	throw (CORBA::SystemException)
 {
 	ACS_TRACE("maci::ContainerImpl::get_logger_names");
 
@@ -2704,9 +2686,10 @@ maci::stringSeq* ContainerImpl::get_logger_names()
 	return namesSeq._retn();
 }
 
-
+/*
+* @throw maciErrType::LoggerDoesNotExistEx
+*/
 maci::LoggingConfigurable::LogLevels ContainerImpl::get_logLevels(const char* loggerName)
-      throw (CORBA::SystemException, maciErrType::LoggerDoesNotExistEx)
 {
 	ACS_TRACE("maci::ContainerImpl::get_logLevels");
 
@@ -2726,8 +2709,10 @@ maci::LoggingConfigurable::LogLevels ContainerImpl::get_logLevels(const char* lo
 }
 
 
+/*
+* @throw maciErrType::LoggerDoesNotExistEx
+*/
 void ContainerImpl::set_logLevels(const char* loggerName, const maci::LoggingConfigurable::LogLevels& logLevels)
-	throw (CORBA::SystemException, maciErrType::LoggerDoesNotExistEx)
 {
 	ACS_TRACE("maci::ContainerImpl::set_logLevels");
 
@@ -2756,7 +2741,6 @@ void ContainerImpl::set_logLevels(const char* loggerName, const maci::LoggingCon
 }
 
 void ContainerImpl::refresh_logging_config()
-	throw (CORBA::SystemException)
 {
 	ACS_TRACE("maci::ContainerImpl::refresh_logging_config");
 

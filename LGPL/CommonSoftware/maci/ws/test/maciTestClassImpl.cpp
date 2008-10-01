@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciTestClassImpl.cpp,v 1.98 2007/09/04 04:10:13 cparedes Exp $"
+* "@(#) $Id: maciTestClassImpl.cpp,v 1.99 2008/10/01 02:40:28 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -16,7 +16,7 @@
 
 #include <vltPort.h>
 
-static char *rcsId="@(#) $Id: maciTestClassImpl.cpp,v 1.98 2007/09/04 04:10:13 cparedes Exp $";
+static char *rcsId="@(#) $Id: maciTestClassImpl.cpp,v 1.99 2008/10/01 02:40:28 cparedes Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <logging.h>
@@ -63,7 +63,6 @@ MaciTestClass::~MaciTestClass()
 
 CORBA::Boolean
 MaciTestClass::test ()
-  throw (CORBA::SystemException)
 {
   ACS_SHORT_LOG((LM_INFO, "MaciTestClass::test(%s)", m_name.c_str()));
   // do some tests here
@@ -75,7 +74,6 @@ MaciTestClass::get_component (
     const char *cob_url,
     CORBA::Boolean activate
     )
-  throw (CORBA::SystemException)
 {
   ACS_SHORT_LOG((LM_INFO, "MaciTestClass::get_component(%s,%s)",
                  m_name.c_str(), cob_url));
@@ -85,7 +83,6 @@ CORBA::Long
 MaciTestClass::release_component(
     const char *cob_url
     )
-  throw (CORBA::SystemException)
 {
   ACS_SHORT_LOG((LM_INFO, "MaciTestClass::release_component(%s, %s)",
                  m_name.c_str(), cob_url));
@@ -93,13 +90,11 @@ MaciTestClass::release_component(
 }
 
 void MaciTestClass::activate_internal_component ()
-  throw (CORBA::SystemException)
 {
   testInternalComp = getContainerServices()->getComponent<MACI_TEST::MaciTestClass>("MACI_SUB");
 }
 
 void MaciTestClass::release_internal_component()
-  throw (CORBA::SystemException)
 {
    //getContainerServices()->forceReleaseComponent("MACI_SUB");
 }
@@ -194,14 +189,12 @@ MaciTestConstructableClass::~MaciTestConstructableClass()
 /*
 void
 MaciTestConstructableClass::construct ()
-  throw (CORBA::SystemException)
 {
   ACS_SHORT_LOG((LM_INFO, "MaciTestConstructableClass::construct"));
 }
 
 void
 MaciTestConstructableClass::destruct ()
-  throw (CORBA::SystemException)
 {
   ACS_SHORT_LOG((LM_INFO, "MaciTestConstructableClass::destruct"));
 }
@@ -211,7 +204,6 @@ MaciTestConstructableClass::get_component (
     const char *cob_url,
     CORBA::Boolean activate,
     CORBA::ULong &status
-  throw (CORBA::SystemException)
 {
   ACS_SHORT_LOG((LM_INFO, "MaciTestConstructableClass::get_component"));
 //  return MaciTestClass::get_component(cob_url, activate, status);
@@ -221,7 +213,6 @@ MaciTestConstructableClass::get_component (
 CORBA::Long
 MaciTestConstructableClass::release_component(
     const char *cob_url
-  throw (CORBA::SystemException)
 {
   ACS_SHORT_LOG((LM_INFO, "MaciTestConstructableClass::release_component"));
 //  return MaciTestClass::release_component(cob_url);

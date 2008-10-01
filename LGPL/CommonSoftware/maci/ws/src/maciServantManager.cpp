@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciServantManager.cpp,v 1.86 2006/09/01 02:20:54 cparedes Exp $"
+* "@(#) $Id: maciServantManager.cpp,v 1.87 2008/10/01 02:40:28 cparedes Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -17,19 +17,12 @@
 
  using namespace maci;
 
+/*
+* @throw PortableServer::ForwardRequest
+*/
 PortableServer::Servant
 MACIServantManager::incarnate (const PortableServer::ObjectId &oid,
 			       PortableServer::POA_ptr poa)
-#if (TAO_HAS_MINIMUM_CORBA == 0)
-      throw (
-        CORBA::SystemException
-        , PortableServer::ForwardRequest
-      )
-#else
-      throw (
-        CORBA::SystemException
-      )
-#endif /* TAO_HAS_MINIMUM_CORBA == 0 */
 {
   ACE_UNUSED_ARG(oid);
   ACE_UNUSED_ARG(poa);
@@ -48,9 +41,6 @@ MACIServantManager::etherealize (const PortableServer::ObjectId &oid,
 				 PortableServer::Servant servant,
 				 CORBA::Boolean cleanup_in_progress,
 				 CORBA::Boolean remaining_activations)
-throw (
-	CORBA::SystemException
-			  )
 { 
   
   ACE_UNUSED_ARG(adapter);

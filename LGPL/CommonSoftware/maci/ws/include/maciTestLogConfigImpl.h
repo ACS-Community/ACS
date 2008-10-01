@@ -4,7 +4,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciTestLogConfigImpl.h,v 1.1 2007/10/01 18:42:16 cparedes Exp $"
+* "@(#) $Id: maciTestLogConfigImpl.h,v 1.2 2008/10/01 02:40:28 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -33,7 +33,7 @@
  *
  * @author <a href=mailto:klemen.zagar@ijs.si>Klemen Zagar</a>,
  * Jozef Stefan Institute, Slovenia<br>
- * @version "@(#) $Id: maciTestLogConfigImpl.h,v 1.1 2007/10/01 18:42:16 cparedes Exp $"
+ * @version "@(#) $Id: maciTestLogConfigImpl.h,v 1.2 2008/10/01 02:40:28 cparedes Exp $"
  */
 
 class LogConfigTestClass: public virtual acscomponent::ACSComponentImpl,
@@ -60,8 +60,7 @@ public:
   /* --------------------- [ CORBA interface ] ----------------------*/
   /* ----------------------------------------------------------------*/
 
-    virtual void LogConfigTestClass::log_all ()
-    throw (CORBA::SystemException);
+    virtual void LogConfigTestClass::log_all ();
 
 };
 

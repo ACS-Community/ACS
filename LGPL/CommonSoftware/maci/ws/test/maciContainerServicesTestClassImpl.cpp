@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - VLT project
 *
-* "@(#) $Id: maciContainerServicesTestClassImpl.cpp,v 1.18 2008/03/27 12:05:32 bjeram Exp $"
+* "@(#) $Id: maciContainerServicesTestClassImpl.cpp,v 1.19 2008/10/01 02:40:28 cparedes Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -11,7 +11,7 @@
 #define _POSIX_SOURCE 1
 #include "vltPort.h"
 
-static char *rcsId="@(#) $Id: maciContainerServicesTestClassImpl.cpp,v 1.18 2008/03/27 12:05:32 bjeram Exp $"; 
+static char *rcsId="@(#) $Id: maciContainerServicesTestClassImpl.cpp,v 1.19 2008/10/01 02:40:28 cparedes Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include "maciContainerServicesTestClassImpl.h"
@@ -52,7 +52,6 @@ void MaciContainerServicesTestClassImpl::aboutToAbort()
 }
 
 void MaciContainerServicesTestClassImpl::dynamicComponentTest() 
-	throw (CORBA::SystemException)
 {
 	 
 	 // Prepare the ComponentSpec struct
@@ -88,7 +87,6 @@ void MaciContainerServicesTestClassImpl::dynamicComponentTest()
 }//dynamicComponentTest
 
 void MaciContainerServicesTestClassImpl::dynamicComponentSmartPtrTest() 
-	throw (CORBA::SystemException)
 {
 	 
 	 // Prepare the ComponentSpec struct
@@ -107,7 +105,6 @@ void MaciContainerServicesTestClassImpl::dynamicComponentSmartPtrTest()
 }
 
 void MaciContainerServicesTestClassImpl::collocatedComponentTest() 
-	throw (CORBA::SystemException)
 {
 	 
 	 // Prepare the ComponentSpec struct
@@ -140,7 +137,6 @@ void MaciContainerServicesTestClassImpl::collocatedComponentTest()
 }
 
 void MaciContainerServicesTestClassImpl::collocatedComponentSmartPtrTest() 
-	throw (CORBA::SystemException)
 {
 	 
 	 // Prepare the ComponentSpec struct
@@ -159,7 +155,6 @@ void MaciContainerServicesTestClassImpl::collocatedComponentSmartPtrTest()
 }
 
 void MaciContainerServicesTestClassImpl::defaultComponentTest() 
-	throw (CORBA::SystemException)
 {
 	 
 	 // Get the default component for the given IDL interface
@@ -188,7 +183,6 @@ void MaciContainerServicesTestClassImpl::defaultComponentTest()
 }
   
 void MaciContainerServicesTestClassImpl::defaultComponentSmartPtrTest() 
-	throw (CORBA::SystemException)
 {
 	 
 	 // Get the default component for the given IDL interface
@@ -200,7 +194,6 @@ void MaciContainerServicesTestClassImpl::defaultComponentSmartPtrTest()
 }
   
 void MaciContainerServicesTestClassImpl::componentDescriptorTest() 
-	throw (CORBA::SystemException)
 {
     ComponentInfo cInfo = getContainerServices()->getComponentDescriptor(COMPNAME);
     ACS_SHORT_LOG((LM_INFO,"ComponentInfo, Name: %s",cInfo.name.in()));
@@ -209,7 +202,6 @@ void MaciContainerServicesTestClassImpl::componentDescriptorTest()
 }
 
 void MaciContainerServicesTestClassImpl::releaseResourcesTest() 
-	throw (CORBA::SystemException)
 {
 	 // Get the COMPNAME component
 	 MACI_TEST::DynamicTestClass_var comp = 
@@ -234,7 +226,6 @@ void MaciContainerServicesTestClassImpl::releaseResourcesTest()
 }
 
 void MaciContainerServicesTestClassImpl::getComponentTest() 
-	throw (CORBA::SystemException)
 {
 	 // Get the COMPNAME component
 	 MACI_TEST::DynamicTestClass_var comp = 
@@ -263,7 +254,6 @@ void MaciContainerServicesTestClassImpl::getComponentTest()
 }//getComponentTest
 
 void MaciContainerServicesTestClassImpl::getComponentSmartPtrTest() 
-	throw (CORBA::SystemException)
 {
 	 // Get the COMPNAME component
 	 SmartPtr<MACI_TEST::DynamicTestClass> comp = 
@@ -274,7 +264,6 @@ void MaciContainerServicesTestClassImpl::getComponentSmartPtrTest()
 }
 
 void MaciContainerServicesTestClassImpl::getComponentNonStickyTest() 
-	throw (CORBA::SystemException)
 {
     try
 	{
@@ -328,7 +317,6 @@ void MaciContainerServicesTestClassImpl::getComponentNonStickyTest()
 }//getComponentNonStickyTest
 
 void MaciContainerServicesTestClassImpl::getComponentNonStickySmartPtrTest() 
-	throw (CORBA::SystemException)
 {
     try
 	{
@@ -360,7 +348,6 @@ void MaciContainerServicesTestClassImpl::getComponentNonStickySmartPtrTest()
 }
 
 void MaciContainerServicesTestClassImpl::componentListenerTest()
-    throw (CORBA::SystemException)
 {
     try {
         BlockingComponentListener* blockLizzy = new BlockingComponentListener();

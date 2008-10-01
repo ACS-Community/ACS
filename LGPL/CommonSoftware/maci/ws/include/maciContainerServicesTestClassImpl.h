@@ -4,7 +4,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciContainerServicesTestClassImpl.h,v 1.14 2007/10/24 22:29:50 agrimstrup Exp $"
+* "@(#) $Id: maciContainerServicesTestClassImpl.h,v 1.15 2008/10/01 02:40:28 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -75,43 +75,43 @@ public:
   /* ----------------------------------------------------------------*/
 
   // Test the defaultComponent activation
-  virtual void getComponentTest() throw (CORBA::SystemException);
+  virtual void getComponentTest() ;
   
   // Test the getting a Component as Non Sticky 
-  virtual void getComponentNonStickyTest() throw (CORBA::SystemException);
+  virtual void getComponentNonStickyTest() ;
 
   // Test the dynamic component activation
-  virtual void dynamicComponentTest() throw (CORBA::SystemException); 
+  virtual void dynamicComponentTest(); 
   
   // Test the collocated component activation
-  virtual void collocatedComponentTest() throw (CORBA::SystemException); 
+  virtual void collocatedComponentTest(); 
   
   // Test the defaultComponent activation
-  virtual void defaultComponentTest() throw (CORBA::SystemException);
+  virtual void defaultComponentTest();
   
   // Test the defaultComponentSmartPtr activation
-  virtual void getComponentSmartPtrTest() throw (CORBA::SystemException);
+  virtual void getComponentSmartPtrTest();
   
   // Test the getting a Component smart pointer as Non Sticky 
-  virtual void getComponentNonStickySmartPtrTest() throw (CORBA::SystemException);
+  virtual void getComponentNonStickySmartPtrTest();
 
   // Test the dynamic component smart pointer activation
-  virtual void dynamicComponentSmartPtrTest() throw (CORBA::SystemException); 
+  virtual void dynamicComponentSmartPtrTest(); 
   
   // Test the collocated component smart pointer activation
-  virtual void collocatedComponentSmartPtrTest() throw (CORBA::SystemException); 
+  virtual void collocatedComponentSmartPtrTest(); 
   
   // Test the defaultComponent smart pointer activation
-  virtual void defaultComponentSmartPtrTest() throw (CORBA::SystemException);
+  virtual void defaultComponentSmartPtrTest();
   
   // Test the request of a component descriptor
-  virtual void componentDescriptorTest() throw (CORBA::SystemException);
+  virtual void componentDescriptorTest();
 
   // Test the relase of all components
-  virtual void releaseResourcesTest() throw (CORBA::SystemException);
+  virtual void releaseResourcesTest();
 
   // Test the component listener
-  virtual void componentListenerTest() throw (CORBA::SystemException);
+  virtual void componentListenerTest();
 
 };
 

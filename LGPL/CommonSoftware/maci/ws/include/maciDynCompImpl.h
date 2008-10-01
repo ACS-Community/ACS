@@ -3,7 +3,7 @@
 /*******************************************************************************
 * E.S.O. - VLT project
 *
-* "@(#) $Id: maciDynCompImpl.h,v 1.9 2005/04/25 17:47:05 acaproni Exp $"
+* "@(#) $Id: maciDynCompImpl.h,v 1.10 2008/10/01 02:40:28 cparedes Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -71,7 +71,7 @@ class DynamicTestClassImpl: public virtual acscomponent::ACSComponentImpl,
   /* ----------------------------------------------------------------*/
 
   // Log the name of the component
-  virtual void whoami() throw (CORBA::SystemException); 
+  virtual void whoami() ; 
   
   // The following variable (read from CDB and with a default value of 0
   // set in the schema) is used to signal that we whish the component

@@ -4,7 +4,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciTestClassImpl.h,v 1.89 2007/09/03 06:07:12 cparedes Exp $"
+* "@(#) $Id: maciTestClassImpl.h,v 1.90 2008/10/01 02:40:28 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -33,7 +33,7 @@
  *
  * @author <a href=mailto:klemen.zagar@ijs.si>Klemen Zagar</a>,
  * Jozef Stefan Institute, Slovenia<br>
- * @version "@(#) $Id: maciTestClassImpl.h,v 1.89 2007/09/03 06:07:12 cparedes Exp $"
+ * @version "@(#) $Id: maciTestClassImpl.h,v 1.90 2008/10/01 02:40:28 cparedes Exp $"
  */
 
 class MaciTestClass: public virtual acscomponent::ACSComponentImpl,
@@ -61,21 +61,16 @@ public:
   /* --------------------- [ CORBA interface ] ----------------------*/
   /* ----------------------------------------------------------------*/
 
-    virtual CORBA::Boolean test ()               
-	throw (CORBA::SystemException);
+    virtual CORBA::Boolean test ();
 
     virtual CORBA::Object_ptr get_component (const char *cob_url,
-					     CORBA::Boolean activate)
-	throw (CORBA::SystemException);
+					     CORBA::Boolean activate);
 
-    virtual CORBA::Long release_component (const char *cob_url)                                    
-	throw (CORBA::SystemException);
+    virtual CORBA::Long release_component (const char *cob_url);                                    
 
-    virtual void MaciTestClass::activate_internal_component ()
-    throw (CORBA::SystemException);
+    virtual void MaciTestClass::activate_internal_component ();
 
-    virtual void MaciTestClass::release_internal_component ()
-    throw (CORBA::SystemException);
+    virtual void MaciTestClass::release_internal_component ();
 
 protected:
 

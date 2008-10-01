@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciSimpleClient.cpp,v 1.107 2008/08/13 05:54:10 cparedes Exp $"
+* "@(#) $Id: maciSimpleClient.cpp,v 1.108 2008/10/01 02:40:28 cparedes Exp $"
 *
 * who       when        what
 * --------  --------    ----------------------------------------------
@@ -602,14 +602,12 @@ long  SimpleClient::releaseComponent(const char* name)
 
 char *
 SimpleClient::name ()
-  throw (CORBA::SystemException)
 {
   return CORBA::string_dup("Simple MACI Client");
 }
 
 void
 SimpleClient::disconnect ()
-  throw (CORBA::SystemException)
 {
   // override this implementation in case of special handling
   ACS_SHORT_LOG((LM_DEBUG, "Manager requested that I should log off or I will be disconneced from the Manager."));
@@ -620,7 +618,6 @@ SimpleClient::authenticate (
         maci::ExecutionId execution_id,
         const char * question
         )
- throw (CORBA::SystemException)
 {
   ACE_UNUSED_ARG(question);
 
@@ -642,7 +639,6 @@ void
 SimpleClient::message (CORBA::Short type,
 		       const char * message
 		       )
-  throw (CORBA::SystemException)
 {
   ACS_SHORT_LOG((LM_DEBUG, "Got message from the Manager: '%s'.", message));
 }
@@ -652,7 +648,6 @@ SimpleClient::taggedmessage (CORBA::Short type,
 		       CORBA::Short tag,
 		       const char * message
 		       )
-  throw (CORBA::SystemException)
 {
   ACS_SHORT_LOG((LM_DEBUG, "Got tagged message from the Manager: (%d) '%s'.", tag, message));
 }
@@ -660,7 +655,6 @@ SimpleClient::taggedmessage (CORBA::Short type,
 void
 SimpleClient::components_available (const maci::ComponentInfoSeq & cobs
 			      )
-  throw (CORBA::SystemException)
 {
 
   // this is the default implementation
@@ -674,7 +668,6 @@ SimpleClient::components_available (const maci::ComponentInfoSeq & cobs
 void
 SimpleClient::components_unavailable (const maci::stringSeq & cob_names
 				)
-  throw (CORBA::SystemException)
 {
   // this is the default implementation
   CORBA::ULong len = cob_names.length ();
@@ -709,7 +702,6 @@ SimpleClient::doneThread()
 
 CORBA::Boolean
 SimpleClient::ping ()
-      throw (CORBA::SystemException)
 {
     return true;
 }
