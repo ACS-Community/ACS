@@ -86,6 +86,7 @@ public class LogMenuBar extends JMenuBar {
 	private JMenu fileMenu; // File
 	private JMenu viewMenu; // View
     private JMenu searchMenu; // Search
+    private JMenu zoomMenu; // Zoom
     private JMenu expertMenu; // Expert
     
     private JMenuItem suspendMI;
@@ -131,6 +132,17 @@ public class LogMenuBar extends JMenuBar {
      * of log i.e. the description is hidden
      */
     private JCheckBoxMenuItem logTypeDescritptionViewMI;
+    
+    /**
+     * The preferences for zooming
+     */
+    private JMenuItem zoomPrefsMI;
+    
+    /**
+     * The menu for performing the zoom of an interval
+     * selected by the user
+     */
+    private JMenuItem manualZoomMI;
 	
 	/**
 	 * Constructor
@@ -186,8 +198,10 @@ public class LogMenuBar extends JMenuBar {
         add(viewMenu);
         
         // Add the Search Menu
-        getSearchMenu();
-        add(searchMenu);
+        add(getSearchMenu());
+        
+        // Add the zoom menu
+        add(getZoomMenu());
         
         // Add the expert menu
         expertMenu = new JMenu();
@@ -207,6 +221,10 @@ public class LogMenuBar extends JMenuBar {
         add(expertMenu);
     }
     
+    /**
+     * Build the search menu
+     * @return
+     */
     public JMenu getSearchMenu() {
     	if (searchMenu==null) {
 	    	searchMenu = new JMenu();
@@ -216,6 +234,21 @@ public class LogMenuBar extends JMenuBar {
 	        searchMenu.add(getSearchNextMenuItem());
     	}
     	return searchMenu;
+    }
+    
+    /**
+     * Build the zoom menu.
+     * @return
+     */
+    public JMenu getZoomMenu() {
+    	if (zoomMenu==null) {
+    		zoomMenu = new JMenu("Drill down");
+    		zoomPrefsMI = new JMenuItem("Preferences...");
+    		zoomMenu.add(zoomPrefsMI);
+    		manualZoomMI= new JMenuItem("Drill down...");
+    		zoomMenu.add(manualZoomMI);
+    	}
+    	return zoomMenu;
     }
     
     /**
@@ -399,6 +432,10 @@ public class LogMenuBar extends JMenuBar {
 		operatorMode.addActionListener(actionListener); // Operator mode
 		engineeringMode.addActionListener(actionListener); // Engineering mode
 		engineFiltersMI.addActionListener(actionListener); // Engine filters
+		
+		zoomPrefsMI.addActionListener(actionListener); // zoom preferences
+		manualZoomMI.addActionListener(actionListener); // manual zoom
+		
 	}
 	
 	/**
@@ -549,6 +586,7 @@ public class LogMenuBar extends JMenuBar {
 		searchMenu.setEnabled(enabled);
 		expertMenu.setEnabled(enabled);
 		fileMenu.setEnabled(enabled);
+		zoomMenu.setEnabled(enabled);
 		super.setEnabled(enabled);
 	}
 	
@@ -597,6 +635,21 @@ public class LogMenuBar extends JMenuBar {
 			engineFiltersMI = new JMenuItem("Engine filters...");
 		}
 		return engineFiltersMI;
+	}
+
+	/**
+	 * 
+	 * @return The manual zoom menu item
+	 */
+	public JMenuItem getManualZoomMI() {
+		return manualZoomMI;
+	}
+
+	/**
+	 * @return The zoom preferences menu item
+	 */
+	public JMenuItem getZoomPrefsMI() {
+		return zoomPrefsMI;
 	}
 	
 }
