@@ -1,4 +1,4 @@
-/* @(#) $Id: acsncSupplierImpl.cpp,v 1.76 2008/07/25 07:35:19 cparedes Exp $
+/* @(#) $Id: acsncSupplierImpl.cpp,v 1.77 2008/10/01 03:14:56 cparedes Exp $
  *
  *    Structured event push supplier implementation.
  *    ALMA - Atacama Large Millimiter Array
@@ -409,15 +409,16 @@ Supplier::createSupplier()
 //-----------------------------------------------------------------------------
 void 
 Supplier::disconnect_structured_push_supplier()
-    throw (CORBA::SystemException)
 {
     ACS_TRACE("Supplier::disconnect_structured_push_supplier");
 }
 //-----------------------------------------------------------------------------
+/*
+* @throw CosNotifyComm::InvalidEventType
+*/
 void 
 Supplier::subscription_change(const CosNotification::EventTypeSeq &added,
 			      const CosNotification::EventTypeSeq &removed)
-    throw (CORBA::SystemException, CosNotifyComm::InvalidEventType)
 {
     ACS_TRACE("Supplier::subscription_change");
     ACE_UNUSED_ARG(added);

@@ -1,7 +1,7 @@
 #ifndef SUPPLIER_H
 #define SUPPLIER_H
 
-/* @(#) $Id: acsncSupplier.h,v 1.61 2008/07/25 07:35:19 cparedes Exp $
+/* @(#) $Id: acsncSupplier.h,v 1.62 2008/10/01 03:14:56 cparedes Exp $
  *
  *    Supplier Abstract base class for notification channel push structured event
  *    supplier.
@@ -150,8 +150,7 @@ class Supplier :
        @endhtmlonly
      */
     virtual void 
-    disconnect_structured_push_supplier()
-	throw (CORBA::SystemException);
+    disconnect_structured_push_supplier();
     
     /** 
      * Called by supplier's consumer proxy object to inform us of changes
@@ -160,6 +159,7 @@ class Supplier :
      * disconnects. <b>Do not call it from your code!</b>
      * @param eventsAdded Event types that consumers want to see.
      * @param eventsRemoved Event types consumers no longer care about.   
+     * @throw CosNotifyComm::InvalidEventType
      * @return void
      * @htmlonly
        <br><hr>
@@ -167,8 +167,7 @@ class Supplier :
      */
     virtual void 
     subscription_change(const CosNotification::EventTypeSeq &eventsAdded,
-			const CosNotification::EventTypeSeq &eventsRemoved)
-	throw (CORBA::SystemException, CosNotifyComm::InvalidEventType);
+			const CosNotification::EventTypeSeq &eventsRemoved);
 
   protected:
     /**

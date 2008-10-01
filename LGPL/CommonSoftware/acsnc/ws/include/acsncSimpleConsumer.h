@@ -1,6 +1,6 @@
 #ifndef SIMPLE_CONSUMER_H
 #define SIMPLE_CONSUMER_H
-/*    @(#) $Id: acsncSimpleConsumer.h,v 1.10 2008/07/25 07:35:19 cparedes Exp $
+/*    @(#) $Id: acsncSimpleConsumer.h,v 1.11 2008/10/01 03:14:56 cparedes Exp $
  *    ALMA - Atacama Large Millimiter Array
  *    (c) Associated Universities Inc., 2002 
  *    (c) European Southern Observatory, 2002
@@ -80,6 +80,7 @@ template <class T> class SimpleConsumer : public Consumer
      *        event is received. The method must accept a <T> structure as it's first parameter.
      * @param handlerParam A void pointer that will be passed to templateFunction (in addition
      *        to the actual ICD <T> event) each time a type_name event is received.
+     * @throw ACSErrTypeCommon::CouldntPerformActionEx
      * @return void
      * @htmlonly
        <br><hr>
@@ -87,7 +88,6 @@ template <class T> class SimpleConsumer : public Consumer
      */
     template <class J> void
     addSubscription(eventHandlerFunction templateFunction, void *handlerParam=0)
-	throw (CORBA::SystemException, ACSErrTypeCommon::CouldntPerformActionEx)
 	{
 	    ACS_TRACE("SimpleConsumer::addSubscription");
 	    
@@ -119,14 +119,14 @@ template <class T> class SimpleConsumer : public Consumer
      * via the addSubscription method. In doing this, one does not have to 
      * override SimpleConsumer. Note that this method must not be
      * invoked by your code!
+     * @throw CosEventComm::Disconnected
      * @return void
      * @htmlonly
      <br><hr>
      @endhtmlonly 
     */      
     virtual void 
-    push_structured_event(const CosNotification::StructuredEvent &notification)
-	throw(CORBA::SystemException, CosEventComm::Disconnected);
+    push_structured_event(const CosNotification::StructuredEvent &notification);
     ///////////////////////////////////////////////////////////////
   protected:
     /**
@@ -174,8 +174,7 @@ template <class T> class SimpleConsumer : public Consumer
        @endhtmlonly 
      */
     void
-    addSubscription(const char* type_name, eventHandlerFunction templateFunction, void *handlerParam=0)
-	throw (CORBA::SystemException);
+    addSubscription(const char* type_name, eventHandlerFunction templateFunction, void *handlerParam=0);
 };
  }; 
 

@@ -1,4 +1,4 @@
-/* @(#) $Id: acsncConsumerImpl.cpp,v 1.69 2008/07/25 07:35:19 cparedes Exp $
+/* @(#) $Id: acsncConsumerImpl.cpp,v 1.70 2008/10/01 03:14:56 cparedes Exp $
  *
  *    Implementation of abstract base class Consumer.
  *    ALMA - Atacama Large Millimiter Array
@@ -447,7 +447,6 @@ Consumer::removeFilter(int filter_id)
 //-----------------------------------------------------------------------------
 void 
 Consumer::disconnect_structured_push_consumer()
-    throw (CORBA::SystemException)
 {
     ACS_TRACE("Consumer::disconnect_structured_push_consumer");
 }
@@ -500,10 +499,12 @@ Consumer::createConsumer()
     //now the developer must call consumerReady() to receive events.
 }
 //-----------------------------------------------------------------------------
+/*
+* @throw CosNotifyComm::InvalidEventType
+*/
 void 
 Consumer::offer_change(const CosNotification::EventTypeSeq &added,
 		       const CosNotification::EventTypeSeq &removed)
-    throw (CORBA::SystemException, CosNotifyComm::InvalidEventType)
 {
     ACS_TRACE("Consumer::offer_change");
     ACE_UNUSED_ARG(added);

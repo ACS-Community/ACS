@@ -1,6 +1,6 @@
 #ifndef SIMPLE_CONSUMER_I
 #define SIMPLE_CONSUMER_I
-/*    @(#) $Id: acsncSimpleConsumer.i,v 1.22 2008/03/13 15:43:50 hsommer Exp $
+/*    @(#) $Id: acsncSimpleConsumer.i,v 1.23 2008/10/01 03:14:56 cparedes Exp $
  *    ALMA - Atacama Large Millimiter Array
  *    (c) Associated Universities Inc., 2002 
  *    (c) European Southern Observatory, 2002
@@ -43,7 +43,6 @@ SimpleConsumer<T>::SimpleConsumer(const char* channelName) :
 template <class T> 
 void 
 SimpleConsumer<T>::push_structured_event(const CosNotification::StructuredEvent &notification)
-    throw(CORBA::SystemException, CosEventComm::Disconnected)
 {
     //update the internal counter
     numEvents_m++;
@@ -131,7 +130,6 @@ void
 SimpleConsumer<T>::addSubscription(const char* type_name, 
 				   eventHandlerFunction templateFunction, 
 				   void *handlerParam)
-    throw (CORBA::SystemException)
 {
     ACS_TRACE("SimpleConsumer::addSubscription");
     

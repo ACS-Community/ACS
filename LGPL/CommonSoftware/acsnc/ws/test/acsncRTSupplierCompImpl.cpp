@@ -19,7 +19,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsncRTSupplierCompImpl.cpp,v 1.12 2006/10/18 11:06:40 sharring Exp $"
+* "@(#) $Id: acsncRTSupplierCompImpl.cpp,v 1.13 2008/10/01 03:14:56 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -27,7 +27,7 @@
 * david  25/09/02  created 
 */
 
-static char *rcsId="@(#) $Id: acsncRTSupplierCompImpl.cpp,v 1.12 2006/10/18 11:06:40 sharring Exp $"; 
+static char *rcsId="@(#) $Id: acsncRTSupplierCompImpl.cpp,v 1.13 2008/10/01 03:14:56 cparedes Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include "acsncRTSupplierCompImpl.h"
@@ -50,7 +50,6 @@ RTSupplierCompImpl::~RTSupplierCompImpl()
 /* --------------------- [ CORBA interface ] ----------------------*/
 void
 RTSupplierCompImpl::sendEvents(short numEvents)
-    throw (CORBA::SystemException)
 {
     acsnc::EventDescription descrip;
     descrip.name = CORBA::string_dup("real-time");

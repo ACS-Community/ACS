@@ -1,7 +1,7 @@
 #ifndef CONSUMER_H
 #define CONSUMER_H
 
-/* @(#) $Id: acsncConsumer.h,v 1.68 2008/07/25 07:35:19 cparedes Exp $
+/* @(#) $Id: acsncConsumer.h,v 1.69 2008/10/01 03:14:56 cparedes Exp $
 *
 *    Consumer Abstract base class for notification channel push structured event
 *    consumers.
@@ -120,6 +120,7 @@ class Consumer :
      *  not call it on your own!</b>
      *  @param publishedEvent The real CORBA event (defined via an IDL definition).
      *         This structure has little to do with so-called ICD events.
+     *  @throw CosEventComm::Disconnected
      *
      *  @return void
      *  @htmlonly
@@ -127,8 +128,7 @@ class Consumer :
         @endhtmlonly
      */
     virtual void 
-    push_structured_event(const CosNotification::StructuredEvent &publishedEvent)
-	throw (CORBA::SystemException, CosEventComm::Disconnected) = 0;
+    push_structured_event(const CosNotification::StructuredEvent &publishedEvent)= 0;
     
     /** 
      *  Supplier calls this when it has events to add or remove from the
@@ -136,6 +136,7 @@ class Consumer :
      *  implementation.<b>Do not call it on your own!</b>
      *  @param added Events the publisher will start publishing to the NC.
      *  @param removed Events the publisher will stop publishing to the NC.
+     *  @throw CosNotifyComm::InvalidEventType
      *
      *  @return void
      *  @htmlonly
@@ -144,8 +145,7 @@ class Consumer :
      */
     virtual void 
     offer_change(const CosNotification::EventTypeSeq &added,
-		 const CosNotification::EventTypeSeq &removed)
-	throw (CORBA::SystemException, CosNotifyComm::InvalidEventType);
+		 const CosNotification::EventTypeSeq &removed);
     
     /**
      *  The Supplier calls this when it disconnects from the channel. <b>Do
@@ -157,8 +157,7 @@ class Consumer :
         @endhtmlonly
      */
     virtual void 
-    disconnect_structured_push_consumer()
-	throw (CORBA::SystemException);
+    disconnect_structured_push_consumer();
 
     /** 
      *  After this method is invoked, the developer has little control over when 

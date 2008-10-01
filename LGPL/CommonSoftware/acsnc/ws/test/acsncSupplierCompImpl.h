@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsncSupplierCompImpl.h,v 1.6 2006/09/01 02:20:54 cparedes Exp $"
+* "@(#) $Id: acsncSupplierCompImpl.h,v 1.7 2008/10/01 03:14:56 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -66,8 +66,7 @@ class SupplierCompImpl: public virtual acscomponent::ACSComponentImpl,
 
     /* --------------------- [ CORBA interface ] ----------------------*/
     virtual void 
-    sendEvents(short numEvents)
-	throw (CORBA::SystemException);
+    sendEvents(short numEvents);
     
   private:
     nc::SimpleSupplier *m_testSupplier_p;

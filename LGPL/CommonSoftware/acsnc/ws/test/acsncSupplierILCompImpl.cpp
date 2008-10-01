@@ -19,7 +19,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsncSupplierILCompImpl.cpp,v 1.2 2006/09/01 02:20:54 cparedes Exp $"
+* "@(#) $Id: acsncSupplierILCompImpl.cpp,v 1.3 2008/10/01 03:14:56 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -27,7 +27,7 @@
 * david  25/09/02  created 
 */
 
-static char *rcsId="@(#) $Id: acsncSupplierILCompImpl.cpp,v 1.2 2006/09/01 02:20:54 cparedes Exp $"; 
+static char *rcsId="@(#) $Id: acsncSupplierILCompImpl.cpp,v 1.3 2008/10/01 03:14:56 cparedes Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include "acsncSupplierCompImpl.h"
@@ -54,7 +54,6 @@ SupplierCompImpl::~SupplierCompImpl()
 /* --------------------- [ CORBA interface ] ----------------------*/
 void
 SupplierCompImpl::sendEvents(short numEvents)
-    throw (CORBA::SystemException)
 {
     acsnc::EventDescription descrip;
     descrip.name = CORBA::string_dup("none...this is a test");
