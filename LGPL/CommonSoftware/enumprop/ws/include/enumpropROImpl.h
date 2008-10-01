@@ -3,7 +3,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: enumpropROImpl.h,v 1.46 2008/07/25 07:31:03 cparedes Exp $"
+* "@(#) $Id: enumpropROImpl.h,v 1.47 2008/10/01 02:33:31 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -149,12 +149,7 @@ public:
 
   /* ------------------ [ CharacteristicModel interface ] ------------------ */
 
-	virtual char * name (
-	      
-	  )
-	  throw (
-	    CORBA::SystemException
-	  );
+	virtual char * name ();
 
     /*
 	virtual CORBA::Any * get_characteristic_by_name (
@@ -177,12 +172,7 @@ public:
 
   /* --------------------- [ Property interface ] --------------------- */
 
-	virtual char * characteristic_component_name (
-	      
-	  )
-	  throw (
-	    CORBA::SystemException
-	  );
+	virtual char * characteristic_component_name ();
 
     /*
 	virtual CosPropertyService::PropertySet_ptr get_all_characteristics (
@@ -195,148 +185,65 @@ public:
   
   /* ----------------- [ TypelessProperty interface ] ----------------- */
 
-	virtual char * description (
-	      
-	  )
-	  throw (
-	    CORBA::SystemException
-	  );
+	virtual char * description ();
 	
-	virtual char * format (
-	      
-	  )
-	  throw (
-	    CORBA::SystemException
-	  );
+	virtual char * format ();
 	
-	virtual char * units (
-	      
-	  )
-	  throw (
-	    CORBA::SystemException
-	  );
+	virtual char * units ();
 	
-	virtual ACS::pattern resolution (
-	      
-	  )
-	  throw (
-	    CORBA::SystemException
-	  );
+	virtual ACS::pattern resolution ();
 	
-	virtual CORBA::Boolean initialize_devio () 
-		throw (CORBA::SystemException);	
+	virtual CORBA::Boolean initialize_devio (); 
   /* -------------------- [ P interface ] -------------------- */
 
-    virtual ACS::TimeInterval default_timer_trigger (
-	  
-	)
-	throw (
-			    CORBA::SystemException
-			    );
+    virtual ACS::TimeInterval default_timer_trigger ();
 	
-    virtual ACS::TimeInterval min_timer_trigger (
-	  
-	)
-	throw (
-			    CORBA::SystemException
-			    );
+    virtual ACS::TimeInterval min_timer_trigger ();
 	
-    virtual T default_value (
-	  
-	)
-	throw (
-			    CORBA::SystemException
-			    );
+    virtual T default_value ();
 		
-    virtual T get_sync (
-	ACSErr::Completion_out c
-	
-	)
-	throw (
-			    CORBA::SystemException
-			    );
+    virtual T get_sync (ACSErr::Completion_out c);
 	
     virtual void get_async (
 			  CBpattern* cb,
 			  const ACS::CBDescIn & desc
-			    
-			  )
-    throw (
-		     CORBA::SystemException
 		     );
 	
     virtual CORBA::Long get_history (
 	CORBA::Long n_last_values,
 	TSeq_out vs,
 	ACS::TimeSeq_out ts
-	
-	)
-	throw (
-			    CORBA::SystemException
-			    );
+    );
 	
     virtual ACS::Monitorpattern* create_monitor (
 	CBpattern* cb,
 	const ACS::CBDescIn & desc
-	
-	)
-	throw (
-			    CORBA::SystemException
-			    );
+    );
 	
     virtual ACS::Monitor* create_postponed_monitor (
 	ACS::Time start_time,
 	CBpattern* cb,
 	const ACS::CBDescIn & desc
-	
-	)
-	throw (
-			    CORBA::SystemException
-			   );
+	);
     
     virtual ACS::stringSeq * statesDescription (
-	  
-	) 
-	throw (
-			    CORBA::SystemException
-			    ); 
+	); 
     
     virtual ACS::ConditionSeq * condition (
-          
-	)
-	throw (
-			    CORBA::SystemException
-			    );
+	);
     
-    virtual TSeq * allStates (
-          
-	)
-	throw (
-			    CORBA::SystemException
-			    );
+    virtual TSeq * allStates ();
 
     /* -------------------- [ RO interface ] -------------------- */
   
-    virtual TSeq* alarm_on (
-	  
-	)
-	throw (
-			    CORBA::SystemException
-			    );
-    
+    virtual TSeq* alarm_on ();
 	
-    virtual TSeq* alarm_off (
-	  
-	)
-	throw (
-			    CORBA::SystemException
-			    );
+    virtual TSeq* alarm_off ();
     
     virtual ACS::Subscription_ptr new_subscription_AlarmEnum (
 	ACS::Alarmpattern_ptr cb,
 	const ACS::CBDescIn & desc
-	) throw (CORBA::SystemException);
-    
+    ); 
     /**
      * Checks if the passed state correspond to an alarm on.
      * @param state the value for the enumeration to be checked.

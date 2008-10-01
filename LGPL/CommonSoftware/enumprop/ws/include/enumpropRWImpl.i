@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - VLT project
 *
-* "@(#) $Id: enumpropRWImpl.i,v 1.56 2008/07/25 07:31:03 cparedes Exp $"
+* "@(#) $Id: enumpropRWImpl.i,v 1.57 2008/10/01 02:33:31 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -440,49 +440,42 @@ bool RWEnumImpl<ACS_ENUM_T(T), SK>::readCharacteristics()
 /* ---------------------- [ CORBA interface ] ---------------------- */
 template <ACS_ENUM_C>
 char *RWEnumImpl<ACS_ENUM_T(T), SK>::name ()
-  throw (CORBA::SystemException)
 {
   return CORBA::string_dup(property_mp->getName());           
 }
 
 template <ACS_ENUM_C>
 char *RWEnumImpl<ACS_ENUM_T(T), SK>::characteristic_component_name ()
-  throw (CORBA::SystemException)
 {
   return CORBA::string_dup (property_mp->getComponent()->getName());
 }
 
 template <ACS_ENUM_C>
 char *RWEnumImpl<ACS_ENUM_T(T), SK>::description ()
-  throw (CORBA::SystemException)
 {
   return CORBA::string_dup (m_description.c_str());
 }
 
 template <ACS_ENUM_C>
 char *RWEnumImpl<ACS_ENUM_T(T), SK>::format ()
-  throw (CORBA::SystemException)
 {
   return CORBA::string_dup (format_m.c_str());
 }
 
 template <ACS_ENUM_C>
 char *RWEnumImpl<ACS_ENUM_T(T), SK>::units ()
-  throw (CORBA::SystemException)
 {
   return CORBA::string_dup (units_m.c_str());
 }
 
 template <ACS_ENUM_C>
 CORBA::Boolean RWEnumImpl<ACS_ENUM_T(T), SK>::initialize_devio ()
-  throw (CORBA::SystemException)
 {
   return CORBA::Boolean(initializeDevIO_m);
 }
 
 template <ACS_ENUM_C>
 ACS::pattern RWEnumImpl<ACS_ENUM_T(T), SK>::resolution ()
-  throw (CORBA::SystemException)
 {
   return m_resolution;
 }
@@ -490,7 +483,6 @@ ACS::pattern RWEnumImpl<ACS_ENUM_T(T), SK>::resolution ()
 template <ACS_ENUM_C>
 T RWEnumImpl<ACS_ENUM_T(T), SK>::get_sync (ACSErr::Completion_out c
 		    )
-  throw (CORBA::SystemException)
 {
     CompletionImpl co;
 
@@ -518,7 +510,6 @@ template <ACS_ENUM_C>
 void RWEnumImpl<ACS_ENUM_T(T), SK>::get_async (CBpattern* cb,
 		     const ACS::CBDescIn & desc
 		     )
-  throw (CORBA::SystemException) 
 {
   property_mp->getComponent()->registerAction(baci::BACIValue::type_pattern, cb, 
 				       desc, this, 0);
@@ -529,7 +520,6 @@ CORBA::Long RWEnumImpl<ACS_ENUM_T(T), SK>::get_history (CORBA::Long n_last_value
 		       TSeq_out vs,
 		       ACS::TimeSeq_out ts
 		       )
-  throw (CORBA::SystemException)
 {
 
   // thread lock needed
@@ -566,7 +556,6 @@ template <ACS_ENUM_C>
 ACS::Monitorpattern_ptr RWEnumImpl<ACS_ENUM_T(T), SK>::create_monitor (CBpattern* cb,
 			  const ACS::CBDescIn & desc
 			  )
-  throw (CORBA::SystemException)
 {
 
   baci::Monitorpattern* monitor = new baci::Monitorpattern(ACE_CString(property_mp->getName())+"_monitor",
@@ -597,7 +586,6 @@ ACS::Monitor_ptr RWEnumImpl<ACS_ENUM_T(T), SK>::create_postponed_monitor (ACS::T
 			  CBpattern* cb,
 			  const ACS::CBDescIn & desc
 			  )
-  throw (CORBA::SystemException)
 {
 
   baci::Monitorpattern* monitor = new baci::Monitorpattern(ACE_CString(property_mp->getName())+"_monitor",
@@ -626,28 +614,24 @@ ACS::Monitor_ptr RWEnumImpl<ACS_ENUM_T(T), SK>::create_postponed_monitor (ACS::T
 
 template <ACS_ENUM_C>
 ACS::TimeInterval RWEnumImpl<ACS_ENUM_T(T), SK>::default_timer_trigger ()
-  throw (CORBA::SystemException)
 {
   return defaultTimerTrig_m;
 }
 
 template <ACS_ENUM_C>
 ACS::TimeInterval RWEnumImpl<ACS_ENUM_T(T), SK>::min_timer_trigger ()
-  throw (CORBA::SystemException)
 {
   return minTimerTrig_m;
 }
 
 template <ACS_ENUM_C>
 T RWEnumImpl<ACS_ENUM_T(T), SK>::default_value ()
-  throw (CORBA::SystemException)
 {
   return (T)defaultValue_m;
 }
 
 template <ACS_ENUM_C>
 ACS::stringSeq *RWEnumImpl<ACS_ENUM_T(T), SK>::statesDescription ()
-  throw (CORBA::SystemException)
 {
 
   // create and initialize the return parameter
@@ -658,7 +642,6 @@ ACS::stringSeq *RWEnumImpl<ACS_ENUM_T(T), SK>::statesDescription ()
 
 template <ACS_ENUM_C>
 ACS::ConditionSeq *RWEnumImpl<ACS_ENUM_T(T), SK>::condition ()
-  throw (CORBA::SystemException)
 {
 
   // create and initialize the return parameter
@@ -669,7 +652,6 @@ ACS::ConditionSeq *RWEnumImpl<ACS_ENUM_T(T), SK>::condition ()
 
 template <ACS_ENUM_C>
 TSeq * RWEnumImpl<ACS_ENUM_T(T), SK>::allStates ( )
-      throw (CORBA::SystemException)
 {
     TSeq *result = new TSeq();
     result->length(m_enumLength);
@@ -683,7 +665,7 @@ TSeq * RWEnumImpl<ACS_ENUM_T(T), SK>::allStates ( )
 
  /* -------------------- [ RW interface ] -------------------- */
 template <ACS_ENUM_C>
-ACSErr::Completion *  RWEnumImpl<ACS_ENUM_T(T), SK>::set_sync ( T val )  throw (CORBA::SystemException )
+ACSErr::Completion *  RWEnumImpl<ACS_ENUM_T(T), SK>::set_sync ( T val ) 
 {
     CompletionImpl co;
     CORBA::Any tAny;
@@ -710,7 +692,7 @@ ACSErr::Completion *  RWEnumImpl<ACS_ENUM_T(T), SK>::set_sync ( T val )  throw (
 	
 template <ACS_ENUM_C>
 void RWEnumImpl<ACS_ENUM_T(T), SK>::set_async ( T val, ACS::CBvoid_ptr cb, const ACS::CBDescIn & desc
-		  ) throw (CORBA::SystemException )
+		  ) 
 {
     CORBA::Any tAny;
     tAny <<= val;
@@ -720,7 +702,7 @@ void RWEnumImpl<ACS_ENUM_T(T), SK>::set_async ( T val, ACS::CBvoid_ptr cb, const
 }
 	
 template <ACS_ENUM_C>
-void RWEnumImpl<ACS_ENUM_T(T), SK>::set_nonblocking ( T val)  throw (CORBA::SystemException )
+void RWEnumImpl<ACS_ENUM_T(T), SK>::set_nonblocking ( T val)  
 {
     ACSErr::CompletionImpl c;
     CORBA::Any tAny;

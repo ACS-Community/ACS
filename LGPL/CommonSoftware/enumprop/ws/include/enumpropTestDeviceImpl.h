@@ -1,4 +1,4 @@
-/* @(#) $Id: enumpropTestDeviceImpl.h,v 1.39 2008/08/13 15:33:43 bjeram Exp $
+/* @(#) $Id: enumpropTestDeviceImpl.h,v 1.40 2008/10/01 02:33:31 cparedes Exp $
  */
 /*
 * DeviceImpl.h - ALMA Device interface implementation.
@@ -52,60 +52,46 @@ class  enumpropTestDeviceImpl : public POA_ENUMPROP_TEST::enumpropTestDevice,
     /* ----------------------------------------------------------------*/
     /* --------------------- [ CORBA interface ] ----------------------*/
     /* ----------------------------------------------------------------*/
-    ENUMPROP_TEST::ROStates_ptr currentState (  
-					)
-      throw (CORBA::SystemException);
+    ENUMPROP_TEST::ROStates_ptr currentState ();
 
-   virtual ACSErr::Completion * enable (  
-			 ) 
-      throw (CORBA::SystemException,
-		       ENUMPROP_TEST::StateMachine::NoSuchTransition
-		       );
+    /*
+    * @throw ENUMPROP_TEST::StateMachine::NoSuchTransition
+    */
+    virtual ACSErr::Completion * enable ();
 
-    virtual ACSErr::Completion * disable (  
-			  )
-      throw (CORBA::SystemException,
-		       ENUMPROP_TEST::StateMachine::NoSuchTransition
-		       );
+    /*
+    * @throw ENUMPROP_TEST::StateMachine::NoSuchTransition
+    */
+    virtual ACSErr::Completion * disable ();
   
-    virtual ACSErr::Completion * diagnose (  
-			   )
-      throw (CORBA::SystemException,
-		       ENUMPROP_TEST::StateMachine::NoSuchTransition
-		       );
+    /*
+    * @throw ENUMPROP_TEST::StateMachine::NoSuchTransition
+    */
+    virtual ACSErr::Completion * diagnose ();
 
-    virtual ACSErr::Completion * shutdown (  
-			   )
-      throw (CORBA::SystemException,
-		       ENUMPROP_TEST::StateMachine::NoSuchTransition
-		       );
+    /*
+    * @throw ENUMPROP_TEST::StateMachine::NoSuchTransition
+    */
+    virtual ACSErr::Completion * shutdown (); 
     
-    virtual ACSErr::Completion * init (   
-			   )
-      throw (CORBA::SystemException,
-		       ENUMPROP_TEST::StateMachine::NoSuchTransition
-		       );
+    /*
+    * @throw ENUMPROP_TEST::StateMachine::NoSuchTransition
+    */
+    virtual ACSErr::Completion * init (); 
 
+    /*
+    * @throw ENUMPROP_TEST::StateMachine::NoSuchTransition
+    */
+    virtual ACSErr::Completion * on ();
 
-    virtual ACSErr::Completion * on (  
-			   )
-      throw (CORBA::SystemException,
-		       ENUMPROP_TEST::StateMachine::NoSuchTransition
-		       );
+    /*
+    * @throw ENUMPROP_TEST::StateMachine::NoSuchTransition
+    */
+    virtual ACSErr::Completion * off ();
 
-    virtual ACSErr::Completion * off (  
-			   )
-      throw (CORBA::SystemException,
-		       ENUMPROP_TEST::StateMachine::NoSuchTransition
-		       );
+   ENUMPROP_TEST::RWStates_ptr currentStateRW (); 
 
-   ENUMPROP_TEST::RWStates_ptr currentStateRW (  
-					)
-       throw (CORBA::SystemException);
-
-      void serverShutdown (  
-	  )
-	  throw (CORBA::SystemException);
+      void serverShutdown ();
 
   private:
     ROEnumImpl<ACS_ENUM_T(ENUMPROP_TEST::States), POA_ENUMPROP_TEST::ROStates> *m_currentState;

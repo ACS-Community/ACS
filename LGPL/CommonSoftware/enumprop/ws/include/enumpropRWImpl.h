@@ -3,7 +3,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: enumpropRWImpl.h,v 1.45 2008/07/25 07:31:03 cparedes Exp $"
+* "@(#) $Id: enumpropRWImpl.h,v 1.46 2008/10/01 02:33:31 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -173,9 +173,6 @@ public:
 
 	virtual char * name (
 	      
-	  )
-	  throw (
-	    CORBA::SystemException
 	  );
 
     /*
@@ -201,9 +198,6 @@ public:
 
 	virtual char * characteristic_component_name (
 	      
-	  )
-	  throw (
-	    CORBA::SystemException
 	  );
 
     /*
@@ -219,73 +213,45 @@ public:
 
 	virtual char * description (
 	      
-	  )
-	  throw (
-	    CORBA::SystemException
 	  );
 	
 	virtual char * format (
 	      
-	  )
-	  throw (
-	    CORBA::SystemException
 	  );
 	
 	virtual char * units (
 	      
-	  )
-	  throw (
-	    CORBA::SystemException
 	  );
 	
 	virtual ACS::pattern resolution (
 	      
-	  )
-	  throw (
-	    CORBA::SystemException
 	  );
 	
-	virtual CORBA::Boolean initialize_devio () 
-		throw (CORBA::SystemException);	
+	virtual CORBA::Boolean initialize_devio (); 
 	
   /* -------------------- [ P interface ] -------------------- */
 
 	virtual ACS::TimeInterval default_timer_trigger (
 	      
-	  )
-	  throw (
-	    CORBA::SystemException
 	  );
 	
 	virtual ACS::TimeInterval min_timer_trigger (
 	      
-	  )
-	  throw (
-	    CORBA::SystemException
 	  );
 	
 	virtual T default_value (
 	      
-	  )
-	  throw (
-	    CORBA::SystemException
 	  );
 		
 	virtual T get_sync (
 	    ACSErr::Completion_out c
 	    
-	  )
-	  throw (
-	    CORBA::SystemException
 	  );
 	
   virtual void get_async (
 			  CBpattern* cb,
 			  const ACS::CBDescIn & desc
 			    
-			  )
-    throw (
-		     CORBA::SystemException
 		     );
 	
 	virtual CORBA::Long get_history (
@@ -293,18 +259,12 @@ public:
 	    TSeq_out vs,
 	    ACS::TimeSeq_out ts
 	    
-	  )
-	  throw (
-	    CORBA::SystemException
 	  );
 	
 	virtual ACS::Monitorpattern* create_monitor (
 	    CBpattern* cb,
 	    const ACS::CBDescIn & desc
 	    
-	  )
-	  throw (
-	    CORBA::SystemException
 	  );
 	
      virtual ACS::Monitor* create_postponed_monitor (
@@ -312,44 +272,30 @@ public:
 	    CBpattern* cb,
 	    const ACS::CBDescIn & desc
 	    
-	  )
-	  throw (
-	    CORBA::SystemException
 	  );
 	
      virtual ACS::stringSeq * statesDescription (
            
-      ) 
-      throw (
-        CORBA::SystemException
       ); 
     
     virtual ACS::ConditionSeq * condition (
           
-      )
-      throw (
-        CORBA::SystemException
       );
     
     virtual TSeq * allStates (
           
-      )
-      throw (
-        CORBA::SystemException
 	);
 
   /* -------------------- [ RW interface ] -------------------- */
-  virtual ACSErr::Completion * set_sync ( T value )
-	  throw (CORBA::SystemException );
+  virtual ACSErr::Completion * set_sync ( T value );
 	
   virtual void set_async ( T value,
 			   ACS::CBvoid_ptr cb,
 			   const ACS::CBDescIn & desc
 			   
-      ) throw (CORBA::SystemException);
+      ) ;
 	
-  virtual void set_nonblocking ( T value)
-      throw ( CORBA::SystemException );
+  virtual void set_nonblocking ( T value);
 
 protected:
 

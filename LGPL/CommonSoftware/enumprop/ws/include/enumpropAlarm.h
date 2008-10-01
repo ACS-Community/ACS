@@ -4,7 +4,7 @@
 /*******************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: enumpropAlarm.h,v 1.36 2007/06/14 08:54:06 nbarriga Exp $"
+* "@(#) $Id: enumpropAlarm.h,v 1.37 2008/10/01 02:33:31 cparedes Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -82,14 +82,11 @@ public:
 
   /* --------------- [ Subscription interface ] --------------- */ 
 
-  virtual void suspend ( ) 
-    throw (CORBA::SystemException);
+  virtual void suspend ( ); 
   
-  virtual void resume ( ) 
-    throw (CORBA::SystemException);
+  virtual void resume ( ) ;
   
-  virtual void destroy ( ) 
-    throw (CORBA::SystemException);
+  virtual void destroy ( ) ;
   
 private:
   /// Event name

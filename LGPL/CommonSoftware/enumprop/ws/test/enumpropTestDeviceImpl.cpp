@@ -1,4 +1,4 @@
-/* @(#) $Id: enumpropTestDeviceImpl.cpp,v 1.47 2006/12/06 16:04:34 bjeram Exp $
+/* @(#) $Id: enumpropTestDeviceImpl.cpp,v 1.48 2008/10/01 02:33:31 cparedes Exp $
  */
 /*
 *    DeviceImpl.cpp - ALMA Device interface implementation.
@@ -92,9 +92,6 @@ enumpropTestDeviceImpl::~enumpropTestDeviceImpl (void)
 ENUMPROP_TEST::ROStates_ptr enumpropTestDeviceImpl::currentState (
     
   )
-  throw (
-    CORBA::SystemException
-  )
 
 {
   if (!m_currentState)
@@ -104,10 +101,6 @@ ENUMPROP_TEST::ROStates_ptr enumpropTestDeviceImpl::currentState (
 }
 
 ACSErr::Completion * enumpropTestDeviceImpl::enable () 
-  throw (
-		   CORBA::SystemException,
-		   ENUMPROP_TEST::StateMachine::NoSuchTransition
-		   )
 {
     
     ACSErr::Completion_var c = new Completion;
@@ -120,9 +113,6 @@ ACSErr::Completion * enumpropTestDeviceImpl::enable ()
  
 
 ACSErr::Completion * enumpropTestDeviceImpl::disable ( )
-  throw (CORBA::SystemException,
-		   ENUMPROP_TEST::StateMachine::NoSuchTransition
-		   )
 {
     
     ACSErr::Completion_var c = new Completion;
@@ -135,9 +125,6 @@ ACSErr::Completion * enumpropTestDeviceImpl::disable ( )
 }
   
 ACSErr::Completion * enumpropTestDeviceImpl::diagnose (  )
-  throw (CORBA::SystemException,
-		   ENUMPROP_TEST::StateMachine::NoSuchTransition
-		   )
 {
   
   ACSErr::Completion_var c = new Completion;
@@ -149,9 +136,6 @@ ACSErr::Completion * enumpropTestDeviceImpl::diagnose (  )
 }
 
 ACSErr::Completion * enumpropTestDeviceImpl::shutdown ( )
-  throw ( CORBA::SystemException,
-		   ENUMPROP_TEST::StateMachine::NoSuchTransition
-		   )
 {
     ACSErr::Completion_var c = new Completion;
 
@@ -162,9 +146,6 @@ ACSErr::Completion * enumpropTestDeviceImpl::shutdown ( )
 }
 
 ACSErr::Completion * enumpropTestDeviceImpl::init ( )
-  throw ( CORBA::SystemException,
-		   ENUMPROP_TEST::StateMachine::NoSuchTransition
-		   )
 {
     ACSErr::Completion_var c = new Completion;
 
@@ -176,9 +157,6 @@ ACSErr::Completion * enumpropTestDeviceImpl::init ( )
 }
 
 ACSErr::Completion * enumpropTestDeviceImpl::on ( )
-  throw ( CORBA::SystemException,
-		   ENUMPROP_TEST::StateMachine::NoSuchTransition
-		   )
 {
     ACSErr::Completion_var c = new Completion;
 
@@ -189,9 +167,6 @@ ACSErr::Completion * enumpropTestDeviceImpl::on ( )
 }
 
 ACSErr::Completion * enumpropTestDeviceImpl::off ( )
-  throw ( CORBA::SystemException,
-		   ENUMPROP_TEST::StateMachine::NoSuchTransition
-		   )
 {
     ACSErr::Completion_var c = new Completion;
 
@@ -204,9 +179,6 @@ ACSErr::Completion * enumpropTestDeviceImpl::off ( )
 ENUMPROP_TEST::RWStates_ptr enumpropTestDeviceImpl::currentStateRW (
     
   )
-  throw (
-    CORBA::SystemException
-  )
 
 {
   if (!m_currentStateRW)
@@ -216,9 +188,6 @@ ENUMPROP_TEST::RWStates_ptr enumpropTestDeviceImpl::currentStateRW (
 }
 
 void  enumpropTestDeviceImpl::serverShutdown ()
- throw (
-    CORBA::SystemException
-  )
 {
     
 #ifndef MAKE_VXWORKS

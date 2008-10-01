@@ -242,7 +242,6 @@ void AlarmenumpropEventStrategy<T, ROT, AlarmT>::setObjectState(const char * sta
 
 template <class T, class ROT, class AlarmT>
 void AlarmenumpropEventStrategy<T, ROT, AlarmT>::suspend ()
-  throw (CORBA::SystemException)
 {
   if (!suspended_m)
   {
@@ -253,7 +252,6 @@ void AlarmenumpropEventStrategy<T, ROT, AlarmT>::suspend ()
  
 template <class T, class ROT, class AlarmT>
 void AlarmenumpropEventStrategy<T, ROT, AlarmT>::resume ()
-  throw (CORBA::SystemException)
 {
   if (suspended_m)
   {
@@ -264,7 +262,6 @@ void AlarmenumpropEventStrategy<T, ROT, AlarmT>::resume ()
 
 template <class T, class ROT, class AlarmT> 
 void AlarmenumpropEventStrategy<T, ROT, AlarmT>::destroy ()
-  throw (CORBA::SystemException)
 {
   ACS_TRACE("baci::AlarmenumpropEventStrategy<T, ROT, AlarmT>::destroy");
 

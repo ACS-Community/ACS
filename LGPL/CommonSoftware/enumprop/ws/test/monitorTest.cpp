@@ -19,14 +19,14 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 *    MA 02111-1307  USA
 *
-* "@(#) $Id: monitorTest.cpp,v 1.38 2008/08/21 15:44:48 bjeram Exp $"
+* "@(#) $Id: monitorTest.cpp,v 1.39 2008/10/01 02:33:31 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
 * bgustafs 2001-04-19 created
 */
 
-static char *rcsId="@(#) $Id: monitorTest.cpp,v 1.38 2008/08/21 15:44:48 bjeram Exp $"; 
+static char *rcsId="@(#) $Id: monitorTest.cpp,v 1.39 2008/10/01 02:33:31 cparedes Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <baciS.h>
@@ -53,7 +53,6 @@ public:
 		const ACSErr::Completion & c,
 		const ACS::CBDescOut & desc
 		 ) 
-    throw (CORBA::SystemException)
   {
     ACE_DEBUG ((LM_DEBUG, "(%s::CBStates::working) Value: %s (%llu)", prop.c_str(), description[value].in(), value));
   }
@@ -62,7 +61,6 @@ public:
 		const ACSErr::Completion & c,
 		const ACS::CBDescOut & desc
 		 )
-    throw (CORBA::SystemException)
   {
     ACE_DEBUG ((LM_DEBUG, "(%s::CBStates::done) Value: %s (%llu)", prop.c_str(),description[value].in(), value));
   }
@@ -70,7 +68,6 @@ public:
   CORBA::Boolean negotiate ( ACS::TimeInterval time_to_transmit,
 			     const ACS::CBDescOut & desc
 			      )
-    throw (CORBA::SystemException)
   {
     return 1;
   }

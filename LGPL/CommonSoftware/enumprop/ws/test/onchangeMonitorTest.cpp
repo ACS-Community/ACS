@@ -19,14 +19,14 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 *    MA 02111-1307  USA
 *
-* "@(#) $Id: onchangeMonitorTest.cpp,v 1.39 2008/08/21 15:44:48 bjeram Exp $"
+* "@(#) $Id: onchangeMonitorTest.cpp,v 1.40 2008/10/01 02:33:31 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
 * bjeram    2002/11/14 created
 */
 
-static char *rcsId="@(#) $Id: onchangeMonitorTest.cpp,v 1.39 2008/08/21 15:44:48 bjeram Exp $"; 
+static char *rcsId="@(#) $Id: onchangeMonitorTest.cpp,v 1.40 2008/10/01 02:33:31 cparedes Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <baciS.h>
@@ -51,7 +51,6 @@ public:
 		const ACSErr::Completion & c,
 		const ACS::CBDescOut & desc
 		 )
-    throw (CORBA::SystemException)
   {
       if (c.code!=0)
 	  ACS_SHORT_LOG ((LM_DEBUG, "(%s::CBStates::working) Value: %s (%llu) Completion type: %d code: %d", prop.c_str(), description[value].in(), value, c.type, c.code));
@@ -61,7 +60,6 @@ public:
 		const ACSErr::Completion & c,
 		const ACS::CBDescOut & desc
 		 )
-    throw (CORBA::SystemException)
   {
     ACS_SHORT_LOG ((LM_DEBUG, "(%s::CBStates::done) Value: %s (%llu)", prop.c_str(),description[value].in(), value));
   }
@@ -69,7 +67,6 @@ public:
   CORBA::Boolean negotiate ( ACS::TimeInterval time_to_transmit,
 			     const ACS::CBDescOut & desc
 			      )
-    throw (CORBA::SystemException)
   {
     return 1;
   }
