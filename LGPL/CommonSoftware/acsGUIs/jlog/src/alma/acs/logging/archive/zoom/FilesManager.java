@@ -36,6 +36,7 @@ import com.cosylab.logging.engine.log.LogTypeHelper;
  * <UL>
  * 	<LI>owns a list of files of logs 
  * 	<LI>return the right file(s) for zooming by date/time interval
+ * 	<LI>get the logs of the given time and level intervals
  * </UL>
  * <P>
  * The folder to access files in this version is read from a java property.
@@ -61,6 +62,10 @@ import com.cosylab.logging.engine.log.LogTypeHelper;
  * </UL>
  * Current version bases the selection of the files on the requested interval and the
  * timestamp in the name of the files i.e. there is a chance to miss logs.
+ * <P>
+ * This has been agreed with ARCHIVE. They claim that there is a constant to tune in the
+ * CDB that should avoid this problem.
+ * See http://almasw.hq.eso.org/almasw/bin/view/Archive/ArchiveEightDotZero for further details. 
  * 
  * 
  * @author acaproni
