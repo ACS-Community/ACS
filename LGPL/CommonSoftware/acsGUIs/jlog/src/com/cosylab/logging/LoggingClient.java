@@ -53,6 +53,7 @@ import javax.swing.event.MenuListener;
 
 import alma.acs.logging.archive.ArchiveConnectionManager;
 import alma.acs.logging.archive.QueryDlg;
+import alma.acs.logging.archive.ArchiveConnectionManager.DBState;
 import alma.acs.logging.dialogs.main.LogFrame;
 import alma.acs.logging.dialogs.main.LogMenuBar;
 import alma.acs.logging.dialogs.main.LogNavigationBar;
@@ -287,7 +288,7 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
             } else if (e.getSource() == menuBar.getSaveFileMenuItem()) {
             	getLCModel1().saveFile();
             } else if (e.getSource() == menuBar.getLoadDBMenuItem()) {
-            	if (archive.getDBStatus()==ArchiveConnectionManager.DATABASE_OK) {
+            	if (archive.getDBStatus()==DBState.DATABASE_OK) {
             		if (databaseDlg==null) {
             			databaseDlg = new QueryDlg(archive,LoggingClient.this,LoggingClient.this,LoggingClient.this);
             		}
@@ -447,7 +448,7 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 			
 			// Enable diasble the menu to load from the DB
 			// if the DB is not available
-			menuBar.getLoadDBMenuItem().setEnabled(archive.getDBStatus()==ArchiveConnectionManager.DATABASE_OK);
+			menuBar.getLoadDBMenuItem().setEnabled(archive.getDBStatus()==DBState.DATABASE_OK);
 		}
 		
 		

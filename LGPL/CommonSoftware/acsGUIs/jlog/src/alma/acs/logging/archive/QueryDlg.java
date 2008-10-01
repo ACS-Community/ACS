@@ -49,6 +49,7 @@ import javax.swing.JRootPane;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
+import alma.acs.logging.archive.ArchiveConnectionManager.DBState;
 import alma.acs.logging.dialogs.LoadSwitchesPanel;
 import alma.acs.logging.engine.parser.ACSLogParser;
 import alma.acs.logging.engine.parser.ACSLogParserFactory;
@@ -330,7 +331,7 @@ public class QueryDlg extends JDialog implements ActionListener {
 		btnPnl.setBorder(BorderFactory.createEmptyBorder(0, 10, 10, 10));
 		submitBtn = new JButton("Submit");
 		submitBtn.addActionListener(this);
-		submitBtn.setEnabled(archive.getDBStatus()==ArchiveConnectionManager.DATABASE_OK);
+		submitBtn.setEnabled(archive.getDBStatus()==DBState.DATABASE_OK);
 		doneBtn = new JButton("Cancel");
 		doneBtn.addActionListener(this);
 		btnPnl.add(submitBtn,BorderLayout.WEST);
