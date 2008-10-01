@@ -38,9 +38,7 @@ export ACS_TMP=$PWD/tmp
 acsutilTATPrologue -l
 
 # Tweak dynamicContainer's DeployInfo. See http://jira.alma.cl/browse/COMP-2560?focusedCommentId=26674#action_26674 about making this unnecessary.
-# To get the instance right, we can do this only now, to be able to read out tmp/acs_instance
 acsReplace "%HOST" $HOST $ACS_CDB/CDB/MACI/Containers/dynamicContainer/dynamicContainer.xml
-acsReplace "%ACS_INSTANCE" `cat $ACS_TMP/acs_instance` $ACS_CDB/CDB/MACI/Containers/dynamicContainer/dynamicContainer.xml
 cdbjDALClearCache
 
 echo " Starting container daemon (if it is not running already) which will run java container 'dynamicContainer'"
