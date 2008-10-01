@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: parameterTask.h,v 1.11 2006/11/29 23:09:51 sharring Exp $"
+* "@(#) $Id: parameterTask.h,v 1.12 2008/10/01 03:07:07 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -76,9 +76,9 @@ namespace ACS
 			 * @param parameters The parameters/arguments supplied on the command line.
 			 * @param fileName The (base) name (without extension) of the meta-data xml file containing
 			 * meta-information about the task.
+             * @throw taskErrType::TaskRunFailureEx
 			 */
-			virtual void run (const ACS::StringSequence & parameters, const char* fileName) throw (CORBA::SystemException,
-				taskErrType::TaskRunFailureEx);
+			virtual void run (const ACS::StringSequence & parameters, const char* fileName); 
 
 		private:
 			void buildParameterMap(const ACS::StringSequence & parameters, const string & baseFileName) throw (invalid_argument);

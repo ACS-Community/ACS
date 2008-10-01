@@ -18,7 +18,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: characteristicTaskTestImpl.h,v 1.8 2005/07/29 21:42:11 sharring Exp $"
+* "@(#) $Id: characteristicTaskTestImpl.h,v 1.9 2008/10/01 03:07:07 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -46,8 +46,10 @@ class CharacteristicTaskTestImpl:  public virtual baci::CharacteristicComponentI
     
     virtual ~CharacteristicTaskTestImpl();
     
-    virtual void run (const ACS::StringSequence & parameters, const char* fileName) throw (CORBA::SystemException,
-					  taskErrType::TaskRunFailureEx);
+    /*
+    * @throw taskErrType::TaskRunFailureEx
+    */
+    virtual void run (const ACS::StringSequence & parameters, const char* fileName); 
 };
 
 #endif /*!_H*/

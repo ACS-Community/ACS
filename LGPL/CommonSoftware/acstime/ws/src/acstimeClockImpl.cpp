@@ -1,4 +1,4 @@
-/* @(#) $Id: acstimeClockImpl.cpp,v 1.20 2006/10/19 07:52:03 bjeram Exp $
+/* @(#) $Id: acstimeClockImpl.cpp,v 1.21 2008/10/01 03:11:48 cparedes Exp $
  *
  * Copyright (C) 2001
  * Associated Universities, Inc. Washington DC, USA.
@@ -85,7 +85,6 @@ ClockImpl::~ClockImpl()
 //------------------------------------------------------------------------------
 acstime::Duration
 ClockImpl::getTimeInterval(const acstime::Epoch &prevEpoch)
-    throw (CORBA::SystemException)
 {
     acstime::Duration retValue;
     ACSErr::Completion_var completion;
@@ -96,7 +95,6 @@ ClockImpl::getTimeInterval(const acstime::Epoch &prevEpoch)
 //------------------------------------------------------------------------------
 ACS::RWlong_ptr 
 ClockImpl::array2TAI()
-    throw (CORBA::SystemException)
 {
     if (m_array2TAI == 0)
 	{
@@ -108,7 +106,6 @@ ClockImpl::array2TAI()
 //------------------------------------------------------------------------------
 ACS::RWlong_ptr 
 ClockImpl::TAI2UTC()
-    throw (CORBA::SystemException)
 {
     if (m_TAI2UTC == 0)
 	{
@@ -120,7 +117,6 @@ ClockImpl::TAI2UTC()
 //------------------------------------------------------------------------------
 ACS::ROuLongLong_ptr 
 ClockImpl::now()
-    throw (CORBA::SystemException)
 {
     if (m_now == 0)
 	{
@@ -133,7 +129,6 @@ ClockImpl::now()
 acstime::Epoch 
 ClockImpl::fromISO8601(acstime::TimeSystem ts,
 		       const char *iso)
-    throw (CORBA::SystemException, ACSTimeError::ArgErrorEx)
 {
     EpochHelper *e_p = new EpochHelper();
     e_p->fromString(ts, iso);
@@ -145,7 +140,6 @@ ClockImpl::fromISO8601(acstime::TimeSystem ts,
 char*
 ClockImpl::toISO8601(acstime::TimeSystem ts,
 		     const acstime::Epoch &timeValue)
-    throw (CORBA::SystemException, ACSTimeError::ArgErrorEx)
 {
     ACS::Time timestamp;
     EpochHelper e_p(timeValue);

@@ -1,4 +1,4 @@
-/* @(#) $Id: acstimeClockImpl.h,v 1.16 2008/07/25 07:34:03 cparedes Exp $
+/* @(#) $Id: acstimeClockImpl.h,v 1.17 2008/10/01 03:11:48 cparedes Exp $
  *
  * Copyright (C) 2001
  * Associated Universities, Inc. Washington DC, USA.
@@ -90,8 +90,7 @@ class ClockImpl : public virtual baci::CharacteristicComponentImpl,
        @endhtmlonly
      */ 
     virtual acstime::Duration 
-    getTimeInterval(const acstime::Epoch &prevEpoch)
-	throw (CORBA::SystemException);
+    getTimeInterval(const acstime::Epoch &prevEpoch);
     
     /**
      * Implementation of IDL method.
@@ -101,8 +100,7 @@ class ClockImpl : public virtual baci::CharacteristicComponentImpl,
        @endhtmlonly
      */ 
     virtual ACS::RWlong_ptr 
-    array2TAI()
-	throw (CORBA::SystemException);
+    array2TAI();
     
     /**
      * Implementation of IDL method.
@@ -112,8 +110,7 @@ class ClockImpl : public virtual baci::CharacteristicComponentImpl,
        @endhtmlonly
      */ 
     virtual ACS::RWlong_ptr 
-    TAI2UTC()
-	throw (CORBA::SystemException);
+    TAI2UTC();
     
     /**
      * Implementation of IDL method.
@@ -123,32 +120,31 @@ class ClockImpl : public virtual baci::CharacteristicComponentImpl,
        @endhtmlonly
      */    
     virtual ACS::ROuLongLong_ptr 
-    now()
-	throw (CORBA::SystemException);
+    now();
 
     /**
      * Implementation of IDL method.
      * Please see the documenation for the Clock IDL interface.
+     * @throw ACSTimeError::ArgErrorEx
      * @htmlonly
        <li><a href="../../idl/html/interfaceacstime_1_1Clock.html">IDL Documentation</a></li><br><hr>
        @endhtmlonly
      */ 
     virtual acstime::Epoch 
     fromISO8601(acstime::TimeSystem ts,
-		const char *iso)
-	throw (CORBA::SystemException, ACSTimeError::ArgErrorEx);
+		const char *iso);
     
     /**
      * Implementation of IDL method.
      * Please see the documenation for the Clock IDL interface.
+     * @throw ACSTimeError::ArgErrorEx
      * @htmlonly
        <li><a href="../../idl/html/interfaceacstime_1_1Clock.html">IDL Documentation</a></li><br><hr>
        @endhtmlonly
      */ 
     virtual char* 
     toISO8601(acstime::TimeSystem ts,
-	      const acstime::Epoch &timeValue)
-	throw (CORBA::SystemException, ACSTimeError::ArgErrorEx);
+	      const acstime::Epoch &timeValue);
 
     ////////////////////////////////////////////////////////////////////////
   private:

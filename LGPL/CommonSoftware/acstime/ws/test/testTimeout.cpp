@@ -1,4 +1,4 @@
-// @(#) $Id: testTimeout.cpp,v 1.9 2006/09/01 02:20:54 cparedes Exp $
+// @(#) $Id: testTimeout.cpp,v 1.10 2008/10/01 03:11:48 cparedes Exp $
 //
 // Copyright (C) 2001
 // Associated Universities, Inc. Washington DC, USA.
@@ -45,7 +45,6 @@ class TimeoutHandlerImpl : public virtual POA_acstime::TimeoutHandler
     // this method is called when timeout occurs
     void handleTimeout(const acstime::Epoch& e
 		       )
-	throw (CORBA::SystemException)
 	{ 
 	    cout << "I'm in time handler " << m_id << endl; 
 	}

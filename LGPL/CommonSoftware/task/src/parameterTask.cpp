@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: parameterTask.cpp,v 1.24 2006/11/29 23:09:51 sharring Exp $"
+* "@(#) $Id: parameterTask.cpp,v 1.25 2008/10/01 03:07:07 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -39,7 +39,7 @@
 #include <xercesc/framework/XMLFormatter.hpp>
 #include <xercesc/framework/MemBufFormatTarget.hpp>
 
-static char *rcsId="@(#) $Id: parameterTask.cpp,v 1.24 2006/11/29 23:09:51 sharring Exp $"; 
+static char *rcsId="@(#) $Id: parameterTask.cpp,v 1.25 2008/10/01 03:07:07 cparedes Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 XERCES_CPP_NAMESPACE_USE
@@ -65,9 +65,9 @@ parameterTask::parameterTask(const ACE_CString &name, maci::ContainerServices* c
  * to instantiate a ParameterSet object, which is an in-memory represention of 
  * the command-line parameters. The ParameterSet object is then passed to the 'go' 
  * method (which is to be implemented by the task author).
+ * @throw taskErrType::TaskRunFailureEx
  */
 void parameterTask::run(const ACS::StringSequence & parameters, const char* filePrefix)
-    throw (CORBA::SystemException, taskErrType::TaskRunFailureEx)
 {
 	try
 	{

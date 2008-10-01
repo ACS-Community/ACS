@@ -18,7 +18,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: execComponentTestImpl.h,v 1.13 2008/07/25 07:33:13 cparedes Exp $"
+* "@(#) $Id: execComponentTestImpl.h,v 1.14 2008/10/01 03:07:07 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -52,9 +52,9 @@ class execComponentTestImpl:  public virtual acscomponent::ACSComponentImpl,
        Implentation of TaskComponent's run method which print what it gets as the parameter to stdio.
        If parameter is 'throw' the run method throws an exception of type: TaskRunFailureEx
        @param parameters: parameters that is send to run method of the task.
+       @throw taskErrType::TaskRunFailureEx
      */    
-    virtual void run (const ACS::StringSequence & parameters, const char* fileName) throw (CORBA::SystemException,
-					  taskErrType::TaskRunFailureEx );
+    virtual void run (const ACS::StringSequence & parameters, const char* fileName); 
 };
 
 #endif /*!_H*/

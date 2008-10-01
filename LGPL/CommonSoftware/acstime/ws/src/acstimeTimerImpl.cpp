@@ -1,4 +1,4 @@
-/* @(#) $Id: acstimeTimerImpl.cpp,v 1.17 2006/10/03 21:55:26 gchiozzi Exp $
+/* @(#) $Id: acstimeTimerImpl.cpp,v 1.18 2008/10/01 03:11:48 cparedes Exp $
  *
  * Copyright (C) 2001
  * Associated Universities, Inc. Washington DC, USA.
@@ -55,7 +55,6 @@ CORBA::Long
 TimerImpl::schedule(acstime::TimeoutHandler_ptr handler,
 		    const acstime::Epoch &start,
 		    const acstime::Duration &period)
-    throw (CORBA::SystemException, ACSTimeError::ArgErrorEx)
 {
     if (CORBA::is_nil(handler) == true)
         {  // nil _ptr
@@ -103,7 +102,6 @@ TimerImpl::schedule(acstime::TimeoutHandler_ptr handler,
 //------------------------------------------------------------------------------
 void 
 TimerImpl::cancel(int id)
-    throw (CORBA::SystemException, ACSTimeError::InvalidIDEx)
 {
     // remove entry from queue
     // if remove is successful, delete Handler object

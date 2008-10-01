@@ -1,4 +1,4 @@
-/* @(#) $Id: acstimeTimerImpl.h,v 1.21 2008/07/25 07:34:03 cparedes Exp $
+/* @(#) $Id: acstimeTimerImpl.h,v 1.22 2008/10/01 03:11:48 cparedes Exp $
  *
  * Copyright (C) 2001
  * Associated Universities, Inc. Washington DC, USA.
@@ -75,6 +75,7 @@ class TimerImpl : public virtual acscomponent::ACSComponentImpl,
     /**
      * Implementation of IDL method.
      * Please see the documenation for the Timer IDL interface.
+     * @throw ACSTimeError::ArgErrorEx
      * @htmlonly
        <li><a href="../../idl/html/interfaceacstime_1_1Timer.html">IDL Documentation</a></li><br><hr>
        @endhtmlonly
@@ -82,19 +83,18 @@ class TimerImpl : public virtual acscomponent::ACSComponentImpl,
     virtual CORBA::Long 
     schedule(acstime::TimeoutHandler_ptr callBack,
 	     const acstime::Epoch &time,
-	     const acstime::Duration &interval)
-	throw (CORBA::SystemException, ACSTimeError::ArgErrorEx);
+	     const acstime::Duration &interval);
     
     /**
      * Implementation of IDL method.
      * Please see the documenation for the Timer IDL interface.
+     * @throw ACSTimeError::InvalidIDEx
      * @htmlonly
        <li><a href="../../idl/html/interfaceacstime_1_1Timer.html">IDL Documentation</a></li><br><hr>
        @endhtmlonly
      */ 
     virtual void 
-    cancel(CORBA::Long id)
-	throw (CORBA::SystemException, ACSTimeError::InvalidIDEx);
+    cancel(CORBA::Long id);
     
     ////////////////////////////////////////////////////////////////////////
   private:

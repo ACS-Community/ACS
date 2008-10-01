@@ -1,4 +1,4 @@
-// @(#) $Id: timeoutExample.cpp,v 1.7 2006/09/01 02:20:54 cparedes Exp $
+// @(#) $Id: timeoutExample.cpp,v 1.8 2008/10/01 03:11:48 cparedes Exp $
 //
 // Copyright (C) 2001
 // Associated Universities, Inc. Washington DC, USA.
@@ -43,7 +43,6 @@ class TimeoutHandlerImpl : public virtual POA_acstime::TimeoutHandler
 {
   public:
     void handleTimeout(const acstime::Epoch& e)
-	throw (CORBA::SystemException)
 	{ 
 	    cout << "The current time is: " << e.value << endl; 
 	}
