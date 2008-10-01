@@ -44,7 +44,6 @@ TestCDBComp::~TestCDBComp()
 }
 ACS::ROdouble_ptr
 TestCDBComp::testatt ()
-    throw (CORBA::SystemException)
 {
     if (m_testatt_sp == 0)
 	{

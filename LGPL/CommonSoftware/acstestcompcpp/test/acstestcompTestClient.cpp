@@ -1,7 +1,10 @@
 /*
- * "@(#) $Id: acstestcompTestClient.cpp,v 1.2 2006/10/11 15:03:43 gchiozzi Exp $"
+ * "@(#) $Id: acstestcompTestClient.cpp,v 1.3 2008/10/01 05:33:43 cparedes Exp $"
  *
  * $Log: acstestcompTestClient.cpp,v $
+ * Revision 1.3  2008/10/01 05:33:43  cparedes
+ * Removing exception declaration from cpp implementation
+ *
  * Revision 1.2  2006/10/11 15:03:43  gchiozzi
  * Improved error handling.
  *
@@ -34,19 +37,16 @@ class ClientCBvoid: public virtual POA_ACS::CBvoid
     ClientCBvoid() {}
     ~ClientCBvoid() {}
     void working (const ACSErr::Completion &c, const ACS::CBDescOut &desc) 
-	throw (CORBA::SystemException)
 	{ 
 	    ACS_SHORT_LOG ((LM_INFO, "CBvoid::working")); 
 	}
     void done (const ACSErr::Completion &c, const ACS::CBDescOut &desc) 
-	throw (CORBA::SystemException)
 	{ 
 	    ACS_SHORT_LOG ((LM_INFO, "CBvoid::done"));
 	    ACS_SHORT_LOG ((LM_INFO, "Error code returned: %d", c.code));
 	}
     CORBA::Boolean negotiate (ACS::TimeInterval time_to_transmit, 
 			      const ACS::CBDescOut &desc) 
-	throw (CORBA::SystemException)
 	{
 	    return true;
 	}

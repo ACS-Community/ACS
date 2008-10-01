@@ -2,9 +2,12 @@
 #define acstestcompImpl_h
 
 /*
- * "@(#) $Id: acstestcompTimingExplorerImpl.h,v 1.2 2008/07/25 07:36:17 cparedes Exp $"
+ * "@(#) $Id: acstestcompTimingExplorerImpl.h,v 1.3 2008/10/01 05:33:43 cparedes Exp $"
  *
  * $Log: acstestcompTimingExplorerImpl.h,v $
+ * Revision 1.3  2008/10/01 05:33:43  cparedes
+ * Removing exception declaration from cpp implementation
+ *
  * Revision 1.2  2008/07/25 07:36:17  cparedes
  * Removing use namespace from included files and updating
  * the files where the use namespace was assumed
@@ -72,7 +75,7 @@ class TimingExplorerImpl : public virtual acscomponent::ACSComponentImpl,
      * sends a reply
      * @param waitTimeSec time to wait in seconds before sending reply
      */
-    virtual void waitToReply(CORBA::Long waitTimeSec) throw(CORBA::SystemException);
+    virtual void waitToReply(CORBA::Long waitTimeSec) ;
 
     /**
      * Sends a number over replies evenly
@@ -86,7 +89,7 @@ class TimingExplorerImpl : public virtual acscomponent::ACSComponentImpl,
      * @param cb          Callback object for the replies
      * @param desc        Input parameters sent by the caller
      */
-    virtual void multipleReplies(CORBA::Long repetitions, CORBA::Long waitTimeSec, ACS::CBvoid_ptr cb, const ACS::CBDescIn& desc) throw(CORBA::SystemException);
+    virtual void multipleReplies(CORBA::Long repetitions, CORBA::Long waitTimeSec, ACS::CBvoid_ptr cb, const ACS::CBDescIn& desc);
 
 
 /* --------------------- [ CORBA END interface ] ----------------*/

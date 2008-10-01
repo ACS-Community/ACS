@@ -22,7 +22,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: acstestcompErrorExplorerImpl.h,v 1.2 2008/07/25 07:36:17 cparedes Exp $"
+* "@(#) $Id: acstestcompErrorExplorerImpl.h,v 1.3 2008/10/01 05:33:43 cparedes Exp $"
 *
 */
 
@@ -58,7 +58,7 @@
  * 
  * @author <a href=mailto:matej.sekoranja@ijs.si>Matej Sekoranja</a>,
  * Jozef Stefan Institute, Slovenia<br>
- * @version "@(#) $Id: acstestcompErrorExplorerImpl.h,v 1.2 2008/07/25 07:36:17 cparedes Exp $"
+ * @version "@(#) $Id: acstestcompErrorExplorerImpl.h,v 1.3 2008/10/01 05:33:43 cparedes Exp $"
  */
 
 class ErrorExplorerImpl: public baci::CharacteristicComponentImpl,     //Standard component superclass
@@ -89,8 +89,7 @@ class ErrorExplorerImpl: public baci::CharacteristicComponentImpl,     //Standar
        @endhtmlonly
      */ 
     virtual ACS::RWdouble_ptr 
-    explorerDoubleProperty()
-	throw (CORBA::SystemException);
+    explorerDoubleProperty();
     
     
   protected:

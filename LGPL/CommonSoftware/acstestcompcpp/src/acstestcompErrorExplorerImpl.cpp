@@ -20,14 +20,14 @@
 *
 *
 *
-* "@(#) $Id: acstestcompErrorExplorerImpl.cpp,v 1.1 2006/09/28 16:02:57 gchiozzi Exp $"
+* "@(#) $Id: acstestcompErrorExplorerImpl.cpp,v 1.2 2008/10/01 05:33:43 cparedes Exp $"
 *
 */
 
 
 #include <acstestcompErrorExplorerImpl.h>
 
-ACE_RCSID(acstestcomp, acstestcompErrorExplorerImpl, "$Id: acstestcompErrorExplorerImpl.cpp,v 1.1 2006/09/28 16:02:57 gchiozzi Exp $")
+ACE_RCSID(acstestcomp, acstestcompErrorExplorerImpl, "$Id: acstestcompErrorExplorerImpl.cpp,v 1.2 2008/10/01 05:33:43 cparedes Exp $")
 
 using namespace baci;
 
@@ -52,7 +52,6 @@ ErrorExplorerImpl::~ErrorExplorerImpl()
 
 ACS::RWdouble_ptr
 ErrorExplorerImpl::explorerDoubleProperty()
-    throw (CORBA::SystemException)
 {
     if (m_explorerDoubleProperty_sp == 0)
 	{

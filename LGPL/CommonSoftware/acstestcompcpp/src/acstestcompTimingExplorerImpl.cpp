@@ -1,7 +1,10 @@
 /*
- * "@(#) $Id: acstestcompTimingExplorerImpl.cpp,v 1.2 2007/01/08 16:00:06 gchiozzi Exp $"
+ * "@(#) $Id: acstestcompTimingExplorerImpl.cpp,v 1.3 2008/10/01 05:33:43 cparedes Exp $"
  *
  * $Log: acstestcompTimingExplorerImpl.cpp,v $
+ * Revision 1.3  2008/10/01 05:33:43  cparedes
+ * Removing exception declaration from cpp implementation
+ *
  * Revision 1.2  2007/01/08 16:00:06  gchiozzi
  * Replaced obsolete (and incomplete) ACS Completion initiallization with
  * initialization from construction of completion generated type.
@@ -172,7 +175,7 @@ void TimingExplorerImpl::initialize(void)
 
 /* --------------------- [ CORBA interface ] ----------------------*/
 
-void TimingExplorerImpl::waitToReply(CORBA::Long waitTimeSec) throw(CORBA::SystemException)
+void TimingExplorerImpl::waitToReply(CORBA::Long waitTimeSec) 
 {
     ACS_LOG(LM_FULL_INFO,"TimingExplorerImpl::waitToReply",
 	    (LM_INFO,"Method waiting %d seconds to reply", waitTimeSec)) 
@@ -186,7 +189,6 @@ void TimingExplorerImpl::multipleReplies(CORBA::Long repetitions,
 					 CORBA::Long waitTimeSec, 
 					 ACS::CBvoid_ptr cb, 
 					 const ACS::CBDescIn& desc)
-    throw(CORBA::SystemException)
 {
     printf("a\n");
     ACS_LOG(LM_FULL_INFO,"TimingExplorerImpl::multipleReplies",
