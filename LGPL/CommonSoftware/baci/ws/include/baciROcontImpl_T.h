@@ -77,22 +77,17 @@ public:
 	
   /* -------------------- [ RO interface ] -------------------- */
   
-	virtual TS alarm_low_on ()
-	  throw (CORBA::SystemException);
+	virtual TS alarm_low_on ();
 	
-	virtual TS alarm_low_off ()
-	  throw (CORBA::SystemException);
+	virtual TS alarm_low_off ();
 	
-	virtual TS alarm_high_on ()
-	  throw (CORBA::SystemException);
+	virtual TS alarm_high_on ();
 	
-	virtual TS alarm_high_off ()
-	  throw (CORBA::SystemException);
+	virtual TS alarm_high_off ();
   
     virtual ACS::Subscription_ptr 
     new_subscription_Alarm (TAlarm *cb,
-			    const ACS::CBDescIn & desc)
-	throw (CORBA::SystemException);
+			    const ACS::CBDescIn & desc);
 
 protected:
 

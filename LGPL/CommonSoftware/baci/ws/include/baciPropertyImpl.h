@@ -19,7 +19,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciPropertyImpl.h,v 1.13 2006/11/06 07:54:17 cparedes Exp $"
+* "@(#) $Id: baciPropertyImpl.h,v 1.14 2008/10/01 02:26:45 cparedes Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -54,17 +54,9 @@ class baci_EXPORT PropertyImpl : public virtual POA_ACS::Property,
 /* ------------------ [ Property interface ] ------------------ */
     virtual char * name (
         ACE_ENV_SINGLE_ARG_DECL_WITH_DEFAULTS
-      )
-      throw (
-        CORBA::SystemException
       );
  
-    virtual char * characteristic_component_name (
-	 
-	)
-	throw (
-	    CORBA::SystemException
-	    );
+    virtual char * characteristic_component_name ();
     
 	///Return the BACI Component    
 	BACIComponent* getComponent() { return component_mp; }

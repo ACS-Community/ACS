@@ -18,7 +18,7 @@
  *    License along with this library; if not, write to the Free Software
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: baciROpattern.cpp,v 1.113 2008/08/21 15:30:52 bjeram Exp $"
+ * "@(#) $Id: baciROpattern.cpp,v 1.114 2008/10/01 02:26:45 cparedes Exp $"
  *
  * who       when        what
  * --------  ----------  ----------------------------------------------
@@ -117,14 +117,12 @@ namespace baci {
 /* ---------------------- [ CORBA interface ] ---------------------- */
 
     ACS::pattern ROpatternImpl::alarm_mask ()
-	throw (CORBA::SystemException)
     {
 	return alarmMask_m;
     }
 
 
     ACS::pattern ROpatternImpl::alarm_trigger ()
-	throw (CORBA::SystemException) 
     {
 
 	return alarmTrigger_m;
@@ -134,7 +132,6 @@ namespace baci {
     ACS::Subscription_ptr ROpatternImpl::new_subscription_Alarm (ACS::Alarmpattern *cb,
 								 const ACS::CBDescIn & desc
 	)
-	throw (CORBA::SystemException)
     {
 //TBD: this could be done just in the constructor
 	if (this->alarmTimerTrig_m==0)

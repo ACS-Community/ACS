@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciTypelessPropertyImpl.cpp,v 1.12 2006/10/16 07:56:40 cparedes Exp $"
+* "@(#) $Id: baciTypelessPropertyImpl.cpp,v 1.13 2008/10/01 02:26:45 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -90,7 +90,6 @@ bool TypelessPropertyImpl::readCharacteristics()
 
 char * 
 TypelessPropertyImpl::description ()
-  throw (CORBA::SystemException)
 {
   
   return CORBA::string_dup (desc_mription.c_str());
@@ -98,7 +97,6 @@ TypelessPropertyImpl::description ()
 
 char * 
 TypelessPropertyImpl::format ()
-  throw (CORBA::SystemException)
 {
   
   return CORBA::string_dup (format_m.c_str());
@@ -106,14 +104,12 @@ TypelessPropertyImpl::format ()
 
  CORBA::Boolean
  TypelessPropertyImpl::initialize_devio ()
-   throw (CORBA::SystemException)
  {
   return initializeDevIO_m;
 
 
 char * 
 TypelessPropertyImpl::units ()
-  throw (CORBA::SystemException)
 {
   
   return CORBA::string_dup (units_m.c_str());
@@ -121,7 +117,6 @@ TypelessPropertyImpl::units ()
 
 ACS::pattern 
 TypelessPropertyImpl::resolution ()
-  throw (CORBA::SystemException)
 {
   
   return resolution_m;

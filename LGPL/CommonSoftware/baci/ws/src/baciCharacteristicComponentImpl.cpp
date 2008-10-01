@@ -19,13 +19,13 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: baciCharacteristicComponentImpl.cpp,v 1.45 2008/03/14 09:23:17 bjeram Exp $"
+* "@(#) $Id: baciCharacteristicComponentImpl.cpp,v 1.46 2008/10/01 02:26:45 cparedes Exp $"
 *
 */
 
 #include <vltPort.h>
 
-static char *rcsId="@(#) $Id: baciCharacteristicComponentImpl.cpp,v 1.45 2008/03/14 09:23:17 bjeram Exp $"; 
+static char *rcsId="@(#) $Id: baciCharacteristicComponentImpl.cpp,v 1.46 2008/10/01 02:26:45 cparedes Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <baci.h>
@@ -229,7 +229,6 @@ void CharacteristicComponentImpl::addPropertyToDesc(ACS::Property_ptr prop)
 //////////////////////////////////////////////////////////////////////////////////////////
 ACS::CharacteristicComponentDesc *
 CharacteristicComponentImpl::descriptor ()
-    throw (CORBA::SystemException)
 {   
     ACS_TRACE("::CharacteristicComponentImpl::descriptor");
     

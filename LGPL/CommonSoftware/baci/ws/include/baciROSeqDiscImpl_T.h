@@ -18,7 +18,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciROSeqDiscImpl_T.h,v 1.6 2006/09/24 18:43:34 bjeram Exp $"
+* "@(#) $Id: baciROSeqDiscImpl_T.h,v 1.7 2008/10/01 02:26:45 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -57,7 +57,7 @@ namespace baci
 	virtual ACS::Subscription_ptr new_subscription_Alarm (
 	    TAlarm *cb,
 	    const ACS::CBDescIn & desc
-	    ) throw (CORBA::SystemException);
+	    ) ;
 	
       protected:
 	/** @defgroup  PropTypeROSeqDiscImplTemplate PropType Class (member from ROSeqDiscImpl)

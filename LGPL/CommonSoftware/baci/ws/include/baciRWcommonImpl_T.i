@@ -182,7 +182,6 @@ void baci::RWcommonImpl<ACS_RW_TL>::setValue(BACIProperty* property,
 template<ACS_RW_C>
 ACSErr::Completion * baci::RWcommonImpl<ACS_RW_TL>::set_sync (TIN val
 		    )
-  throw (CORBA::SystemException)
 {
   CompletionImpl co;
   BACIValue value(val);
@@ -209,7 +208,6 @@ void baci::RWcommonImpl<ACS_RW_TL>::set_async (TIN value,
 		     ACS::CBvoid_ptr cb,
 		     const ACS::CBDescIn & desc
 		     )
-  throw (CORBA::SystemException)
 {
   this->property_mp->getComponent()->registerAction(BACIValue::type_null, cb, 
 				       desc, this, SET_ACTION, BACIValue(value));
@@ -218,7 +216,6 @@ void baci::RWcommonImpl<ACS_RW_TL>::set_async (TIN value,
 template<ACS_RW_C>
 void baci::RWcommonImpl<ACS_RW_TL>::set_nonblocking (TIN val
 			   )
-  throw (CORBA::SystemException)
 {
   ACSErr::CompletionImpl c;
   BACIValue value(val);

@@ -46,7 +46,7 @@ template<>
 ACS::Subscription_ptr ROdiscImpl<char*, ACS::CBstring, ACS::stringSeq, ACS::stringSeq_out, ACS::Monitor, MonitorstringImpl, ACE_CString, char*, ACE_CString, POA_ACS::ROstring, ACS::Alarmstring, POA_ACS::CBstring, const char*>::new_subscription_Alarm (
 	ACS::Alarmstring *cb,
 	const ACS::CBDescIn & desc
-	) throw (CORBA::SystemException);
+	);
 
 /** @defgroup ROstringTemplate ROstring Class
  * The ROstring class is a templated typedef so there is no actual inline doc generated for it per-se.

@@ -19,7 +19,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciTestUtils.h,v 1.103 2008/08/21 15:30:52 bjeram Exp $"
+* "@(#) $Id: baciTestUtils.h,v 1.104 2008/10/01 02:26:45 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -56,7 +56,6 @@ class baciTestCBvoid: public virtual POA_ACS::CBvoid
     virtual void working (const ACSErr::Completion & c,
 		  const ACS::CBDescOut & desc
 		  )
-	throw (CORBA::SystemException)
 	{
 	    ACS_SHORT_LOG((LM_INFO, "(%s::CBvoid::working)", prop.c_str()));
 	}
@@ -64,7 +63,6 @@ class baciTestCBvoid: public virtual POA_ACS::CBvoid
     virtual void done (const ACSErr::Completion & c,
 	       const ACS::CBDescOut & desc
 	        )
-	throw (CORBA::SystemException)
 	{
 	    ACS_SHORT_LOG ((LM_INFO, "(%s::CBvoid::done)", prop.c_str()));
 	}
@@ -72,7 +70,6 @@ class baciTestCBvoid: public virtual POA_ACS::CBvoid
     virtual CORBA::Boolean negotiate (ACS::TimeInterval time_to_transmit,
                               const ACS::CBDescOut & desc
                               )
-	throw (CORBA::SystemException)
 	{
 	    return true;
 	}
@@ -93,9 +90,6 @@ class baciTestCBdouble: public virtual POA_ACS::CBdouble
 	const ACSErr::Completion & c,
 	const ACS::CBDescOut & desc
 	)
-	throw (
-	    CORBA::SystemException
-	    )
 	{
 	    if (count>0)
 		{
@@ -119,9 +113,6 @@ class baciTestCBdouble: public virtual POA_ACS::CBdouble
 	const ACSErr::Completion & c,
 	const ACS::CBDescOut & desc
 	)
-	throw (
-	    CORBA::SystemException
-	    ) 
 	{	    
 	    if (done_c > 0 )
 		{
@@ -136,9 +127,6 @@ class baciTestCBdouble: public virtual POA_ACS::CBdouble
 	ACS::TimeInterval time_to_transmit,
 	const ACS::CBDescOut & desc
 	)
-	throw (
-	    CORBA::SystemException
-	    )
 	{ 
 	    return 1; 
 	}
@@ -161,9 +149,6 @@ class baciTestCBfloat: public virtual POA_ACS::CBfloat
 	const ACSErr::Completion & c,
 	const ACS::CBDescOut & desc
 	)
-	throw (
-	    CORBA::SystemException
-	    )
 	{
 	    if (count>0)
 		{
@@ -178,9 +163,6 @@ class baciTestCBfloat: public virtual POA_ACS::CBfloat
 	const ACSErr::Completion & c,
 	const ACS::CBDescOut & desc
 	)
-	throw (
-	    CORBA::SystemException
-	    ) 
 	{	    
 	    if (done_c > 0 )
 		{
@@ -195,9 +177,6 @@ class baciTestCBfloat: public virtual POA_ACS::CBfloat
 	ACS::TimeInterval time_to_transmit,
 	const ACS::CBDescOut & desc
 	)
-	throw (
-	    CORBA::SystemException
-	    )
 	{ 
 	    return 1; 
 	}
@@ -220,9 +199,6 @@ class baciTestCBpattern: public virtual POA_ACS::CBpattern
 	const ACSErr::Completion & c,
 	const ACS::CBDescOut & desc
 	)
-	throw (
-	    CORBA::SystemException
-	    ) 
 	{
 	    if (count>0)
 		{
@@ -237,9 +213,6 @@ class baciTestCBpattern: public virtual POA_ACS::CBpattern
 	const ACSErr::Completion & c,
 	const ACS::CBDescOut & desc
 	)
-	throw (
-	    CORBA::SystemException
-	    )
 	{	    
 	    if (done_c > 0 )
 		{
@@ -254,9 +227,6 @@ class baciTestCBpattern: public virtual POA_ACS::CBpattern
 	ACS::TimeInterval time_to_transmit,
 	const ACS::CBDescOut & desc
 	)
-	throw (
-	    CORBA::SystemException
-	    ) 
 	{ 
 	    return 1; 
 	}

@@ -52,8 +52,7 @@ class ROdiscImpl : public virtual POA_SK,
   
     virtual ACS::Subscription_ptr 
     new_subscription_Alarm (TAlarm *cb,
-			    const ACS::CBDescIn & desc) 
-	throw (CORBA::SystemException);
+			    const ACS::CBDescIn & desc); 
 
     virtual ~ROdiscImpl();
 

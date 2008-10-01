@@ -19,7 +19,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciRWcommonImpl_T.h,v 1.25 2006/09/01 02:20:54 cparedes Exp $"
+* "@(#) $Id: baciRWcommonImpl_T.h,v 1.26 2008/10/01 02:26:45 cparedes Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -152,26 +152,17 @@ public:
 
     virtual ACSErr::Completion * set_sync (
 	    TIN value
-	  )
-	  throw (
-	    CORBA::SystemException
 	  );
 	
 	virtual void set_async (
 	    TIN value,
 	    ACS::CBvoid_ptr cb,
 	    const ACS::CBDescIn & desc
-	  )
-	  throw (
-	    CORBA::SystemException
 	  );
 	
 	virtual void set_nonblocking (
 	    TIN value
 	      
-	  )
-	  throw (
-	    CORBA::SystemException
 	  );
 
 };

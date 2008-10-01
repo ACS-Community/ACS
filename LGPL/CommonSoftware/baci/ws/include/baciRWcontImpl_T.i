@@ -302,7 +302,6 @@ bool baci::RWcontImpl<ACS_RW_TL>::readCharacteristics()
 template<ACS_RW_C>
 void baci::RWcontImpl<ACS_RW_TL>::increment (ACS::CBvoid_ptr cb,
 		     const ACS::CBDescIn & desc)
-  throw (CORBA::SystemException)
 {
   this->property_mp->getComponent()->registerAction(BACIValue::type_null, cb, 
 				       desc, this, INC_ACTION);
@@ -311,7 +310,6 @@ void baci::RWcontImpl<ACS_RW_TL>::increment (ACS::CBvoid_ptr cb,
 template<ACS_RW_C>
 void baci::RWcontImpl<ACS_RW_TL>::decrement (ACS::CBvoid_ptr cb,
 		     const ACS::CBDescIn & desc)
-  throw (CORBA::SystemException)
 {
   this->property_mp->getComponent()->registerAction(BACIValue::type_null, cb, 
 				       desc, this, DEC_ACTION);
@@ -319,14 +317,12 @@ void baci::RWcontImpl<ACS_RW_TL>::decrement (ACS::CBvoid_ptr cb,
 
 template<ACS_RW_C>
 TS baci::RWcontImpl<ACS_RW_TL>::min_value ()
-  throw (CORBA::SystemException)
 {
   return min_value_m;
 }
 
 template<ACS_RW_C>
 TS baci::RWcontImpl<ACS_RW_TL>::max_value ()
-  throw (CORBA::SystemException) 
 {
   return max_value_m;
 }

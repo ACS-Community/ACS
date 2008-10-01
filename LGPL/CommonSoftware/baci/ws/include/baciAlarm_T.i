@@ -178,7 +178,6 @@ template<class T, class TCB, class POA_CB>
 void baci::EventCB<T, TCB, POA_CB>::working (T value,
 				       const ACSErr::Completion & c,
 				       const ACS::CBDescOut & desc)
-    throw (CORBA::SystemException)
 {
      if (dispatcher_mp != 0)
 	{
@@ -190,7 +189,6 @@ template<class T, class TCB, class POA_CB>
 void baci::EventCB<T, TCB, POA_CB>::done (T value,
 				    const ACSErr::Completion & c,
 				    const ACS::CBDescOut & desc)
-    throw (CORBA::SystemException)
 {
     if (dispatcher_mp != 0)
 	{
@@ -201,7 +199,6 @@ void baci::EventCB<T, TCB, POA_CB>::done (T value,
 template<class T, class TCB, class POA_CB>
 CORBA::Boolean baci::EventCB<T, TCB, POA_CB>:: negotiate (ACS::TimeInterval time_to_transmit,
 						    const ACS::CBDescOut & desc)
-    throw (CORBA::SystemException)
 {
     ACE_UNUSED_ARG(time_to_transmit);
     ACE_UNUSED_ARG(desc);
@@ -415,7 +412,6 @@ void baci::AlarmEventStrategy<T, TPROP, TALARM>::setObjectState(const char * sta
 
 template<class T, class TPROP, class TALARM>
 void baci::AlarmEventStrategy<T, TPROP, TALARM>::suspend ()
-     throw (CORBA::SystemException)
 {
   if (suspended_m==false)
     {
@@ -426,7 +422,6 @@ void baci::AlarmEventStrategy<T, TPROP, TALARM>::suspend ()
 
 template<class T, class TPROP, class TALARM>
 void baci::AlarmEventStrategy<T, TPROP, TALARM>::resume ()
-     throw (CORBA::SystemException)
 {
   if (suspended_m==true)
     {
@@ -437,7 +432,6 @@ void baci::AlarmEventStrategy<T, TPROP, TALARM>::resume ()
 
 template<class T, class TPROP, class TALARM>
 void baci::AlarmEventStrategy<T, TPROP, TALARM>::destroy ()
-     throw (CORBA::SystemException)
 {
   ACS_TRACE("baci::AlarmEventStrategy&lt;&gt;::destroy");
   

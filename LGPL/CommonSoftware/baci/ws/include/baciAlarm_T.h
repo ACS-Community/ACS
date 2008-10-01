@@ -18,7 +18,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciAlarm_T.h,v 1.16 2007/06/12 08:02:23 nbarriga Exp $"
+* "@(#) $Id: baciAlarm_T.h,v 1.17 2008/10/01 02:26:45 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -108,17 +108,14 @@ class baci_EXPORT EventCB :  public virtual PortableServer::RefCountServantBase,
     
     virtual void working (T value,
 			  const ACSErr::Completion & c,
-			  const ACS::CBDescOut & desc)
-	throw (CORBA::SystemException);
+			  const ACS::CBDescOut & desc);
     
     virtual void done (T value,
 		       const ACSErr::Completion & c,
-		       const ACS::CBDescOut & desc)
-	throw (CORBA::SystemException);
+		       const ACS::CBDescOut & desc);
     
     virtual CORBA::Boolean negotiate (ACS::TimeInterval time_to_transmit,
-				      const ACS::CBDescOut & desc)
-	throw (CORBA::SystemException);
+				      const ACS::CBDescOut & desc);
     
   private:
     
@@ -176,14 +173,11 @@ class baci_EXPORT AlarmEventStrategy : public EventStrategy
     
     virtual void setObjectState(const char * state);
     
-    virtual void suspend ()
-	throw (CORBA::SystemException);
+    virtual void suspend ();
     
-    virtual void resume ()
-	throw (CORBA::SystemException);
+    virtual void resume ();
     
-    virtual void destroy () 
-	throw (CORBA::SystemException);
+    virtual void destroy (); 
     
   private:
     

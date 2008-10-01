@@ -19,7 +19,7 @@
  *License along with this library; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: baciROpattern.h,v 1.109 2008/02/27 08:54:23 bjeram Exp $"
+ * "@(#) $Id: baciROpattern.h,v 1.110 2008/10/01 02:26:45 cparedes Exp $"
  *
  * who       when        what
  * --------  ----------  ----------------------------------------------
@@ -70,16 +70,13 @@ namespace baci {
   
 // for the pattern type only the value low_on and high_on for the alarm are implemented (no hysteresis)
 
-	virtual ACS::pattern alarm_mask ()
-	    throw (CORBA::SystemException);
+	virtual ACS::pattern alarm_mask ();
 	
-	virtual ACS::pattern alarm_trigger ()
-	    throw (CORBA::SystemException);
+	virtual ACS::pattern alarm_trigger ();
 
 	virtual ACS::Subscription_ptr 
 	    new_subscription_Alarm (ACS::Alarmpattern *cb,
-				    const ACS::CBDescIn & desc) 
-	    throw (CORBA::SystemException);
+				    const ACS::CBDescIn & desc); 
 
 
       protected:

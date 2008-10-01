@@ -19,7 +19,7 @@
  *License along with this library; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: baciTestAlarmClassImpl.h,v 1.2 2008/07/25 07:29:52 cparedes Exp $"
+ * "@(#) $Id: baciTestAlarmClassImpl.h,v 1.3 2008/10/01 02:26:45 cparedes Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -123,20 +123,16 @@ class BaciTestAlarmClassImpl: public baci::CharacteristicComponentImpl,
     /** 
      * Servant shutdown request function
      */
-    virtual void shutdown ()
-	throw (CORBA::SystemException);
+    virtual void shutdown ();
 
     /**
      * Check the status of the monitoring thread and logs it
      */
-    virtual CORBA::Boolean isPropertiesMonitoringActive() 
-	throw (CORBA::SystemException);
+    virtual CORBA::Boolean isPropertiesMonitoringActive(); 
 
-    virtual ACS::ROpattern_ptr roPatternProperty()
-	throw (CORBA::SystemException);
+    virtual ACS::ROpattern_ptr roPatternProperty();
         
-    virtual ACS::RWpattern_ptr rwPatternProperty()
-	throw (CORBA::SystemException);
+    virtual ACS::RWpattern_ptr rwPatternProperty();
 
 
   private:

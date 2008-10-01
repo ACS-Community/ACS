@@ -19,7 +19,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciPpatternImpl.h,v 1.18 2006/11/06 07:54:17 cparedes Exp $"
+* "@(#) $Id: baciPpatternImpl.h,v 1.19 2008/10/01 02:26:45 cparedes Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -76,14 +76,11 @@ class baci_EXPORT PpatternImpl : public virtual POA_ACS::Ppattern
     /* ----------------------------------------------------------------- */
     /* -------------------- [ Ppattern interface ] -------------------- */
     
-    virtual ACS::stringSeq * bitDescription ()
-	throw (CORBA::SystemException);
+    virtual ACS::stringSeq * bitDescription ();
     
-    virtual ACS::ConditionSeq * whenSet ()
-	throw (CORBA::SystemException);
+    virtual ACS::ConditionSeq * whenSet ();
     
-    virtual ACS::ConditionSeq * whenCleared ()
-	throw (CORBA::SystemException);
+    virtual ACS::ConditionSeq * whenCleared ();
     
     
   protected:

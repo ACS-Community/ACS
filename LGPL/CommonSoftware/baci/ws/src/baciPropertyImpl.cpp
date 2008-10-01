@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciPropertyImpl.cpp,v 1.10 2006/09/01 02:20:54 cparedes Exp $"
+* "@(#) $Id: baciPropertyImpl.cpp,v 1.11 2008/10/01 02:26:45 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -44,14 +44,12 @@ PropertyImpl::~PropertyImpl()
 
 char *
 PropertyImpl::name ()
-  throw (CORBA::SystemException)
 {
   return CORBA::string_dup(name_m.c_str());           
 }
 
 char *
 PropertyImpl::characteristic_component_name ()
-  throw (CORBA::SystemException)
 {
   
   return CORBA::string_dup (component_mp->getName());

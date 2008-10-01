@@ -20,7 +20,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciCharacteristicComponentImpl.h,v 1.36 2008/07/25 07:29:51 cparedes Exp $"
+* "@(#) $Id: baciCharacteristicComponentImpl.h,v 1.37 2008/10/01 02:26:45 cparedes Exp $"
 *
 */
 
@@ -141,8 +141,7 @@ class CharacteristicComponentImpl : public acscomponent::ACSComponentImpl,
      * @endhtmlonly
      */
     virtual ACS::CharacteristicComponentDesc * 
-    descriptor ()
-	throw (CORBA::SystemException);
+    descriptor ();
 	
 	/**
 	 * Add a property to the descriptor desc_m

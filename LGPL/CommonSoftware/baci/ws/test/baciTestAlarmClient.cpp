@@ -18,14 +18,14 @@
  *    License along with this library; if not, write to the Free Software
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: baciTestAlarmClient.cpp,v 1.2 2008/03/04 14:11:51 rcirami Exp $"
+ * "@(#) $Id: baciTestAlarmClient.cpp,v 1.3 2008/10/01 02:26:45 cparedes Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
  * oat      2008-02-02 created
  */
  
-static char *rcsId="@(#) $Id: baciTestAlarmClient.cpp,v 1.2 2008/03/04 14:11:51 rcirami Exp $";
+static char *rcsId="@(#) $Id: baciTestAlarmClient.cpp,v 1.3 2008/10/01 02:26:45 cparedes Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <tao/corba.h>
@@ -57,7 +57,7 @@ using namespace BACI_TEST;
  * of done invocations as well as the name of the BACI property it's monitoring, receiving
  * an asynchronous value from, etc.
  * 
- * @version "@(#) $Id: baciTestAlarmClient.cpp,v 1.2 2008/03/04 14:11:51 rcirami Exp $"
+ * @version "@(#) $Id: baciTestAlarmClient.cpp,v 1.3 2008/10/01 02:26:45 cparedes Exp $"
  */
 class CommonCallback
 {
@@ -96,7 +96,7 @@ class CommonCallback
  * property.  There are only two useful methods: alarm_raised and alarm_cleared.  They
  * do just what their names imply.
  * 
- * @version "@(#) $Id: baciTestAlarmClient.cpp,v 1.2 2008/03/04 14:11:51 rcirami Exp $"
+ * @version "@(#) $Id: baciTestAlarmClient.cpp,v 1.3 2008/10/01 02:26:45 cparedes Exp $"
  */
 class MyAlarmpattern : public virtual POA_ACS::Alarmpattern,    //CORBA servant stub
 		       protected CommonCallback
@@ -130,7 +130,6 @@ class MyAlarmpattern : public virtual POA_ACS::Alarmpattern,    //CORBA servant 
     alarm_raised (ACS::pattern value,
 		  const ACSErr::Completion &c,
 		  const ACS::CBDescOut &desc)
-	throw (CORBA::SystemException)
 	{
 	    ACS_SHORT_LOG ((LM_INFO, "(%s::Alarmpattern::alarm_raised) Value: %d", prop.c_str(), value));
 	}
@@ -150,7 +149,6 @@ class MyAlarmpattern : public virtual POA_ACS::Alarmpattern,    //CORBA servant 
     alarm_cleared (ACS::pattern value,
 		   const ACSErr::Completion &c,
 		   const ACS::CBDescOut &desc)
-	throw (CORBA::SystemException)
 	{
 	    ACS_SHORT_LOG ((LM_INFO, "(%s::Alarmpattern::alarm_cleared) Value: %d", prop.c_str(), value));
 	}
@@ -171,7 +169,6 @@ class MyAlarmpattern : public virtual POA_ACS::Alarmpattern,    //CORBA servant 
     */
     CORBA::Boolean 
     negotiate (ACS::TimeInterval time_to_transmit, const ACS::CBDescOut &desc) 
-	throw (CORBA::SystemException)
 	{
 	    return true;
 	}

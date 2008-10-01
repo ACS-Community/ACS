@@ -19,7 +19,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciMonitor_T.h,v 1.103 2008/07/25 07:29:52 cparedes Exp $"
+* "@(#) $Id: baciMonitor_T.h,v 1.104 2008/10/01 02:26:45 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -225,29 +225,21 @@ public:
   virtual void monitorStateChanged(void);
 
 
-  virtual void suspend ()
-    throw (CORBA::SystemException);
+  virtual void suspend ();
 
-  virtual void resume ()
-    throw (CORBA::SystemException);
+  virtual void resume ();
 
-  virtual void destroy ()
-    throw (CORBA::SystemException);
+  virtual void destroy ();
 
-  virtual void set_timer_trigger (ACS::TimeInterval timer)
-    throw (CORBA::SystemException);
+  virtual void set_timer_trigger (ACS::TimeInterval timer);
 
-  virtual void get_timer_trigger (ACS::TimeInterval_out timer)
-    throw (CORBA::SystemException);
+  virtual void get_timer_trigger (ACS::TimeInterval_out timer);
 
-  virtual void set_value_trigger (TCORBA delta, CORBA::Boolean enable)
-    throw (CORBA::SystemException);
+  virtual void set_value_trigger (TCORBA delta, CORBA::Boolean enable);
   
-  virtual void get_value_trigger (TCORBA_out delta, CORBA::Boolean_out enable)
-    throw (CORBA::SystemException);
+  virtual void get_value_trigger (TCORBA_out delta, CORBA::Boolean_out enable);
 
-  virtual ACS::Time start_time ()
-    throw (CORBA::SystemException);
+  virtual ACS::Time start_time ();
 
 private:
  
@@ -335,23 +327,17 @@ public:
   virtual void monitorStateChanged(void);
 
 
-  virtual void suspend ()
-    throw (CORBA::SystemException);
+  virtual void suspend ();
 
-  virtual void resume ()
-    throw (CORBA::SystemException);
+  virtual void resume ();
 
-  virtual void destroy ()
-    throw (CORBA::SystemException);
+  virtual void destroy ();
 
-  virtual void set_timer_trigger (ACS::TimeInterval timer)
-    throw (CORBA::SystemException);
+  virtual void set_timer_trigger (ACS::TimeInterval timer);
 
-  virtual void get_timer_trigger (ACS::TimeInterval_out timer)
-    throw (CORBA::SystemException);
+  virtual void get_timer_trigger (ACS::TimeInterval_out timer);
 
-  virtual ACS::Time start_time ()
-    throw (CORBA::SystemException);
+  virtual ACS::Time start_time ();
 
 private:
 

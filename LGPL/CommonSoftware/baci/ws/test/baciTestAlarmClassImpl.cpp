@@ -1,7 +1,7 @@
 ////#include <baciTestAlarmClassImpl.h>
 #include <vltPort.h>
 
-static char *rcsId="@(#) $Id: baciTestAlarmClassImpl.cpp,v 1.4 2008/08/21 15:30:12 bjeram Exp $"; 
+static char *rcsId="@(#) $Id: baciTestAlarmClassImpl.cpp,v 1.5 2008/10/01 02:26:45 cparedes Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 
@@ -90,7 +90,6 @@ BaciTestAlarmClassImpl::~BaciTestAlarmClassImpl()
 
 void
 BaciTestAlarmClassImpl::shutdown()
-    throw (CORBA::SystemException)
 {
     ACS_TRACE("BaciTestAlarmClassImpl::shutdown");
   
@@ -104,7 +103,7 @@ BaciTestAlarmClassImpl::shutdown()
 
 
 CORBA::Boolean
-BaciTestAlarmClassImpl::isPropertiesMonitoringActive() throw (CORBA::SystemException)
+BaciTestAlarmClassImpl::isPropertiesMonitoringActive() 
 {
     CORBA::Boolean retVal = CharacteristicComponentImpl::isPropertiesMonitoringActive();
     ACS_SHORT_LOG((LM_INFO,"Retrieved monitoring active status: %d", retVal));
@@ -115,7 +114,6 @@ BaciTestAlarmClassImpl::isPropertiesMonitoringActive() throw (CORBA::SystemExcep
 
 ACS::ROpattern_ptr
 BaciTestAlarmClassImpl::roPatternProperty()
-    throw (CORBA::SystemException)
 {
     if (m_roPatternProperty_sp == 0)
 	{
@@ -129,7 +127,6 @@ BaciTestAlarmClassImpl::roPatternProperty()
 
 ACS::RWpattern_ptr
 BaciTestAlarmClassImpl::rwPatternProperty()
-    throw (CORBA::SystemException)
 {
     if (m_rwPatternProperty_sp == 0)
 	{

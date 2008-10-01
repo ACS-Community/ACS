@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciTestClassImpl.cpp,v 1.115 2006/12/13 11:34:00 bjeram Exp $"
+* "@(#) $Id: baciTestClassImpl.cpp,v 1.116 2008/10/01 02:26:45 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -36,7 +36,7 @@
 
 #include <vltPort.h>
 
-static char *rcsId="@(#) $Id: baciTestClassImpl.cpp,v 1.115 2006/12/13 11:34:00 bjeram Exp $"; 
+static char *rcsId="@(#) $Id: baciTestClassImpl.cpp,v 1.116 2008/10/01 02:26:45 cparedes Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 
@@ -266,7 +266,6 @@ void
 BaciTestClassImpl::shutdown (
 			 
 			 )
-  throw (CORBA::SystemException)
 {
   
   ACS_TRACE("::BaciTestClassImpl::shutdown");
@@ -283,7 +282,6 @@ void
 BaciTestClassImpl::on (ACS::CBvoid_ptr cb,
 		 const ACS::CBDescIn & desc
 		 )
-  throw (CORBA::SystemException)
 {
   ACS_DEBUG("::BaciTestClassImpl::on", "Registering ON Action");
   getComponent()->registerAction(BACIValue::type_null, cb, 
@@ -294,7 +292,6 @@ void
 BaciTestClassImpl::off (ACS::CBvoid_ptr cb,
 		 const ACS::CBDescIn & desc
 		 )
-  throw (CORBA::SystemException)
 {
   ACS_DEBUG("::BaciTestClassImpl::off", "Registering OFF Action");
   getComponent()->registerAction(BACIValue::type_null, cb, 
@@ -305,7 +302,6 @@ void
 BaciTestClassImpl::reset (ACS::CBvoid_ptr cb,
 		 const ACS::CBDescIn & desc
 		 )
-  throw (CORBA::SystemException)
 {
   ACS_DEBUG("::BaciTestClassImpl::reset", "Registering RESET Action");
   getComponent()->registerAction(BACIValue::type_null, cb, 
@@ -313,7 +309,7 @@ BaciTestClassImpl::reset (ACS::CBvoid_ptr cb,
 }
 
 CORBA::Boolean
-BaciTestClassImpl::isPropertiesMonitoringActive() throw (CORBA::SystemException)
+BaciTestClassImpl::isPropertiesMonitoringActive()
 {
     CORBA::Boolean retVal = CharacteristicComponentImpl::isPropertiesMonitoringActive();
     ACS_SHORT_LOG((LM_INFO,"Retrieved monitoring active status: %d", retVal));
@@ -323,7 +319,6 @@ BaciTestClassImpl::isPropertiesMonitoringActive() throw (CORBA::SystemException)
 
 ACS::RWdouble_ptr
 BaciTestClassImpl::RWdoubleWithErrorDevIOProp ()
-    throw (CORBA::SystemException)
 {
   if (m_RWdoubleWithErrorDevIOProp_sp==0)
 	  return ACS::RWdouble::_nil();
@@ -335,7 +330,6 @@ BaciTestClassImpl::RWdoubleWithErrorDevIOProp ()
 
 ACS::RWdouble_ptr
 BaciTestClassImpl::RWdoubleWithDevIOProp ()
-      throw (CORBA::SystemException)
 {
   if (m_RWdoubleWithDevIOProp_sp==0)
 	  return ACS::RWdouble::_nil();
@@ -347,7 +341,6 @@ BaciTestClassImpl::RWdoubleWithDevIOProp ()
 
 ACS::RWdouble_ptr
 BaciTestClassImpl::RWdoubleProp ()
-      throw (CORBA::SystemException)
 {
   if (m_RWdoubleProp_sp==0)
 	  return ACS::RWdouble::_nil();
@@ -359,7 +352,6 @@ BaciTestClassImpl::RWdoubleProp ()
 
 ACS::ROdouble_ptr
 BaciTestClassImpl::ROdoubleProp ()
-  throw (CORBA::SystemException)
 {
   if (m_ROdoubleProp_sp==0)
 	  return ACS::ROdouble::_nil();
@@ -371,7 +363,6 @@ BaciTestClassImpl::ROdoubleProp ()
 
 ACS::RWfloat_ptr
 BaciTestClassImpl::RWfloatProp ()
-      throw (CORBA::SystemException)
 {
   if (m_RWfloatProp_sp==0)
 	  return ACS::RWfloat::_nil();
@@ -383,7 +374,6 @@ BaciTestClassImpl::RWfloatProp ()
 
 ACS::ROfloat_ptr
 BaciTestClassImpl::ROfloatProp ()
-  throw (CORBA::SystemException)
 {
   if (m_ROfloatProp_sp==0)
 	  return ACS::ROfloat::_nil();
@@ -396,7 +386,6 @@ BaciTestClassImpl::ROfloatProp ()
 
 ACS::RWlong_ptr
 BaciTestClassImpl::RWlongProp ()
-      throw (CORBA::SystemException)
 {
   if (m_RWlongProp_sp==0)
 	  return ACS::RWlong::_nil();
@@ -408,7 +397,6 @@ BaciTestClassImpl::RWlongProp ()
 
 ACS::ROlong_ptr
 BaciTestClassImpl::ROlongProp ()
-  throw (CORBA::SystemException)
 {
   if (m_ROlongProp_sp==0)
 	  return ACS::ROlong::_nil();
@@ -421,7 +409,6 @@ BaciTestClassImpl::ROlongProp ()
 
 ACS::ROpattern_ptr
 BaciTestClassImpl::ROpatternProp ()
-  throw (CORBA::SystemException)
 {
   if (m_ROpatternProp_sp==0)
 	  return ACS::ROpattern::_nil();
@@ -433,7 +420,6 @@ BaciTestClassImpl::ROpatternProp ()
 
 ACS::RWpattern_ptr
 BaciTestClassImpl::RWpatternProp ()
-  throw (CORBA::SystemException)
 {
   if (m_RWpatternProp_sp==0)
 	  return ACS::RWpattern::_nil();
@@ -445,7 +431,6 @@ BaciTestClassImpl::RWpatternProp ()
 
 ACS::ROstring_ptr
 BaciTestClassImpl::ROstringProp()
-  throw (CORBA::SystemException)
 {
   if (m_ROstringProp_sp==0)
 	  return ACS::ROstring::_nil();
@@ -457,7 +442,6 @@ BaciTestClassImpl::ROstringProp()
 
 ACS::RWstring_ptr
 BaciTestClassImpl::RWstringProp()
-  throw (CORBA::SystemException)
 {
   if (m_RWstringProp_sp==0)
 	  return ACS::RWstring::_nil();
@@ -470,7 +454,6 @@ BaciTestClassImpl::RWstringProp()
 
 ACS::RWdoubleSeq_ptr
 BaciTestClassImpl::RWdoubleSeqProp ()
-      throw (CORBA::SystemException)
 {
   if (m_RWdoubleSeqProp_sp==0)
 	  return ACS::RWdoubleSeq::_nil();
@@ -482,7 +465,6 @@ BaciTestClassImpl::RWdoubleSeqProp ()
 
 ACS::ROdoubleSeq_ptr
 BaciTestClassImpl::ROdoubleSeqProp ()
-  throw (CORBA::SystemException)
 {
   if (m_ROdoubleSeqProp_sp==0)
 	  return ACS::ROdoubleSeq::_nil();
@@ -494,7 +476,6 @@ BaciTestClassImpl::ROdoubleSeqProp ()
 
 ACS::RWfloatSeq_ptr
 BaciTestClassImpl::RWfloatSeqProp ()
-      throw (CORBA::SystemException)
 {
   if (m_RWfloatSeqProp_sp==0)
 	  return ACS::RWfloatSeq::_nil();
@@ -506,7 +487,6 @@ BaciTestClassImpl::RWfloatSeqProp ()
 
 ACS::ROfloatSeq_ptr
 BaciTestClassImpl::ROfloatSeqProp ()
-  throw (CORBA::SystemException)
 {
   if (m_ROfloatSeqProp_sp==0)
 	  return ACS::ROfloatSeq::_nil();
@@ -519,7 +499,6 @@ BaciTestClassImpl::ROfloatSeqProp ()
 
 ACS::RWlongSeq_ptr
 BaciTestClassImpl::RWlongSeqProp ()
-      throw (CORBA::SystemException)
 {
   if (m_RWlongSeqProp_sp==0)
 	  return ACS::RWlongSeq::_nil();
@@ -531,7 +510,6 @@ BaciTestClassImpl::RWlongSeqProp ()
 
 ACS::ROlongSeq_ptr
 BaciTestClassImpl::ROlongSeqProp ()
-  throw (CORBA::SystemException)
 {
   if (m_ROlongSeqProp_sp==0)
 	  return ACS::ROlongSeq::_nil();

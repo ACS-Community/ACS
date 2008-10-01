@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciAlarmSystemMonitor_T.h,v 1.7 2007/06/12 08:02:23 nbarriga Exp $"
+* "@(#) $Id: baciAlarmSystemMonitor_T.h,v 1.8 2008/10/01 02:26:45 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -67,11 +67,11 @@ class baci_EXPORT AlarmSystemMonitor : public EventStrategy
     
     virtual void setObjectState(const char * state){}
 // ... and also implementation of  POA_ACS::Subscription can be empty
-    virtual void suspend () throw (CORBA::SystemException) {}
+    virtual void suspend () {}
     
-    virtual void resume () throw (CORBA::SystemException){}
+    virtual void resume () {}
     
-    virtual void destroy () throw (CORBA::SystemException) {}
+    virtual void destroy () {}
 
     virtual void check(BACIValue &val,
 	       const ACSErr::Completion & c,

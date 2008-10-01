@@ -19,7 +19,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciCDBPropertySet.h,v 1.99 2008/07/25 07:29:51 cparedes Exp $"
+* "@(#) $Id: baciCDBPropertySet.h,v 1.100 2008/10/01 02:26:45 cparedes Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -147,15 +147,14 @@ class CDBPropertySet : public virtual POA_CosPropertyService::PropertySet
      * therefore this method throws CosPropertyService::ReadOnlyProperty() exception.</b>
      * @param property_name name of the property
      * @param property_value value of the property
+     * @throw CosPropertyService::InvalidPropertyName 
+     * @throw CosPropertyService::ConflictingProperty
+     * @throw CosPropertyService::UnsupportedTypeCode
+     * @throw CosPropertyService::UnsupportedProperty
+     * @throw CosPropertyService::ReadOnlyProperty
      */
     virtual void define_property (const char * property_name,
-				  const CORBA::Any & property_value)
-	throw (CORBA::SystemException,
-	       CosPropertyService::InvalidPropertyName,
-	       CosPropertyService::ConflictingProperty,
-	       CosPropertyService::UnsupportedTypeCode,
-	       CosPropertyService::UnsupportedProperty,
-	       CosPropertyService::ReadOnlyProperty);
+				  const CORBA::Any & property_value);
     
     /**
      * Support for defining and modifying multiple properties at once.
@@ -166,10 +165,9 @@ class CDBPropertySet : public virtual POA_CosPropertyService::PropertySet
      * <b>NOTE: The implementation of CDBPropertySet acts only as accessor,
      * therefore this method throws CosPropertyService::ReadOnlyProperty() exception.</b>
      * @param nproperties list of properties (name-value pairs)
+     * @throw CosPropertyService::MultipleExceptions
      */
-    virtual void define_properties (const CosPropertyService::Properties & nproperties)
-	throw (CORBA::SystemException,
-	       CosPropertyService::MultipleExceptions);
+    virtual void define_properties (const CosPropertyService::Properties & nproperties);
     
     /**
      * Support for Getting Properties and their Names.
@@ -177,8 +175,7 @@ class CDBPropertySet : public virtual POA_CosPropertyService::PropertySet
      * PropertySet.
      * @return number of properties
      */
-    virtual CORBA::ULong get_number_of_properties ()
-	throw (CORBA::SystemException);
+    virtual CORBA::ULong get_number_of_properties ();
     
     /**
      * Returns all of the property names currently defined in the
@@ -191,17 +188,15 @@ class CDBPropertySet : public virtual POA_CosPropertyService::PropertySet
      */
     virtual void get_all_property_names (CORBA::ULong how_many,
 					 CosPropertyService::PropertyNames_out property_names,
-					 CosPropertyService::PropertyNamesIterator_out rest)
-	throw (CORBA::SystemException);
+					 CosPropertyService::PropertyNamesIterator_out rest);
     
     /**
      * Returns the value of a property in the PropertySet.
      * @param property_name name of the property
+     * @throw CosPropertyService::PropertyNotFound
+     * @throw CosPropertyService::InvalidPropertyName
      */
-    virtual CORBA::Any * get_property_value (const char * property_name)
-	throw (CORBA::SystemException,
-	       CosPropertyService::PropertyNotFound,
-	       CosPropertyService::InvalidPropertyName);
+    virtual CORBA::Any * get_property_value (const char * property_name);
     
     /**
      * Returns the values of the properties listed in
@@ -209,8 +204,7 @@ class CDBPropertySet : public virtual POA_CosPropertyService::PropertySet
      * @param property_names sequence of property names
      */
     virtual CORBA::Boolean get_properties (const CosPropertyService::PropertyNames & property_names,
-					   CosPropertyService::Properties_out nproperties)
-	throw (CORBA::SystemException);
+					   CosPropertyService::Properties_out nproperties);
 
     /**
      * Returns all of the property names currently defined in the
@@ -223,8 +217,7 @@ class CDBPropertySet : public virtual POA_CosPropertyService::PropertySet
      */
     virtual void get_all_properties (CORBA::ULong how_many,
 				     CosPropertyService::Properties_out nproperties,
-				     CosPropertyService::PropertiesIterator_out rest)
-	throw (CORBA::SystemException);
+				     CosPropertyService::PropertiesIterator_out rest);
 
     /**
      * Support for Deleting Properties.
@@ -233,12 +226,11 @@ class CDBPropertySet : public virtual POA_CosPropertyService::PropertySet
      * <b>NOTE: The implementation of CDBPropertySet acts only as accessor,
      * therefore this method throws CosPropertyService::FixedProperty() exception.</b>
      * @param property_name name of the property
+     * @throw CosPropertyService::PropertyNotFound
+     * @throw CosPropertyService::InvalidPropertyName
+     * @throw CosPropertyService::FixedProperty
      */
-    virtual void delete_property (const char * property_name)
-	throw (CORBA::SystemException,
-	       CosPropertyService::PropertyNotFound,
-	       CosPropertyService::InvalidPropertyName,
-	       CosPropertyService::FixedProperty);
+    virtual void delete_property (const char * property_name);
     
     /**
      * Support for Deleting Properties.
@@ -248,10 +240,9 @@ class CDBPropertySet : public virtual POA_CosPropertyService::PropertySet
      * <b>NOTE: The implementation of CDBPropertySet acts only as accessor,
      * therefore this method throws list of CosPropertyService::FixedProperty() exceptions.</b>
      * @param property_names sequence of propery names
+     * @throw CosPropertyService::MultipleExceptions
      */
-    virtual void delete_properties (const CosPropertyService::PropertyNames & property_names)
-	throw (CORBA::SystemException,
-	       CosPropertyService::MultipleExceptions);
+    virtual void delete_properties (const CosPropertyService::PropertyNames & property_names);
     
     /**
      * Validation of delete_properties. Applies to all properties.
@@ -259,8 +250,7 @@ class CDBPropertySet : public virtual POA_CosPropertyService::PropertySet
      * therefore this method always returns false.
      * @return false 
      */
-    virtual CORBA::Boolean delete_all_properties ()
-	throw (CORBA::SystemException);
+    virtual CORBA::Boolean delete_all_properties ();
     
     /**
      * Support for Existence Check.
@@ -268,10 +258,9 @@ class CDBPropertySet : public virtual POA_CosPropertyService::PropertySet
      * property is defined in the PropertySet, and returns false
      * otherwise.
      * @param property_name name of the property
+     * @throw CosPropertyService::InvalidPropertyName
      */
-    virtual CORBA::Boolean is_property_defined (const char * property_name)
-	throw (CORBA::SystemException,
-	       CosPropertyService::InvalidPropertyName);
+    virtual CORBA::Boolean is_property_defined (const char * property_name);
     
   private:
     

@@ -134,7 +134,6 @@ bool baci::ROcontImpl<ACS_RO_TL>::readCharacteristics()
 
 template<ACS_RO_C> 
 TS baci::ROcontImpl<ACS_RO_TL>::alarm_low_on ()
-  throw (CORBA::SystemException)
 {
 
   return CORBAMem<TS, TSM>::retn(alarmLowOn_m);
@@ -143,7 +142,6 @@ TS baci::ROcontImpl<ACS_RO_TL>::alarm_low_on ()
 
 template<ACS_RO_C> 
 TS baci::ROcontImpl<ACS_RO_TL>::alarm_low_off ()
-  throw (CORBA::SystemException)
 {
 
   return CORBAMem<TS, TSM>::retn(alarmLowOff_m);
@@ -151,7 +149,6 @@ TS baci::ROcontImpl<ACS_RO_TL>::alarm_low_off ()
 
 template<ACS_RO_C> 
 TS baci::ROcontImpl<ACS_RO_TL>::alarm_high_on ()
-  throw (CORBA::SystemException) 
 {
 
   return CORBAMem<TS, TSM>::retn(alarmHighOn_m);
@@ -159,7 +156,6 @@ TS baci::ROcontImpl<ACS_RO_TL>::alarm_high_on ()
 
 template<ACS_RO_C> 
 TS baci::ROcontImpl<ACS_RO_TL>::alarm_high_off ()
-  throw (CORBA::SystemException)
 {
 
   return CORBAMem<TS, TSM>::retn(alarmHighOff_m);
@@ -171,7 +167,6 @@ template<ACS_RO_C>
 ACS::Subscription_ptr baci::ROcontImpl<ACS_RO_TL>::new_subscription_Alarm (TAlarm *cb,
 					const ACS::CBDescIn & desc
 					)
-  throw (CORBA::SystemException)
 {
 //TBD: this could be done just in the constructor
     if (this->alarmTimerTrig_m==0)

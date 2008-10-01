@@ -19,7 +19,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciCharacteristicModelImpl.h,v 1.11 2008/07/25 09:41:47 cparedes Exp $"
+* "@(#) $Id: baciCharacteristicModelImpl.h,v 1.12 2008/10/01 02:26:45 cparedes Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -97,15 +97,14 @@ class baci_EXPORT CharacteristicModelImpl : public virtual PortableServer::RefCo
 
     /* ------------------ [ CharacteristicModel interface ] ------------------ */
 
-    virtual CosPropertyService::PropertySet_ptr get_all_characteristics ()
-	throw (CORBA::SystemException);
-    
-    virtual CORBA::Any * get_characteristic_by_name (const char * name)
-	throw (CORBA::SystemException,
-	       ACS::NoSuchCharacteristic);
-    
-    virtual ACS::stringSeq * find_characteristic (const char * reg_exp)
-	throw (CORBA::SystemException);
+    virtual CosPropertyService::PropertySet_ptr get_all_characteristics ();
+   
+    /*
+    * @throw ACS::NoSuchCharacteristic
+    */
+    virtual CORBA::Any * get_characteristic_by_name (const char * name);
+   
+    virtual ACS::stringSeq * find_characteristic (const char * reg_exp);
 
   protected:
 

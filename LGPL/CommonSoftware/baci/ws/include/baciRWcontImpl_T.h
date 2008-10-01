@@ -19,7 +19,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciRWcontImpl_T.h,v 1.22 2006/09/01 02:20:54 cparedes Exp $"
+* "@(#) $Id: baciRWcontImpl_T.h,v 1.23 2008/10/01 02:26:45 cparedes Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -162,19 +162,15 @@ class baci_EXPORT RWcontImpl : public virtual POA_SK,
     
     /* -------------------- [ RW (cont) interface ] -------------------- */
     
-    virtual TS min_value ()
-	throw (CORBA::SystemException);
+    virtual TS min_value ();
     
-    virtual TS max_value ()
-	throw (CORBA::SystemException);
+    virtual TS max_value ();
     
     virtual void increment (ACS::CBvoid_ptr cb,
-			    const ACS::CBDescIn & desc)
-	throw (CORBA::SystemException);
+			    const ACS::CBDescIn & desc);
     
     virtual void decrement (ACS::CBvoid_ptr cb,
-			    const ACS::CBDescIn & desc) 
-	throw (CORBA::SystemException);
+			    const ACS::CBDescIn & desc); 
 
   protected:
     virtual bool readCharacteristics();

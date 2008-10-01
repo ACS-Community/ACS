@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciDB.cpp,v 1.99 2006/09/01 02:20:54 cparedes Exp $"
+* "@(#) $Id: baciDB.cpp,v 1.100 2008/10/01 02:26:45 cparedes Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -46,7 +46,6 @@ Table * DBConnector::dbTable_mp = 0;
 CORBA::Any *
 DBConnector::get_characteristic_by_name (const ACE_CString& objectName,
 					 const char * name)
-  throw (CORBA::SystemException, ACS::NoSuchCharacteristic)
 {
   CORBA::Any * value_p = new CORBA::Any();
 
@@ -73,7 +72,6 @@ DBConnector::get_characteristic_by_name (const ACE_CString& objectName,
 ACS::stringSeq *
 DBConnector::find_characteristic (const ACE_CString& name,
 				  const char * reg_exp)
-  throw (CORBA::SystemException)
 {
   Table * table_p = DBConnector::getDBTable();
   if (table_p==0)
@@ -123,7 +121,6 @@ DBConnector::find_characteristic (const ACE_CString& name,
 
 CosPropertyService::PropertySet_ptr
 DBConnector::get_all_characteristics (const ACE_CString& name)
-  throw (CORBA::SystemException)
 {
   if (CDBPropertySet::getInstance()==0)
       {

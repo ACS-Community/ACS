@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciTestErrSys.cpp,v 1.103 2006/09/26 06:26:32 cparedes Exp $"
+* "@(#) $Id: baciTestErrSys.cpp,v 1.104 2008/10/01 02:26:45 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -26,7 +26,7 @@
 * msekoran 2002-05-19 created
 */
  
-static char *rcsId="@(#) $Id: baciTestErrSys.cpp,v 1.103 2006/09/26 06:26:32 cparedes Exp $";
+static char *rcsId="@(#) $Id: baciTestErrSys.cpp,v 1.104 2008/10/01 02:26:45 cparedes Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <tao/corba.h>
@@ -78,9 +78,6 @@ class baciTestCBdoubleErr: public baciTestCBdouble
 	const ACSErr::Completion & c,
 	const ACS::CBDescOut & desc
 	 ) 
-	throw (
-	    CORBA::SystemException
-	    ) 
 	{
 	    ACS_SHORT_LOG((LM_INFO, "(%s::CBdouble::working) desc.id_tag: %u Value: %f TimeStamp: %s", 
 			   prop.c_str(), (unsigned)desc.id_tag, value, getStringifiedUTC(c.timeStamp).c_str()));
@@ -92,9 +89,6 @@ class baciTestCBdoubleErr: public baciTestCBdouble
 	const ACSErr::Completion & c,
 	const ACS::CBDescOut & desc
 	 )
-	throw (
-	    CORBA::SystemException
-	    ) 
 	{	    
 	    ACS_SHORT_LOG((LM_INFO, "(%s::CBdouble::done) desc.id_tag: %u Value: %f TimeStamp: %s", 
 			   prop.c_str(), (unsigned)desc.id_tag, value, getStringifiedUTC(c.timeStamp).c_str()));
@@ -116,9 +110,6 @@ class baciTestCBvoidErr: public baciTestCBvoid
 	const ACSErr::Completion & c,
 	const ACS::CBDescOut & desc
 	 )
-	throw (
-	    CORBA::SystemException
-	    )
 	{
 	    ACS_SHORT_LOG((LM_INFO, "(%s::CBvoid::working) desc.id_tag: %u TimeStamp: %s", 
 			   prop.c_str(), (unsigned)desc.id_tag, getStringifiedUTC(c.timeStamp).c_str()));
@@ -129,9 +120,6 @@ class baciTestCBvoidErr: public baciTestCBvoid
 	const ACSErr::Completion & c,
 	const ACS::CBDescOut & desc
 	 )
-	throw (
-	    CORBA::SystemException
-	    )
 	{	    
 	    ACS_SHORT_LOG((LM_INFO, "(%s::CBvoid::done) desc.id_tag: %u TimeStamp: %s", 
 			   prop.c_str(), (unsigned)desc.id_tag, getStringifiedUTC(c.timeStamp).c_str()));

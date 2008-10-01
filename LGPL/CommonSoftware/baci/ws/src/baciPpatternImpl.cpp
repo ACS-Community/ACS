@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciPpatternImpl.cpp,v 1.17 2008/07/25 07:29:52 cparedes Exp $"
+* "@(#) $Id: baciPpatternImpl.cpp,v 1.18 2008/10/01 02:26:45 cparedes Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -107,7 +107,6 @@ bool PpatternImpl::readCharacteristics(CharacteristicModelImpl *model)
 
 ACS::stringSeq *
 PpatternImpl::bitDescription ()
-  throw (CORBA::SystemException)
 {
   
 
@@ -119,7 +118,6 @@ PpatternImpl::bitDescription ()
 
 ACS::ConditionSeq *
 PpatternImpl::whenSet ()
-  throw (CORBA::SystemException)
 {
   
 
@@ -132,7 +130,6 @@ PpatternImpl::whenSet ()
 
 ACS::ConditionSeq *
 PpatternImpl::whenCleared ()
-  throw (CORBA::SystemException)
 {
   
 

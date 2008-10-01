@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciCDBPropertySet.cpp,v 1.99 2006/09/25 08:48:50 cparedes Exp $"
+* "@(#) $Id: baciCDBPropertySet.cpp,v 1.100 2008/10/01 02:26:45 cparedes Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -39,7 +39,7 @@
  using namespace cdb;
  using namespace cdbErrType;
 
-ACE_RCSID(baci, baciCDBPropertySet, "$Id: baciCDBPropertySet.cpp,v 1.99 2006/09/25 08:48:50 cparedes Exp $");
+ACE_RCSID(baci, baciCDBPropertySet, "$Id: baciCDBPropertySet.cpp,v 1.100 2008/10/01 02:26:45 cparedes Exp $");
 
 CDBPropertySet * CDBPropertySet::instance_mp = 0;
 
@@ -184,12 +184,6 @@ CDBPropertySet::getPropertySet(const char * propertyName)
 void
 CDBPropertySet::define_property ( const char * property_name,
 				 const CORBA::Any & property_value)
-    throw (CORBA::SystemException,
-	   CosPropertyService::InvalidPropertyName,
-	   CosPropertyService::ConflictingProperty,
-	   CosPropertyService::UnsupportedTypeCode,
-	   CosPropertyService::UnsupportedProperty,
-	   CosPropertyService::ReadOnlyProperty)
 {
     ACE_UNUSED_ARG(property_value);
     ACS_TRACE("baci::CDBPropertySet::define_property");
@@ -202,8 +196,6 @@ CDBPropertySet::define_property ( const char * property_name,
   
 void
 CDBPropertySet::define_properties (const CosPropertyService::Properties & nproperties)
-    throw (CORBA::SystemException,
-	   CosPropertyService::MultipleExceptions)
 {
   ACS_TRACE("baci::CDBPropertySet::define_properties");
   
@@ -281,7 +273,6 @@ CDBPropertySet::define_properties (const CosPropertyService::Properties & nprope
   
 CORBA::ULong
 CDBPropertySet::get_number_of_properties ()
-    throw(CORBA::SystemException)
 {
     ACS_TRACE("baci::CDBPropertySet::get_number_of_properties");
     
@@ -311,7 +302,6 @@ void
 CDBPropertySet::get_all_property_names (CORBA::ULong how_many,
 					CosPropertyService::PropertyNames_out property_names,
 					CosPropertyService::PropertyNamesIterator_out rest)
-  throw (CORBA::SystemException)
 {
   ACS_TRACE("baci::CDBPropertySet::get_all_property_names");
 
@@ -416,9 +406,6 @@ CDBPropertySet::get_all_property_names (CORBA::ULong how_many,
   
 CORBA::Any *
 CDBPropertySet::get_property_value (const char * property_name)
-    throw (CORBA::SystemException,
-	   CosPropertyService::PropertyNotFound,
-	   CosPropertyService::InvalidPropertyName)
 {
   ACS_TRACE("baci::CDBPropertySet::get_property_value");
 
@@ -455,7 +442,6 @@ CDBPropertySet::get_property_value (const char * property_name)
 CORBA::Boolean
 CDBPropertySet::get_properties (const CosPropertyService::PropertyNames & property_names,
 				CosPropertyService::Properties_out nproperties)
-    throw (CORBA::SystemException)
 {
   ACS_TRACE("baci::CDBPropertySet::get_properties");
 
@@ -512,7 +498,6 @@ void
 CDBPropertySet::get_all_properties (CORBA::ULong how_many,
 				    CosPropertyService::Properties_out nproperties,
 				    CosPropertyService::PropertiesIterator_out rest)
-    throw (CORBA::SystemException)
 {
   ACS_TRACE("baci::CDBPropertySet::get_all_properties");
 
@@ -645,10 +630,6 @@ CDBPropertySet::get_all_properties (CORBA::ULong how_many,
   
 void
 CDBPropertySet::delete_property (const char * property_name)
-  throw (CORBA::SystemException,
-		   CosPropertyService::PropertyNotFound,
-		   CosPropertyService::InvalidPropertyName,
-		   CosPropertyService::FixedProperty)
 {
   ACS_TRACE("baci::CDBPropertySet::delete_property");
 
@@ -660,8 +641,6 @@ CDBPropertySet::delete_property (const char * property_name)
   
 void
 CDBPropertySet::delete_properties (const CosPropertyService::PropertyNames & property_names)
-    throw (CORBA::SystemException,
-	   CosPropertyService::MultipleExceptions)
 {
   ACS_TRACE("baci::CDBPropertySet::delete_properties");
 
@@ -727,7 +706,6 @@ CDBPropertySet::delete_properties (const CosPropertyService::PropertyNames & pro
   
 CORBA::Boolean
 CDBPropertySet::delete_all_properties ()
-  throw (CORBA::SystemException)
 {
   ACS_TRACE("baci::CDBPropertySet::delete_all_properties");
   return false;
@@ -735,8 +713,6 @@ CDBPropertySet::delete_all_properties ()
   
 CORBA::Boolean
 CDBPropertySet::is_property_defined (const char * property_name)
-    throw (CORBA::SystemException,
-	   CosPropertyService::InvalidPropertyName)
 {
     ACS_TRACE("baci::CDBPropertySet::is_property_defined");
     

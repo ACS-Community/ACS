@@ -18,7 +18,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciROstringSeq.h,v 1.4 2005/01/07 23:41:17 dfugate Exp $"
+* "@(#) $Id: baciROstringSeq.h,v 1.5 2008/10/01 02:26:45 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -51,7 +51,7 @@ template<>
 ACS::Subscription_ptr ROdiscImpl<ACS::stringSeq*, ACS::CBstringSeq, ACS::stringSeqSeq, ACS::stringSeqSeq_out, ACS::Monitorstring, MonitorstringSeq, ACS::stringSeq, char*, ACE_CString, POA_ACS::ROstringSeq, ACS::Alarmstring, POA_ACS::CBstringSeq, const ACS::stringSeq&>::new_subscription_Alarm (
 	ACS::Alarmstring *cb,
 	const ACS::CBDescIn & desc
-    ) throw (CORBA::SystemException);
+    ) ;
 
 /** @defgroup ROstringSeqTemplate ROstringSeq Class
  * The ROstringSeq class is a templated typedef so there is no actual inline doc generated for it per-se.

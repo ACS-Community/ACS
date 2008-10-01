@@ -310,7 +310,6 @@ bool baci::PcommonImpl<ACS_P_TL>::readCharacteristics()
 /* ---------------------- [ CORBA interface ] ---------------------- */
 template<ACS_P_C> 
 char* baci::PcommonImpl<ACS_P_TL>::characteristic_component_name ()
-  throw (CORBA::SystemException)
 {
 
   return CORBA::string_dup (property_mp->getComponent()->getName());
@@ -318,7 +317,6 @@ char* baci::PcommonImpl<ACS_P_TL>::characteristic_component_name ()
 
 template<ACS_P_C> 
 char* baci::PcommonImpl<ACS_P_TL>::name ()
-  throw (CORBA::SystemException)
 {
 
   return CORBA::string_dup (property_mp->getName());
@@ -326,28 +324,24 @@ char* baci::PcommonImpl<ACS_P_TL>::name ()
 
  template<ACS_P_C>
  CORBA::Boolean baci::PcommonImpl<ACS_P_TL>::initialize_devio ()
-   throw (CORBA::SystemException)
  {
   return  CORBA::Boolean(initializeDevIO_m);
 }
 
 template<ACS_P_C> 
 char* baci::PcommonImpl<ACS_P_TL>::description ()
-  throw (CORBA::SystemException)
 {
   return CORBA::string_dup (description_m.c_str());
 }
 
 template<ACS_P_C> 
 char* baci::PcommonImpl<ACS_P_TL>::format ()
-  throw (CORBA::SystemException)
 {
   return CORBA::string_dup (format_m.c_str());
 }
 
 template<ACS_P_C> 
 char* baci::PcommonImpl<ACS_P_TL>::units ()
-  throw (CORBA::SystemException)
 {
 
   return CORBA::string_dup (units_m.c_str());
@@ -355,7 +349,6 @@ char* baci::PcommonImpl<ACS_P_TL>::units ()
  
 template<ACS_P_C> 
 ACS::pattern baci::PcommonImpl<ACS_P_TL>::resolution ()
-  throw (CORBA::SystemException)
 {
   return resolution_m;
 }
@@ -363,7 +356,6 @@ ACS::pattern baci::PcommonImpl<ACS_P_TL>::resolution ()
 template<ACS_P_C> 
 T baci::PcommonImpl<ACS_P_TL>::get_sync (ACSErr::Completion_out c
 		    )
-  throw (CORBA::SystemException)
 {
  CompletionImpl co;
  ACS::CBDescOut descOut;
@@ -396,7 +388,6 @@ template<ACS_P_C>
 void baci::PcommonImpl<ACS_P_TL>::get_async (TCB *cb,
 		     const ACS::CBDescIn & desc
 		     )
-  throw (CORBA::SystemException) 
 {
 
   property_mp->getComponent()->registerAction(BACIValue::mapType(static_cast<TM*>(0)), cb, 
@@ -407,7 +398,6 @@ template<ACS_P_C>
 CORBA::Long baci::PcommonImpl<ACS_P_TL>::get_history (CORBA::Long n_last_values,
 		       TSeq_out vs,
 		       ACS::TimeSeq_out ts)
-  throw (CORBA::SystemException)
 {
   // thread lock needed
   
@@ -448,7 +438,6 @@ CORBA::Long baci::PcommonImpl<ACS_P_TL>::get_history (CORBA::Long n_last_values,
 template<ACS_P_C> 
 TMonitor *baci::PcommonImpl<ACS_P_TL>::create_monitor (TCB *cb,
 			  const ACS::CBDescIn & desc)
-  throw (CORBA::SystemException)
 {
   TMonitorImpl* monitor_p = new TMonitorImpl(ACE_CString(property_mp->getName())+"_monitor",
 					     cb, desc, 
@@ -477,7 +466,6 @@ template<ACS_P_C>
 TMonitor* baci::PcommonImpl<ACS_P_TL>::create_postponed_monitor (ACS::Time start_time,
 			  TCB *cb,
 			  const ACS::CBDescIn & desc)
-  throw (CORBA::SystemException)
 {
   TMonitorImpl* monitor = new TMonitorImpl(ACE_CString(property_mp->getName())+"_monitor",
 					     cb, desc, 
@@ -505,7 +493,6 @@ TMonitor* baci::PcommonImpl<ACS_P_TL>::create_postponed_monitor (ACS::Time start
 
 template<ACS_P_C> 
 ACS::TimeInterval baci::PcommonImpl<ACS_P_TL>::default_timer_trigger ()
-  throw (CORBA::SystemException)
 {
 
   return defaultTimerTrig_m;
@@ -513,7 +500,6 @@ ACS::TimeInterval baci::PcommonImpl<ACS_P_TL>::default_timer_trigger ()
 
 template<ACS_P_C> 
 ACS::TimeInterval baci::PcommonImpl<ACS_P_TL>::min_timer_trigger ()
-  throw (CORBA::SystemException)
 {
 
   return minTimerTrig_m;
@@ -521,7 +507,6 @@ ACS::TimeInterval baci::PcommonImpl<ACS_P_TL>::min_timer_trigger ()
 
 template<ACS_P_C> 
 TS baci::PcommonImpl<ACS_P_TL>::default_value ()
-  throw (CORBA::SystemException)
 {
   return CORBAMem<TS, TSM>::retn(defaultValue_m);
 }

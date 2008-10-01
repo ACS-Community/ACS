@@ -76,7 +76,6 @@ template<ACS_RO_C>
 ACS::Subscription_ptr baci::ROdiscImpl<ACS_RO_TL>::new_subscription_Alarm (TAlarm *cb,
 					const ACS::CBDescIn & desc
 					)
-  throw (CORBA::SystemException)
 {
 //TBD: this could be done just in the constructor
     if (this->alarmTimerTrig_m==0)

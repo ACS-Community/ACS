@@ -19,7 +19,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciTestClassImpl.h,v 1.112 2008/07/25 07:29:52 cparedes Exp $"
+* "@(#) $Id: baciTestClassImpl.h,v 1.113 2008/10/01 02:26:45 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -143,11 +143,8 @@ public:
   /** 
    * Servant shutdown request function
    */
-   virtual void shutdown ()
-   throw (
-   CORBA::SystemException
-   );
-
+   virtual void shutdown ();
+   
   /**
    * Switches on the power supply.
    * A callback is used to inform the caller when the action is
@@ -158,8 +155,7 @@ public:
   virtual void on (
 		   ACS::CBvoid_ptr cb,
 		   const ACS::CBDescIn & desc
-		   )
-    throw (CORBA::SystemException);
+		   );
   
   /**
    * Switches off the power supply.
@@ -171,8 +167,7 @@ public:
   virtual void off (
 		    ACS::CBvoid_ptr cb,
 		    const ACS::CBDescIn & desc
-		    )
-    throw (CORBA::SystemException);
+		    );
   
   /**
    * Resets the power supply.
@@ -184,13 +179,12 @@ public:
     virtual void reset (
 		      ACS::CBvoid_ptr cb,
 		      const ACS::CBDescIn & desc
-		      )
-      throw (CORBA::SystemException);
+		      );
   
     /**
      * Method to turn monitoring on from a remote client
      */
-    virtual void turnOnMonitoring() throw (CORBA::SystemException)
+    virtual void turnOnMonitoring() 
 	{
 	    try
 		{
@@ -206,7 +200,7 @@ public:
     /**
      * Method to turn monitoring off from a remote client
      */
-    virtual void turnOffMonitoring() throw (CORBA::SystemException)
+    virtual void turnOffMonitoring()
 	{
             try
 		{
@@ -221,147 +215,114 @@ public:
     /**
      * Check the status of the monitoring thread and logs it
      */
-    virtual CORBA::Boolean isPropertiesMonitoringActive() 
-	throw (CORBA::SystemException);
+    virtual CORBA::Boolean isPropertiesMonitoringActive();
 
     /**
      * Property RWdoubleProps contains the actual RWdoubleWithErrorDevIOProp of the 
      * power supply.
      */ 
-    virtual ACS::RWdouble_ptr RWdoubleWithErrorDevIOProp () throw (CORBA::SystemException);
+    virtual ACS::RWdouble_ptr RWdoubleWithErrorDevIOProp ();
 
   /**
    * Property RWdoubleProps contains the actual RWdoubleWithDevIOProp of the 
    * power supply.
    */ 
-  virtual ACS::RWdouble_ptr RWdoubleWithDevIOProp () throw (CORBA::SystemException);
+  virtual ACS::RWdouble_ptr RWdoubleWithDevIOProp ();
 
   /**
    * Property RWdoubleProps contains the actual RWdoubleProp of the 
    * power supply.
    */ 
-  virtual ACS::RWdouble_ptr RWdoubleProp (
-				     )
-    throw (CORBA::SystemException);
+  virtual ACS::RWdouble_ptr RWdoubleProp ();
   
   /**
    * Property ROdoubleProp is the ROdoubleProp of the actual setting
    * of the power supply.
    */ 
-  virtual ACS::ROdouble_ptr ROdoubleProp (
-				      )
-    throw (CORBA::SystemException);
+  virtual ACS::ROdouble_ptr ROdoubleProp ();
   
   /**
    * Property RWfloatProps contains the actual RWfloatProp of the 
    * power supply.
    */ 
-  virtual ACS::RWfloat_ptr RWfloatProp (
-				     )
-    throw (CORBA::SystemException);
+  virtual ACS::RWfloat_ptr RWfloatProp ();
   
   /**
    * Property ROfloatProp is the ROfloatProp of the actual setting
    * of the power supply.
    */ 
-  virtual ACS::ROfloat_ptr ROfloatProp (
-				      )
-    throw (CORBA::SystemException);
+  virtual ACS::ROfloat_ptr ROfloatProp ();
   
   /**
    * Property RWlongProp contains the actual "RWlongProp" of the 
    * power supply.
    */ 
-  virtual ACS::RWlong_ptr RWlongProp (
-				     )
-    throw (CORBA::SystemException);
+  virtual ACS::RWlong_ptr RWlongProp ();
   
   /**
    * Property ROlongProp is the ROdoubleProp of the actual "RWlongProp"
    * of the power supply.
    */ 
-  virtual ACS::ROlong_ptr ROlongProp (
-				      )
-    throw (CORBA::SystemException);
+  virtual ACS::ROlong_ptr ROlongProp ();
   
   /**
    * Property ROpatternProp contains the actual ROpatternProp
    * of the power supply.
    */
-  virtual ACS::ROpattern_ptr ROpatternProp (
-				     )
-    throw (CORBA::SystemException);
+  virtual ACS::ROpattern_ptr ROpatternProp ();
 
   /**
    * Property RWpatternProp contains the actual RWpatternProp
    * of the power supply.
    */
-  virtual ACS::RWpattern_ptr RWpatternProp (
-				     )
-    throw (CORBA::SystemException);
+  virtual ACS::RWpattern_ptr RWpatternProp ();
   
   /**
    * Property ROstringProps contains a test ROstringProp string
    */ 
-  virtual ACS::ROstring_ptr ROstringProp (
-				     )
-    throw (CORBA::SystemException);
+  virtual ACS::ROstring_ptr ROstringProp ();
 
   /**
    * Property RWstringProps contains a test RWstringProp string
    */ 
-  virtual ACS::RWstring_ptr RWstringProp (
-				     )
-    throw (CORBA::SystemException);
+  virtual ACS::RWstring_ptr RWstringProp ();
 
 
   /**
    * Property RWdoubleSeqProps contains the actual RWdoubleSeqProp of the 
    * power supply.
    */ 
-  virtual ACS::RWdoubleSeq_ptr RWdoubleSeqProp (
-				     )
-    throw (CORBA::SystemException);
+  virtual ACS::RWdoubleSeq_ptr RWdoubleSeqProp ();
 
   /**
    * Property ROdoubleSeqProp is the ROdoubleSeqProp of the actual setting
    * of the power supply.
    */ 
-  virtual ACS::ROdoubleSeq_ptr ROdoubleSeqProp (
-				      )
-    throw (CORBA::SystemException);
+  virtual ACS::ROdoubleSeq_ptr ROdoubleSeqProp ();
 
   /**
    * Property RWfloatSeqProps contains the actual RWfloatSeqProp of the 
    * power supply.
    */ 
-  virtual ACS::RWfloatSeq_ptr RWfloatSeqProp (
-				     )
-    throw (CORBA::SystemException);
+  virtual ACS::RWfloatSeq_ptr RWfloatSeqProp ();
 
   /**
    * Property ROfloatSeqProp is the ROfloatSeqProp of the actual setting
    * of the power supply.
    */ 
-  virtual ACS::ROfloatSeq_ptr ROfloatSeqProp (
-				      )
-    throw (CORBA::SystemException);
+  virtual ACS::ROfloatSeq_ptr ROfloatSeqProp ();
 
   /**
    * Property RWlongSeqProp contains the actual "RWlongSeqProp" of the 
    * power supply.
    */ 
-  virtual ACS::RWlongSeq_ptr RWlongSeqProp (
-				     )
-    throw (CORBA::SystemException);
+  virtual ACS::RWlongSeq_ptr RWlongSeqProp ();
   
   /**
    * Property ROlongSeqProp is the ROlongSeqProp of the actual "RWlongSeqProp"
    * of the power supply.
    */ 
-  virtual ACS::ROlongSeq_ptr ROlongSeqProp (
-				      )
-    throw (CORBA::SystemException);
+  virtual ACS::ROlongSeq_ptr ROlongSeqProp ();
 
   
   

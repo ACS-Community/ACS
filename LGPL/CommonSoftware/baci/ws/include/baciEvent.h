@@ -19,7 +19,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciEvent.h,v 1.98 2006/09/01 02:20:54 cparedes Exp $"
+* "@(#) $Id: baciEvent.h,v 1.99 2008/10/01 02:26:45 cparedes Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -202,20 +202,17 @@ public:
   /**
    * Suspend event subscription
    */
-  virtual void suspend () 
-    throw (CORBA::SystemException) = 0;
+  virtual void suspend () = 0;
   
   /**
    * Resume suspended event subscription
    */
-  virtual void resume () 
-    throw (CORBA::SystemException) = 0;
+  virtual void resume () = 0;
   
   /**
    * Destroy event subscription
    */
-  virtual void destroy () 
-    throw (CORBA::SystemException) = 0;
+  virtual void destroy () = 0;
   
 };
 

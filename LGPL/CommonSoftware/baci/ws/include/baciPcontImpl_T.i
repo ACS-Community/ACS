@@ -90,7 +90,6 @@ bool baci::PcontImpl<ACS_P_TL>::readCharacteristics(CharacteristicModelImpl *mod
 
 template<ACS_P_C>
 TS baci::PcontImpl<ACS_P_TL>::min_delta_trigger ()
-  throw (CORBA::SystemException)
 {
 
   return CORBAMem<TS, TSM>::retn(min_delta_trig_m);
@@ -98,7 +97,6 @@ TS baci::PcontImpl<ACS_P_TL>::min_delta_trigger ()
 
 template<ACS_P_C> 
 TS baci::PcontImpl<ACS_P_TL>::graph_min ()
-  throw (CORBA::SystemException)
 {
 
   return CORBAMem<TS, TSM>::retn(graph_min_m);
@@ -106,7 +104,6 @@ TS baci::PcontImpl<ACS_P_TL>::graph_min ()
 
 template<ACS_P_C> 
 TS baci::PcontImpl<ACS_P_TL>::graph_max ()
-  throw (CORBA::SystemException)
 {
 
   return CORBAMem<TS, TSM>::retn(graph_max_m);
@@ -114,7 +111,6 @@ TS baci::PcontImpl<ACS_P_TL>::graph_max ()
 
 template<ACS_P_C> 
 TS baci::PcontImpl<ACS_P_TL>::min_step ()
-  throw (CORBA::SystemException)
 {
 
   return CORBAMem<TS, TSM>::retn(min_step_m);

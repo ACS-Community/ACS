@@ -16,7 +16,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciROstringSeq.cpp,v 1.3 2006/09/24 18:43:39 bjeram Exp $"
+* "@(#) $Id: baciROstringSeq.cpp,v 1.4 2008/10/01 02:26:45 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -40,7 +40,7 @@ template<>
 ACS::Subscription_ptr ROdiscImpl<ACS::stringSeq*, ACS::CBstringSeq, ACS::stringSeqSeq, ACS::stringSeqSeq_out, ACS::Monitorstring, MonitorstringSeq, ACS::stringSeq, char*, ACE_CString, POA_ACS::ROstringSeq, ACS::Alarmstring, POA_ACS::CBstringSeq, const ACS::stringSeq&>::
 new_subscription_Alarm (ACS::Alarmstring *cb,
 			const ACS::CBDescIn & desc
-			)  throw (CORBA::SystemException)
+			) 
 {
     ACE_UNUSED_ARG(cb);
     ACE_UNUSED_ARG(desc);   

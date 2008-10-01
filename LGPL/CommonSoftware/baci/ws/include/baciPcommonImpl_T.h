@@ -225,66 +225,50 @@ public:
   
   /* --------------------- [ Property interface ] --------------------- */
     
-    virtual char * name ()
-	throw (CORBA::SystemException);
+    virtual char * name ();
     
-    virtual char * characteristic_component_name ()
-	throw (CORBA::SystemException);
+    virtual char * characteristic_component_name ();
 
     /*
       already defined bt CharacteristicModelImpl
     virtual CosPropertyService::PropertySet_ptr get_all_characteristics ()
-	throw (CORBA::SystemException);
     */
     
     /* ----------------- [ TypelessProperty interface ] ----------------- */
     
-    virtual CORBA::Boolean initialize_devio ()
-	throw (CORBA::SystemException);
+    virtual CORBA::Boolean initialize_devio ();
     
-    virtual char * description ()
-	throw (CORBA::SystemException);
+    virtual char * description ();
     
-    virtual char * format ()
-	throw (CORBA::SystemException);
+    virtual char * format ();
     
-    virtual char * units ()
-	throw (CORBA::SystemException);
+    virtual char * units ();
     
-    virtual ACS::pattern resolution ()
-	throw (CORBA::SystemException);
+    virtual ACS::pattern resolution ();
     
     /* -------------------- [ P interface ] -------------------- */
     
-    virtual ACS::TimeInterval default_timer_trigger ()
-	throw (CORBA::SystemException);
+    virtual ACS::TimeInterval default_timer_trigger ();
     
-    virtual ACS::TimeInterval min_timer_trigger ()
-	throw (CORBA::SystemException);
+    virtual ACS::TimeInterval min_timer_trigger ();
     
-    virtual TS default_value ()
-	throw (CORBA::SystemException);
+    virtual TS default_value ();
     
-    virtual T get_sync (ACSErr::Completion_out c)
-	throw (CORBA::SystemException);
+    virtual T get_sync (ACSErr::Completion_out c);
     
     virtual void get_async (TCB *cb,
-			    const ACS::CBDescIn & desc)
-	throw (CORBA::SystemException);
+			    const ACS::CBDescIn & desc);
     
     virtual CORBA::Long get_history (CORBA::Long n_last_values,
 				     TSeq_out vs,
-				     ACS::TimeSeq_out ts)
-	throw (CORBA::SystemException);
+				     ACS::TimeSeq_out ts);
 	
     virtual TMonitor* create_monitor (TCB*cb,
-				      const ACS::CBDescIn & desc)
-	throw (CORBA::SystemException);
+				      const ACS::CBDescIn & desc);
 	
     virtual TMonitor* create_postponed_monitor (ACS::Time start_time,
 						TCB *cb,
-						const ACS::CBDescIn & desc)
-	throw (CORBA::SystemException);
+						const ACS::CBDescIn & desc);
   
   protected:
     

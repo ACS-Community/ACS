@@ -71,23 +71,13 @@ public:
   
   /* -------------------- [ P interface ] -------------------- */
     
-    virtual TS min_delta_trigger ()
-	 throw (CORBA::SystemException );
+    virtual TS min_delta_trigger ();
 
-    virtual TS graph_min ()
-	throw (
-	    CORBA::SystemException
-	    );
+    virtual TS graph_min ();
     
-    virtual TS graph_max ()
-	throw (
-	    CORBA::SystemException
-	    );
+    virtual TS graph_max ();
     
-    virtual TS min_step ()
-	throw (
-	    CORBA::SystemException
-	    );
+    virtual TS min_step ();
     
   protected:
 

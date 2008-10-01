@@ -19,7 +19,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciDB.h,v 1.98 2008/07/25 07:29:51 cparedes Exp $"
+* "@(#) $Id: baciDB.h,v 1.99 2008/10/01 02:26:45 cparedes Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -93,25 +93,25 @@ public:
 
   /* ------------------ [ CharacteristicModel interface ] ------------------ */
 
+  /*
+  * @throw ACS::NoSuchCharacteristic
+  */
   static CORBA::Any * get_characteristic_by_name (
 						  const ACE_CString& objectName,
 						  const char * name
 						  
-						  )
-    throw (CORBA::SystemException, ACS::NoSuchCharacteristic);
+						  );
 	
   static ACS::stringSeq * find_characteristic (
 					       const ACE_CString& name,
 					       const char * reg_exp
 					       
-					       )
-    throw (CORBA::SystemException);
+					       );
 
   static CosPropertyService::PropertySet_ptr get_all_characteristics (
 								      const ACE_CString& name
 								      
-      )
-    throw (CORBA::SystemException);
+      );
 
 
   /* ------------------------------------------------------------------ */
