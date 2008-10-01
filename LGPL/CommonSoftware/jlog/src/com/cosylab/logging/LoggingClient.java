@@ -54,6 +54,8 @@ import javax.swing.event.MenuListener;
 import alma.acs.logging.archive.ArchiveConnectionManager;
 import alma.acs.logging.archive.QueryDlg;
 import alma.acs.logging.archive.ArchiveConnectionManager.DBState;
+import alma.acs.logging.archive.zoom.ZoomManager;
+import alma.acs.logging.archive.zoom.ZoomPrefsDlg;
 import alma.acs.logging.dialogs.main.LogFrame;
 import alma.acs.logging.dialogs.main.LogMenuBar;
 import alma.acs.logging.dialogs.main.LogNavigationBar;
@@ -188,8 +190,18 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
     
 	private ErrorLogDialog errorDialog = new ErrorLogDialog(null,"jlog: Error log", false);
     
-    // The progress bar for long time operations
+    /** 
+     * The progress bar for long time operations
+     */
     private JProgressBar progressBar = new JProgressBar(JProgressBar.HORIZONTAL);
+    
+    /**
+     * The <code>ZoomManager</code> to perform zooming
+     * <P>
+     * The object is built with default levels; the path of the
+     * folder of XML files is read from a java property.
+     */
+    private ZoomManager zoom=new ZoomManager();
     
     /** 
      * <code>true</code> if the engine is connected.
@@ -418,6 +430,11 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
             	audienceLbl.setText(" Engineering ");
             } else if (e.getSource()==menuBar.getEngineFiltersMenuItem()) {
             	showEngineFiltersDialog();
+            } else if (e.getSource()==menuBar.getZoomPrefsMI()) {
+            	ZoomPrefsDlg dlg = new ZoomPrefsDlg(LoggingClient.this,zoom);
+            	toolBar.setZoomable(zoom.isAvailable());
+            } else if (e.getSource()==menuBar.getManualZoomMI()) {
+            	System.out.println("NOT implemented yet");
             } else {
             	System.err.println("Unrecognized ActionEvent "+e);
             }
@@ -871,6 +888,7 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 			BoxLayout toolbarLayout = new BoxLayout(toolbarsPanel,BoxLayout.Y_AXIS);
 			toolbarsPanel.setLayout(toolbarLayout);
 			toolBar = new LogToolBar(logLevel,discardLevel);
+			toolBar.setZoomable(zoom.isAvailable());
 			toolbarsPanel.add(toolBar);
 			navigationToolbar = new LogNavigationBar(getLogEntryTable());
 			toolbarsPanel.add(navigationToolbar);
