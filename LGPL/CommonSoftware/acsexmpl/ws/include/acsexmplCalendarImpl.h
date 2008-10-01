@@ -22,7 +22,7 @@
 *
 *
 *
-* "@(#) $Id: acsexmplCalendarImpl.h,v 1.97 2008/07/25 07:37:04 cparedes Exp $"
+* "@(#) $Id: acsexmplCalendarImpl.h,v 1.98 2008/10/01 04:30:47 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -99,7 +99,7 @@ specifically for manipulating components).
  *
  *  @author <a href=mailto:matej.sekoranja@ijs.si>Matej Sekoranja</a>,
  *  Jozef Stefan Institute, Slovenia<br>
- *  @version "@(#) $Id: acsexmplCalendarImpl.h,v 1.97 2008/07/25 07:37:04 cparedes Exp $"
+ *  @version "@(#) $Id: acsexmplCalendarImpl.h,v 1.98 2008/10/01 04:30:47 cparedes Exp $"
  */
 class Calendar: public baci::CharacteristicComponentImpl,     //Standard component superclass
 		public virtual POA_acsexmplCalendar::Calendar    //CORBA servant stub
@@ -128,8 +128,7 @@ class Calendar: public baci::CharacteristicComponentImpl,     //Standard compone
        @endhtmlonly
      */ 
     virtual ::acsexmplCalendar::RWDaysEnum_ptr 
-    day ()
-	throw (CORBA::SystemException);
+    day ();
     
     /**
      * Returns a reference to the month property
@@ -139,8 +138,7 @@ class Calendar: public baci::CharacteristicComponentImpl,     //Standard compone
        @endhtmlonly
      */ 
     virtual ::acsexmplCalendar::RWMonthEnum_ptr
-    month ()
-	throw (CORBA::SystemException); 
+    month ();
     
     /**
      * Returns a reference to the yearAttributes property
@@ -150,8 +148,7 @@ class Calendar: public baci::CharacteristicComponentImpl,     //Standard compone
        @endhtmlonly
      */ 
     virtual ::ACS::RWpattern_ptr 
-    yearAttributes ()
-	throw (CORBA::SystemException); 
+    yearAttributes ();
     
     /**
      * Returns a reference to the state property
@@ -161,8 +158,7 @@ class Calendar: public baci::CharacteristicComponentImpl,     //Standard compone
        @endhtmlonly
      */ 
     virtual ::acsexmplCalendar::ROStateEnum_ptr 
-    state ()
-	throw (CORBA::SystemException);
+    state ();
     
   private:
     /**

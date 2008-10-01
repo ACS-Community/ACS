@@ -20,7 +20,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsexmplLampWheelImpl.h,v 1.14 2008/07/25 07:37:04 cparedes Exp $"
+* "@(#) $Id: acsexmplLampWheelImpl.h,v 1.15 2008/10/01 04:30:47 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -116,7 +116,7 @@ It also has three read-only properties: position, desc, slots.
  * A log message inform the user about the selected lamp.
  * 
  * @author <a href=mailto:acaproni@eso.org>Alessandro Caproni</a>,
- * @version "@(#) $Id: acsexmplLampWheelImpl.h,v 1.14 2008/07/25 07:37:04 cparedes Exp $"
+ * @version "@(#) $Id: acsexmplLampWheelImpl.h,v 1.15 2008/10/01 04:30:47 cparedes Exp $"
  */
 class acsexmpl_EXPORT LampWheel: public baci::CharacteristicComponentImpl,//Standard component superclass
 	    public virtual POA_acsexmplLampWheel::LampWheel,//CORBA servant stub
@@ -323,7 +323,7 @@ class acsexmpl_EXPORT LampWheel: public baci::CharacteristicComponentImpl,//Stan
        @endhtmlonly
      */ 
  	virtual void move(CORBA::Short, ACS::CBvoid_ptr,
-		const ACS::CBDescIn&) throw (CORBA::SystemException);
+		const ACS::CBDescIn&); 
 
     /**
      * Returns a reference to the position property
@@ -332,8 +332,7 @@ class acsexmpl_EXPORT LampWheel: public baci::CharacteristicComponentImpl,//Stan
        <br><hr>
        @endhtmlonly
      */ 
-    virtual ACS::ROdouble_ptr position ()
-	throw (CORBA::SystemException); 
+    virtual ACS::ROdouble_ptr position ();
     
     /**
      * Returns a reference to the desc property
@@ -342,8 +341,7 @@ class acsexmpl_EXPORT LampWheel: public baci::CharacteristicComponentImpl,//Stan
        <br><hr>
        @endhtmlonly
      */ 
-    virtual ACS::ROstring_ptr desc ()
-	throw (CORBA::SystemException);
+    virtual ACS::ROstring_ptr desc ();
 
     /**
      * Returns a reference to the descavailableSlots property
@@ -352,8 +350,7 @@ class acsexmpl_EXPORT LampWheel: public baci::CharacteristicComponentImpl,//Stan
        <br><hr>
        @endhtmlonly
      */ 
-    virtual ACS::ROlong_ptr slots ()
-	throw (CORBA::SystemException);
+    virtual ACS::ROlong_ptr slots ();
 
   private:
 

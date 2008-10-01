@@ -21,7 +21,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: acsexmplRampedPowerSupplyImpl.h,v 1.100 2008/07/25 07:37:04 cparedes Exp $"
+* "@(#) $Id: acsexmplRampedPowerSupplyImpl.h,v 1.101 2008/10/01 04:30:47 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -124,7 +124,7 @@ defined in two separate IDLs.
  *  
  *  @author <a href=mailto:matej.sekoranja@ijs.si>Matej Sekoranja</a>,
  *  Jozef Stefan Institute, Slovenia<br>
- *  @version "@(#) $Id: acsexmplRampedPowerSupplyImpl.h,v 1.100 2008/07/25 07:37:04 cparedes Exp $"
+ *  @version "@(#) $Id: acsexmplRampedPowerSupplyImpl.h,v 1.101 2008/10/01 04:30:47 cparedes Exp $"
  */
 class acsexmpl_EXPORT RampedPowerSupply: public PowerSupply,     //PowerSupply's superclass is CharacteristicComponent
 					 public virtual POA_RampedPS::RampedPowerSupply    //CORBA servant stub
@@ -256,8 +256,7 @@ class acsexmpl_EXPORT RampedPowerSupply: public PowerSupply,     //PowerSupply's
     virtual void 
     startRamping (CORBA::Long rampingSteps,
 		  ACS::CBvoid_ptr cb,
-		  const ACS::CBDescIn &desc)
-	throw (CORBA::SystemException);
+		  const ACS::CBDescIn &desc);
     
     /**
      * Stops ramping the power supply.
@@ -274,8 +273,7 @@ class acsexmpl_EXPORT RampedPowerSupply: public PowerSupply,     //PowerSupply's
      */     
     virtual void 
     stopRamping (ACS::CBvoid_ptr cb,
-		 const ACS::CBDescIn &desc)
-	throw (CORBA::SystemException);
+		 const ACS::CBDescIn &desc);
     
     /**
      * Returns a reference to the rampingStatus property (status).
@@ -286,8 +284,7 @@ class acsexmpl_EXPORT RampedPowerSupply: public PowerSupply,     //PowerSupply's
        @endhtmlonly
      */ 
     virtual ACS::RWstring_ptr
-    rampingStatus ()
-	throw (CORBA::SystemException);
+    rampingStatus ();
     
     /**
      * Returns a reference to the rampingStep property.
@@ -298,8 +295,7 @@ class acsexmpl_EXPORT RampedPowerSupply: public PowerSupply,     //PowerSupply's
        @endhtmlonly
      */ 
     virtual ACS::ROlong_ptr 
-    rampingStep ()
-	throw (CORBA::SystemException);
+    rampingStep ();
     
   private:
     /**

@@ -18,7 +18,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsexmplAsyncMethodCB.h,v 1.1 2004/09/22 08:36:45 acaproni Exp $"
+* "@(#) $Id: acsexmplAsyncMethodCB.h,v 1.2 2008/10/01 04:30:47 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -59,14 +59,11 @@ class AsyncMethodCBvoid: public virtual POA_ACS::CBvoid {
 		  */
 		  ~AsyncMethodCBvoid() { }
 		  
-		  void working (const ACSErr::Completion &c, const ACS::CBDescOut &desc)
-			throw (CORBA::SystemException);
+		  void working (const ACSErr::Completion &c, const ACS::CBDescOut &desc);
 		
-		void done (const ACSErr::Completion &c, const ACS::CBDescOut &desc)
-			throw (CORBA::SystemException);
+		void done (const ACSErr::Completion &c, const ACS::CBDescOut &desc);
 			
-		CORBA::Boolean negotiate (ACS::TimeInterval time_to_transmit, const ACS::CBDescOut &desc) 
-			throw (CORBA::SystemException);
+		CORBA::Boolean negotiate (ACS::TimeInterval time_to_transmit, const ACS::CBDescOut &desc); 
 };
 
 #endif /*!_H*/

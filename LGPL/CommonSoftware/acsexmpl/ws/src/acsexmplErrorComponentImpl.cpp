@@ -21,7 +21,7 @@
 *
 *
 *
-* "@(#) $Id: acsexmplErrorComponentImpl.cpp,v 1.10 2007/03/30 13:43:48 nbarriga Exp $"
+* "@(#) $Id: acsexmplErrorComponentImpl.cpp,v 1.11 2008/10/01 04:30:47 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -34,7 +34,7 @@
 #include <ACSErrTypeOK.h>
 #include <iostream>
 
-ACE_RCSID(acsexmpl, acsexmplErrorComponentImpl, "$Id: acsexmplErrorComponentImpl.cpp,v 1.10 2007/03/30 13:43:48 nbarriga Exp $")
+ACE_RCSID(acsexmpl, acsexmplErrorComponentImpl, "$Id: acsexmplErrorComponentImpl.cpp,v 1.11 2008/10/01 04:30:47 cparedes Exp $")
 
 /* ----------------------------------------------------------------*/
 ErrorComponent::ErrorComponent( 
@@ -55,7 +55,6 @@ ErrorComponent::~ErrorComponent()
 /* --------------------- [ CORBA interface ] ----------------------*/
 void
 ErrorComponent::displayMessage ()
-    throw (CORBA::SystemException)
 {
     ACS_LOG(LM_RUNTIME_CONTEXT, "ErrorComponent::displayMessage",
 	    (LM_INFO, "Hello World"));
@@ -63,7 +62,6 @@ ErrorComponent::displayMessage ()
 /* ----------------------------------------------------------------*/
 void 
 ErrorComponent::badMethod(CORBA::Short depth) 
-    throw(CORBA::SystemException, ACSErrTypeCommon::GenericErrorEx, ACSErrTypeCommon::UnexpectedExceptionEx)
 {
         ACS_TRACE("::ErrorComponent::badMethod");
         if(depth>=1){
@@ -100,9 +98,6 @@ ErrorComponent::badMethod(CORBA::Short depth)
 
 
 void ErrorComponent::typeException(CORBA::Short depth) 
-    throw (CORBA::SystemException, 
-	   ACSErrTypeCommon::GenericErrorEx,  
-	   ACSErrTypeCommon::ACSErrTypeCommonEx)
 {
     ACS_TRACE("::ErrorComponent::typeException");
     if(depth>=1){
@@ -138,14 +133,13 @@ void ErrorComponent::typeException(CORBA::Short depth)
 }//typeException
 
 
-void ErrorComponent::corbaSystemException() throw (CORBA::SystemException)
+void ErrorComponent::corbaSystemException() 
 {
     throw CORBA::BAD_PARAM ( /* CORBA::OMGVMCID | */ 2, CORBA::COMPLETED_NO);;
 }
 
 /* ----------------------------------------------------------------*/
 ACSErr::Completion *ErrorComponent::completionFromException(CORBA::Short depth) 
-    throw (CORBA::SystemException)
 {
     ACS_TRACE("::ErrorComponent::completionFromException");
     // here we get LOCAL (C++) completion 
@@ -160,7 +154,6 @@ ACSErr::Completion *ErrorComponent::completionFromException(CORBA::Short depth)
 }//completionFromException
 
         ACSErr::Completion *ErrorComponent::completionOnStack(CORBA::Short depth) 
-throw (CORBA::SystemException)
 {
     ACS_TRACE("::ErrorComponent::completionOnStack");
 
@@ -200,7 +193,6 @@ throw (CORBA::SystemException)
 }//completionOnStack
 
 void  ErrorComponent::exceptionFromCompletion(CORBA::Short depth) 
-        throw (CORBA::SystemException, ACSErrTypeCommon::GenericErrorEx)
 {
         ACS_TRACE("ErrorComponent::exceptionFromCompletion");
         if(depth==1){
@@ -240,7 +232,6 @@ void  ErrorComponent::exceptionFromCompletion(CORBA::Short depth)
 }
 
 ACSErr::Completion *ErrorComponent::completionFromCompletion(CORBA::Short depth) 
-        throw (CORBA::SystemException)
 {
         ACS_TRACE("ErrorComponent::completionFromCompletion");
         CompletionImpl *comp;
@@ -275,7 +266,6 @@ ACSErr::Completion *ErrorComponent::completionFromCompletion(CORBA::Short depth)
 
 void 
 ErrorComponent::outCompletion(ACSErr::Completion_out comp)
-    throw(CORBA::SystemException)
 {
         ACS_TRACE("ErrorComponent::outCompletion");
         ACSErrTypeOK::ACSErrOKCompletion c;

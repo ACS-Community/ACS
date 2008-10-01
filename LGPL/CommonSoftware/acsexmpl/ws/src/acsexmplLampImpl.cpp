@@ -20,7 +20,7 @@
 *
 *
 *
-* "@(#) $Id: acsexmplLampImpl.cpp,v 1.100 2007/01/08 13:53:49 gchiozzi Exp $"
+* "@(#) $Id: acsexmplLampImpl.cpp,v 1.101 2008/10/01 04:30:47 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -47,7 +47,7 @@
 const static int ON_ACTION  = 0;
 const static int OFF_ACTION = 1;
 
-ACE_RCSID(acsexmpl, acsexmplLampImpl, "$Id: acsexmplLampImpl.cpp,v 1.100 2007/01/08 13:53:49 gchiozzi Exp $")
+ACE_RCSID(acsexmpl, acsexmplLampImpl, "$Id: acsexmplLampImpl.cpp,v 1.101 2008/10/01 04:30:47 cparedes Exp $")
 using namespace baci;
 
 /////////////////////////////////////////////////
@@ -152,7 +152,6 @@ void
 Lamp::on (ACS::CBvoid_ptr cb,
 	  const ACS::CBDescIn &desc
 	  )
-    throw (CORBA::SystemException)
 {
     //registers the action to the BACI and returns control immediately
     getComponent()->registerAction(BACIValue::type_null, cb, desc, this, ON_ACTION);
@@ -162,7 +161,6 @@ void
 Lamp::off (ACS::CBvoid_ptr cb,
 	   const ACS::CBDescIn &desc
 	   )
-    throw (CORBA::SystemException)
 {
     //registers the action to the BACI and returns control immediately
     getComponent()->registerAction(BACIValue::type_null, cb, desc, this, OFF_ACTION);
@@ -170,7 +168,6 @@ Lamp::off (ACS::CBvoid_ptr cb,
 
 ACS::RWdouble_ptr
 Lamp::brightness ()
-    throw (CORBA::SystemException)
 {
     if (m_brightness_sp == 0)
 	{

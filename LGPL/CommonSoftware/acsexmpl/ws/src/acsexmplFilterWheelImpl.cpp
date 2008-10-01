@@ -20,7 +20,7 @@
 *
 *
 *
-* "@(#) $Id: acsexmplFilterWheelImpl.cpp,v 1.9 2007/01/08 13:53:49 gchiozzi Exp $"
+* "@(#) $Id: acsexmplFilterWheelImpl.cpp,v 1.10 2008/10/01 04:30:47 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -43,7 +43,7 @@ const static int MOVEFILTER_ACTION   = 0;
 const static int MOVESLOT_ACTION   = 1;
 const static int ADJUST_ACTION = 2;
 
-ACE_RCSID(acsexmpl, acsexmplFilterWheelImpl, "$Id: acsexmplFilterWheelImpl.cpp,v 1.9 2007/01/08 13:53:49 gchiozzi Exp $")
+ACE_RCSID(acsexmpl, acsexmplFilterWheelImpl, "$Id: acsexmplFilterWheelImpl.cpp,v 1.10 2008/10/01 04:30:47 cparedes Exp $")
 
 using namespace baci;
 
@@ -497,7 +497,6 @@ FilterWheel::moveSlotAction (
 /* --------------------- [ CORBA interface ] ----------------------*/
 
 void FilterWheel::moveFilterInBeam(const char* name, ACS::CBvoid_ptr cb,  const ACS::CBDescIn& desc) 
-	    throw (CORBA::SystemException)
 {
     ACE_CString* str = new ACE_CString(name);
 
@@ -506,21 +505,18 @@ void FilterWheel::moveFilterInBeam(const char* name, ACS::CBvoid_ptr cb,  const 
 }
 
 void FilterWheel::moveSlotInBeam(int slot, ACS::CBvoid_ptr cb, const ACS::CBDescIn& desc)
-   throw (CORBA::SystemException)
 {
     int* slot_p= new int(slot);
     getComponent()->registerAction(BACIValue::type_null, cb, desc, this, MOVESLOT_ACTION, BACIValue(slot_p));
 }
 
 void FilterWheel::adjust(int step, ACS::CBvoid_ptr cb, const ACS::CBDescIn& desc)
-	throw (CORBA::SystemException)
 {
     int* step_p= new int(step);
     getComponent()->registerAction(BACIValue::type_null, cb, desc, this, ADJUST_ACTION, BACIValue(step_p));
 }
 
 CORBA::Long FilterWheel::calibrateWheel(int slot)
-	throw (CORBA::SystemException)
 {
 	// Get the number of slots
 	ACSErr::Completion_var completion;
@@ -538,7 +534,6 @@ CORBA::Long FilterWheel::calibrateWheel(int slot)
 }
 
 CORBA::Long FilterWheel::calibrateFilter(const char* name)
-    throw (CORBA::SystemException)
 {
 	// Get the number of slots
 	ACSErr::Completion_var completion;
@@ -573,7 +568,6 @@ CORBA::Long FilterWheel::calibrateFilter(const char* name)
 
 ACS::ROdouble_ptr
 FilterWheel::position ()
-    throw (CORBA::SystemException)
 {
     if (m_position_sp == 0)
 	{
@@ -586,7 +580,6 @@ FilterWheel::position ()
 
 ACS::ROstring_ptr
 FilterWheel::desc ()
-    throw (CORBA::SystemException)
 {
     if (m_desc_sp == 0)
 	{
@@ -599,7 +592,6 @@ FilterWheel::desc ()
 
 ACS::ROlong_ptr
 FilterWheel::slots ()
-	throw (CORBA::SystemException)
 {
     if (m_slots_sp == 0)
 	{

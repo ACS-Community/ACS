@@ -20,7 +20,7 @@
 *
 *
 *
-* "@(#) $Id: acsexmplRampedPowerSupplyImpl.cpp,v 1.108 2006/06/22 16:25:51 gchiozzi Exp $"
+* "@(#) $Id: acsexmplRampedPowerSupplyImpl.cpp,v 1.109 2008/10/01 04:30:47 cparedes Exp $"
 *
 * who       when      what
 * --------  --------- ----------------------------------------------
@@ -34,7 +34,7 @@
 
 #include "acsexmplRampedPowerSupplyImpl.h"
 
-ACE_RCSID(acsexmpl, acsexmplRampedPowerSupplyImpl, "$Id: acsexmplRampedPowerSupplyImpl.cpp,v 1.108 2006/06/22 16:25:51 gchiozzi Exp $")
+ACE_RCSID(acsexmpl, acsexmplRampedPowerSupplyImpl, "$Id: acsexmplRampedPowerSupplyImpl.cpp,v 1.109 2008/10/01 04:30:47 cparedes Exp $")
 using namespace baci;
 
 /////////////////////////////////////////////////
@@ -201,7 +201,6 @@ void
 RampedPowerSupply::startRamping (CORBA::Long rampingSteps,
 				 ACS::CBvoid_ptr cb,
 				 const ACS::CBDescIn &desc)
-    throw (CORBA::SystemException)
 {
     //registers the action to the BACI and returns control immediately
     getComponent()->registerAction(BACIValue::type_null, cb, desc, this, START_RAMPING);
@@ -210,7 +209,6 @@ RampedPowerSupply::startRamping (CORBA::Long rampingSteps,
 void
 RampedPowerSupply::stopRamping (ACS::CBvoid_ptr cb,
 				const ACS::CBDescIn &desc)
-    throw (CORBA::SystemException)
 {
     //registers the action to the BACI and returns control immediately
     getComponent()->registerAction(BACIValue::type_null, cb, desc, this, STOP_RAMPING);
@@ -218,7 +216,6 @@ RampedPowerSupply::stopRamping (ACS::CBvoid_ptr cb,
 
 ACS::RWstring_ptr
 RampedPowerSupply::rampingStatus ()
-    throw (CORBA::SystemException)
 {
     if (m_rampingStatus_sp == 0)
 	{
@@ -231,7 +228,6 @@ RampedPowerSupply::rampingStatus ()
 
 ACS::ROlong_ptr
 RampedPowerSupply::rampingStep ()
-    throw (CORBA::SystemException)
 {
     if (m_rampingStep_sp == 0)
 	{

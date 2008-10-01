@@ -21,7 +21,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: acsexmplPowerSupplyImpl.h,v 1.104 2008/07/25 07:37:04 cparedes Exp $"
+* "@(#) $Id: acsexmplPowerSupplyImpl.h,v 1.105 2008/10/01 04:30:47 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -133,7 +133,7 @@ power supply's actual current) at the same time.
  * 
  * @author <a href=mailto:matej.sekoranja@ijs.si>Matej Sekoranja</a>,
  * Jozef Stefan Institute, Slovenia<br>
- * @version "@(#) $Id: acsexmplPowerSupplyImpl.h,v 1.104 2008/07/25 07:37:04 cparedes Exp $"
+ * @version "@(#) $Id: acsexmplPowerSupplyImpl.h,v 1.105 2008/10/01 04:30:47 cparedes Exp $"
  */
 class acsexmpl_EXPORT PowerSupply: public baci::CharacteristicComponentImpl,     //Standard component superclass
 				   public virtual POA_PS::PowerSupply,    //CORBA servant stub
@@ -291,8 +291,7 @@ class acsexmpl_EXPORT PowerSupply: public baci::CharacteristicComponentImpl,    
      */     
     virtual void 
     on (ACS::CBvoid_ptr cb,
-	const ACS::CBDescIn &desc)
-	throw (CORBA::SystemException);
+	const ACS::CBDescIn &desc);
     
     /**
      * Switches off the power supply.
@@ -309,8 +308,7 @@ class acsexmpl_EXPORT PowerSupply: public baci::CharacteristicComponentImpl,    
      */     
     virtual void 
     off (ACS::CBvoid_ptr cb,
-	 const ACS::CBDescIn &desc)
-	throw (CORBA::SystemException);
+	 const ACS::CBDescIn &desc);
     
     /**
      * Resets the power supply.
@@ -327,8 +325,7 @@ class acsexmpl_EXPORT PowerSupply: public baci::CharacteristicComponentImpl,    
      */
     virtual void 
     reset (ACS::CBvoid_ptr cb,
-	   const ACS::CBDescIn &desc)
-	throw (CORBA::SystemException);
+	   const ACS::CBDescIn &desc);
     
     /**  
      * Returns a reference to the current_p property (commanded current).
@@ -339,8 +336,7 @@ class acsexmpl_EXPORT PowerSupply: public baci::CharacteristicComponentImpl,    
        @endhtmlonly
      */ 
     virtual ACS::RWdouble_ptr 
-    current ()
-	throw (CORBA::SystemException);
+    current ();
     
     /**
      * Returns a reference to the readback_p property (actual current).
@@ -351,8 +347,7 @@ class acsexmpl_EXPORT PowerSupply: public baci::CharacteristicComponentImpl,    
        @endhtmlonly
      */ 
     virtual ACS::ROdouble_ptr
-    readback ()
-	throw (CORBA::SystemException);
+    readback ();
     
     /**
      * Returns a reference to the status_p property (see acsexmplPowerSupplyImpl.cpp).
@@ -363,8 +358,7 @@ class acsexmpl_EXPORT PowerSupply: public baci::CharacteristicComponentImpl,    
        @endhtmlonly
      */
     virtual ACS::ROpattern_ptr 
-    status ()
-	throw (CORBA::SystemException);
+    status ();
 
     /*Overriding component lifecycle methods*/
     /**

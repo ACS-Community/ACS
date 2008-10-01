@@ -20,7 +20,7 @@
 *
 *
 *
-* "@(#) $Id: acsexmplMountImpl.cpp,v 1.110 2006/06/22 16:25:51 gchiozzi Exp $"
+* "@(#) $Id: acsexmplMountImpl.cpp,v 1.111 2008/10/01 04:30:47 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -45,7 +45,7 @@
 #include <acsexmplMountImpl.h>
 #include <baciDB.h>
 
-ACE_RCSID(acsexmpl, acsexmplMountImpl, "$Id: acsexmplMountImpl.cpp,v 1.110 2006/06/22 16:25:51 gchiozzi Exp $")
+ACE_RCSID(acsexmpl, acsexmplMountImpl, "$Id: acsexmplMountImpl.cpp,v 1.111 2008/10/01 04:30:47 cparedes Exp $")
 using namespace baci;
 
 /**
@@ -241,7 +241,6 @@ Mount::objfixAction (BACIComponent *cob_p,
 /* --------------------- [ CORBA interface ] ----------------------*/
 ACS::ROdouble_ptr
 Mount::cmdAz ()
-    throw (CORBA::SystemException)
 {
     if (m_cmdAz_sp == 0)
 	{
@@ -254,7 +253,6 @@ Mount::cmdAz ()
 
 ACS::ROdouble_ptr
 Mount::cmdEl ()
-    throw (CORBA::SystemException)
 {
     if (m_cmdEl_sp == 0)
 	{
@@ -267,7 +265,6 @@ Mount::cmdEl ()
 
 ACS::ROdouble_ptr
 Mount::actAz ()
-    throw (CORBA::SystemException)
 {
     if (m_actAz_sp == 0)
 	{
@@ -280,7 +277,6 @@ Mount::actAz ()
 
 ACS::ROdouble_ptr
 Mount::actEl ()
-    throw (CORBA::SystemException)
 {
     if (m_actEl_sp == 0)
 	{
@@ -302,7 +298,6 @@ Mount::obstar (CORBA::Double ra,
 	       ACS::CBvoid_ptr callBack,
 	       const ACS::CBDescIn &desc
 	       )
-    throw (CORBA::SystemException)
 {
     // convert this method's parameters into something ActionImplementor can use
     __obstar_action *param_p = new __obstar_action();
@@ -324,7 +319,6 @@ Mount::objfix (CORBA::Double az,
 	       ACS::CBvoid_ptr callBack,
 	       const ACS::CBDescIn &desc
 	       )
-    throw (CORBA::SystemException)
 {
     // convert this method's parameters into something ActionImplementor can use
     __objfix_action *param_p = new __objfix_action();

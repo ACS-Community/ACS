@@ -20,7 +20,7 @@
 *
 *
 *
-* "@(#) $Id: acsexmplSlowMountImpl.cpp,v 1.12 2007/01/08 13:53:49 gchiozzi Exp $"
+* "@(#) $Id: acsexmplSlowMountImpl.cpp,v 1.13 2008/10/01 04:30:47 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -38,7 +38,7 @@
 #include <time.h>
 #include <math.h>
 
-ACE_RCSID(acsexmpl, acsexmplSlowMountImpl, "$Id: acsexmplSlowMountImpl.cpp,v 1.12 2007/01/08 13:53:49 gchiozzi Exp $")
+ACE_RCSID(acsexmpl, acsexmplSlowMountImpl, "$Id: acsexmplSlowMountImpl.cpp,v 1.13 2008/10/01 04:30:47 cparedes Exp $")
 using namespace baci;
 
 /**
@@ -276,7 +276,6 @@ SlowMount::objfixAction (BACIComponent *cob_p,
 /* --------------------- [ CORBA interface ] ----------------------*/
 ACS::ROdouble_ptr
 SlowMount::cmdAz ()
-    throw (CORBA::SystemException)
 {
 	ACS_TRACE("SlowMount::cmdAz");
     if (m_cmdAz_sp == 0)
@@ -290,7 +289,6 @@ SlowMount::cmdAz ()
 
 ACS::ROdouble_ptr
 SlowMount::cmdEl ()
-    throw (CORBA::SystemException)
 {
 	ACS_TRACE("SlowMount::cmdEl");
     if (m_cmdEl_sp == 0)
@@ -304,7 +302,6 @@ SlowMount::cmdEl ()
 
 ACS::ROdouble_ptr
 SlowMount::actAz ()
-    throw (CORBA::SystemException)
 {
 	ACS_TRACE("SlowMount::actAz");
     if (m_actAz_sp == 0)
@@ -318,7 +315,6 @@ SlowMount::actAz ()
 
 ACS::ROdouble_ptr
 SlowMount::actEl ()
-    throw (CORBA::SystemException)
 {
 	ACS_TRACE("SlowMount::actEl");
     if (m_actEl_sp == 0)
@@ -341,7 +337,6 @@ SlowMount::obstar (CORBA::Double ra,
 	       ACS::CBvoid_ptr callBack,
 	       const ACS::CBDescIn &desc
 	       )
-    throw (CORBA::SystemException)
 {
 	ACS_TRACE("SlowMount::obstar");
     // convert this method's parameters into something ActionImplementor can use
@@ -364,7 +359,6 @@ SlowMount::objfix (CORBA::Double az,
 	       ACS::CBvoid_ptr callBack,
 	       const ACS::CBDescIn &desc
 	       )
-    throw (CORBA::SystemException)
 {
 	ACS_TRACE("SlowMount::objfix");
     // convert this method's parameters into something ActionImplementor can use

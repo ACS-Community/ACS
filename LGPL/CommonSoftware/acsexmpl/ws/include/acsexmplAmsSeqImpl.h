@@ -21,7 +21,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: acsexmplAmsSeqImpl.h,v 1.101 2008/07/25 07:37:04 cparedes Exp $"
+* "@(#) $Id: acsexmplAmsSeqImpl.h,v 1.102 2008/10/01 04:30:47 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -116,7 +116,7 @@
  *  pointing model term.  An important thing to note is this example shows usage of property
  *  sequence types (i.e., ROdoubleSeq and RWdoubleSeq).
  *
- *  @version "@(#) $Id: acsexmplAmsSeqImpl.h,v 1.101 2008/07/25 07:37:04 cparedes Exp $"
+ *  @version "@(#) $Id: acsexmplAmsSeqImpl.h,v 1.102 2008/10/01 04:30:47 cparedes Exp $"
  */
 class AmsTestSeq: public baci::CharacteristicComponentImpl,     //Standard component superclass
 		  public virtual POA_AMSSEQ::AmsTestSeq    //CORBA servant stub
@@ -146,8 +146,7 @@ class AmsTestSeq: public baci::CharacteristicComponentImpl,     //Standard compo
        @endhtmlonly
      */     
     virtual void 
-    setCoeff ()
-	throw (CORBA::SystemException);
+    setCoeff ();
     
     /**
      * Returns a reference to the RWdoubleSeqPM property
@@ -157,8 +156,7 @@ class AmsTestSeq: public baci::CharacteristicComponentImpl,     //Standard compo
        @endhtmlonly
      */ 
     virtual ACS::RWdoubleSeq_ptr 
-    RWdoubleSeqPM ()
-	throw (CORBA::SystemException);
+    RWdoubleSeqPM ();
     
     /**
      * Returns a reference to the ROdoubleSeqPM property
@@ -168,8 +166,7 @@ class AmsTestSeq: public baci::CharacteristicComponentImpl,     //Standard compo
        @endhtmlonly
      */ 
     virtual ACS::ROdoubleSeq_ptr 
-    ROdoubleSeqPM ()
-	throw (CORBA::SystemException);
+    ROdoubleSeqPM ();
 
     /*Override component lifecycle methods*/
     /**

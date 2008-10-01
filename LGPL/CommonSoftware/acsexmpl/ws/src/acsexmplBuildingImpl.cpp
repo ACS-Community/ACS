@@ -20,7 +20,7 @@
 *
 *
 *
-* "@(#) $Id: acsexmplBuildingImpl.cpp,v 1.125 2006/06/22 16:25:51 gchiozzi Exp $"
+* "@(#) $Id: acsexmplBuildingImpl.cpp,v 1.126 2008/10/01 04:30:47 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -49,7 +49,7 @@
  *  Implementation file for Building example.
  */
 
-ACE_RCSID(acsexmpl, acsexmplBuildingImpl, "$Id: acsexmplBuildingImpl.cpp,v 1.125 2006/06/22 16:25:51 gchiozzi Exp $")
+ACE_RCSID(acsexmpl, acsexmplBuildingImpl, "$Id: acsexmplBuildingImpl.cpp,v 1.126 2008/10/01 04:30:47 cparedes Exp $")
 
 using namespace baci;
 using namespace maci;
@@ -139,7 +139,6 @@ Building::~Building()
 /* --------------------- [ CORBA interface ] ----------------------*/
 void
 Building::openFrontDoor ()
-    throw (CORBA::SystemException)
 {
     try 
 	{
@@ -162,7 +161,6 @@ Building::openFrontDoor ()
 
 void
 Building::closeFrontDoor ()
-    throw (CORBA::SystemException)
 {
     try 
 	{
@@ -184,7 +182,6 @@ Building::closeFrontDoor ()
 
 ACS::ROstring_ptr
 Building::version ()
-    throw (CORBA::SystemException)
 {
     if (m_version_sp == 0)
 	{

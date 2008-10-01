@@ -21,7 +21,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: acsexmplSlowMountImpl.h,v 1.7 2008/07/25 07:37:04 cparedes Exp $"
+* "@(#) $Id: acsexmplSlowMountImpl.h,v 1.8 2008/10/01 04:30:47 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -102,7 +102,7 @@ read-only double properties: actAz, actEl, cmdAz, and cmdEl.
  * The Mount::invokeAction method is called by the asynchronous dispatcher whenever there is an
  * xxx pending action and it calls the xxxAction corresponding method.  Also, invokeAction calls 
  * these methods by simply using a function pointer (ActionFunction) instead of specifying each method.
- * @version "@(#) $Id: acsexmplSlowMountImpl.h,v 1.7 2008/07/25 07:37:04 cparedes Exp $"
+ * @version "@(#) $Id: acsexmplSlowMountImpl.h,v 1.8 2008/10/01 04:30:47 cparedes Exp $"
  */
 class acsexmpl_EXPORT SlowMount: public baci::CharacteristicComponentImpl,     //Standard component superclass
 			     public virtual POA_MOUNT_ACS::Mount,   //CORBA servant stub
@@ -251,8 +251,7 @@ class acsexmpl_EXPORT SlowMount: public baci::CharacteristicComponentImpl,     /
 	    CORBA::Double par,
 	    MOUNT_ACS::Mount::coordType type,
 	    ACS::CBvoid_ptr callBack,
-	    const ACS::CBDescIn &desc)
-	throw (CORBA::SystemException); 
+	    const ACS::CBDescIn &desc);
     
     /**
      * (Pre)sets a new non-moving position for the antenna.
@@ -277,8 +276,7 @@ class acsexmpl_EXPORT SlowMount: public baci::CharacteristicComponentImpl,     /
     objfix (CORBA::Double az,
 	    CORBA::Double elev,
 	    ACS::CBvoid_ptr callBack,
-	    const ACS::CBDescIn &desc)
-	throw (CORBA::SystemException);
+	    const ACS::CBDescIn &desc);
     
     /**
      * Returns a reference to the cmdAz property
@@ -289,8 +287,7 @@ class acsexmpl_EXPORT SlowMount: public baci::CharacteristicComponentImpl,     /
        @endhtmlonly
      */ 
     virtual ACS::ROdouble_ptr 
-    cmdAz ()
-	throw (CORBA::SystemException);
+    cmdAz ();
     
     /**
      * Returns a reference to the cmdEl property
@@ -301,8 +298,7 @@ class acsexmpl_EXPORT SlowMount: public baci::CharacteristicComponentImpl,     /
        @endhtmlonly
      */
     virtual ACS::ROdouble_ptr 
-    cmdEl ()
-	throw (CORBA::SystemException);
+    cmdEl ();
     
     /**
      * Returns a reference to the actAz property
@@ -313,8 +309,7 @@ class acsexmpl_EXPORT SlowMount: public baci::CharacteristicComponentImpl,     /
        @endhtmlonly
      */   
     virtual ACS::ROdouble_ptr 
-    actAz ()
-	throw (CORBA::SystemException);
+    actAz ();
     
     /**
      * Returns a reference to the actEl property
@@ -325,8 +320,7 @@ class acsexmpl_EXPORT SlowMount: public baci::CharacteristicComponentImpl,     /
        @endhtmlonly
      */    
     virtual ACS::ROdouble_ptr 
-    actEl ()
-	throw (CORBA::SystemException);
+    actEl ();
     
   private:
     /**

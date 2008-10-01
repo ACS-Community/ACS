@@ -21,7 +21,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: acsexmplBuildingImpl.h,v 1.106 2008/07/25 07:37:04 cparedes Exp $"
+* "@(#) $Id: acsexmplBuildingImpl.h,v 1.107 2008/10/01 04:30:47 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -114,7 +114,7 @@ version of the C++ Building implementation currently used.
  *  Since this device has only synchronous methods, we do not inherit 
  *  from the ActionImplementator class and we do not implement the 
  *  invokeAction method.
- *  @version "@(#) $Id: acsexmplBuildingImpl.h,v 1.106 2008/07/25 07:37:04 cparedes Exp $"
+ *  @version "@(#) $Id: acsexmplBuildingImpl.h,v 1.107 2008/10/01 04:30:47 cparedes Exp $"
  */
 class Building: public baci::CharacteristicComponentImpl,     //Standard component superclass
 	        public virtual POA_acsexmplBuilding::Building    //CORBA servant stub
@@ -145,8 +145,7 @@ class Building: public baci::CharacteristicComponentImpl,     //Standard compone
        @endhtmlonly
      */
     virtual void 
-    openFrontDoor ()
-        throw (CORBA::SystemException);
+    openFrontDoor ();
     
     /**
      * Closes the FRONTDOOR
@@ -157,8 +156,7 @@ class Building: public baci::CharacteristicComponentImpl,     //Standard compone
        @endhtmlonly
      */
     virtual void 
-    closeFrontDoor ()
-        throw (CORBA::SystemException);
+    closeFrontDoor ();
     
     /**
      * Returns a reference to the version property
@@ -169,8 +167,7 @@ class Building: public baci::CharacteristicComponentImpl,     //Standard compone
        @endhtmlonly
      */
     virtual ACS::ROstring_ptr 
-    version ()
-        throw (CORBA::SystemException);
+    version ();
 
 
     /*Override component lifecycle methods*/

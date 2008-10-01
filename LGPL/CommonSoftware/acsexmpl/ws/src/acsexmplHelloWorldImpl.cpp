@@ -21,7 +21,7 @@
 *
 *
 *
-* "@(#) $Id: acsexmplHelloWorldImpl.cpp,v 1.94 2005/04/14 09:35:59 acaproni Exp $"
+* "@(#) $Id: acsexmplHelloWorldImpl.cpp,v 1.95 2008/10/01 04:30:47 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -33,7 +33,7 @@
 #include <ACSErrTypeCommon.h>
 #include <iostream>
 
-ACE_RCSID(acsexmpl, acsexmplHelloWorldImpl, "$Id: acsexmplHelloWorldImpl.cpp,v 1.94 2005/04/14 09:35:59 acaproni Exp $")
+ACE_RCSID(acsexmpl, acsexmplHelloWorldImpl, "$Id: acsexmplHelloWorldImpl.cpp,v 1.95 2008/10/01 04:30:47 cparedes Exp $")
 
 /* ----------------------------------------------------------------*/
 HelloWorld::HelloWorld( 
@@ -54,14 +54,12 @@ HelloWorld::~HelloWorld()
 /* --------------------- [ CORBA interface ] ----------------------*/
 void
 HelloWorld::displayMessage ()
-    throw (CORBA::SystemException)
 {
     std::cout << "Hello World" << std::endl; 
 }
 /* ----------------------------------------------------------------*/
 void 
 HelloWorld::badMethod() 
-    throw(CORBA::SystemException, ACSErrTypeCommon::UnknownEx)
 {
     throw (ACSErrTypeCommon::UnknownExImpl(__FILE__, __LINE__, "HelloWorld::badMethod").getUnknownEx());
 }

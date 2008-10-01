@@ -20,7 +20,7 @@
 *
 *
 *
-* "@(#) $Id: acsexmplLampWheelImpl.cpp,v 1.19 2007/01/08 13:53:49 gchiozzi Exp $"
+* "@(#) $Id: acsexmplLampWheelImpl.cpp,v 1.20 2008/10/01 04:30:47 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -38,7 +38,7 @@
  */
 const static int MOVE_ACTION  = 0;
 
-ACE_RCSID(acsexmpl, acsexmplLampWheelImpl, "$Id: acsexmplLampWheelImpl.cpp,v 1.19 2007/01/08 13:53:49 gchiozzi Exp $")
+ACE_RCSID(acsexmpl, acsexmplLampWheelImpl, "$Id: acsexmplLampWheelImpl.cpp,v 1.20 2008/10/01 04:30:47 cparedes Exp $")
 
 using namespace baci;
 
@@ -334,7 +334,7 @@ void LampWheel::char_hndl(void *data, const XML_Char *s, int len)
     catch (...)
 	{
 	// An error occurred reading the characteristic
-	// This method throws CORBA::SystemException and ACS::NoSuchCharacteristic
+	// This method throws ACS::NoSuchCharacteristic
 	ACS_SHORT_LOG((LM_ERROR,"Error reading the characteristic AvailableSlots by its name"));
 	}
 
@@ -452,7 +452,6 @@ LampWheel::moveAction (BACIComponent *cob_p,
 /* --------------------- [ CORBA interface ] ----------------------*/
 
 void LampWheel::move(CORBA::Short slot, ACS::CBvoid_ptr cb,  const ACS::CBDescIn& desc) 
-	    throw (CORBA::SystemException)
 {
     int* param_p= new int;
     *param_p=slot;
@@ -463,7 +462,6 @@ void LampWheel::move(CORBA::Short slot, ACS::CBvoid_ptr cb,  const ACS::CBDescIn
 
 ACS::ROdouble_ptr
 LampWheel::position ()
-    throw (CORBA::SystemException)
 {
     if (m_position_sp == 0)
 	{
@@ -476,7 +474,6 @@ LampWheel::position ()
 
 ACS::ROstring_ptr
 LampWheel::desc ()
-    throw (CORBA::SystemException)
 {
     if (m_desc_sp == 0)
 	{
@@ -489,7 +486,6 @@ LampWheel::desc ()
 
 ACS::ROlong_ptr
 LampWheel::slots ()
-	throw (CORBA::SystemException)
 {
     if (m_slots_sp == 0)
 	{

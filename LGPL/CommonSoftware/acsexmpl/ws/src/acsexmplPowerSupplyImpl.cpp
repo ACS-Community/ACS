@@ -20,7 +20,7 @@
 *
 *
 *
-* "@(#) $Id: acsexmplPowerSupplyImpl.cpp,v 1.113 2006/10/10 09:11:11 gchiozzi Exp $"
+* "@(#) $Id: acsexmplPowerSupplyImpl.cpp,v 1.114 2008/10/01 04:30:47 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -41,7 +41,7 @@
 
 #include <acsexmplPowerSupplyImpl.h>
 
-ACE_RCSID(acsexmpl, acsexmplPowerSupplyImpl, "$Id: acsexmplPowerSupplyImpl.cpp,v 1.113 2006/10/10 09:11:11 gchiozzi Exp $")
+ACE_RCSID(acsexmpl, acsexmplPowerSupplyImpl, "$Id: acsexmplPowerSupplyImpl.cpp,v 1.114 2008/10/01 04:30:47 cparedes Exp $")
 
 using namespace baci;
 
@@ -235,7 +235,6 @@ void
 PowerSupply::on (ACS::CBvoid_ptr cb,
 		 const ACS::CBDescIn &desc
 		 )
-    throw (CORBA::SystemException)
 {
     //registers the action to the BACI and returns control immediately
     getComponent()->registerAction(BACIValue::type_null, cb, desc, this, ON_ACTION);
@@ -245,7 +244,6 @@ void
 PowerSupply::off (ACS::CBvoid_ptr cb,
 		  const ACS::CBDescIn &desc
 		  )
-    throw (CORBA::SystemException)
 {
     //registers the action to the BACI and returns control immediately
     getComponent()->registerAction(BACIValue::type_null, cb, desc, this, OFF_ACTION);
@@ -255,7 +253,6 @@ void
 PowerSupply::reset (ACS::CBvoid_ptr cb,
 		    const ACS::CBDescIn &desc
 		    )
-    throw (CORBA::SystemException)
 {
     //registers the action to the BACI and returns control immediately
     getComponent()->registerAction(BACIValue::type_null, cb, desc, this, RESET_ACTION);
@@ -263,7 +260,6 @@ PowerSupply::reset (ACS::CBvoid_ptr cb,
 
 ACS::RWdouble_ptr
 PowerSupply::current ()
-    throw (CORBA::SystemException)
 {
     if (m_current_sp == 0)
 	{
@@ -276,7 +272,6 @@ PowerSupply::current ()
 
 ACS::ROdouble_ptr
 PowerSupply::readback ()
-    throw (CORBA::SystemException)
 {
     if (m_readback_sp == 0)
 	{
@@ -290,7 +285,6 @@ PowerSupply::readback ()
 
 ACS::ROpattern_ptr
 PowerSupply::status ()
-    throw (CORBA::SystemException)
 {
     if (m_status_sp == 0)
 	{

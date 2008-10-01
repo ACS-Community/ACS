@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsexmplDoorImpl.cpp,v 1.114 2006/06/22 16:25:51 gchiozzi Exp $"
+* "@(#) $Id: acsexmplDoorImpl.cpp,v 1.115 2008/10/01 04:30:47 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -43,9 +43,9 @@
 #include <ACSErrTypeCommon.h>
 
 #ifndef MAKE_VXWORKS
-ACE_RCSID(acsexmpl, acsexmplDoorImpl, "$Id: acsexmplDoorImpl.cpp,v 1.114 2006/06/22 16:25:51 gchiozzi Exp $")
+ACE_RCSID(acsexmpl, acsexmplDoorImpl, "$Id: acsexmplDoorImpl.cpp,v 1.115 2008/10/01 04:30:47 cparedes Exp $")
 #else
-static char *rcsId="$Id: acsexmplDoorImpl.cpp,v 1.114 2006/06/22 16:25:51 gchiozzi Exp $";
+static char *rcsId="$Id: acsexmplDoorImpl.cpp,v 1.115 2008/10/01 04:30:47 cparedes Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 #endif
 
@@ -370,7 +370,6 @@ Door::closeAction (BACIComponent *cob_p,
 void
 Door::open (ACS::CBvoid_ptr cb,
 	    const ACS::CBDescIn &desc)
-    throw (CORBA::SystemException)
 {
     getComponent()->registerAction(BACIValue::type_null, cb, desc, this, OPEN_ACTION);  
 }
@@ -378,14 +377,12 @@ Door::open (ACS::CBvoid_ptr cb,
 void
 Door::close (ACS::CBvoid_ptr cb,
 	     const ACS::CBDescIn &desc)
-    throw (CORBA::SystemException)
 {
     getComponent()->registerAction(BACIValue::type_null, cb, desc, this, CLOSE_ACTION);
 }
 
 void
 Door::move (CORBA::Double pos)
-    throw (CORBA::SystemException)
 {
     // Set new ref_position_p
     try 
@@ -425,7 +422,6 @@ Door::move (CORBA::Double pos)
 
 ACS::RWdouble_ptr
 Door::ref_position ()
-    throw (CORBA::SystemException)
 {
     if (m_ref_position_sp == 0)
 	{
@@ -438,7 +434,6 @@ Door::ref_position ()
 
 ACS::ROdouble_ptr
 Door::position ()
-    throw (CORBA::SystemException)
 {
     if (m_position_sp == 0)
 	{
@@ -451,7 +446,6 @@ Door::position ()
 
 ACS::ROlong_ptr
 Door::substate ()
-    throw (CORBA::SystemException)
 {
     if (m_substate_sp == 0)
 	{
@@ -464,7 +458,6 @@ Door::substate ()
 
 ACS::ROstring_ptr
 Door::version ()
-    throw (CORBA::SystemException)
 {
     if (m_version_sp == 0)
 	{

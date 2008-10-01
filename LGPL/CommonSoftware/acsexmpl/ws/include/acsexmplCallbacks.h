@@ -18,7 +18,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsexmplCallbacks.h,v 1.7 2007/02/01 05:14:26 cparedes Exp $"
+* "@(#) $Id: acsexmplCallbacks.h,v 1.8 2008/10/01 04:30:47 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -94,7 +94,7 @@
  * of done invocations as well as the name of the BACI property it's monitoring, receiving
  * an asynchronous value from, etc.
  * 
- * @version "@(#) $Id: acsexmplCallbacks.h,v 1.7 2007/02/01 05:14:26 cparedes Exp $"
+ * @version "@(#) $Id: acsexmplCallbacks.h,v 1.8 2008/10/01 04:30:47 cparedes Exp $"
  */
 class CommonCallback
 {
@@ -131,7 +131,7 @@ class CommonCallback
  * property.  There are only two useful methods: alarm_raised and alarm_cleared.  They
  * do just what their names imply.
  * 
- * @version "@(#) $Id: acsexmplCallbacks.h,v 1.7 2007/02/01 05:14:26 cparedes Exp $"
+ * @version "@(#) $Id: acsexmplCallbacks.h,v 1.8 2008/10/01 04:30:47 cparedes Exp $"
  */
 class MyAlarmdouble : public virtual POA_ACS::Alarmdouble,    //CORBA servant stub
 		      protected CommonCallback
@@ -161,8 +161,7 @@ class MyAlarmdouble : public virtual POA_ACS::Alarmdouble,    //CORBA servant st
     void 
     alarm_raised (CORBA::Double value,
 		  const ACSErr::Completion &c,
-		  const ACS::CBDescOut &desc)
-	throw (CORBA::SystemException);
+		  const ACS::CBDescOut &desc);
 	
     /**
      * Method invoked when the double value goes back into the acceptable range.
@@ -177,8 +176,7 @@ class MyAlarmdouble : public virtual POA_ACS::Alarmdouble,    //CORBA servant st
     void 
     alarm_cleared (CORBA::Double value,
 		   const ACSErr::Completion &c,
-		   const ACS::CBDescOut &desc)
-	throw (CORBA::SystemException);
+		   const ACS::CBDescOut &desc);
 	    
     /**
      * Method used so that client and servant can agree
@@ -195,7 +193,6 @@ class MyAlarmdouble : public virtual POA_ACS::Alarmdouble,    //CORBA servant st
      */
     CORBA::Boolean 
     negotiate (ACS::TimeInterval time_to_transmit, const ACS::CBDescOut &desc) 
-	throw (CORBA::SystemException)
 	{
 	    return true;
 	}
@@ -233,8 +230,7 @@ class MyCBdouble : public virtual POA_ACS::CBdouble,    //CORBA servant stub
        @endhtmlonly
      */
     void 
-    working (CORBA::Double value, const ACSErr::Completion &c, const ACS::CBDescOut &desc)
-	throw (CORBA::SystemException);
+    working (CORBA::Double value, const ACSErr::Completion &c, const ACS::CBDescOut &desc);
     
     /**
      * Method invoked for the final value of a BACI monitor or when an asynchronous
@@ -248,8 +244,7 @@ class MyCBdouble : public virtual POA_ACS::CBdouble,    //CORBA servant stub
        @endhtmlonly
      */
     void 
-    done (CORBA::Double value, const ACSErr::Completion &c, const ACS::CBDescOut &desc)
-	throw (CORBA::SystemException);
+    done (CORBA::Double value, const ACSErr::Completion &c, const ACS::CBDescOut &desc);
     
     /**
      * Method used so that client and servant can agree
@@ -266,7 +261,6 @@ class MyCBdouble : public virtual POA_ACS::CBdouble,    //CORBA servant stub
      */
     CORBA::Boolean 
     negotiate (ACS::TimeInterval time_to_transmit, const ACS::CBDescOut &desc) 
-	throw (CORBA::SystemException)
 	{
 	    return true;
 	}
@@ -303,8 +297,7 @@ class MyCBvoid: public virtual POA_ACS::CBvoid,    //CORBA servant stub
        @endhtmlonly
      */
     void 
-    working (const ACSErr::Completion &c, const ACS::CBDescOut &desc) 
-	throw (CORBA::SystemException);
+    working (const ACSErr::Completion &c, const ACS::CBDescOut &desc); 
     
     /**
      * Method invoked to inform the developer of a client that the 
@@ -317,8 +310,7 @@ class MyCBvoid: public virtual POA_ACS::CBvoid,    //CORBA servant stub
        @endhtmlonly
      */
     void 
-    done (const ACSErr::Completion &c, const ACS::CBDescOut &desc) 
-	throw (CORBA::SystemException);
+    done (const ACSErr::Completion &c, const ACS::CBDescOut &desc); 
 
     /**
      * Method used so that client and servant can agree
@@ -336,7 +328,6 @@ class MyCBvoid: public virtual POA_ACS::CBvoid,    //CORBA servant stub
      */
     CORBA::Boolean 
     negotiate (ACS::TimeInterval time_to_transmit, const ACS::CBDescOut &desc) 
-	throw (CORBA::SystemException)
 	{
 	    return true;
 	}

@@ -20,7 +20,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsexmplLampImpl.h,v 1.98 2008/07/25 07:37:04 cparedes Exp $"
+* "@(#) $Id: acsexmplLampImpl.h,v 1.99 2008/10/01 04:30:47 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -106,7 +106,7 @@ has one read-write double property: brightness.
  * 
  * @author <a href=mailto:matej.sekoranja@ijs.si>Matej Sekoranja</a>,
  * Jozef Stefan Institute, Slovenia<br>
- * @version "@(#) $Id: acsexmplLampImpl.h,v 1.98 2008/07/25 07:37:04 cparedes Exp $"
+ * @version "@(#) $Id: acsexmplLampImpl.h,v 1.99 2008/10/01 04:30:47 cparedes Exp $"
  */
 class Lamp: public baci::CharacteristicComponentImpl,
 	    public virtual POA_acsexmplLamp::Lamp,
@@ -240,8 +240,7 @@ class Lamp: public baci::CharacteristicComponentImpl,
      */     
     virtual void 
     on (ACS::CBvoid_ptr cb,
-	const ACS::CBDescIn &desc)
-	throw (CORBA::SystemException);
+	const ACS::CBDescIn &desc);
     
     /**
      * Switches off the lamp.
@@ -259,8 +258,7 @@ class Lamp: public baci::CharacteristicComponentImpl,
      */ 
     virtual void 
     off (ACS::CBvoid_ptr cb,
-	 const ACS::CBDescIn &desc)
-	throw (CORBA::SystemException); 
+	 const ACS::CBDescIn &desc);
     
     /**
      * Returns a reference to the Brightness property
@@ -270,8 +268,7 @@ class Lamp: public baci::CharacteristicComponentImpl,
        @endhtmlonly
      */ 
     virtual ACS::RWdouble_ptr 
-    brightness ()
-	throw (CORBA::SystemException); 
+    brightness ();
     
   private:
     /**

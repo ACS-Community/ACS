@@ -20,7 +20,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsexmplFilterWheelImpl.h,v 1.6 2008/07/25 07:37:04 cparedes Exp $"
+* "@(#) $Id: acsexmplFilterWheelImpl.h,v 1.7 2008/10/01 04:30:47 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -134,7 +134,7 @@ It also has three read-only properties: position, desc, slots.
  * as well as the CDB values are updated. 
  * 
  * @author <a href=mailto:acaproni@eso.org>Alessandro Caproni</a>,
- * @version "@(#) $Id: acsexmplFilterWheelImpl.h,v 1.6 2008/07/25 07:37:04 cparedes Exp $"
+ * @version "@(#) $Id: acsexmplFilterWheelImpl.h,v 1.7 2008/10/01 04:30:47 cparedes Exp $"
  */
 class acsexmpl_EXPORT FilterWheel: public baci::CharacteristicComponentImpl,//Standard component superclass
 	    public virtual POA_acsexmplFilterWheel::FilterWheel,//CORBA servant stub
@@ -396,7 +396,7 @@ class acsexmpl_EXPORT FilterWheel: public baci::CharacteristicComponentImpl,//St
      * performed.
      */ 
  	virtual void moveFilterInBeam(const char* , ACS::CBvoid_ptr,
-		const ACS::CBDescIn&) throw (CORBA::SystemException);
+		const ACS::CBDescIn&); 
     
     /**
      * Move the filter wheel to a specific slot.
@@ -405,16 +405,14 @@ class acsexmpl_EXPORT FilterWheel: public baci::CharacteristicComponentImpl,//St
      * The given callback is used to inform the caller when the action is
      * performed.
      */ 
-    virtual void moveSlotInBeam(int, ACS::CBvoid_ptr, const ACS::CBDescIn&)
-   throw (CORBA::SystemException);
+    virtual void moveSlotInBeam(int, ACS::CBvoid_ptr, const ACS::CBDescIn&);
 
     /**
      * Move the wheel of the specified number of step
      *
      * @param the step to move the wheel
      */
-    virtual void adjust(int, ACS::CBvoid_ptr, const ACS::CBDescIn&)
-	throw (CORBA::SystemException);
+    virtual void adjust(int, ACS::CBvoid_ptr, const ACS::CBDescIn&);
 
     /**
      * Calibrate the delta of the filter by reading the actual position
@@ -424,7 +422,7 @@ class acsexmpl_EXPORT FilterWheel: public baci::CharacteristicComponentImpl,//St
      * @param name The name of the filter to calibrate
      * @return The new delta for the filter
      */
-    virtual CORBA::Long calibrateFilter(const char* name) throw (CORBA::SystemException);
+    virtual CORBA::Long calibrateFilter(const char* name); 
     
     /**
      * Calibrate the step for the slot by reading the actual position
@@ -433,7 +431,7 @@ class acsexmpl_EXPORT FilterWheel: public baci::CharacteristicComponentImpl,//St
      * @param slot The number of the slot to calibrate
      * @return The new step for the slot
      */
-    virtual CORBA::Long calibrateWheel(int slot) throw (CORBA::SystemException);
+    virtual CORBA::Long calibrateWheel(int slot);
 
 
     /**
@@ -443,8 +441,7 @@ class acsexmpl_EXPORT FilterWheel: public baci::CharacteristicComponentImpl,//St
        <br><hr>
        @endhtmlonly
      */ 
-    virtual ACS::ROdouble_ptr position ()
-	throw (CORBA::SystemException); 
+    virtual ACS::ROdouble_ptr position ();
     
     /**
      * Returns a reference to the desc property
@@ -453,8 +450,7 @@ class acsexmpl_EXPORT FilterWheel: public baci::CharacteristicComponentImpl,//St
        <br><hr>
        @endhtmlonly
      */ 
-    virtual ACS::ROstring_ptr desc ()
-	throw (CORBA::SystemException);
+    virtual ACS::ROstring_ptr desc ();
 
     /**
      * Returns a reference to the descavailableSlots property
@@ -463,8 +459,7 @@ class acsexmpl_EXPORT FilterWheel: public baci::CharacteristicComponentImpl,//St
        <br><hr>
        @endhtmlonly
      */ 
-    virtual ACS::ROlong_ptr slots ()
-	throw (CORBA::SystemException);
+    virtual ACS::ROlong_ptr slots ();
 
   private:
 

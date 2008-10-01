@@ -16,7 +16,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsexmplAsyncMethodCB.cpp,v 1.1 2004/09/22 08:36:45 acaproni Exp $"
+* "@(#) $Id: acsexmplAsyncMethodCB.cpp,v 1.2 2008/10/01 04:30:47 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -75,21 +75,21 @@
 
 #include "vltPort.h"
 
-static char *rcsId="@(#) $Id: acsexmplAsyncMethodCB.cpp,v 1.1 2004/09/22 08:36:45 acaproni Exp $"; 
+static char *rcsId="@(#) $Id: acsexmplAsyncMethodCB.cpp,v 1.2 2008/10/01 04:30:47 cparedes Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include "acsexmplAsyncMethodCB.h"
 #include <logging.h>
 
 void AsyncMethodCBvoid::working (const ACSErr::Completion &c, const ACS::CBDescOut &desc)
-	throw (CORBA::SystemException) {
+	 {
 		char logStr[128];
 		sprintf(logStr,"AsyncMethodCBvoid::working for method %s",methodName.c_str());
 		ACS_SHORT_LOG((LM_INFO,logStr));
 }
 
 void AsyncMethodCBvoid::done (const ACSErr::Completion &c, const ACS::CBDescOut &desc)
-	throw (CORBA::SystemException) {
+	 {
 		char logStr[128];
 		sprintf(logStr,"AsyncMethodCBvoid::done for method %s",methodName.c_str());
 		ACS_SHORT_LOG((LM_INFO,logStr));
@@ -97,7 +97,7 @@ void AsyncMethodCBvoid::done (const ACSErr::Completion &c, const ACS::CBDescOut 
 
 // Time negotiation is not yet implemented
 CORBA::Boolean AsyncMethodCBvoid::negotiate (ACS::TimeInterval time_to_transmit, const ACS::CBDescOut &desc) 
-	throw (CORBA::SystemException) {
+	 {
 		char logStr[128];
 		sprintf(logStr,"AsyncMethodCBvoid::negotiate for method %s",methodName.c_str());
 		ACS_SHORT_LOG((LM_INFO,logStr));

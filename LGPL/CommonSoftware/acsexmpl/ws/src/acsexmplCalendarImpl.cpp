@@ -20,7 +20,7 @@
 *
 *
 *
-* "@(#) $Id: acsexmplCalendarImpl.cpp,v 1.99 2005/04/19 14:36:46 acaproni Exp $"
+* "@(#) $Id: acsexmplCalendarImpl.cpp,v 1.100 2008/10/01 04:30:47 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -30,7 +30,7 @@
 
 #include <acsexmplCalendarImpl.h>
 
-ACE_RCSID(acsxmpl, acsexmplCalendarImpl, "$Id: acsexmplCalendarImpl.cpp,v 1.99 2005/04/19 14:36:46 acaproni Exp $")
+ACE_RCSID(acsxmpl, acsexmplCalendarImpl, "$Id: acsexmplCalendarImpl.cpp,v 1.100 2008/10/01 04:30:47 cparedes Exp $")
 
 using namespace baci;
 
@@ -57,7 +57,6 @@ Calendar::~Calendar()
 /* --------------------- [ CORBA interface ] ----------------------*/
 ::acsexmplCalendar::RWDaysEnum_ptr
 Calendar::day ()
-    throw (CORBA::SystemException)
 {
     if (m_day_sp == 0)
 	{
@@ -70,7 +69,6 @@ Calendar::day ()
   
 ::acsexmplCalendar::RWMonthEnum_ptr
 Calendar::month ()
-    throw (CORBA::SystemException)
 {
     if (m_month_sp == 0)
 	{
@@ -83,7 +81,6 @@ Calendar::month ()
 
 ::ACS::RWpattern_ptr
 Calendar::yearAttributes ()
-    throw (CORBA::SystemException)
 {
     if (m_yearAttributes_sp == 0)
 	{
@@ -96,7 +93,6 @@ Calendar::yearAttributes ()
 
 ::acsexmplCalendar::ROStateEnum_ptr
 Calendar::state ()
-    throw (CORBA::SystemException)
 {
     if (m_state_sp == 0)
 	{

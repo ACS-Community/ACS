@@ -16,7 +16,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsexmplCallbacksImpl.cpp,v 1.3 2004/04/21 14:06:15 acaproni Exp $"
+* "@(#) $Id: acsexmplCallbacksImpl.cpp,v 1.4 2008/10/01 04:30:47 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -31,7 +31,6 @@ void
 MyAlarmdouble::alarm_raised (CORBA::Double value,
 			     const ACSErr::Completion &c,
 			     const ACS::CBDescOut &desc)
-    throw (CORBA::SystemException)
 {
     ACS_SHORT_LOG ((LM_INFO, "(%s::Alarmdouble::alarm_raised) Value: %f", prop.c_str(), value));
 }
@@ -40,14 +39,12 @@ void
 MyAlarmdouble::alarm_cleared (CORBA::Double value,
 			      const ACSErr::Completion &c,
 			      const ACS::CBDescOut &desc)
-    throw (CORBA::SystemException)
 {
     ACS_SHORT_LOG ((LM_INFO, "(%s::Alarmdouble::alarm_cleared) Value: %f", prop.c_str(), value));
 }
 //------------------------------------------------------------------
 void 
 MyCBdouble::working(CORBA::Double value, const ACSErr::Completion &c, const ACS::CBDescOut &desc)
-    throw (CORBA::SystemException)
 {
     //To make the modular test deterministic, we have to ensure this message is only printed
     //to standard out exactly once!  This is accomplished by changing the priority of the 
@@ -65,21 +62,18 @@ MyCBdouble::working(CORBA::Double value, const ACSErr::Completion &c, const ACS:
 
 void 
 MyCBdouble::done (CORBA::Double value, const ACSErr::Completion &c, const ACS::CBDescOut &desc)
-    throw (CORBA::SystemException) 
 {
     ACS_SHORT_LOG ((LM_INFO, "(%s::CBdouble::done) Value: %f", prop.c_str(), value));
 }
 //------------------------------------------------------------------
 void 
 MyCBvoid::working (const ACSErr::Completion &c, const ACS::CBDescOut &desc) 
-    throw (CORBA::SystemException)
 { 
     ACS_SHORT_LOG ((LM_INFO, "(%s::CBvoid::working)", prop.c_str())); 
 }
 
 void 
 MyCBvoid::done (const ACSErr::Completion &c, const ACS::CBDescOut &desc) 
-    throw (CORBA::SystemException)
 { 
     ACS_SHORT_LOG ((LM_INFO, "(%s::CBvoid::done)", prop.c_str()));
     ACS_SHORT_LOG ((LM_INFO, "Error code returned: %d", c.code));

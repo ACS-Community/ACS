@@ -22,7 +22,7 @@
 *
 *
 *
-* "@(#) $Id: acsexmplFridgeImpl.h,v 1.114 2008/07/25 07:37:04 cparedes Exp $"
+* "@(#) $Id: acsexmplFridgeImpl.h,v 1.115 2008/10/01 04:30:47 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------\
@@ -147,7 +147,7 @@ class FridgeThread : public ACS::Thread
  * for the "fridge" notification channel.
  * @author <a href=mailto:matej.sekoranja@ijs.si>Matej Sekoranja</a>,
  * Jozef Stefan Institute, Slovenia<br>
- * @version "@(#) $Id: acsexmplFridgeImpl.h,v 1.114 2008/07/25 07:37:04 cparedes Exp $"
+ * @version "@(#) $Id: acsexmplFridgeImpl.h,v 1.115 2008/10/01 04:30:47 cparedes Exp $"
  */
 class FridgeControl: public baci::CharacteristicComponentImpl,    //Standard component superclass
 		     public virtual POA_FRIDGE::FridgeControl    //CORBA servant stub
@@ -220,8 +220,7 @@ class FridgeControl: public baci::CharacteristicComponentImpl,    //Standard com
        @endhtmlonly
      */ 
     virtual void 
-    on ()
-	throw (CORBA::SystemException);
+    on ();
 
     /**
      * Turn off the fridge.
@@ -231,8 +230,7 @@ class FridgeControl: public baci::CharacteristicComponentImpl,    //Standard com
        @endhtmlonly
      */ 
     virtual void 
-    off ()
-	throw (CORBA::SystemException);
+    off ();
     
     /**
      * Open the door.
@@ -242,8 +240,7 @@ class FridgeControl: public baci::CharacteristicComponentImpl,    //Standard com
        @endhtmlonly
      */ 
     virtual void 
-    open ()
-	throw (CORBA::SystemException);
+    open ();
     
     /**
      * Close the door.
@@ -253,8 +250,7 @@ class FridgeControl: public baci::CharacteristicComponentImpl,    //Standard com
        @endhtmlonly
      */ 
     virtual void 
-    close ()
-	throw (CORBA::SystemException);
+    close ();
     
     /**
      * Property refTemperature is like a thermostat for the fridge.
@@ -264,8 +260,7 @@ class FridgeControl: public baci::CharacteristicComponentImpl,    //Standard com
        @endhtmlonly
      */ 
     virtual ACS::RWdouble_ptr 
-    refTemperature ()
-	throw (CORBA::SystemException);
+    refTemperature ();
     
     /**
      * Property powerStatus shows whether the power is on or off.
@@ -275,8 +270,7 @@ class FridgeControl: public baci::CharacteristicComponentImpl,    //Standard com
        @endhtmlonly
      */ 
     virtual FRIDGE::ROOnOffStates_ptr 
-    powerStatus ()
-	throw (CORBA::SystemException);
+    powerStatus ();
     
     /**
      * Property doorStatus shows the position of the door.
@@ -286,8 +280,7 @@ class FridgeControl: public baci::CharacteristicComponentImpl,    //Standard com
        @endhtmlonly
      */ 
     virtual FRIDGE::ROOpClStates_ptr 
-    doorStatus ()
-	throw (CORBA::SystemException);
+    doorStatus ();
     
     /**
      * Property currTemperature shows the fridge's actual temperature.
@@ -297,8 +290,7 @@ class FridgeControl: public baci::CharacteristicComponentImpl,    //Standard com
        @endhtmlonly
      */ 
     virtual ACS::ROdouble_ptr 
-    currTemperature ()
-	throw (CORBA::SystemException);
+    currTemperature ();
 
   private:
     /**

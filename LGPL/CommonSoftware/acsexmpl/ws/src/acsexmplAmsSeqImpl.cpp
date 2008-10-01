@@ -20,7 +20,7 @@
 *
 *
 *
-* "@(#) $Id: acsexmplAmsSeqImpl.cpp,v 1.110 2006/06/22 16:25:51 gchiozzi Exp $"
+* "@(#) $Id: acsexmplAmsSeqImpl.cpp,v 1.111 2008/10/01 04:30:47 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -32,7 +32,7 @@
 #include <acsexmplAmsSeqImpl.h>
 #include <ACSErrTypeOK.h>
 
-ACE_RCSID(acsexmpl, acsexmplAmsSeqImpl, "$Id: acsexmplAmsSeqImpl.cpp,v 1.110 2006/06/22 16:25:51 gchiozzi Exp $")
+ACE_RCSID(acsexmpl, acsexmplAmsSeqImpl, "$Id: acsexmplAmsSeqImpl.cpp,v 1.111 2008/10/01 04:30:47 cparedes Exp $")
 using namespace baci;
 
 /////////////////////////////////////////////////
@@ -113,7 +113,6 @@ AmsTestSeq::~AmsTestSeq()
 /* ----------------------------------------------------------------*/
 void
 AmsTestSeq::setCoeff ()
-    throw (CORBA::SystemException)
 {
     ACS::Time timestamp;
     ACSErr::Completion_var completion;
@@ -146,7 +145,6 @@ AmsTestSeq::setCoeff ()
 /////////////////////////////////////////////////
 ACS::RWdoubleSeq_ptr
 AmsTestSeq::RWdoubleSeqPM ()
-    throw (CORBA::SystemException)
 {
     if (m_RWdoubleSeqPM_p == 0)
 	{
@@ -159,7 +157,6 @@ AmsTestSeq::RWdoubleSeqPM ()
 /////////////////////////////////////////////////
 ACS::ROdoubleSeq_ptr
 AmsTestSeq::ROdoubleSeqPM ()
-    throw (CORBA::SystemException)
 {
     if (m_ROdoubleSeqPM_p == 0)
 	{

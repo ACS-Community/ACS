@@ -19,7 +19,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: acsexmplFridgeImpl.cpp,v 1.132 2007/03/02 14:56:55 bjeram Exp $"
+* "@(#) $Id: acsexmplFridgeImpl.cpp,v 1.133 2008/10/01 04:30:47 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -40,7 +40,7 @@
 #include <acsexmplFridgeImpl.h>
 #include <math.h>
 
-ACE_RCSID(acsexmpl, acsexmplFridgeImpl, "$Id: acsexmplFridgeImpl.cpp,v 1.132 2007/03/02 14:56:55 bjeram Exp $")
+ACE_RCSID(acsexmpl, acsexmplFridgeImpl, "$Id: acsexmplFridgeImpl.cpp,v 1.133 2008/10/01 04:30:47 cparedes Exp $")
 using namespace baci;
 
 /**
@@ -215,7 +215,6 @@ FridgeControl::updateTemperature()
 /* --------------------- [ FRIDGE interface ] ---------------------*/
 void
 FridgeControl::on ()
-    throw (CORBA::SystemException)
 {
 	ACS::Time timestamp;
 
@@ -239,7 +238,6 @@ FridgeControl::on ()
 
 void
 FridgeControl::off ()
-    throw (CORBA::SystemException)
 {
     ACS::Time timestamp;
 
@@ -255,7 +253,6 @@ FridgeControl::off ()
 
 void
 FridgeControl::open ()
-    throw (CORBA::SystemException)
 {
     ACS::Time timestamp;
     
@@ -266,7 +263,6 @@ FridgeControl::open ()
 
 void
 FridgeControl::close ()
-    throw (CORBA::SystemException)
 {
     ACS::Time timestamp;
     
@@ -277,7 +273,6 @@ FridgeControl::close ()
 
 ACS::RWdouble_ptr
 FridgeControl::refTemperature ()
-    throw (CORBA::SystemException)
 {
     if (m_refTemperature_sp == 0)
 	{
@@ -290,7 +285,6 @@ FridgeControl::refTemperature ()
 
 FRIDGE::ROOnOffStates_ptr
 FridgeControl::powerStatus ()
-    throw (CORBA::SystemException)
 {
     if (m_powerStatus_sp == 0)
 	{
@@ -303,7 +297,6 @@ FridgeControl::powerStatus ()
 
 FRIDGE::ROOpClStates_ptr
 FridgeControl::doorStatus ()
-    throw (CORBA::SystemException)
 {
     if (m_doorStatus_sp == 0)
 	{
@@ -316,7 +309,6 @@ FridgeControl::doorStatus ()
  
 ACS::ROdouble_ptr
 FridgeControl::currTemperature ()
-    throw (CORBA::SystemException)
 {
     if (m_currTemperature_sp == 0)
 	{

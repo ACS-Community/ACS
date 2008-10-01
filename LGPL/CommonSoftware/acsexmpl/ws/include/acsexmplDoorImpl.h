@@ -21,7 +21,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: acsexmplDoorImpl.h,v 1.106 2008/07/25 07:37:04 cparedes Exp $"
+* "@(#) $Id: acsexmplDoorImpl.h,v 1.107 2008/10/01 04:30:47 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -152,7 +152,7 @@ respectively. &nbsp;This example has four properties and uses an ACS thread.
  *   - xxxAction() performs (asyncronously) the action and invokes the callback when finished.
  *  The Door::invokeAction method is called by the asynchronous dispatcher whenever there is a
  *  xxx pending action and it calls the corresponding xxxAction method.
- * @version "@(#) $Id: acsexmplDoorImpl.h,v 1.106 2008/07/25 07:37:04 cparedes Exp $"
+ * @version "@(#) $Id: acsexmplDoorImpl.h,v 1.107 2008/10/01 04:30:47 cparedes Exp $"
  */
 class Door: public baci::CharacteristicComponentImpl,     //Standard component superclass
             public virtual POA_acsexmplBuilding::Door,    //CORBA servant stub
@@ -286,8 +286,7 @@ class Door: public baci::CharacteristicComponentImpl,     //Standard component s
      */
     virtual void
     open (ACS::CBvoid_ptr cb,
-	  const ACS::CBDescIn &desc)
-        throw (CORBA::SystemException);
+	  const ACS::CBDescIn &desc);
     
     /**
      * Closes the door
@@ -305,8 +304,7 @@ class Door: public baci::CharacteristicComponentImpl,     //Standard component s
      */ 
     virtual void 
     close (ACS::CBvoid_ptr cb,
-	   const ACS::CBDescIn &desc)
-        throw (CORBA::SystemException);
+	   const ACS::CBDescIn &desc);
     
     /**
      * Moves the door to the given position
@@ -320,8 +318,7 @@ class Door: public baci::CharacteristicComponentImpl,     //Standard component s
        @endhtmlonly
      */
     virtual void 
-    move (CORBA::Double pos)
-        throw (CORBA::SystemException);
+    move (CORBA::Double pos);
     
     /**
      * Property for readback m_position_p
@@ -332,8 +329,7 @@ class Door: public baci::CharacteristicComponentImpl,     //Standard component s
        @endhtmlonly
      */ 
     virtual ACS::ROdouble_ptr 
-    position ()
-        throw (CORBA::SystemException);
+    position ();
     
     /**
      * Property for reference position
@@ -344,8 +340,7 @@ class Door: public baci::CharacteristicComponentImpl,     //Standard component s
        @endhtmlonly
      */
     virtual ACS::RWdouble_ptr
-    ref_position ()
-        throw (CORBA::SystemException);
+    ref_position ();
     
     /**
      * Property for substate
@@ -356,8 +351,7 @@ class Door: public baci::CharacteristicComponentImpl,     //Standard component s
        @endhtmlonly
      */
     virtual ACS::ROlong_ptr 
-    substate ()
-        throw (CORBA::SystemException);
+    substate ();
     
     /**
      * Property for version
@@ -368,8 +362,7 @@ class Door: public baci::CharacteristicComponentImpl,     //Standard component s
        @endhtmlonly
      */
     virtual ACS::ROstring_ptr 
-    version ()
-        throw (CORBA::SystemException);
+    version ();
 
     /*Override component lifecycle methods*/
     /**
