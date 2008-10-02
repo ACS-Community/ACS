@@ -24,13 +24,11 @@ package alma.acs.logging.table;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseListener;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Date;
 
-import javax.swing.ImageIcon;
 import javax.swing.JComponent;
-import javax.swing.JFileChooser;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
@@ -49,20 +47,8 @@ import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.engine.log.LogTypeHelper;
 import com.cosylab.logging.engine.log.ILogEntry.Field;
 import com.cosylab.logging.settings.FieldChooserDialog;
-import java.awt.datatransfer.Clipboard;
-import java.awt.datatransfer.ClipboardOwner;
-import java.awt.datatransfer.Transferable;
-import java.awt.datatransfer.StringSelection;
-import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.UnsupportedFlavorException;
-import java.awt.Toolkit;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 
-import com.cosylab.logging.settings.UserInfoDlg;
-
+import alma.acs.logging.archive.zoom.ZoomManager;
 import alma.acs.logging.table.renderer.DateRenderer;
 import alma.acs.logging.table.renderer.EntryTypeRenderer;
 import alma.acs.logging.table.renderer.InfoRenderer;
@@ -80,8 +66,6 @@ public class LogEntryTable extends JTable {
 	private FieldChooserDialog fieldChooser = null;
 	
 	private LoggingClient loggingClient;
-	
-	public TextTransfer textTransfer;
 	
 	private DefaultListSelectionModel selectionModel;
 	
@@ -120,336 +104,6 @@ public class LogEntryTable extends JTable {
 	 * The renderer to show the type of log (icon and description or icon only)
 	 */
 	private EntryTypeRenderer logTypeRenderer;
-
-	/**
-	 * The class to set the clipboard content 
-	 *  
-	 * @author acaproni
-	 *
-	 */
-	public final class TextTransfer implements ClipboardOwner {
-		/**
-	   * Empty implementation of the ClipboardOwner interface.
-	   */
-	   public void lostOwnership( Clipboard aClipboard, Transferable aContents) {
-	     //do nothing
-	   }
-	   
-	   /**
-	    * Place a String on the clipboard, and make this class the
-	    * owner of the Clipboard's contents.
-	    */
-	    public void setClipboardContents( String str){
-	      StringSelection stringSelection = new StringSelection(str);
-	      Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-	      try {
-	      	clipboard.setContents( stringSelection, stringSelection );
-	      } catch (IllegalStateException e) {
-	      	// This exception may be returned in some cases
-	      	// It is a temporary situation: we do nothing here
-	      	// and the user will retry again or most likely 
-	      	// submit an SPR ;-)
-	      	e.printStackTrace();
-	      }
-	      /* Check if the clipboards contains the right string
-	      String readStr=null;
-	      try {
-	      	readStr = (String)(clipboard.getContents(this).getTransferData(DataFlavor.stringFlavor));
-	      } catch (Exception e) {
-	      	e.printStackTrace();
-	      }
-	      System.out.println("Write ["+str+"]");
-	      System.out.println("Write ["+readStr+"]");
-	      System.out.println("Comparison="+str.compareTo(readStr));*/
-	    }
-	    
-	    /**
-	     * Get the String residing on the clipboard.
-	     *
-	     * @return any text found on the Clipboard; if none found, return an
-	     * empty String.
-	     */
-	     private String getClipboardContents() {
-	       String result = "";
-	       Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-	       //odd: the Object param of getContents is not currently used
-	       Transferable contents = clipboard.getContents(null);
-	       boolean hasTransferableText = (contents != null) &&
-		   		contents.isDataFlavorSupported(DataFlavor.stringFlavor);
-	       if (hasTransferableText) {
-	         try {
-	           result = (String)contents.getTransferData(DataFlavor.stringFlavor);
-	         }
-	         catch (UnsupportedFlavorException ex){
-	           //highly unlikely since we are using a standard DataFlavor
-	           System.out.println(ex);
-	         }
-	         catch (IOException ex) {
-	           System.out.println(ex);
-	         }
-	       }
-	       return result;
-	     }
-	}
-	
-	/**
-	 * The JPopupMenu displayed when the user presses the right mouse button
-	 * over a row of the table
-	 * 
-	 * @author acaproni
-	 *
-	 */
-	private class ColumnPopupMenu extends javax.swing.JPopupMenu implements ActionListener
-	{
-		/**
-		 * The menu item to show the error stack.
-		 * <P>
-		 * It is enabled only if the stack ID is not null
-		 */
-		private JMenuItem showErrorStack = new JMenuItem("Show error stack");
-		
-		/** 
-		 * The menu item to copy the text to the clipboard
-		 */
-		private JMenuItem copyClipboard = new JMenuItem("to clipboard");
-		
-		/** 
-		 * The menu item to copy the text to the additional info field
-		 */
-		private JMenuItem copyAddInfo = new JMenuItem("to additionalInfo");
-		
-		/** 
-		 * The menu item to allow the user to add his information
-		 */
-		private JMenuItem addUserInfo = new JMenuItem("add Info");
-		
-		/** 
-		 * The menu item to save selected logs
-		 */
-		private ImageIcon icon =new ImageIcon(LogTypeHelper.class.getResource("/disk.png"));
-		
-		/**
-		 * The menu item to save the selected logs
-		 */
-		private JMenuItem saveSelected = new JMenuItem("Save selected logs...",icon);
-		
-		/** 
-		 * The text to copy
-		 */
-		private String textToCopy;
-		
-		/** 
-		 * The row and column under the mouse pointer
-		 */
-		private int row;
-		
-		/**
-		 * This property is used to select the logs for the error browser.
-		 * Its value is initialized in the constructor by reading the <code>STACKID</code> of the selected log.
-		 */
-		private String stackId;
-		
-		/**
-		 * The constructor builds the menu
-		 *
-		 */
-		public ColumnPopupMenu(int row, int col, String text)
-		{
-			// Copy the parameter to local variables
-			this.row=row;
-			// A make a copy of the original string 
-			this.textToCopy=new String(text);
-			// Add the Label
-			setLabel("Paste");
-			
-			// Add the menu items
-			add(showErrorStack);
-			addSeparator();
-			add(saveSelected);
-			addSeparator();
-			add(copyClipboard);
-			add(copyAddInfo);
-			addSeparator();
-			add(addUserInfo);
-			
-			// Hide the unneeded buttons
-			boolean singleLineSelected =
-				selectionModel.getMinSelectionIndex() == selectionModel.getMaxSelectionIndex();
-			
-			// The error stack menu item is enabled only if the stack ID is not empty and not null
-			
-			if (singleLineSelected) {
-				LogTableDataModel model = (LogTableDataModel)getModel();
-				ILogEntry selectedLog = model.getVisibleLogEntry(convertRowIndexToModel(row));
-				stackId = (String)selectedLog.getField(Field.STACKID);
-				showErrorStack.setEnabled(stackId!=null && !stackId.isEmpty());
-			} else {
-				stackId=null;
-				showErrorStack.setEnabled(false);
-			}
-			
-			copyAddInfo.setEnabled(singleLineSelected);
-			addUserInfo.setEnabled(singleLineSelected);
-			copyClipboard.setEnabled(true);
-			saveSelected.setEnabled(true);
-			
-			// Add the listeners
-			showErrorStack.addActionListener(this);
-			copyClipboard.addActionListener(this);
-			copyAddInfo.addActionListener(this);
-			addUserInfo.addActionListener(this);
-			saveSelected.addActionListener(this);
-			// Disable the menu items if the test is null or empty
-			if (textToCopy==null || textToCopy.length()==0) {
-				copyClipboard.setEnabled(false);
-				copyAddInfo.setEnabled(false);
-				return;
-			}
-			// Check if the system clipboard is available
-			// and eventually disable the menu item
-			SecurityManager sm = System.getSecurityManager();
-		    if (sm != null) {
-		    	try {
-		    		sm.checkSystemClipboardAccess();
-		    	} catch (Exception e) {
-		    		copyClipboard.setEnabled(false);
-		    	}
-		    }
-		    // Check if the selected log entry has already a data defined 
-		    // In this case we cannot copy our data there overriding the original one
-		    // TODO: check if it is possible to define multilevel data
-		    //       because we're using a tree in the additional info pane
-			if (row >= 0) {
-				//copyAddInfo.setEnabled(!getLCModel().getVisibleLogEntry(row).hasDatas());
-			} else {
-				// Strange error because the popup menu activates only if the user
-				// pressed the mouse button over an item
-				copyAddInfo.setEnabled(false);
-			}
-		}
-		
-		/**
-		 * Handle the events from the menu
-		 * 
-		 * @param e The event
-		 */
-		public void actionPerformed(ActionEvent e) {
-			if (textToCopy==null) {
-				return;
-			}
-			if (e.getSource()==copyClipboard) {
-				// Build the text to copy in the clipboard
-				if (!selectionModel.isSelectionEmpty()) {
-					StringBuffer strBuffer = new StringBuffer();
-					for (int i=selectionModel.getMinSelectionIndex(); 
-						i<=selectionModel.getMaxSelectionIndex(); i++) {
-						if (!selectionModel.isSelectedIndex(i)) {
-							continue;
-						} else {
-							ILogEntry log = getLCModel().getVisibleLogEntry(convertRowIndexToModel(i));
-							strBuffer.append(log.toXMLString());
-							strBuffer.append("\n");
-						}
-					}
-					// Copy the text to the clipboard
-					textTransfer.setClipboardContents(strBuffer.toString());
-				} 
-			} else if (e.getSource()==copyAddInfo) {
-				// Copy the text to the additionalInfo field
-				ILogEntry logEntry = getLCModel().getVisibleLogEntry(convertRowIndexToModel(row));
-				logEntry.addData("Generated by jlog",textToCopy);
-				getLCModel().replaceLog(row,logEntry);
-				
-				LogTableDataModel tableModel = (LogTableDataModel) getModel();
-				tableModel.fireTableRowsUpdated(row,row);
-				setRowSelectionInterval(row,row);
-				
-				loggingClient.setLogDetailContent(logEntry);
-			} else if (e.getSource()==addUserInfo) {
-				// Show the dialog
-				UserInfoDlg dlg = new UserInfoDlg();
-				if (dlg.okPressed()) {
-					String name =  dlg.getInfoName();
-					String value = dlg.getInfo();
-					// Replace some chars potentially dangerous for xml
-					value = value.replaceAll("&","&amp;");
-					value = value.replaceAll("'","&apos;");
-					value = value.replaceAll("`","&apos;");
-					value = value.replaceAll("\"","&quot;");
-					value = value.replaceAll("<","&lt;");
-					value = value.replaceAll(">","&gt;");
-					name = name.replaceAll("&","&amp;");
-					name = name.replaceAll("'","&apos;");
-					name = name.replaceAll("`","&apos;");
-					name = name.replaceAll("\"","&quot;");
-					name = name.replaceAll("<","&lt;");
-					name = name.replaceAll(">","&gt;");
-					
-					ILogEntry logEntry = getLCModel().getVisibleLogEntry(convertRowIndexToModel(row));
-					logEntry.addData(name,value);
-					getLCModel().replaceLog(row,logEntry);
-					
-					LogTableDataModel tableModel = (LogTableDataModel) getModel();
-					tableModel.fireTableRowsUpdated(row,row);
-					setRowSelectionInterval(row,row);
-					
-					loggingClient.setLogDetailContent(logEntry);
-				}
-			} else if (e.getSource()==saveSelected) {
-				saveSelectedLogs();
-			} else if (e.getSource()==showErrorStack) {
-				if (stackId!=null && !stackId.isEmpty()) {
-					loggingClient.addErrorTab(stackId);
-				}
-			} else {
-				System.err.println("Unhandled event "+e);
-			}
-		}
-		
-		/**
-		 * Save the selected logs into a file
-		 *
-		 */
-		private void saveSelectedLogs() {
-			// Build the text to save in the file
-			StringBuilder strBuffer = new StringBuilder();
-			if (!selectionModel.isSelectionEmpty()) {
-				for (int i=selectionModel.getMinSelectionIndex(); 
-					i<=selectionModel.getMaxSelectionIndex(); i++) {
-					if (!selectionModel.isSelectedIndex(i)) {
-						continue;
-					} else {
-						ILogEntry log = getLCModel().getVisibleLogEntry(i);
-						strBuffer.append(log.toXMLString());
-						strBuffer.append("\n");
-					}
-				}
-				if (strBuffer.length()==0) {
-					// Nothing to save
-					return;
-				}
-					
-			}
-			JFileChooser fc = new JFileChooser();
-			if (fc.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
-				File file = fc.getSelectedFile();
-				FileOutputStream outFStream=null;
-				try {
-					outFStream = new FileOutputStream(file);
-				} catch (FileNotFoundException fnfe) {
-					JOptionPane.showMessageDialog(null,"Error creating "+file.getAbsolutePath()+":\n"+fnfe.getMessage(),"Error saving logs",JOptionPane.ERROR_MESSAGE);
-					return;
-				}
-				try {
-					outFStream.write(strBuffer.toString().getBytes());
-					outFStream.flush();
-					outFStream.close();
-				} catch (IOException ioe) {
-					JOptionPane.showMessageDialog(null,"Error saving "+file.getAbsolutePath()+":\n"+ioe.getMessage(),"Error saving logs",JOptionPane.ERROR_MESSAGE);
-				}
-			}
-		}
-	}
 
 	/**
 	 * Popup menu used to display the column options for the table.
@@ -567,14 +221,17 @@ public class LogEntryTable extends JTable {
 
 	}
 
-	private class ColumnMouseAdapter implements MouseListener
-	{
-		public void mouseReleased(MouseEvent e) {}
-		public void mouseEntered(MouseEvent e) {}
-		public void mouseExited(MouseEvent e) {}
+	/**
+	 * Get events from mouse
+	 * 
+	 * @author acaproni
+	 *
+	 */
+	private class TableMouseAdapter extends MouseAdapter	{
 		
-		public void mouseClicked(MouseEvent e) {}
+		private TablePopupMenu popupMenu = new TablePopupMenu(loggingClient,LogEntryTable.this);
 		
+		@Override
 		public void mousePressed(MouseEvent e)
 		{
 			// Get the index of the row and the column below
@@ -586,12 +243,12 @@ public class LogEntryTable extends JTable {
 			if (e.isPopupTrigger()) {
 				// The mouse button is the pop up trigger so we show the menu
 				// but only if the user selected at least one row
-				if (selectionModel.getMaxSelectionIndex()>=0) {
-					String textUnderMouse = getCellStringContent(row, col);
-					ColumnPopupMenu popMenu = new ColumnPopupMenu(row, col, textUnderMouse);
-					popMenu.show(LogEntryTable.this,e.getX(),e.getY());
+				if (getSelectedRowCount()>0) {
+					String textUnderMouse = getCellStringContent(row, col); 
+					popupMenu.show(LogEntryTable.this,e.getX(),e.getY(),row,textUnderMouse);
 				}
-			} 
+			}
+			loggingClient.getToolBar().setZoomable(getSelectedRowCount()>1 && loggingClient.getZoomManager().isAvailable());
 		}
 
 	}
@@ -621,8 +278,6 @@ public class LogEntryTable extends JTable {
 		
 		initialize(initialDateFormat,initalLogTypeFormat);
 		
-		// Create the object for the clipboard
-		textTransfer = new TextTransfer();
 	}
 	
 	/**
@@ -825,8 +480,6 @@ public class LogEntryTable extends JTable {
 			}
 		}
 
-		addMouseListener(new ColumnMouseAdapter());
-
 		setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		sizeColumnsToFit(JTable.AUTO_RESIZE_OFF);
 
@@ -852,6 +505,7 @@ public class LogEntryTable extends JTable {
 		selectionModel.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 		setSelectionModel(selectionModel);
 
+		addMouseListener(new TableMouseAdapter());
 	}
 
 	/**
@@ -1173,6 +827,46 @@ public class LogEntryTable extends JTable {
 				loggingClient.setEnabled(true);
 				setVisible(true);
 			}
+		}
+	}
+	
+	/**
+	 * Zoom over the selected logs.
+	 * <P>
+	 * The zoom consists of loading all the logs in the time interval
+	 * defined by the selected logs.
+	 * The zoom is delegated to the <code>ZoomManager</code>.
+	 * 
+	 *  @see {@link ZoomManager}
+	 */
+	public void zoom() {
+		if (getSelectedRowCount()<=1) {
+			return;
+		}
+		int[] indexes = getSelectedRows();
+		long startDate=Long.MAX_VALUE;
+		long endDate=0;
+		System.out.println("Keys "+indexes.length);
+		for (int i: indexes) {
+			ILogEntry log= getLCModel().getVisibleLogEntry(convertRowIndexToModel(i));
+			long time =((Long)log.getField(Field.TIMESTAMP)).longValue();
+			if (time<startDate) {
+				startDate=time;
+			}
+			if (time>endDate) {
+				endDate=time;
+			}
+		}
+		String startDateStr=IsoDateFormat.formatDate(new Date(startDate));
+		String endDateStr=IsoDateFormat.formatDate(new Date(endDate));
+		try {
+			loggingClient.getZoomManager().zoom(startDateStr, endDateStr, loggingClient, null, loggingClient);
+		} catch (Throwable t) {
+			JOptionPane.showMessageDialog(
+					loggingClient, 
+					"Error while loading logs.\n"+t.getMessage(), 
+					"Zoom error", 
+					JOptionPane.ERROR_MESSAGE);
 		}
 	}
 	
