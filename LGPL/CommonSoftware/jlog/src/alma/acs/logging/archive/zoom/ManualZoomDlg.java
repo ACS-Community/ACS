@@ -115,7 +115,7 @@ Runnable {
 	/**
 	 * The timer to clean the status label
 	 */
-	private final Timer timer = new Timer(3000,this);
+	private final Timer timer = new Timer(5000,this);
 	
 	/**
 	 * The button to close the dialog
@@ -231,7 +231,7 @@ Runnable {
 				thread.start();
 			}
 		} else if (e.getSource()==stopBtn) {
-			
+			zoomer.stopZoom();
 		} else if (e.getSource()==timer) {
 			statusLbl.setText("Ready");
 		} else {
@@ -272,7 +272,7 @@ Runnable {
 		String toStr=IsoDateFormat.formatDate(to);
 		try {
 			zoomer.zoom(fromStr, toStr, this, this, loggingClient);
-			statusLbl.setText("Done");
+			statusLbl.setText("Done ("+logsRead+" logs read)");
 		} catch (Exception e) {
 			JOptionPane.showMessageDialog(
 					this, 
