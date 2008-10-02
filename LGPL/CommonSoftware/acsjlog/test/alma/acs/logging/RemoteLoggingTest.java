@@ -1,5 +1,7 @@
 package alma.acs.logging;
 
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 import junit.framework.TestCase;
@@ -34,7 +36,7 @@ public class RemoteLoggingTest extends TestCase
 	 * {@link ClientLogManager#initRemoteLogging(ORB, Manager, int, boolean)}. 
 	 */
 	public void testSimpleRemoteLogging() throws Exception {
-		ClientLogManagerStandalone clm = new ClientLogManagerStandalone();
+		ClientLogManagerStandalone clm = new ClientLogManagerStandalone(null);
 		
 		// sync call (waits till remote logging is initialized)
 		initRemoteLogging(clm);
@@ -52,37 +54,49 @@ public class RemoteLoggingTest extends TestCase
 		DaemonThreadFactory dtf = new DaemonThreadFactory(getName());
 
 		// we try this out for different delays
-		int[] delays = {0, 20, 100, 500};
+		int[] delays = {1, 20, 100, 500};
 		for (int networkDelay : delays) {
 			for (int shutdownDelay : delays) {
-				System.out.println("*** Network delay = " + networkDelay + " and shutdown delay = " + shutdownDelay + " ***");
+				System.out.println("\n*** Network delay = " + networkDelay + " and shutdown delay = " + shutdownDelay + " ***");
 				
-				final ClientLogManagerStandalone clm = new ClientLogManagerStandalone();
+				CountDownLatch syncOnPrepareRemoteLogging = new CountDownLatch(1);
+				final ClientLogManagerStandalone clm = new ClientLogManagerStandalone(syncOnPrepareRemoteLogging);
 				LogConfig logConfig = clm.getLogConfig();
 				logConfig.setDefaultMinLogLevel(AcsLogLevelDefinition.TRACE);
 				logConfig.setDefaultMinLogLevelLocal(AcsLogLevelDefinition.TRACE);
 				Logger logger = clm.getLoggerForApplication(getName(), true);
-				clm.setDelayMillis(networkDelay);
+
 				// log something before we init the remote logging:
-				logger.info("A healthy info log");
-				logger.fine("now that was fine.");
+				logger.info("A healthy info log before initRemoteLogging ("+networkDelay+"/"+shutdownDelay+")");
+				// Thread.sleep(2); // to keep these two logs in order, which makes manual ref file comparison easier. 
+				logger.fine("now that was a fine log before initRemoteLogging ("+networkDelay+"/"+shutdownDelay+")");
 				
+				clm.setDelayMillis(networkDelay); // simulated network delay for initRemoteLogging-getLogService and write_records
 				// call initRemoteLogging from a separate thread
 				Thread initRemoteLoggingThread = dtf.newThread(new Runnable() {
 					public void run() {
 						initRemoteLogging(clm);
-					}				
+					}
 				});
 				initRemoteLoggingThread.start();
+				// wait until this thread is actually running, which we check via notification from the ClientLogManager#prepareRemoteLogging method
+				syncOnPrepareRemoteLogging.await(10, TimeUnit.SECONDS); // timeout should never apply, just used to stop the test if it gets messed up. 
 				
-				// todo: log some stuff
+				logger.info("Another info log after initRemoteLogging ("+networkDelay+"/"+shutdownDelay+")");
+//				logger.fine("And also a fine log after initRemoteLogging ("+networkDelay+"/"+shutdownDelay+")");
 				
+				// depending on the values of networkDelay and shutdownDelay, we may be calling shutdown while 
+				// our ClientLogManager is still delivering the log messages.
 				Thread.sleep(shutdownDelay);
 				clm.shutdown(true);
+				
+				// wait for the thread that called initRemoteLogging
 				initRemoteLoggingThread.join();
+				
+				// wait a bit more for the mock log dispatcher to print out its xml log record
+				Thread.sleep(1000);
 			}
 		}
-		
 	}
 	
 	
@@ -99,6 +113,13 @@ public class RemoteLoggingTest extends TestCase
 	 * Remote communication delays are simulated, see {@link #setDelayMillis(long)}. 
 	 */
 	private static class ClientLogManagerStandalone extends ClientLogManager {
+		
+		private CountDownLatch syncOnPrepareRemoteLogging;
+
+		ClientLogManagerStandalone(CountDownLatch syncOnPrepareRemoteLogging) {
+			super();
+			this.syncOnPrepareRemoteLogging = syncOnPrepareRemoteLogging;
+		}
 		
 		private LogOperations logServiceMock = new LogEmptyImpl() {
 			public void write_records(Any[] records) {
@@ -127,6 +148,13 @@ public class RemoteLoggingTest extends TestCase
 			} catch (InterruptedException ex) {
 				ex.printStackTrace(System.out);
 			}
+		}
+		
+		protected void prepareRemoteLogging() {
+			if (syncOnPrepareRemoteLogging != null) {
+				syncOnPrepareRemoteLogging.countDown();
+			}
+			super.prepareRemoteLogging();
 		}
 	}
 		
