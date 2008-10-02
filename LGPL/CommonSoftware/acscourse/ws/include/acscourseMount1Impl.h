@@ -21,7 +21,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: acscourseMount1Impl.h,v 1.3 2008/07/25 07:46:46 cparedes Exp $"
+* "@(#) $Id: acscourseMount1Impl.h,v 1.4 2008/10/02 08:58:19 cparedes Exp $"
 *
 */
 
@@ -75,7 +75,7 @@ objfix(...). &nbsp;
  * The class Mount1 is a basic example of a component and simulates the behaviour of an antenna interface.
  * It provides one asynchronous methods: objfix.  The methods only writes the data into 
  * virtual properties.
- * @version "@(#) $Id: acscourseMount1Impl.h,v 1.3 2008/07/25 07:46:46 cparedes Exp $"
+ * @version "@(#) $Id: acscourseMount1Impl.h,v 1.4 2008/10/02 08:58:19 cparedes Exp $"
  */
 class Mount1Impl: public virtual acscomponent::ACSComponentImpl,
 		  public virtual POA_ACSCOURSE_MOUNT::Mount1
@@ -108,8 +108,7 @@ class Mount1Impl: public virtual acscomponent::ACSComponentImpl,
      */    
     virtual void 
     objfix (CORBA::Double az,
-	    CORBA::Double elev)
-	throw (CORBA::SystemException);
+	    CORBA::Double elev);
 
   private:
     

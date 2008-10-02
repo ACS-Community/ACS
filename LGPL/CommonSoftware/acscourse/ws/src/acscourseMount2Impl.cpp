@@ -21,7 +21,7 @@
 *
 *
 *
-* "@(#) $Id: acscourseMount2Impl.cpp,v 1.8 2008/07/25 07:46:46 cparedes Exp $"
+* "@(#) $Id: acscourseMount2Impl.cpp,v 1.9 2008/10/02 08:58:19 cparedes Exp $"
 *
 */
  
@@ -49,7 +49,6 @@ Mount2Impl::~Mount2Impl()
 void 
 Mount2Impl::objfix (CORBA::Double az,
 		    CORBA::Double elev)
-    throw (CORBA::SystemException)
 {
     ACS_TRACE("::Mount2Impl::objfix");
     ACS::Time timestamp;
@@ -70,7 +69,6 @@ Mount2Impl::objfix (CORBA::Double az,
 
 ACS::RWdouble_ptr
 Mount2Impl::cmdAz ()
-    throw (CORBA::SystemException)
 {
     if (m_cmdAz_sp == 0)
 	{
@@ -84,7 +82,6 @@ Mount2Impl::cmdAz ()
 
 ACS::RWdouble_ptr
 Mount2Impl::cmdEl ()
-    throw (CORBA::SystemException)
 {
     if (m_cmdEl_sp == 0)
 	{
@@ -98,7 +95,6 @@ Mount2Impl::cmdEl ()
 
 ACS::ROdouble_ptr
 Mount2Impl::actAz ()
-    throw (CORBA::SystemException)
 {
     if (m_actAz_sp == 0)
 	{
@@ -112,7 +108,6 @@ Mount2Impl::actAz ()
 
 ACS::ROdouble_ptr
 Mount2Impl::actEl ()
-    throw (CORBA::SystemException)
 {
     if (m_actEl_sp == 0)
 	{

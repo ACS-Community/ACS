@@ -21,7 +21,7 @@
 *
 *
 *
-* "@(#) $Id: acscourseMount4Impl.cpp,v 1.10 2008/07/25 07:46:46 cparedes Exp $"
+* "@(#) $Id: acscourseMount4Impl.cpp,v 1.11 2008/10/02 08:58:19 cparedes Exp $"
 *
 */
  
@@ -180,7 +180,6 @@ Mount4Impl::objfixAction (baci::BACIComponent *cob_p,
 void 
 Mount4Impl::objfix (CORBA::Double az,
 		    CORBA::Double elev)
-    throw (CORBA::SystemException)
 {
     ACS::Time timestamp;
     
@@ -206,7 +205,6 @@ Mount4Impl::objfix_async (CORBA::Double az,
 		      ACS::CBvoid_ptr callBack,
 		      const ACS::CBDescIn &desc
     )
-    throw (CORBA::SystemException)
 {
     // convert this method's parameters into something ActionImplementor can use
     __objfix_action *param_p = new __objfix_action();
@@ -219,7 +217,6 @@ Mount4Impl::objfix_async (CORBA::Double az,
 
 ACS::ROdouble_ptr
 Mount4Impl::cmdAz ()
-    throw (CORBA::SystemException)
 {
     if (m_cmdAz_sp == 0)
 	{
@@ -233,7 +230,6 @@ Mount4Impl::cmdAz ()
 
 ACS::ROdouble_ptr
 Mount4Impl::cmdEl ()
-    throw (CORBA::SystemException)
 {
     if (m_cmdEl_sp == 0)
 	{
@@ -247,7 +243,6 @@ Mount4Impl::cmdEl ()
 
 ACS::ROdouble_ptr
 Mount4Impl::actAz ()
-    throw (CORBA::SystemException)
 {
     if (m_actAz_sp == 0)
 	{
@@ -261,7 +256,6 @@ Mount4Impl::actAz ()
 
 ACS::ROdouble_ptr
 Mount4Impl::actEl ()
-    throw (CORBA::SystemException)
 {
     if (m_actEl_sp == 0)
 	{

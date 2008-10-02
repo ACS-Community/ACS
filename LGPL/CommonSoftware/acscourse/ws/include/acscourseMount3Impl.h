@@ -21,7 +21,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: acscourseMount3Impl.h,v 1.3 2008/07/25 07:46:46 cparedes Exp $"
+* "@(#) $Id: acscourseMount3Impl.h,v 1.4 2008/10/02 08:58:19 cparedes Exp $"
 *
 */
 
@@ -80,7 +80,7 @@ objfix(...). &nbsp;
  * The class Mount3 is a basic example of a component and simulates the behaviour of an antenna interface.
  * It provides one asynchronous methods: objfix.  The methods only writes the data into 
  * virtual properties.
- * @version "@(#) $Id: acscourseMount3Impl.h,v 1.3 2008/07/25 07:46:46 cparedes Exp $"
+ * @version "@(#) $Id: acscourseMount3Impl.h,v 1.4 2008/10/02 08:58:19 cparedes Exp $"
  */
 class Mount3Impl: public virtual baci::CharacteristicComponentImpl,
 		  public virtual POA_ACSCOURSE_MOUNT::Mount3
@@ -106,6 +106,7 @@ class Mount3Impl: public virtual baci::CharacteristicComponentImpl,
      *
      * @param az        position azimuth (degree)
      * @param elev      position elevation (degree)
+     * @throw ACSErrTypeACSCourse::TargetOutOfRangeEx
      * @return void
      * @htmlonly
      * <br><hr>
@@ -113,8 +114,7 @@ class Mount3Impl: public virtual baci::CharacteristicComponentImpl,
      */    
     virtual void 
     objfix (CORBA::Double az,
-	    CORBA::Double elev)
-	throw (CORBA::SystemException, ACSErrTypeACSCourse::TargetOutOfRangeEx);
+	    CORBA::Double elev);
 
     /**
      * Returns a reference to the cmdAz property
@@ -125,8 +125,7 @@ class Mount3Impl: public virtual baci::CharacteristicComponentImpl,
      * @endhtmlonly
      */ 
     virtual ACS::ROdouble_ptr 
-    cmdAz ()
-	throw (CORBA::SystemException);
+    cmdAz ();
     
     /**
      * Returns a reference to the cmdEl property
@@ -137,8 +136,7 @@ class Mount3Impl: public virtual baci::CharacteristicComponentImpl,
      * @endhtmlonly
      */
     virtual ACS::ROdouble_ptr 
-    cmdEl ()
-	throw (CORBA::SystemException);
+    cmdEl ();
     
     /**
      * Returns a reference to the actAz property
@@ -149,8 +147,7 @@ class Mount3Impl: public virtual baci::CharacteristicComponentImpl,
      * @endhtmlonly
      */   
     virtual ACS::ROdouble_ptr 
-    actAz ()
-	throw (CORBA::SystemException);
+    actAz ();
     
     /**
      * Returns a reference to the actEl property
@@ -161,8 +158,7 @@ class Mount3Impl: public virtual baci::CharacteristicComponentImpl,
      * @endhtmlonly
      */    
     virtual ACS::ROdouble_ptr 
-    actEl ()
-	throw (CORBA::SystemException);
+    actEl ();
     
 
   protected:

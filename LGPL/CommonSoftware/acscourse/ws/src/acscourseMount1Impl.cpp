@@ -21,7 +21,7 @@
 *
 *
 *
-* "@(#) $Id: acscourseMount1Impl.cpp,v 1.4 2005/07/04 17:18:25 gchiozzi Exp $"
+* "@(#) $Id: acscourseMount1Impl.cpp,v 1.5 2008/10/02 08:58:19 cparedes Exp $"
 *
 */
  
@@ -47,7 +47,6 @@ Mount1Impl::~Mount1Impl()
 void 
 Mount1Impl::objfix (CORBA::Double az,
 	CORBA::Double elev)
-    throw(CORBA::SystemException)
 {
     ACS_TRACE("::Mount1Impl::~Mount1Impl");
     ACS_SHORT_LOG((LM_INFO,"Received objfix command. Az: %f El: %f", az, elev));

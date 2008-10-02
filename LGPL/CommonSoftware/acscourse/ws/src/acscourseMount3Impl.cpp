@@ -21,7 +21,7 @@
 *
 *
 *
-* "@(#) $Id: acscourseMount3Impl.cpp,v 1.6 2008/07/25 07:46:46 cparedes Exp $"
+* "@(#) $Id: acscourseMount3Impl.cpp,v 1.7 2008/10/02 08:58:19 cparedes Exp $"
 *
 */
  
@@ -54,7 +54,6 @@ Mount3Impl::~Mount3Impl()
 void 
 Mount3Impl::objfix (CORBA::Double az,
 		    CORBA::Double elev)
-    throw (CORBA::SystemException, ACSErrTypeACSCourse::TargetOutOfRangeEx)
 {
     ACS_TRACE("::Mount3Impl::objfix");
     ACS::Time timestamp;
@@ -75,7 +74,6 @@ Mount3Impl::objfix (CORBA::Double az,
 
 ACS::ROdouble_ptr
 Mount3Impl::cmdAz ()
-    throw (CORBA::SystemException)
 {
     if (m_cmdAz_sp == 0)
 	{
@@ -89,7 +87,6 @@ Mount3Impl::cmdAz ()
 
 ACS::ROdouble_ptr
 Mount3Impl::cmdEl ()
-    throw (CORBA::SystemException)
 {
     if (m_cmdEl_sp == 0)
 	{
@@ -103,7 +100,6 @@ Mount3Impl::cmdEl ()
 
 ACS::ROdouble_ptr
 Mount3Impl::actAz ()
-    throw (CORBA::SystemException)
 {
     if (m_actAz_sp == 0)
 	{
@@ -117,7 +113,6 @@ Mount3Impl::actAz ()
 
 ACS::ROdouble_ptr
 Mount3Impl::actEl ()
-    throw (CORBA::SystemException)
 {
     if (m_actEl_sp == 0)
 	{

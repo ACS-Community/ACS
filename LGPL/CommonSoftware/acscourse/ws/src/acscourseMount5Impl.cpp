@@ -21,7 +21,7 @@
 *
 *
 *
-* "@(#) $Id: acscourseMount5Impl.cpp,v 1.9 2008/07/25 07:46:46 cparedes Exp $"
+* "@(#) $Id: acscourseMount5Impl.cpp,v 1.10 2008/10/02 08:58:19 cparedes Exp $"
 *
 */
  
@@ -101,7 +101,6 @@ Mount5Impl::~Mount5Impl()
 void 
 Mount5Impl::objfix (CORBA::Double az,
 		    CORBA::Double elev)
-    throw (CORBA::SystemException, ACSErrTypeACSCourse::TargetOutOfRangeEx)
 {
     ACS_TRACE("::Mount5Impl::objfix");
     ACS_SHORT_LOG((LM_INFO,"Received objfix command. Az: %f El: %f", az, elev));
@@ -134,7 +133,6 @@ Mount5Impl::objfix (CORBA::Double az,
 
 ACS::ROdouble_ptr
 Mount5Impl::cmdAz ()
-    throw (CORBA::SystemException)
 {
     if (m_cmdAz_sp == 0)
 	{
@@ -148,7 +146,6 @@ Mount5Impl::cmdAz ()
 
 ACS::ROdouble_ptr
 Mount5Impl::cmdEl ()
-    throw (CORBA::SystemException)
 {
     if (m_cmdEl_sp == 0)
 	{
@@ -162,7 +159,6 @@ Mount5Impl::cmdEl ()
 
 ACS::ROdouble_ptr
 Mount5Impl::actAz ()
-    throw (CORBA::SystemException)
 {
     if (m_actAz_sp == 0)
 	{
@@ -176,7 +172,6 @@ Mount5Impl::actAz ()
 
 ACS::ROdouble_ptr
 Mount5Impl::actEl ()
-    throw (CORBA::SystemException)
 {
     if (m_actEl_sp == 0)
 	{
