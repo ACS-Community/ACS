@@ -25,9 +25,13 @@ import java.util.Collection;
 import java.util.Set;
 import java.util.Iterator;
 
+import alma.acs.logging.engine.parser.ACSLogParser;
+import alma.acs.logging.engine.parser.ACSLogParserFactory;
+
 import com.cosylab.logging.client.cache.LogMultiFileCache;
 import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.engine.log.LogTypeHelper;
+import com.cosylab.logging.engine.log.ILogEntry.Field;
 
 import junit.framework.TestCase;
 
@@ -374,23 +378,53 @@ public class MultiFileCacheTest extends TestCase {
 	 */
 	public void testGet() throws Exception {
 		// Create and populate the cache
-		Collection<ILogEntry> logCollection = CacheUtils.generateLogs(1000);
-		assertEquals(1000, logCollection.size());
+		Collection<ILogEntry> logCollection = CacheUtils.generateLogs(5000);
+		assertEquals(5000, logCollection.size());
 		for (ILogEntry log: logCollection) {
 			cache.add(log);
 		}
 		assertEquals(Integer.valueOf(0), cache.getFirstLog());
-		assertEquals(Integer.valueOf(999), cache.getLastLog());
+		assertEquals(Integer.valueOf(4999), cache.getLastLog());
 		
 		assertEquals(logCollection.size(), cache.getSize());
 		
 		for (Integer t=cache.getFirstLog(); t<=cache.getLastLog(); t++) {
 			ILogEntry log = cache.getLog(t);
-			// To be sure the log is what we expect, it checks is the log message
+			// To be sure the log is what we expect, it checks if the log message
 			// contains the key
 			String message = (String)log.getField(ILogEntry.Field.LOGMESSAGE);
 			assertNotNull(message);
 			assertTrue(message.contains(t.toString()));
+		}
+	}
+	
+	/**
+	 * Test replacement of logs
+	 * 
+	 * @throws Exception
+	 */
+	public void testReplace() throws Exception {
+		ACSLogParser parser = ACSLogParserFactory.getParser();
+		assertNotNull(parser);
+		// Create and populate the cache
+		Collection<ILogEntry> logCollection = CacheUtils.generateLogs(5000);
+		assertEquals(5000, logCollection.size());
+		for (ILogEntry log: logCollection) {
+			cache.add(log);
+		}
+		assertEquals(Integer.valueOf(0), cache.getFirstLog());
+		assertEquals(Integer.valueOf(4999), cache.getLastLog());
+		
+		assertEquals(logCollection.size(), cache.getSize());
+		
+		for (Integer t=cache.getFirstLog(); t<=cache.getLastLog(); t++) {
+			String logMsg ="This log replaced the log with key "+t;
+			String logStr = "<Info TimeStamp=\"2005-11-29T16:00:00.000\" Routine=\"CacheTest::testReplace\" Host=\"this\" Process=\"test\" Thread=\"main\" Context=\"\"><![CDATA["+logMsg+"]]></Info>";
+			ILogEntry newLog = parser.parse(logStr);
+			cache.replaceLog(t, newLog);
+			
+			ILogEntry replacedLog =cache.getLog(t);
+			assertEquals(newLog.getField(Field.LOGMESSAGE), replacedLog.getField(Field.LOGMESSAGE));
 		}
 	}
 		
