@@ -200,14 +200,6 @@ public class FilesManager {
 	}
 	
 	/**
-	 * The name of the property containing the folder where ARCHIVES writes
-	 * files into.
-	 * <P> 
-	 * <I>Note</I>: this way of getting the folder could change in further releases.
-	 */
-	public static final String FILES_LOCATION_PROPRTY_NAME="jlog.archive.filesFolder";
-	
-	/**
 	 * The folder containing XML files of logs written by ARCHIVE
 	 */
 	public final String filesFolder;
@@ -220,57 +212,34 @@ public class FilesManager {
 	/**
 	 * Constructor
 	 * 
-	 * @throws Exception If the folder containing XML files is not found/readable
-	 */
-	public FilesManager() throws ZoomException {
-		filesFolder=getFolderOfFiles(null);
-	}
-	
-	/**
-	 * Constructor
-	 * 
 	 * @param folder The folder containing files of logs
 	 * @throws ZoomException
 	 */
 	public FilesManager(String folder) throws ZoomException {
-		filesFolder=getFolderOfFiles(folder);
+		filesFolder=checkFolderOfFiles(folder);
 	}
 	
 	/**
-	 * Get the name of the folder where ARCHIVE writes files into and checks
-	 * if the name is valid and points to a readable directory.
-	 * <P>
-	 * The name of the folder can be passed in the parameter and in this case this
-	 * method makes only sanity checks.
-	 * If the parameter is <code>null</code> the the path of the folder is 
-	 * taken from a property.
+	 * Check if the folder where ARCHIVE writes files into is valid 
+	 * and points to a readable directory.
 	 * 
-	 * @param folder The path of folder of log files; if <code>null</code>,
-	 * 				the path is read from a java property 
-	 * @return The name of the folder of files; 
+	 * @param folder The path of folder of log files 
+	 * @return The absolute path name of the folder of files; 
 	 * 
 	 * @throws ZoomException In case the folder is not found or not readable
 	 */
-	private String getFolderOfFiles(String folder) throws ZoomException {
-		String ret;
-		if (folder==null) {
-			ret= System.getProperty(FILES_LOCATION_PROPRTY_NAME);
+	private String checkFolderOfFiles(String folder) throws ZoomException {
+		if (folder==null || folder.isEmpty()) {
+			throw new IllegalArgumentException("Invalid folder: "+folder);
+		}
+		// Check if the folder is readable
+		File f = new File(folder);
+		if (!f.isDirectory() || !f.canRead()) {
+			throw new ZoomException("Invalid folder of XML files: "+folder);
 		} else {
-			ret=folder;
+			folder=f.getAbsolutePath();
 		}
-		if (ret!=null && !ret.isEmpty()) {
-			// Check if the folder is readable
-			File f = new File(ret);
-			if (!f.isDirectory() || !f.canRead()) {
-				ret=null;
-			} else {
-				ret=f.getAbsolutePath();
-			}
-		}
-		if (ret==null) {
-			throw new ZoomException("Invalid folder of XML files");
-		}
-		return ret;
+		return folder;
 	}
 	
 	/**
@@ -414,13 +383,12 @@ public class FilesManager {
 	 * @return <code>true</code> if the file manager is operative
 	 */
 	public boolean isOperational() {
-		if (filesFolder==null) {
+		try {
+			checkFolderOfFiles(filesFolder);
+		} catch (Exception e) {
 			return false;
 		}
 		File f = new File(filesFolder);
-		if (!f.isDirectory() || !f.canRead()) {
-			return false;
-		}
 		return getFileList(0, System.currentTimeMillis()).length>0;
 	}
 
