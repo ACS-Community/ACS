@@ -27,6 +27,7 @@ import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.engine.log.LogTypeHelper;
 
 import alma.acs.logging.archive.zoom.FilesManager;
+import alma.acs.logging.archive.zoom.ZoomManager;
 import alma.acs.logging.archive.zoom.ZoomProgressListener;
 import alma.acs.util.IsoDateFormat;
 import junit.framework.TestCase;
@@ -74,7 +75,8 @@ ZoomProgressListener {
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
-		manager = new FilesManager();
+		String folder = System.getProperty(ZoomManager.FILES_LOCATION_PROPERTY_NAME);
+		manager = new FilesManager(folder);
 		assertNotNull(manager);
 		assertNotNull(dateFormat);
 		filesToRead=0;
