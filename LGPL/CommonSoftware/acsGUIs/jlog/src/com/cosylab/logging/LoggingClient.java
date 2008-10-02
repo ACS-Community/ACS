@@ -54,6 +54,7 @@ import javax.swing.event.MenuListener;
 import alma.acs.logging.archive.ArchiveConnectionManager;
 import alma.acs.logging.archive.QueryDlg;
 import alma.acs.logging.archive.ArchiveConnectionManager.DBState;
+import alma.acs.logging.archive.zoom.ManualZoomDlg;
 import alma.acs.logging.archive.zoom.ZoomManager;
 import alma.acs.logging.archive.zoom.ZoomPrefsDlg;
 import alma.acs.logging.dialogs.main.LogFrame;
@@ -202,6 +203,11 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
      * folder of XML files is read from a java property.
      */
     private ZoomManager zoom=new ZoomManager();
+    
+    /**
+     * The dialog to perform the zoom with a given time interval
+     */
+    private ManualZoomDlg manualZoomDlg;
     
     /** 
      * <code>true</code> if the engine is connected.
@@ -436,7 +442,15 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
             	toolBar.setZoomable(zoomAvailable);
             	menuBar.getManualZoomMI().setEnabled(zoomAvailable);
             } else if (e.getSource()==menuBar.getManualZoomMI()) {
-            	System.out.println("NOT implemented yet");
+            	class ShowManualZoom extends Thread {
+            		public void run() {
+            			if (manualZoomDlg==null) {
+                    		manualZoomDlg=new ManualZoomDlg(LoggingClient.this,zoom);
+                    	}
+                    	manualZoomDlg.setVisible(true);		
+            		}
+            	}
+            	SwingUtilities.invokeLater(new ShowManualZoom());
             } else {
             	System.err.println("Unrecognized ActionEvent "+e);
             }
@@ -1613,6 +1627,10 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
     	if (databaseDlg!=null) {
     		databaseDlg.close();
     		databaseDlg=null;
+    	}
+    	if (manualZoomDlg!=null) {
+    		manualZoomDlg.close();
+    		manualZoomDlg=null;
     	}
 	}
 	
