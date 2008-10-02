@@ -24,9 +24,6 @@ package alma.acs.container.corba;
 import java.util.ConcurrentModificationException;
 import java.util.Properties;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -483,86 +480,114 @@ public class AcsCorba
 
 	/**
 	 * Calls <code>m_orb.shutdown(wait_for_completion)</code>.
-     * <p>
-     * If this method is invoked from an ORB thread (as it happens in the Java container in case of shutdown being commanded by the manager), 
-     * it returns immediately, independently of the <code>wait_for_completion</code> parameter. 
-     * The <code>Orb#shutdown</code> call will then run asynchronously.
-     * Note that shutting down the ORB from within an ORB thread would result in a deadlock (or BAD_INV_ORDER exception) 
-     * if <code>wait_for_completion</code> is true. The Java container will nonetheless wait for the ORB shutdown, 
-     * because its main thread blocks on ORB#run and only continues when the ORB is shut down.
-     * <p>
-     * Note that currently the identification of an ORB thread is not very refined: any thread that is not called "main"
-     * is considered an ORB thread. JacORB has the proprietary method <code>isInInvocationContext</code>,
-     * but this does not seem to be available from a standard ORB.
-     * The only known risk is that a client which is not a container might call this method from a thread other than "main",
-     * in which case the ORB shutdown will happen in a separate thread and this method will return immediately;
-     * since the client does not block on the ORB, the risk is that the JVM terminates before the ORB has released system resources.
-     * 
-     * <p>
-     * @Todo: As a workaround for a JacORB bug (http://www.jacorb.org/cgi-bin/bugzilla/show_bug.cgi?id=537), 
-     *        we currently skim off the <code>ConcurrentModificationException</code> that the unsynchronized
-     *        HashMap of <code>ClientConnectionManager.shutdown</code> may throw. 
-     *        This should be removed when we upgrade JacORB.
-     * @param wait_for_completion blocks this call until ORB has shut down. 
-     *        Will be effectively <code>false</code> if <code>isOrbThread == true</code>.
-     * @param isOrbThread  must be <code>true</code> if the calling thread services a Corba invocation, e.g. to {@link AcsContainer#shutdown}.
+	 * <p>
+	 * If this method is invoked from an ORB thread (as it happens in the Java container in case of shutdown being
+	 * commanded by the manager), it returns immediately, independently of the <code>wait_for_completion</code>
+	 * parameter. The <code>Orb#shutdown</code> call will then run asynchronously. Note that shutting down the ORB from
+	 * within an ORB thread would result in a deadlock (or BAD_INV_ORDER exception) if <code>wait_for_completion</code>
+	 * is true. The Java container will nonetheless wait for the ORB shutdown, because its main thread blocks on ORB#run
+	 * and only continues when the ORB is shut down.
+	 * <p>
+	 * Note that currently the identification of an ORB thread is not very refined: any thread that is not called "main"
+	 * is considered an ORB thread. JacORB has the proprietary method <code>isInInvocationContext</code>, but this does
+	 * not seem to be available from a standard ORB. The only known risk is that a client which is not a container might
+	 * call this method from a thread other than "main", in which case the ORB shutdown will happen in a separate thread
+	 * and this method will return immediately; since the client does not block on the ORB, the risk is that the JVM
+	 * terminates before the ORB has released system resources.
+	 * 
+	 * <p>
+	 * 
+	 * @Todo: As a workaround for a JacORB bug (http://www.jacorb.org/cgi-bin/bugzilla/show_bug.cgi?id=537), we
+	 *        currently skim off the <code>ConcurrentModificationException</code> that the unsynchronized HashMap of
+	 *        <code>ClientConnectionManager.shutdown</code> may throw. This should be removed when we upgrade JacORB.
+	 * @param wait_for_completion
+	 *            blocks this call until ORB has shut down. Will be effectively <code>false</code> if
+	 *            <code>isOrbThread == true</code>.
+	 * @param isOrbThread
+	 *            must be <code>true</code> if the calling thread services a Corba invocation, e.g. to
+	 *            {@link AcsContainer#shutdown}.
 	 */
-	public void shutdownORB(final boolean wait_for_completion, boolean isOrbThread)
-	{
+	public void shutdownORB(final boolean wait_for_completion, boolean isOrbThread) {
 		if (m_orb != null) {
-            if (isOrbThread) {
-                Runnable cmd = new Runnable() {
-                    public void run() {
-                    	try {
-                    		// since m_orb.shutdown runs asynchronously anyway, there is no advantage to pass wait_for_completion even if that flag ist set.
-                    		m_orb.shutdown(false);
-                    	} catch (ConcurrentModificationException ex) {
-                    		// ignore, see javadoc
-                    	}
-                    }
-                };
-                (new DaemonThreadFactory("ShutdownORB")).newThread(cmd).start();
-            }
-            else {
-            	// not an ORB thread, thus we can call shutdown directly
-            	try {
-            		if (wait_for_completion) {
-            			// there appears to be a bug in JacORB that makes "orb.shutdown(true)" return too early (before shutdown completed),
-            			// which then depending on timing can make a subsequent call to orb#destroy hang.
-            			// Here we try out some additional synch'ing through Orb#run, and use a timeout to avoid blocking forever.
-            			final CountDownLatch synch = new CountDownLatch(2);
-            			Runnable cmd = new Runnable() {
+			if (isOrbThread) {
+				Runnable cmd = new Runnable() {
+					public void run() {
+						try {
+							// since m_orb.shutdown runs asynchronously anyway, there is no advantage in passing
+							// wait_for_completion even if that flag is set to true.
+							m_orb.shutdown(false);
+						} catch (ConcurrentModificationException ex) {
+							// ignore, see javadoc
+						}
+					}
+				};
+				(new DaemonThreadFactory("ShutdownORB")).newThread(cmd).start();
+			} else {
+				// not an ORB thread, thus we can call shutdown directly
+				try {
+					if (wait_for_completion) {
+						// There appears to be a bug in JacORB that makes "orb.shutdown(true)" return too early (before shutdown completed),
+						// which then depending on timing can make a subsequent call to orb#destroy hang.
+						// Here we try out some additional synch'ing through Orb#run, and use a timeout to avoid blocking forever.
+						// However the premature return could be caused by the occasional ConcurrentModificationException (see comment on JacORB bug)
+						// in which case the additional orb shutdown synchronization on return from orb.run is useless.
+						// For ACS 8.0 we use both strategies though, the additional synch'ing and a sleep delay when catching ConcurrentModificationException.
+						final CountDownLatch synch1 = new CountDownLatch(1);
+						final CountDownLatch synch2 = new CountDownLatch(1);
+						Runnable cmd = new Runnable() {
 							public void run() {
-								synch.countDown(); // first, to make sure this thread is running 
+								synch1.countDown();
 								m_orb.run();
-								synch.countDown(); // second, to notify that ORB has shut down.
+								synch2.countDown();
 							}
-            			};
-            			(new DaemonThreadFactory("WorkaroundBlockOnOrbTillShutdownCompletes")).newThread(cmd).start();
-            			
-            			// this call should only return when the ORB has shut down, but it may return too early
-            			m_orb.shutdown(true);
-            			
-            			// second line of defense
-            			try {
-							boolean ok = synch.await(30, TimeUnit.SECONDS);
-							if (!ok) {
+						};
+						// Start this ORB-blocking thread, and wait until it actually runs.
+						(new DaemonThreadFactory("WorkaroundBlockOnOrbTillShutdownCompletes")).newThread(cmd).start();
+						try {
+							synch1.await();
+							// sleep one second to minimize the risk that orb.run() has not made it to the point where it blocks
+							// when we call orb.shutdown next
+							Thread.sleep(1000);
+						} catch (InterruptedException ex1) {
+							// loggers probably don't work any more even though we have not called orb.shutdown yet,
+							// but the log manager and handlers has likely been flushed and shut down already
+							System.out.println("Failed to wait for the thread that should call orb.run to synch with ORB shutdown. " + ex1.toString());
+						}
+
+						// this call should only return when the ORB has shut down, but it may return too early
+						m_orb.shutdown(true);
+
+						// second line of defense, hoping that orb.run is not called prematurely even if
+						// orb.shutdown(true) returned too soon.
+						try {
+							boolean orbRunUnblocked = synch2.await(30, TimeUnit.SECONDS);
+							if (!orbRunUnblocked) {
 								// Loggers cannot be expected to work at this point, thus printing to stdout
 								System.out.println("Failed to return within 30 s from orb.run() after ORB shutdown.");
 							}
 						} catch (InterruptedException ex) {
 							// Loggers cannot be expected to work at this point, thus printing to stdout
-							System.out.println("InterruptedException waiting for orb.run() to return after ORB shutdown");
-							ex.printStackTrace(System.out);
+							System.out.println("InterruptedException waiting for orb.run() to return after ORB shutdown. " + ex.toString());
 						}
-            		}
-            		else {
-            			m_orb.shutdown(false);
-            		}
-            	} catch (ConcurrentModificationException ex) {
-            		// ignore, see javadoc
-            	}
-            }
+					} else { // don't wait for orb shutdown to complete...
+						m_orb.shutdown(false);
+					}
+				} catch (ConcurrentModificationException ex) {
+					System.out.println("Caught a ConcurrentModificationException from ORB shutdown. "
+									+ "This should be harmless, see known JacORB bug http://www.jacorb.org/cgi-bin/bugzilla/show_bug.cgi?id=537");
+					if (wait_for_completion) {
+						// we try to compensate for leaving orb.shutdown too early by sleeping for a few seconds.
+						// It is not clear though if this will improve the chances that a subsequent orb.destroy will not hang.
+						// If it still hangs, we could try to sleep longer, or to throw a "shutdown failed" exception 
+						// which the client could interpret to not call orb.destroy
+						try {
+							Thread.sleep(2000);
+						} catch (InterruptedException ex1) {
+							System.out.println("InterruptedException while sleeping after the ConcurrentModificationException in orb.shutdown");
+						}
+					}
+				}
+			}
 		}
 	}
 
