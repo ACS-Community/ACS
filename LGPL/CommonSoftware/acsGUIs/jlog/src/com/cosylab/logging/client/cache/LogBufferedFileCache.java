@@ -424,4 +424,27 @@ public class LogBufferedFileCache extends LogFileCache implements ILogMap {
 		return new LogIterator(this);
 	}
 	
+	/**
+	 * Replace the log in the given position with the new one
+	 * <P>
+	 * If the log to replace is not in the buffer, <code>LogBufferedFileCache</code>
+	 * delegated to <code>LogFileCache</code>
+	 
+	 * @param position The position of the log to replace
+	 * @param log The key (identifier) of the log
+	 */
+	@Override
+	public synchronized void replaceLog(Integer key, ILogEntry log) throws LogCacheException {
+		synchronized (buffer) {
+			if (buffer.containsKey(key)) {
+				BufferedCacheItem oldItem=buffer.get(key);
+				BufferedCacheItem cacheItem = new BufferedCacheItem(log,toCacheString(log));
+				buffer.put(key,cacheItem);
+				bufferFileSize=bufferFileSize+cacheItem.getLogCacheString().length()-oldItem.getLogCacheString().length();
+				return;
+			}
+		}
+		super.replaceLog(key, log);
+	}
+	
 }
