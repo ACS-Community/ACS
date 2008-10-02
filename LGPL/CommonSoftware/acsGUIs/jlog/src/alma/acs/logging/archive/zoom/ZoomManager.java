@@ -25,11 +25,32 @@ import com.cosylab.logging.engine.log.LogTypeHelper;
  * <P>
  * A <code>ZoomManager</code> objects is the entity that perform the zooming
  * by delegating to other classes of the <code>zoom</code> package.
+ * <P>
+ * The min and max levels, if not passed in the constructor, are initialized
+ * from java properties and if those properties does not exist from default values.
  * 
  * @author acaproni
  *
  */
 public class ZoomManager {
+	
+	/**
+	 * The name of the property of the min log level of the zoom 
+	 */
+	public static final String MIN_LEVEL_PROPERTY_NAME="jlog.archive.zoom.MinLevel";
+	
+	/**
+	 * The name of the property of the min log level of the zoom 
+	 */
+	public static final String MAX_LEVEL_PROPERTY_NAME="jlog.archive.zoom.MaxLevel";
+	
+	/**
+	 * The name of the property containing the folder where ARCHIVES writes
+	 * files into.
+	 * <P> 
+	 * <I>Note</I>: this way of getting the folder could change in further releases.
+	 */
+	public static final String FILES_LOCATION_PROPERTY_NAME="jlog.archive.zoom.filesFolder";
 
 	/**
 	 * The files manager to get logs from a set of XML files
@@ -39,7 +60,7 @@ public class ZoomManager {
 	/**
 	 * The minimum level of logs to read from files
 	 */
-	private LogTypeHelper minLevel=null;
+	private LogTypeHelper minLevel=LogTypeHelper.values()[0];
 	
 	/**
 	 * The maximum level of logs to read from files
@@ -55,17 +76,42 @@ public class ZoomManager {
 	 * @see {@link FilesManager}
 	 */
 	public ZoomManager() {
-		try {
-			filesManager = new FilesManager();
-		} catch (ZoomException e) {
-			// It was not possible to instantiate the files manger.
-			// The reason could be that the folder was not valid.
-			//
-			// This error is recoverable if the user set a new folder of XML files
-			// so we can go ahead but the zoom will be not available.
-			System.out.println("Error instantiating the FilesManager: "+e.getMessage());
-			System.out.println("Zoom disabled at startup.");
-			filesManager=null;
+		String folder = System.getProperty(FILES_LOCATION_PROPERTY_NAME);
+		if (folder!=null) {
+			try {
+				filesManager = new FilesManager(folder);
+			} catch (ZoomException e) {
+				// It was not possible to instantiate the files manger.
+				// The reason could be that the folder was not valid.
+				//
+				// This error is recoverable if the user set a new folder of XML files
+				// so we can go ahead but the zoom will be not available.
+				System.out.println("Error instantiating the FilesManager: "+e.getMessage());
+				System.out.println("Zoom disabled at startup.");
+				filesManager=null;
+			}
+		}
+		String minLvl = System.getProperty(MIN_LEVEL_PROPERTY_NAME);
+		if (minLvl!=null && !minLvl.isEmpty()) {
+			LogTypeHelper lvl=LogTypeHelper.fromLogTypeDescription(minLvl);
+			if (lvl!=null) {
+				minLevel=lvl;
+			} else {
+				System.out.println("Property "+MIN_LEVEL_PROPERTY_NAME+" is wrong: default value used instead.");
+			}
+		} else {
+			System.out.println("Default value used for "+MIN_LEVEL_PROPERTY_NAME+": "+minLevel);
+		}
+		String maxLvl = System.getProperty(MAX_LEVEL_PROPERTY_NAME);
+		if (maxLvl!=null && !maxLvl.isEmpty()) {
+			LogTypeHelper lvl=LogTypeHelper.fromLogTypeDescription(maxLvl);
+			if (lvl!=null) {
+				maxLevel=lvl;
+			} else {
+				System.out.println("Property "+MAX_LEVEL_PROPERTY_NAME+" is wrong: default value used instead.");
+			}
+		}else {
+			System.out.println("Default value used for "+MAX_LEVEL_PROPERTY_NAME+": "+maxLevel);
 		}
 	}
 	
