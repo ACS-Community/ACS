@@ -12,8 +12,6 @@
 1 - ----------T--:--:----- FINE [almaalarmsystemsourcetestProxyTest] Alarm source of UNDEFINED connected to the logging
 1 - ----------T--:--:----- FINE [testPushAlarm#testPushAlarm] about to log out from manager
 1 - ----------T--:--:----- FINE [testPushAlarm#testPushAlarm] logged out from manager
-1 - ----------T--:--:----- FINE [testPushAlarm#testPushAlarm] about to destroy all POAs and the ORB
-1 - ----------T--:--:----- FINE [testPushAlarm#testPushAlarm] POAs and ORB destroyed successfully
 1 - ----------T--:--:----- DEBUG [almaacsloggingconfigLogConfig] Logging configuration has been initialized, but not from CDB settings
 1 - ----------T--:--:----- INFO [testAlarmsCollection#testAlarmsCollection] -------------------------------
 1 - ----------T--:--:----- INFO [testAlarmsCollection#testAlarmsCollection] ComponentClientTestCase#setUp()
@@ -30,8 +28,6 @@
 1 - ----------T--:--:----- FINE [almaalarmsystemsourcetestProxyTest] Alarm source of UNDEFINED connected to the logging
 1 - ----------T--:--:----- FINE [testAlarmsCollection#testAlarmsCollection] about to log out from manager
 1 - ----------T--:--:----- FINE [testAlarmsCollection#testAlarmsCollection] logged out from manager
-1 - ----------T--:--:----- FINE [testAlarmsCollection#testAlarmsCollection] about to destroy all POAs and the ORB
-1 - ----------T--:--:----- FINE [testAlarmsCollection#testAlarmsCollection] POAs and ORB destroyed successfully
 1 - 
 1 - 
 1 - OK (2 tests)
