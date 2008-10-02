@@ -432,7 +432,9 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
             	showEngineFiltersDialog();
             } else if (e.getSource()==menuBar.getZoomPrefsMI()) {
             	ZoomPrefsDlg dlg = new ZoomPrefsDlg(LoggingClient.this,zoom);
-            	toolBar.setZoomable(zoom.isAvailable());
+            	boolean zoomAvailable=zoom.isAvailable();
+            	toolBar.setZoomable(zoomAvailable);
+            	menuBar.getManualZoomMI().setEnabled(zoomAvailable);
             } else if (e.getSource()==menuBar.getManualZoomMI()) {
             	System.out.println("NOT implemented yet");
             } else {
@@ -888,7 +890,9 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 			BoxLayout toolbarLayout = new BoxLayout(toolbarsPanel,BoxLayout.Y_AXIS);
 			toolbarsPanel.setLayout(toolbarLayout);
 			toolBar = new LogToolBar(logLevel,discardLevel);
-			toolBar.setZoomable(zoom.isAvailable());
+			boolean zoomAvailable=zoom.isAvailable();
+			toolBar.setZoomable(zoomAvailable);
+			menuBar.getManualZoomMI().setEnabled(zoomAvailable);
 			toolbarsPanel.add(toolBar);
 			navigationToolbar = new LogNavigationBar(getLogEntryTable());
 			toolbarsPanel.add(navigationToolbar);
