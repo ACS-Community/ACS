@@ -210,6 +210,17 @@ public class FilesManager {
 	private IsoDateFormat dateFormat = new IsoDateFormat();
 	
 	/**
+	 * Signal that the loading must be interrupted.
+	 */
+	private volatile boolean stopLoading;
+	
+	/**
+	 * The file where the manager is reading logs
+	 */
+	private FileHelper fileHelper=null;
+
+	
+	/**
 	 * Constructor
 	 * 
 	 * @param folder The folder containing files of logs
@@ -271,6 +282,7 @@ public class FilesManager {
 			LogTypeHelper maxLevel,
 			ZoomProgressListener zoomListener,
 			ACSRemoteErrorListener errorListener) throws FileNotFoundException, ZoomException {
+		stopLoading=false;
 		long start;
 		long end;
 		
@@ -329,8 +341,11 @@ public class FilesManager {
 			if (zoomListener!=null) {
 				zoomListener.zoomReadingFile(++index);
 			}
-			FileHelper file = new FileHelper(inFile, start, end, minLevel, maxLevel);
-			ret = ret && file.loadLogs(logListener, new ProgressListener(), errorListener);
+			fileHelper = new FileHelper(inFile, start, end, minLevel, maxLevel);
+			if (stopLoading) {
+				return false;
+			}
+			ret = ret && fileHelper.loadLogs(logListener, new ProgressListener(), errorListener);
 		}
 		return ret;
 	}
@@ -390,6 +405,18 @@ public class FilesManager {
 		}
 		File f = new File(filesFolder);
 		return getFileList(0, System.currentTimeMillis()).length>0;
+	}
+	
+	/**
+	 * Stop loading logs.
+	 * <P>
+	 * <code>stopLoading</code> does nothing if no load is in progress.
+	 */
+	public void stopLoading() {
+		stopLoading=true;
+		if (fileHelper!=null) {
+			fileHelper.stopLoading();
+		}
 	}
 
 }

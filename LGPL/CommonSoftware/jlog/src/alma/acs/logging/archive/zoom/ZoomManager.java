@@ -259,4 +259,15 @@ public class ZoomManager {
 	public boolean isLoadingLogs() {
 		return loadingLogs;
 	}
+	
+	/**
+	 * Interrupt the zoom.
+	 * <P>
+	 * The method does nothing if no zoom is currently in progress.
+	 */
+	public void stopZoom() {
+		if (filesManager!=null) {
+			filesManager.stopLoading();
+		}
+	}
 }

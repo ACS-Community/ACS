@@ -72,6 +72,11 @@ public class FileHelper implements ACSRemoteErrorListener {
 	private final File inputFile;
 	
 	/**
+	 * The helper to read logs from a file
+	 */
+	private IOHelper ioHelper;
+	
+	/**
 	 * Remembers if there were error while parsing logs read from the file.
 	 * 
 	 * @see loadLogs(...)
@@ -155,15 +160,15 @@ public class FileHelper implements ACSRemoteErrorListener {
 			ACSRemoteLogListener logListener, 
 			IOPorgressListener ioListener, 
 			ACSRemoteErrorListener errorListener) throws ZoomException, FileNotFoundException {
-		IOHelper ioHeleper = new IOHelper();
+		ioHelper = new IOHelper();
 		FiltersVector filters = setupFilters();
-		ioHeleper.setFilters(filters);
+		ioHelper.setFilters(filters);
 		errorParsingLogs=false;
 		externalErrorListener=errorListener;
 		FileReader fileReader = new FileReader(inputFile);
 		BufferedReader reader = new BufferedReader(fileReader);
 		try {
-			ioHeleper.loadLogs(reader, logListener, null, this, ioListener);
+			ioHelper.loadLogs(reader, logListener, null, this, ioListener);
 		} catch (Throwable t) {
 			throw new ZoomException("Error loading logs from file",t);
 		}
@@ -203,6 +208,17 @@ public class FileHelper implements ACSRemoteErrorListener {
 		errorParsingLogs=true;
 		if (externalErrorListener!=null) {
 			externalErrorListener.errorReceived(xml);
+		}
+	}
+	
+	/**
+	 * Stop loading logs.
+	 * <P>
+	 * <code>stopLoading</code> does nothing if no load is in progress.
+	 */
+	public void stopLoading() {
+		if (ioHelper!=null) {
+			ioHelper.stopIO();
 		}
 	}
 }
