@@ -18,8 +18,8 @@ public class FactoryTest extends ComponentClientTestCase {
 	// The reference to the DAL (to make a clear cache)
 	private JDAL jdal; 
 	
-	public FactoryTest(String str) throws Exception {
-		super(str);
+	public FactoryTest() throws Exception {
+		super(FactoryTest.class.getSimpleName());
 	}
 	
 	protected void setUp() throws Exception {
