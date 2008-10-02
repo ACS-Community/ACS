@@ -18,6 +18,10 @@
 */
 package alma.acs.logging.archive.zoom;
 
+import java.io.FileNotFoundException;
+
+import com.cosylab.logging.engine.ACS.ACSRemoteErrorListener;
+import com.cosylab.logging.engine.ACS.ACSRemoteLogListener;
 import com.cosylab.logging.engine.log.LogTypeHelper;
 
 /**
@@ -28,6 +32,8 @@ import com.cosylab.logging.engine.log.LogTypeHelper;
  * <P>
  * The min and max levels, if not passed in the constructor, are initialized
  * from java properties and if those properties does not exist from default values.
+ * <P>
+ * <B>Note</B>: only one loading operation is possible at the same time.
  * 
  * @author acaproni
  *
@@ -66,6 +72,11 @@ public class ZoomManager {
 	 * The maximum level of logs to read from files
 	 */
 	private LogTypeHelper maxLevel=LogTypeHelper.DEBUG;
+	
+	/**
+	 * Signal if a loading is in progress
+	 */
+	private volatile boolean loadingLogs=false;
 	
 	/**
 	 * Constructor.
@@ -217,5 +228,35 @@ public class ZoomManager {
 	 */
 	public LogTypeHelper getMaxLevel() {
 		return maxLevel;
+	}
+	
+	/**
+	 * Load the logs.
+	 * 
+	 * @see {@link FilesManager}
+	 */
+	public void zoom(String startDate, 
+			String endDate, 
+			ACSRemoteLogListener logListener,
+			ZoomProgressListener zoomListener,
+			ACSRemoteErrorListener errorListener) throws FileNotFoundException, ZoomException {
+		if (!isAvailable()) {
+			throw new ZoomException("Zoom not available");
+		}
+		if (loadingLogs) {
+			throw new ZoomException("A zoom is already in progress");
+		}
+		loadingLogs=true;
+		filesManager.getLogs(startDate, endDate, logListener, minLevel, maxLevel, zoomListener, errorListener);
+		loadingLogs=false;
+	}
+
+	/**
+	 * Return <code>true</code> if a loading is in progress.
+	 * 
+	 * @return <code>true</code> if a loading is in progress
+	 */
+	public boolean isLoadingLogs() {
+		return loadingLogs;
 	}
 }
