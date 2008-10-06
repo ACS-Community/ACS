@@ -21,27 +21,14 @@
  */
 package com.cosylab.logging;
 
-import java.awt.BorderLayout;
-import java.awt.FlowLayout;
-import java.awt.Point;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.LinkedList;
 
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JDialog;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JProgressBar;
-import javax.swing.SwingUtilities;
+import javax.swing.ProgressMonitor;
 
 import alma.acs.logging.engine.io.IOHelper;
 import alma.acs.logging.engine.io.IOPorgressListener;
@@ -70,216 +57,6 @@ public class IOLogsHelper extends Thread  implements IOPorgressListener {
 	
 	// Monitor if an async IO operation is in progress
 	private volatile boolean IOOperationInProgress =false;
-	
-	/**
-	 * The dialog to show the progress of time consuming 
-	 * operations (load and save for example)
-	 * 
-	 * Throw this dialog is also possible to abort the operation
-	 * by pressing a button. The dialog does not communicate the abort
-	 * request but just store it into a variable that the long operation
-	 * should poll from time to time 
-	 * 
-	 * @author acaproni
-	 */
-	private class ProgressDialog extends JDialog implements ActionListener {
-		
-		/**
-		 * The minimum interval of time between 2 updates of the panel 
-		 */
-		private static final int UPDATE_INTERVAL = 1500; 
-
-		// The label with the status
-		private JLabel statusLbl = new JLabel();
-		// The progress bar
-		private JProgressBar progressBar=new JProgressBar(JProgressBar.HORIZONTAL);
-		
-		// The button to stop IO
-		private JButton abortBtn;
-		
-		/**
-		 * The last time the label has been updated
-		 */
-		private long lastUpdateTime=0;
-		
-		/**
-		 * The label shown in the GUI reporting a textual description
-		 * of the progress of the I/O
-		 */
-		private String label="";
-		
-		/**
-		 * The thread to update the label and the progress bar into
-		 * the swing thread
-		 */
-		private Thread updaterThread=null;
-		
-		/**
-		 * The actual position of the progress bar
-		 */
-		private int progressBarPosition;
-		
-		/**
-		 * Build a progress dialog with a progress bar
-		 * 
-		 * @param title The tile of the dialog
-		 * @param min The min range for the progress bar
-		 * @param max The max range for the progress bar
-		 */
-		public ProgressDialog(String title, int min, int max) {
-			super();
-			this.setTitle(title);
-			progressBar.setMinimum(min);
-			progressBar.setMaximum(max);
-			progressBar.setValue(min);
-			progressBar.setIndeterminate(false);
-			progressBarPosition=min;
-			initGUI();
-			setVisible(true);
-		}
-		
-		/**
-		 * Build a progress dialog without an indeterminate progress bar
-		 * 
-		 * @param title The tile of the dialog
-		 */
-		public ProgressDialog(String title) {
-			super();
-			progressBar.setIndeterminate(true);
-			setTitle(title);
-			initGUI();
-		}
-		
-		/** 
-		 * Init the GUI
-		 */
-		private void initGUI() {
-			addWindowListener(new WindowAdapter() {
-				/**
-				 * @see java.awt.event.WindowListener
-				 */
-				public void windowClosed(WindowEvent e) {
-					ioHelper.stopIO();
-				}
-				
-				/**
-				 * @see java.awt.event.WindowListener
-				 */
-				public void windowClosing(WindowEvent e) {
-					ioHelper.stopIO();
-				}
-			});
-			
-			BorderLayout borderLayout =new BorderLayout();
-			borderLayout.setVgap(5);
-			borderLayout.setHgap(5);
-			setLayout(borderLayout);
-			
-			
-			// Create the progress bar in the North
-			add(progressBar,BorderLayout.NORTH);
-			progressBar.setString("");
-			progressBar.setStringPainted(true);
-			
-			// Create the labels into the label panel
-			add(new JLabel("Status:"),BorderLayout.WEST);
-			add(statusLbl,BorderLayout.CENTER);
-			
-			// Add the abort button
-			JPanel bottomPanel = new JPanel(new BorderLayout());
-			JPanel buttonPanel = new JPanel(new FlowLayout());
-			abortBtn = new JButton("Abort");
-			abortBtn.addActionListener(this);
-			buttonPanel.add(abortBtn);
-			bottomPanel.add(buttonPanel,BorderLayout.SOUTH);
-			
-			add(bottomPanel,BorderLayout.SOUTH);
-
-			setVisible(true);
-		}
-		
-		/**
-		 * Replace the status label with the new one
-		 * It packs the window to ensure that the string is visible
-		 * 
-		 * @param status The new status string
-		 */
-		public void updateStatus(String status) {
-			label=status;
-			updateGUI();
-		}
-		
-		/**
-		 * Update the status bar and the label.
-		 * <P>
-		 * The updated id done only if the <code>UPDATE_INTERVAL</code> time has elapsed
-		 * since the previous update.
-		 */
-		private void updateGUI() {
-			if (System.currentTimeMillis()-lastUpdateTime<UPDATE_INTERVAL) {
-				return;
-			}
-			lastUpdateTime=System.currentTimeMillis();
-			if (updaterThread==null) {
-				updaterThread = new Thread(new Runnable() {
-					public void run() {
-						// Update the status bar
-						if (!progressBar.isIndeterminate()) {
-							int percent = (progressBar.getMaximum()-progressBar.getMinimum())/100;
-							if (percent!=0) {
-								progressBar.setString(""+progressBarPosition/percent+"%");
-							}
-							progressBar.setStringPainted(true);
-							progressBar.setValue(progressBarPosition);
-						}
-						// Update the label
-						int oldLength = statusLbl.getText().length();
-						statusLbl.setText(label);
-						if (label.length()>oldLength) {
-							pack();
-						}
-					}
-				});
-			}
-			SwingUtilities.invokeLater(updaterThread);
-		}
-		
-		/**
-		 * Update the position of the status bar
-		 * 
-		 * @param current The new position of the status bar
-		 */
-		public void updateProgressBar(int current) {
-			progressBarPosition=current;
-			updateGUI();
-		}
-		
-		/**
-		 * @see java.awt.event.ActionListener
-		 */
-		public void actionPerformed(ActionEvent evt) {
-			if (evt.getSource()==abortBtn) {
-				ioHelper.stopIO();
-			}
-		}
-		
-		/**
-		 * Override <code>setVisible()</code> to move the statistic window
-		 * over the logging client and in front of other windows
-		 */
-		@Override
-		public void setVisible(boolean visible) {
-			super.setVisible(visible);
-			// Move the statistic win on top of jlog
-			if (visible && isShowing()) {
-				Point loggingPos = IOLogsHelper.this.loggingClient.getLocationOnScreen();
-				setLocation(loggingPos);
-				pack();
-				toFront();
-			}
-		}
-		
-	}
 	
 	/**
 	 * An action for operations to be performed asynchronously
@@ -390,7 +167,7 @@ public class IOLogsHelper extends Thread  implements IOPorgressListener {
 	private LinkedList<IOAction> actions = new LinkedList<IOAction>();
 	
 	// The dialog
-	private ProgressDialog progressDialog;
+	private ProgressMonitor progressMonitor;
 	
 	// The IOHelper performing load and save
 	private IOHelper ioHelper = new IOHelper();
@@ -402,12 +179,7 @@ public class IOLogsHelper extends Thread  implements IOPorgressListener {
 	 * The bytes read during a load
 	 */
 	private long bytesRead;
-	
-	/**
-	 * The bytes read during a save
-	 */
-	private long bytesWritten;
-	
+
 	/**
 	 * The number of logs read while loading
 	 */
@@ -466,9 +238,9 @@ public class IOLogsHelper extends Thread  implements IOPorgressListener {
 		
 		// Set the progress range
 		if (progressRange<=0) {
-			progressDialog = new ProgressDialog("Loading logs...");
+			progressMonitor = new ProgressMonitor(loggingClient.getLogEntryTable(),"Loading logs...",null,0,0);
 		} else {
-			progressDialog = new ProgressDialog("Loading logs...",0,progressRange);
+			progressMonitor= new ProgressMonitor(loggingClient.getLogEntryTable(),"Loading logs...",null,0,progressRange);
 		}
 		
 		// Apply discard level, filters and audience to the IOHelper
@@ -487,12 +259,7 @@ public class IOLogsHelper extends Thread  implements IOPorgressListener {
 			ioe.printStackTrace(System.err);
 			JOptionPane.showMessageDialog(null, "Exception loading "+ioe.getMessage(),"Error loading",JOptionPane.ERROR_MESSAGE);
 		}
-		if (progressDialog!=null) {
-			// Close the dialog
-			progressDialog.setVisible(false);
-			progressDialog.dispose();
-			progressDialog=null;
-		}
+		progressMonitor.close();
 		IOOperationTerminated();
 	}
 	
@@ -669,10 +436,9 @@ public class IOLogsHelper extends Thread  implements IOPorgressListener {
 			throw new IllegalArgumentException("BufferedWriter and LogCache can't be null");
 		}
 		
-		progressDialog = new ProgressDialog("Saving logs...",0,cache.getSize());
+		progressMonitor= new ProgressMonitor(loggingClient.getLogEntryTable(),"Saving logs...",null,0,cache.getSize());
 		
 		logsWritten=0;
-		bytesWritten=0;
 		try {
 			ioHelper.writeHeader(outBW);
 			ioHelper.saveLogs(outBW, cache.iterator(), this);
@@ -682,13 +448,8 @@ public class IOLogsHelper extends Thread  implements IOPorgressListener {
 			e.printStackTrace(System.err);
 			JOptionPane.showMessageDialog(null, "Exception saving "+e.getMessage(),"Error saving",JOptionPane.ERROR_MESSAGE);
 		}
-			
-		if (progressDialog!=null) {
-			// Close the dialog
-			progressDialog.setVisible(false);
-			progressDialog.dispose();
-			progressDialog=null;
-		}
+		progressMonitor.close();
+		progressMonitor=null;
 		IOOperationTerminated();
 	}
 	
@@ -715,8 +476,8 @@ public class IOLogsHelper extends Thread  implements IOPorgressListener {
 	@Override
 	public void bytesRead(long bytes) {
 		bytesRead=bytes;
-		if (progressDialog!=null) {
-			progressDialog.updateProgressBar((int)bytesRead);
+		if (progressMonitor!=null) {
+			progressMonitor.setProgress((int)bytesRead);
 		}
 	}
 
@@ -724,9 +485,7 @@ public class IOLogsHelper extends Thread  implements IOPorgressListener {
 	 * @see alma.acs.logging.engine.io.IOPorgressListener#bytesWritten(long)
 	 */
 	@Override
-	public void bytesWritten(long bytes) {
-		bytesWritten=bytes;
-	}
+	public void bytesWritten(long bytes) {}
 
 	/**
 	 * @see alma.acs.logging.engine.io.IOPorgressListener#logsRead(int)
@@ -734,8 +493,11 @@ public class IOLogsHelper extends Thread  implements IOPorgressListener {
 	@Override
 	public void logsRead(int numOfLogs) {
 		logsRead=numOfLogs;
-		if (progressDialog!=null) {
-			progressDialog.updateStatus("bytes "+bytesRead+", logs: "+logsRead);
+		if (progressMonitor!=null && logsRead%100==0) {
+			progressMonitor.setNote(""+numOfLogs+" logs read");
+			if (progressMonitor.isCanceled()) {
+				ioHelper.stopIO();
+			}
 		}
 	}
 
@@ -745,9 +507,12 @@ public class IOLogsHelper extends Thread  implements IOPorgressListener {
 	@Override
 	public void logsWritten(int numOfLogs) {
 		logsWritten=numOfLogs;
-		if (progressDialog!=null) {
-			progressDialog.updateProgressBar(logsWritten);
-			progressDialog.updateStatus("bytes "+bytesWritten+", logs "+logsWritten);
+		if (progressMonitor!=null && logsWritten%100==0) {
+			progressMonitor.setProgress(logsWritten);
+			progressMonitor.setNote(""+logsWritten+" logs saved");
+			if (progressMonitor.isCanceled()) {
+				ioHelper.stopIO();
+			}
 		}
 	}
 	
