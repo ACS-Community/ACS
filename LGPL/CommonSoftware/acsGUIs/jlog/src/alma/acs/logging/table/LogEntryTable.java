@@ -33,6 +33,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.JTable;
+import javax.swing.ProgressMonitor;
 import javax.swing.event.RowSorterEvent;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
@@ -49,6 +50,7 @@ import com.cosylab.logging.engine.log.ILogEntry.Field;
 import com.cosylab.logging.settings.FieldChooserDialog;
 
 import alma.acs.logging.archive.zoom.ZoomManager;
+import alma.acs.logging.archive.zoom.ZoomProgressListener;
 import alma.acs.logging.table.renderer.DateRenderer;
 import alma.acs.logging.table.renderer.EntryTypeRenderer;
 import alma.acs.logging.table.renderer.InfoRenderer;
@@ -60,7 +62,7 @@ import alma.acs.util.IsoDateFormat;
  * @author: 
  */
 
-public class LogEntryTable extends JTable {
+public class LogEntryTable extends JTable implements ZoomProgressListener {
 	private TableColumn[] columnsList;
 	private boolean[] visibleColumns;
 	private FieldChooserDialog fieldChooser = null;
@@ -104,6 +106,16 @@ public class LogEntryTable extends JTable {
 	 * The renderer to show the type of log (icon and description or icon only)
 	 */
 	private EntryTypeRenderer logTypeRenderer;
+	
+	/**
+	 * The dialog to show (and stop) the progress of the zoom
+	 */
+	private ProgressMonitor zoomProgressMonitor=null;
+	
+	/**
+	 * The total number of files to read while zooming
+	 */
+	private int zoomTotFiles;
 
 	/**
 	 * Popup menu used to display the column options for the table.
@@ -846,6 +858,7 @@ public class LogEntryTable extends JTable {
 		int[] indexes = getSelectedRows();
 		long startDate=Long.MAX_VALUE;
 		long endDate=0;
+		zoomTotFiles=0;
 		System.out.println("Keys "+indexes.length);
 		for (int i: indexes) {
 			ILogEntry log= getLCModel().getVisibleLogEntry(convertRowIndexToModel(i));
@@ -860,7 +873,7 @@ public class LogEntryTable extends JTable {
 		String startDateStr=IsoDateFormat.formatDate(new Date(startDate));
 		String endDateStr=IsoDateFormat.formatDate(new Date(endDate));
 		try {
-			loggingClient.getZoomManager().zoom(startDateStr, endDateStr, loggingClient, null, loggingClient);
+			loggingClient.getZoomManager().zoom(startDateStr, endDateStr, loggingClient, this, loggingClient);
 		} catch (Throwable t) {
 			JOptionPane.showMessageDialog(
 					loggingClient, 
@@ -868,6 +881,33 @@ public class LogEntryTable extends JTable {
 					"Zoom error", 
 					JOptionPane.ERROR_MESSAGE);
 		}
+		if (zoomProgressMonitor!=null) {
+			zoomProgressMonitor.close();
+			zoomProgressMonitor=null;
+		}
+	}
+
+	/* (non-Javadoc)
+	 * @see alma.acs.logging.archive.zoom.ZoomProgressListener#zoomReadingFile(int)
+	 */
+	@Override
+	public void zoomReadingFile(int num) {
+		if (zoomProgressMonitor!=null) {
+			zoomProgressMonitor.setProgress(num);
+			zoomProgressMonitor.setNote("Reading "+num+"/"+zoomTotFiles);
+			if (zoomProgressMonitor.isCanceled()) {
+				loggingClient.getZoomManager().stopZoom();
+			}
+		}
+	}
+
+	/* (non-Javadoc)
+	 * @see alma.acs.logging.archive.zoom.ZoomProgressListener#zoomTotalFileToRead(int)
+	 */
+	@Override
+	public void zoomTotalFileToRead(int num) {
+		zoomTotFiles=num;
+		zoomProgressMonitor= new ProgressMonitor(this,"Zoom",null,0,num);
 	}
 	
 }
