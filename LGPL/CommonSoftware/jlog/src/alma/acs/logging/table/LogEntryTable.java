@@ -872,6 +872,7 @@ public class LogEntryTable extends JTable implements ZoomProgressListener {
 		}
 		String startDateStr=IsoDateFormat.formatDate(new Date(startDate));
 		String endDateStr=IsoDateFormat.formatDate(new Date(endDate));
+		System.out.println("Zooming from "+startDateStr+" to "+endDateStr);
 		try {
 			loggingClient.getZoomManager().zoom(startDateStr, endDateStr, loggingClient, this, loggingClient);
 		} catch (Throwable t) {
@@ -908,6 +909,7 @@ public class LogEntryTable extends JTable implements ZoomProgressListener {
 	public void zoomTotalFileToRead(int num) {
 		zoomTotFiles=num;
 		zoomProgressMonitor= new ProgressMonitor(this,"Zoom",null,0,num);
+		System.out.println(""+num+" files to read while zoom");
 	}
 	
 }
