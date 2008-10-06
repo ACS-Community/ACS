@@ -110,7 +110,7 @@ public class CleaningDaemonThreadFactory implements ThreadFactory
 	}
 
 	/**
-	 * Kills running threads via {@link Thread#stop()}.
+	 * Kills running threads via {@link Thread#interrupt()} or {@link Thread#stop()}, see code comments about the two cases.
 	 * Should be called by the container or similar classes when all threads 
 	 * created by this factory supposedly have terminated anyway thanks to smart applications. 
 	 * The safety concerns which led to the deprecation of the stop method thus don't seem to apply here.
@@ -124,13 +124,21 @@ public class CleaningDaemonThreadFactory implements ThreadFactory
 			for (Thread t : threadList) {
 				try {
 					if (t.isAlive()) {
-						logger.warning("forcefully terminating surviving thread " + t.getName());
+						logger.warning("Forcibly terminating surviving thread " + t.getName());
 					}
 					// @TODO HSO 2008-04: now that jbaci uses an external ThreadFactory, which is typically supplied by container services,
 					//       we got jbaci test failures as long as stop() is called (see COMP-2362).
 					//       We must check if we fix jbaci and go back to thread.stop, or stay with thread.interrupt.
 					t.interrupt();
 //					t.stop();
+					
+					// The following sleep of 1 ms is a concession to unit testing of this class,
+					// so that log messages produced during the interrupt() call will appear in the order of the calls. 
+					try {
+						Thread.sleep(1);
+					} catch (InterruptedException ex) {
+						// no harm in operations, but unit tests may fail
+					}
 				} catch (RuntimeException e) {
 					logger.finer("exception while stopping thread '" + t.getName() + "': " + e.toString());
 				}
@@ -152,7 +160,7 @@ public class CleaningDaemonThreadFactory implements ThreadFactory
 	private static class LoggingThreadGroup extends ThreadGroup
 	{
 		private final Logger logger;
-		private boolean shuttingDown = false;
+		private volatile boolean shuttingDown = false;
 
 		LoggingThreadGroup(String name, Logger logger) {
 			super(name);
