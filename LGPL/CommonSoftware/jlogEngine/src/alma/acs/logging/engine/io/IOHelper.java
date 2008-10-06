@@ -254,10 +254,10 @@ public class IOHelper extends LogMatcher {
 					injectLog(xmlStr,logListener, rawLogListener, errorListener);
 					logRecordsRead++;
 					xmlStr.delete(0, xmlStr.length());
-				}
-				progressListener.bytesRead(bytesRead);
-				if (logRecordsRead%25==0) {
-					progressListener.logsRead(logRecordsRead);
+					progressListener.bytesRead(bytesRead);
+					if (logRecordsRead%25==0) {
+						progressListener.logsRead(logRecordsRead);
+					}
 				}
 			}
 			System.out.println("XML log record import finished with " + logRecordsRead + " records in " + 
