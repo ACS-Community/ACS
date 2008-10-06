@@ -27,6 +27,7 @@ import java.awt.event.WindowListener;
 import java.io.File;
 import java.util.logging.Logger;
 
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
@@ -127,6 +128,10 @@ public class LogFrame extends JFrame implements WindowListener {
 	private void initialize(LogTypeHelper discardLevel, boolean unlimited) {
 		setTitle("LoggingClient");
 		addWindowListener(this);
+		
+		// Set the icon
+		ImageIcon image = new ImageIcon(LogFrame.class.getResource("/alma.png"));
+		setIconImage(image.getImage());
         
 		// build the LoggingClient
         loggingClient = new LoggingClient(this, LoggingClient.DEFAULT_LOGLEVEL, discardLevel, unlimited); 
