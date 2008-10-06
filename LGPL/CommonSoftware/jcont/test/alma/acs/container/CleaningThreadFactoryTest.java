@@ -145,18 +145,18 @@ public class CleaningThreadFactoryTest extends TestCase {
 		threadFactory.cleanUp();
 		// verify logged warnings about stopping threads t2 and t3
 		LogRecord[] logs = logger.getCollectedLogRecords();
-		if (logs.length != 2) {
-			// HSO (2008-09): we are getting "3" on the new PowerEdge R300 NRI test machine and need to check what this is...
+		if (logs.length != 3) {
 			String messages = "";
 			for (int i = 0; i < logs.length; i++) {
 				messages += logs[i].getMessage() + "\n";
 			}
-			fail("Expected 2 logs about thread termination from the thread factory, but got " + logs.length + ": " + messages);
+			fail("Expected 3 logs about thread termination from the thread factory, but got " + logs.length + ": \n" + messages);
 		}
 		else {
 			assertEquals(Level.WARNING, logs[0].getLevel());
-			assertEquals("forcefully terminating surviving thread " + factoryName + "-2", logs[0].getMessage());
-			assertEquals("forcefully terminating surviving thread " + factoryName + "-3", logs[1].getMessage());
+			assertEquals("Forcibly terminating surviving thread " + factoryName + "-2", logs[0].getMessage());
+			assertEquals("Thread " + factoryName + "-2 was interrupted while sleeping.", logs[1].getMessage());
+			assertEquals("Forcibly terminating surviving thread " + factoryName + "-3", logs[2].getMessage());
 		}
 	}
     
@@ -191,11 +191,11 @@ public class CleaningThreadFactoryTest extends TestCase {
     }
     
     
-    private void sleep(int millis) {
-        try {
-            Thread.sleep(millis);
-        } catch (InterruptedException e) {
-            logger.info("Thread " + Thread.currentThread().getName() + " was interrupted while sleeping.");
-        }
-    }
+	private void sleep(int millis) {
+		try {
+			Thread.sleep(millis);
+		} catch (InterruptedException e) {
+			logger.info("Thread " + Thread.currentThread().getName() + " was interrupted while sleeping.");
+		}
+	}
 }
