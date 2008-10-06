@@ -50,6 +50,10 @@ import javax.swing.ToolTipManager;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
 
+import org.omg.CORBA.ORB;
+
+import alma.acs.container.AdvancedContainerServices;
+import alma.acs.container.ContainerServices;
 import alma.acs.logging.archive.ArchiveConnectionManager;
 import alma.acs.logging.archive.QueryDlg;
 import alma.acs.logging.archive.ArchiveConnectionManager.DBState;
@@ -287,9 +291,20 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 	 */
 	private FilterChooserDialog filterChooserDialog = null;
     
-    // The frame containing this logging client
-    // It is not null only if the application is executed in stand alone mode
+    /**
+     *  The frame containing this logging client.
+     *  It is not <code>null</code> only if the application is executed in stand alone mode
+     */
     private LogFrame logFrame=null;
+    
+    /**
+     * <code>containerServices</code> is always set while running as OMC plugin.
+     * <P>
+     * It is used to avoid creating a new ORB when one is already available.
+     * 
+     * @see connect()
+     */
+    protected ContainerServices containerServices=null;
 	
 	class EventHandler implements ActionListener, MenuListener
 	{
@@ -541,6 +556,9 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 	 * @throws Exception
 	 */
 	public void start() throws Exception {
+		if (containerServices==null) {
+			throw new IllegalArgumentException("Starting the plugin without setting the ContainerServices");
+		}
 		isStopped=false;
 		connect();
 	}
@@ -606,14 +624,19 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 	 * Connects to the remote system
 	 * as soon as the item "New" is clicked.
 	 */
-	public void connect()
-	{
-		try
-		{
-			getEngine().connect("ACS");
+	public void connect() 	{
+		if (containerServices!=null) {
+			ORB orb=null;
+			AdvancedContainerServices advContSvc = containerServices.getAdvancedContainerServices();
+			if (advContSvc!=null) {
+				orb = advContSvc.getORB();
+				getEngine().setConnectionParams(orb, null);
+			}
 		}
-		catch (java.lang.Throwable ivjExc)
-		{
+		try {
+			
+			getEngine().connect("ACS");
+		} catch (java.lang.Throwable ivjExc) {
 			handleException(ivjExc);
 		}
 	}
@@ -1762,6 +1785,13 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 	 */
 	public LogToolBar getToolBar() {
 		return toolBar;
+	}
+
+	/**
+	 * @return the containerServices
+	 */
+	public ContainerServices getContainerServices() {
+		return containerServices;
 	}
 }
 
