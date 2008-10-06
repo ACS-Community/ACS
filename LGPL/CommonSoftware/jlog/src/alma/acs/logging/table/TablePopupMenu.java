@@ -230,6 +230,7 @@ public class TablePopupMenu extends JPopupMenu implements ActionListener {
 		
 		// Add the menu items
 		add(zoomOverSelected);
+		zoomOverSelected.addActionListener(this);
 		addSeparator();
 		add(showErrorStack);
 		addSeparator();
