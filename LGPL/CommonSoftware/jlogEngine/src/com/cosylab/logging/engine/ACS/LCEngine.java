@@ -292,6 +292,7 @@ public class LCEngine implements Filterable {
 			connCheckerThread = new AccessChecker();
 			connCheckerThread.setName("LCEngine");
 			connCheckerThread.start();
+			connCheckerThread.setDaemon(true);
 		}
 	}
 
