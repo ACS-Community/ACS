@@ -250,7 +250,7 @@ public abstract class MasterComponentImplBase extends CharacteristicComponentImp
 	
 	/*********************** [ miscellaneous ] ***********************/
 	
-	public class DefaultResourceErrorHandler<T> implements SubsysResourceMonitor.RecoverableResourceErrorHandler<T>
+	public class DefaultResourceErrorHandler<T> implements SubsysResourceMonitor.ResourceErrorHandler<T>
 	{
 		protected final String resourceName;
 		protected final boolean isComponent;
