@@ -20,7 +20,7 @@
  *
  *
  *
- * "@(#) $Id: acssampFullNCTest.cpp,v 1.17 2006/10/19 15:20:40 rcirami Exp $"
+ * "@(#) $Id: acssampFullNCTest.cpp,v 1.18 2008/10/07 06:41:54 cparedes Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -51,7 +51,7 @@
 using namespace std;
 using namespace maci;
 using namespace acssamp;
-ACE_RCSID(acssampFullNCTest, fullNCTest, "$Id: acssampFullNCTest.cpp,v 1.17 2006/10/19 15:20:40 rcirami Exp $")
+ACE_RCSID(acssampFullNCTest, fullNCTest, "$Id: acssampFullNCTest.cpp,v 1.18 2008/10/07 06:41:54 cparedes Exp $")
 
     struct ThreadParam
     {
@@ -77,8 +77,10 @@ class SamplerConsumer : public nc::Consumer
 
   protected:
 
+    /*
+     * @throw CosEventComm::Disconnected
+     */
     void push_structured_event(const CosNotification::StructuredEvent &notification)
-	throw (CORBA::SystemException, CosEventComm::Disconnected)
 	{
 	    cout << "Event: domain = " << (const char *)notification.header.fixed_header.event_type.domain_name << endl;
     

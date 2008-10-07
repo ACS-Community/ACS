@@ -21,7 +21,7 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
  *
- * "@(#) $Id: acssampObjImpl.h,v 1.29 2008/07/25 07:39:52 cparedes Exp $"
+ * "@(#) $Id: acssampObjImpl.h,v 1.30 2008/10/07 06:41:54 cparedes Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -183,8 +183,7 @@ class ACSSampObjImpl: public virtual POA_acssamp::SampObj,
      * <br><hr>
      * @endhtmlonly
      */     
-    virtual void start ()
-	throw (CORBA::SystemException); 
+    virtual void start ();
 
     /**
      * Stops the sampling.
@@ -195,8 +194,7 @@ class ACSSampObjImpl: public virtual POA_acssamp::SampObj,
      * <br><hr>
      * @endhtmlonly
      */ 
-    virtual void stop ()
-	throw (CORBA::SystemException); 
+    virtual void stop ();
     
     /**
      * Destroy the sampling object.
@@ -207,8 +205,7 @@ class ACSSampObjImpl: public virtual POA_acssamp::SampObj,
      * <br><hr>
      * @endhtmlonly
      */ 
-    virtual void destroy()
-	throw (CORBA::SystemException);
+    virtual void destroy();
 
     /**
      * Suspend the sampling.
@@ -219,8 +216,7 @@ class ACSSampObjImpl: public virtual POA_acssamp::SampObj,
      * <br><hr>
      * @endhtmlonly
      */ 
-    virtual void suspend()
-	throw (CORBA::SystemException);
+    virtual void suspend();
 
     /**
      * Resume the sampling.
@@ -231,8 +227,7 @@ class ACSSampObjImpl: public virtual POA_acssamp::SampObj,
      * <br><hr>
      * @endhtmlonly
      */ 
-    virtual void resume()
-	throw (CORBA::SystemException);
+    virtual void resume();
 
 
     /** 
@@ -249,8 +244,7 @@ class ACSSampObjImpl: public virtual POA_acssamp::SampObj,
      * <br><hr>
      * @endhtmlonly
      */
-    virtual void setFrequency (ACS::TimeInterval sFrequency)
-	throw (CORBA::SystemException);
+    virtual void setFrequency (ACS::TimeInterval sFrequency);
   
 
     /**      
@@ -266,8 +260,7 @@ class ACSSampObjImpl: public virtual POA_acssamp::SampObj,
      * <br><hr>
      * @endhtmlonly
      */
-    virtual void getFrequency (ACS::TimeInterval_out sFrequency)
-	throw (CORBA::SystemException);
+    virtual void getFrequency (ACS::TimeInterval_out sFrequency);
 
 
 
@@ -284,8 +277,7 @@ class ACSSampObjImpl: public virtual POA_acssamp::SampObj,
      * <br><hr>
      * @endhtmlonly
      */
-    virtual void setRate (ACS::TimeInterval rRate)
-	throw (CORBA::SystemException);
+    virtual void setRate (ACS::TimeInterval rRate);
   
 
 
@@ -301,8 +293,7 @@ class ACSSampObjImpl: public virtual POA_acssamp::SampObj,
      * <br><hr>
      * @endhtmlonly
      */
-    virtual void getRate (ACS::TimeInterval_out rRate)
-	throw (CORBA::SystemException);
+    virtual void getRate (ACS::TimeInterval_out rRate);
 
 
 
@@ -310,15 +301,16 @@ class ACSSampObjImpl: public virtual POA_acssamp::SampObj,
      * Initialize (activate) the sampling object, with parameters
      * passed in the constructor. 
      *
-     
+     * @throw ACSErrTypeCommon::OutOfBoundsExImpl
+     * @throw ACSErrTypeCommon::MemoryFaultExImpl
+     * @throw ACSErrTypeCommon::CORBAProblemExImpl
+     * @throw ACSErrTypeCommon::CouldntCreateObjectExImpl 
      * @return void
      * @htmlonly
      * <br><hr>
      * @endhtmlonly
      */
-    virtual void initialize( )
-	throw (CORBA::SystemException, ACSErrTypeCommon::OutOfBoundsExImpl,ACSErrTypeCommon::MemoryFaultExImpl,
-	       ACSErrTypeCommon::CORBAProblemExImpl,ACSErrTypeCommon::CouldntCreateObjectExImpl);
+    virtual void initialize( );
 
     /**
      * Do the sampling. Retrieves data from the property using
@@ -411,8 +403,7 @@ class ACSSampObjImpl: public virtual POA_acssamp::SampObj,
      * <br><hr>
      * @endhtmlonly
      */
-    virtual char * getChannelName()
-	throw (CORBA::SystemException);
+    virtual char * getChannelName();
     
 
     /** 

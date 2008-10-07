@@ -20,7 +20,7 @@
 *
 *
 *
-* "@(#) $Id: acssampOnlyNCClient.cpp,v 1.16 2006/10/19 15:20:40 rcirami Exp $"
+* "@(#) $Id: acssampOnlyNCClient.cpp,v 1.17 2008/10/07 06:41:54 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -47,7 +47,7 @@
 
 using namespace std;
  using namespace maci;
-ACE_RCSID(acssampOnlyNCClient, OnlyNCClient, "$Id: acssampOnlyNCClient.cpp,v 1.16 2006/10/19 15:20:40 rcirami Exp $")
+ACE_RCSID(acssampOnlyNCClient, OnlyNCClient, "$Id: acssampOnlyNCClient.cpp,v 1.17 2008/10/07 06:41:54 cparedes Exp $")
     
   
   
@@ -75,7 +75,6 @@ public:
 
   void push_structured_event(const CosNotification::StructuredEvent &notification
 			     )
-    throw (CORBA::SystemException, CosEventComm::Disconnected)
   {
     
     cout << "Event: domain = \n" << (const char *)notification.header.fixed_header.event_type.domain_name << endl;

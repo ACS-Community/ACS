@@ -16,7 +16,7 @@
  *License along with this library; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: acssampObjImpl.i,v 1.9 2008/09/17 09:47:06 rcirami Exp $"
+ * "@(#) $Id: acssampObjImpl.i,v 1.10 2008/10/07 06:41:54 cparedes Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -113,8 +113,6 @@ ACSSampObjImpl<ACS_SAMP_TL>::~ACSSampObjImpl()
 //
 template <ACS_SAMP_C> 
 void ACSSampObjImpl<ACS_SAMP_TL>::initialize()
-    throw (CORBA::SystemException, ACSErrTypeCommon::OutOfBoundsExImpl,ACSErrTypeCommon::MemoryFaultExImpl,
-	   ACSErrTypeCommon::CORBAProblemExImpl,ACSErrTypeCommon::CouldntCreateObjectExImpl)
 {
     ACS_TRACE("acssamp::ACSSampObjImpl::initialize");
 
@@ -221,7 +219,6 @@ void ACSSampObjImpl<ACS_SAMP_TL>::initialize()
 // implementation of  start() method
 template <ACS_SAMP_C>
 void ACSSampObjImpl<ACS_SAMP_TL>::start ()
-    throw (CORBA::SystemException)
 {
     ACS_TRACE("acssamp::ACSSampObjImpl::start");
 
@@ -273,7 +270,6 @@ void ACSSampObjImpl<ACS_SAMP_TL>::start ()
 // implementation of  stop() method
 template <ACS_SAMP_C>
 void ACSSampObjImpl<ACS_SAMP_TL>::stop ()
-    throw (CORBA::SystemException)
 {
 
     ACS_TRACE("acssamp::ACSSampObjImpl::stop");
@@ -299,7 +295,6 @@ void ACSSampObjImpl<ACS_SAMP_TL>::stop ()
 // implementation of  suspend() method
 template <ACS_SAMP_C>
 void ACSSampObjImpl<ACS_SAMP_TL>::suspend ()
-    throw (CORBA::SystemException)
 {
 
     ACS_TRACE("acssamp::ACSSampObjImpl::suspend");
@@ -321,7 +316,6 @@ void ACSSampObjImpl<ACS_SAMP_TL>::suspend ()
 // implementation of  resume() method
 template <ACS_SAMP_C>
 void ACSSampObjImpl<ACS_SAMP_TL>::resume ()
-    throw (CORBA::SystemException)
 {
 
     ACS_TRACE("acssamp::ACSSampObjImpl::resume");
@@ -344,7 +338,6 @@ void ACSSampObjImpl<ACS_SAMP_TL>::resume ()
 // implementation of  destroy() method
 template <ACS_SAMP_C>
 void ACSSampObjImpl<ACS_SAMP_TL>::destroy()
-    throw (CORBA::SystemException)
 {
 
     ACS_TRACE("acssamp::ACSSampObjImpl::destroy");
@@ -413,7 +406,6 @@ void ACSSampObjImpl<ACS_SAMP_TL>::setReportRate(const ACS::TimeInterval& _sampRe
 // implementation of  interface method setFrequency
 template <ACS_SAMP_C>
 void ACSSampObjImpl<ACS_SAMP_TL>::setFrequency (ACS::TimeInterval sFrequency)
-    throw (CORBA::SystemException)
 {
     setSampFrequency(sFrequency);
 }
@@ -422,7 +414,6 @@ void ACSSampObjImpl<ACS_SAMP_TL>::setFrequency (ACS::TimeInterval sFrequency)
 // implementation of  interface method getFrequency
 template <ACS_SAMP_C>
 void ACSSampObjImpl<ACS_SAMP_TL>::getFrequency (ACS::TimeInterval_out sFrequency)
-    throw (CORBA::SystemException)
 {
     sFrequency = getSampFrequency();
 }
@@ -431,7 +422,6 @@ void ACSSampObjImpl<ACS_SAMP_TL>::getFrequency (ACS::TimeInterval_out sFrequency
 // implementation of  interface method setRate
 template <ACS_SAMP_C>
 void ACSSampObjImpl<ACS_SAMP_TL>::setRate (ACS::TimeInterval sRate)
-    throw (CORBA::SystemException)
 {
     setReportRate(sRate);
 }
@@ -440,7 +430,6 @@ void ACSSampObjImpl<ACS_SAMP_TL>::setRate (ACS::TimeInterval sRate)
 // implementation of  interface method getRate
 template <ACS_SAMP_C>
 void ACSSampObjImpl<ACS_SAMP_TL>::getRate (ACS::TimeInterval_out sRate)
-    throw (CORBA::SystemException)
 {
     sRate = getReportRate();
 }
@@ -450,7 +439,6 @@ void ACSSampObjImpl<ACS_SAMP_TL>::getRate (ACS::TimeInterval_out sRate)
 // the notification channel name, to be used when connecting a client
 template <ACS_SAMP_C>
 char * ACSSampObjImpl<ACS_SAMP_TL>::getChannelName ()
-    throw (CORBA::SystemException)
 {
 
     return CORBA::string_dup(sampChannelName.c_str());

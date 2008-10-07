@@ -17,7 +17,7 @@
  *License along with this library; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: acssampImpl.cpp,v 1.33 2008/07/25 07:39:52 cparedes Exp $"
+ * "@(#) $Id: acssampImpl.cpp,v 1.34 2008/10/07 06:41:54 cparedes Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -30,7 +30,7 @@
 
 #include <vltPort.h>
 
-static char *rcsId="@(#) $Id: acssampImpl.cpp,v 1.33 2008/07/25 07:39:52 cparedes Exp $";
+static char *rcsId="@(#) $Id: acssampImpl.cpp,v 1.34 2008/10/07 06:41:54 cparedes Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <Request.h>
@@ -104,11 +104,6 @@ acssamp::SampObj_ptr
 ACSSampImpl::initSampObj(const char* name, const char* property, 
 			 ACS::TimeInterval frequency, ACS::TimeInterval reportRate
     )
-    throw (CORBA::SystemException, OutOfBoundsEx,
-	   MemoryFaultEx,CORBAProblemEx,TypeNotSupportedEx,
-	   CouldntAccessPropertyEx,CouldntAccessComponentEx,
-	   CouldntCreateObjectEx)
-
 {  
     ACS_TRACE("acssamp::ACSSampImpl::initSampObj");
     ACS_SHORT_LOG((LM_INFO,"Starting SampObj creation ... "));

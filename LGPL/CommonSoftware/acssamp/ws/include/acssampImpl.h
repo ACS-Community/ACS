@@ -21,7 +21,7 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
  *
- * "@(#) $Id: acssampImpl.h,v 1.22 2008/07/25 07:39:52 cparedes Exp $"
+ * "@(#) $Id: acssampImpl.h,v 1.23 2008/10/07 06:41:54 cparedes Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -102,7 +102,14 @@ class ACSSampImpl: public virtual baci::CharacteristicComponentImpl,
      *                      <i>(units are 100ns; e.g. 10000000 means collect data
      *                       for 1 second)</i>
      *
-     
+     *
+     * @throw ACSErrTypeCommon::OutOfBoundsEx
+     * @throw ACSErrTypeCommon::MemoryFaultEx
+     * @throw ACSErrTypeCommon::CORBAProblemEx
+     * @throw ACSErrTypeCommon::CouldntCreateObjectEx
+     * @throw ACSErrTypeCommon::TypeNotSupportedEx
+     * @throw ACSErrTypeCommon::CouldntAccessPropertyEx
+     * @throw ACSErrTypeCommon::CouldntAccessComponentEx
      * @return SampObj_ptr  pointer to the newly created sampling object. It allows
      *                      to control the actual sampling (start/stop/pause etc.)
      *
@@ -111,16 +118,11 @@ class ACSSampImpl: public virtual baci::CharacteristicComponentImpl,
      * @endhtmlonly
      */
 
-
     virtual acssamp::SampObj_ptr initSampObj(const char *name,
 					     const char *property,
 					     ACS::TimeInterval frequency,
 					     ACS::TimeInterval reportRate
-	)
-	throw (CORBA::SystemException,ACSErrTypeCommon::OutOfBoundsEx,
-	       ACSErrTypeCommon::MemoryFaultEx,ACSErrTypeCommon::CORBAProblemEx,ACSErrTypeCommon::TypeNotSupportedEx,
-	       ACSErrTypeCommon::CouldntAccessPropertyEx,ACSErrTypeCommon::CouldntAccessComponentEx,
-	       ACSErrTypeCommon::CouldntCreateObjectEx);
+	);
 
 
     /**

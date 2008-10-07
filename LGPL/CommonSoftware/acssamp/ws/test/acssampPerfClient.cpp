@@ -20,7 +20,7 @@
 *
 *
 *
-* "@(#) $Id: acssampPerfClient.cpp,v 1.9 2006/10/19 15:20:40 rcirami Exp $"
+* "@(#) $Id: acssampPerfClient.cpp,v 1.10 2008/10/07 06:41:54 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -50,7 +50,7 @@
 using namespace std;
 using namespace maci;
 
-ACE_RCSID(acssampPerfClient, PerfClient, "$Id: acssampPerfClient.cpp,v 1.9 2006/10/19 15:20:40 rcirami Exp $")
+ACE_RCSID(acssampPerfClient, PerfClient, "$Id: acssampPerfClient.cpp,v 1.10 2008/10/07 06:41:54 cparedes Exp $")
     
 
 static int endme = 1;
@@ -92,7 +92,6 @@ class SamplerConsumer : public nc::Consumer
 
   void push_structured_event(const CosNotification::StructuredEvent &notification
 			     )
-    throw (CORBA::SystemException, CosEventComm::Disconnected)
   {
     
       // cout << "Event: domain = \n" << (const char *)notification.header.fixed_header.event_type.domain_name << endl;
