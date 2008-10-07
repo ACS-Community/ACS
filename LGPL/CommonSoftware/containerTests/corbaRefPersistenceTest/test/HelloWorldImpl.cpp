@@ -21,7 +21,7 @@
 *
 *
 *
-* "@(#) $Id: HelloWorldImpl.cpp,v 1.2 2008/04/02 10:20:37 acaproni Exp $"
+* "@(#) $Id: HelloWorldImpl.cpp,v 1.3 2008/10/07 09:47:17 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -32,7 +32,7 @@
 #include <ACSErrTypeCommon.h>
 #include <iostream>
 
-ACE_RCSID(corbaRefPeristenceTest, HelloWorld, "$Id: HelloWorldImpl.cpp,v 1.2 2008/04/02 10:20:37 acaproni Exp $")
+ACE_RCSID(corbaRefPeristenceTest, HelloWorld, "$Id: HelloWorldImpl.cpp,v 1.3 2008/10/07 09:47:17 cparedes Exp $")
 
 /* ----------------------------------------------------------------*/
 HelloWorld::HelloWorld( 
@@ -53,7 +53,6 @@ HelloWorld::~HelloWorld()
 /* --------------------- [ CORBA interface ] ----------------------*/
 void
 HelloWorld::displayMessage ()
-    throw (CORBA::SystemException)
 {
     std::cout << "Hello World" << std::endl; 
 }

@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: HelloWorldImpl.h,v 1.3 2008/07/25 07:45:52 cparedes Exp $"
+* "@(#) $Id: HelloWorldImpl.h,v 1.4 2008/10/07 09:47:17 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -70,7 +70,7 @@ class HelloWorld: public virtual acscomponent::ACSComponentImpl,     //Component
     /**
      * Displays "Hello World" to the console.
      */     
-    virtual void displayMessage () throw (CORBA::SystemException);
+    virtual void displayMessage () ;
 
 };
 /*\@}*/
