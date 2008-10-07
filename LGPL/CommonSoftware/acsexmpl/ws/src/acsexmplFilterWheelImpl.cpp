@@ -20,7 +20,7 @@
 *
 *
 *
-* "@(#) $Id: acsexmplFilterWheelImpl.cpp,v 1.10 2008/10/01 04:30:47 cparedes Exp $"
+* "@(#) $Id: acsexmplFilterWheelImpl.cpp,v 1.11 2008/10/07 09:56:27 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -43,7 +43,7 @@ const static int MOVEFILTER_ACTION   = 0;
 const static int MOVESLOT_ACTION   = 1;
 const static int ADJUST_ACTION = 2;
 
-ACE_RCSID(acsexmpl, acsexmplFilterWheelImpl, "$Id: acsexmplFilterWheelImpl.cpp,v 1.10 2008/10/01 04:30:47 cparedes Exp $")
+ACE_RCSID(acsexmpl, acsexmplFilterWheelImpl, "$Id: acsexmplFilterWheelImpl.cpp,v 1.11 2008/10/07 09:56:27 cparedes Exp $")
 
 using namespace baci;
 
@@ -282,7 +282,7 @@ void FilterWheel::updateWheel(int slot, int step)
     catch (...)
 	{
 	// An error occurred reading the characteristic
-	// This method throws CORBA::SystemException and ACS::NoSuchCharacteristic
+	// This method throws ACS::NoSuchCharacteristic
 	ACS_SHORT_LOG((LM_ERROR,"Error reading the characteristic AvailableSlots by its name"));
 	return;
 	}
