@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.2 2008/10/07 01:47:45 javarias Exp $"
+# "@(#) $Id: Makefile,v 1.1 2008/10/07 01:47:45 javarias Exp $"
 #
 # Makefile of ........
 #
@@ -16,6 +16,7 @@
 # REMARKS
 #    None
 #------------------------------------------------------------------------
+
 #
 # user definable C-compilation flags
 #USER_CFLAGS = 
@@ -23,7 +24,7 @@
 #
 # additional include and library search paths
 USER_INC = -I$(DDS_ROOT)
-USER_LIB = -L$(DDS_ROOT)/lib
+USER_LIB = -L$(DDS_ROOT)/lib 
 
 #
 # MODULE CODE DESCRIPTION:
@@ -35,25 +36,13 @@ USER_LIB = -L$(DDS_ROOT)/lib
 # C programs (public and local)
 # -----------------------------
 EXECUTABLES     =
-EXECUTABLES_L   = ddsPublisher ddsSubscriber testPublisher
+EXECUTABLES_L   = 
 
 #
-# <brief description of ddsnc program>
-#ddsnc_OBJECTS   = 	
-#ddsnc_LDFLAGS   = 
-#ddsnc_LIBS      = examplFridgeStubs
-
-ddsPublisher_OBJECTS   = publisher	
-ddsPublisher_LDFLAGS   = -lACE -lOpenDDS_Dcps -lSimpleTcp
-ddsPublisher_LIBS      = ddsncTestTypeSupport examplFridgeStubs
-
-ddsSubscriber_OBJECTS   = subscriber DataReaderListener	
-ddsSubscriber_LDFLAGS   = -lOpenDDS_Dcps -lSimpleTcp -lACE
-ddsSubscriber_LIBS      = ddsncTestTypeSupport examplFridgeStubs
-
-testPublisher_OBJECTS   = testPub
-testPublisher_LDFLAGS   = -lOpenDDS_Dcps -lSimpleTcp -lACE -lacsddsnc
-testPublisher_LIBS      = ddsncTestTypeSupport examplFridgeStubs
+# <brief description of xxxxx program>
+#xxxxx_OBJECTS   = 	
+#xxxxx_LDFLAGS   = 
+#xxxxx_LIBS      = 
 
 #
 # special compilation flags for single c sources
@@ -62,23 +51,23 @@ testPublisher_LIBS      = ddsncTestTypeSupport examplFridgeStubs
 #
 # Includes (.h) files (public only)
 # ---------------------------------
-INCLUDES        = 
+INCLUDES        =  DDSHelper.h DDSPublisher.h DDSSubscriber.h
 
 #
 # Libraries (public and local)
 # ----------------------------
-LIBRARIES       = ddsncTestTypeSupport
+LIBRARIES       = acsddsnc
 LIBRARIES_L     =
 
 #
-# <brief description of lllll library>
-lllll_OBJECTS   =
+# <brief description of acsddsnc library>
+acsddsnc_OBJECTS   = DDSHelperImpl DDSSubscriberImpl
 
 #
 # Scripts (public and local)
 # ----------------------------
 SCRIPTS         =
-SCRIPTS_L       = runPub.sh runSub.sh runServer.sh
+SCRIPTS_L       =
 
 #
 # TCL scripts (public and local)
@@ -123,10 +112,10 @@ CDB_SCHEMAS =
 # 
 # IDL Files and flags
 # 
-IDL_FILES = examplFridge 
-DDS_IDL_FILES = examplFridge
-TAO_IDLFLAGS = -Gdcps
-USER_IDL = -I$(DDS_ROOT)
+IDL_FILES =  
+DDS_IDL_FILES = 
+TAO_IDLFLAGS = 
+USER_IDL = 
 #
 # Jarfiles and their directories
 #
@@ -200,7 +189,7 @@ endif
 #
 # TARGETS
 # -------
-all: build_dds do_all
+all: do_all
 	@echo " . . . 'all' done" 
 
 clean : clean_dds clean_all 
@@ -212,28 +201,7 @@ clean_dist : clean_all clean_dist_all
 man   : do_man 
 	@echo " . . . man page(s) done"
 
-install : install_dds install_all
+install : install_all
 	@echo " . . . installation done"
 
-DDS_TYPES=temperatureDataBlockEvent
-DDS_IDLS=$(foreach idl, $(DDS_IDL_FILES), ../idl/$(idl).idl)
-DDS_TYPES_IDLS=$(foreach type, $(DDS_TYPES), $(type)TypeSupport.idl)
-DDS_TYPE_FILES=$(foreach type, $(DDS_TYPES), $(type)TypeSupportC $(type)TypeSupportS $(type)TypeSupportImpl)
-ddsncTestTypeSupport_OBJECTS += $(DDS_TYPE_FILES)
-
-build_dds: gen_dds_support
-	@echo $(DDS_TYPES_IDLS)
-	$(ACE_ROOT)/TAO/TAO_IDL/tao_idl $(TAO_IDLFLAGS) $(USER_IDL) $(DDS_TYPES_IDLS)
-#	rm -rf $(foreach idl, $(DDS_IDL_FILES), $(idl).idl)
-
-gen_dds_support: $(DDS_IDLS)
-	cp $(DDS_IDLS) .
-	$(foreach idl, $(DDS_IDL_FILES), $(DDS_ROOT)/bin/dcps_ts.pl $(idl).idl)
-
-clean_dds:
-	rm -rf *TypeSupport*
-
-install_dds: $(DDS_TYPES_IDLS)
-	cp $(DDS_TYPES_IDLS) $(INTROOT)/idl
-	chmod +x $(INTROOT)/idl/*.idl
 #___oOo___
