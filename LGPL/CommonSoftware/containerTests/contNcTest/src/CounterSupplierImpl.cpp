@@ -21,7 +21,7 @@
 *
 *
 *
-* "@(#) $Id: CounterSupplierImpl.cpp,v 1.1 2008/05/23 12:53:45 eallaert Exp $"
+* "@(#) $Id: CounterSupplierImpl.cpp,v 1.2 2008/10/07 09:41:42 cparedes Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -32,7 +32,7 @@
 #include "CounterSupplierImpl.h"
 #include <ACSErrTypeCommon.h>
 
-ACE_RCSID(contNcTest, CounterSupplierImpl, "$Id: CounterSupplierImpl.cpp,v 1.1 2008/05/23 12:53:45 eallaert Exp $")
+ACE_RCSID(contNcTest, CounterSupplierImpl, "$Id: CounterSupplierImpl.cpp,v 1.2 2008/10/07 09:41:42 cparedes Exp $")
 
 ACE_Log_Priority LOCAL_LOGGING_LEVEL = LM_TRACE;
 
@@ -66,7 +66,6 @@ CounterSupplierImpl::sendBlocks (const CORBA::Long initialVal,
 		const CORBA::Long lastVal,
 		const CORBA::Long changeVal,
 		const CORBA::Float period)	
-    throw (CORBA::SystemException, ACSErrTypeCommon::CouldntPerformActionEx)
 {
 
 	CORBA::Boolean flag = false;

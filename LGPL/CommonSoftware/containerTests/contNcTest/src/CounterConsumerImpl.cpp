@@ -21,7 +21,7 @@
 *
 *
 *
-* "@(#) $Id: CounterConsumerImpl.cpp,v 1.1 2008/05/23 12:53:45 eallaert Exp $"
+* "@(#) $Id: CounterConsumerImpl.cpp,v 1.2 2008/10/07 09:41:42 cparedes Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -37,7 +37,7 @@ using namespace ACSErrTypeCommon;
 using namespace std;
 using namespace baci;
 
-ACE_RCSID(contNcTest, CounterConsumerImpl, "$Id: CounterConsumerImpl.cpp,v 1.1 2008/05/23 12:53:45 eallaert Exp $")
+ACE_RCSID(contNcTest, CounterConsumerImpl, "$Id: CounterConsumerImpl.cpp,v 1.2 2008/10/07 09:41:42 cparedes Exp $")
 
 ACE_Log_Priority LOCAL_LOGGING_LEVEL = LM_TRACE;
 
@@ -103,7 +103,6 @@ CounterConsumerImpl::~CounterConsumerImpl()
 /* --------------------- [ CORBA interface ] ----------------------*/
 void 
 CounterConsumerImpl::getBlocks ()	
-throw (CORBA::SystemException, ACSErrTypeCommon::CouldntPerformActionEx)
 {
 
 	m_eventCount = 0;
@@ -125,7 +124,6 @@ throw (CORBA::SystemException, ACSErrTypeCommon::CouldntPerformActionEx)
 
 CORBA::Long
 CounterConsumerImpl::waitTillDone() 
-throw (CORBA::SystemException, ACSErrTypeCommon::CouldntPerformActionEx)
 {
 	if (m_CounterConsumer_p == NULL) {
 		ACS_SHORT_LOG((LM_ERROR, "CounterConsumer didn't even start yet"));
