@@ -291,31 +291,26 @@ public class SubsysResourceMonitor {
     		isSuspended = false;
     		lastCheckSucceeded = true;
 		}
-        
-        /**
-         * Sets the future that was obtained from the scheduler when starting the monitoring job.
-         * The future object can be used to cancel the execution of this check runner.
-         * Unfortunately this object is not yet available at construction time, 
-         * that's why we have this separate setter method.
-         */
-        void setScheduleFuture(Future<?> scheduleFuture) {
-            this.scheduleFuture = scheduleFuture;
-        }
-        
-        Future<?> getScheduleFuture() {
-            return scheduleFuture;
-        }
-        
-        /**
-         * To be called from run()
-         */
-        private void notifyRecovery() {
-			// @TODO remove this check with ACS 8.0 when the interfaces have been merged
-			if (err instanceof RecoverableResourceErrorHandler) {
-				RecoverableResourceErrorHandler<T> recoverableErr = (RecoverableResourceErrorHandler<T>) err;
-				recoverableErr.resourceRecovered(resourceChecker.getResource());
-			}        	
-        }
+
+		/**
+		 * Sets the future that was obtained from the scheduler when starting the monitoring job. The future object can
+		 * be used to cancel the execution of this check runner. Unfortunately this object is not yet available at
+		 * construction time, that's why we have this separate setter method.
+		 */
+		void setScheduleFuture(Future<?> scheduleFuture) {
+			this.scheduleFuture = scheduleFuture;
+		}
+
+		Future<?> getScheduleFuture() {
+			return scheduleFuture;
+		}
+
+		/**
+		 * To be called from run()
+		 */
+		private void notifyRecovery() {
+			err.resourceRecovered(resourceChecker.getResource());
+		}
 		
 		public void run() {
 			
@@ -400,20 +395,20 @@ public class SubsysResourceMonitor {
 					// TODO: call in separate thread with timeout. Decide about value of "beyondRepair" if method 'resourceUnreachable' times out
 					beyondRepair = err.resourceUnreachable(resourceChecker.getResource()); 
 				} catch (Throwable thr) {
-                    logger.log(Level.WARNING, "Failed to propagate unavailability of resource '" + resourceChecker.getResourceName() + "' to the error handler!", thr);
+					logger.log(Level.WARNING, "Failed to propagate unavailability of resource '" + resourceChecker.getResourceName() + "' to the error handler!", thr);
 				}
 			}			
 			else if (callError != null) {
-                // the asynchronous call "resourceChecker.checkState()" failed, but not because of a timeout.
+				// the asynchronous call "resourceChecker.checkState()" failed, but not because of a timeout.
 				// This is not expected, and we must log the exception.
 				lastCheckSucceeded = false;
-                logger.log(Level.WARNING, "Failed to check the status of resource '" + resourceChecker.getResourceName() + "' because of an exception.", callError);
+				logger.log(Level.WARNING, "Failed to check the status of resource '" + resourceChecker.getResourceName() + "' because of an exception.", callError);
 				try {
 					// notify the error handler
 					// @TODO: call in separate thread with timeout. Decide about value of "beyondRepair" if method 'resourceUnreachable' times out
 					beyondRepair = err.resourceUnreachable(resourceChecker.getResource()); 
 				} catch (Throwable thr) {
-                    logger.log(Level.WARNING, "Failed to propagate unavailability of resource '" + resourceChecker.getResourceName() + "' to the error handler!", thr);
+					logger.log(Level.WARNING, "Failed to propagate unavailability of resource '" + resourceChecker.getResourceName() + "' to the error handler!", thr);
 				}
 			}
 
@@ -469,7 +464,7 @@ public class SubsysResourceMonitor {
 		/**
 		 * This method tries to connect to the monitored resource and check its state if applicable.
 		 * If this call does not return within a certain time, then resource unavailability will be assumed.
-		 * @return name of an offending state or status if one is found, otherwise <code>null</code>.  
+		 * @return name of an offending state or status if one is found, otherwise <code>null</code>.
 		 */
 		public String checkState();
 		
@@ -485,42 +480,41 @@ public class SubsysResourceMonitor {
 
 	
 	/**
-     * Implementation of <code>ResourceChecker</code> for ACS components. 
-     * Calls {@link ACSComponentOperations#componentState()} to determine
-     * responsiveness and state of the component resource.
+	 * Implementation of <code>ResourceChecker</code> for ACS components. Calls
+	 * {@link ACSComponentOperations#componentState()} to determine responsiveness and state of the component resource.
 	 */
-	public static class ComponentChecker<T extends ACSComponent> implements ResourceChecker<T> {
-		
+	public static class ComponentChecker<T extends ACSComponent> implements ResourceChecker<T>
+	{
+
 		private final T comp;
-        
-        /**
-         * We keep the component name separately because later when there are problems 
-         * it may no longer be possible to obtain it remotely.
-         */
-        private String compName;
-		
+
+		/**
+		 * We keep the component name separately because later when there are problems it may no longer be possible to
+		 * obtain it remotely.
+		 */
+		private String compName;
+
 		ComponentChecker(T comp) {
 			this.comp = comp;
-            this.compName = comp.name(); // todo: timeout and exception
+			this.compName = comp.name(); // todo: timeout and exception
 		}
 
 		public String checkState() {
-            ComponentStates state = comp.componentState();
+			ComponentStates state = comp.componentState();
 			if (state.value() != ComponentStates.COMPSTATE_OPERATIONAL.value()) {
-                return state.toString();
-            }
-            else {
-                return null;
-            }
+				return state.toString();
+			} else {
+				return null;
+			}
 		}
-		
+
 		public T getResource() {
 			return comp;
 		}
-        
-        public String getResourceName() {
-            return compName;
-        }
+
+		public String getResourceName() {
+			return compName;
+		}
 	}
 	/**
 	 * A custom <code>ResourceChecker</code> for objects implementing
@@ -554,51 +548,51 @@ public class SubsysResourceMonitor {
 			return resourceName;
 		}
 	}
-    /**
-     * Error handler that gets notified when a monitored resource
-     * becomes unavailable or degraded.
-     * <p> 
-     * By implementing a custom error handler, a master component
-     * can attempt first to cure the situation, or go into ERROR state
-     * by calling <code>doTransition(SubsystemStateEvent.SUBSYSEVENT_ERROR);</code>.
-     */
-    public interface ResourceErrorHandler<T> {
+	
+	/**
+	 * Error handler that gets notified when a monitored resource becomes unavailable or degraded.
+	 * <p>
+	 * By implementing a custom error handler, a master component can attempt first to cure the situation, or go into
+	 * ERROR state by calling <code>doTransition(SubsystemStateEvent.SUBSYSEVENT_ERROR);</code>.
+	 */
+	public interface ResourceErrorHandler<T>
+	{
+		/**
+		 * Called when the resource could not be reached at all because of a timeout or network/middleware communication errors.
+		 * The resource object is passed to allow using one handler for many resources.
+		 * <p>
+		 * The return value controls whether monitoring of this resource will be stopped:
+		 * <ol>
+		 * <li><code>true</code> means that the error handler decided that this resource is unreachable beyond repair,
+		 *     and that no further monitoring calls should be made. This can avoid potential problems with an increasing
+		 *     number of hanging calls and eventually stopping the respective threads.
+		 * <li><code>false</code> means that monitoring calls should continue.
+		 * </ol>
+		 */
+		abstract boolean resourceUnreachable(T resource);
 
-        /**
-         * Called when the resource could not be reached at all.
-         * The resource object is passed to allow using one handler for many resources.
-         * <p>
-         * The return value controls whether monitoring of this resource will be stopped:
-         * <ol>
-         * <li><code>true</code> means that the error handler decided that this resource is unreachable beyond repair, 
-         *     and that no further monitoring calls should be made.
-         *     This can avoid potential problems with an increasing number of hanging calls and eventually stopping the respective threads.
-         * <li><code>false</code> means that monitoring calls should continue.
-         * </ol>
-         */
-        abstract boolean resourceUnreachable(T resource);
-        
-        /**
-         * Called when {@link SubsysResourceMonitor} was found in a bad state, but still replied in time. 
-         * @param resource
-         */
-        abstract void badState(T resource, String stateName);
-        
-    }
-    
-    /**
-     * @TODO: with next major ACS release (8.0) this interface must be merged back to ResourceErrorHandler.
-     * We only use a separate interface to be able to add the method resourceRecovered in ACS 6.0.3 in a backward compatible way.
-     */
-    public interface RecoverableResourceErrorHandler<T> extends ResourceErrorHandler<T> {
-        /**
-         * Notification that the monitored resource has recovered after a previous failure or timeout.
-         * This notification can only work if monitoring has continued after the problem was detected, 
-         * which is always the case for =badState= problems, but depends on the return value of <code>resourceUnreachable</code>.
-         * in case of timeout problems.
-         * @since ACS 6.0.3
-         */
-        abstract void resourceRecovered(T resource);        	    	
-    }
+		/**
+		 * Called when {@link SubsysResourceMonitor} was found in a bad state, but still replied in time.
+		 * 
+		 * @param resource 
+		 *            The resource object is passed to allow using one handler for many resources.
+		 * @param stateName
+		 *            Name of the bad state the resource was found in. If the resource does not support named states,
+		 *            it may return any String that indicates the problem. For example, {@linkplain PingableResourceChecker}
+		 *            returns <code>"ping() failed."</code> which is then used as the <code>stateName</code>.
+		 * @see ResourceChecker#checkState()
+		 */
+		abstract void badState(T resource, String stateName);
+
+		/**
+		 * Notification that the monitored resource has recovered after a previous failure or timeout. This notification
+		 * can only work if monitoring has continued after the problem was detected, which is always the case for
+		 * <code>badState</code> problems, but depends on the return value of <code>resourceUnreachable</code> in case of timeout.
+		 * problems.
+		 * 
+		 * @since ACS 8.0.0 (has existed in sub-interface RecoverableResourceErrorHandler since 6.0.3)
+		 */
+		abstract void resourceRecovered(T resource);
+	}
 
 }
