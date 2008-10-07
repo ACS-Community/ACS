@@ -442,6 +442,7 @@ public class LogTableDataModel extends LogEntryTableModelBase {
 	 */
 	public void close(boolean sync) {
 		if (logDeleter!=null) {
+			logDeleter.interrupt();
 			logDeleter.close(sync);
 			logDeleter=null;
 		}
