@@ -52,8 +52,8 @@ namespace testalarmsystem
 			 */
 			virtual ~AlarmTestMountMultiThreadedImpl();
 
-			void faultMount(CORBA::Long threads, CORBA::Long numFaultsPerThread, CORBA::Long mountNum) throw (CORBA::SystemException );
-			void terminate_faultMount() throw (CORBA::SystemException );
+			void faultMount(CORBA::Long threads, CORBA::Long numFaultsPerThread, CORBA::Long mountNum);
+			void terminate_faultMount();
     
 
 			/**

@@ -20,7 +20,7 @@
 *
 *
 *
-* "@(#) $Id: testDriverAcs.cpp,v 1.11 2008/07/30 02:47:40 cparedes Exp $"
+* "@(#) $Id: testDriverAcs.cpp,v 1.12 2008/10/07 10:02:49 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -52,6 +52,7 @@ class LoggingConsumer : public nc::Consumer
     /** 
      * Overridden 
      *  @param publishedEvent The real CORBA event.
+     *  @throw  CosEventComm::Disconnected
      *
      *  @return void
      *  @htmlonly
@@ -60,7 +61,6 @@ class LoggingConsumer : public nc::Consumer
     */
     virtual void 
     push_structured_event(const CosNotification::StructuredEvent &publishedEvent)
-	throw (CORBA::SystemException, CosEventComm::Disconnected)
 	{
      // TODO: ascertain length of remainder_of_body rather than use fixed 4k length
      char remainderOfBodyStorage[4096];

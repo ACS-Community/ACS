@@ -49,7 +49,7 @@ AlarmTestMountImpl::~AlarmTestMountImpl()
 	ACS_TRACE("::AlarmTestMount::~AlarmTestMount");
 }
 
-void AlarmTestMountImpl::faultMount() throw (CORBA::SystemException ) 
+void AlarmTestMountImpl::faultMount() 
 {
 	// alternate using the "short-hand" and the "long-hand" techniques for sending the alarm 
 	// so that we will have test coverage of both styles of sending an alarm
@@ -63,7 +63,7 @@ void AlarmTestMountImpl::faultMount() throw (CORBA::SystemException )
 	}
 }
 
-void AlarmTestMountImpl::terminate_faultMount() throw (CORBA::SystemException ) 
+void AlarmTestMountImpl::terminate_faultMount()
 {
 	sendAlarmLongHand("Mount", "ALARM_SOURCE_MOUNT", 1, false);
 }

@@ -151,7 +151,7 @@ AlarmTestMountMultiThreadedImpl::~AlarmTestMountMultiThreadedImpl()
 	stopped = true;
 }
 
-void AlarmTestMountMultiThreadedImpl::faultMount(CORBA::Long threads, CORBA::Long numFaultsPerMount, CORBA::Long mountNumber) throw (CORBA::SystemException ) 
+void AlarmTestMountMultiThreadedImpl::faultMount(CORBA::Long threads, CORBA::Long numFaultsPerMount, CORBA::Long mountNumber)
 {
 	ACS_TRACE("::AlarmTestMountMultiThreaded::faultMount entering");
 	SenderThread *senderThreads[threads];
@@ -211,7 +211,7 @@ void AlarmTestMountMultiThreadedImpl::faultMount(CORBA::Long threads, CORBA::Lon
 	ACS_TRACE("::AlarmTestMountMultiThreaded::faultMount exiting");
 }
 
-void AlarmTestMountMultiThreadedImpl::terminate_faultMount() throw (CORBA::SystemException ) 
+void AlarmTestMountMultiThreadedImpl::terminate_faultMount() 
 {
 	string family("Mount");
 	string member("ALARM_SOURCE_MOUNTCPP");

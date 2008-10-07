@@ -50,8 +50,8 @@ namespace testalarmsystem
 			 */
 			virtual ~AlarmTestMountImpl();
 
-			void faultMount() throw (CORBA::SystemException );
-			void terminate_faultMount() throw (CORBA::SystemException );
+			void faultMount();
+			void terminate_faultMount();
     
 		private:
 
