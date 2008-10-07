@@ -365,51 +365,57 @@ public class SubsysResourceMonitorTest extends TestCase {
     }
     
 
-    private static class TestErrorHandler implements SubsysResourceMonitor.ResourceErrorHandler<TestResource> {
-        private final Logger logger;
-        private volatile int badStateCount;
-        private volatile int unreachableCount;
-        private boolean isPermanentlyUnreachable;
+	private static class TestErrorHandler implements SubsysResourceMonitor.ResourceErrorHandler<TestResource> {
+		private final Logger logger;
+		private volatile int badStateCount;
+		private volatile int unreachableCount;
+		private boolean isPermanentlyUnreachable;
 		private volatile CountDownLatch unreachabilitySync;
 
-        TestErrorHandler(Logger logger) {
-            this.logger = logger;
-            isPermanentlyUnreachable = false;
-            resetCounters();
-        }
-        public void badState(TestResource resource, String stateName) {
-        	badStateCount++;
-        	logger.info("TestErrorHandler#badState (thread " + Thread.currentThread().getName() + ") called - " + unreachableCount);
-        }
+		TestErrorHandler(Logger logger) {
+			this.logger = logger;
+			isPermanentlyUnreachable = false;
+			resetCounters();
+		}
 
-        public boolean resourceUnreachable(TestResource resource) {
-        	unreachableCount++;
-        	logger.info("TestErrorHandler#resourceUnreachable (thread " + Thread.currentThread().getName() + ") called - " + unreachableCount);
-            if (unreachabilitySync != null) {
-            	unreachabilitySync.countDown();
-            }
-        	return isPermanentlyUnreachable;
-        }
-        
-        void resetCounters() {
-            badStateCount = 0;
-            unreachableCount = 0;
-        }
-        int getBadStateCount() {
-            return badStateCount;
-        }
-        int getUnreachableCount() {
-            return unreachableCount;
-        }
-        boolean isPermanentlyUnreachable() {
-        	return isPermanentlyUnreachable;
-        }
-        void setIsPermanentlyUnreachable(boolean isPermanentlyUnreachable) {
-        	this.isPermanentlyUnreachable = isPermanentlyUnreachable;
-        }
-        void setUnreachabilitySync(CountDownLatch sync) {
-        	this.unreachabilitySync = sync;
-        }
-    }
-    
+		public void badState(TestResource resource, String stateName) {
+			badStateCount++;
+			logger.info("TestErrorHandler#badState (thread " + Thread.currentThread().getName() + ") called - " + unreachableCount);
+		}
+
+		public boolean resourceUnreachable(TestResource resource) {
+			unreachableCount++;
+			logger.info("TestErrorHandler#resourceUnreachable (thread " + Thread.currentThread().getName() + ") called - " + unreachableCount);
+			if (unreachabilitySync != null) {
+				unreachabilitySync.countDown();
+			}
+			return isPermanentlyUnreachable;
+		}
+
+		public void resourceRecovered(TestResource resource) {
+			//@todo test also invocations of this method.
+		}
+
+		void resetCounters() {
+			badStateCount = 0;
+			unreachableCount = 0;
+		}
+
+		int getBadStateCount() {
+			return badStateCount;
+		}
+		int getUnreachableCount() {
+			return unreachableCount;
+		}
+		boolean isPermanentlyUnreachable() {
+			return isPermanentlyUnreachable;
+		}
+		void setIsPermanentlyUnreachable(boolean isPermanentlyUnreachable) {
+			this.isPermanentlyUnreachable = isPermanentlyUnreachable;
+		}
+		void setUnreachabilitySync(CountDownLatch sync) {
+			this.unreachabilitySync = sync;
+		}
+	}
+
 }
