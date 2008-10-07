@@ -20,7 +20,7 @@
 *
 *
 *
-* "@(#) $Id: lifeCycleCharTestImpl.cpp,v 1.1 2008/03/24 07:43:35 cparedes Exp $"
+* "@(#) $Id: lifeCycleCharTestImpl.cpp,v 1.2 2008/10/07 09:45:30 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -56,7 +56,6 @@ void TestLifeCycleCharComp::off(){
     
     }
 ACS::RWlong_ptr TestLifeCycleCharComp::value()
-throw (CORBA::SystemException)
 {
     ACS::RWlong_var prop = ACS::RWlong::_narrow(m_value->getCORBAReference());
     return prop._retn();
