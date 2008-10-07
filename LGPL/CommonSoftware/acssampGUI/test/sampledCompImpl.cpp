@@ -1,5 +1,5 @@
 #include <vltPort.h>
-static char *rcsId=(char *)"@(#) $Id: sampledCompImpl.cpp,v 1.4 2008/09/09 20:15:48 rtobar Exp $";
+static char *rcsId=(char *)"@(#) $Id: sampledCompImpl.cpp,v 1.5 2008/10/07 06:55:55 cparedes Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include "sampledCompImpl.h"
@@ -47,7 +47,7 @@ sampledCompImpl::~sampledCompImpl()
 
 /* Properties returning */
 
-ACS::ROdouble_ptr sampledCompImpl::my_ROdouble() throw (CORBA::SystemException)
+ACS::ROdouble_ptr sampledCompImpl::my_ROdouble()
 {
 	if( m_ROdouble_sp == 0 ){
 		return ACS::ROdouble::_nil();
@@ -56,7 +56,7 @@ ACS::ROdouble_ptr sampledCompImpl::my_ROdouble() throw (CORBA::SystemException)
 	return prop._retn();
 }
 
-ACS::RWdouble_ptr sampledCompImpl::my_RWdouble() throw (CORBA::SystemException)
+ACS::RWdouble_ptr sampledCompImpl::my_RWdouble()
 {
 	if( m_RWdouble_sp == 0 ){
 		return ACS::RWdouble::_nil();
@@ -65,7 +65,7 @@ ACS::RWdouble_ptr sampledCompImpl::my_RWdouble() throw (CORBA::SystemException)
 	return prop._retn();
 }
 
-ACS::ROfloat_ptr sampledCompImpl::my_ROfloat() throw (CORBA::SystemException)
+ACS::ROfloat_ptr sampledCompImpl::my_ROfloat()
 {
 	if( m_ROfloat_sp == 0 ){
 		return ACS::ROfloat::_nil();
@@ -74,7 +74,7 @@ ACS::ROfloat_ptr sampledCompImpl::my_ROfloat() throw (CORBA::SystemException)
 	return prop._retn();
 }
 
-ACS::RWfloat_ptr sampledCompImpl::my_RWfloat() throw (CORBA::SystemException)
+ACS::RWfloat_ptr sampledCompImpl::my_RWfloat()
 {
 	if( m_RWfloat_sp == 0 ){
 		return ACS::RWfloat::_nil();
@@ -83,7 +83,7 @@ ACS::RWfloat_ptr sampledCompImpl::my_RWfloat() throw (CORBA::SystemException)
 	return prop._retn();
 }
 
-ACS::ROstring_ptr sampledCompImpl::my_ROstring() throw (CORBA::SystemException)
+ACS::ROstring_ptr sampledCompImpl::my_ROstring()
 {
 	if( m_ROstring_sp == 0 ){
 		return ACS::ROstring::_nil();
@@ -92,7 +92,7 @@ ACS::ROstring_ptr sampledCompImpl::my_ROstring() throw (CORBA::SystemException)
 	return prop._retn();
 }
 
-ACS::RWstring_ptr sampledCompImpl::my_RWstring() throw (CORBA::SystemException)
+ACS::RWstring_ptr sampledCompImpl::my_RWstring()
 {
 	if( m_RWstring_sp == 0 ){
 		return ACS::RWstring::_nil();
@@ -101,7 +101,7 @@ ACS::RWstring_ptr sampledCompImpl::my_RWstring() throw (CORBA::SystemException)
 	return prop._retn();
 }
 
-ACS::ROlong_ptr sampledCompImpl::my_ROlong() throw (CORBA::SystemException)
+ACS::ROlong_ptr sampledCompImpl::my_ROlong()
 {
 	if( m_ROlong_sp == 0 ){
 		return ACS::ROlong::_nil();
@@ -110,7 +110,7 @@ ACS::ROlong_ptr sampledCompImpl::my_ROlong() throw (CORBA::SystemException)
 	return prop._retn();
 }
 
-ACS::RWlong_ptr sampledCompImpl::my_RWlong() throw (CORBA::SystemException)
+ACS::RWlong_ptr sampledCompImpl::my_RWlong()
 {
 	if( m_RWlong_sp == 0 ){
 		return ACS::RWlong::_nil();
@@ -119,7 +119,7 @@ ACS::RWlong_ptr sampledCompImpl::my_RWlong() throw (CORBA::SystemException)
 	return prop._retn();
 }
 
-ACS::ROlongLong_ptr sampledCompImpl::my_ROlongLong() throw (CORBA::SystemException)
+ACS::ROlongLong_ptr sampledCompImpl::my_ROlongLong()
 {
 	if( m_ROlongLong_sp == 0 ){
 		return ACS::ROlongLong::_nil();
@@ -128,7 +128,7 @@ ACS::ROlongLong_ptr sampledCompImpl::my_ROlongLong() throw (CORBA::SystemExcepti
 	return prop._retn();
 }
 
-ACS::RWlongLong_ptr sampledCompImpl::my_RWlongLong() throw (CORBA::SystemException)
+ACS::RWlongLong_ptr sampledCompImpl::my_RWlongLong()
 {
 	if( m_RWlongLong_sp == 0 ){
 		return ACS::RWlongLong::_nil();
