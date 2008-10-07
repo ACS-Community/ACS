@@ -21,7 +21,7 @@
 *
 *
 *
-* "@(#) $Id: contLogTestImpl.cpp,v 1.13 2008/06/24 13:45:46 eallaert Exp $"
+* "@(#) $Id: contLogTestImpl.cpp,v 1.14 2008/10/07 09:18:09 cparedes Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -36,7 +36,7 @@
 #include "loggingGetLogger.h"
 #include <iostream>
 
-ACE_RCSID(contLogTest, contLogTestImpl, "$Id: contLogTestImpl.cpp,v 1.13 2008/06/24 13:45:46 eallaert Exp $")
+ACE_RCSID(contLogTest, contLogTestImpl, "$Id: contLogTestImpl.cpp,v 1.14 2008/10/07 09:18:09 cparedes Exp $")
 
 /* ----------------------------------------------------------------*/
 TestLogLevelsComp::TestLogLevelsComp( 
@@ -57,7 +57,6 @@ TestLogLevelsComp::~TestLogLevelsComp()
 /* --------------------- [ CORBA interface ] ----------------------*/
 ::contLogTest::LongSeq*
 TestLogLevelsComp::getLevels ()
-    throw (CORBA::SystemException, ACSErrTypeCommon::CouldntPerformActionEx)
 {
     Logging::Logger *l = getLogger();
     ::contLogTest::LongSeq_var level = new ::contLogTest::LongSeq(5);
