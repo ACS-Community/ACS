@@ -36,7 +36,6 @@ void BulkDataSendRecvImpl<TReceiverCallback, TSenderCallback>::cleanUp()
 
 template<class TReceiverCallback, class TSenderCallback>
 void BulkDataSendRecvImpl<TReceiverCallback, TSenderCallback>::connect(bulkdata::BulkDataReceiver_ptr receiverObj_p)
-    throw (CORBA::SystemException, ACSBulkDataError::AVConnectErrorEx)
 {
     ACS_TRACE("BulkDataSendRecvImpl::connect");
 
@@ -136,7 +135,6 @@ void BulkDataSendRecvImpl<TReceiverCallback, TSenderCallback>::connect(bulkdata:
 
 template<class TReceiverCallback, class TSenderCallback>
 void BulkDataSendRecvImpl<TReceiverCallback, TSenderCallback>::disconnect()
-    throw (CORBA::SystemException, ACSBulkDataError::AVDisconnectErrorEx)
 {
     ACS_TRACE("BulkDataSendRecvImpl::disconnect");
 
@@ -154,7 +152,6 @@ void BulkDataSendRecvImpl<TReceiverCallback, TSenderCallback>::disconnect()
 
 template<class TReceiverCallback, class TSenderCallback>
 void BulkDataSendRecvImpl<TReceiverCallback, TSenderCallback>::startSend()
-    throw (CORBA::SystemException, ACSBulkDataError::AVStartSendErrorEx)
 {
     ACS_TRACE("BulkDataSendRecvImpl::startSend");
 
@@ -218,7 +215,6 @@ void BulkDataSendRecvImpl<TReceiverCallback, TSenderCallback>::startSend()
 
 template<class TReceiverCallback, class TSenderCallback>
 void BulkDataSendRecvImpl<TReceiverCallback, TSenderCallback>::paceData()
-    throw (CORBA::SystemException, ACSBulkDataError::AVPaceDataErrorEx)
 {
     ACS_TRACE("BulkDataSendRecvImpl::paceData");
 
@@ -268,7 +264,6 @@ void BulkDataSendRecvImpl<TReceiverCallback, TSenderCallback>::paceData()
 
 template<class TReceiverCallback, class TSenderCallback>
 void BulkDataSendRecvImpl<TReceiverCallback, TSenderCallback>::stopSend()
-    throw (CORBA::SystemException, ACSBulkDataError::AVStopSendErrorEx)
 {
     ACS_TRACE("BulkDataSendRecvImpl::stopSend");
 
@@ -298,7 +293,6 @@ void BulkDataSendRecvImpl<TReceiverCallback, TSenderCallback>::stopSend()
 
 template<class TReceiverCallback, class TSenderCallback>
 void BulkDataSendRecvImpl<TReceiverCallback, TSenderCallback>::openReceiver() 
-    throw (CORBA::SystemException, ACSBulkDataError::AVOpenReceiverErrorEx)
 {
     ACS_TRACE("BulkDataSendRecvImpl::openReceiver");   
  
@@ -364,7 +358,6 @@ void BulkDataSendRecvImpl<TReceiverCallback, TSenderCallback>::openReceiver()
 
 template<class TReceiverCallback, class TSenderCallback>
 bulkdata::BulkDataReceiverConfig * BulkDataSendRecvImpl<TReceiverCallback, TSenderCallback>::getReceiverConfig()
-    throw (CORBA::SystemException, ACSBulkDataError::AVReceiverConfigErrorEx)
 {
     ACS_TRACE("BulkDataSendRecvImpl::getReceiverConfig");
 
@@ -386,7 +379,6 @@ bulkdata::BulkDataReceiverConfig * BulkDataSendRecvImpl<TReceiverCallback, TSend
 
 template<class TReceiverCallback, class TSenderCallback>
 void BulkDataSendRecvImpl<TReceiverCallback, TSenderCallback>::closeReceiver() 
-    throw (CORBA::SystemException, ACSBulkDataError::AVCloseReceiverErrorEx)
 {
     ACS_TRACE("BulkDataSendRecvImpl::close");
     /*

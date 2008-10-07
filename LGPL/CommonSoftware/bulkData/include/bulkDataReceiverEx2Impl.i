@@ -22,7 +22,6 @@ void BulkDataReceiverEx2Impl<TCallback>::cleanUp()
 
 template<class TCallback>
 void BulkDataReceiverEx2Impl<TCallback>::setParam(const CORBA::Any &param) 
-    throw (CORBA::SystemException)
 {
     ACS_TRACE("BulkDataReceiverEx2Impl<>::setParam");
 

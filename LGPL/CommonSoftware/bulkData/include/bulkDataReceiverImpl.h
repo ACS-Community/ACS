@@ -101,31 +101,45 @@ class BulkDataReceiverImpl : public baci::CharacteristicComponentImpl,
      *  It creates the Receiver Stream End Point and Flow End Point for the
      *  connection with the Sender. The Receiver Stream End Point can be retrieved
      *  as an attribute. 
+     *  @throw ACSBulkDataError::AVOpenReceiverErrorEx
      *  @return void
      *  @htmlonly
      <br><hr>
      @endhtmlonly
     */
-    virtual void openReceiver() 
-	throw (CORBA::SystemException, ACSBulkDataError::AVOpenReceiverErrorEx);
+    virtual void openReceiver() ;
 
-    bulkdata::BulkDataReceiverConfig * getReceiverConfig()
-	throw (CORBA::SystemException, ACSBulkDataError::AVReceiverConfigErrorEx);
+    /**
+     *  @throw ACSBulkDataError::AVReceiverConfigErrorEx
+     */
+    bulkdata::BulkDataReceiverConfig * getReceiverConfig();
     
-    virtual void closeReceiver() 
-	throw (CORBA::SystemException, ACSBulkDataError::AVCloseReceiverErrorEx);
+    /**
+     *  @throw ACSBulkDataError::AVCloseReceiverErrorEx
+     */
+    virtual void closeReceiver();
 
-    virtual ACSErr::Completion *getCbStatus(CORBA::ULong flowNumber) 
-	throw (CORBA::SystemException, ACSBulkDataError::AVInvalidFlowNumberEx, ACSBulkDataError::AVFlowEndpointErrorEx);
+    /**
+     *  @throw ACSBulkDataError::AVInvalidFlowNumberEx
+     *  @throw ACSBulkDataError::AVFlowEndpointErrorEx 
+     */
+    virtual ACSErr::Completion *getCbStatus(CORBA::ULong flowNumber);
 
-    virtual void setTimeout(CORBA::ULong flowNumber, CORBA::ULong timeout) 
-	throw (CORBA::SystemException, ACSBulkDataError::AVInvalidFlowNumberEx, ACSBulkDataError::AVFlowEndpointErrorEx);
+    /**
+     *  @throw ACSBulkDataError::AVInvalidFlowNumberEx 
+     *  @throw ACSBulkDataError::AVFlowEndpointErrorEx
+     */
+    virtual void setTimeout(CORBA::ULong flowNumber, CORBA::ULong timeout);
 
-    virtual void setRecvName(const char *recvName) 
-	throw (CORBA::SystemException, ACSBulkDataError::AVSetReceiverNameErrorEx);
+    /**
+     *  @throw ACSBulkDataError::AVSetReceiverNameErrorEx
+     */
+    virtual void setRecvName(const char *recvName);
 
-    virtual void subscribeNotification(ACS::CBvoid_ptr notifCb)
-	throw (CORBA::SystemException, ACSBulkDataError::AVNotificationMechanismErrorEx);
+    /**
+     *  @throw ACSBulkDataError::AVNotificationMechanismErrorEx
+     */
+    virtual void subscribeNotification(ACS::CBvoid_ptr notifCb);
 
   protected: 
 

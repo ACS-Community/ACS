@@ -23,7 +23,6 @@ void BulkDataSenderDistrImpl<TSenderCallback>::cleanUp()
 
 template<class TSenderCallback>
 void BulkDataSenderDistrImpl<TSenderCallback>::startSend()
-    throw (CORBA::SystemException, ACSBulkDataError::AVStartSendErrorEx)
 {
     ACS_TRACE("BulkDataSenderDistrImpl::startSend");
 
@@ -106,7 +105,6 @@ void BulkDataSenderDistrImpl<TSenderCallback>::startSend()
 
 template<class TSenderCallback>
 void BulkDataSenderDistrImpl<TSenderCallback>::paceData()
-    throw (CORBA::SystemException, ACSBulkDataError::AVPaceDataErrorEx)
 {
     ACS_TRACE("BulkDataSenderDistrImpl::paceData");
 
@@ -219,7 +217,6 @@ void BulkDataSenderDistrImpl<TSenderCallback>::paceData()
 
 template<class TSenderCallback>
 void BulkDataSenderDistrImpl<TSenderCallback>::stopSend()
-    throw (CORBA::SystemException, ACSBulkDataError::AVStopSendErrorEx)
 {
     ACS_TRACE("BulkDataSenderDistrImpl::stopSend");
 

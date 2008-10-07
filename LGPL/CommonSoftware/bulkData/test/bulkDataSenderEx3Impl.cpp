@@ -16,7 +16,6 @@ BulkDataSenderEx3Impl::~BulkDataSenderEx3Impl()
 
 
 void BulkDataSenderEx3Impl::startSend()
-    throw (CORBA::SystemException, AVStartSendErrorEx)
 {
   
     char message[] = "OK";
@@ -47,7 +46,6 @@ void BulkDataSenderEx3Impl::startSend()
 
 
 void BulkDataSenderEx3Impl::startSendErr()
-    throw (CORBA::SystemException, AVStartSendErrorEx)
 {  
 
     char message[] = "ERROR";
@@ -76,7 +74,6 @@ void BulkDataSenderEx3Impl::startSendErr()
 
 
 void BulkDataSenderEx3Impl::startSendTimeout()
-    throw (CORBA::SystemException, AVStartSendErrorEx)
 {
     
     char message[] = "TIMEOUT";
@@ -105,7 +102,6 @@ void BulkDataSenderEx3Impl::startSendTimeout()
 
 
 void BulkDataSenderEx3Impl::paceDataErr()
-    throw (CORBA::SystemException, AVPaceDataErrorEx)
 {
 
     try
@@ -150,7 +146,6 @@ void BulkDataSenderEx3Impl::paceDataErr()
 
 
 void BulkDataSenderEx3Impl::paceData()
-    throw (CORBA::SystemException, AVPaceDataErrorEx)
 {
 
     try
@@ -197,7 +192,6 @@ void BulkDataSenderEx3Impl::paceData()
 
 
 void BulkDataSenderEx3Impl::stopSend()
-    throw (CORBA::SystemException, AVStopSendErrorEx)
 {
 
     CORBA::ULong flowNumber = 1;

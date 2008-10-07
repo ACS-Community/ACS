@@ -25,7 +25,6 @@ void BulkDataReceiverImpl<TCallback>::cleanUp()
 
 template<class TCallback>
 void BulkDataReceiverImpl<TCallback>::openReceiver() 
-    throw (CORBA::SystemException, ACSBulkDataError::AVOpenReceiverErrorEx)
 {
     ACS_TRACE("BulkDataReceiverImpl<>::openReceiver");   
  
@@ -76,7 +75,6 @@ void BulkDataReceiverImpl<TCallback>::openReceiver()
 
 template<class TCallback>
 bulkdata::BulkDataReceiverConfig * BulkDataReceiverImpl<TCallback>::getReceiverConfig()
-    throw (CORBA::SystemException, ACSBulkDataError::AVReceiverConfigErrorEx)
 {
     ACS_TRACE("BulkDataReceiverImpl::getReceiverConfig");
 
@@ -104,7 +102,6 @@ bulkdata::BulkDataReceiverConfig * BulkDataReceiverImpl<TCallback>::getReceiverC
 
 template<class TCallback>
 void BulkDataReceiverImpl<TCallback>::closeReceiver() 
-    throw (CORBA::SystemException, ACSBulkDataError::AVCloseReceiverErrorEx)
 {
     ACS_TRACE("BulkDataReceiverImpl::close");
 
@@ -129,7 +126,6 @@ void BulkDataReceiverImpl<TCallback>::closeReceiver()
 
 template<class TCallback>
 ACSErr::Completion *BulkDataReceiverImpl<TCallback>::getCbStatus(CORBA::ULong flowNumber) 
-    throw (CORBA::SystemException, ACSBulkDataError::AVInvalidFlowNumberEx, ACSBulkDataError::AVFlowEndpointErrorEx)
 {
     ACS_TRACE("BulkDataReceiverImpl::getCbStatus");
 	
@@ -186,7 +182,6 @@ ACSErr::Completion *BulkDataReceiverImpl<TCallback>::getCbStatus(CORBA::ULong fl
 
 template<class TCallback>
 void BulkDataReceiverImpl<TCallback>::setTimeout(CORBA::ULong flowNumber, CORBA::ULong timeout) 
-    throw (CORBA::SystemException, ACSBulkDataError::AVInvalidFlowNumberEx, ACSBulkDataError::AVFlowEndpointErrorEx)
 {
     TCallback *cb = 0;
 
@@ -220,7 +215,6 @@ void BulkDataReceiverImpl<TCallback>::setTimeout(CORBA::ULong flowNumber, CORBA:
 
 template<class TCallback>
 void BulkDataReceiverImpl<TCallback>::setRecvName(const char *recvName) 
-    throw (CORBA::SystemException, ACSBulkDataError::AVSetReceiverNameErrorEx)
 {
     try
 	{
@@ -243,7 +237,6 @@ void BulkDataReceiverImpl<TCallback>::setRecvName(const char *recvName)
 
 template<class TCallback>
 void BulkDataReceiverImpl<TCallback>::subscribeNotification(ACS::CBvoid_ptr notifCb)
-    throw (CORBA::SystemException, ACSBulkDataError::AVNotificationMechanismErrorEx)
 {
     try
 	{

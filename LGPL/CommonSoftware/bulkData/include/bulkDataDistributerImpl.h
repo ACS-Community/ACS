@@ -112,78 +112,84 @@ class BulkDataDistributerImpl : public baci::CharacteristicComponentImpl,
     /**
      *  Negotiate and initialize connection with the Sender object.
      *  @param receiverObj_p reference of the Receiver Component.
+     *  @throw ACSBulkDataError::AVConnectErrorEx
      *  @return void
      *  @htmlonly
      <br><hr>
      @endhtmlonly
     */
-    virtual void connect(bulkdata::BulkDataReceiver_ptr receiverObj_p)
-	throw (CORBA::SystemException, ACSBulkDataError::AVConnectErrorEx);
+    virtual void connect(bulkdata::BulkDataReceiver_ptr receiverObj_p);
 
 
     /**
      *  Negotiate and initialize connection with the Sender object.
      *  @param receiverObj_p reference of the Receiver Component.
+     *  @throw ACSBulkDataError::AVConnectErrorEx
      *  @return void
      *  @htmlonly
      <br><hr>
      @endhtmlonly
     */
-    virtual void multiConnect(bulkdata::BulkDataReceiver_ptr receiverObj_p)
-	throw (CORBA::SystemException, ACSBulkDataError::AVConnectErrorEx);
+    virtual void multiConnect(bulkdata::BulkDataReceiver_ptr receiverObj_p);
 
     /**
      *  Negotiate and initialize connection with the Sender object.
      *  @param receiverName_p name of the Receiver Component.
+     *  @throw ACSBulkDataError::AVConnectErrorEx
      *  @return void
      *  @htmlonly
      <br><hr>
      @endhtmlonly
     */
-    virtual void connectByName(const char *receiverName_p)
-	throw (CORBA::SystemException, ACSBulkDataError::AVConnectErrorEx);
+    virtual void connectByName(const char *receiverName_p);
 
-    virtual void disconnect()
-	throw (CORBA::SystemException, ACSBulkDataError::AVDisconnectErrorEx);
+    /*
+     *  @throw ACSBulkDataError::AVDisconnectErrorEx 
+    */
+    virtual void disconnect();
+	
+    /*
+     *  @throw ACSBulkDataError::AVDisconnectErrorEx 
+    */
+    virtual void multiDisconnect(bulkdata::BulkDataReceiver_ptr receiverObj_p);
 
-    virtual void multiDisconnect(bulkdata::BulkDataReceiver_ptr receiverObj_p)
-	throw (CORBA::SystemException, ACSBulkDataError::AVDisconnectErrorEx);
-
-    virtual void disconnectByName(const char *receiverName_p)
-	throw (CORBA::SystemException, ACSBulkDataError::AVDisconnectErrorEx);
+    /*
+     *  @throw ACSBulkDataError::AVDisconnectErrorEx 
+    */
+    virtual void disconnectByName(const char *receiverName_p);
 
 
     /** 
      *  Calls the Receiver handle_start() method once the connection is established.
+     *  @throw ACSBulkDataError::AVStartSendErrorEx
      *  @return void
      *  @htmlonly
      <br><hr>
      @endhtmlonly
     */
-    virtual void startSend()
-	throw (CORBA::SystemException, ACSBulkDataError::AVStartSendErrorEx);
+    virtual void startSend();
 
     /**
      *  Sends data to the Receiver calling the receive_frame() method on the Receiver side.
      *  This method must be overriden by the user to send his own data.
      *  @param size buffer size of the sent data.
+     *  @throw ACSBulkDataError::AVPaceDataErrorEx
      *  @return void
      *  @htmlonly
      <br><hr>
      @endhtmlonly
     */
-    virtual void paceData()
-	throw (CORBA::SystemException, ACSBulkDataError::AVPaceDataErrorEx);
+    virtual void paceData();
 
     /** 
      *  Calls the Receiver handle_stop() method.
+     *  @throw ACSBulkDataError::AVStopSendErrorEx
      *  @return void
      *  @htmlonly
      <br><hr>
      @endhtmlonly
     */
-    virtual void stopSend()
-	throw (CORBA::SystemException, ACSBulkDataError::AVStopSendErrorEx);
+    virtual void stopSend();
 
 /************************ Receiver part ********************/
 
@@ -192,22 +198,28 @@ class BulkDataDistributerImpl : public baci::CharacteristicComponentImpl,
      *  It creates the Receiver Stream End Point and Flow End Point for the
      *  connection with the Sender. The Receiver Stream End Point can be retrieved
      *  as an attribute. 
+     *  @throw ACSBulkDataError::AVOpenReceiverErrorEx
      *  @return void
      *  @htmlonly
      <br><hr>
      @endhtmlonly
     */
-    virtual void openReceiver() 
-	throw (CORBA::SystemException, ACSBulkDataError::AVOpenReceiverErrorEx);
+    virtual void openReceiver();
 
-    bulkdata::BulkDataReceiverConfig * getReceiverConfig()
-	throw (CORBA::SystemException, ACSBulkDataError::AVReceiverConfigErrorEx);
+    /*
+     *  @throw ACSBulkDataError::AVReceiverConfigErrorEx 
+     */
+    bulkdata::BulkDataReceiverConfig * getReceiverConfig();
     
-    virtual void closeReceiver() 
-	throw (CORBA::SystemException, ACSBulkDataError::AVCloseReceiverErrorEx);
+    /*
+     *  @throw ACSBulkDataError::AVCloseReceiverErrorEx
+     */
+    virtual void closeReceiver(); 
 
-    virtual void setReceiver(const bulkdata::BulkDataReceiverConfig &receiverConfig) 
-	throw (CORBA::SystemException, ACSBulkDataError::AVSetReceiverErrorEx);
+    /*
+     *  @throw ACSBulkDataError::AVSetReceiverErrorEx
+     */
+    virtual void setReceiver(const bulkdata::BulkDataReceiverConfig &receiverConfig);
 
     //protected:
 
@@ -216,26 +228,34 @@ class BulkDataDistributerImpl : public baci::CharacteristicComponentImpl,
 	    return &distributer;
 	}
 
-    virtual ACSErr::Completion *getCbStatus(CORBA::ULong flowNumber) 
-	throw (CORBA::SystemException, ACSBulkDataError::AVInvalidFlowNumberEx, ACSBulkDataError::AVFlowEndpointErrorEx);
+    /*
+     *  @throw ACSBulkDataError::AVInvalidFlowNumberEx 
+     *  @throw ACSBulkDataError::AVFlowEndpointErrorEx
+     */
+    virtual ACSErr::Completion *getCbStatus(CORBA::ULong flowNumber);
 
-    virtual ACSErr::Completion *getReceiverCbStatus(const char *recvName, CORBA::ULong flowNumber) 
-	throw (CORBA::SystemException);
+    virtual ACSErr::Completion *getReceiverCbStatus(const char *recvName, CORBA::ULong flowNumber); 
 
+    /*
+     *  @throw ACSBulkDataError::AVInvalidFlowNumberEx
+     */
     virtual void setTimeout(CORBA::ULong flowNumber, CORBA::ULong timeout) 
-	throw (CORBA::SystemException, ACSBulkDataError::AVInvalidFlowNumberEx)
 	{
 	    //empty
 	}
 
+    /*
+     *  @throw ACSBulkDataError::AVSetReceiverNameErrorEx
+     */
     virtual void setRecvName(const char *recvName) 
-	throw (CORBA::SystemException, ACSBulkDataError::AVSetReceiverNameErrorEx)
 	{
 	    //empty
 	}
 
-    virtual void subscribeNotification(ACS::CBvoid_ptr notifCb)
-	throw (CORBA::SystemException, ACSBulkDataError::AVNotificationMechanismErrorEx);
+    /*
+     *  @throw ACSBulkDataError::AVNotificationMechanismErrorEx
+     */
+    virtual void subscribeNotification(ACS::CBvoid_ptr notifCb);
 
 
   private:

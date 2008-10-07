@@ -80,31 +80,37 @@ class BulkDataSenderEx2Impl : public virtual BulkDataSenderDefaultImpl,
    */
     virtual ~BulkDataSenderEx2Impl();
   
-    virtual void startSend()
-	throw (CORBA::SystemException, ACSBulkDataError::AVStartSendErrorEx);
+    /**
+     * @throw ACSBulkDataError::AVStartSendErrorEx
+     */
+    virtual void startSend();
     
+    /**
+     * @throw ACSBulkDataError::AVPaceDataErrorEx
+     */
     virtual void paceData ()
-        throw (CORBA::SystemException, ACSBulkDataError::AVPaceDataErrorEx)
 	{
 	    // empty
 	}
 
-    virtual void stopSend()
-	throw (CORBA::SystemException, ACSBulkDataError::AVStopSendErrorEx);
+    /**
+     * @throw ACSBulkDataError::AVStopSendErrorEx
+     */
+    virtual void stopSend();
 
 
   /**
    *  Sends data to the Receiver calling the receive_frame() method on the Receiver side.
    *  This method must be overriden by the user to send his own data.
    *  @param size buffer size of the sent data.
+   *  @throw ACSBulkDataError::AVPaceDataErrorEx
    *  @return void
    *  @htmlonly
    <br><hr>
    @endhtmlonly
   */
     
-    virtual void paceDataNew (CORBA::Long size)
-	throw (CORBA::SystemException, ACSBulkDataError::AVPaceDataErrorEx);
+    virtual void paceDataNew (CORBA::Long size);
 
 };
 

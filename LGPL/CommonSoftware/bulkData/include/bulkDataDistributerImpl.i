@@ -44,7 +44,6 @@ void BulkDataDistributerImpl<TReceiverCallback, TSenderCallback>::cleanUp()
 
 template<class TReceiverCallback, class TSenderCallback>
 void BulkDataDistributerImpl<TReceiverCallback, TSenderCallback>::connect(bulkdata::BulkDataReceiver_ptr receiverObj_p)
-    throw (CORBA::SystemException, ACSBulkDataError::AVConnectErrorEx)
 {
     ACS_TRACE("BulkDataDistributerImpl<>::connect");
 
@@ -60,7 +59,6 @@ void BulkDataDistributerImpl<TReceiverCallback, TSenderCallback>::connect(bulkda
 
 template<class TReceiverCallback, class TSenderCallback>
 void BulkDataDistributerImpl<TReceiverCallback, TSenderCallback>::multiConnect(bulkdata::BulkDataReceiver_ptr receiverObj_p)
-    throw (CORBA::SystemException, ACSBulkDataError::AVConnectErrorEx)
 {
     ACS_TRACE("BulkDataDistributerImpl<>::multiConnect");
 
@@ -139,7 +137,6 @@ void BulkDataDistributerImpl<TReceiverCallback, TSenderCallback>::multiConnect(b
 
 template<class TReceiverCallback, class TSenderCallback>
 void BulkDataDistributerImpl<TReceiverCallback, TSenderCallback>::connectByName(const char *receiverName_p)
-    throw (CORBA::SystemException, ACSBulkDataError::AVConnectErrorEx)
 {
     ACS_TRACE("BulkDataDistributerImpl<>::connectByName");
 
@@ -181,7 +178,6 @@ void BulkDataDistributerImpl<TReceiverCallback, TSenderCallback>::connectByName(
 
 template<class TReceiverCallback, class TSenderCallback>
 void BulkDataDistributerImpl<TReceiverCallback, TSenderCallback>::disconnect()
-    throw (CORBA::SystemException, ACSBulkDataError::AVDisconnectErrorEx)
 {
     ACS_TRACE("BulkDataDistributerImpl<>::disconnect");
 }
@@ -190,7 +186,6 @@ void BulkDataDistributerImpl<TReceiverCallback, TSenderCallback>::disconnect()
 
 template<class TReceiverCallback, class TSenderCallback>
 void BulkDataDistributerImpl<TReceiverCallback, TSenderCallback>::multiDisconnect(bulkdata::BulkDataReceiver_ptr receiverObj_p)
-    throw (CORBA::SystemException, ACSBulkDataError::AVDisconnectErrorEx)
 {
     ACE_CString recvName = "";
 
@@ -233,7 +228,6 @@ void BulkDataDistributerImpl<TReceiverCallback, TSenderCallback>::multiDisconnec
 
 template<class TReceiverCallback, class TSenderCallback>
 void BulkDataDistributerImpl<TReceiverCallback, TSenderCallback>::disconnectByName(const char *receiverName_p)
-    throw (CORBA::SystemException, ACSBulkDataError::AVDisconnectErrorEx)
 {
     ACS_TRACE("BulkDataDistributerImpl<>::disconnectByName");
 
@@ -288,7 +282,6 @@ void BulkDataDistributerImpl<TReceiverCallback, TSenderCallback>::disconnectByNa
 
 template<class TReceiverCallback, class TSenderCallback>
 void BulkDataDistributerImpl<TReceiverCallback, TSenderCallback>::startSend()
-    throw (CORBA::SystemException, ACSBulkDataError::AVStartSendErrorEx)
 {
     ACS_TRACE("BulkDataDistributerImpl<>::startSend");
 }
@@ -296,7 +289,6 @@ void BulkDataDistributerImpl<TReceiverCallback, TSenderCallback>::startSend()
 
 template<class TReceiverCallback, class TSenderCallback>
 void BulkDataDistributerImpl<TReceiverCallback, TSenderCallback>::paceData()
-    throw (CORBA::SystemException, ACSBulkDataError::AVPaceDataErrorEx)
 {
     ACS_TRACE("BulkDataDistributerImpl<>::paceData");
 }
@@ -304,7 +296,6 @@ void BulkDataDistributerImpl<TReceiverCallback, TSenderCallback>::paceData()
 
 template<class TReceiverCallback, class TSenderCallback>
 void BulkDataDistributerImpl<TReceiverCallback, TSenderCallback>::stopSend()
-    throw (CORBA::SystemException, ACSBulkDataError::AVStopSendErrorEx)
 {
     ACS_TRACE("BulkDataDistributerImpl<>::stopSend");
 }
@@ -312,7 +303,6 @@ void BulkDataDistributerImpl<TReceiverCallback, TSenderCallback>::stopSend()
 
 template<class TReceiverCallback, class TSenderCallback>
 void BulkDataDistributerImpl<TReceiverCallback, TSenderCallback>::openReceiver()
-    throw (CORBA::SystemException, ACSBulkDataError::AVOpenReceiverErrorEx)
 {
     ACS_TRACE("BulkDataDistributerImpl<>::openReceiver");
   
@@ -362,7 +352,6 @@ void BulkDataDistributerImpl<TReceiverCallback, TSenderCallback>::openReceiver()
 
 template<class TReceiverCallback, class TSenderCallback>
 bulkdata::BulkDataReceiverConfig * BulkDataDistributerImpl<TReceiverCallback, TSenderCallback>::getReceiverConfig()
-    throw (CORBA::SystemException, ACSBulkDataError::AVReceiverConfigErrorEx)
 {
     ACS_TRACE("BulkDataDistributerImpl<>::getReceiverConfig");
 
@@ -390,7 +379,6 @@ bulkdata::BulkDataReceiverConfig * BulkDataDistributerImpl<TReceiverCallback, TS
 
 template<class TReceiverCallback, class TSenderCallback>
 void BulkDataDistributerImpl<TReceiverCallback, TSenderCallback>::closeReceiver()
-    throw (CORBA::SystemException, ACSBulkDataError::AVCloseReceiverErrorEx)
 {
     ACS_TRACE("BulkDataDistributerImpl<>::closeReceiver");
 
@@ -415,7 +403,6 @@ void BulkDataDistributerImpl<TReceiverCallback, TSenderCallback>::closeReceiver(
 
 template<class TReceiverCallback, class TSenderCallback>
 void BulkDataDistributerImpl<TReceiverCallback, TSenderCallback>::setReceiver(const bulkdata::BulkDataReceiverConfig &receiverConfig)
-    throw (CORBA::SystemException, ACSBulkDataError::AVSetReceiverErrorEx)
 {
     ACS_TRACE("BulkDataDistributerImpl<>::setReceiver");
 
@@ -468,7 +455,6 @@ void BulkDataDistributerImpl<TReceiverCallback, TSenderCallback>::setReceiver(co
 
 template<class TReceiverCallback, class TSenderCallback>
 ACSErr::Completion * BulkDataDistributerImpl<TReceiverCallback, TSenderCallback>::getCbStatus(CORBA::ULong flowNumber) 
-    throw (CORBA::SystemException, ACSBulkDataError::AVInvalidFlowNumberEx, ACSBulkDataError::AVFlowEndpointErrorEx)
 {
     ACS_TRACE("BulkDataDistributerImpl<>::getCbStatus");
     
@@ -519,7 +505,6 @@ ACSErr::Completion * BulkDataDistributerImpl<TReceiverCallback, TSenderCallback>
 
 template<class TReceiverCallback, class TSenderCallback>
 ACSErr::Completion * BulkDataDistributerImpl<TReceiverCallback, TSenderCallback>::getReceiverCbStatus(const char *recvName, CORBA::ULong flowNumber) 
-    throw (CORBA::SystemException)
 {
     ACS_TRACE("BulkDataDistributerImpl<>::getReceiverCbStatus");
 
@@ -576,7 +561,6 @@ void BulkDataDistributerImpl<TReceiverCallback, TSenderCallback>::rmEntryFromSen
 
 template<class TReceiverCallback, class TSenderCallback>
 void BulkDataDistributerImpl<TReceiverCallback, TSenderCallback>::subscribeNotification(ACS::CBvoid_ptr notifCb)
-    throw (CORBA::SystemException, ACSBulkDataError::AVNotificationMechanismErrorEx)
 {
     try
 	{

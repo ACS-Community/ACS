@@ -88,16 +88,18 @@ class BulkDataSenderImpl : public baci::CharacteristicComponentImpl,
     /**
      *  Negotiate and initialize connection with the Sender object.
      *  @param receiver reference of the Receiver Component.
+     *  @throw ACSBulkDataError::AVConnectErrorEx
      *  @return void
      *  @htmlonly
      <br><hr>
      @endhtmlonly
     */
-    virtual void connect(bulkdata::BulkDataReceiver_ptr receiverObj_p)
-	throw (CORBA::SystemException, ACSBulkDataError::AVConnectErrorEx);
+    virtual void connect(bulkdata::BulkDataReceiver_ptr receiverObj_p);
 
-    virtual void disconnect()
-	throw (CORBA::SystemException, ACSBulkDataError::AVDisconnectErrorEx);
+    /**
+     *  @throw ACSBulkDataError::AVDisconnectErrorEx
+    */
+    virtual void disconnect();
 
 
     virtual AcsBulkdata::BulkDataSender<TSenderCallback> *getSender() 
@@ -108,35 +110,35 @@ class BulkDataSenderImpl : public baci::CharacteristicComponentImpl,
 
     /** 
      *  Calls the Receiver handle_start() method once the connection is established.
+     *  @throw ACSBulkDataError::AVStartSendErrorEx
      *  @return void
      *  @htmlonly
      <br><hr>
      @endhtmlonly
     */
-    virtual void startSend()
-	throw (CORBA::SystemException, ACSBulkDataError::AVStartSendErrorEx) =0;
+    virtual void startSend()  =0;
 
     /**
      *  Sends data to the Receiver calling the receive_frame() method on the Receiver side.
      *  This method must be overriden by the user to send his own data.
      *  @param size buffer size of the sent data.
+     *  @throw ACSBulkDataError::AVPaceDataErrorEx
      *  @return void
      *  @htmlonly
      <br><hr>
      @endhtmlonly
     */
-    virtual void paceData()
-	throw (CORBA::SystemException, ACSBulkDataError::AVPaceDataErrorEx) =0;
+    virtual void paceData()  =0;
 
     /** 
      *  Calls the Receiver handle_stop() method.
+     *  @throw ACSBulkDataError::AVStopSendErrorEx
      *  @return void
      *  @htmlonly
      <br><hr>
      @endhtmlonly
     */
-    virtual void stopSend()
-	throw (CORBA::SystemException, ACSBulkDataError::AVStopSendErrorEx) =0;
+    virtual void stopSend() =0;
 
 
 

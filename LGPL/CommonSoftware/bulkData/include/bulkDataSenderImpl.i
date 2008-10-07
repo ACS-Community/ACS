@@ -29,7 +29,6 @@ void BulkDataSenderImpl<TSenderCallback>::cleanUp()
 
 template<class TSenderCallback>
 void BulkDataSenderImpl<TSenderCallback>::connect(bulkdata::BulkDataReceiver_ptr receiverObj_p)
-    throw (CORBA::SystemException, ACSBulkDataError::AVConnectErrorEx)
 {
     ACS_TRACE("BulkDataSenderImpl::connect");
 
@@ -132,7 +131,6 @@ void BulkDataSenderImpl<TSenderCallback>::connect(bulkdata::BulkDataReceiver_ptr
 
 template<class TSenderCallback>
 void BulkDataSenderImpl<TSenderCallback>::disconnect()
-    throw (CORBA::SystemException, ACSBulkDataError::AVDisconnectErrorEx)
 {
     ACS_TRACE("BulkDataSenderImpl::disconnect");
 

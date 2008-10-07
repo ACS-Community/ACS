@@ -83,8 +83,7 @@ class BulkDataReceiverEx2Impl : public virtual BulkDataReceiverImpl<TCallback>,
 
     void cleanUp();
 
-    virtual void setParam(const CORBA::Any &param) 
-	throw (CORBA::SystemException);
+    virtual void setParam(const CORBA::Any &param); 
 
     virtual void myMethod();
 };

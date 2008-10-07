@@ -47,13 +47,11 @@ class BulkDataTestNotificationCb: public virtual POA_ACS::CBvoid
 	}
 
     void working(const Completion &comp, const ACS::CBDescOut &desc) 
-	throw (CORBA::SystemException)
 	{
 	    ACS_TRACE("BulkDataNotificationCb::working");
 	}
 	
     void done(const Completion &comp, const ACS::CBDescOut &desc) 
-	throw (CORBA::SystemException)
 	{
 	    ACS_TRACE("BulkDataNotificationCb::done");
 
@@ -62,7 +60,6 @@ class BulkDataTestNotificationCb: public virtual POA_ACS::CBvoid
 	}
 
     CORBA::Boolean negotiate (ACS::TimeInterval timeToTransmit, const ACS::CBDescOut &desc) 
-	throw (CORBA::SystemException)
 	{
 	    ACS_TRACE("BulkDataNotificationCb::negotiate");
 

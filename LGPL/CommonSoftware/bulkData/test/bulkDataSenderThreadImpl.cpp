@@ -39,14 +39,12 @@ BulkDataSenderThreadImpl::~BulkDataSenderThreadImpl()
 
 
 void BulkDataSenderThreadImpl::startSend()
-    throw (CORBA::SystemException, AVStartSendErrorEx)
 {
     //empty
 }
 
 
 void BulkDataSenderThreadImpl::paceData()
-    throw (CORBA::SystemException, AVPaceDataErrorEx)
 {
     ACS_TRACE("BulkDataSenderThreadImpl::paceData");
 
@@ -61,7 +59,6 @@ void BulkDataSenderThreadImpl::paceData()
 
 
 void BulkDataSenderThreadImpl::stopSend()
-    throw (CORBA::SystemException, AVStopSendErrorEx)
 {
     ACS_TRACE("BulkDataSenderThreadImpl::stopSend");
 

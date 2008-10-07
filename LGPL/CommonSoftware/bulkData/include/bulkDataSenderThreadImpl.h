@@ -101,14 +101,20 @@ class BulkDataSenderThreadImpl : public virtual BulkDataSenderDefaultImpl,
   
     virtual ~BulkDataSenderThreadImpl();
 
-    virtual void startSend()
-	throw (CORBA::SystemException, ACSBulkDataError::AVStartSendErrorEx);
+    /**
+     * @throw ACSBulkDataError::AVStartSendErrorEx
+    */
+    virtual void startSend();
 
-    virtual void paceData()
-	throw (CORBA::SystemException, ACSBulkDataError::AVPaceDataErrorEx);
+    /**
+     * @throw ACSBulkDataError::AVPaceDataErrorEx
+    */
+    virtual void paceData();
 
-    virtual void stopSend()
-	throw (CORBA::SystemException, ACSBulkDataError::AVStopSendErrorEx);
+    /**
+     * @throw ACSBulkDataError::AVStopSendErrorEx
+    */
+    virtual void stopSend();
 
   private:
 

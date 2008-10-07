@@ -197,12 +197,10 @@ namespace AcsBulkdata
 	    }
 
 	void working(const Completion &comp, const ACS::CBDescOut &desc) 
-	    throw (CORBA::SystemException)
 	    {
 	    }
 	
 	void done(const Completion &comp, const ACS::CBDescOut &desc) 
-	    throw (CORBA::SystemException)
 	    {
 		try
 		    {
@@ -220,7 +218,6 @@ namespace AcsBulkdata
 	    }
 
 	CORBA::Boolean negotiate (ACS::TimeInterval timeToTransmit, const ACS::CBDescOut &desc) 
-	    throw (CORBA::SystemException)
 	    {
 		return true;
 	    }

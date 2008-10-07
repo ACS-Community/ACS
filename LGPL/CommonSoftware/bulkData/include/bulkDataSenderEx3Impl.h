@@ -80,23 +80,35 @@ class BulkDataSenderEx3Impl : public virtual BulkDataSenderDefaultImpl,
    */
     virtual ~BulkDataSenderEx3Impl();
   
-    virtual void startSend()
-	throw (CORBA::SystemException, ACSBulkDataError::AVStartSendErrorEx);
+    /*
+     * @throw ACSBulkDataError::AVStartSendErrorEx 
+    */
+    virtual void startSend();
     
-    virtual void startSendErr()
-	throw (CORBA::SystemException, ACSBulkDataError::AVStartSendErrorEx);
+    /*
+     * @throw ACSBulkDataError::AVStartSendErrorEx
+    */
+    virtual void startSendErr();
     
-    virtual void startSendTimeout()
-	throw (CORBA::SystemException, ACSBulkDataError::AVStartSendErrorEx);
+    /*
+     * @throw ACSBulkDataError::AVStartSendErrorEx
+    */
+    virtual void startSendTimeout();
     
-    virtual void paceData()
-        throw (CORBA::SystemException, ACSBulkDataError::AVPaceDataErrorEx);
+    /*
+     * @throw ACSBulkDataError::AVPaceDataErrorEx
+    */
+    virtual void paceData();
 
-    virtual void paceDataErr()
-        throw (CORBA::SystemException, ACSBulkDataError::AVPaceDataErrorEx);
+    /*
+     * @throw ACSBulkDataError::AVPaceDataErrorEx
+    */
+    virtual void paceDataErr();
 
-    virtual void stopSend()
-	throw (CORBA::SystemException, ACSBulkDataError::AVStopSendErrorEx);
+    /*
+     * @throw ACSBulkDataError::AVStopSendErrorEx
+    */
+    virtual void stopSend();
 
 };
 

@@ -16,7 +16,6 @@ BulkDataSenderEx2Impl::~BulkDataSenderEx2Impl()
 
 
 void BulkDataSenderEx2Impl::startSend()
-    throw (CORBA::SystemException, AVStartSendErrorEx)
 {
     
     ACS_TRACE("BulkDataSenderEx2Impl::startSend");
@@ -80,7 +79,6 @@ void BulkDataSenderEx2Impl::startSend()
 
 
 void BulkDataSenderEx2Impl::paceDataNew (CORBA::Long size)
-    throw (CORBA::SystemException, AVPaceDataErrorEx)
 {
     ACS_TRACE("BulkDataSenderEx2Impl::paceDataNew");
 
@@ -129,7 +127,6 @@ void BulkDataSenderEx2Impl::paceDataNew (CORBA::Long size)
 
 
 void BulkDataSenderEx2Impl::stopSend()
-    throw (CORBA::SystemException, AVStopSendErrorEx)
 {
     ACS_TRACE("BulkDataSenderEx2Impl::stopSend");
 
