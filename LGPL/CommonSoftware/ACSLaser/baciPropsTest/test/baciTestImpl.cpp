@@ -20,7 +20,7 @@
 *
 *
 *
-* "@(#) $Id: baciTestImpl.cpp,v 1.8 2008/03/26 14:18:29 acaproni Exp $"
+* "@(#) $Id: baciTestImpl.cpp,v 1.9 2008/10/07 10:05:24 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -32,7 +32,7 @@
 #include <baciTestImpl.h>
 #include <testComponentC.h>
 
-ACE_RCSID(acsexmpl, baciTestImpl, "$Id: baciTestImpl.cpp,v 1.8 2008/03/26 14:18:29 acaproni Exp $")
+ACE_RCSID(acsexmpl, baciTestImpl, "$Id: baciTestImpl.cpp,v 1.9 2008/10/07 10:05:24 cparedes Exp $")
 
 using namespace baci;
 
@@ -60,7 +60,7 @@ void BaciPropTest::execute() throw (ACSErr::ACSbaseExImpl)
 }
 
 /* --------------------- [ CORBA interface ] ----------------------*/
-ACS::ROdouble_ptr BaciPropTest::testDoubleVar () throw (CORBA::SystemException)
+ACS::ROdouble_ptr BaciPropTest::testDoubleVar () 
 {
     if (m_testDoubleVar_sp == 0)
 	{
@@ -71,7 +71,7 @@ ACS::ROdouble_ptr BaciPropTest::testDoubleVar () throw (CORBA::SystemException)
     return prop._retn();
 }
 
-ACS::ROpattern_ptr BaciPropTest::testPatternVar () throw (CORBA::SystemException)
+ACS::ROpattern_ptr BaciPropTest::testPatternVar () 
 {
     if (m_testPatternVar_sp == 0)
 	{
@@ -82,7 +82,7 @@ ACS::ROpattern_ptr BaciPropTest::testPatternVar () throw (CORBA::SystemException
     return prop._retn();
 }
 
-::alarmsystemPropTest::ROAlarmEnum_ptr BaciPropTest::testEnumVar () throw (CORBA::SystemException)
+::alarmsystemPropTest::ROAlarmEnum_ptr BaciPropTest::testEnumVar () 
 {
     if (m_testEnumVar_sp == 0)
 	{
@@ -93,18 +93,18 @@ ACS::ROpattern_ptr BaciPropTest::testPatternVar () throw (CORBA::SystemException
     return prop._retn();
 }
 
-void BaciPropTest::setDoubleVar(CORBA::Float val) throw (CORBA::SystemException) {
+void BaciPropTest::setDoubleVar(CORBA::Float val) {
 	ACS::Time timestamp;
 	    
 	m_testDoubleVar_sp->getDevIO()->write(val, timestamp);
 }
 
-void BaciPropTest::setPatternVar(CORBA::Long val) throw (CORBA::SystemException) {
+void BaciPropTest::setPatternVar(CORBA::Long val) {
 	ACS::Time timestamp;
 	m_testPatternVar_sp->getDevIO()->write(val, timestamp);
 }
 
-void BaciPropTest::setEnumVar(alarmsystemPropTest::AlarmEnum val) throw (CORBA::SystemException) {
+void BaciPropTest::setEnumVar(alarmsystemPropTest::AlarmEnum val) {
 	ACS::Time timestamp;
 	m_testEnumVar_sp->getDevIO()->write(val, timestamp);
 }

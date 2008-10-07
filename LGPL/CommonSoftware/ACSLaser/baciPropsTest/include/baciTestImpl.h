@@ -21,7 +21,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: baciTestImpl.h,v 1.8 2008/07/30 05:36:59 cparedes Exp $"
+* "@(#) $Id: baciTestImpl.h,v 1.9 2008/10/07 10:05:24 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -76,24 +76,24 @@ class BaciPropTest: public baci::CharacteristicComponentImpl,     //Standard com
     /**
      * 
      */   
-    virtual void setDoubleVar(CORBA::Float) throw (CORBA::SystemException);
-    virtual void setPatternVar(CORBA::Long) throw (CORBA::SystemException);
-    virtual void setEnumVar(alarmsystemPropTest::AlarmEnum) throw (CORBA::SystemException);
+    virtual void setDoubleVar(CORBA::Float);
+    virtual void setPatternVar(CORBA::Long);
+    virtual void setEnumVar(alarmsystemPropTest::AlarmEnum);
     
     /**
      * Returns a reference to the double property
      */
-    virtual ACS::ROdouble_ptr testDoubleVar() throw (CORBA::SystemException);
+    virtual ACS::ROdouble_ptr testDoubleVar();
     
     /**
      * Returns a reference to the pattern property
      */
-     virtual ACS::ROpattern_ptr testPatternVar() throw (CORBA::SystemException);
+     virtual ACS::ROpattern_ptr testPatternVar();
     
     /**
      * Returns a reference to the enum property
      */
-    virtual ::alarmsystemPropTest::ROAlarmEnum_ptr testEnumVar() throw (CORBA::SystemException);
+    virtual ::alarmsystemPropTest::ROAlarmEnum_ptr testEnumVar();
     
   private:
     
