@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsServicesHandlerACS80Impl.h,v 1.2 2008/09/19 13:06:44 msekoran Exp $"
+* "@(#) $Id: acsServicesHandlerACS80Impl.h,v 1.3 2008/10/07 08:45:58 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -251,40 +251,35 @@ class ACSServicesHandlerACS80Impl : public POA_acsdaemon::ServicesDaemon_ACS80 {
     void stop_interface_repository (
         ::acsdaemon::DaemonCallback_ptr callback,
         ::CORBA::Short instance_number);
-    
+   /**
+    *  @throw ::ACSErrTypeCommon::BadParameterEx
+    */ 
     void start_acs (
 	acsdaemon::DaemonCallback_ptr callback,
         ::CORBA::Short instance_number,
         const char * additional_command_line
-      )
-      ACE_THROW_SPEC ((
-        CORBA::SystemException,
-	::ACSErrTypeCommon::BadParameterEx
-      ));
+      );
     
+   /**
+    *  @throw ::ACSErrTypeCommon::BadParameterEx
+    */ 
     void stop_acs (
 	acsdaemon::DaemonCallback_ptr callback,
         ::CORBA::Short instance_number,
         const char * additional_command_line
-      )
-      ACE_THROW_SPEC ((
-        CORBA::SystemException,
-	::ACSErrTypeCommon::BadParameterEx
-      ));
+      );
 
+   /**
+    *  @throw ::acsdaemonErrType::FailedToGetAcsStatusEx
+    */ 
      char * status_acs ( 
 	 ::CORBA::Short instance_number
-	 )
-      ACE_THROW_SPEC ((
-        CORBA::SystemException,
-        ::acsdaemonErrType::FailedToGetAcsStatusEx
-      ));
+	 );
 
-    void shutdown ()
-      ACE_THROW_SPEC ((
-        CORBA::SystemException,
-        ::maciErrType::NoPermissionEx
-      ));
+   /**
+    *  @throw ::maciErrType::NoPermissionEx
+    */ 
+    void shutdown ();
 
   private:
     std::string h_name; // Name of services handler (used for logging purposes)

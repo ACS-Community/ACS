@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@$Id: acsServicesHandlerACS80Impl.cpp,v 1.3 2008/09/19 13:06:44 msekoran Exp $"
+* "@$Id: acsServicesHandlerACS80Impl.cpp,v 1.4 2008/10/07 08:45:58 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -430,10 +430,6 @@ ACSServicesHandlerACS80Impl::start_acs (
     ::CORBA::Short instance_number,
     const char * additional_command_line
     )
-    ACE_THROW_SPEC ((
-			CORBA::SystemException,
-			::ACSErrTypeCommon::BadParameterEx
-			))
 {
     char *commandline = prepareCommand("acsStart", instance_number, false, NULL, additional_command_line, true);
     execCommand(commandline, callback, cmdproc);
@@ -446,10 +442,6 @@ ACSServicesHandlerACS80Impl::stop_acs (
     ::CORBA::Short instance_number,
     const char * additional_command_line
     )
-    ACE_THROW_SPEC ((
-			CORBA::SystemException,
-			::ACSErrTypeCommon::BadParameterEx
-			))
 {
     ACE_CString str = " -noShutdownLocalContainers";
     char *commandline = prepareCommand("acsStop", instance_number, false, NULL, (additional_command_line + str).c_str(), true);
@@ -460,10 +452,6 @@ ACSServicesHandlerACS80Impl::stop_acs (
 char * ACSServicesHandlerACS80Impl::status_acs ( 
     ::CORBA::Short instance_number
     )
-      ACE_THROW_SPEC ((
-        CORBA::SystemException,
-        ::acsdaemonErrType::FailedToGetAcsStatusEx
-      ))
 {
     int result;
     char *acsStatus=0;
@@ -514,10 +502,6 @@ char * ACSServicesHandlerACS80Impl::status_acs (
 }//ACSServicesHandlerACS80Impl::status_acs
 
 void ACSServicesHandlerACS80Impl::shutdown ()
-      ACE_THROW_SPEC ((
-        CORBA::SystemException,
-        ::maciErrType::NoPermissionEx
-      ))
 {
     if (h_service->isProtected())
 	{

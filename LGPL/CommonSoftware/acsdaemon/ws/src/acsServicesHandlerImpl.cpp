@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@$Id: acsServicesHandlerImpl.cpp,v 1.10 2008/09/11 09:29:56 msekoran Exp $"
+* "@$Id: acsServicesHandlerImpl.cpp,v 1.11 2008/10/07 08:45:58 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -58,10 +58,6 @@ void CommandProcessorThread::stop()
 }
 
 void CommandProcessorThread::runLoop()
-    ACE_THROW_SPEC ((
-			CORBA::SystemException,
-			::ACSErrTypeCommon::BadParameterEx
-			))
 {
     Request *nowreq;
     ACSErr::Completion_var comp;
@@ -151,10 +147,6 @@ ACSServicesHandlerImpl::start_acs (
     ::CORBA::Short instance_number,
     const char * additional_command_line
     )
-    ACE_THROW_SPEC ((
-			CORBA::SystemException,
-			::ACSErrTypeCommon::BadParameterEx
-			))
 {
     const char * cmdln = (additional_command_line ? additional_command_line : "");
     
@@ -193,10 +185,6 @@ ACSServicesHandlerImpl::stop_acs (
     ::CORBA::Short instance_number,
     const char * additional_command_line
     )
-    ACE_THROW_SPEC ((
-			CORBA::SystemException,
-			::ACSErrTypeCommon::BadParameterEx
-			))
 {
     const char * cmdln = (additional_command_line ? additional_command_line : "");
 
@@ -235,10 +223,6 @@ ACSServicesHandlerImpl::stop_acs (
 char * ACSServicesHandlerImpl::status_acs ( 
     ::CORBA::Short instance_number
     )
-      ACE_THROW_SPEC ((
-        CORBA::SystemException,
-        ::acsdaemonErrType::FailedToGetAcsStatusEx
-      ))
 {
     int result;
     char *acsStatus=0;
@@ -289,10 +273,6 @@ char * ACSServicesHandlerImpl::status_acs (
 }//ACSServicesHandlerImpl::status_acs
 
 void ACSServicesHandlerImpl::shutdown ()
-      ACE_THROW_SPEC ((
-        CORBA::SystemException,
-        ::maciErrType::NoPermissionEx
-      ))
 {
     if (h_service->isProtected())
 	{

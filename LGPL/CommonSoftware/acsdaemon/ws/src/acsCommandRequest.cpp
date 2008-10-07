@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@$Id: acsCommandRequest.cpp,v 1.4 2008/09/19 13:06:44 msekoran Exp $"
+* "@$Id: acsCommandRequest.cpp,v 1.5 2008/10/07 08:45:58 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -117,10 +117,6 @@ void CommandProcessorThread::stop()
 }
 
 void CommandProcessorThread::runLoop()
-    ACE_THROW_SPEC ((
-			CORBA::SystemException,
-			::ACSErrTypeCommon::BadParameterEx
-			))
 {
     Request *nowreq;
     while (running)

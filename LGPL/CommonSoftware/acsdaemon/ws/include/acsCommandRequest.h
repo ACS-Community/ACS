@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsCommandRequest.h,v 1.2 2008/09/11 09:29:56 msekoran Exp $"
+* "@(#) $Id: acsCommandRequest.h,v 1.3 2008/10/07 08:45:58 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -100,11 +100,7 @@ class CommandProcessorThread : public ACS::Thread
 
     void exit() { ACS::Thread::exit(); stop(); }
 
-    void runLoop()
-      ACE_THROW_SPEC ((
-        CORBA::SystemException,
-	::ACSErrTypeCommon::BadParameterEx
-      ));
+    void runLoop();
 
     void addRequest(Request* r);
 

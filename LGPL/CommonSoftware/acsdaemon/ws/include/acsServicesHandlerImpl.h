@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsServicesHandlerImpl.h,v 1.6 2008/09/11 09:29:56 msekoran Exp $"
+* "@(#) $Id: acsServicesHandlerImpl.h,v 1.7 2008/10/07 08:45:58 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -80,11 +80,10 @@ class CommandProcessorThread : public ACS::Thread
 
     void exit() { ACS::Thread::exit(); stop(); }
 
-    void runLoop()
-      ACE_THROW_SPEC ((
-        CORBA::SystemException,
-	::ACSErrTypeCommon::BadParameterEx
-      ));
+    /*
+     *  @throw ::ACSErrTypeCommon::BadParameterEx
+     */
+    void runLoop();
 
     void addRequest(Request* r);
 
@@ -145,39 +144,35 @@ class ACSServicesHandlerImpl : public POA_acsdaemon::ServicesDaemon {
     
     /*************************** CORBA interface *****************************/
 
+    /*
+     *  @throw ::ACSErrTypeCommon::BadParameterEx
+     */
     void start_acs (
 	acsdaemon::DaemonCallback_ptr callback,
         ::CORBA::Short instance_number,
         const char * additional_command_line
-      )
-      ACE_THROW_SPEC ((
-        CORBA::SystemException,
-	::ACSErrTypeCommon::BadParameterEx
-      ));
+      );
     
+    /*
+     *  @throw ::ACSErrTypeCommon::BadParameterEx
+     */
     void stop_acs (
 	acsdaemon::DaemonCallback_ptr callback,
         ::CORBA::Short instance_number,
         const char * additional_command_line
-      )
-      ACE_THROW_SPEC ((
-        CORBA::SystemException,
-	::ACSErrTypeCommon::BadParameterEx
-      ));
+      );
 
+    /*
+     *  @throw ::acsdaemonErrType::FailedToGetAcsStatusEx
+     */
      virtual char * status_acs ( 
 	 ::CORBA::Short instance_number
-	 )
-      ACE_THROW_SPEC ((
-        CORBA::SystemException,
-        ::acsdaemonErrType::FailedToGetAcsStatusEx
-      ));
+	 );
 
-    virtual void shutdown ()
-      ACE_THROW_SPEC ((
-        CORBA::SystemException,
-        ::maciErrType::NoPermissionEx
-      ));
+    /*
+     *  @throw ::maciErrType::NoPermissionEx
+     */
+    virtual void shutdown ();
 
   private:
     std::string h_name; // Name of services handler (used for logging purposes

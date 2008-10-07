@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsContainerHandlerImpl.h,v 1.5 2008/08/29 13:58:28 msekoran Exp $"
+* "@(#) $Id: acsContainerHandlerImpl.h,v 1.6 2008/10/07 08:45:58 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -92,33 +92,30 @@ class ACSContainerHandlerImpl : public POA_acsdaemon::ContainerDaemon {
 
     /*************************** CORBA interface *****************************/
 
+    /**
+     *  @throw ::acsdaemonErrType::FailedToStartContainerEx
+     *  @throw ::ACSErrTypeCommon::BadParameterEx
+     */
     virtual void start_container (
         const char * container_type,
         const char * container_name,
         ::CORBA::Short instance_number,
         const ::ACS::stringSeq & type_modifiers,
         const char * additional_command_line
-      )
-      ACE_THROW_SPEC ((
-        CORBA::SystemException,
-        ::acsdaemonErrType::FailedToStartContainerEx,
-	::ACSErrTypeCommon::BadParameterEx
-      ));
+      );
+    /**
+     *  @throw ::acsdaemonErrType::FailedToStopContainerEx
+     *  @throw ::ACSErrTypeCommon::BadParameterEx
+     */
     virtual void stop_container (
         const char * container_name,
         ::CORBA::Short instance_number,
         const char * additional_command_line
-      )
-      ACE_THROW_SPEC ((
-        CORBA::SystemException,
-        ::acsdaemonErrType::FailedToStopContainerEx,
-	::ACSErrTypeCommon::BadParameterEx
-      ));
-    virtual void shutdown ()
-      ACE_THROW_SPEC ((
-        CORBA::SystemException,
-        ::maciErrType::NoPermissionEx
-      ));
+      );
+    /**
+     *  @throw ::maciErrType::NoPermissionEx
+     */
+    virtual void shutdown ();
 
   private:
     std::string h_name; // Name of container handler (used for logging purposes
