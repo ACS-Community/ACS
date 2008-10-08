@@ -32,6 +32,7 @@ import org.omg.PortableServer.POA;
 import si.ijs.maci.Client;
 
 import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
+import alma.acs.concurrent.DaemonThreadFactory;
 import alma.acs.container.AcsManagerProxy;
 import alma.acs.container.CleaningDaemonThreadFactory;
 import alma.acs.container.ContainerServices;
@@ -244,10 +245,17 @@ public class ComponentClientTestCase extends TestCase
 				// and with bad timing luck it could block *after* the first shutdown called "shutdown_synch.notifyAll()"
 				// in ORB#shutdown, which could explain that the main thread hangs there forever.
 				acsCorba.shutdownORB(true, false);
-				acsCorba.doneCorba();
+				// as a workaround for this problem, for now we run this async with a timeout
+				Thread destroyThread = (new DaemonThreadFactory("OrbDestroy")).newThread(new Runnable() {
+					public void run() {
+						acsCorba.doneCorba();
+					}
+				});
+				destroyThread.start();
+				destroyThread.join(20000);
 			}
 			// just in case... should give the OS time to reclaim ORB ports and so on
-			Thread.sleep(100);
+			Thread.sleep(1000);
 		}
 	}
 
