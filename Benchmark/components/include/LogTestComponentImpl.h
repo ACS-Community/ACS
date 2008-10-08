@@ -15,7 +15,7 @@ class LogTestComponentImpl: public virtual BasePerfCompImpl
     maci::ContainerServices *containerServices);
     virtual ~LogTestComponentImpl(){};
 
-    virtual void method() throw (CORBA::SystemException);
+    virtual void method();
 };
 
 #endif

@@ -38,39 +38,39 @@ class ComplexBACIComponent: public BasePerfCompImpl,     //Standard component su
     
     /* --------------------- [ CORBA interface ] ----------------------*/
 
-    virtual void action01(ACS::CBvoid_ptr cb, const ACS::CBDescIn &desc) throw (CORBA::SystemException);
-    virtual void action02(ACS::CBvoid_ptr cb, const ACS::CBDescIn &desc) throw (CORBA::SystemException);
-    virtual void action03(ACS::CBvoid_ptr cb, const ACS::CBDescIn &desc) throw (CORBA::SystemException);
-    virtual void action04(ACS::CBvoid_ptr cb, const ACS::CBDescIn &desc) throw (CORBA::SystemException);
-    virtual void action05(ACS::CBvoid_ptr cb, const ACS::CBDescIn &desc) throw (CORBA::SystemException);
-    virtual void action06(ACS::CBvoid_ptr cb, const ACS::CBDescIn &desc) throw (CORBA::SystemException);
-    virtual void action07(ACS::CBvoid_ptr cb, const ACS::CBDescIn &desc) throw (CORBA::SystemException);
-    virtual void action08(ACS::CBvoid_ptr cb, const ACS::CBDescIn &desc) throw (CORBA::SystemException);
-    virtual void action09(ACS::CBvoid_ptr cb, const ACS::CBDescIn &desc) throw (CORBA::SystemException);
-    virtual void action10(ACS::CBvoid_ptr cb, const ACS::CBDescIn &desc) throw (CORBA::SystemException);
-    virtual void action11(ACS::CBvoid_ptr cb, const ACS::CBDescIn &desc) throw (CORBA::SystemException);
-    virtual void action12(ACS::CBvoid_ptr cb, const ACS::CBDescIn &desc) throw (CORBA::SystemException);
-    virtual void action13(ACS::CBvoid_ptr cb, const ACS::CBDescIn &desc) throw (CORBA::SystemException);
-    virtual void action14(ACS::CBvoid_ptr cb, const ACS::CBDescIn &desc) throw (CORBA::SystemException);
-    virtual void action15(ACS::CBvoid_ptr cb, const ACS::CBDescIn &desc) throw (CORBA::SystemException);
-    virtual void action16(ACS::CBvoid_ptr cb, const ACS::CBDescIn &desc) throw (CORBA::SystemException);
+    virtual void action01(ACS::CBvoid_ptr cb, const ACS::CBDescIn &desc);
+    virtual void action02(ACS::CBvoid_ptr cb, const ACS::CBDescIn &desc);
+    virtual void action03(ACS::CBvoid_ptr cb, const ACS::CBDescIn &desc);
+    virtual void action04(ACS::CBvoid_ptr cb, const ACS::CBDescIn &desc);
+    virtual void action05(ACS::CBvoid_ptr cb, const ACS::CBDescIn &desc);
+    virtual void action06(ACS::CBvoid_ptr cb, const ACS::CBDescIn &desc);
+    virtual void action07(ACS::CBvoid_ptr cb, const ACS::CBDescIn &desc);
+    virtual void action08(ACS::CBvoid_ptr cb, const ACS::CBDescIn &desc);
+    virtual void action09(ACS::CBvoid_ptr cb, const ACS::CBDescIn &desc);
+    virtual void action10(ACS::CBvoid_ptr cb, const ACS::CBDescIn &desc);
+    virtual void action11(ACS::CBvoid_ptr cb, const ACS::CBDescIn &desc);
+    virtual void action12(ACS::CBvoid_ptr cb, const ACS::CBDescIn &desc);
+    virtual void action13(ACS::CBvoid_ptr cb, const ACS::CBDescIn &desc);
+    virtual void action14(ACS::CBvoid_ptr cb, const ACS::CBDescIn &desc);
+    virtual void action15(ACS::CBvoid_ptr cb, const ACS::CBDescIn &desc);
+    virtual void action16(ACS::CBvoid_ptr cb, const ACS::CBDescIn &desc);
     
-    virtual ACS::RWlong_ptr property01() throw (CORBA::SystemException);
-    virtual ACS::RWlong_ptr property02() throw (CORBA::SystemException);
-    virtual ACS::RWlong_ptr property03() throw (CORBA::SystemException);
-    virtual ACS::RWlong_ptr property04() throw (CORBA::SystemException);
-    virtual ACS::RWlong_ptr property05() throw (CORBA::SystemException);
-    virtual ACS::RWlong_ptr property06() throw (CORBA::SystemException);
-    virtual ACS::RWlong_ptr property07() throw (CORBA::SystemException);
-    virtual ACS::RWlong_ptr property08() throw (CORBA::SystemException);
-    virtual ACS::RWlong_ptr property09() throw (CORBA::SystemException);
-    virtual ACS::RWlong_ptr property10() throw (CORBA::SystemException);
-    virtual ACS::RWlong_ptr property11() throw (CORBA::SystemException);
-    virtual ACS::RWlong_ptr property12() throw (CORBA::SystemException);
-    virtual ACS::RWlong_ptr property13() throw (CORBA::SystemException);
-    virtual ACS::RWlong_ptr property14() throw (CORBA::SystemException);
-    virtual ACS::RWlong_ptr property15() throw (CORBA::SystemException);
-    virtual ACS::RWlong_ptr property16() throw (CORBA::SystemException);
+    virtual ACS::RWlong_ptr property01();
+    virtual ACS::RWlong_ptr property02();
+    virtual ACS::RWlong_ptr property03();
+    virtual ACS::RWlong_ptr property04();
+    virtual ACS::RWlong_ptr property05();
+    virtual ACS::RWlong_ptr property06();
+    virtual ACS::RWlong_ptr property07();
+    virtual ACS::RWlong_ptr property08();
+    virtual ACS::RWlong_ptr property09();
+    virtual ACS::RWlong_ptr property10();
+    virtual ACS::RWlong_ptr property11();
+    virtual ACS::RWlong_ptr property12();
+    virtual ACS::RWlong_ptr property13();
+    virtual ACS::RWlong_ptr property14();
+    virtual ACS::RWlong_ptr property15();
+    virtual ACS::RWlong_ptr property16();
 
   private:
     baci::SmartPropertyPointer<baci::RWlong>m_property01;

@@ -18,16 +18,16 @@ class MethodTestComponent: public virtual BasePerfCompImpl,
     virtual ~MethodTestComponent(){};
     
     virtual perftest::charSeq * 
-    testReturnSize() throw (CORBA::SystemException);
+    testReturnSize();
 
     virtual void 
-    testInParam(const perftest::charSeq &chars) throw (CORBA::SystemException)
+    testInParam(const perftest::charSeq &chars)
 	{
 	    return;
 	}
 
     virtual void 
-    setup(CORBA::ULong count, CORBA::ULong size, ACS::TimeInterval waitTime) throw (CORBA::SystemException);
+    setup(CORBA::ULong count, CORBA::ULong size, ACS::TimeInterval waitTime);
 
   private:
     perftest::charSeq_var	m_charSeq;

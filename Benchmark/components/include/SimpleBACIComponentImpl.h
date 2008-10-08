@@ -33,11 +33,11 @@ class SimpleBACIComponent: public virtual BasePerfCompImpl,
 		 CBDescOut &descOut);
     
     virtual void 
-    action(ACS::CBvoid_ptr cb, const ACS::CBDescIn &desc) throw (CORBA::SystemException);
+    action(ACS::CBvoid_ptr cb, const ACS::CBDescIn &desc);
     
     
     virtual ACS::RWlong_ptr 
-    property() throw (CORBA::SystemException);
+    property();
 
   private:
 

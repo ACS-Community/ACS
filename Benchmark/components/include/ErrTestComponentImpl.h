@@ -21,7 +21,10 @@ class ErrTestComponentImpl: public virtual BasePerfCompImpl,
 			 maci::ContainerServices *containerServices);
     virtual ~ErrTestComponentImpl(){};
     
-    virtual void testExceptions(CORBA::Long depth, CORBA::Boolean err) throw (CORBA::SystemException, BenchmarkErrType::BenchmarkErr0Ex);
+    /**
+     * @throw BenchmarkErrType::BenchmarkErr0Ex
+     */
+    virtual void testExceptions(CORBA::Long depth, CORBA::Boolean err);
 };
 
 #endif

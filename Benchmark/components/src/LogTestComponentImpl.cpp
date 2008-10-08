@@ -2,7 +2,7 @@
 #include <string.h>
 #include <iomanip>
 
-ACE_RCSID(acstests, LogTestComponentImpl, "$Id: LogTestComponentImpl.cpp,v 1.6 2005/04/29 21:45:13 dfugate Exp $")
+ACE_RCSID(acstests, LogTestComponentImpl, "$Id: LogTestComponentImpl.cpp,v 1.7 2008/10/08 01:57:23 cparedes Exp $")
 
 LogTestComponentImpl::LogTestComponentImpl(const ACE_CString& name,
 					   maci::ContainerServices *containerServices) :
@@ -11,7 +11,7 @@ LogTestComponentImpl::LogTestComponentImpl(const ACE_CString& name,
     ACS_TRACE("::LogTestComponentImpl::LogTestComponentImpl");
 }
 
-void LogTestComponentImpl::method() throw (CORBA::SystemException)
+void LogTestComponentImpl::method()
 {
     //setup the data
     char *str = new char[m_size+1];

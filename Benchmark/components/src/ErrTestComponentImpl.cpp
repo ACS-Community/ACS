@@ -1,7 +1,7 @@
 #include "ErrTestComponentImpl.h"
 #include <string.h>
 
-ACE_RCSID(acstests, ErrTestComponentImpl, "$Id: ErrTestComponentImpl.cpp,v 1.5 2007/03/20 17:55:42 sharring Exp $")
+ACE_RCSID(acstests, ErrTestComponentImpl, "$Id: ErrTestComponentImpl.cpp,v 1.6 2008/10/08 01:57:23 cparedes Exp $")
 
 ErrTestComponentImpl::ErrTestComponentImpl(const ACE_CString& name,
     maci::ContainerServices *containerServices) :
@@ -30,7 +30,6 @@ void ErrTestComponentImpl::genException(int depth, BenchmarkErrType::BenchmarkEr
 
 void 
 ErrTestComponentImpl::testExceptions(CORBA::Long depth, CORBA::Boolean err) 
-    throw (CORBA::SystemException, BenchmarkErrType::BenchmarkErr0Ex)
 {
 	if (depth < 1)
 	{

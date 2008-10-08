@@ -95,8 +95,8 @@ class LogStress: public virtual acscomponent::ACSComponentImpl, public POA_perft
 		virtual ~LogStress();
 
 		/* --------------------- [ CORBA interface ] ----------------------*/    
-		virtual void logNumTimes(int numTimes, int delayBetweenLogs=0) throw (CORBA::SystemException);
-		virtual bool getThreadDone() throw (CORBA::SystemException) { return threadDone; }
+		virtual void logNumTimes(int numTimes, int delayBetweenLogs=0);
+		virtual bool getThreadDone() { return threadDone; }
 
 	private:
 		int getNumTimesToLog() { return numTimesToLog; }

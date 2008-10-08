@@ -16,7 +16,7 @@ class SupplierTestComponentImpl: public virtual BasePerfCompImpl
     maci::ContainerServices *containerServices);
     virtual ~SupplierTestComponentImpl() {};
     
-    virtual void method() throw (CORBA::SystemException);
+    virtual void method();
     virtual void cleanUp();
 
   private:

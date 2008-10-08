@@ -1,6 +1,6 @@
 #include "IdlCompilationTimeImpl.h"
 
-ACE_RCSID(acstests, IdlCompilationTimeComponentImpl, "$Id: IdlCompilationTimeImpl.cpp,v 1.3 2007/03/20 17:55:42 sharring Exp $");
+ACE_RCSID(acstests, IdlCompilationTimeComponentImpl, "$Id: IdlCompilationTimeImpl.cpp,v 1.4 2008/10/08 01:57:23 cparedes Exp $");
 
 IdlCompilationTimeComponent::IdlCompilationTimeComponent(const ACE_CString& name,
     maci::ContainerServices *containerServices) :
@@ -54,17 +54,17 @@ ActionRequest IdlCompilationTimeComponent::invokeAction(int function,
     }
 }
 
-void IdlCompilationTimeComponent::method() throw (CORBA::SystemException)
+void IdlCompilationTimeComponent::method()
 {
     
 }
 
-void IdlCompilationTimeComponent::action(ACS::CBvoid_ptr cb, const ACS::CBDescIn &desc) throw (CORBA::SystemException)
+void IdlCompilationTimeComponent::action(ACS::CBvoid_ptr cb, const ACS::CBDescIn &desc)
 {
     getComponent()->registerAction(BACIValue::type_null, cb, desc, this, ACTION);
 }
 
-ACS::RWlong_ptr IdlCompilationTimeComponent::property() throw (CORBA::SystemException)
+ACS::RWlong_ptr IdlCompilationTimeComponent::property()
 {
     if (m_property == 0) return ACS::RWlong::_nil();
     

@@ -21,7 +21,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: TestMaxMsgSizeImpl.h,v 1.2 2008/07/28 09:57:02 cparedes Exp $"
+* "@(#) $Id: TestMaxMsgSizeImpl.h,v 1.3 2008/10/08 01:58:12 cparedes Exp $"
 *
 */
 
@@ -40,7 +40,7 @@ class TestMaxMsgSizeImpl:
     
     TestMaxMsgSizeImpl(PortableServer::POA_ptr poa, const ACE_CString &name);
     virtual ~TestMaxMsgSizeImpl();
-    virtual void sendSequence(const TEST_MAX_MSG_SIZE::TestMaxMsgSize::CharacterSequence& inSeq) throw(CORBA::SystemException);
+    virtual void sendSequence(const TEST_MAX_MSG_SIZE::TestMaxMsgSize::CharacterSequence& inSeq);
 
   private:
     

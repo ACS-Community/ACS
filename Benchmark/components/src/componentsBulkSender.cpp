@@ -22,7 +22,6 @@ BulkDataSenderEx1Impl::~BulkDataSenderEx1Impl()
 }
 
 void BulkDataSenderEx1Impl::startSend()
-    throw (CORBA::SystemException, ACSBulkDataError::AVStartSendErrorEx)
 {
     unsigned long long realSize = size_m * 1000ULL;
     
@@ -45,12 +44,10 @@ void BulkDataSenderEx1Impl::startSend()
 }
 
 void BulkDataSenderEx1Impl::paceData()
-    throw (CORBA::SystemException, ACSBulkDataError::AVPaceDataErrorEx)
 {
 }
 
 void BulkDataSenderEx1Impl::stopSend()
-    throw (CORBA::SystemException, ACSBulkDataError::AVStopSendErrorEx)
 {
     ACS_TRACE("BulkDataSenderImpl::stopSend");
     getSender()->stopSend(1UL);

@@ -1,7 +1,7 @@
 #include <SupplierTestComponentImpl.h>
 #include <string.h>
 
-ACE_RCSID(acstests, SupplierTestComponentImpl, "$Id: SupplierTestComponentImpl.cpp,v 1.5 2006/01/19 21:42:09 dfugate Exp $")
+ACE_RCSID(acstests, SupplierTestComponentImpl, "$Id: SupplierTestComponentImpl.cpp,v 1.6 2008/10/08 01:57:23 cparedes Exp $")
 
 SupplierTestComponentImpl::SupplierTestComponentImpl(const ACE_CString& name,
     maci::ContainerServices *containerServices) :
@@ -27,7 +27,6 @@ SupplierTestComponentImpl::cleanUp()
 
 void 
 SupplierTestComponentImpl::method() 
-    throw (CORBA::SystemException)
 {
     perftest::charSeqStruct joe;
     joe.aSequence.length(m_size);

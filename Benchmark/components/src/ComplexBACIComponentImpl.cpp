@@ -2,7 +2,7 @@
 
 using namespace baci;
 
-ACE_RCSID(acstests, ComplexBACIComponentImpl, "$Id: ComplexBACIComponentImpl.cpp,v 1.5 2008/07/29 06:43:28 cparedes Exp $")
+ACE_RCSID(acstests, ComplexBACIComponentImpl, "$Id: ComplexBACIComponentImpl.cpp,v 1.6 2008/10/08 01:57:23 cparedes Exp $")
 
 /////////////////////////////////////////////////
 // ComplexBACIComponent
@@ -70,103 +70,103 @@ ActionRequest ComplexBACIComponent::invokeAction(int function,
 
 /* --------------------- [ CORBA interface ] ----------------------*/
  
-void ComplexBACIComponent::action01(ACS::CBvoid_ptr cb, const ACS::CBDescIn &desc) throw (CORBA::SystemException)
+void ComplexBACIComponent::action01(ACS::CBvoid_ptr cb, const ACS::CBDescIn &desc)
 {
     //registers the action to the BACI and returns control immediately
     getComponent()->registerAction(BACIValue::type_null, cb, desc, this, ACTION);
 }
 
-void ComplexBACIComponent::action02(ACS::CBvoid_ptr cb, const ACS::CBDescIn &desc) throw (CORBA::SystemException)
+void ComplexBACIComponent::action02(ACS::CBvoid_ptr cb, const ACS::CBDescIn &desc)
 {
     //registers the action to the BACI and returns control immediately
     getComponent()->registerAction(BACIValue::type_null, cb, desc, this, ACTION);
 }
 
-void ComplexBACIComponent::action03(ACS::CBvoid_ptr cb, const ACS::CBDescIn &desc) throw (CORBA::SystemException)
+void ComplexBACIComponent::action03(ACS::CBvoid_ptr cb, const ACS::CBDescIn &desc)
 {
     //registers the action to the BACI and returns control immediately
     getComponent()->registerAction(BACIValue::type_null, cb, desc, this, ACTION);
 }
 
-void ComplexBACIComponent::action04(ACS::CBvoid_ptr cb, const ACS::CBDescIn &desc) throw (CORBA::SystemException)
+void ComplexBACIComponent::action04(ACS::CBvoid_ptr cb, const ACS::CBDescIn &desc)
 {
     //registers the action to the BACI and returns control immediately
     getComponent()->registerAction(BACIValue::type_null, cb, desc, this, ACTION);
 }
 
-void ComplexBACIComponent::action05(ACS::CBvoid_ptr cb, const ACS::CBDescIn &desc) throw (CORBA::SystemException)
+void ComplexBACIComponent::action05(ACS::CBvoid_ptr cb, const ACS::CBDescIn &desc)
 {
     //registers the action to the BACI and returns control immediately
     getComponent()->registerAction(BACIValue::type_null, cb, desc, this, ACTION);
 }
 
-void ComplexBACIComponent::action06(ACS::CBvoid_ptr cb, const ACS::CBDescIn &desc) throw (CORBA::SystemException)
+void ComplexBACIComponent::action06(ACS::CBvoid_ptr cb, const ACS::CBDescIn &desc)
 {
     //registers the action to the BACI and returns control immediately
     getComponent()->registerAction(BACIValue::type_null, cb, desc, this, ACTION);
 }
 
-void ComplexBACIComponent::action07(ACS::CBvoid_ptr cb, const ACS::CBDescIn &desc) throw (CORBA::SystemException)
+void ComplexBACIComponent::action07(ACS::CBvoid_ptr cb, const ACS::CBDescIn &desc)
 {
     //registers the action to the BACI and returns control immediately
     getComponent()->registerAction(BACIValue::type_null, cb, desc, this, ACTION);
 }
 
-void ComplexBACIComponent::action08(ACS::CBvoid_ptr cb, const ACS::CBDescIn &desc) throw (CORBA::SystemException)
+void ComplexBACIComponent::action08(ACS::CBvoid_ptr cb, const ACS::CBDescIn &desc)
 {
     //registers the action to the BACI and returns control immediately
     getComponent()->registerAction(BACIValue::type_null, cb, desc, this, ACTION);
 }
 
-void ComplexBACIComponent::action09(ACS::CBvoid_ptr cb, const ACS::CBDescIn &desc) throw (CORBA::SystemException)
+void ComplexBACIComponent::action09(ACS::CBvoid_ptr cb, const ACS::CBDescIn &desc)
 {
     //registers the action to the BACI and returns control immediately
     getComponent()->registerAction(BACIValue::type_null, cb, desc, this, ACTION);
 }
 
-void ComplexBACIComponent::action10(ACS::CBvoid_ptr cb, const ACS::CBDescIn &desc) throw (CORBA::SystemException)
+void ComplexBACIComponent::action10(ACS::CBvoid_ptr cb, const ACS::CBDescIn &desc)
 {
     //registers the action to the BACI and returns control immediately
     getComponent()->registerAction(BACIValue::type_null, cb, desc, this, ACTION);
 }
 
-void ComplexBACIComponent::action11(ACS::CBvoid_ptr cb, const ACS::CBDescIn &desc) throw (CORBA::SystemException)
+void ComplexBACIComponent::action11(ACS::CBvoid_ptr cb, const ACS::CBDescIn &desc)
 {
     //registers the action to the BACI and returns control immediately
     getComponent()->registerAction(BACIValue::type_null, cb, desc, this, ACTION);
 }
 
-void ComplexBACIComponent::action12(ACS::CBvoid_ptr cb, const ACS::CBDescIn &desc) throw (CORBA::SystemException)
+void ComplexBACIComponent::action12(ACS::CBvoid_ptr cb, const ACS::CBDescIn &desc)
 {
     //registers the action to the BACI and returns control immediately
     getComponent()->registerAction(BACIValue::type_null, cb, desc, this, ACTION);
 }
 
-void ComplexBACIComponent::action13(ACS::CBvoid_ptr cb, const ACS::CBDescIn &desc) throw (CORBA::SystemException)
+void ComplexBACIComponent::action13(ACS::CBvoid_ptr cb, const ACS::CBDescIn &desc)
 {
     //registers the action to the BACI and returns control immediately
     getComponent()->registerAction(BACIValue::type_null, cb, desc, this, ACTION);
 }
 
-void ComplexBACIComponent::action14(ACS::CBvoid_ptr cb, const ACS::CBDescIn &desc) throw (CORBA::SystemException)
+void ComplexBACIComponent::action14(ACS::CBvoid_ptr cb, const ACS::CBDescIn &desc)
 {
     //registers the action to the BACI and returns control immediately
     getComponent()->registerAction(BACIValue::type_null, cb, desc, this, ACTION);
 }
 
-void ComplexBACIComponent::action15(ACS::CBvoid_ptr cb, const ACS::CBDescIn &desc) throw (CORBA::SystemException)
+void ComplexBACIComponent::action15(ACS::CBvoid_ptr cb, const ACS::CBDescIn &desc)
 {
     //registers the action to the BACI and returns control immediately
     getComponent()->registerAction(BACIValue::type_null, cb, desc, this, ACTION);
 }
 
-void ComplexBACIComponent::action16(ACS::CBvoid_ptr cb, const ACS::CBDescIn &desc) throw (CORBA::SystemException)
+void ComplexBACIComponent::action16(ACS::CBvoid_ptr cb, const ACS::CBDescIn &desc)
 {
     //registers the action to the BACI and returns control immediately
     getComponent()->registerAction(BACIValue::type_null, cb, desc, this, ACTION);
 }
 
-ACS::RWlong_ptr ComplexBACIComponent::property01() throw (CORBA::SystemException)
+ACS::RWlong_ptr ComplexBACIComponent::property01()
 {
     if (m_property01 == 0) return ACS::RWlong::_nil();
     
@@ -174,7 +174,7 @@ ACS::RWlong_ptr ComplexBACIComponent::property01() throw (CORBA::SystemException
     return prop._retn();
 }
 
-ACS::RWlong_ptr ComplexBACIComponent::property02() throw (CORBA::SystemException)
+ACS::RWlong_ptr ComplexBACIComponent::property02()
 {
     if (m_property02 == 0) return ACS::RWlong::_nil();
     
@@ -182,7 +182,7 @@ ACS::RWlong_ptr ComplexBACIComponent::property02() throw (CORBA::SystemException
     return prop._retn();
 }
 
-ACS::RWlong_ptr ComplexBACIComponent::property03() throw (CORBA::SystemException)
+ACS::RWlong_ptr ComplexBACIComponent::property03()
 {
     if (m_property03 == 0) return ACS::RWlong::_nil();
     
@@ -190,7 +190,7 @@ ACS::RWlong_ptr ComplexBACIComponent::property03() throw (CORBA::SystemException
     return prop._retn();
 }
 
-ACS::RWlong_ptr ComplexBACIComponent::property04() throw (CORBA::SystemException)
+ACS::RWlong_ptr ComplexBACIComponent::property04()
 {
     if (m_property04 == 0) return ACS::RWlong::_nil();
     
@@ -198,7 +198,7 @@ ACS::RWlong_ptr ComplexBACIComponent::property04() throw (CORBA::SystemException
     return prop._retn();
 }
 
-ACS::RWlong_ptr ComplexBACIComponent::property05() throw (CORBA::SystemException)
+ACS::RWlong_ptr ComplexBACIComponent::property05()
 {
     if (m_property05 == 0) return ACS::RWlong::_nil();
     
@@ -206,7 +206,7 @@ ACS::RWlong_ptr ComplexBACIComponent::property05() throw (CORBA::SystemException
     return prop._retn();
 }
 
-ACS::RWlong_ptr ComplexBACIComponent::property06() throw (CORBA::SystemException)
+ACS::RWlong_ptr ComplexBACIComponent::property06()
 {
     if (m_property06 == 0) return ACS::RWlong::_nil();
     
@@ -214,7 +214,7 @@ ACS::RWlong_ptr ComplexBACIComponent::property06() throw (CORBA::SystemException
     return prop._retn();
 }
 
-ACS::RWlong_ptr ComplexBACIComponent::property07() throw (CORBA::SystemException)
+ACS::RWlong_ptr ComplexBACIComponent::property07()
 {
     if (m_property07 == 0) return ACS::RWlong::_nil();
     
@@ -222,7 +222,7 @@ ACS::RWlong_ptr ComplexBACIComponent::property07() throw (CORBA::SystemException
     return prop._retn();
 }
 
-ACS::RWlong_ptr ComplexBACIComponent::property08() throw (CORBA::SystemException)
+ACS::RWlong_ptr ComplexBACIComponent::property08()
 {
     if (m_property08 == 0) return ACS::RWlong::_nil();
     
@@ -230,7 +230,7 @@ ACS::RWlong_ptr ComplexBACIComponent::property08() throw (CORBA::SystemException
     return prop._retn();
 }
 
-ACS::RWlong_ptr ComplexBACIComponent::property09() throw (CORBA::SystemException)
+ACS::RWlong_ptr ComplexBACIComponent::property09()
 {
     if (m_property09 == 0) return ACS::RWlong::_nil();
     
@@ -238,7 +238,7 @@ ACS::RWlong_ptr ComplexBACIComponent::property09() throw (CORBA::SystemException
     return prop._retn();
 }
 
-ACS::RWlong_ptr ComplexBACIComponent::property10() throw (CORBA::SystemException)
+ACS::RWlong_ptr ComplexBACIComponent::property10()
 {
     if (m_property10 == 0) return ACS::RWlong::_nil();
     
@@ -246,7 +246,7 @@ ACS::RWlong_ptr ComplexBACIComponent::property10() throw (CORBA::SystemException
     return prop._retn();
 }
 
-ACS::RWlong_ptr ComplexBACIComponent::property11() throw (CORBA::SystemException)
+ACS::RWlong_ptr ComplexBACIComponent::property11()
 {
     if (m_property11 == 0) return ACS::RWlong::_nil();
     
@@ -254,7 +254,7 @@ ACS::RWlong_ptr ComplexBACIComponent::property11() throw (CORBA::SystemException
     return prop._retn();
 }
 
-ACS::RWlong_ptr ComplexBACIComponent::property12() throw (CORBA::SystemException)
+ACS::RWlong_ptr ComplexBACIComponent::property12()
 {
     if (m_property12 == 0) return ACS::RWlong::_nil();
     
@@ -262,7 +262,7 @@ ACS::RWlong_ptr ComplexBACIComponent::property12() throw (CORBA::SystemException
     return prop._retn();
 }
 
-ACS::RWlong_ptr ComplexBACIComponent::property13() throw (CORBA::SystemException)
+ACS::RWlong_ptr ComplexBACIComponent::property13()
 {
     if (m_property13 == 0) return ACS::RWlong::_nil();
     
@@ -270,7 +270,7 @@ ACS::RWlong_ptr ComplexBACIComponent::property13() throw (CORBA::SystemException
     return prop._retn();
 }
 
-ACS::RWlong_ptr ComplexBACIComponent::property14() throw (CORBA::SystemException)
+ACS::RWlong_ptr ComplexBACIComponent::property14()
 {
     if (m_property14 == 0) return ACS::RWlong::_nil();
     
@@ -278,7 +278,7 @@ ACS::RWlong_ptr ComplexBACIComponent::property14() throw (CORBA::SystemException
     return prop._retn();
 }
 
-ACS::RWlong_ptr ComplexBACIComponent::property15() throw (CORBA::SystemException)
+ACS::RWlong_ptr ComplexBACIComponent::property15()
 {
     if (m_property15 == 0) return ACS::RWlong::_nil();
     
@@ -286,7 +286,7 @@ ACS::RWlong_ptr ComplexBACIComponent::property15() throw (CORBA::SystemException
     return prop._retn();
 }
 
-ACS::RWlong_ptr ComplexBACIComponent::property16() throw (CORBA::SystemException)
+ACS::RWlong_ptr ComplexBACIComponent::property16()
 {
     if (m_property16 == 0) return ACS::RWlong::_nil();
     

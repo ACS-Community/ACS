@@ -34,9 +34,9 @@ class IdlCompilationTimeComponentImpl: public CharacteristicComponentImpl,     /
 				       Completion &completion, 
 				       CBDescOut &descOut);
     
-    virtual void method() throw (CORBA::SystemException);
-    virtual void action(ACS::CBvoid_ptr cb, const ACS::CBDescIn &desc) throw (CORBA::SystemException);
-    virtual ACS::RWlong_ptr property() throw (CORBA::SystemException);
+    virtual void method();
+    virtual void action(ACS::CBvoid_ptr cb, const ACS::CBDescIn &desc);
+    virtual ACS::RWlong_ptr property();
 
   private:
     RWlong	*m_property;

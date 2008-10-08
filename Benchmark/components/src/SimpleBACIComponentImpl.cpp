@@ -1,6 +1,6 @@
 #include <SimpleBACIComponentImpl.h>
 
-ACE_RCSID(acstests, SimpleBACIComponentImpl, "$Id: SimpleBACIComponentImpl.cpp,v 1.5 2008/07/28 09:57:02 cparedes Exp $")
+ACE_RCSID(acstests, SimpleBACIComponentImpl, "$Id: SimpleBACIComponentImpl.cpp,v 1.6 2008/10/08 01:57:23 cparedes Exp $")
 
 /////////////////////////////////////////////////
 // SimpleBACIComponent
@@ -48,12 +48,12 @@ SimpleBACIComponent::invokeAction(int function,
 }
 
 /* --------------------- [ CORBA interface ] ----------------------*/
-void SimpleBACIComponent::action(ACS::CBvoid_ptr cb, const ACS::CBDescIn &desc) throw (CORBA::SystemException)
+void SimpleBACIComponent::action(ACS::CBvoid_ptr cb, const ACS::CBDescIn &desc)
 {
     getComponent()->registerAction(baci::BACIValue::type_null, cb, desc, this, ACTION);
 }
 
-ACS::RWlong_ptr SimpleBACIComponent::property() throw (CORBA::SystemException)
+ACS::RWlong_ptr SimpleBACIComponent::property()
 {
     if (m_property_sp == 0) return ACS::RWlong::_nil();
     

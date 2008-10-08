@@ -108,7 +108,7 @@ LogStress::~LogStress()
  * @param numberOfTimes: the number of logs to be sent to the logging channel.
  * @param delayBetweenLogs: the time to pause between logs, in milliseconds.
  */
-void LogStress::logNumTimes(int numberOfTimes, int delayBetweenLogs) throw(CORBA::SystemException)
+void LogStress::logNumTimes(int numberOfTimes, int delayBetweenLogs)
 {
 	// spawn a thread to do the "real work" so that we can return control to the caller ASAP
 	numTimesToLog = numberOfTimes;

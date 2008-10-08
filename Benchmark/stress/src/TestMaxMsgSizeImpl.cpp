@@ -21,7 +21,7 @@
 *
 *
 *
-* "@(#) $Id: TestMaxMsgSizeImpl.cpp,v 1.1 2004/12/02 00:06:44 dfugate Exp $"
+* "@(#) $Id: TestMaxMsgSizeImpl.cpp,v 1.2 2008/10/08 01:58:12 cparedes Exp $"
 *
 */
  
@@ -45,7 +45,7 @@ TestMaxMsgSizeImpl::~TestMaxMsgSizeImpl()
 }
 
 /* --------------------- [ CORBA interface ] ----------------------*/
-void TestMaxMsgSizeImpl::sendSequence(const TEST_MAX_MSG_SIZE::TestMaxMsgSize::CharacterSequence & inSeq) throw(CORBA::SystemException)
+void TestMaxMsgSizeImpl::sendSequence(const TEST_MAX_MSG_SIZE::TestMaxMsgSize::CharacterSequence & inSeq) 
 
 {
     cout << "sendSequence received sequence of length: " << inSeq.length() << endl; 

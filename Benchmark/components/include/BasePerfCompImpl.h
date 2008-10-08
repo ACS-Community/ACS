@@ -32,11 +32,11 @@ class BasePerfCompImpl: public baci::CharacteristicComponentImpl,
 	}
 
     /* --------------------- [ CORBA interface ] ----------------------*/
-    virtual void method() throw (CORBA::SystemException)
+    virtual void method()
 	{
 	}
 
-    virtual void setup(CORBA::ULong count, CORBA::ULong size, ACS::TimeInterval waitTime) throw (CORBA::SystemException)
+    virtual void setup(CORBA::ULong count, CORBA::ULong size, ACS::TimeInterval waitTime)
 	{
 	    m_count = count;
 	    m_size = size;
