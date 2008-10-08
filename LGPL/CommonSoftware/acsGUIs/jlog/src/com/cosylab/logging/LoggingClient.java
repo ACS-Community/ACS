@@ -53,7 +53,7 @@ import javax.swing.event.MenuListener;
 import org.omg.CORBA.ORB;
 
 import alma.acs.container.AdvancedContainerServices;
-import alma.acs.container.ContainerServices;
+import alma.acs.container.ContainerServicesBase;
 import alma.acs.logging.archive.ArchiveConnectionManager;
 import alma.acs.logging.archive.QueryDlg;
 import alma.acs.logging.archive.ArchiveConnectionManager.DBState;
@@ -304,7 +304,7 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
      * 
      * @see connect()
      */
-    protected ContainerServices containerServices=null;
+    protected ContainerServicesBase containerServices=null;
 	
 	class EventHandler implements ActionListener, MenuListener
 	{
@@ -1790,7 +1790,7 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 	/**
 	 * @return the containerServices
 	 */
-	public ContainerServices getContainerServices() {
+	public ContainerServicesBase getContainerServices() {
 		return containerServices;
 	}
 }
