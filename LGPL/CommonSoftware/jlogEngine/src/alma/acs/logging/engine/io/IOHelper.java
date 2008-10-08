@@ -21,11 +21,9 @@
  */
 package alma.acs.logging.engine.io;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Iterator;
@@ -156,8 +154,8 @@ public class IOHelper extends LogMatcher {
 			throw new IllegalArgumentException("The progress listener can't be null");
 		}
 		File f = new File(fileName);
-		BufferedReader buffer=new BufferedReader(new FileReader(f),32768);
-		loadLogs(buffer, logListener, rawLogListener, errorListener,progressListener);
+		FileInputStream inStream = new FileInputStream(f);
+		loadLogs(inStream, logListener, rawLogListener, errorListener,progressListener);
 		return f.length();
 	}
 	
@@ -167,7 +165,7 @@ public class IOHelper extends LogMatcher {
 	 * The logs are sent to the <code>ACSRemoteLogListener</code> and /or
 	 * to the <code>ACSRemoteRawLogListener</code>.
 	 *  
-	 * @param br The BufferedReader to read logs from
+	 * @param fis The stream to read logs from
 	 * @param logListener The callback for each new log read from the IO
 	 * @param rawLogListener The callback for each new XML log read from the IO
 	 * @param errorListener The listener for errors
@@ -176,12 +174,12 @@ public class IOHelper extends LogMatcher {
 	 * @throws Exception In case of error building the parser
 	 */
 	public synchronized void loadLogs(
-			BufferedReader br,
+			FileInputStream fis,
 			ACSRemoteLogListener logListener,
 			ACSRemoteRawLogListener rawLogListener,
 			ACSRemoteErrorListener errorListener, 
 			IOPorgressListener progressListener) throws IOException, Exception {
-		if (br==null || errorListener==null) {
+		if (fis==null || errorListener==null) {
 			throw new IllegalArgumentException("Parameters can't be null");
 		}
 		if (logListener==null && rawLogListener==null) {
@@ -220,7 +218,7 @@ public class IOHelper extends LogMatcher {
 		/** 
 		 * The buffer of data read from the file
 		 */
-		char[] buf =new char[size];
+		byte[] buf =new byte[size];
 		
 		/**
 		 * The cursor to scan the buffer (circular)
@@ -238,7 +236,7 @@ public class IOHelper extends LogMatcher {
 			while (true && !stopped) {
 				// Read a block from the file if the buffer is empty
 				if (bytesInBuffer==0) {
-					bytesInBuffer = br.read(buf,0,size);
+					bytesInBuffer = fis.read(buf,0,size);
 				}
 				if (bytesInBuffer<=0) { // EOF
 					break;
@@ -278,20 +276,19 @@ public class IOHelper extends LogMatcher {
 	 * @param outFileName The not n<code>null</code> and not empty name
 	 *                    of the output file
 	 *                    @param If <code>true</code> the date will be appended
-	 * @return The <code>BufferedWriter</code> to use for writing the logs 
+	 * @return The file to write the logs in 
 	 *         in the file
 	 * @throws IOException In case of an IO error
 	 */
-	public synchronized BufferedWriter prepareSaveFile (String outFileName,boolean append) throws IOException {
+	public synchronized FileOutputStream prepareSaveFile (String outFileName,boolean append) throws IOException {
 		if (outFileName==null || outFileName.isEmpty()) {
 			throw new IllegalArgumentException("Invalid file name");
 		}
 		// Open the output file
-		FileWriter fw = new FileWriter(outFileName,append);
-		BufferedWriter outBW = new BufferedWriter(fw);
+		FileOutputStream fos = new FileOutputStream(outFileName,append);
 		// Write the XML header
-		writeHeader(outBW);
-		return outBW;
+		writeHeader(fos);
+		return fos;
 	}
 	
 	/**
@@ -300,11 +297,12 @@ public class IOHelper extends LogMatcher {
 	 * @param bw
 	 * @throws IOException
 	 */
-	public synchronized void writeHeader(BufferedWriter bw) throws IOException {
-		if (bw==null) {
+	public synchronized void writeHeader(FileOutputStream stream) throws IOException {
+		if (stream==null) {
 			throw new IllegalArgumentException("The BufferedWriter can't be null");
 		}
-		bw.write("<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n<Header Name=\"NameForXmlDocument\" Type=\"LOGFILE\" />\n<Log>\n");
+		String header = new String("<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n<Header Name=\"NameForXmlDocument\" Type=\"LOGFILE\" />\n<Log>\n");
+		stream.write(header.getBytes());
 	}
 	
 	/**
@@ -321,8 +319,8 @@ public class IOHelper extends LogMatcher {
 	 * @param close If <code>true</code> the <code>BufferedWriter</code> is closed
 	 * @throws IOException In case of an IO error
 	 */
-	public synchronized void terminateSave(BufferedWriter outBW, boolean close) throws IOException {
-		outBW.write("</Log>");
+	public synchronized void terminateSave(FileOutputStream outBW, boolean close) throws IOException {
+		outBW.write((new String("</Log>")).getBytes());
 		outBW.flush();
 		if (close) {
 			outBW.close();
@@ -332,20 +330,20 @@ public class IOHelper extends LogMatcher {
 	/** 
 	 * Save a log in the passed file
 	 * 
-	 * @param outBW The buffered writer where the logs have to be stored
+	 * @param outF The buffered writer where the logs have to be stored
 	 * @param log The log to save
 	 * @param progressListener The listener to be notified about the bytes written
 	 * @throws IOException In case of an IO error while writing logs into the file
 	 */
-	public synchronized int saveLog(BufferedWriter outBW, ILogEntry log) throws IOException {
-		if (outBW==null) {
+	public synchronized int saveLog(FileOutputStream outF, ILogEntry log) throws IOException {
+		if (outF==null) {
 			throw new IllegalArgumentException("BufferedWriter can't be null");
 		}
 		if (log==null) {
 			throw new IllegalArgumentException("The log can't be null");
 		}
-		char[] bytes=(log.toXMLString()+"\n").toCharArray();
-		outBW.write(bytes);
+		byte[] bytes=(log.toXMLString()+"\n").getBytes();
+		outF.write(bytes);
 		return bytes.length;
 	}
 	
@@ -377,12 +375,12 @@ public class IOHelper extends LogMatcher {
 	 * The buffer must be initialized and terminated i.e. the <code>prepareSaveFile</code>
 	 * and the <code>terminateSave</code> are not executed by this method.
 	 * 
-	 * @param outBW The buffer to write logs into
+	 * @param outFile The file to write logs into
 	 * @param logs The non empty collection of logs to save
 	 * @param progressListener The listener to be notified about the number of bytes written
 	 * @throws IOException In case of error writing
 	 */
-	public synchronized void saveLogs(BufferedWriter outBW, Collection<ILogEntry> logs, IOPorgressListener progressListener) throws IOException {
+	public synchronized void saveLogs(FileOutputStream outFile, Collection<ILogEntry> logs, IOPorgressListener progressListener) throws IOException {
 		if (logs==null || logs.isEmpty()) {
 			throw new IllegalArgumentException("No logs to save");
 		}
@@ -390,7 +388,7 @@ public class IOHelper extends LogMatcher {
 			throw new IllegalArgumentException("The progress listener can't be null");
 		}
 		Iterator<ILogEntry> iterator = logs.iterator();
-		saveLogs(outBW, iterator, progressListener);
+		saveLogs(outFile, iterator, progressListener);
 	}
 	
 	/**
@@ -411,9 +409,9 @@ public class IOHelper extends LogMatcher {
 		if (progressListener==null) {
 			throw new IllegalArgumentException("The progress listener can't be null");
 		}
-		BufferedWriter buffer=prepareSaveFile(fileName, append);
-		saveLogs(buffer, iterator,progressListener);
-		terminateSave(buffer,true);
+		FileOutputStream outFile=prepareSaveFile(fileName, append);
+		saveLogs(outFile, iterator,progressListener);
+		terminateSave(outFile,true);
 	}
 	
 	/**
@@ -422,12 +420,12 @@ public class IOHelper extends LogMatcher {
 	 * The buffer must be initialized and terminated i.e. the <code>prepareSaveFile</code>
 	 * and the <code>terminateSave</code> are not executed by this method.
 	 * 
-	 * @param outBW The buffer to write logs into
+	 * @param outF The buffer to write logs into
 	 * @param logs The non empty collection of logs to save
 	 * @param progressListener The listener to be notified about the number of bytes written
 	 * @throws IOException In case of error writing
 	 */
-	public synchronized void saveLogs(BufferedWriter outBW, Iterator<ILogEntry> iterator, IOPorgressListener progressListener) throws IOException {
+	public synchronized void saveLogs(FileOutputStream outF, Iterator<ILogEntry> iterator, IOPorgressListener progressListener) throws IOException {
 		if (iterator==null || !iterator.hasNext()) {
 			throw new IllegalArgumentException("No logs to save");
 		}
@@ -439,7 +437,7 @@ public class IOHelper extends LogMatcher {
 		int logsWritten=0;
 		while (iterator.hasNext() && !stopped) {
 			ILogEntry log = iterator.next();
-			len+=saveLog(outBW, log);
+			len+=saveLog(outF, log);
 			progressListener.bytesWritten(len);
 			progressListener.logsWritten(++logsWritten);
 		}
