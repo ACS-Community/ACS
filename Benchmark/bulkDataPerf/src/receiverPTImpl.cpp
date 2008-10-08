@@ -1,7 +1,7 @@
 #include "receiverPTImpl.h"
 #include <OS_NS_time.h>
 
-ReceiverPTImpl::ReceiverPTImpl(const ACE_CString& name,ContainerServices* containerServices) :
+ReceiverPTImpl::ReceiverPTImpl(const ACE_CString& name,maci::ContainerServices* containerServices) :
     BulkDataReceiverImpl<ReceiverPTCb>(name,containerServices)
 {
     ACS_TRACE("ReceiverPTImpl::ReceiverPTImpl");
@@ -21,7 +21,6 @@ void ReceiverPTImpl::cleanUp()
 
 
 void ReceiverPTImpl::setTestName(const char *name)
-  throw (CORBA::SystemException)
 {
     ACS_TRACE("ReceiverPTImpl::setTestName");
 

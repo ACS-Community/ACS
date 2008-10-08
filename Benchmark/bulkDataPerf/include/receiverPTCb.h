@@ -33,7 +33,7 @@ class ReceiverPTCb : public BulkDataCallback
     //ACE_High_Res_Timer el_timer;
 
     //vector<long> stats;
-    vector<double> dstats;
+    std::vector<double> dstats;
     
     int start;
     long count;

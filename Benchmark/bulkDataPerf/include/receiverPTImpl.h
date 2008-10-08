@@ -10,11 +10,11 @@ class ReceiverPTImpl : public virtual BulkDataReceiverImpl<ReceiverPTCb>,
 {
   public:
     
-    ReceiverPTImpl(const ACE_CString& name,ContainerServices* containerServices);
+    ReceiverPTImpl(const ACE_CString& name,maci::ContainerServices* containerServices);
   
     virtual ~ReceiverPTImpl();
 
-    virtual void setTestName(const char *) throw (CORBA::SystemException);
+    virtual void setTestName(const char *);
 
     void cleanUp();
 

@@ -9,27 +9,39 @@ class SenderPTImpl : public virtual BulkDataSenderDefaultImpl,
 		     public virtual POA_TEST_M::SenderPT
 {    
  public:
-    SenderPTImpl(const ACE_CString& name,ContainerServices* containerServices);
+    SenderPTImpl(const ACE_CString& name,maci::ContainerServices* containerServices);
   
     virtual ~SenderPTImpl();
   
-    virtual void startSend()
-	throw (CORBA::SystemException, AVStartSendErrorEx);
+    /**
+     *  @throw AVStartSendErrorEx
+     */ 
+    virtual void startSend();
     
-    virtual void paceData ()
-        throw (CORBA::SystemException, AVPaceDataErrorEx);
+    /**
+     *  @throw AVPaceDataErrorEx
+     */ 
+    virtual void paceData ();
 
-    virtual void stopSend()
-	throw (CORBA::SystemException, AVStopSendErrorEx);
+    /**
+     *  @throw AVStopSendErrorEx
+     */ 
+    virtual void stopSend();
 
-    virtual void startSendNew(CORBA::Long flowNumber, CORBA::Long size)
-	throw (CORBA::SystemException, AVStartSendErrorEx);
+    /**
+     *  @throw AVStartSendErrorEx
+     */ 
+    virtual void startSendNew(CORBA::Long flowNumber, CORBA::Long size);
     
-    virtual void paceDataNew(CORBA::Long flowNumber, CORBA::Long size)
-        throw (CORBA::SystemException, AVPaceDataErrorEx);
+    /**
+     *  @throw AVPaceDataErrorEx
+     */ 
+    virtual void paceDataNew(CORBA::Long flowNumber, CORBA::Long size);
 
-    virtual void stopSendNew(CORBA::Long flowNumber)
-	throw (CORBA::SystemException, AVStopSendErrorEx);
+    /**
+     *  @throw AVStopSendErrorEx
+     */ 
+    virtual void stopSendNew(CORBA::Long flowNumber);
 
 };
 
