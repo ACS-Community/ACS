@@ -1,4 +1,4 @@
-/* @(#) $Id: acstimeDurationHelper.h,v 1.15 2008/07/25 07:34:03 cparedes Exp $
+/* @(#) $Id: acstimeDurationHelper.h,v 1.16 2008/10/09 07:31:16 cparedes Exp $
  *
  * Copyright (C) 2001
  * Associated Universities, Inc. Washington DC, USA.
@@ -290,12 +290,12 @@ class DurationHelper : TimeUtil
      * Adds the given <a href="../../idl/html/structacstime_1_1Duration.html">Duration</a> 
      * to this <a href="../../idl/html/structacstime_1_1Duration.html">Duration</a>.
      * @param duration    Duration to be added
+     * @throw ACSTimeError::OverflowOrUnderflowExImpl
      * @htmlonly
        <br><hr>
        @endhtmlonly
      */
-    void add(const acstime::Duration &duration) 
-	throw(ACSTimeError::OverflowOrUnderflowExImpl);
+    void add(const acstime::Duration &duration) ;
     
     /**
      * Adds the given <a href="../../idl/html/structacstime_1_1Duration.html">Duration</a> 
@@ -311,12 +311,12 @@ class DurationHelper : TimeUtil
      * Subtracts the given <a href="../../idl/html/structacstime_1_1Duration.html">Duration</a>
      * from this <a href="../../idl/html/structacstime_1_1Duration.html">Duration</a>.
      * @param duration    Duration to be subtracted
+     * @throw ACSTimeError::OverflowOrUnderflowExImpl
      * @htmlonly
        <br><hr>
        @endhtmlonly
      */
-    void subtract(const acstime::Duration &duration) 
-	throw(ACSTimeError::OverflowOrUnderflowExImpl);
+    void subtract(const acstime::Duration &duration);
     
     /**
      * Subtracts the given <a href="../../idl/html/structacstime_1_1Duration.html">Duration</a>
@@ -352,12 +352,12 @@ class DurationHelper : TimeUtil
      * Multiplies this <a href="../../idl/html/structacstime_1_1Duration.html">Duration</a> 
      * by the integer value.
      * @param multiplier  multiply duration by this value
+     * @throw ACSTimeError::OverflowOrUnderflowExImpl
      * @htmlonly
        <br><hr>
        @endhtmlonly
      */
-    void multiply(const CORBA::ULong &multiplier) 
-	throw(ACSTimeError::OverflowOrUnderflowExImpl);
+    void multiply(const CORBA::ULong &multiplier);
 
     /**
      * Multiplies this <a href="../../idl/html/structacstime_1_1Duration.html">Duration</a>
@@ -394,23 +394,23 @@ class DurationHelper : TimeUtil
      * value as a String.
      * @param format      format for the output string
      * @return  object's value as equivalent string
+     * @throw ACSTimeError::ArgErrorExImpl
      * @htmlonly
        <br><hr>
        @endhtmlonly
      */
-    std::string toString(const char *format)
-	throw(ACSTimeError::ArgErrorExImpl);
+    std::string toString(const char *format);
     
     /**
      * Sets this <a href="../../idl/html/structacstime_1_1Duration.html">Duration</a>'s 
      * value from the given String.
      * @param duration    use this duration to set object's value
+     * @throw ACSTimeError::ArgErrorExImpl
      * @htmlonly
        <br><hr>
        @endhtmlonly
      */
-    void fromString(const char *duration)
-	throw(ACSTimeError::ArgErrorExImpl);
+    void fromString(const char *duration);
 
     /**
      * Returns this <a href="../../idl/html/structacstime_1_1Duration.html">Duration</a>'s 
@@ -429,8 +429,10 @@ class DurationHelper : TimeUtil
 
   private:
     /* ----------------------------------------------------------------*/
-    void m_toValue()
-	throw(ACSTimeError::OverflowOrUnderflowExImpl);
+    /**
+     * @throw ACSTimeError::OverflowOrUnderflowExImpl
+     */
+    void m_toValue();
     
     void m_toAttributes();
       

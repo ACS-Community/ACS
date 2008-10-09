@@ -1,4 +1,4 @@
-/* @(#) $Id: acstimeEpochHelper.h,v 1.17 2008/07/25 07:34:03 cparedes Exp $
+/* @(#) $Id: acstimeEpochHelper.h,v 1.18 2008/10/09 07:31:16 cparedes Exp $
  *
  * Copyright (C) 2001
  * Associated Universities, Inc. Washington DC, USA.
@@ -351,12 +351,12 @@ class EpochHelper : TimeUtil
      * Adds the given <a href="../../idl/html/structacstime_1_1Duration.html">Duration</a> 
      * to this <a href="../../idl/html/structacstime_1_1Epoch.html">Epoch</a>.
      * @param duration Duration to be added
+     * @throw ACSTimeError::OverflowOrUnderflowExImpl
      * @htmlonly
        <br><hr>
        @endhtmlonly
      */
-    void add(const acstime::Duration&)
-	throw(ACSTimeError::OverflowOrUnderflowExImpl);
+    void add(const acstime::Duration&);
     
     /**
      * Adds the given <a href="../../idl/html/structacstime_1_1Duration.html">Duration</a> 
@@ -372,12 +372,12 @@ class EpochHelper : TimeUtil
      * Subtracts the given <a href="../../idl/html/structacstime_1_1Duration.html">Duration</a> 
      * from this <a href="../../idl/html/structacstime_1_1Epoch.html">Epoch</a>.
      * @param duration    Duration to be subtracted
+     * @throw ACSTimeError::OverflowOrUnderflowExImpl
      * @htmlonly
        <br><hr>
        @endhtmlonly
      */
-    void subtract(const acstime::Duration&)
-	throw(ACSTimeError::OverflowOrUnderflowExImpl);
+    void subtract(const acstime::Duration&);
     
     /**
      * Subtracts the given <a href="../../idl/html/structacstime_1_1Duration.html">Duration</a> 
@@ -479,32 +479,34 @@ class EpochHelper : TimeUtil
      * @param array2TAI Should be the array2TAI property in the Clock Component
      * @param TAI2UTC Should be the TAI2UTC property in the Clock Component
      * @return  object's value as equivalent string
+     * @throw ACSTimeError::ArgErrorExImpl
      * @htmlonly
        <br><hr>
        @endhtmlonly
      */
-    std::string toString(acstime::TimeSystem, const char*, const CORBA::Long array2TAI, const CORBA::Long TAI2UTC)
-	throw(ACSTimeError::ArgErrorExImpl);
+    std::string toString(acstime::TimeSystem, const char*, const CORBA::Long array2TAI, const CORBA::Long TAI2UTC);
 
     /**
      * Sets this <a href="../../idl/html/structacstime_1_1Epoch.html">Epoch</a>'s 
      * value from the given string.
      * @param TimeSystem Time system to be used.
      * @param epoch      use this string to set object's value
+     * @throw ACSTimeError::ArgErrorExImpl
      * @htmlonly
        <br><hr>
        @endhtmlonly
      */
-    void fromString(acstime::TimeSystem, const char*)
-	throw(ACSTimeError::ArgErrorExImpl);
+    void fromString(acstime::TimeSystem, const char*);
 
     friend DurationHelper* operator% (const EpochHelper&, const ACS::TimeInterval &);
     friend DurationHelper* operator% (const ACS::TimeInterval &, const EpochHelper&);
 
   private:
     /* ----------------------------------------------------------------*/
-    void m_toValue(CORBA::Boolean booVal)
-	throw(ACSTimeError::OverflowOrUnderflowExImpl);
+    /**
+    * @throw ACSTimeError::OverflowOrUnderflowExImpl
+    */
+    void m_toValue(CORBA::Boolean booVal);
     
     void m_toAttributes();
     

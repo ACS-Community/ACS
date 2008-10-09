@@ -1,4 +1,4 @@
-/* @(#) $Id: acstimeEpochHelper.cpp,v 1.20 2005/08/29 08:36:28 vwang Exp $
+/* @(#) $Id: acstimeEpochHelper.cpp,v 1.21 2008/10/09 07:31:16 cparedes Exp $
  *
  * Copyright (C) 2001
  * Associated Universities, Inc. Washington DC, USA.
@@ -283,7 +283,6 @@ EpochHelper::operator>(const acstime::Epoch &epoch) const
 //------------------------------------------------------------------------------
 void 
 EpochHelper::add(const acstime::Duration &additive)
-    throw(OverflowOrUnderflowExImpl)
 {
     unsigned long long sum = value_m.value + additive.value;
     if ((additive.value > 0 && sum < value_m.value)
@@ -304,7 +303,6 @@ EpochHelper::operator+=(const acstime::Duration &additive)
 //------------------------------------------------------------------------------
 void 
 EpochHelper::subtract(const acstime::Duration &subtrahend)
-    throw(OverflowOrUnderflowExImpl)
 {
     unsigned long long remainder = value_m.value - subtrahend.value;
     if ((subtrahend.value < 0 && remainder < value_m.value)
@@ -368,7 +366,6 @@ EpochHelper::toJulianYear(CORBA::Long array2TAI, CORBA::Long TAI2UTC)
 // use attributes to set value
 void 
 EpochHelper::m_toValue(CORBA::Boolean dayOfYearSet)
-    throw(OverflowOrUnderflowExImpl)
 {
     // ignore if don't have either year, month, & day, or year & day-of-year
     if (year_m == 0
@@ -681,7 +678,6 @@ EpochHelper::m_toAttributes()
 //------------------------------------------------------------------------------
 std::string 
 EpochHelper::toString(acstime::TimeSystem ts, const char* format, const CORBA::Long array2TAI, const CORBA::Long TAI2UTC)
-    throw(ArgErrorExImpl)
 {
     std::ostringstream ostr;
     
@@ -912,7 +908,6 @@ EpochHelper::m_microSec(std::ostringstream& ostr, int digits)
 //------------------------------------------------------------------------------
 void 
 EpochHelper::fromString(acstime::TimeSystem ts, const char* epoch)
-    throw(ArgErrorExImpl)
 {
     // Currently only time system is ISO-8601
     // In the future, should accept a variety of input formats

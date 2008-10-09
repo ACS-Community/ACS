@@ -1,4 +1,4 @@
-/* @(#) $Id: acstimeDevIOTime.h,v 1.12 2008/07/25 07:34:03 cparedes Exp $
+/* @(#) $Id: acstimeDevIOTime.h,v 1.13 2008/10/09 07:31:16 cparedes Exp $
  *
  * Copyright (C) 2001
  * Associated Universities, Inc. Washington DC, USA.
@@ -76,13 +76,13 @@ class DevIOTime : public DevIO<ACS::Time>
      * to "ACS time".
      * @param timestamp Time for an ACS Completion.
      * @return The ACS-ized time we just retrieved.
+     * @throw ACSErr::ACSbaseExImpl
      * @htmlonly
        <br><hr>
        @endhtmlonly
      */     
     virtual ACS::Time 
     read(ACS::Time &timestamp)
-	throw (ACSErr::ACSbaseExImpl)
 	{
 	    timestamp = getTimeStamp();
 	    
@@ -93,13 +93,13 @@ class DevIOTime : public DevIO<ACS::Time>
     /**
      *  DWF-providing an implementation of this method does not make sense, but
      *  it would be abstract otherwise...
+     * @throw ACSErr::ACSbaseExImpl
      * @htmlonly
        <br><hr>
        @endhtmlonly
      */
     virtual void 
     write(const ACS::Time &value, ACS::Time &timestamp)
-	throw (ACSErr::ACSbaseExImpl)
 	{
 	    ACE_UNUSED_ARG(value);
 	    timestamp = getTimeStamp();

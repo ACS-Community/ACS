@@ -1,4 +1,4 @@
-/* @(#) $Id: acstimeDurationHelper.cpp,v 1.14 2005/08/29 08:36:21 vwang Exp $
+/* @(#) $Id: acstimeDurationHelper.cpp,v 1.15 2008/10/09 07:31:16 cparedes Exp $
  *
  * Copyright (C) 2001
  * Associated Universities, Inc. Washington DC, USA.
@@ -232,7 +232,6 @@ DurationHelper::operator>(const acstime::Duration &duration) const
 //------------------------------------------------------------------------------
 void 
 DurationHelper::add(const acstime::Duration &additive)
-    throw (OverflowOrUnderflowExImpl)
 {
    long long sum = value_m.value + additive.value;
    if ((value_m.value > 0 && additive.value > 0 && sum < 0)
@@ -253,7 +252,6 @@ DurationHelper::operator+=(const acstime::Duration &additive)
 //------------------------------------------------------------------------------
 void 
 DurationHelper::subtract(const acstime::Duration &subtrahend)
-    throw (OverflowOrUnderflowExImpl)
 {
     long long remainder = value_m.value - subtrahend.value;
     if ((value_m.value > 0 && subtrahend.value < 0 && remainder < 0)
@@ -288,7 +286,6 @@ DurationHelper::operator%=(const acstime::Duration &divisor)
 //------------------------------------------------------------------------------
 void 
 DurationHelper::multiply(const CORBA::ULong &multiplier)
-    throw(OverflowOrUnderflowExImpl)
 {
     long long product = value_m.value * multiplier;
     if ((value_m.value > 0 && product < 0)
@@ -323,7 +320,6 @@ DurationHelper::operator/=(const CORBA::ULong &divisor)
 //------------------------------------------------------------------------------
 void 
 DurationHelper::m_toValue()
-    throw(OverflowOrUnderflowExImpl)
 {
     // check values for proper range, if out-of-range 
     // normalize values if flag is set, otherwise cause exception
@@ -418,7 +414,6 @@ DurationHelper::m_toAttributes()
 //------------------------------------------------------------------------------
 std::string
 DurationHelper::toString(const char *format)
-    throw(ArgErrorExImpl)
 {
     std::ostringstream ostr;
     
@@ -478,7 +473,6 @@ DurationHelper::m_microSec(std::ostringstream& ostr)
 //------------------------------------------------------------------------------
 void 
 DurationHelper::fromString(const char *duration)
-    throw(ArgErrorExImpl)
 {
     // Right now I only accept e.g. "10675199 02:48:05.477580",
     //                              "-10675199 02:48:05.477580",
