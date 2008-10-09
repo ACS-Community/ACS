@@ -18,7 +18,7 @@
  *    License along with this library; if not, write to the Free Software
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: cdbDAOProxy.cpp,v 1.6 2008/09/29 09:51:19 cparedes Exp $"
+ * "@(#) $Id: cdbDAOProxy.cpp,v 1.7 2008/10/09 04:47:53 cparedes Exp $"
  *
  * who       when        what
  * --------  ----------  ----------------------------------------------
@@ -261,9 +261,6 @@ DAOProxy::~DAOProxy()
 
 
 void DAOProxy::get_field(const char* name, string &value)
-    throw (
-	cdbErrType::CDBFieldDoesNotExistExImpl
-	)
 {
     //ACS_TRACE("cdb::DAOProxy::get_field");
 

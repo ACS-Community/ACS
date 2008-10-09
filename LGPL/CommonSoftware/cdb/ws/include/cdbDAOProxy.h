@@ -22,7 +22,7 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
  *
- * "@(#) $Id: cdbDAOProxy.h,v 1.4 2008/09/29 09:51:19 cparedes Exp $"
+ * "@(#) $Id: cdbDAOProxy.h,v 1.5 2008/10/09 04:47:53 cparedes Exp $"
  *
  * who       when        what
  * --------  ----------  ----------------------------------------------
@@ -110,11 +110,9 @@ namespace cdb {
 	 * Internal helper method.
 	 * @param name attribute name.
 	 * @param value out parameter.
+     * @throw cdbErrType::CDBFieldDoesNotExistExImpl
 	 */
-	void get_field(const char* name, std::string &value)
-	    throw (
-		cdbErrType::CDBFieldDoesNotExistExImpl
-		);
+	void get_field(const char* name, std::string &value);
       
 	typedef std::vector<std::string> VectorString;
 
