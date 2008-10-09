@@ -20,7 +20,7 @@
 *
 *
 *
-* "@(#) $Id: baciTestImpl.cpp,v 1.9 2008/10/07 10:05:24 cparedes Exp $"
+* "@(#) $Id: baciTestImpl.cpp,v 1.10 2008/10/09 09:16:35 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -32,7 +32,7 @@
 #include <baciTestImpl.h>
 #include <testComponentC.h>
 
-ACE_RCSID(acsexmpl, baciTestImpl, "$Id: baciTestImpl.cpp,v 1.9 2008/10/07 10:05:24 cparedes Exp $")
+ACE_RCSID(acsexmpl, baciTestImpl, "$Id: baciTestImpl.cpp,v 1.10 2008/10/09 09:16:35 cparedes Exp $")
 
 using namespace baci;
 
@@ -49,7 +49,7 @@ BaciPropTest::~BaciPropTest()
 {
 }
 
-void BaciPropTest::execute() throw (ACSErr::ACSbaseExImpl)
+void BaciPropTest::execute() 
 {
 	ACS::Time timestamp;
 	
