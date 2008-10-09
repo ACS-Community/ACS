@@ -6,7 +6,7 @@
 
 namespace ddsnc{
 	template<class DWVAR>
-	class DDSPublisher: ::ddsnc::DDSHelper{
+	class DDSPublisher : public ::ddsnc::DDSHelper{
 		private:
 		DDS::Publisher_var pub;
 		OpenDDS::DCPS::PublisherImpl *pub_impl;
@@ -78,8 +78,20 @@ namespace ddsnc{
 
 		int createPublisher()
 		{
-			pub = participant->create_publisher(pub_qos,
-					DDS::PublisherListener::_nil());
+			std::cerr << "DDSPublisher::createPublisher" << std::endl;
+
+			if(partitionName==NULL){
+				pub =  participant->create_publisher(PUBLISHER_QOS_DEFAULT,
+						DDS::PublisherListener::_nil());
+				std::cerr << "Creating Publisher with default Qos" << std::endl;
+			}
+			
+			else{
+				pub = participant->create_publisher(pub_qos,
+						DDS::PublisherListener::_nil());
+				std::cerr << "Creating Publisher with partition " << partitionName 
+					<< std::endl;
+			}
 
 			if(CORBA::is_nil(pub.in())){
 				std::cerr << "create publisher failed" << std::endl;
@@ -94,6 +106,12 @@ namespace ddsnc{
 			return attachToTransport();
 		}
 
+/* template requires:
+ * D: <type> 
+ * DW: <type>DataWriter class, 
+ * TSV: <type>TypeSupport_var class, 
+ * TSI: <type>TypeSupportImpl class
+ */ 
 		template <class D, class DW, class TSV, class TSI>
 			void publishData(D data)
 			{
@@ -115,6 +133,7 @@ namespace ddsnc{
 				}
 				dataWriter->write(data,handler);
 			}
+
 	};
 }
 #endif

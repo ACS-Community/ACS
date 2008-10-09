@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.2 2008/10/07 01:47:45 javarias Exp $"
+# "@(#) $Id: Makefile,v 1.3 2008/10/09 00:18:52 javarias Exp $"
 #
 # Makefile of ........
 #
@@ -35,7 +35,7 @@ USER_LIB = -L$(DDS_ROOT)/lib
 # C programs (public and local)
 # -----------------------------
 EXECUTABLES     =
-EXECUTABLES_L   = ddsPublisher ddsSubscriber testPublisher
+EXECUTABLES_L   = ddsPublisher ddsSubscriber testPublisher testSubscriber
 
 #
 # <brief description of ddsnc program>
@@ -55,6 +55,9 @@ testPublisher_OBJECTS   = testPub
 testPublisher_LDFLAGS   = -lOpenDDS_Dcps -lSimpleTcp -lACE -lacsddsnc
 testPublisher_LIBS      = ddsncTestTypeSupport examplFridgeStubs
 
+testSubscriber_OBJECTS   = testSub
+testSubscriber_LDFLAGS   = -lOpenDDS_Dcps -lSimpleTcp -lACE -lacsddsnc
+testSubscriber_LIBS      = ddsncTestTypeSupport examplFridgeStubs
 #
 # special compilation flags for single c sources
 #yyyyy_CFLAGS   = 

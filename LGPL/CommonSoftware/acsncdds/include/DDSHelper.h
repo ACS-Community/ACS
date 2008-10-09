@@ -28,12 +28,16 @@ namespace ddsnc{
 		bool initialized;
 
 		DDSHelper(const char *channelName, int argv, char** argc);
+		~DDSHelper();
 		int createParticipant();
 		void initializeTransport();
 		void setTopicName(const char* topicName);
 		void initializeTopic(const char* topicName, CORBA::String_var typeName);
 		void setPartitionName(const char* partitionName);
-		virtual void clean(){}
+		
+		public:
+		void disconnect();
+
 	};
 }
 

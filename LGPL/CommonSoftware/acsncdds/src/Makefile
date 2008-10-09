@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.1 2008/10/07 01:47:45 javarias Exp $"
+# "@(#) $Id: Makefile,v 1.2 2008/10/09 00:18:52 javarias Exp $"
 #
 # Makefile of ........
 #
@@ -51,7 +51,8 @@ EXECUTABLES_L   =
 #
 # Includes (.h) files (public only)
 # ---------------------------------
-INCLUDES        =  DDSHelper.h DDSPublisher.h DDSSubscriber.h
+INCLUDES        =  DDSHelper.h DDSPublisher.h DDSSubscriber.h \
+						 DataReaderListener.h acsddsncDataReaderListener.h
 
 #
 # Libraries (public and local)
@@ -61,7 +62,7 @@ LIBRARIES_L     =
 
 #
 # <brief description of acsddsnc library>
-acsddsnc_OBJECTS   = DDSHelperImpl DDSSubscriberImpl
+acsddsnc_OBJECTS   = DDSHelperImpl DDSSubscriberImpl DataReaderListenerImpl
 
 #
 # Scripts (public and local)
@@ -192,7 +193,7 @@ endif
 all: do_all
 	@echo " . . . 'all' done" 
 
-clean : clean_dds clean_all 
+clean : clean_all 
 	@echo " . . . clean done"
 
 clean_dist : clean_all clean_dist_all 
