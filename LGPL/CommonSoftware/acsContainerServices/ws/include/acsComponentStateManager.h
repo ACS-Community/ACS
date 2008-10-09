@@ -21,7 +21,7 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
  *
- * "@(#) $Id: acsComponentStateManager.h,v 1.3 2008/06/03 09:12:08 bjeram Exp $"
+ * "@(#) $Id: acsComponentStateManager.h,v 1.4 2008/10/09 06:34:01 cparedes Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -62,8 +62,7 @@ namespace maci {
          * @throw LifeCycleException if the transition from the current
          *                           state to the new state is not allowed
          */
-        virtual void setState(ACS::ComponentStates newState)
-            throw (acsErrTypeLifeCycle::LifeCycleExImpl)=0;
+        virtual void setState(ACS::ComponentStates newState)=0;
             
         /**
          * Return the state in a human readable format
