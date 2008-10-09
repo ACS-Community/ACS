@@ -20,7 +20,7 @@
 *
 *
 *
-* "@(#) $Id: acsexmplClientErrorComponent.cpp,v 1.12 2007/04/24 16:22:22 nbarriga Exp $"
+* "@(#) $Id: acsexmplClientErrorComponent.cpp,v 1.13 2008/10/09 08:41:11 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -100,7 +100,7 @@ Each method in the class shows an example.
 #include <acsutilTimeStamp.h>
 #include <string.h>
 
-ACE_RCSID(acsexmpl, acsexmplErrorComponentClient, "$Id: acsexmplClientErrorComponent.cpp,v 1.12 2007/04/24 16:22:22 nbarriga Exp $")
+ACE_RCSID(acsexmpl, acsexmplErrorComponentClient, "$Id: acsexmplClientErrorComponent.cpp,v 1.13 2008/10/09 08:41:11 cparedes Exp $")
 using namespace maci;
 
 /*******************************************************************************/
@@ -124,14 +124,17 @@ using namespace maci;
 class ClientErrorComponent
 {
   public:
-    ClientErrorComponent(SimpleClient &client, char *errorComponent) 
-	throw(CORBA::SystemException, ACSErrTypeCommon::CouldntAccessComponentExImpl);
+    /**
+     * @throw ACSErrTypeCommon::CouldntAccessComponentExImpl
+     */
+    ClientErrorComponent(SimpleClient &client, char *errorComponent) ;
     virtual ~ClientErrorComponent();
 
     /**
      * Here everything should go fine.
+     * @throw ACSErrTypeCommon::CouldntAccessComponentExImpl
      */
-    void TestOk() throw(ACSErrTypeCommon::CouldntAccessComponentExImpl);
+    void TestOk();
 
     /**
      * Example 1: Calls a method that throws an exception
@@ -141,8 +144,9 @@ class ClientErrorComponent
      *   <li> Adds context information
      *   <li> sends it to the logging system
      * </ul>
+     * @throw ACSErrTypeCommon::CouldntAccessComponentExImpl
      */
-    void TestReceiveRemoteException() throw(ACSErrTypeCommon::CouldntAccessComponentExImpl);
+    void TestReceiveRemoteException() ;
 
     /**
      * Example 2: Calls a method that returns a completion
@@ -152,8 +156,9 @@ class ClientErrorComponent
      *   <li> prints it locally 
      *   <li> sends it to the logging system
      * </ul>
+     * @throw ACSErrTypeCommon::CouldntAccessComponentExImpl
      */
-    void TestReceiveRemoteCompletion() throw(ACSErrTypeCommon::CouldntAccessComponentExImpl);
+    void TestReceiveRemoteCompletion();
 
     /**
      * Example 3: Calls a method that throws an exception
@@ -163,8 +168,9 @@ class ClientErrorComponent
      *   <li> Adds context information
      *   <li> sends it to the logging system
      * </ul>
+     * @throw ACSErrTypeCommon::CouldntAccessComponentExImpl
      */
-    void testExceptionFromCompletion() throw(ACSErrTypeCommon::CouldntAccessComponentExImpl);
+    void testExceptionFromCompletion();
 
     /**
      * Example 4: Calls a method that throws an exception 
@@ -174,8 +180,9 @@ class ClientErrorComponent
      *   <li> Adds context information
      *   <li> sends it to the logging system
      * </ul>
+     * @throw ACSErrTypeCommon::CouldntAccessComponentExImpl
      */
-    void testTypeException() throw(ACSErrTypeCommon::CouldntAccessComponentExImpl);
+    void testTypeException();
     /**
      * Example 5: Calls a method that throws a CORBA system exception
      *            It:
@@ -184,8 +191,9 @@ class ClientErrorComponent
      *   <li> prints it locally 
      *   <li> sends it to the logging system
      * </ul>
+     * @throw ACSErrTypeCommon::CouldntAccessComponentExImpl
      */
-    void TestReceiveCorbaSystemException() throw(ACSErrTypeCommon::CouldntAccessComponentExImpl);
+    void TestReceiveCorbaSystemException();
 
     /**
      * Example 6: Calls a method that returns a completion
@@ -195,8 +203,9 @@ class ClientErrorComponent
      *   <li> prints it locally
      *   <li> sends it to the logging system
      * </ul>
+     * @throw ACSErrTypeCommon::CouldntAccessComponentExImpl
      */
-    void testCompletionFromCompletion() throw(ACSErrTypeCommon::CouldntAccessComponentExImpl);
+    void testCompletionFromCompletion(); 
 
     /**
      * Example 6: Calls a method that returns a completion created on the stack instead of heap
@@ -206,14 +215,16 @@ class ClientErrorComponent
      *   <li> prints it locally
      *   <li> sends it to the logging system
      * </ul>
+     * @throw ACSErrTypeCommon::CouldntAccessComponentExImpl
      */
-    void testCompletionOnStack() throw(ACSErrTypeCommon::CouldntAccessComponentExImpl);
+    void testCompletionOnStack(); 
 
 
    /**
      * Example 7: Calls a method that returns a completion as an "out" parameter.
+     * @throw ACSErrTypeCommon::CouldntAccessComponentExImpl
      */
-    void testOutCompletion() throw(ACSErrTypeCommon::CouldntAccessComponentExImpl);
+    void testOutCompletion(); 
 
   private:
     SimpleClient &client_m;
@@ -221,9 +232,11 @@ class ClientErrorComponent
     acsexmplErrorComponent::ErrorComponent_var foo_m;
 };
 
+   /**
+    * @throw ACSErrTypeCommon::CouldntAccessComponentExImpl
+    */
 ClientErrorComponent::ClientErrorComponent(SimpleClient &client, 
-					   char *errorComponent)
-    throw(CORBA::SystemException, ACSErrTypeCommon::CouldntAccessComponentExImpl): 
+					   char *errorComponent): 
     client_m(client), errorComponent_m(errorComponent)
 {
     ACS_TRACE("ClientErrorComponent::ClientErrorComponent");
@@ -264,8 +277,10 @@ ClientErrorComponent::~ClientErrorComponent()
 	}
 }//~ClientErrorComponent
 
+   /**
+    * @throw ACSErrTypeCommon::CouldntAccessComponentExImpl
+    */
 void ClientErrorComponent::TestOk() 
-    throw(ACSErrTypeCommon::CouldntAccessComponentExImpl)
 {
     ACS_TRACE("ClientErrorComponent::TestOk");
     if (CORBA::is_nil(foo_m.in()) == true)
@@ -299,7 +314,6 @@ void ClientErrorComponent::TestOk()
 }
 
 void ClientErrorComponent::TestReceiveRemoteException() 
-    throw(ACSErrTypeCommon::CouldntAccessComponentExImpl)
 {
     ACS_TRACE("ClientErrorComponent::TestReceiveRemoteException");
 
@@ -359,7 +373,6 @@ void ClientErrorComponent::TestReceiveRemoteException()
 
 }
 void ClientErrorComponent::testTypeException() 
-    throw(ACSErrTypeCommon::CouldntAccessComponentExImpl)
 {
     ACS_TRACE("ClientErrorComponent::testTypeException");
 
@@ -466,7 +479,6 @@ void ClientErrorComponent::testTypeException()
 
 }
 void ClientErrorComponent::testExceptionFromCompletion() 
-    throw(ACSErrTypeCommon::CouldntAccessComponentExImpl)
 {
     ACS_TRACE("ClientErrorComponent::testExceptionFromCompletion");
 
@@ -574,7 +586,6 @@ void ClientErrorComponent::testExceptionFromCompletion()
 }
 
 void ClientErrorComponent::TestReceiveRemoteCompletion() 
-    throw(ACSErrTypeCommon::CouldntAccessComponentExImpl)
 {
     ACS_TRACE("ClientErrorComponent::TestReceiveRemoteCompletion");
 
@@ -618,7 +629,6 @@ void ClientErrorComponent::TestReceiveRemoteCompletion()
 	}
 }
 void ClientErrorComponent::testCompletionOnStack() 
-    throw(ACSErrTypeCommon::CouldntAccessComponentExImpl)
 {
     ACS_TRACE("ClientErrorComponent::testCompletionOnStack");
 
@@ -662,7 +672,6 @@ void ClientErrorComponent::testCompletionOnStack()
 }
 
 void ClientErrorComponent::testCompletionFromCompletion() 
-    throw(ACSErrTypeCommon::CouldntAccessComponentExImpl)
 {
     ACS_TRACE("ClientErrorComponent::testCompletionFromCompletion");
 
@@ -706,7 +715,6 @@ void ClientErrorComponent::testCompletionFromCompletion()
 }
 
 void ClientErrorComponent::TestReceiveCorbaSystemException() 
-    throw(ACSErrTypeCommon::CouldntAccessComponentExImpl)
 {
     ACS_TRACE("ClientErrorComponent::TestReceiveCorbaSystemException");
 
@@ -758,7 +766,6 @@ void ClientErrorComponent::TestReceiveCorbaSystemException()
 }
 void 
 ClientErrorComponent::testOutCompletion() 
-    throw(ACSErrTypeCommon::CouldntAccessComponentExImpl)
 {
     ACS_TRACE("ClientErrorComponent::testOutCompletion");
 

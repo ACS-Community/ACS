@@ -21,7 +21,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: acsexmplLongDevIO.h,v 1.10 2008/07/25 07:37:04 cparedes Exp $"
+* "@(#) $Id: acsexmplLongDevIO.h,v 1.11 2008/10/09 08:41:11 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -90,7 +90,7 @@
  * but do not want the property to be read-write where anyone can change it. Please see the
  * Ramped Power Supply example to see how this class is used in conjunction with BACI long
  * properties.
- * @version "@(#) $Id: acsexmplLongDevIO.h,v 1.10 2008/07/25 07:37:04 cparedes Exp $"
+ * @version "@(#) $Id: acsexmplLongDevIO.h,v 1.11 2008/10/09 08:41:11 cparedes Exp $"
  */
 class acsexmpl_EXPORT LongDevIO : public DevIO<CORBA::Long>
 {
@@ -130,13 +130,13 @@ class acsexmpl_EXPORT LongDevIO : public DevIO<CORBA::Long>
      *        determine whether an error occured or not.
      * @param timestamp The time when the long value was read (presumably from hardware).
      * @return The value we are looking for.
+     * @throw ACSErr::ACSbaseExImpl
      * @htmlonly
        <br><hr>
        @endhtmlonly
      */
     virtual CORBA::Long 
     read(unsigned long long& timestamp)
-	throw (ACSErr::ACSbaseExImpl)
 	{
 	
 	    //Must set the timestamp.  This value is in 100s of nanoseconds that have passed
@@ -162,13 +162,13 @@ class acsexmpl_EXPORT LongDevIO : public DevIO<CORBA::Long>
      *        writing this value or 0 if no error occured.  It's up to the developer to 
      *        determine whether an error occured or not.
      * @param timestamp The time when the long value was written (presumably to hardware).
+     * @throw ACSErr::ACSbaseExImpl
      * @htmlonly
        <br><hr>
        @endhtmlonly
      */
     virtual void 
     write(const CORBA::Long &value, unsigned long long& timestamp)
-	throw (ACSErr::ACSbaseExImpl)
 	{
 	    //Must set the timestamp.  This value is in 100s of nanoseconds that have passed
 	    //since some date in the 1500s (see ACS Time System documentation for specific details).  

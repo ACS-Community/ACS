@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsexmplDoorImpl.cpp,v 1.115 2008/10/01 04:30:47 cparedes Exp $"
+* "@(#) $Id: acsexmplDoorImpl.cpp,v 1.116 2008/10/09 08:41:11 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -43,9 +43,9 @@
 #include <ACSErrTypeCommon.h>
 
 #ifndef MAKE_VXWORKS
-ACE_RCSID(acsexmpl, acsexmplDoorImpl, "$Id: acsexmplDoorImpl.cpp,v 1.115 2008/10/01 04:30:47 cparedes Exp $")
+ACE_RCSID(acsexmpl, acsexmplDoorImpl, "$Id: acsexmplDoorImpl.cpp,v 1.116 2008/10/09 08:41:11 cparedes Exp $")
 #else
-static char *rcsId="$Id: acsexmplDoorImpl.cpp,v 1.115 2008/10/01 04:30:47 cparedes Exp $";
+static char *rcsId="$Id: acsexmplDoorImpl.cpp,v 1.116 2008/10/09 08:41:11 cparedes Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 #endif
 
@@ -160,7 +160,6 @@ Door::Door(const ACE_CString& name,
 
 void
 Door::execute()
-  throw (ACSErr::ACSbaseExImpl)
 {
   ACS_SHORT_LOG((LM_INFO,"Door::execute"));
 

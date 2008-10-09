@@ -21,7 +21,7 @@
 *
 *
 *
-* "@(#) $Id: acsexmplErrorComponentImpl.cpp,v 1.11 2008/10/01 04:30:47 cparedes Exp $"
+* "@(#) $Id: acsexmplErrorComponentImpl.cpp,v 1.12 2008/10/09 08:41:11 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -34,7 +34,7 @@
 #include <ACSErrTypeOK.h>
 #include <iostream>
 
-ACE_RCSID(acsexmpl, acsexmplErrorComponentImpl, "$Id: acsexmplErrorComponentImpl.cpp,v 1.11 2008/10/01 04:30:47 cparedes Exp $")
+ACE_RCSID(acsexmpl, acsexmplErrorComponentImpl, "$Id: acsexmplErrorComponentImpl.cpp,v 1.12 2008/10/09 08:41:11 cparedes Exp $")
 
 /* ----------------------------------------------------------------*/
 ErrorComponent::ErrorComponent( 
@@ -328,7 +328,6 @@ CompletionImpl *ErrorComponent::createCompletion(unsigned short depth)
  ************/
 void
 ErrorComponent::buildErrorTrace(unsigned short depth) 
-    throw (ACSErrTypeCommon::GenericErrorExImpl)
 {
     ACS_TRACE("::ErrorComponent::buildErrorTrace");
 

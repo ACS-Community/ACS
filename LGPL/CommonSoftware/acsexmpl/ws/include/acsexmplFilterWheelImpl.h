@@ -20,7 +20,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsexmplFilterWheelImpl.h,v 1.7 2008/10/01 04:30:47 cparedes Exp $"
+* "@(#) $Id: acsexmplFilterWheelImpl.h,v 1.8 2008/10/09 08:41:11 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -134,7 +134,7 @@ It also has three read-only properties: position, desc, slots.
  * as well as the CDB values are updated. 
  * 
  * @author <a href=mailto:acaproni@eso.org>Alessandro Caproni</a>,
- * @version "@(#) $Id: acsexmplFilterWheelImpl.h,v 1.7 2008/10/01 04:30:47 cparedes Exp $"
+ * @version "@(#) $Id: acsexmplFilterWheelImpl.h,v 1.8 2008/10/09 08:41:11 cparedes Exp $"
  */
 class acsexmpl_EXPORT FilterWheel: public baci::CharacteristicComponentImpl,//Standard component superclass
 	    public virtual POA_acsexmplFilterWheel::FilterWheel,//CORBA servant stub
@@ -178,13 +178,13 @@ class acsexmpl_EXPORT FilterWheel: public baci::CharacteristicComponentImpl,//St
    * to acscomponent::ACS::COMPSTATE_INITIALIZED.
    * 
    * @param containerServices  pointer to services provided by the container
+   * @throw ACSErr::ACSbaseExImpl
    * @return void
    * @htmlonly
    * <br><hr>
    * @endhtmlonly
    */
-    virtual void initialize()
-      throw (ACSErr::ACSbaseExImpl);
+    virtual void initialize();
 
      /**
      * Called after {@link #initialize} to tell the 
@@ -203,13 +203,13 @@ class acsexmpl_EXPORT FilterWheel: public baci::CharacteristicComponentImpl,//St
      * In this class the default implementation only sets the state
      * of the component to acscomponent::ACS::COMPSTATE_OPERATIONAL
      *
+     * @throw ACSErr::ACSbaseExImpl
      * @return void
      * @htmlonly
      * <br><hr>
      * @endhtmlonly
      */
-    virtual void execute()
-      throw (ACSErr::ACSbaseExImpl);
+    virtual void execute();
 
      /**
      * Called after the last functional call to the component has finished.

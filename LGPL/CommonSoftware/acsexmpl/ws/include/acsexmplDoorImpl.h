@@ -21,7 +21,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: acsexmplDoorImpl.h,v 1.107 2008/10/01 04:30:47 cparedes Exp $"
+* "@(#) $Id: acsexmplDoorImpl.h,v 1.108 2008/10/09 08:41:11 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -152,7 +152,7 @@ respectively. &nbsp;This example has four properties and uses an ACS thread.
  *   - xxxAction() performs (asyncronously) the action and invokes the callback when finished.
  *  The Door::invokeAction method is called by the asynchronous dispatcher whenever there is a
  *  xxx pending action and it calls the corresponding xxxAction method.
- * @version "@(#) $Id: acsexmplDoorImpl.h,v 1.107 2008/10/01 04:30:47 cparedes Exp $"
+ * @version "@(#) $Id: acsexmplDoorImpl.h,v 1.108 2008/10/09 08:41:11 cparedes Exp $"
  */
 class Door: public baci::CharacteristicComponentImpl,     //Standard component superclass
             public virtual POA_acsexmplBuilding::Door,    //CORBA servant stub
@@ -372,13 +372,13 @@ class Door: public baci::CharacteristicComponentImpl,     //Standard component s
      * Must be implemented as a synchronous (blocking) call 
      * (can spawn threads though).
      *
+     * @throw ACSErr::ACSbaseExImpl
      * @return void
      * @htmlonly
        <br><hr>
        @endhtmlonly
      */
-    virtual void execute()
-	throw (ACSErr::ACSbaseExImpl);
+    virtual void execute();
     
   private:
     /**

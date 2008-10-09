@@ -20,7 +20,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsexmplLampWheelImpl.h,v 1.15 2008/10/01 04:30:47 cparedes Exp $"
+* "@(#) $Id: acsexmplLampWheelImpl.h,v 1.16 2008/10/09 08:41:11 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -116,7 +116,7 @@ It also has three read-only properties: position, desc, slots.
  * A log message inform the user about the selected lamp.
  * 
  * @author <a href=mailto:acaproni@eso.org>Alessandro Caproni</a>,
- * @version "@(#) $Id: acsexmplLampWheelImpl.h,v 1.15 2008/10/01 04:30:47 cparedes Exp $"
+ * @version "@(#) $Id: acsexmplLampWheelImpl.h,v 1.16 2008/10/09 08:41:11 cparedes Exp $"
  */
 class acsexmpl_EXPORT LampWheel: public baci::CharacteristicComponentImpl,//Standard component superclass
 	    public virtual POA_acsexmplLampWheel::LampWheel,//CORBA servant stub
@@ -161,12 +161,12 @@ class acsexmpl_EXPORT LampWheel: public baci::CharacteristicComponentImpl,//Stan
    * to acscomponent::ACS::COMPSTATE_INITIALIZED.
    * 
    * @return void
+   * @throw ACSErr::ACSbaseExImpl
    * @htmlonly
    * <br><hr>
    * @endhtmlonly
    */
-    virtual void initialize()
-	throw (ACSErr::ACSbaseExImpl);
+    virtual void initialize();
 
      /**
      * Called after {@link #initialize} to tell the 
@@ -186,12 +186,12 @@ class acsexmpl_EXPORT LampWheel: public baci::CharacteristicComponentImpl,//Stan
      * of the component to acscomponent::ACS::COMPSTATE_OPERATIONAL
      *
      * @return void
+     * @throw ACSErr::ACSbaseExImpl
      * @htmlonly
      * <br><hr>
      * @endhtmlonly
      */
-    virtual void execute()
-	throw (ACSErr::ACSbaseExImpl);
+    virtual void execute();
 
      /**
      * Called after the last functional call to the component has finished.
