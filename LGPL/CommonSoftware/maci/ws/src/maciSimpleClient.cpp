@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciSimpleClient.cpp,v 1.108 2008/10/01 02:40:28 cparedes Exp $"
+* "@(#) $Id: maciSimpleClient.cpp,v 1.109 2008/10/09 07:05:37 cparedes Exp $"
 *
 * who       when        what
 * --------  --------    ----------------------------------------------
@@ -533,11 +533,6 @@ SimpleClient::handle()
 
 CORBA::Object_ptr 
 SimpleClient::getDynamicComponent(maci::ComponentSpec compSpec, bool markAsDefault)
-throw(maciErrType::NoPermissionExImpl,
-  maciErrType::IncompleteComponentSpecExImpl,
-  maciErrType::InvalidComponentSpecExImpl,
-  maciErrType::ComponentSpecIncompatibleWithActiveComponentExImpl,
-  maciErrType::CannotGetComponentExImpl)
 {
     return getDynamicComponent<CORBA::Object>(compSpec, markAsDefault);
 }
@@ -546,20 +541,17 @@ CORBA::Object_ptr
 SimpleClient::getComponent(const char *name,
 			   const char *domain,
 			   bool activate)
-    throw (maciErrType::CannotGetComponentExImpl)
 {
     return getComponent<CORBA::Object>(name, domain, activate);
 }//getComponent
 
 CORBA::Object_ptr
 SimpleClient::getComponentNonSticky(const char *name)
-    throw (maciErrType::CannotGetComponentExImpl)
 {
     return getComponentNonSticky<CORBA::Object>(name);
 }//getComponentNonSticky
 
 long  SimpleClient::releaseComponent(const char* name)
-    throw (maciErrType::CannotReleaseComponentExImpl)
 {
     ACS_SHORT_LOG((LM_DEBUG, "Releasing component: '%s'.",  name));
     try

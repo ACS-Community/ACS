@@ -4,7 +4,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciContainerServicesTestClassImpl.h,v 1.15 2008/10/01 02:40:28 cparedes Exp $"
+* "@(#) $Id: maciContainerServicesTestClassImpl.h,v 1.16 2008/10/09 07:05:37 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -50,15 +50,15 @@ public:
   
   /**
     * LifeCycle
+    * @throw acsErrTypeLifeCycle::LifeCycleExImpl
     */
-  virtual void initialize()
-      throw (acsErrTypeLifeCycle::LifeCycleExImpl);
+  virtual void initialize();
 
     /**
      * LifeCycle
+     * @throw acsErrTypeLifeCycle::LifeCycleExImpl
      */
-    virtual void execute()
-      throw (acsErrTypeLifeCycle::LifeCycleExImpl);
+    virtual void execute();
 
     /**
      * LifeCycle

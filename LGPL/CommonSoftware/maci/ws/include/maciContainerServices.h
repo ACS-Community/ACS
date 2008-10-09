@@ -21,7 +21,7 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
  *
- * "@(#) $Id: maciContainerServices.h,v 1.29 2008/07/25 07:32:36 cparedes Exp $"
+ * "@(#) $Id: maciContainerServices.h,v 1.30 2008/10/09 07:05:37 cparedes Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -75,43 +75,43 @@ class MACIContainerServices: public ContainerServices
     void test(const char* txt);
     /**
      * Implementation of acsContainerServices::getCORBAComponent(const char* name)
+     * @throw maciErrType::CannotGetComponentExImpl
      */
-    CORBA::Object* getCORBAComponent(const char* name)
-	throw (maciErrType::CannotGetComponentExImpl);
+    CORBA::Object* getCORBAComponent(const char* name);
 
     /**
      * Implementation of acsContainerServices::getCORBAComponentNonSticky(const char* name)
+     * @throw maciErrType::CannotGetComponentExImpl
      */
-    CORBA::Object* getCORBAComponentNonSticky(const char* name)
-	throw (maciErrType::CannotGetComponentExImpl);
+    CORBA::Object* getCORBAComponentNonSticky(const char* name);
     
     /**
      * Implementation of acsContainerServices::getCORBADynamicComponent(const char* name)
+     * @throw maciErrType::NoPermissionExImpl
+     * @throw maciErrType::IncompleteComponentSpecExImpl
+     * @throw maciErrType::InvalidComponentSpecExImpl
+     * @throw maciErrType::ComponentSpecIncompatibleWithActiveComponentExImpl
+     * @throw maciErrType::CannotGetComponentExImpl
      */
-    CORBA::Object* getCORBADynamicComponent(maci::ComponentSpec compSpec, bool markAsDefault) 
-	throw(maciErrType::NoPermissionExImpl,
-	      maciErrType::IncompleteComponentSpecExImpl, 
-	      maciErrType::InvalidComponentSpecExImpl, 
-	      maciErrType::ComponentSpecIncompatibleWithActiveComponentExImpl, 
-	      maciErrType::CannotGetComponentExImpl);
+    CORBA::Object* getCORBADynamicComponent(maci::ComponentSpec compSpec, bool markAsDefault);
     
     /**
      * Implementation of acsContainerServices::getCORBACollocatedComponent(...)
+     * @throw maciErrType::NoPermissionExImpl
+     * @throw maciErrType::IncompleteComponentSpecExImpl
+     * @throw maciErrType::InvalidComponentSpecExImpl
+     * @throw maciErrType::ComponentSpecIncompatibleWithActiveComponentExImpl
+     * @throw maciErrType::CannotGetComponentExImpl
      */
-    CORBA::Object* getCORBACollocatedComponent(maci::ComponentSpec compSpec, bool markAsDefault, const char* targetComponent)
-	throw(maciErrType::NoPermissionExImpl,
-	      maciErrType::IncompleteComponentSpecExImpl, 
-	      maciErrType::InvalidComponentSpecExImpl, 
-	      maciErrType::ComponentSpecIncompatibleWithActiveComponentExImpl, 
-	      maciErrType::CannotGetComponentExImpl);
+    CORBA::Object* getCORBACollocatedComponent(maci::ComponentSpec compSpec, bool markAsDefault, const char* targetComponent);
     
     /**
      * Implementation of acsContainerServices::getCORBADefaultComponent(const char* name)
+     * @throw maciErrType::NoPermissionExImpl
+     * @throw maciErrType::CannotGetComponentExImpl
+     * @throw maciErrType::NoDefaultComponentExImpl
      */
-    CORBA::Object* getCORBADefaultComponent(const char* idlType)
-	throw (maciErrType::NoPermissionExImpl,
-	       maciErrType::NoDefaultComponentExImpl, 
-	       maciErrType::CannotGetComponentExImpl); 
+    CORBA::Object* getCORBADefaultComponent(const char* idlType);
   
  public:
 
@@ -119,10 +119,10 @@ class MACIContainerServices: public ContainerServices
    * Gets the component info for the component
    * 
    * @param componentName The name of the component
+   * @throw acsErrTypeContainerServices::GettingCompInfoExImpl
    * @return The ComponentInfo struct of the component
    */
-  ComponentInfo getComponentDescriptor(const char* componentName)
-  	throw (acsErrTypeContainerServices::GettingCompInfoExImpl);
+  ComponentInfo getComponentDescriptor(const char* componentName);
 
   /**
    * Finds components by their instance name (curl) and/or by their type.
@@ -144,13 +144,13 @@ class MACIContainerServices: public ContainerServices
    * Releases the specified component.
    *
    * @param The name of the component instance to be released
+   * @throw maciErrType::CannotReleaseComponentExImpl
    * @return void  
    * @htmlonly
    * <br><hr>
    * @endhtmlonly
    */
-    void releaseComponent(const char *name)
-	throw (maciErrType::CannotReleaseComponentExImpl);
+    void releaseComponent(const char *name);
     
   /**
    * Release all the components
@@ -163,11 +163,12 @@ class MACIContainerServices: public ContainerServices
    * Get a reference to the DAL object
    *
    * @return A reference to the DAL 
+   * @throw acsErrTypeContainerServices::CanNotGetCDBExImpl
    * @htmlonly
    * <br><hr>
    * @endhtmlonly
    */
-  CDB::DAL_ptr getCDB() throw(acsErrTypeContainerServices::CanNotGetCDBExImpl);
+  CDB::DAL_ptr getCDB();
   
   /// Get the OffShoot POA
   /// @return The offshoot POA
@@ -187,11 +188,10 @@ class MACIContainerServices: public ContainerServices
   /**
    * Deactivate the offshoot CORBA servant
    * @param cbServant the CORBA servant
+   * @throw acsErrTypeContainerServices::OffShootDeactivationExImpl
+   * @throw acsErrTypeContainerServices::OffShootPOAExImpl
    */
-  void deactivateOffShoot(PortableServer::Servant cbServant)
-  throw (
-  	acsErrTypeContainerServices::OffShootDeactivationExImpl,
-  	acsErrTypeContainerServices::OffShootPOAExImpl);
+  void deactivateOffShoot(PortableServer::Servant cbServant);
   
   /**
    * Create the offshoot POA

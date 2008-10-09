@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - VLT project
 *
-* "@(#) $Id: maciDynCompImpl.cpp,v 1.12 2008/10/01 02:40:28 cparedes Exp $"
+* "@(#) $Id: maciDynCompImpl.cpp,v 1.13 2008/10/09 07:05:37 cparedes Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -14,7 +14,7 @@
 #define _POSIX_SOURCE 1
 #include "vltPort.h"
 
-static char *rcsId="@(#) $Id: maciDynCompImpl.cpp,v 1.12 2008/10/01 02:40:28 cparedes Exp $"; 
+static char *rcsId="@(#) $Id: maciDynCompImpl.cpp,v 1.13 2008/10/09 07:05:37 cparedes Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include "maciDynCompImpl.h"
@@ -65,7 +65,6 @@ DynamicTestClassImpl::~DynamicTestClassImpl()
 }
   
 void DynamicTestClassImpl::initialize()
-	throw (acsErrTypeLifeCycle::LifeCycleExImpl)
 {
   if (launchException_m==2)
     {
@@ -75,7 +74,6 @@ void DynamicTestClassImpl::initialize()
 }
 
 void DynamicTestClassImpl::execute()
-	throw (acsErrTypeLifeCycle::LifeCycleExImpl)
 {
   if (launchException_m==3)
     {

@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciTestClassImpl.cpp,v 1.99 2008/10/01 02:40:28 cparedes Exp $"
+* "@(#) $Id: maciTestClassImpl.cpp,v 1.100 2008/10/09 07:05:37 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -16,7 +16,7 @@
 
 #include <vltPort.h>
 
-static char *rcsId="@(#) $Id: maciTestClassImpl.cpp,v 1.99 2008/10/01 02:40:28 cparedes Exp $";
+static char *rcsId="@(#) $Id: maciTestClassImpl.cpp,v 1.100 2008/10/09 07:05:37 cparedes Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <logging.h>
@@ -134,7 +134,7 @@ MaciHierarchicalTestClass::MaciHierarchicalTestClass(
  
 }
 
-void MaciHierarchicalTestClass::execute() throw (acsErrTypeLifeCycle::LifeCycleExImpl)
+void MaciHierarchicalTestClass::execute() 
 {
 
     MACI_TEST::MaciTestClass_var obj =

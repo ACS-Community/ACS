@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - VLT project
 *
-* "@(#) $Id: maciContainerServicesTestClassImpl.cpp,v 1.19 2008/10/01 02:40:28 cparedes Exp $"
+* "@(#) $Id: maciContainerServicesTestClassImpl.cpp,v 1.20 2008/10/09 07:05:37 cparedes Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -11,7 +11,7 @@
 #define _POSIX_SOURCE 1
 #include "vltPort.h"
 
-static char *rcsId="@(#) $Id: maciContainerServicesTestClassImpl.cpp,v 1.19 2008/10/01 02:40:28 cparedes Exp $"; 
+static char *rcsId="@(#) $Id: maciContainerServicesTestClassImpl.cpp,v 1.20 2008/10/09 07:05:37 cparedes Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include "maciContainerServicesTestClassImpl.h"
@@ -33,12 +33,10 @@ MaciContainerServicesTestClassImpl::~MaciContainerServicesTestClassImpl()
 }
 
 void MaciContainerServicesTestClassImpl::initialize()
-	throw (acsErrTypeLifeCycle::LifeCycleExImpl)
 {
 }
 
 void MaciContainerServicesTestClassImpl::execute()
-	throw (acsErrTypeLifeCycle::LifeCycleExImpl)
 {
 }
 

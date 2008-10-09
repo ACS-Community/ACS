@@ -4,7 +4,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciContainerImpl.h,v 1.56 2008/10/01 02:40:28 cparedes Exp $"
+* "@(#) $Id: maciContainerImpl.h,v 1.57 2008/10/09 07:05:37 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -97,7 +97,7 @@ class LibraryManager;
  *
  * @author <a href=mailto:matej.sekoranja@ijs.si>Matej Sekoranja</a>,
  * Jozef Stefan Institute, Slovenia<br>
- * @version "@(#) $Id: maciContainerImpl.h,v 1.56 2008/10/01 02:40:28 cparedes Exp $"
+ * @version "@(#) $Id: maciContainerImpl.h,v 1.57 2008/10/09 07:05:37 cparedes Exp $"
  */
 
 class maci_EXPORT ContainerImpl :
@@ -395,11 +395,11 @@ public:
      * @param doman domain name (could be 0)
      * @param activate true to activate service, false to leave it in the current state 
      * @return reference to the service
+     * @throw maciErrType::CannotGetServiceExImpl
      * @tod Could be this method decalred as deprecated since getContainerServices()->getComponent can be used instead ?
      */
     template<class T>
-    T* getService(const char *name, const char *domain, bool activate) 
-	throw (maciErrType::CannotGetServiceExImpl);
+    T* getService(const char *name, const char *domain, bool activate);
 
   /**
    * Releases the specified component.
@@ -757,7 +757,6 @@ T* ContainerImpl::getComponent(const char *name, const char *domain, bool activa
  */
 template<class T>
 T* ContainerImpl::getService(const char *name, const char *domain, bool activate) 
-    throw (maciErrType::CannotGetServiceExImpl)
 {   
     ACS_TRACE("ContainerImpl::getService&lt;&gt;");
     T* object = T::_nil();

@@ -19,7 +19,7 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
  *
- * "@(#) $Id: maciComponentStateManager.cpp,v 1.4 2005/04/19 09:53:28 acaproni Exp $"
+ * "@(#) $Id: maciComponentStateManager.cpp,v 1.5 2008/10/09 07:05:37 cparedes Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -43,7 +43,6 @@ ACS::ComponentStates MACIComponentStateManager::getCurrentState()
 }
 
 void MACIComponentStateManager::setState(ACS::ComponentStates newState)
-    throw (acsErrTypeLifeCycle::LifeCycleExImpl)
 {
     if (newState==componentState_m)
     {

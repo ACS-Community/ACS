@@ -19,7 +19,7 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
  *
- * "@(#) $Id: maciContainerServices.cpp,v 1.31 2008/07/14 13:41:20 bjeram Exp $"
+ * "@(#) $Id: maciContainerServices.cpp,v 1.32 2008/10/09 07:05:37 cparedes Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -89,7 +89,6 @@ MACIContainerServices::findComponents(const char *nameWildcard, const char *type
 }
 
 CORBA::Object*  MACIContainerServices::getCORBAComponent(const char* name)
-    throw (maciErrType::CannotGetComponentExImpl)
 {
     // code is reused, so I tried not make another version of it
     const char * domain = 0;
@@ -183,7 +182,6 @@ CORBA::Object*  MACIContainerServices::getCORBAComponent(const char* name)
 }//getCORBAComponent
 
 CORBA::Object*  MACIContainerServices::getCORBAComponentNonSticky(const char* name)
-    throw (maciErrType::CannotGetComponentExImpl)
 {
     ACE_TRACE("MACIContainerServices::getCORBAComponentNonSticky");
 
@@ -255,11 +253,6 @@ CORBA::Object*  MACIContainerServices::getCORBAComponentNonSticky(const char* na
 
 CORBA::Object*
 MACIContainerServices::getCORBADynamicComponent(maci::ComponentSpec compSpec, bool markAsDefault)
-    throw(maciErrType::NoPermissionExImpl,
-	  maciErrType::IncompleteComponentSpecExImpl,
-	  maciErrType::InvalidComponentSpecExImpl,
-	  maciErrType::ComponentSpecIncompatibleWithActiveComponentExImpl,
-	  maciErrType::CannotGetComponentExImpl)
 {
    //The IDL ComponentInfo structure returned by the get_dynamic_component method
    //contains tons of information about the newly created component and the most important
@@ -350,11 +343,6 @@ MACIContainerServices::getCORBADynamicComponent(maci::ComponentSpec compSpec, bo
 
 CORBA::Object*
 MACIContainerServices::getCORBACollocatedComponent(maci::ComponentSpec compSpec, bool markAsDefault, const char* targetComponent)
-    throw(maciErrType::NoPermissionExImpl,
-	  maciErrType::IncompleteComponentSpecExImpl,
-	  maciErrType::InvalidComponentSpecExImpl,
-	  maciErrType::ComponentSpecIncompatibleWithActiveComponentExImpl,
-	  maciErrType::CannotGetComponentExImpl)
 {
    //The IDL ComponentInfo structure returned by the get_collocated_component method
    //contains tons of information about the newly created component and the most important
@@ -448,9 +436,6 @@ MACIContainerServices::getCORBACollocatedComponent(maci::ComponentSpec compSpec,
 
 CORBA::Object*
 MACIContainerServices::getCORBADefaultComponent(const char* idlType)
-    throw (maciErrType::NoPermissionExImpl,
-	   maciErrType::NoDefaultComponentExImpl,
-	   maciErrType::CannotGetComponentExImpl)
 {
    ComponentInfo_var cInfo;
    ACS_TRACE("MACIContainerServices::getCORBADefaultComponent");
@@ -519,7 +504,6 @@ MACIContainerServices::getCORBADefaultComponent(const char* idlType)
 
 
 ComponentInfo MACIContainerServices::getComponentDescriptor(const char* componentName)
-throw (acsErrTypeContainerServices::GettingCompInfoExImpl)
 {
 	maci::HandleSeq seq;
 	ComponentInfoSeq_var compInfoSeq =
@@ -542,7 +526,6 @@ throw (acsErrTypeContainerServices::GettingCompInfoExImpl)
 
 void
 MACIContainerServices::releaseComponent(const char *name)
-    throw (maciErrType::CannotReleaseComponentExImpl)
 {
 	int found = m_usedComponents.unbind(name);
     try
@@ -669,7 +652,7 @@ void MACIContainerServices::fireComponentsUnavailable(ACE_CString_Vector& compNa
 
 
 CDB::DAL_ptr
-MACIContainerServices::getCDB() throw (acsErrTypeContainerServices::CanNotGetCDBExImpl)
+MACIContainerServices::getCDB() 
 {
   CDB::DAL_var dalObj = CDB::DAL::_nil();
   ACS_TRACE("MACIContainerServices::getCDB");
@@ -795,9 +778,6 @@ PortableServer::POA_var MACIContainerServices::createOffShootPOA()
 }
 
 void MACIContainerServices::deactivateOffShoot(PortableServer::Servant cbServant)
-throw (
-	acsErrTypeContainerServices::OffShootDeactivationExImpl,
-	acsErrTypeContainerServices::OffShootPOAExImpl)
 {
 	if (!dynamic_cast<POA_ACS::OffShoot_ptr> (cbServant))
     {

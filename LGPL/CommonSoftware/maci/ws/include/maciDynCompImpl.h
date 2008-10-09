@@ -3,7 +3,7 @@
 /*******************************************************************************
 * E.S.O. - VLT project
 *
-* "@(#) $Id: maciDynCompImpl.h,v 1.10 2008/10/01 02:40:28 cparedes Exp $"
+* "@(#) $Id: maciDynCompImpl.h,v 1.11 2008/10/09 07:05:37 cparedes Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -46,15 +46,15 @@ class DynamicTestClassImpl: public virtual acscomponent::ACSComponentImpl,
   
   /**
     * LifeCycle
+    * @throw acsErrTypeLifeCycle::LifeCycleExImpl
     */
-  virtual void initialize()
-      throw (acsErrTypeLifeCycle::LifeCycleExImpl);
+  virtual void initialize();
 
     /**
      * LifeCycle
+    * @throw acsErrTypeLifeCycle::LifeCycleExImpl
      */
-    virtual void execute()
-      throw (acsErrTypeLifeCycle::LifeCycleExImpl);
+    virtual void execute();
 
     /**
      * LifeCycle

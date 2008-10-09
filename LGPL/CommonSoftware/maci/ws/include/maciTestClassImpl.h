@@ -4,7 +4,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciTestClassImpl.h,v 1.90 2008/10/01 02:40:28 cparedes Exp $"
+* "@(#) $Id: maciTestClassImpl.h,v 1.91 2008/10/09 07:05:37 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -33,7 +33,7 @@
  *
  * @author <a href=mailto:klemen.zagar@ijs.si>Klemen Zagar</a>,
  * Jozef Stefan Institute, Slovenia<br>
- * @version "@(#) $Id: maciTestClassImpl.h,v 1.90 2008/10/01 02:40:28 cparedes Exp $"
+ * @version "@(#) $Id: maciTestClassImpl.h,v 1.91 2008/10/09 07:05:37 cparedes Exp $"
  */
 
 class MaciTestClass: public virtual acscomponent::ACSComponentImpl,
@@ -99,8 +99,10 @@ public:
    */
   virtual ~MaciHierarchicalTestClass();
 
- virtual void execute()
-      throw (acsErrTypeLifeCycle::LifeCycleExImpl);
+ /*
+  * @throw acsErrTypeLifeCycle::LifeCycleExImpl
+  */
+ virtual void execute();
       
 
 };

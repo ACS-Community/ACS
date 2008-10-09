@@ -4,7 +4,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciSimpleClient.h,v 1.107 2008/10/01 02:40:28 cparedes Exp $"
+* "@(#) $Id: maciSimpleClient.h,v 1.108 2008/10/09 07:05:37 cparedes Exp $"
 *
 * who       when        what
 * --------  --------    ----------------------------------------------
@@ -176,18 +176,18 @@ public:
    * @param name name of the component (e.g. MOUTN1)
    * @param domain domain name, 0 for default domain
    * @param activate true to activate component, false to leave it in the current state
-   * @return reference to the component. If the component could not be activated, a #maciErrType::CannotGetComponentExImpl exception is thrown.
+   * @return reference to the component. 
+   * @throw maciErrType::CannotGetComponentExImpl If the component could not be activated
    * @see template<class T> T* getComponent
    */
-  CORBA::Object_ptr getComponent(const char *name, const char *domain, bool activate)
-      throw (maciErrType::CannotGetComponentExImpl);
+  CORBA::Object_ptr getComponent(const char *name, const char *domain, bool activate);
 
     /**
      * It just redirect call to the #getComponent
      * @deprecated get_object is deprecated and will be removed in future version of ACS
+     * @throw maciErrType::CannotGetComponentExImpl
      */
   CORBA::Object_ptr get_object(const char *name, const char *domain, bool activate)
-      throw (maciErrType::CannotGetComponentExImpl)
 	{
 	    return getComponent(name, domain, activate);
 	}
@@ -201,7 +201,8 @@ public:
    * @param name name of the component (e.g. MOUNT1)
    * @param domain domain name, 0 for default domain
    * @param activate true to activate component, false to leave it in the current state
-   * @return reference to the component. If the component could not be activated, a #maciErrType::CannotGetComponentExImpl exception is thrown.
+   * @return reference to the component. 
+   * @throw maciErrType::CannotGetComponentExImpl If the component could not be activated
    * For example:
    * @code
    *    MACI_TEST::MaciTestClass_var maciTestDO = client.getComponent<MACI_TEST::MaciTestClass>(argv[1], 0, true);
@@ -209,23 +210,26 @@ public:
    * @see getComponent()
    */
     template<class T>
-    T* getComponent(const char *name, const char *domain, bool activate)
-	throw (maciErrType::CannotGetComponentExImpl);
+    T* getComponent(const char *name, const char *domain, bool activate);
 
-    CORBA::Object* getDynamicComponent(maci::ComponentSpec compSpec, bool markAsDefault)
-    throw(maciErrType::NoPermissionExImpl,
-	  maciErrType::IncompleteComponentSpecExImpl,
-	  maciErrType::InvalidComponentSpecExImpl,
-	  maciErrType::ComponentSpecIncompatibleWithActiveComponentExImpl,
-	  maciErrType::CannotGetComponentExImpl);
+    /**
+     * @throw maciErrType::NoPermissionExImpl
+     * @throw maciErrType::IncompleteComponentSpecExImpl
+     * @throw maciErrType::InvalidComponentSpecExImpl
+     * @throw maciErrType::ComponentSpecIncompatibleWithActiveComponentExImpl
+     * @throw maciErrType::CannotGetComponentExImpl
+     */
+    CORBA::Object* getDynamicComponent(maci::ComponentSpec compSpec, bool markAsDefault);
 
+    /**
+     * @throw maciErrType::NoPermissionExImpl
+     * @throw maciErrType::IncompleteComponentSpecExImpl
+     * @throw maciErrType::InvalidComponentSpecExImpl
+     * @throw maciErrType::ComponentSpecIncompatibleWithActiveComponentExImpl
+     * @throw maciErrType::CannotGetComponentExImpl
+     */
     template<class T>
-    T* getDynamicComponent(maci::ComponentSpec compSpec, bool markAsDefault)
-    throw(maciErrType::NoPermissionExImpl,
-	  maciErrType::IncompleteComponentSpecExImpl,
-	  maciErrType::InvalidComponentSpecExImpl,
-	  maciErrType::ComponentSpecIncompatibleWithActiveComponentExImpl,
-	  maciErrType::CannotGetComponentExImpl);
+    T* getDynamicComponent(maci::ComponentSpec compSpec, bool markAsDefault);
   /**
    * Get a SmartPointer to a component, activating it if necessary and directly narrows it to the type
    * declared in the template definition.
@@ -234,7 +238,8 @@ public:
    * @param name name of the component (e.g. MOUNT1)
    * @param domain domain name, 0 for default domain
    * @param activate true to activate component, false to leave it in the current state
-   * @return Smart Pointer to the component. If the component could not be activated, a #maciErrType::CannotGetComponentExImpl exception is thrown.
+   * @return Smart Pointer to the component. 
+   * @throw maciErrType::CannotGetComponentExImpl If the component could not be activated
    * For example:
    * @code
    *    ComponentSmartPtr<MACI_TEST::MaciTestClass> maciTestDO = client.getComponentSmartPtr<MACI_TEST::MaciTestClass>(argv[1], 0, true);
@@ -242,23 +247,24 @@ public:
    * @see getComponent()
    */
     template<class T>
-    ComponentSmartPtr<T> getComponentSmartPtr(const char *name, const char *domain, bool activate)
-	throw (maciErrType::CannotGetComponentExImpl);
+    ComponentSmartPtr<T> getComponentSmartPtr(const char *name, const char *domain, bool activate);
 
+    /**
+     * @throw maciErrType::NoPermissionExImpl
+     * @throw maciErrType::IncompleteComponentSpecExImpl
+     * @throw maciErrType::InvalidComponentSpecExImpl
+     * @throw maciErrType::ComponentSpecIncompatibleWithActiveComponentExImpl
+     * @throw maciErrType::CannotGetComponentExImpl
+     */
     template<class T>
-    ComponentSmartPtr<T> getDynamicComponentSmartPtr(maci::ComponentSpec compSpec, bool markAsDefault)
-    throw(maciErrType::NoPermissionExImpl,
-	  maciErrType::IncompleteComponentSpecExImpl,
-	  maciErrType::InvalidComponentSpecExImpl,
-	  maciErrType::ComponentSpecIncompatibleWithActiveComponentExImpl,
-	  maciErrType::CannotGetComponentExImpl);
+    ComponentSmartPtr<T> getDynamicComponentSmartPtr(maci::ComponentSpec compSpec, bool markAsDefault);
     /**
      * It just redirected call to #getComponent (template version)
      * @deprecated the method is deprecated and will be removed in future version of ACS
+     * @throw maciErrType::CannotGetComponentExImpl
      */
   template<class T>
   T* get_object(const char *name, const char *domain, bool activate)
-      throw (maciErrType::CannotGetComponentExImpl)
 	{
 	    return getComponent<T>(name, domain, activate);
 	}
@@ -266,33 +272,33 @@ public:
     /**
      * Returns a non-sticky reference to a component
      * @param name name (CURL) of the component
+     * @throw maciErrType::CannotGetComponentExImpl
      * @return reference to the component
      * for details see #get_component_non_sticky
      */
-    CORBA::Object* getComponentNonSticky(const char *name)
-	throw (maciErrType::CannotGetComponentExImpl);
+    CORBA::Object* getComponentNonSticky(const char *name);
 
      /**
       * template version of #getComponentNonSticky
      * Returns a non-sticky reference to a component
      * @param name name (CURL) of the component
+     * @throw maciErrType::CannotGetComponentExImpl
      * @return reference to the component
      * for details see #get_component_non_sticky
      */
     template <class T>
-    T* getComponentNonSticky(const char *name)
-	throw (maciErrType::CannotGetComponentExImpl);
+    T* getComponentNonSticky(const char *name);
 
      /**
       * template version of #getComponentNonSticky
      * Returns a SmartPointer to a component
      * @param name name (CURL) of the component
+     * @throw maciErrType::CannotGetComponentExImpl
      * @return reference to the component
      * for details see #get_component_non_sticky
      */
     template <class T>
-    ComponentSmartPtr<T> getComponentNonStickySmartPtr(const char *name)
-	throw (maciErrType::CannotGetComponentExImpl);
+    ComponentSmartPtr<T> getComponentNonStickySmartPtr(const char *name);
 
     /**
      * Releases the componet.
@@ -301,8 +307,7 @@ public:
      * component after the operation completed.
      * @throw maciErrType::CannotReleaseComponentExImpl when there is a problem
      */
-    long releaseComponent(const char* name)
-	throw (maciErrType::CannotReleaseComponentExImpl);
+    long releaseComponent(const char* name);
 
   /* ----------------------------------------------------------------*/
   /* ------------------ [ CORBA Client interface ] ------------------*/
@@ -438,7 +443,6 @@ private:
  */
 template<class T>
 T* SimpleClient::getComponent(const char *name, const char *domain, bool activate)
-throw (maciErrType::CannotGetComponentExImpl)
 {
 	if(!m_initialized)     // Check first if the client is initialized
 	{
@@ -558,7 +562,6 @@ throw (maciErrType::CannotGetComponentExImpl)
  */
 template<class T>
 ComponentSmartPtr<T> SimpleClient::getComponentSmartPtr(const char *name, const char *domain, bool activate)
-    throw (maciErrType::CannotGetComponentExImpl)
 {
     return ComponentSmartPtr<T>(this, true, this->getComponent<T>(name, domain, activate));
 }
@@ -567,11 +570,6 @@ ComponentSmartPtr<T> SimpleClient::getComponentSmartPtr(const char *name, const 
  */
 template<class T>
 ComponentSmartPtr<T> SimpleClient::getDynamicComponentSmartPtr(maci::ComponentSpec compSpec, bool markAsDefault)
-    throw(maciErrType::NoPermissionExImpl,
-	  maciErrType::IncompleteComponentSpecExImpl,
-	  maciErrType::InvalidComponentSpecExImpl,
-	  maciErrType::ComponentSpecIncompatibleWithActiveComponentExImpl,
-	  maciErrType::CannotGetComponentExImpl)
 {
     return ComponentSmartPtr<T>(this, true, this->getDynamicComponent<T>(compSpec,markAsDefault));
 }
@@ -583,11 +581,6 @@ ComponentSmartPtr<T> SimpleClient::getDynamicComponentSmartPtr(maci::ComponentSp
 //CORBA::Object*
 template<class T>
 T* SimpleClient::getDynamicComponent(maci::ComponentSpec compSpec, bool markAsDefault)
-    throw(maciErrType::NoPermissionExImpl,
-	  maciErrType::IncompleteComponentSpecExImpl,
-	  maciErrType::InvalidComponentSpecExImpl,
-	  maciErrType::ComponentSpecIncompatibleWithActiveComponentExImpl,
-	  maciErrType::CannotGetComponentExImpl)
 {
 
    //The IDL ComponentInfo structure returned by the get_dynamic_component method
@@ -691,7 +684,6 @@ T* SimpleClient::getDynamicComponent(maci::ComponentSpec compSpec, bool markAsDe
  */
 template<class T>
 T* SimpleClient::getComponentNonSticky(const char *name)
-throw (maciErrType::CannotGetComponentExImpl)
 {
 	if(!m_initialized)     // Check first if the client is initialized
 	{
@@ -786,7 +778,6 @@ throw (maciErrType::CannotGetComponentExImpl)
  */
 template<class T>
 ComponentSmartPtr<T> SimpleClient::getComponentNonStickySmartPtr(const char *name)
-    throw (maciErrType::CannotGetComponentExImpl)
 {
     return ComponentSmartPtr<T>(this, false, this->getComponentNonSticky<T>(name));
 }
