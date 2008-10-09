@@ -1,5 +1,5 @@
 #include <vltPort.h>
-static char *rcsId=(char *)"@(#) $Id: sampledCompImpl.cpp,v 1.5 2008/10/07 06:55:55 cparedes Exp $";
+static char *rcsId=(char *)"@(#) $Id: sampledCompImpl.cpp,v 1.6 2008/10/09 08:40:18 cparedes Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include "sampledCompImpl.h"
@@ -25,7 +25,7 @@ sampledCompImpl::sampledCompImpl(const ACE_CString& name, maci::ContainerService
 	component_name = name;
 }
 
-void sampledCompImpl::initialize() throw (acsErrTypeLifeCycle::LifeCycleExImpl){
+void sampledCompImpl::initialize() {
 	m_RWdouble_sp   = new RWdouble  ( (component_name + ":my_RWdouble").c_str(), getComponent());
 	m_RWfloat_sp    = new RWfloat   ( (component_name + ":my_RWfloat").c_str(), getComponent());
 	m_RWstring_sp   = new RWstring  ( (component_name + ":my_RWstring").c_str(), getComponent());

@@ -21,7 +21,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: sampledCompImpl.h,v 1.5 2008/10/07 06:55:55 cparedes Exp $"
+* "@(#) $Id: sampledCompImpl.h,v 1.6 2008/10/09 08:40:18 cparedes Exp $"
 *
 */
 
@@ -61,7 +61,10 @@ class sampledCompImpl: public virtual CharacteristicComponentImpl,
 		 * Destructor
 		 */
 		virtual ~sampledCompImpl();
-		void initialize() throw (acsErrTypeLifeCycle::LifeCycleExImpl);
+        /**
+         * @throw acsErrTypeLifeCycle::LifeCycleExImpl
+        */
+		void initialize();
 
 		virtual ACS::RWdouble_ptr   my_RWdouble();
 		virtual ACS::ROdouble_ptr   my_ROdouble();
