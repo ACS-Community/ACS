@@ -4,7 +4,7 @@
 /************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: acscomponentImpl.h,v 1.31 2008/09/29 09:58:37 cparedes Exp $"
+* "@(#) $Id: acscomponentImpl.h,v 1.32 2008/10/09 19:01:13 bjeram Exp $"
 *
 * who       when        what
 * --------  ----------  -------------------------------------------------
@@ -24,7 +24,7 @@
 #include <acscomponentC.h>
 #include <acsContainerServices.h>
 #include <acsErrTypeLifeCycle.h>
-#include "lokiSmartPtr.h" 
+#include "lokiSmartPtr.h"
 
 namespace acscomponent {
 
@@ -44,24 +44,24 @@ class ACSComponentImpl : public virtual PortableServer::RefCountServantBase,
    * The ACSComponent shall be considered an abstract class
    * and at the end of the constructor the state of the
    * ACSComponent is set to COMPSTATE_NEW (m_componentState = ACS::COMPSTATE_NEW).
-   * @param poa poa which will activate this and also all other Components 
+   * @param poa poa which will activate this and also all other Components
    * @param name ACSComponent name
    * @param containerServices  pointer to services provided by the container
    */
   ACSComponentImpl(
     const ACE_CString& name,
     maci::ContainerServices *containerServices);
-  
+
   /**
    * Destructor
-   * 
+   *
    * Note: ContainerServices is not availble in the destructor
    */
   virtual ~ACSComponentImpl();
 
   /**
    * Get POA reference
-   * This function is used to return m_poa because inherited classes would not 
+   * This function is used to return m_poa because inherited classes would not
    * have access to it otherwise.
    *
    * @return POA reference
@@ -70,13 +70,13 @@ class ACSComponentImpl : public virtual PortableServer::RefCountServantBase,
    * @endhtmlonly
    */
   PortableServer::POA_var getPOA() { return m_containerServices_p->getPOA(); }
-  
+
 /* ------------------ [ ACSComponent interface ] ------------------ */
-  
+
   /**
    * Property for the name of the ACSComponent
    * The string returned by this method is the actual name of this instance
-   * which the manager can convert to a DO reference if a client has the right 
+   * which the manager can convert to a DO reference if a client has the right
    * access level.
    *
    * @return Name of DO
@@ -85,7 +85,7 @@ class ACSComponentImpl : public virtual PortableServer::RefCountServantBase,
    * @endhtmlonly
    */
   virtual char * name ();
- 
+
   /**
    * Property for the state of the ACSComponent
    * @return state of the ACSComponent
@@ -100,27 +100,26 @@ class ACSComponentImpl : public virtual PortableServer::RefCountServantBase,
 
 
   /**
-   * Called to give the component time to initialize itself. 
-   * For instance, the component could retrieve connections, read in 
+   * Called to give the component time to initialize itself.
+   * For instance, the component could retrieve connections, read in
    * configuration files/parameters, build up in-memory tables, ...
    * Called before {@link #execute}.
-   * In fact, this method might be called quite some time before 
+   * In fact, this method might be called quite some time before
    * functional requests can be sent to the component.
    * Must be implemented as a synchronous (blocking) call.
-   * 
+   *
    * @return void
    * @htmlonly
    * <br><hr>
    * @endhtmlonly
    */
-    virtual void initialize()
-      throw (ACSErr::ACSbaseExImpl);
+    virtual void initialize();
 
     /**
-     * Called after {@link #initialize} to tell the 
-     * component that it has to be ready to accept 
-     * incoming functional calls any time. 
-     * Must be implemented as a synchronous (blocking) call 
+     * Called after {@link #initialize} to tell the
+     * component that it has to be ready to accept
+     * incoming functional calls any time.
+     * Must be implemented as a synchronous (blocking) call
      * (can spawn threads though).
      *
      * @return void
@@ -128,9 +127,8 @@ class ACSComponentImpl : public virtual PortableServer::RefCountServantBase,
      * <br><hr>
      * @endhtmlonly
      */
-    virtual void execute()
-      throw (ACSErr::ACSbaseExImpl);
-    
+    virtual void execute();
+
     /**
      * Called after the last functional call to the component has finished.
      * The component should then orderly release resources etc.
@@ -148,11 +146,11 @@ class ACSComponentImpl : public virtual PortableServer::RefCountServantBase,
     virtual void cleanUp();
 
     /**
-     * Called when due to some error condition the component is about 
+     * Called when due to some error condition the component is about
      * to be forcefully removed
      * some unknown amount of time later (usually not very much...).
      * The component should make an effort to die as neatly as possible.
-     * Because of its urgency, this method will be called asynchronously 
+     * Because of its urgency, this method will be called asynchronously
      * to the execution of any other method of the component.
      *
      * @return void
@@ -161,37 +159,35 @@ class ACSComponentImpl : public virtual PortableServer::RefCountServantBase,
      * @endhtmlonly
      */
     virtual void aboutToAbort();
-    
+
     /**
      * The function starts the thread before calling  execute
-     * 
+     *
      * @return void
      */
-    virtual void __execute()
-        throw (ACSErr::ACSbaseExImpl);
-    
+    virtual void __execute();
+
     /**
      * The function stops the threads before calling  aboutToAbort()
-     * 
+     *
      * @return void
      */
     virtual void __aboutToAbort();
-    
+
     /**
      * The function stops the threads before calling  cleanUp()
-     * 
+     *
      * @return void
      */
     virtual void __cleanUp();
-    
+
     /**
-     * The __initialize simply calls initialize 
+     * The __initialize simply calls initialize
      * (added for uniformity with the other life cycle function)
-     * 
+     *
      * @return void
      */
-    virtual void __initialize()
-        throw (ACSErr::ACSbaseExImpl);
+    virtual void __initialize();
 
     /**
      * Get a pointer to the services provided by the container which
@@ -215,7 +211,7 @@ class ACSComponentImpl : public virtual PortableServer::RefCountServantBase,
     //std::auto_ptr<maci::ContainerServices> m_containerServices_p;
     Loki::SmartPtr<maci::ContainerServices> m_containerServices_p;
 
-};  
+};
 
 } // namespace acscomponent
 

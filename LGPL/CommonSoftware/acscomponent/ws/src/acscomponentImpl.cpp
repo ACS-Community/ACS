@@ -1,7 +1,7 @@
 /*************************************************************************
 * E.S.O. - VLT project
 *
-* "@(#) $Id: acscomponentImpl.cpp,v 1.37 2008/09/29 09:58:37 cparedes Exp $"
+* "@(#) $Id: acscomponentImpl.cpp,v 1.38 2008/10/09 19:05:45 bjeram Exp $"
 *
 * who       when        what
 * --------  --------    --------------------------------------------------
@@ -13,7 +13,7 @@
 #include "acsErrTypeComponent.h"
 #include <string>
 
-using namespace maci; 
+using namespace maci;
 using namespace acscomponent;
 
 //
@@ -71,12 +71,12 @@ ACSComponentImpl::componentState ()
 
 /********************** LifeCycle methods ***********************/
 
-void ACSComponentImpl::initialize() throw (ACSErr::ACSbaseExImpl)
+void ACSComponentImpl::initialize()
 {
   ACS_TRACE("acscomponent::ACSComponentImpl::initialize");
 }
 
-void ACSComponentImpl::execute() throw (ACSErr::ACSbaseExImpl)
+void ACSComponentImpl::execute()
 {
   ACS_TRACE("acscomponent::ACSComponentImpl::execute");
 }
@@ -91,8 +91,8 @@ void ACSComponentImpl::aboutToAbort()
   ACS_TRACE("acscomponent::ACSComponentImpl::cleanUp");
 }
 
-void ACSComponentImpl::__initialize() throw (ACSErr::ACSbaseExImpl)
-{   
+void ACSComponentImpl::__initialize()
+{
    ACS_TRACE("acscomponent::ACSComponentImpl::__initialize");
     try
     {
@@ -104,7 +104,7 @@ void ACSComponentImpl::__initialize() throw (ACSErr::ACSbaseExImpl)
     }
 }
 
-void ACSComponentImpl::__execute() throw (ACSErr::ACSbaseExImpl)
+void ACSComponentImpl::__execute()
 {
   ACS_TRACE("acscomponent::ACSComponentImpl::__execute");
 /*
@@ -124,7 +124,7 @@ so that all threads are just created in suspend mode and than startAllThreads wo
         throw acsErrTypeLifeCycle::LifeCycleExImpl(ex,__FILE__,__LINE__,"ACSComponentImpl::__execute");
     }
 }
-    
+
 void ACSComponentImpl::__aboutToAbort()
 {
   ACS_TRACE("acscomponent::ACSComponentImpl::__aboutToAbort");
@@ -142,11 +142,11 @@ void ACSComponentImpl::__aboutToAbort()
         throw acsErrTypeLifeCycle::LifeCycleExImpl(ex,__FILE__,__LINE__,"ACSComponentImpl::__aboutToAbort");
     }
 }
-    
+
 void ACSComponentImpl::__cleanUp()
 {
   ACS_TRACE("acscomponent::ACSComponentImpl::__cleanUp");
- 
+
   try
       {
       cleanUp();
