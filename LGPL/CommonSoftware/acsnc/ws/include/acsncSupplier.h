@@ -1,7 +1,7 @@
 #ifndef SUPPLIER_H
 #define SUPPLIER_H
 
-/* @(#) $Id: acsncSupplier.h,v 1.62 2008/10/01 03:14:56 cparedes Exp $
+/* @(#) $Id: acsncSupplier.h,v 1.63 2008/10/09 07:57:41 cparedes Exp $
  *
  *    Supplier Abstract base class for notification channel push structured event
  *    supplier.
@@ -119,6 +119,7 @@ class Supplier :
      * which does not return control until the event has arrived whereever the 
      * Notification Service is actually running.
      * Makes a call to the push_structured_event() method of consumers.
+     * @throw ACSErrTypeCommon::CORBAProblemEx
      * @return void
      * @htmlonly
        <br><hr>
@@ -126,19 +127,20 @@ class Supplier :
      */
     void 
     publishEvent(const CosNotification::StructuredEvent &event)
-	throw (ACSErrTypeCommon::CORBAProblemEx);
+	;
 
     /**
      * Call this to publish a CORBA Any and implicitly have the structured event
      * "filled-out". It actually makes a call to the push_structured_event() 
      * method of consumers.
+     * @throw ACSErrTypeCommon::CORBAProblemEx
      * @htmlonly
        <br><hr>
        @endhtmlonly
      */
     virtual void 
     publishEvent(const CORBA::Any &eventData)
-	throw (ACSErrTypeCommon::CORBAProblemEx);
+	;
 
     /**
      * <b>Do not under any circumstances invoke this method from your code!</b>
@@ -178,26 +180,28 @@ class Supplier :
     /** 
      *  Fills the fixed header with Event Description information.
      *  @param event The structured event which holds the header & data.
+     * @throw ACSErrTypeCommon::CORBAProblemEx
      *  @htmlonly
         <br><hr>
         @endhtmlonly
      */
     void
     populateHeader(CosNotification::StructuredEvent &event)
-	throw (ACSErrTypeCommon::CORBAProblemEx);
+	;
 
     /** 
      * Extracts the event type name from the any parameter and encodes that
      * into the current structured event to be published. So if any contains
      * a FRIDGE::temperatureDataBlockEvent structure, "temperatureDataBlock" is 
      * encoded into the type_name field of event_m.
+     * @throw ACSErrTypeCommon::CORBAProblemEx
      * @htmlonly
        <br><hr>
        @endhtmlonly
      */
     virtual void
     populateHeader(const CORBA::Any &any)
-	throw (ACSErrTypeCommon::CORBAProblemEx);
+	;
 
     /**
      * Sets the type_name field in the structured event. Method should 
@@ -217,19 +221,21 @@ class Supplier :
      * Utility method.
      * Create the Supplier Admin; create & init the supplier.
      * @return void
+     * @throw ACSErrTypeCommon::CORBAProblemEx
      * @htmlonly
        <br><hr>
        @endhtmlonly
      */
     void
     createSupplier()
-	throw (ACSErrTypeCommon::CORBAProblemEx);
+	;
     
     /**
      * Utility method.
      * Destroys a notification channel.  <b>ONLY USE THIS METHOD IF YOU KNOW FOR CERTAIN
      * THERE IS ONLY ONE SUPPLIER FOR THE CHANNEL!!! Use with extreme caution! This method
      * will most likely become deprecated in future releases of ACS!</b>     
+     * @throw ACSErrTypeCommon::CORBAProblemEx
      * @return void
      * @htmlonly
        <br><hr>
@@ -237,19 +243,20 @@ class Supplier :
      */
     void 
     destroyNotificationChannel()
-	throw (ACSErrTypeCommon::CORBAProblemEx);
+	;
 
     /**
      * Utility method.
      * Initialization method where code common to all constructors is kept.
      * @param orb ORB which has a reference to the Naming Service.
+     * @throw ACSErrTypeCommon::CORBAProblemEx
      * @htmlonly
        <br><hr>
        @endhtmlonly
      */
     void
     init(CORBA::ORB_ptr orb)
-	throw(ACSErrTypeCommon::CORBAProblemEx);
+	;
 
 
     

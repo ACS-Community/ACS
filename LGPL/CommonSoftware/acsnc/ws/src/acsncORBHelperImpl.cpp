@@ -19,7 +19,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsncORBHelperImpl.cpp,v 1.60 2008/07/27 15:09:30 cparedes Exp $"
+* "@(#) $Id: acsncORBHelperImpl.cpp,v 1.61 2008/10/09 07:57:41 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -82,7 +82,6 @@ ORBHelper::~ORBHelper()
 //-----------------------------------------------------------------------------
 void
 ORBHelper::init_ORB()
-    throw (CORBAProblemEx)
 {
     ACS_TRACE("ORBHelper::init_ORB");
 
@@ -111,7 +110,6 @@ ORBHelper::init_ORB()
 //-----------------------------------------------------------------------------
 void 
 ORBHelper::init_ORB(int argc, char *argv[])
-    throw (CORBAProblemEx)
 {
     ACS_TRACE("ORBHelper::init_ORB");
     
@@ -175,7 +173,6 @@ ORBHelper::init_ORB(int argc, char *argv[])
 //-----------------------------------------------------------------------------
 void 
 ORBHelper::runOrb()
-    throw(CouldntCreateThreadEx)
 {
     ACS_TRACE("ORBHelper::runOrb");
 

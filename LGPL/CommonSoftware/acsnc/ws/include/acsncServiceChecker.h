@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsncServiceChecker.h,v 1.2 2008/07/25 07:35:19 cparedes Exp $"
+* "@(#) $Id: acsncServiceChecker.h,v 1.3 2008/10/09 07:57:41 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -43,7 +43,10 @@ namespace nc{
 	    ServiceChecker(CORBA::ORB_ptr orb);
 	    bool check(const std::string domain);
 	private:
-	    void resolveNotificationFactory(const std::string factoryName)throw (ACSErrTypeCommon::CORBAProblemEx);
+        /*
+        * @throw ACSErrTypeCommon::CORBAProblemEx
+        */
+	    void resolveNotificationFactory(const std::string factoryName);
     };
 }
 

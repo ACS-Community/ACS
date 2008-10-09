@@ -1,6 +1,6 @@
 #ifndef SIMPLE_SUPPLIER_H
 #define SIMPLE_SUPPLIER_H
-/*    @(#) $Id: acsncSimpleSupplier.h,v 1.17 2008/07/25 07:35:19 cparedes Exp $
+/*    @(#) $Id: acsncSimpleSupplier.h,v 1.18 2008/10/09 07:57:41 cparedes Exp $
  *    ALMA - Atacama Large Millimiter Array
  *    (c) Associated Universities Inc., 2002 
  *    (c) European Southern Observatory, 2002
@@ -58,13 +58,13 @@ class SimpleSupplier : public Supplier
      * struct) to be sent. Really this is the only Supplier method developers 
      * should be invoking from their code.
      * @param data The templated data structure to be published.
+     * @throw ACSErrTypeCommon::CORBAProblemEx
      * @htmlonly
        <br><hr>
        @endhtmlonly
      */
     template <class T> void 
-    publishData(T data)
-	throw (ACSErrTypeCommon::CORBAProblemEx);
+    publishData(T data);
     
     ///////////////////////////////////////////////////////////////
   protected:

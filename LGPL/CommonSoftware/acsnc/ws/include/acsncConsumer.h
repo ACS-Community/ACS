@@ -1,7 +1,7 @@
 #ifndef CONSUMER_H
 #define CONSUMER_H
 
-/* @(#) $Id: acsncConsumer.h,v 1.69 2008/10/01 03:14:56 cparedes Exp $
+/* @(#) $Id: acsncConsumer.h,v 1.70 2008/10/09 07:57:41 cparedes Exp $
 *
 *    Consumer Abstract base class for notification channel push structured event
 *    consumers.
@@ -163,26 +163,26 @@ class Consumer :
      *  After this method is invoked, the developer has little control over when 
      *  events are received (i.e., push_structured_event() is invoked).
      *
+     *  @throw ACSErrTypeCommon::CORBAProblemEx 
      *  @return void
      *  @htmlonly
         <br><hr>
         @endhtmlonly
      */
     void
-    consumerReady()
-	throw (ACSErrTypeCommon::CORBAProblemEx);
+    consumerReady();
 
     /** 
      *  A suspended (see suspend()) connection can be resumed.
      *  All events queued during suspend will be forward to the Consumer! 
      *  @return void
+     *  @throw ACSErrTypeCommon::CORBAProblemEx 
      *  @htmlonly
         <br><hr>
         @endhtmlonly
      */
     void
-    resume()
-	throw (ACSErrTypeCommon::CORBAProblemEx);
+    resume();
     
     /** 
      *  After this method is invoked, the connection is suspended. All events
@@ -195,8 +195,7 @@ class Consumer :
         @endhtmlonly
      */
     void
-    suspend()
-	throw (ACSErrTypeCommon::CORBAProblemEx);
+    suspend();
 
     /** 
      *  Subscribe to more events.
@@ -204,13 +203,13 @@ class Consumer :
      *  The template parameter T is the ALMA event type to subscribe
      *  to.
      *  @return void
+     *  @throw ACSErrTypeCommon::CORBAProblemEx 
      *  @htmlonly
         <br><hr>
         @endhtmlonly
      */
     template <class T> void
     addSubscription()
-	throw (ACSErrTypeCommon::CORBAProblemEx)
 	{
 	    //Create a tempory any
 	    CORBA::Any any;
@@ -244,13 +243,13 @@ class Consumer :
      *
      *  The template parameter T is the type of structured events to unsubscribe from.
      *  @return void
+     *  @throw ACSErrTypeCommon::CORBAProblemEx 
      *  @htmlonly
         <br><hr>
         @endhtmlonly
      */
     template <class T> void
     removeSubscription()
-	throw (ACSErrTypeCommon::CORBAProblemEx)
 	{
 	    //Create a tempory any
 	    CORBA::Any any;
@@ -289,27 +288,27 @@ class Consumer :
      * @param type_name Type of structured events to filter.
      * @param filter Extended trader constraint language filter string.
      * @return ID of the filter object (used to remove the filter later).
+     *  @throw ACSErrTypeCommon::CORBAProblemEx 
      * @htmlonly
        <br><hr>
        @endhtmlonly
      */
     int
     addFilter(const char* type_name,
-	      const char* filter)
-	throw (ACSErrTypeCommon::CORBAProblemEx);
+	      const char* filter);
     
     /** 
      *  Remove a filter. See comments on the addFilter() method.
      *
      *  @param filter_id ID of the filter object created by the addFilter() method. 
      *  @return True on success, false otherwise.
+     *  @throw ACSErrTypeCommon::CORBAProblemEx 
      *  @htmlonly
         <br><hr>
         @endhtmlonly
      */
     bool
-    removeFilter(int filter_id)
-	throw (ACSErrTypeCommon::CORBAProblemEx);
+    removeFilter(int filter_id);
     
   protected:
     /**
@@ -318,13 +317,13 @@ class Consumer :
      * It shall be called explicitly in the constructors of the derived classes,
      * since it is actually NOT called in the constructors of this
      * pure virtual class.
+     *  @throw ACSErrTypeCommon::CORBAProblemEx 
      *  @htmlonly
         <br><hr>
         @endhtmlonly
      */
     void
-    init()
-	throw (ACSErrTypeCommon::CORBAProblemEx);
+    init();
 
     /**
      *  Destructor is protected.
@@ -336,13 +335,14 @@ class Consumer :
      * Creates a proxy supplier and consumer admin. Next connect this consumer to the
      * proxy supplier.
      * @return void
+     *  @throw ACSErrTypeCommon::CORBAProblemEx 
      * @htmlonly
        <br><hr>
        @endhtmlonly
      */
     void 
-    createConsumer()
-	throw (ACSErrTypeCommon::CORBAProblemEx);
+    createConsumer();
+	
 
     ///////////////////////////////////////////////////////////////////////////////////////
     /** 
@@ -403,13 +403,13 @@ class Consumer :
      * Utility method.
      * Initialization method where code common to all constructors is kept.
      * @param orb ORB which has a reference to the Naming Service.
+     *  @throw ACSErrTypeCommon::CORBAProblemEx 
      *  @htmlonly
      <br><hr>
      @endhtmlonly
     */
     void
-    init(CORBA::ORB_ptr orb)
-	throw (ACSErrTypeCommon::CORBAProblemEx);
+    init(CORBA::ORB_ptr orb);
 
     /**
      * ORB used by this consumer.
@@ -432,26 +432,26 @@ class Consumer :
      *
      *  @param type_name Type of structured events to subscribe to.
      *  @return void
+     *  @throw ACSErrTypeCommon::CORBAProblemEx 
      *  @htmlonly
         <br><hr>
         @endhtmlonly
     */
     void
-    addSubscription(const char* type_name)
-	throw (ACSErrTypeCommon::CORBAProblemEx);
+    addSubscription(const char* type_name);
 
     /** 
      *  Unsubscribe from events.
      *
      *  @param type_name Type of structured events to unsubscribe from.
+     *  @throw ACSErrTypeCommon::CORBAProblemEx 
      *  @return void
      *  @htmlonly
         <br><hr>
         @endhtmlonly
      */
     void
-    removeSubscription(const char* type_name)
-	throw (ACSErrTypeCommon::CORBAProblemEx);
+    removeSubscription(const char* type_name);
     ///////////////////////////////////////////////////////////////////////////////////////
 };
  }; 

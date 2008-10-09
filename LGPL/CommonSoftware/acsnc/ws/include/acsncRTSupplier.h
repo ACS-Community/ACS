@@ -1,6 +1,6 @@
 #ifndef RT_SUPPLIER_H
 #define RT_SUPPLIER_H
-/*    @(#) $Id: acsncRTSupplier.h,v 1.18 2008/07/25 07:35:19 cparedes Exp $
+/*    @(#) $Id: acsncRTSupplier.h,v 1.19 2008/10/09 07:57:41 cparedes Exp $
  *    ALMA - Atacama Large Millimiter Array
  *    (c) Associated Universities Inc., 2002 
  *    (c) European Southern Observatory, 2002
@@ -83,6 +83,7 @@ class RTSupplier : public Supplier
      *  associated with actual CORBA calls involved with pushing events
      *  are only logged as this functionality is really performed by the
      *  worker method/thread.
+     *  @throw ACSErrTypeCommon::CORBAProblemEx 
      *  @param data A user-defined IDL struct. FRIDGE::temperatureDataBlockEvent 
      *              for example
      *  @htmlonly
@@ -90,8 +91,7 @@ class RTSupplier : public Supplier
         @endhtmlonly
      */
     template <class T> void
-    publishData(T data)
-	throw (ACSErrTypeCommon::CORBAProblemEx);
+    publishData(T data);
     ///////////////////////////////////////////////////////////////
   protected:
     /**

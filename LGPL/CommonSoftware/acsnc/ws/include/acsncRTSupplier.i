@@ -1,6 +1,6 @@
 #ifndef RT_SUPPLIER_I
 #define RT_SUPPLIER_I
-/*    @(#) $Id: acsncRTSupplier.i,v 1.22 2008/07/25 07:35:19 cparedes Exp $
+/*    @(#) $Id: acsncRTSupplier.i,v 1.23 2008/10/09 07:57:41 cparedes Exp $
  *    ALMA - Atacama Large Millimiter Array
  *    (c) Associated Universities Inc., 2002 
  *    (c) European Southern Observatory, 2002
@@ -30,7 +30,6 @@ namespace nc {
 //----------------------------------------------------------------------    
 template <class T> void
 RTSupplier::publishData(T data)
-    throw (ACSErrTypeCommon::CORBAProblemEx)
 {
     try
 	{

@@ -1,6 +1,6 @@
 #ifndef SIMPLE_SUPPLIER_I
 #define SIMPLE_SUPPLIER_I
-/*    @(#) $Id: acsncSimpleSupplier.i,v 1.24 2008/07/25 07:35:19 cparedes Exp $
+/*    @(#) $Id: acsncSimpleSupplier.i,v 1.25 2008/10/09 07:57:41 cparedes Exp $
  *    ALMA - Atacama Large Millimiter Array
  *    (c) Associated Universities Inc., 2002 
  *    (c) European Southern Observatory, 2002
@@ -31,7 +31,6 @@ namespace nc {
 //----------------------------------------------------------------------
 template <class T> void 
 SimpleSupplier::publishData(T data)
-    throw (ACSErrTypeCommon::CORBAProblemEx)
 {
     try
 	{

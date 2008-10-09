@@ -1,4 +1,4 @@
-/* @(#) $Id: acsncConsumerImpl.cpp,v 1.70 2008/10/01 03:14:56 cparedes Exp $
+/* @(#) $Id: acsncConsumerImpl.cpp,v 1.71 2008/10/09 07:57:41 cparedes Exp $
  *
  *    Implementation of abstract base class Consumer.
  *    ALMA - Atacama Large Millimiter Array
@@ -85,7 +85,6 @@ Consumer::Consumer(const char* channelName, int argc, char *argv[]) :
 //-----------------------------------------------------------------------------
 void
 Consumer::init()
-    throw (CORBAProblemEx)
 {    
     //just delegate to other signature
     init(orb_mp);
@@ -93,7 +92,6 @@ Consumer::init()
 //-----------------------------------------------------------------------------
 void
 Consumer::init(CORBA::ORB_ptr orb)
-    throw (CORBAProblemEx)
 {    
     //setup profiling stuff here
     handlerTimeoutMap_m = CDBProperties::getEventHandlerTimeoutMap(channelName_mp);
@@ -199,7 +197,6 @@ Consumer::disconnect()
 //-----------------------------------------------------------------------------
 void 
 Consumer::consumerReady()
-    throw (CORBAProblemEx)
 {
     ACS_TRACE("Consumer::consumerReady");
     
@@ -227,7 +224,6 @@ Consumer::consumerReady()
 //-----------------------------------------------------------------------------
 void 
 Consumer::resume()
-    throw (CORBAProblemEx)
 {
     ACS_TRACE("Consumer::resume");
     
@@ -258,7 +254,6 @@ Consumer::resume()
 //-----------------------------------------------------------------------------
 void 
 Consumer::suspend()
-    throw (CORBAProblemEx)
 {
     ACS_TRACE("Consumer::suspend");
     
@@ -289,7 +284,6 @@ Consumer::suspend()
 //-----------------------------------------------------------------------------
 void 
 Consumer::addSubscription(const char* type_name)
-    throw (CORBAProblemEx)
 {
 	ACS_TRACE("Consumer::addSubscription");
 
@@ -325,7 +319,6 @@ Consumer::addSubscription(const char* type_name)
 //-----------------------------------------------------------------------------
 void 
 Consumer::removeSubscription(const char* type_name)
-    throw (CORBAProblemEx)
 {
     ACS_TRACE("Consumer::removeSubscription");
     
@@ -357,7 +350,6 @@ Consumer::removeSubscription(const char* type_name)
 int
 Consumer::addFilter(const char* type_name,
 		    const char* filterString)
-    throw (CORBAProblemEx)
 {
     ACS_TRACE("Consumer::addFilter");
     
@@ -425,7 +417,6 @@ Consumer::addFilter(const char* type_name,
 //-----------------------------------------------------------------------------
 bool
 Consumer::removeFilter(int filter_id)
-    throw (CORBAProblemEx)
 {
     ACS_TRACE("Consumer::removeFilter");
     
@@ -453,7 +444,6 @@ Consumer::disconnect_structured_push_consumer()
 //-----------------------------------------------------------------------------
 void 
 Consumer::createConsumer()
-    throw (CORBAProblemEx)
 {
     ACS_TRACE("Consumer::createConsumer");
     

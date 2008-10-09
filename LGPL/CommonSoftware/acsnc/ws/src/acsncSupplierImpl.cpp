@@ -1,4 +1,4 @@
-/* @(#) $Id: acsncSupplierImpl.cpp,v 1.77 2008/10/01 03:14:56 cparedes Exp $
+/* @(#) $Id: acsncSupplierImpl.cpp,v 1.78 2008/10/09 07:57:41 cparedes Exp $
  *
  *    Structured event push supplier implementation.
  *    ALMA - Atacama Large Millimiter Array
@@ -88,7 +88,6 @@ Supplier::Supplier(const char* channelName, int argc, char *argv[], acscomponent
 //-----------------------------------------------------------------------------
 void
 Supplier::init(CORBA::ORB_ptr orb)
-    throw(CORBAProblemEx)
 {
     //things we only have to do once.
     event_m.filterable_data.length (1);
@@ -162,7 +161,6 @@ Supplier::disconnect()
 //-----------------------------------------------------------------------------
 void 
 Supplier::publishEvent(const CORBA::Any &eventData)
-    throw (CORBAProblemEx)
 {
     populateHeader(eventData);
     publishEvent(event_m);
@@ -170,7 +168,6 @@ Supplier::publishEvent(const CORBA::Any &eventData)
 //-----------------------------------------------------------------------------
 void
 Supplier::publishEvent(const CosNotification::StructuredEvent &event)
-    throw (CORBAProblemEx)
 {   
     //First a sanity check.
     if(CORBA::is_nil(proxyConsumer_m.in()) == true)
@@ -212,7 +209,6 @@ Supplier::publishEvent(const CosNotification::StructuredEvent &event)
 //-----------------------------------------------------------------------------
 void 
 Supplier::populateHeader(const CORBA::Any &any)
-    throw (CORBAProblemEx)
 {
     if (any.type()->kind()!=CORBA::tk_sequence)
 	{
@@ -232,7 +228,6 @@ Supplier::populateHeader(const CORBA::Any &any)
 //-----------------------------------------------------------------------------
 void 
 Supplier::populateHeader(CosNotification::StructuredEvent &event)
-    throw (CORBAProblemEx)
 {
     event.header.fixed_header.event_type.domain_name = getChannelDomain();
     event.header.fixed_header.event_type.type_name = typeName_mp;//CORBA::string_dup(typeName_mp);
@@ -275,7 +270,6 @@ Supplier::populateHeader(CosNotification::StructuredEvent &event)
 //-----------------------------------------------------------------------------
 void 
 Supplier::destroyNotificationChannel()
-    throw (CORBAProblemEx)
 {
     ACS_TRACE("Supplier::destroyNotificationChannel");
     
@@ -320,7 +314,6 @@ Supplier::destroyNotificationChannel()
 //-----------------------------------------------------------------------------
 void 
 Supplier::createSupplier()
-    throw (CORBAProblemEx)
 {
     ACS_TRACE("Supplier::createSupplier");
 

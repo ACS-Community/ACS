@@ -19,7 +19,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsncHelperImpl.cpp,v 1.76 2008/07/10 11:10:41 bjeram Exp $"
+* "@(#) $Id: acsncHelperImpl.cpp,v 1.77 2008/10/09 07:57:41 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -101,7 +101,6 @@ Helper::~Helper()
 //-----------------------------------------------------------------------------
 void
 Helper::resolveNamingService(CORBA::ORB_ptr orb_mp)
-    throw (CORBAProblemEx, CouldntCreateThreadEx)
 {
     ACS_TRACE("Helper::resolveNamingService");
     try
@@ -162,7 +161,6 @@ Helper::resolveNamingService(CORBA::ORB_ptr orb_mp)
 //-----------------------------------------------------------------------------
 void
 Helper::resolveNotificationFactory()
-    throw (CORBAProblemEx)
 {
     ACS_TRACE("Helper::resolveNotificationFactory");
 
@@ -223,7 +221,6 @@ Helper::resolveNotificationFactory()
 //-----------------------------------------------------------------------------
 void
 Helper::createNotificationChannel()
-    throw (CORBAProblemEx)
 {
     ACS_TRACE("Helper::resolveNotificationChannel");
 
@@ -316,7 +313,6 @@ Helper::getAdminProps()
 //-----------------------------------------------------------------------------
 bool
 Helper::resolveNotifyChannel()
-    throw (CORBAProblemEx)
 {
     //commented out as per Rodrigo Amestica's request.
     //should be uncommented once a couple of ACS logging system SPRs get completed.

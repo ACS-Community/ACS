@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsncORBHelper.h,v 1.48 2008/07/25 07:35:19 cparedes Exp $"
+* "@(#) $Id: acsncORBHelper.h,v 1.49 2008/10/09 07:57:41 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -112,13 +112,13 @@ class ORBHelper
      * Runs the orb in a separate thread.
      * This has to be called manually!
      * @return void
+     * @throw ACSErrTypeCommon::CouldntCreateThreadEx
      * @htmlonly
        <br><hr>
        @endhtmlonly
      */
     void 
-    runOrb()
-	throw (ACSErrTypeCommon::CouldntCreateThreadEx);
+    runOrb();
     
     /////////////////////////////////////////////////////////////////////////////
   private:
@@ -126,19 +126,20 @@ class ORBHelper
      * Called by ORBHelper()
      * It also initializes CORBA references, gets POA & POA manager, activates POA mgr.
      * @return void
+     * @throw ACSErrTypeCommon::CORBAProblemEx
      * @htmlonly
        <br><hr>
        @endhtmlonly
      */
     void 
-    init_ORB()
-	throw (ACSErrTypeCommon::CORBAProblemEx);
+    init_ORB();
 
     /**
      * Called by ORBHelper(int argc, char *argv[])
      * It also initializes CORBA references, gets POA & POA manager, activates POA mgr.
      * @param argc Number of arguments to CORBA::ORB_init(...)
      * @param argv Arguments to CORBA::ORB_init(...)
+     * @throw ACSErrTypeCommon::CORBAProblemEx
      * @return void
      * @htmlonly
        <br><hr>
@@ -146,8 +147,7 @@ class ORBHelper
      */
     void 
     init_ORB(int argc, 
-	     char *argv[])
-	throw (ACSErrTypeCommon::CORBAProblemEx);
+	     char *argv[]);
 
     /** 
      * Run the orb in a BACI thread because orb_mp->run() is a blocking call.

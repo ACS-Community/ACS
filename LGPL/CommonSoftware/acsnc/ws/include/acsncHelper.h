@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsncHelper.h,v 1.69 2008/07/25 07:35:19 cparedes Exp $"
+* "@(#) $Id: acsncHelper.h,v 1.70 2008/10/09 07:57:41 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -95,26 +95,27 @@ class Helper
      *  <b>assumes that orb_mp was started with a correct reference to the Naming Service</b>.  It should
      *  be noted that by passing <b><i>(CORBA::ORB *) 0</i></b>, this method will default to Container's
      *  ORB (which is preferred).
+     *  @throw ACSErrTypeCommon::CORBAProblemEx
+     *  @throw ACSErrTypeCommon::CouldntCreateThreadEx
      *  @return void
      *  @htmlonly
         <br><hr>
         @endhtmlonly
      */ 
     void 
-    resolveNamingService(CORBA::ORB_ptr orb_mp)
-	throw (ACSErrTypeCommon::CORBAProblemEx, ACSErrTypeCommon::CouldntCreateThreadEx);
+    resolveNamingService(CORBA::ORB_ptr orb_mp);
     
     /**  
      *  This is used to determine if the notification channel we want to use has been registered
      *  with the Naming Service. If it has, we use that directly.
      *  @return true if named channel exists. False otherwise
+     *  @throw ACSErrTypeCommon::CORBAProblemEx
      *  @htmlonly
         <br><hr>
         @endhtmlonly
      */
     bool 
-    resolveNotifyChannel()
-	throw (ACSErrTypeCommon::CORBAProblemEx);
+    resolveNotifyChannel();
 
     /**  
      *  Helper method designed to eliminate "xxx::" from a passed string where "xxx" is some
@@ -179,25 +180,25 @@ class Helper
      * Utility method.
      * Try to resolve the Notify factory from the Naming service.
      * Only used by Supplier to create NC.
+     * @throw ACSErrTypeCommon::CORBAProblemEx
      * @htmlonly
        <br><hr>
        @endhtmlonly
      */
     virtual void 
-    resolveNotificationFactory()
-	throw (ACSErrTypeCommon::CORBAProblemEx);
+    resolveNotificationFactory();
     
     /** 
      * Utility method.
      * Create notification channel. 
      * Only used by Supplier to create NC.
+     * @throw ACSErrTypeCommon::CORBAProblemEx
      * @htmlonly
        <br><hr>
        @endhtmlonly
     */
     virtual void 
-    createNotificationChannel()
-	throw (ACSErrTypeCommon::CORBAProblemEx);
+    createNotificationChannel();
 
     /**
      * Utility method.
