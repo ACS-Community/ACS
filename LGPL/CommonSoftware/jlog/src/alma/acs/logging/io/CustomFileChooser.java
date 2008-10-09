@@ -1,4 +1,4 @@
-package com.cosylab.logging.client;
+package alma.acs.logging.io;
 
 import javax.swing.JFileChooser;
 import javax.swing.JDialog;

@@ -37,11 +37,11 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
 import alma.acs.logging.dialogs.LoadURLDlg;
+import alma.acs.logging.io.CustomFileChooser;
 
 import com.cosylab.logging.LoggingClient;
 import com.cosylab.logging.IOLogsHelper;
 
-import com.cosylab.logging.client.CustomFileChooser;
 
 /**
  * Extends the <code>LogEntryTableModelBase</code> adding I/O, deletion of logs
