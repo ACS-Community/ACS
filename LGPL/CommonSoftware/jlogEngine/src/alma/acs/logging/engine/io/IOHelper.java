@@ -25,8 +25,12 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 
 import javax.swing.JOptionPane;
 
@@ -137,7 +141,8 @@ public class IOHelper extends LogMatcher {
 	 * @param rawLogListener The callback for each new XML log read from the IO
 	 * @param errorListener The listener for errors
 	 * @param progressListener The listener to be notified about the bytes read
-	 * @return The legth of the file to read
+	 * @param gzip If <code>true</code> the file to read is compressed in GZIP format
+	 * @return The length of the file to read
 	 * @throws IOException In case of an IO error while reading the file
 	 * @throws Exception In case of error building the parser
 	 */
@@ -146,7 +151,8 @@ public class IOHelper extends LogMatcher {
 			ACSRemoteLogListener logListener,
 			ACSRemoteRawLogListener rawLogListener,
 			ACSRemoteErrorListener errorListener, 
-			IOPorgressListener progressListener) throws IOException, Exception {
+			IOPorgressListener progressListener,
+			boolean gzip) throws IOException, Exception {
 		if (fileName==null || fileName.isEmpty()) {
 			throw new IllegalArgumentException("Invalid file name: "+fileName);
 		}
@@ -154,7 +160,10 @@ public class IOHelper extends LogMatcher {
 			throw new IllegalArgumentException("The progress listener can't be null");
 		}
 		File f = new File(fileName);
-		FileInputStream inStream = new FileInputStream(f);
+		InputStream inStream = new FileInputStream(f);
+		if (gzip) {
+			inStream= new GZIPInputStream(inStream);
+		}
 		loadLogs(inStream, logListener, rawLogListener, errorListener,progressListener);
 		return f.length();
 	}
@@ -174,7 +183,7 @@ public class IOHelper extends LogMatcher {
 	 * @throws Exception In case of error building the parser
 	 */
 	public synchronized void loadLogs(
-			FileInputStream fis,
+			InputStream fis,
 			ACSRemoteLogListener logListener,
 			ACSRemoteRawLogListener rawLogListener,
 			ACSRemoteErrorListener errorListener, 
@@ -268,36 +277,12 @@ public class IOHelper extends LogMatcher {
 	}
 	
 	/**
-	 * Prepare the file for saving logs.
-	 * <P>
-	 * It creates a file with the passed name and write the required
-	 * header XML tags
-	 * <P>
-	 * @param outFileName The not n<code>null</code> and not empty name
-	 *                    of the output file
-	 *                    @param If <code>true</code> the date will be appended
-	 * @return The file to write the logs in 
-	 *         in the file
-	 * @throws IOException In case of an IO error
-	 */
-	public synchronized FileOutputStream prepareSaveFile (String outFileName,boolean append) throws IOException {
-		if (outFileName==null || outFileName.isEmpty()) {
-			throw new IllegalArgumentException("Invalid file name");
-		}
-		// Open the output file
-		FileOutputStream fos = new FileOutputStream(outFileName,append);
-		// Write the XML header
-		writeHeader(fos);
-		return fos;
-	}
-	
-	/**
 	 * Write the XML header in the buffered writer
 	 * 
 	 * @param bw
 	 * @throws IOException
 	 */
-	public synchronized void writeHeader(FileOutputStream stream) throws IOException {
+	public synchronized void writeHeader(OutputStream stream) throws IOException {
 		if (stream==null) {
 			throw new IllegalArgumentException("The BufferedWriter can't be null");
 		}
@@ -319,7 +304,7 @@ public class IOHelper extends LogMatcher {
 	 * @param close If <code>true</code> the <code>BufferedWriter</code> is closed
 	 * @throws IOException In case of an IO error
 	 */
-	public synchronized void terminateSave(FileOutputStream outBW, boolean close) throws IOException {
+	public synchronized void terminateSave(OutputStream outBW, boolean close) throws IOException {
 		outBW.write((new String("</Log>")).getBytes());
 		outBW.flush();
 		if (close) {
@@ -335,7 +320,7 @@ public class IOHelper extends LogMatcher {
 	 * @param progressListener The listener to be notified about the bytes written
 	 * @throws IOException In case of an IO error while writing logs into the file
 	 */
-	public synchronized int saveLog(FileOutputStream outF, ILogEntry log) throws IOException {
+	public synchronized int saveLog(OutputStream outF, ILogEntry log) throws IOException {
 		if (outF==null) {
 			throw new IllegalArgumentException("BufferedWriter can't be null");
 		}
@@ -355,10 +340,11 @@ public class IOHelper extends LogMatcher {
 	 * @param progressListener The listener to be notified about the number of bytes written
 	 * @param append <UL><LI>if <code>true</code> if the logs in the collection must be appended to an existing file</LI>
 	 *               <LI>if <code>false</code> and the file aredy exists, it is deleted before writing 
-	 *               </UL> 
+	 *               </UL>
+	 * @param gzip If <code>true</code> the file is compressed (GZIP) 
 	 * @throws IOException In case of error writing
 	 */
-	public synchronized void saveLogs(String fileName, Collection<ILogEntry> logs, IOPorgressListener progressListener, boolean append) throws IOException {
+	public synchronized void saveLogs(String fileName, Collection<ILogEntry> logs, IOPorgressListener progressListener, boolean append, boolean gzip) throws IOException {
 		if (logs==null || logs.isEmpty()) {
 			throw new IllegalArgumentException("No logs to save");
 		}
@@ -366,7 +352,7 @@ public class IOHelper extends LogMatcher {
 			throw new IllegalArgumentException("The progress listener can't be null");
 		}
 		Iterator<ILogEntry> iterator = logs.iterator();
-		saveLogs(fileName, iterator, progressListener,append);
+		saveLogs(fileName, iterator, progressListener,append,gzip);
 	}
 	
 	/**
@@ -378,6 +364,7 @@ public class IOHelper extends LogMatcher {
 	 * @param outFile The file to write logs into
 	 * @param logs The non empty collection of logs to save
 	 * @param progressListener The listener to be notified about the number of bytes written
+	 * @param gzip If <code>true</code> the file is compressed (GZIP)
 	 * @throws IOException In case of error writing
 	 */
 	public synchronized void saveLogs(FileOutputStream outFile, Collection<ILogEntry> logs, IOPorgressListener progressListener) throws IOException {
@@ -400,18 +387,23 @@ public class IOHelper extends LogMatcher {
 	 * @param append <UL><LI>if <code>true</code> if the logs in the collection must be appended to an existing file</LI>
 	 *               <LI>if <code>false</code> and the file already exists, it is deleted before writing 
 	 *               </UL> 
+	 * @param gzip If <code>true</code> the file is compressed (GZIP)    
 	 * @throws IOException In case of error writing
 	 */
-	public synchronized void saveLogs(String fileName, Iterator<ILogEntry>iterator, IOPorgressListener progressListener, boolean append) throws IOException {
+	public synchronized void saveLogs(String fileName, Iterator<ILogEntry>iterator, IOPorgressListener progressListener, boolean append, boolean gzip) throws IOException {
 		if (iterator==null || !iterator.hasNext()) {
 			throw new IllegalArgumentException("No logs to save");
 		}
 		if (progressListener==null) {
 			throw new IllegalArgumentException("The progress listener can't be null");
 		}
-		FileOutputStream outFile=prepareSaveFile(fileName, append);
-		saveLogs(outFile, iterator,progressListener);
-		terminateSave(outFile,true);
+		OutputStream outStream=new FileOutputStream(fileName,append);
+		if (gzip) {
+			outStream = new GZIPOutputStream(outStream);
+		}
+		writeHeader(outStream);
+		saveLogs(outStream, iterator,progressListener);
+		terminateSave(outStream,true);
 	}
 	
 	/**
@@ -425,7 +417,7 @@ public class IOHelper extends LogMatcher {
 	 * @param progressListener The listener to be notified about the number of bytes written
 	 * @throws IOException In case of error writing
 	 */
-	public synchronized void saveLogs(FileOutputStream outF, Iterator<ILogEntry> iterator, IOPorgressListener progressListener) throws IOException {
+	public synchronized void saveLogs(OutputStream outF, Iterator<ILogEntry> iterator, IOPorgressListener progressListener) throws IOException {
 		if (iterator==null || !iterator.hasNext()) {
 			throw new IllegalArgumentException("No logs to save");
 		}
