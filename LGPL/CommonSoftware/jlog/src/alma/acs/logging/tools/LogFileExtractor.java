@@ -217,8 +217,8 @@ public class LogFileExtractor implements ACSRemoteRawLogListener, ACSRemoteError
 		if (!writeAsCSV) {
 			outHelper = new IOHelper();
 			try {
-				outF=outHelper.get
-				outF = outHelper.prepareSaveFile(destFileName, false);
+				outF=outHelper.getBufferedWriter(destFileName, false, false);
+				outHelper.writeHeader(outF);
 			} catch (Exception e) {
 				System.err.println("Error creating a file for saving named "+destFileName);
 				e.printStackTrace(System.err);
