@@ -3,7 +3,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: enumpropROImpl.h,v 1.47 2008/10/01 02:33:31 cparedes Exp $"
+* "@(#) $Id: enumpropROImpl.h,v 1.48 2008/10/09 05:06:11 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -155,18 +155,11 @@ public:
 	virtual CORBA::Any * get_characteristic_by_name (
 	    const char * name
 	    
-	  )
-	  throw (
-	    CORBA::SystemException,
-	    ACS::NoSuchCharacteristic
 	  );
 	
 	virtual ACS::stringSeq * find_characteristic (
 	    const char * reg_exp
 	    
-	  )
-	  throw (
-	    CORBA::SystemException
 	  );
     */
 
@@ -177,9 +170,6 @@ public:
     /*
 	virtual CosPropertyService::PropertySet_ptr get_all_characteristics (
 	    
-	  )
-	  throw (
-	    CORBA::SystemException
 	  );
     */
   
