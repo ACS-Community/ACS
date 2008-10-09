@@ -18,7 +18,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciDevIOMem.h,v 1.100 2008/07/25 07:29:51 cparedes Exp $"
+* "@(#) $Id: baciDevIOMem.h,v 1.101 2008/10/09 06:18:16 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -57,13 +57,19 @@ template <class T> class DevIOMem : public DevIO<T>
 
     virtual bool initializeValue(){ return true; }
   
-    virtual T read(ACS::Time& timestamp) throw (ACSErr::ACSbaseExImpl)
+    /**
+     *  @throw ACSErr::ACSbaseExImpl
+     */
+    virtual T read(ACS::Time& timestamp)
 	{
 	    timestamp = getTimeStamp();
 	    return value_m;
 	}
 
-    virtual void write(const T& value, ACS::Time& timestamp) throw (ACSErr::ACSbaseExImpl)
+    /**
+     *  @throw ACSErr::ACSbaseExImpl
+     */
+    virtual void write(const T& value, ACS::Time& timestamp) 
 	{
 	    timestamp = getTimeStamp();
 	    value_m = value;

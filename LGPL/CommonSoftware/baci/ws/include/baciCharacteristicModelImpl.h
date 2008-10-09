@@ -19,7 +19,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciCharacteristicModelImpl.h,v 1.12 2008/10/01 02:26:45 cparedes Exp $"
+* "@(#) $Id: baciCharacteristicModelImpl.h,v 1.13 2008/10/09 06:18:16 cparedes Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -93,7 +93,10 @@ class baci_EXPORT CharacteristicModelImpl : public virtual PortableServer::RefCo
 
     const char* getModelName() const { return model_name_m.c_str(); };
 
-    cdb::DAONode* getDAONode() const throw(cdbErrType::CDBRecordDoesNotExistExImpl);
+    /**
+    * @throw cdbErrType::CDBRecordDoesNotExistExImpl
+    */
+    cdb::DAONode* getDAONode()const;
 
     /* ------------------ [ CharacteristicModel interface ] ------------------ */
 

@@ -18,7 +18,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciDevIO.h,v 1.101 2006/10/23 12:55:12 bjeram Exp $"
+* "@(#) $Id: baciDevIO.h,v 1.102 2008/10/09 06:18:16 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -95,9 +95,10 @@ public:
      * #ACSErrTypeCommon::NotImplementedExImpl exception is thrown!
      * \param timestamp timestamp of reading
      * \exception any of ACS exceptions can be thrown
+     * @throw ACSErr::ACSbaseExImpl
      * \return read value
      */
-    virtual T read(ACS::Time& timestamp) throw (ACSErr::ACSbaseExImpl)
+    virtual T read(ACS::Time& timestamp) 
 	{
 	    throw ACSErrTypeCommon::NotImplementedExImpl(__FILE__, __LINE__,
 							 "baci::DevIO<>::read");
@@ -110,8 +111,9 @@ public:
      * \param value value to be writen
      * \param timestamp timestamp of writing
      * \exception any of ACS exceptions can be thrown
+     * @throw ACSErr::ACSbaseExImpl
      */
-    virtual void write(const T& value, ACS::Time& timestamp) throw (ACSErr::ACSbaseExImpl)
+    virtual void write(const T& value, ACS::Time& timestamp)
 	{
 	    throw ACSErrTypeCommon::NotImplementedExImpl(__FILE__, __LINE__,
 							 "baci::DevIO<>::write");		 

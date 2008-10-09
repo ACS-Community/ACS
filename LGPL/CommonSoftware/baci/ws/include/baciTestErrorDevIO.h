@@ -21,7 +21,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: baciTestErrorDevIO.h,v 1.2 2008/07/25 07:29:52 cparedes Exp $"
+* "@(#) $Id: baciTestErrorDevIO.h,v 1.3 2008/10/09 06:18:16 cparedes Exp $"
 */
 
 #ifndef __cplusplus
@@ -40,17 +40,21 @@ class TestErrorDevIO : public DevIO<CORBA::Double>
 
   public:
 
+        /**
+         *  @throw ACSErr::ACSbaseExImpl
+        */
     	virtual CORBA::Double
     	read(ACS::Time& timestamp) 
-	    throw (ACSErr::ACSbaseExImpl)
 	{
 	    throw ACSErrTypeCommon::GenericErrorExImpl(__FILE__, __LINE__, "TestErrorDevIO::read");
 	    return 1;
 	}
 
+        /**
+         *  @throw ACSErr::ACSbaseExImpl
+        */
     virtual void 
     write(const CORBA::Double &value, ACS::Time& timestamp)
-	throw (ACSErr::ACSbaseExImpl)
 	{
 	  	    throw ACSErrTypeCommon::GenericErrorExImpl(__FILE__, __LINE__, "TestErrorDevIO::write");  
 	}

@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciTestContainerServices.h,v 1.6 2008/07/25 09:41:47 cparedes Exp $"
+* "@(#) $Id: baciTestContainerServices.h,v 1.7 2008/10/09 06:18:16 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -41,39 +41,49 @@ class TestContainerServices : public virtual maci::ContainerServices
 	{;}
     
   protected:
+    /**
+     * @throw maciErrType::CannotGetComponentExImpl
+    */
     virtual CORBA::Object* getCORBAComponent(const char* name)
-	    throw (maciErrType::CannotGetComponentExImpl)
 	{
 	    return (CORBA::Object*)0;
 	}
 
+    /**
+     * @throw maciErrType::IncompleteComponentSpecExImp
+     * @throw maciErrType::InvalidComponentSpecExImpl
+     * @throw maciErrType::ComponentSpecIncompatibleWithActiveComponentExImpl
+     * @throw maciErrType::CannotGetComponentExImpl
+    */
     virtual CORBA::Object* getCORBADynamicComponent(maci::ComponentSpec compSpec, bool markAsDefault)
-	    throw(maciErrType::IncompleteComponentSpecExImpl, 
-		  maciErrType::InvalidComponentSpecExImpl, 
-		  maciErrType::ComponentSpecIncompatibleWithActiveComponentExImpl, 
-		  maciErrType::CannotGetComponentExImpl)
 	{
 	    return (CORBA::Object*)0;
 	}
 
+    /**
+     * @throw maciErrType::NoDefaultComponentExImpl
+     * @throw maciErrType::CannotGetComponentExImpl
+    */
     virtual CORBA::Object* getCORBADefaultComponent(const char* idlType)
-	    throw (maciErrType::NoDefaultComponentExImpl, 
-		   maciErrType::CannotGetComponentExImpl)
 	{
 	    return (CORBA::Object*)0;
 	}
 
+    /**
+     * @throw maciErrType::IncompleteComponentSpecExImpl
+     * @throw maciErrType::InvalidComponentSpecExImpl
+     * @throw maciErrType::ComponentSpecIncompatibleWithActiveComponentExImpl
+     * @throw maciErrType::CannotGetComponentExImpl
+    */
     virtual CORBA::Object* getCORBACollocatedComponent(maci::ComponentSpec, bool, const char*)
-	    throw(maciErrType::IncompleteComponentSpecExImpl, 
-		  maciErrType::InvalidComponentSpecExImpl, 
-		  maciErrType::ComponentSpecIncompatibleWithActiveComponentExImpl, 
-		  maciErrType::CannotGetComponentExImpl)
 	{
 	    return (CORBA::Object*)0;
 	}
 
+    /**
+     * @throw maciErrType::CannotGetComponentExImpl
+    */
         CORBA::Object* getCORBAComponentNonSticky(const char*)
-	   throw (maciErrType::CannotGetComponentExImpl)
 	{
 	    return (CORBA::Object*)NULL;
 	}
@@ -81,8 +91,10 @@ class TestContainerServices : public virtual maci::ContainerServices
 
 
   public:
+    /**
+     * @throw acsErrTypeContainerServices::GettingCompInfoExImpl
+    */
     virtual maci::ComponentInfo getComponentDescriptor(const char* componentName)
-	throw (acsErrTypeContainerServices::GettingCompInfoExImpl)
 	{
 	    maci::ComponentInfo retVal;
 	    return retVal;
@@ -94,14 +106,19 @@ class TestContainerServices : public virtual maci::ContainerServices
 	    return retVal;
 	}
 
+    /**
+     * @throw maciErrType::CannotReleaseComponentExImpl
+    */
     virtual void releaseComponent(const char *name)
-	throw (maciErrType::CannotReleaseComponentExImpl)  
 	{}
 
     virtual void releaseAllComponents()
 	{}
 
-    virtual CDB::DAL_ptr getCDB() throw (acsErrTypeContainerServices::CanNotGetCDBExImpl) 
+    /**
+     * @throw acsErrTypeContainerServices::CanNotGetCDBExImpl
+    */
+    virtual CDB::DAL_ptr getCDB() 
 	{
 
 	    ACE_TCHAR corbalocRef[230];
@@ -150,9 +167,11 @@ class TestContainerServices : public virtual maci::ContainerServices
 	    return retVal;
 	}
 
-    virtual void deactivateOffShoot(PortableServer::Servant cbServant)throw (
-           acsErrTypeContainerServices::OffShootDeactivationExImpl,
-           acsErrTypeContainerServices::OffShootPOAExImpl)
+    /**
+     * @throw acsErrTypeContainerServices::OffShootDeactivationExImpl
+     * @throw acsErrTypeContainerServices::OffShootPOAExImpl
+    */
+    virtual void deactivateOffShoot(PortableServer::Servant cbServant)
 	{;}
 
     virtual PortableServer::POA_var createOffShootPOA()

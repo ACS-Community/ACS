@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciBACIComponent.cpp,v 1.18 2007/06/12 08:02:23 nbarriga Exp $"
+* "@(#) $Id: baciBACIComponent.cpp,v 1.19 2008/10/09 06:18:16 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -30,7 +30,7 @@
 #include "baciError.h"
 #include "logging.h"
 
-ACE_RCSID(baci, baci, "$Id: baciBACIComponent.cpp,v 1.18 2007/06/12 08:02:23 nbarriga Exp $");
+ACE_RCSID(baci, baci, "$Id: baciBACIComponent.cpp,v 1.19 2008/10/09 06:18:16 cparedes Exp $");
 
 using namespace baciErrTypeProperty;
 using namespace ACSErrTypeCommon;
@@ -390,8 +390,7 @@ BACIComponent::~BACIComponent()
 }//~BACIComponent
 
 
-void BACIComponent::startMonitoringThread() throw (ACSErrTypeCommon::NullPointerExImpl, 
-						   acsthreadErrType::CanNotCreateThreadExImpl)
+void BACIComponent::startMonitoringThread() 
 {
   ACS_TRACE("baci::BACIComponent::startMonitoringThread");
 
@@ -417,8 +416,7 @@ void BACIComponent::startMonitoringThread() throw (ACSErrTypeCommon::NullPointer
       }//if-else
 }//startMonitoringThread
 
-void BACIComponent::startActionThread() throw (ACSErrTypeCommon::NullPointerExImpl, 
-					       acsthreadErrType::CanNotCreateThreadExImpl)
+void BACIComponent::startActionThread() 
 {
   ACS_TRACE("baci::BACIComponent::startActionThread");
 

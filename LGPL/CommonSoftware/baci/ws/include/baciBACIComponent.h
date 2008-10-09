@@ -19,7 +19,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciBACIComponent.h,v 1.13 2007/06/12 08:02:23 nbarriga Exp $"
+* "@(#) $Id: baciBACIComponent.h,v 1.14 2008/10/09 06:18:16 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -181,21 +181,19 @@ public:
   /**
    *  Creates and starts the Monitoring thread.
    *  In case of an error it throws an exception:
-   *    - #ACSErrTypeCommon::NullPointerExImpl if there is no thread manager
-   *    - #acsthreadErrType::CanNotCreateThreadExImpl if the thread can not be created
+   *  @throw ACSErrTypeCommon::NullPointerExImpl if there is no thread manager
+   *  @throw acsthreadErrType::CanNotCreateThreadExImpl if the thread can not be created
    */ 
-  void startMonitoringThread() throw (ACSErrTypeCommon::NullPointerExImpl, 
-				      acsthreadErrType::CanNotCreateThreadExImpl);
+  void startMonitoringThread();
 
   /**
    * Creates and starts the Action thread. 
    * The thread which is used for executing asyhronous commmand.
    *  In case of an error it throws an exception:
-   *    - #ACSErrTypeCommon::NullPointerExImpl if there is no thread manager
-   *    - #acsthreadErrType::CanNotCreateThreadExImpl if the thread can not be created
+   *  @throw ACSErrTypeCommon::NullPointerExImpl if there is no thread manager
+   *  @throw acsthreadErrType::CanNotCreateThreadExImpl if the thread can not be created
    */ 
-   void startActionThread() throw (ACSErrTypeCommon::NullPointerExImpl, 
-				   acsthreadErrType::CanNotCreateThreadExImpl);
+   void startActionThread();
 
   /**
    * Stops (suspends) the Monitoring thread

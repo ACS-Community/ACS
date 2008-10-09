@@ -20,7 +20,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciCharacteristicComponentImpl.h,v 1.37 2008/10/01 02:26:45 cparedes Exp $"
+* "@(#) $Id: baciCharacteristicComponentImpl.h,v 1.38 2008/10/09 06:18:16 cparedes Exp $"
 *
 */
 
@@ -160,11 +160,10 @@ class CharacteristicComponentImpl : public acscomponent::ACSComponentImpl,
 
     /**
      * The function creates and starts the thread before calling  execute
-     * 
+     * @throw ACSErr::ACSbaseExImpl 
      * @return void
      */
-    virtual void __execute()
-        throw (ACSErr::ACSbaseExImpl);
+    virtual void __execute();
     
     /**
      * The function stops the threads before calling  aboutToAbort()
@@ -185,13 +184,11 @@ class CharacteristicComponentImpl : public acscomponent::ACSComponentImpl,
      * it just remains active.
      * If the thread has not been yet created, it creates one. 
      * If the thread has been already created, it just resumes it.
-     * In case the monitoring thread can not be created,
-     * it throws #acsthreadErrType::CanNotStartThreadExImpl
-     * ... and if BACIComponent is NULL it throws #ACSErrTypeCommon::NullPointerExImpl
+     * @throw acsthreadErrType::CanNotStartThreadExImpl In case the monitoring thread can not be created
+     * @throw ACSErrTypeCommon::NullPointerExImpl if BACIComponent is NULL 
      * @return void
      */
-    void startPropertiesMonitoring() throw (acsthreadErrType::CanNotStartThreadExImpl,
-					    ACSErrTypeCommon::NullPointerExImpl);
+    void startPropertiesMonitoring();
 
    /**
      * Method to stop monitoring of the properties.

@@ -21,7 +21,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: baciTestDevIO.h,v 1.3 2008/07/25 07:29:52 cparedes Exp $"
+* "@(#) $Id: baciTestDevIO.h,v 1.4 2008/10/09 06:18:16 cparedes Exp $"
 */
 
 #ifndef __cplusplus
@@ -42,18 +42,22 @@ class TestDevIO : public DevIO<CORBA::Double>
 	virtual ~TestDevIO() {};
 
 	
+    /**
+     *  @throw ACSErr::ACSbaseExImpl
+    */
     	virtual CORBA::Double
-    	read(ACS::Time& timestamp) 
-	    throw (ACSErr::ACSbaseExImpl)
+    	read(ACS::Time& timestamp)
 	{
 	    timestamp = getTimeStamp();
 	    std::cout << "TestDevIO::read(...) - the value is:" << m_value << std::endl;
 	    return 1;
 	}
 
+    /**
+     *  @throw ACSErr::ACSbaseExImpl
+    */
     virtual void 
     write(const CORBA::Double &value, ACS::Time& timestamp)
-	throw (ACSErr::ACSbaseExImpl)
 	{
 	    timestamp = getTimeStamp();
 	    std::cout << "TestDevIO::write(...) - the value before is:" << m_value << std::endl;

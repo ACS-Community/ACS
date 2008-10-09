@@ -19,13 +19,13 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: baciCharacteristicComponentImpl.cpp,v 1.46 2008/10/01 02:26:45 cparedes Exp $"
+* "@(#) $Id: baciCharacteristicComponentImpl.cpp,v 1.47 2008/10/09 06:18:16 cparedes Exp $"
 *
 */
 
 #include <vltPort.h>
 
-static char *rcsId="@(#) $Id: baciCharacteristicComponentImpl.cpp,v 1.46 2008/10/01 02:26:45 cparedes Exp $"; 
+static char *rcsId="@(#) $Id: baciCharacteristicComponentImpl.cpp,v 1.47 2008/10/09 06:18:16 cparedes Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <baci.h>
@@ -89,7 +89,7 @@ CharacteristicComponentImpl::~CharacteristicComponentImpl()
 /* --------------------- [ LifeCycle functions ] ------------------*/
 /* ----------------------------------------------------------------*/
 
-void CharacteristicComponentImpl::__execute() throw (ACSErr::ACSbaseExImpl)
+void CharacteristicComponentImpl::__execute() 
 {
   ACS_TRACE("baci::CharacteristicComponentImpl::__execute");
     // Start the threads actually created and started
@@ -168,8 +168,7 @@ void CharacteristicComponentImpl::__cleanUp()
   ACSComponentImpl::__cleanUp();
 }//__cleanUp
 
-void  CharacteristicComponentImpl::startPropertiesMonitoring() throw (acsthreadErrType::CanNotStartThreadExImpl,
-								      ACSErrTypeCommon::NullPointerExImpl)
+void  CharacteristicComponentImpl::startPropertiesMonitoring() 
 {
     if ( component_mp!=NULL)
 	{
