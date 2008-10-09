@@ -1,7 +1,10 @@
 /*
- * "@(#) $Id: acstestcompTimingExplorerImpl.cpp,v 1.3 2008/10/01 05:33:43 cparedes Exp $"
+ * "@(#) $Id: acstestcompTimingExplorerImpl.cpp,v 1.4 2008/10/09 08:07:23 cparedes Exp $"
  *
  * $Log: acstestcompTimingExplorerImpl.cpp,v $
+ * Revision 1.4  2008/10/09 08:07:23  cparedes
+ * Remove cpp exception declarations
+ *
  * Revision 1.3  2008/10/01 05:33:43  cparedes
  * Removing exception declaration from cpp implementation
  *
@@ -161,7 +164,6 @@ TimingExplorerImpl::TimingExplorerImpl(const ACE_CString& name,
 
 
 void TimingExplorerImpl::initialize(void)
-    throw (acsErrTypeLifeCycle::acsErrTypeLifeCycleExImpl)
 {
     if(strcmp(name(), "HangOnInit") == 0)
 	{

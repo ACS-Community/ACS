@@ -2,9 +2,12 @@
 #define acstestcompImpl_h
 
 /*
- * "@(#) $Id: acstestcompTimingExplorerImpl.h,v 1.3 2008/10/01 05:33:43 cparedes Exp $"
+ * "@(#) $Id: acstestcompTimingExplorerImpl.h,v 1.4 2008/10/09 08:07:23 cparedes Exp $"
  *
  * $Log: acstestcompTimingExplorerImpl.h,v $
+ * Revision 1.4  2008/10/09 08:07:23  cparedes
+ * Remove cpp exception declarations
+ *
  * Revision 1.3  2008/10/01 05:33:43  cparedes
  * Removing exception declaration from cpp implementation
  *
@@ -62,9 +65,10 @@ class TimingExplorerImpl : public virtual acscomponent::ACSComponentImpl,
      * What is peculiar of this implementation is that it checks
      * if the name of the component is "HangOnInit". In this case
      * it hangs forever.
+     * @throw acsErrTypeLifeCycle::acsErrTypeLifeCycleExImpl
      * This is used to make tests on initialisation problems.
      */
-    virtual void initialize(void) throw (acsErrTypeLifeCycle::acsErrTypeLifeCycleExImpl);
+    virtual void initialize(void);
 
 /* ------------------- [ Lifecycle END interface ] --------------- */
 
