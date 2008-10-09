@@ -37,7 +37,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
 import alma.acs.logging.dialogs.LoadURLDlg;
-import alma.acs.logging.io.CustomFileChooser;
+import alma.acs.logging.io.LoadFileChooser;
 import alma.acs.logging.io.IOLogsHelper;
 
 import com.cosylab.logging.LoggingClient;
@@ -300,7 +300,7 @@ public class LogTableDataModel extends LogEntryTableModelBase {
 				".gz",
 				".xml"
 			};
-			CustomFileChooser fc = new CustomFileChooser(currentDir,"Load",filter,loggingClient);
+			LoadFileChooser fc = new LoadFileChooser(currentDir,"Load",filter,loggingClient);
 			File f = fc.getSelectedFile();
 			if (f!=null) {
 				try {
