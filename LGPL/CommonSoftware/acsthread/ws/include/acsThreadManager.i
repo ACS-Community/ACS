@@ -1,11 +1,8 @@
 #ifndef _ACS_THREAD_MANAGER_I
 #define _ACS_THREAD_MANAGER_I
 
-
 template<class T>
-T* ThreadManager::create(const ACE_CString name) throw (acsthreadErrType::ThreadAlreadyExistExImpl,
-						 acsthreadErrType::CanNotCreateThreadExImpl
-						 )
+T* ThreadManager::create(const ACE_CString name) 
 {
 //ACE_Guard<ACE_Recursive_Thread_Mutex> guard(m_addRemoveMutex);	
     if (getThreadByName(name)!=NULL) 
@@ -49,9 +46,7 @@ T* ThreadManager::create(const ACE_CString name) throw (acsthreadErrType::Thread
 template<class T>
 T* ThreadManager::create(const ACE_CString name,
 			 const TimeInterval responseTime,
-			 const TimeInterval sleepTime) throw (acsthreadErrType::ThreadAlreadyExistExImpl,
-							      acsthreadErrType::CanNotCreateThreadExImpl
-			     )
+			 const TimeInterval sleepTime)
 {
 //ACE_Guard<ACE_Recursive_Thread_Mutex> guard(m_addRemoveMutex);	
     if (getThreadByName(name)!=NULL) 
@@ -85,14 +80,11 @@ T* ThreadManager::create(const ACE_CString name,
 	}//try-catch
 }//create
 
-
 template<class T>
 T* ThreadManager::create(const ACE_CString name,
 			 const TimeInterval responseTime,
 			 const TimeInterval sleepTime,
-			 bool del)  throw (acsthreadErrType::ThreadAlreadyExistExImpl,
-					   acsthreadErrType::CanNotCreateThreadExImpl
-			     )
+			 bool del)  
 {
 //ACE_Guard<ACE_Recursive_Thread_Mutex> guard(m_addRemoveMutex);	
     if (getThreadByName(name)!=NULL) 
@@ -131,9 +123,7 @@ T* ThreadManager::create(const ACE_CString name,
 			 const TimeInterval responseTime,
 			 const TimeInterval sleepTime,
 			 bool del,
-                         const long thrFlags)  throw (acsthreadErrType::ThreadAlreadyExistExImpl,
-						      acsthreadErrType::CanNotCreateThreadExImpl
-			     )
+                         const long thrFlags)
 {
 //ACE_Guard<ACE_Recursive_Thread_Mutex> guard(m_addRemoveMutex);	
     if (getThreadByName(name)!=NULL) 
@@ -172,8 +162,7 @@ T* ThreadManager::create(const ACE_CString name,
  ***************************************/
 
 template<class T, class P>
-T* ThreadManager::create(const ACE_CString name, P& param)  throw (acsthreadErrType::ThreadAlreadyExistExImpl,
-								   acsthreadErrType::CanNotCreateThreadExImpl )
+T* ThreadManager::create(const ACE_CString name, P& param)
 {
 //ACE_Guard<ACE_Recursive_Thread_Mutex> guard(m_addRemoveMutex);	
     if (getThreadByName(name)!=NULL) 
@@ -211,8 +200,7 @@ T* ThreadManager::create(const ACE_CString name, P& param)  throw (acsthreadErrT
 template<class T, class P>
 T* ThreadManager::create(const ACE_CString name, P& param,
 			 const TimeInterval responseTime,
-			 const TimeInterval sleepTime)  throw (acsthreadErrType::ThreadAlreadyExistExImpl,
-							      acsthreadErrType::CanNotCreateThreadExImpl )
+			 const TimeInterval sleepTime) 
 {
 //ACE_Guard<ACE_Recursive_Thread_Mutex> guard(m_addRemoveMutex);	
     if (getThreadByName(name)!=NULL) 
@@ -251,8 +239,7 @@ template<class T, class P>
 T* ThreadManager::create(const ACE_CString name, P& param,
 			 const TimeInterval responseTime,
 			 const TimeInterval sleepTime,
-			 bool del)  throw (acsthreadErrType::ThreadAlreadyExistExImpl,
-					   acsthreadErrType::CanNotCreateThreadExImpl )
+			 bool del)
 {
 //ACE_Guard<ACE_Recursive_Thread_Mutex> guard(m_addRemoveMutex);	
     if (getThreadByName(name)!=NULL) 
@@ -292,8 +279,7 @@ T* ThreadManager::create(const ACE_CString name, P& param,
 			 const TimeInterval responseTime,
 			 const TimeInterval sleepTime,
 			 bool del,
-			 const long thrFlags)  throw (acsthreadErrType::ThreadAlreadyExistExImpl,
-						      acsthreadErrType::CanNotCreateThreadExImpl )
+			 const long thrFlags)  
 {
 //ACE_Guard<ACE_Recursive_Thread_Mutex> guard(m_addRemoveMutex);	
     if (getThreadByName(name)!=NULL) 

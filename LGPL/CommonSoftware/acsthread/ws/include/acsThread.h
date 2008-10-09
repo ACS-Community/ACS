@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsThread.h,v 1.27 2007/12/04 13:25:01 bjeram Exp $"
+* "@(#) $Id: acsThread.h,v 1.28 2008/10/09 03:11:07 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -65,6 +65,7 @@ namespace ACS
 	   Constructor of the Thread class.
 	   If someone wants to set thread parameters, s/he has to send these 
 	   parameters from the constructor of the derived class up to the base class.
+       @throw acsthreadErrType::CanNotSpawnThreadExImpl
 	   @param name thread's name
 	   @param responsTime thread's heartbeat response time in 100ns unit. 
 	   Default value is 1s.
@@ -113,7 +114,7 @@ namespace ACS
 	       const TimeInterval& sleepTime=ThreadBase::defaultSleepTime,
 //	       const bool del=false);
 	       const bool del=false, 
-	       const long _thrFlags=THR_NEW_LWP | THR_DETACHED) throw (acsthreadErrType::CanNotSpawnThreadExImpl);
+	       const long _thrFlags=THR_NEW_LWP | THR_DETACHED);
     
 
 	/*

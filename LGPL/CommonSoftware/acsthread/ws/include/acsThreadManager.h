@@ -3,7 +3,7 @@
 /*******************************************************************************
 * E.S.O. - VLT project
 *
-* "@(#) $Id: acsThreadManager.h,v 1.17 2007/05/23 14:51:23 bjeram Exp $"
+* "@(#) $Id: acsThreadManager.h,v 1.18 2008/10/09 03:11:07 cparedes Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -58,60 +58,80 @@ namespace ACS
 	 * of type T (= derived from ACS::Thread)
 	 * without a parameter
 	 * and adds it to the list of Threads.
+     * @throw acsthreadErrType::ThreadAlreadyExistExImpl
+     * @throw acsthreadErrType::CanNotCreateThreadExImpl
 	 */
 	template <class T>
-	T* create(const ACE_CString name) throw (acsthreadErrType::ThreadAlreadyExistExImpl,
-						 acsthreadErrType::CanNotCreateThreadExImpl );
+	T* create(const ACE_CString name);
 
+    /*
+     * @throw acsthreadErrType::ThreadAlreadyExistExImpl
+     * @throw acsthreadErrType::CanNotCreateThreadExImpl
+	 */
 	template <class T>
 	T* create(const ACE_CString name,
 		  const TimeInterval responseTime,
-		  const TimeInterval sleepTime) throw (acsthreadErrType::ThreadAlreadyExistExImpl,
-						       acsthreadErrType::CanNotCreateThreadExImpl );
+		  const TimeInterval sleepTime);
+    /*
+     * @throw acsthreadErrType::ThreadAlreadyExistExImpl
+     * @throw acsthreadErrType::CanNotCreateThreadExImpl
+	 */
 	template <class T>
 	T* create(const ACE_CString name,
 		  const TimeInterval responseTime,
 		  const TimeInterval sleepTime,
-		  bool del) throw (acsthreadErrType::ThreadAlreadyExistExImpl,
-				   acsthreadErrType::CanNotCreateThreadExImpl );
+		  bool del);
 
+    /*
+     * @throw acsthreadErrType::ThreadAlreadyExistExImpl
+     * @throw acsthreadErrType::CanNotCreateThreadExImpl
+	 */
 	template <class T>
 	T* create(const ACE_CString name,
 		  const TimeInterval responseTime,
 		  const TimeInterval sleepTime,
 		  bool del,
-		  const long thrFlags) throw (acsthreadErrType::ThreadAlreadyExistExImpl,
-					      acsthreadErrType::CanNotCreateThreadExImpl );
+		  const long thrFlags);
 
 	/**
 	 * create methods which create a user defined 
 	 * thread object of type T (= derived from ACS::Thread)
 	 * with a parameter of type P
 	 * and add it to the list of Threads.
+     * @throw acsthreadErrType::ThreadAlreadyExistExImpl
+     * @throw acsthreadErrType::CanNotCreateThreadExImpl
 	 */
 	template <class T, class P>
-	T* create(const ACE_CString name, P&) throw (acsthreadErrType::ThreadAlreadyExistExImpl,
-						     acsthreadErrType::CanNotCreateThreadExImpl );
+	T* create(const ACE_CString name, P&);
 
+    /*
+     * @throw acsthreadErrType::ThreadAlreadyExistExImpl
+     * @throw acsthreadErrType::CanNotCreateThreadExImpl
+	 */
 	template <class T, class P>
 	T* create(const ACE_CString name, P&,
 		  const TimeInterval responseTime,
-		  const TimeInterval sleepTime) throw (acsthreadErrType::ThreadAlreadyExistExImpl,
-						       acsthreadErrType::CanNotCreateThreadExImpl );
+		  const TimeInterval sleepTime);
+    /*
+     * @throw acsthreadErrType::ThreadAlreadyExistExImpl
+     * @throw acsthreadErrType::CanNotCreateThreadExImpl
+	 */
 	template <class T, class P>
 	T* create(const ACE_CString name, P&,
 		  const TimeInterval responseTime,
 		  const TimeInterval sleepTime,
-		  bool del) throw (acsthreadErrType::ThreadAlreadyExistExImpl,
-				   acsthreadErrType::CanNotCreateThreadExImpl );
+		  bool del);
 
+    /*
+     * @throw acsthreadErrType::ThreadAlreadyExistExImpl
+     * @throw acsthreadErrType::CanNotCreateThreadExImpl
+	 */
 	template <class T, class P>
 	T* create(const ACE_CString name, P&,
 		  const TimeInterval responseTime,
 		  const TimeInterval sleepTime,
 		  bool del,
-		  const long thrFlags) throw (acsthreadErrType::ThreadAlreadyExistExImpl,
-					      acsthreadErrType::CanNotCreateThreadExImpl );
+		  const long thrFlags);
 
 	/**
 	 * destoy method destroys a thread object
