@@ -5,6 +5,7 @@ import javax.swing.JDialog;
 import javax.swing.JComponent;
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
+import javax.swing.filechooser.FileFilter;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
@@ -24,6 +25,70 @@ import java.io.File;
  *
  */
 public class CustomFileChooser extends JDialog implements ActionListener {
+	
+	/**
+	 * The filter of files shown by the chooser.
+	 * <P>
+	 * The filtering is based on the extension of the files (case insensitive)
+	 * 
+	 * @author acaproni
+	 *
+	 */
+	public class CustomFilter extends FileFilter {
+		
+		/**
+		 * The extensions used for filtering like for example ".gz" or ".xml"
+		 */
+		private String[] extensions;
+		
+		/**
+		 * Constructor
+		 * 
+		 * @param extensions The extension used for filtering
+		 */
+		public CustomFilter(String[] extensions) {
+			if (extensions==null || extensions.length==0) {
+				throw new IllegalArgumentException("Invalid extensions");
+			}
+			this.extensions=extensions;
+		}
+
+		/**
+		 * Check if the file is readable and if its extensions matches one
+		 * of the available extensions.
+		 * 
+		 * @see javax.swing.filechooser.FileFilter#accept(java.io.File)
+		 */
+		@Override
+		public boolean accept(File f) {
+			if (!f.canRead()) {
+				return false;
+			}
+			if (f.isDirectory()) {
+				return true;
+			}
+			String fileName = f.getAbsolutePath().toLowerCase();
+			for (String ext: extensions) {
+				if (fileName.endsWith(ext.toLowerCase())) {
+					return true;
+				}
+			}
+			return false;
+		}
+
+		/**
+		 * @see javax.swing.filechooser.FileFilter#getDescription()
+		 */
+		@Override
+		public String getDescription() {
+			StringBuilder ret = new StringBuilder("Filtering based on ");
+			for (String str: extensions) {
+				ret.append(str);
+				ret.append(' ');
+			}
+			return null;
+		}
+	}
 	
 	/**
 	 * The file selected by the user
@@ -53,16 +118,23 @@ public class CustomFileChooser extends JDialog implements ActionListener {
 	 *  
 	 * @param currentDir The dir whose content is shown at startup
 	 * @param title The title of the window (it appears also in the button)
+	 * @param extensions The (case insensitive) extensions of the files to show in the chooser
+	 * 					(can be <code>null</code> or empty in case of no filtering)
+	 * @param client The <code>LoggingClient</code> invoking this file chooser
 	 */
-	public CustomFileChooser(File currentDir,String title, LoggingClient client) {
+	public CustomFileChooser(File currentDir,String title, String[] extensions, LoggingClient client) {
 		super();
 		if (client==null) {
 			throw new IllegalArgumentException("Invalid null LoggingClient!");
 		}
+		
 		loggingClient=client;
 		setTitle(title);
 		setModal(true);
 		initialize(currentDir);
+		if (extensions!=null && extensions.length>0) {
+			fc.setFileFilter(new CustomFilter(extensions));
+		}
 		pack();
 		setVisible(true);
 	}
