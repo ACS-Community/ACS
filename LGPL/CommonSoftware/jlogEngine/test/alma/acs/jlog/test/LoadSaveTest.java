@@ -199,7 +199,7 @@ public class LoadSaveTest extends TestCase implements IOPorgressListener, ACSRem
 	}
 	
 	/**
-	 * Load and save a collection of logs
+	 * Load and save a collection of logs in uncompressed files
 	 * <P>
 	 * The save is performed by passing the name of the file
 	 *  
@@ -216,12 +216,50 @@ public class LoadSaveTest extends TestCase implements IOPorgressListener, ACSRem
 		}
 		
 		// Save the logs on file
-		ioHelper.saveLogs(fileName, logs, this, false);
+		ioHelper.saveLogs(fileName, logs, this, false,false);
 		assertEquals(assumedLen, bytesWritten);
 		assertEquals(logs.size(), numOfLogsWritten);
 		
 		// Read the logs
-		ioHelper.loadLogs(fileName, this, null, this, this);
+		ioHelper.loadLogs(fileName, this, null, this, this,false);
+		assertEquals(logs.size(),numOfLogsRead);
+		assertTrue(bytesRead>assumedLen); // bytes read includes the XML header
+	
+		// Compare the 2 collections
+		assertEquals(logs.size(), logsRead.size());
+		
+		int t=0;
+		for (ILogEntry log: logs) {
+			String logXML = log.toXMLString();
+			String logReadXML = logsRead.get(t++).toXMLString();
+			assertEquals(logXML, logReadXML);
+		}
+	}
+	
+	/**
+	 * Load and save a collection of logs in uncompressed files
+	 * <P>
+	 * The save is performed by passing the name of the file
+	 *  
+	 * @throws Exception
+	 */
+	public void testSaveLoadCompressed() throws Exception {
+		IOHelper ioHelper = new IOHelper();
+		assertNotNull(ioHelper);
+		
+		long assumedLen=0;
+		for (ILogEntry log: logs) {
+			char[] chars = (log.toXMLString()+"\n").toCharArray();
+			assumedLen+=chars.length;
+		}
+		
+		// Save the logs on file
+		ioHelper.saveLogs(fileName+".gz", logs, this, false,true);
+		assertEquals(assumedLen, bytesWritten);
+		assertEquals(logs.size(), numOfLogsWritten);
+		
+		// Read the logs
+		ioHelper.loadLogs(fileName+".gz", this, null, this, this,true);
 		assertEquals(logs.size(),numOfLogsRead);
 		assertTrue(bytesRead>assumedLen); // bytes read includes the XML header
 	
@@ -291,7 +329,7 @@ public class LoadSaveTest extends TestCase implements IOPorgressListener, ACSRem
 		IOHelper ioHelper = new IOHelper();
 		assertNotNull(ioHelper);
 		
-		ioHelper.loadLogs(fileName, this, null, this, this);
+		ioHelper.loadLogs(fileName, this, null, this, this,false);
 		// Check if the number of records is the same
 		assertEquals(specialLogs.length, logsRead.size());
 	}
@@ -307,12 +345,12 @@ public class LoadSaveTest extends TestCase implements IOPorgressListener, ACSRem
 		assertNotNull(ioHelper);
 		
 		// First save with no append
-		ioHelper.saveLogs(fileName, logs, this, false);
+		ioHelper.saveLogs(fileName, logs, this, false,false);
 		// Second save with append
-		ioHelper.saveLogs(fileName, logs, this, true);
+		ioHelper.saveLogs(fileName, logs, this, true,false);
 		
 		// Load the logs
-		ioHelper.loadLogs(fileName, this, null, this, this);
+		ioHelper.loadLogs(fileName, this, null, this, this,false);
 		assertEquals(2*logs.size(), logsRead.size());
 		assertEquals(2*logs.size(), numOfLogsRead);
 	}
@@ -335,12 +373,12 @@ public class LoadSaveTest extends TestCase implements IOPorgressListener, ACSRem
 		}
 		
 		// Save the logs on file
-		ioHelper.saveLogs(fileName, iterator, this, false);
+		ioHelper.saveLogs(fileName, iterator, this, false,false);
 		assertEquals(assumedLen, bytesWritten);
 		assertEquals(logs.size(), numOfLogsWritten);
 		
 		// Read the logs
-		ioHelper.loadLogs(fileName, this, null, this, this);
+		ioHelper.loadLogs(fileName, this, null, this, this,false);
 		assertEquals(logs.size(),numOfLogsRead);
 	}
 	
@@ -374,11 +412,11 @@ public class LoadSaveTest extends TestCase implements IOPorgressListener, ACSRem
 		// Save the logs on disk
 		IOHelper ioHelper = new IOHelper();
 		assertNotNull(ioHelper);
-		ioHelper.saveLogs(fileName, logsToCheck, this, false);
+		ioHelper.saveLogs(fileName, logsToCheck, this, false,false);
 		assertEquals(logsToCheck.size(), numOfLogsWritten);
 		
 		// Load the logs from disk
-		ioHelper.loadLogs(fileName, this, null, this, this);
+		ioHelper.loadLogs(fileName, this, null, this, this,false);
 		assertEquals(logsRead.size(),logsToCheck.size());
 		
 		// Iterate over the logs comparing each field
