@@ -20,7 +20,6 @@ AcsBulkdata::BulkDataFlowConsumer<TReceiverCallback>::BulkDataFlowConsumer(const
   catch(...)
     {
       ACS_SHORT_LOG((LM_INFO,"BulkDataFlowConsumer<>::BulkDataFlowConsumer protocol not istantiated"));
-      //throw;
     }
 }
 

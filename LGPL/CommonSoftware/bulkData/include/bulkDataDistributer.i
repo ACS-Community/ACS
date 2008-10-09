@@ -35,7 +35,6 @@ AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::~BulkDataD
 
 template<class TReceiverCallback, class TSenderCallback>
 void AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::multiConnect(bulkdata::BulkDataReceiverConfig *recvConfig_p, const char *fepsConfig, const ACE_CString& receiverName)
-    throw (ACSBulkDataError::AVConnectErrorExImpl)
 {
     ACS_TRACE("BulkDataDistributer<>::multiConnect");
 
@@ -116,7 +115,6 @@ void AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::multi
 
 template<class TReceiverCallback, class TSenderCallback>
 void AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::multiDisconnect(const ACE_CString& receiverName)
-    throw (ACSBulkDataError::AVDisconnectErrorExImpl)
 {
     ACS_TRACE("BulkDataDistributer<>::multiDisconnect");
 
@@ -520,7 +518,6 @@ CORBA::Boolean AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallba
 
 template<class TReceiverCallback, class TSenderCallback>
 void AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::subscribeNotification(ACS::CBvoid_ptr notifCb)
-    throw (ACSBulkDataError::AVNotificationMechanismErrorExImpl)
 {
     distributerNotifCb_p = new BulkDataDistributerNotifCb<TReceiverCallback, TSenderCallback>(this);
     if(distributerNotifCb_p == 0)
@@ -566,7 +563,6 @@ void AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::subsc
 
 template<class TReceiverCallback, class TSenderCallback>
 void AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::notifySender(const ACSErr::Completion& comp)
-    throw (ACSBulkDataError::AVNotificationMechanismErrorExImpl)
 {
     CompletionImpl complImp = comp;
     complImp.log(LM_DEBUG);

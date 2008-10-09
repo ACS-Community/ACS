@@ -20,7 +20,7 @@
 *
 *
 *
-* "@(#) $Id: testDriverAcs.cpp,v 1.12 2008/10/07 10:02:49 cparedes Exp $"
+* "@(#) $Id: testDriverAcs.cpp,v 1.13 2008/10/09 09:17:22 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -110,13 +110,13 @@ class LoggingConsumer : public nc::Consumer
     //--------------------------------------------------------------
     /**
      * Method used to subscribe to all types of events on the channel.
+     * @throw ACSErrTypeCommon::CORBAProblemEx
     */
-    void subscribeAllEvents() throw (ACSErrTypeCommon::CORBAProblemEx);
+    void subscribeAllEvents();
 
 };
 
 void LoggingConsumer::subscribeAllEvents()
-    throw (ACSErrTypeCommon::CORBAProblemEx)
 {
     ACS_TRACE("LoggingConsumer::subscribeAllEvents");
     init();

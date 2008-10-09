@@ -16,7 +16,6 @@ BulkDataDistributerImpl<TReceiverCallback, TSenderCallback>::~BulkDataDistribute
 
 template<class TReceiverCallback, class TSenderCallback>
 void BulkDataDistributerImpl<TReceiverCallback, TSenderCallback>::initialize()
-    throw (ACSErr::ACSbaseExImpl)
 {
     ACS_TRACE("BulkDataDistributerImpl<>::initialize");
 

@@ -101,8 +101,10 @@ class BulkDataDistributerImpl : public baci::CharacteristicComponentImpl,
      */
     virtual ~BulkDataDistributerImpl();
 
-    virtual void initialize()
-	throw (ACSErr::ACSbaseExImpl);
+    /*
+    *  @throw ACSErr::ACSbaseExImpl
+    */
+    virtual void initialize();
 
     virtual void cleanUp();
 

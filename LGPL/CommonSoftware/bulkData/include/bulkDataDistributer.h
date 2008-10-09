@@ -105,11 +105,15 @@ namespace AcsBulkdata
 	 */
 	virtual ~BulkDataDistributer();
 
-	virtual void multiConnect(bulkdata::BulkDataReceiverConfig *recvConfig_p, const char *fepsConfig, const ACE_CString& receiverName)
-	    throw (ACSBulkDataError::AVConnectErrorExImpl);
+	/**
+	 *  @throw ACSBulkDataError::AVConnectErrorExImpl
+	 */
+	virtual void multiConnect(bulkdata::BulkDataReceiverConfig *recvConfig_p, const char *fepsConfig, const ACE_CString& receiverName);
 	
-	virtual void multiDisconnect(const ACE_CString& receiverName)
-	    throw (ACSBulkDataError::AVDisconnectErrorExImpl);
+	/**
+	 *  @throw ACSBulkDataError::AVDisconnectErrorExImpl
+	 */
+	virtual void multiDisconnect(const ACE_CString& receiverName);
 
 	virtual BulkDataReceiver<TReceiverCallback> *getReceiver() 
 	    {
@@ -139,11 +143,15 @@ namespace AcsBulkdata
 	void setContSvc (maci::ContainerServices * services_p)
 	    {  contSvc_p = services_p; }  
 
-	void subscribeNotification(ACS::CBvoid_ptr notifCb)
-	    throw (ACSBulkDataError::AVNotificationMechanismErrorExImpl);
+	/**
+	 *  @throw ACSBulkDataError::AVNotificationMechanismErrorExImpl
+	 */
+	void subscribeNotification(ACS::CBvoid_ptr notifCb);
 
-	void notifySender(const ACSErr::Completion& comp)
-	    throw (ACSBulkDataError::AVNotificationMechanismErrorExImpl);
+	/**
+	 *  @throw ACSBulkDataError::AVNotificationMechanismErrorExImpl
+	 */
+	void notifySender(const ACSErr::Completion& comp);
 
 	bulkdata::Connection getSenderConnectionState()
 	    {

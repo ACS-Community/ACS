@@ -50,7 +50,6 @@ AcsBulkdata::BulkDataReceiver<TReceiverCallback>::~BulkDataReceiver()
 
 template<class TReceiverCallback>
 void AcsBulkdata::BulkDataReceiver<TReceiverCallback>::initialize()
-    throw (ACSBulkDataError::AVInitErrorExImpl)
 {
     ACE_TRACE("BulkDataReceiver<>::initialize");
 
@@ -74,7 +73,6 @@ void AcsBulkdata::BulkDataReceiver<TReceiverCallback>::initialize()
 
 template<class TReceiverCallback>
 void AcsBulkdata::BulkDataReceiver<TReceiverCallback>::createSingleFlow()
-    throw (ACSBulkDataError::AVStreamEndpointErrorExImpl, ACSBulkDataError::AVFlowEndpointErrorExImpl)
 {
     ACE_TRACE("BulkDataReceiver<>::createSingleFlow");
 
@@ -121,7 +119,6 @@ void AcsBulkdata::BulkDataReceiver<TReceiverCallback>::createSingleFlow()
 
 template<class TReceiverCallback>
 void AcsBulkdata::BulkDataReceiver<TReceiverCallback>::createMultipleFlows(const char *fepsConfig)
-    throw (ACSBulkDataError::AVStreamEndpointErrorExImpl, ACSBulkDataError::AVInvalidFlowNumberExImpl, ACSBulkDataError::AVFlowEndpointErrorExImpl)
 {
     ACE_TRACE("BulkDataReceiver<>::createMultipleFlows");
 
@@ -220,7 +217,6 @@ void AcsBulkdata::BulkDataReceiver<TReceiverCallback>::createMultipleFlows(const
 
 template<class TReceiverCallback>
 bulkdata::BulkDataReceiverConfig * AcsBulkdata::BulkDataReceiver<TReceiverCallback>::getReceiverConfig()
-    throw (ACSBulkDataError::AVReceiverConfigErrorExImpl)
 {
     ACS_TRACE("BulkDataReceiver<>::getReceiverConfig");
 
@@ -279,7 +275,6 @@ bulkdata::BulkDataReceiverConfig * AcsBulkdata::BulkDataReceiver<TReceiverCallba
 
 template<class TReceiverCallback>
 void AcsBulkdata::BulkDataReceiver<TReceiverCallback>::getFlowCallback(ACE_CString &flowName, TReceiverCallback *&cb_p)
-    throw (ACSBulkDataError::AVFlowEndpointErrorExImpl)
 {
     ACS_TRACE("BulkDataReceiver<>::getFlowCallback");   
 
@@ -330,7 +325,6 @@ void AcsBulkdata::BulkDataReceiver<TReceiverCallback>::getFlowCallback(ACE_CStri
 
 template<class TReceiverCallback>
 void AcsBulkdata::BulkDataReceiver<TReceiverCallback>::getFlowCallback(CORBA::ULong flowNumber, TReceiverCallback *&cb_p)
-    throw (ACSBulkDataError::AVInvalidFlowNumberExImpl, ACSBulkDataError::AVFlowEndpointErrorExImpl)
 {
     ACS_TRACE("BulkDataReceiver<>::getFlowCallback");   
 
@@ -399,7 +393,6 @@ void AcsBulkdata::BulkDataReceiver<TReceiverCallback>::getFlowCallback(CORBA::UL
 
 template<class TReceiverCallback>
 void AcsBulkdata::BulkDataReceiver<TReceiverCallback>::closeReceiver()
-    throw (ACSBulkDataError::AVCloseReceiverErrorExImpl)
 {
     ACE_TRACE("BulkDataReceiver<>::closeReceiver");
 
@@ -737,7 +730,6 @@ void AcsBulkdata::BulkDataReceiver<TReceiverCallback>::setReceiverName(ACE_CStri
 
 template<class TReceiverCallback>
 void AcsBulkdata::BulkDataReceiver<TReceiverCallback>::subscribeNotification(ACS::CBvoid_ptr notifCb)
-    throw (ACSBulkDataError::AVNotificationMechanismErrorExImpl)
 {
     try
 	{
@@ -781,7 +773,6 @@ void AcsBulkdata::BulkDataReceiver<TReceiverCallback>::subscribeNotification(ACS
 
 template<class TReceiverCallback>
 void AcsBulkdata::BulkDataReceiver<TReceiverCallback>::notifySender(const ACSErr::Completion& comp)
-    throw (ACSBulkDataError::AVNotificationMechanismErrorExImpl)
 {
     CompletionImpl complImp = comp;
     complImp.log(LM_DEBUG);
@@ -803,7 +794,6 @@ void AcsBulkdata::BulkDataReceiver<TReceiverCallback>::notifySender(const ACSErr
 
 template<class TReceiverCallback>
 bulkdata::Connection AcsBulkdata::BulkDataReceiver<TReceiverCallback>::checkFlowCallbacks()
-    throw (ACSBulkDataError::AVFlowEndpointErrorExImpl)
 {
     bulkdata::Connection connState = bulkdata::READY;
 

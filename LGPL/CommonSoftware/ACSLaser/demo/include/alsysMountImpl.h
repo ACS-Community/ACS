@@ -46,9 +46,9 @@ class Mount: public acscomponent::ACSComponentImpl,
      */
     virtual ~Mount();
     
-    void faultMount() throw (CORBA::SystemException );
+    void faultMount();
                                                                                                                        
-    void terminate_faultMount() throw (CORBA::SystemException );
+    void terminate_faultMount() ;
     
     /**
      * Send an alarm active or inactive depending on the

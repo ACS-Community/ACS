@@ -44,11 +44,11 @@ Mount::~Mount()
 {
 }
 
-void Mount::faultMount() throw (CORBA::SystemException ) {
+void Mount::faultMount(){ 
 	sendAlarm("Mount","ALARM_SOURCE_MOUNTCPP",1,true);
 }
 
-void Mount::terminate_faultMount() throw (CORBA::SystemException ) {
+void Mount::terminate_faultMount(){
 	sendAlarm("Mount","ALARM_SOURCE_MOUNTCPP",1,false);
 }
 

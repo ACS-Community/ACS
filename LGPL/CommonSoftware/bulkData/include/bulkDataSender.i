@@ -47,7 +47,6 @@ AcsBulkdata::BulkDataSender<TSenderCallback>::~BulkDataSender()
 
 template<class TSenderCallback>
 void AcsBulkdata::BulkDataSender<TSenderCallback>::initialize()
-    throw (ACSBulkDataError::AVInitErrorExImpl)
 {
     ACE_TRACE("BulkDataSender<>::initialize");
 
@@ -71,7 +70,6 @@ void AcsBulkdata::BulkDataSender<TSenderCallback>::initialize()
 
 template<class TSenderCallback>
 void AcsBulkdata::BulkDataSender<TSenderCallback>::createSingleFlow()
-    throw (ACSBulkDataError::AVStreamEndpointErrorExImpl, ACSBulkDataError::AVFlowEndpointErrorExImpl)
 {
     ACE_TRACE("BulkDataSender<>::createSingleFlow");
 
@@ -126,7 +124,6 @@ void AcsBulkdata::BulkDataSender<TSenderCallback>::createSingleFlow()
 
 template<class TSenderCallback>
 void AcsBulkdata::BulkDataSender<TSenderCallback>::createMultipleFlows(const char *fepsConfig)
-    throw (ACSBulkDataError::AVStreamEndpointErrorExImpl, ACSBulkDataError::AVInvalidFlowNumberExImpl, ACSBulkDataError::AVFlowEndpointErrorExImpl)
 {
     ACE_TRACE("BulkDataSender<>::createMultipleFlows");
 
@@ -229,7 +226,6 @@ void AcsBulkdata::BulkDataSender<TSenderCallback>::createMultipleFlows(const cha
 
 template<class TSenderCallback>
 void AcsBulkdata::BulkDataSender<TSenderCallback>::connectToPeer(bulkdata::BulkDataReceiverConfig *recvConfig_p)
-    throw (ACSBulkDataError::AVConnectErrorExImpl)
 {
     ACS_TRACE("BulkDataSender<>::connectToPeer");   
 
@@ -271,7 +267,6 @@ void AcsBulkdata::BulkDataSender<TSenderCallback>::connectToPeer(bulkdata::BulkD
 
 template<class TSenderCallback>
 void AcsBulkdata::BulkDataSender<TSenderCallback>::getFlowProtocol(ACE_CString &flowname, TAO_AV_Protocol_Object *&currentProtocol_p)
-    throw (ACSBulkDataError::AVFlowEndpointErrorExImpl, ACSBulkDataError::AVProtocolErrorExImpl)
 {
 //    ACS_TRACE("BulkDataSender<>::getFlowProtocol");   
 
@@ -317,7 +312,6 @@ void AcsBulkdata::BulkDataSender<TSenderCallback>::getFlowProtocol(ACE_CString &
 
 template<class TSenderCallback>
 void AcsBulkdata::BulkDataSender<TSenderCallback>::startSend(CORBA::ULong flowNumber, ACE_Message_Block *param_p)
-    throw (ACSBulkDataError::AVSendFrameErrorExImpl)
 {
     ACS_TRACE("BulkDataSender<>::startSend(ACE_Message_Block *)");
 
@@ -414,7 +408,6 @@ void AcsBulkdata::BulkDataSender<TSenderCallback>::startSend(CORBA::ULong flowNu
 
 template<class TSenderCallback>
 void AcsBulkdata::BulkDataSender<TSenderCallback>::startSend(CORBA::ULong flowNumber , const char *param_p, size_t len)
-    throw (ACSBulkDataError::AVSendFrameErrorExImpl)
 {
     ACS_TRACE("BulkDataSender<>::startSend(const char *)");
 
@@ -489,7 +482,6 @@ void AcsBulkdata::BulkDataSender<TSenderCallback>::startSend(CORBA::ULong flowNu
 
 template<class TSenderCallback>
 void AcsBulkdata::BulkDataSender<TSenderCallback>::sendData(CORBA::ULong flowNumber, ACE_Message_Block *buffer_p)
-    throw (ACSBulkDataError::AVSendFrameErrorExImpl)
 {
     ACS_TRACE("BulkDataSender<>::startSend(ACE_Message_Block *)");
 
@@ -586,7 +578,6 @@ void AcsBulkdata::BulkDataSender<TSenderCallback>::sendData(CORBA::ULong flowNum
 
 template<class TSenderCallback>
 void AcsBulkdata::BulkDataSender<TSenderCallback>::sendData(CORBA::ULong flowNumber, const char *buffer_p, size_t len)
-    throw (ACSBulkDataError::AVSendFrameErrorExImpl)
 {
     ACS_TRACE("BulkDataSender<>::startSend(const char *)");
 
@@ -671,7 +662,6 @@ void AcsBulkdata::BulkDataSender<TSenderCallback>::sendData(CORBA::ULong flowNum
 
 template<class TSenderCallback>
 void AcsBulkdata::BulkDataSender<TSenderCallback>::stopSend(CORBA::ULong flowNumber)
-    throw(ACSBulkDataError::AVStopSendErrorExImpl) 
 {
     ACS_TRACE("BulkDataSender<>::stopSend");
 
@@ -712,7 +702,6 @@ void AcsBulkdata::BulkDataSender<TSenderCallback>::stopSend(CORBA::ULong flowNum
 
 template<class TSenderCallback>
 void AcsBulkdata::BulkDataSender<TSenderCallback>::disconnectPeer()
-    throw (ACSBulkDataError::AVDisconnectErrorExImpl)
 {
     ACS_TRACE("BulkDataSender<>::disconnectPeer");
 

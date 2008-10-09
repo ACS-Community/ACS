@@ -81,72 +81,76 @@ namespace AcsBulkdata
 	virtual ~BulkDataReceiver();
       
 	/** Initialize the A/V
+     *  @throw ACSBulkDataError::AVInitErrorExImpl 
 	 *  @return void
 	 *  @htmlonly
 	 <br><hr>
 	 @endhtmlonly
 	*/
-	void initialize()
-	    throw (ACSBulkDataError::AVInitErrorExImpl);
+	void initialize();
 
 	/** Create single flow (TCP, A/V default port)
+     *  @throw ACSBulkDataError::AVStreamEndpointErrorExImpl
+     *  @throw ACSBulkDataError::AVFlowEndpointErrorExImpl
 	 *  @return void
 	 *  @htmlonly
 	 <br><hr>
 	 @endhtmlonly
 	*/
-	void createSingleFlow()
-	    throw (ACSBulkDataError::AVStreamEndpointErrorExImpl, ACSBulkDataError::AVFlowEndpointErrorExImpl);
+	void createSingleFlow();
 
 	/** Create multiple flows (user defined)
-	 * @param fepsConfig
+	 *  @param fepsConfig
+     *  @throw ACSBulkDataError::AVStreamEndpointErrorExImpl 
+     *  @throw ACSBulkDataError::AVInvalidFlowNumberExImpl
+     *  @throw ACSBulkDataError::AVFlowEndpointErrorExImpl
 	 *  @return void
 	 *  @htmlonly
 	 <br><hr>
 	 @endhtmlonly
 	*/
-	void createMultipleFlows(const char *fepsConfig)
-	    throw (ACSBulkDataError::AVStreamEndpointErrorExImpl, ACSBulkDataError::AVInvalidFlowNumberExImpl, ACSBulkDataError::AVFlowEndpointErrorExImpl);
+	void createMultipleFlows(const char *fepsConfig);
 
 	/** Get the receiver flow and sep configuration
+     *  @throw ACSBulkDataError::AVReceiverConfigErrorExImpl
 	 *  @return bulkdata::BulkDataReceiverConfig * 
 	 *  @htmlonly
 	 <br><hr>
 	 @endhtmlonly
 	*/
-	bulkdata::BulkDataReceiverConfig * getReceiverConfig()
-	    throw (ACSBulkDataError::AVReceiverConfigErrorExImpl);
+	bulkdata::BulkDataReceiverConfig * getReceiverConfig();
 
 	/** Accessor to allocated receiver callback
 	 * @param ACE_CString 
 	 * @param TReceiverCallback 
+     *  @throw ACSBulkDataError::AVFlowEndpointErrorExImpl
 	 *  @return void
 	 *  @htmlonly
 	 <br><hr>
 	 @endhtmlonly
 	*/
-	void getFlowCallback(ACE_CString &flowName, TReceiverCallback *&cb_p)
-	    throw (ACSBulkDataError::AVFlowEndpointErrorExImpl);
+	void getFlowCallback(ACE_CString &flowName, TReceiverCallback *&cb_p);
 
 	/** Accessor to allocated receiver callback
 	 * @param CORBA::ULong
 	 * @param TReceiverCallback 
+     *  @throw ACSBulkDataError::AVInvalidFlowNumberExImpl
+     *  @throw ACSBulkDataError::AVFlowEndpointErrorExImpl
 	 *  @return void
 	 *  @htmlonly
 	 <br><hr>
 	 @endhtmlonly
 	*/
-	void getFlowCallback(CORBA::ULong flowNumber, TReceiverCallback *&cb_p)
-	    throw (ACSBulkDataError::AVInvalidFlowNumberExImpl, ACSBulkDataError::AVFlowEndpointErrorExImpl);
+	void getFlowCallback(CORBA::ULong flowNumber, TReceiverCallback *&cb_p);
 
 	/** Close the Receiver
+     *  @throw ACSBulkDataError::AVCloseReceiverErrorExImpl
 	 *  @return void
 	 *  @htmlonly
 	 <br><hr>
 	 @endhtmlonly
 	*/
-	void closeReceiver()
-	    throw (ACSBulkDataError::AVCloseReceiverErrorExImpl);
+	void closeReceiver();
 
 	/** Get the names of the connected flows
 	 *  @return vector<string>
@@ -166,17 +170,18 @@ namespace AcsBulkdata
 	void setReceiverName(ACE_CString recvName);
 
 	/** Subscribe to the Notification Mechanism
+     *  @throw ACSBulkDataError::AVNotificationMechanismErrorExImpl
 	 *  @param ACS::CBvoid_ptr
 	 *  @return void
 	 *  @htmlonly
 	 <br><hr>
 	 @endhtmlonly
 	*/
-	void subscribeNotification(ACS::CBvoid_ptr notifCb)
-	    throw (ACSBulkDataError::AVNotificationMechanismErrorExImpl);
-
-	void notifySender(const ACSErr::Completion& comp)
-	    throw (ACSBulkDataError::AVNotificationMechanismErrorExImpl);
+	void subscribeNotification(ACS::CBvoid_ptr notifCb);
+     /*
+     *  @throw ACSBulkDataError::AVNotificationMechanismErrorExImpl
+     */
+	void notifySender(const ACSErr::Completion& comp);
 
       private:
 
@@ -271,8 +276,10 @@ namespace AcsBulkdata
 
 
       public:
-	bulkdata::Connection checkFlowCallbacks()
-	    throw (ACSBulkDataError::AVFlowEndpointErrorExImpl);
+    /**
+     *  @throw ACSBulkDataError::AVFlowEndpointErrorExImpl
+    */
+	bulkdata::Connection checkFlowCallbacks();
 
 	bulkdata::Connection getSenderConnectionState()
 	    {
