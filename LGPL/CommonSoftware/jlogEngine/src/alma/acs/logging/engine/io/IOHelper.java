@@ -21,11 +21,13 @@
  */
 package alma.acs.logging.engine.io;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.Collection;
 import java.util.Iterator;
@@ -86,6 +88,19 @@ import com.cosylab.logging.engine.log.ILogEntry;
  *
  */
 public class IOHelper extends LogMatcher {
+	
+	/**
+	 * <code>GZipLogOutStream</code> subclass <code>GZIPOutputStream</code> to set the compression level.
+	 * 
+	 * @author acaproni
+	 *
+	 */
+	public class GZipLogOutStream extends GZIPOutputStream {
+		public GZipLogOutStream(OutputStream stream, int level) throws IOException {
+			super(stream);
+			super.def.setLevel(level);
+		}
+	}
 	
 	/** 
 	 * Signal that a load or a save must be stopped
@@ -161,11 +176,48 @@ public class IOHelper extends LogMatcher {
 		}
 		File f = new File(fileName);
 		InputStream inStream = new FileInputStream(f);
+		BufferedReader reader;
 		if (gzip) {
-			inStream= new GZIPInputStream(inStream);
+			InputStreamReader inStreamReader= new InputStreamReader(new GZIPInputStream(inStream));
+			reader = new BufferedReader(inStreamReader);
+		} else {
+			reader = new BufferedReader(new InputStreamReader(inStream));
 		}
-		loadLogs(inStream, logListener, rawLogListener, errorListener,progressListener);
+		loadLogs(reader, logListener, rawLogListener, errorListener,progressListener);
 		return f.length();
+	}
+	
+	/**
+	 * Load the logs from the file with the given name.
+	 * <P>
+	 * The logs are sent to the <code>ACSRemoteLogListener</code> and /or
+	 * to the <code>ACSRemoteRawLogListener</code>.
+	 * <P>
+	 * The file can be compressed (GZIP) or plain.
+	 * Compressed file names must terminate with <I>.gz</I> while
+	 * plain XML file names must end with <I>.xml</I>.
+	 *  
+	 * @param fileName The name of the file to read logs from.
+	 * 					<code>fileName</code> must terminate with .gz or .xml (case insensitive)
+	 * @param logListener The callback for each new log read from the IO
+	 * @param rawLogListener The callback for each new XML log read from the IO
+	 * @param errorListener The listener for errors
+	 * @param progressListener The listener to be notified about the bytes read
+	 * @return The length of the file to read
+	 * @throws IOException In case of an IO error while reading the file
+	 * @throws Exception In case of error building the parser
+	 */
+	public synchronized long loadLogs(
+			String fileName,
+			ACSRemoteLogListener logListener,
+			ACSRemoteRawLogListener rawLogListener,
+			ACSRemoteErrorListener errorListener, 
+			IOPorgressListener progressListener) throws IOException, Exception {
+		String name = fileName.toLowerCase();
+		if (!name.endsWith(".gz") && !name.endsWith(".xml")) {
+			throw new IllegalArgumentException("File name must ends with .gz or .xml");
+		}
+		return loadLogs(fileName, logListener, rawLogListener, errorListener, progressListener,name.endsWith(".gz")); 
 	}
 	
 	/**
@@ -174,7 +226,7 @@ public class IOHelper extends LogMatcher {
 	 * The logs are sent to the <code>ACSRemoteLogListener</code> and /or
 	 * to the <code>ACSRemoteRawLogListener</code>.
 	 *  
-	 * @param fis The stream to read logs from
+	 * @param reader The reader to read logs from
 	 * @param logListener The callback for each new log read from the IO
 	 * @param rawLogListener The callback for each new XML log read from the IO
 	 * @param errorListener The listener for errors
@@ -183,12 +235,12 @@ public class IOHelper extends LogMatcher {
 	 * @throws Exception In case of error building the parser
 	 */
 	public synchronized void loadLogs(
-			InputStream fis,
+			BufferedReader reader,
 			ACSRemoteLogListener logListener,
 			ACSRemoteRawLogListener rawLogListener,
 			ACSRemoteErrorListener errorListener, 
 			IOPorgressListener progressListener) throws IOException, Exception {
-		if (fis==null || errorListener==null) {
+		if (reader==null || errorListener==null) {
 			throw new IllegalArgumentException("Parameters can't be null");
 		}
 		if (logListener==null && rawLogListener==null) {
@@ -227,7 +279,7 @@ public class IOHelper extends LogMatcher {
 		/** 
 		 * The buffer of data read from the file
 		 */
-		byte[] buf =new byte[size];
+		char[] buf =new char[size];
 		
 		/**
 		 * The cursor to scan the buffer (circular)
@@ -245,7 +297,7 @@ public class IOHelper extends LogMatcher {
 			while (true && !stopped) {
 				// Read a block from the file if the buffer is empty
 				if (bytesInBuffer==0) {
-					bytesInBuffer = fis.read(buf,0,size);
+					bytesInBuffer = reader.read(buf,0,size);
 				}
 				if (bytesInBuffer<=0) { // EOF
 					break;
@@ -367,7 +419,7 @@ public class IOHelper extends LogMatcher {
 	 * @param gzip If <code>true</code> the file is compressed (GZIP)
 	 * @throws IOException In case of error writing
 	 */
-	public synchronized void saveLogs(FileOutputStream outFile, Collection<ILogEntry> logs, IOPorgressListener progressListener) throws IOException {
+	public synchronized void saveLogs(OutputStream outFile, Collection<ILogEntry> logs, IOPorgressListener progressListener) throws IOException {
 		if (logs==null || logs.isEmpty()) {
 			throw new IllegalArgumentException("No logs to save");
 		}
@@ -399,7 +451,7 @@ public class IOHelper extends LogMatcher {
 		}
 		OutputStream outStream=new FileOutputStream(fileName,append);
 		if (gzip) {
-			outStream = new GZIPOutputStream(outStream);
+			outStream = new GZipLogOutStream(outStream,5);
 		}
 		writeHeader(outStream);
 		saveLogs(outStream, iterator,progressListener);
