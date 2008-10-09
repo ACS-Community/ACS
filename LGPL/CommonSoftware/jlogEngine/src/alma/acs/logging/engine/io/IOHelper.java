@@ -33,6 +33,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.zip.Deflater;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
@@ -98,11 +99,37 @@ public class IOHelper extends LogMatcher {
 	 *
 	 */
 	public class GZipLogOutStream extends GZIPOutputStream {
+		
+		/**
+		 * Constructor 
+		 * 
+		 * @param stream The stream for writing compressed logs into
+		 * @param level The compression level
+		 * 
+		 * @throws IOException
+		 * 
+		 * @see {@link Deflater}
+		 */
 		public GZipLogOutStream(OutputStream stream, int level) throws IOException {
 			super(stream);
 			super.def.setLevel(level);
 		}
+		
+		/**
+		 * Constructor using the default compression level
+		 * 
+		 * @param stream The stream for writing compressed logs into
+		 * @throws IOException
+		 */
+		public GZipLogOutStream(OutputStream stream) throws IOException {
+			super(stream,DEFAULT_COMPRESSION_LEVEL);
+		}
 	}
+	
+	/**
+	 * The default compression level while saving files
+	 */
+	public static final int DEFAULT_COMPRESSION_LEVEL = 5;
 	
 	/** 
 	 * Signal that a load or a save must be stopped
@@ -396,10 +423,39 @@ public class IOHelper extends LogMatcher {
 	 * @param append <UL><LI>if <code>true</code> if the logs in the collection must be appended to an existing file</LI>
 	 *               <LI>if <code>false</code> and the file aredy exists, it is deleted before writing 
 	 *               </UL>
-	 * @param gzip If <code>true</code> the file is compressed (GZIP) 
+	 * @param gzip If <code>true</code> the file is compressed (GZIP) with the default compression level
 	 * @throws IOException In case of error writing
 	 */
-	public synchronized void saveLogs(String fileName, Collection<ILogEntry> logs, IOPorgressListener progressListener, boolean append, boolean gzip) throws IOException {
+	public synchronized void saveLogs(
+			String fileName, 
+			Collection<ILogEntry> logs, 
+			IOPorgressListener progressListener, 
+			boolean append, 
+			boolean gzip) throws IOException {
+		saveLogs(fileName, logs, progressListener,append,gzip,DEFAULT_COMPRESSION_LEVEL);
+	}
+	
+	/**
+	 * Save a collection of logs on disk
+	 * 
+	 * @param fileName The name of the file to store logs into
+	 * @param logs The non empty collection of logs to save
+	 * @param progressListener The listener to be notified about the number of bytes written
+	 * @param append <UL><LI>if <code>true</code> if the logs in the collection must be appended to an existing file</LI>
+	 *               <LI>if <code>false</code> and the file aredy exists, it is deleted before writing 
+	 *               </UL>
+	 * @param gzip If <code>true</code> the file is compressed (GZIP) 
+	 * @param compressionLevel The compressionLevel for GZIP compression (0..9);
+	 * 			ignored if <code>gzip</code> is is <code>false>/code>
+	 * @throws IOException In case of error writing
+	 */
+	public synchronized void saveLogs(
+			String fileName, 
+			Collection<ILogEntry> logs, 
+			IOPorgressListener progressListener, 
+			boolean append, 
+			boolean gzip,
+			int compressionLevel) throws IOException {
 		if (logs==null || logs.isEmpty()) {
 			throw new IllegalArgumentException("No logs to save");
 		}
@@ -407,7 +463,7 @@ public class IOHelper extends LogMatcher {
 			throw new IllegalArgumentException("The progress listener can't be null");
 		}
 		Iterator<ILogEntry> iterator = logs.iterator();
-		saveLogs(fileName, iterator, progressListener,append,gzip);
+		saveLogs(fileName, iterator, progressListener,append,gzip,compressionLevel);
 	}
 	
 	/**
@@ -434,7 +490,7 @@ public class IOHelper extends LogMatcher {
 	}
 	
 	/**
-	 * Save the logs available through an <code>Iterator</code>
+	 * Save the logs available through an <code>Iterator</code>.
 	 * 
 	 * @param filename The name of the file to write logs into
 	 * @param logs The non empty collection of logs to save
@@ -442,10 +498,39 @@ public class IOHelper extends LogMatcher {
 	 * @param append <UL><LI>if <code>true</code> if the logs in the collection must be appended to an existing file</LI>
 	 *               <LI>if <code>false</code> and the file already exists, it is deleted before writing 
 	 *               </UL> 
-	 * @param gzip If <code>true</code> the file is compressed (GZIP)    
+	 * @param gzip If <code>true</code> the file is compressed (GZIP) with the default compression level  
 	 * @throws IOException In case of error writing
 	 */
-	public synchronized void saveLogs(String fileName, Iterator<ILogEntry>iterator, IOPorgressListener progressListener, boolean append, boolean gzip) throws IOException {
+	public synchronized void saveLogs(
+			String fileName, 
+			Iterator<ILogEntry>iterator, 
+			IOPorgressListener progressListener, 
+			boolean append, 
+			boolean gzip) throws IOException {
+		saveLogs(fileName, iterator, progressListener, append, gzip,DEFAULT_COMPRESSION_LEVEL);
+	}
+	
+	/**
+	 * Save the logs available through an <code>Iterator</code>.
+	 * 
+	 * @param filename The name of the file to write logs into
+	 * @param logs The non empty collection of logs to save
+	 * @param progressListener The listener to be notified about the number of bytes written
+	 * @param append <UL><LI>if <code>true</code> if the logs in the collection must be appended to an existing file</LI>
+	 *               <LI>if <code>false</code> and the file already exists, it is deleted before writing 
+	 *               </UL> 
+	 * @param gzip If <code>true</code> the file is compressed (GZIP)  
+	 * @param compressionLevel The compressionLevel for GZIP compression (0..9);
+	 * 			ignored if <code>gzip</code> is <code>false>/code>
+	 * @throws IOException In case of error writing
+	 */
+	public synchronized void saveLogs(
+			String fileName, 
+			Iterator<ILogEntry>iterator, 
+			IOPorgressListener progressListener, 
+			boolean append, 
+			boolean gzip,
+			int compressionLevel) throws IOException {
 		if (iterator==null || !iterator.hasNext()) {
 			throw new IllegalArgumentException("No logs to save");
 		}
@@ -455,7 +540,7 @@ public class IOHelper extends LogMatcher {
 		OutputStream outStream=new FileOutputStream(fileName,append);
 		BufferedWriter writer;
 		if (gzip) {
-			outStream = new GZipLogOutStream(outStream,5);
+			outStream = new GZipLogOutStream(outStream,compressionLevel);
 		} 
 		writer = new BufferedWriter(new OutputStreamWriter(outStream));
 		
@@ -475,7 +560,10 @@ public class IOHelper extends LogMatcher {
 	 * @param progressListener The listener to be notified about the number of bytes written
 	 * @throws IOException In case of error writing
 	 */
-	public synchronized void saveLogs(BufferedWriter outBuf, Iterator<ILogEntry> iterator, IOPorgressListener progressListener) throws IOException {
+	public synchronized void saveLogs(
+			BufferedWriter outBuf, 
+			Iterator<ILogEntry> iterator, 
+			IOPorgressListener progressListener) throws IOException {
 		if (iterator==null || !iterator.hasNext()) {
 			throw new IllegalArgumentException("No logs to save");
 		}
