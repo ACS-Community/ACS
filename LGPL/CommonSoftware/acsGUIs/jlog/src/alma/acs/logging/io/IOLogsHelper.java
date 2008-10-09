@@ -23,7 +23,6 @@ package alma.acs.logging.io;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.LinkedList;
 
@@ -74,19 +73,29 @@ public class IOLogsHelper extends Thread  implements IOPorgressListener {
 		public final static int SAVE_ACTION=1;
 		public final static int TERMINATE_THREAD_ACTION=2;
 		
-		// The type of the action to perform
+		/**
+		 * The type of the action to perform
+		 */
 		public final int type;
 		
-		// The buffered reader to read the logs
+		/**
+		 * The buffered reader to read the logs
+		 */
 		public final BufferedReader inFile;
 		
-		// The buffered writer to write the logs to save into
+		/**
+		 * The buffered writer to write the logs to save into
+		 */
 		public final BufferedWriter outFile;
 		
-		// The cache with all the logs
+		/**
+		 * The cache with all the logs
+		 */
 		public final LogCache logsCache; 
 		
-		// The range for the progress bar
+		/**
+		 *  The range for the progress bar
+		 */
 		public final int progressRange;
 		
 		/**
@@ -148,6 +157,7 @@ public class IOLogsHelper extends Thread  implements IOPorgressListener {
 		 * Build an action for asynchronous save operations
 		 * 
 		 * @param outF The buffered file to save the logs into
+		 * @param theCache The cache of logs
 		 */
 		public IOAction(BufferedWriter outF, LogCache theCache) {
 			this(IOAction.SAVE_ACTION,(BufferedReader)null,outF,(ACSRemoteLogListener)null,(ACSRemoteErrorListener)null,theCache,theCache.getSize());
@@ -337,6 +347,8 @@ public class IOLogsHelper extends Thread  implements IOPorgressListener {
 	 * Save the logs in a file.
 	 * 
 	 * @param fileName The name of the file to save
+	 * @param compress <code>true</code> if the file must be compressed (GZIP)
+	 * @param level The level of compression (ignored if <code>compress</code> is <code>false</code>) 
 	 * @param cache The cache that contains the logs
 	 * @param showProgress If true a progress bar is shown
 	 * @throws IOException
@@ -344,7 +356,9 @@ public class IOLogsHelper extends Thread  implements IOPorgressListener {
 	 * @see saveLogsFromThread
 	 */
 	public void saveLogs(
-			String fileName, 
+			String fileName,
+			boolean compress,
+			int level,
 			LogCache cache,
 			boolean showProgress) throws IOException {
 		// Check if the thread is alive
@@ -353,8 +367,7 @@ public class IOLogsHelper extends Thread  implements IOPorgressListener {
 		}
 		IOOperationInProgress=true;
 		// Open the output file
-		FileWriter fw = new FileWriter(fileName,false);
-		BufferedWriter outBW = new BufferedWriter(fw);
+		BufferedWriter outBW = ioHelper.getBufferedWriter(fileName, false, compress, level);
 		
 		IOAction action = new IOAction(outBW,cache);
 		
