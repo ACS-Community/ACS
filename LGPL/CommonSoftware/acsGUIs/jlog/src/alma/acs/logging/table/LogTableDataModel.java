@@ -296,7 +296,11 @@ public class LogTableDataModel extends LogEntryTableModelBase {
 	 */
 	public void loadFromFile(String fileName) {
 		if (fileName==null) {
-			CustomFileChooser fc = new CustomFileChooser(currentDir,"Load",loggingClient);
+			String[] filter = new String[] {
+				".gz",
+				".xml"
+			};
+			CustomFileChooser fc = new CustomFileChooser(currentDir,"Load",filter,loggingClient);
 			File f = fc.getSelectedFile();
 			if (f!=null) {
 				try {
