@@ -21,7 +21,7 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
  *
- * "@(#) $Id: acsContainerServices.h,v 1.21 2008/02/24 16:58:10 msekoran Exp $"
+ * "@(#) $Id: acsContainerServices.h,v 1.22 2008/10/09 04:56:55 cparedes Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -76,27 +76,25 @@ namespace maci {
          * Gets the specified component as a Corba object. 
          * 
          * @param The name of the deployed component instance
+         * @throw maciErrType::CannotGetComponentExImpl
          * @return Reference to the component
          * @htmlonly
          * <br><hr>
          * @endhtmlonly
          */
-        virtual CORBA::Object* getCORBAComponent(const char* name)
-	    throw (maciErrType::CannotGetComponentExImpl)
-		   =0;
+        virtual CORBA::Object* getCORBAComponent(const char* name)=0;
         /**
          * Gets the specified component non sticky as a Corba object. 
 	 * for details about getting a component non sticky see #get_component_non_sticky
          * 
          * @param The name of the deployed component instance
+         * @throw maciErrType::CannotGetComponentExImpl
          * @return Reference to the component
          * @htmlonly
          * <br><hr>
          * @endhtmlonly
          */
-       virtual CORBA::Object* getCORBAComponentNonSticky(const char* name)
-	   throw (maciErrType::CannotGetComponentExImpl)
-	   =0;
+       virtual CORBA::Object* getCORBAComponentNonSticky(const char* name)=0;
   
         /**
          * Gets a dynamic component as a Corba object. 
@@ -104,15 +102,14 @@ namespace maci {
          * @param compSpec The description of the component to activate
          * @param markAsDefault If true, the component becomes the default component 
          *                      for that IDL type
+         * @throw maciErrType::NoPermissionExImpl
+         * @throw maciErrType::IncompleteComponentSpecExImpl
+         * @throw maciErrType::InvalidComponentSpecExImpl
+         * @throw maciErrType::ComponentSpecIncompatibleWithActiveComponentExImpl
+         * @throw maciErrType::CannotGetComponentExImpl
          * @return The reference to the component
          */
-        virtual CORBA::Object* getCORBADynamicComponent(maci::ComponentSpec compSpec, bool markAsDefault)
-	    throw(maciErrType::NoPermissionExImpl,
-		  maciErrType::IncompleteComponentSpecExImpl, 
-		  maciErrType::InvalidComponentSpecExImpl, 
-		  maciErrType::ComponentSpecIncompatibleWithActiveComponentExImpl, 
-		  maciErrType::CannotGetComponentExImpl)
-		  =0;
+        virtual CORBA::Object* getCORBADynamicComponent(maci::ComponentSpec compSpec, bool markAsDefault)=0;
 
         /**
          * Gets a collocated component as a Corba object. 
@@ -121,14 +118,14 @@ namespace maci {
          * @param markAsDefault If true, the component becomes the default component 
          *                      for that IDL type
 	 * @param targetComponent name of the target component (where to activate component)
+         * @throw maciErrType::NoPermissionExImpl
+         * @throw maciErrType::IncompleteComponentSpecExImpl
+         * @throw maciErrType::InvalidComponentSpecExImpl
+         * @throw maciErrType::ComponentSpecIncompatibleWithActiveComponentExImpl
+         * @throw maciErrType::CannotGetComponentExImpl
          * @return The reference to the component
          */
         virtual CORBA::Object* getCORBACollocatedComponent(maci::ComponentSpec compSpec, bool markAsDefault, const char* targetComponent)
-	    throw(maciErrType::NoPermissionExImpl,
-		  maciErrType::IncompleteComponentSpecExImpl, 
-		  maciErrType::InvalidComponentSpecExImpl, 
-		  maciErrType::ComponentSpecIncompatibleWithActiveComponentExImpl, 
-		  maciErrType::CannotGetComponentExImpl)
 	    =0;
         
         /**
@@ -136,13 +133,12 @@ namespace maci {
          * 
          * @param idlType: the idl type of the component to activate
          *                 For example IDL:alma/PS/PowerSupply:1.0
+         * @throw maciErrType::NoPermissionExImpl
+         * @throw maciErrType::NoDefaultComponentExImpl
+         * @throw maciErrType::CannotGetComponentExImpl
          * @return The reference to the component
          */
-        virtual CORBA::Object* getCORBADefaultComponent(const char* idlType)
-	    throw (maciErrType::NoPermissionExImpl,
-		   maciErrType::NoDefaultComponentExImpl, 
-		   maciErrType::CannotGetComponentExImpl)
-	    =0; 
+        virtual CORBA::Object* getCORBADefaultComponent(const char* idlType)=0; 
         
     public:
     
@@ -179,13 +175,13 @@ namespace maci {
          * This method uses templates, so no cast to the request object is required
          * 
          * @param The name of the deployed component instance
+         * @throw maciErrType::CannotGetComponentExImpl
          * @return Reference to the component
          * @htmlonly
          * <br><hr>
          * @endhtmlonly
          */
-        template<class T> T* getComponent(const char *name)	    
-	    throw (maciErrType::CannotGetComponentExImpl);
+        template<class T> T* getComponent(const char *name);	    
         
        /**
          * Gets the specified component as non sticky.
@@ -193,13 +189,13 @@ namespace maci {
          * This method uses templates, so no cast to the request object is required
          * 
          * @param The name of the deployed component instance
+         * @throw maciErrType::CannotGetComponentExImpl
          * @return Reference to the component
          * @htmlonly
          * <br><hr>
          * @endhtmlonly
          */
-       template<class T> T* getComponentNonSticky(const char *name)
-	   throw (maciErrType::CannotGetComponentExImpl);
+       template<class T> T* getComponentNonSticky(const char *name);
 
         /**
          * Gets a dynamic component
@@ -208,14 +204,14 @@ namespace maci {
          * @param compSpec The description of the component to activate
          * @param markAsDefault If true, the component becomes the default component 
          *                      for that IDL type
+         * @throw maciErrType::NoPermissionExImpl
+         * @throw maciErrType::IncompleteComponentSpecExImpl
+         * @throw maciErrType::InvalidComponentSpecExImpl
+         * @throw maciErrType::ComponentSpecIncompatibleWithActiveComponentExImpl
+         * @throw maciErrType::CannotGetComponentExImpl
          * @return The reference to the component
          */
-        template<class T> T* getDynamicComponent(maci::ComponentSpec compSpec, bool markAsDefault)
-	    throw(maciErrType::NoPermissionExImpl,
-		  maciErrType::IncompleteComponentSpecExImpl, 
-		  maciErrType::InvalidComponentSpecExImpl, 
-		  maciErrType::ComponentSpecIncompatibleWithActiveComponentExImpl, 
-		  maciErrType::CannotGetComponentExImpl);
+        template<class T> T* getDynamicComponent(maci::ComponentSpec compSpec, bool markAsDefault);
         /**
          * Gets a collocated component
          * This method uses templates, so no cast to the request object is required
@@ -223,15 +219,15 @@ namespace maci {
          * @param compSpec The description of the component to activate
          * @param markAsDefault If true, the component becomes the default component 
          *                      for that IDL type
-	 * @param targetComponent name of the target component (where to activate component)
+	     * @param targetComponent name of the target component (where to activate component)
+         * @throw maciErrType::NoPermissionExImpl
+         * @throw maciErrType::IncompleteComponentSpecExImpl
+         * @throw maciErrType::InvalidComponentSpecExImpl
+         * @throw maciErrType::ComponentSpecIncompatibleWithActiveComponentExImpl
+         * @throw maciErrType::CannotGetComponentExImpl
          * @return The reference to the component
          */
-        template<class T> T* getCollocatedComponent(maci::ComponentSpec compSpec, bool markAsDefault, const char* targetComponent)
-	    throw(maciErrType::NoPermissionExImpl,
-		  maciErrType::IncompleteComponentSpecExImpl, 
-		  maciErrType::InvalidComponentSpecExImpl, 
-		  maciErrType::ComponentSpecIncompatibleWithActiveComponentExImpl, 
-		  maciErrType::CannotGetComponentExImpl);  
+        template<class T> T* getCollocatedComponent(maci::ComponentSpec compSpec, bool markAsDefault, const char* targetComponent);
     
         /**
          * Gets the default component specified by the IDL component type.
@@ -239,26 +235,26 @@ namespace maci {
          * 
          * @param idlType: the idl type of the component to activate
          *                 For example IDL:alma/PS/PowerSupply:1.0
+         * @throw maciErrType::NoPermissionExImpl
+         * @throw maciErrType::NoDefaultComponentExImpl
+         * @throw maciErrType::CannotGetComponentExImpl
          * @return The reference to the component
          */
-        template<class T> T* getDefaultComponent(const char* idlType)	 
-	    throw (maciErrType::NoPermissionExImpl,
-		   maciErrType::NoDefaultComponentExImpl, 
-		   maciErrType::CannotGetComponentExImpl);
+        template<class T> T* getDefaultComponent(const char* idlType);
       
          /**
 	  * Gets a smart pointer to the specified component
 	  * This method uses templates, so no cast to the request object is required
 	  * 
 	  * @param The name of the deployed component instance
+      * @throw maciErrType::CannotGetComponentExImpl
 	  * @return A smart pointer containing the reference to the component
 	  * @htmlonly
 	  * <br><hr>
 	  * @endhtmlonly
 	  */
          template <typename T>
-         SmartPtr<T> getComponentSmartPtr(const char *name)	    
-	     throw (maciErrType::CannotGetComponentExImpl);
+         SmartPtr<T> getComponentSmartPtr(const char *name);    
 
          /**
 	  * Gets a smart pointer to the specified component as non sticky.
@@ -266,14 +262,14 @@ namespace maci {
 	  * This method uses templates, so no cast to the request object is required
 	  * 
 	  * @param The name of the deployed component instance
+      * @throw maciErrType::CannotGetComponentExImpl
 	  * @return A smart pointer containing the reference to the component
 	  * @htmlonly
 	  * <br><hr>
 	  * @endhtmlonly
 	  */
          template <typename T>
-         SmartPtr<T> getComponentNonStickySmartPtr(const char *name)
-	     throw (maciErrType::CannotGetComponentExImpl);
+         SmartPtr<T> getComponentNonStickySmartPtr(const char *name);
 
          /**
 	  * Gets a smart pointer to a dynamic component
@@ -282,15 +278,15 @@ namespace maci {
 	  * @param compSpec The description of the component to activate
 	  * @param markAsDefault If true, the component becomes the default component 
 	  *                      for that IDL type
+      * @throw maciErrType::NoPermissionExImpl
+      * @throw maciErrType::IncompleteComponentSpecExImpl
+      * @throw maciErrType::InvalidComponentSpecExImpl
+      * @throw maciErrType::ComponentSpecIncompatibleWithActiveComponentExImpl
+      * @throw maciErrType::CannotGetComponentExImpl
 	  * @return A smart pointer containing the reference to the component
 	  */
          template <typename T>
-         SmartPtr<T> getDynamicComponentSmartPtr(maci::ComponentSpec compSpec, bool markAsDefault)
-	     throw(maciErrType::NoPermissionExImpl,
-		   maciErrType::IncompleteComponentSpecExImpl, 
-		   maciErrType::InvalidComponentSpecExImpl, 
-		   maciErrType::ComponentSpecIncompatibleWithActiveComponentExImpl, 
-		   maciErrType::CannotGetComponentExImpl);
+         SmartPtr<T> getDynamicComponentSmartPtr(maci::ComponentSpec compSpec, bool markAsDefault);
 
          /**
 	  * Gets a smart ponter to a collocated component
@@ -300,15 +296,15 @@ namespace maci {
 	  * @param markAsDefault If true, the component becomes the default component 
 	  *                      for that IDL type
 	  * @param targetComponent name of the target component (where to activate component)
+      * @throw maciErrType::NoPermissionExImpl
+      * @throw maciErrType::IncompleteComponentSpecExImpl
+      * @throw maciErrType::InvalidComponentSpecExImpl
+      * @throw maciErrType::ComponentSpecIncompatibleWithActiveComponentExImpl
+      * @throw maciErrType::CannotGetComponentExImpl
 	  * @return A smart pointer containing the reference to the component
 	  */
          template <typename T>
-         SmartPtr<T> getCollocatedComponentSmartPtr(maci::ComponentSpec compSpec, bool markAsDefault, const char* targetComponent)
-	     throw(maciErrType::NoPermissionExImpl,
-		   maciErrType::IncompleteComponentSpecExImpl, 
-		   maciErrType::InvalidComponentSpecExImpl, 
-		   maciErrType::ComponentSpecIncompatibleWithActiveComponentExImpl, 
-		   maciErrType::CannotGetComponentExImpl);  
+         SmartPtr<T> getCollocatedComponentSmartPtr(maci::ComponentSpec compSpec, bool markAsDefault, const char* targetComponent);
 
          /**
 	  * Gets a smart pointer to the default component specified by the IDL component type.
@@ -316,22 +312,22 @@ namespace maci {
 	  * 
 	  * @param idlType: the idl type of the component to activate
 	  *                 For example IDL:alma/PS/PowerSupply:1.0
+      * @throw maciErrType::NoPermissionExImpl
+      * @throw maciErrType::NoDefaultComponentExImpl
+      * @throw maciErrType::CannotGetComponentExImpl
 	  * @return A smart pointer containing the reference to the component
 	  */
          template <typename T>
-         SmartPtr<T> getDefaultComponentSmartPtr(const char* idlType)	 
-	     throw (maciErrType::NoPermissionExImpl,
-		    maciErrType::NoDefaultComponentExImpl, 
-		    maciErrType::CannotGetComponentExImpl);
+         SmartPtr<T> getDefaultComponentSmartPtr(const char* idlType); 
 
         /**
          * Gets the component info for the component
          * 
          * @param componentName The name of the component
+         * @throw acsErrTypeContainerServices::GettingCompInfoExImpl
          * @return The ComponentInfo struct of the component
          */
-        virtual maci::ComponentInfo getComponentDescriptor(const char* componentName)
-          throw (acsErrTypeContainerServices::GettingCompInfoExImpl)=0;
+        virtual maci::ComponentInfo getComponentDescriptor(const char* componentName)=0;
         
         /**
          * Finds components by their instance name (curl) and/or by their type.
@@ -353,14 +349,13 @@ namespace maci {
          * Releases the specified component.
          *
          * @param The name of the component instance to be released
+         * @throw maciErrType::CannotReleaseComponentExImpl
          * @return void  
          * @htmlonly
          * <br><hr>
          * @endhtmlonly
          */
-        virtual void releaseComponent(const char *name)
-	    throw (maciErrType::CannotReleaseComponentExImpl)  
-	    =0;
+        virtual void releaseComponent(const char *name)=0;
       
         /**
          * Release all the components
@@ -372,13 +367,13 @@ namespace maci {
         /**
          * Get a reference to the DAL object
          *
+         * @throw acsErrTypeContainerServices::CanNotGetCDBExImpl 
          * @return A reference to the DAL 
          * @htmlonly
          * <br><hr>
          * @endhtmlonly
          */
-        virtual CDB::DAL_ptr getCDB()
-	    throw (acsErrTypeContainerServices::CanNotGetCDBExImpl)=0;
+        virtual CDB::DAL_ptr getCDB()=0;
       
         /** Get the OffShoot POA
          * @return The offshoot POA
@@ -399,10 +394,10 @@ namespace maci {
         /**
          * Deactivate the offshoot CORBA servant
          * @param cbServant the CORBA servant
+         * @throw acsErrTypeContainerServices::OffShootDeactivationExImpl
+         * @throw acsErrTypeContainerServices::OffShootPOAExImpl
          */
-        virtual void deactivateOffShoot(PortableServer::Servant cbServant)
-		   throw (acsErrTypeContainerServices::OffShootDeactivationExImpl,
-			  acsErrTypeContainerServices::OffShootPOAExImpl)=0;
+        virtual void deactivateOffShoot(PortableServer::Servant cbServant)=0;
       
         /**
          * Create the offshoot POA

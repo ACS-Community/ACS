@@ -21,7 +21,7 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
  *
- * "@(#) $Id: acsContainerServices.i,v 1.17 2008/07/28 06:59:49 cparedes Exp $"
+ * "@(#) $Id: acsContainerServices.i,v 1.18 2008/10/09 04:56:55 cparedes Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -37,7 +37,6 @@
 
 template<class T>
 T* maci::ContainerServices::getComponent(const char *name)
-    throw (maciErrType::CannotGetComponentExImpl)
 { 
     CORBA::Object* obj =T::_nil();
     
@@ -79,7 +78,6 @@ T* maci::ContainerServices::getComponent(const char *name)
 
 template<class T>
 T* maci::ContainerServices::getComponentNonSticky(const char *name)
-    throw (maciErrType::CannotGetComponentExImpl)
 { 
     CORBA::Object* obj =T::_nil();
     
@@ -126,11 +124,6 @@ T* maci::ContainerServices::getComponentNonSticky(const char *name)
 
 template<class T> T* 
 maci::ContainerServices::getDynamicComponent(maci::ComponentSpec compSpec, bool markAsDefault)
-    throw (maciErrType::NoPermissionExImpl,
-	   maciErrType::IncompleteComponentSpecExImpl, 
-	   maciErrType::InvalidComponentSpecExImpl, 
-	   maciErrType::ComponentSpecIncompatibleWithActiveComponentExImpl, 
-	   maciErrType::CannotGetComponentExImpl)
 {
     CORBA::Object* obj =T::_nil();
 
@@ -214,11 +207,6 @@ maci::ContainerServices::getDynamicComponent(maci::ComponentSpec compSpec, bool 
 
 template<class T> T* 
 maci::ContainerServices::getCollocatedComponent(maci::ComponentSpec compSpec, bool markAsDefault, const char* targetComponent)
-    throw(maciErrType::NoPermissionExImpl,
-	  maciErrType::IncompleteComponentSpecExImpl, 
-	  maciErrType::InvalidComponentSpecExImpl, 
-	  maciErrType::ComponentSpecIncompatibleWithActiveComponentExImpl, 
-	  maciErrType::CannotGetComponentExImpl)
 {
     CORBA::Object* obj =T::_nil();
 
@@ -302,9 +290,6 @@ maci::ContainerServices::getCollocatedComponent(maci::ComponentSpec compSpec, bo
 
 template<class T> T* 
 maci::ContainerServices::getDefaultComponent(const char* idlType)
-    throw (maciErrType::NoPermissionExImpl,
-	   maciErrType::NoDefaultComponentExImpl, 
-	   maciErrType::CannotGetComponentExImpl)
 {
     CORBA::Object* obj =T::_nil();
 
@@ -367,25 +352,18 @@ maci::ContainerServices::getDefaultComponent(const char* idlType)
 
 template <typename T>
 maci::SmartPtr<T> maci::ContainerServices::getComponentSmartPtr(const char *name)
-    throw (maciErrType::CannotGetComponentExImpl)
 {
     return maci::SmartPtr<T>(this, true, this->getComponent<T>(name));
 }//getComponentSmartPtr
 
 template <typename T>
 maci::SmartPtr<T> maci::ContainerServices::getComponentNonStickySmartPtr(const char *name)
-    throw (maciErrType::CannotGetComponentExImpl)
 { 
     return maci::SmartPtr<T>(this, false, this->getComponentNonSticky<T>(name));
 }//getComponentNonStickySmartPtr
 
 template <typename T>
 maci::SmartPtr<T> maci::ContainerServices::getDynamicComponentSmartPtr(maci::ComponentSpec compSpec, bool markAsDefault)
-    throw (maciErrType::NoPermissionExImpl,
-	   maciErrType::IncompleteComponentSpecExImpl, 
-	   maciErrType::InvalidComponentSpecExImpl, 
-	   maciErrType::ComponentSpecIncompatibleWithActiveComponentExImpl, 
-	   maciErrType::CannotGetComponentExImpl)
 {
     return maci::SmartPtr<T>(this, true, this->getDynamicComponent<T>(compSpec, markAsDefault));
 }//getDynamicComponentSmartPtr
@@ -393,20 +371,12 @@ maci::SmartPtr<T> maci::ContainerServices::getDynamicComponentSmartPtr(maci::Com
 
 template <typename T>
 maci::SmartPtr<T> maci::ContainerServices::getCollocatedComponentSmartPtr(maci::ComponentSpec compSpec, bool markAsDefault, const char* targetComponent)
-    throw(maciErrType::NoPermissionExImpl,
-	  maciErrType::IncompleteComponentSpecExImpl, 
-	  maciErrType::InvalidComponentSpecExImpl, 
-	  maciErrType::ComponentSpecIncompatibleWithActiveComponentExImpl, 
-	  maciErrType::CannotGetComponentExImpl)
 {
     return maci::SmartPtr<T>(this, true, this->getCollocatedComponent<T>(compSpec, markAsDefault, targetComponent));
 }//getCollocatedComponentSmartPtr
 
 template <typename T>
 maci::SmartPtr<T> maci::ContainerServices::getDefaultComponentSmartPtr(const char* idlType)
-    throw (maciErrType::NoPermissionExImpl,
-	   maciErrType::NoDefaultComponentExImpl, 
-	   maciErrType::CannotGetComponentExImpl)
 {
     return maci::SmartPtr<T>(this, true, this->getDefaultComponent<T>(idlType));
 }//getDefaultComponentSmartPtr
