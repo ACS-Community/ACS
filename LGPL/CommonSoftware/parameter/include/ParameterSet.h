@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: ParameterSet.h,v 1.10 2006/11/29 23:01:26 sharring Exp $"
+* "@(#) $Id: ParameterSet.h,v 1.11 2008/10/09 05:03:50 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -99,44 +99,51 @@ namespace Parameters {
 			/**
 			 * get an IntParam by name.
 			 * @param paramName the name of the parameter desired.
+             * @throw domain_error
 			 */
-			IntParam getIntParam(string paramName) throw(domain_error);
+			IntParam getIntParam(string paramName);
 
 			/**
 			 * get a double param by name.
 			 * @param paramName the name of the parameter desired.
+             * @throw domain_error
 			 */
-			DoubleParam getDoubleParam(string paramName) throw(domain_error);
+			DoubleParam getDoubleParam(string paramName);
 
 			/**
 			 * get a string param by name.
 			 * @param paramName the name of the parameter desired.
+             * @throw domain_error
 			 */
-			StringParam getStringParam(string paramName) throw(domain_error);
+			StringParam getStringParam(string paramName);
 
 			/**
 			 * get a bool param by name.
 			 * @param paramName the name of the parameter desired.
+             * @throw domain_error
 			 */
-			BoolParam  getBoolParam(string paramName) throw(domain_error);
+			BoolParam  getBoolParam(string paramName);
 
 			/**
 			 * get an array of int params by name 
 			 * @param paramName the name of the parameter desired.
+             * @throw domain_error
 			 */
-			IntArrayParam getIntArrayParam(string paramName) throw(domain_error);
+			IntArrayParam getIntArrayParam(string paramName);
 
 			/**
 			 * get an array of double params by name
 			 * @param paramName the name of the parameter desired.
+             * @throw domain_error
 			 */
-			DoubleArrayParam getDoubleArrayParam(string paramName) throw(domain_error);
+			DoubleArrayParam getDoubleArrayParam(string paramName);
 
 			/**
 			 * get an array of string params by name
 			 * @param paramName the name of the parameter desired.
+             * @throw domain_error
 			 */
-			StringArrayParam getStringArrayParam(string paramName) throw(domain_error);
+			StringArrayParam getStringArrayParam(string paramName);
 
 			/*************************** setters ***************************************/
 
@@ -220,62 +227,128 @@ namespace Parameters {
 
 			/**
 			 * Validates the parameter set
+             * @throw invalid_argument
 			 */
-			void validate() throw(invalid_argument);
+			void validate();
 
 			/**
 			 * Validates the bool params
+             * @throw invalid_argument
 			 */
-			void validateBoolParams() throw(invalid_argument);
-			void validateBoolParam(BoolParamDef pDef) throw(invalid_argument);
+			void validateBoolParams();
+			/**
+			 * Validates the bool parameters 
+             * @throw invalid_argument
+			 */
+			void validateBoolParam(BoolParamDef pDef);
 
 			/**
 			 * Validates the int parameters 
+             * @throw invalid_argument
 			 */
-			void validateIntParams() throw(invalid_argument);
-			void validateIntParam(IntParamDef pDef) throw(invalid_argument);
+			void validateIntParams();
+			/**
+			 * Validates the int parameters 
+             * @throw invalid_argument
+			 */
+			void validateIntParam(IntParamDef pDef);
 
 			/**
 			 * Validates the double parameters 
+             * @throw invalid_argument
 			 */
-			void validateDoubleParams() throw(invalid_argument);
-			void validateDoubleParam(DoubleParamDef pDef) throw(invalid_argument);
+			void validateDoubleParams();
+			/**
+			 * Validates the double parameters 
+             * @throw invalid_argument
+			 */
+			void validateDoubleParam(DoubleParamDef pDef);
 
 			/**
 			 * Validates the string parameters 
+             * @throw invalid_argument
 			 */
-			void validateStringParams() throw(invalid_argument);
-			void validateStringParam(StringParamDef pDef) throw(invalid_argument);
+			void validateStringParams();
+			/**
+			 * Validates the string parameters 
+             * @throw invalid_argument
+			 */
+			void validateStringParam(StringParamDef pDef);
 
 			/**
 			 * Validates the int array parameters 
+             * @throw invalid_argument
 			 */
-			void validateIntArrayParams() throw(invalid_argument);
-			void validateIntArrayParam(IntArrayParamDef pDef) throw(invalid_argument);
+			void validateIntArrayParams();
+			/**
+			 * Validates the int array parameters 
+             * @throw invalid_argument
+			 */
+			void validateIntArrayParam(IntArrayParamDef pDef);
 
 			/**
 			 * Validates the string array parameters 
+             * @throw invalid_argument
 			 */
-			void validateStringArrayParams() throw(invalid_argument);
-			void validateStringArrayParam(StringArrayParamDef pDef) throw(invalid_argument);
+			void validateStringArrayParams();
+			/**
+			 * Validates the string array parameters 
+             * @throw invalid_argument
+			 */
+			void validateStringArrayParam(StringArrayParamDef pDef);
 
 			/**
 			 * Validates the double array parameters 
+             * @throw invalid_argument
 			 */
-			void validateDoubleArrayParams() throw(invalid_argument);
-			void validateDoubleArrayParam(DoubleArrayParamDef pDef) throw(invalid_argument);
+			void validateDoubleArrayParams();
+			/**
+			 * Validates the double array parameters 
+             * @throw invalid_argument
+			 */
+			void validateDoubleArrayParam(DoubleArrayParamDef pDef);
 
-			int parseDOM(const char* xmlParamSet, InMemoryXmlData * fileInfo) throw(domain_error);
+            /**
+             * @throw domain_error
+             */
+			int parseDOM(const char* xmlParamSet, InMemoryXmlData * fileInfo);
 			int parseFile(const string & xmlFile);
 			int parseSAX(const string & xmlParamSet);
-			void handleBoolParam(DOMElement *paramElem) throw(domain_error);
-			void handleIntParam(DOMElement *paramElem) throw(domain_error);
-			void handleIntArrayParam(DOMElement *paramElem) throw(domain_error);
-			void handleDoubleParam(DOMElement *paramElem) throw(domain_error);
-			void handleDoubleArrayParam(DOMElement *paramElem) throw(domain_error);
-			void handleStringParam(DOMElement *paramElem) throw(domain_error);
-			void handleStringArrayParam(DOMElement *paramElem) throw(domain_error);
-			void processParamNodes(DOMNodeList *paramNodes) throw(domain_error);
+            /**
+             * @throw domain_error
+             */
+			void handleBoolParam(DOMElement *paramElem);
+            /**
+             * @throw domain_error
+             */
+			void handleIntParam(DOMElement *paramElem);
+            /**
+             * @throw domain_error
+             */
+			void handleIntArrayParam(DOMElement *paramElem);
+            /**
+             * @throw domain_error
+             */
+			void handleDoubleParam(DOMElement *paramElem);
+            /**
+             * @throw domain_error
+             */
+			void handleDoubleArrayParam(DOMElement *paramElem);
+            /**
+             * @throw domain_error
+             */
+			void handleStringParam(DOMElement *paramElem);
+            /**
+             * @throw domain_error
+             */
+			void handleStringArrayParam(DOMElement *paramElem);
+            /**
+             * @throw domain_error
+             */
+			void processParamNodes(DOMNodeList *paramNodes);
+            /**
+             * @throw domain_error
+             */
 			void initialize();
 			void setSchemaLocation(DOMBuilder * parser);
 

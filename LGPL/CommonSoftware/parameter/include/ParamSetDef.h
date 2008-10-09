@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: ParamSetDef.h,v 1.8 2006/11/29 23:01:26 sharring Exp $"
+* "@(#) $Id: ParamSetDef.h,v 1.9 2008/10/09 05:03:50 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -88,51 +88,59 @@ namespace Parameters {
 		/**
 		 * Gets the type of a parameter by name.
 		 * @param paramName the name of the parameter for which the type is desired.
+         * @throw domain_error
 		 * @return the type as a ParamSetDef::paramType enum.
 		 */
-		paramTypesEnum getParamTypeForName(string paramName) throw(domain_error);
+		paramTypesEnum getParamTypeForName(string paramName);
 
 		/**
 		 * get a bool param by name.
 		 * @param paramName the name of the parameter desired.
+         * @throw domain_error
 		 */
-		BoolParamDef getBoolParamDef(string paramName) throw(domain_error);
+		BoolParamDef getBoolParamDef(string paramName);
 		
 		/**
 		 * get an int param by name.
 		 * @param paramName the name of the parameter desired.
+         * @throw domain_error
 		 */
-		IntParamDef getIntParamDef(string paramName) throw(domain_error);
+		IntParamDef getIntParamDef(string paramName);
 
 		/**
 		 * get a double param by name.
 		 * @param paramName the name of the parameter desired.
+         * @throw domain_error
 		 */
-		DoubleParamDef getDoubleParamDef(string paramName) throw(domain_error);
+		DoubleParamDef getDoubleParamDef(string paramName);
 
 		/**
 		 * get a string param by name.
 		 * @param paramName the name of the parameter desired.
+         * @throw domain_error
 		 */
-		StringParamDef getStringParamDef(string paramName) throw(domain_error);
+		StringParamDef getStringParamDef(string paramName);
 
 		/**
 		 * get an array of int params by name
 		 * @param paramName the name of the parameter desired.
+         * @throw domain_error
 		 */
-		IntArrayParamDef getIntArrayParamDef(string paramName) throw(domain_error);
+		IntArrayParamDef getIntArrayParamDef(string paramName);
 
 		/**
 		 * get an array of double params by name
 		 * @param paramName the name of the parameter desired.
+         * @throw domain_error
 		 */
-		DoubleArrayParamDef getDoubleArrayParamDef(string paramName) throw(domain_error);
+		DoubleArrayParamDef getDoubleArrayParamDef(string paramName);
 
 		/**
 		 * get an array of string params by name
 		 * @param paramName the name of the parameter desired.
+         * @throw domain_error
 		 */
-		StringArrayParamDef getStringArrayParamDef(string paramName) throw(domain_error);
+		StringArrayParamDef getStringArrayParamDef(string paramName);
 
 		/**
 		 * gets all the bool param defs for this psetdef
@@ -175,14 +183,38 @@ namespace Parameters {
 		int parseFile(const string & xmlFile);
 		int parseDOM(const string & xmlFile);
 		int parseSAX(const string & xmlFile);
-		void processParamDefNodes(DOMNodeList *paramNodes) throw(domain_error);
-		void handleBoolParamDef(DOMElement *paramElem) throw(domain_error);
-		void handleIntParamDef(DOMElement *paramElem) throw(domain_error);
-		void handleIntArrayParamDef(DOMElement *paramElem) throw(domain_error);
-		void handleDoubleParamDef(DOMElement *paramElem) throw(domain_error);
-		void handleDoubleArrayParamDef(DOMElement *paramElem) throw(domain_error);
-		void handleStringParamDef(DOMElement *paramElem) throw(domain_error);
-		void handleStringArrayParamDef(DOMElement *paramElem) throw(domain_error);
+        /**
+         * @throw domain_error
+         */
+		void processParamDefNodes(DOMNodeList *paramNodes);
+        /**
+         * @throw domain_error
+         */
+		void handleBoolParamDef(DOMElement *paramElem);
+        /**
+         * @throw domain_error
+         */
+		void handleIntParamDef(DOMElement *paramElem);
+        /**
+         * @throw domain_error
+         */
+		void handleIntArrayParamDef(DOMElement *paramElem);
+        /**
+         * @throw domain_error
+         */
+		void handleDoubleParamDef(DOMElement *paramElem);
+        /**
+         * @throw domain_error
+         */
+		void handleDoubleArrayParamDef(DOMElement *paramElem);
+        /**
+         * @throw domain_error
+         */
+		void handleStringParamDef(DOMElement *paramElem);
+        /**
+         * @throw domain_error
+         */
+		void handleStringArrayParamDef(DOMElement *paramElem);
 		void setSchemaLocation(DOMBuilder * parser);
 
 		map<string, BoolParamDef> boolParamDefMap;

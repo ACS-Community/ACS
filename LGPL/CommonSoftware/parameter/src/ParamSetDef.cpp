@@ -21,7 +21,7 @@
 *
 *
 *
-* "@(#) $Id: ParamSetDef.cpp,v 1.15 2006/11/29 23:01:27 sharring Exp $"
+* "@(#) $Id: ParamSetDef.cpp,v 1.16 2008/10/09 05:03:50 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -136,7 +136,7 @@ ParamSetDef::~ParamSetDef()
  * @param paramName the name of the parameter for which the type is desired.
  * @return the type as a ParamSetDef::paramType enum.
  */
-ParamSetDef::paramTypesEnum ParamSetDef::getParamTypeForName(string paramName) throw(domain_error)
+ParamSetDef::paramTypesEnum ParamSetDef::getParamTypeForName(string paramName) 
 {
 	paramTypesEnum retValue = BOOL;
 	bool found = false; 
@@ -228,7 +228,7 @@ ParamSetDef::paramTypesEnum ParamSetDef::getParamTypeForName(string paramName) t
  * get an int param by name.
  * @param paramName the name of the parameter desired.
  */
-IntParamDef ParamSetDef::getIntParamDef(string paramName) throw(domain_error)
+IntParamDef ParamSetDef::getIntParamDef(string paramName) 
 {
    IntParamDef retVal;
    map<string, IntParamDef>::iterator mapEntry = intParamDefMap.find(paramName);
@@ -248,7 +248,7 @@ IntParamDef ParamSetDef::getIntParamDef(string paramName) throw(domain_error)
  * get a double param by name.
  * @param paramName the name of the parameter desired.
  */
-DoubleParamDef ParamSetDef::getDoubleParamDef(string paramName) throw(domain_error)
+DoubleParamDef ParamSetDef::getDoubleParamDef(string paramName) 
 {
    DoubleParamDef retVal;
    map<string, DoubleParamDef >::iterator mapEntry = doubleParamDefMap.find(paramName);
@@ -268,7 +268,7 @@ DoubleParamDef ParamSetDef::getDoubleParamDef(string paramName) throw(domain_err
  * get an string param by name.
  * @param paramName the name of the parameter desired.
  */
-StringParamDef ParamSetDef::getStringParamDef(string paramName) throw(domain_error)
+StringParamDef ParamSetDef::getStringParamDef(string paramName) 
 {
    StringParamDef retVal;
    map<string, StringParamDef >::iterator mapEntry = stringParamDefMap.find(paramName);
@@ -288,7 +288,7 @@ StringParamDef ParamSetDef::getStringParamDef(string paramName) throw(domain_err
  * get an bool param by name.
  * @param paramName the name of the parameter desired.
  */
-BoolParamDef ParamSetDef::getBoolParamDef(string paramName) throw(domain_error)
+BoolParamDef ParamSetDef::getBoolParamDef(string paramName) 
 {
    BoolParamDef retVal;
    map<string, BoolParamDef >::iterator mapEntry = boolParamDefMap.find(paramName);
@@ -308,7 +308,7 @@ BoolParamDef ParamSetDef::getBoolParamDef(string paramName) throw(domain_error)
  * get an array of int params by name
  * @param paramName the name of the parameter desired.
  */
-IntArrayParamDef ParamSetDef::getIntArrayParamDef(string paramName) throw(domain_error)
+IntArrayParamDef ParamSetDef::getIntArrayParamDef(string paramName) 
 {
    IntArrayParamDef retArray;
    map<string, IntArrayParamDef >::iterator mapEntry = intArrayParamDefMap.find(paramName);
@@ -328,7 +328,7 @@ IntArrayParamDef ParamSetDef::getIntArrayParamDef(string paramName) throw(domain
  * get an array of double params by name
  * @param paramName the name of the parameter desired.
  */
-DoubleArrayParamDef ParamSetDef::getDoubleArrayParamDef(string paramName) throw(domain_error)
+DoubleArrayParamDef ParamSetDef::getDoubleArrayParamDef(string paramName) 
 {
    DoubleArrayParamDef retArray;
    map<string, DoubleArrayParamDef >::iterator mapEntry = doubleArrayParamDefMap.find(paramName);
@@ -348,7 +348,7 @@ DoubleArrayParamDef ParamSetDef::getDoubleArrayParamDef(string paramName) throw(
  * get an array of string param by name
  * @param paramName the name of the parameter desired.
  */
-StringArrayParamDef ParamSetDef::getStringArrayParamDef(string paramName) throw(domain_error)
+StringArrayParamDef ParamSetDef::getStringArrayParamDef(string paramName) 
 {
    StringArrayParamDef retArray;
    map<string, StringArrayParamDef >::iterator mapEntry = stringArrayParamDefMap.find(paramName);
@@ -477,7 +477,7 @@ int ParamSetDef::parseSAX(const string & xmlFile)
 /**
  * Private method to handle a BoolParamDef
  */
-void ParamSetDef::handleBoolParamDef(DOMElement *paramElem) throw(domain_error)
+void ParamSetDef::handleBoolParamDef(DOMElement *paramElem) 
 {
 	// 1. get the name
 	DOMNodeList *nameNodes = paramElem->getElementsByTagName(NAME_TAG_NAME);
@@ -579,7 +579,7 @@ void ParamSetDef::handleBoolParamDef(DOMElement *paramElem) throw(domain_error)
 /**
  * Private method to handle an IntParamDef
  */
-void ParamSetDef::handleIntParamDef(DOMElement *paramElem) throw(domain_error)
+void ParamSetDef::handleIntParamDef(DOMElement *paramElem) 
 {
 	// 1. get the name
 	DOMNodeList *nameNodes = paramElem->getElementsByTagName(NAME_TAG_NAME);
@@ -773,7 +773,7 @@ void ParamSetDef::handleIntParamDef(DOMElement *paramElem) throw(domain_error)
 /**
  * Private method to handle an IntArrayParamDef
  */
-void ParamSetDef::handleIntArrayParamDef(DOMElement *paramElem) throw(domain_error)
+void ParamSetDef::handleIntArrayParamDef(DOMElement *paramElem) 
 {
 	// 1. get the name
 	DOMNodeList *nameNodes = paramElem->getElementsByTagName(NAME_TAG_NAME);
@@ -912,7 +912,7 @@ void ParamSetDef::handleIntArrayParamDef(DOMElement *paramElem) throw(domain_err
 /**
  * Private method to handle a DoubleParamDef
  */
-void ParamSetDef::handleDoubleParamDef(DOMElement *paramElem) throw(domain_error)
+void ParamSetDef::handleDoubleParamDef(DOMElement *paramElem) 
 {
 	// 1. get the name
 	DOMNodeList *nameNodes = paramElem->getElementsByTagName(NAME_TAG_NAME);
@@ -1114,7 +1114,7 @@ void ParamSetDef::handleDoubleParamDef(DOMElement *paramElem) throw(domain_error
 /**
  * Private method to handle a DoubleArrayParamDef
  */
-void ParamSetDef::handleDoubleArrayParamDef(DOMElement *paramElem) throw(domain_error)
+void ParamSetDef::handleDoubleArrayParamDef(DOMElement *paramElem) 
 {
 	// 1. get the name
 	DOMNodeList *nameNodes = paramElem->getElementsByTagName(NAME_TAG_NAME);
@@ -1254,7 +1254,7 @@ void ParamSetDef::handleDoubleArrayParamDef(DOMElement *paramElem) throw(domain_
 /**
  * Private method to handle a StringParamDef
  */
-void ParamSetDef::handleStringParamDef(DOMElement *paramElem) throw(domain_error)
+void ParamSetDef::handleStringParamDef(DOMElement *paramElem) 
 {
 	// 1. get the name
 	DOMNodeList *nameNodes = paramElem->getElementsByTagName(NAME_TAG_NAME);
@@ -1376,7 +1376,7 @@ void ParamSetDef::handleStringParamDef(DOMElement *paramElem) throw(domain_error
 /**
  * Private method to handle a StringArrayParamDef
  */
-void ParamSetDef::handleStringArrayParamDef(DOMElement *paramElem) throw(domain_error)
+void ParamSetDef::handleStringArrayParamDef(DOMElement *paramElem) 
 {
 	// 1. get the name
 	DOMNodeList *nameNodes = paramElem->getElementsByTagName(NAME_TAG_NAME);
@@ -1496,7 +1496,7 @@ void ParamSetDef::handleStringArrayParamDef(DOMElement *paramElem) throw(domain_
 /**
  * Private method to process all the parameter nodes in the XML file
  */
-void ParamSetDef::processParamDefNodes(DOMNodeList *paramNodes) throw(domain_error)
+void ParamSetDef::processParamDefNodes(DOMNodeList *paramNodes) 
 {
 	for (unsigned int i = 0; i < paramNodes->getLength(); i++) {
 		DOMNode * paramItem = paramNodes->item(i);

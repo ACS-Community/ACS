@@ -21,7 +21,7 @@
 *
 *
 *
-* "@(#) $Id: ParameterSet.cpp,v 1.28 2006/11/29 23:01:27 sharring Exp $"
+* "@(#) $Id: ParameterSet.cpp,v 1.29 2008/10/09 05:03:50 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -324,7 +324,7 @@ string ParameterSet::getParamSetDefFileName()
  * get an int param by name.
  * @param paramName the name of the parameter desired.
  */
-IntParam ParameterSet::getIntParam(string paramName) throw(domain_error)
+IntParam ParameterSet::getIntParam(string paramName) 
 {
    IntParam retVal;
    map<string, IntParam >::iterator mapEntry = intParamMap.find(paramName);
@@ -344,7 +344,7 @@ IntParam ParameterSet::getIntParam(string paramName) throw(domain_error)
  * get a double param by name.
  * @param paramName the name of the parameter desired.
  */
-DoubleParam ParameterSet::getDoubleParam(string paramName) throw(domain_error)
+DoubleParam ParameterSet::getDoubleParam(string paramName) 
 {
    DoubleParam retVal;
    map<string, DoubleParam >::iterator mapEntry = doubleParamMap.find(paramName);
@@ -364,7 +364,7 @@ DoubleParam ParameterSet::getDoubleParam(string paramName) throw(domain_error)
  * get an string param by name.
  * @param paramName the name of the parameter desired.
  */
-StringParam ParameterSet::getStringParam(string paramName) throw(domain_error)
+StringParam ParameterSet::getStringParam(string paramName) 
 {
    StringParam retVal;
    map<string, StringParam >::iterator mapEntry = stringParamMap.find(paramName);
@@ -384,7 +384,7 @@ StringParam ParameterSet::getStringParam(string paramName) throw(domain_error)
  * get an bool param by name.
  * @param paramName the name of the parameter desired.
  */
-BoolParam ParameterSet::getBoolParam(string paramName) throw(domain_error)
+BoolParam ParameterSet::getBoolParam(string paramName) 
 {
    BoolParam retVal;
    map<string, BoolParam>::iterator mapEntry = boolParamMap.find(paramName);
@@ -404,7 +404,7 @@ BoolParam ParameterSet::getBoolParam(string paramName) throw(domain_error)
  * get an array of int params by name
  * @param paramName the name of the parameter desired.
  */
-IntArrayParam ParameterSet::getIntArrayParam(string paramName) throw(domain_error)
+IntArrayParam ParameterSet::getIntArrayParam(string paramName) 
 {
    IntArrayParam retArray;
    map<string, IntArrayParam >::iterator mapEntry = intArrayParamMap.find(paramName);
@@ -424,7 +424,7 @@ IntArrayParam ParameterSet::getIntArrayParam(string paramName) throw(domain_erro
  * get an array of double params by name
  * @param paramName the name of the parameter desired.
  */
-DoubleArrayParam ParameterSet::getDoubleArrayParam(string paramName) throw(domain_error)
+DoubleArrayParam ParameterSet::getDoubleArrayParam(string paramName) 
 {
    DoubleArrayParam retArray;
    map<string, DoubleArrayParam >::iterator mapEntry = doubleArrayParamMap.find(paramName);
@@ -444,7 +444,7 @@ DoubleArrayParam ParameterSet::getDoubleArrayParam(string paramName) throw(domai
  * get an array of string param by name
  * @param paramName the name of the parameter desired.
  */
-StringArrayParam ParameterSet::getStringArrayParam(string paramName) throw(domain_error)
+StringArrayParam ParameterSet::getStringArrayParam(string paramName) 
 {
    StringArrayParam retArray;
    map<string, StringArrayParam >::iterator mapEntry = stringArrayParamMap.find(paramName);
@@ -858,7 +858,7 @@ int ParameterSet::parseFile(const string & xmlFile)
  * either we are parsing from a file or parsing from memory, but not both (nor neither - 
  * i.e. NULL for both params should not occur either).
  */
-int ParameterSet::parseDOM(const char* xmlFile, InMemoryXmlData * xmlData) throw(domain_error)
+int ParameterSet::parseDOM(const char* xmlFile, InMemoryXmlData * xmlData) 
 {
 	bool doNamespaces = true;
 	bool doSchema = true;
@@ -987,7 +987,7 @@ int ParameterSet::parseSAX(const string & xmlFileName)
 /**
  * Private method to handle a BoolParam
  */
-void ParameterSet::handleBoolParam(DOMElement *paramElem) throw(domain_error)
+void ParameterSet::handleBoolParam(DOMElement *paramElem) 
 {
 	// get the name
 	DOMNodeList *nameNodes = paramElem->getElementsByTagName(NAME_TAG_NAME);
@@ -1034,7 +1034,7 @@ void ParameterSet::handleBoolParam(DOMElement *paramElem) throw(domain_error)
 /**
  * Private method to handle an IntParam
  */
-void ParameterSet::handleIntParam(DOMElement *paramElem) throw(domain_error)
+void ParameterSet::handleIntParam(DOMElement *paramElem) 
 {
 	// get the name
 	DOMNodeList *nameNodes = paramElem->getElementsByTagName(NAME_TAG_NAME);
@@ -1093,7 +1093,7 @@ void ParameterSet::handleIntParam(DOMElement *paramElem) throw(domain_error)
 /**
  * Private method to handle an IntArrayParam
  */
-void ParameterSet::handleIntArrayParam(DOMElement *paramElem) throw(domain_error)
+void ParameterSet::handleIntArrayParam(DOMElement *paramElem) 
 {
 	// get the name
 	DOMNodeList *nameNodes = paramElem->getElementsByTagName(NAME_TAG_NAME);
@@ -1156,7 +1156,7 @@ void ParameterSet::handleIntArrayParam(DOMElement *paramElem) throw(domain_error
 /**
  * Private method to handle a DoubleParam
  */
-void ParameterSet::handleDoubleParam(DOMElement *paramElem) throw(domain_error)
+void ParameterSet::handleDoubleParam(DOMElement *paramElem) 
 {
 	// get the name
 	DOMNodeList *nameNodes = paramElem->getElementsByTagName(NAME_TAG_NAME);
@@ -1218,7 +1218,7 @@ void ParameterSet::handleDoubleParam(DOMElement *paramElem) throw(domain_error)
 /**
  * Private method to handle a DoubleArrayParam
  */
-void ParameterSet::handleDoubleArrayParam(DOMElement *paramElem) throw(domain_error)
+void ParameterSet::handleDoubleArrayParam(DOMElement *paramElem) 
 {
 	// get the name
 	DOMNodeList *nameNodes = paramElem->getElementsByTagName(NAME_TAG_NAME);
@@ -1282,7 +1282,7 @@ void ParameterSet::handleDoubleArrayParam(DOMElement *paramElem) throw(domain_er
 /**
  * Private method to handle a StringParam
  */
-void ParameterSet::handleStringParam(DOMElement *paramElem) throw(domain_error)
+void ParameterSet::handleStringParam(DOMElement *paramElem) 
 {
 	// get the name
 	DOMNodeList *nameNodes = paramElem->getElementsByTagName(NAME_TAG_NAME);
@@ -1326,7 +1326,7 @@ void ParameterSet::handleStringParam(DOMElement *paramElem) throw(domain_error)
 /**
  * Private method to handle a StringArrayParam
  */
-void ParameterSet::handleStringArrayParam(DOMElement *paramElem) throw(domain_error)
+void ParameterSet::handleStringArrayParam(DOMElement *paramElem) 
 {
 	// get the name
 	DOMNodeList *nameNodes = paramElem->getElementsByTagName(NAME_TAG_NAME);
@@ -1375,7 +1375,7 @@ void ParameterSet::handleStringArrayParam(DOMElement *paramElem) throw(domain_er
 /**
  * Private method to process all the parameter nodes in the XML file
  */
-void ParameterSet::processParamNodes(DOMNodeList *paramNodes) throw(domain_error)
+void ParameterSet::processParamNodes(DOMNodeList *paramNodes) 
 {
 	for (unsigned int i = 0; i < paramNodes->getLength(); i++) {
 		DOMNode * paramItem = paramNodes->item(i);
@@ -1438,7 +1438,7 @@ void ParameterSet::setName(string psetName)
 /**
  * Validates the parameter set against the parameter set definition
  */
-void ParameterSet::validate() throw(invalid_argument)
+void ParameterSet::validate() 
 {
 	bool exceptionCaught = false;
 	string errorMsg;
@@ -1500,7 +1500,7 @@ void ParameterSet::validate() throw(invalid_argument)
 /**
  * Validates the bool parameters 
  */
-void ParameterSet::validateBoolParams() throw(invalid_argument)
+void ParameterSet::validateBoolParams() 
 {
 	// for each bool parameter defined in psetdef
 	auto_ptr< vector<BoolParamDef> > boolParamDefs = ParameterSetDef->getBoolParamDefs();
@@ -1514,7 +1514,7 @@ void ParameterSet::validateBoolParams() throw(invalid_argument)
 /**
  * Validates the int parameters 
  */
-void ParameterSet::validateIntParams() throw(invalid_argument)
+void ParameterSet::validateIntParams() 
 {
 	// for each int parameter defined in psetdef
 	auto_ptr< vector<IntParamDef> > paramDefs = ParameterSetDef->getIntParamDefs();
@@ -1528,7 +1528,7 @@ void ParameterSet::validateIntParams() throw(invalid_argument)
 /**
  * Validates the double parameters 
  */
-void ParameterSet::validateDoubleParams() throw(invalid_argument)
+void ParameterSet::validateDoubleParams() 
 {
 	// for each double parameter defined in psetdef
 	auto_ptr< vector<DoubleParamDef> > paramDefs = ParameterSetDef->getDoubleParamDefs();
@@ -1542,7 +1542,7 @@ void ParameterSet::validateDoubleParams() throw(invalid_argument)
 /**
  * Validates the string parameters 
  */
-void ParameterSet::validateStringParams() throw(invalid_argument)
+void ParameterSet::validateStringParams() 
 {
 	// for each string parameter defined in psetdef
 	auto_ptr< vector<StringParamDef> > stringParamDefs = ParameterSetDef->getStringParamDefs();
@@ -1556,7 +1556,7 @@ void ParameterSet::validateStringParams() throw(invalid_argument)
 /**
  * Validates the int array parameters 
  */
-void ParameterSet::validateIntArrayParams() throw(invalid_argument)
+void ParameterSet::validateIntArrayParams() 
 {
 	// for each int parameter defined in psetdef
 	auto_ptr< vector<IntArrayParamDef> > paramDefs = ParameterSetDef->getIntArrayParamDefs();
@@ -1570,7 +1570,7 @@ void ParameterSet::validateIntArrayParams() throw(invalid_argument)
 /**
  * Validates the string array parameters 
  */
-void ParameterSet::validateStringArrayParams() throw(invalid_argument)
+void ParameterSet::validateStringArrayParams() 
 {
 	// for each string parameter defined in psetdef
 	auto_ptr< vector<StringArrayParamDef> > paramDefs = ParameterSetDef->getStringArrayParamDefs();
@@ -1584,7 +1584,7 @@ void ParameterSet::validateStringArrayParams() throw(invalid_argument)
 /**
  * Validates the double array parameters 
  */
-void ParameterSet::validateDoubleArrayParams() throw(invalid_argument)
+void ParameterSet::validateDoubleArrayParams() 
 {
 	// for each double parameter defined in psetdef
 	auto_ptr< vector<DoubleArrayParamDef> > paramDefs = ParameterSetDef->getDoubleArrayParamDefs();
@@ -1595,7 +1595,7 @@ void ParameterSet::validateDoubleArrayParams() throw(invalid_argument)
 	}
 }
 
-void ParameterSet::validateStringParam(StringParamDef pDef) throw(invalid_argument)
+void ParameterSet::validateStringParam(StringParamDef pDef) 
 {
 	// required parameter
 	if(true == pDef.isRequired()) {
@@ -1655,7 +1655,7 @@ void ParameterSet::validateStringParam(StringParamDef pDef) throw(invalid_argume
 	}
 }
 
-void ParameterSet::validateBoolParam(BoolParamDef pDef) throw(invalid_argument)
+void ParameterSet::validateBoolParam(BoolParamDef pDef) 
 {
 	// required parameter
 	if(true == pDef.isRequired()) {
@@ -1691,7 +1691,7 @@ void ParameterSet::validateBoolParam(BoolParamDef pDef) throw(invalid_argument)
 	}
 }
 
-void ParameterSet::validateIntParam(IntParamDef pDef) throw(invalid_argument)
+void ParameterSet::validateIntParam(IntParamDef pDef) 
 {
 	// required parameter
 	if(true == pDef.isRequired()) {
@@ -1783,7 +1783,7 @@ void ParameterSet::validateIntParam(IntParamDef pDef) throw(invalid_argument)
 	}
 }
 
-void ParameterSet::validateDoubleParam(DoubleParamDef pDef) throw(invalid_argument)
+void ParameterSet::validateDoubleParam(DoubleParamDef pDef) 
 {
 	// required parameter
 	if(true == pDef.isRequired()) {
@@ -1877,7 +1877,7 @@ void ParameterSet::validateDoubleParam(DoubleParamDef pDef) throw(invalid_argume
 	}
 }
 
-void ParameterSet::validateIntArrayParam(IntArrayParamDef pDef) throw(invalid_argument)
+void ParameterSet::validateIntArrayParam(IntArrayParamDef pDef) 
 {
 	// required parameter
 	if(true == pDef.isRequired()) {
@@ -1932,7 +1932,7 @@ void ParameterSet::validateIntArrayParam(IntArrayParamDef pDef) throw(invalid_ar
 	}
 }
 
-void ParameterSet::validateStringArrayParam(StringArrayParamDef pDef) throw(invalid_argument)
+void ParameterSet::validateStringArrayParam(StringArrayParamDef pDef) 
 {
 	// required parameter
 	if(true == pDef.isRequired()) {
@@ -1987,7 +1987,7 @@ void ParameterSet::validateStringArrayParam(StringArrayParamDef pDef) throw(inva
 	}
 }
 
-void ParameterSet::validateDoubleArrayParam(DoubleArrayParamDef pDef) throw(invalid_argument)
+void ParameterSet::validateDoubleArrayParam(DoubleArrayParamDef pDef) 
 {
 	// required parameter
 	if(true == pDef.isRequired()) {
