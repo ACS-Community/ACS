@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsutilAnyAide.cpp,v 1.9 2008/08/21 15:35:49 bjeram Exp $"
+* "@(#) $Id: acsutilAnyAide.cpp,v 1.10 2008/10/09 02:23:13 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -59,7 +59,7 @@
 #include "acsutilAnyAide.h"
 #include "acsutilORBHelper.h"
 
-static char *rcsId="@(#) $Id: acsutilAnyAide.cpp,v 1.9 2008/08/21 15:35:49 bjeram Exp $"; 
+static char *rcsId="@(#) $Id: acsutilAnyAide.cpp,v 1.10 2008/10/09 02:23:13 cparedes Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 const std::string AnyAide::nullType_m      = "null";
@@ -212,7 +212,6 @@ AnyAide::getRealType(const CORBA::Any& any)
 //----------------------------------------------------------------------
 std::string
 AnyAide::getId(const CORBA::Any& any)
-    throw(UnsupportedType)
 {
     CORBA::TCKind kind = getRealType(any);
     
@@ -299,7 +298,6 @@ AnyAide::getId(const CORBA::Any& any)
 //----------------------------------------------------------------------
 std::string
 AnyAide::anyToString(const CORBA::Any& value, unsigned short precision)
-    throw(UnsupportedType)
 {
     
     std::ostringstream ostr;
@@ -406,7 +404,6 @@ AnyAide::anyToString(const CORBA::Any& value, unsigned short precision)
 //----------------------------------------------------------------------
 std::string
 AnyAide::enumToString(const CORBA::Any& value)
-    throw(UnsupportedType)
 {
     CORBA::ORB_ptr orb_p = ORBHelper::getORB();
 

@@ -18,7 +18,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsutilAnyAide.h,v 1.10 2008/08/21 15:35:49 bjeram Exp $"
+* "@(#) $Id: acsutilAnyAide.h,v 1.11 2008/10/09 02:23:13 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -89,11 +89,11 @@ class AnyAide
      * - simple CORBA types supported by BACI (i.e., tk_float, tk_ulonglong, etc)
      * 
      * @throws an UnsupportedType exception if we cannot determine the any's IFR ID.
+     
      * this method thro.
      */
     static std::string
-    getId(const CORBA::Any&)
-	throw(UnsupportedType);
+    getId(const CORBA::Any&);
 
     /**
      * Converts the any's value to a string. Only works for native CORBA types such
@@ -107,13 +107,13 @@ class AnyAide
      * CORBA type embedded within the any parameter.
      */
     static std::string
-    anyToString(const CORBA::Any&, unsigned short precision=0)
-	throw(UnsupportedType);
+    anyToString(const CORBA::Any&, unsigned short precision=0);
 
     /**
      * Converts a CORBA any to its real value and returns that. In the event
      * that the template parameter T is not compatible with the any, an exception
      * is thrown. Typical usage of this method will be something similar too:
+     * @throw WrongTemplateParameter
      * ...
      * CORBA::any joe = ...;
      * if (AnyAide::isPattern(joe) == true)
@@ -124,7 +124,6 @@ class AnyAide
     template <class T> 
     static T
     getValue(const CORBA::Any& any)
-	throw(WrongTemplateParameter)
 	{
 	    T returnVal;
 	    //standard CORBA way of extracting an any
@@ -308,11 +307,11 @@ class AnyAide
   private:
     /**
      * Converts the (enum) any's value to a string.
+     * @throw UnsupportedType
      * @return the any param converted to a string
      */
     static std::string
-    enumToString(const CORBA::Any&)
-	throw(UnsupportedType);
+    enumToString(const CORBA::Any&);
 
 };
 
