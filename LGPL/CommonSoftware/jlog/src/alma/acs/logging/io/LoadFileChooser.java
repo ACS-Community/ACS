@@ -43,70 +43,6 @@ import java.io.File;
 public class LoadFileChooser extends JDialog implements ActionListener {
 	
 	/**
-	 * The filter of files shown by the chooser.
-	 * <P>
-	 * The filtering is based on the extension of the files (case insensitive)
-	 * 
-	 * @author acaproni
-	 *
-	 */
-	public class CustomFilter extends FileFilter {
-		
-		/**
-		 * The extensions used for filtering like for example ".gz" or ".xml"
-		 */
-		private String[] extensions;
-		
-		/**
-		 * Constructor
-		 * 
-		 * @param extensions The extension used for filtering
-		 */
-		public CustomFilter(String[] extensions) {
-			if (extensions==null || extensions.length==0) {
-				throw new IllegalArgumentException("Invalid extensions");
-			}
-			this.extensions=extensions;
-		}
-
-		/**
-		 * Check if the file is readable and if its extensions matches one
-		 * of the available extensions.
-		 * 
-		 * @see javax.swing.filechooser.FileFilter#accept(java.io.File)
-		 */
-		@Override
-		public boolean accept(File f) {
-			if (!f.canRead()) {
-				return false;
-			}
-			if (f.isDirectory()) {
-				return true;
-			}
-			String fileName = f.getAbsolutePath().toLowerCase();
-			for (String ext: extensions) {
-				if (fileName.endsWith(ext.toLowerCase())) {
-					return true;
-				}
-			}
-			return false;
-		}
-
-		/**
-		 * @see javax.swing.filechooser.FileFilter#getDescription()
-		 */
-		@Override
-		public String getDescription() {
-			StringBuilder ret = new StringBuilder("Filtering based on ");
-			for (String str: extensions) {
-				ret.append(str);
-				ret.append(' ');
-			}
-			return null;
-		}
-	}
-	
-	/**
 	 * The file selected by the user
 	 * It is null if the file has not been selected or the user pressed cancel
 	 */
@@ -149,7 +85,7 @@ public class LoadFileChooser extends JDialog implements ActionListener {
 		setModal(true);
 		initialize(currentDir);
 		if (extensions!=null && extensions.length>0) {
-			fc.setFileFilter(new CustomFilter(extensions));
+			fc.setFileFilter(new FileChooserFilter(extensions));
 		}
 		pack();
 		setVisible(true);
