@@ -18,7 +18,21 @@
 */
 package alma.acs.logging.io;
 
-import javax.swing.JDialog;;
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.util.Dictionary;
+import java.util.Hashtable;
+
+import javax.swing.BorderFactory;
+import javax.swing.JCheckBox;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JSlider;
+
+import alma.acs.logging.engine.io.IOHelper;
 
 /**
  * The file chooser for saving, supporting compression
@@ -26,6 +40,93 @@ import javax.swing.JDialog;;
  * @author acaproni
  *
  */
-public class SaveFileChooser extends JDialog {
+public class SaveFileChooser extends LogsFileChooser implements ActionListener {
+	
+	/**
+	 * The check box to enable the compression
+	 */
+	private JCheckBox compressCB=new JCheckBox("Compress",false);
+	
+	/**
+	 * The slider to set compression level
+	 */
+	private JSlider compressionLevelS = new JSlider(JSlider.HORIZONTAL,0,9,IOHelper.DEFAULT_COMPRESSION_LEVEL);
+	
+	
+	
+	/**
+	 * The labels shown in the slider
+	 */
+	private Dictionary<Integer, JLabel> labels = new Hashtable<Integer, JLabel>();
+	
+	/**
+	 * Constructor
+	 * 
+	 * @param title The title of the dialog
+	 * @param currentDirectoryPath The path of the current folder
+	 */
+	public SaveFileChooser(String title, File currentDir) {
+		super(title,currentDir);
+		initialize(currentDir);
+		setTitle(title);
+		setModal(true);
+		pack();
+		setVisible(true);
+	}
 
+	/**
+	 * Init the GUI
+	 * 
+	 * @param folderPath The path of the current directory
+	 */
+	private void initialize(File folder) {
+		rootPane.setLayout(new BorderLayout());
+		
+		JPanel compressPnl = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		compressPnl.setBorder(BorderFactory.createTitledBorder("Compression"));
+		compressPnl.add(compressCB);
+		compressCB.addActionListener(this);
+		compressPnl.add(compressionLevelS);
+		compressionLevelS.setMajorTickSpacing(10);
+		compressionLevelS.setMinorTickSpacing(1);
+		compressionLevelS.setPaintTicks(true);
+		compressionLevelS.setPaintLabels(true);
+		compressionLevelS.setEnabled(compressCB.isSelected());
+		for (int t=0; t<=9; t++) {
+			labels.put(Integer.valueOf(t), new JLabel(""+t));
+		}
+		compressionLevelS.setLabelTable(labels);
+		compressionLevelS.setSnapToTicks(true);
+		
+		rootPane.add(compressPnl,BorderLayout.NORTH);
+		rootPane.add(fileChooser,BorderLayout.CENTER);
+	}
+
+	/**
+	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+	 */
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		if (e.getSource()==compressCB) {
+			compressionLevelS.setEnabled(compressCB.isSelected());
+		} else {
+			super.actionPerformed(e);
+		}
+	}
+	
+	/**
+	 * 
+	 * @return <code>true</code> if the file must be compressed
+	 */
+	public boolean mustBeCompressed() {
+		return compressCB.isSelected();
+	}
+	
+	/**
+	 * 
+	 * @return The compression level
+	 */
+	public int getCompressionLevel() {
+		return compressionLevelS.getValue();
+	}
 }

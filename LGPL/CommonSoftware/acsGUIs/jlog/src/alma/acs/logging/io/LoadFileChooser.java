@@ -19,11 +19,9 @@
 package alma.acs.logging.io;
 
 import javax.swing.JFileChooser;
-import javax.swing.JDialog;
 import javax.swing.JComponent;
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
-import javax.swing.filechooser.FileFilter;
 
 import java.awt.BorderLayout;
 import java.awt.event.ActionListener;
@@ -40,21 +38,9 @@ import java.io.File;
  * @author acaproni
  *
  */
-public class LoadFileChooser extends JDialog implements ActionListener {
-	
+public class LoadFileChooser extends LogsFileChooser implements ActionListener {
 	/**
-	 * The file selected by the user
-	 * It is null if the file has not been selected or the user pressed cancel
-	 */
-	private File selectedFile=null;
-	
-	/**
-	 * The JFileChooser shown in the center of  the main panel
-	 */
-	private JFileChooser fc;
-	
-	/**
-	 * The checkbox to make visible hidden files and folfers
+	 * The checkbox to make visible hidden files and folders
 	 *The default is false (i.e. hidden folders are not shown)
 	 */
 	private JCheckBox viewHiddenFiles = new JCheckBox("Show hidden files",false);
@@ -75,17 +61,16 @@ public class LoadFileChooser extends JDialog implements ActionListener {
 	 * @param client The <code>LoggingClient</code> invoking this file chooser
 	 */
 	public LoadFileChooser(File currentDir,String title, String[] extensions, LoggingClient client) {
-		super();
+		super(title, currentDir);
 		if (client==null) {
 			throw new IllegalArgumentException("Invalid null LoggingClient!");
 		}
 		
 		loggingClient=client;
-		setTitle(title);
 		setModal(true);
 		initialize(currentDir);
 		if (extensions!=null && extensions.length>0) {
-			fc.setFileFilter(new FileChooserFilter(extensions));
+			fileChooser.setFileFilter(new FileChooserFilter(extensions));
 		}
 		pack();
 		setVisible(true);
@@ -107,48 +92,24 @@ public class LoadFileChooser extends JDialog implements ActionListener {
 		if (curDir==null) {
 			curDir = new File(".");
 		}
-		fc = new JFileChooser(curDir);
-		fc.setFileHidingEnabled(!viewHiddenFiles.isSelected());
-		fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
-		fc.addActionListener(this);
-		JComponent fcComponent = fc;
+		fileChooser = new JFileChooser(curDir);
+		fileChooser.setFileHidingEnabled(!viewHiddenFiles.isSelected());
+		fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+		fileChooser.addActionListener(this);
+		JComponent fcComponent = fileChooser;
 		fcComponent.setOpaque(true);
 		rootPane.add(fcComponent,BorderLayout.CENTER);
 	}
 	
 	/**
-	 * 
-	 * @return The file selected by the user or null if the user pressed Cancel
-	 */
-	public File getSelectedFile() {
-		return selectedFile;
-	}
-	
-	/**
-	 * @return The current directory
-	 */
-	public File getCurrentDirectory() {
-		return fc.getCurrentDirectory();
-	}
-	
-	/**
 	 * @see java.awt.event.ActionListener
 	 */
-	public void actionPerformed(ActionEvent evt) {
-		if (evt.getSource()==viewHiddenFiles) {
-			fc.setFileHidingEnabled(!viewHiddenFiles.isSelected());
-			fc.rescanCurrentDirectory();
+	public void actionPerformed(ActionEvent e) {
+		if (e.getSource()==viewHiddenFiles) {
+			fileChooser.setFileHidingEnabled(!viewHiddenFiles.isSelected());
+			fileChooser.rescanCurrentDirectory();
 		} else {
-			if (evt.getActionCommand().equals("ApproveSelection")) {
-				selectedFile=fc.getSelectedFile();
-				setVisible(false);
-				dispose();
-				guiSwitches.execute();
-			} else if (evt.getActionCommand().equals("CancelSelection")) {
-				selectedFile=null;
-				setVisible(false);
-				dispose();
-			}
+			super.actionPerformed(e);
 		}
 	}
 }
