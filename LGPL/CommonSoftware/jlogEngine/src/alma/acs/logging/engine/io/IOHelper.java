@@ -25,6 +25,7 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -537,6 +538,29 @@ public class IOHelper extends LogMatcher {
 		if (progressListener==null) {
 			throw new IllegalArgumentException("The progress listener can't be null");
 		}
+		
+		BufferedWriter writer = getBuferedWriter(fileName, append,gzip, compressionLevel);
+		
+		writeHeader(writer);
+		saveLogs(writer, iterator,progressListener);
+		terminateSave(writer,true);
+	}
+	
+	/**
+	 * Create a <code>BufferedWriter</code> to save logs into
+	 * 
+	 * @param fileName The name of the file to write logs into 
+	 * @param append <UL><LI>if <code>true</code> if the logs in the collection must be appended to an existing file</LI>
+	 *               <LI>if <code>false</code> and the file already exists, it is deleted before writing 
+	 *               </UL> 
+	 * @param gzip If <code>true</code> the file is compressed (GZIP)  
+	 * @param compressionLevel The compressionLevel for GZIP compression (0..9);
+	 * 			ignored if <code>gzip</code> is <code>false>/code>
+	 * 
+	 * @return the <code>BufferedWriter</code> to save logs into the file of the given name
+	 */
+	public synchronized BufferedWriter getBuferedWriter(String fileName, boolean append, boolean gzip, int compressionLevel) 
+	throws FileNotFoundException, IOException{
 		OutputStream outStream=new FileOutputStream(fileName,append);
 		BufferedWriter writer;
 		if (gzip) {
@@ -544,9 +568,32 @@ public class IOHelper extends LogMatcher {
 		} 
 		writer = new BufferedWriter(new OutputStreamWriter(outStream));
 		
-		writeHeader(writer);
-		saveLogs(writer, iterator,progressListener);
-		terminateSave(writer,true);
+		return writer;
+	}
+	
+	/**
+	 * Create a <code>BufferedWriter</code> to save logs into.
+	 * <P>
+	 * In case of compressed files, the default compression level is used
+	 * 
+	 * @param fileName The name of the file to write logs into 
+	 * @param append <UL><LI>if <code>true</code> if the logs in the collection must be appended to an existing file</LI>
+	 *               <LI>if <code>false</code> and the file already exists, it is deleted before writing 
+	 *               </UL> 
+	 * @param gzip If <code>true</code> the file is compressed (GZIP) with the default level
+	 * 
+	 * @return the <code>BufferedWriter</code> to save logs into the file of the given name
+	 */
+	public synchronized BufferedWriter getBuferedWriter(String fileName, boolean append, boolean gzip) 
+	throws FileNotFoundException, IOException{
+		OutputStream outStream=new FileOutputStream(fileName,append);
+		BufferedWriter writer;
+		if (gzip) {
+			outStream = new GZipLogOutStream(outStream,DEFAULT_COMPRESSION_LEVEL);
+		} 
+		writer = new BufferedWriter(new OutputStreamWriter(outStream));
+		
+		return writer;
 	}
 	
 	/**
