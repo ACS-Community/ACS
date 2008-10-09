@@ -1,14 +1,14 @@
 /*******************************************************************************
 * E.S.O. - VLT project
 *
-* "@(#) $Id: taskStaticContainerServices.cpp,v 1.5 2006/10/11 07:28:13 bjeram Exp $"
+* "@(#) $Id: taskStaticContainerServices.cpp,v 1.6 2008/10/09 07:22:33 cparedes Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
 * bjeram  yyyy-mm-dd  created 
 */
 
-static char *rcsId="@(#) $Id: taskStaticContainerServices.cpp,v 1.5 2006/10/11 07:28:13 bjeram Exp $"; 
+static char *rcsId="@(#) $Id: taskStaticContainerServices.cpp,v 1.6 2008/10/09 07:22:33 cparedes Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #define _POSIX_SOURCE 1
@@ -30,7 +30,6 @@ StaticContainerServices::StaticContainerServices(const maci::Handle componentHan
 }//StaticContainerServices
 
 CDB::DAL_ptr StaticContainerServices::getCDB()
-    throw (acsErrTypeContainerServices::CanNotGetCDBExImpl)
 {
 
     ACE_TCHAR corbalocRef[230];

@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: parameterTask.h,v 1.12 2008/10/01 03:07:07 cparedes Exp $"
+* "@(#) $Id: parameterTask.h,v 1.13 2008/10/09 07:22:33 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -81,9 +81,18 @@ namespace ACS
 			virtual void run (const ACS::StringSequence & parameters, const char* fileName); 
 
 		private:
-			void buildParameterMap(const ACS::StringSequence & parameters, const string & baseFileName) throw (invalid_argument);
-			void checkPosition(string::size_type currPosition, unsigned int length, const string & msg) throw(std::invalid_argument);
-			string buildParameterSetXML(const string & fileNamePrefix) throw(std::domain_error);
+            /*
+             * @throw invalid_argument
+            */
+			void buildParameterMap(const ACS::StringSequence & parameters, const string & baseFileName) ;
+            /*
+             * @throw std::invalid_argument
+            */
+			void checkPosition(string::size_type currPosition, unsigned int length, const string & msg) ;
+            /*
+             * @throw std::domain_error
+            */
+			string buildParameterSetXML(const string & fileNamePrefix);
 			DOMElement* createBoolElement(const string & paramName, const vector<string> & values, DOMDocument*);
 			DOMElement* createIntElement(const string & paramName, const vector<string> & values, DOMDocument*);
 			DOMElement* createIntArrayElement(const string & paramName, const vector<string> & values, DOMDocument*);
@@ -96,13 +105,34 @@ namespace ACS
 			DOMElement* createArrayElement(const string & paramName, const vector<string> & values, 
 				DOMDocument *doc, const string & paramType);
 
-			vector<string> parseBoolElement(const string & valueString) throw (invalid_argument);
-			vector<string> parseIntElement(const string & valueString) throw (invalid_argument);
-			vector<string> parseIntArrayElement(const string & valueString) throw (invalid_argument);
-			vector<string> parseDoubleElement(const string & valueString) throw (invalid_argument);
-			vector<string> parseDoubleArrayElement(const string & valueString) throw (invalid_argument);
-			vector<string> parseStringElement(const string & valueString) throw (invalid_argument);
-			vector<string> parseStringArrayElement(const string & valueString) throw (invalid_argument);
+            /*
+             * @throw invalid_argument
+            */
+			vector<string> parseBoolElement(const string & valueString);
+            /*
+             * @throw invalid_argument
+            */
+			vector<string> parseIntElement(const string & valueString);
+            /*
+             * @throw invalid_argument
+            */
+			vector<string> parseIntArrayElement(const string & valueString);
+            /*
+             * @throw invalid_argument
+            */
+			vector<string> parseDoubleElement(const string & valueString);
+            /*
+             * @throw invalid_argument
+            */
+			vector<string> parseDoubleArrayElement(const string & valueString);
+            /*
+             * @throw invalid_argument
+            */
+			vector<string> parseStringElement(const string & valueString);
+            /*
+             * @throw invalid_argument
+            */
+			vector<string> parseStringArrayElement(const string & valueString);
 
 			// map to hold the name/value(s) information from the parsed command line
 			map<string, vector<string> > parameterMap; 

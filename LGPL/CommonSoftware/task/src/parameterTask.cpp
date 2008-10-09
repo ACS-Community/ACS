@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: parameterTask.cpp,v 1.25 2008/10/01 03:07:07 cparedes Exp $"
+* "@(#) $Id: parameterTask.cpp,v 1.26 2008/10/09 07:22:33 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -39,7 +39,7 @@
 #include <xercesc/framework/XMLFormatter.hpp>
 #include <xercesc/framework/MemBufFormatTarget.hpp>
 
-static char *rcsId="@(#) $Id: parameterTask.cpp,v 1.25 2008/10/01 03:07:07 cparedes Exp $"; 
+static char *rcsId="@(#) $Id: parameterTask.cpp,v 1.26 2008/10/09 07:22:33 cparedes Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 XERCES_CPP_NAMESPACE_USE
@@ -113,7 +113,7 @@ void parameterTask::run(const ACS::StringSequence & parameters, const char* file
  * This method converts the entries in the map (created from the command-line arguments)
  * into XML which will then be fed as input into the parameter handling code (i.e. ParameterSet class).
  */
-string parameterTask::buildParameterSetXML(const string & xmlFileNamePrefix) throw(domain_error)
+string parameterTask::buildParameterSetXML(const string & xmlFileNamePrefix) 
 {
 	string retVal;
 	try {
@@ -450,7 +450,7 @@ DOMElement* parameterTask::createStringArrayElement(const string & name, const v
  * @param msg The error message to use in the exception, in the event that the current position 
  *        is out of bounds and an exception is thrown.
  */
-void parameterTask::checkPosition(string::size_type currPosition, unsigned int length, const string & msg) throw (invalid_argument)
+void parameterTask::checkPosition(string::size_type currPosition, unsigned int length, const string & msg) 
 {
 	if(currPosition >= length) {
 		throw invalid_argument(msg);
@@ -465,7 +465,7 @@ void parameterTask::checkPosition(string::size_type currPosition, unsigned int l
  * then fed into the parameter handling logic (which requires XML as its input) - this conversion
  * is perfomed in buildParameterSetXML() method.
  */
-void parameterTask::buildParameterMap(const ACS::StringSequence & params, const string & baseFileName) throw (invalid_argument)
+void parameterTask::buildParameterMap(const ACS::StringSequence & params, const string & baseFileName) 
 {
 	ACS_TRACE("parameterTask::buildParameterMap enter");
 	ACS_DEBUG_PARAM("parameterTask::buildParameterMap", "sequence length is: %d \n", params.length())
@@ -549,7 +549,7 @@ void parameterTask::buildParameterMap(const ACS::StringSequence & params, const 
  * the scientific notation using "D" or "d" which xerces does not recognize as valid scientific notation,
  * and use, instead, "e" which xerces recognizes.
  */
-vector<string> parameterTask::parseDoubleElement(const string & valueString) throw (invalid_argument)
+vector<string> parameterTask::parseDoubleElement(const string & valueString) 
 {
 	vector<string> retVal;
 	string localValueString(valueString);
@@ -571,7 +571,7 @@ vector<string> parameterTask::parseDoubleElement(const string & valueString) thr
  * XML that will be generated in buildParameterSetXML() method; we simply use the 
  * entire string (value portion of name=value pair).
  */
-vector<string> parameterTask::parseStringElement(const string & valueString) throw (invalid_argument)
+vector<string> parameterTask::parseStringElement(const string & valueString) 
 {
 	vector<string> retVal;
 	retVal.push_back(valueString);
@@ -585,7 +585,7 @@ vector<string> parameterTask::parseStringElement(const string & valueString) thr
  * value, it will be caught as a problem by xerces and by the parameter handling logic at a 
  * later point.
  */
-vector<string> parameterTask::parseBoolElement(const string & valueString) throw (invalid_argument)
+vector<string> parameterTask::parseBoolElement(const string & valueString) 
 {
 	vector<string> retVal;
 	retVal.push_back(valueString);
@@ -599,7 +599,7 @@ vector<string> parameterTask::parseBoolElement(const string & valueString) throw
  * value, it will be caught as a problem by xerces and by the parameter handling logic at a 
  * later point.
  */
-vector<string> parameterTask::parseIntElement(const string & valueString) throw (invalid_argument)
+vector<string> parameterTask::parseIntElement(const string & valueString) 
 {
 	vector<string> retVal;
 	retVal.push_back(valueString);
@@ -614,7 +614,7 @@ vector<string> parameterTask::parseIntElement(const string & valueString) throw 
  * are not valid int values, they will be caught as a problem by xerces and by the parameter 
  * handling logic at a later point (as it parses the XML that is generated in buildParameterSetXML).
  */
-vector<string> parameterTask::parseIntArrayElement(const string & valueString) throw (invalid_argument)
+vector<string> parameterTask::parseIntArrayElement(const string & valueString) 
 {
 	ACS_DEBUG_PARAM("parameterTask::parseIntArrayElement", "The value string incoming: %s", valueString.c_str())
 	vector<string> retVal;
@@ -647,7 +647,7 @@ vector<string> parameterTask::parseIntArrayElement(const string & valueString) t
  * the scientific notation using "D" or "d" which xerces does not recognize as valid scientific notation,
  * and use, instead, "e" which xerces recognizes.
  */
-vector<string> parameterTask::parseDoubleArrayElement(const string & valueString) throw (invalid_argument)
+vector<string> parameterTask::parseDoubleArrayElement(const string & valueString) 
 {
 	ACS_DEBUG_PARAM("parameterTask::parseDoubleArrayElement", "The value string incoming: %s", valueString.c_str())
 	vector<string> retVal;
@@ -688,7 +688,7 @@ vector<string> parameterTask::parseDoubleArrayElement(const string & valueString
  * value(s) from the incoming string verbatim. That is, each item/value of the string array 
  * being parsed is in the incoming string and is delimited by commas as in name=value,value,value). 
  */
-vector<string> parameterTask::parseStringArrayElement(const string & valueString) throw (invalid_argument)
+vector<string> parameterTask::parseStringArrayElement(const string & valueString) 
 {
 	ACS_DEBUG_PARAM("parameterTask::parseStringArrayElement", "The value string incoming: %s", valueString.c_str())
 	vector<string> retVal;

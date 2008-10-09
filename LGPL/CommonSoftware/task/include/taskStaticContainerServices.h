@@ -3,7 +3,7 @@
 /*******************************************************************************
 * E.S.O. - VLT project
 *
-* "@(#) $Id: taskStaticContainerServices.h,v 1.9 2007/09/04 04:08:23 cparedes Exp $"
+* "@(#) $Id: taskStaticContainerServices.h,v 1.10 2008/10/09 07:22:33 cparedes Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -45,36 +45,40 @@ class StaticContainerServices: public maci::ContainerServices
  
   public:
  
+    /**
+    * @throw maciErrType::CannotGetComponentExImpl
+    */
     CORBA::Object* getCORBAComponent(const char* name) 
-	throw (maciErrType::CannotGetComponentExImpl) 
 	{ 
 	    return CORBA::Object::_nil(); 
 	}
 
+    /**
+    * @throw maciErrType::CannotGetComponentExImpl
+    */
     CORBA::Object* getCORBAComponentNonSticky(const char* name) 
-	throw (maciErrType::CannotGetComponentExImpl) 
 	{ 
 	    return CORBA::Object::_nil(); 
 	}
     
     /**
      * Implementation of acsContainerServices::getCORBADynamicComponent(const char* name)
+     * @throw maciErrType::IncompleteComponentSpecExImpl
+     * @throw maciErrType::InvalidComponentSpecExImpl
+     * @throw maciErrType::ComponentSpecIncompatibleWithActiveComponentExImpl
+     * @throw maciErrType::CannotGetComponentExImpl
      */
     CORBA::Object* getCORBADynamicComponent(maci::ComponentSpec compSpec, bool markAsDefault) 
-	throw (maciErrType::IncompleteComponentSpecExImpl, 
-	       maciErrType::InvalidComponentSpecExImpl, 
-	       maciErrType::ComponentSpecIncompatibleWithActiveComponentExImpl, 
-	       maciErrType::CannotGetComponentExImpl) 
 	{ 
 	    return CORBA::Object::_nil(); 
 	}
     
     /**
      * Implementation of acsContainerServices::getCORBADefaultComponent(const char* name)
+     * @throw maciErrType::NoDefaultComponentExImpl
+     * @throw maciErrType::CannotGetComponentExImpl
      */
     CORBA::Object* getCORBADefaultComponent(const char* idlType) 
-	throw (maciErrType::NoDefaultComponentExImpl,
-	       maciErrType::CannotGetComponentExImpl) 
 	{ 
 	    return CORBA::Object::_nil(); 
 	}
@@ -83,10 +87,11 @@ class StaticContainerServices: public maci::ContainerServices
    * Gets the component info for the component
    * 
    * @param componentName The name of the component
+   * @throw acsErrTypeContainerServices::GettingCompInfoExImpl
    * @return The ComponentInfo struct of the component
    */
   maci::ComponentInfo getComponentDescriptor(const char* componentName)
-      throw (acsErrTypeContainerServices::GettingCompInfoExImpl){ return maci::ComponentInfo(); }
+   { return maci::ComponentInfo(); }
 
   /**
    * Finds components by their instance name (curl) and/or by their type.
@@ -108,13 +113,13 @@ class StaticContainerServices: public maci::ContainerServices
    * Releases the specified component.
    *
    * @param The name of the component instance to be released
+   * @throw maciErrType::CannotReleaseComponentExImpl
    * @return void  
    * @htmlonly
    * <br><hr>
    * @endhtmlonly
    */
     void releaseComponent(const char *name)
-	throw (maciErrType::CannotReleaseComponentExImpl)  
 	{}
   
   /**
@@ -127,12 +132,13 @@ class StaticContainerServices: public maci::ContainerServices
   /**
    * Get a reference to the DAL object
    *
-   * @return A reference to the DAL 
+   * @return A reference to the DAL
+   * @throw acsErrTypeContainerServices::CanNotGetCDBExImpl 
    * @htmlonly
    * <br><hr>
    * @endhtmlonly
    */
-    CDB::DAL_ptr getCDB() throw (acsErrTypeContainerServices::CanNotGetCDBExImpl);
+    CDB::DAL_ptr getCDB(); 
   
   /// Get the OffShoot POA
   /// @return The offshoot POA
@@ -152,11 +158,11 @@ class StaticContainerServices: public maci::ContainerServices
   /**
    * Deactivate the offshoot CORBA servant
    * @param cbServant the CORBA servant
+   * @throw acsErrTypeContainerServices::OffShootDeactivationExImpl
+   * @throw acsErrTypeContainerServices::OffShootPOAExImpl
    */
   void deactivateOffShoot(PortableServer::Servant cbServant)
-  throw (
-  	acsErrTypeContainerServices::OffShootDeactivationExImpl,
-	    acsErrTypeContainerServices::OffShootPOAExImpl){}
+	    {}
   
   /**
    * Create the offshoot POA
@@ -174,24 +180,26 @@ class StaticContainerServices: public maci::ContainerServices
    * If it doesn't, only the container will change the state based on 
    * the information it has available.
    * 
+   * @throw maciErrType::IncompleteComponentSpecEx
+   * @throw maciErrType::InvalidComponentSpecEx
+   * @throw maciErrType::ComponentSpecIncompatibleWithActiveComponentEx
+   * @throw maciErrType::CannotGetComponentEx
    * @return the state manager
    * @see alma.ACS.ComponentStates
    */
     maci::ComponentStateManager* getComponentStateManager()
-	throw (maciErrType::IncompleteComponentSpecEx,
-	       maciErrType::InvalidComponentSpecEx,
-	       maciErrType::ComponentSpecIncompatibleWithActiveComponentEx,
-	       maciErrType::CannotGetComponentEx)
 	{ 
 	    return &componentStateManager_m; 
 	}
 
+    /*
+   * @throw maciErrType::IncompleteComponentSpecEx
+   * @throw maciErrType::InvalidComponentSpecEx
+   * @throw maciErrType::ComponentSpecIncompatibleWithActiveComponentEx
+   * @throw maciErrType::CannotGetComponentEx
+    */
     virtual CORBA::Object* getCORBACollocatedComponent(maci::ComponentSpec, 
 						       bool, const char*)
-	throw (maciErrType::IncompleteComponentSpecExImpl, 
-	       maciErrType::InvalidComponentSpecExImpl,
-	       maciErrType::ComponentSpecIncompatibleWithActiveComponentExImpl,
-	       maciErrType::CannotGetComponentExImpl)
 	{
 	    return CORBA::Object::_nil();
 	}
