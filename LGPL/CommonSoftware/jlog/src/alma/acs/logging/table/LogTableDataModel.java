@@ -25,20 +25,17 @@ import java.net.URL;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Vector;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
-import java.io.FileNotFoundException;
-
-import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
 import alma.acs.logging.dialogs.LoadURLDlg;
+import alma.acs.logging.engine.io.IOHelper;
 import alma.acs.logging.io.LoadFileChooser;
 import alma.acs.logging.io.IOLogsHelper;
+import alma.acs.logging.io.SaveFileChooser;
 
 import com.cosylab.logging.LoggingClient;
 
@@ -324,11 +321,11 @@ public class LogTableDataModel extends LogEntryTableModelBase {
 		BufferedReader br=null;
 		int len=0;
 		try {
+			br=new IOHelper().getBufferedReader(fileName);
 			File f = new File(fileName);
-			len = (int)f.length();
-			br = new BufferedReader(new FileReader(f),32768);
-		} catch (FileNotFoundException fnfe) {
-			System.err.println("File not found: "+fileName);
+			len=(int)f.length();
+		} catch (Exception fnfe) {
+			System.err.println("Exception creating the reader: "+fileName);
 			return;
 		}
 		getIOHelper().loadLogs(br,loggingClient,loggingClient,allLogs,len);
@@ -337,41 +334,41 @@ public class LogTableDataModel extends LogEntryTableModelBase {
 
 	/**
 	 * Saves input logs into a file.
-	 * Creation date: (4/14/2002 17:21:49)
-	 * @param s java.lang.String
 	 */
-	
 	public void saveFile() {
-		JFileChooser fc = new JFileChooser(currentDir);
-		if (fc.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
+		
+		SaveFileChooser fc = new SaveFileChooser("Save",currentDir);
+		if (fc.getSelectedFile()!=null) {
 			try {
-				String filename = fc.getSelectedFile().getAbsolutePath();	
+				String filename = fc.getSelectedFile().getAbsolutePath();
 					
 				currentDir = fc.getCurrentDirectory();
 				
-				// Cancels saving
-				if (fc.getSelectedFile() == null) 
-					return;		
-				
+				if (fc.mustBeCompressed() && !filename.toLowerCase().endsWith(".gz")) {
+					filename=filename+".gz";
+				} else if (!fc.mustBeCompressed() && !filename.toLowerCase().endsWith(".xml")) {
+					filename=filename+".xml";
+				}
 				// Checks whether the selected file exists
-				if (fc.getSelectedFile().exists()) {
-					int act = javax.swing.JOptionPane.showConfirmDialog(null, filename + " exists.  Overwrite?");
+				File fileToSave = new File(filename);
+				if (fileToSave.exists()) {
+					int act = JOptionPane.showConfirmDialog(null, filename + " already exists.  Overwrite?");
 					
 					// Checks whether a file exists
-					while (act == javax.swing.JOptionPane.NO_OPTION) {
-						fc.showSaveDialog(null);
-						act = javax.swing.JOptionPane.showConfirmDialog(null, filename + " exists.  Overwrite?");
+					while (act == JOptionPane.NO_OPTION) {
+						fc = new SaveFileChooser("Save",currentDir);
+						act = JOptionPane.showConfirmDialog(null, filename + " already exists.  Overwrite?");
 					}
 		
 					// Canceled saving action
-					if (act == javax.swing.JOptionPane.CANCEL_OPTION) {
+					if (act == JOptionPane.CANCEL_OPTION) {
 						filename = null;
 						isSuspended = false;
 						return;
 					}
 				}
 				isSuspended	= true;		
-				saveFile(filename);
+				saveFile(filename,fc.mustBeCompressed(),fc.getCompressionLevel());
 			} catch (Exception e) {
 				System.out.println("Exception "+e.getMessage());
 				e.printStackTrace(System.err);
@@ -386,10 +383,12 @@ public class LogTableDataModel extends LogEntryTableModelBase {
 	 * Save the logs in a file
 	 * 
 	 * @param fileName The name of the file to save logs into
+	 * @param compress <code>true</code> if the file must be compressed (GZIP)
+	 * @param level The level of compression (ignored if <code>compress</code> is <code>false</code>) 
 	 */
-	public void saveFile(String fileName) {
+	private void saveFile(String fileName, boolean compress, int level) {
 		try {
-			getIOHelper().saveLogs(fileName,allLogs,true);
+			getIOHelper().saveLogs(fileName,compress,level,allLogs,true);
 	 	} catch (Exception e) {
 	 		JOptionPane.showMessageDialog(null, "Exception saving the file: "+e.getMessage(),"Error saving "+fileName,JOptionPane.ERROR_MESSAGE);
 	 	};
