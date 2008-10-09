@@ -17,7 +17,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: FaultState.py,v 1.1 2008/10/09 16:11:10 agrimstrup Exp $"
+# "@(#) $Id: FaultState.py,v 1.2 2008/10/09 19:13:20 agrimstrup Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -52,6 +52,9 @@ class Properties(dict):
 ACTIVE_STRING = "ACTIVE"
 TERMINATE_STRING = "TERMINATE"
 CHANGE_STRING = "CHANGE"
+INSTANT_STRING = "INSTANT_STRING";
+ASI_PREFIX_PROPERTY_STRING = "ASI_PREFIX_PROPERTY";
+ASI_SUFFIX_PROPERTY_STRING = "ASI_SUFFIX_PROPERTY";
 
 
 class FaultState(object):

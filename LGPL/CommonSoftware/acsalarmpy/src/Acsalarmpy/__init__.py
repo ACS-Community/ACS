@@ -17,7 +17,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: __init__.py,v 1.1 2008/10/09 16:11:10 agrimstrup Exp $"
+# "@(#) $Id: __init__.py,v 1.2 2008/10/09 19:13:20 agrimstrup Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -29,7 +29,7 @@ import Acspy.Common.CDBAccess as CDBAccess
 import AcsAlarmSystem_xsd
 import FaultState
 import ACSAlarmSystemInterfaceProxy as ACSProxy
-import CERNAlarmSystemInterfaceProxy as CERNProxy
+#import CERNAlarmSystemInterfaceProxy as CERNProxy
 import acsErrTypeAlarmSourceFactory as ErrFactory
 
 class AlarmSystemInterfaceFactory(object):
@@ -40,8 +40,7 @@ class AlarmSystemInterfaceFactory(object):
     manager = None
     systemtype = None
     initialized = False
-    registry ={ 'ACS': ACSProxy.ACSAlarmSystemInterfaceProxy,
-                'CERN' : CERNProxy.CERNAlarmSystemInterfaceProxy }
+    registry ={}
 
     @classmethod
     def init(cls, man=None):
@@ -54,6 +53,17 @@ class AlarmSystemInterfaceFactory(object):
         cls.logger.logTrace("AlarmSystemInterfaceFactory::init() entering.")
         cls.manager = man
         cls.initialized = True
+
+        try:
+            cls.registry['ACS'] = ACSProxy.ACSAlarmSystemInterfaceProxy
+        except:
+            pass
+
+        try:
+            cls.registry['CERN'] = CERNProxy.CERNAlarmSystemInterfaceProxy
+        except:
+            pass
+
 
         # Parse the CDB to get the system type
         cdb = CDBAccess.CDBaccess()
@@ -78,6 +88,7 @@ class AlarmSystemInterfaceFactory(object):
         cls.manager = None
         cls.initialized = False
         cls.systemtype = None
+        cls.registry = {}
         cls.logger.logTrace("AlarmSystemInterfaceFactory::done() exiting.")
 
     @classmethod
