@@ -44,9 +44,12 @@ import alma.acs.logging.engine.parser.ACSLogParserFactory;
 /**
  * A class testing the load and save facilities
  * <P>
- * As a general rule, the class generates some logs with the help of <code>CacheUtile</code>,
- * then save and load the logs. 
- * Finally it checks if the logs written and those read are equals. 
+ * As a general rule, each test of this class
+ * <OL>
+ * 	<LI>generate some logs with the help of <code>CacheUtils</code>,
+ * 	<LI>save and load the logs.
+ * 	<LI>check if the logs written and those read are equals. 
+ * </OL>
  * 
  * @author acaproni
  *
@@ -141,6 +144,12 @@ public class LoadSaveTest extends TestCase implements IOPorgressListener, ACSRem
 	 * The name of the file used for testing
 	 */
 	private String fileName;
+	
+	/**
+	 * The name of the file used for testing compressed load and save
+	 */
+	private String gzipFileName;
+	
 	/**
 	 * @see alma.acs.logging.engine.io.IOPorgressListener#bytesRead(long)
 	 */
@@ -176,6 +185,7 @@ public class LoadSaveTest extends TestCase implements IOPorgressListener, ACSRem
 		File folderFile = new File(folder);
 		String folderPath = folderFile.getAbsolutePath();
 		fileName = folderPath+"/logs.xml";
+		gzipFileName=fileName+".gz";
 		// Check if folder is  a writable directory
 		assertTrue(folderFile.isDirectory());
 		assertTrue(folderFile.canWrite());
@@ -192,6 +202,11 @@ public class LoadSaveTest extends TestCase implements IOPorgressListener, ACSRem
 		// Delete the file
 		File f = new File(fileName);
 		f.deleteOnExit();
+		// Delete the compressed file
+		File compressed = new File(fileName+".gz");
+		if (compressed.exists()) {
+			compressed.deleteOnExit();
+		}
 		logs.clear();
 		logs=null;
 		logsRead.clear();
@@ -247,25 +262,18 @@ public class LoadSaveTest extends TestCase implements IOPorgressListener, ACSRem
 		IOHelper ioHelper = new IOHelper();
 		assertNotNull(ioHelper);
 		
-		long assumedLen=0;
-		for (ILogEntry log: logs) {
-			char[] chars = (log.toXMLString()+"\n").toCharArray();
-			assumedLen+=chars.length;
-		}
-		
 		// Save the logs on file
-		ioHelper.saveLogs(fileName+".gz", logs, this, false,true);
-		assertEquals(assumedLen, bytesWritten);
+		ioHelper.saveLogs(gzipFileName, logs, this, false,true);
 		assertEquals(logs.size(), numOfLogsWritten);
 		
 		// Read the logs
-		ioHelper.loadLogs(fileName+".gz", this, null, this, this,true);
+		ioHelper.loadLogs(gzipFileName, this, null, this, this,true);
 		assertEquals(logs.size(),numOfLogsRead);
-		assertTrue(bytesRead>assumedLen); // bytes read includes the XML header
 	
 		// Compare the 2 collections
 		assertEquals(logs.size(), logsRead.size());
-		
+
+		// Compare the 2 collections
 		int t=0;
 		for (ILogEntry log: logs) {
 			String logXML = log.toXMLString();
