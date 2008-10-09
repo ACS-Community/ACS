@@ -245,7 +245,7 @@ public class IOHelper extends LogMatcher {
 			IOPorgressListener progressListener) throws IOException, Exception {
 		String name = fileName.toLowerCase();
 		if (!name.endsWith(".gz") && !name.endsWith(".xml")) {
-			throw new IllegalArgumentException("File name must ends with .gz or .xml");
+			throw new IllegalArgumentException("File name must end with .gz or .xml");
 		}
 		return loadLogs(fileName, logListener, rawLogListener, errorListener, progressListener,name.endsWith(".gz")); 
 	}
@@ -539,7 +539,7 @@ public class IOHelper extends LogMatcher {
 			throw new IllegalArgumentException("The progress listener can't be null");
 		}
 		
-		BufferedWriter writer = getBuferedWriter(fileName, append,gzip, compressionLevel);
+		BufferedWriter writer = getBufferedWriter(fileName, append,gzip, compressionLevel);
 		
 		writeHeader(writer);
 		saveLogs(writer, iterator,progressListener);
@@ -559,7 +559,7 @@ public class IOHelper extends LogMatcher {
 	 * 
 	 * @return the <code>BufferedWriter</code> to save logs into the file of the given name
 	 */
-	public synchronized BufferedWriter getBuferedWriter(String fileName, boolean append, boolean gzip, int compressionLevel) 
+	public synchronized BufferedWriter getBufferedWriter(String fileName, boolean append, boolean gzip, int compressionLevel) 
 	throws FileNotFoundException, IOException{
 		OutputStream outStream=new FileOutputStream(fileName,append);
 		BufferedWriter writer;
@@ -584,16 +584,34 @@ public class IOHelper extends LogMatcher {
 	 * 
 	 * @return the <code>BufferedWriter</code> to save logs into the file of the given name
 	 */
-	public synchronized BufferedWriter getBuferedWriter(String fileName, boolean append, boolean gzip) 
+	public synchronized BufferedWriter getBufferedWriter(String fileName, boolean append, boolean gzip) 
 	throws FileNotFoundException, IOException{
-		OutputStream outStream=new FileOutputStream(fileName,append);
-		BufferedWriter writer;
-		if (gzip) {
-			outStream = new GZipLogOutStream(outStream,DEFAULT_COMPRESSION_LEVEL);
-		} 
-		writer = new BufferedWriter(new OutputStreamWriter(outStream));
+		return getBufferedWriter(fileName, append, gzip,DEFAULT_COMPRESSION_LEVEL);
+	}
+	
+	/**
+	 * Return the reader to get logs from
+	 * <P>
+	 * The reader can be compressed (GZIP) or not depending on the
+	 * extension of the file name (i.e. ".gz" or ".xml").
+	 * 
+	 * @param fileName The name of the file to read
+	 * @return the reader to get logs from
+	 */
+	public synchronized BufferedReader getBufferedReader(String fileName) throws FileNotFoundException, IOException {
+		String name = fileName.toLowerCase();
+		if (!name.endsWith(".gz") && !name.endsWith(".xml")) {
+			throw new IllegalArgumentException("File name must end with .gz or .xml");
+		}
 		
-		return writer;
+		File f = new File(fileName);
+		InputStream inStream = new FileInputStream(f);
+		if (name.endsWith(".gz")) {
+			InputStreamReader inStreamReader= new InputStreamReader(new GZIPInputStream(inStream));
+			return new BufferedReader(inStreamReader);
+		} else {
+			return new BufferedReader(new InputStreamReader(inStream));
+		}
 	}
 	
 	/**
