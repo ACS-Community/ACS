@@ -19,7 +19,7 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
  *    MA 02111-1307  USA
  */
-package com.cosylab.logging;
+package alma.acs.logging.io;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -33,6 +33,7 @@ import javax.swing.ProgressMonitor;
 import alma.acs.logging.engine.io.IOHelper;
 import alma.acs.logging.engine.io.IOPorgressListener;
 
+import com.cosylab.logging.LoggingClient;
 import com.cosylab.logging.client.cache.LogCache;
 import com.cosylab.logging.engine.ACS.ACSRemoteErrorListener;
 import com.cosylab.logging.engine.ACS.ACSRemoteLogListener;

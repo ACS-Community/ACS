@@ -38,9 +38,9 @@ import javax.swing.JOptionPane;
 
 import alma.acs.logging.dialogs.LoadURLDlg;
 import alma.acs.logging.io.CustomFileChooser;
+import alma.acs.logging.io.IOLogsHelper;
 
 import com.cosylab.logging.LoggingClient;
-import com.cosylab.logging.IOLogsHelper;
 
 
 /**
