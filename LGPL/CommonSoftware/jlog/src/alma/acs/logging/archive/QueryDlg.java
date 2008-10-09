@@ -50,9 +50,9 @@ import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
 import alma.acs.logging.archive.ArchiveConnectionManager.DBState;
-import alma.acs.logging.dialogs.LoadSwitchesPanel;
 import alma.acs.logging.engine.parser.ACSLogParser;
 import alma.acs.logging.engine.parser.ACSLogParserFactory;
+import alma.acs.logging.io.LoadSwitchesPanel;
 
 import com.cosylab.logging.LoggingClient;
 import com.cosylab.logging.engine.ACS.ACSRemoteErrorListener;

@@ -29,7 +29,6 @@ import java.awt.BorderLayout;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
-import alma.acs.logging.dialogs.LoadSwitchesPanel;
 
 import com.cosylab.logging.LoggingClient;
 

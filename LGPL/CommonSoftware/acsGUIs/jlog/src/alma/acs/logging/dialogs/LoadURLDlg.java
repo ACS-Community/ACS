@@ -38,6 +38,8 @@ import javax.swing.JPanel;
 import javax.swing.JRootPane;
 import javax.swing.JTextField;
 
+import alma.acs.logging.io.LoadSwitchesPanel;
+
 import com.cosylab.logging.LoggingClient;
 
 /**
