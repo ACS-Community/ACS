@@ -39,7 +39,6 @@ import alma.acs.logging.io.SaveFileChooser;
 
 import com.cosylab.logging.LoggingClient;
 
-
 /**
  * Extends the <code>LogEntryTableModelBase</code> adding I/O, deletion of logs
  * and so on.
@@ -392,13 +391,11 @@ public class LogTableDataModel extends LogEntryTableModelBase {
 	 */
 	private void saveFile(String fileName, boolean compress, int level) {
 		try {
-			getIOHelper().saveLogs(fileName,compress,level,allLogs,true);
+			getIOHelper().saveLogs(fileName,compress,level,allLogs);
 	 	} catch (Exception e) {
 	 		JOptionPane.showMessageDialog(null, "Exception saving the file: "+e.getMessage(),"Error saving "+fileName,JOptionPane.ERROR_MESSAGE);
 	 	};
 	}
-	
-	
 	
 	/**
 	 * Return true if an async load/save is in progress
