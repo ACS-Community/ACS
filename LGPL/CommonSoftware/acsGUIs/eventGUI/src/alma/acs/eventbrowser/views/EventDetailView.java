@@ -66,9 +66,10 @@ public class EventDetailView extends ViewPart {
 		}
 
 		logger = em.getLogger();
+//		viewer = new TableViewer(parent, SWT.MULTI | SWT.H_SCROLL
+//				| SWT.V_SCROLL | SWT.VIRTUAL);
 		viewer = new TableViewer(parent, SWT.MULTI | SWT.H_SCROLL
-				| SWT.V_SCROLL | SWT.VIRTUAL);
-
+				| SWT.V_SCROLL);
 		Table table = viewer.getTable();
 		table.setHeaderVisible(true);
 		table.setLinesVisible(true);
@@ -139,7 +140,17 @@ public class EventDetailView extends ViewPart {
 //						logger.fine("Table item count: "
 //								+ viewer.getTable().getItemCount()
 //								+ "; number of events drained from queue: "+numberDrained);
-						if (cycles++%CHECK_MEMORY_FREQUENCY == 0) {
+//						Object[] els = new Object[viewer.getTable().getItemCount()];
+//
+//						boolean hasNull = false;
+//						for( int i = 0; i < viewer.getTable().getItemCount(); i++ ) {
+//						   els[i] = viewer.getElementAt(i);
+//						   if (els[i] == null && hasNull == false) {
+//							   logger.fine("Element # "+i+" is null."); // Log first null element found
+//							   hasNull = true;
+//						   }
+//						}
+					    if (cycles++%CHECK_MEMORY_FREQUENCY == 0) {
 							StopWatch sw = new StopWatch(logger);
 							checkFreeMemory();
 							sw.logLapTime("Check free memory");
