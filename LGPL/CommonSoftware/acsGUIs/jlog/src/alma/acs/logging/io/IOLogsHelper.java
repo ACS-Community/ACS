@@ -145,12 +145,10 @@ public class IOLogsHelper extends Thread  implements IOPorgressListener {
 		 * 
 		 * @param inFile The BuffredReader to read logs from
 		 * @param theEngine The logging client engine
-		 * @param theCache The cache of logs (used to shown values in the 
-		 *                 progress dialog)
-		 * @param range The range of the progress bar (<0 means undtereminate)
+q		 * @param range The range of the progress bar (<0 means undetereminate)
 		 */
-		public IOAction(BufferedReader inFile, ACSRemoteLogListener listener, ACSRemoteErrorListener errorListener, LogCache theCache, int range) {
-			this(IOAction.LOAD_ACTION,inFile,(BufferedWriter)null,listener,errorListener,theCache, range);
+		public IOAction(BufferedReader inFile, ACSRemoteLogListener listener, ACSRemoteErrorListener errorListener, int range) {
+			this(IOAction.LOAD_ACTION,inFile,(BufferedWriter)null,listener,errorListener,(LogCache)null, range);
 		}
 		
 		/**
@@ -232,10 +230,9 @@ public class IOLogsHelper extends Thread  implements IOPorgressListener {
 	 * 
 	 * @param br The the file to read
 	 * @param logListener The callback for each new log read from the IO
-	 * @param cache The cache of logs
 	 * @param progressRange The range of the progress bar (if <=0 the progress bar is undeterminated)
 	 */
-	private void loadLogsFromThread(BufferedReader br,ACSRemoteLogListener logListener, ACSRemoteErrorListener errorListener, LogCache cache, int progressRange) {
+	private void loadLogsFromThread(BufferedReader br,ACSRemoteLogListener logListener, ACSRemoteErrorListener errorListener, int progressRange) {
 		if (br==null || logListener==null|| errorListener==null) {
 			throw new IllegalArgumentException("Null parameter received!");
 		}
@@ -249,7 +246,7 @@ public class IOLogsHelper extends Thread  implements IOPorgressListener {
 		
 		// Set the progress range
 		if (progressRange<=0) {
-			progressMonitor = new ProgressMonitor(loggingClient.getLogEntryTable(),"Loading logs...",null,0,0);
+			progressMonitor = new ProgressMonitor(loggingClient.getLogEntryTable(),"Loading logs...",null,0,Integer.MAX_VALUE);
 		} else {
 			progressMonitor= new ProgressMonitor(loggingClient.getLogEntryTable(),"Loading logs...",null,0,progressRange);
 		}
@@ -281,7 +278,7 @@ public class IOLogsHelper extends Thread  implements IOPorgressListener {
 	 * 
 	 * @param reader The buffered reader containing the logs
 	 * @param listener The listener to add logs in
-	 * @param cache The cache To show info in the dialog (can be null)
+	 * @param errorListener The listener of errors
 	 * @param showProgress If true a progress bar is shown
 	 * @param progressRange An integer to make the progress bar showing the real 
 	 *                      state of the operation (determinate)
@@ -293,7 +290,6 @@ public class IOLogsHelper extends Thread  implements IOPorgressListener {
 			BufferedReader reader,
 			ACSRemoteLogListener listener,
 			ACSRemoteErrorListener errorListener,
-			LogCache cache,
 			int progressRange) {
 		// Check if the thread is alive
 		if (!this.isAlive()) {
@@ -307,7 +303,7 @@ public class IOLogsHelper extends Thread  implements IOPorgressListener {
 		
 		
 		// Add an action in the queue
-		IOAction action = new IOAction(reader,listener,errorListener,cache,progressRange);
+		IOAction action = new IOAction(reader,listener,errorListener,progressRange);
 		synchronized(actions) {
 			actions.add(action);
 		}
@@ -417,7 +413,7 @@ public class IOLogsHelper extends Thread  implements IOPorgressListener {
 				}
 				switch (action.type) {
 					case IOAction.LOAD_ACTION: {
-						loadLogsFromThread(action.inFile,action.logListener,action.errorListener,action.logsCache,action.progressRange);
+						loadLogsFromThread(action.inFile,action.logListener,action.errorListener,action.progressRange);
 						break;
 					}
 					case IOAction.TERMINATE_THREAD_ACTION: {
@@ -485,6 +481,8 @@ public class IOLogsHelper extends Thread  implements IOPorgressListener {
 	}
 
 	/**
+	 * Moves the progress bar of the progress monitor 
+	 * 
 	 * @see alma.acs.logging.engine.io.IOPorgressListener#bytesRead(long)
 	 */
 	@Override
@@ -502,6 +500,8 @@ public class IOLogsHelper extends Thread  implements IOPorgressListener {
 	public void bytesWritten(long bytes) {}
 
 	/**
+	 * Change the label of the progress monitor
+	 * 
 	 * @see alma.acs.logging.engine.io.IOPorgressListener#logsRead(int)
 	 */
 	@Override
