@@ -30,10 +30,11 @@ import alma.acs.nc.Consumer;
 import alma.acs.util.StopWatch;
 
 public class EventDetailView extends ViewPart {
-	private static final long MEMORY_MARGIN_IN_BYTES = 850000000; // Remove first rows when free memory < this
+	private static final Runtime runtime = Runtime.getRuntime();
+	private static final long MEMORY_MARGIN_IN_BYTES = runtime.maxMemory()/5; // Remove first rows when free memory < this (here 20% of max)
 	private static final int CHECK_MEMORY_FREQUENCY = 10;	// Run the memory checker this often
 	private static final int QUEUE_DRAIN_LIMIT = 1000;
-	private static final int NUMBER_TO_DELETE = 1000;	// When memory is low, delete this many rows from start of table
+	private static final int NUMBER_TO_DELETE = 200;	// When memory is low, delete this many rows from start of table
 	
 	private TableViewer viewer;
 	private ArrayList<AdminConsumer> consumers;
@@ -43,8 +44,8 @@ public class EventDetailView extends ViewPart {
 	private Action printEventDetails;
 	
 	private long cycles = 0;
-	private Runtime runtime;
-	private long max_memory;
+
+	private final long max_memory = runtime.maxMemory();
 	private Logger logger;
 
 	public static final String ID = "alma.acs.eventbrowser.views.eventdetail";
@@ -63,8 +64,7 @@ public class EventDetailView extends ViewPart {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		runtime = Runtime.getRuntime();
-		max_memory = runtime.maxMemory();
+
 		logger = em.getLogger();
 		viewer = new TableViewer(parent, SWT.MULTI | SWT.H_SCROLL
 				| SWT.V_SCROLL | SWT.VIRTUAL);
@@ -262,6 +262,8 @@ public class EventDetailView extends ViewPart {
 				return; // It's hopeless!
 			}
 			logger.fine("Now have "+itemCount+" rows in event table.");
+			logger.fine("Remaining allocatable memory is: "+ultimateFreeMemory+" bytes. Margin required is "+MEMORY_MARGIN_IN_BYTES);
+			logger.fine("Will attempt to delete "+NUMBER_TO_DELETE+" rows.");
 			Object[] els = new Object[NUMBER_TO_DELETE];
 
 			boolean hasNull = false;
