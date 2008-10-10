@@ -316,12 +316,8 @@ public class LogTableDataModel extends LogEntryTableModelBase {
 				isSuspended = false;
 				return;
 			}
-			if (fc.disconnectEngine()) {
-				loggingClient.getEngine().disconnect();
-			}
-			if (fc.clearLogs()) {
-				clearAll();
-			}
+			// Disconnect the engine and clear the table
+			fc.execute();
 		}
 		
 		BufferedReader br=null;
