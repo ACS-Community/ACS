@@ -316,7 +316,14 @@ public class LogTableDataModel extends LogEntryTableModelBase {
 				isSuspended = false;
 				return;
 			}
+			if (fc.disconnectEngine()) {
+				loggingClient.getEngine().disconnect();
+			}
+			if (fc.clearLogs()) {
+				clearAll();
+			}
 		}
+		
 		BufferedReader br=null;
 		int len=0;
 		try {
