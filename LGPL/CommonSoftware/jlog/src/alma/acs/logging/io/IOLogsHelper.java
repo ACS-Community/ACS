@@ -24,7 +24,6 @@ package alma.acs.logging.io;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.util.LinkedList;
 
 import javax.swing.JOptionPane;
 import javax.swing.ProgressMonitor;
@@ -40,148 +39,165 @@ import com.cosylab.logging.engine.ACS.LCEngine;
 
 /**
  * This class is intended to support the commons IO
- * operations aiming to keep the LogTableDataModel class shorter 
+ * operations aiming to keep the <code>LogTableDataModel</code> class shorter 
  * and more readable.
- * This class instantiate a thread so to let the JVM able
- * to destroy objects of this class the thread must be terminated with
- * the close.
- * 
- * NOTE: The cache on file could be accessed in parallel
- *       by other thread reading logs (for example to refresh
- *       the logs already in the visible list)
+ * <P>
+ * This class instantiate a new thread for each load/save.
+ * To cleanly close, the <code>done()</code> must be called.
+ * <P>
+ * This class allows only one load/save at a time.
+ * If an I/O is requested while another one is in progress, an exception is thrown.
+ * <P>
+ * This class is not thread safe!
  * 
  * @author acaproni
  *
  */
 public class IOLogsHelper extends Thread  implements IOPorgressListener {
 	
-	// Monitor if an async IO operation is in progress
-	private volatile boolean IOOperationInProgress =false;
-	
 	/**
-	 * An action for operations to be performed asynchronously
-	 * 
-	 * There is one specific constructor for each possible type
-	 * of action
+	 * The thread to load logs
 	 * 
 	 * @author acaproni
 	 *
 	 */
-	private class IOAction {
+	final class LoadLogs extends IOThread {
 		
-		public final static int LOAD_ACTION=0;
-		public final static int SAVE_ACTION=1;
-		public final static int TERMINATE_THREAD_ACTION=2;
-		
-		/**
-		 * The type of the action to perform
-		 */
-		public final int type;
+		private final BufferedReader br;
+		private final ACSRemoteLogListener logListener;
+		private final ACSRemoteErrorListener errorListener;
+		private final int range;
 		
 		/**
-		 * The buffered reader to read the logs
-		 */
-		public final BufferedReader inFile;
-		
-		/**
-		 * The buffered writer to write the logs to save into
-		 */
-		public final BufferedWriter outFile;
-		
-		/**
-		 * The cache with all the logs
-		 */
-		public final LogCache logsCache; 
-		
-		/**
-		 *  The range for the progress bar
-		 */
-		public final int progressRange;
-		
-		/**
-		 * The listener i.e. the callback to push the loaded logs in 
-		 */
-		public final ACSRemoteLogListener logListener;
-		
-		/**
-		 * The listener for errors parsing logs
+		 * Constructor
 		 * 
+		 * @param br The the file to read
+		 * @param logListener The callback for each new log read from the IO
+		 * @param errorListener The listener of errors
+		 * @param progressRange The range of the progress bar (if <=0 the progress bar is undetermined)
 		 */
-		public final ACSRemoteErrorListener errorListener;
-		
-		/**
-		 * The constructor with all arguments.
-		 * 
-		 * Each overloaded public constructor calls this method with the right 
-		 * parameters 
-		 * 
-		 * @param type The type of the action
-		 * @param inFile The file to read logs from
-		 * @param outF The file to write logs into
-		 * @param listener The listener for each read log
-		 * @param errorListener The listener for errors reading logs
-		 * @param theCache The cache
-		 * @param range The range of the progress bar (<0 means undtereminate)
-		 */
-		private IOAction(
-				int type,
-				BufferedReader inFile, 
-				BufferedWriter outF,
-				ACSRemoteLogListener listener, 
-				ACSRemoteErrorListener errorListener, 
-				LogCache theCache,
-				int range) {
-			this.type=type;
-			this.logsCache=theCache;
-			this.inFile=inFile;
-			this.logListener=listener;
+		public LoadLogs(BufferedReader br,ACSRemoteLogListener logListener, ACSRemoteErrorListener errorListener, int progressRange) {
+			this.br=br;
+			this.logListener=logListener;
 			this.errorListener=errorListener;
-			this.outFile=outF;
-			this.progressRange=range;
+			this.range=progressRange;
 		}
 		
 		/**
-		 * Build an action for asynchronous load operations
-		 * 
-		 * @param inFile The BuffredReader to read logs from
-		 * @param theEngine The logging client engine
-q		 * @param range The range of the progress bar (<0 means undetereminate)
+		 * @see Thread
 		 */
-		public IOAction(BufferedReader inFile, ACSRemoteLogListener listener, ACSRemoteErrorListener errorListener, int range) {
-			this(IOAction.LOAD_ACTION,inFile,(BufferedWriter)null,listener,errorListener,(LogCache)null, range);
+		public void run() {
+			// Set the progress range
+			if (range<=0) {
+				progressMonitor = new ProgressMonitor(loggingClient.getLogEntryTable(),"Loading logs...",null,0,Integer.MAX_VALUE);
+			} else {
+				progressMonitor= new ProgressMonitor(loggingClient.getLogEntryTable(),"Loading logs...",null,0,range);
+			}
+			
+			// Apply discard level, filters and audience to the IOHelper
+			LCEngine engine = loggingClient.getEngine();
+			ioHelper.setDiscardLevel(engine.getDiscardLevel());
+			ioHelper.setAudience(engine.getAudience());
+			ioHelper.setFilters(engine.getFilters());
+			
+			// Load the logs
+			logsRead=0;
+			bytesRead=0;
+			try {
+				ioHelper.loadLogs(br, logListener, null, errorListener, IOLogsHelper.this);
+			} catch (Exception ioe) {
+				System.err.println("Exception loading the logs: "+ioe.getMessage());
+				ioe.printStackTrace(System.err);
+				JOptionPane.showMessageDialog(null, "Exception loading "+ioe.getMessage(),"Error loading",JOptionPane.ERROR_MESSAGE);
+			}
+			progressMonitor.close();
+		}
+	};
+	
+	/**
+	 * The thread to save logs
+	 * 
+	 * @author acaproni
+	 *
+	 */
+	final class SaveLogs extends IOThread {
+		
+		private final String fileName;
+		private final boolean compress;
+		private final int level;
+		private final LogCache cache;
+		
+		/**
+		 * Constructor
+		 * 
+		 * @param fileName The name of the file to save
+		 * @param compress <code>true</code> if the file must be compressed (GZIP)
+		 * @param level The level of compression (ignored if <code>compress</code> is <code>false</code>) 
+		 * @param cache The cache that contains the logs
+		 */
+		public SaveLogs(
+				String fileName,
+				boolean compress,
+				int level,
+				LogCache cache) {
+			this.fileName=fileName;
+			this.compress=compress;
+			this.level=level;
+			this.cache=cache;
 		}
 		
 		/**
-		 * Build an action for asynchronous save operations
-		 * 
-		 * @param outF The buffered file to save the logs into
-		 * @param theCache The cache of logs
+		 * @see Thread
 		 */
-		public IOAction(BufferedWriter outF, LogCache theCache) {
-			this(IOAction.SAVE_ACTION,(BufferedReader)null,outF,(ACSRemoteLogListener)null,(ACSRemoteErrorListener)null,theCache,theCache.getSize());
+		public void run() {
+
+			// Open the output file
+			BufferedWriter outBW=null;
+			try {
+				outBW = ioHelper.getBufferedWriter(fileName, false, compress, level);
+			} catch (IOException e) {
+				System.err.println("Exception while saving logs: "+e.getMessage());
+				e.printStackTrace(System.err);
+				JOptionPane.showMessageDialog(null, "Exception saving "+e.getMessage(),"Error saving",JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+			progressMonitor= new ProgressMonitor(loggingClient.getLogEntryTable(),"Saving logs...",null,0,cache.getSize());
+			
+			logsWritten=0;
+			try {
+				ioHelper.writeHeader(outBW);
+				ioHelper.saveLogs(outBW, cache.iterator(), IOLogsHelper.this);
+				ioHelper.terminateSave(outBW, true);
+			} catch (IOException e) {
+				System.err.println("Exception while saving logs: "+e.getMessage());
+				e.printStackTrace(System.err);
+				JOptionPane.showMessageDialog(null, "Exception saving "+e.getMessage(),"Error saving",JOptionPane.ERROR_MESSAGE);
+			}
+			progressMonitor.close();
+			progressMonitor=null;
 		}
 		
-		/** 
-		 * This constructor builds an action to terminate the thread
-		 * The class will not be able to perform further requests
-		 * and it will throw an IllegalStateException
-		 *
-		 */
-		public IOAction() {
-			this(IOAction.TERMINATE_THREAD_ACTION,(BufferedReader)null,(BufferedWriter)null,(ACSRemoteLogListener)null,(ACSRemoteErrorListener)null,(LogCache)null,0);
-		}
 	}
 	
-	// A queue of actions to perform in a separate thread
-	private LinkedList<IOAction> actions = new LinkedList<IOAction>();
+	/**
+	 * The <code>Thread</code> executing I/O
+	 * @return
+	 */
+	private IOThread thread=null;
 	
-	// The dialog
+	/**
+	 * The dialog
+	 */
 	private ProgressMonitor progressMonitor;
 	
-	// The IOHelper performing load and save
+	/** 
+	 * The IOHelper performing load and save
+	 */
 	private IOHelper ioHelper = new IOHelper();
 	
-	// The logging client
+	/** 
+	 * The logging client
+	 */
 	private LoggingClient loggingClient=null;
 	
 	/**
@@ -230,88 +246,19 @@ q		 * @param range The range of the progress bar (<0 means undetereminate)
 	 * 
 	 * @param br The the file to read
 	 * @param logListener The callback for each new log read from the IO
-	 * @param progressRange The range of the progress bar (if <=0 the progress bar is undeterminated)
+	 * @param errorListener The listener of errors
+	 * @param progressRange The range of the progress bar (if <=0 the progress bar is undetermined)
 	 */
-	private void loadLogsFromThread(BufferedReader br,ACSRemoteLogListener logListener, ACSRemoteErrorListener errorListener, int progressRange) {
+	public void loadLogs(BufferedReader br,ACSRemoteLogListener logListener, ACSRemoteErrorListener errorListener, int progressRange) {
 		if (br==null || logListener==null|| errorListener==null) {
 			throw new IllegalArgumentException("Null parameter received!");
 		}
-		
-		IOOperationInProgress=true;
-		
-		// Hide the table with the logs
-		// It reduces the access to the cache to redraw the logs 
-		// speeding up the loading
-		loggingClient.getLogEntryTable().setVisible(false);
-		
-		// Set the progress range
-		if (progressRange<=0) {
-			progressMonitor = new ProgressMonitor(loggingClient.getLogEntryTable(),"Loading logs...",null,0,Integer.MAX_VALUE);
-		} else {
-			progressMonitor= new ProgressMonitor(loggingClient.getLogEntryTable(),"Loading logs...",null,0,progressRange);
+		if (thread!=null && thread.isAlive()) {
+			throw new IllegalStateException("An I/O is already in progress");
 		}
 		
-		// Apply discard level, filters and audience to the IOHelper
-		LCEngine engine = loggingClient.getEngine();
-		ioHelper.setDiscardLevel(engine.getDiscardLevel());
-		ioHelper.setAudience(engine.getAudience());
-		ioHelper.setFilters(engine.getFilters());
-		
-		// Load the logs
-		logsRead=0;
-		bytesRead=0;
-		try {
-			ioHelper.loadLogs(br, logListener, null, errorListener, this);
-		} catch (Exception ioe) {
-			System.err.println("Exception loading the logs: "+ioe.getMessage());
-			ioe.printStackTrace(System.err);
-			JOptionPane.showMessageDialog(null, "Exception loading "+ioe.getMessage(),"Error loading",JOptionPane.ERROR_MESSAGE);
-		}
-		progressMonitor.close();
-		IOOperationTerminated();
-	}
-	
-	/**
-	 * Load the logs from a buffered reader.
-	 * <P>
-	 * The filter, discard level and audience of the engine are applied while loading
-	 * 
-	 * @param reader The buffered reader containing the logs
-	 * @param listener The listener to add logs in
-	 * @param errorListener The listener of errors
-	 * @param showProgress If true a progress bar is shown
-	 * @param progressRange An integer to make the progress bar showing the real 
-	 *                      state of the operation (determinate)
-	 *                      If it is <=0 then the progress bar is indeterminate
-	 * 
-	 * @see loadLogsFromThread
-	 */
-	public void loadLogs (
-			BufferedReader reader,
-			ACSRemoteLogListener listener,
-			ACSRemoteErrorListener errorListener,
-			int progressRange) {
-		// Check if the thread is alive
-		if (!this.isAlive()) {
-			throw new IllegalStateException("Unable to execute asynchronous operation");
-		}
-		// Check the params
-		if (listener==null || reader==null || errorListener==null) {
-			throw new IllegalArgumentException("Listseners and Reader can't be null");
-		}
-		
-		
-		
-		// Add an action in the queue
-		IOAction action = new IOAction(reader,listener,errorListener,progressRange);
-		synchronized(actions) {
-			actions.add(action);
-		}
-		
-		synchronized(this) {
-			// Wake up the thread
-				notifyAll();
-		}
+		thread = new LoadLogs( br, logListener, errorListener, progressRange);
+		thread.start();
 	}
 	
 	/**
@@ -346,7 +293,6 @@ q		 * @param range The range of the progress bar (<0 means undetereminate)
 	 * @param compress <code>true</code> if the file must be compressed (GZIP)
 	 * @param level The level of compression (ignored if <code>compress</code> is <code>false</code>) 
 	 * @param cache The cache that contains the logs
-	 * @param showProgress If true a progress bar is shown
 	 * @throws IOException
 	 * 
 	 * @see saveLogsFromThread
@@ -355,26 +301,20 @@ q		 * @param range The range of the progress bar (<0 means undetereminate)
 			String fileName,
 			boolean compress,
 			int level,
-			LogCache cache,
-			boolean showProgress) throws IOException {
+			LogCache cache) throws IOException {
+		if (fileName==null || fileName.isEmpty()) {
+			throw new IllegalArgumentException("Invalid file name");
+		}
+		if (cache==null) {
+			throw new IllegalArgumentException("The cache can't be null");
+		}
 		// Check if the thread is alive
-		if (!this.isAlive()) {
-			throw new IllegalStateException("Unable to execute asynchronous operation");
-		}
-		IOOperationInProgress=true;
-		// Open the output file
-		BufferedWriter outBW = ioHelper.getBufferedWriter(fileName, false, compress, level);
-		
-		IOAction action = new IOAction(outBW,cache);
-		
-		synchronized(actions) {
-			actions.add(action);
+		if (thread!=null && thread.isAlive()) {
+			throw new IllegalStateException("An I/O is already in progress");
 		}
 		
-		synchronized(this) {
-			// Wake up the thread
-			notifyAll();
-		}
+		thread = new SaveLogs(fileName,	compress, level, cache);
+		thread.start();
 	}
 	
 	/**
@@ -386,100 +326,10 @@ q		 * @param range The range of the progress bar (<0 means undetereminate)
 	 *
 	 */
 	public void done() {
-		// Stop every load/save operation
-		ioHelper.stopIO();
-		// Check if the thread is alive
-		IOAction terminateAction = new IOAction();
-		synchronized(actions) {
-			actions.add(terminateAction);
-		}
-		synchronized(this) {
-			// Wake up the thread
-			notifyAll();
-		}
+		thread.stopThread(false);
+		thread=null;
 	}
 	
-	/**
-	 * The thread for asynchronous operation.
-	 * It takes an action out of the actions queue and perform the requested
-	 * task until there no more actions in the list
-	 */
-	public void run() {
-		IOAction action;
-		while (true) {
-			if (!actions.isEmpty()) {
-				synchronized(actions) {
-					action = actions.removeFirst();
-				}
-				switch (action.type) {
-					case IOAction.LOAD_ACTION: {
-						loadLogsFromThread(action.inFile,action.logListener,action.errorListener,action.progressRange);
-						break;
-					}
-					case IOAction.TERMINATE_THREAD_ACTION: {
-						// Terminate the thread
-						return;
-					}
-					case IOAction.SAVE_ACTION: {
-						saveLogsFromThread(action.outFile,action.logsCache);
-						break;
-					}
-				}
-			} else {
-				try {
-	                synchronized (this) {
-		                wait();
-	                }
-	            } catch (InterruptedException e) { }
-			}
-		}
-	}
-	
-	/** 
-	 * Save all the logs in the cache in the file
-	 * 
-	 * @param outBW The buffered writer where the logs have to be stored
-	 * @param logs The cache with all the logs
-	 */
-	private void saveLogsFromThread(BufferedWriter outBW, LogCache cache) {
-		if (outBW==null || cache==null) {
-			throw new IllegalArgumentException("BufferedWriter and LogCache can't be null");
-		}
-		
-		progressMonitor= new ProgressMonitor(loggingClient.getLogEntryTable(),"Saving logs...",null,0,cache.getSize());
-		
-		logsWritten=0;
-		try {
-			ioHelper.writeHeader(outBW);
-			ioHelper.saveLogs(outBW, cache.iterator(), this);
-			ioHelper.terminateSave(outBW, true);
-		} catch (IOException e) {
-			System.err.println("Exception while saving logs: "+e.getMessage());
-			e.printStackTrace(System.err);
-			JOptionPane.showMessageDialog(null, "Exception saving "+e.getMessage(),"Error saving",JOptionPane.ERROR_MESSAGE);
-		}
-		progressMonitor.close();
-		progressMonitor=null;
-		IOOperationTerminated();
-	}
-	
-	/*
-	 * @return true if an async load or save operation is in progress
-	 */
-	public boolean isPerformingIO() {
-		return IOOperationInProgress;
-	}
-	
-	/**
-	 * The async thread for I/O uses this method to signal the cache
-	 * that the operation is terminated
-	 *
-	 */
-	public void IOOperationTerminated() {
-		loggingClient.getLogEntryTable().setVisible(true);
-		IOOperationInProgress=false;
-	}
-
 	/**
 	 * Moves the progress bar of the progress monitor 
 	 * 
@@ -528,6 +378,18 @@ q		 * @param range The range of the progress bar (<0 means undetereminate)
 				ioHelper.stopIO();
 			}
 		}
+	}
+	
+	/**
+	 * Check if a load/save is in progress
+	 * 
+	 * @return <code>true</code> if a load/save is in progress
+	 */
+	public boolean isPerformingIO() {
+		if (thread==null) {
+			return false;
+		}
+		return thread.isAlive();
 	}
 	
 }
