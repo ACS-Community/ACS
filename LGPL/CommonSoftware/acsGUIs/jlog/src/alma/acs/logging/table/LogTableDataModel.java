@@ -273,7 +273,7 @@ public class LogTableDataModel extends LogEntryTableModelBase {
 			isSuspended = true;
 			clearAll();
 
-			getIOHelper().loadLogs(in, loggingClient, loggingClient, allLogs, 0);
+			getIOHelper().loadLogs(in, loggingClient, loggingClient, 0);
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			JOptionPane.showMessageDialog(null, "Exception reading "
@@ -323,12 +323,16 @@ public class LogTableDataModel extends LogEntryTableModelBase {
 		try {
 			br=new IOHelper().getBufferedReader(fileName);
 			File f = new File(fileName);
-			len=(int)f.length();
+			if (fileName.toLowerCase().endsWith(".gz")) {
+				len=0; 
+			} else {
+				len=(int)f.length();
+			}
 		} catch (Exception fnfe) {
 			System.err.println("Exception creating the reader: "+fileName);
 			return;
 		}
-		getIOHelper().loadLogs(br,loggingClient,loggingClient,allLogs,len);
+		getIOHelper().loadLogs(br,loggingClient,loggingClient,len);
 		
 	}
 
