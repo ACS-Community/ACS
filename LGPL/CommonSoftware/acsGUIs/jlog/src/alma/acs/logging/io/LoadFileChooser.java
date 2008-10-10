@@ -112,4 +112,20 @@ public class LoadFileChooser extends LogsFileChooser implements ActionListener {
 			super.actionPerformed(e);
 		}
 	}
+
+	/**
+	 * @return
+	 * @see alma.acs.logging.io.LoadSwitchesPanel#clearLogs()
+	 */
+	public boolean clearLogs() {
+		return guiSwitches.clearLogs();
+	}
+
+	/**
+	 * @return
+	 * @see alma.acs.logging.io.LoadSwitchesPanel#disconnectEngine()
+	 */
+	public boolean disconnectEngine() {
+		return guiSwitches.disconnectEngine();
+	}
 }
