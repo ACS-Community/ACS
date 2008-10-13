@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsThreadBase.cpp,v 1.34 2008/10/13 21:30:44 bjeram Exp $"
+* "@(#) $Id: acsThreadBase.cpp,v 1.35 2008/10/13 22:13:03 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -114,6 +114,7 @@ bool ThreadBase::create(const long _thrFlags) {
 				      &threadID_m,
 				      0/*t_handle*/,
 				      ACE_DEFAULT_THREAD_PRIORITY/*priority*/,
+				  	  -1/*grp_id*/,
 				      0/*stack*/,
 				      stackSize_m
 					);
