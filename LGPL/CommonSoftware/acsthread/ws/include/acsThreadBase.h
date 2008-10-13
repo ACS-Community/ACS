@@ -1,9 +1,10 @@
+
 #ifndef acsThreadBase_h
 #define acsThreadBase_h
 
 /*******************************************************************************
  * ALMA - Atacama Large Millimiter Array
- * (c) European Southern Observatory, 2004 
+ * (c) European Southern Observatory, 2004
  *
  *This library is free software; you can redistribute it and/or
  *modify it under the terms of the GNU Lesser General Public
@@ -19,15 +20,15 @@
  *License along with this library; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: acsThreadBase.h,v 1.29 2008/07/25 07:22:29 cparedes Exp $"
+ * "@(#) $Id: acsThreadBase.h,v 1.30 2008/10/13 21:01:27 bjeram Exp $"
  *
  * who       when        what
  * --------  ----------  ----------------------------------------------
  * almamgr   2000-12-03  created
  */
 
-/** 
- * @file 
+/**
+ * @file
  * Header file for ThreadBase former BACI Thread.
  */
 
@@ -68,16 +69,16 @@ namespace ACS {
  * thread manager is more powerful.
  * An example of thread function implementation performin a loop:
  * <pre>
- * 
+ *
  *   static void worker (void* param)
  *      {
  *              // pointer to ThreadBaseParameter object is passed as parameter
  *              // it contains pointer to ThreadBase (self) object and optional extra parameter
  * 		ThreadBase* myself = ((ThreadBaseParameter*)param)->threadBase;
- *              
+ *
  *              // initialize thread
  *              if (ThreadBase::InitThread) ThreadBase::InitThread(myself->getName());
- * 
+ *
  *              // enter the loop
  *              // check() method ACK heartbeat and returns true unless there is an exit request
  * 		while (myself->check())
@@ -87,24 +88,24 @@ namespace ACS {
  * 		   {
  * 		        // do something meaningful here
  * 		   }
- *                 
+ *
  *                 // sleep for default thread sleep time
  * 		   myself->sleep();
  * 		}
- * 
+ *
  *              // ACK exit state
  * 		myself->setStopped();
  *
  *              // cleanup thread
  *              if (ThreadBase::DoneThread) ThreadBase::DoneThread();
  * 	}
- * </pre> 
+ * </pre>
  */
 
     class ThreadBase : public Logging::Loggable
     {
       public:
-  
+
 	/**
 	 * Default heartbeat response time in 100ns unit.
 	 * A thread is responsive if the check() method is called
@@ -114,14 +115,14 @@ namespace ACS {
 	 * @see ThreadBase#check
 	 * @see ThreadBase#isResponsive
 	 */
-	static TimeInterval defaultResponseTime;	   
+	static TimeInterval defaultResponseTime;
 
 	/**
 	 * Default default sleep time in 100ns unit.
 	 * Defines the time the thread will sleep if sleep() is
 	 * called without any parameter.
 	 * It is typically used when implementing a periodic loop
-	 * in the thread to define the time the thread shall sleep between 
+	 * in the thread to define the time the thread shall sleep between
 	 * two iterations of the loop.
 	 */
 	static TimeInterval defaultSleepTime;
@@ -163,22 +164,25 @@ namespace ACS {
 	 * @param _parameter an optional parameter to the thread
 	 * @param _responseTime heartbeat response time in 100ns unit
 	 * @param _sleepTime default sleep time in 100ns unit
-	 * @param _create should the thread be created in the constructoror not. 
+	 * @param _create should the thread be created in the constructoror not.
 	 *                Default is yes. It is used if constructor is called from a subclass.
 	 *                and this will take care of creating the thread or if we want
 	 *                to call create ourselves.
 	 * @param _thrFlags Thread creation flags to be used if _create = TRUE.
 	 *        See ACE threads and pthread documentation for details.
-	 *        Default is now THR_NEW_LWP | THR_DETACHED 
+	 *        Default is now THR_NEW_LWP | THR_DETACHED
+	 * @param _stackSize The size of the stack of the thread. If 0 the default (OS)
+	 * 		stack size is taken.
 	 *
 	 * @see the create method for important details about joinable threads.
 	 */
-	ThreadBase(const ACE_CString& _name, ACE_Thread_Manager* _threadManager, 
+	ThreadBase(const ACE_CString& _name, ACE_Thread_Manager* _threadManager,
 		   void* _threadProcedure, void* _parameter,
-		   const TimeInterval& _responseTime=ThreadBase::defaultResponseTime, 
+		   const TimeInterval& _responseTime=ThreadBase::defaultResponseTime,
 		   const TimeInterval& _sleepTime=ThreadBase::defaultSleepTime,
 		   const bool _create=true,
-		   const long _thrFlags= THR_NEW_LWP | THR_DETACHED);
+		   const long _thrFlags= THR_NEW_LWP | THR_DETACHED,
+		   const size_t _stackSize=0);
 
 	/**
 	 * Destructor.
@@ -196,7 +200,7 @@ namespace ACS {
 
 	/**
 	 * Set external thread initialization and cleanup functions for all threads
-	 * This allows users of the thread library to define 
+	 * This allows users of the thread library to define
 	 * what initialisation and thread functions will have to be called, to
 	 * customize the behavior of threads based on the rest of the infrastructure.
 	 * For example, ACS Containers use setInitialisers to control
@@ -218,7 +222,7 @@ namespace ACS {
 
 	/**
 	 * Get thread worker function.
-	 * @return function pointer to the thread worker function. 
+	 * @return function pointer to the thread worker function.
 	 *         Signature shall be compatible with ACE_THR_FUNC
 	 */
 	void* getThreadProcedure() const { return threadProcedure_mp; }
@@ -243,14 +247,14 @@ namespace ACS {
 	 * @see ThreadBase#sleep
 	 */
 	TimeInterval getSleepTime() const { return sleepTime_m; }
-    
+
 	/**
 	 * Set default sleep time in 100ns unit.
 	 * @param _sleepTime default sleep time in 100ns unit
 	 * @see ThreadBase#sleep
 	 */
-	void setSleepTime(const TimeInterval& _sleepTime) { 
-	    sleepTime_m=_sleepTime; 
+	void setSleepTime(const TimeInterval& _sleepTime) {
+	    sleepTime_m=_sleepTime;
 	};
 
 	/**
@@ -305,7 +309,7 @@ namespace ACS {
 	 * Stop the thread.
 	 * Stopping means notifying thread by calling exit() method and then waiting
 	 * for a while thread to stop, i.e. checking until thread gets in stopped state
-	 * If after some time the thread is not exited, the method timeouts 
+	 * If after some time the thread is not exited, the method timeouts
 	 * and returns an error
 	 * See example of usage.
 	 * @param terminating , set to true when called by terminate(), for control the "did not stop.." message
@@ -319,10 +323,10 @@ namespace ACS {
 	 * It tries to immediately stop the thread, without waiting for the thread to gracefully
 	 * exit.
 	 * But also this can fail is the thread never goes into a sleep or suspend function.
-	 * Therefore is the thread is still running after a ceetain time, the function 
+	 * Therefore is the thread is still running after a ceetain time, the function
 	 * timeouts and return an error.
 	 * Avoid using this kind of thread termination.
-	 * 
+	 *
 	 * @return true if thread has been stopped
 	 * @see ThreadBase#terminate
 	 */
@@ -340,7 +344,7 @@ namespace ACS {
 
 	/**
 	 * Restart the thread.
-	 * Restarting means terminate and 
+	 * Restarting means terminate and
 	 * recreate a new thread (i.e. calling terminate() and create() methods).
 	 * @see ThreadBase#terminate
 	 * @see ThreadBase#create
@@ -392,7 +396,7 @@ namespace ACS {
 	 * This method shall be used INSIDE a thread service function
 	 * and not outside.
 	 *
-	 * It takes care of handling suspend conditions and of waking 
+	 * It takes care of handling suspend conditions and of waking
 	 * up the thread if requested, as if a signal was sent.
 	 * Instead of an operating system sleep, this method
 	 * is implemented trying to acquire a busy semaphore
@@ -420,10 +424,10 @@ namespace ACS {
       protected:
 	/**
 	 * Create a thread.
-	 * @param thrFlags_ what kind of thread should be created. 
+	 * @param thrFlags_ what kind of thread should be created.
 	 * Default is kernel space thread (THR_NEW_LWP) detached thread (THR_DETACHED)
 	 * For a list of the available thread flags, see the documentation for
-	 * the underlying ACE Threads 
+	 * the underlying ACE Threads
 	 * anr/or the Linux documentation for the behavior of ACE Threads under Linux.
 	 *
 	 * @attention A joinable thread must be joined, or we loose system resources.
@@ -436,11 +440,11 @@ namespace ACS {
 
 	/**
 	 * Yield the thread to another another ready-to-run, active thread.
-	 * This method shall (and can) be called just from inside the thread, 
+	 * This method shall (and can) be called just from inside the thread,
 	 * because we can yield just from actaul/current thread! We can not ask another thread to yield!
 	 */
 	virtual void yield();
-	
+
       private:
 
 	/// thread worker function. Signature shall be compatible with ACE_THR_FUNC
@@ -457,7 +461,7 @@ namespace ACS {
 
 	/// thread last heartbeat time in 100ns unit.
 	TimeInterval timeStamp_m;
-    
+
 	/// true if thread suspended, false otherwise.
 	volatile int suspendStatus_m;
 
@@ -471,14 +475,17 @@ namespace ACS {
 	ACE_CString name_m;
 
 	// ACE speciic
-	/// thread ID 
-	ACE_thread_t threadID_m;							
+	/// thread ID
+	ACE_thread_t threadID_m;
 
 	/// Thread flags used in create, to be reused for restart.
 	long thrFlags_m;
 
+	/// Thread stack size.
+	size_t stackSize_m;
+
 	/// thread manager
-	ACE_Thread_Manager * threadManager_mp;			
+	ACE_Thread_Manager * threadManager_mp;
 
 	/// semaphore used for running loop
 	mutable ACE_Thread_Semaphore m_suspendSemaphore;
@@ -520,7 +527,7 @@ namespace ACS {
 	/**
 	 * Constructor.
 	 */
-	ThreadManagerBase() 
+	ThreadManagerBase()
 	    {
 		threadManager_mp = ACE_Thread_Manager::instance();
 	    }
@@ -536,7 +543,7 @@ namespace ACS {
 	 * @return number of threads in the pool
 	 */
 	int getThreadCount() const {return threads_m.size();}
-  
+
 	/**
 	 * Get name of the thread at the specified position.
 	 * @param pos position of the thread
@@ -560,25 +567,25 @@ namespace ACS {
 	 */
 	ThreadBase* getThreadByName(const ACE_CString& name) {
 	    ACE_Guard<ACE_Recursive_Thread_Mutex> guard(m_addRemoveMutex);
-	
+
 	    ThreadMap::iterator i = threadMap_m.find(name);
-	    if (i!=threadMap_m.end()) 
+	    if (i!=threadMap_m.end())
 		return static_cast<ThreadBase*>((*i).second);
 	    else
 		return NULL;
 	}
-  
+
 	/**
 	 * Get thread with specified ID.
 	 * @param id ID of the thread
 	 * @return pointer to ThreadBase object, NULL otherwise
 	 */
-	ThreadBase* getThreadByID(ACE_thread_t id) 
+	ThreadBase* getThreadByID(ACE_thread_t id)
 	    {
 
 		for(unsigned int i=0UL; i < threads_m.size(); i++)
 		    if (threads_m[i]->getThreadID() == id)
-			return threads_m[i];	  
+			return threads_m[i];
 		return NULL;
 	    }
 
@@ -613,7 +620,7 @@ namespace ACS {
 	 * @param ThreadBase pointer to the thread
 	 */
 	bool add(const ACE_CString& name, ThreadBase * acsBaseThread);
-  
+
 	/**
 	 * Stop named thread.
 	 * @param name name of the thread
@@ -628,7 +635,7 @@ namespace ACS {
 	 * @see ThreadManagerBase#stop
 	 */
 	bool stopAll();
-  
+
 	/**
 	 * Notify named thread to exit thread worker function.
 	 * @param name name of the thread
@@ -747,7 +754,7 @@ namespace ACS {
 	ACE_Thread_Manager* getACEThreadManager() { return threadManager_mp; }
 
       protected:
-      
+
 	/**
 	 * Add a thread to the ThreadManagerBase data store.
 	 * @param name name of the thread
@@ -781,7 +788,7 @@ namespace ACS {
 
       protected:
 	/// mutex used by add and remove method
-	ACE_Recursive_Thread_Mutex m_addRemoveMutex; 
+	ACE_Recursive_Thread_Mutex m_addRemoveMutex;
 
       private:
 
@@ -814,7 +821,7 @@ namespace ACS {
  * ThreadBase thread parameter contains pointer to ThreadBase (self) object and optional extra parameter.
  */
     class ThreadBaseParameter {
-  
+
       public:
 
 	/**
@@ -822,10 +829,10 @@ namespace ACS {
 	 * @param thread reference to ThreadBase (self) object
 	 * @param parameter void pointer to an extra parameter
 	 */
-	ThreadBaseParameter(ThreadBase * thread, 
-			    const void * parameter = 0) : 
+	ThreadBaseParameter(ThreadBase * thread,
+			    const void * parameter = 0) :
 	    thread_mp(thread),  parameter_mp(parameter) {}
-    
+
 	/**
 	 * Accessor method to an optional extra parameter.
 	 * @return void pointer to an optional extra parameter
@@ -837,16 +844,16 @@ namespace ACS {
 	 * @return pointer to ThreadBase (self) object
 	 */
 	ThreadBase * getThreadBase() const { return thread_mp; }
-    
+
 	/**
 	 * This function is equivalent to ThreadBaseParameter#getThreadBase
 	 * and it is here just for backward compatibility reason.
 	 */
 //    ThreadBase * getBACIThread() const { return getThreadBase(); }
       private:
-    
+
 	/// pointer to ThreadBase (self) object
-	ThreadBase * thread_mp;	
+	ThreadBase * thread_mp;
 
 	/// void pointer to an optional extra parameter
 	const void * parameter_mp;
@@ -858,7 +865,7 @@ namespace ACS {
  *
  * @brief Class implementing scope locking synchronization pattern.
  *
- * ThreadSyncGuard implements scope locking synchronization pattern, 
+ * ThreadSyncGuard implements scope locking synchronization pattern,
  * which is very usefull not to forget to release (or relase can be by-passed by an exception)
  * and so avoiding deadlocks.
  * Mutex is automatically released when out of scope.<br>
@@ -876,21 +883,21 @@ namespace ACS {
  *		guard.release();
  *
  *		// do something
- *			
+ *
  *		// optional locking
  *		guard.acquire();
  *
  *		// do something
  *
  *		// lock is automatically released when out of scope
- *			
+ *
  *      }
  * </pre>
  */
     class ThreadSyncGuard
     {
       public:
-    
+
 	/**
 	 * Constructor.
 	 * Creates a guard and acquires mutex if <block> is true.
@@ -898,13 +905,13 @@ namespace ACS {
 	 * @param block if true, lock is acuired, otherwise not
 	 */
 	ThreadSyncGuard(ACE_Recursive_Thread_Mutex * mutex, bool block=true);
-    
+
 	/**
 	 * Destructor.
 	 * Relases mutex if necessary.
 	 */
 	~ThreadSyncGuard();
-    
+
 	/**
 	 * Blocks the thread until the lock is acquired.
 	 */
@@ -917,7 +924,7 @@ namespace ACS {
 
 	/// mutex used by guard
 	ACE_Recursive_Thread_Mutex * mutex_mp;
-    
+
 	/// state of mutex
 	bool acquired_m;
     };

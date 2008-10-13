@@ -18,11 +18,11 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsThreadBase.cpp,v 1.32 2008/06/06 08:09:32 bjeram Exp $"
+* "@(#) $Id: acsThreadBase.cpp,v 1.33 2008/10/13 21:01:26 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
-* msekoran  17/02/01  created 
+* msekoran  17/02/01  created
 */
 
 #include <vltPort.h>
@@ -63,14 +63,16 @@ ThreadBase::ThreadBase(const ACE_CString& _name,
 		       const TimeInterval& _responseTime,
 		       const TimeInterval& _sleepTime,
 		       const bool _create,
-		       const long _thrFlags) :
+		       const long _thrFlags,
+		       const size_t _stackSize) :
     Logging::Loggable(_name.c_str()),
     threadProcedure_mp(_threadProcedure), parameter_mp(_parameter),
     responseTime_m(_responseTime), sleepTime_m(_sleepTime), suspendStatus_m(0),
     exitRequest_m(false), stopped_m(false),
-    name_m(_name), threadID_m(0), 
+    name_m(_name), threadID_m(0),
     thrFlags_m(_thrFlags),
-    threadManager_mp(_threadManager), 
+    stackSize_m(_stackSize),
+    threadManager_mp(_threadManager),
     m_suspendSemaphore(1, 0, 0, 1),  // Starts unlocked. An acquire will not block. Max 1
     m_sleepSemaphore(0, 0, 0, 1)  // Starts locked. An acquire will block. Max 1
 {
@@ -99,16 +101,21 @@ bool ThreadBase::create(const long _thrFlags) {
     ACS_TRACE("ACS::ThreadBase::create");
 
     timeStamp_m = getTime();
-    
+
     stopped_m = exitRequest_m = false;
-    
+
     thrFlags_m = _thrFlags;
 
     ThreadBaseParameter *param_p =  new ThreadBaseParameter(this, parameter_mp);
 
-    int succ = threadManager_mp->spawn((ACE_THR_FUNC)threadProcedure_mp, 
-				      param_p, 
-				      _thrFlags, &threadID_m);
+    int succ = threadManager_mp->spawn((ACE_THR_FUNC)threadProcedure_mp,
+				      param_p,
+				      _thrFlags,
+				      &threadID_m,
+				      0/*t_handle*/,
+				      ACE_DEFAULT_THREAD_PRIORITY/*priority*/,
+				      stackSize_m
+					);
     return (succ!=-1);
 }
 
@@ -125,17 +132,17 @@ bool ThreadBase::suspend() {
 	{
 	return true;
 	}
-	    
+
     /*
      * Set the member that keeps track of suspend status.
      * This is used in the thread sleep function
-     * to determine if it has to suspend or if it can just 
+     * to determine if it has to suspend or if it can just
      * sleep for the requested amount of time.
      */
     suspendStatus_m = true;
     m_suspendSemaphore.acquire();
-	    
-    return true; 
+
+    return true;
 }
 
 bool ThreadBase::resume() {
@@ -173,7 +180,7 @@ bool ThreadBase::cancel() {
     ACE_thread_t threadID             = threadID_m;
     ACE_Thread_Manager *threadManager = threadManager_mp;
 
-    if (stopped_m==true) 
+    if (stopped_m==true)
 	{
 	return true;
 	}
@@ -181,7 +188,7 @@ bool ThreadBase::cancel() {
     ACS_TRACE("ACS::ThreadBase::cancel");
 
     /*
-     * @attention 
+     * @attention
      * Do not use any data member after this line.
      * An autodelete object might start
      * deleting as soon as the thread is cancelled.
@@ -210,7 +217,7 @@ bool ThreadBase::cancel() {
      * I need to add a flag.
      */
 
-    /** 
+    /**
      * @todo GCH Code to be factored out.
      * The code that follows is essentially identical to stop()
      * and should be factored out.
@@ -218,8 +225,8 @@ bool ThreadBase::cancel() {
      */
 
     int n = 0;
-    TimeInterval rs = responseTime_m;  // Unit: 100ns 
-    if (rs<1000000) 
+    TimeInterval rs = responseTime_m;  // Unit: 100ns
+    if (rs<1000000)
 	{
 	rs=1000000;               // minimum is 100ms
 	}
@@ -240,7 +247,7 @@ bool ThreadBase::cancel() {
     m_sleepSemaphore.release(1);
 
     ACE_Time_Value tv (0, rs/100);   // tenth of response time, in us
-    
+
     /*
      * We loop for a total of 0.5 response time
      * If in that time the thread is terminated we return TRUE.
@@ -248,7 +255,7 @@ bool ThreadBase::cancel() {
      *  - the thread is terminated according to the ACE_Thread_Manager
      *  - the thread is not even any more under control of the ACE_Thread_Manager
      */
-    while ( ++n < 5 ) 
+    while ( ++n < 5 )
 	{
 	if (threadManager->testterminate(threadID) == true ||
 	    threadManager->thread_within(threadID) == false   )
@@ -258,14 +265,14 @@ bool ThreadBase::cancel() {
 	     * (see the auto delete ACS::Thread), therefore I cannot safely
 	     * use the logging macros, bacuse they would point me to object
 	     * storage that has been already released.
-	     * Therefore I explicitly get the glogal logger. 
+	     * Therefore I explicitly get the glogal logger.
 	     */
 	    ACE_CString thread_message = "Thread stopped:" + thread_name;
 	    ACS_CHECK_LOGGER;
-	    ::getLogger()->log(Logging::Logger::LM_DEBUG, 
-			       thread_message.c_str(), 
-			       __FILE__, __LINE__, 
-			       "ThreadBase::cancel"); 
+	    ::getLogger()->log(Logging::Logger::LM_DEBUG,
+			       thread_message.c_str(),
+			       __FILE__, __LINE__,
+			       "ThreadBase::cancel");
 	    return true;
 	    }
 	  ACE_OS::sleep(tv);
@@ -275,25 +282,25 @@ bool ThreadBase::cancel() {
      * If we are here, the thread did not stop in the allotted time
      */
     ACS_LOG(LM_SOURCE_INFO,"ThreadBase::cancel",
-	    (LM_ERROR,"Thread %s did not stop within %d 100ns", 
+	    (LM_ERROR,"Thread %s did not stop within %d 100ns",
 	     thread_name.c_str(),
-	     rs));	      
+	     rs));
 
     return false;
 }
-		
+
 bool ThreadBase::restart() {
     ACS_TRACE("ACS::ThreadBase::restart");
 
     if( terminate() == false )
       return false;
 
-//  ACE_Guard<ACE_Recursive_Thread_Mutex> guard(m_addRemoveMutex); 
+//  ACE_Guard<ACE_Recursive_Thread_Mutex> guard(m_addRemoveMutex);
     //GUARD;
     /*
      * Here call create passing the same thrFlags
      * that had been set in a previous call to create.
-     * If the thread was never created before, 
+     * If the thread was never created before,
      * then thrFlags_m contains the default initialisation
      * value.
      */
@@ -307,7 +314,7 @@ bool ThreadBase::terminate() {
 	return true;
 	}
 
-    if (stop(true)==false) 
+    if (stop(true)==false)
 	{
 	return cancel();
 	}
@@ -324,22 +331,22 @@ bool ThreadBase::stop( bool terminating ) {
     ACE_Thread_Manager *threadManager = threadManager_mp;
 
     ACS_LOG(LM_SOURCE_INFO,"ThreadBase::stop",
-	    (LM_DEBUG,"Thread %s", 
+	    (LM_DEBUG,"Thread %s",
 	     thread_name.c_str()));
-    if (stopped_m==true) 
+    if (stopped_m==true)
 	{
 	return true;
 	}
 
-    
-    TimeInterval rs = responseTime_m;  // Unit: 100ns 
-    if (rs<1000000) 
+
+    TimeInterval rs = responseTime_m;  // Unit: 100ns
+    if (rs<1000000)
 	{
 	rs=1000000;               // minimum is 100ms
 	}
 
     /**
-     * @todo GCH: look at the commented code. The guard is commented out. 
+     * @todo GCH: look at the commented code. The guard is commented out.
      * Why? Think about it.
      *
      * // ACE_Guard<ACE_Recursive_Thread_Mutex> guard(m_addRemoveMutex);
@@ -359,7 +366,7 @@ bool ThreadBase::stop( bool terminating ) {
     m_suspendSemaphore.release(1);
 
     /**
-     * From now on, I should not use any more 
+     * From now on, I should not use any more
      * data members of the thread object.
      * It might be that the object itself is automatically
      * destroyed as a consequence of the exit and therefore
@@ -374,7 +381,7 @@ bool ThreadBase::stop( bool terminating ) {
      * After that I bail out
      */
     int n = 0;
-    
+
     /* tv second parameter is in us units.
      * We have to calculate 1/tenth of response time, in us
      * where rs is expressed instead in 100ns, therefore:
@@ -382,8 +389,8 @@ bool ThreadBase::stop( bool terminating ) {
      *     1/tenth of this expressed in us is therefore rs/100:
      *       rs_us/10 = rs/10/10 = rs/100
      */
-    ACE_Time_Value tv (0, rs/100);   
-    
+    ACE_Time_Value tv (0, rs/100);
+
     /*
      * We loop for a total of 1.5 response time
      * If in that time the thread is terminated we return TRUE.
@@ -391,7 +398,7 @@ bool ThreadBase::stop( bool terminating ) {
      *  - the thread is terminated according to the ACE_Thread_Manager
      *  - the thread is not even any more under control of the ACE_Thread_Manager
      */
-    while ( ++n < 15 ) 
+    while ( ++n < 15 )
 	{
 	if (threadManager->testterminate(threadID) == true ||
 	    threadManager->thread_within(threadID) == false   )
@@ -401,14 +408,14 @@ bool ThreadBase::stop( bool terminating ) {
 	     * (see the auto delete ACS::Thread), therefore I cannot safely
 	     * use the logging macros, bacuse they would point me to object
 	     * storage that has been already released.
-	     * Therefore I explicitly get the glogal logger. 
+	     * Therefore I explicitly get the glogal logger.
 	     */
 	    ACE_CString thread_message = "Thread stopped:" + thread_name;
 	    ACS_CHECK_LOGGER;
-	    ::getLogger()->log(Logging::Logger::LM_DEBUG, 
-			       thread_message.c_str(), 
-			       __FILE__, __LINE__, 
-			       "ThreadBase::stop"); 
+	    ::getLogger()->log(Logging::Logger::LM_DEBUG,
+			       thread_message.c_str(),
+			       __FILE__, __LINE__,
+			       "ThreadBase::stop");
 	    return true;
 	    }
 	  ACE_OS::sleep(tv);
@@ -419,29 +426,29 @@ bool ThreadBase::stop( bool terminating ) {
      */
     if( !terminating ) {
       ACS_LOG(LM_SOURCE_INFO,"ThreadBase::stop",
-  	      (LM_ERROR,"Thread %s did not stop within %d 100ns", 
+  	      (LM_ERROR,"Thread %s did not stop within %d 100ns",
 	       thread_name.c_str(),
-	       rs));	 
+	       rs));
     }
-     
+
     return false;
 }
 
-void ThreadBase::makeTimeInterval() 
+void ThreadBase::makeTimeInterval()
 {
     // ACS_TRACE("ACS::ThreadBase::makeTimeInterval");
     timeStamp_m=getTime();
 }
 
 
-bool ThreadBase::isResponding() const 
+bool ThreadBase::isResponding() const
 {
     ACS_TRACE("ACS::ThreadBase::isResponding");
     return ((getTime()-timeStamp_m)<responseTime_m);
 }
 
 
-bool ThreadBase::check() 
+bool ThreadBase::check()
 {
     // ACS_TRACE("ACS::ThreadBase::check");
 
@@ -454,8 +461,8 @@ bool ThreadBase::check()
 /*
  * Debugging logs are commented for performance reasons
  * Uncomment them if needed for debugging.
- */ 
-ThreadBase::SleepReturn ThreadBase::sleep(TimeInterval timeIn100ns) const 
+ */
+ThreadBase::SleepReturn ThreadBase::sleep(TimeInterval timeIn100ns) const
 {
     int acquireRet;
 
@@ -474,26 +481,26 @@ ThreadBase::SleepReturn ThreadBase::sleep(TimeInterval timeIn100ns) const
 	acquireRet = m_suspendSemaphore.acquire();
         /*
          * The semaphore acquire returns:
-         * 0 (errno: x)  
+         * 0 (errno: x)
          *      if it managed to acquire.
 	 *      This happens only when the thread is resumed
-         * -1 (errno: x)  
+         * -1 (errno: x)
 	 *      in case of .problems, to be identified
 	 *      An error log is submitted.
          */
 	if(acquireRet == 0)
 	    {
    	    // ACS_LOG(LM_SOURCE_INFO,"ThreadBase::sleep",
-	    //	(LM_ERROR,"Acquire %d (errno: %d) - suspended", 
-	    //	 acquireRet, errno));	      
+	    //	(LM_ERROR,"Acquire %d (errno: %d) - suspended",
+	    //	 acquireRet, errno));
 	    m_suspendSemaphore.release(1);
 	    return SLEEP_SUSPEND;
 	    }
 	else
 	    {
 	    ACS_LOG(LM_SOURCE_INFO,"ThreadBase::sleep",
-		    (LM_ERROR,"Acquire %d (errno: %d) - unexpeced acquire in suspended", 
-		     acquireRet, errno));	      
+		    (LM_ERROR,"Acquire %d (errno: %d) - unexpeced acquire in suspended",
+		     acquireRet, errno));
 	    return SLEEP_ERROR;
 	    }
 	}
@@ -509,11 +516,11 @@ ThreadBase::SleepReturn ThreadBase::sleep(TimeInterval timeIn100ns) const
 	{
 
 	/*
-	 * Gets the sleep time in TimeInterval units, 
+	 * Gets the sleep time in TimeInterval units,
 	 * converts to us dividing by 10 and initializes an ACS_Time_Value
 	 */
 	ACE_Time_Value rs_timevalue(0, timeToSleep / 10);
-	
+
 	/*
 	 * Now goes from relative to absolute time by adding
 	 * the sleep time to the current time
@@ -522,16 +529,16 @@ ThreadBase::SleepReturn ThreadBase::sleep(TimeInterval timeIn100ns) const
 	acquireRet = m_sleepSemaphore.acquire(&sleepTime);
         /*
          * The semaphore acquire returns:
-         * -1 (errno: 62)  
+         * -1 (errno: 62)
 	 *      if it timed out.
 	 *      This is for us a "good" sleep.
-         * 0 (errno: x)  
+         * 0 (errno: x)
          *      if it managed to acquire.
 	 *      This happens only if interrupted.
          */
 	// ACS_LOG(LM_SOURCE_INFO,"ThreadBase::sleep",
-	//	(LM_ERROR,"Acquire %d (errno: %d) - true sleep", 
-	//	 acquireRet, errno));	      
+	//	(LM_ERROR,"Acquire %d (errno: %d) - true sleep",
+	//	 acquireRet, errno));
 	if(acquireRet == 0)
 	    {
 	    return SLEEP_INTERRUPTED;
@@ -539,8 +546,8 @@ ThreadBase::SleepReturn ThreadBase::sleep(TimeInterval timeIn100ns) const
 	else if(acquireRet == -1 && errno!=ETIME)
 	    {
 	    ACS_LOG(LM_SOURCE_INFO,"ThreadBase::sleep",
-		    (LM_ERROR,"Acquire %d (errno: %d) - unexpeced acquire in sleep", 
-		     acquireRet, errno));	      
+		    (LM_ERROR,"Acquire %d (errno: %d) - unexpeced acquire in sleep",
+		     acquireRet, errno));
 	    return SLEEP_ERROR;
 	    }
 
@@ -554,12 +561,12 @@ void ThreadBase::yield()
 {
 	ACE_Thread::yield();
 }//yield
- 
+
 /////////////////////////////////////////////////
 // ThreadManagerBase
 /////////////////////////////////////////////////
 
-ThreadManagerBase::~ThreadManagerBase() { 
+ThreadManagerBase::~ThreadManagerBase() {
     ACS_TRACE("ACS::ThreadManagerBase::~ThreadManagerBase");
 
     ACE_CString thrName;
@@ -567,16 +574,16 @@ ThreadManagerBase::~ThreadManagerBase() {
     /* get mutex lock before starting terminate
      * since we need to read from threads_m
      * in case some thread is finishing its job, threads_m will change
-     */ 
+     */
     ACE_Guard<ACE_Recursive_Thread_Mutex> guard(m_addRemoveMutex);
-    terminateAll(); 
+    terminateAll();
 
     /* after terminating threads, auto-delete threads will wait for
      * mutex lock in destructor, so we release here
      */
     guard.release();
 
-    /* Strange behaviour here, if I don't sleep a while, 
+    /* Strange behaviour here, if I don't sleep a while,
      * other thread can not acquire this mutex
      */
     ACE_OS::sleep(1);
@@ -590,10 +597,10 @@ ThreadManagerBase::~ThreadManagerBase() {
     /* we remove from the last, since threads_m is a vector, it cost less
      * in ~Threads, it will remove itself from threads_m and threadMap
      * so, no need to call removeFromMap again
-     * problems? 
-     *   1. ~BaseThread don't call removeFromMap, could it happen 
+     * problems?
+     *   1. ~BaseThread don't call removeFromMap, could it happen
      *      some thread in thread_m is a BaseThread ?
-     *   2. double deleting could happen, if some threads' removeFromMap  
+     *   2. double deleting could happen, if some threads' removeFromMap
      *      is not finished yet, but, during test, it seems no problem?
      */
     for (unsigned int n=thrNum; n > 0 ; n--)
@@ -605,28 +612,28 @@ ThreadManagerBase::~ThreadManagerBase() {
 //	thrName = threads_m[0]->getName();
 //
 //      /*
-//	 * we delete always the first thread in the vector because 
+//	 * we delete always the first thread in the vector because
 //	 * the thread removes itself from the thread manager
 //	 * (and therefore the vector) when it is deleted.
-//	 * But old threads do not remove themself from the thread 
+//	 * But old threads do not remove themself from the thread
 //	 * manager, so we remove them by hand in any case
 //	 * to be sure everything is cleaned up.
 //	 */
 //      delete threads_m[0];
-//	removeFromMap(thrName); 
+//	removeFromMap(thrName);
 //	}
 }
 
-ThreadBase* ThreadManagerBase::create(const ACE_CString& name, 
+ThreadBase* ThreadManagerBase::create(const ACE_CString& name,
 				      void* threadProc,
-				      void* parameter, 
-				      const TimeInterval& responseTime, 
+				      void* parameter,
+				      const TimeInterval& responseTime,
 				      const TimeInterval& sleepTime,
 				      const long _thrFlags)
 {
     ACS_TRACE("ACS::ThreadManagerBase::create");
     ACE_Guard<ACE_Recursive_Thread_Mutex> guard(m_addRemoveMutex); //  GUARD;
-    if (getThreadByName(name)!=NULL) 
+    if (getThreadByName(name)!=NULL)
 	{
 	return NULL;
 	}
@@ -634,7 +641,7 @@ ThreadBase* ThreadManagerBase::create(const ACE_CString& name,
      * Here hard codes
      * create    = true
      */
-    ThreadBase* thread_p = new ThreadBase(name, threadManager_mp, threadProc, parameter, 
+    ThreadBase* thread_p = new ThreadBase(name, threadManager_mp, threadProc, parameter,
 					  responseTime, sleepTime,
 					  true,
 					  _thrFlags);
@@ -644,11 +651,11 @@ ThreadBase* ThreadManagerBase::create(const ACE_CString& name,
 
 
 
-bool ThreadManagerBase::add(const ACE_CString& name, ThreadBase* thread) 
+bool ThreadManagerBase::add(const ACE_CString& name, ThreadBase* thread)
 {
     ACS_TRACE("ACS::ThreadManagerBase::add");
     ACE_Guard<ACE_Recursive_Thread_Mutex> guard(m_addRemoveMutex); //   GUARD;
-    if (getThreadByName(name)!=NULL) 
+    if (getThreadByName(name)!=NULL)
 	{
 	return false;
 	}
@@ -661,7 +668,7 @@ bool ThreadManagerBase::stop(const ACE_CString& name) {
 //  GUARD;
   ACS_TRACE("ACS::ThreadManagerBase::stop");
   ThreadBase* thread_p=getThreadByName(name);
-  if (thread_p==NULL) 
+  if (thread_p==NULL)
       {
       return false;
       }
@@ -679,17 +686,17 @@ bool ThreadManagerBase::stopAll() {
   for (int n=0; n < getThreadCount(); n++)
       {
       thread_name = threads_m[n]->getName();
-      if (threads_m[n]->stop()==false) 
+      if (threads_m[n]->stop()==false)
 	  {
 	  ACS_LOG(LM_SOURCE_INFO,"ThreadManagerBase::stopAll",
-		  (LM_ERROR,"Failed to stop thread %s", thread_name.c_str()));	      
+		  (LM_ERROR,"Failed to stop thread %s", thread_name.c_str()));
 	  failedCount++;
 	  }
       }
   if(failedCount != 0)
       {
       ACS_LOG(LM_SOURCE_INFO,"ThreadManagerBase::stopAll",
-	      (LM_INFO,"Failed to stop %d threads", failedCount));	      
+	      (LM_INFO,"Failed to stop %d threads", failedCount));
       }
   return failedCount==0 ? true : false;
 }
@@ -699,7 +706,7 @@ void ThreadManagerBase::exit(const ACE_CString& name) {
 //  GUARD;
   ACS_TRACE("ACS::ThreadManagerBase::exit");
   ThreadBase* thread_p=getThreadByName(name);
-  if (thread_p==NULL) 
+  if (thread_p==NULL)
       {
       return;
       }
@@ -721,7 +728,7 @@ bool ThreadManagerBase::terminate(const ACE_CString& name) {
 //  GUARD;
   ACS_TRACE("ACS::ThreadManagerBase::terminate");
   ThreadBase* thread_p=getThreadByName(name);
-  if (thread_p==NULL) 
+  if (thread_p==NULL)
       {
       return false;
       }
@@ -735,12 +742,12 @@ bool ThreadManagerBase::terminateAll() {
   bool ok = true;
   unsigned int thrNum = getThreadCount();
 
-  /* terminating starting from last threads, 
+  /* terminating starting from last threads,
    * since threads_m is vector, it is easier to remove from last
    */
   for (int n=thrNum; n > 0; n--)
       {
-	  if (threads_m[n-1]->terminate()==false) 
+	  if (threads_m[n-1]->terminate()==false)
 	      {
 	      ok = false;
 	      }
@@ -753,7 +760,7 @@ bool ThreadManagerBase::cancel(const ACE_CString& name) {
 //  GUARD;
   ACS_TRACE("ACS::ThreadManagerBase::cancel");
   ThreadBase* thread_p=getThreadByName(name);
-  if (thread_p==NULL) 
+  if (thread_p==NULL)
       {
       return false;
       }
@@ -767,7 +774,7 @@ bool ThreadManagerBase::cancelAll() {
   bool ok = true;
   for (int n=0; n < getThreadCount(); n++)
       {
-      if (threads_m[n]->cancel()==false) 
+      if (threads_m[n]->cancel()==false)
 	  {
 	  ok = false;
 	  }
@@ -780,7 +787,7 @@ bool ThreadManagerBase::restart(const ACE_CString& name) {
 //  GUARD;
   ACS_TRACE("ACS::ThreadManagerBase::restart");
   ThreadBase* thread_p=getThreadByName(name);
-  if (thread_p==NULL) 
+  if (thread_p==NULL)
       {
       return false;
       }
@@ -794,7 +801,7 @@ bool ThreadManagerBase::restartAll() {
   bool ok = true;
   for (int n=0; n < getThreadCount(); n++)
       {
-      if (threads_m[n]->restart()==false) 
+      if (threads_m[n]->restart()==false)
 	  {
 	  ok = false;
 	  }
@@ -807,7 +814,7 @@ bool ThreadManagerBase::suspend(const ACE_CString& name) {
 //  GUARD;
   ACS_TRACE("ACS::ThreadManagerBase::suspend");
   ThreadBase* thread_p=getThreadByName(name);
-  if (thread_p==NULL) 
+  if (thread_p==NULL)
       {
       return false;
       }
@@ -822,7 +829,7 @@ bool ThreadManagerBase::suspendAll() {
   for (int n=0; n < getThreadCount(); n++)
       {
       if (threads_m[n]->suspend()==false)
-	  { 
+	  {
 	  ok = false;
 	  }
       }
@@ -834,7 +841,7 @@ bool ThreadManagerBase::resume(const ACE_CString& name) {
 //  GUARD;
   ACS_TRACE("ACS::ThreadManagerBase::resume");
   ThreadBase* thread_p=getThreadByName(name);
-  if (thread_p==NULL) 
+  if (thread_p==NULL)
       {
       return false;
       }
@@ -848,7 +855,7 @@ bool ThreadManagerBase::resumeAll() {
   bool ok = true;
   for (int n=0; n < getThreadCount(); n++)
       {
-      if (threads_m[n]->resume()==false) 
+      if (threads_m[n]->resume()==false)
 	  {
 	  ok = false;
 	  }
@@ -861,7 +868,7 @@ bool ThreadManagerBase::isAlive(const ACE_CString& name) {
 //  GUARD;
   ACS_TRACE("ACS::ThreadManagerBase::isAlive");
   ThreadBase* thread_p=getThreadByName(name);
-  if (thread_p==NULL) 
+  if (thread_p==NULL)
       {
       return false;
       }
@@ -883,7 +890,7 @@ bool ThreadManagerBase::areAllAlive() {
   return ok;
 }
 
-  
+
 bool ThreadManagerBase::restartDead() {
 // ACE_Guard<ACE_Recursive_Thread_Mutex> guard(m_addRemoveMutex);
 //  GUARD;
@@ -894,7 +901,7 @@ bool ThreadManagerBase::restartDead() {
 	  thread_p = threads_m[n];
 	  if (thread_p->isAlive()==true)
 	      {
-		  if (thread_p->restart()==false) 
+		  if (thread_p->restart()==false)
 		      {
 		      ok = false;
 		      }
