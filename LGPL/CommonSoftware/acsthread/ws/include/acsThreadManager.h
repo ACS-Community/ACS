@@ -3,7 +3,7 @@
 /*******************************************************************************
 * E.S.O. - VLT project
 *
-* "@(#) $Id: acsThreadManager.h,v 1.18 2008/10/09 03:11:07 cparedes Exp $"
+* "@(#) $Id: acsThreadManager.h,v 1.19 2008/10/13 23:15:12 bjeram Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -25,7 +25,7 @@
 
 namespace ACS
 {
- 
+
     /**
      * @class ThreadManager
      * This clas is an extension of ACS::ThreadManagerBase which is used with ACS::Thread
@@ -40,7 +40,7 @@ namespace ACS
 	/**
 	 * Thread Manager Constructor
 	 */
-	ThreadManager() : 
+	ThreadManager() :
 	    ACS::ThreadManagerBase(),
 	    Logging::Loggable() {}
 
@@ -49,12 +49,12 @@ namespace ACS
 	 * This allows to provide an external, pre-configured, logger
 	 * in the ThreadManager.
 	 */
-	ThreadManager(Logging::Logger::LoggerSmartPtr logger) : 
-	    ACS::ThreadManagerBase(), 
+	ThreadManager(Logging::Logger::LoggerSmartPtr logger) :
+	    ACS::ThreadManagerBase(),
 	    Logging::Loggable(logger) {}
 
 	/**
-	 * create methods which create a user defined  thread object 
+	 * create methods which create a user defined  thread object
 	 * of type T (= derived from ACS::Thread)
 	 * without a parameter
 	 * and adds it to the list of Threads.
@@ -93,8 +93,20 @@ namespace ACS
 		  bool del,
 		  const long thrFlags);
 
+    /*
+     * @throw acsthreadErrType::ThreadAlreadyExistExImpl
+     * @throw acsthreadErrType::CanNotCreateThreadExImpl
+	 */
+	template <class T>
+	T* create(const ACE_CString name,
+		  const TimeInterval responseTime,
+		  const TimeInterval sleepTime,
+		  bool del,
+		  const long thrFlags,
+		  const size_t stackSize);
+
 	/**
-	 * create methods which create a user defined 
+	 * create methods which create a user defined
 	 * thread object of type T (= derived from ACS::Thread)
 	 * with a parameter of type P
 	 * and add it to the list of Threads.
@@ -133,6 +145,18 @@ namespace ACS
 		  bool del,
 		  const long thrFlags);
 
+	/*
+	 * @throw acsthreadErrType::ThreadAlreadyExistExImpl
+	 * @throw acsthreadErrType::CanNotCreateThreadExImpl
+	 */
+	template <class T, class P>
+	T* create(const ACE_CString name, P&,
+			const TimeInterval responseTime,
+			const TimeInterval sleepTime,
+			bool del,
+			const long thrFlags,
+			const size_t stackSize);
+
 	/**
 	 * destoy method destroys a thread object
 	 * @param the pointer to the thread object
@@ -148,7 +172,7 @@ namespace ACS
 	    }//destroy
 
       private:
-	
+
 	/**
 	 * ALMA C++ coding standards state assignment operators should be disabled.
 	 */
@@ -161,11 +185,11 @@ namespace ACS
 
         /**
 	 * @class ThreadManagerTSS
-	 * This is an internal class of ThreadManager 
-	 * which is used for sending the thread manager 
-	 * pointer to a thread object. 
+	 * This is an internal class of ThreadManager
+	 * which is used for sending the thread manager
+	 * pointer to a thread object.
 	 * It is the Thread Safe Storage for the thread managers.
-	 */	
+	 */
 	class ThreadManagerTSS
 	{
 	  public:
@@ -175,26 +199,26 @@ namespace ACS
 	     * method to set thread manager for certain thread
 	     */
 	    void setThreadManager(ThreadManager* _tm){ m_tm = _tm; }
-	    
+
             /**
 	     * return thread manager used in current thread (TSS!)
              * @param _reset should be thread manager pointer set to 0 after
              */
 	    ThreadManager* getThreadManager(bool _reset)
-		{ 
+		{
 		    ThreadManager* tmp_tm = m_tm;
-		    if (_reset) 
+		    if (_reset)
 			m_tm = 0;
-		    return tmp_tm; 
+		    return tmp_tm;
 		}
-	    
+
             /**
 	     * resets thread manager pointer to 0
 	     */
 	    void resetThreadManager() {m_tm = 0;}
 
 	  protected:
-	    ThreadManager* m_tm;	
+	    ThreadManager* m_tm;
 	};
 
 	/**
@@ -209,4 +233,4 @@ namespace ACS
 
 };//namespace ACS
 
-#endif 
+#endif
