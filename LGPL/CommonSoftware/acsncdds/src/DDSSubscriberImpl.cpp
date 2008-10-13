@@ -5,7 +5,7 @@ using namespace ddsnc;
 
 int DDSSubscriber::createSubscriber()
 {
-	std::cerr << "DDSPublisher::createPublisher" << std::endl;
+	std::cerr << "DDSSubscriber::createSubscriber" << std::endl;
 	
 	if(partitionName==NULL){
 		sub=participant->create_subscriber(SUBSCRIBER_QOS_DEFAULT,
@@ -16,7 +16,7 @@ int DDSSubscriber::createSubscriber()
 	else{
 		 sub = participant->create_subscriber(sub_qos,
 				 DDS::SubscriberListener::_nil());
-		 std::cerr << "Creating Subscriber with partition " << partitionName
+		 std::cerr << "Creating Subscriber with partition: " << partitionName
 			 << std::endl;
 	}
 

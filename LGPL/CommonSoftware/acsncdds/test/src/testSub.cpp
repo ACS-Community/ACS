@@ -10,7 +10,15 @@ void handlerFunction(TESTFRIDGE::temperatureDataBlockEvent joe, void *other)
 int main(int argc, char**argv)
 {
 	ddsnc::DDSSubscriber *sub=0;
-	sub = new ddsnc::DDSSubscriber("DefaultTopic", argc, argv);
+	
+	ACS_NEW_DDS_SUBSCRIBER(sub, TESTFRIDGE::temperatureDataBlockEvent,
+			TESTFRIDGE::temperatureDataBlockEventTypeSupport_var,
+			TESTFRIDGE::temperatureDataBlockEventTypeSupportImpl,
+			TESTFRIDGE::temperatureDataBlockEventDataReader_var,
+			TESTFRIDGE::temperatureDataBlockEventDataReader,
+			"DefaultTopic", &handlerFunction, argc, argv);
+	/*All this code block must be a macro*/
+	/*sub = new ddsnc::DDSSubscriber("DefaultTopic", argc, argv);
 
 	sub->initialize<TESTFRIDGE::temperatureDataBlockEvent,
 		TESTFRIDGE::temperatureDataBlockEventTypeSupport_var,
@@ -19,7 +27,8 @@ int main(int argc, char**argv)
 	sub->addSubscription<TESTFRIDGE::temperatureDataBlockEventDataReader_var,
 		TESTFRIDGE::temperatureDataBlockEventDataReader,
 		TESTFRIDGE::temperatureDataBlockEvent>
-			(&handlerFunction, (void *)0);
+			(&handlerFunction, (void *)0);*/
+	/*End of macro*/
 
 	sleep(120);
 

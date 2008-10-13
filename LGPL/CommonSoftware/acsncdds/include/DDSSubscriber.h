@@ -72,9 +72,17 @@ namespace ddsnc{
 			if(CORBA::is_nil(topic.in()))
 				std::cerr<< "Topic is nil" << std::endl;
 
+			initialized=true;
 		}
 
 	};
+}
+
+#define ACS_NEW_DDS_SUBSCRIBER(subscriber_p, idlStruct, typeSupport_var, typeSupportImpl, DataReader_var, DataReader, channelName, handlerFunc, argc, argv) \
+{ \
+	subscriber_p= new ddsnc::DDSSubscriber(channelName, argc, argv); \
+	subscriber_p->initialize<idlStruct, typeSupport_var, typeSupportImpl>(); \
+	sub->addSubscription<DataReader_var, DataReader, idlStruct>(handlerFunc, (void *) 0); \
 }
 
 #endif
