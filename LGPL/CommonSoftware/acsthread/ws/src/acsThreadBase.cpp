@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsThreadBase.cpp,v 1.35 2008/10/13 22:13:03 bjeram Exp $"
+* "@(#) $Id: acsThreadBase.cpp,v 1.36 2008/10/13 23:40:09 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -561,8 +561,24 @@ ThreadBase::SleepReturn ThreadBase::sleep(TimeInterval timeIn100ns) const
 
 void ThreadBase::yield()
 {
+	ACS_TRACE("ACS::ThreadBase::yield");
 	ACE_Thread::yield();
 }//yield
+
+
+void ThreadBase::setPriority(int _priority)
+{
+    ACS_TRACE("ACS::ThreadBase::setPriority");
+    ACE_OS::thr_setprio(getThreadID(), _priority);
+}//setPriority
+
+int ThreadBase::getPriority()
+{
+    ACS_TRACE("ACS::ThreadBase::getPriority");
+    int prio;
+    ACE_OS::thr_getprio(getThreadID(), prio);
+    return prio;
+}//getPriority
 
 /////////////////////////////////////////////////
 // ThreadManagerBase

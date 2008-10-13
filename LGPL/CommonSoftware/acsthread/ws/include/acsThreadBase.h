@@ -20,7 +20,7 @@
  *License along with this library; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: acsThreadBase.h,v 1.30 2008/10/13 21:01:27 bjeram Exp $"
+ * "@(#) $Id: acsThreadBase.h,v 1.31 2008/10/13 23:40:09 bjeram Exp $"
  *
  * who       when        what
  * --------  ----------  ----------------------------------------------
@@ -256,6 +256,18 @@ namespace ACS {
 	void setSleepTime(const TimeInterval& _sleepTime) {
 	    sleepTime_m=_sleepTime;
 	};
+
+	/**
+	 * Set thread priority.
+	 * @param _priority (OS dependent)
+	 */
+	void setPriority(int _priority);
+
+	/**
+	 * Get thread priority.
+	 * @return priority (OS dependent)
+	 */
+	int getPriority();
 
 	/**
 	 * Suspend the execution of a particular thread.
