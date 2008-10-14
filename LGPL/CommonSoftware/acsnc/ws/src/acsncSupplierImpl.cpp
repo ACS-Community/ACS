@@ -1,4 +1,4 @@
-/* @(#) $Id: acsncSupplierImpl.cpp,v 1.78 2008/10/09 07:57:41 cparedes Exp $
+/* @(#) $Id: acsncSupplierImpl.cpp,v 1.79 2008/10/14 19:52:10 bjeram Exp $
  *
  *    Structured event push supplier implementation.
  *    ALMA - Atacama Large Millimiter Array
@@ -25,13 +25,14 @@
 #include "acsncSupplier.h"
 #include <baciCORBA.h>
 #include <acscommonC.h>
+#include <acsncErrType.h>
 
 using namespace ACSErrTypeCommon;
 
 namespace nc {
 //-----------------------------------------------------------------------------
-Supplier::Supplier(const char* channelName, acscomponent::ACSComponentImpl* component) : 
-    Helper(channelName),    
+Supplier::Supplier(const char* channelName, acscomponent::ACSComponentImpl* component) :
+    Helper(channelName),
     SupplierAdmin_m(CosNotifyChannelAdmin::SupplierAdmin::_nil()),
     proxyConsumer_m(CosNotifyChannelAdmin::StructuredProxyPushConsumer::_nil()),
     reference_m(0),
@@ -39,12 +40,12 @@ Supplier::Supplier(const char* channelName, acscomponent::ACSComponentImpl* comp
     typeName_mp(0),
     count_m(0),
     guardbl(10000000,50)
-{     
-    ACS_TRACE("Supplier::Supplier");    
+{
+    ACS_TRACE("Supplier::Supplier");
     init(static_cast<CORBA::ORB_ptr>(0));
 }
 //-----------------------------------------------------------------------------
-Supplier::Supplier(const char* channelName, CORBA::ORB_ptr orb_mp, acscomponent::ACSComponentImpl* component) : 
+Supplier::Supplier(const char* channelName, CORBA::ORB_ptr orb_mp, acscomponent::ACSComponentImpl* component) :
     Helper(channelName),
     SupplierAdmin_m(CosNotifyChannelAdmin::SupplierAdmin::_nil()),
     proxyConsumer_m(CosNotifyChannelAdmin::StructuredProxyPushConsumer::_nil()),
@@ -58,7 +59,7 @@ Supplier::Supplier(const char* channelName, CORBA::ORB_ptr orb_mp, acscomponent:
     init(orb_mp);
 }
 //-----------------------------------------------------------------------------
-Supplier::Supplier(const char* channelName, int argc, char *argv[], acscomponent::ACSComponentImpl* component) : 
+Supplier::Supplier(const char* channelName, int argc, char *argv[], acscomponent::ACSComponentImpl* component) :
     Helper(channelName),
     SupplierAdmin_m(CosNotifyChannelAdmin::SupplierAdmin::_nil()),
     proxyConsumer_m(CosNotifyChannelAdmin::StructuredProxyPushConsumer::_nil()),
@@ -102,10 +103,10 @@ Supplier::init(CORBA::ORB_ptr orb)
 	{
 	ACS_SHORT_LOG((LM_INFO,"Creating Notification Channel for the '%s' channel!",
 		       channelName_mp));
-	
+
 	// Resolve the notify factory
 	resolveNotificationFactory();
-	
+
 	// Create NC
 	createNotificationChannel( );
 	}
@@ -120,7 +121,7 @@ Supplier::~Supplier()
 }
 //-----------------------------------------------------------------------------
 // TAO Developer's Guide p. 595
-void 
+void
 Supplier::disconnect()
 {
     ACS_TRACE("Supplier::disconnect");
@@ -128,21 +129,21 @@ Supplier::disconnect()
     /**
      *  proxyConsumer_m->disconnect_structured_push_consumer should really disconnect the consumer.
      */
-    
+
     //Take sole ownership of the proxy.
     CosNotifyChannelAdmin::StructuredProxyPushConsumer_var proxyConsumer = proxyConsumer_m;
-    proxyConsumer_m=CosNotifyChannelAdmin::StructuredProxyPushConsumer::_nil(); 
-    
+    proxyConsumer_m=CosNotifyChannelAdmin::StructuredProxyPushConsumer::_nil();
+
     try
 	{
-	    if(CORBA::is_nil(proxyConsumer.in()) == false) 
+	    if(CORBA::is_nil(proxyConsumer.in()) == false)
 		{
-		proxyConsumer->disconnect_structured_push_consumer(); 
+		proxyConsumer->disconnect_structured_push_consumer();
 		}
-	    
-	    if(CORBA::is_nil(SupplierAdmin_m.in()) == false) 
+
+	    if(CORBA::is_nil(SupplierAdmin_m.in()) == false)
 		{
-		    SupplierAdmin_m->destroy(); 
+		    SupplierAdmin_m->destroy();
 		    SupplierAdmin_m=CosNotifyChannelAdmin::SupplierAdmin::_nil();
 		}
 	    BACI_CORBA::DestroyTransientCORBAObject(reference_m.in());
@@ -159,7 +160,7 @@ Supplier::disconnect()
 	}
 }
 //-----------------------------------------------------------------------------
-void 
+void
 Supplier::publishEvent(const CORBA::Any &eventData)
 {
     populateHeader(eventData);
@@ -168,46 +169,59 @@ Supplier::publishEvent(const CORBA::Any &eventData)
 //-----------------------------------------------------------------------------
 void
 Supplier::publishEvent(const CosNotification::StructuredEvent &event)
-{   
+{
     //First a sanity check.
     if(CORBA::is_nil(proxyConsumer_m.in()) == true)
 	{
-        char msg[100];
-        sprintf(msg,"Supplier::publishEvent() error occured for the '%s' channel!",channelName_mp);
-        Logging::Logger::LoggerSmartPtr logger = getLogger();
-        guardbl.log(logger, Logging::Logger::LM_DEBUG, msg,__FILE__,__LINE__, "publishEvent");
-	//ACS_SHORT_LOG((LM_DEBUG, "Supplier::publishEvent() error occured for the '%s' channel!", channelName_mp));
-	CORBAProblemExImpl err = CORBAProblemExImpl(__FILE__,__LINE__,"nc::Supplier::publishData");
-	throw err.getCORBAProblemEx();
-	}
+    	acsncErrType::PublishEventFailureExImpl ex(__FILE__, __LINE__, "nc::Supplier::publishEvent");
+    	ex.setChannelName(channelName_mp);
+    	ex.log(LM_DEBUG);
+    	throw ex;
+	}//if
 
     try
-	{
-	// Invoke a method on consumer proxy
-	proxyConsumer_m->push_structured_event(event);
-	}
-    catch(CosEventComm::Disconnected e)
-	{
-        char msg[100];
-        Logging::Logger::LoggerSmartPtr logger = getLogger();
-        sprintf(msg,"Supplier::publishEvent() failed to send the event for the '%s' channel - disconnected!",channelName_mp);
-        guardbl.log(logger, Logging::Logger::LM_DEBUG,msg,__FILE__,__LINE__, "publishEvent");
-	//ACS_SHORT_LOG((LM_DEBUG, "Supplier::publishEvent() failed to send the event for the '%s' channel - disconnected!",channelName_mp));
-	}
+    {
+    	// Invoke a method on consumer proxy
+    	proxyConsumer_m->push_structured_event(event);
+    }
+    catch(CosEventComm::Disconnected &ex)
+    {
+    	ACSErrTypeCommon::CORBAProblemExImpl cex(__FILE__,
+    			__LINE__,
+    			"nc::SimpleSupplier::publishEvent");
+    	cex.setInfo(ex._info().c_str());
 
+    	acsncErrType::PublishEventFailureExImpl ex(cex, __FILE__, __LINE__, "nc::Supplier::publishEvent");
+    	ex.setChannelName(channelName_mp);
+    	ex.log(LM_DEBUG);
+    	throw ex;
+    }
+    catch(CORBA::SystemException &ex)
+    {
+    	ACSErrTypeCommon::CORBAProblemExImpl cex(__FILE__,
+    			__LINE__,
+    			"nc::SimpleSupplier::publishEvent");
+    	cex.setMinor(ex.minor());
+    	cex.setCompletionStatus(ex.completed());
+    	cex.setInfo(ex._info().c_str());
+
+    	acsncErrType::PublishEventFailureExImpl ex(cex, __FILE__, __LINE__, "nc::Supplier::publishEvent");
+    	ex.setChannelName(channelName_mp);
+    	ex.log(LM_DEBUG);
+    	throw ex;
+    }
     catch(...)
-	{
-        char msg[100];
-        sprintf(msg,"Supplier::publishEvent() failed to send the event for the '%s' channel!",channelName_mp);
-        Logging::Logger::LoggerSmartPtr logger = getLogger();
-        guardbl.log(logger, Logging::Logger::LM_DEBUG,msg,__FILE__,__LINE__, "publishEvent");
-	//ACS_SHORT_LOG((LM_DEBUG, "Supplier::publishEvent() failed to send the event for the '%s' channel!",channelName_mp));
-	CORBAProblemExImpl err = CORBAProblemExImpl(__FILE__,__LINE__,"nc::Supplier::publishData");
-	throw err.getCORBAProblemEx();
-	}
-}
+    {
+    	ACSErrTypeCommon::UnexpectedExceptionExImpl uex(__FILE__, __LINE__, "nc::Supplier::publishEvent");
+
+    	acsncErrType::PublishEventFailureExImpl ex(uex, __FILE__, __LINE__, "nc::Supplier::publishEvent");
+    	ex.setChannelName(channelName_mp);
+    	ex.log(LM_DEBUG);
+    	throw ex;
+    }//try-catch
+}//publishEvent
 //-----------------------------------------------------------------------------
-void 
+void
 Supplier::populateHeader(const CORBA::Any &any)
 {
     if (any.type()->kind()!=CORBA::tk_sequence)
@@ -226,12 +240,12 @@ Supplier::populateHeader(const CORBA::Any &any)
     event_m.filterable_data[0].value = any;
 }
 //-----------------------------------------------------------------------------
-void 
+void
 Supplier::populateHeader(CosNotification::StructuredEvent &event)
 {
     event.header.fixed_header.event_type.domain_name = getChannelDomain();
     event.header.fixed_header.event_type.type_name = typeName_mp;//CORBA::string_dup(typeName_mp);
-    
+
     event.header.fixed_header.event_name = "";
 
     // if Names has a filterable data entry, then add it here
@@ -253,7 +267,7 @@ Supplier::populateHeader(CosNotification::StructuredEvent &event)
 	{
         // here we do not have to do CORBA::string_dup, ....
 	// because it is done already in ACSComponentImpl::name()
-	descrip.name = component_mp->name(); 
+	descrip.name = component_mp->name();
 	}
 
     integrationLog(std::string("Channel:") + channelName_mp +
@@ -263,16 +277,16 @@ Supplier::populateHeader(CosNotification::StructuredEvent &event)
     //pack the event description into the event
     event.remainder_of_body <<= descrip;
 
-    
-	
+
+
 
 }
 //-----------------------------------------------------------------------------
-void 
+void
 Supplier::destroyNotificationChannel()
 {
     ACS_TRACE("Supplier::destroyNotificationChannel");
-    
+
     //Sanity check
     if (CORBA::is_nil(notifyChannel_m.in())==true)
 	{
@@ -281,13 +295,13 @@ Supplier::destroyNotificationChannel()
 	CORBAProblemExImpl err = CORBAProblemExImpl(__FILE__,__LINE__,"nc::Supplier::destroyNotificationChannel");
 	throw err.getCORBAProblemEx();
 	}
-    
+
     try
 	{
 	//Destroy the remote object and dereference it's pointer.
 	notifyChannel_m->destroy();
 	notifyChannel_m = 0;
-	
+
 	// Unbind notification channel from Naming service
 	CosNaming::Name name(1);
 	name.length(1);
@@ -312,7 +326,7 @@ Supplier::destroyNotificationChannel()
 	}
 }
 //-----------------------------------------------------------------------------
-void 
+void
 Supplier::createSupplier()
 {
     ACS_TRACE("Supplier::createSupplier");
@@ -325,12 +339,12 @@ Supplier::createSupplier()
 	CORBAProblemExImpl err = CORBAProblemExImpl(__FILE__,__LINE__,"nc::Supplier::createSupplier");
 	throw err.getCORBAProblemEx();
 	}
-    
+
     CosNotifyChannelAdmin::AdminID adminid;
     CosNotifyChannelAdmin::ProxyID proxyConsumerID;
-    
+
     try
-	{    
+	{
 	//get a supplier admin
 	SupplierAdmin_m = notifyChannel_m->new_for_suppliers(ifgop_m, adminid);
 	//sanity check on the supplier admin
@@ -341,9 +355,9 @@ Supplier::createSupplier()
 	    CORBAProblemExImpl err = CORBAProblemExImpl(__FILE__,__LINE__,"nc::Supplier::createSupplier");
 	    throw err.getCORBAProblemEx();
 	    }
-	
+
 	//get a proxy consumer
-	CosNotifyChannelAdmin::ProxyConsumer_var 
+	CosNotifyChannelAdmin::ProxyConsumer_var
 	    proxyconsumer = SupplierAdmin_m->obtain_notification_push_consumer(CosNotifyChannelAdmin::STRUCTURED_EVENT, proxyConsumerID);
 	//sanity check on the consumer admin
 	if(CORBA::is_nil(proxyconsumer.in()) == true)
@@ -364,7 +378,7 @@ Supplier::createSupplier()
 	    CORBAProblemExImpl err = CORBAProblemExImpl(__FILE__,__LINE__,"nc::Supplier::createSupplier");
 	    throw err.getCORBAProblemEx();
 	    }
-	
+
 	//activate ourself as a CORBA object
 	reference_m = BACI_CORBA::ActivateTransientCORBAObject<CosNotifyComm::StructuredPushSupplier>(this);
 	if (reference_m.in()==0)
@@ -400,7 +414,7 @@ Supplier::createSupplier()
 	}
 }
 //-----------------------------------------------------------------------------
-void 
+void
 Supplier::disconnect_structured_push_supplier()
 {
     ACS_TRACE("Supplier::disconnect_structured_push_supplier");
@@ -409,7 +423,7 @@ Supplier::disconnect_structured_push_supplier()
 /*
 * @throw CosNotifyComm::InvalidEventType
 */
-void 
+void
 Supplier::subscription_change(const CosNotification::EventTypeSeq &added,
 			      const CosNotification::EventTypeSeq &removed)
 {
@@ -425,7 +439,7 @@ Supplier::setEventType(const char* typeName)
 }
 //-----------------------------------------------------------------------------
 
- }; 
+ };
 
 
 

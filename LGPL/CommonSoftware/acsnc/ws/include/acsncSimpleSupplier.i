@@ -1,8 +1,8 @@
 #ifndef SIMPLE_SUPPLIER_I
 #define SIMPLE_SUPPLIER_I
-/*    @(#) $Id: acsncSimpleSupplier.i,v 1.25 2008/10/09 07:57:41 cparedes Exp $
+/*    @(#) $Id: acsncSimpleSupplier.i,v 1.26 2008/10/14 19:52:10 bjeram Exp $
  *    ALMA - Atacama Large Millimiter Array
- *    (c) Associated Universities Inc., 2002 
+ *    (c) Associated Universities Inc., 2002
  *    (c) European Southern Observatory, 2002
  *    Copyright by ESO (in the framework of the ALMA collaboration)
  *    and Cosylab 2002, All rights reserved
@@ -25,34 +25,51 @@
 /** @file acsncSimpleSupplier.i
  *  Header file for the Supplier-derived class that should be used from within
  *  components to publish events.
+ *  @exception acsncErrType::PublishEventFailureExImpl
  */
+#include <acsncErrType.h>
 
 namespace nc {
 //----------------------------------------------------------------------
-template <class T> void 
+template <class T> void
 SimpleSupplier::publishData(T data)
 {
-    try
+	try
 	{
-	any_m <<= data;
-	Supplier::publishEvent(any_m);
+		any_m <<= data;
+		Supplier::publishEvent(any_m);
 	}
-    catch(ACSErrTypeCommon::CORBAProblemEx)
+	catch(ACSErr::ACSbaseExImpl &ex)
 	{
-	//an exception from subclasses...OK to rethrow
-	throw;
+		acsncErrType::PublishEventFailureExImpl ex(ex, __FILE__, __LINE__, "nc::Supplier::publishData");
+		ex.setChannelName(channelName_mp);
+		ex.log(LM_DEBUG);
+		throw ex;
 	}
-    catch(...)
+	catch(CORBA::SystemException &ex)
 	{
-	ACS_SHORT_LOG((LM_ERROR,
-		       "SimpleSupplier::publishData(...) %s channel - unknown error!",
-		       channelName_mp));
-	ACSErrTypeCommon::CORBAProblemExImpl err = ACSErrTypeCommon::CORBAProblemExImpl(__FILE__,
-						    __LINE__,
-						    "nc::SimpleSupplier::publishData");
-	throw err;
+		ACSErrTypeCommon::CORBAProblemExImpl cex(__FILE__,
+				__LINE__,
+				"nc::SimpleSupplier::publishData");
+		cex.setMinor(ex.minor());
+		cex.setCompletionStatus(ex.completed());
+		cex.setInfo(ex._info().c_str());
+
+		acsncErrType::PublishEventFailureExImpl ex(cex, __FILE__, __LINE__, "nc::Supplier::publishData");
+		ex.setChannelName(channelName_mp);
+		ex.log(LM_DEBUG);
+		throw ex;
 	}
-}
+	catch(...)
+	{
+		ACSErrTypeCommon::UnexpectedExceptionExImpl uex(__FILE__, __LINE__, "nc::Supplier::publishData");
+
+		acsncErrType::PublishEventFailureExImpl ex(uex, __FILE__, __LINE__, "nc::Supplier::publishData");
+		ex.setChannelName(channelName_mp);
+		ex.log(LM_DEBUG);
+		throw ex;
+	}//try-catch
+}//publishData
 //----------------------------------------------------------------------
- }; 
+ };
 #endif
