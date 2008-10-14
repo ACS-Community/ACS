@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsThread.cpp,v 1.39 2008/10/13 21:01:27 bjeram Exp $"
+* "@(#) $Id: acsThread.cpp,v 1.40 2008/10/14 22:42:33 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -25,7 +25,7 @@
 
 #include "vltPort.h"
 
-static char *rcsId="@(#) $Id: acsThread.cpp,v 1.39 2008/10/13 21:01:27 bjeram Exp $";
+static char *rcsId="@(#) $Id: acsThread.cpp,v 1.40 2008/10/14 22:42:33 bjeram Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include "acsThread.h"
@@ -52,6 +52,7 @@ Thread::Thread(const ACE_CString & name,
 	       responseTime,
 	       sleepTime,
 	       false /* super class shall not create a thread */,
+	       THR_NEW_LWP | THR_DETACHED,
 	       _stackSize),
     logger_mp(0), thrMgr_mp(0), delete_m(del)
 {
