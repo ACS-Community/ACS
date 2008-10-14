@@ -21,7 +21,7 @@
 # MA 02111-1307  USA
 #
 #*******************************************************************************
-# "@(#) $Id: Makefile,v 1.62 2008/03/14 07:32:25 cparedes Exp $"
+# "@(#) $Id: Makefile,v 1.63 2008/10/14 17:26:23 bjeram Exp $"
 #------------------------------------------------------------------------
 #
 # Makefile for acsnc/ws/src
@@ -77,7 +77,6 @@ CSOURCENAMES = \
 	$(foreach lib, $(LIBRARIES) $(LIBRARIES_L), $($(lib)_OBJECTS))
 
 
-ACSERRDEF = acsncErrType
 
 # IDL Files
 IDL_FILES = 
