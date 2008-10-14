@@ -358,38 +358,40 @@ public class DispatchingLogQueue {
 
     
     /**
-     * Extracted from {@link #flush(boolean)} to improve readability of the code.
-     * @param logRecords the records to be sent to the remote logger.
-     * @return true if all or at least some log records were permanently taken off the queue.
-     */
-    private boolean flushLogRecords(final LogRecord[] logRecords) {
-        if (DEBUG) {
-            System.out.println("DispatchingLogQueue#flushLogRecords called in thread " + Thread.currentThread().getName());
-        }
-        boolean flushedSomeRecords = true;
-        
-        RemoteLogDispatcher.FailedLogRecords failures = remoteLogDispatcher.sendLogRecords(logRecords);
-        if (failures.hasSendFailures()) {
-            LogRecord[] sendFailures = failures.getSendFailures();
-            // we'll try to send them some other time
-            queue.addAll(Arrays.asList(sendFailures));
-            flushedSomeRecords = ( sendFailures.length < logRecords.length );
-            if (DEBUG) {
-                System.err.println("flushLogRecords: had to add back " + sendFailures.length + " send-failed log records to the queue.");
-            }
-        }
-        if (failures.hasSerializationFailures()) {
-            LogRecord[] serializationFailures = failures.getSerializationFailures();
-            for (int i = 0; i < serializationFailures.length; i++) {
-                System.err.println("Failed to translate log record for sending remotely. Log message = " 
-                        + serializationFailures[i].getMessage());
-            }
-            // they are not quite satisfactorily flushed, but gone from the queue, which matters here
-            flushedSomeRecords = true;
-        }
-        lastFlushFinished = System.currentTimeMillis();
-        return flushedSomeRecords;
-    }                
+	 * Extracted from {@link #flush(boolean)} to improve readability of the code.
+	 * 
+	 * @param logRecords
+	 *            the records to be sent to the remote logger.
+	 * @return true if all or at least some log records were permanently taken off the queue.
+	 */
+	private boolean flushLogRecords(final LogRecord[] logRecords) {
+		if (DEBUG) {
+			System.out.println("DispatchingLogQueue#flushLogRecords called in thread "
+					+ Thread.currentThread().getName());
+		}
+		boolean flushedSomeRecords = true;
+
+		RemoteLogDispatcher.FailedLogRecords failures = remoteLogDispatcher.sendLogRecords(logRecords);
+		if (failures.hasSendFailures()) {
+			List<LogRecord> sendFailures = failures.getSendFailures();
+			// we'll try to send them some other time
+			queue.addAll(sendFailures);
+			flushedSomeRecords = (sendFailures.size() < logRecords.length);
+			if (DEBUG) {
+				System.err.println("flushLogRecords: had to add back " + sendFailures.size()
+						+ " send-failed log records to the queue.");
+			}
+		}
+		if (failures.hasSerializationFailures()) {
+			for (LogRecord logRecord : failures.getSerializationFailures()) {
+				System.err.println("Failed to translate log record for sending remotely. Log message = " + logRecord.getMessage());
+			}
+			// these records are not quite satisfactorily flushed, but gone from the queue, which matters here
+			flushedSomeRecords = true;
+		}
+		lastFlushFinished = System.currentTimeMillis();
+		return flushedSomeRecords;
+	}
 
     
     /////////////////////////////////////////////////////////////
