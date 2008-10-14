@@ -71,8 +71,8 @@ public class RemoteLoggingTest extends TestCase
 		DaemonThreadFactory dtf = new DaemonThreadFactory(getName());
 
 		// we try this out for different simulated network delays and shutdown delays
-		int[] networkDelays = {0, 2, 18, 22, 100}; // @TODO chose values that give deterministic results on most test machines.
-		int[] shutdownDelays = {1, 20, 102}; // @TODO chose values that give deterministic results on most test machines.
+		int[] networkDelays = {0, 2, 16, 21, 100}; // @TODO chose values that give deterministic results on most test machines.
+		int[] shutdownDelays = {1, 20, 106}; // @TODO chose values that give deterministic results on most test machines.
 
 		for (int networkDelay : networkDelays) {
 			// shutdown delay is the time in milliseconds between the last log and the call to clientlogmanager#shutdown,
@@ -89,7 +89,7 @@ public class RemoteLoggingTest extends TestCase
 
 				// log something before we init the remote logging:
 				logger.info("A healthy info log before initRemoteLogging ("+networkDelay+"/"+shutdownDelay+")");
-//				Thread.sleep(2); // to keep these two logs in order, which makes manual ref file comparison easier. 
+				Thread.sleep(2); // to keep these two logs in order, which makes manual ref file comparison easier. 
 				logger.fine("now that was a fine log before initRemoteLogging ("+networkDelay+"/"+shutdownDelay+")");
 				
 				clm.setDelayMillis(networkDelay); // simulated network delay for initRemoteLogging-getLogService and write_records
