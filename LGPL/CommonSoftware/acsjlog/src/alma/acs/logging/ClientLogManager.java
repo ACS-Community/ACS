@@ -125,7 +125,7 @@ public class ClientLogManager implements LogConfigSubscriber
     /** 
      * Logger used by the classes in this logging package.
      * TODO: allow container or client to replace this logger with their own 
-     * logger, because these classes belong to their respective process.  
+     * logger, because these classes belong to their respective process.
      */
 	private final Logger m_internalLogger;
 
@@ -190,14 +190,12 @@ public class ClientLogManager implements LogConfigSubscriber
 	 */
 	public void configureLogging(LogConfig logConfig) {
 
-//System.out.println("ClientLogManager#configureLogging called ");
-
 		if (!logConfig.getCentralizedLogger().equals(logServiceName)) {
 			if (logServiceName == null) {
 				logServiceName = logConfig.getCentralizedLogger();
 			} else {
 				m_internalLogger.warning("Dynamic switching of Log service not yet supported!");
-				// TODO: switch connection to new log service
+				// @TODO: switch connection to new log service
 			}
 		}
 
@@ -730,11 +728,7 @@ public class ClientLogManager implements LogConfigSubscriber
             logger = AcsLogger.createUnconfiguredLogger(loggerName, null);
             logger.setUseParentHandlers(false);
             addLocalHandler(logger);
-            // this is a bit dirty: the local-only loggers are of the plain JDK Logger type which does not implement LogConfigSubscriber
-            // and thus can't be configured in the normal way.
-            // Nonetheless we want to configure its log level, for which we reuse code from AcsLogger
-            // TODO: it looks that now with using AcsLogger.createUnconfiguredLogger we can get rid of this static method!
-            AcsLogger.configureJDKLogger(logger, sharedLogConfig.getNamedLoggerConfig(loggerName));
+            logger.configureLevels(sharedLogConfig.getNamedLoggerConfig(loggerName));
         }
         return logger;
     }

@@ -57,7 +57,7 @@ public class AcsLogger extends Logger implements LogConfigSubscriber {
     protected static final int offValue = Level.OFF.intValue();
 
 	/** the logger class, which must be known to unwind the stack trace. Will be this class unless we use delegation. 
-	 * TODO: looks like we can share this set among Logger instances
+	 * We don't share this set among Logger instances to avoid threading overheads for fast access.
 	 */
 	private final Set<String> loggerClassNames = new HashSet<String>();
 
@@ -120,20 +120,26 @@ public class AcsLogger extends Logger implements LogConfigSubscriber {
      * Non-standard factory method to be used only for special offline or testing purposes
      * where typically an AcsLogger must be provided by an alternative implementation of ContainerServices.
      * The returned AcsLogger is just like a JDK Logger obtained from {@link Logger#getLogger(String, String)}.
+     * <p>
+     * Note that we do not supply a {@link LogConfig} and therefore the new AcsLogger cannot register itself 
+     * for initial configuration or later configuration change notifications.
      * 
      * @param name  the logger's name
      * @param resourceBundleName
      * @return <code>AcsLogger</code> that is as close to a normal JDK Logger as possible.
+     * @throws IllegalArgumentException 
+     *              If a Logger of the given <code>name</code> exists but is not an <code>AcsLogger</code>,
+     *              or if an AcsLogger of the given <code>name</code> exists but has a different <code>resourceBundleName</code>.
      */
     public static AcsLogger createUnconfiguredLogger(String name, String resourceBundleName) {
     	
     	// the following code is copied and modified from Logger.getLogger 
     	
     	LogManager manager = LogManager.getLogManager();
-    	Logger jdkLogger = manager.getLogger(name);    	
+    	Logger jdkLogger = manager.getLogger(name);
     	if (jdkLogger != null && !(jdkLogger instanceof AcsLogger)) {
     		throw new IllegalArgumentException("Logger " + name + " already exists but is not of subtype AcsLogger.");
-    	}    	
+    	}
     	AcsLogger result = (AcsLogger) jdkLogger;
     	
     	if (result == null) {
@@ -324,13 +330,13 @@ public class AcsLogger extends Logger implements LogConfigSubscriber {
      * @see alma.acs.logging.config.LogConfigSubscriber#configureLogging(alma.acs.logging.config.LogConfig)
      */
     public void configureLogging(LogConfig logConfig) {
-		try {			
+		try {
 			UnnamedLogger config = logConfig.getNamedLoggerConfig(getLoggerName());
 			if (DEBUG) {
 				System.out.println("*** AcsLogger#configureLogging: name=" + getLoggerName() + 
 						" minLevel=" + config.getMinLogLevel() + " minLevelLocal=" + config.getMinLogLevelLocal());
 			}
-	    	configureJDKLogger(this, config);
+			configureLevels(config);
 		} catch (Exception e) {
 			log(Level.INFO, "Failed to configure logger.", e);
 		}
@@ -345,12 +351,12 @@ public class AcsLogger extends Logger implements LogConfigSubscriber {
 	}
 
 	/**
-	 * Service method for configuring even a non-ACS Logger. Shares code with {@link #configureLogging(LogConfig)}.
+	 * Extracted from {@link #configureLogging(LogConfig)} to support also configuration of Loggers created with 
+	 * {@link #createUnconfiguredLogger(String, String)} which do not know about a shared {@link LogConfig}. 
 	 * 
-	 * @param jdkLogger
-	 * @param logConfigData
+	 * @param loggerConfig
 	 */
-	static void configureJDKLogger(Logger jdkLogger, UnnamedLogger loggerConfig) {
+	void configureLevels(UnnamedLogger loggerConfig) {
 		try {
 			// the logger must let through the lowest log level required for either local or remote logging.
 			AcsLogLevelDefinition minLogLevelACS = AcsLogLevelDefinition.fromXsdLogLevel(
@@ -359,9 +365,9 @@ public class AcsLogger extends Logger implements LogConfigSubscriber {
 					: loggerConfig.getMinLogLevelLocal());
 
 			AcsLogLevel minLogLevelJDK = AcsLogLevel.fromAcsCoreLevel(minLogLevelACS); // JDK Level style
-			jdkLogger.setLevel(minLogLevelJDK);
+			setLevel(minLogLevelJDK);
 		} catch (Exception ex) {
-			jdkLogger.log(Level.INFO, "Failed to configure logger.", ex);
+			log(Level.INFO, "Failed to configure logger.", ex);
 		}
 
 	}
