@@ -20,7 +20,7 @@
  *License along with this library; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: acsThreadBase.h,v 1.31 2008/10/13 23:40:09 bjeram Exp $"
+ * "@(#) $Id: acsThreadBase.h,v 1.32 2008/10/14 22:47:10 bjeram Exp $"
  *
  * who       when        what
  * --------  ----------  ----------------------------------------------
@@ -171,7 +171,7 @@ namespace ACS {
 	 * @param _thrFlags Thread creation flags to be used if _create = TRUE.
 	 *        See ACE threads and pthread documentation for details.
 	 *        Default is now THR_NEW_LWP | THR_DETACHED
-	 * @param _stackSize The size of the stack of the thread. If 0 the default (OS)
+	 * @param _stackSize The size of the stack of the thread. If ACE_DEFAULT_THREAD_STACKSIZE the default
 	 * 		stack size is taken.
 	 *
 	 * @see the create method for important details about joinable threads.
@@ -182,7 +182,7 @@ namespace ACS {
 		   const TimeInterval& _sleepTime=ThreadBase::defaultSleepTime,
 		   const bool _create=true,
 		   const long _thrFlags= THR_NEW_LWP | THR_DETACHED,
-		   const size_t _stackSize=0);
+		   const size_t _stackSize=ACE_DEFAULT_THREAD_STACKSIZE);
 
 	/**
 	 * Destructor.

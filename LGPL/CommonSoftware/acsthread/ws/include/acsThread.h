@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsThread.h,v 1.29 2008/10/13 21:01:27 bjeram Exp $"
+* "@(#) $Id: acsThread.h,v 1.30 2008/10/14 22:46:42 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -108,16 +108,15 @@ namespace ACS
 
            2006/07/06 merge two constructor, since there is almost no difference between them
 
-		@param _stackSize The size of the stack of the thread. If 0 the default (OS) stack size is taken.
+		@param _stackSize The size of the stack of the thread. If ACE_DEFAULT_THREAD_STACKSIZE the default ACE stack size is taken.
 
 	 */
 	Thread(const ACE_CString & name,
 	       const TimeInterval& responseTime=ThreadBase::defaultResponseTime,
 	       const TimeInterval& sleepTime=ThreadBase::defaultSleepTime,
-//	       const bool del=false);
 	       const bool del=false,
 	       const long _thrFlags=THR_NEW_LWP | THR_DETACHED,
-	       const size_t stackSize = 0);
+	       const size_t stackSize = ACE_DEFAULT_THREAD_STACKSIZE);
 
 
 	/*
