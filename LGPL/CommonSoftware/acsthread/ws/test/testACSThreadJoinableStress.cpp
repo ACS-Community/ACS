@@ -34,7 +34,7 @@ int main(int argc, char *argv[])
     LoggingProxy::init(&logger_m);
 
 
-    for (int i=0; i<numThread-1; i++)
+    for (int i=0; i<numThread; i++)
 	{
 	std::stringstream str_thread;
 	str_thread << "thread " << i;
@@ -43,7 +43,7 @@ int main(int argc, char *argv[])
 	threadId[i] = threads[i]->getThreadID();
 	}//for
     ACS_SHORT_LOG((LM_INFO, "# of threads in the thread manager: %d\n", tm.getThreadCount()));
-    for (int i=0; i<numThread-1; i++)
+    for (int i=0; i<numThread; i++)
 	{
 	ACS_SHORT_LOG((LM_INFO, "joining thread # %d\n", i));
 	int st = tm.join(threadId[i]);
