@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.2 2007/01/05 16:34:07 hsommer Exp $"
+# "@(#) $Id: Makefile,v 1.3 2008/10/14 17:24:58 bjeram Exp $"
 #
 # Makefile of ........
 #
@@ -108,6 +108,8 @@ tttlll_OBJECTS  =
 # Configuration Database Files
 # ----------------------------
 CDB_SCHEMAS = 
+
+ACSERRDEF = acsncErrType
 
 # 
 # IDL Files and flags
