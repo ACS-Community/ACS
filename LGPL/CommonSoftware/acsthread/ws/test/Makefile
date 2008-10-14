@@ -16,7 +16,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.14 2008/06/06 08:48:24 bjeram Exp $"
+# "@(#) $Id: Makefile,v 1.15 2008/10/14 21:28:07 bjeram Exp $"
 #
 # Makefile of ........
 #
@@ -57,7 +57,8 @@ EXECUTABLES_L   = testACSThread testACSThreadWithParameter testSelfDelThread \
                   testACSThreadCorrExmpl testACSThreadNoTM \
                   testACSThreadDoubleLoop testACSThreadSleep	\
                   testACSThreadJoinable testACSThreadRestart testACSThreadGuard \
-		  testPosixThreads testACSThreadJoinableStress
+		  		testPosixThreads testACSThreadJoinableStress \
+		  		testACSThreadStackSize
 
 #
 # <brief description of xxxxx program>
@@ -108,6 +109,8 @@ testACSThreadGuard_LIBS      = acsThread
 testACSThreadJoinableStress_OBJECTS  = testACSThreadJoinableStress
 testACSThreadJoinableStress_LIBS      = acsThread
 
+testACSThreadStackSize_OBJECTS  =   testACSThreadStackSize
+testACSThreadStackSize_LIBS      = acsThread
 
 #
 # special compilation flags for single c sources
