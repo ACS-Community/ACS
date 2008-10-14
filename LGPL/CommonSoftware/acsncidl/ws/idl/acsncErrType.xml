@@ -33,10 +33,10 @@
 		description="An event could not be published">
 		<Member name="EventName"
 			type="string"
-			description="Event name for which subscription failed. Use '*' if the subscription attempt was for all events."/>
+			description="Name of the event that could not be sent."/>
 		<Member name="ChannelName"
 			type="string"
-			description="Channel on which subscription failed."/>
+			description="Channel on which publish event failed."/>
 	</ErrorCode>
 </Type>
 
