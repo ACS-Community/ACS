@@ -61,15 +61,15 @@ import com.cosylab.CDB.DALOperations;
 import si.ijs.maci.LoggingConfigurable;
 
 import alma.ACSErrTypeCommon.wrappers.AcsJIllegalArgumentEx;
-import alma.acs.logging.level.AcsLogLevelDefinition;
 import alma.acs.logging.AcsLogLevel;
+import alma.acs.logging.level.AcsLogLevelDefinition;
+import alma.acs.util.IsoDateFormat;
 import alma.cdbErrType.CDBRecordDoesNotExistEx;
 import alma.cdbErrType.CDBXMLErrorEx;
 import alma.maci.loggingconfig.LoggingConfig;
 import alma.maci.loggingconfig.NamedLogger;
 import alma.maci.loggingconfig.UnnamedLogger;
 import alma.maci.loggingconfig.types.LogLevel;
-import alma.acs.util.IsoDateFormat;
 
 /**
  * Class that encapsulates all configuration sources (defaults, properties, CDB) for Java logging,
@@ -864,7 +864,7 @@ public class LogConfig {
 			logger.log(level, msg, thr);
 		} 
 		else {
-			if (AcsLogLevel.getNativeLevel(level).getAcsLevel().value  >= getDefaultMinLogLevelLocal().value) {
+			if (AcsLogLevel.getNativeLevel(level).getAcsLevel().compareTo(getDefaultMinLogLevelLocal()) >= 0) {
 				System.out.println(IsoDateFormat.formatCurrentDate()+ " "+ AcsLogLevel.getNativeLevel(level).getAcsLevel().toString() + " [alma.acs.logging.config.LogConfig] " + msg + (thr != null ? thr.toString() : ""));
 			}
 		}
