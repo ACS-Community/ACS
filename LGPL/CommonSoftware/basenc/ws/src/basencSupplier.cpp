@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: basencSupplier.cpp,v 1.10 2008/09/30 09:34:43 cparedes Exp $"
+* "@(#) $Id: basencSupplier.cpp,v 1.11 2008/10/14 22:06:01 bjeram Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -26,6 +26,7 @@
 
 #include "basencSupplier.h"
 #include <iostream>
+#include <logging.h>
 
 //-----------------------------------------------------------------------------
 BaseSupplier::BaseSupplier(const char* channelName, const char* notifyServiceDomainName) :
@@ -116,30 +117,54 @@ BaseSupplier::publishEvent(const CosNotification::StructuredEvent& event)
 	{
 	proxyConsumer_m->push_structured_event(event);
 	}
-    catch(CORBA::COMM_FAILURE ex)
+	catch(CORBA::COMM_FAILURE &ex)
 	{
-	std::cerr << "ERROR (CORBA::COMM_FAILURE): ";
-	std::cerr << "failed to send an event of type '";
-	std::cerr << event.header.fixed_header.event_type.type_name;
-	std::cerr << "' to the '";
-	std::cerr << channelName_mp << "' channel!" << std::endl;
+		char msg[512];
+		Logging::Logger::LoggerSmartPtr logger = getLogger();
+		sprintf(msg, "Failed to send an event of type '%s' to the '%s' channel - CORBA::COMM_FAILURE!",
+				event.header.fixed_header.event_type.type_name.in(),
+				channelName_mp);
+		logger->log(Logging::Logger::LM_ERROR, msg, __FILE__, __LINE__, "BaseSupplier::publishEvent");
 	}
-    catch(CORBA::TRANSIENT ex)
+	catch(CORBA::TRANSIENT &ex)
 	{
-	std::cerr << "ERROR (CORBA::TRANSIENT): ";
-	std::cerr << "failed to send an event of type '";
-	std::cerr << event.header.fixed_header.event_type.type_name;
-	std::cerr << "' to the '";
-	std::cerr << channelName_mp << "' channel!" << std::endl;
+		char msg[512];
+		Logging::Logger::LoggerSmartPtr logger = getLogger();
+		sprintf(msg, "Failed to send an event of type '%s' to the '%s' channel - CORBA::TRANSIENT!",
+				event.header.fixed_header.event_type.type_name.in(),
+				channelName_mp);
+		logger->log(Logging::Logger::LM_ERROR, msg, __FILE__, __LINE__, "BaseSupplier::publishEvent");
 	}
-    catch(...)
+	catch(CORBA::UserException &ex)
 	{
-	std::cerr << "ERROR (Unkwown): ";
-	std::cerr << "failed to send an event of type '";
-	std::cerr << event.header.fixed_header.event_type.type_name;
-	std::cerr << "' to the '";
-	std::cerr << channelName_mp << "' channel!" << std::endl;
+		char msg[512];
+		Logging::Logger::LoggerSmartPtr logger = getLogger();
+		sprintf(msg, "Failed to send an event of type '%s' to the '%s' channel - CORBA::UserException(%s)!",
+				event.header.fixed_header.event_type.type_name.in(),
+				channelName_mp,
+				ex._info().c_str());
+		logger->log(Logging::Logger::LM_ERROR, msg, __FILE__, __LINE__, "BaseSupplier::publishEvent");
 	}
+	catch(CORBA::SystemException &ex)
+	{
+		char msg[512];
+		Logging::Logger::LoggerSmartPtr logger = getLogger();
+		sprintf(msg, "Failed to send an event of type '%s' to the '%s' channel - CORBA::SystemException(%s)!",
+				event.header.fixed_header.event_type.type_name.in(),
+				channelName_mp,
+				ex._info().c_str());
+		logger->log(Logging::Logger::LM_ERROR, msg, __FILE__, __LINE__, "BaseSupplier::publishEvent");
+	}
+	catch(...)
+	{
+		char msg[512];
+		Logging::Logger::LoggerSmartPtr logger = getLogger();
+		sprintf(msg, "Failed to send an event of type '%s' to the '%s' channel - UNKNOWN!",
+				event.header.fixed_header.event_type.type_name.in(),
+				channelName_mp);
+		logger->log(Logging::Logger::LM_ERROR, msg, __FILE__, __LINE__, "BaseSupplier::publishEvent");
+
+	}//try-catch
 }
 //-----------------------------------------------------------------------------
 void
