@@ -34,7 +34,7 @@ int main(int argc, char *argv[])
     LoggingProxy::init(&logger_m);
 
 
-    for (int i=0; i<numThread; i++)
+    for (int i=0; i<numThread-1; i++)
 	{
 	std::stringstream str_thread;
 	str_thread << "thread " << i;
@@ -43,7 +43,7 @@ int main(int argc, char *argv[])
 	threadId[i] = threads[i]->getThreadID();
 	}//for
     ACS_SHORT_LOG((LM_INFO, "# of threads in the thread manager: %d\n", tm.getThreadCount()));
-    for (int i=0; i<numThread; i++)
+    for (int i=0; i<numThread-1; i++)
 	{
 	ACS_SHORT_LOG((LM_INFO, "joining thread # %d\n", i));
 	int st = tm.join(threadId[i]);
@@ -51,7 +51,7 @@ int main(int argc, char *argv[])
 	if (st==-1)cout<<"thread "<<i<<" join fails"<<endl;
 	ACS_SHORT_LOG((LM_INFO, "=> thread # %d joint with ret: %d\n", i , st));
 	delete threads[i];
-	}
+	}//for
 
     ACS_SHORT_LOG((LM_INFO, "# of threads in the thread manager after joining: %d\n", tm.getThreadCount()));
 
