@@ -30,6 +30,7 @@ import org.omg.CORBA.Any;
 import org.omg.CORBA.ORB;
 import org.omg.CORBA.UserException;
 import org.omg.DsLogAdmin.Log;
+import org.omg.DsLogAdmin.LogFull;
 import org.omg.DsLogAdmin.LogOperations;
 
 import alma.acs.logging.formatters.AcsLogFormatter;
@@ -147,81 +148,106 @@ class RemoteLogDispatcher {
             Any[] anyLogRecordsArray = anyLogRecords.toArray(new Any[anyLogRecords.size()]);
             try {
                 writeRecords(anyLogRecordsArray);
-            } catch (Throwable thr) {
+            } 
+//            catch (LogFull ex1) {
+//            	// Telecom Log Service spec v. 1.1.2, chapter 1.2.5.1:
+//            	// "if availability status is log_full and LogFullAction is "halt", then a LogFull exception is raised 
+//            	// and the number of log records written will be returned in the exception."
+//            	// @TODO: Can we actually assume that this number n refers to the first n log records from the Any[] so that we only feed back the later records?
+//            	int recordsWritten = ex1.n_records_written;
+//            	if (recordsWritten > 0 && recordsWritten < candidateLogRecords.size()) {
+//            		for (int i = recordsWritten; i < candidateLogRecords.size(); i++) {
+//						failures.addSendFailure(candidateLogRecords.get(i));
+//					}
+//            	}
+//            	else {
+//            		failures.addSendFailures(candidateLogRecords);
+//            	}
+//            }
+//            // @todo: slow down future sending attempts if we get a 
+//            // LogDisabled - operational state "disabled" due to some runtime problem in the Log
+//            // LogLocked - hopefully temporary admin setting on the Log
+//            // LogOffDuty - other exotic reasons to be not "on duty", such as log duration time or scheduling time
+            catch (Throwable thr) {
                 // feed back these records to we can try them again later
                 failures.addSendFailures(candidateLogRecords);
-                // Note that ACS does not make use of the semantics of the various exceptions specified here by CORBA, i.e.
-                // LogDisabled, LogOffDuty, LogLocked, LogFull
+                // Currently ACS does not make use of the semantics of the various exceptions specified here by CORBA, i.e.
+                // LogDisabled, LogOffDuty, LogLocked, LogFull (see above)
+                
             }
         }
         return failures;
     }
 
-    
-    /**
-     * The CORBA call. To be faked by test subclasses.
-     * @param anyLogRecordsArray
-     * @throws UserException
-     */
-    protected void writeRecords(Any[] anyLogRecordsArray) throws UserException {
-        logService.write_records(anyLogRecordsArray);
-        if (DEBUG) {
-            System.out.println("sent the following Any log records to the log service:");
-            for (int i = 0; i < anyLogRecordsArray.length; i++) {
-                //TODO: CARLI, change that here assumes that is string, it can be a binary log!!!
-                System.out.println("" + i + ") " + anyLogRecordsArray[i].extract_string());
-            }
-        }
-    }
-    
+
+	/**
+	 * The CORBA call to {@link Log#write_records(Any[])}. May be faked by test subclasses.
+	 * 
+	 * @param anyLogRecordsArray
+	 * @throws UserException
+	 */
+	protected void writeRecords(Any[] anyLogRecordsArray) throws UserException {
+		logService.write_records(anyLogRecordsArray);
+		if (DEBUG) {
+			System.out.println("sent the following Any log records to the log service:");
+			for (int i = 0; i < anyLogRecordsArray.length; i++) {
+				// TODO: CARLI, change that here assumes that is string, it can be a binary log!!!
+				System.out.println("" + i + ") " + anyLogRecordsArray[i].extract_string());
+			}
+		}
+	}
 
 
-    static class FailedLogRecords {
-        private List<LogRecord> serializeFailures;
-        private List<LogRecord> sendFailures;
-        
-        void addSerializationFailure(LogRecord logRecord) { 
-            if (serializeFailures == null) {
-                serializeFailures = new ArrayList<LogRecord>();
-            }
-            serializeFailures.add(logRecord);
-        }
-        void addSendFailure(LogRecord logRecord) {
-            if (sendFailures == null) {
-                sendFailures = new ArrayList<LogRecord>();
-            }
-            sendFailures.add(logRecord);
-        }
-        void addSendFailures(List<LogRecord> logRecords) {
-            if (sendFailures == null) {
-                sendFailures = new ArrayList<LogRecord>();
-            }
-            sendFailures.addAll(logRecords);
-        }
-        
-        boolean hasSerializationFailures() {
-            return (serializeFailures != null);
-        }
-        LogRecord[] getSerializationFailures() {
-            if (serializeFailures == null) {
-                return new LogRecord[0];
-            }
-            else {
-                return serializeFailures.toArray(new LogRecord[serializeFailures.size()]);
-            }
-        }
-        
-        boolean hasSendFailures() {
-            return (sendFailures != null);
-        }
-        LogRecord[] getSendFailures() {
-            if (sendFailures == null) {
-                return new LogRecord[0];
-            }
-            else {
-                return sendFailures.toArray(new LogRecord[sendFailures.size()]);
-            }
-        }
-        
-    }
+
+	static class FailedLogRecords
+	{
+		private List<LogRecord> serializeFailures;
+		private List<LogRecord> sendFailures;
+
+		void addSerializationFailure(LogRecord logRecord) {
+			if (serializeFailures == null) {
+				serializeFailures = new ArrayList<LogRecord>();
+			}
+			serializeFailures.add(logRecord);
+		}
+
+		void addSendFailure(LogRecord logRecord) {
+			if (sendFailures == null) {
+				sendFailures = new ArrayList<LogRecord>();
+			}
+			sendFailures.add(logRecord);
+		}
+
+		void addSendFailures(List<LogRecord> logRecords) {
+			if (sendFailures == null) {
+				sendFailures = new ArrayList<LogRecord>();
+			}
+			sendFailures.addAll(logRecords);
+		}
+
+		boolean hasSerializationFailures() {
+			return (serializeFailures != null);
+		}
+
+		List<LogRecord> getSerializationFailures() {
+			if (serializeFailures == null) {
+				return new ArrayList<LogRecord>(0);
+			} else {
+				return serializeFailures;
+			}
+		}
+
+		boolean hasSendFailures() {
+			return (sendFailures != null);
+		}
+
+		List<LogRecord> getSendFailures() {
+			if (sendFailures == null) {
+				return new ArrayList<LogRecord>(0);
+			} else {
+				return sendFailures;
+			}
+		}
+
+	}
 }
