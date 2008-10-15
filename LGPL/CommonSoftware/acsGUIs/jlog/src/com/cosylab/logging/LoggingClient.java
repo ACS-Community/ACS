@@ -244,8 +244,6 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 
 	private EventHandler eventHandler = new EventHandler();
 
-	private boolean ivjConnPtoLCMod = false;
-
 	private LCEngine engine = null;
 	private LogTableDataModel tableModel = null;
 	
@@ -869,6 +867,7 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 						menuBar.getLogTypeDescriptionViewMenuItem().isSelected());
 				logEntryTable.setName("logEntryTable");
 				logEntryTable.setBounds(0, 0, 200, 200);
+				tableModel=logEntryTable.getLCModel();
 			} catch (Throwable ivjExc) {
 				handleException(ivjExc);
 			}
@@ -897,8 +896,6 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 		menuBar.setEventHandler(eventHandler, eventHandler);
 		toolBar.setEventHandler(eventHandler);
 		navigationToolbar.setEventHandler(eventHandler);
-
-		connLCMod();
 	}
 	
 	/**
@@ -1027,32 +1024,6 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 		}
 		catch (java.lang.Throwable ivjExc)
 		{
-
-			handleException(ivjExc);
-		}
-	}
-
-	/**
-	 * Sets the LCModel.
-	 */
-
-	private void connLCMod()
-	{
-		/* Set the target from the source */
-		try
-		{
-			if (ivjConnPtoLCMod == false)
-			{
-
-				ivjConnPtoLCMod = true;
-				setLCModel1(getLogEntryTable().getLCModel());
-
-				ivjConnPtoLCMod = false;
-			}
-		}
-		catch (java.lang.Throwable ivjExc)
-		{
-			ivjConnPtoLCMod = false;
 
 			handleException(ivjExc);
 		}
@@ -1748,8 +1719,12 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 	 */
 	@Override
 	public void setEnabled(boolean enabled) {
-		toolBar.setEnabled(enabled);
-		navigationToolbar.setEnabled(enabled);
+		if (toolBar!=null) {
+			toolBar.setEnabled(enabled);
+		}
+		if (navigationToolbar!=null) {
+			navigationToolbar.setEnabled(enabled);
+		}
 		menuBar.setEnabled(enabled);
 		super.setEnabled(enabled);
 	}
