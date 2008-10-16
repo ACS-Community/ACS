@@ -54,8 +54,13 @@ import alma.maci.loggingconfig.UnnamedLogger;
 public class AcsLogger extends Logger implements LogConfigSubscriber {
 
 	// private in base class, need to redeclare here
-    protected static final int offValue = Level.OFF.intValue();
+	protected static final int offValue = Level.OFF.intValue();
 
+	/**
+	 * Usually this is null, but factory method {@link #wrapJdkLogger(Logger)} could supply this delegate.
+	 */
+	protected final Logger delegate;
+	
 	/** the logger class, which must be known to unwind the stack trace. Will be this class unless we use delegation. 
 	 * We don't share this set among Logger instances to avoid threading overheads for fast access.
 	 */
@@ -67,11 +72,15 @@ public class AcsLogger extends Logger implements LogConfigSubscriber {
 	 */
 	private final Set<String> callStacksToBeIgnored = new HashSet<String>();
 
-    private final LogConfig logConfig;
-    
-    private String loggerName;
-    private String processName;
-    
+	/**
+	 * Configuration data. May be <code>null</code> for instances created from non-standard factory methods.
+	 * @see #configureLogging(LogConfig)
+	 */
+	private LogConfig logConfig;
+
+	private String loggerName;
+	private String processName;
+
     /**
      * TODO: check why we set the SourceObject as a field here, and also take the loggerName 
      * in the formatters to fill in the source object field there.
@@ -81,40 +90,46 @@ public class AcsLogger extends Logger implements LogConfigSubscriber {
     private boolean noLevelWarningPrinted = false;
 
     private final boolean DEBUG = Boolean.getBoolean("alma.acs.logging.verbose");
-    
-    /**
-     * Standard constructor that configures this logger from <code>logConfig</code>
-     * and also registers for log config changes.
-     *  
-     * @param name  the logger's name
-     * @param resourceBundleName may be <code>null</code>
-     * @param logConfig  the ACS logging configuration object, which gives optional access to the CDB. 
-     */
-    public AcsLogger(String name, String resourceBundleName, LogConfig logConfig) {
-    	this(name, resourceBundleName, logConfig, false);
-    }
-    
-    /**
-     * Auxiliary ctor. Don't use it directly from outside of this class.
-     */
-    protected AcsLogger(String name, String resourceBundleName, LogConfig logConfig, boolean allowNullLogConfig) {
-        super(name, resourceBundleName);
-        this.logConfig = logConfig;
-        
-        if (DEBUG) {
-        	System.out.println("*** AcsLogger running in DEBUG mode!");
-        }
-        
-        addLoggerClass(AcsLogger.class);
-        addLoggerClass(Logger.class);
-        if (logConfig != null) {
-        	logConfig.addSubscriber(this);
-        	configureLogging(logConfig);
-        }
-        else if (!allowNullLogConfig) {
-        	throw new NullPointerException("LogConfig must not be null");
-        }
-    }
+
+	/**
+	 * Standard constructor that configures this logger from <code>logConfig</code> and also registers for log config
+	 * changes.
+	 * 
+	 * @param name
+	 *            the logger's name
+	 * @param resourceBundleName
+	 *            may be <code>null</code>
+	 * @param logConfig
+	 *            the ACS logging configuration object, which gives optional access to the CDB.
+	 */
+	public AcsLogger(String name, String resourceBundleName, LogConfig logConfig) {
+		this(name, resourceBundleName, logConfig, false, null);
+	}
+
+	/**
+	 * Auxiliary ctor. Don't use it directly from outside of this class.
+	 * 
+	 * @param logConfig
+	 *            may be null if <code>allowNullLogConfig==true</code>
+	 */
+	protected AcsLogger(String name, String resourceBundleName, LogConfig logConfig, boolean allowNullLogConfig, Logger delegate) {
+		super(name, resourceBundleName);
+		this.delegate = delegate;
+		this.logConfig = logConfig;
+
+		if (DEBUG) {
+			System.out.println("*** AcsLogger running in DEBUG mode!");
+		}
+
+		addLoggerClass(AcsLogger.class);
+		addLoggerClass(Logger.class);
+		if (logConfig != null) {
+			logConfig.addSubscriber(this);
+			configureLogging(logConfig);
+		} else if (!allowNullLogConfig) {
+			throw new NullPointerException("LogConfig must not be null");
+		}
+	}
 
     /**
      * Non-standard factory method to be used only for special offline or testing purposes
@@ -122,7 +137,8 @@ public class AcsLogger extends Logger implements LogConfigSubscriber {
      * The returned AcsLogger is just like a JDK Logger obtained from {@link Logger#getLogger(String, String)}.
      * <p>
      * Note that we do not supply a {@link LogConfig} and therefore the new AcsLogger cannot register itself 
-     * for initial configuration or later configuration change notifications.
+     * for initial configuration or later configuration change notifications. <br>
+     * <b>It is the client's responsibility to configure the log level and parent logger of the returned AcsLogger!</b>
      * 
      * @param name  the logger's name
      * @param resourceBundleName
@@ -145,7 +161,7 @@ public class AcsLogger extends Logger implements LogConfigSubscriber {
     	if (result == null) {
     	    // Create a new logger.
     	    // Note: we may get a MissingResourceException here.
-    	    result = new AcsLogger(name, resourceBundleName, null, true);
+    	    result = new AcsLogger(name, resourceBundleName, null, true, null);
     	    manager.addLogger(result);
     	    result = (AcsLogger) manager.getLogger(name);
     	}
@@ -158,42 +174,75 @@ public class AcsLogger extends Logger implements LogConfigSubscriber {
     	}
     	return result;
     }
-    
+
+	/**
+	 * Client applications that use ACS class <code>ComponentClient</code> may need to turn their own JDK Logger into
+	 * an <code>AcsLogger</code>.
+	 * <p>
+	 * If <code>logger</code> is itself of sub-type <code>AcsLogger</code> then it is returned directly without being wrapped.
+	 * The wrapping logger shares the parent logger and the log level with the provided logger.
+	 * 
+	 * @param logger
+	 *            the JDK logger
+	 * @param wrapperName
+	 *            Name of the returned AcsLogger. May be <code>null</code> in which case the delegate's name plus
+	 *            "wrapper" is taken.
+	 * @return an AcsLogger that delegates to the given <code>logger</code>.
+	 * @since ACS 8.0
+	 */
+	public static AcsLogger fromJdkLogger(Logger logger, String wrapLoggerName) {
+		if (logger instanceof AcsLogger) {
+			return (AcsLogger) logger;
+		}
+		String acsLoggerName = (wrapLoggerName != null ? wrapLoggerName.trim() : logger.getName() + "wrapper");
+		AcsLogger ret = new AcsLogger(acsLoggerName, logger.getResourceBundleName(), null, true, logger);
+		ret.setLevel(logger.getLevel());
+		ret.setParent(logger.getParent());
+		return ret;
+	}
+
+
     /**
-     * Optionally sets a logger name that can be different from the {@link Logger#name} passed in the constructor.
-     * The new name will be used for the <code>LogRecord</code>s produced by this class.
-     * This allows changing the name later on, e.g. when a container name or JUnit test name should be appended to the simple name of a Corba logger.
-     * @param loggerName
-     */
-    void setLoggerName(String newLoggerName) {
-    	if (!getLoggerName().equals(newLoggerName)) {
-    		String oldLoggerName = getLoggerName();
-    		if (DEBUG) {
-    			System.out.println("Renaming logger '" + oldLoggerName + "' to '" + newLoggerName + "'."); 
-    		}
-           	this.loggerName = newLoggerName;
-           	// fix the named logger config 
-           	logConfig.renameNamedLoggerConfig(oldLoggerName, newLoggerName);
-           	configureLogging(logConfig);
-    	}
-            
-    }
-    String getLoggerName() {
-    	return ( loggerName != null ? loggerName : getName() );
-    }
-    
-    void setProcessName(String processName) {
-            this.processName = processName;
-    }
-    public String getProcessName(){
-            return this.processName;
-    }
-    void setSourceObject(String sourceObject) {
-            this.sourceObject = sourceObject;
-    }
-    public String getSourceObject(){
-            return this.sourceObject;
-    }
+	 * Optionally sets a logger name that can be different from the {@link Logger#name} passed in the constructor. The
+	 * new name will be used for the <code>LogRecord</code>s produced by this class. This allows changing the name later
+	 * on, e.g. when a container name or JUnit test name should be appended to the simple name of a Corba logger.
+	 * 
+	 * @param loggerName
+	 */
+	void setLoggerName(String newLoggerName) {
+		if (!getLoggerName().equals(newLoggerName)) {
+			String oldLoggerName = getLoggerName();
+			if (DEBUG) {
+				System.out.println("Renaming logger '" + oldLoggerName + "' to '" + newLoggerName + "'.");
+			}
+			this.loggerName = newLoggerName;
+			// fix the named logger config
+			if (logConfig != null) {
+				logConfig.renameNamedLoggerConfig(oldLoggerName, newLoggerName);
+				configureLogging(logConfig);
+			}
+		}
+	}
+	
+	String getLoggerName() {
+		return (loggerName != null ? loggerName : getName());
+	}
+
+	void setProcessName(String processName) {
+		this.processName = processName;
+	}
+
+	public String getProcessName() {
+		return this.processName;
+	}
+
+	void setSourceObject(String sourceObject) {
+		this.sourceObject = sourceObject;
+	}
+
+	public String getSourceObject() {
+		return this.sourceObject;
+	}
 
     public void logToAudience(Level level, String msg, String audience) {
     	AcsLogRecord lr = createAcsLogRecord(level, msg);
@@ -246,6 +295,7 @@ public class AcsLogger extends Logger implements LogConfigSubscriber {
     	if (loggerWithLevel.getLevel() == null) {
     		// HSO 2007-09-05: With ACS 6.0.4 the OMC uses this class (previously plain JDK logger) and has reported 
     		// that no level was found, which yielded a NPE. To be investigated further. 
+    		// Probably #createUnconfiguredLogger was used without setting parent logger nor log level. 
     		// Just to be safe I add the necessary checks and warning message that improve over a NPE.
     		if (!noLevelWarningPrinted) {
 	    		System.err.println("Logger configuration error: no log level found for logger " + getLoggerName() + 
@@ -321,15 +371,24 @@ public class AcsLogger extends Logger implements LogConfigSubscriber {
             // We haven't found a suitable frame, so just punt. This is
             // OK as we are only committed to making a "best effort" here.
         }
-        
-        super.log(record);
+        // Let the delegate or Logger base class handle the rest.
+        if (delegate != null) {
+        	delegate.log(record);
+        }
+        else {
+        	super.log(record);
+        }
     }
 
     /**
      * Callback method, configures this logger from the data in logConfig.
      * @see alma.acs.logging.config.LogConfigSubscriber#configureLogging(alma.acs.logging.config.LogConfig)
      */
-    public void configureLogging(LogConfig logConfig) {
+	public void configureLogging(LogConfig newLogConfig) {
+		if (newLogConfig == null) {
+			throw new IllegalArgumentException("newLogConfig must not be null");
+		}
+		logConfig = newLogConfig;
 		try {
 			UnnamedLogger config = logConfig.getNamedLoggerConfig(getLoggerName());
 			if (DEBUG) {
