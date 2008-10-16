@@ -173,7 +173,7 @@ class RemoteLogDispatcher {
                 failures.addSendFailures(candidateLogRecords);
                 // Currently ACS does not make use of the semantics of the various exceptions specified here by CORBA, i.e.
                 // LogDisabled, LogOffDuty, LogLocked, LogFull (see above)
-                
+                // There can also be java.net.ConnectException thrown.. @TODO perhaps we should print that to stdout, with repeatGuard.
             }
         }
         return failures;
