@@ -16,9 +16,32 @@
   </fault-code>
   <fault-member-default>
   </fault-member-default>
+  
   <fault-member name="TEST_MEMBER1">
   </fault-member>
   <fault-member name="TEST_MEMBER2">
+  </fault-member>
+  
+  <!-- Alarms for testing reductions related methods of the category client -->
+  <fault-member name="NODE1">
+  </fault-member>
+  <fault-member name="NODE2">
+  </fault-member>
+  <fault-member name="NODE3">
+  </fault-member>
+  
+  <fault-member name="MULTI1">
+  </fault-member>
+  <fault-member name="MULTI2">
+  </fault-member>
+  <fault-member name="MULTI3">
+  </fault-member>
+  <fault-member name="MULTI4">
+  </fault-member>
+  <fault-member name="MULTI5">
+  </fault-member>
+  
+  <fault-member name="MCAUSE">
   </fault-member>
 </fault-family>
 
