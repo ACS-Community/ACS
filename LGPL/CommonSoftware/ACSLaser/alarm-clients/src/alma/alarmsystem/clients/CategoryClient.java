@@ -282,7 +282,7 @@ public class CategoryClient {
 	/**
 	 * Get the parents of a reduced alarm.
 	 * <P>
-	 * The method asks the alarm service component for the parents of a reduced
+	 * The method asks the alarm service component for the children of a reduced
 	 * alarm.
 	 * 
 	 * @param id The id of the alarm 
@@ -325,6 +325,35 @@ public class CategoryClient {
 		} catch (Throwable t) {
 			throw new AlarmClientException("Error getting threshold from component",t);
 		}
+	}
+	
+	/**
+	 * Get the active children of a reduced alarm.
+	 * <P>
+	 * The method asks the alarm service component for the active children of a reduced
+	 * alarm.
+	 * 
+	 * @param id The id of the alarm 
+	 * @param node <code>true</code> if the alarm is a Node alarm;
+	 * 			   <code>false</code> if the alarm of the passed ID is a multiplicity.
+	 * @return The array of the alarm parent of the alarm with the passed ID
+	 * @throws AlarmClientException In case of error getting the alarms from the component 
+	 */
+	public  alma.alarmsystem.Alarm[] getActiveChildren(String id, boolean node) throws AlarmClientException {
+		if (id==null || id.isEmpty()) {
+			throw new IllegalArgumentException("Invalid alarm ID");
+		}
+		alma.alarmsystem.Alarm[] alarms = null;
+		try {
+			if (node) {
+				alarms=alarm.getActiveNodeChildren(id);
+			} else {
+				alarms=alarm.getActiveMultiplicityChildren(id);
+			}
+		} catch (Throwable t) {
+			throw new AlarmClientException("Error getting children from component",t);
+		}
+		return alarms;
 	}
 	
 //	/**
