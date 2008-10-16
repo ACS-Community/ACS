@@ -487,15 +487,6 @@ public class AcsCorba
 	 * within an ORB thread would result in a deadlock (or BAD_INV_ORDER exception) if <code>wait_for_completion</code>
 	 * is true. The Java container will nonetheless wait for the ORB shutdown, because its main thread blocks on ORB#run
 	 * and only continues when the ORB is shut down.
-	 * <p>
-	 * Note that currently the identification of an ORB thread is not very refined: any thread that is not called "main"
-	 * is considered an ORB thread. JacORB has the proprietary method <code>isInInvocationContext</code>, but this does
-	 * not seem to be available from a standard ORB. The only known risk is that a client which is not a container might
-	 * call this method from a thread other than "main", in which case the ORB shutdown will happen in a separate thread
-	 * and this method will return immediately; since the client does not block on the ORB, the risk is that the JVM
-	 * terminates before the ORB has released system resources.
-	 * 
-	 * <p>
 	 * 
 	 * @Todo: As a workaround for a JacORB bug (http://www.jacorb.org/cgi-bin/bugzilla/show_bug.cgi?id=537), we
 	 *        currently skim off the <code>ConcurrentModificationException</code> that the unsynchronized HashMap of
@@ -505,7 +496,9 @@ public class AcsCorba
 	 *            <code>isOrbThread == true</code>.
 	 * @param isOrbThread
 	 *            must be <code>true</code> if the calling thread services a Corba invocation, e.g. to
-	 *            {@link AcsContainer#shutdown}.
+	 *            {@link AcsContainer#shutdown}. 
+	 *            Note that JacORB has the proprietary method <code>isInInvocationContext</code>, but we need the explicit flag
+	 *            in order to stay ORB-independent.
 	 */
 	public void shutdownORB(final boolean wait_for_completion, boolean isOrbThread) {
 		if (m_orb != null) {
