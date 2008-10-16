@@ -22,7 +22,6 @@
 package alma.acs.component.client;
 
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import junit.framework.TestCase;
 
@@ -38,6 +37,7 @@ import alma.acs.container.CleaningDaemonThreadFactory;
 import alma.acs.container.ContainerServices;
 import alma.acs.container.ContainerServicesImpl;
 import alma.acs.container.corba.AcsCorba;
+import alma.acs.logging.AcsLogger;
 import alma.acs.logging.ClientLogManager;
 import alma.acs.logging.engine.LogReceiver;
 import alma.acs.util.ACSPorts;
@@ -64,7 +64,7 @@ public class ComponentClientTestCase extends TestCase
 	 */
 	protected AcsManagerProxy m_acsManagerProxy;
 	
-	protected Logger m_logger;
+	protected AcsLogger m_logger;
 	private LogReceiver logReceiver;
 
 	/** from property ACS.manager, or defaults to localhost */
@@ -125,17 +125,19 @@ public class ComponentClientTestCase extends TestCase
 		POA rootPOA = null;
 		try
 		{
-    		acsCorba = new AcsCorba(m_logger);
-    		rootPOA = acsCorba.initCorbaForClient(false);
+			acsCorba = new AcsCorba(m_logger);
+			rootPOA = acsCorba.initCorbaForClient(false);
 
 			connectToManager();
 
 			m_threadFactory = new CleaningDaemonThreadFactory(m_namePrefix, m_logger);
-			// @TODO: harmonize usage of Logger and AcsLogger and then subclass the containerservices
-			// so that getLogger() returns m_logger and not a new component logger.
 			m_containerServices = new ContainerServicesImpl(m_acsManagerProxy, rootPOA, acsCorba,
 										m_logger, m_acsManagerProxy.getManagerHandle(), 
-										this.getClass().getName(), null, m_threadFactory);
+										this.getClass().getName(), null, m_threadFactory) {
+				public AcsLogger getLogger() {
+					return m_logger;
+				}
+			};
 			managerClientImpl.setContainerServices(m_containerServices);
 			initRemoteLogging();
 		}
