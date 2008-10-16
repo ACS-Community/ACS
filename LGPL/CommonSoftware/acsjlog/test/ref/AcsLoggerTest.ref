@@ -106,7 +106,6 @@
 1 - ]]></Data></Warning>
 1 - 
 1 - ------------ testWrapJdkLogger --------------
-1 - Logger configuration error: no log level found for logger myJdkLoggerwrapper or its ancestors. Will use Level.ALL instead.
 1 - --iso_time-- INFO [myJdkLoggerwrapper] A message logged by the AcsLogger that wraps the jdkLogger
 1 - 
 1 - 
