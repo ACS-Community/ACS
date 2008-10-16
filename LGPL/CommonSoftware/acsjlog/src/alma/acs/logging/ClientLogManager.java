@@ -712,7 +712,7 @@ public class ClientLogManager implements LogConfigSubscriber
      *                             even with enableRemoteLogging == true.</emph> 
 	 * @return a configured Logger
 	 */
-    public Logger getLoggerForApplication(String loggerName, boolean enableRemoteLogging)
+    public AcsLogger getLoggerForApplication(String loggerName, boolean enableRemoteLogging)
     {
         if (loggerName == null || loggerName.trim().length() == 0) {
         	loggerName = "unknownClientApplication";
