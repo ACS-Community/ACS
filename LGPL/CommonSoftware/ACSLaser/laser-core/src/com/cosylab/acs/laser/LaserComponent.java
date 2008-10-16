@@ -70,6 +70,7 @@ import cern.laser.business.pojo.CoreServiceImpl;
 import cern.laser.business.pojo.HeartbeatImpl;
 import cern.laser.business.pojo.MailAndSmsServerImpl;
 import cern.laser.business.pojo.SourceDefinitionServiceImpl;
+import cern.laser.business.data.Building;
 import cern.laser.business.definition.data.CategoryDefinition;
 import cern.laser.business.definition.data.SourceDefinition;
 import cern.laser.business.definition.data.AlarmDefinition;
@@ -404,6 +405,10 @@ public class LaserComponent extends ComponentImplBase
 		return new Source(source.getSourceId(), source.getDescription(),
 						  fromBusinessResponsiblePerson(source.getResponsiblePerson()));
 	}
+	
+	private static String getString(String str) {
+		return (str!=null)?str:"";
+	}
 
 	/**
 	 * Helper method which converts EJB business Alarm to CORBA Alarm structure.
@@ -414,24 +419,26 @@ public class LaserComponent extends ComponentImplBase
 	{
 		cern.laser.business.data.Triplet bt = alarm.getTriplet();
 		cern.laser.business.data.Location bl = alarm.getLocation();
+		if (bl.getBuilding()==null) {
+			bl.setBuilding(new Building("","",1,""));
+		}
 		cern.laser.business.data.Status bs = alarm.getStatus();
-		
-		return new Alarm(
+		Alarm newAlarm = new Alarm(
 				alarm.getAlarmId(),
 				new Triplet(bt.getFaultFamily(),
 							bt.getFaultMember(),
 							bt.getFaultCode().intValue()),
-				alarm.getSystemName(),
-				alarm.getIdentifier(),
-				alarm.getProblemDescription(),
+				getString(alarm.getSystemName()),
+				getString(alarm.getIdentifier()),
+				getString(alarm.getProblemDescription()),
 				alarm.getPriority().intValue(),
-				alarm.getCause(),
-				alarm.getAction(),
-				alarm.getConsequence(),
+				getString(alarm.getCause()),
+				getString(alarm.getAction()),
+				getString(alarm.getConsequence()),
 				fromBusinessSource(alarm.getSource()),
-				alarm.getHelpURL().toExternalForm(),
-				alarm.getPiquetGSM(),
-				alarm.getPiquetEmail(),
+				getString(alarm.getHelpURL().toExternalForm()),
+				getString(alarm.getPiquetGSM()),
+				getString(alarm.getPiquetEmail()),
 				fromBusinessResponsiblePerson(alarm.getResponsiblePerson()),
 				new Location(bl.getFloor(),
 							 bl.getRoom(),
@@ -459,6 +466,7 @@ public class LaserComponent extends ComponentImplBase
 				alarm.hasNodeChildren(),
 				alarm.hasMultiplicityChildren()
 		);
+		return newAlarm;
 	}
 
 	/**
@@ -622,7 +630,8 @@ public class LaserComponent extends ComponentImplBase
 	 */
 	public Alarm[] getMultiplicityChildren(String parentId) {
 		Collection alarms = coreService.getMultiplicityChildren(parentId);
-		return fromBusinessAlarmCollection(alarms);
+		Alarm[] als=fromBusinessAlarmCollection(alarms);
+		return als;
 	}
 
 	/* (non-Javadoc)
@@ -630,7 +639,8 @@ public class LaserComponent extends ComponentImplBase
 	 */
 	public Alarm[] getMultiplicityParents(String childId) {
 		Collection alarms = coreService.getMultiplicityParents(childId);
-		return fromBusinessAlarmCollection(alarms);
+		Alarm[] als=fromBusinessAlarmCollection(alarms);
+		return als;
 	}
 
 	/* (non-Javadoc)
@@ -638,6 +648,7 @@ public class LaserComponent extends ComponentImplBase
 	 */
 	public int getMultiplicityThreshold(String parentId) {
 		return coreService.getMultiplicityThreshold(parentId).intValue();
+		
 	}
 
 	/* (non-Javadoc)
