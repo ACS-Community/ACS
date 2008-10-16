@@ -8,6 +8,7 @@ import org.omg.PortableServer.POA;
 
 import alma.JavaContainerError.wrappers.AcsJContainerEx;
 import alma.acs.container.corba.AcsCorba;
+import alma.acs.logging.AcsLogger;
 import alma.acs.logging.ClientLogManager;
 
 /**
@@ -21,7 +22,7 @@ import alma.acs.logging.ClientLogManager;
 public class ComponentMapTest extends TestCase {
 
 	private ComponentMap componentMap;
-	private Logger logger;
+	private AcsLogger logger;
 
 	protected void setUp() throws Exception {
 		logger = ClientLogManager.getAcsLogManager().getLoggerForApplication(getName(), true);
@@ -72,7 +73,7 @@ public class ComponentMapTest extends TestCase {
 		static int index_count = 0;
 		static DummyAcsCorba dummyAcsCorba;
 		
-		DummyComponentAdapter(Logger logger) throws Exception {
+		DummyComponentAdapter(AcsLogger logger) throws Exception {
 			super("DummyComponent"+index_count, "DummyComponentType"+index_count, "dummycode", 
 					index_count, -1, "dummyContainerName", null, null, null, logger, dummyAcsCorba);
 			index_count++;

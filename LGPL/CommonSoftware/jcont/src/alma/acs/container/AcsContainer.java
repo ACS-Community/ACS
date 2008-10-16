@@ -116,7 +116,7 @@ public class AcsContainer extends ContainerPOA
 
     private final boolean isEmbedded;
 
-    private final Logger m_logger;
+    private final AcsLogger m_logger;
 
     private final ThreadFactory containerThreadFactory;
     

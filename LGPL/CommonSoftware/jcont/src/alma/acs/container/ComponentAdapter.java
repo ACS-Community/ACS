@@ -22,7 +22,6 @@
 package alma.acs.container;
 
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.omg.PortableServer.POA;
 import org.omg.PortableServer.Servant;
@@ -34,7 +33,9 @@ import alma.JavaContainerError.wrappers.AcsJContainerEx;
 import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
 import alma.acs.component.ComponentLifecycle;
 import alma.acs.component.ComponentLifecycleException;
+//import alma.acs.component.StatelessComponentLifecycle;
 import alma.acs.container.corba.AcsCorba;
+import alma.acs.logging.AcsLogger;
 
 
 /**
@@ -61,7 +62,7 @@ public class ComponentAdapter
 
 	// other fields
 	
-	private Logger m_containerLogger;
+	private AcsLogger m_containerLogger;
 
 	// the component itself
 	private ComponentLifecycle m_component;
@@ -104,8 +105,8 @@ public class ComponentAdapter
 					int compHandle, int containerHandle, String containerName,
 					ComponentLifecycle component,
 					AcsManagerProxy managerProxy, 
-                    ClassLoader componentClassLoader,
-					Logger logger,
+					ClassLoader componentClassLoader,
+					AcsLogger logger,
 					AcsCorba acsCorba)
 		throws AcsJContainerEx
 	{
@@ -310,8 +311,8 @@ public class ComponentAdapter
                 m_threadFactory.cleanUp();
             }
 
-            // (3) destroy the component POA
-            // since we already tried to discard requests using the poa manager before,
+			// (3) destroy the component POA
+			// since we already tried to discard requests using the poa manager before,
 			// the additional timeout can be kept small. If calls are pending, we fail.
 			int etherealizeTimeoutMillis = 1000;
 			boolean isEtherealized = acsCorba.destroyComponentPOA(m_componentPOA, compServantManager, etherealizeTimeoutMillis);			
@@ -322,7 +323,6 @@ public class ComponentAdapter
 				m_containerLogger.warning("Component '" + m_compInstanceName + "' failed to be etherealized in " + 
 						etherealizeTimeoutMillis + " ms, probably because of pending calls.");
 			}
-	 					
 		}
 		catch (Throwable thr) {
 			String msg = "an error occured while deactivating component " + m_compInstanceName;
@@ -480,7 +480,15 @@ public class ComponentAdapter
 		return m_componentStateManager;
 	}
 
+// @TODO	
+//	/**
+//	 * @return true if the component managed by this adapter declares itself to be stateless.
+//	 */
+//	boolean isStatelessComponent() {
+//		return ( m_component instanceof StatelessComponentLifecycle ); 
+//	}
 
+	
     protected void finalize() throws Throwable {
     	if (m_containerLogger.isLoggable(Level.FINEST)) {
     		m_containerLogger.finest("finalize() called by JVM for impl classes of component " + getName() + '(' + getHandle() + ')');

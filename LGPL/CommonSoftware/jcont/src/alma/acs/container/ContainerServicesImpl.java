@@ -94,7 +94,7 @@ public class ContainerServicesImpl implements ContainerServices
 	protected final AcsManagerProxy m_acsManagerProxy;
 
     // logger used by this class
-	protected final Logger m_logger;
+	protected final AcsLogger m_logger;
     
     // logger given to component
     private volatile AcsLogger componentLogger;
@@ -142,9 +142,9 @@ public class ContainerServicesImpl implements ContainerServices
      * @param threadFactory to be used for <code>getThreadFactory</code>
 	 */
 	public ContainerServicesImpl(AcsManagerProxy acsManagerProxy, POA componentPOA, AcsCorba acsCorba,
-									Logger logger, int clientHandle, String clientCurl, 
+									AcsLogger logger, int clientHandle, String clientCurl, 
 									ComponentStateManager componentStateManager,
-                                    ThreadFactory threadFactory)
+									ThreadFactory threadFactory)
 	{
 		// The following fields are final. This guarantees that they will be copied to main thread memory,
 		// and thus be seen by other threads after this ctor has terminated.
@@ -163,10 +163,10 @@ public class ContainerServicesImpl implements ContainerServices
 		
 		m_componentDescriptorMap = Collections.synchronizedMap(new HashMap<String, ComponentDescriptor>());
 
-        m_threadFactory = threadFactory;        
-        if (fakeUIDsForTesting) {
-        	m_logger.warning("Running in test mode where UIDs will be constructed randomly instead of being retrieved from the archive!");
-        }
+		m_threadFactory = threadFactory;
+		if (fakeUIDsForTesting) {
+			m_logger.warning("Running in test mode where UIDs will be constructed randomly instead of being retrieved from the archive!");
+		}
 	}
 
 
