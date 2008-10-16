@@ -36,6 +36,7 @@ import alma.acs.container.CleaningDaemonThreadFactory;
 import alma.acs.container.ContainerServices;
 import alma.acs.container.ContainerServicesImpl;
 import alma.acs.container.corba.AcsCorba;
+import alma.acs.logging.AcsLogger;
 import alma.acs.logging.ClientLogManager;
 import alma.alarmsystem.source.ACSAlarmSystemInterfaceFactory;
 
@@ -54,9 +55,9 @@ import alma.alarmsystem.source.ACSAlarmSystemInterfaceFactory;
 public class ComponentClient 
 {
 	private ContainerServicesImpl m_containerServices;
-    private CleaningDaemonThreadFactory m_threadFactory;
+	private CleaningDaemonThreadFactory m_threadFactory;
 		
-	protected final Logger m_logger;
+	protected final AcsLogger m_logger;
 
 	final String m_clientName;
 
@@ -99,57 +100,61 @@ public class ComponentClient
 
 	
 	/**
-	 * Special c'tor that provides an already initialized instance of <code>AcsCorba</code>
-	 * which encapsulates the ORB.
-	 * This may be useful for an application such as the ALMA executive, 
-	 * which works with different ORBs, tries out available ports, and so on.
+	 * Special c'tor that provides an already initialized instance of <code>AcsCorba</code> which encapsulates the ORB.
+	 * This may be useful for an application such as the ALMA executive, which works with different ORBs, tries out
+	 * available ports, and so on.
 	 * <p>
-	 * With this constructor, also initialization and termination of remote ACS logging is left to the caller. 
+	 * With this constructor, also initialization and termination of remote ACS logging is left to the caller.
 	 * 
-	 * @param logger  the logger to be used. If <code>null</code>, one will be created.
-	 * @param managerLoc  the corbaloc for the ACS manager, e.g. "corbaloc::myhost:xxxx/Manager"
-	 * @param clientName  name to be used toward the ACS Manager
-	 * @param externalAcsCorba  encapsulates initialized ORB and POAs. 
-	 * @throws Exception  at the slightest provocation...
+	 * @param logger
+	 *            the logger to be used. If <code>null</code>, one will be created. Since ACS 8.0 it is recommended to
+	 *            supply <code>null</code> or an {@link AcsLogger} instead of a plain JDK Logger because a plain Logger
+	 *            will have to be wrapped inside this method.
+	 * @param managerLoc
+	 *            the corbaloc for the ACS manager, e.g. "corbaloc::myhost:xxxx/Manager"
+	 * @param clientName
+	 *            name to be used toward the ACS Manager
+	 * @param externalAcsCorba
+	 *            encapsulates initialized ORB and POAs.
+	 * @throws Exception
+	 *             at the slightest provocation...
 	 * @see #initRemoteLogging()
 	 */
-	protected ComponentClient(Logger logger, String managerLoc, String clientName, AcsCorba externalAcsCorba) 
-		throws Exception
-	{
+	protected ComponentClient(Logger logger, String managerLoc, String clientName, AcsCorba externalAcsCorba) throws Exception {
 		if (logger == null) {
-			logger = ClientLogManager.getAcsLogManager().getLoggerForApplication(clientName, true);
+			m_logger = ClientLogManager.getAcsLogManager().getLoggerForApplication(clientName, true);
+		} else {
+			// wrap logger if necessary
+			m_logger = AcsLogger.fromJdkLogger(logger, null);
 		}
-		
-		m_logger = logger;
+
 		m_clientName = clientName;
 
 		POA myPOA = null;
 		if (externalAcsCorba == null) {
 			try {
-	    		acsCorba = new AcsCorba(m_logger);
-	    		myPOA = acsCorba.initCorbaForClient(false);
-	    		ownAcsCorba = true;
+				acsCorba = new AcsCorba(m_logger);
+				myPOA = acsCorba.initCorbaForClient(false);
+				ownAcsCorba = true;
+			} catch (IllegalStateException e) {
+				throw new IllegalStateException("Class '" + ComponentClient.class.getName()
+						+ "' can only be used as a singleton and outside of ACS containers. " + e.getMessage());
 			}
-			catch (IllegalStateException e) {
-				throw new IllegalStateException("Class '" + ComponentClient.class.getName() + 
-						"' can only be used as a singleton and outside of ACS containers. " + e.getMessage());
-			}
-		}		
-		else {
+		} else {
 			acsCorba = externalAcsCorba;
 			myPOA = acsCorba.getRootPOA();
-    		ownAcsCorba = false;
+			ownAcsCorba = false;
 		}
-		
+
 		initAcs(managerLoc, myPOA);
 		if (ownAcsCorba) {
 			initRemoteLogging();
 		}
-		
+
 		m_logger.fine("ready to talk with components!");
 	}
 
-    
+
 
     private void initAcs(String managerLoc, POA rootPOA) throws Exception
 	{
@@ -172,7 +177,7 @@ public class ComponentClient
 			
 			m_acsManagerProxy.loginToManager(m_managerClient, false);
 
-            m_threadFactory = new CleaningDaemonThreadFactory(m_clientName, m_logger);
+			m_threadFactory = new CleaningDaemonThreadFactory(m_clientName, m_logger);
 
 			m_containerServices = new ContainerServicesImpl(m_acsManagerProxy, rootPOA, acsCorba,
 										m_logger, m_acsManagerProxy.getManagerHandle(), 
