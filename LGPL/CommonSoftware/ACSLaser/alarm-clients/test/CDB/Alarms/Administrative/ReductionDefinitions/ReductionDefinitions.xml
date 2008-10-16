@@ -16,63 +16,64 @@
 
 		<reduction-link type="NODE">
 		<parent>
-		<alarm-definition fault-family="PS"
-		fault-member="ALARM_SOURCE_PS" fault-code="1"/>
+		<alarm-definition fault-family="TEST"
+		fault-member="NODE1" fault-code="1"/>
 		</parent>
 		<child>
-		<alarm-definition fault-family="Mount"
-		fault-member="ALARM_SOURCE_MOUNT" fault-code="1"/>
+		<alarm-definition fault-family="TEST"
+		fault-member="NODE2" fault-code="1"/>
 		</child>
 		</reduction-link>
+		
 		<reduction-link type="NODE">
 		<parent>
-		<alarm-definition fault-family="Mount"
-		fault-member="ALARM_SOURCE_MOUNT" fault-code="1"/>
+		<alarm-definition fault-family="TEST"
+		fault-member="NODE2" fault-code="1"/>
 		</parent>
 		<child>
-		<alarm-definition fault-family="Antenna"
-		fault-member="ALARM_SOURCE_ANTENNA" fault-code="1"/>
+		<alarm-definition fault-family="TEST"
+		fault-member="NODE3" fault-code="1"/>
 		</child>
 		</reduction-link>
 		
 		<reduction-link type="MULTIPLICITY">
 			<parent>
-				<alarm-definition fault-family="MF" fault-member="MULTIPLE_MF_FAILURES" fault-code="5"/>
+				<alarm-definition fault-family="TEST" fault-member="MCAUSE" fault-code="1"/>
 			</parent>
 			<child>
-				<alarm-definition fault-family="MF" fault-member="ALARM_SOURCE_MF" fault-code="0"/>
+				<alarm-definition fault-family="TEST" fault-member="MULTI1" fault-code="2"/>
 			</child>
 		</reduction-link>
 		<reduction-link type="MULTIPLICITY">
 			<parent>
-				<alarm-definition fault-family="MF" fault-member="MULTIPLE_MF_FAILURES" fault-code="5"/>
+				<alarm-definition fault-family="TEST" fault-member="MCAUSE" fault-code="1"/>
 			</parent>
 			<child>
-				<alarm-definition fault-family="MF" fault-member="ALARM_SOURCE_MF" fault-code="1"/>
+				<alarm-definition fault-family="TEST" fault-member="MULTI2" fault-code="2"/>
 			</child>
 		</reduction-link>
 		<reduction-link type="MULTIPLICITY">
 			<parent>
-				<alarm-definition fault-family="MF" fault-member="MULTIPLE_MF_FAILURES" fault-code="5"/>
+				<alarm-definition fault-family="TEST" fault-member="MCAUSE" fault-code="1"/>
 			</parent>
 			<child>
-				<alarm-definition fault-family="MF" fault-member="ALARM_SOURCE_MF" fault-code="2"/>
+				<alarm-definition fault-family="TEST" fault-member="MULTI3" fault-code="2"/>
 			</child>
 		</reduction-link>
 		<reduction-link type="MULTIPLICITY">
 			<parent>
-				<alarm-definition fault-family="MF" fault-member="MULTIPLE_MF_FAILURES" fault-code="5"/>
+				<alarm-definition fault-family="TEST" fault-member="MCAUSE" fault-code="1"/>
 			</parent>
 			<child>
-				<alarm-definition fault-family="MF" fault-member="ALARM_SOURCE_MF" fault-code="3"/>
+				<alarm-definition fault-family="TEST" fault-member="MULTI4" fault-code="2"/>
 			</child>
 		</reduction-link>
 		<reduction-link type="MULTIPLICITY">
 			<parent>
-				<alarm-definition fault-family="MF" fault-member="MULTIPLE_MF_FAILURES" fault-code="5"/>
+				<alarm-definition fault-family="TEST" fault-member="MCAUSE" fault-code="1"/>
 			</parent>
 			<child>
-				<alarm-definition fault-family="MF" fault-member="ALARM_SOURCE_MF" fault-code="4"/>
+				<alarm-definition fault-family="TEST" fault-member="MULTI5" fault-code="2"/>
 			</child>
 		</reduction-link>
 		
@@ -80,7 +81,7 @@
 
 		<thresholds>
 		<threshold value="3">
-			<alarm-definition fault-family="MF" fault-member="MULTIPLE_MF_FAILURES" fault-code="5"/>
+			<alarm-definition fault-family="TEST" fault-member="MCAUSE" fault-code="1"/>
 		</threshold>
 	</thresholds>
 </reduction-definitions>
