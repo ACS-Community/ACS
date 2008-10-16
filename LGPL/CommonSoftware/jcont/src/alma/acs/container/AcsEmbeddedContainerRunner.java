@@ -91,29 +91,28 @@ public class AcsEmbeddedContainerRunner {
         run(acsCorba);
     }
 
-    
-    void run(AcsCorba acsCorba) throws AcsJContainerEx
-    {
-        getContainerLogger();
-        
-        if (!acsCorba.isInitialized()) {
-        	AcsJContainerEx ex = new AcsJContainerEx();
-        	ex.setContextInfo("The provided AcsCorba object must be initialized!");
-        	throw ex;
-        }
 
-        m_acsCorba = acsCorba;        
-     
-        checkReadyToRun(null);
-        
-        // not calling AcsCorba.initCorba here is the main reason we have a separate embedded-container runner        
-    
-	System.out.println(ContainerOperations.ContainerStatusStartupBeginMsg);
-	initManagerProxy();        
-        createContainer();
-        m_container.initialize();
-        System.out.println(ContainerOperations.ContainerStatusStartupEndMsg);        
-    }
+	void run(AcsCorba acsCorba) throws AcsJContainerEx {
+		getContainerLogger();
+
+		if (!acsCorba.isInitialized()) {
+			AcsJContainerEx ex = new AcsJContainerEx();
+			ex.setContextInfo("The provided AcsCorba object must be initialized!");
+			throw ex;
+		}
+
+		m_acsCorba = acsCorba;
+
+		checkReadyToRun(null);
+
+		// not calling AcsCorba.initCorba here is the main reason we have a separate embedded-container runner
+
+		System.out.println(ContainerOperations.ContainerStatusStartupBeginMsg);
+		initManagerProxy();
+		createContainer();
+		m_container.initialize();
+		System.out.println(ContainerOperations.ContainerStatusStartupEndMsg);
+	}
     
     /**
      * Gets the logger used by the container. If necessary, creates and initializes the logger. 
@@ -182,7 +181,7 @@ public class AcsEmbeddedContainerRunner {
      */
     protected void initManagerProxy() throws AcsJContainerEx {
         m_managerProxy = new AcsManagerProxy(m_managerLoc, m_acsCorba.getORB(), m_logger);
-        m_managerProxy.getManager();        
+        m_managerProxy.getManager();
     }
 
     void setContainerName(String name) {
