@@ -249,4 +249,119 @@ public class CategoryClient {
 		}
 		super.finalize();
 	}
+	
+	/**
+	 * Get the parents of a reduced alarm.
+	 * <P>
+	 * The method asks the alarm service component for the parents of a reduced
+	 * alarm.
+	 * 
+	 * @param id The id of the alarm 
+	 * @param node <code>true</code> if the alarm is a Node alarm;
+	 * 			   <code>false</code> if the alarm of the passed ID is a multiplicity.
+	 * @return The array of the alarm parent of the alarm with the passed ID
+	 * @throws AlarmClientException In case of error getting the alarms from the component 
+	 */
+	public  alma.alarmsystem.Alarm[] getParents(String id, boolean node) throws AlarmClientException {
+		if (id==null || id.isEmpty()) {
+			throw new IllegalArgumentException("Invalid alarm ID");
+		}
+		alma.alarmsystem.Alarm[] alarms = null;
+		try {
+			if (node) {
+				alarms=alarm.getNodeParents(id);
+			} else {
+				alarms=alarm.getMultiplicityParents(id);
+			}
+		} catch (Throwable t) {
+			throw new AlarmClientException("Error getting parents from component",t);
+		}
+		return alarms;
+	}
+	
+	/**
+	 * Get the parents of a reduced alarm.
+	 * <P>
+	 * The method asks the alarm service component for the parents of a reduced
+	 * alarm.
+	 * 
+	 * @param id The id of the alarm 
+	 * @param node <code>true</code> if the alarm is a Node alarm;
+	 * 			   <code>false</code> if the alarm of the passed ID is a multiplicity.
+	 * @return The array of the alarm parent of the alarm with the passed ID
+	 * @throws AlarmClientException In case of error getting the alarms from the component 
+	 */
+	public  alma.alarmsystem.Alarm[] getChildren(String id, boolean node) throws AlarmClientException {
+		if (id==null || id.isEmpty()) {
+			throw new IllegalArgumentException("Invalid alarm ID");
+		}
+		alma.alarmsystem.Alarm[] alarms = null;
+		try {
+			if (node) {
+				alarms=alarm.getNodeChildren(id);
+			} else {
+				alarms=alarm.getMultiplicityChildren(id);
+			}
+		} catch (Throwable t) {
+			throw new AlarmClientException("Error getting children from component",t);
+		}
+		return alarms;
+	}
+	
+	/**
+	 * Return the threshold for the multiplicity node whose
+	 * ID is passed as parameter.
+	 * 
+	 * @param id The id of the multiplicity node
+	 * @return The multiplicity threshold of the node with the given id
+	 * @throws AlarmClientException If an error happens getting the threshold from the component 
+	 */
+	public int  getMultiplicityThreshold(String id) throws AlarmClientException {
+		if (id==null || id.isEmpty()) {
+			throw new IllegalArgumentException("Invalid alarm ID");
+		}
+		try {
+			return alarm.getMultiplicityThreshold(id);
+		} catch (Throwable t) {
+			throw new AlarmClientException("Error getting threshold from component",t);
+		}
+	}
+	
+//	/**
+//	 * Convert a CORBA alarm into a client alarm.
+//	 * 
+//	 * @param alarm The CORBA alarm
+//	 * @return the client alarm
+//	 */
+//	private Alarm convertAlarmType(alma.alarmsystem.Alarm alarm) {
+//		SourceDefinition sourceDef = new SourceDefinition(
+//				alarm.alarmSource.
+//				); 
+//		Source businessSource = new Source();
+//		
+//		cern.laser.business.data.Alarm businessAlarm = new AlarmImpl(
+//				alarm.alarmId,
+//				alarm.systemName,
+//				alarm.identifier,
+//				alarm.problemDescription,
+//				alarm.priority,
+//				alarm.cause,
+//				alarm.action,
+//				alarm.consequence,
+//				alarm.piquetGSM,
+//				alarm.piquetEmail,
+//				alarm.helpURL,
+//				alarm.instant,
+//				alarm.alarmSource,
+//				alarm.alarmLocation,
+//				alarm.alarmResponsiblePerson,
+//				alarm.categories,
+//				alarm.alarmStatus,
+//				alarm.alarmTriplet,
+//				alarm.nodeParent,
+//				alarm.multiplicityParent,
+//				alarm.nodeChild,
+//				alarm.multiplicityChild
+//				);
+//	}
 }
