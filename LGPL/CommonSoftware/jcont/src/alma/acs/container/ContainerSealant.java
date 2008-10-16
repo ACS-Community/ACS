@@ -62,19 +62,18 @@ public class ContainerSealant implements InvocationHandler
 	private final String m_name;
 	private final Object m_component;
 	private final Logger m_logger;
-	private final ClassLoader componentContextCL;    
+	private final ClassLoader componentContextCL;
+	private final boolean isOffShoot;
 	private final Set<String> methodNamesExcludedFromInvocationLogging;
-    
-	private ContainerSealant(Object componentImpl, String name, 
-								Logger logger, 
-								ClassLoader componentContextCL ) 
-	{
+
+	private ContainerSealant(Object componentImpl, String name, Logger logger, ClassLoader componentContextCL, boolean isOffShoot) {
 		m_component = componentImpl;
 		m_name = name;
 		m_logger = logger;
-        this.componentContextCL = componentContextCL; 
-        
-        methodNamesExcludedFromInvocationLogging = new HashSet<String>(2);
+		this.componentContextCL = componentContextCL;
+		this.isOffShoot = isOffShoot;
+
+		methodNamesExcludedFromInvocationLogging = new HashSet<String>(2);
 	}
 
 
@@ -99,7 +98,7 @@ public class ContainerSealant implements InvocationHandler
 	 * @throws ContainerException if the given <code>component</code> Object does not implement the given <code>corbaInterface</code>. 
 	 */
 	static Object createContainerSealant(Class corbaInterface, Object component, String name, boolean isOffShoot,
-            Logger logger, ClassLoader componentContextCL, String[] methodNamesExcludedFromInvocationLogging )
+			Logger logger, ClassLoader componentContextCL, String[] methodNamesExcludedFromInvocationLogging )
 			throws AcsJContainerEx
 	{
 		if (!corbaInterface.isInstance(component)) {
@@ -109,9 +108,9 @@ public class ContainerSealant implements InvocationHandler
 			throw ex;
 		}
 		
-		ContainerSealant invHandler = new ContainerSealant(component, name, logger, componentContextCL);
+		ContainerSealant invHandler = new ContainerSealant(component, name, logger, componentContextCL, isOffShoot);
 		try {
-			invHandler.setMethodsExcludedFromInvocationLogging(methodNamesExcludedFromInvocationLogging, isOffShoot);
+			invHandler.setMethodsExcludedFromInvocationLogging(methodNamesExcludedFromInvocationLogging);
 		} catch (Exception ex) {
 			// logging a warning is enough (error will just result in unwanted future logging and thus does not warrant a failure here).
 			logger.log(Level.WARNING, "failed to exclude certain methods of '" + name + 
@@ -123,8 +122,8 @@ public class ContainerSealant implements InvocationHandler
 															invHandler);
 		return proxy;	
 	}	
-			
-    
+
+
 	/**
 	 * Receives functional calls to the component. 
      * <ol>
@@ -142,33 +141,30 @@ public class ContainerSealant implements InvocationHandler
 		StopWatch methodInvWatch = new StopWatch(m_logger);
 
 		String qualMethodName = m_name + "#" + method.getName();
-		if (! isExcludedFromInvocationLogging(method.getName())) {
-			m_logger.log(AcsLogLevel.DEBUG, "intercepted a call to '" + qualMethodName + "'.");	    
+		Level level = isOffShoot ? AcsLogLevel.TRACE : AcsLogLevel.DEBUG;
+		boolean isLoggable = ( !isExcludedFromInvocationLogging(method.getName()) && m_logger.isLoggable(level) );
+		if (isLoggable) {
+			m_logger.log(level, "intercepted a call to '" + qualMethodName + "'.");
 		}
-		
+
 		Object retObj = null;
-		try
-		{
-            ClassLoader oldContCL = Thread.currentThread().getContextClassLoader();
-            try {
-                Thread.currentThread().setContextClassLoader(componentContextCL);
-                // call to the component implementation or the transparent-xml layer above it
-                retObj = method.invoke(m_component, args);
-            } finally {
-                Thread.currentThread().setContextClassLoader(oldContCL);                                
-            }
-			
-			if (! isExcludedFromInvocationLogging(method.getName())) {
-				m_logger.log(AcsLogLevel.DEBUG, "returning from " + qualMethodName + " after " + 
-					methodInvWatch.getLapTimeMillis() + " ms.");
+		try {
+			ClassLoader oldContCL = Thread.currentThread().getContextClassLoader();
+			try {
+				Thread.currentThread().setContextClassLoader(componentContextCL);
+				// call to the component/offshoot implementation or the transparent-xml layer above it
+				retObj = method.invoke(m_component, args);
+			} finally {
+				Thread.currentThread().setContextClassLoader(oldContCL);
 			}
-		}
-		catch (Throwable thr)
-		{
+
+			if (isLoggable) {
+				m_logger.log(level, "returning from " + qualMethodName + " after " + methodInvWatch.getLapTimeMillis() + " ms.");
+			}
+		} catch (Throwable thr) {
 			Throwable realThr = unwindThrowableHierarchy(thr);
-			
-			if (realThr instanceof UserException)
-			{
+
+			if (realThr instanceof UserException) {
 				// should have been declared in IDL, but better check!
 				boolean declared = false;
 				Class[] declaredExceptions = method.getExceptionTypes();
@@ -178,34 +174,28 @@ public class ContainerSealant implements InvocationHandler
 						break;
 					}
 				}
-				String msg = ( declared 
-								? "checked exception " 
-								: "unchecked user exception (should have been declared in IDL!) " );
+				String msg = (declared ? "checked exception " : "unchecked user exception (should have been declared in IDL!) ");
 				msg += "was thrown in functional method '" + qualMethodName + "':";
-				Level logLevel = ( declared ? AcsLogLevel.DEBUG : Level.WARNING );
+				Level logLevel = (declared ? AcsLogLevel.DEBUG : Level.WARNING);
 				m_logger.log(logLevel, msg, realThr);
-				throw realThr;				
-			} 
-//			// TODO perhaps support ACS error handling  
-//			else if (realThr instanceof AcsJException) {...}			
-			else if (realThr instanceof DynWrapperException)
-			{
-				String msg = "the dynamic xml entity translator failed with the functional method '" + 
-				qualMethodName + "': ";
-				m_logger.log(Level.SEVERE, msg, realThr);
-				// we slightly extend the foreseen usage of this CORBA system exception, which is
-				// "raised if an ORB cannot convert the representation of data 
-				//  as marshaled into its native representation or vice-versa"
-				throw new DATA_CONVERSION(msg + realThr.toString());
+				throw realThr;
 			}
-			else
-			{
-				m_logger.log(Level.WARNING, "unexpected exception was thrown in functional method '" + 
-					qualMethodName + "': ", realThr);
-				throw realThr;				
+			// // TODO perhaps support ACS error handling
+			// else if (realThr instanceof AcsJException) {...}
+			else if (realThr instanceof DynWrapperException) {
+				String msg = "the dynamic xml entity translator failed with the functional method '" + qualMethodName + "': ";
+				m_logger.log(Level.SEVERE, msg, realThr);
+				// we slightly extend the foreseen usage of this CORBA system exception, which according to the spec should be
+				// "raised if an ORB cannot convert the representation of data as marshaled into its native representation or vice-versa"
+				throw new DATA_CONVERSION(msg + realThr.toString());
+			} 
+			else {
+				m_logger.log(Level.WARNING, "unexpected exception was thrown in functional method '" + qualMethodName
+						+ "': ", realThr);
+				throw realThr;
 			}
 		}
-		
+
 		return retObj;
 	}
 
@@ -256,10 +246,9 @@ public class ContainerSealant implements InvocationHandler
 	 * this is only an ACS implementation choice. 
 	 * <p> 
 	 * @param excludedMethods the names of methods to exclude from automatic logging. 
-	 * @param isOffshoot true if the sealed object is an offshoot, as opposed to a component.
 	 * @see ComponentHelper#getComponentMethodsExcludedFromInvocationLogging()
 	 */
-	void setMethodsExcludedFromInvocationLogging(String[] excludedMethods, boolean isOffshoot) {
+	void setMethodsExcludedFromInvocationLogging(String[] excludedMethods) {
         // see comment for method 'isExcludedFromInvocationLogging'
 		methodNamesExcludedFromInvocationLogging.add("componentState");		
 
@@ -267,7 +256,7 @@ public class ContainerSealant implements InvocationHandler
 			return;
 		}
 		
-		if (isOffshoot) {
+		if (isOffShoot) {
 			// strip off component name from qualified offshoot name
 			String actualInterfaceName = m_name.substring(m_name.lastIndexOf('/')+1);
 			
@@ -294,7 +283,7 @@ public class ContainerSealant implements InvocationHandler
 		if (m_logger.isLoggable(Level.FINE) && !methodNamesExcludedFromInvocationLogging.isEmpty()) {
 			StringBuffer buff = new StringBuffer(100);
 			buff.append("Container will not log invocations of the following methods of ");
-			buff.append(isOffshoot ? "offshoot '" : "component '");
+			buff.append(isOffShoot ? "offshoot '" : "component '");
 			buff.append(m_name).append("' :");
 			for (Iterator iter = methodNamesExcludedFromInvocationLogging.iterator(); iter.hasNext();) {				
 				String methodName = (String) iter.next();
