@@ -35,6 +35,7 @@ import alma.acs.container.CleaningDaemonThreadFactory;
 import alma.acs.container.ContainerServices;
 import alma.acs.container.ContainerServicesImpl;
 import alma.acs.container.corba.AcsCorba;
+import alma.acs.logging.AcsLogger;
 
 /**
  * Special version of <code>ComponentClient</code>, which gives more power to specialized applications such as the OMC Gui ("Exec").
@@ -63,38 +64,50 @@ public class AdvancedComponentClient extends ComponentClient {
 	
 	
 	/**
-	 * Factory method for additional container service instances.
-	 * This method should only be used by specialized clients such as the OMC GUI
-	 * which needs independent ContainerServices instances for the plug-ins it runs.
+	 * Factory method for additional container service instances. This method should only be used by specialized clients
+	 * such as the OMC GUI which needs independent ContainerServices instances for the plug-ins it runs.
 	 * <p>
 	 * Make sure to call {@link #destroyContainerServices(ContainerServices)} when done with the new CS.
-	 *  
-	 * @param clientName  name for {@link ContainerServices#getName()}
-	 * @param csLogger  logger to be used internally by the new ContainerServices instance 
-	 *                  (which is different from the Logger returned in {@link ContainerServices#getLogger()}). 
+	 * 
+	 * @param clientName
+	 *            name for {@link ContainerServices#getName()}
+	 * @param csLogger
+	 *            logger to be used internally by the new ContainerServices instance (which is different from the Logger
+	 *            returned in {@link ContainerServices#getLogger()}). 
+	 *            Since ACS 8.0 it is recommended to supply an {@link AcsLogger} instead of a plain JDK Logger because a 
+	 *            plain Logger will have to be wrapped inside this method.
 	 */
-    public ContainerServices createContainerServices(String clientName, Logger csLogger) throws AcsJContainerServicesEx {
+	public ContainerServices createContainerServices(String clientName, Logger csLogger) throws AcsJContainerServicesEx {
 
-    	try {
-	// if not passed as parameter:   	Logger csLogger = containerServicesImpl.m_logger;
-	        ThreadFactory threadFactory = new CleaningDaemonThreadFactory(clientName, csLogger);
-	        
-	        // separately log in to the manager to get a new client handle.
-	        // TODO: if this does not work, then we need a way to get a new handle from manager without logging in separately. 
-	        //       Note that when activating components, the container receives the new handle directly from the manager.
-	    	AcsManagerProxy acsManagerProxy = m_acsManagerProxy.createInstance();
-			ManagerClient clImpl = new ManagerClient(clientName, csLogger);
+		if (clientName == null) {
+			throw new IllegalArgumentException("clientName must not be null");
+		}
+		if (csLogger == null) {
+			throw new IllegalArgumentException("csLogger must not be null");
+		}
+		try {
+			// wrap csLogger if necessary
+			AcsLogger acsLogger = AcsLogger.fromJdkLogger(csLogger, null);
+			
+			ThreadFactory threadFactory = new CleaningDaemonThreadFactory(clientName, csLogger);
+
+			// separately log in to the manager to get a new client handle.
+			// TODO: if this does not work, then we need a way to get a new handle from manager without logging in separately.
+			// Note that when activating components, the container receives the new handle directly from the manager.
+			AcsManagerProxy acsManagerProxy = m_acsManagerProxy.createInstance();
+			ManagerClient clImpl = new ManagerClient(clientName, acsLogger);
 			Client managerClient = clImpl._this(acsCorba.getORB());
-	        acsManagerProxy.loginToManager(managerClient, true);
-	        int clientHandle = acsManagerProxy.getManagerHandle();
-	        
-	        ContainerServicesImpl cs = new ContainerServicesImpl(acsManagerProxy, acsCorba.getRootPOA(), acsCorba, csLogger, clientHandle, clientName, null, threadFactory);
-	    	additionalContainerServices.put(cs, acsManagerProxy);
-	    	return cs;
-    	} catch (Throwable thr) {
-    		throw new AcsJContainerServicesEx(thr);
-    	}
-    }
+			acsManagerProxy.loginToManager(managerClient, true);
+			int clientHandle = acsManagerProxy.getManagerHandle();
+
+			ContainerServicesImpl cs = new ContainerServicesImpl(acsManagerProxy, acsCorba.getRootPOA(), acsCorba,
+					acsLogger, clientHandle, clientName, null, threadFactory);
+			additionalContainerServices.put(cs, acsManagerProxy);
+			return cs;
+		} catch (Throwable thr) {
+			throw new AcsJContainerServicesEx(thr);
+		}
+	}
 	
     
     /**
