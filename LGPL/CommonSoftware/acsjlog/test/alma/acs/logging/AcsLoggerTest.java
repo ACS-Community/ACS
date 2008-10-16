@@ -1,19 +1,24 @@
 package alma.acs.logging;
 
+import java.util.logging.ConsoleHandler;
+import java.util.logging.Handler;
 import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import junit.framework.TestCase;
 
 import alma.acs.logging.domainspecific.AntennaContextLogger;
 import alma.acs.logging.domainspecific.ArrayContextLogger;
+import alma.acs.logging.formatters.ConsoleLogFormatter;
+import alma.acs.testsupport.TestLogger;
 import alma.log_audience.OPERATOR;
-
-import junit.framework.TestCase;
 
 public class AcsLoggerTest extends TestCase {
 
 	private AcsLogger acsLogger;
 	
 	protected void setUp() throws Exception {
-        System.out.println("\n------------ " + getName() + " --------------");
+		System.out.println("\n------------ " + getName() + " --------------");
 		acsLogger = LocalOnlyAcsLogger.getInstance(AcsLoggerTest.class.getName(), Level.ALL);
 	}
 	
@@ -51,5 +56,19 @@ public class AcsLoggerTest extends TestCase {
 				"Array01");
 		arrayLogger.log(Level.WARNING, "Log exception with array",
 				new Exception("My dummy exception"), "Array01");
+	}
+	
+	public void testWrapJdkLogger() {
+		assertSame("Expected reuse of AcsLogger", acsLogger, AcsLogger.fromJdkLogger(acsLogger, null));
+		
+		Logger jdkLogger = TestLogger.getLogger("myJdkLogger");
+		Handler[] handlers = jdkLogger.getHandlers();
+		assertEquals(1, handlers.length);
+		handlers[0].setFormatter(new ConsoleLogFormatter()); // to get an ISO timestamp on stdout, for TAT/sed filtering.
+
+		AcsLogger wrapper = AcsLogger.fromJdkLogger(jdkLogger, null);
+		assertEquals("myJdkLoggerwrapper", wrapper.getName());
+		
+		wrapper.info("A message logged by the AcsLogger that wraps the jdkLogger");
 	}
 }
