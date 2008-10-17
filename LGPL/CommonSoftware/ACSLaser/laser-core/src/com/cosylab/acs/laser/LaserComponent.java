@@ -440,7 +440,9 @@ public class LaserComponent extends ComponentImplBase
 				getString(alarm.getPiquetGSM()),
 				getString(alarm.getPiquetEmail()),
 				fromBusinessResponsiblePerson(alarm.getResponsiblePerson()),
-				new Location(bl.getFloor(),
+				new Location(
+						bl.getLocationId(),
+						bl.getFloor(),
 							 bl.getRoom(),
 							 bl.getPosition(),
 							 bl.getMnemonic(),
