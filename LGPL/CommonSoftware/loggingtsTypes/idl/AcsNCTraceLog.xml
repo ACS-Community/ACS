@@ -26,6 +26,7 @@
 		priority="INFO"
 		audience="Developer">
 		<Member name="ChannelName" type="string" description="Name of the channel created." />
+		<Member name="ChannelId" type="long" description="ID of the channel created." />
 		<Member name="Service" type="string" description="Name or ID of the notification service that hosts the channel." />
 	</LogDefinition>
 	
