@@ -78,6 +78,7 @@ module alarmsystem
 
 	struct Location
 	{
+		string locationId;
 		string floor;
 		string room;
 		string position;
