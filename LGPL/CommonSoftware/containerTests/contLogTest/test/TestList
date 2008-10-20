@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: TestList,v 1.17 2008/05/16 12:44:10 eallaert Exp $"
+# "@(#) $Id: TestList,v 1.18 2008/10/20 16:11:35 eallaert Exp $"
 #
 # TestList
 #
@@ -436,7 +436,7 @@ PROLOGUE acsutilTATPrologue --noloadifr -l
 ########################################################
 81 SOURCE prepareHardcodedLevelsNamedLogger.tcl \
 	PROLOGUE "acsutilAwaitContainerStart -py aragornContainer" \
-    pyHardcodedNamedLoggerLevels2 "maciContainerLogLevel aragornContainer get TESTLOG6"
+    pyHardcodedLevelsNamedLogger2 "maciContainerLogLevel aragornContainer get TESTLOG6"
 # Execute always together with previous test - it assumes proper container is already/still up        
 82  pyHardcodedLevelsNamedLogger "acsStartJava -D TEST_COMP_NAMES=TESTLOG6 alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest" \
     EPILOGUE "acsStopContainer aragornContainer"
@@ -444,7 +444,7 @@ PROLOGUE acsutilTATPrologue --noloadifr -l
 
 83 SOURCE prepareCdbLevelsNamedLogger.tcl \
 	PROLOGUE "acsutilAwaitContainerStart -py aragornContainer" \
-    pyCdbNamedLoggerLevels2 "maciContainerLogLevel aragornContainer get TESTLOG6"
+    pyCdbLevelsNamedLogger2 "maciContainerLogLevel aragornContainer get TESTLOG6"
 # Execute always together with previous test - it assumes proper container is already/still up        
 84  pyCdbLevelsNamedLogger "acsStartJava -D TEST_COMP_NAMES=TESTLOG6 alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest" \
     EPILOGUE "acsStopContainer aragornContainer"
@@ -452,7 +452,7 @@ PROLOGUE acsutilTATPrologue --noloadifr -l
 
 85 SOURCE prepareEnvLevelsNamedLogger.tcl \
 	PROLOGUE "acsutilAwaitContainerStart -py aragornContainer" \
-    pyEnvironmentNamedLoggerLevels2 "maciContainerLogLevel aragornContainer get aragornContainer"
+    pyEnvironmentLevelsNamedLogger2 "maciContainerLogLevel aragornContainer get aragornContainer"
 # Execute always together with previous test - it assumes proper container is already/still up        
 86  pyEnvironmentLevelsNamedLogger "acsStartJava -D TEST_COMP_NAMES=TESTLOG6 alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest" \
     EPILOGUE "acsStopContainer aragornContainer"
@@ -460,7 +460,7 @@ PROLOGUE acsutilTATPrologue --noloadifr -l
 
 87 SOURCE prepareDynLevelsNamedLogger.tcl \
 	PROLOGUE "acsutilAwaitContainerStart -py aragornContainer" \
-    pyDynamicNamedLoggerLevels2 "maciContainerLogLevel aragornContainer set TESTLOG6 8 9"
+    pyDynamicLevelsNamedLogger2 "maciContainerLogLevel aragornContainer set TESTLOG6 8 9"
 # Execute always together with previous test - it assumes proper container is already/still up        
 88  pyDynamicLevelsNamedLogger "acsStartJava -D TEST_COMP_NAMES=TESTLOG6 alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest" \
     EPILOGUE "acsStopContainer aragornContainer"
