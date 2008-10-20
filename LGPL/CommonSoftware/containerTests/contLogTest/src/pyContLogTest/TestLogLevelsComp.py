@@ -17,7 +17,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: TestLogLevelsComp.py,v 1.9 2008/06/24 13:46:25 eallaert Exp $"
+# "@(#) $Id: TestLogLevelsComp.py,v 1.10 2008/10/20 16:03:28 eallaert Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -88,6 +88,9 @@ class TestLogLevelsComp(contLogTest__POA.TestLogLevelsComp,  #CORBA stubs for ID
         void logDummyMessages(in LongSeq levels);
         '''
         mylogger = self.getLogger()
+        # Next is to avoid that Python sends logs in packets of 10 logs.
+        mylogger.acshandler.capacity = 0
+
         # give client time to get ready for logs
         sleep(0.500)
         for l in levels:
