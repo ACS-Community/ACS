@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.4 2008/10/20 04:41:19 javarias Exp $"
+# "@(#) $Id: Makefile,v 1.5 2008/10/20 23:34:07 javarias Exp $"
 #
 # Makefile of ........
 #
@@ -74,6 +74,10 @@ LIBRARIES       = ddsncTestTypeSupport
 LIBRARIES_L     =
 
 #
+# <brief description of ddsncTestType library>
+
+ddsncTestTypeSupport_OBJECTS += $(DDS_TYPE_FILES)
+#
 # <brief description of lllll library>
 lllll_OBJECTS   =
 
@@ -128,6 +132,7 @@ CDB_SCHEMAS =
 # 
 IDL_FILES = examplFridge 
 DDS_IDL_FILES = examplFridge
+DDS_TYPES=temperatureDataBlockEvent
 TAO_IDLFLAGS = -Gdcps
 USER_IDL = -I$(DDS_ROOT)
 #
@@ -215,23 +220,22 @@ clean_dist : clean_all clean_dist_all
 man   : do_man 
 	@echo " . . . man page(s) done"
 
-install : install_dds install_all
+install : install_all
 	@echo " . . . installation done"
 
-DDS_TYPES=temperatureDataBlockEvent
 DDS_IDLS=$(foreach idl, $(DDS_IDL_FILES), ../idl/$(idl).idl)
-DDS_TYPES_IDLS=$(foreach type, $(DDS_TYPES), $(type)TypeSupport.idl)
+DDS_TYPE_IDLS=$(foreach type, $(DDS_TYPES), $(type)TypeSupport.idl)
 DDS_TYPE_FILES=$(foreach type, $(DDS_TYPES), $(type)TypeSupportC $(type)TypeSupportS $(type)TypeSupportImpl)
-ddsncTestTypeSupport_OBJECTS += $(DDS_TYPE_FILES)
 
-build_dds: gen_dds_support
-	@echo $(DDS_TYPES_IDLS)
-	$(ACE_ROOT)/TAO/TAO_IDL/tao_idl $(TAO_IDLFLAGS) $(USER_IDL) $(DDS_TYPES_IDLS)
-#	rm -rf $(foreach idl, $(DDS_IDL_FILES), $(idl).idl)
+build_dds: $(DDS_TYPE_IDLS)
 
-gen_dds_support: $(DDS_IDLS)
-	cp $(DDS_IDLS) .
+$(DDS_TYPE_IDLS):
+	@echo "==== Generating DDS idls"
+	cp -r $(DDS_IDLS) .
 	$(foreach idl, $(DDS_IDL_FILES), $(DDS_ROOT)/bin/dcps_ts.pl $(idl).idl)
+	@echo "==== Processing DDS idls: $(DDS_TYPE_IDLS)"
+	$(foreach idl, $(DDS_TYPE_IDLS), $(ACE_ROOT)/TAO/TAO_IDL/tao_idl $(TAO_IDLFLAGS) $(USER_IDL) $(idl))
+#	rm -rf $(foreach idl, $(DDS_IDL_FILES), $(idl).idl)
 
 clean_dds:
 	rm -rf *TypeSupport*
@@ -239,4 +243,5 @@ clean_dds:
 install_dds: $(DDS_TYPES_IDLS)
 	cp $(DDS_TYPES_IDLS) $(INTROOT)/idl
 	chmod +x $(INTROOT)/idl/*.idl
+
 #___oOo___

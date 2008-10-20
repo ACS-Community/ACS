@@ -1,0 +1,20 @@
+#ifndef _NC_BENCHMARK_IDL_
+#define _NC_BENCHMARK_IDL_
+
+#include <baci.idl>
+
+#pragma prefix "alma"
+
+
+module NC_BENCHMARK{
+
+	interface testNcComponent : ACS::ACSComponent{
+
+		void startTest();
+
+	};
+
+};
+
+
+#endif

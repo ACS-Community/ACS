@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.2 2008/10/09 00:18:52 javarias Exp $"
+# "@(#) $Id: Makefile,v 1.3 2008/10/20 23:34:07 javarias Exp $"
 #
 # Makefile of ........
 #
@@ -57,12 +57,16 @@ INCLUDES        =  DDSHelper.h DDSPublisher.h DDSSubscriber.h \
 #
 # Libraries (public and local)
 # ----------------------------
-LIBRARIES       = acsddsnc
+LIBRARIES       = acsddsnc acsddsncBench
 LIBRARIES_L     =
 
 #
 # <brief description of acsddsnc library>
 acsddsnc_OBJECTS   = DDSHelperImpl DDSSubscriberImpl DataReaderListenerImpl
+
+#
+# <brief description of acsddsncBench library>
+acsddsncBench_OBJECTS += $(DDS_TYPE_FILES)
 
 #
 # Scripts (public and local)
@@ -113,10 +117,11 @@ CDB_SCHEMAS =
 # 
 # IDL Files and flags
 # 
-IDL_FILES =  
-DDS_IDL_FILES = 
-TAO_IDLFLAGS = 
-USER_IDL = 
+IDL_FILES = NCBenchmark NCBenchmarkStruct 
+DDS_IDL_FILES = NCBenchmarkStruct
+DDS_TYPES = Message
+TAO_IDLFLAGS = -Gdcps
+USER_IDL = -I$(DDS_ROOT)
 #
 # Jarfiles and their directories
 #
@@ -190,10 +195,10 @@ endif
 #
 # TARGETS
 # -------
-all: do_all
+all: build_dds do_all
 	@echo " . . . 'all' done" 
 
-clean : clean_all 
+clean : clean_dds clean_all 
 	@echo " . . . clean done"
 
 clean_dist : clean_all clean_dist_all 
@@ -202,7 +207,30 @@ clean_dist : clean_all clean_dist_all
 man   : do_man 
 	@echo " . . . man page(s) done"
 
-install : install_all
+install : install_dds install_all
 	@echo " . . . installation done"
+
+DDS_IDLS=$(foreach idl, $(DDS_IDL_FILES), ../idl/$(idl).idl)
+DDS_TYPE_IDLS=$(foreach type, $(DDS_TYPES), $(type)TypeSupport.idl)
+DDS_TYPE_FILES=$(foreach type, $(DDS_TYPES), $(type)TypeSupportC $(type)TypeSupportS $(type)TypeSupportImpl)
+DDS_INCLUDE_FILES=$(foreach type, $(DDS_TYPES), $(type)TypeSupportC.h $(type)TypeSupportC.inl $(type)TypeSupportImpl.h $(type)TypeSupportS.h $(type)TypeSupportS.inl)
+
+build_dds: $(DDS_TYPE_IDLS)
+
+$(DDS_TYPE_IDLS):
+	@echo "==== Generating DDS idls"
+	cp -r $(DDS_IDLS) .
+	$(foreach idl, $(DDS_IDL_FILES), $(DDS_ROOT)/bin/dcps_ts.pl $(idl).idl)
+	@echo "==== Processing DDS idls: $(DDS_TYPE_IDLS)"
+	$(foreach idl, $(DDS_TYPE_IDLS), $(ACE_ROOT)/TAO/TAO_IDL/tao_idl $(TAO_IDLFLAGS) $(USER_IDL) $(idl))
+#	rm -rf $(foreach idl, $(DDS_IDL_FILES), $(idl).idl)
+
+clean_dds:
+	rm -rf *TypeSupport*
+	rm -rf $(DDS_IDL_FILES).idl $(DDS_TYPE_IDLS)
+
+install_dds: $(DDS_TYPES_IDLS)
+	cp $(DDS_INCLUDE_FILES) $(INTROOT)/include
+#	$(foreach file, $(DDS_INCLUDE_FILES), chmod 775 $(file))
 
 #___oOo___
