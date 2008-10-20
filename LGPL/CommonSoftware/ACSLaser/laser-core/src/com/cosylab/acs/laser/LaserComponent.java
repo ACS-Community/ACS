@@ -483,7 +483,7 @@ public class LaserComponent extends ComponentImplBase
 						   				 bs.getUserTimestamp().getNanos()),
 						   new Timestamp(bs.getSystemTimestamp().getTime(),
 						   				 bs.getSystemTimestamp().getNanos()),
-						   props), // TODO !!!!
+						   props), 
 				alarm.getInstant().booleanValue(),
 				alarm.hasNodeParents(),
 				alarm.hasMultiplicityParents(),
