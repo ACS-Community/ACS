@@ -14,7 +14,7 @@ int DDSSubscriber::createSubscriber()
 	}
 
 	else{
-		 sub = participant->create_subscriber(sub_qos,
+		 sub = participant->create_subscriber(subQos,
 				 DDS::SubscriberListener::_nil());
 		 std::cerr << "Creating Subscriber with partition: " << partitionName
 			 << std::endl;
@@ -59,5 +59,17 @@ int DDSSubscriber::attachToTransport()
         return 1;
       }
 	return 0;
+}
+
+void DDSSubscriber::consumerReady()
+{
+	std::cerr << "DDSSubscriber::consumerReady()" << std::endl;
+
+	DDS::DataReader_var dr = sub->create_datareader(topic.in(),
+			drQos, listener->in());
+	if(CORBA::is_nil(dr.in())){
+		std::cerr << "create_datareader failed" << std::endl;
+	}
+	initialized=true;
 }
 

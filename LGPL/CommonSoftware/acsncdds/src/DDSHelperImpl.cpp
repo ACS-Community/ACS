@@ -58,7 +58,6 @@ void DDSHelper::initializeTopic(const char* topicName, CORBA::String_var typeNam
 {
 	std::cerr << "Initializing topic: " << this->topicName << std::endl;
 	std::cerr << "with type: " << typeName << std::endl;
-	DDS::TopicQos topicQos;
 	participant->get_default_topic_qos(topicQos);
 	topic=participant->create_topic(topicName, typeName.in(),
 			topicQos, DDS::TopicListener::_nil());
