@@ -15,8 +15,6 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
-import de.mud.ssh.SshWrapper;
-
 import alma.ACSErr.Completion;
 import alma.acs.commandcenter.meta.Firestarter;
 import alma.acs.commandcenter.meta.Firestarter.OrbInitException;
@@ -35,6 +33,7 @@ import alma.acsdaemon.DaemonCallbackHelper;
 import alma.acsdaemon.DaemonCallbackPOA;
 import alma.acsdaemon.ServicesDaemon;
 import alma.acsdaemon.ServicesDaemonHelper;
+import de.mud.ssh.SshWrapper;
 
 /**
  * @author mschilli
@@ -723,12 +722,12 @@ public class Executor {
    }
 
    /**
-    * @param startStop if true, the daemon starts the container, otherwise stops it. @todo rethink how useful this overloading is.
+    * @param startStop - if true, the daemon starts the container, otherwise stops it. @todo rethink how useful this overloading is.
     * @param contType - only needed for starting (i.e. startStop==true)
-    * @param typeModifiers  See http://www.eso.org/projects/alma/develop/acs/OnlineDocs/ACS_docs/schemas/urn_schemas-cosylab-com_Container_1.0/complexType/DeployInfo.html. 
-    *            Only relevant for <code>startStop==true</code>
+    * @param contTypeMods - only needed for starting (i.e. startStop==true)
+    * @see http://www.eso.org/projects/alma/develop/acs/OnlineDocs/ACS_docs/schemas/urn_schemas-cosylab-com_Container_1.0/complexType/DeployInfo.html 
     */
-   static public void remoteDaemonForContainers (String host, int instance, boolean startStop, String contName, String contType, String[] typeModifiers, String cmdFlags, NativeCommand.Listener listener) {
+   static public void remoteDaemonForContainers (String host, int instance, boolean startStop, String contName, String contType, String[] contTypeMods, String cmdFlags, NativeCommand.Listener listener) {
    	if (listener != null) {
    		listener.stdoutWritten(null, "\nIn daemon mode, output cannot be displayed.\n" +
    				"See logs in <daemon-owner>/.acs/commandcenter on host "+host+"\n");
@@ -768,7 +767,7 @@ public class Executor {
 		
 		try {
 			if (startStop == true) {
-				daemon.start_container(contType, contName, (short)instance, typeModifiers, cmdFlags);
+				daemon.start_container(contType, contName, (short)instance, contTypeMods, cmdFlags);
 			} else {
 				daemon.stop_container(contName, (short)instance, cmdFlags);
 			}

@@ -72,6 +72,7 @@ public interface RunModel {
 
    public String getContainerName();
    public String getContainerType();
+   public String[] getContainerTypeModifiers();  // new in Acs 7.1
    public String getContainerScriptBase();
    public String getContainerRemoteHost();
    public String getContainerRemoteAccount();

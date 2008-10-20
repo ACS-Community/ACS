@@ -270,6 +270,13 @@ public class ProjectRunModel implements RunModel {
 		return read(selectedContainer().getType());
 	}
 
+	public String[] getContainerTypeModifiers () {
+		String[] ss = selectedContainer().getTypeModifier();
+		for (int i=0; i<ss.length; i++)
+			ss[i] = read(ss[i]);
+		return ss;
+	}
+
 	public String getContainerScriptBase () {
 		if (selectedContainer().getUseDedicatedSettings())
 			return read(selectedContainer().getScriptBase());
