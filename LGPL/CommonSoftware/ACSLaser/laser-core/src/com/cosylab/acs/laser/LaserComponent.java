@@ -24,7 +24,9 @@ package com.cosylab.acs.laser;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Enumeration;
 import java.util.Iterator;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import javax.jms.JMSException;
@@ -37,6 +39,7 @@ import javax.jms.TopicConnection;
 import javax.jms.TopicSession;
 import javax.jms.TopicSubscriber;
 
+import org.omg.CORBA.Any;
 import org.omg.CosPropertyService.Property;
 
 import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
@@ -415,7 +418,7 @@ public class LaserComponent extends ComponentImplBase
 	 * @param alarm
 	 * @return
 	 */
-	private static Alarm fromBusinessAlarm(cern.laser.business.data.Alarm alarm)
+	private Alarm fromBusinessAlarm(cern.laser.business.data.Alarm alarm)
 	{
 		cern.laser.business.data.Triplet bt = alarm.getTriplet();
 		cern.laser.business.data.Location bl = alarm.getLocation();
@@ -423,6 +426,24 @@ public class LaserComponent extends ComponentImplBase
 			bl.setBuilding(new Building("","",1,""));
 		}
 		cern.laser.business.data.Status bs = alarm.getStatus();
+		
+		// Build the properties
+		Property[] props;
+		if (alarm.getStatus().getProperties()!=null) {
+			props = new Property[alarm.getStatus().getProperties().size()];
+			Set keys = alarm.getStatus().getProperties().keySet();
+			int t=0;
+			for (Object key: keys) {
+				String name = (String)key;
+				String value = alarm.getStatus().getProperties().getProperty(name);
+				Any any = contSvcs.getAdvancedContainerServices().getAny();
+				any.insert_string(value);
+				props[t++] = new Property(name,any);
+			}
+		} else {
+			props = new Property[0];
+		}
+		
 		Alarm newAlarm = new Alarm(
 				alarm.getAlarmId(),
 				new Triplet(bt.getFaultFamily(),
@@ -451,6 +472,7 @@ public class LaserComponent extends ComponentImplBase
 							 bl.getBuilding().getZone().intValue(),
 							 bl.getBuilding().getMap()),
 				fromBusinessCategoryCollection(alarm.getCategories()),
+				
 				new Status(bs.getActive().booleanValue(),
 						   bs.getMasked().booleanValue(),
 						   bs.getReduced().booleanValue(),
@@ -461,7 +483,7 @@ public class LaserComponent extends ComponentImplBase
 						   				 bs.getUserTimestamp().getNanos()),
 						   new Timestamp(bs.getSystemTimestamp().getTime(),
 						   				 bs.getSystemTimestamp().getNanos()),
-						   new Property[0]), // TODO !!!!
+						   props), // TODO !!!!
 				alarm.getInstant().booleanValue(),
 				alarm.hasNodeParents(),
 				alarm.hasMultiplicityParents(),
@@ -476,7 +498,7 @@ public class LaserComponent extends ComponentImplBase
 	 * @param alarms
 	 * @return
 	 */
-	private static Alarm[] fromBusinessAlarmCollection(Collection alarms) {
+	private Alarm[] fromBusinessAlarmCollection(Collection alarms) {
 		if (alarms == null)
 			return new Alarm[0];
 		
