@@ -18,7 +18,11 @@
  */
 package alma.alarmsystem.clients;
 
+import java.sql.Timestamp;
+import java.util.HashSet;
+import java.util.Properties;
 import java.util.Set;
+import java.util.Vector;
 import java.util.logging.Logger;
 
 import alma.acs.container.ContainerServices;
@@ -29,6 +33,17 @@ import alma.alarmsystem.Category;
 import alma.alarmsystem.clients.alarm.AlarmClientException;
 import alma.maciErrType.wrappers.AcsJCannotGetComponentEx;
 
+import cern.laser.business.data.AlarmImpl;
+import cern.laser.business.data.Building;
+import cern.laser.business.data.CategoryImpl;
+import cern.laser.business.data.Location;
+import cern.laser.business.data.ResponsiblePerson;
+import cern.laser.business.data.Source;
+import cern.laser.business.data.Status;
+import cern.laser.business.data.StatusImpl;
+import cern.laser.business.data.Triplet;
+import cern.laser.business.definition.data.CategoryDefinition;
+import cern.laser.business.definition.data.SourceDefinition;
 import cern.laser.client.data.Alarm;
 import cern.laser.client.services.selection.AlarmSelectionHandler;
 import cern.laser.client.services.selection.AlarmSelectionListener;
@@ -58,29 +73,43 @@ import cern.laser.console.impl.UserHandlerImpl;
  */
 public class CategoryClient {
 	
-	// The user handler
+	/**
+	 * The user handler
+	 */
 	private UserHandlerImpl userHandler;
 	
-	// The user to log in (test for instance)
+	/**
+	 *  The user to log in (test for instance)
+	 */
 	private User testUser;
 	
-	// The user's default configuration
+	/**
+	 *  The user to log in (test for instance)
+	 */
 	private Configuration defaultConf;
 	
-	// The alarm selection handler
+	/** 
+	 * / The alarm selection handler
+	 */
 	private AlarmSelectionHandler jms_selectionHandler;
 	
-	// ACS ContainerServices
+	/**
+	 *  ACS ContainerServices
+	 */
 	private ContainerServices contSvc;
 	
-	// The logger
+	/** 
+	 * The logger
+	 */
 	private Logger logger;
 	
 	// The alarm service component and its IDL
 	private final String alarmServiceIDL = "*/AlarmService:*";
 	private AlarmService alarm;
 	
-	// To avoid to release the resources twice
+	/**
+	 * To avoid to release the resources twice
+	 */
 	private volatile boolean closed=false;
 	
 	/**
@@ -227,10 +256,14 @@ public class CategoryClient {
 	 * @throws AlarmClientException 
 	 */
 	public void close() throws AlarmClientException {
+		if (closed) {
+			return;
+		}
 		closed=true;
 		try {
 			if (jms_selectionHandler!=null) {
 				jms_selectionHandler.close();
+				jms_selectionHandler=null;
 			}
 			if (contSvc!=null && alarm!=null) {
 				contSvc.releaseComponent(alarm.name());
@@ -243,9 +276,9 @@ public class CategoryClient {
 	/**
 	 * Ensure that the resources have been released before destroying the object
 	 */
-	public void finalize() throws Throwable {
+	protected void finalize() throws Throwable {
 		if (!closed) {
-			close();
+				close();
 		}
 		super.finalize();
 	}
@@ -262,7 +295,7 @@ public class CategoryClient {
 	 * @return The array of the alarm parent of the alarm with the passed ID
 	 * @throws AlarmClientException In case of error getting the alarms from the component 
 	 */
-	public  alma.alarmsystem.Alarm[] getParents(String id, boolean node) throws AlarmClientException {
+	public  Alarm[] getParents(String id, boolean node) throws AlarmClientException {
 		if (id==null || id.isEmpty()) {
 			throw new IllegalArgumentException("Invalid alarm ID");
 		}
@@ -276,7 +309,11 @@ public class CategoryClient {
 		} catch (Throwable t) {
 			throw new AlarmClientException("Error getting parents from component",t);
 		}
-		return alarms;
+		Alarm[] ret = new Alarm[alarms.length];
+		for (int t=0; t< ret.length; t++) {
+			ret[t]=convertAlarmType(alarms[t]);
+		}
+		return ret;
 	}
 	
 	/**
@@ -291,7 +328,7 @@ public class CategoryClient {
 	 * @return The array of the alarm parent of the alarm with the passed ID
 	 * @throws AlarmClientException In case of error getting the alarms from the component 
 	 */
-	public  alma.alarmsystem.Alarm[] getChildren(String id, boolean node) throws AlarmClientException {
+	public  Alarm[] getChildren(String id, boolean node) throws AlarmClientException {
 		if (id==null || id.isEmpty()) {
 			throw new IllegalArgumentException("Invalid alarm ID");
 		}
@@ -305,7 +342,11 @@ public class CategoryClient {
 		} catch (Throwable t) {
 			throw new AlarmClientException("Error getting children from component",t);
 		}
-		return alarms;
+		Alarm[] ret = new Alarm[alarms.length];
+		for (int t=0; t< ret.length; t++) {
+			ret[t]=convertAlarmType(alarms[t]);
+		}
+		return ret;
 	}
 	
 	/**
@@ -339,7 +380,7 @@ public class CategoryClient {
 	 * @return The array of the alarm parent of the alarm with the passed ID
 	 * @throws AlarmClientException In case of error getting the alarms from the component 
 	 */
-	public  alma.alarmsystem.Alarm[] getActiveChildren(String id, boolean node) throws AlarmClientException {
+	public  Alarm[] getActiveChildren(String id, boolean node) throws AlarmClientException {
 		if (id==null || id.isEmpty()) {
 			throw new IllegalArgumentException("Invalid alarm ID");
 		}
@@ -353,44 +394,93 @@ public class CategoryClient {
 		} catch (Throwable t) {
 			throw new AlarmClientException("Error getting children from component",t);
 		}
-		return alarms;
+		Alarm[] ret = new Alarm[alarms.length];
+		for (int t=0; t< ret.length; t++) {
+			ret[t]=convertAlarmType(alarms[t]);
+		}
+		return ret;
 	}
 	
-//	/**
-//	 * Convert a CORBA alarm into a client alarm.
-//	 * 
-//	 * @param alarm The CORBA alarm
-//	 * @return the client alarm
-//	 */
-//	private Alarm convertAlarmType(alma.alarmsystem.Alarm alarm) {
-//		SourceDefinition sourceDef = new SourceDefinition(
-//				alarm.alarmSource.
-//				); 
-//		Source businessSource = new Source();
-//		
-//		cern.laser.business.data.Alarm businessAlarm = new AlarmImpl(
-//				alarm.alarmId,
-//				alarm.systemName,
-//				alarm.identifier,
-//				alarm.problemDescription,
-//				alarm.priority,
-//				alarm.cause,
-//				alarm.action,
-//				alarm.consequence,
-//				alarm.piquetGSM,
-//				alarm.piquetEmail,
-//				alarm.helpURL,
-//				alarm.instant,
-//				alarm.alarmSource,
-//				alarm.alarmLocation,
-//				alarm.alarmResponsiblePerson,
-//				alarm.categories,
-//				alarm.alarmStatus,
-//				alarm.alarmTriplet,
-//				alarm.nodeParent,
-//				alarm.multiplicityParent,
-//				alarm.nodeChild,
-//				alarm.multiplicityChild
-//				);
-//	}
+	/**
+	 * Convert a CORBA alarm into a client alarm.
+	 * 
+	 * @param alarm The CORBA alarm
+	 * @return the client alarm
+	 */
+	private Alarm convertAlarmType(alma.alarmsystem.Alarm alarm) {
+		Source source = new Source();
+		
+		Building building = new Building(
+				alarm.alarmLocation.buildingNb, 
+				alarm.alarmLocation.site,
+				alarm.alarmLocation.zone, 
+				alarm.alarmLocation.map);
+		Location location =new Location(
+				alarm.alarmLocation.locationId,
+				alarm.alarmLocation.floor,
+				alarm.alarmLocation.mnemonic, 
+				alarm.alarmLocation.position, 
+				alarm.alarmLocation.room);
+		location.setBuilding(building);
+		ResponsiblePerson responsiblePerson = new ResponsiblePerson(
+				alarm.alarmResponsiblePerson.responsibleId, 
+				alarm.alarmResponsiblePerson.familyName, 
+				alarm.alarmResponsiblePerson.firstName, 
+				alarm.alarmResponsiblePerson.eMail, 
+				alarm.alarmResponsiblePerson.gsmNumber,
+			    alarm.alarmResponsiblePerson.phoneNumber);
+		
+		Properties userProperties = new Properties();
+		for (org.omg.CosPropertyService.Property prop: alarm.alarmStatus.userProperties) {
+			userProperties.put(prop.property_name, prop.property_value);
+		}
+		Status status = new StatusImpl(
+				Boolean.valueOf(alarm.alarmStatus.active),
+				Boolean.valueOf(alarm.alarmStatus.masked),
+				Boolean.valueOf(alarm.alarmStatus.reduced),
+				Boolean.FALSE,
+				Boolean.FALSE,
+				alarm.alarmStatus.sourceHostname,
+				new Timestamp(alarm.alarmStatus.sourceTimestamp.miliseconds),
+				new Timestamp(alarm.alarmStatus.userTimestamp.miliseconds),
+				new Timestamp(alarm.alarmStatus.systemTimestamp.miliseconds),
+				userProperties);
+		Triplet triplet = new Triplet(
+				alarm.alarmTriplet.faultFamily, 
+				alarm.alarmTriplet.faultMember, 
+				alarm.alarmTriplet.faultCode);
+		
+		Set<cern.laser.business.data.Category> categories = new HashSet<cern.laser.business.data.Category>();
+		for (Category cat: alarm.categories) {
+			CategoryImpl catImpl=new CategoryImpl(cat.categoryId,cat.name,cat.description,cat.path,cat.leaf);
+			categories.add(catImpl);
+		}
+		
+		cern.laser.business.data.Alarm businessAlarm = new AlarmImpl(
+				alarm.alarmId,
+				alarm.systemName,
+				alarm.identifier,
+				alarm.problemDescription,
+				Integer.valueOf(alarm.priority),
+				alarm.cause,
+				alarm.action,
+				alarm.consequence,
+				alarm.piquetGSM,
+				alarm.piquetEmail,
+				alarm.helpURL,
+				Boolean.valueOf(alarm.instant),
+				source,
+				location,
+				responsiblePerson,
+				categories,
+				status,
+				triplet,
+				alarm.nodeParent,
+				alarm.multiplicityParent,
+				alarm.nodeChild,
+				alarm.multiplicityChild
+				);
+		Alarm ret = new cern.laser.client.impl.data.AlarmImpl(businessAlarm);
+		return ret;
+	}
 }
