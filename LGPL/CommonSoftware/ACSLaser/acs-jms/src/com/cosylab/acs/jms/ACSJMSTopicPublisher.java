@@ -8,6 +8,7 @@ package com.cosylab.acs.jms;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 
 import javax.jms.JMSException;
 import javax.jms.Message;
@@ -259,10 +260,15 @@ public class ACSJMSTopicPublisher extends ACSJMSProducer implements TopicPublish
 	 */
 	public void close() throws JMSException {
 		Collection<PublisherPoolItem> values;
+		Iterator<PublisherPoolItem> iter;
+		
 		synchronized (publishersPool) {
 			values= publishersPool.values();
-			for (PublisherPoolItem item: values) {
+			iter = values.iterator();
+			while (iter.hasNext()) {
+				PublisherPoolItem item = iter.next();
 				item.close();
+				iter.remove();
 			}
 		}
 	}
