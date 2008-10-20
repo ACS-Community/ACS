@@ -221,6 +221,7 @@ public class Helper {
 	{
 		// return value
 		EventChannel retValue = null;
+		int channelId = -1; // to be assigned by factory
 		try {
 			// get the Notification Factory first.
 			NameComponent[] t_NameFactory = { new NameComponent(notifyFactoryName, "") };
@@ -229,14 +230,16 @@ public class Helper {
 			// create the channel
 			// here we use the channel properties taken directly from our channel properties helper object. 
 			// presumably these values come from the ACS configuration database.
+			IntHolder channelIdHolder = new IntHolder();
 			retValue = notifyFactory.create_channel(m_channelProperties.configQofS(channelName),
-					m_channelProperties.configAdminProps(channelName), new IntHolder());
+					m_channelProperties.configAdminProps(channelName), channelIdHolder);
 			// sanity check
 			if (retValue == null) {
 				// a null reference implies we cannot go any further
 				String reason = "Null reference obtained for the '" + channelName + "' channel!";
 				throw new alma.ACSErrTypeJavaNative.wrappers.AcsJJavaLangEx(reason); // @todo: more specific ex type
 			}
+			channelId = channelIdHolder.value;
 
 			// register our new channel with the naming service
 			NameComponent[] t_NameChannel = { new NameComponent(channelName, channelKind) };
@@ -263,7 +266,7 @@ public class Helper {
 			throw new alma.ACSErrTypeCommon.wrappers.AcsJCORBAProblemEx(reason + e.getMessage());
 		}
 		
-		LOG_NC_ChannelCreated_OK.log(m_logger, channelName, notifyFactoryName); 
+		LOG_NC_ChannelCreated_OK.log(m_logger, channelName, channelId, notifyFactoryName); 
 		
 		return retValue;
 	}
