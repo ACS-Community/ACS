@@ -166,6 +166,9 @@ public class SourceClient {
 	 * Frees all the resources
 	 */
 	public void close() {
+		if (closed) {
+			return;
+		}
 		closed=true;
 		m_consumer.disconnect();
 	}
@@ -173,7 +176,7 @@ public class SourceClient {
 	/**
 	 * Ensure that the resources have been released before destroying the object
 	 */
-	public void finalize() throws Throwable {
+	protected void finalize() throws Throwable {
 		if (!closed) {
 			close();
 		}
