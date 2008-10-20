@@ -10,6 +10,14 @@
 namespace ddsnc{
 
 //Class DataReaderListenerImpl
+/**
+ * Base class for DataReaderListener functions callbacks. Only a empty
+ * skeleton that print to stdout when a function is called.
+ *
+ * @see ACSNCDDSDataReaderListener
+ *
+ * @author Jorge Avarias <javarias[at]inf.utfsm.cl>
+ */
 class DataReaderListenerImpl
   : public virtual OpenDDS::DCPS::LocalObject<DDS::DataReaderListener>
 {

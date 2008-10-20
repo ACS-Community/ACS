@@ -17,21 +17,12 @@ int main(int argc, char**argv)
 			TESTFRIDGE::temperatureDataBlockEventDataReader_var,
 			TESTFRIDGE::temperatureDataBlockEventDataReader,
 			"DefaultTopic", &handlerFunction, argc, argv);
-	/*All this code block must be a macro*/
-	/*sub = new ddsnc::DDSSubscriber("DefaultTopic", argc, argv);
 
-	sub->initialize<TESTFRIDGE::temperatureDataBlockEvent,
-		TESTFRIDGE::temperatureDataBlockEventTypeSupport_var,
-		TESTFRIDGE::temperatureDataBlockEventTypeSupportImpl>();
-	
-	sub->addSubscription<TESTFRIDGE::temperatureDataBlockEventDataReader_var,
-		TESTFRIDGE::temperatureDataBlockEventDataReader,
-		TESTFRIDGE::temperatureDataBlockEvent>
-			(&handlerFunction, (void *)0);*/
-	/*End of macro*/
+	sub->consumerReady();
 
 	sleep(120);
 
 	sub->disconnect();
+	delete sub;
 
 }

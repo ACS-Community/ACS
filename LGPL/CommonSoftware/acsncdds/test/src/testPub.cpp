@@ -22,5 +22,6 @@ int main(int argc, char** argv)
 		sleep(1);
 	}
 	pub->disconnect();
+	delete pub;
 	return 0;
 }
