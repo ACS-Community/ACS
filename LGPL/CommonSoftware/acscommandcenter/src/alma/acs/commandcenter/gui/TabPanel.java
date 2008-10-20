@@ -1733,7 +1733,7 @@ public class TabPanel extends JPanel {
 						+ "Finally note that the output of processes started through Acs Daemons\n" //
 						+ "will not be available in the Log Area of Acs Command Center" //
 						;
-				JOptionPane.showMessageDialog(master.frame, msg, "About Acs 7.0 Daemons", JOptionPane.OK_OPTION);
+				JOptionPane.showMessageDialog(master.frame, msg, "About Acs Daemons", JOptionPane.OK_OPTION);
 			}
 		}
 	}
