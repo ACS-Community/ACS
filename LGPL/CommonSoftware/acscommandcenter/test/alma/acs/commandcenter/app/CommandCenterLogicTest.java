@@ -22,7 +22,7 @@ public class CommandCenterLogicTest extends TestCase {
 		_Tests.enter(this);
 
 		CommandCenterLogic logic = new CommandCenterLogic();
-		logic.projectMaker = new ProjectMaker(logic);
+		logic.projectMaker = new ProjectMaker("v100.0");
 		AcsCommandCenterProject p = logic.createProject();
 
 		File f = new File("test_Write_Project.prj");
