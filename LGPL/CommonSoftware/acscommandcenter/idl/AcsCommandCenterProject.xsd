@@ -6,8 +6,6 @@
  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
  elementFormDefault="qualified" attributeFormDefault="unqualified">
 
- <xsd:import namespace="Alma/CommonEntity" schemaLocation="CommonEntity.xsd"/>
-
 
  <xsd:element name="AcsCommandCenterProject">
   <xsd:complexType>
@@ -61,7 +59,7 @@
 	<xsd:element name="againstCDB"						type="xsd:string"/>
 	<xsd:element name="againstInterfaceRepository"	type="xsd:string"/>
 
-	<xsd:element name="container"							type="ContainerT"	minOccurs="0" maxOccurs="unbounded"/>
+	<xsd:element name="container"							type="accprj:ContainerT" minOccurs="0" maxOccurs="unbounded"/>
   </xsd:sequence>
  </xsd:complexType>
 
