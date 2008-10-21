@@ -19,7 +19,7 @@
 
 /** 
  * @author  acaproni   
- * @version $Id: AlarmTableModel.java,v 1.14 2008/04/28 08:29:58 acaproni Exp $
+ * @version $Id: AlarmTableModel.java,v 1.15 2008/10/21 14:39:46 acaproni Exp $
  * @since    
  */
 
@@ -58,6 +58,7 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 	 *
 	 */
 	public enum AlarmTableColumn {
+		REDUCTION("",true),
 		ICON("",true),
 		TIME("Time",true),
 		COMPONENT("Component",true),
@@ -106,12 +107,16 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 	
 	/**
 	 * Constructor
+	 * 
+	 * @param owner The component that owns the table
+	 * @param reduce <code>true</code> if the reduction rules must be applied
 	 */
-	public AlarmTableModel(Component owner) {
+	public AlarmTableModel(Component owner, boolean reduce) {
 		if (owner==null) {
 			throw new IllegalArgumentException("The owner component can't be null");
 		}
 		this.owner=owner;
+		this.applyReductionRules=reduce;
 		// Put each alarm type in the has map of the counters
 		for (AlarmGUIType alarmType: AlarmGUIType.values()) {
 			counters.put(alarmType, new AlarmCounter());
@@ -127,7 +132,7 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 	 */
 	public synchronized void onAlarm(Alarm alarm) {
 		synchronized (items) {
-			if (items.size()==MAX_ALARMS && !items.contains(alarm.getAlarmId())) {
+			if (items.size(applyReductionRules)==MAX_ALARMS && !items.contains(alarm.getAlarmId())) {
 				AlarmTableEntry removedAlarm=null;
 				try {
 					removedAlarm = items.removeOldest(); // Remove the last one
@@ -150,6 +155,16 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 			}
 		}
 		fireTableDataChanged();
+		
+		System.out.println("Adding "+alarm.getIdentifier());
+		System.out.println("\tMultiplicity parent: "+alarm.isMultiplicityParent());
+		System.out.println("\tMultiplicity child: "+alarm.isMultiplicityChild());
+		System.out.println("\tNode parent: "+alarm.isNodeParent());
+		System.out.println("\tNodechild: "+alarm.isNodeChild());
+		System.out.println("Status:");
+		System.out.println("\t\tMasked: "+alarm.getStatus().isMasked());
+		System.out.println("\t\tReduced: "+alarm.getStatus().isReduced());
+		System.out.println("\t\tActive: "+alarm.getStatus().isActive());
 	}
 	
 	/**
@@ -163,6 +178,7 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 			// do not add inactive alarms
 			return;
 		}
+		
 		AlarmTableEntry newEntry=new AlarmTableEntry(alarm);
 		try {
 			items.add(newEntry);
@@ -321,18 +337,29 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 	 */
 	public static final int MAX_ALARMS=10000;
 	
-	// The owner component (used to show dialog messages) 
+	/**
+	 * The owner component (used to show dialog messages) 
+	 */
 	private Component owner;
 	
-	// The alarms in the table
+	/**
+	 * The alarms in the table
+	 */
 	private AlarmsContainer items = new AlarmsContainer(MAX_ALARMS);
 	
-	// The auto acknowledge level
+	/**
+	 *	If <code>true</code> applies the reduction rules hiding reduced alarms 
+	 */
+	private boolean applyReductionRules;
+	
+	/**
+	 * The auto acknowledge level
+	 */
 	private ComboBoxValues autoAckLvl = ComboBoxValues.NONE ;
 
 	public int getRowCount() {
 		synchronized (items) {
-			return items.size();
+			return items.size(applyReductionRules);
 		}
 	}
 
@@ -352,7 +379,7 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 	public Object getCellContent(int rowIndex, int columnIndex) {
 		Alarm alarm;
 		synchronized (items) {
-			alarm = items.get(rowIndex).getAlarm();
+			alarm = items.get(rowIndex,applyReductionRules).getAlarm();
 		}
 		
 		AlarmTableColumn col = AlarmTableColumn.values()[columnIndex];
@@ -435,15 +462,25 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 	/**
 	 * Return the alarm whose content fills the given row
 	 * 
-	 * @param row The given showing the alarm
-	 * @return The alarm shown in the row row
+	 * @param row The number of the row showing the alarm
+	 * @return The alarm shown in the row
 	 */
 	public Alarm getRowAlarm(int row) {
+		return getRowEntry(row).getAlarm();
+	}
+	
+	/**
+	 * Return the entry the given row
+	 * 
+	 * @param row The number of the row showing the alarm
+	 * @return The entry 
+	 */
+	public AlarmTableEntry getRowEntry(int row) {
 		synchronized (items) {
-			if (row<0 || row>=items.size()) {
-				throw new IllegalArgumentException("Invalid row: "+row+" not in [0,"+items.size()+"[");
+			if (row<0 || row>=items.size(applyReductionRules)) {
+				throw new IllegalArgumentException("Invalid row: "+row+" not in [0,"+items.size(applyReductionRules)+"[");
 			}
-			return items.get(row).getAlarm();
+			return items.get(row,applyReductionRules);
 		}
 	}
 	
@@ -453,10 +490,10 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 	 */
 	public boolean isRowAlarmNew(int row) {
 		synchronized (items) {
-			if (row<0 || row>=items.size()) {
-				throw new IllegalArgumentException("Invalid row: "+row+" not in [0,"+items.size()+"[");
+			if (row<0 || row>=items.size(applyReductionRules)) {
+				throw new IllegalArgumentException("Invalid row: "+row+" not in [0,"+items.size(applyReductionRules)+"[");
 			}
-			return items.get(row).isNew();
+			return items.get(row,applyReductionRules).isNew();
 		}
 	}
 	
@@ -482,7 +519,7 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 	 */
 	public void alarmSelected(int row) {
 		synchronized (items) {
-			items.get(row).alarmSeen();
+			items.get(row,applyReductionRules).alarmSeen();
 		}
 		fireTableRowsUpdated(row, row);
 	}
@@ -524,5 +561,19 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 	 */
 	public void setConnectionListener(ConnectionListener listener) {
 		connectionListener=listener;
+	}
+	
+	/**
+	 * Enable/disable the applying of reduction rules in the table.
+	 * <P>
+	 * by applying reduction rules, the table will not show reduced alarms.
+	 * 
+	 * @param reduce if <code>true</code> apply the reduction rules hiding reduced alarms;
+	 * 				if <code>reduce</code> is <code>false</code> all the alarms are shown 
+	 * 				by the table independently of the reduction rules
+	 */
+	public void applyReductions(boolean reduce) {
+		applyReductionRules=reduce;
+		fireTableDataChanged();
 	}
 }
