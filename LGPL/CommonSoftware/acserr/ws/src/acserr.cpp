@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acserr.cpp,v 1.88 2008/08/06 10:36:46 bjeram Exp $"
+* "@(#) $Id: acserr.cpp,v 1.89 2008/10/21 17:25:03 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -34,7 +34,7 @@
 #include <iomanip>
 #include "ace/UUID.h"
 
-static char *rcsId="@(#) $Id: acserr.cpp,v 1.88 2008/08/06 10:36:46 bjeram Exp $"; 
+static char *rcsId="@(#) $Id: acserr.cpp,v 1.89 2008/10/21 17:25:03 bjeram Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 
@@ -51,14 +51,14 @@ const unsigned int ErrorTraceHelper::m_maxDepth = 20;
 ACS::Time ErrorTraceHelper::getTime()
 {
     return ::getTimeStamp();
-} 
+}
 
 ErrorTraceHelper::ErrorTraceHelper(ACSErr::ErrorTrace &et, int depth) :
     m_errorTracePtr(&et) , m_depth(depth)
-{  
+{
     const ACSErr::ErrorTrace *c = m_errorTracePtr;
-    if (m_depth) 
-	{ 
+    if (m_depth)
+	{
 	m_depth=1;
 	while (c->previousError.length()!=0)
 	    {
@@ -67,18 +67,18 @@ ErrorTraceHelper::ErrorTraceHelper(ACSErr::ErrorTrace &et, int depth) :
 	    }
 	m_current = m_errorTracePtr;
 	}
-    else 
-	{    
+    else
+	{
     	m_current = 0/*NULL*/;
-	}  
+	}
 }
 
 ErrorTraceHelper::ErrorTraceHelper(ACSErr::ErrorTrace &et) :
     m_errorTracePtr(&et)
-{ 
+{
     const ACSErr::ErrorTrace *c = m_errorTracePtr;
-    if (c) 
-	{ 
+    if (c)
+	{
 	m_depth=1;
 	while (c->previousError.length()!=0)
 	    {
@@ -87,30 +87,30 @@ ErrorTraceHelper::ErrorTraceHelper(ACSErr::ErrorTrace &et) :
 	    }
 	m_current = m_errorTracePtr;
 	}
-    else 
-	{    
+    else
+	{
     	m_current = 0;
-  	m_depth = 0;	
+  	m_depth = 0;
 	}
 }
 
 ErrorTraceHelper::ErrorTraceHelper (ACSErr::ACSErrType et, ACSErr::ErrorCode ec,
-				    const char* file, int line, const char* routine, const char* sd, 
+				    const char* file, int line, const char* routine, const char* sd,
 				    ACSErr::Severity severity,
 				    ACSErr::ErrorTrace &errortrace ) :
 	m_errorTracePtr(&errortrace)
-{ 
+{
     m_depth=1;
-    fill(et, ec, severity, file, line, routine, sd); 
+    fill(et, ec, severity, file, line, routine, sd);
 }
 
 ErrorTraceHelper::ErrorTraceHelper (const ACSErr::ErrorTrace &pet,
 				    ACSErr::ACSErrType et, ACSErr::ErrorCode ec,
-				    const char* file, int line, const char* routine, const char* sd, 
+				    const char* file, int line, const char* routine, const char* sd,
 				    ACSErr::Severity severity,
 				    ACSErr::ErrorTrace &errortrace ) :
     m_errorTracePtr(&errortrace)
-{ 
+{
     m_depth=1;
     const ACSErr::ErrorTrace *c = &pet;
     while (c->previousError.length()!=0)
@@ -119,31 +119,31 @@ ErrorTraceHelper::ErrorTraceHelper (const ACSErr::ErrorTrace &pet,
 	c = &c->previousError[0];
 	}
 
-    if( m_depth < m_maxDepth ) 
+    if( m_depth < m_maxDepth )
     {
-      fill(et, ec, severity, file, line, routine, sd); 
+      fill(et, ec, severity, file, line, routine, sd);
       m_errorTracePtr->previousError.length(1);
-      m_errorTracePtr->previousError[0] = pet; 
+      m_errorTracePtr->previousError[0] = pet;
       m_depth++;
 //      m_current = &m_errorTraceRef;
     }
     else if( m_depth > m_maxDepth )
 	{
         // here we have to deep copy previous error trace !!!
-	fill(pet.errorType, pet.errorCode, pet.severity, pet.file, pet.lineNum, pet.routine, pet.shortDescription); 
+	fill(pet.errorType, pet.errorCode, pet.severity, pet.file, pet.lineNum, pet.routine, pet.shortDescription);
 	m_errorTracePtr->previousError.length(1);
 	m_errorTracePtr->previousError[0] = pet.previousError[0];
 	m_current = m_errorTracePtr;
 	}
-    else 
-	{ 
-	fill(ACSErr::ErrorSystemErrType, ::ErrorSystemErrType::ErrorTraceOverFlow, 
-	     ACSErr::Alert, "acserr.cpp", __LINE__,  "ErrorTraceHelper::ErrorTraceHelper", 
-	     ::ErrorSystemErrType::ErrorTraceOverFlowExImpl::getShortDescription()); 
-	
+    else
+	{
+	fill(ACSErr::ErrorSystemErrType, ::ErrorSystemErrType::ErrorTraceOverFlow,
+	     ACSErr::Alert, "acserr.cpp", __LINE__,  "ErrorTraceHelper::ErrorTraceHelper",
+	     ::ErrorSystemErrType::ErrorTraceOverFlowExImpl::getShortDescription());
+
 	m_errorTracePtr->previousError.length(1);
-	m_errorTracePtr->previousError[0] = pet; 
-	
+	m_errorTracePtr->previousError[0] = pet;
+
 	m_depth++;
 	m_current = m_errorTracePtr;
 	}
@@ -154,8 +154,8 @@ ErrorTraceHelper& ErrorTraceHelper::operator=(ACSErr::ErrorTrace& et)
 {
     m_errorTracePtr = &et;
     const ACSErr::ErrorTrace *c = m_errorTracePtr;
-    if (c) 
-	{ 
+    if (c)
+	{
 	m_depth=1;
 	while (c->previousError.length()!=0)
 	    {
@@ -164,17 +164,17 @@ ErrorTraceHelper& ErrorTraceHelper::operator=(ACSErr::ErrorTrace& et)
 	    }//while
 	m_current = m_errorTracePtr;
 	}
-    else 
-	{    
+    else
+	{
     	m_current = 0;
-  	m_depth = 0;	
+  	m_depth = 0;
 	}//if-else
-    
+
     return *this;
 }// operator=
 
 void ErrorTraceHelper::fill (ACSErr::ACSErrType et, ACSErr::ErrorCode ec, ACSErr::Severity severity,
-		   const char* file, int line, const char* routine, const char* sd) 
+		   const char* file, int line, const char* routine, const char* sd)
 {
    char tid[64];
 
@@ -184,7 +184,7 @@ void ErrorTraceHelper::fill (ACSErr::ACSErrType et, ACSErr::ErrorCode ec, ACSErr
    m_errorTracePtr->routine = CORBA::string_dup (routine);
 
    // setting thread name
-   if (LoggingProxy::ThreadName()!=0 && 
+   if (LoggingProxy::ThreadName()!=0 &&
        strlen(LoggingProxy::ThreadName())>0)
        {
        m_errorTracePtr->thread = CORBA::string_dup (LoggingProxy::ThreadName());
@@ -194,14 +194,14 @@ void ErrorTraceHelper::fill (ACSErr::ACSErrType et, ACSErr::ErrorCode ec, ACSErr
        ACE_OS::sprintf( tid, "ID: %lu", (long)ACE_Thread_Manager::instance()->thr_self() );
        m_errorTracePtr->thread = CORBA::string_dup (tid);
        }//if-else
-    
+
     // setting process name
     if (m_processName[0]!=0)
 	{
 	m_errorTracePtr->process = CORBA::string_dup (m_processName);
 	}
     else
-	if (LoggingProxy::ProcessName()!=0 
+	if (LoggingProxy::ProcessName()!=0
 	    && strlen(LoggingProxy::ProcessName())>0)
 	    {
 	    m_errorTracePtr->process = CORBA::string_dup (LoggingProxy::ProcessName());
@@ -212,7 +212,7 @@ void ErrorTraceHelper::fill (ACSErr::ACSErrType et, ACSErr::ErrorCode ec, ACSErr
 	    ACE_OS::sprintf (m_processName, "PID: %lu", pid);
 	    m_errorTracePtr->process = CORBA::string_dup (m_processName);
 	    }//if-else
-   
+
     //setting host name
     if (m_hostName[0]==0)
 	{
@@ -220,31 +220,31 @@ void ErrorTraceHelper::fill (ACSErr::ACSErrType et, ACSErr::ErrorCode ec, ACSErr
 	}
     m_errorTracePtr->host = CORBA::string_dup (m_hostName);
 
-    m_errorTracePtr->severity = severity;  
+    m_errorTracePtr->severity = severity;
 
     m_errorTracePtr->shortDescription = CORBA::string_dup (sd);
-  
-    m_errorTracePtr->errorCode = ec; 
+
+    m_errorTracePtr->errorCode = ec;
     m_errorTracePtr->errorType = et;
     m_current = m_errorTracePtr;
 }
 
-void ErrorTraceHelper::log (ACSErr::ErrorTrace * c, 
+void ErrorTraceHelper::log (ACSErr::ErrorTrace * c,
 			    int level, char* stackId,
 			    ACE_Log_Priority priorty)
 {
     unsigned int j;
     ACE_CString oldProcessName, oldThreadName, oldHost;
-    Logging::BaseLog::Priority prio; 
+    Logging::BaseLog::Priority prio;
 
     LoggingProxy::StackLevel (level);
     LoggingProxy::StackId (stackId);
 
-    for (j=0; j<c->data.length(); j++) 
+    for (j=0; j<c->data.length(); j++)
       LoggingProxy::AddData (c->data[j].name.in(), c->data[j].value.in());
 
   // set runtime context
-//  ACE_Log_Msg::instance()->local_host(c->host.in()); 
+//  ACE_Log_Msg::instance()->local_host(c->host.in());
 
   // here we save old process, host  and thread names
   oldHost = LoggingProxy::host();
@@ -259,7 +259,7 @@ void ErrorTraceHelper::log (ACSErr::ErrorTrace * c,
   ostr << c->shortDescription.in() << " (type=" << c->errorType << ", code=" << c->errorCode << ")" << std::ends;
   //set the logging proxy flags
   LoggingProxy::Flags(LM_SOURCE_INFO | LM_RUNTIME_CONTEXT);
- 
+
   prio = (priorty!=LM_ERROR) ? Logging::ace2acsPriority(priorty) :
       Logging::BaseLog::Priority(1 << (c->severity+7));
 
@@ -267,24 +267,23 @@ void ErrorTraceHelper::log (ACSErr::ErrorTrace * c,
   if (strlen(c->sourceObject.in())>0)
       {
       //just delegate
-      LOG_RECORD(prio, 
-		 ostr.str(), 
-		 c->file.in(), 
-		 c->lineNum, 
-		 c->routine.in(), 
+      LOG_RECORD(prio,
+		 ostr.str(),
+		 c->file.in(),
+		 c->lineNum,
+		 c->routine.in(),
 		 c->timeStamp,
 		 c->sourceObject.in());
       }
   else
       {
       //just delegate
-      LOG_RECORD(prio,
-		 ostr.str(), 
-		 c->file.in(), 
-		 c->lineNum, 
-		 c->routine.in(), 
-		 c->timeStamp,
-		 getLogger()->getName());
+      LOG_GLOBAL_RECORD(prio,
+		 ostr.str(),
+		 c->file.in(),
+		 c->lineNum,
+		 c->routine.in(),
+		 c->timeStamp);
       }//if-else
 
   // reset process and thread name
@@ -294,12 +293,12 @@ void ErrorTraceHelper::log (ACSErr::ErrorTrace * c,
 }//log
 
 void ErrorTraceHelper::log(ACE_Log_Priority priorty)
-{  
+{
   unsigned int i=0;
   ACSErr::ErrorTrace *c = m_errorTracePtr;
   char uuidBuf[40];
   ACE_Utils::UUID* uuid = ACE_Utils::UUID_GENERATOR::instance ()->generate_UUID ();
- 
+
   snprintf(uuidBuf, 40, "%s", uuid->to_string()->c_str());
   delete uuid;
 
@@ -315,11 +314,11 @@ void ErrorTraceHelper::log(ACE_Log_Priority priorty)
 }//log
 
 void ErrorTraceHelper::toString (ACSErr::ErrorTrace * c, int level, std::ostringstream &oss){
-   
+
   oss << "Error Trace Level : " << level << std::endl;
 
   char ctp[21];
-  long sec_ =  ACE_static_cast(CORBA::ULongLong, c->timeStamp) / ACE_static_cast(ACE_UINT32, 10000000u) - ACE_UINT64_LITERAL(0x2D8539C80); 
+  long sec_ =  ACE_static_cast(CORBA::ULongLong, c->timeStamp) / ACE_static_cast(ACE_UINT32, 10000000u) - ACE_UINT64_LITERAL(0x2D8539C80);
   long usec_ = (c->timeStamp % 10000000u) / 10;
   time_t tt(sec_);
   struct tm *utc_p = ACE_OS::gmtime(&tt);
@@ -331,17 +330,17 @@ void ErrorTraceHelper::toString (ACSErr::ErrorTrace * c, int level, std::ostring
   oss << "  Severity=" << c->severity;
   oss << " type=" << c->errorType << " code=" << c->errorCode << " description:" << c->shortDescription << std::endl;
 
-  for (unsigned int j=0; j<c->data.length(); j++) 
+  for (unsigned int j=0; j<c->data.length(); j++)
       oss << "    data[" << j << "] : " <<  c->data[j].name << " = " << c->data[j].value << std::endl;
 
   return;
 }
 
 std::string ErrorTraceHelper::toString()
-{  
+{
   std::ostringstream oss;
-  
-  if (!m_depth) 
+
+  if (!m_depth)
     return oss.str();
 
   ACSErr::ErrorTrace *c = m_errorTracePtr;
@@ -397,12 +396,12 @@ void ErrorTraceHelper::addData (const char* name, const char* value)
 
 
 void ErrorTraceHelper::setMemberValue (const char* name, ACE_CString& value)
-{ 
+{
     setMemberValue(name, value.c_str());
 }
 
 void ErrorTraceHelper::setMemberValue (const char* name, const char* value)
-{   
+{
     int i=0,
 	length = m_current->data.length();
     if (name == NULL || value == NULL) return;
@@ -410,7 +409,7 @@ void ErrorTraceHelper::setMemberValue (const char* name, const char* value)
 // let's try to find the data with the same name
     while (i<length && ACE_OS::strcmp(name, m_current->data[i].name) != 0)
 	i++;
-  
+
     if (i<length) // have we reached the end ?
 	{
 	// previous value should be deleted by TAO_String_Manager (=type of value in NameValue structure)
@@ -448,20 +447,20 @@ ACE_CString ErrorTraceHelper::getMemberValue<ACE_CString> (const char* name)
   return getData(name);
 }
 
-ACSErr::ErrorTrace* ErrorTraceHelper::getNext(){ 
+ACSErr::ErrorTrace* ErrorTraceHelper::getNext(){
   if (m_depth && m_current->previousError.length()!=0) {
     m_current = &m_current->previousError[0];
-    return m_current; 
+    return m_current;
   }else{
     return NULL;
   }
 }
 
-char* ErrorTraceHelper::getDescription(){ 
+char* ErrorTraceHelper::getDescription(){
     return CORBA::string_dup(m_current->shortDescription);
 }
 
-char* ErrorTraceHelper::getShortDescription(){ 
+char* ErrorTraceHelper::getShortDescription(){
     return CORBA::string_dup(m_current->shortDescription);
 }
 
@@ -478,7 +477,7 @@ void ErrorTraceHelper::setProcessName (const char *pn){
  *               CompletionInit
  *
  ******************************************************************************/
-CompletionInit::CompletionInit(const ACSErr::Completion &c) : 
+CompletionInit::CompletionInit(const ACSErr::Completion &c) :
     ACSErr::Completion(c) {
 }
 
@@ -508,13 +507,13 @@ CompletionImpl::CompletionImpl() :
 {}
 
 CompletionImpl::CompletionImpl (const ACSErr::Completion &c) :
-    CompletionInit(c), m_errorTraceHelper(previousError[0], previousError.length()) 
+    CompletionInit(c), m_errorTraceHelper(previousError[0], previousError.length())
 {}
 
 CompletionImpl::CompletionImpl(ACSErr::Completion* c, bool del) :
     CompletionInit(*c), m_errorTraceHelper(previousError[0], previousError.length())
-{ 
-    if (del) 
+{
+    if (del)
 	{
 	delete c;
 	c = 0;
@@ -522,9 +521,9 @@ CompletionImpl::CompletionImpl(ACSErr::Completion* c, bool del) :
 }
 
 CompletionImpl::CompletionImpl(ACSErr::Completion_var& c) :
-    CompletionInit(*c.ptr()), 
+    CompletionInit(*c.ptr()),
     m_errorTraceHelper(previousError[0], previousError.length())
-{ 
+{
 }
 
 void CompletionImpl::log(ACE_Log_Priority priorty)
@@ -536,13 +535,13 @@ void CompletionImpl::log(ACE_Log_Priority priorty)
     else
 	{
 	ACS_LOG_TIME (0, timeStamp, Logging::BaseLog::FIELD_UNAVAILABLE,
-		      (LM_INFO, "Completion (type=%d, code=%d) does not contain any error", 
+		      (LM_INFO, "Completion (type=%d, code=%d) does not contain any error",
 		       getType(), getCode()));
 	}
 }
 
-CompletionImpl & 
-CompletionImpl::operator=(CompletionImpl& c) 
+CompletionImpl &
+CompletionImpl::operator=(CompletionImpl& c)
 {
   if (this != &c )
 	{
@@ -565,8 +564,8 @@ CompletionImpl::CompletionImpl (const CompletionImpl &c)
 }
 
 CompletionImpl&
-CompletionImpl::operator=(Completion* c) 
-{ 
+CompletionImpl::operator=(Completion* c)
+{
     if (c != NULL )
 	{
 	type = c->type;;
@@ -589,8 +588,8 @@ CompletionImpl::operator=(Completion* c)
 }//operator=(Completion* c)
 
 CompletionImpl&
-CompletionImpl::operator=(Completion_var& c) 
-{ 
+CompletionImpl::operator=(Completion_var& c)
+{
     if (c.ptr() != NULL )
 	{
 	type = c->type;;
