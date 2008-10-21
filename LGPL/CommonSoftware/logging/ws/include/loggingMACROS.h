@@ -2,23 +2,23 @@
 #define logging_macros_H
 /*******************************************************************************
 * ALMA - Atacama Large Millimiter Array
-* (c) UNSPECIFIED - FILL IN, 2005 
-* 
+* (c) UNSPECIFIED - FILL IN, 2005
+*
 * This library is free software; you can redistribute it and/or
 * modify it under the terms of the GNU Lesser General Public
 * License as published by the Free Software Foundation; either
 * version 2.1 of the License, or (at your option) any later version.
-* 
+*
 * This library is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 * Lesser General Public License for more details.
-* 
+*
 * You should have received a copy of the GNU Lesser General Public
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingMACROS.h,v 1.20 2008/01/19 21:14:12 jschwarz Exp $"
+* "@(#) $Id: loggingMACROS.h,v 1.21 2008/10/21 17:19:09 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -33,7 +33,7 @@
 #include "loggingLogTrace.h"
 #include "loggingGetLogger.h"
 #include <iostream>
-#include <acsutilTimeStamp.h> 
+#include <acsutilTimeStamp.h>
 
 /**
  * Used to send logs. This macro is primarily useful because it automatically
@@ -58,7 +58,7 @@ else \
 
 /**
  * Used to send logs. This macro is primarily useful because it automatically
- * determines the file name and line number for the developer. 
+ * determines the file name and line number for the developer.
  * @param logPriority Logging::BaseLog::Priority of the log message
  * @param logRoutine Name of the routine in which this macro is being used from (std::string)
  * @param logMessage Log message (std::string)
@@ -90,7 +90,7 @@ else \
 
 /**
  * Used to send logs. This macro is primarily useful because it automatically
- * determines the file name and line number for the developer. 
+ * determines the file name and line number for the developer.
  * @param logPriority Logging::BaseLog::Priority of the log message
  * @param logRoutine Name of the routine in which this macro is being used from (std::string)
  * @param logMessage Log message (std::string)
@@ -120,7 +120,7 @@ else \
 
 /**
  * Used to send logs. This macro is primarily useful because it automatically
- * determines the file name and line number for the developer. 
+ * determines the file name and line number for the developer.
  * @param logPriority Logging::BaseLog::Priority of the log message
  * @param logRoutine Name of the routine in which this macro is being used from (std::string)
  * @param logMessage Log message (std::string)
@@ -176,9 +176,40 @@ else \
   std::cerr << logFile << ", line=" << logLine << std::endl; \
 }
 
+
 /**
- * Used to send logs from a static context (such as from static methods). This macro 
- * is primarily useful because it automatically determines the file name and line 
+ * Used to publish a log record to the global logger. Useful for doing things like setting
+ * a specific time the log was sent (rather than letting ACS figure this
+ * out for you).
+ * @param logPriority  ACS priority of the log.
+ * @param logMessage  Log message (string).
+ * @param logFile  Name of the file the log was published from (__FILE__)
+ * @param logLine  Line number from where the log was published (__LINE__)
+ * @param logRoutine  Name of the routine from where the log was published (string)
+ * @param logTime  Time the log was published (ACS::Time)
+ */
+#define LOG_GLOBAL_RECORD(logPriority, logMessage, logFile, logLine, logRoutine, logTime) \
+if (getLogger()!=0) \
+{ \
+    Logging::BaseLog::LogRecord lr; \
+    lr.priority  = logPriority; \
+    lr.message   = logMessage; \
+    lr.file      = logFile; \
+    lr.line      = logLine; \
+    lr.method    = logRoutine; \
+    lr.timeStamp = logTime; \
+    getLogger()->log(lr); \
+} \
+else \
+{ \
+  std::cerr << "SEVERE LOGGING ERROR - getLogger() returned NULL: file="; \
+  std::cerr << logFile << ", line=" << logLine << std::endl; \
+}
+
+
+/**
+ * Used to send logs from a static context (such as from static methods). This macro
+ * is primarily useful because it automatically determines the file name and line
  * number for the developer.
  * @param priority Logging::BaseLog::Priority of the log message
  * @param routine Name of the routine in which this macro is being used from (std::string)
@@ -211,8 +242,8 @@ Logging::Logger::getStaticLogger()->log(priority, text, __FILE__, __LINE__, rout
 }
 
 /**
- * This macro creates a LogTrace object which in turn logs a trace message where it is 
- * immediately declared and then logs another trace message when it is destroyed. It can 
+ * This macro creates a LogTrace object which in turn logs a trace message where it is
+ * immediately declared and then logs another trace message when it is destroyed. It can
  * only be used once per namespace.
  * @param routine Name of the routine in which this macro is being used from (std::string)
  */
@@ -220,7 +251,7 @@ Logging::Logger::getStaticLogger()->log(priority, text, __FILE__, __LINE__, rout
 Logging::LogTrace::LogTraceSmartPtr __autoTraceLogTraceSmartPtrInstance(new Logging::LogTrace(getLogger(), routine, __FILE__, __LINE__));
 
 /**
- * This macro is static version of AUTO_TRACE macro that can be used inside a static methods 
+ * This macro is static version of AUTO_TRACE macro that can be used inside a static methods
  * where AUTO_TRACE does not work (it does not compile).
  * For details see description of AUTO_TRACE macro.
  * @param routine Name of the routine in which this macro is being used from (std::string)
