@@ -6,6 +6,8 @@ package alma.acs.commandcenter.gui;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
@@ -24,6 +26,7 @@ import java.util.Vector;
 
 import javax.swing.AbstractButton;
 import javax.swing.Action;
+import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
@@ -140,30 +143,30 @@ public class TabPanel extends JPanel {
 
 	MyRadioButton chkLocalScript = new MyRadioButton("Local");
 	MyRadioButton chkRemoteScript = new MyRadioButton("Remote");
-	MyRadioButton chkLocalJava = new MyRadioButton("Java-only Acs");
+	//MyRadioButton chkLocalJava = new MyRadioButton("Java-only Acs");
 	JCheckBox chkUseDaemons;
 
 	ButtonGroup buttonGroup1 = new ButtonGroup();
 	{
 		buttonGroup1.add(chkLocalScript);
 		buttonGroup1.add(chkRemoteScript);
-		buttonGroup1.add(chkLocalJava);
+		//buttonGroup1.add(chkLocalJava);
 
-		chkLocalScript.setToolTipText("Run Acs scripts like acsStartManager etc. on your local machine");
-		chkRemoteScript.setToolTipText("Connect to a host via ssh and run the Acs scripts there");
-		chkLocalJava.setToolTipText("Run a pure Java Acs on your local machine");
+		chkLocalScript.setToolTipText("Run Acs scripts like acsStart on your local host");
+		chkRemoteScript.setToolTipText("Connect to a remote host and run the Acs scripts there");
+		//chkLocalJava.setToolTipText("Run a pure Java Acs on your local machine");
 
 		chkLocalScript.setName("chk_Local");
 		chkRemoteScript.setName("chk_Remote");
-		chkLocalJava.setName("chk_Java");
+		//chkLocalJava.setName("chk_Java");
 		
 		chkLocalScript.setMnemonic(KeyEvent.VK_L);
 		chkRemoteScript.setMnemonic(KeyEvent.VK_R);
-		chkLocalJava.setMnemonic(KeyEvent.VK_J);
+		//chkLocalJava.setMnemonic(KeyEvent.VK_J);
 
-		String osName = System.getProperty("os.name");
-		boolean win32 = osName.length() >= 3 && osName.substring(0, 3).equalsIgnoreCase("win");
-		chkLocalJava.setEnabled(true);
+		//String osName = System.getProperty("os.name");
+		//boolean win32 = osName.length() >= 3 && osName.substring(0, 3).equalsIgnoreCase("win");
+		//chkLocalJava.setEnabled(true);
 	}
 
 	JPanel containerPanel;
@@ -175,8 +178,8 @@ public class TabPanel extends JPanel {
 	JTextField acsinstanceF = new JTextField(5);
 
 	JTextField hostF = new JTextField(20);
-	JTextField accountF = new JTextField(20);
-	JTextField passwordF = new JPasswordField(20);
+	JTextField accountF = new JTextField(10);
+	JTextField passwordF = new JPasswordField(10);
 
 	JTextField cdbrootF = new JTextField(20);
 
@@ -257,33 +260,33 @@ public class TabPanel extends JPanel {
 		// local java settings
 		// -------------------------------------------------------------------
 
-		JPanel localJavaTab = new JPanel(new BorderLayout());
+//		JPanel localJavaTab = new JPanel(new BorderLayout());
 
-		JPanel g = new JPanel(new BorderLayout());
-		g.add(chkLocalJava, BorderLayout.NORTH);
+//		JPanel g = new JPanel(new BorderLayout());
+//		g.add(chkLocalJava, BorderLayout.NORTH);
 
 		JPanel m = new JPanel(new SpringLayout());
 		lblE = new JLabel("Cdb Root");
 		lblE.setToolTipText("The Cdb Location  (Additional schemas searched for in " + System.getProperty("ACS.cdbpath") + ")");
 		m.add(lblE);
 		m.add(cdbrootF);
-		/*m.add(btnShowCdbChooser);*/ // cdb-chooser is experimental
 		cdbrootF.addFocusListener(focusListener);
-		chkLocalJava.addFocusListener(focusListener);
-		chkLocalJava.disenable(lblE);
-		chkLocalJava.disenable(cdbrootF);
-		chkLocalJava.disenable(btnShowCdbChooser);
-		SpringUtilities.makeCompactGrid(m, 1, 0, 30, 3, 6, 2);
-		g.add(m, BorderLayout.SOUTH);
+		/*m.add(btnShowCdbChooser);*/ // cdb-chooser is experimental
+//		chkLocalJava.addFocusListener(focusListener);
+//		chkLocalJava.disenable(lblE);
+//		chkLocalJava.disenable(cdbrootF);
+//		chkLocalJava.disenable(btnShowCdbChooser);
+//		SpringUtilities.makeCompactGrid(m, 1, 0, 30, 3, 6, 2);
+//		g.add(m, BorderLayout.SOUTH);
+//
+//		localJavaTab.add(g);
 
-		localJavaTab.add(g);
-
-		tabbedPane1LeftContent.add(localJavaTab);
-		tabbedPane1LeftContent.add(Box.createVerticalStrut(1));
+//		tabbedPane1LeftContent.add(localJavaTab);
+//		tabbedPane1LeftContent.add(Box.createVerticalStrut(1));
 
 		cdbrootF.setName("txt_CdbRoot");
 		btnShowCdbChooser.setName("btn_Show_Cdb_Chooser");
-		
+
 		// -------------------------------------------------------------------
 		// remote settings
 		// -------------------------------------------------------------------
@@ -294,34 +297,30 @@ public class TabPanel extends JPanel {
 		JPanel j = new JPanel(new BorderLayout());
 		j.add(chkRemoteScript, BorderLayout.NORTH);
 
-		JPanel k = new JPanel(new SpringLayout());
-		k.add(lblB = new JLabel("Host"));
-		k.add(hostF);
-		chkRemoteScript.addFocusListener(focusListener);
-		chkRemoteScript.disenable(lblB);
-		chkRemoteScript.disenable(hostF);
-		hostF.addFocusListener(focusListener);
-		k.add(lblC = new JLabel("Username"));
-		k.add(accountF);
-		lblC.setLabelFor(accountF);
-		chkRemoteScript.disenable(lblC);
-		chkRemoteScript.disenable(accountF);
-		accountF.addFocusListener(focusListener);
-		k.add(lblD = new JLabel("Password"));
-		k.add(passwordF);
-		lblD.setLabelFor(passwordF);
-		chkRemoteScript.disenable(lblD);
-		chkRemoteScript.disenable(passwordF);
-		passwordF.addFocusListener(focusListener);
-		SpringUtilities.makeCompactGrid(k, 3, 2, 30, 3, 6, 2);
-		j.add(k, BorderLayout.CENTER);
-
-		chkUseDaemons = new JCheckBox(new ActionUseDaemons());
-		chkUseDaemons.setToolTipText("Use Acs Daemons instead of ssh");
-		chkUseDaemons.setBorder(new EmptyBorder(6,30,3,0)); // align with textfields
-		chkRemoteScript.disenable(chkUseDaemons);
-		j.add(chkUseDaemons, BorderLayout.SOUTH);
+		JPanel k = new JPanel(new GridBagLayout());
 		
+		chkUseDaemons = new JCheckBox(new ActionUseDaemons());
+		chkUseDaemons.setToolTipText("Use Acs daemons instead of ssh");
+		chkUseDaemons.setBorder(BorderFactory.createEmptyBorder());
+		k.add(chkUseDaemons, gridbagpos(0,0).width(2).gapy(5));
+
+		k.add(lblB = new JLabel("Host"), gridbagpos(1,0));
+		k.add(hostF, gridbagpos(1,1).width(3));
+		chkRemoteScript.addFocusListener(focusListener);
+		hostF.addFocusListener(focusListener);
+		
+		k.add(lblC = new JLabel("User"), gridbagpos(2,0));
+		k.add(accountF, gridbagpos(2,1));
+		lblC.setLabelFor(accountF);
+		accountF.addFocusListener(focusListener);
+
+		k.add(lblD = new JLabel("Pwd"), gridbagpos(2,2));
+		k.add(passwordF, gridbagpos(2,3).weightx(0.2));
+		lblD.setLabelFor(passwordF);
+		passwordF.addFocusListener(focusListener);
+
+		k.setBorder(new EmptyBorder(0,30,0,5));
+		j.add(k, BorderLayout.CENTER);
 		
 		remoteTab.add(j);
 
@@ -394,12 +393,9 @@ public class TabPanel extends JPanel {
 		// -------------------------------------------------------------------
 
 		controlsPanel = new JPanel(new SpringLayout());
-		controlsPanel.setBorder(createTitledBorder(" Controls "));
+		controlsPanel.setBorder(createTitledBorder(" Acs Suite "));
 
 		buttonPanel = new JPanel(new SpringLayout());
-
-		JLabel label1 = new JLabel("Acs Suite");
-		buttonPanel.add(label1);
 
 		buttonPanel.add(btnStartAcs);
 		flowDialog.disenable(btnStartAcs);
@@ -410,47 +406,36 @@ public class TabPanel extends JPanel {
 		buttonPanel.add(btnKillAcs);
 		flowDialog.disenable(btnKillAcs);
 
-		SpringUtilities.makeCompactGrid(buttonPanel, 1, 4);
+		buttonPanel.add(Box.createHorizontalStrut(5));
+		buttonPanel.add(new JSeparator(JSeparator.VERTICAL));
+		
+		buttonPanel.add(btnShowAdvanced);
+		flowDialog.disenable(btnShowAdvanced);
+		
+		SpringUtilities.makeCompactGrid(buttonPanel, 1, 0);
 
 		// -------------------------------------------------------------------
 		// advanced section
 		// -------------------------------------------------------------------
 
 		panelAdvanced = new JPanel(new BorderLayout());
-
-		flowDialog.disenable(btnShowAdvanced);
-
-		JPanel p = new JPanel(new BorderLayout());
-		p.add(btnShowAdvanced, BorderLayout.NORTH);
-		p.setBorder(new EmptyBorder(0, 0, 0, 0));
-
-		panelAdvanced.add(p, BorderLayout.WEST);
-
 		buttonPanelAdvanced = new JPanel(new SpringLayout());
-		buttonPanelAdvanced.setBorder(new CompoundBorder(new EmptyBorder(8, 4, 4, 4), LineBorder.createGrayLineBorder()));
 
-		JLabel label2 = new JLabel("Services");
-		buttonPanelAdvanced.add(label2);
-
+		buttonPanelAdvanced.add(new JLabel("Services"));
 		buttonPanelAdvanced.add(btnStartServices);
 		flowDialog.disenable(btnStartServices);
-
 		buttonPanelAdvanced.add(btnStopServices);
 		flowDialog.disenable(btnStopServices);
 
-		buttonPanelAdvanced.add(new JPanel());
-
-		JLabel label3 = new JLabel("Manager");
-		buttonPanelAdvanced.add(label3);
-
+		buttonPanelAdvanced.add(Box.createHorizontalStrut(15));
+		
+		buttonPanelAdvanced.add(new JLabel("Manager"));
 		buttonPanelAdvanced.add(btnStartManager);
 		flowDialog.disenable(btnStartManager);
-
 		buttonPanelAdvanced.add(btnStopManager);
 		flowDialog.disenable(btnStopManager);
 
-		SpringUtilities.makeCompactGrid(buttonPanelAdvanced, 1, 7);
-
+		SpringUtilities.makeCompactGrid(buttonPanelAdvanced, 1, 0);
 		panelAdvanced.add(buttonPanelAdvanced, BorderLayout.CENTER);
 
 		/*
@@ -481,12 +466,10 @@ public class TabPanel extends JPanel {
 		containerPanel = new JPanel(new BorderLayout());
 		containerPanel.setBorder(createTitledBorder(" Containers "));
 
-		JPanel a = new JPanel(new GridLayout(0, 6, 5, 5));
-		a.add(new JLabel());
-		a.add(new JLabel("Name"));
-		a.add(new JLabel());
-		a.add(new JLabel("Type"));
-		a.add(new JLabel());
+		JPanel a = new JPanel(new GridLayout(1, 0));
+		a.add(new JLabel("Name", JLabel.CENTER));
+		a.add(new JLabel("Type", JLabel.CENTER));
+		a.add(new JLabel("TypeModif.", JLabel.CENTER));
 		a.add(new JLabel());
 		containerPanel.add(a, BorderLayout.NORTH);
 
@@ -501,12 +484,13 @@ public class TabPanel extends JPanel {
 
 		containerPanel.add(scp, BorderLayout.CENTER);
 
-		// freeze the size of the scrollpane to 3 containerlines
+		// freeze the size of the scrollpane to n containerlines
 		ContainerLine filler = new ContainerLine();
 		scp.validate();
 		int scrollbarWidth = 25; // can't find out this value before scrollpane is visible on screen
+		int nLines = 5; // number of lines
 		scp.freezeSize(filler.getPreferredSize().width + scrollbarWidth,
-				         filler.getPreferredSize().height * 3 + 4 * 2 + 2); // <-- don't ask...
+				         filler.getPreferredSize().height * nLines + 4 * 2 + 2); // <-- don't ask...
 
 
 		btnMoreContainers.setToolTipText("More Containers");
@@ -571,19 +555,21 @@ public class TabPanel extends JPanel {
 		tabbedPane1Left.add(tabbedPane1LeftContent, BorderLayout.NORTH);
 		tabbedPane1Left.setBorder(createTitledBorder(" Common Settings "));
 
-		JPanel tabbedPane1 = new JPanel(new BorderLayout());
-		tabbedPane1.add(tabbedPane1Left, BorderLayout.CENTER);
-		tabbedPane1.add(tabbedPane1Right, BorderLayout.EAST);
+		Box tabbedPane1 = Box.createHorizontalBox();
+		tabbedPane1.add(tabbedPane1Left);
+		tabbedPane1.add(tabbedPane1Right);
 		this.add(tabbedPane1, BorderLayout.NORTH);
 
 		// -------------------------------------------------------------------
 		// select some checkboxes, etc.
 		// -------------------------------------------------------------------
 
+		disenabler = new Disenabler();
+		
 		// unselect all radiobuttons, then select wanted one
 		// weird but needed to activate the buttons' disenable event-handlers
-		for (Enumeration en = buttonGroup1.getElements(); en.hasMoreElements();)
-			((AbstractButton) en.nextElement()).setSelected(false);
+		for (Enumeration<AbstractButton> en = buttonGroup1.getElements(); en.hasMoreElements();)
+			en.nextElement().setSelected(false);
 		chkLocalScript.setSelected(true);
 
 		// we want the "advanced" section to be off, initially
@@ -591,6 +577,55 @@ public class TabPanel extends JPanel {
 		setAdvancedVisible(false);
 	}
 
+	// GridBagLayout is such a pain
+	GridBag gridbagpos (int y, int x) {
+		GridBag ret = new GridBag();
+		ret.pos(y, x);
+		ret.gapx(2).gapy(2);
+		ret.fill = GridBag.HORIZONTAL;
+		ret.anchor = GridBag.LINE_START;
+		return ret;
+	}
+	class GridBag extends GridBagConstraints {
+		GridBag pos (int y, int x) {gridy = y; gridx = x; return this;}
+		GridBag gapy (int n) {insets.top = insets.bottom = n;  return this;}
+		GridBag gapx (int n) {insets.left = insets.right = n;  return this;}
+		GridBag width (int n) {gridwidth = n; return this;}
+		GridBag weightx (double n) {weightx = n; return this;}
+	}
+
+
+	// use this to add swing components that will be automatically
+	// enabled/disabled according to the selection status of this radiobutton
+	Disenabler disenabler;
+
+	class Disenabler implements ItemListener {
+
+		{
+			chkRemoteScript.addItemListener(this);
+			chkLocalScript.addItemListener(this);
+			chkUseDaemons.addItemListener(this);
+		}
+
+		public void itemStateChanged (ItemEvent e) {
+			if (chkRemoteScript.isSelected()) {
+				JComponent[] cc1 = {lblB, hostF, chkUseDaemons};
+				for (JComponent c : cc1)
+					c.setEnabled(true);
+
+				JComponent[] cc2 = {lblC, accountF, lblD, passwordF};
+				for (JComponent c : cc2)
+					c.setEnabled(!chkUseDaemons.isSelected());
+
+			} else{
+				JComponent[] cc = {lblB, hostF, chkUseDaemons, lblC, accountF, lblD, passwordF};
+				for (JComponent c : cc)
+					c.setEnabled(false);
+			}
+		}
+	}
+	
+	
 	protected Border createTitledBorder (String title) {
 		Border ret = new CompoundBorder(new EmptyBorder(5, 7, 5, 7), new TitledBorder(LineBorder.createBlackLineBorder(), title));
 		return ret;
@@ -797,7 +832,7 @@ public class TabPanel extends JPanel {
 	 * 
 	 * @return the newly created ContainerLine
 	 */
-	protected void addContainerLine (String name, String type, boolean selected) {
+	protected void addContainerLine (String name, String type, String modif, boolean selected) {
 		/*
 		 *  When modifying this, remember to
 		 *  change lessContainerLines() as well
@@ -805,8 +840,11 @@ public class TabPanel extends JPanel {
 		ContainerLine containerLine = new ContainerLine();
 		containerLine.nameF.setText(name);
 		containerLine.typeF.setSelectedItem(type);
+		containerLine.modifF.setText(modif);
 		containerLine.selectB.setSelected(selected);
 
+		containerLine.modifF.setToolTipText("Enter comma-separated Modifiers, e.g. \"archive\"");
+		
 		containerLinePanel.add(containerLine);
 		containerLines.add(containerLine);
 
@@ -820,18 +858,12 @@ public class TabPanel extends JPanel {
 		containerLine.btnData.setName("btn_Edit_Container#"+index);
 		containerLine.nameF.setName("txt_ContainerName#"+index);
 		containerLine.typeF.setName("txt_ContainerType#"+index);
+		containerLine.modifF.setName("txt_ContainerTypeModif#"+index);
 
 		// add model-autowrite
 		containerLine.nameF.addFocusListener(focusListener);
 		containerLine.typeF.addFocusListener(focusListener);
-
-		// when pure-java is selected, the container type is fixed, namely: it
-		// will be java container
-		chkLocalScript.disenable(containerLine.typeF);
-		chkRemoteScript.disenable(containerLine.typeF);
-
-		// TODO(msc) same problem as in constructor: simulate a user click on
-		// radiobutton to invoke disenable listener
+		containerLine.modifF.addFocusListener(focusListener);
 
 		// force scrollbar to recalculate its appearance
 		containerPanel.validate();
@@ -848,7 +880,7 @@ public class TabPanel extends JPanel {
 			containerLine.lblMnemomic.setLabelFor(containerLine.nameF);
 		}
 	}
-	
+
 	protected void moveContainerLine (int index, boolean upwards) {
 		boolean err = (upwards)? index == 0 : index >= containerLines.size()-1;
 		if (!err) {
@@ -882,9 +914,7 @@ public class TabPanel extends JPanel {
 
 		containerLine.nameF.removeFocusListener(focusListener);
 		containerLine.typeF.removeFocusListener(focusListener);
-
-		chkLocalScript.undisenable(containerLine.typeF);
-		chkRemoteScript.undisenable(containerLine.typeF);
+		containerLine.modifF.removeFocusListener(focusListener);
 
 		containerLines.remove(containerLine);
 		containerLinePanel.remove(containerLine);
@@ -896,6 +926,11 @@ public class TabPanel extends JPanel {
 	}
 
 	protected void setAdvancedVisible (boolean b) {
+		// msc (2008-10): advanced panel is now really invisible when disabled.
+		// this means TODO the whole "advanced" stuff can cleaned up (e.g. remove TwoStateEnableButton)
+		buttonPanelAdvanced.setVisible(b);
+		TabPanel.this.validate();
+
 		for (int i = 0; i < buttonPanelAdvanced.getComponentCount(); i++) {
 			Component c = buttonPanelAdvanced.getComponent(i);
 			if (c instanceof TwoStageEnableButton)
@@ -1041,39 +1076,17 @@ public class TabPanel extends JPanel {
 		}
 	}
 
-	protected class MyRadioButton extends JRadioButton implements ItemListener {
-
-		Vector<JComponent> comps = new Vector<JComponent>();
+	protected class MyRadioButton extends JRadioButton {
 
 		MyRadioButton(String text) {
 			super(text);
-			addItemListener(this);
 		}
 
-		// use this to add swing components that will be automatically
-		// enabled/disabled according to the selection status of this radiobutton
-		protected void disenable (JComponent c) {
-			comps.add(c);
-		}
-
-		protected void undisenable (JComponent c) {
-			comps.remove(c);
-		}
-
-		public void itemStateChanged (ItemEvent e) {
-			respondToIsSelected(e.getStateChange() == ItemEvent.SELECTED);
-		}
-
-		// needed since doClick() doesn't trigger the itemStateChange event handler
+		// needed since doClick() doesn't trigger itemStateChanged
 		@Override
 		public void setSelected (boolean b) {
-			respondToIsSelected(b);
+			disenabler.itemStateChanged(null);
 			super.setSelected(b);
-		}
-
-		protected void respondToIsSelected (boolean b) {
-			for (int i = 0; i < comps.size(); i++)
-				((JComponent) comps.elementAt(i)).setEnabled(b);
 		}
 
 	}
@@ -1085,6 +1098,7 @@ public class TabPanel extends JPanel {
 		Button btnStart, btnStop, btnData;
 		JTextField nameF = new JTextField(10);
 		JComboBox typeF = new JComboBox(new String[]{"java", "cpp", "py"});
+		JTextField modifF = new JTextField(10);
 
 		ContainerLine() {
 			super();
@@ -1092,9 +1106,10 @@ public class TabPanel extends JPanel {
 			this.add(lblMnemomic);
 			this.add(Box.createHorizontalStrut(5));
 
-			JPanel b = new JPanel(new GridLayout(0, 2, 5, 5));
+			JPanel b = new JPanel(new GridLayout(0, 3, 5, 5));
 			b.add(nameF);
 			b.add(typeF);
+			b.add(modifF);
 			this.add(b);
 			this.add(Box.createHorizontalStrut(5));
 
@@ -1109,13 +1124,14 @@ public class TabPanel extends JPanel {
 
 			// support for selecting a container line 
 			// by placing the cursor in the name field
-			nameF.addFocusListener(new FocusAdapter() {
-				@Override
-				public void focusGained (FocusEvent e) {
+			FocusListener focLi = new FocusAdapter() {
+				@Override public void focusGained (FocusEvent e) {
 					selectB.setSelected(true);
 					validateAfterProgrammaticUpdate(selectB);
 				}
-			});
+			};
+			nameF.addFocusListener(focLi);
+			modifF.addFocusListener(focLi);
 			
 			this.add(btnStart = new Button(master.icons.getStartIcon(), this));
 			btnStart.setToolTipText("Start this Container");
@@ -1624,7 +1640,7 @@ public class TabPanel extends JPanel {
 
 		@Override
 		protected void actionPerformed () throws Throwable {
-			addContainerLine("", "", false);
+			addContainerLine("", "", "", false);
 			master.controller.moreContainers();
 		}
 	}
