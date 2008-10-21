@@ -262,7 +262,7 @@ public class DeploymentTree extends JTree {
 
 	public void refreshManagers () {
 		// iterate over root's children
-		for (Enumeration en = getRoot().children(); en.hasMoreElements();) {
+		for (Enumeration<Object> en = getRoot().children(); en.hasMoreElements();) {
 			DefaultMutableTreeNode managerNode = (DefaultMutableTreeNode) en.nextElement();
 			shieldedRefreshManager(maciSupervisor(managerNode));
 		}
@@ -277,7 +277,7 @@ public class DeploymentTree extends JTree {
 		String toFind = managerLoc;
 
 		// iterate over root's children
-		for (Enumeration en = getRoot().children(); en.hasMoreElements();) {
+		for (Enumeration<Object> en = getRoot().children(); en.hasMoreElements();) {
 			// inspect each child
 			DefaultMutableTreeNode managerNode = (DefaultMutableTreeNode) en.nextElement();
 			String managerLocation = maciSupervisor(managerNode).getManagerLocation();
@@ -616,8 +616,6 @@ public class DeploymentTree extends JTree {
 			runInSwingThread(r);
 		}
 
-		@SuppressWarnings("unchecked")
-		// JDK library is not type-safe
 		private void convert (DefaultMutableTreeNode src, DefaultMutableTreeNode trg) {
 			List<DefaultMutableTreeNode> children = Collections.list((Enumeration<DefaultMutableTreeNode>) src.children());
 			for (DefaultMutableTreeNode subSrc : children) {
@@ -688,7 +686,7 @@ public class DeploymentTree extends JTree {
 		protected ContextMenu() {
 		/*
 		 * (Apr 15, 2004) msc: commented out When one removes a folder like "Containers", it
-		 * disappears unrecoverable When one removes an element like "bilboContainer", it
+		 * disappears unrecoverably. When one removes an element like "bilboContainer", it
 		 * reappears with the next Maci-Refresh This asymetry is not user-friendly, the
 		 * feature by itself is not so useful anyway. It has now gone to ManagerContextMenu.
 		 * 
@@ -712,8 +710,15 @@ public class DeploymentTree extends JTree {
 			this.add(new ManagerPingAction());
 			this.add(new ManagerShutdownAction());
 
-			this.add(new JPopupMenu.Separator());
-			this.add(new RemoveFromViewAction());
+
+			/* 
+			 * msc (2008-10): "remove from view" hardly needed: if a
+			 * manager goes away, we offer to remove it anyhow. and
+			 * other than that, this entry is undesirable inside the omc.
+			 * 
+			 * this.add(new JPopupMenu.Separator());
+			 * this.add(new RemoveFromViewAction());
+			 */
 
 		}
 
