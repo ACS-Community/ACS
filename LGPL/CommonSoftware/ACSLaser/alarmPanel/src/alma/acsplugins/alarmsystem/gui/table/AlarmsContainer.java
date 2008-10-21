@@ -25,17 +25,18 @@ import cern.laser.client.data.Alarm;
 
 /**
  * A container for the alarms as needed by the AlarmTableModel
- * 
+ * <P>
  * It is composed of 2 collections:
- *  - the HashMap stores the entry accessed by their alarmID (the key)
- *  - the Vector of Strings used to remember the position of each alarm when the max
- *                          number of alarms has been reached
+ * <OL>
+ *  <LI> the <code>HashMap</code> stores each entry accessed by its alarmID (the key)
+ *  <LI> the <code>Vector</code> of <code>Strings</code> used to remember the position of 
+ *  						each alarm when the max number of alarms has been reached
  *                          It also allows to access the alarms by row
- *               
+ * </OL>         
  * Basically the array stores the alarmID of each row in the table.
  * The content of the row i.e. the Alarm, is then obtained by the
  * HashMap passing the alarmID.
- * 
+ * <P>
  * In this way it is possible to get the entry of a row by getting
  * the key from the Vector. And it is possible to get an alarm
  * from the HashMap.
@@ -91,13 +92,30 @@ public class AlarmsContainer {
 		
 	}
 
-	// The entries in the table
+	/**
+	 * The entries in the table
+	 */
 	private HashMap<String, AlarmTableEntry> entries = new HashMap<String, AlarmTableEntry>();
 	
-	// The index
+	/**
+	 * The index when the reduction rules are not applied
+	 * <P>
+	 * Each item in the vector represents the ID of the entry 
+	 * shown in a table row when the reduction rules are not used.
+	 */
 	private final Vector<String> index = new Vector<String>();
 	
-	// The maximum number of alarms to store in the container
+	/**
+	 * The index when the reduction rules are in place
+	 * <P>
+	 * Each item in the vector represents the ID of the entry 
+	 * shown in a table row when the reduction rules are used.
+	 */
+	private final Vector<String> indexWithReduction = new Vector<String>();
+	
+	/**
+	 * The maximum number of alarms to store in the container
+	 */
 	private final int maxAlarms;
 	
 	/**
@@ -110,10 +128,18 @@ public class AlarmsContainer {
 	}
 	
 	/**
+	 * Return the number of alarms in the container depending
+	 * if the reduction rules are applied or not
+	 * 
+	 * @param <code>true</code> if the reduction rules are applied
 	 * @return The number of alarms in the container
 	 */
-	public synchronized int size() {
-		return index.size();
+	public synchronized int size(boolean reduced) {
+		if (!reduced) {
+			return index.size();
+		} else {
+			return indexWithReduction.size();
+		}
 	}
 	
 	/**
@@ -134,8 +160,8 @@ public class AlarmsContainer {
 		if (entry.getAlarm().getAlarmId()==null ||entry.getAlarm().getAlarmId().length()==0) {
 			throw new IllegalStateException("The alarm ID is invalid");
 		}
-		if (index.size()>maxAlarms) {
-			throw new ArrayIndexOutOfBoundsException("Container empty");
+		if (index.size()>=maxAlarms) {
+			throw new ArrayIndexOutOfBoundsException("Container full");
 		}
 		if (entries.containsKey(entry.getAlarm().getAlarmId())) {
 			throw new AlarmContainerException("Alarm already in the Container");
@@ -145,6 +171,9 @@ public class AlarmsContainer {
 			throw new IllegalStateException("Inconsistency between index and entries");
 		}
 		index.add(entry.getAlarm().getAlarmId());
+		if (entry.isReduced()) {
+			indexWithReduction.add(entry.getAlarm().getAlarmId());
+		}
 		entries.put(entry.getAlarm().getAlarmId(), entry);
 	}
 	
@@ -166,16 +195,17 @@ public class AlarmsContainer {
 	 * Return the entry in the given position
 	 * 
 	 * @param pos The position of the alarm in the container
+	 * @param reduced <code>true</code> if the alarms in the table are reduced
 	 * @return The AlarmTableEntry in the given position
 	 */
-	public synchronized AlarmTableEntry get(int pos) {
+	public synchronized AlarmTableEntry get(int pos, boolean reduced) {
 		if (pos<0) {
 			throw new IllegalArgumentException("The position must be greater then 0");
 		}
 		if (pos>index.size()) {
 			throw new IndexOutOfBoundsException("Can't acces item at pos "+pos+": [0,"+index.size()+"[");
 		}
-		String ID = index.get(pos);
+		String ID = (!reduced)?index.get(pos):indexWithReduction.get(pos);
 		AlarmTableEntry ret = get(ID);
 		if (ret==null) {
 			throw new IllegalStateException("Inconsistent state of container");
@@ -202,6 +232,7 @@ public class AlarmsContainer {
 	 */
 	public synchronized void clear() {
 		index.clear();
+		indexWithReduction.clear();
 		entries.clear();
 	}
 	
@@ -219,10 +250,11 @@ public class AlarmsContainer {
 		if (ID==null) {
 			throw new IllegalStateException("The index vector returned a null item");
 		}
-		AlarmTableEntry ret = entries.get(ID);
+		AlarmTableEntry ret = entries.remove(ID);
 		if (ret==null) {
 			throw new IllegalStateException("The entries  HashMap contains a null entry");
 		}
+		indexWithReduction.remove(ID);
 		return ret;
 	}
 	
@@ -242,6 +274,7 @@ public class AlarmsContainer {
 			throw new AlarmContainerException("Alarm not in the container");
 		}
 		index.remove(pos);
+		indexWithReduction.remove(pos);
 		AlarmTableEntry oldEntry = entries.remove(ID);
 		if (oldEntry==null) {
 			throw new IllegalStateException("The ID was in index but not in entries");
@@ -249,8 +282,8 @@ public class AlarmsContainer {
 	}
 	
 	/**
-	 * Remove all the inactive alarms of a given type
-	 * delegating to the AlarmsContainer.
+	 * Remove all the inactive alarms of a given type.
+	 * <P>
 	 * If the type is INACTIVE all inactive alarms are deleted
 	 * regardless of their priority
 	 * 
@@ -285,7 +318,7 @@ public class AlarmsContainer {
 	
 	/**
 	 * Replace the alarm in a row with passed one.
-	 * 
+	 * <P>
 	 * The entry to replace the alarm is given by the alarm ID of the parameter.
 	 * 
 	 * @param newAlarm The not null new alarm 
@@ -310,5 +343,12 @@ public class AlarmsContainer {
 			String key = index.remove(pos);
 			index.insertElementAt(key, 0);
 		}
+		pos=indexWithReduction.indexOf(newAlarm.getAlarmId());
+		if (pos>=0) {
+			String key = indexWithReduction.remove(pos);
+			indexWithReduction.insertElementAt(key, 0);
+		}
+		
+		
 	}
 }
