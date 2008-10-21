@@ -145,7 +145,8 @@ public class Firestarter {
 			if (acsCorba != null) {
 				new Thread() {
 					public void run () {
-						acsCorba.shutdownORB(true, false);
+						if (acsCorba != null)
+							acsCorba.shutdownORB(true, false);
 					}
 				}.start();
 				// acsCorba.blockOnORB(); HSO 2008-09 commented out because of the above change to wait_for_completion==true
