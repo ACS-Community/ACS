@@ -27,9 +27,6 @@ import java.util.logging.Logger;
 
 import javax.help.HelpSet;
 import javax.help.HelpSetException;
-import javax.swing.JFrame;
-import javax.swing.JScrollPane;
-import javax.swing.JTree;
 
 import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.ValidationException;
@@ -52,7 +49,6 @@ import alma.acs.commandcenter.meta.IMaciSupervisor;
 import alma.acs.commandcenter.meta.Firestarter.OrbInitException;
 import alma.acs.commandcenter.util.MiscUtils;
 import alma.acs.util.ACSPorts;
-import alma.acs.util.AcsLocations;
 import alma.entity.xmlbinding.acscommandcenterproject.AcsCommandCenterProject;
 import alma.entity.xmlbinding.acscommandcenterproject.ContainerT;
 import alma.entity.xmlbinding.acscommandcentertools.AcsCommandCenterTools;
@@ -105,7 +101,10 @@ public class CommandCenterLogic {
 		
 		log = MiscUtils.getPackageLogger(this);
 		
-		projectMaker = new ProjectMaker(this);
+		// Make up the creator string for command center projects.
+		String projectCreatorId = (version().equals(""))? null : "acc-"+version();
+
+		projectMaker = new ProjectMaker(projectCreatorId);
 		project = projectMaker.createProject();
 		model = new MyProjectRunModel(project);
 
@@ -195,7 +194,7 @@ public class CommandCenterLogic {
 
 	/** assigned in version() */
 	protected String version = null;
-	
+
 	/** 
 	 * Returns the first non-empty line of file "src/VERSION",
 	 * or the empty string in any erroneous case.
@@ -214,26 +213,14 @@ public class CommandCenterLogic {
 					}
 				}
 			} catch (Exception e) {}
-			
+
 			ret = (ret == null)? "" : ret;
 			this.version = ret;
 		}
+
 		return version;
 	}
 
-	/** 
-	 * Make up the creator string for command center projects
-	 * from a fixed prefix and the VERSION info. If no version
-	 * could be found, this returns <code>null</code>.
-	 */
-	public String projectCreatorId() {
-		String version = version();
-		if (version.equals("")) {
-			return null;
-		}
-		return "acc-"+version;
-	}
-	
 	
 	//
 	// ============ Resource Loading ====================
