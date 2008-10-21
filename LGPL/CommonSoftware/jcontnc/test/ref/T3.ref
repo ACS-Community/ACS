@@ -8,7 +8,7 @@
 1 - ContainerStatusMsg: Automatic component loading ends
 1 - ContainerStatusMsg: Ready
 1 - ----------T--:--:--.--- INFO [ABSTRACT_PUBLISHER] Attempting to create the AbstractNC_Channel channel.
-1 - ----------T--:--:--.--- INFO [ABSTRACT_PUBLISHER] Successfully created a notification channel [ logName='LOG_NC_ChannelCreated_OK' ChannelName='AbstractNC_Channel' Service='NotifyEventChannelFactory' ]
+1 - ----------T--:--:--.--- INFO [ABSTRACT_PUBLISHER] Successfully created a notification channel [ logName='LOG_NC_ChannelCreated_OK' ChannelName='AbstractNC_Channel' ChannelId='xxx' Service='NotifyEventChannelFactory' ]
 1 - Created NC Pulisher
 1 - Created NC Receiver
 1 - NC_TEST: Got temperatureDataBlockEvent in receive
