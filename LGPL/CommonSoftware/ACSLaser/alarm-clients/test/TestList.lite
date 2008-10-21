@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: TestList.lite,v 1.3 2008/10/16 15:26:45 acaproni Exp $"
+# "@(#) $Id: TestList.lite,v 1.4 2008/10/21 08:18:36 acaproni Exp $"
 #
 # TestList
 #
@@ -34,5 +34,6 @@ PROLOGUE clientTATPrologue
 3 testCategoryClientParents "testCategoryClientParents"
 4 testCategoryClientChildren "testCategoryClientChildren"
 5 testCategoryClientActiveChildren "testCategoryClientActiveChildren"
+6 testUserProps "testUserProps"
 
 EPILOGUE acsutilTATEpilogue
