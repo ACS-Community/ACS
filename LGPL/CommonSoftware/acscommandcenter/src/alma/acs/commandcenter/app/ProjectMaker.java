@@ -65,7 +65,7 @@ public class ProjectMaker {
 			
 			// 3. fallback
 			if (cdbroot == null || cdbroot.equals("")) {
-				cdbroot = "/alma/ACS-4.0/acsdata/config/defaultCDB";	
+				cdbroot = "/alma/ACS-8.0/acsdata/config/defaultCDB";	
 			}
 		}
 		
