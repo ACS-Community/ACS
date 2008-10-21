@@ -27,10 +27,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.JToggleButton;
 import javax.swing.ListCellRenderer;
 import javax.swing.SwingConstants;
 import javax.swing.border.EtchedBorder;
@@ -209,31 +213,57 @@ public class Toolbar extends JPanel implements ActionListener {
 		}
 	}
 	
-	// The combo box for autoacknowledgement of alarms
+	/**
+	 * The combo box for auto-acknowledgment of alarms
+	 */
 	private JComboBox autoAckLevelCB=new JComboBox(ComboBoxValues.values());
+	
+	/**
+	 * The icon shown in the button when reduction is active
+	 */
+	private ImageIcon activeReductionIcon;
+	
+	/**
+	 * The icon shown in the button when reduction is inactive
+	 */
+	private ImageIcon inactiveReductionIcon;
+	
+	/**
+	 * The check box to activate/deactivate the reduction of alarms
+	 */
+	private JToggleButton reductionRulesBtn;
 
-	// The label box for autoacknowledgement of alarms
+	/**
+	 * The label box for autoacknowledgement of alarms
+	 */
 	private JLabel autoAckLbl = new JLabel("Auto ack: ");
 	
-	// The table model
+	/**
+	 * 
+	 */
 	private AlarmTableModel model;
 	
 	/**
 	 * Constructor
+	 * 
+	 * @param model The table model
+	 * @param <code>true</code> if the reduction rules are applied at startup
 	 */
-	public Toolbar(AlarmTableModel model) {
+	public Toolbar(AlarmTableModel model, boolean reduce) {
 		super();
 		if (model==null) {
 			throw new IllegalArgumentException("the model can't be null");
 		}
 		this.model=model;
-		initialize();
+		initialize(reduce);
 	}
 	
 	/**
 	 * Initialize the toolbar
+	 * 
+	 * @param <code>true</code> if the reduction rules are applied at startup
 	 */
-	private void initialize() {
+	private void initialize(boolean reduce) {
 		FlowLayout layout = (FlowLayout)getLayout();
 		layout.setAlignment(FlowLayout.LEFT);
 		setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
@@ -256,13 +286,31 @@ public class Toolbar extends JPanel implements ActionListener {
 		Dimension d = new Dimension(ComboBoxValues.getWidth(),ComboBoxValues.getHeight());
 		autoAckLevelCB.setMinimumSize(d);
 		add(autoAckLevelCB);
+		
+		activeReductionIcon=new ImageIcon(this.getClass().getResource("/alma/acsplugins/alarmsystem/gui/resources/arrow_in.png"));
+		inactiveReductionIcon=new ImageIcon(this.getClass().getResource("/alma/acsplugins/alarmsystem/gui/resources/arrow_out.png"));
+		reductionRulesBtn= new JToggleButton("Reduce alarms",activeReductionIcon, reduce);
+		reductionRulesBtn.setFont(newFont);
+		add(reductionRulesBtn);
+		reductionRulesBtn.addActionListener(this);
 	}
 	
 	/**
 	 * @see ActionListener
 	 */
 	public void actionPerformed(ActionEvent e) {
-		System.out.println("Selected item: "+autoAckLevelCB.getSelectedItem());
-		model.setAutoAckLevel((ComboBoxValues)autoAckLevelCB.getSelectedItem());
+		if (e.getSource()==autoAckLevelCB) {
+			System.out.println("Selected item: "+autoAckLevelCB.getSelectedItem());
+			model.setAutoAckLevel((ComboBoxValues)autoAckLevelCB.getSelectedItem());
+		} else if (e.getSource()==reductionRulesBtn) {
+			model.applyReductions(reductionRulesBtn.isSelected());
+			if (reductionRulesBtn.isSelected()) {
+				reductionRulesBtn.setIcon(activeReductionIcon);
+			} else {
+				reductionRulesBtn.setIcon(inactiveReductionIcon);
+			}
+		} else {
+			System.err.println("Invalid source of event: "+e.getSource());
+		}
 	}
 }
