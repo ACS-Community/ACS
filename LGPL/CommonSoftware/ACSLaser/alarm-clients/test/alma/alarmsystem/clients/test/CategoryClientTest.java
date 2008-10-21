@@ -101,13 +101,19 @@ public class CategoryClientTest extends ComponentClientTestCase implements Alarm
 		}
 	}
 	
-	// The categoryClient to test
+	/**
+	 *  The categoryClient to test
+	 */
 	private CategoryClient categoryClient;
 	
-	// The vector with the alarms received
+	/**
+	 * The vector with the alarms received
+	 */
 	private Vector<Alarm> alarmsReceived;
 	
-	// Max number of seconds to wait for the messages
+	/**
+	 *  Max number of seconds to wait for the messages
+	 */
 	private static final int MAX_TIMEOUT = 120;
 	
 	/**
@@ -132,7 +138,7 @@ public class CategoryClientTest extends ComponentClientTestCase implements Alarm
 	/**
 	 * @see extends ComponentClientTestCase
 	 */
-	public void teraDown() throws Exception {
+	public void tearDown() throws Exception {
 		categoryClient.close();
 		alarmsReceived.clear();
 		super.tearDown();
