@@ -142,7 +142,7 @@ public class TestCategoryActiveChildren extends ComponentClientTestCase implemen
 		send_alarm("TEST", "NODE1", 1, true);
 		waitAlarm(1);
 		
-		alma.alarmsystem.Alarm[] alarms = categoryClient.getActiveChildren("TEST:NODE1:1", true);
+		Alarm[] alarms = categoryClient.getActiveChildren("TEST:NODE1:1", true);
 		assertEquals(0, alarms.length);
 		alarms = categoryClient.getActiveChildren("TEST:NODE2:1", true);
 		assertEquals(0, alarms.length);
@@ -156,7 +156,7 @@ public class TestCategoryActiveChildren extends ComponentClientTestCase implemen
 		
 		alarms = categoryClient.getActiveChildren("TEST:NODE1:1", true);
 		assertEquals(1, alarms.length);
-		assertEquals("TEST:NODE2:1", alarms[0].alarmId);
+		assertEquals("TEST:NODE2:1", alarms[0].getAlarmId());
 		alarms = categoryClient.getActiveChildren("TEST:NODE2:1", true);
 		assertEquals(0, alarms.length);
 		alarms = categoryClient.getActiveChildren("TEST:NODE3:1", true);
@@ -169,10 +169,10 @@ public class TestCategoryActiveChildren extends ComponentClientTestCase implemen
 		
 		alarms = categoryClient.getActiveChildren("TEST:NODE1:1", true);
 		assertEquals(1, alarms.length);
-		assertEquals("TEST:NODE2:1", alarms[0].alarmId);
+		assertEquals("TEST:NODE2:1", alarms[0].getAlarmId());
 		alarms = categoryClient.getActiveChildren("TEST:NODE2:1", true);
 		assertEquals(1, alarms.length);
-		assertEquals("TEST:NODE3:1", alarms[0].alarmId);
+		assertEquals("TEST:NODE3:1", alarms[0].getAlarmId());
 		alarms = categoryClient.getActiveChildren("TEST:NODE3:1", true);
 		assertEquals(0, alarms.length);
 		
@@ -197,7 +197,7 @@ public class TestCategoryActiveChildren extends ComponentClientTestCase implemen
 		
 		alarms = categoryClient.getActiveChildren("TEST:MCAUSE:1", false);
 		assertEquals(1, alarms.length);
-		assertEquals("TEST:MULTI1:2", alarms[0].alarmId);
+		assertEquals("TEST:MULTI1:2", alarms[0].getAlarmId());
 		alarms = categoryClient.getActiveChildren("TEST:MULTI1:2", false);
 		assertEquals(0, alarms.length);
 		alarms = categoryClient.getActiveChildren("TEST:MULTI2:2", false);
@@ -228,6 +228,20 @@ public class TestCategoryActiveChildren extends ComponentClientTestCase implemen
 		assertEquals(0, alarms.length);
 		alarms = categoryClient.getActiveChildren("TEST:MULTI5:2", false);
 		assertEquals(0, alarms.length);
+		
+		// Turn off all the alarms
+		send_alarm("TEST", "NODE1", 1, false);
+		send_alarm("TEST", "NODE2", 1, false);
+		send_alarm("TEST", "NODE3", 1, false);
+		
+		send_alarm("TEST", "MULTI1", 2, false);
+		send_alarm("TEST", "MULTI2", 2, false);
+		send_alarm("TEST", "MULTI3", 2, false);
+		send_alarm("TEST", "MULTI4", 2, false);
+		send_alarm("TEST", "MULTI5", 2, false);
+		try {
+			Thread.sleep(5000);
+		} catch (InterruptedException e) {}
 	}
 	
 	/**
@@ -242,7 +256,6 @@ public class TestCategoryActiveChildren extends ComponentClientTestCase implemen
 			} catch (InterruptedException e) {
 				continue;
 			}
-			System.out.println("Waiting for "+n+"alarms; received "+alarmsReceived);
 		}
 	}
 }

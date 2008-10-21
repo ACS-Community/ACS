@@ -62,7 +62,7 @@ public class CategoryClientParent extends ComponentClientTestCase  implements Al
 	/**
 	 * @see extends ComponentClientTestCase
 	 */
-	public void teraDown() throws Exception {
+	public void tearDown() throws Exception {
 		categoryClient.close();
 		super.tearDown();
 	}
@@ -88,12 +88,12 @@ public class CategoryClientParent extends ComponentClientTestCase  implements Al
 		categoryClient.connect(this);
 		
 		// Multiplicity
-		alma.alarmsystem.Alarm[] alarms = categoryClient.getParents("TEST:MCAUSE:1", false);
+		Alarm[] alarms = categoryClient.getParents("TEST:MCAUSE:1", false);
 		assertEquals(0, alarms.length);
 		
 		alarms = categoryClient.getParents("TEST:MULTI3:2", false);
 		assertEquals(1, alarms.length);
-		assertEquals("TEST:MCAUSE:1", alarms[0].alarmId);
+		assertEquals("TEST:MCAUSE:1", alarms[0].getAlarmId());
 		
 		// Node
 		alarms= categoryClient.getParents("TEST:NODE1:1", true);
@@ -101,10 +101,10 @@ public class CategoryClientParent extends ComponentClientTestCase  implements Al
 		
 		alarms= categoryClient.getParents("TEST:NODE2:1", true);
 		assertEquals(1, alarms.length);
-		assertEquals("TEST:NODE1:1", alarms[0].alarmId);
+		assertEquals("TEST:NODE1:1", alarms[0].getAlarmId());
 		
 		alarms= categoryClient.getParents("TEST:NODE3:1", true);
 		assertEquals(1, alarms.length);
-		assertEquals("TEST:NODE2:1", alarms[0].alarmId);
+		assertEquals("TEST:NODE2:1", alarms[0].getAlarmId());
 	}
 }
