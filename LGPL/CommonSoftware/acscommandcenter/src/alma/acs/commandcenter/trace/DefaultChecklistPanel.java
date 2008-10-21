@@ -48,7 +48,7 @@ public class DefaultChecklistPanel extends JPanel implements FlowListener {
 		this.setBorder(new EmptyBorder(1,0,1,0));		
 		JPanel stripes = new JPanel(new GridLayout(0, 1));
 
-		Enumeration en = ((Flow.Node) flowDefinition.name2node.get(null)).preorderEnumeration();
+		Enumeration<Object> en = ((Flow.Node) flowDefinition.name2node.get(null)).preorderEnumeration();
 		// skip first element (== root)
 		en.nextElement();
 		Vector<String> vec = new Vector<String>();
@@ -91,7 +91,7 @@ public class DefaultChecklistPanel extends JPanel implements FlowListener {
 	Map<String, Stripe> name2stripe = new HashMap<String, Stripe>();
 
 	public void reset (Flow f, Object info) {
-		Iterator iter = name2stripe.values().iterator();
+		Iterator<Stripe> iter = name2stripe.values().iterator();
 		while (iter.hasNext()) {
 			Stripe s = (Stripe) iter.next();
 			s.statusF.setText("");

@@ -221,7 +221,9 @@ public class CommandCenter {
       s.close();
    }
    
-   public static void dbg_printProps(Properties p, PrintStream s) {
+   
+   @SuppressWarnings("unchecked")
+	public static void dbg_printProps(Properties p, PrintStream s) {
       
       Set<Map.Entry<Object, Object>> e1 = p.entrySet();
       Map.Entry[] e2 = e1.toArray(new Map.Entry[e1.size()]);

@@ -87,7 +87,7 @@ public class ExecuteManager {
                 });
 
         this.localJavaManagerLocation = new String[] { ACSPorts.getIP(), mgrPort};
-        return localJavaManagerLocation; //TODO make the manager corbaloc dynamic
+        return localJavaManagerLocation;
     }
 
     
@@ -97,25 +97,25 @@ public class ExecuteManager {
     
     public void stopLocalJava() {
 
-        NativeCommand.Listener listener = null; // could be a method argument
-        Properties props = new Properties(); // empty
+        NativeCommand.Listener listener = null;
+        Properties props = new Properties();
 
-        Thread stopThread = Executor.localInProc(props, stopLocalJavaPexpect,
-                listener, new Executor.RunMain() {
+        Executor.localInProc(props, stopLocalJavaPexpect,
+          listener, new Executor.RunMain() {
 
-                    public void runMain() {
-                  	  if (localManager != null) {
-                  		  boolean sigInt = false;
-                  		  localManager.shutdown(sigInt);
-                  	  }
-                  	  
-                  	  /* msc(2005-07): no longer sure this is really needed
-                  	  if (localInProcThread != null) {
-                  	  	  localInProcThread.stop();
-                  	  }
-                  	  */
-                    }
-                });
+              public void runMain() {
+            	  if (localManager != null) {
+            		  boolean sigInt = false;
+            		  localManager.shutdown(sigInt);
+            	  }
+            	  
+            	  /* msc(2005-07): no longer sure this is really needed
+            	  if (localInProcThread != null) {
+            	  	  localInProcThread.stop();
+            	  }
+            	  */
+              }
+          });
 
     }
 

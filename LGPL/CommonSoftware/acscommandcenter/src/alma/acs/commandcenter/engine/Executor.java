@@ -24,7 +24,6 @@ import alma.acs.commandcenter.util.PreparedString;
 import alma.acs.commandcenter.util.StringRingBuffer;
 import alma.acs.container.corba.AcsCorba;
 import alma.acs.exceptions.AcsJCompletion;
-import alma.acs.util.ACSPorts;
 import alma.acs.util.AcsLocations;
 import alma.acsdaemon.ContainerDaemon;
 import alma.acsdaemon.ContainerDaemonHelper;
@@ -65,7 +64,7 @@ public class Executor {
    	if (useNativeSSH()) {
    		remoteNative(username, password, command, endMark, listener, host);
    	} else {
-   		int ticket = remotePortable(username, password, command, endMark, listener, host);
+   		remotePortable(username, password, command, endMark, listener, host);
    	}
    }
    
@@ -285,7 +284,6 @@ public class Executor {
    
    static private Vector<NativeCommand> remoteNativeTasks = new Vector<NativeCommand>();
    
-   // PENDING(msc): return the task, so shutdown can do task.sendCommand("exit") ? 
    static private void remoteNative(String username, final String password, final String command, String endMark, NativeCommand.Listener listener, String host) throws Throwable {
       
    	if (disableRemote)
@@ -362,7 +360,7 @@ public class Executor {
    
    static private void remoteDownAllNative() {
    	if (killNativeSSH()) {
-	   	for (Enumeration en = remoteNativeTasks.elements(); en.hasMoreElements();) {
+	   	for (Enumeration<NativeCommand> en = remoteNativeTasks.elements(); en.hasMoreElements();) {
 	   		NativeCommand t = null;
 				try {
 					t = (NativeCommand) en.nextElement();
@@ -636,8 +634,7 @@ public class Executor {
 				+ instance + ")";
 		remoteServicesDaemonFlow.reset(info);
 
-		ACSPorts ports = ACSPorts.globalInstance(instance);
-		String daemonLoc = AcsLocations.convertToServicesDaemonLocation(host, ports.giveServicesDaemonPort());
+		String daemonLoc = AcsLocations.convertToServicesDaemonLocation(host);
 
 		org.omg.CORBA.ORB orb;
 		AcsCorba acsCorba = null;
@@ -736,8 +733,7 @@ public class Executor {
    	String info = ((startStop)? "Starting" : "Stopping") + " container "+contName+" on host '"+host+"' (instance "+instance+")";
    	remoteContainerDaemonFlow.reset(info);
 
-   	ACSPorts ports = ACSPorts.globalInstance(instance);
-		String daemonLoc = AcsLocations.convertToContainerDaemonLocation(host, ports.giveContainerDaemonPort());
+		String daemonLoc = AcsLocations.convertToContainerDaemonLocation(host);
 
 		org.omg.CORBA.ORB orb = null;
 		try {

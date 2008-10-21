@@ -96,7 +96,7 @@ public class AddToDeployTreeTest extends JFCTestCase {
 		
 		DialogFinder dFinder = new DialogFinder(null);
 		dFinder.setWait(2);
-		List showingDialogs = dFinder.findAll();
+		List<Object> showingDialogs = dFinder.findAll();
 		assertEquals("Number of dialogs showing is wrong", 1, showingDialogs.size());
 
 		dialog = (JDialog) showingDialogs.get(0);

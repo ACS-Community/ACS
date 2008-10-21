@@ -9,7 +9,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.logging.Logger;
 
-import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeNode;
 
 import org.omg.CORBA.OBJECT_NOT_EXIST;
@@ -27,19 +26,11 @@ import si.ijs.maci.ContainerInfo;
 import si.ijs.maci.ImplLangType;
 import si.ijs.maci.Manager;
 import si.ijs.maci.ManagerHelper;
-import alma.acs.commandcenter.meta.IMaciSupervisor.CannotRetrieveManagerException;
-import alma.acs.commandcenter.meta.IMaciSupervisor.CorbaNotExistException;
-import alma.acs.commandcenter.meta.IMaciSupervisor.CorbaTransientException;
-import alma.acs.commandcenter.meta.IMaciSupervisor.NotConnectedToManagerException;
-import alma.acs.commandcenter.meta.IMaciSupervisor.UnknownErrorException;
 import alma.acs.commandcenter.meta.MaciInfo.FolderInfo;
 import alma.acs.commandcenter.meta.MaciInfo.InfoDetail;
 import alma.acs.commandcenter.meta.MaciInfo.SortingTreeNode;
 import alma.acs.util.AcsLocations;
 import alma.acs.util.UTCUtility;
-import alma.maciErrType.CannotGetComponentEx;
-import alma.maciErrType.ComponentConfigurationNotFoundEx;
-import alma.maciErrType.ComponentNotAlreadyActivatedEx;
 import alma.maciErrType.NoPermissionEx;
 
 /**
@@ -393,7 +384,7 @@ public class MaciSupervisor implements IMaciSupervisor {
 		int[] component_handles = new int[]{};
 		String type_wildcard = "*";
 		boolean active_only = false;
-		return myManagerReference().get_component_info(hhhhh, component_handles, name_wildcard, type_wildcard, false);
+		return myManagerReference().get_component_info(hhhhh, component_handles, name_wildcard, type_wildcard, active_only);
 	}
 
 
@@ -462,7 +453,6 @@ public class MaciSupervisor implements IMaciSupervisor {
 	protected synchronized void refreshNow() throws NoPermissionEx, NotConnectedToManagerException, SystemException, CorbaTransientException, CorbaNotExistException, UnknownErrorException {
 		log.finer("refreshing maci info...");
 
-		Exception error = null; 
 		List<SortingTreeNode> newComponents = new ArrayList<SortingTreeNode>(); 
 		List<SortingTreeNode> newContainers = new ArrayList<SortingTreeNode>(); 
 		List<SortingTreeNode> newClientApps = new ArrayList<SortingTreeNode>();

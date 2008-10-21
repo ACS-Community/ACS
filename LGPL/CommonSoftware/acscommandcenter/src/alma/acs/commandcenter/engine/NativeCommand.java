@@ -159,7 +159,7 @@ public class NativeCommand implements Runnable {
 		try {
 			// TODO(msc): don't log passwords !!!
 			log.finer("writing command '"+text+"' to stdin of "+process);
-			
+
 			stdin.write(text+"\n");
 			stdin.flush();
 		
@@ -258,7 +258,7 @@ public class NativeCommand implements Runnable {
     */
    protected void fireStatusChanged (String oldStatus, String newStatus) {
 
-   	for (Enumeration en = listeners.elements(); en.hasMoreElements();) {
+   	for (Enumeration<Listener> en = listeners.elements(); en.hasMoreElements();) {
          NativeCommand.Listener po = (NativeCommand.Listener) en.nextElement();
          po.statusChanged(this, oldStatus);
       }
@@ -273,7 +273,7 @@ public class NativeCommand implements Runnable {
 		}
       boolean isOutputOnStdout = (sourceStream == process.getInputStream());
 
-      for (Enumeration en = listeners.elements(); en.hasMoreElements();) {
+      for (Enumeration<Listener> en = listeners.elements(); en.hasMoreElements();) {
          NativeCommand.Listener po = (NativeCommand.Listener) en.nextElement();
 
          if (isOutputOnStdout)
@@ -294,7 +294,7 @@ public class NativeCommand implements Runnable {
    static public interface Listener {
       /**  */
       public void statusChanged(NativeCommand command, String oldStatus);
-      // PENDING(msc) guarantee that only one line will be delivered? would make parsing easier for clients (e.g. when reading environment variables)
+      
       /** @param additionalOutput    one or more lines of new output (last line will not contain a line terminator) */
       public void stdoutWritten(NativeCommand command, String additionalOutput);
 
@@ -373,7 +373,7 @@ public class NativeCommand implements Runnable {
             // TODO(msc) read out standard error 
 
          } catch (IOException exc) {
-         	//PENDING(msc): seems to happen when the process is willingly destroyed()
+         	// seems to happen when the process is willingly destroy()-ed
             log.fine("will stop reading from process output stream, an I/O error occurred: "+exc);
          }
       }

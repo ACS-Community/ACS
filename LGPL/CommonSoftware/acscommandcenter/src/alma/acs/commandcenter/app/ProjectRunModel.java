@@ -137,9 +137,9 @@ public class ProjectRunModel implements RunModel {
 		return new VariableString(stringWithVars, false).toString(getVariables());
 	}
 	
-	protected Map variables = null;
+	protected Map<String, Object> variables = null;
 
-	public Map getVariables() {
+	public Map<String, Object> getVariables() {
 		if (variables == null) {
 			readDefaultVariables();
 		}
@@ -149,6 +149,7 @@ public class ProjectRunModel implements RunModel {
 	/**
 	 * The default allocation of the variables map is (an excerpt of) the System Properties. 
 	 */
+	@SuppressWarnings("unchecked") // JDK API not parameterized
 	public void readDefaultVariables() {
 		
 		Map<String, Object> m = Collections.synchronizedMap(new HashMap<String, Object>());

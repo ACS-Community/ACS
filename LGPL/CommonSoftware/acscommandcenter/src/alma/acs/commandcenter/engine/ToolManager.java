@@ -164,9 +164,9 @@ public class ToolManager {
 		return generateCommand(tool, runModel, emptyMap);
 	}
 
-	static private HashMap emptyMap = new HashMap();
+	static private HashMap<String,Object> emptyMap = new HashMap<String,Object>();
 
-	static public String generateCommand (Tool tool, RunModel runModel, Map input) throws Exception {
+	static public String generateCommand (Tool tool, RunModel runModel, Map<String,Object> input) throws Exception {
 		String ret;
 
 		String[] pieces = collectInsertions(tool, runModel, input);
@@ -203,7 +203,7 @@ public class ToolManager {
 	static protected HashMap<String, Tool> builtinTools;
 
 
-	static protected String[] collectInsertions (Tool tool, RunModel runModel, Map input) throws Exception {
+	static protected String[] collectInsertions (Tool tool, RunModel runModel, Map<String,Object> input) throws Exception {
 
 		String[] ret = new String[tool.getInsertionCount()];
 		for (int i = 0; i < ret.length; i++) {
@@ -259,7 +259,7 @@ public class ToolManager {
 		}
 	}
 
-	static protected String readFromInput (Map input, String name, String fallback) {
+	static protected String readFromInput (Map<String, Object> input, String name, String fallback) {
 		Object ret = null;
 		ret = input.get(name);
 		if (ret == null || ret.equals("")) {

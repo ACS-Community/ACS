@@ -24,7 +24,7 @@ public class ExecuteTools {
 	// ========================================================================================
 	//
 
-   public ToolStarter addTool(Tool tool, HashMap input) {
+   public ToolStarter addTool(Tool tool, HashMap<String,Object> input) {
       return new ToolStarter(tool, input);
    }
    
@@ -32,9 +32,9 @@ public class ExecuteTools {
    public class ToolStarter {
       
       protected Tool tool;
-      protected HashMap input;
+      protected HashMap<String,Object> input;
       
-      public ToolStarter(Tool tool, HashMap input){
+      public ToolStarter(Tool tool, HashMap<String,Object> input){
          this.tool = tool;
          this.input = input;
       }

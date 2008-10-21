@@ -12,7 +12,6 @@ import java.util.HashMap;
 import javax.swing.JFileChooser;
 import javax.swing.JTabbedPane;
 
-import alma.acs.commandcenter.CommandCenter;
 import alma.acs.commandcenter.engine.NativeCommand;
 
 /**

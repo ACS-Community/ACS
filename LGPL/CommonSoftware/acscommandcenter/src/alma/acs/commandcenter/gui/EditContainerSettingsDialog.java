@@ -45,9 +45,8 @@ class EditContainerSettingsDialog extends JDialog implements
         super(gui.frame, title, true);
         this.master = gui;
         this.getContentPane().setLayout(new BorderLayout());
-        JPanel root = new JPanel(new BorderLayout()); // need 'root' to be
-        // able to set a
-        // border
+        // need 'root' to be able to set a border
+        JPanel root = new JPanel(new BorderLayout()); 
         root.setBorder(new EmptyBorder(10, 10, 10, 10));
         // --- content
         JPanel content = new JPanel();
@@ -120,23 +119,4 @@ class EditContainerSettingsDialog extends JDialog implements
         setVisible(false);
     }
 }
-////////////////////////////////////////////////////////
-/// ------------------- API ------------------------ ///
-////////////////////////////////////////////////////////
 
-////////////////////////////////////////////////////////
-/// ----------------- Internal --------------------- ///
-////////////////////////////////////////////////////////
-
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//

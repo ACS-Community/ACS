@@ -5,33 +5,20 @@ package alma.acs.commandcenter.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.lang.reflect.Field;
-import java.util.HashMap;
 import java.util.Hashtable;
-import java.util.List;
 import java.util.Map;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
-import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.JTextField;
-import javax.swing.border.BevelBorder;
 import javax.swing.border.Border;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
-import javax.swing.table.AbstractTableModel;
-import javax.swing.table.TableModel;
 
-import alma.acs.commandcenter.app.CommandCenterLogic;
 import alma.acs.commandcenter.util.MapTableModel;
-import alma.acs.commandcenter.util.PreparedString;
 
 
 
@@ -78,11 +65,11 @@ class EditVariablesPanel extends JPanel {
 	}
 
 
-	protected Map writeTo;
-	protected Map inProject;
-	protected Map inSession;
+	protected Map<String,Object> writeTo;
+	protected Map<String,Object> inProject;
+	protected Map<String,Object> inSession;
 
-	public void preShow(Map writeTo, Map inProject, Map inSession) {
+	public void preShow(Map<String,Object> writeTo, Map<String,Object> inProject, Map<String,Object> inSession) {
 		this.writeTo = writeTo;
 		this.inProject = inProject;
 		this.inSession = inSession;
@@ -114,15 +101,15 @@ class EditVariablesPanel extends JPanel {
 			return (MapTableModel)getModel();
 		}
 
-		public void readModel (Map m) {
+		public void readModel (Map<String,Object> m) {
 			model().setData(m);
 		}
-	
-		public void writeModel(Map m) {
+
+		public void writeModel(Map<String,Object> m) {
 			MapTableModel tableM = model();
 			int nRows = tableM.getRowCount();
 			for (int row=0; row < nRows ; row++) {
-				Object key = tableM.getValueAt(row, 0);
+				String key = tableM.getValueAt(row, 0).toString();
 				Object value = tableM.getValueAt(row, 1);
 				if (m instanceof Hashtable && value == null) {
 					// skip

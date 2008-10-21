@@ -10,7 +10,6 @@ import org.omg.CORBA.ORB;
 
 import si.ijs.maci.ClientInfo;
 import si.ijs.maci.ContainerInfo;
-import alma.acs.commandcenter.meta.IMaciSupervisor.CorbaNoPermissionException;
 import alma.maciErrType.CannotGetComponentEx;
 import alma.maciErrType.ComponentConfigurationNotFoundEx;
 import alma.maciErrType.ComponentNotAlreadyActivatedEx;
@@ -49,9 +48,7 @@ public class GuiMaciSupervisor extends MaciSupervisor {
 	public void managerPing() throws NotConnectedToManagerException, CorbaTransientException, CorbaNotExistException, UnknownErrorException {
 		try {
 			log.fine("sending ping request to manager (" + getManagerLocation() + ")");
-			int hhhhh = myMaciHandle();
 			myManagerReference().ping();
-
 			
 		} catch (NotConnectedToManagerException exc) {
 			mcehandler.handleExceptionTalkingToManager(exc);

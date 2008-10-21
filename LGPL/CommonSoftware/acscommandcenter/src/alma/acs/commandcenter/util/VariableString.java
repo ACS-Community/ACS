@@ -89,9 +89,9 @@ public class VariableString {
 	 * @return the <strong>resolved</strong> version of this instance.
 	 * @throws UnresolvableException if variables cannot be resolved and we are non-{@link #lenient}
 	 */
-	public String toString (Map map) throws UnresolvableException {
+	public String toString (Map<?,Object> map) throws UnresolvableException {
 		// wrap the given map with an ad-hoc IResolver
-		final Map m = map;
+		final Map<?,Object> m = map;
 		IResolver res = new IResolver() {
 			public String resolve (String name) {
 				Object value = m.get(name);

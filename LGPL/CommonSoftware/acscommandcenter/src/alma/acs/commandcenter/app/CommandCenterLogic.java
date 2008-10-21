@@ -300,7 +300,7 @@ public class CommandCenterLogic {
 
 			// this map will be used to transport values from ToolInputPanel to
 			// ToolStarter
-			HashMap input = new HashMap();
+			HashMap<String,Object> input = new HashMap<String,Object>();
 
 			// ToolStarter knows how to start a tool with the given input
 			final ToolStarter ts = executeTools.addTool(tool, input);
@@ -408,24 +408,24 @@ public class CommandCenterLogic {
 	// ============ Variable Management ====================
 	//
 
-	public Map[] giveVariableMapsForGui() {
-		Map[] ret = new Map[3];
+	public Map<String, Object>[] giveVariableMapsForGui() {
+		Map<String, Object>[] ret = new Map[3];
 		
-		Map m0 = model.getVariables();
+		Map<String, Object> m0 = model.getVariables();
 		ret[0] = m0;
-		
-		List projectVariableNames = giveProjectVariableNames();
+
+		List<String> projectVariableNames = giveProjectVariableNames();
 		
 		// in project (with values from session if set, otherwise null)
-		Map m1 = new HashMap();
-		for (Iterator it = projectVariableNames.iterator() ; it.hasNext() ;) {
-			Object key = it.next();
+		Map<String, Object> m1 = new HashMap<String, Object>();
+		for (Iterator<String> it = projectVariableNames.iterator() ; it.hasNext() ;) {
+			String key = it.next();
 			m1.put(key, m0.get(key));
 		}
 		ret[1] = m1;
 
 		// in session only
-		Map m2 = new HashMap(m0);
+		Map<String, Object> m2 = new HashMap<String, Object>(m0);
 		m2.keySet().removeAll(projectVariableNames);
 		ret[2] = m2;
 		

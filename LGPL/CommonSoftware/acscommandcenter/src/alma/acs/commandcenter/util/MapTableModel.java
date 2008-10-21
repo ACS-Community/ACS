@@ -18,12 +18,6 @@ public class MapTableModel extends DefaultTableModel {
 		this.init(keyColumnName, valueColumnName);
 	}
 	
-	public MapTableModel(Map m, String keyColumnName, String valueColumnName) {
-		super();
-		this.init(keyColumnName, valueColumnName);
-		this.setData(m);
-	}
-	
 	@SuppressWarnings("unchecked")
 	protected void init(String keyColumnName, String valueColumnName) {
 		super.columnIdentifiers = new Vector(2);
@@ -31,8 +25,8 @@ public class MapTableModel extends DefaultTableModel {
 		super.columnIdentifiers.add(valueColumnName);
 	}
 
+	@SuppressWarnings("unchecked")
 	public void setData (Map m) {
-
 		Vector<Vector> data = new Vector<Vector>(m.size());
 		Iterator it = m.entrySet().iterator();
 		while (it.hasNext()) {
@@ -54,17 +48,4 @@ public class MapTableModel extends DefaultTableModel {
 	
 	
 }
-
-
-	// ================================================
-	// API
-	// ================================================
-
-	// ================================================
-	// Internal
-	// ================================================
-
-	// ================================================
-	// Inner Types
-	// ================================================
 

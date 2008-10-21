@@ -87,7 +87,7 @@ public class ExternalToolsTest extends TestCase {
 		_Tests.enter(this);
 		
 		Tool tool = _Tests.giveTool("Object Explorer");
-		HashMap input = new HashMap();
+		HashMap<String,Object> input = new HashMap<String,Object>();
 
 		LogWriter listener = _Tests.giveTaskListener(super.getName());
 		ExecuteTools x = _Tests.createExecuteTools(ACS_INSTANCE, "127.0.0.1", MGR_PORT, IR_PORT, NS_PORT);
@@ -101,7 +101,7 @@ public class ExternalToolsTest extends TestCase {
 		_Tests.enter(this);
 		
 		Tool tool = _Tests.giveTool("Logging Client (graphical)");
-		HashMap input = new HashMap();
+		HashMap<String,Object> input = new HashMap<String,Object>();
 
 		LogWriter listener = _Tests.giveTaskListener(super.getName());
 		ExecuteTools x = _Tests.createExecuteTools(ACS_INSTANCE, "127.0.0.1", MGR_PORT, IR_PORT, NS_PORT);
@@ -115,7 +115,7 @@ public class ExternalToolsTest extends TestCase {
 		_Tests.enter(this);
 		
 		Tool tool = _Tests.giveTool("Cdb Browser");
-		HashMap input = new HashMap();
+		HashMap<String,Object> input = new HashMap<String,Object>();
 
 		LogWriter listener = _Tests.giveTaskListener(super.getName());
 		ExecuteTools x = _Tests.createExecuteTools(ACS_INSTANCE, "127.0.0.1", MGR_PORT, IR_PORT, NS_PORT);
@@ -129,7 +129,7 @@ public class ExternalToolsTest extends TestCase {
 		_Tests.enter(this);
 		
 		Tool tool = _Tests.giveTool("Dynamic Components Client");
-		HashMap input = new HashMap();
+		HashMap<String,Object> input = new HashMap<String,Object>();
 
 		LogWriter listener = _Tests.giveTaskListener(super.getName());
 		ExecuteTools x = _Tests.createExecuteTools(ACS_INSTANCE, "127.0.0.1", MGR_PORT, IR_PORT, NS_PORT);
@@ -143,7 +143,7 @@ public class ExternalToolsTest extends TestCase {
 		_Tests.enter(this);
 		
 		Tool tool = _Tests.giveTool("Name Service Browser");
-		HashMap input = new HashMap();
+		HashMap<String,Object> input = new HashMap<String,Object>();
 
 		LogWriter listener = _Tests.giveTaskListener(super.getName());
 		ExecuteTools x = _Tests.createExecuteTools(ACS_INSTANCE, "127.0.0.1", MGR_PORT, IR_PORT, NS_PORT);

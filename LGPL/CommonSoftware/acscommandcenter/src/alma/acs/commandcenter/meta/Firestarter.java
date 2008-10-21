@@ -144,7 +144,7 @@ public class Firestarter {
 		try {
 			if (acsCorba != null) {
 				new Thread() {
-					public void run () {
+					@Override public void run () {
 						if (acsCorba != null)
 							acsCorba.shutdownORB(true, false);
 					}

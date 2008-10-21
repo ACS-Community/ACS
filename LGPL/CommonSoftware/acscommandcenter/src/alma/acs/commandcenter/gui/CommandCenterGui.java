@@ -8,7 +8,6 @@ package alma.acs.commandcenter.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Cursor;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
@@ -149,7 +148,6 @@ public class CommandCenterGui {
 
 				@Override
 				public void windowClosing (WindowEvent evt) {
-					showExitDialog();
 					controller.stop();
 				}
 			});
@@ -314,8 +312,6 @@ public class CommandCenterGui {
 	public void stop () {
 		frame.setVisible(false);
 		frame.dispose();
-		exitDialog.setVisible(false);
-		exitDialog.dispose();
 	}
 
 
@@ -381,18 +377,6 @@ public class CommandCenterGui {
 		frame.setTitle(proj + " - " + app);
 	}
 
-	JDialog exitDialog = new JDialog();
-
-	protected void showExitDialog () {
-		frame.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-		// PENDING(msc): exitDialog is a nice idea, but not properly working yet
-		// exitDialog.getContentPane().removeAll();
-		// exitDialog.getContentPane().add(new JLabel("\n Exiting. Please wait. \n"));
-		// exitDialog.setLocationRelativeTo(frame);
-		// exitDialog.pack();
-		// exitDialog.setVisible(true);
-	}
-
 	protected File showOpenDialog () {
 		File ret = null;
 		JFileChooser chooser = new JFileChooser();
@@ -435,7 +419,7 @@ public class CommandCenterGui {
 			//dlgEditVariables.pack();
 		}
 		
-		Map[] m = controller.giveVariableMapsForGui();
+		Map<String, Object>[] m = controller.giveVariableMapsForGui();
 		pnlEditVariables.preShow(m[0], m[1], m[2]);
 		
 		dlgEditVariables.bringUp(); // dialog is modal
@@ -455,7 +439,7 @@ public class CommandCenterGui {
 
 				@Override
 				public void paint (Graphics g) {
-					// PENDING(msc): remove this hack for this swing-related concurrency problem
+					// this is apparently a swing-related concurrency problem.
 					// there's a problem with setPage() when the dialog is invisible,
 					// but i don't have time to investigate and find a swing-bug-workaround now
 					try {
@@ -574,7 +558,7 @@ public class CommandCenterGui {
 						} catch (Exception exc) {
 							ErrorBox.showErrorDialog(frame, "Failed to download Cdb", exc.toString());
 						} finally {
-							// PENDING(msc): would be prettier to add an extra event handler
+							// would be prettier to add an extra event handler for this, but well.
 							cdbChooserDialog.setVisible(false);
 						}
 
@@ -879,7 +863,7 @@ public class CommandCenterGui {
 	 * Adds an entry to the tools menu, on activation an input dialog is shown and
 	 * evaluated. Finally the specified listener is triggered.
 	 */
-	public void addExtraTool (Tool tool, final HashMap result, final ExecuteTools.ToolStarter ts) {
+	public void addExtraTool (Tool tool, final HashMap<String, Object> result, final ExecuteTools.ToolStarter ts) {
 
 		// --- create an input dialog
 		
@@ -1173,7 +1157,7 @@ public class CommandCenterGui {
 			try {
 				// FileInputStream is = new FileInputStream(f);
 				controller.removeExtraTools();
-				controller.installExtraTools(f.toURL());
+				controller.installExtraTools(f.toURI().toURL());
 			} catch (Exception exc) {
 				ErrorBox.showMessageDialog(frame, "The tools could not be installed. Check console for error output. ", true);
 				log.info("could not install tools: " + exc);
@@ -1258,7 +1242,7 @@ public class CommandCenterGui {
 
 			// read file
 			try {
-				URL url = f.toURL();
+				URL url = f.toURI().toURL();
 				controller.loadBuiltinTools(url);
 			} catch (Exception exc) {
 				JOptionPane.showMessageDialog(frame, "The built-in tools could not be loaded. Check console for error output. ");

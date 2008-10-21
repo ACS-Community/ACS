@@ -11,7 +11,6 @@ import java.util.List;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.TreeNode;
 
 import si.ijs.maci.ClientInfo;
 import si.ijs.maci.ComponentInfo;
@@ -332,7 +331,7 @@ public class MaciInfo extends DefaultTreeModel {
 
          } else {
 
-            for (Enumeration en = children(); en.hasMoreElements();) {
+            for (Enumeration<Object> en = children(); en.hasMoreElements();) {
 
             	try{
                SortingTreeNode elem = (SortingTreeNode) en.nextElement();
