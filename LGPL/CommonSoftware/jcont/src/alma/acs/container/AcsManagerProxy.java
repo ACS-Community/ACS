@@ -218,13 +218,15 @@ public class AcsManagerProxy
 	}
 
 	/**
-	 * Invoked by the manager methods on failure 
+	 * Invoked by the manager methods on failure.
+	 * The "handling" of the exception refers to changing the connection status, logging the exception, etc.
+	 * This method will not throw the given exception, which means that the calling client has to do this herself.
 	 */
 	protected void handleRuntimeException (RuntimeException exc) {
 
 		if (exc instanceof org.omg.CORBA.NO_PERMISSION				// manager changed, or has cut connection
 				||exc instanceof org.omg.CORBA.OBJECT_NOT_EXIST		// manager is down
-				||exc instanceof org.omg.CORBA.TRANSIENT)				// manager is down
+				||exc instanceof org.omg.CORBA.TRANSIENT)			// manager is down
 		{
 			
 			// store the knowledge that we're unconnected:
@@ -236,6 +238,10 @@ public class AcsManagerProxy
 				connectorLock.notify();
 			}
 		} 
+		else if (exc instanceof org.omg.CORBA.TIMEOUT) {
+			// the timeout usually does not indicate a general problem of the manager, but affects
+			// only this one invocation. We don't do anything here and let the caller throw the exception.
+		}
 		else {
 			m_logger.log(Level.INFO, "unexpected error occurred: please report this", exc);
 			return;
