@@ -108,6 +108,7 @@ public class CommandCenterGui {
 	protected NativeCommand.Listener taskListenerDynClient;
 	protected NativeCommand.Listener taskListenerInterfaceRepBrowser;
 	protected NativeCommand.Listener taskListenerNameServiceBrowser;
+	protected JMenuBar menuBar;
 	protected JMenu toolsMenu;
 	protected File currentProjectFile;
 
@@ -201,8 +202,7 @@ public class CommandCenterGui {
 			pnl2.add(version, BorderLayout.SOUTH);
 			logoPanel.add(pnl2, BorderLayout.EAST);
 
-			// Menu
-			JMenuBar menuBar = new JMenuBar();
+			menuBar = new JMenuBar();
 			JMenu fileMenu = new JMenu("Project");
 			fileMenu.setMnemonic(KeyEvent.VK_P);
 			{
@@ -292,22 +292,22 @@ public class CommandCenterGui {
 	}
 
 	public void go (boolean admincMode) {
-		
-		frame.pack();
 
-		//	depending on admincMode we fix/enforce locations of the dividers
 		if (admincMode) {
-			splitLeftRight.setDividerLocation(10);
-			splitTopBottom.setDividerLocation(splitTopBottom.getMaximumDividerLocation());
+			//	in adminclient mode, we run with a stripped down GUI  
+			menuBar.setVisible(false);
+			splitLeftRight.getLeftComponent().setVisible(false);
+			splitTopBottom.getBottomComponent().setVisible(false);
 		} else {
 			splitTopBottom.validate();
 			splitLeftRight.setDividerLocation((int) (frame.getWidth() - deploymentInfoPanel.getPreferredSize().width * 1.1));
 		}
 		
+		frame.pack();
 		if (controller.startupOptions.geometry != null) {
 			frame.setBounds(controller.startupOptions.geometry);
 		}
-		
+
 		frame.setVisible(true);
 	}
 
