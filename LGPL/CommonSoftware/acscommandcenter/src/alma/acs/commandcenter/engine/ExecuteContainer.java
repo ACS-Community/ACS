@@ -104,33 +104,25 @@ public class ExecuteContainer {
 	 
     public void stopLocalJava(RunModel runModel) {
 
-        final String managerHost = runModel.getContainerAgainstManagerHost();
-        final String managerPort = runModel.getContainerAgainstManagerPort();
-        final String contName = runModel.getContainerName();
+        NativeCommand.Listener listener = null;
+        Properties props = new Properties();
 
-        NativeCommand.Listener listener = null; // TODO: listener could be a method argument
-        Properties props = new Properties(); // empty
-        
-
-        Thread stopThread = Executor.localInProc(props, stopLocalJavaPexpect,
-                listener, new Executor.RunMain() {
-
-                    public void runMain() {
-                  	  if (customAcsEmbeddedContainerRunner != null) {
-                  		  AcsContainer cont = customAcsEmbeddedContainerRunner.theContainer();
-                  		  if (cont != null) {
-                  		      int action = 2 * 256 + 0; // hibyte: 2 (= EXIT), lobyte: 0 (exitcode towards the OS)
-                  			  cont.shutdown(action);
-                  		  }
-                  	  }
-
-                  	  /* msc(2005-07): no longer sure this is really needed
-                  	  if (localInProcThread != null) {
-                  	  	  localInProcThread.stop();
-                  	  }
-                  	  */
-                    }
-                });
+        Executor.localInProc(props, stopLocalJavaPexpect, listener, new Executor.RunMain() {
+           public void runMain() {
+         	  if (customAcsEmbeddedContainerRunner != null) {
+         		  AcsContainer cont = customAcsEmbeddedContainerRunner.theContainer();
+         		  if (cont != null) {
+         		      int action = 2 * 256 + 0; // hibyte: 2 (= EXIT), lobyte: 0 (exitcode towards the OS)
+         			  cont.shutdown(action);
+         		  }
+         	  }
+         	  /* msc(2005-07): no longer sure this is really needed
+         	  if (localInProcThread != null) {
+         	  	  localInProcThread.stop();
+         	  }
+         	  */
+           }
+       });
 
     }
 
