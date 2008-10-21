@@ -85,7 +85,6 @@ public class AlarmContainerTest extends ComponentClientTestCase {
 	 * @throws Exception
 	 */
 	public void testContainerSize() throws Exception {
-		System.out.println("testContainerSize");
 		// Check the size of the empty container
 		assertEquals(0,container.size(false));
 		assertEquals(0,container.size(true));
@@ -120,7 +119,6 @@ public class AlarmContainerTest extends ComponentClientTestCase {
 	 * @throws Exception
 	 */
 	public void testAlarmsRemove() throws Exception {
-		System.out.println("testAlarmsRemove");
 		// Add some alarms
 		int reduced=0;
 		Vector<Alarm> alarms = new Vector<Alarm>();
