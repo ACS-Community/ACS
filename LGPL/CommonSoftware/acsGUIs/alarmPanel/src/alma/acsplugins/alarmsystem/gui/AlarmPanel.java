@@ -19,7 +19,7 @@
 
 /** 
  * @author  acaproni   
- * @version $Id: AlarmPanel.java,v 1.17 2008/03/28 09:12:14 acaproni Exp $
+ * @version $Id: AlarmPanel.java,v 1.18 2008/10/21 14:41:23 acaproni Exp $
  * @since    
  */
 
@@ -50,41 +50,77 @@ import alma.maciErrType.wrappers.AcsJCannotGetComponentEx;
  */
 public class AlarmPanel extends JPanel implements IPanel {
 	
-	// The container services
+	/**
+	 * The startup option for reduction rules
+	 */
+	public final boolean ACTIVATE_RDUCTION_RULES=true;
+	
+	/**
+	 * The container services
+	 */
     private ContainerServices contSvc=null;
 	
-	// The table of logs and its model
+	/**
+	 * The model of the table of alarms
+	 */
 	private AlarmTableModel model;
+	
+	/**
+	 * The table of alarms
+	 */
 	private AlarmTable alarmTable;
 	
+	/**
+	 * The scroll pane of the table
+	 */
 	private JScrollPane tableScrollPane = new JScrollPane(
 			JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 			JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 	
-	// The window that shows this panel
+	/**
+	 * The window that shows this panel
+	 */
     private JFrame frame=null;
     
-    // The client to listen alarms from categories
+    /**
+     *  The client to listen alarms from categories
+     */
     private CategoryClient categoryClient=null;
     
-    // The toolbar
+    /**
+     * The toolbar
+     */
     private Toolbar toolbar;
     
-    // The status line
+    /**
+     * The status line
+     */
     private StatusLine statusLine;
     
-    // The listener of the connection
+    /**
+     * The listener of the connection
+     */
     private ConnectionListener connectionListener;
     
-    // Say if there is an attempt to connect
+    /**
+     * Say if there is an attempt to connect
+     */
     private volatile boolean connecting=false;
     
-    // true if the panel has been closed
-    // It helps stopping the connection thread
+    /**
+     * <code>true</code> if the panel has been closed.
+     * It helps stopping the connection thread
+     */
     private volatile boolean closed=false;
     
-    // The thread to connect/disconnect
+    /**
+     * The thread to connect/disconnect
+     */
     private Thread connectThread;
+    
+    /**
+     * Signal the thread to teminate
+     */
     private Thread disconnectThread;
 	
 	/**
@@ -115,23 +151,26 @@ public class AlarmPanel extends JPanel implements IPanel {
 	 *
 	 */
 	private void initialize() {
+		setLayout(new BorderLayout());
+		
+		
+		
 		// Build GUI objects
-		model = new AlarmTableModel(this);
+		model = new AlarmTableModel(this,ACTIVATE_RDUCTION_RULES);
 		alarmTable = new AlarmTable(model);
 		statusLine = new StatusLine(model,this);
 		connectionListener=statusLine;
 		model.setConnectionListener(statusLine);
-		
-		setLayout(new BorderLayout());
-		// Add the toolbar
-		toolbar=new Toolbar(model);
-		add(toolbar,BorderLayout.NORTH);
 		
 		// Add the table of alarms
 		tableScrollPane.setViewportView(alarmTable);
 		tableScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 		tableScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		add(tableScrollPane,BorderLayout.CENTER);
+		
+		// Add the toolbar
+		toolbar=new Toolbar(model,ACTIVATE_RDUCTION_RULES);
+		add(toolbar,BorderLayout.NORTH);
 		
 		// Add the status line
 		add(statusLine,BorderLayout.SOUTH);
