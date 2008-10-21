@@ -843,7 +843,7 @@ public class TabPanel extends JPanel {
 		containerLine.modifF.setText(modif);
 		containerLine.selectB.setSelected(selected);
 
-		containerLine.modifF.setToolTipText("Enter comma-separated Modifiers, e.g. \"archive\"");
+		containerLine.modifF.setToolTipText("Enter comma-separated Modifiers, e.g. \"archiveContainer\"");
 		
 		containerLinePanel.add(containerLine);
 		containerLines.add(containerLine);
