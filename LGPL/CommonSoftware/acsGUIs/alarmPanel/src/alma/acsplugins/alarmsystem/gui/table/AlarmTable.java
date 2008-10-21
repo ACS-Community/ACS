@@ -19,7 +19,7 @@
 
 /** 
  * @author  aaproni
- * @version $Id: AlarmTable.java,v 1.6 2008/02/22 18:22:00 acaproni Exp $
+ * @version $Id: AlarmTable.java,v 1.7 2008/10/21 14:38:50 acaproni Exp $
  * @since    
  */
 
@@ -47,10 +47,6 @@ import javax.swing.JTable;
 import javax.swing.JComponent;
 import javax.swing.SwingUtilities;
 import javax.swing.ToolTipManager;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.RowSorterListener;
-import javax.swing.table.DefaultTableColumnModel;
-import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
@@ -326,7 +322,7 @@ public class AlarmTable extends JTable implements ActionListener {
 		for (int t=0; t<columns.length; t++) {
 			columns[t]=colModel.getColumn(t);
 			columns[t].setIdentifier(AlarmTableColumn.values()[t]);
-			if (columns[t].getIdentifier()==AlarmTableColumn.ICON) {
+			if (columns[t].getIdentifier()==AlarmTableColumn.ICON || columns[t].getIdentifier()==AlarmTableColumn.REDUCTION) {
 				columns[t].setWidth(20);
 				columns[t].setResizable(false);
 				columns[t].setPreferredWidth(20);
@@ -377,6 +373,8 @@ public class AlarmTable extends JTable implements ActionListener {
 			} else {
 				return emptyLbl;
 			}
+		} else if (col.getIdentifier().equals(AlarmTableColumn.REDUCTION))  {
+			AlarmTableEntry entry = model.getRowEntry(sorter.convertRowIndexToModel(rowIndex));
 		}
 		Component c = super.prepareRenderer(renderer, rowIndex, vColIndex);
 		Alarm alarm = model.getRowAlarm(sorter.convertRowIndexToModel(rowIndex));
