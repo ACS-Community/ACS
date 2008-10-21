@@ -17,11 +17,8 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.net.URL;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 import java.util.logging.Level;
@@ -50,7 +47,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JSplitPane;
-import javax.swing.JTextArea;
 import javax.swing.KeyStroke;
 import javax.swing.SpringLayout;
 import javax.swing.SwingConstants;
@@ -63,7 +59,6 @@ import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 import javax.swing.filechooser.FileFilter;
 
-import alma.acs.commandcenter.CommandCenter;
 import alma.acs.commandcenter.app.CommandCenterLogic;
 import alma.acs.commandcenter.engine.ExecuteTools;
 import alma.acs.commandcenter.engine.Executor;
@@ -470,7 +465,7 @@ public class CommandCenterGui {
 			};
 			cdbChooser = new CdbChooser();
 			cdbChooserDialog.getContentPane().add(cdbChooser);
-			cdbChooserDialog.setSize(400, 500);
+			cdbChooserDialog.setSize(350, 500);
 			cdbChooserDialog.setLocationRelativeTo(frame);
 			cdbChooserDialog.setModal(true);
 		}
@@ -681,7 +676,6 @@ public class CommandCenterGui {
 		ContainerT cont = writeModelToContainerLocationDialog();
 
 		// show dialog
-		correctDialogLocation(dlgContainerLocation);
 		dlgContainerLocation.bringUp();
 
 		// if dialog cancelled or closed, we're done
@@ -745,10 +739,11 @@ public class CommandCenterGui {
 		} else
 		if (frontPanel.chkRemoteScript.isSelected()) {
 			controller.project.setMode(ModeType.REMOTE);
-		} else
-		if (frontPanel.chkLocalJava.isSelected()) {
-			controller.project.setMode(ModeType.JAVA);
-		}
+		} 
+//		else
+//		if (frontPanel.chkLocalJava.isSelected()) {
+//			controller.project.setMode(ModeType.JAVA);
+//		}
 
 		// read container definitions and see which
 		// of the container-RadioButtons is checked
@@ -767,6 +762,7 @@ public class CommandCenterGui {
 
 			cont.setName(c.nameF.getText().trim());
 			cont.setType(String.valueOf(c.typeF.getSelectedItem()).trim());
+			cont.setTypeModifier(MiscUtils.split(c.modifF.getText().trim()));
 		}
 
 	}
@@ -785,9 +781,10 @@ public class CommandCenterGui {
 		} else 
 		if (mode.equals(ModeType.REMOTE)) {
 			frontPanel.chkRemoteScript.setSelected(true);
-		} else
+		}
+		else
 		if (mode.equals(ModeType.JAVA)) {
-			frontPanel.chkLocalJava.setSelected(true);
+			frontPanel.chkLocalScript.setSelected(true); // Acs8.0: remove local java
 		}
 		
 		// update container definitions + set container-RadioButton
@@ -795,7 +792,8 @@ public class CommandCenterGui {
 			frontPanel.lessContainerLines();
 		for (int i = 0; i < controller.project.getContainers().getContainerCount(); i++) {
 			ContainerT cont = controller.project.getContainers().getContainer(i);
-			frontPanel.addContainerLine(cont.getName(), cont.getType(), (i == controller.project.getContainers().getSelect()));
+			String modif = MiscUtils.join(cont.getTypeModifier());
+			frontPanel.addContainerLine(cont.getName(), cont.getType(), modif, (i == controller.project.getContainers().getSelect()));
 		}
 	}
 
