@@ -14,7 +14,6 @@ import java.io.IOException;
 import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.ValidationException;
 
-import alma.acs.commandcenter.CommandCenter;
 import alma.entity.xmlbinding.acscommandcenterproject.AcsCommandCenterProject;
 import alma.entity.xmlbinding.acscommandcenterproject.ContainerT;
 import alma.entity.xmlbinding.acscommandcenterproject.ContainersT;
@@ -28,11 +27,14 @@ import alma.entity.xmlbinding.acscommandcenterproject.types.ModeType;
  */
 public class ProjectMaker {
 	
-	protected CommandCenterLogic ctrl;
-	public ProjectMaker(CommandCenterLogic ctrl) {
-		this.ctrl = ctrl;
+	protected String projectCreatorId;
+	public ProjectMaker(String projectCreatorId) {
+		this.projectCreatorId = projectCreatorId;
 	}
 
+	
+	// CREATE PROJECTS
+	// =============================================================
 	
 	public AcsCommandCenterProject createProject () {
 		AcsCommandCenterProject ret = new AcsCommandCenterProject();
@@ -109,45 +111,12 @@ public class ProjectMaker {
 		ret.getContainers().setAgainstInterfaceRepository("");
 		ret.getContainers().addContainer(createContainer());
 		
-		ret.setCreator(ctrl.projectCreatorId());
+		ret.setCreator(projectCreatorId);
 		
 		return ret;
 	}
 
 	
-	public AcsCommandCenterProject loadProject (File f) throws MarshalException, ValidationException, FileNotFoundException, IOException {
-		AcsCommandCenterProject project = readProject(f);
-		
-		if (isFromAnOutdatedVersion(project)) {
-			// could ask here whether upgrade is wanted
-		}
-		
-		// checks and upgrades the project
-		sanitizeProject(project); 
-		
-		return project;
-	}
-
-
-	/**
-	 * Purges passwords from the project, sets the version/creator info,
-	 * then writes the project to disk.
-	 */
-	public void writeProject (AcsCommandCenterProject p, File f) throws IOException, MarshalException, ValidationException {
-
-		// --- clear all passwords from the model
-		p.setRemotePassword("");
-		for (int i = 0; i < p.getContainers().getContainerCount(); i++) {
-			p.getContainers().getContainer(i).setRemotePassword("");
-		}
-
-		// --- write to disk
-		BufferedWriter w = new BufferedWriter(new FileWriter(f));
-		p.marshal(w);
-		w.flush();
-		w.close();
-	}
-
 	
 	protected ContainerT createContainer () {
 		ContainerT ret = new ContainerT();
@@ -155,29 +124,43 @@ public class ProjectMaker {
 		return ret;
 	}
 
-	/**
-	 * Used to upgrade a project after it was read in.
-	 */
-	protected void sanitizeProject(AcsCommandCenterProject p) {
-		
-		// --- upgrading projects to 4.1
-		
-		if (p.getMode() == null) {
-			p.setMode(ModeType.LOCAL);
-		}
-		if (! p.hasToolRunAgainstDedicatedSettings()) {
-			p.setToolRunAgainstDedicatedSettings(false);
-		}
-
-		// --- upgrading projects to xyz
-
-		
-		// --- store the fact that the project was sanitized 
-		//     by this current command center version
-		p.setCreator(ctrl.projectCreatorId());
-		
-	}
 	
+	
+	// WRITE PROJECTS
+	// =============================================================
+	
+
+	/**
+	 * Purges passwords from the project, sets the version/creator info,
+	 * then writes the project to disk.
+	 */
+	public void writeProject (AcsCommandCenterProject p, File f) throws IOException, MarshalException, ValidationException {
+
+		// clear all passwords from the model
+		p.setRemotePassword("");
+		for (int i = 0; i < p.getContainers().getContainerCount(); i++) {
+			p.getContainers().getContainer(i).setRemotePassword("");
+		}
+
+		// write to disk
+		BufferedWriter w = new BufferedWriter(new FileWriter(f));
+		p.marshal(w);
+		w.flush();
+		w.close();
+	}
+
+
+	
+	// READ PROJECTS
+	// =============================================================
+	
+	
+	public AcsCommandCenterProject loadProject (File f) throws MarshalException, ValidationException, FileNotFoundException, IOException {
+		AcsCommandCenterProject project = readProject(f);
+		sanitizeProject(project); 
+		return project;
+	}
+
 	
 	protected AcsCommandCenterProject readProject (File f) throws FileNotFoundException, MarshalException, ValidationException, IOException {
 		BufferedReader r = new BufferedReader(new FileReader(f));
@@ -187,34 +170,43 @@ public class ProjectMaker {
 	}
 
 
-	/**
-	 * @since v4.1
-	 */
-	protected boolean isFromAnOutdatedVersion(AcsCommandCenterProject p) {
-		String v = p.getCreator();
-		if (v == null) {
-			return true;
+	protected void sanitizeProject (AcsCommandCenterProject p) {
+		boolean sanitized = false;
+
+		// catch ill cases caused by manual editing
+		// ----------------------------
+		if (p.getContainers() == null) {
+			p.setContainers(new ContainersT());
+			sanitized = true;
 		}
-		// PENDING(msc): more sophisticated version checking
-		boolean a = v.equals("acc-v4.1");
-		boolean b = v.startsWith("acc-v4.1");
-		
-		return !a; // sufficient in current version
-	}	
-	
+
+		// upgrade projects to 4.1
+		// ----------------------------
+		if (p.getMode() == null) {
+			p.setMode(ModeType.LOCAL);
+			sanitized = true;
+		}
+
+		if (! p.hasToolRunAgainstDedicatedSettings()) {
+			p.setToolRunAgainstDedicatedSettings(false);
+			sanitized = true;
+		}
+
+		// upgrade projects to 8.0
+		// ----------------------------
+		for (ContainerT c : p.getContainers().getContainer()) {
+			if (c.getType().equals("archive")) {
+				c.setType("java");
+				c.addTypeModifier("archiveContainer");
+				sanitized = true;
+			}
+		}
+
+		if (sanitized)
+			// now you're up-to-date
+			p.setCreator(projectCreatorId);
+	}
+
+
 }
-
-
-
-	// ================================================
-	// API
-	// ================================================
-
-	// ================================================
-	// Internal
-	// ================================================
-
-	// ================================================
-	// Inner Types
-	// ================================================
 
