@@ -18,6 +18,8 @@
  */
 package alma.acsplugins.alarmsystem.gui.table;
 
+import com.sun.mail.handlers.text_html;
+
 import cern.laser.client.data.Alarm;
 
 /**
@@ -33,14 +35,20 @@ import cern.laser.client.data.Alarm;
  */
 public class AlarmTableEntry {
 	
-	// An entry is new till the user look at it by pressing one mouse
-	// button over the row of the alarm
+	/**
+	 *  An entry is new till the user look at it by pressing one mouse
+	 *  button over the row of the alarm
+	 */
 	private volatile boolean isNew;
 	
-	// The alarm received by the alarm system
+	/**
+	 * The alarm received by the alarm system
+	 */
 	private Alarm alarm;
 	
-	// The type of the alarm
+	/**
+	 * The type of the alarm
+	 */
 	private AlarmGUIType alarmType;
 	
 	/** 
@@ -110,5 +118,28 @@ public class AlarmTableEntry {
 	 */
 	public void alarmSeen() {
 		isNew=false;
+	}
+	
+	/**
+	 * @return <code>true</code> if the alarm is reduced
+	 */
+	public boolean isReduced() {
+		return alarm.getStatus().isReduced();
+	}
+	
+	/**
+	 * 
+	 * @return <code>true</code> if the alarm is a node or multiplicity child
+	 */
+	public boolean isChild() {
+		return alarm.isNodeChild() || alarm.isMultiplicityChild();
+	}
+	
+	/**
+	 * 
+	 * @return <code>true</code> if the alarm is a node or multiplicity parent
+	 */
+	public boolean isParent() {
+		return alarm.isNodeParent() || alarm.isMultiplicityParent();
 	}
 }
