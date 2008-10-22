@@ -103,18 +103,18 @@ public enum AlarmGUIType {
 	 */
 	public static AlarmGUIType fromAlarm(Alarm alarm) {
 		if (alarm==null) {
-			throw new IllegalArgumentException("The a null alar has no type!");
+			throw new IllegalArgumentException("A null alarm can't have type!");
 		}
 		if (!alarm.getStatus().isActive()) {
 			return INACTIVE;
 		}
-		switch (alarm.getPriority()) {
+		switch (alarm.getPriority().intValue()) {
 		case 0: return PRIORITY_0;
 		case 1: return PRIORITY_1;
 		case 2: return PRIORITY_2;
 		case 3: return PRIORITY_3;
 		default: {
-			throw new IllegalStateException("Inavlid priority from alarm: "+alarm.getPriority());
+			throw new IllegalStateException("Inavlid priority from alarm: "+alarm.getPriority().intValue());
 		}
 		}
 	}
