@@ -246,7 +246,7 @@ public class AlarmsContainer {
 		if (index.size()==0) {
 			throw new AlarmContainerException("The container is empty");
 		}
-		String ID = index.remove(index.size()-1);
+		String ID = index.remove(0);
 		if (ID==null) {
 			throw new IllegalStateException("The index vector returned a null item");
 		}
@@ -274,7 +274,10 @@ public class AlarmsContainer {
 			throw new AlarmContainerException("Alarm not in the container");
 		}
 		index.remove(pos);
-		indexWithReduction.remove(pos);
+		pos = indexWithReduction.indexOf(ID);
+		if (pos>=0) {
+			indexWithReduction.remove(pos);
+		}
 		AlarmTableEntry oldEntry = entries.remove(ID);
 		if (oldEntry==null) {
 			throw new IllegalStateException("The ID was in index but not in entries");
