@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.3 2008/10/20 23:34:07 javarias Exp $"
+# "@(#) $Id: Makefile,v 1.4 2008/10/22 05:04:11 javarias Exp $"
 #
 # Makefile of ........
 #
@@ -52,21 +52,28 @@ EXECUTABLES_L   =
 # Includes (.h) files (public only)
 # ---------------------------------
 INCLUDES        =  DDSHelper.h DDSPublisher.h DDSSubscriber.h \
-						 DataReaderListener.h acsddsncDataReaderListener.h
+						 DataReaderListener.h acsddsncDataReaderListener.h \
+						 NCBenchmarkImpl.h
 
 #
 # Libraries (public and local)
 # ----------------------------
-LIBRARIES       = acsddsnc acsddsncBench
+LIBRARIES       = acsddsnc NCBenchTypeSupport NCBenchmarkImpl
 LIBRARIES_L     =
 
 #
 # <brief description of acsddsnc library>
-acsddsnc_OBJECTS   = DDSHelperImpl DDSSubscriberImpl DataReaderListenerImpl
+acsddsnc_OBJECTS  = DDSHelperImpl DDSSubscriberImpl DataReaderListenerImpl
+acsddsnc_LIBS		= OpenDDS_Dcps SimpleTcp
+#
+# <brief description of acsddsncBench library>
+NCBenchmarkImpl_OBJECTS = NCBenchmarkImpl
+NCBenchmarkImpl_LIBS    = NCBenchmarkStubs OpenDDS_Dcps SimpleTcp
 
 #
 # <brief description of acsddsncBench library>
-acsddsncBench_OBJECTS += $(DDS_TYPE_FILES)
+NCBenchTypeSupport_OBJECTS = $(DDS_TYPE_FILES)
+NCBenchTypeSupport_LIBS		= NCBenchmarkStubs OpenDDS_Dcps SimpleTcp
 
 #
 # Scripts (public and local)
@@ -117,8 +124,8 @@ CDB_SCHEMAS =
 # 
 # IDL Files and flags
 # 
-IDL_FILES = NCBenchmark NCBenchmarkStruct 
-DDS_IDL_FILES = NCBenchmarkStruct
+IDL_FILES = NCBenchmark
+DDS_IDL_FILES = NCBenchmark
 DDS_TYPES = Message
 TAO_IDLFLAGS = -Gdcps
 USER_IDL = -I$(DDS_ROOT)
@@ -222,7 +229,7 @@ $(DDS_TYPE_IDLS):
 	cp -r $(DDS_IDLS) .
 	$(foreach idl, $(DDS_IDL_FILES), $(DDS_ROOT)/bin/dcps_ts.pl $(idl).idl)
 	@echo "==== Processing DDS idls: $(DDS_TYPE_IDLS)"
-	$(foreach idl, $(DDS_TYPE_IDLS), $(ACE_ROOT)/TAO/TAO_IDL/tao_idl $(TAO_IDLFLAGS) $(USER_IDL) $(idl))
+	$(foreach idl, $(DDS_TYPE_IDLS), $(ACE_ROOT)/TAO/TAO_IDL/tao_idl $(IDL_PATH) $(USER_IDL) $(TAO_IDLFLAGS) $(USER_IDL) $(idl))
 #	rm -rf $(foreach idl, $(DDS_IDL_FILES), $(idl).idl)
 
 clean_dds:
