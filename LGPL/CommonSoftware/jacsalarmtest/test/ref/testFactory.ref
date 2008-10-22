@@ -7,7 +7,7 @@
 1 - ----------T--:--:----- FINEST [FactoryTest#testNoALarmBranch] manager corbaloc 'corbaloc::xxxxxxx:yyyy/Manager' resolved
 1 - ----------T--:--:----- FINEST [FactoryTest#testNoALarmBranch] manager narrow successful
 1 - ----------T--:--:----- FINE [FactoryTest#testNoALarmBranch] Manager login done ...
-1 - ----------T--:--:----- DEBUG [almaalarmsystemsourcetestFactoryTest] Alarm system type: ACS
+1 - ----------T--:--:----- DEBUG [FactoryTest#testNoALarmBranch] Alarm system type: ACS
 1 - ----------T--:--:----- FINE [FactoryTest#testNoALarmBranch] about to log out from manager
 1 - ----------T--:--:----- FINE [FactoryTest#testNoALarmBranch] logged out from manager
 1 - ----------T--:--:----- DEBUG [almaacsloggingconfigLogConfig] Logging configuration has been initialized, but not from CDB settings
@@ -19,7 +19,7 @@
 1 - ----------T--:--:----- FINEST [FactoryTest#testACSAS] manager corbaloc 'corbaloc::xxxxxxx:yyyy/Manager' resolved
 1 - ----------T--:--:----- FINEST [FactoryTest#testACSAS] manager narrow successful
 1 - ----------T--:--:----- FINE [FactoryTest#testACSAS] Manager login done ...
-1 - ----------T--:--:----- DEBUG [almaalarmsystemsourcetestFactoryTest] Alarm system type: ACS
+1 - ----------T--:--:----- DEBUG [FactoryTest#testACSAS] Alarm system type: ACS
 1 - ----------T--:--:----- FINE [FactoryTest#testACSAS] about to log out from manager
 1 - ----------T--:--:----- FINE [FactoryTest#testACSAS] logged out from manager
 1 - ----------T--:--:----- DEBUG [almaacsloggingconfigLogConfig] Logging configuration has been initialized, but not from CDB settings
@@ -31,8 +31,8 @@
 1 - ----------T--:--:----- FINEST [FactoryTest#testCERNAS] manager corbaloc 'corbaloc::xxxxxxx:yyyy/Manager' resolved
 1 - ----------T--:--:----- FINEST [FactoryTest#testCERNAS] manager narrow successful
 1 - ----------T--:--:----- FINE [FactoryTest#testCERNAS] Manager login done ...
-1 - ----------T--:--:----- DEBUG [almaalarmsystemsourcetestFactoryTest] Alarm system type: CERN
-1 - ----------T--:--:----- DEBUG [almaalarmsystemsourcetestFactoryTest] cmw-mom/acs-jms initialized
+1 - ----------T--:--:----- DEBUG [FactoryTest#testCERNAS] Alarm system type: CERN
+1 - ----------T--:--:----- DEBUG [FactoryTest#testCERNAS] cmw-mom/acs-jms initialized
 1 - ----------T--:--:----- FINE [FactoryTest#testCERNAS] about to log out from manager
 1 - ----------T--:--:----- FINE [FactoryTest#testCERNAS] logged out from manager
 1 - ----------T--:--:----- DEBUG [almaacsloggingconfigLogConfig] Logging configuration has been initialized, but not from CDB settings
@@ -44,19 +44,19 @@
 1 - ----------T--:--:----- FINEST [FactoryTest#testWrongImplementationProp] manager corbaloc 'corbaloc::xxxxxxx:yyyy/Manager' resolved
 1 - ----------T--:--:----- FINEST [FactoryTest#testWrongImplementationProp] manager narrow successful
 1 - ----------T--:--:----- FINE [FactoryTest#testWrongImplementationProp] Manager login done ...
-1 - ----------T--:--:----- DEBUG [almaalarmsystemsourcetestFactoryTest] Alarm system type: ACS
+1 - ----------T--:--:----- DEBUG [FactoryTest#testWrongImplementationProp] Alarm system type: ACS
 1 - ----------T--:--:----- FINE [FactoryTest#testWrongImplementationProp] about to log out from manager
 1 - ----------T--:--:----- FINE [FactoryTest#testWrongImplementationProp] logged out from manager
 1 - ----------T--:--:----- DEBUG [almaacsloggingconfigLogConfig] Logging configuration has been initialized, but not from CDB settings
-1 - ----------T--:--:----- FINE [FactoryTest#testFaultStateCreation] calling orbresolve_initial_references
 1 - ----------T--:--:----- INFO [FactoryTest#testFaultStateCreation] -------------------------------
 1 - ----------T--:--:----- INFO [FactoryTest#testFaultStateCreation] ComponentClientTestCase#setUp()
-1 - ----------T--:--:----- FINE [FactoryTest#testFaultStateCreation] manager reference not yet available in method loginToManager; will try to find the manager first
+1 - ----------T--:--:----- FINE [FactoryTest#testFaultStateCreation] calling orbresolve_initial_references
 1 - ----------T--:--:----- FINE [FactoryTest#testFaultStateCreation] POA activated
+1 - ----------T--:--:----- FINE [FactoryTest#testFaultStateCreation] manager reference not yet available in method loginToManager; will try to find the manager first
 1 - ----------T--:--:----- FINEST [FactoryTest#testFaultStateCreation] manager corbaloc 'corbaloc::xxxxxxx:yyyy/Manager' resolved
 1 - ----------T--:--:----- FINEST [FactoryTest#testFaultStateCreation] manager narrow successful
 1 - ----------T--:--:----- FINE [FactoryTest#testFaultStateCreation] Manager login done ...
-1 - ----------T--:--:----- DEBUG [almaalarmsystemsourcetestFactoryTest] Alarm system type: ACS
+1 - ----------T--:--:----- DEBUG [FactoryTest#testFaultStateCreation] Alarm system type: ACS
 1 - ----------T--:--:----- FINE [FactoryTest#testFaultStateCreation] about to log out from manager
 1 - ----------T--:--:----- FINE [FactoryTest#testFaultStateCreation] logged out from manager
 1 - ----------T--:--:----- DEBUG [almaacsloggingconfigLogConfig] Logging configuration has been initialized, but not from CDB settings
@@ -68,8 +68,8 @@
 1 - ----------T--:--:----- FINEST [FactoryTest#testAlarmSourceCreation] manager corbaloc 'corbaloc::xxxxxxx:yyyy/Manager' resolved
 1 - ----------T--:--:----- FINEST [FactoryTest#testAlarmSourceCreation] manager narrow successful
 1 - ----------T--:--:----- FINE [FactoryTest#testAlarmSourceCreation] Manager login done ...
-1 - ----------T--:--:----- DEBUG [almaalarmsystemsourcetestFactoryTest] Alarm system type: ACS
-1 - ----------T--:--:----- FINE [almaalarmsystemsourcetestFactoryTest] Alarm source of SourceName connected to the logging
+1 - ----------T--:--:----- DEBUG [FactoryTest#testAlarmSourceCreation] Alarm system type: ACS
+1 - ----------T--:--:----- FINE [FactoryTest#testAlarmSourceCreation] Alarm source of SourceName connected to the logging
 1 - ----------T--:--:----- FINE [FactoryTest#testAlarmSourceCreation] about to log out from manager
 1 - ----------T--:--:----- FINE [FactoryTest#testAlarmSourceCreation] logged out from manager
 1 - 
