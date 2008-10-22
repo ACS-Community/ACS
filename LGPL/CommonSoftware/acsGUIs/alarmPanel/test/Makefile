@@ -16,7 +16,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.1 2008/10/21 14:44:03 acaproni Exp $"
+# "@(#) $Id: Makefile,v 1.2 2008/10/22 10:15:31 acaproni Exp $"
 #
 # Makefile of ........
 #
@@ -208,7 +208,7 @@ all:	do_all
 	@echo " . . . 'all' done" 
 
 clean : clean_all 
-	$(RM) *~ ../*~ *.diff *.rep core tmp tatlogs
+	$(RM) *~ ../*~ *.diff *.rep core tmp tatlogs ../lib/alarmPanelTest.jar ../object
 	@echo " . . . clean done"
 
 clean_dist : clean_all clean_dist_all 
