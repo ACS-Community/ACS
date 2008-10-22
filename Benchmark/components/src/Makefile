@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.26 2008/09/26 14:02:09 eallaert Exp $"
+# "@(#) $Id: Makefile,v 1.27 2008/10/22 02:47:49 cparedes Exp $"
 #
 # Makefile of ........
 #
@@ -64,8 +64,15 @@ ACS_VERSION = $(shell cat $(ACSROOT)/ACS_VERSION)
 #
 # C programs (public and local)
 # -----------------------------
-EXECUTABLES     =
-EXECUTABLES_L   = 
+EXECUTABLES     = 
+EXECUTABLES_L   = logMonitorClient logSenderClient loggingClientHack
+
+
+logSenderClient_OBJECTS=LogSenderClient
+logMonitorClient_OBJECTS=LogMonitorClient
+
+loggingClientHack_OBJECTS=loggingClient loggingHelper
+loggingClientHack_LIBS = logging
 
 #
 # <brief description of xxxxx program>
@@ -94,6 +101,7 @@ INCLUDES        =  	IdlCompilationTimeImpl.h BasePerfCompImpl.h \
 LIBRARIES       = 	componentsBulkReceiver componentsBulkSender \
 			MethodTestComponentImpl SimpleBACIComponentImpl ComplexBACIComponentImpl \
 			LogTestComponentImpl ErrTestComponentImpl SupplierTestComponentImpl LogStressImpl
+
 LIBRARIES_L     =
 
 LogStressImpl_OBJECTS = LogStressImpl

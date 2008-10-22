@@ -2,6 +2,7 @@
 import perftest
 import sys
 import acstime
+from time import sleep
 
 #--ACS Imports-----------------------------------------------------------------
 from Acspy.Common.TimeHelper  import getTimeStamp
@@ -11,7 +12,7 @@ from Acspy.Nc.Consumer   import Consumer
 class NCStressConsumer (Consumer):
 
     #--------------------------------------------------------------------------
-    def __init__ (self, numToExpect, outputFileName):
+    def __init__ (self, numToExpect, outputFileName, waitBetweenEvents=0):
         '''
         Constructor.
         
@@ -35,6 +36,7 @@ class NCStressConsumer (Consumer):
         else:
             self.numToExpect = numToExpect
         self.numReceived = 0
+        self.waitBetweenEvents=waitBetweenEvents
 
     def disconnect(self):
         Consumer.disconnect(self)
@@ -68,6 +70,8 @@ class NCStressConsumer (Consumer):
             # and will not know when things are finished if they're buffered
             if(self.numReceived >= self.numToExpect):
                 self.outputfile.flush()
+
+            sleep(self.waitBetweenEvents)
 
         except Exception, e:
             self.logger.logCritical('Unable to use handler function...' + str(e))
