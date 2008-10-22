@@ -316,6 +316,14 @@ public class AlarmContainerTest extends ComponentClientTestCase {
 					priorities[al.getPriority()]++;
 				}
 			}
+			container.removeInactiveAlarms(alarmType);
+			if (alarmType!=AlarmGUIType.INACTIVE) {
+				assertEquals(alarms.size()-priorities[alarmType.ordinal()], container.size(false));
+			} else {
+				int newSize = alarms.size()-priorities[0]-priorities[1]-priorities[2]-priorities[3];
+				assertEquals(newSize, container.size(false));
+			}
+			
 		}
 	}
 	
