@@ -171,7 +171,7 @@ public class AlarmsContainer {
 			throw new IllegalStateException("Inconsistency between index and entries");
 		}
 		index.add(entry.getAlarm().getAlarmId());
-		if (entry.isReduced()) {
+		if (!entry.isReduced()) {
 			indexWithReduction.add(entry.getAlarm().getAlarmId());
 		}
 		entries.put(entry.getAlarm().getAlarmId(), entry);

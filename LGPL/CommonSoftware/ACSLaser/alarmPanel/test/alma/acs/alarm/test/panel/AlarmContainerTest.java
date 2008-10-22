@@ -90,14 +90,14 @@ public class AlarmContainerTest extends ComponentClientTestCase {
 		assertEquals(0,container.size(false));
 		assertEquals(0,container.size(true));
 		// Add half of the max number of alarms
-		int reduced=populateContainer(CONTAINER_SIZE/2, "TEST",null,null);
+		int notReduced=populateContainer(CONTAINER_SIZE/2, "TEST",null,null);
 		assertEquals("Wrong not reduced size",CONTAINER_SIZE/2, container.size(false));
-		assertEquals("Wrong reduced size",reduced, container.size(true));
+		assertEquals("Wrong reduced size",notReduced, container.size(true));
 
 		// Add the other alarms until the container is full
-		reduced+=populateContainer(CONTAINER_SIZE/2, "TEST", null,null);
+		notReduced+=populateContainer(CONTAINER_SIZE/2, "TEST", null,null);
 		assertEquals("Wrong not reduced size",CONTAINER_SIZE, container.size(false));
-		assertEquals("Wrong reduced size",reduced, container.size(true));
+		assertEquals("Wrong reduced size",notReduced, container.size(true));
 		
 		// Adding one more item, an exception should be thrown
 		boolean exceptionThrown=false;
@@ -121,11 +121,11 @@ public class AlarmContainerTest extends ComponentClientTestCase {
 	 */
 	public void testAlarmsRemove() throws Exception {
 		// Add some alarms
-		int reduced=0;
+		int notReduced=0;
 		Vector<Alarm> alarms = new Vector<Alarm>();
-		reduced = populateContainer(CONTAINER_SIZE/2, "TEST", alarms,null);
+		notReduced = populateContainer(CONTAINER_SIZE/2, "TEST", alarms,null);
 		assertEquals("Wrong not reduced size",CONTAINER_SIZE/2, container.size(false));
-		assertEquals("Wrong reduced size",reduced, container.size(true));
+		assertEquals("Wrong reduced size",notReduced, container.size(true));
 		
 		// Trying to remove an alarm not in the container throws an exception
 		Alarm al = TestAlarm.generateRndAlarm("EXCEPTION");
@@ -139,11 +139,11 @@ public class AlarmContainerTest extends ComponentClientTestCase {
 		
 		// Remove all the alarms checking the number of alarms in the container
 		int sz = CONTAINER_SIZE/2;
-		int reducedToRemove=reduced;
+		int reducedToRemove=notReduced;
 		for (Alarm removedAlarm: alarms) {
 			container.remove(removedAlarm);
 			sz--;
-			if (removedAlarm.getStatus().isReduced()) {
+			if (!removedAlarm.getStatus().isReduced()) {
 				reducedToRemove--;
 			}
 			assertEquals(sz, container.size(false));
@@ -167,14 +167,14 @@ public class AlarmContainerTest extends ComponentClientTestCase {
 	 * 				it can be <code>null</code>; if it is not <code>null</code>, the newly generated
 	 * 						entries are added to the collection.
 	 * 					
-	 * @return The number of reduced alarms in the collection
+	 * @return The number of not reduced alarms in the collection
 	 */
 	private int populateContainer(
 			int size, 
 			String fm, 
 			Collection<Alarm> generatedAlarms,
 			Collection<AlarmTableEntry> entries) throws Exception {
-		int reduced=0;
+		int notReduced=0;
 		int originalCollectionAlarmsSize=0;
 		if (generatedAlarms!=null) {
 			originalCollectionAlarmsSize=generatedAlarms.size();
@@ -188,8 +188,8 @@ public class AlarmContainerTest extends ComponentClientTestCase {
 			if (generatedAlarms!=null) {
 				generatedAlarms.add(alarm);
 			}
-			if (alarm.getStatus().isReduced()) {
-				reduced++;
+			if (!alarm.getStatus().isReduced()) {
+				notReduced++;
 			}
 			container.add(new AlarmTableEntry(alarm));
 		}
@@ -199,7 +199,7 @@ public class AlarmContainerTest extends ComponentClientTestCase {
 		if (entries!=null) {
 			assertEquals(size, entries.size()-originalCollectionEntriesSize);
 		}
-		return reduced;
+		return notReduced;
 	}
 	
 	/**
@@ -210,18 +210,18 @@ public class AlarmContainerTest extends ComponentClientTestCase {
 	public void testRemoveOldest() throws Exception {
 		// Add some alarms
 		Vector<Alarm> alarms = new Vector<Alarm>();
-		int reduced = populateContainer(CONTAINER_SIZE/2, "TEST", alarms,null);
+		int notReduced = populateContainer(CONTAINER_SIZE/2, "TEST", alarms,null);
 		assertEquals("Wrong not reduced size",CONTAINER_SIZE/2, container.size(false));
-		assertEquals("Wrong reduced size",reduced, container.size(true));
+		assertEquals("Wrong reduced size",notReduced, container.size(true));
 		
 		AlarmTableEntry removedEntry = container.removeOldest();
 		assertNotNull(removedEntry);
 		// Check the sizes
 		assertEquals(alarms.size()-1, container.size(false));
 		if (removedEntry.isReduced()) {
-			assertEquals(reduced-1, container.size(true));
+			assertEquals(notReduced, container.size(true));
 		} else {
-			assertEquals(reduced, container.size(true));
+			assertEquals(notReduced-1, container.size(true));
 		}
 		// Check if removed alarms was the oldest alarm
 		assertEquals(alarms.get(0).getAlarmId(), removedEntry.getAlarm().getAlarmId());
@@ -235,9 +235,9 @@ public class AlarmContainerTest extends ComponentClientTestCase {
 	public void testReplaceAlarm() throws Exception {
 		// Add some alarms
 		Vector<Alarm> alarms = new Vector<Alarm>();
-		int reduced = populateContainer(CONTAINER_SIZE/2, "TEST", alarms,null);
+		int notReduced = populateContainer(CONTAINER_SIZE/2, "TEST", alarms,null);
 		assertEquals("Wrong not reduced size",CONTAINER_SIZE/2, container.size(false));
-		assertEquals("Wrong reduced size",reduced, container.size(true));
+		assertEquals("Wrong reduced size",notReduced, container.size(true));
 		
 		// replace the first alarm with another one changing the
 		// active attribute
@@ -295,7 +295,7 @@ public class AlarmContainerTest extends ComponentClientTestCase {
 	 */
 	public void testRemoveInactivAls() throws Exception {
 		Vector<Alarm> alarms= new Vector<Alarm>();
-		int reduced;
+		int notReduced;
 		// Stores for each priority the number of inactive alarms
 		int[] priorities =new int[AlarmGUIType.values().length-1];
 		// The test is done for each AlarmGUIType corresponding to a priority
@@ -308,9 +308,9 @@ public class AlarmContainerTest extends ComponentClientTestCase {
 			for (int t=0; t<4; t++) {
 				priorities[t]=0;
 			}
-			reduced = populateContainer(CONTAINER_SIZE/2, "TEST", alarms,null);
+			notReduced = populateContainer(CONTAINER_SIZE/2, "TEST", alarms,null);
 			assertEquals("Wrong not reduced size",CONTAINER_SIZE/2, container.size(false));
-			assertEquals("Wrong reduced size",reduced, container.size(true));
+			assertEquals("Wrong reduced size",notReduced, container.size(true));
 			for (Alarm al: alarms) {
 				if (!al.getStatus().isActive()) {
 					priorities[al.getPriority()]++;
