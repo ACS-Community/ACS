@@ -24,6 +24,7 @@ import java.util.Vector;
 import cern.laser.client.data.Alarm;
 
 import alma.acs.component.client.ComponentClientTestCase;
+import alma.acsplugins.alarmsystem.gui.table.AlarmGUIType;
 import alma.acsplugins.alarmsystem.gui.table.AlarmTableEntry;
 import alma.acsplugins.alarmsystem.gui.table.AlarmsContainer;
 import alma.acsplugins.alarmsystem.gui.table.AlarmsContainer.AlarmContainerException;
@@ -199,6 +200,123 @@ public class AlarmContainerTest extends ComponentClientTestCase {
 			assertEquals(size, entries.size()-originalCollectionEntriesSize);
 		}
 		return reduced;
+	}
+	
+	/**
+	 * Test <code>removeOldest()</code>
+	 * 
+	 * @throws Exception
+	 */
+	public void testRemoveOldest() throws Exception {
+		// Add some alarms
+		Vector<Alarm> alarms = new Vector<Alarm>();
+		int reduced = populateContainer(CONTAINER_SIZE/2, "TEST", alarms,null);
+		assertEquals("Wrong not reduced size",CONTAINER_SIZE/2, container.size(false));
+		assertEquals("Wrong reduced size",reduced, container.size(true));
+		
+		AlarmTableEntry removedEntry = container.removeOldest();
+		assertNotNull(removedEntry);
+		// Check the sizes
+		assertEquals(alarms.size()-1, container.size(false));
+		if (removedEntry.isReduced()) {
+			assertEquals(reduced-1, container.size(true));
+		} else {
+			assertEquals(reduced, container.size(true));
+		}
+		// Check if removed alarms was the oldest alarm
+		assertEquals(alarms.get(0).getAlarmId(), removedEntry.getAlarm().getAlarmId());
+	}
+	
+	/**
+	 * Test <code>replaceAlarm()</code>
+	 * 
+	 * @throws Exception
+	 */
+	public void testReplaceAlarm() throws Exception {
+		// Add some alarms
+		Vector<Alarm> alarms = new Vector<Alarm>();
+		int reduced = populateContainer(CONTAINER_SIZE/2, "TEST", alarms,null);
+		assertEquals("Wrong not reduced size",CONTAINER_SIZE/2, container.size(false));
+		assertEquals("Wrong reduced size",reduced, container.size(true));
+		
+		// replace the first alarm with another one changing the
+		// active attribute
+		Alarm alarmToReplace = alarms.get(0);
+		assertNotNull(alarmToReplace);
+		Alarm newAlarm = new TestAlarm(
+				alarmToReplace.getAlarmId(),
+				alarmToReplace.isNodeChild(),
+				alarmToReplace.isNodeParent(),
+				!alarmToReplace.getStatus().isActive(),
+				alarmToReplace.getStatus().isMasked(),
+				alarmToReplace.getStatus().isReduced());
+		container.replace(newAlarm);
+		AlarmTableEntry entry = container.get(newAlarm.getAlarmId());
+		assertEquals(newAlarm.getAlarmId(), entry.getAlarm().getAlarmId());
+		assertEquals(newAlarm.getStatus().isActive(), entry.getAlarm().getStatus().isActive());
+		
+		// replace the LAST alarm with another one changing the
+		// active attribute
+		alarmToReplace = alarms.get(alarms.size()-1);
+		assertNotNull(alarmToReplace);
+		newAlarm = new TestAlarm(
+				alarmToReplace.getAlarmId(),
+				alarmToReplace.isNodeChild(),
+				alarmToReplace.isNodeParent(),
+				!alarmToReplace.getStatus().isActive(),
+				alarmToReplace.getStatus().isMasked(),
+				alarmToReplace.getStatus().isReduced());
+		container.replace(newAlarm);
+		entry = container.get(newAlarm.getAlarmId());
+		assertEquals(newAlarm.getAlarmId(), entry.getAlarm().getAlarmId());
+		assertEquals(newAlarm.getStatus().isActive(), entry.getAlarm().getStatus().isActive());
+		
+		// replace a middle-list alarm with another one changing the
+		// active attribute
+		alarmToReplace = alarms.get(alarms.size()/2);
+		assertNotNull(alarmToReplace);
+		newAlarm = new TestAlarm(
+				alarmToReplace.getAlarmId(),
+				alarmToReplace.isNodeChild(),
+				alarmToReplace.isNodeParent(),
+				!alarmToReplace.getStatus().isActive(),
+				alarmToReplace.getStatus().isMasked(),
+				alarmToReplace.getStatus().isReduced());
+		container.replace(newAlarm);
+		entry = container.get(newAlarm.getAlarmId());
+		assertEquals(newAlarm.getAlarmId(), entry.getAlarm().getAlarmId());
+		assertEquals(newAlarm.getStatus().isActive(), entry.getAlarm().getStatus().isActive());
+	}
+	
+	/**
+	 * Test the removal of inactive alarms
+	 * 
+	 * @throws Exception
+	 */
+	public void testRemoveInactivAls() throws Exception {
+		Vector<Alarm> alarms= new Vector<Alarm>();
+		int reduced;
+		// Stores for each priority the number of inactive alarms
+		int[] priorities =new int[AlarmGUIType.values().length-1];
+		// The test is done for each AlarmGUIType corresponding to a priority
+		for (AlarmGUIType alarmType: AlarmGUIType.values()) {
+			// Add some alarms
+			alarms.clear();
+			assertEquals(0, alarms.size());
+			container.clear();
+			assertEquals(0, container.size(false));
+			for (int t=0; t<4; t++) {
+				priorities[t]=0;
+			}
+			reduced = populateContainer(CONTAINER_SIZE/2, "TEST", alarms,null);
+			assertEquals("Wrong not reduced size",CONTAINER_SIZE/2, container.size(false));
+			assertEquals("Wrong reduced size",reduced, container.size(true));
+			for (Alarm al: alarms) {
+				if (!al.getStatus().isActive()) {
+					priorities[al.getPriority()]++;
+				}
+			}
+		}
 	}
 	
 }
