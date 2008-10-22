@@ -69,6 +69,11 @@ public class TestAlarm implements Alarm {
 	private final TestAlarmStatus status;
 	
 	/**
+	 * The priority
+	 */
+	private int priority;
+	
+	/**
 	 * Constructor
 	 * 
 	 */
@@ -86,6 +91,7 @@ public class TestAlarm implements Alarm {
 		status = new TestAlarmStatus(active,masked,reduced);
 		this.child=child;
 		this.parent=parent;
+		this.priority=Math.abs(rnd.nextInt())%4;
 	}
 
 	/**
@@ -173,7 +179,7 @@ public class TestAlarm implements Alarm {
 	 */
 	@Override
 	public Integer getPriority() {
-		return 0;
+		return priority;
 	}
 
 	/**
