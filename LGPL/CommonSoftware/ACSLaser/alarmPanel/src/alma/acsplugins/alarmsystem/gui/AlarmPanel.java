@@ -19,7 +19,7 @@
 
 /** 
  * @author  acaproni   
- * @version $Id: AlarmPanel.java,v 1.18 2008/10/21 14:41:23 acaproni Exp $
+ * @version $Id: AlarmPanel.java,v 1.19 2008/10/23 16:05:26 acaproni Exp $
  * @since    
  */
 
@@ -322,11 +322,13 @@ public class AlarmPanel extends JPanel implements IPanel {
 			}
 		}
 		if (closed) {
+			model.setCategoryClient(null);
 			return;
 		}
 		connecting=false;
 		connectionListener.connected();
 		statusLine.start();
+		model.setCategoryClient(categoryClient);
 	}
 	
 	/**
@@ -334,6 +336,7 @@ public class AlarmPanel extends JPanel implements IPanel {
 	 */
 	public synchronized void disconnect() {
 		statusLine.stop();
+		model.setCategoryClient(null);
 		// wait until the connect thread terminates (if it is running)
 		while (connectThread!=null && connectThread.isAlive()) {
 			try {
@@ -356,5 +359,12 @@ public class AlarmPanel extends JPanel implements IPanel {
 	 */
 	public boolean isConencting() {
 		return connecting;
+	}
+
+	/**
+	 * @return the categoryClient
+	 */
+	public CategoryClient getCategoryClient() {
+		return categoryClient;
 	}
 }
