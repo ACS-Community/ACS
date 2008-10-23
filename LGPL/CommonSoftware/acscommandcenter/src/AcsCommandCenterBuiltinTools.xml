@@ -36,7 +36,9 @@ Please read the documentation in "AcsCommandCenterTools.xml" first. The differen
 
        <tool>
             <caption>Acs_startLocalScript</caption>
-            <command>acsStart -b ? </command>
+            <command>accEnableVars if [ ? ] ; then export ACS_CDB=? ; fi ; acsStart -b ? </command>
+            <insertion source="model">ServicesLocalJavaRoot</insertion>
+            <insertion source="model">ServicesLocalJavaRoot</insertion>
             <insertion source="model">ScriptBase</insertion>
             <expectedOutput>up and running</expectedOutput>
         </tool>
