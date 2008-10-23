@@ -1,0 +1,15 @@
+1 - CERNAlarmSystemInterfaceProxy closes after default initialization ... ok
+1 - CERNAlarmSystemInterfaceProxy closes after source name initialization ... ok
+1 - test_close_returns_None_after_message_published (test_CERNAlarmSystemInterfaceProxy.TestCERNAlarmSystemInterfaceProxy) ... ok
+1 - CERNAlarmSystemInterfaceProxy initialize with given source name ... ok
+1 - CERNAlarmSystemInterfaceProxy default initialization ... ok
+1 - test_publishMessage (test_CERNAlarmSystemInterfaceProxy.TestCERNAlarmSystemInterfaceProxy) ... ok
+1 - test_publishMessage_with_source (test_CERNAlarmSystemInterfaceProxy.TestCERNAlarmSystemInterfaceProxy) ... ok
+1 - AlarmPublisher default initialization ... ok
+1 - AlarmPublisher initialization with given channel name ... ok
+1 - AlarmPublisher alarm publishing ... ok
+1 - 
+1 - ----------------------------------------------------------------------
+1 - Ran 10 tests in x.xxxs
+1 - 
+1 - OK
