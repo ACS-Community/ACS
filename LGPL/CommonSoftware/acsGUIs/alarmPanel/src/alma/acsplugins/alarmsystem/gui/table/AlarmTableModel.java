@@ -19,7 +19,7 @@
 
 /** 
  * @author  acaproni   
- * @version $Id: AlarmTableModel.java,v 1.15 2008/10/21 14:39:46 acaproni Exp $
+ * @version $Id: AlarmTableModel.java,v 1.16 2008/10/23 16:07:28 acaproni Exp $
  * @since    
  */
 
@@ -29,8 +29,10 @@ import javax.swing.JOptionPane;
 import javax.swing.table.AbstractTableModel;
 
 import alma.acs.util.IsoDateFormat;
+import alma.acsplugins.alarmsystem.gui.AlarmPanel;
 import alma.acsplugins.alarmsystem.gui.ConnectionListener;
 import alma.acsplugins.alarmsystem.gui.toolbar.Toolbar.ComboBoxValues;
+import alma.alarmsystem.clients.CategoryClient;
 
 import cern.laser.client.data.Alarm;
 import cern.laser.client.services.selection.AlarmSelectionListener;
@@ -110,13 +112,15 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 	 * 
 	 * @param owner The component that owns the table
 	 * @param reduce <code>true</code> if the reduction rules must be applied
+	 * @param panel The <code>AlarmPanel</code>
 	 */
-	public AlarmTableModel(Component owner, boolean reduce) {
+	public AlarmTableModel(AlarmPanel owner, boolean reduce) {
 		if (owner==null) {
 			throw new IllegalArgumentException("The owner component can't be null");
 		}
 		this.owner=owner;
 		this.applyReductionRules=reduce;
+		this.items = new AlarmsContainer(MAX_ALARMS);
 		// Put each alarm type in the has map of the counters
 		for (AlarmGUIType alarmType: AlarmGUIType.values()) {
 			counters.put(alarmType, new AlarmCounter());
@@ -156,15 +160,16 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 		}
 		fireTableDataChanged();
 		
-		System.out.println("Adding "+alarm.getIdentifier());
-		System.out.println("\tMultiplicity parent: "+alarm.isMultiplicityParent());
-		System.out.println("\tMultiplicity child: "+alarm.isMultiplicityChild());
-		System.out.println("\tNode parent: "+alarm.isNodeParent());
-		System.out.println("\tNodechild: "+alarm.isNodeChild());
-		System.out.println("Status:");
-		System.out.println("\t\tMasked: "+alarm.getStatus().isMasked());
-		System.out.println("\t\tReduced: "+alarm.getStatus().isReduced());
-		System.out.println("\t\tActive: "+alarm.getStatus().isActive());
+		// Debug messages for investigating reductions
+//		System.out.println("Adding "+alarm.getIdentifier());
+//		System.out.println("\tMultiplicity parent: "+alarm.isMultiplicityParent());
+//		System.out.println("\tMultiplicity child: "+alarm.isMultiplicityChild());
+//		System.out.println("\tNode parent: "+alarm.isNodeParent());
+//		System.out.println("\tNodechild: "+alarm.isNodeChild());
+//		System.out.println("Status:");
+//		System.out.println("\t\tMasked: "+alarm.getStatus().isMasked());
+//		System.out.println("\t\tReduced: "+alarm.getStatus().isReduced());
+//		System.out.println("\t\tActive: "+alarm.getStatus().isActive());
 	}
 	
 	/**
@@ -291,6 +296,7 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 					JOptionPane.ERROR_MESSAGE);
 			return;
 		}
+		fireTableDataChanged();
 		if (oldAlarmStatus==newAlarm.getStatus().isActive()) {
 			return;
 		}
@@ -345,7 +351,7 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 	/**
 	 * The alarms in the table
 	 */
-	private AlarmsContainer items = new AlarmsContainer(MAX_ALARMS);
+	private AlarmsContainer items=null;
 	
 	/**
 	 *	If <code>true</code> applies the reduction rules hiding reduced alarms 
@@ -575,5 +581,14 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 	public void applyReductions(boolean reduce) {
 		applyReductionRules=reduce;
 		fireTableDataChanged();
+	}
+	
+	/**
+	 * Set the <code>CategoryClient</code> in the <code>AlarmsContainer</code>
+	 * 
+	 * @param client The <code>CategoryCLient</code>; it can be <code>null</code>.
+	 */
+	public void setCategoryClient(CategoryClient client) {
+		items.setCategoryClient(client);
 	}
 }
