@@ -48,11 +48,7 @@ import javax.swing.JTextField;
 import javax.swing.JToggleButton;
 import javax.swing.SpringLayout;
 import javax.swing.SwingConstants;
-import javax.swing.border.Border;
-import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
-import javax.swing.border.LineBorder;
-import javax.swing.border.TitledBorder;
 
 import alma.acs.commandcenter.engine.Executor;
 import alma.acs.commandcenter.engine.RunModel;
@@ -71,7 +67,6 @@ import alma.entity.xmlbinding.acscommandcenterproject.types.ModeType;
 public class TabPanel extends JPanel {
 
 	protected CommandCenterGui master;
-	protected JPanel remoteTab;
 	protected DefaultChecklistPanel remoteFlowPanel;
 	protected DefaultChecklistPanel localJavaFlowPanel;
 	protected DefaultChecklistPanel localScriptFlowPanel;
@@ -108,9 +103,9 @@ public class TabPanel extends JPanel {
 	ActionBaseClass actShowAdvanced;
 	ActionBaseClass actStartContainer;
 	ActionBaseClass actStopContainer;
+	ActionBaseClass actConfigureContainer;
 	ActionBaseClass actStartAllContainers;
 	ActionBaseClass actStopAllContainers;
-	ActionBaseClass actConfigureContainer;
 
 
 	FlowDialog flowDialog;
@@ -127,10 +122,6 @@ public class TabPanel extends JPanel {
 	JButton btnKillAcs;
 	JButton btnStopAcs;
 	JButton btnStartAcs;
-
-	JButton btnStartContainer;
-	JButton btnStopContainer;
-	JButton btnConfigureContainer;
 	JButton btnStartAllContainers;
 	JButton btnStopAllContainers;
 	JButton btnMoreContainers;
@@ -141,7 +132,7 @@ public class TabPanel extends JPanel {
 
 	JButton btnShowCdbChooser;
 
-	MyRadioButton chkLocalScript = new MyRadioButton("Local");
+	MyRadioButton chkLocalScript = new MyRadioButton("Localhost");
 	MyRadioButton chkRemoteScript = new MyRadioButton("Remote");
 	//MyRadioButton chkLocalJava = new MyRadioButton("Java-only Acs");
 	JCheckBox chkUseDaemons;
@@ -205,56 +196,43 @@ public class TabPanel extends JPanel {
 		
 		this.setLayout(new BorderLayout());
 
-		Box tabbedPane1LeftContent = new Box(BoxLayout.Y_AXIS);
-
-		Box tabbedPane1Right = new Box(BoxLayout.Y_AXIS);
-
 		// -------------------------------------------------------------------
 		// general settings
 		// -------------------------------------------------------------------
 
 		JPanel generalTab = new JPanel(new BorderLayout());
-
-		JPanel o = new JPanel(new BorderLayout());
-
 		JPanel n = new JPanel(new SpringLayout());
-		lblA = new JLabel("Acs Instance");
-		n.add(lblA);
+
+		n.add(lblA = new JLabel("Acs Instance"));
 		n.add(acsinstanceF);
-		n.add(new JPanel());
-		
-		flowDialog.disenable(acsinstanceF);
-		acsinstanceF.addFocusListener(focusListener);
-		
 		lblA.setLabelFor(acsinstanceF);
+		acsinstanceF.addFocusListener(focusListener);
 		lblA.setDisplayedMnemonic(KeyEvent.VK_I);
-		SpringUtilities.makeCompactGrid(n, 1, 0);
-		o.add(n, BorderLayout.NORTH);
-		o.add(new JLabel(" ")); // empty placeholder
 
-		generalTab.add(o);
+		n.add(lblE = new JLabel("Cdb Root Dir"));
+		n.add(cdbrootF);
+		lblE.setLabelFor(cdbrootF);
+		cdbrootF.addFocusListener(focusListener);
+		lblE.setToolTipText("The Cdb Location  (In addition to " + System.getProperty("ACS.cdbpath") + ")");
 
-		tabbedPane1LeftContent.add(generalTab);
-		tabbedPane1LeftContent.add(Box.createVerticalStrut(1));
+		SpringUtilities.makeCompactGrid(n, 2, 0);
+		generalTab.add(n);
 
+		//flowDialog.disenable(cdbrootF);
+		flowDialog.disenable(acsinstanceF);
 		acsinstanceF.setName("txt_AcsInstance");
+		cdbrootF.setName("txt_CdbRoot");
 		
 		
 		// -------------------------------------------------------------------
 		// local script settings
 		// -------------------------------------------------------------------
 
-
 		JPanel localScriptTab = new JPanel(new BorderLayout());
-
 		JPanel h = new JPanel(new BorderLayout());
 		h.add(chkLocalScript, BorderLayout.NORTH);
-		h.add(new JLabel(" "), BorderLayout.SOUTH); // empty placeholder
 		chkLocalScript.addFocusListener(focusListener);
 		localScriptTab.add(h);
-
-		tabbedPane1LeftContent.add(localScriptTab);
-		tabbedPane1LeftContent.add(Box.createVerticalStrut(1));
 
 		// -------------------------------------------------------------------
 		// local java settings
@@ -265,12 +243,12 @@ public class TabPanel extends JPanel {
 //		JPanel g = new JPanel(new BorderLayout());
 //		g.add(chkLocalJava, BorderLayout.NORTH);
 
-		JPanel m = new JPanel(new SpringLayout());
-		lblE = new JLabel("Cdb Root");
-		lblE.setToolTipText("The Cdb Location  (Additional schemas searched for in " + System.getProperty("ACS.cdbpath") + ")");
-		m.add(lblE);
-		m.add(cdbrootF);
-		cdbrootF.addFocusListener(focusListener);
+//		JPanel m = new JPanel(new SpringLayout());
+//		lblE = new JLabel("Cdb Root");
+//		lblE.setToolTipText("The Cdb Location  (Additional schemas searched for in " + System.getProperty("ACS.cdbpath") + ")");
+//		m.add(lblE);
+//		m.add(cdbrootF);
+//		cdbrootF.addFocusListener(focusListener);
 		/*m.add(btnShowCdbChooser);*/ // cdb-chooser is experimental
 //		chkLocalJava.addFocusListener(focusListener);
 //		chkLocalJava.disenable(lblE);
@@ -284,16 +262,14 @@ public class TabPanel extends JPanel {
 //		tabbedPane1LeftContent.add(localJavaTab);
 //		tabbedPane1LeftContent.add(Box.createVerticalStrut(1));
 
-		cdbrootF.setName("txt_CdbRoot");
-		btnShowCdbChooser.setName("btn_Show_Cdb_Chooser");
+//		cdbrootF.setName("txt_CdbRoot");
+//		btnShowCdbChooser.setName("btn_Show_Cdb_Chooser");
 
 		// -------------------------------------------------------------------
 		// remote settings
 		// -------------------------------------------------------------------
 
-
-		remoteTab = new JPanel(new BorderLayout());
-
+		JPanel remoteTab = new JPanel(new BorderLayout());
 		JPanel j = new JPanel(new BorderLayout());
 		j.add(chkRemoteScript, BorderLayout.NORTH);
 
@@ -324,9 +300,6 @@ public class TabPanel extends JPanel {
 		
 		remoteTab.add(j);
 
-		tabbedPane1LeftContent.add(remoteTab);
-		tabbedPane1LeftContent.add(Box.createVerticalGlue());
-
 		
 		hostF.setName("txt_RemoteHost");
 		accountF.setName("txt_RemoteUser");
@@ -335,7 +308,10 @@ public class TabPanel extends JPanel {
 		// -------------------------------------------------------------------
 		// buttons / actions
 		// -------------------------------------------------------------------
-
+		
+		actStartContainer = new ActionStartContainer();
+		actStopContainer = new ActionStopContainer();
+		actConfigureContainer = new ActionConfigureContainer();
 
 		btnStartAcs = new JButton(actStartAcs = new ActionStartAcs());
 		btnStopAcs = new JButton(actStopAcs = new ActionStopAcs());
@@ -345,12 +321,8 @@ public class TabPanel extends JPanel {
 		btnStartManager = new TwoStageEnableButton(actStartManager = new ActionStartManager());
 		btnStopManager = new TwoStageEnableButton(actStopManager = new ActionStopManager());
 		btnShowAdvanced = new JCheckBox(actShowAdvanced = new ActionShowAdvanced());
-		btnStartContainer = new JButton(actStartContainer = new ActionStartContainer());
-		btnStopContainer = new JButton(actStopContainer = new ActionStopContainer());
-		btnConfigureContainer = new JButton(actConfigureContainer = new ActionConfigureContainer());
 		btnStartAllContainers = new JButton(actStartAllContainers = new ActionStartAllContainers());
 		btnStopAllContainers = new JButton(actStopAllContainers = new ActionStopAllContainers());
-
 		btnStartServices.setToolTipText("Start Services with the specified Common Settings");
 		btnStopServices.setToolTipText("Stop the specified Services");
 		btnStartManager.setToolTipText("Start a Manager with the specified Common Settings");
@@ -392,27 +364,27 @@ public class TabPanel extends JPanel {
 		// control section
 		// -------------------------------------------------------------------
 
-		controlsPanel = new JPanel(new SpringLayout());
-		controlsPanel.setBorder(createTitledBorder(" Acs Suite "));
+		controlsPanel = new JPanel();
+		controlsPanel.setBorder(master.createTitledBorder(" Acs Suite "));
 
 		buttonPanel = new JPanel(new SpringLayout());
 
 		buttonPanel.add(btnStartAcs);
 		flowDialog.disenable(btnStartAcs);
-
+		
 		buttonPanel.add(btnStopAcs);
 		flowDialog.disenable(btnStopAcs);
+
+		buttonPanel.add(Box.createVerticalStrut(1));
+		buttonPanel.add(new FixSizeSeparator(SwingConstants.HORIZONTAL, new Dimension(10, 3)));
 
 		buttonPanel.add(btnKillAcs);
 		flowDialog.disenable(btnKillAcs);
 
-		buttonPanel.add(Box.createHorizontalStrut(5));
-		buttonPanel.add(new JSeparator(JSeparator.VERTICAL));
-		
 		buttonPanel.add(btnShowAdvanced);
 		flowDialog.disenable(btnShowAdvanced);
 		
-		SpringUtilities.makeCompactGrid(buttonPanel, 1, 0);
+		SpringUtilities.makeCompactGrid(buttonPanel, 0, 1);
 
 		// -------------------------------------------------------------------
 		// advanced section
@@ -421,42 +393,28 @@ public class TabPanel extends JPanel {
 		panelAdvanced = new JPanel(new BorderLayout());
 		buttonPanelAdvanced = new JPanel(new SpringLayout());
 
-		buttonPanelAdvanced.add(new JLabel("Services"));
+		buttonPanelAdvanced.add(new JLabel("Srv"));
 		buttonPanelAdvanced.add(btnStartServices);
 		flowDialog.disenable(btnStartServices);
 		buttonPanelAdvanced.add(btnStopServices);
 		flowDialog.disenable(btnStopServices);
 
-		buttonPanelAdvanced.add(Box.createHorizontalStrut(15));
-		
-		buttonPanelAdvanced.add(new JLabel("Manager"));
+		buttonPanelAdvanced.add(new JLabel("Mgr"));
 		buttonPanelAdvanced.add(btnStartManager);
 		flowDialog.disenable(btnStartManager);
 		buttonPanelAdvanced.add(btnStopManager);
 		flowDialog.disenable(btnStopManager);
 
-		SpringUtilities.makeCompactGrid(buttonPanelAdvanced, 1, 0);
+		SpringUtilities.makeCompactGrid(buttonPanelAdvanced, 2, 0);
 		panelAdvanced.add(buttonPanelAdvanced, BorderLayout.CENTER);
 
-		/*
-		 * These buttons are now invisible - BUT CLICKED programmatically by the
-		 * per-container buttons!
-		 * 
-		 * controlsPanel.add(btnStartContainer); controlsPanel.add(btnStopContainer);
-		 * controlsPanel.add(btnConfigureContainer);
-		 */
-
+		controlsPanel.setLayout(new BoxLayout(controlsPanel, BoxLayout.Y_AXIS));
 		controlsPanel.add(buttonPanel);
 		controlsPanel.add(panelAdvanced);
-		SpringUtilities.makeCompactGrid(controlsPanel, 2, 1);
 
 		makeButtonPair(btnStartAcs, btnStopAcs);
 		makeButtonPair(btnStartServices, btnStopServices);
 		makeButtonPair(btnStartManager, btnStopManager);
-		makeButtonPair(btnStartContainer, btnStopContainer);
-
-		tabbedPane1Right.add(controlsPanel);
-		tabbedPane1Right.add(Box.createVerticalStrut(10));
 
 
 		// -------------------------------------------------------------------
@@ -464,12 +422,12 @@ public class TabPanel extends JPanel {
 		// -------------------------------------------------------------------
 
 		containerPanel = new JPanel(new BorderLayout());
-		containerPanel.setBorder(createTitledBorder(" Containers "));
+		containerPanel.setBorder(master.createTitledBorder(" Containers "));
 
 		JPanel a = new JPanel(new GridLayout(1, 0));
 		a.add(new JLabel("Name", JLabel.CENTER));
 		a.add(new JLabel("Type", JLabel.CENTER));
-		a.add(new JLabel("TypeModif.", JLabel.CENTER));
+		a.add(new JLabel("Remote Host", JLabel.CENTER));
 		a.add(new JLabel());
 		containerPanel.add(a, BorderLayout.NORTH);
 
@@ -545,21 +503,38 @@ public class TabPanel extends JPanel {
 		south.add(southeast);
 		
 		containerPanel.add(south, BorderLayout.SOUTH);
-		tabbedPane1Right.add(containerPanel);
 
 		// -------------------------------------------------------------------
 		// assemble / layout
 		// -------------------------------------------------------------------
 
-		JPanel tabbedPane1Left = new JPanel(new BorderLayout());
-		tabbedPane1Left.add(tabbedPane1LeftContent, BorderLayout.NORTH);
-		tabbedPane1Left.setBorder(createTitledBorder(" Common Settings "));
+		Box commonSettingsPanel = new Box(BoxLayout.Y_AXIS);
+		commonSettingsPanel.add(generalTab);
+		commonSettingsPanel.add(Box.createVerticalStrut(10));
+		commonSettingsPanel.add(localScriptTab);
+		commonSettingsPanel.add(Box.createVerticalStrut(10));
+		commonSettingsPanel.add(remoteTab);
+		commonSettingsPanel.add(Box.createVerticalStrut(10));
+		commonSettingsPanel.setBorder(master.createTitledBorder(" Common Settings "));
+		JPanel tabbedPanelLeft = new JPanel(new BorderLayout());
+		tabbedPanelLeft.add(commonSettingsPanel, BorderLayout.NORTH);		
 
+		Box tabbedPane1Right = new Box(BoxLayout.Y_AXIS);
+		tabbedPane1Right.add(controlsPanel);
+		tabbedPane1Right.add(Box.createVerticalStrut(10));
+		tabbedPane1Right.add(containerPanel);
+		
 		Box tabbedPane1 = Box.createHorizontalBox();
-		tabbedPane1.add(tabbedPane1Left);
+		tabbedPane1.add(tabbedPanelLeft);
 		tabbedPane1.add(tabbedPane1Right);
-		this.add(tabbedPane1, BorderLayout.NORTH);
+		//this.add(tabbedPane1, BorderLayout.NORTH);
 
+		this.setLayout(new GridBagLayout());
+		this.add(commonSettingsPanel, gridbagpos(0, 0).weightx(0.2).align(GridBag.NORTHEAST));
+		this.add(controlsPanel, gridbagpos(0, 1).align(GridBag.NORTHEAST));
+		this.add(containerPanel, gridbagpos(1, 0).width(2).align(GridBag.NORTHEAST));
+
+		
 		// -------------------------------------------------------------------
 		// select some checkboxes, etc.
 		// -------------------------------------------------------------------
@@ -582,16 +557,20 @@ public class TabPanel extends JPanel {
 		GridBag ret = new GridBag();
 		ret.pos(y, x);
 		ret.gapx(2).gapy(2);
-		ret.fill = GridBag.HORIZONTAL;
-		ret.anchor = GridBag.LINE_START;
+		ret.fill(GridBag.BOTH);
+		ret.align(GridBag.WEST);
 		return ret;
 	}
+	/* the fields are explained at 
+	 * http://java.sun.com/docs/books/tutorial/uiswing/layout/gridbag.html */
 	class GridBag extends GridBagConstraints {
 		GridBag pos (int y, int x) {gridy = y; gridx = x; return this;}
 		GridBag gapy (int n) {insets.top = insets.bottom = n;  return this;}
 		GridBag gapx (int n) {insets.left = insets.right = n;  return this;}
 		GridBag width (int n) {gridwidth = n; return this;}
 		GridBag weightx (double n) {weightx = n; return this;}
+		GridBag fill (int n) {fill = n; return this;}
+		GridBag align (int n) {anchor = n; return this;}
 	}
 
 
@@ -616,30 +595,17 @@ public class TabPanel extends JPanel {
 				JComponent[] cc2 = {lblC, accountF, lblD, passwordF};
 				for (JComponent c : cc2)
 					c.setEnabled(!chkUseDaemons.isSelected());
-
+				
 			} else{
 				JComponent[] cc = {lblB, hostF, chkUseDaemons, lblC, accountF, lblD, passwordF};
 				for (JComponent c : cc)
 					c.setEnabled(false);
 			}
+
+			cdbrootF.setEnabled(chkLocalScript.isSelected() || !chkUseDaemons.isSelected());
 		}
 	}
 	
-	
-	protected Border createTitledBorder (String title) {
-		Border ret = new CompoundBorder(new EmptyBorder(5, 7, 5, 7), new TitledBorder(LineBorder.createBlackLineBorder(), title));
-		return ret;
-	}
-
-	protected JPanel createLabeledTextField (JLabel label, JTextField textfield) {
-		JPanel ret = new JPanel(new SpringLayout());
-		ret.add(label);
-		ret.add(textfield);
-		label.setLabelFor(textfield);
-		SpringUtilities.makeCompactGrid(ret, 1, 2, 0, 0, 6, 0);
-		return ret;
-	}
-
 	protected class FixSizeScrollPane extends JScrollPane {
 
 		Dimension d;
@@ -832,19 +798,14 @@ public class TabPanel extends JPanel {
 	 * 
 	 * @return the newly created ContainerLine
 	 */
-	protected void addContainerLine (String name, String type, String modif, boolean selected) {
+	protected ContainerLine addEmptyContainerLine() {
+		
+		ContainerLine containerLine = new ContainerLine();
+		
 		/*
 		 *  When modifying this, remember to
 		 *  change lessContainerLines() as well
 		 */
-		ContainerLine containerLine = new ContainerLine();
-		containerLine.nameF.setText(name);
-		containerLine.typeF.setSelectedItem(type);
-		containerLine.modifF.setText(modif);
-		containerLine.selectB.setSelected(selected);
-
-		containerLine.modifF.setToolTipText("Enter comma-separated Modifiers, e.g. \"archiveContainer\"");
-		
 		containerLinePanel.add(containerLine);
 		containerLines.add(containerLine);
 
@@ -855,19 +816,21 @@ public class TabPanel extends JPanel {
 		containerLine.setName("pnl_ContainerLine#"+index);
 		containerLine.btnStart.setName("btn_Start_Container#"+index);
 		containerLine.btnStop.setName("btn_Stop_Container#"+index);
-		containerLine.btnData.setName("btn_Edit_Container#"+index);
+		containerLine.btnConfigure.setName("btn_Edit_Container#"+index);
 		containerLine.nameF.setName("txt_ContainerName#"+index);
 		containerLine.typeF.setName("txt_ContainerType#"+index);
-		containerLine.modifF.setName("txt_ContainerTypeModif#"+index);
+		containerLine.hostF.setName("txt_ContainerHost#"+index);
 
 		// add model-autowrite
 		containerLine.nameF.addFocusListener(focusListener);
 		containerLine.typeF.addFocusListener(focusListener);
-		containerLine.modifF.addFocusListener(focusListener);
+		containerLine.hostF.addFocusListener(focusListener);
 
 		// force scrollbar to recalculate its appearance
 		containerPanel.validate();
 		scp.revalidate();
+		
+		return containerLine;
 	}
 
 	protected void setMnemonicForContainerLine(int index) {
@@ -914,7 +877,7 @@ public class TabPanel extends JPanel {
 
 		containerLine.nameF.removeFocusListener(focusListener);
 		containerLine.typeF.removeFocusListener(focusListener);
-		containerLine.modifF.removeFocusListener(focusListener);
+		containerLine.hostF.removeFocusListener(focusListener);
 
 		containerLines.remove(containerLine);
 		containerLinePanel.remove(containerLine);
@@ -1093,45 +1056,48 @@ public class TabPanel extends JPanel {
 
 	protected class ContainerLine extends JPanel implements ActionListener {
 
-		JRadioButton selectB = new JRadioButton();
-		JLabel lblMnemomic = new JLabel("x");
-		Button btnStart, btnStop, btnData;
-		JTextField nameF = new JTextField(10);
-		JComboBox typeF = new JComboBox(new String[]{"java", "cpp", "py"});
-		JTextField modifF = new JTextField(10);
+		JRadioButton selectB;
+		JLabel lblMnemomic;
+		Button btnStart, btnStop, btnConfigure;
+		JTextField nameF;
+		JComboBox typeF;
+		JTextField hostF;
 
+		/** 
+		 * The constructor does not fill data into this containerline:
+		 * populate(...) does that.
+		 */
 		ContainerLine() {
-			super();
 			this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
-			this.add(lblMnemomic);
+
+			this.add(lblMnemomic = new JLabel("x"));
 			this.add(Box.createHorizontalStrut(5));
 
 			JPanel b = new JPanel(new GridLayout(0, 3, 5, 5));
-			b.add(nameF);
-			b.add(typeF);
-			b.add(modifF);
+			b.add(nameF = new JTextField(10));
+			b.add(typeF = new JComboBox(new String[]{"java", "cpp", "py"}));
+			b.add(hostF = new JTextField(10));
 			this.add(b);
 			this.add(Box.createHorizontalStrut(5));
 
+			hostF.setToolTipText("Remote Host (if assigned in Detail Settings)");
+			hostF.setEditable(false);
+
+			// "selectB" is now invisible, but it will be internally PRESSED 
+			// when the user clicks any other buttons belonging to this container
+			selectB = new JRadioButton();
 			selectB.addFocusListener(focusListener);
 			buttonGroup2.add(selectB);
-			// This is now invisible, note that it will  
-			// internally be SELECTED BY PRESSING either
-			// one of the 2 BUTTONS
-			/* 
-			 * this.add(selectB); 
-			 */
+			/* this.add(selectB); */
 
 			// support for selecting a container line 
 			// by placing the cursor in the name field
-			FocusListener focLi = new FocusAdapter() {
+			nameF.addFocusListener(new FocusAdapter() {
 				@Override public void focusGained (FocusEvent e) {
 					selectB.setSelected(true);
 					validateAfterProgrammaticUpdate(selectB);
 				}
-			};
-			nameF.addFocusListener(focLi);
-			modifF.addFocusListener(focLi);
+			});
 			
 			this.add(btnStart = new Button(master.icons.getStartIcon(), this));
 			btnStart.setToolTipText("Start this Container");
@@ -1143,9 +1109,16 @@ public class TabPanel extends JPanel {
 
 			makeButtonPair(btnStart, btnStop);
 
-			this.add(btnData = new Button(master.icons.getConfigIcon(), this));
-			btnData.setToolTipText("Choose where to run this container");
+			this.add(btnConfigure = new Button(master.icons.getConfigIcon(), this));
+			btnConfigure.setToolTipText("Edit detail settings");
 			
+		}
+		
+		void populate (String name, String type, String host, boolean selected) {
+			nameF.setText(name);
+			typeF.setSelectedItem(type);
+			hostF.setText(host);
+			selectB.setSelected(selected);
 		}
 
 		public void actionPerformed (ActionEvent e) {
@@ -1153,28 +1126,24 @@ public class TabPanel extends JPanel {
 			validateAfterProgrammaticUpdate(selectB);
 
 			if (e.getSource() == btnStart) {
-				boolean ok = doSanityCheck();
-				if (!ok)
-					return;
-				btnStartContainer.doClick();
+				if (sanityCheck())
+					actStartContainer.actionPerformed(null);
 			}
 
 			if (e.getSource() == btnStop) {
-				boolean ok = doSanityCheck();
-				if (!ok)
-					return;
-				btnStopContainer.doClick();
+				if (sanityCheck())
+					actStopContainer.actionPerformed(null);
 			}
 
-			if (e.getSource() == btnData) {
-				btnConfigureContainer.doClick();
+			if (e.getSource() == btnConfigure) {
+				actConfigureContainer.actionPerformed(null);
 			}
 		}
 
-		boolean doSanityCheck () {
+		boolean sanityCheck () {
 			// --- little sanity check for a popular mistake
 			if (nameF.getText().trim().equals("")) {
-				JOptionPane.showMessageDialog(master.frame, "The specified container name is invalid", "Invalid Container Settings",
+				JOptionPane.showMessageDialog(master.frame, "The specified Name is invalid", "Invalid Container Settings",
 						JOptionPane.ERROR_MESSAGE);
 				return false;
 			}
@@ -1466,7 +1435,7 @@ public class TabPanel extends JPanel {
 	protected class ActionStartContainer extends ActionBaseClass2 {
 
 		protected ActionStartContainer() {
-			super("Start Cont");
+			super("Start Container");
 		}
 
 		@Override
@@ -1506,7 +1475,7 @@ public class TabPanel extends JPanel {
 	protected class ActionStopContainer extends ActionBaseClass2 {
 
 		protected ActionStopContainer() {
-			super("Stop Cont");
+			super("Stop Container");
 		}
 
 		@Override
@@ -1640,7 +1609,7 @@ public class TabPanel extends JPanel {
 
 		@Override
 		protected void actionPerformed () throws Throwable {
-			addContainerLine("", "", "", false);
+			addEmptyContainerLine();
 			master.controller.moreContainers();
 		}
 	}
@@ -1666,7 +1635,7 @@ public class TabPanel extends JPanel {
 
 		@Override
 		protected void actionPerformed () throws Throwable {
-			master.showContainerLocationDialog();
+			master.showContainerSettingsDialog();
 		}
 	}
 
@@ -1735,19 +1704,22 @@ public class TabPanel extends JPanel {
 			if (b) { 
 				String msg = " You have enabled daemon mode." //
 						+ "\n\n" //
-						+ "Acs Command Center will use Acs Daemons to start or stop:\n" //
+						+ "Acs Command Center will use Acs Daemons to start and stop:\n" //
 						+ "   * Acs Suite\n" //
 						+ "   * Containers\n" //
-						+ "Note that daemons will not be used for the Services and Manager controls in the\n" //
+						+ "Daemons will not be used for the Services and Manager controls in the\n" //
 						+ "advanced section. Instead, ssh will be used. The same is true for the \"Kill\" button.\n" //
 						+ "\n"
 						+ "In daemon mode, there's no need to specify\n" //
 						+ "   * Username\n" //
 						+ "   * Password\n" //
-						+ "Instead, all Acs processes will run under the account of their respective daemon.\n" //
+						+ "Instead, all Acs processes will run under the account of their respective daemon.\n"
 						+ "\n" //
-						+ "Finally note that the output of processes started through Acs Daemons\n" //
-						+ "will not be available in the Log Area of Acs Command Center" //
+						+ "The daemon chooses the Cdb to use (depending on the $ACS_CDB variable in its environment).\n" //
+						+ "Currently, it is not possible to specify the Cdb Root Dir in the Common Settings section.\n" //
+						+ "\n"
+						+ "Finally note that the output of processes started through Acs Daemons will not be\n" //
+						+ "available in the Log Area of Acs Command Center." //
 						;
 				JOptionPane.showMessageDialog(master.frame, msg, "About Acs Daemons", JOptionPane.OK_OPTION);
 			}

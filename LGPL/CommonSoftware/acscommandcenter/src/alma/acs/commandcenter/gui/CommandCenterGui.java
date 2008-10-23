@@ -46,10 +46,12 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JSplitPane;
+import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.SpringLayout;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
+import javax.swing.border.Border;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
@@ -63,6 +65,7 @@ import alma.acs.commandcenter.engine.ExecuteTools;
 import alma.acs.commandcenter.engine.Executor;
 import alma.acs.commandcenter.engine.NativeCommand;
 import alma.acs.commandcenter.engine.ToolManager;
+import alma.acs.commandcenter.gui.TabPanel.ContainerLine;
 import alma.acs.commandcenter.gui.thirdparty.SpringUtilities;
 import alma.acs.commandcenter.util.MiscUtils;
 import alma.acs.commandcenter.util.VariableString.UnresolvableException;
@@ -274,8 +277,7 @@ public class CommandCenterGui {
 
 			
 			// ---
-			dlgContainerLocation = new EditContainerSettingsDialog(this, "Choose where to run this Container",
-					"Choose where to run this container:                                      ", "Set");
+			dlgContainerSettings = new EditContainerSettingsDialog(this);
 
 			splitTopBottom = new JSplitPane(JSplitPane.VERTICAL_SPLIT, splitLeftRight, feedbackTabs);
 			splitTopBottom.setOneTouchExpandable(true);
@@ -652,52 +654,69 @@ public class CommandCenterGui {
 		controller.project.getContainers().setRunAgainstDedicatedSettings(pnlManagerLocationForContainers.btnCustom.isSelected());
 	}
 
-	protected EditContainerSettingsDialog dlgContainerLocation;
+	protected EditContainerSettingsDialog dlgContainerSettings;
 
-	protected void showContainerLocationDialog () {
+	protected void showContainerSettingsDialog () {
 
 		// update data in dialog
-		ContainerT cont = writeModelToContainerLocationDialog();
+		int contIndex = controller.project.getContainers().getSelect();
+		ContainerT cont = controller.project.getContainers().getContainer(contIndex);
+		writeModelToContainerSettingsDialog(cont);
 
 		// show dialog
-		dlgContainerLocation.bringUp();
+		dlgContainerSettings.bringUp();
 
 		// if dialog cancelled or closed, we're done
-		if (!dlgContainerLocation.okChosen)
+		if (!dlgContainerSettings.okChosen)
 			return;
 
 		// read out data from dialog
-		writeContainerLocationDialogToModel(cont);
+		writeContainerSettingsDialogToModel(cont);
+
+		// the dialog and the frontpanel share some data, so we should update
+		// the frontpanel now. we could update it as a a whole but that seems
+		// overly expensive, so we just update the affected containerline.
+		ContainerLine contline = frontPanel.containerLines.get(contIndex);
+		// for host, we have an additional complication: we want to show what
+		// host is going to be used. this may be the same as field "remoteHost"
+		// in our xml-project, or it may be the host from the Common Settings.
+		// luckily, the RunModel already has logic to find that out, so we reuse
+		// it here instead of simply showing the "remoteHost" value from the xml-project.
+		String host = (cont.getUseDedicatedSettings())? cont.getRemoteHost() : null;
+		contline.populate(cont.getName(), cont.getType(), host, true);
 	}
 
 
-	protected ContainerT writeModelToContainerLocationDialog () {
-		int selectedContainer = controller.project.getContainers().getSelect();
-		ContainerT cont = controller.project.getContainers().getContainer(selectedContainer);
+	protected void writeModelToContainerSettingsDialog (ContainerT cont) {
 
-		dlgContainerLocation.defaultScriptBaseF.setText(controller.project.getScriptBase());
-		dlgContainerLocation.defaultHostF.setText(controller.project.getRemoteHost());
-		dlgContainerLocation.defaultAccountF.setText(controller.project.getRemoteAccount());
-		dlgContainerLocation.defaultPasswordF.setText(controller.project.getRemotePassword());
+		String modif = MiscUtils.join(cont.getTypeModifier());
+		dlgContainerSettings.modifF.setText(modif);
+		
+		dlgContainerSettings.defaultScriptBaseF.setText(controller.project.getScriptBase());
+		dlgContainerSettings.defaultHostF.setText(controller.project.getRemoteHost());
+		dlgContainerSettings.defaultAccountF.setText(controller.project.getRemoteAccount());
+		dlgContainerSettings.defaultPasswordF.setText(controller.project.getRemotePassword());
 
-		dlgContainerLocation.customScriptBaseF.setText(cont.getScriptBase());
-		dlgContainerLocation.customHostF.setText(cont.getRemoteHost());
-		dlgContainerLocation.customAccountF.setText(cont.getRemoteAccount());
-		dlgContainerLocation.customPasswordF.setText(cont.getRemotePassword());
+		dlgContainerSettings.customScriptBaseF.setText(cont.getScriptBase());
+		dlgContainerSettings.customHostF.setText(cont.getRemoteHost());
+		dlgContainerSettings.customAccountF.setText(cont.getRemoteAccount());
+		dlgContainerSettings.customPasswordF.setText(cont.getRemotePassword());
 
-		dlgContainerLocation.btnCustom.setSelected(cont.getUseDedicatedSettings());
-		dlgContainerLocation.btnGlobal.setSelected(!cont.getUseDedicatedSettings());
-
-		return cont;
+		dlgContainerSettings.btnCustom.setSelected(cont.getUseDedicatedSettings());
+		dlgContainerSettings.btnGlobal.setSelected(!cont.getUseDedicatedSettings());
 	}
 
-	protected void writeContainerLocationDialogToModel (ContainerT cont) {
-		cont.setScriptBase(dlgContainerLocation.customScriptBaseF.getText().trim());
-		cont.setRemoteHost(dlgContainerLocation.customHostF.getText().trim());
-		cont.setRemoteAccount(dlgContainerLocation.customAccountF.getText().trim());
-		cont.setRemotePassword(dlgContainerLocation.customPasswordF.getText().trim());
+	
+	protected void writeContainerSettingsDialogToModel (ContainerT cont) {
 
-		cont.setUseDedicatedSettings(!dlgContainerLocation.btnGlobal.isSelected());
+		cont.setTypeModifier(MiscUtils.split(dlgContainerSettings.modifF.getText().trim()));
+		
+		cont.setScriptBase(dlgContainerSettings.customScriptBaseF.getText().trim());
+		cont.setRemoteHost(dlgContainerSettings.customHostF.getText().trim());
+		cont.setRemoteAccount(dlgContainerSettings.customAccountF.getText().trim());
+		cont.setRemotePassword(dlgContainerSettings.customPasswordF.getText().trim());
+
+		cont.setUseDedicatedSettings(!dlgContainerSettings.btnGlobal.isSelected());
 	}
 
 	/**
@@ -746,7 +765,6 @@ public class CommandCenterGui {
 
 			cont.setName(c.nameF.getText().trim());
 			cont.setType(String.valueOf(c.typeF.getSelectedItem()).trim());
-			cont.setTypeModifier(MiscUtils.split(c.modifF.getText().trim()));
 		}
 
 	}
@@ -776,8 +794,9 @@ public class CommandCenterGui {
 			frontPanel.lessContainerLines();
 		for (int i = 0; i < controller.project.getContainers().getContainerCount(); i++) {
 			ContainerT cont = controller.project.getContainers().getContainer(i);
-			String modif = MiscUtils.join(cont.getTypeModifier());
-			frontPanel.addContainerLine(cont.getName(), cont.getType(), modif, (i == controller.project.getContainers().getSelect()));
+
+			ContainerLine contline = frontPanel.addEmptyContainerLine();
+			contline.populate(cont.getName(), cont.getType(), cont.getRemoteHost(), (i == controller.project.getContainers().getSelect()));
 		}
 	}
 
@@ -1285,6 +1304,21 @@ public class CommandCenterGui {
 		NativeCommand.Listener second = new CheckAcsInstanceTaskListener();
 		return new CompoundTaskListener(first, second);
 	}
+
+	protected Border createTitledBorder (String title) {
+		Border ret = new CompoundBorder(new EmptyBorder(5, 7, 5, 7), new TitledBorder(LineBorder.createBlackLineBorder(), title));
+		return ret;
+	}
+
+	
+	protected JPanel createLabeledTextField (JLabel label, JTextField textfield) {
+		JPanel ret = new JPanel(new SpringLayout());
+		ret.add(label);
+		ret.add(textfield);
+		label.setLabelFor(textfield);
+		SpringUtilities.makeCompactGrid(ret, 1, 2, 0, 0, 6, 0);
+		return ret;
+	}	
 
 	/**
 	 * An instance of this is passed to some of the launch methods.
