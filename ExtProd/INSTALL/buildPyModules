@@ -282,32 +282,32 @@ else
   popd
 fi
 
-if [ ! -e ../PRODUCTS/mock-0.3.1.zip ]
+if [ ! -e ../PRODUCTS/mock-0.4.0.zip ]
 then
   echo Error: Python Mock sources are missing
 else
   echo "== Installing Python Mock Objects"
-  unzip -oj mock-0.3.1.zip mock-0.3.1/mock.py mock-0.3.1/testcase.py mock-0.3.1/testutils.py -d $PYTHON_ROOT/lib/python2.5/site-packages/
+  unzip -oj mock-0.4.0.zip mock-0.4.0/mock.py mock-0.4.0/testcase.py mock-0.4.0/testutils.py -d $PYTHON_ROOT/lib/python2.5/site-packages/
 fi
 
-if [ ! -e ../PRODUCTS/generateDS-1.14e.tar.gz ]
+if [ ! -e ../PRODUCTS/generateDS-1.14g.tar.gz ]
 then
   echo Error: generateDS sources are missing
 else
   echo "== Installing generateDS"
-  tar -zxvf generateDS-1.14e.tar.gz
-  pushd generateDS-1.14e
+  tar -zxvf generateDS-1.14g.tar.gz
+  pushd generateDS-1.14g
   python setup.py install 
   popd
 fi
 
-if [ ! -e ../PRODUCTS/snakefood-1.3.tar.bz2 ]
+if [ ! -e ../PRODUCTS/snakefood-1.3.1.tar.bz2 ]
 then
   echo Error: snakefood sources are missing
 else
   echo "== Installing snakefood"
-  tar -jxvf snakefood-1.3.tar.bz2
-  pushd snakefood-1.3
+  tar -jxvf snakefood-1.3.1.tar.bz2
+  pushd snakefood-1.3.1
   python setup.py install 
   popd
 fi
@@ -319,6 +319,17 @@ else
   echo "== Installing figleaf"
   tar -zxvf figleaf-latest.tar.gz
   pushd figleaf-latest
+  python setup.py install 
+  popd
+fi
+
+if [ ! -e ../PRODUCTS/pythoscope-0.3.2.tar.gz ]
+then
+  echo Error: Pythoscope sources are missing
+else
+  echo "== Installing Pythoscope"
+  tar -zxvf pythoscope-0.3.2.tar.gz
+  pushd pythoscope-0.3.2
   python setup.py install 
   popd
 fi
