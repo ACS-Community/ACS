@@ -602,7 +602,12 @@ public class TabPanel extends JPanel {
 					c.setEnabled(false);
 			}
 
-			cdbrootF.setEnabled(chkLocalScript.isSelected() || !chkUseDaemons.isSelected());
+			boolean enabled = chkLocalScript.isSelected() || !chkUseDaemons.isSelected();
+			cdbrootF.setEnabled(enabled);
+			if (master.dlgContainerSettings != null) {
+				master.dlgContainerSettings.customAccountF.setEnabled(enabled);
+				master.dlgContainerSettings.customPasswordF.setEnabled(enabled);
+			}
 		}
 	}
 	
