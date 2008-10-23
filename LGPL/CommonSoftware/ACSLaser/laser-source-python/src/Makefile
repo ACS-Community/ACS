@@ -82,6 +82,7 @@ all:	do_all
 	@echo " . . . 'all' done" 
 
 clean : clean_all 
+	$(RM) *~ CERNAlarmSystemInterfaceProxy/*~ CERNAlarmSystemInterfaceProxy/*.pyc CERNAlarmSystemInterfaceProxy/*.pyo
 	@echo " . . . clean done"
 
 clean_dist : clean_all clean_dist_all 
