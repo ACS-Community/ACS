@@ -139,7 +139,7 @@ public class ProjectMaker {
 		// clear all passwords from the model
 		p.setRemotePassword("");
 		for (int i = 0; i < p.getContainers().getContainerCount(); i++) {
-			p.getContainers().getContainer(i).setRemotePassword("");
+			p.getContainers().getContainer(i).setRemotePassword(null);
 		}
 
 		// write to disk
