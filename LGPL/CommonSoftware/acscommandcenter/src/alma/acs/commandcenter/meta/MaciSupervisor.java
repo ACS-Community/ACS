@@ -310,9 +310,12 @@ public class MaciSupervisor implements IMaciSupervisor {
 			throw new CannotRetrieveManagerException("orb delivered null-reference for manager-location " + managerLoc);
 		}
 
-		Administrator adminIF = acImpl._this(orb); // <-- throws "port occupied"
+		// instantiate client (only once, please)
+		if (adminIF == null)
+			adminIF = acImpl._this(orb); // <-- throws "port occupied"
+
 		administratorClientInfo = managerRef.login(adminIF);
-		
+
 
 		log.info("connected to manager (" + getManagerLocation() + ")");
 	}
@@ -391,26 +394,48 @@ public class MaciSupervisor implements IMaciSupervisor {
 	final protected MaciInfo maciInfo;
 
 	/**
-	 * The returned TreeModel is a combination of the info retrievable from the manager.
+	 * Returns a TreeModel compiled from information from the Acs manager. The returned
+	 * model will never become invalid during the lifetime of this MaciSupervisor, and it
+	 * will be automatically updated.
 	 * <p>
-	 * The returned TreeModel reference will never become invalid during the lifetime of
-	 * this MaciSupervisor, and it will be automatically updated.
-	 * <p>
-	 * A call to this method will trigger a refresh of the available info, possibly 
-	 * throwing an exception.
-	 * 
+	 * A call to this method will automatically trigger a refresh, possibly 
+	 * throwing an exception or blocking the current thread for a long time. Calling
+	 * {@link #getMaciInformation()} and {@link #refresh()} from two different threads
+	 * can shield you from these effects.
+	 *
 	 * @return a stable maciInfo instance, never <code>null</code>
 	 * @throws NotConnectedToManagerException 
 	 * @throws NoPermissionEx 
 	 * @throws UnknownErrorException 
 	 * @throws CorbaNotExistException 
-	 * @throws CorbaTransientException 
+	 * @throws CorbaTransientException
 	 */
 	public MaciInfo getMaciInfo () throws NoPermissionEx, NotConnectedToManagerException, CorbaTransientException, CorbaNotExistException, UnknownErrorException {
-		
+
 		refreshNow();
 
 		return maciInfo;
+	}
+
+	
+	/**
+	 * Returns a TreeModel compiled from information from the Acs manager. The returned
+	 * model will never become invalid during the lifetime of this MaciSupervisor, and it
+	 * will be automatically updated.
+	 * <p>
+	 * The returned model may be out-of-date. Call {@link #refreshSoon()} to have it updated.
+	 *
+	 * @return a stable maciInfo instance, never <code>null</code>
+	 */
+	public MaciInfo getMaciInformation () {
+		return maciInfo;
+	}
+
+	/**
+	 * Request the MaciInfo be refreshed.
+	 */
+	public void refreshSoon() {
+		infoShouldBeRefreshed = true;
 	}
 
 
@@ -715,7 +740,8 @@ public class MaciSupervisor implements IMaciSupervisor {
 	// Administrator Client Implementation
 	// ==================================================================
 
-
+	protected Administrator adminIF;
+	
 	/**
 	 * assigned in connectToManager(). unassigned in disconnectFromManager(). This means,
 	 * this field indicates the "connected" status.
@@ -839,8 +865,8 @@ public class MaciSupervisor implements IMaciSupervisor {
 		}
 
 		public void taggedmessage(short type, short messageID, String message) {
-			// TODO Auto-generated method stub
-			
+			log.finer("taggedmessage() received");
+			log.info("Incoming Maci Network Message: '" + message + "' (messageId="+messageID+")");
 		}
 
 		public boolean ping () {
