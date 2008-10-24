@@ -262,7 +262,7 @@ public class DeploymentTree extends JTree {
 
 	public void refreshManagers () {
 		// iterate over root's children
-		for (Enumeration<Object> en = getRoot().children(); en.hasMoreElements();) {
+		for (Enumeration<DefaultMutableTreeNode> en = getRoot().children(); en.hasMoreElements();) {
 			DefaultMutableTreeNode managerNode = (DefaultMutableTreeNode) en.nextElement();
 			shieldedRefreshManager(maciSupervisor(managerNode));
 		}
@@ -277,7 +277,7 @@ public class DeploymentTree extends JTree {
 		String toFind = managerLoc;
 
 		// iterate over root's children
-		for (Enumeration<Object> en = getRoot().children(); en.hasMoreElements();) {
+		for (Enumeration<DefaultMutableTreeNode> en = getRoot().children(); en.hasMoreElements();) {
 			// inspect each child
 			DefaultMutableTreeNode managerNode = (DefaultMutableTreeNode) en.nextElement();
 			String managerLocation = maciSupervisor(managerNode).getManagerLocation();
