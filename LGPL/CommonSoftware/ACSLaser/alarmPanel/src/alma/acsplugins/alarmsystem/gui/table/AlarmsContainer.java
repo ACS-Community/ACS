@@ -21,9 +21,7 @@ package alma.acsplugins.alarmsystem.gui.table;
 import java.util.HashMap;
 import java.util.Vector;
 
-import alma.acsplugins.alarmsystem.gui.AlarmPanel;
 import alma.alarmsystem.clients.CategoryClient;
-import alma.alarmsystem.clients.alarm.AlarmClientException;
 
 import cern.laser.client.data.Alarm;
 
@@ -44,9 +42,6 @@ import cern.laser.client.data.Alarm;
  * In this way it is possible to get the entry of a row by getting
  * the key from the Vector. And it is possible to get an alarm
  * from the HashMap.
- * <P>
- * The <code>indexWithReduction</code> vector, stores the alarms visible when 
- * reduction is in place.
  * 
  * @author acaproni
  *
@@ -113,26 +108,9 @@ public class AlarmsContainer {
 	private final Vector<String> index = new Vector<String>();
 	
 	/**
-	 * The index when the reduction rules are in place
-	 * <P>
-	 * Each item in the vector represents the ID of the entry 
-	 * shown in a table row when the reduction rules are used.
-	 */
-	private final Vector<String> indexWithReduction = new Vector<String>();
-	
-	/**
 	 * The maximum number of alarms to store in the container
 	 */
 	private final int maxAlarms;
-	
-	/**
-	 * The <code>CategoryClient</code> to ask for parents/children
-	 * while reducing alarms.
-	 * <P>
-	 * It can be <code>null</code> so needs to be checked before
-	 * invoking methods.
-	 */
-	private CategoryClient categoryClient=null;
 	
 	/**
 	 * Build an AlarmContainer 
@@ -145,18 +123,12 @@ public class AlarmsContainer {
 	}
 	
 	/**
-	 * Return the number of alarms in the container depending
-	 * if the reduction rules are applied or not
+	 * Return the number of alarms in the container.
 	 * 
-	 * @param <code>true</code> if the reduction rules are applied
 	 * @return The number of alarms in the container
 	 */
-	public synchronized int size(boolean reduced) {
-		if (!reduced) {
-			return index.size();
-		} else {
-			return indexWithReduction.size();
-		}
+	public synchronized int size() {
+		return index.size();
 	}
 	
 	/**
@@ -189,49 +161,8 @@ public class AlarmsContainer {
 		}
 		index.add(entry.getAlarm().getAlarmId());
 		entries.put(entry.getAlarm().getAlarmId(), entry);
-		addReducedAlarm(entry);
 	}
-	
-	/**
-	 * Add an alarm making all the needed adjustments for reductions
-	 * <P>
-	 * When a new reduced alarm is recived, several checks must be done:
-	 * <UL>
-	 * 	<LI>If the table of reduced alarms has active children of this
-	 * 		alarm they must be hidden
-	 *	</UL>
-	 * @param entry
-	 */
-	private void addReducedAlarm(AlarmTableEntry entry) {
-		if (!entry.isReduced()) {
-			indexWithReduction.add(entry.getAlarm().getAlarmId());
-		}
-		
-		// Check if the table contains children of this alarm that must be hidden
-		// i.e. removed
-		if (categoryClient==null) {
-			return;
-		}
-		Alarm[] children=null;
-		try {
-			if (entry.getAlarm().isNodeParent()) {
-					children = categoryClient.getChildren(entry.getAlarm().getAlarmId(), true);
-				
-			} else if (entry.getAlarm().isMultiplicityParent()) {
-				children = categoryClient.getChildren(entry.getAlarm().getAlarmId(), false);
-			}
-		} catch (Throwable t) {
-			System.err.println("Error getting children of "+entry.getAlarm().getAlarmId()+": "+t.getMessage());
-			t.printStackTrace();
-			children=null;
-		}
-		if (children!=null) {
-			for (Alarm al: children) {
-				indexWithReduction.remove(al.getAlarmId());
-			}
-		}
-	}
-	
+
 	/**
 	 * Check if an alarm with the given ID is in the container
 	 * 
@@ -253,14 +184,14 @@ public class AlarmsContainer {
 	 * @param reduced <code>true</code> if the alarms in the table are reduced
 	 * @return The AlarmTableEntry in the given position
 	 */
-	public synchronized AlarmTableEntry get(int pos, boolean reduced) {
+	public synchronized AlarmTableEntry get(int pos) {
 		if (pos<0) {
 			throw new IllegalArgumentException("The position must be greater then 0");
 		}
 		if (pos>index.size()) {
 			throw new IndexOutOfBoundsException("Can't acces item at pos "+pos+": [0,"+index.size()+"]");
 		}
-		String ID = (!reduced)?index.get(pos):indexWithReduction.get(pos);
+		String ID = index.get(pos);
 		AlarmTableEntry ret = get(ID);
 		if (ret==null) {
 			throw new IllegalStateException("Inconsistent state of container");
@@ -283,11 +214,10 @@ public class AlarmsContainer {
 	}
 	
 	/**
-	 * Remove all the elemnts in the container
+	 * Remove all the elements in the container
 	 */
 	public synchronized void clear() {
 		index.clear();
-		indexWithReduction.clear();
 		entries.clear();
 	}
 	
@@ -309,7 +239,6 @@ public class AlarmsContainer {
 		if (ret==null) {
 			throw new IllegalStateException("The entries  HashMap contains a null entry");
 		}
-		indexWithReduction.remove(ID);
 		return ret;
 	}
 	
@@ -329,10 +258,6 @@ public class AlarmsContainer {
 			throw new AlarmContainerException("Alarm not in the container");
 		}
 		index.remove(pos);
-		pos = indexWithReduction.indexOf(ID);
-		if (pos>=0) {
-			indexWithReduction.remove(pos);
-		}
 		AlarmTableEntry oldEntry = entries.remove(ID);
 		if (oldEntry==null) {
 			throw new IllegalStateException("The ID was in index but not in entries");
@@ -401,50 +326,7 @@ public class AlarmsContainer {
 			String key = index.remove(pos);
 			index.insertElementAt(key, 0);
 		}
-		pos=indexWithReduction.indexOf(newAlarm.getAlarmId());
-		if (pos>=0) {
-			String key = indexWithReduction.remove(pos);
-			indexWithReduction.insertElementAt(key, 0);
-			if (newAlarm.getStatus().isActive()) {
-				return;
-			}
-			if (categoryClient==null) {
-				return;
-			}
-			
-			// If the alarm is not active then the active children must be
-			// visible
-			Alarm[] als=null;
-			try {
-				if (newAlarm.isMultiplicityParent()){
-					als= categoryClient.getActiveChildren(newAlarm.getAlarmId(), false);
-				} else if (newAlarm.isNodeParent()) {
-					als= categoryClient.getActiveChildren(newAlarm.getAlarmId(), true);
-				}
-			} catch (Throwable t) {
-				System.err.println("Error getting children of "+entry.getAlarm().getAlarmId()+": "+t.getMessage());
-				t.printStackTrace();
-				als=null;
-			}
-			if (als!=null) {
-				for (Alarm al: als) {
-					AlarmTableEntry newEntry = get(al.getAlarmId());
-					if (newEntry!=null) {
-						if (indexWithReduction.indexOf(al.getAlarmId())<0) {
-							indexWithReduction.add(al.getAlarmId());
-						}
-					}
-				}
-			}
-		}
 	}
 	
-	/**
-	 * Set the <code>CategoryClient</code>
-	 * 
-	 * @param client The <code>CategoryCLient</code>; it can be <code>null</code>.
-	 */
-	public void setCategoryClient(CategoryClient client) {
-		this.categoryClient=client;
-	}
+	
 }
