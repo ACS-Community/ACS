@@ -5,12 +5,9 @@
 package alma.acs.commandcenter.app;
 
 import java.awt.Rectangle;
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -114,7 +111,7 @@ public class CommandCenterLogic {
 		executeAcs = new ExecuteAcs(model);
 		executeTools = new ExecuteTools(model);
 
-		firestarter = new Firestarter("AcsCommandCenter", log);
+		firestarter = new Firestarter("AcsCommandCenter", log, null);
 		Executor.remoteDaemonEnable(firestarter); // msc (2007-11): needed for talking to daemons
 		
 		deploymentTreeControllerImpl = new DeploymentTreeControllerImpl();
@@ -498,88 +495,6 @@ public class CommandCenterLogic {
 			}
 		}
 	}
-	//
-	// ============ CDB Downloading ====================
-	//
-	
-	
-	/**
-	 * @param url
-	 * @return success or not
-	 * @exception an exception with a nested root-cause
-	 */
-	public void download (URL url, File target) throws Exception {
-
-		BufferedInputStream is;
-		BufferedOutputStream os;
-
-
-		try {
-			is = new BufferedInputStream(url.openStream());
-		} catch (Exception exc) {
-			throw new Exception("could not open input stream: " + exc);
-		}
-
-		try {
-			os = new BufferedOutputStream(new FileOutputStream(target));
-		} catch (Exception exc) {
-			throw new Exception("could not open output stream: " + exc);
-		}
-
-		try {
-			int c;
-			while ((c = is.read()) != -1) {
-				os.write(c);
-			}
-		} catch (Exception exc) {
-			throw new Exception("could not copy from input to output stream: " + exc);
-		}
-
-		try {
-			os.flush();
-			os.close();
-		} catch (Exception exc) {
-			throw new Exception("could not close output stream: " + exc);
-		}
-
-		try {
-			is.close();
-		} catch (Exception exc) {
-			throw new Exception("could not close input stream: " + exc);
-		}
-
-		log.info("downloaded " + url + " and stored as " + target);
-	}
-
-	
-	public boolean extract (File zipfile) {
-		/* 
-		 * in the JRE there's no jar-tool delivered, so
-		 * it's no use to rely on "${java.home}/bin/jar".
-		 * instead we try out some common archivers and
-		 * hope that one of them is in the path.
-		 */
-
-		// Executor does not allow to specify the working dir, thus we use Runtime.exec()
-		// Executor.localOutProc(command, true, 60, "", null);
-
-		String[] commands = new String[]{"jar xf", "unzip", "pkunzip"};
-		for (int i = 0; i < commands.length; i++) {
-			String cmd = commands[i] + " " + zipfile.getName();
-			try {
-				Runtime.getRuntime().exec(cmd, null, zipfile.getParentFile());
-				log.info("extracted " + zipfile.getPath() + " with '" + cmd + "'");
-				return true;
-
-			} catch (IOException exc) {
-				log.info("could not extract " + zipfile.getPath() + " with '" + cmd + "': " + exc);
-			}
-		}
-		// if we got here, we failed
-		return false;
-
-	}
-
 
 	//
 	//  ======= Options from Command Line etc. ==========

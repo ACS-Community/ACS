@@ -20,7 +20,6 @@ import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.File;
 import java.util.Enumeration;
 import java.util.Vector;
 
@@ -130,8 +129,6 @@ public class TabPanel extends JPanel {
 	JButton btnMoveContainerUp;
 	JButton btnMoveContainerDown;
 
-	JButton btnShowCdbChooser;
-
 	MyRadioButton chkLocalScript = new MyRadioButton("Localhost");
 	MyRadioButton chkRemoteScript = new MyRadioButton("Remote");
 	//MyRadioButton chkLocalJava = new MyRadioButton("Java-only Acs");
@@ -183,16 +180,13 @@ public class TabPanel extends JPanel {
 		btnContainersAgainstManager = new JButton(new ActionConfigureAllContainers());
 		btnMoveContainerUp = new JButton(new ActionMoveContainerUp());
 		btnMoveContainerDown = new JButton(new ActionMoveContainerDown());
-		btnShowCdbChooser = new JButton(new ActionShowCdbChooser());
-
+		
 		Insets margin = new Insets(1, 0, 1, 0);
 		btnMoreContainers.setMargin(margin);
 		btnLessContainers.setMargin(margin);
 		btnContainersAgainstManager.setMargin(margin);
 		btnMoveContainerUp.setMargin(margin);
 		btnMoveContainerDown.setMargin(margin);
-		btnShowCdbChooser.setMargin(margin);
-
 		
 		this.setLayout(new BorderLayout());
 
@@ -1104,6 +1098,9 @@ public class TabPanel extends JPanel {
 				}
 			});
 			
+			this.add(btnConfigure = new Button(master.icons.getConfigIcon(), this));
+			btnConfigure.setToolTipText("Edit Detail Settings");
+			
 			this.add(btnStart = new Button(master.icons.getStartIcon(), this));
 			btnStart.setToolTipText("Start this Container");
 			flowDialog.disenable(btnStart);
@@ -1114,9 +1111,6 @@ public class TabPanel extends JPanel {
 
 			makeButtonPair(btnStart, btnStop);
 
-			this.add(btnConfigure = new Button(master.icons.getConfigIcon(), this));
-			btnConfigure.setToolTipText("Edit detail settings");
-			
 		}
 		
 		void populate (String name, String type, String host, boolean selected) {
@@ -1728,40 +1722,6 @@ public class TabPanel extends JPanel {
 						;
 				JOptionPane.showMessageDialog(master.frame, msg, "About Acs Daemons", JOptionPane.OK_OPTION);
 			}
-		}
-	}
-
-	protected class ActionShowCdbChooser extends CommandCenterGui.ActionBaseClass {
-
-		public ActionShowCdbChooser() {
-			master.super("@");
-		}
-
-		@Override
-		public void actionPerformed () {
-
-			File result = master.showCdbChooser();
-
-			if (result == null) {
-				return;
-			}
-
-			// TODO(msc): put this logic into a method, analogously to showCdbBrowser()
-			try {
-				boolean success = master.controller.extract(result);
-				if (success) {
-					String newCdbRoot = master.cdbChooser.getCdbRoot();
-					if (newCdbRoot != null)
-						cdbrootF.setText(newCdbRoot);
-					// otherwise we failed to compute the name
-					return;
-				}
-
-				// in case of exception, or if success == false, show a message
-			} catch (Exception exc) {}
-
-			JOptionPane.showMessageDialog(master.frame, "Could not extract the Cdb. See console for details");
-
 		}
 	}
 
