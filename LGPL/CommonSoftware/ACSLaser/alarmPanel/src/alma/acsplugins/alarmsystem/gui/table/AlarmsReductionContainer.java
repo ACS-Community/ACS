@@ -80,17 +80,9 @@ public class AlarmsReductionContainer extends AlarmsContainer {
 	 * Add an entry (i.e a alarm) in the collection.
 	 * <P>
 	 * If there is no room available in the container,
-	 * an exception is thrown.
-	 * Checking if there is enough room must be done by the
-	 * caller.
+	 * an exception is thrown: checking if there is enough room 
+	 * must be done by the caller.
 	 * <P>
-	 * When a new reduced alarm is received, several checks must be done:
-	 * <UL>
-	 * 	<LI>If the table of reduced alarms has active children of this
-	 * 		alarm they must be hidden
-	 *	</UL>
-	 * @param entry The entry to add
-	 * 
 	 * @param entry The not <code>null</code> entry to add
 	 * @throw {@link AlarmContainerException} If the entry is already in the container
 	 */
@@ -99,12 +91,23 @@ public class AlarmsReductionContainer extends AlarmsContainer {
 		if (!entry.isReduced()) {
 			indexWithReduction.add(entry.getAlarm().getAlarmId());
 		}
-		
-		// Check if the table contains children of this alarm that must be hidden
-		// i.e. removed
+		hideReducedChildren(entry);
+	}
+	
+	/**
+	 * Hide the active alarms of this entry.
+	 * 
+	 * @param entry The not <code>null</code> entry to hide active children
+	 */
+	private void hideReducedChildren(AlarmTableEntry entry) {
+		if (entry==null) {
+			throw new IllegalArgumentException("The entry can't be null");
+		}
 		if (categoryClient==null) {
 			return;
 		}
+		// Check if the table contains children of this alarm that must be hidden
+		// i.e. removed
 		Alarm[] children=null;
 		try {
 			if (entry.getAlarm().isNodeParent()) {
@@ -207,31 +210,40 @@ public class AlarmsReductionContainer extends AlarmsContainer {
 			if (newAlarm.getStatus().isActive()) {
 				return;
 			}
-			if (categoryClient==null) {
-				return;
+			showActiveChildren(newAlarm,pos);
+		}
+	}
+	
+	/**
+	 * Show the active children of the passed alarms
+	 * 
+	 * @param alarm The alarm whose active children must be displayed
+	 * @param pos The position in the table where the active children must be shown
+	 */
+	private void showActiveChildren(Alarm alarm, int pos) {
+		if (categoryClient==null) {
+			return;
+		}
+		// If the alarm is not active then the active children must be
+		// visible
+		Alarm[] als=null;
+		try {
+			if (alarm.isMultiplicityParent()){
+				als= categoryClient.getActiveChildren(alarm.getAlarmId(), false);
+			} else if (alarm.isNodeParent()) {
+				als= categoryClient.getActiveChildren(alarm.getAlarmId(), true);
 			}
-			
-			// If the alarm is not active then the active children must be
-			// visible
-			Alarm[] als=null;
-			try {
-				if (newAlarm.isMultiplicityParent()){
-					als= categoryClient.getActiveChildren(newAlarm.getAlarmId(), false);
-				} else if (newAlarm.isNodeParent()) {
-					als= categoryClient.getActiveChildren(newAlarm.getAlarmId(), true);
-				}
-			} catch (Throwable t) {
-				System.err.println("Error getting children of "+newAlarm.getAlarmId()+": "+t.getMessage());
-				t.printStackTrace();
-				als=null;
-			}
-			if (als!=null) {
-				for (Alarm al: als) {
-					AlarmTableEntry newEntry = get(al.getAlarmId());
-					if (newEntry!=null) {
-						if (indexWithReduction.indexOf(al.getAlarmId())<0) {
-							indexWithReduction.add(al.getAlarmId());
-						}
+		} catch (Throwable t) {
+			System.err.println("Error getting children of "+alarm.getAlarmId()+": "+t.getMessage());
+			t.printStackTrace();
+			als=null;
+		}
+		if (als!=null) {
+			for (Alarm al: als) {
+				AlarmTableEntry newEntry = get(al.getAlarmId());
+				if (newEntry!=null) {
+					if (indexWithReduction.indexOf(al.getAlarmId())<0) {
+						indexWithReduction.add(al.getAlarmId());
 					}
 				}
 			}
