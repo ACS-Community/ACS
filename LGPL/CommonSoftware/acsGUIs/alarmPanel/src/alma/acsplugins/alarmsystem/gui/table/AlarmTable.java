@@ -19,7 +19,7 @@
 
 /** 
  * @author  aaproni
- * @version $Id: AlarmTable.java,v 1.8 2008/10/24 09:06:14 acaproni Exp $
+ * @version $Id: AlarmTable.java,v 1.9 2008/10/24 14:42:10 acaproni Exp $
  * @since    
  */
 
@@ -37,6 +37,7 @@ import java.io.FileOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import javax.swing.ImageIcon;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
@@ -292,6 +293,22 @@ public class AlarmTable extends JTable implements ActionListener {
 	private JLabel emptyLbl = new JLabel();
 	
 	/**
+	 *  The renderer for the reduced alarm entries i.e.
+	 *  the entries normally hidden
+	 */
+	public static final JLabel reductionRenderer = new JLabel(
+			new ImageIcon(AlarmGUIType.class.getResource(AlarmGUIType.iconFolder+"arrow_in.png")),
+			JLabel.CENTER);
+	
+	/**
+	 * The renderer for a node that hides children because of a
+	 * reduction rule is in place
+	 */
+	public static final JLabel hasReducedNodesRenderer = new JLabel(
+			new ImageIcon(AlarmGUIType.class.getResource(AlarmGUIType.iconFolder+"add.png")),
+			JLabel.CENTER);
+	
+	/**
 	 * Constructor 
 	 * @param model The model for this table
 	 */
@@ -322,7 +339,9 @@ public class AlarmTable extends JTable implements ActionListener {
 		for (int t=0; t<columns.length; t++) {
 			columns[t]=colModel.getColumn(t);
 			columns[t].setIdentifier(AlarmTableColumn.values()[t]);
-			if (columns[t].getIdentifier()==AlarmTableColumn.ICON || columns[t].getIdentifier()==AlarmTableColumn.REDUCTION) {
+			if (columns[t].getIdentifier()==AlarmTableColumn.ICON || 
+					columns[t].getIdentifier()==AlarmTableColumn.REDUCED ||
+					columns[t].getIdentifier()==AlarmTableColumn.HIDES_CHILDREN) {
 				columns[t].setWidth(20);
 				columns[t].setResizable(false);
 				columns[t].setPreferredWidth(20);
@@ -373,10 +392,17 @@ public class AlarmTable extends JTable implements ActionListener {
 			} else {
 				return emptyLbl;
 			}
-		} else if (col.getIdentifier().equals(AlarmTableColumn.REDUCTION))  {
+		} else if (col.getIdentifier().equals(AlarmTableColumn.REDUCED))  {
 			AlarmTableEntry entry = model.getRowEntry(sorter.convertRowIndexToModel(rowIndex));
 			if (entry.isReduced()) {
-				return AlarmGUIType.reductionRenderer;
+				return AlarmTable.reductionRenderer;
+			} else {
+				return emptyLbl;
+			}
+		} else if (col.getIdentifier().equals(AlarmTableColumn.HIDES_CHILDREN)) {
+			AlarmTableEntry entry = model.getRowEntry(sorter.convertRowIndexToModel(rowIndex));
+			if (entry.isParent()) {
+				return AlarmTable.hasReducedNodesRenderer;
 			} else {
 				return emptyLbl;
 			}
