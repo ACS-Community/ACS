@@ -1,4 +1,4 @@
-# @(#) $Id: Log.py,v 1.42 2008/05/07 22:23:25 agrimstrup Exp $
+# @(#) $Id: Log.py,v 1.43 2008/10/24 19:02:41 agrimstrup Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA,  2001
@@ -39,7 +39,7 @@ of creating new instances of the Logger class which can take a very long
 time depending on managers load.
 '''
 
-__revision__ = "$Id: Log.py,v 1.42 2008/05/07 22:23:25 agrimstrup Exp $"
+__revision__ = "$Id: Log.py,v 1.43 2008/10/24 19:02:41 agrimstrup Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 from os        import environ
@@ -160,26 +160,6 @@ def acsPrintExcDebug():
     if stdoutOk(logging.INFO):
         print_exc()
 
-# The ACS logger uses two handlers one for local messages and one for
-# central messages.  There should be only one pair of handlers per
-# process.
-
-# Create a singleton handler for the local messages.  These messages
-# sent to stdout stream.
-try:
-    LOCALHANDLER
-except NameError:
-    LOCALHANDLER = logging.StreamHandler(sys.stdout)
-    LOCALHANDLER.setFormatter(ACSFormatter())
-
-
-# Create a singleton handler for messages destined for the central
-# logging service.
-try:
-    CENTRALHANDLER
-except NameError:
-    CENTRALHANDLER = ACSHandler()
-    register(CENTRALHANDLER.flush)
 
 #------------------------------------------------------------------------
 def setCapacity(capacity):
@@ -191,7 +171,7 @@ def setCapacity(capacity):
     
     Returns: Nothing
     
-    Raises: Nothing
+    Raises: NameError if no Logger object has been previously instantiated
     '''
     if capacity > 0:
         CENTRALHANDLER.capacity = capacity
@@ -208,7 +188,7 @@ def setBatchSize(batchsize):
     
     Returns: Nothing
     
-    Raises: Nothing
+    Raises: NameError if no Logger object has been previously instantiated
     '''
     if batchsize > CENTRALHANDLER.capacity:
         CENTRALHANDLER.batchsize = CENTRALHANDLER.capacity
@@ -227,31 +207,11 @@ def setImmediateDispatchLevel(level):
     Returns: Nothing
     
     Raises: KeyError if level is not defined
+            NameError if no Logger object has been previously instantiated
     '''
     CENTRALHANDLER.dispatchlevel = LEVELS[level]
 #------------------------------------------------------------------------
 
-# The default filtering level for the local and central loggers
-# are held in separate handlers.  By moving the management of the
-# logging levels to these handlers, we can allow users to set
-# log levels lower than the default value.
-
-
-# Singleton wrapper for the local message handler
-try:
-    DEFAULTLOCALHANDLER
-except NameError:
-    DEFAULTLOCALHANDLER = MemoryHandler(capacity=0, target=LOCALHANDLER)
-    DEFAULTLOCALHANDLER.setLevel(LEVELS[ACS_LOG_STDOUT])
-
-# Singleton wrapper for the central message handler
-try:
-    DEFAULTCENTRALHANDLER
-except NameError:
-    DEFAULTCENTRALHANDLER = MemoryHandler(capacity=0, target=CENTRALHANDLER)
-    DEFAULTCENTRALHANDLER.setLevel(LEVELS[ACS_LOG_CENTRAL])
-
-#------------------------------------------------------------------------
 def setDefaultLevels(levels):
     '''
     Set the default log level filtering for this process.
@@ -261,7 +221,7 @@ def setDefaultLevels(levels):
 
     Returns:  Nothing
 
-    Raises:  Nothing
+    Raises: NameError if no Logger object has been previously instantiated
     '''
     DEFAULTLOCALHANDLER.setLevel(LEVELS[levels.minLogLevelLocal]) 
     DEFAULTCENTRALHANDLER.setLevel(LEVELS[levels.minLogLevel])
@@ -274,7 +234,7 @@ def getDefaultLevels():
 
     Returns: LogLevels object containing the current default log levels.
 
-    Raises:  Nothing
+    Raises: NameError if no Logger object has been previously instantiated
     '''
     return maci.LoggingConfigurable.LogLevels(True, RLEVELS[DEFAULTCENTRALHANDLER.level],
                                               RLEVELS[DEFAULTLOCALHANDLER.level])
@@ -434,8 +394,51 @@ class Logger(logging.Logger):
 
         Raises: Nothing
         '''
+        global LOCALHANDLER, CENTRALHANDLER, DEFAULTLOCALHANDLER, DEFAULTCENTRALHANDLER
+        
         #pass it on to baseclass. by default all logs are sent to the handlers
         logging.Logger.__init__(self, name, logging.NOTSET)
+
+        # The ACS logger uses two handlers one for local messages and one for
+        # central messages.  There should be only one pair of handlers per
+        # process.
+
+        # Create a singleton handler for the local messages.  These messages
+        # sent to stdout stream.
+        try:
+            LOCALHANDLER
+        except NameError:
+            LOCALHANDLER = logging.StreamHandler(sys.stdout)
+            LOCALHANDLER.setFormatter(ACSFormatter())
+
+
+        # Create a singleton handler for messages destined for the central
+        # logging service.
+        try:
+            CENTRALHANDLER
+        except NameError:
+            CENTRALHANDLER = ACSHandler()
+            register(CENTRALHANDLER.flush)
+                
+        # The default filtering level for the local and central loggers
+        # are held in separate handlers.  By moving the management of the
+        # logging levels to these handlers, we can allow users to set
+        # log levels lower than the default value.
+
+
+        # Singleton wrapper for the local message handler
+        try:
+            DEFAULTLOCALHANDLER
+        except NameError:
+            DEFAULTLOCALHANDLER = MemoryHandler(capacity=0, target=LOCALHANDLER)
+            DEFAULTLOCALHANDLER.setLevel(LEVELS[ACS_LOG_STDOUT])
+
+        # Singleton wrapper for the central message handler
+        try:
+            DEFAULTCENTRALHANDLER
+        except NameError:
+            DEFAULTCENTRALHANDLER = MemoryHandler(capacity=0, target=CENTRALHANDLER)
+            DEFAULTCENTRALHANDLER.setLevel(LEVELS[ACS_LOG_CENTRAL])
 
         #create a stdout handler
         self.stdouthandler = DEFAULTLOCALHANDLER
