@@ -48,7 +48,7 @@ public enum AlarmGUIType {
 	/**
 	 *  The name of the folder with icons
 	 */
-	private static final String iconFolder = "/alma/acsplugins/alarmsystem/gui/resources/";
+	public static final String iconFolder = "/alma/acsplugins/alarmsystem/gui/resources/";
 	
 	/** 
 	 * Background color
@@ -74,13 +74,6 @@ public enum AlarmGUIType {
 	 *  The renderer for the table showing the flag icon
 	 */
 	public final JLabel flagRenderer;
-	
-	/**
-	 *  The renderer for the table showing the flag icon
-	 */
-	public static final JLabel reductionRenderer = new JLabel(
-			new ImageIcon(AlarmGUIType.class.getResource(iconFolder+"arrow_in.png")),
-			JLabel.CENTER);
 	
 	/**
 	 * Constructor
