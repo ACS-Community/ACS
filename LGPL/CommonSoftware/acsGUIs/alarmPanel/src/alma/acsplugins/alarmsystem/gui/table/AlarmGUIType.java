@@ -45,24 +45,42 @@ public enum AlarmGUIType {
 	PRIORITY_3(Color.black,new Color(255,255,198),"Priority 3","flag_yellow.png"),
 	INACTIVE(Color.black,new Color(188,255,188),"Inactive","flag_green.png");
 	
-	// The name of the folder with icons
+	/**
+	 *  The name of the folder with icons
+	 */
 	private static final String iconFolder = "/alma/acsplugins/alarmsystem/gui/resources/";
 	
-	// Background and foreground colors
+	/** 
+	 * Background color
+	 */
 	public final Color backg;
+	
+	/**
+	 * Foreground color
+	 */
 	public final Color foreg;
 	
-	// The string to display
+	/**
+	 *  The string to display
+	 */
 	public final String tile;
 	
-	// The unique identifier of this type of alarm
+	/**
+	 *  The unique identifier of this type of alarm
+	 */
 	public final int id;
 	
-	// The icon 
-	public final ImageIcon icon;
+	/**
+	 *  The renderer for the table showing the flag icon
+	 */
+	public final JLabel flagRenderer;
 	
-	// The renderer for the table showing the icon
-	public final JLabel renderer;
+	/**
+	 *  The renderer for the table showing the flag icon
+	 */
+	public static final JLabel reductionRenderer = new JLabel(
+			new ImageIcon(AlarmGUIType.class.getResource(iconFolder+"arrow_in.png")),
+			JLabel.CENTER);
 	
 	/**
 	 * Constructor
@@ -78,12 +96,13 @@ public enum AlarmGUIType {
 		this.tile=title;
 		id=this.ordinal();
 		// Load the icon
+		ImageIcon flagIcon;
 		if (iconName!=null) {
-			icon=new ImageIcon(AlarmGUIType.this.getClass().getResource(iconFolder+iconName));
+			flagIcon=new ImageIcon(AlarmGUIType.this.getClass().getResource(iconFolder+iconName));
 		} else {
-			icon=null;
+			flagIcon=null;
 		}
-		renderer = new JLabel(icon,JLabel.CENTER);
+		flagRenderer = new JLabel(flagIcon,JLabel.CENTER);
 	}
 	
 	public AlarmGUIType fromID(int id) {
