@@ -8,14 +8,12 @@ package alma.acs.commandcenter.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
-import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
@@ -56,8 +54,6 @@ import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
-import javax.swing.event.HyperlinkEvent;
-import javax.swing.event.HyperlinkListener;
 import javax.swing.filechooser.FileFilter;
 
 import alma.acs.commandcenter.app.CommandCenterLogic;
@@ -227,25 +223,25 @@ public class CommandCenterGui {
 			JMenu extrasMenu = new JMenu("Expert");
 			extrasMenu.setMnemonic(KeyEvent.VK_E);
 			{
-				JMenu sshMode = new JMenu("SSH Mode");
+				JMenu sshMode = new JMenu("SSH Library");
 				sshMode.add(new ActionSetSshMode("Platform-independent", false, false));
-				sshMode.add(new ActionSetSshMode("Native ssh", true, false));
-				sshMode.add(new ActionSetSshMode("Native ssh, kill ssh on quit", true, true));
+				sshMode.add(new ActionSetSshMode("Natively installed ssh", true, true));
+				//sshMode.add(new ActionSetSshMode("Native ssh, kill ssh on quit", true, true));
 				extrasMenu.add(sshMode);
 				extrasMenu.add(new JSeparator());
 
-				JMenu extraTools = new JMenu("Tools");
-				extraTools.add(new ActionShowExtraTools("View All..."));
-				extraTools.add(new ActionInstallExtraTools("Replace All..."));
+				JMenu extraTools = new JMenu("Tools Menu");
+				extraTools.add(new ActionShowExtraTools("View..."));
+				extraTools.add(new ActionInstallExtraTools("Replace..."));
 				extrasMenu.add(extraTools);
 
-				JMenu builtinTools = new JMenu("Built-in Tools");
-				builtinTools.add(new ActionShowBuiltinTools("View Latest Replacement..."));
-				builtinTools.add(new ActionLoadBuiltinTools("Replace Some..."));
+				JMenu builtinTools = new JMenu("Acs Scripts");
+				builtinTools.add(new ActionShowBuiltinTools("View..."));
+				builtinTools.add(new ActionLoadBuiltinTools("Replace..."));
 				extrasMenu.add(builtinTools);
 			}
-			extrasMenu.add(new ActionEditCommands("Edit Java Args..."));
-			extrasMenu.add(new ActionEditPexpects("Edit Java Expr..."));
+//			extrasMenu.add(new ActionEditCommands("Edit Java Args..."));
+//			extrasMenu.add(new ActionEditPexpects("Edit Java Expr..."));
 			extrasMenu.add(new JSeparator());
 			extrasMenu.add(new ActionShowVariables("Variables..."));
 			
@@ -433,151 +429,10 @@ public class CommandCenterGui {
 	}
 	
 	
-	// ======= CDB downloading ================
-
-	protected File showCdbChooser () {
-		if (cdbChooserDialog == null) {
-			cdbChooserDialog = new JDialog(frame) {
-
-				@Override
-				public void paint (Graphics g) {
-					// this is apparently a swing-related concurrency problem.
-					// there's a problem with setPage() when the dialog is invisible,
-					// but i don't have time to investigate and find a swing-bug-workaround now
-					try {
-						super.paint(g);
-					} catch (ArrayIndexOutOfBoundsException e) {}
-				}
-			};
-			cdbChooser = new CdbChooser();
-			cdbChooserDialog.getContentPane().add(cdbChooser);
-			cdbChooserDialog.setSize(350, 500);
-			cdbChooserDialog.setLocationRelativeTo(frame);
-			cdbChooserDialog.setModal(true);
-		}
-
-		cdbChooser.reset();
-		// cdbChooserDialog.setModal(false);
-
-		// cdbChooserDialog.setVisible(true);
-		new Thread() {
-
-			@Override
-			public void run () {
-				try {
-					while (!cdbChooser.isVisible()) {
-						try {
-							Thread.sleep(10);
-						} catch (InterruptedException exc1) {}
-					}
-					cdbChooser.setPage("http://www.eso.org/~mschilli/acc/cdb");
-				} catch (IOException exc) {
-					log.warning(exc.toString());
-					ErrorBox.showErrorDialog(frame, "Could not load the Cdb page", exc.toString());
-				}
-			}
-		}.start();
-
-		// cdbChooserDialog.setVisible(false);
-		// cdbChooserDialog.setModal(true);
-		cdbChooserDialog.setVisible(true);
-		// cdbChooserDialog.dispose();
-		return cdbChooser.getResult();
-	}
-
-	protected JDialog cdbChooserDialog;
-	protected CdbChooser cdbChooser;
-
-	protected class CdbChooser extends JEditorPane implements HyperlinkListener {
-
-		protected CdbChooser() {
-			super("text/html", "<html><body> please wait ... </body></html>");
-			this.setEditable(false);
-			this.setContentType("text/html");
-			this.addHyperlinkListener(this);
-			this.result = null;
-		}
-
-		// the return values
-		protected File result = null;
-		protected URL theURL = null;
-
-		protected void reset () {
-			result = null;
-			theURL = null;
-		}
-
-		protected File getResult () {
-			return result;
-		}
-
-		protected String getCdbRoot () {
-			try {
-				File diskParent = result.getParentFile();
-				String nameFromURL = theURL.getFile(); // "~mschilli/acc/cdb/cdb2.jar"
-				String name = nameFromURL.substring(nameFromURL.lastIndexOf('/') + 1, nameFromURL.length() - 4);
-				return new File(diskParent, name).getAbsolutePath();
-
-			} catch (Exception exc) {
-				exc.printStackTrace();
-				return null;
-			}
-		}
-
-		public void hyperlinkUpdate (HyperlinkEvent evt) {
-			// only clicking on a link is interesting for us
-			if (evt.getEventType() != HyperlinkEvent.EventType.ACTIVATED)
-				return;
-			respond(evt.getURL());
-
-		}
-
-		protected JFileChooser chooser = new JFileChooser();
-
-		public void respond (final URL url) {
-			try {
-
-				File suggestion = new File(chooser.getCurrentDirectory(), url.getFile());
-				chooser.setSelectedFile(suggestion);
-				int returnVal = chooser.showSaveDialog(frame);
-
-				if (returnVal != JFileChooser.APPROVE_OPTION) {
-					// user cancelled
-					return;
-				}
-
-				new Thread() {
-
-					@Override
-					public void run () {
-						try {
-
-							File target = chooser.getSelectedFile();
-							controller.download(url, target);
-							result = target;
-							theURL = url;
-
-						} catch (Exception exc) {
-							ErrorBox.showErrorDialog(frame, "Failed to download Cdb", exc.toString());
-						} finally {
-							// would be prettier to add an extra event handler for this, but well.
-							cdbChooserDialog.setVisible(false);
-						}
-
-					}
-				}.start();
-
-			} catch (Exception exc) {
-				ErrorBox.showErrorDialog(frame, "A problem occurred", exc.toString());
-			}
-		}
-
-	}
 
 
-
-	// ========== writing Model to Gui and vice versa
-	// ===========================================
+	// writing Model to Gui and vice versa
+	// =====================================================
 
 
 	protected void writeModelToManagerLocationForTools () {
