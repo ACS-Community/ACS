@@ -27,6 +27,7 @@ import alma.acs.component.client.ComponentClientTestCase;
 import alma.acsplugins.alarmsystem.gui.table.AlarmGUIType;
 import alma.acsplugins.alarmsystem.gui.table.AlarmTableEntry;
 import alma.acsplugins.alarmsystem.gui.table.AlarmsContainer;
+import alma.acsplugins.alarmsystem.gui.table.AlarmsReductionContainer;
 import alma.acsplugins.alarmsystem.gui.table.AlarmsContainer.AlarmContainerException;
 
 /**
@@ -49,7 +50,7 @@ public class AlarmContainerTest extends ComponentClientTestCase {
 	/**
 	 * The container to test
 	 */
-	private AlarmsContainer container;
+	private AlarmsReductionContainer container;
 
 	/**
 	 * Constructor
@@ -67,7 +68,7 @@ public class AlarmContainerTest extends ComponentClientTestCase {
 	protected void setUp() throws Exception {
 		super.setUp();
 		TestAlarm.alarm_generator_id=0;
-		container = new AlarmsContainer(CONTAINER_SIZE);
+		container = new AlarmsReductionContainer(CONTAINER_SIZE);
 		assertNotNull(container);
 	}
 

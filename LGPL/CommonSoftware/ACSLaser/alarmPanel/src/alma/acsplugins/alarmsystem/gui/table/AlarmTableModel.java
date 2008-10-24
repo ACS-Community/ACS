@@ -19,7 +19,7 @@
 
 /** 
  * @author  acaproni   
- * @version $Id: AlarmTableModel.java,v 1.16 2008/10/23 16:07:28 acaproni Exp $
+ * @version $Id: AlarmTableModel.java,v 1.17 2008/10/24 09:59:47 acaproni Exp $
  * @since    
  */
 
@@ -120,7 +120,7 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 		}
 		this.owner=owner;
 		this.applyReductionRules=reduce;
-		this.items = new AlarmsContainer(MAX_ALARMS);
+		this.items = new AlarmsReductionContainer(MAX_ALARMS);
 		// Put each alarm type in the has map of the counters
 		for (AlarmGUIType alarmType: AlarmGUIType.values()) {
 			counters.put(alarmType, new AlarmCounter());
@@ -351,7 +351,7 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 	/**
 	 * The alarms in the table
 	 */
-	private AlarmsContainer items=null;
+	private AlarmsReductionContainer items=null;
 	
 	/**
 	 *	If <code>true</code> applies the reduction rules hiding reduced alarms 
