@@ -21,10 +21,6 @@ public class ExecuteContainer {
 	protected Logger log;
 	protected Logger acsCorbaLogger;
 	
-	/* msc(2005-07): no longer sure this is really needed
-	 *  protected Thread localInProcThread;
-	 */
-    
     
     /**
      */

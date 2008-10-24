@@ -22,8 +22,6 @@ public class ExecuteManager {
         this.runModel = runModel;
     }
 
-    Thread localInProcThread;
-
     String[] localJavaManagerLocation;
 
     //
@@ -78,7 +76,7 @@ public class ExecuteManager {
         props.setProperty("ACS.tmp", props.getProperty("ACS.data")+"/tmp/ACS_INSTANCE."+acsInstance);
         
         // run in same vm
-        this.localInProcThread = Executor.localInProc(props,
+        Executor.localInProc(props,
                 startLocalJavaPexpect, listener, new Executor.RunMain() {
 
                     public void runMain() {
@@ -109,11 +107,6 @@ public class ExecuteManager {
             		  localManager.shutdown(sigInt);
             	  }
             	  
-            	  /* msc(2005-07): no longer sure this is really needed
-            	  if (localInProcThread != null) {
-            	  	  localInProcThread.stop();
-            	  }
-            	  */
               }
           });
 

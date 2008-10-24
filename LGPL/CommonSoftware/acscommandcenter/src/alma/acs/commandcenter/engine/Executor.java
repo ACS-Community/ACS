@@ -387,7 +387,7 @@ public class Executor {
     * @param listener a proprietary listener if the caller wants to hear about the process' output
     * @param runMain a callback that will be invoked by the newly spawned thread
     */
-   static public Thread localInProc(Properties properties, String pexpect, NativeCommand.Listener listener, final RunMain runMain) {
+   static public void localInProc(Properties properties, String pexpect, NativeCommand.Listener listener, final RunMain runMain) {
       
       if (listener == null) {
          listener = new NativeCommand.ListenerAdapter(); // normalization: use a do-nothing implementation
@@ -428,7 +428,6 @@ public class Executor {
 
       localInProcFlow.success(LocalInProcFlow.ALIVE);
       //CommandCenter.dbg_printProps(System.getProperties(), "sysprops");
-      return t;
    }
 
    
@@ -485,11 +484,7 @@ public class Executor {
       }
    }
 
-   //   static public void localDown(int ticket) {
-   //      Thread t = (Thread)threads.get(ticket);
-   //      t.
-   //   }
-   
+
    
 
    /**
