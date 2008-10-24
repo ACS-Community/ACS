@@ -28,7 +28,7 @@ import alma.entity.xmlbinding.acscommandcentertools.Tool;
  */
 public class _Tests {
 
-	/* $Id: _Tests.java,v 1.6 2007/10/22 14:13:37 mschilli Exp $ */
+	/* $Id: _Tests.java,v 1.7 2008/10/24 07:56:57 mschilli Exp $ */
 
 	public static Test suite() {
 		TestSuite ret = new TestSuite("Test for " + _Tests.class.getPackage().getName());
@@ -146,6 +146,11 @@ public class _Tests {
 	
 		RunModel m = new RunModelAdapter() {
 	
+			@Override
+			public String getServicesLocalJavaRoot () {
+				return null;
+			}
+
 			@Override
 			public String getScriptBase () {
 				return acsInstance;
