@@ -19,7 +19,7 @@
 
 /** 
  * @author  aaproni
- * @version $Id: AlarmTable.java,v 1.7 2008/10/21 14:38:50 acaproni Exp $
+ * @version $Id: AlarmTable.java,v 1.8 2008/10/24 09:06:14 acaproni Exp $
  * @since    
  */
 
@@ -369,12 +369,17 @@ public class AlarmTable extends JTable implements ActionListener {
 		if (col.getIdentifier().equals(AlarmTableColumn.ICON)) {
 			if (model.isRowAlarmNew(sorter.convertRowIndexToModel(rowIndex))) {
 				Alarm alarm = model.getRowAlarm(sorter.convertRowIndexToModel(rowIndex));
-				return AlarmGUIType.fromAlarm(alarm).renderer;
+				return AlarmGUIType.fromAlarm(alarm).flagRenderer;
 			} else {
 				return emptyLbl;
 			}
 		} else if (col.getIdentifier().equals(AlarmTableColumn.REDUCTION))  {
 			AlarmTableEntry entry = model.getRowEntry(sorter.convertRowIndexToModel(rowIndex));
+			if (entry.isReduced()) {
+				return AlarmGUIType.reductionRenderer;
+			} else {
+				return emptyLbl;
+			}
 		}
 		Component c = super.prepareRenderer(renderer, rowIndex, vColIndex);
 		Alarm alarm = model.getRowAlarm(sorter.convertRowIndexToModel(rowIndex));
