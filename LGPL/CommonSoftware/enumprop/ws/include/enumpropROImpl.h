@@ -3,7 +3,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: enumpropROImpl.h,v 1.48 2008/10/09 05:06:11 cparedes Exp $"
+* "@(#) $Id: enumpropROImpl.h,v 1.49 2008/10/27 14:50:38 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -330,7 +330,7 @@ public:
     bool  alarmRaised_m; 
 
 #ifdef MAKE_VXWORKS 
-    AlarmenumpropEventStrategy<T, ROEnumImpl<ACS_ENUM_T(T), SK>, ACS::Alarmpattern> a;
+    baci::AlarmenumpropEventStrategy<T, ROEnumImpl<ACS_ENUM_T(T), SK>, ACS::Alarmpattern> a;
 #endif
     
     DevIO<T> *devIO_mp;  
