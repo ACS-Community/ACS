@@ -4,9 +4,9 @@
 int main(int argc, char** argv)
 {
 	ddsnc::DDSPublisher<TESTFRIDGE::temperatureDataBlockEventDataWriter_var> *pub;
+	std::cerr << "Creating a publisher" << std::endl;
 	pub = new ddsnc::DDSPublisher
-		<TESTFRIDGE::temperatureDataBlockEventDataWriter_var>
-		("DefaultTopic", argc, argv);
+		<TESTFRIDGE::temperatureDataBlockEventDataWriter_var>("DefaultTopic");
 
 	TESTFRIDGE::temperatureDataBlockEvent message;
 	message.key=1;

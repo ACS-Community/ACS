@@ -12,11 +12,7 @@ int main(int argc, char**argv)
 	ddsnc::DDSSubscriber *sub=0;
 	
 	ACS_NEW_DDS_SUBSCRIBER(sub, TESTFRIDGE::temperatureDataBlockEvent,
-			TESTFRIDGE::temperatureDataBlockEventTypeSupport_var,
-			TESTFRIDGE::temperatureDataBlockEventTypeSupportImpl,
-			TESTFRIDGE::temperatureDataBlockEventDataReader_var,
-			TESTFRIDGE::temperatureDataBlockEventDataReader,
-			"DefaultTopic", &handlerFunction, argc, argv);
+			"DefaultTopic", &handlerFunction);
 
 	sub->consumerReady();
 

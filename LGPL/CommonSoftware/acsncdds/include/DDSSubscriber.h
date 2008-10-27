@@ -47,8 +47,8 @@ namespace ddsnc{
 		 *
 		 * @see DDSHelper
 		 */
-		DDSSubscriber(const char *channelName, int argc, char** argv) : 
-			ddsnc::DDSHelper(channelName, argc, argv)
+		DDSSubscriber(const char *channelName) : 
+			ddsnc::DDSHelper(channelName)
 		{
 		}
 		
@@ -156,7 +156,7 @@ namespace ddsnc{
 }
 
 /**
- * Create a new DDS Subscriber in a easy way.
+ * Create a new DDS Subscriber in an easy way.
  *
  * Create a new DDSSubscribe object, then initialize the subscribe and finally
  * execute the addSubscription function.
@@ -165,11 +165,11 @@ namespace ddsnc{
  * @see initialize()
  * @see addSubscription()
  */
-#define ACS_NEW_DDS_SUBSCRIBER(subscriber_p, idlStruct, typeSupport_var, typeSupportImpl, DataReader_var, DataReader, channelName, handlerFunc, argc, argv) \
+#define ACS_NEW_DDS_SUBSCRIBER(subscriber_p, idlStruct, channelName, handlerFunc) \
 { \
-	subscriber_p= new ddsnc::DDSSubscriber(channelName, argc, argv); \
-	subscriber_p->initialize<idlStruct, typeSupport_var, typeSupportImpl>(); \
-	sub->addSubscription<DataReader_var, DataReader, idlStruct>(handlerFunc, (void *) 0); \
+	subscriber_p= new ddsnc::DDSSubscriber(channelName); \
+	subscriber_p->initialize<idlStruct, idlStruct##TypeSupport_var, idlStruct##TypeSupportImpl>(); \
+	sub->addSubscription<idlStruct##DataReader_var, idlStruct##DataReader, idlStruct>(handlerFunc, (void *) 0); \
 }
 
 #endif

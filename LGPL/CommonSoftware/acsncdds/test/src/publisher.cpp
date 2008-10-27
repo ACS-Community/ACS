@@ -5,9 +5,11 @@
 #include <dds/DCPS/PublisherImpl.h>
 #include <dds/DCPS/transport/framework/TheTransportFactory.h>
 #include <dds/DCPS/transport/simpleTCP/SimpleTcpConfiguration.h>
+#include <dds/DCPS/transport/simpleTCP/SimpleTcpGenerator.h>
 #include <dds/DCPS/transport/simpleTCP/SimpleTcpTransport.h>
 
 #include <ace/streams.h>
+#include <ace/Service_Config.h>
 #include "ace/Get_Opt.h"
 
 using namespace TESTFRIDGE;
@@ -17,6 +19,14 @@ OpenDDS::DCPS::TransportIdType transport_impl_id = 1;
 
 int main (int argc, char *argv[])
 {
+
+//	OpenDDS::DCPS::SimpleTcpGenerator* generator;
+//	ACE_NEW_RETURN(generator, OpenDDS::DCPS::SimpleTcpGenerator (), -1);
+//	TheTransportFactory->register_generator("SimpleTcp", generator);
+
+	ACE_Service_Config::process_directive(
+			"static DCPS_SimpleTcpLoader \"-type SimpleTcp\"");
+
 	try{
 		DDS::DomainParticipantFactory_var dpf =
         TheParticipantFactoryWithArgs(argc,argv);
@@ -40,7 +50,7 @@ int main (int argc, char *argv[])
 		DDS::TopicQos topic_qos;
 		participant->get_default_topic_qos(topic_qos);
 		DDS::Topic_var topic =
-				  participant->create_topic("Default Topic",
+				  participant->create_topic("DefaultTopic",
 										type_name.in(),
 										topic_qos,
 										DDS::TopicListener::_nil());
@@ -50,13 +60,32 @@ int main (int argc, char *argv[])
 		}
       OpenDDS::DCPS::TransportImpl_rch tcp_impl =
          TheTransportFactory->create_transport_impl (transport_impl_id,
-                         ::OpenDDS::DCPS::AUTO_CONFIG);
+				  	"SimpleTcp",::OpenDDS::DCPS::DONT_AUTO_CONFIG);
+
+		OpenDDS::DCPS::TransportConfiguration_rch config = 
+			TheTransportFactory->create_configuration (transport_impl_id,
+					"SimpleTcp");
+		
+		OpenDDS::DCPS::SimpleTcpConfiguration* tcp_config = 
+			static_cast<OpenDDS::DCPS::SimpleTcpConfiguration*>(config.in());
+
+		ACE_TCHAR dir[100];
+		ACE_INET_Addr local_address;
+		local_address.addr_to_string(dir, 100);
+		std::string dir_str(dir);
+		tcp_config->local_address_ = local_address;
+		tcp_config->local_address_str_ = dir_str;
+
+		if ((tcp_impl->configure(tcp_config))!=0){
+			std::cerr << "Failed to configure the transport" << std::endl;
+			return -1;
+		}
 
 		OpenDDS::DCPS::SimpleTcpTransport * tcp;
 		tcp =  (OpenDDS::DCPS::SimpleTcpTransport *) tcp_impl.in();
 		std::cout << "Network Configuration => ";
 		std::cout << tcp->get_configuration()->local_address_str_ << endl;
-		
+
 		
 		//Setup Publisher QoS, add the partition QoS policy
 		DDS::PublisherQos pub_qos;
@@ -64,7 +93,7 @@ int main (int argc, char *argv[])
 		pub_qos.partition.name.length(1);
 		pub_qos.partition.name[0]=CORBA::string_dup("partition");
 
-		DDS::Publisher_var pub = participant->create_publisher(pub_qos,
+		DDS::Publisher_var pub = participant->create_publisher(PUBLISHER_QOS_DEFAULT,
 				DDS::PublisherListener::_nil());
 		if(CORBA::is_nil(pub.in())){
 			std::cerr << "create publisher failed" << std::endl;

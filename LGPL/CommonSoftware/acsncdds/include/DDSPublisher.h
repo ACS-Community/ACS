@@ -78,6 +78,7 @@ namespace ddsnc{
 			createPublisher();
 
 			pub->get_default_datawriter_qos (dwQos);
+			dwQos.reliability.kind = ::DDS::RELIABLE_RELIABILITY_QOS;
 		}
 
 		/**
@@ -153,8 +154,8 @@ namespace ddsnc{
 		 * @see DDSHelper
 		 * @see initialize()
 		 */
-		DDSPublisher(const char *channelName, int argv, char** argc): 
-			::ddsnc::DDSHelper(channelName, argv, argc)
+		DDSPublisher(const char *channelName): 
+			::ddsnc::DDSHelper(channelName)
 		{
 			initialize();
 		}

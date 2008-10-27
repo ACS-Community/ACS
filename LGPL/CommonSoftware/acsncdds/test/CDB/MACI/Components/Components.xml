@@ -3,7 +3,7 @@
        xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0" 
        xmlns:baci="urn:schemas-cosylab-com:BACI:1.0" 
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-      <_ Name="NC_BENCHMARK" Code="NCBenchmarkImpl"
-                             Type="IDL:alma/NC_BENCHMARK/testNcComponent:1.0"
+      <_ Name="NC_SUPPLIER" Code="NCBenchmarkImpl"
+                             Type="IDL:alma/NC_BENCHMARK/testNCSupplier:1.0"
                              Container="Container"/>
 </Components>

@@ -52,7 +52,7 @@ namespace ddsnc{
 		 * for DDS. In general the arguments must be: <br>
 		 * -ORBSvcConf transport_config_file -DCPSConfigFile app_config_file
 		 */
-		DDSHelper(const char *channelName, int argv, char** argc);
+		DDSHelper(const char *channelName);
 		
 		/**
 		 * Destructor for DDSHelper before free the varibales it call to

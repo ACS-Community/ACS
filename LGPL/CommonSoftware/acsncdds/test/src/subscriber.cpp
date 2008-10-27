@@ -5,22 +5,39 @@
 #include <dds/DCPS/Marked_Default_Qos.h>
 #include <dds/DCPS/SubscriberImpl.h>
 #include <dds/DCPS/transport/framework/TheTransportFactory.h>
+#include <dds/DCPS/transport/framework/TransportFactory.h>
 #include <dds/DCPS/transport/simpleTCP/SimpleTcpConfiguration.h>
 #include <dds/DCPS/transport/simpleTCP/SimpleTcpTransport.h>
+#include <dds/DCPS/transport/simpleTCP/SimpleTcpGenerator.h>
+#include <dds/DCPS/transport/framework/TransportConfiguration.h>
 
 #include <ace/streams.h>
+#include <ace/Service_Config.h>
 #include "ace/Get_Opt.h"
 
 using namespace TESTFRIDGE;
 
 
-OpenDDS::DCPS::TransportIdType transport_impl_id = 1;
+const OpenDDS::DCPS::TransportIdType transport_impl_id = 1;
 
 int main (int argc, char *argv[])
 {
-	try{
+		 ACE_Service_Config::process_directive(
+		       "static DCPS_SimpleTcpLoader \"-type SimpleTcp\"");
+	try{	
+		
+		std::cout << "LALA" << std::endl;
+
 		DDS::DomainParticipantFactory_var dpf =
         TheParticipantFactoryWithArgs(argc,argv);
+		std::cout << "LALA2" << std::endl;
+		std::cout.flush();
+
+		
+		//OpenDDS::DCPS::SimpleTcpGenerator* generator;
+		//ACE_NEW_RETURN(generator, OpenDDS::DCPS::SimpleTcpGenerator (), -1);
+		//TheTransportFactory->register_generator("SimpleTcp", generator);
+
 		DDS::DomainParticipant_var participant =
         dpf->create_participant(411, //Arbitrary Domain ID
                         PARTICIPANT_QOS_DEFAULT,
@@ -30,6 +47,8 @@ int main (int argc, char *argv[])
         	return 1;
 		}
 
+		std::cout << "Created participant" << std::endl;
+
 		//Data type support initialization
 		temperatureDataBlockEventTypeSupport_var ts;
 		ts=new temperatureDataBlockEventTypeSupportImpl();
@@ -37,13 +56,44 @@ int main (int argc, char *argv[])
 			std::cerr << "register_type failed" << std::endl;
 		}
 		
+		//Configuring network protocol
+		std::cout << "Config protocol" << std::endl;
+		
+		
+		OpenDDS::DCPS::TransportImpl_rch tcp_impl =
+         TheTransportFactory->create_transport_impl (
+					transport_impl_id, "SimpleTcp", 
+					::OpenDDS::DCPS::DONT_AUTO_CONFIG);
+
+		OpenDDS::DCPS::TransportConfiguration_rch config=
+			TheTransportFactory->create_configuration(transport_impl_id, 
+					"SimpleTcp");
+	
+		std::cout << "LALA2" << std::endl;
+		OpenDDS::DCPS::SimpleTcpConfiguration* tcp_config =
+			static_cast<OpenDDS::DCPS::SimpleTcpConfiguration*>(config.in());
+
+		std::string dir("localhost:4443");
+		ACE_INET_Addr local_address (4443);
+		tcp_config->local_address_ = local_address;
+		tcp_config->local_address_str_ = dir;
+
+		tcp_impl->configure(tcp_config);
+
+
+      OpenDDS::DCPS::SimpleTcpTransport * tcp; 
+      tcp =  (OpenDDS::DCPS::SimpleTcpTransport *) tcp_impl.in(); 
+      std::cout << "Network Configuration => "; 
+      std::cout << tcp->get_configuration()->local_address_str_ << endl; 
+		
+		
 		//Topic registration
 		CORBA::String_var type_name = ts->get_type_name();
 		DDS::TopicQos topic_qos;
 		participant->get_default_topic_qos(topic_qos);
 		::std::cout << "Type name: " << type_name << ::std::endl;
 		DDS::Topic_var topic =
-				  participant->create_topic("Default Topic",
+				  participant->create_topic("DefaultTopic",
 										type_name.in(),
 										topic_qos,
 										DDS::TopicListener::_nil());
@@ -52,24 +102,15 @@ int main (int argc, char *argv[])
 			return 1;
 		}
 		
-		//Configuring network protocol
-      OpenDDS::DCPS::TransportImpl_rch tcp_impl =
-         TheTransportFactory->create_transport_impl (transport_impl_id,
-                         ::OpenDDS::DCPS::AUTO_CONFIG);
-
-      OpenDDS::DCPS::SimpleTcpTransport * tcp; 
-      tcp =  (OpenDDS::DCPS::SimpleTcpTransport *) tcp_impl.in(); 
-      std::cout << "Network Configuration => "; 
-      std::cout << tcp->get_configuration()->local_address_str_ << endl; 
 
       //Setup Publisher QoS, add the partition QoS policy
       DDS::SubscriberQos sub_qos;
       participant->get_default_subscriber_qos(sub_qos);
-      sub_qos.partition.name.length(1);
-      sub_qos.partition.name[0]=CORBA::string_dup("partition");
+     // sub_qos.partition.name.length(1);
+     // sub_qos.partition.name[0]=CORBA::string_dup("partition");
 
 
-		DDS::Subscriber_var sub = participant->create_subscriber(sub_qos,
+		DDS::Subscriber_var sub = participant->create_subscriber(SUBSCRIBER_QOS_DEFAULT,
 			DDS::SubscriberListener::_nil());
 		if(CORBA::is_nil(sub.in())){
 			std::cerr << "create subscriber failed" << std::endl;

@@ -1,19 +1,26 @@
 #include <DDSHelper.h>
+#include <ace/Service_Config.h>
+#include <string.h>
 #include <stdlib.h>
 
 using namespace ddsnc;
 
-DDSHelper::DDSHelper(const char* channelName, int argc, char** argv)
+DDSHelper::DDSHelper(const char* channelName)
 {
-	/*
-	argc=5;
-	argv[0]="Participant\0";
-	argv[1]="-ORBSvcConf\0";
-	argv[2]="tcp.conf\0";
-	argv[3]="-DCPSConfigFile\0";
-	argv[4]="sub.ini\0";
-	*/
+	int argc;
+	char* argv[3];
+	argc=3;
+
+	argv[0] = strdup("Participant");
+	argv[1] = strdup("-DCPSInforepo");
+	argv[2] = strdup("corbaloc:iiop:127.0.0.1:4000/DCPSInfoRepo");
+
 	transport_impl_id=1;
+	
+	ACE_Service_Config::process_directive(
+			"static DCPS_SimpleTcpLoader \"-type SimpleTcp\"");
+
+
 	dpf=TheParticipantFactoryWithArgs(argc, (ACE_TCHAR**)argv);
 	initialized=false;
 
@@ -46,7 +53,25 @@ int DDSHelper::createParticipant(){
 void DDSHelper::initializeTransport(){
 	transport_impl=
 		TheTransportFactory->create_transport_impl(transport_impl_id,
-											  ::OpenDDS::DCPS::AUTO_CONFIG);
+												"SimpleTcp",
+											  ::OpenDDS::DCPS::DONT_AUTO_CONFIG);
+	
+	OpenDDS::DCPS::TransportConfiguration_rch config=
+		         TheTransportFactory->create_configuration(transport_impl_id,
+							               "SimpleTcp");
+
+	OpenDDS::DCPS::SimpleTcpConfiguration* tcp_config =
+	  	static_cast<OpenDDS::DCPS::SimpleTcpConfiguration*>(config.in());
+
+	ACE_TCHAR dir[1024];
+	ACE_INET_Addr local_address ;
+	local_address.addr_to_string(dir, 1024);
+	std::string dir_str(dir);
+	tcp_config->local_address_ = local_address;
+	tcp_config->local_address_str_ = dir_str;
+
+	transport_impl->configure(tcp_config);
+
 }
 
 void DDSHelper::setTopicName(const char* topicName)

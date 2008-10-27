@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.4 2008/10/22 05:04:11 javarias Exp $"
+# "@(#) $Id: Makefile,v 1.5 2008/10/27 04:15:56 javarias Exp $"
 #
 # Makefile of ........
 #
@@ -35,10 +35,19 @@ USER_LIB = -L$(DDS_ROOT)/lib
 #
 # C programs (public and local)
 # -----------------------------
-EXECUTABLES     =
+EXECUTABLES     = ncConsumer ddsPublisher
 EXECUTABLES_L   = 
 
-#
+# <brief description of xxxxx program>
+ncConsumer_OBJECTS   = 	ncConsumer
+ncConsumer_LDFLAGS   =  
+ncConsumer_LIBS      =  acsnc maciClient NCBenchmarkStubs OpenDDS_Dcps
+
+# <brief description of xxxxx program>
+ddsPublisher_OBJECTS   = ddsPublisher
+ddsPublisher_LDFLAGS   = 
+ddsPublisher_LIBS      = OpenDDS_Dcps SimpleTcp ACE NCBenchTypeSupport acsddsnc acserr baci acsutil 
+
 # <brief description of xxxxx program>
 #xxxxx_OBJECTS   = 	
 #xxxxx_LDFLAGS   = 
@@ -64,16 +73,17 @@ LIBRARIES_L     =
 #
 # <brief description of acsddsnc library>
 acsddsnc_OBJECTS  = DDSHelperImpl DDSSubscriberImpl DataReaderListenerImpl
-acsddsnc_LIBS		= OpenDDS_Dcps SimpleTcp
+acsddsnc_LIBS		= OpenDDS_Dcps SimpleTcp ACE
+
 #
 # <brief description of acsddsncBench library>
 NCBenchmarkImpl_OBJECTS = NCBenchmarkImpl
-NCBenchmarkImpl_LIBS    = NCBenchmarkStubs OpenDDS_Dcps SimpleTcp
+NCBenchmarkImpl_LIBS    = acsddsnc acserr baci acsutil
 
 #
 # <brief description of acsddsncBench library>
 NCBenchTypeSupport_OBJECTS = $(DDS_TYPE_FILES)
-NCBenchTypeSupport_LIBS		= NCBenchmarkStubs OpenDDS_Dcps SimpleTcp
+NCBenchTypeSupport_LIBS		= NCBenchmarkStubs OpenDDS_Dcps SimpleTcp ACE
 
 #
 # Scripts (public and local)

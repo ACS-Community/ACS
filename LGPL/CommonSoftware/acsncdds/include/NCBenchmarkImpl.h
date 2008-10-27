@@ -9,15 +9,18 @@
 
 #include "NCBenchmarkS.h"
 
-class NCBenchmarkImpl : virtual public POA_NC_BENCHMARK::testNcComponent,
-								virtual public acscomponent::ACSComponentImpl
+class NCBenchmarkSupplierImpl : 
+	virtual public POA_NC_BENCHMARK::testNCSupplier,
+	virtual public acscomponent::ACSComponentImpl
 {
 	public:
-		NCBenchmarkImpl(const ACE_CString &name, maci::ContainerServices *containerServices);
+		NCBenchmarkSupplierImpl(const ACE_CString &name, 
+				maci::ContainerServices *containerServices);
 
-		virtual void runTest() throw (CORBA::SystemException);
+		virtual void runTest(::CORBA::ULong freq, ::CORBA::ULong duration) 
+			throw (CORBA::SystemException);
 
-		virtual ~NCBenchmarkImpl();
+		virtual ~NCBenchmarkSupplierImpl();
 };
 
 #endif
