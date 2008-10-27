@@ -1,7 +1,7 @@
 /*******************************************************************************
  * E.S.O. - ACS project
  *
- * "@(#) $Id: acsservicesdaemonStop.cpp,v 1.2 2008/10/21 16:06:50 hsommer Exp $"
+ * "@(#) $Id: acsservicesdaemonStop.cpp,v 1.3 2008/10/27 21:11:23 msekoran Exp $"
  *
  * who       when        what
  * --------  ----------  ----------------------------------------------
@@ -35,7 +35,7 @@ usage(const char *argv)
 {
     ACE_OS::printf ("\n\tusage: %s {-h}", argv);
     ACE_OS::printf ("\t   -h, --help         show this help message\n");
-    ACE_OS::printf ("\t   -i, --instance     ACS instance to use\n"); // HSO: what does that mean? We have one daemon for all instances...
+    ACE_OS::printf ("\t   -i, --instance     ACS instance to use\n");
     ACE_OS::printf ("\t   -H, --host         Host where to stop the daemon\n");
     ACE_OS::printf ("\t   -d, --daemon       Daemon reference\n");
 }

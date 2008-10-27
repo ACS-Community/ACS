@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.19 2008/09/15 13:40:20 msekoran Exp $"
+# "@(#) $Id: Makefile,v 1.20 2008/10/27 21:11:23 msekoran Exp $"
 #
 # Makefile of ........
 #
@@ -24,7 +24,7 @@
 #
 # additional include and library search paths
 #USER_INC = 
-USER_LIB = -lTAO -lACE -lTAO_PortableServer -lacserr -lmaciErrType -lTAO_DsLogAdmin -lTAO_CosNaming -lTAO_CosProperty_Serv -lTAO_IORTable -llogging -lTAO_DynamicAny -lacsutil -lACSErrTypeCommon -lTAO_Messaging -lacsQoS
+USER_LIB = -lTAO -lACE -lTAO_PortableServer -lacserr -lmaciErrType -lTAO_DsLogAdmin -lTAO_CosNaming -lTAO_CosProperty_Serv -lTAO_IORTable -llogging -lTAO_DynamicAny -lacsutil -lACSErrTypeCommon -lACSErrTypeCORBA -lTAO_Messaging -lacsQoS -lacsAlSysSource
 
 #
 # MODULE CODE DESCRIPTION:
@@ -35,11 +35,15 @@ USER_LIB = -lTAO -lACE -lTAO_PortableServer -lacserr -lmaciErrType -lTAO_DsLogAd
 #
 # C programs (public and local)
 # -----------------------------
-EXECUTABLES     = acscontainerdaemon acsdaemonStartContainer \
-                  acsdaemonStopContainer acsservicesdaemon70 acsdaemonStartAcs \
-                  acsdaemonStopAcs acsdaemonStatusAcs \
-                  acscontainerdaemonSmartStart acscontainerdaemonStop \
-                  acsservicesdaemonStop acsservicesdaemon
+EXECUTABLES     = acsservicesdaemon acsservicesdaemonStop \
+                  acsdaemonNamingServiceImp acsdaemonNotificationServiceImp \
+                  acsdaemonInterfaceRepositoryImp acsdaemonLoggingServiceImp \
+                  acsdaemonACSLogServiceImp acsdaemonConfigurationDatabaseImp \
+                  acsdaemonManagerImp
+#                  acscontainerdaemon acsdaemonStartContainer \
+#                  acsdaemonStopContainer acsdaemonStartAcs \
+#                  acsdaemonStopAcs acsdaemonStatusAcs \
+#                  acscontainerdaemonSmartStart acscontainerdaemonStop \
 EXECUTABLES_L   = 
 
 #
@@ -54,10 +58,7 @@ acsdaemonStartContainer_LIBS      =	acscomponentStubs acsdaemonErrType acsdaemon
 acsdaemonStopContainer_OBJECTS   =	acsdaemonStopContainer
 acsdaemonStopContainer_LIBS      =	acscomponentStubs acsdaemonErrType acsdaemonStubs
 
-acsservicesdaemon70_OBJECTS   =	acsservicesdaemon acsServicesHandlerImpl
-acsservicesdaemon70_LIBS      =	acscomponentStubs acsdaemonErrType acsdaemonStubs acsThread
-
-acsservicesdaemon_OBJECTS   =	acsservicesdaemon80 acsServicesHandlerACS80Impl acsCommandRequest
+acsservicesdaemon_OBJECTS   =	acsservicesdaemon acsServicesHandlerImpl acsRequest acsServiceController
 acsservicesdaemon_LIBS      =	acscomponentStubs acsdaemonErrType acsdaemonStubs acsThread expat acsQoS
 
 acsdaemonStartAcs_OBJECTS   =	acsdaemonStartAcs
@@ -78,6 +79,27 @@ acscontainerdaemonSmartStart_LIBS      =	acscomponentStubs acsdaemonErrType acsd
 
 acsservicesdaemonStop_OBJECTS   =	acsservicesdaemonStop
 acsservicesdaemonStop_LIBS      =	acscomponentStubs acsdaemonErrType acsdaemonStubs
+
+acsdaemonNamingServiceImp_OBJECTS   =	acsdaemonNamingServiceImp acsRequest acsServiceController
+acsdaemonNamingServiceImp_LIBS      =	acscomponentStubs acsdaemonErrType acsdaemonStubs acsThread acsQoS
+
+acsdaemonNotificationServiceImp_OBJECTS   =	acsdaemonNotificationServiceImp acsRequest acsServiceController
+acsdaemonNotificationServiceImp_LIBS      =	acscomponentStubs acsdaemonErrType acsdaemonStubs acsThread acsQoS
+
+acsdaemonInterfaceRepositoryImp_OBJECTS   =	acsdaemonInterfaceRepositoryImp acsRequest acsServiceController
+acsdaemonInterfaceRepositoryImp_LIBS      =	acscomponentStubs acsdaemonErrType acsdaemonStubs acsThread acsQoS
+
+acsdaemonLoggingServiceImp_OBJECTS   =	acsdaemonLoggingServiceImp acsRequest acsServiceController
+acsdaemonLoggingServiceImp_LIBS      =	acscomponentStubs acsdaemonErrType acsdaemonStubs acsThread acsQoS
+
+acsdaemonACSLogServiceImp_OBJECTS   =	acsdaemonACSLogServiceImp acsRequest acsServiceController
+acsdaemonACSLogServiceImp_LIBS      =	acscomponentStubs acsdaemonErrType acsdaemonStubs acsThread acsQoS
+
+acsdaemonConfigurationDatabaseImp_OBJECTS   =	acsdaemonConfigurationDatabaseImp acsRequest acsServiceController
+acsdaemonConfigurationDatabaseImp_LIBS      =	acscomponentStubs acsdaemonErrType acsdaemonStubs acsThread acsQoS
+
+acsdaemonManagerImp_OBJECTS   =	acsdaemonManagerImp acsRequest acsServiceController
+acsdaemonManagerImp_LIBS      =	acscomponentStubs acsdaemonErrType acsdaemonStubs acsThread acsQoS
 
 #
 # special compilation flags for single c sources

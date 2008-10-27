@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsCommandRequest.h,v 1.3 2008/10/07 08:45:58 cparedes Exp $"
+* "@(#) $Id: acsCommandRequest.h,v 1.4 2008/10/27 21:11:23 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -31,6 +31,7 @@
 #include "acsdaemonS.h"
 #include <acsThread.h>
 #include <queue>
+#include <memory>
 #include <acsQoS.h>
 
 // callback call timeout
@@ -52,6 +53,28 @@
 // can't run requested servant: launch attempt timed out
 #define EC_TIMEOUT 45
 
+enum ACSService {
+    NAMING_SERVICE = 0,
+    NOTIFICATION_SERVICE,
+    CDB,
+    MANAGER,
+    ACS_LOG,
+    LOGGING_SERVICE,
+    INTERFACE_REPOSITORY,
+    UNKNOWN
+};
+
+static const char *acsServiceNames[] = {
+    "naming_service",
+    "notification_service",
+    "cdb",
+    "manager",
+    "acs_log",
+    "logging_service",
+    "interface_repository",
+    NULL
+};
+
 class Request
 {
   public:
@@ -60,38 +83,22 @@ class Request
     virtual void execute() = 0;
 };
 
-class LocalRequest : public Request
-{
-    acsdaemon::DaemonCallback_var callback;
-    char *cmd;
-  public:
-    LocalRequest(acsdaemon::DaemonCallback_ptr icallback, char *icmd) : cmd(icmd) {
-        callback = icallback == NULL ? NULL : acsQoS::Timeout::setObjectTimeout(CORBA_TIMEOUT, icallback);
-    }
-    ~LocalRequest() {
-        ACS_SHORT_LOG((LM_DEBUG, "DESTROYING LocalRequest '%s'!", cmd));
-        delete[] cmd; // cmd was created by ACE_CString::rep()
-    }
-    void abort();
-    void execute();
-};
-
-class CommandProcessorThread : public ACS::Thread
+class RequestProcessorThread : public ACS::Thread
 {
   public:
-    CommandProcessorThread(const ACE_CString &name,
+    RequestProcessorThread(const ACE_CString &name,
 	       const ACS::TimeInterval& responseTime=ThreadBase::defaultResponseTime, 
 	       const ACS::TimeInterval& sleepTime=ThreadBase::defaultSleepTime) :
 	ACS::Thread(name, responseTime, sleepTime, false, THR_DETACHED) 
 	{
-	    ACS_TRACE("CommandProcessorThread::CommandProcessorThread"); 
+	    ACS_TRACE("RequestProcessorThread::RequestProcessorThread"); 
 	    m_mutex = new ACE_Thread_Mutex();
 	    m_wait = new ACE_Condition<ACE_Thread_Mutex>(*m_mutex);
 	}
     
-    ~CommandProcessorThread() 
+    ~RequestProcessorThread() 
 	{ 
-	    ACS_TRACE("CommandProcessorThread::~CommandProcessorThread"); 
+	    ACS_TRACE("RequestProcessorThread::~RequestProcessorThread"); 
 	}
     
     void onStart();
@@ -100,7 +107,11 @@ class CommandProcessorThread : public ACS::Thread
 
     void exit() { ACS::Thread::exit(); stop(); }
 
-    void runLoop();
+    void runLoop()
+        ACE_THROW_SPEC ((
+            CORBA::SystemException,
+	    ::ACSErrTypeCommon::BadParameterEx
+        ));
 
     void addRequest(Request* r);
 
@@ -111,24 +122,89 @@ class CommandProcessorThread : public ACS::Thread
     volatile bool running;
 };
 
-class RequestChainBuilder;
-class RemoteRequestDaemonCallback;
+char *prepareCommand(const char *command, short instance_number, bool wait, const char *name, const char *additional_command_line, bool log);
 
-class RemoteRequest : public Request
+void execCommand(char *commandline, acsdaemon::DaemonCallback_ptr callback, RequestProcessorThread *reqproc);
+
+class LocalCommandRequest : public Request
+{
+    acsdaemon::DaemonCallback_var callback;
+    char *cmd;
+  public:
+    LocalCommandRequest(acsdaemon::DaemonCallback_ptr icallback, char *icmd) : cmd(icmd) {
+        callback = icallback == NULL ? NULL : acsQoS::Timeout::setObjectTimeout(CORBA_TIMEOUT, icallback);
+    }
+    ~LocalCommandRequest() {
+        ACS_SHORT_LOG((LM_DEBUG, "DESTROYING LocalCommandRequest '%s'!", cmd));
+        delete[] cmd; // cmd was created by ACE_CString::rep()
+    }
+    void abort();
+    void execute();
+};
+
+class RequestChainBuilder;
+class DaemonRequestCallback;
+class DaemonRequest;
+
+class CommandRequestDescription
+{
+    ACSService service;
+    char *host, *name, *domain, *xmlcdbdir;
+    bool loadir, wait, recovery;
+    int instance_number;
+    bool start;
+    acsdaemon::DaemonSequenceCallback_ptr callback;
+    CommandRequestDescription(ACSService iservice, char *ihost, char *iname = NULL) : service(iservice), host(ihost), name(iname), domain(NULL), xmlcdbdir(NULL) {}
+    CommandRequestDescription(ACSService iservice, char *ihost, char *idomain, bool irecovery) : service(iservice), host(ihost), domain(idomain), recovery(irecovery) {}
+    CommandRequestDescription(ACSService iservice, char *ihost, bool irecovery, char *ixmlcdbdir) : service(iservice), host(ihost), xmlcdbdir(ixmlcdbdir), recovery(irecovery) {}
+    CommandRequestDescription(ACSService iservice, char *ihost, bool iloadir, bool iwait) : service(iservice), host(ihost), loadir(iloadir), wait(iwait) {}
+    friend class DaemonRequest;
+    friend class DaemonRequestCallback;
+  public:
+    CommandRequestDescription(const char *iservice, const char **atts, int iinstance_number, bool istart, acsdaemon::DaemonSequenceCallback_ptr icallback) : host(NULL), name(NULL), domain(NULL), instance_number(iinstance_number), start(istart), callback(icallback) {
+        int i = 0;
+        while (acsServiceNames[i] != NULL) {
+            if (strcasecmp(iservice, acsServiceNames[i]) == 0) break;
+            i++;
+        }
+        service = (ACSService)i;
+        if (service == UNKNOWN) {
+            ACS_SHORT_LOG((LM_ERROR, "Unknown service '%s'!", iservice));
+        }
+        i = 0;
+        while (atts[i] != NULL) {
+            if (strcasecmp(atts[i], "host") == 0) host = strdup(atts[i+1]);
+            else if (strcasecmp(atts[i], "name") == 0) name = strdup(atts[i+1]);
+            else if (strcasecmp(atts[i], "domain") == 0) domain = strdup(atts[i+1]);
+            else if (strcasecmp(atts[i], "xml_cdb_dir") == 0) xmlcdbdir = strdup(atts[i+1]);
+            else if (strcasecmp(atts[i], "load") == 0) loadir = strcasecmp(atts[i+1], "true") == 0;
+            else if (strcasecmp(atts[i], "wait_load") == 0) wait = strcasecmp(atts[i+1], "true") == 0;
+            else if (strcasecmp(atts[i], "recovery") == 0) recovery = strcasecmp(atts[i+1], "true") == 0;
+            i += 2;
+        }
+    };
+    ~CommandRequestDescription() {
+        ACS_SHORT_LOG((LM_DEBUG, "DESTROYING CommandRequestDescription '%s'!", acsServiceNames[service]));
+        if (host != NULL) free(host);
+        if (name != NULL) free(name);
+        if (domain != NULL) free(domain);
+        if (xmlcdbdir != NULL) free(xmlcdbdir);
+    }
+    const char *getServiceName() { return acsServiceNames[service]; }
+    static CommandRequestDescription *createNamingServiceDescription(char *ihost) { return new CommandRequestDescription(NAMING_SERVICE, ihost); }
+};
+
+class DaemonRequest : public Request
 {
     RequestChainBuilder *builder;
-    char *service;
-    char *host, *name, *domain;
-    bool loadir, wait;
-    RemoteRequest *next;
+    ACSService service;
+    auto_ptr<CommandRequestDescription> description;
+    DaemonRequest *next;
     friend class RequestChainBuilder;
-    friend class RemoteRequestDaemonCallback;
   public:
-    RemoteRequest(RequestChainBuilder *ibuilder, char *iservice) : builder(ibuilder), service(iservice), host(NULL), name(NULL), domain(NULL), next(NULL) {};
-    ~RemoteRequest() {
-        ACS_SHORT_LOG((LM_DEBUG, "DESTROYING RemoteRequest '%s'!", service));
-        if (service != NULL) free(service);
-        // host, name and domain get released by the callback
+    DaemonRequest(RequestChainBuilder *ibuilder, CommandRequestDescription *idescription) : builder(ibuilder), service(idescription->service), description(idescription) {}
+    ~DaemonRequest() {
+        ACS_SHORT_LOG((LM_DEBUG, "DESTROYING DaemonRequest '%s'!", acsServiceNames[service]));
     }
     void abort();
     void execute();
@@ -139,14 +215,14 @@ class RequestChainBuilder
     CORBA::ORB_ptr orb;
     bool start; // true to start and false to stop
     bool reuse_services;
-    CommandProcessorThread *cmdproc;
+    RequestProcessorThread *reqproc;
     acsdaemon::DaemonSequenceCallback_var callback;
-    RemoteRequest *head, *tail;
+    DaemonRequest *head, *tail;
     short instance_number;
-    friend class RemoteRequest;
-    friend class RemoteRequestDaemonCallback;
+//    friend class DaemonRequest;
+//    friend class DaemonRequestCallback;
   public:
-    RequestChainBuilder(CORBA::ORB_ptr iorb, bool istart, CommandProcessorThread *icmdproc, bool ireuse_services, acsdaemon::DaemonSequenceCallback_ptr icallback) : orb(iorb), start(istart), reuse_services(ireuse_services), cmdproc(icmdproc), head(NULL), tail(NULL), instance_number(-1) {
+    RequestChainBuilder(CORBA::ORB_ptr iorb, bool istart, RequestProcessorThread *ireqproc, bool ireuse_services, acsdaemon::DaemonSequenceCallback_ptr icallback) : orb(iorb), start(istart), reuse_services(ireuse_services), reqproc(ireqproc), head(NULL), tail(NULL), instance_number(-1) {
     callback = icallback == NULL ? NULL : acsQoS::Timeout::setObjectTimeout(CORBA_TIMEOUT, icallback);
 }
     virtual ~RequestChainBuilder() {
@@ -156,21 +232,16 @@ class RequestChainBuilder
     void startProcessing();
 };
 
-class RemoteRequestDaemonCallback : public POA_acsdaemon::DaemonCallback
+class DaemonRequestCallback : public POA_acsdaemon::DaemonCallback
 {
     RequestChainBuilder *builder;
-    RemoteRequest *next;
-    char *service;
-    char *host, *name, *domain;
+    DaemonRequest *next;
+    auto_ptr<CommandRequestDescription> description;
     ::acsdaemon::DaemonCallback_var cobj;
   public:
-    RemoteRequestDaemonCallback(RequestChainBuilder *ibuilder, RemoteRequest *irequest) : builder(ibuilder), next(irequest->next), service(strdup(irequest->service)), host(irequest->host), name(irequest->name), domain(irequest->domain), cobj(NULL) {}
-    virtual ~RemoteRequestDaemonCallback() {
-        ACS_SHORT_LOG((LM_DEBUG, "DESTROYING RemoteRequestDaemonCallback '%s'!", service));
-        if (service != NULL) free(service);
-        if (host != NULL) free(host);
-        if (name != NULL) free(name);
-        if (domain != NULL) free(domain);
+    DaemonRequestCallback(RequestChainBuilder *ibuilder, DaemonRequest *inext, auto_ptr<CommandRequestDescription> idescription) : builder(ibuilder), next(inext), description(idescription), cobj(NULL) {}
+    virtual ~DaemonRequestCallback() {
+        ACS_SHORT_LOG((LM_DEBUG, "DESTROYING DaemonRequestCallback '%s'!", acsServiceNames[description.get()->service]));
     }
     ::acsdaemon::DaemonCallback_ptr ptr() {
         if (cobj == NULL)
@@ -180,6 +251,7 @@ class RemoteRequestDaemonCallback : public POA_acsdaemon::DaemonCallback
     void done (const ::ACSErr::Completion & comp);
     void working (const ::ACSErr::Completion & comp);
 };
+
 
 
 #endif

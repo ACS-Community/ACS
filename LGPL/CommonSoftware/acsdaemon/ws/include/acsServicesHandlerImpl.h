@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsServicesHandlerImpl.h,v 1.7 2008/10/07 08:45:58 cparedes Exp $"
+* "@(#) $Id: acsServicesHandlerImpl.h,v 1.8 2008/10/27 21:11:23 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -29,71 +29,92 @@
 * agrimstr 2007-11-07 refactored Services interface into separate
 *                     class for use in template pattern implementation
 *                     of the acsdaemon
+* azagar   2008-08-12 migrated to ACS 8.0
 */
 
 #ifndef __cplusplus
 #error This is a C++ include file and cannot be used from plain C
 #endif
 
-#include "acsdaemonS.h"
-#include "logging.h"
 #include "acsDaemonImpl.h"
-#include <acserr.h>
-#include <ACSErrTypeOK.h>
-#include <acsdaemonErrType.h>
-#include <ACSErrTypeCommon.h>
-#include <acsutilPorts.h>
-#include <acsThread.h>
-#include "acsThreadManager.h"
-#include <ace/Synch.h>
-#include <queue>
+#include "acsRequest.h"
+#include "acsServiceController.h"
 
-struct Request
-{
-    acsdaemon::DaemonCallback_ptr cb;
-    const char *cmd;
-    Request(acsdaemon::DaemonCallback_ptr icbp, const char *icmd) :
-	cb(icbp), cmd(icmd) {}
-};
 
-class CommandProcessorThread : public ACS::Thread
-{
+class ServiceDefinitionBuilderImpl : public POA_acsdaemon::ServiceDefinitionBuilder {
+
+    short instance;
+    ACE_CString services_definition_xml;
+
+    static int definition_builder_count;
+
   public:
-    CommandProcessorThread(const ACE_CString &name,
-	       const ACS::TimeInterval& responseTime=ThreadBase::defaultResponseTime, 
-	       const ACS::TimeInterval& sleepTime=ThreadBase::defaultSleepTime) :
-	ACS::Thread(name, responseTime, sleepTime, false, THR_DETACHED) 
-	{
-	    ACS_TRACE("ACSServicesHandlerImpl::CommandProcessorThread"); 
-	    m_mutex = new ACE_Thread_Mutex();
-	    m_wait = new ACE_Condition<ACE_Thread_Mutex>(*m_mutex);
-	}
+
+    ServiceDefinitionBuilderImpl(short instance_number) : instance(instance_number), services_definition_xml("") {
+        if (definition_builder_count >= 10) {
+            throw ::ACSErrTypeCommon::NoResourcesExImpl(__FILE__, __LINE__, 
+                "::ServiceDefinitionBuilderImpl::ServiceDefinitionBuilderImpl").getNoResourcesEx();
+        }
+        if (instance_number < 0 || instance_number > 10) {
+            throw ::ACSErrTypeCommon::BadParameterExImpl(__FILE__, __LINE__, 
+                "::ServiceDefinitionBuilderImpl::ServiceDefinitionBuilderImpl").getBadParameterEx();
+        }
+        definition_builder_count++;
+        ACS_SHORT_LOG((LM_DEBUG, "CREATING ServiceDefinitionBuilderImpl. New count: '%d'!", definition_builder_count));
+     };
+
+    ~ServiceDefinitionBuilderImpl() {
+        definition_builder_count--;
+        ACS_SHORT_LOG((LM_DEBUG, "DESTROYING ServiceDefinitionBuilderImpl. New count: '%d'!", definition_builder_count));
+    };
     
-    ~CommandProcessorThread() 
-	{ 
-	    ACS_TRACE("ACSServicesHandlerImpl::~CommandProcessorThread"); 
-	}
+    /*************************** CORBA interface *****************************/
+
+    ::CORBA::Short acs_instance_number (
+        void);
+
+    void add_naming_service (
+        const char * host);
     
-    void onStart();
-
-    void stop();
-
-    void exit() { ACS::Thread::exit(); stop(); }
-
-    /*
-     *  @throw ::ACSErrTypeCommon::BadParameterEx
-     */
-    void runLoop();
-
-    void addRequest(Request* r);
-
-  private:
-    ACE_Thread_Mutex *m_mutex;
-    ACE_Condition<ACE_Thread_Mutex> *m_wait;
-    std::queue<Request*> pending;
-    volatile bool running;
+    void add_notification_service (
+        const char * name,
+        const char * host);
+    
+    void add_xml_cdb (
+        const char * host,
+        ::CORBA::Boolean recovery,
+        const char * cdb_xml_dir);
+    
+    void add_manager (
+        const char * host,
+        const char * domain,
+        ::CORBA::Boolean recovery);
+    
+    void add_acs_log (
+        const char * host);
+    
+    void add_logging_service (
+        const char * host,
+        const char * name);
+    
+    void add_interface_repository (
+        const char * host,
+        ::CORBA::Boolean load,
+        ::CORBA::Boolean wait_load);
+    
+    void add_services_definition (
+        const char * definition);
+    
+    ::CORBA::Boolean is_valid (
+        ::CORBA::String_out error_description);
+    
+    char * get_services_definition (
+        void);
+    
+    void close (
+        void);
+    
 };
-
 
 class ACSServicesHandlerImpl : public POA_acsdaemon::ServicesDaemon {
 
@@ -114,7 +135,7 @@ class ACSServicesHandlerImpl : public POA_acsdaemon::ServicesDaemon {
      */
     void setService(ACSDaemonServiceImpl<ACSServicesHandlerImpl> *service)
     {
-	h_service = service;
+        h_service = service;
     }
 
     /**
@@ -144,42 +165,202 @@ class ACSServicesHandlerImpl : public POA_acsdaemon::ServicesDaemon {
     
     /*************************** CORBA interface *****************************/
 
-    /*
-     *  @throw ::ACSErrTypeCommon::BadParameterEx
-     */
-    void start_acs (
-	acsdaemon::DaemonCallback_ptr callback,
-        ::CORBA::Short instance_number,
-        const char * additional_command_line
-      );
+    ::acsdaemon::ServiceDefinitionBuilder_ptr create_service_definition_builder (
+        ::CORBA::Short instance_number);
     
-    /*
-     *  @throw ::ACSErrTypeCommon::BadParameterEx
-     */
-    void stop_acs (
-	acsdaemon::DaemonCallback_ptr callback,
+    void start_services (
+        const char * definition,
+        ::CORBA::Boolean reuse_services,
+        ::acsdaemon::DaemonSequenceCallback_ptr callback
+      )
+      ACE_THROW_SPEC ((
+        ACSErrTypeCommon::BadParameterEx
+      ));
+    
+    void stop_services (
+        const char * definition,
+        ::acsdaemon::DaemonSequenceCallback_ptr callback
+      )
+      ACE_THROW_SPEC ((
+        ACSErrTypeCommon::BadParameterEx
+      ));
+    
+    void start_naming_service (
+        ::acsdaemon::DaemonCallback_ptr callback,
+        ::CORBA::Short instance_number
+      )
+      ACE_THROW_SPEC ((
+        ACSErrTypeCommon::BadParameterEx,
+        acsdaemonErrType::ServiceAlreadyRunningEx
+      ));
+    
+    void start_notification_service (
+        const char * name,
+        ::acsdaemon::DaemonCallback_ptr callback,
+        ::CORBA::Short instance_number
+      )
+      ACE_THROW_SPEC ((
+        ACSErrTypeCommon::BadParameterEx,
+        acsdaemonErrType::ServiceAlreadyRunningEx
+      ));
+    
+    void start_xml_cdb (
+        ::acsdaemon::DaemonCallback_ptr callback,
+        ::CORBA::Short instance_number,
+        ::CORBA::Boolean recovery,
+        const char * cdb_xml_dir
+      )
+      ACE_THROW_SPEC ((
+        ACSErrTypeCommon::BadParameterEx,
+        acsdaemonErrType::ServiceAlreadyRunningEx
+      ));
+    
+    void start_manager (
+        const char * domain,
+        ::acsdaemon::DaemonCallback_ptr callback,
+        ::CORBA::Short instance_number,
+        ::CORBA::Boolean recovery
+      )
+      ACE_THROW_SPEC ((
+        ACSErrTypeCommon::BadParameterEx,
+        acsdaemonErrType::ServiceAlreadyRunningEx
+      ));
+    
+    void start_acs_log (
+        ::acsdaemon::DaemonCallback_ptr callback,
+        ::CORBA::Short instance_number
+      )
+      ACE_THROW_SPEC ((
+        ACSErrTypeCommon::BadParameterEx,
+        acsdaemonErrType::ServiceAlreadyRunningEx
+      ));
+    
+    void start_logging_service (
+        const char * name,
+        ::acsdaemon::DaemonCallback_ptr callback,
+        ::CORBA::Short instance_number
+      )
+      ACE_THROW_SPEC ((
+        ACSErrTypeCommon::BadParameterEx,
+        acsdaemonErrType::ServiceAlreadyRunningEx
+      ));
+    
+    void start_interface_repository (
+        ::CORBA::Boolean load,
+        ::CORBA::Boolean wait_load,
+        ::acsdaemon::DaemonCallback_ptr callback,
+        ::CORBA::Short instance_number
+      )
+      ACE_THROW_SPEC ((
+        ACSErrTypeCommon::BadParameterEx,
+        acsdaemonErrType::ServiceAlreadyRunningEx
+      ));
+    
+    void stop_naming_service (
+        ::acsdaemon::DaemonCallback_ptr callback,
+        ::CORBA::Short instance_number
+      )
+      ACE_THROW_SPEC ((
+        ACSErrTypeCommon::BadParameterEx,
+        acsdaemonErrType::ServiceNotRunningEx
+      ));
+    
+    void stop_notification_service (
+        const char * name,
+        ::acsdaemon::DaemonCallback_ptr callback,
+        ::CORBA::Short instance_number
+      )
+      ACE_THROW_SPEC ((
+        ACSErrTypeCommon::BadParameterEx,
+        acsdaemonErrType::ServiceNotRunningEx
+      ));
+    
+    void stop_cdb (
+        ::acsdaemon::DaemonCallback_ptr callback,
+        ::CORBA::Short instance_number
+      )
+      ACE_THROW_SPEC ((
+        ACSErrTypeCommon::BadParameterEx,
+        acsdaemonErrType::ServiceNotRunningEx
+      ));
+    
+    void stop_manager (
+        const char * domain,
+        ::acsdaemon::DaemonCallback_ptr callback,
+        ::CORBA::Short instance_number
+      )
+      ACE_THROW_SPEC ((
+        ACSErrTypeCommon::BadParameterEx,
+        acsdaemonErrType::ServiceNotRunningEx
+      ));
+    
+    void stop_acs_log (
+        ::acsdaemon::DaemonCallback_ptr callback,
+        ::CORBA::Short instance_number
+      )
+      ACE_THROW_SPEC ((
+        ACSErrTypeCommon::BadParameterEx,
+        acsdaemonErrType::ServiceNotRunningEx
+      ));
+    
+    void stop_logging_service (
+        const char * name,
+        ::acsdaemon::DaemonCallback_ptr callback,
+        ::CORBA::Short instance_number
+      )
+      ACE_THROW_SPEC ((
+        ACSErrTypeCommon::BadParameterEx,
+        acsdaemonErrType::ServiceNotRunningEx
+      ));
+    
+    void stop_interface_repository (
+        ::acsdaemon::DaemonCallback_ptr callback,
+        ::CORBA::Short instance_number
+      )
+      ACE_THROW_SPEC ((
+        ACSErrTypeCommon::BadParameterEx,
+        acsdaemonErrType::ServiceNotRunningEx
+      ));
+    
+    void start_acs (
+        acsdaemon::DaemonCallback_ptr callback,
         ::CORBA::Short instance_number,
         const char * additional_command_line
-      );
+      )
+      ACE_THROW_SPEC ((
+        CORBA::SystemException,
+        ::ACSErrTypeCommon::BadParameterEx
+      ));
+    
+    void stop_acs (
+        acsdaemon::DaemonCallback_ptr callback,
+        ::CORBA::Short instance_number,
+        const char * additional_command_line
+      )
+      ACE_THROW_SPEC ((
+        CORBA::SystemException,
+        ::ACSErrTypeCommon::BadParameterEx
+      ));
 
-    /*
-     *  @throw ::acsdaemonErrType::FailedToGetAcsStatusEx
-     */
-     virtual char * status_acs ( 
-	 ::CORBA::Short instance_number
-	 );
+     char * status_acs ( 
+         ::CORBA::Short instance_number
+         )
+      ACE_THROW_SPEC ((
+        CORBA::SystemException,
+        ::acsdaemonErrType::FailedToGetAcsStatusEx
+      ));
 
-    /*
-     *  @throw ::maciErrType::NoPermissionEx
-     */
-    virtual void shutdown ();
+    void shutdown ()
+      ACE_THROW_SPEC ((
+        CORBA::SystemException,
+        ::maciErrType::NoPermissionEx
+      ));
 
   private:
-    std::string h_name; // Name of services handler (used for logging purposes
+    std::string h_name; // Name of services handler (used for logging purposes)
     std::string h_type; // CORBA-type for this services handler
     ACSDaemonServiceImpl<ACSServicesHandlerImpl> *h_service; // ACS daemon service
-    CommandProcessorThread *cmdproc;
-    ACS::ThreadManager tm;
+    ACSDaemonContext *context;
 };
 
 

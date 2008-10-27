@@ -21,16 +21,13 @@
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
-* ntroncos
-* nbarriga 2007-10-10 created
-* agrimstr 2007-11-07 refactored to use daemon implementation template class
-* azagar   2008-08-12 migrated to ACS 8.0
+* azagar   2008-10-02 created based on acsservicesdaemon.cpp
 */
 
-#include <acsDaemonImpl.h>
-#include <acsServicesHandlerImpl.h>
+#include "acsDaemonImpl.h"
+#include "acsInterfaceRepositoryImpHandlerImpl.h"
 
-acsDaemonImpl<ACSServicesHandlerImpl>* g_daemon = 0; //Reference used by signal handler
+acsDaemonImpl<ACSInterfaceRepositoryImpHandlerImpl>* g_daemon = 0; //Reference used by signal handler
 
 
 void TerminationSignalHandler(int)
@@ -45,7 +42,7 @@ void TerminationSignalHandler(int)
 int
 main (int argc, char *argv[])
 {
-    acsDaemonImpl<ACSServicesHandlerImpl> daemon(argc,argv);
+    acsDaemonImpl<ACSInterfaceRepositoryImpHandlerImpl> daemon(argc,argv);
 
     // Daemon is to be shutdown on receipt of SIGINT or SIGTERM
     g_daemon = &daemon;

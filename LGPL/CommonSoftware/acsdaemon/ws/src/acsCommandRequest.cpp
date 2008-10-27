@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@$Id: acsCommandRequest.cpp,v 1.5 2008/10/07 08:45:58 cparedes Exp $"
+* "@$Id: acsCommandRequest.cpp,v 1.6 2008/10/27 21:11:23 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -30,11 +30,110 @@
 #include <ACSErrTypeOK.h>
 #include <acsutilPorts.h>
 
-/**************************** LocalRequest ****************************/
+/*********************** Command construction helper methods ***********************/
 
-void LocalRequest::abort() {
+char *prepareCommand(const char *command, short instance_number, bool wait, const char *name, const char *additional_command_line, bool log) {
+    char buffer[64];
+    sprintf(buffer, "%s -b %d", command, instance_number);
+    ACE_CString commandline = buffer;
+    if (wait) commandline = commandline + " -w";
+    if (name != NULL) commandline = commandline + " -n " + name;
+    if (additional_command_line != NULL) commandline = commandline + " " + additional_command_line;
+    if (log) {
+        ACE_CString logDirectory="~/.acs/commandcenter/";
+
+    std::string timeStamp(getStringifiedTimeStamp().c_str());
+
+    if( timeStamp.find(":") != std::string::npos)
+        timeStamp.replace(timeStamp.find(":"),1,".");
+    if( timeStamp.find(":") != std::string::npos )
+        timeStamp.replace(timeStamp.find(":"),1,".");
+    if( timeStamp.find("T") != std::string::npos)
+        timeStamp.replace(timeStamp.find("T"),1,"_");
+
+        //create the directory
+        ACE_OS::system(("mkdir -p " + logDirectory).c_str());
+        commandline = commandline + " &> " + logDirectory + command + "_" + timeStamp.c_str();
+    }
+    return commandline.rep();
+}
+
+void execCommand(char *commandline, acsdaemon::DaemonCallback_ptr callback, RequestProcessorThread *reqproc) {
+    Request *newreq = new LocalCommandRequest(callback, commandline);
+    reqproc->addRequest(newreq);
+    acsdaemonErrType::AcsStartServicesCompletion ok(__FILE__, __LINE__, "execCommand");
+    ACSErr::Completion_var comp = ok.returnCompletion(false);
     if (callback != NULL) {
-        acsdaemonErrType::ProcessingAbortedCompletion ok(__FILE__, __LINE__, "LocalRequest::abort");
+        try {
+            callback->working(comp.in());
+        } catch (CORBA::TIMEOUT timeout) {
+            ACS_SHORT_LOG((LM_WARNING, "Failed to make a 'working' callback call for local request!"));
+        }
+    }
+}
+
+/*********************** RequestProcessorThread ***********************/
+
+void RequestProcessorThread::onStart()
+{
+    running = true;
+}
+
+void RequestProcessorThread::stop()
+{
+    Request *nowreq;
+    running = false;
+    m_mutex->acquire();
+    while (!pending.empty())
+    {
+	nowreq = pending.front();
+	pending.pop();
+	nowreq->abort();
+	delete nowreq;
+    }
+    m_mutex->release();
+    m_wait->signal();
+}
+
+void RequestProcessorThread::runLoop()
+    ACE_THROW_SPEC ((
+			CORBA::SystemException,
+			::ACSErrTypeCommon::BadParameterEx
+			))
+{
+    Request *nowreq;
+    while (running)
+    {
+        m_mutex->acquire();
+        if (pending.empty())
+	    m_wait->wait();
+	if (!running) break;
+	nowreq = pending.front();
+	pending.pop();
+	m_mutex->release();
+        nowreq->execute();
+	delete nowreq;
+    }
+}
+
+void RequestProcessorThread::addRequest(Request* r)
+{
+    m_mutex->acquire();
+    if (!running) {
+        r->abort();
+        m_mutex->release();
+        return;
+    }
+    pending.push(r);
+    m_mutex->release();
+    m_wait->signal();
+}
+
+/**************************** LocalCommandRequest ****************************/
+
+void LocalCommandRequest::abort() {
+    if (callback != NULL) {
+        acsdaemonErrType::ProcessingAbortedCompletion ok(__FILE__, __LINE__, "LocalCommandRequest::abort");
         ACSErr::Completion_var comp = ok.returnCompletion(false);
         try {
             callback->done(comp.in());
@@ -44,7 +143,7 @@ void LocalRequest::abort() {
     }
 }
 
-void LocalRequest::execute() {
+void LocalCommandRequest::execute() {
     ACSErr::Completion_var comp;
     ACSErrTypeOK::ACSErrOKCompletion ok;
     comp = ok.returnCompletion(false);
@@ -62,23 +161,23 @@ void LocalRequest::execute() {
 	ACSErr::CompletionImpl *failed;
         switch (result) {
         case EC_CANNOTCREATE:
-            failed = new acsdaemonErrType::CannotCreateInstanceCompletion (__FILE__, __LINE__, "LocalRequest::execute");
+            failed = new acsdaemonErrType::CannotCreateInstanceCompletion (__FILE__, __LINE__, "LocalCommandRequest::execute");
             break;
         case EC_CANNOTUSE:
-            failed = new acsdaemonErrType::CannotUseInstanceCompletion (__FILE__, __LINE__, "LocalRequest::execute");
+            failed = new acsdaemonErrType::CannotUseInstanceCompletion (__FILE__, __LINE__, "LocalCommandRequest::execute");
             break;
         case EC_BADARGS:
-            failed = new acsdaemonErrType::BadArgumentsCompletion (__FILE__, __LINE__, "LocalRequest::execute");
+            failed = new acsdaemonErrType::BadArgumentsCompletion (__FILE__, __LINE__, "LocalCommandRequest::execute");
             break;
         case EC_NOPORT:
-            failed = new acsdaemonErrType::PortInUseCompletion (__FILE__, __LINE__, "LocalRequest::execute");
+            failed = new acsdaemonErrType::PortInUseCompletion (__FILE__, __LINE__, "LocalCommandRequest::execute");
             break;
         case EC_TIMEOUT:
-            failed = new acsdaemonErrType::RequestProcessingTimedOutCompletion (__FILE__, __LINE__, "LocalRequest::execute");
+            failed = new acsdaemonErrType::RequestProcessingTimedOutCompletion (__FILE__, __LINE__, "LocalCommandRequest::execute");
             break;
         case EC_FAILURE:
         default:
-            failed = new acsdaemonErrType::FailedToProcessRequestCompletion (__FILE__, __LINE__, "LocalRequest::execute");
+            failed = new acsdaemonErrType::FailedToProcessRequestCompletion (__FILE__, __LINE__, "LocalCommandRequest::execute");
         }
         comp = failed->returnCompletion(true);
     } else {
@@ -93,114 +192,61 @@ void LocalRequest::execute() {
     }
 }
 
-/*********************** CommandProcessorThread ***********************/
+/********************* DaemonRequestCallback ********************/
 
-void CommandProcessorThread::onStart()
-{
-    running = true;
-}
-
-void CommandProcessorThread::stop()
-{
-    Request *nowreq;
-    running = false;
-    m_mutex->acquire();
-    while (!pending.empty())
-    {
-	nowreq = pending.front();
-	pending.pop();
-	nowreq->abort();
-	delete nowreq;
-    }
-    m_mutex->release();
-    m_wait->signal();
-}
-
-void CommandProcessorThread::runLoop()
-{
-    Request *nowreq;
-    while (running)
-    {
-        m_mutex->acquire();
-        if (pending.empty())
-	    m_wait->wait();
-	if (!running) break;
-	nowreq = pending.front();
-	pending.pop();
-	m_mutex->release();
-        nowreq->execute();
-	delete nowreq;
-    }
-}
-
-void CommandProcessorThread::addRequest(Request* r)
-{
-    m_mutex->acquire();
-    if (!running) {
-        r->abort();
-        m_mutex->release();
-        return;
-    }
-    pending.push(r);
-    m_mutex->release();
-    m_wait->signal();
-}
-
-/********************* RemoteRequestDaemonCallback ********************/
-
-void RemoteRequestDaemonCallback::done(const ::ACSErr::Completion & comp) {
+void DaemonRequestCallback::done(const ::ACSErr::Completion & comp) {
     ACSErr::CompletionImpl compi = comp;
 //    if (!compi.isErrorFree()) compi.log();
     // this occurs right after remote service is started
-    if (builder->callback != NULL) {
+    if (description.get()->callback != NULL) {
         try {
-            builder->callback->working(service, host, builder->instance_number, comp);
+            description.get()->callback->working(description.get()->getServiceName(), description.get()->host, description.get()->instance_number, comp);
         } catch (CORBA::TIMEOUT timeout) {
-            ACS_SHORT_LOG((LM_WARNING, "Failed to make a 'working' callback call for remote request!"));
+            ACS_SHORT_LOG((LM_WARNING, "Failed to make a 'working' callback call for daemon request!"));
         }
     }
     if (next == NULL) {
-        if (builder->callback != NULL) {
+        if (description.get()->callback != NULL) {
             try {
-                builder->callback->done(comp);
+                description.get()->callback->done(comp);
             } catch (CORBA::TIMEOUT timeout) {
-                ACS_SHORT_LOG((LM_WARNING, "Failed to make a 'done' callback call for remote request!"));
+                ACS_SHORT_LOG((LM_WARNING, "Failed to make a 'done' callback call for daemon request!"));
             }
         }
         delete builder;
         ACS_SHORT_LOG((LM_INFO, "Ended processing command requests!"));
     } else if (compi.isErrorFree() || builder->reuse_services) {
-        builder->cmdproc->addRequest(next);
+        builder->reqproc->addRequest(next);
     }
-    // RemoteRequestDaemonCallback may deactivate itself now
+    // DaemonRequestCallback may deactivate itself now
     PortableServer::POA_var poa = this->_default_POA();
     PortableServer::ObjectId_var oid = poa->servant_to_id(this);
     poa->deactivate_object(oid.in()); // this will also dispose the callback object
 }
 
-void RemoteRequestDaemonCallback::working(const ::ACSErr::Completion & comp) {
+void DaemonRequestCallback::working(const ::ACSErr::Completion & comp) {
     // this occurs just before remote service gets started
 }
 
-/*************************** RemoteRequest ****************************/
+/*************************** DaemonRequest ****************************/
 
-void RemoteRequest::abort() {
-    if (builder->callback != NULL) {
-        acsdaemonErrType::ProcessingAbortedCompletion ok(__FILE__, __LINE__, "RemoteRequest::abort");
+void DaemonRequest::abort() {
+    if (description.get() != NULL && description.get()->callback != NULL) {
+        acsdaemonErrType::ProcessingAbortedCompletion ok(__FILE__, __LINE__, "DaemonRequest::abort");
         ACSErr::Completion_var comp = ok.returnCompletion(false);
         try {
-            builder->callback->working(service, host, builder->instance_number, comp.in());
-            builder->callback->done(comp.in());
+            description.get()->callback->working(description.get()->getServiceName(), description.get()->host, description.get()->instance_number, comp.in());
+            description.get()->callback->done(comp.in());
         } catch (CORBA::TIMEOUT timeout) {
-            ACS_SHORT_LOG((LM_WARNING, "Failed to make a callback call for aborted remote request!"));
+            ACS_SHORT_LOG((LM_WARNING, "Failed to make a callback call for aborted daemon request!"));
         }
     }
 }
 
-void RemoteRequest::execute() {
-    RemoteRequestDaemonCallback *callback = NULL;
+void DaemonRequest::execute() {
+    DaemonRequestCallback *callback = NULL;
     ACE_CString daemonRef = "corbaloc::";
-    daemonRef = daemonRef + host + ":" + ACSPorts::getServicesDaemonPort().c_str() + "/" + ::acsdaemon::servicesDaemonServiceName;
+    daemonRef = daemonRef + description->host + ":" + ACSPorts::getServicesDaemonPort().c_str() + "/" + ::acsdaemon::servicesDaemonServiceName;
     ACS_SHORT_LOG((LM_INFO, "Using local Services Daemon reference: '%s'", daemonRef.c_str()));
     try
     {
@@ -211,64 +257,83 @@ void RemoteRequest::execute() {
             return;
         }
 
-        acsdaemon::ServicesDaemon_ACS80_var daemon = acsdaemon::ServicesDaemon_ACS80::_narrow(obj.in());
+        acsdaemon::ServicesDaemon_var daemon = acsdaemon::ServicesDaemon::_narrow(obj.in());
         if (CORBA::is_nil(daemon.in()))
         {
             ACS_SHORT_LOG((LM_ERROR, "Failed to narrow reference '%s'.", daemonRef.c_str()));
             return;
         }
 
-        ACS_SHORT_LOG((LM_INFO, "Requesting a remote startup of '%s'.", service));
+        ACS_SHORT_LOG((LM_INFO, "Requesting another daemon to startup '%s'.", acsServiceNames[service]));
 
-/*        if (builder->callback != NULL)
+/*        if (description.get()->callback != NULL)
         {
-            acsdaemonErrType::AcsStartServicesCompletion ok(__FILE__, __LINE__, "RemoteRequest::execute");
+            ACSErrTypeOK::ACSErrOKCompletion ok;
             ACSErr::Completion_var comp = ok.returnCompletion(false);
             try {
-                builder->callback->working(service, host, builder->instance_number, comp.in());
+                description.get()->callback->working(description.get()->getServiceName(), description.get()->host, description.get()->instance_number, comp.in());
             } catch (CORBA::TIMEOUT timeout) {
                 ACS_SHORT_LOG((LM_INFO, "TIMEOUT!"));
             }
         }*/
 
-        callback = new RemoteRequestDaemonCallback(builder, this);
-        if (builder->start)
+        CommandRequestDescription *desc = description.get();
+        callback = new DaemonRequestCallback(builder, next, description);
+        if (description.get()->start)
         {
-            if (strcasecmp(service, "naming_service") == 0)
-                daemon->start_naming_service(callback->ptr(), builder->instance_number);
-            else if (strcasecmp(service, "notification_service") == 0)
-                daemon->start_notification_service(name, callback->ptr(), builder->instance_number);
-            else if (strcasecmp(service, "cdb") == 0)
-                daemon->start_xml_cdb(callback->ptr(), builder->instance_number, false, 0);	// !!! TODO @todo
-            else if (strcasecmp(service, "manager") == 0)
-                daemon->start_manager(domain, callback->ptr(), builder->instance_number, false); /// !!! TODO @todo
-            else if (strcasecmp(service, "acs_log") == 0)
-                daemon->start_acs_log(callback->ptr(), builder->instance_number);
-            else if (strcasecmp(service, "logging_service") == 0)
-                daemon->start_logging_service(name, callback->ptr(), builder->instance_number);
-            else if (strcasecmp(service, "interface_repository") == 0)
-                daemon->start_interface_repository(loadir, wait, callback->ptr(), builder->instance_number);
-            else
-                ACS_SHORT_LOG((LM_ERROR, "Unknown service '%s'!"));
+            switch (service) {
+            case NAMING_SERVICE:
+                daemon->start_naming_service(callback->ptr(), desc->instance_number);
+                break;
+            case NOTIFICATION_SERVICE:
+                daemon->start_notification_service(desc->name, callback->ptr(), desc->instance_number);
+                break;
+            case CDB:
+                daemon->start_xml_cdb(callback->ptr(), desc->instance_number, desc->recovery, desc->xmlcdbdir);
+                break;
+            case MANAGER:
+                daemon->start_manager(desc->domain, callback->ptr(), desc->instance_number, desc->recovery);
+                break;
+            case ACS_LOG:
+                daemon->start_acs_log(callback->ptr(), desc->instance_number);
+                break;
+            case LOGGING_SERVICE:
+                daemon->start_logging_service(desc->name, callback->ptr(), desc->instance_number);
+                break;
+            case INTERFACE_REPOSITORY:
+                daemon->start_interface_repository(desc->loadir, desc->wait, callback->ptr(), desc->instance_number);
+                break;
+            case UNKNOWN:
+                ACS_SHORT_LOG((LM_ERROR, "Trying to start unknown service!"));
+            }
         }
         else
         {
-            if (strcasecmp(service, "naming_service") == 0)
-                daemon->stop_naming_service(callback->ptr(), builder->instance_number);
-            else if (strcasecmp(service, "notification_service") == 0)
-                daemon->stop_notification_service(name, callback->ptr(), builder->instance_number);
-            else if (strcasecmp(service, "cdb") == 0)
-                daemon->stop_cdb(callback->ptr(), builder->instance_number);
-            else if (strcasecmp(service, "manager") == 0)
-                daemon->stop_manager(domain, callback->ptr(), builder->instance_number);
-            else if (strcasecmp(service, "acs_log") == 0)
-                daemon->stop_acs_log(callback->ptr(), builder->instance_number);
-            else if (strcasecmp(service, "logging_service") == 0)
-                daemon->stop_logging_service(name, callback->ptr(), builder->instance_number);
-            else if (strcasecmp(service, "interface_repository") == 0)
-                daemon->stop_interface_repository(callback->ptr(), builder->instance_number);
-            else
-                ACS_SHORT_LOG((LM_ERROR, "Unknown service '%s'!"));
+            switch (service) {
+            case NAMING_SERVICE:
+                daemon->stop_naming_service(callback->ptr(), desc->instance_number);
+                break;
+            case NOTIFICATION_SERVICE:
+                daemon->stop_notification_service(desc->name, callback->ptr(), desc->instance_number);
+                break;
+            case CDB:
+                daemon->stop_cdb(callback->ptr(), desc->instance_number);
+                break;
+            case MANAGER:
+                daemon->stop_manager(desc->domain, callback->ptr(), desc->instance_number);
+                break;
+            case ACS_LOG:
+                daemon->stop_acs_log(callback->ptr(), desc->instance_number);
+                break;
+            case LOGGING_SERVICE:
+                daemon->stop_logging_service(desc->name, callback->ptr(), desc->instance_number);
+                break;
+            case INTERFACE_REPOSITORY:
+                daemon->stop_interface_repository(callback->ptr(), desc->instance_number);
+                break;
+            case UNKNOWN:
+                ACS_SHORT_LOG((LM_ERROR, "Trying to stop unknown service!"));
+            }
         }
     }
     catch( maciErrType::NoPermissionEx &ex )
@@ -300,15 +365,8 @@ void RequestChainBuilder::addRequest(const char *service, const char **atts) {
         instance_number = 0;
         ACS_SHORT_LOG((LM_WARNING, "Instance number has not been provided with the root node! Using 0!\n"));
     }
-    RemoteRequest *req = new RemoteRequest(this, strdup(service));
-    while (atts[i] != NULL) {
-        if (strcasecmp(atts[i], "host") == 0) req->host = strdup(atts[i+1]);
-        else if (strcasecmp(atts[i], "name") == 0) req->name = strdup(atts[i+1]);
-        else if (strcasecmp(atts[i], "domain") == 0) req->domain = strdup(atts[i+1]);
-        else if (strcasecmp(atts[i], "load") == 0) req->loadir = strcasecmp(atts[i+1], "true") == 0;
-        else if (strcasecmp(atts[i], "wait_load") == 0) req->wait = strcasecmp(atts[i+1], "true") == 0;
-        i += 2;
-    }
+    CommandRequestDescription *desc = new CommandRequestDescription(service, atts, instance_number, start, callback);
+    DaemonRequest *req = new DaemonRequest(this, desc);
     if (start) {
         if (head == NULL) head = req;
         if (tail != NULL) tail->next = req;
@@ -321,5 +379,5 @@ void RequestChainBuilder::addRequest(const char *service, const char **atts) {
 }
 
 void RequestChainBuilder::startProcessing() {
-    if (head != NULL) cmdproc->addRequest(head);
+    if (head != NULL) reqproc->addRequest(head);
 }

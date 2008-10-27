@@ -1,7 +1,7 @@
 /*******************************************************************************
  * E.S.O. - ACS project
  *
- * "@(#) $Id: acsServices80Test.cpp,v 1.2 2008/09/15 13:04:44 msekoran Exp $"
+ * "@(#) $Id: acsServices80Test.cpp,v 1.3 2008/10/27 21:11:23 msekoran Exp $"
  *
  * who       when        what
  * --------  ----------  ----------------------------------------------
@@ -49,7 +49,7 @@ class TestDaemonSequenceCallback : public POA_acsdaemon::DaemonSequenceCallback
   bool startup, complete;
   ::acsdaemon::DaemonSequenceCallback_var cobj;
   public:
-    acsdaemon::ServicesDaemon_ACS80_var daemon;
+    acsdaemon::ServicesDaemon_var daemon;
     char *services_definition;
     TestDaemonSequenceCallback() : startup(true), complete(false), cobj(NULL), services_definition(NULL) {}
     ~TestDaemonSequenceCallback() {
@@ -67,6 +67,8 @@ class TestDaemonSequenceCallback : public POA_acsdaemon::DaemonSequenceCallback
     void done (const ::ACSErr::Completion & comp) {
       if (startup) {
         ACS_SHORT_LOG((LM_INFO, "DONE STARTING UP SERVICES."));
+//        printf("Please, press a key to start shutting down the services!");
+//        getchar();
         ACS_SHORT_LOG((LM_INFO, "SHUTTING DOWN THE SERVICES."));
         daemon->stop_services(services_definition, ptr());
         startup = false;
@@ -245,7 +247,7 @@ main (int argc, char *argv[])
 			return -1;
 		}
 
-		acsdaemon::ServicesDaemon_ACS80_var daemon = acsdaemon::ServicesDaemon_ACS80::_narrow(obj.in());
+		acsdaemon::ServicesDaemon_var daemon = acsdaemon::ServicesDaemon::_narrow(obj.in());
 		if (CORBA::is_nil(daemon.in()))
 		{
 			ACS_SHORT_LOG((LM_ERROR, "Failed to narrow reference '%s'.", daemonRef.c_str()));
@@ -258,8 +260,13 @@ main (int argc, char *argv[])
 		acsdaemon::ServiceDefinitionBuilder *sdb = daemon->create_service_definition_builder(1);
 		sdb->add_naming_service(DAEMONHOST);
 		sdb->add_interface_repository(DAEMONHOST, false, false); // still waits for interface repository startup
-		sdb->add_notification_service(NULL, DAEMONHOST);
+		sdb->add_notification_service("", DAEMONHOST);
 		sdb->add_notification_service("Logging", DAEMONHOST);
+		sdb->add_xml_cdb(DAEMONHOST, true, "/alma/ACS-7.0/acsdata/config/defaultCDB");
+		sdb->add_logging_service(DAEMONHOST, "Log");
+		sdb->add_acs_log(DAEMONHOST);
+		sdb->add_manager(DAEMONHOST, "", true);
+		
 		printf("SERVICE DEFINITION XML:\n%s\n", sdb->get_services_definition());
                 cb.daemon = daemon;
                 cb.services_definition = sdb->get_services_definition();

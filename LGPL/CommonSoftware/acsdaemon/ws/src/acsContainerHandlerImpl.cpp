@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@$Id: acsContainerHandlerImpl.cpp,v 1.14 2008/10/07 08:45:58 cparedes Exp $"
+* "@$Id: acsContainerHandlerImpl.cpp,v 1.15 2008/10/27 21:11:23 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -66,6 +66,11 @@ ACSContainerHandlerImpl::start_container (
     const ::ACS::stringSeq & type_modifiers,
     const char * additional_command_line
     )
+    ACE_THROW_SPEC ((
+			CORBA::SystemException,
+			::acsdaemonErrType::FailedToStartContainerEx,
+			::ACSErrTypeCommon::BadParameterEx
+			))
 {
     if (container_type == 0 ||
 	*container_type == 0)
@@ -150,6 +155,11 @@ ACSContainerHandlerImpl::stop_container (
     ::CORBA::Short instance_number,
     const char * additional_command_line
     )
+    ACE_THROW_SPEC ((
+			CORBA::SystemException,
+			::acsdaemonErrType::FailedToStopContainerEx,
+			::ACSErrTypeCommon::BadParameterEx
+			))
 {
     if (container_name == 0 ||
 	*container_name == 0)
@@ -206,6 +216,10 @@ ACSContainerHandlerImpl::stop_container (
 
 void
 ACSContainerHandlerImpl::shutdown ()
+    ACE_THROW_SPEC ((
+			CORBA::SystemException,
+			::maciErrType::NoPermissionEx
+    ))
 {
 	if (h_service->isProtected())
 	{
