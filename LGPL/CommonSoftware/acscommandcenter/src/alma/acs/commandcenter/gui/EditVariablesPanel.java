@@ -59,6 +59,10 @@ class EditVariablesPanel extends JPanel {
 		p1.add(Box.createVerticalStrut(10));
 		this.add(p1, BorderLayout.CENTER);
 		
+		String tooltip = "To edit an entry, double-click its 'Value'";
+		t1.setToolTipText(tooltip);
+		t2.setToolTipText(tooltip);
+		
 		Dimension size = new Dimension(450, 120);
 		t1.setPreferredScrollableViewportSize(size);
 		t2.setPreferredScrollableViewportSize(size);
