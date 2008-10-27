@@ -18,7 +18,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsutilPorts.h,v 1.6 2007/10/11 17:27:06 nbarriga Exp $"
+* "@(#) $Id: acsutilPorts.h,v 1.7 2008/10/27 20:43:56 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -68,6 +68,9 @@ class ACSPorts
      @endhtmlonly
      */
     static std::string
+    getManagerPort(int baseport);
+
+    static std::string
     getManagerPort();
     
     /**
@@ -76,6 +79,9 @@ class ACSPorts
      <br><hr>
      @endhtmlonly
      */
+    static std::string
+    getNamingServicePort(int baseport);
+    
     static std::string
     getNamingServicePort();
     
@@ -86,6 +92,9 @@ class ACSPorts
      @endhtmlonly
      */
     static std::string
+    getNotifyServicePort(int baseport, const char *name = NULL);
+    
+    static std::string
     getNotifyServicePort();
     
     /**
@@ -94,6 +103,9 @@ class ACSPorts
      <br><hr>
      @endhtmlonly
      */
+    static std::string
+    getLoggingServicePort(int baseport);
+    
     static std::string
     getLoggingServicePort();
     
@@ -104,6 +116,9 @@ class ACSPorts
      @endhtmlonly
      */
     static std::string
+    getIRPort(int baseport);
+    
+    static std::string
     getIRPort();
     
     /**
@@ -113,6 +128,9 @@ class ACSPorts
      @endhtmlonly
      */
     static std::string
+    getLogPort(int baseport);
+    
+    static std::string
     getLogPort();
     
     /**
@@ -121,6 +139,9 @@ class ACSPorts
      <br><hr>
      @endhtmlonly
      */
+    static std::string
+    getCDBPort(int baseport);
+
     static std::string
     getCDBPort();
 

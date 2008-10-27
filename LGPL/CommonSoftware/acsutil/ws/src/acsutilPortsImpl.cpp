@@ -35,11 +35,17 @@ ACSPorts::getBasePort()
  * @endhtmlonly
  */
 std::string 
-ACSPorts::getManagerPort()
+ACSPorts::getManagerPort(int baseport)
 {
     std::ostringstream realOutput;
-    realOutput << setw(4) << setfill('0') << (getBasePort()*100 + 3000 + 0) << ends;
+    realOutput << setw(4) << setfill('0') << (baseport*100 + 3000 + 0) << ends;
     return realOutput.str();
+}
+
+std::string 
+ACSPorts::getManagerPort()
+{
+    return ACSPorts::getManagerPort(getBasePort());
 }
 
 /**
@@ -49,11 +55,17 @@ ACSPorts::getManagerPort()
  * @endhtmlonly
  */
 std::string 
-ACSPorts::getNamingServicePort()
+ACSPorts::getNamingServicePort(int baseport)
 {
     std::ostringstream realOutput;
-    realOutput << setw(4) << setfill('0') << (getBasePort()*100 + 3000 + 1) << ends;
+    realOutput << setw(4) << setfill('0') << (baseport*100 + 3000 + 1) << ends;
     return realOutput.str();
+}
+
+std::string 
+ACSPorts::getNamingServicePort()
+{
+    return ACSPorts::getNamingServicePort(getBasePort());
 }
 
 /**
@@ -63,11 +75,23 @@ ACSPorts::getNamingServicePort()
  * @endhtmlonly
  */
 std::string 
-ACSPorts::getNotifyServicePort()
+ACSPorts::getNotifyServicePort(int baseport, const char *name)
 {
     std::ostringstream realOutput;
-    realOutput << setw(4) << setfill('0') << (getBasePort()*100 + 3000 + 2) << ends;
+    int add = 2;
+    if (name != NULL) {
+        if (strcmp(name, "Logging") == 0) add = 5;
+        else if (strcmp(name, "Archive") == 0) add = 6;
+        else if (strcmp(name, "Alarm") == 0) add = 7;
+    }
+    realOutput << setw(4) << setfill('0') << (baseport*100 + 3000 + add) << ends;
     return realOutput.str();
+}
+
+std::string 
+ACSPorts::getNotifyServicePort()
+{
+    return ACSPorts::getNotifyServicePort(getBasePort());
 }
 
 /**
@@ -77,11 +101,17 @@ ACSPorts::getNotifyServicePort()
  * @endhtmlonly
  */
 std::string
-ACSPorts::getLoggingServicePort()
+ACSPorts::getLoggingServicePort(int baseport)
 {
     std::ostringstream realOutput;
-    realOutput << setw(4) << setfill('0') << (getBasePort()*100 + 3000 + 3) << ends;
+    realOutput << setw(4) << setfill('0') << (baseport*100 + 3000 + 3) << ends;
     return realOutput.str();   
+}
+
+std::string 
+ACSPorts::getLoggingServicePort()
+{
+    return ACSPorts::getLoggingServicePort(getBasePort());
 }
 
 /**
@@ -91,11 +121,17 @@ ACSPorts::getLoggingServicePort()
  * @endhtmlonly
  */
 std::string
-ACSPorts::getIRPort()
+ACSPorts::getIRPort(int baseport)
 {
     std::ostringstream realOutput;
-    realOutput << setw(4) << setfill('0') << (getBasePort()*100 + 3000 + 4) << ends;
+    realOutput << setw(4) << setfill('0') << (baseport*100 + 3000 + 4) << ends;
     return realOutput.str();   
+}
+
+std::string 
+ACSPorts::getIRPort()
+{
+    return ACSPorts::getIRPort(getBasePort());
 }
 
 /**
@@ -105,11 +141,17 @@ ACSPorts::getIRPort()
  * @endhtmlonly
  */
 std::string
-ACSPorts::getLogPort()
+ACSPorts::getLogPort(int baseport)
 {
     std::ostringstream realOutput;
-    realOutput << setw(4) << setfill('0') << (getBasePort()*100 + 3000 + 11) << ends;
+    realOutput << setw(4) << setfill('0') << (baseport*100 + 3000 + 11) << ends;
     return realOutput.str();
+}
+
+std::string 
+ACSPorts::getLogPort()
+{
+    return ACSPorts::getLogPort(getBasePort());
 }
 
 /**
@@ -119,11 +161,17 @@ ACSPorts::getLogPort()
  * @endhtmlonly
  */
 std::string
-ACSPorts::getCDBPort()
+ACSPorts::getCDBPort(int baseport)
 {
     std::ostringstream realOutput;
-    realOutput << setw(4) << setfill('0') << (getBasePort()*100 + 3000 + 12) << ends;
+    realOutput << setw(4) << setfill('0') << (baseport*100 + 3000 + 12) << ends;
     return realOutput.str();
+}
+
+std::string 
+ACSPorts::getCDBPort()
+{
+    return ACSPorts::getCDBPort(getBasePort());
 }
 
 /**
