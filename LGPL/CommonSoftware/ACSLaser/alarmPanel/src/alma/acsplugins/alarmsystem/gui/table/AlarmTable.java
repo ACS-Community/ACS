@@ -18,8 +18,8 @@
  */
 
 /** 
- * @author  aaproni
- * @version $Id: AlarmTable.java,v 1.9 2008/10/24 14:42:10 acaproni Exp $
+ * @author  acaproni
+ * @version $Id: AlarmTable.java,v 1.10 2008/10/27 16:41:32 acaproni Exp $
  * @since    
  */
 
@@ -44,6 +44,7 @@ import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
+import javax.swing.JSeparator;
 import javax.swing.JTable;
 import javax.swing.JComponent;
 import javax.swing.SwingUtilities;
@@ -55,7 +56,9 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableRowSorter;
 
 import alma.acs.util.IsoDateFormat;
+import alma.acsplugins.alarmsystem.gui.reduced.ReducedChainDlg;
 import alma.acsplugins.alarmsystem.gui.table.AlarmTableModel.AlarmTableColumn;
+import alma.alarmsystem.clients.CategoryClient;
 
 import cern.laser.client.data.Alarm;
 
@@ -132,6 +135,7 @@ public class AlarmTable extends JTable implements ActionListener {
 				}
 				public void run() {
 					ackMI.setEnabled(!selectedAlarm.getStatus().isActive());
+					showReducedMI.setEnabled(selectedAlarm!=null && selectedAlarm.isNodeParent());
 					popupM.show(AlarmTable.this,e.getX(),e.getY());
 				}
 			}
@@ -267,30 +271,67 @@ public class AlarmTable extends JTable implements ActionListener {
 		
 	}
 	
-	// The model of the table
+	/** 
+	 * The model of the table
+	 */
 	private AlarmTableModel model;
 	
-	// The sorter for sorting the rows of the table
+	/**
+	 * The sorter for sorting the rows of the table
+	 */
 	private TableRowSorter<TableModel> sorter;
 	
-	// The cols of the table
+	/**
+	 * The cols of the table
+	 */
 	private TableColumn[] columns;
 	
-	// The alarm adapter that recives events from the mouse
+	/**
+	 *  The alarm adapter that recives events from the mouse
+	 */
 	private AlarmTableMouseAdapter mouseAdapter = new AlarmTableMouseAdapter();
 	
-	// The clipboard
+	/**
+	 *  The clipboard
+	 */
 	private ClipboardHelper clipboard = new ClipboardHelper();
 	
-	// The popup menu shown when the user presses the right mouse button over a row
+	/**
+	 *  The popup menu shown when the user presses the right mouse button over a row
+	 */
 	private JPopupMenu popupM = new JPopupMenu("Alarm");
+	
+	/**
+	 * The menu item to acknowledge an alarm
+	 */
 	private JMenuItem ackMI = new JMenuItem("Acknowledge");
+	
+	/**
+	 * The menu item to save
+	 */
 	private JMenuItem saveMI = new JMenuItem("Save...");
+	
+	/**
+	 * The menu item to svae the selected alarm into the clipboard
+	 */
 	private JMenuItem clipMI = new JMenuItem("To clipboard");
 	
-	// The label returned as renderer when no flag is shown in the 
-	// first column of the table
+	/**
+	 * The menu to show the reduction chain of an alarm 
+	 */
+	private JMenuItem showReducedMI = new JMenuItem("Show reduction chain");
+	
+	/**
+	 *  The label returned as renderer when no flag is shown in the 
+	 * first column of the table
+	 */
 	private JLabel emptyLbl = new JLabel();
+	
+	/**
+	 * The dialog showing the table with the alarms involved in a
+	 * reduction chain 
+	 */
+	private ReducedChainDlg reducedDlg=null;
 	
 	/**
 	 *  The renderer for the reduced alarm entries i.e.
@@ -371,6 +412,8 @@ public class AlarmTable extends JTable implements ActionListener {
 	 */
 	private void buildPopupMenu() {
 		popupM.add(ackMI);
+		popupM.add(showReducedMI);
+		popupM.add(new JSeparator());
 		popupM.add(saveMI);
 		popupM.add(clipMI);
 		popupM.pack();
@@ -378,6 +421,7 @@ public class AlarmTable extends JTable implements ActionListener {
 		ackMI.addActionListener(this);
 		saveMI.addActionListener(this);
 		clipMI.addActionListener(this);
+		showReducedMI.addActionListener(this);
 	}
 	
 	/**
@@ -445,6 +489,8 @@ public class AlarmTable extends JTable implements ActionListener {
 			clipboard.setClipboardContents(mouseAdapter.selectedAlarm.toString());
 		} else if (e.getSource()==ackMI) {
 			model.acknowledge(mouseAdapter.selectedAlarm);
+		} else if (e.getSource()==showReducedMI) {
+			showReductionChain(mouseAdapter.selectedAlarm);
 		}
 	}
 	
@@ -477,5 +523,65 @@ public class AlarmTable extends JTable implements ActionListener {
 		} catch (Exception e) {
 			JOptionPane.showInternalMessageDialog(this, e.getMessage(), "Error saving", JOptionPane.ERROR_MESSAGE);
 		}
+	}
+	
+	/**
+	 * Free all the resource 
+	 */
+	public void close() {
+		if (reducedDlg!=null) {
+			reducedDlg.close();
+		}
+	}
+	
+	/**
+	 * Show the dialog with all the nodes reduced by the passed alarm
+	 * 
+	 * @param alarm The alarm whose children must be shown in a dialog
+	 */
+	private void showReductionChain(Alarm alarm) {
+		if (alarm==null) {
+			throw new IllegalArgumentException("The alarm can't be null");
+		}
+		CategoryClient client = model.getCategoryClient();
+		if (reducedDlg==null) {
+			reducedDlg = new ReducedChainDlg(client,alarm);
+		} else {
+			reducedDlg.setRootAlarm(alarm);
+		}
+	}
+	
+	/**
+	 * Set the visible columns in the table.
+	 * The columns are displayed following their order in the array.
+	 * 
+	 * @param cols The visible columns in the table;
+	 * 			it can't be <code>null</code> and at least one column must be in the array.
+	 */
+	public void showColumns(AlarmTableColumn[] cols) {
+		if (cols==null || cols.length==0) {
+			throw new IllegalArgumentException("Invalid columns array");
+		}
+		class AddRemoveCol extends Thread {
+			public AlarmTableColumn[] aTCs;
+			public void run() {
+				TableColumnModel colModel = getColumnModel();
+				// Remove all the columns
+				for (TableColumn column: columns) {
+					colModel.removeColumn(column);
+				}
+				for (AlarmTableColumn aTC: aTCs) {
+					for (int t=0; t<columns.length; t++) {
+						if (columns[t].getIdentifier()==aTC) {
+							colModel.addColumn(columns[t]);
+							break;
+						}
+					}
+				}
+			}
+		}
+		AddRemoveCol thread = new AddRemoveCol();
+		thread.aTCs=cols;
+		SwingUtilities.invokeLater(thread);
 	}
 }
