@@ -22,7 +22,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsdaemon.idl,v 1.15 2008/09/30 09:57:55 msekoran Exp $"
+* "@(#) $Id: acsdaemon.idl,v 1.16 2008/10/27 20:46:05 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -122,7 +122,7 @@ module acsdaemon
 
 
 	///////////////////////////////////////////////////////////////////////////////////////////////
-	////////////////////////////////// Services Daemon /////////////////////////////////////////////
+	////////////////////////////////// Services Daemon ////////////////////////////////////////////
 	///////////////////////////////////////////////////////////////////////////////////////////////
 
 	/** 
@@ -130,73 +130,8 @@ module acsdaemon
 	 */
 	const string servicesDaemonServiceName = "ACSServicesDaemon";
 
-
-	interface ServicesDaemon
-	{
 	/**
-	 * Starts ACS services. 
-	 * Returns immediately. The client will be notified through the callback object 
-	 * when the services are up, or if an error has occurred.
-	 * @return void
-	 * @htmlonly
-	 * <br><hr>
-	 * @endhtmlonly
-	 */
-	void start_acs( 
-			in DaemonCallback callback,
-			in short instance_number, 
-			in string flags)
-				raises (ACSErrTypeCommon::BadParameterEx);
-
-	/** 
-	 * Stops ACS services.
-	 * Returns immediately. The client will be notified through the callback object 
-	 * when the services are stopped, or if an error has occurred.
-	 * @return void
-	 * @htmlonly
-	 * <br><hr>
-	 * @endhtmlonly
-	 */
-	void stop_acs(
-			in DaemonCallback callback,
-			in short instance_number, 
-			in string flags)
-				raises (ACSErrTypeCommon::BadParameterEx);
-
-	/** 
-	 * Returns status of ACS (i.e. invokes acsStatus).
-	 * @parm instance_number ACS instance number
-	 * @return string Status of ACS.
-	 * @htmlonly
-	 * <br><hr>
-	 * @endhtmlonly
-	 * @tbd return a structure or similar instead string
-	 */
-	string status_acs(
-			in short instance_number)
-				raises (acsdaemonErrType::FailedToGetAcsStatusEx);
-
-	/** 
-	 * Shuts down the daemon.
-	 * @return void
-	 * @htmlonly
-	 * <br><hr>
-	 * @endhtmlonly
-	 */
-	void shutdown() raises (maciErrType::NoPermissionEx);
-	};
-
-
-
-
-
-	///////////////////////////////////////////////////////////////////////////////////////////////
-	///////////////////////// Services Daemon proposed extensions for ACS 8.0 //////////////////////
-	///////////////////////////////////////////////////////////////////////////////////////////////
-
-
-	/**
-	 *  String constant for use in {@link ServicesDaemon_ACS80#start_notification_service} 
+	 *  String constant for use in {@link ServicesDaemon#start_notification_service} 
 	 *  and {@link ServiceDefinitionBuilder#add_notification_service} to start the
 	 *  system-defined default notification service for NC events.
 	 *  Note that in ACS lingo the NC process that we start is called "notification service" whereas Corba says "event channel factory".
@@ -204,7 +139,7 @@ module acsdaemon
 	const string systemNotificationServiceDefault = "NotifyEventChannelFactory";
 
 	/**
-	 *  String constant for use in {@link ServicesDaemon_ACS80#start_notification_service} 
+	 *  String constant for use in {@link ServicesDaemon#start_notification_service} 
 	 *  and {@link ServiceDefinitionBuilder#add_notification_service} to start the
 	 *  system-defined logging notification service.
 	 *  Note that in ACS lingo the NC process that we start is called "notification service" whereas Corba says "event channel factory".
@@ -212,7 +147,7 @@ module acsdaemon
 	const string systemNotificationServiceLogging = "LoggingNotifyEventChannelFactory";
 
 	/**
-	 *  String constant for use in {@link ServicesDaemon_ACS80#start_notification_service}
+	 *  String constant for use in {@link ServicesDaemon#start_notification_service}
 	 *  and {@link ServiceDefinitionBuilder#add_notification_service} to start the
 	 *  system-defined alarm notification service.
 	 *  Note that in ACS lingo the NC process that we start is called "notification service" whereas Corba says "event channel factory".
@@ -220,7 +155,7 @@ module acsdaemon
 	const string systemNotificationServiceAlarms = "AlarmNotifyEventChannelFactory";
 
 	/**
-	 *  String constant for use in {@link ServicesDaemon_ACS80#start_notification_service} 
+	 *  String constant for use in {@link ServicesDaemon#start_notification_service} 
 	 *  and {@link ServiceDefinitionBuilder#add_notification_service} to start the
 	 *  system-defined notification service to transport monitor data to the archive (will be removed in the future!).
 	 *  Note that in ACS lingo the NC process that we start is called "notification service" whereas Corba says "event channel factory".
@@ -287,7 +222,7 @@ module acsdaemon
 
 		/** 
 		 *  Starts a CDB service.
-		 *  About the TMCDB, see ServicesDaemon_ACS80#start_xml_cdb 
+		 *  About the TMCDB, see ServicesDaemon#start_xml_cdb 
 		 *  @param host Hostname
 		 *  @param recovery if true then use recovery information from previous run. 
 		 *  @param xml_cdb_dir the directory which contains the CDB directory, see env var ACS_CDB.
@@ -393,9 +328,9 @@ module acsdaemon
 	enum ServiceState { NOT_EXISTING, DEFUNCT, DEGRADED, RUNNING };
 	
 	/** 
-	 *  Base Spell interface.
+	 *  Base Imp interface.
 	 */
-	interface SpellBase
+	interface ImpBase
 	{
 		/** 
 		 * Heartbeat ping check.
@@ -407,7 +342,7 @@ module acsdaemon
 		boolean ping();
 
 		/** 
-		 * Shuts down the Spell.
+		 * Shuts down the Imp.
 		 * @return void
 		 * @htmlonly
 		 * <br><hr>
@@ -419,9 +354,9 @@ module acsdaemon
 
 
 	/** 
-	 *  Naming Service Spell base interface.
+	 *  Naming Service Spell interface.
 	 */
-	interface NamingServiceSpellBase
+	interface NamingServiceSpell
 	{
 		/** 
 		 *  Asynchronously starts a naming service.
@@ -447,9 +382,9 @@ module acsdaemon
 	};
 
 	/** 
-	 *  Naming Service Spell.
+	 *  Naming Service Imp.
 	 */
-	interface NamingServiceSpell : SpellBase, NamingServiceSpellBase
+	interface NamingServiceImp : ImpBase, NamingServiceSpell
 	{
 		/** 
 		 *  Get service state.
@@ -462,9 +397,9 @@ module acsdaemon
 
 
 	/** 
-	 *  Notification Service Spell base interface.
+	 *  Notification Service Spell interface.
 	 */
-	interface NotificationServiceSpellBase
+	interface NotificationServiceSpell
 	{
 		/** 
 		 *  Asynchronously starts a notification service on the current host.
@@ -497,9 +432,9 @@ module acsdaemon
 
 
 	/** 
-	 *  Notification Service Spell.
+	 *  Notification Service Imp.
 	 */
-	interface NotificationServiceSpell : SpellBase, NotificationServiceSpellBase
+	interface NotificationServiceImp : ImpBase, NotificationServiceSpell
 	{
 		/** 
 		 *  Get service state.
@@ -512,9 +447,9 @@ module acsdaemon
 	};
 
 	/** 
-	 *  CDB Spell base interface.
+	 *  CDB Spell interface.
 	 */
-	interface CDBSpellBase
+	interface CDBSpell
 	{
 
 		/** 
@@ -548,9 +483,9 @@ module acsdaemon
 	};
 
 	/** 
-	 *  CDB Spell.
+	 *  CDB Imp.
 	 */
-	interface CDBSpell : SpellBase, CDBSpellBase
+	interface CDBImp : ImpBase, CDBSpell
 	{
 		/** 
 		 *  Get service state.
@@ -562,9 +497,9 @@ module acsdaemon
 	};
 
 	/** 
-	 *  Manager Spell base interface.
+	 *  Manager Spell interface.
 	 */
-	interface ManagerSpellBase
+	interface ManagerSpell
 	{
 		/** 
 		 *  Asynchronously starts an ACS manager on the current host.
@@ -594,9 +529,9 @@ module acsdaemon
 	};
 
 	/** 
-	 *  Manager Spell.
+	 *  Manager Imp.
 	 */
-	interface ManagerSpell : SpellBase, ManagerSpellBase
+	interface ManagerImp : ImpBase, ManagerSpell
 	{
 		/** 
 		 *  Get service state.
@@ -609,9 +544,9 @@ module acsdaemon
 
 
 	/** 
-	 *  ACS Log Spell base interface.
+	 *  ACS Log Spell interface.
 	 */
-	interface ACSLogSpellBase
+	interface ACSLogSpell
 	{
 		/** 
 		 *  Asynchronously starts an ACSLog service on the current host.
@@ -639,9 +574,9 @@ module acsdaemon
 	};
 
 	/** 
-	 *  ACSLog Spell.
+	 *  ACSLog Imp.
 	 */
-	interface ACSLogSpell : SpellBase, ACSLogSpellBase
+	interface ACSLogImp : ImpBase, ACSLogSpell
 	{
 		/** 
 		 *  Get service state.
@@ -654,9 +589,9 @@ module acsdaemon
 
 
 	/** 
-	 *  Logging Service Spell base interface.
+	 *  Logging Service Spell interface.
 	 */
-	interface LoggingServiceSpellBase
+	interface LoggingServiceSpell
 	{
 		/** 
 		 *  Asynchronously starts a logging service on the current host.
@@ -685,9 +620,9 @@ module acsdaemon
 	};
 
 	/** 
-	 *  LoggingService Spell.
+	 *  LoggingService Imp.
 	 */
-	interface LoggingServiceSpell : SpellBase, LoggingServiceSpellBase
+	interface LoggingServiceImp : ImpBase, LoggingServiceSpell
 	{
 		/** 
 		 *  Get service state.
@@ -700,9 +635,9 @@ module acsdaemon
 	};
 
 	/** 
-	 *  Interface Repository Spell base interface.
+	 *  Interface Repository Spell interface.
 	 */
-	interface InterfaceRepositorySpellBase
+	interface InterfaceRepositorySpell
 	{
 		/** 
 		 *  Asynchronously starts an interface repository on the current host.
@@ -733,9 +668,9 @@ module acsdaemon
 	};
 
 	/** 
-	 *  Interface Repository Spell.
+	 *  Interface Repository Imp.
 	 */
-	interface InterfaceRepositorySpell : SpellBase, InterfaceRepositorySpellBase
+	interface InterfaceRepositoryImp : ImpBase, InterfaceRepositorySpell
 	{
 		/** 
 		 *  Get service state.
@@ -747,9 +682,6 @@ module acsdaemon
 	};
 
 	/** 
-	 * @todo Once the ACS 8.0 design is final and these new methods are implemented, this interface must be merged into ServicesDaemon!!
-	 *       Having it separate is just a trick to keep the IDL changes in real code with cvs history, without breaking the compile of the existing impl.
-	 *  
 	 * <p>
 	 *  The services daemon starts, stops and monitors the ACS services on one or more host machine(s).
 	 *  This daemon must persist any state data (such as user-defined notification service name-to-port mappings) 
@@ -783,9 +715,9 @@ module acsdaemon
 	 *  It may be started by a different user than the one later running ACS.
 	 *  The daemon can be found using "corbaloc::host:3014/ACSServicesDaemon".
 	 */
-	interface ServicesDaemon_ACS80 : ServicesDaemon,
-		NamingServiceSpellBase, NotificationServiceSpellBase, CDBSpellBase,
-		ManagerSpellBase, ACSLogSpellBase, LoggingServiceSpellBase, InterfaceRepositorySpellBase
+	interface ServicesDaemon :
+		NamingServiceSpell, NotificationServiceSpell, CDBSpell,
+		ManagerSpell, ACSLogSpell, LoggingServiceSpell, InterfaceRepositorySpell
 	{
 		/**
 		 *  Creates and retrieves a reference to a ServiceDescriptionBuilder instance.
@@ -841,6 +773,57 @@ module acsdaemon
 		 */
 		void stop_services(in services_definition_xml definition, in DaemonSequenceCallback callback) 
 			raises (ACSErrTypeCommon::BadParameterEx);
+
+		/**
+		 * Starts ACS services. 
+		 * Returns immediately. The client will be notified through the callback object 
+		 * when the services are up, or if an error has occurred.
+		 * @return void
+		 * @htmlonly
+		 * <br><hr>
+		 * @endhtmlonly
+		 */
+		void start_acs( 
+				in DaemonCallback callback,
+				in short instance_number, 
+				in string flags)
+			raises (ACSErrTypeCommon::BadParameterEx);
+
+		/** 
+		 * Stops ACS services.
+		 * Returns immediately. The client will be notified through the callback object 
+		 * when the services are stopped, or if an error has occurred.
+		 * @return void
+		 * @htmlonly
+		 * <br><hr>
+		 * @endhtmlonly
+		 */
+		void stop_acs(
+				in DaemonCallback callback,
+				in short instance_number, 
+				in string flags)
+			raises (ACSErrTypeCommon::BadParameterEx);
+
+		/** 
+		 * Returns status of ACS (i.e. invokes acsStatus).
+		 * @parm instance_number ACS instance number
+		 * @return string Status of ACS.
+		 * @htmlonly
+		 * <br><hr>
+		 * @endhtmlonly
+		 * @tbd return a structure or similar instead string
+		 */
+		string status_acs(in short instance_number)
+			raises (acsdaemonErrType::FailedToGetAcsStatusEx);
+
+		/** 
+		 * Shuts down the daemon.
+		 * @return void
+		 * @htmlonly
+		 * <br><hr>
+		 * @endhtmlonly
+		 */
+		void shutdown() raises (maciErrType::NoPermissionEx);
 
 	};
 
