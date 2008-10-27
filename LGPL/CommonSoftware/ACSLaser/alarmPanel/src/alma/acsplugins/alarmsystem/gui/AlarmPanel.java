@@ -19,7 +19,7 @@
 
 /** 
  * @author  acaproni   
- * @version $Id: AlarmPanel.java,v 1.19 2008/10/23 16:05:26 acaproni Exp $
+ * @version $Id: AlarmPanel.java,v 1.20 2008/10/27 16:43:42 acaproni Exp $
  * @since    
  */
 
@@ -27,6 +27,7 @@ package alma.acsplugins.alarmsystem.gui;
 
 import java.awt.BorderLayout;
 
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -38,6 +39,7 @@ import alma.alarmsystem.clients.CategoryClient;
 
 import alma.acs.gui.util.panel.IPanel;
 import alma.acsplugins.alarmsystem.gui.statusline.StatusLine;
+import alma.acsplugins.alarmsystem.gui.table.AlarmGUIType;
 import alma.acsplugins.alarmsystem.gui.table.AlarmTable;
 import alma.acsplugins.alarmsystem.gui.table.AlarmTableModel;
 import alma.acsplugins.alarmsystem.gui.toolbar.Toolbar;
@@ -143,6 +145,7 @@ public class AlarmPanel extends JPanel implements IPanel {
 			throw new IllegalArgumentException("Invalid null frame in constructor");
 		}
 		this.frame=frame;
+		this.frame.setIconImage(new ImageIcon(AlarmGUIType.class.getResource(AlarmGUIType.iconFolder+"flag_red.png")).getImage());
 		initialize();
 	}
 	
@@ -225,14 +228,19 @@ public class AlarmPanel extends JPanel implements IPanel {
 	public void stop() throws Exception {
 		class StopAlarmPanel extends Thread {
 			public void run() {
-				AlarmPanel.this.disconnect();
+				try {
+					AlarmPanel.this.disconnect();
+				} catch (Throwable t) {
+					System.err.println("Ignored error while disconnecting category client: "+t.getMessage());
+					t.printStackTrace(System.err);
+				}
 			}
 		}
 		closed=true;
 		disconnectThread = new StopAlarmPanel();
 		disconnectThread.setName("StopAlarmPanel");
-		disconnectThread.setDaemon(true);
-		disconnectThread.start();	
+		disconnectThread.start();
+		alarmTable.close();
 	}
 	
 	/**
