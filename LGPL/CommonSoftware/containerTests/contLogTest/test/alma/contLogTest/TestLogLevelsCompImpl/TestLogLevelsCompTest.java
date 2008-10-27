@@ -189,7 +189,7 @@ public class TestLogLevelsCompTest extends ComponentClientTestCase
 			}
 			centralLogLevels[i++] = lld.value;
 		}
-		int waitTimeSeconds = 12;
+		int waitTimeSeconds = 5;
 		
 		for (TestLogLevelsComp testComp : components) {
 			String componentName = testComp.name();
