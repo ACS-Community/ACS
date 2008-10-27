@@ -13,6 +13,7 @@ import java.util.Enumeration;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.Vector;
+import java.util.concurrent.ThreadFactory;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
@@ -26,7 +27,7 @@ import alma.acs.commandcenter.util.MiscUtils;
  * around the pure process object as provided by the Java Runtime.
  * 
  * The native command can be run
- * a) within its own thread (since it implements Runnable), or 
+ * a) within its own thread (as it implements Runnable), or 
  * b) directly via a call to its run() method.
  * 
  * @author mschilli 
@@ -115,9 +116,32 @@ public class NativeCommand implements Runnable {
    }
 
    
+   
    //
    // ================= API ====================
    //
+
+   /**
+    * The default thread factory for background actions.
+    */
+   protected ThreadFactory threadFactoryDefault = new ThreadFactory(){
+		public Thread newThread (Runnable r) {
+			return new Thread(r);
+		}
+	};
+
+   protected ThreadFactory threadFactory = threadFactoryDefault;
+
+   /** 
+    * This class executes various actions concurrently.
+    * With this setter, clients can control the threads to be used.
+    * @param threads - null for default
+    */
+   public void setThreadFactory (ThreadFactory threads) {
+   	threadFactory = (threads == null)? threadFactoryDefault : threads;
+   }
+
+
    
    public void addListener(NativeCommand.Listener po) {
       listeners.add(po);
@@ -180,7 +204,7 @@ public class NativeCommand implements Runnable {
     */
    public void run() {
 
-      Executor deleg1 = new Executor();
+      Spawner deleg1 = new Spawner();
       deleg1.run();
 
       // nothing more to do in this case
@@ -196,11 +220,11 @@ public class NativeCommand implements Runnable {
 
       // start a delegate to read the process's output stream
       Reader deleg3 = new Reader(process.getInputStream());
-      new Thread(deleg3).start();
+      threadFactory.newThread(deleg3).start();
 
       // start a delegate to read the process's error stream
       Reader deleg4 = new Reader(process.getErrorStream());
-      new Thread(deleg4).start();
+      threadFactory.newThread(deleg4).start();
 
       // store a reference to the process's input stream
       stdin = new OutputStreamWriter(process.getOutputStream());
@@ -315,7 +339,7 @@ public class NativeCommand implements Runnable {
     * Runs a process. Very little code, but it's
     * prettier to have a dedicated class for it.
     */
-   protected class Executor {
+   protected class Spawner {
 
       public void run() {
          try {
