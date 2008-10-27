@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingLogSvcHandler.cpp,v 1.29 2008/04/24 09:07:38 cparedes Exp $"
+* "@(#) $Id: loggingLogSvcHandler.cpp,v 1.30 2008/10/27 13:32:12 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -32,7 +32,7 @@
 
 #include <ace/Log_Record.h>
 
-static char *rcsId="@(#) $Id: loggingLogSvcHandler.cpp,v 1.29 2008/04/24 09:07:38 cparedes Exp $"; 
+static char *rcsId="@(#) $Id: loggingLogSvcHandler.cpp,v 1.30 2008/10/27 13:32:12 bjeram Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 
@@ -278,7 +278,7 @@ namespace Logging {
 		    setLocalLevel(localPriority);
 	    }
 	    // set global level (min of both)
-	    setLevel(getLocalLevel() < getRemoteLevel() ? getLocalLevel() : getRemoteLevel());  
+	    setLevel(static_cast<Logging::BaseLog::Priority>(getLocalLevel() < getRemoteLevel() ? getLocalLevel() : getRemoteLevel()));  
 	}
     // ----------------------------------------------------------
     //--The following section exists solely to remain
