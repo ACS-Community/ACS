@@ -20,6 +20,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
 import java.util.logging.Logger;
 
 import javax.help.HelpSet;
@@ -29,7 +32,6 @@ import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.ValidationException;
 import org.omg.CORBA.ORB;
 
-import alma.acs.commandcenter.CommandCenter;
 import alma.acs.commandcenter.engine.ExecuteAcs;
 import alma.acs.commandcenter.engine.ExecuteContainer;
 import alma.acs.commandcenter.engine.ExecuteManager;
@@ -128,7 +130,7 @@ public class CommandCenterLogic {
 			log.severe("*** FATAL: Could not read definition of built-in tools."
 					+ " Printing stacktrace to stderr and exiting. ***");
 			exc.printStackTrace(System.err);
-			CommandCenter.exit(4);
+			exit(4);
 		}
 
 
@@ -168,22 +170,53 @@ public class CommandCenterLogic {
 
 	public void stop () {
 
-		/* as soon as commandcenter is closed, remotely started managers
-		 * don't function no longer anyhow (they disconnect for some reason).
-		 * thus we can well close all the open ssh-sessions.
-		 */
+		bgThreads.shutdownNow();
+
 		Executor.remoteDownAll();
 
 		if (deploymentTreeControllerImpl != null)
 			deploymentTreeControllerImpl.stop();
-		
+
 		if (firestarter != null)
 			firestarter.shutdown();
-		
+
 		gui.stop();
-		CommandCenter.exit(0);
+		exit(0);
 	}
 
+	/**
+	 * System.exit() can be prevented by setting the boolean flag to false through
+	 * the corresponding command line switch.
+	 */
+	public void exit(final int code) {
+		log.fine("requested to exit with exit code '" + code + "'");
+      
+		if (startupOptions.doExitOnClose) {
+
+			// trying to tear down a hanging in-process Acs
+         // can freeze the whole application.
+         // thus, we use a watchdog to ensure termination.
+         new Thread(){@Override
+			public void run(){
+            try {
+               Thread.sleep(8*1000);
+            } catch (InterruptedException exc) {}
+
+            System.out.println("VM still up, shooting it now.");
+            try {
+               Thread.sleep(1*1000);
+            } catch (InterruptedException exc) {}
+            
+            Runtime.getRuntime().halt(code);
+               
+         }}.start();
+
+         System.exit(code);
+         
+		} else {
+			log.fine("I am configured with the no-exit option, will not shut down the VM");
+      }
+	}
 
 	//
 	// ============ Versioning ====================
@@ -542,49 +575,73 @@ public class CommandCenterLogic {
 	}
 
 
-	//
-	//  ======= DeploymentTreeController implementation ==========
-	//
+	// Background Actions
+	// ============================================================
+
+
+	/** Factory for unlimited number of daemons threads */
+	private ExecutorService bgThreads = Executors.newCachedThreadPool(new ThreadFactory(){
+		ThreadFactory def = Executors.defaultThreadFactory();
+		public Thread newThread (Runnable r) {
+			Thread ret = def.newThread(r);
+			ret.setDaemon(true);
+			return ret;
+		}
+	});
+
+
+	public void runBackground (Runnable r) {
+		bgThreads.execute(r);
+	}
+
+	
+
+	// DeploymentTreeController implementation
+	// ============================================================
 
 	
 	public DeploymentTreeControllerImpl deploymentTreeControllerImpl;
 	
 	public class DeploymentTreeControllerImpl implements DeploymentTreeController {
 
-	   private Map<String, GuiMaciSupervisor> managerLoc2instance = new WeakHashMap<String, GuiMaciSupervisor>();
+		// create MaciSupervisors
+		// -----------------------------------------
+		// (i) we cache previously created ones
+		// (ii) newly created ones will not be start()-ed
 
-		/**
-		 * Returns a MaciSupervisor from the cache, or creates a new one. It may not be started yet!
-		 */
 		synchronized public GuiMaciSupervisor giveMaciSupervisor(String managerLoc) throws OrbInitException {
-			
 			GuiMaciSupervisor ret = managerLoc2instance.get(managerLoc);
-
 			if (ret == null) {
 				ORB orb = firestarter.giveOrb();
 				ret = new GuiMaciSupervisor("AcsCommandCenter", managerLoc, orb, log);
 				managerLoc2instance.put(managerLoc, ret);
 	      }
-	      
 	      return ret;
 		}
-	   
-		/**
-		 * Stop all MaciSupervisors that we created.
-		 * @return true if all supervisors stopped gracefully  
-		 */
-	   synchronized public boolean stop() {
-	   	boolean ok = true;
-	   	
+		
+		private Map<String, GuiMaciSupervisor> managerLoc2instance = new WeakHashMap<String, GuiMaciSupervisor>();
+
+		
+		// background actions
+		// -----------------------------------------
+		
+		public java.util.concurrent.Executor getBackgroundExecutor() {
+			return bgThreads;
+		}
+
+
+		// lifecycle of this class
+		// -----------------------------------------
+
+		/** Call stop() on all MaciSupervisors */
+	   synchronized public void stop() {
 	   	for (IMaciSupervisor s : managerLoc2instance.values()) {	
 	   		try {
 					s.stop();
-				} catch (Exception exc) {
-					ok = false;
-				}
+				} catch (Exception exc) {/* ignore */}
 	   	}
-	   	return ok;
 	   }
+
 	   
 	}
 	
