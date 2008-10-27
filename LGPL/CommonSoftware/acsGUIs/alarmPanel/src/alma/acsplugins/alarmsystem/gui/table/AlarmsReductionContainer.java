@@ -249,4 +249,11 @@ public class AlarmsReductionContainer extends AlarmsContainer {
 			}
 		}
 	}
+
+	/**
+	 * @return the categoryClient
+	 */
+	public CategoryClient getCategoryClient() {
+		return categoryClient;
+	}
 }
