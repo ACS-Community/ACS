@@ -19,12 +19,13 @@
 
 /** 
  * @author  acaproni   
- * @version $Id: AlarmTableModel.java,v 1.17 2008/10/24 09:59:47 acaproni Exp $
+ * @version $Id: AlarmTableModel.java,v 1.18 2008/10/27 16:39:46 acaproni Exp $
  * @since    
  */
 
 package alma.acsplugins.alarmsystem.gui.table;
 
+import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 import javax.swing.table.AbstractTableModel;
 
@@ -60,8 +61,9 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 	 *
 	 */
 	public enum AlarmTableColumn {
-		REDUCTION("",true),
-		ICON("",true),
+		HIDES_CHILDREN("",true), // The entry hides chidlren because of RR
+		REDUCED("",true), // The entry is reduced
+		ICON("",true), // The flag
 		TIME("Time",true),
 		COMPONENT("Component",true),
 		CODE("Code",true),
@@ -94,10 +96,14 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 			
 	};
 	
-	// The date format
+	/** 
+	 * The date format
+	 */
 	private SimpleDateFormat dateFormat = new IsoDateFormat();
 	
-	// The counter for the alarms
+	/**
+	 *  The counter for the alarms
+	 */
 	private HashMap<AlarmGUIType, AlarmCounter> counters = new HashMap<AlarmGUIType, AlarmCounter>();
 	
 	/**
@@ -114,7 +120,7 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 	 * @param reduce <code>true</code> if the reduction rules must be applied
 	 * @param panel The <code>AlarmPanel</code>
 	 */
-	public AlarmTableModel(AlarmPanel owner, boolean reduce) {
+	public AlarmTableModel(JComponent owner, boolean reduce) {
 		if (owner==null) {
 			throw new IllegalArgumentException("The owner component can't be null");
 		}
@@ -346,7 +352,7 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 	/**
 	 * The owner component (used to show dialog messages) 
 	 */
-	private Component owner;
+	private JComponent owner;
 	
 	/**
 	 * The alarms in the table
@@ -590,5 +596,21 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 	 */
 	public void setCategoryClient(CategoryClient client) {
 		items.setCategoryClient(client);
+	}
+	
+	/**
+	 * Get the <code>CategoryClient</code> from the <code>AlarmsContainer</code>
+	 * 
+	 * @param client The <code>CategoryCLient</code>; it can be <code>null</code>.
+	 */
+	public CategoryClient getCategoryClient() {
+		return items.getCategoryClient();
+	}
+	
+	/**
+	 * Clear the content of the model
+	 */
+	public synchronized void clear() {
+		items.clear();
 	}
 }
