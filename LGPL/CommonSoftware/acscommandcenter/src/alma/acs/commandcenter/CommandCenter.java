@@ -161,42 +161,6 @@ public class CommandCenter {
 		}
    }
 
-	/**
-	 * System.exit() can be prevented by setting the boolean flag to false through
-	 * the corresponding command line switch.
-	 */
-	public static void exit(final int code) {
-		log.fine("requested to exit with exit code '" + code + "'");
-      
-		if (commandCenterLogic.startupOptions.doExitOnClose) {
-
-			// trying to tear down a hanging in-process Acs
-         // can freeze the whole application.
-         // thus, we use a watchdog to ensure termination.
-         new Thread(){@Override
-			public void run(){
-            try {
-               Thread.sleep(8*1000);
-            } catch (InterruptedException exc) {}
-
-            System.out.println("VM still up, shooting it now.");
-            try {
-               Thread.sleep(1*1000);
-            } catch (InterruptedException exc) {}
-            
-            Runtime.getRuntime().halt(code);
-               
-         }}.start();
-
-         System.exit(code);
-         
-		} else {
-			log.fine("I am configured with the no-exit option, will not shut down the VM");
-      }
-	}
-
-
-	
    
    //
    //
