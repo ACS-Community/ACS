@@ -179,9 +179,9 @@ public class MaciSupervisor implements IMaciSupervisor {
 			mcehandler.start();
 		}
 
-		if (refreshIfNeeded == null) {
-			refreshIfNeeded = new RefreshIfNeeded();
-			timer.schedule(refreshIfNeeded, 2000, 2000);
+		if (refreshTask == null) {
+			refreshTask = new RefreshIfNeeded();
+			timer.schedule(refreshTask, 2000, 2000);
 		}
 
 
@@ -223,8 +223,8 @@ public class MaciSupervisor implements IMaciSupervisor {
 		mcehandler.stop();
 		mcehandler = null;
 
-		refreshIfNeeded.cancel();
-		refreshIfNeeded = null;
+		refreshTask.cancel();
+		refreshTask = null;
 
 		disconnectFromManager();
 	}
@@ -400,8 +400,8 @@ public class MaciSupervisor implements IMaciSupervisor {
 	 * <p>
 	 * A call to this method will automatically trigger a refresh, possibly 
 	 * throwing an exception or blocking the current thread for a long time. Calling
-	 * {@link #getMaciInformation()} and {@link #refresh()} from two different threads
-	 * can shield you from these effects.
+	 * {@link #getMaciInformation()} and {@link #refreshSoon()} will shield you from
+	 * these effects.
 	 *
 	 * @return a stable maciInfo instance, never <code>null</code>
 	 * @throws NotConnectedToManagerException 
@@ -432,7 +432,7 @@ public class MaciSupervisor implements IMaciSupervisor {
 	}
 
 	/**
-	 * Request the MaciInfo be refreshed.
+	 * Request the MaciInfo be refreshed in the background.
 	 */
 	public void refreshSoon() {
 		infoShouldBeRefreshed = true;
@@ -442,7 +442,7 @@ public class MaciSupervisor implements IMaciSupervisor {
 	/*
 	 * We check 'refresh needed' regularly
 	 */
-	protected RefreshIfNeeded refreshIfNeeded;
+	protected RefreshIfNeeded refreshTask;
 	protected Timer timer = new Timer("MaciSupervisor.Refresher", true);
 
 	protected class RefreshIfNeeded extends TimerTask {
@@ -467,7 +467,11 @@ public class MaciSupervisor implements IMaciSupervisor {
 	 * Tries to refresh the component-section, container-section, and client-section
 	 * of the info tree model. The treemodel will be updated when things go well
 	 * and also when things fail.
-	 * @throws NoPermissionEx 
+	 * 
+ 	 * A call to this method will instantly perform a refresh, possibly 
+	 * throwing an exception or blocking the current thread for a long time. Calling
+	 * {@link #getMaciInformation()} and {@link #refreshSoon()} will shield you from
+	 * these effects.
 	 * 
 	 * @throws NoPermissionEx error during refresh
 	 * @throws NotConnectedToManagerException error during refresh
@@ -475,7 +479,7 @@ public class MaciSupervisor implements IMaciSupervisor {
 	 * @throws CorbaNotExistException 
 	 * @throws UnknownErrorException 
 	 */
-	protected synchronized void refreshNow() throws NoPermissionEx, NotConnectedToManagerException, SystemException, CorbaTransientException, CorbaNotExistException, UnknownErrorException {
+	public synchronized void refreshNow() throws NoPermissionEx, NotConnectedToManagerException, SystemException, CorbaTransientException, CorbaNotExistException, UnknownErrorException {
 		log.finer("refreshing maci info...");
 
 		List<SortingTreeNode> newComponents = new ArrayList<SortingTreeNode>(); 
