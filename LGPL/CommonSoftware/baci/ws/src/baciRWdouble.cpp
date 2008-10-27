@@ -20,7 +20,7 @@
 *
 * E.S.O. - ACS project
 *
-* "@(#) $Id: baciRWdouble.cpp,v 1.93 2008/07/25 07:29:52 cparedes Exp $"
+* "@(#) $Id: baciRWdouble.cpp,v 1.94 2008/10/27 14:13:24 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -35,9 +35,9 @@
 
 
 #ifdef MAKE_VXWORKS
-template class PcommonImpl<ACS_P_T(double, CORBA::Double), POA_ACS::RWdouble>;
-template class PcontImpl<ACS_P_T(double, CORBA::Double), POA_ACS::RWdouble>;
-template class RWcommonImpl<ACS_RW_T(double, CORBA::Double)>;
+template class baci::PcommonImpl<ACS_P_T(double, CORBA::Double), POA_ACS::RWdouble>;
+template class baci::PcontImpl<ACS_P_T(double, CORBA::Double), POA_ACS::RWdouble>;
+template class baci::RWcommonImpl<ACS_RW_T(double, CORBA::Double)>;
 #endif
 template class baci::RWcontImpl<ACS_RW_T(double, CORBA::Double)>;
 
