@@ -51,7 +51,7 @@ import javax.swing.border.EmptyBorder;
 
 import alma.acs.commandcenter.engine.Executor;
 import alma.acs.commandcenter.engine.RunModel;
-import alma.acs.commandcenter.gui.CommandCenterGui.ActionBaseClass;
+import alma.acs.commandcenter.gui.CommandCenterGui.BackgroundAction;
 import alma.acs.commandcenter.gui.thirdparty.SpringUtilities;
 import alma.acs.commandcenter.trace.DefaultChecklistPanel;
 import alma.acs.commandcenter.trace.Flow;
@@ -92,19 +92,19 @@ public class TabPanel extends JPanel {
 		init();
 	}
 
-	ActionBaseClass actStartAcs;
-	ActionBaseClass actStopAcs;
-	ActionBaseClass actKillAcs;
-	ActionBaseClass actStartServices;
-	ActionBaseClass actStopServices;
-	ActionBaseClass actStartManager;
-	ActionBaseClass actStopManager;
-	ActionBaseClass actShowAdvanced;
-	ActionBaseClass actStartContainer;
-	ActionBaseClass actStopContainer;
-	ActionBaseClass actConfigureContainer;
-	ActionBaseClass actStartAllContainers;
-	ActionBaseClass actStopAllContainers;
+	BackgroundAction actStartAcs;
+	BackgroundAction actStopAcs;
+	BackgroundAction actKillAcs;
+	BackgroundAction actStartServices;
+	BackgroundAction actStopServices;
+	BackgroundAction actStartManager;
+	BackgroundAction actStopManager;
+	BackgroundAction actShowAdvanced;
+	BackgroundAction actStartContainer;
+	BackgroundAction actStopContainer;
+	BackgroundAction actConfigureContainer;
+	BackgroundAction actStartAllContainers;
+	BackgroundAction actStopAllContainers;
 
 
 	FlowDialog flowDialog;
@@ -212,7 +212,7 @@ public class TabPanel extends JPanel {
 		SpringUtilities.makeCompactGrid(n, 2, 0);
 		generalTab.add(n);
 
-		//flowDialog.disenable(cdbrootF);
+		flowDialog.disenable(cdbrootF);
 		flowDialog.disenable(acsinstanceF);
 		acsinstanceF.setName("txt_AcsInstance");
 		cdbrootF.setName("txt_CdbRoot");
@@ -225,6 +225,9 @@ public class TabPanel extends JPanel {
 		JPanel localScriptTab = new JPanel(new BorderLayout());
 		JPanel h = new JPanel(new BorderLayout());
 		h.add(chkLocalScript, BorderLayout.NORTH);
+
+		flowDialog.disenable(chkLocalScript);
+		
 		chkLocalScript.addFocusListener(focusListener);
 		localScriptTab.add(h);
 
@@ -295,6 +298,8 @@ public class TabPanel extends JPanel {
 		remoteTab.add(j);
 
 		
+		flowDialog.disenable(chkRemoteScript);
+
 		hostF.setName("txt_RemoteHost");
 		accountF.setName("txt_RemoteUser");
 		passwordF.setName("txt_RemotePassword");
@@ -574,34 +579,46 @@ public class TabPanel extends JPanel {
 
 	class Disenabler implements ItemListener {
 
-		{
+		Disenabler() {
 			chkRemoteScript.addItemListener(this);
 			chkLocalScript.addItemListener(this);
 			chkUseDaemons.addItemListener(this);
+			itemStateChanged(null);
 		}
 
 		public void itemStateChanged (ItemEvent e) {
-			if (chkRemoteScript.isSelected()) {
+			boolean local = chkLocalScript.isSelected();
+			boolean remote = chkRemoteScript.isSelected();
+			boolean remoteSsh = remote && !chkUseDaemons.isSelected();
+			boolean remoteDaemon = remote && chkUseDaemons.isSelected();
+
+			if (remote) {
 				JComponent[] cc1 = {lblB, hostF, chkUseDaemons};
 				for (JComponent c : cc1)
 					c.setEnabled(true);
 
 				JComponent[] cc2 = {lblC, accountF, lblD, passwordF};
 				for (JComponent c : cc2)
-					c.setEnabled(!chkUseDaemons.isSelected());
-				
-			} else{
+					c.setEnabled(remoteSsh);
+
+			}
+			if (local) {
 				JComponent[] cc = {lblB, hostF, chkUseDaemons, lblC, accountF, lblD, passwordF};
 				for (JComponent c : cc)
 					c.setEnabled(false);
 			}
 
-			boolean enabled = chkLocalScript.isSelected() || !chkUseDaemons.isSelected();
+			boolean enabled = local || remoteSsh;
 			cdbrootF.setEnabled(enabled);
 			if (master.dlgContainerSettings != null) {
+				master.dlgContainerSettings.customAccountL.setEnabled(enabled);
 				master.dlgContainerSettings.customAccountF.setEnabled(enabled);
+				master.dlgContainerSettings.customPasswordL.setEnabled(enabled);
 				master.dlgContainerSettings.customPasswordF.setEnabled(enabled);
+				master.dlgContainerSettings.modifL.setEnabled(remoteDaemon);
+				master.dlgContainerSettings.modifF.setEnabled(remoteDaemon);
 			}
+			
 		}
 	}
 	
@@ -714,8 +731,7 @@ public class TabPanel extends JPanel {
 			for (int i = 0; i < comps.size(); i++)
 				((JComponent) comps.elementAt(i)).setEnabled(false);
 
-			// super.setLocationRelativeTo(getParent()); // PENDING: try out if this works as well
-			setLocation((getParent().getWidth() - getWidth()) / 2, (getParent().getHeight() - getHeight()) / 2);
+			master.correctDialogLocation(this);
 			super.setVisible(true);
 		}
 
@@ -1179,13 +1195,13 @@ public class TabPanel extends JPanel {
 	 * Invokes super which runs the response in its own thread. Then makes the progress
 	 * panel for the action-response visible.
 	 */
-	protected abstract class ActionBaseClass2 extends CommandCenterGui.ActionBaseClass {
+	protected abstract class BackgroundAction2 extends CommandCenterGui.BackgroundAction {
 
-		protected ActionBaseClass2(String name) {
+		protected BackgroundAction2(String name) {
 			master.super(name);
 		}
 
-		protected ActionBaseClass2(String name, Icon icon) {
+		protected BackgroundAction2(String name, Icon icon) {
 			master.super(name, icon);
 		}
 
@@ -1202,7 +1218,7 @@ public class TabPanel extends JPanel {
 
 
 
-	protected class ActionStartAcs extends ActionBaseClass2 {
+	protected class ActionStartAcs extends BackgroundAction2 {
 
 		protected ActionStartAcs() {
 			super("Start", master.icons.getStartIcon());
@@ -1260,7 +1276,7 @@ public class TabPanel extends JPanel {
 		}
 	}
 
-	protected class ActionStopAcs extends ActionBaseClass2 {
+	protected class ActionStopAcs extends BackgroundAction2 {
 
 		protected ActionStopAcs() {
 			super("Stop", master.icons.getStopIcon());
@@ -1301,7 +1317,7 @@ public class TabPanel extends JPanel {
 		}
 	}
 
-	protected class ActionStartServices extends ActionBaseClass2 {
+	protected class ActionStartServices extends BackgroundAction2 {
 
 		protected ActionStartServices() {
 			super("", master.icons.getStartIcon());
@@ -1328,7 +1344,7 @@ public class TabPanel extends JPanel {
 		}
 	}
 
-	protected class ActionStopServices extends ActionBaseClass2 {
+	protected class ActionStopServices extends BackgroundAction2 {
 
 		protected ActionStopServices() {
 			super("", master.icons.getStopIcon());
@@ -1356,7 +1372,7 @@ public class TabPanel extends JPanel {
 		}
 	}
 
-	protected class ActionStartManager extends ActionBaseClass2 {
+	protected class ActionStartManager extends BackgroundAction2 {
 
 		protected ActionStartManager() {
 			super("", master.icons.getStartIcon());
@@ -1400,7 +1416,7 @@ public class TabPanel extends JPanel {
 		}
 	}
 
-	protected class ActionStopManager extends ActionBaseClass2 {
+	protected class ActionStopManager extends BackgroundAction2 {
 
 		protected ActionStopManager() {
 			super("", master.icons.getStopIcon());
@@ -1431,7 +1447,7 @@ public class TabPanel extends JPanel {
 		}
 	}
 
-	protected class ActionStartContainer extends ActionBaseClass2 {
+	protected class ActionStartContainer extends BackgroundAction2 {
 
 		protected ActionStartContainer() {
 			super("Start Container");
@@ -1471,7 +1487,7 @@ public class TabPanel extends JPanel {
 		}
 	}
 
-	protected class ActionStopContainer extends ActionBaseClass2 {
+	protected class ActionStopContainer extends BackgroundAction2 {
 
 		protected ActionStopContainer() {
 			super("Stop Container");
@@ -1512,7 +1528,7 @@ public class TabPanel extends JPanel {
 	}
 
 
-	protected class ActionStartAllContainers extends ActionBaseClass {
+	protected class ActionStartAllContainers extends BackgroundAction {
 
 		protected ActionStartAllContainers() {
 			master.super("", master.icons.getStartIcon());
@@ -1531,7 +1547,7 @@ public class TabPanel extends JPanel {
 	}
 
 
-	protected class ActionStopAllContainers extends ActionBaseClass {
+	protected class ActionStopAllContainers extends BackgroundAction {
 
 		protected ActionStopAllContainers() {
 			master.super("", master.icons.getStopIcon());
@@ -1550,7 +1566,7 @@ public class TabPanel extends JPanel {
 	}
 
 
-	protected class ActionKillAcs extends ActionBaseClass2 {
+	protected class ActionKillAcs extends BackgroundAction2 {
 
 		protected ActionKillAcs() {
 			super("Kill", master.icons.getStopIconRed());
@@ -1588,7 +1604,7 @@ public class TabPanel extends JPanel {
 		}
 	}
 
-	protected class ActionConfigureAllContainers extends CommandCenterGui.ActionBaseClass {
+	protected class ActionConfigureAllContainers extends CommandCenterGui.BackgroundAction {
 
 		protected ActionConfigureAllContainers() {
 			master.super("", master.icons.getConfigIcon());
@@ -1600,7 +1616,7 @@ public class TabPanel extends JPanel {
 		}
 	}
 
-	protected class ActionMoreContainers extends CommandCenterGui.ActionBaseClass {
+	protected class ActionMoreContainers extends CommandCenterGui.BackgroundAction {
 
 		protected ActionMoreContainers() {
 			master.super("", master.icons.getPlusIcon());
@@ -1613,7 +1629,7 @@ public class TabPanel extends JPanel {
 		}
 	}
 
-	protected class ActionLessContainers extends CommandCenterGui.ActionBaseClass {
+	protected class ActionLessContainers extends CommandCenterGui.BackgroundAction {
 
 		protected ActionLessContainers() {
 			master.super("", master.icons.getMinusIcon());
@@ -1626,7 +1642,7 @@ public class TabPanel extends JPanel {
 		}
 	}
 
-	protected class ActionConfigureContainer extends CommandCenterGui.ActionBaseClass {
+	protected class ActionConfigureContainer extends CommandCenterGui.BackgroundAction {
 
 		protected ActionConfigureContainer() {
 			master.super("Configure Container");
@@ -1638,7 +1654,7 @@ public class TabPanel extends JPanel {
 		}
 	}
 
-	protected class ActionMoveContainerUp extends CommandCenterGui.ActionBaseClass {
+	protected class ActionMoveContainerUp extends CommandCenterGui.BackgroundAction {
 
 		protected ActionMoveContainerUp() {
 			master.super("", master.icons.getUpIcon());
@@ -1656,7 +1672,7 @@ public class TabPanel extends JPanel {
 		}
 	}
 
-	protected class ActionMoveContainerDown extends CommandCenterGui.ActionBaseClass {
+	protected class ActionMoveContainerDown extends CommandCenterGui.BackgroundAction {
 
 		protected ActionMoveContainerDown() {
 			master.super("", master.icons.getDownIcon());
@@ -1676,7 +1692,7 @@ public class TabPanel extends JPanel {
 	}
 	
 	
-	protected class ActionShowAdvanced extends CommandCenterGui.ActionBaseClass {
+	protected class ActionShowAdvanced extends CommandCenterGui.BackgroundAction {
 
 		protected ActionShowAdvanced() {
 			master.super("advanced", null);
@@ -1689,7 +1705,7 @@ public class TabPanel extends JPanel {
 		}
 	}
 
-	protected class ActionUseDaemons extends CommandCenterGui.ActionBaseClass {
+	protected class ActionUseDaemons extends CommandCenterGui.BackgroundAction {
 
 		protected ActionUseDaemons() {
 			master.super("Use Acs Daemons", null);
@@ -1706,17 +1722,14 @@ public class TabPanel extends JPanel {
 						+ "Acs Command Center will use Acs Daemons to start and stop:\n" //
 						+ "   * Acs Suite\n" //
 						+ "   * Containers\n" //
-						+ "Daemons will not be used for the Services and Manager controls in the\n" //
-						+ "advanced section. Instead, ssh will be used. The same is true for the \"Kill\" button.\n" //
 						+ "\n"
-						+ "In daemon mode, there's no need to specify\n" //
-						+ "   * Username\n" //
-						+ "   * Password\n" //
-						+ "Instead, all Acs processes will run under the account of their respective daemon.\n"
+						+ "In daemon mode, there's no need to specify Username or Password. Instead,\n" //
+						+ "all Acs processes will run under the account of their respective daemon.\n"
 						+ "\n" //
-						+ "The daemon chooses the Cdb to use (depending on the $ACS_CDB variable in its environment).\n" //
-						+ "Currently, it is not possible to specify the Cdb Root Dir in the Common Settings section.\n" //
-						+ "\n"
+						+ "The daemon chooses the Cdb to use (from the $ACS_CDB variable in its environment).\n" //
+						+ "\n" //
+						+ "Only in daemon mode can you specify Type Modifiers for a container.\n"
+						+ "\n" //
 						+ "Finally note that the output of processes started through Acs Daemons will not be\n" //
 						+ "available in the Log Area of Acs Command Center." //
 						;

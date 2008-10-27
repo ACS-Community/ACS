@@ -14,9 +14,6 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Vector;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadFactory;
 
 import javax.swing.AbstractAction;
 import javax.swing.JOptionPane;
@@ -337,6 +334,7 @@ public class DeploymentTree extends JTree {
 		// they can sort their kids
 		SortingTreeNode casted = (SortingTreeNode) node;
 		casted.sortChildrenByInfoDetail(key);
+		
 		// inform the model that something has changed
 		getTreeModel().nodeStructureChanged(casted);
 	}
@@ -791,9 +789,9 @@ public class DeploymentTree extends JTree {
 	/**
 	 * Performs the work to be done within the event-dispatcher thread
 	 */
-	protected abstract class ImmediateAction extends AbstractAction {
+	protected abstract class SwingAction extends AbstractAction {
 
-		protected ImmediateAction(String name) {
+		protected SwingAction(String name) {
 			super(name);
 		}
 
@@ -813,27 +811,19 @@ public class DeploymentTree extends JTree {
 		protected abstract void actionPerformed ();
 	}
 
-	private Executor pool = Executors.newCachedThreadPool(new ThreadFactory(){
-		ThreadFactory def = Executors.defaultThreadFactory();
-		public Thread newThread (Runnable r) {
-			Thread ret = def.newThread(r);
-			ret.setDaemon(true);
-			return ret;
-		}
-	});
-	
+
 	/**
 	 * Performs the work to be done delayed, and NOT within the event-dispatcher thread.
 	 * Used for most actions in the context menus.
 	 */
-	protected abstract class DelayedAction extends AbstractAction {
+	protected abstract class BackgroundAction extends AbstractAction {
 
-		protected DelayedAction(String name) {
+		protected BackgroundAction(String name) {
 			super(name);
 		}
 
 		final public void actionPerformed (ActionEvent e) {
-			pool.execute(new Runnable() {
+			ctrl.getBackgroundExecutor().execute(new Runnable() {
 				public void run () {
 					
 					setBusy(true);
@@ -856,7 +846,7 @@ public class DeploymentTree extends JTree {
 		protected abstract void actionPerformed () throws Exception;
 	}
 
-	protected class RemoveFromViewAction extends ImmediateAction {
+	protected class RemoveFromViewAction extends SwingAction {
 
 		protected RemoveFromViewAction() {
 			super("Remove from View");
@@ -869,7 +859,7 @@ public class DeploymentTree extends JTree {
 	}
 
 	
-	protected class ManagerRefreshAction extends DelayedAction {
+	protected class ManagerRefreshAction extends BackgroundAction {
 
 		protected ManagerRefreshAction() {
 			super("Refresh Info");
@@ -882,7 +872,7 @@ public class DeploymentTree extends JTree {
 
 	}
 
-	protected class ManagerPingAction extends DelayedAction {
+	protected class ManagerPingAction extends BackgroundAction {
 
 		protected ManagerPingAction() {
 			super("Send Ping Request");
@@ -895,7 +885,7 @@ public class DeploymentTree extends JTree {
 
 	}
 
-	protected class ManagerShutdownAction extends DelayedAction {
+	protected class ManagerShutdownAction extends BackgroundAction {
 
 		protected ManagerShutdownAction() {
 			super("Send Shutdown Request");
@@ -907,7 +897,7 @@ public class DeploymentTree extends JTree {
 		}
 	}
 
-	protected class FolderSortByNameAction extends DelayedAction {
+	protected class FolderSortByNameAction extends SwingAction {
 
 		protected FolderSortByNameAction() {
 			super("Sort by name");
@@ -919,7 +909,7 @@ public class DeploymentTree extends JTree {
 		}
 	}
 
-	protected class FolderSortByContainerNameAction extends DelayedAction {
+	protected class FolderSortByContainerNameAction extends SwingAction {
 
 		protected FolderSortByContainerNameAction() {
 			super("Sort by container needed");
@@ -931,7 +921,7 @@ public class DeploymentTree extends JTree {
 		}
 	}
 
-	protected class ContainerPingAction extends DelayedAction {
+	protected class ContainerPingAction extends BackgroundAction {
 
 		protected ContainerPingAction() {
 			super("Send Ping Request");
@@ -943,7 +933,7 @@ public class DeploymentTree extends JTree {
 		}
 	}
 
-	protected class ContainerShutdownAction extends DelayedAction {
+	protected class ContainerShutdownAction extends BackgroundAction {
 
 		protected ContainerShutdownAction() {
 			super("Send Shutdown Request");
@@ -955,7 +945,7 @@ public class DeploymentTree extends JTree {
 		}
 	}
 
-	protected class ContainerMessageAction extends DelayedAction {
+	protected class ContainerMessageAction extends BackgroundAction {
 
 		protected ContainerMessageAction() {
 			super("Send Message...");
@@ -969,7 +959,7 @@ public class DeploymentTree extends JTree {
 		}
 	}
 
-	protected class ClientPingAction extends DelayedAction {
+	protected class ClientPingAction extends BackgroundAction {
 
 		protected ClientPingAction() {
 			super("Send Ping Request");
@@ -981,7 +971,7 @@ public class DeploymentTree extends JTree {
 		}
 	}
 
-	protected class ContainerDisconnectAction extends DelayedAction {
+	protected class ContainerDisconnectAction extends BackgroundAction {
 
 		protected ContainerDisconnectAction() {
 			super("Send Disconnect Request");
@@ -993,7 +983,7 @@ public class DeploymentTree extends JTree {
 		}
 	}
 
-	protected class ClientDisconnectAction extends DelayedAction {
+	protected class ClientDisconnectAction extends BackgroundAction {
 
 		protected ClientDisconnectAction() {
 			super("Send Disconnect Request");
@@ -1005,7 +995,7 @@ public class DeploymentTree extends JTree {
 		}
 	}
 
-	protected class ClientMessageAction extends DelayedAction {
+	protected class ClientMessageAction extends BackgroundAction {
 
 		protected ClientMessageAction() {
 			super("Send Message...");
@@ -1019,7 +1009,7 @@ public class DeploymentTree extends JTree {
 		}
 	}
 
-	protected class ContainerLogoutAction extends DelayedAction {
+	protected class ContainerLogoutAction extends BackgroundAction {
 
 		protected ContainerLogoutAction() {
 			super("Have logged out by Manager");
@@ -1031,7 +1021,7 @@ public class DeploymentTree extends JTree {
 		}
 	}
 
-	protected class ClientLogoutAction extends DelayedAction {
+	protected class ClientLogoutAction extends BackgroundAction {
 
 		protected ClientLogoutAction() {
 			super("Have logged out by Manager");
@@ -1043,7 +1033,7 @@ public class DeploymentTree extends JTree {
 		}
 	}
 
-	protected class ComponentRequestAction extends DelayedAction {
+	protected class ComponentRequestAction extends BackgroundAction {
 
 		protected ComponentRequestAction() {
 			super("Have activated");
@@ -1056,7 +1046,7 @@ public class DeploymentTree extends JTree {
 		}
 	}
 
-	protected class ComponentReleaseAction extends DelayedAction {
+	protected class ComponentReleaseAction extends BackgroundAction {
 
 		protected ComponentReleaseAction() {
 			super("Release own reference");
@@ -1069,7 +1059,7 @@ public class DeploymentTree extends JTree {
 		}
 	}
 
-	protected class ComponentForceReleaseAction extends DelayedAction {
+	protected class ComponentForceReleaseAction extends BackgroundAction {
 
 		protected ComponentForceReleaseAction() {
 			super("Force system-wide deactivation");

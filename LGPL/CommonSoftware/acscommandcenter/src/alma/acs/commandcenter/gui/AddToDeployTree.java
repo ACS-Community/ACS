@@ -15,7 +15,7 @@ import javax.swing.JTextField;
 import javax.swing.JToggleButton;
 import javax.swing.SpringLayout;
 
-import alma.acs.commandcenter.gui.CommandCenterGui.ActionBaseClass;
+import alma.acs.commandcenter.gui.CommandCenterGui.BackgroundAction;
 import alma.acs.commandcenter.gui.thirdparty.SpringUtilities;
 import alma.acs.util.AcsLocations;
 
@@ -98,7 +98,7 @@ class AddToDeployTree extends JPanel {
 	 * is running and switches back to the {@link Cursor#DEFAULT_CURSOR}
 	 * afterwards.
 	 */
-	abstract protected class MyActionBaseClass extends ActionBaseClass {
+	abstract protected class MyActionBaseClass extends BackgroundAction {
 		public MyActionBaseClass(String name) {
 			master.super(name);
 		}

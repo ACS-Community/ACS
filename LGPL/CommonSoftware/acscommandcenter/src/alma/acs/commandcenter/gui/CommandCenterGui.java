@@ -151,6 +151,9 @@ public class CommandCenterGui {
 				}
 			});
 
+			
+			dlgContainerSettings = new EditContainerSettingsDialog(this);
+
 			frontPanel = new TabPanel(this);
 			writeModelToFrontPanel();
 
@@ -273,7 +276,6 @@ public class CommandCenterGui {
 
 			
 			// ---
-			dlgContainerSettings = new EditContainerSettingsDialog(this);
 
 			splitTopBottom = new JSplitPane(JSplitPane.VERTICAL_SPLIT, splitLeftRight, feedbackTabs);
 			splitTopBottom.setOneTouchExpandable(true);
@@ -307,6 +309,7 @@ public class CommandCenterGui {
 		frame.setVisible(true);
 	}
 
+	/** Disposes the frame. */
 	public void stop () {
 		frame.setVisible(false);
 		frame.dispose();
@@ -802,22 +805,44 @@ public class CommandCenterGui {
 
 	// ================== Actions ==============================================
 
-	
-	
-	/** Runs the response to the action in its own thread */
-	protected abstract class ActionBaseClass extends AbstractAction {
 
-		protected ActionBaseClass(String name) {
+	/**
+	 * Performs the work to be done within the event-dispatcher thread
+	 */
+	protected abstract class SwingAction extends AbstractAction {
+
+		protected SwingAction(String name) {
 			super(name);
 		}
 
-		protected ActionBaseClass(String name, Icon icon) {
+		final public void actionPerformed (ActionEvent e) {
+			try {
+				actionPerformed();
+
+			} catch (Exception exc) {
+				String name = "'"+getValue(Action.NAME)+"'";
+				ErrorBox.showErrorDialog(frame, "Encountered an error while performing "+name, exc);
+				log.log(Level.INFO, "Error while performing "+name, exc);
+			}
+		}
+
+		protected abstract void actionPerformed () throws Exception;
+	}
+
+	
+	/** Runs the response to the action in its own thread */
+	protected abstract class BackgroundAction extends AbstractAction {
+
+		protected BackgroundAction(String name) {
+			super(name);
+		}
+
+		protected BackgroundAction(String name, Icon icon) {
 			super(name, icon);
 		}
 
 		public void actionPerformed (ActionEvent evt) {
-			// TODO(msc): re-use threads
-			new Thread(new Runnable() {
+			controller.runBackground(new Runnable() {
 
 				public void run () {
 					try {
@@ -835,13 +860,13 @@ public class CommandCenterGui {
 						log.log(Level.INFO, "Error while performing "+name, t);
 					}
 				};
-			}).start();
+			});
 		}
 
 		protected abstract void actionPerformed () throws Throwable;
 	}
 
-	protected class ActionNewProject extends ActionBaseClass {
+	protected class ActionNewProject extends SwingAction {
 
 		public ActionNewProject(String name) {
 			super(name);
@@ -856,7 +881,7 @@ public class CommandCenterGui {
 	}
 
 	
-	protected class ActionShowHelp extends ActionBaseClass {
+	protected class ActionShowHelp extends SwingAction {
 
 		public ActionShowHelp(String name) {
 			super(name);
@@ -868,7 +893,7 @@ public class CommandCenterGui {
 		}
 	}
 
-	protected class ActionOpenProject extends ActionBaseClass {
+	protected class ActionOpenProject extends BackgroundAction {
 
 		public ActionOpenProject(String name) {
 			super(name);
@@ -885,7 +910,7 @@ public class CommandCenterGui {
 		}
 	}
 
-	protected class ActionSaveProject extends ActionBaseClass {
+	protected class ActionSaveProject extends BackgroundAction {
 
 		public ActionSaveProject(String name) {
 			super(name);
@@ -911,7 +936,7 @@ public class CommandCenterGui {
 		}
 	}
 
-	protected class ActionSaveAsProject extends ActionBaseClass {
+	protected class ActionSaveAsProject extends BackgroundAction {
 
 		public ActionSaveAsProject(String name) {
 			super(name);
@@ -928,7 +953,7 @@ public class CommandCenterGui {
 		}
 	}
 
-	protected class ActionExit extends ActionBaseClass {
+	protected class ActionExit extends BackgroundAction {
 
 		public ActionExit(String name) {
 			super(name);
@@ -940,7 +965,7 @@ public class CommandCenterGui {
 		}
 	}
 
-	protected class ActionConfigureTools extends ActionBaseClass {
+	protected class ActionConfigureTools extends SwingAction {
 
 		public ActionConfigureTools(String name) {
 			super(name);
@@ -959,7 +984,7 @@ public class CommandCenterGui {
 		}
 	}
 
-	protected class ActionEditCommands extends ActionBaseClass {
+	protected class ActionEditCommands extends BackgroundAction {
 
 		public ActionEditCommands(String name) {
 			super(name);
@@ -978,7 +1003,7 @@ public class CommandCenterGui {
 		}
 	}
 
-	protected class ActionEditPexpects extends ActionBaseClass {
+	protected class ActionEditPexpects extends BackgroundAction {
 
 		public ActionEditPexpects(String name) {
 			super(name);
@@ -997,7 +1022,7 @@ public class CommandCenterGui {
 		}
 	}
 
-	protected class ActionInstallExtraTools extends ActionBaseClass {
+	protected class ActionInstallExtraTools extends BackgroundAction {
 
 		public ActionInstallExtraTools(String name) {
 			super(name);
@@ -1042,7 +1067,7 @@ public class CommandCenterGui {
 		}
 	}
 
-	protected class ActionSetSshMode extends ActionBaseClass {
+	protected class ActionSetSshMode extends BackgroundAction {
 		
 		private boolean useNativeSSH;
 		private boolean killNativeSSH;
@@ -1060,7 +1085,7 @@ public class CommandCenterGui {
 		}
 	}
 	
-	protected class ActionShowExtraTools extends ActionBaseClass {
+	protected class ActionShowExtraTools extends BackgroundAction {
 
 		public ActionShowExtraTools(String name) {
 			super(name);
@@ -1072,7 +1097,7 @@ public class CommandCenterGui {
 		}
 	}
 
-	protected class ActionShowBuiltinTools extends ActionBaseClass {
+	protected class ActionShowBuiltinTools extends BackgroundAction {
 
 		public ActionShowBuiltinTools(String name) {
 			super(name);
@@ -1084,7 +1109,7 @@ public class CommandCenterGui {
 		}
 	}
 
-	protected class ActionLoadBuiltinTools extends ActionBaseClass {
+	protected class ActionLoadBuiltinTools extends BackgroundAction {
 
 		public ActionLoadBuiltinTools(String name) {
 			super(name);
@@ -1128,7 +1153,7 @@ public class CommandCenterGui {
 		}
 	}
 
-	protected class ActionShowVariables extends ActionBaseClass {
+	protected class ActionShowVariables extends BackgroundAction {
 
 		public ActionShowVariables(String name) {
 			super(name);
@@ -1255,14 +1280,14 @@ public class CommandCenterGui {
 			final Matcher m = p.matcher(additionalOutput);
 			if (m.matches()) {
 				final String desiredAcsInstance = frontPanel.acsinstanceF.getText().trim();
-				new Thread(new Runnable() {
+				controller.runBackground(new Runnable() {
 					public void run () {
 						String message = "The Acs Instance you requested ( " + desiredAcsInstance + " ) is already" +
 								" in use by you or somebody else." +
 								"\nPlease choose a different Acs Instance in the Common Settings.";
 						JOptionPane.showMessageDialog(frame, message, "Acs Instance in use", JOptionPane.INFORMATION_MESSAGE);
 					}
-				}).start();
+				});
 			}
 		}
 	}

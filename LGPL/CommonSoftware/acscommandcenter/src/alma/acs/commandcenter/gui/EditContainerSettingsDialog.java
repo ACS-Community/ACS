@@ -29,8 +29,11 @@ class EditContainerSettingsDialog extends JDialog implements ActionListener {
 	private final CommandCenterGui master;
 	JRadioButton btnGlobal, btnCustom;
 	JTextField modifF;
+	JLabel modifL;
 	JTextField defaultScriptBaseF, defaultHostF, defaultAccountF, defaultPasswordF;
 	JTextField customScriptBaseF, customHostF, customAccountF, customPasswordF;
+	JLabel customAccountL, customPasswordL;
+	
 	ButtonGroup buttonGroup;
 	boolean okChosen; // this dialog's "return value"
 
@@ -46,7 +49,7 @@ class EditContainerSettingsDialog extends JDialog implements ActionListener {
 		JPanel pnlModifiers = new JPanel();
 		pnlModifiers.setBorder(master.createTitledBorder(" Tweak type of container "));
 		pnlModifiers.setLayout(new SpringLayout());
-		pnlModifiers.add(new JLabel("Type Modifiers"));
+		pnlModifiers.add(modifL = new JLabel("Type Modifiers"));
 		pnlModifiers.add(modifF = new JTextField());
 		modifF.setToolTipText("Enter comma-separated Modifiers, e.g. \"archiveContainer\"");
 		SpringUtilities.makeCompactGrid(pnlModifiers, 0, 2);
@@ -76,9 +79,9 @@ class EditContainerSettingsDialog extends JDialog implements ActionListener {
 		pnlLocation.add(customScriptBaseF = new JTextField());
 		pnlLocation.add(new JLabel("Remote Host"));
 		pnlLocation.add(customHostF = new JTextField());
-		pnlLocation.add(new JLabel("Remote Username"));
+		pnlLocation.add(customAccountL = new JLabel("Remote Username"));
 		pnlLocation.add(customAccountF = new JTextField());
-		pnlLocation.add(new JLabel("Remote Password"));
+		pnlLocation.add(customPasswordL = new JLabel("Remote Password"));
 		pnlLocation.add(customPasswordF = new JPasswordField());
 		SpringUtilities.makeCompactGrid(pnlLocation, 0, 2);
 
