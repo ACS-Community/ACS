@@ -18,8 +18,6 @@
  */
 package alma.acsplugins.alarmsystem.gui.table;
 
-import com.sun.mail.handlers.text_html;
-
 import cern.laser.client.data.Alarm;
 
 /**
