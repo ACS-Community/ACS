@@ -1,18 +1,17 @@
 /*******************************************************************************
 * E.S.O. - VLT project
 *
-* "@(#) $Id: acserrHandlers.cpp,v 1.3 2005/06/17 08:20:50 bjeram Exp $"
+* "@(#) $Id: acserrHandlers.cpp,v 1.4 2008/10/27 13:35:54 bjeram Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
 * bjeram  yyyy-mm-dd  created 
 */
 
-#define _POSIX_SOURCE 1
 #include "vltPort.h"
 #include "acserrHandlers.h"
 
-static char *rcsId="@(#) $Id: acserrHandlers.cpp,v 1.3 2005/06/17 08:20:50 bjeram Exp $"; 
+static char *rcsId="@(#) $Id: acserrHandlers.cpp,v 1.4 2008/10/27 13:35:54 bjeram Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 
