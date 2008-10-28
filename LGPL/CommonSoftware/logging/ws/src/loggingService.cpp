@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingService.cpp,v 1.60 2008/08/04 11:24:39 bjeram Exp $"
+* "@(#) $Id: loggingService.cpp,v 1.61 2008/10/28 13:46:13 msekoran Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -37,6 +37,8 @@
 
 #include "loggingACSStructuredPushSupplierBin.h"
 #include "loggingACSStructuredPushSupplierXml.h"
+
+#include <tao/IORTable/IORTable.h>
 
 #include <acscommonC.h>
 
@@ -458,6 +460,24 @@ LoggingService::create_basic_log()
   ACS_SHORT_LOG ((LM_DEBUG,
               "Log registered with the naming service as: %s",
               this->m_basic_log_name));
+
+  // and make it corbaloc accessible
+  CORBA::Object_var table_object =
+    this->m_orb->resolve_initial_references ("IORTable");
+
+  IORTable::Table_var adapter =
+    IORTable::Table::_narrow (table_object.in ());
+  if (CORBA::is_nil (adapter.in ()))
+    {
+    ACS_SHORT_LOG ((LM_ERROR, "Nil IORTable. corbaloc support not enabled."));
+    }
+  else
+    {
+    CORBA::String_var ior =
+      this->m_orb->object_to_string (this->m_basic_log.in ());
+        adapter->bind (this->m_basic_log_name, ior.in ());
+    }
+
 }
 
 void
@@ -614,6 +634,9 @@ main (int argc, char *argv[])
 // REVISION HISTORY:
 //
 // $Log: loggingService.cpp,v $
+// Revision 1.61  2008/10/28 13:46:13  msekoran
+// corbaloc support
+//
 // Revision 1.60  2008/08/04 11:24:39  bjeram
 // Replaced non portable comparing with _nil() with CORBA::is_nil(x).
 // COMP-2596
