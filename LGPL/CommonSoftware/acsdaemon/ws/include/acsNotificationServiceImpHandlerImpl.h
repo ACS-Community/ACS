@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsNotificationServiceImpHandlerImpl.h,v 1.1 2008/10/27 21:11:23 msekoran Exp $"
+* "@(#) $Id: acsNotificationServiceImpHandlerImpl.h,v 1.2 2008/10/28 09:43:31 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -70,9 +70,7 @@ public:
         ACS_SHORT_LOG ((LM_INFO, "Stopping '%s' Notification Service on Imp (instance %d).", name == NULL ? "default" : name, instance_number));
         ACSServiceRequestDescription *desc = new ACSServiceRequestDescription(NOTIFICATION_SERVICE, instance_number);
         desc->setName(name);
-        ACS_SHORT_LOG ((LM_INFO, "A1"));
         context->processRequest(LOCAL, STOP_SERVICE, desc, callback);
-        ACS_SHORT_LOG ((LM_INFO, "A2"));
     }
 
     acsdaemon::ServiceState get_service_status(const char * name, CORBA::Short instance_number)
