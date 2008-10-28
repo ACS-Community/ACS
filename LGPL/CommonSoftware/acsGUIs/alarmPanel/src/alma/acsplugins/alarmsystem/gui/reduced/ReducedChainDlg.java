@@ -110,7 +110,7 @@ public class ReducedChainDlg extends JDialog implements ActionListener {
 	private void initialize() {
 		setIconImage(new ImageIcon(AlarmGUIType.class.getResource(AlarmGUIType.iconFolder+"arrow_in.png")).getImage());
 		setModalityType(Dialog.ModalityType.MODELESS);
-		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+		setDefaultCloseOperation(HIDE_ON_CLOSE);
 		
 		rootPane.setLayout(new BorderLayout());
 		
@@ -204,7 +204,7 @@ public class ReducedChainDlg extends JDialog implements ActionListener {
 				if (al.isNodeParent()) {
 					alarms = categoryClient.getChildren(al.getAlarmId(), true);
 				} else {
-					alarms = categoryClient.getChildren(al.getAlarmId(), true);
+					alarms = categoryClient.getChildren(al.getAlarmId(), false);
 				}
 			} catch (Throwable error) {
 				System.err.println("Error getting the children of "+alarm.getAlarmId());
