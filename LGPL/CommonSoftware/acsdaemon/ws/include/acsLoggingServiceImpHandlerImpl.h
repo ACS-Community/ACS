@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsLoggingServiceImpHandlerImpl.h,v 1.1 2008/10/27 21:11:23 msekoran Exp $"
+* "@(#) $Id: acsLoggingServiceImpHandlerImpl.h,v 1.2 2008/10/28 13:54:15 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -51,8 +51,8 @@ public:
         ACSErrTypeCommon::BadParameterEx,
         acsdaemonErrType::ServiceAlreadyRunningEx
       )) {
-        if (name != NULL && strlen(name) == 0) name = NULL;
-        ACS_SHORT_LOG ((LM_INFO, "Starting '%s' Logging Service on Imp (instance %d).", name, instance_number));
+        if (name != NULL && (strlen(name) == 0 || strcmp(name, "Log") == 0)) name = NULL;
+        ACS_SHORT_LOG ((LM_INFO, "Starting '%s' Logging Service on Imp (instance %d).", name == NULL ? "Log" : name, instance_number));
         if (name != NULL) {
             ACS_SHORT_LOG ((LM_WARNING, "Name parameter of Logging Service startup is not supported!"));
         }
@@ -69,8 +69,8 @@ public:
         ACSErrTypeCommon::BadParameterEx,
         acsdaemonErrType::ServiceNotRunningEx
       )) {
-        if (name != NULL && strlen(name) == 0) name = NULL;
-        ACS_SHORT_LOG ((LM_INFO, "Stopping '%s' Logging Service (instance %d).", name, instance_number));
+        if (name != NULL && (strlen(name) == 0 || strcmp(name, "Log") == 0)) name = NULL;
+        ACS_SHORT_LOG ((LM_INFO, "Stopping '%s' Logging Service on Imp (instance %d).", name == NULL ? "Log" : name, instance_number));
         if (name != NULL) {
             ACS_SHORT_LOG ((LM_WARNING, "Name parameter of Logging Service shutdown is not supported!"));
         }

@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@$Id: acsServicesHandlerImpl.cpp,v 1.12 2008/10/27 21:11:23 msekoran Exp $"
+* "@$Id: acsServicesHandlerImpl.cpp,v 1.13 2008/10/28 13:54:15 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -303,12 +303,8 @@ void ACSServicesHandlerImpl::start_manager (
   ))
 {
     if (domain != NULL && strlen(domain) == 0) domain = NULL;
-    ACS_SHORT_LOG ((LM_INFO, "Starting Manager (instance %d).", instance_number));
-    if (domain != NULL) {
-        ACS_SHORT_LOG ((LM_WARNING, "Domain parameter of Manager startup is not supported!"));
-    }
     ACSServiceRequestDescription *desc = new ACSServiceRequestDescription(MANAGER, instance_number);
-//    desc->setDomain(domain);
+    desc->setDomain(domain);
     desc->setRecovery(recovery);
     context->processRequest(IMP, START_SERVICE, desc, callback);
 }
@@ -337,13 +333,10 @@ void ACSServicesHandlerImpl::start_logging_service (
     acsdaemonErrType::ServiceAlreadyRunningEx
   ))
 {
-    if (name != NULL && strlen(name) == 0) name = NULL;
-    ACS_SHORT_LOG ((LM_INFO, "Starting '%s' Logging Service (instance %d).", name, instance_number));
-    if (name != NULL) {
-        ACS_SHORT_LOG ((LM_WARNING, "Name parameter of Logging Service startup is not supported!"));
-    }
+    if (name != NULL && (strlen(name) == 0 || strcmp(name, "Log") == 0)) name = NULL;
+    ACS_SHORT_LOG ((LM_INFO, "Starting '%s' Logging Service (instance %d).", name == NULL ? "Log" : name, instance_number));
     ACSServiceRequestDescription *desc = new ACSServiceRequestDescription(LOGGING_SERVICE, instance_number);
-//    desc->setName(name);
+    desc->setName(name);
     context->processRequest(IMP, START_SERVICE, desc, callback);
 }
     
@@ -422,11 +415,8 @@ void ACSServicesHandlerImpl::stop_manager (
 {
     if (domain != NULL && strlen(domain) == 0) domain = NULL;
     ACS_SHORT_LOG ((LM_INFO, "Stopping Manager (instance %d).", instance_number));
-    if (domain != NULL) {
-        ACS_SHORT_LOG ((LM_WARNING, "Domain parameter of Manager shutdown is not supported!"));
-    }
     ACSServiceRequestDescription *desc = new ACSServiceRequestDescription(MANAGER, instance_number);
-//    desc->setDomain(domain);
+    desc->setDomain(domain);
     context->processRequest(IMP, STOP_SERVICE, desc, callback);
 }
     
@@ -454,13 +444,10 @@ void ACSServicesHandlerImpl::stop_logging_service (
     acsdaemonErrType::ServiceNotRunningEx
   ))
 {
-    if (name != NULL && strlen(name) == 0) name = NULL;
-    ACS_SHORT_LOG ((LM_INFO, "Stopping '%s' Logging Service (instance %d).", name, instance_number));
-    if (name != NULL) {
-        ACS_SHORT_LOG ((LM_WARNING, "Name parameter of Logging Service shutdown is not supported!"));
-    }
+    if (name != NULL && (strlen(name) == 0 || strcmp(name, "Log") == 0)) name = NULL;
+    ACS_SHORT_LOG ((LM_INFO, "Stopping '%s' Logging Service (instance %d).", name == NULL ? "Log" : name, instance_number));
     ACSServiceRequestDescription *desc = new ACSServiceRequestDescription(LOGGING_SERVICE, instance_number);
-//    desc->setName(name);
+    desc->setName(name);
     context->processRequest(IMP, STOP_SERVICE, desc, callback);
 }
     

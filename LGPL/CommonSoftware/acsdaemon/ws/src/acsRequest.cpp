@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@$Id: acsRequest.cpp,v 1.1 2008/10/27 21:11:23 msekoran Exp $"
+* "@$Id: acsRequest.cpp,v 1.2 2008/10/28 13:54:15 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -155,7 +155,7 @@ template <class R> void RequestChainContext<R>::proceed(R *lastreq) {
 /*********************** ACS SERVICES SPECIFIC REQUESTS ***********************/
 /************************ ACSServiceRequestDescription ************************/
 
-ACSServiceRequestDescription::ACSServiceRequestDescription(ACSServiceType iservice, int iinstance_number) : service(iservice), instance_number(iinstance_number), host(NULL), name(NULL), domain(NULL), cdbxmldir(NULL), loadir(false), wait(false), recovery(false) {
+ACSServiceRequestDescription::ACSServiceRequestDescription(ACSServiceType iservice, int iinstance_number) : service(iservice), instance_number(iinstance_number), host(NULL), name(NULL), domain(NULL), cdbxmldir(NULL), loadir(false), wait(true), recovery(false) {
 }
 
 ACSServiceRequestDescription::ACSServiceRequestDescription(const ACSServiceRequestDescription &desc) : service(desc.service), instance_number(desc.instance_number), host(STRDUP(desc.host)), name(STRDUP(desc.name)), domain(STRDUP(desc.domain)), cdbxmldir(STRDUP(desc.cdbxmldir)), loadir(desc.loadir), wait(desc.wait), recovery(desc.recovery) {
@@ -180,7 +180,7 @@ ACE_CString ACSServiceRequestDescription::prepareCommand(ACSServiceRequestType r
     sprintf(buffer, "%s %s -b %d", acsServices[service].script, request_type == START_SERVICE ? "-s" : "-k", instance_number);
     ACE_CString commandline = buffer;
     if (loadir && service == INTERFACE_REPOSITORY) commandline = commandline + " -l";
-    if (wait) commandline = commandline + " -w";
+    if (wait && request_type == START_SERVICE) commandline = commandline + " -w";
     if (recovery && (service == CDB || service == MANAGER)) commandline = commandline + " -r";
     if (name != NULL && service == NOTIFICATION_SERVICE) commandline = commandline + " -n " + name;
     if (domain != NULL && service == LOGGING_SERVICE) {
