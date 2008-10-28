@@ -130,7 +130,7 @@ then
     then
 	($CL_CMD > $CL_FILE 2>& 1) &
     else
-	($CL_CMD 2>1) | tee -a $CL_FILE &
+	($CL_CMD 2>& 1) | tee -a $CL_FILE &
     fi
 
     #save the process ID
