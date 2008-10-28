@@ -29,15 +29,16 @@ import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
-import javax.swing.table.TableColumnModel;
+import javax.swing.tree.DefaultMutableTreeNode;
 
 import cern.laser.client.data.Alarm;
 
 import alma.acsplugins.alarmsystem.gui.table.AlarmGUIType;
 import alma.acsplugins.alarmsystem.gui.table.AlarmTable;
 import alma.acsplugins.alarmsystem.gui.table.AlarmTableModel;
-import alma.acsplugins.alarmsystem.gui.table.AlarmTableModel.AlarmTableColumn;
+import alma.acsplugins.alarmsystem.gui.tree.AlarmTree;
 import alma.alarmsystem.clients.CategoryClient;
 
 /**
@@ -65,6 +66,11 @@ public class ReducedChainDlg extends JDialog implements ActionListener {
 	 * The table of alarms
 	 */
 	private final AlarmTable table;
+	
+	/**
+	 * The tree of alarms
+	 */
+	private final AlarmTree tree=new AlarmTree();
 	
 	/**
 	 * The model
@@ -101,7 +107,7 @@ public class ReducedChainDlg extends JDialog implements ActionListener {
 		model = new AlarmTableModel(rootPane,false);
 		table = new AlarmTable(model);
 		initialize();
-		refreshTableContent();
+		refreshContent();
 	}
 	
 	/**
@@ -114,6 +120,8 @@ public class ReducedChainDlg extends JDialog implements ActionListener {
 		
 		rootPane.setLayout(new BorderLayout());
 		
+		JTabbedPane tabbedPane = new JTabbedPane();
+		
 		JScrollPane tableScrollPane = new JScrollPane(
 				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 				JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -122,16 +130,24 @@ public class ReducedChainDlg extends JDialog implements ActionListener {
 		// Set the column of the table
 		//
 		// The table shows all the columns but the flag
-		AlarmTableColumn[] visibleCols = new AlarmTableColumn[AlarmTableColumn.values().length-1];
-		int pos=0;
-		for (AlarmTableColumn col: AlarmTableColumn.values()) {
-			if (col!=AlarmTableColumn.ICON) {
-				visibleCols[pos++]=col;
-			}
-		}
-		table.showColumns(visibleCols);
+//		AlarmTableColumn[] visibleCols = new AlarmTableColumn[AlarmTableColumn.values().length-1];
+//		int pos=0;
+//		for (AlarmTableColumn col: AlarmTableColumn.values()) {
+//			if (col!=AlarmTableColumn.ICON) {
+//				visibleCols[pos++]=col;
+//			}
+//		}
+//		table.showColumns(visibleCols);
 		
-		rootPane.add(tableScrollPane,BorderLayout.CENTER);
+		tabbedPane.addTab("Table view", tableScrollPane);
+		
+		JScrollPane treeScrollPane = new JScrollPane(
+				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+				JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		treeScrollPane.setViewportView(tree);
+		tabbedPane.addTab("Tree view", treeScrollPane);
+		
+		rootPane.add(tabbedPane,BorderLayout.CENTER);
 		
 		JPanel buttonPnl = new JPanel();
 		buttonPnl.add(refreshBtn);
@@ -165,21 +181,23 @@ public class ReducedChainDlg extends JDialog implements ActionListener {
 		if (e.getSource()==closeBtn) {
 			close();
 		} else if (e.getSource()==refreshBtn) {
-			refreshTableContent();
+			refreshContent();
 		}
 	}
 	
 	/**
-	 * Refresh the content of the table by getting the children of the
-	 * root alarm from the {@link CategoryClient}.
+	 * Refresh the content of the table and the tree by getting the
+	 *  children of the root alarm from the {@link CategoryClient}.
 	 */
-	private void refreshTableContent() {
+	private void refreshContent() {
 		Thread refreshThread = new Thread() {
 			public void run() {
 				refreshBtn.setEnabled(true);
 				model.clear();
 				setTitle("Reduction chain of ["+alarm.getAlarmId()+"]");
-				getAlarmChain(alarm);
+				tree.clear(alarm);
+				getAlarmChain(alarm,null);
+				tree.expandRow(0);
 				model.fireTableDataChanged();
 			}
 		};
@@ -195,9 +213,11 @@ public class ReducedChainDlg extends JDialog implements ActionListener {
 	 * to an out of memory if the chain is very deep.
 	 * 
 	 * @param al The alarm to get reduced nodes
+	 * @param parentNode The parent node of the tree
 	 */
-	private void getAlarmChain(Alarm al) {
+	private void getAlarmChain(Alarm al, DefaultMutableTreeNode parentNode) {
 		model.onAlarm(al);
+		DefaultMutableTreeNode newNode = tree.add(al, parentNode);
 		if (al!=null) {
 			Alarm[] alarms = null;
 			try {
@@ -217,7 +237,7 @@ public class ReducedChainDlg extends JDialog implements ActionListener {
 			}
 			if (alarms !=null) {
 				for (Alarm child: alarms) {
-					getAlarmChain(child);
+					getAlarmChain(child,newNode);
 				}
 			}
 		}
@@ -236,6 +256,6 @@ public class ReducedChainDlg extends JDialog implements ActionListener {
 			throw new IllegalArgumentException("The alarm can't be null");
 		}
 		alarm=rootAlarm;
-		refreshTableContent();
+		refreshContent();
 	}
 }
