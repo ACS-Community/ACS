@@ -1,4 +1,4 @@
-# @(#) $Id: Executor.py,v 1.17 2007/10/03 20:44:03 agrimstrup Exp $
+# @(#) $Id: Executor.py,v 1.18 2008/10/28 09:00:49 agrimstrup Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -21,7 +21,7 @@
 # ALMA should be addressed as follows:
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: Executor.py,v 1.17 2007/10/03 20:44:03 agrimstrup Exp $"
+# "@(#) $Id: Executor.py,v 1.18 2008/10/28 09:00:49 agrimstrup Exp $"
 #
 # who       when        what
 # --------  ----------  -------------------------------------------------------
@@ -47,7 +47,7 @@ from Acssim.Corba.Generator            import *
 
 #--GLOBALS---------------------------------------------------------------------
 LOGGER = getLogger("Acssim.Servants.Executor")
-__revision__ = "@(#) $Id: Executor.py,v 1.17 2007/10/03 20:44:03 agrimstrup Exp $"
+__revision__ = "@(#) $Id: Executor.py,v 1.18 2008/10/28 09:00:49 agrimstrup Exp $"
 #------------------------------------------------------------------------------
 def _execute(comp_name, meth_name, args, local_ns):
     '''
@@ -187,4 +187,4 @@ def _executeList(code_list, args, local_ns):
         return final_val
 #---------------------------------
 #the final thing we do is startup the GUI
-import Acssim.Servants.Widgets
+#import Acssim.Servants.Widgets

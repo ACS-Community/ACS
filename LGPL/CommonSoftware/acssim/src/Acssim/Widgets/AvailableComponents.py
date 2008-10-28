@@ -110,7 +110,7 @@ class AvailableComponents(Pmw.Group):
                                                                           
         #add all components to the list iff they are actually simulator objects
         for comp_info in comp_info_list:
-            if comp_info.code == "Acssim.Servants.Simulator" and self.comp_names.count(comp_info.name)==0:
+            if comp_info.code == "Acssim.Servants.GUISimulator" and self.comp_names.count(comp_info.name)==0:
                 self.comp_names.append(comp_info.name)
         #tidy up the list
         self.comp_names.sort()
