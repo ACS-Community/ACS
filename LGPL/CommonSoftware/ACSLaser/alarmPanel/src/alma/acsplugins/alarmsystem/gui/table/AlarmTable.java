@@ -19,7 +19,7 @@
 
 /** 
  * @author  acaproni
- * @version $Id: AlarmTable.java,v 1.10 2008/10/27 16:41:32 acaproni Exp $
+ * @version $Id: AlarmTable.java,v 1.11 2008/10/28 09:51:12 acaproni Exp $
  * @since    
  */
 
@@ -135,7 +135,7 @@ public class AlarmTable extends JTable implements ActionListener {
 				}
 				public void run() {
 					ackMI.setEnabled(!selectedAlarm.getStatus().isActive());
-					showReducedMI.setEnabled(selectedAlarm!=null && selectedAlarm.isNodeParent());
+					showReducedMI.setEnabled(selectedAlarm!=null && (selectedAlarm.isNodeParent() || selectedAlarm.isMultiplicityParent()));
 					popupM.show(AlarmTable.this,e.getX(),e.getY());
 				}
 			}
@@ -548,6 +548,7 @@ public class AlarmTable extends JTable implements ActionListener {
 			reducedDlg = new ReducedChainDlg(client,alarm);
 		} else {
 			reducedDlg.setRootAlarm(alarm);
+			reducedDlg.setVisible(true);
 		}
 	}
 	
