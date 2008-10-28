@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@$Id: acsRequest.cpp,v 1.2 2008/10/28 13:54:15 msekoran Exp $"
+* "@$Id: acsRequest.cpp,v 1.3 2008/10/28 15:44:21 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -189,6 +189,7 @@ ACE_CString ACSServiceRequestDescription::prepareCommand(ACSServiceRequestType r
     if (domain != NULL && service == MANAGER) {
         ACS_SHORT_LOG ((LM_WARNING, "Domain parameter of Manager startup script is not yet supported!"));
     }
+    if (cdbxmldir != NULL && service == CDB) commandline = commandline + " -d \"" + cdbxmldir + "\"";
     if (log) {
         ACE_CString logDirectory="~/.acs/commandcenter/";
 
@@ -212,14 +213,7 @@ ACSErr::Completion_var ACSServiceRequestDescription::executeLocal(ACSServiceRequ
     /* sinchronously executes a system command on the local machine */
     ACE_CString command = prepareCommand(request_type, true);
     ACS_SHORT_LOG ((LM_INFO, "Executing: '%s'.", command.c_str()));
-    char *str = NULL;
-    if (cdbxmldir != NULL) {
-        str = (char*)malloc(sizeof(char) * (10 + strlen(cdbxmldir)));
-        sprintf(str, "ACS_CDB=%s", cdbxmldir);
-        ACE_OS::putenv(str);
-    }
     int result = ACE_OS::system(command.c_str()) >> 8;
-    if (str != NULL) free(str);
     if (result != EC_OK) {
         ACS_SHORT_LOG ((LM_INFO, "Result is: '%d'.", result));
         ACSErr::CompletionImpl *failed;
