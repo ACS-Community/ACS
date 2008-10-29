@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.5 2008/10/27 04:15:56 javarias Exp $"
+# "@(#) $Id: Makefile,v 1.6 2008/10/29 02:39:06 javarias Exp $"
 #
 # Makefile of ........
 #
@@ -24,7 +24,33 @@
 #
 # additional include and library search paths
 USER_INC = -I$(DDS_ROOT)
-USER_LIB = -L$(DDS_ROOT)/lib 
+USER_LIB = -lACE \
+			  -lTAO \
+			  -lTAO_DsLogAdmin \
+			  -lTAO_CosNaming \
+			  -lTAO_IORTable \
+			  -lTAO_PortableServer \
+			  -lTAO_Svc_Utils \
+			  -lTAO_CosTrading \
+			  -lTAO_CosNotification \
+			  -lTAO_DynamicAny \
+			  -lTAO_IFR_Client \
+			  -lTAO_CosProperty \
+			  -lacsutil \
+			  -lcdb \
+			  -llogging \
+			  -lacscomponent \
+			  -lbaci \
+			  -lmaci \
+			  -lmaciClient \
+			  -lacserr \
+			  -lm \
+			  -lloki \
+			  -lACSErrTypeCommon \
+			  -lacsnc \
+			  -lOpenDDS_Dcps \
+			  -lSimpleTcp \
+			  -L$(DDS_ROOT)/lib
 
 #
 # MODULE CODE DESCRIPTION:
@@ -35,18 +61,23 @@ USER_LIB = -L$(DDS_ROOT)/lib
 #
 # C programs (public and local)
 # -----------------------------
-EXECUTABLES     = ncConsumer ddsPublisher
+EXECUTABLES     = simpleExampleDDSClient ncConsumer ddsSubscriber
 EXECUTABLES_L   = 
+
+# <brief description of xxxxx program>
+simpleExampleDDSClient_OBJECTS   = 	simpleExampleDDSClient
+simpleExampleDDSClient_LDFLAGS   =  
+simpleExampleDDSClient_LIBS      =  acsddsnc maciClient SimpleExampleStubs acsddsncTypeSupport
 
 # <brief description of xxxxx program>
 ncConsumer_OBJECTS   = 	ncConsumer
 ncConsumer_LDFLAGS   =  
-ncConsumer_LIBS      =  acsnc maciClient NCBenchmarkStubs OpenDDS_Dcps
+ncConsumer_LIBS      =  acsnc maciClient NCBenchmarkStubs
 
 # <brief description of xxxxx program>
-ddsPublisher_OBJECTS   = ddsPublisher
-ddsPublisher_LDFLAGS   = 
-ddsPublisher_LIBS      = OpenDDS_Dcps SimpleTcp ACE NCBenchTypeSupport acsddsnc acserr baci acsutil 
+ddsSubscriber_OBJECTS   = ddsSubscriber
+ddsSubscriber_LDFLAGS   = 
+ddsSubscriber_LIBS      = acsddsnc NCBenchmarkStubs acsddsncTypeSupport
 
 # <brief description of xxxxx program>
 #xxxxx_OBJECTS   = 	
@@ -67,7 +98,7 @@ INCLUDES        =  DDSHelper.h DDSPublisher.h DDSSubscriber.h \
 #
 # Libraries (public and local)
 # ----------------------------
-LIBRARIES       = acsddsnc NCBenchTypeSupport NCBenchmarkImpl
+LIBRARIES       = acsddsnc acsddsncTypeSupport simpleExampleDDSImpl NCBenchmarkImpl DDSNCBenchmarkImpl
 LIBRARIES_L     =
 
 #
@@ -76,19 +107,27 @@ acsddsnc_OBJECTS  = DDSHelperImpl DDSSubscriberImpl DataReaderListenerImpl
 acsddsnc_LIBS		= OpenDDS_Dcps SimpleTcp ACE
 
 #
-# <brief description of acsddsncBench library>
-NCBenchmarkImpl_OBJECTS = NCBenchmarkImpl
-NCBenchmarkImpl_LIBS    = acsddsnc acserr baci acsutil
+# <brief description of simpleExample library>
+simpleExampleDDSImpl_OBJECTS = simpleExampleDDSImpl
+simpleExampleDDSImpl_LIBS    = SimpleExampleStubs acsddsncTypeSupport acsddsnc 
 
 #
-# <brief description of acsddsncBench library>
-NCBenchTypeSupport_OBJECTS = $(DDS_TYPE_FILES)
-NCBenchTypeSupport_LIBS		= NCBenchmarkStubs OpenDDS_Dcps SimpleTcp ACE
+# <brief description of NCBenchmarkImple library>
+NCBenchmarkImpl_OBJECTS = NCBenchmarkImpl
+NCBenchmarkImpl_LIBS    =  OpenDDS_Dcps SimpleTcp ACE NCBenchmarkStubs NCBenchTypeSupport acsnc acserr baci acsutil
+
+DDSNCBenchmarkImpl_OBJECTS = DDSNCBenchmarkImpl
+DDSNCBenchmarkImpl_LIBS    = OpenDDS_Dcps SimpleTcp ACE NCBenchmarkStubs NCBenchTypeSupport acsddsnc acserr baci acsutil
+
+#
+# <brief description of acsddsncTypeSupport library>
+acsddsncTypeSupport_OBJECTS = $(DDS_TYPE_FILES)
+acsddsncTypeSupport_LIBS    = NCBenchmarkStubs SimpleExampleStubs 
 
 #
 # Scripts (public and local)
 # ----------------------------
-SCRIPTS         =
+SCRIPTS         = startDCPSInfoRepo
 SCRIPTS_L       =
 
 #
@@ -134,9 +173,9 @@ CDB_SCHEMAS =
 # 
 # IDL Files and flags
 # 
-IDL_FILES = NCBenchmark
-DDS_IDL_FILES = NCBenchmark
-DDS_TYPES = Message
+IDL_FILES = NCBenchmark SimpleExample
+DDS_IDL_FILES = NCBenchmark SimpleExample
+DDS_TYPES = Message simpleMessage
 TAO_IDLFLAGS = -Gdcps
 USER_IDL = -I$(DDS_ROOT)
 #
@@ -237,9 +276,9 @@ build_dds: $(DDS_TYPE_IDLS)
 $(DDS_TYPE_IDLS):
 	@echo "==== Generating DDS idls"
 	cp -r $(DDS_IDLS) .
-	$(foreach idl, $(DDS_IDL_FILES), $(DDS_ROOT)/bin/dcps_ts.pl $(idl).idl)
+	$(foreach idl, $(DDS_IDL_FILES), $(DDS_ROOT)/bin/dcps_ts.pl $(idl).idl;)
 	@echo "==== Processing DDS idls: $(DDS_TYPE_IDLS)"
-	$(foreach idl, $(DDS_TYPE_IDLS), $(ACE_ROOT)/TAO/TAO_IDL/tao_idl $(IDL_PATH) $(USER_IDL) $(TAO_IDLFLAGS) $(USER_IDL) $(idl))
+	$(foreach idl, $(DDS_TYPE_IDLS), $(ACE_ROOT)/TAO/TAO_IDL/tao_idl $(IDL_PATH) $(USER_IDL) $(TAO_IDLFLAGS) $(USER_IDL) $(idl);)
 #	rm -rf $(foreach idl, $(DDS_IDL_FILES), $(idl).idl)
 
 clean_dds:

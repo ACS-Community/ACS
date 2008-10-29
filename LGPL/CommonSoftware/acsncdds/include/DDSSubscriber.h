@@ -89,7 +89,7 @@ namespace ddsnc{
 
 				listener = new  DDS::DataReaderListener_var 
 					(new ddsnc::ACSDDSNCDataReaderListener
-					 <DRV,DR,D>(templateFunction));
+					 <DRV,DR,D>(templateFunction, handlerParam));
 
 				/*ddsnc::ACSDDSNCDataReaderListener<DRV,DR,D>* listener_servant=
 					dynamic_cast<ddsnc::ACSDDSNCDataReaderListener<DRV,DR,D>*>
@@ -165,11 +165,11 @@ namespace ddsnc{
  * @see initialize()
  * @see addSubscription()
  */
-#define ACS_NEW_DDS_SUBSCRIBER(subscriber_p, idlStruct, channelName, handlerFunc) \
+#define ACS_NEW_DDS_SUBSCRIBER(subscriber_p, idlStruct, channelName, handlerFunc, handlerParam) \
 { \
 	subscriber_p= new ddsnc::DDSSubscriber(channelName); \
 	subscriber_p->initialize<idlStruct, idlStruct##TypeSupport_var, idlStruct##TypeSupportImpl>(); \
-	sub->addSubscription<idlStruct##DataReader_var, idlStruct##DataReader, idlStruct>(handlerFunc, (void *) 0); \
+	subscriber_p->addSubscription<idlStruct##DataReader_var, idlStruct##DataReader, idlStruct>(handlerFunc, handlerParam); \
 }
 
 #endif

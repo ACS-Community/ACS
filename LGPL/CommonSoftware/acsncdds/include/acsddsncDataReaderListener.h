@@ -28,6 +28,7 @@ class ACSDDSNCDataReaderListener :
 	public:
 	typedef void (*eventHandlerFunction)(D eventData, void *handlerParam);
 	eventHandlerFunction templateFunction_mp;
+	void *handlerParam_mp;
 
 	/**
 	 * Callback function to receive the messages. 
@@ -35,10 +36,12 @@ class ACSDDSNCDataReaderListener :
 	 * @param eventHandlerFunction Function pointer to function responsible to
 	 * do something with the data
 	 */
-	ACSDDSNCDataReaderListener(eventHandlerFunction templateFunction) : 
+	ACSDDSNCDataReaderListener(eventHandlerFunction templateFunction, 
+			void * handlerParam=0) : 
 		ddsnc::DataReaderListenerImpl()
 	{
 		templateFunction_mp = templateFunction;
+		handlerParam_mp = handlerParam;
 	}
 
 	void on_data_available(DDS::DataReader_ptr reader) 
@@ -54,8 +57,8 @@ class ACSDDSNCDataReaderListener :
 			DDS::SampleInfo si;
 			DDS::ReturnCode_t status = message_dr->take_next_sample(message, si);
 			if (status == DDS::RETCODE_OK) {
-				::std::cerr << "SampleInfo.sample_rank = " << si.sample_rank << ::std::endl;
-				::std::cerr << "SampleInfo.instance_state = " << si.instance_state << ::std::endl;
+				//::std::cerr << "SampleInfo.sample_rank = " << si.sample_rank << ::std::endl;
+				//::std::cerr << "SampleInfo.instance_state = " << si.instance_state << ::std::endl;
 				if (si.valid_data == 1){
 					(*templateFunction_mp)(message, 0);
 				}else if (si.instance_state == DDS::NOT_ALIVE_DISPOSED_INSTANCE_STATE){

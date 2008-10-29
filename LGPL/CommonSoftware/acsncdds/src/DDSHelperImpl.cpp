@@ -8,20 +8,23 @@ using namespace ddsnc;
 DDSHelper::DDSHelper(const char* channelName)
 {
 	int argc;
-	char* argv[3];
-	argc=3;
+	char* argv[5];
+	argc=5;
 
 	argv[0] = strdup("Participant");
 	argv[1] = strdup("-DCPSInforepo");
-	argv[2] = strdup("corbaloc:iiop:127.0.0.1:4000/DCPSInfoRepo");
+	argv[2] = strdup("corbaloc:iiop:127.0.0.1:3999/DCPSInfoRepo");
+	argv[3] = strdup("-DCPSDebugLevel");
+	argv[4] = strdup("0");
 
 	transport_impl_id=1;
-	
+
+	std::cerr << "Registering TransportImpl"	<< std::endl;
 	ACE_Service_Config::process_directive(
 			"static DCPS_SimpleTcpLoader \"-type SimpleTcp\"");
 
-
 	dpf=TheParticipantFactoryWithArgs(argc, (ACE_TCHAR**)argv);
+	
 	initialized=false;
 
 	::std::string channelStr(channelName);
@@ -33,15 +36,18 @@ DDSHelper::DDSHelper(const char* channelName)
    }
    setTopicName(channelStr.substr(++pos).c_str());
 	std::cerr << "Trying to set topic name: " << topicName <<std::endl;
-   setPartitionName(channelStr.substr(0,pos).c_str());
+   setPartitionName(channelStr.substr(0,--pos).c_str());
 
 }
 
 int DDSHelper::createParticipant(){
 	std::cerr << "DDSHelper::createParticipant" << std::endl;
 	participant = dpf->create_participant(DOMAIN_ID,
-						  PARTICIPANT_QOS_DEFAULT,
-						  DDS::DomainParticipantListener::_nil());
+			PARTICIPANT_QOS_DEFAULT,
+			DDS::DomainParticipantListener::_nil());
+	
+	std::cerr << "Created the participant" << std::endl;
+
 	if (CORBA::is_nil(participant.in())){
 		std::cerr << "Create Participant Failed." << std::endl;
 		return 1;
@@ -51,26 +57,34 @@ int DDSHelper::createParticipant(){
 
 
 void DDSHelper::initializeTransport(){
+	std::cerr << " DDSHelper::initializeTransport()" << std::endl;
+	try{
 	transport_impl=
 		TheTransportFactory->create_transport_impl(transport_impl_id,
-												"SimpleTcp",
-											  ::OpenDDS::DCPS::DONT_AUTO_CONFIG);
-	
-	OpenDDS::DCPS::TransportConfiguration_rch config=
-		         TheTransportFactory->create_configuration(transport_impl_id,
-							               "SimpleTcp");
-
-	OpenDDS::DCPS::SimpleTcpConfiguration* tcp_config =
-	  	static_cast<OpenDDS::DCPS::SimpleTcpConfiguration*>(config.in());
-
-	ACE_TCHAR dir[1024];
-	ACE_INET_Addr local_address ;
-	local_address.addr_to_string(dir, 1024);
-	std::string dir_str(dir);
-	tcp_config->local_address_ = local_address;
-	tcp_config->local_address_str_ = dir_str;
-
-	transport_impl->configure(tcp_config);
+				"SimpleTcp", ::OpenDDS::DCPS::AUTO_CONFIG);
+	}
+	catch(OpenDDS::DCPS::Transport::Duplicate &ex){
+		transport_impl=TheTransportFactory->obtain(transport_impl_id);
+	}
+//	std::cerr << "Configuring transport" << std::cerr;	
+//	OpenDDS::DCPS::TransportConfiguration_rch config=
+//		         TheTransportFactory->create_configuration(transport_impl_id,
+//							               "SimpleTcp");
+//
+//	OpenDDS::DCPS::SimpleTcpConfiguration* tcp_config =
+//	  	static_cast<OpenDDS::DCPS::SimpleTcpConfiguration*>(config.in());
+//
+//	ACE_TCHAR dir[1024];
+//	ACE_INET_Addr local_address ;
+//	local_address.addr_to_string(dir, 1024);
+//	std::string dir_str(dir);
+//	tcp_config->local_address_ = local_address;
+//	tcp_config->local_address_str_ = dir_str;
+//	std::cerr << dir_str << std::endl;
+//
+//	transport_impl->configure(tcp_config);
+//
+	std::cerr << "Finishing configuration" << std::endl;
 
 }
 
@@ -99,17 +113,19 @@ void DDSHelper::setPartitionName(const char* partitionName){
 
 void DDSHelper::disconnect()
 {
+	std::cerr<< "DDSHelper::disconnect()"<<std::endl;
 	if(initialized==true){
 		participant->delete_contained_entities();
 		dpf->delete_participant(participant.in());
-		TheTransportFactory->release();
-		TheServiceParticipant->shutdown();
+		//TheTransportFactory->release();
+		//TheServiceParticipant->shutdown();
 		initialized=false;
 	}
 }
 
 DDSHelper::~DDSHelper()
 {
+	std::cerr << "DDSHelper::~DDSHelper()" << std::endl;
 	disconnect();
 	free(partitionName);
 	free(topicName);
