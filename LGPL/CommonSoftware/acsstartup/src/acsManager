@@ -7,7 +7,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: acsManager,v 1.1 2008/08/29 10:20:47 msekoran Exp $"
+# "@(#) $Id: acsManager,v 1.2 2008/10/29 17:18:29 msekoran Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -178,55 +178,59 @@ MANAGER_OUT=$INSTANCE_DIR/$ACS_MANAGER_OUT
 
 if [ "$CL_STOP" = "true" ]
 then
-  # SANITY CHECKS
-  # --------------------------------------------------------------------------
-  if ! MANAGER_PID=`getManagerPid`
+  if MANAGER_PID=`getManagerPid`
   then
-    exit $EC_CANNOTUSE
-  fi
-  if [ ! -d $INSTANCE_DIR ]
-  then
-    ACS_LOG_DEBUG "$COMMAND" "The lock directory '$INSTANCE_DIR' does not exist!"
-  elif [ ! -e $MANAGER_PIDFILE ]
-  then
-    ACS_LOG_DEBUG "$COMMAND" "The temporary file '$MANAGER_PIDFILE' does not exist!"
-  elif [ ! -w $INSTANCE_DIR ] # Stop user A from interfering with user B
-  then
-    ACS_LOG_ERROR "$COMMAND" "The directory '$INSTANCE_DIR' is not owned by $USER!"
-    exit $EC_CANNOTUSE
-  elif [ ! -w $MANAGER_PIDFILE ]
-  then
-    ACS_LOG_ERROR "$COMMAND" "The temporary file '$MANAGER_PIDFILE' is not owned by $USER!"
-    exit $EC_CANNOTUSE
-  fi
+    # SANITY CHECKS
+    # --------------------------------------------------------------------------
+    if [ ! -d $INSTANCE_DIR ]
+    then
+      ACS_LOG_DEBUG "$COMMAND" "The lock directory '$INSTANCE_DIR' does not exist!"
+    elif [ ! -e $MANAGER_PIDFILE ]
+    then
+      ACS_LOG_DEBUG "$COMMAND" "The temporary file '$MANAGER_PIDFILE' does not exist!"
+    elif [ ! -w $INSTANCE_DIR ] # Stop user A from interfering with user B
+    then
+      ACS_LOG_ERROR "$COMMAND" "The directory '$INSTANCE_DIR' is not owned by $USER!"
+      exit $EC_CANNOTUSE
+    elif [ ! -w $MANAGER_PIDFILE ]
+    then
+      ACS_LOG_ERROR "$COMMAND" "The temporary file '$MANAGER_PIDFILE' is not owned by $USER!"
+      exit $EC_CANNOTUSE
+    fi
 
-  # MANAGER SHUTDOWN
-  # --------------------------------------------------------------------------
-  # Everything checked out so manager can really be shutdown
-  # If this command does not finish in 15 seconds, it will be killed
+    # MANAGER SHUTDOWN
+    # --------------------------------------------------------------------------
+    # Everything checked out so manager can really be shutdown
+    # If this command does not finish in 15 seconds, it will be killed
 
-  # The code to send to shutdown methods of all containers. 
-  # If 0, the containers' shutdown methods are not called, and the manager simply calls disconnect()
-  # TODO Think about if we want containers to actually shut down, and what value to send in that case.
-  # See COMP-2602 for more.
-  export container_shutdown_code=0
+    # The code to send to shutdown methods of all containers. 
+    # If 0, the containers' shutdown methods are not called, and the manager simply calls disconnect()
+    # TODO Think about if we want containers to actually shut down, and what value to send in that case.
+    # See COMP-2602 for more.
+    export container_shutdown_code=0
  
-  acsutilBlock -t 15 -k "maciManagerShutdown $container_shutdown_code"
+    acsutilBlock -t 15 -k "maciManagerShutdown $container_shutdown_code"
 
-  # Assume the worst has happened...manager is hung
-  # --------------------------------------------------------------------------
-  # Delegate to this helper script. If jManager does not really go away in
-  # $MAX_TIMEOUT seconds, the helper script will forcefully kill it!
-  acsutilBlock -p $MANAGER_PID -t $MAX_TIMEOUT -k
+    # Assume the worst has happened...manager is hung
+    # --------------------------------------------------------------------------
+    # Delegate to this helper script. If jManager does not really go away in
+    # $MAX_TIMEOUT seconds, the helper script will forcefully kill it!
+    acsutilBlock -p $MANAGER_PID -t $MAX_TIMEOUT -k
 
-  # Some final cleanup
-  # --------------------------------------------------------------------------
-  #remove manager's pid file
-  rm -f $MANAGER_PIDFILE 
-  #remove manager's output file
-  rm -f $MANAGER_OUT
+    # Some final cleanup
+    # --------------------------------------------------------------------------
+    #remove manager's pid file
+    rm -f $MANAGER_PIDFILE 
+    #remove manager's output file
+    rm -f $MANAGER_OUT
 
-  ACS_LOG_INFO "$COMMAND" "`basename $0`: done."
+    ACS_LOG_INFO "$COMMAND" "`basename $0`: done."
+  else
+    if [ "$CL_START" != "true" ]
+    then
+      exit $EC_FAILURE
+    fi
+  fi
 fi
 
 if [ "$CL_START" = "true" ]
