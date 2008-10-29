@@ -118,6 +118,11 @@ public class AcsLogLevel extends Level implements Comparable<AcsLogLevel>
 	 */
 	public static final AcsLogLevel EMERGENCY = new AcsLogLevel("EMERGENCY", Level.SEVERE.intValue(), AcsLogLevelDefinition.EMERGENCY);
 
+	/**
+	 * Level not to be used for actual logging, but to set log levels for filtering.
+	 * Overwrites/hides {@link Level.OFF}.
+	 */
+	public static final AcsLogLevel OFF = new AcsLogLevel(Level.OFF.getName(), Level.OFF.intValue(), AcsLogLevelDefinition.OFF);
 	
 	
 	/**
@@ -143,7 +148,7 @@ public class AcsLogLevel extends Level implements Comparable<AcsLogLevel>
 		// create entry name, so that is computent only once
 		entryName = name.substring(0, 1).toUpperCase() + name.substring(1).toLowerCase();
 
-		this.acsCoreLevel = acsCoreLevel;		
+		this.acsCoreLevel = acsCoreLevel;
 
 		// add to tree of known lists
 		synchronized (known)
@@ -160,11 +165,12 @@ public class AcsLogLevel extends Level implements Comparable<AcsLogLevel>
 
 	/**
 	 * Converts an ACS core log level (as defined in ACS, Unix or similar) 
-	 * to the best fitting AcsLogLevel. 
+	 * to the matching AcsLogLevel.
 	 * If no AcsLogLevel directly corresponds to the given core level, then the AcsLogLevel
 	 * whose associated acsCoreLevel is >= the given core level is chosen.
-	 * Only if <code>acsCoreLevel</code> is larger than EMERGENCY's core level,
-	 * we "round down" to EMERGENCY.
+	 * <p>
+	 * @TODO: In the past the acsCoreLevel param was an int, in which case the iteration over "known" level list made sense.
+	 *        Now that these are enums we should translate more directly.
 	 * @param acsCoreLevel
 	 * @return
 	 */
