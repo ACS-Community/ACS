@@ -17,7 +17,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: test_Acsalarmpy.py,v 1.3 2008/10/29 08:38:05 agrimstrup Exp $"
+# "@(#) $Id: test_Acsalarmpy.py,v 1.4 2008/10/29 09:10:58 agrimstrup Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -58,7 +58,7 @@ class TestAlarmSystemInterfaceFactory(unittest.TestCase):
 
     def test_createSource_noinit(self):
         """AlarmSystemInterfaceFactory does not create source when not initialized"""
-        self.assertRaises(RuntimeError, Acsalarmpy.AlarmSystemInterfaceFactory.createSource)
+        self.assertRaises(Acsalarmpy.ErrFactory.ACSASFactoryNotInitedExImpl, Acsalarmpy.AlarmSystemInterfaceFactory.createSource)
 
     def test_createSource_ACS(self):
         """AlarmSystemInterfaceFactory creates ACS source correctly"""
@@ -81,7 +81,7 @@ class TestAlarmSystemInterfaceFactory(unittest.TestCase):
 
     def test_createFaultState_noinit(self):
         """AlarmSystemInterfaceFactory does not create FaultStates when not initialized"""
-        self.assertRaises(RuntimeError, Acsalarmpy.AlarmSystemInterfaceFactory.createFaultState)
+        self.assertRaises(Acsalarmpy.ErrFactory.ACSASFactoryNotInitedExImpl, Acsalarmpy.AlarmSystemInterfaceFactory.createFaultState)
 
     def test_done(self):
         """AlarmSystemInterfaceFactory cleared correctly"""

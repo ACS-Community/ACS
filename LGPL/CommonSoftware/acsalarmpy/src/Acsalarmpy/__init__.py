@@ -17,7 +17,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: __init__.py,v 1.3 2008/10/29 08:38:05 agrimstrup Exp $"
+# "@(#) $Id: __init__.py,v 1.4 2008/10/29 09:10:57 agrimstrup Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -30,7 +30,7 @@ import AcsAlarmSystem_xsd
 import FaultState
 import ACSAlarmSystemInterfaceProxy as ACSProxy
 import CERNAlarmSystemInterfaceProxy as CERNProxy
-import acsErrTypeAlarmSourceFactory as ErrFactory
+import acsErrTypeAlarmSourceFactoryImpl as ErrFactory
 
 class AlarmSystemInterfaceFactory(object):
     """
@@ -104,7 +104,7 @@ class AlarmSystemInterfaceFactory(object):
         """
         cls.logger.logTrace("AlarmSystemInterfaceFactory::createSource() entering.")
         if not cls.initialized:
-            raise RuntimeError("Factory Not Initialized")
+            raise ErrFactory.ACSASFactoryNotInitedExImpl()
         cls.logger.logTrace("AlarmSystemInterfaceFactory::createSource() exiting.")
         return cls.registry[cls.systemtype](sourceName)
 
@@ -123,7 +123,7 @@ class AlarmSystemInterfaceFactory(object):
         """
         cls.logger.logTrace("AlarmSystemInterfaceFactory::createFaultState() entering.")
         if not cls.initialized:
-            raise RuntimeError("Factory Not Initialized")
+            raise ErrFactory.ACSASFactoryNotInitedExImpl()
         cls.logger.logTrace("AlarmSystemInterfaceFactory::createFaultState() exiting.")
         return FaultState.FaultState(family, member, code)
 
