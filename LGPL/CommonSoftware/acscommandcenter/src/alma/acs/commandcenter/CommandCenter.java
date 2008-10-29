@@ -65,12 +65,12 @@ public class CommandCenter {
 				}
 				
 				if (equalsOneOf(args[i], new String[]{"-useNativeSSH", "--useNativeSSH"})) {
-			   	startupOptions.useNativeSSH = true;
+					log.warning("command line option '-useNativeSSH' no longer supported.");
 			   	continue;
 				}
 
 				if (equalsOneOf(args[i], new String[]{"-killNativeSSH", "--killNativeSSH"})) {
-			   	startupOptions.killNativeSSH = true;
+					log.warning("command line option '-killNativeSSH' no longer supported.");
 			   	continue;
 				}
 
@@ -98,20 +98,8 @@ public class CommandCenter {
       }
 
       
-      // --- evaluate some pieces of the options
-
-      if (startupOptions.useNativeSSH) {
-			System.setProperty(Executor.SYSPROP_USE_NATIVE_SSH, Boolean.toString(true));
-      }
-
-      if (startupOptions.killNativeSSH) {
-			System.setProperty(Executor.SYSPROP_KILL_NATIVE_SSH, Boolean.toString(true));
-      }
-      
       
       // --- instantiate appropriate logic
-
-      // A) normal Gui operations
 
       commandCenterLogic = new CommandCenterLogic();
       commandCenterLogic.prepare(startupOptions);
@@ -121,8 +109,6 @@ public class CommandCenter {
       }
       
       commandCenterLogic.go();
-
-      // B) something else... ;)
 
 	}
 
