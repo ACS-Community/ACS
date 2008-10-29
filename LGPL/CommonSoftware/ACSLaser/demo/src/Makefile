@@ -84,7 +84,7 @@ PY_SCRIPTS_L       =
 PY_MODULES         =
 PY_MODULES_L       =
 
-PY_PACKAGES        =
+PY_PACKAGES        = AlSysDemo
 PY_PACKAGES_L      =
 pppppp_MODULES	   =
 
