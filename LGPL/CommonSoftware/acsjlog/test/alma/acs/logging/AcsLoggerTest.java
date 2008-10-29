@@ -1,15 +1,16 @@
 package alma.acs.logging;
 
-import java.util.logging.ConsoleHandler;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import junit.framework.TestCase;
 
+import alma.ACSErrTypeCommon.wrappers.AcsJIllegalArgumentEx;
 import alma.acs.logging.domainspecific.AntennaContextLogger;
 import alma.acs.logging.domainspecific.ArrayContextLogger;
 import alma.acs.logging.formatters.ConsoleLogFormatter;
+import alma.acs.logging.level.AcsLogLevelDefinition;
 import alma.acs.testsupport.TestLogger;
 import alma.log_audience.OPERATOR;
 
@@ -70,5 +71,20 @@ public class AcsLoggerTest extends TestCase {
 		assertEquals("myJdkLoggerwrapper", wrapper.getName());
 		
 		wrapper.info("A message logged by the AcsLogger that wraps the jdkLogger");
+	}
+	
+	public void testAbuseLevelOff() throws Exception {
+		try {
+			acsLogger.log(Level.OFF, "Bad log with Level.OFF");
+			fail("Logging with level OFF should throw an exception, see COMP-1928");
+		} catch (IllegalArgumentException ex) {
+			// good
+		}
+		try {
+			acsLogger.log(AcsLogLevel.OFF, "Bad log with AcsLogLevel.OFF");
+			fail("Logging with level OFF should throw an exception, see COMP-1928");
+		} catch (IllegalArgumentException ex) {
+			// good
+		}
 	}
 }
