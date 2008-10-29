@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.1 2008/10/09 16:11:09 agrimstrup Exp $"
+# "@(#) $Id: Makefile,v 1.2 2008/10/29 08:38:05 agrimstrup Exp $"
 #
 # Makefile of ........
 #
@@ -84,7 +84,7 @@ PY_SCRIPTS_L       =
 PY_MODULES         = 
 PY_MODULES_L       =
 
-PY_PACKAGES        = Acsalarmpy
+PY_PACKAGES        = Acsalarmpy ACSAlarmSystemInterfaceProxy
 PY_PACKAGES_L      =
 pppppp_MODULES	   =
 

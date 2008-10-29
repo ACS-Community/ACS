@@ -1,23 +1,23 @@
 #! /usr/bin/env python
 #*******************************************************************************
 # ALMA - Atacama Large Millimiter Array
-# (c) National Research Council of Canada, 2008 
-# 
+# (c) National Research Council of Canada, 2008
+#
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
 # License as published by the Free Software Foundation; either
 # version 2.1 of the License, or (at your option) any later version.
-# 
+#
 # This library is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 # Lesser General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU Lesser General Public
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: test_Acsalarmpy_ACSAlarmSystemInterfaceProxy.py,v 1.1 2008/10/09 16:11:10 agrimstrup Exp $"
+# "@(#) $Id: test_Acsalarmpy_ACSAlarmSystemInterfaceProxy.py,v 1.2 2008/10/29 08:38:05 agrimstrup Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -34,13 +34,13 @@ def mockGetLogger(name=None):
 
 Acspy.Common.Log.getLogger = mockGetLogger
 
-import Acsalarmpy.ACSAlarmSystemInterfaceProxy as ACSInterface
+import ACSAlarmSystemInterfaceProxy as ACSInterface
 import Acsalarmpy.FaultState as FaultState
 
 class TestACSAlarmSystemInterfaceProxy(unittest.TestCase):
     def setUp(self):
         self.asi = ACSInterface.ACSAlarmSystemInterfaceProxy()
-        
+
     def test_object_initialization(self):
         """ACSAlarmSystemInterfaceProxy default initializer"""
         self.assertEqual(True, self.asi.sourceName is None)
@@ -49,11 +49,11 @@ class TestACSAlarmSystemInterfaceProxy(unittest.TestCase):
 
     def test_close(self):
         """ACSAlarmSystemInterfaceProxy close interface"""
-        self.assertRaises(Exception,self.asi.close) 
+        self.assertRaises(Exception,self.asi.close)
 
     def test_publishMessage(self):
         """ACSAlarmSystemInterfaceProxy publish message to alarm system"""
-        self.assertRaises(Exception,self.asi.publishMessage) 
+        self.assertRaises(Exception,self.asi.publishMessage)
 
     def test_push_single(self):
         """ACSAlarmSystemInterfaceProxy push a single fault"""
@@ -65,7 +65,7 @@ class TestACSAlarmSystemInterfaceProxy(unittest.TestCase):
         self.assertEqual(1, len(mesg))
         self.assertEqual('logAlert',mesg[0][0])
         self.assertEqual(base, mesg[0][1][0])
-        
+
 
     def test_push_multi(self):
         """ACSAlarmSystemInterfaceProxy push multiple faults"""
@@ -80,7 +80,7 @@ class TestACSAlarmSystemInterfaceProxy(unittest.TestCase):
     def test_pushActiveList(self):
         """ACSAlarmSystemInterfaceProxy push a list of active faults"""
         self.asi.logger.reset()
-        faultList = [FaultState.FaultState("Family","Member",4),FaultState.FaultState("Family","Member",5)] 
+        faultList = [FaultState.FaultState("Family","Member",4),FaultState.FaultState("Family","Member",5)]
         self.asi.pushActiveList(faultList)
         mesg = self.asi.logger.method_calls[1:-1]
         self.assertEqual(2, len(mesg))

@@ -1,23 +1,23 @@
 #! /usr/bin/env python
 #*******************************************************************************
 # ALMA - Atacama Large Millimiter Array
-# (c) National Research Council of Canada, 2008 
-# 
+# (c) National Research Council of Canada, 2008
+#
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
 # License as published by the Free Software Foundation; either
 # version 2.1 of the License, or (at your option) any later version.
-# 
+#
 # This library is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 # Lesser General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU Lesser General Public
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: __init__.py,v 1.2 2008/10/09 19:13:20 agrimstrup Exp $"
+# "@(#) $Id: __init__.py,v 1.3 2008/10/29 08:38:05 agrimstrup Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -29,7 +29,7 @@ import Acspy.Common.CDBAccess as CDBAccess
 import AcsAlarmSystem_xsd
 import FaultState
 import ACSAlarmSystemInterfaceProxy as ACSProxy
-#import CERNAlarmSystemInterfaceProxy as CERNProxy
+import CERNAlarmSystemInterfaceProxy as CERNProxy
 import acsErrTypeAlarmSourceFactory as ErrFactory
 
 class AlarmSystemInterfaceFactory(object):
