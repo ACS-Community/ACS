@@ -5,7 +5,7 @@
 #*******************************************************************************
 # E.S.O. - ALMA project
 #
-# "@(#) $Id: acsList,v 1.8 2008/04/10 05:24:41 cparedes Exp $"
+# "@(#) $Id: acsList,v 1.9 2008/10/29 09:53:26 mschilli Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -97,11 +97,11 @@ function printDetails() {
 	if [ -d `getInstanceDirName $1` ] ; then 
 		pushd `getInstanceDirName $1` >/dev/null
 		
-	   if [ -e ACS_CDB_PID ] ; then
+	   if [ -e pids/ACS_CDB_PID ] ; then
 	      cdb=yes
 		fi
 	   
-	   if [ -e manager.out ] ; then
+	   if [ -e pids/ACS_MANAGER_PID ] ; then
 	      manager=yes
 		fi
 		
@@ -114,14 +114,14 @@ function printDetails() {
 		   fi
 		fi
 
-		echo cdb: $cdb
-		echo manager: $manager
-		echo $nContainers container\(s\): $containers
+		echo Cdb: $cdb
+		echo Manager: $manager
+		echo $nContainers Container\(s\): $containers
 
 		popd >/dev/null
 	
 	else
-		ACS_LOG_ERROR "acsList" "$1: doesn't exist"
+		echo "$1: doesn't exist"
 	fi
 
 }
