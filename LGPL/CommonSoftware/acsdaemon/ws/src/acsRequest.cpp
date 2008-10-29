@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@$Id: acsRequest.cpp,v 1.3 2008/10/28 15:44:21 msekoran Exp $"
+* "@$Id: acsRequest.cpp,v 1.4 2008/10/29 17:18:45 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -177,7 +177,7 @@ void ACSServiceRequestDescription::setFromXMLAttributes(const char **atts) {
 
 ACE_CString ACSServiceRequestDescription::prepareCommand(ACSServiceRequestType request_type, bool log) {
     char buffer[64];
-    sprintf(buffer, "%s %s -b %d", acsServices[service].script, request_type == START_SERVICE ? "-s" : "-k", instance_number);
+    sprintf(buffer, "%s %s -b %d", acsServices[service].script, request_type == START_SERVICE ? "-k -s" : "-k", instance_number);
     ACE_CString commandline = buffer;
     if (loadir && service == INTERFACE_REPOSITORY) commandline = commandline + " -l";
     if (wait && request_type == START_SERVICE) commandline = commandline + " -w";
