@@ -91,7 +91,7 @@ public class FeedbackTabs extends JTabbedPane {
 				fw.flush();
 
     		} catch (IOException exc) {
-				master.log.info("couldn't save log '"+x.surroundingTabTitle+"' to file '"+f+"' due to "+exc);
+				master.log.fine("couldn't save log '"+x.surroundingTabTitle+"' to file '"+f+"' due to "+exc);
 			
     		} finally {
 				try {

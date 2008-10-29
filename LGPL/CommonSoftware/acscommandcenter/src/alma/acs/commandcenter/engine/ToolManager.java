@@ -242,7 +242,7 @@ public class ToolManager {
 			return ret.toString();
 
 		} catch (InvocationTargetException exc) {
-			log.info("readFromModel(" + name + "," + fallback + ") failed: " + exc);
+			log.fine("readFromModel(" + name + "," + fallback + ") failed: " + exc);
 			// in general, the root cause should be interesting to our callers.
 			// this is particularly true if reading from model failed because of an
 			// unresolvable variable. thus, we unwrap and throw the cause
@@ -254,7 +254,7 @@ public class ToolManager {
 			}
 			
 		} catch (Exception exc) {
-			log.info("readFromModel(" + name + "," + fallback + ") failed: " + exc);
+			log.fine("readFromModel(" + name + "," + fallback + ") failed: " + exc);
 			throw exc;
 		}
 	}

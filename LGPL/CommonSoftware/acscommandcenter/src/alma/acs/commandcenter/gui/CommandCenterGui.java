@@ -59,7 +59,6 @@ import alma.acs.commandcenter.app.CommandCenterLogic;
 import alma.acs.commandcenter.engine.ExecuteTools;
 import alma.acs.commandcenter.engine.Executor;
 import alma.acs.commandcenter.engine.NativeCommand;
-import alma.acs.commandcenter.engine.ToolManager;
 import alma.acs.commandcenter.gui.TabPanel.ContainerLine;
 import alma.acs.commandcenter.gui.thirdparty.SpringUtilities;
 import alma.acs.commandcenter.util.MiscUtils;
@@ -126,7 +125,7 @@ public class CommandCenterGui {
 			try {
 				UIManager.setLookAndFeel(lafName);
 			} catch (Exception exc) {
-				log.info("Couldn't set look and feel " + lafName + " due to " + exc);
+				log.fine("Couldn't set look and feel " + lafName + " due to " + exc);
 			}
 		}
 
@@ -312,7 +311,6 @@ public class CommandCenterGui {
 			deployTree.shieldedAddManager(AcsLocations.convertToManagerLocation(host, port));
 
 		} catch (Exception exc) {
-			log.warning("Couldn't add manager (" + host + "," + port + ") to deployment view due to " + exc);
 			log.log(Level.FINER, "Couldn't add manager (" + host + "," + port + ") to deployment view", exc);
 		}
 	}
@@ -332,11 +330,10 @@ public class CommandCenterGui {
 			String managerLoc = AcsLocations.convertToManagerLocation(host, port);
 			boolean ok = deployTree.removeManager(managerLoc, true);
 			if (!ok) {
-				log.info("Couldn't remove manager from deployment view: no such manager known: " + host + "," + port);
+				log.finer("Couldn't remove manager from deployment view: no such manager known: " + host + "," + port);
 			}
 
 		} catch (Exception exc) {
-			log.warning("Tried to remove manager (" + host + "," + port + ") from deployment view, failed due to " + exc);
 			log.log(Level.FINER, "Tried to remove (" + host + "," + port + ") manager from deployment view, failed", exc);
 		}
 	}
@@ -589,7 +586,7 @@ public class CommandCenterGui {
 			ContainerT cont = controller.project.getContainers().getContainer(i);
 
 			if (cont == null) {
-				log.warning("number of containers in model and gui is out-of-sync");
+				log.fine("PROBLEM: number of containers in model and gui is out-of-sync");
 				break;
 			}
 
@@ -770,12 +767,10 @@ public class CommandCenterGui {
 				} catch (UnresolvableException exc) {
 					String var = exc.getVariableName();
 					controller.handleUnresolvableVariable(var);
-					log.log(Level.INFO, "Could not start tool '"+cap+"': Variable '"+var+"' is undefined");
+					log.log(Level.INFO, "Couldn't start tool '"+cap+"': Variable '"+var+"' is undefined");
 					
 				} catch (Throwable t) {
-					log.warning("Could not start tool '"+cap+"', check definition file " + "(default file: "
-							+ ToolManager.getDefaultExtraToolsName() + "); reason was: " + t);
-					t.printStackTrace(System.err);
+					log.info("Couldn't start tool '"+cap+"', check definition file; reason was: " + t);
 				}
 			}
 		};
@@ -1053,7 +1048,7 @@ public class CommandCenterGui {
 				controller.installExtraTools(f.toURI().toURL());
 			} catch (Exception exc) {
 				ErrorBox.showMessageDialog(frame, "The tools could not be installed. Check console for error output. ", true);
-				log.info("could not install tools: " + exc);
+				log.fine("could not install tools: " + exc);
 				return;
 			}
 
@@ -1139,7 +1134,7 @@ public class CommandCenterGui {
 				controller.loadBuiltinTools(url);
 			} catch (Exception exc) {
 				JOptionPane.showMessageDialog(frame, "The built-in tools could not be loaded. Check console for error output. ");
-				log.info("could not load built-in tools: " + exc);
+				log.fine("could not load built-in tools: " + exc);
 				return;
 			}
 

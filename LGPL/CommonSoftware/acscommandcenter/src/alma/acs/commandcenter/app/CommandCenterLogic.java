@@ -140,7 +140,7 @@ public class CommandCenterLogic {
 			installExtraTools(url);
 
 		} catch (Exception exc) {
-			log.warning("Failed to read " + ToolManager.getDefaultExtraToolsName() + "; reason was: " + exc);
+			log.info("Failed to read " + ToolManager.getDefaultExtraToolsName() + "; reason was: " + exc);
 
 		}
 		
@@ -392,7 +392,7 @@ public class CommandCenterLogic {
 			gui.currentProjectChanged();
 
 		} catch (Exception exc) {
-			log.warning("could not load project file '" + f + "' due to " + exc);
+			log.info("could not load project file '" + f + "' due to " + exc);
 		}
 	}
 	

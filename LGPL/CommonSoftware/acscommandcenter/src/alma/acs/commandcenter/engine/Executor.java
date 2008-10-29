@@ -208,7 +208,7 @@ public class Executor {
            try {
                remoteDownPortable(i);
            }catch(IOException exc) {
-               log.info("could not disconnect "+clients.get(i));
+               log.fine("could not disconnect "+clients.get(i));
            }
        }
     }
@@ -225,7 +225,7 @@ public class Executor {
       SshWrapper client = null;
       client = (SshWrapper) clients.get(ticket);
       client.disconnect();
-      log.info("disconnected "+client);
+      log.fine("disconnected "+client);
    }
 
 
@@ -338,12 +338,8 @@ public class Executor {
       // it simply means the expected output has occurred but the
       // process itself is still running
 
-     	System.out.println("Process invocation returns. Process is now: " + task.getStatus() + ", exitvalue: " + 
-     			( task.getExitValue()!=null? task.getExitValue().toString() : "none (yet)" ) + ", command was '" + command + "'"
-		);
-
-      log.fine("Process invocation returns. Process is now: " + task.getStatus() + ", exitvalue: " + 
-     			( task.getExitValue()!=null? task.getExitValue().toString() : "none (yet)" ) + ", command was '" + command + "'"
+      log.info("Process invoked. Process is now: " + task.getStatus() + ". Exitcode: " + 
+     			( task.getExitValue()!=null? task.getExitValue().toString() : "none (yet)" ) + ". Command was '" + command + "'"
 		);
 
       if (latestExc != null) {
@@ -575,12 +571,8 @@ public class Executor {
       // it simply means the expected output has occurred but the
       // process itself is still running
 
-     	System.out.println("Process invocation returns. Process is now: " + task.getStatus() + ", exitvalue: " + 
-     			( task.getExitValue()!=null? task.getExitValue().toString() : "none (yet)" ) + ", command was '" + command + "'"
-		);
-
-      log.fine("Process invocation returns. Process is now: " + task.getStatus() + ", exitvalue: " + 
-     			( task.getExitValue()!=null? task.getExitValue().toString() : "none (yet)" ) + ", command was '" + command + "'"
+     	log.info("Process invoked. Process is now: " + task.getStatus() + ". Exitcode: " + 
+     			( task.getExitValue()!=null? task.getExitValue().toString() : "none (yet)" ) + ". Command was '" + command + "'"
 		);
 
       if (latestExc != null) {
