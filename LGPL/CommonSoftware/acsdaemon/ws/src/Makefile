@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.20 2008/10/27 21:11:23 msekoran Exp $"
+# "@(#) $Id: Makefile,v 1.21 2008/10/29 17:31:01 hsommer Exp $"
 #
 # Makefile of ........
 #
@@ -39,11 +39,11 @@ EXECUTABLES     = acsservicesdaemon acsservicesdaemonStop \
                   acsdaemonNamingServiceImp acsdaemonNotificationServiceImp \
                   acsdaemonInterfaceRepositoryImp acsdaemonLoggingServiceImp \
                   acsdaemonACSLogServiceImp acsdaemonConfigurationDatabaseImp \
-                  acsdaemonManagerImp
-#                  acscontainerdaemon acsdaemonStartContainer \
-#                  acsdaemonStopContainer acsdaemonStartAcs \
-#                  acsdaemonStopAcs acsdaemonStatusAcs \
-#                  acscontainerdaemonSmartStart acscontainerdaemonStop \
+                  acsdaemonManagerImp \
+                  acscontainerdaemon acsdaemonStartContainer \
+                  acsdaemonStopContainer acsdaemonStartAcs \
+                  acsdaemonStopAcs acsdaemonStatusAcs \
+                  acscontainerdaemonSmartStart acscontainerdaemonStop
 EXECUTABLES_L   = 
 
 #
