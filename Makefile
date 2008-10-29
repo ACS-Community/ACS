@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.157 2008/09/09 14:13:31 eallaert Exp $"
+# "@(#) $Id: Makefile,v 1.158 2008/10/29 17:20:31 agrimstrup Exp $"
 #
 #
 
@@ -19,7 +19,7 @@ MODULES_KIT = vlt doc acs acstempl
 # because it is already built in the prepare phase.
 #
 MODULES_TOOLS = emacs tat expat loki extjars antlr freetype extpy cppunit getopt FITS astyle swig xercesc xercesj castor gmp jfree xsddoc extidl vtd-xml
-MODULES_ACS = abeansgen jacsutil xmljbind acsidlcommon acsutil acsutilpy acsstartup loggingidl logging acserr acserrTypes acsQoS acsthread repeatGuard acscomponentidl cdbidl maciidl acsjlog loggingts loggingtsTypes cdb cdbChecker acsContainerServices acscomponent cdbBrowser errorBrowser recovery baciidl acsncidl basenc archiveevents parameter acsalarmidl acsalarm baci enumprop acsdaemonidl jacscommon jacsalarm jmanager maci task abeans acstime acsnc acsdaemon acslog acstestcompcpp acsexmpl acsabeans jlogEngine jlog acspy comphelpgen XmlIdl define acstestentities objexp jacsalarmtest jcont jcontnc jcontexmpl jbaci acssamp acscallbacks codegen mastercomp acspyexmpl nctest acscommandcenter acssampGUI acsGUIutil logLevelGUI acssim bulkData containerTests acscourse ACSLaser
+MODULES_ACS = abeansgen jacsutil xmljbind acsidlcommon acsutil acsutilpy acsstartup loggingidl logging acserr acserrTypes acsQoS acsthread repeatGuard acscomponentidl cdbidl maciidl acsjlog loggingts loggingtsTypes cdb cdbChecker acsContainerServices acscomponent cdbBrowser errorBrowser recovery baciidl acsncidl basenc archiveevents parameter acsalarmidl acsalarm baci enumprop acsdaemonidl jacscommon jacsalarm jmanager maci task abeans acstime acsnc acsdaemon acslog acstestcompcpp acsexmpl acsabeans jlogEngine jlog acspy comphelpgen XmlIdl define acstestentities objexp jacsalarmtest jcont jcontnc jcontexmpl jbaci acssamp acscallbacks codegen mastercomp acspyexmpl nctest acscommandcenter acssampGUI acsGUIutil logLevelGUI acssim bulkData containerTests acscourse acsalarmpy ACSLaser
 ######## end Modules ###########################
 
 #
