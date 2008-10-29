@@ -10,7 +10,6 @@
 ### The result will be stored in the lib directory
 ###
 
-
 DIR=createHelp.tmp
 
 rm -rf $DIR >/dev/null 2>&1
@@ -41,5 +40,7 @@ jar cf ../../lib/AcsCommandCenterHelp.jar *
 
 cd ..
 rm -rf $DIR
+
+echo done.
 
 
