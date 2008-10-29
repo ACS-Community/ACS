@@ -284,8 +284,14 @@ public class AcsLogger extends Logger implements LogConfigSubscriber {
      * @see java.util.logging.Logger#log(java.util.logging.LogRecord)
      */
     public void log(LogRecord record) {
+    	// Throw exception if level OFF was used to log this record, see http://jira.alma.cl/browse/COMP-1928
+    	// Both Level.OFF and AcsLogLevel.OFF use the same value INTEGER.max, but we anyway check for both.
+    	if (record.getLevel().intValue() == Level.OFF.intValue() ||
+    		record.getLevel().intValue() == AcsLogLevel.OFF.intValue()) {
+    		throw new IllegalArgumentException("Level OFF must not be used for actual logging, but only for level filtering.");
+    	}
     	
-        // Level could be null and must be inherited from the ancestor loggers, 
+    	// Level could be null and must be inherited from the ancestor loggers, 
     	// e.g. during JDK shutdown when the log level is nulled by the JDK LogManager 
     	Logger loggerWithLevel = this;
     	while (loggerWithLevel != null && loggerWithLevel.getLevel() == null && loggerWithLevel.getParent() != null) {
