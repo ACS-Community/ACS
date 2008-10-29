@@ -1,0 +1,6 @@
+#!/bin/bash
+
+echo  "static DCPS_SimpleTcpLoader \"-type SimpleTcp\"" > /tmp/tcp.conf
+echo  "411" > /tmp/domain_ids
+
+$DDS_ROOT/bin/DCPSInfoRepo -ORBEndpoint iiop://:3999 -ORBSvcConf /tmp/tcp.conf -o /tmp/repo.ior -d /tmp/domain_ids
