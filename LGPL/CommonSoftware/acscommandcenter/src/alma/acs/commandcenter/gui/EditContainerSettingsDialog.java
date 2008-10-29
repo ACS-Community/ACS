@@ -31,14 +31,14 @@ class EditContainerSettingsDialog extends JDialog implements ActionListener {
 	JTextField modifF;
 	JLabel modifL;
 	JTextField defaultScriptBaseF, defaultHostF, defaultAccountF, defaultPasswordF;
-	JTextField customScriptBaseF, customHostF, customAccountF, customPasswordF;
-	JLabel customAccountL, customPasswordL;
+	JTextField scriptbaseF, hostF, accountF, passwordF;
+	JLabel scriptbaseL, hostL, accountL, passwordL;
 	
 	ButtonGroup buttonGroup;
 	boolean okChosen; // this dialog's "return value"
 
 	protected EditContainerSettingsDialog(CommandCenterGui gui) {
-		super(gui.frame, "Edit detail settings for container", true);
+		super(gui.frame, "Container Settings ", true);
 		this.master = gui;
 		this.getContentPane().setLayout(new BorderLayout());
 		
@@ -75,14 +75,14 @@ class EditContainerSettingsDialog extends JDialog implements ActionListener {
 
 		pnlLocation.add(btnCustom = new JRadioButton("On the following host"));
 		pnlLocation.add(new JLabel("")); // "(implies SSH connection)"
-		pnlLocation.add(new JLabel("Acs Instance"));
-		pnlLocation.add(customScriptBaseF = new JTextField());
-		pnlLocation.add(new JLabel("Remote Host"));
-		pnlLocation.add(customHostF = new JTextField());
-		pnlLocation.add(customAccountL = new JLabel("Remote Username"));
-		pnlLocation.add(customAccountF = new JTextField());
-		pnlLocation.add(customPasswordL = new JLabel("Remote Password"));
-		pnlLocation.add(customPasswordF = new JPasswordField());
+		pnlLocation.add(scriptbaseL = new JLabel("Acs Instance"));
+		pnlLocation.add(scriptbaseF = new JTextField());
+		pnlLocation.add(hostL = new JLabel("Remote Host"));
+		pnlLocation.add(hostF = new JTextField());
+		pnlLocation.add(accountL = new JLabel("Remote Username"));
+		pnlLocation.add(accountF = new JTextField());
+		pnlLocation.add(passwordL = new JLabel("Remote Password"));
+		pnlLocation.add(passwordF = new JPasswordField());
 		SpringUtilities.makeCompactGrid(pnlLocation, 0, 2);
 
 		buttonGroup = new ButtonGroup();
@@ -113,10 +113,10 @@ class EditContainerSettingsDialog extends JDialog implements ActionListener {
 		defaultHostF.setName("txt_DefaultHost");
 		defaultAccountF.setName("txt_DefaultUser");
 		defaultPasswordF.setName("txt_DefaultPassword");
-		customScriptBaseF.setName("txt_CustomInstance");
-		customHostF.setName("txt_CustomHost");
-		customAccountF.setName("txt_CustomUser");
-		customPasswordF.setName("txt_CustomPassword");
+		scriptbaseF.setName("txt_CustomInstance");
+		hostF.setName("txt_CustomHost");
+		accountF.setName("txt_CustomUser");
+		passwordF.setName("txt_CustomPassword");
 		btnOk.setName("btn_Ok");
 	}
 

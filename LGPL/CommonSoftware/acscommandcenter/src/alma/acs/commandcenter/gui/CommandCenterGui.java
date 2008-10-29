@@ -44,7 +44,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JSplitPane;
-import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.SpringLayout;
 import javax.swing.SwingConstants;
@@ -76,25 +75,18 @@ public class CommandCenterGui {
 
 	// =========================================================================
 	protected static Color COLOR_ActiveButton = Color.gray;
-
-	protected static Color COLOR_PassiveButton = new JButton().getBackground(); // standard
-	// button
-	// color
+	protected static Color COLOR_PassiveButton = new JButton().getBackground();
 	protected static Color COLOR_LogoBackground_A = Color.black;
 	protected static Color COLOR_LogoBackground_B = new Color(0, 110, 160);
-	// protected static Color COLOR_LogoBackground_A = new Color(1,36,100);
-	// protected static Color COLOR_LogoBackground_B = new Color(0, 102, 153);
-
-
 	protected static Color COLOR_LogoForeground = new Color(255, 255, 255);
 
 	// =========================================================================
 	// =========================================================================
+	
+	
 	public CommandCenterLogic controller;
 	protected Logger log;
-
 	public JFrame frame;
-
 	protected TabPanel frontPanel;
 	protected FeedbackTabs feedbackTabs;
 	public DeploymentTree deployTree;
@@ -133,166 +125,155 @@ public class CommandCenterGui {
 			String lafName = UIManager.getSystemLookAndFeelClassName();
 			try {
 				UIManager.setLookAndFeel(lafName);
-				/* SwingUtilities.updateComponentTreeUI(SwingUtilities.getRoot(gui.frame));
-				 * SwingUtilities.updateComponentTreeUI(SwingUtilities.getRoot(gui.dlgOptions));
-				 */
 			} catch (Exception exc) {
 				log.info("Couldn't set look and feel " + lafName + " due to " + exc);
 			}
 		}
 
-		try {
-			frame = new JFrame(""); // title added later in doFrameTitle()
-			frame.addWindowListener(new WindowAdapter() {
+		frame = new JFrame(""); // title added later in doFrameTitle()
+		frame.addWindowListener(new WindowAdapter() {
 
-				@Override
-				public void windowClosing (WindowEvent evt) {
-					controller.stop();
-				}
-			});
-
-			
-			dlgContainerSettings = new EditContainerSettingsDialog(this);
-
-			frontPanel = new TabPanel(this);
-			writeModelToFrontPanel();
-
-			// Splitter between tree and the rest
-			splitLeftRight = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
-			splitLeftRight.setOneTouchExpandable(true);
-			JPanel p2 = new JPanel(new BorderLayout());
-			p2.setBorder(new EmptyBorder(10, 10, 10, 10));
-			p2.add(frontPanel, BorderLayout.NORTH);
-			splitLeftRight.setLeftComponent(p2);
-
-			// Deployment Tree
-			deploymentInfoPanel = new JPanel(new BorderLayout());
-			deploymentInfoPanel.setBorder(new CompoundBorder(new EmptyBorder(5, 7, 5, 7), new TitledBorder(LineBorder
-					.createBlackLineBorder(), " Deployment Info ")));
-
-			deployTree = new DeploymentTree(controller.deploymentTreeControllerImpl);
-			JPanel addToDeployTree = new AddToDeployTree(this, deployTree);
-
-			deploymentInfoPanel.add(addToDeployTree, BorderLayout.NORTH);
-			deploymentInfoPanel.add(new JScrollPane(deployTree), BorderLayout.CENTER);
-			splitLeftRight.setRightComponent(deploymentInfoPanel);
-
-			// Feedback Area
-			feedbackTabs = new FeedbackTabs(this, FeedbackTabs.BOTTOM);
-
-			// Logo Panel
-			JPanel logoPanel = new LogoPanel(COLOR_LogoBackground_A, COLOR_LogoBackground_B);
-			logoPanel.setLayout(new BorderLayout());
-
-			JLabel alma = new JLabel(new ImageIcon(controller.findResource("alma.jpg")));
-			logoPanel.add(alma, BorderLayout.WEST);
-
-			JLabel text = new JLabel("Acs Command Center");
-			text.setForeground(COLOR_LogoForeground);
-			text.setHorizontalTextPosition(SwingConstants.CENTER);
-			text.setFont(text.getFont().deriveFont((float) (text.getFont().getSize() * 2.5)));
-			text.setBorder(new EmptyBorder(5, 30, 5, 30));
-			logoPanel.add(text, BorderLayout.CENTER);
-
-			JLabel version = new JLabel(controller.version());
-			version.setForeground(COLOR_LogoForeground);
-			version.setBorder(new EmptyBorder(0, 0, 0, 4));
-			JPanel pnl2 = new JPanel(new BorderLayout());
-			pnl2.setOpaque(false);
-			pnl2.add(version, BorderLayout.SOUTH);
-			logoPanel.add(pnl2, BorderLayout.EAST);
-
-			menuBar = new JMenuBar();
-			JMenu fileMenu = new JMenu("Project");
-			fileMenu.setMnemonic(KeyEvent.VK_P);
-			{
-				JMenu newMenu = new JMenu("New");	
-				newMenu.add(new ActionNewProject("Project"));
-				fileMenu.add(newMenu);
+			@Override
+			public void windowClosing (WindowEvent evt) {
+				controller.stop();
 			}
-			
-			fileMenu.add(new ActionOpenProject("Open..."));
-			fileMenu.add(new ActionSaveProject("Save"));
-			fileMenu.add(new ActionSaveAsProject("Save As..."));
-			fileMenu.addSeparator();
-			fileMenu.add(new ActionExit("Exit"));
-			menuBar.add(fileMenu);
-			toolsMenu = new JMenu("Tools");
-			toolsMenu.setMnemonic(KeyEvent.VK_T);
-			toolsMenu.add(new ActionConfigureTools("Configure Tools..."));
-			toolsMenu.addSeparator();
-			menuBar.add(toolsMenu);
-			// ---
-			JMenu extrasMenu = new JMenu("Expert");
-			extrasMenu.setMnemonic(KeyEvent.VK_E);
-			{
-				JMenu sshMode = new JMenu("SSH Library");
-				sshMode.add(new ActionSetSshMode("Platform-independent", false, false));
-				sshMode.add(new ActionSetSshMode("Natively installed ssh", true, true));
-				//sshMode.add(new ActionSetSshMode("Native ssh, kill ssh on quit", true, true));
-				extrasMenu.add(sshMode);
-				extrasMenu.add(new JSeparator());
+		});
 
-				JMenu extraTools = new JMenu("Tools Menu");
-				extraTools.add(new ActionShowExtraTools("View..."));
-				extraTools.add(new ActionInstallExtraTools("Replace..."));
-				extrasMenu.add(extraTools);
+		
+		dlgContainerSettings = new EditContainerSettingsDialog(this);
 
-				JMenu builtinTools = new JMenu("Acs Scripts");
-				builtinTools.add(new ActionShowBuiltinTools("View..."));
-				builtinTools.add(new ActionLoadBuiltinTools("Replace..."));
-				extrasMenu.add(builtinTools);
-			}
-//			extrasMenu.add(new ActionEditCommands("Edit Java Args..."));
-//			extrasMenu.add(new ActionEditPexpects("Edit Java Expr..."));
-			extrasMenu.add(new JSeparator());
-			extrasMenu.add(new ActionShowVariables("Variables..."));
-			
-			menuBar.add(extrasMenu);
-			// ---
-			JMenuItem item;
-			JMenu helpMenu = new JMenu("Help");
-			helpMenu.setMnemonic(KeyEvent.VK_H);
-			item = helpMenu.add(new ActionShowHelp("Online Help"));
-			item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F1, 0));
-			menuBar.add(Box.createHorizontalGlue());
-			menuBar.add(helpMenu);
-			// ---
-			JPanel h = new JPanel(new SpringLayout());
-			h.add(logoPanel);
-			h.add(menuBar);
-			SpringUtilities.makeCompactGrid(h, 0, 1);
-			frame.getContentPane().add(h, BorderLayout.NORTH);
+		frontPanel = new TabPanel(this);
+		writeModelToFrontPanel();
 
-			// ---
-			pnlManagerLocationForTools = new ManagerLocationPanel.ForTools();
-			managerLocationDialog1 = new BasicDialog(this, "Specify Manager and Services for Tools", "Set", pnlManagerLocationForTools);
+		// Splitter between tree and the rest
+		splitLeftRight = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
+		splitLeftRight.setOneTouchExpandable(true);
+		JPanel p2 = new JPanel(new BorderLayout());
+		p2.setBorder(new EmptyBorder(10, 10, 10, 10));
+		p2.add(frontPanel, BorderLayout.NORTH);
+		splitLeftRight.setLeftComponent(p2);
 
-			// ---
-			pnlManagerLocationForContainers = new ManagerLocationPanel.ForContainers();
-			managerLocationDialog2 = new BasicDialog(this, "Specify Manager and Services for Containers", "Set", pnlManagerLocationForContainers);
+		// Deployment Tree
+		deploymentInfoPanel = new JPanel(new BorderLayout());
+		deploymentInfoPanel.setBorder(new CompoundBorder(new EmptyBorder(5, 7, 5, 7), new TitledBorder(LineBorder
+				.createBlackLineBorder(), " Deployment Info ")));
 
-			// ---
+		deployTree = new DeploymentTree(controller.deploymentTreeControllerImpl);
+		JPanel addToDeployTree = new AddToDeployTree(this, deployTree);
 
-			
-			// ---
+		deploymentInfoPanel.add(addToDeployTree, BorderLayout.NORTH);
+		deploymentInfoPanel.add(new JScrollPane(deployTree), BorderLayout.CENTER);
+		splitLeftRight.setRightComponent(deploymentInfoPanel);
 
-			splitTopBottom = new JSplitPane(JSplitPane.VERTICAL_SPLIT, splitLeftRight, feedbackTabs);
-			splitTopBottom.setOneTouchExpandable(true);
-			frame.getContentPane().add(splitTopBottom, BorderLayout.CENTER);
+		// Feedback Area
+		feedbackTabs = new FeedbackTabs(this, FeedbackTabs.BOTTOM);
 
-		/* frame.getContentPane().add(feedbackArea, BorderLayout.SOUTH); */
-			doFrameTitle();
-			
-		} catch (Exception e) {
-			e.printStackTrace();
+		// Logo Panel
+		JPanel logoPanel = new LogoPanel(COLOR_LogoBackground_A, COLOR_LogoBackground_B);
+		logoPanel.setLayout(new BorderLayout());
+
+		JLabel alma = new JLabel(new ImageIcon(controller.findResource("alma.jpg")));
+		logoPanel.add(alma, BorderLayout.WEST);
+
+		JLabel text = new JLabel("Acs Command Center");
+		text.setForeground(COLOR_LogoForeground);
+		text.setHorizontalTextPosition(SwingConstants.CENTER);
+		text.setFont(text.getFont().deriveFont((float) (text.getFont().getSize() * 2.5)));
+		text.setBorder(new EmptyBorder(5, 30, 5, 30));
+		logoPanel.add(text, BorderLayout.CENTER);
+
+		JLabel version = new JLabel(controller.version());
+		version.setForeground(COLOR_LogoForeground);
+		version.setBorder(new EmptyBorder(0, 0, 0, 4));
+		JPanel pnl2 = new JPanel(new BorderLayout());
+		pnl2.setOpaque(false);
+		pnl2.add(version, BorderLayout.SOUTH);
+		logoPanel.add(pnl2, BorderLayout.EAST);
+
+		menuBar = new JMenuBar();
+		JMenu fileMenu = new JMenu("Project");
+		fileMenu.setMnemonic(KeyEvent.VK_P);
+		{
+			JMenu newMenu = new JMenu("New");	
+			newMenu.add(new ActionNewProject("Project"));
+			fileMenu.add(newMenu);
 		}
+		
+		fileMenu.add(new ActionOpenProject("Open..."));
+		fileMenu.add(new ActionSaveProject("Save"));
+		fileMenu.add(new ActionSaveAsProject("Save As..."));
+		fileMenu.addSeparator();
+		fileMenu.add(new ActionExit("Exit"));
+		menuBar.add(fileMenu);
+		toolsMenu = new JMenu("Tools");
+		toolsMenu.setMnemonic(KeyEvent.VK_T);
+		toolsMenu.add(new ActionConfigureTools("Configure Tools..."));
+		toolsMenu.addSeparator();
+		menuBar.add(toolsMenu);
+		// ---
+		JMenu extrasMenu = new JMenu("Expert");
+		extrasMenu.setMnemonic(KeyEvent.VK_E);
+		{
+//				JMenu sshMode = new JMenu("SSH Library");
+//				sshMode.add(new ActionSetSshMode("Platform-independent", false, false));
+//				sshMode.add(new ActionSetSshMode("Natively installed ssh", true, true));
+//				extrasMenu.add(sshMode);
+//				extrasMenu.add(new JSeparator());
+
+			JMenu extraTools = new JMenu("Tools Menu");
+			extraTools.add(new ActionShowExtraTools("View..."));
+			extraTools.add(new ActionInstallExtraTools("Replace..."));
+			extrasMenu.add(extraTools);
+
+			JMenu builtinTools = new JMenu("Acs Scripts");
+			builtinTools.add(new ActionShowBuiltinTools("View..."));
+			builtinTools.add(new ActionLoadBuiltinTools("Replace..."));
+			extrasMenu.add(builtinTools);
+		}
+		extrasMenu.add(new JSeparator());
+		extrasMenu.add(new ActionShowVariables("Variables..."));
+		
+		menuBar.add(extrasMenu);
+		// ---
+		JMenuItem item;
+		JMenu helpMenu = new JMenu("Help");
+		helpMenu.setMnemonic(KeyEvent.VK_H);
+		item = helpMenu.add(new ActionShowHelp("Online Help"));
+		item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F1, 0));
+		menuBar.add(Box.createHorizontalGlue());
+		menuBar.add(helpMenu);
+		// ---
+		JPanel h = new JPanel(new SpringLayout());
+		h.add(logoPanel);
+		h.add(menuBar);
+		SpringUtilities.makeCompactGrid(h, 0, 1);
+		frame.getContentPane().add(h, BorderLayout.NORTH);
+
+		// ---
+		pnlManagerLocationForTools = new ManagerLocationPanel.ForTools();
+		managerLocationDialog1 = new BasicDialog(this, "Specify Manager and Services for Tools", "Set", pnlManagerLocationForTools);
+
+		// ---
+		pnlManagerLocationForContainers = new ManagerLocationPanel.ForContainers();
+		managerLocationDialog2 = new BasicDialog(this, "Specify Manager and Services for Containers", "Set", pnlManagerLocationForContainers);
+
+		// ---
+
+		
+		// ---
+
+		splitTopBottom = new JSplitPane(JSplitPane.VERTICAL_SPLIT, splitLeftRight, feedbackTabs);
+		splitTopBottom.setOneTouchExpandable(true);
+		frame.getContentPane().add(splitTopBottom, BorderLayout.CENTER);
+
+		doFrameTitle();
+			
 	}
 
 	public void go (boolean admincMode) {
 
 		if (admincMode) {
-			//	in adminclient mode, we run with a stripped down GUI  
+			//	in adminclient mode, we run with a stripped GUI  
 			menuBar.setVisible(false);
 			splitLeftRight.getLeftComponent().setVisible(false);
 			splitTopBottom.getBottomComponent().setVisible(false);
@@ -537,9 +518,8 @@ public class CommandCenterGui {
 		ContainerLine contline = frontPanel.containerLines.get(contIndex);
 		// for host, we have an additional complication: we want to show what
 		// host is going to be used. this may be the same as field "remoteHost"
-		// in our xml-project, or it may be the host from the Common Settings.
-		// luckily, the RunModel already has logic to find that out, so we reuse
-		// it here instead of simply showing the "remoteHost" value from the xml-project.
+		// or it may be the host from the Common Settings. for the latter case
+		// i consider it nicer to not display any host name.
 		String host = (cont.getUseDedicatedSettings())? cont.getRemoteHost() : null;
 		contline.populate(cont.getName(), cont.getType(), host, true);
 	}
@@ -555,10 +535,10 @@ public class CommandCenterGui {
 		dlgContainerSettings.defaultAccountF.setText(controller.project.getRemoteAccount());
 		dlgContainerSettings.defaultPasswordF.setText(controller.project.getRemotePassword());
 
-		dlgContainerSettings.customScriptBaseF.setText(cont.getScriptBase());
-		dlgContainerSettings.customHostF.setText(cont.getRemoteHost());
-		dlgContainerSettings.customAccountF.setText(cont.getRemoteAccount());
-		dlgContainerSettings.customPasswordF.setText(cont.getRemotePassword());
+		dlgContainerSettings.scriptbaseF.setText(cont.getScriptBase());
+		dlgContainerSettings.hostF.setText(cont.getRemoteHost());
+		dlgContainerSettings.accountF.setText(cont.getRemoteAccount());
+		dlgContainerSettings.passwordF.setText(cont.getRemotePassword());
 
 		dlgContainerSettings.btnCustom.setSelected(cont.getUseDedicatedSettings());
 		dlgContainerSettings.btnGlobal.setSelected(!cont.getUseDedicatedSettings());
@@ -569,10 +549,10 @@ public class CommandCenterGui {
 
 		cont.setTypeModifier(MiscUtils.split(dlgContainerSettings.modifF.getText().trim()));
 		
-		cont.setScriptBase(dlgContainerSettings.customScriptBaseF.getText().trim());
-		cont.setRemoteHost(dlgContainerSettings.customHostF.getText().trim());
-		cont.setRemoteAccount(dlgContainerSettings.customAccountF.getText().trim());
-		cont.setRemotePassword(dlgContainerSettings.customPasswordF.getText().trim());
+		cont.setScriptBase(dlgContainerSettings.scriptbaseF.getText().trim());
+		cont.setRemoteHost(dlgContainerSettings.hostF.getText().trim());
+		cont.setRemoteAccount(dlgContainerSettings.accountF.getText().trim());
+		cont.setRemotePassword(dlgContainerSettings.passwordF.getText().trim());
 
 		cont.setUseDedicatedSettings(!dlgContainerSettings.btnGlobal.isSelected());
 	}
@@ -601,10 +581,6 @@ public class CommandCenterGui {
 		if (frontPanel.chkRemoteScript.isSelected()) {
 			controller.project.setMode(ModeType.REMOTE);
 		} 
-//		else
-//		if (frontPanel.chkLocalJava.isSelected()) {
-//			controller.project.setMode(ModeType.JAVA);
-//		}
 
 		// read container definitions and see which
 		// of the container-RadioButtons is checked
@@ -647,15 +623,20 @@ public class CommandCenterGui {
 			frontPanel.chkLocalScript.setSelected(true); // Acs8.0: remove local java
 		}
 		
-		// update container definitions + set container-RadioButton
+		// remove all existing, and re-add from project
+		// ---------------------------------------------
 		while (frontPanel.containerLines.size() > 0)
 			frontPanel.lessContainerLines();
+		
 		for (int i = 0; i < controller.project.getContainers().getContainerCount(); i++) {
 			ContainerT cont = controller.project.getContainers().getContainer(i);
-
 			ContainerLine contline = frontPanel.addEmptyContainerLine();
-			contline.populate(cont.getName(), cont.getType(), cont.getRemoteHost(), (i == controller.project.getContainers().getSelect()));
+			
+			String host = (cont.getUseDedicatedSettings())? cont.getRemoteHost() : null;
+			contline.populate(cont.getName(), cont.getType(), host, (i == controller.project.getContainers().getSelect()));
 		}
+		
+		frontPanel.disenabler.actionPerformed(null);
 	}
 
 
@@ -671,8 +652,15 @@ public class CommandCenterGui {
 		}
 	}
 
+
+	protected Border createTitledBorder (String title) {
+		Border ret = new CompoundBorder(new EmptyBorder(5, 7, 5, 7), new TitledBorder(LineBorder.createBlackLineBorder(), title));
+		return ret;
+	}
+
 	
-	// ======= Html Browsing ========
+	// Html Browsing
+	// ===========================================================================
 	
 	JDialog dialog = null;
 	JEditorPane editor = null;
@@ -698,7 +686,8 @@ public class CommandCenterGui {
 		}
 	}
 
-	// ====== Help =======
+	// Help
+	// ===========================================================================
 	
 	protected DefaultHelpBroker helpBroker;
 	
@@ -729,9 +718,10 @@ public class CommandCenterGui {
 
 	protected EditPexpectsPanel editPexpectsPanel;
 
+
 	
-	// ====== ToolMenu Tools =======
-	
+	// Tools
+	// ===========================================================================
 	
 	/** for book-keeping, to allow later removal of actions from the tools menu */
 	protected Vector<JMenuItem> addedToolMenuItems = new Vector<JMenuItem>();
@@ -772,7 +762,7 @@ public class CommandCenterGui {
 					result.putAll(map);
 				}
 
-				NativeCommand.Listener listener = giveSimpleListener(tabCaption);
+				NativeCommand.Listener listener = giveOutputListener(tabCaption);
 				
 				try {
 					ts.start(listener);
@@ -803,7 +793,11 @@ public class CommandCenterGui {
 	}
 
 
-	// ================== Actions ==============================================
+	
+	
+	// ################################################################
+	// Actions
+	// ################################################################
 
 
 	/**
@@ -1166,39 +1160,29 @@ public class CommandCenterGui {
 	}
 
 	
+	// ################################################################
+	// Listening to Processes
+	// ################################################################
+
+	
 	/**
-	 * The simple listener just writes a task's output to a feedback area, nothing more and
+	 * The outputlistener just writes a task's output to a feedback area, nothing more and
 	 * nothing less. this is sufficient when running tools like the admin client.
 	 */
-	protected NativeCommand.Listener giveSimpleListener (String taskName) {
+	protected NativeCommand.Listener giveOutputListener (String taskName) {
 		NativeCommand.Listener ret = feedbackTabs.viewTab(taskName);
 		return ret;
 	}
 
 	/**
-	 * The complex listener is like the simple plus: it scans the output for automatic
+	 * The outputlistener2 is like the standard one, plus it scans the output for automatic
 	 * acs_instance assignments. this is needed when running services or a manager.
 	 */
-	protected NativeCommand.Listener giveComplexListener (String taskName) {
-		NativeCommand.Listener first = giveSimpleListener(taskName);
+	protected NativeCommand.Listener giveOutputListener2 (String taskName) {
+		NativeCommand.Listener first = giveOutputListener(taskName);
 		NativeCommand.Listener second = new CheckAcsInstanceTaskListener();
 		return new CompoundTaskListener(first, second);
 	}
-
-	protected Border createTitledBorder (String title) {
-		Border ret = new CompoundBorder(new EmptyBorder(5, 7, 5, 7), new TitledBorder(LineBorder.createBlackLineBorder(), title));
-		return ret;
-	}
-
-	
-	protected JPanel createLabeledTextField (JLabel label, JTextField textfield) {
-		JPanel ret = new JPanel(new SpringLayout());
-		ret.add(label);
-		ret.add(textfield);
-		label.setLabelFor(textfield);
-		SpringUtilities.makeCompactGrid(ret, 1, 2, 0, 0, 6, 0);
-		return ret;
-	}	
 
 	/**
 	 * An instance of this is passed to some of the launch methods.
@@ -1257,7 +1241,7 @@ public class CommandCenterGui {
 
 	// msc (2005-10-24): the automatic instance choosing has been removed from the
 	// acs startup scripts, so we check for the corresponding error message instead.
-	protected static final Pattern p = Pattern.compile(".*using the same ACS_INSTANCE (.+). This is not possible.*");
+	protected static final Pattern p = Pattern.compile(".*the ACS_INSTANCE, (.+), is currently in use.*");
 
 	/**
 	 * Checks the output for whether the desired acs instance is already taken.
@@ -1283,8 +1267,8 @@ public class CommandCenterGui {
 				controller.runBackground(new Runnable() {
 					public void run () {
 						String message = "The Acs Instance you requested ( " + desiredAcsInstance + " ) is already" +
-								" in use by you or somebody else." +
-								"\nPlease choose a different Acs Instance in the Common Settings.";
+								" in use (by you or somebody else)." +
+								"\nChoose a different Acs Instance in the Common Settings.";
 						JOptionPane.showMessageDialog(frame, message, "Acs Instance in use", JOptionPane.INFORMATION_MESSAGE);
 					}
 				});
@@ -1292,8 +1276,10 @@ public class CommandCenterGui {
 		}
 	}
 
-	// ==========================================================================================
-
+	
+	// Icons
+	// ===========================================================================
+		
 	protected Icons icons = new Icons();
 
 	protected class Icons {
