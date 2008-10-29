@@ -7,17 +7,23 @@ package alma.acs.commandcenter;
 import java.awt.Rectangle;
 import java.io.File;
 import java.io.PrintStream;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.StringTokenizer;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.Formatter;
+import java.util.logging.Handler;
+import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
 import alma.acs.commandcenter.app.CommandCenterLogic;
 import alma.acs.commandcenter.app.CommandCenterLogic.StartupOptions;
-import alma.acs.commandcenter.engine.Executor;
 import alma.acs.commandcenter.util.MiscUtils;
 import alma.acs.util.ACSPorts;
 import alma.acs.util.AcsLocations;
@@ -36,6 +42,23 @@ public class CommandCenter {
    
 	public static void main(String[] args) {
 
+		// --- tweak console log format when started from command line 
+		
+		for (Handler h: Logger.getLogger("").getHandlers()) {
+			if (h instanceof ConsoleHandler) {
+				h.setFormatter(new Formatter(){
+					DateFormat df = new SimpleDateFormat("HH:mm:ss ");
+					@Override public String format (LogRecord record) {
+						String s = df.format(new Date(record.getMillis()));
+						s += record.getMessage() + "\n";
+						return s;
+					}
+				});
+			}
+		}
+		
+		
+		
 		// --- parse the command line
       
       StartupOptions startupOptions = new StartupOptions();
