@@ -7,7 +7,7 @@
 	<classpathentry kind="lib" path="lib/jnlp.jar"/>
 	<classpathentry kind="lib" path="lib/jfcunit.jar"/>
 	<classpathentry kind="lib" path="lib/AcsCommandCenterHelp.jar"/>
-	<classpathentry kind="var" path="ACSROOT/lib/AcsCommandCenterEntities.jar"/>
+	<classpathentry kind="var" path="INTROOT/lib/AcsCommandCenterEntities.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/maciErrType.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acserr.jar" sourcepath="INTROOT/lib/acserr.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acserrj.jar" sourcepath="/INTROOT/lib/acserrj.jar"/>
@@ -39,5 +39,6 @@
 	<classpathentry kind="var" path="ACSROOT/lib/acsdaemonErrType.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/ACSErrTypeCommon.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acsContainerServices.jar"/>
+	<classpathentry kind="var" path="ACSROOT"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
