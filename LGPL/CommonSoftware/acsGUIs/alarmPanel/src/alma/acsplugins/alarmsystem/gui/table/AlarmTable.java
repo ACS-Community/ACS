@@ -19,7 +19,7 @@
 
 /** 
  * @author  acaproni
- * @version $Id: AlarmTable.java,v 1.11 2008/10/28 09:51:12 acaproni Exp $
+ * @version $Id: AlarmTable.java,v 1.12 2008/10/29 10:57:10 acaproni Exp $
  * @since    
  */
 
@@ -136,7 +136,8 @@ public class AlarmTable extends JTable implements ActionListener {
 				public void run() {
 					ackMI.setEnabled(!selectedAlarm.getStatus().isActive());
 					showReducedMI.setEnabled(selectedAlarm!=null && (selectedAlarm.isNodeParent() || selectedAlarm.isMultiplicityParent()));
-					popupM.show(AlarmTable.this,e.getX(),e.getY());
+					popupM.show(e.getComponent(),e.getX(),e.getY());
+					popupM.setVisible(true);
 				}
 			}
 			SwingUtilities.invokeLater(new ShowPopup(e));	
@@ -166,7 +167,7 @@ public class AlarmTable extends JTable implements ActionListener {
 			menuItems = new JCheckBoxMenuItem[AlarmTableColumn.values().length];
 			int t=0;
 			for (AlarmTableColumn col: AlarmTableColumn.values()) {
-				menuItems[t]= new JCheckBoxMenuItem(col.title);
+				menuItems[t]= new JCheckBoxMenuItem(col.popupTitle);
 				menuItems[t].addActionListener(this);
 				headerPopup.add(menuItems[t++]);
 			}
@@ -209,7 +210,7 @@ public class AlarmTable extends JTable implements ActionListener {
 				}
 				public void run() {
 					ratioMenu();
-					headerPopup.show(AlarmTable.this,e.getX(),e.getY());
+					headerPopup.show(e.getComponent(),e.getX(),e.getY());
 				}
 			}
 			SwingUtilities.invokeLater(new ShowHeaderPopup(e));	
@@ -239,11 +240,11 @@ public class AlarmTable extends JTable implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
 			// Look for the source of this event
 			JCheckBoxMenuItem source=null;
-			TableColumn column=null;
+			int column=-1;
 			for (int t=0; t<menuItems.length; t++) {
 				if (e.getSource()==menuItems[t]) {
 					source=menuItems[t];
-					column=columns[t];
+					column=t;
 					break;
 				}
 			}
@@ -251,22 +252,7 @@ public class AlarmTable extends JTable implements ActionListener {
 				System.out.println("Unknown source of event: "+e.getSource());
 				return;
 			}
-			class AddRemoveCol extends Thread {
-				public TableColumn col;
-				public boolean toAdd;
-				public void run() {
-					TableColumnModel colModel = getColumnModel();
-					if (toAdd) {
-						colModel.addColumn(col);
-					} else {
-						colModel.removeColumn(col);
-					}
-				}
-			}
-			AddRemoveCol thread = new AddRemoveCol();
-			thread.col=column;
-			thread.toAdd=source.isSelected();
-			SwingUtilities.invokeLater(thread);
+			addRemoveColumn(AlarmTableColumn.values()[column], source.isSelected());
 		}
 		
 	}
@@ -395,11 +381,10 @@ public class AlarmTable extends JTable implements ActionListener {
 				colModel.removeColumn(columns[col.ordinal()]);
 			} 
 		}
+		buildPopupMenu();
 		addMouseListener(mouseAdapter);
 		
 		getTableHeader().addMouseListener(new AlarmHeaderMouseAdapter());
-		
-		buildPopupMenu();
 		
 		// Set the tooltip
 		ToolTipManager ttm = ToolTipManager.sharedInstance();
@@ -585,4 +570,33 @@ public class AlarmTable extends JTable implements ActionListener {
 		thread.aTCs=cols;
 		SwingUtilities.invokeLater(thread);
 	}
+	
+	/**
+	 * Add/remove one column from the table
+	 * 
+	 * @param col The column to add or remove
+	 * @param add If <code>true</code> add the column, otherwise remove the column
+	 */
+	public void addRemoveColumn(AlarmTableColumn col, boolean add) {
+		if (col==null) {
+			throw new IllegalArgumentException("The column to add/remove can't be null");
+		}
+		class AddRemoveCol extends Thread {
+			public TableColumn col;
+			public boolean toAdd;
+			public void run() {
+				TableColumnModel colModel = getColumnModel();
+				if (toAdd) {
+					colModel.addColumn(col);
+				} else {
+					colModel.removeColumn(col);
+				}
+			}
+		}
+		AddRemoveCol thread = new AddRemoveCol();
+		thread.col=columns[col.ordinal()];
+		thread.toAdd=add;
+		SwingUtilities.invokeLater(thread);
+	}
+	
 }
