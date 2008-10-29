@@ -17,7 +17,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: ASI.py,v 1.1 2008/10/09 16:11:09 agrimstrup Exp $"
+# "@(#) $Id: ASI.py,v 1.2 2008/10/29 16:20:18 agrimstrup Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -71,8 +71,8 @@ class ASIMessage(object):
         taglist = []
         header = '<?xml version="1.0" encoding="ISO-8859-1"?>\n'
         taglist.append('<ASI-message xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" backup="%s" version="%s" xsi:type="ASI-message">\n' % (str(self.backup).lower(), self.version))
-        taglist.append('<source-name>%s</source_name>\n' % self.sourceName)
-        taglist.append('<source-hostname>%s</source_hostname>\n' % self.sourceHostname)
+        taglist.append('<source-name>%s</source-name>\n' % self.sourceName)
+        taglist.append('<source-hostname>%s</source-hostname>\n' % self.sourceHostname)
         taglist.append(self.sourceTimestamp.toXML('source-timestamp', 0))
         taglist.append('<fault-states>\n')
         try:
@@ -81,7 +81,7 @@ class ASIMessage(object):
         except TypeError:
             pass
         taglist.append('</fault-states>\n')
-        return pad.join(taglist) + '</ASI-message>\n'
+        return header + pad.join(taglist) + '</ASI-message>\n'
         
     
 #
