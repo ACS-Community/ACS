@@ -28,9 +28,9 @@ namespace ddsnc{
 		const ACE_TCHAR* argv[];*/
 
 		protected:
+		DDS::DomainParticipantFactory_ptr dpf;
 		OpenDDS::DCPS::TransportIdType transport_impl_id;
 		DDS::DomainParticipant_var participant;
-		DDS::DomainParticipantFactory *dpf;
 		OpenDDS::DCPS::TransportImpl_rch transport_impl;
 		DDS::Topic_var topic;
 		char* partitionName;
@@ -76,6 +76,9 @@ namespace ddsnc{
 		 * must be in CORBA type name format
 		 */
 		void initializeTopic(const char* topicName, CORBA::String_var typeName);
+		
+		void initializeTopic(CORBA::String_var typeName);
+		
 		void setPartitionName(const char* partitionName);
 		
 		public:

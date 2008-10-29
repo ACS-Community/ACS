@@ -27,16 +27,17 @@ DDSHelper::DDSHelper(const char* channelName)
 	
 	initialized=false;
 
-	::std::string channelStr(channelName);
-   int pos=channelStr.find_last_of("_");
-   if(pos<0){
-
-      setTopicName(channelName);
-      return;
-   }
-   setTopicName(channelStr.substr(++pos).c_str());
-	std::cerr << "Trying to set topic name: " << topicName <<std::endl;
-   setPartitionName(channelStr.substr(0,--pos).c_str());
+	setPartitionName(channelName);
+//	::std::string channelStr(channelName);
+//	 int pos=channelStr.find_last_of("_");
+//   if(pos<0){
+//
+//      setTopicName(channelName);
+//      return;
+//   }
+//   setTopicName(channelStr.substr(++pos).c_str());
+//	  std::cerr << "Trying to set topic name: " << topicName <<std::endl;
+//   setPartitionName(channelStr.substr(0,--pos).c_str());
 
 }
 
@@ -105,6 +106,15 @@ void DDSHelper::initializeTopic(const char* topicName, CORBA::String_var typeNam
          std::cerr << "create_topic failed" << std::endl;
 	}
 	
+}
+
+void DDSHelper::initializeTopic(CORBA::String_var typeName)
+{
+	std::string topicStr (typeName);
+	int f = topicStr.find_first_of(":");
+	int l = topicStr.find_last_of(":");
+	topicName = strdup(topicStr.substr(f+1, (l-1)-f).c_str());
+	initializeTopic(topicName, typeName);
 }
 
 void DDSHelper::setPartitionName(const char* partitionName){

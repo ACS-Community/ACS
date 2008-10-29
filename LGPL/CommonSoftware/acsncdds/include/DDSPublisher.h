@@ -79,6 +79,9 @@ namespace ddsnc{
 
 			pub->get_default_datawriter_qos (dwQos);
 			dwQos.reliability.kind = ::DDS::RELIABLE_RELIABILITY_QOS;
+			dwQos.reliability.max_blocking_time.sec = 1;
+			dwQos.history.kind = ::DDS::KEEP_LAST_HISTORY_QOS;
+			dwQos.history.depth = 100;
 		}
 
 		/**
@@ -186,7 +189,7 @@ namespace ddsnc{
 					if(DDS::RETCODE_OK != ts->register_type(participant.in(),""))
 						std::cerr << "register_type failed" << std::endl;
 					/*Initialize the Topic*/
-					initializeTopic(topicName, ts->get_type_name());
+					initializeTopic(ts->get_type_name());
 					if(CORBA::is_nil(topic.in()))
 							std::cerr<< "Topic is nil" << std::endl;
 					initializeDataWriter<DW>();

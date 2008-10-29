@@ -23,6 +23,7 @@ void SimpleExampleDDSImpl::sendMessage() throw (::CORBA::SystemException)
 
 	PUBLISH_DATA(pub_p, DDS_SIMPLE_EXAMPLE::simpleMessage, m);
 
+	sleep(1);
 	pub_p->disconnect();
 	delete pub_p;
 

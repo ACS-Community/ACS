@@ -146,11 +146,17 @@ namespace ddsnc{
 			}
 			
 			/*Initialize the Topic*/
-			initializeTopic(topicName, ts->get_type_name());
+			initializeTopic(ts->get_type_name());
 			if(CORBA::is_nil(topic.in()))
 				std::cerr<< "Topic is nil" << std::endl;
 		
 			sub->get_default_datareader_qos (drQos);
+			
+			drQos.reliability.kind = ::DDS::RELIABLE_RELIABILITY_QOS;
+			drQos.reliability.max_blocking_time.sec = 1;
+
+			drQos.history.kind = ::DDS::KEEP_LAST_HISTORY_QOS;
+			drQos.history.depth = 100;
 		}
 	};
 }
