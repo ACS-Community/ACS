@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.6 2008/10/29 02:39:06 javarias Exp $"
+# "@(#) $Id: Makefile,v 1.7 2008/10/29 20:54:15 javarias Exp $"
 #
 # Makefile of ........
 #
@@ -114,10 +114,10 @@ simpleExampleDDSImpl_LIBS    = SimpleExampleStubs acsddsncTypeSupport acsddsnc
 #
 # <brief description of NCBenchmarkImple library>
 NCBenchmarkImpl_OBJECTS = NCBenchmarkImpl
-NCBenchmarkImpl_LIBS    =  OpenDDS_Dcps SimpleTcp ACE NCBenchmarkStubs NCBenchTypeSupport acsnc acserr baci acsutil
+NCBenchmarkImpl_LIBS    =  NCBenchmarkStubs acsnc
 
 DDSNCBenchmarkImpl_OBJECTS = DDSNCBenchmarkImpl
-DDSNCBenchmarkImpl_LIBS    = OpenDDS_Dcps SimpleTcp ACE NCBenchmarkStubs NCBenchTypeSupport acsddsnc acserr baci acsutil
+DDSNCBenchmarkImpl_LIBS    = NCBenchmarkStubs acsddsncTypeSupport acsddsnc
 
 #
 # <brief description of acsddsncTypeSupport library>
