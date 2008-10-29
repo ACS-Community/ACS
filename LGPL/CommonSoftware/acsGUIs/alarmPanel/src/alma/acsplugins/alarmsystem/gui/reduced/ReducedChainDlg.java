@@ -38,6 +38,7 @@ import cern.laser.client.data.Alarm;
 import alma.acsplugins.alarmsystem.gui.table.AlarmGUIType;
 import alma.acsplugins.alarmsystem.gui.table.AlarmTable;
 import alma.acsplugins.alarmsystem.gui.table.AlarmTableModel;
+import alma.acsplugins.alarmsystem.gui.table.AlarmTableModel.AlarmTableColumn;
 import alma.acsplugins.alarmsystem.gui.tree.AlarmTree;
 import alma.alarmsystem.clients.CategoryClient;
 
@@ -126,18 +127,7 @@ public class ReducedChainDlg extends JDialog implements ActionListener {
 				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 				JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		tableScrollPane.setViewportView(table);
-		
-		// Set the column of the table
-		//
-		// The table shows all the columns but the flag
-//		AlarmTableColumn[] visibleCols = new AlarmTableColumn[AlarmTableColumn.values().length-1];
-//		int pos=0;
-//		for (AlarmTableColumn col: AlarmTableColumn.values()) {
-//			if (col!=AlarmTableColumn.ICON) {
-//				visibleCols[pos++]=col;
-//			}
-//		}
-//		table.showColumns(visibleCols);
+		table.addRemoveColumn(AlarmTableColumn.ICON, false);
 		
 		tabbedPane.addTab("Table view", tableScrollPane);
 		
