@@ -19,7 +19,7 @@
 
 /** 
  * @author  acaproni   
- * @version $Id: AlarmTableModel.java,v 1.18 2008/10/27 16:39:46 acaproni Exp $
+ * @version $Id: AlarmTableModel.java,v 1.19 2008/10/29 10:54:26 acaproni Exp $
  * @since    
  */
 
@@ -61,36 +61,50 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 	 *
 	 */
 	public enum AlarmTableColumn {
-		HIDES_CHILDREN("",true), // The entry hides chidlren because of RR
-		REDUCED("",true), // The entry is reduced
-		ICON("",true), // The flag
-		TIME("Time",true),
-		COMPONENT("Component",true),
-		CODE("Code",true),
-		PRIORITY("Priority",true),
-		DESCRIPTION("Description",true),
-		CAUSE("Cause",true),
-		ACTION("Action",false),
-		CONSEQUENCE("Consequence",false),
-		URL("URL",false),
-		CONTACT("Contact",false),
-		EMAIL("email",false),
-		GSM("GSM",false),
-		TRIPLET("Triplet",false),
-		FAMILY("Family",false);
+		HIDES_CHILDREN("","Parent node flag",true), // The entry hides children because of RR
+		REDUCED("","Reduced flag",true), // The entry is reduced
+		ICON("","Not acknowledged flag",true), // The flag
+		TIME("Time",null,true),
+		COMPONENT("Component",null,true),
+		CODE("Code",null,true),
+		PRIORITY("Priority",null,true),
+		DESCRIPTION("Description",null,true),
+		CAUSE("Cause",null,true),
+		ACTION("Action",null,false),
+		CONSEQUENCE("Consequence",null,false),
+		URL("URL",null,false),
+		CONTACT("Contact",null,false),
+		EMAIL("email",null,false),
+		GSM("GSM",null,false),
+		TRIPLET("Triplet",null,false),
+		FAMILY("Family",null,false);
 		
-		// The title of the header
+		/**
+		 *  The title of the column as it appears in the table header
+		 */
 		public final String title;
 		
-		// If true the column is shown at startup
+		/**
+		 *  The title of the column as it appears in the table header popup menu
+		 */
+		public final String popupTitle;
+		
+		/**
+		 *  If <code>true</code> the column is shown at startup
+		 */
 		public boolean visibleAtStartup;
 		
 		/**
-		 * Constructor: set the final properties
+		 * Constructor
 		 * 
+		 * @param title The name of the column in the table header
+		 * @param popupTitle The name of the column in the popup menu;
+		 * 					 if it is <code>null</code> then it is set to be equal to <code>title</code>
+		 * @param initiallyVisible if <code>true</code> the column is visible at startup
 		 */
-		private AlarmTableColumn(String title, boolean initiallyVisible) {
+		private AlarmTableColumn(String title, String popupTitle, boolean initiallyVisible) {
 			this.title=title;
+			this.popupTitle= (popupTitle==null) ? title : popupTitle;
 			this.visibleAtStartup=initiallyVisible;
 		}
 			
