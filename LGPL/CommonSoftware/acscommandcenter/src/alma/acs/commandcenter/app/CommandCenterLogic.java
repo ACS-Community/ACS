@@ -170,8 +170,6 @@ public class CommandCenterLogic {
 
 	public void stop () {
 
-		bgThreads.shutdownNow();
-
 		Executor.remoteDownAll();
 
 		if (deploymentTreeControllerImpl != null)
@@ -181,6 +179,12 @@ public class CommandCenterLogic {
 			firestarter.shutdown();
 
 		gui.stop();
+		
+		// we stop these rather late because the
+		// thread that executes this very method
+		// may itself be a background thread.
+		bgThreads.shutdownNow();
+
 		exit(0);
 	}
 
@@ -542,8 +546,6 @@ public class CommandCenterLogic {
 		public File project;
 		public String manager;
 		public boolean doExitOnClose = true;
-		public boolean useNativeSSH = false;
-		public boolean killNativeSSH = false;
 	}	
 
 	
