@@ -50,7 +50,7 @@ public class ProjectMaker {
 		 * "ACS.cdbpath" which we do not want to touch if it has been set by the
 		 * user. Otherwise, we'll infer it from ACSROOT.
 		 */ 
-		
+
 		String cdbroot = null; 
 		{
 			// 1. $ACS_CDB
@@ -70,29 +70,7 @@ public class ProjectMaker {
 				cdbroot = "/alma/ACS-8.0/acsdata/config/defaultCDB";	
 			}
 		}
-		
-		String cdbpath = null;
-		{
-			// 1. ACS.cdbpath
-			cdbpath = System.getProperty("ACS.cdbpath");
-			
-			// 2. $ACSROOT/config/CDB/schemas
-			if (cdbpath == null || cdbpath.equals("")) {
-				String acsroot = System.getProperty("ACS.root");
-				if (acsroot != null) {
-					acsroot += (acsroot.endsWith("/")) ? "" : "/";
-					cdbpath = acsroot + "config/CDB/schemas";
 
-					//	store, so cdb-jDAL can find it
-					if (cdbpath != null) 
-						System.setProperty("ACS.cdbpath", cdbpath);
-					// TODO(msc): instead setting sysprop ACS.cdbpath: store in project, add field to gui
-				}
-			}
-			
-			// 3. fallback to what?
-		}	
-		
 		ret.setMode(ModeType.LOCAL);
 		ret.setScriptBase(System.getProperty("ACS.baseport", "9"));
 		ret.setServicesLocalJavaRoot(cdbroot);
