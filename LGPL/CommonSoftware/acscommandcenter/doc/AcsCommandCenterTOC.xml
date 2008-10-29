@@ -16,7 +16,7 @@
 		<tocitem text="Managing Projects">
 			<tocitem text="Managing Projects" target="managing_projects"/>
 		</tocitem>
-		<tocitem text="Extra Tools">
+		<tocitem text="Tools">
 			<tocitem text="Tools Menu" target="tools_menu"/>
 			<tocitem text="Tool Definitions" target="tool_definitions"/>
 		</tocitem>
