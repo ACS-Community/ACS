@@ -7,7 +7,7 @@
 1 - ------------ testAudienceLog --------------
 1 - <Warning TimeStamp="xxx" File="alma.acs.logging.AcsLoggerTest"  Line="xxx" Routine="testAudienceLog" Host="xxx" Process="alma.acs.logging.AcsLoggerTest" SourceObject="alma.acs.logging.AcsLoggerTest" Thread="main" StackId="unknown" StackLevel="0" LogId="2" Audience="Operator"><![CDATA[Log with audience]]></Warning>
 1 - <Warning TimeStamp="xxx" File="alma.acs.logging.AcsLoggerTest"  Line="xxx" Routine="testAudienceLog" Host="xxx" Process="alma.acs.logging.AcsLoggerTest" SourceObject="alma.acs.logging.AcsLoggerTest" Thread="main" StackId="unknown" StackLevel="0" LogId="3" Audience="Operator"><![CDATA[Log exception with audience]]><Data Name="LoggedException"><![CDATA[java.lang.Exception: My dummy exception
-1 - 	at alma.acs.logging.AcsLoggerTest.testAudienceLog(AcsLoggerTest.java:33)
+1 - 	at alma.acs.logging.AcsLoggerTest.testAudienceLog(AcsLoggerTest.java:34)
 1 - 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
 1 - 	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
 1 - 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
@@ -29,7 +29,7 @@
 1 - <Warning TimeStamp="xxx" File="alma.acs.logging.AcsLoggerTest"  Line="xxx" Routine="testAntennaContextLog" Host="xxx" Process="alma.acs.logging.AcsLoggerTest" SourceObject="alma.acs.logging.AcsLoggerTest" Thread="main" StackId="unknown" StackLevel="0" LogId="4" Audience="Operator" Array="Array01" Antenna="Antenna01"><![CDATA[Log with audience, array and antenna]]></Warning>
 1 - <Warning TimeStamp="xxx" File="alma.acs.logging.AcsLoggerTest"  Line="xxx" Routine="testAntennaContextLog" Host="xxx" Process="alma.acs.logging.AcsLoggerTest" SourceObject="alma.acs.logging.AcsLoggerTest" Thread="main" StackId="unknown" StackLevel="0" LogId="5" Array="Array01" Antenna="Antenna01"><![CDATA[Log with array and antenna]]></Warning>
 1 - <Warning TimeStamp="xxx" File="alma.acs.logging.AcsLoggerTest"  Line="xxx" Routine="testAntennaContextLog" Host="xxx" Process="alma.acs.logging.AcsLoggerTest" SourceObject="alma.acs.logging.AcsLoggerTest" Thread="main" StackId="unknown" StackLevel="0" LogId="6" Audience="Operator" Array="Array01" Antenna="Antenna01"><![CDATA[Log exception with audience, array and antenna]]><Data Name="LoggedException"><![CDATA[java.lang.Exception: My dummy exception
-1 - 	at alma.acs.logging.AcsLoggerTest.testAntennaContextLog(AcsLoggerTest.java:42)
+1 - 	at alma.acs.logging.AcsLoggerTest.testAntennaContextLog(AcsLoggerTest.java:43)
 1 - 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
 1 - 	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
 1 - 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
@@ -47,7 +47,7 @@
 1 - 	at alma.acs.testsupport.tat.NoDotJUnitRunner.main(NoDotJUnitRunner.java:41)
 1 - ]]></Data></Warning>
 1 - <Warning TimeStamp="xxx" File="alma.acs.logging.AcsLoggerTest"  Line="xxx" Routine="testAntennaContextLog" Host="xxx" Process="alma.acs.logging.AcsLoggerTest" SourceObject="alma.acs.logging.AcsLoggerTest" Thread="main" StackId="unknown" StackLevel="0" LogId="7" Array="Array01" Antenna="Antenna01"><![CDATA[Log exception with array and antenna]]><Data Name="LoggedException"><![CDATA[java.lang.Exception: My dummy exception
-1 - 	at alma.acs.logging.AcsLoggerTest.testAntennaContextLog(AcsLoggerTest.java:46)
+1 - 	at alma.acs.logging.AcsLoggerTest.testAntennaContextLog(AcsLoggerTest.java:47)
 1 - 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
 1 - 	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
 1 - 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
@@ -69,7 +69,7 @@
 1 - <Warning TimeStamp="xxx" File="alma.acs.logging.AcsLoggerTest"  Line="xxx" Routine="testArrayContextLog" Host="xxx" Process="alma.acs.logging.AcsLoggerTest" SourceObject="alma.acs.logging.AcsLoggerTest" Thread="main" StackId="unknown" StackLevel="0" LogId="8" Audience="Operator" Array="Array01"><![CDATA[Log with audience and array]]></Warning>
 1 - <Warning TimeStamp="xxx" File="alma.acs.logging.AcsLoggerTest"  Line="xxx" Routine="testArrayContextLog" Host="xxx" Process="alma.acs.logging.AcsLoggerTest" SourceObject="alma.acs.logging.AcsLoggerTest" Thread="main" StackId="unknown" StackLevel="0" LogId="9" Array="Array01"><![CDATA[Log with array]]></Warning>
 1 - <Warning TimeStamp="xxx" File="alma.acs.logging.AcsLoggerTest"  Line="xxx" Routine="testArrayContextLog" Host="xxx" Process="alma.acs.logging.AcsLoggerTest" SourceObject="alma.acs.logging.AcsLoggerTest" Thread="main" StackId="unknown" StackLevel="0" LogId="10" Audience="Operator" Array="Array01"><![CDATA[Log exception with audience and array]]><Data Name="LoggedException"><![CDATA[java.lang.Exception: My dummy exception
-1 - 	at alma.acs.logging.AcsLoggerTest.testArrayContextLog(AcsLoggerTest.java:53)
+1 - 	at alma.acs.logging.AcsLoggerTest.testArrayContextLog(AcsLoggerTest.java:54)
 1 - 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
 1 - 	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
 1 - 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
@@ -87,7 +87,7 @@
 1 - 	at alma.acs.testsupport.tat.NoDotJUnitRunner.main(NoDotJUnitRunner.java:41)
 1 - ]]></Data></Warning>
 1 - <Warning TimeStamp="xxx" File="alma.acs.logging.AcsLoggerTest"  Line="xxx" Routine="testArrayContextLog" Host="xxx" Process="alma.acs.logging.AcsLoggerTest" SourceObject="alma.acs.logging.AcsLoggerTest" Thread="main" StackId="unknown" StackLevel="0" LogId="11" Array="Array01"><![CDATA[Log exception with array]]><Data Name="LoggedException"><![CDATA[java.lang.Exception: My dummy exception
-1 - 	at alma.acs.logging.AcsLoggerTest.testArrayContextLog(AcsLoggerTest.java:57)
+1 - 	at alma.acs.logging.AcsLoggerTest.testArrayContextLog(AcsLoggerTest.java:58)
 1 - 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
 1 - 	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
 1 - 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
@@ -108,6 +108,8 @@
 1 - ------------ testWrapJdkLogger --------------
 1 - --iso_time-- INFO [myJdkLoggerwrapper] A message logged by the AcsLogger that wraps the jdkLogger
 1 - 
+1 - ------------ testAbuseLevelOff --------------
 1 - 
-1 - OK (5 tests)
+1 - 
+1 - OK (6 tests)
 1 - 
