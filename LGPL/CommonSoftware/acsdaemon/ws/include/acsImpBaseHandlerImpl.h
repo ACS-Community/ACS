@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsImpBaseHandlerImpl.h,v 1.1 2008/10/28 10:45:19 msekoran Exp $"
+* "@(#) $Id: acsImpBaseHandlerImpl.h,v 1.2 2008/10/29 08:37:57 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -35,6 +35,8 @@
 #include "acsDaemonImpl.h"
 #include "acsRequest.h"
 #include "acsServiceController.h"
+
+#include "ACSAlarmSystemInterfaceFactory.h"
 
 
 template <class T> class ACSImpBaseHandlerImpl : public virtual POA_acsdaemon::ImpBase {
@@ -69,13 +71,17 @@ template <class T> class ACSImpBaseHandlerImpl : public virtual POA_acsdaemon::I
      */
     void initialize(CORBA::ORB_ptr orb) {
         context->initialize(orb);
+	
+	// initialize the AlarmSystemInterfaceFactory
+	ACSAlarmSystemInterfaceFactory::init(NULL);
     }
 
     /**
      * Dispose handler
      */
     void dispose(CORBA::ORB_ptr orb) {
-        context->dispose(orb);
+	ACSAlarmSystemInterfaceFactory::done();
+	context->dispose(orb);
     }
 
     /**

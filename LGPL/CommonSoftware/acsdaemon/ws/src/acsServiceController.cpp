@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@$Id: acsServiceController.cpp,v 1.1 2008/10/27 21:11:23 msekoran Exp $"
+* "@$Id: acsServiceController.cpp,v 1.2 2008/10/29 08:37:26 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -28,7 +28,11 @@
 #include "acsServiceController.h"
 #include <acsutilPorts.h>
 #include <acsQoS.h>
+
 #include <ACSAlarmSystemInterfaceFactory.h>
+#include <Properties.h>
+#include <faultStateConstants.h>
+
 #include "acsdaemonErrType.h"
 
 /***************************** ControllerThread *******************************/
@@ -97,7 +101,8 @@ void ServiceController::requestComplete(Request *request) {
 
 bool ServiceController::setState(acsdaemon::ServiceState istate) {
     bool stopped = state != acsdaemon::NOT_EXISTING && istate == acsdaemon::NOT_EXISTING;
-    if (state == acsdaemon::RUNNING && istate != acsdaemon::RUNNING || state == acsdaemon::DEGRADED && istate != acsdaemon::RUNNING && istate != acsdaemon::DEGRADED) {
+    if (state != istate) { // NOTE initially clear (non-active) state will be sent (to clear any old state)
+    //if (state == acsdaemon::RUNNING && istate != acsdaemon::RUNNING || state == acsdaemon::DEGRADED && istate != acsdaemon::RUNNING && istate != acsdaemon::DEGRADED) {
         fireAlarm(istate);
     }
     state = istate;
@@ -260,11 +265,25 @@ acsdaemon::ServiceState ACSServiceController::getActualState() {
     }
 }
 
-const char *STATES[] = {"NOT_EXISTING", "DEFUNCT", "DEGRADED", "RUNNING"};
-
 void ACSServiceController::fireAlarm(acsdaemon::ServiceState state) {
-    // FIXME !!!!
-    ACS_SHORT_LOG ((LM_INFO, "Supposed to fire an alarm because '%s' changed state to %s.", desc->getACSServiceName(), STATES[state]));
+    // constants we will use when creating the fault
+    std::string family = "Services";
+    std::string member = desc->getACSServiceName();;
+    int code = (int)state; 
+    
+    // create a Properties object and configure it
+    acsalarm::Properties props;
+    props.setProperty(faultState::ASI_PREFIX_PROPERTY_STRING, "prefix");
+    props.setProperty(faultState::ASI_SUFFIX_PROPERTY_STRING, "suffix");
+    props.setProperty("host", desc->getHost());
+    std::stringstream out;
+    out << desc->getInstanceNumber();
+    props.setProperty("instance", out.str());
+    if (desc->getName())
+        props.setProperty("name", desc->getName()); // for named services (e.g. notification services) 
+
+    // push the FaultState using the AlarmSystemInterface previously created
+    ACSAlarmSystemInterfaceFactory::createAndSendAlarm(family, member, code, state != acsdaemon::RUNNING, props);
 }
 
 /***************************** ACSDaemonContext *******************************/
@@ -288,10 +307,10 @@ ACSDaemonContext::~ACSDaemonContext() {
         for (int i = 0; i < ACS_SERVICE_INSTANCES; i++) if (acsservicecontrollers[i] != NULL) delete acsservicecontrollers[i];
         delete [] acsservicecontrollers;
     }
-    for (std::map<const char *, ServiceController **>::iterator itr; itr != NULL; itr++) {
-        if ((*itr).second != NULL) {
-            for (int i = 0; i < ACS_SERVICE_INSTANCES; i++) if ((*itr).second[i] != NULL) delete (*itr).second[i];
-            delete [] (*itr).second;
+    for (std::map<const char *, ServiceController **>::const_iterator itr = acsservicecontrollersmap.begin(); itr != acsservicecontrollersmap.end(); ++itr) {
+        if (itr->second != NULL) {
+            for (int i = 0; i < ACS_SERVICE_INSTANCES; i++) if (itr->second[i] != NULL) delete itr->second[i];
+            delete [] itr->second;
         }
     }
     tm.destroy(ctrl);
@@ -324,11 +343,11 @@ ServiceController *ACSDaemonContext::getACSServiceController(ACSServiceRequestDe
         controllers = acsservicecontrollers;
         if (controllers[inum] == NULL) controllers[inum] = new ACSServiceController(this, desc, autorestart);
     } else {
-        if (acsservicecontrollersmap[name] == NULL) {
-            acsservicecontrollersmap[name] = new ServiceController*[ACS_SERVICE_INSTANCES];
-            memset(acsservicecontrollersmap[name], 0, sizeof(ServiceController*) * ACS_SERVICE_INSTANCES);
+        if ((controllers = acsservicecontrollersmap[name]) == NULL) {
+            controllers = new ServiceController*[ACS_SERVICE_INSTANCES];
+            memset(controllers, 0, sizeof(ServiceController*) * ACS_SERVICE_INSTANCES);
+            acsservicecontrollersmap[name] = controllers;
         }
-        controllers = acsservicecontrollersmap[name];
         if (controllers[inum] == NULL) controllers[inum] = new ACSServiceController(this, desc, autorestart);
     }
     m_mutex->release();
@@ -376,9 +395,9 @@ void ACSDaemonContext::checkControllers() {
     if (acsservicecontrollers != NULL) {
         for (int i = 0; i < ACS_SERVICE_INSTANCES; i++) if (acsservicecontrollers[i] != NULL) acsservicecontrollers[i]->restart();
     }
-    for (std::map<const char *, ServiceController **>::iterator itr; itr != NULL; itr++) {
-        if ((*itr).second != NULL) {
-            for (int i = 0; i < ACS_SERVICE_INSTANCES; i++) if ((*itr).second[i] != NULL) (*itr).second[i]->restart();
+    for (std::map<const char *, ServiceController **>::const_iterator itr = acsservicecontrollersmap.begin(); itr != acsservicecontrollersmap.end(); ++itr) {
+        if (itr->second != NULL) {
+            for (int i = 0; i < ACS_SERVICE_INSTANCES; i++) if (itr->second[i] != NULL) itr->second[i]->restart();
         }
     }
     m_mutex->release();
