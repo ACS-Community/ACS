@@ -44,6 +44,11 @@ A Tool definition has the following elements:
 =================================================================================================== -->
 
 	<tool>
+		<caption>Acs List</caption>
+		<command>accEnableVars acsList -v</command>
+	</tool>
+
+	<tool>
 		<caption>Object Explorer</caption>
 		<command>accEnableVars accStarter -e ACS_INSTANCE=? -p $HOME/.acs/commandcenter/objexp objexp -m corbaloc::?:?/Manager</command>
 		<insertion source="model">ScriptBase</insertion>
