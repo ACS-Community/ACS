@@ -33,12 +33,14 @@ import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JToggleButton;
 import javax.swing.ListCellRenderer;
 import javax.swing.SwingConstants;
 import javax.swing.border.EtchedBorder;
 
+import alma.acsplugins.alarmsystem.gui.AlarmPanel;
 import alma.acsplugins.alarmsystem.gui.table.AlarmGUIType;
 import alma.acsplugins.alarmsystem.gui.table.AlarmTableModel;
 
@@ -214,6 +216,11 @@ public class Toolbar extends JPanel implements ActionListener {
 	}
 	
 	/**
+	 * The panel showing the toolbar
+	 */
+	private final AlarmPanel alarmPanel;
+	
+	/**
 	 * The combo box for auto-acknowledgment of alarms
 	 */
 	private JComboBox autoAckLevelCB=new JComboBox(ComboBoxValues.values());
@@ -232,9 +239,24 @@ public class Toolbar extends JPanel implements ActionListener {
 	 * The check box to activate/deactivate the reduction of alarms
 	 */
 	private JToggleButton reductionRulesBtn;
+	
+	/**
+	 * The icon shown by <code>pauseBtn</code> when the application is paused
+	 */
+	private ImageIcon pausedIcon = new ImageIcon(Toolbar.class.getResource(AlarmGUIType.iconFolder+"play.png"));
+	
+	/**
+	 * The icon shown by <code>pauseBtn</code> when the application is not paused
+	 */
+	private ImageIcon notPausedIcon = new ImageIcon(Toolbar.class.getResource(AlarmGUIType.iconFolder+"pause.png"));
+	
+	/**
+	 * The button to pause/unpause the application
+	 */
+	private JButton pauseBtn = new JButton("Pause",notPausedIcon);
 
 	/**
-	 * The label box for autoacknowledgement of alarms
+	 * The label box for auto-acknowledgement of alarms
 	 */
 	private JLabel autoAckLbl = new JLabel("Auto ack: ");
 	
@@ -247,14 +269,19 @@ public class Toolbar extends JPanel implements ActionListener {
 	 * Constructor
 	 * 
 	 * @param model The table model
-	 * @param <code>true</code> if the reduction rules are applied at startup
+	 * @param reduce <code>true</code> if the reduction rules are applied at startup
+	 * @param panel The panel showing the toolbar
 	 */
-	public Toolbar(AlarmTableModel model, boolean reduce) {
+	public Toolbar(AlarmTableModel model, boolean reduce, AlarmPanel panel) {
 		super();
 		if (model==null) {
-			throw new IllegalArgumentException("the model can't be null");
+			throw new IllegalArgumentException("The model can't be null");
+		}
+		if (panel==null) {
+			throw new IllegalArgumentException("The panel can't be null");
 		}
 		this.model=model;
+		this.alarmPanel=panel;
 		initialize(reduce);
 	}
 	
@@ -293,6 +320,9 @@ public class Toolbar extends JPanel implements ActionListener {
 		reductionRulesBtn.setFont(newFont);
 		add(reductionRulesBtn);
 		reductionRulesBtn.addActionListener(this);
+		
+		add(pauseBtn);
+		pauseBtn.addActionListener(this);
 	}
 	
 	/**
@@ -309,8 +339,39 @@ public class Toolbar extends JPanel implements ActionListener {
 			} else {
 				reductionRulesBtn.setIcon(inactiveReductionIcon);
 			}
+		} else if (e.getSource()==pauseBtn) {
+			try {
+				if (pauseBtn.getIcon()==notPausedIcon) {
+						alarmPanel.pause();
+				} else {
+					alarmPanel.resume();
+				}
+			} catch (Throwable t) {
+				t.printStackTrace(System.err);
+				JOptionPane.showMessageDialog(this, t.getMessage(), "Error pausing/unpausing", JOptionPane.ERROR_MESSAGE);
+			}
 		} else {
 			System.err.println("Invalid source of event: "+e.getSource());
+		}
+	}
+	
+	/**
+	 * Update the state of the pause button depending on the state 
+	 * paused/unpaused of the application
+	 * <P>
+	 * This method is not called directly by <code>actionPerformed</code> when the button 
+	 * is pressed.
+	 * It is executed when the application is started/paused.
+	 *  
+	 * @param paused <code>true</code> if the application is paused 
+	 */
+	public void updatePauseBtn(boolean paused) {
+		if (paused) {
+			pauseBtn.setIcon(pausedIcon);
+			pauseBtn.setText("Play");
+		} else {
+			pauseBtn.setIcon(notPausedIcon);
+			pauseBtn.setText("Pause");
 		}
 	}
 }
