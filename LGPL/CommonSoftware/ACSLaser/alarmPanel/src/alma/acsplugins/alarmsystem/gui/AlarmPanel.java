@@ -19,7 +19,7 @@
 
 /** 
  * @author  acaproni   
- * @version $Id: AlarmPanel.java,v 1.20 2008/10/27 16:43:42 acaproni Exp $
+ * @version $Id: AlarmPanel.java,v 1.21 2008/10/30 14:33:55 acaproni Exp $
  * @since    
  */
 
@@ -172,7 +172,7 @@ public class AlarmPanel extends JPanel implements IPanel {
 		add(tableScrollPane,BorderLayout.CENTER);
 		
 		// Add the toolbar
-		toolbar=new Toolbar(model,ACTIVATE_RDUCTION_RULES);
+		toolbar=new Toolbar(model,ACTIVATE_RDUCTION_RULES,this);
 		add(toolbar,BorderLayout.NORTH);
 		
 		// Add the status line
@@ -183,14 +183,18 @@ public class AlarmPanel extends JPanel implements IPanel {
 	 * @see IpauseResume
 	 */
 	public void pause() throws Exception {
+		model.pause(true);
 		statusLine.pause();
+		toolbar.updatePauseBtn(true);
 	}
 	
 	/**
 	 * @see IPauseResume
 	 */
 	public void resume() throws Exception {
+		model.pause(false);
 		statusLine.resume();
+		toolbar.updatePauseBtn(false);
 	}
 	
 	/**
@@ -240,6 +244,7 @@ public class AlarmPanel extends JPanel implements IPanel {
 		disconnectThread = new StopAlarmPanel();
 		disconnectThread.setName("StopAlarmPanel");
 		disconnectThread.start();
+		model.close();
 		alarmTable.close();
 	}
 	
