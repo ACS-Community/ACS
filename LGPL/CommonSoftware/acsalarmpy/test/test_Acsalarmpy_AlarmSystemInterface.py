@@ -17,7 +17,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: test_Acsalarmpy_AlarmSystemInterface.py,v 1.1 2008/10/09 16:11:10 agrimstrup Exp $"
+# "@(#) $Id: test_Acsalarmpy_AlarmSystemInterface.py,v 1.2 2008/10/30 13:01:21 agrimstrup Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -59,7 +59,7 @@ class TestAlarmSystemInterface(unittest.TestCase):
         """AlarmSystemInterface publish message to alarm system"""
         self.assertRaises(Exception, self.asi.publishMessage) 
 
-    @mock.patch(ASInterface.AlarmSystemInterface, 'publishMessage', mock.Mock())
+    @mock.patch('Acsalarmpy.AlarmSystemInterface.AlarmSystemInterface.publishMessage', new=mock.Mock())
     def test_push_single(self):
         """Push a single fault"""
         self.asi.logger.reset()
@@ -72,7 +72,7 @@ class TestAlarmSystemInterface(unittest.TestCase):
         self.assertEqual(5, len(self.asi.logger.method_calls))
         
 
-    @mock.patch(ASInterface.AlarmSystemInterface, 'publishMessage', mock.Mock())
+    @mock.patch('Acsalarmpy.AlarmSystemInterface.AlarmSystemInterface.publishMessage', new=mock.Mock())
     def test_push_multi(self):
         """Push multiple faults"""
         self.asi.logger.reset()
@@ -85,7 +85,7 @@ class TestAlarmSystemInterface(unittest.TestCase):
         self.assertEqual(6, len(self.asi.logger.method_calls))
         
 
-    @mock.patch(ASInterface.AlarmSystemInterface, 'publishMessage', mock.Mock())
+    @mock.patch('Acsalarmpy.AlarmSystemInterface.AlarmSystemInterface.publishMessage', new=mock.Mock())
     def test_pushActiveList(self):
         """Push a list of active faults"""
         self.asi.logger.reset()

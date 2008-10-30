@@ -17,7 +17,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: __init__.py,v 1.4 2008/10/29 09:10:57 agrimstrup Exp $"
+# "@(#) $Id: __init__.py,v 1.5 2008/10/30 13:01:21 agrimstrup Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -28,8 +28,6 @@ import Acspy.Common.Log as Log
 import Acspy.Common.CDBAccess as CDBAccess
 import AcsAlarmSystem_xsd
 import FaultState
-import ACSAlarmSystemInterfaceProxy as ACSProxy
-import CERNAlarmSystemInterfaceProxy as CERNProxy
 import acsErrTypeAlarmSourceFactoryImpl as ErrFactory
 
 class AlarmSystemInterfaceFactory(object):
@@ -55,11 +53,13 @@ class AlarmSystemInterfaceFactory(object):
         cls.initialized = True
 
         try:
+            import ACSAlarmSystemInterfaceProxy as ACSProxy
             cls.registry['ACS'] = ACSProxy.ACSAlarmSystemInterfaceProxy
         except:
             pass
 
         try:
+            import CERNAlarmSystemInterfaceProxy as CERNProxy
             cls.registry['CERN'] = CERNProxy.CERNAlarmSystemInterfaceProxy
         except:
             pass

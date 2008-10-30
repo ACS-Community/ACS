@@ -17,7 +17,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: test_Acsalarmpy_ASI.py,v 1.1 2008/10/09 16:11:10 agrimstrup Exp $"
+# "@(#) $Id: test_Acsalarmpy_ASI.py,v 1.2 2008/10/30 13:01:21 agrimstrup Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -67,7 +67,7 @@ class TestASIMessage(unittest.TestCase):
         msg.faultStates = [FaultState.FaultState("Family","Member",1)]
         msg.sourceHostname = 'foo'
         msg.sourceTimestamp = Timestamp.Timestamp()
-        self.assertEqual('<ASI-message xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" backup="false" version="0.9" xsi:type="ASI-message">\n   <source-name>ALARM_SYSTEM_SOURCES</source_name>\n   <source-hostname>foo</source_hostname>\n   <source-timestamp seconds="1222887968" microseconds="813308"/>\n   <fault-states>\n   <fault-state family="Family" member="Member" code="1">\n</fault-state>\n   </fault-states>\n</ASI-message>\n',msg.toXML())
+        self.assertEqual('<?xml version="1.0" encoding="ISO-8859-1"?>\n<ASI-message xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" backup="false" version="0.9" xsi:type="ASI-message">\n   <source-name>ALARM_SYSTEM_SOURCES</source-name>\n   <source-hostname>foo</source-hostname>\n   <source-timestamp seconds="1222887968" microseconds="813308"/>\n   <fault-states>\n   <fault-state family="Family" member="Member" code="1">\n</fault-state>\n   </fault-states>\n</ASI-message>\n',msg.toXML())
 
 if __name__ == '__main__':
     unittest.main()
