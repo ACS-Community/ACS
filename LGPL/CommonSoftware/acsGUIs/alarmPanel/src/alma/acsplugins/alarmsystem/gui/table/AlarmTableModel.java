@@ -19,7 +19,7 @@
 
 /** 
  * @author  acaproni   
- * @version $Id: AlarmTableModel.java,v 1.19 2008/10/29 10:54:26 acaproni Exp $
+ * @version $Id: AlarmTableModel.java,v 1.20 2008/10/30 14:32:53 acaproni Exp $
  * @since    
  */
 
@@ -30,7 +30,6 @@ import javax.swing.JOptionPane;
 import javax.swing.table.AbstractTableModel;
 
 import alma.acs.util.IsoDateFormat;
-import alma.acsplugins.alarmsystem.gui.AlarmPanel;
 import alma.acsplugins.alarmsystem.gui.ConnectionListener;
 import alma.acsplugins.alarmsystem.gui.toolbar.Toolbar.ComboBoxValues;
 import alma.alarmsystem.clients.CategoryClient;
@@ -40,16 +39,17 @@ import cern.laser.client.services.selection.AlarmSelectionListener;
 import cern.laser.client.services.selection.LaserHeartbeatException;
 import cern.laser.client.services.selection.LaserSelectionException;
 
-import java.awt.Component;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.Semaphore;
 
 /** 
  * 
  * The table model for the table alarms
  *
  */
-public class AlarmTableModel extends AbstractTableModel implements AlarmSelectionListener {
+public class AlarmTableModel extends AbstractTableModel implements AlarmSelectionListener, Runnable {
 	
 	/**
 	 * The title of each column.
@@ -127,6 +127,34 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 	 */
 	private ConnectionListener connectionListener=null;
 	
+	/** 
+	 * The queue of alarms received from the <code>CategoryClient</code> that will be
+	 * injected in the table
+	 */
+	private LinkedBlockingQueue<Alarm> queue = new LinkedBlockingQueue<Alarm>(QUEUE_SIZE);
+	
+	/**
+	 * The semaphore used to pause the thread
+	 * <P>
+	 * When the application is not paused, the thread acquire the semaphore
+	 * before getting an alarm from the queue and release it when done.
+	 * <BR>
+	 * The pause method acquires the semaphore blocking the thread.
+	 * When the application is upaused then the semaphore is released and the thread restarts.
+	 * 
+	 */
+	private Semaphore paused=new Semaphore(1);
+	
+	/**
+	 * Signal the thread to terminate
+	 */
+	private volatile boolean terminateThread=false;
+	
+	/**
+	 * The thread
+	 */
+	private final Thread thread;
+	
 	/**
 	 * Constructor
 	 * 
@@ -145,51 +173,35 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 		for (AlarmGUIType alarmType: AlarmGUIType.values()) {
 			counters.put(alarmType, new AlarmCounter());
 		}
+		// Start the thread
+		thread = new Thread(this,"AlarmTableModel");
+		thread.setDaemon(true);
+		thread.start();
 	}
 	
 	/**
-	 * Add an alarm in the table.
-	 * If an alarm with the same triplet is already in the table it is replaced.
+	 * Add an alarm in the queue.
+	 * The thread will get the alarm from the queue and update the model.
 	 * 
-	 * @param alarm The alarm to show in the table.
+	 * @param alarm The alarm to add to the table.
 	 * @see AlarmSelectionListener
 	 */
 	public synchronized void onAlarm(Alarm alarm) {
-		synchronized (items) {
-			if (items.size(applyReductionRules)==MAX_ALARMS && !items.contains(alarm.getAlarmId())) {
-				AlarmTableEntry removedAlarm=null;
+		// Add the alarm to the queue
+		if (waitIfQueueFull) {
+			// Wait if the queue is full
+			while (!terminateThread) {
 				try {
-					removedAlarm = items.removeOldest(); // Remove the last one
-				} catch (Exception e) {
-					System.err.println("Error removing the oldest alarm: "+e.getMessage());
-					e.printStackTrace(System.err);
-					JOptionPane.showInternalMessageDialog(
-							owner, 
-							e.getMessage(), 
-							"Error removing the oldest alarm", 
-							JOptionPane.ERROR_MESSAGE);
-					return;
+					queue.put(alarm);
+				} catch (InterruptedException e) {
+					continue;
 				}
-				counters.get(removedAlarm.getAlarmType()).decCounter();
+				break;
 			}
-			if (items.contains(alarm.getAlarmId())) {
-				replaceAlarm(alarm);
-			} else {
-				addAlarm(alarm);
-			}
+		} else {
+			// Does not care if the queue is full
+			queue.offer(alarm);
 		}
-		fireTableDataChanged();
-		
-		// Debug messages for investigating reductions
-//		System.out.println("Adding "+alarm.getIdentifier());
-//		System.out.println("\tMultiplicity parent: "+alarm.isMultiplicityParent());
-//		System.out.println("\tMultiplicity child: "+alarm.isMultiplicityChild());
-//		System.out.println("\tNode parent: "+alarm.isNodeParent());
-//		System.out.println("\tNodechild: "+alarm.isNodeChild());
-//		System.out.println("Status:");
-//		System.out.println("\t\tMasked: "+alarm.getStatus().isMasked());
-//		System.out.println("\t\tReduced: "+alarm.getStatus().isReduced());
-//		System.out.println("\t\tActive: "+alarm.getStatus().isActive());
 	}
 	
 	/**
@@ -316,7 +328,6 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 					JOptionPane.ERROR_MESSAGE);
 			return;
 		}
-		fireTableDataChanged();
 		if (oldAlarmStatus==newAlarm.getStatus().isActive()) {
 			return;
 		}
@@ -361,7 +372,22 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 	 * When the max has been reach, the oldest alarm is removed 
 	 * before adding a new one
 	 */
-	public static final int MAX_ALARMS=10000;
+	public static final int MAX_ALARMS=20000;
+	
+	/**
+	 * The max alarm in queue when the table is paused
+	 */
+	public static final int QUEUE_SIZE=15000;
+	
+	/**
+	 * The behavior if the queue is full.
+	 * 
+	 * If it is <code>true</code> when a new alarm arrives and the queue is full then 
+	 * it waits until there is one free place in the queue.
+	 * 
+	 * If it is <code>false</code> and the queue is full then the incoming alarm will be discarded.
+	 */
+	private boolean waitIfQueueFull = false;
 	
 	/**
 	 * The owner component (used to show dialog messages) 
@@ -626,5 +652,106 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 	 */
 	public synchronized void clear() {
 		items.clear();
+	}
+	
+	/**
+	 * Pause/un-pause the update of the table
+	 * <P>
+	 * If it is paused then the alarms received in <code>onAlarm</code>
+	 * are not added in the model but queued until the application is unpaused.
+	 * 
+	 * @param pause if <code>true</code> no new alarms are added in the table
+	 */
+	public void pause(boolean pause) {
+		if (pause) {
+			while (!terminateThread) {
+				try {
+					paused.acquire();
+					break;
+				} catch (InterruptedException e) {
+					continue;
+				}
+			}
+			
+		} else {
+			paused.release();
+		}
+	}
+
+	/**
+	 * The thread getting alarms from the queue and injecting in the model.
+	 * <P>
+	 * If an alarm with the same triplet is already in the table it is replaced.
+	 * 
+	 * @see java.lang.Runnable#run()
+	 */
+	@Override
+	public void run() {
+		// Get an alarm out of the queue
+		while (!terminateThread) {
+			Alarm alarm;
+			
+			// Get an alarm from the queue waiting until an alarm
+			// is available
+			try { 
+				alarm=queue.take();
+			} catch (InterruptedException e) {
+				continue;
+			}
+			
+			// Wait if the application is paused by getting the semaphore
+			try {
+				paused.acquire();
+			} catch (InterruptedException e) {
+				continue;
+			}
+			// The semaphore is immediately released to avoid blocking
+			// pause() for a long time
+			paused.release();
+		
+			// Debug messages for investigating reductions
+//			System.out.println("Adding "+alarm.getIdentifier());
+//			System.out.println("\tMultiplicity parent: "+alarm.isMultiplicityParent());
+//			System.out.println("\tMultiplicity child: "+alarm.isMultiplicityChild());
+//			System.out.println("\tNode parent: "+alarm.isNodeParent());
+//			System.out.println("\tNodechild: "+alarm.isNodeChild());
+//			System.out.println("Status:");
+//			System.out.println("\t\tMasked: "+alarm.getStatus().isMasked());
+//			System.out.println("\t\tReduced: "+alarm.getStatus().isReduced());
+//			System.out.println("\t\tActive: "+alarm.getStatus().isActive());
+			
+			synchronized (items) {
+				if (items.size(applyReductionRules)==MAX_ALARMS && !items.contains(alarm.getAlarmId())) {
+					AlarmTableEntry removedAlarm=null;
+					try {
+						removedAlarm = items.removeOldest(); // Remove the last one
+					} catch (Exception e) {
+						System.err.println("Error removing the oldest alarm: "+e.getMessage());
+						e.printStackTrace(System.err);
+						JOptionPane.showInternalMessageDialog(
+								owner, 
+								e.getMessage(), 
+								"Error removing the oldest alarm", 
+								JOptionPane.ERROR_MESSAGE);
+						return;
+					}
+					counters.get(removedAlarm.getAlarmType()).decCounter();
+				}
+				if (items.contains(alarm.getAlarmId())) {
+					replaceAlarm(alarm);
+				} else {
+					addAlarm(alarm);
+				}
+			}
+			fireTableDataChanged();
+		}
+	}
+	
+	/**
+	 * Terminate the thread and free the resources.
+	 */
+	public void close() {
+		terminateThread=true;
+		thread.interrupt();
 	}
 }
