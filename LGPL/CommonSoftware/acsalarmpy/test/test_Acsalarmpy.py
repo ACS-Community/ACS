@@ -17,7 +17,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: test_Acsalarmpy.py,v 1.4 2008/10/29 09:10:58 agrimstrup Exp $"
+# "@(#) $Id: test_Acsalarmpy.py,v 1.5 2008/10/30 14:13:00 agrimstrup Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -45,6 +45,7 @@ def mockGetLogger(name=None):
 Acspy.Common.Log.getLogger = mockGetLogger
 
 import Acsalarmpy
+import ACSAlarmSystemInterfaceProxy as ACSProxy
 
 class TestAlarmSystemInterfaceFactory(unittest.TestCase):
     def test_createFaultState(self):
@@ -66,7 +67,7 @@ class TestAlarmSystemInterfaceFactory(unittest.TestCase):
         mgr = mock.Mock()
         Acsalarmpy.AlarmSystemInterfaceFactory.init(mgr)
         asi = Acsalarmpy.AlarmSystemInterfaceFactory.createSource()
-        self.assertEqual(True, isinstance(asi, Acsalarmpy.ACSProxy.ACSAlarmSystemInterfaceProxy))
+        self.assertEqual(True, isinstance(asi, ACSProxy.ACSAlarmSystemInterfaceProxy))
         Acsalarmpy.AlarmSystemInterfaceFactory.done()
 
     def test_createSource_CERN(self):
