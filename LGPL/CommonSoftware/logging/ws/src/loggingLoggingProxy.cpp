@@ -19,7 +19,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: loggingLoggingProxy.cpp,v 1.64 2008/08/06 10:44:27 bjeram Exp $"
+* "@(#) $Id: loggingLoggingProxy.cpp,v 1.65 2008/10/31 09:44:05 bjeram Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -58,7 +58,7 @@
 #define LOG_NAME "Log"
 #define DEFAULT_LOG_FILE_NAME "acs_local_log"
 
-ACE_RCSID(logging, logging, "$Id: loggingLoggingProxy.cpp,v 1.64 2008/08/06 10:44:27 bjeram Exp $");
+ACE_RCSID(logging, logging, "$Id: loggingLoggingProxy.cpp,v 1.65 2008/10/31 09:44:05 bjeram Exp $");
 unsigned int LoggingProxy::setClrCount_m = 0;
 bool LoggingProxy::initialized = false;
 int LoggingProxy::instances = 0;
@@ -1470,15 +1470,17 @@ LoggingProxy::sendCacheInternal()
              iter != m_cache.end();
              iter++)
             anys[i++] <<= iter->c_str();
-
-        m_logger->write_records(anys);
-
-
+        // we have to unlock before we do a remote call to prevent a deadlock
+        // this is just temporary solution. We have to solve the problem in case if we can not send logs to logging system
+        // (to delete cache afterwards or to put the logs back and how to handle    successfullySent/failedToSend
         // successfully sent
         successfullySent();
 
         // successfully sent, clear cache
         m_cache.clear();
+        ace_mon.release();
+        m_logger->write_records(anys);
+
 	}else{
 	    // fill anys
         DsLogAdmin::Anys anys(m_bin_cache.size());
@@ -1492,17 +1494,21 @@ LoggingProxy::sendCacheInternal()
             anys[i++] = record;
             delete *iter;
         }
-
-        m_logger->write_records(anys);
+        // we have to unlock before we do a remote call to prevent a deadlock
+        // this is just temporary solution. We have to solve the problem in case if we can not send logs to logging system
+        // (to delete cache afterwards or to put the logs back and how to handle    successfullySent/failedToSend
         // successfully sent
         successfullySent();
 
         // successfully sent, clear cache
-        m_bin_cache.clear();
-    }
+        m_cache.clear();
+        ace_mon.release();
+        m_logger->write_records(anys);
+	}//if-else
     }
     catch(...)
 	{
+    	//TBD: this is now not protected!!!
 	    failedToSend();
 	// this can cause dead-loop (when new log record causes sent action...)
 	//ACE_PRINT_EXCEPTION(ACE_ANY_EXCEPTION, "(LoggingProxy::sendCache) Unexpected exception occured while sending to the Centralized Logger");
