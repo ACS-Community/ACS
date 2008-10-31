@@ -17,19 +17,19 @@ Run:  5   Failures: 2   Errors: 0
 
 1) test: BoardGameTest<BoardGame>::testResetShouldFail (F) line: 45 BoardGameTest.h
 assertion failed
-- Expression: !m_game->reset()
+- Expression: !this->m_game->reset()
 
 
 2) test: ChessTest<Chess>::testResetShouldFail (F) line: 45 BoardGameTest.h
 assertion failed
-- Expression: !m_game->reset()
+- Expression: !this->m_game->reset()
 
 
-PASS: hierarchy
-==================
-All 1 tests passed
-==================
-StringToolsTest::testToStringInt : OK
+XFAIL: hierarchy
+=====================================================
+All 1 tests behaved as expected (1 expected failures)
+=====================================================
+Running StringToolsTest::testToStringInt : OK
 StringToolsTest::testToStringDouble : OK
 StringToolsTest::testSplitEmptyString : OK
 StringToolsTest::testSplitOneItem : OK
@@ -83,6 +83,7 @@ XmlElementTest::testElementWithChildrenToString : OK
 XmlElementTest::testElementWithContentToString : OK
 XmlElementTest::testElementWithNumericContentToString : OK
 XmlElementTest::testElementWithContentAndChildToString : OK
+assertion_traitsTest::test_toString : OK
 ExceptionTest::testConstructor : OK
 ExceptionTest::testDefaultConstructor : OK
 ExceptionTest::testCopyConstructor : OK
@@ -115,6 +116,8 @@ TestAssertTest::testAssertEqual : OK
 TestAssertTest::testAssertMessageTrue : OK
 TestAssertTest::testAssertMessageFalse : OK
 TestAssertTest::testAssertDoubleEquals : OK
+TestAssertTest::testAssertDoubleEqualsPrecision : OK
+TestAssertTest::testAssertDoubleNonFinite : OK
 TestAssertTest::testFail : OK
 TestCaseTest::testSetUpFailure : OK
 TestCaseTest::testRunTestFailure : OK
@@ -249,8 +252,8 @@ TestCallerTest::testBasicConstructor : OK
 TestCallerTest::testReferenceConstructor : OK
 TestCallerTest::testPointerConstructor : OK
 
-OK (219)
-Running PASS: cppunittestmain
+OK (222)
+PASS: cppunittestmain
 ==================
 All 1 tests passed
 ==================

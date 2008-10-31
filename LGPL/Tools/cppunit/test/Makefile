@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.5 2005/11/18 15:25:47 gchiozzi Exp $"
+# "@(#) $Id: Makefile,v 1.6 2008/10/31 15:27:50 agrimstrup Exp $"
 #
 # Makefile of ........
 #
@@ -18,8 +18,8 @@
 #------------------------------------------------------------------------
 
 PLATFORM := $(shell uname)
-CPPUNIT_VER = 1.10.2
-CPPUNIT_TAR = 1.10.2
+CPPUNIT_VER = 1.12.1
+CPPUNIT_TAR = 1.12.1
 
 #
 # C programs (public and local)
