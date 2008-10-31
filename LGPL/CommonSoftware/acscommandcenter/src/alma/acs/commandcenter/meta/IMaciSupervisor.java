@@ -7,6 +7,7 @@ package alma.acs.commandcenter.meta;
 import org.omg.CORBA.NO_PERMISSION;
 import org.omg.CORBA.OBJECT_NOT_EXIST;
 import org.omg.CORBA.TRANSIENT;
+import org.omg.CORBA.UNKNOWN;
 
 import si.ijs.maci.AdministratorPOA;
 import alma.maciErrType.NoPermissionEx;
@@ -122,6 +123,14 @@ public interface IMaciSupervisor {
 		}
 	}
 	
+	/**
+	 * Can happen when releasing a component that wasn't activated before.
+	 */
+	public static class CorbaUnknownException extends MaciSupervisorException {
+		protected CorbaUnknownException (UNKNOWN exc) {
+			super("no such remote object known", exc);
+		}
+	}
 	
 	/**
 	 * Can happen when trying to log in to the manager. 
