@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.1 2005/02/14 20:41:08 dfugate Exp $"
+# "@(#) $Id: Makefile,v 1.2 2008/10/31 07:45:20 bjeram Exp $"
 #
 # Makefile of ........
 #
@@ -17,7 +17,7 @@
 #    None
 #------------------------------------------------------------------------
 # List of files to be linked
-LINK_FILES = $(addprefix ../idl/, $(addsuffix .idl, $(IDL_FILES)))
+LINK_FILES = $(addprefix ../idl/, $(addsuffix .idl, $(IDL_FILES))) $(addprefix ../idl/, $(addsuffix .xml, $(ACSERRDEF)))
 #
 
 #
@@ -101,10 +101,14 @@ IDL_FILES = acsnc
 IDL_TAO_FLAGS =
 USER_IDL =
 
+ACSERRDEF = acsncErrType
+
+
 #
 # Configuration Database Files
 # ----------------------------
 CDB_SCHEMAS = 
+
 
 #
 # man pages to be done
