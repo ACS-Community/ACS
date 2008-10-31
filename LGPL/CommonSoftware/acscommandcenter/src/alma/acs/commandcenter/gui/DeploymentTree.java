@@ -45,6 +45,7 @@ import alma.acs.commandcenter.meta.IMaciSupervisor.CannotRetrieveManagerExceptio
 import alma.acs.commandcenter.meta.IMaciSupervisor.CorbaNoPermissionException;
 import alma.acs.commandcenter.meta.IMaciSupervisor.CorbaNotExistException;
 import alma.acs.commandcenter.meta.IMaciSupervisor.CorbaTransientException;
+import alma.acs.commandcenter.meta.IMaciSupervisor.CorbaUnknownException;
 import alma.acs.commandcenter.meta.IMaciSupervisor.NotConnectedToManagerException;
 import alma.acs.commandcenter.meta.IMaciSupervisor.UnknownErrorException;
 import alma.acs.commandcenter.meta.MaciInfo.FolderInfo;
@@ -1238,6 +1239,8 @@ public class DeploymentTree extends JTree {
 		try {
 			supervisor.managerReleaseComponents(curls);
 
+		} catch (CorbaUnknownException exc) {
+			/* thrown by manager if component was never retrieved, we ignore this.*/
 		} catch (NoPermissionEx exc) {
 			mce.handleException(supervisor, exc);
 		} catch (NotConnectedToManagerException exc) {
