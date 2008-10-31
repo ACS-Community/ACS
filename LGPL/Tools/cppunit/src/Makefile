@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.11 2005/12/01 12:00:51 gchiozzi Exp $"
+# "@(#) $Id: Makefile,v 1.12 2008/10/31 15:17:26 agrimstrup Exp $"
 #
 # Makefile of ........
 #
@@ -19,8 +19,8 @@
 
 SHELL=/bin/bash
 PLATFORM := $(shell uname)
-CPPUNIT_VER = 1.10.2
-CPPUNIT_TAR = 1.10.2
+CPPUNIT_VER = 1.12.1
+CPPUNIT_TAR = 1.12.1
 
 #
 # Scripts (public and local)
@@ -42,7 +42,8 @@ endif
 #
 # TARGETS
 # -------
-all:	do_all unpack patch doxyfile configure build
+#ll:	do_all unpack patch doxyfile configure build
+all:	do_all unpack doxyfile configure build
 	@echo " . . . 'all' done" 
 
 clean : clean_all 
