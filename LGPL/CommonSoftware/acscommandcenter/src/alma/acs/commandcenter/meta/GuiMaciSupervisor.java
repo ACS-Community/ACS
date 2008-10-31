@@ -235,14 +235,20 @@ public class GuiMaciSupervisor extends MaciSupervisor {
 	 * @throws NoPermissionEx 
 	 * @throws CorbaTransientException 
 	 * @throws CorbaNotExistException 
+	 * @throws CorbaUnknownException 
 	 */
-	public void managerReleaseComponents (String[] curls) throws UnknownErrorException, NotConnectedToManagerException, NoPermissionEx, CorbaTransientException, CorbaNotExistException {
+	public void managerReleaseComponents (String[] curls) throws UnknownErrorException, NotConnectedToManagerException, NoPermissionEx, CorbaTransientException, CorbaNotExistException, CorbaUnknownException {
 		try {
 			log.fine("sending release_component requests to manager");
 			int hhhhh = myMaciHandle();
 			for (int i = 0; i < curls.length; i++) {
 				myManagerReference().release_component(hhhhh, curls[i]);
 			}
+		} catch (org.omg.CORBA.UNKNOWN exc) {
+			/* may be thrown by manager if component is unknown.
+			 * thus, this is not a manager-communication problem. */
+			throw new CorbaUnknownException(exc);
+			
 		} catch (NotConnectedToManagerException exc) {
 			mcehandler.handleExceptionTalkingToManager(exc);
 			throw exc;
