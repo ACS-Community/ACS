@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciTestValue.cpp,v 1.6 2005/11/03 19:53:15 dfugate Exp $"
+* "@(#) $Id: baciTestValue.cpp,v 1.7 2008/11/02 14:23:58 agrimstrup Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -55,7 +55,7 @@
 #include "baciTestC.h"
 #include <cppunit/extensions/HelperMacros.h>
 
-static char *rcsId="@(#) $Id: baciTestValue.cpp,v 1.6 2005/11/03 19:53:15 dfugate Exp $"; 
+static char *rcsId="@(#) $Id: baciTestValue.cpp,v 1.7 2008/11/02 14:23:58 agrimstrup Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 
@@ -399,6 +399,7 @@ int main(int argc, char *argv[])
 
   // Print test in a compiler compatible format.
   CPPUNIT_NS::CompilerOutputter outputter( &result, std::cerr );
+  std::cout.flush();
   outputter.write(); 
 
   return result.wasSuccessful() ? 0 : 1;
