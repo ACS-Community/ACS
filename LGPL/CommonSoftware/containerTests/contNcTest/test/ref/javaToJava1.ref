@@ -4,7 +4,7 @@
 1 - <timestamp> INFO [alma.COUNTER.CounterTestImpl.CounterTest#testNC] ComponentClientTestCase#setUp()
 1 - Bringing up consumer CONSUMER1_JAVA
 1 - <timestamp> INFO [alma.COUNTER.CounterTestImpl.CounterTest#testNC] component 'alma.COUNTER.CounterTestImpl.CounterTest' requested AdvancedContainerServices
-1 - <timestamp> INFO [alma.COUNTER.CounterTestImpl.CounterTest] authenticate called: id=XXX; question=Identify yourself
+1 - <timestamp> INFO [alma.COUNTER.CounterTestImpl.CounterTest#testNC] authenticate called: id=XXX; question=Identify yourself
 1 - <timestamp> INFO [alma.COUNTER.CounterTestImpl.CounterTest#testNC] CONSUMER1_JAVA now expecting blocks
 1 - <timestamp> INFO [alma.COUNTER.CounterTestImpl.CounterTest#testNC] requesting SUPPLIER_JAVA to sendBlocks
 1 - <timestamp> INFO [alma.COUNTER.CounterTestImpl.CounterTest#testNC] SUPPLIER_JAVA has sent 15 blocks

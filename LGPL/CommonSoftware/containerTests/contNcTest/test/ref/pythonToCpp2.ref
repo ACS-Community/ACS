@@ -9,7 +9,7 @@
 1 - Bringing up consumer CONSUMER5_CPP
 1 - Bringing up consumer CONSUMER6_CPP
 1 - <timestamp> INFO [alma.COUNTER.CounterTestImpl.CounterTest#testNC] component 'alma.COUNTER.CounterTestImpl.CounterTest' requested AdvancedContainerServices
-1 - <timestamp> INFO [alma.COUNTER.CounterTestImpl.CounterTest] authenticate called: id=XXX; question=Identify yourself
+1 - <timestamp> INFO [alma.COUNTER.CounterTestImpl.CounterTest#testNC] authenticate called: id=XXX; question=Identify yourself
 1 - <timestamp> INFO [alma.COUNTER.CounterTestImpl.CounterTest#testNC] CONSUMER1_CPP now expecting blocks
 1 - <timestamp> INFO [alma.COUNTER.CounterTestImpl.CounterTest#testNC] CONSUMER2_CPP now expecting blocks
 1 - <timestamp> INFO [alma.COUNTER.CounterTestImpl.CounterTest#testNC] CONSUMER3_CPP now expecting blocks
