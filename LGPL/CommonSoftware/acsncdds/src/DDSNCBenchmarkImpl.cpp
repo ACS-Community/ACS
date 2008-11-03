@@ -22,7 +22,7 @@ void DDSNCBenchmarkSupplierImpl::runTest(::CORBA::ULong freq,
 	struct timeval time;
 	NC_BENCHMARK::Message m;
 
-	for(int i=0;i<5;i++){
+	for(int i=0;i<100;i++){
 		m.seqnum=i;
 		gettimeofday(&time,NULL);
 		m.time= (long long)time.tv_sec*1000000L + time.tv_usec;

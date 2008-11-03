@@ -82,6 +82,9 @@ namespace ddsnc{
 			dwQos.reliability.max_blocking_time.sec = 1;
 			dwQos.history.kind = ::DDS::KEEP_LAST_HISTORY_QOS;
 			dwQos.history.depth = 100;
+			
+			dwQos.durability.kind = ::DDS::TRANSIENT_LOCAL_DURABILITY_QOS;
+			dwQos.durability.service_cleanup_delay.sec = 10;
 		}
 
 		/**
