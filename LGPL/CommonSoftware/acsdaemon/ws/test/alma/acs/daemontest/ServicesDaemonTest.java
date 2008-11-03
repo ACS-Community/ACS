@@ -1,6 +1,14 @@
 package alma.acs.daemontest;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -13,6 +21,7 @@ import org.omg.CosNaming.NamingContextHelper;
 
 import alma.ACSErrTypeCommon.wrappers.AcsJUnexpectedExceptionEx;
 import alma.JavaContainerError.wrappers.AcsJContainerEx;
+import alma.acs.concurrent.DaemonThreadFactory;
 import alma.acs.container.corba.AcsCorba;
 import alma.acs.exceptions.AcsJCompletion;
 import alma.acs.logging.ClientLogManager;
@@ -49,7 +58,7 @@ public class ServicesDaemonTest extends TestCase
 	
 	private ServicesDaemon daemon;
 	private String host;
-	private short instanceNumber = (short) ACSPorts.getBasePort();
+	private short instanceNumber = 2;//(short) ACSPorts.getBasePort();
 
 	public ServicesDaemonTest() throws Exception {
 		super(namePrefix);
@@ -86,8 +95,7 @@ public class ServicesDaemonTest extends TestCase
 			acsCorba = new AcsCorba(logger);
 			acsCorba.initCorbaForClient(false);
 		} catch (Exception ex) {
-			logger.log(Level.SEVERE, "failed to initialize the ORB, or connect to the ACS Manager, " + 
-					"or to set up the container services.", ex);
+			logger.log(Level.SEVERE, "failed to initialize the ORB", ex);
 			if (acsCorba != null) {
 				try {
 					acsCorba.shutdownORB(true, false);
@@ -209,7 +217,7 @@ public class ServicesDaemonTest extends TestCase
 		DaemonCallback dcb = activateDaemonCallback(daemonCallbackImpl);
 		
 		// start naming service
-		daemonCallbackImpl.prepareWaitForDone();
+		daemonCallbackImpl.prepareWaitForDone("naming");
 		StopWatch sw = new StopWatch(logger);
 		daemon.start_naming_service(dcb, instanceNumber);
 		assertTrue("Failed to start naming service in 10 s", daemonCallbackImpl.waitForDone(10, TimeUnit.SECONDS));
@@ -219,7 +227,7 @@ public class ServicesDaemonTest extends TestCase
 		assertNamingService(true);
 		
 		// stop naming service
-		daemonCallbackImpl.prepareWaitForDone();
+		daemonCallbackImpl.prepareWaitForDone("naming");
 		sw.reset();
 		daemon.stop_naming_service(dcb, instanceNumber);
 		assertTrue("Failed to stop naming service in 5 s", daemonCallbackImpl.waitForDone(5, TimeUnit.SECONDS));
@@ -235,7 +243,7 @@ public class ServicesDaemonTest extends TestCase
 		DaemonCallback dcb = activateDaemonCallback(daemonCallbackImpl);
 		
 		// start naming service and wait till it's up
-		daemonCallbackImpl.prepareWaitForDone();
+		daemonCallbackImpl.prepareWaitForDone("naming");
 		daemon.start_naming_service(dcb, instanceNumber);
 		assertTrue("Failed to start naming service in 10 s", 
 			daemonCallbackImpl.waitForDone(10, TimeUnit.SECONDS));
@@ -243,7 +251,7 @@ public class ServicesDaemonTest extends TestCase
 		
 		try {
 			// now start it again
-			daemonCallbackImpl.prepareWaitForDone();
+			daemonCallbackImpl.prepareWaitForDone("naming");
 			daemon.start_naming_service(dcb, instanceNumber);
 			assertTrue("Failed to get reply about starting of second naming service within 10 s", 
 				daemonCallbackImpl.waitForDone(10, TimeUnit.SECONDS));
@@ -256,7 +264,7 @@ public class ServicesDaemonTest extends TestCase
 			assertEquals("Naming", AcsJServiceAlreadyRunningEx.fromServiceAlreadyRunningEx(ex).getService());
 		}
 		finally {
-			daemonCallbackImpl.prepareWaitForDone();
+			daemonCallbackImpl.prepareWaitForDone("naming");
 			daemon.stop_naming_service(dcb, instanceNumber);
 			assertTrue("Failed to stop naming service in 5 s", 
 				daemonCallbackImpl.waitForDone(5, TimeUnit.SECONDS));
@@ -273,44 +281,154 @@ public class ServicesDaemonTest extends TestCase
 	 * which is one step up from the old acsStart method, but does not use the convenience
 	 * of the service description. All services are started on the same host. Later they are stopped.
 	 */
-	public void testStartAcsServiceIndividually() throws Exception {
+	public void testStartAcsServiceIndividually() throws Throwable {
 		
 		DaemonCallbackImpl daemonCallbackImpl_1 = new DaemonCallbackImpl(logger);
 		DaemonCallbackImpl daemonCallbackImpl_2 = new DaemonCallbackImpl(logger);
+		DaemonCallbackImpl daemonCallbackImpl_3 = new DaemonCallbackImpl(logger);
 		DaemonCallback dcb_1 = activateDaemonCallback(daemonCallbackImpl_1);
 		DaemonCallback dcb_2 = activateDaemonCallback(daemonCallbackImpl_2);
+		DaemonCallback dcb_3 = activateDaemonCallback(daemonCallbackImpl_3);
 		
-		// start naming service and wait till it's up
-		daemonCallbackImpl_1.prepareWaitForDone();
-		daemon.start_naming_service(dcb_1, instanceNumber);
-		assertTrue("Failed to start naming service in 10 s", 
-				daemonCallbackImpl_1.waitForDone(10, TimeUnit.SECONDS));
-		logger.info("Got naming service");
+		List<Throwable> thrs = new ArrayList<Throwable>();
+		try {
+			// start naming service and wait till it's up
+			daemonCallbackImpl_1.prepareWaitForDone("naming");
+			daemon.start_naming_service(dcb_1, instanceNumber);
+			assertTrue("Failed to start naming service in 10 s", 
+					daemonCallbackImpl_1.waitForDone(10, TimeUnit.SECONDS));
+			logger.info("Got naming service");
+	
+			// start interface repository but don't wait for it yet ( start other services in parallel)
+			daemonCallbackImpl_2.prepareWaitForDone("IFR");
+			daemon.start_interface_repository(true, true, dcb_2, instanceNumber);
+	
+			// start CDB and wait till it's up
+			daemonCallbackImpl_1.prepareWaitForDone("CDB");
+			daemon.start_xml_cdb(dcb_1, instanceNumber, false, ""); // TODO try explicit path ($ACS_CDB replacement)
+			assertTrue("Failed to start CDB in 10 s", 
+					daemonCallbackImpl_1.waitForDone(10, TimeUnit.SECONDS));
+			assertCDB();
+			
+			// start manager and wait till it's up
+			daemonCallbackImpl_1.prepareWaitForDone("manager");
+			daemon.start_manager("", dcb_1, instanceNumber, false);
+			assertTrue("Failed to start the ACS manager in 10 s", 
+					daemonCallbackImpl_1.waitForDone(10, TimeUnit.SECONDS));
+			assertManager();
+			
+			// now wait for the IR if necessary
+			assertTrue("Failed to start interface repository 30 s after all other services have started", 
+					daemonCallbackImpl_2.waitForDone(30, TimeUnit.SECONDS));
+			logger.info("Got the IFR");
+	
+			// start 3 of the 4 known notify services in parallel.
+			// We want to call the start_notification_service method in parallel, which yields an even more parallel service start
+			// than with calling this asynchronous method 3 times in a sequence.
+			// @TODO Currently this test fails due to what seems a deadlock in the daemon. With just one NC factory it works, but with 3 we get a timeout.
+			daemonCallbackImpl_1.prepareWaitForDone("NC factory default");
+			daemonCallbackImpl_2.prepareWaitForDone("NC factory logging");
+			daemonCallbackImpl_3.prepareWaitForDone("NC factory alarms");
+			class NotifySrvStarter implements Callable<Void> {
+				private final String srvName;
+				private final DaemonCallback cb;
+				NotifySrvStarter(String srvName, DaemonCallback cb) {
+					this.srvName = srvName;
+					this.cb = cb;
+				}
+				public Void call() throws Exception {
+					daemon.start_notification_service(srvName, cb, instanceNumber);
+					return null;
+				}
+			}
+			ExecutorService pool = Executors.newFixedThreadPool(3, new DaemonThreadFactory());
+			Future<Void> defaultNotifSrvFuture = pool.submit(new NotifySrvStarter("", dcb_1)); // @TODO systemNotificationServiceDefault.value once full name is accepted by daemon
+			Future<Void> loggingNotifSrvFuture = pool.submit(new NotifySrvStarter("Logging", dcb_2)); // @TODO systemNotificationServiceLogging.value once full name is accepted by daemon
+			Future<Void> alarmNotifSrvFuture = pool.submit(new NotifySrvStarter("Alarm", dcb_3)); // @TODO systemNotificationServiceAlarms.value once full name is accepted by daemon
+			try {
+				defaultNotifSrvFuture.get(20, TimeUnit.SECONDS);
+				loggingNotifSrvFuture.get(20, TimeUnit.SECONDS);
+				alarmNotifSrvFuture.get(20, TimeUnit.SECONDS);
+			} 
+			catch (ExecutionException ex) {
+				// throw the ex that came from the call() method
+				throw ex.getCause();
+			}
+			catch (TimeoutException ex2) {
+				fail("Failed to return from 'start_notification_service' within 20 seconds. ");
+			}
+			// now wait for the notification services to be actually started
+			daemonCallbackImpl_1.waitForDone(10, TimeUnit.SECONDS);
+			daemonCallbackImpl_2.waitForDone(10, TimeUnit.SECONDS);
+			daemonCallbackImpl_3.waitForDone(10, TimeUnit.SECONDS);
+		}
+		catch (Throwable thr) {
+			thrs.add(thr);
+		}
+		finally {
+			// stop all services. Continue after errors to make sure the services are really stopped.
+			
+			// Stop the NC factories, calling the stop_notification_service methods one after the other
+			// and then waiting for the asynch calls to finish.
+			try {
+				daemonCallbackImpl_1.prepareWaitForDone("stop NC factory default");
+				daemon.stop_notification_service("", dcb_1, instanceNumber); // @TODO systemNotificationServiceDefault.value once full name is accepted by daemon
+			}
+			catch (Throwable thr) {
+				thrs.add(thr);
+			}
+			try {
+				daemonCallbackImpl_2.prepareWaitForDone("stop NC factory logging");
+				daemon.stop_notification_service("Logging", dcb_2, instanceNumber); // @TODO systemNotificationServiceLogging.value once full name is accepted by daemon
+			}
+			catch (Throwable thr) {
+				thrs.add(thr);
+			}
+			try {
+				daemonCallbackImpl_3.prepareWaitForDone("stop NC factory alarms");
+				daemon.stop_notification_service("Alarm", dcb_3, instanceNumber); // @TODO systemNotificationServiceAlarms.value once full name is accepted by daemon
+			}
+			catch (Throwable thr) {
+				thrs.add(thr);
+			}
+			try {
+				assertTrue("Failed to stop the default NC factory in 10 s", 
+						daemonCallbackImpl_1.waitForDone(10, TimeUnit.SECONDS));
+				assertTrue("Failed to stop the logging NC factory in 10 s", 
+						daemonCallbackImpl_2.waitForDone(10, TimeUnit.SECONDS));
+				assertTrue("Failed to stop the logging NC factory in 10 s", 
+						daemonCallbackImpl_3.waitForDone(10, TimeUnit.SECONDS));
+			}
+			catch (Throwable thr) {
+				thrs.add(thr);
+			}
 
-		// start interface repository but don't wait for it yet ( start other services in parallel)
-		daemonCallbackImpl_2.prepareWaitForDone();
-		daemon.start_interface_repository(true, true, dcb_2, instanceNumber);
+			// stop the IFR
+			try {
+				daemonCallbackImpl_1.prepareWaitForDone("stop IFR");
+				daemon.stop_interface_repository(dcb_1, instanceNumber);
+				assertTrue("Failed to stop the interface repository in 10 s", 
+						daemonCallbackImpl_1.waitForDone(10, TimeUnit.SECONDS));
+			}
+			catch (Throwable thr) {
+				thrs.add(thr);
+			}
 
-		// start CDB and wait till it's up
-		daemonCallbackImpl_1.prepareWaitForDone();
-		daemon.start_xml_cdb(dcb_1, instanceNumber, false, ""); // TODO try explicit path ($ACS_CDB replacement)
-		assertTrue("Failed to start CDB in 10 s", 
-				daemonCallbackImpl_1.waitForDone(10, TimeUnit.SECONDS));
-		assertCDB();
-		
-		// start manager and wait till it's up
-		daemonCallbackImpl_1.prepareWaitForDone();
-		daemon.start_manager("", dcb_1, instanceNumber, false);
-		assertTrue("Failed to start the ACS manager in 10 s", 
-				daemonCallbackImpl_1.waitForDone(10, TimeUnit.SECONDS));
-		assertManager();
-		
-		// now wait for the IR
-		assertTrue("Failed to start interface repository 30 s after all other services have started", 
-				daemonCallbackImpl_2.waitForDone(30, TimeUnit.SECONDS));
-		logger.info("Got the IFR");
-
-		// @TODO stop these services
+			// stop the manager
+			try {
+				daemonCallbackImpl_1.prepareWaitForDone("stop manager");
+				daemon.stop_manager("", dcb_1, instanceNumber);
+				assertTrue("Failed to stop the manager in 10 s", 
+						daemonCallbackImpl_1.waitForDone(10, TimeUnit.SECONDS));
+			}
+			catch (Throwable thr) {
+				thrs.add(thr);
+			}
+		}
+		if (thrs.size() > 0) {
+			logger.info("Failure: there were " + thrs.size() + " errors.");
+			throw thrs.get(0);
+		}
 	}
 
 
