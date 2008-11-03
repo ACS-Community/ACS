@@ -26,7 +26,7 @@
 # To do this goes in the directory where the iriginal test is
 #
 START_DIR=$PWD
-CPPUNIT_VER=1.10.2
+CPPUNIT_VER=1.12.1
 
 if [ -f /etc/redhat-release ]
     then
