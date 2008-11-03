@@ -13,6 +13,7 @@ import alma.acsdaemon.DaemonCallbackPOA;
 public class DaemonCallbackImpl extends DaemonCallbackPOA
 {
 	private final Logger logger;
+	private volatile String srvName;
 	private volatile CountDownLatch syncDone;
 	private volatile Completion lastDoneCompletion;
 	
@@ -22,23 +23,26 @@ public class DaemonCallbackImpl extends DaemonCallbackPOA
 	
 	public void done(Completion comp) {
 		lastDoneCompletion = comp;
-		logger.info("DaemonCallbackImpl#done: comp.timeStamp=" + isoDateFromOmgTime(comp.timeStamp));
+		logger.info(srvName + " - DaemonCallbackImpl#done: comp.timeStamp=" + isoDateFromOmgTime(comp.timeStamp));
 		if (syncDone != null) {
 			syncDone.countDown();
 		}
+		srvName = null;
 	}
 
 	public void working(Completion comp) {
-		logger.info("DaemonCallbackImpl#working: comp.timeStamp=" + isoDateFromOmgTime(comp.timeStamp));
+		logger.info(srvName + " - DaemonCallbackImpl#working: comp.timeStamp=" + isoDateFromOmgTime(comp.timeStamp));
 	}
 	
 	/**
 	 * Must be called before the call that can trigger the callback to {@link #done(Completion)} 
 	 * and before {@link #waitForDone(long, TimeUnit)}, so as to (re-)activate waiting for the done callback.
 	 * This ensures that we don't miss the done callback even if it occurs faster than the client thread can call waitForDone.
+	 * @param srvName used for logging the working and done calls
 	 */
-	void prepareWaitForDone() {
+	void prepareWaitForDone(String srvName) {
 		syncDone = new CountDownLatch(1);
+		this.srvName = srvName;
 	}
 	
 	/**
