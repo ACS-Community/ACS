@@ -26,62 +26,102 @@ import javax.swing.SwingUtilities;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.PlainDocument;
 
+import com.cosylab.logging.engine.log.LogTypeHelper;
+
 /**
  * The dialog to show the errors.
- * The dialog stores errors till maxLength chars is reached. If the log exceeds that number,
- * they are automatically flushed in ACS_TMP.
- * 
- * The dimension defaults to ERROR_LOG_DEFAULT_SIZE and can be changed setting
- * the ERRORLOG_SIZE_PROP_NAME property.
- * 
+ * <P>
+ * The dialog stores errors till maxLength chars is reached. 
+ * If the log exceeds that number, they are automatically flushed in 
+ * a file in <code>ACS_TMP</code> that is not be deleted when jlog terminates.
+ * <BR>
+ * If an error happened while creating the file, the errors are not flushed on disk
+ * and therefore the only part of the errors that can be saved is that in the text area.
+ * <P>
+ * The dimension defaults to <code>ERROR_LOG_DEFAULT_SIZE</code> and can be changed setting
+ * the <code>ERRORLOG_SIZE_PROP_NAME</code> property.
+ * <P>
  * The content of the dialog can be saved and cleared.
  * 
- * The dimension of the file on disk can grows too much.
  * 
  * @author acaproni
  *
  */
 public class ErrorLogDialog extends JDialog implements ActionListener {
 	
-	// The log text are appears into a scroll pane
-	private JScrollPane logSP;
+	/**  
+	 * The log text appears into a <code>JtextArea</code>
+	 */
 	private JTextArea logTA;
 	
-	// The document of the TextArea
+	/**
+	 *  The document of the TextArea
+	 */
 	private PlainDocument document = new PlainDocument();
 	
-	// The button to close (hide) the dialog
+	/**
+	 *  The button to close (hide) the dialog
+	 */
 	private JButton closeBtn;
 	
-	// The button to erase all the logs (i.e. the logs shown in the window and those
-	// flushed on the temporary file
+	/**
+	 * The button to erase all the logs (i.e. the logs shown in the window and 
+	 * those flushed on the temporary file)
+	 */
 	private JButton cleanAllBtn;
-	private ImageIcon cleanIcon=new ImageIcon(ErrorLogDialog.class.getResource("/delete.png"));
 	
-	// The button to save all the logs in a file (it saves the content of
-	// the temporary log file on disk and the content of the text area)
-	// The button is eabled only if some log has been flushed on disk
+	
+	/**
+	 * / The button to save all the logs in a file (it saves the content of the 
+	 * temporary log file on disk and the content of the text area)
+	 * <P>
+	 * The button is enabled only if some log has been flushed on disk
+	 */
 	private JButton saveAllBtn;
-	private ImageIcon saveIcon=new ImageIcon(ErrorLogDialog.class.getResource("/disk.png"));
 	
-	// The toolbar
+	/**
+	 *  The toolbar
+	 */
 	private JToolBar toolBar;
 	
-	// The maximum dimension of the log to keep in memory
-	// Its value is read from a property.
-	// If the value is 0, the error log is unlimited
+	/**
+	 * The maximum dimension of the log to keep in memory.
+	 * <P>
+	 * Its value is read from a property.
+	 * If the value is 0, the error log is unlimited
+	 */
 	private long maxLength;
 	
-	// The name of the property definig the size of the error log
+	/**
+	 * / The name of the property defining the size of the error log
+	 */
 	private final String ERRORLOG_SIZE_PROP_NAME = "jlog.errorlog.size";
 	
-	// The default maximum size of the ERROR LOG
+	/**
+	 * / The default maximum size of the ERROR LOG
+	 */
 	private final long ERROR_LOG_DEFAULT_SIZE = 50 *1000000;
 	
-	// The file to flush the logs
-	// it is created only if there is a log to flush
+	/**
+	 * The file to flush logs is created only if there is a log to flush
+	 */
 	private File tmpFile = null;
+	
+	/**
+	 * The output stream
+	 */
 	private FileOutputStream outF=null;
+	
+	/**
+	 * Remember if there was an error creating the temporary file for 
+	 * flushing errors.
+	 * <P>
+	 * In case an error happened creating the temporary file, the dialog 
+	 * does not try to create a new file again and therefore
+	 * the flushed strings will be lost.
+	 * 
+	 */
+	private boolean errorCreatingTmpFile=false;
 	
 	/**
 	 * Constructor
@@ -106,30 +146,38 @@ public class ErrorLogDialog extends JDialog implements ActionListener {
 	 *
 	 */
 	private void initGUI() {
+		ImageIcon icon = new ImageIcon(LogTypeHelper.class.getResource("/errorLogIcon.png"));
+		setIconImage(icon.getImage());
+		
 		logTA = new JTextArea("", 20, 60);
 		synchronized(logTA) {
 			logTA.setDocument(document);
 			logTA.setEditable(false);
 		}
-		logSP = new JScrollPane(logTA);
+		JScrollPane logSP = new JScrollPane(logTA);
 		
 		JRootPane mainPnl = this.getRootPane();
 		mainPnl.setLayout(new BorderLayout());
 		
 		mainPnl.add(logSP,BorderLayout.CENTER);
 		
+		// Close button
 		JPanel btnPnl = new JPanel(new FlowLayout());
 		closeBtn = new JButton("Close");
 		closeBtn.addActionListener(this);
 		btnPnl.add(closeBtn);
+		
 		mainPnl.add(btnPnl,BorderLayout.SOUTH);
+		
 		
 		// Build the toolbar
 		toolBar = new JToolBar();
 		JPanel toolBarPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		ImageIcon cleanIcon=new ImageIcon(ErrorLogDialog.class.getResource("/delete.png"));
 		cleanAllBtn = new JButton("<HTML><Font size=\"-1\">Clean</FONT></HTML>",cleanIcon);
 		cleanAllBtn.addActionListener(this);
 		cleanAllBtn.setToolTipText("Delete log");
+		ImageIcon saveIcon=new ImageIcon(ErrorLogDialog.class.getResource("/disk.png"));
 		saveAllBtn = new JButton("<HTML><Font size=\"-1\">Save</FONT></HTML>",saveIcon);
 		saveAllBtn.addActionListener(this);
 		saveAllBtn.setToolTipText("Save log");
@@ -146,9 +194,6 @@ public class ErrorLogDialog extends JDialog implements ActionListener {
 	/**
 	 * Add a String to the error log and show/hide the dialog
 	 * if it is the first time an error is added
-	 * 
-	 * It calls SwingUtilities.invokeLater to avoid deadlocks
-	 * @see javax.swing.SwingUtilities
 	 * 
 	 * @param str The string to append in the TextArea
 	 * @param show Show/hide the dialog
@@ -325,19 +370,32 @@ public class ErrorLogDialog extends JDialog implements ActionListener {
 	 * @param str The string to flush
 	 */
 	private void flush(String str) {
+		if (errorCreatingTmpFile) {
+			// There was an error creating the temporary file:
+			// the flushing is disabled
+			return;
+		}
 		if (outF==null) {
 			try {
 				initTmpFile();
 			} catch (IOException ioe) {
-				System.out.println("Error creating the temporay log file: "+ioe.getMessage());
+				System.out.println("Error creating the temporary log file: "+ioe.getMessage());
 				ioe.printStackTrace();
+				errorCreatingTmpFile=true;
+				JOptionPane.showInternalMessageDialog(
+						logTA, 
+						"<HTML>Error creating the temporary file: <I>"+
+						ioe.getMessage()+
+						"</I><BR>saving is limited to the content of the text area.</HTML>", 
+						"Error creating a file", 
+						JOptionPane.INFORMATION_MESSAGE);
 				return;
 			}
 		}
 		try {
 			outF.write(str.getBytes());
 		} catch (IOException ioe) {
-			System.out.println("Error writing to the temporay log file: "+ioe.getMessage());
+			System.out.println("Error writing to the temporary log file: "+ioe.getMessage());
 			ioe.printStackTrace();
 		}
 	}
@@ -357,6 +415,7 @@ public class ErrorLogDialog extends JDialog implements ActionListener {
 		}
 		File dir = new File(tmpDir);
 		tmpFile = File.createTempFile("jlog.", ".error.log", dir);
+		tmpFile.deleteOnExit();
 		outF = new FileOutputStream(tmpFile);
 	}
 	
@@ -369,6 +428,8 @@ public class ErrorLogDialog extends JDialog implements ActionListener {
 			outF.close();
 			outF=null;
 		}
+		outF=null;
+		tmpFile=null;
 		super.finalize();
 	}
 	
