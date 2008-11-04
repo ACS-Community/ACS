@@ -186,6 +186,9 @@ public class ErrorLogFile extends TimerTask {
 	private void initTmpFile() throws IOException {
 		// Get a name for the file
 		File tmpFile = File.createTempFile(prefix, suffix, new File(folder));
+		if (deleteOnExit) {
+			tmpFile.deleteOnExit();
+		}
 		fileName = tmpFile.getAbsolutePath();
 	}
 	
@@ -252,10 +255,6 @@ public class ErrorLogFile extends TimerTask {
 			}
 			outFile=null;
 		}
-		if (deleteOnExit) {
-			File f = new File(fileName);
-			f.delete();
-		}
 		lastWriteTime=-1;
 		fileName=null;
 		fileError=false;
@@ -266,9 +265,12 @@ public class ErrorLogFile extends TimerTask {
 	 */
 	@Override
 	protected void finalize() throws Throwable {
-		timer.cancel();
-		clear();
-		super.finalize();
+		try {
+			timer.cancel();
+			clear();
+		} finally {
+			super.finalize();
+		}
 	}
 
 	/**
