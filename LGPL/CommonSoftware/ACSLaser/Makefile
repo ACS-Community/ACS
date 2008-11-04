@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.22 2008/09/01 13:20:17 acaproni Exp $"
+# "@(#) $Id: Makefile,v 1.23 2008/11/04 14:51:01 agrimstrup Exp $"
 #
 #
 
@@ -14,6 +14,7 @@ os     = $(shell uname)
 MODULES = laser-extlib \
 	  acs-jms \
 	  laser-source-cpp \
+	  laser-source-python \
 	  cmw-mom \
 	  laser-util \
 	  laser-source \
