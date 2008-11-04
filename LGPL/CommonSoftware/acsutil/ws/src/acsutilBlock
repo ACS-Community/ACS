@@ -8,7 +8,7 @@ then
 fi
 
 CL_STRING=
-CL_TIMEOUT=60
+CL_TIMEOUT=30
 CL_CMD=
 CL_PID=
 CL_TAT=no
@@ -86,7 +86,7 @@ if [ "$CL_CMD" = "" ] && [ "$CL_TAT" = "yes" ]
 then
     echo "Cannot use acsutilTATTestRunner with non-existant command!"
     printUsage
-    exit 1
+    exit 2
 fi
 
 #cannot specify no command, process ID, and string to search for
@@ -94,7 +94,7 @@ if [ "$CL_CMD" = "" ] && [ "$CL_PID" = "" ] && [ "$CL_STRING" = "" ]
 then
     echo "Need a command, process ID, or a string in a file to search for!"
     printUsage
-    exit 1
+    exit 3
 fi
 
 #must specify a real file
@@ -102,7 +102,7 @@ if [ "$CL_CMD" = "" ] && [ "$CL_PID" = "" ] && [ "$CL_STRING" != "" ] && [ "$CL_
 then
     echo "Must specify a file to search for '$CL_STRING' within!"
     printUsage
-    exit 1
+    exit 4
 fi
 
 
@@ -195,7 +195,7 @@ do
       echo "Detected the process emitted '$CL_CRAP' which implies"
       echo "some sort of error condition!"
       echo "Bailing without making any attempt to stop the process."
-      exit 1
+      exit 5
   fi
 
   #check if we've waited too long.
@@ -209,7 +209,7 @@ do
 	  then
 	  acsKillProc $CL_PID 2> /dev/null
       fi
-      exit 1
+      exit 6
 
   #sleep some more
   else
