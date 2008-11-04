@@ -60,6 +60,7 @@ import alma.acs.logging.archive.ArchiveConnectionManager.DBState;
 import alma.acs.logging.archive.zoom.ManualZoomDlg;
 import alma.acs.logging.archive.zoom.ZoomManager;
 import alma.acs.logging.archive.zoom.ZoomPrefsDlg;
+import alma.acs.logging.dialogs.error.ErrorLogDialog;
 import alma.acs.logging.dialogs.main.LogFrame;
 import alma.acs.logging.dialogs.main.LogMenuBar;
 import alma.acs.logging.dialogs.main.LogNavigationBar;
@@ -82,7 +83,6 @@ import com.cosylab.logging.engine.ACS.LCEngine;
 import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.engine.log.LogTypeHelper;
 import com.cosylab.logging.search.SearchDialog;
-import com.cosylab.logging.settings.ErrorLogDialog;
 import com.cosylab.logging.settings.FilterChooserDialog;
 import com.cosylab.logging.stats.StatsDlg;
 
