@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@$Id: acsRequest.cpp,v 1.4 2008/10/29 17:18:45 msekoran Exp $"
+* "@$Id: acsRequest.cpp,v 1.5 2008/11/04 14:50:55 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -129,8 +129,7 @@ template <class R> void ChainedRequest<R>::complete() {
 
 template <class R> void RequestChainContext<R>::proceed(R *lastreq) {
     if (curreq != lastreq) {
-        ACS_SHORT_LOG ((LM_ERROR, "Chain should proceed from its previous request %d %d!", curreq, lastreq));
-        ACS_SHORT_LOG ((LM_ERROR, "Chain should proceed from its previous request '%s' '%s'!", curreq == NULL ? "null" : curreq->getACSServiceName(), lastreq == NULL ? "null" : lastreq->getACSServiceName()));
+        ACS_SHORT_LOG ((LM_ERROR, "Chain should proceed from its previous request!"));
         return;
     }
     if (inprocess) {
@@ -262,6 +261,7 @@ ACSErr::Completion_var ACSServiceRequestDescription::executeRemote(ACSServiceReq
                 acsdaemonErrType::FailedToProcessRequestCompletion failed(__FILE__, __LINE__, "ACSServiceRequestDescription::executeRemote");
                 return failed.returnCompletion(false);
             }
+            spell = acsQoS::Timeout::setObjectTimeout(CORBA_TIMEOUT, spell.in());
             switch (request_type) {
             case START_SERVICE: spell->start_naming_service(cbptr, instance_number); break;
             case STOP_SERVICE: spell->stop_naming_service(cbptr, instance_number); break;
@@ -274,6 +274,7 @@ ACSErr::Completion_var ACSServiceRequestDescription::executeRemote(ACSServiceReq
                 acsdaemonErrType::FailedToProcessRequestCompletion failed(__FILE__, __LINE__, "ACSServiceRequestDescription::executeRemote");
                 return failed.returnCompletion(false);
             }
+            spell = acsQoS::Timeout::setObjectTimeout(CORBA_TIMEOUT, spell.in());
             switch (request_type) {
             case START_SERVICE: spell->start_notification_service(UNNULL(name), cbptr, instance_number); break;
             case STOP_SERVICE: spell->stop_notification_service(UNNULL(name), cbptr, instance_number); break;
@@ -286,6 +287,7 @@ ACSErr::Completion_var ACSServiceRequestDescription::executeRemote(ACSServiceReq
                 acsdaemonErrType::FailedToProcessRequestCompletion failed(__FILE__, __LINE__, "ACSServiceRequestDescription::executeRemote");
                 return failed.returnCompletion(false);
             }
+            spell = acsQoS::Timeout::setObjectTimeout(CORBA_TIMEOUT, spell.in());
             switch (request_type) {
             case START_SERVICE: spell->start_xml_cdb(cbptr, instance_number, recovery, UNNULL(cdbxmldir)); break;
             case STOP_SERVICE: spell->stop_cdb(cbptr, instance_number); break;
@@ -298,6 +300,7 @@ ACSErr::Completion_var ACSServiceRequestDescription::executeRemote(ACSServiceReq
                 acsdaemonErrType::FailedToProcessRequestCompletion failed(__FILE__, __LINE__, "ACSServiceRequestDescription::executeRemote");
                 return failed.returnCompletion(false);
             }
+            spell = acsQoS::Timeout::setObjectTimeout(CORBA_TIMEOUT, spell.in());
             switch (request_type) {
             case START_SERVICE: spell->start_manager(UNNULL(domain), cbptr, instance_number, recovery); break;
             case STOP_SERVICE: spell->stop_manager(UNNULL(domain), cbptr, instance_number); break;
@@ -310,6 +313,7 @@ ACSErr::Completion_var ACSServiceRequestDescription::executeRemote(ACSServiceReq
                 acsdaemonErrType::FailedToProcessRequestCompletion failed(__FILE__, __LINE__, "ACSServiceRequestDescription::executeRemote");
                 return failed.returnCompletion(false);
             }
+            spell = acsQoS::Timeout::setObjectTimeout(CORBA_TIMEOUT, spell.in());
             switch (request_type) {
             case START_SERVICE: spell->start_acs_log(cbptr, instance_number); break;
             case STOP_SERVICE: spell->stop_acs_log(cbptr, instance_number); break;
@@ -322,6 +326,7 @@ ACSErr::Completion_var ACSServiceRequestDescription::executeRemote(ACSServiceReq
                 acsdaemonErrType::FailedToProcessRequestCompletion failed(__FILE__, __LINE__, "ACSServiceRequestDescription::executeRemote");
                 return failed.returnCompletion(false);
             }
+            spell = acsQoS::Timeout::setObjectTimeout(CORBA_TIMEOUT, spell.in());
             switch (request_type) {
             case START_SERVICE: spell->start_logging_service(UNNULL(name), cbptr, instance_number); break;
             case STOP_SERVICE: spell->stop_logging_service(UNNULL(name), cbptr, instance_number); break;
@@ -334,6 +339,7 @@ ACSErr::Completion_var ACSServiceRequestDescription::executeRemote(ACSServiceReq
                 acsdaemonErrType::FailedToProcessRequestCompletion failed(__FILE__, __LINE__, "ACSServiceRequestDescription::executeRemote");
                 return failed.returnCompletion(false);
             }
+            spell = acsQoS::Timeout::setObjectTimeout(CORBA_TIMEOUT, spell.in());
             switch (request_type) {
             case START_SERVICE: spell->start_interface_repository(loadir, wait, cbptr, instance_number); break;
             case STOP_SERVICE: spell->stop_interface_repository(cbptr, instance_number); break;
@@ -344,6 +350,10 @@ ACSErr::Completion_var ACSServiceRequestDescription::executeRemote(ACSServiceReq
             acsdaemonErrType::FailedToProcessRequestCompletion failed(__FILE__, __LINE__, "ACSServiceRequestDescription::executeRemote");
             return failed.returnCompletion(false);
         }}
+    } catch (CORBA::TIMEOUT timeout) {
+        ACS_SHORT_LOG((LM_ERROR, "Object with reference '%s' did not respond in time.", corbaloc));
+        acsdaemonErrType::FailedToProcessRequestCompletion failed(__FILE__, __LINE__, "ACSServiceRequestDescription::executeRemote");
+        return failed.returnCompletion(false);
     } catch(CORBA::OBJECT_NOT_EXIST &ex) {
         ACS_SHORT_LOG((LM_ERROR, "Server is already running but object with reference '%s' does not exist.", corbaloc));
         acsdaemonErrType::FailedToProcessRequestCompletion failed(__FILE__, __LINE__, "ACSServiceRequestDescription::executeRemote");
