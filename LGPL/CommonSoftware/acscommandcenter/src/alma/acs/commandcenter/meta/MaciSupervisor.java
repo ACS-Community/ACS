@@ -107,7 +107,7 @@ public class MaciSupervisor implements IMaciSupervisor {
 		public void handleExceptionTalkingToManager (Exception exc) {
 			if (!connectsAutomatically)
 				return;
-			
+
 			MaciSupervisor.this.dismissManager();
 			synchronized (connector) {
 				connector.notify();
@@ -132,6 +132,7 @@ public class MaciSupervisor implements IMaciSupervisor {
 					synchronized (connector) {
 						try {
 							connector.wait();
+							log.finer("auto-connector triggered");
 						} catch (InterruptedException exc) {
 							break ALIVE; // quit
 						}
@@ -143,6 +144,7 @@ public class MaciSupervisor implements IMaciSupervisor {
 							break RECONNECT; // managed to reconnect
 							
 						} catch (Exception exc) {
+							log.finest("auto-connector attempt failed with "+exc);
 							try {
 								sleep(5000); // take a break
 							} catch (InterruptedException exc2) {
@@ -150,7 +152,7 @@ public class MaciSupervisor implements IMaciSupervisor {
 							}
 						}
 					}
-
+					log.finer("auto-connector suspended");
 				}
 			}
 		};
@@ -317,7 +319,7 @@ public class MaciSupervisor implements IMaciSupervisor {
 		administratorClientInfo = managerRef.login(adminIF);
 
 
-		log.info("connected to manager (" + getManagerLocation() + ")");
+		log.info("connected to manager (" + getManagerLocation() + ") as "+administratorClientInfo.h +" (= 0x"+Integer.toHexString(administratorClientInfo.h) +")");
 	}
 
 	/**
