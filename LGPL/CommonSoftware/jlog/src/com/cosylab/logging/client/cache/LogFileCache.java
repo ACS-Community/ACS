@@ -117,7 +117,7 @@ public class LogFileCache implements ILogMap {
 	//       care of the logs deleted.
 	protected int logID=0;
 	
-	// The index of the log is a SortedMap havink the number identifying a log as key.
+	// The index of the log is a SortedMap having the number identifying a log as key.
 	// Each entry is a LogCacheInfo containing the starting and ending position
 	// of the log in the file
 	protected TreeMap<Integer,LogCacheInfo> index = new TreeMap<Integer,LogCacheInfo>();
@@ -129,19 +129,19 @@ public class LogFileCache implements ILogMap {
 	// They are usually a few so we keep them in memory
 	protected HashMap<Integer,ILogEntry> replacedLogs = new HashMap<Integer,ILogEntry>();
 	
-	/**
-	 * Build an empty cache
-	 * 
-	 * @param filters The user defined filters
-	 * @param systemFilters The system filters
-	 */
-	public LogFileCache() throws LogCacheException {
-		try {
-			initCache();
-		} catch (IOException ioe) {
-			throw new LogCacheException("Error initializing the file",ioe);
-		}		
-	}
+//	/**
+//	 * Build an empty cache
+//	 * 
+//	 * @param filters The user defined filters
+//	 * @param systemFilters The system filters
+//	 */
+//	public LogFileCache() throws LogCacheException {
+//		try {
+//			initCache();
+//		} catch (IOException ioe) {
+//			throw new LogCacheException("Error initializing the file",ioe);
+//		}		
+//	}
 	
 	/**
 	 * 
@@ -164,7 +164,7 @@ public class LogFileCache implements ILogMap {
 	 * @see java.io.RandomAccessFile
 	 */
 	public long getFileSize() throws IOException{
-		return file.length();
+		return (file==null) ? 0 : file.length();
 	}
 	
 	/**
@@ -174,7 +174,7 @@ public class LogFileCache implements ILogMap {
 	 * 
 	 * @throws IOException
 	 */
-	private void initCache() throws IOException {
+	protected void initCache() throws IOException {
 		// The temporary file
 		if (file==null) {
 			file = new RandomAccessFile(getFile(),"rw");
@@ -273,11 +273,11 @@ public class LogFileCache implements ILogMap {
 					}
 				}
 			}
-			try {
-				initCache();
-			} catch (IOException ioe) {
-				throw new LogCacheException("Error initing the cache",ioe);
-			}
+//			try {
+//				initCache();
+//			} catch (IOException ioe) {
+//				throw new LogCacheException("Error initing the cache",ioe);
+//			}
 		}
 		logID=0;
 	}
@@ -359,6 +359,13 @@ public class LogFileCache implements ILogMap {
 	public synchronized int add(ILogEntry log) throws LogCacheException {
 		if (log==null) {
 			throw new LogCacheException("Trying to add a null log!");
+		}
+		if (file==null) {
+			try {
+				initCache();
+			} catch (IOException e) {
+				throw new LogCacheException("Error initializing the cache",e);
+			}
 		}
 		String cacheLogStr=toCacheString(log);
 		long startingPos;

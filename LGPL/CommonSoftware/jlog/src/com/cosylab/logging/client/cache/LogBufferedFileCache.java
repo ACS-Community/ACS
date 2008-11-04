@@ -253,6 +253,13 @@ public class LogBufferedFileCache extends LogFileCache implements ILogMap {
 	public void flushBuffer() throws LogCacheException {
 		// str is the buffer of logs to write on disk at once
 		StringBuilder str = new StringBuilder();
+		if (file==null) {
+			try {
+				initCache();
+			} catch (IOException e) {
+				throw new LogCacheException("Error flushing buffer",e);
+			}
+		}
 		
 		// The position of the first log to add on disk
 		long startingPos;
