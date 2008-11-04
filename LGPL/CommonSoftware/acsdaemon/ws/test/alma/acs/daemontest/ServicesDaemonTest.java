@@ -35,6 +35,7 @@ import alma.acsdaemon.DaemonSequenceCallbackHelper;
 import alma.acsdaemon.ServiceDefinitionBuilder;
 import alma.acsdaemon.ServicesDaemon;
 import alma.acsdaemon.ServicesDaemonHelper;
+import alma.acsdaemon.systemNotificationServiceAlarms;
 import alma.acsdaemon.systemNotificationServiceDefault;
 import alma.acsdaemon.systemNotificationServiceLogging;
 import alma.acsdaemonErrType.ServiceAlreadyRunningEx;
@@ -149,7 +150,7 @@ public class ServicesDaemonTest extends TestCase
 		org.omg.CORBA.Object objRef = acsCorba.getORB().string_to_object(cloc);
 		return NamingContextHelper.narrow(objRef);
 	}
-	
+
 	private void assertNamingService(boolean running) {
 		try {
 			NamingContext naming = getNamingService();
@@ -236,7 +237,7 @@ public class ServicesDaemonTest extends TestCase
 
 
 	/**
-	 * @TODO: currently fails
+	 * Test starting service twice. It must return ServiceAlreadyRunning exception (immediately or via callback). 
 	 */
 	public void testStartServiceTwice() throws Exception {
 		DaemonCallbackImpl daemonCallbackImpl = new DaemonCallbackImpl(logger);
@@ -343,9 +344,11 @@ public class ServicesDaemonTest extends TestCase
 				}
 			}
 			ExecutorService pool = Executors.newFixedThreadPool(3, new DaemonThreadFactory());
-			Future<Void> defaultNotifSrvFuture = pool.submit(new NotifySrvStarter("", dcb_1)); // @TODO systemNotificationServiceDefault.value once full name is accepted by daemon
-			Future<Void> loggingNotifSrvFuture = pool.submit(new NotifySrvStarter("Logging", dcb_2)); // @TODO systemNotificationServiceLogging.value once full name is accepted by daemon
-			Future<Void> alarmNotifSrvFuture = pool.submit(new NotifySrvStarter("Alarm", dcb_3)); // @TODO systemNotificationServiceAlarms.value once full name is accepted by daemon
+			Future<Void> defaultNotifSrvFuture = pool.submit(new NotifySrvStarter(systemNotificationServiceDefault.value, dcb_1)); 
+
+			Future<Void> loggingNotifSrvFuture = pool.submit(new NotifySrvStarter(systemNotificationServiceLogging.value, dcb_2));
+
+			Future<Void> alarmNotifSrvFuture = pool.submit(new NotifySrvStarter(systemNotificationServiceAlarms.value, dcb_3));
 			try {
 				defaultNotifSrvFuture.get(20, TimeUnit.SECONDS);
 				loggingNotifSrvFuture.get(20, TimeUnit.SECONDS);
@@ -373,21 +376,21 @@ public class ServicesDaemonTest extends TestCase
 			// and then waiting for the asynch calls to finish.
 			try {
 				daemonCallbackImpl_1.prepareWaitForDone("stop NC factory default");
-				daemon.stop_notification_service("", dcb_1, instanceNumber); // @TODO systemNotificationServiceDefault.value once full name is accepted by daemon
+				daemon.stop_notification_service(systemNotificationServiceDefault.value, dcb_1, instanceNumber);
 			}
 			catch (Throwable thr) {
 				thrs.add(thr);
 			}
 			try {
 				daemonCallbackImpl_2.prepareWaitForDone("stop NC factory logging");
-				daemon.stop_notification_service("Logging", dcb_2, instanceNumber); // @TODO systemNotificationServiceLogging.value once full name is accepted by daemon
+				daemon.stop_notification_service(systemNotificationServiceLogging.value, dcb_2, instanceNumber);
 			}
 			catch (Throwable thr) {
 				thrs.add(thr);
 			}
 			try {
 				daemonCallbackImpl_3.prepareWaitForDone("stop NC factory alarms");
-				daemon.stop_notification_service("Alarm", dcb_3, instanceNumber); // @TODO systemNotificationServiceAlarms.value once full name is accepted by daemon
+				daemon.stop_notification_service(systemNotificationServiceAlarms.value, dcb_3, instanceNumber);
 			}
 			catch (Throwable thr) {
 				thrs.add(thr);
