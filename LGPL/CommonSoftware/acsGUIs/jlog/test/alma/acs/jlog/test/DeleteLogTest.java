@@ -78,12 +78,7 @@ public class DeleteLogTest extends TestCase {
 		// Create and populate the cache
 		Collection<ILogEntry> c = CacheUtils.generateLogs(512);
 		LogFileCache cache;
-		try {
-			cache= new LogFileCache();
-		} catch (LogCacheException lce) {
-			System.out.println("Error creating the LogFileCache");
-			throw lce;
-		}
+		cache= new LogFileCache();
 		for (ILogEntry temp : c) {
 			cache.add(temp); 
 		}
@@ -141,12 +136,7 @@ public class DeleteLogTest extends TestCase {
 		Vector<ILogEntry> v = (Vector<ILogEntry>)CacheUtils.generateLogs(512);
 		HashMap<Integer,ILogEntry> logs = new  HashMap<Integer,ILogEntry>();
 		LogFileCache cache;
-		try {
-			cache= new LogFileCache();
-		} catch (LogCacheException lce) {
-			System.out.println("Error creating the LogFileCache");
-			throw lce;
-		}
+		cache= new LogFileCache();
 		for (ILogEntry temp : v) {
 			int key=cache.add(temp);
 			logs.put(key,temp);
