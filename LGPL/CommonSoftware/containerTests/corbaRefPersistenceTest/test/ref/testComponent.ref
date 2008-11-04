@@ -9,14 +9,14 @@
 1 - Starting pyContainer...
 1 - 
 1 - Acquiring Components...
-1 - javaClient: Load Complete: HELLOWORLD_JAVA HELLOWORLD_CPP HELLOWORLD_PY   Failed with Exception:
+1 - javaClient: Load Complete: HELLOWORLD_JAVA HELLOWORLD_CPP HELLOWORLD_PY  Failed with Exception:
 1 - pyClient: Load Complete: HELLOWORLD_JAVA HELLOWORLD_CPP HELLOWORLD_PY   Failed with Exception:
-1 - cppClient: Load Complete: HELLOWORLD_JAVA HELLOWORLD_CPP HELLOWORLD_PY   Failed with Exception:
+1 - cppClient: Load Complete: HELLOWORLD_JAVA HELLOWORLD_CPP HELLOWORLD_PY  Failed with Exceptions:
 1 - 
 1 - Invoking Component methods...
-1 - javaClient: Call Success: HELLOWORLD_CPP HELLOWORLD_JAVA HELLOWORLD_PY   Failed with Exception:
+1 - javaClient: Call Success: HELLOWORLD_JAVA HELLOWORLD_CPP HELLOWORLD_PY  Failed with Exception:
 1 - pyClient: Call Success: HELLOWORLD_CPP HELLOWORLD_JAVA HELLOWORLD_PY   Failed with Exception:
-1 - cppClient: Call Success: HELLOWORLD_CPP HELLOWORLD_JAVA HELLOWORLD_PY   Failed with Exception:
+1 - cppClient: Call Success: HELLOWORLD_CPP HELLOWORLD_JAVA HELLOWORLD_PY  Failed with Exceptions:
 1 - 
 1 - Killing javaContainer...
 1 - Restarting javaContainer...
@@ -26,14 +26,14 @@
 1 - Restarting pyContainer...
 1 - 
 1 - Invoking Component methods after kill...
-1 - javaClient: Call Success:   Failed with Exception: HELLOWORLD_CPP HELLOWORLD_JAVA HELLOWORLD_PY
+1 - javaClient: Call Success: HELLOWORLD_JAVA HELLOWORLD_CPP HELLOWORLD_PY  Failed with Exception:
 1 - pyClient: Call Success:   Failed with Exception: HELLOWORLD_CPP HELLOWORLD_JAVA HELLOWORLD_PY
-1 - cppClient: Call Success:   Failed with Exception: HELLOWORLD_CPP HELLOWORLD_JAVA HELLOWORLD_PY
+1 - cppClient: Call Success:  Failed with Exceptions: HELLOWORLD_CPP HELLOWORLD_JAVA HELLOWORLD_PY
 1 - 
 1 - Retry invoking Component methods...
-1 - javaClient: Call Success: HELLOWORLD_CPP HELLOWORLD_JAVA HELLOWORLD_PY   Failed with Exception:
+1 - javaClient: Call Success: HELLOWORLD_JAVA HELLOWORLD_CPP HELLOWORLD_PY  Failed with Exception:
 1 - pyClient: Call Success: HELLOWORLD_CPP HELLOWORLD_JAVA HELLOWORLD_PY   Failed with Exception:
-1 - cppClient: Call Success: HELLOWORLD_CPP HELLOWORLD_JAVA HELLOWORLD_PY   Failed with Exception:
+1 - cppClient: Call Success: HELLOWORLD_CPP HELLOWORLD_JAVA HELLOWORLD_PY  Failed with Exceptions:
 1 - 
 1 - Killing javaContainer...
 1 - Restarting javaContainer...
@@ -43,9 +43,9 @@
 1 - Restarting pyContainer...
 1 - 
 1 - Invoking Component methods after kill with 5 second delay...
-1 - javaClient: Call Success:   Failed with Exception: HELLOWORLD_CPP HELLOWORLD_JAVA HELLOWORLD_PY
+1 - javaClient: Call Success: HELLOWORLD_JAVA HELLOWORLD_CPP HELLOWORLD_PY  Failed with Exception:
 1 - pyClient: Call Success:   Failed with Exception: HELLOWORLD_CPP HELLOWORLD_JAVA HELLOWORLD_PY
-1 - cppClient: Call Success:   Failed with Exception: HELLOWORLD_CPP HELLOWORLD_JAVA HELLOWORLD_PY
+1 - cppClient: Call Success: HELLOWORLD_JAVA HELLOWORLD_PY  Failed with Exceptions: HELLOWORLD_CPP
 1 - 
 1 - Shutting down clients...
 1 - javaClient: Bye
@@ -53,7 +53,7 @@
 1 - cppClient: Bye
 1 - 
 1 - Stopping javaContainer...
-1 - Command '['acsStopContainer', 'javaContainer']' returned non-zero exit status 1
+1 - Command '['acsStopContainer', 'javaContainer']' returned non-zero exit status 6
 1 - Stopping cppContainer...
 1 - Stopping pyContainer...
 1 - End of Processing

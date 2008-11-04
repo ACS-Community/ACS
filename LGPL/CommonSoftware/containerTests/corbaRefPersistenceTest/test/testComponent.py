@@ -1,23 +1,23 @@
 #! /usr/bin/env python
 #*******************************************************************************
 # ALMA - Atacama Large Millimiter Array
-# (c) National Research Council of Canada, 2008 
-# 
+# (c) National Research Council of Canada, 2008
+#
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
 # License as published by the Free Software Foundation; either
 # version 2.1 of the License, or (at your option) any later version.
-# 
+#
 # This library is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 # Lesser General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU Lesser General Public
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: testComponent.py,v 1.1 2008/06/19 19:15:45 agrimstrup Exp $"
+# "@(#) $Id: testComponent.py,v 1.2 2008/11/04 11:00:20 agrimstrup Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -33,7 +33,7 @@ from time import sleep
 def start_container(cname, ctype):
     """Common container start function"""
     try:
-        subprocess.check_call(["acsutilAwaitContainerStart", ctype, cname]) 
+        subprocess.check_call(["acsutilAwaitContainerStart", ctype, cname])
     except Exception, e:
         print e
 
@@ -65,7 +65,7 @@ def find_worker_pid(cname):
 print "Starting Clients..."
 clients = {}
 for cmd in ['pyClient', 'cppClient', 'javaClient']:
-    clients[cmd] = pexpect.spawn('pyClient',searchwindowsize=200)
+    clients[cmd] = pexpect.spawn(cmd,searchwindowsize=200)
     clients[cmd].expect("Ready")
     print "%s: %s" % (cmd, clients[cmd].after)
 print ""
