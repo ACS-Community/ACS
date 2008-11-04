@@ -1,4 +1,4 @@
-# @(#) $Id: Container.py,v 1.39 2008/05/22 17:43:17 agrimstrup Exp $
+# @(#) $Id: Container.py,v 1.40 2008/11/04 10:48:14 agrimstrup Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -21,7 +21,7 @@
 # ALMA should be addressed as follows:
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: Container.py,v 1.39 2008/05/22 17:43:17 agrimstrup Exp $"
+# "@(#) $Id: Container.py,v 1.40 2008/11/04 10:48:14 agrimstrup Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -38,7 +38,7 @@ TODO LIST:
 - a ComponentLifecycleException has been defined in IDL now...
 '''
 
-__revision__ = "$Id: Container.py,v 1.39 2008/05/22 17:43:17 agrimstrup Exp $"
+__revision__ = "$Id: Container.py,v 1.40 2008/11/04 10:48:14 agrimstrup Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 from time      import sleep
@@ -104,17 +104,17 @@ class Container(maci__POA.Container, maci__POA.LoggingConfigurable, BaseClient):
         Constructor.
 
         Initializes member variables and CORBA
-        
+
         Parameters: name is the stringified name of this container.
 
         Raises: ???
         '''
-        
+
         print maci.Container.ContainerStatusStartupBeginMsg
         #Member variables
         self.running = 1  #As long as this is true, container is not shutdown
         self.name = name  #Container Name
-        self.canRecover = False  #Whether this container is capable of recovery
+        self.canRecover = True  #Whether this container is capable of recovery
         self.components = {}  #A dict where components are referenced by name
         self.compHandles = {}  #A dict where comp names are referenced by handles
         self.shutdownHandles = []
@@ -135,11 +135,11 @@ class Container(maci__POA.Container, maci__POA.LoggingConfigurable, BaseClient):
         print maci.Container.ContainerStatusMgrInitBeginMsg
         BaseClient.__init__(self, self.name)
         print maci.Container.ContainerStatusMgrInitEndMsg
-        
+
         self.logger.logTrace('CORBA configured for Container: ' + self.name)
 
         self.cdbAccess = CDBaccess()
-        
+
         self.cdbContainerInfo = {}
         self.autoLoadPackages = []
         #dictionary which maps package names to the number of active components
@@ -152,16 +152,16 @@ class Container(maci__POA.Container, maci__POA.LoggingConfigurable, BaseClient):
         self.getCDBInfo()
         self.refresh_logging_config()
         self.configureComponentLogger(name)
-        
+
         #Run everything
         self.logger.logInfo('Container ' + self.name + ' waiting for requests')
         print maci.Container.ContainerStatusStartupEndMsg
-        
+
     #--CLIENT IDL--------------------------------------------------------------
     def disconnect(self):
         '''
         Disconnect from manager.
-        
+
         oneway void disconnect ();
         '''
         self.logger.logTrace('Shutdown called for Container: ' + self.name)
@@ -184,23 +184,27 @@ class Container(maci__POA.Container, maci__POA.LoggingConfigurable, BaseClient):
         Returns: Nothing
 
         Raises: Nothing
-        
-        oneway void message (in short message_type, in string message) 
+
+        oneway void message (in short message_type, in string message)
         '''
         if message_id == maci.Client.MSGID_AUTOLOAD_START:
             print maci.Container.ContainerStatusCompAutoloadBeginMsg
         if message_type == maci.Client.MSG_ERROR:
             self.logger.logWarning("Error message from the manager: " + message)
+            sys.stdout.flush()
 
         elif message_type == maci.Client.MSG_INFORMATION:
             self.logger.logInfo("Info message from the manager: " + message)
-            
+            sys.stdout.flush()
+
         else:
             self.logger.logInfo("Message of unknown type from the manager: " + message)
+            sys.stdout.flush()
         if message_id == maci.Client.MSGID_AUTOLOAD_END:
             print maci.Container.ContainerStatusCompAutoloadEndMsg
             print maci.Container.ContainerStatusReadyMsg
-            
+            sys.stdout.flush()
+
     #--ACTIVATOR IDL-----------------------------------------------------------
     def activate_component(self, h, exeid, name, exe, idl_type):
         '''
@@ -213,10 +217,10 @@ class Container(maci__POA.Container, maci__POA.LoggingConfigurable, BaseClient):
         components implementation
         - idl_type is the the IR Location for the component
 
-        Raises: CannotActivateComponentExImpl exception when invalid 
+        Raises: CannotActivateComponentExImpl exception when invalid
 
         Returns: a ComponentInfo structure for manager to use.
-        
+
         activate_component(in Handle h,in string name,in string exe,in string idl_type)
         '''
         #Check to see if this Component already exists
@@ -241,7 +245,7 @@ class Container(maci__POA.Container, maci__POA.LoggingConfigurable, BaseClient):
             temp[COMPONENTINFO] = None  #An IDL struct given to manager
             temp[PYCLASS] = temp[TYPE].split(':')[1].split('/').pop() #get class name
             temp[COMPMODULE] = __import__(temp[EXE], globals(), locals(), [temp[PYCLASS]]) #get module
-            
+
             try:
                 temp[PYCLASS] = temp[EXE].split('.').pop() #get class name
                 temp[PYCLASS] = temp[COMPMODULE].__dict__.get(temp[PYCLASS]) #get class
@@ -256,7 +260,7 @@ class Container(maci__POA.Container, maci__POA.LoggingConfigurable, BaseClient):
                 e2.setDetailedReason("Verify that the name of implementation class matches the module name *%s*" % temp[EXE].split('.').pop())
             else:
                 e2.setDetailedReason("Verify that CDB Code entry and Python install path match for module *%s*" % temp[EXE])
-                
+
             self.failedActivation(temp)
             e2.log()
             raise e2
@@ -289,7 +293,7 @@ class Container(maci__POA.Container, maci__POA.LoggingConfigurable, BaseClient):
         #Check to see if it's an ACSComponent next
         if isinstance(temp[PYREF], ACSComponent) or isinstance(temp[PYREF], CharacteristicComponent):
             temp[PYREF].setName(temp[NAME])
-            
+
         #Check to see if it's derived from ComponentLifeCycle next!!!
         #If it is, we have to mess with the state model and invoke the lifecycle
         #methods accordingly.
@@ -309,23 +313,23 @@ class Container(maci__POA.Container, maci__POA.LoggingConfigurable, BaseClient):
                     temp[PYREF].setComponentState(ACS.COMPSTATE_INITIALIZED)
                 elif isinstance(temp[PYREF], ACSComponent) or isinstance(temp[PYREF], CharacteristicComponent):
                     #bad...the developer has changed the state from the initialize method.  warn the user but continue
-                    self.logger.logWarning("initialize method of " + 
+                    self.logger.logWarning("initialize method of " +
                                            "ComponentLifecycle failed for the '" +
                                            temp[NAME] + "' component changed the component's state to something unexpected!")
-                    
+
             except ComponentLifecycleException, e:
                 print_exc()
-                self.logger.logWarning("initializeComponent method of " + 
+                self.logger.logWarning("initializeComponent method of " +
                                        "ComponentLifecycle failed for the '" +
                                        temp[NAME] + "' component with this message: " +
                                        str(e.args))
                 #Have to mess with the state model
                 if isinstance(temp[PYREF], ACSComponent) or isinstance(temp[PYREF], CharacteristicComponent):
                     temp[PYREF].setComponentState(ACS.COMPSTATE_ERROR)
-                    
+
             except Exception, e:
                 print_exc()
-                self.logger.logCritical("initializeComponent method of " + 
+                self.logger.logCritical("initializeComponent method of " +
                                         "ComponentLifecycle failed for the '" +
                                         temp[NAME] + "'.\n" + str(e.args) + "\nDestroying!")
                 self.failedActivation(temp)
@@ -333,19 +337,19 @@ class Container(maci__POA.Container, maci__POA.LoggingConfigurable, BaseClient):
 
             try:
                 temp[PYREF].execute()
-                
+
                 #Have to mess with the state model
                 temp_state = temp[PYREF]._get_componentState()
                 if (isinstance(temp[PYREF], ACSComponent) or isinstance(temp[PYREF], CharacteristicComponent)) and (temp_state==ACS.COMPSTATE_INITIALIZED or temp_state==ACS.COMPSTATE_OPERATIONAL):
                     temp[PYREF].setComponentState(ACS.COMPSTATE_OPERATIONAL)
                 elif isinstance(temp[PYREF], ACSComponent) or isinstance(temp[PYREF], CharacteristicComponent):
                     #bad...the developer has changed the state from the initialize method.  warn the user but continue
-                    self.logger.logWarning("execute method of " + 
+                    self.logger.logWarning("execute method of " +
                                            "ComponentLifecycle failed for the '" +
                                            temp[NAME] + "' component: changed the component's state to something unexpected!")
             except ComponentLifecycleException, e:
                 print_exc()
-                self.logger.logWarning("executeComponent method of " + 
+                self.logger.logWarning("executeComponent method of " +
                                        "ComponentLifecycle failed for the '" +
                                        temp[NAME] + "' component with this message: " +
                                        str(e.args))
@@ -353,10 +357,10 @@ class Container(maci__POA.Container, maci__POA.LoggingConfigurable, BaseClient):
                 if isinstance(temp[PYREF], ACSComponent) or isinstance(temp[PYREF], CharacteristicComponent):
                     temp[PYREF].setComponentState(ACS.COMPSTATE_ERROR)
 
-                
+
             except Exception, e:
                 print_exc()
-                self.logger.logCritical("executeComponent method of " + 
+                self.logger.logCritical("executeComponent method of " +
                                         "ComponentLifecycle failed for the '" +
                                         temp[NAME] + "'.\n" + str(e.args) + "\nDestroying!")
                 self.failedActivation(temp)
@@ -364,7 +368,7 @@ class Container(maci__POA.Container, maci__POA.LoggingConfigurable, BaseClient):
 
 
         #DWF-should check to see if it's derived from CharacteristicComponent next!!!
-            
+
         #Next activate it as a CORBA object.
         try:
             temp[POA].activate_object_with_id(temp[NAME], temp[PYREF])
@@ -380,7 +384,7 @@ class Container(maci__POA.Container, maci__POA.LoggingConfigurable, BaseClient):
             self.logger.logWarning("Failed to create CORBA object for: " + name)
             self.failedActivation(temp)
             return None
-            
+
         #Create the structure and give it to manager
         #DWF-FIX ME!!! The next line screws everything up for some reason!
         #temp[PYREF]._get_interface()
@@ -412,7 +416,7 @@ class Container(maci__POA.Container, maci__POA.LoggingConfigurable, BaseClient):
         self.configureComponentLogger(name)
 
         self.logger.logInfo("Activated component: " + name)
-        
+
         return self.components[name][COMPONENTINFO]
 
     #--------------------------------------------------------------------------
@@ -429,19 +433,19 @@ class Container(maci__POA.Container, maci__POA.LoggingConfigurable, BaseClient):
             comp_entry[CORBAREF]._release()
         except:
             pass
-        
+
         #destroy the Offshoot POA
         try:
             comp_entry[POAOFFSHOOT].destroy(FALSE, FALSE)
         except:
             pass
-        
+
         #deactivate the component's underlying CORBA object
         try:
             comp_entry[POA].deactivate_object(comp_entry[NAME])
         except:
             pass
-        
+
         #destroy the component's "personal" POA
         try:
             comp_entry[POA].destroy(FALSE, FALSE)
@@ -449,7 +453,7 @@ class Container(maci__POA.Container, maci__POA.LoggingConfigurable, BaseClient):
             pass
 
         del self.components[comp_entry[NAME]]
-        
+
     #--ACTIVATOR IDL-----------------------------------------------------------
     def deactivate_components(self, handle_list):
         '''
@@ -463,7 +467,7 @@ class Container(maci__POA.Container, maci__POA.LoggingConfigurable, BaseClient):
 
         void deactivate_components (in HandleSeq h)
         '''
-        
+
         for handle in handle_list:
             try:
                 comp_entry = self.components[self.compHandles[handle]]
@@ -481,11 +485,11 @@ class Container(maci__POA.Container, maci__POA.LoggingConfigurable, BaseClient):
 
             #deactivate the component's underlying CORBA object
             comp_entry[POA].deactivate_object(comp_entry[NAME])
-            
+
             #Have to mess with the state model
             if isinstance(comp_entry[PYREF], ACSComponent) or isinstance(comp_entry[PYREF], CharacteristicComponent):
                 comp_entry[PYREF].setComponentState(ACS.COMPSTATE_DESTROYING)
-                
+
             try:  #Invoke the cleanUp method if implemented...
                 comp_entry[PYREF].cleanUp()
             except Exception, e:
@@ -494,14 +498,14 @@ class Container(maci__POA.Container, maci__POA.LoggingConfigurable, BaseClient):
 
             #destroy the component's "personal" POA
             comp_entry[POA].destroy(FALSE, FALSE)
-            
+
             #Have to mess with the state model
             if isinstance(comp_entry[PYREF], ACSComponent) or isinstance(comp_entry[PYREF], CharacteristicComponent):
                 comp_entry[PYREF].setComponentState(ACS.COMPSTATE_DEFUNCT)
-            
+
             #remove one from the container's list of modules
             self.compModuleCount[comp_entry[COMPMODULE]] = self.compModuleCount[comp_entry[COMPMODULE]] - 1
-            
+
             #if the number of references to this module falls to zero, it should be reloaded
             if self.compModuleCount[comp_entry[COMPMODULE]] == 0:
                 try:
@@ -509,14 +513,14 @@ class Container(maci__POA.Container, maci__POA.LoggingConfigurable, BaseClient):
                 except:
                     self.logger.logWarning("Unable to reload:" + str(comp_entry[COMPMODULE]))
                     print_exc()
-                    
+
                 #remove it from the container's list
                 del self.compModuleCount[comp_entry[COMPMODULE]]
-                
+
             #Finally delete our references so the garbage collector can be used
             del self.components[self.compHandles[handle]]
             del self.compHandles[handle]
-            
+
         return
     #--LOGGINGCONFIGURABLE IDL-----------------------------------------------------------
     def configureComponentLogger(self, name):
@@ -548,7 +552,7 @@ class Container(maci__POA.Container, maci__POA.LoggingConfigurable, BaseClient):
                         # No value was supplied so default is used
                         centrallevel = defaultlevels.minLogLevel
                     try:
-                        # Environment variable takes precedence over CDB configuration 
+                        # Environment variable takes precedence over CDB configuration
                         if 'ACS_LOG_STDOUT' in environ:
                             locallevel = int(environ['ACS_LOG_STDOUT'])
                         else:
@@ -556,7 +560,7 @@ class Container(maci__POA.Container, maci__POA.LoggingConfigurable, BaseClient):
                     except KeyError:
                         # No value was supplied so default is used
                         locallevel = defaultlevels.minLogLevelLocal
-                        
+
                     clogger.setLevels(maci.LoggingConfigurable.LogLevels(False, centrallevel, locallevel))
                     # There should only be one entry per logger so we are done
                     break
@@ -615,7 +619,7 @@ class Container(maci__POA.Container, maci__POA.LoggingConfigurable, BaseClient):
             return Log.getLogger(logger_name).getLevels()
         else:
             raise LoggerDoesNotExistExImpl()
-    
+
     #--LOGGINGCONFIGURABLE IDL-----------------------------------------------------------
     def set_logLevels(self, logger_name, levels):
         """
@@ -664,22 +668,22 @@ class Container(maci__POA.Container, maci__POA.LoggingConfigurable, BaseClient):
             except:
                 # Default value used because CDB has no setting for this attribute
                 pass
-            try: 
+            try:
                 cap = int(logconfig[0]['maxLogQueueSize'])
             except:
                 # Default value used because CDB has no setting for this attribute
                 pass
-            try: 
+            try:
                 batch = int(logconfig[0]['dispatchPacketSize'])
             except:
                 # Default value used because CDB has no setting for this attribute
                 pass
-            try: 
+            try:
                 displevel = int(logconfig[0]['immediateDispatchLevel'])
             except:
                 # Default value used because CDB has no setting for this attribute
                 pass
-            try: 
+            try:
                 flush = int(logconfig[0]['flushPeriodSeconds'])
             except:
                 # Default value used because CDB has no setting for this attribute
@@ -698,7 +702,7 @@ class Container(maci__POA.Container, maci__POA.LoggingConfigurable, BaseClient):
 
         if 'ACS_LOG_STDOUT' in environ:
             locallevel = int(environ['ACS_LOG_STDOUT'])
-        
+
         Log.setDefaultLevels(maci.LoggingConfigurable.LogLevels(False, centrallevel, locallevel))
         Log.setCapacity(cap)
         Log.setBatchSize(batch)
@@ -719,13 +723,13 @@ class Container(maci__POA.Container, maci__POA.LoggingConfigurable, BaseClient):
 
         Parameters:
         - action is an encrypted value that tells the container what action to take
-        
+
         oneway void shutdown (in unsigned long action)
-        '''        
+        '''
         action = (action >> 8) & 0xFF
 
         if (action == ACTIVATOR_EXIT) or (action == ACTIVATOR_REBOOT) or (action == ACTIVATOR_RELOAD):
-            
+
             self.logger.logTrace("Shutting down container: " + self.name)
 
             #Logout from manager
@@ -740,7 +744,7 @@ class Container(maci__POA.Container, maci__POA.LoggingConfigurable, BaseClient):
                 Log.stopPeriodicFlush()
         else:
             self.logger.logWarning("Unable to process 'shutdown' request at this time: " + str(action))
-        
+
     #----------------------------------------------------------------------------
     def set_component_shutdown_order(self, handles):
         '''
@@ -748,23 +752,23 @@ class Container(maci__POA.Container, maci__POA.LoggingConfigurable, BaseClient):
 
         void set_component_shutdown_order(in HandleSeq h);
         '''
-        self.shutdownHandles = handles 
+        self.shutdownHandles = handles
     #----------------------------------------------------------------------------
     def get_component_info(self, handles):
         '''
         Returns information about a subset of components that are currently hosted by
         the Container.
-        
+
         Note:  If the list of handles is empty, information about all components hosted
         by the activator is returned!
 
         Parmaters: handles is a sequence of integers specifiying component handles.
         Return: Information about the selected components.
-        
+
         ComponentInfoSeq get_component_info (in HandleSeq h);
         '''
         return_seq=[]
-        
+
         if (handles == None) or (handles == []):
             for record in self.components.keys():
                 return_seq.append(self.components[record][COMPONENTINFO])
@@ -798,7 +802,7 @@ class Container(maci__POA.Container, maci__POA.LoggingConfigurable, BaseClient):
         #get a list of libraries to preload
         # [{'string': 'baci'}]
         temp_list = self.cdbAccess.getElement("MACI/Containers/" + self.name, "Container/Autoload/cdb:_")
-        
+
         #get rid of libraries that can't be found!
         for temp_dict in temp_list:
             package = temp_dict['string']
@@ -808,7 +812,7 @@ class Container(maci__POA.Container, maci__POA.LoggingConfigurable, BaseClient):
                 self.autoLoadPackages.append(package)
             else:
                 self.logger.logAlert("The '" + str(temp_dict['string']) + "' Python script specified by this container's CDB Autoload element cannot be found!")
-                
+
         #now try loading the packages!
         for temp_package in self.autoLoadPackages:
             try:
@@ -816,7 +820,7 @@ class Container(maci__POA.Container, maci__POA.LoggingConfigurable, BaseClient):
             except:
                 self.logger.logCritical("There was a problem autoloading the '" + str(temp_package) + "' Python script!")
                 print_exc()
-            
+
     #--------------------------------------------------------------------------
     def configCORBA(self):
         '''
@@ -844,7 +848,7 @@ class Container(maci__POA.Container, maci__POA.LoggingConfigurable, BaseClient):
             self.logger.logWarning("Unable to create the container's POA - " + str(e))
             print_exc()
             raise CouldntCreateObjectExImpl()
-            
+
         #Create the Components POA
         try:
             self.compPolicies.append(ACSCorba.getPOARoot().create_id_assignment_policy(PortableServer.USER_ID))
@@ -867,7 +871,7 @@ class Container(maci__POA.Container, maci__POA.LoggingConfigurable, BaseClient):
             self.logger.logWarning("Unable to create the OffShoots' POA - " + str(e))
             print_exc()
             raise CouldntCreateObjectExImpl()
-        
+
         # register this object with the Container POA and have
         # it come alive
         try:
@@ -924,7 +928,7 @@ class Container(maci__POA.Container, maci__POA.LoggingConfigurable, BaseClient):
 
         #to make pychecker happy
         frame = None
-        
+
         print "-->Signal Interrupt caught...shutting everything down cleanly"
 
         #Destroy what manager has told us about first
@@ -933,7 +937,7 @@ class Container(maci__POA.Container, maci__POA.LoggingConfigurable, BaseClient):
         #Double-check to see if there's any extra components manager did not
         #let us know about!
         self.deactivate_components(self.compHandles.keys())
-        
+
         self.shutdown(ACTIVATOR_EXIT<<8)
     #--------------------------------------------------------------------------
     def createPOAForComponent(self, comp_name):
@@ -948,7 +952,7 @@ class Container(maci__POA.Container, maci__POA.LoggingConfigurable, BaseClient):
         Raises: ???
         '''
         return self.componentPOA.create_POA("ComponentPOA" + comp_name, ACSCorba.getPOAManager(), self.compPolicies)
-    #--------------------------------------------------------------------------   
+    #--------------------------------------------------------------------------
     def destroyCORBA(self):
         '''
         Helper function designed to shutdown/destroy all CORBA associated with
@@ -1009,20 +1013,20 @@ class Container(maci__POA.Container, maci__POA.LoggingConfigurable, BaseClient):
         elif not isinstance(os_corba_ref, OffShoot):
             #Not an offshoot but try activating it anyways!
             self.logger.logWarning("Not an OffShoot '" + str(os_corba_ref) + "'")
-            
+
         try:
             comp[POAOFFSHOOT].activate_object(os_corba_ref)
             return comp[POAOFFSHOOT].servant_to_reference(os_corba_ref)
         except Exception, e:
             self.logger.logWarning("Unable to activate '" + str(os_corba_ref) + "'")
             print_exc()
-            return None    
+            return None
     #--------------------------------------------------------------------------
     def getMyCorbaRef(self):
         '''
         Overriden from BaseClient
         '''
-        
+
         #if this object has not already been activated as a CORBA object...
         if self.corbaRef == None:
             try:
@@ -1038,10 +1042,10 @@ class Container(maci__POA.Container, maci__POA.LoggingConfigurable, BaseClient):
                 # without a client, we can't go on
                 self.logger.logWarning("Cannot activate self as a CORBA servant")
                 raise CORBAProblemExImpl()
-        
+
             #OK to return at this point
             return self.corbaRef
-        
+
         #otherwise return the saved reference
         else:
             return self.corbaRef
