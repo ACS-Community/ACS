@@ -56,13 +56,8 @@ public class ErrorLogFileTest extends ComponentClientTestCase {
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
-		file = new ErrorLogFile(TIMEOUT, "test.",".log", null, false, false);
+		file = new ErrorLogFile(TIMEOUT, "test.",".log", null, true, false);
 		assertNotNull(file);
-	}
-
-	@Override
-	protected void tearDown() throws Exception {
-		super.tearDown();
 	}
 
 	/**
@@ -165,6 +160,7 @@ public class ErrorLogFileTest extends ComponentClientTestCase {
 	 */
 	public void testClear() throws Exception {
 		// Add some strings to the file
+		String oldName = file.getFileName();
 		for (int t=0; t<1000; t++) {
 			file.append(str+Integer.valueOf(t).toString()+"\n");
 		}
@@ -172,6 +168,8 @@ public class ErrorLogFileTest extends ComponentClientTestCase {
 		for (int t=1000; t<2000; t++) {
 			file.append(str+Integer.valueOf(t).toString()+"\n");
 		}
+		String newName = file.getFileName();
 		assertTrue(checkFile(file.getFileName(), 1000,1000));
+		assertNotSame(newName+" and "+oldName+" should differ after clearing",newName, oldName);
 	}
 }
