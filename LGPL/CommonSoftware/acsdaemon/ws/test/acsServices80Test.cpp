@@ -1,7 +1,7 @@
 /*******************************************************************************
  * E.S.O. - ACS project
  *
- * "@(#) $Id: acsServices80Test.cpp,v 1.3 2008/10/27 21:11:23 msekoran Exp $"
+ * "@(#) $Id: acsServices80Test.cpp,v 1.4 2008/11/04 17:49:36 msekoran Exp $"
  *
  * who       when        what
  * --------  ----------  ----------------------------------------------
@@ -69,6 +69,7 @@ class TestDaemonSequenceCallback : public POA_acsdaemon::DaemonSequenceCallback
         ACS_SHORT_LOG((LM_INFO, "DONE STARTING UP SERVICES."));
 //        printf("Please, press a key to start shutting down the services!");
 //        getchar();
+	ACE_OS::sleep(3);
         ACS_SHORT_LOG((LM_INFO, "SHUTTING DOWN THE SERVICES."));
         daemon->stop_services(services_definition, ptr());
         startup = false;
@@ -260,8 +261,8 @@ main (int argc, char *argv[])
 		acsdaemon::ServiceDefinitionBuilder *sdb = daemon->create_service_definition_builder(1);
 		sdb->add_naming_service(DAEMONHOST);
 		sdb->add_interface_repository(DAEMONHOST, false, false); // still waits for interface repository startup
-		sdb->add_notification_service("", DAEMONHOST);
-		sdb->add_notification_service("Logging", DAEMONHOST);
+		sdb->add_notification_service("NotifyEventChannelFactory", DAEMONHOST);
+		sdb->add_notification_service("LoggingNotifyEventChannelFactory", DAEMONHOST);
 		sdb->add_xml_cdb(DAEMONHOST, true, "/alma/ACS-7.0/acsdata/config/defaultCDB");
 		sdb->add_logging_service(DAEMONHOST, "Log");
 		sdb->add_acs_log(DAEMONHOST);
