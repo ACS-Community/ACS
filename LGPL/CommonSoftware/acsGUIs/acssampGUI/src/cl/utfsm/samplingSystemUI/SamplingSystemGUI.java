@@ -494,6 +494,8 @@ public class SamplingSystemGUI extends JFrame {
 				MAN_NAME);
 		if( s != null && !s.trim().equals("") )
 			this.MAN_NAME = s;
+		else
+			System.exit(0);
 		
 		/* Show the main window */
 		this.setVisible(true);

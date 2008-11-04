@@ -15,6 +15,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Iterator;
+import javax.swing.JOptionPane;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -144,6 +147,23 @@ public class BeanGrouper extends JPanel {
 			timeSampTextField = new JTextField();
 			timeSampTextField.setText("0");
 			timeSampTextField.setPreferredSize(new Dimension(50,19));
+			timeSampTextField.addFocusListener(new FocusListener() {
+
+				public void focusGained(FocusEvent e) {
+					// Do nothing special :)
+				}
+
+				public void focusLost(FocusEvent e) {
+					if( !timeSampTextField.getText().matches("^([0-9])+$") ) {
+						JOptionPane.showConfirmDialog(BeanGrouper.this,
+								"Sampling time '" + timeSampTextField.getText() + "' is invalid.\nPlease use only numeric characters.",
+								"Invalid sampling time",
+								JOptionPane.PLAIN_MESSAGE,JOptionPane.WARNING_MESSAGE);
+						timeSampTextField.setText("0");
+						timeSampTextField.grabFocus();
+					}
+				}
+			});
 		}
 		return timeSampTextField;
 	}
@@ -174,6 +194,23 @@ public class BeanGrouper extends JPanel {
 			freqTextField=new JTextField();
 			freqTextField.setText("100");
 			freqTextField.setPreferredSize(new Dimension(50, 19));
+			freqTextField.addFocusListener(new FocusListener() {
+
+				public void focusGained(FocusEvent e) {
+					// Do nothing special :)
+				}
+
+				public void focusLost(FocusEvent e) {
+					if( !freqTextField.getText().matches("^([0-9])+$") ) {
+						JOptionPane.showConfirmDialog(BeanGrouper.this,
+								"Frequency value '" + freqTextField.getText() + "' is invalid.\nPlease use only numeric characters.",
+								"Invalid frequency value",
+								JOptionPane.PLAIN_MESSAGE,JOptionPane.WARNING_MESSAGE);
+						freqTextField.setText("100");
+						freqTextField.grabFocus();
+					}
+				}
+			});
 		}
 		return freqTextField;
 	}
@@ -200,6 +237,11 @@ public class BeanGrouper extends JPanel {
 					if(ready2samp)ready2samp = false;
 					else ready2samp = true;
 				}
+					}                                                                                                                                            	
+					}
+
+
+
 			});*/
 		}
 		return jCheckBox;
@@ -267,13 +309,15 @@ public class BeanGrouper extends JPanel {
 	 */
 	private void startSample(){
 
-		int freq=100;
-		setjLabel("Sampling to file: " + toFile.getFileName());
-		try{
+		int freq=0;
+		try {
 			freq = Integer.parseInt(getFreqTextField().getText());
-		}catch(NumberFormatException ex){
-			getFreqTextField().setText("100");
+		} catch (NumberFormatException ex) {
+			// Shouldn't happen
 		}
+
+		setjLabel("Sampling to file: " + toFile.getFileName());
+		freq = Integer.parseInt(getFreqTextField().getText());
 		for(DataPrinter wp : samplers){
 			wp.setFrecuency(freq);
 			try {
@@ -290,6 +334,8 @@ public class BeanGrouper extends JPanel {
 			jCloseButton.setEnabled(true);
 			jStopButton.setEnabled(false);
 			startSampleButton.setEnabled(true);
+			freqTextField.setEnabled(true);
+			timeSampTextField.setEnabled(true);
 			return;
 		}
 		
@@ -344,6 +390,11 @@ public class BeanGrouper extends JPanel {
 					startSampleButton.setEnabled(false);
 					getFreqTextField().setEnabled(false);
 					getTimeSampTextField().setEnabled(false);
+					try{
+						Integer.parseInt(getFreqTextField().getText());
+					}catch(NumberFormatException ex){
+						getFreqTextField().setText("100");
+					}
 					toFile.initialize(Integer.parseInt(getFreqTextField().getText()));
 					startSample();
 				}

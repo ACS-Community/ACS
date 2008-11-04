@@ -5,6 +5,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
+
+import alma.acs.util.IsoDateFormat;
+import alma.acs.util.UTCUtility;
 
 import cl.utfsm.samplingSystemUI.core.DataItem;
 
@@ -16,7 +20,7 @@ public class FileHelper {
 	private BufferedWriter writer;
 	private String header;
 	private int c[];
-	ArrayList<ArrayList<DataItem>> data;
+	private ArrayList<ArrayList<DataItem>> data;
 	
 	public FileHelper(){
 		data = new ArrayList<ArrayList<DataItem>>();
@@ -52,21 +56,23 @@ public class FileHelper {
 	}
 	
 	public void initialize(int freq){
-		if( group == "" )
-			filename = "samp_"+10000000L/freq+"_"+Calendar.getInstance().getTimeInMillis();
-		else
-			filename = group+"_"+10000000L/freq+"_"+Calendar.getInstance().getTimeInMillis();
+
+		IsoDateFormat fo = new IsoDateFormat();
+    		if( group == "" )
+                        filename = "samp_"+10000000L/freq+"_"+fo.format(new Date()) +".csv";
+                else
+                        filename = group+"_"+10000000L/freq+"_"+fo.format(new Date()) +".csv";
 	}
 	
 	public void dumpToFile(long frequency, double prec){
-		//long milis = Calendar.getInstance().getTimeInMillis();
+
+		IsoDateFormat formater = new IsoDateFormat();
 		long timestamp=data.get(0).get(0).getTime();
 		boolean done = false;
 		frequency=10000000L/frequency;
 		long w = (long) (frequency*prec);
 		c=new
 		int[data.size()];
-		//filename = "samp_"+frequency+"_"+milis;
 		openFile();
 		try {
 			writer.write(header+"\n");
@@ -74,7 +80,7 @@ public class FileHelper {
 			e1.printStackTrace();
 		}
 		while(!done){
-			String line = "" + timestamp;
+			String line = "" + formater.format(new Date(UTCUtility.utcOmgToJava(timestamp)));
 			boolean dataPresent = true;
 			for(int i=0;i<data.size();i++){
 				dataPresent = false;

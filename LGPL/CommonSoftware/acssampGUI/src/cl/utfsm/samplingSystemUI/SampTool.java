@@ -6,9 +6,12 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.swing.JOptionPane;
+
 import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
 import alma.acs.component.ComponentDescriptor;
 import alma.acs.container.ContainerServices;
+import cl.utfsm.samplingSystemUI.core.AcsInformation;
 import cl.utfsm.samplingSystemUI.core.AcsInformationException;
 import cl.utfsm.samplingSystemUI.core.SamplingManagerException;
 import cl.utfsm.samplingSystemUI.core.SamplingManagerUITool;
@@ -39,6 +42,12 @@ public class SampTool extends SamplingManagerUITool {
 	}
 
 	public static void initializeComponents(){
+		try {
+			info=AcsInformation.getInstance(NAME);
+		} catch (AcsInformationException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		
 		/* Get all component names and descriptors */
 		List<String> listTmp = new ArrayList<String>();
@@ -73,8 +82,18 @@ public class SampTool extends SamplingManagerUITool {
 	public static void main(String[] args){
 		window = new SamplingSystemGUI();
 		try {
-			spinUp(NAME,window.MAN_NAME);
 			initializeComponents();
+			if(sampManList.size()==0){
+				JOptionPane.showMessageDialog(null,
+					    "There is no Sampling Manager defined in the current CDB.\n" +
+					    "(The component type should be 'IDL:alma/acssamp/Samp:1.0')\n" +
+					    "Please check your CDB and restart Sampling System GUI",
+					    "Critical Error",
+					    JOptionPane.ERROR_MESSAGE);
+				System.exit(1);
+			}
+				
+			spinUp(NAME,sampManList.getFirst());
 		} catch (AcsInformationException e) {
 			e.printStackTrace();
 		} catch (SamplingManagerException e) {
