@@ -21,6 +21,7 @@ import java.util.Iterator;
 import java.util.StringTokenizer;
 import java.util.Vector;
 import java.util.logging.Filter;
+import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.LogRecord;
@@ -30,6 +31,7 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -190,9 +192,9 @@ public class LogManagerGui extends JPanel {
 		}
 
 		// iterate over all loggers and create nodes
-		Enumeration en = LogManager.getLogManager().getLoggerNames();
+		Enumeration<String> en = LogManager.getLogManager().getLoggerNames();
 		while (en.hasMoreElements()) {
-			String name = (String) en.nextElement();
+			String name = en.nextElement();
 			if (passesThroughFilter(nameFilter, name)) {
 				Logger elem = LogManager.getLogManager().getLogger(name);
 				TreeN node = new TreeN(elem);
@@ -201,9 +203,9 @@ public class LogManagerGui extends JPanel {
 		}
 
 		// iterate over nodes and compose them as tree
-		Iterator it = reverse.keySet().iterator();
+		Iterator<Logger> it = reverse.keySet().iterator();
 		while (it.hasNext()) {
-			Logger elem = (Logger) it.next();
+			Logger elem = it.next();
 			TreeN node = (TreeN) reverse.get(elem);
 			TreeN pnode = (TreeN) reverse.get(elem.getParent());
 			if (pnode == null) {
@@ -246,8 +248,14 @@ public class LogManagerGui extends JPanel {
 			level += " (filter-level: " + ((ForceFilter) x.getFilter()).level + ")";
 		}
 
-		editor.text2.setText(x.toString() + "\nname=" + x.getName() + "\nlogger-level=" + level + "\nactive-level="
-				+ activeLevel(x) + "\neffective-level=" + effectiveLevel(x) + "\nparent=" + x.getParent());
+		editor.text2.setText(x.toString() //
+				+ "\nname=" + x.getName() //
+				+ "\nlogger-level=" + level //
+				+ "\nactive-level=" + activeLevel(x)
+				+ "\neffective-level=" + effectiveLevel(x) //
+				+ "\nhandlers=" + Arrays.toString(x.getHandlers()) //
+				+ "\nusesParentHandler (i.e. sends output to parent):" + x.getUseParentHandlers() //
+				+ "\nparent=" + x.getParent());
 		editor.comboBoxActionListener.x = null;
 		
 		if (x.getLevel() == null) {
@@ -260,16 +268,14 @@ public class LogManagerGui extends JPanel {
 	}
 
 	void quickEditLogger (Point p, final Logger x) {
-		quickEditor.popupmenuActionListener.x = x;
+		quickEditor.use(x);
 		quickEditor.show(tree, p.x, p.y);
 	}
 
 	/**
-	 * 
-	 * @param x
 	 * @param level Something that can be recognized as (or made) a level
 	 */
-	void doSetLevel (Logger x, Object level) {
+	Level decodeLevel (Object level) {
 		Level toSet;
 		if ("(inherited)".equals(level)) {
 			toSet = null;
@@ -281,15 +287,23 @@ public class LogManagerGui extends JPanel {
 				try {
 					toSet = Level.parse(s);
 					/* Level.parse() will create a custom-level if an integer is passed in */
-				} catch (Exception exc2) {
-					message("cannot decode level '" + level + "'");
-					return;
+				} catch (Exception exc) {
+					message("cannot decode level '" + level + "', using ALL instead");
+					toSet = Level.ALL;
 				}
 			}
 		}
+		return toSet;
+	}
+	
+	/**
+	 * 
+	 * @param x
+	 */
+	void doSetLevel (Logger x, Level toSet) {
 		
 		if (toSet == null && x.getParent() == null) {
-			// now allowed to set "(inherited)" on the rootlogger
+			// leniently ignore attempts to set "(inherited)" on the rootlogger
 			return;
 		}
 		
@@ -330,39 +344,57 @@ public class LogManagerGui extends JPanel {
 	
 	class QuickLoggerEditor extends JPopupMenu {
 
-		ActionLi popupmenuActionListener;
+		Logger x;
+		JMenu handlermenu;
 
 		QuickLoggerEditor() {
-			popupmenuActionListener = new ActionLi();
+			JMenuItem item;
 
-			JMenuItem item = new JMenuItem("(inherited)");
+			LoggerLevelAction loggerAction = new LoggerLevelAction();
+			item = new JMenuItem("(inherited)");
 			item.setActionCommand("(inherited)");
-			item.addActionListener(popupmenuActionListener);
+			item.addActionListener(loggerAction);
 			super.add(item);
-			
 			for (int i = 0; i < LEVELS.size(); i++) {
 				String levelName = ((Level) LEVELS.get(i)).getName();
 				item = new JMenuItem(levelName);
 				item.setActionCommand(levelName);
-				item.addActionListener(popupmenuActionListener);
+				item.addActionListener(loggerAction);
 				super.add(item);
 			}
-		}
-
-
-		class ActionLi implements ActionListener {
-
-			Logger x;
-
-			public void actionPerformed (ActionEvent e) {
-				if (x == null) {
-					return;
-				}
-
-				doSetLevel(x, e.getActionCommand());
+			
+			HandlerLevelAction handlerAction = new HandlerLevelAction();
+			handlermenu = new JMenu("Handlers");
+			for (int i = 0; i < LEVELS.size(); i++) {
+				String levelName = ((Level) LEVELS.get(i)).getName();
+				item = new JMenuItem(levelName);
+				item.setActionCommand(levelName);
+				item.addActionListener(handlerAction);
+				handlermenu.add(item);
 			}
-
+			super.add(handlermenu);
 		}
+
+		void use(Logger x) {
+			this.x = x;
+			handlermenu.setEnabled(x.getHandlers().length>0);
+		}
+		
+		class LoggerLevelAction implements ActionListener {
+			public void actionPerformed (ActionEvent e) {
+				if (x != null)
+					doSetLevel(x, decodeLevel(e.getActionCommand()));
+			}
+		}
+
+		class HandlerLevelAction implements ActionListener {
+			public void actionPerformed (ActionEvent e) {
+				if (x != null)
+					for (Handler h : x.getHandlers())
+						h.setLevel(decodeLevel(e.getActionCommand()));
+			}
+		}
+		
 	}
 
 	class LoggerEditor extends JPanel {
@@ -402,7 +434,7 @@ public class LogManagerGui extends JPanel {
 					return;
 				}
 
-				doSetLevel(x, sel);
+				doSetLevel(x, decodeLevel(sel));
 			}
 		}
 	}
