@@ -16,7 +16,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.4 2008/08/29 13:58:28 msekoran Exp $"
+# "@(#) $Id: Makefile,v 1.5 2008/11/04 10:02:44 msekoran Exp $"
 #
 # Makefile of ........
 #
@@ -138,8 +138,8 @@ USER_IDL =
 #
 # Jarfiles and their directories
 #
-JARFILES= 
-jjj_DIRS=
+JARFILES=acsdaemonTest 
+acsdaemonTest_DIRS=alma
 jjj_EXTRAS= 
 #
 # java sources in Jarfile on/off

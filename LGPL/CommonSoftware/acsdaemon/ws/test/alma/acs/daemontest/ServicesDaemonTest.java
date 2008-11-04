@@ -255,8 +255,9 @@ public class ServicesDaemonTest extends TestCase
 			daemon.start_naming_service(dcb, instanceNumber);
 			assertTrue("Failed to get reply about starting of second naming service within 10 s", 
 				daemonCallbackImpl.waitForDone(10, TimeUnit.SECONDS));
-			// we don't expect a done() callback though
-			fail("Expected ServiceAlreadyRunningEx when starting naming service twice.");
+			// error via callback?
+			if (daemonCallbackImpl.getLastDoneCompletion().type != alma.ACSErr.acsdaemonErrType.value || daemonCallbackImpl.getLastDoneCompletion().code != alma.acsdaemonErrType.ServiceAlreadyRunning.value)
+				fail("Expected ServiceAlreadyRunningEx when starting naming service twice.");
 		} 
 		catch (ServiceAlreadyRunningEx ex) {
 			// good
