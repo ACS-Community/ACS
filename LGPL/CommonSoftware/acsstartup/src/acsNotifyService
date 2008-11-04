@@ -7,7 +7,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: acsNotifyService,v 1.3 2008/11/04 10:13:46 msekoran Exp $"
+# "@(#) $Id: acsNotifyService,v 1.4 2008/11/04 10:59:39 msekoran Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -174,11 +174,13 @@ NAMING_SERVICE_PIDFILE=$INSTANCE_DIR/$ACS_NAMING_SERVICE_PIDFILE
 NAMING_SERVICE_PORT=`getNamingServicePort`
 case $CL_NS_TYPE in
   ""|"NotifyEventChannelFactory")
+    CL_NS_TYPE=""
     NOTIFY_SERVICE_PIDFILE=$INSTANCE_DIR/$ACS_NOTIFY_SERVICE_PIDFILE
     NOTIFY_OUT=$INSTANCE_DIR/$ACS_NOTIFY_OUT
     NOTIFY_IOR=$INSTANCE_DIR/$ACS_NOTIFY_SERVICE_IORFILE
     NOTIFY_SERVICE_PORT=`getNotifyServicePort`
   ;; "Logging"|"LoggingNotifyEventChannelFactory")
+    CL_NS_TYPE="Logging"
     NOTIFY_SERVICE_PIDFILE=$INSTANCE_DIR/$ACS_LOGGING_NOTIFY_SERVICE_PIDFILE
     NOTIFY_OUT=$INSTANCE_DIR/$ACS_LOG_NOTIFY_OUT
     NOTIFY_IOR=$INSTANCE_DIR/$ACS_LOGGING_NOTIFY_SERVICE_IORFILE
@@ -192,6 +194,7 @@ case $CL_NS_TYPE in
     NOTIFY_EVENT_CHANNEL=$LOGGING_CHANNEL
     NOTIFY_EVENT_CHANNEL_FACTORY=LoggingNotifyEventChannelFactory
   ;; "Archive"|"ArchiveNotifyEventChannelFactory")
+    CL_NS_TYPE="Archive"
     NOTIFY_SERVICE_PIDFILE=$INSTANCE_DIR/$ACS_ARCHIVE_NOTIFY_SERVICE_PIDFILE
     NOTIFY_OUT=$INSTANCE_DIR/$ACS_ARCHIVE_NOTIFY_OUT
     NOTIFY_IOR=$INSTANCE_DIR/$ACS_ARCHIVE_NOTIFY_SERVICE_IORFILE
@@ -199,6 +202,7 @@ case $CL_NS_TYPE in
     NOTIFY_EVENT_CHANNEL=ArchivingChannel
     NOTIFY_EVENT_CHANNEL_FACTORY=ArchiveNotifyEventChannelFactory
   ;; "Alarm"|"AlarmNotifyEventChannelFactory")
+    CL_NS_TYPE="Alarm"
     NOTIFY_SERVICE_PIDFILE=$INSTANCE_DIR/$ACS_ALARM_NOTIFY_SERVICE_PIDFILE
     NOTIFY_OUT=$INSTANCE_DIR/$ACS_ALARM_NOTIFY_OUT
     NOTIFY_IOR=$INSTANCE_DIR/$ACS_ALARM_NOTIFY_SERVICE_IORFILE
