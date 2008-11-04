@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsRequest.h,v 1.2 2008/10/29 08:37:57 msekoran Exp $"
+* "@(#) $Id: acsRequest.h,v 1.3 2008/11/04 14:50:15 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -99,7 +99,7 @@ const ACSService acsServices[] = {
       "NotificationServiceImp",
       "3016",
       "acsutilBlock -t 15 -s -k -b \"Imp is up and running...\" acsdaemonNotificationServiceImp",
-      "corbaloc::%s:%s/%sNotifyEventChannelFactory",
+      "corbaloc::%s:%s/%s",
       NULL,
       &ACSPorts::getNotifyServicePort,
       true
@@ -260,7 +260,7 @@ class ACSServiceRequestDescription {
     void setLoadIR(bool iloadir) { loadir = iloadir; }
     void setWaitLoadIR(bool iwait) { wait = iwait; }
     void setRecovery(bool irecovery) { recovery = irecovery; }
-    void setCdbXMLDir(const char *icdbxmldir) { cdbxmldir = icdbxmldir; }
+    void setCdbXMLDir(const char *icdbxmldir) { cdbxmldir = icdbxmldir == NULL ? NULL : strdup(icdbxmldir); }
     int getInstanceNumber() { return instance_number; }
     const char *getName() { return name; }
     const char *getHost() { return host == NULL ? ACSPorts::getIP() : host; }
