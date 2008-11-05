@@ -206,10 +206,11 @@ public class LogEntryTableModelBase extends AbstractTableModel {
 	    if (allLogs != null) {
 	    	try {
 	    		synchronized(rows) {
+	    			int sz =rows.size();
 	    			rows.removeAllElements();
+	    			fireTableRowsDeleted(0, sz-1);
 	    		}
 	    		allLogs.clear();
-	    		fireTableDataChanged();
 	    	} catch (LogCacheException e) {
 	    		System.err.println("Error clearing the cache: "+e.getMessage());
 	    		e.printStackTrace(System.err);
