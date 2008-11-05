@@ -1,4 +1,4 @@
-# @(#) $Id: LoggingConsumer.py,v 1.2 2006/01/28 00:03:50 dfugate Exp $
+# @(#) $Id: LoggingConsumer.py,v 1.3 2008/11/05 19:34:21 rtobar Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -27,7 +27,7 @@ TODO:
 - everything
 '''
 
-__revision__ = "$Id: LoggingConsumer.py,v 1.2 2006/01/28 00:03:50 dfugate Exp $"
+__revision__ = "$Id: LoggingConsumer.py,v 1.3 2008/11/05 19:34:21 rtobar Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 from traceback import print_exc
@@ -64,7 +64,7 @@ class LoggingConsumer (Consumer):
         '''
         self.handler = handler
 
-        Consumer.__init__(self, acscommon.LOGGING_CHANNEL_NAME)
+        Consumer.__init__(self, acscommon.LOGGING_CHANNEL_XML_NAME)
     #--------------------------------------------------------------------------
     def getChannelKind(self):
         '''
