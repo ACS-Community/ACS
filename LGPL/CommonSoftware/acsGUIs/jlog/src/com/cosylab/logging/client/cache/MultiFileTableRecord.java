@@ -165,7 +165,7 @@ public class MultiFileTableRecord {
 	public void clear() throws LogCacheException {
 		minLogIdx=Integer.MAX_VALUE;
 		maxLogIdx=Integer.MIN_VALUE; 
-		lbfc.clear(false,false);
+		lbfc.clear();
 	}
 	
 	/**

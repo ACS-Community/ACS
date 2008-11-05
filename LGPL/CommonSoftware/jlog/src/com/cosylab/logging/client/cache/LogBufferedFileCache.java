@@ -123,27 +123,12 @@ public class LogBufferedFileCache extends LogFileCache implements ILogMap {
 	}
 	
 	/**
-	 * Empty the cache.
-	 * 
-	 */
-	public synchronized void clear() throws LogCacheException {
-		super.clear();
-		synchronized (buffer){
-			buffer.clear();
-		}
-		bufferFileSize=0;
-	}
-	
-	/**
 	 * Empty the cache 
-	 * 
-	 * @param newFile If true the cache allocates a new file for storing the logs
-	 * @param keepOldFile If true the old file for the cache is not deleted
 	 * 
 	 * @throws IOException
 	 */
-	public synchronized void clear(boolean newFile, boolean keepOldFile) throws LogCacheException {
-		super.clear(newFile,keepOldFile);
+	public synchronized void clear() throws LogCacheException {
+		super.clear();
 		synchronized(buffer) {
 			buffer.clear();
 		}
