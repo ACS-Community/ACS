@@ -194,10 +194,10 @@ public class LogFileCache implements ILogMap {
 	 * Create the file for the cache trying in several places
 	 * before giving up.
 	 * 
-	 * @ return The file for the temporary log file 
+	 * @ return The name of the file for the temporary log file 
 	 * 
 	 */
-	private File getFile() {
+	private String getFile() {
 		String name=null;
 		File f=null;
 		// This does not work because the file is created into a 
@@ -212,7 +212,6 @@ public class LogFileCache implements ILogMap {
 			acsdata=acsdata+"/tmp/";
 			File dir = new File(acsdata);
 			f = File.createTempFile("jlog",".tmp",dir);
-			name=acsdata+f.getName();
 		} catch (IOException ioe) {
 			// Another error :-O
 			String homeDir = System.getProperty("user.dir");
@@ -224,62 +223,41 @@ public class LogFileCache implements ILogMap {
 			} while (f.exists());
 		}
 		if (f!=null) {
-			logFileName=name;
+			logFileName=f.getAbsolutePath();
 			f.deleteOnExit();
+			f=null;
 		} else {
 			logFileName=null;
 		}
-		return f;
-	}
-	
-	
-	/**
-	 * Empty the cache reusing the same file
-	 *
-	 */
-	public void clear() throws LogCacheException {
-		try {
-			clear(false,false);
-		} catch (Exception e) {
-			System.err.println("Exception caught while clearing "+e.getMessage());
-			e.printStackTrace(System.err);
-			throw new LogCacheException("Exception while clearing the cache",e);
-		}
+		return logFileName;
 	}
 	
 	/**
-	 * Empty the cache 
-	 * 
-	 * @param newFile If true the cache allocates a new file for storing the logs
-	 * @param keepOldFile If true the old file for the cache is not deleted
+	 * Empty the cache. 
 	 * 
 	 * @throws IOException
 	 */
-	public synchronized void clear(boolean newFile, boolean keepOldFile) throws LogCacheException {
-		if (file==null) {
-			synchronized(index) {
-				index.clear();
-			}
-		} else {
-			if (newFile) {
-				try {
-					file.close();
-				} catch (IOException ioe) { }
-				file = null;
-				if (logFileName!=null) {
-					if (!keepOldFile) {
-						File f = new File(logFileName);
-						f.delete();
-					}
-				}
-			}
-//			try {
-//				initCache();
-//			} catch (IOException ioe) {
-//				throw new LogCacheException("Error initing the cache",ioe);
-//			}
+	public synchronized void clear() throws LogCacheException {
+		synchronized(index) {
+			index.clear();
 		}
 		logID=0;
+		if (file==null) {
+			return;
+		}
+		
+		try {
+			file.close();
+			if (logFileName!=null) {
+				File f = new File(logFileName);
+				f.delete(); 
+			}
+		} catch (IOException e) {
+			throw new LogCacheException("Error clearing cache file",e);
+		} finally {
+			file=null;
+			logFileName=null;
+		}
 	}
 	
 	/**
