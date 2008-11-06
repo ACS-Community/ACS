@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.16 2005/10/20 11:53:04 dfugate Exp $"
+# "@(#) $Id: Makefile,v 1.17 2008/11/06 10:24:16 cparedes Exp $"
 #
 # Makefile of ........
 #
@@ -64,7 +64,7 @@ PY_SCRIPTS_L =
 # Scripts (public and local)
 # ----------------------------
 SCRIPTS         = 
-SCRIPTS_L       = jcontncTATRunTest.sh jcontncArchiveConsumerContainer jcontncArchiveConsumerContainerShutdown
+SCRIPTS_L       = runHelperTest.sh jcontncTATRunTest.sh jcontncArchiveConsumerContainer jcontncArchiveConsumerContainerShutdown
 
 #>>>>> END OF standard rules
 
