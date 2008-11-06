@@ -7,7 +7,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: acsNotifyService,v 1.4 2008/11/04 10:59:39 msekoran Exp $"
+# "@(#) $Id: acsNotifyService,v 1.5 2008/11/06 09:37:29 cparedes Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -298,15 +298,13 @@ then
     ORBOPTS="$ORBOPTS -ORBDebug -ORBDebugLevel 1"
   else
     ORBOPTS="$ORBOPTS -Factory $NOTIFY_EVENT_CHANNEL_FACTORY"
-    if [ "$CL_NS_TYPE" = "Logging" ]
-    then
-      # Let's create configuration file
-      # we replace slashes(/) with \/ which can be used in sed
-      LOGGING_NOTIFY_MC_IOR=`echo $INSTANCE_DIR | sed 's/\//\\\\\//g'`"\/iors\/LoggingNotifyMCIOR"
-      sed -e "s/NS_HOST/$HOST/" -e "s/NS_PORT/$NAMING_SERVICE_PORT/" -e "s/MC_IOR/$LOGGING_NOTIFY_MC_IOR/"  $ACSROOT/config/svc.conf/LoggingNotify.svc.conf > $INSTANCE_DIR/$ACS_CNF_DIR/LoggingNotify.svc.conf
-      ORBOPTS="$ORBOPTS -ORBSvcConf $INSTANCE_DIR/$ACS_CNF_DIR/LoggingNotify.svc.conf"
-    fi
   fi
+
+  # Let's create configuration file
+  # we replace slashes(/) with \/ which can be used in sed
+  NOTIFY_MC_IOR=`echo $INSTANCE_DIR | sed 's/\//\\\\\//g'`"\/iors\/${CL_NS_TYPE}NotifyMCIOR"
+  sed -e "s/NS_HOST/$HOST/" -e "s/NS_PORT/$NAMING_SERVICE_PORT/" -e "s/MC_IOR/$NOTIFY_MC_IOR/"  $ACSROOT/config/svc.conf/defaultNotify.svc.conf > $INSTANCE_DIR/$ACS_CNF_DIR/${CL_NS_TYPE}Notify.svc.conf
+  ORBOPTS="$ORBOPTS -ORBSvcConf $INSTANCE_DIR/$ACS_CNF_DIR/${CL_NS_TYPE}Notify.svc.conf"
 
   # I need to cd to $ACE_ROOT/TAO/orbsvcs/Notify_Service
   # in order to get the correct svc.conf service configuration file.
