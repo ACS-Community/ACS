@@ -69,7 +69,7 @@ public class ConsumerWithComponentClientTestCaseTest extends ComponentClientTest
 			m_logger.info("tearDown called.");
 			channelDown();
 			// The following hack is necessary for JUnit tests!
-			Helper.m_nContext = null;
+			//Helper.m_nContext = null;
 		} finally { 
 			super.tearDown();
 		}
