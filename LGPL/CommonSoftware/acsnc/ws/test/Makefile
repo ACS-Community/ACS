@@ -1,5 +1,5 @@
 #*******************************************************************************
-# "@(#) $Id: Makefile,v 1.64 2006/03/08 17:50:44 dfugate Exp $"
+# "@(#) $Id: Makefile,v 1.65 2008/11/06 09:45:35 cparedes Exp $"
 #
 # ALMA - Atacama Large Millimiter Array
 # (c) Associated Universities Inc., 2002  
@@ -32,9 +32,11 @@ PROG =
 DEBUG=on
 # C programs (public and local)
 # -----------------------------
-EXECUTABLES     = 
+EXECUTABLES     = testChannelCreation 
 EXECUTABLES_L   = 
 
+testChannelCreation_OBJECTS =	testChannelCreation
+testChannelCreation_LIBS    =	acsnc maciClient
 
 
 SCRIPTS_L       = acsncTATRunTest.sh
@@ -50,12 +52,13 @@ INCLUDES_L      = acsncConsumerCompImpl.h acsncSupplierCompImpl.h
 # ----------------------------
 LIBRARIES       = acsncConsumerCompImpl acsncSupplierCompImpl acsncRTSupplierCompImpl \
 		acsncArchiveConsumerCompImpl \
-		testCDBProps \
+		testCDBProps  \
 		acsncConsumerILCompImpl acsncSupplierILCompImpl
 LIBRARIES_L     = 
 
 testCDBProps_OBJECTS =	testCDBProps
 testCDBProps_LIBS    =	EventComponentStubs acsnc acscomponent
+
 
 acsncConsumerCompImpl_OBJECTS = acsncConsumerCompImpl
 acsncConsumerCompImpl_LIBS    = EventComponentStubs acsnc acscomponent

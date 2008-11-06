@@ -16,7 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: acsncServiceChecker.cpp,v 1.4 2008/10/09 07:57:41 cparedes Exp $"
+ * "@(#) $Id: acsncServiceChecker.cpp,v 1.5 2008/11/06 09:45:35 cparedes Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -122,13 +122,17 @@ namespace nc{
 					throw err.getCORBAProblemEx();
 				}
 				//now try to narrow the notification service reference
-				notifyFactory_m = CosNotifyChannelAdmin::EventChannelFactory::_narrow(corbaObj.in());
+				notifyFactory_m = NotifyMonitoringExt::EventChannelFactory::_narrow(corbaObj.in());
 				//double-check to ensure it's not a nil reference
 				if(CORBA::is_nil(notifyFactory_m.in()) == true)
 				{
-					CORBAProblemExImpl err = CORBAProblemExImpl(__FILE__,__LINE__,"ServiceChecker::resolveNotificationFactory");
-					throw err.getCORBAProblemEx();
-				}
+                    notifyFactoryOld_m = CosNotifyChannelAdmin::EventChannelFactory::_narrow(corbaObj.in());
+				    if(CORBA::is_nil(notifyFactoryOld_m.in()) == true)
+				    {
+					    CORBAProblemExImpl err = CORBAProblemExImpl(__FILE__,__LINE__,"ServiceChecker::resolveNotificationFactory");
+					    throw err.getCORBAProblemEx();
+				    }
+                }
 			}
 			catch(...)
 			{

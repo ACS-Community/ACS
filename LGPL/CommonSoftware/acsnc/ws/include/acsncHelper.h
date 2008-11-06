@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsncHelper.h,v 1.70 2008/10/09 07:57:41 cparedes Exp $"
+* "@(#) $Id: acsncHelper.h,v 1.71 2008/11/06 09:45:35 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -42,6 +42,7 @@
 #include <orbsvcs/CosNotifyCommC.h>
 #include <orbsvcs/CosNotifyFilterC.h>
 #include <orbsvcs/CosNotificationC.h>
+#include <orbsvcs/Notify/MonitorControlExt/NotifyMonitoringExtC.h>
 
 #include "acsncS.h"
 #include "acsncC.h"
@@ -193,6 +194,8 @@ class Helper
      * Create notification channel. 
      * Only used by Supplier to create NC.
      * @throw ACSErrTypeCommon::CORBAProblemEx
+     * @throw NotifyMonitoringExt::NameAlreadyUsed when the factory tries to create a notification channel with the same name
+     * @throw NotifyMonitoringExt::NameMapError
      * @htmlonly
        <br><hr>
        @endhtmlonly
@@ -273,8 +276,18 @@ class Helper
 
     /**
      * Channel factory. Used to create new channels.
+     * The extended mode of TAO is used to prevent the creation
+     * of a channel multiple times
      */
-    CosNotifyChannelAdmin::EventChannelFactory_var notifyFactory_m;
+    NotifyMonitoringExt::EventChannelFactory_var notifyFactory_m;
+    
+    /**
+     * Channel factory. Used to create new channels.
+     * In the case of a non TAO implementation or the initialization
+     * of the service without the extended mode, the standard
+     * mode is used
+     */
+    CosNotifyChannelAdmin::EventChannelFactory_var notifyFactoryOld_m;
 
     /**
      * Keep a reference to the channel. Should this be removed in future

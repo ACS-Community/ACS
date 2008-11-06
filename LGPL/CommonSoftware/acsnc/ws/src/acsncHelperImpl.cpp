@@ -19,7 +19,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsncHelperImpl.cpp,v 1.77 2008/10/09 07:57:41 cparedes Exp $"
+* "@(#) $Id: acsncHelperImpl.cpp,v 1.78 2008/11/06 09:45:35 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -46,6 +46,7 @@ Helper::Helper(const char* channelName, const char* notifyServiceDomainName):
     notificationServiceName_mp(0),
     orbHelper_mp(0),
     notifyFactory_m(0),
+    notifyFactoryOld_m(0),
     channelID_m(0),
     okToLog_m(false)
 {
@@ -176,46 +177,52 @@ Helper::resolveNotificationFactory()
 	CORBAProblemExImpl err = CORBAProblemExImpl(__FILE__,__LINE__,"nc::Helper::resolveNotificationFactory");
 	throw err.getCORBAProblemEx();
 	}
-
     try
 	{
-	//try to resolve the object with the naming service.  a few exceptions can be
-	//thrown by this
-	CORBA::Object_var corbaObj = namingContext_m->resolve(name);
-	//double-check to ensure it's not a nil reference
-	if(CORBA::is_nil(corbaObj.in()) == true)
-	    {
-	    ACS_SHORT_LOG((LM_ERROR, "Helper::resolveNotificationFactory error occured for the '%s' channel!",
-			   channelName_mp));
-	    CORBAProblemExImpl err = CORBAProblemExImpl(__FILE__,__LINE__,"nc::Helper::resolveNotificationFactory");
-	    throw err.getCORBAProblemEx();
-	    }
-	//now try to narrow the notification service reference
-	notifyFactory_m = CosNotifyChannelAdmin::EventChannelFactory::_narrow(corbaObj.in());
-	//double-check to ensure it's not a nil reference
-	if(CORBA::is_nil(notifyFactory_m.in()) == true)
-	    {
-	    ACS_SHORT_LOG((LM_ERROR, "Helper::resolveNotificationFactory error occured for the '%s' channel!",
-			   channelName_mp));
-	    CORBAProblemExImpl err = CORBAProblemExImpl(__FILE__,__LINE__,"nc::Helper::resolveNotificationFactory");
-	    throw err.getCORBAProblemEx();
-	    }
+        //try to resolve the object with the naming service.  a few exceptions can be
+        //thrown by this
+        CORBA::Object_var corbaObj = namingContext_m->resolve(name);
+        //double-check to ensure it's not a nil reference
+        if(CORBA::is_nil(corbaObj.in()) == true)
+        {
+            ACS_SHORT_LOG((LM_ERROR, "Helper::resolveNotificationFactory error occured for the '%s' channel!",
+                   channelName_mp));
+            CORBAProblemExImpl err = CORBAProblemExImpl(__FILE__,__LINE__,"nc::Helper::resolveNotificationFactory");
+            throw err.getCORBAProblemEx();
+        }
+        //now try to narrow the notification service reference
+        notifyFactory_m = NotifyMonitoringExt::EventChannelFactory::_narrow(corbaObj.in());
+        //double-check to ensure it's not a nil reference
+        if(CORBA::is_nil(notifyFactory_m.in()) == true)
+        {
+            ACS_SHORT_LOG((LM_ERROR, "Helper::resolveNotificationFactory error occured for the '%s' channel using NotifyMonitoringExt!",
+                   channelName_mp));
+            notifyFactoryOld_m = CosNotifyChannelAdmin::EventChannelFactory::_narrow(corbaObj.in());
+            //double-check to ensure it's not a nil reference again
+            if(CORBA::is_nil(notifyFactoryOld_m.in()) == true)
+            {
+                ACS_SHORT_LOG((LM_ERROR, "Helper::resolveNotificationFactory error occured for the '%s' channel using CosNotifyChannelAdmin!",
+                       channelName_mp));
+                CORBAProblemExImpl err = CORBAProblemExImpl(__FILE__,__LINE__,"nc::Helper::resolveNotificationFactory");
+                throw err.getCORBAProblemEx();
+            }
+        }
 	}
     catch(CORBAProblemEx)
 	{
-	ACS_SHORT_LOG((LM_TRACE, "Helper::resolveNotificationFactory failed for the '%s' channel with a nil pointer!",
-		       channelName_mp));
-	//thrown by this method and OK to rethrow
-	throw;
+        ACS_SHORT_LOG((LM_TRACE, "Helper::resolveNotificationFactory failed for the '%s' channel with a nil pointer!",
+                   channelName_mp));
+        //thrown by this method and OK to rethrow
+        throw;
 	}
     catch(...)
 	{
-	//most likely some exception like the notification service is not registered
-	//with the naming service.  nothing can be done
-	ACS_SHORT_LOG((LM_ERROR, "Helper::resolveNotificationFactory() error occured for the '%s' channel!",
-		       channelName_mp));
-	CORBAProblemExImpl err = CORBAProblemExImpl(__FILE__,__LINE__,"nc::Helper::resolveNotificationFactory");
-	throw err.getCORBAProblemEx();
+        //most likely some exception like the notification service is not registered
+        //with the naming service.  nothing can be done
+        ACS_SHORT_LOG((LM_ERROR, "Helper::resolveNotificationFactory() error occured for the '%s' channel!",
+                   channelName_mp));
+        CORBAProblemExImpl err = CORBAProblemExImpl(__FILE__,__LINE__,"nc::Helper::resolveNotificationFactory");
+        throw err.getCORBAProblemEx();
 	}
 }
 //-----------------------------------------------------------------------------
@@ -224,45 +231,54 @@ Helper::createNotificationChannel()
 {
     ACS_TRACE("Helper::resolveNotificationChannel");
 
+    try{
     //double-check the notification service reference
     if(CORBA::is_nil(notifyFactory_m.in()) == true)
 	{
-	ACS_SHORT_LOG((LM_ERROR, "Helper::createNotificationChannel() error occured for the '%s' channel!",
+        //it means that the extended notify factory failed to be created.
+        //we will try with the standard implementation
+        if(CORBA::is_nil(notifyFactoryOld_m.in()) == true)
+        {
+	        ACS_SHORT_LOG((LM_ERROR, "Helper::createNotificationChannel() error occured for the '%s' channel!",
 		       channelName_mp));
-	CORBAProblemExImpl err = CORBAProblemExImpl(__FILE__,__LINE__,"nc::Helper::createNotificationChannel");
-	throw err.getCORBAProblemEx();
-	}
-
-    try
-	{
-	//here is where the channel is actually created
-	notifyChannel_m = notifyFactory_m->create_channel(getQoSProps(),
-							  getAdminProps(),
-							  channelID_m);
+	        CORBAProblemExImpl err = CORBAProblemExImpl(__FILE__,__LINE__,"nc::Helper::createNotificationChannel");
+	        throw err.getCORBAProblemEx();
+	    }
+        
+        //here is where the channel is actually created
+        notifyChannel_m = notifyFactoryOld_m->create_channel(getQoSProps(),
+                                  getAdminProps(),
+                                  channelID_m);
+    }else{
+        //here is where the channel is actually created
+        notifyChannel_m = notifyFactory_m->create_named_channel(getQoSProps(),
+                                  getAdminProps(),
+                                  channelID_m, channelName_mp);
+    }
 	//ensure it's a valid reference
 	if(CORBA::is_nil(notifyChannel_m.in()) == true)
-	    {
+	{
 	    ACS_SHORT_LOG((LM_ERROR, "Helper::createNotificationChannel() error occured for the '%s' channel!",
 			   channelName_mp));
 	    CORBAProblemExImpl err = CORBAProblemExImpl(__FILE__,__LINE__,"nc::Helper::createNotificationChannel");
 	    throw err.getCORBAProblemEx();
-	    }
+	}
 
-	   // Bind notification channel to Naming service
-	   CosNaming::Name name(1);
-	   name.length(1);
-	   name[0].id = CORBA::string_dup(channelName_mp);
-	   name[0].kind = acscommon::NC_KIND;
-	   //sanity check to make sure the naming service is really there
-	   if(CORBA::is_nil(namingContext_m.in()) == true)
-	       {
-	       ACS_SHORT_LOG((LM_ERROR, "Helper::createNotificationChannel() error occured for the '%s' channel!",
-			   channelName_mp));
-	       CORBAProblemExImpl err = CORBAProblemExImpl(__FILE__,__LINE__,"nc::Helper::createNotificationChannel");
-	       throw err.getCORBAProblemEx();
-	       }
-	   //really bind the reference here
-	   namingContext_m->rebind(name, notifyChannel_m.in());
+   // Bind notification channel to Naming service
+   CosNaming::Name name(1);
+   name.length(1);
+   name[0].id = CORBA::string_dup(channelName_mp);
+   name[0].kind = acscommon::NC_KIND;
+   //sanity check to make sure the naming service is really there
+   if(CORBA::is_nil(namingContext_m.in()) == true)
+       {
+       ACS_SHORT_LOG((LM_ERROR, "Helper::createNotificationChannel() error occured for the '%s' channel!",
+           channelName_mp));
+       CORBAProblemExImpl err = CORBAProblemExImpl(__FILE__,__LINE__,"nc::Helper::createNotificationChannel");
+       throw err.getCORBAProblemEx();
+       }
+   //really bind the reference here
+   namingContext_m->rebind(name, notifyChannel_m.in());
 	}
     catch(CORBAProblemEx)
 	{
