@@ -19,7 +19,7 @@ package alma.acs.nc;
 
 /**
  * @author dfugate
- * @version $Id: LoggingConsumer.java,v 1.5 2007/11/05 20:20:56 hsommer Exp $
+ * @version $Id: LoggingConsumer.java,v 1.6 2008/11/06 01:33:33 cparedes Exp $
  * @since
  */
 
@@ -58,7 +58,7 @@ public class LoggingConsumer extends Consumer {
    public LoggingConsumer(ContainerServicesBase services, Object receiver)
          throws AcsJException {
       // call the super.
-      super(alma.acscommon.LOGGING_CHANNEL_NAME.value, services);
+      super(alma.acscommon.LOGGING_CHANNEL_XML_NAME.value, services);
 
       // check to ensure receiver is capable to processing the event
       Class receiverClass = receiver.getClass();
