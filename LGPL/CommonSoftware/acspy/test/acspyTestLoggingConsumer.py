@@ -21,7 +21,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# @(#) $Id: acspyTestLoggingConsumer.py,v 1.1 2005/10/08 13:34:42 dfugate Exp $
+# @(#) $Id: acspyTestLoggingConsumer.py,v 1.2 2008/11/06 16:13:02 agrimstrup Exp $
 ###############################################################################
 '''
 Tests logging consumer
@@ -38,7 +38,7 @@ def myHandler(xml):
     '''
     global count 
     if count < magicNumber:
-        print xml
+#        print xml
         count = count + 1
     return
 
@@ -51,3 +51,5 @@ while (count!=magicNumber):
 
 #shutdown everything cleanly
 myConsumer.disconnect()
+print "%d of %d messages received" % (count, magicNumber)
+

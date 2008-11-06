@@ -20,7 +20,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.40 2007/10/04 21:56:15 agrimstrup Exp $"
+# "@(#) $Id: Makefile,v 1.41 2008/11/06 16:13:02 agrimstrup Exp $"
 #
 # Makefile of ........
 #
@@ -56,6 +56,7 @@ PY_SCRIPTS_L =	acspyTestACSComponent \
 		acspyTestArchiveSupplier \
 		acspyTestArchiveConsumerPS \
 		acspyTestCompReload \
+		acspyTestLoggingConsumer \
 		acspyTestSupplier acspyTestConsumer acspyTestQoSTimeout
 
 PY_PACKAGES = acspytestImpl acspyTestQoSImpl
