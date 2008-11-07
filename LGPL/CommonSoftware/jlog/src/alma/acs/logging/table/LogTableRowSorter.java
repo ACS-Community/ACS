@@ -134,7 +134,8 @@ public class LogTableRowSorter extends TableRowSorter<LogTableDataModel> impleme
 				setRowFilter(new LogTableRowFilter(filters,logLevel));
 			}
 		},"LogTableRowSorter.applyChanges");
-		SwingUtilities.invokeLater(t);
+		t.setDaemon(true);
+		t. start();
 	}
 	
 	/**
