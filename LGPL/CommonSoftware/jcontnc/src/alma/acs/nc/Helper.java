@@ -94,7 +94,7 @@ public class Helper {
 	private final ContainerServicesBase m_services;
 
 	// / Our own personal logger
-	private final Logger m_logger;
+	protected final Logger m_logger;
 
 	// / Provides access to channel's quality of service properties
 	private final ChannelProperties m_channelProperties;
